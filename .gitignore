@@ -1,0 +1,53 @@
+# ── Unreal: generated / local build output ──────────────
+Binaries/
+Intermediate/
+Saved/
+DerivedDataCache/
+Build/*
+!Build/**/*.ico
+Plugins/*/Binaries/
+Plugins/*/Intermediate/
+Plugins/**/Binaries/
+Plugins/**/Intermediate/
+
+# ── IDE / generated solution files (regenerate via .uproject) ──
+.vs/
+.vscode/
+.idea/
+*.sln
+*.slnx
+*.suo
+*.user
+*.opensdf
+*.sdf
+*.VC.db
+*.VC.opendb
+*.code-workspace
+
+# ── Compiled / temp ─────────────────────────────────────
+*.pdb
+*.obj
+*.dll
+*.exe
+*.tmp
+*.log
+
+# ── Secrets (never commit) ──────────────────────────────
+.env
+.env.*
+!.env.example
+private/
+secrets/
+*.key
+*.pem
+*.pfx
+
+# ── Vault / tooling ─────────────────────────────────────
+node_modules/
+vault/.obsidian/workspace*
+.claude/settings.local.json
+
+# ── OS ──────────────────────────────────────────────────
+Thumbs.db
+desktop.ini
+.DS_Store
