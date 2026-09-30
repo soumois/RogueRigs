@@ -12,7 +12,7 @@ status: approved
 
 ## States
 - **Orbit:** circles the miner by default.
-- **Dig:** when the miner stands against a block, the drone cuts that block. It stays right next to the miner, on the same side.
+- **Dig:** when the miner stands against a block, the drone cuts that block. It stays right next to the miner, on the same block.
 - **Hack:** inside an objective zone, it links to the beacon ([[objective-beacon-hack]]).
 - It cannot dig and hack at the same time.
 
