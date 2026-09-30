@@ -27,6 +27,7 @@ Every feature must pass at least one test. A feature that passes none is cut.
 - **Ore / special ore**: meta-progression resource / rare objective resource.
 
 ## Relations
+- [[lore]] — world, factions, the colleague behind the drone, how lore maps onto mechanics. Open for narrative or text work.
 - [[run-index]] — run structure, level flow, objectives, extraction, ore economy. Open for loop or win/loss questions.
 - [[player-index]] — the miner and the drone: controls, states, stats.
 - [[weapons-index]] — weapons, turrets, upgrades and rarities.

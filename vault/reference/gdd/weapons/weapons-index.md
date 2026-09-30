@@ -6,7 +6,13 @@ kind: note
 ---
 # Weapons and upgrades
 
-Planned nodes: burst-rifle, shotgun, turret, upgrades, rarities, damage-numbers.
+All weapons fire automatically toward the aim. All projectiles stop on rock blocks.
 
 ## Relations
 - [[gdd-index]] — parent index.
+- [[burst-rifle]] — default weapon, fires in bursts.
+- [[shotgun]] — short range, knockback.
+- [[turret]] — deployable, up to 2, fixed lifetime, no collision.
+- [[upgrades]] — the level-up pool: stats, effects, stacking.
+- [[rarities]] — 5 tiers, UI-only colors.
+- [[damage-numbers]] — floating hit numbers.

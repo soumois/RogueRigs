@@ -6,7 +6,7 @@ kind: note
 ---
 # Player side
 
-Planned nodes: miner, drone.
-
 ## Relations
 - [[gdd-index]] — parent index.
+- [[miner]] — the player character: controls, aim, health, look.
+- [[drone]] — the helper drone: orbit, dig and hack states, dialogue channel.

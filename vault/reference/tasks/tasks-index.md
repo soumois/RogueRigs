@@ -10,3 +10,4 @@ One node per task, template `task.md`, id `task-<number>-<slug>`. Done tasks sta
 
 ## Relations
 - [[root]] — the vault map.
+- [[task-000-enable-gas]] — enable the GAS plugin and modules; blocks all GAS code. Status todo.

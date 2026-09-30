@@ -6,7 +6,10 @@ kind: note
 ---
 # Art and audio
 
-Planned nodes: visual-style, color-code, readability-rules, audio-direction, dialogue-tone.
-
 ## Relations
 - [[gdd-index]] — parent index.
+- [[visual-style]] — low-poly look, camera, arena framing.
+- [[color-code]] — the color of every element.
+- [[readability-rules]] — rules that keep future biomes readable.
+- [[audio-direction]] — sound sourcing and music.
+- [[dialogue-tone]] — how the Rigs talk; bark rules and examples.

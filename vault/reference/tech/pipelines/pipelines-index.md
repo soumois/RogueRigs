@@ -6,7 +6,8 @@ kind: note
 ---
 # Pipelines
 
-Planned nodes: asset-pipeline, run-log-schema, build-toolchain.
-
 ## Relations
 - [[tech-index]] — parent index.
+- [[asset-pipeline]] — image, 3D generation, cleanup, rigid-part split.
+- [[run-log-schema]] — what each run log records, for the balance agent.
+- [[build-toolchain]] — engine, compiler, plugins, regenerating project files.
