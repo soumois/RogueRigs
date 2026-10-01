@@ -3,7 +3,7 @@ id: task-003-03-project-name
 description: "Rename the project display name from the template's Top Down Game Template to Rogue Rigs in DefaultGame.ini."
 parent: task-003-arena-80-paths
 kind: task
-status: todo
+status: in-progress
 ---
 # Project name
 

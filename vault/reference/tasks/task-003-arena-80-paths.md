@@ -13,7 +13,7 @@ status: in-progress
 - gdd_check: read [[arena-grid]] (M1 arena 60 × 60, approved) → conflict, owner changes it to 80 × 80. [[sys-grid]] repeats the size → replaced by a link to [[arena-grid]]. [[stress-test-m1]] does not depend on arena size. Open values scaled with the area (× 1.78), proposed: asteroid 3600 to 4600 cells, rock coverage kept at 60 % [0.57, 0.63], heal ore 10 to 16. Owner: paths organic with dead ends, hidden pockets reached by digging (reachable floor need not be near 100 %), long rock walls allowed. Not in the GDD: the skylight from the template uses real-time capture without an atmosphere, so the viewport shows an error.
 - confirmed_by_owner: yes
 - milestone: M1
-- next_step: task-003-02-map-update
+- next_step: task-003-03-project-name
 - result: open
 
 ## Subtasks

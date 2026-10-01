@@ -3,7 +3,7 @@ id: task-003-02-map-update
 description: "Update L_ArenaM1 for the 80 x 80 layout: PlayerStart on the new spawn, sky light without real-time capture, counts and PIE check."
 parent: task-003-arena-80-paths
 kind: task
-status: in-progress
+status: done
 ---
 # Map L_ArenaM1 for the 80 × 80 layout
 
@@ -16,7 +16,7 @@ status: in-progress
 - editor_state: open
 - token_ceiling: 40000
 - milestone: M1
-- result: open
+- result: grid rebuilt (floor 3729, rock 2192, heal ore 12); PlayerStart (8100, 8100, 120); SkyLight real-time capture off, intensity 0.3, no sky light error in the log; PIE spawns BP_TwinStickCharacter at (8100, 8100, 90). [[bp-arena-grid]] updated. About 40k tokens.
 
 ## Relations
 - [[task-003-arena-80-paths]] — parent global task.
