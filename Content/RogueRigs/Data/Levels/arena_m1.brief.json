@@ -2,8 +2,8 @@
  "width": 60,
  "height": 60,
  "rock_coverage": [
-  0.37,
-  0.43
+  0.57,
+  0.63
  ],
  "counts": {
   "heal_ore": [

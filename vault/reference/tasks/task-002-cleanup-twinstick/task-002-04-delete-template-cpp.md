@@ -3,7 +3,7 @@ id: task-002-04-delete-template-cpp
 description: "Delete the Strategy variant and root top-down C++ classes, clean Build.cs include paths, rebuild, and update build-toolchain."
 parent: task-002-cleanup-twinstick
 kind: task
-status: todo
+status: in-progress
 ---
 # Delete template C++
 

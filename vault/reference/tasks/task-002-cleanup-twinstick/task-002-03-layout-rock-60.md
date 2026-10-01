@@ -3,7 +3,7 @@ id: task-002-03-layout-rock-60
 description: "Rewrite arena_m1 at about 60 percent rock coverage, keeping the irregular asteroid outline, heal ore and reachability rules."
 parent: task-002-cleanup-twinstick
 kind: task
-status: in-progress
+status: done
 ---
 # Layout: arena_m1 at 60 % rock
 
@@ -16,7 +16,7 @@ status: in-progress
 - editor_state: any
 - token_ceiling: 30000
 - milestone: M1
-- result: open
+- result: arena_m1 rewritten by carving tunnels in solid rock; 2231 asteroid cells, rock 1346 (60.7 %), heal_ore 8 (min distance 9 to spawn), reachable floor 93.4 %; orchestrator measured longest straight edge 5, one piece, largest rock square 10 × 10. About 25k tokens.
 
 ## Relations
 - [[task-002-cleanup-twinstick]] — parent global task.
