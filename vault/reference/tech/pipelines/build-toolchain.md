@@ -16,7 +16,7 @@ kind: doc
   UBT currently picks MSVC 14.51 and warns it is not a preferred version; the build still succeeds. Expected engine-header warnings: C4996 from `Character.h` (`GetMovementBase`) and `HierarchicalInstancedStaticMeshComponent.h` (`BuildComponentInstanceData`).
 - Launch the editor on the project:
   `"C:\Program Files\Epic Games\UE_5.8\Engine\Binaries\Win64\UnrealEditor.exe" "C:\Users\soumo\Documents\Unreal Projects\RogueRigs\RogueRigs.uproject"`
-- Plugins: GameplayAbilities must be enabled ([[task-000-enable-gas]]). StateTree is already enabled by the template.
+- Plugins: GameplayAbilities is enabled in `RogueRigs.uproject`; `GameplayAbilities`, `GameplayTags`, `GameplayTasks` are public module dependencies of `RogueRigs.Build.cs` ([[task-004-01-enable-gas]]). StateTree is already enabled by the template.
 - `Source/RogueRigsEditor` does not exist (only `RogueRigsEditor.Target.cs`); create it only if the Slate debug tool returns ([[wishlist]]).
 - Rendering settings: see [[perf-risks]].
 

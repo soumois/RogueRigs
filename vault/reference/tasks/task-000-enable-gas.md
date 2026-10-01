@@ -3,7 +3,7 @@ id: task-000-enable-gas
 description: "Enable the GameplayAbilities plugin and add the GAS modules to the build, so GAS code can compile."
 parent: tasks-index
 kind: task
-status: todo
+status: done
 ---
 # Enable GAS in the project
 
@@ -13,7 +13,7 @@ status: todo
 - expected_output: plugin `GameplayAbilities` enabled in the `.uproject`; `GameplayAbilities`, `GameplayTags`, `GameplayTasks` added to the Build.cs dependencies; clean rebuild with the editor closed (about 10 min).
 - token_ceiling: open
 - milestone: M1
-- result: open
+- result: executed as [[task-004-01-enable-gas]] (2026-10-01): plugin enabled, three modules public in Build.cs, build exit 0.
 
 ## Relations
 - [[tasks-index]] — parent index.

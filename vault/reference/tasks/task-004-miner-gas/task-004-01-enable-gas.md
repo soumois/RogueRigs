@@ -3,7 +3,7 @@ id: task-004-01-enable-gas
 description: "Enable the GameplayAbilities plugin and the GAS modules in the build, as specified by task-000, and rebuild."
 parent: task-004-miner-gas
 kind: task
-status: in-progress
+status: done
 ---
 # Enable GAS
 
@@ -16,7 +16,7 @@ status: in-progress
 - editor_state: closed
 - token_ceiling: 20000
 - milestone: M1
-- result: open
+- result: GameplayAbilities enabled in the .uproject; GameplayAbilities, GameplayTags, GameplayTasks public dependencies; [[build-toolchain]] updated; build exit 0 (orchestrator re-ran it). Closes [[task-000-enable-gas]]. About 23k tokens.
 
 ## Relations
 - [[task-004-miner-gas]] — parent global task.

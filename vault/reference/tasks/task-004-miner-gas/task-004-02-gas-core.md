@@ -3,7 +3,7 @@ id: task-004-02-gas-core
 description: "Write the custom ASC, the health, movement and player attribute sets, and the runtime CSV loader for player base stats."
 parent: task-004-miner-gas
 kind: task
-status: todo
+status: in-progress
 ---
 # GAS core for the player
 
