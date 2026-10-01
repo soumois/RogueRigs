@@ -3,7 +3,7 @@ id: task-001-04-greybox-materials
 description: "Create the grey-box base material with a color parameter and one material instance per arena type, after the color code."
 parent: task-001-arena-m1
 kind: task
-status: in-progress
+status: done
 ---
 # Grey-box materials
 
@@ -16,7 +16,7 @@ status: in-progress
 - editor_state: open
 - token_ceiling: 40000
 - milestone: M1
-- result: open
+- result: `M_GreyBox` (Color, Roughness 0.8) and five instances in `/Game/RogueRigs/Materials/GreyBox/`; linear RGB floor (0.045, 0.038, 0.032), rock (0.45, 0.40, 0.55), heal ore (0.80, 0.02, 0.02), ore (0.30, 0.05, 0.75), special ore white. [[unreal-mcp]] tool inventory filled. About 55k tokens (over the 40k ceiling, mostly tool discovery).
 
 ## Relations
 - [[task-001-arena-m1]] — parent global task.

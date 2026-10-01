@@ -3,7 +3,7 @@ id: task-001-05-bp-arena-grid
 description: "Create BP_ArenaGrid from ARRArenaGrid with layout arena_m1, the engine cube and the grey-box materials, and document it."
 parent: task-001-arena-m1
 kind: task
-status: todo
+status: in-progress
 ---
 # BP_ArenaGrid
 
