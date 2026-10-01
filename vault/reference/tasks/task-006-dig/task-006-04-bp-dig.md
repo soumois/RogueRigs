@@ -3,7 +3,7 @@ id: task-006-04-bp-dig
 description: "Laser and pickup grey-box assets, grid and drone defaults, then a PIE check of digging rock and heal ore and of pickup collection."
 parent: task-006-dig
 kind: task
-status: todo
+status: in-progress
 ---
 # Digging assets and PIE check
 

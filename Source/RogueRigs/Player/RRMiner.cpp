@@ -168,6 +168,20 @@ void ARRMiner::HandleMoveSpeedChanged(const FOnAttributeChangeData& ChangeData)
 	ApplyMoveSpeed(ChangeData.NewValue);
 }
 
+float ARRMiner::GetPickupRadius() const
+{
+	if (!AbilitySystemComponent || !AbilitySystemComponent->HasAttributeSetForAttribute(URRPlayerAttributeSet::GetPickupRadiusAttribute()))
+	{
+		return 0.f;
+	}
+	return AbilitySystemComponent->GetNumericAttribute(URRPlayerAttributeSet::GetPickupRadiusAttribute());
+}
+
+void ARRMiner::NotifyPickupCollected(ERRPickupType Type)
+{
+	OnPickupCollected.Broadcast(Type);
+}
+
 FVector ARRMiner::ScreenInputToWorld(const FVector2D& Input) const
 {
 	// Screen up = camera forward flattened, screen right = camera right flattened.

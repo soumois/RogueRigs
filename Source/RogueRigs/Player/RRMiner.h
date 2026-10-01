@@ -5,6 +5,7 @@
 #include "CoreMinimal.h"
 #include "GameFramework/Character.h"
 #include "AbilitySystemInterface.h"
+#include "Pickups/RRPickup.h"
 #include "RRMiner.generated.h"
 
 class ARRArenaGrid;
@@ -18,6 +19,9 @@ class URRPlayerAttributeSet;
 class USpringArmComponent;
 struct FOnAttributeChangeData;
 
+/** Fired when the miner collects a pickup: the pickup's type. */
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FRROnPickupCollectedSignature, ERRPickupType, Type);
+
 /**
  * Player character. Owns the player's URRAbilitySystemComponent and its three AttributeSets (health,
  * movement, player); base stats are read from PlayerBaseStats.csv at BeginPlay (row BaseStatsRowName).
@@ -28,7 +32,8 @@ struct FOnAttributeChangeData;
  * destroys it at EndPlay. Dig trigger: each tick, when the move input points into the adjacent block cell
  * (dominant axis of the world move direction) and that block face is within the dig reach, the miner asks the
  * drone to cut it (ARRDrone::RequestDig); the drone handles the cancel rule. The arena grid is found once at
- * BeginPlay (first ARRArenaGrid in the world). No weapon, dash, pickup or item logic here.
+ * BeginPlay (first ARRArenaGrid in the world). Pickups (ARRPickup) read GetPickupRadius and report their collection
+ * through NotifyPickupCollected, which broadcasts OnPickupCollected; no pickup effect here. No weapon, dash or item logic.
  * Subclass in Blueprint for the mesh and animation.
  */
 UCLASS(Abstract)
@@ -81,6 +86,17 @@ public:
 	/** Arena grid found at BeginPlay (first ARRArenaGrid in the world); null if the level has none. */
 	UFUNCTION(BlueprintPure, Category = "Miner|Dig")
 	ARRArenaGrid* GetArenaGrid() const { return ArenaGrid; }
+
+	/** Current PickupRadius attribute in uu (collection radius of XP, ore and heal pickups); 0 when the attribute set is missing. */
+	UFUNCTION(BlueprintPure, Category = "Miner|Pickup")
+	float GetPickupRadius() const;
+
+	/** Called by a pickup when it reaches the miner: broadcasts OnPickupCollected. Applies no effect itself. */
+	void NotifyPickupCollected(ERRPickupType Type);
+
+	/** Broadcast each time the miner collects a pickup, with its type. */
+	UPROPERTY(BlueprintAssignable, Category = "Miner|Pickup")
+	FRROnPickupCollectedSignature OnPickupCollected;
 
 	/** Updates the mouse aim if active, turns the pawn toward the aim direction, then checks the dig trigger. */
 	virtual void Tick(float DeltaSeconds) override;

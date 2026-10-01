@@ -9,9 +9,11 @@
 #include "Dom/JsonValue.h"
 #include "Engine/CollisionProfile.h"
 #include "Engine/StaticMesh.h"
+#include "Engine/World.h"
 #include "Materials/MaterialInterface.h"
 #include "Misc/FileHelper.h"
 #include "Misc/Paths.h"
+#include "Pickups/RRPickup.h"
 #include "Serialization/JsonReader.h"
 #include "Serialization/JsonSerializer.h"
 
@@ -69,6 +71,7 @@ void ARRArenaGrid::RebuildFromLayout()
 	{
 		Cells.Reset();
 		CellHealth.Reset();
+		CellDigDrops.Reset();
 		CellInstanceIndex.Reset();
 		ShakingCells.Reset();
 		SetActorTickEnabled(false);
@@ -306,6 +309,7 @@ void ARRArenaGrid::BuildInstances()
 	}
 
 	CellHealth.Init(0.f, Cells.Num());
+	CellDigDrops.Init(0, Cells.Num());
 	CellInstanceIndex.Init(INDEX_NONE, Cells.Num());
 
 	// Gather per component first and add in one batch; AddInstances appends, so instance i of a batch
@@ -480,6 +484,12 @@ bool ARRArenaGrid::ApplyTerrainDamage(FIntPoint Cell, float Amount, ERRTerrainDa
 	const float Applied = FMath::Min(Amount, CellHealth[Index]);
 	CellHealth[Index] -= Applied;
 
+	// The destroying hit never drops a dig pickup: DestroyCell drops the destruction bundle instead.
+	if (CellHealth[Index] > UE_KINDA_SMALL_NUMBER)
+	{
+		SpawnDigDrops(Cell, Type);
+	}
+
 	OnCellDamaged.Broadcast(Cell, Type, Applied, Source);
 
 	// A listener may already have destroyed the block (e.g. a chain reaction).
@@ -513,13 +523,74 @@ bool ARRArenaGrid::DestroyCell(FIntPoint Cell, ERRTerrainDamageSource Source)
 
 	Cells[Index] = ERRCellType::Floor;
 	CellHealth[Index] = 0.f;
+	if (CellDigDrops.IsValidIndex(Index))
+	{
+		CellDigDrops[Index] = 0;
+	}
 	AddCellInstance(FloorInstances, ERRCellType::Floor, Cell, GetFloorInstanceTransform(Cell));
 
 	UE_LOG(LogRogueRigs, Verbose, TEXT("ARRArenaGrid: block destroyed at (%d, %d), type %s, source %s."), Cell.X, Cell.Y,
 		*UEnum::GetValueAsString(Type), *UEnum::GetValueAsString(Source));
 
+	SpawnPickups(Cell, Type, DestroyDropCount);
+
 	OnCellDestroyed.Broadcast(Cell, Type, Source);
 	return true;
+}
+
+TSubclassOf<ARRPickup> ARRArenaGrid::GetPickupClass(ERRCellType Type) const
+{
+	switch (Type)
+	{
+	case ERRCellType::Ore:     return OrePickupClass;
+	case ERRCellType::HealOre: return HealPickupClass;
+	default:                   return nullptr;
+	}
+}
+
+void ARRArenaGrid::SpawnDigDrops(FIntPoint Cell, ERRCellType Type)
+{
+	const int32 Index = GetCellIndex(Cell);
+	if (DropInterval <= 0.f || !GetPickupClass(Type) || !CellDigDrops.IsValidIndex(Index))
+	{
+		return;
+	}
+
+	// Multiples of DropInterval strictly below max health: 4.5 / 1.5 gives 2 (at 1.5 and 3.0); 4.5 is the destroying hit.
+	const float MaxHealth = GetBlockMaxHealth(Type);
+	const int32 MaxDigDrops = FMath::Max(0, FMath::CeilToInt32(MaxHealth / DropInterval - UE_KINDA_SMALL_NUMBER) - 1);
+	const float Accumulated = MaxHealth - CellHealth[Index];
+	const int32 Crossed = FMath::Min(FMath::FloorToInt32(Accumulated / DropInterval), MaxDigDrops);
+
+	const int32 NewDrops = Crossed - CellDigDrops[Index];
+	if (NewDrops > 0)
+	{
+		CellDigDrops[Index] = Crossed;
+		SpawnPickups(Cell, Type, NewDrops);
+	}
+}
+
+void ARRArenaGrid::SpawnPickups(FIntPoint Cell, ERRCellType Type, int32 Count)
+{
+	UWorld* World = GetWorld();
+	const TSubclassOf<ARRPickup> PickupClass = GetPickupClass(Type);
+	if (Count <= 0 || !PickupClass || !World || !World->IsGameWorld())
+	{
+		return;
+	}
+
+	FActorSpawnParameters SpawnParams;
+	SpawnParams.Owner = this;
+	SpawnParams.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AlwaysSpawn;
+
+	const FVector Location = GetCellCenter(Cell.X, Cell.Y);
+	for (int32 Drop = 0; Drop < Count; ++Drop)
+	{
+		World->SpawnActor<ARRPickup>(PickupClass, Location, FRotator::ZeroRotator, SpawnParams);
+	}
+
+	UE_LOG(LogRogueRigs, Verbose, TEXT("ARRArenaGrid: %d pickup(s) dropped at (%d, %d), type %s."), Count, Cell.X, Cell.Y,
+		*UEnum::GetValueAsString(Type));
 }
 
 int32 ARRArenaGrid::DestroyCellsInRadius(FVector Center, float Radius, ERRTerrainDamageSource Source)

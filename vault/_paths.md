@@ -88,6 +88,7 @@ sys-enemy-ai  reference/tech/systems/sys-enemy-ai.md
 sys-explosions  reference/tech/systems/sys-explosions.md
 sys-gas-core  reference/tech/systems/sys-gas-core.md
 sys-grid  reference/tech/systems/sys-grid.md
+sys-pickups  reference/tech/systems/sys-pickups.md
 sys-player  reference/tech/systems/sys-player.md
 sys-projectiles  reference/tech/systems/sys-projectiles.md
 sys-status-effects  reference/tech/systems/sys-status-effects.md

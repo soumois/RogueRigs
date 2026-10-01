@@ -6,6 +6,7 @@
 #include "GameFramework/Actor.h"
 #include "RRArenaGrid.generated.h"
 
+class ARRPickup;
 class UHierarchicalInstancedStaticMeshComponent;
 class UMaterialInterface;
 class USceneComponent;
@@ -70,7 +71,9 @@ DECLARE_DYNAMIC_MULTICAST_DELEGATE_ThreeParams(FRROnCellDestroyedSignature, FInt
  * the actor; the floor top is at the actor's Z; cell (x, y) center is at ((x + 0.5) * CellSize, (y + 0.5) * CellSize)
  * in actor space. Floor instances exist only on cells without a block; destroying a block adds one.
  * Terrain damage (dig) and destruction (explosions) go through ApplyTerrainDamage / DestroyCell / DestroyCellsInRadius.
- * Derive a Blueprint to assign meshes and materials per type.
+ * Drops: ore and heal ore blocks spawn one pickup (OrePickupClass / HealPickupClass) each time their accumulated damage
+ * crosses a multiple of DropInterval, except on the hit that destroys them, and DestroyDropCount pickups when destroyed,
+ * whatever the source. Derive a Blueprint to assign meshes, materials and pickup classes.
  */
 UCLASS(Blueprintable)
 class ROGUERIGS_API ARRArenaGrid : public AActor
@@ -129,7 +132,8 @@ public:
 
 	/**
 	 * Removes Amount dig-seconds of health from the block in Cell (the drone passes DeltaSeconds * MiningSpeed).
-	 * Broadcasts OnCellDamaged, then destroys the block (DestroyCell) when its health reaches 0.
+	 * Spawns the dig drops of ore and heal ore when the hit does not destroy the block, broadcasts OnCellDamaged,
+	 * then destroys the block (DestroyCell) when its health reaches 0.
 	 * Returns true when this call destroyed the block; false otherwise (no block, Amount <= 0, or still standing).
 	 */
 	UFUNCTION(BlueprintCallable, Category = "Grid|Destruction")
@@ -137,7 +141,8 @@ public:
 
 	/**
 	 * Destroys the block in Cell outright, whatever its health: removes its instance, adds a floor instance,
-	 * sets the cell to Floor and broadcasts OnCellDestroyed. Returns false when the cell has no block.
+	 * sets the cell to Floor, spawns DestroyDropCount pickups for ore and heal ore, and broadcasts OnCellDestroyed.
+	 * Returns false when the cell has no block.
 	 */
 	UFUNCTION(BlueprintCallable, Category = "Grid|Destruction")
 	bool DestroyCell(FIntPoint Cell, ERRTerrainDamageSource Source);
@@ -216,6 +221,18 @@ protected:
 	/** Stops shaking Cell, restoring its rest transform if it still has a block. */
 	void StopShaking(FIntPoint Cell);
 
+	/** Pickup class dropped by a block type: OrePickupClass for Ore, HealPickupClass for HealOre, none otherwise. */
+	TSubclassOf<ARRPickup> GetPickupClass(ERRCellType Type) const;
+
+	/**
+	 * Spawns the dig drops owed by a damaged, still standing block: one per multiple of DropInterval crossed by its
+	 * accumulated damage, capped so the multiple equal to its max health (the destroying hit) never drops.
+	 */
+	void SpawnDigDrops(FIntPoint Cell, ERRCellType Type);
+
+	/** Spawns Count pickups of the class dropped by Type at the center of Cell (floor top), during play only. */
+	void SpawnPickups(FIntPoint Cell, ERRCellType Type, int32 Count);
+
 	// --- Layout and dimensions ---
 
 	/** Layout file name without extension, read from Content/RogueRigs/Data/Levels/<LayoutName>.json. */
@@ -277,6 +294,24 @@ protected:
 	/** Oscillation frequency of a shaking block (provisional). */
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Grid|Destruction", meta = (ClampMin = "0.0", Units = "Hz"))
 	float ShakeFrequency = 20.f;
+
+	// --- Drops (ore and heal ore) ---
+
+	/** Pickup spawned by ore blocks (a Blueprint subclass of ARRPickup with type Ore). None = ore drops nothing. */
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Grid|Drops")
+	TSubclassOf<ARRPickup> OrePickupClass;
+
+	/** Pickup spawned by heal ore blocks (a Blueprint subclass of ARRPickup with type Heal). None = heal ore drops nothing. */
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Grid|Drops")
+	TSubclassOf<ARRPickup> HealPickupClass;
+
+	/** Accumulated damage, in dig-seconds, between two drops while a block is dug (provisional). */
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Grid|Drops", meta = (ClampMin = "0.01", Units = "s"))
+	float DropInterval = 1.5f;
+
+	/** Pickups spawned when an ore or heal ore block is destroyed, whatever the source (provisional). */
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Grid|Drops", meta = (ClampMin = "0"))
+	int32 DestroyDropCount = 3;
 
 	// --- Visuals per type (assigned in the derived Blueprint) ---
 
@@ -379,6 +414,10 @@ protected:
 	/** Remaining block health per cell in dig-seconds, row-major; 0 on cells without a block. */
 	UPROPERTY(Transient)
 	TArray<float> CellHealth;
+
+	/** Dig drops already spawned per cell, row-major; compared with the DropInterval multiples crossed. */
+	UPROPERTY(Transient)
+	TArray<int32> CellDigDrops;
 
 	/** Cell -> instance index in the HISM of the cell's current visual (block component, or floor), row-major; INDEX_NONE on void cells. */
 	UPROPERTY(Transient)

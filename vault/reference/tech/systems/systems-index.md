@@ -1,6 +1,6 @@
 ---
 id: systems-index
-description: "One doc per C++ system (GAS core, damage, statuses, weapons, upgrades, difficulty, auto-fire, projectiles, explosions, AI, grid) plus verified GAS 5.8 facts."
+description: "One doc per C++ system (GAS core, damage, statuses, weapons, upgrades, difficulty, auto-fire, projectiles, explosions, AI, grid, pickups) plus verified GAS 5.8 facts."
 parent: tech-index
 kind: note
 ---
@@ -23,5 +23,6 @@ Decision status inside each doc: approved, provisional, deferred or open. Planne
 - [[sys-explosions]] — explosion queue and chain reactions.
 - [[sys-enemy-ai]] — AI framework choice, pathfinding, line of sight, stun reaction.
 - [[sys-grid]] — grid data, autotiling, instanced rendering, terrain damage.
+- [[sys-pickups]] — ore and heal pickups: drop rule, pop, attraction within PickupRadius, collection event.
 - [[gas-engine-facts]] — GAS 5.8 behaviors read in engine source that fix project rules.
 - [[gas-api-notes]] — GAS 5.8 APIs used by the code skeletons, with source lines.

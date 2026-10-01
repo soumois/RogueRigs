@@ -3,7 +3,7 @@ id: task-006-03-pickups
 description: "Drops from ore and heal ore (one per 1.5 dig-seconds, 3 on destruction) and ARRPickup collected within the miner's PickupRadius."
 parent: task-006-dig
 kind: task
-status: in-progress
+status: done
 ---
 # Pickups
 
@@ -16,7 +16,7 @@ status: in-progress
 - editor_state: closed
 - token_ceiling: 60000
 - milestone: M1
-- result: open
+- result: `ARRPickup` (Ore, Heal; NoCollision mesh; pop, hover, fly to the miner inside PickupRadius, collect, log, `ARRMiner::OnPickupCollected`); grid drops (OrePickupClass, HealPickupClass, DropInterval 1.5, DestroyDropCount 3; 2 + 3 for a 4.5 block). New doc sys-pickups; sys-grid, sys-player, systems-index updated. Build exit 0 (orchestrator re-ran it). sys-grid now about 550 words: to split later. About 86k tokens (over ceiling).
 
 ## Relations
 - [[task-006-dig]] — parent global task.
