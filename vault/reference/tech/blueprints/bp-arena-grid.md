@@ -16,6 +16,7 @@ kind: doc
 - assets: /Engine/BasicShapes/Cube; materials in /Game/RogueRigs/Materials/GreyBox/.
 - owner_agent: agent-bp
 - verified: spawned in a level, instance counts floor 2228, rock 869, heal ore 8 (the arena_m1 expected counts).
+- placed_in: /Game/RogueRigs/Maps/L_ArenaM1 (one instance at the origin, with a directional light, a sky light at intensity 0.3, no sky atmosphere so the void is dark, a PlayerStart at (6100, 6100, 120) on the spawn cell (30, 30), game mode override BP_TopDownGameMode). Verified: reopened map instance counts floor 2228, rock 869, heal ore 8; PIE spawns BP_TopDownCharacter near (6100, 6100) at z 98, on the floor.
 
 ## Relations
 - [[blueprints-index]] — parent index.

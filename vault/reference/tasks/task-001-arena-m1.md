@@ -3,7 +3,7 @@ id: task-001-arena-m1
 description: "Global task: the M1 arena as an irregular asteroid with rocks and heal ore, from layout JSON to a grey-box map visible in the editor."
 parent: tasks-index
 kind: task
-status: in-progress
+status: done
 ---
 # M1 arena, visible in the editor
 
@@ -13,8 +13,8 @@ status: in-progress
 - gdd_check: read [[arena-grid]], [[heal-ore]], [[destruction-rules]], [[milestones]], [[color-code]], [[level-layout-schema]], [[sys-grid]]. Conflict: heal ore was M2 → owner moves the block to M1; its heal effect stays open. Open values: heal ore density → 6 to 10; rock coverage → 40 % of the asteroid. Arena shape: the schema had no way to mark void → new cell type `void` (owner approved). Grey-box block height and floor color are not in the GDD: provisional values in subtasks 03 and 04. Heal pickups need block destruction, which no system implements yet: out of this task.
 - confirmed_by_owner: yes
 - milestone: M1
-- next_step: task-001-06-map-arena-m1
-- result: open
+- next_step: none
+- result: acceptance 1, 2, 3, 5 passed; 4 partly: PIE spawns the pawn on the spawn cell and it stays on the floor, but moving it with input was not tested and the map has no nav mesh (top-down click-to-move pathfinding needs one). Layout caveat: thick rock mass in the lower left. Six subtasks done, about 300k tokens in total.
 
 ## Subtasks
 1. task-001-01-validator-void — cpp: `void` cell type, coverage over the asteroid, floor reachability, in the validator and schema doc.

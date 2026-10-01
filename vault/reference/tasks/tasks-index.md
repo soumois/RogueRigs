@@ -11,4 +11,4 @@ One global task per owner request (template `task-global.md`, id `task-<number>-
 ## Relations
 - [[root]] — the vault map.
 - [[task-000-enable-gas]] — enable the GAS plugin and modules; blocks all GAS code. Status todo.
-- [[task-001-arena-m1]] — M1 arena: layout JSON, C++ grid, grey-box map visible in the editor. Status in-progress.
+- [[task-001-arena-m1]] — M1 arena: layout JSON, C++ grid, grey-box map visible in the editor. Status done.
