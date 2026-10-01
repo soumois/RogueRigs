@@ -95,6 +95,12 @@ task-001-04-greybox-materials  reference/tasks/task-001-arena-m1/task-001-04-gre
 task-001-05-bp-arena-grid  reference/tasks/task-001-arena-m1/task-001-05-bp-arena-grid.md
 task-001-06-map-arena-m1  reference/tasks/task-001-arena-m1/task-001-06-map-arena-m1.md
 task-001-arena-m1  reference/tasks/task-001-arena-m1.md
+task-002-01-twinstick-defaults  reference/tasks/task-002-cleanup-twinstick/task-002-01-twinstick-defaults.md
+task-002-02-delete-template-content  reference/tasks/task-002-cleanup-twinstick/task-002-02-delete-template-content.md
+task-002-03-layout-rock-60  reference/tasks/task-002-cleanup-twinstick/task-002-03-layout-rock-60.md
+task-002-04-delete-template-cpp  reference/tasks/task-002-cleanup-twinstick/task-002-04-delete-template-cpp.md
+task-002-05-verify-pie  reference/tasks/task-002-cleanup-twinstick/task-002-05-verify-pie.md
+task-002-cleanup-twinstick  reference/tasks/task-002-cleanup-twinstick.md
 tasks-index  reference/tasks/tasks-index.md
 tech-index  reference/tech/tech-index.md
 terrain-index  reference/gdd/terrain/terrain-index.md
