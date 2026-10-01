@@ -3,7 +3,7 @@ id: task-001-02-layout-arena-m1
 description: "Write arena_m1.json: a 60 x 60 irregular asteroid in void, about 40 percent rock, 6 to 10 heal ore, no barrel, validated."
 parent: task-001-arena-m1
 kind: task
-status: todo
+status: in-progress
 ---
 # Layout: arena_m1
 

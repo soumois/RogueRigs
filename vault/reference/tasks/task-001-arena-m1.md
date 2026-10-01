@@ -13,7 +13,7 @@ status: in-progress
 - gdd_check: read [[arena-grid]], [[heal-ore]], [[destruction-rules]], [[milestones]], [[color-code]], [[level-layout-schema]], [[sys-grid]]. Conflict: heal ore was M2 → owner moves the block to M1; its heal effect stays open. Open values: heal ore density → 6 to 10; rock coverage → 40 % of the asteroid. Arena shape: the schema had no way to mark void → new cell type `void` (owner approved). Grey-box block height and floor color are not in the GDD: provisional values in subtasks 03 and 04. Heal pickups need block destruction, which no system implements yet: out of this task.
 - confirmed_by_owner: yes
 - milestone: M1
-- next_step: task-001-01-validator-void
+- next_step: task-001-02-layout-arena-m1
 - result: open
 
 ## Subtasks

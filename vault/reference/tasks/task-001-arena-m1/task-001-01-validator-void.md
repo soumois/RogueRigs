@@ -3,7 +3,7 @@ id: task-001-01-validator-void
 description: "Add the void cell type to the layout validator and schema: coverage over asteroid cells, floor reachability from the spawn."
 parent: task-001-arena-m1
 kind: task
-status: in-progress
+status: done
 ---
 # Validator: void cells and reachability
 
@@ -16,7 +16,7 @@ status: in-progress
 - editor_state: any
 - token_ceiling: 30000
 - milestone: M1
-- result: open
+- result: validator handles `void` (space glyph), coverage over non-void cells, spawn 5 × 5 must be empty floor, reachable-floor stat and brief `reachable_floor_min`; schema doc updated. Three done_when tests pass (orchestrator re-ran them). About 23k tokens.
 
 ## Relations
 - [[task-001-arena-m1]] — parent global task.
