@@ -3,7 +3,7 @@ id: task-007-01-weapon-autofire
 description: "Write URRWeaponAttributeSet, ARRWeapon with its own ASC and CSV stats, URRAutoFireComponent burst timing, and the miner equipping a starting weapon."
 parent: task-007-burst-rifle-dummy
 kind: task
-status: todo
+status: in-progress
 ---
 # Weapon and auto-fire
 

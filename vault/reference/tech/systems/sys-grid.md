@@ -24,3 +24,4 @@ kind: doc
 - [[systems-index]] — parent index.
 - [[level-layout-schema]] — file format the grid loads.
 - [[sys-pickups]] — the pickups the grid drops from ore and heal ore.
+- [[sys-automation-tests]] — automation tests of damage, destruction, drops and instance maps.

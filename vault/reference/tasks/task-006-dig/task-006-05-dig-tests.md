@@ -3,7 +3,7 @@ id: task-006-05-dig-tests
 description: "C++ automation tests for grid damage, drops, pickup collection and the drone dig, run headless from the command line, since MCP cannot drive PIE input."
 parent: task-006-dig
 kind: task
-status: in-progress
+status: done
 ---
 # Dig automation tests
 
@@ -16,7 +16,7 @@ status: in-progress
 - editor_state: closed
 - token_ceiling: 90000
 - milestone: M1
-- result: open
+- result: `Source/RogueRigs/Tests/RRDigTests.cpp` + `RRTestEventRecorder.h`; 6 tests pass headless (orchestrator re-ran them): rock destroyed at 1.500 s, heal ore drops at 1.5 and 3.0 s then 3 at 4.5 s (5 total), radius destruction, drone dig 1.5 s and cancel, pickup collected. No gameplay bug found. New doc sys-automation-tests; headless command in [[build-toolchain]]. About 139k tokens (over ceiling: harness frame-counter issue).
 
 ## Relations
 - [[task-006-dig]] — parent global task.

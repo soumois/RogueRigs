@@ -3,7 +3,7 @@ id: task-007-burst-rifle-dummy
 description: "Global task: the burst rifle (weapon ASC, auto-fire bursts, projectiles, GAS damage with crits) and an immobile target dummy showing hits."
 parent: tasks-index
 kind: task
-status: todo
+status: in-progress
 ---
 # Burst rifle and target dummy
 
@@ -21,6 +21,7 @@ status: todo
 2. task-007-02-projectile-damage — cpp: projectile, collision channel, damage GE and ExecCalc, native tags.
 3. task-007-03-target-dummy — cpp: `ARRTargetDummy`, hit flash, debug damage text, refill.
 4. task-007-04-bp-rifle-dummy — bp: Blueprints, materials, three dummies in the map, PIE check.
+5. task-007-05-weapon-tests — cpp: headless automation tests of timing, magazine, projectile and damage (added: MCP cannot drive PIE input).
 
 ## Relations
 - [[tasks-index]] — parent index.
@@ -28,3 +29,4 @@ status: todo
 - [[task-007-02-projectile-damage]] — step 2, cpp, projectile and damage.
 - [[task-007-03-target-dummy]] — step 3, cpp, target dummy.
 - [[task-007-04-bp-rifle-dummy]] — step 4, bp, assets and PIE.
+- [[task-007-05-weapon-tests]] — step 5, cpp, automation tests.

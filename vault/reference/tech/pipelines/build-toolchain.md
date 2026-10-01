@@ -14,6 +14,11 @@ kind: doc
   From Git Bash, run it through PowerShell (verified in task-001-03 and task-002-04):
   `powershell.exe -NoProfile -Command "& 'C:\Program Files\Epic Games\UE_5.8\Engine\Build\BatchFiles\Build.bat' RogueRigsEditor Win64 Development '-Project=C:\Users\soumo\Documents\Unreal Projects\RogueRigs\RogueRigs.uproject' -WaitMutex"`
   UBT currently picks MSVC 14.51 and warns it is not a preferred version; the build still succeeds. Expected engine-header warnings: C4996 from `Character.h` (`GetMovementBase`) and `HierarchicalInstancedStaticMeshComponent.h` (`BuildComponentInstanceData`).
+- Headless automation tests, editor closed, after a successful build (verified in task-006-05; exit code 0 = all passed; results in `Saved/Logs/RogueRigs.log`, lines `Test Completed. Result={Success|Fail}` and `TEST COMPLETE. EXIT CODE`):
+  `"C:\Program Files\Epic Games\UE_5.8\Engine\Binaries\Win64\UnrealEditor-Cmd.exe" "C:\Users\soumo\Documents\Unreal Projects\RogueRigs\RogueRigs.uproject" -ExecCmds="Automation RunTests RogueRigs.Dig;Quit" -unattended -nullrhi -nosplash -nop4 -log`
+  From Git Bash, through PowerShell with a timeout:
+  `timeout 900 powershell.exe -NoProfile -Command "& 'C:\Program Files\Epic Games\UE_5.8\Engine\Binaries\Win64\UnrealEditor-Cmd.exe' 'C:\Users\soumo\Documents\Unreal Projects\RogueRigs\RogueRigs.uproject' '-ExecCmds=Automation RunTests RogueRigs.Dig;Quit' -unattended -nullrhi -nosplash -nop4 -log; exit \$LASTEXITCODE"`
+  Replace `RogueRigs.Dig` by `RogueRigs` to run every project test. Tests: [[sys-automation-tests]].
 - Launch the editor on the project:
   `"C:\Program Files\Epic Games\UE_5.8\Engine\Binaries\Win64\UnrealEditor.exe" "C:\Users\soumo\Documents\Unreal Projects\RogueRigs\RogueRigs.uproject"`
 - Plugins: GameplayAbilities is enabled in `RogueRigs.uproject`; `GameplayAbilities`, `GameplayTags`, `GameplayTasks` are public module dependencies of `RogueRigs.Build.cs` ([[task-004-01-enable-gas]]). StateTree is already enabled by the template.
@@ -23,3 +28,4 @@ kind: doc
 ## Relations
 - [[pipelines-index]] — parent index.
 - [[editor-workflow]] — when to compile with the editor closed.
+- [[sys-automation-tests]] — the tests the headless command runs.

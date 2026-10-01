@@ -83,6 +83,7 @@ run-structure  reference/gdd/run/run-structure.md
 shotgun  reference/gdd/weapons/shotgun.md
 stress-test-m1  reference/tech/performance/stress-test-m1.md
 sys-auto-fire  reference/tech/systems/sys-auto-fire.md
+sys-automation-tests  reference/tech/systems/sys-automation-tests.md
 sys-damage  reference/tech/systems/sys-damage.md
 sys-difficulty  reference/tech/systems/sys-difficulty.md
 sys-drone  reference/tech/systems/sys-drone.md
@@ -133,6 +134,7 @@ task-007-01-weapon-autofire  reference/tasks/task-007-burst-rifle-dummy/task-007
 task-007-02-projectile-damage  reference/tasks/task-007-burst-rifle-dummy/task-007-02-projectile-damage.md
 task-007-03-target-dummy  reference/tasks/task-007-burst-rifle-dummy/task-007-03-target-dummy.md
 task-007-04-bp-rifle-dummy  reference/tasks/task-007-burst-rifle-dummy/task-007-04-bp-rifle-dummy.md
+task-007-05-weapon-tests  reference/tasks/task-007-burst-rifle-dummy/task-007-05-weapon-tests.md
 task-007-burst-rifle-dummy  reference/tasks/task-007-burst-rifle-dummy.md
 tasks-index  reference/tasks/tasks-index.md
 tech-index  reference/tech/tech-index.md

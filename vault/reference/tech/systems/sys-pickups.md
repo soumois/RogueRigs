@@ -21,3 +21,4 @@ kind: doc
 - [[systems-index]] — parent index.
 - [[sys-grid]] — the drop properties and the damage path that spawns pickups.
 - [[sys-player]] — the miner's pickup radius and collection event.
+- [[sys-automation-tests]] — automation tests of drop counts and collection.

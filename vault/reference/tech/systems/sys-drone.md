@@ -39,3 +39,4 @@ kind: doc
 - [[sys-player]] — the miner that spawns, owns, destroys the drone and triggers digs.
 - [[sys-gas-core]] — where `MiningSpeed` lives.
 - [[sys-grid]] — the terrain the drone damages and shakes.
+- [[sys-automation-tests]] — automation tests of the dig and its cancel rule.
