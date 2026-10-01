@@ -1,6 +1,6 @@
 ---
 id: run-index
-description: "Run and level loop: run structure, win/loss, level flow, objectives, extraction, XP and level-up, ore economy. Open for any loop or progression question."
+description: "Run and level loop: run structure, level flow, alert and threat, objectives, extraction, XP and level-up, ore economy. Open for loop or progression questions."
 parent: gdd-index
 kind: note
 ---
@@ -9,9 +9,11 @@ kind: note
 ## Relations
 - [[gdd-index]] — parent index.
 - [[run-structure]] — 4 levels, what carries over, run win and loss.
-- [[level-flow]] — the 4 steps of a level: land, survive and mine, objective, extract.
-- [[objective-beacon-hack]] — default objective: the drone hacks the beacon while the miner holds the zone.
-- [[objective-variants]] — boss and special-ore objectives; which level uses which.
+- [[level-flow]] — alert tiers, events, end of a level.
+- [[difficulty]] — alert bar vs threat, difficulty between and inside levels.
+- [[objective-console]] — mandatory objective: drop, marked rocks, hack.
+- [[objective-bonus-chest]] — optional hack objective and its reward.
+- [[objective-variants]] — special ore and boss objectives.
 - [[extraction]] — shuttle landing, countdown, risk window, missed shuttle.
 - [[xp-level-up]] — XP drops, level-up bar, the 3-card upgrade choice.
 - [[ore-economy]] — when ore is secured or lost, meta-progression.

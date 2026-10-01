@@ -9,7 +9,7 @@ kind: doc
 - Project class prefix: `RR` (`URR…`, `ARR…`).
 - Gameplay Effects: `URRGE_<Name>` (e.g. `URRGE_Damage`, `URRGE_DamageFlat`, `URRGE_IFrames`).
 - Gameplay Abilities: `URRGA_<Name>` (e.g. `URRGA_OnDamaged`).
-- AttributeSets: `URR<Domain>AttributeSet` — `URRHealthAttributeSet`, `URRMovementAttributeSet`, `URRWeaponAttributeSet` (provisional).
+- AttributeSets: `URR<Domain>AttributeSet` — `URRHealthAttributeSet`, `URRMovementAttributeSet`, `URRPlayerAttributeSet`, `URRWeaponAttributeSet`, `URREnemyAttributeSet` (provisional).
 - Native tags declared with `UE_DECLARE_GAMEPLAY_TAG_EXTERN` / `UE_DEFINE_GAMEPLAY_TAG`.
 
 ## GameplayTag roots in use

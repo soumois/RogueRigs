@@ -19,7 +19,7 @@ status: approved
   - its shots stop on rock blocks ([[destruction-rules]]).
 - telegraph: a red targeting laser before each shot, shown only with line of sight.
 - colors: acid green; red eyes, yellow logo plate; red shots and laser ([[color-code]])
-- stats: hp, speed, damage, attack_rate, range, preferred distance → open
+- stats: hp, speed, damage, attack_rate, range, preferred distance, xp_value, knockback_resistance → open
 - milestone: M2
 - references: `vault/assets/enemies-lineup.jpg`
 

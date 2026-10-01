@@ -1,6 +1,6 @@
 ---
 id: systems-index
-description: "One doc per C++ system (GAS core, damage, status effects, weapons, auto-fire, projectiles, explosions, enemy AI, grid) plus verified GAS 5.8 facts."
+description: "One doc per C++ system (GAS core, damage, statuses, weapons, upgrades, difficulty, auto-fire, projectiles, explosions, AI, grid) plus verified GAS 5.8 facts."
 parent: tech-index
 kind: note
 ---
@@ -13,7 +13,9 @@ Decision status inside each doc: approved, provisional, deferred or open. Planne
 - [[sys-gas-core]] — which actors own an ASC, AttributeSets, plugin setup, debug tools. Read first for any GAS work.
 - [[sys-damage]] — damage chain from shot to death, i-frames, death guard.
 - [[sys-status-effects]] — stacking rules for bonuses and statuses, enemy stun.
-- [[sys-weapons]] — weapon ASC lifecycle, upgrade broadcast, magazine, turrets, impact effects.
+- [[sys-weapons]] — weapon ASC lifecycle, shotgun cone, magazine and reload, turret launcher and turrets, impact effects.
+- [[sys-upgrades]] — fixed value table, luck-weighted rarity draw, targeted vs global application.
+- [[sys-difficulty]] — alert and threat counters, enemy difficulty GE at spawn.
 - [[sys-auto-fire]] — auto-fire component and burst timing formulas.
 - [[sys-projectiles]] — projectiles without GAS, piercing, collision, pooling.
 - [[sys-explosions]] — explosion queue and chain reactions.

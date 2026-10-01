@@ -11,6 +11,8 @@ kind: note
 - Per-weapon-type upgrades (laser, physical projectile, light weapon…).
 - Grenades, with limited charges.
 - Glowing weak point on the heavy robot's back (rewards manual aim).
+- Boss objective, with a boss entity still to define.
+- Player armor stat.
 - Robots knocked into the void by explosions or shotgun knockback.
 - Ice, burn/DoT, other elements and immunities, elemental reactions (explosion, lightning, tornado).
 - Projectile behaviors: bounce, homing, explode on impact.

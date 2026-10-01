@@ -8,10 +8,11 @@ status: approved
 # XP and level-up
 
 - Killed robots drop XP cubes (glowing cyan, see [[color-code]]).
-- Collecting XP fills a level-up bar.
+- Collecting XP fills a level-up bar. The player's `XPGain` stat scales XP gained; `PickupRadius` sets the collection radius ([[player-stats]]).
+- Bonus chests also give XP and an upgrade choice ([[objective-bonus-chest]]).
 - Each level-up offers 3 upgrades; the player picks 1 ([[upgrades]]).
 - Level-up keeps across the 4 levels of a run.
-- XP per robot type, XP curve, pickup radius: open.
+- XP per robot type, XP curve, base pickup radius: open.
 - Whether the game pauses on the choice screen: open.
 - Milestone: M1.
 

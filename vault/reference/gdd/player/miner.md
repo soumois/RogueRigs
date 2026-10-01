@@ -9,12 +9,13 @@ status: approved
 
 - Moves freely; aims with the mouse or the right stick.
 - Every equipped weapon fires automatically toward the aim, each at its own rate ([[upgrades]] change the rates).
-- A button places a [[turret]] on the aimed spot.
+- A button places a turret on the aimed spot, using the turret launcher ([[turret]]).
 - Cannot shoot through or over rock blocks ([[destruction-rules]]).
 - Standing against a block makes the [[drone]] dig it.
 - Explosions never one-shot the miner ([[explosions]]).
 - Invulnerability frames after a hit: provisional; duration open.
-- Stats: health, move speed → open.
+- Stats: see [[player-stats]].
+- Healing: only from heal pickups dropped by heal ore ([[heal-ore]]).
 - Death ends the run ([[run-structure]]).
 - Look: plate armor, white + teal + rust, patched salvage ([[color-code]]).
 - Asset: Tripo (auto-rig); reference `vault/assets/rigs-lineup.jpg`.

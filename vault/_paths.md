@@ -27,6 +27,7 @@ cpp-bp-split  reference/tech/conventions/cpp-bp-split.md
 damage-numbers  reference/gdd/weapons/damage-numbers.md
 destruction-rules  reference/gdd/terrain/destruction-rules.md
 dialogue-tone  reference/gdd/art-audio/dialogue-tone.md
+difficulty  reference/gdd/run/difficulty.md
 drone  reference/gdd/player/drone.md
 editor-workflow  reference/tech/conventions/editor-workflow.md
 enemies-index  reference/gdd/enemies/enemies-index.md
@@ -41,12 +42,14 @@ gas-api-notes  reference/tech/systems/gas-api-notes.md
 gas-engine-facts  reference/tech/systems/gas-engine-facts.md
 gas-scope  reference/production/gas-scope.md
 gdd-index  reference/gdd/gdd-index.md
+heal-ore  reference/gdd/terrain/heal-ore.md
 level-flow  reference/gdd/run/level-flow.md
 lore  reference/gdd/lore.md
 milestones  reference/production/milestones.md
 miner  reference/gdd/player/miner.md
 naming  reference/tech/conventions/naming.md
-objective-beacon-hack  reference/gdd/run/objective-beacon-hack.md
+objective-bonus-chest  reference/gdd/run/objective-bonus-chest.md
+objective-console  reference/gdd/run/objective-console.md
 objective-variants  reference/gdd/run/objective-variants.md
 ore-blocks  reference/gdd/terrain/ore-blocks.md
 ore-economy  reference/gdd/run/ore-economy.md
@@ -54,6 +57,7 @@ perf-risks  reference/tech/performance/perf-risks.md
 performance-index  reference/tech/performance/performance-index.md
 pipelines-index  reference/tech/pipelines/pipelines-index.md
 player-index  reference/gdd/player/player-index.md
+player-stats  reference/gdd/player/player-stats.md
 production-index  reference/production/production-index.md
 rarities  reference/gdd/weapons/rarities.md
 readability-rules  reference/gdd/art-audio/readability-rules.md
@@ -65,12 +69,14 @@ shotgun  reference/gdd/weapons/shotgun.md
 stress-test-m1  reference/tech/performance/stress-test-m1.md
 sys-auto-fire  reference/tech/systems/sys-auto-fire.md
 sys-damage  reference/tech/systems/sys-damage.md
+sys-difficulty  reference/tech/systems/sys-difficulty.md
 sys-enemy-ai  reference/tech/systems/sys-enemy-ai.md
 sys-explosions  reference/tech/systems/sys-explosions.md
 sys-gas-core  reference/tech/systems/sys-gas-core.md
 sys-grid  reference/tech/systems/sys-grid.md
 sys-projectiles  reference/tech/systems/sys-projectiles.md
 sys-status-effects  reference/tech/systems/sys-status-effects.md
+sys-upgrades  reference/tech/systems/sys-upgrades.md
 sys-weapons  reference/tech/systems/sys-weapons.md
 systems-index  reference/tech/systems/systems-index.md
 task-000-enable-gas  reference/tasks/task-000-enable-gas.md

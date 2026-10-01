@@ -7,7 +7,7 @@ status: approved
 ---
 # Extraction
 
-- Triggered when the level objective is complete.
+- Triggered when the alert bar is full and no mandatory objective is pending ([[level-flow]]).
 - The shuttle lands far from the miner. A countdown starts before company reinforcements arrive.
 - **Risk window:** between landing and the end of the countdown, the player chooses to keep collecting ore and XP, or to run for the shuttle.
 - Reaching the shuttle ends the level; ore carried is secured ([[ore-economy]]).

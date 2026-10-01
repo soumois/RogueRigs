@@ -1,6 +1,6 @@
 ---
 id: burst-rifle
-description: "Default weapon: auto-fires bursts toward the aim. Burst timing, starting values, magazine and upgradable stats."
+description: "Default weapon: auto-fires projectile bursts toward the aim. Burst timing, starting values, magazine, upgradable stats and effect pool."
 parent: weapons-index
 kind: spec
 status: approved
@@ -10,14 +10,16 @@ status: approved
 Final English name: open (one name for tag, asset and this node; "burst rifle" is the working name).
 
 - fire_mode: auto toward aim, in bursts.
-- projectile: projectile; pierces only with the piercing upgrade.
+- projectile: projectile; pierces only with the piercing effect.
 - effect_on_hit: damage; critical hits possible.
 - blocked_by_rock: yes
 - stats:
   - fire_rate 2 bursts/s, burst_count 3, burst_duty 0.32 (starting values, untuned);
-  - damage, range, spread, magazine size, reload time → open.
+  - damage, crit chance, range, spread, projectile speed, magazine size, reload time → open;
+  - crit damage: ×1.5 base.
 - burst timing: see [[sys-auto-fire]].
-- upgradable_stats: fire rate, damage, critical chance, critical damage; piercing, 4-direction fire ([[upgrades]]).
+- upgradable_stats: damage, fire rate, reload speed, crit chance, crit damage, magazine size.
+- effect pool (yellow rarity): piercing, 4-direction fire.
 - vfx_sfx: white-gold shots ([[color-code]]); muzzle, impact and sound open.
 - milestone: M1
 

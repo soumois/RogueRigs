@@ -16,7 +16,7 @@ kind: doc
 4. The ExecCalc rolls the critical and writes `IncomingDamage` (provisional). No critical on periodic damage (`Effect.Damage.DoT`) (provisional).
 5. Post-execute converts `IncomingDamage` into `Health` loss: clamp, single death, single damage log, damage number.
 6. Death fires once, when `Health` goes from above 0 to 0 or below (approved). Damage GEs and statuses also refuse `State.Dead` targets via `UTargetTagRequirementsGameplayEffectComponent` (approved).
-7. Player i-frames: `URRGE_IFrames` applied from post-execute, in the same call stack, so the next pellet of the same frame is refused (provisional; duration open). `URRGA_OnDamaged` handles only reaction and feedback.
+7. Player i-frames: `URRGE_IFrames` applied from post-execute, in the same call stack, so the next hit in the same frame is refused (provisional; duration open). `URRGA_OnDamaged` handles only reaction and feedback.
 
 - data: damage values from CSV.
 - depends_on: [[sys-gas-core]].

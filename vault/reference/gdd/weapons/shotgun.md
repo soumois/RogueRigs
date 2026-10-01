@@ -1,19 +1,20 @@
 ---
 id: shotgun
-description: "Short-range auto-firing shotgun that pushes enemies back. Stats, knockback and upgradable values."
+description: "Shotgun: instant conical wave that hits every enemy in the cone with line of sight, one crit roll each, knockback outward."
 parent: weapons-index
 kind: spec
 status: approved
 ---
 # Shotgun
 
-- fire_mode: auto toward aim, one shot per cycle (burst_count 1).
-- projectile: projectile pellets; pierces only with the piercing upgrade.
-- effect_on_hit: damage + knockback (pushes robots back a little).
-- blocked_by_rock: yes
-- stats: damage, fire_rate, range, spread, pellet count, knockback force, magazine size, reload time → open.
-- upgradable_stats: fire rate, damage, critical chance, critical damage; piercing, 4-direction fire ([[upgrades]]).
-- vfx_sfx: white-gold pellets ([[color-code]]); muzzle, impact and sound open.
+- fire_mode: auto toward aim; each shot is an instant conical wave (no pellets, no projectile).
+- hit rule: every enemy inside the cone is hit at once, if the line of sight between the miner and that enemy is clear on the grid. The wave's visual effect disappears into rock.
+- effect_on_hit: damage with no falloff over distance; one critical roll per enemy hit; knockback outward from the miner, reduced by the target's knockback resistance.
+- blocked_by_rock: yes (per-enemy line of sight)
+- stats: damage, fire rate, cone angle, range, knockback force, magazine size, reload time → open; crit damage ×1.5 base.
+- upgradable_stats: damage, fire rate, reload speed, crit chance, crit damage, magazine size.
+- effect pool: none (piercing and 4-direction fire do not apply).
+- vfx_sfx: white-gold wave ([[color-code]]); sound open.
 - milestone: M1
 
 ## Relations

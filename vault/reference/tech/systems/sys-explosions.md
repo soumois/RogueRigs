@@ -15,6 +15,7 @@ kind: doc
 - A 0.05–0.1 s delay between two links of a chain; it also serves juice (P1).
 - A kamikaze's death adds its explosion to the queue.
 - Character damage enters [[sys-damage]]; terrain damage goes to the grid through its own interface, outside GAS ([[sys-grid]]).
+- Barrels have no ASC: a health value on the barrel plus the already-exploded flag. What damages a barrel (shots, explosions): open.
 
 - data: radius, terrain damage and character damage per source, from CSV (values open).
 - depends_on: [[sys-damage]], [[sys-grid]].

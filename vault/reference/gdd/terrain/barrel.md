@@ -7,7 +7,7 @@ status: approved
 ---
 # Barrel
 
-- Red industrial barrel, placed as a grid cell (type `barrel`).
+- Orange industrial barrel, placed as a grid cell (type `barrel`). Orange means "explodes" ([[readability-rules]]).
 - On destruction it plays a particle burst and explodes ([[explosions]]).
 - It is one of the three block-destruction sources ([[destruction-rules]]).
 - What destroys it (player shots, robot shots, explosions): open.

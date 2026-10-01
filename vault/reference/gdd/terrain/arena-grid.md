@@ -12,7 +12,7 @@ status: approved
 - Floor is clean: no scattered pebbles.
 - Arena edge: a cliff into open space (stars, planet). No indestructible rock in the rock biome.
 - Layouts: M1 uses one fixed layout written as grid JSON by the Level-Design agent; M2 uses a deterministic C++ generator (no runtime AI).
-- Cell types in the JSON: rock, ore, special_ore, barrel, spawn, beacon, exit.
+- Cell types in the JSON: rock, ore, heal_ore, special_ore, barrel, spawn, exit. Command consoles and bonus chests are dropped during play, not placed in the layout ([[level-flow]]).
 - Cell size and arena size: open.
 - Visual build (autotiling, instancing): [[sys-grid]].
 

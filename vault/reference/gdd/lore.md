@@ -21,7 +21,7 @@ status: approved
 | Mechanic | Lore meaning |
 |---|---|
 | Alert bar | The company's alert level |
-| Beacon hack | Hijacking the claim beacon |
+| Command console hack | Hijacking the claim's control network; who drops the console: open |
 | Shuttle | The Rigs' extraction craft |
 | Extraction countdown | Company reinforcements arriving |
 | Enemy waves | Claim security robots |

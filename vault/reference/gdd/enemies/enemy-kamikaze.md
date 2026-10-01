@@ -21,7 +21,7 @@ status: approved
   - the share of kamikazes per wave controls how long a chokepoint lasts.
 - telegraph: open (the core always pulses)
 - colors: dark gunmetal, pulsing orange core; red eyes, yellow logo plate ([[color-code]])
-- stats: hp, speed, explosion radius, explosion damage (terrain and characters) → open
+- stats: hp, speed, explosion radius, explosion damage (terrain and characters), xp_value, knockback_resistance → open
 - milestone: M1
 - references: `vault/assets/enemies-lineup.jpg`
 

@@ -20,7 +20,7 @@ kind: doc
 
 - data: none of its own; values come from the weapon.
 - depends_on: [[sys-weapons]].
-- implements: [[burst-rifle]], [[shotgun]], [[turret]], [[enemy-shooter]].
+- implements: [[burst-rifle]], [[turret]], [[enemy-shooter]]. The shotgun fires no projectile ([[sys-weapons]]).
 - gotchas: see [[perf-risks]].
 
 ## Relations

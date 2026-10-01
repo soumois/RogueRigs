@@ -16,7 +16,7 @@ status: approved
 - behavior: moves straight toward the miner; no line-of-sight requirement.
 - telegraph: open
 - colors: bright company yellow; red eyes, yellow logo plate ([[color-code]])
-- stats: hp, speed, damage, attack_rate, range → open
+- stats: hp, speed, damage, attack_rate, range, xp_value, knockback_resistance → open
 - milestone: M1
 - references: `vault/assets/enemies-lineup.jpg`
 
