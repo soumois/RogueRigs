@@ -3,7 +3,7 @@ id: task-001-03-arena-grid-cpp
 description: "Implement ARRArenaGrid: load a layout JSON by name and build floor and block instances with HISM in OnConstruction."
 parent: task-001-arena-m1
 kind: task
-status: todo
+status: in-progress
 ---
 # C++: ARRArenaGrid
 

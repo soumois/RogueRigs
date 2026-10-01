@@ -3,7 +3,7 @@ id: task-001-02-layout-arena-m1
 description: "Write arena_m1.json: a 60 x 60 irregular asteroid in void, about 40 percent rock, 6 to 10 heal ore, no barrel, validated."
 parent: task-001-arena-m1
 kind: task
-status: in-progress
+status: done
 ---
 # Layout: arena_m1
 
@@ -16,7 +16,7 @@ status: in-progress
 - editor_state: any
 - token_ceiling: 30000
 - milestone: M1
-- result: open
+- result: `arena_m1.json` + brief written; 2228 asteroid cells, rock 869 (39.4 %), heal_ore 8, spawn (30,30), reachable floor 97.2 %, longest straight edge 5, one connected asteroid. Second attempt (first had a 21-cell straight edge). Caveat: a thick rock mass in the lower left. About 40k tokens.
 
 ## Relations
 - [[task-001-arena-m1]] — parent global task.
