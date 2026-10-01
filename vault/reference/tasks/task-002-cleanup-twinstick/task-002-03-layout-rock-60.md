@@ -3,7 +3,7 @@ id: task-002-03-layout-rock-60
 description: "Rewrite arena_m1 at about 60 percent rock coverage, keeping the irregular asteroid outline, heal ore and reachability rules."
 parent: task-002-cleanup-twinstick
 kind: task
-status: todo
+status: in-progress
 ---
 # Layout: arena_m1 at 60 % rock
 

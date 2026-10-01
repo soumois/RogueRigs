@@ -13,7 +13,7 @@ status: in-progress
 - gdd_check: read [[miner]] (moves freely, aims with mouse or right stick: matches TwinStick), [[build-toolchain]] (TwinStick is the base, Strategy to delete), [[sys-grid]] (HISM kept, owner confirmed). No conflict. Rock coverage 60 % of the asteroid: owner decision, replaces the 40 % of task-001.
 - confirmed_by_owner: yes
 - milestone: M1
-- next_step: task-002-02-delete-template-content
+- next_step: task-002-03-layout-rock-60
 - result: open
 
 ## Subtasks

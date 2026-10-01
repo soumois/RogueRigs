@@ -3,7 +3,7 @@ id: task-002-02-delete-template-content
 description: "Delete the TopDown, Variant_Strategy and Cursor content folders through the editor and fix up redirectors, keeping TwinStick intact."
 parent: task-002-cleanup-twinstick
 kind: task
-status: in-progress
+status: done
 ---
 # Delete template content
 
@@ -16,7 +16,7 @@ status: in-progress
 - editor_state: open
 - token_ceiling: 40000
 - milestone: M1
-- result: open
+- result: MI_Colorway moved to `/Game/Variant_TwinStick/Materials/` (parent MI_DefaultColorway stays in LevelPrototyping), referencers re-pointed by hand (no fixup-redirectors tool), no redirector left. Deleted through the editor: TopDown, Variant_Strategy, Cursor and their __ExternalActors__/__ExternalObjects__ folders. 195 kept assets scanned, no reference to deleted folders; key assets load. About 92k tokens (over the 40k ceiling: manual redirector fixup). MCP quirks for [[unreal-mcp]] passed to task-002-05.
 
 ## Relations
 - [[task-002-cleanup-twinstick]] — parent global task.
