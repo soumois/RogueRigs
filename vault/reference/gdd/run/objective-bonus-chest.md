@@ -14,7 +14,7 @@ status: approved
   - ore;
   - an upgrade choice drawn with a temporary luck bonus, applied to that draw only ([[rarities]]).
 - Open: hack duration, XP and ore amounts, luck bonus value, whether marked rocks also surround it.
-- Milestone: open.
+- Milestone: M2 (provisional).
 
 ## Relations
 - [[run-index]] — parent index.

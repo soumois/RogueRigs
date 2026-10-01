@@ -8,7 +8,7 @@ status: approved
 # Level flow
 
 1. **Land.** The alert bar starts filling with time and kills ([[difficulty]]).
-2. **Alert tiers.** A level has 4 to 7 tiers; the exact count is a balance value. Each tier triggers one event:
+2. **Alert tiers.** A level has 4 to 7 tiers; the exact count is a balance value. Each tier triggers one event, drawn from a pool with conditions (swarms most often):
    - an enemy swarm;
    - a bonus chest ([[objective-bonus-chest]]);
    - a command console ([[objective-console]]).
@@ -19,7 +19,7 @@ status: approved
 Throughout the level, robot waves spawn and killed robots drop XP cubes ([[xp-level-up]]).
 
 ## Open values
-- Event sequence per level: whether tier events are fixed per level or drawn from a pool.
+- Draw weights and conditions of tier events. Events are drawn from a pool with conditions; swarms are the most frequent; at least one console per level.
 - Swarm size and composition.
 
 ## Relations

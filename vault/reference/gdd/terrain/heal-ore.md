@@ -12,8 +12,9 @@ status: approved
 - Pickups are collected within the miner's pickup radius ([[player-stats]]).
 - Each pickup heals a fixed amount (value open).
 - Look: red heal crystals and red pickups; static on the floor, unlike moving red enemy shots ([[color-code]]).
-- Block health, pickups per block, placement density: open.
-- Milestone: open.
+- Heal ore blocks are spread across the map; their density is a balance value.
+- Block health, pickups per block, density: open.
+- Milestone: M2 (provisional).
 
 ## Relations
 - [[terrain-index]] — parent index.

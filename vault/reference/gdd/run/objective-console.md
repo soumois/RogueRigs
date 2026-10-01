@@ -16,7 +16,8 @@ status: approved
   - the console shows its gauge, so the player sees why progress stops.
 - The drone hacks one target at a time and cannot dig and hack at once.
 - While the console is not hacked, the alert bar is paused.
-- Open: drop distance range, marked-rock radius, marker look (must follow [[color-code]]), hack duration, drain rate, zone radius, who drops the console in the lore.
+- Open: drop distance range, marked-rock radius, marker look (must follow [[color-code]]), hack duration, drain rate, zone radius.
+- Lore (provisional): the Rigs' ship detects an entry point into the claim's network and drops the console there as an access point ([[lore]]).
 - Milestone: M1.
 
 ## Relations

@@ -21,7 +21,7 @@ status: approved
 | Mechanic | Lore meaning |
 |---|---|
 | Alert bar | The company's alert level |
-| Command console hack | Hijacking the claim's control network; who drops the console: open |
+| Command console hack | The Rigs' ship detects an entry point into the claim's network and drops a console there as an access point (provisional) |
 | Shuttle | The Rigs' extraction craft |
 | Extraction countdown | Company reinforcements arriving |
 | Enemy waves | Claim security robots |
