@@ -1,6 +1,6 @@
 ---
 id: task-003-01-layout-80-paths
-description: "Rewrite arena_m1 at 80 x 80 as organic winding paths walled by rock across the whole asteroid, with hidden pockets to dig into, 60 percent rock."
+description: "Rewrite arena_m1 at 80 x 80: organic winding paths walled by rock across the asteroid, hidden pockets to dig into, 60 percent rock."
 parent: task-003-arena-80-paths
 kind: task
 status: in-progress
