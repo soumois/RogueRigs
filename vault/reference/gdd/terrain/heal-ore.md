@@ -14,7 +14,7 @@ status: approved
 - Look: red heal crystals and red pickups; static on the floor, unlike moving red enemy shots ([[color-code]]).
 - Heal ore blocks are spread across the map; their density is a balance value.
 - Block health, pickups per block, density: open.
-- Milestone: M2 (provisional).
+- Milestone: the block is M1 (owner decision, task-001); pickups and the heal effect wait for block destruction, heal amount open.
 
 ## Relations
 - [[terrain-index]] — parent index.

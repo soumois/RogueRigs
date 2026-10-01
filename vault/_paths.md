@@ -87,6 +87,13 @@ sys-upgrades  reference/tech/systems/sys-upgrades.md
 sys-weapons  reference/tech/systems/sys-weapons.md
 systems-index  reference/tech/systems/systems-index.md
 task-000-enable-gas  reference/tasks/task-000-enable-gas.md
+task-001-01-validator-void  reference/tasks/task-001-arena-m1/task-001-01-validator-void.md
+task-001-02-layout-arena-m1  reference/tasks/task-001-arena-m1/task-001-02-layout-arena-m1.md
+task-001-03-arena-grid-cpp  reference/tasks/task-001-arena-m1/task-001-03-arena-grid-cpp.md
+task-001-04-greybox-materials  reference/tasks/task-001-arena-m1/task-001-04-greybox-materials.md
+task-001-05-bp-arena-grid  reference/tasks/task-001-arena-m1/task-001-05-bp-arena-grid.md
+task-001-06-map-arena-m1  reference/tasks/task-001-arena-m1/task-001-06-map-arena-m1.md
+task-001-arena-m1  reference/tasks/task-001-arena-m1.md
 tasks-index  reference/tasks/tasks-index.md
 tech-index  reference/tech/tech-index.md
 terrain-index  reference/gdd/terrain/terrain-index.md
