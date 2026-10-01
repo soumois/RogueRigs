@@ -11,4 +11,5 @@ kind: note
 - [[asset-pipeline]] — image, 3D generation, cleanup, rigid-part split.
 - [[level-layout-schema]] — layout JSON format, brief format, validator. Read before writing or loading a layout.
 - [[run-log-schema]] — what each run log records, for the balance agent.
+- [[unreal-mcp]] — Epic's MCP plugin: start, connection, toolsets, limits.
 - [[build-toolchain]] — engine, compiler, plugins, regenerating project files.

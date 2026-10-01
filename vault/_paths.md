@@ -11,6 +11,7 @@ directory you are reading (cross-branch jump). This is resolution, not search: y
 must already hold the id from a `## Relations` gloss. Do not read it to find a topic.
 
 ```
+agent-bp  reference/agents/agent-bp.md
 agent-cpp  reference/agents/agent-cpp.md
 agent-level-design  reference/agents/agent-level-design.md
 agent-orchestrator  reference/agents/agent-orchestrator.md
@@ -90,6 +91,7 @@ tasks-index  reference/tasks/tasks-index.md
 tech-index  reference/tech/tech-index.md
 terrain-index  reference/gdd/terrain/terrain-index.md
 turret  reference/gdd/weapons/turret.md
+unreal-mcp  reference/tech/pipelines/unreal-mcp.md
 upgrades  reference/gdd/weapons/upgrades.md
 visual-style  reference/gdd/art-audio/visual-style.md
 weapons-index  reference/gdd/weapons/weapons-index.md

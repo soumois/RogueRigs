@@ -32,7 +32,7 @@ Base: the Epic C++ coding standard for Unreal Engine. Project-specific rules bel
 - Log through the `LogRogueRigs` category; no `GEngine->AddOnScreenDebugMessage` left in committed code.
 
 ## Comments
-- Every class and public or protected function in a header has a short comment: what it does, and when to call it. This replaces per-class docs; the system doc lives in `tech/systems/`.
+- Every class, every public or protected function, and every member variable in a header has a short comment: what it does or holds, and when to use it. This replaces per-class docs; the system doc lives in `tech/systems/`.
 
 ## Engine knowledge
 - Target Unreal Engine 5.8. When unsure of an API, read the engine source under `C:\Program Files\Epic Games\UE_5.8\Engine\Source` or `Engine\Plugins` before writing code; never rely on memory for deprecated or changed APIs (see [[gas-api-notes]]).

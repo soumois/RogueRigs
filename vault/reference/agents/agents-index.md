@@ -9,11 +9,12 @@ kind: note
 The main Claude Code session acts as the Orchestrator. It splits each owner request into subtasks and delegates each to one specialized subagent (`.claude/agents/`). Agents never talk to each other: they read inputs from and write outputs to this vault and the repo. Token ceilings are first estimates, corrected after each milestone retrospective.
 
 Assignment #3 crew (provisional): orchestrator → level-design → cpp → bp.
-Planned, not written yet: agent-bp, agent-balance, agent-text, agent-style-guide, agent-art, agent-animation, agent-sound, agent-qa (deferred).
+Planned, not written yet: agent-balance, agent-text, agent-style-guide, agent-art, agent-animation, agent-sound, agent-qa (deferred).
 
 ## Relations
 - [[root]] — the vault map.
 - [[agent-orchestrator]] — the Orchestrator: role, tools, model, limits.
 - [[agent-level-design]] — writes arena layouts as validated grid JSON.
 - [[agent-cpp]] — writes and builds C++ gameplay code, updates system docs.
+- [[agent-bp]] — builds the Blueprint layer through Unreal MCP and documents each Blueprint.
 - [[orchestration-protocol]] — the step-by-step procedure the Orchestrator follows for every request, including resume after a limit.
