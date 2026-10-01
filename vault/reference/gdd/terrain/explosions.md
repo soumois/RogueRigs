@@ -9,7 +9,7 @@ status: approved
 
 - Sources: [[barrel]], [[enemy-kamikaze]].
 - Every explosion has two damage values:
-  - terrain: tuned to break an ore block in one hit;
+  - terrain: none; every block inside the radius is destroyed outright, whatever its type or health (owner decision, 2026-10-01);
   - characters: hurts robots and the miner, never a one-shot on the miner.
 - Chain reactions (barrel → kamikaze → barrel) resolve one link at a time, with a 0.05–0.1 s delay between links: provisional. The delay also serves juice (P1).
 - An explosion source explodes only once.

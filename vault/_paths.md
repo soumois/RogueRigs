@@ -106,6 +106,14 @@ task-003-01-layout-80-paths  reference/tasks/task-003-arena-80-paths/task-003-01
 task-003-02-map-update  reference/tasks/task-003-arena-80-paths/task-003-02-map-update.md
 task-003-03-project-name  reference/tasks/task-003-arena-80-paths/task-003-03-project-name.md
 task-003-arena-80-paths  reference/tasks/task-003-arena-80-paths.md
+task-004-01-enable-gas  reference/tasks/task-004-miner-gas/task-004-01-enable-gas.md
+task-004-02-gas-core  reference/tasks/task-004-miner-gas/task-004-02-gas-core.md
+task-004-03-miner-classes  reference/tasks/task-004-miner-gas/task-004-03-miner-classes.md
+task-004-04-bp-miner  reference/tasks/task-004-miner-gas/task-004-04-bp-miner.md
+task-004-miner-gas  reference/tasks/task-004-miner-gas.md
+task-005-01-drone-cpp  reference/tasks/task-005-drone-orbit/task-005-01-drone-cpp.md
+task-005-02-bp-drone  reference/tasks/task-005-drone-orbit/task-005-02-bp-drone.md
+task-005-drone-orbit  reference/tasks/task-005-drone-orbit.md
 tasks-index  reference/tasks/tasks-index.md
 tech-index  reference/tech/tech-index.md
 terrain-index  reference/gdd/terrain/terrain-index.md

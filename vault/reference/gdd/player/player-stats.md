@@ -27,8 +27,15 @@ Damage (%), fire rate (%), reload speed (%), critical chance (points), critical 
 - Life regen and dodge: not used. Healing comes only from heal ore ([[heal-ore]]).
 - A future upgrade on heals received (%): candidate, not decided.
 
-## Open values
-Base value of every stat.
+## Base values (provisional, owner to test)
+| Stat | Base |
+|---|---|
+| Max health | 100 |
+| Move speed | 600 uu/s (3 cells/s) |
+| Pickup radius | 300 uu (1.5 cells) |
+| XP gain | ×1.0 |
+| Mining speed | ×1.0 |
+| Luck | 0 |
 
 ## Relations
 - [[player-index]] — parent index.

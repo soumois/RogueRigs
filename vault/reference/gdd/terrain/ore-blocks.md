@@ -7,11 +7,12 @@ status: approved
 ---
 # Ore blocks
 
-- Tougher than plain rock blocks.
-- Always drop ore, whatever destroyed them ([[ore-economy]]).
-- One kamikaze explosion breaks one ore block: luring a kamikaze onto a vein is a valid tactic.
+- Tougher than plain rock blocks: drone dig time 4.5 s at mining speed 1, against 1.5 s for rock (provisional).
+- Drop ore while being dug: one pickup per 1.5 s of digging (provisional); no need to finish the block to get some.
+- Drop a larger bundle when destroyed, whatever destroyed them: 3 pickups (provisional) ([[ore-economy]]).
+- Any explosion destroys every block in its radius ([[explosions]]): luring a kamikaze onto a vein is a valid tactic.
 - Look: same base as breakable rock, with glowing violet crystals ([[color-code]]).
-- Values: block health, ore per block, drone dig time → open.
+- Values above are provisional, set by the owner on 2026-10-01; ore value per pickup: open.
 - Milestone: M1.
 
 ## Relations
