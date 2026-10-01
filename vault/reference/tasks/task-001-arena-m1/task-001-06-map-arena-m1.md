@@ -16,7 +16,7 @@ status: done
 - editor_state: open
 - token_ceiling: 40000
 - milestone: M1
-- result: `L_ArenaM1` (duplicated from Lvl_TopDown, template actors removed, nav mesh included); BP_ArenaGrid at origin, PlayerStart (6100, 6100, 120), directional light, sky light 0.3, game mode `BP_TopDownGameMode`. Counts floor 2228, rock 869, heal ore 8. PIE: pawn spawns at the spawn cell and stays on the floor; walking with input not tested. About 85k tokens over two runs (turn limit hit once).
+- result: `L_ArenaM1` (duplicated from Lvl_TopDown, template actors removed, nav bounds and nav mesh removed too); BP_ArenaGrid at origin, PlayerStart (6100, 6100, 120), directional light, sky light 0.3, game mode `BP_TopDownGameMode`. Counts floor 2228, rock 869, heal ore 8. PIE: pawn spawns at the spawn cell and stays on the floor; walking with input not tested. About 85k tokens over two runs (turn limit hit once).
 
 ## Relations
 - [[task-001-arena-m1]] — parent global task.
