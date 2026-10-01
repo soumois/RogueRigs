@@ -13,7 +13,7 @@ status: approved
 - parts: open
 - size: twice the size (GDD wording; reference unit open)
 - animations: open
-- behavior: attack pattern open. High knockback resistance, due to its mass.
+- behavior: attack pattern open. High knockback resistance, due to its mass. Passes through every one-cell corridor ([[arena-grid]]).
 - telegraph: open
 - colors: steel blue with yellow and black hazard stripes; red eyes, yellow logo plate ([[color-code]])
 - stats: hp, speed, damage, attack_rate, range, xp_value → open; knockback_resistance high (value open)

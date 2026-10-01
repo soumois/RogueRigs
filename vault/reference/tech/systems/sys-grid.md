@@ -18,7 +18,7 @@ kind: doc
 - Terrain damage arrives through a dedicated interface, outside GAS.
 - Chaos Destruction is not used.
 
-- data: level layout JSON from the Level-Design agent (M1); deterministic generator (M2).
+- data: level layout JSON in cell coordinates from the Level-Design agent (M1); deterministic generator (M2). `CellSize` is an editable data value (starting 200 uu); arena 60 × 60 cells in M1.
 - depends_on: none.
 - implements: [[arena-grid]], [[destruction-rules]], [[ore-blocks]].
 - gotchas: destroyed blocks are logged by source and type ([[run-log-schema]]).
