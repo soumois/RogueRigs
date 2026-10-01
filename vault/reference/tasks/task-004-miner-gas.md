@@ -13,7 +13,7 @@ status: in-progress
 - gdd_check: read [[miner]], [[player-stats]], [[sys-gas-core]], [[gas-scope]], [[cpp-bp-split]], [[naming]]. No dash, shot or AoE in the GDD: dropped. Weapons fire on their own with their own ASC: out of this task. Turret button: out of this task. Base stat values were open: provisional values set (owner asked to apply them; [[player-stats]]). Camera values: kept from the TwinStick template (pitch −50°, arm 2200 uu, FOV 75) as editable properties.
 - confirmed_by_owner: yes
 - milestone: M1
-- next_step: task-004-02-gas-core
+- next_step: task-004-03-miner-classes
 - result: open
 
 ## Subtasks

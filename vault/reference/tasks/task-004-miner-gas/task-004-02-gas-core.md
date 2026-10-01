@@ -3,7 +3,7 @@ id: task-004-02-gas-core
 description: "Write the custom ASC, the health, movement and player attribute sets, and the runtime CSV loader for player base stats."
 parent: task-004-miner-gas
 kind: task
-status: in-progress
+status: done
 ---
 # GAS core for the player
 
@@ -16,7 +16,7 @@ status: in-progress
 - editor_state: closed
 - token_ceiling: 80000
 - milestone: M1
-- result: open
+- result: `Source/RogueRigs/GAS/`: URRAbilitySystemComponent, URRGameplayAbility, three attribute sets with clamps, FRRPlayerBaseStatsRow, FRRBaseStatsLoader (`LoadAndApplyPlayerBaseStats(ASC, RowName)`); CSV `PlayerBaseStats.csv` row `Miner`. [[sys-gas-core]] updated. Build exit 0 (orchestrator re-ran it). Runtime untested until 004-04. Packaging line moved to 004-03. About 71k tokens.
 
 ## Relations
 - [[task-004-miner-gas]] — parent global task.
