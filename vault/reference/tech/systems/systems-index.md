@@ -11,6 +11,7 @@ Decision status inside each doc: approved, provisional, deferred or open. Planne
 ## Relations
 - [[tech-index]] — parent index.
 - [[sys-gas-core]] — which actors own an ASC, AttributeSets, plugin setup, debug tools. Read first for any GAS work.
+- [[sys-player]] — miner pawn (ASC, base stats, camera, move and aim), player controller input routing, game mode.
 - [[sys-damage]] — damage chain from shot to death, i-frames, death guard.
 - [[sys-status-effects]] — stacking rules for bonuses and statuses, enemy stun.
 - [[sys-weapons]] — weapon ASC lifecycle, shotgun cone, magazine and reload, turret launcher and turrets, impact effects.

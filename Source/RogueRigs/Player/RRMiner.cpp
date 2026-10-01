@@ -1,0 +1,198 @@
+// Rogue Rigs - the miner: player character owning the player ASC, top-down camera, world-space move and aim.
+
+#include "Player/RRMiner.h"
+
+#include "Camera/CameraComponent.h"
+#include "Components/CapsuleComponent.h"
+#include "GameFramework/CharacterMovementComponent.h"
+#include "GameFramework/PlayerController.h"
+#include "GameFramework/SpringArmComponent.h"
+#include "GAS/RRAbilitySystemComponent.h"
+#include "GAS/RRBaseStatsLoader.h"
+#include "GAS/RRHealthAttributeSet.h"
+#include "GAS/RRMovementAttributeSet.h"
+#include "GAS/RRPlayerAttributeSet.h"
+#include "RogueRigs.h"
+
+ARRMiner::ARRMiner(const FObjectInitializer& ObjectInitializer)
+	: Super(ObjectInitializer)
+{
+	PrimaryActorTick.bCanEverTick = true;
+
+	// The pawn faces the aim, not the controller or the movement direction.
+	bUseControllerRotationPitch = false;
+	bUseControllerRotationYaw = false;
+	bUseControllerRotationRoll = false;
+
+	// Ability system: attribute sets created as default subobjects of the miner are found and
+	// registered by UAbilitySystemComponent::InitializeComponent.
+	AbilitySystemComponent = CreateDefaultSubobject<URRAbilitySystemComponent>(TEXT("AbilitySystemComponent"));
+	HealthSet = CreateDefaultSubobject<URRHealthAttributeSet>(TEXT("HealthSet"));
+	MovementSet = CreateDefaultSubobject<URRMovementAttributeSet>(TEXT("MovementSet"));
+	PlayerSet = CreateDefaultSubobject<URRPlayerAttributeSet>(TEXT("PlayerSet"));
+
+	// Camera boom with a fixed world rotation.
+	SpringArm = CreateDefaultSubobject<USpringArmComponent>(TEXT("SpringArm"));
+	SpringArm->SetupAttachment(RootComponent);
+	SpringArm->SetUsingAbsoluteRotation(true);
+	SpringArm->SetRelativeRotation(FRotator(CameraPitch, CameraYaw, 0.f));
+	SpringArm->TargetArmLength = CameraArmLength;
+	SpringArm->bDoCollisionTest = false;
+	SpringArm->bUsePawnControlRotation = false;
+	SpringArm->bEnableCameraLag = true;
+	SpringArm->CameraLagSpeed = 0.5f;
+
+	Camera = CreateDefaultSubobject<UCameraComponent>(TEXT("Camera"));
+	Camera->SetupAttachment(SpringArm, USpringArmComponent::SocketName);
+	Camera->bUsePawnControlRotation = false;
+	Camera->SetFieldOfView(CameraFieldOfView);
+
+	// Movement defaults (editable on the component). MaxWalkSpeed is driven by the MoveSpeed attribute.
+	UCharacterMovementComponent* Movement = GetCharacterMovement();
+	Movement->bOrientRotationToMovement = false;
+	Movement->GravityScale = 1.5f;
+	Movement->MaxAcceleration = 1000.f;
+	Movement->BrakingFrictionFactor = 1.f;
+	Movement->bCanWalkOffLedges = false;
+}
+
+UAbilitySystemComponent* ARRMiner::GetAbilitySystemComponent() const
+{
+	return AbilitySystemComponent;
+}
+
+void ARRMiner::OnConstruction(const FTransform& Transform)
+{
+	Super::OnConstruction(Transform);
+
+	SpringArm->SetRelativeRotation(FRotator(CameraPitch, CameraYaw, 0.f));
+	SpringArm->TargetArmLength = CameraArmLength;
+	Camera->SetFieldOfView(CameraFieldOfView);
+}
+
+void ARRMiner::BeginPlay()
+{
+	Super::BeginPlay();
+
+	AimDirection = GetActorForwardVector().GetSafeNormal2D(UE_SMALL_NUMBER, FVector::ForwardVector);
+
+	// Init order (sys-gas-core): actor info, then base stats once the three sets are on the ASC.
+	AbilitySystemComponent->InitAbilityActorInfo(this, this);
+
+	MoveSpeedChangedHandle = AbilitySystemComponent
+		->GetGameplayAttributeValueChangeDelegate(URRMovementAttributeSet::GetMoveSpeedAttribute())
+		.AddUObject(this, &ARRMiner::HandleMoveSpeedChanged);
+
+	if (!FRRBaseStatsLoader::LoadAndApplyPlayerBaseStats(*AbilitySystemComponent, BaseStatsRowName))
+	{
+		UE_LOG(LogRogueRigs, Error, TEXT("%s: base stats row '%s' could not be applied."), *GetName(), *BaseStatsRowName.ToString());
+	}
+
+	// Push the value even if no change was broadcast (e.g. same value as before).
+	ApplyMoveSpeed(MovementSet->GetMoveSpeed());
+}
+
+void ARRMiner::PossessedBy(AController* NewController)
+{
+	Super::PossessedBy(NewController);
+
+	AbilitySystemComponent->RefreshAbilityActorInfo();
+}
+
+void ARRMiner::EndPlay(const EEndPlayReason::Type EndPlayReason)
+{
+	if (MoveSpeedChangedHandle.IsValid())
+	{
+		AbilitySystemComponent
+			->GetGameplayAttributeValueChangeDelegate(URRMovementAttributeSet::GetMoveSpeedAttribute())
+			.Remove(MoveSpeedChangedHandle);
+		MoveSpeedChangedHandle.Reset();
+	}
+
+	Super::EndPlay(EndPlayReason);
+}
+
+void ARRMiner::ApplyMoveSpeed(float NewMoveSpeed)
+{
+	GetCharacterMovement()->MaxWalkSpeed = NewMoveSpeed;
+}
+
+void ARRMiner::HandleMoveSpeedChanged(const FOnAttributeChangeData& ChangeData)
+{
+	ApplyMoveSpeed(ChangeData.NewValue);
+}
+
+FVector ARRMiner::ScreenInputToWorld(const FVector2D& Input) const
+{
+	// Screen up = camera forward flattened, screen right = camera right flattened.
+	const FRotator CameraYawRotation(0.f, SpringArm->GetComponentRotation().Yaw, 0.f);
+	const FVector ScreenUp = CameraYawRotation.RotateVector(FVector::ForwardVector);
+	const FVector ScreenRight = CameraYawRotation.RotateVector(FVector::RightVector);
+	return ScreenUp * Input.Y + ScreenRight * Input.X;
+}
+
+void ARRMiner::ApplyMoveInput(const FVector2D& Input)
+{
+	const FVector WorldInput = ScreenInputToWorld(Input);
+	AddMovementInput(WorldInput.GetClampedToMaxSize(1.f));
+}
+
+void ARRMiner::ApplyStickAimInput(const FVector2D& Input)
+{
+	if (Input.Size() <= StickAimMinInput)
+	{
+		return;
+	}
+
+	bUsingMouseAim = false;
+	AimDirection = ScreenInputToWorld(Input).GetSafeNormal2D(UE_SMALL_NUMBER, AimDirection);
+}
+
+void ARRMiner::UseMouseAim()
+{
+	bUsingMouseAim = true;
+}
+
+void ARRMiner::UpdateMouseAim()
+{
+	const APlayerController* PlayerController = Cast<APlayerController>(GetController());
+	if (!PlayerController)
+	{
+		return;
+	}
+
+	FVector RayOrigin;
+	FVector RayDirection;
+	if (!PlayerController->DeprojectMousePositionToWorld(RayOrigin, RayDirection))
+	{
+		return;
+	}
+
+	// Horizontal plane at the miner's feet (+ offset).
+	const FVector Feet = GetActorLocation() - FVector(0.f, 0.f, GetCapsuleComponent()->GetScaledCapsuleHalfHeight());
+	const float PlaneZ = Feet.Z + MouseAimPlaneHeight;
+
+	// A ray parallel to or pointing away from the plane never reaches it.
+	if (FMath::IsNearlyZero(RayDirection.Z) || (PlaneZ - RayOrigin.Z) / RayDirection.Z <= 0.f)
+	{
+		return;
+	}
+
+	const FVector AimPoint = FMath::RayPlaneIntersection(RayOrigin, RayDirection, FPlane(FVector(0.f, 0.f, PlaneZ), FVector::UpVector));
+	const FVector ToAim = AimPoint - GetActorLocation();
+	AimDirection = ToAim.GetSafeNormal2D(UE_SMALL_NUMBER, AimDirection);
+}
+
+void ARRMiner::Tick(float DeltaSeconds)
+{
+	Super::Tick(DeltaSeconds);
+
+	if (bUsingMouseAim)
+	{
+		UpdateMouseAim();
+	}
+
+	const FRotator CurrentRotation = GetActorRotation();
+	const FRotator TargetRotation(CurrentRotation.Pitch, AimDirection.Rotation().Yaw, CurrentRotation.Roll);
+	SetActorRotation(FMath::RInterpTo(CurrentRotation, TargetRotation, DeltaSeconds, AimRotationInterpSpeed));
+}

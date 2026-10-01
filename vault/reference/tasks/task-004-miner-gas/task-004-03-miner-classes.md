@@ -3,7 +3,7 @@ id: task-004-03-miner-classes
 description: "Write ARRMiner (ASC, move and aim inspired by TwinStickCharacter, no dash, shot or AoE), ARRPlayerController and ARRGameMode."
 parent: task-004-miner-gas
 kind: task
-status: in-progress
+status: done
 ---
 # Miner, controller, game mode
 
@@ -16,7 +16,7 @@ status: in-progress
 - editor_state: closed
 - token_ceiling: 80000
 - milestone: M1
-- result: open
+- result: `Source/RogueRigs/Player/`: ARRMiner (ASC + three sets as subobjects, CSV base stats at BeginPlay, MoveSpeed → MaxWalkSpeed, camera properties, mouse and stick aim), ARRPlayerController (mapping context and three actions as properties), ARRGameMode; all three abstract. DefaultGame.ini stages `RogueRigs/Data` as non-UFS. New doc `sys-player`. Input axes: screen X right, Y up (WASD needs Swizzle and Negate). Build exit 0 (orchestrator re-ran it); Variant_TwinStick untouched. About 75k tokens.
 
 ## Relations
 - [[task-004-miner-gas]] — parent global task.
