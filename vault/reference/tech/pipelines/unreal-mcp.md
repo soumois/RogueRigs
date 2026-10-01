@@ -16,8 +16,8 @@ kind: doc
 Named in Epic's documentation: `ActorTools`, `SceneTools`, `MaterialInstanceTools`, `ObjectTools`. Exposed functionality includes spawning actors, lighting, material instances, inspecting Slate widgets, running automation tests.
 
 ## Tool inventory
-- Full tool list: open. The first BP subtask lists the tools the server actually exposes and records them here.
-- Whether Blueprint classes can be created and edited through MCP: open, checked by that inventory. If not, the fallback is decided with the owner.
+- Full tool list: open. The first BP subtask lists the tools the server exposes and records them here.
+- Blueprint creation and editing through MCP works: the owner used it on another project to build a Blueprint with its rendering, materials and collision script.
 
 ## Limits
 - Experimental: features incomplete, APIs and formats may change.
