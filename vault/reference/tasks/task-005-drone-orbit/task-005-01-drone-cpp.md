@@ -3,7 +3,7 @@ id: task-005-01-drone-cpp
 description: "Write ARRDrone: a separate actor spawned by ARRMiner, with a state enum and an orbit movement around the miner from editable data."
 parent: task-005-drone-orbit
 kind: task
-status: in-progress
+status: done
 ---
 # C++: ARRDrone (orbit)
 
@@ -16,7 +16,7 @@ status: in-progress
 - editor_state: closed
 - token_ceiling: 50000
 - milestone: M1
-- result: open
+- result: `Source/RogueRigs/Drone/RRDrone.*`: ARRDrone (abstract, NoCollision mesh root, ERRDroneState, orbit in Tick, GetMiningSpeed from the miner ASC), editable OrbitRadius 150, OrbitPeriod 2, HoverHeight 150, FollowInterpSpeed 10 (provisional). ARRMiner: DroneClass, Drone, GetDrone, spawn at BeginPlay, destroy at EndPlay. Docs sys-drone (new), sys-player, systems-index. Build exit 0 (orchestrator re-ran it). About 49k tokens.
 
 ## Relations
 - [[task-005-drone-orbit]] — parent global task.

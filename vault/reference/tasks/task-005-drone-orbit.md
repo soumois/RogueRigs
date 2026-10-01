@@ -13,7 +13,7 @@ status: in-progress
 - gdd_check: read [[drone]], [[sys-gas-core]] (drone has no ASC, reads `MiningSpeed`). Orbit values were open: provisional values set in [[drone]]. Dig state, laser (red, owner decision) and block shake belong to the digging task.
 - confirmed_by_owner: yes
 - milestone: M1
-- next_step: task-005-01-drone-cpp
+- next_step: task-005-02-bp-drone
 - result: open
 
 ## Subtasks

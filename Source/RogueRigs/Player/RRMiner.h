@@ -7,6 +7,7 @@
 #include "AbilitySystemInterface.h"
 #include "RRMiner.generated.h"
 
+class ARRDrone;
 class UAbilitySystemComponent;
 class UCameraComponent;
 class URRAbilitySystemComponent;
@@ -22,7 +23,8 @@ struct FOnAttributeChangeData;
  * MoveSpeed changes are pushed to CharacterMovement->MaxWalkSpeed. A fixed top-down camera (arm does not
  * rotate with the pawn) frames the arena. Input is routed here by ARRPlayerController: move is a
  * world-space 2D input, aim comes from the mouse cursor projected on the floor plane or from the right
- * stick, and the pawn turns toward the aim every tick. No weapon, dash, pickup or item logic here.
+ * stick, and the pawn turns toward the aim every tick. Spawns its helper drone (DroneClass) at BeginPlay and
+ * destroys it at EndPlay. No weapon, dash, pickup or item logic here.
  * Subclass in Blueprint for the mesh and animation.
  */
 UCLASS(Abstract)
@@ -68,6 +70,10 @@ public:
 	UFUNCTION(BlueprintPure, Category = "Miner|Aim")
 	bool IsUsingMouseAim() const { return bUsingMouseAim; }
 
+	/** The helper drone spawned at BeginPlay (null if DroneClass is unset or the spawn failed). */
+	UFUNCTION(BlueprintPure, Category = "Miner|Drone")
+	ARRDrone* GetDrone() const { return Drone; }
+
 	/** Updates the mouse aim if active, then turns the pawn toward the aim direction. */
 	virtual void Tick(float DeltaSeconds) override;
 
@@ -81,7 +87,7 @@ protected:
 	/** Refreshes the ASC actor info so it caches the new controller. */
 	virtual void PossessedBy(AController* NewController) override;
 
-	/** Stops listening to MoveSpeed changes. */
+	/** Stops listening to MoveSpeed changes and destroys the drone. */
 	virtual void EndPlay(const EEndPlayReason::Type EndPlayReason) override;
 
 	/** Pushes the current MoveSpeed attribute value to CharacterMovement->MaxWalkSpeed. */
@@ -89,6 +95,9 @@ protected:
 
 	/** ASC callback: MoveSpeed changed (base or current value). */
 	void HandleMoveSpeedChanged(const FOnAttributeChangeData& ChangeData);
+
+	/** Spawns DroneClass at the miner's location (owner and instigator: this miner) and hands it this miner. */
+	void SpawnDrone();
 
 	/** Projects the mouse cursor on the floor plane and aims at the hit point. Keeps the last aim if it misses. */
 	void UpdateMouseAim();
@@ -151,6 +160,14 @@ protected:
 	/** Stick inputs with a length at or below this value are ignored (keeps the last aim). */
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Miner|Aim", meta = (ClampMin = 0, ClampMax = 1))
 	float StickAimMinInput = 0.1f;
+
+	/** Drone class spawned at BeginPlay (a Blueprint subclass of ARRDrone). None = no drone. */
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Miner|Drone")
+	TSubclassOf<ARRDrone> DroneClass;
+
+	/** The spawned drone; destroyed at EndPlay. */
+	UPROPERTY(VisibleInstanceOnly, BlueprintReadOnly, Category = "Miner|Drone")
+	TObjectPtr<ARRDrone> Drone;
 
 	/** Current world-space aim direction (unit, Z = 0). */
 	FVector AimDirection = FVector::ForwardVector;

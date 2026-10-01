@@ -3,6 +3,8 @@
 #include "Player/RRMiner.h"
 
 #include "Camera/CameraComponent.h"
+#include "Drone/RRDrone.h"
+#include "Engine/World.h"
 #include "Components/CapsuleComponent.h"
 #include "GameFramework/CharacterMovementComponent.h"
 #include "GameFramework/PlayerController.h"
@@ -90,6 +92,31 @@ void ARRMiner::BeginPlay()
 
 	// Push the value even if no change was broadcast (e.g. same value as before).
 	ApplyMoveSpeed(MovementSet->GetMoveSpeed());
+
+	SpawnDrone();
+}
+
+void ARRMiner::SpawnDrone()
+{
+	if (!DroneClass)
+	{
+		UE_LOG(LogRogueRigs, Warning, TEXT("%s: DroneClass is not set; no drone spawned."), *GetName());
+		return;
+	}
+
+	FActorSpawnParameters SpawnParameters;
+	SpawnParameters.Owner = this;
+	SpawnParameters.Instigator = this;
+	SpawnParameters.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AlwaysSpawn;
+
+	Drone = GetWorld()->SpawnActor<ARRDrone>(DroneClass, GetActorTransform(), SpawnParameters);
+	if (!Drone)
+	{
+		UE_LOG(LogRogueRigs, Error, TEXT("%s: drone of class %s could not be spawned."), *GetName(), *DroneClass->GetName());
+		return;
+	}
+
+	Drone->SetOwnerMiner(this);
 }
 
 void ARRMiner::PossessedBy(AController* NewController)
@@ -108,6 +135,12 @@ void ARRMiner::EndPlay(const EEndPlayReason::Type EndPlayReason)
 			.Remove(MoveSpeedChangedHandle);
 		MoveSpeedChangedHandle.Reset();
 	}
+
+	if (IsValid(Drone))
+	{
+		Drone->Destroy();
+	}
+	Drone = nullptr;
 
 	Super::EndPlay(EndPlayReason);
 }

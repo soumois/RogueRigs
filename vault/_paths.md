@@ -82,6 +82,7 @@ stress-test-m1  reference/tech/performance/stress-test-m1.md
 sys-auto-fire  reference/tech/systems/sys-auto-fire.md
 sys-damage  reference/tech/systems/sys-damage.md
 sys-difficulty  reference/tech/systems/sys-difficulty.md
+sys-drone  reference/tech/systems/sys-drone.md
 sys-enemy-ai  reference/tech/systems/sys-enemy-ai.md
 sys-explosions  reference/tech/systems/sys-explosions.md
 sys-gas-core  reference/tech/systems/sys-gas-core.md
