@@ -17,3 +17,6 @@ One node per Blueprint, template `blueprint.md`.
 - [[bp-pickup-ore]] — BP_PickupOre, the cyan ore pickup.
 - [[bp-rr-player-controller]] — BP_RRPlayerController, input wiring.
 - [[bp-rr-game-mode]] — BP_RRGameMode, default pawn and controller.
+- [[bp-burst-rifle]] — BP_BurstRifle, the burst rifle weapon.
+- [[bp-projectile]] — BP_Projectile, the rifle bullet.
+- [[bp-target-dummy]] — BP_TargetDummy, the debug target.

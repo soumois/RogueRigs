@@ -13,7 +13,7 @@ status: in-progress
 - gdd_check: read [[burst-rifle]], [[sys-weapons]], [[sys-auto-fire]], [[sys-projectiles]], [[sys-damage]], [[damage-numbers]], [[sys-gas-core]], [[color-code]]. Open values set by the owner (2026-10-01) in [[burst-rifle]]; final weapon name stays open (`BurstRifle` used as working name). Damage numbers are M2: an M1 debug text on the dummy only, recorded in [[damage-numbers]]. The target dummy is a test tool, not a GDD entity. Out of scope: shotgun, turret, upgrades, enemy death, i-frames.
 - confirmed_by_owner: yes
 - milestone: M1
-- next_step: task-007-04-bp-rifle-dummy
+- next_step: task-007-05-weapon-tests
 - result: open
 
 ## Subtasks

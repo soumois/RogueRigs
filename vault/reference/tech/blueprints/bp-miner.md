@@ -15,6 +15,7 @@ kind: doc
 - logic_in_bp: none
 - assets: SKM_Quinn_Simple and ABP_Unarmed from the template mannequins.
 - owner_agent: agent-bp
+- weapons: StartingWeapons = [BP_BurstRifle_C], WeaponAttachSocketName = hand_r ([[bp-burst-rifle]], task-007-04; attachment not yet checked in PIE).
 - verified: PIE on L_ArenaM1 spawns BP_Miner_C at (8100, 8100, 90.15); MaxWalkSpeed 600; Health 100, MaxHealth 100, MoveSpeed 600, MiningSpeed 1, PickupRadius 300, XPGain 1, Luck 0.
 
 ## Relations

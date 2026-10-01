@@ -3,7 +3,7 @@ id: task-007-05-weapon-tests
 description: "Headless C++ automation tests for burst timing, magazine and reload, projectile stop on rock, GAS damage with crits and the dummy refill."
 parent: task-007-burst-rifle-dummy
 kind: task
-status: todo
+status: in-progress
 ---
 # Weapon automation tests
 

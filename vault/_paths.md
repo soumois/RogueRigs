@@ -23,12 +23,15 @@ audio-direction  reference/gdd/art-audio/audio-direction.md
 barrel  reference/gdd/terrain/barrel.md
 blueprints-index  reference/tech/blueprints/blueprints-index.md
 bp-arena-grid  reference/tech/blueprints/bp-arena-grid.md
+bp-burst-rifle  reference/tech/blueprints/bp-burst-rifle.md
 bp-drone  reference/tech/blueprints/bp-drone.md
 bp-miner  reference/tech/blueprints/bp-miner.md
 bp-pickup-heal  reference/tech/blueprints/bp-pickup-heal.md
 bp-pickup-ore  reference/tech/blueprints/bp-pickup-ore.md
+bp-projectile  reference/tech/blueprints/bp-projectile.md
 bp-rr-game-mode  reference/tech/blueprints/bp-rr-game-mode.md
 bp-rr-player-controller  reference/tech/blueprints/bp-rr-player-controller.md
+bp-target-dummy  reference/tech/blueprints/bp-target-dummy.md
 build-toolchain  reference/tech/pipelines/build-toolchain.md
 burst-rifle  reference/gdd/weapons/burst-rifle.md
 color-code  reference/gdd/art-audio/color-code.md
