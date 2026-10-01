@@ -3,7 +3,7 @@ id: task-005-drone-orbit
 description: "Global task: the drone as a separate C++ actor spawned by the miner, a grey-box sphere circling it; dig state comes with the digging task."
 parent: tasks-index
 kind: task
-status: todo
+status: in-progress
 ---
 # Drone (orbit)
 

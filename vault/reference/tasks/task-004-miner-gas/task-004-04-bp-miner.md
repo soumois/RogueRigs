@@ -3,7 +3,7 @@ id: task-004-04-bp-miner
 description: "Create BP_Miner, BP_RRPlayerController and BP_RRGameMode, switch L_ArenaM1 and project defaults to them, and check the miner in PIE."
 parent: task-004-miner-gas
 kind: task
-status: in-progress
+status: done
 ---
 # Miner Blueprints and map switch
 
@@ -16,7 +16,7 @@ status: in-progress
 - editor_state: open
 - token_ceiling: 50000
 - milestone: M1
-- result: open
+- result: BP_Miner (Quinn mesh, ABP_Unarmed, capsule 88/34), BP_RRPlayerController, BP_RRGameMode; input assets duplicated into `/Game/RogueRigs/Input/` (no MCP tool creates them) with IMC_Miner (WASD + ZQSD, sticks, Mouse2D). L_ArenaM1 and project default game mode = BP_RRGameMode. PIE: BP_Miner_C at (8100, 8100, 90), MaxWalkSpeed 600, Health 100/100, MoveSpeed 600, MiningSpeed 1, PickupRadius 300. Doc nodes bp-miner, bp-rr-player-controller, bp-rr-game-mode. MCP quirks for [[unreal-mcp]] passed to task-005-02. About 86k tokens.
 
 ## Relations
 - [[task-004-miner-gas]] — parent global task.

@@ -3,7 +3,7 @@ id: task-005-01-drone-cpp
 description: "Write ARRDrone: a separate actor spawned by ARRMiner, with a state enum and an orbit movement around the miner from editable data."
 parent: task-005-drone-orbit
 kind: task
-status: todo
+status: in-progress
 ---
 # C++: ARRDrone (orbit)
 
