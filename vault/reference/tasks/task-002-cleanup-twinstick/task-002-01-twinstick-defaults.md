@@ -3,7 +3,7 @@ id: task-002-01-twinstick-defaults
 description: "Switch L_ArenaM1 and the project defaults to BP_TwinStickGameMode and make L_ArenaM1 the editor and game startup map."
 parent: task-002-cleanup-twinstick
 kind: task
-status: in-progress
+status: done
 ---
 # TwinStick game mode and default maps
 
@@ -16,7 +16,7 @@ status: in-progress
 - editor_state: open
 - token_ceiling: 40000
 - milestone: M1
-- result: open
+- result: ini GameDefaultMap, EditorStartupMap = L_ArenaM1, GlobalDefaultGameMode = BP_TwinStickGameMode_C; L_ArenaM1 override = BP_TwinStickGameMode, saved (its 61 removed template actor files deleted from disk on save). Kept assets referencing deleted folders: only `/Game/TopDown/MI_Colorway`, used by BP_TwinStickPickup, BP_TwinStickSpawner, SM_TargetBaseMesh, GC_SM_TargetBaseMesh_Destruction and LVL_TwinStick actors. Ini still has three ActiveClassRedirects to the root top-down classes. About 65k tokens.
 
 ## Relations
 - [[task-002-cleanup-twinstick]] — parent global task.
