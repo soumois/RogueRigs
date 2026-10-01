@@ -3,7 +3,7 @@ id: task-001-05-bp-arena-grid
 description: "Create BP_ArenaGrid from ARRArenaGrid with layout arena_m1, the engine cube and the grey-box materials, and document it."
 parent: task-001-arena-m1
 kind: task
-status: in-progress
+status: done
 ---
 # BP_ArenaGrid
 
@@ -16,7 +16,7 @@ status: in-progress
 - editor_state: open
 - token_ceiling: 40000
 - milestone: M1
-- result: open
+- result: `BP_ArenaGrid` created, compiled, saved; cube mesh and grey-box materials set, BarrelMaterial null; instance check floor 2228, rock 869, heal ore 8 (temporary actor in Lvl_TopDown, removed, level not saved). Doc node `bp-arena-grid`. About 51k tokens.
 
 ## Relations
 - [[task-001-arena-m1]] — parent global task.

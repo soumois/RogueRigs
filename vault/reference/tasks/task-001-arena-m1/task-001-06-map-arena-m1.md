@@ -3,7 +3,7 @@ id: task-001-06-map-arena-m1
 description: "Create map L_ArenaM1 with BP_ArenaGrid, lights, a dark sky, a player start on the spawn cell and the top-down game mode."
 parent: task-001-arena-m1
 kind: task
-status: todo
+status: in-progress
 ---
 # Map L_ArenaM1
 

@@ -6,7 +6,8 @@ kind: note
 ---
 # Blueprints
 
-One node per Blueprint, template `blueprint.md`. None yet.
+One node per Blueprint, template `blueprint.md`.
 
 ## Relations
 - [[tech-index]] — parent index.
+- [[bp-arena-grid]] — BP_ArenaGrid doc, the M1 arena grid Blueprint.
