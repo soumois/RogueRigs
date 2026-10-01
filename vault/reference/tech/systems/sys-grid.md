@@ -7,7 +7,8 @@ kind: doc
 # Grid
 
 - responsibility: terrain data, rendering and destruction.
-- main_classes: open (not written yet).
+- main_classes: `ARRArenaGrid` (provisional): reads the layout JSON and builds the blocks itself, one HISM component per block type, in `OnConstruction` so the arena shows in the editor. `BP_ArenaGrid` derives from it and only sets the layout name and one mesh and material per block type; one instance of it is placed in the map.
+- M1 grey box (approved): every block type uses the engine cube (`/Engine/BasicShapes/Cube`) or a `LevelPrototyping` cube, with one material instance per type colored after [[color-code]]. Final meshes and autotiling replace them later by changing references in `BP_ArenaGrid`; code and layouts stay unchanged.
 
 ## Rules (approved)
 - The grid is the source of truth for terrain. Using it for pathfinding and line of sight is provisional ([[sys-enemy-ai]]).

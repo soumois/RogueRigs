@@ -13,6 +13,7 @@ status: approved
 - Clean floor; arena edge is a cliff into space with stars and a planet.
 - The Rigs' side looks repaired and bolted together; corporate robots look clean.
 - Key art: `vault/assets/keyart.jpg` (readability reference, not a fidelity promise).
+- M1 is grey box: plain cubes colored by block type after [[color-code]]; final assets come later ([[sys-grid]]).
 
 ## Relations
 - [[art-audio-index]] — parent index.
