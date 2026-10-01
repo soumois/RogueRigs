@@ -13,7 +13,7 @@ status: in-progress
 - gdd_check: read [[drone]], [[destruction-rules]], [[ore-blocks]], [[heal-ore]], [[explosions]], [[player-stats]], [[sys-grid]]. Owner decisions recorded 2026-10-01 (dig times, drops, laser red against [[readability-rules]], shake, explosions destroy all blocks in radius). Dig cancel rule was open: provisional rule set in [[drone]]. Explosions themselves are out (no barrel or kamikaze yet); the grid exposes the radius destruction call for them. Ore and heal values per pickup: open, pickups have no effect.
 - confirmed_by_owner: yes
 - milestone: M1
-- next_step: task-006-01-grid-destruction
+- next_step: task-006-02-drone-dig
 - result: open
 
 ## Subtasks

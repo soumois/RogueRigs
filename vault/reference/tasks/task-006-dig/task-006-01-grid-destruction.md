@@ -3,7 +3,7 @@ id: task-006-01-grid-destruction
 description: "Extend ARRArenaGrid: no floor under blocks, cell-to-instance map, block health, terrain damage and destruction API, shaking block."
 parent: task-006-dig
 kind: task
-status: in-progress
+status: done
 ---
 # Grid destruction
 
@@ -16,7 +16,7 @@ status: in-progress
 - editor_state: closed
 - token_ceiling: 80000
 - milestone: M1
-- result: open
+- result: no floor under blocks (blocks fill the floor slab, `bBlocksFillFloorSlab`), floor added on destroy; cell↔instance maps with swap-remove; health per type in dig-seconds; GetCellAtWorld, IsBlockCell, GetCellType(FIntPoint), GetCellHealth, ApplyTerrainDamage, DestroyCell, DestroyCellsInRadius, SetCellShaking (6 uu, 20 Hz provisional), OnCellDamaged and OnCellDestroyed; runtime state rebuilt at BeginPlay. Flicker diagnosis: buried coplanar floor faces, most likely seen by Lumen and distance fields; owner to confirm. [[sys-grid]] updated. Build exit 0 (orchestrator re-ran it). About 77k tokens.
 
 ## Relations
 - [[task-006-dig]] — parent global task.

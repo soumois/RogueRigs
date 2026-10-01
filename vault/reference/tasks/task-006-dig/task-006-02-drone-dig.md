@@ -3,7 +3,7 @@ id: task-006-02-drone-dig
 description: "Dig trigger on the miner and the drone's Dig state: fly to the block, red laser, damage over time scaled by MiningSpeed, cancel rule."
 parent: task-006-dig
 kind: task
-status: todo
+status: in-progress
 ---
 # Drone digs
 

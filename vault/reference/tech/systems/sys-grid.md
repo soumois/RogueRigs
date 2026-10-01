@@ -1,31 +1,23 @@
 ---
 id: sys-grid
-description: "Grid terrain as built: ARRArenaGrid loads a layout JSON, builds floor and block HISM instances; autotiling and destruction rules to come."
+description: "Grid terrain as built: ARRArenaGrid loads a layout JSON, builds floor and block HISMs, block health, dig damage, destruction, shake; autotiling to come."
 parent: systems-index
 kind: doc
 ---
 # Grid
 
-- responsibility: terrain data, rendering and destruction.
-- main_classes: `ARRArenaGrid` (`Source/RogueRigs/Grid/RRArenaGrid.h/.cpp`, Blueprintable) and `ERRCellType` (Floor, Void, Rock, Ore, HealOre, SpecialOre, Barrel, Spawn). In `OnConstruction` it reads `Content/RogueRigs/Data/Levels/<LayoutName>.json` (path from `FPaths::ProjectContentDir()`, format [[level-layout-schema]]) and rebuilds six HISM components: floor, rock, ore, heal_ore, special_ore, barrel. `BP_ArenaGrid` derives from it, sets the layout name, meshes and materials; one instance sits in the map.
-- build rules: grid origin = actor; floor top at the actor's Z; cell (x, y) center at ((x+0.5)·CellSize, (y+0.5)·CellSize) in actor space. One floor instance per non-void cell (spawn included); one block instance per block cell, standing on its floor; nothing on void cells. Instances scale a `MeshBaseSize` centered cube to CellSize² × FloorThickness or BlockHeight. Collision BlockAll.
-- properties: `LayoutName` (default `arena_m1`), `CellSize` 200 uu, `BlockHeight` 100 uu (provisional), `FloorThickness` 200 uu (cliff edge), `MeshBaseSize` 100 uu; `<Type>Mesh` and `<Type>Material` for Floor, Rock, Ore, HealOre, SpecialOre, Barrel (null by default, set in the Blueprint).
-- entry_points: `GetCellCenter(X, Y)` (world position at floor top), `GetSpawnCell()` ((-1, -1) when none), `GetCellType(X, Y)` (Void outside the grid).
-- M1 grey box (approved): engine or `LevelPrototyping` cube per type, one material instance per type after [[color-code]]; final meshes later replace references in `BP_ArenaGrid` only.
-
-## Rules (approved)
-- The grid is the source of truth for terrain. Using it for pathfinding and line of sight is provisional ([[sys-enemy-ai]]).
-- Autotiling: a block's mesh depends on its open sides. With rotation, 6 shapes cover every case: buried, 1 open side, corner, corridor, wall end, isolated; each with a few variants. Not implemented yet.
-- Top face: a few variants with a random 90° rotation (the most visible face under the near-vertical camera).
-- Rendering: one Hierarchical Instanced Static Mesh per asset type; destroying a block removes instances.
-- A destroyed block plays a particle burst; its neighbors swap to the shape matching their new open sides. Destruction not implemented yet.
-- Terrain damage arrives through a dedicated interface, outside GAS.
-- Chaos Destruction is not used.
-
-- data: level layout JSON from the Level-Design agent (M1); deterministic generator (M2). Arena size: [[arena-grid]]. Modules Json and JsonUtilities.
+- responsibility: terrain data, rendering, block health and destruction.
+- main_classes: `ARRArenaGrid` (`Source/RogueRigs/Grid/RRArenaGrid.h/.cpp`, Blueprintable), `ERRCellType` (Floor, Void, Rock, Ore, HealOre, SpecialOre, Barrel, Spawn), `ERRTerrainDamageSource` (Drone, Barrel, Kamikaze). Reads `Content/RogueRigs/Data/Levels/<LayoutName>.json` ([[level-layout-schema]]) and fills six HISMs: floor, rock, ore, heal_ore, special_ore, barrel. `BP_ArenaGrid` sets layout, meshes, materials.
+- build rules: origin = actor, floor top at actor Z, cell (x, y) center at ((x+0.5)·CellSize, (y+0.5)·CellSize). Floor instance (slab [-FloorThickness, 0]) only on open cells (floor, spawn); block instance only on block cells, spanning [-FloorThickness, BlockHeight] when `bBlocksFillFloorSlab` (default), else [0, BlockHeight]. No face is coplanar with another visible face. Collision BlockAll.
+- lifecycle: built in `OnConstruction` (editor) and again in `BeginPlay`; `OnConstruction` is ignored once play has begun, so runtime destruction survives.
+- properties (all editable): `LayoutName` `arena_m1`, `CellSize` 200, `BlockHeight` 100 (provisional), `FloorThickness` 200, `bBlocksFillFloorSlab` true, `MeshBaseSize` 100; health in dig-seconds at mining speed 1 (provisional): `RockHealth` 1.5, `OreHealth` 4.5, `HealOreHealth` 4.5, `SpecialOreHealth` 4.5, `BarrelHealth` 1.5; `ShakeAmplitude` 6 uu, `ShakeFrequency` 20 Hz (provisional); `<Type>Mesh`/`<Type>Material`.
+- entry_points: `GetCellCenter(X, Y)`, `GetCellAtWorld(FVector)`, `GetSpawnCell()`, `GetCellType(FIntPoint)` (current type; destroyed = Floor), `IsBlockCell(FIntPoint)`, `GetCellHealth(FIntPoint)`, `ApplyTerrainDamage(Cell, Amount, Source)` (true when it destroyed the block), `DestroyCell(Cell, Source)`, `DestroyCellsInRadius(Center, Radius, Source)` (every block whose center is within the 2D radius, returns count), `SetCellShaking(Cell, bool)`. Delegates `OnCellDamaged(Cell, Type, Amount, Source)`, `OnCellDestroyed(Cell, Type, Source)`.
+- destruction: removes the block instance, adds a floor instance, cell becomes Floor, health 0, logged Verbose by type and source. Instance maps (cell → index, index → cell per HISM) mirror HISM remove-at-swap. Shake jitters the instance horizontally (actor ticks only while something shakes) and restores it on stop.
+- rules (approved): the grid is the terrain source of truth; its use for pathfinding and line of sight is provisional ([[sys-enemy-ai]]). One HISM per asset type. Autotiling: 6 shapes by open sides, with variants; top face variants with random 90° rotation; neighbors re-shape on destruction. M1 grey box: one cube and one material per type ([[color-code]]).
+- data: layout JSON (M1), deterministic generator (M2). Modules Json, JsonUtilities.
 - depends_on: none.
-- implements: [[arena-grid]], [[destruction-rules]], [[ore-blocks]].
-- gotchas: a missing file or parse error is logged on `LogRogueRigs` with the path and leaves the grid empty, never crashes. The layout is re-read on every construction (each editor move or edit). The layout folder must be packaged as a non-asset directory ([[level-layout-schema]]). Destroyed blocks are logged by source and type ([[run-log-schema]]).
+- implements: [[arena-grid]], [[destruction-rules]], [[ore-blocks]], [[explosions]] (terrain side).
+- gotchas: missing file or parse error logs on `LogRogueRigs` and leaves the grid empty. The layout folder must be packaged as a non-asset directory. Moving a shaking instance dirties the HISM tree each frame (fine for a few cells). Drops, barrel detonation and the run log react to the delegates; not done here. Autotiling, top-face variants and the destroy particle burst: not implemented. Chaos Destruction is not used; terrain damage stays outside GAS.
 
 ## Relations
 - [[systems-index]] — parent index.
