@@ -6,7 +6,7 @@ kind: note
 ---
 # Tasks
 
-One node per task, template `task.md`, id `task-<number>-<slug>`. Done tasks stay until the milestone retrospective.
+One global task per owner request (template `task-global.md`, id `task-<number>-<slug>`), with its subtasks in a folder of the same name (template `task.md`, id `task-<number>-<step>-<slug>`). Status lives in the nodes, so any session or account can resume from `next_step`. Done tasks stay until the milestone retrospective.
 
 ## Relations
 - [[root]] — the vault map.

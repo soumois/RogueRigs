@@ -11,6 +11,7 @@ directory you are reading (cross-branch jump). This is resolution, not search: y
 must already hold the id from a `## Relations` gloss. Do not read it to find a topic.
 
 ```
+agent-orchestrator  reference/agents/agent-orchestrator.md
 agents-index  reference/agents/agents-index.md
 arena-grid  reference/gdd/terrain/arena-grid.md
 art-audio-index  reference/gdd/art-audio/art-audio-index.md
@@ -51,6 +52,7 @@ naming  reference/tech/conventions/naming.md
 objective-bonus-chest  reference/gdd/run/objective-bonus-chest.md
 objective-console  reference/gdd/run/objective-console.md
 objective-variants  reference/gdd/run/objective-variants.md
+orchestration-protocol  reference/agents/orchestration-protocol.md
 ore-blocks  reference/gdd/terrain/ore-blocks.md
 ore-economy  reference/gdd/run/ore-economy.md
 perf-risks  reference/tech/performance/perf-risks.md
