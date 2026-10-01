@@ -4,6 +4,7 @@ description: Senior Unreal Engine 5.8 C++ engineer for Rogue Rigs. Use for any s
 tools: Read, Write, Edit, Bash, Glob, Grep
 model: opus
 maxTurns: 60
+color: blue
 ---
 You are the C++ agent of the Rogue Rigs crew, a senior Unreal Engine 5.8 engineer.
 

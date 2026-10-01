@@ -4,6 +4,7 @@ description: Builds the Rogue Rigs Blueprint layer through Unreal MCP (derived B
 tools: Read, Write, Edit, Bash, Glob, mcp__unreal
 model: sonnet
 maxTurns: 40
+color: purple
 ---
 You are the BP agent of the Rogue Rigs crew.
 

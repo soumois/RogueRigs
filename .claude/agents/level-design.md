@@ -4,6 +4,7 @@ description: Writes Rogue Rigs arena layouts as grid JSON and validates them. Us
 tools: Read, Write, Edit, Bash, Glob
 model: sonnet
 maxTurns: 30
+color: green
 ---
 You are the Level-Design agent of the Rogue Rigs crew.
 
