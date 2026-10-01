@@ -3,7 +3,7 @@ id: task-006-04-bp-dig
 description: "Laser and pickup grey-box assets, grid and drone defaults, then a PIE check of digging rock and heal ore and of pickup collection."
 parent: task-006-dig
 kind: task
-status: in-progress
+status: done
 ---
 # Digging assets and PIE check
 
@@ -17,7 +17,7 @@ status: in-progress
 - editor_state: open
 - token_ceiling: 60000
 - milestone: M1
-- result: open
+- result: MI_GB_Laser (2, 0, 0), MI_GB_PickupHeal, MI_GB_PickupOre (cyan); BP_PickupHeal, BP_PickupOre (30 uu cubes); BP_ArenaGrid pickup classes; BP_Drone LaserMesh = cylinder + MI_GB_Laser. Load counts floor 1525, rock 2192, heal ore 12. PIE dig, drops and collection could not be driven through MCP (no UFunction call, no held key): moved to automated tests in task-006-05 and to the owner. Docs bp-pickup-heal, bp-pickup-ore, bp-arena-grid, bp-drone. About 100k tokens (over ceiling).
 
 ## Relations
 - [[task-006-dig]] — parent global task.

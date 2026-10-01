@@ -13,7 +13,7 @@ status: in-progress
 - gdd_check: read [[drone]], [[destruction-rules]], [[ore-blocks]], [[heal-ore]], [[explosions]], [[player-stats]], [[sys-grid]]. Owner decisions recorded 2026-10-01 (dig times, drops, laser red against [[readability-rules]], shake, explosions destroy all blocks in radius). Dig cancel rule was open: provisional rule set in [[drone]]. Explosions themselves are out (no barrel or kamikaze yet); the grid exposes the radius destruction call for them. Ore and heal values per pickup: open, pickups have no effect.
 - confirmed_by_owner: yes
 - milestone: M1
-- next_step: task-006-04-bp-dig
+- next_step: task-006-05-dig-tests
 - result: open
 
 ## Subtasks
@@ -21,6 +21,7 @@ status: in-progress
 2. task-006-02-drone-dig — cpp: dig trigger on the miner, drone Dig state, red laser component.
 3. task-006-03-pickups — cpp: drops from the grid, `ARRPickup` collected by the miner.
 4. task-006-04-bp-dig — bp: laser and pickup assets, grid and drone defaults, PIE check.
+5. task-006-05-dig-tests — cpp: headless automation tests of the dig rules (added: MCP cannot drive PIE input).
 
 ## Relations
 - [[tasks-index]] — parent index.
@@ -28,3 +29,4 @@ status: in-progress
 - [[task-006-02-drone-dig]] — step 2, cpp, drone and miner.
 - [[task-006-03-pickups]] — step 3, cpp, pickups.
 - [[task-006-04-bp-dig]] — step 4, bp, assets and PIE.
+- [[task-006-05-dig-tests]] — step 5, cpp, automation tests.

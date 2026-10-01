@@ -25,6 +25,8 @@ blueprints-index  reference/tech/blueprints/blueprints-index.md
 bp-arena-grid  reference/tech/blueprints/bp-arena-grid.md
 bp-drone  reference/tech/blueprints/bp-drone.md
 bp-miner  reference/tech/blueprints/bp-miner.md
+bp-pickup-heal  reference/tech/blueprints/bp-pickup-heal.md
+bp-pickup-ore  reference/tech/blueprints/bp-pickup-ore.md
 bp-rr-game-mode  reference/tech/blueprints/bp-rr-game-mode.md
 bp-rr-player-controller  reference/tech/blueprints/bp-rr-player-controller.md
 build-toolchain  reference/tech/pipelines/build-toolchain.md
@@ -125,6 +127,7 @@ task-006-01-grid-destruction  reference/tasks/task-006-dig/task-006-01-grid-dest
 task-006-02-drone-dig  reference/tasks/task-006-dig/task-006-02-drone-dig.md
 task-006-03-pickups  reference/tasks/task-006-dig/task-006-03-pickups.md
 task-006-04-bp-dig  reference/tasks/task-006-dig/task-006-04-bp-dig.md
+task-006-05-dig-tests  reference/tasks/task-006-dig/task-006-05-dig-tests.md
 task-006-dig  reference/tasks/task-006-dig.md
 task-007-01-weapon-autofire  reference/tasks/task-007-burst-rifle-dummy/task-007-01-weapon-autofire.md
 task-007-02-projectile-damage  reference/tasks/task-007-burst-rifle-dummy/task-007-02-projectile-damage.md
