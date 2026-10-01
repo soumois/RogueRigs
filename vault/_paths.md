@@ -95,6 +95,7 @@ sys-pickups  reference/tech/systems/sys-pickups.md
 sys-player  reference/tech/systems/sys-player.md
 sys-projectiles  reference/tech/systems/sys-projectiles.md
 sys-status-effects  reference/tech/systems/sys-status-effects.md
+sys-target-dummy  reference/tech/systems/sys-target-dummy.md
 sys-upgrades  reference/tech/systems/sys-upgrades.md
 sys-weapons  reference/tech/systems/sys-weapons.md
 systems-index  reference/tech/systems/systems-index.md

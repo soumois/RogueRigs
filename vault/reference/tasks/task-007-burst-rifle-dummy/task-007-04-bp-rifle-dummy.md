@@ -3,7 +3,7 @@ id: task-007-04-bp-rifle-dummy
 description: "Burst rifle, projectile and target dummy Blueprints and materials, rifle on BP_Miner, three dummies near the spawn, PIE check of bursts and damage."
 parent: task-007-burst-rifle-dummy
 kind: task
-status: todo
+status: in-progress
 ---
 # Rifle and dummy assets, PIE check
 

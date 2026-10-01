@@ -3,6 +3,7 @@
 #include "GAS/RRHealthAttributeSet.h"
 
 #include "GameplayEffectExtension.h"
+#include "GAS/RRGameplayTags.h"
 
 #include UE_INLINE_GENERATED_CPP_BY_NAME(RRHealthAttributeSet)
 
@@ -63,6 +64,10 @@ void URRHealthAttributeSet::PostGameplayEffectExecute(const FGameplayEffectModCa
 		if (Damage > 0.f)
 		{
 			SetHealth(FMath::Clamp(GetHealth() - Damage, 0.f, GetMaxHealth()));
+
+			// The crit flag is a dynamic asset tag on the executed spec (sys-damage).
+			const bool bIsCritical = Data.EffectSpec.GetDynamicAssetTags().HasTagExact(RRGameplayTags::Effect_Damage_Critical);
+			OnDamageReceived.Broadcast(Damage, bIsCritical, GetHealth());
 		}
 	}
 }

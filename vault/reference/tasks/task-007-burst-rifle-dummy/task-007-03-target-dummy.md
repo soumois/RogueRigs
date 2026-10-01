@@ -3,7 +3,7 @@ id: task-007-03-target-dummy
 description: "Write ARRTargetDummy: immobile test target with an ASC and health, white hit flash, debug floating damage text, refill 3 s after the last hit."
 parent: task-007-burst-rifle-dummy
 kind: task
-status: in-progress
+status: done
 ---
 # Target dummy
 
@@ -16,7 +16,7 @@ status: in-progress
 - editor_state: closed
 - token_ceiling: 60000
 - milestone: M1
-- result: open
+- result: `Source/RogueRigs/Debug/`: ARRTargetDummy (AActor, Pawn-type mesh overlapping Projectile, ASC + health set, flash, refill 3 s, never dies, logs) and ARRFloatingDamageText (rises, fades, faces the camera). Health set broadcasts `OnDamageReceived(Damage, bIsCritical, HealthLeft)`. New doc sys-target-dummy; sys-damage, sys-gas-core, build-toolchain updated. Build exit 0, tests 6/6 (orchestrator re-ran both). About 69k tokens.
 
 ## Relations
 - [[task-007-burst-rifle-dummy]] — parent global task.

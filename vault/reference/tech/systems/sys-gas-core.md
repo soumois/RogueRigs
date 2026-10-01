@@ -26,7 +26,7 @@ kind: doc
 - gotchas:
   - Clamps: base in `PreAttributeBaseChange`, current in `PreAttributeChange`. `Health` in [0, `MaxHealth`]; `MaxHealth`, `IncomingDamage`, `MoveSpeed`, `PickupRadius`, `XPGain`, `MiningSpeed` >= 0; `Luck` unclamped. `Health` is lowered in `PostAttributeChange` when `MaxHealth` drops; it is not raised when `MaxHealth` grows.
   - Set `MaxHealth` before `Health` (the loader does).
-  - `IncomingDamage` is consumed in `PostGameplayEffectExecute`: reset to 0, subtracted from `Health`. Death handling is not here.
+  - `IncomingDamage` is consumed in `PostGameplayEffectExecute`: reset to 0, subtracted from `Health`, then `OnDamageReceived` is broadcast ([[sys-damage]]). Death handling is not here.
   - Packaging: `Data/Tables` must be staged as a non-asset directory; `Config/DefaultGame.ini` stages `RogueRigs/Data` as non-UFS ([[task-004-03-miner-classes]]).
   - A missing SetByCaller returns 0 and logs an error.
   - Debug with native tools: `showdebug abilitysystem`, `AbilitySystem.Debug.NextCategory`, `AbilitySystem.DebugAttribute <attrs>`, `AbilityListGranted`, `EffectListActive`.

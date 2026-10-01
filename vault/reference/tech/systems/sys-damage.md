@@ -11,6 +11,7 @@ kind: doc
 - implemented (in `Source/RogueRigs/Damage/`): `URRGE_Damage` (instant; execution `URRDamageExecution`; `UTargetTagRequirementsGameplayEffectComponent` ignoring `State.Dead`, `State.Invulnerable`). Native tags in `GAS/RRGameplayTags.h` (`RRGameplayTags::State_Dead`, `State_Invulnerable`, `Effect_Damage_Critical`). Not yet: `URRGE_DamageFlat`, `URRGE_IFrames`, `URRGA_OnDamaged`, death handling.
 - `URRDamageExecution`: captures the source weapon's `Damage`, `CritChance`, `CritDamage` (snapshot at fire time), crit if `FRand() < CritChance`, outputs `Damage` (× `CritDamage` on a crit) as Additive on `IncomingDamage`.
 - Critical flag: on a crit the ExecCalc adds the dynamic asset tag `Effect.Damage.Critical` to the executed spec through `GetOwningSpecForPreExecuteMod()`; listeners read `Data.EffectSpec.GetDynamicAssetTags()` in `PostGameplayEffectExecute` ([[gas-api-notes]]). The executed spec is the target ASC's copy, so the carried handle never keeps the tag; the effect context is shared between copies, hence not used.
+- Per-hit event: after consuming a positive `IncomingDamage`, `URRHealthAttributeSet` broadcasts the native multicast `OnDamageReceived(Damage, bIsCritical, HealthLeft)` — raw damage before the `Health` clamp, crit read from the spec's dynamic asset tags, `Health` after the hit. Feedback listeners bind to it instead of parsing specs; first user: [[sys-target-dummy]]. Handlers run inside the GE execution (same safety rules as post-execute).
 
 ## Chain
 1. On fire, the weapon's ASC creates the spec. Instigator and causer = the weapon (approved). Kill credit and XP go up through `Weapon->GetOwner()`.
@@ -33,3 +34,4 @@ kind: doc
 ## Relations
 - [[systems-index]] — parent index.
 - [[sys-explosions]] — explosions entering this chain.
+- [[sys-target-dummy]] — debug target consuming `OnDamageReceived` for flash and damage numbers.

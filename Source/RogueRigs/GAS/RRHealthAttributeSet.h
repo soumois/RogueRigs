@@ -8,6 +8,13 @@
 #include "RRHealthAttributeSet.generated.h"
 
 /**
+ * Fired by URRHealthAttributeSet each time IncomingDamage is consumed with a positive value.
+ * Params: Damage (raw amount from the execution, before the Health clamp), bIsCritical (the executed spec
+ * carries the dynamic asset tag Effect.Damage.Critical), HealthLeft (Health after the hit).
+ */
+DECLARE_MULTICAST_DELEGATE_ThreeParams(FRROnDamageReceived, float /*Damage*/, bool /*bIsCritical*/, float /*HealthLeft*/);
+
+/**
  * Health of a combat actor (player, enemies). Health is kept in [0, MaxHealth]: base values are
  * clamped in PreAttributeBaseChange, current values in PreAttributeChange, and Health is brought
  * back under MaxHealth in PostAttributeChange when MaxHealth drops. Damage goes through the
@@ -36,8 +43,15 @@ public:
 	/** Brings Health back to MaxHealth when MaxHealth drops below it. */
 	virtual void PostAttributeChange(const FGameplayAttribute& Attribute, float OldValue, float NewValue) override;
 
-	/** Consumes IncomingDamage: resets it to 0 and subtracts it from Health (clamped at 0). */
+	/** Consumes IncomingDamage: resets it to 0, subtracts it from Health (clamped at 0), then broadcasts OnDamageReceived. */
 	virtual void PostGameplayEffectExecute(const FGameplayEffectModCallbackData& Data) override;
+
+	/**
+	 * Per-hit damage event (amount, critical flag, health left), broadcast from PostGameplayEffectExecute after
+	 * Health is updated. Bind for hit feedback (flash, damage numbers, logs). Handlers run inside the GE execution:
+	 * applying a GE or setting an attribute is safe there; removing effects or cancelling abilities is not.
+	 */
+	FRROnDamageReceived OnDamageReceived;
 
 protected:
 	/** Current health; the actor dies at 0 (death handling lives outside this set). */
