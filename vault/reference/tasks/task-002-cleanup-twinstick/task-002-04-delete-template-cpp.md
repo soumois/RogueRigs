@@ -3,7 +3,7 @@ id: task-002-04-delete-template-cpp
 description: "Delete the Strategy variant and root top-down C++ classes, clean Build.cs include paths, rebuild, and update build-toolchain."
 parent: task-002-cleanup-twinstick
 kind: task
-status: in-progress
+status: done
 ---
 # Delete template C++
 
@@ -16,7 +16,7 @@ status: in-progress
 - editor_state: closed
 - token_ceiling: 40000
 - milestone: M1
-- result: open
+- result: deleted Variant_Strategy and the three root top-down classes; Build.cs drops Niagara and the Strategy include paths; ini: three ActiveClassRedirects removed, dead `RogueRigsCharacter` section (DefaultGame.ini) and two TopDown paths (DefaultEditor.ini, DefaultEditorPerProjectUserSettings.ini) removed. Build exit 0, no warning in touched files, no leftover include. [[build-toolchain]] updated. About 40k tokens.
 
 ## Relations
 - [[task-002-cleanup-twinstick]] — parent global task.

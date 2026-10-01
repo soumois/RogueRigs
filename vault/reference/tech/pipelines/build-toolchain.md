@@ -6,12 +6,14 @@ kind: doc
 ---
 # Build and toolchain
 
-- Engine: Unreal Engine 5.8. Project from the Top Down template (C++); Twin Stick variant as the base; the Strategy variant is to be deleted once the Twin Stick build works.
+- Engine: Unreal Engine 5.8. Project from the Top Down template (C++); Twin Stick variant as the base. The Strategy variant and the root top-down classes (`RogueRigsCharacter`, `RogueRigsGameMode`, `RogueRigsPlayerController`) are deleted ([[task-002-04-delete-template-cpp]]); `Source/RogueRigs` holds only the module files, `Grid/` and `Variant_TwinStick/`. The `Niagara` module is no longer a C++ dependency (the plugin stays enabled).
 - Compiler: MSVC 14.50 (Visual Studio 2026, workload "Game development with C++"). MSVC 14.40–14.43 are rejected by UE 5.8.
 - After a toolchain change: right-click `RogueRigs.uproject` → Generate Visual Studio project files.
 - Command-line build, editor closed (used by agents; exit code 0 = success, compiler errors on stdout):
   `"C:\Program Files\Epic Games\UE_5.8\Engine\Build\BatchFiles\Build.bat" RogueRigsEditor Win64 Development -Project="C:\Users\soumo\Documents\Unreal Projects\RogueRigs\RogueRigs.uproject" -WaitMutex`
-  Path follows the standard Epic launcher layout; not verified on the machine yet.
+  From Git Bash, run it through PowerShell (verified in task-001-03 and task-002-04):
+  `powershell.exe -NoProfile -Command "& 'C:\Program Files\Epic Games\UE_5.8\Engine\Build\BatchFiles\Build.bat' RogueRigsEditor Win64 Development '-Project=C:\Users\soumo\Documents\Unreal Projects\RogueRigs\RogueRigs.uproject' -WaitMutex"`
+  UBT currently picks MSVC 14.51 and warns it is not a preferred version; the build still succeeds. Expected engine-header warnings: C4996 from `Character.h` (`GetMovementBase`) and `HierarchicalInstancedStaticMeshComponent.h` (`BuildComponentInstanceData`).
 - Launch the editor on the project:
   `"C:\Program Files\Epic Games\UE_5.8\Engine\Binaries\Win64\UnrealEditor.exe" "C:\Users\soumo\Documents\Unreal Projects\RogueRigs\RogueRigs.uproject"`
 - Plugins: GameplayAbilities must be enabled ([[task-000-enable-gas]]). StateTree is already enabled by the template.

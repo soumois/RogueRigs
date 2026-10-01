@@ -3,7 +3,7 @@ id: task-002-05-verify-pie
 description: "Check the cleaned project in the editor: L_ArenaM1 opens without errors, shows the new layout, and BP_TwinStickCharacter spawns and moves in PIE."
 parent: task-002-cleanup-twinstick
 kind: task
-status: todo
+status: in-progress
 ---
 # Verify in the editor and PIE
 

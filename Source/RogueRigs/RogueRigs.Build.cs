@@ -18,7 +18,6 @@ public class RogueRigs : ModuleRules
 			"NavigationSystem",
 			"StateTreeModule",
 			"GameplayStateTreeModule",
-			"Niagara",
 			"UMG",
 			"Slate"
 		});
@@ -30,8 +29,6 @@ public class RogueRigs : ModuleRules
 
 		PublicIncludePaths.AddRange(new string[] {
 			"RogueRigs",
-			"RogueRigs/Variant_Strategy",
-			"RogueRigs/Variant_Strategy/UI",
 			"RogueRigs/Variant_TwinStick",
 			"RogueRigs/Variant_TwinStick/AI",
 			"RogueRigs/Variant_TwinStick/Gameplay",
