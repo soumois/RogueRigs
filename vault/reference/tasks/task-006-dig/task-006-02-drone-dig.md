@@ -3,7 +3,7 @@ id: task-006-02-drone-dig
 description: "Dig trigger on the miner and the drone's Dig state: fly to the block, red laser, damage over time scaled by MiningSpeed, cancel rule."
 parent: task-006-dig
 kind: task
-status: in-progress
+status: done
 ---
 # Drone digs
 
@@ -16,7 +16,7 @@ status: in-progress
 - editor_state: closed
 - token_ceiling: 80000
 - milestone: M1
-- result: open
+- result: miner dig trigger (dominant-axis neighbour, reach capsule radius + 30) → `ARRDrone::RequestDig`; Dig state flies 60 uu off the block face, laser cylinder (`LaserMesh`, 8 uu), `ApplyTerrainDamage(DeltaSeconds × MiningSpeed)`, shake on and off, cancel beyond 1.5 cells; damage kept. Grid helpers GetCellFaceCenter, GetCellSize, GetBlockHeight. Docs sys-drone, sys-player, sys-grid. Build exit 0 (orchestrator re-ran it). About 84k tokens (over the 80k ceiling).
 
 ## Relations
 - [[task-006-dig]] — parent global task.

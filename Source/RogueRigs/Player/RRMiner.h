@@ -7,6 +7,7 @@
 #include "AbilitySystemInterface.h"
 #include "RRMiner.generated.h"
 
+class ARRArenaGrid;
 class ARRDrone;
 class UAbilitySystemComponent;
 class UCameraComponent;
@@ -24,7 +25,10 @@ struct FOnAttributeChangeData;
  * rotate with the pawn) frames the arena. Input is routed here by ARRPlayerController: move is a
  * world-space 2D input, aim comes from the mouse cursor projected on the floor plane or from the right
  * stick, and the pawn turns toward the aim every tick. Spawns its helper drone (DroneClass) at BeginPlay and
- * destroys it at EndPlay. No weapon, dash, pickup or item logic here.
+ * destroys it at EndPlay. Dig trigger: each tick, when the move input points into the adjacent block cell
+ * (dominant axis of the world move direction) and that block face is within the dig reach, the miner asks the
+ * drone to cut it (ARRDrone::RequestDig); the drone handles the cancel rule. The arena grid is found once at
+ * BeginPlay (first ARRArenaGrid in the world). No weapon, dash, pickup or item logic here.
  * Subclass in Blueprint for the mesh and animation.
  */
 UCLASS(Abstract)
@@ -74,7 +78,11 @@ public:
 	UFUNCTION(BlueprintPure, Category = "Miner|Drone")
 	ARRDrone* GetDrone() const { return Drone; }
 
-	/** Updates the mouse aim if active, then turns the pawn toward the aim direction. */
+	/** Arena grid found at BeginPlay (first ARRArenaGrid in the world); null if the level has none. */
+	UFUNCTION(BlueprintPure, Category = "Miner|Dig")
+	ARRArenaGrid* GetArenaGrid() const { return ArenaGrid; }
+
+	/** Updates the mouse aim if active, turns the pawn toward the aim direction, then checks the dig trigger. */
 	virtual void Tick(float DeltaSeconds) override;
 
 protected:
@@ -101,6 +109,16 @@ protected:
 
 	/** Projects the mouse cursor on the floor plane and aims at the hit point. Keeps the last aim if it misses. */
 	void UpdateMouseAim();
+
+	/** Stores the first ARRArenaGrid of the world in ArenaGrid (logs a warning when there is none). */
+	void FindArenaGrid();
+
+	/**
+	 * Dig trigger, run each tick with the move input of this frame: picks the cell next to the miner along the
+	 * dominant grid axis of MoveDirection; if it holds a block whose facing side is within the dig reach
+	 * (capsule radius + DigReachMargin), calls RequestDig on the drone.
+	 */
+	void UpdateDigTrigger(const FVector& MoveDirection);
 
 	/** Converts a 2D input in screen axes to a world-space direction on the XY plane (not normalized). */
 	FVector ScreenInputToWorld(const FVector2D& Input) const;
@@ -165,12 +183,27 @@ protected:
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Miner|Drone")
 	TSubclassOf<ARRDrone> DroneClass;
 
+	/** Extra distance beyond the capsule radius within which a pushed block face triggers a dig, in uu. */
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Miner|Dig", meta = (ClampMin = 0, Units = "cm"))
+	float DigReachMargin = 30.f;
+
+	/** Move inputs with a length at or below this value never trigger a dig (provisional). */
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Miner|Dig", meta = (ClampMin = 0, ClampMax = 1))
+	float DigMinMoveInput = 0.1f;
+
+	/** Arena grid used for the dig trigger; found once at BeginPlay. */
+	UPROPERTY(VisibleInstanceOnly, BlueprintReadOnly, Category = "Miner|Dig")
+	TObjectPtr<ARRArenaGrid> ArenaGrid;
+
 	/** The spawned drone; destroyed at EndPlay. */
 	UPROPERTY(VisibleInstanceOnly, BlueprintReadOnly, Category = "Miner|Drone")
 	TObjectPtr<ARRDrone> Drone;
 
 	/** Current world-space aim direction (unit, Z = 0). */
 	FVector AimDirection = FVector::ForwardVector;
+
+	/** World-space move input of the current frame (clamped to length 1), consumed by the dig trigger in Tick. */
+	FVector PendingMoveInput = FVector::ZeroVector;
 
 	/** True while aiming with the mouse cursor. */
 	bool bUsingMouseAim = true;

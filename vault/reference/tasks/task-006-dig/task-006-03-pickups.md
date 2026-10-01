@@ -3,7 +3,7 @@ id: task-006-03-pickups
 description: "Drops from ore and heal ore (one per 1.5 dig-seconds, 3 on destruction) and ARRPickup collected within the miner's PickupRadius."
 parent: task-006-dig
 kind: task
-status: todo
+status: in-progress
 ---
 # Pickups
 

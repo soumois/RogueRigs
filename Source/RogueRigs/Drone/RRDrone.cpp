@@ -1,4 +1,4 @@
-// Rogue Rigs - the helper drone: separate actor spawned by the miner; orbits it (dig and hack states declared, not implemented).
+// Rogue Rigs - the helper drone: separate actor spawned by the miner; orbits it and cuts blocks with a laser (dig). Hack declared, not implemented.
 
 #include "Drone/RRDrone.h"
 
@@ -7,6 +7,7 @@
 #include "Engine/CollisionProfile.h"
 #include "GAS/RRAbilitySystemComponent.h"
 #include "GAS/RRPlayerAttributeSet.h"
+#include "Grid/RRArenaGrid.h"
 #include "Player/RRMiner.h"
 #include "RogueRigs.h"
 
@@ -19,10 +20,28 @@ ARRDrone::ARRDrone()
 	Mesh->SetGenerateOverlapEvents(false);
 	Mesh->SetCanEverAffectNavigation(false);
 	RootComponent = Mesh;
+
+	// The laser is placed in world space every Dig tick, so it ignores the drone's transform.
+	LaserMesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("LaserMesh"));
+	LaserMesh->SetupAttachment(Mesh);
+	LaserMesh->SetUsingAbsoluteLocation(true);
+	LaserMesh->SetUsingAbsoluteRotation(true);
+	LaserMesh->SetUsingAbsoluteScale(true);
+	LaserMesh->SetCollisionProfileName(UCollisionProfile::NoCollision_ProfileName);
+	LaserMesh->SetGenerateOverlapEvents(false);
+	LaserMesh->SetCanEverAffectNavigation(false);
+	LaserMesh->SetCastShadow(false);
+	LaserMesh->SetVisibility(false);
 }
 
 void ARRDrone::SetOwnerMiner(ARRMiner* NewOwnerMiner)
 {
+	if (State == ERRDroneState::Dig)
+	{
+		StopDig();
+		State = ERRDroneState::Orbit;
+	}
+
 	if (OwnerMiner)
 	{
 		RemoveTickPrerequisiteActor(OwnerMiner);
@@ -41,15 +60,63 @@ void ARRDrone::SetOwnerMiner(ARRMiner* NewOwnerMiner)
 
 bool ARRDrone::SetState(ERRDroneState NewState)
 {
-	if (NewState != ERRDroneState::Orbit)
+	switch (NewState)
 	{
+	case ERRDroneState::Orbit:
+		if (State == ERRDroneState::Dig)
+		{
+			StopDig();
+		}
+		State = ERRDroneState::Orbit;
+		return true;
+
+	case ERRDroneState::Dig:
+		if (!IsValid(OwnerMiner) || !IsValid(DigGrid) || !DigGrid->IsBlockCell(DigCell))
+		{
+			UE_LOG(LogRogueRigs, Warning, TEXT("%s: cannot enter Dig without a miner and a block target (use RequestDig); staying in %s."),
+				*GetName(), *UEnum::GetValueAsString(State));
+			return false;
+		}
+		if (State != ERRDroneState::Dig)
+		{
+			State = ERRDroneState::Dig;
+			DigGrid->SetCellShaking(DigCell, true);
+		}
+		return true;
+
+	case ERRDroneState::Hack:
+	default:
 		UE_LOG(LogRogueRigs, Warning, TEXT("%s: drone state %s is not implemented yet; staying in %s."),
 			*GetName(), *UEnum::GetValueAsString(NewState), *UEnum::GetValueAsString(State));
 		return false;
 	}
+}
 
-	State = NewState;
-	return true;
+bool ARRDrone::RequestDig(ARRArenaGrid* Grid, FIntPoint Cell, FIntPoint MinerSide)
+{
+	if (!IsValid(OwnerMiner) || !IsValid(Grid) || !Grid->IsBlockCell(Cell))
+	{
+		return false;
+	}
+
+	// Same target: only the side may change.
+	if (State == ERRDroneState::Dig && DigGrid == Grid && DigCell == Cell)
+	{
+		DigSide = MinerSide;
+		return true;
+	}
+
+	// New target: release the previous block (its damage stays), then start on this one.
+	if (State == ERRDroneState::Dig)
+	{
+		StopDig();
+		State = ERRDroneState::Orbit;
+	}
+
+	DigGrid = Grid;
+	DigCell = Cell;
+	DigSide = MinerSide;
+	return SetState(ERRDroneState::Dig);
 }
 
 float ARRDrone::GetMiningSpeed() const
@@ -73,10 +140,23 @@ void ARRDrone::Tick(float DeltaSeconds)
 		TickOrbit(DeltaSeconds);
 		break;
 	case ERRDroneState::Dig:
+		TickDig(DeltaSeconds);
+		break;
 	case ERRDroneState::Hack:
-		// Not implemented yet (SetState refuses them).
+		// Not implemented yet (SetState refuses it).
 		break;
 	}
+}
+
+void ARRDrone::EndPlay(const EEndPlayReason::Type EndPlayReason)
+{
+	if (State == ERRDroneState::Dig)
+	{
+		StopDig();
+		State = ERRDroneState::Orbit;
+	}
+
+	Super::EndPlay(EndPlayReason);
 }
 
 void ARRDrone::TickOrbit(float DeltaSeconds)
@@ -93,6 +173,34 @@ void ARRDrone::TickOrbit(float DeltaSeconds)
 	SetActorLocation(FMath::VInterpTo(GetActorLocation(), ComputeOrbitPoint(), DeltaSeconds, FollowInterpSpeed));
 }
 
+void ARRDrone::TickDig(float DeltaSeconds)
+{
+	// Cancel rules: target gone (dug out or blown up), or the miner walked away.
+	if (!IsValid(OwnerMiner) || !IsValid(DigGrid) || !DigGrid->IsBlockCell(DigCell))
+	{
+		SetState(ERRDroneState::Orbit);
+		return;
+	}
+
+	const FVector BlockCenter = DigGrid->GetCellCenter(DigCell.X, DigCell.Y);
+	const float CancelDistance = DigCancelDistanceCells * DigGrid->GetCellSize();
+	if (FVector::DistSquared2D(OwnerMiner->GetActorLocation(), BlockCenter) > FMath::Square(CancelDistance))
+	{
+		SetState(ERRDroneState::Orbit);
+		return;
+	}
+
+	SetActorLocation(FMath::VInterpTo(GetActorLocation(), ComputeDigHoverPoint(), DeltaSeconds, FollowInterpSpeed));
+
+	// Laser first: the face center is still valid before the hit that may destroy the block.
+	UpdateLaser(GetActorLocation(), DigGrid->GetCellFaceCenter(DigCell, DigSide));
+
+	if (DigGrid->ApplyTerrainDamage(DigCell, DeltaSeconds * GetMiningSpeed(), ERRTerrainDamageSource::Drone))
+	{
+		SetState(ERRDroneState::Orbit);
+	}
+}
+
 FVector ARRDrone::ComputeOrbitPoint() const
 {
 	const FVector MinerLocation = OwnerMiner->GetActorLocation();
@@ -103,4 +211,60 @@ FVector ARRDrone::ComputeOrbitPoint() const
 	FMath::SinCos(&Sin, &Cos, OrbitAngle);
 
 	return FVector(MinerLocation.X + Cos * OrbitRadius, MinerLocation.Y + Sin * OrbitRadius, FloorZ + HoverHeight);
+}
+
+FVector ARRDrone::ComputeDigHoverPoint() const
+{
+	const FVector MinerLocation = OwnerMiner->GetActorLocation();
+	const double FloorZ = MinerLocation.Z - OwnerMiner->GetCapsuleComponent()->GetScaledCapsuleHalfHeight();
+
+	// Outward normal of the cut face, in world space: from the block center to the face center.
+	const FVector FaceCenter = DigGrid->GetCellFaceCenter(DigCell, DigSide);
+	const FVector BlockCenter = DigGrid->GetCellCenter(DigCell.X, DigCell.Y);
+	const FVector FaceNormal = (FaceCenter - BlockCenter).GetSafeNormal2D();
+
+	const FVector HoverPoint = FaceCenter + FaceNormal * DigHoverDistance;
+	return FVector(HoverPoint.X, HoverPoint.Y, FloorZ + HoverHeight);
+}
+
+void ARRDrone::StopDig()
+{
+	if (IsValid(DigGrid))
+	{
+		DigGrid->SetCellShaking(DigCell, false);
+	}
+
+	LaserMesh->SetVisibility(false);
+	DigGrid = nullptr;
+	DigCell = FIntPoint(-1, -1);
+	DigSide = FIntPoint(0, 0);
+
+	// Resume the orbit from where the drone is, so it does not cut across the miner.
+	if (IsValid(OwnerMiner))
+	{
+		const FVector FromMiner = GetActorLocation() - OwnerMiner->GetActorLocation();
+		if (FromMiner.SizeSquared2D() > UE_KINDA_SMALL_NUMBER)
+		{
+			OrbitAngle = FMath::Fmod(FMath::Atan2(FromMiner.Y, FromMiner.X) + UE_TWO_PI, UE_TWO_PI);
+		}
+	}
+}
+
+void ARRDrone::UpdateLaser(const FVector& Start, const FVector& End)
+{
+	const FVector Beam = End - Start;
+	const double Length = Beam.Size();
+	if (Length <= UE_KINDA_SMALL_NUMBER)
+	{
+		LaserMesh->SetVisibility(false);
+		return;
+	}
+
+	// The cylinder is centered on its pivot and runs along local Z.
+	const double WidthScale = LaserDiameter / FMath::Max(LaserMeshBaseDiameter, UE_KINDA_SMALL_NUMBER);
+	const double LengthScale = Length / FMath::Max(LaserMeshBaseHeight, UE_KINDA_SMALL_NUMBER);
+	const FRotator Rotation = FRotationMatrix::MakeFromZ(Beam / Length).Rotator();
+
+	LaserMesh->SetWorldTransform(FTransform(Rotation, Start + Beam * 0.5, FVector(WidthScale, WidthScale, LengthScale)));
+	LaserMesh->SetVisibility(true);
 }

@@ -5,6 +5,7 @@
 #include "Camera/CameraComponent.h"
 #include "Drone/RRDrone.h"
 #include "Engine/World.h"
+#include "EngineUtils.h"
 #include "Components/CapsuleComponent.h"
 #include "GameFramework/CharacterMovementComponent.h"
 #include "GameFramework/PlayerController.h"
@@ -14,6 +15,7 @@
 #include "GAS/RRHealthAttributeSet.h"
 #include "GAS/RRMovementAttributeSet.h"
 #include "GAS/RRPlayerAttributeSet.h"
+#include "Grid/RRArenaGrid.h"
 #include "RogueRigs.h"
 
 ARRMiner::ARRMiner(const FObjectInitializer& ObjectInitializer)
@@ -94,6 +96,17 @@ void ARRMiner::BeginPlay()
 	ApplyMoveSpeed(MovementSet->GetMoveSpeed());
 
 	SpawnDrone();
+	FindArenaGrid();
+}
+
+void ARRMiner::FindArenaGrid()
+{
+	TActorIterator<ARRArenaGrid> It(GetWorld());
+	ArenaGrid = It ? *It : nullptr;
+	if (!ArenaGrid)
+	{
+		UE_LOG(LogRogueRigs, Warning, TEXT("%s: no ARRArenaGrid in the world; digging is disabled."), *GetName());
+	}
 }
 
 void ARRMiner::SpawnDrone()
@@ -166,8 +179,9 @@ FVector ARRMiner::ScreenInputToWorld(const FVector2D& Input) const
 
 void ARRMiner::ApplyMoveInput(const FVector2D& Input)
 {
-	const FVector WorldInput = ScreenInputToWorld(Input);
-	AddMovementInput(WorldInput.GetClampedToMaxSize(1.f));
+	const FVector WorldInput = ScreenInputToWorld(Input).GetClampedToMaxSize(1.f);
+	PendingMoveInput = WorldInput;
+	AddMovementInput(WorldInput);
 }
 
 void ARRMiner::ApplyStickAimInput(const FVector2D& Input)
@@ -228,4 +242,53 @@ void ARRMiner::Tick(float DeltaSeconds)
 	const FRotator CurrentRotation = GetActorRotation();
 	const FRotator TargetRotation(CurrentRotation.Pitch, AimDirection.Rotation().Yaw, CurrentRotation.Roll);
 	SetActorRotation(FMath::RInterpTo(CurrentRotation, TargetRotation, DeltaSeconds, AimRotationInterpSpeed));
+
+	// Move input arrives before the pawn ticks (the controller ticks first); consume the value of this frame.
+	const FVector MoveInput = PendingMoveInput;
+	PendingMoveInput = FVector::ZeroVector;
+	if (MoveInput.Size2D() > DigMinMoveInput)
+	{
+		UpdateDigTrigger(MoveInput);
+	}
+}
+
+void ARRMiner::UpdateDigTrigger(const FVector& MoveDirection)
+{
+	if (!IsValid(ArenaGrid) || !IsValid(Drone))
+	{
+		return;
+	}
+
+	// Dominant axis of the move direction in grid space: a diagonal push picks one neighbour.
+	const FVector GridDirection = ArenaGrid->GetActorTransform().InverseTransformVectorNoScale(MoveDirection);
+	FIntPoint Step(0, 0);
+	if (FMath::Abs(GridDirection.X) >= FMath::Abs(GridDirection.Y))
+	{
+		Step.X = GridDirection.X >= 0.0 ? 1 : -1;
+	}
+	else
+	{
+		Step.Y = GridDirection.Y >= 0.0 ? 1 : -1;
+	}
+
+	const FIntPoint MinerCell = ArenaGrid->GetCellAtWorld(GetActorLocation());
+	const FIntPoint TargetCell = MinerCell + Step;
+	if (!ArenaGrid->IsBlockCell(TargetCell))
+	{
+		return;
+	}
+
+	// Distance from the miner to the block face that looks back at it, measured along the push axis.
+	const FIntPoint MinerSide(-Step.X, -Step.Y);
+	const FVector FaceCenter = ArenaGrid->GetCellFaceCenter(TargetCell, MinerSide);
+	const FVector BlockCenter = ArenaGrid->GetCellCenter(TargetCell.X, TargetCell.Y);
+	const FVector TowardBlock = (BlockCenter - FaceCenter).GetSafeNormal2D();
+	const double DistanceToFace = FVector::DotProduct(FaceCenter - GetActorLocation(), TowardBlock);
+	const double Reach = GetCapsuleComponent()->GetScaledCapsuleRadius() + DigReachMargin;
+	if (DistanceToFace > Reach)
+	{
+		return;
+	}
+
+	Drone->RequestDig(ArenaGrid, TargetCell, MinerSide);
 }

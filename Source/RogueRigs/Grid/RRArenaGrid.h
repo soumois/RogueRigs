@@ -95,6 +95,22 @@ public:
 	UFUNCTION(BlueprintPure, Category = "Grid")
 	FIntPoint GetCellAtWorld(FVector WorldLocation) const;
 
+	/**
+	 * World-space center of the vertical face of the block in Cell that looks toward the neighbour Cell + Side,
+	 * at half the block height above the floor top. Side is a unit grid step: (1, 0), (-1, 0), (0, 1) or (0, -1)
+	 * (other values are reduced to their dominant axis). Does not check that Cell holds a block.
+	 */
+	UFUNCTION(BlueprintPure, Category = "Grid")
+	FVector GetCellFaceCenter(FIntPoint Cell, FIntPoint Side) const;
+
+	/** Edge length of one cell in uu. */
+	UFUNCTION(BlueprintPure, Category = "Grid")
+	float GetCellSize() const { return CellSize; }
+
+	/** Height of a block above the floor top in uu. */
+	UFUNCTION(BlueprintPure, Category = "Grid")
+	float GetBlockHeight() const { return BlockHeight; }
+
 	/** Spawn cell read from the layout; (-1, -1) when no layout is loaded or it has no spawn. */
 	UFUNCTION(BlueprintPure, Category = "Grid")
 	FIntPoint GetSpawnCell() const;

@@ -426,6 +426,23 @@ FIntPoint ARRArenaGrid::GetCellAtWorld(FVector WorldLocation) const
 	return FIntPoint(FMath::FloorToInt32(Local.X / CellSize), FMath::FloorToInt32(Local.Y / CellSize));
 }
 
+FVector ARRArenaGrid::GetCellFaceCenter(FIntPoint Cell, FIntPoint Side) const
+{
+	// Reduce Side to one unit step along its dominant axis.
+	FIntPoint Step(0, 0);
+	if (FMath::Abs(Side.X) >= FMath::Abs(Side.Y))
+	{
+		Step.X = FMath::Sign(Side.X);
+	}
+	else
+	{
+		Step.Y = FMath::Sign(Side.Y);
+	}
+
+	const FVector LocalFace((Cell.X + 0.5f + 0.5f * Step.X) * CellSize, (Cell.Y + 0.5f + 0.5f * Step.Y) * CellSize, 0.5f * BlockHeight);
+	return GetActorTransform().TransformPosition(LocalFace);
+}
+
 FIntPoint ARRArenaGrid::GetSpawnCell() const
 {
 	return SpawnCell;
