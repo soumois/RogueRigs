@@ -3,7 +3,7 @@ id: task-003-03-project-name
 description: "Rename the project display name from the template's Top Down Game Template to Rogue Rigs in DefaultGame.ini."
 parent: task-003-arena-80-paths
 kind: task
-status: in-progress
+status: done
 ---
 # Project name
 
@@ -16,7 +16,7 @@ status: in-progress
 - editor_state: any
 - token_ceiling: 10000
 - milestone: M1
-- result: open
+- result: `ProjectName=Rogue Rigs`, CRLF kept, only that line changed. Left: two ActiveGameNameRedirects (TP_TopDown → RogueRigs) kept on purpose. About 15k tokens.
 
 ## Relations
 - [[task-003-arena-80-paths]] — parent global task.
