@@ -16,3 +16,5 @@ One global task per owner request (template `task-global.md`, id `task-<number>-
 - [[task-003-arena-80-paths]] — M1 arena 80 × 80 as a path network, map follow-ups, project rename. Status done.
 - [[task-004-miner-gas]] — GAS enabled, C++ miner with ASC and CSV base stats replacing the TwinStick pawn. Status done.
 - [[task-005-drone-orbit]] — drone actor circling the miner (grey-box sphere). Status done.
+- [[task-006-dig]] — the drone digs pushed blocks (red laser, shake, drops, pickups) and the floor flicker fix. Status in-progress.
+- [[task-007-burst-rifle-dummy]] — burst rifle with GAS damage and an immobile target dummy. Status todo, confirmed, runs after task-006.

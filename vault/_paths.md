@@ -120,6 +120,16 @@ task-004-miner-gas  reference/tasks/task-004-miner-gas.md
 task-005-01-drone-cpp  reference/tasks/task-005-drone-orbit/task-005-01-drone-cpp.md
 task-005-02-bp-drone  reference/tasks/task-005-drone-orbit/task-005-02-bp-drone.md
 task-005-drone-orbit  reference/tasks/task-005-drone-orbit.md
+task-006-01-grid-destruction  reference/tasks/task-006-dig/task-006-01-grid-destruction.md
+task-006-02-drone-dig  reference/tasks/task-006-dig/task-006-02-drone-dig.md
+task-006-03-pickups  reference/tasks/task-006-dig/task-006-03-pickups.md
+task-006-04-bp-dig  reference/tasks/task-006-dig/task-006-04-bp-dig.md
+task-006-dig  reference/tasks/task-006-dig.md
+task-007-01-weapon-autofire  reference/tasks/task-007-burst-rifle-dummy/task-007-01-weapon-autofire.md
+task-007-02-projectile-damage  reference/tasks/task-007-burst-rifle-dummy/task-007-02-projectile-damage.md
+task-007-03-target-dummy  reference/tasks/task-007-burst-rifle-dummy/task-007-03-target-dummy.md
+task-007-04-bp-rifle-dummy  reference/tasks/task-007-burst-rifle-dummy/task-007-04-bp-rifle-dummy.md
+task-007-burst-rifle-dummy  reference/tasks/task-007-burst-rifle-dummy.md
 tasks-index  reference/tasks/tasks-index.md
 tech-index  reference/tech/tech-index.md
 terrain-index  reference/gdd/terrain/terrain-index.md
