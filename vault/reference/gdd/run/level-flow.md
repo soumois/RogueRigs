@@ -16,7 +16,7 @@ status: approved
 3. **Mandatory objective.** While a console is not hacked, the alert bar is paused. Difficulty keeps rising, so the player cannot farm XP indefinitely.
 4. **Extraction.** When the bar is full and no mandatory objective is pending, the shuttle lands: [[extraction]].
 
-Throughout the level, robot waves spawn and killed robots drop XP cubes ([[xp-level-up]]).
+Throughout the level, robot waves spawn just outside the miner's field of view, and killed robots drop XP cubes ([[xp-level-up]]).
 
 ## Open values
 - Draw weights and conditions of tier events. Events are drawn from a pool with conditions; swarms are the most frequent; at least one console per level.

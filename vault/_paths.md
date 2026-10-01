@@ -11,6 +11,7 @@ directory you are reading (cross-branch jump). This is resolution, not search: y
 must already hold the id from a `## Relations` gloss. Do not read it to find a topic.
 
 ```
+agent-level-design  reference/agents/agent-level-design.md
 agent-orchestrator  reference/agents/agent-orchestrator.md
 agents-index  reference/agents/agents-index.md
 arena-grid  reference/gdd/terrain/arena-grid.md
@@ -45,6 +46,7 @@ gas-scope  reference/production/gas-scope.md
 gdd-index  reference/gdd/gdd-index.md
 heal-ore  reference/gdd/terrain/heal-ore.md
 level-flow  reference/gdd/run/level-flow.md
+level-layout-schema  reference/tech/pipelines/level-layout-schema.md
 lore  reference/gdd/lore.md
 milestones  reference/production/milestones.md
 miner  reference/gdd/player/miner.md

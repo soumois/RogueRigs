@@ -9,5 +9,6 @@ kind: note
 ## Relations
 - [[tech-index]] — parent index.
 - [[asset-pipeline]] — image, 3D generation, cleanup, rigid-part split.
+- [[level-layout-schema]] — layout JSON format, brief format, validator. Read before writing or loading a layout.
 - [[run-log-schema]] — what each run log records, for the balance agent.
 - [[build-toolchain]] — engine, compiler, plugins, regenerating project files.
