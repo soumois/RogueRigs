@@ -3,7 +3,7 @@ id: task-002-05-verify-pie
 description: "Check the cleaned project in the editor: L_ArenaM1 opens without errors, shows the new layout, and BP_TwinStickCharacter spawns and moves in PIE."
 parent: task-002-cleanup-twinstick
 kind: task
-status: in-progress
+status: done
 ---
 # Verify in the editor and PIE
 
@@ -16,7 +16,7 @@ status: in-progress
 - editor_state: open
 - token_ceiling: 40000
 - milestone: M1
-- result: open
+- result: editor starts on L_ArenaM1; HISM floor 2231, rock 1346, heal ore 8, others 0; no missing asset or class in the log; PIE spawns BP_TwinStickCharacter_C at (6100, 6100, 90) with the TwinStick game mode and controller. Movement not verified: MCP `PressKey` cannot hold a key; manual test needed. Quirks added to [[unreal-mcp]]. About 45k tokens.
 
 ## Relations
 - [[task-002-cleanup-twinstick]] — parent global task.
