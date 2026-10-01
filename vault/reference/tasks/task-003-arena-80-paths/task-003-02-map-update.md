@@ -16,7 +16,7 @@ status: done
 - editor_state: open
 - token_ceiling: 40000
 - milestone: M1
-- result: grid rebuilt (floor 3729, rock 2192, heal ore 12); PlayerStart (8100, 8100, 120); SkyLight real-time capture off, intensity 0.3, no sky light error in the log; PIE spawns BP_TwinStickCharacter at (8100, 8100, 90). [[bp-arena-grid]] updated. About 40k tokens.
+- result: grid rebuilt (floor 3729, rock 2192, heal ore 12); PlayerStart (8100, 8100, 120); SkyLight real-time capture off, intensity 0.3, no sky light error in the log; PIE spawns BP_TwinStickCharacter at (8100, 8100, 90). Second attempt: the first saved only the map package, not its external actor files (fixed with save of all dirty packages). [[bp-arena-grid]] updated. About 49k tokens.
 
 ## Relations
 - [[task-003-arena-80-paths]] — parent global task.
