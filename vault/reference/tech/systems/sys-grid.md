@@ -22,7 +22,7 @@ kind: doc
 - Terrain damage arrives through a dedicated interface, outside GAS.
 - Chaos Destruction is not used.
 
-- data: level layout JSON from the Level-Design agent (M1); deterministic generator (M2). Arena 60 × 60 cells in M1. Modules Json and JsonUtilities.
+- data: level layout JSON from the Level-Design agent (M1); deterministic generator (M2). Arena size: [[arena-grid]]. Modules Json and JsonUtilities.
 - depends_on: none.
 - implements: [[arena-grid]], [[destruction-rules]], [[ore-blocks]].
 - gotchas: a missing file or parse error is logged on `LogRogueRigs` with the path and leaves the grid empty, never crashes. The layout is re-read on every construction (each editor move or edit). The layout folder must be packaged as a non-asset directory ([[level-layout-schema]]). Destroyed blocks are logged by source and type ([[run-log-schema]]).
