@@ -12,5 +12,6 @@ One node per Blueprint, template `blueprint.md`.
 - [[tech-index]] — parent index.
 - [[bp-arena-grid]] — BP_ArenaGrid doc, the M1 arena grid Blueprint.
 - [[bp-miner]] — BP_Miner, the playable miner pawn.
+- [[bp-drone]] — BP_Drone, the orbiting helper drone.
 - [[bp-rr-player-controller]] — BP_RRPlayerController, input wiring.
 - [[bp-rr-game-mode]] — BP_RRGameMode, default pawn and controller.

@@ -3,7 +3,7 @@ id: task-005-02-bp-drone
 description: "Create BP_Drone (40 uu grey-box sphere, white and teal material), assign it as the miner's drone class, and check the orbit in PIE."
 parent: task-005-drone-orbit
 kind: task
-status: in-progress
+status: done
 ---
 # BP_Drone
 
@@ -17,7 +17,7 @@ status: in-progress
 - editor_state: open
 - token_ceiling: 40000
 - milestone: M1
-- result: open
+- result: MI_GB_Drone (teal 0, 0.45, 0.45), BP_Drone (sphere scale 0.4), BP_Miner DroneClass = BP_Drone. PIE: one BP_Drone_C, reads (7950, 8100, 152) then (8175, 7970, 152), 150 uu from the miner, 150 uu above the floor. Docs bp-drone, bp-miner, [[unreal-mcp]] quirks. About 43k tokens.
 
 ## Relations
 - [[task-005-drone-orbit]] — parent global task.

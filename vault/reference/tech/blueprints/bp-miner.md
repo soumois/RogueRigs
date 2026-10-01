@@ -10,7 +10,7 @@ kind: doc
 - parent_class: ARRMiner (/Script/RogueRigs.RRMiner)
 - purpose: the playable miner pawn; visuals only, all logic in C++ ([[sys-player]]).
 - components: inherited from C++ only (capsule, mesh, character movement, spring arm, camera, ability system component, three attribute sets); none added.
-- exposed_defaults: Mesh SkeletalMeshAsset = /Game/Characters/Mannequins/Meshes/SKM_Quinn_Simple, AnimClass = ABP_Unarmed_C (mode AnimationBlueprint), relative location (0, 0, -95), rotation yaw -90; capsule half height 88, radius 34 (all copied from BP_TwinStickCharacter, untouched); all C++ defaults kept (camera pitch -50, arm 2200, FOV 75, BaseStatsRowName Miner).
+- exposed_defaults: DroneClass = BP_Drone_C ([[bp-drone]]); Mesh SkeletalMeshAsset = /Game/Characters/Mannequins/Meshes/SKM_Quinn_Simple, AnimClass = ABP_Unarmed_C (mode AnimationBlueprint), relative location (0, 0, -95), rotation yaw -90; capsule half height 88, radius 34 (all copied from BP_TwinStickCharacter, untouched); all C++ defaults kept (camera pitch -50, arm 2200, FOV 75, BaseStatsRowName Miner).
 - events: none.
 - logic_in_bp: none
 - assets: SKM_Quinn_Simple and ABP_Unarmed from the template mannequins.
@@ -21,3 +21,4 @@ kind: doc
 - [[blueprints-index]] — parent index.
 - [[sys-player]] — the C++ class it derives from.
 - [[bp-rr-game-mode]] — default pawn of this game mode.
+- [[bp-drone]] — the drone Blueprint set as its `DroneClass`.

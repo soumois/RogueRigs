@@ -25,6 +25,9 @@ Named in Epic's documentation: `ActorTools`, `SceneTools`, `MaterialInstanceTool
 - Quirks (task-002-02): `execute_tool_script` needs a `run()` returning a dict with string keys. `SceneTools.find_actors` requires `name`, `tag`, `collision_channels` even when empty. `get_referencers` lists external-actor packages. `AssetTools.delete` on a content folder leaves `__ExternalActors__`/`__ExternalObjects__` (delete them in a second call). No fixup-redirectors tool: re-save referencers, or clear and reset a property to dirty them.
 - Quirks (task-002-05): `ObjectTools.get_properties` takes `properties` (list), not `property_names`. `LogsToolset.GetLogEntries` needs `pattern`. `SlateInspectorToolset.PressKey` is press+release in one event: no held key, the PIE pawn did not move (movement cannot be verified this way).
 
+- Quirks (task-004-04): no tool creates Enhanced Input assets (duplicate existing ones). `set_properties` on an array that changes size and elements at once fails: set it to `[]` first. An instanced subobject is created with `{"refPath": "/Script/Module.Class"}` (the `{"instance": ...}` form gives None). PIE subobject paths use `.` (e.g. `BP_Miner_C_0.CharMoveComp`). `compile_blueprint` returns null on success.
+- Quirks (task-005-02): object refs need the full `Pkg.Name` form (`/Game/.../M_GreyBox.M_GreyBox`; the bare package path is rejected). `BlueprintTools.create` takes `asset_type` = the parent class ref. A C++ inherited component is edited on the CDO with `get_default_object` then `set_properties` on `<CDO path>:Mesh`. `StartPIE` needs `options` (`bSimulate`, `playMode`, `warmupSeconds`). `ActorTools.get_actor_transform` reads a PIE actor.
+
 ## Limits
 - Experimental: features incomplete, APIs and formats may change.
 - Each session starts cold: the agent discovers the project one tool call at a time, so subtasks must name the exact assets and classes involved.
