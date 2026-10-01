@@ -1,6 +1,6 @@
 ---
 id: task-004-miner-gas
-description: "Global task: enable GAS and build the miner from scratch in C++ (ASC, attribute sets, CSV base stats, move and aim), replacing the TwinStick pawn on L_ArenaM1."
+description: "Global task: enable GAS and build the C++ miner from scratch (ASC, attribute sets, CSV base stats, move, aim), replacing the TwinStick pawn."
 parent: tasks-index
 kind: task
 status: in-progress
