@@ -17,7 +17,7 @@ status: provisional
 - must_not: write C++, Blueprints, assets or layout data itself; invent a value marked `open`; change a GDD spec or a `kind: rule` node without the owner's decision; start a second global task without the owner's confirmation; skip a dependency.
 - model: opus
 - token_ceiling: 20k per planning pass (provisional)
-- open: Unreal Editor executable path for launching the editor; build command line for the C++ agent.
+- editor and build commands: see [[build-toolchain]].
 
 ## Relations
 - [[agents-index]] — parent index.
