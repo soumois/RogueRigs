@@ -3,7 +3,7 @@ id: task-007-03-target-dummy
 description: "Write ARRTargetDummy: immobile test target with an ASC and health, white hit flash, debug floating damage text, refill 3 s after the last hit."
 parent: task-007-burst-rifle-dummy
 kind: task
-status: todo
+status: in-progress
 ---
 # Target dummy
 

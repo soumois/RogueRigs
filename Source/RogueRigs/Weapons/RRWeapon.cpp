@@ -3,10 +3,13 @@
 #include "Weapons/RRWeapon.h"
 
 #include "Components/SceneComponent.h"
+#include "Damage/RRGE_Damage.h"
 #include "Engine/DataTable.h"
+#include "Engine/World.h"
 #include "GAS/RRAbilitySystemComponent.h"
 #include "GAS/RRBaseStatsLoader.h"
 #include "Player/RRMiner.h"
+#include "Projectiles/RRProjectile.h"
 #include "RogueRigs.h"
 #include "Weapons/RRAutoFireComponent.h"
 #include "Weapons/RRWeaponAttributeSet.h"
@@ -29,6 +32,11 @@ ARRWeapon::ARRWeapon(const FObjectInitializer& ObjectInitializer)
 	WeaponSet = CreateDefaultSubobject<URRWeaponAttributeSet>(TEXT("WeaponSet"));
 
 	AutoFire = CreateDefaultSubobject<URRAutoFireComponent>(TEXT("AutoFire"));
+
+	Muzzle = CreateDefaultSubobject<USceneComponent>(TEXT("Muzzle"));
+	Muzzle->SetupAttachment(Root);
+
+	DamageEffectClass = URRGE_Damage::StaticClass();
 }
 
 UAbilitySystemComponent* ARRWeapon::GetAbilitySystemComponent() const
@@ -116,8 +124,55 @@ FVector ARRWeapon::GetAimDirection() const
 	return GetActorForwardVector().GetSafeNormal2D(UE_SMALL_NUMBER, FVector::ForwardVector);
 }
 
+FGameplayEffectSpecHandle ARRWeapon::MakeDamageSpec() const
+{
+	if (!DamageEffectClass)
+	{
+		return FGameplayEffectSpecHandle();
+	}
+	// MakeEffectContext adds the ASC's owner and avatar (both this weapon) as instigator and causer (sys-damage).
+	return AbilitySystemComponent->MakeOutgoingSpec(DamageEffectClass, 1.f, AbilitySystemComponent->MakeEffectContext());
+}
+
 void ARRWeapon::FireOnce()
 {
+	UWorld* World = GetWorld();
+	if (World == nullptr)
+	{
+		return;
+	}
+	if (!ProjectileClass)
+	{
+		UE_LOG(LogRogueRigs, Warning, TEXT("%s: ProjectileClass is not set; shot skipped."), *GetName());
+		return;
+	}
+	if (ProjectileSpeed <= 0.f || Range <= 0.f)
+	{
+		UE_LOG(LogRogueRigs, Warning, TEXT("%s: ProjectileSpeed %.1f or Range %.1f is not positive; shot skipped."), *GetName(), ProjectileSpeed, Range);
+		return;
+	}
+
+	const FGameplayEffectSpecHandle Spec = MakeDamageSpec();
+	if (!Spec.IsValid())
+	{
+		UE_LOG(LogRogueRigs, Warning, TEXT("%s: no damage spec (DamageEffectClass unset); the projectile will deal no damage."), *GetName());
+	}
+
+	// Flat shot: aim yaw plus a uniform spread in [-SpreadDeg, SpreadDeg].
+	const float SpreadYaw = SpreadDeg > 0.f ? FMath::FRandRange(-SpreadDeg, SpreadDeg) : 0.f;
+	const FRotator ShotRotation(0.f, GetAimDirection().Rotation().Yaw + SpreadYaw, 0.f);
+	const FTransform SpawnTransform(ShotRotation, Muzzle->GetComponentLocation());
+
+	APawn* InstigatorPawn = OwnerMiner ? static_cast<APawn*>(OwnerMiner) : GetInstigator();
+	ARRProjectile* Projectile = World->SpawnActorDeferred<ARRProjectile>(ProjectileClass, SpawnTransform, this, InstigatorPawn, ESpawnActorCollisionHandlingMethod::AlwaysSpawn);
+	if (Projectile == nullptr)
+	{
+		UE_LOG(LogRogueRigs, Error, TEXT("%s: projectile of class %s could not be spawned."), *GetName(), *ProjectileClass->GetName());
+		return;
+	}
+
+	Projectile->InitProjectile(Spec, ProjectileSpeed, Range / ProjectileSpeed);
+	Projectile->FinishSpawning(SpawnTransform);
 }
 
 void ARRWeapon::EndPlay(const EEndPlayReason::Type EndPlayReason)

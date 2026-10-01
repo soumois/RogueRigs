@@ -7,7 +7,7 @@ kind: doc
 # Weapons
 
 - responsibility: weapon lifecycle, weapon stats, how upgrades reach weapons and turrets.
-- main_classes (in `Source/RogueRigs/Weapons/`): `ARRWeapon` (abstract; own `URRAbilitySystemComponent` + `URRWeaponAttributeSet`, root scene component, `URRAutoFireComponent` [[sys-auto-fire]]; protected virtual `FireOnce()` decides what is fired, empty in the base); `URRWeaponAttributeSet` (`Damage`, `FireRate`, `ReloadSpeed`, `CritChance`, `CritDamage`, `MagazineSize`, `Ammo`; all >= 0, `Ammo` <= `MagazineSize`, lowered when `MagazineSize` drops); `FRRWeaponStatsRow`; GEs `URRGE_ConsumeAmmo` (instant, `Ammo` -1) and `URRGE_RefillAmmo` (instant, `Ammo` overridden by the target's `MagazineSize`). Weapons: burst rifle, shotgun, turret launcher.
+- main_classes (in `Source/RogueRigs/Weapons/`): `ARRWeapon` (abstract; own `URRAbilitySystemComponent` + `URRWeaponAttributeSet`, root scene component, `Muzzle` scene component under it, `URRAutoFireComponent` [[sys-auto-fire]]; protected virtual `FireOnce()` decides what is fired: by default the burst rifle shot, overridden by weapons that fire differently); `URRWeaponAttributeSet` (`Damage`, `FireRate`, `ReloadSpeed`, `CritChance`, `CritDamage`, `MagazineSize`, `Ammo`; all >= 0, `Ammo` <= `MagazineSize`, lowered when `MagazineSize` drops); `FRRWeaponStatsRow`; GEs `URRGE_ConsumeAmmo` (instant, `Ammo` -1) and `URRGE_RefillAmmo` (instant, `Ammo` overridden by the target's `MagazineSize`). Weapons: burst rifle, shotgun, turret launcher.
 
 ## Decisions
 - One ASC per weapon; upgrades routed by `Weapon.Player.*` tags (approved).
@@ -16,6 +16,7 @@ kind: doc
 - Global bonuses are broadcast to every weapon ASC, replayed on acquisition, never removed; the list of applied upgrades serves replay and debug (provisional).
 - Player-state conditions (death, level transition) are read on the player's ASC; weapon ASCs do not carry those tags (provisional).
 - 4-direction fire is a fire pattern inside `FireOnce()` (main shot + 3 weaker ones), not a projectile behavior (provisional).
+- Burst rifle `FireOnce()` (implemented in `ARRWeapon`): `MakeDamageSpec()` (editable `DamageEffectClass`, default `URRGE_Damage`, context instigator and causer = the weapon), then one editable `ProjectileClass` spawned deferred at the `Muzzle`, flat, aim yaw + uniform random in ±`SpreadDeg`, speed `ProjectileSpeed`, lifetime `Range / ProjectileSpeed`; Owner = weapon, Instigator = miner ([[sys-projectiles]]). Skipped with a warning if `ProjectileClass` is unset or `ProjectileSpeed`/`Range` <= 0. The Blueprint subclass sets `ProjectileClass`, the mesh and the `Muzzle` position.
 - Shotgun: `FireOnce()` runs a cone query, keeps enemies with a clear grid line of sight to the miner, and applies the damage spec to each one directly (one critical roll per target); no projectile.
 - Reload duration = base `ReloadTime` (CSV) / `ReloadSpeed`.
 - Turret launcher: `MagazineSize` = turret charges; placing a turret starts recharging that charge at `ReloadSpeed`, one charge at a time; no cap on active turrets.

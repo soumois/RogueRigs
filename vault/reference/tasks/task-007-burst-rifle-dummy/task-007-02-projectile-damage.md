@@ -3,7 +3,7 @@ id: task-007-02-projectile-damage
 description: "Write ARRProjectile (stops on rock, carries the damage spec), a Projectile collision channel, URRGE_Damage with a crit ExecCalc, native state tags."
 parent: task-007-burst-rifle-dummy
 kind: task
-status: in-progress
+status: done
 ---
 # Projectile and damage
 
@@ -16,7 +16,7 @@ status: in-progress
 - editor_state: closed
 - token_ceiling: 80000
 - milestone: M1
-- result: open
+- result: native tags State.Dead, State.Invulnerable, Effect.Damage.Critical (RRGameplayTags); URRDamageExecution (snapshot Damage, CritChance, CritDamage; crit adds the dynamic asset tag Effect.Damage.Critical) and URRGE_Damage (refuses Dead or Invulnerable targets); ARRProjectile (sphere on channel Projectile = GameTraceChannel1, overlaps Pawn, blocks world, ignores its owner chain; applies the spec once); ARRWeapon Muzzle, ProjectileClass, DamageEffectClass, FireOnce with spread. Ini: Projectile channel. Docs sys-projectiles, sys-damage, sys-weapons, build-toolchain. Build exit 0, tests 6/6 (orchestrator re-ran both). About 91k tokens (over ceiling).
 
 ## Relations
 - [[task-007-burst-rifle-dummy]] — parent global task.

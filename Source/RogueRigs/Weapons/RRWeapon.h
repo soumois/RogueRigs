@@ -5,10 +5,13 @@
 #include "CoreMinimal.h"
 #include "GameFramework/Actor.h"
 #include "AbilitySystemInterface.h"
+#include "GameplayEffectTypes.h"
 #include "RRWeapon.generated.h"
 
 class ARRMiner;
+class ARRProjectile;
 class UAbilitySystemComponent;
+class UGameplayEffect;
 class URRAbilitySystemComponent;
 class URRAutoFireComponent;
 class URRWeaponAttributeSet;
@@ -18,10 +21,12 @@ struct FRRWeaponStatsRow;
 /**
  * Base class of the miner's weapons (sys-weapons). Owns its URRAbilitySystemComponent (owner and avatar: the
  * weapon) with URRWeaponAttributeSet, and a URRAutoFireComponent that decides when to fire; FireOnce decides
- * what is fired (empty here, overridden per weapon). Acquisition (Acquire, called by the miner after spawn and
+ * what is fired (default: one ProjectileClass from the Muzzle carrying a DamageEffectClass spec, with yaw
+ * spread; overridden by weapons that fire differently). Acquisition (Acquire, called by the miner after spawn and
  * attach): InitAbilityActorInfo(weapon, weapon), base values from row StatsRowName of WeaponStats.csv, magazine
  * filled, auto-fire configured and started. Upgrade replay and the player registry are not implemented yet.
- * Aim comes from the owning miner's GetAimDirection. Subclass in Blueprint for the mesh and the stats row.
+ * Aim comes from the owning miner's GetAimDirection. Subclass in Blueprint for the mesh, the muzzle position,
+ * the projectile class and the stats row.
  */
 UCLASS(Abstract)
 class ROGUERIGS_API ARRWeapon : public AActor, public IAbilitySystemInterface
@@ -90,8 +95,17 @@ protected:
 	/** Stops the auto-fire. */
 	virtual void EndPlay(const EEndPlayReason::Type EndPlayReason) override;
 
-	/** Fires one bullet (or one pattern) toward GetAimDirection. Called by the auto-fire for each shot. Empty here. */
+	/**
+	 * Fires one shot, called by the auto-fire for each bullet. Default (burst rifle): makes a DamageEffectClass spec
+	 * on the weapon's ASC, spawns one ProjectileClass at the Muzzle, flat, toward GetAimDirection rotated by a random
+	 * yaw in [-SpreadDeg, SpreadDeg], with speed ProjectileSpeed and lifetime Range / ProjectileSpeed (Owner: this
+	 * weapon, Instigator: the miner). Logged and skipped if ProjectileClass is unset or ProjectileSpeed or Range is <= 0.
+	 * Weapons that fire differently (shotgun) override it.
+	 */
 	virtual void FireOnce();
+
+	/** Makes the outgoing DamageEffectClass spec on the weapon's ASC (context instigator and causer: this weapon). */
+	FGameplayEffectSpecHandle MakeDamageSpec() const;
 
 	/** Loads row StatsRowName of WeaponStats.csv into OutRow. Returns false (logged) if the file or row is missing. */
 	bool LoadStatsRow(FRRWeaponStatsRow& OutRow) const;
@@ -114,6 +128,18 @@ protected:
 	/** Decides when to fire (burst timing, magazine, reload). */
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Components")
 	TObjectPtr<URRAutoFireComponent> AutoFire;
+
+	/** Spawn point of the projectiles, under Root. Its relative location is set in the Blueprint subclass (barrel tip). */
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Components")
+	TObjectPtr<USceneComponent> Muzzle;
+
+	/** Projectile spawned by FireOnce. Must be set by the Blueprint subclass (a Blueprint of ARRProjectile). */
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Weapon|Projectile")
+	TSubclassOf<ARRProjectile> ProjectileClass;
+
+	/** Damage effect carried by each projectile. Defaults to URRGE_Damage. */
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Weapon|Projectile")
+	TSubclassOf<UGameplayEffect> DamageEffectClass;
 
 	/** Row of WeaponStats.csv applied at acquisition (e.g. BurstRifle). Must be set by the Blueprint subclass. */
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Weapon|Stats")
