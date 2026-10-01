@@ -3,7 +3,7 @@ id: task-001-03-arena-grid-cpp
 description: "Implement ARRArenaGrid: load a layout JSON by name and build floor and block instances with HISM in OnConstruction."
 parent: task-001-arena-m1
 kind: task
-status: in-progress
+status: done
 ---
 # C++: ARRArenaGrid
 
@@ -16,7 +16,7 @@ status: in-progress
 - editor_state: closed
 - token_ceiling: 80000
 - milestone: M1
-- result: open
+- result: `ARRArenaGrid` (Source/RogueRigs/Grid) + `ERRCellType`; six HISMs, floor per non-void cell, blocks on top, getters `GetCellCenter`, `GetSpawnCell`, `GetCellType`; Build.cs adds Json, JsonUtilities; [[sys-grid]] updated. Build exit 0 (orchestrator re-ran it). Note: from Git Bash, Build.bat runs only through PowerShell. About 53k tokens.
 
 ## Relations
 - [[task-001-arena-m1]] — parent global task.

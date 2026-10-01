@@ -3,7 +3,7 @@ id: task-001-04-greybox-materials
 description: "Create the grey-box base material with a color parameter and one material instance per arena type, after the color code."
 parent: task-001-arena-m1
 kind: task
-status: todo
+status: in-progress
 ---
 # Grey-box materials
 
