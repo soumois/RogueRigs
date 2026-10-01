@@ -3,7 +3,7 @@ id: task-002-cleanup-twinstick
 description: "Global task: remove the TopDown and Strategy template code and content, play the M1 arena with the TwinStick character, rock coverage 60 percent."
 parent: tasks-index
 kind: task
-status: review
+status: done
 ---
 # Project cleanup, TwinStick character, denser arena
 
@@ -13,8 +13,8 @@ status: review
 - gdd_check: read [[miner]] (moves freely, aims with mouse or right stick: matches TwinStick), [[build-toolchain]] (TwinStick is the base, Strategy to delete), [[sys-grid]] (HISM kept, owner confirmed). No conflict. Rock coverage 60 % of the asteroid: owner decision, replaces the 40 % of task-001.
 - confirmed_by_owner: yes
 - milestone: M1
-- next_step: none (owner: manual movement test in PIE)
-- result: acceptance 1, 2, 3, 4, 6 passed; 5 partly: the TwinStick character spawns on the spawn cell, movement with keys awaits a manual owner test (MCP cannot hold a key). Five subtasks done, about 340k tokens. Left for the owner: `ProjectName=Top Down Game Template` in DefaultGame.ini.
+- next_step: none
+- result: all acceptance checks passed. The TwinStick character spawns on the spawn cell; movement with keys confirmed by the owner in PIE (2026-10-01); speed to be driven by a GAS attribute once the ASC is on the player. Five subtasks done, about 340k tokens. Project name rename moved to task-003.
 
 ## Subtasks
 1. task-002-01-twinstick-defaults — bp: `L_ArenaM1` and project defaults use `BP_TwinStickGameMode`; startup maps = `L_ArenaM1`.

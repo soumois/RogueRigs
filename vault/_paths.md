@@ -101,6 +101,10 @@ task-002-03-layout-rock-60  reference/tasks/task-002-cleanup-twinstick/task-002-
 task-002-04-delete-template-cpp  reference/tasks/task-002-cleanup-twinstick/task-002-04-delete-template-cpp.md
 task-002-05-verify-pie  reference/tasks/task-002-cleanup-twinstick/task-002-05-verify-pie.md
 task-002-cleanup-twinstick  reference/tasks/task-002-cleanup-twinstick.md
+task-003-01-layout-80-paths  reference/tasks/task-003-arena-80-paths/task-003-01-layout-80-paths.md
+task-003-02-map-update  reference/tasks/task-003-arena-80-paths/task-003-02-map-update.md
+task-003-03-project-name  reference/tasks/task-003-arena-80-paths/task-003-03-project-name.md
+task-003-arena-80-paths  reference/tasks/task-003-arena-80-paths.md
 tasks-index  reference/tasks/tasks-index.md
 tech-index  reference/tech/tech-index.md
 terrain-index  reference/gdd/terrain/terrain-index.md
