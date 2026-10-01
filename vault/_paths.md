@@ -11,6 +11,7 @@ directory you are reading (cross-branch jump). This is resolution, not search: y
 must already hold the id from a `## Relations` gloss. Do not read it to find a topic.
 
 ```
+agent-cpp  reference/agents/agent-cpp.md
 agent-level-design  reference/agents/agent-level-design.md
 agent-orchestrator  reference/agents/agent-orchestrator.md
 agents-index  reference/agents/agents-index.md
@@ -26,6 +27,7 @@ color-code  reference/gdd/art-audio/color-code.md
 conventions-index  reference/tech/conventions/conventions-index.md
 course-index  reference/course/course-index.md
 cpp-bp-split  reference/tech/conventions/cpp-bp-split.md
+cpp-standard  reference/tech/conventions/cpp-standard.md
 damage-numbers  reference/gdd/weapons/damage-numbers.md
 destruction-rules  reference/gdd/terrain/destruction-rules.md
 dialogue-tone  reference/gdd/art-audio/dialogue-tone.md
