@@ -3,7 +3,7 @@ id: task-003-02-map-update
 description: "Update L_ArenaM1 for the 80 x 80 layout: PlayerStart on the new spawn, sky light without real-time capture, counts and PIE check."
 parent: task-003-arena-80-paths
 kind: task
-status: todo
+status: in-progress
 ---
 # Map L_ArenaM1 for the 80 × 80 layout
 

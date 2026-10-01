@@ -3,7 +3,7 @@ id: task-003-01-layout-80-paths
 description: "Rewrite arena_m1 at 80 x 80: organic winding paths walled by rock across the asteroid, hidden pockets to dig into, 60 percent rock."
 parent: task-003-arena-80-paths
 kind: task
-status: in-progress
+status: done
 ---
 # Layout: arena_m1 80 × 80, organic paths
 
@@ -16,7 +16,7 @@ status: in-progress
 - editor_state: any
 - token_ceiling: 30000
 - milestone: M1
-- result: open
+- result: arena_m1 80 × 80: 3729 asteroid cells, rock 2192 + heal ore 12 (59.1 %), spawn (40, 40), reachable floor 85.8 %, 7 hidden floor regions (17 to 48 cells) 1 to 3 cells behind rock; orchestrator measured straight outline edge 6, one piece, max distance to floor 5. Longest straight path about 12 cells (target about 8). About 37k tokens.
 
 ## Relations
 - [[task-003-arena-80-paths]] — parent global task.
