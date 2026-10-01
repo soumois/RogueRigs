@@ -16,7 +16,7 @@ status: in-progress
 - editor_state: closed
 - token_ceiling: 100000
 - milestone: M1
-- result: open
+- result: (partial, usage limit) 11 of 12 headless tests pass: BurstTiming, MagazineReload, ProjectileStopsOnRock, ProjectileDamagesDummy (10, crit 15), DummyRefill, 6 Dig tests. Failing: Weapons.MinerStartingWeapon, muzzle at 130 uu above the floor (blocks are 100 uu), because the rifle snaps to socket hand_r and points up. Next: a bp fix (attach without socket rotation or a dedicated socket, muzzle below 100 uu), then rerun the tests. Test code uncommitted until then is committed here as work in progress.
 
 ## Relations
 - [[task-007-burst-rifle-dummy]] — parent global task.

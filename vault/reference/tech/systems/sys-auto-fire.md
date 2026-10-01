@@ -34,3 +34,4 @@ kind: doc
 
 ## Relations
 - [[systems-index]] — parent index.
+- [[sys-automation-tests]] — RogueRigs.Weapons.BurstTiming and MagazineReload prove these rules.

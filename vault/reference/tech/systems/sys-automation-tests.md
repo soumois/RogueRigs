@@ -1,25 +1,26 @@
 ---
 id: sys-automation-tests
-description: "C++ automation tests as built: RogueRigs.Dig.* (grid damage, drops, radius destruction, drone dig and cancel, pickup collection), test world harness, headless run, gotchas."
+description: "C++ automation tests as built: RogueRigs.Dig.* (terrain, drops, drone, pickups) and RogueRigs.Weapons.* (burst timing, reload, projectiles, damage, dummy), harness, gotchas."
 parent: systems-index
 kind: doc
 ---
 # Automation tests
 
-- responsibility: prove gameplay rules headless, where MCP cannot drive PIE input. Currently the dig rules (task-006-05).
-- main_classes: `Source/RogueRigs/Tests/RRDigTests.cpp` (all code inside `WITH_DEV_AUTOMATION_TESTS`; simple tests, flags `EditorContext | EngineFilter`). `URRTestEventRecorder` (`Tests/RRTestEventRecorder.h`): UObject with UFunctions bound to `ARRMiner::OnPickupCollected` and `ARRArenaGrid::OnCellDestroyed`; a UCLASS, so compiled in every configuration (UHT rejects the automation guard), never used by gameplay.
-- harness: per test, a transient Game `UWorld` (no game mode: `AWorldSettings::NotifyBeginPlay` dispatches BeginPlay) with `BP_ArenaGrid` at the origin and, when needed, `BP_Miner` on (42, 38) (spawns `BP_Drone`), ticked manually at 1/60 s. Protected state is read through pointers to members formed in a never-instantiated derived struct.
+- responsibility: prove gameplay rules headless, where MCP cannot drive PIE input: dig rules (task-006-05), weapon and damage rules (task-007-05).
+- main_classes (`Source/RogueRigs/Tests/`, code inside `WITH_DEV_AUTOMATION_TESTS`, simple tests, flags `EditorContext | EngineFilter`): `RRTestHarness.h` (namespace `RRTestHarness`: `FTestWorld`, `LoadTestClass`, `SpawnGrid`, `SpawnMiner`, `FrameSeconds`, cells (43, 38) rock and (42, 38) floor); `RRDigTests.cpp`; `RRWeaponTests.cpp`; `URRTestEventRecorder` (UCLASS, so in every configuration; never used by gameplay): UFunctions for `OnPickupCollected`, `OnCellDestroyed`, auto-fire `OnShotFired` / `OnReloadStarted` / `OnReloadFinished` (samples `Ammo` of a set ASC), `OnProjectileStop`.
+- harness: per test, a transient Game `UWorld` (no game mode: `AWorldSettings::NotifyBeginPlay` dispatches BeginPlay), `BP_ArenaGrid` at the origin, `BP_Miner`, `BP_BurstRifle` (acquired without miner: aim = +X), `BP_TargetDummy` (lifted so its bounds rest on the floor), ticked at 1/60 s. Protected members read via pointer-to-member in never-instantiated derived structs.
 - entry_points (tests):
-  - `RogueRigs.Dig.RockDestroy`: `ApplyTerrainDamage(dt)` per frame on rock (43, 38) destroys it at frame 90 (1.5 s); rock HISM −1, floor HISM +1, every instance maps back to its cell (index, type, position), `OnCellDestroyed` once, no drop.
-  - `RogueRigs.Dig.HealOreDrops`: heal ore (49, 45) drops at frames 90 and 180, is destroyed at 270 (4.5 s) with 3 drops, 5 `BP_PickupHeal` in total.
-  - `RogueRigs.Dig.DestroyCellsInRadius`: every block within 2.5 cells of a point near (49, 45) destroyed (8), all others standing, destruction drops spawned, maps consistent.
-  - `RogueRigs.Dig.DroneDig`: `RequestDig(grid, (43, 38), (−1, 0))` → Dig, block shaking; destroyed at frame 90; back to Orbit, no shaking cell, grid tick off, laser hidden.
-  - `RogueRigs.Dig.DroneDigCancel`: after 0.5 s of dig, moving the miner 2 cells west cancels on the next tick; damage kept (health 1.0), none added afterwards.
-  - `RogueRigs.Dig.PickupCollect`: a player controller (no local player) possesses the miner so player 0 lookup works; a pickup 100 uu away is collected (`OnPickupCollected` Heal, frame 23), one beyond `PickupRadius` is not.
-- data: `arena_m1` layout, `PlayerBaseStats.csv`, the Blueprint classes above. Headless command in [[build-toolchain]].
-- depends_on: [[sys-grid]], [[sys-drone]], [[sys-pickups]], [[sys-player]].
-- implements: none (verification of [[ore-blocks]], [[heal-ore]], [[drone]]).
-- gotchas: the tick task manager runs a tick function once per `GFrameCounter`; a synchronous test runs inside one engine frame, so the harness increments `GFrameCounter` before each `World->Tick` (without it actors tick once). Tests depend on `arena_m1` cells around (43, 38) and (49, 45).
+  - `RogueRigs.Dig.RockDestroy`, `HealOreDrops`, `DestroyCellsInRadius`, `DroneDig`, `DroneDigCancel`, `PickupCollect`: terrain damage and destruction times, ore drops, radius destruction, drone dig and cancel, pickup collection ([[sys-grid]], [[sys-drone]], [[sys-pickups]]).
+  - `RogueRigs.Weapons.BurstTiming`: `AdvanceTime` alone at 1/60 s; exact shot times and firing frame (±1) at `FireRate` 2 and 3 ([[sys-auto-fire]] example).
+  - `Weapons.MagazineReload`: shot 30 at 4.66 s, 1.5 s reload with `Ammo` 0, `Ammo` 30 at its end, shot 31 at 6.16 s.
+  - `Weapons.ProjectileStopsOnRock`: shot from (42, 38) stops on rock (43, 38) at frame 2, no damage to the rock or a dummy behind it.
+  - `Weapons.ProjectileDamagesDummy`: dummy on (44, 41), shot from (42, 41): `CritChance` 0 → −10, not critical; `CritChance` 1 → −15, critical.
+  - `Weapons.DummyRefill`: hits at 0 and 1 s, refill 180 frames after the last; a 5000 hit leaves 0 then refills at once, no `State.Dead`.
+  - `Weapons.MinerStartingWeapon`: `BP_BurstRifle` attached at `hand_r`, acquired, firing; muzzle must sit between floor and block top. Fails: 130 uu ([[bp-burst-rifle]]).
+- data: `arena_m1` layout, `PlayerBaseStats.csv`, `WeaponStats.csv`, the Blueprint classes above. Headless command in [[build-toolchain]].
+- depends_on: [[sys-grid]], [[sys-drone]], [[sys-pickups]], [[sys-player]], [[sys-weapons]], [[sys-auto-fire]], [[sys-projectiles]], [[sys-damage]], [[sys-target-dummy]].
+- implements: none (verification).
+- gotchas: the tick task manager runs a tick function once per `GFrameCounter`; `FTestWorld::Tick` increments it before each `World->Tick` (without it actors tick once). Timing tests call `AdvanceTime` without ticking the world. Tests depend on `arena_m1` cells (42–44, 38), (42–44, 41), (49, 45).
 
 ## Relations
 - [[systems-index]] — parent index.
@@ -27,3 +28,5 @@ kind: doc
 - [[sys-grid]] — the terrain rules tested.
 - [[sys-drone]] — the dig state machine tested.
 - [[sys-pickups]] — the drop and collection rules tested.
+- [[sys-auto-fire]] — the burst and reload rules tested.
+- [[sys-target-dummy]] — the dummy rules tested.

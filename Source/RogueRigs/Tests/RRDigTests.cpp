@@ -19,21 +19,18 @@
 #include "Pickups/RRPickup.h"
 #include "Player/RRMiner.h"
 #include "Tests/RRTestEventRecorder.h"
+#include "Tests/RRTestHarness.h"
 #include "UObject/StrongObjectPtr.h"
 
 namespace RRDigTests
 {
-	/** Fixed tick of every test world. */
-	constexpr float FrameSeconds = 1.f / 60.f;
+	// Test world, frame step, grid and miner spawning, RockCell and RockWestFloorCell: Tests/RRTestHarness.h.
+	using namespace RRTestHarness;
 
-	/** Blueprint classes that carry the meshes, pickup classes and drone class. */
-	const TCHAR* const ArenaGridClassPath = TEXT("/Game/RogueRigs/Blueprints/Terrain/BP_ArenaGrid.BP_ArenaGrid_C");
-	const TCHAR* const MinerClassPath = TEXT("/Game/RogueRigs/Blueprints/Player/BP_Miner.BP_Miner_C");
+	/** Blueprint class of the heal pickup. */
 	const TCHAR* const HealPickupClassPath = TEXT("/Game/RogueRigs/Blueprints/Pickups/BP_PickupHeal.BP_PickupHeal_C");
 
-	/** Cells of arena_m1 used by the tests. */
-	const FIntPoint RockCell(43, 38);
-	const FIntPoint RockWestFloorCell(42, 38);
+	/** Heal ore cell of arena_m1 used by the tests. */
 	const FIntPoint HealOreCell(49, 45);
 
 	/** Read access to protected ARRArenaGrid state, through pointers to members formed in a derived class. Never instantiated. */
@@ -68,93 +65,6 @@ namespace RRDigTests
 	{
 		static const UStaticMeshComponent* Laser(const ARRDrone* Drone) { return Drone->*(&FDroneAccess::LaserMesh); }
 	};
-
-	/** Transient game world ticked manually: actors begin play on spawn, no game mode, no local player. Destroyed with the scope. */
-	class FTestWorld
-	{
-	public:
-		FTestWorld()
-		{
-			World = UWorld::CreateWorld(EWorldType::Game, /*bInformEngineOfWorld*/ false, TEXT("RRDigTestWorld"));
-			FWorldContext& Context = GEngine->CreateNewWorldContext(EWorldType::Game);
-			Context.SetCurrentWorld(World);
-			World->InitializeActorsForPlay(FURL());
-			World->BeginPlay();
-			// No game mode: dispatch BeginPlay ourselves; actors spawned afterwards begin play on spawn.
-			World->GetWorldSettings()->NotifyBeginPlay();
-		}
-
-		~FTestWorld()
-		{
-			World->EndPlay(EEndPlayReason::Quit);
-			World->DestroyWorld(/*bInformEngineOfWorld*/ false);
-			GEngine->DestroyWorldContext(World);
-		}
-
-		UWorld* Get() const { return World; }
-
-		/**
-		 * Advances the world by one fixed frame. The tick task manager runs a tick function at most once per
-		 * GFrameCounter value, and a synchronous test runs inside one engine frame: advance the counter per simulated frame.
-		 */
-		void Tick() const
-		{
-			++GFrameCounter;
-			World->Tick(LEVELTICK_All, FrameSeconds);
-		}
-
-		template <typename T>
-		T* Spawn(UClass* Class, const FVector& Location) const
-		{
-			FActorSpawnParameters Params;
-			Params.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AlwaysSpawn;
-			return World->SpawnActor<T>(Class, Location, FRotator::ZeroRotator, Params);
-		}
-
-	protected:
-		UWorld* World = nullptr;
-	};
-
-	/** Loads a Blueprint class, failing the test when it is missing. */
-	template <typename T>
-	UClass* LoadTestClass(FAutomationTestBase& Test, const TCHAR* Path)
-	{
-		UClass* Class = LoadClass<T>(nullptr, Path);
-		Test.TestNotNull(FString::Printf(TEXT("class %s loads"), Path), Class);
-		return Class;
-	}
-
-	/** Spawns BP_ArenaGrid at the origin and checks it rebuilt from arena_m1 at BeginPlay. */
-	ARRArenaGrid* SpawnGrid(FAutomationTestBase& Test, const FTestWorld& TestWorld)
-	{
-		UClass* GridClass = LoadTestClass<ARRArenaGrid>(Test, ArenaGridClassPath);
-		if (!GridClass)
-		{
-			return nullptr;
-		}
-		ARRArenaGrid* Grid = TestWorld.Spawn<ARRArenaGrid>(GridClass, FVector::ZeroVector);
-		if (!Test.TestNotNull(TEXT("grid spawned"), Grid))
-		{
-			return nullptr;
-		}
-		Test.TestTrue(TEXT("grid has begun play"), Grid->HasActorBegunPlay());
-		Test.TestTrue(TEXT("grid layout loaded"), FGridAccess::Width(Grid) > 0 && FGridAccess::Height(Grid) > 0);
-		return Grid;
-	}
-
-	/** Spawns BP_Miner standing on the floor of Cell (the drone is spawned by the miner's BeginPlay). */
-	ARRMiner* SpawnMiner(FAutomationTestBase& Test, const FTestWorld& TestWorld, const ARRArenaGrid* Grid, FIntPoint Cell)
-	{
-		UClass* MinerClass = LoadTestClass<ARRMiner>(Test, MinerClassPath);
-		if (!MinerClass)
-		{
-			return nullptr;
-		}
-		const float HalfHeight = MinerClass->GetDefaultObject<ARRMiner>()->GetCapsuleComponent()->GetScaledCapsuleHalfHeight();
-		ARRMiner* Miner = TestWorld.Spawn<ARRMiner>(MinerClass, Grid->GetCellCenter(Cell.X, Cell.Y) + FVector(0.f, 0.f, HalfHeight + 2.f));
-		Test.TestNotNull(TEXT("miner spawned"), Miner);
-		return Miner;
-	}
 
 	/** Number of live pickups in the world. */
 	int32 CountPickups(UWorld* World)

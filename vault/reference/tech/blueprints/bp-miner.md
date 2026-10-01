@@ -15,7 +15,7 @@ kind: doc
 - logic_in_bp: none
 - assets: SKM_Quinn_Simple and ABP_Unarmed from the template mannequins.
 - owner_agent: agent-bp
-- weapons: StartingWeapons = [BP_BurstRifle_C], WeaponAttachSocketName = hand_r ([[bp-burst-rifle]], task-007-04; attachment not yet checked in PIE).
+- weapons: StartingWeapons = [BP_BurstRifle_C], WeaponAttachSocketName = hand_r ([[bp-burst-rifle]], task-007-04; attachment checked headless in task-007-05: attached and firing, but the muzzle ends 130 uu above the floor, see [[bp-burst-rifle]]).
 - verified: PIE on L_ArenaM1 spawns BP_Miner_C at (8100, 8100, 90.15); MaxWalkSpeed 600; Health 100, MaxHealth 100, MoveSpeed 600, MiningSpeed 1, PickupRadius 300, XPGain 1, Luck 0.
 
 ## Relations
@@ -23,3 +23,4 @@ kind: doc
 - [[sys-player]] — the C++ class it derives from.
 - [[bp-rr-game-mode]] — default pawn of this game mode.
 - [[bp-drone]] — the drone Blueprint set as its `DroneClass`.
+- [[bp-burst-rifle]] — its starting weapon.

@@ -28,3 +28,4 @@ kind: doc
 - [[systems-index]] — parent index.
 - [[sys-damage]] — the per-hit damage event the dummy listens to.
 - [[damage-numbers]] — the feedback this debug version stands in for.
+- [[sys-automation-tests]] — RogueRigs.Weapons.ProjectileDamagesDummy and DummyRefill prove its damage and refill.
