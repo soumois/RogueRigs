@@ -49,6 +49,7 @@ gas-engine-facts  reference/tech/systems/gas-engine-facts.md
 gas-scope  reference/production/gas-scope.md
 gdd-index  reference/gdd/gdd-index.md
 heal-ore  reference/gdd/terrain/heal-ore.md
+layout-generator-recipe  reference/tech/pipelines/layout-generator-recipe.md
 level-flow  reference/gdd/run/level-flow.md
 level-layout-schema  reference/tech/pipelines/level-layout-schema.md
 lore  reference/gdd/lore.md

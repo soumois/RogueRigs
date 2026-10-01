@@ -34,3 +34,4 @@ kind: doc
 - [[pipelines-index]] — parent index.
 - [[agent-level-design]] — writes layouts.
 - [[sys-grid]] — loads layouts.
+- [[layout-generator-recipe]] — how the current layout was generated.
