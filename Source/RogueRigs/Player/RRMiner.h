@@ -10,6 +10,7 @@
 
 class ARRArenaGrid;
 class ARRDrone;
+class ARRWeapon;
 class UAbilitySystemComponent;
 class UCameraComponent;
 class URRAbilitySystemComponent;
@@ -33,7 +34,9 @@ DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FRROnPickupCollectedSignature, ERRPi
  * (dominant axis of the world move direction) and that block face is within the dig reach, the miner asks the
  * drone to cut it (ARRDrone::RequestDig); the drone handles the cancel rule. The arena grid is found once at
  * BeginPlay (first ARRArenaGrid in the world). Pickups (ARRPickup) read GetPickupRadius and report their collection
- * through NotifyPickupCollected, which broadcasts OnPickupCollected; no pickup effect here. No weapon, dash or item logic.
+ * through NotifyPickupCollected, which broadcasts OnPickupCollected; no pickup effect here. Weapons: at BeginPlay each class of
+ * StartingWeapons is spawned (owner: the miner), attached to the mesh at WeaponAttachSocketName and acquired
+ * (ARRWeapon::Acquire); they are destroyed at EndPlay. No dash or item logic.
  * Subclass in Blueprint for the mesh and animation.
  */
 UCLASS(Abstract)
@@ -87,6 +90,9 @@ public:
 	UFUNCTION(BlueprintPure, Category = "Miner|Dig")
 	ARRArenaGrid* GetArenaGrid() const { return ArenaGrid; }
 
+	/** Weapons spawned from StartingWeapons, in acquisition order (failed spawns skipped). */
+	const TArray<TObjectPtr<ARRWeapon>>& GetWeapons() const { return Weapons; }
+
 	/** Current PickupRadius attribute in uu (collection radius of XP, ore and heal pickups); 0 when the attribute set is missing. */
 	UFUNCTION(BlueprintPure, Category = "Miner|Pickup")
 	float GetPickupRadius() const;
@@ -111,7 +117,7 @@ protected:
 	/** Refreshes the ASC actor info so it caches the new controller. */
 	virtual void PossessedBy(AController* NewController) override;
 
-	/** Stops listening to MoveSpeed changes and destroys the drone. */
+	/** Stops listening to MoveSpeed changes and destroys the drone and the weapons. */
 	virtual void EndPlay(const EEndPlayReason::Type EndPlayReason) override;
 
 	/** Pushes the current MoveSpeed attribute value to CharacterMovement->MaxWalkSpeed. */
@@ -122,6 +128,9 @@ protected:
 
 	/** Spawns DroneClass at the miner's location (owner and instigator: this miner) and hands it this miner. */
 	void SpawnDrone();
+
+	/** Spawns each class of StartingWeapons at the miner (owner and instigator: this miner), attaches it and calls Acquire. */
+	void SpawnStartingWeapons();
 
 	/** Projects the mouse cursor on the floor plane and aims at the hit point. Keeps the last aim if it misses. */
 	void UpdateMouseAim();
@@ -206,6 +215,18 @@ protected:
 	/** Move inputs with a length at or below this value never trigger a dig (provisional). */
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Miner|Dig", meta = (ClampMin = 0, ClampMax = 1))
 	float DigMinMoveInput = 0.1f;
+
+	/** Weapon classes spawned, attached and acquired at BeginPlay, in order (Blueprint subclasses of ARRWeapon). */
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Miner|Weapons")
+	TArray<TSubclassOf<ARRWeapon>> StartingWeapons;
+
+	/** Socket of the miner mesh the weapons attach to. None = the mesh origin (or the capsule when there is no mesh). */
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Miner|Weapons")
+	FName WeaponAttachSocketName;
+
+	/** Weapons spawned from StartingWeapons; destroyed at EndPlay. */
+	UPROPERTY(VisibleInstanceOnly, BlueprintReadOnly, Category = "Miner|Weapons")
+	TArray<TObjectPtr<ARRWeapon>> Weapons;
 
 	/** Arena grid used for the dig trigger; found once at BeginPlay. */
 	UPROPERTY(VisibleInstanceOnly, BlueprintReadOnly, Category = "Miner|Dig")

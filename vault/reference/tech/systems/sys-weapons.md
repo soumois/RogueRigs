@@ -7,11 +7,11 @@ kind: doc
 # Weapons
 
 - responsibility: weapon lifecycle, weapon stats, how upgrades reach weapons and turrets.
-- main_classes: `ARRWeapon` (`FireOnce()` decides what is fired), `URRWeaponAttributeSet`, [[sys-auto-fire]] (decides when). Weapons: burst rifle, shotgun, turret launcher.
+- main_classes (in `Source/RogueRigs/Weapons/`): `ARRWeapon` (abstract; own `URRAbilitySystemComponent` + `URRWeaponAttributeSet`, root scene component, `URRAutoFireComponent` [[sys-auto-fire]]; protected virtual `FireOnce()` decides what is fired, empty in the base); `URRWeaponAttributeSet` (`Damage`, `FireRate`, `ReloadSpeed`, `CritChance`, `CritDamage`, `MagazineSize`, `Ammo`; all >= 0, `Ammo` <= `MagazineSize`, lowered when `MagazineSize` drops); `FRRWeaponStatsRow`; GEs `URRGE_ConsumeAmmo` (instant, `Ammo` -1) and `URRGE_RefillAmmo` (instant, `Ammo` overridden by the target's `MagazineSize`). Weapons: burst rifle, shotgun, turret launcher.
 
 ## Decisions
 - One ASC per weapon; upgrades routed by `Weapon.Player.*` tags (approved).
-- Magazine and reload by GEs `ConsumeAmmo`, `Reloading`, `RefillAmmo` (approved).
+- Magazine and reload by GEs `ConsumeAmmo`, `Reloading`, `RefillAmmo` (approved). Implemented: `ConsumeAmmo`, `RefillAmmo`; the reload is a timer in [[sys-auto-fire]]; `Reloading` (duration GE + tag) waits for the tag hierarchy (open).
 - Acquisition order (provisional): spawn and attach → `InitAbilityActorInfo(weapon, weapon)` → base values from CSV (`SetNumericAttributeBase`) → replay of global upgrades → registration in the player's registry.
 - Global bonuses are broadcast to every weapon ASC, replayed on acquisition, never removed; the list of applied upgrades serves replay and debug (provisional).
 - Player-state conditions (death, level transition) are read on the player's ASC; weapon ASCs do not carry those tags (provisional).
@@ -22,9 +22,9 @@ kind: doc
 - Impact effects are weapon attributes (e.g. `StunChance`, `StunDuration`), changed by ordinary upgrade GEs; an effect is active when its attribute is above 0 (provisional).
 - Turrets: at placement, copy every attribute of the turret launcher, impact effects and `Projectile.Behavior.*` tags included (provisional). A turret's specs have the turret as instigator.
 
-- entry_points: acquisition, `FireOnce()`, upgrade application.
-- data: one CSV row per weapon (fire rate, burst, magazine…).
-- depends_on: [[sys-gas-core]], [[sys-projectiles]].
+- entry_points: `ARRWeapon::Acquire(Miner)`, called by the miner after spawn and attach ([[sys-player]]): `InitAbilityActorInfo(weapon, weapon)`, base values from CSV row `StatsRowName` (editable, set in Blueprint), magazine filled, auto-fire configured (ticks after the miner) and started if `bStartFiringOnAcquire`. Upgrade replay and player registry: not implemented. `GetAimDirection()` = owning miner's aim (weapon forward without miner). Getters for the CSV constants.
+- data: `Content/RogueRigs/Data/Tables/WeaponStats.csv`, read at runtime with `FRRBaseStatsLoader::LoadTableFromCSV`; row `BurstRifle` = [[burst-rifle]] values. Attribute columns become base values; `BurstCount`, `BurstDuty`, `ReloadTime`, `ProjectileSpeed`, `Range`, `SpreadDeg` stay constants on the weapon.
+- depends_on: [[sys-gas-core]], [[sys-projectiles]], [[sys-player]] (aim).
 - implements: [[burst-rifle]], [[shotgun]], [[turret]], [[upgrades]].
 - gotchas: `AbilitySystem.DebugAttribute FireRate Damage` shows values above each weapon actor. Turret stats are frozen by attribute copy, not by spec snapshot.
 

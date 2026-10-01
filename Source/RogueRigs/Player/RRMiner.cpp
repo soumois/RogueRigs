@@ -17,6 +17,7 @@
 #include "GAS/RRPlayerAttributeSet.h"
 #include "Grid/RRArenaGrid.h"
 #include "RogueRigs.h"
+#include "Weapons/RRWeapon.h"
 
 ARRMiner::ARRMiner(const FObjectInitializer& ObjectInitializer)
 	: Super(ObjectInitializer)
@@ -97,6 +98,7 @@ void ARRMiner::BeginPlay()
 
 	SpawnDrone();
 	FindArenaGrid();
+	SpawnStartingWeapons();
 }
 
 void ARRMiner::FindArenaGrid()
@@ -132,6 +134,37 @@ void ARRMiner::SpawnDrone()
 	Drone->SetOwnerMiner(this);
 }
 
+void ARRMiner::SpawnStartingWeapons()
+{
+	FActorSpawnParameters SpawnParameters;
+	SpawnParameters.Owner = this;
+	SpawnParameters.Instigator = this;
+	SpawnParameters.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AlwaysSpawn;
+
+	USceneComponent* AttachParent = GetMesh() ? static_cast<USceneComponent*>(GetMesh()) : GetRootComponent();
+
+	for (const TSubclassOf<ARRWeapon>& WeaponClass : StartingWeapons)
+	{
+		if (!WeaponClass)
+		{
+			UE_LOG(LogRogueRigs, Warning, TEXT("%s: empty entry in StartingWeapons skipped."), *GetName());
+			continue;
+		}
+
+		// Acquisition order (sys-weapons): spawn and attach, then Acquire (actor info, CSV base values, auto-fire).
+		ARRWeapon* Weapon = GetWorld()->SpawnActor<ARRWeapon>(WeaponClass, GetActorTransform(), SpawnParameters);
+		if (!Weapon)
+		{
+			UE_LOG(LogRogueRigs, Error, TEXT("%s: weapon of class %s could not be spawned."), *GetName(), *WeaponClass->GetName());
+			continue;
+		}
+
+		Weapon->AttachToComponent(AttachParent, FAttachmentTransformRules::SnapToTargetNotIncludingScale, WeaponAttachSocketName);
+		Weapon->Acquire(this);
+		Weapons.Add(Weapon);
+	}
+}
+
 void ARRMiner::PossessedBy(AController* NewController)
 {
 	Super::PossessedBy(NewController);
@@ -154,6 +187,15 @@ void ARRMiner::EndPlay(const EEndPlayReason::Type EndPlayReason)
 		Drone->Destroy();
 	}
 	Drone = nullptr;
+
+	for (ARRWeapon* Weapon : Weapons)
+	{
+		if (IsValid(Weapon))
+		{
+			Weapon->Destroy();
+		}
+	}
+	Weapons.Reset();
 
 	Super::EndPlay(EndPlayReason);
 }

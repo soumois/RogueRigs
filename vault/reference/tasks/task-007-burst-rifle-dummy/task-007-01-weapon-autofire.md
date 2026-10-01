@@ -3,7 +3,7 @@ id: task-007-01-weapon-autofire
 description: "Write URRWeaponAttributeSet, ARRWeapon with its own ASC and CSV stats, URRAutoFireComponent burst timing, and the miner equipping a starting weapon."
 parent: task-007-burst-rifle-dummy
 kind: task
-status: in-progress
+status: done
 ---
 # Weapon and auto-fire
 
@@ -16,7 +16,7 @@ status: in-progress
 - editor_state: closed
 - token_ceiling: 80000
 - milestone: M1
-- result: open
+- result: `Source/RogueRigs/Weapons/`: URRWeaponAttributeSet, FRRWeaponStatsRow, URRGE_ConsumeAmmo, URRGE_RefillAmmo, URRAutoFireComponent (time accumulator, `AdvanceTime` public for tests, reload replaces the post-burst pause: provisional), ARRWeapon (own ASC, `Acquire`, `StatsRowName`, empty `FireOnce`); WeaponStats.csv row BurstRifle; ARRMiner StartingWeapons. Docs sys-weapons, sys-auto-fire, sys-player, build-toolchain folder list. Build exit 0, Dig tests 6/6 (orchestrator re-ran both). About 97k tokens (over ceiling).
 
 ## Relations
 - [[task-007-burst-rifle-dummy]] — parent global task.

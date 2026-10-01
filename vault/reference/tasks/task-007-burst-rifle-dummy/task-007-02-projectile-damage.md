@@ -3,7 +3,7 @@ id: task-007-02-projectile-damage
 description: "Write ARRProjectile (stops on rock, carries the damage spec), a Projectile collision channel, URRGE_Damage with a crit ExecCalc, native state tags."
 parent: task-007-burst-rifle-dummy
 kind: task
-status: todo
+status: in-progress
 ---
 # Projectile and damage
 
