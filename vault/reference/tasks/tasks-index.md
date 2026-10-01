@@ -14,5 +14,5 @@ One global task per owner request (template `task-global.md`, id `task-<number>-
 - [[task-001-arena-m1]] — M1 arena: layout JSON, C++ grid, grey-box map visible in the editor. Status done.
 - [[task-002-cleanup-twinstick]] — delete TopDown and Strategy templates, TwinStick character on L_ArenaM1, 60 % rock layout. Status done.
 - [[task-003-arena-80-paths]] — M1 arena 80 × 80 as a path network, map follow-ups, project rename. Status done.
-- [[task-004-miner-gas]] — GAS enabled, C++ miner with ASC and CSV base stats replacing the TwinStick pawn. Status review (owner test).
+- [[task-004-miner-gas]] — GAS enabled, C++ miner with ASC and CSV base stats replacing the TwinStick pawn. Status done.
 - [[task-005-drone-orbit]] — drone actor circling the miner (grey-box sphere). Status done.

@@ -3,7 +3,7 @@ id: task-004-miner-gas
 description: "Global task: enable GAS and build the C++ miner from scratch (ASC, attribute sets, CSV base stats, move, aim), replacing the TwinStick pawn."
 parent: tasks-index
 kind: task
-status: review
+status: done
 ---
 # Miner with GAS
 
@@ -13,8 +13,8 @@ status: review
 - gdd_check: read [[miner]], [[player-stats]], [[sys-gas-core]], [[gas-scope]], [[cpp-bp-split]], [[naming]]. No dash, shot or AoE in the GDD: dropped. Weapons fire on their own with their own ASC: out of this task. Turret button: out of this task. Base stat values were open: provisional values set (owner asked to apply them; [[player-stats]]). Camera values: kept from the TwinStick template (pitch −50°, arm 2200 uu, FOV 75) as editable properties.
 - confirmed_by_owner: yes
 - milestone: M1
-- next_step: none (owner: test movement and aim by hand)
-- result: acceptance 1, 2, 3, 5, 6 passed; 4 partly: PIE shows BP_Miner on the spawn cell with MaxWalkSpeed 600 and the CSV stats on the ASC; movement and mouse aim by hand await the owner. About 255k tokens.
+- next_step: none
+- result: acceptance 1, 2, 3, 5, 6 passed; 4 partly: PIE shows BP_Miner on the spawn cell with MaxWalkSpeed 600 and the CSV stats on the ASC; movement confirmed by the owner in PIE (2026-10-01). About 255k tokens.
 
 ## Subtasks
 1. task-004-01-enable-gas — cpp: executes [[task-000-enable-gas]].
