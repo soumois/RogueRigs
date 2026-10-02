@@ -33,6 +33,8 @@ ARRTargetDummy::ARRTargetDummy(const FObjectInitializer& ObjectInitializer)
 	// Attribute sets created as default subobjects of the owner are registered by UAbilitySystemComponent::InitializeComponent.
 	AbilitySystemComponent = CreateDefaultSubobject<URRAbilitySystemComponent>(TEXT("AbilitySystemComponent"));
 	HealthSet = CreateDefaultSubobject<URRHealthAttributeSet>(TEXT("HealthSet"));
+	// The dummy never dies: no State.Dead, no OnDeath when a hit takes Health to 0 (it refills at once).
+	HealthSet->SetDeathEnabled(false);
 
 	FloatingTextClass = ARRFloatingDamageText::StaticClass();
 }

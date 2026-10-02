@@ -1,4 +1,4 @@
-// Rogue Rigs - native gameplay tags shared by every system (naming: State., Effect.Damage. roots).
+// Rogue Rigs - native gameplay tags shared by every system (naming: State., Effect.Damage., Data. roots).
 
 #pragma once
 
@@ -15,4 +15,10 @@ namespace RRGameplayTags
 
 	/** Damage kind: set as a dynamic asset tag on the executed damage spec when the hit is critical. */
 	ROGUERIGS_API UE_DECLARE_GAMEPLAY_TAG_EXTERN(Effect_Damage_Critical);
+
+	/** SetByCaller key: flat damage amount of URRGE_DamageFlat (before the source's AttackPower scaling). */
+	ROGUERIGS_API UE_DECLARE_GAMEPLAY_TAG_EXTERN(Data_Damage);
+
+	/** SetByCaller key: duration in seconds of a duration GE set by its caller (URRGE_IFrames). */
+	ROGUERIGS_API UE_DECLARE_GAMEPLAY_TAG_EXTERN(Data_Duration);
 }

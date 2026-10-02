@@ -1,13 +1,13 @@
 ---
 id: sys-automation-tests
-description: "C++ automation tests as built: RogueRigs.Dig.* (terrain, drops, drone, pickups) and RogueRigs.Weapons.* (firing, reload, projectiles, damage, dummy, miner weapon), harness, gotchas."
+description: "C++ automation tests as built: RogueRigs.Dig.* (terrain, drops, drone, pickups), RogueRigs.Weapons.* (firing, damage, dummy, miner weapon), RogueRigs.Player.* (damage, i-frames, death), harness."
 parent: systems-index
 kind: doc
 ---
 # Automation tests
 
-- responsibility: prove gameplay rules headless, where MCP cannot drive PIE input: dig rules (task-006-05), weapon and damage rules (task-007-05).
-- main_classes (`Source/RogueRigs/Tests/`, code inside `WITH_DEV_AUTOMATION_TESTS`, simple tests, flags `EditorContext | EngineFilter`): `RRTestHarness.h` (namespace `RRTestHarness`: `FTestWorld`, `LoadTestClass`, `SpawnGrid`, `SpawnMiner` (deferred: an optional hook runs before BeginPlay), `FrameSeconds`, cells (43, 38) rock and (42, 38) floor); `RRDigTests.cpp`; `RRWeaponTests.cpp`; `URRTestEventRecorder` (UCLASS, so in every configuration; never used by gameplay): UFunctions for `OnPickupCollected`, `OnCellDestroyed`, auto-fire `OnShotFired` / `OnReloadStarted` / `OnReloadFinished` (samples `Ammo` of a set ASC), `OnProjectileStop`, `OnComponentHit`.
+- responsibility: prove gameplay rules headless, where MCP cannot drive PIE input: dig rules (task-006-05), weapon and damage rules (task-007-05), player damage rules (task-009-01).
+- main_classes (`Source/RogueRigs/Tests/`, code inside `WITH_DEV_AUTOMATION_TESTS`, simple tests, flags `EditorContext | EngineFilter`): `RRTestHarness.h` (namespace `RRTestHarness`: `FTestWorld`, `LoadTestClass`, `SpawnGrid`, `SpawnMiner` (deferred: an optional hook runs before BeginPlay), `FrameSeconds`, cells (43, 38) rock and (42, 38) floor); `RRDigTests.cpp`; `RRWeaponTests.cpp`; `RRPlayerTests.cpp`; `URRTestEventRecorder` (UCLASS, so in every configuration; never used by gameplay): UFunctions for `OnPickupCollected`, `OnCellDestroyed`, auto-fire `OnShotFired` / `OnReloadStarted` / `OnReloadFinished` (samples `Ammo` of a set ASC), `OnProjectileStop`, `OnComponentHit`.
 - harness: per test, a transient Game `UWorld` (no game mode: `AWorldSettings::NotifyBeginPlay` dispatches BeginPlay), `BP_ArenaGrid` at the origin, `BP_Miner`, `BP_BurstRifle` (acquired without miner: aim = +X), `BP_TargetDummy` (lifted so its bounds rest on the floor), ticked at 1/60 s. Protected members read via pointer-to-member in never-instantiated derived structs.
 - entry_points (tests):
   - `RogueRigs.Dig.RockDestroy`, `HealOreDrops`, `DestroyCellsInRadius`, `DroneDig`, `DroneDigCancel`, `PickupCollect`: terrain damage and destruction times, ore drops, radius destruction, drone dig and cancel, pickup collection (not before pop + `AttractDelay`, read by reflection; collected after) ([[sys-grid]], [[sys-drone]], [[sys-pickups]]).
@@ -19,6 +19,7 @@ kind: doc
   - `Weapons.MinerStartingWeapon`: miner with `WeaponAttachSocketName` forced to none, walking on (42, 38): `BP_BurstRifle` on the capsule at `WeaponAttachOffset`, pointing along the aim, no actor collision, acquired, firing; capsule Overlap on `Projectile`; one shot spawns `ShotHeight` (50) above the floor, below `BlockHeight`, capsule radius + `ShotForwardOffset` (54 uu) ahead, and stops on rock (43, 38) at frame 1.
   - `Weapons.MinerMovesWhileFiring`: miner (weapons on the capsule) pushed +X by `AddMovementInput` for 1 s from (30, 43), once with the weapon stopped, once firing: 425 uu both (kinematic 420), no lateral drift, no projectile or non-floor capsule hit; firing must keep >= 90 % of the distance.
   - `Weapons.MinerHitsFloorDummy`: final `BP_Miner` (no socket override) on (38, 43) with its starting `BP_BurstRifle`, aim set by `ApplyStickAimInput((-1, 0))` (= world −Y) toward a `BP_TargetDummy` resting on the floor of (38, 40) (bounds 0–160 uu, actor Z = floor + 80); `Health` must drop below `MaxHealth` within 2 s (measured: first hit at frame 10, 0.167 s, 3 shots fired, 990 / 1000).
+  - `RogueRigs.Player.FlatDamage`, `IFrames`, `DeathOnce`: `BP_Miner` on (42, 38), Health set to 100, hit by `URRGE_DamageFlat` from a bare actor with an ASC and `URREnemyAttributeSet`: 10 → 90 and `State.Invulnerable`; `AttackPower` 2 → −20; no enemy set → −10. Same-frame and 0.217 s hits refused, mesh hidden and shown during the window, visible and hit applied after it. 150 → 0: `OnDeath` once (enemy as instigator), `State.Dead`, no i-frames, weapons stopped, move input ignored; a later hit is refused ([[sys-damage]]).
 - data: `arena_m1` layout, `PlayerBaseStats.csv`, `WeaponStats.csv`, the Blueprint classes above. Headless command in [[build-toolchain]].
 - depends_on: [[sys-grid]], [[sys-drone]], [[sys-pickups]], [[sys-player]], [[sys-weapons]], [[sys-auto-fire]], [[sys-projectiles]], [[sys-damage]], [[sys-target-dummy]].
 - implements: none (verification).

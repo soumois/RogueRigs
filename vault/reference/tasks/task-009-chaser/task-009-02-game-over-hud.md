@@ -3,7 +3,7 @@ id: task-009-02-game-over-hud
 description: "Game-over flow on miner death (input cut, event, level restart after 3 s) and a C++ HUD widget base fed with health and game-over events."
 parent: task-009-chaser
 kind: task
-status: todo
+status: in-progress
 ---
 # Game over and HUD base
 

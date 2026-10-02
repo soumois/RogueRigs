@@ -18,7 +18,7 @@ class URRHealthAttributeSet;
  * (Health starts at MaxHealth). The Mesh root has object type Pawn and overlaps the Projectile channel, so
  * projectiles overlap it and apply their damage spec. On each hit (URRHealthAttributeSet::OnDamageReceived):
  * logs the hit, flashes the mesh to FlashColor, spawns a floating damage number (bigger, white-gold on a crit).
- * Health refills to MaxHealth RefillDelay seconds after the last hit, or instantly when it reaches 0: it never dies.
+ * Health refills to MaxHealth RefillDelay seconds after the last hit, or instantly when it reaches 0: it never dies (death disabled on its health set).
  * Abstract: place a Blueprint subclass that sets the mesh and its M_GreyBox material.
  */
 UCLASS(Abstract)

@@ -3,21 +3,25 @@
 #include "Player/RRMiner.h"
 
 #include "Camera/CameraComponent.h"
+#include "Damage/RRGE_IFrames.h"
 #include "Drone/RRDrone.h"
 #include "Engine/World.h"
 #include "EngineUtils.h"
 #include "Components/CapsuleComponent.h"
+#include "Components/SkeletalMeshComponent.h"
 #include "GameFramework/CharacterMovementComponent.h"
 #include "GameFramework/PlayerController.h"
 #include "GameFramework/SpringArmComponent.h"
 #include "GAS/RRAbilitySystemComponent.h"
 #include "GAS/RRBaseStatsLoader.h"
+#include "GAS/RRGameplayTags.h"
 #include "GAS/RRHealthAttributeSet.h"
 #include "GAS/RRMovementAttributeSet.h"
 #include "GAS/RRPlayerAttributeSet.h"
 #include "Grid/RRArenaGrid.h"
 #include "Projectiles/RRCollisionChannels.h"
 #include "RogueRigs.h"
+#include "Weapons/RRAutoFireComponent.h"
 #include "Weapons/RRWeapon.h"
 
 ARRMiner::ARRMiner(const FObjectInitializer& ObjectInitializer)
@@ -36,6 +40,7 @@ ARRMiner::ARRMiner(const FObjectInitializer& ObjectInitializer)
 	HealthSet = CreateDefaultSubobject<URRHealthAttributeSet>(TEXT("HealthSet"));
 	MovementSet = CreateDefaultSubobject<URRMovementAttributeSet>(TEXT("MovementSet"));
 	PlayerSet = CreateDefaultSubobject<URRPlayerAttributeSet>(TEXT("PlayerSet"));
+	IFramesEffectClass = URRGE_IFrames::StaticClass();
 
 	// Camera boom with a fixed world rotation.
 	SpringArm = CreateDefaultSubobject<USpringArmComponent>(TEXT("SpringArm"));
@@ -99,6 +104,10 @@ void ARRMiner::BeginPlay()
 
 	// Push the value even if no change was broadcast (e.g. same value as before).
 	ApplyMoveSpeed(MovementSet->GetMoveSpeed());
+
+	// Damage reactions (sys-damage): i-frames from the hit callback (same call stack as the damage), single death.
+	DamageReceivedHandle = HealthSet->OnDamageReceived.AddUObject(this, &ARRMiner::HandleDamageReceived);
+	DeathHandle = HealthSet->OnDeath.AddUObject(this, &ARRMiner::HandleDeath);
 
 	SpawnDrone();
 	FindArenaGrid();
@@ -198,6 +207,14 @@ void ARRMiner::EndPlay(const EEndPlayReason::Type EndPlayReason)
 		MoveSpeedChangedHandle.Reset();
 	}
 
+	if (HealthSet)
+	{
+		HealthSet->OnDamageReceived.Remove(DamageReceivedHandle);
+		HealthSet->OnDeath.Remove(DeathHandle);
+	}
+	DamageReceivedHandle.Reset();
+	DeathHandle.Reset();
+
 	if (IsValid(Drone))
 	{
 		Drone->Destroy();
@@ -240,6 +257,97 @@ void ARRMiner::NotifyPickupCollected(ERRPickupType Type)
 	OnPickupCollected.Broadcast(Type);
 }
 
+bool ARRMiner::IsDead() const
+{
+	return AbilitySystemComponent && AbilitySystemComponent->HasMatchingGameplayTag(RRGameplayTags::State_Dead);
+}
+
+void ARRMiner::HandleDamageReceived(float Damage, bool bIsCritical, float HealthLeft)
+{
+	// A lethal hit gets no i-frames: the death handler takes over.
+	if (HealthLeft > 0.f && !IsDead())
+	{
+		ApplyIFrames();
+	}
+}
+
+void ARRMiner::ApplyIFrames()
+{
+	if (IFramesDuration <= 0.f || !IFramesEffectClass)
+	{
+		return;
+	}
+
+	// Applying a GE from the post-execute call stack is safe (gas-api-notes); the next hit of the frame is refused.
+	FGameplayEffectSpecHandle Spec = AbilitySystemComponent->MakeOutgoingSpec(IFramesEffectClass, 1.f, AbilitySystemComponent->MakeEffectContext());
+	if (!Spec.IsValid())
+	{
+		UE_LOG(LogRogueRigs, Error, TEXT("%s: i-frames spec of class %s could not be made."), *GetName(), *IFramesEffectClass->GetName());
+		return;
+	}
+	Spec.Data->SetSetByCallerMagnitude(RRGameplayTags::Data_Duration, IFramesDuration);
+	AbilitySystemComponent->ApplyGameplayEffectSpecToSelf(*Spec.Data);
+
+	if (BlinkRate > 0.f)
+	{
+		const double Now = GetWorld()->GetTimeSeconds();
+		BlinkStartTime = Now;
+		BlinkEndTime = Now + IFramesDuration;
+		bBlinking = true;
+		SetMeshVisible(false);
+	}
+}
+
+void ARRMiner::UpdateBlink()
+{
+	if (!bBlinking)
+	{
+		return;
+	}
+
+	const double Now = GetWorld()->GetTimeSeconds();
+	if (Now >= BlinkEndTime)
+	{
+		bBlinking = false;
+		SetMeshVisible(true);
+		return;
+	}
+
+	// Hidden during the first half of each cycle, so the blink starts on the hit frame.
+	const double Phase = FMath::Frac((Now - BlinkStartTime) * BlinkRate);
+	SetMeshVisible(Phase >= 0.5);
+}
+
+void ARRMiner::SetMeshVisible(bool bVisible)
+{
+	if (USkeletalMeshComponent* MeshComponent = GetMesh())
+	{
+		MeshComponent->SetVisibility(bVisible, /*bPropagateToChildren*/ true);
+	}
+}
+
+void ARRMiner::HandleDeath(AActor* DeathInstigator)
+{
+	// Controls cut (miner gdd): no more input-driven movement or aim, weapons stop firing.
+	PendingMoveInput = FVector::ZeroVector;
+	ConsumeMovementInputVector();
+	GetCharacterMovement()->StopMovementImmediately();
+
+	for (ARRWeapon* Weapon : Weapons)
+	{
+		if (IsValid(Weapon) && Weapon->GetAutoFireComponent())
+		{
+			Weapon->GetAutoFireComponent()->StopFiring();
+		}
+	}
+
+	bBlinking = false;
+	SetMeshVisible(true);
+
+	UE_LOG(LogRogueRigs, Log, TEXT("%s died (instigator: %s)."), *GetName(), *GetNameSafe(DeathInstigator));
+	OnDeath.Broadcast(DeathInstigator);
+}
+
 FVector ARRMiner::ScreenInputToWorld(const FVector2D& Input) const
 {
 	// Screen up = camera forward flattened, screen right = camera right flattened.
@@ -251,6 +359,11 @@ FVector ARRMiner::ScreenInputToWorld(const FVector2D& Input) const
 
 void ARRMiner::ApplyMoveInput(const FVector2D& Input)
 {
+	if (IsDead())
+	{
+		return;
+	}
+
 	const FVector WorldInput = ScreenInputToWorld(Input).GetClampedToMaxSize(1.f);
 	PendingMoveInput = WorldInput;
 	AddMovementInput(WorldInput);
@@ -258,7 +371,7 @@ void ARRMiner::ApplyMoveInput(const FVector2D& Input)
 
 void ARRMiner::ApplyStickAimInput(const FVector2D& Input)
 {
-	if (Input.Size() <= StickAimMinInput)
+	if (Input.Size() <= StickAimMinInput || IsDead())
 	{
 		return;
 	}
@@ -305,6 +418,15 @@ void ARRMiner::UpdateMouseAim()
 void ARRMiner::Tick(float DeltaSeconds)
 {
 	Super::Tick(DeltaSeconds);
+
+	UpdateBlink();
+
+	// Dead: no aim, no turning, no dig (controls are cut).
+	if (IsDead())
+	{
+		PendingMoveInput = FVector::ZeroVector;
+		return;
+	}
 
 	if (bUsingMouseAim)
 	{

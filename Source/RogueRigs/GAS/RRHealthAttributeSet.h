@@ -15,10 +15,19 @@
 DECLARE_MULTICAST_DELEGATE_ThreeParams(FRROnDamageReceived, float /*Damage*/, bool /*bIsCritical*/, float /*HealthLeft*/);
 
 /**
+ * Fired once by URRHealthAttributeSet when a hit takes Health from above 0 to 0 (single death).
+ * Param: Instigator (original instigator of the killing effect context; may be null).
+ */
+DECLARE_MULTICAST_DELEGATE_OneParam(FRROnDeath, AActor* /*Instigator*/);
+
+/**
  * Health of a combat actor (player, enemies). Health is kept in [0, MaxHealth]: base values are
  * clamped in PreAttributeBaseChange, current values in PreAttributeChange, and Health is brought
  * back under MaxHealth in PostAttributeChange when MaxHealth drops. Damage goes through the
  * IncomingDamage meta-attribute, which is consumed in PostGameplayEffectExecute.
+ * Single death: when a hit takes Health from above 0 to 0 and the owner has no State.Dead yet, the set adds the loose
+ * tag State.Dead to the owning ASC (damage GEs then refuse the actor) and broadcasts OnDeath once. Owners that must never
+ * die (target dummy) call SetDeathEnabled(false) in their constructor.
  * Set MaxHealth before Health when initializing (Health is clamped against the current MaxHealth).
  */
 UCLASS()
@@ -43,7 +52,10 @@ public:
 	/** Brings Health back to MaxHealth when MaxHealth drops below it. */
 	virtual void PostAttributeChange(const FGameplayAttribute& Attribute, float OldValue, float NewValue) override;
 
-	/** Consumes IncomingDamage: resets it to 0, subtracts it from Health (clamped at 0), then broadcasts OnDamageReceived. */
+	/**
+	 * Consumes IncomingDamage: resets it to 0, subtracts it from Health (clamped at 0), detects the death (State.Dead added),
+	 * then broadcasts OnDamageReceived, then OnDeath on a death.
+	 */
 	virtual void PostGameplayEffectExecute(const FGameplayEffectModCallbackData& Data) override;
 
 	/**
@@ -53,8 +65,17 @@ public:
 	 */
 	FRROnDamageReceived OnDamageReceived;
 
+	/**
+	 * Death event, broadcast once from PostGameplayEffectExecute after OnDamageReceived, when a hit takes Health from above 0
+	 * to 0; State.Dead is already on the owning ASC. Same safety rules as OnDamageReceived.
+	 */
+	FRROnDeath OnDeath;
+
+	/** Enables or disables the death detection (State.Dead + OnDeath). Enabled by default; call from the owner constructor. */
+	void SetDeathEnabled(bool bEnabled) { bDeathEnabled = bEnabled; }
+
 protected:
-	/** Current health; the actor dies at 0 (death handling lives outside this set). */
+	/** Current health; the actor dies when a hit takes it to 0 (see OnDeath). */
 	UPROPERTY(BlueprintReadOnly, Category = "Attributes|Health")
 	FGameplayAttributeData Health;
 
@@ -65,4 +86,7 @@ protected:
 	/** Meta-attribute: damage to apply this execution. Never persists (reset to 0 after each execute). */
 	UPROPERTY(BlueprintReadOnly, Category = "Attributes|Health")
 	FGameplayAttributeData IncomingDamage;
+
+	/** When false, reaching 0 Health adds no State.Dead and fires no OnDeath (never-dying debug targets). */
+	bool bDeathEnabled = true;
 };

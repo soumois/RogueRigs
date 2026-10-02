@@ -3,7 +3,7 @@ id: task-009-01-player-damage
 description: "Enemy-to-player flat damage GE, 0.25 s i-frames with blink, single death with State.Dead and a death event, enemy attribute set."
 parent: task-009-chaser
 kind: task
-status: in-progress
+status: done
 ---
 # Player damage, i-frames, death
 
@@ -16,7 +16,7 @@ status: in-progress
 - editor_state: closed
 - token_ceiling: 90000
 - milestone: M1
-- result: open
+- result: URREnemyAttributeSet (AttackPower 1); URRGE_DamageFlat + URRDamageFlatExecution (SetByCaller Data.Damage × source AttackPower, refuses Dead or Invulnerable); URRGE_IFrames (Data.Duration, grants State.Invulnerable); health set OnDeath (once, adds State.Dead, SetDeathEnabled; dummy disables it); miner IFramesDuration 0.25, BlinkRate 12 Hz, OnDeath (stops input, movement, firing). Tests Player.FlatDamage, IFrames, DeathOnce. Build exit 0, 17/17 tests (orchestrator re-ran). Docs sys-damage, sys-gas-core, sys-player, sys-automation-tests, sys-target-dummy, naming. About 108k tokens (over ceiling).
 
 ## Relations
 - [[task-009-chaser]] — parent global task.

@@ -18,10 +18,14 @@ class URRHealthAttributeSet;
 class URRMovementAttributeSet;
 class URRPlayerAttributeSet;
 class USpringArmComponent;
+class UGameplayEffect;
 struct FOnAttributeChangeData;
 
 /** Fired when the miner collects a pickup: the pickup's type. */
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FRROnPickupCollectedSignature, ERRPickupType, Type);
+
+/** Fired once when the miner dies: the original instigator of the killing hit (may be null). */
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FRROnMinerDeathSignature, AActor*, Instigator);
 
 /**
  * Player character. Owns the player's URRAbilitySystemComponent and its three AttributeSets (health,
@@ -39,6 +43,11 @@ DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FRROnPickupCollectedSignature, ERRPi
  * WeaponAttachOffset when the socket is None) and acquired (ARRWeapon::Acquire); they are destroyed at EndPlay.
  * Collision: the capsule overlaps the Projectile channel (never blocked by any projectile; projectiles still get
  * overlap events) and ignores its weapons when moving. No dash or item logic.
+ * Damage (sys-damage): on each hit of its health set (OnDamageReceived) that leaves Health above 0, the miner applies
+ * IFramesEffectClass (URRGE_IFrames, State.Invulnerable for IFramesDuration, SetByCaller Data.Duration) to itself in the
+ * same call stack, and blinks its mesh at BlinkRate until the i-frames end (visibility restored). On the health set
+ * OnDeath (single death, State.Dead added by the set) it stops moving, ignores move and aim input, stops its weapons
+ * firing and broadcasts OnDeath.
  * Subclass in Blueprint for the mesh and animation.
  */
 UCLASS(Abstract)
@@ -102,11 +111,26 @@ public:
 	/** Called by a pickup when it reaches the miner: broadcasts OnPickupCollected. Applies no effect itself. */
 	void NotifyPickupCollected(ERRPickupType Type);
 
+	/** True once the miner died (its ASC has State.Dead). */
+	UFUNCTION(BlueprintPure, Category = "Miner|Damage")
+	bool IsDead() const;
+
+	/** Duration in seconds of the invulnerability applied after each non-lethal hit. */
+	UFUNCTION(BlueprintPure, Category = "Miner|Damage")
+	float GetIFramesDuration() const { return IFramesDuration; }
+
+	/** The miner health set (Health, MaxHealth, IncomingDamage; OnDamageReceived and OnDeath native events). */
+	URRHealthAttributeSet* GetHealthSet() const { return HealthSet; }
+
+	/** Broadcast once when the miner dies, after input, movement and firing are cut. Bind for game over. */
+	UPROPERTY(BlueprintAssignable, Category = "Miner|Damage")
+	FRROnMinerDeathSignature OnDeath;
+
 	/** Broadcast each time the miner collects a pickup, with its type. */
 	UPROPERTY(BlueprintAssignable, Category = "Miner|Pickup")
 	FRROnPickupCollectedSignature OnPickupCollected;
 
-	/** Updates the mouse aim if active, turns the pawn toward the aim direction, then checks the dig trigger. */
+	/** Updates the i-frames blink; while alive, updates the mouse aim if active, turns the pawn toward the aim, then checks the dig trigger. */
 	virtual void Tick(float DeltaSeconds) override;
 
 protected:
@@ -119,7 +143,7 @@ protected:
 	/** Refreshes the ASC actor info so it caches the new controller. */
 	virtual void PossessedBy(AController* NewController) override;
 
-	/** Stops listening to MoveSpeed changes and destroys the drone and the weapons. */
+	/** Stops listening to MoveSpeed changes and to the health set events, and destroys the drone and the weapons. */
 	virtual void EndPlay(const EEndPlayReason::Type EndPlayReason) override;
 
 	/** Pushes the current MoveSpeed attribute value to CharacterMovement->MaxWalkSpeed. */
@@ -149,6 +173,21 @@ protected:
 	 * (capsule radius + DigReachMargin), calls RequestDig on the drone.
 	 */
 	void UpdateDigTrigger(const FVector& MoveDirection);
+
+	/** Health set hit callback: applies the i-frames when the miner survives the hit. Runs inside the GE execution. */
+	void HandleDamageReceived(float Damage, bool bIsCritical, float HealthLeft);
+
+	/** Health set death callback: cuts movement, input and firing, ends the blink, broadcasts OnDeath. Runs inside the GE execution. */
+	void HandleDeath(AActor* DeathInstigator);
+
+	/** Applies IFramesEffectClass to self with SetByCaller Data.Duration = IFramesDuration, then starts the blink. */
+	void ApplyIFrames();
+
+	/** Blink step: shows or hides the mesh by the BlinkRate phase; restores visibility once the i-frames time is over. */
+	void UpdateBlink();
+
+	/** Shows or hides the mesh (and its attached components). */
+	void SetMeshVisible(bool bVisible);
 
 	/** Converts a 2D input in screen axes to a world-space direction on the XY plane (not normalized). */
 	FVector ScreenInputToWorld(const FVector2D& Input) const;
@@ -221,6 +260,18 @@ protected:
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Miner|Dig", meta = (ClampMin = 0, ClampMax = 1))
 	float DigMinMoveInput = 0.1f;
 
+	/** Invulnerability after a non-lethal hit, in seconds (miner gdd: 0.25 s, provisional). 0 = no i-frames. */
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Miner|Damage", meta = (ClampMin = 0, Units = "s"))
+	float IFramesDuration = 0.25f;
+
+	/** Effect applied to self for the i-frames; must read SetByCaller Data.Duration and grant State.Invulnerable. */
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Miner|Damage")
+	TSubclassOf<UGameplayEffect> IFramesEffectClass;
+
+	/** Mesh blink frequency during the i-frames, in full hide/show cycles per second. 0 = no blink. */
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Miner|Damage", meta = (ClampMin = 0, Units = "Hz"))
+	float BlinkRate = 12.f;
+
 	/** Weapon classes spawned, attached and acquired at BeginPlay, in order (Blueprint subclasses of ARRWeapon). */
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Miner|Weapons")
 	TArray<TSubclassOf<ARRWeapon>> StartingWeapons;
@@ -256,4 +307,19 @@ protected:
 
 	/** Handle of the MoveSpeed change subscription on the ASC. */
 	FDelegateHandle MoveSpeedChangedHandle;
+
+	/** Handle of the binding on HealthSet->OnDamageReceived. */
+	FDelegateHandle DamageReceivedHandle;
+
+	/** Handle of the binding on HealthSet->OnDeath. */
+	FDelegateHandle DeathHandle;
+
+	/** World time at which the current blink started (the last i-frames application). */
+	double BlinkStartTime = 0.0;
+
+	/** World time at which the current blink ends and the mesh is shown again. */
+	double BlinkEndTime = 0.0;
+
+	/** True while the mesh blinks (between an i-frames application and BlinkEndTime). */
+	bool bBlinking = false;
 };

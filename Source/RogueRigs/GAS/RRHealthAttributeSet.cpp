@@ -63,11 +63,26 @@ void URRHealthAttributeSet::PostGameplayEffectExecute(const FGameplayEffectModCa
 		SetIncomingDamage(0.f);
 		if (Damage > 0.f)
 		{
-			SetHealth(FMath::Clamp(GetHealth() - Damage, 0.f, GetMaxHealth()));
+			const float HealthBefore = GetHealth();
+			SetHealth(FMath::Clamp(HealthBefore - Damage, 0.f, GetMaxHealth()));
+
+			// Single death (sys-damage step 6): only the hit taking Health from above 0 to 0, only once per State.Dead.
+			UAbilitySystemComponent* OwnerASC = GetOwningAbilitySystemComponent();
+			const bool bDied = bDeathEnabled && OwnerASC && HealthBefore > 0.f && GetHealth() <= 0.f
+				&& !OwnerASC->HasMatchingGameplayTag(RRGameplayTags::State_Dead);
+			if (bDied)
+			{
+				OwnerASC->AddLooseGameplayTag(RRGameplayTags::State_Dead);
+			}
 
 			// The crit flag is a dynamic asset tag on the executed spec (sys-damage).
 			const bool bIsCritical = Data.EffectSpec.GetDynamicAssetTags().HasTagExact(RRGameplayTags::Effect_Damage_Critical);
 			OnDamageReceived.Broadcast(Damage, bIsCritical, GetHealth());
+
+			if (bDied)
+			{
+				OnDeath.Broadcast(Data.EffectSpec.GetEffectContext().GetOriginalInstigator());
+			}
 		}
 	}
 }
