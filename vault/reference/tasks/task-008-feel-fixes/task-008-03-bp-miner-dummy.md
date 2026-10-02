@@ -3,7 +3,7 @@ id: task-008-03-bp-miner-dummy
 description: "BP_Miner weapon on the body (no hand socket), BP_TargetDummy at 160 uu standing on the floor in L_ArenaM1, grid shake defaults, save."
 parent: task-008-feel-fixes
 kind: task
-status: in-progress
+status: done
 ---
 # Miner and dummy Blueprints
 
@@ -16,7 +16,7 @@ status: in-progress
 - editor_state: open
 - token_ceiling: 40000
 - milestone: M1
-- result: open
+- result: BP_Miner WeaponAttachSocketName None (offset (0, 20, −40) kept); BP_TargetDummy scale 1.6; the three dummies at Z 80 (X, Y unchanged), saved with Ctrl+Shift+S. RifleMesh collision not readable through MCP (C++ disables weapon collision). Docs bp-miner, bp-target-dummy, bp-burst-rifle, unreal-mcp quirks. About 33k tokens.
 
 ## Relations
 - [[task-008-feel-fixes]] — parent global task.

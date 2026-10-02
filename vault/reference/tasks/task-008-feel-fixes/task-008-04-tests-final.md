@@ -3,7 +3,7 @@ id: task-008-04-tests-final
 description: "Headless test that a shot fired by BP_Miner hits a floor-standing BP_TargetDummy, then the full RogueRigs test run with the final Blueprints."
 parent: task-008-feel-fixes
 kind: task
-status: todo
+status: in-progress
 ---
 # Final tests
 
