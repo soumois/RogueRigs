@@ -30,6 +30,7 @@ void ARRPickup::BeginPlay()
 	PopStart = GetActorLocation();
 	PopEnd = PopStart + FVector(FMath::FRandRange(-PopMaxOffset, PopMaxOffset), FMath::FRandRange(-PopMaxOffset, PopMaxOffset), HoverHeight);
 	PopElapsed = 0.f;
+	RestElapsed = 0.f;
 	bPopDone = false;
 }
 
@@ -47,6 +48,16 @@ void ARRPickup::Tick(float DeltaSeconds)
 		bPopDone = UpdatePop(DeltaSeconds);
 		if (!bPopDone)
 		{
+			return;
+		}
+	}
+
+	if (!bAttracted)
+	{
+		// Rest on the floor for AttractDelay after the pop so the drop reads before it flies away.
+		if (RestElapsed < AttractDelay)
+		{
+			RestElapsed += DeltaSeconds;
 			return;
 		}
 	}

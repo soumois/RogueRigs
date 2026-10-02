@@ -467,8 +467,21 @@ bool FRRDigPickupCollectTest::RunTest(const FString& Parameters)
 	TWeakObjectPtr<ARRPickup> NearWeak(Near);
 	TWeakObjectPtr<ARRPickup> FarWeak(Far);
 
+	// Pop and rest timing read from the spawned pickup (protected tunables, read by reflection so Blueprint overrides count).
+	const FFloatProperty* PopDurationProperty = FindFProperty<FFloatProperty>(ARRPickup::StaticClass(), TEXT("PopDuration"));
+	const FFloatProperty* AttractDelayProperty = FindFProperty<FFloatProperty>(ARRPickup::StaticClass(), TEXT("AttractDelay"));
+	if (!TestNotNull(TEXT("PopDuration property"), PopDurationProperty) || !TestNotNull(TEXT("AttractDelay property"), AttractDelayProperty))
+	{
+		return false;
+	}
+	const float PopDuration = PopDurationProperty->GetPropertyValue_InContainer(Near);
+	const float AttractDelay = AttractDelayProperty->GetPropertyValue_InContainer(Near);
+	AddInfo(FString::Printf(TEXT("PopDuration %.2f s, AttractDelay %.2f s"), PopDuration, AttractDelay));
+	TestTrue(TEXT("AttractDelay is at least 1 s"), AttractDelay >= 1.f);
+	const float EarliestCollect = PopDuration + AttractDelay;
+
 	int32 CollectFrame = INDEX_NONE;
-	for (int32 Frame = 1; Frame <= 180; ++Frame)
+	for (int32 Frame = 1; Frame <= 240; ++Frame)
 	{
 		TestWorld.Tick();
 		if (CollectFrame == INDEX_NONE && Recorder->GetCollectedPickups().Num() > 0)
@@ -480,6 +493,8 @@ bool FRRDigPickupCollectTest::RunTest(const FString& Parameters)
 	AddInfo(FString::Printf(TEXT("near pickup collected at frame %d (%.4f s); collected %d"), CollectFrame, CollectFrame * FrameSeconds,
 		Recorder->GetCollectedPickups().Num()));
 	TestEqual(TEXT("OnPickupCollected fired once"), Recorder->GetCollectedPickups().Num(), 1);
+	// Frame N ends at N * FrameSeconds; allow one frame of accumulation rounding.
+	TestTrue(TEXT("near pickup not collected before pop + AttractDelay"), CollectFrame != INDEX_NONE && CollectFrame * FrameSeconds >= EarliestCollect - FrameSeconds);
 	if (Recorder->GetCollectedPickups().Num() > 0)
 	{
 		TestEqual(TEXT("collected type Heal"), Recorder->GetCollectedPickups()[0], ERRPickupType::Heal);

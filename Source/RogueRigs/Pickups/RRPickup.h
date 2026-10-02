@@ -22,7 +22,7 @@ enum class ERRPickupType : uint8
 /**
  * A pickup lying on the arena floor. On spawn it pops toward a random horizontal offset (within PopMaxOffset of
  * the spawn point, i.e. inside the cell) along a short arc, then rests HoverHeight above the spawn Z. Once the pop
- * is over, each tick it measures its horizontal distance to the player miner; when that distance is within the
+ * is over and AttractDelay has elapsed, each tick it measures its horizontal distance to the player miner; when that distance is within the
  * miner's PickupRadius attribute it flies to the miner at FlySpeed (and keeps flying even if the miner moves away)
  * and is collected within CollectDistance: logs its type on LogRogueRigs, calls ARRMiner::NotifyPickupCollected,
  * destroys itself. No collision at all (pawns and projectiles go through). No heal or ore effect yet.
@@ -84,6 +84,10 @@ protected:
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Pickup|Pop", meta = (Units = "cm"))
 	float HoverHeight = 30.f;
 
+	/** Seconds the pickup rests after the pop ends before it may be attracted to the miner. */
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Pickup|Collect", meta = (ClampMin = 0, Units = "s"))
+	float AttractDelay = 1.f;
+
 	/** Flight speed toward the miner once attracted; keep above the miner's move speed. */
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Pickup|Collect", meta = (ClampMin = 1, Units = "CentimetersPerSecond"))
 	float FlySpeed = 1500.f;
@@ -104,6 +108,9 @@ protected:
 
 	/** Seconds elapsed in the pop. */
 	float PopElapsed = 0.f;
+
+	/** Seconds elapsed since the pop finished; attraction is allowed once it reaches AttractDelay. */
+	float RestElapsed = 0.f;
 
 	/** True once the pop has finished. */
 	bool bPopDone = false;

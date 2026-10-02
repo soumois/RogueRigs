@@ -109,11 +109,11 @@ protected:
 
 	/** World size (uu) of a normal hit's number. */
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Target Dummy|Damage Text", meta = (ClampMin = "1"))
-	float NormalTextSize = 40.f;
+	float NormalTextSize = 60.f;
 
 	/** World size (uu) of a critical hit's number (larger than normal). */
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Target Dummy|Damage Text", meta = (ClampMin = "1"))
-	float CriticalTextSize = 64.f;
+	float CriticalTextSize = 90.f;
 
 	/** Dynamic instance of the mesh material (slot 0), created at BeginPlay; null if the mesh has no material. */
 	UPROPERTY(Transient)

@@ -3,7 +3,7 @@ id: task-008-02-feel-values
 description: "Pickups rest 1 s before attraction, block shake 15 uu at 10 Hz, damage text sizes 60 and 90 with a dark outline for readability."
 parent: task-008-feel-fixes
 kind: task
-status: in-progress
+status: done
 ---
 # Feel values
 
@@ -16,7 +16,7 @@ status: in-progress
 - editor_state: closed
 - token_ceiling: 60000
 - milestone: M1
-- result: open
+- result: ARRPickup AttractDelay 1.0 s after the pop; grid shake 15 uu at 10 Hz (BP_ArenaGrid does not override); damage text 60 / 90 with a near-black outline text behind (size ×1.12, offset); PickupCollect test checks the delay (collected at 1.43 s). Docs sys-pickups, sys-grid, sys-target-dummy, sys-automation-tests. Build exit 0, tests 13/13 (orchestrator re-ran). Outline look unseen: owner to check. About 43k tokens.
 
 ## Relations
 - [[task-008-feel-fixes]] — parent global task.

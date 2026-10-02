@@ -25,6 +25,16 @@ ARRFloatingDamageText::ARRFloatingDamageText(const FObjectInitializer& ObjectIni
 	TextRender->SetVerticalAlignment(EVRTA_TextCenter);
 	SetRootComponent(TextRender);
 
+	// Dark copy behind the main text: drawn first (lower sort priority) and pushed away from the camera.
+	OutlineRender = CreateDefaultSubobject<UTextRenderComponent>(TEXT("OutlineRender"));
+	OutlineRender->SetupAttachment(TextRender);
+	OutlineRender->SetCollisionEnabled(ECollisionEnabled::NoCollision);
+	OutlineRender->SetGenerateOverlapEvents(false);
+	OutlineRender->CastShadow = false;
+	OutlineRender->SetHorizontalAlignment(EHTA_Center);
+	OutlineRender->SetVerticalAlignment(EVRTA_TextCenter);
+	OutlineRender->TranslucencySortPriority = -1;
+
 	// Engine default text material is opaque; the translucent one reads vertex color alpha, which the fade drives.
 	static ConstructorHelpers::FObjectFinderOptional<UMaterialInterface> TranslucentTextMaterial(TEXT("/Engine/EngineMaterials/DefaultTextMaterialTranslucent"));
 	TextMaterial = TranslucentTextMaterial.Get();
@@ -36,6 +46,11 @@ void ARRFloatingDamageText::InitDamageText(float Damage, const FLinearColor& Col
 	TextRender->SetText(FText::AsNumber(FMath::RoundToInt(Damage)));
 	TextRender->SetTextRenderColor(BaseColor.ToFColor(true));
 	TextRender->SetWorldSize(WorldSize);
+
+	OutlineRender->SetText(FText::AsNumber(FMath::RoundToInt(Damage)));
+	OutlineRender->SetTextRenderColor(OutlineColor.ToFColor(true));
+	OutlineRender->SetWorldSize(WorldSize * OutlineSizeScale);
+	OutlineRender->SetRelativeLocation(OutlineOffset);
 }
 
 void ARRFloatingDamageText::BeginPlay()
@@ -45,6 +60,7 @@ void ARRFloatingDamageText::BeginPlay()
 	if (TextMaterial)
 	{
 		TextRender->SetTextMaterial(TextMaterial);
+		OutlineRender->SetTextMaterial(TextMaterial);
 	}
 	// Safety net: the actor goes away even if ticking is stopped.
 	SetLifeSpan(Lifetime + 0.1f);
@@ -67,6 +83,10 @@ void ARRFloatingDamageText::Tick(float DeltaSeconds)
 	FLinearColor FadedColor = BaseColor;
 	FadedColor.A = BaseColor.A * (1.f - Age / Lifetime);
 	TextRender->SetTextRenderColor(FadedColor.ToFColor(true));
+
+	FLinearColor FadedOutline = OutlineColor;
+	FadedOutline.A = OutlineColor.A * (1.f - Age / Lifetime);
+	OutlineRender->SetTextRenderColor(FadedOutline.ToFColor(true));
 
 	FaceCamera();
 }
