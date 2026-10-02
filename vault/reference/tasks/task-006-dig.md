@@ -3,7 +3,7 @@ id: task-006-dig
 description: "Global task: the drone digs blocks the miner pushes into (red laser, shaking block, dig times, ore and heal drops), and the floor flicker fix."
 parent: tasks-index
 kind: task
-status: review
+status: done
 ---
 # Digging
 
@@ -13,8 +13,8 @@ status: review
 - gdd_check: read [[drone]], [[destruction-rules]], [[ore-blocks]], [[heal-ore]], [[explosions]], [[player-stats]], [[sys-grid]]. Owner decisions recorded 2026-10-01 (dig times, drops, laser red against [[readability-rules]], shake, explosions destroy all blocks in radius). Dig cancel rule was open: provisional rule set in [[drone]]. Explosions themselves are out (no barrel or kamikaze yet); the grid exposes the radius destruction call for them. Ore and heal values per pickup: open, pickups have no effect.
 - confirmed_by_owner: yes
 - milestone: M1
-- next_step: none (owner: flicker and feel in PIE)
-- result: acceptance 1, 2, 5 passed; 3 and 4 proven by 6 headless automation tests (rock 1.5 s, heal ore 4.5 s with 2 + 3 pickups, collection, drone dig and cancel); PIE play with real input and the flicker fix await the owner (6). About 490k tokens over five subtasks.
+- next_step: none
+- result: acceptance 1, 2, 5 passed; 3 and 4 proven by 6 headless automation tests (rock 1.5 s, heal ore 4.5 s with 2 + 3 pickups, collection, drone dig and cancel); owner confirmed in PIE (2026-10-02): flicker gone, digging with Z or W works, pickups visible; feel tuning (pickup attraction delay, stronger slower shake) moved to task-008. About 490k tokens over five subtasks.
 
 ## Subtasks
 1. task-006-01-grid-destruction — cpp: floor fix, cell index map, block health, terrain damage and destruction API, shake.

@@ -3,7 +3,7 @@ id: task-007-05-weapon-tests
 description: "Headless C++ automation tests for burst timing, magazine and reload, projectile stop on rock, GAS damage with crits and the dummy refill."
 parent: task-007-burst-rifle-dummy
 kind: task
-status: in-progress
+status: blocked
 ---
 # Weapon automation tests
 
@@ -16,7 +16,7 @@ status: in-progress
 - editor_state: closed
 - token_ceiling: 100000
 - milestone: M1
-- result: (partial, usage limit) 11 of 12 headless tests pass: BurstTiming, MagazineReload, ProjectileStopsOnRock, ProjectileDamagesDummy (10, crit 15), DummyRefill, 6 Dig tests. Failing: Weapons.MinerStartingWeapon, muzzle at 130 uu above the floor (blocks are 100 uu), because the rifle snaps to socket hand_r and points up. Next: a bp fix (attach without socket rotation or a dedicated socket, muzzle below 100 uu), then rerun the tests. Test code uncommitted until then is committed here as work in progress.
+- result: (partial, usage limit) 11 of 12 headless tests pass: BurstTiming, MagazineReload, ProjectileStopsOnRock, ProjectileDamagesDummy (10, crit 15), DummyRefill, 6 Dig tests. Failing: Weapons.MinerStartingWeapon, muzzle at 130 uu above the floor (blocks are 100 uu), because the rifle snaps to socket hand_r and points up. Blocked on the shot height: fixed in task-008 (owner also saw shots fly over the dummy), which reruns the tests. Test code uncommitted until then is committed here as work in progress.
 
 ## Relations
 - [[task-007-burst-rifle-dummy]] — parent global task.
