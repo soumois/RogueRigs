@@ -110,6 +110,10 @@ public:
 	UFUNCTION(BlueprintPure, Category = "Grid")
 	float GetCellSize() const { return CellSize; }
 
+	/** Layout dimensions in cells (width, height); (0, 0) when no layout is loaded. */
+	UFUNCTION(BlueprintPure, Category = "Grid")
+	FIntPoint GetGridSize() const { return FIntPoint(GridWidth, GridHeight); }
+
 	/** Height of a block above the floor top in uu. */
 	UFUNCTION(BlueprintPure, Category = "Grid")
 	float GetBlockHeight() const { return BlockHeight; }

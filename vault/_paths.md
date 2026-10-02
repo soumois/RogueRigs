@@ -92,6 +92,7 @@ sys-difficulty  reference/tech/systems/sys-difficulty.md
 sys-drone  reference/tech/systems/sys-drone.md
 sys-enemy-ai  reference/tech/systems/sys-enemy-ai.md
 sys-explosions  reference/tech/systems/sys-explosions.md
+sys-flow-field  reference/tech/systems/sys-flow-field.md
 sys-gas-core  reference/tech/systems/sys-gas-core.md
 sys-grid  reference/tech/systems/sys-grid.md
 sys-hud  reference/tech/systems/sys-hud.md

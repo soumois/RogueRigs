@@ -23,6 +23,7 @@ Decision status inside each doc: approved, provisional, deferred or open. Planne
 - [[sys-projectiles]] — projectiles without GAS, piercing, collision, pooling.
 - [[sys-explosions]] — explosion queue and chain reactions.
 - [[sys-enemy-ai]] — AI framework choice, pathfinding, line of sight, stun reaction.
+- [[sys-flow-field]] — flow field path provider and generic enemy movement component as built.
 - [[sys-grid]] — grid data, autotiling, instanced rendering, terrain damage.
 - [[sys-pickups]] — ore and heal pickups: drop rule, pop, attraction within PickupRadius, collection event.
 - [[sys-target-dummy]] — debug target dummy: never dies, hit flash, M1 floating damage numbers, health refill.

@@ -3,7 +3,7 @@ id: task-009-04-enemy-chaser
 description: "ARREnemy base (ASC, health and enemy sets, CSV stats, single death, shrink, XP cube) and ARRChaser state machine: chase, wind-up, attack, recover."
 parent: task-009-chaser
 kind: task
-status: todo
+status: in-progress
 ---
 # Enemy base and chaser
 

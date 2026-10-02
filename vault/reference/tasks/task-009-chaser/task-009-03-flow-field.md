@@ -3,7 +3,7 @@ id: task-009-03-flow-field
 description: "Grid BFS flow field toward the miner, a path-provider interface, and a generic enemy movement component that follows any provider."
 parent: task-009-chaser
 kind: task
-status: in-progress
+status: done
 ---
 # Flow field and generic enemy movement
 
@@ -16,7 +16,7 @@ status: in-progress
 - editor_state: closed
 - token_ceiling: 90000
 - milestone: M1
-- result: open
+- result: IRRPathProvider (direction, reachable, distance, goal, direct path by grid walk); URRFlowFieldSubsystem (8-neighbour BFS without corner cutting, recompute on goal cell change, OnCellDestroyed, MarkDirty, once per frame; 0.22 ms mean, 0.29 ms worst on 80 × 80; rr.FlowField.Debug); URREnemyMovementComponent (provider class, ArrivalDistance 100, DirectChaseRange 400, straight chase on direct path). Grid GetGridSize. 6 FlowField tests (test character reaches the miner from behind rocks in 4.1 s). Build exit 0, 24/24 (orchestrator re-ran). New doc sys-flow-field; sys-enemy-ai, sys-grid, sys-automation-tests, build-toolchain. About 92k tokens.
 
 ## Relations
 - [[task-009-chaser]] — parent global task.

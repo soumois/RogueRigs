@@ -7,7 +7,7 @@ kind: doc
 # Enemy AI
 
 - responsibility: movement and decisions of every robot.
-- main_classes: the template's `ATwinStickNPC` (an `ACharacter`) and `ATwinStickAIController` with `UStateTreeAIComponent` (StateTree plugin enabled).
+- main_classes: `IRRPathProvider`, `URRFlowFieldSubsystem`, `URREnemyMovementComponent` (`Source/RogueRigs/FlowField/`, [[sys-flow-field]]). The template's `ATwinStickNPC` and `ATwinStickAIController` (`Variant_TwinStick/`) stay as reference only.
 
 ## Decisions
 - Framework (approved, owner 2026-10-02): a C++ state machine per robot (chaser: Chase, WindUp, Attack, Recover), readable and testable by agents.
@@ -24,3 +24,4 @@ kind: doc
 
 ## Relations
 - [[systems-index]] — parent index.
+- [[sys-flow-field]] — the flow field and movement component as built.
