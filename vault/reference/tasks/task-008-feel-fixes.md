@@ -3,7 +3,7 @@ id: task-008-feel-fixes
 description: "Global task: owner PIE feedback: fixed shot height, rifle no longer blocks movement, longer pause between bursts, pickups, shake, readable damage text, bigger dummy."
 parent: tasks-index
 kind: task
-status: review
+status: done
 ---
 # Feel fixes after the first PIE test
 
@@ -13,8 +13,8 @@ status: review
 - gdd_check: read [[burst-rifle]], [[destruction-rules]] (nobody shoots over a block → shots below the block top), [[damage-numbers]], [[color-code]], [[sys-pickups]], [[sys-grid]]. Owner decisions 2026-10-02: FireRate 1.25 bursts/s with BurstDuty 0.2 (gap 0.08 s, pause 0.64 s), damage 10; pickup attraction delay 1 s; shake 15 uu at 10 Hz; damage text with a dark outline, sizes 60 / 90; dummy 160 uu; fixed shot height 50 uu.
 - confirmed_by_owner: yes
 - milestone: M1
-- next_step: none (owner: feel check in PIE)
-- result: acceptance 1 to 4 passed: 14/14 headless tests, movement bug found and fixed (rifle mesh collision, not projectiles), shots at 50 uu hit a floor dummy, values applied. Closes task-007. Owner to check the feel (5): pickup delay, shake, damage text outline, burst pause, rifle position at the hip. About 300k tokens.
+- next_step: none
+- result: acceptance 1 to 4 passed: 14/14 headless tests, movement bug found and fixed (rifle mesh collision, not projectiles), shots at 50 uu hit a floor dummy, values applied. Closes task-007. Owner confirmed the features work in PIE (2026-10-02); value tuning will come as a later task. About 300k tokens.
 
 ## Subtasks
 1. task-008-01-shot-height-movement — cpp: fixed shot height, weapon on the body, capsule ignores own projectiles, burst values, tests.
