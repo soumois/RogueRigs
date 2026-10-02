@@ -1,4 +1,4 @@
-// Rogue Rigs - robot base: own ASC with health, movement and enemy sets, CSV stats, flow-field movement, single death with shrink and XP drop.
+// Rogue Rigs - robot base: own ASC with health, movement and enemy sets, CSV stats, flow-field movement, single death with shrink and XP drop, floating damage numbers.
 
 #pragma once
 
@@ -8,6 +8,7 @@
 #include "Enemies/RREnemyStatsRow.h"
 #include "RREnemy.generated.h"
 
+class ARRFloatingDamageText;
 class ARRMiner;
 class ARRPickup;
 class UAbilitySystemComponent;
@@ -25,7 +26,8 @@ struct FOnAttributeChangeData;
  * Moves without a controller: URREnemyMovementComponent feeds the flow-field direction to CharacterMovement (RVO
  * avoidance on). The capsule overlaps the Projectile channel, so shots hit it through the ASC (sys-projectiles).
  * Death (health set OnDeath, once, State.Dead on the ASC): stops, disables collision, shrinks to 0 over DeathShrinkDuration,
- * then spawns Stats.XPValue pickups of XPPickupClass at its feet and destroys itself. Subclasses implement their behavior in
+ * then spawns Stats.XPValue pickups of XPPickupClass at its feet and destroys itself. Each hit (the killing one too) spawns a
+ * FloatingTextClass damage number above the capsule top when bShowDamageNumbers is on. Subclasses implement their behavior in
  * UpdateBehavior (alive only) and may extend HandleDeath. Subclass in Blueprint for the mesh.
  */
 UCLASS(Abstract)
@@ -94,6 +96,12 @@ protected:
 	/** Spawns Stats.XPValue pickups of XPPickupClass at DropLocation (no owner). */
 	void DropXP();
 
+	/** Health set hit callback (runs inside the GE execution): spawns the damage number when bShowDamageNumbers is on. */
+	void HandleDamageReceived(float Damage, bool bIsCritical, float HealthLeft);
+
+	/** Spawns FloatingTextClass at the capsule top + TextSpawnHeight (horizontal jitter), styled for a normal or critical hit. */
+	void SpawnDamageText(float Damage, bool bIsCritical);
+
 	/** Shows or hides every mesh component of the robot (used by the wind-up flash). */
 	void SetMeshesVisible(bool bVisible);
 
@@ -129,6 +137,38 @@ protected:
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Enemy|Death", meta = (ClampMin = 0, Units = "s"))
 	float DeathShrinkDuration = 0.15f;
 
+	/** Spawns a damage number on each hit (the killing one too). */
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Enemy|Damage Text")
+	bool bShowDamageNumbers = true;
+
+	/** Actor spawned per hit to show the damage number. None = no number. */
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Enemy|Damage Text")
+	TSubclassOf<ARRFloatingDamageText> FloatingTextClass;
+
+	/** Height (uu) of the damage number above the capsule top. */
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Enemy|Damage Text", meta = (Units = "cm"))
+	float TextSpawnHeight = 40.f;
+
+	/** Random horizontal offset (uu, each axis in [-Jitter, Jitter]) so stacked numbers stay readable. */
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Enemy|Damage Text", meta = (ClampMin = "0", Units = "cm"))
+	float TextSpawnJitter = 25.f;
+
+	/** Color of a normal hit's number (white, color-code). */
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Enemy|Damage Text")
+	FLinearColor NormalTextColor = FLinearColor::White;
+
+	/** Color of a critical hit's number (white-gold, color-code). */
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Enemy|Damage Text")
+	FLinearColor CriticalTextColor = FLinearColor(1.f, 0.85f, 0.45f);
+
+	/** World size (uu) of a normal hit's number. */
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Enemy|Damage Text", meta = (ClampMin = "1"))
+	float NormalTextSize = 60.f;
+
+	/** World size (uu) of a critical hit's number (larger than normal). */
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Enemy|Damage Text", meta = (ClampMin = "1"))
+	float CriticalTextSize = 90.f;
+
 	/** Stats read at BeginPlay. */
 	UPROPERTY(VisibleInstanceOnly, BlueprintReadOnly, Category = "Enemy|Stats")
 	FRREnemyStatsRow Stats;
@@ -156,4 +196,7 @@ protected:
 
 	/** Handle of the binding on HealthSet->OnDeath. */
 	FDelegateHandle DeathHandle;
+
+	/** Handle of the binding on HealthSet->OnDamageReceived. */
+	FDelegateHandle DamageReceivedHandle;
 };

@@ -1,4 +1,4 @@
-// Rogue Rigs - automation tests of the robots (RogueRigs.Enemies.*): CSV stats, chaser death and XP drop, attack timing, i-frames against two chasers.
+// Rogue Rigs - automation tests of the robots (RogueRigs.Enemies.*): CSV stats, chaser death and XP drop, attack timing, i-frames against two chasers, damage number per hit.
 
 #include "CoreMinimal.h"
 #include "Misc/AutomationTest.h"
@@ -6,6 +6,8 @@
 #if WITH_DEV_AUTOMATION_TESTS
 
 #include "AbilitySystemComponent.h"
+#include "Damage/RRGE_DamageFlat.h"
+#include "Debug/RRFloatingDamageText.h"
 #include "Enemies/RRChaser.h"
 #include "EngineUtils.h"
 #include "FlowField/RREnemyMovementComponent.h"
@@ -25,6 +27,9 @@
 namespace RREnemyTests
 {
 	using namespace RRTestHarness;
+
+	/** Chaser Blueprint (the robot of the arena). */
+	const TCHAR* const ChaserClassPath = TEXT("/Game/RogueRigs/Blueprints/Enemies/BP_Chaser.BP_Chaser_C");
 
 	/** Burst rifle Blueprint (the miner's starting weapon). */
 	const TCHAR* const BurstRifleClassPath = TEXT("/Game/RogueRigs/Blueprints/Weapons/BP_BurstRifle.BP_BurstRifle_C");
@@ -397,6 +402,53 @@ bool FRREnemyIFramesTest::RunTest(const FString& Parameters)
 	TestTrue(TEXT("miner invulnerable at the second attack"), bInvulnerableAtSecondAttack);
 	TestEqual(TEXT("only one hit applied"), Hits.Num(), 1);
 	TestEqual(TEXT("Health 90"), Attribute(Miner, URRHealthAttributeSet::GetHealthAttribute()), 90.f);
+	return true;
+}
+
+IMPLEMENT_SIMPLE_AUTOMATION_TEST(FRREnemyDamageNumberTest, "RogueRigs.Enemies.DamageNumberSpawned",
+	EAutomationTestFlags::EditorContext | EAutomationTestFlags::EngineFilter)
+
+bool FRREnemyDamageNumberTest::RunTest(const FString& Parameters)
+{
+	using namespace RREnemyTests;
+
+	FTestWorld TestWorld(TEXT("RREnemyDamageNumber"));
+	UClass* ChaserClass = LoadTestClass<ARRChaser>(*this, ChaserClassPath);
+	if (!ChaserClass)
+	{
+		return false;
+	}
+	ARRChaser* Target = TestWorld.Spawn<ARRChaser>(ChaserClass, FVector(0.f, 0.f, 200.f));
+	ARRChaser* Source = TestWorld.Spawn<ARRChaser>(ChaserClass, FVector(1000.f, 0.f, 200.f));
+	if (!TestNotNull(TEXT("target chaser spawned"), Target) || !TestNotNull(TEXT("source chaser spawned"), Source))
+	{
+		return false;
+	}
+
+	// One flat hit (no crit), below the chaser's 30 health.
+	UAbilitySystemComponent* SourceASC = Source->GetAbilitySystemComponent();
+	FGameplayEffectSpecHandle Spec = SourceASC->MakeOutgoingSpec(URRGE_DamageFlat::StaticClass(), 1.f, SourceASC->MakeEffectContext());
+	Spec.Data->SetSetByCallerMagnitude(RRGameplayTags::Data_Damage, 5.f);
+	SourceASC->ApplyGameplayEffectSpecToTarget(*Spec.Data, Target->GetAbilitySystemComponent());
+	TestEqual(TEXT("target Health 25"), Attribute(Target, URRHealthAttributeSet::GetHealthAttribute()), 25.f);
+
+	TArray<ARRFloatingDamageText*> Texts;
+	for (TActorIterator<ARRFloatingDamageText> It(TestWorld.Get()); It; ++It)
+	{
+		if (IsValid(*It))
+		{
+			Texts.Add(*It);
+		}
+	}
+	if (!TestEqual(TEXT("exactly one damage number"), Texts.Num(), 1))
+	{
+		return false;
+	}
+	const float CapsuleTop = Target->GetActorLocation().Z + Target->GetCapsuleComponent()->GetScaledCapsuleHalfHeight();
+	const FVector TextLocation = Texts[0]->GetActorLocation();
+	AddInfo(FString::Printf(TEXT("capsule top %.1f, text at %s"), CapsuleTop, *TextLocation.ToString()));
+	TestTrue(TEXT("damage number above the capsule top"), TextLocation.Z > CapsuleTop);
+	TestTrue(TEXT("damage number over the target (within the jitter)"), FVector::Dist2D(TextLocation, Target->GetActorLocation()) <= 50.f);
 	return true;
 }
 

@@ -3,7 +3,7 @@ id: task-010-01-enemy-damage-text
 description: "ARREnemy spawns the existing ARRFloatingDamageText above its capsule on each hit, with the dummy's colors and sizes."
 parent: task-010-damage-numbers-video
 kind: task
-status: in-progress
+status: done
 ---
 # Floating damage text on enemies
 
@@ -16,7 +16,7 @@ status: in-progress
 - editor_state: closed
 - token_ceiling: 40000
 - milestone: M1
-- result: open
+- result: ARREnemy binds OnDamageReceived and spawns ARRFloatingDamageText at capsule top + TextSpawnHeight 40 uu (jitter 25), dummy colors and sizes, bShowDamageNumbers; killing hit included. Test Enemies.DamageNumberSpawned (text 40 uu above the capsule top). Build exit 0, 36/36 (orchestrator re-ran). Docs sys-enemies, sys-automation-tests. About 58k tokens.
 
 ## Relations
 - [[task-010-damage-numbers-video]] — parent global task.

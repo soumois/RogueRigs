@@ -1,9 +1,10 @@
-// Rogue Rigs - robot base: own ASC with health, movement and enemy sets, CSV stats, flow-field movement, single death with shrink and XP drop.
+// Rogue Rigs - robot base: own ASC with health, movement and enemy sets, CSV stats, flow-field movement, single death with shrink and XP drop, floating damage numbers.
 
 #include "Enemies/RREnemy.h"
 
 #include "Components/CapsuleComponent.h"
 #include "Components/MeshComponent.h"
+#include "Debug/RRFloatingDamageText.h"
 #include "Engine/DataTable.h"
 #include "Engine/World.h"
 #include "EngineUtils.h"
@@ -54,6 +55,8 @@ ARREnemy::ARREnemy(const FObjectInitializer& ObjectInitializer)
 	// Shots (Projectile channel) overlap the capsule: the projectile applies its spec to the ASC, never blocks (sys-projectiles).
 	GetCapsuleComponent()->SetCollisionResponseToChannel(RRCollisionChannels::Projectile, ECR_Overlap);
 	GetCapsuleComponent()->SetGenerateOverlapEvents(true);
+
+	FloatingTextClass = ARRFloatingDamageText::StaticClass();
 }
 
 UAbilitySystemComponent* ARREnemy::GetAbilitySystemComponent() const
@@ -102,6 +105,7 @@ void ARREnemy::BeginPlay()
 	GetCharacterMovement()->SetDefaultMovementMode();
 
 	DeathHandle = HealthSet->OnDeath.AddUObject(this, &ARREnemy::HandleDeath);
+	DamageReceivedHandle = HealthSet->OnDamageReceived.AddUObject(this, &ARREnemy::HandleDamageReceived);
 }
 
 void ARREnemy::EndPlay(const EEndPlayReason::Type EndPlayReason)
@@ -116,8 +120,10 @@ void ARREnemy::EndPlay(const EEndPlayReason::Type EndPlayReason)
 	if (HealthSet)
 	{
 		HealthSet->OnDeath.Remove(DeathHandle);
+		HealthSet->OnDamageReceived.Remove(DamageReceivedHandle);
 	}
 	DeathHandle.Reset();
+	DamageReceivedHandle.Reset();
 
 	Super::EndPlay(EndPlayReason);
 }
@@ -232,6 +238,36 @@ void ARREnemy::DropXP()
 		{
 			UE_LOG(LogRogueRigs, Error, TEXT("%s: XP pickup of class %s could not be spawned."), *GetName(), *XPPickupClass->GetName());
 		}
+	}
+}
+
+void ARREnemy::HandleDamageReceived(float Damage, bool bIsCritical, float HealthLeft)
+{
+	if (bShowDamageNumbers)
+	{
+		SpawnDamageText(Damage, bIsCritical);
+	}
+}
+
+void ARREnemy::SpawnDamageText(float Damage, bool bIsCritical)
+{
+	UWorld* World = GetWorld();
+	if (!World || !FloatingTextClass)
+	{
+		return;
+	}
+
+	// Capsule top (scaled) + height, jittered horizontally only.
+	const FVector Jitter(FMath::FRandRange(-TextSpawnJitter, TextSpawnJitter), FMath::FRandRange(-TextSpawnJitter, TextSpawnJitter), 0.f);
+	const float CapsuleTop = GetCapsuleComponent()->GetScaledCapsuleHalfHeight();
+	const FTransform SpawnTransform(GetActorLocation() + FVector(0.f, 0.f, CapsuleTop + TextSpawnHeight) + Jitter);
+
+	FActorSpawnParameters SpawnParams;
+	SpawnParams.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AlwaysSpawn;
+
+	if (ARRFloatingDamageText* Text = World->SpawnActor<ARRFloatingDamageText>(FloatingTextClass, SpawnTransform, SpawnParams))
+	{
+		Text->InitDamageText(Damage, bIsCritical ? CriticalTextColor : NormalTextColor, bIsCritical ? CriticalTextSize : NormalTextSize);
 	}
 }
 
