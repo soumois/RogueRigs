@@ -6,7 +6,7 @@ kind: doc
 ---
 # Enemies
 
-- responsibility: the robot pawns: stats, damage intake, death and XP drop, and each robot's decisions. Spawning: not yet.
+- responsibility: the robot pawns: stats, damage intake, death and XP drop, and each robot's decisions. Spawning: [[sys-spawner]].
 - main_classes (`Source/RogueRigs/Enemies/`):
   - `ARREnemy` (abstract `ACharacter`, `IAbilitySystemInterface`): own `URRAbilitySystemComponent` with `URRHealthAttributeSet`, `URRMovementAttributeSet`, `URREnemyAttributeSet` ([[sys-gas-core]]); `URREnemyMovementComponent` ([[sys-flow-field]]). No controller (`AutoPossessAI` disabled, `bRunPhysicsWithNoController`, default movement mode set at BeginPlay); RVO avoidance on, orient to movement, no walking off ledges. Capsule Overlap on `Projectile` ([[sys-projectiles]]). `FindTarget()` = first living `ARRMiner` (cached).
   - Death (single, `State.Dead` from the health set, [[sys-damage]]): movement off, velocity cut, `DisableMovement`, collision off; scale shrinks linearly to 0 over `DeathShrinkDuration` (0.15 s); then `Stats.XPValue` pickups of `XPPickupClass` spawn at the feet recorded at death, and the robot is destroyed.
@@ -23,3 +23,4 @@ kind: doc
 - [[sys-enemy-ai]] — the framework decision the chaser state machine follows.
 - [[sys-flow-field]] — the movement component the robots use.
 - [[sys-pickups]] — the XP pickup dropped on death.
+- [[sys-spawner]] — the actor that spawns the robots.

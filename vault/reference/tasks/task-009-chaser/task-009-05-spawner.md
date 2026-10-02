@@ -3,7 +3,7 @@ id: task-009-05-spawner
 description: "ARREnemySpawner: one robot every 2 s, at most 20 alive, on reachable floor cells just outside the camera view."
 parent: task-009-chaser
 kind: task
-status: in-progress
+status: done
 ---
 # Enemy spawner
 
@@ -16,7 +16,7 @@ status: in-progress
 - editor_state: closed
 - token_ceiling: 70000
 - milestone: M1
-- result: open
+- result: ARREnemySpawner (EnemyClass to set in BP, SpawnInterval 2, MaxAlive 20, ViewMargin 1, MaxSpawnDistanceCells 6, SpawnFloorClearance 2, rr.Spawner.Enabled); view rectangle from the player camera manager, else the miner camera component, or an override for tests; cells reachable in the flow field, 1.5 to 6.5 cells outside the view, no pawn on the cell. Tests SpawnsOutsideViewAndReachable, MaxAliveCap, KilledRobotFreesSlot. Build exit 0, 31/31 (orchestrator re-ran). New doc sys-spawner. Full grid scan per attempt (fine at 2 s). About 80k tokens.
 
 ## Relations
 - [[task-009-chaser]] — parent global task.

@@ -3,7 +3,7 @@ id: task-009-06-bp-chaser
 description: "Chaser, XP cube and spawner Blueprints, grey-box materials, HUD widget with health bar and Game Over text, miner blink, placed in L_ArenaM1."
 parent: task-009-chaser
 kind: task
-status: todo
+status: in-progress
 ---
 # Chaser assets, HUD and map
 

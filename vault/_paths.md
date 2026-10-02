@@ -100,6 +100,7 @@ sys-hud  reference/tech/systems/sys-hud.md
 sys-pickups  reference/tech/systems/sys-pickups.md
 sys-player  reference/tech/systems/sys-player.md
 sys-projectiles  reference/tech/systems/sys-projectiles.md
+sys-spawner  reference/tech/systems/sys-spawner.md
 sys-status-effects  reference/tech/systems/sys-status-effects.md
 sys-target-dummy  reference/tech/systems/sys-target-dummy.md
 sys-upgrades  reference/tech/systems/sys-upgrades.md

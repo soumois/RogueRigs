@@ -1,0 +1,257 @@
+// Rogue Rigs - enemy spawner: one robot per interval, capped alive count, on reachable floor cells just outside the camera view.
+
+#include "Enemies/RREnemySpawner.h"
+
+#include "Camera/CameraComponent.h"
+#include "Camera/PlayerCameraManager.h"
+#include "Components/CapsuleComponent.h"
+#include "Engine/GameViewportClient.h"
+#include "Engine/World.h"
+#include "EngineUtils.h"
+#include "Enemies/RREnemy.h"
+#include "FlowField/RRFlowFieldSubsystem.h"
+#include "GameFramework/Pawn.h"
+#include "GameFramework/PlayerController.h"
+#include "Grid/RRArenaGrid.h"
+#include "HAL/IConsoleManager.h"
+#include "RogueRigs.h"
+
+namespace RRSpawner
+{
+	TAutoConsoleVariable<int32> CVarEnabled(TEXT("rr.Spawner.Enabled"), 1,
+		TEXT("0: enemy spawners stop spawning on their own. 1: they spawn (default)."), ECVF_Cheat);
+
+	/** Shallowest downward slope (Z per horizontal unit) of a frustum corner ray, so rays above the horizon still hit the floor. */
+	constexpr float MinRaySlope = 0.05f;
+}
+
+ARREnemySpawner::ARREnemySpawner()
+{
+	PrimaryActorTick.bCanEverTick = true;
+	PrimaryActorTick.bStartWithTickEnabled = true;
+	RootComponent = CreateDefaultSubobject<USceneComponent>(TEXT("Root"));
+}
+
+void ARREnemySpawner::Tick(float DeltaSeconds)
+{
+	Super::Tick(DeltaSeconds);
+	if (!IsSpawningEnabled())
+	{
+		return;
+	}
+	SpawnTimer += DeltaSeconds;
+	if (SpawnTimer >= SpawnInterval)
+	{
+		SpawnTimer -= SpawnInterval;
+		TrySpawnEnemy();
+	}
+}
+
+bool ARREnemySpawner::IsSpawningEnabled() const
+{
+	return bEnabled && RRSpawner::CVarEnabled.GetValueOnGameThread() != 0;
+}
+
+void ARREnemySpawner::SetViewRectangleOverride(FBox2D Rectangle)
+{
+	ViewOverride = Rectangle;
+	bHasViewOverride = true;
+}
+
+URRFlowFieldSubsystem* ARREnemySpawner::GetFlowField() const
+{
+	UWorld* World = GetWorld();
+	return World ? World->GetSubsystem<URRFlowFieldSubsystem>() : nullptr;
+}
+
+ARRArenaGrid* ARREnemySpawner::GetGrid() const
+{
+	URRFlowFieldSubsystem* FlowField = GetFlowField();
+	if (!FlowField)
+	{
+		return nullptr;
+	}
+	FlowField->UpdateField();
+	return FlowField->GetGrid();
+}
+
+FBox2D ARREnemySpawner::ProjectViewOnFloor(const FMinimalViewInfo& View, float AspectRatio, float FloorZ)
+{
+	const float TanX = FMath::Tan(FMath::DegreesToRadians(View.FOV * 0.5f));
+	const float TanY = TanX / FMath::Max(AspectRatio, KINDA_SMALL_NUMBER);
+	const FRotationMatrix Axes(View.Rotation);
+	const FVector Forward = Axes.GetUnitAxis(EAxis::X);
+	const FVector Right = Axes.GetUnitAxis(EAxis::Y);
+	const FVector Up = Axes.GetUnitAxis(EAxis::Z);
+	const float Height = View.Location.Z - FloorZ;
+
+	FBox2D Result(ForceInit);
+	for (const float SignX : { -1.f, 1.f })
+	{
+		for (const float SignY : { -1.f, 1.f })
+		{
+			FVector Ray = Forward + Right * (SignX * TanX) + Up * (SignY * TanY);
+			Ray.Z = FMath::Min(Ray.Z, -RRSpawner::MinRaySlope * Ray.Size2D());
+			const float Distance = Height / -Ray.Z;
+			const FVector Hit = View.Location + Ray * Distance;
+			Result += FVector2D(Hit.X, Hit.Y);
+		}
+	}
+	return Result;
+}
+
+float ARREnemySpawner::GetDistanceToRectangle(const FBox2D& Rectangle, const FVector2D& Point)
+{
+	const double GapX = FMath::Max3(0.0, Rectangle.Min.X - Point.X, Point.X - Rectangle.Max.X);
+	const double GapY = FMath::Max3(0.0, Rectangle.Min.Y - Point.Y, Point.Y - Rectangle.Max.Y);
+	return static_cast<float>(FMath::Max(GapX, GapY));
+}
+
+bool ARREnemySpawner::GetViewRectangle(FBox2D& OutRectangle) const
+{
+	if (bHasViewOverride)
+	{
+		OutRectangle = ViewOverride;
+		return true;
+	}
+	UWorld* World = GetWorld();
+	const ARRArenaGrid* Grid = GetGrid();
+	if (!World || !Grid)
+	{
+		return false;
+	}
+	const float FloorZ = Grid->GetActorLocation().Z;
+
+	// 1. The local player's camera manager (what the screen shows).
+	const APlayerController* PlayerController = World->GetFirstPlayerController();
+	if (PlayerController && PlayerController->PlayerCameraManager)
+	{
+		const FMinimalViewInfo& View = PlayerController->PlayerCameraManager->GetCameraCacheView();
+		float AspectRatio = View.AspectRatio;
+		if (UGameViewportClient* Viewport = World->GetGameViewport())
+		{
+			FVector2D ViewportSize;
+			Viewport->GetViewportSize(ViewportSize);
+			if (ViewportSize.X > 0.f && ViewportSize.Y > 0.f)
+			{
+				AspectRatio = ViewportSize.X / ViewportSize.Y;
+			}
+		}
+		if (View.FOV > 0.f)
+		{
+			OutRectangle = ProjectViewOnFloor(View, AspectRatio, FloorZ);
+			return true;
+		}
+	}
+
+	// 2. The goal's (miner's) camera component: headless worlds have no player controller.
+	const URRFlowFieldSubsystem* FlowField = GetFlowField();
+	const AActor* Goal = FlowField ? FlowField->GetGoalActor() : nullptr;
+	if (UCameraComponent* Camera = Goal ? Goal->FindComponentByClass<UCameraComponent>() : nullptr)
+	{
+		FMinimalViewInfo View;
+		Camera->GetCameraView(0.f, View);
+		OutRectangle = ProjectViewOnFloor(View, View.AspectRatio, FloorZ);
+		return true;
+	}
+	return false;
+}
+
+void ARREnemySpawner::GetSpawnCandidates(TArray<FIntPoint>& OutCells)
+{
+	OutCells.Reset();
+	URRFlowFieldSubsystem* FlowField = GetFlowField();
+	const ARRArenaGrid* Grid = GetGrid();
+	FBox2D View;
+	if (!FlowField || !Grid || !GetViewRectangle(View))
+	{
+		return;
+	}
+
+	TSet<FIntPoint> Occupied;
+	for (TActorIterator<APawn> It(GetWorld()); It; ++It)
+	{
+		if (IsValid(*It))
+		{
+			Occupied.Add(Grid->GetCellAtWorld(It->GetActorLocation()));
+		}
+	}
+
+	const float CellSize = Grid->GetCellSize();
+	const float MinDistance = (ViewMargin + 0.5f) * CellSize;
+	const float MaxDistance = (MaxSpawnDistanceCells + 0.5f) * CellSize;
+	const FIntPoint Size = Grid->GetGridSize();
+	for (int32 Y = 0; Y < Size.Y; ++Y)
+	{
+		for (int32 X = 0; X < Size.X; ++X)
+		{
+			const FIntPoint Cell(X, Y);
+			const FVector Center = Grid->GetCellCenter(X, Y);
+			const float Distance = GetDistanceToRectangle(View, FVector2D(Center.X, Center.Y));
+			if (Distance < MinDistance || Distance > MaxDistance || !FlowField->IsWalkableCell(Cell) || Occupied.Contains(Cell))
+			{
+				continue;
+			}
+			if (FlowField->GetCellDistance(Cell) != INDEX_NONE)
+			{
+				OutCells.Add(Cell);
+			}
+		}
+	}
+}
+
+ARREnemy* ARREnemySpawner::TrySpawnEnemy()
+{
+	UWorld* World = GetWorld();
+	if (!World || !EnemyClass || GetAliveCount() >= MaxAlive)
+	{
+		return nullptr;
+	}
+	TArray<FIntPoint> Candidates;
+	GetSpawnCandidates(Candidates);
+	const ARRArenaGrid* Grid = GetGrid();
+	if (Candidates.IsEmpty() || !Grid)
+	{
+		UE_LOG(LogRogueRigs, Verbose, TEXT("ARREnemySpawner %s: no spawn cell available."), *GetName());
+		return nullptr;
+	}
+
+	const FIntPoint Cell = Candidates[FMath::RandRange(0, Candidates.Num() - 1)];
+	const float HalfHeight = EnemyClass->GetDefaultObject<ARREnemy>()->GetCapsuleComponent()->GetScaledCapsuleHalfHeight();
+	const FVector Location = Grid->GetCellCenter(Cell.X, Cell.Y) + FVector(0.f, 0.f, HalfHeight + SpawnFloorClearance);
+	FActorSpawnParameters Params;
+	Params.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AdjustIfPossibleButAlwaysSpawn;
+	ARREnemy* Enemy = World->SpawnActor<ARREnemy>(EnemyClass, Location, FRotator::ZeroRotator, Params);
+	if (Enemy)
+	{
+		AliveEnemies.Add(Enemy);
+		UE_LOG(LogRogueRigs, Verbose, TEXT("ARREnemySpawner %s: %s spawned on (%d, %d), %d alive."), *GetName(), *Enemy->GetName(),
+			Cell.X, Cell.Y, AliveEnemies.Num());
+	}
+	return Enemy;
+}
+
+void ARREnemySpawner::PruneAlive()
+{
+	AliveEnemies.RemoveAll([](const TWeakObjectPtr<ARREnemy>& Enemy)
+	{
+		return !Enemy.IsValid() || Enemy->IsActorBeingDestroyed() || Enemy->IsDead();
+	});
+}
+
+int32 ARREnemySpawner::GetAliveCount()
+{
+	PruneAlive();
+	return AliveEnemies.Num();
+}
+
+TArray<ARREnemy*> ARREnemySpawner::GetAliveEnemies()
+{
+	PruneAlive();
+	TArray<ARREnemy*> Result;
+	for (const TWeakObjectPtr<ARREnemy>& Enemy : AliveEnemies)
+	{
+		Result.Add(Enemy.Get());
+	}
+	return Result;
+}
