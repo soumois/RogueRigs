@@ -3,7 +3,7 @@ id: task-009-chaser
 description: "Global task: the chaser robot with player health, i-frames, death and game over, grid flow-field movement, enemy base, spawner, HUD and tests."
 parent: tasks-index
 kind: task
-status: in-progress
+status: review
 ---
 # Chaser robot
 
@@ -13,8 +13,8 @@ status: in-progress
 - gdd_check: read [[enemies-index]], [[enemy-chaser]], [[enemy-death]], [[sys-enemy-ai]], [[sys-damage]], [[sys-gas-core]], [[miner]], [[run-structure]], [[difficulty]], [[xp-level-up]], [[perf-risks]]. Conflict: owner asked for navmesh, [[sys-enemy-ai]] chose a grid flow field → owner chose the flow field behind a generic movement component (2026-10-02). Open values set by the owner (2026-10-02): chaser stats, wind-up 0.25 s, size 0.7, i-frames 0.25 s, M1 death flow, spawn rule, M1 robot death, C++ state machine. Out: difficulty scaling (open), XP system (next task; the cube is inert), kamikaze, death debris (M3).
 - confirmed_by_owner: yes (2026-10-02, all subtasks pre-approved)
 - milestone: M1
-- next_step: task-009-07-tests-perf
-- result: open
+- next_step: none (owner: play it)
+- result: acceptance 1 to 7 passed: 35/35 headless tests; flow field with swappable provider; chaser from CSV; i-frames and single death proven; 50 chasers at 2.5 ms average game-thread tick headless. PIE: 7 chasers spawned after 8 s, no gameplay error; HUD look, chaser feel and game over on screen await the owner (8). Notes: real chaser cadence 1.27 s (recover 1/AttackRate then 0.25 s wind-up), CSV read per spawn, sys-automation-tests to split. About 720k tokens over seven subtasks.
 
 ## Subtasks
 1. task-009-01-player-damage — cpp: flat damage GE, i-frames, single death, enemy attribute set.

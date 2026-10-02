@@ -3,7 +3,7 @@ id: task-009-07-tests-perf
 description: "Integration tests with the final Blueprints (chasers reach and hit the miner around rocks, die to the rifle) and a 50-chaser headless timing run."
 parent: task-009-chaser
 kind: task
-status: in-progress
+status: done
 ---
 # Integration tests and first performance read
 
@@ -16,7 +16,7 @@ status: in-progress
 - editor_state: closed
 - token_ceiling: 80000
 - milestone: M1
-- result: open
+- result: 4 Integration tests: chaser from (34, 34) takes a 15-step winding path, hits at 6.6 s; rifle kills a chaser 1283 uu out at 1.27 s with 1 XP drop; 10 chaser hits kill the miner, game over once, restart armed 3 s; 50 chasers 600 frames. First perf read (headless, no rendering): world tick avg 2.5 ms, p95 3.3 ms, max 5.0 ms; flow-field recompute 0.32 to 0.36 ms; recorded in [[perf-risks]]. Build exit 0, 35/35 (orchestrator re-ran). No bug found. About 91k tokens.
 
 ## Relations
 - [[task-009-chaser]] — parent global task.
