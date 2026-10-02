@@ -3,7 +3,7 @@ id: task-009-03-flow-field
 description: "Grid BFS flow field toward the miner, a path-provider interface, and a generic enemy movement component that follows any provider."
 parent: task-009-chaser
 kind: task
-status: todo
+status: in-progress
 ---
 # Flow field and generic enemy movement
 

@@ -9,13 +9,14 @@
 class ARRMiner;
 class UInputAction;
 class UInputMappingContext;
+class URRHUDWidget;
 struct FInputActionValue;
 
 /**
  * Player controller of a run. Adds DefaultMappingContext to the local player's Enhanced Input subsystem,
  * binds the move and aim actions and forwards them to the possessed ARRMiner. Shows the mouse cursor;
  * hides it while a stick aims, shows it again on mouse movement. Assets are assigned in the Blueprint
- * subclass. No gameplay logic here.
+ * subclass. Creates the HUD widget (HUDWidgetClass) for a local player. No gameplay logic here.
  */
 UCLASS(Abstract)
 class ROGUERIGS_API ARRPlayerController : public APlayerController
@@ -26,7 +27,16 @@ public:
 	/** Shows the mouse cursor by default. */
 	ARRPlayerController(const FObjectInitializer& ObjectInitializer = FObjectInitializer::Get());
 
+	/** The HUD widget created at BeginPlay; null without a local player or without HUDWidgetClass. */
+	URRHUDWidget* GetHUDWidget() const { return HUDWidget; }
+
 protected:
+	/** Local player only: creates HUDWidgetClass, adds it to the viewport and binds it to the game mode and the possessed miner. */
+	virtual void BeginPlay() override;
+
+	/** Rebinds the HUD widget to the newly possessed miner. */
+	virtual void OnPossess(APawn* InPawn) override;
+
 	/** Adds the mapping context (local controller only) and binds the input actions. */
 	virtual void SetupInputComponent() override;
 
@@ -65,4 +75,12 @@ protected:
 	/** If true, the cursor is hidden while a stick aims and shown again when the mouse moves. */
 	UPROPERTY(EditDefaultsOnly, Category = "Input")
 	bool bHideCursorWhileStickAiming = true;
+
+	/** HUD widget class created at BeginPlay (a Blueprint subclass of URRHUDWidget). None = no HUD. */
+	UPROPERTY(EditDefaultsOnly, Category = "HUD")
+	TSubclassOf<URRHUDWidget> HUDWidgetClass;
+
+	/** The HUD widget created from HUDWidgetClass. */
+	UPROPERTY(Transient)
+	TObjectPtr<URRHUDWidget> HUDWidget;
 };

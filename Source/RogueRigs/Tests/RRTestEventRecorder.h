@@ -1,4 +1,4 @@
-// Rogue Rigs - test-only listener: records dynamic delegate broadcasts (pickup collected, cell destroyed, auto-fire shots and reloads, projectile stop, component hit) for the automation tests.
+// Rogue Rigs - test-only listener: records dynamic delegate broadcasts (pickup collected, cell destroyed, auto-fire shots and reloads, projectile stop, component hit, game over) for the automation tests.
 
 #pragma once
 
@@ -15,7 +15,7 @@ class UAbilitySystemComponent;
 /**
  * Records the broadcasts of ARRMiner::OnPickupCollected, ARRArenaGrid::OnCellDestroyed, the URRAutoFireComponent
  * events (OnShotFired, OnReloadStarted, OnReloadFinished), UProjectileMovementComponent::OnProjectileStop and
- * UPrimitiveComponent::OnComponentHit so
+ * UPrimitiveComponent::OnComponentHit and ARRGameMode::OnGameOver so
  * automation tests (Source/RogueRigs/Tests) can check that the events fire. Dynamic delegates need a UFunction to
  * bind to, so this is a UCLASS and is compiled in every configuration (UHT does not support WITH_DEV_AUTOMATION_TESTS
  * guards); it is never used by gameplay code. Create with NewObject, keep it alive with a TStrongObjectPtr.
@@ -53,6 +53,13 @@ public:
 	/** Bind to UPrimitiveComponent::OnComponentHit (e.g. the miner capsule): appends the blocking hit. */
 	UFUNCTION()
 	void HandleComponentHit(UPrimitiveComponent* HitComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, FVector NormalImpulse, const FHitResult& Hit) { ComponentHits.Add(Hit); }
+
+	/** Bind to ARRGameMode::OnGameOver: counts the broadcasts. */
+	UFUNCTION()
+	void HandleGameOver() { ++GameOverCount; }
+
+	/** Number of OnGameOver broadcasts received through HandleGameOver. */
+	int32 GetGameOverCount() const { return GameOverCount; }
 
 	/** Sets the ASC whose Ammo is sampled when a reload finishes (the weapon ASC). */
 	void SetAmmoSource(UAbilitySystemComponent* InAmmoSource) { AmmoSource = InAmmoSource; }
@@ -99,6 +106,9 @@ protected:
 
 	/** Blocking hits received so far. */
 	TArray<FHitResult> ComponentHits;
+
+	/** Game over broadcasts received so far. */
+	int32 GameOverCount = 0;
 
 	/** ASC sampled by HandleReloadFinished. */
 	TWeakObjectPtr<UAbilitySystemComponent> AmmoSource;

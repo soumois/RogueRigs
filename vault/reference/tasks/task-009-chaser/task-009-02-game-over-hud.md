@@ -3,7 +3,7 @@ id: task-009-02-game-over-hud
 description: "Game-over flow on miner death (input cut, event, level restart after 3 s) and a C++ HUD widget base fed with health and game-over events."
 parent: task-009-chaser
 kind: task
-status: in-progress
+status: done
 ---
 # Game over and HUD base
 
@@ -16,7 +16,7 @@ status: in-progress
 - editor_state: closed
 - token_ceiling: 60000
 - milestone: M1
-- result: open
+- result: ARRGameMode RegisterMiner (called by the miner at BeginPlay), OnGameOver once, input disabled, RestartDelay 3 s then OpenLevel(current); URRHUDWidget (OnHealthChanged, OnGameOver; binds ASC Health and MaxHealth); ARRPlayerController HUDWidgetClass, created only with a local player. Test Player.GameOver. Build exit 0, 18/18 (orchestrator re-ran). New doc sys-hud; sys-player, sys-automation-tests, systems-index, build-toolchain. About 84k tokens.
 
 ## Relations
 - [[task-009-chaser]] — parent global task.

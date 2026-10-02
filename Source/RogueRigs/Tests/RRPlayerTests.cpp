@@ -12,7 +12,10 @@
 #include "GAS/RREnemyAttributeSet.h"
 #include "GAS/RRGameplayTags.h"
 #include "GAS/RRHealthAttributeSet.h"
+#include "Player/RRGameMode.h"
+#include "Tests/RRTestEventRecorder.h"
 #include "Tests/RRTestHarness.h"
+#include "UObject/StrongObjectPtr.h"
 #include "Weapons/RRAutoFireComponent.h"
 #include "Weapons/RRWeapon.h"
 
@@ -25,6 +28,15 @@ namespace RRPlayerTests
 
 	/** Flat damage of one test hit (task-009-01: 10 lowers 100 to 90). */
 	constexpr float HitDamage = 10.f;
+
+	/** Blueprint of the run game mode. */
+	const TCHAR* const GameModeClassPath = TEXT("/Game/RogueRigs/Blueprints/Player/BP_RRGameMode.BP_RRGameMode_C");
+
+	/** Reads protected ARRGameMode members (never instantiated). */
+	struct FGameModeAccess : public ARRGameMode
+	{
+		static float& Delay(ARRGameMode* GameMode) { return GameMode->*(&FGameModeAccess::RestartDelay); }
+	};
 
 	/** Spawns the grid and BP_Miner on a floor cell, with Health = MaxHealth = TestMaxHealth. Null on failure. */
 	ARRMiner* SpawnTestMiner(FAutomationTestBase& Test, const FTestWorld& TestWorld)
@@ -224,6 +236,63 @@ bool FRRPlayerDeathOnceTest::RunTest(const FString& Parameters)
 
 	HealthSet->OnDeath.Remove(DeathHandle);
 	HealthSet->OnDamageReceived.Remove(HitHandle);
+	return true;
+}
+
+IMPLEMENT_SIMPLE_AUTOMATION_TEST(FRRPlayerGameOverTest, "RogueRigs.Player.GameOver",
+	EAutomationTestFlags::EditorContext | EAutomationTestFlags::EngineFilter)
+
+bool FRRPlayerGameOverTest::RunTest(const FString& Parameters)
+{
+	using namespace RRPlayerTests;
+
+	UClass* GameModeClass = LoadTestClass<ARRGameMode>(*this, GameModeClassPath);
+	if (!GameModeClass)
+	{
+		return false;
+	}
+	TestEqual(TEXT("default RestartDelay is 3 s"), GameModeClass->GetDefaultObject<ARRGameMode>()->GetRestartDelay(), 3.f);
+
+	FTestWorld TestWorld(TEXT("RRPlayerGameOver"));
+	ARRMiner* Miner = SpawnTestMiner(*this, TestWorld);
+	ARRGameMode* GameMode = TestWorld.Spawn<ARRGameMode>(GameModeClass, FVector::ZeroVector);
+	if (!Miner || !TestNotNull(TEXT("game mode spawned"), GameMode))
+	{
+		return false;
+	}
+
+	// A configured delay other than the default proves the timer reads the property.
+	constexpr float ConfiguredDelay = 4.5f;
+	FGameModeAccess::Delay(GameMode) = ConfiguredDelay;
+
+	TStrongObjectPtr<URRTestEventRecorder> Recorder(NewObject<URRTestEventRecorder>());
+	GameMode->OnGameOver.AddDynamic(Recorder.Get(), &URRTestEventRecorder::HandleGameOver);
+	// No authority game mode in the test world: register as ARRMiner::BeginPlay does in a run.
+	GameMode->RegisterMiner(Miner);
+	GameMode->RegisterMiner(Miner);
+
+	TestFalse(TEXT("no game over while alive"), GameMode->IsGameOver());
+	TestEqual(TEXT("no restart armed while alive"), GameMode->GetRestartTimeRemaining(), -1.f);
+
+	UAbilitySystemComponent* Enemy = SpawnEnemySource(TestWorld, 1.f);
+	ApplyFlatDamage(Enemy, Miner->GetAbilitySystemComponent(), 150.f);
+	TestTrue(TEXT("miner dead"), Miner->IsDead());
+	TestEqual(TEXT("game over fired once on death (registered twice)"), Recorder->GetGameOverCount(), 1);
+	TestTrue(TEXT("IsGameOver"), GameMode->IsGameOver());
+	TestEqual(TEXT("restart armed with the configured delay"), GameMode->GetRestartTimeRemaining(), ConfiguredDelay, 1.e-4f);
+
+	// A second death broadcast does not end the run again nor re-arm the timer; ticks stay below the delay (no travel).
+	constexpr int32 Frames = 30;
+	for (int32 Frame = 0; Frame < Frames; ++Frame)
+	{
+		TestWorld.Tick();
+	}
+	Miner->OnDeath.Broadcast(nullptr);
+	TestEqual(TEXT("game over still fired once"), Recorder->GetGameOverCount(), 1);
+	// The timer manager skips the frame the timer was set in (measured: 29 of 30 frames counted).
+	const float Remaining = GameMode->GetRestartTimeRemaining();
+	TestTrue(FString::Printf(TEXT("restart timer counts down, not re-armed (%.4f s left)"), Remaining),
+		Remaining >= ConfiguredDelay - Frames * FrameSeconds - 1.e-3f && Remaining <= ConfiguredDelay - (Frames - 1) * FrameSeconds + 1.e-3f);
 	return true;
 }
 

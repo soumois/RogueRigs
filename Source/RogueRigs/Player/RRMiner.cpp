@@ -19,6 +19,7 @@
 #include "GAS/RRMovementAttributeSet.h"
 #include "GAS/RRPlayerAttributeSet.h"
 #include "Grid/RRArenaGrid.h"
+#include "Player/RRGameMode.h"
 #include "Projectiles/RRCollisionChannels.h"
 #include "RogueRigs.h"
 #include "Weapons/RRAutoFireComponent.h"
@@ -108,6 +109,12 @@ void ARRMiner::BeginPlay()
 	// Damage reactions (sys-damage): i-frames from the hit callback (same call stack as the damage), single death.
 	DamageReceivedHandle = HealthSet->OnDamageReceived.AddUObject(this, &ARRMiner::HandleDamageReceived);
 	DeathHandle = HealthSet->OnDeath.AddUObject(this, &ARRMiner::HandleDeath);
+
+	// Game over: the run game mode listens to OnDeath (no game mode in the test worlds).
+	if (ARRGameMode* GameMode = GetWorld()->GetAuthGameMode<ARRGameMode>())
+	{
+		GameMode->RegisterMiner(this);
+	}
 
 	SpawnDrone();
 	FindArenaGrid();

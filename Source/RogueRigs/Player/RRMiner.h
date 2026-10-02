@@ -47,7 +47,8 @@ DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FRROnMinerDeathSignature, AActor*, I
  * IFramesEffectClass (URRGE_IFrames, State.Invulnerable for IFramesDuration, SetByCaller Data.Duration) to itself in the
  * same call stack, and blinks its mesh at BlinkRate until the i-frames end (visibility restored). On the health set
  * OnDeath (single death, State.Dead added by the set) it stops moving, ignores move and aim input, stops its weapons
- * firing and broadcasts OnDeath.
+ * firing and broadcasts OnDeath. At BeginPlay it registers with the run game mode (ARRGameMode::RegisterMiner), which
+ * turns OnDeath into the game over.
  * Subclass in Blueprint for the mesh and animation.
  */
 UCLASS(Abstract)

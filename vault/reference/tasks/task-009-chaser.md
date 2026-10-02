@@ -13,7 +13,7 @@ status: in-progress
 - gdd_check: read [[enemies-index]], [[enemy-chaser]], [[enemy-death]], [[sys-enemy-ai]], [[sys-damage]], [[sys-gas-core]], [[miner]], [[run-structure]], [[difficulty]], [[xp-level-up]], [[perf-risks]]. Conflict: owner asked for navmesh, [[sys-enemy-ai]] chose a grid flow field → owner chose the flow field behind a generic movement component (2026-10-02). Open values set by the owner (2026-10-02): chaser stats, wind-up 0.25 s, size 0.7, i-frames 0.25 s, M1 death flow, spawn rule, M1 robot death, C++ state machine. Out: difficulty scaling (open), XP system (next task; the cube is inert), kamikaze, death debris (M3).
 - confirmed_by_owner: yes (2026-10-02, all subtasks pre-approved)
 - milestone: M1
-- next_step: task-009-02-game-over-hud
+- next_step: task-009-03-flow-field
 - result: open
 
 ## Subtasks

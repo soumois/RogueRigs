@@ -6,12 +6,13 @@ kind: note
 ---
 # C++ systems
 
-Decision status inside each doc: approved, provisional, deferred or open. Planned, not written yet: sys-run-flow, sys-logging.
+Decision status inside each doc: approved, provisional, deferred or open. Planned, not written yet: sys-run-flow (beyond the M1 game over in sys-player), sys-logging.
 
 ## Relations
 - [[tech-index]] — parent index.
 - [[sys-gas-core]] — which actors own an ASC, AttributeSets, plugin setup, debug tools. Read first for any GAS work.
 - [[sys-player]] — miner pawn (ASC, base stats, camera, move and aim), player controller input routing, game mode.
+- [[sys-hud]] — HUD widget C++ base: health and game-over display events, created by the player controller.
 - [[sys-drone]] — helper drone actor spawned by the miner: state enum, orbit tunables, MiningSpeed read.
 - [[sys-damage]] — damage chain from shot to death, i-frames, death guard.
 - [[sys-status-effects]] — stacking rules for bonuses and statuses, enemy stun.

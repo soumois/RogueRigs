@@ -8,13 +8,46 @@
 #include "InputAction.h"
 #include "InputActionValue.h"
 #include "InputMappingContext.h"
+#include "Player/RRGameMode.h"
 #include "Player/RRMiner.h"
 #include "RogueRigs.h"
+#include "UI/RRHUDWidget.h"
 
 ARRPlayerController::ARRPlayerController(const FObjectInitializer& ObjectInitializer)
 	: Super(ObjectInitializer)
 {
 	bShowMouseCursor = true;
+}
+
+void ARRPlayerController::BeginPlay()
+{
+	Super::BeginPlay();
+
+	// Headless runs and non-local controllers have no viewport: no HUD.
+	if (!HUDWidgetClass || !IsLocalPlayerController() || !GetLocalPlayer())
+	{
+		return;
+	}
+
+	HUDWidget = CreateWidget<URRHUDWidget>(this, HUDWidgetClass);
+	if (!HUDWidget)
+	{
+		UE_LOG(LogRogueRigs, Error, TEXT("%s: could not create the HUD widget %s."), *GetName(), *GetNameSafe(HUDWidgetClass));
+		return;
+	}
+	HUDWidget->AddToViewport();
+	HUDWidget->BindToGameMode(GetWorld()->GetAuthGameMode<ARRGameMode>());
+	HUDWidget->BindToMiner(GetMiner());
+}
+
+void ARRPlayerController::OnPossess(APawn* InPawn)
+{
+	Super::OnPossess(InPawn);
+
+	if (HUDWidget)
+	{
+		HUDWidget->BindToMiner(Cast<ARRMiner>(InPawn));
+	}
 }
 
 void ARRPlayerController::SetupInputComponent()
