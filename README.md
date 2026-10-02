@@ -98,7 +98,7 @@ The owner types `/task <request>` in a Claude Code session opened on this repo (
 
 ## Run log
 
-Eight requests have gone through the crew so far (full records in `vault/reference/tasks/`):
+Nine requests have gone through the crew so far (full records in `vault/reference/tasks/`):
 
 | Task | Request | Result |
 |---|---|---|
@@ -110,6 +110,19 @@ Eight requests have gone through the crew so far (full records in `vault/referen
 | 006 | Digging | block destruction, drone laser, block shake, ore and heal pickups; 6 automation tests; about 490k tokens |
 | 007 | Burst rifle and target dummy | auto-fire bursts, GAS damage with criticals, floating damage numbers, dummy that refills |
 | 008 | Feel fixes from playtest | shot height, free movement while firing, burst pause, readable numbers; 14/14 tests pass; about 300k tokens |
+| 009 | Chaser robot | player damage, 0.25 s i-frames, single death and game over; grid flow field behind a swappable path provider; enemy base class, chaser state machine, spawner, HUD; 35/35 tests; 50 chasers at 2.5 ms per tick; about 720k tokens |
+
+## Evidence: two real runs
+
+Both captures are unmodified output of the Orchestrator session (the Claude app was set to French). Left: the original screenshots, stitched in order. Right: an English translation, retyped, not a screenshot.
+
+**Task 002, cleanup.** The Orchestrator asks its GDD-check questions, waits for answers, plans, delegates to `bp`, `level-design` and `cpp` in turn, sends a subtask back to the same agent when a check fails, and closes with a per-agent report.
+
+![Task 002 run: original French output and English translation](docs/images/crew-run-bilingual.png)
+
+**Task 009, chaser robot.** The owner asks for NavMesh movement; the GDD check finds a conflict with the grid flow field chosen earlier, lays out both options and proposes values for every `open` field. After one confirmation, seven subtasks run back to back (six `cpp`, one `bp`), each followed by a build and the full test suite. The Orchestrator also finds and removes a stale git lock by itself.
+
+![Task 009 run: original French output and English translation](docs/images/crew-run-009-bilingual.png)
 
 ## Lessons so far
 
