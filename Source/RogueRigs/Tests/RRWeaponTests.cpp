@@ -1,4 +1,4 @@
-// Rogue Rigs - automation tests of the weapon rules (RogueRigs.Weapons.*): burst timing, magazine and reload, projectile stop on rock, GAS damage and crits on the target dummy, dummy refill, miner starting weapon and shot origin, miner moving while firing.
+// Rogue Rigs - automation tests of the weapon rules (RogueRigs.Weapons.*): burst timing, magazine and reload, projectile stop on rock, GAS damage and crits on the target dummy, dummy refill, miner starting weapon and shot origin, miner moving while firing, miner shots hitting a floor dummy.
 
 #include "CoreMinimal.h"
 #include "Misc/AutomationTest.h"
@@ -873,6 +873,109 @@ bool FRRWeaponMinerMovesWhileFiringTest::RunTest(const FString& Parameters)
 	TestEqual(TEXT("no non-floor hit while firing in the open corridor"), Firing.OtherHits, 0);
 	TestTrue(TEXT("no sideways push while firing (drift < 5 % of the distance)"), Firing.LateralDrift < 0.05 * FMath::Max(Firing.Distance, 1.0));
 	TestTrue(TEXT("firing keeps at least 90 % of the distance"), Ratio >= 0.9);
+	return true;
+}
+
+namespace RRWeaponTests
+{
+	/** Open column of arena_m1 (x = 38, y = 39..44 floor, neighbours open): the miner stands on MinerAimCell, the dummy 3 cells north (-Y). */
+	const FIntPoint MinerAimCell(38, 43);
+	const FIntPoint MinerAimDummyCell(38, 40);
+
+	/** Stick input (screen axes: X right, Y up) aiming from MinerAimCell at MinerAimDummyCell: screen left = world -Y with CameraYaw 0. */
+	const FVector2D MinerAimStickInput(-1.f, 0.f);
+
+	/** Time the dummy has to take its first hit from the miner. */
+	constexpr float MinerHitDeadlineSeconds = 2.f;
+
+	/** Expected height of BP_TargetDummy (scale 1.6) and tolerance. */
+	constexpr float DummyHeight = 160.f;
+	constexpr float DummyHeightTolerance = 1.f;
+}
+
+IMPLEMENT_SIMPLE_AUTOMATION_TEST(FRRWeaponMinerHitsFloorDummyTest, "RogueRigs.Weapons.MinerHitsFloorDummy",
+	EAutomationTestFlags::EditorContext | EAutomationTestFlags::EngineFilter)
+
+bool FRRWeaponMinerHitsFloorDummyTest::RunTest(const FString& Parameters)
+{
+	FTestWorld TestWorld(TEXT("RRWeaponTestWorld"));
+	ARRArenaGrid* Grid = SpawnGrid(*this, TestWorld);
+	if (!Grid)
+	{
+		return false;
+	}
+	for (int32 Y = MinerAimDummyCell.Y; Y <= MinerAimCell.Y; ++Y)
+	{
+		TestFalse(FString::Printf(TEXT("(%d, %d) is open floor"), MinerAimCell.X, Y), Grid->IsBlockCell(FIntPoint(MinerAimCell.X, Y)));
+	}
+
+	// Dummy resting on the floor of its cell (final BP_TargetDummy: 160 uu, centered mesh, so actor Z = floor + 80).
+	const FVector DummyFloor = Grid->GetCellCenter(MinerAimDummyCell.X, MinerAimDummyCell.Y);
+	ARRTargetDummy* Dummy = SpawnDummy(*this, TestWorld, DummyFloor);
+	// Final BP_Miner as authored (no socket override): starting BP_BurstRifle, firing from BeginPlay.
+	ARRMiner* Miner = Dummy ? SpawnMiner(*this, TestWorld, Grid, MinerAimCell) : nullptr;
+	UClass* RifleClass = LoadTestClass<ARRWeapon>(*this, BurstRifleClassPath);
+	if (!Miner || !RifleClass)
+	{
+		return false;
+	}
+	EnableMinerMovement(Miner);
+
+	const FBox DummyBounds = Dummy->GetComponentsBoundingBox(/*bNonColliding*/ false);
+	AddInfo(FString::Printf(TEXT("dummy at %s (%.1f uu above the floor), collision bounds %s"),
+		*Dummy->GetActorLocation().ToCompactString(), Dummy->GetActorLocation().Z - DummyFloor.Z, *DummyBounds.ToString()));
+	TestTrue(TEXT("dummy rests on the floor"), DummyBounds.IsValid && FMath::IsNearlyEqual(DummyBounds.Min.Z, DummyFloor.Z, 0.5f));
+	TestTrue(TEXT("dummy is 160 uu tall"), FMath::IsNearlyEqual(DummyBounds.Max.Z - DummyBounds.Min.Z, DummyHeight, DummyHeightTolerance));
+
+	if (!TestEqual(TEXT("one starting weapon"), Miner->GetWeapons().Num(), 1))
+	{
+		return false;
+	}
+	ARRWeapon* Weapon = Miner->GetWeapons()[0];
+	if (!TestTrue(TEXT("starting weapon valid"), IsValid(Weapon)))
+	{
+		return false;
+	}
+	TestTrue(TEXT("starting weapon is a BP_BurstRifle"), Weapon->IsA(RifleClass));
+	TestTrue(TEXT("auto-fire running"), Weapon->GetAutoFireComponent()->IsFiring());
+
+	// Aim toward the dummy through the stick-aim path, before the first tick.
+	Miner->ApplyStickAimInput(MinerAimStickInput);
+	const FVector ToDummy = (DummyFloor - Miner->GetActorLocation()).GetSafeNormal2D();
+	TestTrue(FString::Printf(TEXT("miner aims at the dummy (aim %s, to dummy %s)"), *Miner->GetAimDirection().ToCompactString(), *ToDummy.ToCompactString()),
+		Miner->GetAimDirection().Equals(ToDummy, 1e-3f));
+
+	UAbilitySystemComponent* DummyASC = Dummy->GetAbilitySystemComponent();
+	const float MaxHealth = DummyASC->GetNumericAttribute(URRHealthAttributeSet::GetMaxHealthAttribute());
+	TestNearlyEqual(TEXT("dummy starts at MaxHealth"), DummyHealth(Dummy), MaxHealth);
+
+	TArray<FDummyHit> Hits;
+	URRHealthAttributeSet* HealthSet = FDummyAccess::HealthSetOf(Dummy);
+	const FDelegateHandle HitHandle = HealthSet->OnDamageReceived.AddLambda([&Hits](float Damage, bool bIsCritical, float HealthLeft)
+	{
+		Hits.Add({ Damage, bIsCritical, HealthLeft });
+	});
+
+	// Tick until the dummy loses health or the deadline passes. The dummy refills 3 s after the last hit, so within 2 s
+	// a hit leaves Health below MaxHealth.
+	const int32 MaxFrames = FMath::CeilToInt32(MinerHitDeadlineSeconds / FrameSeconds);
+	int32 FirstHitFrame = INDEX_NONE;
+	for (int32 Frame = 1; Frame <= MaxFrames && FirstHitFrame == INDEX_NONE; ++Frame)
+	{
+		TestWorld.Tick();
+		if (DummyHealth(Dummy) < MaxHealth)
+		{
+			FirstHitFrame = Frame;
+		}
+	}
+	const float HealthAfter = DummyHealth(Dummy);
+	AddInfo(FString::Printf(TEXT("first hit at frame %d (%.3f s); shots fired %d; hits %d; health %.1f / %.1f"),
+		FirstHitFrame, FirstHitFrame * FrameSeconds, Weapon->GetAutoFireComponent()->GetTotalShotsFired(), Hits.Num(), HealthAfter, MaxHealth));
+	TestTrue(TEXT("the miner's shots hit the floor dummy within 2 s"), FirstHitFrame != INDEX_NONE);
+	TestTrue(TEXT("dummy Health below MaxHealth"), HealthAfter < MaxHealth);
+	TestTrue(TEXT("damage received through the health set"), Hits.Num() > 0);
+
+	HealthSet->OnDamageReceived.Remove(HitHandle);
 	return true;
 }
 

@@ -3,7 +3,7 @@ id: task-007-burst-rifle-dummy
 description: "Global task: the burst rifle (weapon ASC, auto-fire bursts, projectiles, GAS damage with crits) and an immobile target dummy showing hits."
 parent: tasks-index
 kind: task
-status: in-progress
+status: done
 ---
 # Burst rifle and target dummy
 
@@ -13,8 +13,8 @@ status: in-progress
 - gdd_check: read [[burst-rifle]], [[sys-weapons]], [[sys-auto-fire]], [[sys-projectiles]], [[sys-damage]], [[damage-numbers]], [[sys-gas-core]], [[color-code]]. Open values set by the owner (2026-10-01) in [[burst-rifle]]; final weapon name stays open (`BurstRifle` used as working name). Damage numbers are M2: an M1 debug text on the dummy only, recorded in [[damage-numbers]]. The target dummy is a test tool, not a GDD entity. Out of scope: shotgun, turret, upgrades, enemy death, i-frames.
 - confirmed_by_owner: yes
 - milestone: M1
-- next_step: task-007-05-weapon-tests (blocked, resolved by task-008)
-- result: open
+- next_step: none
+- result: all acceptance checks passed through headless tests (bursts, reload, rock stop, damage 10/15, refill); owner fired in PIE (2026-10-02); feel fixes in task-008.
 
 ## Subtasks
 1. task-007-01-weapon-autofire — cpp: weapon attribute set, `ARRWeapon`, weapon CSV, auto-fire component, miner equips it.

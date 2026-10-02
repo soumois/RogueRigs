@@ -3,7 +3,7 @@ id: task-008-04-tests-final
 description: "Headless test that a shot fired by BP_Miner hits a floor-standing BP_TargetDummy, then the full RogueRigs test run with the final Blueprints."
 parent: task-008-feel-fixes
 kind: task
-status: in-progress
+status: done
 ---
 # Final tests
 
@@ -16,7 +16,7 @@ status: in-progress
 - editor_state: closed
 - token_ceiling: 50000
 - milestone: M1
-- result: open
+- result: new test Weapons.MinerHitsFloorDummy: BP_Miner on (38, 43) aims −Y at a 160 uu BP_TargetDummy on (38, 40) resting on the floor; first hit at 0.167 s, Health 990. Full run 14/14 pass (orchestrator re-ran). No bug found. Doc sys-automation-tests. About 48k tokens.
 
 ## Relations
 - [[task-008-feel-fixes]] — parent global task.
