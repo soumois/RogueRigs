@@ -145,6 +145,14 @@ task-008-02-feel-values  reference/tasks/task-008-feel-fixes/task-008-02-feel-va
 task-008-03-bp-miner-dummy  reference/tasks/task-008-feel-fixes/task-008-03-bp-miner-dummy.md
 task-008-04-tests-final  reference/tasks/task-008-feel-fixes/task-008-04-tests-final.md
 task-008-feel-fixes  reference/tasks/task-008-feel-fixes.md
+task-009-01-player-damage  reference/tasks/task-009-chaser/task-009-01-player-damage.md
+task-009-02-game-over-hud  reference/tasks/task-009-chaser/task-009-02-game-over-hud.md
+task-009-03-flow-field  reference/tasks/task-009-chaser/task-009-03-flow-field.md
+task-009-04-enemy-chaser  reference/tasks/task-009-chaser/task-009-04-enemy-chaser.md
+task-009-05-spawner  reference/tasks/task-009-chaser/task-009-05-spawner.md
+task-009-06-bp-chaser  reference/tasks/task-009-chaser/task-009-06-bp-chaser.md
+task-009-07-tests-perf  reference/tasks/task-009-chaser/task-009-07-tests-perf.md
+task-009-chaser  reference/tasks/task-009-chaser.md
 tasks-index  reference/tasks/tasks-index.md
 tech-index  reference/tech/tech-index.md
 terrain-index  reference/gdd/terrain/terrain-index.md

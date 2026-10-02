@@ -15,7 +15,7 @@ status: approved
 - Debris systems are pooled.
 - A robot dies exactly once ([[sys-damage]]).
 - Chaos Destruction is not used, for robots or terrain.
-- Milestone: M3 (juice pass).
+- Milestone: M3 (juice pass). M1: the robot shrinks for 0.15 s, disappears and drops its XP cube (owner 2026-10-02).
 
 Robots knocked into the void by explosions: [[wishlist]].
 

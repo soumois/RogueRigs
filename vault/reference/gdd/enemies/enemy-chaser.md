@@ -11,12 +11,13 @@ status: approved
 - locomotion: biped
 - rig: rigid parts, one bone per part
 - parts: open
-- size: small; ratio to the miner open
+- size: small; 0.7 × the miner (provisional, owner 2026-10-02)
 - animations: open
 - behavior: moves straight toward the miner; no line-of-sight requirement.
-- telegraph: open
+- telegraph: 0.25 s wind-up (the robot stops and flashes) before each hit (provisional)
 - colors: bright company yellow; red eyes, yellow logo plate ([[color-code]])
-- stats: hp, speed, damage, attack_rate, range, xp_value, knockback_resistance → open
+- stats (provisional, owner 2026-10-02): hp 30, speed 450 uu/s, damage 10, attack_rate 1/s, range 120 uu, xp_value 1, knockback_resistance 0; parts and animations open
+- grey box (M1): yellow capsule with a red eye
 - milestone: M1
 - references: `vault/assets/enemies-lineup.jpg`
 
