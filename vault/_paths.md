@@ -90,6 +90,7 @@ sys-automation-tests  reference/tech/systems/sys-automation-tests.md
 sys-damage  reference/tech/systems/sys-damage.md
 sys-difficulty  reference/tech/systems/sys-difficulty.md
 sys-drone  reference/tech/systems/sys-drone.md
+sys-enemies  reference/tech/systems/sys-enemies.md
 sys-enemy-ai  reference/tech/systems/sys-enemy-ai.md
 sys-explosions  reference/tech/systems/sys-explosions.md
 sys-flow-field  reference/tech/systems/sys-flow-field.md

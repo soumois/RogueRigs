@@ -1,0 +1,403 @@
+// Rogue Rigs - automation tests of the robots (RogueRigs.Enemies.*): CSV stats, chaser death and XP drop, attack timing, i-frames against two chasers.
+
+#include "CoreMinimal.h"
+#include "Misc/AutomationTest.h"
+
+#if WITH_DEV_AUTOMATION_TESTS
+
+#include "AbilitySystemComponent.h"
+#include "Enemies/RRChaser.h"
+#include "EngineUtils.h"
+#include "FlowField/RREnemyMovementComponent.h"
+#include "GameFramework/CharacterMovementComponent.h"
+#include "GAS/RREnemyAttributeSet.h"
+#include "GAS/RRGameplayTags.h"
+#include "GAS/RRHealthAttributeSet.h"
+#include "GAS/RRMovementAttributeSet.h"
+#include "Projectiles/RRCollisionChannels.h"
+#include "Projectiles/RRProjectile.h"
+#include "Tests/RRTestHarness.h"
+#include "Tests/RRTestPickupXP.h"
+#include "Weapons/RRAutoFireComponent.h"
+#include "Weapons/RRWeapon.h"
+#include "Weapons/RRWeaponAttributeSet.h"
+
+namespace RREnemyTests
+{
+	using namespace RRTestHarness;
+
+	/** Burst rifle Blueprint (the miner's starting weapon). */
+	const TCHAR* const BurstRifleClassPath = TEXT("/Game/RogueRigs/Blueprints/Weapons/BP_BurstRifle.BP_BurstRifle_C");
+
+	/** Open floor row of arena_m1 (as the dummy tests): the chaser stands on TargetCell, the muzzle two cells west. */
+	const FIntPoint TargetCell(44, 41);
+	const FIntPoint ShooterCell(42, 41);
+
+	/** Spawn cell of the miner in the attack tests (open floor, flow field tests). */
+	const FIntPoint MinerCell(40, 40);
+
+	/** Reads and writes protected members (never instantiated). */
+	struct FEnemyAccess : public ARREnemy
+	{
+		static TSubclassOf<ARRPickup>& XPPickupClassOf(ARREnemy* Enemy) { return Enemy->*(&FEnemyAccess::XPPickupClass); }
+	};
+	struct FWeaponAccess : public ARRWeapon
+	{
+		static USceneComponent* MuzzleOf(const ARRWeapon* Weapon) { return Weapon->*(&FWeaponAccess::Muzzle); }
+	};
+
+	/** One hit received by the miner. */
+	struct FHit
+	{
+		double Time = 0.0;
+		float Damage = 0.f;
+	};
+
+	/** Spawns a native ARRChaser with its feet on the floor at FloorLocation (XP drop: ARRTestPickupXP). */
+	ARRChaser* SpawnChaser(FAutomationTestBase& Test, const FTestWorld& TestWorld, const FVector& FloorLocation)
+	{
+		const float HalfHeight = GetDefault<ARRChaser>()->GetCapsuleComponent()->GetScaledCapsuleHalfHeight();
+		const FTransform SpawnTransform(FloorLocation + FVector(0.f, 0.f, HalfHeight + 2.f));
+		ARRChaser* Chaser = TestWorld.Get()->SpawnActorDeferred<ARRChaser>(ARRChaser::StaticClass(), SpawnTransform, nullptr, nullptr,
+			ESpawnActorCollisionHandlingMethod::AlwaysSpawn);
+		if (Test.TestNotNull(TEXT("chaser spawned"), Chaser))
+		{
+			FEnemyAccess::XPPickupClassOf(Chaser) = ARRTestPickupXP::StaticClass();
+			Chaser->FinishSpawning(SpawnTransform);
+		}
+		return Chaser;
+	}
+
+	/** Current value of an attribute on Actor's ASC. */
+	float Attribute(const IAbilitySystemInterface* Actor, const FGameplayAttribute& Attr)
+	{
+		return Actor->GetAbilitySystemComponent()->GetNumericAttribute(Attr);
+	}
+
+	/** Live XP pickups in the world. */
+	TArray<ARRPickup*> GetXPPickups(UWorld* World)
+	{
+		TArray<ARRPickup*> Result;
+		for (TActorIterator<ARRPickup> It(World); It; ++It)
+		{
+			if (IsValid(*It) && It->GetPickupType() == ERRPickupType::XP)
+			{
+				Result.Add(*It);
+			}
+		}
+		return Result;
+	}
+
+	/** Fires exactly one shot from Weapon now (auto-fire re-configured, advanced 1 ms, stopped). Returns the new projectile. */
+	ARRProjectile* FireSingleShot(FAutomationTestBase& Test, ARRWeapon* Weapon)
+	{
+		TSet<ARRProjectile*> Before;
+		for (TActorIterator<ARRProjectile> It(Weapon->GetWorld()); It; ++It)
+		{
+			Before.Add(*It);
+		}
+		URRAutoFireComponent* AutoFire = Weapon->GetAutoFireComponent();
+		AutoFire->Configure(Weapon->GetAbilitySystemComponent(), Weapon->GetBurstCount(), Weapon->GetBurstDuty(), Weapon->GetReloadTime());
+		AutoFire->StartFiring();
+		AutoFire->AdvanceTime(0.001f);
+		AutoFire->StopFiring();
+		for (TActorIterator<ARRProjectile> It(Weapon->GetWorld()); It; ++It)
+		{
+			if (IsValid(*It) && !Before.Contains(*It))
+			{
+				return *It;
+			}
+		}
+		Test.AddError(TEXT("the shot spawned no projectile"));
+		return nullptr;
+	}
+
+	/** Ticks until Projectile is gone (max MaxFrames). Returns the frame, INDEX_NONE if still alive. */
+	int32 TickUntilDestroyed(const FTestWorld& TestWorld, ARRProjectile* Projectile, int32 MaxFrames)
+	{
+		TWeakObjectPtr<ARRProjectile> Weak(Projectile);
+		for (int32 Frame = 1; Frame <= MaxFrames; ++Frame)
+		{
+			TestWorld.Tick();
+			if (!Weak.IsValid() || Weak->IsActorBeingDestroyed())
+			{
+				return Frame;
+			}
+		}
+		return INDEX_NONE;
+	}
+
+	/** Spawns BP_Miner on MinerCell and stops its starting weapons (they would shoot the chasers in front of it). */
+	ARRMiner* SpawnUnarmedMiner(FAutomationTestBase& Test, const FTestWorld& TestWorld, const ARRArenaGrid* Grid)
+	{
+		ARRMiner* Miner = SpawnMiner(Test, TestWorld, Grid, MinerCell);
+		if (Miner)
+		{
+			for (ARRWeapon* Weapon : Miner->GetWeapons())
+			{
+				if (IsValid(Weapon) && Weapon->GetAutoFireComponent())
+				{
+					Weapon->GetAutoFireComponent()->StopFiring();
+				}
+			}
+		}
+		return Miner;
+	}
+
+	/** Records every hit of the miner (time, damage) on its health set. Remove the returned handle when done. */
+	FDelegateHandle RecordHits(ARRMiner* Miner, TArray<FHit>& Hits)
+	{
+		UWorld* World = Miner->GetWorld();
+		return Miner->GetHealthSet()->OnDamageReceived.AddLambda([&Hits, World](float Damage, bool, float)
+		{
+			Hits.Add({ World->GetTimeSeconds(), Damage });
+		});
+	}
+}
+
+IMPLEMENT_SIMPLE_AUTOMATION_TEST(FRREnemyStatsTest, "RogueRigs.Enemies.StatsFromCSV",
+	EAutomationTestFlags::EditorContext | EAutomationTestFlags::EngineFilter)
+
+bool FRREnemyStatsTest::RunTest(const FString& Parameters)
+{
+	using namespace RREnemyTests;
+
+	FRREnemyStatsRow Row;
+	if (!TestTrue(TEXT("EnemyStats.csv row Chaser read"), ARREnemy::LoadStatsRow(TEXT("Chaser"), Row)))
+	{
+		return false;
+	}
+	TestEqual(TEXT("MaxHealth 30"), Row.MaxHealth, 30.f);
+	TestEqual(TEXT("MoveSpeed 450"), Row.MoveSpeed, 450.f);
+	TestEqual(TEXT("Damage 10"), Row.Damage, 10.f);
+	TestEqual(TEXT("AttackRate 1"), Row.AttackRate, 1.f);
+	TestEqual(TEXT("AttackRange 120"), Row.AttackRange, 120.f);
+	TestEqual(TEXT("WindUp 0.25"), Row.WindUp, 0.25f);
+	TestEqual(TEXT("XPValue 1"), Row.XPValue, 1);
+	TestEqual(TEXT("KnockbackResistance 0"), Row.KnockbackResistance, 0.f);
+
+	FTestWorld TestWorld(TEXT("RREnemyStats"));
+	ARRChaser* Chaser = SpawnChaser(*this, TestWorld, FVector::ZeroVector);
+	if (!Chaser)
+	{
+		return false;
+	}
+	TestEqual(TEXT("chaser Stats.Damage from the CSV"), Chaser->GetStats().Damage, 10.f);
+	TestEqual(TEXT("chaser Stats.XPValue from the CSV"), Chaser->GetStats().XPValue, 1);
+	TestEqual(TEXT("MaxHealth attribute 30"), Attribute(Chaser, URRHealthAttributeSet::GetMaxHealthAttribute()), 30.f);
+	TestEqual(TEXT("Health attribute 30"), Attribute(Chaser, URRHealthAttributeSet::GetHealthAttribute()), 30.f);
+	TestEqual(TEXT("MoveSpeed attribute 450"), Attribute(Chaser, URRMovementAttributeSet::GetMoveSpeedAttribute()), 450.f);
+	TestEqual(TEXT("AttackPower starts at 1"), Attribute(Chaser, URREnemyAttributeSet::GetAttackPowerAttribute()), 1.f);
+	TestEqual(TEXT("MaxWalkSpeed mirrors MoveSpeed"), Chaser->GetCharacterMovement()->MaxWalkSpeed, 450.f);
+	TestTrue(TEXT("RVO avoidance on"), Chaser->GetCharacterMovement()->bUseRVOAvoidance);
+	const float Arrival = Chaser->GetEnemyMovement()->GetArrivalDistance();
+	AddInfo(FString::Printf(TEXT("arrival distance %.1f uu"), Arrival));
+	TestTrue(TEXT("arrival distance just under the attack range"), Arrival > 0.f && Arrival < 120.f);
+	TestEqual(TEXT("capsule overlaps Projectile"), Chaser->GetCapsuleComponent()->GetCollisionResponseToChannel(RRCollisionChannels::Projectile), ECR_Overlap);
+	TestEqual(TEXT("starts in Chase"), Chaser->GetState(), ERRChaserState::Chase);
+	return true;
+}
+
+IMPLEMENT_SIMPLE_AUTOMATION_TEST(FRREnemyDeathTest, "RogueRigs.Enemies.ChaserDiesAndDropsXP",
+	EAutomationTestFlags::EditorContext | EAutomationTestFlags::EngineFilter)
+
+bool FRREnemyDeathTest::RunTest(const FString& Parameters)
+{
+	using namespace RREnemyTests;
+
+	FTestWorld TestWorld(TEXT("RREnemyDeath"));
+	ARRArenaGrid* Grid = SpawnGrid(*this, TestWorld);
+	UClass* RifleClass = Grid ? LoadTestClass<ARRWeapon>(*this, BurstRifleClassPath) : nullptr;
+	ARRWeapon* Rifle = RifleClass ? TestWorld.Spawn<ARRWeapon>(RifleClass, FVector::ZeroVector) : nullptr;
+	if (!Rifle || !TestTrue(TEXT("rifle acquired"), Rifle->Acquire(nullptr)))
+	{
+		return false;
+	}
+	Rifle->GetAutoFireComponent()->StopFiring();
+	Rifle->GetAbilitySystemComponent()->SetNumericAttributeBase(URRWeaponAttributeSet::GetCritChanceAttribute(), 0.f);
+
+	ARRChaser* Chaser = SpawnChaser(*this, TestWorld, Grid->GetCellCenter(TargetCell.X, TargetCell.Y));
+	if (!Chaser)
+	{
+		return false;
+	}
+	TWeakObjectPtr<ARRChaser> WeakChaser(Chaser);
+	for (int32 Frame = 0; Frame < 10; ++Frame)
+	{
+		TestWorld.Tick();
+	}
+
+	// Muzzle two cells west at half the block height, aiming +X (as the dummy tests).
+	const FVector MuzzleTarget = Grid->GetCellCenter(ShooterCell.X, ShooterCell.Y) + FVector(0.f, 0.f, 0.5f * Grid->GetBlockHeight());
+	const FVector MuzzleOffset = FWeaponAccess::MuzzleOf(Rifle)->GetComponentLocation() - Rifle->GetActorLocation();
+	Rifle->SetActorLocation(MuzzleTarget - MuzzleOffset, false, nullptr, ETeleportType::TeleportPhysics);
+	const FBox ChaserBounds = Chaser->GetCapsuleComponent()->Bounds.GetBox();
+	TestTrue(TEXT("chaser capsule covers the shot height"), ChaserBounds.Min.Z < MuzzleTarget.Z && ChaserBounds.Max.Z > MuzzleTarget.Z);
+
+	const float ExpectedHealth[] = { 20.f, 10.f, 0.f };
+	FVector DeathLocation = Chaser->GetActorLocation();
+	for (int32 Shot = 0; Shot < 3; ++Shot)
+	{
+		const int32 Frame = TickUntilDestroyed(TestWorld, FireSingleShot(*this, Rifle), 30);
+		TestTrue(FString::Printf(TEXT("shot %d stopped"), Shot + 1), Frame != INDEX_NONE);
+		TestEqual(FString::Printf(TEXT("Health after shot %d"), Shot + 1), Attribute(Chaser, URRHealthAttributeSet::GetHealthAttribute()), ExpectedHealth[Shot]);
+		AddInfo(FString::Printf(TEXT("shot %d hit at frame %d, health %.1f"), Shot + 1, Frame, Attribute(Chaser, URRHealthAttributeSet::GetHealthAttribute())));
+		if (Shot < 2)
+		{
+			TestFalse(FString::Printf(TEXT("alive after shot %d"), Shot + 1), Chaser->IsDead());
+		}
+	}
+	TestTrue(TEXT("dead after 3 hits"), Chaser->IsDead());
+	TestEqual(TEXT("state Dead"), Chaser->GetState(), ERRChaserState::Dead);
+	TestFalse(TEXT("collision disabled"), Chaser->GetActorEnableCollision());
+	TestEqual(TEXT("no XP before the shrink ends"), GetXPPickups(TestWorld.Get()).Num(), 0);
+
+	// Shrink 0.15 s (9 frames), then drop and destroy.
+	int32 DestroyFrame = INDEX_NONE;
+	float MinScale = 1.f;
+	for (int32 Frame = 1; Frame <= 20 && DestroyFrame == INDEX_NONE; ++Frame)
+	{
+		TestWorld.Tick();
+		if (!WeakChaser.IsValid() || WeakChaser->IsActorBeingDestroyed())
+		{
+			DestroyFrame = Frame;
+		}
+		else
+		{
+			MinScale = FMath::Min(MinScale, static_cast<float>(WeakChaser->GetActorScale3D().X));
+		}
+	}
+	AddInfo(FString::Printf(TEXT("destroyed %d frames after death, smallest scale seen %.3f"), DestroyFrame, MinScale));
+	TestTrue(TEXT("destroyed about 0.15 s after death"), DestroyFrame >= 8 && DestroyFrame <= 11);
+	TestTrue(TEXT("shrank before destruction"), MinScale < 0.2f);
+	const TArray<ARRPickup*> Pickups = GetXPPickups(TestWorld.Get());
+	TestEqual(TEXT("1 XP pickup dropped"), Pickups.Num(), 1);
+	if (Pickups.Num() == 1)
+	{
+		TestTrue(TEXT("XP pickup near the death point"), FVector::Dist2D(Pickups[0]->GetActorLocation(), DeathLocation) < 120.f);
+	}
+	return true;
+}
+
+IMPLEMENT_SIMPLE_AUTOMATION_TEST(FRREnemyAttackTest, "RogueRigs.Enemies.ChaserAttackTiming",
+	EAutomationTestFlags::EditorContext | EAutomationTestFlags::EngineFilter)
+
+bool FRREnemyAttackTest::RunTest(const FString& Parameters)
+{
+	using namespace RREnemyTests;
+
+	FTestWorld TestWorld(TEXT("RREnemyAttack"));
+	ARRArenaGrid* Grid = SpawnGrid(*this, TestWorld);
+	ARRMiner* Miner = Grid ? SpawnUnarmedMiner(*this, TestWorld, Grid) : nullptr;
+	if (!Miner)
+	{
+		return false;
+	}
+	TestEqual(TEXT("miner Health 100"), Attribute(Miner, URRHealthAttributeSet::GetHealthAttribute()), 100.f);
+	TArray<FHit> Hits;
+	const FDelegateHandle Handle = RecordHits(Miner, Hits);
+
+	const FVector MinerFloor = Grid->GetCellCenter(MinerCell.X, MinerCell.Y);
+	ARRChaser* Chaser = SpawnChaser(*this, TestWorld, MinerFloor + FVector(90.f, 0.f, 0.f));
+	if (!Chaser)
+	{
+		return false;
+	}
+
+	double WindUpStart = -1.0;
+	ERRChaserState Previous = Chaser->GetState();
+	for (int32 Frame = 0; Frame < 210; ++Frame)
+	{
+		TestWorld.Tick();
+		if (Chaser->GetState() == ERRChaserState::WindUp && Previous != ERRChaserState::WindUp && WindUpStart < 0.0)
+		{
+			WindUpStart = TestWorld.Get()->GetTimeSeconds();
+		}
+		Previous = Chaser->GetState();
+	}
+	Miner->GetHealthSet()->OnDamageReceived.Remove(Handle);
+
+	AddInfo(FString::Printf(TEXT("miner capsule radius %.1f; chaser at %.1f uu, state %s, %d attacks, %d hits"),
+		Miner->GetCapsuleComponent()->GetScaledCapsuleRadius(), FVector::Dist2D(Chaser->GetActorLocation(), Miner->GetActorLocation()),
+		*UEnum::GetValueAsString(Chaser->GetState()), Chaser->GetAttackCount(), Hits.Num()));
+	TestTrue(TEXT("wind-up started"), WindUpStart >= 0.0);
+	if (!TestTrue(TEXT("at least 2 hits in 3.5 s"), Hits.Num() >= 2))
+	{
+		return false;
+	}
+	FString Times;
+	for (const FHit& Hit : Hits)
+	{
+		Times += FString::Printf(TEXT(" %.3f"), Hit.Time - WindUpStart);
+		TestEqual(TEXT("each hit deals 10"), Hit.Damage, 10.f);
+	}
+	AddInfo(FString::Printf(TEXT("wind-up at %.3f s; hits (s after wind-up):%s; %d attacks"), WindUpStart, *Times, Chaser->GetAttackCount()));
+	TestTrue(TEXT("first hit 0.25 s after the wind-up starts (±1 frame)"), FMath::Abs(Hits[0].Time - WindUpStart - 0.25) <= FrameSeconds + 1e-3);
+	for (int32 Index = 1; Index < Hits.Num(); ++Index)
+	{
+		TestTrue(FString::Printf(TEXT("hit %d at least 1 s after the previous"), Index + 1), Hits[Index].Time - Hits[Index - 1].Time >= 1.0 - 1e-3);
+	}
+	TestEqual(TEXT("Health = 100 - 10 per hit"), Attribute(Miner, URRHealthAttributeSet::GetHealthAttribute()), 100.f - 10.f * Hits.Num());
+	TestTrue(TEXT("chaser stayed in range"), FVector::Dist2D(Chaser->GetActorLocation(), Miner->GetActorLocation()) <= 120.f);
+	return true;
+}
+
+IMPLEMENT_SIMPLE_AUTOMATION_TEST(FRREnemyIFramesTest, "RogueRigs.Enemies.IFramesRefuseSecondChaser",
+	EAutomationTestFlags::EditorContext | EAutomationTestFlags::EngineFilter)
+
+bool FRREnemyIFramesTest::RunTest(const FString& Parameters)
+{
+	using namespace RREnemyTests;
+
+	FTestWorld TestWorld(TEXT("RREnemyIFrames"));
+	ARRArenaGrid* Grid = SpawnGrid(*this, TestWorld);
+	ARRMiner* Miner = Grid ? SpawnUnarmedMiner(*this, TestWorld, Grid) : nullptr;
+	if (!Miner)
+	{
+		return false;
+	}
+	TArray<FHit> Hits;
+	const FDelegateHandle Handle = RecordHits(Miner, Hits);
+	const FVector MinerFloor = Grid->GetCellCenter(MinerCell.X, MinerCell.Y);
+
+	// Second chaser 6 frames (0.1 s) after the first: its attack lands inside the first hit's 0.25 s i-frames.
+	ARRChaser* First = SpawnChaser(*this, TestWorld, MinerFloor + FVector(90.f, 0.f, 0.f));
+	for (int32 Frame = 0; Frame < 6; ++Frame)
+	{
+		TestWorld.Tick();
+	}
+	ARRChaser* Second = SpawnChaser(*this, TestWorld, MinerFloor + FVector(60.f, 60.f, 0.f));
+	if (!First || !Second)
+	{
+		return false;
+	}
+
+	bool bInvulnerableAtSecondAttack = false;
+	double FirstAttackTime = -1.0;
+	double SecondAttackTime = -1.0;
+	for (int32 Frame = 0; Frame < 40 && SecondAttackTime < 0.0; ++Frame)
+	{
+		TestWorld.Tick();
+		if (FirstAttackTime < 0.0 && First->GetAttackCount() > 0)
+		{
+			FirstAttackTime = First->GetLastAttackTime();
+		}
+		if (Second->GetAttackCount() > 0)
+		{
+			SecondAttackTime = Second->GetLastAttackTime();
+			bInvulnerableAtSecondAttack = Miner->GetAbilitySystemComponent()->HasMatchingGameplayTag(RRGameplayTags::State_Invulnerable);
+		}
+	}
+	Miner->GetHealthSet()->OnDamageReceived.Remove(Handle);
+
+	AddInfo(FString::Printf(TEXT("first attack %.3f s, second attack %.3f s (gap %.3f s), hits %d"),
+		FirstAttackTime, SecondAttackTime, SecondAttackTime - FirstAttackTime, Hits.Num()));
+	TestTrue(TEXT("both chasers attacked"), FirstAttackTime >= 0.0 && SecondAttackTime >= 0.0);
+	TestTrue(TEXT("second attack within the 0.25 s i-frames"), SecondAttackTime - FirstAttackTime < Miner->GetIFramesDuration());
+	TestTrue(TEXT("miner invulnerable at the second attack"), bInvulnerableAtSecondAttack);
+	TestEqual(TEXT("only one hit applied"), Hits.Num(), 1);
+	TestEqual(TEXT("Health 90"), Attribute(Miner, URRHealthAttributeSet::GetHealthAttribute()), 90.f);
+	return true;
+}
+
+#endif // WITH_DEV_AUTOMATION_TESTS

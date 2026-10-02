@@ -49,6 +49,9 @@ public:
 	/** Distance to the goal (2D, uu) under which the pawn stops. */
 	float GetArrivalDistance() const { return ArrivalDistance; }
 
+	/** Sets the 2D distance to the goal under which the pawn stops (a robot calls it from its attack range at BeginPlay). */
+	void SetArrivalDistance(float InArrivalDistance) { ArrivalDistance = FMath::Max(0.f, InArrivalDistance); }
+
 protected:
 	/** The active provider: the override, else the PathProviderClass world subsystem or owner component; null when none. */
 	IRRPathProvider* ResolveProvider();

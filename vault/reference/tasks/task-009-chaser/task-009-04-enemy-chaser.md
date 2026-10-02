@@ -3,7 +3,7 @@ id: task-009-04-enemy-chaser
 description: "ARREnemy base (ASC, health and enemy sets, CSV stats, single death, shrink, XP cube) and ARRChaser state machine: chase, wind-up, attack, recover."
 parent: task-009-chaser
 kind: task
-status: in-progress
+status: done
 ---
 # Enemy base and chaser
 
@@ -16,7 +16,7 @@ status: in-progress
 - editor_state: closed
 - token_ceiling: 100000
 - milestone: M1
-- result: open
+- result: ARREnemy (ACharacter, own ASC with health, movement and enemy sets, EnemyStats.csv row, RVO, capsule overlaps Projectile, no controller, single death → shrink 0.15 s → XPValue XP pickups → destroy; XPPickupClass, StatsRowName); ARRChaser state machine Chase, WindUp (blink), Attack (URRGE_DamageFlat from its ASC), Recover, Dead; arrival 108 uu. EnemyStats.csv row Chaser 30, 450, 10, 1, 120, 0.25, 1, 0. ERRPickupType XP. Tests: 3 rifle hits kill and drop 1 XP; hits at 0.25 s then every 1.267 s (1/AttackRate recover + wind-up: the real cadence is slower than 1/s, owner to tune); i-frames refuse a second chaser 0.1 s later. Build exit 0, 28/28 (orchestrator re-ran). New doc sys-enemies. CSV read on each spawn (to cache later); sys-automation-tests about 1030 words, to split. About 145k tokens (over ceiling).
 
 ## Relations
 - [[task-009-chaser]] — parent global task.

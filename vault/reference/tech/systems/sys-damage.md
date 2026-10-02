@@ -23,7 +23,7 @@ kind: doc
 6. Death fires once, when `Health` goes from above 0 to 0 or below (approved). Damage GEs and statuses also refuse `State.Dead` targets via `UTargetTagRequirementsGameplayEffectComponent` (approved).
 7. Player i-frames: `URRGE_IFrames` applied from post-execute, in the same call stack, so the next hit in the same frame is refused (provisional; 0.25 s per [[miner]]). Implemented by the opting-in pawn: `ARRMiner` binds `OnDamageReceived` and applies it on non-lethal hits ([[sys-player]]). `URRGA_OnDamaged` handles only reaction and feedback.
 
-- entry_points: `ARRWeapon::MakeDamageSpec()` ([[sys-weapons]]); the spec is applied by `ARRProjectile` on impact ([[sys-projectiles]]).
+- entry_points: `ARRWeapon::MakeDamageSpec()` ([[sys-weapons]]); the spec is applied by `ARRProjectile` on impact ([[sys-projectiles]]); enemy melee: `ARRChaser` applies `URRGE_DamageFlat` from its own ASC ([[sys-enemies]]).
 - data: damage values from CSV.
 - depends_on: [[sys-gas-core]], [[sys-weapons]] (source attributes).
 - implements: [[damage-numbers]], [[enemy-death]], [[miner]].

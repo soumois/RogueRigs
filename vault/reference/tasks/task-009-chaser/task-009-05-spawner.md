@@ -3,7 +3,7 @@ id: task-009-05-spawner
 description: "ARREnemySpawner: one robot every 2 s, at most 20 alive, on reachable floor cells just outside the camera view."
 parent: task-009-chaser
 kind: task
-status: todo
+status: in-progress
 ---
 # Enemy spawner
 

@@ -1,4 +1,4 @@
-// Rogue Rigs - pickup actor dropped by ore and heal ore blocks: pops out, then flies to the miner within its pickup radius.
+// Rogue Rigs - pickup actor dropped by ore and heal ore blocks and by dying robots: pops out, then flies to the miner within its pickup radius.
 
 #pragma once
 
@@ -16,7 +16,9 @@ enum class ERRPickupType : uint8
 	/** Ore currency, dropped by ore blocks. */
 	Ore,
 	/** Heal, dropped by heal ore blocks. */
-	Heal
+	Heal,
+	/** Experience cube, dropped by robots on death (sys-enemies). Inert on collection for now (logged only). */
+	XP
 };
 
 /**
@@ -26,7 +28,7 @@ enum class ERRPickupType : uint8
  * miner's PickupRadius attribute it flies to the miner at FlySpeed (and keeps flying even if the miner moves away)
  * and is collected within CollectDistance: logs its type on LogRogueRigs, calls ARRMiner::NotifyPickupCollected,
  * destroys itself. No collision at all (pawns and projectiles go through). No heal or ore effect yet.
- * Spawned by ARRArenaGrid at a cell center (floor top). Subclass in Blueprint: set PickupType and the mesh.
+ * Spawned by ARRArenaGrid at a cell center (floor top), and by ARREnemy at its feet on death (XP). Subclass in Blueprint: set PickupType and the mesh.
  */
 UCLASS(Abstract, Blueprintable)
 class ROGUERIGS_API ARRPickup : public AActor
