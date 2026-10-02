@@ -13,7 +13,7 @@ status: in-progress
 - gdd_check: read [[burst-rifle]], [[destruction-rules]] (nobody shoots over a block → shots below the block top), [[damage-numbers]], [[color-code]], [[sys-pickups]], [[sys-grid]]. Owner decisions 2026-10-02: FireRate 1.25 bursts/s with BurstDuty 0.2 (gap 0.08 s, pause 0.64 s), damage 10; pickup attraction delay 1 s; shake 15 uu at 10 Hz; damage text with a dark outline, sizes 60 / 90; dummy 160 uu; fixed shot height 50 uu.
 - confirmed_by_owner: yes
 - milestone: M1
-- next_step: task-008-01-shot-height-movement
+- next_step: task-008-02-feel-values
 - result: open
 
 ## Subtasks

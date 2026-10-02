@@ -3,7 +3,7 @@ id: task-008-02-feel-values
 description: "Pickups rest 1 s before attraction, block shake 15 uu at 10 Hz, damage text sizes 60 and 90 with a dark outline for readability."
 parent: task-008-feel-fixes
 kind: task
-status: todo
+status: in-progress
 ---
 # Feel values
 

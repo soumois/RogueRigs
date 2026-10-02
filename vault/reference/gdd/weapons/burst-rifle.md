@@ -14,7 +14,7 @@ Final English name: open (one name for tag, asset and this node; "burst rifle" i
 - effect_on_hit: damage; critical hits possible.
 - blocked_by_rock: yes
 - stats:
-  - fire_rate 2 bursts/s, burst_count 3, burst_duty 0.32 (starting values, untuned);
+  - fire_rate 1.25 bursts/s, burst_count 3, burst_duty 0.2 (owner values 2026-10-02; bullets 0.08 s apart, 0.64 s pause);
   - damage 10 per bullet, crit chance 5 %, range 2000 uu (10 cells), spread ±2°, projectile speed 3000 uu/s, magazine 30 bullets, reload 1.5 s (provisional, owner 2026-10-01);
   - crit damage: ×1.5 base.
 - burst timing: see [[sys-auto-fire]].

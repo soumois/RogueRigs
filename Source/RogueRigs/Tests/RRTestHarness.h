@@ -105,8 +105,12 @@ namespace RRTestHarness
 		return Grid;
 	}
 
-	/** Spawns BP_Miner standing on the floor of Cell (its BeginPlay spawns the drone and the starting weapons). */
-	inline ARRMiner* SpawnMiner(FAutomationTestBase& Test, const FTestWorld& TestWorld, const ARRArenaGrid* Grid, FIntPoint Cell)
+	/**
+	 * Spawns BP_Miner standing on the floor of Cell (its BeginPlay spawns the drone and the starting weapons). The spawn is
+	 * deferred: BeforeBeginPlay runs on the new miner before its construction script and BeginPlay (e.g. to override a property).
+	 */
+	inline ARRMiner* SpawnMiner(FAutomationTestBase& Test, const FTestWorld& TestWorld, const ARRArenaGrid* Grid, FIntPoint Cell,
+		TFunctionRef<void(ARRMiner*)> BeforeBeginPlay = [](ARRMiner*) {})
 	{
 		UClass* MinerClass = LoadTestClass<ARRMiner>(Test, MinerClassPath);
 		if (!MinerClass)
@@ -114,8 +118,13 @@ namespace RRTestHarness
 			return nullptr;
 		}
 		const float HalfHeight = MinerClass->GetDefaultObject<ARRMiner>()->GetCapsuleComponent()->GetScaledCapsuleHalfHeight();
-		ARRMiner* Miner = TestWorld.Spawn<ARRMiner>(MinerClass, Grid->GetCellCenter(Cell.X, Cell.Y) + FVector(0.f, 0.f, HalfHeight + 2.f));
-		Test.TestNotNull(TEXT("miner spawned"), Miner);
+		const FTransform SpawnTransform(Grid->GetCellCenter(Cell.X, Cell.Y) + FVector(0.f, 0.f, HalfHeight + 2.f));
+		ARRMiner* Miner = TestWorld.Get()->SpawnActorDeferred<ARRMiner>(MinerClass, SpawnTransform, nullptr, nullptr, ESpawnActorCollisionHandlingMethod::AlwaysSpawn);
+		if (Test.TestNotNull(TEXT("miner spawned"), Miner))
+		{
+			BeforeBeginPlay(Miner);
+			Miner->FinishSpawning(SpawnTransform);
+		}
 		return Miner;
 	}
 }

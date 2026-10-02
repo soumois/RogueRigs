@@ -2,12 +2,15 @@
 
 #include "Weapons/RRWeapon.h"
 
+#include "Components/CapsuleComponent.h"
 #include "Components/SceneComponent.h"
 #include "Damage/RRGE_Damage.h"
 #include "Engine/DataTable.h"
 #include "Engine/World.h"
 #include "GAS/RRAbilitySystemComponent.h"
 #include "GAS/RRBaseStatsLoader.h"
+#include "GameFramework/CharacterMovementComponent.h"
+#include "Grid/RRArenaGrid.h"
 #include "Player/RRMiner.h"
 #include "Projectiles/RRProjectile.h"
 #include "RogueRigs.h"
@@ -23,6 +26,9 @@ ARRWeapon::ARRWeapon(const FObjectInitializer& ObjectInitializer)
 	: Super(ObjectInitializer)
 {
 	PrimaryActorTick.bCanEverTick = false;
+
+	// A held weapon sits inside the miner capsule: any blocking collision would push the miner (depenetration) as it moves.
+	SetActorEnableCollision(false);
 
 	Root = CreateDefaultSubobject<USceneComponent>(TEXT("Root"));
 	SetRootComponent(Root);
@@ -69,6 +75,12 @@ bool ARRWeapon::Acquire(ARRMiner* InOwnerMiner)
 	if (OwnerMiner)
 	{
 		AutoFire->AddTickPrerequisiteActor(OwnerMiner);
+
+		const ARRArenaGrid* Grid = OwnerMiner->GetArenaGrid();
+		if (Grid && ShotHeight >= Grid->GetBlockHeight())
+		{
+			UE_LOG(LogRogueRigs, Warning, TEXT("%s: ShotHeight %.1f is not below the grid BlockHeight %.1f; shots will fly over blocks."), *GetName(), ShotHeight, Grid->GetBlockHeight());
+		}
 	}
 
 	if (bStartFiringOnAcquire)
@@ -124,6 +136,27 @@ FVector ARRWeapon::GetAimDirection() const
 	return GetActorForwardVector().GetSafeNormal2D(UE_SMALL_NUMBER, FVector::ForwardVector);
 }
 
+FVector ARRWeapon::GetShotOrigin() const
+{
+	const UCapsuleComponent* Capsule = OwnerMiner ? OwnerMiner->GetCapsuleComponent() : nullptr;
+	if (Capsule == nullptr)
+	{
+		return Muzzle->GetComponentLocation();
+	}
+
+	// Floor under the miner: capsule bottom, lowered by the gap CharacterMovement keeps above a walkable floor.
+	double FloorZ = Capsule->GetComponentLocation().Z - Capsule->GetScaledCapsuleHalfHeight();
+	const UCharacterMovementComponent* Movement = OwnerMiner->GetCharacterMovement();
+	if (Movement && Movement->IsMovingOnGround() && Movement->CurrentFloor.IsWalkableFloor())
+	{
+		FloorZ -= Movement->CurrentFloor.FloorDist;
+	}
+
+	const FVector Forward = GetAimDirection().GetSafeNormal2D(UE_SMALL_NUMBER, FVector::ForwardVector);
+	const FVector Base(Capsule->GetComponentLocation().X, Capsule->GetComponentLocation().Y, FloorZ + ShotHeight);
+	return Base + Forward * (Capsule->GetScaledCapsuleRadius() + ShotForwardOffset);
+}
+
 FGameplayEffectSpecHandle ARRWeapon::MakeDamageSpec() const
 {
 	if (!DamageEffectClass)
@@ -161,7 +194,7 @@ void ARRWeapon::FireOnce()
 	// Flat shot: aim yaw plus a uniform spread in [-SpreadDeg, SpreadDeg].
 	const float SpreadYaw = SpreadDeg > 0.f ? FMath::FRandRange(-SpreadDeg, SpreadDeg) : 0.f;
 	const FRotator ShotRotation(0.f, GetAimDirection().Rotation().Yaw + SpreadYaw, 0.f);
-	const FTransform SpawnTransform(ShotRotation, Muzzle->GetComponentLocation());
+	const FTransform SpawnTransform(ShotRotation, GetShotOrigin());
 
 	APawn* InstigatorPawn = OwnerMiner ? static_cast<APawn*>(OwnerMiner) : GetInstigator();
 	ARRProjectile* Projectile = World->SpawnActorDeferred<ARRProjectile>(ProjectileClass, SpawnTransform, this, InstigatorPawn, ESpawnActorCollisionHandlingMethod::AlwaysSpawn);

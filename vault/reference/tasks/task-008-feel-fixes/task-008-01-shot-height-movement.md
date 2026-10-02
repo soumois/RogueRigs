@@ -3,7 +3,7 @@ id: task-008-01-shot-height-movement
 description: "Shots spawn at a fixed height before the miner, weapon on the body, capsule ignores projectiles, new burst values."
 parent: task-008-feel-fixes
 kind: task
-status: in-progress
+status: done
 ---
 # Shot height and free movement
 
@@ -16,7 +16,7 @@ status: in-progress
 - editor_state: closed
 - token_ceiling: 100000
 - milestone: M1
-- result: open
+- result: movement bug was the rifle mesh (BlockAllDynamic inside the capsule) pushing the miner sideways (66 uu forward, 350 uu sideways per second), not the projectiles; fixed: weapon collision off, capsule ignores its weapons and overlaps Projectile. Shots spawn at ShotHeight 50 uu, ShotForwardOffset 20 uu from the capsule; weapon on the capsule at WeaponAttachOffset (0, 20, −40) when the socket is None. CSV FireRate 1.25, BurstDuty 0.2 (gap 0.08 s, pause 0.64 s). Tests: 13/13 pass (orchestrator re-ran), new MinerMovesWhileFiring (425 uu both ways). Docs sys-weapons, sys-projectiles, sys-player, sys-automation-tests, sys-auto-fire, burst-rifle. About 173k tokens (over ceiling, turn limit hit once).
 
 ## Relations
 - [[task-008-feel-fixes]] — parent global task.

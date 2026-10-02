@@ -1,4 +1,4 @@
-// Rogue Rigs - test-only listener: records dynamic delegate broadcasts (pickup collected, cell destroyed, auto-fire shots and reloads, projectile stop) for the automation tests.
+// Rogue Rigs - test-only listener: records dynamic delegate broadcasts (pickup collected, cell destroyed, auto-fire shots and reloads, projectile stop, component hit) for the automation tests.
 
 #pragma once
 
@@ -14,7 +14,8 @@ class UAbilitySystemComponent;
 
 /**
  * Records the broadcasts of ARRMiner::OnPickupCollected, ARRArenaGrid::OnCellDestroyed, the URRAutoFireComponent
- * events (OnShotFired, OnReloadStarted, OnReloadFinished) and UProjectileMovementComponent::OnProjectileStop so
+ * events (OnShotFired, OnReloadStarted, OnReloadFinished), UProjectileMovementComponent::OnProjectileStop and
+ * UPrimitiveComponent::OnComponentHit so
  * automation tests (Source/RogueRigs/Tests) can check that the events fire. Dynamic delegates need a UFunction to
  * bind to, so this is a UCLASS and is compiled in every configuration (UHT does not support WITH_DEV_AUTOMATION_TESTS
  * guards); it is never used by gameplay code. Create with NewObject, keep it alive with a TStrongObjectPtr.
@@ -49,6 +50,10 @@ public:
 	UFUNCTION()
 	void HandleProjectileStop(const FHitResult& ImpactResult) { ProjectileStops.Add(ImpactResult); }
 
+	/** Bind to UPrimitiveComponent::OnComponentHit (e.g. the miner capsule): appends the blocking hit. */
+	UFUNCTION()
+	void HandleComponentHit(UPrimitiveComponent* HitComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, FVector NormalImpulse, const FHitResult& Hit) { ComponentHits.Add(Hit); }
+
 	/** Sets the ASC whose Ammo is sampled when a reload finishes (the weapon ASC). */
 	void SetAmmoSource(UAbilitySystemComponent* InAmmoSource) { AmmoSource = InAmmoSource; }
 
@@ -70,6 +75,9 @@ public:
 	/** Impacts received through HandleProjectileStop, in order. */
 	const TArray<FHitResult>& GetProjectileStops() const { return ProjectileStops; }
 
+	/** Blocking hits received through HandleComponentHit, in order. */
+	const TArray<FHitResult>& GetComponentHits() const { return ComponentHits; }
+
 protected:
 	/** Pickup types collected so far. */
 	TArray<ERRPickupType> CollectedPickups;
@@ -88,6 +96,9 @@ protected:
 
 	/** Projectile impacts so far. */
 	TArray<FHitResult> ProjectileStops;
+
+	/** Blocking hits received so far. */
+	TArray<FHitResult> ComponentHits;
 
 	/** ASC sampled by HandleReloadFinished. */
 	TWeakObjectPtr<UAbilitySystemComponent> AmmoSource;

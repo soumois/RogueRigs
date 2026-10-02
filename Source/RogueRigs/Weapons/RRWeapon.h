@@ -21,8 +21,11 @@ struct FRRWeaponStatsRow;
 /**
  * Base class of the miner's weapons (sys-weapons). Owns its URRAbilitySystemComponent (owner and avatar: the
  * weapon) with URRWeaponAttributeSet, and a URRAutoFireComponent that decides when to fire; FireOnce decides
- * what is fired (default: one ProjectileClass from the Muzzle carrying a DamageEffectClass spec, with yaw
- * spread; overridden by weapons that fire differently). Acquisition (Acquire, called by the miner after spawn and
+ * what is fired (default: one ProjectileClass from GetShotOrigin carrying a DamageEffectClass spec, with yaw
+ * spread; overridden by weapons that fire differently). Shots start ShotHeight above the floor under the owning
+ * miner, ShotForwardOffset ahead of its capsule, so they hit floor-standing targets and stop on blocks; the Muzzle is
+ * only a visual reference (and the spawn point when there is no owning miner). The weapon actor has no collision
+ * (bActorEnableCollision off): it is a visual carried inside the miner capsule. Acquisition (Acquire, called by the miner after spawn and
  * attach): InitAbilityActorInfo(weapon, weapon), base values from row StatsRowName of WeaponStats.csv, magazine
  * filled, auto-fire configured and started. Upgrade replay and the player registry are not implemented yet.
  * Aim comes from the owning miner's GetAimDirection. Subclass in Blueprint for the mesh, the muzzle position,
@@ -63,6 +66,22 @@ public:
 	UFUNCTION(BlueprintPure, Category = "Weapon")
 	FVector GetAimDirection() const;
 
+	/**
+	 * World location where FireOnce spawns its projectile. With an owning miner: the floor under the miner (capsule bottom
+	 * minus the CharacterMovement floor distance when standing on a walkable floor) + ShotHeight, moved horizontally along
+	 * GetAimDirection by the capsule radius + ShotForwardOffset. Without a miner: the Muzzle location.
+	 */
+	UFUNCTION(BlueprintPure, Category = "Weapon")
+	FVector GetShotOrigin() const;
+
+	/** Height of the shots above the floor under the owning miner, in uu. */
+	UFUNCTION(BlueprintPure, Category = "Weapon|Projectile")
+	float GetShotHeight() const { return ShotHeight; }
+
+	/** Distance of the shot origin ahead of the owning miner's capsule surface, along the aim, in uu. */
+	UFUNCTION(BlueprintPure, Category = "Weapon|Projectile")
+	float GetShotForwardOffset() const { return ShotForwardOffset; }
+
 	/** The component that decides when this weapon fires. */
 	UFUNCTION(BlueprintPure, Category = "Weapon")
 	URRAutoFireComponent* GetAutoFireComponent() const { return AutoFire; }
@@ -97,7 +116,7 @@ protected:
 
 	/**
 	 * Fires one shot, called by the auto-fire for each bullet. Default (burst rifle): makes a DamageEffectClass spec
-	 * on the weapon's ASC, spawns one ProjectileClass at the Muzzle, flat, toward GetAimDirection rotated by a random
+	 * on the weapon's ASC, spawns one ProjectileClass at GetShotOrigin, flat, toward GetAimDirection rotated by a random
 	 * yaw in [-SpreadDeg, SpreadDeg], with speed ProjectileSpeed and lifetime Range / ProjectileSpeed (Owner: this
 	 * weapon, Instigator: the miner). Logged and skipped if ProjectileClass is unset or ProjectileSpeed or Range is <= 0.
 	 * Weapons that fire differently (shotgun) override it.
@@ -129,7 +148,10 @@ protected:
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Components")
 	TObjectPtr<URRAutoFireComponent> AutoFire;
 
-	/** Spawn point of the projectiles, under Root. Its relative location is set in the Blueprint subclass (barrel tip). */
+	/**
+	 * Barrel tip, under Root; its relative location is set in the Blueprint subclass. Visual reference only (muzzle effects):
+	 * shots of a weapon held by a miner start at GetShotOrigin. Spawn point of the shots only when there is no owning miner.
+	 */
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Components")
 	TObjectPtr<USceneComponent> Muzzle;
 
@@ -144,6 +166,14 @@ protected:
 	/** Row of WeaponStats.csv applied at acquisition (e.g. BurstRifle). Must be set by the Blueprint subclass. */
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Weapon|Stats")
 	FName StatsRowName;
+
+	/** Height of the shots above the floor under the owning miner, in uu. Must stay below the grid's BlockHeight (100 by default) so shots stop on blocks; checked at acquisition. */
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Weapon|Projectile", meta = (ClampMin = 0, Units = "cm"))
+	float ShotHeight = 50.f;
+
+	/** Distance of the shot origin ahead of the owning miner's capsule surface, along the aim, in uu (origin = capsule radius + this value from the miner axis). */
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Weapon|Projectile", meta = (ClampMin = 0, Units = "cm"))
+	float ShotForwardOffset = 20.f;
 
 	/** True = the auto-fire starts at acquisition. */
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Weapon")

@@ -16,6 +16,7 @@
 #include "GAS/RRMovementAttributeSet.h"
 #include "GAS/RRPlayerAttributeSet.h"
 #include "Grid/RRArenaGrid.h"
+#include "Projectiles/RRCollisionChannels.h"
 #include "RogueRigs.h"
 #include "Weapons/RRWeapon.h"
 
@@ -59,6 +60,9 @@ ARRMiner::ARRMiner(const FObjectInitializer& ObjectInitializer)
 	Movement->MaxAcceleration = 1000.f;
 	Movement->BrakingFrictionFactor = 1.f;
 	Movement->bCanWalkOffLedges = false;
+
+	// Projectiles (own or enemy) never block the capsule; Overlap keeps their overlap events (hits by overlap).
+	GetCapsuleComponent()->SetCollisionResponseToChannel(RRCollisionChannels::Projectile, ECR_Overlap);
 }
 
 UAbilitySystemComponent* ARRMiner::GetAbilitySystemComponent() const
@@ -141,7 +145,9 @@ void ARRMiner::SpawnStartingWeapons()
 	SpawnParameters.Instigator = this;
 	SpawnParameters.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AlwaysSpawn;
 
-	USceneComponent* AttachParent = GetMesh() ? static_cast<USceneComponent*>(GetMesh()) : GetRootComponent();
+	// No socket: the capsule, which turns with the aim yaw, so the weapon points forward.
+	const bool bAttachToCapsule = WeaponAttachSocketName.IsNone() || !GetMesh();
+	USceneComponent* AttachParent = bAttachToCapsule ? GetRootComponent() : static_cast<USceneComponent*>(GetMesh());
 
 	for (const TSubclassOf<ARRWeapon>& WeaponClass : StartingWeapons)
 	{
@@ -159,7 +165,17 @@ void ARRMiner::SpawnStartingWeapons()
 			continue;
 		}
 
-		Weapon->AttachToComponent(AttachParent, FAttachmentTransformRules::SnapToTargetNotIncludingScale, WeaponAttachSocketName);
+		if (bAttachToCapsule)
+		{
+			Weapon->AttachToComponent(AttachParent, FAttachmentTransformRules::SnapToTargetNotIncludingScale);
+			Weapon->SetActorRelativeLocation(WeaponAttachOffset);
+		}
+		else
+		{
+			Weapon->AttachToComponent(AttachParent, FAttachmentTransformRules::SnapToTargetNotIncludingScale, WeaponAttachSocketName);
+		}
+		// The weapon is carried inside the capsule: never let it block the miner's own moves.
+		GetCapsuleComponent()->IgnoreActorWhenMoving(Weapon, true);
 		Weapon->Acquire(this);
 		Weapons.Add(Weapon);
 	}

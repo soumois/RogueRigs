@@ -13,7 +13,8 @@ kind: doc
 - The projectile carries the spec made by the weapon's ASC at fire time and applies it only on impact ([[sys-damage]]).
 - Overlap with an actor that has an ASC: `ApplyGameplayEffectSpecToSelf` once, then destroyed. Pawns without an ASC are passed through. The owner weapon, the instigator (miner) and the owner's owner are ignored, both in the overlap handler and with `IgnoreActorWhenMoving`.
 - Blocking hit: `OnProjectileStop` destroys it. Every projectile stops on rock ([[destruction-rules]]); a projectile spawned inside a block stops at once.
-- Collision: object channel `Projectile` = `ECC_GameTraceChannel1`, declared in `Config/DefaultEngine.ini` with default response Block (so rock HISM `BlockAll` and pawns respond Block to it). The sphere ignores every channel except Pawn (overlap), WorldStatic and WorldDynamic (block); projectiles ignore each other.
+- Collision: object channel `Projectile` = `ECC_GameTraceChannel1`, declared in `Config/DefaultEngine.ini` with default response Block (so rock HISM `BlockAll` responds Block to it). The sphere ignores every channel except Pawn (overlap), WorldStatic and WorldDynamic (block); projectiles ignore each other. A sphere/pawn pair resolves to the weaker response (Overlap), so a projectile never blocks a pawn; the miner capsule also sets Overlap on `Projectile` explicitly ([[sys-player]]).
+- Spawn point: the weapon's `GetShotOrigin()` ([[sys-weapons]]), `ShotHeight` (50 uu) above the floor, below the block height.
 - Speed and lifetime come from the weapon: speed `ProjectileSpeed`, lifetime `Range / ProjectileSpeed`.
 - Piercing: a `PierceRemaining` counter copied from the weapon at fire time (provisional; M2, not implemented: one hit destroys).
 - Pool projectiles before any enemy pool (provisional; M2, if stress test S2 asks for it).

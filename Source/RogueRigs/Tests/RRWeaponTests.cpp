@@ -1,4 +1,4 @@
-// Rogue Rigs - automation tests of the weapon rules (RogueRigs.Weapons.*): burst timing, magazine and reload, projectile stop on rock, GAS damage and crits on the target dummy, dummy refill, miner starting weapon.
+// Rogue Rigs - automation tests of the weapon rules (RogueRigs.Weapons.*): burst timing, magazine and reload, projectile stop on rock, GAS damage and crits on the target dummy, dummy refill, miner starting weapon and shot origin, miner moving while firing.
 
 #include "CoreMinimal.h"
 #include "Misc/AutomationTest.h"
@@ -8,12 +8,14 @@
 #include "AbilitySystemComponent.h"
 #include "Components/SceneComponent.h"
 #include "Components/SkeletalMeshComponent.h"
+#include "GameFramework/CharacterMovementComponent.h"
 #include "Damage/RRGE_Damage.h"
 #include "Debug/RRTargetDummy.h"
 #include "EngineUtils.h"
 #include "GameFramework/ProjectileMovementComponent.h"
 #include "GAS/RRGameplayTags.h"
 #include "GAS/RRHealthAttributeSet.h"
+#include "Projectiles/RRCollisionChannels.h"
 #include "Projectiles/RRProjectile.h"
 #include "Tests/RRTestEventRecorder.h"
 #include "Tests/RRTestHarness.h"
@@ -30,9 +32,6 @@ namespace RRWeaponTests
 	const TCHAR* const BurstRifleClassPath = TEXT("/Game/RogueRigs/Blueprints/Weapons/BP_BurstRifle.BP_BurstRifle_C");
 	const TCHAR* const TargetDummyClassPath = TEXT("/Game/RogueRigs/Blueprints/Debug/BP_TargetDummy.BP_TargetDummy_C");
 
-	/** Socket of BP_Miner the starting weapons attach to. */
-	const FName MinerWeaponSocket(TEXT("hand_r"));
-
 	/** Open floor of arena_m1: the dummy stands on DummyCell, the rifle fires from two cells west of it. */
 	const FIntPoint DummyCell(44, 41);
 	const FIntPoint DummyShooterCell(42, 41);
@@ -40,13 +39,20 @@ namespace RRWeaponTests
 	/** Tolerance on times measured from the accumulator (the schedule is exact up to float rounding). */
 	constexpr double ExactTolerance = 1.0e-4;
 
-	/** Step used to fire a single shot: the shot due now fires, the next one (>= 0.053 s away) does not. */
+	/** Step used to fire a single shot: the shot due now fires, the next one (>= 0.033 s away) does not. */
 	constexpr float SingleShotStep = 0.001f;
 
 	/** Read access to the weapon's protected muzzle. Never instantiated. */
 	struct FWeaponAccess : public ARRWeapon
 	{
 		static USceneComponent* MuzzleOf(const ARRWeapon* Weapon) { return Weapon->*(&FWeaponAccess::Muzzle); }
+	};
+
+	/** Read and write access to the miner's protected weapon attachment settings. Never instantiated. */
+	struct FMinerAccess : public ARRMiner
+	{
+		static FName& WeaponAttachSocketNameOf(ARRMiner* Miner) { return Miner->*(&FMinerAccess::WeaponAttachSocketName); }
+		static FVector WeaponAttachOffsetOf(const ARRMiner* Miner) { return Miner->*(&FMinerAccess::WeaponAttachOffset); }
 	};
 
 	/** Read access to the dummy's protected health set. Never instantiated. */
@@ -105,6 +111,23 @@ namespace RRWeaponTests
 			}
 		}
 		return Dummy;
+	}
+
+	/** Spawns BP_Miner on Cell with WeaponAttachSocketName forced to None before BeginPlay: starting weapons go on the capsule at WeaponAttachOffset. */
+	ARRMiner* SpawnMinerWithCapsuleWeapons(FAutomationTestBase& Test, const FTestWorld& TestWorld, const ARRArenaGrid* Grid, FIntPoint Cell)
+	{
+		return SpawnMiner(Test, TestWorld, Grid, Cell, [](ARRMiner* Miner) { FMinerAccess::WeaponAttachSocketNameOf(Miner) = NAME_None; });
+	}
+
+	/**
+	 * Lets an unpossessed miner walk as in play: CharacterMovement simulates without a controller (bRunPhysicsWithNoController)
+	 * and leaves MOVE_None, the mode of an unpossessed character, for the default mode (walking, falling until it lands).
+	 */
+	void EnableMinerMovement(ARRMiner* Miner)
+	{
+		UCharacterMovementComponent* Movement = Miner->GetCharacterMovement();
+		Movement->bRunPhysicsWithNoController = true;
+		Movement->SetDefaultMovementMode();
 	}
 
 	/** Current value of a weapon attribute. */
@@ -248,12 +271,13 @@ namespace RRWeaponTests
 		AutoFire->StartFiring();
 
 		const TArray<FShotSample> Shots = RecordShots(Test, Rifle, Recorder.Get(), 7, 120);
-		if (!Test.TestEqual(FString::Printf(TEXT("FireRate %.0f: 7 shots recorded"), FireRate), Shots.Num(), 7))
+		if (!Test.TestEqual(FString::Printf(TEXT("FireRate %g: 7 shots recorded"), FireRate), Shots.Num(), 7))
 		{
 			return false;
 		}
 
-		const TCHAR* Label = FireRate == 2.f ? TEXT("FireRate 2") : TEXT("FireRate 3");
+		const FString LabelText = FString::Printf(TEXT("FireRate %g"), FireRate);
+		const TCHAR* Label = *LabelText;
 		const double Period = ExpectedPause + 2.0 * ExpectedGap;
 		for (int32 Shot = 0; Shot < Shots.Num(); ++Shot)
 		{
@@ -289,17 +313,17 @@ bool FRRWeaponBurstTimingTest::RunTest(const FString& Parameters)
 		return false;
 	}
 
-	// CSV row BurstRifle (burst-rifle): FireRate 2, BurstCount 3, BurstDuty 0.32.
-	TestNearlyEqual(TEXT("FireRate 2 from the CSV"), WeaponAttribute(Rifle, URRWeaponAttributeSet::GetFireRateAttribute()), 2.f);
+	// CSV row BurstRifle (burst-rifle, owner values 2026-10-02): FireRate 1.25, BurstCount 3, BurstDuty 0.2.
+	TestNearlyEqual(TEXT("FireRate 1.25 from the CSV"), WeaponAttribute(Rifle, URRWeaponAttributeSet::GetFireRateAttribute()), 1.25f);
 	TestEqual(TEXT("BurstCount 3 from the CSV"), Rifle->GetBurstCount(), 3);
-	TestNearlyEqual(TEXT("BurstDuty 0.32 from the CSV"), Rifle->GetBurstDuty(), 0.32f);
+	TestNearlyEqual(TEXT("BurstDuty 0.2 from the CSV"), Rifle->GetBurstDuty(), 0.2f);
 	TestTrue(TEXT("auto-fire started at acquisition"), Rifle->GetAutoFireComponent()->IsFiring());
 	Rifle->Destroy();
 
-	// FireRate 2: bullets at 0, 0.08, 0.16 s, next burst at 0.5 s (pause 0.34 s).
-	CheckBurstSchedule(*this, TestWorld, 2.f, 0.08, 0.34);
-	// FireRate 3 (+50 %): period 1/3 s, gap 0.32 / 3 / 2 = 0.0533 s, pause 2/3 * 0.34 = 0.2267 s.
-	CheckBurstSchedule(*this, TestWorld, 3.f, 0.32 / 3.0 / 2.0, (1.0 - 0.32) / 3.0);
+	// FireRate 1.25 (CSV): period 0.8 s, bullets at 0, 0.08, 0.16 s, next burst at 0.8 s (pause 0.64 s).
+	CheckBurstSchedule(*this, TestWorld, 1.25f, 0.08, 0.64);
+	// FireRate 3 (upgraded): period 1/3 s, gap 0.2 / 3 / 2 = 0.0333 s, pause 0.8 / 3 = 0.2667 s.
+	CheckBurstSchedule(*this, TestWorld, 3.f, 0.2 / 3.0 / 2.0, (1.0 - 0.2) / 3.0);
 	return true;
 }
 
@@ -350,14 +374,14 @@ bool FRRWeaponMagazineReloadTest::RunTest(const FString& Parameters)
 		return false;
 	}
 
-	// Shot 30 is the last bullet of burst 10: 9 * 0.5 + 0.16 = 4.66 s; the reload replaces the pause, the next burst starts at its end.
+	// Shot 30 is the last bullet of burst 10: 9 * 0.8 + 0.16 = 7.36 s; the reload replaces the pause, the next burst starts at its end.
 	const double ReloadStart = Shots[29].ExactSeconds;
 	const double ReloadEnd = Shots[30].ExactSeconds;
 	AddInfo(FString::Printf(TEXT("shot 30 at %.4f s (frame %d), shot 31 at %.4f s (frame %d): reload %.4f s over %d frames; ammo after shot 29 %.0f; ammo at reload end %s"),
 		ReloadStart, Shots[29].Frame, ReloadEnd, Shots[30].Frame, ReloadEnd - ReloadStart, ReloadFrames, AmmoAfterShot29,
 		Recorder->GetAmmoAtReloadFinished().Num() > 0 ? *FString::SanitizeFloat(Recorder->GetAmmoAtReloadFinished()[0]) : TEXT("none")));
-	CheckShotTime(*this, TEXT("magazine"), 30, Shots[29], 4.66);
-	CheckShotTime(*this, TEXT("magazine"), 31, Shots[30], 4.66 + 1.5);
+	CheckShotTime(*this, TEXT("magazine"), 30, Shots[29], 7.36);
+	CheckShotTime(*this, TEXT("magazine"), 31, Shots[30], 7.36 + 1.5);
 	TestNearlyEqual(TEXT("1 bullet left after shot 29"), AmmoAfterShot29, 1.f);
 	TestTrue(TEXT("reload of 1.5 s"), FMath::Abs((ReloadEnd - ReloadStart) - 1.5) <= ExactTolerance);
 	TestTrue(TEXT("reloading for 1.5 s +- 1 frame"), FMath::Abs(ReloadFrames - 90) <= 1);
@@ -637,12 +661,13 @@ bool FRRWeaponMinerStartingWeaponTest::RunTest(const FString& Parameters)
 {
 	FTestWorld TestWorld(TEXT("RRWeaponTestWorld"));
 	ARRArenaGrid* Grid = SpawnGrid(*this, TestWorld);
-	ARRMiner* Miner = Grid ? SpawnMiner(*this, TestWorld, Grid, RockWestFloorCell) : nullptr;
+	ARRMiner* Miner = Grid ? SpawnMinerWithCapsuleWeapons(*this, TestWorld, Grid, RockWestFloorCell) : nullptr;
 	UClass* RifleClass = LoadTestClass<ARRWeapon>(*this, BurstRifleClassPath);
 	if (!Miner || !RifleClass)
 	{
 		return false;
 	}
+	EnableMinerMovement(Miner);
 	// Let the miner land on the floor and the weapon fire a few bursts.
 	for (int32 Frame = 0; Frame < 60; ++Frame)
 	{
@@ -659,27 +684,195 @@ bool FRRWeaponMinerStartingWeaponTest::RunTest(const FString& Parameters)
 		return false;
 	}
 	TestTrue(TEXT("starting weapon is a BP_BurstRifle"), Weapon->IsA(RifleClass));
-	TestEqual(TEXT("attached to the miner"), Weapon->GetAttachParentActor(), static_cast<AActor*>(Miner));
-	TestEqual(TEXT("attached to the miner mesh"), Weapon->GetRootComponent()->GetAttachParent(), static_cast<USceneComponent*>(Miner->GetMesh()));
-	TestEqual(TEXT("attached at socket hand_r"), Weapon->GetAttachParentSocketName(), MinerWeaponSocket);
-	TestTrue(TEXT("miner mesh has socket hand_r"), Miner->GetMesh() && Miner->GetMesh()->DoesSocketExist(MinerWeaponSocket));
 	TestEqual(TEXT("acquired by the miner"), Weapon->GetOwnerMiner(), Miner);
 	TestEqual(TEXT("owned by the miner"), Weapon->GetOwner(), static_cast<AActor*>(Miner));
 	TestTrue(TEXT("auto-fire running"), Weapon->GetAutoFireComponent()->IsFiring());
 	TestTrue(TEXT("the weapon fired during the first second"), Weapon->GetAutoFireComponent()->GetTotalShotsFired() > 0);
+	TestTrue(TEXT("miner walking on the floor"), Miner->GetCharacterMovement()->IsMovingOnGround());
 
+	// Attachment with WeaponAttachSocketName None: on the capsule at WeaponAttachOffset, turning with the aim.
+	UCapsuleComponent* Capsule = Miner->GetCapsuleComponent();
+	const FVector AttachOffset = FMinerAccess::WeaponAttachOffsetOf(Miner);
+	TestEqual(TEXT("attached to the miner"), Weapon->GetAttachParentActor(), static_cast<AActor*>(Miner));
+	TestEqual(TEXT("attached to the capsule"), Weapon->GetRootComponent()->GetAttachParent(), static_cast<USceneComponent*>(Capsule));
+	TestEqual(TEXT("no attach socket"), Weapon->GetAttachParentSocketName(), FName(NAME_None));
+	TestTrue(FString::Printf(TEXT("relative location = WeaponAttachOffset %s"), *AttachOffset.ToCompactString()),
+		Weapon->GetRootComponent()->GetRelativeLocation().Equals(AttachOffset, 0.01f));
+	TestTrue(TEXT("weapon points along the miner aim"), Weapon->GetActorForwardVector().Equals(Miner->GetAimDirection(), 1e-3f));
+	TestFalse(TEXT("weapon actor has no collision"), Weapon->GetActorEnableCollision());
+	TestEqual(TEXT("capsule overlaps the Projectile channel"), static_cast<int32>(Capsule->GetCollisionResponseToChannel(RRCollisionChannels::Projectile)), static_cast<int32>(ECR_Overlap));
+
+	// One shot from the miner standing on (42, 38), aiming east (+X) at the rock (43, 38).
+	Weapon->GetAutoFireComponent()->StopFiring();
 	const float FloorZ = Grid->GetCellCenter(RockWestFloorCell.X, RockWestFloorCell.Y).Z;
+	const FVector MinerLocation = Miner->GetActorLocation();
+	TestTrue(TEXT("miner aims east"), Miner->GetAimDirection().Equals(FVector::ForwardVector, 1e-3f));
+	ARRProjectile* Projectile = FireSingleShot(*this, Weapon);
+	if (!Projectile)
+	{
+		return false;
+	}
+	const FVector ShotLocation = Projectile->GetActorLocation();
+	const float ShotHeight = ShotLocation.Z - FloorZ;
+	const FVector ToShot = ShotLocation - MinerLocation;
+	const float ExpectedForward = Capsule->GetScaledCapsuleRadius() + Weapon->GetShotForwardOffset();
 	const FVector MuzzleLocation = FWeaponAccess::MuzzleOf(Weapon)->GetComponentLocation();
-	const float MuzzleHeight = MuzzleLocation.Z - FloorZ;
-	AddInfo(FString::Printf(TEXT("miner at %s, socket hand_r at %s, weapon at %s, muzzle at %s: %.1f uu above the floor (block height %.1f)"),
-		*Miner->GetActorLocation().ToCompactString(), *Miner->GetMesh()->GetSocketLocation(MinerWeaponSocket).ToCompactString(),
-		*Weapon->GetActorLocation().ToCompactString(), *MuzzleLocation.ToCompactString(), MuzzleHeight, Grid->GetBlockHeight()));
-	AddInfo(FString::Printf(TEXT("socket hand_r rotation %s; weapon forward %s, up %s; miner mesh anim instance %s"),
-		*Miner->GetMesh()->GetSocketRotation(MinerWeaponSocket).ToCompactString(), *Weapon->GetActorForwardVector().ToCompactString(),
-		*Weapon->GetActorUpVector().ToCompactString(), *GetNameSafe(Miner->GetMesh()->GetAnimInstance())));
-	// Sensible height: above the floor and below the top of the blocks, so shots fly over the floor and stop on rock.
-	TestTrue(TEXT("muzzle above the floor"), MuzzleHeight > 0.f);
-	TestTrue(TEXT("muzzle below the block top (shots hit rocks)"), MuzzleHeight < Grid->GetBlockHeight());
+	AddInfo(FString::Printf(TEXT("miner at %s (capsule bottom %.2f uu above the floor), weapon at %s, muzzle (visual) at %s %.1f uu above the floor; shot spawned at %s: %.2f uu above the floor (ShotHeight %.1f, block height %.1f), %.2f uu ahead of the miner axis (expected %.1f)"),
+		*MinerLocation.ToCompactString(), MinerLocation.Z - Capsule->GetScaledCapsuleHalfHeight() - FloorZ, *Weapon->GetActorLocation().ToCompactString(),
+		*MuzzleLocation.ToCompactString(), MuzzleLocation.Z - FloorZ, *ShotLocation.ToCompactString(), ShotHeight, Weapon->GetShotHeight(),
+		Grid->GetBlockHeight(), ToShot.X, ExpectedForward));
+	TestTrue(TEXT("ShotHeight is below the block height"), Weapon->GetShotHeight() > 0.f && Weapon->GetShotHeight() < Grid->GetBlockHeight());
+	TestTrue(TEXT("shot spawned ShotHeight above the floor"), FMath::IsNearlyEqual(ShotHeight, Weapon->GetShotHeight(), 0.5f));
+	TestTrue(TEXT("shot spawned below the block top (shots hit rocks)"), ShotHeight > 0.f && ShotHeight < Grid->GetBlockHeight());
+	TestTrue(TEXT("shot spawned capsule radius + ShotForwardOffset ahead along the aim"),
+		FMath::IsNearlyEqual(ToShot.X, ExpectedForward, 0.5f) && FMath::Abs(ToShot.Y) < 0.5f);
+
+	// The shot stops on the rock in front of the miner.
+	TStrongObjectPtr<URRTestEventRecorder> Recorder(NewObject<URRTestEventRecorder>());
+	Projectile->GetProjectileMovement()->OnProjectileStop.AddDynamic(Recorder.Get(), &URRTestEventRecorder::HandleProjectileStop);
+	FVector LastLocation;
+	const int32 DestroyFrame = TickUntilDestroyed(TestWorld, Projectile, 30, LastLocation);
+	AddInfo(FString::Printf(TEXT("miner shot destroyed at frame %d, last location %s"), DestroyFrame, *LastLocation.ToCompactString()));
+	TestTrue(TEXT("miner shot destroyed within 3 frames"), DestroyFrame != INDEX_NONE && DestroyFrame <= 3);
+	if (TestEqual(TEXT("miner shot: one blocking stop"), Recorder->GetProjectileStops().Num(), 1))
+	{
+		const FHitResult& Hit = Recorder->GetProjectileStops()[0];
+		TestEqual(TEXT("miner shot stopped by the grid"), Hit.GetActor(), static_cast<AActor*>(Grid));
+		TestEqual(TEXT("miner shot stopped on the rock cell"), Grid->GetCellAtWorld(Hit.ImpactPoint + FVector(1.f, 0.f, 0.f)), RockCell);
+	}
+	TestTrue(TEXT("rock still stands"), Grid->IsBlockCell(RockCell));
+	return true;
+}
+
+namespace RRWeaponTests
+{
+	/** Distance covered and capsule hits of one MinerMovesWhileFiring run. */
+	struct FMoveRun
+	{
+		bool bValid = false;
+		double Distance = 0.0;
+		double LateralDrift = 0.0;
+		int32 ShotsFired = 0;
+		int32 ProjectileHits = 0;
+		int32 OtherHits = 0;
+		float MaxWalkSpeed = 0.f;
+		float MaxAcceleration = 0.f;
+		FString HitActors;
+	};
+
+	/**
+	 * Spawns BP_Miner (weapons on the capsule) on MoveStartCell of a fresh world, lets it land, then pushes it toward +X (its aim)
+	 * with AddMovementInput for MoveFrames frames (1 s), with its starting weapon firing or stopped. No controller:
+	 * EnableMinerMovement lets CharacterMovement simulate the input. Records the
+	 * blocking hits of the capsule.
+	 */
+	FMoveRun RunMinerMove(FAutomationTestBase& Test, bool bFiring)
+	{
+		const FIntPoint MoveStartCell(30, 43);
+		constexpr int32 SettleFrames = 30;
+		constexpr int32 MoveFrames = 60;
+
+		FMoveRun Run;
+		FTestWorld TestWorld(TEXT("RRWeaponTestWorld"));
+		ARRArenaGrid* Grid = SpawnGrid(Test, TestWorld);
+		ARRMiner* Miner = Grid ? SpawnMinerWithCapsuleWeapons(Test, TestWorld, Grid, MoveStartCell) : nullptr;
+		if (!Miner || !Test.TestEqual(TEXT("one starting weapon"), Miner->GetWeapons().Num(), 1))
+		{
+			return Run;
+		}
+		for (int32 X = MoveStartCell.X; X <= MoveStartCell.X + 6; ++X)
+		{
+			for (int32 Y = MoveStartCell.Y - 1; Y <= MoveStartCell.Y + 1; ++Y)
+			{
+				Test.TestFalse(FString::Printf(TEXT("(%d, %d) is open floor"), X, Y), Grid->IsBlockCell(FIntPoint(X, Y)));
+			}
+		}
+		EnableMinerMovement(Miner);
+		UCharacterMovementComponent* Movement = Miner->GetCharacterMovement();
+
+		ARRWeapon* Weapon = Miner->GetWeapons()[0];
+		URRAutoFireComponent* AutoFire = Weapon->GetAutoFireComponent();
+		if (!bFiring)
+		{
+			AutoFire->StopFiring();
+		}
+
+		TStrongObjectPtr<URRTestEventRecorder> Recorder(NewObject<URRTestEventRecorder>());
+		Miner->GetCapsuleComponent()->OnComponentHit.AddDynamic(Recorder.Get(), &URRTestEventRecorder::HandleComponentHit);
+
+		for (int32 Frame = 0; Frame < SettleFrames; ++Frame)
+		{
+			TestWorld.Tick();
+		}
+		Test.TestTrue(TEXT("miner walking on the floor before the move"), Movement->IsMovingOnGround());
+		const int32 HitsBeforeMove = Recorder->GetComponentHits().Num();
+		const int32 ShotsBeforeMove = AutoFire->GetTotalShotsFired();
+		const FVector Start = Miner->GetActorLocation();
+		for (int32 Frame = 0; Frame < MoveFrames; ++Frame)
+		{
+			Miner->AddMovementInput(FVector::ForwardVector, 1.f);
+			TestWorld.Tick();
+		}
+		const FVector End = Miner->GetActorLocation();
+
+		Run.bValid = true;
+		Run.Distance = FVector::Dist2D(Start, End);
+		Run.LateralDrift = FMath::Abs(End.Y - Start.Y);
+		Run.ShotsFired = AutoFire->GetTotalShotsFired() - ShotsBeforeMove;
+		Run.MaxWalkSpeed = Movement->MaxWalkSpeed;
+		Run.MaxAcceleration = Movement->MaxAcceleration;
+		for (int32 Index = HitsBeforeMove; Index < Recorder->GetComponentHits().Num(); ++Index)
+		{
+			const FHitResult& Hit = Recorder->GetComponentHits()[Index];
+			const AActor* HitActor = Hit.GetActor();
+			if (HitActor && HitActor->IsA<ARRProjectile>())
+			{
+				++Run.ProjectileHits;
+			}
+			else if (HitActor != Grid || Hit.ImpactNormal.Z < 0.7)
+			{
+				// Floor contacts (grid, normal up) are ordinary walking; anything else is reported.
+				++Run.OtherHits;
+			}
+			const FString HitName = GetNameSafe(HitActor) + TEXT("/") + GetNameSafe(Hit.GetComponent());
+			if (!Run.HitActors.Contains(HitName))
+			{
+				Run.HitActors += HitName + TEXT(" ");
+			}
+		}
+		Test.AddInfo(FString::Printf(TEXT("%s: miner moved %.1f uu in %d frames (from %s to %s, lateral drift %.1f uu), %d shots, MaxWalkSpeed %.0f, MaxAcceleration %.0f; capsule hits: %d projectile, %d non-floor [%s]"),
+			bFiring ? TEXT("firing") : TEXT("not firing"), Run.Distance, MoveFrames, *Start.ToCompactString(), *End.ToCompactString(), Run.LateralDrift,
+			Run.ShotsFired, Run.MaxWalkSpeed, Run.MaxAcceleration, Run.ProjectileHits, Run.OtherHits, *Run.HitActors));
+		return Run;
+	}
+}
+
+IMPLEMENT_SIMPLE_AUTOMATION_TEST(FRRWeaponMinerMovesWhileFiringTest, "RogueRigs.Weapons.MinerMovesWhileFiring",
+	EAutomationTestFlags::EditorContext | EAutomationTestFlags::EngineFilter)
+
+bool FRRWeaponMinerMovesWhileFiringTest::RunTest(const FString& Parameters)
+{
+	const FMoveRun Free = RunMinerMove(*this, /*bFiring*/ false);
+	const FMoveRun Firing = RunMinerMove(*this, /*bFiring*/ true);
+	if (!Free.bValid || !Firing.bValid)
+	{
+		return false;
+	}
+	TestEqual(TEXT("no shot in the reference run"), Free.ShotsFired, 0);
+	TestTrue(TEXT("the weapon fired during the firing run"), Firing.ShotsFired > 0);
+
+	// Reference: from rest, accelerate to MaxWalkSpeed then cruise for the rest of 1 s.
+	const double AccelTime = Free.MaxAcceleration > 0.f ? FMath::Min(1.0, static_cast<double>(Free.MaxWalkSpeed) / Free.MaxAcceleration) : 1.0;
+	const double Kinematic = 0.5 * Free.MaxAcceleration * AccelTime * AccelTime + Free.MaxWalkSpeed * (1.0 - AccelTime);
+	AddInfo(FString::Printf(TEXT("kinematic distance in 1 s: %.1f uu"), Kinematic));
+	TestTrue(TEXT("reference run covers at least 90 % of the kinematic distance"), Free.Distance >= 0.9 * Kinematic);
+
+	const double Ratio = Free.Distance > 0.0 ? Firing.Distance / Free.Distance : 0.0;
+	AddInfo(FString::Printf(TEXT("distance while firing / without firing = %.1f / %.1f = %.3f"), Firing.Distance, Free.Distance, Ratio));
+	TestEqual(TEXT("the capsule is never blocked by a projectile"), Firing.ProjectileHits, 0);
+	TestEqual(TEXT("no non-floor hit while firing in the open corridor"), Firing.OtherHits, 0);
+	TestTrue(TEXT("no sideways push while firing (drift < 5 % of the distance)"), Firing.LateralDrift < 0.05 * FMath::Max(Firing.Distance, 1.0));
+	TestTrue(TEXT("firing keeps at least 90 % of the distance"), Ratio >= 0.9);
 	return true;
 }
 

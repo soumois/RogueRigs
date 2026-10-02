@@ -35,8 +35,10 @@ DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FRROnPickupCollectedSignature, ERRPi
  * drone to cut it (ARRDrone::RequestDig); the drone handles the cancel rule. The arena grid is found once at
  * BeginPlay (first ARRArenaGrid in the world). Pickups (ARRPickup) read GetPickupRadius and report their collection
  * through NotifyPickupCollected, which broadcasts OnPickupCollected; no pickup effect here. Weapons: at BeginPlay each class of
- * StartingWeapons is spawned (owner: the miner), attached to the mesh at WeaponAttachSocketName and acquired
- * (ARRWeapon::Acquire); they are destroyed at EndPlay. No dash or item logic.
+ * StartingWeapons is spawned (owner: the miner), attached (mesh socket WeaponAttachSocketName, or the capsule at
+ * WeaponAttachOffset when the socket is None) and acquired (ARRWeapon::Acquire); they are destroyed at EndPlay.
+ * Collision: the capsule overlaps the Projectile channel (never blocked by any projectile; projectiles still get
+ * overlap events) and ignores its weapons when moving. No dash or item logic.
  * Subclass in Blueprint for the mesh and animation.
  */
 UCLASS(Abstract)
@@ -129,7 +131,10 @@ protected:
 	/** Spawns DroneClass at the miner's location (owner and instigator: this miner) and hands it this miner. */
 	void SpawnDrone();
 
-	/** Spawns each class of StartingWeapons at the miner (owner and instigator: this miner), attaches it and calls Acquire. */
+	/**
+	 * Spawns each class of StartingWeapons at the miner (owner and instigator: this miner), attaches it (mesh socket
+	 * WeaponAttachSocketName, or the capsule at WeaponAttachOffset when None), makes the capsule ignore it when moving and calls Acquire.
+	 */
 	void SpawnStartingWeapons();
 
 	/** Projects the mouse cursor on the floor plane and aims at the hit point. Keeps the last aim if it misses. */
@@ -220,9 +225,13 @@ protected:
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Miner|Weapons")
 	TArray<TSubclassOf<ARRWeapon>> StartingWeapons;
 
-	/** Socket of the miner mesh the weapons attach to. None = the mesh origin (or the capsule when there is no mesh). */
+	/** Socket of the miner mesh the weapons attach to. None = attach to the capsule (root) at WeaponAttachOffset, so the weapon turns with the aim yaw. */
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Miner|Weapons")
 	FName WeaponAttachSocketName;
+
+	/** Location of the weapons relative to the capsule center (X forward along the aim, Y right, Z up), in uu. Used only when WeaponAttachSocketName is None. */
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Miner|Weapons", meta = (Units = "cm"))
+	FVector WeaponAttachOffset = FVector(0.f, 20.f, -40.f);
 
 	/** Weapons spawned from StartingWeapons; destroyed at EndPlay. */
 	UPROPERTY(VisibleInstanceOnly, BlueprintReadOnly, Category = "Miner|Weapons")

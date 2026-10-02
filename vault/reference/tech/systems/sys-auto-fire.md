@@ -15,7 +15,7 @@ kind: doc
 - Gap between two bullets = `BurstDuty` × period / (`BurstCount` − 1).
 - Pause after the burst = period × (1 − `BurstDuty`).
 - `BurstDuty` (share of the period used by the burst, 0 to 1) replaced `BurstInterval`, so the gap between bullets shrinks when fire rate rises.
-- Example, [[burst-rifle]]: `FireRate` 2, `BurstCount` 3, `BurstDuty` 0.32 → bullets 0.08 s apart, 0.34 s pause. With +50 % fire rate (`FireRate` 3): 0.053 s and 0.227 s.
+- Example, [[burst-rifle]]: `FireRate` 1.25, `BurstCount` 3, `BurstDuty` 0.2 → bullets 0.08 s apart, 0.64 s pause. Upgraded to `FireRate` 3: 0.033 s and 0.267 s.
 - [[shotgun]]: `BurstCount` 1, `BurstDuty` ignored.
 - If the magazine empties mid-burst, the burst stops and the burst counter resets to 0.
 
