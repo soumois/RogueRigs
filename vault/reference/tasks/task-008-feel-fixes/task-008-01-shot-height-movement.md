@@ -1,6 +1,6 @@
 ---
 id: task-008-01-shot-height-movement
-description: "Shots spawn at a fixed height in front of the miner, the weapon attaches to the body, the miner capsule ignores its own projectiles, new burst values."
+description: "Shots spawn at a fixed height before the miner, weapon on the body, capsule ignores projectiles, new burst values."
 parent: task-008-feel-fixes
 kind: task
 status: in-progress
