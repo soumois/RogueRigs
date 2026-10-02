@@ -160,6 +160,8 @@ task-009-05-spawner  reference/tasks/task-009-chaser/task-009-05-spawner.md
 task-009-06-bp-chaser  reference/tasks/task-009-chaser/task-009-06-bp-chaser.md
 task-009-07-tests-perf  reference/tasks/task-009-chaser/task-009-07-tests-perf.md
 task-009-chaser  reference/tasks/task-009-chaser.md
+task-010-01-enemy-damage-text  reference/tasks/task-010-damage-numbers-video/task-010-01-enemy-damage-text.md
+task-010-damage-numbers-video  reference/tasks/task-010-damage-numbers-video.md
 tasks-index  reference/tasks/tasks-index.md
 tech-index  reference/tech/tech-index.md
 terrain-index  reference/gdd/terrain/terrain-index.md

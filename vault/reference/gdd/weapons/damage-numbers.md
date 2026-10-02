@@ -12,7 +12,7 @@ status: provisional
 - The player can turn them off.
 - Rendered with Niagara at horde scale (digit atlas), fed by the damage pipeline ([[sys-damage]]).
 - Merging window duration: open.
-- Milestone: M2 (critical-hit pop in M3). M1 has a debug text version on the test target dummy only (owner, 2026-10-01).
+- Milestone: M2 (critical-hit pop in M3). M1 has a debug text version on the test target dummy (owner, 2026-10-01), extended to every enemy (owner, 2026-10-02); not pooled, so not for horde scale.
 
 ## Relations
 - [[weapons-index]] — parent index.
