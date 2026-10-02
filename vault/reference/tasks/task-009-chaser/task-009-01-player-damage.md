@@ -3,7 +3,7 @@ id: task-009-01-player-damage
 description: "Enemy-to-player flat damage GE, 0.25 s i-frames with blink, single death with State.Dead and a death event, enemy attribute set."
 parent: task-009-chaser
 kind: task
-status: todo
+status: in-progress
 ---
 # Player damage, i-frames, death
 

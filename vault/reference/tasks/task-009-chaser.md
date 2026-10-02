@@ -3,7 +3,7 @@ id: task-009-chaser
 description: "Global task: the chaser robot with player health, i-frames, death and game over, grid flow-field movement, enemy base, spawner, HUD and tests."
 parent: tasks-index
 kind: task
-status: todo
+status: in-progress
 ---
 # Chaser robot
 
@@ -11,7 +11,7 @@ status: todo
 - goal: in PIE, chasers spawn outside the view, follow the grid flow field to the miner around rocks, wind up and hit for 10; the miner blinks 0.25 s invulnerable, loses health on a HUD bar, and at 0 the game is over and the level restarts after 3 s; chasers die after 3 bullets, shrink, and drop an XP cube.
 - acceptance: (1) build exits 0; all `RogueRigs.*` headless tests pass, new ones included; (2) flow field: direction from any reachable cell leads to the miner, updated when a block is destroyed or the miner changes cell; (3) generic movement component used by the chaser, provider swappable; (4) chaser values from `EnemyStats.csv` row `Chaser` match [[enemy-chaser]]; (5) i-frames 0.25 s and single death proven by tests; (6) 50 chasers headless: average frame time reported; (7) docs `sys-enemy-ai`, `sys-damage`, `sys-player`, new `sys-flow-field`, `sys-enemies`, `sys-spawner`, `sys-hud`, Blueprint docs; lint clean; every subtask committed; (8) owner plays it.
 - gdd_check: read [[enemies-index]], [[enemy-chaser]], [[enemy-death]], [[sys-enemy-ai]], [[sys-damage]], [[sys-gas-core]], [[miner]], [[run-structure]], [[difficulty]], [[xp-level-up]], [[perf-risks]]. Conflict: owner asked for navmesh, [[sys-enemy-ai]] chose a grid flow field → owner chose the flow field behind a generic movement component (2026-10-02). Open values set by the owner (2026-10-02): chaser stats, wind-up 0.25 s, size 0.7, i-frames 0.25 s, M1 death flow, spawn rule, M1 robot death, C++ state machine. Out: difficulty scaling (open), XP system (next task; the cube is inert), kamikaze, death debris (M3).
-- confirmed_by_owner: no
+- confirmed_by_owner: yes (2026-10-02, all subtasks pre-approved)
 - milestone: M1
 - next_step: task-009-01-player-damage
 - result: open
