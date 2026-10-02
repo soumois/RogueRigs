@@ -3,7 +3,7 @@ id: task-009-07-tests-perf
 description: "Integration tests with the final Blueprints (chasers reach and hit the miner around rocks, die to the rifle) and a 50-chaser headless timing run."
 parent: task-009-chaser
 kind: task
-status: todo
+status: in-progress
 ---
 # Integration tests and first performance read
 

@@ -3,7 +3,7 @@ id: task-009-06-bp-chaser
 description: "Chaser, XP cube and spawner Blueprints, grey-box materials, HUD widget with health bar and Game Over text, miner blink, placed in L_ArenaM1."
 parent: task-009-chaser
 kind: task
-status: in-progress
+status: done
 ---
 # Chaser assets, HUD and map
 
@@ -16,7 +16,7 @@ status: in-progress
 - editor_state: open
 - token_ceiling: 60000
 - milestone: M1
-- result: open
+- result: MI_GB_Chaser (1, 0.75, 0), MI_GB_Eye (red), MI_GB_PickupXP (cyan); BP_PickupXP (type XP, 30 uu cube); BP_Chaser (cylinder body 48 × 124, red sphere eye, XPPickupClass BP_PickupXP); BP_EnemySpawner (EnemyClass BP_Chaser) placed in L_ArenaM1; WBP_HUD (health bar and text top-left, GAME OVER text collapsed; both events implemented through the graph DSL); BP_RRPlayerController HUDWidgetClass = WBP_HUD. PIE: 7 chasers after 8 s, no gameplay error in the log; HUD look and chaser movement not seen (owner). Docs bp-chaser, bp-pickup-xp, bp-enemy-spawner, wbp-hud, bp-rr-player-controller. About 84k tokens (turn limit hit once).
 
 ## Relations
 - [[task-009-chaser]] — parent global task.

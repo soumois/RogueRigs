@@ -24,10 +24,13 @@ barrel  reference/gdd/terrain/barrel.md
 blueprints-index  reference/tech/blueprints/blueprints-index.md
 bp-arena-grid  reference/tech/blueprints/bp-arena-grid.md
 bp-burst-rifle  reference/tech/blueprints/bp-burst-rifle.md
+bp-chaser  reference/tech/blueprints/bp-chaser.md
 bp-drone  reference/tech/blueprints/bp-drone.md
+bp-enemy-spawner  reference/tech/blueprints/bp-enemy-spawner.md
 bp-miner  reference/tech/blueprints/bp-miner.md
 bp-pickup-heal  reference/tech/blueprints/bp-pickup-heal.md
 bp-pickup-ore  reference/tech/blueprints/bp-pickup-ore.md
+bp-pickup-xp  reference/tech/blueprints/bp-pickup-xp.md
 bp-projectile  reference/tech/blueprints/bp-projectile.md
 bp-rr-game-mode  reference/tech/blueprints/bp-rr-game-mode.md
 bp-rr-player-controller  reference/tech/blueprints/bp-rr-player-controller.md
@@ -164,6 +167,7 @@ turret  reference/gdd/weapons/turret.md
 unreal-mcp  reference/tech/pipelines/unreal-mcp.md
 upgrades  reference/gdd/weapons/upgrades.md
 visual-style  reference/gdd/art-audio/visual-style.md
+wbp-hud  reference/tech/blueprints/wbp-hud.md
 weapons-index  reference/gdd/weapons/weapons-index.md
 wishlist  reference/production/wishlist.md
 xp-level-up  reference/gdd/run/xp-level-up.md

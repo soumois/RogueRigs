@@ -10,7 +10,7 @@ kind: doc
 - parent_class: ARRPlayerController (/Script/RogueRigs.RRPlayerController)
 - purpose: routes Enhanced Input to the miner ([[sys-player]]).
 - components: none.
-- exposed_defaults: DefaultMappingContext = /Game/RogueRigs/Input/IMC_Miner; MoveAction = IA_Move; StickAimAction = IA_StickAim; MouseAimAction = IA_MouseAim (all Axis2D, in /Game/RogueRigs/Input/, created by duplicating the TwinStick assets, originals untouched).
+- exposed_defaults: HUDWidgetClass = /Game/RogueRigs/UI/WBP_HUD (task-009-06); DefaultMappingContext = /Game/RogueRigs/Input/IMC_Miner; MoveAction = IA_Move; StickAimAction = IA_StickAim; MouseAimAction = IA_MouseAim (all Axis2D, in /Game/RogueRigs/Input/, created by duplicating the TwinStick assets, originals untouched).
 - events: none.
 - logic_in_bp: none
 - assets: IMC_Miner mappings (all on IA_Move unless noted): Gamepad Left 2D (no modifier); W and Z: Swizzle Input Axis Values YXZ; S: Swizzle YXZ then Negate; D: none; A and Q: Negate. IA_StickAim: Gamepad Right 2D (no modifier). IA_MouseAim: Mouse XY 2D-Axis (no modifier).
@@ -20,3 +20,4 @@ kind: doc
 - [[blueprints-index]] — parent index.
 - [[sys-player]] — the C++ class and the input axis convention.
 - [[bp-rr-game-mode]] — default controller of this game mode.
+- [[wbp-hud]] — the HUD widget it creates.
