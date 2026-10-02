@@ -18,3 +18,4 @@ One global task per owner request (template `task-global.md`, id `task-<number>-
 - [[task-005-drone-orbit]] — drone actor circling the miner (grey-box sphere). Status done.
 - [[task-006-dig]] — the drone digs pushed blocks (red laser, shake, drops, pickups) and the floor flicker fix. Status done.
 - [[task-007-burst-rifle-dummy]] — burst rifle with GAS damage and an immobile target dummy. Status in-progress (last test blocked on the shot height, task-008).
+- [[task-008-feel-fixes]] — owner PIE feedback: shot height, free movement, burst pause, pickups, shake, damage text, bigger dummy. Status in-progress.

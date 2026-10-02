@@ -140,6 +140,11 @@ task-007-03-target-dummy  reference/tasks/task-007-burst-rifle-dummy/task-007-03
 task-007-04-bp-rifle-dummy  reference/tasks/task-007-burst-rifle-dummy/task-007-04-bp-rifle-dummy.md
 task-007-05-weapon-tests  reference/tasks/task-007-burst-rifle-dummy/task-007-05-weapon-tests.md
 task-007-burst-rifle-dummy  reference/tasks/task-007-burst-rifle-dummy.md
+task-008-01-shot-height-movement  reference/tasks/task-008-feel-fixes/task-008-01-shot-height-movement.md
+task-008-02-feel-values  reference/tasks/task-008-feel-fixes/task-008-02-feel-values.md
+task-008-03-bp-miner-dummy  reference/tasks/task-008-feel-fixes/task-008-03-bp-miner-dummy.md
+task-008-04-tests-final  reference/tasks/task-008-feel-fixes/task-008-04-tests-final.md
+task-008-feel-fixes  reference/tasks/task-008-feel-fixes.md
 tasks-index  reference/tasks/tasks-index.md
 tech-index  reference/tech/tech-index.md
 terrain-index  reference/gdd/terrain/terrain-index.md
