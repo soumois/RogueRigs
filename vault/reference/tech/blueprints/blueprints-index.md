@@ -26,4 +26,6 @@ One node per Blueprint, template `blueprint.md`.
 - [[bp-enemy-spawner]] — BP_EnemySpawner, the enemy spawner placed in the arena.
 - [[bp-kamikaze]] — BP_Kamikaze, the kamikaze robot.
 - [[bp-explosion-fx]] — BP_ExplosionFX, the explosion visual.
+- [[bp-objective-console]] — BP_ObjectiveConsole, the command console.
+- [[bp-extraction-shuttle]] — BP_ExtractionShuttle, the extraction shuttle.
 - [[wbp-hud]] — WBP_HUD, health bar and Game Over text.
