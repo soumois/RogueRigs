@@ -45,6 +45,10 @@ namespace RRKamikazeTests
 		static TSubclassOf<ARREnemy>& EnemyClassOf(ARREnemySpawner* Spawner) { return Spawner->*(&FSpawnerAccess::EnemyClass); }
 		static TArray<FRRWeightedEnemyClass>& WeightsOf(ARREnemySpawner* Spawner) { return Spawner->*(&FSpawnerAccess::WeightedEnemyClasses); }
 	};
+	struct FPickupAccess : public ARRPickup
+	{
+		static const FVector& PopStartOf(const ARRPickup* Pickup) { return Pickup->*(&FPickupAccess::PopStart); }
+	};
 	struct FWeaponAccess : public ARRWeapon
 	{
 		static USceneComponent* MuzzleOf(const ARRWeapon* Weapon) { return Weapon->*(&FWeaponAccess::Muzzle); }
@@ -293,9 +297,10 @@ bool FRRKamikazeKilledTest::RunTest(const FString& Parameters)
 	const TArray<ARRPickup*> Pickups = GetXPPickups(TestWorld.Get());
 	for (const ARRPickup* Pickup : Pickups)
 	{
-		NearKamikaze += FVector::Dist2D(Pickup->GetActorLocation(), DeathLocation) < 75.f ? 1 : 0;
+		// Dropped where the kamikaze died (the pop then moves it up to PopMaxOffset per axis in a random direction).
+		NearKamikaze += FVector::Dist2D(FPickupAccess::PopStartOf(Pickup), DeathLocation) < 1.f ? 1 : 0;
 	}
-	AddInfo(FString::Printf(TEXT("%d XP pickups, %d at the kamikaze"), Pickups.Num(), NearKamikaze));
+	AddInfo(FString::Printf(TEXT("%d XP pickups, %d dropped at the kamikaze"), Pickups.Num(), NearKamikaze));
 	TestEqual(TEXT("1 XP from the kamikaze"), NearKamikaze, 1);
 	TestEqual(TEXT("2 XP in total (kamikaze + chaser)"), Pickups.Num(), 2);
 	return true;

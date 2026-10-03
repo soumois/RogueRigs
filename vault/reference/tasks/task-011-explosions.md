@@ -3,7 +3,7 @@ id: task-011-explosions
 description: "Global task: feel tweaks (camera, shake, chaser wind-up), then explosions: queue and chains, barrels in the arena, kamikaze robot, assets, tests."
 parent: tasks-index
 kind: task
-status: in-progress
+status: review
 ---
 # Explosions: barrel and kamikaze
 
@@ -13,8 +13,8 @@ status: in-progress
 - gdd_check: read [[enemy-kamikaze]], [[barrel]], [[explosions]], [[sys-explosions]], [[ore-blocks]], [[destruction-rules]], [[visual-style]] (miner always centered: matches). Fixed a stale rule (one explosion breaks one ore block) in [[enemy-kamikaze]] and [[ore-blocks]] after the 2026-10-01 decision. Open values set by the owner (2026-10-02): kamikaze, barrel, explosion radius and damage, chain delay 0.08 s, grey-box look, 16 barrels, spawn share 25 % kamikaze, chaser wind-up 0.1 s, camera arm 1700 uu without lag, shake 25 uu at 8 Hz plus 8 uu vertical. TaskCreate is not available in this session: progress is tracked in these nodes only.
 - confirmed_by_owner: yes (2026-10-02, all subtasks pre-approved)
 - milestone: M1
-- next_step: task-011-07-tests-integration
-- result: open
+- next_step: none (owner: play it)
+- result: acceptance 1 to 5 passed: 52/52 headless tests (explosion queue and chain 0.083 s, barrels from shots, digs and blasts, kamikaze fuse and death, no one-shot, i-frames respected), 16 barrels with 4 chaining pairs, kamikazes 25 % of spawns. Owner to play it (6). Known: WBP_HUD divide by zero warning at PIE start. About 640k tokens over seven subtasks.
 
 ## Subtasks
 1. task-011-01-feel-tweaks — cpp: camera, shake, wind-up values, tests updated.
