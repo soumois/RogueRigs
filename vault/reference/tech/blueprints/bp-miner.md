@@ -15,7 +15,7 @@ kind: doc
 - logic_in_bp: visual effect only (level-up disc)
 - assets: SKM_Quinn_Simple and ABP_Unarmed from the template mannequins.
 - owner_agent: agent-bp
-- weapons: StartingWeapons = [BP_BurstRifle_C], WeaponAttachSocketName = None (task-008-03: attached to the capsule at the C++ default WeaponAttachOffset (0, 20, -40), no hand socket; the hand_r socket pitched the rifle about 84° up) ([[bp-burst-rifle]]). Read back after save; the in-game muzzle height is not yet checked.
+- weapons: StartingWeapons = [BP_BurstRifle_C, BP_Shotgun_C] in that order (task-015-02; GuaranteedWeaponClasses unchanged, still ARRShotgun natively, no duplicate spawned in PIE: one BP_Shotgun_C_0) ([[bp-shotgun]]); earlier, [BP_BurstRifle_C], WeaponAttachSocketName = None (task-008-03: attached to the capsule at the C++ default WeaponAttachOffset (0, 20, -40), no hand socket; the hand_r socket pitched the rifle about 84° up) ([[bp-burst-rifle]]). Read back after save; the in-game muzzle height is not yet checked.
 - verified: PIE on L_ArenaM1 spawns BP_Miner_C at (8100, 8100, 90.15); MaxWalkSpeed 600; Health 100, MaxHealth 100, MoveSpeed 600, MiningSpeed 1, PickupRadius 300, XPGain 1, Luck 0.
 
 ## Relations
@@ -25,3 +25,4 @@ kind: doc
 - [[bp-drone]] — the drone Blueprint set as its `DroneClass`.
 - [[sys-level-up]] — the effect event the disc listens to.
 - [[bp-burst-rifle]] — its starting weapon.
+- [[bp-shotgun]] — its second starting weapon.
