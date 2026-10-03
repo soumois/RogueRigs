@@ -3,7 +3,7 @@ id: task-016-04-tests-integration
 description: "Integration tests with the final Blueprints: alert, console drop, clear marked rocks, hack, shuttle, win; and the timeout loss."
 parent: task-016-console-extraction
 kind: task
-status: todo
+status: in-progress
 ---
 # Objectives integration tests
 
