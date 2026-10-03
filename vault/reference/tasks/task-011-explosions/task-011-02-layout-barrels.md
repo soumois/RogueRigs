@@ -3,7 +3,7 @@ id: task-011-02-layout-barrels
 description: "Add about 16 barrel cells to arena_m1 in walls along paths, some in pairs, without changing rock, heal ore or paths."
 parent: task-011-explosions
 kind: task
-status: in-progress
+status: done
 ---
 # Layout: barrels
 
@@ -16,7 +16,7 @@ status: in-progress
 - editor_state: any
 - token_ceiling: 30000
 - milestone: M1
-- result: open
+- result: 16 barrels (rock → barrel only, orchestrator diff): (59, 67)+(57, 68), (73, 31)+(73, 32), (35, 66)+(37, 68), (24, 49)+(26, 47), and (43, 6), (13, 64), (7, 30), (48, 41), (30, 27), (67, 49), (19, 12), (59, 18); all touch reachable floor, > 6 cells from the spawn, none in the test area (33..45, 33..49). Coverage 59.1 %, reachable floor 85.8 %, validator OK. About 23k tokens.
 
 ## Relations
 - [[task-011-explosions]] — parent global task.

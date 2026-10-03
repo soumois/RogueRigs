@@ -3,7 +3,7 @@ id: task-011-03-explosion-system
 description: "URRExplosionSubsystem: queued explosions, 0.08 s chain delay, every block in radius destroyed, character damage without one-shot, FX actor."
 parent: task-011-explosions
 kind: task
-status: todo
+status: in-progress
 ---
 # Explosion system
 
