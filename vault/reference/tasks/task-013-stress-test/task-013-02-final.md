@@ -3,7 +3,7 @@ id: task-013-02-final
 description: "Rerun the stress procedure after task-016: S0, S2 continuous fire, S7 mass death and explosions; compare with baseline; ranked optimization leads."
 parent: task-013-stress-test
 kind: task
-status: todo
+status: in-progress
 ---
 # Stress final
 

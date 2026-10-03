@@ -26,4 +26,4 @@ One global task per owner request (template `task-global.md`, id `task-<number>-
 - [[task-013-stress-test]] — stress test in -game: baseline at 50 to 400 robots first, final S0, S2, S7 after task-016. Status in-progress.
 - [[task-014-upgrades-levelup]] — spawn packs (100 max, 15 % kamikazes), stat upgrades with rarities, level-up heal, pause, 3 cards, one reroll. Status done.
 - [[task-015-shotgun]] — shotgun conical wave with knockback, given at start with the burst rifle. Status done.
-- [[task-016-console-extraction]] — alert bar, command console hack, shuttle extraction, end screens. Status in-progress.
+- [[task-016-console-extraction]] — alert bar, command console hack, shuttle extraction, end screens. Status done.

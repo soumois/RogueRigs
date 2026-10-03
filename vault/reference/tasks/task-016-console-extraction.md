@@ -3,7 +3,7 @@ id: task-016-console-extraction
 description: "Global task: minimal alert bar, command console with marked rocks and drone hack, shuttle landing with countdown, success and run-lost screens."
 parent: tasks-index
 kind: task
-status: in-progress
+status: done
 ---
 # Console hack and shuttle extraction
 
@@ -13,8 +13,8 @@ status: in-progress
 - gdd_check: Read [[level-flow]], [[difficulty]], [[objective-console]], [[extraction]], [[drone]], [[destruction-rules]], [[color-code]]. Alert gains, console and shuttle values open → owner set provisional defaults. Owner decisions of 2026-10-03 written into the GDD before planning (level-up heal vs heal-ore-only, rarities moved to M1, reroll, spawn packs, all open values set as provisional defaults). TaskCreate and TaskUpdate are not available in this session: progress is tracked in these nodes and the crew dashboard artifact.
 - confirmed_by_owner: yes (2026-10-03, all subtasks pre-approved)
 - milestone: M1
-- next_step: task-016-04-tests-integration
-- result: open
+- next_step: none
+- result: All acceptance checks passed: 95/95 headless tests (alert time and kills, pause on pending console, console placement, marked rocks, hack rules and drain, shuttle distance, countdown, win, loss, real pause on the end screen, restart); PIE loop played end to end through the cheat property route; docs sys-objectives (new), sys-difficulty, sys-drone, sys-hud, sys-cheats, Blueprint docs. Owner to review: console prefers cells with rocks to mark; shuttle board radius 1 cell; console gauge is a glow, not a bar; visuals not seen on screen. About 880k tokens over four subtasks.
 
 ## Subtasks
 1. task-016-01-alert-console — cpp: run flow, alert bar, console drop, marked rocks, drone hack, tests
