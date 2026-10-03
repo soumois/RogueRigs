@@ -108,6 +108,7 @@ sys-progression  reference/tech/systems/sys-progression.md
 sys-projectiles  reference/tech/systems/sys-projectiles.md
 sys-spawner  reference/tech/systems/sys-spawner.md
 sys-status-effects  reference/tech/systems/sys-status-effects.md
+sys-stress  reference/tech/systems/sys-stress.md
 sys-target-dummy  reference/tech/systems/sys-target-dummy.md
 sys-upgrades  reference/tech/systems/sys-upgrades.md
 sys-weapons  reference/tech/systems/sys-weapons.md

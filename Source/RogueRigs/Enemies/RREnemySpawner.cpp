@@ -239,6 +239,21 @@ TSubclassOf<ARREnemy> ARREnemySpawner::PickEnemyClass() const
 	return PickEnemyClass(Stream);
 }
 
+void ARREnemySpawner::GetSpawnableClasses(TArray<TSubclassOf<ARREnemy>>& OutClasses) const
+{
+	if (EnemyClass)
+	{
+		OutClasses.AddUnique(EnemyClass);
+	}
+	for (const FRRWeightedEnemyClass& Entry : WeightedEnemyClasses)
+	{
+		if (Entry.EnemyClass)
+		{
+			OutClasses.AddUnique(Entry.EnemyClass);
+		}
+	}
+}
+
 ARREnemy* ARREnemySpawner::TrySpawnEnemy()
 {
 	UWorld* World = GetWorld();

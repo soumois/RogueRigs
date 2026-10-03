@@ -67,6 +67,9 @@ public:
 	/** PickEnemyClass with the global random generator (used by TrySpawnEnemy). */
 	TSubclassOf<ARREnemy> PickEnemyClass() const;
 
+	/** Robot classes this spawner can spawn: EnemyClass, then each WeightedEnemyClasses entry with a class (no duplicates). */
+	void GetSpawnableClasses(TArray<TSubclassOf<ARREnemy>>& OutClasses) const;
+
 	/** Number of robots spawned by this spawner that are alive (not dead, not destroyed). Prunes the list. */
 	UFUNCTION(BlueprintPure, Category = "Spawner")
 	int32 GetAliveCount();

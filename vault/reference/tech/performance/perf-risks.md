@@ -1,6 +1,6 @@
 ---
 id: perf-risks
-description: "Likely cost centers at 150–200 enemies (movement, pathfinding, animation, rendering, line of sight, chains, projectiles) with fallbacks and hours."
+description: "Cost centers at 150–200 enemies with fallbacks and hours, plus ranked optimization leads with expected gains from the S0 baseline."
 parent: performance-index
 kind: doc
 ---
@@ -19,8 +19,17 @@ Measure in S0 ([[stress-test-m1]]) before changing any architecture.
 | Line of sight | Shooters and turrets test line of sight; blocks are the only obstacles | Grid cell walk instead of physics traces, throttled | 1 |
 | Explosion chains | Barrel → kamikaze → barrel, synchronous in damage callbacks: recursion, double hits | Queue on next tick, "already exploded" flag ([[sys-explosions]]) | 0.5 |
 | Projectiles | Template projectile spawned and destroyed each shot, `bForceSubStepping = true` | Projectile pool; sub-stepping off unless needed | 1 |
-| Target machine | Not defined | Decide before S0: thresholds mean nothing without it | — |
+| Target machine | This PC, 1920×1080 windowed (owner, 2026-10-03; [[stress-test-m1]]) | Baseline measured: ceiling ≈ 500 chasers | — |
+
+## Leads from the S0 baseline (task-013-01, ranked, not measured one by one)
+Baseline: game-thread bound, ≈ 0.02 ms per chaser up to 400, ceiling ≈ 500 ([[stress-test-m1]]). Gains are estimates at 400 chasers; confirm each with an Insights trace (`-trace=cpu,frame`, 0.5 h) before coding. No optimization is coded without the owner.
+1. Enemy-enemy capsule collision in the crowd (sweeps and depenetration of CharacterMovement against neighbours): enemies ignore the Pawn channel, separation left to RVO. Expected −3 to −5 ms game. 1 h.
+2. CharacterMovement cost per robot: lighter settings (no physics interaction, no floor re-check when flat, tick interval for robots far from the miner). Expected −1 to −3 ms. 1–2 h. Full fallback: flat-floor pawn movement (row above), larger gain, 2–3 h.
+3. RVO avoidance at 400 agents in one dense cluster: lower `AvoidanceConsiderationRadius` or update rate. Expected −0.5 to −2 ms. 0.5 h.
+4. Per-robot tick work (state machine, mesh blink, flow-field lookup each frame): tick at 30 Hz or batch in a manager. Expected −0.5 to −1 ms. 1 h.
+5. Rendering floor: draw ≈ 8 ms and GPU ≈ 7 ms already at 50 robots (Lumen, virtual shadows, ray tracing). Not limiting on this PC; −2 to −4 ms GPU if a weaker target appears. 0.5 h.
 
 ## Relations
 - [[performance-index]] — parent index.
 - [[sys-enemy-ai]] — pathfinding and line of sight decisions.
+- [[stress-test-m1]] — the baseline table these leads come from.

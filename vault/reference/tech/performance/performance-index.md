@@ -8,5 +8,5 @@ kind: note
 
 ## Relations
 - [[tech-index]] — parent index.
-- [[perf-risks]] — likely cost centers outside GAS, with measures and fallbacks.
-- [[stress-test-m1]] — scenarios, thresholds, measuring method.
+- [[perf-risks]] — likely cost centers outside GAS, with measures and fallbacks; ranked leads from the baseline.
+- [[stress-test-m1]] — scenarios, thresholds, target machine, stress procedure, baseline table and ceiling.
