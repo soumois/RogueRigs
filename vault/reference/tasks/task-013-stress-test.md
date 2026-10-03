@@ -13,7 +13,7 @@ status: in-progress
 - gdd_check: Read [[stress-test-m1]], [[perf-risks]], [[gas-scope]]. Target machine open → owner: this PC, 1920×1080. Owner decisions of 2026-10-03 written into the GDD before planning (level-up heal vs heal-ore-only, rarities moved to M1, reroll, spawn packs, all open values set as provisional defaults). TaskCreate and TaskUpdate are not available in this session: progress is tracked in these nodes and the crew dashboard artifact.
 - confirmed_by_owner: yes (2026-10-03, all subtasks pre-approved)
 - milestone: M1
-- next_step: task-013-01-baseline
+- next_step: task-013-02-final (waits for task-016-04)
 - result: open
 
 ## Subtasks

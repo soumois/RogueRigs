@@ -3,7 +3,7 @@ id: task-014-upgrades-levelup
 description: "Global task: 100 robots in packs with fewer kamikazes, stat upgrades with rarities, level-up heal, effect, pause, 3 cards and one reroll."
 parent: tasks-index
 kind: task
-status: todo
+status: in-progress
 ---
 # Spawn packs, upgrades and level-up
 

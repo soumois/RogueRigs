@@ -3,7 +3,7 @@ id: task-013-01-baseline
 description: "Stress command and -game frame-time measurement on the current build: S0 at 50 to 400 chasers; ceiling and optimization leads."
 parent: task-013-stress-test
 kind: task
-status: in-progress
+status: done
 ---
 # Stress baseline
 
@@ -16,7 +16,7 @@ status: in-progress
 - editor_state: closed (the run launches its own -game process)
 - token_ceiling: 90000
 - milestone: M1
-- result: open
+- result: URRStressSubsystem (rr.Stress.Spawn, Clear, Peace, Run → Saved/Stress CSV), Scripts/Run-StressTest.ps1 (-game 1920×1080, no frame cap, no VSync), spawner GetSpawnableClasses. Baseline S0 with GAS (avg / p99 frame ms): 50 → 8.1 / 9.6; 100 → 8.6 / 10.7; 200 → 9.5 / 12.8; 300 → 9.8 / 12.5; 400 → 11.3 / 13.8. Ceiling about 500 chasers (800: p99 50 ms); game-thread bound from 200. Leads ranked in perf-risks (robot-robot capsule collision first, about −3 to −5 ms at 400). stat unit readout (CSV profiler unavailable in editor -game). Build 0, 58/58. Docs sys-stress (new), stress-test-m1, perf-risks, sys-spawner. Commit b26b604, about 110k tokens.
 
 ## Relations
 - [[task-013-stress-test]] — parent global task.

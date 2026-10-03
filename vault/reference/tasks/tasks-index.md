@@ -24,6 +24,6 @@ One global task per owner request (template `task-global.md`, id `task-<number>-
 - [[task-011-explosions]] — feel tweaks, then explosions: barrel, kamikaze, chains, tests. Status done.
 - [[task-012-xp-level]] — tougher slower kamikaze, slower chasers, render-only shake, XP and level-up without upgrades. Status done.
 - [[task-013-stress-test]] — stress test in -game: baseline at 50 to 400 robots first, final S0, S2, S7 after task-016. Status in-progress.
-- [[task-014-upgrades-levelup]] — spawn packs (100 max, 15 % kamikazes), stat upgrades with rarities, level-up heal, pause, 3 cards, one reroll. Status todo.
+- [[task-014-upgrades-levelup]] — spawn packs (100 max, 15 % kamikazes), stat upgrades with rarities, level-up heal, pause, 3 cards, one reroll. Status in-progress.
 - [[task-015-shotgun]] — shotgun conical wave with knockback, given at start with the burst rifle. Status todo.
 - [[task-016-console-extraction]] — alert bar, command console hack, shuttle extraction, end screens. Status todo.

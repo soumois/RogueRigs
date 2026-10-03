@@ -3,7 +3,7 @@ id: task-014-01-spawn-packs
 description: "Spawner: 30 s trickle, then packs of 8 to 15 every 6 s from one side, rare lone robots, cap 100, kamikaze 15 %."
 parent: task-014-upgrades-levelup
 kind: task
-status: todo
+status: in-progress
 ---
 # Spawn packs
 
