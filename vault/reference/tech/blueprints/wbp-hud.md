@@ -1,6 +1,6 @@
 ---
 id: wbp-hud
-description: "WBP_HUD, widget Blueprint of URRHUDWidget: health, XP bar with level, LEVEL UP, Game Over and the upgrade card screen; open for its tree and event graphs."
+description: "WBP_HUD, widget Blueprint of URRHUDWidget: health, XP bar, LEVEL UP, Game Over and the upgrade card screen; open for its tree and graphs."
 parent: blueprints-index
 kind: doc
 ---
