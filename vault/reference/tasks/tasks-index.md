@@ -20,4 +20,4 @@ One global task per owner request (template `task-global.md`, id `task-<number>-
 - [[task-007-burst-rifle-dummy]] — burst rifle with GAS damage and an immobile target dummy. Status done.
 - [[task-008-feel-fixes]] — owner PIE feedback: shot height, free movement, burst pause, pickups, shake, damage text, bigger dummy. Status done.
 - [[task-009-chaser]] — chaser robot: player damage, i-frames, death, flow field, enemy base, spawner, HUD. Status done.
-- [[task-010-damage-numbers-video]] — quick damage numbers above every enemy for the assignment video. Status review (owner check).
+- [[task-010-damage-numbers-video]] — quick damage numbers above every enemy for the assignment video. Status done.

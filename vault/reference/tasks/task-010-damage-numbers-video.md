@@ -3,7 +3,7 @@ id: task-010-damage-numbers-video
 description: "Global task: quick damage numbers above every enemy, reusing the dummy's floating text, for the owner's assignment video."
 parent: tasks-index
 kind: task
-status: review
+status: done
 ---
 # Damage numbers on enemies (quick version)
 
@@ -13,8 +13,8 @@ status: review
 - gdd_check: [[damage-numbers]] is M2 (Niagara at horde scale), M1 debug text was dummy-only → owner extends the debug text to all enemies (2026-10-02). Risk: one actor per hit does not scale to 200 robots; the shared feedback component with a text pool stays a later task. Merge window open: not merged.
 - confirmed_by_owner: yes (2026-10-02)
 - milestone: M1
-- next_step: none (owner: check in PIE)
-- result: acceptance 1 and 2 passed (36/36 headless); owner to see the numbers in PIE. Shared feedback component with a text pool remains a later task.
+- next_step: none
+- result: acceptance 1 and 2 passed (36/36 headless); owner used it (2026-10-02). Shared feedback component with a text pool remains a later task.
 
 ## Subtasks
 1. task-010-01-enemy-damage-text — cpp: floating damage text on `ARREnemy`.
