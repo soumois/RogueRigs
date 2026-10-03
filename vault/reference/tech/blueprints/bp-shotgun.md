@@ -1,6 +1,6 @@
 ---
 id: bp-shotgun
-description: "BP_Shotgun, Blueprint of ARRShotgun: grey-box mesh, muzzle position and the white-gold fan flash drawn on OnWaveFired; open to see the VFX and what is not set."
+description: "BP_Shotgun, Blueprint of ARRShotgun: grey-box mesh, muzzle position and the white-gold fan flash drawn on OnWaveFired; open for the VFX."
 parent: blueprints-index
 kind: doc
 ---
