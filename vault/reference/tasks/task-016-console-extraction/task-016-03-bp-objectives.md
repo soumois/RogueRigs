@@ -3,7 +3,7 @@ id: task-016-03-bp-objectives
 description: "Console and shuttle visuals, marked-rock outline, hack gauge, alert bar and countdown in the HUD, success and run-lost screens, PIE."
 parent: task-016-console-extraction
 kind: task
-status: todo
+status: in-progress
 ---
 # Objectives Blueprints and HUD
 
