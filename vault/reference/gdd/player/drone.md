@@ -19,7 +19,7 @@ status: approved
 ## Rules and values
 - It is one of the three block-destruction sources ([[destruction-rules]]).
 - Dig speed scales with the miner's mining speed stat ([[player-stats]]). Base dig time at mining speed 1: rock 1.5 s, ore and heal ore 4.5 s (provisional, owner 2026-10-01).
-- Dig feedback: the block being cut shakes until it breaks.
+- Dig feedback: the block being cut shakes until it breaks; only its rendering shakes, never its collision (owner 2026-10-02).
 - Dig trigger and cancel (provisional): the miner pushing into an adjacent block starts the dig; it goes on while the miner stays within 1.5 cells of that block and stops when the miner moves away; damage done stays on the block, so digging it again resumes.
 - Laser color: red (owner decision, 2026-10-01), against [[color-code]] (white-gold) and [[readability-rules]] (red = enemy fire or healing); check readability once the shooter's red targeting laser exists.
 - Orbit (provisional): radius 150 uu, one turn per 2 s, height 150 uu above the floor; grey box: a 40 uu sphere.

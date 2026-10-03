@@ -172,6 +172,11 @@ task-011-05-kamikaze  reference/tasks/task-011-explosions/task-011-05-kamikaze.m
 task-011-06-bp-explosions  reference/tasks/task-011-explosions/task-011-06-bp-explosions.md
 task-011-07-tests-integration  reference/tasks/task-011-explosions/task-011-07-tests-integration.md
 task-011-explosions  reference/tasks/task-011-explosions.md
+task-012-01-tuning-shake  reference/tasks/task-012-xp-level/task-012-01-tuning-shake.md
+task-012-02-progression  reference/tasks/task-012-xp-level/task-012-02-progression.md
+task-012-03-bp-hud-kamikaze  reference/tasks/task-012-xp-level/task-012-03-bp-hud-kamikaze.md
+task-012-04-tests-integration  reference/tasks/task-012-xp-level/task-012-04-tests-integration.md
+task-012-xp-level  reference/tasks/task-012-xp-level.md
 tasks-index  reference/tasks/tasks-index.md
 tech-index  reference/tech/tech-index.md
 terrain-index  reference/gdd/terrain/terrain-index.md
