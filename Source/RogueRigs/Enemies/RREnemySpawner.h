@@ -11,9 +11,25 @@ class ARRArenaGrid;
 class URRFlowFieldSubsystem;
 struct FMinimalViewInfo;
 
+/** One entry of the spawner weighted robot list: a class and its relative weight. */
+USTRUCT(BlueprintType)
+struct FRRWeightedEnemyClass
+{
+	GENERATED_BODY()
+
+	/** Robot class (a Blueprint subclass of ARRChaser, ARRKamikaze...). None = entry ignored. */
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Spawner")
+	TSubclassOf<ARREnemy> EnemyClass;
+
+	/** Relative weight: chance = Weight / sum of the weights of the valid entries. 0 or less = never picked. */
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Spawner", meta = (ClampMin = 0))
+	float Weight = 1.f;
+};
+
 /**
  * Placed actor that keeps robots coming from outside the screen (sys-spawner).
- * Every SpawnInterval seconds, when fewer than MaxAlive robots it spawned are alive, it spawns one EnemyClass robot on a
+ * Every SpawnInterval seconds, when fewer than MaxAlive robots it spawned are alive, it spawns one robot (weighted draw among
+ * WeightedEnemyClasses, else EnemyClass) on a
  * random cell that is walkable and reachable in the flow field (URRFlowFieldSubsystem), not occupied by a pawn, and lies in a
  * band around the visible floor rectangle: the cell center is at least ViewMargin + 0.5 cells and at most
  * MaxSpawnDistanceCells + 0.5 cells outside the rectangle (box distance), so with ViewMargin 1 the whole cell is at least one
@@ -41,6 +57,15 @@ public:
 	 */
 	UFUNCTION(BlueprintCallable, Category = "Spawner")
 	ARREnemy* TrySpawnEnemy();
+
+	/**
+	 * Class of the next robot: a weighted draw (Stream) among WeightedEnemyClasses entries with a class and a positive weight;
+	 * EnemyClass when there is none. Null when nothing is set.
+	 */
+	TSubclassOf<ARREnemy> PickEnemyClass(FRandomStream& Stream) const;
+
+	/** PickEnemyClass with the global random generator (used by TrySpawnEnemy). */
+	TSubclassOf<ARREnemy> PickEnemyClass() const;
 
 	/** Number of robots spawned by this spawner that are alive (not dead, not destroyed). Prunes the list. */
 	UFUNCTION(BlueprintPure, Category = "Spawner")
@@ -92,9 +117,13 @@ protected:
 	/** Removes dead or destroyed robots from AliveEnemies. */
 	void PruneAlive();
 
-	/** Robot class spawned (a Blueprint subclass of ARRChaser for the mesh). None = no spawn. */
+	/** Robot class spawned when WeightedEnemyClasses has no valid entry (a Blueprint subclass of ARRChaser for the mesh). None = no spawn. */
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Spawner")
 	TSubclassOf<ARREnemy> EnemyClass;
+
+	/** Weighted robot classes (e.g. chaser 3, kamikaze 1 = 25 % kamikazes). Empty or all invalid = EnemyClass. */
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Spawner")
+	TArray<FRRWeightedEnemyClass> WeightedEnemyClasses;
 
 	/** Seconds between two spawn attempts (one robot per attempt). */
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Spawner", meta = (ClampMin = 0.01, Units = "s"))

@@ -93,8 +93,8 @@ protected:
 	/** Advances the shrink; at its end drops the XP pickups and destroys the robot. */
 	void UpdateDeath(float DeltaSeconds);
 
-	/** Spawns Stats.XPValue pickups of XPPickupClass at DropLocation (no owner). */
-	void DropXP();
+	/** Spawns Stats.XPValue pickups of XPPickupClass at DropLocation (no owner). Overridden to suppress the drop (kamikaze fuse). */
+	virtual void DropXP();
 
 	/** Health set hit callback (runs inside the GE execution): spawns the damage number when bShowDamageNumbers is on. */
 	void HandleDamageReceived(float Damage, bool bIsCritical, float HealthLeft);

@@ -1,2 +1,3 @@
 Name,MaxHealth,MoveSpeed,Damage,AttackRate,AttackRange,WindUp,XPValue,KnockbackResistance
 Chaser,30,450,10,1,120,0.1,1,0
+Kamikaze,15,520,0,0,0,0,1,0

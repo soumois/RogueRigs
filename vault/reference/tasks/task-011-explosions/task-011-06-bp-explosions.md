@@ -3,7 +3,7 @@ id: task-011-06-bp-explosions
 description: "Grey-box kamikaze, orange barrel material, explosion FX, spawner mix 3 to 1, then a PIE check of barrels and kamikazes."
 parent: task-011-explosions
 kind: task
-status: todo
+status: in-progress
 ---
 # Explosion assets and PIE
 

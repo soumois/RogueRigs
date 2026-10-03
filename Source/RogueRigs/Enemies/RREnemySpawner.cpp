@@ -200,10 +200,50 @@ void ARREnemySpawner::GetSpawnCandidates(TArray<FIntPoint>& OutCells)
 	}
 }
 
+TSubclassOf<ARREnemy> ARREnemySpawner::PickEnemyClass(FRandomStream& Stream) const
+{
+	float TotalWeight = 0.f;
+	for (const FRRWeightedEnemyClass& Entry : WeightedEnemyClasses)
+	{
+		if (Entry.EnemyClass && Entry.Weight > 0.f)
+		{
+			TotalWeight += Entry.Weight;
+		}
+	}
+	if (TotalWeight <= 0.f)
+	{
+		return EnemyClass;
+	}
+	float Draw = Stream.FRand() * TotalWeight;
+	TSubclassOf<ARREnemy> LastValid;
+	for (const FRRWeightedEnemyClass& Entry : WeightedEnemyClasses)
+	{
+		if (!Entry.EnemyClass || Entry.Weight <= 0.f)
+		{
+			continue;
+		}
+		LastValid = Entry.EnemyClass;
+		if (Draw < Entry.Weight)
+		{
+			return Entry.EnemyClass;
+		}
+		Draw -= Entry.Weight;
+	}
+	// Float rounding at the top of the range.
+	return LastValid;
+}
+
+TSubclassOf<ARREnemy> ARREnemySpawner::PickEnemyClass() const
+{
+	FRandomStream Stream(FMath::Rand());
+	return PickEnemyClass(Stream);
+}
+
 ARREnemy* ARREnemySpawner::TrySpawnEnemy()
 {
 	UWorld* World = GetWorld();
-	if (!World || !EnemyClass || GetAliveCount() >= MaxAlive)
+	const TSubclassOf<ARREnemy> SpawnClass = PickEnemyClass();
+	if (!World || !SpawnClass || GetAliveCount() >= MaxAlive)
 	{
 		return nullptr;
 	}
@@ -217,11 +257,11 @@ ARREnemy* ARREnemySpawner::TrySpawnEnemy()
 	}
 
 	const FIntPoint Cell = Candidates[FMath::RandRange(0, Candidates.Num() - 1)];
-	const float HalfHeight = EnemyClass->GetDefaultObject<ARREnemy>()->GetCapsuleComponent()->GetScaledCapsuleHalfHeight();
+	const float HalfHeight = SpawnClass->GetDefaultObject<ARREnemy>()->GetCapsuleComponent()->GetScaledCapsuleHalfHeight();
 	const FVector Location = Grid->GetCellCenter(Cell.X, Cell.Y) + FVector(0.f, 0.f, HalfHeight + SpawnFloorClearance);
 	FActorSpawnParameters Params;
 	Params.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AdjustIfPossibleButAlwaysSpawn;
-	ARREnemy* Enemy = World->SpawnActor<ARREnemy>(EnemyClass, Location, FRotator::ZeroRotator, Params);
+	ARREnemy* Enemy = World->SpawnActor<ARREnemy>(SpawnClass, Location, FRotator::ZeroRotator, Params);
 	if (Enemy)
 	{
 		AliveEnemies.Add(Enemy);

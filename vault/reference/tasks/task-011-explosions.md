@@ -13,7 +13,7 @@ status: in-progress
 - gdd_check: read [[enemy-kamikaze]], [[barrel]], [[explosions]], [[sys-explosions]], [[ore-blocks]], [[destruction-rules]], [[visual-style]] (miner always centered: matches). Fixed a stale rule (one explosion breaks one ore block) in [[enemy-kamikaze]] and [[ore-blocks]] after the 2026-10-01 decision. Open values set by the owner (2026-10-02): kamikaze, barrel, explosion radius and damage, chain delay 0.08 s, grey-box look, 16 barrels, spawn share 25 % kamikaze, chaser wind-up 0.1 s, camera arm 1700 uu without lag, shake 25 uu at 8 Hz plus 8 uu vertical. TaskCreate is not available in this session: progress is tracked in these nodes only.
 - confirmed_by_owner: yes (2026-10-02, all subtasks pre-approved)
 - milestone: M1
-- next_step: task-011-05-kamikaze
+- next_step: task-011-06-bp-explosions
 - result: open
 
 ## Subtasks

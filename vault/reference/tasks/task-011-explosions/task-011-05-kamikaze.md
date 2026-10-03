@@ -3,7 +3,7 @@ id: task-011-05-kamikaze
 description: "ARRKamikaze on ARREnemy: hover look, arms within 150 uu, 0.5 s fuse with a growing pulsing core, explodes on fuse or death; weighted spawner."
 parent: task-011-explosions
 kind: task
-status: in-progress
+status: done
 ---
 # Kamikaze
 
@@ -16,7 +16,7 @@ status: in-progress
 - editor_state: closed
 - token_ceiling: 90000
 - milestone: M1
-- result: open
+- result: ARRKamikaze (Chase → Armed within 150 uu → fuse 0.5 s with growing core → Detonate: one Kamikaze explosion, no XP; killed earlier: same explosion and XP; itself as explosion source; VisualRoot with BodyMesh and CoreMesh, hover 40 uu, bob, pulse); EnemyStats row Kamikaze 15, 520; spawner WeightedEnemyClasses + PickEnemyClass. 4 Kamikaze tests (armed at 142 uu, miner 100 → 70; killed by 2 shots its blast kills a chaser 150 uu away; caught in a barrel blast; 3:1 weights give 24.8 %). Build exit 0, 48/48 (orchestrator re-ran). Docs sys-enemies, sys-spawner, sys-automation-tests. About 109k tokens (over ceiling).
 
 ## Relations
 - [[task-011-explosions]] — parent global task.
