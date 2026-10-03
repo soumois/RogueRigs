@@ -3,7 +3,7 @@ id: task-014-02-upgrade-system
 description: "Upgrade value CSV, luck-weighted rarity draw, 3-card offer limited to owned weapons, GAS application, one reroll per screen, tests."
 parent: task-014-upgrades-levelup
 kind: task
-status: todo
+status: in-progress
 ---
 # Upgrade system
 

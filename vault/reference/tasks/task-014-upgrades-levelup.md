@@ -13,7 +13,7 @@ status: in-progress
 - gdd_check: Read [[enemies-index]], [[enemy-kamikaze]], [[upgrades]], [[rarities]], [[player-stats]], [[xp-level-up]], [[burst-rifle]]. Owner decisions of 2026-10-03 written into the GDD before planning (level-up heal vs heal-ore-only, rarities moved to M1, reroll, spawn packs, all open values set as provisional defaults). TaskCreate and TaskUpdate are not available in this session: progress is tracked in these nodes and the crew dashboard artifact.
 - confirmed_by_owner: yes (2026-10-03, all subtasks pre-approved)
 - milestone: M1
-- next_step: task-014-01-spawn-packs
+- next_step: task-014-02-upgrade-system
 - result: open
 
 ## Subtasks
