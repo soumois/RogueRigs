@@ -674,11 +674,12 @@ bool FRRWeaponMinerStartingWeaponTest::RunTest(const FString& Parameters)
 		TestWorld.Tick();
 	}
 
-	if (!TestEqual(TEXT("one starting weapon"), Miner->GetWeapons().Num(), 1))
+	// M1 loadout: burst rifle + shotgun (the shotgun fires no projectile and hits only robots).
+	if (!TestEqual(TEXT("two starting weapons"), Miner->GetWeapons().Num(), 2) || !TestNotNull(TEXT("starting shotgun"), FindShotgun(Miner)))
 	{
 		return false;
 	}
-	ARRWeapon* Weapon = Miner->GetWeapons()[0];
+	ARRWeapon* Weapon = FindRifle(Miner);
 	if (!TestTrue(TEXT("starting weapon valid"), IsValid(Weapon)))
 	{
 		return false;
@@ -776,7 +777,7 @@ namespace RRWeaponTests
 		FTestWorld TestWorld(TEXT("RRWeaponTestWorld"));
 		ARRArenaGrid* Grid = SpawnGrid(Test, TestWorld);
 		ARRMiner* Miner = Grid ? SpawnMinerWithCapsuleWeapons(Test, TestWorld, Grid, MoveStartCell) : nullptr;
-		if (!Miner || !Test.TestEqual(TEXT("one starting weapon"), Miner->GetWeapons().Num(), 1))
+		if (!Miner || !Test.TestEqual(TEXT("two starting weapons (rifle + shotgun)"), Miner->GetWeapons().Num(), 2) || !FindRifle(Miner))
 		{
 			return Run;
 		}
@@ -790,11 +791,12 @@ namespace RRWeaponTests
 		EnableMinerMovement(Miner);
 		UCharacterMovementComponent* Movement = Miner->GetCharacterMovement();
 
-		ARRWeapon* Weapon = Miner->GetWeapons()[0];
+		ARRWeapon* Weapon = FindRifle(Miner);
 		URRAutoFireComponent* AutoFire = Weapon->GetAutoFireComponent();
 		if (!bFiring)
 		{
 			AutoFire->StopFiring();
+			StopShotgun(Miner);
 		}
 
 		TStrongObjectPtr<URRTestEventRecorder> Recorder(NewObject<URRTestEventRecorder>());
@@ -927,11 +929,12 @@ bool FRRWeaponMinerHitsFloorDummyTest::RunTest(const FString& Parameters)
 	TestTrue(TEXT("dummy rests on the floor"), DummyBounds.IsValid && FMath::IsNearlyEqual(DummyBounds.Min.Z, DummyFloor.Z, 0.5f));
 	TestTrue(TEXT("dummy is 160 uu tall"), FMath::IsNearlyEqual(DummyBounds.Max.Z - DummyBounds.Min.Z, DummyHeight, DummyHeightTolerance));
 
-	if (!TestEqual(TEXT("one starting weapon"), Miner->GetWeapons().Num(), 1))
+	// M1 loadout: burst rifle + shotgun (the shotgun fires no projectile and hits only robots).
+	if (!TestEqual(TEXT("two starting weapons"), Miner->GetWeapons().Num(), 2) || !TestNotNull(TEXT("starting shotgun"), FindShotgun(Miner)))
 	{
 		return false;
 	}
-	ARRWeapon* Weapon = Miner->GetWeapons()[0];
+	ARRWeapon* Weapon = FindRifle(Miner);
 	if (!TestTrue(TEXT("starting weapon valid"), IsValid(Weapon)))
 	{
 		return false;

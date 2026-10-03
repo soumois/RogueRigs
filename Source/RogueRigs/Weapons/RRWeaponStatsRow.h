@@ -68,4 +68,12 @@ struct ROGUERIGS_API FRRWeaponStatsRow : public FTableRowBase
 	/** Name shown in the UI (upgrade card target), French (constant). Empty = the row name. */
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Weapon Stats")
 	FString DisplayName;
+
+	/** Full angle of the shotgun cone in degrees (constant); 0 for weapons that are not cones. */
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Weapon Stats")
+	float ConeAngleDeg = 0.f;
+
+	/** Knockback launch speed in uu/s given to each robot hit, before its KnockbackResistance (constant); 0 = no knockback. */
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Weapon Stats")
+	float KnockbackForce = 0.f;
 };

@@ -134,8 +134,8 @@ protected:
 	/** Loads row StatsRowName of WeaponStats.csv into OutRow. Returns false (logged) if the file or row is missing. */
 	bool LoadStatsRow(FRRWeaponStatsRow& OutRow) const;
 
-	/** Sets the attribute base values of Row on the ASC and copies the CSV constants onto this actor. */
-	void ApplyStatsRow(const FRRWeaponStatsRow& Row);
+	/** Sets the attribute base values of Row on the ASC and copies the CSV constants onto this actor. Overrides call Super and copy their own columns. */
+	virtual void ApplyStatsRow(const FRRWeaponStatsRow& Row);
 
 	/** Root scene component; Blueprint subclasses attach the mesh and muzzle under it. */
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Components")

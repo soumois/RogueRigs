@@ -26,11 +26,15 @@
 #include "Upgrades/RRUpgradeComponent.h"
 #include "RogueRigs.h"
 #include "Weapons/RRAutoFireComponent.h"
+#include "Weapons/RRShotgun.h"
 #include "Weapons/RRWeapon.h"
 
 ARRMiner::ARRMiner(const FObjectInitializer& ObjectInitializer)
 	: Super(ObjectInitializer)
 {
+	// M1 loadout (shotgun gdd): the shotgun is spawned natively until BP_Miner lists a shotgun Blueprint in StartingWeapons.
+	GuaranteedWeaponClasses.Add(ARRShotgun::StaticClass());
+
 	PrimaryActorTick.bCanEverTick = true;
 
 	// The pawn faces the aim, not the controller or the movement direction.
@@ -172,7 +176,21 @@ void ARRMiner::SpawnStartingWeapons()
 	const bool bAttachToCapsule = WeaponAttachSocketName.IsNone() || !GetMesh();
 	USceneComponent* AttachParent = bAttachToCapsule ? GetRootComponent() : static_cast<USceneComponent*>(GetMesh());
 
-	for (const TSubclassOf<ARRWeapon>& WeaponClass : StartingWeapons)
+	// StartingWeapons in order, then each guaranteed class that no StartingWeapons entry already provides (itself or a subclass).
+	TArray<TSubclassOf<ARRWeapon>> Loadout = StartingWeapons;
+	for (const TSubclassOf<ARRWeapon>& Guaranteed : GuaranteedWeaponClasses)
+	{
+		const bool bProvided = !Guaranteed || StartingWeapons.ContainsByPredicate([&Guaranteed](const TSubclassOf<ARRWeapon>& Entry)
+		{
+			return Entry && Entry->IsChildOf(Guaranteed);
+		});
+		if (!bProvided)
+		{
+			Loadout.Add(Guaranteed);
+		}
+	}
+
+	for (const TSubclassOf<ARRWeapon>& WeaponClass : Loadout)
 	{
 		if (!WeaponClass)
 		{

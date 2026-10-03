@@ -44,7 +44,7 @@ struct ROGUERIGS_API FRREnemyStatsRow : public FTableRowBase
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Enemy Stats")
 	int32 XPValue = 0;
 
-	/** Knockback resistance in [0, 1] (0 = full knockback). Stored only: knockback does not exist yet. */
+	/** Knockback resistance in [0, 1] (0 = full knockback). Read by ARREnemy::ApplyKnockback (shotgun): launch speed x (1 - resistance). */
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Enemy Stats")
 	float KnockbackResistance = 0.f;
 };

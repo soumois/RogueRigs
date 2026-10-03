@@ -146,6 +146,26 @@ bool ARREnemy::IsDead() const
 	return AbilitySystemComponent && AbilitySystemComponent->HasMatchingGameplayTag(RRGameplayTags::State_Dead);
 }
 
+float ARREnemy::GetKnockbackResistance() const
+{
+	return FMath::Clamp(Stats.KnockbackResistance, 0.f, 1.f);
+}
+
+void ARREnemy::ApplyKnockback(FVector Velocity)
+{
+	if (IsDead())
+	{
+		return;
+	}
+	const FVector Launch = FVector(Velocity.X, Velocity.Y, 0.f) * (1.f - GetKnockbackResistance());
+	if (Launch.IsNearlyZero())
+	{
+		return;
+	}
+	// Applied by CharacterMovement on its next update (falling for a frame, then ground friction brakes it).
+	LaunchCharacter(Launch, /*bXYOverride*/ true, /*bZOverride*/ false);
+}
+
 ARRMiner* ARREnemy::FindTarget()
 {
 	ARRMiner* Target = CachedTarget.Get();

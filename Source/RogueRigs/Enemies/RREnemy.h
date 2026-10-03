@@ -65,6 +65,17 @@ public:
 	UFUNCTION(BlueprintPure, Category = "Enemy")
 	bool IsDead() const;
 
+	/** Knockback resistance from the CSV stats, clamped to [0, 1] (0 = full knockback). */
+	UFUNCTION(BlueprintPure, Category = "Enemy")
+	float GetKnockbackResistance() const;
+
+	/**
+	 * Pushes a living robot horizontally: launches it (ACharacter::LaunchCharacter, XY overridden, Z kept) with Velocity's XY
+	 * scaled by (1 - GetKnockbackResistance()). Ignored when dead or when the scaled velocity is zero. Called by the shotgun.
+	 */
+	UFUNCTION(BlueprintCallable, Category = "Enemy")
+	void ApplyKnockback(FVector Velocity);
+
 	/** Target of the attacks: the first living ARRMiner of the world (cached); null when there is none. */
 	ARRMiner* FindTarget();
 

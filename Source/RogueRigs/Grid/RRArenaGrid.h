@@ -137,6 +137,19 @@ public:
 	UFUNCTION(BlueprintPure, Category = "Grid")
 	bool IsBlockCell(FIntPoint Cell) const;
 
+	/**
+	 * Grid line of sight on the XY plane (Z ignored): distance from From along Direction to the first block cell crossed,
+	 * capped at MaxDistance. 0 when From is inside a block cell. A ray passing exactly through a cell corner is blocked if
+	 * either side cell is a block. Void and floor never block. Assumes an unscaled grid actor. Use it for sight checks and
+	 * to clip effects at rock (shotgun wave).
+	 */
+	UFUNCTION(BlueprintPure, Category = "Grid|Sight")
+	float GetClearDistance(FVector From, FVector Direction, float MaxDistance) const;
+
+	/** True when no block cell lies between From and To on the XY plane (To's own cell included). See GetClearDistance. */
+	UFUNCTION(BlueprintPure, Category = "Grid|Sight")
+	bool HasLineOfSight(FVector From, FVector To) const;
+
 	/** Remaining health of a block in dig-seconds at mining speed 1; 0 when the cell has no block. */
 	UFUNCTION(BlueprintPure, Category = "Grid|Destruction")
 	float GetCellHealth(FIntPoint Cell) const;

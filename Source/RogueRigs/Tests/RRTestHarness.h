@@ -13,6 +13,8 @@
 #include "GameFramework/WorldSettings.h"
 #include "Grid/RRArenaGrid.h"
 #include "Player/RRMiner.h"
+#include "Weapons/RRAutoFireComponent.h"
+#include "Weapons/RRShotgun.h"
 
 namespace RRTestHarness
 {
@@ -126,6 +128,61 @@ namespace RRTestHarness
 			Miner->FinishSpawning(SpawnTransform);
 		}
 		return Miner;
+	}
+
+	/** Read and write access to the miner's protected loadout lists. Never instantiated. */
+	struct FMinerLoadoutAccess : public ARRMiner
+	{
+		static TArray<TSubclassOf<ARRWeapon>>& StartingWeaponsOf(ARRMiner* Miner) { return Miner->*(&FMinerLoadoutAccess::StartingWeapons); }
+		static TArray<TSubclassOf<ARRWeapon>>& GuaranteedWeaponClassesOf(ARRMiner* Miner) { return Miner->*(&FMinerLoadoutAccess::GuaranteedWeaponClasses); }
+	};
+
+	/**
+	 * SpawnMiner hook: the miner starts with the burst rifle only (shotgun entries removed from StartingWeapons, no guaranteed
+	 * class). For tests whose seeded draws or counts were measured with a single weapon (upgrade rules).
+	 */
+	inline void KeepRifleOnly(ARRMiner* Miner)
+	{
+		FMinerLoadoutAccess::StartingWeaponsOf(Miner).RemoveAll([](const TSubclassOf<ARRWeapon>& Entry)
+		{
+			return !Entry || Entry->IsChildOf(ARRShotgun::StaticClass());
+		});
+		FMinerLoadoutAccess::GuaranteedWeaponClassesOf(Miner).Reset();
+	}
+
+	/** The miner's first weapon that is not a shotgun (the burst rifle); null when none. */
+	inline ARRWeapon* FindRifle(const ARRMiner* Miner)
+	{
+		for (ARRWeapon* Weapon : Miner->GetWeapons())
+		{
+			if (IsValid(Weapon) && !Weapon->IsA<ARRShotgun>())
+			{
+				return Weapon;
+			}
+		}
+		return nullptr;
+	}
+
+	/** The miner's shotgun; null when it has none. */
+	inline ARRShotgun* FindShotgun(const ARRMiner* Miner)
+	{
+		for (ARRWeapon* Weapon : Miner->GetWeapons())
+		{
+			if (ARRShotgun* Shotgun = Cast<ARRShotgun>(Weapon))
+			{
+				return Shotgun;
+			}
+		}
+		return nullptr;
+	}
+
+	/** Stops the miner's shotgun auto-fire (rifle tests keep the M1 loadout but must not hit robots with the wave). */
+	inline void StopShotgun(const ARRMiner* Miner)
+	{
+		if (ARRShotgun* Shotgun = FindShotgun(Miner))
+		{
+			Shotgun->GetAutoFireComponent()->StopFiring();
+		}
 	}
 }
 

@@ -34,11 +34,12 @@ namespace RRUpgradeTests
 		ARRWeapon* Rifle = nullptr;
 	};
 
-	/** Spawns the grid and BP_Miner (weapons stopped) and checks it holds an upgrade component and one rifle. */
+	/** Spawns the grid and BP_Miner with the rifle only (weapons stopped) and checks it holds an upgrade component and one rifle. */
 	bool SpawnUpgradeSetup(FAutomationTestBase& Test, const FTestWorld& TestWorld, FUpgradeSetup& Out)
 	{
 		ARRArenaGrid* Grid = SpawnGrid(Test, TestWorld);
-		Out.Miner = Grid ? SpawnMiner(Test, TestWorld, Grid, RockWestFloorCell) : nullptr;
+		// Rifle only (no shotgun): the seeded draws and target counts below were measured with one weapon; the shotgun cards are proven by RogueRigs.Shotgun.CardsOnlyWhenEquipped.
+		Out.Miner = Grid ? SpawnMiner(Test, TestWorld, Grid, RockWestFloorCell, KeepRifleOnly) : nullptr;
 		if (!Out.Miner)
 		{
 			return false;

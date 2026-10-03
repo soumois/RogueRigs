@@ -143,7 +143,7 @@ namespace RRIntegrationTests
 		URRFlowFieldSubsystem* FlowField = nullptr;
 	};
 
-	/** Spawns BP_ArenaGrid and BP_Miner on Cell (weapons stopped unless bArmed), loads BP_Chaser, ticks one frame. */
+	/** Spawns BP_ArenaGrid and BP_Miner on Cell (weapons stopped unless bArmed; the shotgun always stopped), loads BP_Chaser, ticks one frame. */
 	bool SetUp(FAutomationTestBase& Test, const FTestWorld& TestWorld, FIntPoint Cell, bool bArmed, FLoopSetup& Out)
 	{
 		Out.ChaserClass = LoadTestClass<ARRChaser>(Test, ChaserClassPath);
@@ -157,6 +157,11 @@ namespace RRIntegrationTests
 		if (!bArmed)
 		{
 			StopWeapons(Out.Miner);
+		}
+		else
+		{
+			// Rifle loops: the M1 loadout keeps its shotgun, stopped so only the rifle hits (its kill times and hit counts were measured alone).
+			StopShotgun(Out.Miner);
 		}
 		TestWorld.Tick();
 		return Test.TestEqual(TEXT("field goal cell is the miner cell"), Out.FlowField->GetGoalCell(), Cell);

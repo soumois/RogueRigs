@@ -538,6 +538,82 @@ bool ARRArenaGrid::IsBlockCell(FIntPoint Cell) const
 	return IsBlockType(GetCellType(Cell));
 }
 
+float ARRArenaGrid::GetClearDistance(FVector From, FVector Direction, float MaxDistance) const
+{
+	if (MaxDistance <= 0.f || CellSize <= 0.f)
+	{
+		return FMath::Max(MaxDistance, 0.f);
+	}
+	// Grid-local 2D ray (unscaled grid: local distances equal world distances).
+	const FTransform& GridTransform = GetActorTransform();
+	const FVector LocalStart = GridTransform.InverseTransformPosition(From);
+	const FVector LocalDirection = GridTransform.InverseTransformVectorNoScale(Direction).GetSafeNormal2D();
+	FIntPoint Cell(FMath::FloorToInt32(LocalStart.X / CellSize), FMath::FloorToInt32(LocalStart.Y / CellSize));
+	if (IsBlockCell(Cell))
+	{
+		return 0.f;
+	}
+	if (LocalDirection.IsNearlyZero())
+	{
+		return MaxDistance;
+	}
+
+	// Amanatides-Woo traversal: TMax* = ray distance to the next vertical / horizontal cell boundary.
+	const int32 StepX = LocalDirection.X > 0.0 ? 1 : (LocalDirection.X < 0.0 ? -1 : 0);
+	const int32 StepY = LocalDirection.Y > 0.0 ? 1 : (LocalDirection.Y < 0.0 ? -1 : 0);
+	const double DeltaX = StepX != 0 ? CellSize / FMath::Abs(LocalDirection.X) : TNumericLimits<double>::Max();
+	const double DeltaY = StepY != 0 ? CellSize / FMath::Abs(LocalDirection.Y) : TNumericLimits<double>::Max();
+	double TMaxX = StepX > 0 ? ((Cell.X + 1) * CellSize - LocalStart.X) / LocalDirection.X
+		: (StepX < 0 ? (Cell.X * CellSize - LocalStart.X) / LocalDirection.X : TNumericLimits<double>::Max());
+	double TMaxY = StepY > 0 ? ((Cell.Y + 1) * CellSize - LocalStart.Y) / LocalDirection.Y
+		: (StepY < 0 ? (Cell.Y * CellSize - LocalStart.Y) / LocalDirection.Y : TNumericLimits<double>::Max());
+	const double CornerTolerance = CellSize * 1.0e-4;
+
+	while (true)
+	{
+		const double T = FMath::Min(TMaxX, TMaxY);
+		if (T >= MaxDistance)
+		{
+			return MaxDistance;
+		}
+		if (FMath::Abs(TMaxX - TMaxY) <= CornerTolerance)
+		{
+			// Exactly through a corner: blocked when either side cell holds a block.
+			if (IsBlockCell(FIntPoint(Cell.X + StepX, Cell.Y)) || IsBlockCell(FIntPoint(Cell.X, Cell.Y + StepY)))
+			{
+				return static_cast<float>(T);
+			}
+			Cell += FIntPoint(StepX, StepY);
+			TMaxX += DeltaX;
+			TMaxY += DeltaY;
+		}
+		else if (TMaxX < TMaxY)
+		{
+			Cell.X += StepX;
+			TMaxX += DeltaX;
+		}
+		else
+		{
+			Cell.Y += StepY;
+			TMaxY += DeltaY;
+		}
+		if (IsBlockCell(Cell))
+		{
+			return static_cast<float>(T);
+		}
+	}
+}
+
+bool ARRArenaGrid::HasLineOfSight(FVector From, FVector To) const
+{
+	const float Distance = FVector::Dist2D(From, To);
+	if (Distance <= UE_KINDA_SMALL_NUMBER)
+	{
+		return !IsBlockCell(GetCellAtWorld(From));
+	}
+	return GetClearDistance(From, To - From, Distance) >= Distance;
+}
+
 float ARRArenaGrid::GetCellHealth(FIntPoint Cell) const
 {
 	return IsBlockCell(Cell) && CellHealth.IsValidIndex(GetCellIndex(Cell)) ? CellHealth[GetCellIndex(Cell)] : 0.f;

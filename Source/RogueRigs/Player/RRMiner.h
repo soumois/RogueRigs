@@ -44,8 +44,8 @@ DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FRROnMinerDeathSignature, AActor*, I
  * through NotifyPickupCollected, which broadcasts OnPickupCollected; no pickup effect here. XP and level live in its
  * URRProgressionComponent (GetProgression; XP pickups call AddXP on it). Upgrade offers and picked upgrades live in its
  * URRUpgradeComponent (GetUpgrades); the level-up flow (heal, effect, paused choice screens) in its URRLevelUpComponent
- * (GetLevelUp). Weapons: at BeginPlay each class of
- * StartingWeapons is spawned (owner: the miner), attached (mesh socket WeaponAttachSocketName, or the capsule at
+ * (GetLevelUp). Weapons: at BeginPlay each class of StartingWeapons, then each GuaranteedWeaponClasses entry no
+ * StartingWeapons entry provides (default: ARRShotgun), is spawned (owner: the miner), attached (mesh socket WeaponAttachSocketName, or the capsule at
  * WeaponAttachOffset when the socket is None) and acquired (ARRWeapon::Acquire); they are destroyed at EndPlay.
  * Collision: the capsule overlaps the Projectile channel (never blocked by any projectile; projectiles still get
  * overlap events) and ignores its weapons when moving. No dash or item logic.
@@ -108,7 +108,7 @@ public:
 	UFUNCTION(BlueprintPure, Category = "Miner|Dig")
 	ARRArenaGrid* GetArenaGrid() const { return ArenaGrid; }
 
-	/** Weapons spawned from StartingWeapons, in acquisition order (failed spawns skipped). */
+	/** Weapons spawned from StartingWeapons then GuaranteedWeaponClasses, in acquisition order (failed spawns skipped). */
 	const TArray<TObjectPtr<ARRWeapon>>& GetWeapons() const { return Weapons; }
 
 	/** Current PickupRadius attribute in uu (collection radius of XP, ore and heal pickups); 0 when the attribute set is missing. */
@@ -175,7 +175,7 @@ protected:
 	void SpawnDrone();
 
 	/**
-	 * Spawns each class of StartingWeapons at the miner (owner and instigator: this miner), attaches it (mesh socket
+	 * Spawns each class of StartingWeapons, then each GuaranteedWeaponClasses entry not provided by StartingWeapons, at the miner (owner and instigator: this miner), attaches it (mesh socket
 	 * WeaponAttachSocketName, or the capsule at WeaponAttachOffset when None), makes the capsule ignore it when moving and calls Acquire.
 	 */
 	void SpawnStartingWeapons();
@@ -310,6 +310,14 @@ protected:
 	/** Weapon classes spawned, attached and acquired at BeginPlay, in order (Blueprint subclasses of ARRWeapon). */
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Miner|Weapons")
 	TArray<TSubclassOf<ARRWeapon>> StartingWeapons;
+
+	/**
+	 * Weapon classes the miner always starts with: after StartingWeapons, each class here is spawned, attached and acquired
+	 * unless an entry of StartingWeapons is that class or a subclass. Default: ARRShotgun (M1 loadout: burst rifle + shotgun),
+	 * so the native shotgun fills in until a shotgun Blueprint is listed in StartingWeapons.
+	 */
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Miner|Weapons")
+	TArray<TSubclassOf<ARRWeapon>> GuaranteedWeaponClasses;
 
 	/** Socket of the miner mesh the weapons attach to. None = attach to the capsule (root) at WeaponAttachOffset, so the weapon turns with the aim yaw. */
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Miner|Weapons")
