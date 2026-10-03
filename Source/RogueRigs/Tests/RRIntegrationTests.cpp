@@ -7,7 +7,15 @@
 
 #include "AbilitySystemComponent.h"
 #include "Blueprint/UserWidget.h"
+#include "Components/Button.h"
+#include "Components/ProgressBar.h"
 #include "Components/TextBlock.h"
+#include "Debug/RRCheatSettings.h"
+#include "Debug/RRCheats.h"
+#include "Kismet/GameplayStatics.h"
+#include "Objectives/RRConsole.h"
+#include "Objectives/RRRunFlowSubsystem.h"
+#include "Objectives/RRShuttle.h"
 #include "Enemies/RRChaser.h"
 #include "Enemies/RREnemySpawner.h"
 #include "Enemies/RRKamikaze.h"
@@ -1307,6 +1315,8 @@ bool FRRIntegrationUpgradeLoopTest::RunTest(const FString& Parameters)
 	{
 		return false;
 	}
+	// The world tick may run a garbage collection: keep the unreferenced widget alive.
+	TStrongObjectPtr<URRHUDWidget> HUDRoot(HUD);
 	HUD->BindToMiner(Miner);
 	TestTrue(TEXT("UpgradeScreen collapsed at start"), GetWidgetVisibility(*this, HUD, TEXT("UpgradeScreen")) == ESlateVisibility::Collapsed);
 
@@ -1461,6 +1471,429 @@ bool FRRIntegrationUpgradeLoopTest::RunTest(const FString& Parameters)
 	TestTrue(TEXT("spawner spawned after the resume"), CountEnemies(World) > PausedEnemies);
 	TestTrue(TEXT("rifle fires again"), Recorder->GetShotIndices().Num() > PausedShots);
 	HUD->BindToMiner(nullptr);
+	return true;
+}
+
+namespace RRIntegrationObjectiveTests
+{
+	using namespace RRIntegrationTests;
+	using namespace RRIntegrationUpgradeTests;
+
+	/** Final objective Blueprints, expected in the RunFlowConfig of BP_RRGameMode. */
+	const TCHAR* const ConsoleClassPath = TEXT("/Game/RogueRigs/Blueprints/Objectives/BP_ObjectiveConsole.BP_ObjectiveConsole_C");
+	const TCHAR* const ShuttleClassPath = TEXT("/Game/RogueRigs/Blueprints/Objectives/BP_ExtractionShuttle.BP_ExtractionShuttle_C");
+
+	/** Cheat alert speed of the loops: the 240 s bar fills in 6 s (console at 2.4 s, extraction 3.6 s after the hack). */
+	constexpr float AlertSpeed = 40.f;
+
+	/** Seed of the console and shuttle placement, the spawner and the upgrade draws. */
+	constexpr int32 RunSeed = 20261003;
+
+	/** Text of a TextBlock of WBP_HUD (empty with a test failure when missing). */
+	FString GetWidgetText(FAutomationTestBase& Test, UUserWidget* Widget, const TCHAR* Name)
+	{
+		const UTextBlock* Text = Cast<UTextBlock>(Widget->GetWidgetFromName(Name));
+		Test.TestNotNull(FString::Printf(TEXT("WBP_HUD has TextBlock %s"), Name), Text);
+		return Text ? Text->GetText().ToString() : FString();
+	}
+
+	/** Percent of a ProgressBar of WBP_HUD (-1 with a test failure when missing). */
+	float GetWidgetPercent(FAutomationTestBase& Test, UUserWidget* Widget, const TCHAR* Name)
+	{
+		const UProgressBar* Bar = Cast<UProgressBar>(Widget->GetWidgetFromName(Name));
+		Test.TestNotNull(FString::Printf(TEXT("WBP_HUD has ProgressBar %s"), Name), Bar);
+		return Bar ? Bar->GetPercent() : -1.f;
+	}
+
+	/** Moves the miner (teleport) to the XY of Target, standing on the floor of the cell below it. */
+	void TeleportMiner(ARRMiner* Miner, const ARRArenaGrid* Grid, const FVector& Target)
+	{
+		const FIntPoint Cell = Grid->GetCellAtWorld(Target);
+		const float FloorZ = Grid->GetCellCenter(Cell.X, Cell.Y).Z;
+		const float HalfHeight = Miner->GetCapsuleComponent()->GetScaledCapsuleHalfHeight();
+		Miner->SetActorLocation(FVector(Target.X, Target.Y, FloorZ + HalfHeight + 2.f), false, nullptr, ETeleportType::TeleportPhysics);
+	}
+
+	/** Resets the cheats the loops use (alert speed, shuttle countdown, invulnerability). Declare after the world: runs before its teardown. */
+	struct FCheatGuard
+	{
+		explicit FCheatGuard(UWorld* InWorld) : World(InWorld) { Reset(); }
+		~FCheatGuard()
+		{
+			RRCheats::SetInvulnerable(World, false, TEXT("RogueRigs.Integration"));
+			Reset();
+		}
+
+		/** Neutral values of the persistent cheat properties. */
+		static void Reset()
+		{
+			URRCheatSettings* Settings = GetMutableDefault<URRCheatSettings>();
+			Settings->AlertSpeedMultiplier = 1.f;
+			Settings->ShuttleCountdownOverride = 0.f;
+			Settings->bInvulnerable = false;
+		}
+
+		/** World whose miner was made invulnerable. */
+		UWorld* World = nullptr;
+	};
+
+	/** Actors and widgets of one objective loop: real game mode, controller, spawner and HUD around an armed, invulnerable miner. */
+	struct FRunLoop
+	{
+		/** Unbinds the HUD (the world is destroyed after this). */
+		~FRunLoop()
+		{
+			if (HUD)
+			{
+				HUD->BindToMiner(nullptr);
+				HUD->BindToRunFlow(nullptr);
+			}
+		}
+
+		FLoopSetup Setup;
+		AGameModeBase* GameMode = nullptr;
+		APlayerController* Controller = nullptr;
+		ARREnemySpawner* Spawner = nullptr;
+		URRHUDWidget* HUD = nullptr;
+		/** Keeps WBP_HUD alive: the world tick may run a garbage collection and nothing else references the widget. */
+		TStrongObjectPtr<URRHUDWidget> HUDRoot;
+		URRRunFlowSubsystem* RunFlow = nullptr;
+		UClass* ConsoleClass = nullptr;
+		UClass* ShuttleClass = nullptr;
+		/** Level-up cards picked through the HUD while the loop ran. */
+		int32 UpgradeChoices = 0;
+	};
+
+	/**
+	 * Starts BP_RRGameMode (StartGameMode), BP_ArenaGrid, an armed BP_Miner on ChaseMinerCell possessed by BP_RRPlayerController,
+	 * BP_EnemySpawner (seeded, enabled, view rectangle around the miner), WBP_HUD bound to the miner and the run flow; the miner is
+	 * made invulnerable (cheat) and the alert runs at AlertSpeed. Checks the run flow reads BP_ObjectiveConsole and BP_ExtractionShuttle.
+	 */
+	bool StartRun(FAutomationTestBase& Test, const FTestWorld& TestWorld, FTestGameInstance& GameInstance, FRunLoop& Out)
+	{
+		UWorld* World = TestWorld.Get();
+		UClass* GameModeClass = LoadTestClass<AGameModeBase>(Test, GameModeClassPath);
+		UClass* ControllerClass = LoadTestClass<APlayerController>(Test, PlayerControllerClassPath);
+		UClass* SpawnerClass = LoadTestClass<ARREnemySpawner>(Test, SpawnerClassPath);
+		UClass* HUDClass = LoadTestClass<URRHUDWidget>(Test, HUDClassPath);
+		Out.ConsoleClass = LoadTestClass<ARRConsole>(Test, ConsoleClassPath);
+		Out.ShuttleClass = LoadTestClass<ARRShuttle>(Test, ShuttleClassPath);
+		if (!GameModeClass || !ControllerClass || !SpawnerClass || !HUDClass || !Out.ConsoleClass || !Out.ShuttleClass)
+		{
+			return false;
+		}
+		Out.GameMode = StartGameMode(Test, TestWorld, GameModeClass, GameInstance);
+		Out.RunFlow = World->GetSubsystem<URRRunFlowSubsystem>();
+		if (!Out.GameMode || !Test.TestNotNull(TEXT("run flow subsystem"), Out.RunFlow))
+		{
+			return false;
+		}
+		Out.RunFlow->SetRandomSeed(RunSeed);
+		if (!SetUp(Test, TestWorld, ChaseMinerCell, /*bArmed*/ true, Out.Setup))
+		{
+			return false;
+		}
+		ARRMiner* Miner = Out.Setup.Miner;
+		const FRRRunFlowConfig& Config = Out.RunFlow->GetConfig();
+		Test.TestTrue(TEXT("run flow reads BP_ObjectiveConsole from BP_RRGameMode"), Config.ConsoleClass.Get() == Out.ConsoleClass);
+		Test.TestTrue(TEXT("run flow reads BP_ExtractionShuttle from BP_RRGameMode"), Config.ShuttleClass.Get() == Out.ShuttleClass);
+
+		Out.Controller = TestWorld.Spawn<APlayerController>(ControllerClass, Miner->GetActorLocation());
+		if (!Test.TestNotNull(TEXT("BP_RRPlayerController spawned"), Out.Controller))
+		{
+			return false;
+		}
+		Out.Controller->Possess(Miner);
+		Out.Spawner = TestWorld.Spawn<ARREnemySpawner>(SpawnerClass, FVector::ZeroVector);
+		Out.HUD = CreateWidget<URRHUDWidget>(World, HUDClass);
+		Out.HUDRoot.Reset(Out.HUD);
+		if (!Test.TestNotNull(TEXT("BP_EnemySpawner spawned"), Out.Spawner) || !Test.TestNotNull(TEXT("WBP_HUD created"), Out.HUD))
+		{
+			return false;
+		}
+		Out.Spawner->SeedRandomStream(RunSeed);
+		Out.Spawner->SetSpawningEnabled(true);
+		Out.HUD->BindToMiner(Miner);
+		Out.HUD->BindToRunFlow(Out.RunFlow);
+		Miner->GetUpgrades()->SetRandomSeed(RunSeed);
+		Test.TestTrue(TEXT("EndScreen collapsed at start"), GetWidgetVisibility(Test, Out.HUD, TEXT("EndScreen")) == ESlateVisibility::Collapsed);
+
+		GetMutableDefault<URRCheatSettings>()->AlertSpeedMultiplier = AlertSpeed;
+		Test.TestEqual(TEXT("miner made invulnerable"), RRCheats::SetInvulnerable(World, true, TEXT("RogueRigs.Integration")), 1);
+		return true;
+	}
+
+	/**
+	 * Ticks the loop up to MaxFrames frames, stopping on the frame Done returns true; returns that frame (1-based) or -1. Before each
+	 * frame the spawner view follows the miner, and an open level-up screen (world paused) is answered with card 0 through the HUD.
+	 */
+	int32 TickRun(FAutomationTestBase& Test, const FTestWorld& TestWorld, FRunLoop& Loop, int32 MaxFrames, TFunctionRef<bool()> Done)
+	{
+		ARRMiner* Miner = Loop.Setup.Miner;
+		URRLevelUpComponent* LevelUp = Miner->GetLevelUp();
+		for (int32 Frame = 1; Frame <= MaxFrames; ++Frame)
+		{
+			const FVector2D MinerXY(Miner->GetActorLocation());
+			Loop.Spawner->SetViewRectangleOverride(FBox2D(MinerXY - SpawnerViewHalfExtent, MinerXY + SpawnerViewHalfExtent));
+			if (LevelUp->IsAwaitingChoice())
+			{
+				Test.TestTrue(TEXT("level-up screen: world paused"), TestWorld.Get()->IsPaused());
+				Test.TestTrue(TEXT("level-up screen: UpgradeScreen visible"), GetWidgetVisibility(Test, Loop.HUD, TEXT("UpgradeScreen")) == ESlateVisibility::Visible);
+				Test.TestTrue(TEXT("level-up screen: HUD pick accepted"), Loop.HUD->ChooseUpgrade(0));
+				++Loop.UpgradeChoices;
+			}
+			TestWorld.Tick();
+			if (Done())
+			{
+				return Frame;
+			}
+		}
+		return -1;
+	}
+
+	/** Checks the end state: run ended with bSuccess, real pause, UI input, WBP_HUD end screen with Title, nothing moves for 2 s. */
+	void CheckEndScreen(FAutomationTestBase& Test, const FTestWorld& TestWorld, FRunLoop& Loop, const URRTestEventRecorder* Recorder, bool bSuccess, const TCHAR* Title)
+	{
+		UWorld* World = TestWorld.Get();
+		ARRMiner* Miner = Loop.Setup.Miner;
+		URRLevelUpComponent* LevelUp = Miner->GetLevelUp();
+		Test.TestTrue(TEXT("run ended"), Loop.RunFlow->IsRunEnded());
+		Test.TestTrue(TEXT("phase Ended"), Loop.RunFlow->GetPhase() == ERRRunPhase::Ended);
+		Test.TestEqual(TEXT("run success flag"), Loop.RunFlow->WasRunSuccessful(), bSuccess);
+		if (Test.TestEqual(TEXT("OnRunEnded once"), Recorder->GetRunEndedResults().Num(), 1))
+		{
+			Test.TestEqual(TEXT("OnRunEnded result"), Recorder->GetRunEndedResults()[0], bSuccess);
+		}
+		Test.TestFalse(TEXT("miner alive at the end"), Miner->IsDead());
+		const ARRGameMode* RunGameMode = Cast<ARRGameMode>(Loop.GameMode);
+		Test.TestTrue(TEXT("no game over"), RunGameMode && !RunGameMode->IsGameOver());
+
+		// Real pause through the game mode, UI input with the cursor.
+		Test.TestTrue(TEXT("world paused by the end"), World->IsPaused());
+		Test.TestTrue(TEXT("controller reports the pause"), Loop.Controller->IsPaused());
+		Test.TestTrue(TEXT("cursor shown on the end screen"), Loop.Controller->ShouldShowMouseCursor());
+
+		// WBP_HUD end screen; the level-up screen lost to it.
+		Test.TestTrue(TEXT("EndScreen visible"), GetWidgetVisibility(Test, Loop.HUD, TEXT("EndScreen")) == ESlateVisibility::Visible);
+		Test.TestEqual(TEXT("EndTitle"), GetWidgetText(Test, Loop.HUD, TEXT("EndTitle")), FString(Title));
+		Test.TestTrue(TEXT("ShuttleText hidden at the end"), GetWidgetVisibility(Test, Loop.HUD, TEXT("ShuttleText")) == ESlateVisibility::Collapsed);
+		Test.TestTrue(TEXT("UpgradeScreen collapsed at the end"), GetWidgetVisibility(Test, Loop.HUD, TEXT("UpgradeScreen")) == ESlateVisibility::Collapsed);
+		Test.TestTrue(TEXT("level-up choices blocked by the end"), LevelUp->AreChoicesBlocked());
+		Test.TestFalse(TEXT("no level-up choice pending at the end"), LevelUp->IsAwaitingChoice());
+
+		// Frozen: 2 s of frames change nothing.
+		const double EndTime = World->GetTimeSeconds();
+		const int32 EndEnemies = CountEnemies(World);
+		const FVector EndLocation = Miner->GetActorLocation();
+		const float EndCountdown = Loop.RunFlow->GetShuttle() ? Loop.RunFlow->GetShuttle()->GetRemainingSeconds() : -1.f;
+		const int32 EndOffers = Recorder->GetOfferCardCounts().Num();
+		for (int32 Frame = 0; Frame < 120; ++Frame)
+		{
+			TestWorld.Tick();
+		}
+		Test.TestEqual(TEXT("game time frozen after the end"), World->GetTimeSeconds(), EndTime);
+		Test.TestEqual(TEXT("no robot spawned or removed after the end"), CountEnemies(World), EndEnemies);
+		Test.TestTrue(TEXT("miner still after the end"), Miner->GetActorLocation().Equals(EndLocation, 0.01f));
+		Test.TestEqual(TEXT("shuttle countdown frozen after the end"), Loop.RunFlow->GetShuttle() ? Loop.RunFlow->GetShuttle()->GetRemainingSeconds() : -1.f, EndCountdown);
+		Test.TestEqual(TEXT("no level-up offer after the end"), Recorder->GetOfferCardCounts().Num(), EndOffers);
+		Test.TestTrue(TEXT("EndScreen still visible"), GetWidgetVisibility(Test, Loop.HUD, TEXT("EndScreen")) == ESlateVisibility::Visible);
+		Test.TestFalse(TEXT("second EndRun refused"), Loop.RunFlow->EndRun(!bSuccess));
+		Test.TestEqual(TEXT("still one OnRunEnded"), Recorder->GetRunEndedResults().Num(), 1);
+
+		// Rejouer: clicking the button reaches RestartLevel, which asks the engine to reopen this map (travel cleared before it runs).
+		UButton* Restart = Cast<UButton>(Loop.HUD->GetWidgetFromName(TEXT("RestartButton")));
+		FWorldContext* Context = GEngine->GetWorldContextFromWorld(World);
+		if (Test.TestNotNull(TEXT("WBP_HUD has RestartButton"), Restart) && Test.TestNotNull(TEXT("world context"), Context))
+		{
+			Test.TestTrue(TEXT("RestartButton visible (UMG property: no Slate widget headless)"), Restart->GetVisibility() == ESlateVisibility::Visible || Restart->GetVisibility() == ESlateVisibility::SelfHitTestInvisible);
+			Test.TestTrue(TEXT("RestartButton enabled"), Restart->GetIsEnabled());
+			Test.TestTrue(TEXT("RestartButton click bound"), Restart->OnClicked.IsBound());
+			Test.TestTrue(TEXT("no travel before the click"), Context->TravelURL.IsEmpty());
+			Restart->OnClicked.Broadcast();
+			Test.TestEqual(TEXT("Rejouer reopens the current map"), Context->TravelURL, UGameplayStatics::GetCurrentLevelName(World, true));
+			Context->TravelURL.Empty();
+		}
+	}
+}
+
+IMPLEMENT_SIMPLE_AUTOMATION_TEST(FRRIntegrationConsoleExtractionWinTest, "RogueRigs.Integration.ConsoleExtractionWin",
+	EAutomationTestFlags::EditorContext | EAutomationTestFlags::EngineFilter)
+
+bool FRRIntegrationConsoleExtractionWinTest::RunTest(const FString& Parameters)
+{
+	using namespace RRIntegrationObjectiveTests;
+
+	// Declared in this order: the loop unbinds, the cheats reset, then the world and the game instance go.
+	FTestGameInstance GameInstance;
+	FTestWorld TestWorld(TEXT("RRIntegrationExtractionWin"));
+	UWorld* World = TestWorld.Get();
+	FCheatGuard CheatGuard(World);
+	TStrongObjectPtr<URRTestEventRecorder> Recorder(NewObject<URRTestEventRecorder>());
+	FRunLoop Loop;
+	if (!StartRun(*this, TestWorld, GameInstance, Loop))
+	{
+		return false;
+	}
+	ARRMiner* Miner = Loop.Setup.Miner;
+	ARRArenaGrid* Grid = Loop.Setup.Grid;
+	URRRunFlowSubsystem* RunFlow = Loop.RunFlow;
+	URRLevelUpComponent* LevelUp = Miner->GetLevelUp();
+	const FRRRunFlowConfig& Config = RunFlow->GetConfig();
+	RunFlow->OnExtractionReady.AddDynamic(Recorder.Get(), &URRTestEventRecorder::HandleExtractionReady);
+	RunFlow->OnRunEnded.AddDynamic(Recorder.Get(), &URRTestEventRecorder::HandleRunEnded);
+	RunFlow->OnShuttleCountdown.AddDynamic(Recorder.Get(), &URRTestEventRecorder::HandleShuttleCountdown);
+	LevelUp->OnUpgradeOfferShown.AddDynamic(Recorder.Get(), &URRTestEventRecorder::HandleUpgradeOfferShown);
+
+	// 1. The alert (time and kills, x AlertSpeed) reaches the threshold: BP_ObjectiveConsole drops with marked rocks, alert paused.
+	const double StartTime = World->GetTimeSeconds();
+	const int32 DropFrame = TickRun(*this, TestWorld, Loop, 600, [RunFlow]() { return RunFlow->GetConsole() != nullptr; });
+	if (!TestTrue(TEXT("console dropped"), DropFrame > 0))
+	{
+		return false;
+	}
+	ARRConsole* Console = RunFlow->GetConsole();
+	Console->OnConsoleStateChanged.AddDynamic(Recorder.Get(), &URRTestEventRecorder::HandleConsoleStateChanged);
+	AddInfo(FString::Printf(TEXT("console dropped on (%d, %d) after %.3f s game time, %d kill(s), %d marked rock(s)"), Console->GetCell().X, Console->GetCell().Y,
+		World->GetTimeSeconds() - StartTime, RunFlow->GetKillCount(), Console->GetInitialMarkedRockCount()));
+	TestTrue(TEXT("console is BP_ObjectiveConsole"), Console->IsA(Loop.ConsoleClass));
+	TestEqual(TEXT("alert clamped at the console threshold"), RunFlow->GetAlert(), Config.ConsoleAlertThreshold, 1e-4f);
+	TestTrue(TEXT("phase ObjectivePending"), RunFlow->GetPhase() == ERRRunPhase::ObjectivePending);
+	TestTrue(TEXT("console Locked"), Console->GetConsoleState() == ERRConsoleState::Locked);
+	const TArray<FIntPoint> MarkedRocks = Console->GetMarkedRocks();
+	if (!TestTrue(TEXT("console marked rocks (seeded drop prefers cells with rocks)"), MarkedRocks.Num() > 0))
+	{
+		return false;
+	}
+	for (const FIntPoint& Cell : MarkedRocks)
+	{
+		TestTrue(FString::Printf(TEXT("rock (%d, %d) marked on the grid"), Cell.X, Cell.Y), Grid->IsCellMarked(Cell));
+	}
+	TestTrue(TEXT("ObjectiveText visible"), GetWidgetVisibility(*this, Loop.HUD, TEXT("ObjectiveText")) == ESlateVisibility::Visible);
+	TestTrue(TEXT("ObjectiveText asks to clear the marked rocks"), GetWidgetText(*this, Loop.HUD, TEXT("ObjectiveText")).Contains(TEXT("roches marquées")));
+	TestEqual(TEXT("AlertBar at the threshold"), GetWidgetPercent(*this, Loop.HUD, TEXT("AlertBar")), Config.ConsoleAlertThreshold, 1e-4f);
+	TestEqual(TEXT("AlertLabel shows the pause"), GetWidgetText(*this, Loop.HUD, TEXT("AlertLabel")), FString(TEXT("ALERTE (pause)")));
+
+	// The alert holds while the console is pending.
+	TickRun(*this, TestWorld, Loop, 60, []() { return false; });
+	TestEqual(TEXT("alert holds while the console is pending"), RunFlow->GetAlert(), Config.ConsoleAlertThreshold, 1e-4f);
+	TestFalse(TEXT("no extraction while the console is pending"), RunFlow->IsExtractionReady());
+
+	// 2. The marked rocks are destroyed: unmarked, console hackable (Idle: the miner is 12+ cells away).
+	for (const FIntPoint& Cell : MarkedRocks)
+	{
+		Grid->DestroyCell(Cell, ERRTerrainDamageSource::Drone);
+	}
+	TickRun(*this, TestWorld, Loop, 1, []() { return true; });
+	TestEqual(TEXT("no marked rock left"), Console->GetMarkedRockCount(), 0);
+	for (const FIntPoint& Cell : MarkedRocks)
+	{
+		TestFalse(FString::Printf(TEXT("cell (%d, %d) destroyed and unmarked"), Cell.X, Cell.Y), Grid->IsCellMarked(Cell) || Grid->GetCellType(Cell) != ERRCellType::Floor);
+	}
+	TestTrue(TEXT("console Idle once cleared"), Console->GetConsoleState() == ERRConsoleState::Idle);
+	TestTrue(TEXT("ObjectiveText asks to hack"), GetWidgetText(*this, Loop.HUD, TEXT("ObjectiveText")).Contains(TEXT("Pirate la console")));
+
+	// 3. The miner stands at the console: the drone hacks it in HackDuration of game time.
+	TeleportMiner(Miner, Grid, Console->GetActorLocation());
+	const double HackStart = World->GetTimeSeconds();
+	const int32 HackFrames = TickRun(*this, TestWorld, Loop, 1800, [Console]() { return Console->IsComplete(); });
+	const double HackSeconds = World->GetTimeSeconds() - HackStart;
+	AddInfo(FString::Printf(TEXT("hack completed in %.3f s game time (%d frames), %d kill(s), %d upgrade choice(s) so far"), HackSeconds, HackFrames,
+		RunFlow->GetKillCount(), Loop.UpgradeChoices));
+	if (!TestTrue(TEXT("hack completed"), HackFrames > 0))
+	{
+		return false;
+	}
+	TestTrue(TEXT("hack lasted at least HackDuration (within one frame)"), HackSeconds >= Console->GetHackDuration() - FrameSeconds - 1e-3);
+	TestTrue(TEXT("console states went through Hacking"), Recorder->GetConsoleStates().Contains(ERRConsoleState::Hacking));
+	TestTrue(TEXT("console ends Complete"), Recorder->GetConsoleStates().Num() > 0 && Recorder->GetConsoleStates().Last() == ERRConsoleState::Complete);
+	TestFalse(TEXT("objective no longer pending"), RunFlow->HasPendingObjective());
+	TestTrue(TEXT("HackBar hidden once hacked"), GetWidgetVisibility(*this, Loop.HUD, TEXT("HackBar")) == ESlateVisibility::Collapsed);
+
+	// 4. The alert resumes to 1: extraction ready once, BP_ExtractionShuttle lands far away with its countdown.
+	const double ResumeTime = World->GetTimeSeconds();
+	const int32 LandFrame = TickRun(*this, TestWorld, Loop, 900, [RunFlow]() { return RunFlow->GetShuttle() != nullptr; });
+	if (!TestTrue(TEXT("shuttle landed"), LandFrame > 0))
+	{
+		return false;
+	}
+	ARRShuttle* Shuttle = RunFlow->GetShuttle();
+	const float LandDistanceCells = FVector::Dist2D(Shuttle->GetActorLocation(), Miner->GetActorLocation()) / Grid->GetCellSize();
+	AddInfo(FString::Printf(TEXT("shuttle landed on (%d, %d) %.1f cells away, %.3f s game time after the hack"), Shuttle->GetCell().X, Shuttle->GetCell().Y,
+		LandDistanceCells, World->GetTimeSeconds() - ResumeTime));
+	TestTrue(TEXT("shuttle is BP_ExtractionShuttle"), Shuttle->IsA(Loop.ShuttleClass));
+	TestEqual(TEXT("extraction ready once"), Recorder->GetExtractionReadyCount(), 1);
+	TestEqual(TEXT("alert full"), RunFlow->GetAlert(), 1.f, 1e-4f);
+	TestTrue(TEXT("shuttle at least ShuttleMinDistanceCells away (within a cell)"), LandDistanceCells >= Config.ShuttleMinDistanceCells - 1.f);
+	TestEqual(TEXT("countdown from the config"), Shuttle->GetCountdownSeconds(), Config.ShuttleCountdownSeconds, 1e-4f);
+	TestTrue(TEXT("ObjectiveText says to reach the shuttle"), GetWidgetText(*this, Loop.HUD, TEXT("ObjectiveText")).Contains(TEXT("navette")));
+	TestTrue(TEXT("ShuttleText visible"), GetWidgetVisibility(*this, Loop.HUD, TEXT("ShuttleText")) == ESlateVisibility::Visible);
+	TestTrue(TEXT("ShuttleText shows the countdown"), GetWidgetText(*this, Loop.HUD, TEXT("ShuttleText")).StartsWith(TEXT("Navette")));
+	TickRun(*this, TestWorld, Loop, 60, []() { return false; });
+	TestTrue(TEXT("countdown running"), Shuttle->GetRemainingSeconds() < Config.ShuttleCountdownSeconds - 0.5f);
+	TestFalse(TEXT("run not ended while the miner is away"), RunFlow->IsRunEnded());
+
+	// 5. A level-up starts its choice delay, then the miner boards: the run ends won and the end screen wins over the offer.
+	TestTrue(TEXT("XP granted"), RRCheats::GrantXP(World, 500.f, TEXT("RogueRigs.Integration")));
+	TestTrue(TEXT("level-up choice delay running before boarding"), LevelUp->IsChoiceDelayActive());
+	TeleportMiner(Miner, Grid, Shuttle->GetActorLocation());
+	TestEqual(TEXT("run ends on the boarding tick"), TickRun(*this, TestWorld, Loop, 1, [RunFlow]() { return RunFlow->IsRunEnded(); }), 1);
+	TestTrue(TEXT("shuttle extracted the miner"), Shuttle->IsFinished() && Shuttle->WasExtracted());
+	AddInfo(FString::Printf(TEXT("won with %.2f s left; %d kill(s), %d upgrade choice(s) during the run"), Shuttle->GetRemainingSeconds(), RunFlow->GetKillCount(), Loop.UpgradeChoices));
+	CheckEndScreen(*this, TestWorld, Loop, Recorder.Get(), /*bSuccess*/ true, TEXT("EXTRACTION RÉUSSIE"));
+	return true;
+}
+
+IMPLEMENT_SIMPLE_AUTOMATION_TEST(FRRIntegrationShuttleTimeoutLossTest, "RogueRigs.Integration.ShuttleTimeoutLoss",
+	EAutomationTestFlags::EditorContext | EAutomationTestFlags::EngineFilter)
+
+bool FRRIntegrationShuttleTimeoutLossTest::RunTest(const FString& Parameters)
+{
+	using namespace RRIntegrationObjectiveTests;
+
+	FTestGameInstance GameInstance;
+	FTestWorld TestWorld(TEXT("RRIntegrationExtractionLoss"));
+	UWorld* World = TestWorld.Get();
+	FCheatGuard CheatGuard(World);
+	TStrongObjectPtr<URRTestEventRecorder> Recorder(NewObject<URRTestEventRecorder>());
+	FRunLoop Loop;
+	if (!StartRun(*this, TestWorld, GameInstance, Loop))
+	{
+		return false;
+	}
+	URRRunFlowSubsystem* RunFlow = Loop.RunFlow;
+	RunFlow->OnRunEnded.AddDynamic(Recorder.Get(), &URRTestEventRecorder::HandleRunEnded);
+	Loop.Setup.Miner->GetLevelUp()->OnUpgradeOfferShown.AddDynamic(Recorder.Get(), &URRTestEventRecorder::HandleUpgradeOfferShown);
+	constexpr float ShortCountdown = 3.f;
+	GetMutableDefault<URRCheatSettings>()->ShuttleCountdownOverride = ShortCountdown;
+
+	// Accelerated alert to the console; the hack (proven by ConsoleExtractionWin) is completed by the cheat; the alert fills.
+	if (!TestTrue(TEXT("console dropped"), TickRun(*this, TestWorld, Loop, 600, [RunFlow]() { return RunFlow->GetConsole() != nullptr; }) > 0))
+	{
+		return false;
+	}
+	TestTrue(TEXT("console is BP_ObjectiveConsole"), RunFlow->GetConsole()->IsA(Loop.ConsoleClass));
+	TestTrue(TEXT("hack completed by the cheat"), RRCheats::CompleteConsoleHack(World, TEXT("RogueRigs.Integration")));
+	if (!TestTrue(TEXT("shuttle landed"), TickRun(*this, TestWorld, Loop, 900, [RunFlow]() { return RunFlow->GetShuttle() != nullptr; }) > 0))
+	{
+		return false;
+	}
+	ARRShuttle* Shuttle = RunFlow->GetShuttle();
+	TestTrue(TEXT("shuttle is BP_ExtractionShuttle"), Shuttle->IsA(Loop.ShuttleClass));
+	TestEqual(TEXT("countdown from the cheat override"), Shuttle->GetCountdownSeconds(), ShortCountdown, 1e-4f);
+
+	// The miner stays where it is (25+ cells away): the countdown runs out in game time, the run is lost.
+	const double LandTime = World->GetTimeSeconds();
+	const int32 EndFrame = TickRun(*this, TestWorld, Loop, 600, [RunFlow]() { return RunFlow->IsRunEnded(); });
+	const double CountdownSeconds = World->GetTimeSeconds() - LandTime;
+	AddInfo(FString::Printf(TEXT("run lost %.3f s game time after landing (%d frames), %d kill(s), %d upgrade choice(s)"), CountdownSeconds, EndFrame,
+		RunFlow->GetKillCount(), Loop.UpgradeChoices));
+	if (!TestTrue(TEXT("run ended"), EndFrame > 0))
+	{
+		return false;
+	}
+	TestEqual(TEXT("lost when the countdown runs out (within one frame)"), CountdownSeconds, double(ShortCountdown), double(FrameSeconds) + 1e-3);
+	TestTrue(TEXT("shuttle missed"), Shuttle->IsFinished() && !Shuttle->WasExtracted());
+	CheckEndScreen(*this, TestWorld, Loop, Recorder.Get(), /*bSuccess*/ false, TEXT("RUN PERDUE"));
 	return true;
 }
 

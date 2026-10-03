@@ -21,7 +21,7 @@ kind: doc
 - data: tunables above (provisional values from [[level-flow]] M1 and [[objective-console]]); no table.
 - depends_on: [[sys-grid]], [[sys-drone]], [[sys-flow-field]], [[sys-player]], [[sys-enemies]], [[sys-cheats]] (alert multiplier).
 - implements: [[level-flow]] (M1 sequence), [[objective-console]], [[extraction]] (M1 end screens), alert counter of [[difficulty]].
-- gotchas: threat counter not built ([[sys-difficulty]]). One console per level; no tier pool. The flow is active in every game world with a grid and a miner, including other tests (alert never reaches 0.4 there). Ore carried is not secured yet ([[ore-economy]] meta not built). The bare test world has no controller: tests prove the end state, not the pause. Tests: `RogueRigs.RunFlow.*`, `RogueRigs.Console.*`, `RogueRigs.Extraction.*` ([[sys-automation-tests]]).
+- gotchas: threat counter not built ([[sys-difficulty]]). One console per level; no tier pool. The flow is active in every game world with a grid and a miner, including other tests (alert never reaches 0.4 there). Ore carried is not secured yet ([[ore-economy]] meta not built). The bare test world has no controller: those tests prove the end state; `Integration.ConsoleExtractionWin` / `ShuttleTimeoutLoss` prove the real pause, the HUD texts and the end screen. Tests: `RogueRigs.RunFlow.*`, `RogueRigs.Console.*`, `RogueRigs.Extraction.*` ([[sys-automation-tests]]).
 
 ## Relations
 - [[systems-index]] — parent index.
