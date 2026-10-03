@@ -3,7 +3,7 @@ id: task-012-04-tests-integration
 description: "Integration tests with final Blueprints: kill robots with the rifle, collect their XP cubes, level up; full run."
 parent: task-012-xp-level
 kind: task
-status: in-progress
+status: done
 ---
 # Integration tests
 
@@ -16,7 +16,7 @@ status: in-progress
 - editor_state: closed
 - token_ceiling: 60000
 - milestone: M1
-- result: open
+- result: new Integration.RifleKillsFiveChasersLevelUp (5 chasers killed by the rifle 1009 to 1647 uu out, 5 cubes collected, level 2 with one level-up event, miner untouched); RifleKillsKamikazeExplodes extended (exactly 10 hits of 10 kill a kamikaze, crits off, in-flight shots cleared). No gameplay bug. Build exit 0, 58/58 (orchestrator re-ran). Doc sys-automation-tests. About 84k tokens.
 
 ## Relations
 - [[task-012-xp-level]] — parent global task.

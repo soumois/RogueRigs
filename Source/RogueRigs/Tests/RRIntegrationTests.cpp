@@ -1,4 +1,4 @@
-// Rogue Rigs - integration tests with the final Blueprints (RogueRigs.Integration.*): BP_Chaser reaching and hitting BP_Miner around rocks, the starting rifle killing a chaser, miner death and game over, a 50-chaser headless timing run, and the explosion loop (barrel chain from a rifle shot with BP_ExplosionFX, BP_Kamikaze reaching the miner, point-blank barrel, rifle-killed kamikaze).
+// Rogue Rigs - integration tests with the final Blueprints (RogueRigs.Integration.*): BP_Chaser reaching and hitting BP_Miner around rocks, the starting rifle killing a chaser, five rifle kills whose XP cubes are collected up to level 2, miner death and game over, a 50-chaser headless timing run, and the explosion loop (barrel chain from a rifle shot with BP_ExplosionFX, BP_Kamikaze reaching the miner, point-blank barrel, rifle-killed kamikaze after 10 non-critical hits).
 
 #include "CoreMinimal.h"
 #include "Misc/AutomationTest.h"
@@ -12,16 +12,20 @@
 #include "Explosions/RRExplosionFX.h"
 #include "Explosions/RRExplosionSubsystem.h"
 #include "FlowField/RRFlowFieldSubsystem.h"
+#include "GameFramework/PlayerController.h"
 #include "GAS/RRHealthAttributeSet.h"
 #include "HAL/PlatformTime.h"
 #include "Math/RandomStream.h"
 #include "Pickups/RRPickup.h"
+#include "Projectiles/RRProjectile.h"
 #include "Player/RRGameMode.h"
+#include "Progression/RRProgressionComponent.h"
 #include "Tests/RRTestEventRecorder.h"
 #include "Tests/RRTestHarness.h"
 #include "UObject/StrongObjectPtr.h"
 #include "Weapons/RRAutoFireComponent.h"
 #include "Weapons/RRWeapon.h"
+#include "Weapons/RRWeaponAttributeSet.h"
 
 namespace RRIntegrationTests
 {
@@ -271,6 +275,145 @@ bool FRRIntegrationRifleKillsTest::RunTest(const FString& Parameters)
 	}
 	TestFalse(TEXT("chaser destroyed after the shrink"), WeakChaser.IsValid() && !WeakChaser->IsActorBeingDestroyed());
 	TestEqual(TEXT("one XP pickup dropped"), CountXPPickups(TestWorld.Get()), 1);
+	return true;
+}
+
+IMPLEMENT_SIMPLE_AUTOMATION_TEST(FRRIntegrationXPLevelUpTest, "RogueRigs.Integration.RifleKillsFiveChasersLevelUp",
+	EAutomationTestFlags::EditorContext | EAutomationTestFlags::EngineFilter)
+
+bool FRRIntegrationXPLevelUpTest::RunTest(const FString& Parameters)
+{
+	using namespace RRIntegrationTests;
+
+	FTestWorld TestWorld(TEXT("RRIntegrationXPLevel"));
+	TStrongObjectPtr<URRTestEventRecorder> Recorder(NewObject<URRTestEventRecorder>());
+	FLoopSetup Setup;
+	if (!SetUp(*this, TestWorld, ArmedMinerCell, /*bArmed*/ true, Setup))
+	{
+		return false;
+	}
+	ARRMiner* Miner = Setup.Miner;
+	URRProgressionComponent* Progression = Miner->GetProgression();
+	if (!TestNotNull(TEXT("miner has a progression component"), Progression))
+	{
+		return false;
+	}
+	TestEqual(TEXT("starts at level 1"), Progression->GetLevel(), 1);
+	TestEqual(TEXT("starts with 0 XP"), Progression->GetXP(), 0.f);
+	TestEqual(TEXT("level 1 needs 5 XP"), Progression->GetXPToNextLevel(), 5.f);
+
+	// Pickups find the miner as the player 0 pawn: a player controller (no local player) possesses it.
+	APlayerController* Controller = TestWorld.Spawn<APlayerController>(APlayerController::StaticClass(), Miner->GetActorLocation());
+	if (!TestNotNull(TEXT("player controller spawned"), Controller))
+	{
+		return false;
+	}
+	Controller->Possess(Miner);
+	Progression->OnXPChanged.AddDynamic(Recorder.Get(), &URRTestEventRecorder::HandleXPChanged);
+	Progression->OnLevelUp.AddDynamic(Recorder.Get(), &URRTestEventRecorder::HandleLevelUp);
+	Miner->OnPickupCollected.AddDynamic(Recorder.Get(), &URRTestEventRecorder::HandlePickupCollected);
+	const FVector Toward = Setup.Grid->GetCellCenter(StraightStartCell.X, StraightStartCell.Y) - Miner->GetActorLocation();
+	AimAlong(Miner, Toward);
+	TestTrue(TEXT("miner aims down the corridor"), FVector::DotProduct(Miner->GetAimDirection(), Toward.GetSafeNormal2D()) > 0.99f);
+	const float StartHealth = GetHealth(Miner);
+
+	// Five BP_Chaser one after the other from the east end of row 42, each spawned once the previous one is dead.
+	const int32 ChaserCount = 5;
+	FString Kills;
+	for (int32 Index = 0; Index < ChaserCount; ++Index)
+	{
+		ARRChaser* Chaser = SpawnChaser(*this, TestWorld, Setup.ChaserClass, Setup.Grid, StraightStartCell);
+		if (!Chaser)
+		{
+			return false;
+		}
+		TWeakObjectPtr<ARRChaser> Weak(Chaser);
+		const double SpawnTime = TestWorld.Get()->GetTimeSeconds();
+		bool bDead = false;
+		for (int32 Frame = 0; Frame < 600 && !bDead; ++Frame)
+		{
+			TestWorld.Tick();
+			bDead = Weak.IsValid() && Weak->IsDead();
+		}
+		if (!TestTrue(FString::Printf(TEXT("chaser %d killed by the rifle within 10 s"), Index + 1), bDead))
+		{
+			return false;
+		}
+		const float Distance = FVector::Dist2D(Weak->GetActorLocation(), Miner->GetActorLocation());
+		Kills += FString::Printf(TEXT(" %.3f s / %.0f uu;"), TestWorld.Get()->GetTimeSeconds() - SpawnTime, Distance);
+		TestTrue(FString::Printf(TEXT("chaser %d killed before reaching attack range"), Index + 1), Distance > Chaser->GetStats().AttackRange);
+	}
+
+	// Pop and rest: the cubes lie 1000 uu or more from the miner, outside its PickupRadius, so none is collected yet.
+	for (int32 Frame = 0; Frame < 60; ++Frame)
+	{
+		TestWorld.Tick();
+	}
+	TArray<FVector> Cubes;
+	for (TActorIterator<ARRPickup> It(TestWorld.Get()); It; ++It)
+	{
+		if (IsValid(*It) && !It->IsActorBeingDestroyed() && It->GetPickupType() == ERRPickupType::XP)
+		{
+			Cubes.Add(It->GetActorLocation());
+		}
+	}
+	TestEqual(TEXT("five XP cubes dropped"), Cubes.Num(), ChaserCount);
+	TestEqual(TEXT("no cube collected from afar"), Recorder->GetCollectedPickups().Num(), 0);
+	TestEqual(TEXT("still level 1 before collecting"), Progression->GetLevel(), 1);
+	if (Cubes.Num() != ChaserCount)
+	{
+		return false;
+	}
+
+	const double CollectStart = TestWorld.Get()->GetTimeSeconds();
+	// The kills spread over about 600 uu (the first shots land mid-burst): the miner walks the drop zone, stepping onto
+	// the nearest cube left whenever none lies within its PickupRadius; cubes in range fly to it and are collected.
+	int32 Moves = 0;
+	for (int32 Frame = 0; Frame < 600 && Recorder->GetCollectedPickups().Num() < ChaserCount; ++Frame)
+	{
+		bool bInRange = false;
+		const ARRPickup* Nearest = nullptr;
+		float NearestDistance = TNumericLimits<float>::Max();
+		for (TActorIterator<ARRPickup> It(TestWorld.Get()); It; ++It)
+		{
+			if (IsValid(*It) && !It->IsActorBeingDestroyed() && It->GetPickupType() == ERRPickupType::XP)
+			{
+				const float Distance = FVector::Dist2D(It->GetActorLocation(), Miner->GetActorLocation());
+				bInRange |= Distance <= Miner->GetPickupRadius();
+				if (Distance < NearestDistance)
+				{
+					NearestDistance = Distance;
+					Nearest = *It;
+				}
+			}
+		}
+		if (!bInRange && Nearest)
+		{
+			Miner->SetActorLocation(FVector(Nearest->GetActorLocation().X, Nearest->GetActorLocation().Y, Miner->GetActorLocation().Z));
+			++Moves;
+		}
+		TestWorld.Tick();
+	}
+	const double CollectTime = TestWorld.Get()->GetTimeSeconds() - CollectStart;
+	TestWorld.Tick();
+
+	AddInfo(FString::Printf(TEXT("kills (time after spawn / distance):%s %d miner move(s) (PickupRadius %.0f); %d collected in %.3f s; level %d, XP %.0f / %.0f; %d level-up(s), %d XP event(s); miner Health %.0f -> %.0f"),
+		*Kills, Moves, Miner->GetPickupRadius(), Recorder->GetCollectedPickups().Num(), CollectTime, Progression->GetLevel(), Progression->GetXP(),
+		Progression->GetXPToNextLevel(), Recorder->GetLevelUps().Num(), Recorder->GetXPChanges().Num(), StartHealth, GetHealth(Miner)));
+	TestEqual(TEXT("five cubes collected"), Recorder->GetCollectedPickups().Num(), ChaserCount);
+	TestEqual(TEXT("no XP cube left"), CountXPPickups(TestWorld.Get()), 0);
+	TestEqual(TEXT("level 2"), Progression->GetLevel(), 2);
+	TestEqual(TEXT("0 XP carried"), Progression->GetXP(), 0.f);
+	TestEqual(TEXT("level 2 needs 10"), Progression->GetXPToNextLevel(), 10.f);
+	if (TestEqual(TEXT("exactly one level-up event"), Recorder->GetLevelUps().Num(), 1))
+	{
+		TestEqual(TEXT("level-up to 2"), Recorder->GetLevelUps()[0], 2);
+	}
+	if (TestEqual(TEXT("one XP event per cube"), Recorder->GetXPChanges().Num(), ChaserCount))
+	{
+		TestEqual(TEXT("last XP event (0, 10, 2)"), Recorder->GetXPChanges().Last(), FVector(0.f, 10.f, 2.f));
+	}
+	TestEqual(TEXT("miner untouched"), GetHealth(Miner), StartHealth);
 	return true;
 }
 
@@ -855,6 +998,31 @@ bool FRRIntegrationRifleKillsKamikazeTest::RunTest(const FString& Parameters)
 	}
 	TWeakObjectPtr<ARRKamikaze> Weak(Kamikaze);
 	const float StartHealth = GetHealth(Miner);
+
+	// Crits off on the starting weapon so every rifle hit deals the CSV Damage; count the hits the kamikaze takes until death.
+	// A shot captures CritChance in its spec when fired: the shots already in flight (fired during the set-up) are removed.
+	for (ARRWeapon* Weapon : Miner->GetWeapons())
+	{
+		if (IsValid(Weapon) && Weapon->GetAbilitySystemComponent())
+		{
+			Weapon->GetAbilitySystemComponent()->SetNumericAttributeBase(URRWeaponAttributeSet::GetCritChanceAttribute(), 0.f);
+		}
+	}
+	for (TActorIterator<ARRProjectile> It(TestWorld.Get()); It; ++It)
+	{
+		It->Destroy();
+	}
+	const float KamikazeMaxHealth = Kamikaze->GetAbilitySystemComponent()->GetNumericAttribute(URRHealthAttributeSet::GetMaxHealthAttribute());
+	TestEqual(TEXT("kamikaze at full health (100)"), GetHealth(Kamikaze), KamikazeMaxHealth);
+	TestEqual(TEXT("kamikaze MaxHealth 100"), KamikazeMaxHealth, 100.f);
+	TArray<FHit> RifleHits;
+	int32 CriticalHits = 0;
+	UWorld* World = TestWorld.Get();
+	const FDelegateHandle RifleHitHandle = Kamikaze->GetHealthSet()->OnDamageReceived.AddLambda([&RifleHits, &CriticalHits, World](float Damage, bool bIsCritical, float)
+	{
+		RifleHits.Add({ World->GetTimeSeconds(), Damage });
+		CriticalHits += bIsCritical ? 1 : 0;
+	});
 	const double StartTime = TestWorld.Get()->GetTimeSeconds();
 	double DeathTime = -1.0;
 	FVector DeathLocation = FVector::ZeroVector;
@@ -869,9 +1037,21 @@ bool FRRIntegrationRifleKillsKamikazeTest::RunTest(const FString& Parameters)
 			DeathLocation = Weak->GetActorLocation();
 		}
 	}
+	if (Weak.IsValid())
+	{
+		Weak->GetHealthSet()->OnDamageReceived.Remove(RifleHitHandle);
+	}
 	if (!TestTrue(TEXT("kamikaze killed within 10 s"), DeathTime >= 0.0))
 	{
 		return false;
+	}
+	AddInfo(FString::Printf(TEXT("kamikaze took %d rifle hit(s) (%d critical) before dying, first %.0f, Health %.0f -> 0"),
+		RifleHits.Num(), CriticalHits, RifleHits.Num() > 0 ? RifleHits[0].Damage : 0.f, KamikazeMaxHealth));
+	TestEqual(TEXT("10 rifle hits to kill the 100 HP kamikaze"), RifleHits.Num(), 10);
+	TestEqual(TEXT("no critical hit"), CriticalHits, 0);
+	for (const FHit& Hit : RifleHits)
+	{
+		TestEqual(TEXT("every rifle hit deals 10"), Hit.Damage, 10.f);
 	}
 	for (int32 Frame = 0; Frame < 30; ++Frame)
 	{

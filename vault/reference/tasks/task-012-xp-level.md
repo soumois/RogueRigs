@@ -3,7 +3,7 @@ id: task-012-xp-level
 description: "Global task: slower bigger tougher kamikaze, slower chasers, render-only block shake, then XP and level-up without upgrade cards, HUD bar and tests."
 parent: tasks-index
 kind: task
-status: in-progress
+status: review
 ---
 # XP and level-up (no upgrades yet)
 
@@ -13,8 +13,8 @@ status: in-progress
 - gdd_check: read [[xp-level-up]], [[upgrades]], [[player-stats]], [[enemy-kamikaze]], [[enemy-chaser]], [[drone]], [[sys-gas-core]] (XP and level are not attributes: no upgrade changes them). Open values set by the owner (2026-10-02): kamikaze 100 HP, 300 uu/s, 1.1 × size; chaser 360 uu/s; XP curve 5 × level; level-up feedback and HUD layout. Out: upgrade cards, pause on choice, heal and ore pickup effects. TaskCreate and TaskUpdate are not available in this session: progress is tracked in these nodes.
 - confirmed_by_owner: yes (2026-10-02, all subtasks pre-approved)
 - milestone: M1
-- next_step: task-012-04-tests-integration
-- result: open
+- next_step: none (owner: play it)
+- result: acceptance 1 to 5 passed: 58/58 headless tests (render-only shake keeps collision, progression with carry-over and XPGain, XP cubes, 10-hit kamikaze, 5 kills → level 2); PIE 12 s with no warning. Owner to play it (6): HUD layout, kamikaze size, chaser speed. About 390k tokens over four subtasks.
 
 ## Subtasks
 1. task-012-01-tuning-shake — cpp: kamikaze and chaser values, render-only shake, tests.

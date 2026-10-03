@@ -22,4 +22,4 @@ One global task per owner request (template `task-global.md`, id `task-<number>-
 - [[task-009-chaser]] — chaser robot: player damage, i-frames, death, flow field, enemy base, spawner, HUD. Status done.
 - [[task-010-damage-numbers-video]] — quick damage numbers above every enemy for the assignment video. Status done.
 - [[task-011-explosions]] — feel tweaks, then explosions: barrel, kamikaze, chains, tests. Status done.
-- [[task-012-xp-level]] — tougher slower kamikaze, slower chasers, render-only shake, XP and level-up without upgrades. Status in-progress.
+- [[task-012-xp-level]] — tougher slower kamikaze, slower chasers, render-only shake, XP and level-up without upgrades. Status review (owner test).
