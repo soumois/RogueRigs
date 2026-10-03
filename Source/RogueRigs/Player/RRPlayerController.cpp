@@ -8,6 +8,7 @@
 #include "InputAction.h"
 #include "InputActionValue.h"
 #include "InputMappingContext.h"
+#include "Objectives/RRRunFlowSubsystem.h"
 #include "Player/RRGameMode.h"
 #include "Player/RRMiner.h"
 #include "RogueRigs.h"
@@ -38,6 +39,7 @@ void ARRPlayerController::BeginPlay()
 	HUDWidget->AddToViewport();
 	HUDWidget->BindToGameMode(GetWorld()->GetAuthGameMode<ARRGameMode>());
 	HUDWidget->BindToMiner(GetMiner());
+	HUDWidget->BindToRunFlow(GetWorld()->GetSubsystem<URRRunFlowSubsystem>());
 }
 
 void ARRPlayerController::OnPossess(APawn* InPawn)

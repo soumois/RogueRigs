@@ -326,6 +326,7 @@ void ARRArenaGrid::BuildInstances()
 {
 	ClearAllInstances();
 	ShakingCells.Reset();
+	MarkedCells.Reset();
 	SetActorTickEnabled(false);
 
 	struct FVisual
@@ -352,6 +353,11 @@ void ARRArenaGrid::BuildInstances()
 			if (Visual.MapKey != ERRCellType::Floor)
 			{
 				Component->SetCollisionEnabled(ECollisionEnabled::NoCollision);
+				// Room for the marked flag (objective rocks); set while the component is empty.
+				if (Component->NumCustomDataFloats <= MarkedCustomDataIndex)
+				{
+					Component->SetNumCustomDataFloats(MarkedCustomDataIndex + 1);
+				}
 			}
 		}
 		if (UInstancedStaticMeshComponent* Collision = GetBlockCollisionComponent(Visual.MapKey))
@@ -662,6 +668,7 @@ bool ARRArenaGrid::DestroyCell(FIntPoint Cell, ERRTerrainDamageSource Source)
 	{
 		SetActorTickEnabled(false);
 	}
+	const bool bWasMarked = MarkedCells.Remove(Cell) > 0;
 
 	if (CellInstanceIndex.IsValidIndex(Index) && CellInstanceIndex[Index] != INDEX_NONE)
 	{
@@ -691,8 +698,50 @@ bool ARRArenaGrid::DestroyCell(FIntPoint Cell, ERRTerrainDamageSource Source)
 		QueueBarrelExplosion(Cell);
 	}
 
+	if (bWasMarked)
+	{
+		OnCellMarkedChanged(Cell, false, GetCellCenter(Cell.X, Cell.Y));
+	}
 	OnCellDestroyed.Broadcast(Cell, Type, Source);
 	return true;
+}
+
+bool ARRArenaGrid::SetCellMarked(FIntPoint Cell, bool bMarked)
+{
+	if (bMarked)
+	{
+		if (!IsBlockCell(Cell) || MarkedCells.Contains(Cell))
+		{
+			return false;
+		}
+		MarkedCells.Add(Cell);
+		WriteMarkedCustomData(Cell, MarkedCustomDataValue);
+	}
+	else
+	{
+		if (MarkedCells.Remove(Cell) == 0)
+		{
+			return false;
+		}
+		WriteMarkedCustomData(Cell, 0.f);
+	}
+	OnCellMarkedChanged(Cell, bMarked, GetCellCenter(Cell.X, Cell.Y));
+	return true;
+}
+
+void ARRArenaGrid::WriteMarkedCustomData(FIntPoint Cell, float Value)
+{
+	if (!IsBlockCell(Cell))
+	{
+		return;
+	}
+	const int32 Index = GetCellIndex(Cell);
+	UHierarchicalInstancedStaticMeshComponent* Component = GetBlockComponent(Cells[Index]);
+	if (!Component || !CellInstanceIndex.IsValidIndex(Index) || CellInstanceIndex[Index] == INDEX_NONE || Component->NumCustomDataFloats <= MarkedCustomDataIndex)
+	{
+		return;
+	}
+	Component->SetCustomDataValue(CellInstanceIndex[Index], MarkedCustomDataIndex, Value, /*bMarkRenderStateDirty*/ true);
 }
 
 float ARRArenaGrid::GetCellShotHealth(FIntPoint Cell) const

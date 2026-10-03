@@ -1,9 +1,10 @@
-// Rogue Rigs - base class of the in-run HUD widget: health, XP, level-up, upgrade choice and game-over events fed by C++.
+// Rogue Rigs - base class of the in-run HUD widget: health, XP, level-up, upgrade choice, alert bar, objective and game-over events fed by C++.
 
 #include "UI/RRHUDWidget.h"
 
 #include "AbilitySystemComponent.h"
 #include "GAS/RRHealthAttributeSet.h"
+#include "Objectives/RRRunFlowSubsystem.h"
 #include "Player/RRGameMode.h"
 #include "Player/RRMiner.h"
 #include "Progression/RRLevelUpComponent.h"
@@ -76,10 +77,67 @@ void URRHUDWidget::BindToGameMode(ARRGameMode* GameMode)
 	}
 }
 
+void URRHUDWidget::BindToRunFlow(URRRunFlowSubsystem* RunFlow)
+{
+	if (URRRunFlowSubsystem* Previous = BoundRunFlow.Get())
+	{
+		Previous->OnAlertChanged.RemoveDynamic(this, &URRHUDWidget::HandleAlertChanged);
+		Previous->OnObjectiveChanged.RemoveDynamic(this, &URRHUDWidget::HandleObjectiveChanged);
+		Previous->OnObjectiveProgressChanged.RemoveDynamic(this, &URRHUDWidget::HandleObjectiveProgressChanged);
+		Previous->OnExtractionReady.RemoveDynamic(this, &URRHUDWidget::HandleExtractionReady);
+	}
+	BoundRunFlow = RunFlow;
+	if (!RunFlow)
+	{
+		return;
+	}
+	RunFlow->OnAlertChanged.AddUniqueDynamic(this, &URRHUDWidget::HandleAlertChanged);
+	RunFlow->OnObjectiveChanged.AddUniqueDynamic(this, &URRHUDWidget::HandleObjectiveChanged);
+	RunFlow->OnObjectiveProgressChanged.AddUniqueDynamic(this, &URRHUDWidget::HandleObjectiveProgressChanged);
+	RunFlow->OnExtractionReady.AddUniqueDynamic(this, &URRHUDWidget::HandleExtractionReady);
+
+	// Push the current state once.
+	OnAlertChanged(RunFlow->GetAlert(), RunFlow->HasPendingObjective());
+	if (ARRConsole* Console = RunFlow->GetConsole())
+	{
+		HandleObjectiveChanged(Console, Console->GetConsoleState(), Console->GetMarkedRockCount(), Console->GetInitialMarkedRockCount());
+		OnObjectiveProgressChanged(Console->GetHackProgress(), Console->GetConsoleState() == ERRConsoleState::Hacking);
+	}
+	else
+	{
+		HandleObjectiveChanged(nullptr, ERRConsoleState::Locked, 0, 0);
+	}
+	if (RunFlow->IsExtractionReady())
+	{
+		OnExtractionReady();
+	}
+}
+
+void URRHUDWidget::HandleAlertChanged(float Alert, bool bPaused)
+{
+	OnAlertChanged(Alert, bPaused);
+}
+
+void URRHUDWidget::HandleObjectiveChanged(ARRConsole* Console, ERRConsoleState State, int32 MarkedRocksLeft, int32 MarkedRocksTotal)
+{
+	OnObjectiveChanged(IsValid(Console), State, MarkedRocksLeft, MarkedRocksTotal);
+}
+
+void URRHUDWidget::HandleObjectiveProgressChanged(float Progress, bool bHacking)
+{
+	OnObjectiveProgressChanged(Progress, bHacking);
+}
+
+void URRHUDWidget::HandleExtractionReady()
+{
+	OnExtractionReady();
+}
+
 void URRHUDWidget::NativeDestruct()
 {
 	UnbindMiner();
 	BindToGameMode(nullptr);
+	BindToRunFlow(nullptr);
 	Super::NativeDestruct();
 }
 

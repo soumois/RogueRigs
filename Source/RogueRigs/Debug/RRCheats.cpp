@@ -1,12 +1,16 @@
-// Rogue Rigs - cheat console variables with on-change sinks (rr.Cheat.*): drive PIE checks from tools that can set console variables but cannot run commands or call functions (Unreal MCP).
+// Rogue Rigs - cheat actions and the rr.Cheat.* console variables with on-change sinks; the same actions serve the polled URRCheatSettings route.
+
+#include "Debug/RRCheats.h"
 
 #include "AbilitySystemComponent.h"
+#include "Debug/RRCheatSettings.h"
 #include "Engine/Engine.h"
 #include "Engine/World.h"
 #include "EngineUtils.h"
 #include "GAS/RRGameplayTags.h"
 #include "HAL/IConsoleManager.h"
 #include "Kismet/GameplayStatics.h"
+#include "Objectives/RRRunFlowSubsystem.h"
 #include "Player/RRMiner.h"
 #include "Progression/RRLevelUpComponent.h"
 #include "Progression/RRProgressionComponent.h"
@@ -14,7 +18,6 @@
 
 namespace RRCheats
 {
-	/** The world the cheats act on: the first PIE world, else the first game world (headless tests, -game). */
 	UWorld* FindCheatWorld()
 	{
 		if (!GEngine)
@@ -41,7 +44,6 @@ namespace RRCheats
 		return GameWorld;
 	}
 
-	/** The miner of player 0 in World, else the first live miner found. */
 	ARRMiner* FindPlayerMiner(UWorld* World)
 	{
 		if (!World)
@@ -62,6 +64,104 @@ namespace RRCheats
 		return nullptr;
 	}
 
+	bool GrantXP(UWorld* World, float Amount, const TCHAR* Source)
+	{
+		ARRMiner* Miner = FindPlayerMiner(World);
+		URRProgressionComponent* Progression = Miner ? Miner->GetProgression() : nullptr;
+		if (!Progression)
+		{
+			UE_LOG(LogRogueRigs, Warning, TEXT("rr.Cheat.GrantXP (%s): no miner with a progression."), Source);
+			return false;
+		}
+		Progression->AddXP(Amount);
+		UE_LOG(LogRogueRigs, Log, TEXT("rr.Cheat.GrantXP (%s): %.1f raw XP to %s, level %d, XP %.1f / %.1f."),
+			Source, Amount, *Miner->GetName(), Progression->GetLevel(), Progression->GetXP(), Progression->GetXPToNextLevel());
+		return true;
+	}
+
+	/** ASCs that hold one loose State.Invulnerable count added by the invulnerable cheat (both routes). */
+	TArray<TWeakObjectPtr<UAbilitySystemComponent>> InvulnerableASCs;
+
+	int32 SetInvulnerable(UWorld* World, bool bInvulnerable, const TCHAR* Source)
+	{
+		InvulnerableASCs.RemoveAll([](const TWeakObjectPtr<UAbilitySystemComponent>& ASC) { return !ASC.IsValid(); });
+		if (!bInvulnerable)
+		{
+			const int32 Removed = InvulnerableASCs.Num();
+			for (const TWeakObjectPtr<UAbilitySystemComponent>& ASC : InvulnerableASCs)
+			{
+				ASC->RemoveLooseGameplayTag(RRGameplayTags::State_Invulnerable);
+			}
+			InvulnerableASCs.Reset();
+			UE_LOG(LogRogueRigs, Log, TEXT("rr.Cheat.Invulnerable 0 (%s): %d miner(s) vulnerable again."), Source, Removed);
+			return Removed;
+		}
+		if (!World)
+		{
+			UE_LOG(LogRogueRigs, Warning, TEXT("rr.Cheat.Invulnerable (%s): no PIE or game world."), Source);
+			return 0;
+		}
+		int32 Tagged = 0;
+		for (TActorIterator<ARRMiner> It(World); It; ++It)
+		{
+			UAbilitySystemComponent* ASC = It->GetAbilitySystemComponent();
+			if (!ASC)
+			{
+				continue;
+			}
+			if (!InvulnerableASCs.Contains(ASC))
+			{
+				ASC->AddLooseGameplayTag(RRGameplayTags::State_Invulnerable);
+				InvulnerableASCs.Add(ASC);
+			}
+			++Tagged;
+		}
+		UE_LOG(LogRogueRigs, Log, TEXT("rr.Cheat.Invulnerable 1 (%s): %d miner(s) invulnerable."), Source, Tagged);
+		return Tagged;
+	}
+
+	bool ChooseUpgrade(UWorld* World, int32 Index, const TCHAR* Source)
+	{
+		ARRMiner* Miner = FindPlayerMiner(World);
+		URRLevelUpComponent* LevelUp = Miner ? Miner->GetLevelUp() : nullptr;
+		const bool bAccepted = LevelUp && LevelUp->ChooseUpgrade(Index);
+		UE_LOG(LogRogueRigs, Log, TEXT("rr.Cheat.ChooseUpgrade %d (%s): %s."), Index, Source, bAccepted ? TEXT("picked") : TEXT("refused (no screen or bad index)"));
+		return bAccepted;
+	}
+
+	bool Reroll(UWorld* World, const TCHAR* Source)
+	{
+		ARRMiner* Miner = FindPlayerMiner(World);
+		URRLevelUpComponent* LevelUp = Miner ? Miner->GetLevelUp() : nullptr;
+		const bool bAccepted = LevelUp && LevelUp->RequestReroll();
+		UE_LOG(LogRogueRigs, Log, TEXT("rr.Cheat.Reroll (%s): %s."), Source, bAccepted ? TEXT("rerolled") : TEXT("refused (no screen or reroll used)"));
+		return bAccepted;
+	}
+
+	bool SkipToConsole(UWorld* World, const TCHAR* Source)
+	{
+		URRRunFlowSubsystem* RunFlow = World ? World->GetSubsystem<URRRunFlowSubsystem>() : nullptr;
+		const ARRConsole* Console = RunFlow ? RunFlow->SkipToConsole() : nullptr;
+		UE_LOG(LogRogueRigs, Log, TEXT("rr.Cheat.SkipToConsole (%s): %s."), Source, Console ? *FString::Printf(TEXT("console on (%d, %d)"), Console->GetCell().X, Console->GetCell().Y) : TEXT("refused (no run flow, grid, miner or cell)"));
+		return Console != nullptr;
+	}
+
+	bool CompleteConsoleHack(UWorld* World, const TCHAR* Source)
+	{
+		URRRunFlowSubsystem* RunFlow = World ? World->GetSubsystem<URRRunFlowSubsystem>() : nullptr;
+		const bool bDone = RunFlow && RunFlow->CompleteConsoleHack();
+		UE_LOG(LogRogueRigs, Log, TEXT("rr.Cheat.CompleteHack (%s): %s."), Source, bDone ? TEXT("console hacked") : TEXT("refused (no pending console)"));
+		return bDone;
+	}
+
+	bool SkipToExtraction(UWorld* World, const TCHAR* Source)
+	{
+		URRRunFlowSubsystem* RunFlow = World ? World->GetSubsystem<URRRunFlowSubsystem>() : nullptr;
+		const bool bReady = RunFlow && RunFlow->SkipToExtraction();
+		UE_LOG(LogRogueRigs, Log, TEXT("rr.Cheat.SkipToExtraction (%s): %s."), Source, bReady ? TEXT("extraction ready") : TEXT("refused (no run flow, grid or miner)"));
+		return bReady;
+	}
+
 	/** Sets Variable back to Value with the priority of its last setter (a lower priority would be refused); runs the sink once more. */
 	void ResetVariable(IConsoleVariable* Variable, const TCHAR* Value)
 	{
@@ -76,57 +176,14 @@ namespace RRCheats
 		{
 			return;
 		}
-		ARRMiner* Miner = FindPlayerMiner(FindCheatWorld());
-		if (URRProgressionComponent* Progression = Miner ? Miner->GetProgression() : nullptr)
-		{
-			Progression->AddXP(Amount);
-			UE_LOG(LogRogueRigs, Log, TEXT("rr.Cheat.GrantXP: %.1f raw XP to %s, level %d, XP %.1f / %.1f."),
-				Amount, *Miner->GetName(), Progression->GetLevel(), Progression->GetXP(), Progression->GetXPToNextLevel());
-		}
-		else
-		{
-			UE_LOG(LogRogueRigs, Warning, TEXT("rr.Cheat.GrantXP: no miner with a progression in a PIE or game world."));
-		}
+		GrantXP(FindCheatWorld(), Amount, TEXT("rr.Cheat"));
 		ResetVariable(Variable, TEXT("0"));
 	}
 
-	/** ASCs that hold one loose State.Invulnerable count added by rr.Cheat.Invulnerable. */
-	TArray<TWeakObjectPtr<UAbilitySystemComponent>> InvulnerableASCs;
-
-	/**
-	 * rr.Cheat.Invulnerable sink: 1 adds one loose State.Invulnerable count to every miner of the cheat world not tagged yet,
-	 * 0 removes the counts it added. Loose tags are counted, so i-frames and rr.Stress.Peace stay independent.
-	 */
+	/** rr.Cheat.Invulnerable sink: 1 tags every miner of the cheat world, 0 removes the counts the cheat added. */
 	void HandleInvulnerable(IConsoleVariable* Variable)
 	{
-		const bool bInvulnerable = Variable->GetInt() != 0;
-		InvulnerableASCs.RemoveAll([](const TWeakObjectPtr<UAbilitySystemComponent>& ASC) { return !ASC.IsValid(); });
-		if (!bInvulnerable)
-		{
-			for (const TWeakObjectPtr<UAbilitySystemComponent>& ASC : InvulnerableASCs)
-			{
-				ASC->RemoveLooseGameplayTag(RRGameplayTags::State_Invulnerable);
-			}
-			UE_LOG(LogRogueRigs, Log, TEXT("rr.Cheat.Invulnerable 0: %d miner(s) vulnerable again."), InvulnerableASCs.Num());
-			InvulnerableASCs.Reset();
-			return;
-		}
-		UWorld* World = FindCheatWorld();
-		if (!World)
-		{
-			UE_LOG(LogRogueRigs, Warning, TEXT("rr.Cheat.Invulnerable: no PIE or game world."));
-			return;
-		}
-		for (TActorIterator<ARRMiner> It(World); It; ++It)
-		{
-			UAbilitySystemComponent* ASC = It->GetAbilitySystemComponent();
-			if (ASC && !InvulnerableASCs.Contains(ASC))
-			{
-				ASC->AddLooseGameplayTag(RRGameplayTags::State_Invulnerable);
-				InvulnerableASCs.Add(ASC);
-			}
-		}
-		UE_LOG(LogRogueRigs, Log, TEXT("rr.Cheat.Invulnerable 1: %d miner(s) invulnerable."), InvulnerableASCs.Num());
+		SetInvulnerable(FindCheatWorld(), Variable->GetInt() != 0, TEXT("rr.Cheat"));
 	}
 
 	/** rr.Cheat.ChooseUpgrade sink: a value >= 0 picks that card of the open level-up screen, then the variable returns to -1. */
@@ -137,10 +194,7 @@ namespace RRCheats
 		{
 			return;
 		}
-		ARRMiner* Miner = FindPlayerMiner(FindCheatWorld());
-		URRLevelUpComponent* LevelUp = Miner ? Miner->GetLevelUp() : nullptr;
-		const bool bAccepted = LevelUp && LevelUp->ChooseUpgrade(Index);
-		UE_LOG(LogRogueRigs, Log, TEXT("rr.Cheat.ChooseUpgrade %d: %s."), Index, bAccepted ? TEXT("picked") : TEXT("refused (no screen or bad index)"));
+		ChooseUpgrade(FindCheatWorld(), Index, TEXT("rr.Cheat"));
 		ResetVariable(Variable, TEXT("-1"));
 	}
 
@@ -151,10 +205,47 @@ namespace RRCheats
 		{
 			return;
 		}
-		ARRMiner* Miner = FindPlayerMiner(FindCheatWorld());
-		URRLevelUpComponent* LevelUp = Miner ? Miner->GetLevelUp() : nullptr;
-		const bool bAccepted = LevelUp && LevelUp->RequestReroll();
-		UE_LOG(LogRogueRigs, Log, TEXT("rr.Cheat.Reroll: %s."), bAccepted ? TEXT("rerolled") : TEXT("refused (no screen or reroll used)"));
+		Reroll(FindCheatWorld(), TEXT("rr.Cheat"));
+		ResetVariable(Variable, TEXT("0"));
+	}
+
+	/** rr.Cheat.AlertSpeed sink: writes the multiplier into the URRCheatSettings default object (read by the run flow). */
+	void HandleAlertSpeed(IConsoleVariable* Variable)
+	{
+		GetMutableDefault<URRCheatSettings>()->AlertSpeedMultiplier = Variable->GetFloat();
+		UE_LOG(LogRogueRigs, Log, TEXT("rr.Cheat.AlertSpeed (rr.Cheat): alert gain x%.2f."), Variable->GetFloat());
+	}
+
+	/** rr.Cheat.SkipToConsole sink: 1 drops the console now, then the variable returns to 0. */
+	void HandleSkipToConsole(IConsoleVariable* Variable)
+	{
+		if (Variable->GetInt() == 0)
+		{
+			return;
+		}
+		SkipToConsole(FindCheatWorld(), TEXT("rr.Cheat"));
+		ResetVariable(Variable, TEXT("0"));
+	}
+
+	/** rr.Cheat.CompleteHack sink: 1 completes the pending console, then the variable returns to 0. */
+	void HandleCompleteHack(IConsoleVariable* Variable)
+	{
+		if (Variable->GetInt() == 0)
+		{
+			return;
+		}
+		CompleteConsoleHack(FindCheatWorld(), TEXT("rr.Cheat"));
+		ResetVariable(Variable, TEXT("0"));
+	}
+
+	/** rr.Cheat.SkipToExtraction sink: 1 completes the objective and fills the alert, then the variable returns to 0. */
+	void HandleSkipToExtraction(IConsoleVariable* Variable)
+	{
+		if (Variable->GetInt() == 0)
+		{
+			return;
+		}
+		SkipToExtraction(FindCheatWorld(), TEXT("rr.Cheat"));
 		ResetVariable(Variable, TEXT("0"));
 	}
 
@@ -173,4 +264,20 @@ namespace RRCheats
 	TAutoConsoleVariable<int32> CVarReroll(TEXT("rr.Cheat.Reroll"), 0,
 		TEXT("Set to 1: rerolls the open level-up screen (as the Relancer button), then resets to 0."),
 		FConsoleVariableDelegate::CreateStatic(&HandleReroll), ECVF_Cheat);
+
+	TAutoConsoleVariable<float> CVarAlertSpeed(TEXT("rr.Cheat.AlertSpeed"), 1.f,
+		TEXT("Alert gain multiplier (time and kills); writes URRCheatSettings::AlertSpeedMultiplier. 1 = normal."),
+		FConsoleVariableDelegate::CreateStatic(&HandleAlertSpeed), ECVF_Cheat);
+
+	TAutoConsoleVariable<int32> CVarSkipToConsole(TEXT("rr.Cheat.SkipToConsole"), 0,
+		TEXT("Set to 1: the alert jumps to the console threshold and the console drops now, then resets to 0."),
+		FConsoleVariableDelegate::CreateStatic(&HandleSkipToConsole), ECVF_Cheat);
+
+	TAutoConsoleVariable<int32> CVarCompleteHack(TEXT("rr.Cheat.CompleteHack"), 0,
+		TEXT("Set to 1: the pending console is hacked at once (alert resumes), then resets to 0."),
+		FConsoleVariableDelegate::CreateStatic(&HandleCompleteHack), ECVF_Cheat);
+
+	TAutoConsoleVariable<int32> CVarSkipToExtraction(TEXT("rr.Cheat.SkipToExtraction"), 0,
+		TEXT("Set to 1: completes or skips the console and fills the alert (extraction ready), then resets to 0."),
+		FConsoleVariableDelegate::CreateStatic(&HandleSkipToExtraction), ECVF_Cheat);
 }

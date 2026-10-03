@@ -4,6 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/GameModeBase.h"
+#include "Objectives/RRRunFlowConfig.h"
 #include "RRGameMode.generated.h"
 
 class ARRMiner;
@@ -18,6 +19,8 @@ DECLARE_DYNAMIC_MULTICAST_DELEGATE(FRROnGameOverSignature);
  * Game over: each miner registers itself at BeginPlay (RegisterMiner). On the first miner death the game mode
  * disables the input of the miner's player controller, broadcasts OnGameOver once and arms a timer that reopens
  * the current level after RestartDelay seconds.
+ * Run flow: RunFlowConfig holds the alert and console tunables read by URRRunFlowSubsystem (set ConsoleClass to the console
+ * Blueprint here).
  */
 UCLASS(Abstract)
 class ROGUERIGS_API ARRGameMode : public AGameModeBase
@@ -40,6 +43,9 @@ public:
 	UFUNCTION(BlueprintPure, Category = "Run")
 	float GetRestartTimeRemaining() const;
 
+	/** Tunables of the level run flow (alert bar, console drop); read once by URRRunFlowSubsystem. */
+	const FRRRunFlowConfig& GetRunFlowConfig() const { return RunFlowConfig; }
+
 	/** Broadcast once at the game over, after the player input is disabled. The HUD widget binds to it. */
 	UPROPERTY(BlueprintAssignable, Category = "Run")
 	FRROnGameOverSignature OnGameOver;
@@ -58,6 +64,10 @@ protected:
 	/** Seconds between the game over and the level restart (miner gdd, M1: 3 s). */
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Run", meta = (ClampMin = 0.1, Units = "s"))
 	float RestartDelay = 3.f;
+
+	/** Alert and console tunables of the run flow (level-flow M1 defaults); ConsoleClass = the console Blueprint. */
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Run|Flow")
+	FRRRunFlowConfig RunFlowConfig;
 
 	/** True once the game over happened; guards against a second game over. */
 	bool bGameOver = false;

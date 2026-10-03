@@ -7,6 +7,7 @@
 #include "UObject/WeakObjectPtr.h"
 #include "Engine/HitResult.h"
 #include "Grid/RRArenaGrid.h"
+#include "Objectives/RRConsole.h"
 #include "Pickups/RRPickup.h"
 #include "Upgrades/RRUpgradeCard.h"
 #include "RRTestEventRecorder.generated.h"
@@ -61,6 +62,14 @@ public:
 	UFUNCTION()
 	void HandleGameOver() { ++GameOverCount; }
 
+	/** Bind to URRRunFlowSubsystem::OnExtractionReady: counts broadcasts. */
+	UFUNCTION()
+	void HandleExtractionReady() { ++ExtractionReadyCount; }
+
+	/** Bind to ARRConsole::OnConsoleStateChanged: appends the new state. */
+	UFUNCTION()
+	void HandleConsoleStateChanged(ARRConsole* Console, ERRConsoleState NewState) { ConsoleStates.Add(NewState); }
+
 	/** Bind to URRExplosionSubsystem::OnExplosion: appends the row name and the center. */
 	UFUNCTION()
 	void HandleExplosion(FVector Center, FName RowName) { ExplosionRows.Add(RowName); ExplosionCenters.Add(Center); }
@@ -114,6 +123,12 @@ public:
 
 	/** Number of OnGameOver broadcasts received through HandleGameOver. */
 	int32 GetGameOverCount() const { return GameOverCount; }
+
+	/** Number of OnExtractionReady broadcasts received through HandleExtractionReady. */
+	int32 GetExtractionReadyCount() const { return ExtractionReadyCount; }
+
+	/** Console states received through HandleConsoleStateChanged, in order. */
+	const TArray<ERRConsoleState>& GetConsoleStates() const { return ConsoleStates; }
 
 	/** Sets the ASC whose Ammo is sampled when a reload finishes (the weapon ASC). */
 	void SetAmmoSource(UAbilitySystemComponent* InAmmoSource) { AmmoSource = InAmmoSource; }
@@ -190,6 +205,12 @@ protected:
 
 	/** Game over broadcasts received so far. */
 	int32 GameOverCount = 0;
+
+	/** Extraction-ready broadcasts received so far. */
+	int32 ExtractionReadyCount = 0;
+
+	/** Console states received so far. */
+	TArray<ERRConsoleState> ConsoleStates;
 
 	/** ASC sampled by HandleReloadFinished. */
 	TWeakObjectPtr<UAbilitySystemComponent> AmmoSource;

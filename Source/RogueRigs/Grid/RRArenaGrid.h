@@ -211,6 +211,28 @@ public:
 	UFUNCTION(BlueprintCallable, Category = "Grid|Destruction")
 	void SetCellShaking(FIntPoint Cell, bool bShaking);
 
+	/**
+	 * Marks or unmarks the block in Cell as an objective rock (console marked rocks, pulsing white outline). Writes
+	 * MarkedCustomDataValue / 0 into per-instance custom data float MarkedCustomDataIndex of the block's rendering HISM (a
+	 * material reads it with PerInstanceCustomData), then calls OnCellMarkedChanged. Marking is refused on cells without a
+	 * block; a destroyed marked block is unmarked by DestroyCell (event called with bMarked false). Returns true when the
+	 * mark changed.
+	 */
+	UFUNCTION(BlueprintCallable, Category = "Grid|Objectives")
+	bool SetCellMarked(FIntPoint Cell, bool bMarked);
+
+	/** True while the block in Cell is marked (SetCellMarked). */
+	UFUNCTION(BlueprintPure, Category = "Grid|Objectives")
+	bool IsCellMarked(FIntPoint Cell) const { return MarkedCells.Contains(Cell); }
+
+	/** Every marked cell, in no particular order. */
+	UFUNCTION(BlueprintPure, Category = "Grid|Objectives")
+	TArray<FIntPoint> GetMarkedCells() const { return MarkedCells.Array(); }
+
+	/** Index of the per-instance custom data float that holds the marked flag on every block HISM. */
+	UFUNCTION(BlueprintPure, Category = "Grid|Objectives")
+	int32 GetMarkedCustomDataIndex() const { return MarkedCustomDataIndex; }
+
 	/** Broadcast each time a block takes terrain damage (ApplyTerrainDamage), before a possible destruction. */
 	UPROPERTY(BlueprintAssignable, Category = "Grid|Destruction")
 	FRROnCellDamagedSignature OnCellDamaged;
@@ -222,6 +244,17 @@ public:
 protected:
 	/** Rebuilds the grid from the layout so play starts from a fresh, fully indexed state (placed actors do not rerun construction in PIE or cooked builds). */
 	virtual void BeginPlay() override;
+
+	/**
+	 * Display event: the block in Cell was marked or unmarked (SetCellMarked, or a marked block destroyed). CellCenter is the
+	 * world center of the cell on the floor. Implement in Blueprint for an outline that is not driven by the instance custom
+	 * data (e.g. spawn and remove an outline mesh).
+	 */
+	UFUNCTION(BlueprintImplementableEvent, Category = "Grid|Objectives")
+	void OnCellMarkedChanged(FIntPoint Cell, bool bMarked, FVector CellCenter);
+
+	/** Writes Value into the marked custom data float of the rendering instance of the block in Cell (no-op without one). */
+	void WriteMarkedCustomData(FIntPoint Cell, float Value);
 
 	/** Loads the layout and builds instances, or clears everything when loading fails. */
 	void RebuildFromLayout();
@@ -390,6 +423,14 @@ protected:
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Grid|Drops", meta = (ClampMin = "0"))
 	int32 DestroyDropCount = 3;
 
+	/** Per-instance custom data float of the block HISMs that holds the marked flag (each block HISM gets index + 1 floats). */
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Grid|Objectives", meta = (ClampMin = "0", ClampMax = "7"))
+	int32 MarkedCustomDataIndex = 0;
+
+	/** Value written into the marked custom data float of a marked block (0 when unmarked). */
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Grid|Objectives")
+	float MarkedCustomDataValue = 1.f;
+
 	// --- Visuals per type (assigned in the derived Blueprint) ---
 
 	/** Mesh of the floor slab under every open (non-void, non-block) cell. */
@@ -534,4 +575,7 @@ protected:
 
 	/** Cells whose block is currently shaking, with a per-cell phase so neighbors do not move in lockstep. */
 	TMap<FIntPoint, float> ShakingCells;
+
+	/** Block cells marked as objective rocks (SetCellMarked). Reset on rebuild; a destroyed block leaves the set. */
+	TSet<FIntPoint> MarkedCells;
 };

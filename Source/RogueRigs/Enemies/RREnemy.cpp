@@ -16,6 +16,7 @@
 #include "GAS/RRGameplayTags.h"
 #include "GAS/RRHealthAttributeSet.h"
 #include "GAS/RRMovementAttributeSet.h"
+#include "Objectives/RRRunFlowSubsystem.h"
 #include "Pickups/RRPickup.h"
 #include "Player/RRMiner.h"
 #include "Projectiles/RRCollisionChannels.h"
@@ -218,6 +219,12 @@ void ARREnemy::HandleDeath(AActor* DeathInstigator)
 	SetMeshesVisible(true);
 
 	UE_LOG(LogRogueRigs, Log, TEXT("%s died (instigator: %s)."), *GetName(), *GetNameSafe(DeathInstigator));
+
+	// Kills feed the alert bar (a kamikaze's own fuse does not count: the run flow ignores self-instigated deaths).
+	if (URRRunFlowSubsystem* RunFlow = GetWorld() ? GetWorld()->GetSubsystem<URRRunFlowSubsystem>() : nullptr)
+	{
+		RunFlow->NotifyEnemyKilled(this, DeathInstigator);
+	}
 }
 
 void ARREnemy::UpdateDeath(float DeltaSeconds)

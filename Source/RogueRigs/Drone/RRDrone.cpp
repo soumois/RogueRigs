@@ -1,4 +1,4 @@
-// Rogue Rigs - the helper drone: separate actor spawned by the miner; orbits it and cuts blocks with a laser (dig). Hack declared, not implemented.
+// Rogue Rigs - the helper drone: separate actor spawned by the miner; orbits it, cuts blocks with a laser (dig) and links to an objective (hack).
 
 #include "Drone/RRDrone.h"
 
@@ -41,6 +41,10 @@ void ARRDrone::SetOwnerMiner(ARRMiner* NewOwnerMiner)
 		StopDig();
 		State = ERRDroneState::Orbit;
 	}
+	else if (State == ERRDroneState::Hack)
+	{
+		EndHack();
+	}
 
 	if (OwnerMiner)
 	{
@@ -67,10 +71,19 @@ bool ARRDrone::SetState(ERRDroneState NewState)
 		{
 			StopDig();
 		}
+		else if (State == ERRDroneState::Hack)
+		{
+			EndHack();
+		}
 		State = ERRDroneState::Orbit;
 		return true;
 
 	case ERRDroneState::Dig:
+		if (State == ERRDroneState::Hack)
+		{
+			UE_LOG(LogRogueRigs, Warning, TEXT("%s: cannot dig while hacking %s."), *GetName(), *GetNameSafe(HackTarget));
+			return false;
+		}
 		if (!IsValid(OwnerMiner) || !IsValid(DigGrid) || !DigGrid->IsBlockCell(DigCell))
 		{
 			UE_LOG(LogRogueRigs, Warning, TEXT("%s: cannot enter Dig without a miner and a block target (use RequestDig); staying in %s."),
@@ -86,15 +99,50 @@ bool ARRDrone::SetState(ERRDroneState NewState)
 
 	case ERRDroneState::Hack:
 	default:
-		UE_LOG(LogRogueRigs, Warning, TEXT("%s: drone state %s is not implemented yet; staying in %s."),
+		if (State == NewState)
+		{
+			return true;
+		}
+		UE_LOG(LogRogueRigs, Warning, TEXT("%s: state %s is entered through StartHack; staying in %s."),
 			*GetName(), *UEnum::GetValueAsString(NewState), *UEnum::GetValueAsString(State));
 		return false;
 	}
 }
 
+bool ARRDrone::StartHack(AActor* Target)
+{
+	if (!IsValid(OwnerMiner) || !IsValid(Target))
+	{
+		return false;
+	}
+	if (State == ERRDroneState::Hack)
+	{
+		// One target at a time.
+		return HackTarget == Target;
+	}
+	if (State == ERRDroneState::Dig)
+	{
+		StopDig();
+	}
+	HackTarget = Target;
+	State = ERRDroneState::Hack;
+	UE_LOG(LogRogueRigs, Verbose, TEXT("%s: hacking %s."), *GetName(), *Target->GetName());
+	return true;
+}
+
+void ARRDrone::StopHack(AActor* Target)
+{
+	if (State == ERRDroneState::Hack && HackTarget == Target)
+	{
+		EndHack();
+		State = ERRDroneState::Orbit;
+	}
+}
+
 bool ARRDrone::RequestDig(ARRArenaGrid* Grid, FIntPoint Cell, FIntPoint MinerSide)
 {
-	if (!IsValid(OwnerMiner) || !IsValid(Grid) || !Grid->IsBlockCell(Cell))
+	// The drone cannot dig and hack at the same time: the objective releases it first.
+	if (State == ERRDroneState::Hack || !IsValid(OwnerMiner) || !IsValid(Grid) || !Grid->IsBlockCell(Cell))
 	{
 		return false;
 	}
@@ -143,7 +191,7 @@ void ARRDrone::Tick(float DeltaSeconds)
 		TickDig(DeltaSeconds);
 		break;
 	case ERRDroneState::Hack:
-		// Not implemented yet (SetState refuses it).
+		TickHack(DeltaSeconds);
 		break;
 	}
 }
@@ -153,6 +201,11 @@ void ARRDrone::EndPlay(const EEndPlayReason::Type EndPlayReason)
 	if (State == ERRDroneState::Dig)
 	{
 		StopDig();
+		State = ERRDroneState::Orbit;
+	}
+	else if (State == ERRDroneState::Hack)
+	{
+		EndHack();
 		State = ERRDroneState::Orbit;
 	}
 
@@ -239,6 +292,37 @@ void ARRDrone::StopDig()
 	DigCell = FIntPoint(-1, -1);
 	DigSide = FIntPoint(0, 0);
 
+	ResumeOrbitFromCurrentAngle();
+}
+
+void ARRDrone::TickHack(float DeltaSeconds)
+{
+	if (!IsValid(OwnerMiner) || !IsValid(HackTarget))
+	{
+		EndHack();
+		State = ERRDroneState::Orbit;
+		return;
+	}
+
+	const FVector MinerLocation = OwnerMiner->GetActorLocation();
+	const double FloorZ = MinerLocation.Z - OwnerMiner->GetCapsuleComponent()->GetScaledCapsuleHalfHeight();
+	const FVector TargetLocation = HackTarget->GetActorLocation();
+	const FVector TowardMiner = (MinerLocation - TargetLocation).GetSafeNormal2D();
+	const FVector HoverPoint = TargetLocation + TowardMiner * HackHoverDistance;
+
+	SetActorLocation(FMath::VInterpTo(GetActorLocation(), FVector(HoverPoint.X, HoverPoint.Y, FloorZ + HoverHeight), DeltaSeconds, FollowInterpSpeed));
+	UpdateLaser(GetActorLocation(), TargetLocation + HackLinkOffset);
+}
+
+void ARRDrone::EndHack()
+{
+	LaserMesh->SetVisibility(false);
+	HackTarget = nullptr;
+	ResumeOrbitFromCurrentAngle();
+}
+
+void ARRDrone::ResumeOrbitFromCurrentAngle()
+{
 	// Resume the orbit from where the drone is, so it does not cut across the miner.
 	if (IsValid(OwnerMiner))
 	{

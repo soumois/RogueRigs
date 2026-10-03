@@ -1,9 +1,10 @@
-// Rogue Rigs - base class of the in-run HUD widget: health, XP, level-up, upgrade choice and game-over events fed by C++.
+// Rogue Rigs - base class of the in-run HUD widget: health, XP, level-up, upgrade choice, alert bar, objective and game-over events fed by C++.
 
 #pragma once
 
 #include "CoreMinimal.h"
 #include "Blueprint/UserWidget.h"
+#include "Objectives/RRConsole.h"
 #include "Upgrades/RRUpgradeCard.h"
 #include "RRHUDWidget.generated.h"
 
@@ -11,6 +12,7 @@ class ARRGameMode;
 class ARRMiner;
 class URRLevelUpComponent;
 class URRProgressionComponent;
+class URRRunFlowSubsystem;
 class UAbilitySystemComponent;
 struct FOnAttributeChangeData;
 
@@ -21,7 +23,8 @@ struct FOnAttributeChangeData;
  * OnHealthChanged, OnXPChanged, OnLevelUp, OnUpgradeOfferShown, OnUpgradeOfferClosed and OnGameOver, and calls
  * ChooseUpgrade / RequestReroll from its card and reroll buttons (forwarded to the level-up component).
  * OnHealthChanged is never called with Max <= 0 and OnXPChanged never with Needed <= 0, so the Blueprint can divide by
- * them. No gameplay logic.
+ * them. Run flow (BindToRunFlow, URRRunFlowSubsystem): OnAlertChanged, OnObjectiveChanged, OnObjectiveProgressChanged and
+ * OnExtractionReady. No gameplay logic.
  */
 UCLASS(Abstract)
 class ROGUERIGS_API URRHUDWidget : public UUserWidget
@@ -37,6 +40,12 @@ public:
 
 	/** Listens to GameMode's OnGameOver (replaces a previous game mode). Null unbinds. */
 	void BindToGameMode(ARRGameMode* GameMode);
+
+	/**
+	 * Listens to the run flow's alert, objective, progress and extraction events (replaces a previous one), then pushes the
+	 * current alert and objective once. Null unbinds.
+	 */
+	void BindToRunFlow(URRRunFlowSubsystem* RunFlow);
 
 	/**
 	 * Card button: picks card Index (0-based, order of OnUpgradeOfferShown's Cards) through the bound miner's
@@ -84,6 +93,42 @@ protected:
 	UFUNCTION(BlueprintImplementableEvent, Category = "HUD")
 	void OnGameOver();
 
+	/** Display event: the alert bar value (0..1) or its paused flag (a mandatory objective is pending) changed; also on binding. Implement in Blueprint. */
+	UFUNCTION(BlueprintImplementableEvent, Category = "HUD|Run")
+	void OnAlertChanged(float Alert, bool bPaused);
+
+	/**
+	 * Display event: the objective changed (also on binding). bActive is false while no console exists (hide the objective
+	 * panel); State Locked = destroy the marked rocks (MarkedRocksLeft of MarkedRocksTotal), Idle = go to the console, Hacking =
+	 * stay in the zone, Complete = hacked. Implement in Blueprint (the text lives there).
+	 */
+	UFUNCTION(BlueprintImplementableEvent, Category = "HUD|Run")
+	void OnObjectiveChanged(bool bActive, ERRConsoleState State, int32 MarkedRocksLeft, int32 MarkedRocksTotal);
+
+	/** Display event: the console hack progress (0..1) or hacking flag changed. Implement in Blueprint. */
+	UFUNCTION(BlueprintImplementableEvent, Category = "HUD|Run")
+	void OnObjectiveProgressChanged(float Progress, bool bHacking);
+
+	/** Display event: the alert bar is full and no objective is pending (extraction starts). Implement in Blueprint. */
+	UFUNCTION(BlueprintImplementableEvent, Category = "HUD|Run")
+	void OnExtractionReady();
+
+	/** Run flow OnAlertChanged callback. */
+	UFUNCTION()
+	void HandleAlertChanged(float Alert, bool bPaused);
+
+	/** Run flow OnObjectiveChanged callback: calls OnObjectiveChanged with bActive = Console is valid. */
+	UFUNCTION()
+	void HandleObjectiveChanged(ARRConsole* Console, ERRConsoleState State, int32 MarkedRocksLeft, int32 MarkedRocksTotal);
+
+	/** Run flow OnObjectiveProgressChanged callback. */
+	UFUNCTION()
+	void HandleObjectiveProgressChanged(float Progress, bool bHacking);
+
+	/** Run flow OnExtractionReady callback. */
+	UFUNCTION()
+	void HandleExtractionReady();
+
 	/** ASC callback for Health and MaxHealth: forwards the current values to OnHealthChanged. */
 	void HandleHealthAttributeChanged(const FOnAttributeChangeData& ChangeData);
 
@@ -124,6 +169,9 @@ protected:
 
 	/** Game mode whose OnGameOver is bound. */
 	TWeakObjectPtr<ARRGameMode> BoundGameMode;
+
+	/** Run flow whose events are bound. */
+	TWeakObjectPtr<URRRunFlowSubsystem> BoundRunFlow;
 
 	/** Handle of the Health change binding on BoundASC. */
 	FDelegateHandle HealthChangedHandle;

@@ -1,4 +1,4 @@
-// Rogue Rigs - the helper drone: separate actor spawned by the miner; orbits it and cuts blocks with a laser (dig). Hack declared, not implemented.
+// Rogue Rigs - the helper drone: separate actor spawned by the miner; orbits it, cuts blocks with a laser (dig) and links to an objective (hack).
 
 #pragma once
 
@@ -10,7 +10,7 @@ class ARRArenaGrid;
 class ARRMiner;
 class UStaticMeshComponent;
 
-/** What the drone is doing. Orbit and Dig have a behaviour; Hack is added by a later task. */
+/** What the drone is doing. */
 UENUM(BlueprintType)
 enum class ERRDroneState : uint8
 {
@@ -18,7 +18,7 @@ enum class ERRDroneState : uint8
 	Orbit,
 	/** Hovers beside the block the miner pushed into and cuts it with the laser. */
 	Dig,
-	/** Links to a console or bonus chest inside an objective zone (not implemented yet). */
+	/** Links to a console (or later a bonus chest) inside its objective zone: StartHack / StopHack, driven by the objective. */
 	Hack
 };
 
@@ -32,6 +32,10 @@ enum class ERRDroneState : uint8
  * of terrain damage to the block each tick, keeps it shaking, and shows LaserMesh from itself to the face
  * center. It returns to Orbit when the block is gone or the miner is farther than DigCancelDistanceCells
  * cells from the block center; damage done stays on the block.
+ * Hack (StartHack, called every tick by the objective while the miner is in its zone): the drone stops any dig, hovers
+ * HackHoverDistance from the target toward the miner (same HoverHeight) and shows LaserMesh from itself to the target's
+ * location + HackLinkOffset. One target at a time; RequestDig is refused while hacking. StopHack (or the target or miner
+ * gone) returns it to Orbit. The objective owns the hack progress.
  * The drone has no ASC: it reads MiningSpeed on the miner's ASC. Its meshes never collide.
  * Subclass in Blueprint for the drone mesh and the laser mesh and material.
  */
@@ -61,7 +65,7 @@ public:
 
 	/**
 	 * Requests a state change. Orbit is always accepted (stops any dig). Dig is accepted only when a dig
-	 * target is set and still holds a block (use RequestDig to set one). Hack is not implemented and refused.
+	 * target is set and still holds a block (use RequestDig to set one). Hack is refused here: use StartHack.
 	 * Refusals are logged. Returns true when the drone is in the requested state afterwards.
 	 */
 	UFUNCTION(BlueprintCallable, Category = "Drone")
@@ -71,10 +75,27 @@ public:
 	 * Asks the drone to cut the block in Cell of Grid. MinerSide is the unit grid step from the block toward
 	 * the miner (the face the laser hits and the side the drone hovers on). Called every tick by the miner
 	 * while it pushes into the block: the same cell only refreshes MinerSide; another cell switches the target
-	 * (the old block stops shaking, keeps its damage). Returns false when Cell holds no block or there is no miner.
+	 * (the old block stops shaking, keeps its damage). Returns false when Cell holds no block, there is no miner, or the
+	 * drone is hacking (it cannot dig and hack at once).
 	 */
 	UFUNCTION(BlueprintCallable, Category = "Drone|Dig")
 	bool RequestDig(ARRArenaGrid* Grid, FIntPoint Cell, FIntPoint MinerSide);
+
+	/**
+	 * Links the drone to Target (an objective actor) and enters Hack: stops a dig in progress. Called every tick by the
+	 * objective while the miner is inside its zone; the same target again just returns true. Refused (false) without a miner
+	 * or target, or while hacking another target (one target at a time).
+	 */
+	UFUNCTION(BlueprintCallable, Category = "Drone|Hack")
+	bool StartHack(AActor* Target);
+
+	/** Leaves Hack if Target is the current hack target (the miner left the zone or the hack completed): back to Orbit. */
+	UFUNCTION(BlueprintCallable, Category = "Drone|Hack")
+	void StopHack(AActor* Target);
+
+	/** Objective the drone is hacking; null outside Hack. */
+	UFUNCTION(BlueprintPure, Category = "Drone|Hack")
+	AActor* GetHackTarget() const { return HackTarget; }
 
 	/** Cell being cut; meaningful only while GetState() is Dig. */
 	UFUNCTION(BlueprintPure, Category = "Drone|Dig")
@@ -84,7 +105,7 @@ public:
 	UFUNCTION(BlueprintPure, Category = "Drone")
 	float GetMiningSpeed() const;
 
-	/** Runs the behaviour of the current state (Orbit: moves along the orbit; Dig: hovers, cuts, draws the laser). */
+	/** Runs the behaviour of the current state (Orbit: moves along the orbit; Dig: hovers, cuts, draws the laser; Hack: hovers, draws the link). */
 	virtual void Tick(float DeltaSeconds) override;
 
 protected:
@@ -96,6 +117,15 @@ protected:
 
 	/** Dig tick: checks the cancel rules, moves to the hover point, damages the block and updates the laser. */
 	void TickDig(float DeltaSeconds);
+
+	/** Hack tick: back to Orbit when the target or miner is gone, else moves to the hack hover point and draws the link. */
+	void TickHack(float DeltaSeconds);
+
+	/** Leaves Hack: hides the laser, clears the target and resumes the orbit from the drone's current angle. */
+	void EndHack();
+
+	/** Sets the orbit angle to the drone's current angle around the miner, so the orbit resumes where the drone is. */
+	void ResumeOrbitFromCurrentAngle();
 
 	/** World position of the orbit point for the current angle around the owner miner. Requires a valid miner. */
 	FVector ComputeOrbitPoint() const;
@@ -157,6 +187,14 @@ protected:
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Drone|Laser", meta = (ClampMin = 0.01, Units = "cm"))
 	float LaserMeshBaseDiameter = 100.f;
 
+	/** Horizontal distance of the hack hover point from the target, toward the miner, in uu (provisional). */
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Drone|Hack", meta = (ClampMin = 0, Units = "cm"))
+	float HackHoverDistance = 100.f;
+
+	/** Offset from the hack target's location to the point the link beam aims at, in uu (provisional). */
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Drone|Hack")
+	FVector HackLinkOffset = FVector(0.f, 0.f, 50.f);
+
 	/** Miner the drone follows. Set by SetOwnerMiner. */
 	UPROPERTY(VisibleInstanceOnly, BlueprintReadOnly, Category = "Drone")
 	TObjectPtr<ARRMiner> OwnerMiner;
@@ -176,6 +214,10 @@ protected:
 	/** Unit grid step from the dig cell toward the miner: the face the laser hits. */
 	UPROPERTY(VisibleInstanceOnly, BlueprintReadOnly, Category = "Drone|Dig")
 	FIntPoint DigSide = FIntPoint(0, 0);
+
+	/** Objective being hacked. Set by StartHack, cleared by EndHack. */
+	UPROPERTY(VisibleInstanceOnly, BlueprintReadOnly, Category = "Drone|Hack")
+	TObjectPtr<AActor> HackTarget;
 
 	/** Current orbit angle in radians, in [0, 2*pi). */
 	float OrbitAngle = 0.f;

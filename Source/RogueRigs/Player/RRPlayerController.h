@@ -31,7 +31,7 @@ public:
 	URRHUDWidget* GetHUDWidget() const { return HUDWidget; }
 
 protected:
-	/** Local player only: creates HUDWidgetClass, adds it to the viewport and binds it to the game mode and the possessed miner. */
+	/** Local player only: creates HUDWidgetClass, adds it to the viewport and binds it to the game mode, the possessed miner and the run flow. */
 	virtual void BeginPlay() override;
 
 	/** Rebinds the HUD widget to the newly possessed miner. */

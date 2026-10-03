@@ -1,4 +1,4 @@
-// Rogue Rigs - automation test of the cheat console variables (RogueRigs.Cheats.*): rr.Cheat.GrantXP, Reroll, ChooseUpgrade, Invulnerable.
+// Rogue Rigs - automation tests of the cheats (RogueRigs.Cheats.*): rr.Cheat.* console variables and the polled URRCheatSettings property route.
 
 #include "CoreMinimal.h"
 #include "Misc/AutomationTest.h"
@@ -6,6 +6,9 @@
 #if WITH_DEV_AUTOMATION_TESTS
 
 #include "AbilitySystemComponent.h"
+#include "Debug/RRCheatSettings.h"
+#include "Misc/ScopeExit.h"
+#include "Objectives/RRRunFlowSubsystem.h"
 #include "GAS/RRGameplayTags.h"
 #include "HAL/IConsoleManager.h"
 #include "Progression/RRLevelUpComponent.h"
@@ -114,6 +117,128 @@ bool FRRCheatConsoleVariablesTest::RunTest(const FString& Parameters)
 	TestEqual(TEXT("Invulnerable 1 twice: one count"), ASC->GetGameplayTagCount(RRGameplayTags::State_Invulnerable), CountBefore + 1);
 	SetCheat(*this, TEXT("rr.Cheat.Invulnerable"), TEXT("0"));
 	TestEqual(TEXT("Invulnerable 0: count back"), ASC->GetGameplayTagCount(RRGameplayTags::State_Invulnerable), CountBefore);
+	return true;
+}
+
+IMPLEMENT_SIMPLE_AUTOMATION_TEST(FRRCheatPropertyRouteTest, "RogueRigs.Cheats.PropertyRoute",
+	EAutomationTestFlags::EditorContext | EAutomationTestFlags::EngineFilter)
+
+bool FRRCheatPropertyRouteTest::RunTest(const FString& Parameters)
+{
+	using namespace RRTestHarness;
+
+	// The default object outlives the test: always put it back to neutral values.
+	URRCheatSettings* Settings = GetMutableDefault<URRCheatSettings>();
+	auto ResetSettings = [Settings]()
+	{
+		Settings->GrantXP = 0.f;
+		Settings->bInvulnerable = false;
+		Settings->ChooseUpgrade = -1;
+		Settings->bReroll = false;
+		Settings->AlertSpeedMultiplier = 1.f;
+		Settings->bSkipToConsole = false;
+		Settings->bCompleteConsoleHack = false;
+		Settings->bSkipToExtraction = false;
+	};
+	ResetSettings();
+	ON_SCOPE_EXIT { ResetSettings(); };
+
+	FTestWorld TestWorld(TEXT("RRCheatPropertyWorld"));
+	TStrongObjectPtr<URRTestEventRecorder> Recorder(NewObject<URRTestEventRecorder>());
+	ARRArenaGrid* Grid = SpawnGrid(*this, TestWorld);
+	ARRMiner* Miner = Grid ? SpawnMiner(*this, TestWorld, Grid, RockWestFloorCell) : nullptr;
+	URRRunFlowSubsystem* RunFlow = TestWorld.Get()->GetSubsystem<URRRunFlowSubsystem>();
+	if (!Miner || !TestNotNull(TEXT("run flow"), RunFlow) || !TestNotNull(TEXT("level-up flow"), Miner->GetLevelUp()))
+	{
+		return false;
+	}
+	for (ARRWeapon* Weapon : Miner->GetWeapons())
+	{
+		if (IsValid(Weapon) && Weapon->GetAutoFireComponent())
+		{
+			Weapon->GetAutoFireComponent()->StopFiring();
+		}
+	}
+	RunFlow->SetConfig(FRRRunFlowConfig());
+	RunFlow->SetRandomSeed(20261003);
+	URRProgressionComponent* Progression = Miner->GetProgression();
+	URRLevelUpComponent* LevelUp = Miner->GetLevelUp();
+	Miner->GetUpgrades()->SetRandomSeed(20261003);
+	LevelUp->OnUpgradeOfferShown.AddDynamic(Recorder.Get(), &URRTestEventRecorder::HandleUpgradeOfferShown);
+	LevelUp->OnUpgradeOfferClosed.AddDynamic(Recorder.Get(), &URRTestEventRecorder::HandleUpgradeOfferClosed);
+
+	// GrantXP: applied by the next tick, then consumed.
+	Settings->GrantXP = 5.f;
+	TestEqual(TEXT("nothing before the tick"), Progression->GetLevel(), 1);
+	TestWorld.Tick();
+	TestEqual(TEXT("GrantXP 5: level 2"), Progression->GetLevel(), 2);
+	TestEqual(TEXT("GrantXP consumed"), Settings->GrantXP, 0.f);
+
+	// Invulnerable: persistent, one loose count however many ticks, removed when cleared.
+	UAbilitySystemComponent* ASC = Miner->GetAbilitySystemComponent();
+	const int32 CountBefore = ASC->GetGameplayTagCount(RRGameplayTags::State_Invulnerable);
+	Settings->bInvulnerable = true;
+	TestWorld.Tick();
+	TestWorld.Tick();
+	TestEqual(TEXT("bInvulnerable: one count"), ASC->GetGameplayTagCount(RRGameplayTags::State_Invulnerable), CountBefore + 1);
+	TestTrue(TEXT("bInvulnerable stays set"), Settings->bInvulnerable);
+	Settings->bInvulnerable = false;
+	TestWorld.Tick();
+	TestEqual(TEXT("bInvulnerable cleared: count back"), ASC->GetGameplayTagCount(RRGameplayTags::State_Invulnerable), CountBefore);
+
+	// AlertSpeedMultiplier: 10 x for 60 frames = 10 s of alert.
+	const float AlertBefore = RunFlow->GetAlertSeconds();
+	Settings->AlertSpeedMultiplier = 10.f;
+	for (int32 Frame = 0; Frame < 60; ++Frame)
+	{
+		TestWorld.Tick();
+	}
+	TestNearlyEqual(TEXT("x10: 10 s of alert in 1 s"), RunFlow->GetAlertSeconds() - AlertBefore, 10.f, 0.01f);
+	Settings->AlertSpeedMultiplier = 1.f;
+
+	// The level-up screen opened during those frames: reroll, then pick.
+	if (!TestTrue(TEXT("screen open"), LevelUp->IsAwaitingChoice()))
+	{
+		return false;
+	}
+	Settings->bReroll = true;
+	TestWorld.Tick();
+	TestFalse(TEXT("bReroll consumed"), Settings->bReroll);
+	TestEqual(TEXT("bReroll: offer shown again"), Recorder->GetOfferCardCounts().Num(), 2);
+	TestFalse(TEXT("reroll used"), LevelUp->CanReroll());
+	const TArray<FRRUpgradeCard> Cards = LevelUp->GetOfferCards();
+	Settings->ChooseUpgrade = 1;
+	TestWorld.Tick();
+	TestEqual(TEXT("ChooseUpgrade consumed"), Settings->ChooseUpgrade, -1);
+	TestFalse(TEXT("ChooseUpgrade 1: screen closed"), LevelUp->IsAwaitingChoice());
+	if (TestEqual(TEXT("one upgrade picked"), Miner->GetUpgrades()->GetPickedUpgrades().Num(), 1) && Cards.Num() == 3)
+	{
+		TestTrue(TEXT("card 1 picked"), Miner->GetUpgrades()->GetPickedUpgrades()[0].IsSameChoice(Cards[1]));
+	}
+
+	// Run flow cheats.
+	Settings->bSkipToConsole = true;
+	TestWorld.Tick();
+	TestFalse(TEXT("bSkipToConsole consumed"), Settings->bSkipToConsole);
+	ARRConsole* Console = RunFlow->GetConsole();
+	if (!TestNotNull(TEXT("bSkipToConsole: console dropped"), Console))
+	{
+		return false;
+	}
+	TestNearlyEqual(TEXT("alert at the threshold"), RunFlow->GetAlert(), 0.4f, 1e-6f);
+	TestTrue(TEXT("objective pending"), RunFlow->HasPendingObjective());
+
+	Settings->bCompleteConsoleHack = true;
+	TestWorld.Tick();
+	TestFalse(TEXT("bCompleteConsoleHack consumed"), Settings->bCompleteConsoleHack);
+	TestTrue(TEXT("console hacked"), Console->IsComplete());
+	TestFalse(TEXT("nothing pending"), RunFlow->HasPendingObjective());
+
+	Settings->bSkipToExtraction = true;
+	TestWorld.Tick();
+	TestFalse(TEXT("bSkipToExtraction consumed"), Settings->bSkipToExtraction);
+	TestTrue(TEXT("extraction ready"), RunFlow->IsExtractionReady());
+	TestEqual(TEXT("alert full"), RunFlow->GetAlert(), 1.f);
 	return true;
 }
 
