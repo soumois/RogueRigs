@@ -3,7 +3,7 @@ id: task-016-01-alert-console
 description: "Run flow: alert bar from time and kills, paused while the console is pending; console at 40 %, marked rocks, drone hack, drain; tests."
 parent: task-016-console-extraction
 kind: task
-status: in-progress
+status: done
 ---
 # Alert bar and console
 
@@ -16,7 +16,7 @@ status: in-progress
 - editor_state: closed
 - token_ceiling: 130000
 - milestone: M1
-- result: open
+- result: URRRunFlowSubsystem (alert 240 s + 0.5 s per kill, kamikaze self-destruct not a kill, stops at 0.4 and drops the console, paused while pending, OnExtractionReady once when full with no objective); ARRConsole (12–20 cells straight line, reachable, prefers cells with rocks to mark (bPreferCellsWithMarkedRocks, owner to review), rock-type blocks within 2 cells marked via instance custom data slot 0 and OnCellMarkedChanged, hack 20 s in a 3-cell zone, drain 5 %/s, drone hack state refuses digs); values on BP_RRGameMode RunFlowConfig and the console class. BP events: console OnMarkedRocksChanged, OnHackProgress, OnHackStateChanged; HUD OnAlertChanged, OnObjectiveChanged, OnObjectiveProgressChanged, OnExtractionReady. URRCheatSettings CDO property route polled each frame (GrantXP, bInvulnerable, ChooseUpgrade, bReroll, AlertSpeedMultiplier, bSkipToConsole, bCompleteConsoleHack, bSkipToExtraction) + matching CVars. 6 new tests; build 0, 88/88. Docs sys-objectives (new), sys-difficulty, sys-drone, sys-hud, sys-cheats, sys-grid, sys-automation-tests, unreal-mcp. Commits 0ddd8c6, e1c5e04; about 480k tokens over two runs (ceiling 130k).
 
 ## Relations
 - [[task-016-console-extraction]] — parent global task.

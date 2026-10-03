@@ -3,7 +3,7 @@ id: task-016-02-shuttle
 description: "Full alert with no pending objective lands the shuttle 25+ cells away with a 45 s countdown; reaching it wins, missing it loses; restart; tests."
 parent: task-016-console-extraction
 kind: task
-status: todo
+status: in-progress
 ---
 # Shuttle extraction
 
