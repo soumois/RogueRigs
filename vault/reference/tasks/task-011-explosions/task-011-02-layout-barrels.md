@@ -3,7 +3,7 @@ id: task-011-02-layout-barrels
 description: "Add about 16 barrel cells to arena_m1 in walls along paths, some in pairs, without changing rock, heal ore or paths."
 parent: task-011-explosions
 kind: task
-status: in-progress
+status: done
 ---
 # Layout: barrels
 
@@ -16,7 +16,7 @@ status: in-progress
 - editor_state: any
 - token_ceiling: 30000
 - milestone: M1
-- result: 16 barrels (rock → barrel only, orchestrator diff): (59, 67)+(57, 68), (73, 31)+(73, 32), (35, 66)+(37, 68), (24, 49)+(26, 47), and (43, 6), (13, 64), (7, 30), (48, 41), (30, 27), (67, 49), (19, 12), (59, 18); all touch reachable floor, > 6 cells from the spawn, none in the test area (33..45, 33..49). Coverage 59.1 %, reachable floor 85.8 %, validator OK. About 23k tokens. Reopened: pairs must be within the 350 uu barrel radius (adjacent or diagonal cells); only (73, 31)+(73, 32) chains.
+- result: 16 barrels (rock → barrel only, orchestrator diff): (59, 67)+(57, 68), (73, 31)+(73, 32), (35, 66)+(37, 68), (24, 49)+(26, 47), and (43, 6), (13, 64), (7, 30), (48, 41), (30, 27), (67, 49), (19, 12), (59, 18); all touch reachable floor, > 6 cells from the spawn, none in the test area (33..45, 33..49). Coverage 59.1 %, reachable floor 85.8 %, validator OK. About 23k tokens. Second pass: partners moved so all 4 pairs chain: (73, 31)+(73, 32) 200 uu, (24, 49)+(24, 48) 200 uu, (35, 66)+(35, 65) 200 uu, (59, 67)+(58, 68) 283 uu (orchestrator verified); 16 barrels, validator OK.
 
 ## Relations
 - [[task-011-explosions]] — parent global task.
