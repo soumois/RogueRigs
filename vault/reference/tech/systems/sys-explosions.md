@@ -22,8 +22,8 @@ kind: doc
 
 - data: `Content/RogueRigs/Data/Tables/ExplosionStats.csv` (`FRRExplosionStatsRow`: `Radius`, `Damage`, `TerrainSource`, `FXClass`), loaded at runtime with `FRRBaseStatsLoader::LoadTableFromCSV` on first use: `Barrel` 350 / 40 / Barrel, `Kamikaze` 250 / 30 / Kamikaze, both FX `/Game/RogueRigs/Blueprints/FX/BP_ExplosionFX.BP_ExplosionFX_C`. Config properties (defaults in code, override in `DefaultGame.ini` section `[/Script/RogueRigs.RRExplosionSubsystem]`): `ChainDelay` 0.08 s (provisional), `MinerHealthLeftAtFullHealth` 1.
 - depends_on: [[sys-grid]], [[sys-damage]].
-- implements: [[explosions]], [[destruction-rules]] (explosion side); [[barrel]] and [[enemy-kamikaze]] queue into it (task-011-04, task-011-05).
-- gotchas: synchronous chains in damage callbacks cause recursion and double hits; that is why the queue exists — never call the grid or apply explosion damage directly. Target search iterates every actor of the world once per explosion (fine at M1 horde size). The character radius test uses the actor location only (no capsule radius). Barrels have no ASC (task-011-04 owns their shot health).
+- implements: [[explosions]], [[destruction-rules]] (explosion side); [[barrel]] (the grid queues `Barrel` on every barrel destruction, [[sys-grid]]) and [[enemy-kamikaze]] (task-011-05) queue into it.
+- gotchas: synchronous chains in damage callbacks cause recursion and double hits; that is why the queue exists — never call the grid or apply explosion damage directly. Target search iterates every actor of the world once per explosion (fine at M1 horde size). The character radius test uses the actor location only (no capsule radius). Barrels have no ASC: their shot health lives in the grid ([[sys-grid]] `ApplyShotDamage`); the grid queues their explosion with one `URRBarrelSource` per cell as source.
 
 ## Relations
 - [[systems-index]] — parent index.

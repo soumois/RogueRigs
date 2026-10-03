@@ -10,6 +10,8 @@
 #include "Engine/CollisionProfile.h"
 #include "Engine/StaticMesh.h"
 #include "Engine/World.h"
+#include "Explosions/RRExplosionSubsystem.h"
+#include "Grid/RRBarrelSource.h"
 #include "Materials/MaterialInterface.h"
 #include "Misc/FileHelper.h"
 #include "Misc/Paths.h"
@@ -71,6 +73,7 @@ void ARRArenaGrid::RebuildFromLayout()
 	{
 		Cells.Reset();
 		CellHealth.Reset();
+		CellShotHealth.Reset();
 		CellDigDrops.Reset();
 		CellInstanceIndex.Reset();
 		ShakingCells.Reset();
@@ -309,6 +312,8 @@ void ARRArenaGrid::BuildInstances()
 	}
 
 	CellHealth.Init(0.f, Cells.Num());
+	CellShotHealth.Init(0.f, Cells.Num());
+	BarrelSources.Reset();
 	CellDigDrops.Init(0, Cells.Num());
 	CellInstanceIndex.Init(INDEX_NONE, Cells.Num());
 
@@ -342,6 +347,7 @@ void ARRArenaGrid::BuildInstances()
 			if (bIsBlock)
 			{
 				CellHealth[GetCellIndex(Cell)] = GetBlockMaxHealth(Type);
+				CellShotHealth[GetCellIndex(Cell)] = Type == ERRCellType::Barrel ? BarrelShotHealth : 0.f;
 			}
 		}
 	}
@@ -523,6 +529,10 @@ bool ARRArenaGrid::DestroyCell(FIntPoint Cell, ERRTerrainDamageSource Source)
 
 	Cells[Index] = ERRCellType::Floor;
 	CellHealth[Index] = 0.f;
+	if (CellShotHealth.IsValidIndex(Index))
+	{
+		CellShotHealth[Index] = 0.f;
+	}
 	if (CellDigDrops.IsValidIndex(Index))
 	{
 		CellDigDrops[Index] = 0;
@@ -534,8 +544,85 @@ bool ARRArenaGrid::DestroyCell(FIntPoint Cell, ERRTerrainDamageSource Source)
 
 	SpawnPickups(Cell, Type, DestroyDropCount);
 
+	// Every destroyed barrel explodes, whatever destroyed it (shots, dig, another explosion); queued, never synchronous.
+	if (Type == ERRCellType::Barrel)
+	{
+		QueueBarrelExplosion(Cell);
+	}
+
 	OnCellDestroyed.Broadcast(Cell, Type, Source);
 	return true;
+}
+
+float ARRArenaGrid::GetCellShotHealth(FIntPoint Cell) const
+{
+	return GetCellType(Cell) == ERRCellType::Barrel && CellShotHealth.IsValidIndex(GetCellIndex(Cell)) ? CellShotHealth[GetCellIndex(Cell)] : 0.f;
+}
+
+FIntPoint ARRArenaGrid::GetCellFromHit(const FHitResult& Hit) const
+{
+	if (const UPrimitiveComponent* HitComponent = Hit.GetComponent())
+	{
+		for (const TPair<ERRCellType, FRRInstanceCellMap>& Pair : InstanceCellMaps)
+		{
+			if (Pair.Key != ERRCellType::Floor && GetBlockComponent(Pair.Key) == HitComponent && Pair.Value.InstanceCells.IsValidIndex(Hit.Item))
+			{
+				return Pair.Value.InstanceCells[Hit.Item];
+			}
+		}
+	}
+	const FVector Normal = Hit.ImpactNormal.IsNearlyZero() ? FVector::ZeroVector : Hit.ImpactNormal.GetSafeNormal();
+	return GetCellAtWorld(Hit.ImpactPoint - Normal);
+}
+
+bool ARRArenaGrid::ApplyShotDamage(FIntPoint Cell, float Damage)
+{
+	if (Damage <= 0.f || GetCellType(Cell) != ERRCellType::Barrel || !CellShotHealth.IsValidIndex(GetCellIndex(Cell)))
+	{
+		return false;
+	}
+
+	const int32 Index = GetCellIndex(Cell);
+	const float Applied = FMath::Min(Damage, CellShotHealth[Index]);
+	CellShotHealth[Index] -= Applied;
+	UE_LOG(LogRogueRigs, Verbose, TEXT("ARRArenaGrid: barrel (%d, %d) shot for %.1f, shot health %.1f."), Cell.X, Cell.Y, Applied, CellShotHealth[Index]);
+
+	if (CellShotHealth[Index] <= UE_KINDA_SMALL_NUMBER)
+	{
+		return DestroyCell(Cell, ERRTerrainDamageSource::Shot);
+	}
+	return false;
+}
+
+URRBarrelSource* ARRArenaGrid::GetBarrelSource(FIntPoint Cell)
+{
+	if (!IsValidCell(Cell))
+	{
+		return nullptr;
+	}
+	TObjectPtr<URRBarrelSource>& Source = BarrelSources.FindOrAdd(Cell);
+	if (!Source)
+	{
+		Source = NewObject<URRBarrelSource>(this);
+		Source->Cell = Cell;
+	}
+	return Source;
+}
+
+void ARRArenaGrid::QueueBarrelExplosion(FIntPoint Cell)
+{
+	UWorld* World = GetWorld();
+	if (!World || !World->IsGameWorld())
+	{
+		return;
+	}
+	URRExplosionSubsystem* Explosions = World->GetSubsystem<URRExplosionSubsystem>();
+	if (!Explosions)
+	{
+		UE_LOG(LogRogueRigs, Warning, TEXT("ARRArenaGrid: no explosion subsystem, barrel (%d, %d) does not explode."), Cell.X, Cell.Y);
+		return;
+	}
+	Explosions->QueueExplosion(GetCellCenter(Cell.X, Cell.Y), BarrelExplosionRow, this, GetBarrelSource(Cell));
 }
 
 TSubclassOf<ARRPickup> ARRArenaGrid::GetPickupClass(ERRCellType Type) const

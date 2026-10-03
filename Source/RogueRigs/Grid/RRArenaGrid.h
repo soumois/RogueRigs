@@ -7,10 +7,12 @@
 #include "RRArenaGrid.generated.h"
 
 class ARRPickup;
+class URRBarrelSource;
 class UHierarchicalInstancedStaticMeshComponent;
 class UMaterialInterface;
 class USceneComponent;
 class UStaticMesh;
+struct FHitResult;
 
 /** Content of one grid cell, as read from the layout file. Unlisted cells are Floor. */
 UENUM(BlueprintType)
@@ -34,7 +36,7 @@ enum class ERRCellType : uint8
 	Spawn
 };
 
-/** What damaged or destroyed a block. The only three terrain-breaking sources (destruction-rules). */
+/** What damaged or destroyed a block: the three terrain-breaking sources (destruction-rules), plus shots, which only break barrels. */
 UENUM(BlueprintType)
 enum class ERRTerrainDamageSource : uint8
 {
@@ -43,7 +45,9 @@ enum class ERRTerrainDamageSource : uint8
 	/** An exploding barrel. */
 	Barrel,
 	/** An exploding kamikaze robot. */
-	Kamikaze
+	Kamikaze,
+	/** Projectiles: only barrels take shot damage (BarrelShotHealth); the barrel then explodes. */
+	Shot
 };
 
 /** Instance index -> cell map of one HISM component. Index i is the cell rendered by instance i. */
@@ -158,6 +162,31 @@ public:
 	UFUNCTION(BlueprintCallable, Category = "Grid|Destruction")
 	int32 DestroyCellsInRadius(FVector Center, float Radius, ERRTerrainDamageSource Source);
 
+	/** Remaining shot health of a barrel cell (separate from its dig health); 0 when the cell holds no barrel. */
+	UFUNCTION(BlueprintPure, Category = "Grid|Destruction")
+	float GetCellShotHealth(FIntPoint Cell) const;
+
+	/**
+	 * Grid cell of a blocking hit on this grid: the cell of the hit instance when the hit component is a block HISM
+	 * with a valid Item, else the cell just behind the impact point (impact point minus 1 uu along the impact normal).
+	 */
+	FIntPoint GetCellFromHit(const FHitResult& Hit) const;
+
+	/**
+	 * Applies Damage from a projectile to the block in Cell. Only barrels take shot damage (shots never break other
+	 * blocks): it lowers the barrel's shot health and destroys the cell (DestroyCell, source Shot) at 0, which queues its
+	 * explosion. Returns true when this call destroyed the barrel.
+	 */
+	UFUNCTION(BlueprintCallable, Category = "Grid|Destruction")
+	bool ApplyShotDamage(FIntPoint Cell, float Damage);
+
+	/**
+	 * Explosion source object of the barrel in Cell: one per cell, created on first request and kept by the grid, so
+	 * URRExplosionSubsystem lets each barrel explode only once. Returns nullptr when Cell is outside the grid.
+	 */
+	UFUNCTION(BlueprintCallable, Category = "Grid|Destruction")
+	URRBarrelSource* GetBarrelSource(FIntPoint Cell);
+
 	/** Starts or stops the jitter of the block in Cell (dig feedback). Stopping restores its rest transform. Ignored on cells without a block. */
 	UFUNCTION(BlueprintCallable, Category = "Grid|Destruction")
 	void SetCellShaking(FIntPoint Cell, bool bShaking);
@@ -234,6 +263,9 @@ protected:
 	 */
 	void SpawnDigDrops(FIntPoint Cell, ERRCellType Type);
 
+	/** Queues the explosion of the barrel in Cell (row BarrelExplosionRow, at the cell center, source GetBarrelSource) in the world's URRExplosionSubsystem, during play only. */
+	void QueueBarrelExplosion(FIntPoint Cell);
+
 	/** Spawns Count pickups of the class dropped by Type at the center of Cell (floor top), during play only. */
 	void SpawnPickups(FIntPoint Cell, ERRCellType Type, int32 Count);
 
@@ -288,6 +320,14 @@ protected:
 	/** Health of a barrel block: drone dig time in seconds at mining speed 1. */
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Grid|Destruction", meta = (ClampMin = "0.01", Units = "s"))
 	float BarrelHealth = 1.5f;
+
+	/** Health of a barrel against shots (projectile damage, e.g. 10 per rifle bullet); separate from its dig health (provisional, barrel gdd). */
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Grid|Destruction", meta = (ClampMin = "0.01"))
+	float BarrelShotHealth = 20.f;
+
+	/** Row of ExplosionStats.csv queued when a barrel is destroyed, whatever the source. */
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Grid|Destruction")
+	FName BarrelExplosionRow = TEXT("Barrel");
 
 	// --- Shake (dig feedback) ---
 
@@ -422,6 +462,14 @@ protected:
 	/** Remaining block health per cell in dig-seconds, row-major; 0 on cells without a block. */
 	UPROPERTY(Transient)
 	TArray<float> CellHealth;
+
+	/** Remaining shot health per cell, row-major: BarrelShotHealth on barrel cells, 0 elsewhere and once destroyed. */
+	UPROPERTY(Transient)
+	TArray<float> CellShotHealth;
+
+	/** Explosion source object per barrel cell, created on first request (GetBarrelSource); kept so each stays unique and alive. */
+	UPROPERTY(Transient)
+	TMap<FIntPoint, TObjectPtr<URRBarrelSource>> BarrelSources;
 
 	/** Dig drops already spawned per cell, row-major; compared with the DropInterval multiples crossed. */
 	UPROPERTY(Transient)

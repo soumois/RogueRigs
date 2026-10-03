@@ -3,7 +3,7 @@ id: task-011-04-barrel
 description: "Barrel cells get 20 health from shots and explode through the queue when destroyed by any source, so barrels chain."
 parent: task-011-explosions
 kind: task
-status: in-progress
+status: done
 ---
 # Barrel
 
@@ -16,7 +16,7 @@ status: in-progress
 - editor_state: closed
 - token_ceiling: 80000
 - milestone: M1
-- result: open
+- result: barrel shot health 20 per cell (dig health unchanged); projectile stop on a barrel instance → ApplyShotDamage with the bullet damage snapshot from the spec (no crit, enemy flat shots ignored); any barrel destruction (Shot, Drone, Barrel, Kamikaze) queues a Barrel explosion with one URRBarrelSource per cell. 3 Barrel tests (two shots explode; pair (73, 31)+(73, 32) chains 0.083 s later; dug barrel explodes). Build exit 0, 44/44 (orchestrator re-ran). Found: 3 of the 4 layout pairs are farther than 350 uu (orchestrator spec said "within 2 cells"), sent back to task-011-02. About 104k tokens.
 
 ## Relations
 - [[task-011-explosions]] — parent global task.

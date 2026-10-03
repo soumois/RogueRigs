@@ -3,7 +3,7 @@ id: task-011-05-kamikaze
 description: "ARRKamikaze on ARREnemy: hover look, arms within 150 uu, 0.5 s fuse with a growing pulsing core, explodes on fuse or death; weighted spawner."
 parent: task-011-explosions
 kind: task
-status: todo
+status: in-progress
 ---
 # Kamikaze
 

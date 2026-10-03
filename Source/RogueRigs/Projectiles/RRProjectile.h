@@ -17,7 +17,7 @@ struct FHitResult;
  * applies it on impact. Collision: a sphere on the Projectile object channel (RRCollisionChannels::Projectile)
  * that overlaps pawns and blocks world static and dynamic. On overlap with an actor that has an ASC (other than
  * its owner weapon and the instigating miner), it applies the spec once and is destroyed; on a blocking hit (rock
- * blocks, walls) it is destroyed. Straight flight, no gravity, no sub-stepping; speed and lifetime set by
+ * blocks, walls) it is destroyed, after damaging the cell when it is a barrel of the arena grid (carried Damage, no GAS on barrels). Straight flight, no gravity, no sub-stepping; speed and lifetime set by
  * InitProjectile. Spawn with SpawnActorDeferred (Owner = weapon, Instigator = miner), call InitProjectile, then
  * FinishSpawning. Subclass in Blueprint for the mesh and the sphere radius.
  */
@@ -50,9 +50,15 @@ protected:
 	UFUNCTION()
 	void OnSphereBeginOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult);
 
-	/** Blocking hit (rock, wall): destroys this projectile. */
+	/** Blocking hit (rock, wall): applies the carried damage to a barrel of the arena grid (ARRArenaGrid::ApplyShotDamage), then destroys this projectile. */
 	UFUNCTION()
 	void OnProjectileStop(const FHitResult& ImpactResult);
+
+	/**
+	 * Per-bullet damage carried by the spec, read without a target ASC: the fire-time snapshot of the source weapon's
+	 * URRWeaponAttributeSet Damage captured in the spec (critical hits not rolled). 0 when the spec has no such capture.
+	 */
+	float GetCarriedDamage() const;
 
 	/** True for actors this projectile never hits: itself, its owner weapon, the instigator, and the owner's owner. */
 	bool IsIgnoredActor(const AActor* OtherActor) const;

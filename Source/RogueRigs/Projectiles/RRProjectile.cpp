@@ -6,7 +6,9 @@
 #include "AbilitySystemGlobals.h"
 #include "Components/SphereComponent.h"
 #include "GameFramework/ProjectileMovementComponent.h"
+#include "Grid/RRArenaGrid.h"
 #include "Projectiles/RRCollisionChannels.h"
+#include "Weapons/RRWeaponAttributeSet.h"
 
 #include UE_INLINE_GENERATED_CPP_BY_NAME(RRProjectile)
 
@@ -115,7 +117,38 @@ void ARRProjectile::OnSphereBeginOverlap(UPrimitiveComponent* OverlappedComponen
 	Destroy();
 }
 
+float ARRProjectile::GetCarriedDamage() const
+{
+	const FGameplayEffectSpec* Spec = DamageSpec.Data.Get();
+	if (Spec == nullptr)
+	{
+		return 0.f;
+	}
+	// Same capture definition as URRDamageExecution (source, snapshot): the weapon's Damage at fire time.
+	const FGameplayEffectAttributeCaptureDefinition DamageDef(URRWeaponAttributeSet::GetDamageAttribute(), EGameplayEffectAttributeCaptureSource::Source, true);
+	const FGameplayEffectAttributeCaptureSpec* Capture = Spec->CapturedRelevantAttributes.FindCaptureSpecByDefinition(DamageDef, true);
+	float Damage = 0.f;
+	if (Capture == nullptr || !Capture->AttemptCalculateAttributeMagnitude(FAggregatorEvaluateParameters(), Damage))
+	{
+		return 0.f;
+	}
+	return FMath::Max(Damage, 0.f);
+}
+
 void ARRProjectile::OnProjectileStop(const FHitResult& ImpactResult)
 {
+	// Barrels are grid cells without an ASC: the grid takes the carried damage as shot damage (other blocks ignore it).
+	if (!bHasHit)
+	{
+		if (ARRArenaGrid* Grid = Cast<ARRArenaGrid>(ImpactResult.GetActor()))
+		{
+			const FIntPoint Cell = Grid->GetCellFromHit(ImpactResult);
+			if (Grid->GetCellType(Cell) == ERRCellType::Barrel)
+			{
+				bHasHit = true;
+				Grid->ApplyShotDamage(Cell, GetCarriedDamage());
+			}
+		}
+	}
 	Destroy();
 }
