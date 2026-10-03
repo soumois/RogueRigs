@@ -3,7 +3,7 @@ id: task-011-07-tests-integration
 description: "Integration tests with final Blueprints: a barrel chain opens a wall, a kamikaze reaches and hurts the miner, no one-shot, full run."
 parent: task-011-explosions
 kind: task
-status: todo
+status: in-progress
 ---
 # Integration tests
 

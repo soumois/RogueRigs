@@ -8,9 +8,9 @@ kind: doc
 
 - asset_path: /Game/RogueRigs/Blueprints/Enemies/BP_EnemySpawner
 - parent_class: ARREnemySpawner (/Script/RogueRigs.RREnemySpawner)
-- purpose: spawns chasers outside the screen ([[sys-spawner]]).
+- purpose: spawns chasers and kamikazes outside the screen ([[sys-spawner]]).
 - components: inherited only.
-- exposed_defaults: EnemyClass = BP_Chaser_C; other tunables at C++ defaults. One instance placed in L_ArenaM1 at (8100, 8100, 100) (location irrelevant).
+- exposed_defaults: WeightedEnemyClasses = BP_Chaser_C 3, BP_Kamikaze_C 1 (25 % kamikazes; the level instance override was reset to inherit); EnemyClass = BP_Chaser_C (fallback); other tunables at C++ defaults. One instance placed in L_ArenaM1 at (8100, 8100, 100) (location irrelevant).
 - events: none
 - logic_in_bp: none
 - assets: none
@@ -20,3 +20,4 @@ kind: doc
 - [[blueprints-index]] — parent index.
 - [[sys-spawner]] — the C++ class.
 - [[bp-chaser]] — the enemy it spawns.
+- [[bp-kamikaze]] — the other enemy it spawns.

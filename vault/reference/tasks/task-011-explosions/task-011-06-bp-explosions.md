@@ -3,7 +3,7 @@ id: task-011-06-bp-explosions
 description: "Grey-box kamikaze, orange barrel material, explosion FX, spawner mix 3 to 1, then a PIE check of barrels and kamikazes."
 parent: task-011-explosions
 kind: task
-status: in-progress
+status: done
 ---
 # Explosion assets and PIE
 
@@ -16,7 +16,7 @@ status: in-progress
 - editor_state: open
 - token_ceiling: 60000
 - milestone: M1
-- result: open
+- result: M_GreyBoxTranslucent (Color, Opacity, unlit), MI_GB_Barrel, MI_GB_Kamikaze, MI_GB_Core, MI_GB_Explosion; BP_ExplosionFX at the CSV path; BP_Kamikaze (gunmetal body 0.5, orange core, red eye, BP_PickupXP); BP_ArenaGrid barrel cylinder + MI_GB_Barrel; BP_EnemySpawner weights Chaser 3, Kamikaze 1; stale level overrides reset (orchestrator checked the saved actor files: no override left). PIE: 16 barrels, kamikazes among chasers, no gameplay error. Known: WBP_HUD logs a divide by zero at PIE start (Max 0 before the first health event). Docs bp-kamikaze, bp-explosion-fx, bp-arena-grid, bp-enemy-spawner. About 73k tokens (turn limit hit once).
 
 ## Relations
 - [[task-011-explosions]] — parent global task.

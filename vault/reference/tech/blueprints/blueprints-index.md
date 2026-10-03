@@ -23,4 +23,6 @@ One node per Blueprint, template `blueprint.md`.
 - [[bp-chaser]] — BP_Chaser, the chaser robot.
 - [[bp-pickup-xp]] — BP_PickupXP, the cyan XP pickup.
 - [[bp-enemy-spawner]] — BP_EnemySpawner, the enemy spawner placed in the arena.
+- [[bp-kamikaze]] — BP_Kamikaze, the kamikaze robot.
+- [[bp-explosion-fx]] — BP_ExplosionFX, the explosion visual.
 - [[wbp-hud]] — WBP_HUD, health bar and Game Over text.
