@@ -3,7 +3,7 @@ id: task-014-04-bp-upgrade-ui
 description: "Level-up ring effect, 3-card upgrade widget with rarity colors and one reroll button, spawner values on the map, PIE check."
 parent: task-014-upgrades-levelup
 kind: task
-status: todo
+status: in-progress
 ---
 # Upgrade UI and level-up effect
 
