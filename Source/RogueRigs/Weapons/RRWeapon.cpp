@@ -13,6 +13,7 @@
 #include "Grid/RRArenaGrid.h"
 #include "Player/RRMiner.h"
 #include "Projectiles/RRProjectile.h"
+#include "Upgrades/RRUpgradeComponent.h"
 #include "RogueRigs.h"
 #include "Weapons/RRAutoFireComponent.h"
 #include "Weapons/RRWeaponAttributeSet.h"
@@ -54,7 +55,7 @@ bool ARRWeapon::Acquire(ARRMiner* InOwnerMiner)
 {
 	OwnerMiner = InOwnerMiner;
 
-	// Acquisition order (sys-weapons): actor info, base values from CSV; upgrade replay and registry come later.
+	// Acquisition order (sys-weapons): actor info, base values from CSV, replay of the global upgrades; registry comes later.
 	AbilitySystemComponent->InitAbilityActorInfo(this, this);
 
 	FRRWeaponStatsRow Row;
@@ -63,6 +64,11 @@ bool ARRWeapon::Acquire(ARRMiner* InOwnerMiner)
 		return false;
 	}
 	ApplyStatsRow(Row);
+
+	if (OwnerMiner && OwnerMiner->GetUpgrades())
+	{
+		OwnerMiner->GetUpgrades()->ReplayGlobalUpgrades(*this);
+	}
 
 	if (!AutoFire->Configure(AbilitySystemComponent, BurstCount, BurstDuty, ReloadTime))
 	{
@@ -125,6 +131,12 @@ void ARRWeapon::ApplyStatsRow(const FRRWeaponStatsRow& Row)
 	ProjectileSpeed = Row.ProjectileSpeed;
 	Range = Row.Range;
 	SpreadDeg = Row.SpreadDeg;
+	DisplayName = Row.DisplayName;
+}
+
+FText ARRWeapon::GetDisplayName() const
+{
+	return FText::FromString(DisplayName.IsEmpty() ? StatsRowName.ToString() : DisplayName);
 }
 
 FVector ARRWeapon::GetAimDirection() const

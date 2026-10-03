@@ -27,7 +27,8 @@ struct FRRWeaponStatsRow;
  * only a visual reference (and the spawn point when there is no owning miner). The weapon actor has no collision
  * (bActorEnableCollision off): it is a visual carried inside the miner capsule. Acquisition (Acquire, called by the miner after spawn and
  * attach): InitAbilityActorInfo(weapon, weapon), base values from row StatsRowName of WeaponStats.csv, magazine
- * filled, auto-fire configured and started. Upgrade replay and the player registry are not implemented yet.
+ * filled, auto-fire configured and started; the miner's global upgrades are replayed after the base values
+ * (URRUpgradeComponent::ReplayGlobalUpgrades). The player registry is not implemented yet.
  * Aim comes from the owning miner's GetAimDirection. Subclass in Blueprint for the mesh, the muzzle position,
  * the projectile class and the stats row.
  */
@@ -52,7 +53,7 @@ public:
 
 	/**
 	 * Acquisition, after spawn and attach: stores InOwnerMiner, initializes the ASC actor info, applies the CSV
-	 * row StatsRowName as base values, fills the magazine, configures the auto-fire (ticks after the miner) and
+	 * row StatsRowName as base values, replays the miner's global upgrades, fills the magazine, configures the auto-fire (ticks after the miner) and
 	 * starts it if bStartFiringOnAcquire. Returns false (logged) if the stats could not be loaded; the weapon then
 	 * does not fire.
 	 */
@@ -109,6 +110,10 @@ public:
 	/** Half-angle of the random spread in degrees (CSV constant). */
 	UFUNCTION(BlueprintPure, Category = "Weapon|Stats")
 	float GetSpreadDeg() const { return SpreadDeg; }
+
+	/** Name shown in the UI (CSV column DisplayName, or StatsRowName when empty or before acquisition). */
+	UFUNCTION(BlueprintPure, Category = "Weapon|Stats")
+	FText GetDisplayName() const;
 
 protected:
 	/** Stops the auto-fire. */
@@ -202,6 +207,10 @@ protected:
 	/** Half-angle of the random spread in degrees, copied from the CSV at acquisition. */
 	UPROPERTY(VisibleInstanceOnly, BlueprintReadOnly, Category = "Weapon|Stats")
 	float SpreadDeg = 0.f;
+
+	/** UI name, copied from the CSV column DisplayName at acquisition. */
+	UPROPERTY(VisibleInstanceOnly, BlueprintReadOnly, Category = "Weapon|Stats")
+	FString DisplayName;
 
 	/** Miner that acquired this weapon. */
 	UPROPERTY(VisibleInstanceOnly, BlueprintReadOnly, Category = "Weapon")

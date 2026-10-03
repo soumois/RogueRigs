@@ -19,7 +19,7 @@ kind: doc
 | `Ability.` | `Ability.Attack` | ability families (cancel, block) |
 | `Weapon.Player.` | per weapon | upgrade routing |
 | `Effect.Damage.` | `Effect.Damage.DoT` | damage kinds |
-| `Data.` | `Data.Damage`, `Data.Duration` | SetByCaller keys |
+| `Data.` | `Data.Damage`, `Data.Duration`, `Data.UpgradeValue` | SetByCaller keys |
 | `Projectile.Behavior.` | deferred | behavior modules ([[wishlist]]) |
 
 - Full tag hierarchy: open.

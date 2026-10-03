@@ -21,4 +21,7 @@ namespace RRGameplayTags
 
 	/** SetByCaller key: duration in seconds of a duration GE set by its caller (URRGE_IFrames). */
 	ROGUERIGS_API UE_DECLARE_GAMEPLAY_TAG_EXTERN(Data_Duration);
+
+	/** SetByCaller key: magnitude of a runtime upgrade GE (URRUpgradeComponent; AddBase value, or 1 + value for MultiplyAdditive). */
+	ROGUERIGS_API UE_DECLARE_GAMEPLAY_TAG_EXTERN(Data_UpgradeValue);
 }

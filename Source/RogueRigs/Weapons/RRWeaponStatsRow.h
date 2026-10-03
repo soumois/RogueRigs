@@ -64,4 +64,8 @@ struct ROGUERIGS_API FRRWeaponStatsRow : public FTableRowBase
 	/** Half-angle of the random spread in degrees (constant). */
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Weapon Stats")
 	float SpreadDeg = 0.f;
+
+	/** Name shown in the UI (upgrade card target), French (constant). Empty = the row name. */
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Weapon Stats")
+	FString DisplayName;
 };

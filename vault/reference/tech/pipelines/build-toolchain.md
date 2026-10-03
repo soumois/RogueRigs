@@ -6,7 +6,7 @@ kind: doc
 ---
 # Build and toolchain
 
-- Engine: Unreal Engine 5.8. Project from the Top Down template (C++); Twin Stick variant as the base. The Strategy variant and the root top-down classes (`RogueRigsCharacter`, `RogueRigsGameMode`, `RogueRigsPlayerController`) are deleted ([[task-002-04-delete-template-cpp]]); `Source/RogueRigs` holds the module files and one folder per system: `Damage/`, `Debug/`, `Drone/`, `Enemies/`, `Explosions/`, `FlowField/`, `GAS/`, `Grid/`, `Pickups/`, `Player/`, `Progression/`, `Projectiles/`, `Tests/`, `UI/`, `Weapons/`, plus `Variant_TwinStick/` (reference only). The `Niagara` module is no longer a C++ dependency (the plugin stays enabled).
+- Engine: Unreal Engine 5.8. Project from the Top Down template (C++); Twin Stick variant as the base. The Strategy variant and the root top-down classes (`RogueRigsCharacter`, `RogueRigsGameMode`, `RogueRigsPlayerController`) are deleted ([[task-002-04-delete-template-cpp]]); `Source/RogueRigs` holds the module files and one folder per system: `Damage/`, `Debug/`, `Drone/`, `Enemies/`, `Explosions/`, `FlowField/`, `GAS/`, `Grid/`, `Pickups/`, `Player/`, `Progression/`, `Projectiles/`, `Tests/`, `UI/`, `Upgrades/`, `Weapons/`, plus `Variant_TwinStick/` (reference only). The `Niagara` module is no longer a C++ dependency (the plugin stays enabled).
 - Compiler: MSVC 14.50 (Visual Studio 2026, workload "Game development with C++"). MSVC 14.40–14.43 are rejected by UE 5.8.
 - After a toolchain change: right-click `RogueRigs.uproject` → Generate Visual Studio project files.
 - Command-line build, editor closed (used by agents; exit code 0 = success, compiler errors on stdout):

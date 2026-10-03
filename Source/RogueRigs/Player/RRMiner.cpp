@@ -22,6 +22,7 @@
 #include "Player/RRGameMode.h"
 #include "Progression/RRProgressionComponent.h"
 #include "Projectiles/RRCollisionChannels.h"
+#include "Upgrades/RRUpgradeComponent.h"
 #include "RogueRigs.h"
 #include "Weapons/RRAutoFireComponent.h"
 #include "Weapons/RRWeapon.h"
@@ -43,6 +44,7 @@ ARRMiner::ARRMiner(const FObjectInitializer& ObjectInitializer)
 	MovementSet = CreateDefaultSubobject<URRMovementAttributeSet>(TEXT("MovementSet"));
 	PlayerSet = CreateDefaultSubobject<URRPlayerAttributeSet>(TEXT("PlayerSet"));
 	Progression = CreateDefaultSubobject<URRProgressionComponent>(TEXT("Progression"));
+	Upgrades = CreateDefaultSubobject<URRUpgradeComponent>(TEXT("Upgrades"));
 	IFramesEffectClass = URRGE_IFrames::StaticClass();
 
 	// Camera boom with a fixed world rotation.

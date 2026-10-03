@@ -9,4 +9,5 @@ namespace RRGameplayTags
 	UE_DEFINE_GAMEPLAY_TAG(Effect_Damage_Critical, "Effect.Damage.Critical");
 	UE_DEFINE_GAMEPLAY_TAG(Data_Damage, "Data.Damage");
 	UE_DEFINE_GAMEPLAY_TAG(Data_Duration, "Data.Duration");
+	UE_DEFINE_GAMEPLAY_TAG(Data_UpgradeValue, "Data.UpgradeValue");
 }

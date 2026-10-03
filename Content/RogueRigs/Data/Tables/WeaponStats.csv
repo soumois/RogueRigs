@@ -1,2 +1,2 @@
-Name,Damage,FireRate,BurstCount,BurstDuty,CritChance,CritDamage,MagazineSize,ReloadTime,ReloadSpeed,ProjectileSpeed,Range,SpreadDeg
-BurstRifle,10,1.25,3,0.2,0.05,1.5,30,1.5,1,3000,2000,2
+Name,Damage,FireRate,BurstCount,BurstDuty,CritChance,CritDamage,MagazineSize,ReloadTime,ReloadSpeed,ProjectileSpeed,Range,SpreadDeg,DisplayName
+BurstRifle,10,1.25,3,0.2,0.05,1.5,30,1.5,1,3000,2000,2,Fusil à rafales
