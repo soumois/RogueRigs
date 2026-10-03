@@ -1,4 +1,4 @@
-// Rogue Rigs - automation tests of the dig rules (RogueRigs.Dig.*): grid damage and destruction, ore drops, radius destruction, drone dig, pickup collection.
+// Rogue Rigs - automation tests of the dig rules (RogueRigs.Dig.*): grid damage and destruction, ore drops, radius destruction, drone dig, pickup collection, render-only shake.
 
 #include "CoreMinimal.h"
 #include "Misc/AutomationTest.h"
@@ -7,11 +7,13 @@
 
 #include "Components/CapsuleComponent.h"
 #include "Components/HierarchicalInstancedStaticMeshComponent.h"
+#include "Components/InstancedStaticMeshComponent.h"
 #include "Components/StaticMeshComponent.h"
 #include "Drone/RRDrone.h"
 #include "Engine/Engine.h"
 #include "Engine/World.h"
 #include "EngineUtils.h"
+#include "GameFramework/CharacterMovementComponent.h"
 #include "GameFramework/PlayerController.h"
 #include "GameFramework/WorldSettings.h"
 #include "Grid/RRArenaGrid.h"
@@ -21,6 +23,8 @@
 #include "Tests/RRTestEventRecorder.h"
 #include "Tests/RRTestHarness.h"
 #include "UObject/StrongObjectPtr.h"
+#include "Weapons/RRAutoFireComponent.h"
+#include "Weapons/RRWeapon.h"
 
 namespace RRDigTests
 {
@@ -58,6 +62,20 @@ namespace RRDigTests
 			default:                      return nullptr;
 			}
 		}
+
+		/** Hidden collision ISM of a block type; nullptr for Floor (the floor HISM collides itself). */
+		static UInstancedStaticMeshComponent* CollisionComponent(const ARRArenaGrid* Grid, ERRCellType Key)
+		{
+			switch (Key)
+			{
+			case ERRCellType::Rock:       return Grid->*(&FGridAccess::RockCollision);
+			case ERRCellType::Ore:        return Grid->*(&FGridAccess::OreCollision);
+			case ERRCellType::HealOre:    return Grid->*(&FGridAccess::HealOreCollision);
+			case ERRCellType::SpecialOre: return Grid->*(&FGridAccess::SpecialOreCollision);
+			case ERRCellType::Barrel:     return Grid->*(&FGridAccess::BarrelCollision);
+			default:                      return nullptr;
+			}
+		}
 	};
 
 	/** Read access to the drone's protected laser mesh. Never instantiated. */
@@ -79,8 +97,9 @@ namespace RRDigTests
 
 	/**
 	 * Checks the grid's instance maps against its HISMs: each map has one entry per instance, every instance maps back
-	 * to a cell whose index points at it, of the map's type, and the instance sits on that cell's center; every non-void
-	 * cell has exactly one instance. Returns true when consistent.
+	 * to a cell whose index points at it, of the map's type, and the instance sits on that cell's center; each block type's
+	 * collision ISM has the same instances in the same order, at rest; every non-void cell has exactly one instance.
+	 * Returns true when consistent.
 	 */
 	bool CheckInstanceMaps(FAutomationTestBase& Test, const ARRArenaGrid* Grid)
 	{
@@ -102,6 +121,14 @@ namespace RRDigTests
 				++Errors;
 				continue;
 			}
+			const UInstancedStaticMeshComponent* Collision = FGridAccess::CollisionComponent(Grid, Pair.Key);
+			if (Pair.Key != ERRCellType::Floor && (!Collision || Collision->GetInstanceCount() != InstanceCells.Num()))
+			{
+				Test.AddError(FString::Printf(TEXT("map %s has %d entries, collision ISM has %d instances"), *UEnum::GetValueAsString(Pair.Key),
+					InstanceCells.Num(), Collision ? Collision->GetInstanceCount() : -1));
+				++Errors;
+				continue;
+			}
 
 			for (int32 Instance = 0; Instance < InstanceCells.Num(); ++Instance)
 			{
@@ -112,7 +139,13 @@ namespace RRDigTests
 				FTransform InstanceTransform;
 				Component->GetInstanceTransform(Instance, InstanceTransform, /*bWorldSpace*/ false);
 				const FVector2D Expected((Cell.X + 0.5f) * CellSize, (Cell.Y + 0.5f) * CellSize);
-				const bool bOnCell = FVector2D(InstanceTransform.GetLocation()).Equals(Expected, 1.f);
+				bool bOnCell = FVector2D(InstanceTransform.GetLocation()).Equals(Expected, 1.f);
+				if (Collision)
+				{
+					FTransform CollisionTransform;
+					Collision->GetInstanceTransform(Instance, CollisionTransform, /*bWorldSpace*/ false);
+					bOnCell &= FVector2D(CollisionTransform.GetLocation()).Equals(Expected, 1.f);
+				}
 				if (!bTypeMatches || !Indices.IsValidIndex(CellIndex) || Indices[CellIndex] != Instance || !bOnCell)
 				{
 					if (Errors < 10)
@@ -501,6 +534,128 @@ bool FRRDigPickupCollectTest::RunTest(const FString& Parameters)
 	}
 	TestFalse(TEXT("near pickup destroyed"), NearWeak.IsValid());
 	TestTrue(TEXT("far pickup not collected"), FarWeak.IsValid());
+	return true;
+}
+
+IMPLEMENT_SIMPLE_AUTOMATION_TEST(FRRDigShakeKeepsCollisionTest, "RogueRigs.Dig.ShakeKeepsCollision",
+	EAutomationTestFlags::EditorContext | EAutomationTestFlags::EngineFilter)
+
+bool FRRDigShakeKeepsCollisionTest::RunTest(const FString& Parameters)
+{
+	FTestWorld TestWorld;
+	ARRArenaGrid* Grid = SpawnGrid(*this, TestWorld);
+	ARRMiner* Miner = Grid ? SpawnMiner(*this, TestWorld, Grid, RockWestFloorCell) : nullptr;
+	if (!Miner)
+	{
+		return false;
+	}
+	for (ARRWeapon* Weapon : Miner->GetWeapons())
+	{
+		if (IsValid(Weapon) && Weapon->GetAutoFireComponent())
+		{
+			Weapon->GetAutoFireComponent()->StopFiring();
+		}
+	}
+
+	const UHierarchicalInstancedStaticMeshComponent* RockRender = FGridAccess::Component(Grid, ERRCellType::Rock);
+	const UInstancedStaticMeshComponent* RockCollisionComponent = FGridAccess::CollisionComponent(Grid, ERRCellType::Rock);
+	const int32 RockIndex = FGridAccess::InstanceIndices(Grid)[RockCell.Y * FGridAccess::Width(Grid) + RockCell.X];
+	if (!TestNotNull(TEXT("rock collision ISM"), RockCollisionComponent) || !TestTrue(TEXT("rock instance mapped"), RockIndex != INDEX_NONE))
+	{
+		return false;
+	}
+	TestEqual(TEXT("rock HISM renders without collision"), RockRender->GetCollisionEnabled(), ECollisionEnabled::NoCollision);
+	TestFalse(TEXT("collision ISM is not drawn"), RockCollisionComponent->IsVisible());
+	FTransform RestTransform;
+	RockRender->GetInstanceTransform(RockIndex, RestTransform, /*bWorldSpace*/ false);
+
+	// Part 1: a miner-sized capsule swept east from the floor cell at the rock's west face hits at the same place every frame.
+	const UCapsuleComponent* Capsule = Miner->GetCapsuleComponent();
+	const float Radius = Capsule->GetScaledCapsuleRadius();
+	const float HalfHeight = Capsule->GetScaledCapsuleHalfHeight();
+	const FVector FloorCenter = Grid->GetCellCenter(RockWestFloorCell.X, RockWestFloorCell.Y);
+	// Object query on WorldStatic: terrain only (the miner standing on the floor cell is a pawn, its drone and weapons are not swept).
+	const FVector SweepStart(FloorCenter.X - 0.5f * Grid->GetCellSize() + Radius + 1.f, FloorCenter.Y, FloorCenter.Z + HalfHeight + 2.f);
+	const FVector SweepEnd = SweepStart + FVector(Grid->GetCellSize(), 0.f, 0.f);
+	const FVector FaceCenter = Grid->GetCellFaceCenter(RockCell, FIntPoint(-1, 0));
+	const FCollisionShape Shape = FCollisionShape::MakeCapsule(Radius, HalfHeight);
+	const FCollisionObjectQueryParams Objects(ECC_WorldStatic);
+
+	Grid->SetCellShaking(RockCell, true);
+	TestTrue(TEXT("rock shaking"), FGridAccess::Shaking(Grid).Contains(RockCell));
+	double FirstHitX = 0.0;
+	int32 HitFrames = 0;
+	int32 MovedHits = 0;
+	int32 WrongCellHits = 0;
+	float MaxRenderOffset = 0.f;
+	float MaxCollisionOffset = 0.f;
+	constexpr int32 SweepFrames = 30;
+	for (int32 Frame = 0; Frame < SweepFrames; ++Frame)
+	{
+		TestWorld.Tick();
+		FTransform RenderTransform;
+		FTransform CollisionTransform;
+		RockRender->GetInstanceTransform(RockIndex, RenderTransform, /*bWorldSpace*/ false);
+		RockCollisionComponent->GetInstanceTransform(RockIndex, CollisionTransform, /*bWorldSpace*/ false);
+		MaxRenderOffset = FMath::Max(MaxRenderOffset, static_cast<float>(FVector::Dist(RenderTransform.GetLocation(), RestTransform.GetLocation())));
+		MaxCollisionOffset = FMath::Max(MaxCollisionOffset, static_cast<float>(FVector::Dist(CollisionTransform.GetLocation(), RestTransform.GetLocation())));
+
+		FHitResult Hit;
+		if (!TestWorld.Get()->SweepSingleByObjectType(Hit, SweepStart, SweepEnd, FQuat::Identity, Objects, Shape) || Hit.bStartPenetrating)
+		{
+			continue;
+		}
+		++HitFrames;
+		WrongCellHits += Grid->GetCellFromHit(Hit) == RockCell && Hit.GetComponent() == RockCollisionComponent ? 0 : 1;
+		if (HitFrames == 1)
+		{
+			FirstHitX = Hit.Location.X;
+		}
+		MovedHits += FMath::Abs(Hit.Location.X - FirstHitX) <= 0.01 ? 0 : 1;
+	}
+	AddInfo(FString::Printf(TEXT("sweep: %d / %d frames hit, first hit at x %.3f (face x %.1f, radius %.1f), %d moved; render offset max %.2f uu, collision offset max %.4f uu"),
+		HitFrames, SweepFrames, FirstHitX, FaceCenter.X, Radius, MovedHits, MaxRenderOffset, MaxCollisionOffset));
+	TestTrue(TEXT("the rendering shakes"), MaxRenderOffset > 1.f);
+	TestTrue(TEXT("the collision never moves"), MaxCollisionOffset < 1e-3f);
+	TestEqual(TEXT("the sweep hits the shaking rock every frame"), HitFrames, SweepFrames);
+	TestEqual(TEXT("each hit is the rock's collision instance"), WrongCellHits, 0);
+	TestEqual(TEXT("the hit position never moves"), MovedHits, 0);
+	TestTrue(TEXT("the hit is at the rock's west face"), FMath::Abs(FirstHitX + Radius - FaceCenter.X) <= 1.0);
+
+	// Part 2: the miner walks east into the shaking rock and keeps pushing; it must never be pushed back.
+	UCharacterMovementComponent* Movement = Miner->GetCharacterMovement();
+	Movement->bRunPhysicsWithNoController = true;
+	Movement->SetDefaultMovementMode();
+	for (int32 Frame = 0; Frame < 20; ++Frame)
+	{
+		TestWorld.Tick();
+	}
+	const double ContactX = FaceCenter.X - Radius;
+	double PreviousX = Miner->GetActorLocation().X;
+	double MaxX = PreviousX;
+	double WorstBackStep = 0.0;
+	int32 ContactFrames = 0;
+	constexpr int32 PushFrames = 60;
+	for (int32 Frame = 0; Frame < PushFrames && Grid->IsBlockCell(RockCell); ++Frame)
+	{
+		Grid->SetCellShaking(RockCell, true);
+		Miner->AddMovementInput(FVector::ForwardVector, 1.f);
+		TestWorld.Tick();
+		const double X = Miner->GetActorLocation().X;
+		WorstBackStep = FMath::Max(WorstBackStep, PreviousX - X);
+		MaxX = FMath::Max(MaxX, X);
+		ContactFrames += X >= ContactX - 1.0 ? 1 : 0;
+		PreviousX = X;
+	}
+	AddInfo(FString::Printf(TEXT("push: contact x %.2f, max x %.2f, %d frames in contact, worst backward step %.4f uu"), ContactX, MaxX, ContactFrames, WorstBackStep));
+	TestTrue(TEXT("the rock still stands"), Grid->IsBlockCell(RockCell));
+	TestTrue(TEXT("the miner reached the rock"), ContactFrames >= 30);
+	TestTrue(TEXT("the miner never entered the rock"), MaxX <= ContactX + 1.0);
+	TestTrue(TEXT("the miner never moved backward"), WorstBackStep <= 0.01);
+
+	Grid->SetCellShaking(RockCell, false);
+	TestWorld.Tick();
+	TestTrue(TEXT("instance maps consistent after the shake"), CheckInstanceMaps(*this, Grid));
 	return true;
 }
 

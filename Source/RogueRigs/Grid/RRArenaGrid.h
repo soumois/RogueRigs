@@ -9,6 +9,7 @@
 class ARRPickup;
 class URRBarrelSource;
 class UHierarchicalInstancedStaticMeshComponent;
+class UInstancedStaticMeshComponent;
 class UMaterialInterface;
 class USceneComponent;
 class UStaticMesh;
@@ -71,7 +72,9 @@ DECLARE_DYNAMIC_MULTICAST_DELEGATE_ThreeParams(FRROnCellDestroyedSignature, FInt
  * Arena terrain built from a layout JSON (Content/RogueRigs/Data/Levels/<LayoutName>.json).
  * Rebuilds in OnConstruction so the arena shows in the editor viewport, and again in BeginPlay so runtime
  * state (health, instance maps) always exists; OnConstruction is ignored once play has begun, so runtime
- * destruction is never wiped. One HISM component per visual type (floor and each block type). Grid origin is
+ * destruction is never wiped. One HISM component per visual type (floor and each block type); block HISMs only render,
+ * and each block type has a hidden collision ISM holding the same instances in the same order (same indices), always at
+ * rest, so the dig shake moves the rendering only (see SetCellShaking). The floor HISM renders and collides. Grid origin is
  * the actor; the floor top is at the actor's Z; cell (x, y) center is at ((x + 0.5) * CellSize, (y + 0.5) * CellSize)
  * in actor space. Floor instances exist only on cells without a block; destroying a block adds one.
  * Terrain damage (dig) and destruction (explosions) go through ApplyTerrainDamage / DestroyCell / DestroyCellsInRadius.
@@ -85,7 +88,7 @@ class ROGUERIGS_API ARRArenaGrid : public AActor
 	GENERATED_BODY()
 
 public:
-	/** Creates the root and one HISM component per visual type. Tick is enabled only while a block shakes. */
+	/** Creates the root, one HISM component per visual type and one hidden collision ISM per block type. Tick is enabled only while a block shakes. */
 	ARRArenaGrid();
 
 	/** Reloads the layout and rebuilds every instance. Runs on placement, move and property edit; ignored once play has begun. */
@@ -167,8 +170,8 @@ public:
 	float GetCellShotHealth(FIntPoint Cell) const;
 
 	/**
-	 * Grid cell of a blocking hit on this grid: the cell of the hit instance when the hit component is a block HISM
-	 * with a valid Item, else the cell just behind the impact point (impact point minus 1 uu along the impact normal).
+	 * Grid cell of a blocking hit on this grid: the cell of the hit instance when the hit component is a block collision
+	 * ISM (or block HISM) with a valid Item, else the cell just behind the impact point (impact point minus 1 uu along the impact normal).
 	 */
 	FIntPoint GetCellFromHit(const FHitResult& Hit) const;
 
@@ -187,7 +190,11 @@ public:
 	UFUNCTION(BlueprintCallable, Category = "Grid|Destruction")
 	URRBarrelSource* GetBarrelSource(FIntPoint Cell);
 
-	/** Starts or stops the jitter of the block in Cell (dig feedback). Stopping restores its rest transform. Ignored on cells without a block. */
+	/**
+	 * Starts or stops the jitter of the block in Cell (dig feedback). Only the rendering instance moves: the collision
+	 * instance stays at the cell, so a shaking block never pushes a character. Stopping restores the rest transform.
+	 * Ignored on cells without a block.
+	 */
 	UFUNCTION(BlueprintCallable, Category = "Grid|Destruction")
 	void SetCellShaking(FIntPoint Cell, bool bShaking);
 
@@ -221,14 +228,23 @@ protected:
 	/** True for the block types (Rock, Ore, HealOre, SpecialOre, Barrel). */
 	static bool IsBlockType(ERRCellType Type);
 
-	/** HISM that renders the given block type; nullptr for Floor, Void and Spawn. */
+	/** HISM that renders the given block type (no collision); nullptr for Floor, Void and Spawn. */
 	UHierarchicalInstancedStaticMeshComponent* GetBlockComponent(ERRCellType Type) const;
+
+	/** Hidden ISM that holds the collision of the given block type, instance for instance with GetBlockComponent; nullptr for non-block types. */
+	UInstancedStaticMeshComponent* GetBlockCollisionComponent(ERRCellType Type) const;
+
+	/** Rendering HISM of a map key: FloorInstances for Floor, else GetBlockComponent. */
+	UHierarchicalInstancedStaticMeshComponent* GetRenderComponent(ERRCellType MapKey) const;
 
 	/** Starting health of a block type in dig-seconds; 0 for non-block types. */
 	float GetBlockMaxHealth(ERRCellType Type) const;
 
-	/** Creates one HISM default subobject with block-all collision, attached to the root. */
-	UHierarchicalInstancedStaticMeshComponent* CreateGridComponent(FName Name);
+	/** Creates one HISM default subobject attached to the root: block-all collision when bWithCollision, else render only. */
+	UHierarchicalInstancedStaticMeshComponent* CreateGridComponent(FName Name, bool bWithCollision);
+
+	/** Creates one hidden, shadowless ISM default subobject with block-all collision and remove-at-swap, attached to the root. */
+	UInstancedStaticMeshComponent* CreateCollisionComponent(FName Name);
 
 	/** Absolute path of the layout file for LayoutName. */
 	FString GetLayoutFilePath() const;
@@ -245,11 +261,11 @@ protected:
 	/** Actor-space rest transform of the block instance of a cell. */
 	FTransform GetBlockInstanceTransform(FIntPoint Cell) const;
 
-	/** Adds an instance for Cell to Component and records it in the matching map. Returns the instance index, or INDEX_NONE. */
-	int32 AddCellInstance(UHierarchicalInstancedStaticMeshComponent* Component, ERRCellType MapKey, FIntPoint Cell, const FTransform& LocalTransform);
+	/** Adds an instance for Cell to the rendering component of MapKey (and to its collision ISM for a block) and records it in the matching map. Returns the instance index, or INDEX_NONE. */
+	int32 AddCellInstance(ERRCellType MapKey, FIntPoint Cell, const FTransform& LocalTransform);
 
-	/** Removes the instance at InstanceIndex from Component and patches both maps for the instance moved into the freed slot. */
-	void RemoveCellInstance(UHierarchicalInstancedStaticMeshComponent* Component, ERRCellType MapKey, int32 InstanceIndex);
+	/** Removes the instance at InstanceIndex from the rendering component of MapKey (and its collision ISM) and patches both maps for the instance moved into the freed slot. */
+	void RemoveCellInstance(ERRCellType MapKey, int32 InstanceIndex);
 
 	/** Stops shaking Cell, restoring its rest transform if it still has a block. */
 	void StopShaking(FIntPoint Cell);
@@ -421,25 +437,45 @@ protected:
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Grid|Components")
 	TObjectPtr<UHierarchicalInstancedStaticMeshComponent> FloorInstances;
 
-	/** Rock block instances. */
+	/** Rock block instances (rendering only). */
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Grid|Components")
 	TObjectPtr<UHierarchicalInstancedStaticMeshComponent> RockInstances;
 
-	/** Ore block instances. */
+	/** Ore block instances (rendering only). */
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Grid|Components")
 	TObjectPtr<UHierarchicalInstancedStaticMeshComponent> OreInstances;
 
-	/** Healing ore block instances. */
+	/** Healing ore block instances (rendering only). */
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Grid|Components")
 	TObjectPtr<UHierarchicalInstancedStaticMeshComponent> HealOreInstances;
 
-	/** Special ore block instances. */
+	/** Special ore block instances (rendering only). */
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Grid|Components")
 	TObjectPtr<UHierarchicalInstancedStaticMeshComponent> SpecialOreInstances;
 
-	/** Barrel block instances. */
+	/** Barrel block instances (rendering only). */
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Grid|Components")
 	TObjectPtr<UHierarchicalInstancedStaticMeshComponent> BarrelInstances;
+
+	/** Hidden collision of rock blocks: same instances, same order as RockInstances, always at rest. */
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Grid|Components")
+	TObjectPtr<UInstancedStaticMeshComponent> RockCollision;
+
+	/** Hidden collision of ore blocks: same instances, same order as OreInstances, always at rest. */
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Grid|Components")
+	TObjectPtr<UInstancedStaticMeshComponent> OreCollision;
+
+	/** Hidden collision of healing ore blocks: same instances, same order as HealOreInstances, always at rest. */
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Grid|Components")
+	TObjectPtr<UInstancedStaticMeshComponent> HealOreCollision;
+
+	/** Hidden collision of special ore blocks: same instances, same order as SpecialOreInstances, always at rest. */
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Grid|Components")
+	TObjectPtr<UInstancedStaticMeshComponent> SpecialOreCollision;
+
+	/** Hidden collision of barrel blocks: same instances, same order as BarrelInstances, always at rest. */
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Grid|Components")
+	TObjectPtr<UInstancedStaticMeshComponent> BarrelCollision;
 
 	// --- Loaded layout and runtime state (rebuilt from the file, not saved) ---
 
@@ -475,11 +511,11 @@ protected:
 	UPROPERTY(Transient)
 	TArray<int32> CellDigDrops;
 
-	/** Cell -> instance index in the HISM of the cell's current visual (block component, or floor), row-major; INDEX_NONE on void cells. */
+	/** Cell -> instance index in the HISM of the cell's current visual (block component, or floor), row-major; INDEX_NONE on void cells. A block's collision ISM uses the same index. */
 	UPROPERTY(Transient)
 	TArray<int32> CellInstanceIndex;
 
-	/** Instance index -> cell map per visual, keyed by cell type (Floor for the floor HISM, each block type for its HISM). */
+	/** Instance index -> cell map per visual, keyed by cell type (Floor for the floor HISM, each block type for its HISM and collision ISM). */
 	UPROPERTY(Transient)
 	TMap<ERRCellType, FRRInstanceCellMap> InstanceCellMaps;
 

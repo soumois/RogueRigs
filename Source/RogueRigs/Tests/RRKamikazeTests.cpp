@@ -149,8 +149,8 @@ bool FRRKamikazeFuseTest::RunTest(const FString& Parameters)
 	FRREnemyStatsRow Row;
 	if (TestTrue(TEXT("EnemyStats.csv row Kamikaze read"), ARREnemy::LoadStatsRow(TEXT("Kamikaze"), Row)))
 	{
-		TestEqual(TEXT("MaxHealth 15"), Row.MaxHealth, 15.f);
-		TestEqual(TEXT("MoveSpeed 520"), Row.MoveSpeed, 520.f);
+		TestEqual(TEXT("MaxHealth 100"), Row.MaxHealth, 100.f);
+		TestEqual(TEXT("MoveSpeed 300"), Row.MoveSpeed, 300.f);
 		TestEqual(TEXT("XPValue 1"), Row.XPValue, 1);
 	}
 
@@ -178,7 +178,7 @@ bool FRRKamikazeFuseTest::RunTest(const FString& Parameters)
 	{
 		return false;
 	}
-	TestEqual(TEXT("Health 15"), Health(Kamikaze), 15.f);
+	TestEqual(TEXT("Health 100"), Health(Kamikaze), 100.f);
 	TestEqual(TEXT("starts in Chase"), Kamikaze->GetState(), ERRKamikazeState::Chase);
 	TWeakObjectPtr<ARRKamikaze> Weak(Kamikaze);
 
@@ -209,7 +209,9 @@ bool FRRKamikazeFuseTest::RunTest(const FString& Parameters)
 	AddInfo(FString::Printf(TEXT("armed at %.1f uu from the miner at t=%.3f s, explosion queued %.3f s later, max armed core scale %.2f"),
 		ArmDistance, Kamikaze->GetArmTime(), Fuse, MaxCoreScaleArmed));
 	TestTrue(TEXT("armed within 150 uu"), ArmDistance > 0.f && ArmDistance <= 150.f);
-	TestTrue(TEXT("armed near the 150 uu edge (one frame of travel)"), ArmDistance > 150.f - 2.f * 520.f * FrameSeconds);
+	TestTrue(TEXT("armed near the 150 uu edge (one frame of travel)"), ArmDistance > 150.f - 2.f * Row.MoveSpeed * FrameSeconds);
+	const float ContactDistance = Kamikaze->GetCapsuleComponent()->GetScaledCapsuleRadius() + Miner->GetCapsuleComponent()->GetScaledCapsuleRadius();
+	TestTrue(TEXT("armed before its capsule touches the miner"), ArmDistance > ContactDistance);
 	TestTrue(TEXT("fuse 0.5 s (within one frame)"), Fuse >= 0.5 - 1e-3 && Fuse <= 0.5 + FrameSeconds + 1e-3);
 	TestTrue(TEXT("core grew while armed"), MaxCoreScaleArmed > 1.5f);
 	TestTrue(TEXT("dead after the fuse"), Kamikaze->IsDead());
@@ -273,13 +275,20 @@ bool FRRKamikazeKilledTest::RunTest(const FString& Parameters)
 	const FBox Bounds = Kamikaze->GetCapsuleComponent()->Bounds.GetBox();
 	TestTrue(TEXT("kamikaze capsule covers the shot height"), Bounds.Min.Z < MuzzleTarget.Z && Bounds.Max.Z > MuzzleTarget.Z);
 
-	TestTrue(TEXT("shot 1 stopped"), FireOneShot(*this, TestWorld, Rifle));
-	TestEqual(TEXT("Health 5 after shot 1"), Health(Kamikaze), 5.f);
-	TestFalse(TEXT("alive after shot 1"), Kamikaze->IsDead());
-	TestEqual(TEXT("no explosion while alive"), Explosions->IsSourceSpent(Kamikaze), false);
+	// Each rifle shot deals 10 (crit 0): health steps down by 10 per shot, the last of MaxHealth / 10 shots kills it.
+	const float StartHealth = Health(Kamikaze);
+	TestEqual(TEXT("starts at MaxHealth 100 (EnemyStats.csv)"), StartHealth, 100.f);
+	const int32 ShotsToKill = FMath::CeilToInt(StartHealth / 10.f);
+	for (int32 Shot = 1; Shot < ShotsToKill; ++Shot)
+	{
+		TestTrue(*FString::Printf(TEXT("shot %d stopped"), Shot), FireOneShot(*this, TestWorld, Rifle));
+		TestEqual(*FString::Printf(TEXT("Health after shot %d"), Shot), Health(Kamikaze), StartHealth - 10.f * Shot);
+		TestFalse(*FString::Printf(TEXT("alive after shot %d"), Shot), Kamikaze->IsDead());
+		TestEqual(*FString::Printf(TEXT("no explosion while alive (shot %d)"), Shot), Explosions->IsSourceSpent(Kamikaze), false);
+	}
 
-	TestTrue(TEXT("shot 2 stopped"), FireOneShot(*this, TestWorld, Rifle));
-	TestTrue(TEXT("dead after 2 shots"), Kamikaze->IsDead());
+	TestTrue(TEXT("last shot stopped"), FireOneShot(*this, TestWorld, Rifle));
+	TestTrue(*FString::Printf(TEXT("dead after %d shots"), ShotsToKill), Kamikaze->IsDead());
 	TestFalse(TEXT("killed, not detonated"), Kamikaze->HasDetonated());
 	TestTrue(TEXT("explosion queued at death"), Explosions->IsSourceSpent(Kamikaze));
 	const FVector DeathLocation = Kamikaze->GetActorLocation();
@@ -324,6 +333,13 @@ bool FRRKamikazeChainTest::RunTest(const FString& Parameters)
 		return false;
 	}
 	TestWorld.Tick();
+	// A full-health kamikaze (100) survives one Barrel explosion (40): bring it down to that damage so the explosion kills it.
+	FRRExplosionStatsRow BarrelStats;
+	if (TestTrue(TEXT("Barrel row loads"), Explosions->GetExplosionStats(TEXT("Barrel"), BarrelStats)))
+	{
+		TestTrue(TEXT("full health survives one Barrel explosion"), Health(Kamikaze) > BarrelStats.Damage);
+		Kamikaze->GetAbilitySystemComponent()->SetNumericAttributeBase(URRHealthAttributeSet::GetHealthAttribute(), BarrelStats.Damage);
+	}
 	TestTrue(TEXT("barrel explosion queued"), Explosions->QueueExplosion(Floor + FVector(100.f, 0.f, 0.f), TEXT("Barrel"), nullptr, nullptr));
 	for (int32 Frame = 0; Frame < 40; ++Frame)
 	{

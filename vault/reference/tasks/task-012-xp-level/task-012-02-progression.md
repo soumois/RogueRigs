@@ -3,7 +3,7 @@ id: task-012-02-progression
 description: "URRProgressionComponent on the miner: XP and level, CSV curve 5 × level with carry-over, XP pickups × XPGain, events for the HUD, tests."
 parent: task-012-xp-level
 kind: task
-status: todo
+status: in-progress
 ---
 # XP and level progression
 

@@ -13,7 +13,7 @@ status: in-progress
 - gdd_check: read [[xp-level-up]], [[upgrades]], [[player-stats]], [[enemy-kamikaze]], [[enemy-chaser]], [[drone]], [[sys-gas-core]] (XP and level are not attributes: no upgrade changes them). Open values set by the owner (2026-10-02): kamikaze 100 HP, 300 uu/s, 1.1 × size; chaser 360 uu/s; XP curve 5 × level; level-up feedback and HUD layout. Out: upgrade cards, pause on choice, heal and ore pickup effects. TaskCreate and TaskUpdate are not available in this session: progress is tracked in these nodes.
 - confirmed_by_owner: yes (2026-10-02, all subtasks pre-approved)
 - milestone: M1
-- next_step: task-012-01-tuning-shake
+- next_step: task-012-02-progression
 - result: open
 
 ## Subtasks

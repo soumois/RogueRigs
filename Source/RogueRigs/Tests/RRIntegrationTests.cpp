@@ -482,9 +482,10 @@ namespace RRIntegrationExplosionTests
 	const FIntPoint PointBlankPartnerCell(35, 66);
 	const FIntPoint PointBlankMinerCell(36, 65);
 
-	/** Open row 44 of arena_m1 running along the rocks (37-41, 45): armed miner on the west end, kamikaze 8 cells east above the rocks. */
+	/** Open row 44 of arena_m1 running along the rocks (37-41, 45): armed miner on the west end, kamikaze 11 cells east
+	 * (slow and tough: 300 uu/s, 100 HP, so it dies about 800 uu after its start, above the rocks). */
 	const FIntPoint KamikazeKillMinerCell(32, 44);
-	const FIntPoint KamikazeKillStartCell(40, 44);
+	const FIntPoint KamikazeKillStartCell(43, 44);
 
 	/** Reads protected members of the explosion visual (never instantiated). */
 	struct FExplosionFXAccess : public ARRExplosionFX

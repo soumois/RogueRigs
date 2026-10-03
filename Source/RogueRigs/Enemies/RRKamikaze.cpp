@@ -26,8 +26,9 @@ ARRKamikaze::ARRKamikaze(const FObjectInitializer& ObjectInitializer)
 {
 	StatsRowName = TEXT("Kamikaze");
 
-	// About 0.6 x the miner's default capsule (34 x 88), on the ground: the flow field and avoidance are unchanged. Editable in the Blueprint.
-	GetCapsuleComponent()->InitCapsuleSize(20.f, 53.f);
+	// 1.1 x the miner's capsule (34 x 88 -> 37.4 x 96.8, enemy-kamikaze size), on the ground: the flow field and avoidance are
+	// unchanged. Contact with the miner is at 71.4 uu between centers, inside ArmRange (150) and the arrival distance (75). Editable in the Blueprint.
+	GetCapsuleComponent()->InitCapsuleSize(37.4f, 96.8f);
 
 	VisualRoot = CreateDefaultSubobject<USceneComponent>(TEXT("VisualRoot"));
 	VisualRoot->SetupAttachment(GetCapsuleComponent());

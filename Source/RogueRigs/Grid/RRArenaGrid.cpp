@@ -4,6 +4,7 @@
 
 #include "RogueRigs.h"
 #include "Components/HierarchicalInstancedStaticMeshComponent.h"
+#include "Components/InstancedStaticMeshComponent.h"
 #include "Components/SceneComponent.h"
 #include "Dom/JsonObject.h"
 #include "Dom/JsonValue.h"
@@ -29,19 +30,38 @@ ARRArenaGrid::ARRArenaGrid()
 	GridRoot = CreateDefaultSubobject<USceneComponent>(TEXT("GridRoot"));
 	SetRootComponent(GridRoot);
 
-	FloorInstances = CreateGridComponent(TEXT("FloorInstances"));
-	RockInstances = CreateGridComponent(TEXT("RockInstances"));
-	OreInstances = CreateGridComponent(TEXT("OreInstances"));
-	HealOreInstances = CreateGridComponent(TEXT("HealOreInstances"));
-	SpecialOreInstances = CreateGridComponent(TEXT("SpecialOreInstances"));
-	BarrelInstances = CreateGridComponent(TEXT("BarrelInstances"));
+	FloorInstances = CreateGridComponent(TEXT("FloorInstances"), /*bWithCollision*/ true);
+	RockInstances = CreateGridComponent(TEXT("RockInstances"), /*bWithCollision*/ false);
+	OreInstances = CreateGridComponent(TEXT("OreInstances"), /*bWithCollision*/ false);
+	HealOreInstances = CreateGridComponent(TEXT("HealOreInstances"), /*bWithCollision*/ false);
+	SpecialOreInstances = CreateGridComponent(TEXT("SpecialOreInstances"), /*bWithCollision*/ false);
+	BarrelInstances = CreateGridComponent(TEXT("BarrelInstances"), /*bWithCollision*/ false);
+
+	RockCollision = CreateCollisionComponent(TEXT("RockCollision"));
+	OreCollision = CreateCollisionComponent(TEXT("OreCollision"));
+	HealOreCollision = CreateCollisionComponent(TEXT("HealOreCollision"));
+	SpecialOreCollision = CreateCollisionComponent(TEXT("SpecialOreCollision"));
+	BarrelCollision = CreateCollisionComponent(TEXT("BarrelCollision"));
 }
 
-UHierarchicalInstancedStaticMeshComponent* ARRArenaGrid::CreateGridComponent(FName Name)
+UHierarchicalInstancedStaticMeshComponent* ARRArenaGrid::CreateGridComponent(FName Name, bool bWithCollision)
 {
 	UHierarchicalInstancedStaticMeshComponent* Component = CreateDefaultSubobject<UHierarchicalInstancedStaticMeshComponent>(Name);
 	Component->SetupAttachment(GridRoot);
+	Component->SetCollisionProfileName(bWithCollision ? UCollisionProfile::BlockAll_ProfileName : UCollisionProfile::NoCollision_ProfileName);
+	return Component;
+}
+
+UInstancedStaticMeshComponent* ARRArenaGrid::CreateCollisionComponent(FName Name)
+{
+	UInstancedStaticMeshComponent* Component = CreateDefaultSubobject<UInstancedStaticMeshComponent>(Name);
+	Component->SetupAttachment(GridRoot);
 	Component->SetCollisionProfileName(UCollisionProfile::BlockAll_ProfileName);
+	// Collision only: never drawn, no shadow. Remove-at-swap like the HISMs, so both keep the same instance order.
+	Component->SetVisibility(false);
+	Component->SetHiddenInGame(true);
+	Component->SetCastShadow(false);
+	Component->SetRemoveSwap();
 	return Component;
 }
 
@@ -238,6 +258,24 @@ UHierarchicalInstancedStaticMeshComponent* ARRArenaGrid::GetBlockComponent(ERRCe
 	}
 }
 
+UInstancedStaticMeshComponent* ARRArenaGrid::GetBlockCollisionComponent(ERRCellType Type) const
+{
+	switch (Type)
+	{
+	case ERRCellType::Rock:       return RockCollision;
+	case ERRCellType::Ore:        return OreCollision;
+	case ERRCellType::HealOre:    return HealOreCollision;
+	case ERRCellType::SpecialOre: return SpecialOreCollision;
+	case ERRCellType::Barrel:     return BarrelCollision;
+	default:                      return nullptr;
+	}
+}
+
+UHierarchicalInstancedStaticMeshComponent* ARRArenaGrid::GetRenderComponent(ERRCellType MapKey) const
+{
+	return MapKey == ERRCellType::Floor ? FloorInstances.Get() : GetBlockComponent(MapKey);
+}
+
 float ARRArenaGrid::GetBlockMaxHealth(ERRCellType Type) const
 {
 	switch (Type)
@@ -253,8 +291,10 @@ float ARRArenaGrid::GetBlockMaxHealth(ERRCellType Type) const
 
 void ARRArenaGrid::ClearAllInstances()
 {
-	for (UHierarchicalInstancedStaticMeshComponent* Component : { FloorInstances.Get(), RockInstances.Get(), OreInstances.Get(),
-		HealOreInstances.Get(), SpecialOreInstances.Get(), BarrelInstances.Get() })
+	const TArray<UInstancedStaticMeshComponent*> Components = { FloorInstances.Get(), RockInstances.Get(), OreInstances.Get(),
+		HealOreInstances.Get(), SpecialOreInstances.Get(), BarrelInstances.Get(),
+		RockCollision.Get(), OreCollision.Get(), HealOreCollision.Get(), SpecialOreCollision.Get(), BarrelCollision.Get() };
+	for (UInstancedStaticMeshComponent* Component : Components)
 	{
 		if (Component)
 		{
@@ -290,24 +330,34 @@ void ARRArenaGrid::BuildInstances()
 
 	struct FVisual
 	{
-		UHierarchicalInstancedStaticMeshComponent* Component;
+		ERRCellType MapKey;
 		UStaticMesh* Mesh;
 		UMaterialInterface* Material;
 	};
 	const FVisual Visuals[] = {
-		{ FloorInstances, FloorMesh, FloorMaterial },
-		{ RockInstances, RockMesh, RockMaterial },
-		{ OreInstances, OreMesh, OreMaterial },
-		{ HealOreInstances, HealOreMesh, HealOreMaterial },
-		{ SpecialOreInstances, SpecialOreMesh, SpecialOreMaterial },
-		{ BarrelInstances, BarrelMesh, BarrelMaterial },
+		{ ERRCellType::Floor, FloorMesh, FloorMaterial },
+		{ ERRCellType::Rock, RockMesh, RockMaterial },
+		{ ERRCellType::Ore, OreMesh, OreMaterial },
+		{ ERRCellType::HealOre, HealOreMesh, HealOreMaterial },
+		{ ERRCellType::SpecialOre, SpecialOreMesh, SpecialOreMaterial },
+		{ ERRCellType::Barrel, BarrelMesh, BarrelMaterial },
 	};
 	for (const FVisual& Visual : Visuals)
 	{
-		if (Visual.Component)
+		if (UHierarchicalInstancedStaticMeshComponent* Component = GetRenderComponent(Visual.MapKey))
 		{
-			Visual.Component->SetStaticMesh(Visual.Mesh);
-			Visual.Component->SetMaterial(0, Visual.Material);
+			Component->SetStaticMesh(Visual.Mesh);
+			Component->SetMaterial(0, Visual.Material);
+			// Block HISMs only render: their collision lives in the matching collision ISM (enforced in case a subclass changed it).
+			if (Visual.MapKey != ERRCellType::Floor)
+			{
+				Component->SetCollisionEnabled(ECollisionEnabled::NoCollision);
+			}
+		}
+		if (UInstancedStaticMeshComponent* Collision = GetBlockCollisionComponent(Visual.MapKey))
+		{
+			// Same mesh, so the collision shape matches the block at rest.
+			Collision->SetStaticMesh(Visual.Mesh);
 		}
 	}
 
@@ -354,7 +404,7 @@ void ARRArenaGrid::BuildInstances()
 
 	for (TPair<ERRCellType, FBatch>& Pair : Batches)
 	{
-		UHierarchicalInstancedStaticMeshComponent* Component = Pair.Key == ERRCellType::Floor ? FloorInstances.Get() : GetBlockComponent(Pair.Key);
+		UHierarchicalInstancedStaticMeshComponent* Component = GetRenderComponent(Pair.Key);
 		if (!Component || Pair.Value.Transforms.Num() == 0)
 		{
 			continue;
@@ -362,6 +412,10 @@ void ARRArenaGrid::BuildInstances()
 
 		const int32 FirstIndex = Component->GetInstanceCount();
 		Component->AddInstances(Pair.Value.Transforms, /*bShouldReturnIndices*/ false, /*bWorldSpace*/ false);
+		if (UInstancedStaticMeshComponent* Collision = GetBlockCollisionComponent(Pair.Key))
+		{
+			Collision->AddInstances(Pair.Value.Transforms, /*bShouldReturnIndices*/ false, /*bWorldSpace*/ false);
+		}
 
 		FRRInstanceCellMap& Map = InstanceCellMaps.FindOrAdd(Pair.Key);
 		Map.InstanceCells.SetNum(FirstIndex);
@@ -374,18 +428,23 @@ void ARRArenaGrid::BuildInstances()
 	}
 }
 
-int32 ARRArenaGrid::AddCellInstance(UHierarchicalInstancedStaticMeshComponent* Component, ERRCellType MapKey, FIntPoint Cell, const FTransform& LocalTransform)
+int32 ARRArenaGrid::AddCellInstance(ERRCellType MapKey, FIntPoint Cell, const FTransform& LocalTransform)
 {
+	UHierarchicalInstancedStaticMeshComponent* Component = GetRenderComponent(MapKey);
 	if (!Component)
 	{
 		return INDEX_NONE;
 	}
 
-	// HISM appends: the returned index is the previous instance count.
+	// HISM appends: the returned index is the previous instance count. The collision ISM appends the same instance.
 	const int32 InstanceIndex = Component->AddInstance(LocalTransform, /*bWorldSpace*/ false);
 	if (InstanceIndex == INDEX_NONE)
 	{
 		return INDEX_NONE;
+	}
+	if (UInstancedStaticMeshComponent* Collision = GetBlockCollisionComponent(MapKey))
+	{
+		Collision->AddInstance(LocalTransform, /*bWorldSpace*/ false);
 	}
 
 	TArray<FIntPoint>& InstanceCells = InstanceCellMaps.FindOrAdd(MapKey).InstanceCells;
@@ -398,8 +457,9 @@ int32 ARRArenaGrid::AddCellInstance(UHierarchicalInstancedStaticMeshComponent* C
 	return InstanceIndex;
 }
 
-void ARRArenaGrid::RemoveCellInstance(UHierarchicalInstancedStaticMeshComponent* Component, ERRCellType MapKey, int32 InstanceIndex)
+void ARRArenaGrid::RemoveCellInstance(ERRCellType MapKey, int32 InstanceIndex)
 {
+	UHierarchicalInstancedStaticMeshComponent* Component = GetRenderComponent(MapKey);
 	FRRInstanceCellMap* Map = InstanceCellMaps.Find(MapKey);
 	if (!Component || !Map || !Map->InstanceCells.IsValidIndex(InstanceIndex))
 	{
@@ -413,8 +473,13 @@ void ARRArenaGrid::RemoveCellInstance(UHierarchicalInstancedStaticMeshComponent*
 		UE_LOG(LogRogueRigs, Error, TEXT("ARRArenaGrid: failed to remove instance %d of cell (%d, %d)."), InstanceIndex, RemovedCell.X, RemovedCell.Y);
 		return;
 	}
+	UInstancedStaticMeshComponent* Collision = GetBlockCollisionComponent(MapKey);
+	if (Collision && !Collision->RemoveInstance(InstanceIndex))
+	{
+		UE_LOG(LogRogueRigs, Error, TEXT("ARRArenaGrid: failed to remove collision instance %d of cell (%d, %d)."), InstanceIndex, RemovedCell.X, RemovedCell.Y);
+	}
 
-	// HISM always removes at swap: the last instance now occupies InstanceIndex. Mirror it in both maps.
+	// HISM and the collision ISM (SetRemoveSwap) remove at swap: the last instance now occupies InstanceIndex. Mirror it in both maps.
 	Map->InstanceCells.RemoveAtSwap(InstanceIndex, EAllowShrinking::No);
 	if (InstanceIndex != LastIndex)
 	{
@@ -524,7 +589,7 @@ bool ARRArenaGrid::DestroyCell(FIntPoint Cell, ERRTerrainDamageSource Source)
 
 	if (CellInstanceIndex.IsValidIndex(Index) && CellInstanceIndex[Index] != INDEX_NONE)
 	{
-		RemoveCellInstance(GetBlockComponent(Type), Type, CellInstanceIndex[Index]);
+		RemoveCellInstance(Type, CellInstanceIndex[Index]);
 	}
 
 	Cells[Index] = ERRCellType::Floor;
@@ -537,7 +602,7 @@ bool ARRArenaGrid::DestroyCell(FIntPoint Cell, ERRTerrainDamageSource Source)
 	{
 		CellDigDrops[Index] = 0;
 	}
-	AddCellInstance(FloorInstances, ERRCellType::Floor, Cell, GetFloorInstanceTransform(Cell));
+	AddCellInstance(ERRCellType::Floor, Cell, GetFloorInstanceTransform(Cell));
 
 	UE_LOG(LogRogueRigs, Verbose, TEXT("ARRArenaGrid: block destroyed at (%d, %d), type %s, source %s."), Cell.X, Cell.Y,
 		*UEnum::GetValueAsString(Type), *UEnum::GetValueAsString(Source));
@@ -565,7 +630,8 @@ FIntPoint ARRArenaGrid::GetCellFromHit(const FHitResult& Hit) const
 	{
 		for (const TPair<ERRCellType, FRRInstanceCellMap>& Pair : InstanceCellMaps)
 		{
-			if (Pair.Key != ERRCellType::Floor && GetBlockComponent(Pair.Key) == HitComponent && Pair.Value.InstanceCells.IsValidIndex(Hit.Item))
+			const bool bBlockComponent = HitComponent == GetBlockCollisionComponent(Pair.Key) || HitComponent == GetBlockComponent(Pair.Key);
+			if (Pair.Key != ERRCellType::Floor && bBlockComponent && Pair.Value.InstanceCells.IsValidIndex(Hit.Item))
 			{
 				return Pair.Value.InstanceCells[Hit.Item];
 			}
@@ -790,7 +856,7 @@ void ARRArenaGrid::Tick(float DeltaSeconds)
 			continue;
 		}
 
-		// Incommensurate sines per axis: a horizontal jitter bounded by ShakeAmplitude plus a vertical bob
+		// Only the rendering instance moves; the collision instance stays at rest. Incommensurate sines per axis: a horizontal jitter bounded by ShakeAmplitude plus a vertical bob
 		// bounded by ShakeVerticalAmplitude.
 		const FVector Offset(
 			ShakeAmplitude * FMath::Sin(Angle + Pair.Value),
