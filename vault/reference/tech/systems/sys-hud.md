@@ -1,22 +1,23 @@
 ---
 id: sys-hud
-description: "In-run HUD C++ base: URRHUDWidget display events (health, game over) fed by the miner ASC and the game mode, created by the player controller."
+description: "In-run HUD C++ base: URRHUDWidget display events (health, XP, level-up, game over) fed by the miner and the game mode, created by the player controller."
 parent: systems-index
 kind: doc
 ---
 # HUD
 
-- responsibility: feed the UI layer from C++: the miner's health and the game-over event. Layout, text and visuals live in the Blueprint subclass (BP agent, [[cpp-bp-split]]); no gameplay logic in the widget.
-- main_classes: `URRHUDWidget : UUserWidget` (`Source/RogueRigs/UI/RRHUDWidget.h`, `Abstract`). `BlueprintImplementableEvent`s to implement in the Blueprint subclass: `OnHealthChanged(Current, Max)` (Health and MaxHealth of the miner) and `OnGameOver()`.
+- responsibility: feed the UI layer from C++: the miner's health, XP and level-ups, and the game-over event. Layout, text and visuals live in the Blueprint subclass (BP agent, [[cpp-bp-split]]); no gameplay logic in the widget.
+- main_classes: `URRHUDWidget : UUserWidget` (`Source/RogueRigs/UI/RRHUDWidget.h`, `Abstract`). `BlueprintImplementableEvent`s to implement in the Blueprint subclass: `OnHealthChanged(float Current, float Max)` (Health and MaxHealth of the miner), `OnXPChanged(float Current, float Needed, int32 Level)` and `OnLevelUp(int32 NewLevel)` (miner progression, [[sys-progression]]) and `OnGameOver()`. Guards: `OnHealthChanged` is never called with Max <= 0 and `OnXPChanged` never with Needed <= 0, so the Blueprint may divide by them.
 - entry_points:
   - `ARRPlayerController::BeginPlay` (local player only: skipped when `HUDWidgetClass` is none, the controller is not local or has no `ULocalPlayer`, so headless tests create no widget) creates `HUDWidgetClass`, adds it to the viewport, calls `BindToGameMode(auth game mode as ARRGameMode)` and `BindToMiner(possessed miner)`. `ARRPlayerController::OnPossess` rebinds to the new miner. `GetHUDWidget()` returns it.
-  - `BindToMiner(ARRMiner*)`: subscribes to the ASC value-change delegates of `Health` and `MaxHealth` (either change calls `OnHealthChanged` with both current values) and calls `OnHealthChanged` once at bind time; null unbinds.
+  - `BindToMiner(ARRMiner*)`: subscribes to the ASC value-change delegates of `Health` and `MaxHealth` (either change calls `OnHealthChanged` with both current values, skipped while MaxHealth is 0) and to the miner `URRProgressionComponent` `OnXPChanged` / `OnLevelUp` (forwarded to the display events), then pushes the current health and XP once; null unbinds.
   - `BindToGameMode(ARRGameMode*)`: binds `ARRGameMode::OnGameOver` to `OnGameOver` ([[sys-player]] game over); null unbinds. `NativeDestruct` removes every binding.
 - data: editable on the controller Blueprint: `HUDWidgetClass` (category HUD, none by default; set to the HUD widget Blueprint).
-- depends_on: [[sys-player]] (miner, controller, game mode), [[sys-gas-core]] (health attribute set); module `UMG`.
-- implements: [[miner]] (M1 "Game Over" text, health display data).
-- gotchas: the game mode exists only on the server, so the game-over binding is single-player only. The first `OnHealthChanged` may report 0 / 0 if the controller begins play before the miner applied its CSV base stats; the base-stat change then fires it again with the real values.
+- depends_on: [[sys-player]] (miner, controller, game mode), [[sys-gas-core]] (health attribute set), [[sys-progression]]; module `UMG`.
+- implements: [[miner]] (M1 "Game Over" text, health display data), [[xp-level-up]] (XP bar and level-up data).
+- gotchas: the game mode exists only on the server, so the game-over binding is single-player only. If the controller begins play before the miner applied its CSV base stats, MaxHealth is 0: the bind-time push is skipped (it caused a divide-by-zero in WBP_HUD at PIE start) and the base-stat change fires `OnHealthChanged` with the real values. The XP curve is loaded at component initialization, so the bind-time `OnXPChanged` has its need.
 
 ## Relations
 - [[systems-index]] — parent index.
 - [[sys-player]] — the controller that creates the widget, the miner and game mode it listens to.
+- [[sys-progression]] — the XP and level events it forwards.

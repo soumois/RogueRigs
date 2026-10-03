@@ -17,7 +17,7 @@ enum class ERRPickupType : uint8
 	Ore,
 	/** Heal, dropped by heal ore blocks. */
 	Heal,
-	/** Experience cube, dropped by robots on death (sys-enemies). Inert on collection for now (logged only). */
+	/** Experience cube, dropped by robots on death (sys-enemies). Adds XPAmount XP to the miner progression on collection. */
 	XP
 };
 
@@ -27,7 +27,8 @@ enum class ERRPickupType : uint8
  * is over and AttractDelay has elapsed, each tick it measures its horizontal distance to the player miner; when that distance is within the
  * miner's PickupRadius attribute it flies to the miner at FlySpeed (and keeps flying even if the miner moves away)
  * and is collected within CollectDistance: logs its type on LogRogueRigs, calls ARRMiner::NotifyPickupCollected,
- * destroys itself. No collision at all (pawns and projectiles go through). No heal or ore effect yet.
+ * destroys itself; an XP pickup first adds XPAmount to the miner progression (URRProgressionComponent::AddXP, scaled by
+ * XPGain there). No collision at all (pawns and projectiles go through). No heal or ore effect yet.
  * Spawned by ARRArenaGrid at a cell center (floor top), and by ARREnemy at its feet on death (XP). Subclass in Blueprint: set PickupType and the mesh.
  */
 UCLASS(Abstract, Blueprintable)
@@ -59,7 +60,7 @@ protected:
 	/** Moves toward the miner at FlySpeed; collects when within CollectDistance. */
 	void FlyToMiner(ARRMiner* Miner, float DeltaSeconds);
 
-	/** Logs the type, notifies the miner and destroys this pickup. */
+	/** Logs the type, adds XPAmount XP to the miner for an XP pickup, notifies the miner and destroys this pickup. */
 	void Collect(ARRMiner* Miner);
 
 	/** Visual root. Collision disabled: pickups find the miner by distance. Assign the mesh in the Blueprint. */
@@ -69,6 +70,10 @@ protected:
 	/** What this pickup gives when collected (set in each Blueprint subclass). */
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Pickup")
 	ERRPickupType PickupType = ERRPickupType::Ore;
+
+	/** Raw XP given by an XP pickup on collection (before the miner XPGain). Ignored by other types. */
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Pickup", meta = (ClampMin = 0))
+	float XPAmount = 1.f;
 
 	/** Maximum horizontal offset (per axis) of the pop target from the spawn point; keep under half a cell to stay in the cell. */
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Pickup|Pop", meta = (ClampMin = 0, Units = "cm"))

@@ -3,7 +3,7 @@ id: task-012-02-progression
 description: "URRProgressionComponent on the miner: XP and level, CSV curve 5 × level with carry-over, XP pickups × XPGain, events for the HUD, tests."
 parent: task-012-xp-level
 kind: task
-status: in-progress
+status: done
 ---
 # XP and level progression
 
@@ -16,7 +16,7 @@ status: in-progress
 - editor_state: closed
 - token_ceiling: 80000
 - milestone: M1
-- result: open
+- result: URRProgressionComponent on the miner (AddXP × XPGain, carry-over, multi-level; GetLevel, GetXP, GetXPToNextLevel; OnXPChanged(Current, Needed, Level), OnLevelUp(NewLevel)); XPCurve.csv rows 1 to 50 (5 × level); XP pickups add XPAmount 1; URRHUDWidget OnXPChanged and OnLevelUp, health and XP pushed only when Max and Needed > 0 (HUD divide-by-zero fix). 4 Progression tests. Build exit 0, 57/57 (orchestrator re-ran). New doc sys-progression; sys-hud, sys-pickups, sys-player, sys-automation-tests, systems-index, build-toolchain. About 107k tokens.
 
 ## Relations
 - [[task-012-xp-level]] — parent global task.

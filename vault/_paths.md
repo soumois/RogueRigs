@@ -104,6 +104,7 @@ sys-grid  reference/tech/systems/sys-grid.md
 sys-hud  reference/tech/systems/sys-hud.md
 sys-pickups  reference/tech/systems/sys-pickups.md
 sys-player  reference/tech/systems/sys-player.md
+sys-progression  reference/tech/systems/sys-progression.md
 sys-projectiles  reference/tech/systems/sys-projectiles.md
 sys-spawner  reference/tech/systems/sys-spawner.md
 sys-status-effects  reference/tech/systems/sys-status-effects.md

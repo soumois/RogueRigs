@@ -6,6 +6,7 @@
 #include "Engine/CollisionProfile.h"
 #include "Kismet/GameplayStatics.h"
 #include "Player/RRMiner.h"
+#include "Progression/RRProgressionComponent.h"
 #include "RogueRigs.h"
 
 #include UE_INLINE_GENERATED_CPP_BY_NAME(RRPickup)
@@ -135,6 +136,10 @@ void ARRPickup::Collect(ARRMiner* Miner)
 
 	if (Miner)
 	{
+		if (PickupType == ERRPickupType::XP && Miner->GetProgression())
+		{
+			Miner->GetProgression()->AddXP(XPAmount);
+		}
 		Miner->NotifyPickupCollected(PickupType);
 	}
 	Destroy();

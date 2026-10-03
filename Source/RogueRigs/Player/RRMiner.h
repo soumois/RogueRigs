@@ -17,6 +17,7 @@ class URRAbilitySystemComponent;
 class URRHealthAttributeSet;
 class URRMovementAttributeSet;
 class URRPlayerAttributeSet;
+class URRProgressionComponent;
 class USpringArmComponent;
 class UGameplayEffect;
 struct FOnAttributeChangeData;
@@ -38,7 +39,8 @@ DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FRROnMinerDeathSignature, AActor*, I
  * (dominant axis of the world move direction) and that block face is within the dig reach, the miner asks the
  * drone to cut it (ARRDrone::RequestDig); the drone handles the cancel rule. The arena grid is found once at
  * BeginPlay (first ARRArenaGrid in the world). Pickups (ARRPickup) read GetPickupRadius and report their collection
- * through NotifyPickupCollected, which broadcasts OnPickupCollected; no pickup effect here. Weapons: at BeginPlay each class of
+ * through NotifyPickupCollected, which broadcasts OnPickupCollected; no pickup effect here. XP and level live in its
+ * URRProgressionComponent (GetProgression; XP pickups call AddXP on it). Weapons: at BeginPlay each class of
  * StartingWeapons is spawned (owner: the miner), attached (mesh socket WeaponAttachSocketName, or the capsule at
  * WeaponAttachOffset when the socket is None) and acquired (ARRWeapon::Acquire); they are destroyed at EndPlay.
  * Collision: the capsule overlaps the Projectile channel (never blocked by any projectile; projectiles still get
@@ -108,6 +110,10 @@ public:
 	/** Current PickupRadius attribute in uu (collection radius of XP, ore and heal pickups); 0 when the attribute set is missing. */
 	UFUNCTION(BlueprintPure, Category = "Miner|Pickup")
 	float GetPickupRadius() const;
+
+	/** XP and level progression of the miner (default subobject). */
+	UFUNCTION(BlueprintPure, Category = "Miner|Progression")
+	URRProgressionComponent* GetProgression() const { return Progression; }
 
 	/** Called by a pickup when it reaches the miner: broadcasts OnPickupCollected. Applies no effect itself. */
 	void NotifyPickupCollected(ERRPickupType Type);
@@ -216,6 +222,10 @@ protected:
 	/** PickupRadius, XPGain, MiningSpeed, Luck. Registered on the ASC as a default subobject. */
 	UPROPERTY()
 	TObjectPtr<URRPlayerAttributeSet> PlayerSet;
+
+	/** XP and level; XP pickups call AddXP on it, the HUD listens to its events. */
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Components")
+	TObjectPtr<URRProgressionComponent> Progression;
 
 	/** Row of PlayerBaseStats.csv applied as base stats at BeginPlay. */
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Miner|Stats")

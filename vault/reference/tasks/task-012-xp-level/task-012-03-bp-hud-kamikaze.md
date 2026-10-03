@@ -3,7 +3,7 @@ id: task-012-03-bp-hud-kamikaze
 description: "Bigger kamikaze visuals, HUD XP bar with level and LEVEL UP text, HUD divide-by-zero check, PIE check."
 parent: task-012-xp-level
 kind: task
-status: todo
+status: in-progress
 ---
 # HUD XP and kamikaze visuals
 

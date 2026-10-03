@@ -1,4 +1,4 @@
-// Rogue Rigs - test-only listener: records dynamic delegate broadcasts (pickup collected, cell destroyed, auto-fire shots and reloads, projectile stop, component hit, game over, explosion) for the automation tests.
+// Rogue Rigs - test-only listener: records dynamic delegate broadcasts (pickup collected, cell destroyed, auto-fire shots and reloads, projectile stop, component hit, game over, explosion, XP and level-up) for the automation tests.
 
 #pragma once
 
@@ -15,7 +15,8 @@ class UAbilitySystemComponent;
 /**
  * Records the broadcasts of ARRMiner::OnPickupCollected, ARRArenaGrid::OnCellDestroyed, the URRAutoFireComponent
  * events (OnShotFired, OnReloadStarted, OnReloadFinished), UProjectileMovementComponent::OnProjectileStop and
- * UPrimitiveComponent::OnComponentHit, ARRGameMode::OnGameOver and URRExplosionSubsystem::OnExplosion so
+ * UPrimitiveComponent::OnComponentHit, ARRGameMode::OnGameOver, URRExplosionSubsystem::OnExplosion and the
+ * URRProgressionComponent events (OnXPChanged, OnLevelUp) so
  * automation tests (Source/RogueRigs/Tests) can check that the events fire. Dynamic delegates need a UFunction to
  * bind to, so this is a UCLASS and is compiled in every configuration (UHT does not support WITH_DEV_AUTOMATION_TESTS
  * guards); it is never used by gameplay code. Create with NewObject, keep it alive with a TStrongObjectPtr.
@@ -61,6 +62,20 @@ public:
 	/** Bind to URRExplosionSubsystem::OnExplosion: appends the row name and the center. */
 	UFUNCTION()
 	void HandleExplosion(FVector Center, FName RowName) { ExplosionRows.Add(RowName); ExplosionCenters.Add(Center); }
+
+	/** Bind to URRProgressionComponent::OnXPChanged: appends (Current, Needed, Level) as a vector. */
+	UFUNCTION()
+	void HandleXPChanged(float Current, float Needed, int32 Level) { XPChanges.Add(FVector(Current, Needed, Level)); }
+
+	/** Bind to URRProgressionComponent::OnLevelUp: appends the new level. */
+	UFUNCTION()
+	void HandleLevelUp(int32 NewLevel) { LevelUps.Add(NewLevel); }
+
+	/** (Current, Needed, Level) received through HandleXPChanged, in order. */
+	const TArray<FVector>& GetXPChanges() const { return XPChanges; }
+
+	/** Levels received through HandleLevelUp, in order. */
+	const TArray<int32>& GetLevelUps() const { return LevelUps; }
 
 	/** Row names received through HandleExplosion, in order. */
 	const TArray<FName>& GetExplosionRows() const { return ExplosionRows; }
@@ -122,6 +137,12 @@ protected:
 
 	/** Explosion centers received so far. */
 	TArray<FVector> ExplosionCenters;
+
+	/** XP changes received so far: (Current, Needed, Level). */
+	TArray<FVector> XPChanges;
+
+	/** Level-ups received so far. */
+	TArray<int32> LevelUps;
 
 	/** Game over broadcasts received so far. */
 	int32 GameOverCount = 0;
