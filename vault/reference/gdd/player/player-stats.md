@@ -24,7 +24,7 @@ Damage (%), fire rate (%), reload speed (%), critical chance (points), critical 
 
 ## Out of scope
 - Armor: deferred.
-- Life regen and dodge: not used. Healing comes only from heal ore ([[heal-ore]]).
+- Life regen and dodge: not used. Healing comes from heal ore ([[heal-ore]]) and from each level-up ([[xp-level-up]], owner 2026-10-03).
 - A future upgrade on heals received (%): candidate, not decided.
 
 ## Base values (provisional, owner to test)

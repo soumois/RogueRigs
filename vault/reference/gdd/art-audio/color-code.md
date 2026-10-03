@@ -16,6 +16,8 @@ status: approved
 | XP and resource pickups | glowing cyan |
 | Miner, turrets, drone | white + teal + rust |
 | Player shots, mining laser | white-gold |
+| Command console, shuttle | white + teal (player side) |
+| Console marked rocks | pulsing white outline |
 | Enemy shots, targeting laser | red (moving lines) |
 | All robots | red eyes + yellow logo plate |
 | Chaser | company yellow |

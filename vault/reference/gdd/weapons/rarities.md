@@ -12,7 +12,7 @@ status: approved
 - Each (stat, target, tier) has one fixed value, the same in every run. Values: open.
 - Draw (provisional): each tier has a base weight; luck raises the weight of higher tiers: weight = base weight × (1 + k × luck)^rank, with rank 0 (grey) to 4 (yellow), then normalized. Placeholders: base weights grey 50, green 30, blue 13, purple 5, yellow 2; k = 0.1.
 - A bonus chest adds a temporary luck bonus to its draw ([[objective-bonus-chest]]).
-- Milestone: M2.
+- Milestone: M1 (owner 2026-10-03, moved from M2).
 
 ## Relations
 - [[weapons-index]] — parent index.

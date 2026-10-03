@@ -16,7 +16,8 @@ status: approved
   - the console shows its gauge, so the player sees why progress stops.
 - The drone hacks one target at a time and cannot dig and hack at once.
 - While the console is not hacked, the alert bar is paused.
-- Open: drop distance range, marked-rock radius, marker look (must follow [[color-code]]), hack duration, drain rate, zone radius.
+- Values (provisional, owner 2026-10-03): dropped 12 to 20 cells from the miner; marked rocks within 2 cells, pulsing white outline; hack 20 s; zone radius 3 cells; progress drains 5 %/s while the miner is out.
+- M1: one console, dropped when the alert bar reaches 40 % ([[level-flow]]).
 - Lore (provisional): the Rigs' ship detects an entry point into the claim's network and drops the console there as an access point ([[lore]]).
 - Milestone: M1.
 

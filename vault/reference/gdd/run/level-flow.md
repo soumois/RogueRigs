@@ -18,6 +18,9 @@ status: approved
 
 Throughout the level, robot waves spawn just outside the miner's field of view, and killed robots drop XP cubes ([[xp-level-up]]).
 
+## M1 (provisional, owner 2026-10-03)
+- One fixed sequence instead of a drawn pool: the alert bar fills in about 4 min of time alone, each kill adds 0.5 s; one console at 40 %; extraction when full. Swarms come from the spawner packs ([[enemies-index]]).
+
 ## Open values
 - Draw weights and conditions of tier events. Events are drawn from a pool with conditions; swarms are the most frequent; at least one console per level.
 - Swarm size and composition.
