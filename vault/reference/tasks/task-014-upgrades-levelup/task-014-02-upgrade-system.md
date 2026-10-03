@@ -3,7 +3,7 @@ id: task-014-02-upgrade-system
 description: "Upgrade value CSV, luck-weighted rarity draw, 3-card offer limited to owned weapons, GAS application, one reroll per screen, tests."
 parent: task-014-upgrades-levelup
 kind: task
-status: in-progress
+status: done
 ---
 # Upgrade system
 
@@ -16,7 +16,7 @@ status: in-progress
 - editor_state: closed
 - token_ceiling: 120000
 - milestone: M1
-- result: open
+- result: URRUpgradeComponent on the miner (BuildOffer, BuildOfferWithOwnerLuck, Reroll once per offer with no repeated stat+target, ApplyUpgrade refusing unowned weapons, OnUpgradeApplied, ReplayGlobalUpgrades on ARRWeapon::Acquire); FRRUpgradeCard with French DisplayName, TargetText, ValueText; UpgradeValues.csv (55 rows, no magazine) and UpgradeRarities.csv; runtime SetByCaller GEs; targets read from GetWeapons (shotgun ready). Provisional choices in sys-upgrades: stats equally likely then target even; rifle UI name Fusil à rafales. 8 new Upgrades tests; build 0, 70/70. Docs sys-upgrades, sys-weapons, sys-player, sys-automation-tests, build-toolchain, naming. Commit a8099d4, about 160k tokens.
 
 ## Relations
 - [[task-014-upgrades-levelup]] — parent global task.

@@ -3,7 +3,7 @@ id: task-014-03-levelup-flow
 description: "On level-up: effect event, heal 20 % of max health, pause about 0.8 s later on the card offer, chained screens, pick resumes; tests."
 parent: task-014-upgrades-levelup
 kind: task
-status: todo
+status: in-progress
 ---
 # Level-up flow
 
