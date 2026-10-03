@@ -3,7 +3,7 @@ id: task-014-05-tests-integration
 description: "Integration tests with the final Blueprints: kill robots, level up, paused offer appears, reroll, pick, stat changed, resume."
 parent: task-014-upgrades-levelup
 kind: task
-status: todo
+status: in-progress
 ---
 # Upgrade integration tests
 
