@@ -51,7 +51,7 @@ ARRMiner::ARRMiner(const FObjectInitializer& ObjectInitializer)
 	SpringArm->TargetArmLength = CameraArmLength;
 	SpringArm->bDoCollisionTest = false;
 	SpringArm->bUsePawnControlRotation = false;
-	SpringArm->bEnableCameraLag = true;
+	SpringArm->bEnableCameraLag = bCameraLag;
 	SpringArm->CameraLagSpeed = 0.5f;
 
 	Camera = CreateDefaultSubobject<UCameraComponent>(TEXT("Camera"));
@@ -82,6 +82,7 @@ void ARRMiner::OnConstruction(const FTransform& Transform)
 
 	SpringArm->SetRelativeRotation(FRotator(CameraPitch, CameraYaw, 0.f));
 	SpringArm->TargetArmLength = CameraArmLength;
+	SpringArm->bEnableCameraLag = bCameraLag;
 	Camera->SetFieldOfView(CameraFieldOfView);
 }
 

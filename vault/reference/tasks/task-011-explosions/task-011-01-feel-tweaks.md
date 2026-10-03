@@ -3,7 +3,7 @@ id: task-011-01-feel-tweaks
 description: "Camera arm 1700 uu without lag, block shake 25 uu at 8 Hz plus 8 uu vertical, chaser wind-up 0.1 s, tests updated."
 parent: task-011-explosions
 kind: task
-status: in-progress
+status: done
 ---
 # Feel tweaks
 
@@ -16,7 +16,7 @@ status: in-progress
 - editor_state: closed
 - token_ceiling: 50000
 - milestone: M1
-- result: open
+- result: CameraArmLength 1700, bCameraLag false (miner centered); shake 25 uu, 8 Hz, ShakeVerticalAmplitude 8 uu; Chaser WindUp 0.1 (hits every 1.117 s in contact); no Blueprint override. Tests updated (same checks). Build exit 0, 36/36 (orchestrator re-ran). Note: RifleKillsChaser timing varies run to run (random spread), doc updated to 1.95 s. About 44k tokens.
 
 ## Relations
 - [[task-011-explosions]] — parent global task.

@@ -177,7 +177,7 @@ bool FRREnemyStatsTest::RunTest(const FString& Parameters)
 	TestEqual(TEXT("Damage 10"), Row.Damage, 10.f);
 	TestEqual(TEXT("AttackRate 1"), Row.AttackRate, 1.f);
 	TestEqual(TEXT("AttackRange 120"), Row.AttackRange, 120.f);
-	TestEqual(TEXT("WindUp 0.25"), Row.WindUp, 0.25f);
+	TestEqual(TEXT("WindUp 0.1"), Row.WindUp, 0.1f);
 	TestEqual(TEXT("XPValue 1"), Row.XPValue, 1);
 	TestEqual(TEXT("KnockbackResistance 0"), Row.KnockbackResistance, 0.f);
 
@@ -337,7 +337,7 @@ bool FRREnemyAttackTest::RunTest(const FString& Parameters)
 		TestEqual(TEXT("each hit deals 10"), Hit.Damage, 10.f);
 	}
 	AddInfo(FString::Printf(TEXT("wind-up at %.3f s; hits (s after wind-up):%s; %d attacks"), WindUpStart, *Times, Chaser->GetAttackCount()));
-	TestTrue(TEXT("first hit 0.25 s after the wind-up starts (±1 frame)"), FMath::Abs(Hits[0].Time - WindUpStart - 0.25) <= FrameSeconds + 1e-3);
+	TestTrue(TEXT("first hit 0.1 s after the wind-up starts (±1 frame)"), FMath::Abs(Hits[0].Time - WindUpStart - 0.1) <= FrameSeconds + 1e-3);
 	for (int32 Index = 1; Index < Hits.Num(); ++Index)
 	{
 		TestTrue(FString::Printf(TEXT("hit %d at least 1 s after the previous"), Index + 1), Hits[Index].Time - Hits[Index - 1].Time >= 1.0 - 1e-3);

@@ -3,7 +3,7 @@ id: task-011-02-layout-barrels
 description: "Add about 16 barrel cells to arena_m1 in walls along paths, some in pairs, without changing rock, heal ore or paths."
 parent: task-011-explosions
 kind: task
-status: todo
+status: in-progress
 ---
 # Layout: barrels
 

@@ -703,11 +703,12 @@ void ARRArenaGrid::Tick(float DeltaSeconds)
 			continue;
 		}
 
-		// Two incommensurate sines per axis: a horizontal jitter bounded by ShakeAmplitude.
+		// Incommensurate sines per axis: a horizontal jitter bounded by ShakeAmplitude plus a vertical bob
+		// bounded by ShakeVerticalAmplitude.
 		const FVector Offset(
 			ShakeAmplitude * FMath::Sin(Angle + Pair.Value),
 			ShakeAmplitude * FMath::Sin(1.37f * Angle + 2.f * Pair.Value),
-			0.f);
+			ShakeVerticalAmplitude * FMath::Sin(1.71f * Angle + 3.f * Pair.Value));
 		FTransform Transform = GetBlockInstanceTransform(Cell);
 		Transform.AddToTranslation(Offset);
 		Component->UpdateInstanceTransform(CellInstanceIndex[Index], Transform, /*bWorldSpace*/ false,

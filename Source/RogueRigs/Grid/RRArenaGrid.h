@@ -293,11 +293,15 @@ protected:
 
 	/** Maximum horizontal offset of a shaking block from its rest position. */
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Grid|Destruction", meta = (ClampMin = "0.0", Units = "cm"))
-	float ShakeAmplitude = 15.f;
+	float ShakeAmplitude = 25.f;
 
-	/** Oscillation frequency of a shaking block (provisional). */
+	/** Maximum vertical offset (bob) of a shaking block from its rest position, in the same jitter. */
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Grid|Destruction", meta = (ClampMin = "0.0", Units = "cm"))
+	float ShakeVerticalAmplitude = 8.f;
+
+	/** Oscillation frequency of a shaking block. */
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Grid|Destruction", meta = (ClampMin = "0.0", Units = "Hz"))
-	float ShakeFrequency = 10.f;
+	float ShakeFrequency = 8.f;
 
 	// --- Drops (ore and heal ore) ---
 

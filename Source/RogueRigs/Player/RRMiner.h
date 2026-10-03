@@ -135,7 +135,7 @@ public:
 	virtual void Tick(float DeltaSeconds) override;
 
 protected:
-	/** Applies the camera tunables (pitch, arm length, FOV) to the components, so Blueprint edits show up. */
+	/** Applies the camera tunables (pitch, arm length, lag, FOV) to the components, so Blueprint edits show up. */
 	virtual void OnConstruction(const FTransform& Transform) override;
 
 	/** Initializes the ASC actor info, applies the CSV base stats and starts mirroring MoveSpeed. */
@@ -231,7 +231,11 @@ protected:
 
 	/** Camera arm length in uu. */
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Miner|Camera", meta = (ClampMin = 0, Units = "cm"))
-	float CameraArmLength = 2200.f;
+	float CameraArmLength = 1700.f;
+
+	/** Spring arm camera lag. Off by default so the miner stays centered on screen. */
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Miner|Camera")
+	bool bCameraLag = false;
 
 	/** Camera horizontal field of view in degrees. */
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Miner|Camera", meta = (ClampMin = 5, ClampMax = 170, Units = "deg"))
