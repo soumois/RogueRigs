@@ -3,7 +3,7 @@ id: task-015-02-bp-shotgun
 description: "White-gold conical wave VFX cut by rock, shotgun Blueprint and data, miner loadout, PIE check, docs."
 parent: task-015-shotgun
 kind: task
-status: todo
+status: in-progress
 ---
 # Shotgun Blueprint and VFX
 

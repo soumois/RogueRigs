@@ -3,7 +3,7 @@ id: task-015-01-shotgun-cpp
 description: "Shotgun weapon: instant 60° cone, per-enemy grid line of sight, damage and crit per enemy, knockback, magazine and reload; start loadout; tests."
 parent: task-015-shotgun
 kind: task
-status: in-progress
+status: done
 ---
 # Shotgun C++
 
@@ -16,7 +16,7 @@ status: in-progress
 - editor_state: closed
 - token_ceiling: 110000
 - milestone: M1
-- result: open
+- result: ARRShotgun (instant 60° cone, 700 uu, grid line of sight via new ARRArenaGrid::GetClearDistance and HasLineOfSight, one damage spec per robot with its own crit, knockback 600 uu/s launch scaled by 1 − resistance via ARREnemy::ApplyKnockback, OnWaveFired(Origin, Direction, HalfAngleDeg, WaveRange, ClippedLength), GetWaveClearDistance). WeaponStats.csv Shotgun row + ConeAngleDeg, KnockbackForce columns. ARRMiner::GuaranteedWeaponClasses spawns the native shotgun until BP_Miner StartingWeapons lists BP_Shotgun. Existing tests adjusted for two weapons (rifle looked up; integration stops the shotgun; upgrade tests keep rifle only). 6 new Shotgun tests; build 0, 82/82. Docs sys-weapons, sys-damage, sys-grid, sys-enemies, sys-player, sys-automation-tests. To check in PIE: knockback strength (friction stops it fast); shotgun ignores dummies. Commits 3280326, 28b26ef; about 200k tokens over two runs.
 
 ## Relations
 - [[task-015-shotgun]] — parent global task.

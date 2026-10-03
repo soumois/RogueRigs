@@ -13,7 +13,7 @@ status: in-progress
 - gdd_check: Read [[shotgun]], [[burst-rifle]], [[upgrades]], [[miner]], [[color-code]]. Weapon acquisition open → owner: both weapons at start in M1. Owner decisions of 2026-10-03 written into the GDD before planning (level-up heal vs heal-ore-only, rarities moved to M1, reroll, spawn packs, all open values set as provisional defaults). TaskCreate and TaskUpdate are not available in this session: progress is tracked in these nodes and the crew dashboard artifact.
 - confirmed_by_owner: yes (2026-10-03, all subtasks pre-approved)
 - milestone: M1
-- next_step: task-015-01-shotgun-cpp
+- next_step: task-015-02-bp-shotgun
 - result: open
 
 ## Subtasks
