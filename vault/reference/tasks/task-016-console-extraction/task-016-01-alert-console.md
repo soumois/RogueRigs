@@ -3,7 +3,7 @@ id: task-016-01-alert-console
 description: "Run flow: alert bar from time and kills, paused while the console is pending; console at 40 %, marked rocks, drone hack, drain; tests."
 parent: task-016-console-extraction
 kind: task
-status: todo
+status: in-progress
 ---
 # Alert bar and console
 

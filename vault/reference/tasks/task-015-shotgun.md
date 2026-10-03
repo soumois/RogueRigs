@@ -3,7 +3,7 @@ id: task-015-shotgun
 description: "Global task: shotgun conical wave with line of sight, crit per enemy, knockback; given at start with the rifle; its upgrades join the pool."
 parent: tasks-index
 kind: task
-status: in-progress
+status: done
 ---
 # Shotgun
 
@@ -13,8 +13,8 @@ status: in-progress
 - gdd_check: Read [[shotgun]], [[burst-rifle]], [[upgrades]], [[miner]], [[color-code]]. Weapon acquisition open → owner: both weapons at start in M1. Owner decisions of 2026-10-03 written into the GDD before planning (level-up heal vs heal-ore-only, rarities moved to M1, reroll, spawn packs, all open values set as provisional defaults). TaskCreate and TaskUpdate are not available in this session: progress is tracked in these nodes and the crew dashboard artifact.
 - confirmed_by_owner: yes (2026-10-03, all subtasks pre-approved)
 - milestone: M1
-- next_step: task-015-02-bp-shotgun
-- result: open
+- next_step: none
+- result: Acceptance 1 to 3 and 5 passed: 82/82 tests (cone, range, line of sight, independent crits, knockback × resistance, shotgun cards only when equipped); both weapons at start; docs. Acceptance 4 partly: the wave fires and hits in PIE, its rays use the rock-clipped distance, but the flash and the rock cut were not seen on screen (no screenshot route). For the owner to judge: knockback strength (friction stops robots fast), flash look.
 
 ## Subtasks
 1. task-015-01-shotgun-cpp — cpp: conical wave weapon, LOS, crit per enemy, knockback, start loadout, tests

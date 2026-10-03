@@ -3,7 +3,7 @@ id: task-016-console-extraction
 description: "Global task: minimal alert bar, command console with marked rocks and drone hack, shuttle landing with countdown, success and run-lost screens."
 parent: tasks-index
 kind: task
-status: todo
+status: in-progress
 ---
 # Console hack and shuttle extraction
 
