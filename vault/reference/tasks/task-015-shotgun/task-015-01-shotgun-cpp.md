@@ -3,7 +3,7 @@ id: task-015-01-shotgun-cpp
 description: "Shotgun weapon: instant 60° cone, per-enemy grid line of sight, damage and crit per enemy, knockback, magazine and reload; start loadout; tests."
 parent: task-015-shotgun
 kind: task
-status: todo
+status: in-progress
 ---
 # Shotgun C++
 

@@ -3,7 +3,7 @@ id: task-015-shotgun
 description: "Global task: shotgun conical wave with line of sight, crit per enemy, knockback; given at start with the rifle; its upgrades join the pool."
 parent: tasks-index
 kind: task
-status: todo
+status: in-progress
 ---
 # Shotgun
 

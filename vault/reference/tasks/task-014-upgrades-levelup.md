@@ -3,7 +3,7 @@ id: task-014-upgrades-levelup
 description: "Global task: 100 robots in packs with fewer kamikazes, stat upgrades with rarities, level-up heal, effect, pause, 3 cards and one reroll."
 parent: tasks-index
 kind: task
-status: in-progress
+status: done
 ---
 # Spawn packs, upgrades and level-up
 
@@ -13,8 +13,8 @@ status: in-progress
 - gdd_check: Read [[enemies-index]], [[enemy-kamikaze]], [[upgrades]], [[rarities]], [[player-stats]], [[xp-level-up]], [[burst-rifle]]. Owner decisions of 2026-10-03 written into the GDD before planning (level-up heal vs heal-ore-only, rarities moved to M1, reroll, spawn packs, all open values set as provisional defaults). TaskCreate and TaskUpdate are not available in this session: progress is tracked in these nodes and the crew dashboard artifact.
 - confirmed_by_owner: yes (2026-10-03, all subtasks pre-approved)
 - milestone: M1
-- next_step: task-014-05-tests-integration
-- result: open
+- next_step: none
+- result: All acceptance checks passed: 76/76 headless tests; spawner packs, cap 100, kamikaze 15 %; upgrades with rarities, owned-weapon targets only, no magazine, reroll once; level-up heal 20 %, pause after 0.8 s, chained screens; card UI and level-up disc verified in PIE and by a real-pause integration test. Docs sys-spawner, sys-upgrades, sys-level-up (new), sys-progression, sys-hud, sys-cheats (new), Blueprint docs. Open for the owner: card widths differ at 1920 px (cosmetic); the level-up ring is a filled disc; mouse clicks on cards not confirmed in PIE (keyboard Enter was). About 1M tokens over five subtasks.
 
 ## Subtasks
 1. task-014-01-spawn-packs — cpp: pack spawning, cap 100, kamikaze 15 %, tests
