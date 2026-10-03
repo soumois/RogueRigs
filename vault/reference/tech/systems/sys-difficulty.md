@@ -7,7 +7,7 @@ kind: doc
 # Difficulty
 
 - responsibility: level counters and enemy strength at spawn.
-- main_classes: `URRGE_EnemyDifficulty`; counter owner: open (run flow system, not written yet).
+- main_classes: `URRGE_EnemyDifficulty`; alert counter owner: `URRRunFlowSubsystem` ([[sys-objectives]]); threat counter: not built.
 
 ## Rules
 - Alert: grows with time and kills, pauses while a mandatory objective is pending, fires tier events.
@@ -16,10 +16,11 @@ kind: doc
 - Enemy attack damage = `AttackDamage` (CSV) × `AttackPower`.
 - Spawn rate also follows threat.
 
-- data: difficulty table CSV; alert and threat gains (open).
+- data: difficulty table CSV; alert gains M1 provisional (240 s fill, 0.5 s per kill, `FRRRunFlowConfig`); threat gains open.
 - depends_on: [[sys-gas-core]].
 - implements: [[difficulty]], [[level-flow]].
 - gotchas: set `MaxHealth` before `Health` when initializing a spawned robot.
 
 ## Relations
 - [[systems-index]] — parent index.
+- [[sys-objectives]] — where the alert counter lives.

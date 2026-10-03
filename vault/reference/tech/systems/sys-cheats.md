@@ -1,27 +1,31 @@
 ---
 id: sys-cheats
-description: "Cheat console variables as built: rr.Cheat.GrantXP, Invulnerable, ChooseUpgrade, Reroll with on-change sinks; open to drive PIE checks through Unreal MCP."
+description: "Cheats as built: polled URRCheatSettings CDO properties (the route Unreal MCP can drive) and rr.Cheat.* console variables, sharing one set of actions."
 parent: systems-index
 kind: doc
 ---
-# Cheat console variables
+# Cheats
 
-- responsibility: let a tool that can only set console variables (Unreal MCP, [[unreal-mcp]]) drive PIE checks: grant XP, make the miner invulnerable, pick or reroll the level-up cards. Debug only, no gameplay role. Console commands with arguments stay in [[sys-stress]].
-- main_classes: no class; `Source/RogueRigs/Debug/RRCheats.cpp`, namespace `RRCheats`: four `TAutoConsoleVariable` (`ECVF_Cheat`) with a `FConsoleVariableDelegate` sink each. Target world: the first PIE world, else the first game world (headless tests, `-game`). Target miner: player 0's pawn, else the first live `ARRMiner`.
-- entry_points (each set fires its sink, even with the same value):
-  - `rr.Cheat.GrantXP <N>`: N > 0 calls `URRProgressionComponent::AddXP(N)` on the miner (XPGain applies, [[sys-progression]]), logs level and XP, then resets to 0. Level 1 → 2 needs 5.
-  - `rr.Cheat.Invulnerable <0|1>`: 1 adds one loose `State.Invulnerable` count to every miner not yet tagged by it (weapons keep firing, unlike `rr.Stress.Peace`); 0 removes the counts it added. Loose tags are counted, so i-frames and `rr.Stress.Peace` stay independent. A miner spawned later (level restart) is not covered: set 1 again.
-  - `rr.Cheat.ChooseUpgrade <i>`: i >= 0 calls `URRLevelUpComponent::ChooseUpgrade(i)` (as a card button, [[sys-level-up]]), logs picked or refused, then resets to -1.
-  - `rr.Cheat.Reroll 1`: calls `RequestReroll()` (as the "Relancer" button), logs, then resets to 0.
+- responsibility: drive PIE checks without input: grant XP, invulnerability, pick or reroll level-up cards, alert speed, console and extraction skips. Debug only, no gameplay role. Console commands with arguments stay in [[sys-stress]].
+- main_classes (`Source/RogueRigs/Debug/`):
+  - `RRCheats.h/.cpp`: namespace `RRCheats` actions shared by both routes: `GrantXP`, `SetInvulnerable`, `ChooseUpgrade`, `Reroll`, `SkipToConsole`, `CompleteConsoleHack`, `SkipToExtraction`, plus `FindCheatWorld`, `FindPlayerMiner` (player 0's pawn, else the first live `ARRMiner`). Every log line starts with `rr.Cheat.<Name> (<route>)`.
+  - `URRCheatSettings` (`RRCheatSettings.h`, UObject): cheat fields on the class default object `/Script/RogueRigs.Default__RRCheatSettings`.
+  - `URRCheatSubsystem` (tickable world subsystem, Game/PIE, ticks while paused, absent in shipping): every frame reads the CDO, applies to its own world and resets one-shot fields.
+- property route (use this from Unreal MCP: `ObjectTools.set_properties` on the CDO path during PIE; [[unreal-mcp]]):
+  - one-shot, consumed by the next frame and reset: `GrantXP` (float > 0, reset 0), `ChooseUpgrade` (0..2, reset -1), `bReroll`, `bSkipToConsole` (alert jumps to the threshold, console drops), `bCompleteConsoleHack`, `bSkipToExtraction` (console completed or skipped, alert full, `OnExtractionReady`) (bools reset false). Read a field back: neutral = consumed.
+  - persistent: `bInvulnerable` (applied on change; true with no miner yet is retried; applied again in each new world, so it survives a level restart), `AlertSpeedMultiplier` (1; multiplies alert gain from time and kills, read directly by the run flow, [[sys-objectives]]). The CDO lives as long as the editor: set them back after a check.
+- console variable route (`ECVF_Cheat`, sinks fire on set, act on the first PIE world else the first game world): `rr.Cheat.GrantXP <N>` (reset 0), `rr.Cheat.Invulnerable <0|1>`, `rr.Cheat.ChooseUpgrade <i>` (reset -1), `rr.Cheat.Reroll 1`, `rr.Cheat.AlertSpeed <x>` (writes `AlertSpeedMultiplier`), `rr.Cheat.SkipToConsole 1`, `rr.Cheat.CompleteHack 1`, `rr.Cheat.SkipToExtraction 1` (reset 0). For the in-game console or `-ExecCmds`; Unreal MCP cannot set them.
+- invulnerable rule: one loose `State.Invulnerable` count per miner, shared list for both routes (counted tags keep i-frames and `rr.Stress.Peace` independent); clearing either route removes every count the cheat added.
 - data: none.
-- depends_on: [[sys-progression]], [[sys-level-up]], [[sys-gas-core]], [[sys-player]].
+- depends_on: [[sys-progression]], [[sys-level-up]], [[sys-gas-core]], [[sys-player]], [[sys-objectives]].
 - implements: none (debug tooling).
-- gotchas: the reset uses the priority of the last setter (`SetBy` flags): a lower priority set is refused by the console manager with a warning, so set every cheat from the same source (MCP or console). Cheat variables are compiled out of shipping builds. They work while the game is paused (the screen is open), console variables do not tick. Proven by `RogueRigs.Cheats.ConsoleVariables` ([[sys-automation-tests]]).
+- gotchas: a CVar reset uses the priority of its last setter (`SetBy`); a lower-priority set is refused with a warning. One-shot properties are consumed by whichever game world ticks first. Proven by `RogueRigs.Cheats.ConsoleVariables` and `RogueRigs.Cheats.PropertyRoute` ([[sys-automation-tests]]).
 
 ## Relations
 - [[systems-index]] — parent index.
-- [[unreal-mcp]] — the tool that sets these variables during PIE checks.
+- [[unreal-mcp]] — the tool that sets the properties during PIE checks.
 - [[sys-stress]] — the other debug console tooling (commands).
 - [[sys-level-up]] — the screen ChooseUpgrade and Reroll drive.
 - [[sys-progression]] — the AddXP GrantXP calls.
-- [[sys-automation-tests]] — the test that proves the sinks.
+- [[sys-objectives]] — the run flow the alert and console cheats drive.
+- [[sys-automation-tests]] — the tests that prove both routes.

@@ -6,7 +6,7 @@ kind: note
 ---
 # C++ systems
 
-Decision status inside each doc: approved, provisional, deferred or open. Planned, not written yet: sys-run-flow (beyond the M1 game over in sys-player), sys-logging.
+Decision status inside each doc: approved, provisional, deferred or open. Planned, not written yet: sys-logging.
 
 ## Relations
 - [[tech-index]] — parent index.
@@ -21,6 +21,7 @@ Decision status inside each doc: approved, provisional, deferred or open. Planne
 - [[sys-weapons]] — weapon ASC lifecycle, shotgun cone, magazine and reload, turret launcher and turrets, impact effects.
 - [[sys-upgrades]] — fixed value table, luck-weighted rarity draw, targeted vs global application.
 - [[sys-difficulty]] — alert and threat counters, enemy difficulty GE at spawn.
+- [[sys-objectives]] — run flow (alert bar, console drop and pause, extraction-ready event) and the console objective with its Blueprint events.
 - [[sys-auto-fire]] — auto-fire component and burst timing formulas.
 - [[sys-projectiles]] — projectiles without GAS, piercing, collision, pooling.
 - [[sys-explosions]] — explosion queue and chain reactions.
@@ -32,7 +33,7 @@ Decision status inside each doc: approved, provisional, deferred or open. Planne
 - [[sys-pickups]] — ore, heal and XP pickups: drop rule, pop, attraction within PickupRadius, collection event, XP grant.
 - [[sys-target-dummy]] — debug target dummy: never dies, hit flash, M1 floating damage numbers, health refill.
 - [[sys-stress]] — stress test tooling: rr.Stress.* cheat commands, bulk spawn around the miner, timed frame-time run.
-- [[sys-cheats]] — cheat console variables rr.Cheat.* (grant XP, invulnerable, pick or reroll cards) to drive PIE checks through MCP.
+- [[sys-cheats]] — cheats (XP, invulnerable, cards, alert speed, console, extraction): polled URRCheatSettings properties for MCP, plus rr.Cheat.* console variables.
 - [[sys-automation-tests]] — headless C++ automation tests (RogueRigs.Dig.*, RogueRigs.Weapons.*): test world harness, what each test proves, gotchas.
 - [[gas-engine-facts]] — GAS 5.8 behaviors read in engine source that fix project rules.
 - [[gas-api-notes]] — GAS 5.8 APIs used by the code skeletons, with source lines.
