@@ -3,7 +3,7 @@ id: task-013-stress-test
 description: "Global task: measure frame time against enemy count in -game, find the ceiling, list optimizations; baseline first, final run after task-016."
 parent: tasks-index
 kind: task
-status: in-progress
+status: done
 ---
 # Stress test M1
 
@@ -13,8 +13,8 @@ status: in-progress
 - gdd_check: Read [[stress-test-m1]], [[perf-risks]], [[gas-scope]]. Target machine open → owner: this PC, 1920×1080. Owner decisions of 2026-10-03 written into the GDD before planning (level-up heal vs heal-ore-only, rarities moved to M1, reroll, spawn packs, all open values set as provisional defaults). TaskCreate and TaskUpdate are not available in this session: progress is tracked in these nodes and the crew dashboard artifact.
 - confirmed_by_owner: yes (2026-10-03, all subtasks pre-approved)
 - milestone: M1
-- next_step: task-013-02-final
-- result: open
+- next_step: none
+- result: Acceptance passed: repeatable command and launcher (sys-stress), baseline and final tables (stress-test-m1, stress-final-m1), ceiling about 500–600 robots, M1 cap of 100 safe with margin, ranked leads in perf-risks; no optimization coded.
 
 ## Subtasks
 1. task-013-01-baseline — cpp: stress spawn command, -game CSV profile, S0 at 50 to 400 chasers, report
