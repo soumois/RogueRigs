@@ -92,6 +92,7 @@ run-index  reference/gdd/run/run-index.md
 run-log-schema  reference/tech/pipelines/run-log-schema.md
 run-structure  reference/gdd/run/run-structure.md
 shotgun  reference/gdd/weapons/shotgun.md
+stress-final-m1  reference/tech/performance/stress-final-m1.md
 stress-test-m1  reference/tech/performance/stress-test-m1.md
 sys-auto-fire  reference/tech/systems/sys-auto-fire.md
 sys-automation-tests  reference/tech/systems/sys-automation-tests.md

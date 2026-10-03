@@ -3,12 +3,16 @@
 # waits for the process to exit and prints the per-step table (average and p99 frame, game, draw, GPU ms).
 # Results: Saved/Stress/Stress_<time>.csv (not committed). Usage, from the repo root:
 #   powershell -NoProfile -ExecutionPolicy Bypass -File Scripts/Run-StressTest.ps1 [-Counts 50+100+200+300+400] [-Settle 5] [-Measure 20]
+#     [-Mode peace|fire|burst] [-Class Kamikaze] [-PreExec "rr.Stress.MinCells 8"]  (PreExec: extra console commands, separated by commas)
 # Build the RogueRigsEditor target first (vault: build-toolchain), editor closed.
 
 param(
 	[string]$Counts = "50+100+200+300+400",
 	[double]$Settle = 5,
 	[double]$Measure = 20,
+	[string]$Mode = "peace",
+	[string]$Class = "",
+	[string]$PreExec = "",
 	[string]$Map = "/Game/RogueRigs/Maps/L_ArenaM1",
 	[int]$ResX = 1920,
 	[int]$ResY = 1080,
@@ -24,7 +28,9 @@ $StressDir = Join-Path $ProjectDir "Saved\Stress"
 $StartTime = Get-Date
 
 # -ExecCmds splits on commas: counts use '+'. Frame cap and vsync off so the frame time is the real cost.
-$Exec = "t.MaxFPS 0,r.VSync 0,rr.Stress.Run $Counts $Settle $Measure 1"
+$Exec = "t.MaxFPS 0,r.VSync 0,"
+if ($PreExec) { $Exec += "$PreExec," }
+$Exec += "rr.Stress.Run $Counts $Settle $Measure 1 $Mode $Class".TrimEnd()
 $GameArgs = @("`"$Project`"", $Map, "-game", "-ResX=$ResX", "-ResY=$ResY", "-windowed", "-nosplash", "-nop4", "-log",
 	"-ExecCmds=`"$Exec`"")
 

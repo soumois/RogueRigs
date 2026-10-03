@@ -1,6 +1,6 @@
 ---
 id: perf-risks
-description: "Cost centers at 150–200 enemies with fallbacks and hours, plus ranked optimization leads with expected gains from the S0 baseline."
+description: "Cost centers at 150–200 enemies with fallbacks and hours, plus optimization leads ranked by expected gain from the final S0, S2, S7 run."
 parent: performance-index
 kind: doc
 ---
@@ -21,15 +21,20 @@ Measure in S0 ([[stress-test-m1]]) before changing any architecture.
 | Projectiles | Template projectile spawned and destroyed each shot, `bForceSubStepping = true` | Projectile pool; sub-stepping off unless needed | 1 |
 | Target machine | This PC, 1920×1080 windowed (owner, 2026-10-03; [[stress-test-m1]]) | Baseline measured: ceiling ≈ 500 chasers | — |
 
-## Leads from the S0 baseline (task-013-01, ranked, not measured one by one)
-Baseline: game-thread bound, ≈ 0.02 ms per chaser up to 400, ceiling ≈ 500 ([[stress-test-m1]]). Gains are estimates at 400 chasers; confirm each with an Insights trace (`-trace=cpu,frame`, 0.5 h) before coding. No optimization is coded without the owner.
-1. Enemy-enemy capsule collision in the crowd (sweeps and depenetration of CharacterMovement against neighbours): enemies ignore the Pawn channel, separation left to RVO. Expected −3 to −5 ms game. 1 h.
-2. CharacterMovement cost per robot: lighter settings (no physics interaction, no floor re-check when flat, tick interval for robots far from the miner). Expected −1 to −3 ms. 1–2 h. Full fallback: flat-floor pawn movement (row above), larger gain, 2–3 h.
-3. RVO avoidance at 400 agents in one dense cluster: lower `AvoidanceConsiderationRadius` or update rate. Expected −0.5 to −2 ms. 0.5 h.
-4. Per-robot tick work (state machine, mesh blink, flow-field lookup each frame): tick at 30 Hz or batch in a manager. Expected −0.5 to −1 ms. 1 h.
-5. Rendering floor: draw ≈ 8 ms and GPU ≈ 7 ms already at 50 robots (Lumen, virtual shadows, ray tracing). Not limiting on this PC; −2 to −4 ms GPU if a weaker target appears. 0.5 h.
+## Leads after the final run (task-013-02, ranked by expected gain)
+From [[stress-final-m1]]: game-thread bound, ≈ 0.02–0.025 ms per chaser; M1 cap (100) safe. Gains are estimates; confirm each with an Insights trace (`-trace=cpu,frame`, 0.5 h) before coding. No optimization is coded without the owner.
+1. Enemy-enemy capsule collision in the crowd (CharacterMovement sweeps and depenetration): enemies ignore the Pawn channel, separation left to RVO. −3 to −5 ms game at 400. 1 h.
+2. CharacterMovement cost per robot: no physics interaction, no floor re-check on flat floor, tick interval far from the miner. −1 to −3 ms at 400. 1–2 h. Full fallback: flat-floor pawn movement (table row), larger gain, 2–3 h.
+3. Periodic ≈ 45–50 ms hitches every 61 s from 200 robots (S0 and S2), likely garbage collection: confirm, then incremental GC or fewer transient UObjects (pools, lead 5). Removes the only frames over 25 ms in steady play. 1 h after the trace; check in a packaged build first.
+4. Render thread in long explosion chains: draw p99 10.9 → 23.2 ms from 66 to 216 queued explosions (FX actor per explosion, terrain instance removal and add). Pool or cap explosion FX, batch instance updates per frame. −5 to −10 ms draw p99 in chains. 1–2 h.
+5. Fire cost: +2 ms game and +1.5–3 ms draw at 300–400 robots under fire (projectile spawn and destroy, damage text actors, knockback). Projectile and damage-text pools. −1 to −2 ms. 1–2 h.
+6. Burst death frame: ≈ 0.23 ms per robot dying in the same frame (death, XP pickup spawn, kamikaze explosion request); 100 at once = 29.5 ms. Spread death work over frames or pool pickups. Matters only if an upgrade can clear a crowd at once. 1 h.
+7. Fixed overhead +1.4 ms game at 50 robots since the baseline (run flow, HUD, second weapon): find it in the trace. −0.5 to −1 ms. 0.5 h.
+8. RVO at 400 agents in one cluster: lower `AvoidanceConsiderationRadius` or update rate. −0.5 to −2 ms. 0.5 h.
+9. Rendering floor: draw ≈ 8 ms and GPU ≈ 7 ms at 50 robots (Lumen, virtual shadows, ray tracing). Not limiting here; −2 to −4 ms GPU on a weaker target. 0.5 h.
 
 ## Relations
 - [[performance-index]] — parent index.
 - [[sys-enemy-ai]] — pathfinding and line of sight decisions.
-- [[stress-test-m1]] — the baseline table these leads come from.
+- [[stress-test-m1]] — protocol and baseline.
+- [[stress-final-m1]] — the final tables these leads come from.

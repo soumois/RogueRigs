@@ -1,6 +1,6 @@
 ---
 id: stress-test-m1
-description: "M1 stress test: scenarios S0 to S8, thresholds, target machine, rr.Stress procedure, baseline frame-time table per robot count and the ceiling."
+description: "M1 stress test: scenarios S0 to S8, thresholds, target machine, rr.Stress procedure, baseline frame-time table, ceiling, and the final-run verdict."
 parent: performance-index
 kind: doc
 ---
@@ -44,7 +44,11 @@ Beyond the range (other runs, frame avg / p99, game thread equal): 400 fresh spa
 - Game-thread bound from 200 robots on (frame = game); draw and GPU stay 6–9 ms whatever the count.
 - Spread between runs at one count: ±2–3 ms game thread (crowd layout, fresh spawn vs top-up). Leads: [[perf-risks]].
 
+## Final (task-013-02, 2026-10-03)
+- S0 +0.4 to +2.3 ms vs baseline (400: 13.6 / 17.5), ceiling still ≈ 500–600; S2 continuous fire 400: 15.8 / 20.1; S7 200 kamikazes + 16 barrels: p99 23.4, max 49.6 (burst frame). Periodic ≈ 47 ms hitches every 61 s (likely GC). M1 cap 100 alive: safe with ≈ 40 % average margin. Tables: [[stress-final-m1]].
+
 ## Relations
 - [[performance-index]] — parent index.
+- [[stress-final-m1]] — final S0, S2, S7 tables, comparison and the 100-cap verdict.
 - [[perf-risks]] — what to do when a scenario fails; leads from the baseline.
 - [[sys-stress]] — the commands and script that run the test.

@@ -4,6 +4,8 @@
 
 #include "AbilitySystemComponent.h"
 #include "Components/CapsuleComponent.h"
+#include "Damage/RRGE_DamageExplosion.h"
+#include "Debug/RRCheats.h"
 #include "Enemies/RRChaser.h"
 #include "Enemies/RREnemy.h"
 #include "Enemies/RREnemySpawner.h"
@@ -11,9 +13,11 @@
 #include "Engine/GameViewportClient.h"
 #include "Engine/World.h"
 #include "EngineUtils.h"
+#include "Explosions/RRExplosionSubsystem.h"
 #include "FlowField/RRFlowFieldSubsystem.h"
 #include "GameFramework/Pawn.h"
 #include "GAS/RRGameplayTags.h"
+#include "GAS/RRHealthAttributeSet.h"
 #include "Grid/RRArenaGrid.h"
 #include "HAL/IConsoleManager.h"
 #include "Misc/App.h"
@@ -40,6 +44,12 @@ namespace RRStress
 
 	TAutoConsoleVariable<float> CVarMeasureSeconds(TEXT("rr.Stress.MeasureSeconds"), 20.f,
 		TEXT("Default sampling time (s) of each rr.Stress.Run step."), ECVF_Cheat);
+
+	TAutoConsoleVariable<float> CVarFireHealth(TEXT("rr.Stress.FireHealth"), 1000000.f,
+		TEXT("Max health given to the stress robots in fire mode (rr.Stress.Run ... fire) so shots never kill them."), ECVF_Cheat);
+
+	/** Damage of KillEnemy: far above any robot health. */
+	constexpr float KillDamage = 1.0e9f;
 
 	TAutoConsoleVariable<FString> CVarCounts(TEXT("rr.Stress.Counts"), TEXT("50,100,200,300,400"),
 		TEXT("Default comma-separated robot counts of rr.Stress.Run."), ECVF_Cheat);
@@ -133,7 +143,19 @@ namespace RRStress
 		const float Settle = Args.IsValidIndex(1) ? FCString::Atof(*Args[1]) : CVarSettleSeconds.GetValueOnGameThread();
 		const float Measure = Args.IsValidIndex(2) ? FCString::Atof(*Args[2]) : CVarMeasureSeconds.GetValueOnGameThread();
 		const bool bQuit = Args.IsValidIndex(3) && FCString::Atoi(*Args[3]) != 0;
-		Stress->StartRun(Counts, Settle, Measure, bQuit);
+		ERRStressMode Mode = ERRStressMode::Peace;
+		if (Args.IsValidIndex(4) && !URRStressSubsystem::ParseMode(Args[4], Mode))
+		{
+			UE_LOG(LogRogueRigs, Warning, TEXT("rr.Stress.Run: unknown mode '%s' (peace, fire, burst)."), *Args[4]);
+			return;
+		}
+		const TSubclassOf<ARREnemy> EnemyClass = Stress->ResolveEnemyClass(Args.IsValidIndex(5) ? Args[5] : FString());
+		if (!EnemyClass)
+		{
+			UE_LOG(LogRogueRigs, Warning, TEXT("rr.Stress.Run: no robot class matches '%s'."), Args.IsValidIndex(5) ? *Args[5] : TEXT("<default>"));
+			return;
+		}
+		Stress->StartRun(Counts, Settle, Measure, bQuit, Mode, EnemyClass);
 	}
 
 	FAutoConsoleCommandWithWorldAndArgs CmdSpawn(TEXT("rr.Stress.Spawn"),
@@ -149,7 +171,7 @@ namespace RRStress
 		FConsoleCommandWithWorldAndArgsDelegate::CreateStatic(&HandlePeace), ECVF_Cheat);
 
 	FAutoConsoleCommandWithWorldAndArgs CmdRun(TEXT("rr.Stress.Run"),
-		TEXT("rr.Stress.Run [Counts] [SettleSeconds] [MeasureSeconds] [Quit]: timed frame-time steps, results in Saved/Stress."),
+		TEXT("rr.Stress.Run [Counts] [SettleSeconds] [MeasureSeconds] [Quit] [peace|fire|burst] [Class]: timed frame-time steps, results in Saved/Stress."),
 		FConsoleCommandWithWorldAndArgsDelegate::CreateStatic(&HandleRun), ECVF_Cheat);
 }
 
@@ -313,31 +335,141 @@ int32 URRStressSubsystem::GetStressEnemyCount()
 void URRStressSubsystem::SetPeace(bool bInPeace)
 {
 	bPeace = bInPeace;
+	SetMinersInvulnerable(bPeace);
+	SetMinerWeaponsFiring(!bPeace);
+	UE_LOG(LogRogueRigs, Log, TEXT("Stress: peace %s."), bPeace ? TEXT("on") : TEXT("off"));
+}
+
+void URRStressSubsystem::SetMinersInvulnerable(bool bInvulnerable)
+{
 	for (TActorIterator<ARRMiner> It(GetWorld()); It; ++It)
 	{
 		if (UAbilitySystemComponent* ASC = It->GetAbilitySystemComponent())
 		{
-			if (bPeace && !ASC->HasMatchingGameplayTag(RRGameplayTags::State_Invulnerable))
+			if (bInvulnerable && !ASC->HasMatchingGameplayTag(RRGameplayTags::State_Invulnerable))
 			{
 				ASC->AddLooseGameplayTag(RRGameplayTags::State_Invulnerable);
 			}
-			else if (!bPeace)
+			else if (!bInvulnerable)
 			{
 				ASC->RemoveLooseGameplayTag(RRGameplayTags::State_Invulnerable);
 			}
 		}
+	}
+}
+
+void URRStressSubsystem::SetMinerWeaponsFiring(bool bFiring)
+{
+	for (TActorIterator<ARRMiner> It(GetWorld()); It; ++It)
+	{
 		for (ARRWeapon* Weapon : It->GetWeapons())
 		{
 			if (URRAutoFireComponent* AutoFire = Weapon ? Weapon->GetAutoFireComponent() : nullptr)
 			{
-				bPeace ? AutoFire->StopFiring() : AutoFire->StartFiring();
+				bFiring ? AutoFire->StartFiring() : AutoFire->StopFiring();
 			}
 		}
 	}
-	UE_LOG(LogRogueRigs, Log, TEXT("Stress: peace %s."), bPeace ? TEXT("on") : TEXT("off"));
 }
 
-void URRStressSubsystem::StartRun(const TArray<int32>& Counts, float SettleSeconds, float MeasureSeconds, bool bQuit)
+bool URRStressSubsystem::ParseMode(const FString& Text, ERRStressMode& OutMode)
+{
+	const FString Mode = Text.TrimStartAndEnd();
+	if (Mode.Equals(TEXT("peace"), ESearchCase::IgnoreCase) || Mode == TEXT("0"))
+	{
+		OutMode = ERRStressMode::Peace;
+		return true;
+	}
+	if (Mode.Equals(TEXT("fire"), ESearchCase::IgnoreCase) || Mode == TEXT("1"))
+	{
+		OutMode = ERRStressMode::Fire;
+		return true;
+	}
+	if (Mode.Equals(TEXT("burst"), ESearchCase::IgnoreCase) || Mode == TEXT("2"))
+	{
+		OutMode = ERRStressMode::Burst;
+		return true;
+	}
+	return false;
+}
+
+bool URRStressSubsystem::KillEnemy(ARREnemy* Enemy)
+{
+	UAbilitySystemComponent* ASC = IsValid(Enemy) && !Enemy->IsDead() ? Enemy->GetAbilitySystemComponent() : nullptr;
+	if (!ASC)
+	{
+		return false;
+	}
+	// Same path as an explosion hit: the health set sees the damage and broadcasts the death (XP, kamikaze explosion).
+	FGameplayEffectSpecHandle Spec = ASC->MakeOutgoingSpec(URRGE_DamageExplosion::StaticClass(), 1.f, ASC->MakeEffectContext());
+	if (!Spec.IsValid())
+	{
+		return false;
+	}
+	Spec.Data->SetSetByCallerMagnitude(RRGameplayTags::Data_Damage, RRStress::KillDamage);
+	ASC->ApplyGameplayEffectSpecToSelf(*Spec.Data);
+	return Enemy->IsDead();
+}
+
+int32 URRStressSubsystem::DestroyAllBarrels(ARRArenaGrid* Grid)
+{
+	if (!Grid)
+	{
+		return 0;
+	}
+	int32 Destroyed = 0;
+	const FIntPoint Size = Grid->GetGridSize();
+	for (int32 Y = 0; Y < Size.Y; ++Y)
+	{
+		for (int32 X = 0; X < Size.X; ++X)
+		{
+			const FIntPoint Cell(X, Y);
+			if (Grid->GetCellType(Cell) == ERRCellType::Barrel && Grid->DestroyCell(Cell, ERRTerrainDamageSource::Barrel))
+			{
+				++Destroyed;
+			}
+		}
+	}
+	return Destroyed;
+}
+
+void URRStressSubsystem::MakeStressEnemiesTough()
+{
+	const float Health = FMath::Max(1.f, RRStress::CVarFireHealth.GetValueOnGameThread());
+	for (const TWeakObjectPtr<ARREnemy>& Enemy : StressEnemies)
+	{
+		UAbilitySystemComponent* ASC = Enemy.IsValid() && !Enemy->IsDead() ? Enemy->GetAbilitySystemComponent() : nullptr;
+		if (ASC && ASC->GetNumericAttributeBase(URRHealthAttributeSet::GetMaxHealthAttribute()) < Health)
+		{
+			// MaxHealth first: Health is clamped against the current MaxHealth.
+			ASC->SetNumericAttributeBase(URRHealthAttributeSet::GetMaxHealthAttribute(), Health);
+			ASC->SetNumericAttributeBase(URRHealthAttributeSet::GetHealthAttribute(), Health);
+		}
+	}
+}
+
+void URRStressSubsystem::TriggerBurst()
+{
+	int32 Kills = 0;
+	for (const TWeakObjectPtr<ARREnemy>& Enemy : StressEnemies)
+	{
+		Kills += KillEnemy(Enemy.Get()) ? 1 : 0;
+	}
+	TActorIterator<ARRArenaGrid> GridIt(GetWorld());
+	StepBurstKills = Kills;
+	StepBurstBarrels = DestroyAllBarrels(GridIt ? *GridIt : nullptr);
+	const URRExplosionSubsystem* Explosions = GetWorld()->GetSubsystem<URRExplosionSubsystem>();
+	UE_LOG(LogRogueRigs, Log, TEXT("Stress: burst killed %d robots, destroyed %d barrels, %d explosions queued."), StepBurstKills,
+		StepBurstBarrels, Explosions ? Explosions->GetPendingCount() : 0);
+}
+
+void URRStressSubsystem::HandleExplosion(FVector Center, FName RowName)
+{
+	++StepExplosions;
+}
+
+void URRStressSubsystem::StartRun(const TArray<int32>& Counts, float SettleSeconds, float MeasureSeconds, bool bQuit,
+	ERRStressMode Mode, TSubclassOf<ARREnemy> EnemyClass)
 {
 	if (Counts.IsEmpty())
 	{
@@ -349,15 +481,32 @@ void URRStressSubsystem::StartRun(const TArray<int32>& Counts, float SettleSecon
 	{
 		GEngine->Exec(GetWorld(), TEXT("stat unit"));
 	}
-	SetPeace(true);
+	RunMode = Mode;
+	RunEnemyClass = EnemyClass ? EnemyClass : GetDefaultEnemyClass();
+	if (RunMode == ERRStressMode::Fire)
+	{
+		// S2: the miner stays alive another way than peace, its weapons keep firing.
+		bPeace = false;
+		SetMinersInvulnerable(true);
+		SetMinerWeaponsFiring(true);
+	}
+	else
+	{
+		SetPeace(true);
+	}
+	if (URRExplosionSubsystem* Explosions = GetWorld()->GetSubsystem<URRExplosionSubsystem>(); Explosions && !bExplosionBound)
+	{
+		Explosions->OnExplosion.AddDynamic(this, &URRStressSubsystem::HandleExplosion);
+		bExplosionBound = true;
+	}
 	RunCounts = Counts;
 	RunSettleSeconds = FMath::Max(0.f, SettleSeconds);
 	RunMeasureSeconds = FMath::Max(0.1f, MeasureSeconds);
 	bQuitWhenDone = bQuit;
 	Results.Reset();
 	bRunning = true;
-	UE_LOG(LogRogueRigs, Log, TEXT("Stress: run started, %d steps, settle %.1f s, measure %.1f s."), RunCounts.Num(), RunSettleSeconds,
-		RunMeasureSeconds);
+	UE_LOG(LogRogueRigs, Log, TEXT("Stress: run started, %d steps, settle %.1f s, measure %.1f s, mode %s, class %s."), RunCounts.Num(),
+		RunSettleSeconds, RunMeasureSeconds, *UEnum::GetValueAsString(RunMode), *GetNameSafe(RunEnemyClass));
 	BeginStep(0);
 }
 
@@ -374,11 +523,23 @@ void URRStressSubsystem::BeginStep(int32 InStepIndex)
 		}
 		return;
 	}
+	if (RunMode == ERRStressMode::Burst)
+	{
+		// Each burst step starts from a fresh set of robots (the previous ones are dead or exploding).
+		ClearStressEnemies();
+	}
 	const int32 Missing = RunCounts[StepIndex] - GetStressEnemyCount();
 	if (Missing > 0)
 	{
-		SpawnStressEnemies(Missing);
+		SpawnStressEnemies(Missing, RunEnemyClass);
 	}
+	if (RunMode == ERRStressMode::Fire)
+	{
+		MakeStressEnemiesTough();
+	}
+	StepBurstKills = 0;
+	StepBurstBarrels = 0;
+	StepExplosions = 0;
 	StepElapsed = 0.0;
 	FrameSamples.Reset();
 	GameSamples.Reset();
@@ -393,6 +554,12 @@ void URRStressSubsystem::Tick(float DeltaTime)
 	{
 		return;
 	}
+	if (GetWorld()->IsPaused())
+	{
+		// A level-up screen (XP of killed robots) would hold the run: pick the first card; paused frames are not sampled.
+		RRCheats::ChooseUpgrade(GetWorld(), 0, TEXT("rr.Stress.Run"));
+		return;
+	}
 	const double RealDelta = FApp::GetDeltaTime();
 	const bool bWasSettling = StepElapsed < RunSettleSeconds;
 	StepElapsed += RealDelta;
@@ -404,6 +571,11 @@ void URRStressSubsystem::Tick(float DeltaTime)
 	{
 		// First frame after the settle window: the delta still belongs to it.
 		CSV_EVENT_GLOBAL(TEXT("Stress_%d_Measure"), RunCounts[StepIndex]);
+		StepExplosions = 0;
+		if (RunMode == ERRStressMode::Burst)
+		{
+			TriggerBurst();
+		}
 		return;
 	}
 	// stat unit raw values (FStatUnitData, refreshed each frame while stat unit is shown, which StartRun ensures).
@@ -425,24 +597,30 @@ void URRStressSubsystem::FinishStep()
 	FRRStressStepResult Result;
 	Result.EnemyCount = GetStressEnemyCount();
 	Result.FrameCount = FrameSamples.Num();
+	Result.FrameMax = FrameSamples.IsEmpty() ? 0.f : FMath::Max(FrameSamples);
+	Result.GameMax = GameSamples.IsEmpty() ? 0.f : FMath::Max(GameSamples);
+	Result.BurstKills = StepBurstKills;
+	Result.BurstBarrels = StepBurstBarrels;
+	Result.Explosions = StepExplosions;
 	RRStress::Summarize(FrameSamples, Result.FrameAvg, Result.FrameP99);
 	RRStress::Summarize(GameSamples, Result.GameAvg, Result.GameP99);
 	RRStress::Summarize(DrawSamples, Result.DrawAvg, Result.DrawP99);
 	RRStress::Summarize(GpuSamples, Result.GpuAvg, Result.GpuP99);
 	Results.Add(Result);
 	UE_LOG(LogRogueRigs, Display,
-		TEXT("Stress step: enemies %d, frames %d, frame avg %.2f p99 %.2f, game avg %.2f p99 %.2f, draw avg %.2f p99 %.2f, gpu avg %.2f p99 %.2f ms"),
-		Result.EnemyCount, Result.FrameCount, Result.FrameAvg, Result.FrameP99, Result.GameAvg, Result.GameP99, Result.DrawAvg,
-		Result.DrawP99, Result.GpuAvg, Result.GpuP99);
+		TEXT("Stress step: enemies %d, frames %d, frame avg %.2f p99 %.2f max %.2f, game avg %.2f p99 %.2f max %.2f, draw avg %.2f p99 %.2f, gpu avg %.2f p99 %.2f ms, burst kills %d barrels %d, explosions %d"),
+		Result.EnemyCount, Result.FrameCount, Result.FrameAvg, Result.FrameP99, Result.FrameMax, Result.GameAvg, Result.GameP99,
+		Result.GameMax, Result.DrawAvg, Result.DrawP99, Result.GpuAvg, Result.GpuP99, Result.BurstKills, Result.BurstBarrels, Result.Explosions);
 }
 
 void URRStressSubsystem::WriteResults() const
 {
-	FString Csv = TEXT("Enemies,Frames,FrameAvg,FrameP99,GameAvg,GameP99,DrawAvg,DrawP99,GpuAvg,GpuP99\n");
+	FString Csv = TEXT("Enemies,Frames,FrameAvg,FrameP99,FrameMax,GameAvg,GameP99,GameMax,DrawAvg,DrawP99,GpuAvg,GpuP99,Kills,Barrels,Explosions\n");
 	for (const FRRStressStepResult& R : Results)
 	{
-		Csv += FString::Printf(TEXT("%d,%d,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f\n"), R.EnemyCount, R.FrameCount, R.FrameAvg, R.FrameP99,
-			R.GameAvg, R.GameP99, R.DrawAvg, R.DrawP99, R.GpuAvg, R.GpuP99);
+		Csv += FString::Printf(TEXT("%d,%d,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%d,%d,%d\n"), R.EnemyCount, R.FrameCount, R.FrameAvg,
+			R.FrameP99, R.FrameMax, R.GameAvg, R.GameP99, R.GameMax, R.DrawAvg, R.DrawP99, R.GpuAvg, R.GpuP99, R.BurstKills, R.BurstBarrels,
+			R.Explosions);
 	}
 	const FString Path = FPaths::ProjectSavedDir() / TEXT("Stress") /
 		FString::Printf(TEXT("Stress_%s.csv"), *FDateTime::Now().ToString(TEXT("%Y%m%d_%H%M%S")));
