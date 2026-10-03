@@ -1,4 +1,4 @@
-// Rogue Rigs - enemy spawner: one robot per interval, capped alive count, on reachable floor cells just outside the camera view.
+// Rogue Rigs - enemy spawner: a trickle of single robots, then packs from one side, capped alive count, on reachable floor cells just outside the camera view.
 
 #pragma once
 
@@ -10,6 +10,22 @@ class ARREnemy;
 class ARRArenaGrid;
 class URRFlowFieldSubsystem;
 struct FMinimalViewInfo;
+
+/** Side of the visible floor rectangle a cell lies beyond (the axis of its larger gap; X wins a tie). */
+UENUM(BlueprintType)
+enum class ERRSpawnSide : uint8
+{
+	/** Inside the rectangle (no gap). */
+	None,
+	/** Beyond the -X edge. */
+	NegativeX,
+	/** Beyond the +X edge. */
+	PositiveX,
+	/** Beyond the -Y edge. */
+	NegativeY,
+	/** Beyond the +Y edge. */
+	PositiveY
+};
 
 /** One entry of the spawner weighted robot list: a class and its relative weight. */
 USTRUCT(BlueprintType)
@@ -28,9 +44,11 @@ struct FRRWeightedEnemyClass
 
 /**
  * Placed actor that keeps robots coming from outside the screen (sys-spawner).
- * Every SpawnInterval seconds, when fewer than MaxAlive robots it spawned are alive, it spawns one robot (weighted draw among
- * WeightedEnemyClasses, else EnemyClass) on a
- * random cell that is walkable and reachable in the flow field (URRFlowFieldSubsystem), not occupied by a pawn, and lies in a
+ * Trickle phase, the first TrickleDuration seconds of spawning: one robot every SpawnInterval seconds. Pack phase after it: a pack
+ * of PackSizeMin to PackSizeMax robots every PackInterval seconds (the first one when the phase starts), all from one side of the
+ * view rectangle, on distinct cells, clamped to the free slots; between packs, every SpawnInterval, a lone robot with chance
+ * LoneSpawnChance. Nothing spawns beyond MaxAlive robots alive. Each robot class is a weighted draw among WeightedEnemyClasses,
+ * else EnemyClass. A robot spawns on a random cell that is walkable and reachable in the flow field (URRFlowFieldSubsystem), not occupied by a pawn, and lies in a
  * band around the visible floor rectangle: the cell center is at least ViewMargin + 0.5 cells and at most
  * MaxSpawnDistanceCells + 0.5 cells outside the rectangle (box distance), so with ViewMargin 1 the whole cell is at least one
  * cell beyond the view edge. The robot spawns at the cell center, its capsule resting on the floor.
@@ -48,8 +66,33 @@ public:
 	/** Ticks the spawn timer. */
 	ARREnemySpawner();
 
-	/** Advances the timer and spawns one robot each SpawnInterval while enabled. */
+	/** Seeds the random stream (a new seed per run). */
+	virtual void BeginPlay() override;
+
+	/** Advances the run clock and the trickle, pack and lone-robot timers while enabled; spawns what they call for. */
 	virtual void Tick(float DeltaSeconds) override;
+
+	/**
+	 * Spawns one pack now (ignores the timers and the enabled flags): size drawn in [PackSizeMin, PackSizeMax], clamped to the
+	 * free slots and to the cells of the chosen side. The side is drawn among the sides with at least that many candidate cells,
+	 * else the side with the most. One candidate scan per pack. Returns the robots spawned (empty when none).
+	 */
+	UFUNCTION(BlueprintCallable, Category = "Spawner")
+	TArray<ARREnemy*> TrySpawnPack();
+
+	/** Reseeds the spawner random stream (cells, sides, pack sizes, classes, lone rolls): reproducible draws in tests. */
+	void SeedRandomStream(int32 Seed) { RandomStream.Initialize(Seed); }
+
+	/** Seconds of enabled spawning since BeginPlay (the trickle phase lasts TrickleDuration of them). */
+	UFUNCTION(BlueprintPure, Category = "Spawner")
+	float GetRunTime() const { return RunTime; }
+
+	/** True once the trickle phase is over and packs come. */
+	UFUNCTION(BlueprintPure, Category = "Spawner")
+	bool IsInPackPhase() const { return bPackPhase; }
+
+	/** Side of Rectangle that Point lies beyond: the axis of the larger gap (X on a tie), None inside. */
+	static ERRSpawnSide GetSideOfRectangle(const FBox2D& Rectangle, const FVector2D& Point);
 
 	/**
 	 * Spawns one robot now if a slot is free and a valid cell exists (ignores the timer and the enabled flags).
@@ -62,9 +105,9 @@ public:
 	 * Class of the next robot: a weighted draw (Stream) among WeightedEnemyClasses entries with a class and a positive weight;
 	 * EnemyClass when there is none. Null when nothing is set.
 	 */
-	TSubclassOf<ARREnemy> PickEnemyClass(FRandomStream& Stream) const;
+	TSubclassOf<ARREnemy> PickEnemyClass(const FRandomStream& Stream) const;
 
-	/** PickEnemyClass with the global random generator (used by TrySpawnEnemy). */
+	/** PickEnemyClass with the spawner random stream (used by TrySpawnEnemy and TrySpawnPack). */
 	TSubclassOf<ARREnemy> PickEnemyClass() const;
 
 	/** Robot classes this spawner can spawn: EnemyClass, then each WeightedEnemyClasses entry with a class (no duplicates). */
@@ -120,21 +163,47 @@ protected:
 	/** Removes dead or destroyed robots from AliveEnemies. */
 	void PruneAlive();
 
+	/** Spawns one robot of SpawnClass on Cell (capsule on the floor) and tracks it; null when the spawn fails. */
+	ARREnemy* SpawnEnemyOnCell(TSubclassOf<ARREnemy> SpawnClass, const FIntPoint& Cell);
+
 	/** Robot class spawned when WeightedEnemyClasses has no valid entry (a Blueprint subclass of ARRChaser for the mesh). None = no spawn. */
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Spawner")
 	TSubclassOf<ARREnemy> EnemyClass;
 
-	/** Weighted robot classes (e.g. chaser 3, kamikaze 1 = 25 % kamikazes). Empty or all invalid = EnemyClass. */
+	/** Weighted robot classes (M1 default for the placed spawner: chaser 85, kamikaze 15 = 15 % kamikazes). Empty or all invalid = EnemyClass. */
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Spawner")
 	TArray<FRRWeightedEnemyClass> WeightedEnemyClasses;
 
-	/** Seconds between two spawn attempts (one robot per attempt). */
+	/** Trickle phase: seconds between two single spawns. Pack phase: seconds between two lone-robot rolls. */
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Spawner", meta = (ClampMin = 0.01, Units = "s"))
 	float SpawnInterval = 2.f;
 
-	/** Maximum number of robots of this spawner alive at once; an attempt at the cap spawns nothing. */
+	/** Seconds of enabled spawning spent in the trickle phase before packs start. */
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Spawner|Packs", meta = (ClampMin = 0, Units = "s"))
+	float TrickleDuration = 30.f;
+
+	/** Pack phase: seconds between two packs. */
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Spawner|Packs", meta = (ClampMin = 0.01, Units = "s"))
+	float PackInterval = 6.f;
+
+	/** Smallest pack (robots), before the clamp to free slots and side cells. */
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Spawner|Packs", meta = (ClampMin = 1))
+	int32 PackSizeMin = 8;
+
+	/** Largest pack (robots); below PackSizeMin it counts as PackSizeMin. */
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Spawner|Packs", meta = (ClampMin = 1))
+	int32 PackSizeMax = 15;
+
+	/**
+	 * Pack phase: chance of a lone robot at each SpawnInterval roll between packs (a pack resets the roll timer). With 0.1, a 2 s
+	 * interval and 6 s between packs: two rolls per gap, about one lone robot every 5 gaps.
+	 */
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Spawner|Packs", meta = (ClampMin = 0, ClampMax = 1))
+	float LoneSpawnChance = 0.1f;
+
+	/** Maximum number of robots of this spawner alive at once; spawns beyond it are skipped (packs are clamped). */
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Spawner", meta = (ClampMin = 0))
-	int32 MaxAlive = 20;
+	int32 MaxAlive = 100;
 
 	/** Minimum gap in cells between the visible floor rectangle and a spawn cell (whole cell beyond it). */
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Spawner", meta = (ClampMin = 0))
@@ -155,8 +224,23 @@ protected:
 	/** Robots spawned and still alive (pruned on query). */
 	TArray<TWeakObjectPtr<ARREnemy>> AliveEnemies;
 
-	/** Seconds accumulated toward the next attempt. */
+	/** Trickle phase: seconds accumulated toward the next single spawn. */
 	float SpawnTimer = 0.f;
+
+	/** Seconds of enabled spawning since BeginPlay. */
+	float RunTime = 0.f;
+
+	/** True once RunTime reached TrickleDuration. */
+	bool bPackPhase = false;
+
+	/** Pack phase: seconds accumulated toward the next pack. */
+	float PackTimer = 0.f;
+
+	/** Pack phase: seconds accumulated toward the next lone-robot roll (reset by each pack). */
+	float LoneTimer = 0.f;
+
+	/** Random stream of every spawner draw; seeded in BeginPlay, reseeded by SeedRandomStream. */
+	FRandomStream RandomStream;
 
 	/** View rectangle set by SetViewRectangleOverride. */
 	FBox2D ViewOverride = FBox2D(ForceInit);

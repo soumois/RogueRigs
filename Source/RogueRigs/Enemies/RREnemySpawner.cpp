@@ -1,4 +1,4 @@
-// Rogue Rigs - enemy spawner: one robot per interval, capped alive count, on reachable floor cells just outside the camera view.
+// Rogue Rigs - enemy spawner: a trickle of single robots, then packs from one side, capped alive count, on reachable floor cells just outside the camera view.
 
 #include "Enemies/RREnemySpawner.h"
 
@@ -32,6 +32,12 @@ ARREnemySpawner::ARREnemySpawner()
 	RootComponent = CreateDefaultSubobject<USceneComponent>(TEXT("Root"));
 }
 
+void ARREnemySpawner::BeginPlay()
+{
+	Super::BeginPlay();
+	RandomStream.GenerateNewSeed();
+}
+
 void ARREnemySpawner::Tick(float DeltaSeconds)
 {
 	Super::Tick(DeltaSeconds);
@@ -39,11 +45,46 @@ void ARREnemySpawner::Tick(float DeltaSeconds)
 	{
 		return;
 	}
-	SpawnTimer += DeltaSeconds;
-	if (SpawnTimer >= SpawnInterval)
+	RunTime += DeltaSeconds;
+
+	if (!bPackPhase && RunTime >= TrickleDuration)
 	{
-		SpawnTimer -= SpawnInterval;
-		TrySpawnEnemy();
+		// The first pack comes as the phase starts.
+		bPackPhase = true;
+		PackTimer = PackInterval;
+		LoneTimer = 0.f;
+	}
+	else if (bPackPhase)
+	{
+		PackTimer += DeltaSeconds;
+	}
+
+	if (!bPackPhase)
+	{
+		SpawnTimer += DeltaSeconds;
+		if (SpawnTimer >= SpawnInterval)
+		{
+			SpawnTimer -= SpawnInterval;
+			TrySpawnEnemy();
+		}
+		return;
+	}
+
+	if (PackTimer >= PackInterval)
+	{
+		PackTimer = FMath::Fmod(PackTimer, PackInterval);
+		LoneTimer = 0.f;
+		TrySpawnPack();
+		return;
+	}
+	LoneTimer += DeltaSeconds;
+	if (LoneTimer >= SpawnInterval)
+	{
+		LoneTimer -= SpawnInterval;
+		if (RandomStream.FRand() < LoneSpawnChance)
+		{
+			TrySpawnEnemy();
+		}
 	}
 }
 
@@ -105,6 +146,25 @@ float ARREnemySpawner::GetDistanceToRectangle(const FBox2D& Rectangle, const FVe
 	const double GapX = FMath::Max3(0.0, Rectangle.Min.X - Point.X, Point.X - Rectangle.Max.X);
 	const double GapY = FMath::Max3(0.0, Rectangle.Min.Y - Point.Y, Point.Y - Rectangle.Max.Y);
 	return static_cast<float>(FMath::Max(GapX, GapY));
+}
+
+ERRSpawnSide ARREnemySpawner::GetSideOfRectangle(const FBox2D& Rectangle, const FVector2D& Point)
+{
+	const double GapNegX = Rectangle.Min.X - Point.X;
+	const double GapPosX = Point.X - Rectangle.Max.X;
+	const double GapNegY = Rectangle.Min.Y - Point.Y;
+	const double GapPosY = Point.Y - Rectangle.Max.Y;
+	const double GapX = FMath::Max3(0.0, GapNegX, GapPosX);
+	const double GapY = FMath::Max3(0.0, GapNegY, GapPosY);
+	if (GapX <= 0.0 && GapY <= 0.0)
+	{
+		return ERRSpawnSide::None;
+	}
+	if (GapX >= GapY)
+	{
+		return GapNegX > 0.0 ? ERRSpawnSide::NegativeX : ERRSpawnSide::PositiveX;
+	}
+	return GapNegY > 0.0 ? ERRSpawnSide::NegativeY : ERRSpawnSide::PositiveY;
 }
 
 bool ARREnemySpawner::GetViewRectangle(FBox2D& OutRectangle) const
@@ -200,7 +260,7 @@ void ARREnemySpawner::GetSpawnCandidates(TArray<FIntPoint>& OutCells)
 	}
 }
 
-TSubclassOf<ARREnemy> ARREnemySpawner::PickEnemyClass(FRandomStream& Stream) const
+TSubclassOf<ARREnemy> ARREnemySpawner::PickEnemyClass(const FRandomStream& Stream) const
 {
 	float TotalWeight = 0.f;
 	for (const FRRWeightedEnemyClass& Entry : WeightedEnemyClasses)
@@ -235,8 +295,7 @@ TSubclassOf<ARREnemy> ARREnemySpawner::PickEnemyClass(FRandomStream& Stream) con
 
 TSubclassOf<ARREnemy> ARREnemySpawner::PickEnemyClass() const
 {
-	FRandomStream Stream(FMath::Rand());
-	return PickEnemyClass(Stream);
+	return PickEnemyClass(RandomStream);
 }
 
 void ARREnemySpawner::GetSpawnableClasses(TArray<TSubclassOf<ARREnemy>>& OutClasses) const
@@ -256,22 +315,93 @@ void ARREnemySpawner::GetSpawnableClasses(TArray<TSubclassOf<ARREnemy>>& OutClas
 
 ARREnemy* ARREnemySpawner::TrySpawnEnemy()
 {
-	UWorld* World = GetWorld();
 	const TSubclassOf<ARREnemy> SpawnClass = PickEnemyClass();
-	if (!World || !SpawnClass || GetAliveCount() >= MaxAlive)
+	if (!GetWorld() || !SpawnClass || GetAliveCount() >= MaxAlive)
 	{
 		return nullptr;
+	}
+	TArray<FIntPoint> Candidates;
+	GetSpawnCandidates(Candidates);
+	if (Candidates.IsEmpty())
+	{
+		UE_LOG(LogRogueRigs, Verbose, TEXT("ARREnemySpawner %s: no spawn cell available."), *GetName());
+		return nullptr;
+	}
+	return SpawnEnemyOnCell(SpawnClass, Candidates[RandomStream.RandRange(0, Candidates.Num() - 1)]);
+}
+
+TArray<ARREnemy*> ARREnemySpawner::TrySpawnPack()
+{
+	TArray<ARREnemy*> Spawned;
+	const int32 FreeSlots = MaxAlive - GetAliveCount();
+	FBox2D View;
+	if (!GetWorld() || FreeSlots <= 0 || !GetViewRectangle(View))
+	{
+		return Spawned;
 	}
 	TArray<FIntPoint> Candidates;
 	GetSpawnCandidates(Candidates);
 	const ARRArenaGrid* Grid = GetGrid();
 	if (Candidates.IsEmpty() || !Grid)
 	{
-		UE_LOG(LogRogueRigs, Verbose, TEXT("ARREnemySpawner %s: no spawn cell available."), *GetName());
-		return nullptr;
+		UE_LOG(LogRogueRigs, Verbose, TEXT("ARREnemySpawner %s: no spawn cell available for a pack."), *GetName());
+		return Spawned;
 	}
 
-	const FIntPoint Cell = Candidates[FMath::RandRange(0, Candidates.Num() - 1)];
+	// Split the candidates by side (index = ERRSpawnSide - 1).
+	constexpr int32 SideCount = 4;
+	TArray<FIntPoint> BySide[SideCount];
+	for (const FIntPoint& Cell : Candidates)
+	{
+		const FVector Center = Grid->GetCellCenter(Cell.X, Cell.Y);
+		const ERRSpawnSide Side = GetSideOfRectangle(View, FVector2D(Center.X, Center.Y));
+		if (Side != ERRSpawnSide::None)
+		{
+			BySide[static_cast<int32>(Side) - 1].Add(Cell);
+		}
+	}
+
+	const int32 PackSize = FMath::Min(RandomStream.RandRange(PackSizeMin, FMath::Max(PackSizeMin, PackSizeMax)), FreeSlots);
+	TArray<int32, TInlineAllocator<SideCount>> FullSides;
+	int32 LargestSide = 0;
+	for (int32 SideIndex = 0; SideIndex < SideCount; ++SideIndex)
+	{
+		if (BySide[SideIndex].Num() >= PackSize)
+		{
+			FullSides.Add(SideIndex);
+		}
+		if (BySide[SideIndex].Num() > BySide[LargestSide].Num())
+		{
+			LargestSide = SideIndex;
+		}
+	}
+	const int32 SideIndex = FullSides.IsEmpty() ? LargestSide : FullSides[RandomStream.RandRange(0, FullSides.Num() - 1)];
+	TArray<FIntPoint>& Cells = BySide[SideIndex];
+	const int32 Count = FMath::Min(PackSize, Cells.Num());
+
+	// Partial Fisher-Yates: Count distinct random cells of the side.
+	for (int32 Index = 0; Index < Count; ++Index)
+	{
+		Cells.Swap(Index, RandomStream.RandRange(Index, Cells.Num() - 1));
+		const TSubclassOf<ARREnemy> SpawnClass = PickEnemyClass();
+		if (ARREnemy* Enemy = SpawnClass ? SpawnEnemyOnCell(SpawnClass, Cells[Index]) : nullptr)
+		{
+			Spawned.Add(Enemy);
+		}
+	}
+	UE_LOG(LogRogueRigs, Verbose, TEXT("ARREnemySpawner %s: pack of %d (drawn %d) from side %d, %d alive."), *GetName(), Spawned.Num(),
+		PackSize, SideIndex + 1, AliveEnemies.Num());
+	return Spawned;
+}
+
+ARREnemy* ARREnemySpawner::SpawnEnemyOnCell(TSubclassOf<ARREnemy> SpawnClass, const FIntPoint& Cell)
+{
+	UWorld* World = GetWorld();
+	const ARRArenaGrid* Grid = GetGrid();
+	if (!World || !Grid || !SpawnClass)
+	{
+		return nullptr;
+	}
 	const float HalfHeight = SpawnClass->GetDefaultObject<ARREnemy>()->GetCapsuleComponent()->GetScaledCapsuleHalfHeight();
 	const FVector Location = Grid->GetCellCenter(Cell.X, Cell.Y) + FVector(0.f, 0.f, HalfHeight + SpawnFloorClearance);
 	FActorSpawnParameters Params;

@@ -1,4 +1,4 @@
-// Rogue Rigs - automation tests of the enemy spawner (RogueRigs.Spawner.*): spawn cells outside the view and reachable, alive cap, freed slot.
+// Rogue Rigs - automation tests of the enemy spawner (RogueRigs.Spawner.*): spawn cells outside the view and reachable, alive cap, freed slot, trickle then packs, packs from one side, kamikaze share.
 
 #include "CoreMinimal.h"
 #include "Misc/AutomationTest.h"
@@ -9,6 +9,7 @@
 #include "Damage/RRGE_DamageFlat.h"
 #include "Enemies/RRChaser.h"
 #include "Enemies/RREnemySpawner.h"
+#include "Enemies/RRKamikaze.h"
 #include "FlowField/RRFlowFieldSubsystem.h"
 #include "GAS/RRGameplayTags.h"
 #include "HAL/IConsoleManager.h"
@@ -34,6 +35,12 @@ namespace RRSpawnerTests
 		static int32& MaxAliveOf(ARREnemySpawner* Spawner) { return Spawner->*(&FSpawnerAccess::MaxAlive); }
 		static int32& ViewMarginOf(ARREnemySpawner* Spawner) { return Spawner->*(&FSpawnerAccess::ViewMargin); }
 		static int32& MaxSpawnDistanceOf(ARREnemySpawner* Spawner) { return Spawner->*(&FSpawnerAccess::MaxSpawnDistanceCells); }
+		static float& TrickleDurationOf(ARREnemySpawner* Spawner) { return Spawner->*(&FSpawnerAccess::TrickleDuration); }
+		static float& PackIntervalOf(ARREnemySpawner* Spawner) { return Spawner->*(&FSpawnerAccess::PackInterval); }
+		static int32& PackSizeMinOf(ARREnemySpawner* Spawner) { return Spawner->*(&FSpawnerAccess::PackSizeMin); }
+		static int32& PackSizeMaxOf(ARREnemySpawner* Spawner) { return Spawner->*(&FSpawnerAccess::PackSizeMax); }
+		static float& LoneSpawnChanceOf(ARREnemySpawner* Spawner) { return Spawner->*(&FSpawnerAccess::LoneSpawnChance); }
+		static TArray<FRRWeightedEnemyClass>& WeightsOf(ARREnemySpawner* Spawner) { return Spawner->*(&FSpawnerAccess::WeightedEnemyClasses); }
 	};
 
 	/** World with the grid, an unarmed miner on MinerCell and a native-chaser spawner using the fixed view rectangle. */
@@ -66,7 +73,12 @@ namespace RRSpawnerTests
 			return false;
 		}
 		Test.TestEqual(TEXT("default SpawnInterval 2 s"), FSpawnerAccess::SpawnIntervalOf(Out.Spawner), 2.f);
-		Test.TestEqual(TEXT("default MaxAlive 20"), FSpawnerAccess::MaxAliveOf(Out.Spawner), 20);
+		Test.TestEqual(TEXT("default MaxAlive 100"), FSpawnerAccess::MaxAliveOf(Out.Spawner), 100);
+		Test.TestEqual(TEXT("default TrickleDuration 30 s"), FSpawnerAccess::TrickleDurationOf(Out.Spawner), 30.f);
+		Test.TestEqual(TEXT("default PackInterval 6 s"), FSpawnerAccess::PackIntervalOf(Out.Spawner), 6.f);
+		Test.TestEqual(TEXT("default PackSizeMin 8"), FSpawnerAccess::PackSizeMinOf(Out.Spawner), 8);
+		Test.TestEqual(TEXT("default PackSizeMax 15"), FSpawnerAccess::PackSizeMaxOf(Out.Spawner), 15);
+		Test.TestEqual(TEXT("default LoneSpawnChance 0.1"), FSpawnerAccess::LoneSpawnChanceOf(Out.Spawner), 0.1f);
 		Test.TestEqual(TEXT("default ViewMargin 1"), FSpawnerAccess::ViewMarginOf(Out.Spawner), 1);
 		Test.TestEqual(TEXT("default MaxSpawnDistanceCells 6"), FSpawnerAccess::MaxSpawnDistanceOf(Out.Spawner), 6);
 		FSpawnerAccess::EnemyClassOf(Out.Spawner) = ARRChaser::StaticClass();
@@ -78,6 +90,32 @@ namespace RRSpawnerTests
 		Out.View = FBox2D(Center - ViewHalfExtent, Center + ViewHalfExtent);
 		Out.Spawner->SetViewRectangleOverride(Out.View);
 		return true;
+	}
+
+	/** Checks that every robot of Pack stands on a distinct candidate-band cell beyond the same side of View; returns that side. */
+	ERRSpawnSide CheckPackOnOneSide(FAutomationTestBase& Test, const FSetup& Setup, const TArray<ARREnemy*>& Pack, const TCHAR* Label)
+	{
+		const float CellSize = Setup.Grid->GetCellSize();
+		ERRSpawnSide PackSide = ERRSpawnSide::None;
+		TSet<FIntPoint> Cells;
+		for (const ARREnemy* Enemy : Pack)
+		{
+			const FIntPoint Cell = Setup.Grid->GetCellAtWorld(Enemy->GetActorLocation());
+			const FVector Center = Setup.Grid->GetCellCenter(Cell.X, Cell.Y);
+			const FVector2D Point(Center.X, Center.Y);
+			const ERRSpawnSide Side = ARREnemySpawner::GetSideOfRectangle(Setup.View, Point);
+			PackSide = PackSide == ERRSpawnSide::None ? Side : PackSide;
+			Test.TestTrue(*FString::Printf(TEXT("%s: (%d, %d) on the pack side"), Label, Cell.X, Cell.Y), Side == PackSide && Side != ERRSpawnSide::None);
+			// The cell really lies beyond that edge.
+			const bool bBeyond = (Side == ERRSpawnSide::NegativeX && Point.X < Setup.View.Min.X) || (Side == ERRSpawnSide::PositiveX && Point.X > Setup.View.Max.X)
+				|| (Side == ERRSpawnSide::NegativeY && Point.Y < Setup.View.Min.Y) || (Side == ERRSpawnSide::PositiveY && Point.Y > Setup.View.Max.Y);
+			Test.TestTrue(*FString::Printf(TEXT("%s: (%d, %d) beyond its edge"), Label, Cell.X, Cell.Y), bBeyond);
+			const float Distance = ARREnemySpawner::GetDistanceToRectangle(Setup.View, Point);
+			Test.TestTrue(*FString::Printf(TEXT("%s: (%d, %d) in the spawn band"), Label, Cell.X, Cell.Y), Distance >= 1.5f * CellSize && Distance <= 6.5f * CellSize);
+			Test.TestFalse(*FString::Printf(TEXT("%s: (%d, %d) distinct"), Label, Cell.X, Cell.Y), Cells.Contains(Cell));
+			Cells.Add(Cell);
+		}
+		return PackSide;
 	}
 
 	/** Applies a URRGE_DamageFlat of Damage made by Source to Target. */
@@ -244,6 +282,221 @@ bool FRRSpawnerFreedSlotTest::RunTest(const FString& Parameters)
 	// A destroyed (not killed) robot frees a slot too.
 	Second->Destroy();
 	TestEqual(TEXT("a destroyed robot frees its slot"), Setup.Spawner->GetAliveCount(), 1);
+	return true;
+}
+
+IMPLEMENT_SIMPLE_AUTOMATION_TEST(FRRSpawnerTrickleThenPacksTest, "RogueRigs.Spawner.TrickleThenPacks",
+	EAutomationTestFlags::EditorContext | EAutomationTestFlags::EngineFilter)
+
+bool FRRSpawnerTrickleThenPacksTest::RunTest(const FString& Parameters)
+{
+	using namespace RRSpawnerTests;
+
+	FTestWorld TestWorld(TEXT("RRSpawnerTrickle"));
+	FSetup Setup;
+	if (!MakeSetup(*this, TestWorld, 100, 1.f, false, Setup))
+	{
+		return false;
+	}
+	// Short phases: 6 s of trickle (one robot per second), then a pack every 3 s with a sure lone robot at +1 and +2 s.
+	FSpawnerAccess::TrickleDurationOf(Setup.Spawner) = 6.f;
+	FSpawnerAccess::PackIntervalOf(Setup.Spawner) = 3.f;
+	FSpawnerAccess::LoneSpawnChanceOf(Setup.Spawner) = 1.f;
+	Setup.Spawner->SeedRandomStream(20261003);
+	Setup.Spawner->SetSpawningEnabled(true);
+
+	struct FEvent
+	{
+		int32 Frame;
+		int32 Delta;
+		bool bPackPhase;
+	};
+	TArray<FEvent> Events;
+	int32 PackPhaseFrame = INDEX_NONE;
+	int32 Previous = 0;
+	for (int32 Frame = 1; Frame <= 750; ++Frame)
+	{
+		TestWorld.Tick();
+		const int32 Alive = Setup.Spawner->GetAliveCount();
+		if (Setup.Spawner->IsInPackPhase() && PackPhaseFrame == INDEX_NONE)
+		{
+			PackPhaseFrame = Frame;
+		}
+		if (Alive != Previous)
+		{
+			Events.Add({ Frame, Alive - Previous, Setup.Spawner->IsInPackPhase() });
+			Previous = Alive;
+		}
+	}
+
+	FString Log;
+	for (const FEvent& Event : Events)
+	{
+		Log += FString::Printf(TEXT(" f%d:%+d%s"), Event.Frame, Event.Delta, Event.bPackPhase ? TEXT("p") : TEXT(""));
+	}
+	AddInfo(FString::Printf(TEXT("pack phase from frame %d; alive changes:%s"), PackPhaseFrame, *Log));
+	TestTrue(TEXT("pack phase starts after 6 s (frame 360 or 361)"), PackPhaseFrame == 360 || PackPhaseFrame == 361);
+
+	int32 TrickleSpawns = 0;
+	TArray<FEvent> PackPhaseEvents;
+	for (const FEvent& Event : Events)
+	{
+		if (Event.bPackPhase)
+		{
+			PackPhaseEvents.Add(Event);
+			continue;
+		}
+		++TrickleSpawns;
+		TestEqual(*FString::Printf(TEXT("trickle spawn at frame %d is a single robot"), Event.Frame), Event.Delta, 1);
+	}
+	TestTrue(TEXT("5 or 6 trickle spawns in 6 s at 1 s"), TrickleSpawns == 5 || TrickleSpawns == 6);
+
+	// Expected after the trickle: pack, lone, lone, pack, lone, lone, pack.
+	const bool Pattern[] = { true, false, false, true, false, false, true };
+	if (!TestEqual(TEXT("7 spawn events in the pack phase"), PackPhaseEvents.Num(), static_cast<int32>(UE_ARRAY_COUNT(Pattern))))
+	{
+		return false;
+	}
+	TArray<int32> PackFrames;
+	for (int32 Index = 0; Index < PackPhaseEvents.Num(); ++Index)
+	{
+		const FEvent& Event = PackPhaseEvents[Index];
+		if (Pattern[Index])
+		{
+			PackFrames.Add(Event.Frame);
+			TestTrue(*FString::Printf(TEXT("pack at frame %d has 8 to 15 robots (%d)"), Event.Frame, Event.Delta), Event.Delta >= 8 && Event.Delta <= 15);
+		}
+		else
+		{
+			TestEqual(*FString::Printf(TEXT("lone robot at frame %d"), Event.Frame), Event.Delta, 1);
+		}
+	}
+	TestTrue(TEXT("first pack as the pack phase starts"), PackFrames[0] == PackPhaseFrame);
+	for (int32 Index = 1; Index < PackFrames.Num(); ++Index)
+	{
+		const int32 Gap = PackFrames[Index] - PackFrames[Index - 1];
+		TestTrue(*FString::Printf(TEXT("packs 3 s apart (%d frames)"), Gap), FMath::Abs(Gap - 180) <= 1);
+	}
+	return true;
+}
+
+IMPLEMENT_SIMPLE_AUTOMATION_TEST(FRRSpawnerPackOneSideTest, "RogueRigs.Spawner.PackFromOneSide",
+	EAutomationTestFlags::EditorContext | EAutomationTestFlags::EngineFilter)
+
+bool FRRSpawnerPackOneSideTest::RunTest(const FString& Parameters)
+{
+	using namespace RRSpawnerTests;
+
+	FTestWorld TestWorld(TEXT("RRSpawnerPackSide"));
+	FSetup Setup;
+	if (!MakeSetup(*this, TestWorld, 100, 2.f, false, Setup))
+	{
+		return false;
+	}
+	Setup.Spawner->SeedRandomStream(20261003);
+	TSet<ERRSpawnSide> SidesSeen;
+	for (int32 PackIndex = 0; PackIndex < 8; ++PackIndex)
+	{
+		const TArray<ARREnemy*> Pack = Setup.Spawner->TrySpawnPack();
+		const FString Label = FString::Printf(TEXT("pack %d"), PackIndex);
+		TestTrue(*FString::Printf(TEXT("%s has 8 to 15 robots (%d)"), *Label, Pack.Num()), Pack.Num() >= 8 && Pack.Num() <= 15);
+		const ERRSpawnSide Side = CheckPackOnOneSide(*this, Setup, Pack, *Label);
+		AddInfo(FString::Printf(TEXT("%s: %d robots, side %d"), *Label, Pack.Num(), static_cast<int32>(Side)));
+		SidesSeen.Add(Side);
+		TestEqual(*FString::Printf(TEXT("%s alive"), *Label), Setup.Spawner->GetAliveCount(), Pack.Num());
+		for (ARREnemy* Enemy : Pack)
+		{
+			Enemy->Destroy();
+		}
+	}
+	TestTrue(TEXT("packs come from more than one side"), SidesSeen.Num() >= 2);
+	return true;
+}
+
+IMPLEMENT_SIMPLE_AUTOMATION_TEST(FRRSpawnerPackCapTest, "RogueRigs.Spawner.PackClampedToCap",
+	EAutomationTestFlags::EditorContext | EAutomationTestFlags::EngineFilter)
+
+bool FRRSpawnerPackCapTest::RunTest(const FString& Parameters)
+{
+	using namespace RRSpawnerTests;
+
+	FTestWorld TestWorld(TEXT("RRSpawnerPackCap"));
+	FSetup Setup;
+	if (!MakeSetup(*this, TestWorld, 10, 2.f, false, Setup))
+	{
+		return false;
+	}
+	Setup.Spawner->SeedRandomStream(7);
+	for (int32 Index = 0; Index < 3; ++Index)
+	{
+		TestNotNull(*FString::Printf(TEXT("single spawn %d"), Index), Setup.Spawner->TrySpawnEnemy());
+	}
+	const TArray<ARREnemy*> Clamped = Setup.Spawner->TrySpawnPack();
+	TestEqual(TEXT("pack clamped to the 7 free slots"), Clamped.Num(), 7);
+	CheckPackOnOneSide(*this, Setup, Clamped, TEXT("clamped pack"));
+	TestEqual(TEXT("cap of 10 reached"), Setup.Spawner->GetAliveCount(), 10);
+	TestEqual(TEXT("no pack at the cap"), Setup.Spawner->TrySpawnPack().Num(), 0);
+	TestNull(TEXT("no single robot at the cap"), Setup.Spawner->TrySpawnEnemy());
+
+	// Fixed pack size 12 with room: exactly 12.
+	FSpawnerAccess::MaxAliveOf(Setup.Spawner) = 100;
+	FSpawnerAccess::PackSizeMinOf(Setup.Spawner) = 12;
+	FSpawnerAccess::PackSizeMaxOf(Setup.Spawner) = 12;
+	const TArray<ARREnemy*> Full = Setup.Spawner->TrySpawnPack();
+	TestEqual(TEXT("pack of exactly 12 with free slots"), Full.Num(), 12);
+	CheckPackOnOneSide(*this, Setup, Full, TEXT("fixed pack"));
+	TestEqual(TEXT("22 alive"), Setup.Spawner->GetAliveCount(), 22);
+	return true;
+}
+
+IMPLEMENT_SIMPLE_AUTOMATION_TEST(FRRSpawnerKamikazeShareTest, "RogueRigs.Spawner.KamikazeShare",
+	EAutomationTestFlags::EditorContext | EAutomationTestFlags::EngineFilter)
+
+bool FRRSpawnerKamikazeShareTest::RunTest(const FString& Parameters)
+{
+	using namespace RRSpawnerTests;
+
+	FTestWorld TestWorld(TEXT("RRSpawnerKamikazeShare"));
+	ARREnemySpawner* Spawner = TestWorld.Spawn<ARREnemySpawner>(ARREnemySpawner::StaticClass(), FVector::ZeroVector);
+	if (!TestNotNull(TEXT("spawner spawned"), Spawner))
+	{
+		return false;
+	}
+	Spawner->SetSpawningEnabled(false);
+
+	// M1 default of the placed spawner: chaser 85, kamikaze 15.
+	FRRWeightedEnemyClass ChaserEntry;
+	ChaserEntry.EnemyClass = ARRChaser::StaticClass();
+	ChaserEntry.Weight = 85.f;
+	FRRWeightedEnemyClass KamikazeEntry;
+	KamikazeEntry.EnemyClass = ARRKamikaze::StaticClass();
+	KamikazeEntry.Weight = 15.f;
+	FSpawnerAccess::WeightsOf(Spawner) = { ChaserEntry, KamikazeEntry };
+
+	FRandomStream Stream(20261003);
+	constexpr int32 Picks = 2000;
+	int32 Kamikazes = 0;
+	int32 Chasers = 0;
+	for (int32 Index = 0; Index < Picks; ++Index)
+	{
+		const TSubclassOf<ARREnemy> Picked = Spawner->PickEnemyClass(Stream);
+		Kamikazes += Picked == ARRKamikaze::StaticClass() ? 1 : 0;
+		Chasers += Picked == ARRChaser::StaticClass() ? 1 : 0;
+	}
+	const float Share = static_cast<float>(Kamikazes) / Picks;
+	AddInfo(FString::Printf(TEXT("%d kamikazes, %d chasers over %d seeded picks: %.1f %%"), Kamikazes, Chasers, Picks, 100.f * Share));
+	TestEqual(TEXT("every pick is one of the two classes"), Kamikazes + Chasers, Picks);
+	TestTrue(TEXT("12 to 18 % kamikazes"), Share >= 0.12f && Share <= 0.18f);
+
+	// The spawner's own stream, seeded, gives the same share band.
+	Spawner->SeedRandomStream(20261003);
+	int32 OwnKamikazes = 0;
+	for (int32 Index = 0; Index < Picks; ++Index)
+	{
+		OwnKamikazes += Spawner->PickEnemyClass() == ARRKamikaze::StaticClass() ? 1 : 0;
+	}
+	AddInfo(FString::Printf(TEXT("spawner stream: %d kamikazes over %d picks"), OwnKamikazes, Picks));
+	TestEqual(TEXT("seeded spawner stream matches the seeded draw"), OwnKamikazes, Kamikazes);
 	return true;
 }
 
