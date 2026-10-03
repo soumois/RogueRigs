@@ -24,4 +24,7 @@ namespace RRGameplayTags
 
 	/** SetByCaller key: magnitude of a runtime upgrade GE (URRUpgradeComponent; AddBase value, or 1 + value for MultiplyAdditive). */
 	ROGUERIGS_API UE_DECLARE_GAMEPLAY_TAG_EXTERN(Data_UpgradeValue);
+
+	/** SetByCaller key: health restored by URRGE_Heal (clamped to MaxHealth by the health set). */
+	ROGUERIGS_API UE_DECLARE_GAMEPLAY_TAG_EXTERN(Data_Heal);
 }

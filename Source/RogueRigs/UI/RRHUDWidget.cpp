@@ -1,4 +1,4 @@
-// Rogue Rigs - base class of the in-run HUD widget: health, XP, level-up and game-over events fed by C++.
+// Rogue Rigs - base class of the in-run HUD widget: health, XP, level-up, upgrade choice and game-over events fed by C++.
 
 #include "UI/RRHUDWidget.h"
 
@@ -6,6 +6,7 @@
 #include "GAS/RRHealthAttributeSet.h"
 #include "Player/RRGameMode.h"
 #include "Player/RRMiner.h"
+#include "Progression/RRLevelUpComponent.h"
 #include "Progression/RRProgressionComponent.h"
 
 void URRHUDWidget::BindToMiner(ARRMiner* Miner)
@@ -31,6 +32,35 @@ void URRHUDWidget::BindToMiner(ARRMiner* Miner)
 		Progression->OnLevelUp.AddUniqueDynamic(this, &URRHUDWidget::HandleLevelUp);
 		HandleXPChanged(Progression->GetXP(), Progression->GetXPToNextLevel(), Progression->GetLevel());
 	}
+
+	if (URRLevelUpComponent* LevelUp = Miner->GetLevelUp())
+	{
+		BoundLevelUp = LevelUp;
+		LevelUp->OnUpgradeOfferShown.AddUniqueDynamic(this, &URRHUDWidget::HandleUpgradeOfferShown);
+		LevelUp->OnUpgradeOfferClosed.AddUniqueDynamic(this, &URRHUDWidget::HandleUpgradeOfferClosed);
+		if (LevelUp->IsAwaitingChoice())
+		{
+			HandleUpgradeOfferShown(LevelUp->GetOfferCards(), LevelUp->CanReroll());
+		}
+	}
+}
+
+bool URRHUDWidget::ChooseUpgrade(int32 Index)
+{
+	URRLevelUpComponent* LevelUp = BoundLevelUp.Get();
+	return LevelUp && LevelUp->ChooseUpgrade(Index);
+}
+
+bool URRHUDWidget::RequestReroll()
+{
+	URRLevelUpComponent* LevelUp = BoundLevelUp.Get();
+	return LevelUp && LevelUp->RequestReroll();
+}
+
+bool URRHUDWidget::CanRerollUpgrade() const
+{
+	const URRLevelUpComponent* LevelUp = BoundLevelUp.Get();
+	return LevelUp && LevelUp->CanReroll();
 }
 
 void URRHUDWidget::BindToGameMode(ARRGameMode* GameMode)
@@ -77,6 +107,16 @@ void URRHUDWidget::HandleLevelUp(int32 NewLevel)
 	OnLevelUp(NewLevel);
 }
 
+void URRHUDWidget::HandleUpgradeOfferShown(const TArray<FRRUpgradeCard>& Cards, bool bCanReroll)
+{
+	OnUpgradeOfferShown(Cards, bCanReroll);
+}
+
+void URRHUDWidget::HandleUpgradeOfferClosed()
+{
+	OnUpgradeOfferClosed();
+}
+
 void URRHUDWidget::BroadcastHealth()
 {
 	const UAbilitySystemComponent* ASC = BoundASC.Get();
@@ -105,6 +145,12 @@ void URRHUDWidget::UnbindMiner()
 		Progression->OnXPChanged.RemoveDynamic(this, &URRHUDWidget::HandleXPChanged);
 		Progression->OnLevelUp.RemoveDynamic(this, &URRHUDWidget::HandleLevelUp);
 	}
+	if (URRLevelUpComponent* LevelUp = BoundLevelUp.Get())
+	{
+		LevelUp->OnUpgradeOfferShown.RemoveDynamic(this, &URRHUDWidget::HandleUpgradeOfferShown);
+		LevelUp->OnUpgradeOfferClosed.RemoveDynamic(this, &URRHUDWidget::HandleUpgradeOfferClosed);
+	}
+	BoundLevelUp.Reset();
 	BoundProgression.Reset();
 	BoundASC.Reset();
 	HealthChangedHandle.Reset();

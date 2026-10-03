@@ -1,16 +1,17 @@
 ---
 id: sys-hud
-description: "In-run HUD C++ base: URRHUDWidget display events (health, XP, level-up, game over) fed by the miner and the game mode, created by the player controller."
+description: "In-run HUD C++ base: URRHUDWidget display events (health, XP, level-up, upgrade cards, game over) and card/reroll calls, created by the player controller."
 parent: systems-index
 kind: doc
 ---
 # HUD
 
 - responsibility: feed the UI layer from C++: the miner's health, XP and level-ups, and the game-over event. Layout, text and visuals live in the Blueprint subclass (BP agent, [[cpp-bp-split]]); no gameplay logic in the widget.
-- main_classes: `URRHUDWidget : UUserWidget` (`Source/RogueRigs/UI/RRHUDWidget.h`, `Abstract`). `BlueprintImplementableEvent`s to implement in the Blueprint subclass: `OnHealthChanged(float Current, float Max)` (Health and MaxHealth of the miner), `OnXPChanged(float Current, float Needed, int32 Level)` and `OnLevelUp(int32 NewLevel)` (miner progression, [[sys-progression]]) and `OnGameOver()`. Guards: `OnHealthChanged` is never called with Max <= 0 and `OnXPChanged` never with Needed <= 0, so the Blueprint may divide by them.
+- main_classes: `URRHUDWidget : UUserWidget` (`Source/RogueRigs/UI/RRHUDWidget.h`, `Abstract`). `BlueprintImplementableEvent`s to implement in the Blueprint subclass: `OnHealthChanged(float Current, float Max)` (Health and MaxHealth of the miner), `OnXPChanged(float Current, float Needed, int32 Level)` and `OnLevelUp(int32 NewLevel)` (miner progression, [[sys-progression]]; drives the "LEVEL UP" text), `OnUpgradeOfferShown(TArray<FRRUpgradeCard> Cards, bool bCanReroll)` (show or refresh the card screen: opening, after a reroll, each chained screen; game paused, cursor shown) and `OnUpgradeOfferClosed()` (hide it, game resumes) ([[sys-level-up]]), and `OnGameOver()`. Guards: `OnHealthChanged` is never called with Max <= 0 and `OnXPChanged` never with Needed <= 0, so the Blueprint may divide by them.
+- Blueprint calls (buttons): `ChooseUpgrade(int32 Index)` (0-based in `Cards`; bool), `RequestReroll()` (bool), `CanRerollUpgrade()` (pure); forwarded to the bound miner's `URRLevelUpComponent`. Card fields: `DisplayName`, `TargetText`, `ValueText`, `Tier` ([[sys-upgrades]]).
 - entry_points:
   - `ARRPlayerController::BeginPlay` (local player only: skipped when `HUDWidgetClass` is none, the controller is not local or has no `ULocalPlayer`, so headless tests create no widget) creates `HUDWidgetClass`, adds it to the viewport, calls `BindToGameMode(auth game mode as ARRGameMode)` and `BindToMiner(possessed miner)`. `ARRPlayerController::OnPossess` rebinds to the new miner. `GetHUDWidget()` returns it.
-  - `BindToMiner(ARRMiner*)`: subscribes to the ASC value-change delegates of `Health` and `MaxHealth` (either change calls `OnHealthChanged` with both current values, skipped while MaxHealth is 0) and to the miner `URRProgressionComponent` `OnXPChanged` / `OnLevelUp` (forwarded to the display events), then pushes the current health and XP once; null unbinds.
+  - `BindToMiner(ARRMiner*)`: subscribes to the ASC value-change delegates of `Health` and `MaxHealth` (either change calls `OnHealthChanged` with both current values, skipped while MaxHealth is 0) to the miner `URRProgressionComponent` `OnXPChanged` / `OnLevelUp` and `URRLevelUpComponent` `OnUpgradeOfferShown` / `OnUpgradeOfferClosed` (forwarded to the display events), then pushes the current health and XP once (and an open card screen); null unbinds.
   - `BindToGameMode(ARRGameMode*)`: binds `ARRGameMode::OnGameOver` to `OnGameOver` ([[sys-player]] game over); null unbinds. `NativeDestruct` removes every binding.
 - data: editable on the controller Blueprint: `HUDWidgetClass` (category HUD, none by default; set to the HUD widget Blueprint).
 - depends_on: [[sys-player]] (miner, controller, game mode), [[sys-gas-core]] (health attribute set), [[sys-progression]]; module `UMG`.
@@ -21,3 +22,4 @@ kind: doc
 - [[systems-index]] — parent index.
 - [[sys-player]] — the controller that creates the widget, the miner and game mode it listens to.
 - [[sys-progression]] — the XP and level events it forwards.
+- [[sys-level-up]] — the card offer events it forwards and the choice calls it relays.

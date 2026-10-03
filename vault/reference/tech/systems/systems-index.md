@@ -12,8 +12,9 @@ Decision status inside each doc: approved, provisional, deferred or open. Planne
 - [[tech-index]] — parent index.
 - [[sys-gas-core]] — which actors own an ASC, AttributeSets, plugin setup, debug tools. Read first for any GAS work.
 - [[sys-player]] — miner pawn (ASC, base stats, camera, move and aim), player controller input routing, game mode.
-- [[sys-hud]] — HUD widget C++ base: health, XP, level-up and game-over display events, created by the player controller.
+- [[sys-hud]] — HUD widget C++ base: health, XP, level-up, upgrade choice and game-over display events, created by the player controller.
 - [[sys-progression]] — miner XP and level: XPCurve.csv, XPGain scaling, carry-over, XP and level-up events.
+- [[sys-level-up]] — level-up flow: heal, effect event, delayed pause on the upgrade cards, chained screens, Blueprint API to bind.
 - [[sys-drone]] — helper drone actor spawned by the miner: state enum, orbit tunables, MiningSpeed read.
 - [[sys-damage]] — damage chain from shot to death, i-frames, death guard.
 - [[sys-status-effects]] — stacking rules for bonuses and statuses, enemy stun.

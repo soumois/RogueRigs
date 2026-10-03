@@ -102,6 +102,7 @@ sys-flow-field  reference/tech/systems/sys-flow-field.md
 sys-gas-core  reference/tech/systems/sys-gas-core.md
 sys-grid  reference/tech/systems/sys-grid.md
 sys-hud  reference/tech/systems/sys-hud.md
+sys-level-up  reference/tech/systems/sys-level-up.md
 sys-pickups  reference/tech/systems/sys-pickups.md
 sys-player  reference/tech/systems/sys-player.md
 sys-progression  reference/tech/systems/sys-progression.md

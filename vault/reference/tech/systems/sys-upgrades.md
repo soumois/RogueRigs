@@ -6,7 +6,7 @@ kind: doc
 ---
 # Upgrades
 
-- responsibility: build the card offer and apply the picked upgrade. The level-up flow (pause, heal, chained screens) is [[task-014-03-levelup-flow]].
+- responsibility: build the card offer and apply the picked upgrade. The level-up flow (pause, heal, chained screens) drives it: [[sys-level-up]].
 - main_classes (`Source/RogueRigs/Upgrades/`): `URRUpgradeComponent` (default subobject `Upgrades` of `ARRMiner`, `GetUpgrades()`); `FRRUpgradeCard` (`Stat`, `Tier`, `Target`, `TargetWeapon`, `Value`, `Operation`, UI texts `DisplayName`, `TargetText`, `ValueText`) and enums `ERRUpgradeStat`, `ERRUpgradeRarity` (rank = value), `ERRUpgradeTarget` (`Player`, `AllWeapons`, `Weapon`), `ERRUpgradeOperation` in `RRUpgradeCard.h`; rows `FRRUpgradeValueRow`, `FRRUpgradeRarityRow`.
 
 ## Rules

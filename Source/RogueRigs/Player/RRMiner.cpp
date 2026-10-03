@@ -20,6 +20,7 @@
 #include "GAS/RRPlayerAttributeSet.h"
 #include "Grid/RRArenaGrid.h"
 #include "Player/RRGameMode.h"
+#include "Progression/RRLevelUpComponent.h"
 #include "Progression/RRProgressionComponent.h"
 #include "Projectiles/RRCollisionChannels.h"
 #include "Upgrades/RRUpgradeComponent.h"
@@ -45,6 +46,7 @@ ARRMiner::ARRMiner(const FObjectInitializer& ObjectInitializer)
 	PlayerSet = CreateDefaultSubobject<URRPlayerAttributeSet>(TEXT("PlayerSet"));
 	Progression = CreateDefaultSubobject<URRProgressionComponent>(TEXT("Progression"));
 	Upgrades = CreateDefaultSubobject<URRUpgradeComponent>(TEXT("Upgrades"));
+	LevelUp = CreateDefaultSubobject<URRLevelUpComponent>(TEXT("LevelUp"));
 	IFramesEffectClass = URRGE_IFrames::StaticClass();
 
 	// Camera boom with a fixed world rotation.

@@ -8,6 +8,7 @@
 #include "Engine/HitResult.h"
 #include "Grid/RRArenaGrid.h"
 #include "Pickups/RRPickup.h"
+#include "Upgrades/RRUpgradeCard.h"
 #include "RRTestEventRecorder.generated.h"
 
 class UAbilitySystemComponent;
@@ -16,7 +17,8 @@ class UAbilitySystemComponent;
  * Records the broadcasts of ARRMiner::OnPickupCollected, ARRArenaGrid::OnCellDestroyed, the URRAutoFireComponent
  * events (OnShotFired, OnReloadStarted, OnReloadFinished), UProjectileMovementComponent::OnProjectileStop and
  * UPrimitiveComponent::OnComponentHit, ARRGameMode::OnGameOver, URRExplosionSubsystem::OnExplosion and the
- * URRProgressionComponent events (OnXPChanged, OnLevelUp) so
+ * URRProgressionComponent events (OnXPChanged, OnLevelUp) and the URRLevelUpComponent events (OnLevelUpEffect,
+ * OnUpgradeOfferShown, OnUpgradeOfferClosed) so
  * automation tests (Source/RogueRigs/Tests) can check that the events fire. Dynamic delegates need a UFunction to
  * bind to, so this is a UCLASS and is compiled in every configuration (UHT does not support WITH_DEV_AUTOMATION_TESTS
  * guards); it is never used by gameplay code. Create with NewObject, keep it alive with a TStrongObjectPtr.
@@ -70,6 +72,33 @@ public:
 	/** Bind to URRProgressionComponent::OnLevelUp: appends the new level. */
 	UFUNCTION()
 	void HandleLevelUp(int32 NewLevel) { LevelUps.Add(NewLevel); }
+
+	/** Bind to URRLevelUpComponent::OnLevelUpEffect: appends the new level. */
+	UFUNCTION()
+	void HandleLevelUpEffect(int32 NewLevel) { LevelUpEffects.Add(NewLevel); }
+
+	/** Bind to URRLevelUpComponent::OnUpgradeOfferShown: appends the card count and the reroll flag, keeps the cards. */
+	UFUNCTION()
+	void HandleUpgradeOfferShown(const TArray<FRRUpgradeCard>& Cards, bool bCanReroll) { OfferCardCounts.Add(Cards.Num()); OfferRerollFlags.Add(bCanReroll); LastOfferCards = Cards; }
+
+	/** Bind to URRLevelUpComponent::OnUpgradeOfferClosed: counts the broadcasts. */
+	UFUNCTION()
+	void HandleUpgradeOfferClosed() { ++OfferClosedCount; }
+
+	/** Levels received through HandleLevelUpEffect, in order. */
+	const TArray<int32>& GetLevelUpEffects() const { return LevelUpEffects; }
+
+	/** Card count of each OnUpgradeOfferShown, in order. */
+	const TArray<int32>& GetOfferCardCounts() const { return OfferCardCounts; }
+
+	/** bCanReroll of each OnUpgradeOfferShown, in order. */
+	const TArray<bool>& GetOfferRerollFlags() const { return OfferRerollFlags; }
+
+	/** Cards of the last OnUpgradeOfferShown. */
+	const TArray<FRRUpgradeCard>& GetLastOfferCards() const { return LastOfferCards; }
+
+	/** Number of OnUpgradeOfferClosed broadcasts. */
+	int32 GetOfferClosedCount() const { return OfferClosedCount; }
 
 	/** (Current, Needed, Level) received through HandleXPChanged, in order. */
 	const TArray<FVector>& GetXPChanges() const { return XPChanges; }
@@ -143,6 +172,21 @@ protected:
 
 	/** Level-ups received so far. */
 	TArray<int32> LevelUps;
+
+	/** Level-up effect levels received so far. */
+	TArray<int32> LevelUpEffects;
+
+	/** Card count of each offer shown so far. */
+	TArray<int32> OfferCardCounts;
+
+	/** Reroll flag of each offer shown so far. */
+	TArray<bool> OfferRerollFlags;
+
+	/** Cards of the last offer shown. */
+	TArray<FRRUpgradeCard> LastOfferCards;
+
+	/** Offer closed broadcasts received so far. */
+	int32 OfferClosedCount = 0;
 
 	/** Game over broadcasts received so far. */
 	int32 GameOverCount = 0;

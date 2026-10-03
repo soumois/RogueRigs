@@ -17,6 +17,7 @@ class URRAbilitySystemComponent;
 class URRHealthAttributeSet;
 class URRMovementAttributeSet;
 class URRPlayerAttributeSet;
+class URRLevelUpComponent;
 class URRProgressionComponent;
 class URRUpgradeComponent;
 class USpringArmComponent;
@@ -42,7 +43,8 @@ DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FRROnMinerDeathSignature, AActor*, I
  * BeginPlay (first ARRArenaGrid in the world). Pickups (ARRPickup) read GetPickupRadius and report their collection
  * through NotifyPickupCollected, which broadcasts OnPickupCollected; no pickup effect here. XP and level live in its
  * URRProgressionComponent (GetProgression; XP pickups call AddXP on it). Upgrade offers and picked upgrades live in its
- * URRUpgradeComponent (GetUpgrades). Weapons: at BeginPlay each class of
+ * URRUpgradeComponent (GetUpgrades); the level-up flow (heal, effect, paused choice screens) in its URRLevelUpComponent
+ * (GetLevelUp). Weapons: at BeginPlay each class of
  * StartingWeapons is spawned (owner: the miner), attached (mesh socket WeaponAttachSocketName, or the capsule at
  * WeaponAttachOffset when the socket is None) and acquired (ARRWeapon::Acquire); they are destroyed at EndPlay.
  * Collision: the capsule overlaps the Projectile channel (never blocked by any projectile; projectiles still get
@@ -120,6 +122,10 @@ public:
 	/** Upgrade offers and picked upgrades of the miner (default subobject; sys-upgrades). */
 	UFUNCTION(BlueprintPure, Category = "Miner|Upgrades")
 	URRUpgradeComponent* GetUpgrades() const { return Upgrades; }
+
+	/** Level-up flow of the miner (default subobject): heal, effect event, paused choice screens (ChooseUpgrade, RequestReroll). */
+	UFUNCTION(BlueprintPure, Category = "Miner|Progression")
+	URRLevelUpComponent* GetLevelUp() const { return LevelUp; }
 
 	/** Called by a pickup when it reaches the miner: broadcasts OnPickupCollected. Applies no effect itself. */
 	void NotifyPickupCollected(ERRPickupType Type);
@@ -236,6 +242,10 @@ protected:
 	/** Builds upgrade offers and applies the picked upgrades (player ASC and weapon ASCs); replays global ones on new weapons. */
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Components")
 	TObjectPtr<URRUpgradeComponent> Upgrades;
+
+	/** Level-up flow: listens to Progression, heals, broadcasts the effect and offer events, pauses on the choice screens. */
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Components")
+	TObjectPtr<URRLevelUpComponent> LevelUp;
 
 	/** Row of PlayerBaseStats.csv applied as base stats at BeginPlay. */
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Miner|Stats")
