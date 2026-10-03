@@ -3,7 +3,7 @@ id: task-012-03-bp-hud-kamikaze
 description: "Bigger kamikaze visuals, HUD XP bar with level and LEVEL UP text, HUD divide-by-zero check, PIE check."
 parent: task-012-xp-level
 kind: task
-status: in-progress
+status: done
 ---
 # HUD XP and kamikaze visuals
 
@@ -16,7 +16,7 @@ status: in-progress
 - editor_state: open
 - token_ceiling: 60000
 - milestone: M1
-- result: open
+- result: BP_Kamikaze meshes × 2.3 (body 115 uu, core 0.644, eye 0.23, front positions); WBP_HUD XPBar (cyan, bottom, full width), LevelText "Lv N", LevelUpText shown 1 s on OnLevelUp (Delay); OnXPChanged guarded. PIE 12 s: no divide by zero, warning or error in the log. HUD layout and kamikaze size not seen on screen (owner). Docs wbp-hud, bp-kamikaze. About 48k tokens.
 
 ## Relations
 - [[task-012-xp-level]] — parent global task.

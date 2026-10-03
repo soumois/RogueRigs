@@ -9,7 +9,7 @@ kind: doc
 - asset_path: /Game/RogueRigs/Blueprints/Enemies/BP_Kamikaze
 - parent_class: ARRKamikaze (/Script/RogueRigs.RRKamikaze)
 - purpose: the kamikaze robot; visuals only, behaviour in C++ ([[sys-enemies]]).
-- components: inherited C++ components (VisualRoot, BodyMesh, CoreMesh) plus EyeMesh added under VisualRoot. BodyMesh: engine Sphere, scale 0.5 (50 uu), relative (0, 0, 25), MI_GB_Kamikaze. CoreMesh: engine Sphere, scale 0.28, relative (21, 0, 20), protrudes at the front, MI_GB_Core. EyeMesh: engine Sphere, scale 0.1, relative (17, 0, 41), MI_GB_Eye, no collision, no shadow.
+- components: inherited C++ components (VisualRoot, BodyMesh, CoreMesh) plus EyeMesh added under VisualRoot. Sized to about 1.1 x the miner (capsule 37.4 x 96.8, task-012-03). BodyMesh: engine Sphere, scale 1.15 (115 uu, bottom at the VisualRoot origin), relative (0, 0, 57.5), MI_GB_Kamikaze. CoreMesh: engine Sphere, scale 0.644, relative (48.3, 0, 46), protrudes at the front, MI_GB_Core. EyeMesh: engine Sphere, scale 0.23, relative (39, 0, 94.3) (front, near the top), MI_GB_Eye, no collision, no shadow. Earlier sizes (body 0.5, core 0.28, eye 0.1) scaled by 2.3.
 - exposed_defaults: XPPickupClass = BP_PickupXP_C; all other C++ defaults kept.
 - events: none
 - logic_in_bp: none

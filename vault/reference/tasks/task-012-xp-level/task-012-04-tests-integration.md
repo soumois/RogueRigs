@@ -3,7 +3,7 @@ id: task-012-04-tests-integration
 description: "Integration tests with final Blueprints: kill robots with the rifle, collect their XP cubes, level up; full run."
 parent: task-012-xp-level
 kind: task
-status: todo
+status: in-progress
 ---
 # Integration tests
 
