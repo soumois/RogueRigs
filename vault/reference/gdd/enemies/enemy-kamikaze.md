@@ -11,17 +11,18 @@ status: approved
 - locomotion: hover
 - rig: rigid parts, one bone per part
 - parts: open
-- size: open
+- size: 0.6 × the miner, hovering (provisional, owner 2026-10-02)
 - animations: open
 - behavior:
   - explodes on proximity or on death, with the same radius and damage both ways;
   - the explosion hurts robots, the miner and terrain ([[explosions]]);
   - it does not target defenses: breaking terrain is emergent, not intended;
-  - one explosion breaks one ore block, so luring it onto a vein is a valid tactic ([[ore-blocks]]);
+  - its explosion destroys every block in the radius ([[explosions]]), so luring it onto a vein is a valid tactic ([[ore-blocks]]);
   - the share of kamikazes per wave controls how long a chokepoint lasts.
-- telegraph: open (the core always pulses)
+- telegraph: the core always pulses; within 150 uu of the miner it arms: the core pulses faster and grows for 0.5 s, then it explodes (provisional, owner 2026-10-02)
 - colors: dark gunmetal, pulsing orange core; red eyes, yellow logo plate ([[color-code]])
-- stats: hp, speed, explosion radius, explosion damage (terrain and characters), xp_value, knockback_resistance → open
+- stats (provisional, owner 2026-10-02): hp 15, speed 520 uu/s, explosion radius 250 uu, character damage 30, terrain: every block in the radius, xp_value 1; knockback_resistance open
+- spawn share (M1): 25 % of spawned robots
 - milestone: M1
 - references: `vault/assets/enemies-lineup.jpg`
 

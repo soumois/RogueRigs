@@ -1,6 +1,6 @@
 ---
 id: ore-blocks
-description: "Ore blocks: tougher than rock, always drop ore whatever broke them, one kamikaze explosion breaks one. Look and values."
+description: "Ore blocks: tougher than rock, always drop ore whatever broke them, explosions destroy them like any block. Look and values."
 parent: terrain-index
 kind: spec
 status: approved
@@ -17,4 +17,4 @@ status: approved
 
 ## Relations
 - [[terrain-index]] — parent index.
-- [[explosions]] — the terrain damage tuned to break one.
+- [[explosions]] — destroy every block in the radius, ore included.

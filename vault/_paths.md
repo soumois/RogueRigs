@@ -162,6 +162,14 @@ task-009-07-tests-perf  reference/tasks/task-009-chaser/task-009-07-tests-perf.m
 task-009-chaser  reference/tasks/task-009-chaser.md
 task-010-01-enemy-damage-text  reference/tasks/task-010-damage-numbers-video/task-010-01-enemy-damage-text.md
 task-010-damage-numbers-video  reference/tasks/task-010-damage-numbers-video.md
+task-011-01-feel-tweaks  reference/tasks/task-011-explosions/task-011-01-feel-tweaks.md
+task-011-02-layout-barrels  reference/tasks/task-011-explosions/task-011-02-layout-barrels.md
+task-011-03-explosion-system  reference/tasks/task-011-explosions/task-011-03-explosion-system.md
+task-011-04-barrel  reference/tasks/task-011-explosions/task-011-04-barrel.md
+task-011-05-kamikaze  reference/tasks/task-011-explosions/task-011-05-kamikaze.md
+task-011-06-bp-explosions  reference/tasks/task-011-explosions/task-011-06-bp-explosions.md
+task-011-07-tests-integration  reference/tasks/task-011-explosions/task-011-07-tests-integration.md
+task-011-explosions  reference/tasks/task-011-explosions.md
 tasks-index  reference/tasks/tasks-index.md
 tech-index  reference/tech/tech-index.md
 terrain-index  reference/gdd/terrain/terrain-index.md

@@ -21,3 +21,4 @@ One global task per owner request (template `task-global.md`, id `task-<number>-
 - [[task-008-feel-fixes]] — owner PIE feedback: shot height, free movement, burst pause, pickups, shake, damage text, bigger dummy. Status done.
 - [[task-009-chaser]] — chaser robot: player damage, i-frames, death, flow field, enemy base, spawner, HUD. Status done.
 - [[task-010-damage-numbers-video]] — quick damage numbers above every enemy for the assignment video. Status done.
+- [[task-011-explosions]] — feel tweaks, then explosions: barrel, kamikaze, chains, tests. Status in-progress.
