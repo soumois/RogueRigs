@@ -25,3 +25,4 @@ kind: doc
 - [[sys-pickups]] — XP pickups that call AddXP.
 - [[sys-hud]] — the widget fed by its events.
 - [[sys-level-up]] — the flow run on each level gained.
+- [[sys-cheats]] — rr.Cheat.GrantXP calls AddXP for PIE checks.

@@ -17,11 +17,12 @@ kind: doc
 - data: component defaults, editable in BP_Miner: `ChoiceDelay` 0.8 s, `HealFraction` 0.2, `CardCount` 3, `HealEffectClass` `URRGE_Heal` (values provisional, [[xp-level-up]]).
 - depends_on: [[sys-progression]], [[sys-upgrades]], [[sys-gas-core]], [[sys-player]].
 - implements: [[xp-level-up]] (level-up sequence, chained screens, reroll button).
-- gotchas: headless tests have no player controller or game mode, so no engine pause: `RogueRigs.LevelUp.*` prove the flow state (`IsAwaitingChoice`), the real freeze is a PIE check. Enhanced Input actions do not trigger while paused (miner input stops); UMG keeps working. EndPlay ends a pause it still holds. A level gained while dead heals nothing and opens no screen.
+- gotchas: the bare test world has no game mode, so `RogueRigs.LevelUp.*` prove the flow state (`IsAwaitingChoice`); `RogueRigs.Integration.LevelUpUpgradeLoop` gives its world a game instance and `BP_RRGameMode` and proves the real pause (world time, spawner, rifle frozen) and resume. In PIE, `rr.Cheat.GrantXP` / `ChooseUpgrade` / `Reroll` drive the screen ([[sys-cheats]]). Enhanced Input actions do not trigger while paused (miner input stops); UMG keeps working. EndPlay ends a pause it still holds. A level gained while dead heals nothing and opens no screen.
 
 ## Relations
 - [[systems-index]] — parent index.
 - [[sys-progression]] — the OnLevelUp it listens to.
 - [[sys-upgrades]] — the offer builder it drives.
 - [[sys-hud]] — the widget that shows the cards and calls ChooseUpgrade / RequestReroll.
-- [[sys-automation-tests]] — RogueRigs.LevelUp.* prove the flow.
+- [[sys-automation-tests]] — RogueRigs.LevelUp.* and Integration.LevelUpUpgradeLoop prove the flow.
+- [[sys-cheats]] — console variables that pick or reroll the cards in PIE.

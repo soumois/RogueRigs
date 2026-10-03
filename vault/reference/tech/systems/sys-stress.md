@@ -23,3 +23,4 @@ kind: doc
 - [[systems-index]] — parent index.
 - [[stress-test-m1]] — procedure and results this tool produces.
 - [[sys-spawner]] — default robot class and the timed spawner the run disables.
+- [[sys-cheats]] — cheat console variables (rr.Cheat.*) settable by MCP, unlike these commands.

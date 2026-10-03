@@ -32,6 +32,7 @@ Decision status inside each doc: approved, provisional, deferred or open. Planne
 - [[sys-pickups]] — ore, heal and XP pickups: drop rule, pop, attraction within PickupRadius, collection event, XP grant.
 - [[sys-target-dummy]] — debug target dummy: never dies, hit flash, M1 floating damage numbers, health refill.
 - [[sys-stress]] — stress test tooling: rr.Stress.* cheat commands, bulk spawn around the miner, timed frame-time run.
+- [[sys-cheats]] — cheat console variables rr.Cheat.* (grant XP, invulnerable, pick or reroll cards) to drive PIE checks through MCP.
 - [[sys-automation-tests]] — headless C++ automation tests (RogueRigs.Dig.*, RogueRigs.Weapons.*): test world harness, what each test proves, gotchas.
 - [[gas-engine-facts]] — GAS 5.8 behaviors read in engine source that fix project rules.
 - [[gas-api-notes]] — GAS 5.8 APIs used by the code skeletons, with source lines.

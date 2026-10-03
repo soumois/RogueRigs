@@ -29,6 +29,9 @@ Named in Epic's documentation: `ActorTools`, `SceneTools`, `MaterialInstanceTool
 - Quirks (task-007-04/008-03): `StartPIE` options = {"bSimulate":false,"playMode":"PlayMode_InViewPort","warmupSeconds":3}. `SlateInspectorToolset.PressKey` takes a chord as one string ("Ctrl+Shift+S"). `ActorTools.save_actor` fails on new external actors; `AssetTools.save_assets` on the map returns true but does not write moved external actors: press Ctrl+Shift+S, then check `git status` for `__ExternalActors__` changes. `ActorTools.set_actor_transform` takes `xform` with a `location` only (unset fields unchanged). A BP component added in the SCS (e.g. `RifleMesh`) is not readable through the CDO path.
 - Quirks (task-005-02): object refs need the full `Pkg.Name` form (`/Game/.../M_GreyBox.M_GreyBox`; the bare package path is rejected). `BlueprintTools.create` takes `asset_type` = the parent class ref. A C++ inherited component is edited on the CDO with `get_default_object` then `set_properties` on `<CDO path>:Mesh`. `StartPIE` needs `options` (`bSimulate`, `playMode`, `warmupSeconds`). `ActorTools.get_actor_transform` reads a PIE actor.
 
+## Driving PIE checks
+- MCP cannot call a UFunction or run a console command, but `EditorToolset.EditorAppToolset` sets console variables, and the `rr.Cheat.*` variables act on set ([[sys-cheats]]): during PIE set `rr.Cheat.GrantXP 5` (level 1 → 2, the card screen opens 0.8 s later), `rr.Cheat.Reroll 1`, `rr.Cheat.ChooseUpgrade 0..2`, `rr.Cheat.Invulnerable 1` (miner takes no damage, weapons keep firing); each logs its result (read with `LogsToolset.GetLogEntries`, pattern `rr.Cheat`). Set them all from MCP: a lower-priority setter is refused.
+
 ## Limits
 - Experimental: features incomplete, APIs and formats may change.
 - Each session starts cold: the agent discovers the project one tool call at a time, so subtasks must name the exact assets and classes involved.
@@ -39,3 +42,4 @@ Source: https://dev.epicgames.com/documentation/unreal-engine/unreal-mcp-in-unre
 ## Relations
 - [[pipelines-index]] — parent index.
 - [[agent-bp]] — the agent that uses it.
+- [[sys-cheats]] — cheat console variables MCP sets to drive PIE checks.

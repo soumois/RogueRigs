@@ -92,6 +92,7 @@ shotgun  reference/gdd/weapons/shotgun.md
 stress-test-m1  reference/tech/performance/stress-test-m1.md
 sys-auto-fire  reference/tech/systems/sys-auto-fire.md
 sys-automation-tests  reference/tech/systems/sys-automation-tests.md
+sys-cheats  reference/tech/systems/sys-cheats.md
 sys-damage  reference/tech/systems/sys-damage.md
 sys-difficulty  reference/tech/systems/sys-difficulty.md
 sys-drone  reference/tech/systems/sys-drone.md

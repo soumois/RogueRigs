@@ -1,4 +1,4 @@
-// Rogue Rigs - integration tests with the final Blueprints (RogueRigs.Integration.*): BP_Chaser reaching and hitting BP_Miner around rocks, the starting rifle killing a chaser, five rifle kills whose XP cubes are collected up to level 2, miner death and game over, a 50-chaser headless timing run, and the explosion loop (barrel chain from a rifle shot with BP_ExplosionFX, BP_Kamikaze reaching the miner, point-blank barrel, rifle-killed kamikaze after 10 non-critical hits).
+// Rogue Rigs - integration tests with the final Blueprints (RogueRigs.Integration.*): BP_Chaser reaching and hitting BP_Miner around rocks, the starting rifle killing a chaser, five rifle kills whose XP cubes are collected up to level 2, miner death and game over, a 50-chaser headless timing run, and the explosion loop (barrel chain from a rifle shot with BP_ExplosionFX, BP_Kamikaze reaching the miner, point-blank barrel, rifle-killed kamikaze after 10 non-critical hits), and the level-up upgrade loop (real game mode pause, BP_RRPlayerController, BP_EnemySpawner, WBP_HUD cards, reroll, damage card, resume).
 
 #include "CoreMinimal.h"
 #include "Misc/AutomationTest.h"
@@ -6,8 +6,12 @@
 #if WITH_DEV_AUTOMATION_TESTS
 
 #include "AbilitySystemComponent.h"
+#include "Blueprint/UserWidget.h"
+#include "Components/TextBlock.h"
 #include "Enemies/RRChaser.h"
+#include "Enemies/RREnemySpawner.h"
 #include "Enemies/RRKamikaze.h"
+#include "Engine/GameInstance.h"
 #include "EngineUtils.h"
 #include "Explosions/RRExplosionFX.h"
 #include "Explosions/RRExplosionSubsystem.h"
@@ -19,10 +23,13 @@
 #include "Pickups/RRPickup.h"
 #include "Projectiles/RRProjectile.h"
 #include "Player/RRGameMode.h"
+#include "Progression/RRLevelUpComponent.h"
 #include "Progression/RRProgressionComponent.h"
 #include "Tests/RRTestEventRecorder.h"
 #include "Tests/RRTestHarness.h"
+#include "UI/RRHUDWidget.h"
 #include "UObject/StrongObjectPtr.h"
+#include "Upgrades/RRUpgradeComponent.h"
 #include "Weapons/RRAutoFireComponent.h"
 #include "Weapons/RRWeapon.h"
 #include "Weapons/RRWeaponAttributeSet.h"
@@ -153,6 +160,76 @@ namespace RRIntegrationTests
 		}
 		TestWorld.Tick();
 		return Test.TestEqual(TEXT("field goal cell is the miner cell"), Out.FlowField->GetGoalCell(), Cell);
+	}
+
+	/**
+	 * Spawns Count BP_Chaser one after the other on StartCell, each once the previous one is dead; each must be killed by the
+	 * armed miner's rifle within 10 s and before reaching attack range. Appends " time after spawn / distance;" per kill to OutKills.
+	 */
+	bool KillChasersOneByOne(FAutomationTestBase& Test, const FTestWorld& TestWorld, const FLoopSetup& Setup, FIntPoint StartCell, int32 Count, FString& OutKills)
+	{
+		for (int32 Index = 0; Index < Count; ++Index)
+		{
+			ARRChaser* Chaser = SpawnChaser(Test, TestWorld, Setup.ChaserClass, Setup.Grid, StartCell);
+			if (!Chaser)
+			{
+				return false;
+			}
+			TWeakObjectPtr<ARRChaser> Weak(Chaser);
+			const double SpawnTime = TestWorld.Get()->GetTimeSeconds();
+			bool bDead = false;
+			for (int32 Frame = 0; Frame < 600 && !bDead; ++Frame)
+			{
+				TestWorld.Tick();
+				bDead = Weak.IsValid() && Weak->IsDead();
+			}
+			if (!Test.TestTrue(FString::Printf(TEXT("chaser %d killed by the rifle within 10 s"), Index + 1), bDead))
+			{
+				return false;
+			}
+			const float Distance = FVector::Dist2D(Weak->GetActorLocation(), Setup.Miner->GetActorLocation());
+			OutKills += FString::Printf(TEXT(" %.3f s / %.0f uu;"), TestWorld.Get()->GetTimeSeconds() - SpawnTime, Distance);
+			Test.TestTrue(FString::Printf(TEXT("chaser %d killed before reaching attack range"), Index + 1), Distance > Chaser->GetStats().AttackRange);
+		}
+		return true;
+	}
+
+	/**
+	 * Walks the miner over the drop zone until Recorder counts Count collected pickups (10 s max): whenever no XP cube lies within
+	 * its PickupRadius, the miner steps onto the nearest one; cubes in range fly to it. Returns the number of steps; OutSeconds
+	 * gets the collection time. Stops on the tick that collects the last cube.
+	 */
+	int32 CollectXPCubes(const FTestWorld& TestWorld, ARRMiner* Miner, const URRTestEventRecorder* Recorder, int32 Count, double& OutSeconds)
+	{
+		const double Start = TestWorld.Get()->GetTimeSeconds();
+		int32 Moves = 0;
+		for (int32 Frame = 0; Frame < 600 && Recorder->GetCollectedPickups().Num() < Count; ++Frame)
+		{
+			bool bInRange = false;
+			const ARRPickup* Nearest = nullptr;
+			float NearestDistance = TNumericLimits<float>::Max();
+			for (TActorIterator<ARRPickup> It(TestWorld.Get()); It; ++It)
+			{
+				if (IsValid(*It) && !It->IsActorBeingDestroyed() && It->GetPickupType() == ERRPickupType::XP)
+				{
+					const float Distance = FVector::Dist2D(It->GetActorLocation(), Miner->GetActorLocation());
+					bInRange |= Distance <= Miner->GetPickupRadius();
+					if (Distance < NearestDistance)
+					{
+						NearestDistance = Distance;
+						Nearest = *It;
+					}
+				}
+			}
+			if (!bInRange && Nearest)
+			{
+				Miner->SetActorLocation(FVector(Nearest->GetActorLocation().X, Nearest->GetActorLocation().Y, Miner->GetActorLocation().Z));
+				++Moves;
+			}
+			TestWorld.Tick();
+		}
+		OutSeconds = TestWorld.Get()->GetTimeSeconds() - Start;
+		return Moves;
 	}
 }
 
@@ -320,28 +397,9 @@ bool FRRIntegrationXPLevelUpTest::RunTest(const FString& Parameters)
 	// Five BP_Chaser one after the other from the east end of row 42, each spawned once the previous one is dead.
 	const int32 ChaserCount = 5;
 	FString Kills;
-	for (int32 Index = 0; Index < ChaserCount; ++Index)
+	if (!KillChasersOneByOne(*this, TestWorld, Setup, StraightStartCell, ChaserCount, Kills))
 	{
-		ARRChaser* Chaser = SpawnChaser(*this, TestWorld, Setup.ChaserClass, Setup.Grid, StraightStartCell);
-		if (!Chaser)
-		{
-			return false;
-		}
-		TWeakObjectPtr<ARRChaser> Weak(Chaser);
-		const double SpawnTime = TestWorld.Get()->GetTimeSeconds();
-		bool bDead = false;
-		for (int32 Frame = 0; Frame < 600 && !bDead; ++Frame)
-		{
-			TestWorld.Tick();
-			bDead = Weak.IsValid() && Weak->IsDead();
-		}
-		if (!TestTrue(FString::Printf(TEXT("chaser %d killed by the rifle within 10 s"), Index + 1), bDead))
-		{
-			return false;
-		}
-		const float Distance = FVector::Dist2D(Weak->GetActorLocation(), Miner->GetActorLocation());
-		Kills += FString::Printf(TEXT(" %.3f s / %.0f uu;"), TestWorld.Get()->GetTimeSeconds() - SpawnTime, Distance);
-		TestTrue(FString::Printf(TEXT("chaser %d killed before reaching attack range"), Index + 1), Distance > Chaser->GetStats().AttackRange);
+		return false;
 	}
 
 	// Pop and rest: the cubes lie 1000 uu or more from the miner, outside its PickupRadius, so none is collected yet.
@@ -365,36 +423,9 @@ bool FRRIntegrationXPLevelUpTest::RunTest(const FString& Parameters)
 		return false;
 	}
 
-	const double CollectStart = TestWorld.Get()->GetTimeSeconds();
-	// The kills spread over about 600 uu (the first shots land mid-burst): the miner walks the drop zone, stepping onto
-	// the nearest cube left whenever none lies within its PickupRadius; cubes in range fly to it and are collected.
-	int32 Moves = 0;
-	for (int32 Frame = 0; Frame < 600 && Recorder->GetCollectedPickups().Num() < ChaserCount; ++Frame)
-	{
-		bool bInRange = false;
-		const ARRPickup* Nearest = nullptr;
-		float NearestDistance = TNumericLimits<float>::Max();
-		for (TActorIterator<ARRPickup> It(TestWorld.Get()); It; ++It)
-		{
-			if (IsValid(*It) && !It->IsActorBeingDestroyed() && It->GetPickupType() == ERRPickupType::XP)
-			{
-				const float Distance = FVector::Dist2D(It->GetActorLocation(), Miner->GetActorLocation());
-				bInRange |= Distance <= Miner->GetPickupRadius();
-				if (Distance < NearestDistance)
-				{
-					NearestDistance = Distance;
-					Nearest = *It;
-				}
-			}
-		}
-		if (!bInRange && Nearest)
-		{
-			Miner->SetActorLocation(FVector(Nearest->GetActorLocation().X, Nearest->GetActorLocation().Y, Miner->GetActorLocation().Z));
-			++Moves;
-		}
-		TestWorld.Tick();
-	}
-	const double CollectTime = TestWorld.Get()->GetTimeSeconds() - CollectStart;
+	// The kills spread over about 600 uu (the first shots land mid-burst): the miner walks the drop zone.
+	double CollectTime = 0.0;
+	const int32 Moves = CollectXPCubes(TestWorld, Miner, Recorder.Get(), ChaserCount, CollectTime);
 	TestWorld.Tick();
 
 	AddInfo(FString::Printf(TEXT("kills (time after spawn / distance):%s %d miner move(s) (PickupRadius %.0f); %d collected in %.3f s; level %d, XP %.0f / %.0f; %d level-up(s), %d XP event(s); miner Health %.0f -> %.0f"),
@@ -1078,6 +1109,353 @@ bool FRRIntegrationRifleKillsKamikazeTest::RunTest(const FString& Parameters)
 	TestTrue(TEXT("miner outside the radius"), DeathDistance > Stats.Radius);
 	TestEqual(TEXT("miner untouched"), GetHealth(Miner), StartHealth);
 	TestEqual(TEXT("one XP pickup dropped"), CountXPPickups(TestWorld.Get()), 1);
+	return true;
+}
+
+namespace RRIntegrationUpgradeTests
+{
+	using namespace RRIntegrationTests;
+
+	/** Final Blueprints of the level-up loop besides the miner, grid and chaser. */
+	const TCHAR* const PlayerControllerClassPath = TEXT("/Game/RogueRigs/Blueprints/Player/BP_RRPlayerController.BP_RRPlayerController_C");
+	const TCHAR* const SpawnerClassPath = TEXT("/Game/RogueRigs/Blueprints/Enemies/BP_EnemySpawner.BP_EnemySpawner_C");
+	const TCHAR* const HUDClassPath = TEXT("/Game/RogueRigs/UI/WBP_HUD.WBP_HUD_C");
+
+	/** Seed of the upgrade draws: with it, the rerolled offer holds a damage card for the rifle. */
+	constexpr int32 UpgradeSeed = 6;
+
+	/** Half extent (uu) of the fixed spawner view rectangle around the miner (spawner tests). */
+	const FVector2D SpawnerViewHalfExtent(1600.f, 1000.f);
+
+	/** Writes the protected world context of a game instance (never instantiated). */
+	struct FGameInstanceAccess : public UGameInstance
+	{
+		static FWorldContext*& WorldContextOf(UGameInstance* GameInstance) { return GameInstance->*(&FGameInstanceAccess::WorldContext); }
+	};
+
+	/** Game instance of a test world. Declare it before the FTestWorld: it outlives the world, then drops its context pointer. */
+	struct FTestGameInstance
+	{
+		/** Clears the (destroyed) world context pointer of the game instance and releases it. */
+		~FTestGameInstance()
+		{
+			if (GameInstance.IsValid())
+			{
+				FGameInstanceAccess::WorldContextOf(GameInstance.Get()) = nullptr;
+			}
+		}
+
+		/** The game instance, kept alive for the test. */
+		TStrongObjectPtr<UGameInstance> GameInstance;
+	};
+
+	/**
+	 * Gives the test world a game instance (wired to the world context, so widgets created on it find the world) and makes
+	 * GameModeClass its authority game mode, so APlayerController::SetPause works (the bare harness world has none).
+	 * Call before spawning the miner and the controller (miner registration, player state).
+	 */
+	AGameModeBase* StartGameMode(FAutomationTestBase& Test, const FTestWorld& TestWorld, UClass* GameModeClass, FTestGameInstance& OutGameInstance)
+	{
+		UWorld* World = TestWorld.Get();
+		FWorldContext* Context = GEngine->GetWorldContextFromWorld(World);
+		if (!Test.TestNotNull(TEXT("test world has a world context"), Context))
+		{
+			return nullptr;
+		}
+		UGameInstance* GameInstance = NewObject<UGameInstance>(GEngine);
+		OutGameInstance.GameInstance.Reset(GameInstance);
+		Context->OwningGameInstance = GameInstance;
+		FGameInstanceAccess::WorldContextOf(GameInstance) = Context;
+		World->SetGameInstance(GameInstance);
+		World->GetWorldSettings()->DefaultGameMode = GameModeClass;
+		World->SetGameMode(FURL());
+		AGameModeBase* GameMode = World->GetAuthGameMode();
+		Test.TestTrue(TEXT("authority game mode is BP_RRGameMode"), GameMode && GameMode->IsA(GameModeClass));
+		return GameMode;
+	}
+
+	/** Visibility of the widget named Name in Widget (Hidden when missing, with a test failure). */
+	ESlateVisibility GetWidgetVisibility(FAutomationTestBase& Test, UUserWidget* Widget, const TCHAR* Name)
+	{
+		const UWidget* Child = Widget->GetWidgetFromName(Name);
+		Test.TestNotNull(FString::Printf(TEXT("WBP_HUD has %s"), Name), Child);
+		return Child ? Child->GetVisibility() : ESlateVisibility::Hidden;
+	}
+
+	/** Checks that WBP_HUD shows Cards: UpgradeScreen visible, RerollButton enabled as bCanReroll, CardName0..2 = display names. */
+	void CheckHUDCards(FAutomationTestBase& Test, UUserWidget* HUD, const TArray<FRRUpgradeCard>& Cards, bool bCanReroll, const TCHAR* Label)
+	{
+		Test.TestTrue(FString::Printf(TEXT("%s: UpgradeScreen visible"), Label), GetWidgetVisibility(Test, HUD, TEXT("UpgradeScreen")) == ESlateVisibility::Visible);
+		const UWidget* Reroll = HUD->GetWidgetFromName(TEXT("RerollButton"));
+		if (Test.TestNotNull(TEXT("WBP_HUD has RerollButton"), Reroll))
+		{
+			Test.TestTrue(FString::Printf(TEXT("%s: RerollButton enabled = %d"), Label, bCanReroll ? 1 : 0), Reroll->GetIsEnabled() == bCanReroll);
+		}
+		for (int32 Index = 0; Index < Cards.Num(); ++Index)
+		{
+			const FString Name = FString::Printf(TEXT("CardName%d"), Index);
+			const UTextBlock* Text = Cast<UTextBlock>(HUD->GetWidgetFromName(*Name));
+			if (Test.TestNotNull(FString::Printf(TEXT("WBP_HUD has %s"), *Name), Text))
+			{
+				Test.TestEqual(FString::Printf(TEXT("%s: %s shows the card name"), Label, *Name), Text->GetText().ToString(), Cards[Index].DisplayName.ToString());
+			}
+		}
+	}
+
+	/** Checks Cards form a valid offer for Miner: 3 cards, no shared stat and target, weapon cards on all weapons or an owned weapon. */
+	void CheckOfferValid(FAutomationTestBase& Test, const ARRMiner* Miner, const TArray<FRRUpgradeCard>& Cards, const TCHAR* Label)
+	{
+		Test.TestEqual(FString::Printf(TEXT("%s: 3 cards"), Label), Cards.Num(), 3);
+		for (int32 Index = 0; Index < Cards.Num(); ++Index)
+		{
+			const FRRUpgradeCard& Card = Cards[Index];
+			Test.TestTrue(FString::Printf(TEXT("%s: card %d has a value"), Label, Index), Card.Value > 0.f);
+			Test.TestFalse(FString::Printf(TEXT("%s: card %d has a name"), Label, Index), Card.DisplayName.IsEmpty());
+			Test.TestTrue(FString::Printf(TEXT("%s: card %d is not a magazine card"), Label, Index), Card.Stat != ERRUpgradeStat::MagazineSize);
+			if (Card.Target == ERRUpgradeTarget::Weapon)
+			{
+				Test.TestTrue(FString::Printf(TEXT("%s: card %d targets an owned weapon"), Label, Index), Miner->GetWeapons().Contains(Card.TargetWeapon.Get()));
+			}
+			for (int32 Other = Index + 1; Other < Cards.Num(); ++Other)
+			{
+				Test.TestFalse(FString::Printf(TEXT("%s: cards %d and %d differ"), Label, Index, Other), Card.IsSameChoice(Cards[Other]));
+			}
+		}
+	}
+
+	/** "Stat/Target/Value" of each card, for the log. */
+	FString DescribeCards(const TArray<FRRUpgradeCard>& Cards)
+	{
+		FString Text;
+		for (const FRRUpgradeCard& Card : Cards)
+		{
+			Text += FString::Printf(TEXT(" [%s %s %s]"), *Card.DisplayName.ToString(), *Card.TargetText.ToString(), *Card.ValueText.ToString());
+		}
+		return Text;
+	}
+
+	/** Number of robots (alive or dying) in World. */
+	int32 CountEnemies(UWorld* World)
+	{
+		int32 Count = 0;
+		for (TActorIterator<ARREnemy> It(World); It; ++It)
+		{
+			Count += IsValid(*It) && !It->IsActorBeingDestroyed() ? 1 : 0;
+		}
+		return Count;
+	}
+}
+
+IMPLEMENT_SIMPLE_AUTOMATION_TEST(FRRIntegrationUpgradeLoopTest, "RogueRigs.Integration.LevelUpUpgradeLoop",
+	EAutomationTestFlags::EditorContext | EAutomationTestFlags::EngineFilter)
+
+bool FRRIntegrationUpgradeLoopTest::RunTest(const FString& Parameters)
+{
+	using namespace RRIntegrationTests;
+	using namespace RRIntegrationUpgradeTests;
+
+	// Declared before the world: released after it.
+	FTestGameInstance GameInstance;
+	FTestWorld TestWorld(TEXT("RRIntegrationUpgrade"));
+	UWorld* World = TestWorld.Get();
+	TStrongObjectPtr<URRTestEventRecorder> Recorder(NewObject<URRTestEventRecorder>());
+	UClass* GameModeClass = LoadTestClass<AGameModeBase>(*this, GameModeClassPath);
+	UClass* ControllerClass = LoadTestClass<APlayerController>(*this, PlayerControllerClassPath);
+	UClass* SpawnerClass = LoadTestClass<ARREnemySpawner>(*this, SpawnerClassPath);
+	UClass* HUDClass = LoadTestClass<URRHUDWidget>(*this, HUDClassPath);
+	if (!GameModeClass || !ControllerClass || !SpawnerClass || !HUDClass || !StartGameMode(*this, TestWorld, GameModeClass, GameInstance))
+	{
+		return false;
+	}
+
+	// Real Blueprints: armed BP_Miner possessed by BP_RRPlayerController (no local player: no HUD of its own, so WBP_HUD is
+	// created here and bound like the controller does), BP_EnemySpawner held off until the level-up.
+	FLoopSetup Setup;
+	if (!SetUp(*this, TestWorld, ArmedMinerCell, /*bArmed*/ true, Setup))
+	{
+		return false;
+	}
+	ARRMiner* Miner = Setup.Miner;
+	URRProgressionComponent* Progression = Miner->GetProgression();
+	URRLevelUpComponent* LevelUp = Miner->GetLevelUp();
+	URRUpgradeComponent* Upgrades = Miner->GetUpgrades();
+	ARRWeapon* Rifle = Miner->GetWeapons().Num() > 0 ? Miner->GetWeapons()[0].Get() : nullptr;
+	if (!TestNotNull(TEXT("progression"), Progression) || !TestNotNull(TEXT("level-up flow"), LevelUp)
+		|| !TestNotNull(TEXT("upgrades"), Upgrades) || !TestNotNull(TEXT("starting rifle"), Rifle))
+	{
+		return false;
+	}
+	APlayerController* Controller = TestWorld.Spawn<APlayerController>(ControllerClass, Miner->GetActorLocation());
+	if (!TestNotNull(TEXT("BP_RRPlayerController spawned"), Controller) || !TestNotNull(TEXT("controller has a player state"), Controller->PlayerState.Get()))
+	{
+		return false;
+	}
+	Controller->Possess(Miner);
+	ARREnemySpawner* Spawner = TestWorld.Spawn<ARREnemySpawner>(SpawnerClass, FVector::ZeroVector);
+	if (!TestNotNull(TEXT("BP_EnemySpawner spawned"), Spawner))
+	{
+		return false;
+	}
+	Spawner->SetSpawningEnabled(false);
+	URRHUDWidget* HUD = CreateWidget<URRHUDWidget>(World, HUDClass);
+	if (!TestNotNull(TEXT("WBP_HUD created"), HUD))
+	{
+		return false;
+	}
+	HUD->BindToMiner(Miner);
+	TestTrue(TEXT("UpgradeScreen collapsed at start"), GetWidgetVisibility(*this, HUD, TEXT("UpgradeScreen")) == ESlateVisibility::Collapsed);
+
+	Upgrades->SetRandomSeed(UpgradeSeed);
+	LevelUp->OnLevelUpEffect.AddDynamic(Recorder.Get(), &URRTestEventRecorder::HandleLevelUpEffect);
+	LevelUp->OnUpgradeOfferShown.AddDynamic(Recorder.Get(), &URRTestEventRecorder::HandleUpgradeOfferShown);
+	LevelUp->OnUpgradeOfferClosed.AddDynamic(Recorder.Get(), &URRTestEventRecorder::HandleUpgradeOfferClosed);
+	Progression->OnLevelUp.AddDynamic(Recorder.Get(), &URRTestEventRecorder::HandleLevelUp);
+	Miner->OnPickupCollected.AddDynamic(Recorder.Get(), &URRTestEventRecorder::HandlePickupCollected);
+	Rifle->GetAutoFireComponent()->OnShotFired.AddDynamic(Recorder.Get(), &URRTestEventRecorder::HandleShotFired);
+	const FVector Toward = Setup.Grid->GetCellCenter(StraightStartCell.X, StraightStartCell.Y) - Miner->GetActorLocation();
+	AimAlong(Miner, Toward);
+
+	// Kill five robots with the rifle, wound the miner, collect the five cubes: level 2 on the last one.
+	const int32 ChaserCount = 5;
+	FString Kills;
+	if (!KillChasersOneByOne(*this, TestWorld, Setup, StraightStartCell, ChaserCount, Kills))
+	{
+		return false;
+	}
+	for (int32 Frame = 0; Frame < 60; ++Frame)
+	{
+		TestWorld.Tick();
+	}
+	const FGameplayAttribute Health = URRHealthAttributeSet::GetHealthAttribute();
+	const FGameplayAttribute Damage = URRWeaponAttributeSet::GetDamageAttribute();
+	UAbilitySystemComponent* MinerASC = Miner->GetAbilitySystemComponent();
+	UAbilitySystemComponent* RifleASC = Rifle->GetAbilitySystemComponent();
+	MinerASC->SetNumericAttributeBase(Health, 50.f);
+	double CollectTime = 0.0;
+	const int32 Moves = CollectXPCubes(TestWorld, Miner, Recorder.Get(), ChaserCount, CollectTime);
+	AddInfo(FString::Printf(TEXT("kills:%s %d miner move(s); %d cubes collected in %.3f s"), *Kills, Moves, Recorder->GetCollectedPickups().Num(), CollectTime));
+	if (!TestEqual(TEXT("level 2 after the five cubes"), Progression->GetLevel(), 2) || !TestEqual(TEXT("one level-up"), Recorder->GetLevelUps().Num(), 1))
+	{
+		return false;
+	}
+
+	// Heal and feedback at once, game still running during the choice delay.
+	TestEqual(TEXT("level-up heals 20 % of max: 50 -> 70"), MinerASC->GetNumericAttribute(Health), 70.f, 1e-3f);
+	TestEqual(TEXT("one level-up effect"), Recorder->GetLevelUpEffects().Num(), 1);
+	TestTrue(TEXT("choice delay running"), LevelUp->IsChoiceDelayActive());
+	TestFalse(TEXT("world not paused at the level-up"), World->IsPaused());
+	TestEqual(TEXT("no offer at the level-up"), Recorder->GetOfferCardCounts().Num(), 0);
+	Spawner->SetViewRectangleOverride(FBox2D(FVector2D(Miner->GetActorLocation()) - SpawnerViewHalfExtent, FVector2D(Miner->GetActorLocation()) + SpawnerViewHalfExtent));
+	Spawner->SetSpawningEnabled(true);
+	const float RifleDamageBefore = RifleASC->GetNumericAttribute(Damage);
+
+	// Wait the delay frame by frame: the world pauses on the frame the screen opens.
+	const double LevelUpTime = World->GetTimeSeconds();
+	int32 PauseFrame = -1;
+	bool bPausedEarly = false;
+	for (int32 Frame = 1; Frame <= 60 && PauseFrame < 0; ++Frame)
+	{
+		TestWorld.Tick();
+		if (LevelUp->IsAwaitingChoice())
+		{
+			PauseFrame = Frame;
+		}
+		bPausedEarly |= PauseFrame < 0 && World->IsPaused();
+	}
+	const double DelaySeconds = World->GetTimeSeconds() - LevelUpTime;
+	AddInfo(FString::Printf(TEXT("screen opened %d frames (%.3f s game time) after the level-up"), PauseFrame, DelaySeconds));
+	TestFalse(TEXT("no pause before the screen"), bPausedEarly);
+	if (!TestTrue(TEXT("screen opened"), PauseFrame > 0))
+	{
+		return false;
+	}
+	TestTrue(TEXT("screen opens after the 0.8 s delay (within one frame)"), DelaySeconds >= LevelUp->GetChoiceDelay() - FrameSeconds - 1e-3 && DelaySeconds <= LevelUp->GetChoiceDelay() + FrameSeconds + 1e-3);
+	TestTrue(TEXT("world paused by the game mode"), World->IsPaused());
+	TestTrue(TEXT("controller reports the pause"), Controller->IsPaused());
+	TestTrue(TEXT("cursor shown on the screen"), Controller->ShouldShowMouseCursor());
+	if (!TestEqual(TEXT("one offer shown"), Recorder->GetOfferCardCounts().Num(), 1))
+	{
+		return false;
+	}
+	TestTrue(TEXT("reroll offered"), Recorder->GetOfferRerollFlags()[0]);
+	const TArray<FRRUpgradeCard> FirstCards = Recorder->GetLastOfferCards();
+	CheckOfferValid(*this, Miner, FirstCards, TEXT("first offer"));
+	CheckHUDCards(*this, HUD, FirstCards, true, TEXT("first offer"));
+
+	// Frozen: game time, spawner, rifle and position hold over 1 s of frames.
+	const double PausedTime = World->GetTimeSeconds();
+	const float PausedRunTime = Spawner->GetRunTime();
+	const int32 PausedShots = Recorder->GetShotIndices().Num();
+	const int32 PausedEnemies = CountEnemies(World);
+	const FVector PausedLocation = Miner->GetActorLocation();
+	for (int32 Frame = 0; Frame < 60; ++Frame)
+	{
+		TestWorld.Tick();
+	}
+	TestEqual(TEXT("game time frozen while paused"), World->GetTimeSeconds(), PausedTime);
+	TestEqual(TEXT("spawner frozen while paused"), Spawner->GetRunTime(), PausedRunTime);
+	TestEqual(TEXT("no robot spawned while paused"), CountEnemies(World), PausedEnemies);
+	TestEqual(TEXT("rifle silent while paused"), Recorder->GetShotIndices().Num(), PausedShots);
+	TestTrue(TEXT("miner still while paused"), Miner->GetActorLocation().Equals(PausedLocation, 0.01f));
+	TestTrue(TEXT("still awaiting the choice"), LevelUp->IsAwaitingChoice());
+
+	// Reroll through the HUD (the Relancer button): new cards, no second reroll.
+	TestTrue(TEXT("HUD reroll accepted"), HUD->RequestReroll());
+	if (!TestEqual(TEXT("offer shown again"), Recorder->GetOfferCardCounts().Num(), 2))
+	{
+		return false;
+	}
+	TestFalse(TEXT("no second reroll offered"), Recorder->GetOfferRerollFlags()[1]);
+	TestFalse(TEXT("second HUD reroll refused"), HUD->RequestReroll());
+	const TArray<FRRUpgradeCard> Cards = Recorder->GetLastOfferCards();
+	CheckOfferValid(*this, Miner, Cards, TEXT("rerolled offer"));
+	CheckHUDCards(*this, HUD, Cards, false, TEXT("rerolled offer"));
+	for (const FRRUpgradeCard& Card : Cards)
+	{
+		for (const FRRUpgradeCard& Old : FirstCards)
+		{
+			TestFalse(TEXT("rerolled card shares no stat and target with the first offer"), Card.IsSameChoice(Old));
+		}
+	}
+	AddInfo(FString::Printf(TEXT("first offer:%s; rerolled:%s"), *DescribeCards(FirstCards), *DescribeCards(Cards)));
+
+	// Pick the damage card for the rifle through the HUD (a card button).
+	const int32 DamageIndex = Cards.IndexOfByPredicate([Rifle](const FRRUpgradeCard& Card)
+	{
+		return Card.Stat == ERRUpgradeStat::Damage && (Card.Target == ERRUpgradeTarget::AllWeapons || Card.TargetWeapon == Rifle);
+	});
+	if (!TestTrue(TEXT("rerolled offer holds a rifle damage card (seeded)"), DamageIndex != INDEX_NONE))
+	{
+		return false;
+	}
+	const FRRUpgradeCard& DamageCard = Cards[DamageIndex];
+	const float ExpectedDamage = DamageCard.Operation == ERRUpgradeOperation::MultiplyAdditive
+		? RifleDamageBefore * (1.f + DamageCard.Value) : RifleDamageBefore + DamageCard.Value;
+	TestTrue(TEXT("HUD pick accepted"), HUD->ChooseUpgrade(DamageIndex));
+	AddInfo(FString::Printf(TEXT("picked card %d (%s %s %s): rifle Damage %.3f -> %.3f"), DamageIndex, *DamageCard.DisplayName.ToString(),
+		*DamageCard.TargetText.ToString(), *DamageCard.ValueText.ToString(), RifleDamageBefore, RifleASC->GetNumericAttribute(Damage)));
+	TestEqual(TEXT("rifle damage raised by the card"), RifleASC->GetNumericAttribute(Damage), ExpectedDamage, 1e-3f);
+	TestTrue(TEXT("rifle damage rose"), RifleASC->GetNumericAttribute(Damage) > RifleDamageBefore);
+	TestEqual(TEXT("one upgrade picked"), Upgrades->GetPickedUpgrades().Num(), 1);
+	TestEqual(TEXT("screen closed once"), Recorder->GetOfferClosedCount(), 1);
+	TestTrue(TEXT("UpgradeScreen collapsed after the pick"), GetWidgetVisibility(*this, HUD, TEXT("UpgradeScreen")) == ESlateVisibility::Collapsed);
+	TestFalse(TEXT("no choice left"), LevelUp->IsAwaitingChoice());
+	TestFalse(TEXT("world resumed"), World->IsPaused());
+	TestFalse(TEXT("controller resumed"), Controller->IsPaused());
+
+	// Resumed: time, spawner and rifle run again (the spawner reaches its 2 s interval and spawns).
+	const double ResumeTime = World->GetTimeSeconds();
+	for (int32 Frame = 0; Frame < 90; ++Frame)
+	{
+		TestWorld.Tick();
+	}
+	AddInfo(FString::Printf(TEXT("after resume: %.3f s game time, spawner run time %.3f s, %d shot(s), %d robot(s)"),
+		World->GetTimeSeconds() - ResumeTime, Spawner->GetRunTime(), Recorder->GetShotIndices().Num() - PausedShots, CountEnemies(World)));
+	TestEqual(TEXT("game time runs again (1.5 s)"), World->GetTimeSeconds() - ResumeTime, 90.0 * FrameSeconds, 1e-3);
+	TestTrue(TEXT("spawner runs again"), Spawner->GetRunTime() > PausedRunTime + 1.f);
+	TestTrue(TEXT("spawner spawned after the resume"), CountEnemies(World) > PausedEnemies);
+	TestTrue(TEXT("rifle fires again"), Recorder->GetShotIndices().Num() > PausedShots);
+	HUD->BindToMiner(nullptr);
 	return true;
 }
 
