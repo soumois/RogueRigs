@@ -60,6 +60,16 @@ public:
 	UFUNCTION(BlueprintPure, Category = "LevelUp")
 	bool IsAwaitingChoice() const { return bAwaitingChoice; }
 
+	/**
+	 * The run ended: clears the choice delay and the queue, closes an open screen (OnUpgradeOfferClosed, unpauses, restores the
+	 * input) and blocks every later screen (level-ups still heal). Called by URRRunFlowSubsystem::EndRun before its end pause.
+	 */
+	void CancelChoices();
+
+	/** True once CancelChoices ran: no more choice screens. */
+	UFUNCTION(BlueprintPure, Category = "LevelUp")
+	bool AreChoicesBlocked() const { return bChoicesBlocked; }
+
 	/** True while the ChoiceDelay timer runs (level gained, game not paused yet). */
 	UFUNCTION(BlueprintPure, Category = "LevelUp")
 	bool IsChoiceDelayActive() const;
@@ -165,6 +175,9 @@ protected:
 
 	/** True when the flow's SetPause succeeded (only then does it unpause). */
 	bool bPausedByFlow = false;
+
+	/** True once CancelChoices ran (run over): level-ups queue no choice. */
+	bool bChoicesBlocked = false;
 
 	/** Cursor visibility before the pause, restored after it. */
 	bool bCursorShownBeforePause = true;

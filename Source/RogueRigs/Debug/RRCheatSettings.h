@@ -10,9 +10,9 @@
  * Cheat switches read from the class default object (/Script/RogueRigs.Default__RRCheatSettings) by URRCheatSubsystem every
  * frame, paused or not, in each game and PIE world. Set them with ObjectTools.set_properties on that path during PIE.
  * One-shot fields (GrantXP, ChooseUpgrade, bReroll, bSkipToConsole, bCompleteConsoleHack, bSkipToExtraction) are applied once
- * by the next world tick and reset to their neutral value; read them back to see they were consumed. bInvulnerable and
- * AlertSpeedMultiplier are persistent. The CDO lives as long as the editor process: reset persistent values after a check.
- * Debug tooling only; nothing reads it in shipping builds except AlertSpeedMultiplier (stays 1).
+ * by the next world tick and reset to their neutral value; read them back to see they were consumed. bInvulnerable,
+ * AlertSpeedMultiplier and ShuttleCountdownOverride are persistent. The CDO lives as long as the editor process: reset persistent values after a check.
+ * Debug tooling only; nothing reads it in shipping builds except AlertSpeedMultiplier (stays 1) and ShuttleCountdownOverride (stays 0).
  */
 UCLASS(NotBlueprintable, Transient)
 class ROGUERIGS_API URRCheatSettings : public UObject
@@ -51,4 +51,8 @@ public:
 	/** One-shot: true completes or skips the console and fills the alert (extraction ready); reset to false. */
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Cheats")
 	bool bSkipToExtraction = false;
+
+	/** Persistent: seconds > 0 replace the shuttle countdown of the next landing (short PIE checks of the run loss); 0 = the run flow value. */
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Cheats")
+	float ShuttleCountdownOverride = 0.f;
 };

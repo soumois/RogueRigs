@@ -1,4 +1,4 @@
-// Rogue Rigs - tunables of the level run flow (alert bar and console drop), edited on the game mode Blueprint.
+// Rogue Rigs - tunables of the level run flow (alert bar, console drop, extraction shuttle), edited on the game mode Blueprint.
 
 #pragma once
 
@@ -7,6 +7,7 @@
 #include "RRRunFlowConfig.generated.h"
 
 class ARRConsole;
+class ARRShuttle;
 
 /**
  * Tunables of URRRunFlowSubsystem. Defaults are the provisional M1 values (level-flow, objective-console, owner 2026-10-03).
@@ -49,4 +50,20 @@ struct ROGUERIGS_API FRRRunFlowConfig
 	/** Console actor spawned at the threshold (the console Blueprint). None = the native ARRConsole (no mesh). */
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Run Flow")
 	TSubclassOf<ARRConsole> ConsoleClass;
+
+	/** Minimum straight-line distance, in cells, between the miner's cell and the shuttle cell (extraction: 25, provisional). */
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Run Flow|Extraction", meta = (ClampMin = 0))
+	float ShuttleMinDistanceCells = 25.f;
+
+	/** Seconds between the shuttle landing and its departure without the miner (extraction: 45 s, provisional). */
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Run Flow|Extraction", meta = (ClampMin = 0.1, Units = "s"))
+	float ShuttleCountdownSeconds = 45.f;
+
+	/** Boarding radius in cells: the miner boards when its 2D distance to the shuttle is at most this (1 cell, provisional choice of task-016-02). */
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Run Flow|Extraction", meta = (ClampMin = 0))
+	float ShuttleBoardRadiusCells = 1.f;
+
+	/** Shuttle actor landed when extraction is ready (the shuttle Blueprint). None = the native ARRShuttle (no mesh). */
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Run Flow|Extraction")
+	TSubclassOf<ARRShuttle> ShuttleClass;
 };

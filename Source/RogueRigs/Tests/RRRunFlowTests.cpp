@@ -319,7 +319,7 @@ bool FRRConsoleDropTest::RunTest(const FString& Parameters)
 				TestEqual(*FString::Printf(TEXT("seed %d: (%d, %d) marked"), Seed, Near.X, Near.Y), Grid->IsCellMarked(Near), bShouldMark);
 				if (bShouldMark)
 				{
-					TestEqual(*FString::Printf(TEXT("seed %d: (%d, %d) outline data"), Seed, Near.X, Near.Y), FGridAccess::GetMarkedData(Grid, Near), 1.f);
+					TestEqual(*FString::Printf(TEXT("seed %d: (%d, %d) outline data"), Seed, Near.X, Near.Y), RRRunFlowTests::FGridAccess::GetMarkedData(Grid, Near), 1.f);
 				}
 			}
 		}

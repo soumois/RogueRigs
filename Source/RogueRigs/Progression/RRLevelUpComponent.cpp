@@ -84,6 +84,10 @@ void URRLevelUpComponent::HandleLevelUp(int32 NewLevel)
 	ApplyLevelUpHeal();
 	OnLevelUpEffect.Broadcast(NewLevel);
 
+	if (bChoicesBlocked)
+	{
+		return;
+	}
 	++PendingChoices;
 	// A running delay or an open screen picks the new choice up through the queue.
 	if (!bAwaitingChoice && !IsChoiceDelayActive())
@@ -123,7 +127,7 @@ void URRLevelUpComponent::ApplyLevelUpHeal()
 
 void URRLevelUpComponent::HandleChoiceDelayElapsed()
 {
-	if (PendingChoices <= 0 || bAwaitingChoice)
+	if (PendingChoices <= 0 || bAwaitingChoice || bChoicesBlocked)
 	{
 		return;
 	}
@@ -186,6 +190,16 @@ bool URRLevelUpComponent::RequestReroll()
 	}
 	OnUpgradeOfferShown.Broadcast(Cards, Upgrades->CanReroll());
 	return true;
+}
+
+void URRLevelUpComponent::CancelChoices()
+{
+	bChoicesBlocked = true;
+	if (UWorld* World = GetWorld())
+	{
+		World->GetTimerManager().ClearTimer(ChoiceDelayTimer);
+	}
+	CloseChoice();
 }
 
 void URRLevelUpComponent::CloseChoice()

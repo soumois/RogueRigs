@@ -1,4 +1,4 @@
-// Rogue Rigs - run flow of a level: alert bar from time and kills, console drop and pause, extraction-ready event.
+// Rogue Rigs - run flow of a level: alert bar from time and kills, console drop and pause, extraction shuttle and run end.
 
 #include "Objectives/RRRunFlowSubsystem.h"
 
@@ -8,8 +8,11 @@
 #include "FlowField/RRFlowFieldSubsystem.h"
 #include "Grid/RRArenaGrid.h"
 #include "Kismet/GameplayStatics.h"
+#include "GameFramework/PlayerController.h"
+#include "Objectives/RRShuttle.h"
 #include "Player/RRGameMode.h"
 #include "Player/RRMiner.h"
+#include "Progression/RRLevelUpComponent.h"
 #include "RogueRigs.h"
 
 void URRRunFlowSubsystem::Initialize(FSubsystemCollectionBase& Collection)
@@ -41,6 +44,10 @@ float URRRunFlowSubsystem::GetAlert() const
 
 ERRRunPhase URRRunFlowSubsystem::GetPhase() const
 {
+	if (bRunEnded)
+	{
+		return ERRRunPhase::Ended;
+	}
 	if (bExtractionReady)
 	{
 		return ERRRunPhase::ExtractionReady;
@@ -52,13 +59,22 @@ void URRRunFlowSubsystem::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
 
-	if (!bRunFlowEnabled || bExtractionReady)
+	if (!bRunFlowEnabled || bRunEnded)
 	{
 		return;
 	}
 	ResolveConfig();
 	if (!ResolveRunActors())
 	{
+		return;
+	}
+	if (bExtractionReady)
+	{
+		// Landing retried until a reachable cell exists; the shuttle then owns the countdown.
+		if (!Shuttle)
+		{
+			LandShuttle();
+		}
 		return;
 	}
 
@@ -309,6 +325,167 @@ void URRRunFlowSubsystem::CheckExtraction()
 	bExtractionReady = true;
 	UE_LOG(LogRogueRigs, Log, TEXT("URRRunFlowSubsystem: alert full, no objective pending: extraction ready."));
 	OnExtractionReady.Broadcast();
+	LandShuttle();
+}
+
+bool URRRunFlowSubsystem::FindShuttleCell(FIntPoint& OutCell)
+{
+	if (!Grid || !Miner)
+	{
+		return false;
+	}
+	URRFlowFieldSubsystem* FlowField = GetWorld()->GetSubsystem<URRFlowFieldSubsystem>();
+	const FIntPoint MinerCell = Grid->GetCellAtWorld(Miner->GetActorLocation());
+	const FIntPoint Size = Grid->GetGridSize();
+	const int32 MinSquared = FMath::CeilToInt(FMath::Square(Config.ShuttleMinDistanceCells));
+
+	TArray<FIntPoint> Candidates;
+	FIntPoint Farthest(INDEX_NONE, INDEX_NONE);
+	int32 FarthestSquared = -1;
+	for (int32 Y = 0; Y < Size.Y; ++Y)
+	{
+		for (int32 X = 0; X < Size.X; ++X)
+		{
+			const FIntPoint Cell(X, Y);
+			if (Grid->GetCellType(Cell) != ERRCellType::Floor || (FlowField && FlowField->GetCellDistance(Cell) < 0))
+			{
+				continue;
+			}
+			const int32 DistanceSquared = FMath::Square(X - MinerCell.X) + FMath::Square(Y - MinerCell.Y);
+			if (DistanceSquared >= MinSquared)
+			{
+				Candidates.Add(Cell);
+			}
+			if (DistanceSquared > FarthestSquared)
+			{
+				FarthestSquared = DistanceSquared;
+				Farthest = Cell;
+			}
+		}
+	}
+	if (!Candidates.IsEmpty())
+	{
+		OutCell = Candidates[RandomStream.RandRange(0, Candidates.Num() - 1)];
+		return true;
+	}
+	if (FarthestSquared < 0)
+	{
+		return false;
+	}
+	UE_LOG(LogRogueRigs, Warning, TEXT("URRRunFlowSubsystem: no reachable floor cell %.0f cells from the miner; shuttle lands on the farthest one (%d, %d), %.1f cells."),
+		Config.ShuttleMinDistanceCells, Farthest.X, Farthest.Y, FMath::Sqrt(static_cast<float>(FarthestSquared)));
+	OutCell = Farthest;
+	return true;
+}
+
+ARRShuttle* URRRunFlowSubsystem::LandShuttle()
+{
+	if (Shuttle || bRunEnded)
+	{
+		return Shuttle;
+	}
+	FIntPoint Cell;
+	if (!FindShuttleCell(Cell))
+	{
+		if (!bShuttleFailureLogged)
+		{
+			bShuttleFailureLogged = true;
+			UE_LOG(LogRogueRigs, Warning, TEXT("URRRunFlowSubsystem: no reachable floor cell for the shuttle; landing retried every tick."));
+		}
+		return nullptr;
+	}
+
+	UClass* ShuttleClass = Config.ShuttleClass ? Config.ShuttleClass.Get() : ARRShuttle::StaticClass();
+	FActorSpawnParameters Params;
+	Params.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AlwaysSpawn;
+	ARRShuttle* NewShuttle = GetWorld()->SpawnActor<ARRShuttle>(ShuttleClass, Grid->GetCellCenter(Cell.X, Cell.Y), FRotator::ZeroRotator, Params);
+	if (!NewShuttle)
+	{
+		UE_LOG(LogRogueRigs, Error, TEXT("URRRunFlowSubsystem: could not spawn shuttle %s."), *GetNameSafe(ShuttleClass));
+		return nullptr;
+	}
+	Shuttle = NewShuttle;
+	NewShuttle->OnShuttleCountdownChanged.AddUniqueDynamic(this, &URRRunFlowSubsystem::HandleShuttleCountdownChanged);
+	NewShuttle->OnShuttleFinished.AddUniqueDynamic(this, &URRRunFlowSubsystem::HandleShuttleFinished);
+
+	const float CheatCountdown = GetDefault<URRCheatSettings>()->ShuttleCountdownOverride;
+	const float Countdown = CheatCountdown > 0.f ? CheatCountdown : Config.ShuttleCountdownSeconds;
+	NewShuttle->InitializeShuttle(Grid, Miner, Cell, Countdown, Config.ShuttleBoardRadiusCells * Grid->GetCellSize());
+	OnShuttleLanded.Broadcast(NewShuttle);
+	return NewShuttle;
+}
+
+bool URRRunFlowSubsystem::EndRun(bool bSuccess)
+{
+	if (bRunEnded)
+	{
+		return false;
+	}
+	ResolveRunActors();
+	if (Miner && Miner->IsDead())
+	{
+		return false;
+	}
+	bRunEnded = true;
+	bRunSucceeded = bSuccess;
+
+	// The end screen wins over a pending or open level-up offer: close it (it unpauses) before pausing for the end.
+	if (URRLevelUpComponent* LevelUp = Miner ? Miner->FindComponentByClass<URRLevelUpComponent>() : nullptr)
+	{
+		LevelUp->CancelChoices();
+	}
+	EnterEndPause();
+
+	UE_LOG(LogRogueRigs, Log, TEXT("URRRunFlowSubsystem: run ended, %s."), bSuccess ? TEXT("miner extracted") : TEXT("shuttle missed, run lost"));
+	OnRunEnded.Broadcast(bSuccess);
+	return true;
+}
+
+void URRRunFlowSubsystem::RestartLevel()
+{
+	UWorld* World = GetWorld();
+	if (!World)
+	{
+		return;
+	}
+	const FString LevelName = UGameplayStatics::GetCurrentLevelName(World, true);
+	UE_LOG(LogRogueRigs, Log, TEXT("URRRunFlowSubsystem: restarting level %s."), *LevelName);
+	UGameplayStatics::OpenLevel(World, FName(*LevelName));
+}
+
+void URRRunFlowSubsystem::EnterEndPause()
+{
+	APlayerController* Controller = UGameplayStatics::GetPlayerController(GetWorld(), 0);
+	if (!Controller)
+	{
+		return;
+	}
+	// Standard pause: actors, timers and this subsystem stop (robots, auto-fire); the controller and UMG keep running.
+	if (!Controller->IsPaused())
+	{
+		Controller->SetPause(true);
+	}
+	FInputModeGameAndUI InputMode;
+	InputMode.SetHideCursorDuringCapture(false);
+	InputMode.SetLockMouseToViewportBehavior(EMouseLockMode::DoNotLock);
+	Controller->SetInputMode(InputMode);
+	Controller->SetShowMouseCursor(true);
+}
+
+void URRRunFlowSubsystem::HandleShuttleCountdownChanged(ARRShuttle* InShuttle, float RemainingSeconds)
+{
+	if (InShuttle == Shuttle)
+	{
+		OnShuttleCountdown.Broadcast(RemainingSeconds, InShuttle->GetActorLocation());
+	}
+}
+
+void URRRunFlowSubsystem::HandleShuttleFinished(ARRShuttle* InShuttle, bool bExtracted)
+{
+	if (InShuttle == Shuttle)
+	{
+		EndRun(bExtracted);
+	}
 }
 
 void URRRunFlowSubsystem::BroadcastAlertIfChanged()

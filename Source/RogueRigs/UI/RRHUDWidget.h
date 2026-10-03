@@ -24,7 +24,7 @@ struct FOnAttributeChangeData;
  * ChooseUpgrade / RequestReroll from its card and reroll buttons (forwarded to the level-up component).
  * OnHealthChanged is never called with Max <= 0 and OnXPChanged never with Needed <= 0, so the Blueprint can divide by
  * them. Run flow (BindToRunFlow, URRRunFlowSubsystem): OnAlertChanged, OnObjectiveChanged, OnObjectiveProgressChanged and
- * OnExtractionReady. No gameplay logic.
+ * OnExtractionReady, OnShuttleCountdown and OnRunEnded (end screen; its restart button calls RestartLevel). No gameplay logic.
  */
 UCLASS(Abstract)
 class ROGUERIGS_API URRHUDWidget : public UUserWidget
@@ -61,6 +61,10 @@ public:
 	/** True while the open choice screen can still be rerolled (reroll button enabled). */
 	UFUNCTION(BlueprintPure, Category = "HUD|Upgrades")
 	bool CanRerollUpgrade() const;
+
+	/** Reopens the current map (restart button of the success and run-lost screens). Forwarded to URRRunFlowSubsystem::RestartLevel. */
+	UFUNCTION(BlueprintCallable, Category = "HUD|Run")
+	void RestartLevel();
 
 protected:
 	/** Removes every binding. */
@@ -112,6 +116,29 @@ protected:
 	/** Display event: the alert bar is full and no objective is pending (extraction starts). Implement in Blueprint. */
 	UFUNCTION(BlueprintImplementableEvent, Category = "HUD|Run")
 	void OnExtractionReady();
+
+	/**
+	 * Display event: the shuttle countdown (seconds left) and the shuttle location (off-screen marker); every countdown frame, at
+	 * landing and on binding while it counts. Implement in Blueprint.
+	 */
+	UFUNCTION(BlueprintImplementableEvent, Category = "HUD|Run")
+	void OnShuttleCountdown(float Remaining, FVector ShuttleLocation);
+
+	/**
+	 * Display event: the run ended. bSuccess true = success screen (miner extracted), false = run-lost screen (shuttle missed).
+	 * The game is paused, input is game-and-UI with the cursor shown, any upgrade screen was closed first. Both screens offer a
+	 * button calling RestartLevel. Also on binding after the end. Implement in Blueprint.
+	 */
+	UFUNCTION(BlueprintImplementableEvent, Category = "HUD|Run")
+	void OnRunEnded(bool bSuccess);
+
+	/** Run flow OnShuttleCountdown callback. */
+	UFUNCTION()
+	void HandleShuttleCountdown(float RemainingSeconds, FVector ShuttleLocation);
+
+	/** Run flow OnRunEnded callback. */
+	UFUNCTION()
+	void HandleRunEnded(bool bSuccess);
 
 	/** Run flow OnAlertChanged callback. */
 	UFUNCTION()

@@ -1,4 +1,4 @@
-// Rogue Rigs - run flow of a level: alert bar from time and kills, console drop and pause, extraction-ready event.
+// Rogue Rigs - run flow of a level: alert bar from time and kills, console drop and pause, extraction shuttle and run end.
 
 #pragma once
 
@@ -11,6 +11,7 @@
 
 class ARRArenaGrid;
 class ARRMiner;
+class ARRShuttle;
 
 /** Phase of the level run flow. */
 UENUM(BlueprintType)
@@ -20,8 +21,10 @@ enum class ERRRunPhase : uint8
 	Filling,
 	/** A mandatory objective (the console) is pending: the alert bar is paused. */
 	ObjectivePending,
-	/** The bar is full and no objective is pending: extraction may start (OnExtractionReady fired). Final. */
-	ExtractionReady
+	/** The bar is full and no objective is pending: OnExtractionReady fired, the shuttle lands and counts down. */
+	ExtractionReady,
+	/** The run ended: the miner boarded the shuttle (win) or the countdown ran out (loss). Final. */
+	Ended
 };
 
 /** Fired when the alert value (0..1) or its paused flag changes. */
@@ -39,6 +42,15 @@ DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FRROnConsoleDroppedSignature, ARRCon
 /** Fired once when the alert bar is full and no mandatory objective is pending (the shuttle hooks here). */
 DECLARE_DYNAMIC_MULTICAST_DELEGATE(FRROnExtractionReadySignature);
 
+/** Fired once when the shuttle lands. */
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FRROnShuttleLandedSignature, ARRShuttle*, Shuttle);
+
+/** Fired every countdown frame (and at landing) with the seconds left and the shuttle location. */
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_TwoParams(FRROnShuttleCountdownSignature, float, RemainingSeconds, FVector, ShuttleLocation);
+
+/** Fired once when the run ends: bSuccess true = extracted, false = the shuttle left without the miner. */
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FRROnRunEndedSignature, bool, bSuccess);
+
 /**
  * Run flow of one level (level-flow M1, difficulty alert counter). Game and PIE worlds; active once the world has an
  * ARRArenaGrid and a living ARRMiner (player 0's pawn, else the first one).
@@ -51,8 +63,12 @@ DECLARE_DYNAMIC_MULTICAST_DELEGATE(FRROnExtractionReadySignature);
  * that the flow field reaches from the miner, preferring cells with rocks to mark (bPreferCellsWithMarkedRocks); no candidate =
  * retried each tick (warning once). The alert stays paused until
  * the console is Complete.
- * Extraction: when Alert is 1 and no objective is pending, OnExtractionReady fires once (phase ExtractionReady); the shuttle
- * (task-016-02) binds to it. Display data: OnAlertChanged, OnObjectiveChanged, OnObjectiveProgressChanged (URRHUDWidget binds).
+ * Extraction: when Alert is 1 and no objective is pending, OnExtractionReady fires once (phase ExtractionReady) and the shuttle
+ * (ShuttleClass) lands on a random reachable Floor cell at least ShuttleMinDistanceCells from the miner's cell (none = the
+ * farthest reachable floor cell, warning; no reachable cell = retried each tick), with a ShuttleCountdownSeconds countdown (the
+ * cheat ShuttleCountdownOverride replaces it when > 0). Robots keep coming. The shuttle finishing ends the run (EndRun): the
+ * miner's level-up offer is cancelled, player 0's controller pauses the game with UI input and the cursor shown, OnRunEnded
+ * fires once (phase Ended). RestartLevel reopens the map. Display data: OnAlertChanged, OnObjectiveChanged, OnObjectiveProgressChanged (URRHUDWidget binds).
  */
 UCLASS()
 class ROGUERIGS_API URRRunFlowSubsystem : public UTickableWorldSubsystem
@@ -136,6 +152,30 @@ public:
 	UFUNCTION(BlueprintCallable, Category = "RunFlow")
 	bool SkipToExtraction();
 
+	/** The landed shuttle (null before landing). */
+	UFUNCTION(BlueprintPure, Category = "RunFlow")
+	ARRShuttle* GetShuttle() const { return Shuttle; }
+
+	/** True once the run ended (win or loss). */
+	UFUNCTION(BlueprintPure, Category = "RunFlow")
+	bool IsRunEnded() const { return bRunEnded; }
+
+	/** True when the run ended with the miner extracted (valid once ended). */
+	UFUNCTION(BlueprintPure, Category = "RunFlow")
+	bool WasRunSuccessful() const { return bRunSucceeded; }
+
+	/**
+	 * Ends the run once: cancels the miner's level-up offer (the end screen wins), pauses the game with UI input and the cursor
+	 * shown (player 0's controller, when there is one) and broadcasts OnRunEnded. Refused (false) when already ended or when the
+	 * miner is dead (the game over owns that end). Called when the shuttle finishes.
+	 */
+	UFUNCTION(BlueprintCallable, Category = "RunFlow")
+	bool EndRun(bool bSuccess);
+
+	/** Reopens the current map (end screen restart button; a single level in M1). */
+	UFUNCTION(BlueprintCallable, Category = "RunFlow")
+	void RestartLevel();
+
 	/** Seeds the console placement stream (tests). */
 	void SetRandomSeed(int32 Seed) { RandomStream.Initialize(Seed); }
 
@@ -159,6 +199,18 @@ public:
 	UPROPERTY(BlueprintAssignable, Category = "RunFlow")
 	FRROnExtractionReadySignature OnExtractionReady;
 
+	/** Broadcast once when the shuttle lands. */
+	UPROPERTY(BlueprintAssignable, Category = "RunFlow")
+	FRROnShuttleLandedSignature OnShuttleLanded;
+
+	/** Broadcast every countdown frame and at landing (seconds left, shuttle location). */
+	UPROPERTY(BlueprintAssignable, Category = "RunFlow")
+	FRROnShuttleCountdownSignature OnShuttleCountdown;
+
+	/** Broadcast once when the run ends (true = extracted). */
+	UPROPERTY(BlueprintAssignable, Category = "RunFlow")
+	FRROnRunEndedSignature OnRunEnded;
+
 protected:
 	/** Finds the grid (first ARRArenaGrid) and the miner (player 0's pawn, else the first living ARRMiner). False when either is missing. */
 	bool ResolveRunActors();
@@ -174,6 +226,23 @@ protected:
 
 	/** Fires OnExtractionReady once when the bar is full and nothing is pending. */
 	void CheckExtraction();
+
+	/** Picks the shuttle cell (see class comment). False when no reachable floor cell exists. */
+	bool FindShuttleCell(FIntPoint& OutCell);
+
+	/** Spawns and initializes the shuttle and binds its events. Null when no cell qualifies or the spawn failed. */
+	ARRShuttle* LandShuttle();
+
+	/** Pauses the game through player 0's controller and switches it to game-and-UI input with the cursor shown. */
+	void EnterEndPause();
+
+	/** Shuttle countdown callback: relays OnShuttleCountdown. */
+	UFUNCTION()
+	void HandleShuttleCountdownChanged(ARRShuttle* InShuttle, float RemainingSeconds);
+
+	/** Shuttle finished callback: ends the run. */
+	UFUNCTION()
+	void HandleShuttleFinished(ARRShuttle* InShuttle, bool bExtracted);
 
 	/** Fires OnAlertChanged when the value or the paused flag changed since the last broadcast. */
 	void BroadcastAlertIfChanged();
@@ -209,6 +278,10 @@ protected:
 	UPROPERTY(Transient)
 	TObjectPtr<ARRConsole> Console;
 
+	/** The landed shuttle. */
+	UPROPERTY(Transient)
+	TObjectPtr<ARRShuttle> Shuttle;
+
 	/** Console placement stream. */
 	FRandomStream RandomStream;
 
@@ -230,6 +303,15 @@ protected:
 
 	/** True once OnExtractionReady fired. */
 	bool bExtractionReady = false;
+
+	/** True once the run ended. */
+	bool bRunEnded = false;
+
+	/** True when the run ended with the miner extracted. */
+	bool bRunSucceeded = false;
+
+	/** True once the "no shuttle cell" warning was logged. */
+	bool bShuttleFailureLogged = false;
 
 	/** True once Config was set by SetConfig or read from the game mode. */
 	bool bConfigResolved = false;

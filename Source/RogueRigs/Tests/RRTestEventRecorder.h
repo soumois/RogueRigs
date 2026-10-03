@@ -66,6 +66,14 @@ public:
 	UFUNCTION()
 	void HandleExtractionReady() { ++ExtractionReadyCount; }
 
+	/** Bind to URRRunFlowSubsystem::OnRunEnded: records each result. */
+	UFUNCTION()
+	void HandleRunEnded(bool bSuccess) { RunEndedResults.Add(bSuccess); }
+
+	/** Bind to URRRunFlowSubsystem::OnShuttleCountdown: counts broadcasts and keeps the last value. */
+	UFUNCTION()
+	void HandleShuttleCountdown(float RemainingSeconds, FVector ShuttleLocation) { ++ShuttleCountdownCount; LastShuttleCountdown = RemainingSeconds; }
+
 	/** Bind to ARRConsole::OnConsoleStateChanged: appends the new state. */
 	UFUNCTION()
 	void HandleConsoleStateChanged(ARRConsole* Console, ERRConsoleState NewState) { ConsoleStates.Add(NewState); }
@@ -126,6 +134,15 @@ public:
 
 	/** Number of OnExtractionReady broadcasts received through HandleExtractionReady. */
 	int32 GetExtractionReadyCount() const { return ExtractionReadyCount; }
+
+	/** Results of the OnRunEnded broadcasts received through HandleRunEnded. */
+	const TArray<bool>& GetRunEndedResults() const { return RunEndedResults; }
+
+	/** Number of OnShuttleCountdown broadcasts received through HandleShuttleCountdown. */
+	int32 GetShuttleCountdownCount() const { return ShuttleCountdownCount; }
+
+	/** Last seconds received through HandleShuttleCountdown (-1 = none). */
+	float GetLastShuttleCountdown() const { return LastShuttleCountdown; }
 
 	/** Console states received through HandleConsoleStateChanged, in order. */
 	const TArray<ERRConsoleState>& GetConsoleStates() const { return ConsoleStates; }
@@ -208,6 +225,15 @@ protected:
 
 	/** Extraction-ready broadcasts received so far. */
 	int32 ExtractionReadyCount = 0;
+
+	/** Run end results received so far. */
+	TArray<bool> RunEndedResults;
+
+	/** Shuttle countdown broadcasts received so far. */
+	int32 ShuttleCountdownCount = 0;
+
+	/** Last shuttle countdown received. */
+	float LastShuttleCountdown = -1.f;
 
 	/** Console states received so far. */
 	TArray<ERRConsoleState> ConsoleStates;

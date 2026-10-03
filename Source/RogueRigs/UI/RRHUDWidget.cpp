@@ -5,6 +5,7 @@
 #include "AbilitySystemComponent.h"
 #include "GAS/RRHealthAttributeSet.h"
 #include "Objectives/RRRunFlowSubsystem.h"
+#include "Objectives/RRShuttle.h"
 #include "Player/RRGameMode.h"
 #include "Player/RRMiner.h"
 #include "Progression/RRLevelUpComponent.h"
@@ -85,6 +86,8 @@ void URRHUDWidget::BindToRunFlow(URRRunFlowSubsystem* RunFlow)
 		Previous->OnObjectiveChanged.RemoveDynamic(this, &URRHUDWidget::HandleObjectiveChanged);
 		Previous->OnObjectiveProgressChanged.RemoveDynamic(this, &URRHUDWidget::HandleObjectiveProgressChanged);
 		Previous->OnExtractionReady.RemoveDynamic(this, &URRHUDWidget::HandleExtractionReady);
+		Previous->OnShuttleCountdown.RemoveDynamic(this, &URRHUDWidget::HandleShuttleCountdown);
+		Previous->OnRunEnded.RemoveDynamic(this, &URRHUDWidget::HandleRunEnded);
 	}
 	BoundRunFlow = RunFlow;
 	if (!RunFlow)
@@ -95,6 +98,8 @@ void URRHUDWidget::BindToRunFlow(URRRunFlowSubsystem* RunFlow)
 	RunFlow->OnObjectiveChanged.AddUniqueDynamic(this, &URRHUDWidget::HandleObjectiveChanged);
 	RunFlow->OnObjectiveProgressChanged.AddUniqueDynamic(this, &URRHUDWidget::HandleObjectiveProgressChanged);
 	RunFlow->OnExtractionReady.AddUniqueDynamic(this, &URRHUDWidget::HandleExtractionReady);
+	RunFlow->OnShuttleCountdown.AddUniqueDynamic(this, &URRHUDWidget::HandleShuttleCountdown);
+	RunFlow->OnRunEnded.AddUniqueDynamic(this, &URRHUDWidget::HandleRunEnded);
 
 	// Push the current state once.
 	OnAlertChanged(RunFlow->GetAlert(), RunFlow->HasPendingObjective());
@@ -111,6 +116,38 @@ void URRHUDWidget::BindToRunFlow(URRRunFlowSubsystem* RunFlow)
 	{
 		OnExtractionReady();
 	}
+	if (const ARRShuttle* Shuttle = RunFlow->GetShuttle())
+	{
+		OnShuttleCountdown(Shuttle->GetRemainingSeconds(), Shuttle->GetActorLocation());
+	}
+	if (RunFlow->IsRunEnded())
+	{
+		OnRunEnded(RunFlow->WasRunSuccessful());
+	}
+}
+
+void URRHUDWidget::RestartLevel()
+{
+	URRRunFlowSubsystem* RunFlow = BoundRunFlow.Get();
+	if (!RunFlow)
+	{
+		const UWorld* World = GetWorld();
+		RunFlow = World ? World->GetSubsystem<URRRunFlowSubsystem>() : nullptr;
+	}
+	if (RunFlow)
+	{
+		RunFlow->RestartLevel();
+	}
+}
+
+void URRHUDWidget::HandleShuttleCountdown(float RemainingSeconds, FVector ShuttleLocation)
+{
+	OnShuttleCountdown(RemainingSeconds, ShuttleLocation);
+}
+
+void URRHUDWidget::HandleRunEnded(bool bSuccess)
+{
+	OnRunEnded(bSuccess);
 }
 
 void URRHUDWidget::HandleAlertChanged(float Alert, bool bPaused)
