@@ -10,7 +10,7 @@ kind: doc
 - parent_class: ARREnemySpawner (/Script/RogueRigs.RREnemySpawner)
 - purpose: spawns chasers and kamikazes outside the screen ([[sys-spawner]]).
 - components: inherited only.
-- exposed_defaults: WeightedEnemyClasses = BP_Chaser_C 3, BP_Kamikaze_C 1 (25 % kamikazes; the level instance override was reset to inherit); EnemyClass = BP_Chaser_C (fallback); other tunables at C++ defaults. One instance placed in L_ArenaM1 at (8100, 8100, 100) (location irrelevant).
+- exposed_defaults: WeightedEnemyClasses = BP_Chaser_C 85, BP_Kamikaze_C 15 (15 % kamikazes, task-014-04; the level instance override was reset to inherit); EnemyClass = BP_Chaser_C (fallback); other tunables at C++ defaults. One instance placed in L_ArenaM1 at (8100, 8100, 100) (location irrelevant).
 - events: none
 - logic_in_bp: none
 - assets: none
