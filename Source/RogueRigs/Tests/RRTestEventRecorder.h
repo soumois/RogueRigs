@@ -1,4 +1,4 @@
-// Rogue Rigs - test-only listener: records dynamic delegate broadcasts (pickup collected, cell destroyed, auto-fire shots and reloads, projectile stop, component hit, game over) for the automation tests.
+// Rogue Rigs - test-only listener: records dynamic delegate broadcasts (pickup collected, cell destroyed, auto-fire shots and reloads, projectile stop, component hit, game over, explosion) for the automation tests.
 
 #pragma once
 
@@ -15,7 +15,7 @@ class UAbilitySystemComponent;
 /**
  * Records the broadcasts of ARRMiner::OnPickupCollected, ARRArenaGrid::OnCellDestroyed, the URRAutoFireComponent
  * events (OnShotFired, OnReloadStarted, OnReloadFinished), UProjectileMovementComponent::OnProjectileStop and
- * UPrimitiveComponent::OnComponentHit and ARRGameMode::OnGameOver so
+ * UPrimitiveComponent::OnComponentHit, ARRGameMode::OnGameOver and URRExplosionSubsystem::OnExplosion so
  * automation tests (Source/RogueRigs/Tests) can check that the events fire. Dynamic delegates need a UFunction to
  * bind to, so this is a UCLASS and is compiled in every configuration (UHT does not support WITH_DEV_AUTOMATION_TESTS
  * guards); it is never used by gameplay code. Create with NewObject, keep it alive with a TStrongObjectPtr.
@@ -57,6 +57,16 @@ public:
 	/** Bind to ARRGameMode::OnGameOver: counts the broadcasts. */
 	UFUNCTION()
 	void HandleGameOver() { ++GameOverCount; }
+
+	/** Bind to URRExplosionSubsystem::OnExplosion: appends the row name and the center. */
+	UFUNCTION()
+	void HandleExplosion(FVector Center, FName RowName) { ExplosionRows.Add(RowName); ExplosionCenters.Add(Center); }
+
+	/** Row names received through HandleExplosion, in order. */
+	const TArray<FName>& GetExplosionRows() const { return ExplosionRows; }
+
+	/** Centers received through HandleExplosion, in order. */
+	const TArray<FVector>& GetExplosionCenters() const { return ExplosionCenters; }
 
 	/** Number of OnGameOver broadcasts received through HandleGameOver. */
 	int32 GetGameOverCount() const { return GameOverCount; }
@@ -106,6 +116,12 @@ protected:
 
 	/** Blocking hits received so far. */
 	TArray<FHitResult> ComponentHits;
+
+	/** Explosion row names received so far. */
+	TArray<FName> ExplosionRows;
+
+	/** Explosion centers received so far. */
+	TArray<FVector> ExplosionCenters;
 
 	/** Game over broadcasts received so far. */
 	int32 GameOverCount = 0;

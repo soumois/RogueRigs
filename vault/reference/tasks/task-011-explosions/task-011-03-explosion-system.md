@@ -3,7 +3,7 @@ id: task-011-03-explosion-system
 description: "URRExplosionSubsystem: queued explosions, 0.08 s chain delay, every block in radius destroyed, character damage without one-shot, FX actor."
 parent: task-011-explosions
 kind: task
-status: in-progress
+status: done
 ---
 # Explosion system
 
@@ -16,7 +16,7 @@ status: in-progress
 - editor_state: closed
 - token_ceiling: 100000
 - milestone: M1
-- result: open
+- result: URRExplosionSubsystem (FIFO queue, one link per tick after ChainDelay 0.08 s, each source once; QueueExplosion, OnExplosion); ExplosionStats.csv (Barrel 350/40, Kamikaze 250/30, TerrainSource, FXClass = /Game/RogueRigs/Blueprints/FX/BP_ExplosionFX); URRGE_DamageExplosion (Data.Damage, refuses Dead and Invulnerable; explosions respect i-frames); no one-shot: a full-health miner keeps at least 1 health; ARRExplosionFX (scale 0 → radius, Opacity 1 → 0 over 0.25 s). 5 Explosions tests. Build exit 0, 41/41 (orchestrator re-ran). Docs sys-explosions (rewritten), sys-grid, sys-damage, sys-automation-tests, build-toolchain. About 111k tokens (over ceiling).
 
 ## Relations
 - [[task-011-explosions]] — parent global task.

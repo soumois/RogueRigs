@@ -18,7 +18,7 @@ kind: doc
 - data: layout JSON (M1), deterministic generator (M2). Modules Json, JsonUtilities.
 - depends_on: none.
 - implements: [[arena-grid]], [[destruction-rules]], [[ore-blocks]], [[explosions]] (terrain side).
-- gotchas: missing file or parse error logs on `LogRogueRigs` and leaves the grid empty. The layout folder must be packaged as a non-asset directory. Moving a shaking instance dirties the HISM tree each frame (fine for a few cells). Barrel detonation and the run log will react to the delegates; not done here. Autotiling, top-face variants and the destroy particle burst: not implemented. Chaos Destruction is not used; terrain damage stays outside GAS.
+- gotchas: missing file or parse error logs on `LogRogueRigs` and leaves the grid empty. The layout folder must be packaged as a non-asset directory. Moving a shaking instance dirties the HISM tree each frame (fine for a few cells). Explosions call `DestroyCellsInRadius` only from `URRExplosionSubsystem` (queued, source Barrel or Kamikaze from the CSV row; [[sys-explosions]]); barrel detonation on destruction is task-011-04; the run log will react to the delegates. Autotiling, top-face variants and the destroy particle burst: not implemented. Chaos Destruction is not used; terrain damage stays outside GAS.
 
 ## Relations
 - [[systems-index]] — parent index.
@@ -26,3 +26,4 @@ kind: doc
 - [[sys-pickups]] — the pickups the grid drops from ore and heal ore.
 - [[sys-flow-field]] — the flow field built on the grid.
 - [[sys-automation-tests]] — automation tests of damage, destruction, drops and instance maps.
+- [[sys-explosions]] — the explosion queue calling `DestroyCellsInRadius`.

@@ -1,0 +1,3 @@
+Name,Radius,Damage,TerrainSource,FXClass
+Barrel,350,40,Barrel,/Game/RogueRigs/Blueprints/FX/BP_ExplosionFX.BP_ExplosionFX_C
+Kamikaze,250,30,Kamikaze,/Game/RogueRigs/Blueprints/FX/BP_ExplosionFX.BP_ExplosionFX_C

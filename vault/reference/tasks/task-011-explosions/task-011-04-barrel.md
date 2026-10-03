@@ -3,7 +3,7 @@ id: task-011-04-barrel
 description: "Barrel cells get 20 health from shots and explode through the queue when destroyed by any source, so barrels chain."
 parent: task-011-explosions
 kind: task
-status: todo
+status: in-progress
 ---
 # Barrel
 
