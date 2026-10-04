@@ -3,7 +3,7 @@ id: task-018-02-crowd-collision
 description: "Robots stop sweeping against each other’s capsules; separation left to RVO with lighter settings; robots pack tighter; stress before and after."
 parent: task-018-robot-perf
 kind: task
-status: in-progress
+status: done
 ---
 # Crowd collision
 
@@ -16,7 +16,7 @@ status: in-progress
 - editor_state: closed
 - token_ceiling: 90000
 - milestone: M1
-- result: open
+- result: Robot capsules carry RobotMaskFilter and robot movement sweeps ignore it (miner, terrain, barrels, projectiles still collide); ARREnemy SetIgnoreOtherRobots, Enemy|Crowd settings: avoidance consideration 500 → 250 uu, radius expansion 1.5 → 1.1, lock time 0.2 → 0.3 s. Packing (40 chasers, 10 s): within 300 uu 11 → 19, mean distance 617 → 496 uu, attacks 20 → 28. Stress game avg: S0 400 11.31 → 10.96 (noise); S2 400 13.34 → 14.6–14.7 (+1.3 ms, likely more hits in the denser crowd, unconfirmed). Tests RobotsOverlapRobots, Integration.CrowdPacking; build 0, 100/100. Docs sys-enemies, sys-enemy-ai, perf-risks, sys-automation-tests. Commit 270955a, about 125k tokens.
 
 ## Relations
 - [[task-018-robot-perf]] — parent global task.

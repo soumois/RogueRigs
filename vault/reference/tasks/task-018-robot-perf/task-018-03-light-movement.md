@@ -3,7 +3,7 @@ id: task-018-03-light-movement
 description: "Lighter CharacterMovement for robots on the flat floor and a slower movement tick far from the miner; stress before and after."
 parent: task-018-robot-perf
 kind: task
-status: todo
+status: in-progress
 ---
 # Light movement
 

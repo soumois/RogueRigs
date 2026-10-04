@@ -13,7 +13,7 @@ status: in-progress
 - gdd_check: Read [[perf-risks]], [[stress-final-m1]], [[enemies-index]]. Owner accepts tighter packing (2026-10-04). Gains are estimates until measured; any step that does not pay off is reverted and reported.
 - confirmed_by_owner: yes (2026-10-04, all subtasks pre-approved)
 - milestone: M1
-- next_step: task-018-02-crowd-collision
+- next_step: task-018-03-light-movement
 - result: open
 
 ## Subtasks
