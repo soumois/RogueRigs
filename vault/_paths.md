@@ -42,6 +42,12 @@ bp-shotgun  reference/tech/blueprints/bp-shotgun.md
 bp-target-dummy  reference/tech/blueprints/bp-target-dummy.md
 build-toolchain  reference/tech/pipelines/build-toolchain.md
 burst-rifle  reference/gdd/weapons/burst-rifle.md
+code-review-m1  reference/tech/conventions/code-review-m1/code-review-m1.md
+code-review-m1-deferred  reference/tech/conventions/code-review-m1/code-review-m1-deferred.md
+code-review-m1-gameplay  reference/tech/conventions/code-review-m1/code-review-m1-gameplay.md
+code-review-m1-hooks  reference/tech/conventions/code-review-m1/code-review-m1-hooks.md
+code-review-m1-plan  reference/tech/conventions/code-review-m1/code-review-m1-plan.md
+code-review-m1-systems  reference/tech/conventions/code-review-m1/code-review-m1-systems.md
 color-code  reference/gdd/art-audio/color-code.md
 conventions-index  reference/tech/conventions/conventions-index.md
 cost-log  reference/production/cost-log.md
