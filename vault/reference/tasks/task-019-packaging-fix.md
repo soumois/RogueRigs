@@ -3,7 +3,7 @@ id: task-019-packaging-fix
 description: "Global task: add GameFeatureData to the asset manager settings so BuildCookRun cook, stage and pak exits 0."
 parent: tasks-index
 kind: task
-status: in-progress
+status: done
 ---
 # Packaging fix
 
@@ -13,8 +13,8 @@ status: in-progress
 - gdd_check: No GDD impact. Error found in task-018-04 (UAT exit 25: GameFeatureData missing from the asset manager primary asset types).
 - confirmed_by_owner: yes (2026-10-04, all subtasks pre-approved)
 - milestone: M1
-- next_step: task-019-01-asset-manager
-- result: open
+- next_step: none
+- result: All acceptance checks passed: BuildCookRun exit 0, staged run clean, documented.
 
 ## Subtasks
 1. task-019-01-asset-manager — cpp: asset manager config, full BuildCookRun, staged run check

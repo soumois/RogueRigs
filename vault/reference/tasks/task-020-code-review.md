@@ -3,7 +3,7 @@ id: task-020-code-review
 description: "Global task: review the C++ for human readability and generalization, refactor high-value items without behavior change, check Blueprints in PIE."
 parent: tasks-index
 kind: task
-status: todo
+status: in-progress
 ---
 # C++ code review and refactor
 

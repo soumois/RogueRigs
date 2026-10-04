@@ -34,6 +34,7 @@ kind: note
 | [[task-018-03-light-movement]] | opus | 1 | 0k | 95k | 2968k | 37k |
 | [[task-018-04-hitch]] | opus | 1 | 0k | 70k | 1694k | 20k |
 | [[task-018-05-final-stress]] | opus | 1 | 0k | 162k | 538k | 17k |
+| [[task-019-01-asset-manager]] | opus | 1 | 0k | 36k | 390k | 8k |
 
 ## Totals
 | Scope | Input | Cache write | Cache read | Output |

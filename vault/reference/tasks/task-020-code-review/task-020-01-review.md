@@ -3,7 +3,7 @@ id: task-020-01-review
 description: "Read all of Source/RogueRigs: readability, comments, naming, duplication, base-class generalization; write a ranked refactor list with risk."
 parent: task-020-code-review
 kind: task
-status: todo
+status: in-progress
 ---
 # Code review
 
