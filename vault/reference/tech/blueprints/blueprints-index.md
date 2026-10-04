@@ -25,6 +25,7 @@ One node per Blueprint, template `blueprint.md`.
 - [[bp-pickup-xp]] — BP_PickupXP, the cyan XP pickup.
 - [[bp-enemy-spawner]] — BP_EnemySpawner, the enemy spawner placed in the arena.
 - [[bp-kamikaze]] — BP_Kamikaze, the kamikaze robot.
+- [[bp-shooter]] — BP_Shooter and BP_ShooterProjectile, the shooter robot.
 - [[bp-explosion-fx]] — BP_ExplosionFX, the explosion visual.
 - [[bp-objective-console]] — BP_ObjectiveConsole, the command console.
 - [[bp-extraction-shuttle]] — BP_ExtractionShuttle, the extraction shuttle.
