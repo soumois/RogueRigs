@@ -3,7 +3,7 @@ id: task-020-04-bp-check
 description: "Open the editor, check every Blueprint compiles and loads without broken references, run a PIE smoke test of the full loop."
 parent: task-020-code-review
 kind: task
-status: todo
+status: in-progress
 ---
 # Blueprint check after refactor
 

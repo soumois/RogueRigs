@@ -37,6 +37,7 @@ kind: note
 | [[task-019-01-asset-manager]] | opus | 1 | 0k | 36k | 390k | 8k |
 | [[task-020-01-review]] | opus | 1 | 0k | 188k | 7197k | 38k |
 | [[task-020-02-refactor]] | opus | 2 | 0k | 191k | 7042k | 69k |
+| [[task-020-03-refactor-cleanup]] | opus | 1 | 0k | 117k | 3705k | 40k |
 
 ## Totals
 | Scope | Input | Cache write | Cache read | Output |
