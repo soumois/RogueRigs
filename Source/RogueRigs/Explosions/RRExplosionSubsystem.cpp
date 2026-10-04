@@ -80,22 +80,7 @@ bool URRExplosionSubsystem::QueueExplosionWithStats(FVector Center, FName RowNam
 
 bool URRExplosionSubsystem::GetExplosionStats(FName RowName, FRRExplosionStatsRow& OutStats)
 {
-	if (!StatsTable)
-	{
-		StatsTable = FRRBaseStatsLoader::LoadTableFromCSV(ExplosionStatsPath, FRRExplosionStatsRow::StaticStruct(), this);
-		if (!StatsTable)
-		{
-			return false;
-		}
-	}
-	const FRRExplosionStatsRow* Row = StatsTable->FindRow<FRRExplosionStatsRow>(RowName, TEXT("URRExplosionSubsystem"), false);
-	if (!Row)
-	{
-		UE_LOG(LogRogueRigs, Error, TEXT("URRExplosionSubsystem: row '%s' not found in %s"), *RowName.ToString(), ExplosionStatsPath);
-		return false;
-	}
-	OutStats = *Row;
-	return true;
+	return FRRBaseStatsLoader::FindRow(ExplosionStatsPath, RowName, OutStats, TEXT("URRExplosionSubsystem"));
 }
 
 bool URRExplosionSubsystem::IsSourceSpent(const UObject* SourceObject) const

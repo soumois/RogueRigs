@@ -30,7 +30,7 @@ void URRProgressionComponent::LoadCurve()
 {
 	XPToNextLevelByLevel.Reset();
 
-	const UDataTable* Table = FRRBaseStatsLoader::LoadTableFromCSV(XPCurvePath, FRRXPCurveRow::StaticStruct());
+	const UDataTable* Table = FRRBaseStatsLoader::GetCachedTable(XPCurvePath, FRRXPCurveRow::StaticStruct());
 	if (Table == nullptr)
 	{
 		return;

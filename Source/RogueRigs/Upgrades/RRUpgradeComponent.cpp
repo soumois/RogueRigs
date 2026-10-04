@@ -46,7 +46,7 @@ void URRUpgradeComponent::LoadTables()
 		LuckFactors[Rank] = 0.f;
 	}
 
-	if (const UDataTable* Values = FRRBaseStatsLoader::LoadTableFromCSV(UpgradeValuesPath, FRRUpgradeValueRow::StaticStruct()))
+	if (const UDataTable* Values = FRRBaseStatsLoader::GetCachedTable(UpgradeValuesPath, FRRUpgradeValueRow::StaticStruct()))
 	{
 		for (const TPair<FName, uint8*>& Pair : Values->GetRowMap())
 		{
@@ -75,7 +75,7 @@ void URRUpgradeComponent::LoadTables()
 		}
 	}
 
-	if (const UDataTable* Rarities = FRRBaseStatsLoader::LoadTableFromCSV(UpgradeRaritiesPath, FRRUpgradeRarityRow::StaticStruct()))
+	if (const UDataTable* Rarities = FRRBaseStatsLoader::GetCachedTable(UpgradeRaritiesPath, FRRUpgradeRarityRow::StaticStruct()))
 	{
 		const UEnum* TierEnum = StaticEnum<ERRUpgradeRarity>();
 		for (const TPair<FName, uint8*>& Pair : Rarities->GetRowMap())

@@ -88,19 +88,7 @@ bool ARREnemy::IsIgnoringOtherRobots() const
 
 bool ARREnemy::LoadStatsRow(FName RowName, FRREnemyStatsRow& OutRow)
 {
-	const UDataTable* Table = FRRBaseStatsLoader::LoadTableFromCSV(EnemyStatsPath, FRREnemyStatsRow::StaticStruct());
-	if (!Table)
-	{
-		return false;
-	}
-	const FRREnemyStatsRow* Row = Table->FindRow<FRREnemyStatsRow>(RowName, TEXT("ARREnemy::LoadStatsRow"), false);
-	if (!Row)
-	{
-		UE_LOG(LogRogueRigs, Error, TEXT("ARREnemy: row '%s' not found in %s"), *RowName.ToString(), EnemyStatsPath);
-		return false;
-	}
-	OutRow = *Row;
-	return true;
+	return FRRBaseStatsLoader::FindRow(EnemyStatsPath, RowName, OutRow, TEXT("ARREnemy::LoadStatsRow"));
 }
 
 void ARREnemy::BeginPlay()

@@ -98,21 +98,8 @@ bool ARRWeapon::Acquire(ARRMiner* InOwnerMiner)
 
 bool ARRWeapon::LoadStatsRow(FRRWeaponStatsRow& OutRow) const
 {
-	const UDataTable* Table = FRRBaseStatsLoader::LoadTableFromCSV(WeaponStatsPath, FRRWeaponStatsRow::StaticStruct());
-	if (Table == nullptr)
-	{
-		return false;
-	}
-
-	const FRRWeaponStatsRow* Row = Table->FindRow<FRRWeaponStatsRow>(StatsRowName, TEXT("ARRWeapon::LoadStatsRow"), false);
-	if (Row == nullptr)
-	{
-		UE_LOG(LogRogueRigs, Error, TEXT("%s: row '%s' not found in %s; the weapon will not fire."), *GetName(), *StatsRowName.ToString(), WeaponStatsPath);
-		return false;
-	}
-
-	OutRow = *Row;
-	return true;
+	const FString Context = FString::Printf(TEXT("%s; the weapon will not fire"), *GetName());
+	return FRRBaseStatsLoader::FindRow(WeaponStatsPath, StatsRowName, OutRow, *Context);
 }
 
 void ARRWeapon::ApplyStatsRow(const FRRWeaponStatsRow& Row)

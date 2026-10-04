@@ -1,4 +1,4 @@
-// Rogue Rigs - automation tests of the robots (RogueRigs.Enemies.*): CSV stats, chaser death and XP drop, attack timing, i-frames against two chasers, damage number per hit, robots moving through robots but not through the miner.
+// Rogue Rigs - automation tests of the robots (RogueRigs.Enemies.*): CSV stats and their parse cache, chaser death and XP drop, attack timing, i-frames against two chasers, damage number per hit, robots moving through robots but not through the miner.
 
 #include "CoreMinimal.h"
 #include "Misc/AutomationTest.h"
@@ -14,6 +14,7 @@
 #include "EngineUtils.h"
 #include "FlowField/RREnemyMovementComponent.h"
 #include "GameFramework/CharacterMovementComponent.h"
+#include "GAS/RRBaseStatsLoader.h"
 #include "GAS/RREnemyAttributeSet.h"
 #include "GAS/RRGameplayTags.h"
 #include "GAS/RRHealthAttributeSet.h"
@@ -202,6 +203,28 @@ bool FRREnemyStatsTest::RunTest(const FString& Parameters)
 	TestTrue(TEXT("arrival distance just under the attack range"), Arrival > 0.f && Arrival < 120.f);
 	TestEqual(TEXT("capsule overlaps Projectile"), Chaser->GetCapsuleComponent()->GetCollisionResponseToChannel(RRCollisionChannels::Projectile), ECR_Overlap);
 	TestEqual(TEXT("starts in Chase"), Chaser->GetState(), ERRChaserState::Chase);
+	return true;
+}
+
+IMPLEMENT_SIMPLE_AUTOMATION_TEST(FRREnemyStatsCacheTest, "RogueRigs.Enemies.StatsTableCached",
+	EAutomationTestFlags::EditorContext | EAutomationTestFlags::EngineFilter)
+
+bool FRREnemyStatsCacheTest::RunTest(const FString& Parameters)
+{
+	// EnemyStats.csv is parsed once and shared: a second lookup returns the same table, rows stay readable,
+	// and a missing row fails with one logged error.
+	const UDataTable* First = FRRBaseStatsLoader::GetCachedTable(ARREnemy::EnemyStatsPath, FRREnemyStatsRow::StaticStruct());
+	const UDataTable* Second = FRRBaseStatsLoader::GetCachedTable(ARREnemy::EnemyStatsPath, FRREnemyStatsRow::StaticStruct());
+	if (!TestNotNull(TEXT("EnemyStats.csv cached"), First))
+	{
+		return false;
+	}
+	TestTrue(TEXT("second lookup returns the cached table"), First == Second);
+
+	FRREnemyStatsRow Row;
+	TestTrue(TEXT("Kamikaze row read through the cache"), ARREnemy::LoadStatsRow(TEXT("Kamikaze"), Row));
+	AddExpectedError(TEXT("row 'NoSuchRobot' not found"), EAutomationExpectedErrorFlags::Contains, 1);
+	TestFalse(TEXT("missing row fails"), ARREnemy::LoadStatsRow(TEXT("NoSuchRobot"), Row));
 	return true;
 }
 

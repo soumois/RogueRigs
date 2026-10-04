@@ -12,7 +12,6 @@ class AActor;
 class ARRArenaGrid;
 class ARRExplosionFX;
 class UAbilitySystemComponent;
-class UDataTable;
 
 /** Broadcast by URRExplosionSubsystem after each explosion resolved (terrain, characters and FX done). */
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_TwoParams(FRROnExplosionSignature, FVector, Center, FName, RowName);
@@ -125,10 +124,6 @@ protected:
 	/** Health a full-health miner keeps at least after one explosion (no-one-shot rule). */
 	UPROPERTY(Config, EditAnywhere, Category = "Explosions", meta = (ClampMin = "0"))
 	float MinerHealthLeftAtFullHealth = 1.f;
-
-	/** ExplosionStats.csv, loaded on first use. */
-	UPROPERTY(Transient)
-	TObjectPtr<UDataTable> StatsTable;
 
 	/** Terrain of the explosions. */
 	TWeakObjectPtr<ARRArenaGrid> Grid;

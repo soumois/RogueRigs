@@ -12,7 +12,7 @@ kind: doc
 - data: `Content/RogueRigs/Data/Tables/EnemyStats.csv` (`FRREnemyStatsRow`): MaxHealth, MoveSpeed, Damage, AttackRate, AttackRange, WindUp, XPValue, KnockbackResistance; row `Chaser` 30, 360, 10, 1, 120, 0.1, 1, 0; row `Kamikaze` 100, 300, 0, 0, 0, 0, 1, 0 (owner tuning 2026-10-02, task-012-01; its Damage, AttackRate, AttackRange, WindUp are unused). MaxHealth, Health and MoveSpeed become ASC base values; the rest stay CSV constants in `Stats`.
 - depends_on: [[sys-gas-core]], [[sys-damage]], [[sys-flow-field]], [[sys-pickups]], [[sys-player]], [[sys-explosions]], [[sys-world-queries]].
 - implements: [[enemy-chaser]], [[enemy-kamikaze]], [[enemy-death]] (M1 shrink and drop).
-- gotchas: the CSV is read on every spawn (cache planned, R3 of [[code-review-m1-plan]]). Tests: [[sys-automation-tests]].
+- gotchas: the CSV is parsed once and cached by `FRRBaseStatsLoader::FindRow` (re-parsed when the file timestamp changes; R3 of [[code-review-m1-plan]]). Tests: [[sys-automation-tests]].
 
 ## Relations
 - [[systems-index]] — parent index.

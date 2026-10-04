@@ -28,6 +28,30 @@ public:
 	 */
 	static UDataTable* LoadTableFromCSV(const FString& ContentRelativePath, UScriptStruct* RowStruct, UObject* Outer = nullptr);
 
+	/**
+	 * Returns the shared, rooted DataTable for the CSV at ContentRelativePath, parsing it only on first use or when
+	 * the file timestamp (or RowStruct) changed since the last parse. Game thread only. Returns nullptr (logged by
+	 * LoadTableFromCSV) when the file is unreadable or empty. Use this instead of LoadTableFromCSV for read-only lookups.
+	 */
+	static const UDataTable* GetCachedTable(const FString& ContentRelativePath, UScriptStruct* RowStruct);
+
+	/**
+	 * Copies row RowName of the cached CSV table at ContentRelativePath into OutRow. Returns false when the file or
+	 * the row is missing; a missing row logs one error "row '<RowName>' not found in <path> (<Context>)".
+	 * RowType must be a USTRUCT deriving from FTableRowBase.
+	 */
+	template <typename RowType>
+	static bool FindRow(const FString& ContentRelativePath, FName RowName, RowType& OutRow, const TCHAR* Context)
+	{
+		const uint8* RowData = FindRowData(ContentRelativePath, RowType::StaticStruct(), RowName, Context);
+		if (RowData == nullptr)
+		{
+			return false;
+		}
+		OutRow = *reinterpret_cast<const RowType*>(RowData);
+		return true;
+	}
+
 	/** Loads PlayerBaseStats.csv and copies row RowName into OutRow. Returns false (logged) if the file or row is missing. */
 	static bool LoadPlayerBaseStats(FName RowName, FRRPlayerBaseStatsRow& OutRow);
 
@@ -42,6 +66,9 @@ public:
 	static bool LoadAndApplyPlayerBaseStats(UAbilitySystemComponent& ASC, FName RowName);
 
 protected:
+	/** Untyped body of FindRow: raw row memory of RowName in the cached table, or nullptr (logged when the row is missing). */
+	static const uint8* FindRowData(const FString& ContentRelativePath, UScriptStruct* RowStruct, FName RowName, const TCHAR* Context);
+
 	/** Sets the base value of Attribute on ASC if the ASC owns its set; logs and returns false otherwise. */
 	static bool SetBaseIfPresent(UAbilitySystemComponent& ASC, const struct FGameplayAttribute& Attribute, float Value);
 };
