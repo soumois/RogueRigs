@@ -26,6 +26,7 @@
 #include "Player/RRMiner.h"
 #include "Projectiles/RRCollisionChannels.h"
 #include "RogueRigs.h"
+#include "World/RRWorld.h"
 
 #include UE_INLINE_GENERATED_CPP_BY_NAME(RREnemy)
 
@@ -214,16 +215,9 @@ ARRMiner* ARREnemy::FindTarget()
 	{
 		return Target;
 	}
-	CachedTarget.Reset();
-	for (TActorIterator<ARRMiner> It(GetWorld()); It; ++It)
-	{
-		if (IsValid(*It) && !It->IsDead())
-		{
-			CachedTarget = *It;
-			return *It;
-		}
-	}
-	return nullptr;
+	Target = RRWorld::FindLivingMiner(GetWorld());
+	CachedTarget = Target;
+	return Target;
 }
 
 void ARREnemy::Tick(float DeltaSeconds)

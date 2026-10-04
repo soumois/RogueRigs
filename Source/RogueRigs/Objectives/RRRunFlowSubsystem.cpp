@@ -14,6 +14,7 @@
 #include "Player/RRMiner.h"
 #include "Progression/RRLevelUpComponent.h"
 #include "RogueRigs.h"
+#include "World/RRWorld.h"
 
 void URRRunFlowSubsystem::Initialize(FSubsystemCollectionBase& Collection)
 {
@@ -187,26 +188,14 @@ bool URRRunFlowSubsystem::ResolveRunActors()
 	}
 	if (!IsValid(Grid))
 	{
-		Grid = nullptr;
-		for (TActorIterator<ARRArenaGrid> It(World); It; ++It)
-		{
-			Grid = *It;
-			break;
-		}
+		Grid = RRWorld::FindArenaGrid(World);
 	}
 	if (!IsValid(Miner) || Miner->IsActorBeingDestroyed())
 	{
 		Miner = Cast<ARRMiner>(UGameplayStatics::GetPlayerPawn(World, 0));
 		if (!Miner)
 		{
-			for (TActorIterator<ARRMiner> It(World); It; ++It)
-			{
-				if (IsValid(*It) && !It->IsActorBeingDestroyed() && !It->IsDead())
-				{
-					Miner = *It;
-					break;
-				}
-			}
+			Miner = RRWorld::FindLivingMiner(World);
 		}
 	}
 	return Grid != nullptr && Miner != nullptr;

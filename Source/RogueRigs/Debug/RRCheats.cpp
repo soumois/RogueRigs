@@ -15,6 +15,7 @@
 #include "Progression/RRLevelUpComponent.h"
 #include "Progression/RRProgressionComponent.h"
 #include "RogueRigs.h"
+#include "World/RRWorld.h"
 
 namespace RRCheats
 {
@@ -54,14 +55,7 @@ namespace RRCheats
 		{
 			return Miner;
 		}
-		for (TActorIterator<ARRMiner> It(World); It; ++It)
-		{
-			if (IsValid(*It) && !It->IsActorBeingDestroyed())
-			{
-				return *It;
-			}
-		}
-		return nullptr;
+		return RRWorld::FindMiner(World, /*bLivingOnly*/ false);
 	}
 
 	bool GrantXP(UWorld* World, float Amount, const TCHAR* Source)

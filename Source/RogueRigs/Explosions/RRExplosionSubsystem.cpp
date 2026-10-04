@@ -16,6 +16,7 @@
 #include "Misc/PackageName.h"
 #include "Player/RRMiner.h"
 #include "RogueRigs.h"
+#include "World/RRWorld.h"
 
 #include UE_INLINE_GENERATED_CPP_BY_NAME(RRExplosionSubsystem)
 
@@ -237,14 +238,7 @@ ARRArenaGrid* URRExplosionSubsystem::ResolveGrid()
 {
 	if (!Grid.IsValid())
 	{
-		if (UWorld* World = GetWorld())
-		{
-			for (TActorIterator<ARRArenaGrid> It(World); It; ++It)
-			{
-				Grid = *It;
-				break;
-			}
-		}
+		Grid = RRWorld::FindArenaGrid(GetWorld());
 	}
 	return Grid.Get();
 }

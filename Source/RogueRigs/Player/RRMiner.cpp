@@ -28,6 +28,7 @@
 #include "Weapons/RRAutoFireComponent.h"
 #include "Weapons/RRShotgun.h"
 #include "Weapons/RRWeapon.h"
+#include "World/RRWorld.h"
 
 ARRMiner::ARRMiner(const FObjectInitializer& ObjectInitializer)
 	: Super(ObjectInitializer)
@@ -134,8 +135,7 @@ void ARRMiner::BeginPlay()
 
 void ARRMiner::FindArenaGrid()
 {
-	TActorIterator<ARRArenaGrid> It(GetWorld());
-	ArenaGrid = It ? *It : nullptr;
+	ArenaGrid = RRWorld::FindArenaGrid(GetWorld());
 	if (!ArenaGrid)
 	{
 		UE_LOG(LogRogueRigs, Warning, TEXT("%s: no ARRArenaGrid in the world; digging is disabled."), *GetName());

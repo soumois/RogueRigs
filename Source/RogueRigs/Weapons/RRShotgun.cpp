@@ -12,6 +12,7 @@
 #include "Player/RRMiner.h"
 #include "RogueRigs.h"
 #include "Weapons/RRWeaponStatsRow.h"
+#include "World/RRWorld.h"
 
 #include UE_INLINE_GENERATED_CPP_BY_NAME(RRShotgun)
 
@@ -48,11 +49,7 @@ ARRArenaGrid* ARRShotgun::ResolveGrid() const
 	}
 	if (!CachedGrid.IsValid() && GetWorld())
 	{
-		for (TActorIterator<ARRArenaGrid> It(GetWorld()); It; ++It)
-		{
-			CachedGrid = *It;
-			break;
-		}
+		CachedGrid = RRWorld::FindArenaGrid(GetWorld());
 	}
 	return CachedGrid.Get();
 }

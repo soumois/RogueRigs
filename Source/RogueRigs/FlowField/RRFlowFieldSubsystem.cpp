@@ -9,6 +9,7 @@
 #include "HAL/PlatformTime.h"
 #include "Player/RRMiner.h"
 #include "RogueRigs.h"
+#include "World/RRWorld.h"
 
 namespace RRFlowField
 {
@@ -72,11 +73,10 @@ bool URRFlowFieldSubsystem::ResolveGridAndGoal()
 	}
 	if (!Grid.IsValid())
 	{
-		for (TActorIterator<ARRArenaGrid> It(World); It; ++It)
+		if (ARRArenaGrid* FoundGrid = RRWorld::FindArenaGrid(World))
 		{
-			Grid = *It;
+			Grid = FoundGrid;
 			bDirty = true;
-			break;
 		}
 	}
 	if (Grid.Get() != BoundGrid.Get())
@@ -93,14 +93,10 @@ bool URRFlowFieldSubsystem::ResolveGridAndGoal()
 	}
 	if (!GoalActor.IsValid() && !bExplicitGoal)
 	{
-		for (TActorIterator<ARRMiner> It(World); It; ++It)
+		if (ARRMiner* FoundMiner = RRWorld::FindLivingMiner(World))
 		{
-			if (!It->IsDead())
-			{
-				GoalActor = *It;
-				bDirty = true;
-				break;
-			}
+			GoalActor = FoundMiner;
+			bDirty = true;
 		}
 	}
 	return Grid.IsValid() && GoalActor.IsValid();

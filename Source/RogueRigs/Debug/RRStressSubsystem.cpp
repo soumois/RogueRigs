@@ -31,6 +31,7 @@
 #include "RogueRigs.h"
 #include "Weapons/RRAutoFireComponent.h"
 #include "Weapons/RRWeapon.h"
+#include "World/RRWorld.h"
 
 namespace RRStress
 {
@@ -447,9 +448,8 @@ void URRStressSubsystem::TriggerBurst()
 	{
 		Kills += KillEnemy(Enemy.Get()) ? 1 : 0;
 	}
-	TActorIterator<ARRArenaGrid> GridIt(GetWorld());
 	StepBurstKills = Kills;
-	StepBurstBarrels = DestroyAllBarrels(GridIt ? *GridIt : nullptr);
+	StepBurstBarrels = DestroyAllBarrels(RRWorld::FindArenaGrid(GetWorld()));
 	const URRExplosionSubsystem* Explosions = GetWorld()->GetSubsystem<URRExplosionSubsystem>();
 	UE_LOG(LogRogueRigs, Log, TEXT("Stress: burst killed %d robots, destroyed %d barrels, %d explosions queued."), StepBurstKills,
 		StepBurstBarrels, Explosions ? Explosions->GetPendingCount() : 0);
