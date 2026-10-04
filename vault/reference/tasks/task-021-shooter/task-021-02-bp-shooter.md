@@ -3,7 +3,7 @@ id: task-021-02-bp-shooter
 description: "BP_Shooter grey-box (acid green, elbow cannon), red laser on aim, red shot visual, spawner weights 70/15/15, PIE check."
 parent: task-021-shooter
 kind: task
-status: todo
+status: in-progress
 ---
 # Shooter Blueprint
 
