@@ -3,7 +3,7 @@ id: task-018-04-hitch
 description: "Remove or reduce the 45–50 ms hitch every 61 s found by the trace (garbage collection or other), measured in -game."
 parent: task-018-robot-perf
 kind: task
-status: in-progress
+status: done
 ---
 # Periodic hitch
 
@@ -16,7 +16,7 @@ status: in-progress
 - editor_state: closed
 - token_ceiling: 90000
 - milestone: M1
-- result: open
+- result: The 61 s hitch is editor-only: staged Development build (BuildCookRun cook+stage+pak; UAT exit 25 from GameFeatureData asset-manager errors, staged with a -skipcook rerun) has a GC frame of 10.8 ms at 200 and 16.4 ms at 400 robots (ConditionalCollectGarbage 3.6–5.3 ms, no Python hook) vs 40–44 ms in editor -game. No GC or code change (step 2 of the node). Staged game avg S0 100/200/400 3.7/5.0/6.4 ms, S2 4.1/6.0/9.8; max frame ≤ 16 ms in stepped runs. Run-StressTest.ps1 -Exe and trace-path fix; 55+5 s steps align with the 61 s GC (documented). No C++ or config changed, so no build or test run needed. Docs perf-trace-m1, perf-risks, sys-stress, build-toolchain. Commit 0ff5dfc, about 77k tokens.
 
 ## Relations
 - [[task-018-robot-perf]] — parent global task.

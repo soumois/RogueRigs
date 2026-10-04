@@ -3,7 +3,7 @@ id: task-018-05-final-stress
 description: "Rerun S0, S2, S7 after task-018 changes; compare with stress-final-m1; new ceiling and remaining leads."
 parent: task-018-robot-perf
 kind: task
-status: todo
+status: in-progress
 ---
 # Final stress after optimization
 
