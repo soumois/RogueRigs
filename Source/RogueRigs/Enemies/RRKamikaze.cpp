@@ -21,7 +21,7 @@ ARRKamikaze::ARRKamikaze(const FObjectInitializer& ObjectInitializer)
 	ArrivalRangeRatio = 0.5f;
 
 	// 1.1 x the miner's capsule (34 x 88 -> 37.4 x 96.8, enemy-kamikaze size), on the ground: the flow field and avoidance are
-	// unchanged. Contact with the miner is at 71.4 uu between centers, inside ArmRange (150) and the arrival distance (75). Editable in the Blueprint.
+	// unchanged. Contact with the miner is at 71.4 uu between centers, inside the arm range (CSV AttackRange 150) and the arrival distance (75). Editable in the Blueprint.
 	GetCapsuleComponent()->InitCapsuleSize(37.4f, 96.8f);
 
 	VisualRoot = CreateDefaultSubobject<USceneComponent>(TEXT("VisualRoot"));
@@ -47,7 +47,7 @@ void ARRKamikaze::BeginPlay()
 
 	CoreBaseScale = CoreMesh->GetRelativeScale3D();
 	VisualRootBaseLocation = VisualRoot->GetRelativeLocation();
-	EnemyMovement->SetArrivalDistance(ArmRange * ArrivalRangeRatio);
+	EnemyMovement->SetArrivalDistance(GetArmRange() * ArrivalRangeRatio);
 	EnterState(ERRKamikazeState::Chase);
 	UpdateHover();
 	UpdateCore(0.f);
@@ -82,7 +82,7 @@ void ARRKamikaze::UpdateBehavior(float DeltaSeconds)
 
 	case ERRKamikazeState::Armed:
 		// Committed: the fuse runs to its end even if the miner steps away.
-		if (HasStateLasted(FuseTime))
+		if (HasStateLasted(GetFuseTime()))
 		{
 			Detonate();
 			return;
@@ -163,6 +163,7 @@ void ARRKamikaze::UpdateCore(float DeltaSeconds)
 	float Growth = 1.f;
 	if (bArmed)
 	{
+		const float FuseTime = GetFuseTime();
 		const double Alpha = FuseTime > 0.f ? FMath::Clamp(GetTimeInState() / FuseTime, 0.0, 1.0) : 1.0;
 		Growth = FMath::Lerp(1.f, ArmedCoreScale, static_cast<float>(Alpha));
 	}

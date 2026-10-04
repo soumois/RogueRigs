@@ -32,11 +32,11 @@ struct ROGUERIGS_API FRREnemyStatsRow : public FTableRowBase
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Enemy Stats")
 	float AttackRate = 0.f;
 
-	/** 2D distance between the robot and its target centers within which it attacks, in uu. */
+	/** 2D distance between the robot and its target centers within which it attacks, in uu (kamikaze: arm range; shooter: fire range). */
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Enemy Stats")
 	float AttackRange = 0.f;
 
-	/** Telegraph before each attack, in seconds (the robot stops and flashes). */
+	/** Telegraph before each attack, in seconds (chaser flash, kamikaze fuse, shooter targeting laser). */
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Enemy Stats")
 	float WindUp = 0.f;
 
@@ -47,4 +47,16 @@ struct ROGUERIGS_API FRREnemyStatsRow : public FTableRowBase
 	/** Knockback resistance in [0, 1] (0 = full knockback). Read by ARREnemy::ApplyKnockback (shotgun): launch speed x (1 - resistance). */
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Enemy Stats")
 	float KnockbackResistance = 0.f;
+
+	/** Ranged robots: distance (uu, 2D) to the miner the robot tries to keep (shooter 800). 0 for melee robots. */
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Enemy Stats")
+	float PreferredDistance = 0.f;
+
+	/** Ranged robots: half width (uu) of the preferred ring, PreferredDistance +/- this (shooter 200). */
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Enemy Stats")
+	float PreferredDistanceTolerance = 0.f;
+
+	/** Ranged robots: speed of the robot's shots, in uu/s (shooter 1200). Lifetime = AttackRange / ProjectileSpeed. */
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Enemy Stats")
+	float ProjectileSpeed = 0.f;
 };

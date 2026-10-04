@@ -5,6 +5,7 @@
 #include "CoreMinimal.h"
 #include "GameFramework/Character.h"
 #include "AbilitySystemInterface.h"
+#include "GameplayEffectTypes.h"
 #include "Enemies/RREnemyStatsRow.h"
 #include "RREnemy.generated.h"
 
@@ -181,6 +182,13 @@ protected:
 	bool ApplyDamageSpecTo(UAbilitySystemComponent* TargetASC, TSubclassOf<UGameplayEffect> EffectClass, float Damage);
 
 	/**
+	 * Outgoing spec of EffectClass from this robot's ASC with SetByCaller Data.Damage = Damage (AttackPower scales it on
+	 * execution). Invalid handle (logged) when the spec could not be made. Used by ApplyDamageSpecTo and by ranged robots, whose
+	 * projectile carries the spec to the impact.
+	 */
+	FGameplayEffectSpecHandle MakeDamageSpec(TSubclassOf<UGameplayEffect> EffectClass, float Damage) const;
+
+	/**
 	 * Telegraph blink: meshes hidden during the first half of each cycle at Rate full hide/show cycles per second, measured from
 	 * the state start. Rate <= 0 leaves the meshes as they are. Call every tick of the telegraph state; show the meshes again
 	 * (SetMeshesVisible(true)) when leaving it.
@@ -293,7 +301,7 @@ protected:
 	float CriticalTextSize = 90.f;
 
 	/**
-	 * Arrival distance of the movement = the subclass's engage range (chaser AttackRange, kamikaze ArmRange) * this ratio (< 1 so
+	 * Arrival distance of the movement = the subclass's engage range (chaser AttackRange, kamikaze arm range = AttackRange, shooter PreferredDistance) * this ratio (< 1 so
 	 * the robot stops inside its range). Defaults set per subclass constructor (chaser 0.9, kamikaze 0.5).
 	 */
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Enemy|Movement", meta = (ClampMin = 0, ClampMax = 1))

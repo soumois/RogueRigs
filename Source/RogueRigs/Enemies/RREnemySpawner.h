@@ -150,6 +150,14 @@ public:
 	 */
 	static FBox2D ProjectViewOnFloor(const FMinimalViewInfo& View, float AspectRatio, float FloorZ);
 
+	/**
+	 * Visible floor rectangle (world XY) of World's camera on the plane Z = FloorZ, without any override: the first player
+	 * controller's camera manager (camera cache view, viewport aspect ratio), else the first camera component of
+	 * FallbackCameraOwner (the miner: works headless). False when neither exists. Shared by the spawner and the shooter's
+	 * on-screen check.
+	 */
+	static bool ComputeCameraViewRectangle(UWorld* World, float FloorZ, const AActor* FallbackCameraOwner, FBox2D& OutRectangle);
+
 	/** Box distance in uu from Point to Rectangle (0 inside): the larger of the X and Y gaps. */
 	static float GetDistanceToRectangle(const FBox2D& Rectangle, const FVector2D& Point);
 
@@ -170,7 +178,7 @@ protected:
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Spawner")
 	TSubclassOf<ARREnemy> EnemyClass;
 
-	/** Weighted robot classes (M1 default for the placed spawner: chaser 85, kamikaze 15 = 15 % kamikazes). Empty or all invalid = EnemyClass. */
+	/** Weighted robot classes (default of the placed spawner: chaser 70, kamikaze 15, shooter 15). Empty or all invalid = EnemyClass. */
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Spawner")
 	TArray<FRRWeightedEnemyClass> WeightedEnemyClasses;
 

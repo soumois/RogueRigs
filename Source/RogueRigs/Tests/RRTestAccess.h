@@ -13,6 +13,7 @@
 #include "Drone/RRDrone.h"
 #include "Enemies/RREnemy.h"
 #include "Enemies/RREnemySpawner.h"
+#include "Enemies/RRShooter.h"
 #include "Engine/GameInstance.h"
 #include "Explosions/RRExplosionFX.h"
 #include "Grid/RRArenaGrid.h"
@@ -97,6 +98,21 @@ namespace RRTestAccess
 	{
 		static TSubclassOf<ARRPickup>& XPPickupClassOf(ARREnemy* Enemy) { return Enemy->*(&FEnemyAccess::XPPickupClass); }
 		static FRREnemyStatsRow& StatsOf(ARREnemy* Enemy) { return Enemy->*(&FEnemyAccess::Stats); }
+	};
+
+	/** ARRShooter: laser component, shot class, flat damage spec and the repositioning search. */
+	struct FShooterAccess : public ARRShooter
+	{
+		static UStaticMeshComponent* LaserOf(const ARRShooter* Shooter) { return Shooter->*(&FShooterAccess::LaserBeam); }
+		static TSubclassOf<ARRProjectile> ProjectileClassOf(const ARRShooter* Shooter) { return Shooter->*(&FShooterAccess::ProjectileClass); }
+		static FGameplayEffectSpecHandle DamageSpecOf(const ARRShooter* Shooter)
+		{
+			return (Shooter->*(&FShooterAccess::MakeDamageSpec))(Shooter->*(&FShooterAccess::DamageEffectClass), Shooter->GetStats().Damage);
+		}
+		static bool FindPath(ARRShooter* Shooter, const ARRMiner* Target, TArray<FVector>& OutWaypoints, FIntPoint& OutCell)
+		{
+			return (Shooter->*(&FShooterAccess::FindRepositionPath))(Target, OutWaypoints, OutCell);
+		}
 	};
 
 	/** ARREnemySpawner: class, weights and every pacing tunable. */

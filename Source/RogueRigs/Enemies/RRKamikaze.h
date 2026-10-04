@@ -15,7 +15,7 @@ enum class ERRKamikazeState : uint8
 {
 	/** Follows the path provider toward the miner. */
 	Chase,
-	/** Target came within ArmRange: stopped, the core pulses faster and grows for FuseTime seconds, then it explodes. */
+	/** Target came within the arm range (CSV AttackRange): stopped, the core pulses faster and grows for the fuse (CSV WindUp), then it explodes. */
 	Armed,
 	/** Exploded by fuse or killed: the base runs the death shrink. */
 	Dead
@@ -25,8 +25,8 @@ enum class ERRKamikazeState : uint8
  * Second robot (enemy-kamikaze). The capsule walks the flow field on the ground like the chaser; the visuals (VisualRoot:
  * BodyMesh, CoreMesh and whatever the Blueprint attaches, e.g. the eyes) hover HoverHeight above the capsule bottom with a
  * slight bob. CoreMesh always pulses its scale at CorePulseRate. Each tick, alive: Chase (movement on) -> Armed when the
- * target (first living miner) is within ArmRange, 2D between centers: movement off, the core pulses at ArmedPulseRate and
- * grows to ArmedCoreScale over FuseTime -> after FuseTime it queues one ExplosionRowName explosion (URRExplosionSubsystem,
+ * target (first living miner) is within the arm range (CSV AttackRange), 2D between centers: movement off, the core pulses at ArmedPulseRate and
+ * grows to ArmedCoreScale over the fuse (CSV WindUp) -> after the fuse it queues one ExplosionRowName explosion (URRExplosionSubsystem,
  * instigator and source = this robot) and dies without dropping XP (State.Dead added directly, so its own explosion is
  * refused by its ASC and never counts as a kill). Killed before that (shots, another explosion): it queues the same explosion
  * and drops its XP as any robot. The robot being the explosion source, the subsystem never explodes it twice.
@@ -54,6 +54,12 @@ public:
 	/** World time (s) at which its explosion was queued (fuse or death); negative before. */
 	double GetExplosionQueuedTime() const { return ExplosionQueuedTime; }
 
+	/** Distance (uu, 2D between centers) to the miner under which the robot arms: CSV AttackRange (enemy-kamikaze: 150). */
+	float GetArmRange() const { return Stats.AttackRange; }
+
+	/** Seconds between arming and the explosion: CSV WindUp (enemy-kamikaze: 0.5). */
+	float GetFuseTime() const { return Stats.WindUp; }
+
 	/** Current core scale multiplier (pulse x arming growth), for tests and debug. */
 	float GetCoreScaleFactor() const { return CoreScaleFactor; }
 
@@ -73,8 +79,8 @@ protected:
 	/** Leaves the current state and enters NewState (movement on in Chase only). */
 	void EnterState(ERRKamikazeState NewState);
 
-	/** True when Target is alive and within ArmRange (2D between centers). */
-	bool IsTargetInArmRange(const ARRMiner* Target) const { return IsTargetWithin(Target, ArmRange); }
+	/** True when Target is alive and within the arm range (CSV AttackRange) (2D between centers). */
+	bool IsTargetInArmRange(const ARRMiner* Target) const { return IsTargetWithin(Target, GetArmRange()); }
 
 	/** Fuse end: queues the explosion, adds State.Dead and runs the death without XP. */
 	void Detonate();
@@ -99,14 +105,6 @@ protected:
 	/** Pulsing orange core. Mesh and material set by the Blueprint; its relative scale at BeginPlay is the pulse base. No collision. */
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Components")
 	TObjectPtr<UStaticMeshComponent> CoreMesh;
-
-	/** Distance (uu, 2D between centers) to the miner under which the robot arms (enemy-kamikaze: 150). */
-	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Kamikaze|Fuse", meta = (ClampMin = 0, Units = "cm"))
-	float ArmRange = 150.f;
-
-	/** Seconds between arming and the explosion (enemy-kamikaze: 0.5). */
-	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Kamikaze|Fuse", meta = (ClampMin = 0, Units = "s"))
-	float FuseTime = 0.5f;
 
 	/** Row of ExplosionStats.csv queued on fuse or death. */
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Kamikaze|Fuse")

@@ -180,7 +180,17 @@ bool ARREnemySpawner::GetViewRectangle(FBox2D& OutRectangle) const
 	{
 		return false;
 	}
-	const float FloorZ = Grid->GetActorLocation().Z;
+	// The goal's (miner's) camera is the fallback: headless worlds have no player controller.
+	const URRFlowFieldSubsystem* FlowField = GetFlowField();
+	return ComputeCameraViewRectangle(World, Grid->GetActorLocation().Z, FlowField ? FlowField->GetGoalActor() : nullptr, OutRectangle);
+}
+
+bool ARREnemySpawner::ComputeCameraViewRectangle(UWorld* World, float FloorZ, const AActor* FallbackCameraOwner, FBox2D& OutRectangle)
+{
+	if (!World)
+	{
+		return false;
+	}
 
 	// 1. The local player's camera manager (what the screen shows).
 	const APlayerController* PlayerController = World->GetFirstPlayerController();
@@ -204,10 +214,8 @@ bool ARREnemySpawner::GetViewRectangle(FBox2D& OutRectangle) const
 		}
 	}
 
-	// 2. The goal's (miner's) camera component: headless worlds have no player controller.
-	const URRFlowFieldSubsystem* FlowField = GetFlowField();
-	const AActor* Goal = FlowField ? FlowField->GetGoalActor() : nullptr;
-	if (UCameraComponent* Camera = Goal ? Goal->FindComponentByClass<UCameraComponent>() : nullptr)
+	// 2. The fallback actor's (miner's) camera component: headless worlds have no player controller.
+	if (UCameraComponent* Camera = FallbackCameraOwner ? FallbackCameraOwner->FindComponentByClass<UCameraComponent>() : nullptr)
 	{
 		FMinimalViewInfo View;
 		Camera->GetCameraView(0.f, View);

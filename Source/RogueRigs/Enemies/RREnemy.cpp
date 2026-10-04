@@ -414,16 +414,30 @@ bool ARREnemy::ApplyDamageSpecTo(UAbilitySystemComponent* TargetASC, TSubclassOf
 	{
 		return false;
 	}
+	const FGameplayEffectSpecHandle Spec = MakeDamageSpec(EffectClass, Damage);
+	if (!Spec.IsValid())
+	{
+		return false;
+	}
+	// The target's i-frames or death refuse the spec (target tag requirements of the damage effect).
+	AbilitySystemComponent->ApplyGameplayEffectSpecToTarget(*Spec.Data, TargetASC);
+	return true;
+}
+
+FGameplayEffectSpecHandle ARREnemy::MakeDamageSpec(TSubclassOf<UGameplayEffect> EffectClass, float Damage) const
+{
+	if (!EffectClass)
+	{
+		return FGameplayEffectSpecHandle();
+	}
 	FGameplayEffectSpecHandle Spec = AbilitySystemComponent->MakeOutgoingSpec(EffectClass, 1.f, AbilitySystemComponent->MakeEffectContext());
 	if (!Spec.IsValid())
 	{
 		UE_LOG(LogRogueRigs, Error, TEXT("%s: damage spec of class %s could not be made."), *GetName(), *EffectClass->GetName());
-		return false;
+		return Spec;
 	}
 	Spec.Data->SetSetByCallerMagnitude(RRGameplayTags::Data_Damage, Damage);
-	// The target's i-frames or death refuse the spec (target tag requirements of the damage effect).
-	AbilitySystemComponent->ApplyGameplayEffectSpecToTarget(*Spec.Data, TargetASC);
-	return true;
+	return Spec;
 }
 
 void ARREnemy::UpdateTelegraphBlink(float Rate)
