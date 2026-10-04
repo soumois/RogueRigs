@@ -1,4 +1,4 @@
-// Rogue Rigs - automation tests of the explosion system (RogueRigs.Explosions.*): blocks in the radius, characters hit once, chain delay, single explosion per source, miner no-one-shot.
+// Rogue Rigs - automation tests of the explosion system (RogueRigs.Explosions.*): blocks in the radius, characters hit once, kamikaze reach (312 uu), chain delay, single explosion per source, miner no-one-shot.
 
 #include "CoreMinimal.h"
 #include "Misc/AutomationTest.h"
@@ -102,7 +102,7 @@ bool FRRExplosionBlocksInRadiusTest::RunTest(const FString& Parameters)
 	TestTrue(TEXT("Barrel terrain source"), Stats.TerrainSource == ERRTerrainDamageSource::Barrel);
 	FRRExplosionStatsRow KamikazeStats;
 	TestTrue(TEXT("Kamikaze row loads"), Subsystem->GetExplosionStats(TEXT("Kamikaze"), KamikazeStats));
-	TestEqual(TEXT("Kamikaze radius 250"), KamikazeStats.Radius, 250.f);
+	TestEqual(TEXT("Kamikaze radius 312"), KamikazeStats.Radius, 312.f);
 	TestEqual(TEXT("Kamikaze damage 30"), KamikazeStats.Damage, 30.f);
 
 	// Blocks around the floor cell west of the test rock, before the explosion.
@@ -191,6 +191,47 @@ bool FRRExplosionDamagesOnceTest::RunTest(const FString& Parameters)
 	TestEqual(TEXT("near dummy hit once by 40"), NearHealth, NearStart - 40.f);
 	TestEqual(TEXT("far dummy untouched"), Attribute(FarASC, URRHealthAttributeSet::GetHealthAttribute()), FarStart);
 	TestFalse(TEXT("miner alive"), Miner->IsDead());
+	return true;
+}
+
+IMPLEMENT_SIMPLE_AUTOMATION_TEST(FRRExplosionKamikazeReachTest, "RogueRigs.Explosions.KamikazeReach",
+	EAutomationTestFlags::EditorContext | EAutomationTestFlags::EngineFilter)
+
+bool FRRExplosionKamikazeReachTest::RunTest(const FString& Parameters)
+{
+	using namespace RRExplosionTests;
+
+	FTestWorld TestWorld(TEXT("RRExplosionKamikazeReach"));
+	ARRArenaGrid* Grid = SpawnGrid(*this, TestWorld);
+	UClass* DummyClass = Grid ? LoadTestClass<ARRTargetDummy>(*this, TargetDummyClassPath) : nullptr;
+	URRExplosionSubsystem* Subsystem = DummyClass ? GetSubsystem(*this, TestWorld, nullptr) : nullptr;
+	FRRExplosionStatsRow Stats;
+	if (!Subsystem || !TestTrue(TEXT("Kamikaze row loads"), Subsystem->GetExplosionStats(TEXT("Kamikaze"), Stats)))
+	{
+		return false;
+	}
+	// 300 uu was outside the old 250 uu radius and is inside 312 uu; 400 uu stays outside.
+	const FVector Center = Grid->GetCellCenter(RockWestFloorCell.X, RockWestFloorCell.Y);
+	ARRTargetDummy* Reached = TestWorld.Spawn<ARRTargetDummy>(DummyClass, Center + FVector(0.f, 300.f, 80.f));
+	ARRTargetDummy* Beyond = TestWorld.Spawn<ARRTargetDummy>(DummyClass, Center + FVector(0.f, 400.f, 80.f));
+	if (!TestNotNull(TEXT("dummy at 300 uu"), Reached) || !TestNotNull(TEXT("dummy at 400 uu"), Beyond))
+	{
+		return false;
+	}
+	UAbilitySystemComponent* ReachedASC = Reached->GetAbilitySystemComponent();
+	UAbilitySystemComponent* BeyondASC = Beyond->GetAbilitySystemComponent();
+	const float ReachedStart = Attribute(ReachedASC, URRHealthAttributeSet::GetHealthAttribute());
+	const float BeyondStart = Attribute(BeyondASC, URRHealthAttributeSet::GetHealthAttribute());
+
+	TestTrue(TEXT("explosion queued"), Subsystem->QueueExplosion(Center, TEXT("Kamikaze"), nullptr, nullptr));
+	for (int32 Frame = 0; Frame < 30; ++Frame)
+	{
+		TestWorld.Tick();
+	}
+	const float ReachedHealth = Attribute(ReachedASC, URRHealthAttributeSet::GetHealthAttribute());
+	AddInfo(FString::Printf(TEXT("radius %.0f, dummy at 300 uu %.1f -> %.1f"), Stats.Radius, ReachedStart, ReachedHealth));
+	TestEqual(TEXT("dummy at 300 uu hit once by the Kamikaze damage"), ReachedHealth, ReachedStart - Stats.Damage);
+	TestEqual(TEXT("dummy at 400 uu untouched"), Attribute(BeyondASC, URRHealthAttributeSet::GetHealthAttribute()), BeyondStart);
 	return true;
 }
 
