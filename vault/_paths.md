@@ -80,6 +80,7 @@ orchestration-protocol  reference/agents/orchestration-protocol.md
 ore-blocks  reference/gdd/terrain/ore-blocks.md
 ore-economy  reference/gdd/run/ore-economy.md
 perf-risks  reference/tech/performance/perf-risks.md
+perf-trace-m1  reference/tech/performance/perf-trace-m1.md
 performance-index  reference/tech/performance/performance-index.md
 pipelines-index  reference/tech/pipelines/pipelines-index.md
 player-index  reference/gdd/player/player-index.md

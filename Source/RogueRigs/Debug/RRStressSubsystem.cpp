@@ -27,6 +27,7 @@
 #include "UnrealClient.h"
 #include "Player/RRMiner.h"
 #include "ProfilingDebugging/CsvProfiler.h"
+#include "ProfilingDebugging/MiscTrace.h"
 #include "RogueRigs.h"
 #include "Weapons/RRAutoFireComponent.h"
 #include "Weapons/RRWeapon.h"
@@ -571,6 +572,8 @@ void URRStressSubsystem::Tick(float DeltaTime)
 	{
 		// First frame after the settle window: the delta still belongs to it.
 		CSV_EVENT_GLOBAL(TEXT("Stress_%d_Measure"), RunCounts[StepIndex]);
+		// Insights timing region (with -trace=...,region): TimingInsights exports can filter with -region=Stress_<N>_Measure.
+		TRACE_BEGIN_REGION(*FString::Printf(TEXT("Stress_%d_Measure"), RunCounts[StepIndex]), TEXT("Stress"));
 		StepExplosions = 0;
 		if (RunMode == ERRStressMode::Burst)
 		{
@@ -607,6 +610,7 @@ void URRStressSubsystem::FinishStep()
 	RRStress::Summarize(DrawSamples, Result.DrawAvg, Result.DrawP99);
 	RRStress::Summarize(GpuSamples, Result.GpuAvg, Result.GpuP99);
 	Results.Add(Result);
+	TRACE_END_REGION(*FString::Printf(TEXT("Stress_%d_Measure"), RunCounts[StepIndex]));
 	UE_LOG(LogRogueRigs, Display,
 		TEXT("Stress step: enemies %d, frames %d, frame avg %.2f p99 %.2f max %.2f, game avg %.2f p99 %.2f max %.2f, draw avg %.2f p99 %.2f, gpu avg %.2f p99 %.2f ms, burst kills %d barrels %d, explosions %d"),
 		Result.EnemyCount, Result.FrameCount, Result.FrameAvg, Result.FrameP99, Result.FrameMax, Result.GameAvg, Result.GameP99,

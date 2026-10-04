@@ -4,6 +4,7 @@
 # Results: Saved/Stress/Stress_<time>.csv (not committed). Usage, from the repo root:
 #   powershell -NoProfile -ExecutionPolicy Bypass -File Scripts/Run-StressTest.ps1 [-Counts 50+100+200+300+400] [-Settle 5] [-Measure 20]
 #     [-Mode peace|fire|burst] [-Class Kamikaze] [-PreExec "rr.Stress.MinCells 8"]  (PreExec: extra console commands, separated by commas)
+#     [-Trace cpu,frame,bookmark,region] [-TraceFile Saved/Traces/S0.utrace] [-ExtraArgs "-statnamedevents"]  (Insights trace, vault: perf-trace-m1)
 # Build the RogueRigsEditor target first (vault: build-toolchain), editor closed.
 
 param(
@@ -13,6 +14,9 @@ param(
 	[string]$Mode = "peace",
 	[string]$Class = "",
 	[string]$PreExec = "",
+	[string]$Trace = "",
+	[string]$TraceFile = "",
+	[string]$ExtraArgs = "",
 	[string]$Map = "/Game/RogueRigs/Maps/L_ArenaM1",
 	[int]$ResX = 1920,
 	[int]$ResY = 1080,
@@ -33,6 +37,13 @@ if ($PreExec) { $Exec += "$PreExec," }
 $Exec += "rr.Stress.Run $Counts $Settle $Measure 1 $Mode $Class".TrimEnd()
 $GameArgs = @("`"$Project`"", $Map, "-game", "-ResX=$ResX", "-ResY=$ResY", "-windowed", "-nosplash", "-nop4", "-log",
 	"-ExecCmds=`"$Exec`"")
+# Insights trace to a file (no trace server needed); region channel carries the Stress_<N>_Measure windows.
+if ($Trace) {
+	if (-not $TraceFile) { $TraceFile = Join-Path $ProjectDir ("SavedTracesStress_{0}_{1}.utrace" -f $Mode, $StartTime.ToString("yyyyMMdd_HHmmss")) }
+	New-Item -ItemType Directory -Force -Path (Split-Path -Parent $TraceFile) | Out-Null
+	$GameArgs += @("-trace=$Trace", "-tracefile=`"$TraceFile`"")
+}
+if ($ExtraArgs) { $GameArgs += $ExtraArgs }
 
 Write-Host "Launching: $Editor $($GameArgs -join ' ')"
 $Process = Start-Process -FilePath $Editor -ArgumentList $GameArgs -PassThru
