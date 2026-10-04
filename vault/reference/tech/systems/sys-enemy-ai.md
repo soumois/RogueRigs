@@ -15,6 +15,7 @@ kind: doc
 - Line of sight (provisional): a walk over grid cells instead of physics traces, at a throttled rate; blocks are the only obstacles. The same grid test filters shotgun targets ([[sys-weapons]]).
 - Shooter repositioning when line of sight is lost: EQS was the candidate; depends on the framework choice (open).
 - Stun: the AI listens to `State.Stunned` and stops or resumes movement ([[sys-status-effects]]).
+- Crowd separation (task-018-02, owner wish for denser packs): robots ignore each other in movement sweeps (mask filter, [[sys-enemies]]) and RVO alone keeps them apart, with lighter settings; they may overlap. 40 chasers after 10 s: 12 within 200 uu of the miner instead of 7, 19 within 300 uu instead of 11 (`Integration.CrowdPacking`, [[sys-automation-tests]]).
 - Movement fallback if stress test S0 fails: a pawn with simple flat-floor movement and hand-computed separation.
 
 - data: per-robot CSV rows.

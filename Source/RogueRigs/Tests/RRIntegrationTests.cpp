@@ -1,4 +1,4 @@
-// Rogue Rigs - integration tests with the final Blueprints (RogueRigs.Integration.*): BP_Chaser reaching and hitting BP_Miner around rocks, the starting rifle killing a chaser, five rifle kills whose XP cubes are collected up to level 2, miner death and game over, a 50-chaser headless timing run, and the explosion loop (barrel chain from a rifle shot with BP_ExplosionFX, BP_Kamikaze reaching the miner, point-blank barrel, rifle-killed kamikaze after 10 non-critical hits), and the level-up upgrade loop (real game mode pause, BP_RRPlayerController, BP_EnemySpawner, WBP_HUD cards, reroll, damage card, resume).
+// Rogue Rigs - integration tests with the final Blueprints (RogueRigs.Integration.*): BP_Chaser reaching and hitting BP_Miner around rocks, the starting rifle killing a chaser, five rifle kills whose XP cubes are collected up to level 2, miner death and game over, a 50-chaser headless timing run, crowd packing with and without robot-robot collision, and the explosion loop (barrel chain from a rifle shot with BP_ExplosionFX, BP_Kamikaze reaching the miner, point-blank barrel, rifle-killed kamikaze after 10 non-critical hits), and the level-up upgrade loop (real game mode pause, BP_RRPlayerController, BP_EnemySpawner, WBP_HUD cards, reroll, damage card, resume).
 
 #include "CoreMinimal.h"
 #include "Misc/AutomationTest.h"
@@ -6,6 +6,8 @@
 #if WITH_DEV_AUTOMATION_TESTS
 
 #include "AbilitySystemComponent.h"
+#include "AI/Navigation/AvoidanceManager.h"
+#include "GameFramework/CharacterMovementComponent.h"
 #include "Blueprint/UserWidget.h"
 #include "Components/Button.h"
 #include "Components/ProgressBar.h"
@@ -648,6 +650,163 @@ bool FRRIntegrationPerfTest::RunTest(const FString& Parameters)
 	TestEqual(TEXT("three rocks destroyed"), RocksDestroyed, 3);
 	TestTrue(TEXT("a recompute per destroyed rock"), Setup.FlowField->GetComputeCount() - ComputesBefore >= RocksDestroyed);
 	TestEqual(TEXT("every chaser alive (miner unarmed)"), Alive, ChaserCount);
+	return true;
+}
+
+namespace RRIntegrationCrowdTests
+{
+	using namespace RRIntegrationTests;
+
+	/** Measures of one crowd run around the miner. */
+	struct FCrowdResult
+	{
+		int32 Spawned = 0;
+		int32 WithinAttack = 0;
+		int32 Within200 = 0;
+		int32 Within300 = 0;
+		int32 OutOfChase = 0;
+		int32 Attacks = 0;
+		int32 AllIgnoring = 0;
+		float MinerDamage = 0.f;
+		float MinMinerDistance = TNumericLimits<float>::Max();
+		float MinPairDistance = TNumericLimits<float>::Max();
+		float MeanDistance = 0.f;
+	};
+
+	/**
+	 * Spawns Count BP_Chaser on reachable cells 6 to 20 BFS steps from an unarmed miner (huge health), seed 9007, runs Frames at
+	 * 1/60 s and measures the crowd. bLegacyCrowd restores the pre-018-02 settings on every robot (robot-robot collision, RVO
+	 * consideration 500 uu, manager radius expansion 1.5 and lock 0.2 s) right after the spawn.
+	 */
+	bool RunCrowd(FAutomationTestBase& Test, bool bLegacyCrowd, int32 Count, int32 Frames, FCrowdResult& Out)
+	{
+		FTestWorld TestWorld(bLegacyCrowd ? TEXT("RRCrowdLegacy") : TEXT("RRCrowdPacked"));
+		FLoopSetup Setup;
+		if (!SetUp(Test, TestWorld, ChaseMinerCell, /*bArmed*/ false, Setup))
+		{
+			return false;
+		}
+		UAbilitySystemComponent* MinerASC = Setup.Miner->GetAbilitySystemComponent();
+		// 1e6 (not 1e9): a 10-damage hit must stay visible in float precision.
+		MinerASC->SetNumericAttributeBase(URRHealthAttributeSet::GetMaxHealthAttribute(), 1.e6f);
+		MinerASC->SetNumericAttributeBase(URRHealthAttributeSet::GetHealthAttribute(), 1.e6f);
+
+		TArray<FIntPoint> Candidates;
+		const FIntPoint Size = Setup.Grid->GetGridSize();
+		for (int32 Y = 0; Y < Size.Y; ++Y)
+		{
+			for (int32 X = 0; X < Size.X; ++X)
+			{
+				const int32 Steps = Setup.FlowField->GetCellDistance(FIntPoint(X, Y));
+				if (Steps >= 6 && Steps <= 20)
+				{
+					Candidates.Add(FIntPoint(X, Y));
+				}
+			}
+		}
+		if (!Test.TestTrue(TEXT("enough reachable cells"), Candidates.Num() >= Count))
+		{
+			return false;
+		}
+		FRandomStream Stream(9007);
+		for (int32 Index = Candidates.Num() - 1; Index > 0; --Index)
+		{
+			Candidates.Swap(Index, Stream.RandRange(0, Index));
+		}
+		TArray<ARRChaser*> Chasers;
+		for (int32 Index = 0; Index < Count; ++Index)
+		{
+			if (ARRChaser* Chaser = SpawnChaser(Test, TestWorld, Setup.ChaserClass, Setup.Grid, Candidates[Index]))
+			{
+				Chasers.Add(Chaser);
+				Out.AllIgnoring += Chaser->IsIgnoringOtherRobots() ? 1 : 0;
+				if (bLegacyCrowd)
+				{
+					Chaser->SetIgnoreOtherRobots(false);
+					Chaser->GetCharacterMovement()->AvoidanceConsiderationRadius = 500.f;
+				}
+			}
+		}
+		Out.Spawned = Chasers.Num();
+		if (bLegacyCrowd)
+		{
+			if (UAvoidanceManager* Manager = TestWorld.Get()->GetAvoidanceManager())
+			{
+				Manager->ArtificialRadiusExpansion = 1.5f;
+				Manager->LockTimeAfterAvoid = 0.2f;
+			}
+		}
+
+		for (int32 Frame = 0; Frame < Frames; ++Frame)
+		{
+			TestWorld.Tick();
+			for (const ARRChaser* Chaser : Chasers)
+			{
+				Out.MinMinerDistance = FMath::Min(Out.MinMinerDistance, FVector::Dist2D(Chaser->GetActorLocation(), Setup.Miner->GetActorLocation()));
+			}
+		}
+		Out.MinerDamage = 1.e6f - MinerASC->GetNumericAttribute(URRHealthAttributeSet::GetHealthAttribute());
+		const float AttackRange = Chasers.Num() > 0 ? Chasers[0]->GetStats().AttackRange : 0.f;
+		for (int32 Index = 0; Index < Chasers.Num(); ++Index)
+		{
+			const ARRChaser* Chaser = Chasers[Index];
+			const float Distance = FVector::Dist2D(Chaser->GetActorLocation(), Setup.Miner->GetActorLocation());
+			Out.WithinAttack += Distance <= AttackRange ? 1 : 0;
+			Out.Within200 += Distance <= 200.f ? 1 : 0;
+			Out.Within300 += Distance <= 300.f ? 1 : 0;
+			Out.OutOfChase += Chaser->GetState() != ERRChaserState::Chase ? 1 : 0;
+			Out.Attacks += Chaser->GetAttackCount();
+			Out.MeanDistance += Distance / Chasers.Num();
+			for (int32 Other = Index + 1; Other < Chasers.Num(); ++Other)
+			{
+				Out.MinPairDistance = FMath::Min(Out.MinPairDistance, FVector::Dist2D(Chaser->GetActorLocation(), Chasers[Other]->GetActorLocation()));
+			}
+		}
+		const FString Summary = FString::Printf(
+			TEXT("CROWD %s, %d BP_Chaser, %.1f s: %d within attack range (%.0f uu), %d within 200 uu, %d within 300 uu, mean %.1f uu; ")
+			TEXT("%d out of Chase, %d attacks, miner damage %.0f; closest to the miner %.1f uu, closest pair %.1f uu"),
+			bLegacyCrowd ? TEXT("legacy (robot collision, RVO 500 / 1.5 / 0.2)") : TEXT("packed (robots ignore robots, RVO defaults of ARREnemy)"),
+			Out.Spawned, Frames * FrameSeconds, Out.WithinAttack, AttackRange, Out.Within200, Out.Within300, Out.MeanDistance, Out.OutOfChase,
+			Out.Attacks, Out.MinerDamage, Out.MinMinerDistance, Out.MinPairDistance);
+		Test.AddInfo(Summary);
+		UE_LOG(LogTemp, Display, TEXT("%s"), *Summary);
+		return true;
+	}
+}
+
+IMPLEMENT_SIMPLE_AUTOMATION_TEST(FRRIntegrationCrowdPackingTest, "RogueRigs.Integration.CrowdPacking",
+	EAutomationTestFlags::EditorContext | EAutomationTestFlags::EngineFilter)
+
+bool FRRIntegrationCrowdPackingTest::RunTest(const FString& Parameters)
+{
+	using namespace RRIntegrationCrowdTests;
+
+	constexpr int32 ChaserCount = 40;
+	constexpr int32 Frames = 600;
+	FCrowdResult Legacy;
+	FCrowdResult Packed;
+	if (!RunCrowd(*this, /*bLegacyCrowd*/ true, ChaserCount, Frames, Legacy) || !RunCrowd(*this, /*bLegacyCrowd*/ false, ChaserCount, Frames, Packed))
+	{
+		return false;
+	}
+	TestEqual(TEXT("40 chasers spawned per run"), Packed.Spawned, ChaserCount);
+	// Both robot Blueprints inherit the ARREnemy crowd defaults (no override of the avoidance values).
+	for (const TCHAR* Path : { ChaserClassPath, TEXT("/Game/RogueRigs/Blueprints/Enemies/BP_Kamikaze.BP_Kamikaze_C") })
+	{
+		if (UClass* RobotClass = LoadTestClass<ARREnemy>(*this, Path))
+		{
+			const ARREnemy* Robot = RobotClass->GetDefaultObject<ARREnemy>();
+			TestEqual(FString::Printf(TEXT("%s RVO consideration radius 250 uu"), *RobotClass->GetName()), Robot->GetCharacterMovement()->AvoidanceConsiderationRadius, 250.f);
+			TestTrue(FString::Printf(TEXT("%s uses RVO"), *RobotClass->GetName()), Robot->GetCharacterMovement()->bUseRVOAvoidance != 0);
+		}
+	}
+	TestEqual(TEXT("every BP_Chaser ignores other robots by default (inherited from ARREnemy)"), Packed.AllIgnoring, ChaserCount);
+	// Miner capsule 34 + chaser capsule 24: robots never pass through the miner.
+	TestTrue(TEXT("packed: no robot inside the miner"), Packed.MinMinerDistance >= 58.f - 1.f);
+	TestTrue(TEXT("packed: robots still attack"), Packed.Attacks > 0);
+	TestTrue(TEXT("packed: robots still damage the miner"), Packed.MinerDamage > 0.f);
+	TestTrue(TEXT("packed: at least as many robots within 200 uu as legacy"), Packed.Within200 >= Legacy.Within200);
+	TestTrue(TEXT("packed: at least as many robots within attack range as legacy"), Packed.WithinAttack >= Legacy.WithinAttack);
 	return true;
 }
 

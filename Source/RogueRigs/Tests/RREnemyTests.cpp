@@ -1,4 +1,4 @@
-// Rogue Rigs - automation tests of the robots (RogueRigs.Enemies.*): CSV stats, chaser death and XP drop, attack timing, i-frames against two chasers, damage number per hit.
+// Rogue Rigs - automation tests of the robots (RogueRigs.Enemies.*): CSV stats, chaser death and XP drop, attack timing, i-frames against two chasers, damage number per hit, robots moving through robots but not through the miner.
 
 #include "CoreMinimal.h"
 #include "Misc/AutomationTest.h"
@@ -449,6 +449,63 @@ bool FRREnemyDamageNumberTest::RunTest(const FString& Parameters)
 	AddInfo(FString::Printf(TEXT("capsule top %.1f, text at %s"), CapsuleTop, *TextLocation.ToString()));
 	TestTrue(TEXT("damage number above the capsule top"), TextLocation.Z > CapsuleTop);
 	TestTrue(TEXT("damage number over the target (within the jitter)"), FVector::Dist2D(TextLocation, Target->GetActorLocation()) <= 50.f);
+	return true;
+}
+
+IMPLEMENT_SIMPLE_AUTOMATION_TEST(FRREnemyCrowdOverlapTest, "RogueRigs.Enemies.RobotsOverlapRobots",
+	EAutomationTestFlags::EditorContext | EAutomationTestFlags::EngineFilter)
+
+bool FRREnemyCrowdOverlapTest::RunTest(const FString& Parameters)
+{
+	using namespace RREnemyTests;
+
+	FTestWorld TestWorld(TEXT("RREnemyCrowdOverlap"));
+	ARRArenaGrid* Grid = SpawnGrid(*this, TestWorld);
+	ARRMiner* Miner = Grid ? SpawnUnarmedMiner(*this, TestWorld, Grid) : nullptr;
+	if (!Miner)
+	{
+		return false;
+	}
+	const FVector Floor = Grid->GetCellCenter(TargetCell.X, TargetCell.Y);
+	ARRChaser* Still = SpawnChaser(*this, TestWorld, Floor);
+	ARRChaser* Mover = SpawnChaser(*this, TestWorld, Floor - FVector(100.f, 0.f, 0.f));
+	if (!Still || !Mover)
+	{
+		return false;
+	}
+	TestTrue(TEXT("robots ignore robots by default"), Still->IsIgnoringOtherRobots() && Mover->IsIgnoringOtherRobots());
+
+	// Swept move onto the other robot: no blocking hit, the capsules overlap.
+	const FVector Target = Still->GetActorLocation() - FVector(10.f, 0.f, 0.f);
+	FHitResult Hit;
+	Mover->SetActorLocation(Target, /*bSweep*/ true, &Hit);
+	TestFalse(TEXT("robot sweep through a robot: no blocking hit"), Hit.bBlockingHit);
+	TestTrue(TEXT("robot reached 10 uu from the other robot"), FVector::Dist2D(Mover->GetActorLocation(), Target) <= 0.1f);
+
+	// Crowd collision back on: the same move is blocked at contact (2 x radius).
+	const FVector MoverStart = Target - FVector(90.f, 0.f, 0.f);
+	Mover->SetActorLocation(MoverStart, /*bSweep*/ false);
+	Mover->SetIgnoreOtherRobots(false);
+	Still->SetIgnoreOtherRobots(false);
+	Mover->SetActorLocation(Target, /*bSweep*/ true, &Hit);
+	const float Contact = 2.f * Mover->GetCapsuleComponent()->GetScaledCapsuleRadius();
+	TestTrue(TEXT("collision on: blocked by the other robot"), Hit.bBlockingHit && Hit.GetActor() == Still);
+	AddInfo(FString::Printf(TEXT("collision on: stopped at %.2f uu (contact %.1f)"), FVector::Dist2D(Mover->GetActorLocation(), Still->GetActorLocation()), Contact));
+	TestTrue(TEXT("collision on: stopped near contact"), FVector::Dist2D(Mover->GetActorLocation(), Still->GetActorLocation()) >= Contact - 1.f);
+	Mover->SetIgnoreOtherRobots(true);
+	Still->SetIgnoreOtherRobots(true);
+
+	// The miner still blocks robots, and robots still block the miner.
+	const FVector MinerLocation = Miner->GetActorLocation();
+	const float MinerContact = Miner->GetCapsuleComponent()->GetScaledCapsuleRadius() + Mover->GetCapsuleComponent()->GetScaledCapsuleRadius();
+	Mover->SetActorLocation(FVector(MinerLocation.X + 150.f, MinerLocation.Y, Mover->GetActorLocation().Z), /*bSweep*/ false);
+	Mover->SetActorLocation(FVector(MinerLocation.X + 10.f, MinerLocation.Y, Mover->GetActorLocation().Z), /*bSweep*/ true, &Hit);
+	TestTrue(TEXT("robot sweep into the miner: blocked by the miner"), Hit.bBlockingHit && Hit.GetActor() == Miner);
+	TestTrue(TEXT("robot stopped at the miner contact"), FVector::Dist2D(Mover->GetActorLocation(), MinerLocation) >= MinerContact - 1.f);
+	const FVector RobotLocation = Mover->GetActorLocation();
+	Miner->SetActorLocation(FVector(RobotLocation.X, RobotLocation.Y, MinerLocation.Z), /*bSweep*/ true, &Hit);
+	TestTrue(TEXT("miner sweep into a robot: blocked by the robot"), Hit.bBlockingHit && Hit.GetActor() == Mover);
+	TestTrue(TEXT("miner stopped at the robot contact"), FVector::Dist2D(Miner->GetActorLocation(), RobotLocation) >= MinerContact - 1.f);
 	return true;
 }
 

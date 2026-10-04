@@ -25,6 +25,9 @@ struct FOnAttributeChangeData;
  * MoveSpeed become base values (MoveSpeed is mirrored to CharacterMovement->MaxWalkSpeed), the rest is kept in Stats.
  * Moves without a controller: URREnemyMovementComponent feeds the flow-field direction to CharacterMovement (RVO
  * avoidance on). The capsule overlaps the Projectile channel, so shots hit it through the ASC (sys-projectiles).
+ * Crowd: when bIgnoreOtherRobots is on, the capsule carries RRCollisionChannels::RobotMaskFilter and its movement sweeps ignore
+ * that mask, so robots pass through each other (RVO alone separates them) while the miner, terrain and every query still
+ * collide with them. At BeginPlay the robot also writes the crowd RVO settings to the world avoidance manager.
  * Death (health set OnDeath, once, State.Dead on the ASC): stops, disables collision, shrinks to 0 over DeathShrinkDuration,
  * then spawns Stats.XPValue pickups of XPPickupClass at its feet and destroys itself. Each hit (the killing one too) spawns a
  * FloatingTextClass damage number above the capsule top when bShowDamageNumbers is on. Subclasses implement their behavior in
@@ -78,6 +81,16 @@ public:
 
 	/** Target of the attacks: the first living ARRMiner of the world (cached); null when there is none. */
 	ARRMiner* FindTarget();
+
+	/**
+	 * Lets the movement of this robot pass through other robots (true) or collide with them (false), applied at once: sets
+	 * RobotMaskFilter on the capsule body and as the capsule move-ignore mask (both cleared when false). Called at BeginPlay with
+	 * bIgnoreOtherRobots; tests call it to compare both crowds.
+	 */
+	void SetIgnoreOtherRobots(bool bIgnore);
+
+	/** True when the capsule move sweeps currently ignore other robots. */
+	bool IsIgnoringOtherRobots() const;
 
 protected:
 	/** Initializes the ASC, applies the CSV stats, enables controller-less walking and binds the health set events. */
@@ -147,6 +160,24 @@ protected:
 	/** Duration of the death shrink to scale 0, in seconds (enemy-death M1: 0.15 s). */
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Enemy|Death", meta = (ClampMin = 0, Units = "s"))
 	float DeathShrinkDuration = 0.15f;
+
+	/** Robots pass through each other when moving (crowd collision left to RVO avoidance); applied at BeginPlay. */
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Enemy|Crowd")
+	bool bIgnoreOtherRobots = true;
+
+	/**
+	 * RVO radius multiplier written to the world avoidance manager at BeginPlay (ArtificialRadiusExpansion, engine default 1.5):
+	 * robots keep about 2 x capsule radius x this value between centers. Lower = denser packs. 0 = leave the manager as is.
+	 */
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Enemy|Crowd", meta = (ClampMin = "0"))
+	float AvoidanceRadiusExpansion = 1.1f;
+
+	/**
+	 * Seconds an RVO-diverted velocity stays locked before the next avoidance query, written to the world avoidance manager at
+	 * BeginPlay (LockTimeAfterAvoid, engine default 0.2 s). Higher = fewer queries. Negative = leave the manager as is.
+	 */
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Enemy|Crowd", meta = (Units = "s"))
+	float AvoidanceLockTimeAfterAvoid = 0.3f;
 
 	/** Spawns a damage number on each hit (the killing one too). */
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Enemy|Damage Text")

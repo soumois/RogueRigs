@@ -2,6 +2,7 @@
 
 #include "Enemies/RREnemy.h"
 
+#include "AI/Navigation/AvoidanceManager.h"
 #include "Components/CapsuleComponent.h"
 #include "Components/MeshComponent.h"
 #include "Debug/RRFloatingDamageText.h"
@@ -52,6 +53,8 @@ ARREnemy::ARREnemy(const FObjectInitializer& ObjectInitializer)
 	Movement->bRunPhysicsWithNoController = true;
 	Movement->bCanWalkOffLedges = false;
 	Movement->bUseRVOAvoidance = true;
+	// RVO is the only robot-robot separation (bIgnoreOtherRobots): consider neighbors within 250 uu (engine default 500).
+	Movement->AvoidanceConsiderationRadius = 250.f;
 
 	// Shots (Projectile channel) overlap the capsule: the projectile applies its spec to the ASC, never blocks (sys-projectiles).
 	GetCapsuleComponent()->SetCollisionResponseToChannel(RRCollisionChannels::Projectile, ECR_Overlap);
@@ -63,6 +66,19 @@ ARREnemy::ARREnemy(const FObjectInitializer& ObjectInitializer)
 UAbilitySystemComponent* ARREnemy::GetAbilitySystemComponent() const
 {
 	return AbilitySystemComponent;
+}
+
+void ARREnemy::SetIgnoreOtherRobots(bool bIgnore)
+{
+	UCapsuleComponent* Capsule = GetCapsuleComponent();
+	const FMaskFilter Mask = bIgnore ? RRCollisionChannels::RobotMaskFilter : 0;
+	Capsule->SetMaskFilterOnBodyInstance(Mask);
+	Capsule->SetMoveIgnoreMask(Mask);
+}
+
+bool ARREnemy::IsIgnoringOtherRobots() const
+{
+	return (GetCapsuleComponent()->GetMoveIgnoreMask() & RRCollisionChannels::RobotMaskFilter) != 0;
 }
 
 bool ARREnemy::LoadStatsRow(FName RowName, FRREnemyStatsRow& OutRow)
@@ -101,6 +117,20 @@ void ARREnemy::BeginPlay()
 		UE_LOG(LogRogueRigs, Error, TEXT("%s: stats row '%s' could not be read."), *GetName(), *StatsRowName.ToString());
 	}
 	GetCharacterMovement()->MaxWalkSpeed = MovementSet->GetMoveSpeed();
+
+	// Crowd: robots pass through each other, RVO separates them; the avoidance manager is world-wide (robots are its only users).
+	SetIgnoreOtherRobots(bIgnoreOtherRobots);
+	if (UAvoidanceManager* AvoidanceManager = GetWorld()->GetAvoidanceManager())
+	{
+		if (AvoidanceRadiusExpansion > 0.f)
+		{
+			AvoidanceManager->ArtificialRadiusExpansion = AvoidanceRadiusExpansion;
+		}
+		if (AvoidanceLockTimeAfterAvoid >= 0.f)
+		{
+			AvoidanceManager->LockTimeAfterAvoid = AvoidanceLockTimeAfterAvoid;
+		}
+	}
 
 	// An unpossessed character stays in MOVE_None: start walking (falling until it lands).
 	GetCharacterMovement()->SetDefaultMovementMode();
