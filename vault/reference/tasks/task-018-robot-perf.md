@@ -3,7 +3,7 @@ id: task-018-robot-perf
 description: "Global task: Insights trace, no robot-robot capsule collision with lighter RVO, lighter movement, periodic hitch fix; stress compared after each step."
 parent: tasks-index
 kind: task
-status: in-progress
+status: done
 ---
 # Robot count optimization
 
@@ -13,8 +13,8 @@ status: in-progress
 - gdd_check: Read [[perf-risks]], [[stress-final-m1]], [[enemies-index]]. Owner accepts tighter packing (2026-10-04). Gains are estimates until measured; any step that does not pay off is reverted and reported.
 - confirmed_by_owner: yes (2026-10-04, all subtasks pre-approved)
 - milestone: M1
-- next_step: task-018-05-final-stress
-- result: open
+- next_step: none
+- result: Acceptance passed: 400 robots 13.6 → 9.8 ms frame in editor -game (game thread 13.6 → 7.9), ceiling about 600 → 1500 (S0) and 450–500 → 700 (S2); staged build ceiling about 1600 / 900 with no hitch; the 61 s hitch is an editor-only GC (16.4 ms max in staged); robots pack tighter (within 300 uu 11 → 19 of 40); 101/101 tests. Docs perf-trace-m1, stress-opt-m1, perf-leads (new), perf-risks, sys-enemies, sys-enemy-ai, sys-stress, build-toolchain. Owner to look in PIE: tighter packs. Open: UAT staging exits 25 on GameFeatureData asset-manager errors. About 530k tokens over five subtasks.
 
 ## Subtasks
 1. task-018-01-trace — cpp: Insights trace at 400 robots, cost breakdown, hitch cause
