@@ -18,6 +18,7 @@
 #include "Projectiles/RRCollisionChannels.h"
 #include "Projectiles/RRProjectile.h"
 #include "Tests/RRTestEventRecorder.h"
+#include "Tests/RRTestAccess.h"
 #include "Tests/RRTestHarness.h"
 #include "UObject/StrongObjectPtr.h"
 #include "Weapons/RRAutoFireComponent.h"
@@ -42,30 +43,8 @@ namespace RRWeaponTests
 	/** Step used to fire a single shot: the shot due now fires, the next one (>= 0.033 s away) does not. */
 	constexpr float SingleShotStep = 0.001f;
 
-	/** Read access to the weapon's protected muzzle. Never instantiated. */
-	struct FWeaponAccess : public ARRWeapon
-	{
-		static USceneComponent* MuzzleOf(const ARRWeapon* Weapon) { return Weapon->*(&FWeaponAccess::Muzzle); }
-	};
-
-	/** Read and write access to the miner's protected weapon attachment settings. Never instantiated. */
-	struct FMinerAccess : public ARRMiner
-	{
-		static FName& WeaponAttachSocketNameOf(ARRMiner* Miner) { return Miner->*(&FMinerAccess::WeaponAttachSocketName); }
-		static FVector WeaponAttachOffsetOf(const ARRMiner* Miner) { return Miner->*(&FMinerAccess::WeaponAttachOffset); }
-	};
-
-	/** Write access to the projectile's protected hit filter. Never instantiated. */
-	struct FProjectileAccess : public ARRProjectile
-	{
-		static TSubclassOf<AActor>& HitActorClassOf(ARRProjectile* Projectile) { return Projectile->*(&FProjectileAccess::HitActorClass); }
-	};
-
-	/** Read access to the dummy's protected health set. Never instantiated. */
-	struct FDummyAccess : public ARRTargetDummy
-	{
-		static URRHealthAttributeSet* HealthSetOf(const ARRTargetDummy* Dummy) { return Dummy->*(&FDummyAccess::HealthSet); }
-	};
+	// Protected-member accessors: Tests/RRTestAccess.h.
+	using namespace RRTestAccess;
 
 	/** One shot seen by RecordShots: frame index of the step it fired in (step k covers [k, k + 1] * FrameSeconds) and its exact time. */
 	struct FShotSample

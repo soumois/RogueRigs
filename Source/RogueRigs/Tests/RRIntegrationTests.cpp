@@ -36,6 +36,7 @@
 #include "Progression/RRLevelUpComponent.h"
 #include "Progression/RRProgressionComponent.h"
 #include "Tests/RRTestEventRecorder.h"
+#include "Tests/RRTestAccess.h"
 #include "Tests/RRTestHarness.h"
 #include "UI/RRHUDWidget.h"
 #include "UObject/StrongObjectPtr.h"
@@ -833,11 +834,8 @@ namespace RRIntegrationExplosionTests
 	const FIntPoint KamikazeKillMinerCell(32, 44);
 	const FIntPoint KamikazeKillStartCell(43, 44);
 
-	/** Reads protected members of the explosion visual (never instantiated). */
-	struct FExplosionFXAccess : public ARRExplosionFX
-	{
-		static float DurationOf(const ARRExplosionFX* FX) { return FX->*(&FExplosionFXAccess::Duration); }
-	};
+	// Protected-member accessors: Tests/RRTestAccess.h.
+	using namespace RRTestAccess;
 
 	/** Spawns an enemy Blueprint of class Class (native base T) with its feet on the floor of Cell. */
 	template <typename T>
@@ -1299,11 +1297,8 @@ namespace RRIntegrationUpgradeTests
 	/** Half extent (uu) of the fixed spawner view rectangle around the miner (spawner tests). */
 	const FVector2D SpawnerViewHalfExtent(1600.f, 1000.f);
 
-	/** Writes the protected world context of a game instance (never instantiated). */
-	struct FGameInstanceAccess : public UGameInstance
-	{
-		static FWorldContext*& WorldContextOf(UGameInstance* GameInstance) { return GameInstance->*(&FGameInstanceAccess::WorldContext); }
-	};
+	// Protected-member accessors: Tests/RRTestAccess.h.
+	using namespace RRTestAccess;
 
 	/** Game instance of a test world. Declare it before the FTestWorld: it outlives the world, then drops its context pointer. */
 	struct FTestGameInstance

@@ -136,21 +136,23 @@ public:
 	 */
 	void NotifyEnemyKilled(AActor* Enemy, AActor* DeathInstigator);
 
-	/** Sets the alert value (0..1) directly (cheats, tests); the threshold and extraction checks run on the next tick. */
-	UFUNCTION(BlueprintCallable, Category = "RunFlow")
+	//~ Begin cheats (cheats and tests; non-shipping: in shipping builds they do nothing and return null or false)
+	/** Sets the alert value (0..1) directly; the threshold and extraction checks run on the next tick. */
+	UFUNCTION(BlueprintCallable, Category = "Cheats")
 	void SetAlert(float NewAlert);
 
 	/** Drops the console now if it has not dropped yet: the alert jumps to the threshold. Returns the console (null on failure). */
-	UFUNCTION(BlueprintCallable, Category = "RunFlow")
+	UFUNCTION(BlueprintCallable, Category = "Cheats")
 	ARRConsole* SkipToConsole();
 
 	/** Completes the pending console at once (ARRConsole::ForceComplete). False when none is pending. */
-	UFUNCTION(BlueprintCallable, Category = "RunFlow")
+	UFUNCTION(BlueprintCallable, Category = "Cheats")
 	bool CompleteConsoleHack();
 
 	/** Completes or skips the console and fills the alert: OnExtractionReady fires now. False when the flow has no grid or miner. */
-	UFUNCTION(BlueprintCallable, Category = "RunFlow")
+	UFUNCTION(BlueprintCallable, Category = "Cheats")
 	bool SkipToExtraction();
+	//~ End cheats
 
 	/** The landed shuttle (null before landing). */
 	UFUNCTION(BlueprintPure, Category = "RunFlow")

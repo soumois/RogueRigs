@@ -80,7 +80,7 @@ void ARRConsole::Tick(float DeltaSeconds)
 		const float NewProgress = FMath::Min(HackProgress + DeltaSeconds / FMath::Max(HackDuration, UE_KINDA_SMALL_NUMBER), 1.f);
 		if (NewProgress >= 1.f)
 		{
-			ForceComplete();
+			CompleteHack();
 			return;
 		}
 		SetProgress(NewProgress, true);
@@ -94,6 +94,13 @@ void ARRConsole::Tick(float DeltaSeconds)
 }
 
 void ARRConsole::ForceComplete()
+{
+#if !UE_BUILD_SHIPPING
+	CompleteHack();
+#endif
+}
+
+void ARRConsole::CompleteHack()
 {
 	if (IsComplete())
 	{

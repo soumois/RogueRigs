@@ -12,6 +12,7 @@
 #include "Engine/World.h"
 #include "GameFramework/WorldSettings.h"
 #include "Grid/RRArenaGrid.h"
+#include "Tests/RRTestAccess.h"
 #include "Player/RRMiner.h"
 #include "Weapons/RRAutoFireComponent.h"
 #include "Weapons/RRShotgun.h"
@@ -130,12 +131,8 @@ namespace RRTestHarness
 		return Miner;
 	}
 
-	/** Read and write access to the miner's protected loadout lists. Never instantiated. */
-	struct FMinerLoadoutAccess : public ARRMiner
-	{
-		static TArray<TSubclassOf<ARRWeapon>>& StartingWeaponsOf(ARRMiner* Miner) { return Miner->*(&FMinerLoadoutAccess::StartingWeapons); }
-		static TArray<TSubclassOf<ARRWeapon>>& GuaranteedWeaponClassesOf(ARRMiner* Miner) { return Miner->*(&FMinerLoadoutAccess::GuaranteedWeaponClasses); }
-	};
+	// Protected-member accessors: Tests/RRTestAccess.h.
+	using namespace RRTestAccess;
 
 	/**
 	 * SpawnMiner hook: the miner starts with the burst rifle only (shotgun entries removed from StartingWeapons, no guaranteed
@@ -143,11 +140,11 @@ namespace RRTestHarness
 	 */
 	inline void KeepRifleOnly(ARRMiner* Miner)
 	{
-		FMinerLoadoutAccess::StartingWeaponsOf(Miner).RemoveAll([](const TSubclassOf<ARRWeapon>& Entry)
+		FMinerAccess::StartingWeaponsOf(Miner).RemoveAll([](const TSubclassOf<ARRWeapon>& Entry)
 		{
 			return !Entry || Entry->IsChildOf(ARRShotgun::StaticClass());
 		});
-		FMinerLoadoutAccess::GuaranteedWeaponClassesOf(Miner).Reset();
+		FMinerAccess::GuaranteedWeaponClassesOf(Miner).Reset();
 	}
 
 	/** The miner's first weapon that is not a shotgun (the burst rifle); null when none. */

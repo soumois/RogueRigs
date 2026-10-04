@@ -9,6 +9,7 @@
 #include "Enemies/RRChaser.h"
 #include "GameFramework/CharacterMovementComponent.h"
 #include "GAS/RRHealthAttributeSet.h"
+#include "Tests/RRTestAccess.h"
 #include "Tests/RRTestHarness.h"
 #include "Tests/RRTestPickupXP.h"
 #include "Upgrades/RRUpgradeCard.h"
@@ -33,12 +34,8 @@ namespace RRShotgunTests
 	const FIntPoint BehindRockCell(33, 40);
 	const FIntPoint SideFloorCell(34, 41);
 
-	/** Reads and writes protected robot members (never instantiated). */
-	struct FEnemyAccess : public ARREnemy
-	{
-		static TSubclassOf<ARRPickup>& XPPickupClassOf(ARREnemy* Enemy) { return Enemy->*(&FEnemyAccess::XPPickupClass); }
-		static FRREnemyStatsRow& StatsOf(ARREnemy* Enemy) { return Enemy->*(&FEnemyAccess::Stats); }
-	};
+	// Protected-member accessors: Tests/RRTestAccess.h.
+	using namespace RRTestAccess;
 
 	/** The test scene: grid, BP_Miner (weapons stopped, aimed), its shotgun. */
 	struct FShotgunSetup

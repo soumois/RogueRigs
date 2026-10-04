@@ -21,6 +21,7 @@
 #include "GAS/RRMovementAttributeSet.h"
 #include "Projectiles/RRCollisionChannels.h"
 #include "Projectiles/RRProjectile.h"
+#include "Tests/RRTestAccess.h"
 #include "Tests/RRTestHarness.h"
 #include "Tests/RRTestPickupXP.h"
 #include "Weapons/RRAutoFireComponent.h"
@@ -44,15 +45,8 @@ namespace RREnemyTests
 	/** Spawn cell of the miner in the attack tests (open floor, flow field tests). */
 	const FIntPoint MinerCell(40, 40);
 
-	/** Reads and writes protected members (never instantiated). */
-	struct FEnemyAccess : public ARREnemy
-	{
-		static TSubclassOf<ARRPickup>& XPPickupClassOf(ARREnemy* Enemy) { return Enemy->*(&FEnemyAccess::XPPickupClass); }
-	};
-	struct FWeaponAccess : public ARRWeapon
-	{
-		static USceneComponent* MuzzleOf(const ARRWeapon* Weapon) { return Weapon->*(&FWeaponAccess::Muzzle); }
-	};
+	// Protected-member accessors: Tests/RRTestAccess.h.
+	using namespace RRTestAccess;
 
 	/** One hit received by the miner. */
 	struct FHit

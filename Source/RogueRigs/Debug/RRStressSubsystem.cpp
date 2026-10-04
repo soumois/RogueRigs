@@ -179,7 +179,12 @@ namespace RRStress
 
 bool URRStressSubsystem::DoesSupportWorldType(const EWorldType::Type WorldType) const
 {
+	// Stress tooling never exists in shipping builds (same gate as URRCheatSubsystem).
+#if UE_BUILD_SHIPPING
+	return false;
+#else
 	return WorldType == EWorldType::Game || WorldType == EWorldType::PIE;
+#endif
 }
 
 TStatId URRStressSubsystem::GetStatId() const

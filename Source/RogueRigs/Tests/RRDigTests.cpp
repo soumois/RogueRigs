@@ -21,6 +21,7 @@
 #include "Pickups/RRPickup.h"
 #include "Player/RRMiner.h"
 #include "Tests/RRTestEventRecorder.h"
+#include "Tests/RRTestAccess.h"
 #include "Tests/RRTestHarness.h"
 #include "UObject/StrongObjectPtr.h"
 #include "Weapons/RRAutoFireComponent.h"
@@ -37,52 +38,8 @@ namespace RRDigTests
 	/** Heal ore cell of arena_m1 used by the tests. */
 	const FIntPoint HealOreCell(49, 45);
 
-	/** Read access to protected ARRArenaGrid state, through pointers to members formed in a derived class. Never instantiated. */
-	struct FGridAccess : public ARRArenaGrid
-	{
-		static const TMap<ERRCellType, FRRInstanceCellMap>& Maps(const ARRArenaGrid* Grid) { return Grid->*(&FGridAccess::InstanceCellMaps); }
-		static const TArray<int32>& InstanceIndices(const ARRArenaGrid* Grid) { return Grid->*(&FGridAccess::CellInstanceIndex); }
-		static const TMap<FIntPoint, float>& Shaking(const ARRArenaGrid* Grid) { return Grid->*(&FGridAccess::ShakingCells); }
-		static int32 Width(const ARRArenaGrid* Grid) { return Grid->*(&FGridAccess::GridWidth); }
-		static int32 Height(const ARRArenaGrid* Grid) { return Grid->*(&FGridAccess::GridHeight); }
-		static int32 DropsOnDestroy(const ARRArenaGrid* Grid) { return Grid->*(&FGridAccess::DestroyDropCount); }
-		static TSubclassOf<ARRPickup>& HealClass(ARRArenaGrid* Grid) { return Grid->*(&FGridAccess::HealPickupClass); }
-		static TSubclassOf<ARRPickup> OreClass(const ARRArenaGrid* Grid) { return Grid->*(&FGridAccess::OrePickupClass); }
-
-		static UHierarchicalInstancedStaticMeshComponent* Component(const ARRArenaGrid* Grid, ERRCellType Key)
-		{
-			switch (Key)
-			{
-			case ERRCellType::Floor:      return Grid->*(&FGridAccess::FloorInstances);
-			case ERRCellType::Rock:       return Grid->*(&FGridAccess::RockInstances);
-			case ERRCellType::Ore:        return Grid->*(&FGridAccess::OreInstances);
-			case ERRCellType::HealOre:    return Grid->*(&FGridAccess::HealOreInstances);
-			case ERRCellType::SpecialOre: return Grid->*(&FGridAccess::SpecialOreInstances);
-			case ERRCellType::Barrel:     return Grid->*(&FGridAccess::BarrelInstances);
-			default:                      return nullptr;
-			}
-		}
-
-		/** Hidden collision ISM of a block type; nullptr for Floor (the floor HISM collides itself). */
-		static UInstancedStaticMeshComponent* CollisionComponent(const ARRArenaGrid* Grid, ERRCellType Key)
-		{
-			switch (Key)
-			{
-			case ERRCellType::Rock:       return Grid->*(&FGridAccess::RockCollision);
-			case ERRCellType::Ore:        return Grid->*(&FGridAccess::OreCollision);
-			case ERRCellType::HealOre:    return Grid->*(&FGridAccess::HealOreCollision);
-			case ERRCellType::SpecialOre: return Grid->*(&FGridAccess::SpecialOreCollision);
-			case ERRCellType::Barrel:     return Grid->*(&FGridAccess::BarrelCollision);
-			default:                      return nullptr;
-			}
-		}
-	};
-
-	/** Read access to the drone's protected laser mesh. Never instantiated. */
-	struct FDroneAccess : public ARRDrone
-	{
-		static const UStaticMeshComponent* Laser(const ARRDrone* Drone) { return Drone->*(&FDroneAccess::LaserMesh); }
-	};
+	// Protected-member accessors: Tests/RRTestAccess.h.
+	using namespace RRTestAccess;
 
 	/** Number of live pickups in the world. */
 	int32 CountPickups(UWorld* World)

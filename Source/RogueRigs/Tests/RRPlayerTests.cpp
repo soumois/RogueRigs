@@ -14,6 +14,7 @@
 #include "GAS/RRHealthAttributeSet.h"
 #include "Player/RRGameMode.h"
 #include "Tests/RRTestEventRecorder.h"
+#include "Tests/RRTestAccess.h"
 #include "Tests/RRTestHarness.h"
 #include "UObject/StrongObjectPtr.h"
 #include "Weapons/RRAutoFireComponent.h"
@@ -32,11 +33,8 @@ namespace RRPlayerTests
 	/** Blueprint of the run game mode. */
 	const TCHAR* const GameModeClassPath = TEXT("/Game/RogueRigs/Blueprints/Player/BP_RRGameMode.BP_RRGameMode_C");
 
-	/** Reads protected ARRGameMode members (never instantiated). */
-	struct FGameModeAccess : public ARRGameMode
-	{
-		static float& Delay(ARRGameMode* GameMode) { return GameMode->*(&FGameModeAccess::RestartDelay); }
-	};
+	// Protected-member accessors: Tests/RRTestAccess.h.
+	using namespace RRTestAccess;
 
 	/** Spawns the grid and BP_Miner on a floor cell, with Health = MaxHealth = TestMaxHealth. Null on failure. */
 	ARRMiner* SpawnTestMiner(FAutomationTestBase& Test, const FTestWorld& TestWorld)

@@ -15,6 +15,7 @@
 #include "Objectives/RRConsole.h"
 #include "Objectives/RRRunFlowSubsystem.h"
 #include "Tests/RRTestEventRecorder.h"
+#include "Tests/RRTestAccess.h"
 #include "Tests/RRTestHarness.h"
 #include "UObject/StrongObjectPtr.h"
 #include "Weapons/RRAutoFireComponent.h"
@@ -72,23 +73,8 @@ namespace RRRunFlowTests
 		return -1;
 	}
 
-	/** Read access to the grid's block components and instance indices. Never instantiated. */
-	struct FGridAccess : public ARRArenaGrid
-	{
-		/** Marked custom data float of the rendering instance of the block in Cell; -1 when unreadable. */
-		static float GetMarkedData(const ARRArenaGrid* Grid, FIntPoint Cell)
-		{
-			UHierarchicalInstancedStaticMeshComponent* Component = (Grid->*(&FGridAccess::GetBlockComponent))(Grid->GetCellType(Cell));
-			const TArray<int32>& Indices = Grid->*(&FGridAccess::CellInstanceIndex);
-			const int32 CellIndex = Cell.Y * Grid->GetGridSize().X + Cell.X;
-			if (!Component || !Indices.IsValidIndex(CellIndex) || Indices[CellIndex] == INDEX_NONE)
-			{
-				return -1.f;
-			}
-			const int32 DataIndex = Indices[CellIndex] * Component->NumCustomDataFloats + Grid->GetMarkedCustomDataIndex();
-			return Component->PerInstanceSMCustomData.IsValidIndex(DataIndex) ? Component->PerInstanceSMCustomData[DataIndex] : -1.f;
-		}
-	};
+	// Protected-member accessors: Tests/RRTestAccess.h.
+	using namespace RRTestAccess;
 
 	/** True for the block types a console marks by default. */
 	bool IsMarkableType(ERRCellType Type)

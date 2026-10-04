@@ -14,6 +14,7 @@
 #include "GAS/RRHealthAttributeSet.h"
 #include "Projectiles/RRProjectile.h"
 #include "Tests/RRTestEventRecorder.h"
+#include "Tests/RRTestAccess.h"
 #include "Tests/RRTestHarness.h"
 #include "Tests/RRTestPickupXP.h"
 #include "UObject/StrongObjectPtr.h"
@@ -35,24 +36,8 @@ namespace RRKamikazeTests
 	/** Miner cell of the fuse test (open floor; row 40 is open up to x 45). */
 	const FIntPoint FuseMinerCell(40, 40);
 
-	/** Reads and writes protected members (never instantiated). */
-	struct FEnemyAccess : public ARREnemy
-	{
-		static TSubclassOf<ARRPickup>& XPPickupClassOf(ARREnemy* Enemy) { return Enemy->*(&FEnemyAccess::XPPickupClass); }
-	};
-	struct FSpawnerAccess : public ARREnemySpawner
-	{
-		static TSubclassOf<ARREnemy>& EnemyClassOf(ARREnemySpawner* Spawner) { return Spawner->*(&FSpawnerAccess::EnemyClass); }
-		static TArray<FRRWeightedEnemyClass>& WeightsOf(ARREnemySpawner* Spawner) { return Spawner->*(&FSpawnerAccess::WeightedEnemyClasses); }
-	};
-	struct FPickupAccess : public ARRPickup
-	{
-		static const FVector& PopStartOf(const ARRPickup* Pickup) { return Pickup->*(&FPickupAccess::PopStart); }
-	};
-	struct FWeaponAccess : public ARRWeapon
-	{
-		static USceneComponent* MuzzleOf(const ARRWeapon* Weapon) { return Weapon->*(&FWeaponAccess::Muzzle); }
-	};
+	// Protected-member accessors: Tests/RRTestAccess.h.
+	using namespace RRTestAccess;
 
 	/** Spawns a native robot of class T with its feet on the floor at FloorLocation (XP drop: ARRTestPickupXP). */
 	template <typename T>

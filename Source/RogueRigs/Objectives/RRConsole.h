@@ -116,9 +116,11 @@ public:
 	UFUNCTION(BlueprintPure, Category = "Console")
 	float GetDrainPerSecond() const { return DrainPerSecond; }
 
-	/** Completes the hack at once (cheat and tests): unmarks the rocks left, progress 1, state Complete, drone released. */
-	UFUNCTION(BlueprintCallable, Category = "Console")
+	//~ Begin cheats (non-shipping: these entry points do nothing in shipping builds)
+	/** Cheat and tests: completes the hack at once (CompleteHack). Does nothing in shipping builds. */
+	UFUNCTION(BlueprintCallable, Category = "Cheats")
 	void ForceComplete();
+	//~ End cheats
 
 	/** Broadcast on every state change (after OnHackStateChanged). */
 	UPROPERTY(BlueprintAssignable, Category = "Console")
@@ -135,6 +137,9 @@ public:
 protected:
 	/** Releases the drone and unmarks the rocks left when the console goes away. */
 	virtual void EndPlay(const EEndPlayReason::Type EndPlayReason) override;
+
+	/** Completes the hack: unmarks the rocks left, progress 1, state Complete, drone released. No-op once complete. Called by Tick when the gauge fills, and by ForceComplete. */
+	void CompleteHack();
 
 	/** Display event: marked rocks left (Remaining) out of Total; also called at initialization. Implement in Blueprint. */
 	UFUNCTION(BlueprintImplementableEvent, Category = "Console")

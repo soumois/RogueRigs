@@ -13,6 +13,7 @@
 #include "FlowField/RRFlowFieldSubsystem.h"
 #include "GAS/RRGameplayTags.h"
 #include "HAL/IConsoleManager.h"
+#include "Tests/RRTestAccess.h"
 #include "Tests/RRTestHarness.h"
 #include "Weapons/RRAutoFireComponent.h"
 #include "Weapons/RRWeapon.h"
@@ -27,21 +28,8 @@ namespace RRSpawnerTests
 	/** Half extent (uu) of the fixed view rectangle centered on the miner. */
 	const FVector2D ViewHalfExtent(1600.f, 1000.f);
 
-	/** Reads and writes protected members (never instantiated). */
-	struct FSpawnerAccess : public ARREnemySpawner
-	{
-		static TSubclassOf<ARREnemy>& EnemyClassOf(ARREnemySpawner* Spawner) { return Spawner->*(&FSpawnerAccess::EnemyClass); }
-		static float& SpawnIntervalOf(ARREnemySpawner* Spawner) { return Spawner->*(&FSpawnerAccess::SpawnInterval); }
-		static int32& MaxAliveOf(ARREnemySpawner* Spawner) { return Spawner->*(&FSpawnerAccess::MaxAlive); }
-		static int32& ViewMarginOf(ARREnemySpawner* Spawner) { return Spawner->*(&FSpawnerAccess::ViewMargin); }
-		static int32& MaxSpawnDistanceOf(ARREnemySpawner* Spawner) { return Spawner->*(&FSpawnerAccess::MaxSpawnDistanceCells); }
-		static float& TrickleDurationOf(ARREnemySpawner* Spawner) { return Spawner->*(&FSpawnerAccess::TrickleDuration); }
-		static float& PackIntervalOf(ARREnemySpawner* Spawner) { return Spawner->*(&FSpawnerAccess::PackInterval); }
-		static int32& PackSizeMinOf(ARREnemySpawner* Spawner) { return Spawner->*(&FSpawnerAccess::PackSizeMin); }
-		static int32& PackSizeMaxOf(ARREnemySpawner* Spawner) { return Spawner->*(&FSpawnerAccess::PackSizeMax); }
-		static float& LoneSpawnChanceOf(ARREnemySpawner* Spawner) { return Spawner->*(&FSpawnerAccess::LoneSpawnChance); }
-		static TArray<FRRWeightedEnemyClass>& WeightsOf(ARREnemySpawner* Spawner) { return Spawner->*(&FSpawnerAccess::WeightedEnemyClasses); }
-	};
+	// Protected-member accessors: Tests/RRTestAccess.h.
+	using namespace RRTestAccess;
 
 	/** World with the grid, an unarmed miner on MinerCell and a native-chaser spawner using the fixed view rectangle. */
 	struct FSetup

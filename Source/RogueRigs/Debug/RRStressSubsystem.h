@@ -94,7 +94,7 @@ class ROGUERIGS_API URRStressSubsystem : public UTickableWorldSubsystem
 	GENERATED_BODY()
 
 public:
-	/** Game and PIE worlds only. */
+	/** Game and PIE worlds only; never created in shipping builds. */
 	virtual bool DoesSupportWorldType(const EWorldType::Type WorldType) const override;
 
 	/** Advances the sequencer and samples frame times while a run is active. */

@@ -125,15 +125,22 @@ void URRRunFlowSubsystem::NotifyEnemyKilled(AActor* Enemy, AActor* DeathInstigat
 	BroadcastAlertIfChanged();
 }
 
+//~ Begin cheats: bodies compiled out of shipping builds.
+
 void URRRunFlowSubsystem::SetAlert(float NewAlert)
 {
+#if !UE_BUILD_SHIPPING
 	ResolveConfig();
 	AlertSeconds = FMath::Clamp(NewAlert, 0.f, 1.f) * FMath::Max(Config.AlertFillSeconds, 1.f);
 	BroadcastAlertIfChanged();
+#endif
 }
 
 ARRConsole* URRRunFlowSubsystem::SkipToConsole()
 {
+#if UE_BUILD_SHIPPING
+	return nullptr;
+#else
 	if (Console || bConsoleDone)
 	{
 		return Console;
@@ -148,20 +155,28 @@ ARRConsole* URRRunFlowSubsystem::SkipToConsole()
 	ARRConsole* Dropped = DropConsole();
 	BroadcastAlertIfChanged();
 	return Dropped;
+#endif
 }
 
 bool URRRunFlowSubsystem::CompleteConsoleHack()
 {
+#if UE_BUILD_SHIPPING
+	return false;
+#else
 	if (!Console || Console->IsComplete())
 	{
 		return false;
 	}
 	Console->ForceComplete();
 	return true;
+#endif
 }
 
 bool URRRunFlowSubsystem::SkipToExtraction()
 {
+#if UE_BUILD_SHIPPING
+	return false;
+#else
 	ResolveConfig();
 	if (!ResolveRunActors())
 	{
@@ -177,7 +192,10 @@ bool URRRunFlowSubsystem::SkipToExtraction()
 	CheckExtraction();
 	BroadcastAlertIfChanged();
 	return bExtractionReady;
+#endif
 }
+
+//~ End cheats
 
 bool URRRunFlowSubsystem::ResolveRunActors()
 {
