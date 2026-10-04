@@ -13,16 +13,18 @@ status: in-progress
 - gdd_check: No GDD impact. Rule [[cpp-standard]] and [[cpp-bp-split]] apply.
 - confirmed_by_owner: yes (2026-10-04, all subtasks pre-approved)
 - milestone: M1
-- next_step: task-020-01-review
+- next_step: task-020-02-refactor
 - result: open
 
 ## Subtasks
-1. task-020-01-review — cpp: review report: readability, naming, comments, duplication, base classes, ranked refactor list
-2. task-020-02-refactor — cpp: refactor the high-value items, no behavior change, tests green
-3. task-020-03-bp-check — bp: all Blueprints load, PIE smoke test, no broken reference
+1. task-020-01-review — cpp: review report, ranked refactor list
+2. task-020-02-refactor — cpp: R1, R2, R4, R5 (robot helpers, cell query, world lookups, projectile filter, weapon aim)
+3. task-020-03-refactor-cleanup — cpp: R3, R6, R7 (CSV loader, damage numbers, cheats and test hooks)
+4. task-020-04-bp-check — bp: all Blueprints load, PIE smoke test
 
 ## Relations
 - [[tasks-index]] — parent index.
 - [[task-020-01-review]] — step 1, cpp.
 - [[task-020-02-refactor]] — step 2, cpp.
-- [[task-020-03-bp-check]] — step 3, bp.
+- [[task-020-03-refactor-cleanup]] — step 3, cpp.
+- [[task-020-04-bp-check]] — step 4, bp.

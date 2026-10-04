@@ -225,7 +225,8 @@ task-019-01-asset-manager  reference/tasks/task-019-packaging-fix/task-019-01-as
 task-019-packaging-fix  reference/tasks/task-019-packaging-fix.md
 task-020-01-review  reference/tasks/task-020-code-review/task-020-01-review.md
 task-020-02-refactor  reference/tasks/task-020-code-review/task-020-02-refactor.md
-task-020-03-bp-check  reference/tasks/task-020-code-review/task-020-03-bp-check.md
+task-020-03-refactor-cleanup  reference/tasks/task-020-code-review/task-020-03-refactor-cleanup.md
+task-020-04-bp-check  reference/tasks/task-020-code-review/task-020-04-bp-check.md
 task-020-code-review  reference/tasks/task-020-code-review.md
 task-021-01-shooter-cpp  reference/tasks/task-021-shooter/task-021-01-shooter-cpp.md
 task-021-02-bp-shooter  reference/tasks/task-021-shooter/task-021-02-bp-shooter.md
