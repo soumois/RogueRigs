@@ -229,35 +229,18 @@ void ARREnemySpawner::GetSpawnCandidates(TArray<FIntPoint>& OutCells)
 	}
 
 	TSet<FIntPoint> Occupied;
-	for (TActorIterator<APawn> It(GetWorld()); It; ++It)
-	{
-		if (IsValid(*It))
-		{
-			Occupied.Add(Grid->GetCellAtWorld(It->GetActorLocation()));
-		}
-	}
+	FlowField->GatherPawnCells(Occupied);
 
+	// Reachable free cells in the ring between ViewMargin and MaxSpawnDistanceCells outside the view rectangle.
 	const float CellSize = Grid->GetCellSize();
 	const float MinDistance = (ViewMargin + 0.5f) * CellSize;
 	const float MaxDistance = (MaxSpawnDistanceCells + 0.5f) * CellSize;
-	const FIntPoint Size = Grid->GetGridSize();
-	for (int32 Y = 0; Y < Size.Y; ++Y)
+	FlowField->GatherReachableCells(OutCells, [Grid, &View, MinDistance, MaxDistance](FIntPoint Cell, int32 Steps)
 	{
-		for (int32 X = 0; X < Size.X; ++X)
-		{
-			const FIntPoint Cell(X, Y);
-			const FVector Center = Grid->GetCellCenter(X, Y);
-			const float Distance = GetDistanceToRectangle(View, FVector2D(Center.X, Center.Y));
-			if (Distance < MinDistance || Distance > MaxDistance || !FlowField->IsWalkableCell(Cell) || Occupied.Contains(Cell))
-			{
-				continue;
-			}
-			if (FlowField->GetCellDistance(Cell) != INDEX_NONE)
-			{
-				OutCells.Add(Cell);
-			}
-		}
-	}
+		const FVector Center = Grid->GetCellCenter(Cell.X, Cell.Y);
+		const float Distance = GetDistanceToRectangle(View, FVector2D(Center.X, Center.Y));
+		return Distance >= MinDistance && Distance <= MaxDistance;
+	}, /*bFloorOnly*/ false, &Occupied);
 }
 
 TSubclassOf<ARREnemy> ARREnemySpawner::PickEnemyClass(const FRandomStream& Stream) const

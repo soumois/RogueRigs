@@ -249,30 +249,21 @@ int32 URRStressSubsystem::SpawnStressEnemies(int32 Count, TSubclassOf<ARREnemy> 
 	}
 
 	TSet<FIntPoint> Occupied;
-	for (TActorIterator<APawn> It(World); It; ++It)
-	{
-		if (IsValid(*It))
-		{
-			Occupied.Add(Grid->GetCellAtWorld(It->GetActorLocation()));
-		}
-	}
+	FlowField->GatherPawnCells(Occupied);
 
-	// Reachable walkable cells at least MinCells steps from the miner, nearest first.
+	// Reachable free walkable cells at least MinCells steps from the miner, nearest first.
 	const int32 MinCells = FMath::Max(0, RRStress::CVarMinCells.GetValueOnGameThread());
 	TArray<TPair<int32, FIntPoint>> Cells;
-	const FIntPoint Size = Grid->GetGridSize();
-	for (int32 Y = 0; Y < Size.Y; ++Y)
+	TArray<FIntPoint> Reachable;
+	FlowField->GatherReachableCells(Reachable, [MinCells, &Cells](FIntPoint Cell, int32 Steps)
 	{
-		for (int32 X = 0; X < Size.X; ++X)
+		if (Steps < MinCells)
 		{
-			const FIntPoint Cell(X, Y);
-			const int32 Distance = FlowField->GetCellDistance(Cell);
-			if (Distance >= MinCells && FlowField->IsWalkableCell(Cell) && !Occupied.Contains(Cell))
-			{
-				Cells.Emplace(Distance, Cell);
-			}
+			return false;
 		}
-	}
+		Cells.Emplace(Steps, Cell);
+		return true;
+	}, /*bFloorOnly*/ false, &Occupied);
 	if (Cells.IsEmpty())
 	{
 		UE_LOG(LogRogueRigs, Warning, TEXT("Stress: no reachable cell to spawn on."));

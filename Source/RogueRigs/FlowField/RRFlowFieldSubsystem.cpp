@@ -4,6 +4,7 @@
 
 #include "DrawDebugHelpers.h"
 #include "EngineUtils.h"
+#include "GameFramework/Pawn.h"
 #include "HAL/IConsoleManager.h"
 #include "HAL/PlatformTime.h"
 #include "Player/RRMiner.h"
@@ -236,6 +237,57 @@ bool URRFlowFieldSubsystem::IsWalkableCell(FIntPoint Cell) const
 	}
 	const ERRCellType Type = CurrentGrid->GetCellType(Cell);
 	return Type == ERRCellType::Floor || Type == ERRCellType::Spawn;
+}
+
+void URRFlowFieldSubsystem::GatherReachableCells(TArray<FIntPoint>& OutCells, TFunctionRef<bool(FIntPoint Cell, int32 Steps)> Filter,
+	bool bFloorOnly, const TSet<FIntPoint>* ExcludedCells)
+{
+	UpdateField();
+	const ARRArenaGrid* CurrentGrid = Grid.Get();
+	if (!CurrentGrid)
+	{
+		return;
+	}
+	const FIntPoint Size = CurrentGrid->GetGridSize();
+	// Y outer, X inner: callers drawing from the result with a seeded stream depend on this order.
+	for (int32 Y = 0; Y < Size.Y; ++Y)
+	{
+		for (int32 X = 0; X < Size.X; ++X)
+		{
+			const FIntPoint Cell(X, Y);
+			const ERRCellType Type = CurrentGrid->GetCellType(Cell);
+			if (Type != ERRCellType::Floor && (bFloorOnly || Type != ERRCellType::Spawn))
+			{
+				continue;
+			}
+			const int32 Steps = IsInField(Cell) && Distances.IsValidIndex(GetFieldIndex(Cell)) ? Distances[GetFieldIndex(Cell)] : INDEX_NONE;
+			if (Steps == INDEX_NONE || (ExcludedCells && ExcludedCells->Contains(Cell)))
+			{
+				continue;
+			}
+			if (Filter(Cell, Steps))
+			{
+				OutCells.Add(Cell);
+			}
+		}
+	}
+}
+
+void URRFlowFieldSubsystem::GatherPawnCells(TSet<FIntPoint>& OutCells) const
+{
+	const ARRArenaGrid* CurrentGrid = Grid.Get();
+	UWorld* World = GetWorld();
+	if (!CurrentGrid || !World)
+	{
+		return;
+	}
+	for (TActorIterator<APawn> It(World); It; ++It)
+	{
+		if (IsValid(*It))
+		{
+			OutCells.Add(CurrentGrid->GetCellAtWorld(It->GetActorLocation()));
+		}
+	}
 }
 
 int32 URRFlowFieldSubsystem::GetCellDistance(FIntPoint Cell)

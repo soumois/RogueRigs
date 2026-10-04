@@ -232,33 +232,21 @@ bool URRRunFlowSubsystem::FindConsoleCell(FIntPoint& OutCell)
 		return false;
 	}
 	URRFlowFieldSubsystem* FlowField = GetWorld()->GetSubsystem<URRFlowFieldSubsystem>();
+	if (!FlowField)
+	{
+		return false;
+	}
 	const FIntPoint MinerCell = Grid->GetCellAtWorld(Miner->GetActorLocation());
-	const FIntPoint Size = Grid->GetGridSize();
 	const float MinSquared = FMath::Square(Config.ConsoleMinDistanceCells);
 	const float MaxSquared = FMath::Square(Config.ConsoleMaxDistanceCells);
 
+	// Reachable floor cells in the distance ring around the miner.
 	TArray<FIntPoint> Candidates;
-	for (int32 Y = 0; Y < Size.Y; ++Y)
+	FlowField->GatherReachableCells(Candidates, [MinerCell, MinSquared, MaxSquared](FIntPoint Cell, int32 Steps)
 	{
-		for (int32 X = 0; X < Size.X; ++X)
-		{
-			const FIntPoint Cell(X, Y);
-			if (Grid->GetCellType(Cell) != ERRCellType::Floor)
-			{
-				continue;
-			}
-			const float DistanceSquared = static_cast<float>(FMath::Square(X - MinerCell.X) + FMath::Square(Y - MinerCell.Y));
-			if (DistanceSquared < MinSquared || DistanceSquared > MaxSquared)
-			{
-				continue;
-			}
-			if (FlowField && FlowField->GetCellDistance(Cell) < 0)
-			{
-				continue;
-			}
-			Candidates.Add(Cell);
-		}
-	}
+		const float DistanceSquared = static_cast<float>(FMath::Square(Cell.X - MinerCell.X) + FMath::Square(Cell.Y - MinerCell.Y));
+		return DistanceSquared >= MinSquared && DistanceSquared <= MaxSquared;
+	}, /*bFloorOnly*/ true);
 	if (Candidates.IsEmpty())
 	{
 		return false;
@@ -335,34 +323,27 @@ bool URRRunFlowSubsystem::FindShuttleCell(FIntPoint& OutCell)
 		return false;
 	}
 	URRFlowFieldSubsystem* FlowField = GetWorld()->GetSubsystem<URRFlowFieldSubsystem>();
+	if (!FlowField)
+	{
+		return false;
+	}
 	const FIntPoint MinerCell = Grid->GetCellAtWorld(Miner->GetActorLocation());
-	const FIntPoint Size = Grid->GetGridSize();
 	const int32 MinSquared = FMath::CeilToInt(FMath::Square(Config.ShuttleMinDistanceCells));
 
+	// Reachable floor cells at least the minimum distance away; the farthest reachable one is the fallback.
 	TArray<FIntPoint> Candidates;
 	FIntPoint Farthest(INDEX_NONE, INDEX_NONE);
 	int32 FarthestSquared = -1;
-	for (int32 Y = 0; Y < Size.Y; ++Y)
+	FlowField->GatherReachableCells(Candidates, [MinerCell, MinSquared, &Farthest, &FarthestSquared](FIntPoint Cell, int32 Steps)
 	{
-		for (int32 X = 0; X < Size.X; ++X)
+		const int32 DistanceSquared = FMath::Square(Cell.X - MinerCell.X) + FMath::Square(Cell.Y - MinerCell.Y);
+		if (DistanceSquared > FarthestSquared)
 		{
-			const FIntPoint Cell(X, Y);
-			if (Grid->GetCellType(Cell) != ERRCellType::Floor || (FlowField && FlowField->GetCellDistance(Cell) < 0))
-			{
-				continue;
-			}
-			const int32 DistanceSquared = FMath::Square(X - MinerCell.X) + FMath::Square(Y - MinerCell.Y);
-			if (DistanceSquared >= MinSquared)
-			{
-				Candidates.Add(Cell);
-			}
-			if (DistanceSquared > FarthestSquared)
-			{
-				FarthestSquared = DistanceSquared;
-				Farthest = Cell;
-			}
+			FarthestSquared = DistanceSquared;
+			Farthest = Cell;
 		}
-	}
+		return DistanceSquared >= MinSquared;
+	}, /*bFloorOnly*/ true);
 	if (!Candidates.IsEmpty())
 	{
 		OutCell = Candidates[RandomStream.RandRange(0, Candidates.Num() - 1)];

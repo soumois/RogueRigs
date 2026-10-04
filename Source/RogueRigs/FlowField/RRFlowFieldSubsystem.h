@@ -86,6 +86,19 @@ public:
 	UFUNCTION(BlueprintPure, Category = "FlowField")
 	bool IsWalkableCell(FIntPoint Cell) const;
 
+	/**
+	 * Reachable-cell query shared by every placement search (console, shuttle, spawner, stress, shooter reposition). Updates
+	 * the field once, then scans the grid row by row (Y outer, X inner, so seeded callers keep drawing the same cells) and
+	 * appends to OutCells (not reset) every cell that is walkable (Floor or Spawn; Floor only when bFloorOnly), has a path to
+	 * the goal, is not in ExcludedCells (optional) and passes Filter(Cell, Steps), Steps being its BFS distance to the goal.
+	 * Filter runs only on cells that passed the other checks, in scan order. Nothing is added without a grid or a goal.
+	 */
+	void GatherReachableCells(TArray<FIntPoint>& OutCells, TFunctionRef<bool(FIntPoint Cell, int32 Steps)> Filter,
+		bool bFloorOnly = false, const TSet<FIntPoint>* ExcludedCells = nullptr);
+
+	/** Adds the cell of every valid pawn of the world (robots, miner) to OutCells, on the current grid; spawn searches exclude them. */
+	void GatherPawnCells(TSet<FIntPoint>& OutCells) const;
+
 	/** Duration of the last BFS (distances and directions) in milliseconds. */
 	UFUNCTION(BlueprintPure, Category = "FlowField")
 	float GetLastComputeMilliseconds() const { return LastComputeMilliseconds; }
