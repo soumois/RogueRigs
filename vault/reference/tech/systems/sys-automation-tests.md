@@ -15,6 +15,7 @@ kind: doc
   - `RogueRigs.Weapons.BurstTiming`: `AdvanceTime` alone at 1/60 s; CSV values; exact shot times and firing frame (±1) at `FireRate` 1.25 (gaps 0.08 s, pause 0.64 s) and 3 (0.033 s, 0.267 s) ([[sys-auto-fire]] example).
   - `Weapons.MagazineReload`: shot 30 at 7.36 s, 1.5 s reload with `Ammo` 0, `Ammo` 30 at its end, shot 31 at 8.86 s.
   - `Weapons.ProjectileStopsOnRock`: shot from (42, 38) stops on rock (43, 38) at frame 2, no damage to the rock or a dummy behind it.
+  - `Weapons.ProjectileHitFilter` (task-020-02): projectiles damage terrain by default; a shot whose `HitActorClass` is set to the miner class passes through the dummy (no hit, health unchanged); one set to the dummy class hits it (−10).
   - `Weapons.ProjectileDamagesDummy`: dummy on (44, 41), shot from (42, 41): `CritChance` 0 → −10, not critical; `CritChance` 1 → −15, critical.
   - `Weapons.DummyRefill`: hits at 0 and 1 s, refill 180 frames after the last; a 5000 hit leaves 0 then refills at once, no `State.Dead`.
   - `Weapons.MinerStartingWeapon`: miner with `WeaponAttachSocketName` forced to none, walking on (42, 38): `BP_BurstRifle` on the capsule at `WeaponAttachOffset`, pointing along the aim, no actor collision, acquired, firing; capsule Overlap on `Projectile`; one shot spawns `ShotHeight` (50) above the floor, below `BlockHeight`, capsule radius + `ShotForwardOffset` (54 uu) ahead, and stops on rock (43, 38) at frame 1.

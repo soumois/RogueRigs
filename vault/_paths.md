@@ -110,7 +110,11 @@ sys-cheats  reference/tech/systems/sys-cheats.md
 sys-damage  reference/tech/systems/sys-damage.md
 sys-difficulty  reference/tech/systems/sys-difficulty.md
 sys-drone  reference/tech/systems/sys-drone.md
-sys-enemies  reference/tech/systems/sys-enemies.md
+sys-enemies  reference/tech/systems/sys-enemies/sys-enemies.md
+sys-enemies-base  reference/tech/systems/sys-enemies/sys-enemies-base.md
+sys-enemies-chaser  reference/tech/systems/sys-enemies/sys-enemies-chaser.md
+sys-enemies-kamikaze  reference/tech/systems/sys-enemies/sys-enemies-kamikaze.md
+sys-enemies-movement  reference/tech/systems/sys-enemies/sys-enemies-movement.md
 sys-enemy-ai  reference/tech/systems/sys-enemy-ai.md
 sys-explosions  reference/tech/systems/sys-explosions.md
 sys-flow-field  reference/tech/systems/sys-flow-field.md
@@ -129,6 +133,7 @@ sys-stress  reference/tech/systems/sys-stress.md
 sys-target-dummy  reference/tech/systems/sys-target-dummy.md
 sys-upgrades  reference/tech/systems/sys-upgrades.md
 sys-weapons  reference/tech/systems/sys-weapons.md
+sys-world-queries  reference/tech/systems/sys-world-queries.md
 systems-index  reference/tech/systems/systems-index.md
 task-000-enable-gas  reference/tasks/task-000-enable-gas.md
 task-001-01-validator-void  reference/tasks/task-001-arena-m1/task-001-01-validator-void.md

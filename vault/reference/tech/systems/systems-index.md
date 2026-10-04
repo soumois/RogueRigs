@@ -27,7 +27,8 @@ Decision status inside each doc: approved, provisional, deferred or open. Planne
 - [[sys-explosions]] — explosion queue and chain reactions.
 - [[sys-enemy-ai]] — AI framework choice, pathfinding, line of sight, stun reaction.
 - [[sys-flow-field]] — flow field path provider and generic enemy movement component as built.
-- [[sys-enemies]] — robot base (ASC, CSV stats, death, XP drop) and the chaser state machine as built.
+- [[sys-enemies]] — robots index: base and shared state-machine helpers, light movement, chaser, kamikaze, EnemyStats.csv.
+- [[sys-world-queries]] — RRWorld lookups: the arena grid and the (living) miner of a world.
 - [[sys-spawner]] — enemy spawner actor: spawn band outside the camera view, alive cap, tunables.
 - [[sys-grid]] — grid data, autotiling, instanced rendering, terrain damage.
 - [[sys-pickups]] — ore, heal and XP pickups: drop rule, pop, attraction within PickupRadius, collection event, XP grant.
