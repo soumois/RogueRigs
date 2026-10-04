@@ -3,7 +3,7 @@ id: task-021-shooter
 description: "Global task: ranged shooter robot with line of sight, repositioning, red targeting laser, dodgeable shots stopped by rock; joins the spawner mix."
 parent: tasks-index
 kind: task
-status: todo
+status: in-progress
 ---
 # Shooter robot
 

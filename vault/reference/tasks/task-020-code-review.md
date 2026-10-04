@@ -3,7 +3,7 @@ id: task-020-code-review
 description: "Global task: review the C++ for human readability and generalization, refactor high-value items without behavior change, check Blueprints in PIE."
 parent: tasks-index
 kind: task
-status: in-progress
+status: done
 ---
 # C++ code review and refactor
 
@@ -13,8 +13,8 @@ status: in-progress
 - gdd_check: No GDD impact. Rule [[cpp-standard]] and [[cpp-bp-split]] apply.
 - confirmed_by_owner: yes (2026-10-04, all subtasks pre-approved)
 - milestone: M1
-- next_step: task-020-04-bp-check
-- result: open
+- next_step: none
+- result: All acceptance checks passed: review nodes code-review-m1 (index, gameplay, systems, hooks, plan, deferred); R1 to R7 done with no behavior change (101 → 103/103 tests, Shipping target builds, no CoreRedirect needed); all 19 Blueprints compile and the PIE loop runs clean. Deferred R8 to R16 with triggers in code-review-m1-deferred (kamikaze tuning to CSV goes with task-021-01).
 
 ## Subtasks
 1. task-020-01-review — cpp: review report, ranked refactor list

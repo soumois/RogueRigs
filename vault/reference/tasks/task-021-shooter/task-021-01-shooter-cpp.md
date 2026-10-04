@@ -3,7 +3,7 @@ id: task-021-01-shooter-cpp
 description: "Shooter class: keeps 4 cells away, grid LOS gating, repositioning search, on-screen-only fire, 0.6 s laser telegraph, enemy projectile; spawner entry; tests."
 parent: task-021-shooter
 kind: task
-status: todo
+status: in-progress
 ---
 # Shooter C++
 
