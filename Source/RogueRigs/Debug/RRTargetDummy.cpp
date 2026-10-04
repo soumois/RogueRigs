@@ -3,7 +3,7 @@
 #include "Debug/RRTargetDummy.h"
 
 #include "Components/StaticMeshComponent.h"
-#include "Debug/RRFloatingDamageText.h"
+#include "Damage/RRFloatingDamageText.h"
 #include "Engine/World.h"
 #include "GAS/RRAbilitySystemComponent.h"
 #include "GAS/RRHealthAttributeSet.h"
@@ -127,23 +127,8 @@ void ARRTargetDummy::EndFlash()
 
 void ARRTargetDummy::SpawnFloatingText(float Damage, bool bIsCritical)
 {
-	UWorld* World = GetWorld();
-	if (!World || !FloatingTextClass)
-	{
-		return;
-	}
-
-	const FVector Jitter(FMath::FRandRange(-TextSpawnJitter, TextSpawnJitter), FMath::FRandRange(-TextSpawnJitter, TextSpawnJitter), 0.f);
-	const FTransform SpawnTransform(GetActorLocation() + TextSpawnOffset + Jitter);
-
-	FActorSpawnParameters SpawnParams;
-	SpawnParams.Owner = this;
-	SpawnParams.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AlwaysSpawn;
-
-	if (ARRFloatingDamageText* Text = World->SpawnActor<ARRFloatingDamageText>(FloatingTextClass, SpawnTransform, SpawnParams))
-	{
-		Text->InitDamageText(Damage, bIsCritical ? CriticalTextColor : NormalTextColor, bIsCritical ? CriticalTextSize : NormalTextSize);
-	}
+	ARRFloatingDamageText::SpawnForHit(GetWorld(), FloatingTextClass, GetActorLocation() + TextSpawnOffset, TextSpawnJitter, Damage,
+		bIsCritical ? CriticalTextColor : NormalTextColor, bIsCritical ? CriticalTextSize : NormalTextSize, this);
 }
 
 void ARRTargetDummy::RefillHealth()

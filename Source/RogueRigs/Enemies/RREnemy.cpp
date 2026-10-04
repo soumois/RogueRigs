@@ -7,7 +7,7 @@
 #include "Components/CapsuleComponent.h"
 #include "Components/MeshComponent.h"
 #include "Components/SkeletalMeshComponent.h"
-#include "Debug/RRFloatingDamageText.h"
+#include "Damage/RRFloatingDamageText.h"
 #include "Enemies/RRRobotMovementComponent.h"
 #include "Engine/DataTable.h"
 #include "Engine/World.h"
@@ -362,24 +362,10 @@ void ARREnemy::HandleDamageReceived(float Damage, bool bIsCritical, float Health
 
 void ARREnemy::SpawnDamageText(float Damage, bool bIsCritical)
 {
-	UWorld* World = GetWorld();
-	if (!World || !FloatingTextClass)
-	{
-		return;
-	}
-
-	// Capsule top (scaled) + height, jittered horizontally only.
-	const FVector Jitter(FMath::FRandRange(-TextSpawnJitter, TextSpawnJitter), FMath::FRandRange(-TextSpawnJitter, TextSpawnJitter), 0.f);
+	// Capsule top (scaled) + height; the helper adds the horizontal jitter.
 	const float CapsuleTop = GetCapsuleComponent()->GetScaledCapsuleHalfHeight();
-	const FTransform SpawnTransform(GetActorLocation() + FVector(0.f, 0.f, CapsuleTop + TextSpawnHeight) + Jitter);
-
-	FActorSpawnParameters SpawnParams;
-	SpawnParams.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AlwaysSpawn;
-
-	if (ARRFloatingDamageText* Text = World->SpawnActor<ARRFloatingDamageText>(FloatingTextClass, SpawnTransform, SpawnParams))
-	{
-		Text->InitDamageText(Damage, bIsCritical ? CriticalTextColor : NormalTextColor, bIsCritical ? CriticalTextSize : NormalTextSize);
-	}
+	ARRFloatingDamageText::SpawnForHit(GetWorld(), FloatingTextClass, GetActorLocation() + FVector(0.f, 0.f, CapsuleTop + TextSpawnHeight),
+		TextSpawnJitter, Damage, bIsCritical ? CriticalTextColor : NormalTextColor, bIsCritical ? CriticalTextSize : NormalTextSize);
 }
 
 void ARREnemy::SetMeshesVisible(bool bVisible)

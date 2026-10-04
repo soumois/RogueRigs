@@ -1,6 +1,6 @@
-// Rogue Rigs - debug floating damage number: a world-space text that rises, fades and faces the camera, then destroys itself.
+// Rogue Rigs - floating damage number (robots and target dummy): a world-space text that rises, fades and faces the camera, then destroys itself.
 
-#include "Debug/RRFloatingDamageText.h"
+#include "Damage/RRFloatingDamageText.h"
 
 #include "Camera/PlayerCameraManager.h"
 #include "Components/TextRenderComponent.h"
@@ -10,6 +10,30 @@
 #include "UObject/ConstructorHelpers.h"
 
 #include UE_INLINE_GENERATED_CPP_BY_NAME(RRFloatingDamageText)
+
+ARRFloatingDamageText* ARRFloatingDamageText::SpawnForHit(UWorld* World, TSubclassOf<ARRFloatingDamageText> TextClass, const FVector& BaseLocation,
+	float JitterRadius, float Damage, const FLinearColor& Color, float WorldSize, AActor* Owner)
+{
+	if (!World || !TextClass)
+	{
+		return nullptr;
+	}
+
+	// Horizontal jitter only, so the text keeps its height above the hit actor.
+	const FVector Jitter(FMath::FRandRange(-JitterRadius, JitterRadius), FMath::FRandRange(-JitterRadius, JitterRadius), 0.f);
+	const FTransform SpawnTransform(BaseLocation + Jitter);
+
+	FActorSpawnParameters SpawnParams;
+	SpawnParams.Owner = Owner;
+	SpawnParams.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AlwaysSpawn;
+
+	ARRFloatingDamageText* Text = World->SpawnActor<ARRFloatingDamageText>(TextClass, SpawnTransform, SpawnParams);
+	if (Text)
+	{
+		Text->InitDamageText(Damage, Color, WorldSize);
+	}
+	return Text;
+}
 
 ARRFloatingDamageText::ARRFloatingDamageText(const FObjectInitializer& ObjectInitializer)
 	: Super(ObjectInitializer)

@@ -7,7 +7,7 @@
 
 #include "AbilitySystemComponent.h"
 #include "Damage/RRGE_DamageFlat.h"
-#include "Debug/RRFloatingDamageText.h"
+#include "Damage/RRFloatingDamageText.h"
 #include "Components/SkeletalMeshComponent.h"
 #include "Enemies/RRChaser.h"
 #include "Enemies/RRRobotMovementComponent.h"

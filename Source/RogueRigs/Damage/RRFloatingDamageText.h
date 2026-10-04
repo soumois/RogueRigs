@@ -1,4 +1,4 @@
-// Rogue Rigs - debug floating damage number: a world-space text that rises, fades and faces the camera, then destroys itself.
+// Rogue Rigs - floating damage number (robots and target dummy): a world-space text that rises, fades and faces the camera, then destroys itself.
 
 #pragma once
 
@@ -10,7 +10,7 @@ class UMaterialInterface;
 class UTextRenderComponent;
 
 /**
- * M1 debug damage number (damage-numbers): one short-lived actor per hit, spawned by ARRTargetDummy.
+ * M1 damage number (damage-numbers): one short-lived actor per hit, spawned through SpawnForHit by ARREnemy and ARRTargetDummy.
  * Shows the rounded damage with a UTextRenderComponent, rises at RiseSpeed, fades its alpha to 0 over Lifetime,
  * and turns every tick to face the active player camera. A second, near-black text render (OutlineRender) sits just
  * behind it, slightly larger and offset, as a dark outline/drop shadow for readability; it shows the same value and fades with it. Not for horde scale: the M2 version uses Niagara.
@@ -26,6 +26,14 @@ public:
 
 	/** Sets the shown value (rounded to an integer), color and world size. Call right after spawning. */
 	void InitDamageText(float Damage, const FLinearColor& Color, float WorldSize);
+
+	/**
+	 * Spawns TextClass at BaseLocation plus a random horizontal jitter in [-JitterRadius, JitterRadius] on X and Y
+	 * (always spawns, ignoring collision), then calls InitDamageText. Shared by every actor that shows damage numbers;
+	 * the caller picks color and size (normal or critical). Returns nullptr when World or TextClass is null.
+	 */
+	static ARRFloatingDamageText* SpawnForHit(UWorld* World, TSubclassOf<ARRFloatingDamageText> TextClass, const FVector& BaseLocation,
+		float JitterRadius, float Damage, const FLinearColor& Color, float WorldSize, AActor* Owner = nullptr);
 
 	/** Rises, fades and faces the camera; destroys the actor once Lifetime has elapsed. */
 	virtual void Tick(float DeltaSeconds) override;
