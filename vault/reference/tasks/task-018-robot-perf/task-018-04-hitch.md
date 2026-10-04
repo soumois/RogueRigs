@@ -3,7 +3,7 @@ id: task-018-04-hitch
 description: "Remove or reduce the 45–50 ms hitch every 61 s found by the trace (garbage collection or other), measured in -game."
 parent: task-018-robot-perf
 kind: task
-status: todo
+status: in-progress
 ---
 # Periodic hitch
 

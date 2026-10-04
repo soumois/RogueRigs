@@ -3,7 +3,7 @@ id: task-018-03-light-movement
 description: "Lighter CharacterMovement for robots on the flat floor and a slower movement tick far from the miner; stress before and after."
 parent: task-018-robot-perf
 kind: task
-status: in-progress
+status: done
 ---
 # Light movement
 
@@ -16,7 +16,7 @@ status: in-progress
 - editor_state: closed
 - token_ceiling: 90000
 - milestone: M1
-- result: Kept: empty CharacterMesh0 stripped (no tick/collision/render, fully absolute) + no overlap events on collisionless parts (S0 game −0.6/−0.6/−0.8 ms at 100/200/400); URRRobotMovementComponent floor cache, 25 uu (−0.2/−0.9/−0.8); far movement, off-screen beyond 2000 uu at 0.1 s tick (−0.2/−0.05/−0.7, single run, near noise). Reverted: bEnablePhysicsInteraction off + bAlwaysCheckFloor off (+0.2 to +0.4, noise). Sub-stepping not applicable (one step per frame above 20 fps). Game avg before → after: S0 5.38/7.91/11.24 → 4.39–4.49/6.09–6.40/8.88–9.28; S2 (018-02 after) 6.0/9.4/14.65 → 5.35–5.62/7.94–8.10/12.03–12.11. No Blueprint change needed. Test Enemies.LightMovement; build 0, 101/101. Docs sys-enemies, perf-risks, sys-automation-tests.
+- result: Kept: empty built-in skeletal mesh stripped on robots and no overlap events on collision-less parts (−0.8 ms at 400); URRRobotMovementComponent reuses the floor result until 25 uu moved or height change (−0.8); far off-screen robots (> 2000 uu) move at 0.1 s intervals (−0.7, near noise, off screen only). Reverted: physics interaction off + idle floor check (no gain). Game avg S0 100/200/400: 5.38/7.91/11.24 → 4.4/6.2/9.1; S2: 6.0/9.4/14.7 → 5.5/8.0/12.1. Test Enemies.LightMovement; build 0, 101/101. Docs sys-enemies, perf-risks, sys-automation-tests. Commit fe827fd, about 100k tokens.
 
 ## Relations
 - [[task-018-robot-perf]] — parent global task.
