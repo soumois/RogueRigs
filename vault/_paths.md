@@ -203,6 +203,14 @@ task-016-02-shuttle  reference/tasks/task-016-console-extraction/task-016-02-shu
 task-016-03-bp-objectives  reference/tasks/task-016-console-extraction/task-016-03-bp-objectives.md
 task-016-04-tests-integration  reference/tasks/task-016-console-extraction/task-016-04-tests-integration.md
 task-016-console-extraction  reference/tasks/task-016-console-extraction.md
+task-017-01-radius  reference/tasks/task-017-kamikaze-radius/task-017-01-radius.md
+task-017-kamikaze-radius  reference/tasks/task-017-kamikaze-radius.md
+task-018-01-trace  reference/tasks/task-018-robot-perf/task-018-01-trace.md
+task-018-02-crowd-collision  reference/tasks/task-018-robot-perf/task-018-02-crowd-collision.md
+task-018-03-light-movement  reference/tasks/task-018-robot-perf/task-018-03-light-movement.md
+task-018-04-hitch  reference/tasks/task-018-robot-perf/task-018-04-hitch.md
+task-018-05-final-stress  reference/tasks/task-018-robot-perf/task-018-05-final-stress.md
+task-018-robot-perf  reference/tasks/task-018-robot-perf.md
 tasks-index  reference/tasks/tasks-index.md
 tech-index  reference/tech/tech-index.md
 terrain-index  reference/gdd/terrain/terrain-index.md
