@@ -209,15 +209,7 @@ void ARRWeapon::FireOnce()
 	const FTransform SpawnTransform(ShotRotation, GetShotOrigin());
 
 	APawn* InstigatorPawn = OwnerMiner ? static_cast<APawn*>(OwnerMiner) : GetInstigator();
-	ARRProjectile* Projectile = World->SpawnActorDeferred<ARRProjectile>(ProjectileClass, SpawnTransform, this, InstigatorPawn, ESpawnActorCollisionHandlingMethod::AlwaysSpawn);
-	if (Projectile == nullptr)
-	{
-		UE_LOG(LogRogueRigs, Error, TEXT("%s: projectile of class %s could not be spawned."), *GetName(), *ProjectileClass->GetName());
-		return;
-	}
-
-	Projectile->InitProjectile(Spec, ProjectileSpeed, Range / ProjectileSpeed);
-	Projectile->FinishSpawning(SpawnTransform);
+	ARRProjectile::SpawnProjectile(World, ProjectileClass, SpawnTransform, this, InstigatorPawn, Spec, ProjectileSpeed, Range / ProjectileSpeed);
 }
 
 void ARRWeapon::EndPlay(const EEndPlayReason::Type EndPlayReason)

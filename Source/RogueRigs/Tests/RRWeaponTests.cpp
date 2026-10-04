@@ -1,4 +1,4 @@
-// Rogue Rigs - automation tests of the weapon rules (RogueRigs.Weapons.*): burst timing, magazine and reload, projectile stop on rock, GAS damage and crits on the target dummy, dummy refill, miner starting weapon and shot origin, miner moving while firing, miner shots hitting a floor dummy.
+// Rogue Rigs - automation tests of the weapon rules (RogueRigs.Weapons.*): burst timing, magazine and reload, projectile stop on rock, GAS damage and crits on the target dummy, dummy refill, miner starting weapon and shot origin, miner moving while firing, miner shots hitting a floor dummy, projectile hit filter.
 
 #include "CoreMinimal.h"
 #include "Misc/AutomationTest.h"
@@ -53,6 +53,12 @@ namespace RRWeaponTests
 	{
 		static FName& WeaponAttachSocketNameOf(ARRMiner* Miner) { return Miner->*(&FMinerAccess::WeaponAttachSocketName); }
 		static FVector WeaponAttachOffsetOf(const ARRMiner* Miner) { return Miner->*(&FMinerAccess::WeaponAttachOffset); }
+	};
+
+	/** Write access to the projectile's protected hit filter. Never instantiated. */
+	struct FProjectileAccess : public ARRProjectile
+	{
+		static TSubclassOf<AActor>& HitActorClassOf(ARRProjectile* Projectile) { return Projectile->*(&FProjectileAccess::HitActorClass); }
 	};
 
 	/** Read access to the dummy's protected health set. Never instantiated. */
@@ -977,6 +983,69 @@ bool FRRWeaponMinerHitsFloorDummyTest::RunTest(const FString& Parameters)
 	TestTrue(TEXT("the miner's shots hit the floor dummy within 2 s"), FirstHitFrame != INDEX_NONE);
 	TestTrue(TEXT("dummy Health below MaxHealth"), HealthAfter < MaxHealth);
 	TestTrue(TEXT("damage received through the health set"), Hits.Num() > 0);
+
+	HealthSet->OnDamageReceived.Remove(HitHandle);
+	return true;
+}
+
+IMPLEMENT_SIMPLE_AUTOMATION_TEST(FRRWeaponProjectileHitFilterTest, "RogueRigs.Weapons.ProjectileHitFilter",
+	EAutomationTestFlags::EditorContext | EAutomationTestFlags::EngineFilter)
+
+bool FRRWeaponProjectileHitFilterTest::RunTest(const FString& Parameters)
+{
+	// Robot shots (task-021) rely on the filter: HitActorClass = the miner class passes through every other actor.
+	const ARRProjectile* Defaults = GetDefault<ARRProjectile>();
+	TestTrue(TEXT("projectiles damage terrain by default"), Defaults->DamagesTerrain());
+
+	FTestWorld TestWorld(TEXT("RRWeaponTestWorld"));
+	ARRArenaGrid* Grid = SpawnGrid(*this, TestWorld);
+	ARRWeapon* Rifle = Grid ? SpawnRifle(*this, TestWorld, FVector::ZeroVector) : nullptr;
+	ARRTargetDummy* Dummy = Rifle ? SpawnDummy(*this, TestWorld, Grid->GetCellCenter(DummyCell.X, DummyCell.Y)) : nullptr;
+	if (!Dummy)
+	{
+		return false;
+	}
+	Rifle->GetAutoFireComponent()->StopFiring();
+	Rifle->GetAbilitySystemComponent()->SetNumericAttributeBase(URRWeaponAttributeSet::GetCritChanceAttribute(), 0.f);
+	PlaceMuzzleAt(Rifle, Grid->GetCellCenter(DummyShooterCell.X, DummyShooterCell.Y) + FVector(0.f, 0.f, 0.5f * Grid->GetBlockHeight()));
+
+	int32 HitCount = 0;
+	URRHealthAttributeSet* HealthSet = FDummyAccess::HealthSetOf(Dummy);
+	const FDelegateHandle HitHandle = HealthSet->OnDamageReceived.AddLambda([&HitCount](float, bool, float) { ++HitCount; });
+	const float MaxHealth = DummyHealth(Dummy);
+
+	// Miner-only shot: the dummy is not hittable, the projectile passes through it.
+	ARRProjectile* Filtered = FireSingleShot(*this, Rifle);
+	if (!Filtered)
+	{
+		return false;
+	}
+	TestTrue(TEXT("unfiltered projectile can hit the dummy"), Filtered->CanHit(Dummy));
+	FProjectileAccess::HitActorClassOf(Filtered) = ARRMiner::StaticClass();
+	TestFalse(TEXT("miner-only projectile cannot hit the dummy"), Filtered->CanHit(Dummy));
+	TWeakObjectPtr<ARRProjectile> WeakFiltered(Filtered);
+	for (int32 Frame = 0; Frame < 30; ++Frame)
+	{
+		TestWorld.Tick();
+	}
+	TestEqual(TEXT("no hit from the miner-only shot"), HitCount, 0);
+	TestNearlyEqual(TEXT("dummy health unchanged"), DummyHealth(Dummy), MaxHealth);
+	if (WeakFiltered.IsValid())
+	{
+		WeakFiltered->Destroy();
+	}
+
+	// Filter matching the dummy's class: hit as usual.
+	ARRProjectile* Matching = FireSingleShot(*this, Rifle);
+	if (!Matching)
+	{
+		return false;
+	}
+	FProjectileAccess::HitActorClassOf(Matching) = ARRTargetDummy::StaticClass();
+	FVector LastLocation;
+	TestTrue(TEXT("matching shot destroyed on the dummy"), TickUntilDestroyed(TestWorld, Matching, 30, LastLocation) != INDEX_NONE);
+	TestEqual(TEXT("one hit from the matching shot"), HitCount, 1);
+	TestNearlyEqual(TEXT("Health lowered by 10"), DummyHealth(Dummy), MaxHealth - 10.f);
 
 	HealthSet->OnDamageReceived.Remove(HitHandle);
 	return true;

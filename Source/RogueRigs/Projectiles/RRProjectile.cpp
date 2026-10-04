@@ -1,13 +1,16 @@
-// Rogue Rigs - base projectile: flies straight, carries a damage spec, hurts the first actor with an ASC, stops on rock.
+// Rogue Rigs - base projectile: flies straight, carries a damage spec, hurts the first hittable actor with an ASC, stops on rock.
 
 #include "Projectiles/RRProjectile.h"
 
 #include "AbilitySystemComponent.h"
 #include "AbilitySystemGlobals.h"
 #include "Components/SphereComponent.h"
+#include "Engine/World.h"
+#include "GameFramework/Pawn.h"
 #include "GameFramework/ProjectileMovementComponent.h"
 #include "Grid/RRArenaGrid.h"
 #include "Projectiles/RRCollisionChannels.h"
+#include "RogueRigs.h"
 #include "Weapons/RRWeaponAttributeSet.h"
 
 #include UE_INLINE_GENERATED_CPP_BY_NAME(RRProjectile)
@@ -82,6 +85,30 @@ void ARRProjectile::InitProjectile(const FGameplayEffectSpecHandle& InDamageSpec
 	}
 }
 
+ARRProjectile* ARRProjectile::SpawnProjectile(UWorld* World, TSubclassOf<ARRProjectile> Class, const FTransform& SpawnTransform,
+	AActor* InOwner, APawn* InInstigator, const FGameplayEffectSpecHandle& InDamageSpec, float Speed, float Lifetime)
+{
+	if (!World || !Class)
+	{
+		UE_LOG(LogRogueRigs, Warning, TEXT("ARRProjectile::SpawnProjectile: no world or no class (owner %s)."), *GetNameSafe(InOwner));
+		return nullptr;
+	}
+	ARRProjectile* Projectile = World->SpawnActorDeferred<ARRProjectile>(Class, SpawnTransform, InOwner, InInstigator, ESpawnActorCollisionHandlingMethod::AlwaysSpawn);
+	if (Projectile == nullptr)
+	{
+		UE_LOG(LogRogueRigs, Error, TEXT("%s: projectile of class %s could not be spawned."), *GetNameSafe(InOwner), *Class->GetName());
+		return nullptr;
+	}
+	Projectile->InitProjectile(InDamageSpec, Speed, Lifetime);
+	Projectile->FinishSpawning(SpawnTransform);
+	return Projectile;
+}
+
+bool ARRProjectile::CanHit(const AActor* OtherActor) const
+{
+	return OtherActor && (!HitActorClass || OtherActor->IsA(HitActorClass));
+}
+
 bool ARRProjectile::IsIgnoredActor(const AActor* OtherActor) const
 {
 	if (OtherActor == nullptr || OtherActor == this)
@@ -98,7 +125,7 @@ bool ARRProjectile::IsIgnoredActor(const AActor* OtherActor) const
 
 void ARRProjectile::OnSphereBeginOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
 {
-	if (bHasHit || !IsValid(this) || IsIgnoredActor(OtherActor))
+	if (bHasHit || !IsValid(this) || IsIgnoredActor(OtherActor) || !CanHit(OtherActor))
 	{
 		return;
 	}
@@ -138,7 +165,7 @@ float ARRProjectile::GetCarriedDamage() const
 void ARRProjectile::OnProjectileStop(const FHitResult& ImpactResult)
 {
 	// Barrels are grid cells without an ASC: the grid takes the carried damage as shot damage (other blocks ignore it).
-	if (!bHasHit)
+	if (!bHasHit && bDamagesTerrain)
 	{
 		if (ARRArenaGrid* Grid = Cast<ARRArenaGrid>(ImpactResult.GetActor()))
 		{

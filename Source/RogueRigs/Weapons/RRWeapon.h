@@ -63,17 +63,21 @@ public:
 	UFUNCTION(BlueprintPure, Category = "Weapon")
 	ARRMiner* GetOwnerMiner() const { return OwnerMiner; }
 
-	/** Fire direction in world space: the owning miner's aim, or the weapon's flat forward vector without a miner. */
+	/**
+	 * Fire direction in world space: the owning miner's aim, or the weapon's flat forward vector without a miner. Virtual so a
+	 * weapon not held by a miner (turret) supplies its own aim.
+	 */
 	UFUNCTION(BlueprintPure, Category = "Weapon")
-	FVector GetAimDirection() const;
+	virtual FVector GetAimDirection() const;
 
 	/**
 	 * World location where FireOnce spawns its projectile. With an owning miner: the floor under the miner (capsule bottom
 	 * minus the CharacterMovement floor distance when standing on a walkable floor) + ShotHeight, moved horizontally along
-	 * GetAimDirection by the capsule radius + ShotForwardOffset. Without a miner: the Muzzle location.
+	 * GetAimDirection by the capsule radius + ShotForwardOffset. Without a miner: the Muzzle location. Virtual so a weapon not
+	 * held by a miner (turret) supplies its own origin.
 	 */
 	UFUNCTION(BlueprintPure, Category = "Weapon")
-	FVector GetShotOrigin() const;
+	virtual FVector GetShotOrigin() const;
 
 	/** Height of the shots above the floor under the owning miner, in uu. */
 	UFUNCTION(BlueprintPure, Category = "Weapon|Projectile")
@@ -123,7 +127,7 @@ protected:
 	 * Fires one shot, called by the auto-fire for each bullet. Default (burst rifle): makes a DamageEffectClass spec
 	 * on the weapon's ASC, spawns one ProjectileClass at GetShotOrigin, flat, toward GetAimDirection rotated by a random
 	 * yaw in [-SpreadDeg, SpreadDeg], with speed ProjectileSpeed and lifetime Range / ProjectileSpeed (Owner: this
-	 * weapon, Instigator: the miner). Logged and skipped if ProjectileClass is unset or ProjectileSpeed or Range is <= 0.
+	 * weapon, Instigator: the miner; ARRProjectile::SpawnProjectile). Logged and skipped if ProjectileClass is unset or ProjectileSpeed or Range is <= 0.
 	 * Weapons that fire differently (shotgun) override it.
 	 */
 	virtual void FireOnce();

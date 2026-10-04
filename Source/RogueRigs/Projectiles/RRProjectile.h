@@ -1,4 +1,4 @@
-// Rogue Rigs - base projectile: flies straight, carries a damage spec, hurts the first actor with an ASC, stops on rock.
+// Rogue Rigs - base projectile: flies straight, carries a damage spec, hurts the first hittable actor with an ASC, stops on rock.
 
 #pragma once
 
@@ -7,6 +7,7 @@
 #include "GameplayEffectTypes.h"
 #include "RRProjectile.generated.h"
 
+class APawn;
 class UPrimitiveComponent;
 class UProjectileMovementComponent;
 class USphereComponent;
@@ -15,11 +16,14 @@ struct FHitResult;
 /**
  * Base projectile (sys-projectiles). No ASC: it carries the damage spec made by the weapon's ASC at fire time and
  * applies it on impact. Collision: a sphere on the Projectile object channel (RRCollisionChannels::Projectile)
- * that overlaps pawns and blocks world static and dynamic. On overlap with an actor that has an ASC (other than
- * its owner weapon and the instigating miner), it applies the spec once and is destroyed; on a blocking hit (rock
- * blocks, walls) it is destroyed, after damaging the cell when it is a barrel of the arena grid (carried Damage, no GAS on barrels). Straight flight, no gravity, no sub-stepping; speed and lifetime set by
- * InitProjectile. Spawn with SpawnActorDeferred (Owner = weapon, Instigator = miner), call InitProjectile, then
- * FinishSpawning. Subclass in Blueprint for the mesh and the sphere radius.
+ * that overlaps pawns and blocks world static and dynamic. On overlap with an actor that has an ASC, is not ignored
+ * (owner, owner's owner, instigator) and passes CanHit (default: an instance of HitActorClass, any actor when unset), it
+ * applies the spec once and is destroyed; other actors are passed through. On a blocking hit (rock blocks, walls) it is
+ * destroyed, after damaging the cell when bDamagesTerrain and it is a barrel of the arena grid (carried Damage, no GAS on
+ * barrels). Straight flight, no gravity, no sub-stepping; speed and lifetime set by InitProjectile. Spawn with
+ * SpawnProjectile (deferred spawn + InitProjectile + FinishSpawning; Owner = the firing actor, Instigator = its pawn).
+ * Robot shots: HitActorClass = the miner class (robots are passed through) and bDamagesTerrain off. Subclass in Blueprint
+ * for the mesh and the sphere radius.
  */
 UCLASS(Abstract)
 class ROGUERIGS_API ARRProjectile : public AActor
@@ -36,6 +40,23 @@ public:
 	 */
 	void InitProjectile(const FGameplayEffectSpecHandle& InDamageSpec, float Speed, float Lifetime);
 
+	/**
+	 * Spawns one projectile of Class at SpawnTransform (deferred, always spawned), sets its damage spec, speed (uu/s) and
+	 * lifetime (s, 0 = unlimited) with InitProjectile, then finishes the spawn. InOwner and InInstigator are ignored by its
+	 * collision. Returns null (logged) when World or Class is missing or the spawn failed.
+	 */
+	static ARRProjectile* SpawnProjectile(UWorld* World, TSubclassOf<ARRProjectile> Class, const FTransform& SpawnTransform,
+		AActor* InOwner, APawn* InInstigator, const FGameplayEffectSpecHandle& InDamageSpec, float Speed, float Lifetime);
+
+	/**
+	 * True when this projectile may hit OtherActor (checked on overlap after the ignored actors, before the ASC lookup).
+	 * Default: OtherActor is an instance of HitActorClass, or any actor when HitActorClass is unset. Override for other filters.
+	 */
+	virtual bool CanHit(const AActor* OtherActor) const;
+
+	/** True when a blocking hit on a barrel cell applies the carried damage to it. */
+	bool DamagesTerrain() const { return bDamagesTerrain; }
+
 	/** The collision sphere (root component). */
 	USphereComponent* GetCollisionSphere() const { return CollisionSphere; }
 
@@ -46,11 +67,11 @@ protected:
 	/** Binds the overlap and stop events and ignores the owner weapon and the instigator while moving. */
 	virtual void PostInitializeComponents() override;
 
-	/** Pawn overlap: applies the spec once to an actor with an ASC (owner and instigator excluded), then destroys this projectile. */
+	/** Pawn overlap: applies the spec once to a hittable actor with an ASC (ignored actors and CanHit false excluded), then destroys this projectile. */
 	UFUNCTION()
 	void OnSphereBeginOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult);
 
-	/** Blocking hit (rock, wall): applies the carried damage to a barrel of the arena grid (ARRArenaGrid::ApplyShotDamage), then destroys this projectile. */
+	/** Blocking hit (rock, wall): when bDamagesTerrain, applies the carried damage to a barrel of the arena grid (ARRArenaGrid::ApplyShotDamage); then destroys this projectile. */
 	UFUNCTION()
 	void OnProjectileStop(const FHitResult& ImpactResult);
 
@@ -70,6 +91,14 @@ protected:
 	/** Straight flight without gravity, bounce or sub-stepping; stops on the first blocking hit. */
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Components")
 	TObjectPtr<UProjectileMovementComponent> ProjectileMovement;
+
+	/** Only instances of this class are hit (CanHit); others are passed through. None = any actor with an ASC (miner shots). */
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Projectile")
+	TSubclassOf<AActor> HitActorClass;
+
+	/** A blocking hit on a barrel cell damages it (miner shots). Off for shots that must not touch the terrain (robot shots). */
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Projectile")
+	bool bDamagesTerrain = true;
 
 	/** Damage spec made by the weapon's ASC at fire time; applied on impact (the target ASC works on its own copy). */
 	FGameplayEffectSpecHandle DamageSpec;
