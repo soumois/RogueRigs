@@ -50,3 +50,4 @@ Safe with margin: at 100 robots avg 9–10 ms (≈ 40 % under 16.6) and p99 11�
 - [[stress-test-m1]] — protocol, thresholds and the baseline these numbers compare with.
 - [[perf-risks]] — ranked optimization leads drawn from these tables.
 - [[sys-stress]] — the run modes and launcher options used.
+- [[stress-opt-m1]] — the same scenarios rerun after task-018 optimization.

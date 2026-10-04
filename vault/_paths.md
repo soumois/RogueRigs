@@ -79,6 +79,7 @@ objective-variants  reference/gdd/run/objective-variants.md
 orchestration-protocol  reference/agents/orchestration-protocol.md
 ore-blocks  reference/gdd/terrain/ore-blocks.md
 ore-economy  reference/gdd/run/ore-economy.md
+perf-leads  reference/tech/performance/perf-leads.md
 perf-risks  reference/tech/performance/perf-risks.md
 perf-trace-m1  reference/tech/performance/perf-trace-m1.md
 performance-index  reference/tech/performance/performance-index.md
@@ -94,6 +95,7 @@ run-log-schema  reference/tech/pipelines/run-log-schema.md
 run-structure  reference/gdd/run/run-structure.md
 shotgun  reference/gdd/weapons/shotgun.md
 stress-final-m1  reference/tech/performance/stress-final-m1.md
+stress-opt-m1  reference/tech/performance/stress-opt-m1.md
 stress-test-m1  reference/tech/performance/stress-test-m1.md
 sys-auto-fire  reference/tech/systems/sys-auto-fire.md
 sys-automation-tests  reference/tech/systems/sys-automation-tests.md
