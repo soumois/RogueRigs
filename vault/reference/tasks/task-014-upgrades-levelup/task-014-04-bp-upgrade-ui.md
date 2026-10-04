@@ -16,7 +16,7 @@ status: done
 - editor_state: open
 - token_ceiling: 110000
 - model: sonnet
-- tokens: 243692
+- tokens: input 266, cache write 241597, cache read 19228948, output 80733
 - runs: 4
 - milestone: M1
 - result: WBP_HUD: UpgradeScreen (dim backdrop, title Choisis une amélioration, 3 tier-colored cards name/target/value, Relancer button) bound to OnUpgradeOfferShown/Closed, ChooseUpgrade(0..2), RequestReroll (no separate WBP_UpgradeChoice: cross-Blueprint calls not creatable via MCP). BP_Miner: cyan disc grows 0.6 s on OnLevelUpEffect. BP_EnemySpawner weights 85/15. PIE: pause 0.8 s after level-up with frozen frame, reroll once then disabled, card PV max +15 applied and resume — pass; ring seen; heal 20 % not isolated in PIE (C++ tests cover it); clicks driven by Slate Click + Enter (real mouse click unconfirmed). Cosmetic: card widths differ at 1920 px. No PIE runtime error. Docs wbp-hud, bp-miner, bp-enemy-spawner. Commits a6a715e, abc4ea7, df5a4fb; about 245k tokens over four agent runs (turn limit hit three times, screenshots overflowed context). Editor force-closed with a Save Content prompt pending (screen locked); only uncommitted in-memory edits lost.

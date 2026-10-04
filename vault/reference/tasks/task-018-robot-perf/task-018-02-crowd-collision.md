@@ -16,7 +16,7 @@ status: done
 - editor_state: closed
 - token_ceiling: 90000
 - model: opus
-- tokens: 123924
+- tokens: input 100, cache write 117092, cache read 3838609, output 41084
 - runs: 1
 - milestone: M1
 - result: Robot capsules carry RobotMaskFilter and robot movement sweeps ignore it (miner, terrain, barrels, projectiles still collide); ARREnemy SetIgnoreOtherRobots, Enemy|Crowd settings: avoidance consideration 500 → 250 uu, radius expansion 1.5 → 1.1, lock time 0.2 → 0.3 s. Packing (40 chasers, 10 s): within 300 uu 11 → 19, mean distance 617 → 496 uu, attacks 20 → 28. Stress game avg: S0 400 11.31 → 10.96 (noise); S2 400 13.34 → 14.6–14.7 (+1.3 ms, likely more hits in the denser crowd, unconfirmed). Tests RobotsOverlapRobots, Integration.CrowdPacking; build 0, 100/100. Docs sys-enemies, sys-enemy-ai, perf-risks, sys-automation-tests. Commit 270955a, about 125k tokens.

@@ -16,7 +16,7 @@ status: done
 - editor_state: closed
 - token_ceiling: 90000
 - model: opus
-- tokens: 126307
+- tokens: input 66, cache write 119422, cache read 2609795, output 48468
 - runs: 1
 - milestone: M1
 - result: ARRShuttle landed on OnExtractionReady at a reachable floor cell ≥ 25 cells straight line (fallback farthest reachable), 45 s countdown, win within 1 cell (ShuttleBoardRadiusCells, provisional), loss at 0, robots keep spawning; miner death freezes it. EndRun cancels and blocks level-up offers, pauses via player 0, UI input, OnRunEnded(bSuccess); RestartLevel reopens the map. BP events: shuttle OnLanded, OnCountdown, OnExtracted, OnMissed; HUD OnShuttleCountdown(Remaining, ShuttleLocation), OnRunEnded(bSuccess), callable RestartLevel. RunFlowConfig ShuttleClass to set by BP. Cheat ShuttleCountdownOverride. 5 new Extraction tests; build 0, 93/93. Real pause to check in PIE. Ore not secured (ore economy not built). Docs sys-objectives, sys-hud, sys-cheats, sys-level-up, sys-automation-tests. Commits faebb7c, 0300351; about 125k tokens.

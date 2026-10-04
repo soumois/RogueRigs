@@ -35,7 +35,7 @@ Show the plan once. The owner confirms the global task; subtasks then run withou
 2. Prepare the editor state (close Unreal before C++ builds; launch it before BP work).
 3. Delegate to the subagent with only the subtask node as input.
 4. Run the `done_when` checks.
-5. Pass: fill `result`, `model`, `tokens` and `runs`, add the subtask to [[cost-log]], set `done`, move `next_step`, lint, commit `task-<id>: done`.
+5. Pass: fill `result`, `model`, `tokens` (input, cache write, cache read, output from `node vault/scripts/agent-usage.js`) and `runs`, add the subtask to [[cost-log]], set `done`, move `next_step`, lint, commit `task-<id>: done`.
 6. Fail: send the error back to the same agent once. Second failure: set `blocked`, record why, stop and report.
 
 ## 6. Close

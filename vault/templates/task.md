@@ -16,7 +16,7 @@ status: todo
 - editor_state: closed | open | any
 - token_ceiling: <number>
 - model: <model of the agent that ran it (opus | sonnet | haiku), filled when done>
-- tokens: <final subagent_tokens reported by the Agent tool for the subtask, all runs included; filled when done>
+- tokens: <input N, cache write N, cache read N, output N — from `node vault/scripts/agent-usage.js`, all runs included; filled when done>
 - runs: <number of agent runs, resumes included; filled when done>
 - milestone: M1 | M2 | M3
 - result: <filled when done: what changed, commit, tokens used>

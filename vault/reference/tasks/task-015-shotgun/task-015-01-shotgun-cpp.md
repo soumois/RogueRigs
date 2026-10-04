@@ -16,7 +16,7 @@ status: done
 - editor_state: closed
 - token_ceiling: 110000
 - model: opus
-- tokens: 203496
+- tokens: input 128, cache write 196114, cache read 8480867, output 72222
 - runs: 2
 - milestone: M1
 - result: ARRShotgun (instant 60° cone, 700 uu, grid line of sight via new ARRArenaGrid::GetClearDistance and HasLineOfSight, one damage spec per robot with its own crit, knockback 600 uu/s launch scaled by 1 − resistance via ARREnemy::ApplyKnockback, OnWaveFired(Origin, Direction, HalfAngleDeg, WaveRange, ClippedLength), GetWaveClearDistance). WeaponStats.csv Shotgun row + ConeAngleDeg, KnockbackForce columns. ARRMiner::GuaranteedWeaponClasses spawns the native shotgun until BP_Miner StartingWeapons lists BP_Shotgun. Existing tests adjusted for two weapons (rifle looked up; integration stops the shotgun; upgrade tests keep rifle only). 6 new Shotgun tests; build 0, 82/82. Docs sys-weapons, sys-damage, sys-grid, sys-enemies, sys-player, sys-automation-tests. To check in PIE: knockback strength (friction stops it fast); shotgun ignores dummies. Commits 3280326, 28b26ef; about 200k tokens over two runs.

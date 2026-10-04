@@ -16,7 +16,7 @@ status: done
 - editor_state: closed
 - token_ceiling: 90000
 - model: opus
-- tokens: 101478
+- tokens: input 92, cache write 94831, cache read 2967656, output 37169
 - runs: 1
 - milestone: M1
 - result: Kept: empty built-in skeletal mesh stripped on robots and no overlap events on collision-less parts (−0.8 ms at 400); URRRobotMovementComponent reuses the floor result until 25 uu moved or height change (−0.8); far off-screen robots (> 2000 uu) move at 0.1 s intervals (−0.7, near noise, off screen only). Reverted: physics interaction off + idle floor check (no gain). Game avg S0 100/200/400: 5.38/7.91/11.24 → 4.4/6.2/9.1; S2: 6.0/9.4/14.7 → 5.5/8.0/12.1. Test Enemies.LightMovement; build 0, 101/101. Docs sys-enemies, perf-risks, sys-automation-tests. Commit fe827fd, about 100k tokens.
