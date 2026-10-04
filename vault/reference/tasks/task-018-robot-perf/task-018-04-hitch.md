@@ -7,7 +7,7 @@ status: todo
 ---
 # Periodic hitch
 
-- goal: no steady-play frame over 25 ms at 200–400 robots.
+- goal: no steady-play frame over 25 ms at 200–400 robots. The trace shows the 61 s hitch is the default full GC (29.5–32.6 ms: PyUtil::CollectGarbage 9–11 ms from the editor Python plugin, reachability 18–19 ms), the same at 200 and 400 robots: measure it first in a packaged Development build (or standalone without editor plugins), and change GC settings only if the hitch remains there.
 - agent: cpp
 - depends_on: task-018-03-light-movement
 - inputs: task-018-01 result, [[perf-risks]], [[sys-projectiles]], [[sys-damage]], [[sys-automation-tests]], [[cpp-standard]].

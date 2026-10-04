@@ -7,7 +7,7 @@ status: todo
 ---
 # Light movement
 
-- goal: cut the per-robot movement cost.
+- goal: cut the per-robot movement cost, the main game-thread cost per the trace (CharacterMovement 5.9 ms S0 / 7.0 ms S2 at 400: walking physics 4.65, move sweeps 2.15, floor check 1.86, attached mesh parts update 0.81). Also consider cheaper updates of the robots’ attached rigid parts (e.g. fewer attached components, no overlaps on them, transform updates deferred).
 - agent: cpp
 - depends_on: task-018-02-crowd-collision
 - inputs: task-018-01 and 018-02 results, [[perf-risks]], [[sys-enemies]], [[sys-enemy-ai]], [[sys-automation-tests]], [[cpp-standard]].

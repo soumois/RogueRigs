@@ -3,11 +3,11 @@ id: task-018-02-crowd-collision
 description: "Robots stop sweeping against each other’s capsules; separation left to RVO with lighter settings; robots pack tighter; stress before and after."
 parent: task-018-robot-perf
 kind: task
-status: todo
+status: in-progress
 ---
 # Crowd collision
 
-- goal: cut the crowd collision cost and let packs be denser.
+- goal: let packs be denser (owner wish); the trace (018-01) shows only 61 robot-robot blocking hits per frame (0.05 ms) and RVO 0.33 ms at 400, so the expected perf gain is small (−0.3 to −1 ms).
 - agent: cpp
 - depends_on: task-018-01-trace
 - inputs: task-018-01 result, [[perf-risks]], [[sys-enemies]], [[sys-enemy-ai]], [[sys-flow-field]], [[sys-automation-tests]], [[cpp-standard]].
