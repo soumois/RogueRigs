@@ -15,6 +15,9 @@ status: done
 - done_when: the -game runs completed and the tables exist with real numbers; lint clean.
 - editor_state: closed
 - token_ceiling: 80000
+- model: opus
+- tokens: 124750
+- runs: 1
 - milestone: M1
 - result: Stress modes peace, fire, burst (rr.Stress.Run … [mode]; FireHealth), max frame and kill/barrel/explosion counts; 2 new Stress tests. S0 now 0.4 to 2.3 ms slower than baseline (about 1.4 ms fixed cost from new systems), 100 → 9.1 / 11.1 ms, 400 → 13.6 / 17.5, ceiling about 600 (avg 16.8). S2 both weapons: 100 → 9.7 / 11.8, 400 → 15.8 / 20.1, ceiling about 450–500. S7 one-frame deaths: max frame +0.23 ms per robot (100 → 29.5 ms max), long chains raise render p99 (200 → 23.4). Single 45–50 ms hitches every 61 s, probably GC (trace needed). M1 cap 100 safe: about 40 % margin on avg, 50 % on p99. Nine ranked leads in perf-risks; nothing optimized. New node stress-final-m1; stress-test-m1, perf-risks, sys-stress, sys-automation-tests. Commit d9ff38c, about 125k tokens.
 

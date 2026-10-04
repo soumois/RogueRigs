@@ -15,6 +15,9 @@ status: done
 - done_when: build exits 0 with the editor closed; all `RogueRigs.*` tests pass headless (new ones included); docs updated; lint clean.
 - editor_state: closed
 - token_ceiling: 90000
+- model: opus
+- tokens: 150510
+- runs: 1
 - milestone: M1
 - result: URRLevelUpComponent on the miner: heal 20 % (URRGE_Heal, Data.Heal), OnLevelUpEffect(NewLevel), ChoiceDelay 0.8 s game time then pause via the miner controller, Game and UI input with cursor, OnUpgradeOfferShown(Cards, bCanReroll) and OnUpgradeOfferClosed on URRHUDWidget, ChooseUpgrade(Index), RequestReroll, CanRerollUpgrade; queued levels chain; unpause only if it paused. Headless world has no controller: real pause and input switch to verify in PIE (014-04). 4 new LevelUp tests; build 0, 74/74. New doc sys-level-up; sys-hud, sys-progression, sys-upgrades, sys-player, sys-automation-tests. Data.Heal not added to naming examples (rule node). Commit f4734ce, about 150k tokens (over the 90k ceiling).
 

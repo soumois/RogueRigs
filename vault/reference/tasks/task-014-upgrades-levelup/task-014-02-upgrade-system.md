@@ -15,6 +15,9 @@ status: done
 - done_when: build exits 0 with the editor closed; all `RogueRigs.*` tests pass headless (new ones included); docs updated; lint clean.
 - editor_state: closed
 - token_ceiling: 120000
+- model: opus
+- tokens: 161696
+- runs: 1
 - milestone: M1
 - result: URRUpgradeComponent on the miner (BuildOffer, BuildOfferWithOwnerLuck, Reroll once per offer with no repeated stat+target, ApplyUpgrade refusing unowned weapons, OnUpgradeApplied, ReplayGlobalUpgrades on ARRWeapon::Acquire); FRRUpgradeCard with French DisplayName, TargetText, ValueText; UpgradeValues.csv (55 rows, no magazine) and UpgradeRarities.csv; runtime SetByCaller GEs; targets read from GetWeapons (shotgun ready). Provisional choices in sys-upgrades: stats equally likely then target even; rifle UI name Fusil à rafales. 8 new Upgrades tests; build 0, 70/70. Docs sys-upgrades, sys-weapons, sys-player, sys-automation-tests, build-toolchain, naming. Commit a8099d4, about 160k tokens.
 

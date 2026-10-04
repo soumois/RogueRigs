@@ -15,6 +15,9 @@ status: done
 - done_when: build exits 0 with the editor closed; all `RogueRigs.*` tests pass headless (new ones included); docs updated; lint clean.
 - editor_state: closed
 - token_ceiling: 80000
+- model: opus
+- tokens: 96444
+- runs: 1
 - milestone: M1
 - result: ARREnemySpawner: 30 s trickle (2 s), then packs of 8 to 15 every 6 s from one side of the view rectangle (one candidate scan per pack, clamped to free slots), lone robot chance 0.1 per 2 s between packs (provisional), MaxAlive 100, seeded stream; TrySpawnPack, SeedRandomStream, GetRunTime, IsInPackPhase, GetSideOfRectangle. Kamikaze weights live on BP_EnemySpawner defaults (3/1) → set 85/15 in task-014-04. 4 new Spawner tests (15.4 % kamikaze over 2000 draws); build 0, 62/62. Docs sys-spawner, sys-automation-tests. Commit 8d152f3, about 96k tokens.
 

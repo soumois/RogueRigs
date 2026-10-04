@@ -15,6 +15,9 @@ status: done
 - done_when: build exits 0 with the editor closed; all `RogueRigs.*` tests pass headless (new ones included); docs updated; lint clean.
 - editor_state: closed
 - token_ceiling: 50000
+- model: opus
+- tokens: 51465
+- runs: 1
 - milestone: M1
 - result: ExplosionStats.csv row Kamikaze Radius 250 → 312 (data only); FX already scales from the row radius (sphere scale 6.24). New test Explosions.KamikazeReach (dummy at 300 uu hit, at 400 uu untouched); RifleKillsKamikazeExplodes now breaks 2 blocks. Build 0, 98/98. Docs sys-explosions, sys-enemies, sys-automation-tests. Commit 4afbf4a, about 50k tokens.
 

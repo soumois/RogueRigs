@@ -15,6 +15,9 @@ status: done
 - done_when: build exits 0 with the editor closed; all `RogueRigs.*` tests pass headless (new ones included); docs updated; lint clean.
 - editor_state: closed
 - token_ceiling: 70000
+- model: opus
+- tokens: 173785
+- runs: 2
 - milestone: M1
 - result: RogueRigs.Integration.LevelUpUpgradeLoop with the real Blueprints and a real paused world (game instance + BP_RRGameMode): 5 kills, heal 50 → 70, offer at 0.800 s, 60 frozen frames (time, spawner, robots, shots, miner), HUD reroll once, damage card 10 → 10.5, resume. RogueRigs.Cheats.ConsoleVariables. Cheat CVars for MCP-driven PIE checks: rr.Cheat.GrantXP, Invulnerable, ChooseUpgrade, Reroll (new doc sys-cheats, unreal-mcp section). Build 0, 76/76. Commit 4392427, about 175k tokens over two runs.
 

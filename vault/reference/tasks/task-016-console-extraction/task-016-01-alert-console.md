@@ -15,6 +15,9 @@ status: done
 - done_when: build exits 0 with the editor closed; all `RogueRigs.*` tests pass headless (new ones included); docs updated; lint clean.
 - editor_state: closed
 - token_ceiling: 130000
+- model: opus
+- tokens: 252890
+- runs: 2
 - milestone: M1
 - result: URRRunFlowSubsystem (alert 240 s + 0.5 s per kill, kamikaze self-destruct not a kill, stops at 0.4 and drops the console, paused while pending, OnExtractionReady once when full with no objective); ARRConsole (12–20 cells straight line, reachable, prefers cells with rocks to mark (bPreferCellsWithMarkedRocks, owner to review), rock-type blocks within 2 cells marked via instance custom data slot 0 and OnCellMarkedChanged, hack 20 s in a 3-cell zone, drain 5 %/s, drone hack state refuses digs); values on BP_RRGameMode RunFlowConfig and the console class. BP events: console OnMarkedRocksChanged, OnHackProgress, OnHackStateChanged; HUD OnAlertChanged, OnObjectiveChanged, OnObjectiveProgressChanged, OnExtractionReady. URRCheatSettings CDO property route polled each frame (GrantXP, bInvulnerable, ChooseUpgrade, bReroll, AlertSpeedMultiplier, bSkipToConsole, bCompleteConsoleHack, bSkipToExtraction) + matching CVars. 6 new tests; build 0, 88/88. Docs sys-objectives (new), sys-difficulty, sys-drone, sys-hud, sys-cheats, sys-grid, sys-automation-tests, unreal-mcp. Commits 0ddd8c6, e1c5e04; about 480k tokens over two runs (ceiling 130k).
 

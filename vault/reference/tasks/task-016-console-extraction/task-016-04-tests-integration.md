@@ -15,6 +15,9 @@ status: done
 - done_when: build exits 0 with the editor closed; all `RogueRigs.*` tests pass headless (new ones included); docs updated; lint clean.
 - editor_state: closed
 - token_ceiling: 70000
+- model: opus
+- tokens: 74166 (first run cut by an API limit, its tokens unknown)
+- runs: 2
 - milestone: M1
 - result: RogueRigs.Integration.ConsoleExtractionWin (console drop with 4 marked rocks, alert held at 0.4, HUD texts, rocks cleared, hack Hacking → Complete, shuttle ≥ 25 cells with 45 s, pending level-up then extraction won) and ShuttleTimeoutLoss (3 s override, lost on time); shared end check: real pause and cursor, end title, offers blocked, 2 s frozen, second end refused, Rejouer bound and reloads the map. Fixed a HUD widget GC hazard in the harness (also in LevelUpUpgradeLoop). Build 0, 95/95. Docs sys-automation-tests, sys-objectives. Commit 803ff2c, about 75k tokens (a first run was cut by an API limit).
 

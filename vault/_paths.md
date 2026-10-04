@@ -44,6 +44,7 @@ build-toolchain  reference/tech/pipelines/build-toolchain.md
 burst-rifle  reference/gdd/weapons/burst-rifle.md
 color-code  reference/gdd/art-audio/color-code.md
 conventions-index  reference/tech/conventions/conventions-index.md
+cost-log  reference/production/cost-log.md
 course-index  reference/course/course-index.md
 cpp-bp-split  reference/tech/conventions/cpp-bp-split.md
 cpp-standard  reference/tech/conventions/cpp-standard.md
