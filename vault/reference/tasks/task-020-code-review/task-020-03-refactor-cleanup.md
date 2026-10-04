@@ -3,7 +3,7 @@ id: task-020-03-refactor-cleanup
 description: "Refactor R3, R6, R7 from code-review-m1-plan (cached CSV loader, shared damage numbers, cheats and test hooks grouped and shipping-guarded); no behavior change."
 parent: task-020-code-review
 kind: task
-status: todo
+status: in-progress
 ---
 # Refactor cleanup
 

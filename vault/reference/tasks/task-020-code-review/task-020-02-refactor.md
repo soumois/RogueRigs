@@ -3,7 +3,7 @@ id: task-020-02-refactor
 description: "Refactor R1, R2, R4, R5 from code-review-m1-plan (robot base helpers, reachable-cell query, world lookups, projectile filter and weapon aim); no behavior change."
 parent: task-020-code-review
 kind: task
-status: in-progress
+status: done
 ---
 # Refactor
 
@@ -15,11 +15,11 @@ status: in-progress
 - done_when: build exits 0 with the editor closed; all `RogueRigs.*` tests pass headless (new ones included); docs updated; lint clean.
 - editor_state: closed
 - token_ceiling: 150000
-- model: open
-- tokens: open
-- runs: open
+- model: opus
+- tokens: input 134, cache write 191429, cache read 7041553, output 68988
+- runs: 2
 - milestone: M1
-- result: open
+- result: R1 robot helpers in ARREnemy (SetMovementActive, IsTargetWithin, MarkStateStart, GetTimeInState, HasStateLasted, ApplyDamageSpecTo, UpdateTelegraphBlink; ArrivalRangeRatio moved up, same name). R2 URRFlowFieldSubsystem::GatherReachableCells + GatherPawnCells replace 4 scans, same order (54 seeded log lines identical). R4 RRWorld::FindArenaGrid, FindMiner, FindLivingMiner replace 10 loops. R5 ARRProjectile CanHit (HitActorClass), bDamagesTerrain, static SpawnProjectile; ARRWeapon aim and shot origin virtual; test Weapons.ProjectileHitFilter. 101 → 102/102, build 0, no CoreRedirect needed. sys-enemies split into index + base, movement, chaser, kamikaze; new sys-world-queries; sys-flow-field, sys-projectiles, sys-weapons updated. Commits 6fafeb3, 027a33d, bdd99d5, a19ddf0, 608cbbf.
 
 ## Relations
 - [[task-020-code-review]] — parent global task.

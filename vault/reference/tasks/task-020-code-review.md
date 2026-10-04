@@ -13,7 +13,7 @@ status: in-progress
 - gdd_check: No GDD impact. Rule [[cpp-standard]] and [[cpp-bp-split]] apply.
 - confirmed_by_owner: yes (2026-10-04, all subtasks pre-approved)
 - milestone: M1
-- next_step: task-020-02-refactor
+- next_step: task-020-03-refactor-cleanup
 - result: open
 
 ## Subtasks
