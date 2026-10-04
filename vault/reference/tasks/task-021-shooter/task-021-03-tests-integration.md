@@ -3,7 +3,7 @@ id: task-021-03-tests-integration
 description: "Integration tests with the final Blueprints: shooter keeps distance, fires with LOS, repositions around rock, shots hit the miner, mix 70/15/15."
 parent: task-021-shooter
 kind: task
-status: todo
+status: in-progress
 ---
 # Shooter integration tests
 

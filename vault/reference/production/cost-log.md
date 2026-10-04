@@ -40,6 +40,7 @@ kind: note
 | [[task-020-03-refactor-cleanup]] | opus | 1 | 0k | 117k | 3705k | 40k |
 | [[task-020-04-bp-check]] | sonnet | 1 | 0k | 76k | 1578k | 9k |
 | [[task-021-01-shooter-cpp]] | opus | 1 | 0k | 200k | 6584k | 87k |
+| [[task-021-02-bp-shooter]] | sonnet | 2 | 0k | 138k | 6637k | 39k |
 
 ## Totals
 | Scope | Input | Cache write | Cache read | Output |

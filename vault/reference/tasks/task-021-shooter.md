@@ -13,7 +13,7 @@ status: in-progress
 - gdd_check: Read [[enemy-shooter]], [[enemies-index]], [[color-code]], [[readability-rules]], [[destruction-rules]], [[xp-level-up]]. Open values set by the owner (2026-10-04, provisional), AI framework: C++ grid search, no EQS.
 - confirmed_by_owner: yes (2026-10-04, all subtasks pre-approved)
 - milestone: M2
-- next_step: task-021-02-bp-shooter
+- next_step: task-021-03-tests-integration
 - result: open
 
 ## Subtasks
