@@ -27,5 +27,5 @@ One global task per owner request (template `task-global.md`, id `task-<number>-
 - [[task-014-upgrades-levelup]] — spawn packs (100 max, 15 % kamikazes), stat upgrades with rarities, level-up heal, pause, 3 cards, one reroll. Status done.
 - [[task-015-shotgun]] — shotgun conical wave with knockback, given at start with the burst rifle. Status done.
 - [[task-016-console-extraction]] — alert bar, command console hack, shuttle extraction, end screens. Status done.
-- [[task-017-kamikaze-radius]] — kamikaze explosion radius 250 → 312 uu. Status in-progress.
-- [[task-018-robot-perf]] — robot count optimization: trace, crowd collision, light movement, hitch fix, final stress. Status todo.
+- [[task-017-kamikaze-radius]] — kamikaze explosion radius 250 → 312 uu. Status done.
+- [[task-018-robot-perf]] — robot count optimization: trace, crowd collision, light movement, hitch fix, final stress. Status in-progress.

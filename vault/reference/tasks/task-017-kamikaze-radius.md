@@ -3,7 +3,7 @@ id: task-017-kamikaze-radius
 description: "Global task: kamikaze explosion radius from 250 to 312 uu (owner +25 %), data, tests and docs; the explosion visual follows the radius."
 parent: tasks-index
 kind: task
-status: in-progress
+status: done
 ---
 # Kamikaze explosion radius +25 %
 
@@ -13,8 +13,8 @@ status: in-progress
 - gdd_check: Read [[enemy-kamikaze]], [[explosions]]. GDD updated with the owner value before planning. The shotgun review note was added to [[shotgun]] (no work).
 - confirmed_by_owner: yes (2026-10-04, all subtasks pre-approved)
 - milestone: M1
-- next_step: task-017-01-radius
-- result: open
+- next_step: none
+- result: All acceptance checks passed: radius 312 in data, FX follows, 98/98 tests, docs.
 
 ## Subtasks
 1. task-017-01-radius — cpp: radius 312 in data, visual check, tests, docs

@@ -3,7 +3,7 @@ id: task-018-01-trace
 description: "Unreal Insights CPU trace in -game at 400 robots (S0 and S2): game-thread cost breakdown per system and the cause of the 61 s hitch."
 parent: task-018-robot-perf
 kind: task
-status: todo
+status: in-progress
 ---
 # Insights trace
 

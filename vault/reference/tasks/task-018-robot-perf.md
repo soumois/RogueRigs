@@ -3,7 +3,7 @@ id: task-018-robot-perf
 description: "Global task: Insights trace, no robot-robot capsule collision with lighter RVO, lighter movement, periodic hitch fix; stress compared after each step."
 parent: tasks-index
 kind: task
-status: todo
+status: in-progress
 ---
 # Robot count optimization
 
