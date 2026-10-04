@@ -10,7 +10,7 @@ Continues the ranking of [[code-review-m1-plan]] (R1 to R7 are the 020-02 scope)
 
 | # | Item | Gain | Risk | h | Blueprint impact / trigger |
 |---|---|---|---|---|---|
-| R8 | F2/D4: kamikaze `ArmRange`, `FuseTime` to CSV `AttackRange`, `WindUp` (150, 0.5) | medium | medium | 1 | Removes 2 properties, overridden by no asset. Do with task-021-01, which changes `EnemyStats.csv` anyway. |
+| R8 | F2/D4: kamikaze `ArmRange`, `FuseTime` to CSV `AttackRange`, `WindUp` (150, 0.5) | medium | medium | 1 | Done in task-021-01: properties removed, values unchanged ([[sys-enemies-kamikaze]]). |
 | R9 | Split `RRIntegrationTests.cpp` per namespace, `RRWeaponTests.cpp` in two | low | low | 1 | Test-only; any time. |
 | R10 | F12: shared `ARRCombatCharacter` base for miner and robots | medium | medium | 4 | Reparents BP_Miner and every robot BP; subobject names must stay. After M2 enemies exist. |
 | R11 | F10: split grid layout parsing into `FRRGridLayout` + `ApplyLayout` | high for generator | low | 2 | No BP; do in the grid-generator task. |

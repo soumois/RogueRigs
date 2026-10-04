@@ -1,6 +1,6 @@
 ---
 id: sys-projectiles
-description: "Projectiles without GAS: ARRProjectile carries the damage spec to impact, Projectile collision channel, stop on rock, pierce counter, pooling, deferred behavior modules."
+description: "Projectiles without GAS: ARRProjectile carries the damage spec to impact, ARREnemyProjectile robot shots, Projectile channel, stop on rock, pierce, pooling, deferred modules."
 parent: systems-index
 kind: doc
 ---
@@ -20,7 +20,7 @@ kind: doc
 - Pool projectiles before any enemy pool (provisional; M2, if stress test S2 asks for it).
 - Bounce, homing, tornado, lightning, explode on impact: deferred with the module framework ([[wishlist]]).
 
-- entry_points: static `ARRProjectile::SpawnProjectile(World, Class, Transform, Owner, Instigator, Spec, Speed, Lifetime)` (deferred spawn, `InitProjectile`, `FinishSpawning`; lifetime goes through `InitialLifeSpan`, speed through `InitialSpeed`), called by `ARRWeapon::FireOnce` ([[sys-weapons]]). Hit filter (task-020-02): virtual `CanHit(Actor)`, checked on overlap after the ignored actors; default = instance of `HitActorClass` (`EditDefaultsOnly`, None = any actor with an ASC); non-hittable actors are passed through. `bDamagesTerrain` (default true): barrel damage on a blocking hit. Robot shots: `HitActorClass` = miner class, `bDamagesTerrain` off.
+- entry_points: static `ARRProjectile::SpawnProjectile(World, Class, Transform, Owner, Instigator, Spec, Speed, Lifetime)` (deferred spawn, `InitProjectile`, `FinishSpawning`; lifetime goes through `InitialLifeSpan`, speed through `InitialSpeed`), called by `ARRWeapon::FireOnce` ([[sys-weapons]]). Hit filter (task-020-02): virtual `CanHit(Actor)`, checked on overlap after the ignored actors; default = instance of `HitActorClass` (`EditDefaultsOnly`, None = any actor with an ASC); non-hittable actors are passed through. `bDamagesTerrain` (default true): barrel damage on a blocking hit. Robot shots: `ARREnemyProjectile` (`RREnemyProjectile.h/.cpp`, Blueprintable, task-021-01) sets `HitActorClass` = `ARRMiner` and `bDamagesTerrain` off: robots pass through, rock and barrels only stop it; fired by the shooter with its flat damage spec ([[sys-enemies-shooter]]).
 - data: none of its own; values come from the weapon. Blueprint subclass sets the mesh (no collision) and may change the sphere radius.
 - depends_on: [[sys-weapons]], [[sys-damage]].
 - implements: [[burst-rifle]], [[turret]], [[enemy-shooter]]. The shotgun fires no projectile ([[sys-weapons]]).

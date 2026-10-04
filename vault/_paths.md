@@ -115,6 +115,7 @@ sys-enemies-base  reference/tech/systems/sys-enemies/sys-enemies-base.md
 sys-enemies-chaser  reference/tech/systems/sys-enemies/sys-enemies-chaser.md
 sys-enemies-kamikaze  reference/tech/systems/sys-enemies/sys-enemies-kamikaze.md
 sys-enemies-movement  reference/tech/systems/sys-enemies/sys-enemies-movement.md
+sys-enemies-shooter  reference/tech/systems/sys-enemies/sys-enemies-shooter.md
 sys-enemy-ai  reference/tech/systems/sys-enemy-ai.md
 sys-explosions  reference/tech/systems/sys-explosions.md
 sys-flow-field  reference/tech/systems/sys-flow-field.md
