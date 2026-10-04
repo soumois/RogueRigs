@@ -31,4 +31,4 @@ One global task per owner request (template `task-global.md`, id `task-<number>-
 - [[task-018-robot-perf]] — robot count optimization: trace, crowd collision, light movement, hitch fix, final stress. Status done.
 - [[task-019-packaging-fix]] — asset manager config so BuildCookRun exits 0. Status done.
 - [[task-020-code-review]] — C++ review for readability and generalization, refactor, Blueprint check. Status done.
-- [[task-021-shooter]] — shooter robot: distance, line of sight, repositioning, laser, shots, spawner mix. Status in-progress.
+- [[task-021-shooter]] — shooter robot: distance, line of sight, repositioning, laser, shots, spawner mix. Status done.

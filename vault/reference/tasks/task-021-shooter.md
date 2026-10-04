@@ -3,7 +3,7 @@ id: task-021-shooter
 description: "Global task: ranged shooter robot with line of sight, repositioning, red targeting laser, dodgeable shots stopped by rock; joins the spawner mix."
 parent: tasks-index
 kind: task
-status: in-progress
+status: done
 ---
 # Shooter robot
 
@@ -13,8 +13,8 @@ status: in-progress
 - gdd_check: Read [[enemy-shooter]], [[enemies-index]], [[color-code]], [[readability-rules]], [[destruction-rules]], [[xp-level-up]]. Open values set by the owner (2026-10-04, provisional), AI framework: C++ grid search, no EQS.
 - confirmed_by_owner: yes (2026-10-04, all subtasks pre-approved)
 - milestone: M2
-- next_step: task-021-03-tests-integration
-- result: open
+- next_step: none
+- result: All acceptance checks passed: 113/113 tests (distance ring, LOS gating, repositioning, on-screen-only fire, telegraph timing, shots stopped by rock and harmless to robots, spawner mix 70/15/15 on the placed map instance); BP_Shooter readable in PIE; docs sys-enemies-shooter, sys-enemy-ai, sys-projectiles, bp-shooter. To judge by the owner in play: shooter pressure, laser readability, shot speed.
 
 ## Subtasks
 1. task-021-01-shooter-cpp — cpp: shooter behavior, laser telegraph, enemy projectile, spawner entry, tests
