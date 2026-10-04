@@ -65,21 +65,14 @@ protected:
 	void EnterState(ERRChaserState NewState);
 
 	/** True when Target is alive and within Stats.AttackRange (2D between centers). */
-	bool IsTargetInRange(const ARRMiner* Target) const;
+	bool IsTargetInRange(const ARRMiner* Target) const { return IsTargetWithin(Target, Stats.AttackRange); }
 
 	/** Applies DamageEffectClass with SetByCaller Data.Damage = Stats.Damage from this ASC to the target's ASC. */
 	void ApplyAttack(ARRMiner* Target);
 
-	/** Blinks the meshes during the wind-up (hidden during the first half of each cycle). */
-	void UpdateFlash();
-
 	/** Damage effect of the attack; must read SetByCaller Data.Damage (URRGE_DamageFlat). */
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Chaser|Attack")
 	TSubclassOf<UGameplayEffect> DamageEffectClass;
-
-	/** Arrival distance of the movement = Stats.AttackRange * this ratio (< 1 so the robot stops inside its range). */
-	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Chaser|Attack", meta = (ClampMin = 0, ClampMax = 1))
-	float ArrivalRangeRatio = 0.9f;
 
 	/** Blink frequency of the meshes during the wind-up, in full hide/show cycles per second. 0 = no blink. */
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Chaser|Attack", meta = (ClampMin = 0, Units = "Hz"))
@@ -88,9 +81,6 @@ protected:
 	/** Current state. */
 	UPROPERTY(VisibleInstanceOnly, BlueprintReadOnly, Category = "Chaser")
 	ERRChaserState State = ERRChaserState::Chase;
-
-	/** World time (s) at which the current state was entered. */
-	double StateStartTime = 0.0;
 
 	/** World time (s) of the last attack; negative before the first. */
 	double LastAttackTime = -1.0;

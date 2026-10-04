@@ -74,7 +74,7 @@ protected:
 	void EnterState(ERRKamikazeState NewState);
 
 	/** True when Target is alive and within ArmRange (2D between centers). */
-	bool IsTargetInArmRange(const ARRMiner* Target) const;
+	bool IsTargetInArmRange(const ARRMiner* Target) const { return IsTargetWithin(Target, ArmRange); }
 
 	/** Fuse end: queues the explosion, adds State.Dead and runs the death without XP. */
 	void Detonate();
@@ -107,10 +107,6 @@ protected:
 	/** Seconds between arming and the explosion (enemy-kamikaze: 0.5). */
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Kamikaze|Fuse", meta = (ClampMin = 0, Units = "s"))
 	float FuseTime = 0.5f;
-
-	/** Arrival distance of the movement = ArmRange * this ratio (< 1 so the robot stops inside its arm range). */
-	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Kamikaze|Fuse", meta = (ClampMin = 0, ClampMax = 1))
-	float ArrivalRangeRatio = 0.5f;
 
 	/** Row of ExplosionStats.csv queued on fuse or death. */
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Kamikaze|Fuse")
@@ -159,9 +155,6 @@ protected:
 
 	/** Current core scale multiplier. */
 	float CoreScaleFactor = 1.f;
-
-	/** World time (s) at which the current state was entered. */
-	double StateStartTime = 0.0;
 
 	/** World time (s) of arming; negative before. */
 	double ArmTime = -1.0;

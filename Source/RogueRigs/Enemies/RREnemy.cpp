@@ -2,6 +2,7 @@
 
 #include "Enemies/RREnemy.h"
 
+#include "AbilitySystemComponent.h"
 #include "AI/Navigation/AvoidanceManager.h"
 #include "Components/CapsuleComponent.h"
 #include "Components/MeshComponent.h"
@@ -13,6 +14,7 @@
 #include "EngineUtils.h"
 #include "FlowField/RREnemyMovementComponent.h"
 #include "GameFramework/CharacterMovementComponent.h"
+#include "GameplayEffect.h"
 #include "GAS/RRAbilitySystemComponent.h"
 #include "GAS/RRBaseStatsLoader.h"
 #include "GAS/RREnemyAttributeSet.h"
@@ -313,9 +315,7 @@ void ARREnemy::HandleDeath(AActor* DeathInstigator)
 	// Feet = bottom of the capsule; the pickups add their own hover height.
 	DropLocation = GetActorLocation() - FVector(0.f, 0.f, GetCapsuleComponent()->GetScaledCapsuleHalfHeight());
 
-	EnemyMovement->SetMovementEnabled(false);
-	ConsumeMovementInputVector();
-	GetCharacterMovement()->StopMovementImmediately();
+	SetMovementActive(false);
 	GetCharacterMovement()->DisableMovement();
 	SetActorEnableCollision(false);
 	SetMeshesVisible(true);
@@ -407,4 +407,63 @@ void ARREnemy::SetMeshesVisible(bool bVisible)
 	{
 		MeshComponent->SetVisibility(bVisible);
 	}
+}
+
+void ARREnemy::SetMovementActive(bool bActive)
+{
+	EnemyMovement->SetMovementEnabled(bActive);
+	if (!bActive)
+	{
+		ConsumeMovementInputVector();
+		GetCharacterMovement()->StopMovementImmediately();
+	}
+}
+
+bool ARREnemy::IsTargetWithin(const ARRMiner* Target, float Range) const
+{
+	return Target && !Target->IsDead()
+		&& FVector::DistSquared2D(GetActorLocation(), Target->GetActorLocation()) <= FMath::Square(Range);
+}
+
+void ARREnemy::MarkStateStart()
+{
+	StateStartTime = GetWorld()->GetTimeSeconds();
+}
+
+double ARREnemy::GetTimeInState() const
+{
+	return GetWorld()->GetTimeSeconds() - StateStartTime;
+}
+
+bool ARREnemy::HasStateLasted(double Duration) const
+{
+	return GetTimeInState() + TimeTolerance >= Duration;
+}
+
+bool ARREnemy::ApplyDamageSpecTo(UAbilitySystemComponent* TargetASC, TSubclassOf<UGameplayEffect> EffectClass, float Damage)
+{
+	if (!EffectClass || !TargetASC)
+	{
+		return false;
+	}
+	FGameplayEffectSpecHandle Spec = AbilitySystemComponent->MakeOutgoingSpec(EffectClass, 1.f, AbilitySystemComponent->MakeEffectContext());
+	if (!Spec.IsValid())
+	{
+		UE_LOG(LogRogueRigs, Error, TEXT("%s: damage spec of class %s could not be made."), *GetName(), *EffectClass->GetName());
+		return false;
+	}
+	Spec.Data->SetSetByCallerMagnitude(RRGameplayTags::Data_Damage, Damage);
+	// The target's i-frames or death refuse the spec (target tag requirements of the damage effect).
+	AbilitySystemComponent->ApplyGameplayEffectSpecToTarget(*Spec.Data, TargetASC);
+	return true;
+}
+
+void ARREnemy::UpdateTelegraphBlink(float Rate)
+{
+	if (Rate <= 0.f)
+	{
+		return;
+	}
+	const double Phase = FMath::Frac(GetTimeInState() * Rate);
+	SetMeshesVisible(Phase >= 0.5);
 }

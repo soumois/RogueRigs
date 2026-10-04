@@ -17,6 +17,7 @@ class URREnemyAttributeSet;
 class URREnemyMovementComponent;
 class URRHealthAttributeSet;
 class URRMovementAttributeSet;
+class UGameplayEffect;
 struct FOnAttributeChangeData;
 
 /**
@@ -154,6 +155,41 @@ protected:
 	/** Shows or hides every mesh component of the robot (used by the wind-up flash). */
 	void SetMeshesVisible(bool bVisible);
 
+	/**
+	 * Turns the flow-field movement on or off. Off also drops the pending movement input and cuts the velocity at once, so a
+	 * robot that stops to attack or telegraph does not slide. Subclass state machines call it when entering a state.
+	 */
+	void SetMovementActive(bool bActive);
+
+	/** True when Target is a living miner within Range (uu, 2D between actor centers, range inclusive). */
+	bool IsTargetWithin(const ARRMiner* Target, float Range) const;
+
+	/** Records the current world time as the start of a new state (StateStartTime). Subclasses call it in their EnterState. */
+	void MarkStateStart();
+
+	/** Seconds spent in the current state (world time minus StateStartTime). */
+	double GetTimeInState() const;
+
+	/** True once at least Duration seconds were spent in the current state (with TimeTolerance). */
+	bool HasStateLasted(double Duration) const;
+
+	/**
+	 * Applies EffectClass from this robot's ASC to TargetASC with SetByCaller Data.Damage = Damage (source = this ASC, so
+	 * AttackPower scales it). The target's tag requirements (i-frames, death) may refuse it. Returns false (logged when the spec
+	 * could not be made) when nothing was applied.
+	 */
+	bool ApplyDamageSpecTo(UAbilitySystemComponent* TargetASC, TSubclassOf<UGameplayEffect> EffectClass, float Damage);
+
+	/**
+	 * Telegraph blink: meshes hidden during the first half of each cycle at Rate full hide/show cycles per second, measured from
+	 * the state start. Rate <= 0 leaves the meshes as they are. Call every tick of the telegraph state; show the meshes again
+	 * (SetMeshesVisible(true)) when leaving it.
+	 */
+	void UpdateTelegraphBlink(float Rate);
+
+	/** Tolerance on state timers (s): absorbs float drift of the accumulated world time. */
+	static constexpr double TimeTolerance = 1e-4;
+
 	/** The robot's ability system component (owner and avatar: this robot). */
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Abilities")
 	TObjectPtr<URRAbilitySystemComponent> AbilitySystemComponent;
@@ -256,9 +292,19 @@ protected:
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Enemy|Damage Text", meta = (ClampMin = "1"))
 	float CriticalTextSize = 90.f;
 
+	/**
+	 * Arrival distance of the movement = the subclass's engage range (chaser AttackRange, kamikaze ArmRange) * this ratio (< 1 so
+	 * the robot stops inside its range). Defaults set per subclass constructor (chaser 0.9, kamikaze 0.5).
+	 */
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Enemy|Movement", meta = (ClampMin = 0, ClampMax = 1))
+	float ArrivalRangeRatio = 0.9f;
+
 	/** Stats read at BeginPlay. */
 	UPROPERTY(VisibleInstanceOnly, BlueprintReadOnly, Category = "Enemy|Stats")
 	FRREnemyStatsRow Stats;
+
+	/** World time (s) at which the subclass state machine entered its current state (MarkStateStart). */
+	double StateStartTime = 0.0;
 
 	/** Cached attack target. */
 	TWeakObjectPtr<ARRMiner> CachedTarget;

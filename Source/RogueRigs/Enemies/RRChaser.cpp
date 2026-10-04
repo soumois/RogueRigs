@@ -7,24 +7,16 @@
 #include "Damage/RRGE_DamageFlat.h"
 #include "Engine/World.h"
 #include "FlowField/RREnemyMovementComponent.h"
-#include "GameFramework/CharacterMovementComponent.h"
-#include "GAS/RRAbilitySystemComponent.h"
-#include "GAS/RRGameplayTags.h"
 #include "Player/RRMiner.h"
 #include "RogueRigs.h"
 
 #include UE_INLINE_GENERATED_CPP_BY_NAME(RRChaser)
 
-namespace RRChaser
-{
-	/** Tolerance on state timers (s): absorbs float drift of the accumulated world time. */
-	constexpr double TimeTolerance = 1e-4;
-}
-
 ARRChaser::ARRChaser(const FObjectInitializer& ObjectInitializer)
 	: Super(ObjectInitializer)
 {
 	StatsRowName = TEXT("Chaser");
+	ArrivalRangeRatio = 0.9f;
 	DamageEffectClass = URRGE_DamageFlat::StaticClass();
 
 	// Small robot: about 0.7 x the default character capsule (enemy-chaser size, provisional). Editable in the Blueprint.
@@ -47,21 +39,8 @@ void ARRChaser::EnterState(ERRChaserState NewState)
 	}
 
 	State = NewState;
-	StateStartTime = GetWorld()->GetTimeSeconds();
-
-	const bool bMove = NewState == ERRChaserState::Chase;
-	EnemyMovement->SetMovementEnabled(bMove);
-	if (!bMove)
-	{
-		ConsumeMovementInputVector();
-		GetCharacterMovement()->StopMovementImmediately();
-	}
-}
-
-bool ARRChaser::IsTargetInRange(const ARRMiner* Target) const
-{
-	return Target && !Target->IsDead()
-		&& FVector::DistSquared2D(GetActorLocation(), Target->GetActorLocation()) <= FMath::Square(Stats.AttackRange);
+	MarkStateStart();
+	SetMovementActive(NewState == ERRChaserState::Chase);
 }
 
 void ARRChaser::UpdateBehavior(float DeltaSeconds)
@@ -75,12 +54,12 @@ void ARRChaser::UpdateBehavior(float DeltaSeconds)
 		if (IsTargetInRange(Target))
 		{
 			EnterState(ERRChaserState::WindUp);
-			UpdateFlash();
+			UpdateTelegraphBlink(WindUpFlashRate);
 		}
 		break;
 
 	case ERRChaserState::WindUp:
-		if (Now - StateStartTime + RRChaser::TimeTolerance >= Stats.WindUp)
+		if (HasStateLasted(Stats.WindUp))
 		{
 			EnterState(ERRChaserState::Attack);
 			LastAttackTime = Now;
@@ -92,7 +71,7 @@ void ARRChaser::UpdateBehavior(float DeltaSeconds)
 		}
 		else
 		{
-			UpdateFlash();
+			UpdateTelegraphBlink(WindUpFlashRate);
 		}
 		break;
 
@@ -103,7 +82,7 @@ void ARRChaser::UpdateBehavior(float DeltaSeconds)
 	case ERRChaserState::Recover:
 	{
 		const double RecoverTime = Stats.AttackRate > 0.f ? 1.0 / Stats.AttackRate : 0.0;
-		if (Now - LastAttackTime + RRChaser::TimeTolerance >= RecoverTime)
+		if (Now - LastAttackTime + TimeTolerance >= RecoverTime)
 		{
 			EnterState(ERRChaserState::Chase);
 		}
@@ -117,30 +96,8 @@ void ARRChaser::UpdateBehavior(float DeltaSeconds)
 
 void ARRChaser::ApplyAttack(ARRMiner* Target)
 {
-	UAbilitySystemComponent* TargetASC = Target->GetAbilitySystemComponent();
-	if (!DamageEffectClass || !TargetASC)
-	{
-		return;
-	}
-	FGameplayEffectSpecHandle Spec = AbilitySystemComponent->MakeOutgoingSpec(DamageEffectClass, 1.f, AbilitySystemComponent->MakeEffectContext());
-	if (!Spec.IsValid())
-	{
-		UE_LOG(LogRogueRigs, Error, TEXT("%s: damage spec of class %s could not be made."), *GetName(), *DamageEffectClass->GetName());
-		return;
-	}
-	Spec.Data->SetSetByCallerMagnitude(RRGameplayTags::Data_Damage, Stats.Damage);
 	// The miner's i-frames or death refuse the spec (target tag requirements of URRGE_DamageFlat).
-	AbilitySystemComponent->ApplyGameplayEffectSpecToTarget(*Spec.Data, TargetASC);
-}
-
-void ARRChaser::UpdateFlash()
-{
-	if (WindUpFlashRate <= 0.f)
-	{
-		return;
-	}
-	const double Phase = FMath::Frac((GetWorld()->GetTimeSeconds() - StateStartTime) * WindUpFlashRate);
-	SetMeshesVisible(Phase >= 0.5);
+	ApplyDamageSpecTo(Target->GetAbilitySystemComponent(), DamageEffectClass, Stats.Damage);
 }
 
 void ARRChaser::HandleDeath(AActor* DeathInstigator)

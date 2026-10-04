@@ -7,7 +7,6 @@
 #include "Engine/World.h"
 #include "Explosions/RRExplosionSubsystem.h"
 #include "FlowField/RREnemyMovementComponent.h"
-#include "GameFramework/CharacterMovementComponent.h"
 #include "GAS/RRAbilitySystemComponent.h"
 #include "GAS/RRGameplayTags.h"
 #include "Player/RRMiner.h"
@@ -15,16 +14,11 @@
 
 #include UE_INLINE_GENERATED_CPP_BY_NAME(RRKamikaze)
 
-namespace RRKamikaze
-{
-	/** Tolerance on state timers (s): absorbs float drift of the accumulated world time. */
-	constexpr double TimeTolerance = 1e-4;
-}
-
 ARRKamikaze::ARRKamikaze(const FObjectInitializer& ObjectInitializer)
 	: Super(ObjectInitializer)
 {
 	StatsRowName = TEXT("Kamikaze");
+	ArrivalRangeRatio = 0.5f;
 
 	// 1.1 x the miner's capsule (34 x 88 -> 37.4 x 96.8, enemy-kamikaze size), on the ground: the flow field and avoidance are
 	// unchanged. Contact with the miner is at 71.4 uu between centers, inside ArmRange (150) and the arrival distance (75). Editable in the Blueprint.
@@ -62,26 +56,14 @@ void ARRKamikaze::BeginPlay()
 void ARRKamikaze::EnterState(ERRKamikazeState NewState)
 {
 	State = NewState;
-	StateStartTime = GetWorld()->GetTimeSeconds();
+	MarkStateStart();
 
 	if (NewState == ERRKamikazeState::Dead)
 	{
 		// The base death stops the movement.
 		return;
 	}
-	const bool bMove = NewState == ERRKamikazeState::Chase;
-	EnemyMovement->SetMovementEnabled(bMove);
-	if (!bMove)
-	{
-		ConsumeMovementInputVector();
-		GetCharacterMovement()->StopMovementImmediately();
-	}
-}
-
-bool ARRKamikaze::IsTargetInArmRange(const ARRMiner* Target) const
-{
-	return Target && !Target->IsDead()
-		&& FVector::DistSquared2D(GetActorLocation(), Target->GetActorLocation()) <= FMath::Square(ArmRange);
+	SetMovementActive(NewState == ERRKamikazeState::Chase);
 }
 
 void ARRKamikaze::UpdateBehavior(float DeltaSeconds)
@@ -100,7 +82,7 @@ void ARRKamikaze::UpdateBehavior(float DeltaSeconds)
 
 	case ERRKamikazeState::Armed:
 		// Committed: the fuse runs to its end even if the miner steps away.
-		if (Now - StateStartTime + RRKamikaze::TimeTolerance >= FuseTime)
+		if (HasStateLasted(FuseTime))
 		{
 			Detonate();
 			return;
@@ -181,7 +163,7 @@ void ARRKamikaze::UpdateCore(float DeltaSeconds)
 	float Growth = 1.f;
 	if (bArmed)
 	{
-		const double Alpha = FuseTime > 0.f ? FMath::Clamp((GetWorld()->GetTimeSeconds() - StateStartTime) / FuseTime, 0.0, 1.0) : 1.0;
+		const double Alpha = FuseTime > 0.f ? FMath::Clamp(GetTimeInState() / FuseTime, 0.0, 1.0) : 1.0;
 		Growth = FMath::Lerp(1.f, ArmedCoreScale, static_cast<float>(Alpha));
 	}
 	CoreScaleFactor = Growth * (1.f + CorePulseAmplitude * FMath::Sin(UE_TWO_PI * CorePulsePhase));
