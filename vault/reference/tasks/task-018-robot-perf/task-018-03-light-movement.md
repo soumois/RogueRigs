@@ -16,7 +16,7 @@ status: in-progress
 - editor_state: closed
 - token_ceiling: 90000
 - milestone: M1
-- result: open
+- result: Kept: empty CharacterMesh0 stripped (no tick/collision/render, fully absolute) + no overlap events on collisionless parts (S0 game −0.6/−0.6/−0.8 ms at 100/200/400); URRRobotMovementComponent floor cache, 25 uu (−0.2/−0.9/−0.8); far movement, off-screen beyond 2000 uu at 0.1 s tick (−0.2/−0.05/−0.7, single run, near noise). Reverted: bEnablePhysicsInteraction off + bAlwaysCheckFloor off (+0.2 to +0.4, noise). Sub-stepping not applicable (one step per frame above 20 fps). Game avg before → after: S0 5.38/7.91/11.24 → 4.39–4.49/6.09–6.40/8.88–9.28; S2 (018-02 after) 6.0/9.4/14.65 → 5.35–5.62/7.94–8.10/12.03–12.11. No Blueprint change needed. Test Enemies.LightMovement; build 0, 101/101. Docs sys-enemies, perf-risks, sys-automation-tests.
 
 ## Relations
 - [[task-018-robot-perf]] — parent global task.

@@ -28,6 +28,9 @@ struct FOnAttributeChangeData;
  * Crowd: when bIgnoreOtherRobots is on, the capsule carries RRCollisionChannels::RobotMaskFilter and its movement sweeps ignore
  * that mask, so robots pass through each other (RVO alone separates them) while the miner, terrain and every query still
  * collide with them. At BeginPlay the robot also writes the crowd RVO settings to the world avoidance manager.
+ * Light movement: CharacterMovement is URRRobotMovementComponent (cached floor on the flat arena); at BeginPlay the attached
+ * parts are made cheap to move (bLightAttachedParts); a walking robot far from the miner and off screen moves at a slower
+ * tick interval (FarMovementDistance, FarMovementTickInterval; UpdateMovementLOD).
  * Death (health set OnDeath, once, State.Dead on the ASC): stops, disables collision, shrinks to 0 over DeathShrinkDuration,
  * then spawns Stats.XPValue pickups of XPPickupClass at its feet and destroys itself. Each hit (the killing one too) spawns a
  * FloatingTextClass damage number above the capsule top when bShowDamageNumbers is on. Subclasses implement their behavior in
@@ -92,6 +95,15 @@ public:
 	/** True when the capsule move sweeps currently ignore other robots. */
 	bool IsIgnoringOtherRobots() const;
 
+	/**
+	 * Switches the far-movement level of detail (tick interval FarMovementTickInterval on CharacterMovement and EnemyMovement)
+	 * on or off at once. Driven by UpdateMovementLOD; tests call it directly.
+	 */
+	void SetFarMovement(bool bFar);
+
+	/** True while the movement runs at the far tick interval. */
+	bool IsFarMovementActive() const { return bFarMovementActive; }
+
 protected:
 	/** Initializes the ASC, applies the CSV stats, enables controller-less walking and binds the health set events. */
 	virtual void BeginPlay() override;
@@ -125,6 +137,19 @@ protected:
 
 	/** Spawns FloatingTextClass at the capsule top + TextSpawnHeight (horizontal jitter), styled for a normal or critical hit. */
 	void SpawnDamageText(float Damage, bool bIsCritical);
+
+	/**
+	 * Makes the attached parts cheap to move (bLightAttachedParts): an inherited CharacterMesh0 without skeletal mesh and
+	 * without children stops ticking, colliding and rendering and goes fully absolute (skipped by move transform updates);
+	 * every other non-capsule primitive with no collision stops generating overlap events.
+	 */
+	void ApplyLightAttachedParts();
+
+	/**
+	 * Every MovementLODCheckInterval s: far movement on when the robot is beyond FarMovementDistance from the miner and was not
+	 * rendered during the last OffScreenGraceSeconds, off otherwise. Only in a world with a game viewport (never in tests).
+	 */
+	void UpdateMovementLOD(float DeltaSeconds);
 
 	/** Shows or hides every mesh component of the robot (used by the wind-up flash). */
 	void SetMeshesVisible(bool bVisible);
@@ -179,6 +204,26 @@ protected:
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Enemy|Crowd", meta = (Units = "s"))
 	float AvoidanceLockTimeAfterAvoid = 0.3f;
 
+	/** At BeginPlay, strips the cost of moving the attached parts (see ApplyLightAttachedParts). */
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Enemy|Performance")
+	bool bLightAttachedParts = true;
+
+	/** Distance (uu, 2D) from the miner beyond which an off-screen robot moves at FarMovementTickInterval. 0 = never. */
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Enemy|Performance", meta = (ClampMin = "0", Units = "cm"))
+	float FarMovementDistance = 2000.f;
+
+	/** Tick interval (s) of CharacterMovement and EnemyMovement while far movement is on. */
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Enemy|Performance", meta = (ClampMin = "0", Units = "s"))
+	float FarMovementTickInterval = 0.1f;
+
+	/** Seconds between two far-movement checks (each robot starts at a random phase). */
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Enemy|Performance", meta = (ClampMin = "0.01", Units = "s"))
+	float MovementLODCheckInterval = 0.25f;
+
+	/** A robot rendered within this many seconds counts as on screen (AActor::WasRecentlyRendered tolerance). */
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Enemy|Performance", meta = (ClampMin = "0", Units = "s"))
+	float OffScreenGraceSeconds = 0.2f;
+
 	/** Spawns a damage number on each hit (the killing one too). */
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Enemy|Damage Text")
 	bool bShowDamageNumbers = true;
@@ -226,6 +271,12 @@ protected:
 
 	/** Seconds elapsed in the death shrink. */
 	float DeathElapsed = 0.f;
+
+	/** Seconds left before the next far-movement check. */
+	float MovementLODTimer = 0.f;
+
+	/** True while the movement runs at FarMovementTickInterval. */
+	bool bFarMovementActive = false;
 
 	/** True once HandleDeath ran (never reset). */
 	bool bDying = false;

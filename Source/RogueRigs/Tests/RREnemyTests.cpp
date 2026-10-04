@@ -8,7 +8,9 @@
 #include "AbilitySystemComponent.h"
 #include "Damage/RRGE_DamageFlat.h"
 #include "Debug/RRFloatingDamageText.h"
+#include "Components/SkeletalMeshComponent.h"
 #include "Enemies/RRChaser.h"
+#include "Enemies/RRRobotMovementComponent.h"
 #include "EngineUtils.h"
 #include "FlowField/RREnemyMovementComponent.h"
 #include "GameFramework/CharacterMovementComponent.h"
@@ -506,6 +508,76 @@ bool FRREnemyCrowdOverlapTest::RunTest(const FString& Parameters)
 	Miner->SetActorLocation(FVector(RobotLocation.X, RobotLocation.Y, MinerLocation.Z), /*bSweep*/ true, &Hit);
 	TestTrue(TEXT("miner sweep into a robot: blocked by the robot"), Hit.bBlockingHit && Hit.GetActor() == Mover);
 	TestTrue(TEXT("miner stopped at the robot contact"), FVector::Dist2D(Miner->GetActorLocation(), RobotLocation) >= MinerContact - 1.f);
+	return true;
+}
+
+IMPLEMENT_SIMPLE_AUTOMATION_TEST(FRREnemyLightMovementTest, "RogueRigs.Enemies.LightMovement",
+	EAutomationTestFlags::EditorContext | EAutomationTestFlags::EngineFilter)
+
+bool FRREnemyLightMovementTest::RunTest(const FString& Parameters)
+{
+	using namespace RREnemyTests;
+
+	FTestWorld TestWorld(TEXT("RREnemyLightMovement"));
+	ARRArenaGrid* Grid = SpawnGrid(*this, TestWorld);
+	ARRMiner* Miner = Grid ? SpawnUnarmedMiner(*this, TestWorld, Grid) : nullptr;
+	ARRChaser* Chaser = Miner ? SpawnChaser(*this, TestWorld, Grid->GetCellCenter(TargetCell.X, TargetCell.Y)) : nullptr;
+	if (!Chaser)
+	{
+		return false;
+	}
+	URRRobotMovementComponent* Movement = Cast<URRRobotMovementComponent>(Chaser->GetCharacterMovement());
+	if (!TestNotNull(TEXT("robot CharacterMovement is URRRobotMovementComponent"), Movement))
+	{
+		return false;
+	}
+	USkeletalMeshComponent* CharacterMesh = Chaser->GetMesh();
+	if (CharacterMesh && !CharacterMesh->GetSkinnedAsset() && CharacterMesh->GetAttachChildren().Num() == 0)
+	{
+		TestFalse(TEXT("empty character mesh does not tick"), CharacterMesh->IsComponentTickEnabled());
+		TestTrue(TEXT("empty character mesh is absolute"), CharacterMesh->IsUsingAbsoluteLocation() && CharacterMesh->IsUsingAbsoluteRotation() && CharacterMesh->IsUsingAbsoluteScale());
+	}
+
+	// Walk toward the miner: floor results come from the cache, the robot stays on the floor at the same height.
+	for (int32 Frame = 0; Frame < 30; ++Frame)
+	{
+		TestWorld.Tick();
+	}
+	const FVector Settled = Chaser->GetActorLocation();
+	for (int32 Frame = 0; Frame < 60; ++Frame)
+	{
+		TestWorld.Tick();
+	}
+	const FVector Walked = Chaser->GetActorLocation();
+	AddInfo(FString::Printf(TEXT("walked %.1f uu, height change %.3f uu, cached floor hits %d"), FVector::Dist2D(Settled, Walked), Walked.Z - Settled.Z, Movement->GetCachedFloorHits()));
+	TestTrue(TEXT("robot walked"), FVector::Dist2D(Settled, Walked) > 10.f);
+	TestTrue(TEXT("robot still walking"), Movement->IsMovingOnGround());
+	TestTrue(TEXT("robot kept its height on the flat floor"), FMath::Abs(Walked.Z - Settled.Z) < 1.f);
+	TestTrue(TEXT("floor checks answered from the cache"), Movement->GetCachedFloorHits() > 0);
+
+	// Far movement: slower movement tick, the robot still moves and a knockback still launches it.
+	TestFalse(TEXT("no far movement without a game viewport"), Chaser->IsFarMovementActive());
+	Chaser->SetFarMovement(true);
+	TestTrue(TEXT("far movement: CharacterMovement tick interval raised"), Movement->GetComponentTickInterval() > 0.f);
+	Chaser->SetActorLocation(Grid->GetCellCenter(TargetCell.X, TargetCell.Y) + FVector(0.f, 0.f, Settled.Z - Grid->GetCellCenter(TargetCell.X, TargetCell.Y).Z));
+	// Pushed away from the miner (as the shotgun does): the first slow movement tick (0.1 s) moves it away.
+	const FVector MinerLocation = Miner->GetActorLocation();
+	const float StartDistance = FVector::Dist2D(Chaser->GetActorLocation(), MinerLocation);
+	Chaser->ApplyKnockback((Chaser->GetActorLocation() - MinerLocation).GetSafeNormal2D() * 1200.f);
+	for (int32 Frame = 0; Frame < 8; ++Frame)
+	{
+		TestWorld.Tick();
+	}
+	const float PushedDistance = FVector::Dist2D(Chaser->GetActorLocation(), MinerLocation);
+	AddInfo(FString::Printf(TEXT("far movement: knockback moved the robot %.1f uu away from the miner"), PushedDistance - StartDistance));
+	TestTrue(TEXT("far movement: knockback pushed the robot away"), PushedDistance - StartDistance > 10.f);
+	for (int32 Frame = 0; Frame < 30; ++Frame)
+	{
+		TestWorld.Tick();
+	}
+	TestTrue(TEXT("far movement: robot back on the floor"), Movement->IsMovingOnGround() && FMath::Abs(Chaser->GetActorLocation().Z - Settled.Z) < 1.f);
+	Chaser->SetFarMovement(false);
+	TestEqual(TEXT("near movement: tick interval back to 0"), Movement->GetComponentTickInterval(), 0.f);
 	return true;
 }
 

@@ -5,7 +5,9 @@
 #include "AI/Navigation/AvoidanceManager.h"
 #include "Components/CapsuleComponent.h"
 #include "Components/MeshComponent.h"
+#include "Components/SkeletalMeshComponent.h"
 #include "Debug/RRFloatingDamageText.h"
+#include "Enemies/RRRobotMovementComponent.h"
 #include "Engine/DataTable.h"
 #include "Engine/World.h"
 #include "EngineUtils.h"
@@ -28,7 +30,7 @@
 const TCHAR* ARREnemy::EnemyStatsPath = TEXT("RogueRigs/Data/Tables/EnemyStats.csv");
 
 ARREnemy::ARREnemy(const FObjectInitializer& ObjectInitializer)
-	: Super(ObjectInitializer)
+	: Super(ObjectInitializer.SetDefaultSubobjectClass<URRRobotMovementComponent>(ACharacter::CharacterMovementComponentName))
 {
 	PrimaryActorTick.bCanEverTick = true;
 
@@ -132,6 +134,12 @@ void ARREnemy::BeginPlay()
 		}
 	}
 
+	if (bLightAttachedParts)
+	{
+		ApplyLightAttachedParts();
+	}
+	MovementLODTimer = FMath::FRand() * MovementLODCheckInterval;
+
 	// An unpossessed character stays in MOVE_None: start walking (falling until it lands).
 	GetCharacterMovement()->SetDefaultMovementMode();
 
@@ -225,7 +233,71 @@ void ARREnemy::Tick(float DeltaSeconds)
 		UpdateDeath(DeltaSeconds);
 		return;
 	}
+	UpdateMovementLOD(DeltaSeconds);
 	UpdateBehavior(DeltaSeconds);
+}
+
+void ARREnemy::ApplyLightAttachedParts()
+{
+	// The inherited character mesh is empty on the robots (parts are static meshes): no tick, no collision, no render, and fully
+	// absolute so USceneComponent::UpdateChildTransforms skips it on every move.
+	USkeletalMeshComponent* CharacterMesh = GetMesh();
+	if (CharacterMesh && !CharacterMesh->GetSkinnedAsset() && CharacterMesh->GetAttachChildren().Num() == 0)
+	{
+		CharacterMesh->SetComponentTickEnabled(false);
+		CharacterMesh->SetCollisionEnabled(ECollisionEnabled::NoCollision);
+		CharacterMesh->SetGenerateOverlapEvents(false);
+		CharacterMesh->SetVisibility(false);
+		CharacterMesh->SetUsingAbsoluteLocation(true);
+		CharacterMesh->SetUsingAbsoluteRotation(true);
+		CharacterMesh->SetUsingAbsoluteScale(true);
+	}
+
+	// Visual parts without collision never need overlap updates when the capsule moves.
+	TInlineComponentArray<UPrimitiveComponent*> Primitives(this);
+	for (UPrimitiveComponent* Primitive : Primitives)
+	{
+		if (Primitive != GetCapsuleComponent() && Primitive->GetCollisionEnabled() == ECollisionEnabled::NoCollision)
+		{
+			Primitive->SetGenerateOverlapEvents(false);
+		}
+	}
+}
+
+void ARREnemy::UpdateMovementLOD(float DeltaSeconds)
+{
+	MovementLODTimer -= DeltaSeconds;
+	if (MovementLODTimer > 0.f)
+	{
+		return;
+	}
+	MovementLODTimer += MovementLODCheckInterval;
+	if (MovementLODTimer <= 0.f)
+	{
+		MovementLODTimer = MovementLODCheckInterval;
+	}
+
+	bool bFar = false;
+	if (FarMovementDistance > 0.f && GetWorld()->GetGameViewport() && GetCharacterMovement()->IsMovingOnGround())
+	{
+		const ARRMiner* Target = FindTarget();
+		bFar = Target
+			&& FVector::DistSquared2D(Target->GetActorLocation(), GetActorLocation()) > FMath::Square(FarMovementDistance)
+			&& !WasRecentlyRendered(OffScreenGraceSeconds);
+	}
+	SetFarMovement(bFar);
+}
+
+void ARREnemy::SetFarMovement(bool bFar)
+{
+	if (bFar == bFarMovementActive)
+	{
+		return;
+	}
+	bFarMovementActive = bFar;
+	const float Interval = bFar ? FarMovementTickInterval : 0.f;
+	GetCharacterMovement()->SetComponentTickInterval(Interval);
+	EnemyMovement->SetComponentTickInterval(Interval);
 }
 
 void ARREnemy::HandleDeath(AActor* DeathInstigator)
