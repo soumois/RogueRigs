@@ -19,9 +19,9 @@ kind: doc
   From Git Bash, through PowerShell with a timeout:
   `timeout 900 powershell.exe -NoProfile -Command "& 'C:\Program Files\Epic Games\UE_5.8\Engine\Binaries\Win64\UnrealEditor-Cmd.exe' 'C:\Users\soumo\Documents\Unreal Projects\RogueRigs\RogueRigs.uproject' '-ExecCmds=Automation RunTests RogueRigs.Dig;Quit' -unattended -nullrhi -nosplash -nop4 -log; exit \$LASTEXITCODE"`
   Replace `RogueRigs.Dig` by `RogueRigs.Weapons` for the weapon tests, or by `RogueRigs` to run every project test. Tests: [[sys-automation-tests]].
-- Staged Development game (perf checks outside the editor, [[sys-stress]] `-Exe`; output `Saved/StagedBuilds/Windows/`, not committed; verified in task-018-04, ≈ 6 min cold):
+- Staged Development game (perf checks outside the editor, [[sys-stress]] `-Exe`; output `Saved/StagedBuilds/Windows/`, not committed; single command, exits 0 since [[task-019-01-asset-manager]], ≈ 6 min cold, a few minutes warm):
   `RunUAT.bat BuildCookRun -project=<uproject> -noP4 -platform=Win64 -clientconfig=Development -build -cook -stage -pak -map=/Game/RogueRigs/Maps/L_ArenaM1 -unattended -utf8output`
-  The cook finishes but UAT reports failure (exit 25) on two `GameFeatureData` asset-manager errors logged by an editor plugin; rerun with `-skipbuild -skipcook -stage -pak` (≈ 40 s) to stage the cooked output.
+  `Config/DefaultGame.ini` declares a `GameFeatureData` entry in `[/Script/Engine.AssetManagerSettings]` `PrimaryAssetTypesToScan` (scans the empty `/Game/Unused`): the GameFeatures plugin, pulled in by an enabled plugin, logs an error without it and the cook fails with exit 25. Staged run: `Saved/StagedBuilds/Windows/RogueRigs.exe /Game/RogueRigs/Maps/L_ArenaM1 -windowed -log`; log in `Saved/StagedBuilds/Windows/RogueRigs/Saved/Logs/`.
 - Launch the editor on the project:
   `"C:\Program Files\Epic Games\UE_5.8\Engine\Binaries\Win64\UnrealEditor.exe" "C:\Users\soumo\Documents\Unreal Projects\RogueRigs\RogueRigs.uproject"`
 - Plugins: GameplayAbilities is enabled in `RogueRigs.uproject`; `GameplayAbilities`, `GameplayTags`, `GameplayTasks` are public module dependencies of `RogueRigs.Build.cs` ([[task-004-01-enable-gas]]). StateTree is already enabled by the template.
