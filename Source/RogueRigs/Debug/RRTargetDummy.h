@@ -7,7 +7,6 @@
 #include "GameFramework/Actor.h"
 #include "RRTargetDummy.generated.h"
 
-class ARRFloatingDamageText;
 class UMaterialInstanceDynamic;
 class UStaticMeshComponent;
 class URRAbilitySystemComponent;
@@ -17,7 +16,7 @@ class URRHealthAttributeSet;
  * Punching ball to test weapons and hit feedback. Owns a URRAbilitySystemComponent and a URRHealthAttributeSet
  * (Health starts at MaxHealth). The Mesh root has object type Pawn and overlaps the Projectile channel, so
  * projectiles overlap it and apply their damage spec. On each hit (URRHealthAttributeSet::OnDamageReceived):
- * logs the hit, flashes the mesh to FlashColor, spawns a floating damage number (bigger, white-gold on a crit).
+ * logs the hit, flashes the mesh to FlashColor, sends the damage number to URRDamageNumberSubsystem.
  * Health refills to MaxHealth RefillDelay seconds after the last hit, or instantly when it reaches 0: it never dies (death disabled on its health set).
  * Abstract: place a Blueprint subclass that sets the mesh and its M_GreyBox material.
  */
@@ -40,7 +39,7 @@ protected:
 	/** Unbinds the damage event and clears the flash and refill timers. */
 	virtual void EndPlay(const EEndPlayReason::Type EndPlayReason) override;
 
-	/** Per-hit feedback: log, flash, floating number, refill scheduling. Bound to URRHealthAttributeSet::OnDamageReceived. */
+	/** Per-hit feedback: log, flash, damage number, refill scheduling. Bound to URRHealthAttributeSet::OnDamageReceived. */
 	void HandleDamageReceived(float Damage, bool bIsCritical, float HealthLeft);
 
 	/** Sets the Color parameter of the mesh's dynamic material to FlashColor and schedules EndFlash. */
@@ -48,9 +47,6 @@ protected:
 
 	/** Restores the Color parameter to the material's original value. */
 	void EndFlash();
-
-	/** Spawns FloatingTextClass above the dummy with the rounded damage, styled for a normal or critical hit. */
-	void SpawnFloatingText(float Damage, bool bIsCritical);
 
 	/** Sets Health back to the current MaxHealth. */
 	void RefillHealth();
@@ -87,33 +83,9 @@ protected:
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Target Dummy|Flash")
 	FName ColorParameterName = TEXT("Color");
 
-	/** Actor spawned per hit to show the damage number. */
-	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Target Dummy|Damage Text")
-	TSubclassOf<ARRFloatingDamageText> FloatingTextClass;
-
-	/** Spawn point of the damage number, relative to the actor location (world axes). */
-	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Target Dummy|Damage Text")
-	FVector TextSpawnOffset = FVector(0.f, 0.f, 150.f);
-
-	/** Random horizontal offset (uu, each axis in [-Jitter, Jitter]) so stacked numbers stay readable. */
-	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Target Dummy|Damage Text", meta = (ClampMin = "0"))
-	float TextSpawnJitter = 25.f;
-
-	/** Color of a normal hit's number (white, color-code). */
-	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Target Dummy|Damage Text")
-	FLinearColor NormalTextColor = FLinearColor::White;
-
-	/** Color of a critical hit's number (white-gold, color-code). */
-	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Target Dummy|Damage Text")
-	FLinearColor CriticalTextColor = FLinearColor(1.f, 0.85f, 0.45f);
-
-	/** World size (uu) of a normal hit's number. */
-	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Target Dummy|Damage Text", meta = (ClampMin = "1"))
-	float NormalTextSize = 60.f;
-
-	/** World size (uu) of a critical hit's number (larger than normal). */
-	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Target Dummy|Damage Text", meta = (ClampMin = "1"))
-	float CriticalTextSize = 90.f;
+	/** Location of the damage number, relative to the actor location (world axes). */
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Target Dummy|Damage Numbers")
+	FVector DamageNumberOffset = FVector(0.f, 0.f, 150.f);
 
 	/** Dynamic instance of the mesh material (slot 0), created at BeginPlay; null if the mesh has no material. */
 	UPROPERTY(Transient)

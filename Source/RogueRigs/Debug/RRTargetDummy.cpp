@@ -3,7 +3,7 @@
 #include "Debug/RRTargetDummy.h"
 
 #include "Components/StaticMeshComponent.h"
-#include "Damage/RRFloatingDamageText.h"
+#include "Damage/RRDamageNumberSubsystem.h"
 #include "Engine/World.h"
 #include "GAS/RRAbilitySystemComponent.h"
 #include "GAS/RRHealthAttributeSet.h"
@@ -36,7 +36,6 @@ ARRTargetDummy::ARRTargetDummy(const FObjectInitializer& ObjectInitializer)
 	// The dummy never dies: no State.Dead, no OnDeath when a hit takes Health to 0 (it refills at once).
 	HealthSet->SetDeathEnabled(false);
 
-	FloatingTextClass = ARRFloatingDamageText::StaticClass();
 }
 
 UAbilitySystemComponent* ARRTargetDummy::GetAbilitySystemComponent() const
@@ -92,7 +91,10 @@ void ARRTargetDummy::HandleDamageReceived(float Damage, bool bIsCritical, float 
 		*GetName(), Damage, bIsCritical ? TEXT(" (critical)") : TEXT(""), HealthLeft, HealthSet->GetMaxHealth());
 
 	StartFlash();
-	SpawnFloatingText(Damage, bIsCritical);
+	if (URRDamageNumberSubsystem* Numbers = GetWorld()->GetSubsystem<URRDamageNumberSubsystem>())
+	{
+		Numbers->AddHit(this, Damage, bIsCritical, GetActorLocation() + DamageNumberOffset);
+	}
 
 	FTimerManager& TimerManager = GetWorldTimerManager();
 	if (HealthLeft <= 0.f || RefillDelay <= 0.f)
@@ -123,12 +125,6 @@ void ARRTargetDummy::EndFlash()
 	{
 		FlashMaterial->SetVectorParameterValue(ColorParameterName, BaseColor);
 	}
-}
-
-void ARRTargetDummy::SpawnFloatingText(float Damage, bool bIsCritical)
-{
-	ARRFloatingDamageText::SpawnForHit(GetWorld(), FloatingTextClass, GetActorLocation() + TextSpawnOffset, TextSpawnJitter, Damage,
-		bIsCritical ? CriticalTextColor : NormalTextColor, bIsCritical ? CriticalTextSize : NormalTextSize, this);
 }
 
 void ARRTargetDummy::RefillHealth()

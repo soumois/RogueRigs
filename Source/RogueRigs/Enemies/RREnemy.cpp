@@ -1,4 +1,4 @@
-// Rogue Rigs - robot base: own ASC with health, movement and enemy sets, CSV stats, flow-field movement, single death with shrink and XP drop, floating damage numbers.
+// Rogue Rigs - robot base: own ASC with health, movement and enemy sets, CSV stats, flow-field movement, single death with shrink and XP drop, damage numbers sent to the damage number subsystem.
 
 #include "Enemies/RREnemy.h"
 
@@ -7,7 +7,7 @@
 #include "Components/CapsuleComponent.h"
 #include "Components/MeshComponent.h"
 #include "Components/SkeletalMeshComponent.h"
-#include "Damage/RRFloatingDamageText.h"
+#include "Damage/RRDamageNumberSubsystem.h"
 #include "Enemies/RRRobotMovementComponent.h"
 #include "Engine/DataTable.h"
 #include "Engine/World.h"
@@ -65,7 +65,6 @@ ARREnemy::ARREnemy(const FObjectInitializer& ObjectInitializer)
 	GetCapsuleComponent()->SetCollisionResponseToChannel(RRCollisionChannels::Projectile, ECR_Overlap);
 	GetCapsuleComponent()->SetGenerateOverlapEvents(true);
 
-	FloatingTextClass = ARRFloatingDamageText::StaticClass();
 }
 
 UAbilitySystemComponent* ARREnemy::GetAbilitySystemComponent() const
@@ -359,18 +358,12 @@ void ARREnemy::DropXP()
 
 void ARREnemy::HandleDamageReceived(float Damage, bool bIsCritical, float HealthLeft)
 {
-	if (bShowDamageNumbers)
+	// Capsule top (scaled) + height; the subsystem merges per robot and adds the jitter.
+	if (URRDamageNumberSubsystem* Numbers = GetWorld()->GetSubsystem<URRDamageNumberSubsystem>())
 	{
-		SpawnDamageText(Damage, bIsCritical);
+		const float CapsuleTop = GetCapsuleComponent()->GetScaledCapsuleHalfHeight();
+		Numbers->AddHit(this, Damage, bIsCritical, GetActorLocation() + FVector(0.f, 0.f, CapsuleTop + DamageNumberHeight));
 	}
-}
-
-void ARREnemy::SpawnDamageText(float Damage, bool bIsCritical)
-{
-	// Capsule top (scaled) + height; the helper adds the horizontal jitter.
-	const float CapsuleTop = GetCapsuleComponent()->GetScaledCapsuleHalfHeight();
-	ARRFloatingDamageText::SpawnForHit(GetWorld(), FloatingTextClass, GetActorLocation() + FVector(0.f, 0.f, CapsuleTop + TextSpawnHeight),
-		TextSpawnJitter, Damage, bIsCritical ? CriticalTextColor : NormalTextColor, bIsCritical ? CriticalTextSize : NormalTextSize);
 }
 
 void ARREnemy::SetMeshesVisible(bool bVisible)

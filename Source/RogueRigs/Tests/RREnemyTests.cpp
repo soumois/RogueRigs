@@ -7,7 +7,7 @@
 
 #include "AbilitySystemComponent.h"
 #include "Damage/RRGE_DamageFlat.h"
-#include "Damage/RRFloatingDamageText.h"
+#include "Damage/RRDamageNumberSubsystem.h"
 #include "Components/SkeletalMeshComponent.h"
 #include "Enemies/RRChaser.h"
 #include "Enemies/RRRobotMovementComponent.h"
@@ -453,23 +453,33 @@ bool FRREnemyDamageNumberTest::RunTest(const FString& Parameters)
 	SourceASC->ApplyGameplayEffectSpecToTarget(*Spec.Data, Target->GetAbilitySystemComponent());
 	TestEqual(TEXT("target Health 25"), Attribute(Target, URRHealthAttributeSet::GetHealthAttribute()), 25.f);
 
-	TArray<ARRFloatingDamageText*> Texts;
-	for (TActorIterator<ARRFloatingDamageText> It(TestWorld.Get()); It; ++It)
-	{
-		if (IsValid(*It))
-		{
-			Texts.Add(*It);
-		}
-	}
-	if (!TestEqual(TEXT("exactly one damage number"), Texts.Num(), 1))
+	// The hit goes to the damage number subsystem (no actor spawned); its window closes 0.25 s later.
+	URRDamageNumberSubsystem* Numbers = TestWorld.Get()->GetSubsystem<URRDamageNumberSubsystem>();
+	if (!TestNotNull(TEXT("damage number subsystem"), Numbers))
 	{
 		return false;
 	}
+	TestEqual(TEXT("one pending number"), Numbers->GetPendingCount(), 1);
+	// Read before ticking: without a grid the robot falls while the window runs; the number keeps the hit location.
 	const float CapsuleTop = Target->GetActorLocation().Z + Target->GetCapsuleComponent()->GetScaledCapsuleHalfHeight();
-	const FVector TextLocation = Texts[0]->GetActorLocation();
-	AddInfo(FString::Printf(TEXT("capsule top %.1f, text at %s"), CapsuleTop, *TextLocation.ToString()));
+	const FVector HitLocation = Target->GetActorLocation();
+	TArray<FRRDamageNumber> Pushed;
+	const FDelegateHandle Handle = Numbers->OnNumbersPushed.AddLambda([&Pushed](const TArray<FRRDamageNumber>& Batch) { Pushed.Append(Batch); });
+	for (int32 Frame = 0; Frame < 30; ++Frame)
+	{
+		TestWorld.Tick();
+	}
+	Numbers->OnNumbersPushed.Remove(Handle);
+	if (!TestEqual(TEXT("exactly one damage number"), Pushed.Num(), 1))
+	{
+		return false;
+	}
+	const FVector TextLocation = Pushed[0].Location;
+	AddInfo(FString::Printf(TEXT("capsule top %.1f, number at %s"), CapsuleTop, *TextLocation.ToString()));
+	TestEqual(TEXT("value 5"), Pushed[0].Value, 5.f);
+	TestFalse(TEXT("not critical"), Pushed[0].bCritical);
 	TestTrue(TEXT("damage number above the capsule top"), TextLocation.Z > CapsuleTop);
-	TestTrue(TEXT("damage number over the target (within the jitter)"), FVector::Dist2D(TextLocation, Target->GetActorLocation()) <= 50.f);
+	TestTrue(TEXT("damage number over the target (within the jitter)"), FVector::Dist2D(TextLocation, HitLocation) <= 50.f);
 	return true;
 }
 

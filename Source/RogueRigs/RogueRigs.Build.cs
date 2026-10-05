@@ -27,6 +27,7 @@ public class RogueRigs : ModuleRules
 
 		PrivateDependencyModuleNames.AddRange(new string[] {
 			"Json",
+			"Niagara",
 			"JsonUtilities"
 		});
 

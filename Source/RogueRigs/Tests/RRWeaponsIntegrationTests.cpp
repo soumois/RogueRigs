@@ -57,11 +57,8 @@ namespace RRWeaponsIntegrationTests
 	/** Seed of the upgrade draws of the card test. */
 	constexpr int32 IntegrationCardSeed = 20261005;
 
-	/** Total disc steps of the BP_Miner level-up animation as documented in bp-miner (DiscStep_Tick re-arms while step < 6, then hides the disc). */
-	constexpr int32 DiscLastStep = 6;
-
-	/** Last step measured headless (task-024-06): DiscStep_Tick hides the disc and stops re-arming on the tick that sets step 5, pause or not. */
-	constexpr int32 DiscMeasuredLastStep = 5;
+	/** Last step of the BP_Miner level-up disc (bp-miner, kept behaviour): DiscStep_Tick hides the disc and stops re-arming on the tick that sets step 5, pause or not. */
+	constexpr int32 DiscLastStep = 5;
 
 	/** Frame of the third level-up of the disc test: restarts the animation 0.5 s into the 0.8 s choice delay, so its 0.1 s timer is mid-run when the screens pause the world. */
 	constexpr int32 ThirdLevelFrame = 30;
@@ -703,12 +700,7 @@ bool FRRIntegrationLevelUpDiscTest::RunTest(const FString& Parameters)
 	TestTrue(TEXT("the disc was shown"), bEverShown);
 	TestFalse(TEXT("the disc ends hidden"), IsShown());
 	TestFalse(TEXT("the disc animation finished (no DiscStep_Tick timer left)"), UKismetSystemLibrary::K2_TimerExists(Miner, DiscTimerFunction));
-	// Blueprint discrepancy, reported and not edited here (cpp agent): the documented animation runs to step 6, the saved graph stops at 5.
-	TestEqual(TEXT("DiscStep ends on the measured last step"), Step(), DiscMeasuredLastStep);
-	if (Step() != DiscLastStep)
-	{
-		AddWarning(FString::Printf(TEXT("BP_Miner DiscStep_Tick ends at step %d, not %d as documented in bp-miner: the disc hides one step early (0.5 s, max scale 5.5)."), Step(), DiscLastStep));
-	}
+	TestEqual(TEXT("DiscStep ends on the last step (5, bp-miner)"), Step(), DiscLastStep);
 	return true;
 }
 
