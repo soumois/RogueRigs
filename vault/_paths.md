@@ -239,6 +239,10 @@ task-021-01-shooter-cpp  reference/tasks/task-021-shooter/task-021-01-shooter-cp
 task-021-02-bp-shooter  reference/tasks/task-021-shooter/task-021-02-bp-shooter.md
 task-021-03-tests-integration  reference/tasks/task-021-shooter/task-021-03-tests-integration.md
 task-021-shooter  reference/tasks/task-021-shooter.md
+task-022-01-heavy-cpp  reference/tasks/task-022-heavy/task-022-01-heavy-cpp.md
+task-022-02-bp-heavy  reference/tasks/task-022-heavy/task-022-02-bp-heavy.md
+task-022-03-tests-integration  reference/tasks/task-022-heavy/task-022-03-tests-integration.md
+task-022-heavy  reference/tasks/task-022-heavy.md
 tasks-index  reference/tasks/tasks-index.md
 tech-index  reference/tech/tech-index.md
 terrain-index  reference/gdd/terrain/terrain-index.md

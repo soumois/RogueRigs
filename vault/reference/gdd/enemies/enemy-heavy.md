@@ -11,13 +11,13 @@ status: approved
 - locomotion: biped
 - rig: rigid parts, one bone per part
 - parts: open
-- size: twice the size (GDD wording; reference unit open)
-- animations: open
-- behavior: attack pattern open. High knockback resistance, due to its mass. Passes through every one-cell corridor ([[arena-grid]]).
-- telegraph: open
+- size: twice the chaser visually; collision capsule radius at most 80 uu so it fits one-cell corridors (owner 2026-10-04)
+- animations: none in grey-box; the telegraph uses a body tilt and a glow (owner 2026-10-04)
+- behavior: ground slam (owner 2026-10-04): stops, raises its arms, eyes and stripes glow for the telegraph, then a shockwave around it hits the miner; the shockwave never breaks rock ([[destruction-rules]]). High knockback resistance, due to its mass. Passes through every one-cell corridor ([[arena-grid]]).
+- telegraph: 0.8 s arms raised with eyes and stripes glowing (owner 2026-10-04)
 - colors: steel blue with yellow and black hazard stripes; red eyes, yellow logo plate ([[color-code]])
-- stats: hp, speed, damage, attack_rate, range, xp_value → open; knockback_resistance high (value open)
-- milestone: M3
+- stats (provisional, owner 2026-10-04): hp 300, speed 200 uu/s, slam damage 25, slam radius 220 uu, one slam every 2.5 s, xp_value 5, knockback_resistance 0.8; at most 5 alive.
+- milestone: M3, pulled into the current work (owner 2026-10-04)
 - references: `vault/assets/enemies-lineup.jpg`
 
 Glowing weak point on its back: [[wishlist]].
