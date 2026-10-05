@@ -55,6 +55,7 @@ kind: note
 | [[task-025-01-numbers-pipeline]] | opus | 1 | 0k | 150k | 3989k | 55k |
 | [[task-025-02-bp-numbers]] | sonnet | 2 | 0k | 154k | 7174k | 52k |
 | [[task-025-03-numbers-perf]] | opus | 2 | 0k | 175k | 7657k | 55k |
+| [[task-025-04-per-digit-contract]] | opus | 1 | 0k | 145k | 4931k | 58k |
 
 ## Totals
 | Scope | Input | Cache write | Cache read | Output |

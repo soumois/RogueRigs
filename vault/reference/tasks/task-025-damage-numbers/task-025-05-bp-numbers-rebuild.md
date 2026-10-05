@@ -3,7 +3,7 @@ id: task-025-05-bp-numbers-rebuild
 description: "Rebuild NS_DamageNumbers on the per-digit contract: infinite loop, spawn DigitCount particles when DigitBatchId changes, SubUV frame from DigitIndices."
 parent: task-025-damage-numbers
 kind: task
-status: todo
+status: in-progress
 ---
 # Rebuild the damage number Niagara
 
