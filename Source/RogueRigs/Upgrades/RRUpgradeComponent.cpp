@@ -1,4 +1,4 @@
-// Rogue Rigs - upgrade offer and application on the miner: CSV values, luck-weighted rarity draw, owned-weapon targets, GAS application, replay.
+// Rogue Rigs - upgrade offer and application on the miner: CSV values, luck-weighted rarity draw, owned-weapon targets, new-weapon cards, GAS application, replay.
 
 #include "Upgrades/RRUpgradeComponent.h"
 
@@ -16,6 +16,7 @@
 #include "Upgrades/RRUpgradeRarityRow.h"
 #include "Weapons/RRWeapon.h"
 #include "Weapons/RRWeaponAttributeSet.h"
+#include "Weapons/RRWeaponCatalogueEntry.h"
 
 #include UE_INLINE_GENERATED_CPP_BY_NAME(RRUpgradeComponent)
 
@@ -239,6 +240,23 @@ bool URRUpgradeComponent::MakeCard(ERRUpgradeStat Stat, ERRUpgradeRarity Tier, E
 	return true;
 }
 
+bool URRUpgradeComponent::MakeWeaponCard(const FRRWeaponCatalogueEntry& Entry, FRRUpgradeCard& OutCard)
+{
+	if (!Entry.WeaponClass)
+	{
+		return false;
+	}
+	FRRUpgradeCard Card;
+	Card.CardType = ERRUpgradeCardType::NewWeapon;
+	Card.WeaponClass = Entry.WeaponClass;
+	Card.Target = ERRUpgradeTarget::Weapon;
+	Card.DisplayName = LOCTEXT("Card_NewWeapon", "Nouvelle arme");
+	Card.TargetText = ARRWeapon::GetClassDisplayName(Entry.WeaponClass);
+	Card.DescriptionText = Entry.Description;
+	OutCard = Card;
+	return true;
+}
+
 TArray<ARRWeapon*> URRUpgradeComponent::GetTargetableWeapons() const
 {
 	TArray<ARRWeapon*> Result;
@@ -347,9 +365,67 @@ TArray<FRRUpgradeCard> URRUpgradeComponent::DrawCards(TArray<FChoice> Choices, i
 	return Cards;
 }
 
+TArray<FRRUpgradeCard> URRUpgradeComponent::DrawOffer(int32 CardCount, float Luck, const TArray<FRRUpgradeCard>& Excluded)
+{
+	// New-weapon slots first. Nothing is drawn from the stream when no roll can succeed, so stat draws keep their sequence.
+	TArray<FRRWeaponCatalogueEntry> Candidates;
+	if (const ARRMiner* Miner = Cast<ARRMiner>(GetOwner()))
+	{
+		Candidates = Miner->GetAcquirableWeapons();
+		Candidates.RemoveAll([&Excluded](const FRRWeaponCatalogueEntry& Entry)
+		{
+			return Excluded.ContainsByPredicate([&Entry](const FRRUpgradeCard& Card) { return Card.IsNewWeapon() && Card.WeaponClass == Entry.WeaponClass; });
+		});
+	}
+	TArray<int32> WeaponSlots;
+	TArray<FRRUpgradeCard> WeaponCards;
+	for (int32 Slot = 0; Slot < CardCount && NewWeaponCardChance > 0.f && WeaponCards.Num() < MaxNewWeaponCardsPerOffer && !Candidates.IsEmpty(); ++Slot)
+	{
+		if (RandomStream.FRand() >= NewWeaponCardChance)
+		{
+			continue;
+		}
+		const int32 Index = RandomStream.RandRange(0, Candidates.Num() - 1);
+		FRRUpgradeCard Card;
+		if (MakeWeaponCard(Candidates[Index], Card))
+		{
+			WeaponSlots.Add(Slot);
+			WeaponCards.Add(Card);
+		}
+		Candidates.RemoveAt(Index);
+	}
+
+	// Stat cards for the other slots.
+	const TArray<FRRUpgradeCard> StatExcluded = Excluded.FilterByPredicate([](const FRRUpgradeCard& Card) { return !Card.IsNewWeapon(); });
+	const int32 StatCount = CardCount - WeaponCards.Num();
+	TArray<FChoice> Choices = GatherChoices(StatExcluded);
+	if (!StatExcluded.IsEmpty() && Choices.Num() < StatCount)
+	{
+		// Pool too small for fresh choices: allow the same (stat, target) again; a card may then differ only by tier.
+		Choices = GatherChoices({});
+	}
+	const TArray<FRRUpgradeCard> StatCards = DrawCards(MoveTemp(Choices), StatCount, Luck);
+
+	TArray<FRRUpgradeCard> Cards;
+	int32 NextWeapon = 0;
+	int32 NextStat = 0;
+	for (int32 Slot = 0; Slot < CardCount; ++Slot)
+	{
+		if (WeaponSlots.IsValidIndex(NextWeapon) && WeaponSlots[NextWeapon] == Slot)
+		{
+			Cards.Add(WeaponCards[NextWeapon++]);
+		}
+		else if (StatCards.IsValidIndex(NextStat))
+		{
+			Cards.Add(StatCards[NextStat++]);
+		}
+	}
+	return Cards;
+}
+
 TArray<FRRUpgradeCard> URRUpgradeComponent::BuildOffer(int32 CardCount, float Luck)
 {
-	CurrentOffer = DrawCards(GatherChoices({}), CardCount, Luck);
+	CurrentOffer = DrawOffer(CardCount, Luck, {});
 	OfferLuck = Luck;
 	bHasOffer = true;
 	bRerollUsed = false;
@@ -373,14 +449,7 @@ bool URRUpgradeComponent::Reroll(TArray<FRRUpgradeCard>& OutCards)
 		return false;
 	}
 
-	const int32 CardCount = CurrentOffer.Num();
-	TArray<FChoice> Choices = GatherChoices(CurrentOffer);
-	if (Choices.Num() < CardCount)
-	{
-		// Pool too small for fresh choices: allow the same (stat, target) again; a card may then differ only by tier.
-		Choices = GatherChoices({});
-	}
-	CurrentOffer = DrawCards(MoveTemp(Choices), CardCount, OfferLuck);
+	CurrentOffer = DrawOffer(CurrentOffer.Num(), OfferLuck, CurrentOffer);
 	bRerollUsed = true;
 	OutCards = CurrentOffer;
 	return true;
@@ -388,6 +457,11 @@ bool URRUpgradeComponent::Reroll(TArray<FRRUpgradeCard>& OutCards)
 
 bool URRUpgradeComponent::ApplyUpgrade(const FRRUpgradeCard& Card)
 {
+	if (Card.IsNewWeapon())
+	{
+		return ApplyNewWeapon(Card);
+	}
+
 	TArray<UAbilitySystemComponent*> Targets;
 	switch (Card.Target)
 	{
@@ -424,12 +498,38 @@ bool URRUpgradeComponent::ApplyUpgrade(const FRRUpgradeCard& Card)
 		ApplyCardToASC(Card, *ASC);
 	}
 
-	PickedUpgrades.Add(Card);
+	FinishPick(Card);
+	return true;
+}
+
+bool URRUpgradeComponent::ApplyNewWeapon(const FRRUpgradeCard& Card)
+{
+	ARRMiner* Miner = Cast<ARRMiner>(GetOwner());
+	if (!Miner || !Miner->CanAcquireWeapon(Card.WeaponClass))
+	{
+		UE_LOG(LogRogueRigs, Warning, TEXT("URRUpgradeComponent: new weapon %s refused (no miner, class unset or already owned, or weapon limit reached)."),
+			*GetNameSafe(Card.WeaponClass.Get()));
+		return false;
+	}
+	// AddWeapon acquires the weapon, which replays the global upgrades on it (ReplayGlobalUpgrades).
+	ARRWeapon* Weapon = Miner->AddWeapon(Card.WeaponClass);
+	if (!Weapon)
+	{
+		return false;
+	}
+	FRRUpgradeCard Picked = Card;
+	Picked.TargetWeapon = Weapon;
+	FinishPick(Picked);
+	return true;
+}
+
+void URRUpgradeComponent::FinishPick(const FRRUpgradeCard& Picked)
+{
+	PickedUpgrades.Add(Picked);
 	CurrentOffer.Reset();
 	bHasOffer = false;
 	bRerollUsed = false;
-	OnUpgradeApplied.Broadcast(Card);
-	return true;
+	OnUpgradeApplied.Broadcast(Picked);
 }
 
 void URRUpgradeComponent::ReplayGlobalUpgrades(ARRWeapon& Weapon)
@@ -441,7 +541,7 @@ void URRUpgradeComponent::ReplayGlobalUpgrades(ARRWeapon& Weapon)
 	}
 	for (const FRRUpgradeCard& Card : PickedUpgrades)
 	{
-		if (Card.Target == ERRUpgradeTarget::AllWeapons)
+		if (!Card.IsNewWeapon() && Card.Target == ERRUpgradeTarget::AllWeapons)
 		{
 			ApplyCardToASC(Card, *ASC);
 		}

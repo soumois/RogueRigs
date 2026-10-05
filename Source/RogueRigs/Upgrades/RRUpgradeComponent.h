@@ -1,4 +1,4 @@
-// Rogue Rigs - upgrade offer and application on the miner: CSV values, luck-weighted rarity draw, owned-weapon targets, GAS application, replay.
+// Rogue Rigs - upgrade offer and application on the miner: CSV values, luck-weighted rarity draw, owned-weapon targets, new-weapon cards, GAS application, replay.
 
 #pragma once
 
@@ -12,6 +12,7 @@
 
 class ARRWeapon;
 class UAbilitySystemComponent;
+struct FRRWeaponCatalogueEntry;
 class UGameplayEffect;
 
 /** Fired after an upgrade was applied, with the card. */
@@ -26,6 +27,12 @@ DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FRROnUpgradeAppliedSignature, const 
  * then a tier by the luck-weighted draw; when the stat has no row at the drawn tier (Pierce below blue) that choice is
  * dropped for this offer and the card is drawn again from the other choices. Two cards of one offer never share stat and target. Reroll replaces the offer
  * once with cards sharing no (stat, target) with it. ApplyUpgrade ends the offer.
+ * New-weapon cards (upgrades gdd): before the stat cards, while the owner miner can acquire a catalogue weapon
+ * (ARRMiner::GetAcquirableWeapons: not owned, fewer than MaxWeapons owned), each slot in order rolls NewWeaponCardChance; a
+ * success makes that slot a "Nouvelle arme" card for a weapon picked uniformly among the acquirable ones, at most
+ * MaxNewWeaponCardsPerOffer per offer; the other slots get stat cards. No roll is made when the chance is 0 or nothing can be
+ * acquired, so the stat draws of a seed are unchanged. Picking a new-weapon card calls ARRMiner::AddWeapon (acquisition
+ * replays the global upgrades), and the new weapon becomes a target of later stat cards. A reroll excludes the weapons offered.
  * Application: an infinite runtime GE per (attribute, operation) with SetByCaller Data.UpgradeValue (AddBase: Value;
  * MultiplyAdditive: 1 + Value, so percentages add before multiplying). Player stats go to the owner's ASC (MaxHealth also
  * raises Health by Value), one-weapon cards to that weapon's ASC, all-weapons cards to every owned weapon ASC; picked cards
@@ -118,6 +125,20 @@ public:
 	UFUNCTION(BlueprintCallable, Category = "Upgrades")
 	bool MakeCard(ERRUpgradeStat Stat, ERRUpgradeRarity Tier, ERRUpgradeTarget Target, ARRWeapon* TargetWeapon, FRRUpgradeCard& OutCard) const;
 
+	/**
+	 * Builds the "Nouvelle arme" card of Entry: CardType NewWeapon, WeaponClass, Target Weapon (no TargetWeapon yet), TargetText
+	 * = the weapon's CSV name (ARRWeapon::GetClassDisplayName), DescriptionText = Entry.Description. False when the class is unset.
+	 */
+	static bool MakeWeaponCard(const FRRWeaponCatalogueEntry& Entry, FRRUpgradeCard& OutCard);
+
+	/** Chance (0 to 1) that one offer slot becomes a new-weapon card while a weapon can be acquired (NewWeaponCardChance). */
+	UFUNCTION(BlueprintPure, Category = "Upgrades")
+	float GetNewWeaponCardChance() const { return NewWeaponCardChance; }
+
+	/** Most new-weapon cards in one offer (MaxNewWeaponCardsPerOffer). */
+	UFUNCTION(BlueprintPure, Category = "Upgrades")
+	int32 GetMaxNewWeaponCardsPerOffer() const { return MaxNewWeaponCardsPerOffer; }
+
 	/** Weapons that can be targeted: the owner miner's valid weapons with an ASC (empty when the owner is not a miner). */
 	TArray<ARRWeapon*> GetTargetableWeapons() const;
 
@@ -163,6 +184,18 @@ protected:
 	/** Every (stat, target) choice available now, minus those matching a card of Excluded. */
 	TArray<FChoice> GatherChoices(const TArray<FRRUpgradeCard>& Excluded) const;
 
+	/**
+	 * Draws a full offer of up to CardCount cards (see the class comment): new-weapon slots first, then stat cards from the
+	 * choices not matching Excluded (all choices when too few remain). Excluded weapon classes are not offered again.
+	 */
+	TArray<FRRUpgradeCard> DrawOffer(int32 CardCount, float Luck, const TArray<FRRUpgradeCard>& Excluded);
+
+	/** Applies a new-weapon card: ARRMiner::AddWeapon if the miner can acquire the class. False (logged) otherwise. */
+	bool ApplyNewWeapon(const FRRUpgradeCard& Card);
+
+	/** Records Picked, ends the current offer and broadcasts OnUpgradeApplied. */
+	void FinishPick(const FRRUpgradeCard& Picked);
+
 	/** Draws up to CardCount cards from Choices without replacement (each with its own tier drawn at Luck). */
 	TArray<FRRUpgradeCard> DrawCards(TArray<FChoice> Choices, int32 CardCount, float Luck);
 
@@ -193,6 +226,14 @@ protected:
 	/** Runtime upgrade GEs by "<Attribute>_<Op>_<Instant|Infinite>"; outer this component. */
 	UPROPERTY(Transient)
 	TMap<FString, TObjectPtr<UGameplayEffect>> EffectCache;
+
+	/** Chance (0 to 1) that each offer slot becomes a new-weapon card while a weapon can be acquired (upgrades gdd: 30 %, provisional). */
+	UPROPERTY(EditDefaultsOnly, Category = "Upgrades|New weapons", meta = (ClampMin = 0, ClampMax = 1))
+	float NewWeaponCardChance = 0.3f;
+
+	/** Most new-weapon cards in one offer (upgrades gdd: 1, provisional). */
+	UPROPERTY(EditDefaultsOnly, Category = "Upgrades|New weapons", meta = (ClampMin = 0))
+	int32 MaxNewWeaponCardsPerOffer = 1;
 
 	/** Cards of the current offer. */
 	UPROPERTY(VisibleInstanceOnly, BlueprintReadOnly, Category = "Upgrades")

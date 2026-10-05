@@ -34,8 +34,13 @@
 ARRMiner::ARRMiner(const FObjectInitializer& ObjectInitializer)
 	: Super(ObjectInitializer)
 {
-	// M1 loadout (shotgun gdd): the shotgun is spawned natively until BP_Miner lists a shotgun Blueprint in StartingWeapons.
-	GuaranteedWeaponClasses.Add(ARRShotgun::StaticClass());
+	// Weapon catalogue (upgrades gdd): the miner starts with the burst rifle only; these native defaults let new-weapon cards
+	// work without Blueprints. BP_Miner replaces them with the Blueprint classes (rifle, shotgun, turret launcher).
+	// Descriptions are provisional working texts.
+	WeaponCatalogue.Add({ ARRShotgun::StaticClass(),
+		NSLOCTEXT("RRMiner", "Catalogue_Shotgun", "Une gerbe de plombs à courte portée qui repousse les robots.") });
+	WeaponCatalogue.Add({ ARRTurretLauncher::StaticClass(),
+		NSLOCTEXT("RRMiner", "Catalogue_TurretLauncher", "Pose des tourelles qui tirent seules sur les robots proches.") });
 
 	PrimaryActorTick.bCanEverTick = true;
 
@@ -191,6 +196,43 @@ void ARRMiner::SpawnStartingWeapons()
 		}
 		AddWeapon(WeaponClass);
 	}
+}
+
+bool ARRMiner::OwnsWeaponClass(TSubclassOf<ARRWeapon> WeaponClass) const
+{
+	return WeaponClass && Weapons.ContainsByPredicate([&WeaponClass](const TObjectPtr<ARRWeapon>& Weapon)
+	{
+		return IsValid(Weapon) && Weapon->IsA(WeaponClass);
+	});
+}
+
+int32 ARRMiner::GetOwnedWeaponCount() const
+{
+	int32 Count = 0;
+	for (const TObjectPtr<ARRWeapon>& Weapon : Weapons)
+	{
+		Count += IsValid(Weapon) ? 1 : 0;
+	}
+	return Count;
+}
+
+bool ARRMiner::CanAcquireWeapon(TSubclassOf<ARRWeapon> WeaponClass) const
+{
+	return WeaponClass && GetOwnedWeaponCount() < MaxWeapons && !OwnsWeaponClass(WeaponClass);
+}
+
+TArray<FRRWeaponCatalogueEntry> ARRMiner::GetAcquirableWeapons() const
+{
+	TArray<FRRWeaponCatalogueEntry> Result;
+	for (const FRRWeaponCatalogueEntry& Entry : WeaponCatalogue)
+	{
+		const bool bDuplicate = Result.ContainsByPredicate([&Entry](const FRRWeaponCatalogueEntry& Other) { return Other.WeaponClass == Entry.WeaponClass; });
+		if (!bDuplicate && CanAcquireWeapon(Entry.WeaponClass))
+		{
+			Result.Add(Entry);
+		}
+	}
+	return Result;
 }
 
 ARRWeapon* ARRMiner::AddWeapon(TSubclassOf<ARRWeapon> WeaponClass)

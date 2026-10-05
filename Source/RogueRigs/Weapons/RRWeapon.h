@@ -119,6 +119,12 @@ public:
 	UFUNCTION(BlueprintPure, Category = "Weapon|Stats")
 	FText GetDisplayName() const;
 
+	/**
+	 * UI name of a weapon class before any instance exists (new-weapon cards): CSV column DisplayName of the class default
+	 * object's StatsRowName, or that row name when the column is empty; empty text when WeaponClass is unset.
+	 */
+	static FText GetClassDisplayName(TSubclassOf<ARRWeapon> WeaponClass);
+
 	/** Projectile class FireOnce spawns (a turret copies its launcher's). */
 	TSubclassOf<ARRProjectile> GetProjectileClass() const { return ProjectileClass; }
 

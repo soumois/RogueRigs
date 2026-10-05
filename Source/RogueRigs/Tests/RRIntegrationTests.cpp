@@ -159,7 +159,7 @@ namespace RRIntegrationTests
 	{
 		Out.ChaserClass = LoadTestClass<ARRChaser>(Test, ChaserClassPath);
 		Out.Grid = Out.ChaserClass ? SpawnGrid(Test, TestWorld) : nullptr;
-		Out.Miner = Out.Grid ? SpawnMiner(Test, TestWorld, Out.Grid, Cell) : nullptr;
+		Out.Miner = Out.Grid ? SpawnMiner(Test, TestWorld, Out.Grid, Cell, M1TestLoadout) : nullptr;
 		Out.FlowField = TestWorld.Get()->GetSubsystem<URRFlowFieldSubsystem>();
 		if (!Out.Miner || !Test.TestNotNull(TEXT("flow field subsystem"), Out.FlowField))
 		{

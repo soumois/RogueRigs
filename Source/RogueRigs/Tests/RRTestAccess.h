@@ -21,6 +21,7 @@
 #include "Player/RRGameMode.h"
 #include "Player/RRMiner.h"
 #include "Projectiles/RRProjectile.h"
+#include "Upgrades/RRUpgradeComponent.h"
 #include "Weapons/RRWeapon.h"
 
 /**
@@ -162,6 +163,15 @@ namespace RRTestAccess
 		static TArray<TSubclassOf<ARRWeapon>>& GuaranteedWeaponClassesOf(ARRMiner* Miner) { return Miner->*(&FMinerAccess::GuaranteedWeaponClasses); }
 		static FName& WeaponAttachSocketNameOf(ARRMiner* Miner) { return Miner->*(&FMinerAccess::WeaponAttachSocketName); }
 		static FVector WeaponAttachOffsetOf(const ARRMiner* Miner) { return Miner->*(&FMinerAccess::WeaponAttachOffset); }
+		static TArray<FRRWeaponCatalogueEntry>& WeaponCatalogueOf(ARRMiner* Miner) { return Miner->*(&FMinerAccess::WeaponCatalogue); }
+		static int32& MaxWeaponsOf(ARRMiner* Miner) { return Miner->*(&FMinerAccess::MaxWeapons); }
+	};
+
+	/** URRUpgradeComponent: new-weapon card tunables (RRTestHarness::DisableWeaponCards, WeaponCards tests). */
+	struct FUpgradeAccess : public URRUpgradeComponent
+	{
+		static float& NewWeaponCardChanceOf(URRUpgradeComponent* Upgrades) { return Upgrades->*(&FUpgradeAccess::NewWeaponCardChance); }
+		static int32& MaxNewWeaponCardsPerOfferOf(URRUpgradeComponent* Upgrades) { return Upgrades->*(&FUpgradeAccess::MaxNewWeaponCardsPerOffer); }
 	};
 
 	/** ARRWeapon: the muzzle component. */

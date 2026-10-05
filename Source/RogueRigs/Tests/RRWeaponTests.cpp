@@ -102,10 +102,10 @@ namespace RRWeaponTests
 		return Dummy;
 	}
 
-	/** Spawns BP_Miner on Cell with WeaponAttachSocketName forced to None before BeginPlay: starting weapons go on the capsule at WeaponAttachOffset. */
+	/** Spawns BP_Miner on Cell with WeaponAttachSocketName forced to None before BeginPlay: starting weapons (M1TestLoadout: rifle + shotgun) go on the capsule at WeaponAttachOffset. */
 	ARRMiner* SpawnMinerWithCapsuleWeapons(FAutomationTestBase& Test, const FTestWorld& TestWorld, const ARRArenaGrid* Grid, FIntPoint Cell)
 	{
-		return SpawnMiner(Test, TestWorld, Grid, Cell, [](ARRMiner* Miner) { FMinerAccess::WeaponAttachSocketNameOf(Miner) = NAME_None; });
+		return SpawnMiner(Test, TestWorld, Grid, Cell, [](ARRMiner* Miner) { FMinerAccess::WeaponAttachSocketNameOf(Miner) = NAME_None; M1TestLoadout(Miner); });
 	}
 
 	/**
@@ -907,7 +907,7 @@ bool FRRWeaponMinerHitsFloorDummyTest::RunTest(const FString& Parameters)
 	const FVector DummyFloor = Grid->GetCellCenter(MinerAimDummyCell.X, MinerAimDummyCell.Y);
 	ARRTargetDummy* Dummy = SpawnDummy(*this, TestWorld, DummyFloor);
 	// Final BP_Miner as authored (no socket override): starting BP_BurstRifle, firing from BeginPlay.
-	ARRMiner* Miner = Dummy ? SpawnMiner(*this, TestWorld, Grid, MinerAimCell) : nullptr;
+	ARRMiner* Miner = Dummy ? SpawnMiner(*this, TestWorld, Grid, MinerAimCell, M1TestLoadout) : nullptr;
 	UClass* RifleClass = LoadTestClass<ARRWeapon>(*this, BurstRifleClassPath);
 	if (!Miner || !RifleClass)
 	{

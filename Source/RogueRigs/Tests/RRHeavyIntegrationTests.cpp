@@ -74,7 +74,7 @@ namespace RRHeavyIntegrationTests
 	{
 		OutHeavyClass = LoadTestClass<ARRHeavy>(Test, HeavyClassPath);
 		OutGrid = OutHeavyClass ? SpawnGrid(Test, TestWorld) : nullptr;
-		OutMiner = OutGrid ? SpawnMiner(Test, TestWorld, OutGrid, Cell) : nullptr;
+		OutMiner = OutGrid ? SpawnMiner(Test, TestWorld, OutGrid, Cell, M1TestLoadout) : nullptr;
 		if (!OutMiner)
 		{
 			return false;

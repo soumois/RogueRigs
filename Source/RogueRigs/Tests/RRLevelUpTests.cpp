@@ -37,7 +37,7 @@ namespace RRLevelUpTests
 	bool SpawnLevelUpSetup(FAutomationTestBase& Test, const FTestWorld& TestWorld, URRTestEventRecorder* Recorder, FLevelUpSetup& Out)
 	{
 		ARRArenaGrid* Grid = SpawnGrid(Test, TestWorld);
-		Out.Miner = Grid ? SpawnMiner(Test, TestWorld, Grid, RockWestFloorCell) : nullptr;
+		Out.Miner = Grid ? SpawnMiner(Test, TestWorld, Grid, RockWestFloorCell, M1TestLoadout) : nullptr;
 		if (!Out.Miner)
 		{
 			return false;

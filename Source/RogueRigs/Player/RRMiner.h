@@ -6,6 +6,7 @@
 #include "GameFramework/Character.h"
 #include "AbilitySystemInterface.h"
 #include "Pickups/RRPickup.h"
+#include "Weapons/RRWeaponCatalogueEntry.h"
 #include "RRMiner.generated.h"
 
 class ARRArenaGrid;
@@ -50,7 +51,7 @@ DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FRROnWeaponAddedSignature, ARRWeapon
  * URRProgressionComponent (GetProgression; XP pickups call AddXP on it). Upgrade offers and picked upgrades live in its
  * URRUpgradeComponent (GetUpgrades); the level-up flow (heal, effect, paused choice screens) in its URRLevelUpComponent
  * (GetLevelUp). Weapons: at BeginPlay each class of StartingWeapons, then each GuaranteedWeaponClasses entry no
- * StartingWeapons entry provides (default: ARRShotgun), is spawned (owner: the miner), attached (mesh socket WeaponAttachSocketName, or the capsule at
+ * StartingWeapons entry provides (default: none), is spawned (owner: the miner), attached (mesh socket WeaponAttachSocketName, or the capsule at
  * WeaponAttachOffset when the socket is None) and acquired (ARRWeapon::Acquire); they are destroyed at EndPlay.
  * Collision: the capsule overlaps the Projectile channel (never blocked by any projectile; projectiles still get
  * overlap events) and ignores its weapons when moving. No dash or item logic.
@@ -124,6 +125,30 @@ public:
 	 */
 	UFUNCTION(BlueprintCallable, Category = "Miner|Weapons")
 	ARRWeapon* AddWeapon(TSubclassOf<ARRWeapon> WeaponClass);
+
+	/** Weapons of the run that new-weapon cards can offer (WeaponCatalogue). */
+	UFUNCTION(BlueprintPure, Category = "Miner|Weapons")
+	const TArray<FRRWeaponCatalogueEntry>& GetWeaponCatalogue() const { return WeaponCatalogue; }
+
+	/** Most weapons the miner can own at once (MaxWeapons); new-weapon cards stop at this count. */
+	UFUNCTION(BlueprintPure, Category = "Miner|Weapons")
+	int32 GetMaxWeapons() const { return MaxWeapons; }
+
+	/** True when a valid weapon of GetWeapons is WeaponClass or a subclass of it. */
+	UFUNCTION(BlueprintPure, Category = "Miner|Weapons")
+	bool OwnsWeaponClass(TSubclassOf<ARRWeapon> WeaponClass) const;
+
+	/** Number of valid weapons in GetWeapons. */
+	UFUNCTION(BlueprintPure, Category = "Miner|Weapons")
+	int32 GetOwnedWeaponCount() const;
+
+	/** True when WeaponClass is set, not owned (OwnsWeaponClass) and fewer than MaxWeapons weapons are owned. */
+	UFUNCTION(BlueprintPure, Category = "Miner|Weapons")
+	bool CanAcquireWeapon(TSubclassOf<ARRWeapon> WeaponClass) const;
+
+	/** Catalogue entries the miner could acquire now (CanAcquireWeapon), in catalogue order, duplicates skipped; empty once MaxWeapons are owned. */
+	UFUNCTION(BlueprintPure, Category = "Miner|Weapons")
+	TArray<FRRWeaponCatalogueEntry> GetAcquirableWeapons() const;
 
 	/** First turret launcher of GetWeapons, or null. */
 	UFUNCTION(BlueprintPure, Category = "Miner|Weapons")
@@ -345,11 +370,23 @@ protected:
 
 	/**
 	 * Weapon classes the miner always starts with: after StartingWeapons, each class here is spawned, attached and acquired
-	 * unless an entry of StartingWeapons is that class or a subclass. Default: ARRShotgun (M1 loadout: burst rifle + shotgun),
-	 * so the native shotgun fills in until a shotgun Blueprint is listed in StartingWeapons.
+	 * unless an entry of StartingWeapons is that class or a subclass. Default: empty (since task-024-04 the miner starts with
+	 * the burst rifle only; the other weapons come from new-weapon cards).
 	 */
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Miner|Weapons")
 	TArray<TSubclassOf<ARRWeapon>> GuaranteedWeaponClasses;
+
+	/**
+	 * Weapons of the run (burst rifle, shotgun, turret launcher), offered by new-weapon cards while not owned and fewer than
+	 * MaxWeapons are owned (sys-upgrades). Code defaults: native ARRShotgun and ARRTurretLauncher (the burst rifle has no
+	 * native class); BP_Miner lists the Blueprint classes.
+	 */
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Miner|Weapons")
+	TArray<FRRWeaponCatalogueEntry> WeaponCatalogue;
+
+	/** Most weapons owned at once (upgrades gdd: 4); new-weapon cards are offered only below this count. */
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Miner|Weapons", meta = (ClampMin = 1))
+	int32 MaxWeapons = 4;
 
 	/** Socket of the miner mesh the weapons attach to. None = attach to the capsule (root) at WeaponAttachOffset, so the weapon turns with the aim yaw. */
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Miner|Weapons")

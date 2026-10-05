@@ -25,6 +25,7 @@ namespace RRTestHarness
 	/** Blueprint classes used by several test files. */
 	inline const TCHAR* const ArenaGridClassPath = TEXT("/Game/RogueRigs/Blueprints/Terrain/BP_ArenaGrid.BP_ArenaGrid_C");
 	inline const TCHAR* const MinerClassPath = TEXT("/Game/RogueRigs/Blueprints/Player/BP_Miner.BP_Miner_C");
+	inline const TCHAR* const ShotgunClassPath = TEXT("/Game/RogueRigs/Blueprints/Weapons/BP_Shotgun.BP_Shotgun_C");
 
 	/** Rock cell of arena_m1 with a floor cell to its west; the grid checks below use it to prove the layout loaded. */
 	inline const FIntPoint RockCell(43, 38);
@@ -145,6 +146,39 @@ namespace RRTestHarness
 			return !Entry || Entry->IsChildOf(ARRShotgun::StaticClass());
 		});
 		FMinerAccess::GuaranteedWeaponClassesOf(Miner).Reset();
+		// Seeded offers of these tests were measured without new-weapon cards (task-024-04 adds them).
+		FUpgradeAccess::NewWeaponCardChanceOf(Miner->GetUpgrades()) = 0.f;
+	}
+
+	/** SpawnMiner hook: offers never contain a new-weapon card (chance 0), so seeded stat draws match the pre-024-04 measures. */
+	inline void DisableWeaponCards(ARRMiner* Miner)
+	{
+		FUpgradeAccess::NewWeaponCardChanceOf(Miner->GetUpgrades()) = 0.f;
+	}
+
+	/**
+	 * SpawnMiner hook: BP_Shotgun (native ARRShotgun if it fails to load) appended to StartingWeapons unless an entry is already
+	 * a shotgun. BP_Miner starts with the rifle only since task-024-04; tests measured with the rifle + shotgun loadout add it here.
+	 */
+	inline void AddStartingShotgun(ARRMiner* Miner)
+	{
+		TArray<TSubclassOf<ARRWeapon>>& Starting = FMinerAccess::StartingWeaponsOf(Miner);
+		const bool bHasShotgun = Starting.ContainsByPredicate([](const TSubclassOf<ARRWeapon>& Entry)
+		{
+			return Entry && Entry->IsChildOf(ARRShotgun::StaticClass());
+		});
+		if (!bHasShotgun)
+		{
+			UClass* ShotgunClass = LoadClass<ARRShotgun>(nullptr, ShotgunClassPath);
+			Starting.Add(ShotgunClass ? ShotgunClass : ARRShotgun::StaticClass());
+		}
+	}
+
+	/** SpawnMiner hook: the loadout the tests before task-024-04 were measured with: rifle + shotgun (AddStartingShotgun), no new-weapon cards. */
+	inline void M1TestLoadout(ARRMiner* Miner)
+	{
+		AddStartingShotgun(Miner);
+		DisableWeaponCards(Miner);
 	}
 
 	/** The miner's first weapon that is not a shotgun (the burst rifle); null when none. */

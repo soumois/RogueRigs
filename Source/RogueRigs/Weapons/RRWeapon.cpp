@@ -127,6 +127,21 @@ FText ARRWeapon::GetDisplayName() const
 	return FText::FromString(DisplayName.IsEmpty() ? StatsRowName.ToString() : DisplayName);
 }
 
+FText ARRWeapon::GetClassDisplayName(TSubclassOf<ARRWeapon> WeaponClass)
+{
+	if (!WeaponClass)
+	{
+		return FText::GetEmpty();
+	}
+	const ARRWeapon* Default = WeaponClass->GetDefaultObject<ARRWeapon>();
+	FRRWeaponStatsRow Row;
+	if (Default->LoadStatsRow(Row) && !Row.DisplayName.IsEmpty())
+	{
+		return FText::FromString(Row.DisplayName);
+	}
+	return FText::FromString(Default->StatsRowName.ToString());
+}
+
 FVector ARRWeapon::GetAimDirection() const
 {
 	if (OwnerMiner)

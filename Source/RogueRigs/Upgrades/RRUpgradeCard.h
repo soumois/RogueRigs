@@ -1,11 +1,22 @@
-// Rogue Rigs - upgrade card: the enums of the upgrade system (stat, rarity tier, target, operation) and the card shown to the player.
+// Rogue Rigs - upgrade card: the enums of the upgrade system (card type, stat, rarity tier, target, operation) and the card shown to the player.
 
 #pragma once
 
 #include "CoreMinimal.h"
+#include "Templates/SubclassOf.h"
 #include "RRUpgradeCard.generated.h"
 
 class ARRWeapon;
+
+/** Kind of card of an offer: a stat upgrade, or a new weapon to acquire (sys-upgrades). */
+UENUM(BlueprintType)
+enum class ERRUpgradeCardType : uint8
+{
+	/** Raises Stat on Target by Value, with a rarity Tier. */
+	StatUpgrade,
+	/** "Nouvelle arme": picking it gives the miner WeaponClass (ARRMiner::AddWeapon). No tier: the UI shows it with its own style. */
+	NewWeapon
+};
 
 /** Stat an upgrade raises. Player stats live on the miner's ASC, weapon stats on each weapon's ASC (sys-upgrades). */
 UENUM(BlueprintType)
@@ -81,11 +92,22 @@ enum class ERRUpgradeOperation : uint8
  * One upgrade card of an offer, built by URRUpgradeComponent::BuildOffer and applied by ApplyUpgrade. Value is in attribute
  * units (0.12 = +12 % for a percentage stat, 0.05 = +5 points of CritChance, 20 = +20 MaxHealth), already scaled by the
  * targeted multiplier for a one-weapon card. The texts are ready for the UI (French).
+ * A NewWeapon card uses only CardType, WeaponClass, Target (Weapon), TargetWeapon (null in the offer, the acquired weapon
+ * once picked), DisplayName ("Nouvelle arme"), TargetText (weapon name) and DescriptionText; Stat, Tier, Value, Operation and
+ * ValueText keep their defaults.
  */
 USTRUCT(BlueprintType)
 struct ROGUERIGS_API FRRUpgradeCard
 {
 	GENERATED_BODY()
+
+	/** Stat upgrade or new weapon; the UI picks the card style from it (a new weapon has no rarity color). */
+	UPROPERTY(BlueprintReadOnly, Category = "Upgrade")
+	ERRUpgradeCardType CardType = ERRUpgradeCardType::StatUpgrade;
+
+	/** Weapon class given by a NewWeapon card; null for a stat upgrade. */
+	UPROPERTY(BlueprintReadOnly, Category = "Upgrade")
+	TSubclassOf<ARRWeapon> WeaponClass;
 
 	/** Stat raised by the card. */
 	UPROPERTY(BlueprintReadOnly, Category = "Upgrade")
@@ -111,21 +133,36 @@ struct ROGUERIGS_API FRRUpgradeCard
 	UPROPERTY(BlueprintReadOnly, Category = "Upgrade")
 	ERRUpgradeOperation Operation = ERRUpgradeOperation::AddBase;
 
-	/** Stat name for the UI (e.g. "Dégâts"). */
+	/** Stat name for the UI (e.g. "Dégâts"); "Nouvelle arme" on a NewWeapon card. */
 	UPROPERTY(BlueprintReadOnly, Category = "Upgrade|UI")
 	FText DisplayName;
 
-	/** Target for the UI: empty for a player stat, "Toutes les armes" or the weapon's display name. */
+	/** Target for the UI: empty for a player stat, "Toutes les armes" or the weapon's display name (also on a NewWeapon card). */
 	UPROPERTY(BlueprintReadOnly, Category = "Upgrade|UI")
 	FText TargetText;
 
-	/** Bonus for the UI (e.g. "+12 %", "+20"). */
+	/** Bonus for the UI (e.g. "+12 %", "+20"); empty on a NewWeapon card. */
 	UPROPERTY(BlueprintReadOnly, Category = "Upgrade|UI")
 	FText ValueText;
 
-	/** True when both cards raise the same stat on the same target (tier ignored): such cards never share an offer. */
+	/** Short weapon description of a NewWeapon card (ARRMiner weapon catalogue); empty for a stat upgrade. */
+	UPROPERTY(BlueprintReadOnly, Category = "Upgrade|UI")
+	FText DescriptionText;
+
+	/** True for a "Nouvelle arme" card. */
+	bool IsNewWeapon() const { return CardType == ERRUpgradeCardType::NewWeapon; }
+
+	/** True when both cards raise the same stat on the same target (tier ignored), or offer the same weapon: such cards never share an offer. */
 	bool IsSameChoice(const FRRUpgradeCard& Other) const
 	{
+		if (CardType != Other.CardType)
+		{
+			return false;
+		}
+		if (IsNewWeapon())
+		{
+			return WeaponClass == Other.WeaponClass;
+		}
 		return Stat == Other.Stat && Target == Other.Target && TargetWeapon == Other.TargetWeapon;
 	}
 };

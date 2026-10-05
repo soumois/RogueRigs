@@ -45,7 +45,7 @@ bool FRRCheatConsoleVariablesTest::RunTest(const FString& Parameters)
 	FTestWorld TestWorld(TEXT("RRCheatWorld"));
 	TStrongObjectPtr<URRTestEventRecorder> Recorder(NewObject<URRTestEventRecorder>());
 	ARRArenaGrid* Grid = SpawnGrid(*this, TestWorld);
-	ARRMiner* Miner = Grid ? SpawnMiner(*this, TestWorld, Grid, RockWestFloorCell) : nullptr;
+	ARRMiner* Miner = Grid ? SpawnMiner(*this, TestWorld, Grid, RockWestFloorCell, M1TestLoadout) : nullptr;
 	if (!Miner || !TestNotNull(TEXT("progression"), Miner->GetProgression()) || !TestNotNull(TEXT("level-up flow"), Miner->GetLevelUp()))
 	{
 		return false;
@@ -146,7 +146,7 @@ bool FRRCheatPropertyRouteTest::RunTest(const FString& Parameters)
 	FTestWorld TestWorld(TEXT("RRCheatPropertyWorld"));
 	TStrongObjectPtr<URRTestEventRecorder> Recorder(NewObject<URRTestEventRecorder>());
 	ARRArenaGrid* Grid = SpawnGrid(*this, TestWorld);
-	ARRMiner* Miner = Grid ? SpawnMiner(*this, TestWorld, Grid, RockWestFloorCell) : nullptr;
+	ARRMiner* Miner = Grid ? SpawnMiner(*this, TestWorld, Grid, RockWestFloorCell, M1TestLoadout) : nullptr;
 	URRRunFlowSubsystem* RunFlow = TestWorld.Get()->GetSubsystem<URRRunFlowSubsystem>();
 	if (!Miner || !TestNotNull(TEXT("run flow"), RunFlow) || !TestNotNull(TEXT("level-up flow"), Miner->GetLevelUp()))
 	{

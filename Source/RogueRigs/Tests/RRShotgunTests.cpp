@@ -69,7 +69,7 @@ namespace RRShotgunTests
 	bool SetUp(FAutomationTestBase& Test, const FTestWorld& TestWorld, FIntPoint Cell, const FVector& Aim, FShotgunSetup& Out)
 	{
 		Out.Grid = SpawnGrid(Test, TestWorld);
-		Out.Miner = Out.Grid ? SpawnMiner(Test, TestWorld, Out.Grid, Cell) : nullptr;
+		Out.Miner = Out.Grid ? SpawnMiner(Test, TestWorld, Out.Grid, Cell, M1TestLoadout) : nullptr;
 		if (!Out.Miner)
 		{
 			return false;
@@ -190,7 +190,7 @@ bool FRRShotgunStatsAndLoadoutTest::RunTest(const FString& Parameters)
 
 	FTestWorld TestWorld(TEXT("RRShotgunLoadout"));
 	ARRArenaGrid* Grid = SpawnGrid(*this, TestWorld);
-	ARRMiner* Miner = Grid ? SpawnMiner(*this, TestWorld, Grid, OpenMinerCell) : nullptr;
+	ARRMiner* Miner = Grid ? SpawnMiner(*this, TestWorld, Grid, OpenMinerCell, M1TestLoadout) : nullptr;
 	UClass* RifleClass = LoadTestClass<ARRWeapon>(*this, BurstRifleClassPath);
 	if (!Miner || !RifleClass)
 	{
@@ -579,7 +579,7 @@ bool FRRShotgunCardsOnlyWhenEquippedTest::RunTest(const FString& Parameters)
 		ARRMiner* Miner = nullptr;
 		if (Grid)
 		{
-			Miner = bEquipped ? SpawnMiner(*this, TestWorld, Grid, OpenMinerCell) : SpawnMiner(*this, TestWorld, Grid, OpenMinerCell, KeepRifleOnly);
+			Miner = bEquipped ? SpawnMiner(*this, TestWorld, Grid, OpenMinerCell, M1TestLoadout) : SpawnMiner(*this, TestWorld, Grid, OpenMinerCell, KeepRifleOnly);
 		}
 		URRUpgradeComponent* Upgrades = Miner ? Miner->GetUpgrades() : nullptr;
 		if (!Miner || !TestNotNull(TEXT("upgrade component"), Upgrades))
