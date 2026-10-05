@@ -29,6 +29,7 @@ bp-drone  reference/tech/blueprints/bp-drone.md
 bp-enemy-spawner  reference/tech/blueprints/bp-enemy-spawner.md
 bp-explosion-fx  reference/tech/blueprints/bp-explosion-fx.md
 bp-extraction-shuttle  reference/tech/blueprints/bp-extraction-shuttle.md
+bp-heavy  reference/tech/blueprints/bp-heavy.md
 bp-kamikaze  reference/tech/blueprints/bp-kamikaze.md
 bp-miner  reference/tech/blueprints/bp-miner.md
 bp-objective-console  reference/tech/blueprints/bp-objective-console.md
