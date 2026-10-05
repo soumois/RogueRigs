@@ -22,6 +22,7 @@ status: approved
 | All robots | red eyes + yellow logo plate |
 | Chaser | company yellow |
 | Kamikaze | dark gunmetal + pulsing orange core |
+| Chaser shield | translucent pale blue-white (provisional) |
 | Shooter | acid green |
 | Heavy | steel blue + yellow/black hazard stripes |
 | Normal / critical damage number | white / larger white-gold |

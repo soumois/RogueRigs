@@ -7,6 +7,7 @@ kind: note
 # Wishlist
 
 ## Game design
+- Weapon tags (light, medium, projectile, area…) with tag-targeted upgrades, from DRGS: out of the prototype scope with only 3 weapons (owner 2026-10-05).
 - Meta-progression shop spending ore ([[ore-economy]]).
 - Per-weapon-type upgrades (laser, physical projectile, light weapon…).
 - Grenades, with limited charges.

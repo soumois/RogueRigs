@@ -14,7 +14,7 @@ status: approved
 - size: 1.1 × the miner, hovering (owner 2026-10-02, was 0.6)
 - animations: open
 - behavior:
-  - explodes on proximity or on death, with the same radius and damage both ways;
+  - explodes on proximity or on death, with the same radius and damage both ways; before a proximity explosion its core flares with a strong light for 0.5 s (owner 2026-10-05); a death explosion stays instant;
   - the explosion hurts robots, the miner and terrain ([[explosions]]);
   - it does not target defenses: breaking terrain is emergent, not intended;
   - its explosion destroys every block in the radius ([[explosions]]), so luring it onto a vein is a valid tactic ([[ore-blocks]]);

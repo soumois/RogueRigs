@@ -7,7 +7,8 @@ status: approved
 ---
 # XP and level-up
 
-- Killed robots drop XP cubes (glowing cyan, see [[color-code]]).
+- Killed robots drop XP cubes (glowing cyan, see [[color-code]]). Like DRGS (provisional, owner 2026-10-05): a kill bursts several small cubes in short arcs around the body; they rest on the floor; inside the pickup radius they accelerate toward the miner and form a stream; each collect sparkles. Broken ore and heal blocks pop chunks the same way. Healing shows a green ring on the miner.
+- Pacing target (provisional, owner 2026-10-05): level 2 at about 0:30, level 5 at about 1:40, level 10 at about 3:10 of a 4-minute level; a fast early rhythm matters (owner).
 - Collecting XP fills a level-up bar. The player's `XPGain` stat scales XP gained; `PickupRadius` sets the collection radius ([[player-stats]]).
 - Bonus chests also give XP and an upgrade choice ([[objective-bonus-chest]]).
 - Each level-up offers 3 upgrades; the player picks 1 ([[upgrades]]).

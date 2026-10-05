@@ -21,6 +21,9 @@ status: approved
 - milestone: M1
 - references: `vault/assets/enemies-lineup.jpg`
 
+## Shield variant (provisional, owner 2026-10-05)
+- A chaser with a 30-point shield that absorbs damage before health; translucent pale blue-white shell that breaks; xp 2; mixed into chaser packs (25 %) after 1:00. Inspired by the DRGS red swarmers.
+
 ## Relations
 - [[enemies-index]] — parent index.
 - [[enemy-death]] — death effect.

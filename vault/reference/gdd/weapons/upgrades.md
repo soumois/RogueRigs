@@ -18,14 +18,15 @@ status: approved
 Damage, fire rate, reload speed, crit chance, crit damage, magazine size.
 
 ## Effects (always yellow rarity)
-- Each effect belongs to specific weapons' pools: piercing (burst rifle, turret launcher), 4-direction fire (burst rifle). The shotgun has no effect.
+- Each effect belongs to specific weapons' pools: 4-direction fire (burst rifle). Piercing is no longer an effect but a weapon stat upgrade: blue +1, purple +2, yellow +3 pierced robots (owner 2026-10-05).
+- New-weapon cards (owner 2026-10-05): the miner starts with the burst rifle only; while fewer than 4 weapons are owned (3 exist in the prototype), each offer slot has a 30 % chance to be a "Nouvelle arme" card, at most one per offer (provisional). Taking few weapons lets the player focus upgrades.
 - 4-direction fire: the main shot stays on the aim; the 3 extra shots are weaker, to protect pillar P2. Milestone M2, like piercing.
 - EMP, stuns machines: provisional, M3 if time allows.
 - Ice, burn, other elements: deferred ([[wishlist]]).
 
 ## Values
 - Fixed: an upgrade of a given stat, target and rarity always gives the same value in every run ([[rarities]]).
-- Global values per tier grey / green / blue / purple / yellow (provisional, owner 2026-10-03): % stats +5 / +8 / +12 / +18 / +25 %; max health +10 / +15 / +20 / +30 / +40; crit chance +2 / +3 / +5 / +7 / +10 points; crit damage +0.1 / +0.15 / +0.2 / +0.3 / +0.4; luck +1 / +2 / +3 / +4 / +5. A targeted upgrade gives 1.5 × the global value.
+- Global values per tier grey / green / blue / purple / yellow (provisional, owner 2026-10-05), about twice the previous ones, close to DRGS: % stats +10 / +15 / +25 / +30 / +40 %; max health +20 / +30 / +45 / +60 / +80; crit chance +3 / +5 / +8 / +11 / +15 points; crit damage +0.1 / +0.2 / +0.3 / +0.4 / +0.5; luck +1 / +2 / +3 / +4 / +5. A targeted upgrade gives 1.5 × the global value.
 - Only weapons the miner owns can be targeted.
 - M1 scope (owner 2026-10-03): player stats and weapon stats damage, fire rate, reload speed, crit chance, crit damage; no magazine size and no effects.
 - Stacking: percentage bonuses add together (2 × +20 % damage = ×1.4). Point bonuses add (crit damage ×1.5 + 0.2 = ×1.7).

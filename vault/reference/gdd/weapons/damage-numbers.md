@@ -7,12 +7,12 @@ status: provisional
 ---
 # Damage numbers
 
-- Normal hits: white. Critical hits: larger, white-gold.
+- Normal hits: white. Critical hits: 1.6 × larger, white-gold, with a short pop, like DRGS (owner 2026-10-05).
 - Hits on the same robot within a short window add up into one number.
 - The player can turn them off.
 - Rendered with Niagara at horde scale (digit atlas), fed by the damage pipeline ([[sys-damage]]).
-- Merging window duration: open.
-- Milestone: M2 (critical-hit pop in M3). M1 has a debug text version on the test target dummy (owner, 2026-10-01), extended to every enemy (owner, 2026-10-02); not pooled, so not for horde scale.
+- Merging window duration: 0.25 s (provisional, owner 2026-10-05).
+- Milestone: M2, built now (owner 2026-10-05). M1 has a debug text version on the test target dummy (owner, 2026-10-01), extended to every enemy (owner, 2026-10-02); not pooled, so not for horde scale.
 
 ## Relations
 - [[weapons-index]] — parent index.

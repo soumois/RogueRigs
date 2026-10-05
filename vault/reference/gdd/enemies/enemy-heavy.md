@@ -16,7 +16,7 @@ status: approved
 - behavior: ground slam (owner 2026-10-04): stops, raises its arms, eyes and stripes glow for the telegraph, then a shockwave around it hits the miner; the shockwave never breaks rock ([[destruction-rules]]). High knockback resistance, due to its mass. Passes through every one-cell corridor ([[arena-grid]]).
 - telegraph: 0.8 s arms raised with eyes and stripes glowing (owner 2026-10-04)
 - colors: steel blue with yellow and black hazard stripes; red eyes, yellow logo plate ([[color-code]])
-- stats (provisional, owner 2026-10-04): hp 300, speed 200 uu/s, slam damage 25, slam radius 220 uu, one slam every 2.5 s, xp_value 5, knockback_resistance 0.8; at most 5 alive.
+- stats (provisional, owner 2026-10-04): hp 300, speed 200 uu/s, slam damage 25, slam radius 400 uu (owner 2026-10-05: the area must be large; was 220), the slam area shown on the ground during the telegraph, one slam every 2.5 s, xp_value 5, knockback_resistance 0.8; at most 5 alive.
 - milestone: M3, pulled into the current work (owner 2026-10-04)
 - references: `vault/assets/enemies-lineup.jpg`
 

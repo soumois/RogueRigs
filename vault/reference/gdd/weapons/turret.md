@@ -12,6 +12,7 @@ status: approved
 - fire_mode: deployable; a button places a turret on the aimed spot.
 - Charges = magazine size. Placing a turret starts recharging that charge at the launcher's reload speed; one charge recharges at a time.
 - No cap on active turrets for now.
+- Placement is always a player button, never automatic when standing still (owner 2026-10-05: auto-placement in DRGS was a frustration).
 
 ## Turret (placed)
 - Fixed lifetime; cannot be picked up.
@@ -21,11 +22,11 @@ status: approved
 - projectile: projectile; blocked_by_rock: yes.
 
 ## Values
-- stats: damage, fire rate, crit chance, magazine size (charges), reload time, lifetime, target range → open; crit damage ×1.5 base.
+- stats (provisional, owner 2026-10-05), ratios from DRGS LMG Gun Platform: damage 6 per bullet, 3.3 shots/s, pierce 4, crit chance 5 %, charges 2, recharge 6 s, lifetime 10 s, target range 1500 uu; crit damage ×1.5 base.
 - upgradable_stats: damage, fire rate, reload speed, crit chance, crit damage, magazine size.
 - effect pool (yellow rarity): piercing.
 - vfx_sfx: white + teal + rust body, white-gold shots ([[color-code]]); sound open.
-- milestone: M2
+- milestone: M2, pulled into the current work (owner 2026-10-05)
 
 ## Relations
 - [[weapons-index]] — parent index.

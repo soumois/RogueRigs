@@ -51,3 +51,6 @@ vault/.obsidian/workspace*
 Thumbs.db
 desktop.ini
 .DS_Store
+
+# Reference videos (large, not ours)
+Reference/
