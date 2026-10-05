@@ -18,3 +18,5 @@ Planned, not written yet: agent-balance, agent-text, agent-style-guide, agent-ar
 - [[agent-cpp]] — writes and builds C++ gameplay code, updates system docs.
 - [[agent-bp]] — builds the Blueprint layer through Unreal MCP and documents each Blueprint.
 - [[orchestration-protocol]] — the step-by-step procedure the Orchestrator follows for every request, including resume after a limit.
+- [[orchestrator-runbook]] — the commands that work: git, editor start and stop, delegation prompt, closing a subtask, dashboard.
+- [[orchestrator-lessons]] — bp agent and MCP limits, visual checks, measuring, owner preferences.

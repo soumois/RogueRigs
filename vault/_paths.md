@@ -77,6 +77,7 @@ gas-api-notes  reference/tech/systems/gas-api-notes.md
 gas-engine-facts  reference/tech/systems/gas-engine-facts.md
 gas-scope  reference/production/gas-scope.md
 gdd-index  reference/gdd/gdd-index.md
+handover-2026-10-06  reference/production/handover-2026-10-06.md
 heal-ore  reference/gdd/terrain/heal-ore.md
 layout-generator-recipe  reference/tech/pipelines/layout-generator-recipe.md
 level-flow  reference/gdd/run/level-flow.md
@@ -89,6 +90,8 @@ objective-bonus-chest  reference/gdd/run/objective-bonus-chest.md
 objective-console  reference/gdd/run/objective-console.md
 objective-variants  reference/gdd/run/objective-variants.md
 orchestration-protocol  reference/agents/orchestration-protocol.md
+orchestrator-lessons  reference/agents/orchestrator-lessons.md
+orchestrator-runbook  reference/agents/orchestrator-runbook.md
 ore-blocks  reference/gdd/terrain/ore-blocks.md
 ore-economy  reference/gdd/run/ore-economy.md
 perf-leads  reference/tech/performance/perf-leads.md

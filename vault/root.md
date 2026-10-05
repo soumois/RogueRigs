@@ -16,7 +16,7 @@ Read [[_navigation]] before descending. Read [[_authoring]] before creating or m
 | Know what the game is or does: rules, entities, look, sound, dialogue | `gdd-index` |
 | Run, define or change an AI agent of the dev crew | `agents-index` |
 | Write or change C++, Blueprints, pipelines, build | `tech-index`, then the `gdd` node it implements |
-| Plan work, check milestones, check what is cut | `production-index` |
+| Plan work, check milestones, check what is cut, resume after a handover | `production-index` |
 | Pick up, create or update a work item | `tasks-index` |
 | Course material, assignments, rubrics, feedback | `course-index` |
 

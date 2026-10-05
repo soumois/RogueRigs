@@ -14,4 +14,5 @@ Capstone submission: November 9, 2026. Budget: one person, 5 to 6 hours a week.
 - [[gas-scope]] — GAS work per milestone, in hours.
 - [[wishlist]] — every cut or deferred idea.
 - [[drgs-analysis]] — DRGS reference run analysis: pacing, arrival, packs, mining, pickups, weapons; open when tuning against DRGS.
+- [[handover-2026-10-06]] — state at the pause of 2026-10-06: next subtask, queue, pending owner decisions; open first when resuming.
 - [[cost-log]] — tokens, model and runs per subtask from task 013; open to estimate cost.
