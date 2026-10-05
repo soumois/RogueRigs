@@ -46,10 +46,6 @@ public:
 	UFUNCTION(BlueprintPure, Category = "Weapon|Shotgun")
 	int32 GetLastPelletsSpawned() const { return LastPelletsSpawned; }
 
-	/** Legacy, never called by C++: kept only so BP_Shotgun's old fan VFX still compiles until task-024-05 removes it; returns Range. */
-	UFUNCTION(BlueprintPure, Category = "Weapon|Shotgun|Legacy")
-	float GetWaveClearDistance(float YawOffsetDeg) const { return Range; }
-
 protected:
 	/** One shot: PelletCount pellets around the aim (see the class comment), then OnShotFired. Skipped (logged) without ProjectileClass or with ProjectileSpeed or Range <= 0. */
 	virtual void FireOnce() override;
@@ -63,10 +59,6 @@ protected:
 	 */
 	UFUNCTION(BlueprintImplementableEvent, Category = "Weapon|Shotgun")
 	void OnShotFired(FVector Origin, FVector Direction, float FanSpreadDeg);
-
-	/** Legacy, never called: kept only so BP_Shotgun's old Event OnWaveFired node still compiles until task-024-05 deletes it. */
-	UFUNCTION(BlueprintImplementableEvent, Category = "Weapon|Shotgun|Legacy")
-	void OnWaveFired(FVector Origin, FVector Direction, float HalfAngleDeg, float WaveRange, float ClippedLength);
 
 	/** Pellets per shot, copied from the CSV at acquisition. */
 	UPROPERTY(VisibleInstanceOnly, BlueprintReadOnly, Category = "Weapon|Shotgun")

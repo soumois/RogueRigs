@@ -19,7 +19,9 @@
 #include "Grid/RRArenaGrid.h"
 #include "Pickups/RRPickup.h"
 #include "Player/RRGameMode.h"
+#include "InputActionValue.h"
 #include "Player/RRMiner.h"
+#include "Player/RRPlayerController.h"
 #include "Projectiles/RRProjectile.h"
 #include "Upgrades/RRUpgradeComponent.h"
 #include "Weapons/RRWeapon.h"
@@ -165,6 +167,15 @@ namespace RRTestAccess
 		static FVector WeaponAttachOffsetOf(const ARRMiner* Miner) { return Miner->*(&FMinerAccess::WeaponAttachOffset); }
 		static TArray<FRRWeaponCatalogueEntry>& WeaponCatalogueOf(ARRMiner* Miner) { return Miner->*(&FMinerAccess::WeaponCatalogue); }
 		static int32& MaxWeaponsOf(ARRMiner* Miner) { return Miner->*(&FMinerAccess::MaxWeapons); }
+	};
+
+	/** ARRPlayerController: the place-turret input path (action resolution and its Started handler). */
+	struct FPlayerControllerAccess : public ARRPlayerController
+	{
+		/** The place-turret action the controller binds (PlaceTurretAction, else its transient action; no mapping context added). */
+		static UInputAction* PlaceTurretActionOf(ARRPlayerController* Controller) { return (Controller->*(&FPlayerControllerAccess::ResolvePlaceTurretAction))(nullptr); }
+		/** Runs the handler bound to the place-turret action on Started, as one button press does. */
+		static void PressPlaceTurret(ARRPlayerController* Controller) { (Controller->*(&FPlayerControllerAccess::HandlePlaceTurret))(FInputActionValue(true)); }
 	};
 
 	/** URRUpgradeComponent: new-weapon card tunables (RRTestHarness::DisableWeaponCards, WeaponCards tests). */
