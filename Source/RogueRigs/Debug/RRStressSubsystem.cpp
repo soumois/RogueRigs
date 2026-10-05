@@ -72,6 +72,12 @@ namespace RRStress
 	TAutoConsoleVariable<float> CVarDigReferenceCellSize(TEXT("rr.Stress.DigReferenceCellSize"), 200.f,
 		TEXT("Dig mode: cell size (uu) in which rr.Stress.DigRate is expressed."), ECVF_Cheat);
 
+	TAutoConsoleVariable<float> CVarWalkRadius(TEXT("rr.Stress.WalkRadius"), 800.f,
+		TEXT("Walk mode: radius (uu) of the circle the miner is moved along."), ECVF_Cheat);
+
+	TAutoConsoleVariable<float> CVarWalkSpeed(TEXT("rr.Stress.WalkSpeed"), 600.f,
+		TEXT("Walk mode: miner speed (uu/s) along the circle."), ECVF_Cheat);
+
 	TAutoConsoleVariable<FString> CVarCounts(TEXT("rr.Stress.Counts"), TEXT("50,100,200,300,400"),
 		TEXT("Default comma-separated robot counts of rr.Stress.Run."), ECVF_Cheat);
 
@@ -192,7 +198,7 @@ namespace RRStress
 		FConsoleCommandWithWorldAndArgsDelegate::CreateStatic(&HandlePeace), ECVF_Cheat);
 
 	FAutoConsoleCommandWithWorldAndArgs CmdRun(TEXT("rr.Stress.Run"),
-		TEXT("rr.Stress.Run [Counts] [SettleSeconds] [MeasureSeconds] [Quit] [peace|fire|burst] [Class]: timed frame-time steps, results in Saved/Stress."),
+		TEXT("rr.Stress.Run [Counts] [SettleSeconds] [MeasureSeconds] [Quit] [peace|fire|burst|chain|dig|walk] [Class]: timed frame-time steps, results in Saved/Stress."),
 		FConsoleCommandWithWorldAndArgsDelegate::CreateStatic(&HandleRun), ECVF_Cheat);
 }
 
@@ -417,6 +423,11 @@ bool URRStressSubsystem::ParseMode(const FString& Text, ERRStressMode& OutMode)
 		OutMode = ERRStressMode::Dig;
 		return true;
 	}
+	if (Mode.Equals(TEXT("walk"), ESearchCase::IgnoreCase) || Mode == TEXT("5"))
+	{
+		OutMode = ERRStressMode::Walk;
+		return true;
+	}
 	return false;
 }
 
@@ -570,6 +581,24 @@ void URRStressSubsystem::TickDig(float DeltaSeconds)
 	}
 }
 
+void URRStressSubsystem::TickWalk(float DeltaSeconds)
+{
+	const ARRArenaGrid* Grid = RRWorld::FindArenaGrid(GetWorld());
+	ARRMiner* Miner = RRWorld::FindLivingMiner(GetWorld());
+	const float Radius = RRStress::CVarWalkRadius.GetValueOnGameThread();
+	if (!Grid || !Miner || Radius <= 0.f)
+	{
+		return;
+	}
+	WalkAngle = FMath::Fmod(WalkAngle + DeltaSeconds * RRStress::CVarWalkSpeed.GetValueOnGameThread() / Radius, UE_TWO_PI);
+	const FVector Target(WalkCenter.X + Radius * FMath::Cos(WalkAngle), WalkCenter.Y + Radius * FMath::Sin(WalkAngle), Miner->GetActorLocation().Z);
+	const ERRCellType Type = Grid->GetCellType(Grid->GetCellAtWorld(Target));
+	if (Type == ERRCellType::Floor || Type == ERRCellType::Spawn)
+	{
+		Miner->SetActorLocation(Target, false, nullptr, ETeleportType::TeleportPhysics);
+	}
+}
+
 void URRStressSubsystem::SampleGridEvents(float FrameMs)
 {
 	// An event's cost lands in the frame that resolves it or the next one (tick order): keep the worst of the two frames after it.
@@ -591,10 +620,10 @@ void URRStressSubsystem::SampleGridEvents(float FrameMs)
 			PendingEventMax = 0.f;
 		}
 	}
-	if (const URRFlowFieldSubsystem* Flow = GetWorld()->GetSubsystem<URRFlowFieldSubsystem>(); Flow && Flow->GetComputeCount() != LastFlowCount)
+	if (const URRFlowFieldSubsystem* Flow = GetWorld()->GetSubsystem<URRFlowFieldSubsystem>(); Flow && Flow->GetWorkFrameCount() != LastFlowCount)
 	{
-		LastFlowCount = Flow->GetComputeCount();
-		FlowSamples.Add(Flow->GetLastComputeMilliseconds());
+		LastFlowCount = Flow->GetWorkFrameCount();
+		FlowSamples.Add(Flow->GetLastFrameWorkMilliseconds());
 	}
 }
 
@@ -668,7 +697,7 @@ void URRStressSubsystem::BeginStep(int32 InStepIndex)
 	{
 		SpawnStressEnemies(Missing, RunEnemyClass);
 	}
-	if (RunMode == ERRStressMode::Fire || RunMode == ERRStressMode::Chain || RunMode == ERRStressMode::Dig)
+	if (RunMode == ERRStressMode::Fire || RunMode == ERRStressMode::Chain || RunMode == ERRStressMode::Dig || RunMode == ERRStressMode::Walk)
 	{
 		// Chain and dig: explosions must not change the robot count either.
 		MakeStressEnemiesTough();
@@ -717,7 +746,7 @@ void URRStressSubsystem::Tick(float DeltaTime)
 		FlowSamples.Reset();
 		if (const URRFlowFieldSubsystem* Flow = GetWorld()->GetSubsystem<URRFlowFieldSubsystem>())
 		{
-			LastFlowCount = Flow->GetComputeCount();
+			LastFlowCount = Flow->GetWorkFrameCount();
 		}
 		if (RunMode == ERRStressMode::Burst)
 		{
@@ -731,11 +760,21 @@ void URRStressSubsystem::Tick(float DeltaTime)
 		{
 			BuildDigQueue();
 		}
+		else if (RunMode == ERRStressMode::Walk)
+		{
+			const AActor* Miner = RRWorld::FindLivingMiner(GetWorld());
+			WalkCenter = Miner ? Miner->GetActorLocation() : FVector::ZeroVector;
+			WalkAngle = 0.f;
+		}
 		return;
 	}
 	if (RunMode == ERRStressMode::Dig)
 	{
 		TickDig(static_cast<float>(RealDelta));
+	}
+	else if (RunMode == ERRStressMode::Walk)
+	{
+		TickWalk(static_cast<float>(RealDelta));
 	}
 	SampleGridEvents(static_cast<float>(RealDelta * 1000.0));
 	// stat unit raw values (FStatUnitData, refreshed each frame while stat unit is shown, which StartRun ensures).

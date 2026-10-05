@@ -23,7 +23,9 @@ enum class ERRStressMode : uint8
 	/** Grid stress (task-023-01): peace, tough robots; at the end of the settle time queues rr.Stress.ChainCount explosions on block points around the miner. */
 	Chain,
 	/** Grid stress (task-023-01): peace, tough robots; during the measure window destroys the block cells nearest the miner at rr.Stress.DigRate. */
-	Dig
+	Dig,
+	/** Flow-field stress (task-029-02): peace, tough robots; during the measure window the miner is teleported along a circle (rr.Stress.WalkRadius, rr.Stress.WalkSpeed), only onto walkable cells, so the goal keeps changing cell. */
+	Walk
 };
 
 /** Frame-time averages of one stress step, in milliseconds (same sources as stat unit). */
@@ -92,7 +94,7 @@ struct FRRStressStepResult
 	UPROPERTY()
 	float EventFrameMax = 0.f;
 
-	/** Flow-field computations during the measure window, average and worst BFS ms. */
+	/** Frames with flow-field work during the measure window (rebuilds, openings, goal rebuild slices), average and worst flow-field ms of those frames. */
 	UPROPERTY()
 	int32 FlowComputes = 0;
 	UPROPERTY()
@@ -107,8 +109,8 @@ struct FRRStressStepResult
  *   reachable in the flow field, nearest first from rr.Stress.MinCells flow-field steps away from the miner, ignoring MaxAlive.
  * - rr.Stress.Clear: destroys every robot the tool spawned (no death, no XP).
  * - rr.Stress.Peace <0|1>: 1 makes the miner invulnerable (loose State.Invulnerable) and stops its weapons, so counts hold.
- * - rr.Stress.Run [Counts] [SettleSeconds] [MeasureSeconds] [Quit] [Mode] [Class]: Mode peace (S0, default), fire (S2) or
- *   burst (S7), see ERRStressMode; Class as rr.Stress.Spawn. Disables timed spawners, applies the mode, then for each
+ * - rr.Stress.Run [Counts] [SettleSeconds] [MeasureSeconds] [Quit] [Mode] [Class]: Mode peace (S0, default), fire (S2),
+ *   burst (S7), chain, dig or walk, see ERRStressMode; Class as rr.Stress.Spawn. Disables timed spawners, applies the mode, then for each
  *   count (list separated by commas or +, e.g. 50+100+200) tops the stress robots up to it, waits the settle time, samples every frame for the
  *   measure time and logs average and p99 frame, game, draw and GPU ms; writes Saved/Stress/Stress_<time>.csv at the end and
  *   requests exit when Quit is 1.
@@ -216,6 +218,9 @@ protected:
 	/** Dig mode: destroys the next cells of the sweep at rr.Stress.DigRate for DeltaSeconds. */
 	void TickDig(float DeltaSeconds);
 
+	/** Walk mode: moves the miner along its circle for DeltaSeconds (teleport, skipped when the target cell is not walkable). */
+	void TickWalk(float DeltaSeconds);
+
 	/** Measure window: records the event frame costs and the flow-field computations of this frame. */
 	void SampleGridEvents(float FrameMs);
 
@@ -279,13 +284,17 @@ protected:
 	TArray<float> EventSamples;
 	TArray<float> FlowSamples;
 
-	/** Flow-field computation count at the last sample. */
+	/** Flow-field work frame count at the last sample. */
 	int32 LastFlowCount = 0;
 
 	/** Dig mode: sweep order, next index and fractional cells owed. */
 	TArray<FIntPoint> DigQueue;
 	int32 DigIndex = 0;
 	float DigAccumulator = 0.f;
+
+	/** Walk mode: circle center (the miner location at the start of the measure window) and current angle in radians. */
+	FVector WalkCenter = FVector::ZeroVector;
+	float WalkAngle = 0.f;
 
 	/** Grid whose OnCellDestroyed is bound to HandleCellDestroyed. */
 	TWeakObjectPtr<ARRArenaGrid> BoundGrid;

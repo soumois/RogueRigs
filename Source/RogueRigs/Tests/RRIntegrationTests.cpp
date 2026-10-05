@@ -592,14 +592,14 @@ bool FRRIntegrationPerfTest::RunTest(const FString& Parameters)
 	}
 
 	// 600 frames at 1/60 s; destroy a rock at frames 150, 300, 450 to force recomputes.
-	const int32 ComputesBefore = Setup.FlowField->GetComputeCount();
+	const int32 OpenedBefore = Setup.FlowField->GetOpenedCellCount();
 	TArray<double> FrameMs;
 	FrameMs.Reserve(Frames);
 	TArray<float> ComputeMs;
 	int32 RocksDestroyed = 0;
 	for (int32 Frame = 0; Frame < Frames; ++Frame)
 	{
-		const int32 ComputesBeforeFrame = Setup.FlowField->GetComputeCount();
+		const int32 WorkFramesBefore = Setup.FlowField->GetWorkFrameCount();
 		if (Frame > 0 && Frame % 150 == 0 && RocksDestroyed < UE_ARRAY_COUNT(PerfRockCells))
 		{
 			RocksDestroyed += Setup.Grid->DestroyCell(PerfRockCells[RocksDestroyed], ERRTerrainDamageSource::Barrel) ? 1 : 0;
@@ -607,9 +607,9 @@ bool FRRIntegrationPerfTest::RunTest(const FString& Parameters)
 		const double Start = FPlatformTime::Seconds();
 		TestWorld.Tick();
 		FrameMs.Add((FPlatformTime::Seconds() - Start) * 1000.0);
-		if (Setup.FlowField->GetComputeCount() != ComputesBeforeFrame)
+		if (Setup.FlowField->GetWorkFrameCount() != WorkFramesBefore)
 		{
-			ComputeMs.Add(Setup.FlowField->GetLastComputeMilliseconds());
+			ComputeMs.Add(Setup.FlowField->GetLastFrameWorkMilliseconds());
 		}
 	}
 
@@ -643,13 +643,13 @@ bool FRRIntegrationPerfTest::RunTest(const FString& Parameters)
 	}
 	const FString Summary = FString::Printf(
 		TEXT("PERF 50 BP_Chaser, %d frames at 1/60 s, headless -nullrhi (no rendering): world tick avg %.3f ms, median %.3f ms, p95 %.3f ms, max %.3f ms; ")
-		TEXT("flow field %d recomputes (%d rocks destroyed): avg %.3f ms, max %.3f ms [%s ]; %d alive, %d out of Chase at the end"),
+		TEXT("flow field %d work frames (%d rocks destroyed): avg %.3f ms, max %.3f ms [%s ]; %d alive, %d out of Chase at the end"),
 		Frames, Sum / Frames, Sorted[Frames / 2], Sorted[FMath::Min(Frames - 1, FMath::FloorToInt(Frames * 0.95))], Max,
 		ComputeMs.Num(), RocksDestroyed, ComputeMs.Num() > 0 ? ComputeSum / ComputeMs.Num() : 0.f, ComputeMax, *ComputeList, Alive, InContact);
 	AddInfo(Summary);
 	UE_LOG(LogTemp, Display, TEXT("%s"), *Summary);
 	TestEqual(TEXT("three rocks destroyed"), RocksDestroyed, 3);
-	TestTrue(TEXT("a recompute per destroyed rock"), Setup.FlowField->GetComputeCount() - ComputesBefore >= RocksDestroyed);
+	TestEqual(TEXT("each destroyed rock opened incrementally"), Setup.FlowField->GetOpenedCellCount() - OpenedBefore, RocksDestroyed);
 	TestEqual(TEXT("every chaser alive (miner unarmed)"), Alive, ChaserCount);
 	return true;
 }

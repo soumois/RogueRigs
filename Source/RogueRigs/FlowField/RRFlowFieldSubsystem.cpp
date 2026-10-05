@@ -1,4 +1,5 @@
-// Rogue Rigs - flow field world subsystem: one grid BFS from the miner's cell gives every ground robot its direction.
+// Rogue Rigs - flow field world subsystem: one grid BFS from the miner's cell gives every ground robot its direction,
+// repaired incrementally when cells open and refreshed over several frames when the miner changes cell.
 
 #include "FlowField/RRFlowFieldSubsystem.h"
 
@@ -19,17 +20,49 @@ namespace RRFlowField
 		FIntPoint(1, 1), FIntPoint(1, -1), FIntPoint(-1, 1), FIntPoint(-1, -1)
 	};
 
+	/** Index of the opposite offset of each entry of Offsets (the step back). */
+	const uint8 Opposite[8] = { 1, 0, 3, 2, 7, 6, 5, 4 };
+
 	TAutoConsoleVariable<int32> CVarDebug(TEXT("rr.FlowField.Debug"), 0,
 		TEXT("1: draw the flow field directions around the goal."), ECVF_Cheat);
 
 	TAutoConsoleVariable<int32> CVarDebugRadius(TEXT("rr.FlowField.DebugRadius"), 15,
 		TEXT("Radius in cells around the goal drawn by rr.FlowField.Debug."), ECVF_Cheat);
+
+	TAutoConsoleVariable<float> CVarBudgetMs(TEXT("rr.FlowField.BudgetMs"), 0.3f,
+		TEXT("Per-frame time budget (ms) of the incremental flow-field work: opened cells and the goal rebuild. <= 0: no budget, all work done in the frame."),
+		ECVF_Default);
+
+	/** Packs a relaxation heap entry: distance in the high half (heap order), cell index in the low half. */
+	uint64 PackEntry(int32 Distance, int32 Index)
+	{
+		return (static_cast<uint64>(static_cast<uint32>(Distance)) << 32) | static_cast<uint32>(Index);
+	}
+
+	/** True when the deadline (FPlatformTime::Seconds, <= 0 for none) has passed. */
+	bool IsPastDeadline(double DeadlineSeconds)
+	{
+		return DeadlineSeconds > 0.0 && FPlatformTime::Seconds() >= DeadlineSeconds;
+	}
+
+	/** Squared straight-line distance in cells between two cells (direction tie-break). */
+	int32 StraightSquared(FIntPoint From, FIntPoint To)
+	{
+		const FIntPoint Delta = To - From;
+		return Delta.X * Delta.X + Delta.Y * Delta.Y;
+	}
 }
 
 void URRFlowFieldSubsystem::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
 	UpdateField();
+	if (LastWorkFrame != GFrameCounter)
+	{
+		LastWorkFrame = GFrameCounter;
+		const float BudgetMs = RRFlowField::CVarBudgetMs.GetValueOnGameThread();
+		ProcessPendingWork(BudgetMs > 0.f ? FPlatformTime::Seconds() + BudgetMs / 1000.0 : 0.0);
+	}
 	if (RRFlowField::CVarDebug.GetValueOnGameThread() > 0)
 	{
 		DrawDebugField();
@@ -109,13 +142,33 @@ void URRFlowFieldSubsystem::UpdateField()
 		return;
 	}
 	const ARRArenaGrid* CurrentGrid = Grid.Get();
-	const FIntPoint GoalCell = CurrentGrid->GetCellAtWorld(GoalActor->GetActorLocation());
 	const FIntPoint Size = CurrentGrid->GetGridSize();
-	if (!bDirty && GoalCell == FieldGoalCell && Size == FieldSize)
+	if (!bDirty && Size == FieldSize && Distances.Num() == Size.X * Size.Y)
 	{
 		return;
 	}
-	ComputeField(GoalCell, Size);
+	ComputeField(CurrentGrid->GetCellAtWorld(GoalActor->GetActorLocation()), Size);
+}
+
+void URRFlowFieldSubsystem::FlushPendingWork()
+{
+	UpdateField();
+	// A goal rebuild started for an older cell may finish while the goal sits elsewhere: a few passes settle it.
+	for (int32 Pass = 0; Pass < 4 && IsUpdatePending(); ++Pass)
+	{
+		ProcessPendingWork(0.0);
+	}
+}
+
+bool URRFlowFieldSubsystem::IsUpdatePending() const
+{
+	if (PendingOpenings.Num() > 0 || RelaxHeap.Num() > 0 || bGoalRebuildActive)
+	{
+		return true;
+	}
+	const ARRArenaGrid* CurrentGrid = Grid.Get();
+	const AActor* Goal = GoalActor.Get();
+	return CurrentGrid && Goal && CurrentGrid->GetCellAtWorld(Goal->GetActorLocation()) != FieldGoalCell;
 }
 
 bool URRFlowFieldSubsystem::CanStep(FIntPoint Cell, int32 Index) const
@@ -134,6 +187,80 @@ bool URRFlowFieldSubsystem::CanStep(FIntPoint Cell, int32 Index) const
 	return true;
 }
 
+uint8 URRFlowFieldSubsystem::ChooseDirection(FIntPoint Cell, const TArray<int32>& InDistances, FIntPoint Goal) const
+{
+	uint8 Best = NoDirection;
+	int32 BestDistance = MAX_int32;
+	int32 BestStraight = MAX_int32;
+	for (int32 Neighbour = 0; Neighbour < 8; ++Neighbour)
+	{
+		if (!CanStep(Cell, Neighbour))
+		{
+			continue;
+		}
+		const FIntPoint Next = Cell + RRFlowField::Offsets[Neighbour];
+		const int32 NextDistance = InDistances[GetFieldIndex(Next)];
+		const int32 Straight = RRFlowField::StraightSquared(Next, Goal);
+		if (NextDistance != INDEX_NONE && (NextDistance < BestDistance || (NextDistance == BestDistance && Straight < BestStraight)))
+		{
+			BestDistance = NextDistance;
+			BestStraight = Straight;
+			Best = static_cast<uint8>(Neighbour);
+		}
+	}
+	return Best;
+}
+
+bool URRFlowFieldSubsystem::IsBetterTie(FIntPoint Cell, int32 Candidate, int32 Current, FIntPoint Goal)
+{
+	const int32 CandidateStraight = RRFlowField::StraightSquared(Cell + RRFlowField::Offsets[Candidate], Goal);
+	const int32 CurrentStraight = RRFlowField::StraightSquared(Cell + RRFlowField::Offsets[Current], Goal);
+	return CandidateStraight < CurrentStraight || (CandidateStraight == CurrentStraight && Candidate < Current);
+}
+
+bool URRFlowFieldSubsystem::AdvanceBfs(FIntPoint Goal, TArray<int32>& OutDistances, TArray<uint8>& OutDirections, TArray<int32>& Queue,
+	int32& Head, int32& DirectionHead, double DeadlineSeconds) const
+{
+	int32 Steps = 0;
+	// Breadth-first from the goal; every step (orthogonal or diagonal) costs 1.
+	while (Head < Queue.Num())
+	{
+		if (++Steps % BudgetCheckInterval == 0 && RRFlowField::IsPastDeadline(DeadlineSeconds))
+		{
+			return false;
+		}
+		const int32 Index = Queue[Head++];
+		const FIntPoint Cell = GetFieldCell(Index);
+		for (int32 Neighbour = 0; Neighbour < 8; ++Neighbour)
+		{
+			if (!CanStep(Cell, Neighbour))
+			{
+				continue;
+			}
+			const int32 NextIndex = GetFieldIndex(Cell + RRFlowField::Offsets[Neighbour]);
+			if (OutDistances[NextIndex] == INDEX_NONE)
+			{
+				OutDistances[NextIndex] = OutDistances[Index] + 1;
+				Queue.Add(NextIndex);
+			}
+		}
+	}
+	// Directions once every distance is known.
+	while (DirectionHead < Queue.Num())
+	{
+		if (++Steps % BudgetCheckInterval == 0 && RRFlowField::IsPastDeadline(DeadlineSeconds))
+		{
+			return false;
+		}
+		const int32 Index = Queue[DirectionHead++];
+		if (OutDistances[Index] > 0)
+		{
+			OutDirections[Index] = ChooseDirection(GetFieldCell(Index), OutDistances, Goal);
+		}
+	}
+	return true;
+}
+
 void URRFlowFieldSubsystem::ComputeField(FIntPoint GoalCell, FIntPoint Size)
 {
 	const double StartSeconds = FPlatformTime::Seconds();
@@ -144,6 +271,12 @@ void URRFlowFieldSubsystem::ComputeField(FIntPoint GoalCell, FIntPoint Size)
 	bDirty = false;
 	LastComputeFrame = GFrameCounter;
 	++ComputeCount;
+
+	// The walkability is read fresh from the grid: queued openings and a running goal rebuild are obsolete.
+	PendingOpenings.Reset();
+	RelaxHeap.Reset();
+	bGoalRebuildActive = false;
+	OpenedDuringRebuild.Reset();
 
 	const int32 CellCount = Size.X * Size.Y;
 	Walkable.SetNumUninitialized(CellCount);
@@ -158,70 +291,216 @@ void URRFlowFieldSubsystem::ComputeField(FIntPoint GoalCell, FIntPoint Size)
 	Distances.Init(INDEX_NONE, CellCount);
 	Directions.Init(NoDirection, CellCount);
 
+	TArray<int32> Queue;
+	Queue.Reserve(CellCount);
 	if (IsInField(GoalCell))
 	{
-		// Breadth-first from the goal; every step (orthogonal or diagonal) costs 1.
-		TArray<int32> Queue;
-		Queue.Reserve(CellCount);
 		Distances[GetFieldIndex(GoalCell)] = 0;
 		Queue.Add(GetFieldIndex(GoalCell));
-		for (int32 Head = 0; Head < Queue.Num(); ++Head)
-		{
-			const int32 Index = Queue[Head];
-			const FIntPoint Cell(Index % Size.X, Index / Size.X);
-			for (int32 Neighbour = 0; Neighbour < 8; ++Neighbour)
-			{
-				if (!CanStep(Cell, Neighbour))
-				{
-					continue;
-				}
-				const int32 NextIndex = GetFieldIndex(Cell + RRFlowField::Offsets[Neighbour]);
-				if (Distances[NextIndex] == INDEX_NONE)
-				{
-					Distances[NextIndex] = Distances[Index] + 1;
-					Queue.Add(NextIndex);
-				}
-			}
-		}
-
-		// Direction: the reachable neighbour with the lowest distance, ties broken by straight-line closeness to the goal.
-		for (const int32 Index : Queue)
-		{
-			if (Distances[Index] == 0)
-			{
-				continue;
-			}
-			const FIntPoint Cell(Index % Size.X, Index / Size.X);
-			int32 BestDistance = MAX_int32;
-			int32 BestStraight = MAX_int32;
-			for (int32 Neighbour = 0; Neighbour < 8; ++Neighbour)
-			{
-				if (!CanStep(Cell, Neighbour))
-				{
-					continue;
-				}
-				const FIntPoint Next = Cell + RRFlowField::Offsets[Neighbour];
-				const int32 NextDistance = Distances[GetFieldIndex(Next)];
-				const FIntPoint ToGoal = GoalCell - Next;
-				const int32 Straight = ToGoal.X * ToGoal.X + ToGoal.Y * ToGoal.Y;
-				if (NextDistance != INDEX_NONE && (NextDistance < BestDistance || (NextDistance == BestDistance && Straight < BestStraight)))
-				{
-					BestDistance = NextDistance;
-					BestStraight = Straight;
-					Directions[Index] = static_cast<uint8>(Neighbour);
-				}
-			}
-		}
 	}
+	int32 Head = 0;
+	int32 DirectionHead = 0;
+	AdvanceBfs(GoalCell, Distances, Directions, Queue, Head, DirectionHead, 0.0);
 
-	LastComputeMilliseconds = static_cast<float>((FPlatformTime::Seconds() - StartSeconds) * 1000.0);
+	const double Milliseconds = (FPlatformTime::Seconds() - StartSeconds) * 1000.0;
+	LastComputeMilliseconds = static_cast<float>(Milliseconds);
+	AddFrameWork(Milliseconds);
 	UE_LOG(LogRogueRigs, Verbose, TEXT("URRFlowFieldSubsystem: field %dx%d computed from (%d, %d) in %.3f ms."),
 		Size.X, Size.Y, GoalCell.X, GoalCell.Y, LastComputeMilliseconds);
 }
 
+void URRFlowFieldSubsystem::ProcessPendingWork(double DeadlineSeconds)
+{
+	const ARRArenaGrid* CurrentGrid = Grid.Get();
+	const AActor* Goal = GoalActor.Get();
+	if (!CurrentGrid || !Goal || bDirty || CurrentGrid->GetGridSize() != FieldSize || Distances.Num() != FieldSize.X * FieldSize.Y)
+	{
+		// No valid field: the next UpdateField rebuilds it in full.
+		return;
+	}
+	const FIntPoint GoalCell = CurrentGrid->GetCellAtWorld(Goal->GetActorLocation());
+	if (PendingOpenings.Num() == 0 && RelaxHeap.Num() == 0 && !bGoalRebuildActive && GoalCell == FieldGoalCell)
+	{
+		return;
+	}
+	const double StartSeconds = FPlatformTime::Seconds();
+
+	// Openings first: they only shorten paths of the live field.
+	ApplyPendingOpenings();
+	RunRelaxation(DeadlineSeconds);
+
+	// Goal rebuild: a BFS into the second buffer, sliced; it always advances a little, so constant digging cannot starve it.
+	if (!bGoalRebuildActive && GoalCell != FieldGoalCell)
+	{
+		const int32 CellCount = FieldSize.X * FieldSize.Y;
+		bGoalRebuildActive = true;
+		RebuildGoalCell = GoalCell;
+		RebuildDistances.Init(INDEX_NONE, CellCount);
+		RebuildDirections.Init(NoDirection, CellCount);
+		RebuildQueue.Reset(CellCount);
+		RebuildHead = 0;
+		RebuildDirectionHead = 0;
+		RebuildMilliseconds = 0.0;
+		OpenedDuringRebuild.Reset();
+		if (IsInField(GoalCell))
+		{
+			RebuildDistances[GetFieldIndex(GoalCell)] = 0;
+			RebuildQueue.Add(GetFieldIndex(GoalCell));
+		}
+	}
+	if (bGoalRebuildActive)
+	{
+		const double SliceStart = FPlatformTime::Seconds();
+		const bool bDone = AdvanceBfs(RebuildGoalCell, RebuildDistances, RebuildDirections, RebuildQueue, RebuildHead, RebuildDirectionHead,
+			DeadlineSeconds);
+		RebuildMilliseconds += (FPlatformTime::Seconds() - SliceStart) * 1000.0;
+		if (bDone)
+		{
+			Swap(Distances, RebuildDistances);
+			Swap(Directions, RebuildDirections);
+			FieldGoalCell = RebuildGoalCell;
+			bGoalRebuildActive = false;
+			++ComputeCount;
+			LastComputeMilliseconds = static_cast<float>(RebuildMilliseconds);
+			// The old relaxation targeted the old field; cells opened during the rebuild may be missing from the new one.
+			RelaxHeap.Reset();
+			for (const FIntPoint& Cell : OpenedDuringRebuild)
+			{
+				SeedAround(Cell);
+			}
+			OpenedDuringRebuild.Reset();
+			RunRelaxation(DeadlineSeconds);
+		}
+	}
+	AddFrameWork((FPlatformTime::Seconds() - StartSeconds) * 1000.0);
+}
+
+void URRFlowFieldSubsystem::ApplyPendingOpenings()
+{
+	const ARRArenaGrid* CurrentGrid = Grid.Get();
+	for (const FIntPoint& Cell : PendingOpenings)
+	{
+		if (!IsInField(Cell))
+		{
+			continue;
+		}
+		const int32 Index = GetFieldIndex(Cell);
+		const ERRCellType Type = CurrentGrid->GetCellType(Cell);
+		if (Walkable[Index] || (Type != ERRCellType::Floor && Type != ERRCellType::Spawn))
+		{
+			continue;
+		}
+		Walkable[Index] = true;
+		++OpenedCellCount;
+		if (bGoalRebuildActive)
+		{
+			OpenedDuringRebuild.Add(Cell);
+		}
+		SeedAround(Cell);
+	}
+	PendingOpenings.Reset();
+}
+
+void URRFlowFieldSubsystem::SeedAround(FIntPoint Cell)
+{
+	// The opened cell itself: one step more than its best neighbour, direction set now so robots never meet a gap.
+	const int32 Index = GetFieldIndex(Cell);
+	const uint8 Best = ChooseDirection(Cell, Distances, FieldGoalCell);
+	if (Best != NoDirection && Distances[Index] != 0)
+	{
+		const int32 Candidate = Distances[GetFieldIndex(Cell + RRFlowField::Offsets[Best])] + 1;
+		if (Distances[Index] == INDEX_NONE || Candidate < Distances[Index])
+		{
+			Distances[Index] = Candidate;
+			Directions[Index] = Best;
+		}
+	}
+	PushRelax(Index);
+	// Its neighbours gain edges (to the cell, and diagonals that no longer cut its corner): relax from each of them.
+	for (int32 Neighbour = 0; Neighbour < 8; ++Neighbour)
+	{
+		const FIntPoint Next = Cell + RRFlowField::Offsets[Neighbour];
+		if (IsInField(Next) && Walkable[GetFieldIndex(Next)])
+		{
+			PushRelax(GetFieldIndex(Next));
+		}
+	}
+}
+
+void URRFlowFieldSubsystem::PushRelax(int32 Index)
+{
+	if (Distances[Index] != INDEX_NONE)
+	{
+		RelaxHeap.HeapPush(RRFlowField::PackEntry(Distances[Index], Index));
+	}
+}
+
+bool URRFlowFieldSubsystem::RunRelaxation(double DeadlineSeconds)
+{
+	int32 Steps = 0;
+	while (RelaxHeap.Num() > 0)
+	{
+		if (++Steps % BudgetCheckInterval == 0 && RRFlowField::IsPastDeadline(DeadlineSeconds))
+		{
+			return false;
+		}
+		uint64 Entry = 0;
+		RelaxHeap.HeapPop(Entry, EAllowShrinking::No);
+		const int32 Index = static_cast<int32>(Entry & 0xFFFFFFFFull);
+		const int32 Distance = static_cast<int32>(Entry >> 32);
+		if (Distances[Index] != Distance)
+		{
+			continue; // Stale: the cell got shorter since this entry was pushed.
+		}
+		const FIntPoint Cell = GetFieldCell(Index);
+		if (Distance > 0)
+		{
+			// Lowest distance first: the neighbours closer than this cell are final, so the full rule applies.
+			Directions[Index] = ChooseDirection(Cell, Distances, FieldGoalCell);
+		}
+		for (int32 Neighbour = 0; Neighbour < 8; ++Neighbour)
+		{
+			if (!CanStep(Cell, Neighbour))
+			{
+				continue;
+			}
+			const FIntPoint Next = Cell + RRFlowField::Offsets[Neighbour];
+			const int32 NextIndex = GetFieldIndex(Next);
+			const int32 NextDistance = Distances[NextIndex];
+			const uint8 Back = RRFlowField::Opposite[Neighbour];
+			if (NextDistance == INDEX_NONE || Distance + 1 < NextDistance)
+			{
+				// Shorter through this cell: valid direction now, refined when Next is popped.
+				Distances[NextIndex] = Distance + 1;
+				Directions[NextIndex] = Back;
+				PushRelax(NextIndex);
+			}
+			else if (Distance + 1 == NextDistance
+				&& (Directions[NextIndex] == NoDirection || IsBetterTie(Next, Back, Directions[NextIndex], FieldGoalCell)))
+			{
+				// Same distance through this cell, better tie-break: what a full rebuild would pick.
+				Directions[NextIndex] = Back;
+			}
+		}
+	}
+	return true;
+}
+
+void URRFlowFieldSubsystem::AddFrameWork(double Milliseconds)
+{
+	if (FrameWorkFrame != GFrameCounter)
+	{
+		FrameWorkFrame = GFrameCounter;
+		FrameWorkMilliseconds = 0.f;
+		++WorkFrameCount;
+	}
+	FrameWorkMilliseconds += static_cast<float>(Milliseconds);
+}
+
 void URRFlowFieldSubsystem::HandleCellDestroyed(FIntPoint Cell, ERRCellType Type, ERRTerrainDamageSource Source)
 {
-	bDirty = true;
+	// Destruction only opens cells (the grid sets them to Floor): repaired incrementally by the next budgeted pass.
+	PendingOpenings.Add(Cell);
 }
 
 bool URRFlowFieldSubsystem::IsWalkableCell(FIntPoint Cell) const
