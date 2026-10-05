@@ -51,6 +51,7 @@ kind: note
 | [[task-024-03-turret]] | opus | 2 | 0k | 206k | 9284k | 87k |
 | [[task-024-04-weapon-cards]] | opus | 1 | 0k | 152k | 4094k | 68k |
 | [[task-024-05-bp-weapons]] | sonnet | 6 | 0k | 245k | 26014k | 87k |
+| [[task-024-06-tests-integration]] | opus | 2 | 0k | 214k | 5029k | 61k |
 
 ## Totals
 | Scope | Input | Cache write | Cache read | Output |

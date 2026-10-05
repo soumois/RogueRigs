@@ -3,7 +3,7 @@ id: task-025-damage-numbers
 description: "Global task: pooled Niagara damage numbers fed by the damage pipeline, merged per robot, bigger white-gold crits, toggle in settings."
 parent: tasks-index
 kind: task
-status: todo
+status: in-progress
 ---
 # Damage numbers at horde scale
 

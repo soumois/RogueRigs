@@ -3,7 +3,7 @@ id: task-024-06-tests-integration
 description: "Integration tests with the final Blueprints: weapon card equips the shotgun, pellets pierce, turret placed by the input action fires."
 parent: task-024-weapons
 kind: task
-status: in-progress
+status: done
 ---
 # Weapons integration tests
 
@@ -15,11 +15,11 @@ status: in-progress
 - done_when: build exits 0 with the editor closed; all `RogueRigs.*` tests pass headless (new ones included); docs updated; lint clean.
 - editor_state: closed
 - token_ceiling: 80000
-- model: open
-- tokens: open
-- runs: open
+- model: opus
+- tokens: input 144, cache write 213645, cache read 5028715, output 60588
+- runs: 2
 - milestone: M2
-- result: open
+- result: RRWeaponsIntegrationTests: StartLoadoutRifleOnly, WeaponCardEquipsShotgun (HUD ChooseUpgrade, description shown, value hidden, shotgun stat card later), ShotgunPelletsPierceRobots (3 of 4 hit), PlaceTurretInputKillsRobot (kill in 1.467 s), LevelUpDiscEndsHidden (timer survives pause; disc hidden after 5 steps, kept as intended). Legacy OnWaveFired/GetWaveClearDistance removed. Build 0, 142/142. Commit 68f652d (first run cut by an API limit).
 
 ## Relations
 - [[task-024-weapons]] — parent global task.

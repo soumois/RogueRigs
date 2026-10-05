@@ -3,7 +3,7 @@ id: task-024-weapons
 description: "Global task: rifle pierces 4, shotgun pellets toward the aim, turret launcher on a button, weapons as level-up cards, piercing as a stat."
 parent: tasks-index
 kind: task
-status: in-progress
+status: done
 ---
 # Weapons rework
 
@@ -13,8 +13,8 @@ status: in-progress
 - gdd_check: Read [[burst-rifle]], [[shotgun]], [[turret]], [[upgrades]], [[rarities]], [[miner]], [[damage-numbers]]. Analysis in [[drgs-analysis]]. The owner launched all lots and delegated provisional values (2026-10-05); decisions written into the GDD before planning; the grid-size lot waits for the owner after the stress report.
 - confirmed_by_owner: yes (2026-10-05, all lots launched by the owner)
 - milestone: M2
-- next_step: task-024-06-tests-integration
-- result: open
+- next_step: none
+- result: All acceptance checks passed: 142/142 tests (rifle pierce 4, shotgun pellets with pierce 3 and knockback, turret on a button, weapon cards with 4 slots, piercing stat); PIE: rifle-only start, cards equip the shotgun and launcher, E places a firing turret. To check by eye: card border, weapon slots, turret bar, muzzle flashes; IA_PlaceTurret asset not created (C++ fallback input works).
 
 ## Subtasks
 1. task-024-01-rifle-pierce — cpp: rifle pierce 4, piercing as an upgrade stat, tests
