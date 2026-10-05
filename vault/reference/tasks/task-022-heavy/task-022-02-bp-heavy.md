@@ -3,7 +3,7 @@ id: task-022-02-bp-heavy
 description: "BP_Heavy grey-box (steel blue, hazard stripes, 2× visual), telegraph glow and tilt, shockwave visual, spawner weights 65/12/15/8 and cap 5, PIE."
 parent: task-022-heavy
 kind: task
-status: todo
+status: in-progress
 ---
 # Heavy Blueprint
 

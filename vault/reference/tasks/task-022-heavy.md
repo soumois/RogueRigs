@@ -13,7 +13,7 @@ status: in-progress
 - gdd_check: Read [[enemy-heavy]], [[enemies-index]], [[arena-grid]], [[destruction-rules]], [[color-code]], [[xp-level-up]]. Conflict "twice the size" vs one-cell corridors resolved by the owner: 2× visual, capsule radius ≤ 80 uu. Open values set by the owner (2026-10-04, provisional). Weak point stays in the wishlist.
 - confirmed_by_owner: yes (2026-10-04, all subtasks pre-approved)
 - milestone: M3
-- next_step: task-022-01-heavy-cpp
+- next_step: task-022-02-bp-heavy
 - result: open
 
 ## Subtasks
