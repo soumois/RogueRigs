@@ -32,3 +32,4 @@ One node per Blueprint, template `blueprint.md`.
 - [[bp-objective-console]] — BP_ObjectiveConsole, the command console.
 - [[bp-extraction-shuttle]] — BP_ExtractionShuttle, the extraction shuttle.
 - [[wbp-hud]] — WBP_HUD, health bar and Game Over text.
+- [[bp-damage-numbers]] — NS_DamageNumbers, M_DamageNumber and the digit atlas, the floating damage numbers.

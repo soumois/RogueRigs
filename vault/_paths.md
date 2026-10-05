@@ -25,6 +25,7 @@ blueprints-index  reference/tech/blueprints/blueprints-index.md
 bp-arena-grid  reference/tech/blueprints/bp-arena-grid.md
 bp-burst-rifle  reference/tech/blueprints/bp-burst-rifle.md
 bp-chaser  reference/tech/blueprints/bp-chaser.md
+bp-damage-numbers  reference/tech/blueprints/bp-damage-numbers.md
 bp-drone  reference/tech/blueprints/bp-drone.md
 bp-enemy-spawner  reference/tech/blueprints/bp-enemy-spawner.md
 bp-explosion-fx  reference/tech/blueprints/bp-explosion-fx.md
