@@ -1088,6 +1088,8 @@ namespace RRWeaponTests
 		}
 		Rifle->GetAutoFireComponent()->StopFiring();
 		Rifle->GetAbilitySystemComponent()->SetNumericAttributeBase(URRWeaponAttributeSet::GetCritChanceAttribute(), 0.f);
+		// No random spread: a 2 deg draw can make a bullet miss the far robots of the line (flaky with other tests' RNG draws).
+		RRTestAccess::FWeaponAccess::SpreadDegOf(Rifle) = 0.f;
 		Rifle->SetActorRotation(FRotator(0.f, Yaw, 0.f), ETeleportType::TeleportPhysics);
 		PlaceMuzzleAt(Rifle, Floor + FVector(0.f, 0.f, 0.5f * OutGrid->GetBlockHeight()));
 		return Rifle;

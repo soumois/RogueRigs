@@ -80,4 +80,8 @@ struct ROGUERIGS_API FRRWeaponStatsRow : public FTableRowBase
 	/** Knockback launch speed in uu/s given by each projectile hit to a robot, before its KnockbackResistance (constant); 0 = no knockback. */
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Weapon Stats")
 	float KnockbackForce = 0.f;
+
+	/** Seconds a placed turret lives before it disappears (constant; read by the turret launcher, 0 elsewhere). */
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Weapon Stats")
+	float TurretLifetime = 0.f;
 };

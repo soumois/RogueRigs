@@ -10,6 +10,8 @@
 
 class ARRGameMode;
 class ARRMiner;
+class ARRTurretLauncher;
+class ARRWeapon;
 class URRLevelUpComponent;
 class URRProgressionComponent;
 class URRRunFlowSubsystem;
@@ -24,7 +26,9 @@ struct FOnAttributeChangeData;
  * ChooseUpgrade / RequestReroll from its card and reroll buttons (forwarded to the level-up component).
  * OnHealthChanged is never called with Max <= 0 and OnXPChanged never with Needed <= 0, so the Blueprint can divide by
  * them. Run flow (BindToRunFlow, URRRunFlowSubsystem): OnAlertChanged, OnObjectiveChanged, OnObjectiveProgressChanged and
- * OnExtractionReady, OnShuttleCountdown and OnRunEnded (end screen; its restart button calls RestartLevel). No gameplay logic.
+ * OnExtractionReady, OnShuttleCountdown and OnRunEnded (end screen; its restart button calls RestartLevel). Turret charges
+ * (BindToMiner: the miner's turret launcher, now or when acquired later through OnWeaponAdded): OnTurretChargesChanged, plus
+ * GetTurretRechargeProgress for a per-frame bar. No gameplay logic.
  */
 UCLASS(Abstract)
 class ROGUERIGS_API URRHUDWidget : public UUserWidget
@@ -62,6 +66,10 @@ public:
 	UFUNCTION(BlueprintPure, Category = "HUD|Upgrades")
 	bool CanRerollUpgrade() const;
 
+	/** Progress 0..1 of the bound turret launcher's running recharge (0 when none or without a launcher), for a per-frame bar. */
+	UFUNCTION(BlueprintPure, Category = "HUD|Turret")
+	float GetTurretRechargeProgress() const;
+
 	/** Reopens the current map (restart button of the success and run-lost screens). Forwarded to URRRunFlowSubsystem::RestartLevel. */
 	UFUNCTION(BlueprintCallable, Category = "HUD|Run")
 	void RestartLevel();
@@ -92,6 +100,13 @@ protected:
 	/** Display event: hide the choice screen (the last queued choice was made; the game resumes). Implement in Blueprint. */
 	UFUNCTION(BlueprintImplementableEvent, Category = "HUD|Upgrades")
 	void OnUpgradeOfferClosed();
+
+	/**
+	 * Display event: the turret launcher's charges changed (also on binding): charges ready, maximum, duration in seconds of the
+	 * recharge that runs now (0 = none, all charges ready). Not called while the miner has no launcher. Implement in Blueprint.
+	 */
+	UFUNCTION(BlueprintImplementableEvent, Category = "HUD|Turret")
+	void OnTurretChargesChanged(int32 Charges, int32 MaxCharges, float RechargeDuration);
 
 	/** Display event: the run is over (the level restarts after the game mode's RestartDelay). Implement in Blueprint. */
 	UFUNCTION(BlueprintImplementableEvent, Category = "HUD")
@@ -179,6 +194,17 @@ protected:
 	UFUNCTION()
 	void HandleUpgradeOfferClosed();
 
+	/** Turret launcher OnTurretChargesChanged callback: calls OnTurretChargesChanged. */
+	UFUNCTION()
+	void HandleTurretChargesChanged(int32 Charges, int32 MaxCharges, float RechargeDuration);
+
+	/** Miner OnWeaponAdded callback: binds a newly acquired turret launcher when none is bound. */
+	UFUNCTION()
+	void HandleWeaponAdded(ARRWeapon* Weapon);
+
+	/** Listens to Launcher's charge changes (replaces a previous one) and pushes its current charges once. Null unbinds. */
+	void BindToTurretLauncher(ARRTurretLauncher* Launcher);
+
 	/** Reads Health and MaxHealth on the bound ASC and calls OnHealthChanged, unless MaxHealth <= 0 (stats not applied yet). */
 	void BroadcastHealth();
 
@@ -193,6 +219,12 @@ protected:
 
 	/** Level-up flow of the bound miner. */
 	TWeakObjectPtr<URRLevelUpComponent> BoundLevelUp;
+
+	/** Miner whose OnWeaponAdded is bound. */
+	TWeakObjectPtr<ARRMiner> BoundMiner;
+
+	/** Turret launcher whose OnTurretChargesChanged is bound. */
+	TWeakObjectPtr<ARRTurretLauncher> BoundTurretLauncher;
 
 	/** Game mode whose OnGameOver is bound. */
 	TWeakObjectPtr<ARRGameMode> BoundGameMode;

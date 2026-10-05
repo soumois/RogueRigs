@@ -86,6 +86,13 @@ public:
 	UFUNCTION()
 	void HandleXPChanged(float Current, float Needed, int32 Level) { XPChanges.Add(FVector(Current, Needed, Level)); }
 
+	/** Bind to ARRTurretLauncher::OnTurretChargesChanged: appends (Charges, MaxCharges, RechargeDuration) as a vector. */
+	UFUNCTION()
+	void HandleTurretChargesChanged(int32 Charges, int32 MaxCharges, float RechargeDuration) { TurretCharges.Add(FVector(Charges, MaxCharges, RechargeDuration)); }
+
+	/** (Charges, MaxCharges, RechargeDuration) received through HandleTurretChargesChanged, in order. */
+	const TArray<FVector>& GetTurretCharges() const { return TurretCharges; }
+
 	/** Bind to URRProgressionComponent::OnLevelUp: appends the new level. */
 	UFUNCTION()
 	void HandleLevelUp(int32 NewLevel) { LevelUps.Add(NewLevel); }
@@ -198,6 +205,9 @@ protected:
 
 	/** Explosion centers received so far. */
 	TArray<FVector> ExplosionCenters;
+
+	/** Turret charge changes received so far: (Charges, MaxCharges, RechargeDuration). */
+	TArray<FVector> TurretCharges;
 
 	/** XP changes received so far: (Current, Needed, Level). */
 	TArray<FVector> XPChanges;

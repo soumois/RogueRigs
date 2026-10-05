@@ -10,6 +10,8 @@
 
 class ARRArenaGrid;
 class ARRDrone;
+class ARRTurret;
+class ARRTurretLauncher;
 class ARRWeapon;
 class UAbilitySystemComponent;
 class UCameraComponent;
@@ -29,6 +31,9 @@ DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FRROnPickupCollectedSignature, ERRPi
 
 /** Fired once when the miner dies: the original instigator of the killing hit (may be null). */
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FRROnMinerDeathSignature, AActor*, Instigator);
+
+/** Fired after the miner acquired a weapon (starting loadout or AddWeapon): the weapon, already in GetWeapons. */
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FRROnWeaponAddedSignature, ARRWeapon*, Weapon);
 
 /**
  * Player character. Owns the player's URRAbilitySystemComponent and its three AttributeSets (health,
@@ -108,8 +113,31 @@ public:
 	UFUNCTION(BlueprintPure, Category = "Miner|Dig")
 	ARRArenaGrid* GetArenaGrid() const { return ArenaGrid; }
 
-	/** Weapons spawned from StartingWeapons then GuaranteedWeaponClasses, in acquisition order (failed spawns skipped). */
+	/** Weapons spawned from StartingWeapons then GuaranteedWeaponClasses, then by AddWeapon, in acquisition order (failed spawns skipped). */
 	const TArray<TObjectPtr<ARRWeapon>>& GetWeapons() const { return Weapons; }
+
+	/**
+	 * Gives the miner a weapon of WeaponClass: spawned at the miner (owner and instigator: this miner), attached (mesh socket
+	 * WeaponAttachSocketName, or the capsule at WeaponAttachOffset), ignored by the capsule when moving, acquired
+	 * (ARRWeapon::Acquire: CSV stats, upgrade replay), added to GetWeapons, then OnWeaponAdded. Null (logged) when the class is
+	 * unset or the spawn fails. Used by the starting loadout; tests and weapon cards call it at runtime.
+	 */
+	UFUNCTION(BlueprintCallable, Category = "Miner|Weapons")
+	ARRWeapon* AddWeapon(TSubclassOf<ARRWeapon> WeaponClass);
+
+	/** First turret launcher of GetWeapons, or null. */
+	UFUNCTION(BlueprintPure, Category = "Miner|Weapons")
+	ARRTurretLauncher* FindTurretLauncher() const;
+
+	/**
+	 * Place-turret button (input action PlaceTurret): asks the first turret launcher to place a turret
+	 * (ARRTurretLauncher::TryPlaceTurret). Null when dead, without a launcher or when no turret was placed (no charge, no floor cell).
+	 */
+	UFUNCTION(BlueprintCallable, Category = "Miner|Input")
+	ARRTurret* PlaceTurret();
+
+	/** With mouse aim and once the cursor hit the aim plane: true and the cursor point on the plane in OutPoint. False with stick aim. */
+	bool GetMouseAimPoint(FVector& OutPoint) const;
 
 	/** Current PickupRadius attribute in uu (collection radius of XP, ore and heal pickups); 0 when the attribute set is missing. */
 	UFUNCTION(BlueprintPure, Category = "Miner|Pickup")
@@ -149,6 +177,10 @@ public:
 	UPROPERTY(BlueprintAssignable, Category = "Miner|Pickup")
 	FRROnPickupCollectedSignature OnPickupCollected;
 
+	/** Broadcast after each weapon acquisition (HUD: binds the turret charges of a launcher acquired mid-run). */
+	UPROPERTY(BlueprintAssignable, Category = "Miner|Weapons")
+	FRROnWeaponAddedSignature OnWeaponAdded;
+
 	/** Updates the i-frames blink; while alive, updates the mouse aim if active, turns the pawn toward the aim, then checks the dig trigger. */
 	virtual void Tick(float DeltaSeconds) override;
 
@@ -176,7 +208,7 @@ protected:
 
 	/**
 	 * Spawns each class of StartingWeapons, then each GuaranteedWeaponClasses entry not provided by StartingWeapons, at the miner (owner and instigator: this miner), attaches it (mesh socket
-	 * WeaponAttachSocketName, or the capsule at WeaponAttachOffset when None), makes the capsule ignore it when moving and calls Acquire.
+	 * WeaponAttachSocketName, or the capsule at WeaponAttachOffset when None), makes the capsule ignore it when moving and calls Acquire (AddWeapon).
 	 */
 	void SpawnStartingWeapons();
 
@@ -347,6 +379,12 @@ protected:
 
 	/** True while aiming with the mouse cursor. */
 	bool bUsingMouseAim = true;
+
+	/** Last cursor point on the mouse aim plane (valid when bHasMouseAimPoint). */
+	FVector MouseAimPoint = FVector::ZeroVector;
+
+	/** True once the cursor ray hit the mouse aim plane. */
+	bool bHasMouseAimPoint = false;
 
 	/** Handle of the MoveSpeed change subscription on the ASC. */
 	FDelegateHandle MoveSpeedChangedHandle;

@@ -67,6 +67,13 @@ public:
 	/** Fills the magazine now (RefillAmmoEffect, or a direct base write when it is unset). */
 	void RefillAmmo();
 
+	/** Turns the magazine on or off at runtime (off: infinite ammo, no reload; e.g. a placed turret, whose MagazineSize is the launcher's charges). */
+	void SetUseMagazine(bool bInUseMagazine) { bUseMagazine = bInUseMagazine; }
+
+	/** True when shots consume Ammo and an empty magazine reloads. */
+	UFUNCTION(BlueprintPure, Category = "AutoFire")
+	bool UsesMagazine() const { return bUseMagazine; }
+
 	/** True between StartFiring and StopFiring. */
 	UFUNCTION(BlueprintPure, Category = "AutoFire")
 	bool IsFiring() const { return bFiring; }

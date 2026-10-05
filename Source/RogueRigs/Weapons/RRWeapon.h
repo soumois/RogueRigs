@@ -119,6 +119,12 @@ public:
 	UFUNCTION(BlueprintPure, Category = "Weapon|Stats")
 	FText GetDisplayName() const;
 
+	/** Projectile class FireOnce spawns (a turret copies its launcher's). */
+	TSubclassOf<ARRProjectile> GetProjectileClass() const { return ProjectileClass; }
+
+	/** Damage effect carried by the projectiles (a turret copies its launcher's). */
+	TSubclassOf<UGameplayEffect> GetDamageEffectClass() const { return DamageEffectClass; }
+
 	/** Distinct robots one projectile fired now damages: the Pierce attribute rounded down, at least 1 (sys-projectiles). */
 	UFUNCTION(BlueprintPure, Category = "Weapon")
 	int32 GetPierceCount() const;

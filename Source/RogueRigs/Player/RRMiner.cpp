@@ -27,6 +27,7 @@
 #include "RogueRigs.h"
 #include "Weapons/RRAutoFireComponent.h"
 #include "Weapons/RRShotgun.h"
+#include "Weapons/RRTurretLauncher.h"
 #include "Weapons/RRWeapon.h"
 #include "World/RRWorld.h"
 
@@ -167,15 +168,6 @@ void ARRMiner::SpawnDrone()
 
 void ARRMiner::SpawnStartingWeapons()
 {
-	FActorSpawnParameters SpawnParameters;
-	SpawnParameters.Owner = this;
-	SpawnParameters.Instigator = this;
-	SpawnParameters.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AlwaysSpawn;
-
-	// No socket: the capsule, which turns with the aim yaw, so the weapon points forward.
-	const bool bAttachToCapsule = WeaponAttachSocketName.IsNone() || !GetMesh();
-	USceneComponent* AttachParent = bAttachToCapsule ? GetRootComponent() : static_cast<USceneComponent*>(GetMesh());
-
 	// StartingWeapons in order, then each guaranteed class that no StartingWeapons entry already provides (itself or a subclass).
 	TArray<TSubclassOf<ARRWeapon>> Loadout = StartingWeapons;
 	for (const TSubclassOf<ARRWeapon>& Guaranteed : GuaranteedWeaponClasses)
@@ -197,29 +189,80 @@ void ARRMiner::SpawnStartingWeapons()
 			UE_LOG(LogRogueRigs, Warning, TEXT("%s: empty entry in StartingWeapons skipped."), *GetName());
 			continue;
 		}
-
-		// Acquisition order (sys-weapons): spawn and attach, then Acquire (actor info, CSV base values, auto-fire).
-		ARRWeapon* Weapon = GetWorld()->SpawnActor<ARRWeapon>(WeaponClass, GetActorTransform(), SpawnParameters);
-		if (!Weapon)
-		{
-			UE_LOG(LogRogueRigs, Error, TEXT("%s: weapon of class %s could not be spawned."), *GetName(), *WeaponClass->GetName());
-			continue;
-		}
-
-		if (bAttachToCapsule)
-		{
-			Weapon->AttachToComponent(AttachParent, FAttachmentTransformRules::SnapToTargetNotIncludingScale);
-			Weapon->SetActorRelativeLocation(WeaponAttachOffset);
-		}
-		else
-		{
-			Weapon->AttachToComponent(AttachParent, FAttachmentTransformRules::SnapToTargetNotIncludingScale, WeaponAttachSocketName);
-		}
-		// The weapon is carried inside the capsule: never let it block the miner's own moves.
-		GetCapsuleComponent()->IgnoreActorWhenMoving(Weapon, true);
-		Weapon->Acquire(this);
-		Weapons.Add(Weapon);
+		AddWeapon(WeaponClass);
 	}
+}
+
+ARRWeapon* ARRMiner::AddWeapon(TSubclassOf<ARRWeapon> WeaponClass)
+{
+	UWorld* World = GetWorld();
+	if (!WeaponClass || !World)
+	{
+		UE_LOG(LogRogueRigs, Warning, TEXT("%s: AddWeapon without a weapon class or a world; ignored."), *GetName());
+		return nullptr;
+	}
+
+	FActorSpawnParameters SpawnParameters;
+	SpawnParameters.Owner = this;
+	SpawnParameters.Instigator = this;
+	SpawnParameters.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AlwaysSpawn;
+
+	// Acquisition order (sys-weapons): spawn and attach, then Acquire (actor info, CSV base values, auto-fire).
+	ARRWeapon* Weapon = World->SpawnActor<ARRWeapon>(WeaponClass, GetActorTransform(), SpawnParameters);
+	if (!Weapon)
+	{
+		UE_LOG(LogRogueRigs, Error, TEXT("%s: weapon of class %s could not be spawned."), *GetName(), *WeaponClass->GetName());
+		return nullptr;
+	}
+
+	// No socket: the capsule, which turns with the aim yaw, so the weapon points forward.
+	if (WeaponAttachSocketName.IsNone() || !GetMesh())
+	{
+		Weapon->AttachToComponent(GetRootComponent(), FAttachmentTransformRules::SnapToTargetNotIncludingScale);
+		Weapon->SetActorRelativeLocation(WeaponAttachOffset);
+	}
+	else
+	{
+		Weapon->AttachToComponent(GetMesh(), FAttachmentTransformRules::SnapToTargetNotIncludingScale, WeaponAttachSocketName);
+	}
+	// The weapon is carried inside the capsule: never let it block the miner's own moves.
+	GetCapsuleComponent()->IgnoreActorWhenMoving(Weapon, true);
+	Weapon->Acquire(this);
+	Weapons.Add(Weapon);
+	OnWeaponAdded.Broadcast(Weapon);
+	return Weapon;
+}
+
+ARRTurretLauncher* ARRMiner::FindTurretLauncher() const
+{
+	for (ARRWeapon* Weapon : Weapons)
+	{
+		if (ARRTurretLauncher* Launcher = Cast<ARRTurretLauncher>(Weapon))
+		{
+			return Launcher;
+		}
+	}
+	return nullptr;
+}
+
+ARRTurret* ARRMiner::PlaceTurret()
+{
+	if (IsDead())
+	{
+		return nullptr;
+	}
+	ARRTurretLauncher* Launcher = FindTurretLauncher();
+	return Launcher ? Launcher->TryPlaceTurret() : nullptr;
+}
+
+bool ARRMiner::GetMouseAimPoint(FVector& OutPoint) const
+{
+	if (!bUsingMouseAim || !bHasMouseAimPoint)
+	{
+		return false;
+	}
+	OutPoint = MouseAimPoint;
+	return true;
 }
 
 void ARRMiner::PossessedBy(AController* NewController)
@@ -443,6 +486,8 @@ void ARRMiner::UpdateMouseAim()
 	}
 
 	const FVector AimPoint = FMath::RayPlaneIntersection(RayOrigin, RayDirection, FPlane(FVector(0.f, 0.f, PlaneZ), FVector::UpVector));
+	MouseAimPoint = AimPoint;
+	bHasMouseAimPoint = true;
 	const FVector ToAim = AimPoint - GetActorLocation();
 	AimDirection = ToAim.GetSafeNormal2D(UE_SMALL_NUMBER, AimDirection);
 }

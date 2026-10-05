@@ -18,6 +18,8 @@ ARRPlayerController::ARRPlayerController(const FObjectInitializer& ObjectInitial
 	: Super(ObjectInitializer)
 {
 	bShowMouseCursor = true;
+
+	PlaceTurretKeys = { EKeys::E, EKeys::RightMouseButton, EKeys::Gamepad_FaceButton_Bottom };
 }
 
 void ARRPlayerController::BeginPlay()
@@ -56,9 +58,11 @@ void ARRPlayerController::SetupInputComponent()
 {
 	Super::SetupInputComponent();
 
+	UEnhancedInputLocalPlayerSubsystem* Subsystem = nullptr;
 	if (IsLocalPlayerController())
 	{
-		if (UEnhancedInputLocalPlayerSubsystem* Subsystem = ULocalPlayer::GetSubsystem<UEnhancedInputLocalPlayerSubsystem>(GetLocalPlayer()))
+		Subsystem = ULocalPlayer::GetSubsystem<UEnhancedInputLocalPlayerSubsystem>(GetLocalPlayer());
+		if (Subsystem)
 		{
 			if (DefaultMappingContext)
 			{
@@ -89,6 +93,10 @@ void ARRPlayerController::SetupInputComponent()
 	if (MouseAimAction)
 	{
 		EnhancedInput->BindAction(MouseAimAction, ETriggerEvent::Triggered, this, &ARRPlayerController::HandleMouseAim);
+	}
+	if (UInputAction* PlaceTurret = ResolvePlaceTurretAction(Subsystem))
+	{
+		EnhancedInput->BindAction(PlaceTurret, ETriggerEvent::Started, this, &ARRPlayerController::HandlePlaceTurret);
 	}
 	if (!MoveAction || !StickAimAction || !MouseAimAction)
 	{
@@ -133,4 +141,42 @@ void ARRPlayerController::HandleMouseAim(const FInputActionValue& Value)
 	}
 
 	SetShowMouseCursor(true);
+}
+
+void ARRPlayerController::HandlePlaceTurret(const FInputActionValue& Value)
+{
+	if (ARRMiner* Miner = GetMiner())
+	{
+		Miner->PlaceTurret();
+	}
+}
+
+UInputAction* ARRPlayerController::ResolvePlaceTurretAction(UEnhancedInputLocalPlayerSubsystem* Subsystem)
+{
+	if (PlaceTurretAction)
+	{
+		return PlaceTurretAction;
+	}
+
+	// No asset yet: a transient Boolean action and its own mapping context, so E / right mouse / gamepad work out of the box.
+	if (!RuntimePlaceTurretAction)
+	{
+		RuntimePlaceTurretAction = NewObject<UInputAction>(this, TEXT("RuntimePlaceTurretAction"), RF_Transient);
+	}
+	if (Subsystem && PlaceTurretKeys.Num() > 0)
+	{
+		if (!RuntimePlaceTurretContext)
+		{
+			RuntimePlaceTurretContext = NewObject<UInputMappingContext>(this, TEXT("RuntimePlaceTurretContext"), RF_Transient);
+			for (const FKey& Key : PlaceTurretKeys)
+			{
+				if (Key.IsValid())
+				{
+					RuntimePlaceTurretContext->MapKey(RuntimePlaceTurretAction, Key);
+				}
+			}
+		}
+		Subsystem->AddMappingContext(RuntimePlaceTurretContext, MappingContextPriority + 1);
+	}
+	return RuntimePlaceTurretAction;
 }

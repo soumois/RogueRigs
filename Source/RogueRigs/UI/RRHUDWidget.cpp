@@ -10,6 +10,7 @@
 #include "Player/RRMiner.h"
 #include "Progression/RRLevelUpComponent.h"
 #include "Progression/RRProgressionComponent.h"
+#include "Weapons/RRTurretLauncher.h"
 
 void URRHUDWidget::BindToMiner(ARRMiner* Miner)
 {
@@ -45,6 +46,48 @@ void URRHUDWidget::BindToMiner(ARRMiner* Miner)
 			HandleUpgradeOfferShown(LevelUp->GetOfferCards(), LevelUp->CanReroll());
 		}
 	}
+
+	BoundMiner = Miner;
+	Miner->OnWeaponAdded.AddUniqueDynamic(this, &URRHUDWidget::HandleWeaponAdded);
+	BindToTurretLauncher(Miner->FindTurretLauncher());
+}
+
+void URRHUDWidget::BindToTurretLauncher(ARRTurretLauncher* Launcher)
+{
+	if (ARRTurretLauncher* Previous = BoundTurretLauncher.Get())
+	{
+		Previous->OnTurretChargesChanged.RemoveDynamic(this, &URRHUDWidget::HandleTurretChargesChanged);
+	}
+	BoundTurretLauncher.Reset();
+	if (!Launcher)
+	{
+		return;
+	}
+	BoundTurretLauncher = Launcher;
+	Launcher->OnTurretChargesChanged.AddUniqueDynamic(this, &URRHUDWidget::HandleTurretChargesChanged);
+	HandleTurretChargesChanged(Launcher->GetCharges(), Launcher->GetMaxCharges(), Launcher->IsRecharging() ? Launcher->GetRechargeDuration() : 0.f);
+}
+
+void URRHUDWidget::HandleWeaponAdded(ARRWeapon* Weapon)
+{
+	if (!BoundTurretLauncher.IsValid())
+	{
+		if (ARRTurretLauncher* Launcher = Cast<ARRTurretLauncher>(Weapon))
+		{
+			BindToTurretLauncher(Launcher);
+		}
+	}
+}
+
+void URRHUDWidget::HandleTurretChargesChanged(int32 Charges, int32 MaxCharges, float RechargeDuration)
+{
+	OnTurretChargesChanged(Charges, MaxCharges, RechargeDuration);
+}
+
+float URRHUDWidget::GetTurretRechargeProgress() const
+{
+	const ARRTurretLauncher* Launcher = BoundTurretLauncher.Get();
+	return Launcher ? Launcher->GetRechargeProgress() : 0.f;
 }
 
 bool URRHUDWidget::ChooseUpgrade(int32 Index)
@@ -245,6 +288,12 @@ void URRHUDWidget::UnbindMiner()
 		LevelUp->OnUpgradeOfferShown.RemoveDynamic(this, &URRHUDWidget::HandleUpgradeOfferShown);
 		LevelUp->OnUpgradeOfferClosed.RemoveDynamic(this, &URRHUDWidget::HandleUpgradeOfferClosed);
 	}
+	if (ARRMiner* Miner = BoundMiner.Get())
+	{
+		Miner->OnWeaponAdded.RemoveDynamic(this, &URRHUDWidget::HandleWeaponAdded);
+	}
+	BindToTurretLauncher(nullptr);
+	BoundMiner.Reset();
 	BoundLevelUp.Reset();
 	BoundProgression.Reset();
 	BoundASC.Reset();

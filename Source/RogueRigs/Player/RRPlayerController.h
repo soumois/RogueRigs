@@ -4,9 +4,11 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/PlayerController.h"
+#include "InputCoreTypes.h"
 #include "RRPlayerController.generated.h"
 
 class ARRMiner;
+class UEnhancedInputLocalPlayerSubsystem;
 class UInputAction;
 class UInputMappingContext;
 class URRHUDWidget;
@@ -14,7 +16,8 @@ struct FInputActionValue;
 
 /**
  * Player controller of a run. Adds DefaultMappingContext to the local player's Enhanced Input subsystem,
- * binds the move and aim actions and forwards them to the possessed ARRMiner. Shows the mouse cursor;
+ * binds the move, aim and place-turret actions and forwards them to the possessed ARRMiner. The place-turret action works
+ * without assets: when PlaceTurretAction is unset, a transient action and mapping context are built from PlaceTurretKeys. Shows the mouse cursor;
  * hides it while a stick aims, shows it again on mouse movement. Assets are assigned in the Blueprint
  * subclass. Creates the HUD widget (HUDWidgetClass) for a local player. No gameplay logic here.
  */
@@ -49,6 +52,15 @@ protected:
 	/** Mouse aim action handler: switches the miner to mouse aim and shows the cursor. */
 	void HandleMouseAim(const FInputActionValue& Value);
 
+	/** Place-turret action handler (Started: once per press): ARRMiner::PlaceTurret. */
+	void HandlePlaceTurret(const FInputActionValue& Value);
+
+	/**
+	 * Returns the place-turret action to bind: PlaceTurretAction when set (its keys come from DefaultMappingContext), else a
+	 * transient Boolean action mapped to PlaceTurretKeys in a transient mapping context added to Subsystem (when given).
+	 */
+	UInputAction* ResolvePlaceTurretAction(UEnhancedInputLocalPlayerSubsystem* Subsystem);
+
 	/** Returns the possessed pawn as a miner, or nullptr. */
 	ARRMiner* GetMiner() const;
 
@@ -71,6 +83,22 @@ protected:
 	/** Mouse aim action (mouse XY movement); any trigger switches back to mouse aim. Bound on Triggered. */
 	UPROPERTY(EditDefaultsOnly, Category = "Input")
 	TObjectPtr<UInputAction> MouseAimAction;
+
+	/** Boolean place-turret action, bound on Started. Unset = a transient action mapped to PlaceTurretKeys is built at input setup. */
+	UPROPERTY(EditDefaultsOnly, Category = "Input")
+	TObjectPtr<UInputAction> PlaceTurretAction;
+
+	/** Keys of the transient place-turret mapping, used only when PlaceTurretAction is unset (task-024-03: E, right mouse button, gamepad face button bottom). */
+	UPROPERTY(EditDefaultsOnly, Category = "Input")
+	TArray<FKey> PlaceTurretKeys;
+
+	/** Transient place-turret action built when PlaceTurretAction is unset. */
+	UPROPERTY(Transient)
+	TObjectPtr<UInputAction> RuntimePlaceTurretAction;
+
+	/** Transient mapping context holding PlaceTurretKeys, added at MappingContextPriority + 1. */
+	UPROPERTY(Transient)
+	TObjectPtr<UInputMappingContext> RuntimePlaceTurretContext;
 
 	/** If true, the cursor is hidden while a stick aims and shown again when the mouse moves. */
 	UPROPERTY(EditDefaultsOnly, Category = "Input")

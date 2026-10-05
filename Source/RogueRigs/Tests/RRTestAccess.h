@@ -168,6 +168,7 @@ namespace RRTestAccess
 	struct FWeaponAccess : public ARRWeapon
 	{
 		static USceneComponent* MuzzleOf(const ARRWeapon* Weapon) { return Weapon->*(&FWeaponAccess::Muzzle); }
+		static float& SpreadDegOf(ARRWeapon* Weapon) { return Weapon->*(&FWeaponAccess::SpreadDeg); }
 	};
 
 	/** ARRProjectile: the hit filter class. */
