@@ -253,35 +253,54 @@ void ARREnemySpawner::GetSpawnCandidates(TArray<FIntPoint>& OutCells)
 
 TSubclassOf<ARREnemy> ARREnemySpawner::PickEnemyClass(const FRandomStream& Stream) const
 {
+	// Entries with a class and a positive weight; those at their alive cap are left out of this draw.
+	TArray<const FRRWeightedEnemyClass*, TInlineAllocator<8>> Open;
+	bool bAnyValid = false;
 	float TotalWeight = 0.f;
-	for (const FRRWeightedEnemyClass& Entry : WeightedEnemyClasses)
-	{
-		if (Entry.EnemyClass && Entry.Weight > 0.f)
-		{
-			TotalWeight += Entry.Weight;
-		}
-	}
-	if (TotalWeight <= 0.f)
-	{
-		return EnemyClass;
-	}
-	float Draw = Stream.FRand() * TotalWeight;
-	TSubclassOf<ARREnemy> LastValid;
 	for (const FRRWeightedEnemyClass& Entry : WeightedEnemyClasses)
 	{
 		if (!Entry.EnemyClass || Entry.Weight <= 0.f)
 		{
 			continue;
 		}
-		LastValid = Entry.EnemyClass;
-		if (Draw < Entry.Weight)
+		bAnyValid = true;
+		if (Entry.MaxAlive > 0 && GetAliveCountOfClass(Entry.EnemyClass) >= Entry.MaxAlive)
 		{
-			return Entry.EnemyClass;
+			continue;
 		}
-		Draw -= Entry.Weight;
+		Open.Add(&Entry);
+		TotalWeight += Entry.Weight;
+	}
+	if (!bAnyValid)
+	{
+		return EnemyClass;
+	}
+	if (Open.IsEmpty())
+	{
+		return nullptr;
+	}
+	float Draw = Stream.FRand() * TotalWeight;
+	for (const FRRWeightedEnemyClass* Entry : Open)
+	{
+		if (Draw < Entry->Weight)
+		{
+			return Entry->EnemyClass;
+		}
+		Draw -= Entry->Weight;
 	}
 	// Float rounding at the top of the range.
-	return LastValid;
+	return Open.Last()->EnemyClass;
+}
+
+int32 ARREnemySpawner::GetAliveCountOfClass(TSubclassOf<ARREnemy> Class) const
+{
+	int32 Count = 0;
+	for (const TWeakObjectPtr<ARREnemy>& Enemy : AliveEnemies)
+	{
+		const ARREnemy* Robot = Enemy.Get();
+		Count += Robot && Class && Robot->IsA(Class) && !Robot->IsActorBeingDestroyed() && !Robot->IsDead() ? 1 : 0;
+	}
+	return Count;
 }
 
 TSubclassOf<ARREnemy> ARREnemySpawner::PickEnemyClass() const

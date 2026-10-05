@@ -27,7 +27,7 @@ enum class ERRSpawnSide : uint8
 	PositiveY
 };
 
-/** One entry of the spawner weighted robot list: a class and its relative weight. */
+/** One entry of the spawner weighted robot list: a class, its relative weight and an optional alive cap for that class. */
 USTRUCT(BlueprintType)
 struct FRRWeightedEnemyClass
 {
@@ -40,6 +40,13 @@ struct FRRWeightedEnemyClass
 	/** Relative weight: chance = Weight / sum of the weights of the valid entries. 0 or less = never picked. */
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Spawner", meta = (ClampMin = 0))
 	float Weight = 1.f;
+
+	/**
+	 * Most robots of this class (IsA, subclasses included) of this spawner alive at once; while reached, the entry is left out of
+	 * the draw (its weight goes to the others). 0 = no cap (heavy: 5, enemy-heavy).
+	 */
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Spawner", meta = (ClampMin = 0))
+	int32 MaxAlive = 0;
 };
 
 /**
@@ -102,8 +109,9 @@ public:
 	ARREnemy* TrySpawnEnemy();
 
 	/**
-	 * Class of the next robot: a weighted draw (Stream) among WeightedEnemyClasses entries with a class and a positive weight;
-	 * EnemyClass when there is none. Null when nothing is set.
+	 * Class of the next robot: a weighted draw (Stream) among WeightedEnemyClasses entries with a class, a positive weight and
+	 * room under their MaxAlive cap; EnemyClass when no entry has a class and a positive weight. Null when nothing is set or every
+	 * valid entry is capped.
 	 */
 	TSubclassOf<ARREnemy> PickEnemyClass(const FRandomStream& Stream) const;
 
@@ -112,6 +120,9 @@ public:
 
 	/** Robot classes this spawner can spawn: EnemyClass, then each WeightedEnemyClasses entry with a class (no duplicates). */
 	void GetSpawnableClasses(TArray<TSubclassOf<ARREnemy>>& OutClasses) const;
+
+	/** Number of robots of Class (IsA) spawned by this spawner that are alive (not dead, not destroyed). Does not prune. */
+	int32 GetAliveCountOfClass(TSubclassOf<ARREnemy> Class) const;
 
 	/** Number of robots spawned by this spawner that are alive (not dead, not destroyed). Prunes the list. */
 	UFUNCTION(BlueprintPure, Category = "Spawner")
@@ -178,7 +189,7 @@ protected:
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Spawner")
 	TSubclassOf<ARREnemy> EnemyClass;
 
-	/** Weighted robot classes (default of the placed spawner: chaser 70, kamikaze 15, shooter 15). Empty or all invalid = EnemyClass. */
+	/** Weighted robot classes (default of the placed spawner: chaser 65, kamikaze 12, shooter 15, heavy 8 with MaxAlive 5). Empty or all invalid = EnemyClass. */
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Spawner")
 	TArray<FRRWeightedEnemyClass> WeightedEnemyClasses;
 
