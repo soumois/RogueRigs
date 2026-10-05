@@ -33,3 +33,4 @@ Method: editor `-game` 1920×1080 on L_ArenaM1, `Run-StressTest.ps1 -Mode fire`,
 - [[bp-damage-numbers]] — the asset the defects apply to.
 - [[sys-damage-numbers]] — the subsystem and contract measured.
 - [[stress-opt-m1]] — earlier S2 reference.
+- [[stress-damage-numbers-recheck]] — child: task-025-06 recheck after the per-digit rebuild (defects 1–4 fixed, crit colour and crowd overlap remain, new S2).

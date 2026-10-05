@@ -107,6 +107,7 @@ run-log-schema  reference/tech/pipelines/run-log-schema.md
 run-structure  reference/gdd/run/run-structure.md
 shotgun  reference/gdd/weapons/shotgun.md
 stress-damage-numbers  reference/tech/performance/stress-damage-numbers.md
+stress-damage-numbers-recheck  reference/tech/performance/stress-damage-numbers-recheck.md
 stress-final-m1  reference/tech/performance/stress-final-m1.md
 stress-grid-cells  reference/tech/performance/stress-grid-cells.md
 stress-opt-m1  reference/tech/performance/stress-opt-m1.md
