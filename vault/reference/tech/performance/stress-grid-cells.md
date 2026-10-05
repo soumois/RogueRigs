@@ -31,6 +31,19 @@ Same PC and editor `-game` procedure as [[stress-opt-m1]]. `L_ArenaM1` split at 
 ## Cause and what-if
 Insights trace (67 uu chain): 3.0 of 3.1 s explosion time is `UInstancedStaticMeshComponent::PartialNavigationUpdate` → `CalcBoundsImpl`, a full bounds pass over every instance on each add or remove. The map has no navmesh; robots use [[sys-flow-field]]. Same runs with navigation relevance off (`Subdivide <F> 1`): explosion 0.56 ms (100 uu), 1.0 ms (67 uu); chain event frames 11.6 / 13.9 (100 uu) and 19.2 / 21.4 (67 uu); dig 100 uu 9.90 / 13.27; dig 67 uu still 18.70 / 23.34, render-thread bound (HISM proxy and distance-field buffers re-uploaded every frame, `UpdateDistanceFieldObjectBuffers` up to 14 ms).
 
+## After task-029-01 (2026-10-05)
+Grid chunked in 16 × 16-cell HISMs per type, no component navigation relevant ([[sys-grid]]). Same PC, background load gone; "before" = commit 93c6585 rebuilt in a worktree, run the same hour. 100 robots, ms avg / p99 (event frame avg / max).
+
+| Run | 200 uu before | 200 uu after | 67 uu before | 67 uu after |
+|---|---|---|---|---|
+| S0 frame | 8.50 / 10.26 | 8.73 / 10.91 | 9.53 / 12.18 | 9.24 / 11.77 |
+| S2 frame | 8.88 / 11.50 | 8.94 / 11.51 | 9.37 / 11.95 | 9.39 / 11.93 |
+| Chain frame (event) | 9.22 / 12.13 (11.1 / 16.9) | 8.88 / 11.63 (9.5 / 13.0) | 11.14 / 111.5 (121 / 189) | 9.31 / 12.07 (10.8 / 16.4) |
+| Dig frame (game avg) | 9.34 / 12.07 (5.25) | 9.12 / 11.75 (5.39) | 19.00 / 23.47 (14.08) | 9.59 / 12.15 (7.77) |
+
+- 67 uu: chain event frames 121 → 10.8 ms avg, max 189 → 16 ms; dig 19.0 → 9.6 ms (60 fps regained). Steady state unchanged (± 0.3 ms, noise). Flow-field BFS 2.7–2.8 ms per rebuild remains (task-029-02).
+- Distance fields: chunks with `bGridAffectsDistanceFields` on vs off at 67 uu, chain 9.35 / 11.94 vs 9.31 / 12.07, dig 9.60 / 11.97 vs 9.59 / 12.15: no difference, so the grid stays in distance fields (default on, lighting unchanged).
+
 ## Verdict
 - 200 uu: holds; the navigation fix would also help it (one destruction 0.25 ms here, 0.04–0.07 ms measured with the fix at the smaller sizes).
 - 100 uu: steady state and dig hold. Explosion chains break (52 ms frames) and are fixed by turning off navigation relevance on the grid components (≈ 1 h with test), back to the 200 uu level. Recommended.

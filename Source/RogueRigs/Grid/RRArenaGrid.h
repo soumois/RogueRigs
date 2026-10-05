@@ -403,9 +403,9 @@ protected:
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Grid|Rendering", meta = (ClampMin = "1"))
 	int32 ChunkCells = 16;
 
-	/** Whether the floor and block chunk HISMs feed the mesh distance field scene (Lumen software tracing, distance field shadows and AO). Off: no distance field buffer upload when instances change. Read at build. */
+	/** Whether the floor and block chunk HISMs feed the mesh distance field scene (Lumen, distance field shadows and AO). On by default: with chunks, turning it off measured no gain (task-029-01). Read at build. */
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Grid|Rendering")
-	bool bGridAffectsDistanceFields = false;
+	bool bGridAffectsDistanceFields = true;
 
 	// --- Block health, in dig-seconds at mining speed 1 (provisional) ---
 

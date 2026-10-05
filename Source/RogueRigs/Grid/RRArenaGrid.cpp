@@ -334,7 +334,7 @@ UInstancedStaticMeshComponent* ARRArenaGrid::CreateChunkComponent(TSubclassOf<UI
 		Component->SetMaterial(MaterialIndex, Template->OverrideMaterials[MaterialIndex]);
 	}
 	Component->SetNumCustomDataFloats(Template->NumCustomDataFloats);
-	// No navmesh in the arena; distance fields only when bGridAffectsDistanceFields (no buffer upload on every instance change).
+	// No navmesh in the arena; distance fields as the template, unless bGridAffectsDistanceFields is off.
 	Component->SetCanEverAffectNavigation(false);
 	Component->bAffectDistanceFieldLighting = bGridAffectsDistanceFields && Template->bAffectDistanceFieldLighting;
 	if (Template->SupportsRemoveSwap())

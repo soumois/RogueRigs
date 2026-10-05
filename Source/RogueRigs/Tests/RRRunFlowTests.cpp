@@ -10,6 +10,7 @@
 #include "Damage/RRGE_DamageFlat.h"
 #include "Drone/RRDrone.h"
 #include "Enemies/RRChaser.h"
+#include "FlowField/RREnemyMovementComponent.h"
 #include "FlowField/RRFlowFieldSubsystem.h"
 #include "GAS/RRGameplayTags.h"
 #include "Objectives/RRConsole.h"
