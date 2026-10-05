@@ -275,6 +275,14 @@ task-028-01-heavy-shield-values  reference/tasks/task-028-balance/task-028-01-he
 task-028-02-bp-shield-heavy  reference/tasks/task-028-balance/task-028-02-bp-shield-heavy.md
 task-028-03-xp-pacing  reference/tasks/task-028-balance/task-028-03-xp-pacing.md
 task-028-balance  reference/tasks/task-028-balance.md
+task-029-01-grid-render  reference/tasks/task-029-fine-grid/task-029-01-grid-render.md
+task-029-02-flow-field-incremental  reference/tasks/task-029-fine-grid/task-029-02-flow-field-incremental.md
+task-029-03-layout-67  reference/tasks/task-029-fine-grid/task-029-03-layout-67.md
+task-029-04-switch-67  reference/tasks/task-029-fine-grid/task-029-04-switch-67.md
+task-029-05-arc-mining  reference/tasks/task-029-fine-grid/task-029-05-arc-mining.md
+task-029-06-bp-fine-grid  reference/tasks/task-029-fine-grid/task-029-06-bp-fine-grid.md
+task-029-07-final-check  reference/tasks/task-029-fine-grid/task-029-07-final-check.md
+task-029-fine-grid  reference/tasks/task-029-fine-grid.md
 tasks-index  reference/tasks/tasks-index.md
 tech-index  reference/tech/tech-index.md
 terrain-index  reference/gdd/terrain/terrain-index.md

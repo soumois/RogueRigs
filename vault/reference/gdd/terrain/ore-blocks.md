@@ -7,8 +7,8 @@ status: approved
 ---
 # Ore blocks
 
-- Tougher than plain rock blocks: drone dig time 4.5 s at mining speed 1, against 1.5 s for rock (provisional).
-- Drop ore while being dug: one pickup per 1.5 s of digging (provisional); no need to finish the block to get some.
+- Tougher than plain rock blocks: drone dig time 1.5 s per 67 uu block at mining speed 1, against 0.5 s for rock (provisional, 2026-10-06).
+- Each broken ore block pops one ore chunk (DRGS-like arc then suction, [[xp-level-up]]); ore value per chunk: open until the ore economy is built (provisional, 2026-10-06).
 - Drop a larger bundle when destroyed, whatever destroyed them: 3 pickups (provisional) ([[ore-economy]]).
 - Any explosion destroys every block in its radius ([[explosions]]): luring a kamikaze onto a vein is a valid tactic.
 - Look: same base as breakable rock, with glowing violet crystals ([[color-code]]).

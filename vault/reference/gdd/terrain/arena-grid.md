@@ -14,9 +14,9 @@ status: approved
 - Layouts: M1 uses one fixed layout written as grid JSON by the Level-Design agent; M2 uses a deterministic C++ generator (no runtime AI).
 - Arena shape: an irregular asteroid inside the grid, never a rectangle. Cells outside it are void: no floor, no block; the floor edge is the cliff.
 - Cell types in the layout: void, rock, ore, heal_ore, special_ore, barrel, spawn (the miner's start). Robots, consoles, bonus chests and the shuttle are placed during play, not in the layout ([[level-flow]]). Format: [[level-layout-schema]].
-- M1 arena: 80 × 80 cells (owner decision, task-003; was 60 × 60).
-- One cell = one block = one dig unit. Every unit, the heavy robot included, fits through a one-cell corridor: the collision diameter of every robot is smaller than a cell.
-- Cell size: a data constant in the grid (Unreal units), tunable in the editor without changing layouts. Starting value 200 uu (provisional).
+- M1 arena: 240 × 240 cells of 67 uu, the same world size as the former 80 × 80 cells of 200 uu (owner 2026-10-06: finer, more organic destruction like DRGS slabs).
+- One cell = one block = one dig unit. Passages in layouts are at least 3 cells (200 uu) wide, and every unit, the heavy robot included, fits through a 3-cell corridor (provisional, 2026-10-06: a single 67 uu cell is narrower than some units).
+- Cell size: a data constant in the grid (Unreal units), tunable in the editor without changing layouts. Value 67 uu (owner 2026-10-06; was 200 uu). The flow field updates incrementally and spread over frames: digging only opens cells, so a path that is 2–3 frames late is still valid (owner 2026-10-06).
 - Layouts are written in cell coordinates only.
 - Visual build (autotiling, instancing): [[sys-grid]].
 

@@ -39,3 +39,4 @@ One global task per owner request (template `task-global.md`, id `task-<number>-
 - [[task-026-pressure]] — wave director, horde banner, damage vignette, alert-bar icons, light halo test. Status todo.
 - [[task-027-juice]] — XP and ore ejection and suction, kamikaze flare, ring gauge, chevrons, heal ring. Status todo.
 - [[task-028-balance]] — larger heavy slam, shield chasers, doubled upgrade values, XP pacing. Status todo.
+- [[task-029-fine-grid]] — 67 uu cells: chunked rendering, incremental flow field, converted layout, arc mining by contact. Status todo.
