@@ -44,6 +44,19 @@ Grid chunked in 16 × 16-cell HISMs per type, no component navigation relevant (
 - 67 uu: chain event frames 121 → 10.8 ms avg, max 189 → 16 ms; dig 19.0 → 9.6 ms (60 fps regained). Steady state unchanged (± 0.3 ms, noise). Flow-field BFS 2.7–2.8 ms per rebuild remains (task-029-02).
 - Distance fields: chunks with `bGridAffectsDistanceFields` on vs off at 67 uu, chain 9.35 / 11.94 vs 9.31 / 12.07, dig 9.60 / 11.97 vs 9.59 / 12.15: no difference, so the grid stays in distance fields (default on, lighting unchanged).
 
+## After task-029-02 (2026-10-05)
+Incremental flow field ([[sys-flow-field]], budget 0.3 ms). 67 uu, 100 robots, editor `-game`, 5 s settle, 20 s measure. Background check: no game running (Steam and Epic launchers idle), GPU at 19–21 % from the desktop before the runs. ms avg / p99; flow = flow-field time of frames with work, avg / max.
+
+| Run | Frame | Game avg / p99 | Flow work frames | Flow avg / max |
+|---|---|---|---|---|
+| Dig (1440 cells) | 9.19 / 11.02 | 6.33 / 9.03 | 1451 | 0.015 / 0.37 |
+| Chain (1838 cells, events 10.2 / 13.6) | 9.03 / 10.88 | 6.22 / 9.27 | 32 | 0.051 / 0.22 |
+| Walk 600 uu/s, budget 0.3 | 9.25 / 11.20 | 7.16 / 9.94 | 1379 | 0.29 / 0.72 |
+| Walk, budget 0 (goal BFS in one frame) | 9.27 / 11.31 | 7.03 / 10.72 | 168 | 2.17 / 3.54 |
+
+- Openings: 2.7 ms per rebuild on every dig frame before, 0.015 ms avg now; dig game thread 7.77 → 6.33 ms avg (029-01 run, other hour).
+- Miner moving: the sliced goal rebuild holds 0.3 ms per frame instead of 2.2 ms spikes ~8 times a second; frames stay render bound (draw ≈ 9.2 ms), so frame averages move little. The field goal lags at most 13 frames (headless test).
+
 ## Verdict
 - 200 uu: holds; the navigation fix would also help it (one destruction 0.25 ms here, 0.04–0.07 ms measured with the fix at the smaller sizes).
 - 100 uu: steady state and dig hold. Explosion chains break (52 ms frames) and are fixed by turning off navigation relevance on the grid components (≈ 1 h with test), back to the 200 uu level. Recommended.
@@ -56,3 +69,4 @@ Grid chunked in 16 × 16-cell HISMs per type, no component navigation relevant (
 - [[stress-opt-m1]] — the 200 uu tables of the same procedure.
 - [[sys-grid]] — the instanced components whose costs are measured.
 - [[task-023-01-cell-stress]] — the task that produced this report.
+- [[sys-flow-field]] — the incremental field measured in the task-029-02 section.
