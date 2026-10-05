@@ -14,7 +14,7 @@ kind: doc
 - data: CSV row `Heavy` ([[sys-enemies]]): AttackRange = slam radius, WindUp = telegraph, AttackRate 0.4 = one slam every 2.5 s. `EditDefaultsOnly`: `DamageEffectClass` (`URRGE_DamageFlat`), `SlamTriggerRatio` 0.7, `RecoverDuration` 0.5 s, `TelegraphFlashRate` 0 (no mesh blink: the Blueprint glows); `ArrivalRangeRatio` 0.5. Alive cap 5: spawner entry `MaxAlive` ([[sys-spawner]]).
 - depends_on: [[sys-enemies-base]], [[sys-damage]], [[sys-flow-field]].
 - implements: [[enemy-heavy]].
-- gotchas: measured in contact: telegraphs every 2.5 s, slam 0.800 s later, 25 per hit; the telegraph started at 151 uu. Crosses the corridor x 36, rows 66–68 of `arena_m1` in 4.58 s. SlamTriggerRatio, RecoverDuration and the arrival ratio are code choices, not gdd values. Tests: [[sys-automation-tests]].
+- gotchas: measured in contact: telegraphs every 2.5 s, slam 0.800 s later, 25 per hit; the telegraph started at 151 uu. Crosses the corridor x 36, rows 66–68 of `arena_m1` in 4.58 s (also with `BP_Heavy`). With `BP_Heavy` and `BP_Miner` (task-022-03): 25 per slam on a vulnerable miner, hit at 210 uu, miss at 230 uu, shotgun launch 120 uu/s vs 600 for `BP_Chaser`. SlamTriggerRatio, RecoverDuration and the arrival ratio are code choices, not gdd values. Tests: [[sys-automation-tests]].
 
 ## Relations
 - [[sys-enemies]] — parent index.
