@@ -3,7 +3,7 @@ id: task-025-damage-numbers
 description: "Global task: pooled Niagara damage numbers fed by the damage pipeline, merged per robot, bigger white-gold crits, toggle in settings."
 parent: tasks-index
 kind: task
-status: in-progress
+status: done
 ---
 # Damage numbers at horde scale
 
@@ -13,8 +13,8 @@ status: in-progress
 - gdd_check: Read [[damage-numbers]], [[color-code]], [[sys-damage]]. Merging window open → 0.25 s (provisional). Analysis in [[drgs-analysis]]. The owner launched all lots and delegated provisional values (2026-10-05); decisions written into the GDD before planning; the grid-size lot waits for the owner after the stress report.
 - confirmed_by_owner: yes (2026-10-05, all lots launched by the owner)
 - milestone: M2
-- next_step: task-025-06-numbers-visual-check
-- result: open
+- next_step: none
+- result: Damage numbers at horde scale: pooled per-digit Niagara fed by URRDamageNumberSubsystem, 0.25 s merge, crit 1.6× with pop, settings toggle; verified by -game screenshots (multi-digit, continuous) and tests; no game-thread cost. Follow-ups in task-027: gold crit colour, crowd stacking, outline. About 1 M agent tokens over 6 subtasks (first Niagara build had index and loop defects found by the screenshot check).
 
 ## Subtasks
 1. task-025-01-numbers-pipeline — cpp

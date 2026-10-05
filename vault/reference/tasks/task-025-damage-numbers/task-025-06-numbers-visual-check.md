@@ -3,7 +3,7 @@ id: task-025-06-numbers-visual-check
 description: "Screenshots in -game confirm multi-digit numbers, continuous display, crits larger white-gold; S2 perf on vs off."
 parent: task-025-damage-numbers
 kind: task
-status: in-progress
+status: done
 ---
 # Damage numbers visual recheck
 
@@ -15,11 +15,11 @@ status: in-progress
 - done_when: screenshots confirm the checks; tests pass; lint clean.
 - editor_state: closed
 - token_ceiling: 80000
-- model: open
-- tokens: open
-- runs: open
+- model: opus
+- tokens: input 58, cache write 89441, cache read 1720080, output 18926
+- runs: 1
 - milestone: M2
-- result: open
+- result: Screenshots: two-digit numbers read left to right, numbers still appear after 15 s, no double batch; particle dump: digit index 0/1 per number, correct digits, 60 uu spacing, crit 96. Remaining: crits look pale cream (linear 1, 0.8, 0.3 is too light after tonemapping) and neighbouring robots' numbers overlap in crowds → moved to task-027 (gold crit colour, vertical stacking, digit outline). S2 numbers on vs off: no game-thread cost; frames GPU-bound at 22–26 ms (regression vs stress-opt-m1, investigated in 029-01). 7/7 DamageNumbers. New stress-damage-numbers-recheck. Commit caf9c7a.
 
 ## Relations
 - [[task-025-damage-numbers]] — parent global task.

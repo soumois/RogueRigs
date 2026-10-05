@@ -3,7 +3,7 @@ id: task-029-fine-grid
 description: "Global task: 67 uu cells with chunked rendering, incremental time-sliced flow field, converted layout, wall-contact arc mining, re-measured stress."
 parent: tasks-index
 kind: task
-status: todo
+status: in-progress
 ---
 # Fine grid and arc mining
 
