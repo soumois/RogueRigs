@@ -11,7 +11,7 @@ status: todo
 - agent: cpp
 - depends_on: task-024-05-bp-weapons
 - inputs: [[sys-automation-tests]], task-024-05 result.
-- expected_output: `RogueRigs.Integration.*` tests: start loadout rifle only; level-up with a forced weapon card equips BP_Shotgun and its cards appear; pellets pierce a line of robots; PlaceTurret action places BP_Turret that kills a robot; full run.
+- expected_output: `RogueRigs.Integration.*` tests: start loadout rifle only; level-up with a forced weapon card equips BP_Shotgun and its cards appear; pellets pierce a line of robots; PlaceTurret action places BP_Turret that kills a robot; remove the legacy OnWaveFired and GetWaveClearDistance stubs from ARRShotgun once BP_Shotgun no longer uses them; full run.
 - done_when: build exits 0 with the editor closed; all `RogueRigs.*` tests pass headless (new ones included); docs updated; lint clean.
 - editor_state: closed
 - token_ceiling: 80000

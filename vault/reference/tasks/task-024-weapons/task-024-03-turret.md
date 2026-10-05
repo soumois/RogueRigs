@@ -3,7 +3,7 @@ id: task-024-03-turret
 description: "Turret launcher weapon placed with a button on the aimed spot: charges, recharge, lifetime, nearest-target fire with line of sight, pierce; tests."
 parent: task-024-weapons
 kind: task
-status: todo
+status: in-progress
 ---
 # Turret launcher
 
