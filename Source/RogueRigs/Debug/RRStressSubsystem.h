@@ -3,6 +3,7 @@
 #pragma once
 
 #include "CoreMinimal.h"
+#include "Grid/RRArenaGrid.h"
 #include "Subsystems/WorldSubsystem.h"
 #include "RRStressSubsystem.generated.h"
 
@@ -18,7 +19,11 @@ enum class ERRStressMode : uint8
 	/** S2: miner invulnerable, every weapon firing; robots get rr.Stress.FireHealth so the count holds under fire. */
 	Fire,
 	/** S7: each step clears, spawns the robots, and at the end of the settle time kills them all and destroys every barrel at once. */
-	Burst
+	Burst,
+	/** Grid stress (task-023-01): peace, tough robots; at the end of the settle time queues rr.Stress.ChainCount explosions on block points around the miner. */
+	Chain,
+	/** Grid stress (task-023-01): peace, tough robots; during the measure window destroys the block cells nearest the miner at rr.Stress.DigRate. */
+	Dig
 };
 
 /** Frame-time averages of one stress step, in milliseconds (same sources as stat unit). */
@@ -74,6 +79,26 @@ struct FRRStressStepResult
 	/** Explosions resolved during the measure window. */
 	UPROPERTY()
 	int32 Explosions = 0;
+
+	/** Grid blocks destroyed during the measure window (any source). */
+	UPROPERTY()
+	int32 BlocksDestroyed = 0;
+
+	/** Event frames (an explosion resolved or a block destroyed): count, average and worst of the two frames after each event (ms). */
+	UPROPERTY()
+	int32 EventFrames = 0;
+	UPROPERTY()
+	float EventFrameAvg = 0.f;
+	UPROPERTY()
+	float EventFrameMax = 0.f;
+
+	/** Flow-field computations during the measure window, average and worst BFS ms. */
+	UPROPERTY()
+	int32 FlowComputes = 0;
+	UPROPERTY()
+	float FlowAvg = 0.f;
+	UPROPERTY()
+	float FlowMax = 0.f;
 };
 
 /**
@@ -178,6 +203,22 @@ protected:
 	UFUNCTION()
 	void HandleExplosion(FVector Center, FName RowName);
 
+	/** Counts the grid blocks destroyed during a measure window. */
+	UFUNCTION()
+	void HandleCellDestroyed(FIntPoint Cell, ERRCellType Type, ERRTerrainDamageSource Source);
+
+	/** Chain mode: queues rr.Stress.ChainCount explosions (row rr.Stress.ChainRow) on block points around the miner. */
+	void TriggerChain();
+
+	/** Dig mode: lists the non-barrel block cells by distance from the miner (the sweep order). */
+	void BuildDigQueue();
+
+	/** Dig mode: destroys the next cells of the sweep at rr.Stress.DigRate for DeltaSeconds. */
+	void TickDig(float DeltaSeconds);
+
+	/** Measure window: records the event frame costs and the flow-field computations of this frame. */
+	void SampleGridEvents(float FrameMs);
+
 	/** Robots spawned by the tool. */
 	TArray<TWeakObjectPtr<ARREnemy>> StressEnemies;
 
@@ -225,4 +266,27 @@ protected:
 
 	/** True once HandleExplosion is bound to the explosion subsystem. */
 	bool bExplosionBound = false;
+
+	/** Grid blocks destroyed since the current measure window began. */
+	int32 StepBlocksDestroyed = 0;
+
+	/** Event counter (explosions + blocks) at the last sample, frames left in the current event window and its worst frame (ms). */
+	int32 LastEventCounter = 0;
+	int32 PendingEventFrames = 0;
+	float PendingEventMax = 0.f;
+
+	/** Event frame costs and flow-field BFS durations of the current measure window (ms). */
+	TArray<float> EventSamples;
+	TArray<float> FlowSamples;
+
+	/** Flow-field computation count at the last sample. */
+	int32 LastFlowCount = 0;
+
+	/** Dig mode: sweep order, next index and fractional cells owed. */
+	TArray<FIntPoint> DigQueue;
+	int32 DigIndex = 0;
+	float DigAccumulator = 0.f;
+
+	/** Grid whose OnCellDestroyed is bound to HandleCellDestroyed. */
+	TWeakObjectPtr<ARRArenaGrid> BoundGrid;
 };

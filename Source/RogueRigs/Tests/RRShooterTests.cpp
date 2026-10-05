@@ -12,6 +12,7 @@
 #include "Enemies/RRKamikaze.h"
 #include "Enemies/RRShooter.h"
 #include "EngineUtils.h"
+#include "FlowField/RREnemyMovementComponent.h"
 #include "FlowField/RRFlowFieldSubsystem.h"
 #include "GameFramework/CharacterMovementComponent.h"
 #include "GAS/RRHealthAttributeSet.h"

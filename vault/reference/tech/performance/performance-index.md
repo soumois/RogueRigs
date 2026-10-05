@@ -14,3 +14,4 @@ kind: note
 - [[stress-final-m1]] — final run after task-016: S0, S2 fire, S7 burst tables, baseline comparison, 100-cap verdict.
 - [[perf-trace-m1]] — Insights trace at 400 robots: game-thread ms per timer, CharacterMovement breakdown, 61 s GC hitch, capture commands.
 - [[stress-opt-m1]] — after task-018: S0, S2, S7 vs stress-final-m1, new ceilings, staged Development build ceilings.
+- [[stress-grid-cells]] — 200 vs 100 vs 67 uu cells: frame times, explosions, dig, flow field, memory, fixes with hours, verdict.

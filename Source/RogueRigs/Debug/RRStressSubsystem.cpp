@@ -6,6 +6,7 @@
 #include "Components/CapsuleComponent.h"
 #include "Damage/RRGE_DamageExplosion.h"
 #include "Debug/RRCheats.h"
+#include "Debug/RRGridStress.h"
 #include "Enemies/RRChaser.h"
 #include "Enemies/RREnemy.h"
 #include "Enemies/RREnemySpawner.h"
@@ -52,6 +53,24 @@ namespace RRStress
 
 	/** Damage of KillEnemy: far above any robot health. */
 	constexpr float KillDamage = 1.0e9f;
+
+	TAutoConsoleVariable<int32> CVarChainCount(TEXT("rr.Stress.ChainCount"), 30,
+		TEXT("Chain mode: explosions queued at the end of the settle time (resolved one per ChainDelay)."), ECVF_Cheat);
+
+	TAutoConsoleVariable<float> CVarChainMinRange(TEXT("rr.Stress.ChainMinRange"), 1500.f,
+		TEXT("Chain mode: inner radius (uu) around the miner of the ring where explosion points are drawn."), ECVF_Cheat);
+
+	TAutoConsoleVariable<float> CVarChainMaxRange(TEXT("rr.Stress.ChainMaxRange"), 5000.f,
+		TEXT("Chain mode: outer radius (uu) around the miner of the ring where explosion points are drawn."), ECVF_Cheat);
+
+	TAutoConsoleVariable<FString> CVarChainRow(TEXT("rr.Stress.ChainRow"), TEXT("Barrel"),
+		TEXT("Chain mode: ExplosionStats row of the queued explosions."), ECVF_Cheat);
+
+	TAutoConsoleVariable<float> CVarDigRate(TEXT("rr.Stress.DigRate"), 8.f,
+		TEXT("Dig mode: block area destroyed per second, in cells of rr.Stress.DigReferenceCellSize (same world area at any cell size)."), ECVF_Cheat);
+
+	TAutoConsoleVariable<float> CVarDigReferenceCellSize(TEXT("rr.Stress.DigReferenceCellSize"), 200.f,
+		TEXT("Dig mode: cell size (uu) in which rr.Stress.DigRate is expressed."), ECVF_Cheat);
 
 	TAutoConsoleVariable<FString> CVarCounts(TEXT("rr.Stress.Counts"), TEXT("50,100,200,300,400"),
 		TEXT("Default comma-separated robot counts of rr.Stress.Run."), ECVF_Cheat);
@@ -148,7 +167,7 @@ namespace RRStress
 		ERRStressMode Mode = ERRStressMode::Peace;
 		if (Args.IsValidIndex(4) && !URRStressSubsystem::ParseMode(Args[4], Mode))
 		{
-			UE_LOG(LogRogueRigs, Warning, TEXT("rr.Stress.Run: unknown mode '%s' (peace, fire, burst)."), *Args[4]);
+			UE_LOG(LogRogueRigs, Warning, TEXT("rr.Stress.Run: unknown mode '%s' (peace, fire, burst, chain, dig)."), *Args[4]);
 			return;
 		}
 		const TSubclassOf<ARREnemy> EnemyClass = Stress->ResolveEnemyClass(Args.IsValidIndex(5) ? Args[5] : FString());
@@ -388,6 +407,16 @@ bool URRStressSubsystem::ParseMode(const FString& Text, ERRStressMode& OutMode)
 		OutMode = ERRStressMode::Burst;
 		return true;
 	}
+	if (Mode.Equals(TEXT("chain"), ESearchCase::IgnoreCase) || Mode == TEXT("3"))
+	{
+		OutMode = ERRStressMode::Chain;
+		return true;
+	}
+	if (Mode.Equals(TEXT("dig"), ESearchCase::IgnoreCase) || Mode == TEXT("4"))
+	{
+		OutMode = ERRStressMode::Dig;
+		return true;
+	}
 	return false;
 }
 
@@ -465,6 +494,110 @@ void URRStressSubsystem::HandleExplosion(FVector Center, FName RowName)
 	++StepExplosions;
 }
 
+void URRStressSubsystem::HandleCellDestroyed(FIntPoint Cell, ERRCellType Type, ERRTerrainDamageSource Source)
+{
+	++StepBlocksDestroyed;
+}
+
+void URRStressSubsystem::TriggerChain()
+{
+	UWorld* World = GetWorld();
+	ARRArenaGrid* Grid = RRWorld::FindArenaGrid(World);
+	const ARRMiner* Miner = RRWorld::FindLivingMiner(World);
+	URRExplosionSubsystem* Explosions = World->GetSubsystem<URRExplosionSubsystem>();
+	if (!Grid || !Miner || !Explosions)
+	{
+		UE_LOG(LogRogueRigs, Warning, TEXT("Stress: chain needs a grid, a living miner and the explosion subsystem."));
+		return;
+	}
+	const FName Row(*RRStress::CVarChainRow.GetValueOnGameThread());
+	const TArray<FVector> Points = RRGridStress::DrawBlockPoints(Grid, Miner->GetActorLocation(), RRStress::CVarChainCount.GetValueOnGameThread(),
+		RRStress::CVarChainMinRange.GetValueOnGameThread(), RRStress::CVarChainMaxRange.GetValueOnGameThread(), RRGridStress::BenchSeed);
+	int32 Queued = 0;
+	for (const FVector& Point : Points)
+	{
+		// No source object: never deduplicated, every point explodes.
+		Queued += Explosions->QueueExplosion(Point, Row, Grid, nullptr) ? 1 : 0;
+	}
+	UE_LOG(LogRogueRigs, Log, TEXT("Stress: chain queued %d %s explosions."), Queued, *Row.ToString());
+}
+
+void URRStressSubsystem::BuildDigQueue()
+{
+	DigQueue.Reset();
+	DigIndex = 0;
+	DigAccumulator = 0.f;
+	const ARRArenaGrid* Grid = RRWorld::FindArenaGrid(GetWorld());
+	const ARRMiner* Miner = RRWorld::FindLivingMiner(GetWorld());
+	if (!Grid || !Miner)
+	{
+		return;
+	}
+	const FVector Origin = Miner->GetActorLocation();
+	TArray<TPair<double, FIntPoint>> Blocks;
+	const FIntPoint Size = Grid->GetGridSize();
+	for (int32 Y = 0; Y < Size.Y; ++Y)
+	{
+		for (int32 X = 0; X < Size.X; ++X)
+		{
+			const FIntPoint Cell(X, Y);
+			if (Grid->IsBlockCell(Cell) && Grid->GetCellType(Cell) != ERRCellType::Barrel)
+			{
+				Blocks.Emplace(FVector::DistSquared2D(Grid->GetCellCenter(X, Y), Origin), Cell);
+			}
+		}
+	}
+	Blocks.Sort([](const TPair<double, FIntPoint>& A, const TPair<double, FIntPoint>& B) { return A.Key < B.Key; });
+	for (const TPair<double, FIntPoint>& Block : Blocks)
+	{
+		DigQueue.Add(Block.Value);
+	}
+}
+
+void URRStressSubsystem::TickDig(float DeltaSeconds)
+{
+	ARRArenaGrid* Grid = RRWorld::FindArenaGrid(GetWorld());
+	if (!Grid || Grid->GetCellSize() <= 0.f)
+	{
+		return;
+	}
+	const float AreaScale = FMath::Square(RRStress::CVarDigReferenceCellSize.GetValueOnGameThread() / Grid->GetCellSize());
+	DigAccumulator += DeltaSeconds * RRStress::CVarDigRate.GetValueOnGameThread() * AreaScale;
+	while (DigAccumulator >= 1.f && DigQueue.IsValidIndex(DigIndex))
+	{
+		Grid->DestroyCell(DigQueue[DigIndex++], ERRTerrainDamageSource::Drone);
+		DigAccumulator -= 1.f;
+	}
+}
+
+void URRStressSubsystem::SampleGridEvents(float FrameMs)
+{
+	// An event's cost lands in the frame that resolves it or the next one (tick order): keep the worst of the two frames after it.
+	if (PendingEventFrames > 0)
+	{
+		PendingEventMax = FMath::Max(PendingEventMax, FrameMs);
+		if (--PendingEventFrames == 0)
+		{
+			EventSamples.Add(PendingEventMax);
+		}
+	}
+	const int32 EventCounter = StepExplosions + StepBlocksDestroyed;
+	if (EventCounter != LastEventCounter)
+	{
+		LastEventCounter = EventCounter;
+		if (PendingEventFrames == 0)
+		{
+			PendingEventFrames = 2;
+			PendingEventMax = 0.f;
+		}
+	}
+	if (const URRFlowFieldSubsystem* Flow = GetWorld()->GetSubsystem<URRFlowFieldSubsystem>(); Flow && Flow->GetComputeCount() != LastFlowCount)
+	{
+		LastFlowCount = Flow->GetComputeCount();
+		FlowSamples.Add(Flow->GetLastComputeMilliseconds());
+	}
+}
+
 void URRStressSubsystem::StartRun(const TArray<int32>& Counts, float SettleSeconds, float MeasureSeconds, bool bQuit,
 	ERRStressMode Mode, TSubclassOf<ARREnemy> EnemyClass)
 {
@@ -495,6 +628,11 @@ void URRStressSubsystem::StartRun(const TArray<int32>& Counts, float SettleSecon
 	{
 		Explosions->OnExplosion.AddDynamic(this, &URRStressSubsystem::HandleExplosion);
 		bExplosionBound = true;
+	}
+	if (ARRArenaGrid* Grid = RRWorld::FindArenaGrid(GetWorld()); Grid && BoundGrid.Get() != Grid)
+	{
+		Grid->OnCellDestroyed.AddUniqueDynamic(this, &URRStressSubsystem::HandleCellDestroyed);
+		BoundGrid = Grid;
 	}
 	RunCounts = Counts;
 	RunSettleSeconds = FMath::Max(0.f, SettleSeconds);
@@ -530,8 +668,9 @@ void URRStressSubsystem::BeginStep(int32 InStepIndex)
 	{
 		SpawnStressEnemies(Missing, RunEnemyClass);
 	}
-	if (RunMode == ERRStressMode::Fire)
+	if (RunMode == ERRStressMode::Fire || RunMode == ERRStressMode::Chain || RunMode == ERRStressMode::Dig)
 	{
+		// Chain and dig: explosions must not change the robot count either.
 		MakeStressEnemiesTough();
 	}
 	StepBurstKills = 0;
@@ -571,12 +710,34 @@ void URRStressSubsystem::Tick(float DeltaTime)
 		// Insights timing region (with -trace=...,region): TimingInsights exports can filter with -region=Stress_<N>_Measure.
 		TRACE_BEGIN_REGION(*FString::Printf(TEXT("Stress_%d_Measure"), RunCounts[StepIndex]), TEXT("Stress"));
 		StepExplosions = 0;
+		StepBlocksDestroyed = 0;
+		LastEventCounter = 0;
+		PendingEventFrames = 0;
+		EventSamples.Reset();
+		FlowSamples.Reset();
+		if (const URRFlowFieldSubsystem* Flow = GetWorld()->GetSubsystem<URRFlowFieldSubsystem>())
+		{
+			LastFlowCount = Flow->GetComputeCount();
+		}
 		if (RunMode == ERRStressMode::Burst)
 		{
 			TriggerBurst();
 		}
+		else if (RunMode == ERRStressMode::Chain)
+		{
+			TriggerChain();
+		}
+		else if (RunMode == ERRStressMode::Dig)
+		{
+			BuildDigQueue();
+		}
 		return;
 	}
+	if (RunMode == ERRStressMode::Dig)
+	{
+		TickDig(static_cast<float>(RealDelta));
+	}
+	SampleGridEvents(static_cast<float>(RealDelta * 1000.0));
 	// stat unit raw values (FStatUnitData, refreshed each frame while stat unit is shown, which StartRun ensures).
 	const UGameViewportClient* Viewport = GetWorld()->GetGameViewport();
 	const FStatUnitData* Unit = Viewport ? Viewport->GetStatUnitData() : nullptr;
@@ -601,6 +762,14 @@ void URRStressSubsystem::FinishStep()
 	Result.BurstKills = StepBurstKills;
 	Result.BurstBarrels = StepBurstBarrels;
 	Result.Explosions = StepExplosions;
+	Result.BlocksDestroyed = StepBlocksDestroyed;
+	Result.EventFrames = EventSamples.Num();
+	Result.EventFrameMax = EventSamples.IsEmpty() ? 0.f : FMath::Max(EventSamples);
+	Result.FlowComputes = FlowSamples.Num();
+	Result.FlowMax = FlowSamples.IsEmpty() ? 0.f : FMath::Max(FlowSamples);
+	float UnusedP99 = 0.f;
+	RRStress::Summarize(EventSamples, Result.EventFrameAvg, UnusedP99);
+	RRStress::Summarize(FlowSamples, Result.FlowAvg, UnusedP99);
 	RRStress::Summarize(FrameSamples, Result.FrameAvg, Result.FrameP99);
 	RRStress::Summarize(GameSamples, Result.GameAvg, Result.GameP99);
 	RRStress::Summarize(DrawSamples, Result.DrawAvg, Result.DrawP99);
@@ -608,19 +777,21 @@ void URRStressSubsystem::FinishStep()
 	Results.Add(Result);
 	TRACE_END_REGION(*FString::Printf(TEXT("Stress_%d_Measure"), RunCounts[StepIndex]));
 	UE_LOG(LogRogueRigs, Display,
-		TEXT("Stress step: enemies %d, frames %d, frame avg %.2f p99 %.2f max %.2f, game avg %.2f p99 %.2f max %.2f, draw avg %.2f p99 %.2f, gpu avg %.2f p99 %.2f ms, burst kills %d barrels %d, explosions %d"),
+		TEXT("Stress step: enemies %d, frames %d, frame avg %.2f p99 %.2f max %.2f, game avg %.2f p99 %.2f max %.2f, draw avg %.2f p99 %.2f, gpu avg %.2f p99 %.2f ms, burst kills %d barrels %d, explosions %d, blocks %d, event frames %d avg %.2f max %.2f, flow computes %d avg %.3f max %.3f ms"),
 		Result.EnemyCount, Result.FrameCount, Result.FrameAvg, Result.FrameP99, Result.FrameMax, Result.GameAvg, Result.GameP99,
-		Result.GameMax, Result.DrawAvg, Result.DrawP99, Result.GpuAvg, Result.GpuP99, Result.BurstKills, Result.BurstBarrels, Result.Explosions);
+		Result.GameMax, Result.DrawAvg, Result.DrawP99, Result.GpuAvg, Result.GpuP99, Result.BurstKills, Result.BurstBarrels, Result.Explosions,
+		Result.BlocksDestroyed, Result.EventFrames, Result.EventFrameAvg, Result.EventFrameMax, Result.FlowComputes, Result.FlowAvg, Result.FlowMax);
 }
 
 void URRStressSubsystem::WriteResults() const
 {
-	FString Csv = TEXT("Enemies,Frames,FrameAvg,FrameP99,FrameMax,GameAvg,GameP99,GameMax,DrawAvg,DrawP99,GpuAvg,GpuP99,Kills,Barrels,Explosions\n");
+	FString Csv = TEXT("Enemies,Frames,FrameAvg,FrameP99,FrameMax,GameAvg,GameP99,GameMax,DrawAvg,DrawP99,GpuAvg,GpuP99,Kills,Barrels,Explosions,Blocks,EventFrames,EventAvg,EventMax,FlowComputes,FlowAvg,FlowMax\n");
 	for (const FRRStressStepResult& R : Results)
 	{
-		Csv += FString::Printf(TEXT("%d,%d,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%d,%d,%d\n"), R.EnemyCount, R.FrameCount, R.FrameAvg,
-			R.FrameP99, R.FrameMax, R.GameAvg, R.GameP99, R.GameMax, R.DrawAvg, R.DrawP99, R.GpuAvg, R.GpuP99, R.BurstKills, R.BurstBarrels,
-			R.Explosions);
+		Csv += FString::Printf(TEXT("%d,%d,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%d,%d,%d,%d,%d,%.3f,%.3f,%d,%.3f,%.3f\n"), R.EnemyCount,
+			R.FrameCount, R.FrameAvg, R.FrameP99, R.FrameMax, R.GameAvg, R.GameP99, R.GameMax, R.DrawAvg, R.DrawP99, R.GpuAvg, R.GpuP99,
+			R.BurstKills, R.BurstBarrels, R.Explosions, R.BlocksDestroyed, R.EventFrames, R.EventFrameAvg, R.EventFrameMax, R.FlowComputes,
+			R.FlowAvg, R.FlowMax);
 	}
 	const FString Path = FPaths::ProjectSavedDir() / TEXT("Stress") /
 		FString::Printf(TEXT("Stress_%s.csv"), *FDateTime::Now().ToString(TEXT("%Y%m%d_%H%M%S")));
