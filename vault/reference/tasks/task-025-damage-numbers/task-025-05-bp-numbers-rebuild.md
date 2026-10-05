@@ -3,7 +3,7 @@ id: task-025-05-bp-numbers-rebuild
 description: "Rebuild NS_DamageNumbers on the per-digit contract: infinite loop, spawn DigitCount particles when DigitBatchId changes, SubUV frame from DigitIndices."
 parent: task-025-damage-numbers
 kind: task
-status: in-progress
+status: done
 ---
 # Rebuild the damage number Niagara
 
@@ -15,11 +15,11 @@ status: in-progress
 - done_when: no Niagara warning in PIE; particle dump shows varied digits; docs updated; lint clean.
 - editor_state: open
 - token_ceiling: 110000
-- model: open
-- tokens: open
-- runs: open
+- model: sonnet
+- tokens: input 194, cache write 163247, cache read 9491673, output 65092
+- runs: 3
 - milestone: M2
-- result: open
+- result: NS_DamageNumbers rebuilt on the per-digit contract: 8 User.Digit* parameters, loop Infinite, spawn DigitCount when DigitBatchId changes (Emitter.LastBatchId), Particle Spawn reads arrays at Engine.ExecIndex (SubImageIndex = digit), fade/pop/crit flash from DNCritI and DNSize, old HLSL and number-level parameters removed. DamageNumbers tests 6/6 (one batch of 4 digits spawns exactly 4 particles), no Niagara or missing-parameter warning. Not verified: digit variety, long-run spawning (025-06). Stray NS_Orig.uasset deleted by the orchestrator. Commits b858e99, bec8c0f, dfa46c3.
 
 ## Relations
 - [[task-025-damage-numbers]] — parent global task.

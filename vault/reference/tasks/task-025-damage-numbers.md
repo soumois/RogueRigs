@@ -13,7 +13,7 @@ status: in-progress
 - gdd_check: Read [[damage-numbers]], [[color-code]], [[sys-damage]]. Merging window open → 0.25 s (provisional). Analysis in [[drgs-analysis]]. The owner launched all lots and delegated provisional values (2026-10-05); decisions written into the GDD before planning; the grid-size lot waits for the owner after the stress report.
 - confirmed_by_owner: yes (2026-10-05, all lots launched by the owner)
 - milestone: M2
-- next_step: task-025-05-bp-numbers-rebuild
+- next_step: task-025-06-numbers-visual-check
 - result: open
 
 ## Subtasks

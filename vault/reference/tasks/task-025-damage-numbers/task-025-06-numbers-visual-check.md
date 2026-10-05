@@ -3,7 +3,7 @@ id: task-025-06-numbers-visual-check
 description: "Screenshots in -game confirm multi-digit numbers, continuous display, crits larger white-gold; S2 perf on vs off."
 parent: task-025-damage-numbers
 kind: task
-status: todo
+status: in-progress
 ---
 # Damage numbers visual recheck
 
