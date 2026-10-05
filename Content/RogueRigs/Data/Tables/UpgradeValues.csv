@@ -54,3 +54,6 @@ Luck_Green,Luck,Green,2,1.5,AddBase
 Luck_Blue,Luck,Blue,3,1.5,AddBase
 Luck_Purple,Luck,Purple,4,1.5,AddBase
 Luck_Yellow,Luck,Yellow,5,1.5,AddBase
+Pierce_Blue,Pierce,Blue,1,1,AddBase
+Pierce_Purple,Pierce,Purple,2,1,AddBase
+Pierce_Yellow,Pierce,Yellow,3,1,AddBase

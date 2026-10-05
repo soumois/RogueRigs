@@ -1,4 +1,4 @@
-// Rogue Rigs - base projectile: flies straight, carries a damage spec, hurts the first hittable actor with an ASC, stops on rock.
+// Rogue Rigs - base projectile: flies straight, carries a damage spec, hurts up to MaxHits distinct hittable actors with an ASC (pierce), stops on rock.
 
 #pragma once
 
@@ -17,8 +17,9 @@ struct FHitResult;
  * Base projectile (sys-projectiles). No ASC: it carries the damage spec made by the weapon's ASC at fire time and
  * applies it on impact. Collision: a sphere on the Projectile object channel (RRCollisionChannels::Projectile)
  * that overlaps pawns and blocks world static and dynamic. On overlap with an actor that has an ASC, is not ignored
- * (owner, owner's owner, instigator) and passes CanHit (default: an instance of HitActorClass, any actor when unset), it
- * applies the spec once and is destroyed; other actors are passed through. On a blocking hit (rock blocks, walls) it is
+ * (owner, owner's owner, instigator), passes CanHit (default: an instance of HitActorClass, any actor when unset) and was
+ * not hit yet by this projectile, it applies the spec once to it; after MaxHits distinct actors (pierce, set by
+ * InitProjectile, default 1) it is destroyed; other actors are passed through. On a blocking hit (rock blocks, walls) it is
  * destroyed, after damaging the cell when bDamagesTerrain and it is a barrel of the arena grid (carried Damage, no GAS on
  * barrels). Straight flight, no gravity, no sub-stepping; speed and lifetime set by InitProjectile. Spawn with
  * SpawnProjectile (deferred spawn + InitProjectile + FinishSpawning; Owner = the firing actor, Instigator = its pawn).
@@ -35,18 +36,19 @@ public:
 	ARRProjectile(const FObjectInitializer& ObjectInitializer = FObjectInitializer::Get());
 
 	/**
-	 * Sets the carried damage spec, the speed (uu/s) and the lifetime (s, 0 = unlimited). Call between
+	 * Sets the carried damage spec, the speed (uu/s), the lifetime (s, 0 = unlimited) and the number of distinct actors it
+	 * damages before it is destroyed (InMaxHits, clamped to >= 1; the firing weapon's Pierce). Call between
 	 * SpawnActorDeferred and FinishSpawning; called after BeginPlay it sets the velocity and life span directly.
 	 */
-	void InitProjectile(const FGameplayEffectSpecHandle& InDamageSpec, float Speed, float Lifetime);
+	void InitProjectile(const FGameplayEffectSpecHandle& InDamageSpec, float Speed, float Lifetime, int32 InMaxHits = 1);
 
 	/**
 	 * Spawns one projectile of Class at SpawnTransform (deferred, always spawned), sets its damage spec, speed (uu/s) and
-	 * lifetime (s, 0 = unlimited) with InitProjectile, then finishes the spawn. InOwner and InInstigator are ignored by its
+	 * lifetime (s, 0 = unlimited) and MaxHits (distinct actors damaged, >= 1) with InitProjectile, then finishes the spawn. InOwner and InInstigator are ignored by its
 	 * collision. Returns null (logged) when World or Class is missing or the spawn failed.
 	 */
 	static ARRProjectile* SpawnProjectile(UWorld* World, TSubclassOf<ARRProjectile> Class, const FTransform& SpawnTransform,
-		AActor* InOwner, APawn* InInstigator, const FGameplayEffectSpecHandle& InDamageSpec, float Speed, float Lifetime);
+		AActor* InOwner, APawn* InInstigator, const FGameplayEffectSpecHandle& InDamageSpec, float Speed, float Lifetime, int32 MaxHits = 1);
 
 	/**
 	 * True when this projectile may hit OtherActor (checked on overlap after the ignored actors, before the ASC lookup).
@@ -56,6 +58,12 @@ public:
 
 	/** True when a blocking hit on a barrel cell applies the carried damage to it. */
 	bool DamagesTerrain() const { return bDamagesTerrain; }
+
+	/** Distinct actors this projectile damages before it is destroyed (>= 1). */
+	int32 GetMaxHits() const { return MaxHits; }
+
+	/** Distinct actors damaged so far. */
+	int32 GetHitCount() const { return HitActors.Num(); }
 
 	/** The collision sphere (root component). */
 	USphereComponent* GetCollisionSphere() const { return CollisionSphere; }
@@ -67,11 +75,14 @@ protected:
 	/** Binds the overlap and stop events and ignores the owner weapon and the instigator while moving. */
 	virtual void PostInitializeComponents() override;
 
-	/** Pawn overlap: applies the spec once to a hittable actor with an ASC (ignored actors and CanHit false excluded), then destroys this projectile. */
+	/**
+	 * Pawn overlap: applies the spec once to a hittable actor with an ASC (ignored actors, CanHit false and actors already hit
+	 * excluded); destroys this projectile once MaxHits distinct actors were hit.
+	 */
 	UFUNCTION()
 	void OnSphereBeginOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult);
 
-	/** Blocking hit (rock, wall): when bDamagesTerrain, applies the carried damage to a barrel of the arena grid (ARRArenaGrid::ApplyShotDamage); then destroys this projectile. */
+	/** Blocking hit (rock, wall): when bDamagesTerrain, applies the carried damage once to a barrel of the arena grid (ARRArenaGrid::ApplyShotDamage); then destroys this projectile. */
 	UFUNCTION()
 	void OnProjectileStop(const FHitResult& ImpactResult);
 
@@ -103,6 +114,12 @@ protected:
 	/** Damage spec made by the weapon's ASC at fire time; applied on impact (the target ASC works on its own copy). */
 	FGameplayEffectSpecHandle DamageSpec;
 
-	/** True once the spec has been applied; guards against a second application before destruction. */
-	bool bHasHit = false;
+	/** Distinct actors this projectile damages before it is destroyed (pierce; >= 1). Set by InitProjectile. */
+	int32 MaxHits = 1;
+
+	/** Actors already damaged by this projectile: a pierced robot is never hit twice by the same bullet. */
+	TSet<TWeakObjectPtr<AActor>> HitActors;
+
+	/** True once the projectile is spent (MaxHits reached or stopped); guards against any application before destruction. */
+	bool bSpent = false;
 };

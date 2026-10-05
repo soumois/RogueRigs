@@ -10,7 +10,8 @@
 /**
  * One row of Content/RogueRigs/Data/Tables/UpgradeValues.csv, one row per (stat, tier); row name <Stat>_<Tier> (e.g.
  * Damage_Blue). GlobalValue is the value of a player-stat card or an all-weapons card; a one-weapon card gives
- * GlobalValue x TargetedMultiplier (unused for player stats). A stat is offered only when it has a row for every tier.
+ * GlobalValue x TargetedMultiplier (unused for player stats). A stat is offered at the tiers it has rows
+ * for (Pierce: blue, purple, yellow only).
  * Read once by URRUpgradeComponent.
  */
 USTRUCT(BlueprintType)

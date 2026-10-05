@@ -65,14 +65,6 @@ void URRUpgradeComponent::LoadTables()
 			}
 			ByTier[Rank] = *Row;
 		}
-		for (const TPair<ERRUpgradeStat, TArray<TOptional<FRRUpgradeValueRow>>>& Pair : ValueRows)
-		{
-			if (Pair.Value.ContainsByPredicate([](const TOptional<FRRUpgradeValueRow>& Row) { return !Row.IsSet(); }))
-			{
-				UE_LOG(LogRogueRigs, Warning, TEXT("URRUpgradeComponent: stat %s misses a tier in %s; it is not offered."),
-					*UEnum::GetValueAsString(Pair.Key), UpgradeValuesPath);
-			}
-		}
 	}
 
 	if (const UDataTable* Rarities = FRRBaseStatsLoader::GetCachedTable(UpgradeRaritiesPath, FRRUpgradeRarityRow::StaticStruct()))
@@ -95,7 +87,7 @@ void URRUpgradeComponent::LoadTables()
 
 bool URRUpgradeComponent::IsWeaponStat(ERRUpgradeStat Stat)
 {
-	return Stat <= ERRUpgradeStat::MagazineSize;
+	return Stat <= ERRUpgradeStat::MagazineSize || Stat == ERRUpgradeStat::Pierce;
 }
 
 FGameplayAttribute URRUpgradeComponent::GetStatAttribute(ERRUpgradeStat Stat)
@@ -114,6 +106,7 @@ FGameplayAttribute URRUpgradeComponent::GetStatAttribute(ERRUpgradeStat Stat)
 	case ERRUpgradeStat::XPGain:       return URRPlayerAttributeSet::GetXPGainAttribute();
 	case ERRUpgradeStat::MiningSpeed:  return URRPlayerAttributeSet::GetMiningSpeedAttribute();
 	case ERRUpgradeStat::Luck:         return URRPlayerAttributeSet::GetLuckAttribute();
+	case ERRUpgradeStat::Pierce:       return URRWeaponAttributeSet::GetPierceAttribute();
 	}
 	return FGameplayAttribute();
 }
@@ -134,13 +127,15 @@ FText URRUpgradeComponent::GetStatDisplayName(ERRUpgradeStat Stat)
 	case ERRUpgradeStat::XPGain:       return LOCTEXT("Stat_XPGain", "Gain d'XP");
 	case ERRUpgradeStat::MiningSpeed:  return LOCTEXT("Stat_MiningSpeed", "Vitesse de minage");
 	case ERRUpgradeStat::Luck:         return LOCTEXT("Stat_Luck", "Chance");
+	case ERRUpgradeStat::Pierce:       return LOCTEXT("Stat_Pierce", "Perforation");
 	}
 	return FText::GetEmpty();
 }
 
 FText URRUpgradeComponent::FormatValueText(ERRUpgradeStat Stat, float Value)
 {
-	const bool bFlat = Stat == ERRUpgradeStat::MaxHealth || Stat == ERRUpgradeStat::Luck || Stat == ERRUpgradeStat::MagazineSize;
+	const bool bFlat = Stat == ERRUpgradeStat::MaxHealth || Stat == ERRUpgradeStat::Luck || Stat == ERRUpgradeStat::MagazineSize
+		|| Stat == ERRUpgradeStat::Pierce;
 	const double Shown = bFlat ? Value : Value * 100.0;
 
 	// One decimal at most, French decimal comma, no trailing ",0".
@@ -269,7 +264,8 @@ TArray<URRUpgradeComponent::FChoice> URRUpgradeComponent::GatherChoices(const TA
 	for (const TPair<ERRUpgradeStat, TArray<TOptional<FRRUpgradeValueRow>>>& Pair : ValueRows)
 	{
 		const ERRUpgradeStat Stat = Pair.Key;
-		if (Pair.Value.ContainsByPredicate([](const TOptional<FRRUpgradeValueRow>& Row) { return !Row.IsSet(); }))
+		// A stat with rows at some tiers only (Pierce) is offered; a drawn tier without a row drops the choice (DrawCards).
+		if (!Pair.Value.ContainsByPredicate([](const TOptional<FRRUpgradeValueRow>& Row) { return Row.IsSet(); }))
 		{
 			continue;
 		}
@@ -341,6 +337,7 @@ TArray<FRRUpgradeCard> URRUpgradeComponent::DrawCards(TArray<FChoice> Choices, i
 		const FChoice Choice = Choices[Picked];
 		Choices.RemoveAt(Picked);
 
+		// MakeCard fails when the stat has no row at the drawn tier (Pierce below blue): the choice is dropped for this offer.
 		FRRUpgradeCard Card;
 		if (MakeCard(Choice.Stat, DrawTier(Luck), Choice.Target, Choice.Weapon, Card))
 		{

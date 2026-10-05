@@ -111,6 +111,7 @@ void ARRWeapon::ApplyStatsRow(const FRRWeaponStatsRow& Row)
 	AbilitySystemComponent->SetNumericAttributeBase(URRWeaponAttributeSet::GetCritChanceAttribute(), Row.CritChance);
 	AbilitySystemComponent->SetNumericAttributeBase(URRWeaponAttributeSet::GetCritDamageAttribute(), Row.CritDamage);
 	AbilitySystemComponent->SetNumericAttributeBase(URRWeaponAttributeSet::GetMagazineSizeAttribute(), Row.MagazineSize);
+	AbilitySystemComponent->SetNumericAttributeBase(URRWeaponAttributeSet::GetPierceAttribute(), Row.Pierce);
 
 	BurstCount = FMath::Max(Row.BurstCount, 1);
 	BurstDuty = Row.BurstDuty;
@@ -196,7 +197,14 @@ void ARRWeapon::FireOnce()
 	const FTransform SpawnTransform(ShotRotation, GetShotOrigin());
 
 	APawn* InstigatorPawn = OwnerMiner ? static_cast<APawn*>(OwnerMiner) : GetInstigator();
-	ARRProjectile::SpawnProjectile(World, ProjectileClass, SpawnTransform, this, InstigatorPawn, Spec, ProjectileSpeed, Range / ProjectileSpeed);
+	ARRProjectile::SpawnProjectile(World, ProjectileClass, SpawnTransform, this, InstigatorPawn, Spec, ProjectileSpeed, Range / ProjectileSpeed, GetPierceCount());
+}
+
+int32 ARRWeapon::GetPierceCount() const
+{
+	const float Pierce = AbilitySystemComponent ? AbilitySystemComponent->GetNumericAttribute(URRWeaponAttributeSet::GetPierceAttribute()) : 0.f;
+	// Small tolerance so 3.9999 from stacked modifiers still counts as 4.
+	return FMath::Max(FMath::FloorToInt32(Pierce + KINDA_SMALL_NUMBER), 1);
 }
 
 void ARRWeapon::EndPlay(const EEndPlayReason::Type EndPlayReason)

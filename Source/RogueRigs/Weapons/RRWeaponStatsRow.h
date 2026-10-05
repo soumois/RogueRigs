@@ -9,7 +9,7 @@
 /**
  * One row of Content/RogueRigs/Data/Tables/WeaponStats.csv, one row per weapon (row name = weapon id,
  * e.g. BurstRifle). Column names match the property names. Damage, FireRate, ReloadSpeed, CritChance,
- * CritDamage and MagazineSize become base values of URRWeaponAttributeSet (Ammo starts at MagazineSize);
+ * CritDamage, MagazineSize and Pierce become base values of URRWeaponAttributeSet (Ammo starts at MagazineSize);
  * the other columns are constants copied onto the weapon actor (ARRWeapon) because nothing changes them during a run.
  */
 USTRUCT(BlueprintType)
@@ -44,6 +44,10 @@ struct ROGUERIGS_API FRRWeaponStatsRow : public FTableRowBase
 	/** Base MagazineSize in bullets (attribute); Ammo starts full. */
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Weapon Stats")
 	float MagazineSize = 0.f;
+
+	/** Base Pierce: distinct robots one projectile damages before it is destroyed (attribute; 0 for weapons without projectiles hits at least 1). */
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Weapon Stats")
+	float Pierce = 0.f;
 
 	/** Base reload duration in seconds (constant); actual duration = ReloadTime / ReloadSpeed. */
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Weapon Stats")

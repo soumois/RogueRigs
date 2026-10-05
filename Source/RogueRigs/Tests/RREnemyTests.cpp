@@ -239,6 +239,8 @@ bool FRREnemyDeathTest::RunTest(const FString& Parameters)
 	}
 	Rifle->GetAutoFireComponent()->StopFiring();
 	Rifle->GetAbilitySystemComponent()->SetNumericAttributeBase(URRWeaponAttributeSet::GetCritChanceAttribute(), 0.f);
+	// Pierce 1: each shot must end on the chaser so the death-to-destroy frames are counted from the killing hit.
+	Rifle->GetAbilitySystemComponent()->SetNumericAttributeBase(URRWeaponAttributeSet::GetPierceAttribute(), 1.f);
 
 	ARRChaser* Chaser = SpawnChaser(*this, TestWorld, Grid->GetCellCenter(TargetCell.X, TargetCell.Y));
 	if (!Chaser)

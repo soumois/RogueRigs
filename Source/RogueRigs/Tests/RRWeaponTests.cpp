@@ -1,4 +1,4 @@
-// Rogue Rigs - automation tests of the weapon rules (RogueRigs.Weapons.*): burst timing, magazine and reload, projectile stop on rock, GAS damage and crits on the target dummy, dummy refill, miner starting weapon and shot origin, miner moving while firing, miner shots hitting a floor dummy, projectile hit filter.
+// Rogue Rigs - automation tests of the weapon rules (RogueRigs.Weapons.*): burst timing, magazine and reload, projectile stop on rock, GAS damage and crits on the target dummy, dummy refill, miner starting weapon and shot origin, miner moving while firing, miner shots hitting a floor dummy, projectile hit filter, pierce (robots per bullet, rock stop, no double hit, piercing upgrade).
 
 #include "CoreMinimal.h"
 #include "Misc/AutomationTest.h"
@@ -10,6 +10,7 @@
 #include "Components/SkeletalMeshComponent.h"
 #include "GameFramework/CharacterMovementComponent.h"
 #include "Damage/RRGE_Damage.h"
+#include "Enemies/RRChaser.h"
 #include "Debug/RRTargetDummy.h"
 #include "EngineUtils.h"
 #include "GameFramework/ProjectileMovementComponent.h"
@@ -20,6 +21,9 @@
 #include "Tests/RRTestEventRecorder.h"
 #include "Tests/RRTestAccess.h"
 #include "Tests/RRTestHarness.h"
+#include "Tests/RRTestPickupXP.h"
+#include "Upgrades/RRUpgradeCard.h"
+#include "Upgrades/RRUpgradeComponent.h"
 #include "UObject/StrongObjectPtr.h"
 #include "Weapons/RRAutoFireComponent.h"
 #include "Weapons/RRWeapon.h"
@@ -516,6 +520,9 @@ bool FRRWeaponProjectileDamageTest::RunTest(const FString& Parameters)
 	TestNearlyEqual(TEXT("rifle Damage 10"), RifleASC->GetNumericAttribute(URRWeaponAttributeSet::GetDamageAttribute()), 10.f);
 	TestNearlyEqual(TEXT("rifle CritDamage 1.5"), RifleASC->GetNumericAttribute(URRWeaponAttributeSet::GetCritDamageAttribute()), 1.5f);
 
+	// Pierce 1: these checks are about one bullet ending on the dummy (pierce: PierceFourRobots).
+	RifleASC->SetNumericAttributeBase(URRWeaponAttributeSet::GetPierceAttribute(), 1.f);
+
 	// Normal hit: CritChance forced to 0 so the CSV's 5 % cannot roll a crit.
 	RifleASC->SetNumericAttributeBase(URRWeaponAttributeSet::GetCritChanceAttribute(), 0.f);
 	FVector LastLocation;
@@ -986,6 +993,8 @@ bool FRRWeaponProjectileHitFilterTest::RunTest(const FString& Parameters)
 	}
 	Rifle->GetAutoFireComponent()->StopFiring();
 	Rifle->GetAbilitySystemComponent()->SetNumericAttributeBase(URRWeaponAttributeSet::GetCritChanceAttribute(), 0.f);
+	// Pierce 1: the matching shot must end on the dummy (pierce: PierceFourRobots).
+	Rifle->GetAbilitySystemComponent()->SetNumericAttributeBase(URRWeaponAttributeSet::GetPierceAttribute(), 1.f);
 	PlaceMuzzleAt(Rifle, Grid->GetCellCenter(DummyShooterCell.X, DummyShooterCell.Y) + FVector(0.f, 0.f, 0.5f * Grid->GetBlockHeight()));
 
 	int32 HitCount = 0;
@@ -1027,6 +1036,347 @@ bool FRRWeaponProjectileHitFilterTest::RunTest(const FString& Parameters)
 	TestNearlyEqual(TEXT("Health lowered by 10"), DummyHealth(Dummy), MaxHealth - 10.f);
 
 	HealthSet->OnDamageReceived.Remove(HitHandle);
+	return true;
+}
+
+namespace RRWeaponTests
+{
+	/** Pierce tests: open floor row 42 of arena_m1 from x 32 to 39; the rifle fires +X from (32, 42), robots stand on (34..38, 42). */
+	const FIntPoint PierceShooterCell(32, 42);
+	constexpr int32 PierceFirstRobotX = 34;
+
+	/** Rock pierce test: the rifle fires -X from (36, 40) past robots on (36, 40) and (35, 40) into rock (34, 40); floor (33, 40) behind it. */
+	const FIntPoint PierceRockShooterCell(36, 40);
+	const FIntPoint PierceRockCell(34, 40);
+	const FIntPoint PierceBehindRockCell(33, 40);
+
+	/** Spawns a native ARRChaser with its feet on the floor at FloorLocation, ticking off (it neither moves nor attacks); XP drop ARRTestPickupXP. */
+	ARRChaser* SpawnFrozenChaser(FAutomationTestBase& Test, const FTestWorld& TestWorld, const FVector& FloorLocation)
+	{
+		const float HalfHeight = GetDefault<ARRChaser>()->GetCapsuleComponent()->GetScaledCapsuleHalfHeight();
+		const FTransform SpawnTransform(FloorLocation + FVector(0.f, 0.f, HalfHeight + 2.f));
+		ARRChaser* Chaser = TestWorld.Get()->SpawnActorDeferred<ARRChaser>(ARRChaser::StaticClass(), SpawnTransform, nullptr, nullptr,
+			ESpawnActorCollisionHandlingMethod::AlwaysSpawn);
+		if (!Test.TestNotNull(TEXT("chaser spawned"), Chaser))
+		{
+			return nullptr;
+		}
+		FEnemyAccess::XPPickupClassOf(Chaser) = ARRTestPickupXP::StaticClass();
+		Chaser->FinishSpawning(SpawnTransform);
+		Chaser->SetActorTickEnabled(false);
+		Chaser->GetCharacterMovement()->SetComponentTickEnabled(false);
+		return Chaser;
+	}
+
+	/** Current Health of a robot. */
+	float RobotHealth(const ARREnemy* Enemy)
+	{
+		return Enemy->GetAbilitySystemComponent()->GetNumericAttribute(URRHealthAttributeSet::GetHealthAttribute());
+	}
+
+	/**
+	 * Spawns the grid and BP_BurstRifle (no miner, firing stopped, CritChance 0), turns it to Yaw and puts its muzzle at half
+	 * block height above Floor (a floor-top point). Returns null if the setup failed.
+	 */
+	ARRWeapon* SpawnPierceRifle(FAutomationTestBase& Test, const FTestWorld& TestWorld, ARRArenaGrid*& OutGrid, const FVector& Floor, float Yaw)
+	{
+		OutGrid = SpawnGrid(Test, TestWorld);
+		ARRWeapon* Rifle = OutGrid ? SpawnRifle(Test, TestWorld, FVector::ZeroVector) : nullptr;
+		if (!Rifle)
+		{
+			return nullptr;
+		}
+		Rifle->GetAutoFireComponent()->StopFiring();
+		Rifle->GetAbilitySystemComponent()->SetNumericAttributeBase(URRWeaponAttributeSet::GetCritChanceAttribute(), 0.f);
+		Rifle->SetActorRotation(FRotator(0.f, Yaw, 0.f), ETeleportType::TeleportPhysics);
+		PlaceMuzzleAt(Rifle, Floor + FVector(0.f, 0.f, 0.5f * OutGrid->GetBlockHeight()));
+		return Rifle;
+	}
+}
+
+IMPLEMENT_SIMPLE_AUTOMATION_TEST(FRRWeaponPierceFourRobotsTest, "RogueRigs.Weapons.PierceFourRobots",
+	EAutomationTestFlags::EditorContext | EAutomationTestFlags::EngineFilter)
+
+bool FRRWeaponPierceFourRobotsTest::RunTest(const FString& Parameters)
+{
+	FTestWorld TestWorld(TEXT("RRWeaponPierceWorld"));
+	ARRArenaGrid* Grid = nullptr;
+	ARRWeapon* Rifle = SpawnPierceRifle(*this, TestWorld, Grid, FVector::ZeroVector, 0.f);
+	if (!Rifle)
+	{
+		return false;
+	}
+	PlaceMuzzleAt(Rifle, Grid->GetCellCenter(PierceShooterCell.X, PierceShooterCell.Y) + FVector(0.f, 0.f, 0.5f * Grid->GetBlockHeight()));
+	for (int32 X = PierceShooterCell.X; X <= PierceFirstRobotX + 5; ++X)
+	{
+		TestFalse(FString::Printf(TEXT("(%d, %d) is open floor"), X, PierceShooterCell.Y), Grid->IsBlockCell(FIntPoint(X, PierceShooterCell.Y)));
+	}
+
+	// CSV base: the rifle pierces 4 robots.
+	TestNearlyEqual(TEXT("rifle Pierce 4 (WeaponStats.csv)"), WeaponAttribute(Rifle, URRWeaponAttributeSet::GetPierceAttribute()), 4.f);
+	TestEqual(TEXT("rifle pierce count 4"), Rifle->GetPierceCount(), 4);
+
+	// Five robots in a line, 200 uu apart, all within range.
+	TArray<ARRChaser*> Robots;
+	for (int32 Index = 0; Index < 5; ++Index)
+	{
+		ARRChaser* Robot = SpawnFrozenChaser(*this, TestWorld, Grid->GetCellCenter(PierceFirstRobotX + Index, PierceShooterCell.Y));
+		if (!Robot)
+		{
+			return false;
+		}
+		Robots.Add(Robot);
+	}
+	const float StartHealth = RobotHealth(Robots[0]);
+	TestNearlyEqual(TEXT("chaser starts at 30"), StartHealth, 30.f);
+
+	// One bullet: the first 4 robots take 10 each, the 5th is untouched and the bullet is gone.
+	ARRProjectile* Shot = FireSingleShot(*this, Rifle);
+	if (!Shot)
+	{
+		return false;
+	}
+	TestEqual(TEXT("bullet carries 4 hits"), Shot->GetMaxHits(), 4);
+	FVector LastLocation;
+	const int32 Frame = TickUntilDestroyed(TestWorld, Shot, 40, LastLocation);
+	AddInfo(FString::Printf(TEXT("pierce 4: bullet destroyed at frame %d near %s; health %.0f %.0f %.0f %.0f %.0f"), Frame, *LastLocation.ToCompactString(),
+		RobotHealth(Robots[0]), RobotHealth(Robots[1]), RobotHealth(Robots[2]), RobotHealth(Robots[3]), RobotHealth(Robots[4])));
+	TestTrue(TEXT("bullet destroyed on the 4th robot"), Frame != INDEX_NONE);
+	TestTrue(TEXT("bullet destroyed before the 5th robot"), LastLocation.X < Robots[4]->GetActorLocation().X);
+	for (int32 Index = 0; Index < 4; ++Index)
+	{
+		TestNearlyEqual(FString::Printf(TEXT("robot %d hit once (30 -> 20)"), Index + 1), RobotHealth(Robots[Index]), StartHealth - 10.f);
+	}
+	TestNearlyEqual(TEXT("robot 5 untouched"), RobotHealth(Robots[4]), StartHealth);
+
+	// Pierce is read at fire time: one more point and the next bullet reaches the 5th robot.
+	Rifle->GetAbilitySystemComponent()->SetNumericAttributeBase(URRWeaponAttributeSet::GetPierceAttribute(), 5.f);
+	ARRProjectile* Second = FireSingleShot(*this, Rifle);
+	if (!Second)
+	{
+		return false;
+	}
+	TestEqual(TEXT("second bullet carries 5 hits"), Second->GetMaxHits(), 5);
+	TestTrue(TEXT("second bullet destroyed on the 5th robot"), TickUntilDestroyed(TestWorld, Second, 40, LastLocation) != INDEX_NONE);
+	for (int32 Index = 0; Index < 4; ++Index)
+	{
+		TestNearlyEqual(FString::Printf(TEXT("robot %d hit twice in total"), Index + 1), RobotHealth(Robots[Index]), StartHealth - 20.f);
+	}
+	TestNearlyEqual(TEXT("robot 5 hit once"), RobotHealth(Robots[4]), StartHealth - 10.f);
+
+	// A weapon without pierce still hits one robot.
+	Rifle->GetAbilitySystemComponent()->SetNumericAttributeBase(URRWeaponAttributeSet::GetPierceAttribute(), 0.f);
+	TestEqual(TEXT("Pierce 0 still hits one robot"), Rifle->GetPierceCount(), 1);
+	return true;
+}
+
+IMPLEMENT_SIMPLE_AUTOMATION_TEST(FRRWeaponPierceStopsOnRockTest, "RogueRigs.Weapons.PierceStopsOnRock",
+	EAutomationTestFlags::EditorContext | EAutomationTestFlags::EngineFilter)
+
+bool FRRWeaponPierceStopsOnRockTest::RunTest(const FString& Parameters)
+{
+	FTestWorld TestWorld(TEXT("RRWeaponPierceRockWorld"));
+	ARRArenaGrid* Grid = nullptr;
+	ARRWeapon* Rifle = SpawnPierceRifle(*this, TestWorld, Grid, FVector::ZeroVector, 180.f);
+	if (!Rifle)
+	{
+		return false;
+	}
+	const FVector ShooterFloor = Grid->GetCellCenter(PierceRockShooterCell.X, PierceRockShooterCell.Y);
+	PlaceMuzzleAt(Rifle, ShooterFloor + FVector(60.f, 0.f, 0.5f * Grid->GetBlockHeight()));
+
+	TestFalse(TEXT("(36, 40) is open floor"), Grid->IsBlockCell(PierceRockShooterCell));
+	TestFalse(TEXT("(35, 40) is open floor"), Grid->IsBlockCell(FIntPoint(35, 40)));
+	TestTrue(TEXT("(34, 40) is a block"), Grid->IsBlockCell(PierceRockCell));
+	TestFalse(TEXT("(33, 40) is open floor"), Grid->IsBlockCell(PierceBehindRockCell));
+
+	ARRChaser* Near = SpawnFrozenChaser(*this, TestWorld, ShooterFloor - FVector(60.f, 0.f, 0.f));
+	ARRChaser* Far = SpawnFrozenChaser(*this, TestWorld, Grid->GetCellCenter(35, 40));
+	ARRChaser* Behind = SpawnFrozenChaser(*this, TestWorld, Grid->GetCellCenter(PierceBehindRockCell.X, PierceBehindRockCell.Y));
+	if (!Near || !Far || !Behind)
+	{
+		return false;
+	}
+	const float StartHealth = RobotHealth(Near);
+
+	ARRProjectile* Shot = FireSingleShot(*this, Rifle);
+	if (!Shot)
+	{
+		return false;
+	}
+	TestEqual(TEXT("bullet carries 4 hits"), Shot->GetMaxHits(), 4);
+	FVector LastLocation;
+	const int32 Frame = TickUntilDestroyed(TestWorld, Shot, 40, LastLocation);
+	AddInfo(FString::Printf(TEXT("rock: bullet destroyed at frame %d near %s"), Frame, *LastLocation.ToCompactString()));
+	TestTrue(TEXT("bullet stopped"), Frame != INDEX_NONE);
+	const float RockEastFace = Grid->GetCellCenter(PierceRockCell.X, PierceRockCell.Y).X + 100.f;
+	TestTrue(TEXT("bullet stopped at the rock, not beyond"), LastLocation.X >= RockEastFace - 60.f);
+	TestNearlyEqual(TEXT("near robot hit"), RobotHealth(Near), StartHealth - 10.f);
+	TestNearlyEqual(TEXT("far robot hit"), RobotHealth(Far), StartHealth - 10.f);
+	TestNearlyEqual(TEXT("robot behind the rock untouched"), RobotHealth(Behind), StartHealth);
+	return true;
+}
+
+IMPLEMENT_SIMPLE_AUTOMATION_TEST(FRRWeaponPierceNoDoubleHitTest, "RogueRigs.Weapons.PierceNoDoubleHit",
+	EAutomationTestFlags::EditorContext | EAutomationTestFlags::EngineFilter)
+
+bool FRRWeaponPierceNoDoubleHitTest::RunTest(const FString& Parameters)
+{
+	FTestWorld TestWorld(TEXT("RRWeaponPierceTwiceWorld"));
+	ARRArenaGrid* Grid = nullptr;
+	ARRWeapon* Rifle = SpawnPierceRifle(*this, TestWorld, Grid, FVector::ZeroVector, 0.f);
+	if (!Rifle)
+	{
+		return false;
+	}
+	PlaceMuzzleAt(Rifle, Grid->GetCellCenter(PierceShooterCell.X, PierceShooterCell.Y) + FVector(0.f, 0.f, 0.5f * Grid->GetBlockHeight()));
+	ARRChaser* First = SpawnFrozenChaser(*this, TestWorld, Grid->GetCellCenter(PierceFirstRobotX, PierceShooterCell.Y));
+	ARRChaser* Second = SpawnFrozenChaser(*this, TestWorld, Grid->GetCellCenter(PierceFirstRobotX + 4, PierceShooterCell.Y));
+	if (!First || !Second)
+	{
+		return false;
+	}
+	const float StartHealth = RobotHealth(First);
+
+	ARRProjectile* Shot = FireSingleShot(*this, Rifle);
+	if (!Shot)
+	{
+		return false;
+	}
+	TWeakObjectPtr<ARRProjectile> WeakShot(Shot);
+
+	// Tick until the first robot is hit.
+	int32 HitFrame = INDEX_NONE;
+	for (int32 Frame = 1; Frame <= 20 && HitFrame == INDEX_NONE; ++Frame)
+	{
+		TestWorld.Tick();
+		if (RobotHealth(First) < StartHealth)
+		{
+			HitFrame = Frame;
+		}
+	}
+	if (!TestTrue(TEXT("first robot hit"), HitFrame != INDEX_NONE) || !TestTrue(TEXT("bullet still flying after the first robot"), WeakShot.IsValid()))
+	{
+		return false;
+	}
+	TestEqual(TEXT("one hit counted"), WeakShot->GetHitCount(), 1);
+
+	// The pierced robot jumps ahead of the bullet: the same bullet passes through it again without hurting it.
+	const FVector FirstLocation = First->GetActorLocation();
+	First->SetActorLocation(FVector(WeakShot->GetActorLocation().X + 250.f, FirstLocation.Y, FirstLocation.Z), /*bSweep*/ false, nullptr, ETeleportType::TeleportPhysics);
+	bool bPassedFirstAgain = false;
+	for (int32 Frame = 0; Frame < 40 && WeakShot.IsValid(); ++Frame)
+	{
+		TestWorld.Tick();
+		if (WeakShot.IsValid() && WeakShot->GetActorLocation().X > First->GetActorLocation().X + 50.f)
+		{
+			bPassedFirstAgain = true;
+		}
+		if (RobotHealth(Second) < StartHealth)
+		{
+			break;
+		}
+	}
+	AddInfo(FString::Printf(TEXT("first hit at frame %d; first robot moved to x %.0f"), HitFrame, First->GetActorLocation().X));
+	TestTrue(TEXT("bullet flew through the moved robot"), bPassedFirstAgain);
+	TestNearlyEqual(TEXT("pierced robot hit only once"), RobotHealth(First), StartHealth - 10.f);
+	TestNearlyEqual(TEXT("next robot hit"), RobotHealth(Second), StartHealth - 10.f);
+	if (WeakShot.IsValid())
+	{
+		TestEqual(TEXT("two distinct hits counted"), WeakShot->GetHitCount(), 2);
+		WeakShot->Destroy();
+	}
+	return true;
+}
+
+IMPLEMENT_SIMPLE_AUTOMATION_TEST(FRRWeaponPierceUpgradeTest, "RogueRigs.Weapons.PierceUpgrade",
+	EAutomationTestFlags::EditorContext | EAutomationTestFlags::EngineFilter)
+
+bool FRRWeaponPierceUpgradeTest::RunTest(const FString& Parameters)
+{
+	FTestWorld TestWorld(TEXT("RRWeaponPierceUpgradeWorld"));
+	ARRArenaGrid* Grid = SpawnGrid(*this, TestWorld);
+	ARRMiner* Miner = Grid ? SpawnMiner(*this, TestWorld, Grid, DummyShooterCell, KeepRifleOnly) : nullptr;
+	ARRWeapon* Rifle = Miner ? FindRifle(Miner) : nullptr;
+	URRUpgradeComponent* Upgrades = Miner ? Miner->GetUpgrades() : nullptr;
+	if (!TestNotNull(TEXT("miner rifle"), Rifle) || !TestNotNull(TEXT("upgrade component"), Upgrades))
+	{
+		return false;
+	}
+	Rifle->GetAutoFireComponent()->StopFiring();
+	Upgrades->SetRandomSeed(20261005);
+
+	// Value rows: blue +1, purple +2, yellow +3 points, the same on one weapon (whole robots); none for grey or green.
+	const float Expected[] = { 0.f, 0.f, 1.f, 2.f, 3.f };
+	for (int32 Rank = 0; Rank < URRUpgradeComponent::TierCount; ++Rank)
+	{
+		const ERRUpgradeRarity Tier = static_cast<ERRUpgradeRarity>(Rank);
+		const FString Label = UEnum::GetValueAsString(Tier);
+		float Global = -1.f;
+		float Targeted = -1.f;
+		const bool bHasRow = Upgrades->GetUpgradeValue(ERRUpgradeStat::Pierce, Tier, false, Global);
+		Upgrades->GetUpgradeValue(ERRUpgradeStat::Pierce, Tier, true, Targeted);
+		FRRUpgradeCard Card;
+		const bool bCard = Upgrades->MakeCard(ERRUpgradeStat::Pierce, Tier, ERRUpgradeTarget::AllWeapons, nullptr, Card);
+		if (Rank < 2)
+		{
+			TestFalse(Label + TEXT(": no piercing row"), bHasRow);
+			TestFalse(Label + TEXT(": no piercing card"), bCard);
+			continue;
+		}
+		TestTrue(Label + TEXT(": piercing row"), bHasRow);
+		TestNearlyEqual(Label + TEXT(": global value"), Global, Expected[Rank]);
+		TestNearlyEqual(Label + TEXT(": targeted value"), Targeted, Expected[Rank]);
+		TestTrue(Label + TEXT(": card"), bCard);
+		TestEqual(Label + TEXT(": card name"), Card.DisplayName.ToString(), FString(TEXT("Perforation")));
+		TestEqual(Label + TEXT(": card value text"), Card.ValueText.ToString(), FString::Printf(TEXT("+%d"), FMath::RoundToInt32(Expected[Rank])));
+		TestTrue(Label + TEXT(": weapon stat"), URRUpgradeComponent::IsWeaponStat(Card.Stat));
+	}
+	FRRUpgradeCard PlayerPierce;
+	TestFalse(TEXT("piercing cannot target the player"), Upgrades->MakeCard(ERRUpgradeStat::Pierce, ERRUpgradeRarity::Blue, ERRUpgradeTarget::Player, nullptr, PlayerPierce));
+
+	// Offers: piercing cards appear, never grey or green.
+	int32 PierceCards = 0;
+	int32 LowTierPierce = 0;
+	int32 ShortOffers = 0;
+	for (int32 Offer = 0; Offer < 400; ++Offer)
+	{
+		const TArray<FRRUpgradeCard> Cards = Upgrades->BuildOffer(3, static_cast<float>(Offer % 11));
+		ShortOffers += Cards.Num() != 3 ? 1 : 0;
+		for (const FRRUpgradeCard& Card : Cards)
+		{
+			if (Card.Stat == ERRUpgradeStat::Pierce)
+			{
+				++PierceCards;
+				LowTierPierce += Card.Tier < ERRUpgradeRarity::Blue ? 1 : 0;
+			}
+		}
+	}
+	AddInfo(FString::Printf(TEXT("400 offers: %d piercing cards"), PierceCards));
+	TestEqual(TEXT("every offer has 3 cards"), ShortOffers, 0);
+	TestTrue(TEXT("piercing cards are offered"), PierceCards > 0);
+	TestEqual(TEXT("no grey or green piercing card"), LowTierPierce, 0);
+
+	// Application: all-weapons blue +1, then targeted yellow +3: 4 -> 5 -> 8; the next bullet carries 8 hits.
+	TestNearlyEqual(TEXT("rifle Pierce 4"), WeaponAttribute(Rifle, URRWeaponAttributeSet::GetPierceAttribute()), 4.f);
+	FRRUpgradeCard Blue;
+	FRRUpgradeCard Yellow;
+	TestTrue(TEXT("blue all-weapons card"), Upgrades->MakeCard(ERRUpgradeStat::Pierce, ERRUpgradeRarity::Blue, ERRUpgradeTarget::AllWeapons, nullptr, Blue));
+	TestTrue(TEXT("yellow rifle card"), Upgrades->MakeCard(ERRUpgradeStat::Pierce, ERRUpgradeRarity::Yellow, ERRUpgradeTarget::Weapon, Rifle, Yellow));
+	TestTrue(TEXT("blue applied"), Upgrades->ApplyUpgrade(Blue));
+	TestNearlyEqual(TEXT("Pierce 5 after blue"), WeaponAttribute(Rifle, URRWeaponAttributeSet::GetPierceAttribute()), 5.f);
+	TestTrue(TEXT("yellow applied"), Upgrades->ApplyUpgrade(Yellow));
+	TestNearlyEqual(TEXT("Pierce 8 after yellow"), WeaponAttribute(Rifle, URRWeaponAttributeSet::GetPierceAttribute()), 8.f);
+	TestEqual(TEXT("pierce count 8"), Rifle->GetPierceCount(), 8);
+	TestNearlyEqual(TEXT("base Pierce unchanged"),
+		Rifle->GetAbilitySystemComponent()->GetNumericAttributeBase(URRWeaponAttributeSet::GetPierceAttribute()), 4.f);
+
+	ARRProjectile* Shot = FireSingleShot(*this, Rifle);
+	if (Shot)
+	{
+		TestEqual(TEXT("upgraded bullet carries 8 hits"), Shot->GetMaxHits(), 8);
+		Shot->Destroy();
+	}
 	return true;
 }
 

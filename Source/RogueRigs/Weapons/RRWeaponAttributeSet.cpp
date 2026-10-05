@@ -14,6 +14,7 @@ URRWeaponAttributeSet::URRWeaponAttributeSet(const FObjectInitializer& ObjectIni
 	InitCritDamage(0.f);
 	InitMagazineSize(0.f);
 	InitAmmo(0.f);
+	InitPierce(0.f);
 }
 
 void URRWeaponAttributeSet::ClampAttribute(const FGameplayAttribute& Attribute, float& NewValue) const

@@ -1,4 +1,4 @@
-// Rogue Rigs - base projectile: flies straight, carries a damage spec, hurts the first hittable actor with an ASC, stops on rock.
+// Rogue Rigs - base projectile: flies straight, carries a damage spec, hurts up to MaxHits distinct hittable actors with an ASC (pierce), stops on rock.
 
 #include "Projectiles/RRProjectile.h"
 
@@ -64,9 +64,10 @@ void ARRProjectile::PostInitializeComponents()
 	ProjectileMovement->OnProjectileStop.AddDynamic(this, &ARRProjectile::OnProjectileStop);
 }
 
-void ARRProjectile::InitProjectile(const FGameplayEffectSpecHandle& InDamageSpec, float Speed, float Lifetime)
+void ARRProjectile::InitProjectile(const FGameplayEffectSpecHandle& InDamageSpec, float Speed, float Lifetime, int32 InMaxHits)
 {
 	DamageSpec = InDamageSpec;
+	MaxHits = FMath::Max(InMaxHits, 1);
 
 	const float ClampedSpeed = FMath::Max(Speed, 0.f);
 	ProjectileMovement->InitialSpeed = ClampedSpeed;
@@ -86,7 +87,7 @@ void ARRProjectile::InitProjectile(const FGameplayEffectSpecHandle& InDamageSpec
 }
 
 ARRProjectile* ARRProjectile::SpawnProjectile(UWorld* World, TSubclassOf<ARRProjectile> Class, const FTransform& SpawnTransform,
-	AActor* InOwner, APawn* InInstigator, const FGameplayEffectSpecHandle& InDamageSpec, float Speed, float Lifetime)
+	AActor* InOwner, APawn* InInstigator, const FGameplayEffectSpecHandle& InDamageSpec, float Speed, float Lifetime, int32 MaxHits)
 {
 	if (!World || !Class)
 	{
@@ -99,7 +100,7 @@ ARRProjectile* ARRProjectile::SpawnProjectile(UWorld* World, TSubclassOf<ARRProj
 		UE_LOG(LogRogueRigs, Error, TEXT("%s: projectile of class %s could not be spawned."), *GetNameSafe(InOwner), *Class->GetName());
 		return nullptr;
 	}
-	Projectile->InitProjectile(InDamageSpec, Speed, Lifetime);
+	Projectile->InitProjectile(InDamageSpec, Speed, Lifetime, MaxHits);
 	Projectile->FinishSpawning(SpawnTransform);
 	return Projectile;
 }
@@ -125,7 +126,7 @@ bool ARRProjectile::IsIgnoredActor(const AActor* OtherActor) const
 
 void ARRProjectile::OnSphereBeginOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
 {
-	if (bHasHit || !IsValid(this) || IsIgnoredActor(OtherActor) || !CanHit(OtherActor))
+	if (bSpent || !IsValid(this) || IsIgnoredActor(OtherActor) || !CanHit(OtherActor) || HitActors.Contains(OtherActor))
 	{
 		return;
 	}
@@ -136,12 +137,20 @@ void ARRProjectile::OnSphereBeginOverlap(UPrimitiveComponent* OverlappedComponen
 		return;
 	}
 
-	bHasHit = true;
+	// Pierce: each distinct actor is hit once; the projectile flies on until MaxHits actors were hit.
+	HitActors.Add(OtherActor);
+	if (HitActors.Num() >= MaxHits)
+	{
+		bSpent = true;
+	}
 	if (const FGameplayEffectSpec* Spec = DamageSpec.Data.Get())
 	{
 		TargetASC->ApplyGameplayEffectSpecToSelf(*Spec);
 	}
-	Destroy();
+	if (bSpent)
+	{
+		Destroy();
+	}
 }
 
 float ARRProjectile::GetCarriedDamage() const
@@ -165,17 +174,17 @@ float ARRProjectile::GetCarriedDamage() const
 void ARRProjectile::OnProjectileStop(const FHitResult& ImpactResult)
 {
 	// Barrels are grid cells without an ASC: the grid takes the carried damage as shot damage (other blocks ignore it).
-	if (!bHasHit && bDamagesTerrain)
+	if (!bSpent && bDamagesTerrain)
 	{
 		if (ARRArenaGrid* Grid = Cast<ARRArenaGrid>(ImpactResult.GetActor()))
 		{
 			const FIntPoint Cell = Grid->GetCellFromHit(ImpactResult);
 			if (Grid->GetCellType(Cell) == ERRCellType::Barrel)
 			{
-				bHasHit = true;
 				Grid->ApplyShotDamage(Cell, GetCarriedDamage());
 			}
 		}
 	}
+	bSpent = true;
 	Destroy();
 }

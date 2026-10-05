@@ -20,10 +20,11 @@ DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FRROnUpgradeAppliedSignature, const 
 /**
  * Upgrade system of the miner (a default subobject of ARRMiner; sys-upgrades). Reads UpgradeValues.csv (FRRUpgradeValueRow)
  * and UpgradeRarities.csv (FRRUpgradeRarityRow) when it initializes.
- * Offer: BuildOffer draws distinct cards; each card picks a stat uniformly among the offerable stats (rows for every tier;
+ * Offer: BuildOffer draws distinct cards; each card picks a stat uniformly among the offerable stats (at least one row;
  * weapon stats only while the miner owns a weapon), then a target uniformly among that stat's targets (player stats: the
  * player; weapon stats: all weapons or one weapon of ARRMiner::GetWeapons, so a new weapon becomes a target by itself),
- * then a tier by the luck-weighted draw. Two cards of one offer never share stat and target. Reroll replaces the offer
+ * then a tier by the luck-weighted draw; when the stat has no row at the drawn tier (Pierce below blue) that choice is
+ * dropped for this offer and the card is drawn again from the other choices. Two cards of one offer never share stat and target. Reroll replaces the offer
  * once with cards sharing no (stat, target) with it. ApplyUpgrade ends the offer.
  * Application: an infinite runtime GE per (attribute, operation) with SetByCaller Data.UpgradeValue (AddBase: Value;
  * MultiplyAdditive: 1 + Value, so percentages add before multiplying). Player stats go to the owner's ASC (MaxHealth also
@@ -123,7 +124,7 @@ public:
 	/** Reseeds the random stream (deterministic offers in tests). */
 	void SetRandomSeed(int32 Seed) { RandomStream.Initialize(Seed); }
 
-	/** True for the stats held by the weapons (Damage to MagazineSize), false for player stats. */
+	/** True for the stats held by the weapons (Damage to MagazineSize, Pierce), false for player stats. */
 	static bool IsWeaponStat(ERRUpgradeStat Stat);
 
 	/** Attribute raised by Stat. */
@@ -156,7 +157,7 @@ protected:
 	/** Loads the tables (LoadTables) and seeds the random stream. */
 	virtual void InitializeComponent() override;
 
-	/** Reads both CSVs into ValueRows and RarityRows. Logs problems; a stat missing a tier is not offered. */
+	/** Reads both CSVs into ValueRows and RarityRows. Logs problems; a stat is offered only at the tiers it has rows for. */
 	void LoadTables();
 
 	/** Every (stat, target) choice available now, minus those matching a card of Excluded. */
@@ -180,7 +181,7 @@ protected:
 	/** The owner's current Luck attribute; 0 when it has no player attribute set. */
 	float GetOwnerLuck() const;
 
-	/** Table rows by stat and tier rank; a stat is offerable when it holds TierCount rows. */
+	/** Table rows by stat and tier rank (TierCount entries, unset when the tier has no row); a stat is offerable when one is set. */
 	TMap<ERRUpgradeStat, TArray<TOptional<FRRUpgradeValueRow>>> ValueRows;
 
 	/** Base weight and luck factor per tier rank (0 when the tier is missing). */

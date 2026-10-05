@@ -34,7 +34,9 @@ enum class ERRUpgradeStat : uint8
 	/** Player: MiningSpeed (%). */
 	MiningSpeed,
 	/** Player: Luck (points). */
-	Luck
+	Luck,
+	/** Weapon: Pierce (points: +1 = one more robot damaged per projectile). Rows only for blue, purple and yellow. */
+	Pierce
 };
 
 /** Rarity tier of an upgrade card, low to high; the enum value is the rank used by the luck-weighted draw (rarities). */

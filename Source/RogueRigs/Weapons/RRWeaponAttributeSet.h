@@ -9,7 +9,7 @@
 
 /**
  * Weapon stats changed by upgrades or effects during a run: Damage, FireRate, ReloadSpeed, CritChance,
- * CritDamage, MagazineSize, and the current magazine content Ammo. Every attribute is clamped to >= 0
+ * CritDamage, MagazineSize, Pierce, and the current magazine content Ammo. Every attribute is clamped to >= 0
  * (base and current); Ammo is also clamped to <= MagazineSize and lowered when MagazineSize drops (never
  * raised when it grows). All start at 0; base values come from WeaponStats.csv (ARRWeapon acquisition).
  */
@@ -29,6 +29,7 @@ public:
 	ATTRIBUTE_ACCESSORS_BASIC(URRWeaponAttributeSet, CritDamage)
 	ATTRIBUTE_ACCESSORS_BASIC(URRWeaponAttributeSet, MagazineSize)
 	ATTRIBUTE_ACCESSORS_BASIC(URRWeaponAttributeSet, Ammo)
+	ATTRIBUTE_ACCESSORS_BASIC(URRWeaponAttributeSet, Pierce)
 
 	/** Clamps every base value to >= 0, and base Ammo to <= MagazineSize. */
 	virtual void PreAttributeBaseChange(const FGameplayAttribute& Attribute, float& NewValue) const override;
@@ -67,6 +68,13 @@ protected:
 	/** Bullets left in the magazine, in [0, MagazineSize]. Consumed per shot, refilled by the reload. */
 	UPROPERTY(BlueprintReadOnly, Category = "Attributes|Weapon")
 	FGameplayAttributeData Ammo;
+
+	/**
+	 * Distinct robots one projectile of this weapon damages before it is destroyed (burst rifle base 4; read at fire time,
+	 * rounded down, at least 1). Raised by piercing upgrades (points).
+	 */
+	UPROPERTY(BlueprintReadOnly, Category = "Attributes|Weapon")
+	FGameplayAttributeData Pierce;
 
 	/** Applies the clamps shared by base and current values to NewValue. */
 	void ClampAttribute(const FGameplayAttribute& Attribute, float& NewValue) const;
