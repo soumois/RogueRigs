@@ -3,7 +3,7 @@ id: task-025-02-bp-numbers
 description: "Niagara system rendering digits from an atlas at horde scale: rise and fade, crits larger white-gold with a short pop."
 parent: task-025-damage-numbers
 kind: task
-status: todo
+status: in-progress
 ---
 # Damage numbers Niagara
 

@@ -3,7 +3,7 @@ id: task-025-01-numbers-pipeline
 description: "World subsystem receiving every damage event, merging per target within 0.25 s, feeding one Niagara system; toggle; actor version removed."
 parent: task-025-damage-numbers
 kind: task
-status: in-progress
+status: done
 ---
 # Damage number pipeline
 
@@ -15,11 +15,11 @@ status: in-progress
 - done_when: build exits 0 with the editor closed; all `RogueRigs.*` tests pass headless (new ones included); docs updated; lint clean.
 - editor_state: closed
 - token_ceiling: 110000
-- model: open
-- tokens: open
-- runs: open
+- model: opus
+- tokens: input 84, cache write 149885, cache read 3989150, output 55379
+- runs: 1
 - milestone: M2
-- result: open
+- result: URRDamageNumberSubsystem (AddHit, 0.25 s merge per target, crit if any, last hit location kept for dead robots, ±25 uu jitter, 64 numbers per tick, config in DefaultGame.ini), one persistent Niagara component for /Game/RogueRigs/FX/NS_DamageNumbers fed through user arrays (DamageNumberPositions, Values, Sizes, Colors, Criticals, SpawnTimes, NewCount); crit 1.6× white-gold, normal 60 white; URRGameUserSettings bShowDamageNumbers toggle (DefaultEngine GameUserSettingsClassName); ARRFloatingDamageText deleted; Niagara added to Build.cs. Disc warning removed. 4 DamageNumbers tests; build 0, 146/146. New sys-damage-numbers; sys-damage, sys-target-dummy, sys-enemies-base, build-toolchain. Commits 36d17ab, e8e20a9.
 
 ## Relations
 - [[task-025-damage-numbers]] — parent global task.
