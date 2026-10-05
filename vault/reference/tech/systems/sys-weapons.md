@@ -7,7 +7,7 @@ kind: doc
 # Weapons
 
 - responsibility: weapon lifecycle, weapon stats, how upgrades reach weapons and turrets.
-- main_classes (in `Source/RogueRigs/Weapons/`): `ARRWeapon` (abstract; own `URRAbilitySystemComponent` + `URRWeaponAttributeSet`, root scene component, `Muzzle` scene component under it (visual reference only), no actor collision (`bActorEnableCollision` off: a held weapon sits inside the miner capsule and would push it), `URRAutoFireComponent` [[sys-auto-fire]]; protected virtual `FireOnce()` decides what is fired: by default the burst rifle shot, overridden by weapons that fire differently); `URRWeaponAttributeSet` (`Damage`, `FireRate`, `ReloadSpeed`, `CritChance`, `CritDamage`, `MagazineSize`, `Ammo`, `Pierce`; all >= 0, `Ammo` <= `MagazineSize`, lowered when `MagazineSize` drops); `FRRWeaponStatsRow`; GEs `URRGE_ConsumeAmmo` (instant, `Ammo` -1) and `URRGE_RefillAmmo` (instant, `Ammo` overridden by the target's `MagazineSize`); `ARRShotgun` (Blueprintable, usable natively: `StatsRowName` `Shotgun`, `ProjectileClass` default `ARRShotgunPellet` [[sys-projectiles]]). Weapons: burst rifle (implemented in `ARRWeapon`), shotgun (implemented), turret launcher (not yet).
+- main_classes (in `Source/RogueRigs/Weapons/`): `ARRWeapon` (abstract; own `URRAbilitySystemComponent` + `URRWeaponAttributeSet`, root scene component, `Muzzle` scene component under it (visual reference only), no actor collision (`bActorEnableCollision` off: a held weapon sits inside the miner capsule and would push it), `URRAutoFireComponent` [[sys-auto-fire]]; protected virtual `FireOnce()` decides what is fired: by default the burst rifle shot, overridden by weapons that fire differently); `URRWeaponAttributeSet` (`Damage`, `FireRate`, `ReloadSpeed`, `CritChance`, `CritDamage`, `MagazineSize`, `Ammo`, `Pierce`; all >= 0, `Ammo` <= `MagazineSize`, lowered when `MagazineSize` drops); `FRRWeaponStatsRow`; GEs `URRGE_ConsumeAmmo` (instant, `Ammo` -1) and `URRGE_RefillAmmo` (instant, `Ammo` overridden by the target's `MagazineSize`); `ARRShotgun` (Blueprintable, usable natively: `StatsRowName` `Shotgun`, `ProjectileClass` default `ARRShotgunPellet` [[sys-projectiles]]). Weapons: burst rifle (implemented in `ARRWeapon`), shotgun (implemented), turret launcher `ARRTurretLauncher` and turrets `ARRTurret` (implemented, [[sys-turret]]). `GetProjectileClass()` / `GetDamageEffectClass()` are public (a turret copies its launcher's).
 
 ## Decisions
 - One ASC per weapon; upgrades routed by `Weapon.Player.*` tags (approved).
@@ -36,3 +36,4 @@ kind: doc
 ## Relations
 - [[systems-index]] — parent index.
 - [[sys-upgrades]] — the upgrades applied to weapon ASCs and replayed on acquisition.
+- [[sys-turret]] — turret launcher and turrets built on the weapon base.

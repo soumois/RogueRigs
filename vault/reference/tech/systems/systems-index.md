@@ -19,6 +19,7 @@ Decision status inside each doc: approved, provisional, deferred or open. Planne
 - [[sys-damage]] — damage chain from shot to death, i-frames, death guard.
 - [[sys-status-effects]] — stacking rules for bonuses and statuses, enemy stun.
 - [[sys-weapons]] — weapon ASC lifecycle, shotgun cone, magazine and reload, turret launcher and turrets, impact effects.
+- [[sys-turret]] — turret launcher and placed turrets: button placement, charges, recharge, stat copy, targeting with grid sight.
 - [[sys-upgrades]] — fixed value table, luck-weighted rarity draw, targeted vs global application.
 - [[sys-difficulty]] — alert and threat counters, enemy difficulty GE at spawn.
 - [[sys-objectives]] — run flow (alert bar, console drop and pause, extraction-ready event) and the console objective with its Blueprint events.

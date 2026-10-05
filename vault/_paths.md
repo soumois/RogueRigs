@@ -137,6 +137,7 @@ sys-spawner  reference/tech/systems/sys-spawner.md
 sys-status-effects  reference/tech/systems/sys-status-effects.md
 sys-stress  reference/tech/systems/sys-stress.md
 sys-target-dummy  reference/tech/systems/sys-target-dummy.md
+sys-turret  reference/tech/systems/sys-turret.md
 sys-upgrades  reference/tech/systems/sys-upgrades.md
 sys-weapons  reference/tech/systems/sys-weapons.md
 sys-world-queries  reference/tech/systems/sys-world-queries.md
