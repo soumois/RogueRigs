@@ -53,6 +53,7 @@ kind: note
 | [[task-024-05-bp-weapons]] | sonnet | 6 | 0k | 245k | 26014k | 87k |
 | [[task-024-06-tests-integration]] | opus | 2 | 0k | 214k | 5029k | 61k |
 | [[task-025-01-numbers-pipeline]] | opus | 1 | 0k | 150k | 3989k | 55k |
+| [[task-025-02-bp-numbers]] | sonnet | 2 | 0k | 154k | 7174k | 52k |
 
 ## Totals
 | Scope | Input | Cache write | Cache read | Output |
