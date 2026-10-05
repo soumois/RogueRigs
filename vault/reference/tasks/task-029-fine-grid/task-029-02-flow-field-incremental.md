@@ -3,7 +3,7 @@ id: task-029-02-flow-field-incremental
 description: "Flow field updated incrementally from opened cells (distances only decrease) and spread over frames under a per-frame budget; tests; measured."
 parent: task-029-fine-grid
 kind: task
-status: todo
+status: in-progress
 ---
 # Incremental flow field
 

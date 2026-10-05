@@ -58,6 +58,7 @@ kind: note
 | [[task-025-04-per-digit-contract]] | opus | 1 | 0k | 145k | 4931k | 58k |
 | [[task-025-05-bp-numbers-rebuild]] | sonnet | 3 | 0k | 163k | 9492k | 65k |
 | [[task-025-06-numbers-visual-check]] | opus | 1 | 0k | 89k | 1720k | 19k |
+| [[task-029-01-grid-render]] | opus | 2 | 0k | 598k | 10948k | 75k |
 
 ## Totals
 | Scope | Input | Cache write | Cache read | Output |
