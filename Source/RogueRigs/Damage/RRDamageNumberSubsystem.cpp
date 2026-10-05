@@ -3,11 +3,15 @@
 #include "Damage/RRDamageNumberSubsystem.h"
 
 #include "Engine/World.h"
+#include "GameFramework/WorldSettings.h"
+#include "Misc/App.h"
 #include "Misc/PackageName.h"
 #include "GameFramework/Actor.h"
 #include "NiagaraComponent.h"
 #include "NiagaraDataInterfaceArrayFunctionLibrary.h"
-#include "NiagaraFunctionLibrary.h"
+#include "NiagaraEmitterInstance.h"
+#include "NiagaraSystemInstance.h"
+#include "NiagaraSystemInstanceController.h"
 #include "NiagaraSystem.h"
 #include "RogueRigs.h"
 #include "Settings/RRGameUserSettings.h"
@@ -54,11 +58,21 @@ void URRDamageNumberSubsystem::OnWorldBeginPlay(UWorld& InWorld)
 		UE_LOG(LogRogueRigs, Log, TEXT("Damage numbers: Niagara system %s not found; numbers are not rendered."), *NumberSystem.ToString());
 		return;
 	}
-	NiagaraComponent = UNiagaraFunctionLibrary::SpawnSystemAtLocation(&InWorld, System, FVector::ZeroVector, FRotator::ZeroRotator,
-		FVector(1.f), /*bAutoDestroy*/ false, /*bAutoActivate*/ true, ENCPoolMethod::None, /*bPreCullCheck*/ false);
-	if (NiagaraComponent)
+	// Same set-up as UNiagaraFunctionLibrary::SpawnSystemAtLocation (owner: world settings, absolute transform at the
+	// origin, no auto destroy), built by hand so the component and its user parameters also exist in a process that
+	// cannot render (headless automation tests); Niagara itself only simulates where it can render.
+	NiagaraComponent = NewObject<UNiagaraComponent>(InWorld.GetWorldSettings(), NAME_None, RF_Transient);
+	NiagaraComponent->SetAsset(System);
+	NiagaraComponent->bAutoActivate = false;
+	NiagaraComponent->SetAutoDestroy(false);
+	NiagaraComponent->SetVisibleInRayTracing(false);
+	NiagaraComponent->RegisterComponentWithWorld(&InWorld);
+	NiagaraComponent->SetAbsolute(true, true, true);
+	NiagaraComponent->SetWorldLocationAndRotation(FVector::ZeroVector, FRotator::ZeroRotator);
+	NiagaraComponent->SetVariableInt(NewCountParameter, 0);
+	if (FApp::CanEverRender())
 	{
-		NiagaraComponent->SetVariableInt(NewCountParameter, 0);
+		NiagaraComponent->Activate(/*bReset*/ true);
 	}
 }
 
@@ -156,6 +170,7 @@ void URRDamageNumberSubsystem::Tick(float DeltaTime)
 	PushToNiagara(Numbers);
 	if (Numbers.Num() > 0)
 	{
+		TotalPushedCount += Numbers.Num();
 		OnNumbersPushed.Broadcast(Numbers);
 	}
 }
@@ -174,6 +189,13 @@ void URRDamageNumberSubsystem::PushToNiagara(const TArray<FRRDamageNumber>& Numb
 			LastPushedCount = 0;
 		}
 		return;
+	}
+
+	// A system whose emitters completed (one-shot loop, task-025-03 finding) deactivates the component: reactivate it so
+	// the batch still spawns. Nothing is alive at that point, so the reset loses no particle.
+	if (!NiagaraComponent->IsActive() && FApp::CanEverRender())
+	{
+		NiagaraComponent->Activate(/*bReset*/ true);
 	}
 
 	TArray<FVector> Positions;
@@ -205,6 +227,29 @@ void URRDamageNumberSubsystem::PushToNiagara(const TArray<FRRDamageNumber>& Numb
 	UNiagaraDataInterfaceArrayFunctionLibrary::SetNiagaraArrayFloat(NiagaraComponent, SpawnTimesParameter, SpawnTimes);
 	NiagaraComponent->SetVariableInt(NewCountParameter, Numbers.Num());
 	LastPushedCount = Numbers.Num();
+	UE_LOG(LogRogueRigs, Verbose, TEXT("Damage numbers: pushed %d to Niagara (first value %.1f)."), Numbers.Num(), Numbers[0].Value);
+}
+
+bool URRDamageNumberSubsystem::GetParticleStats(int32& OutLiveParticles, int32& OutSpawnedParticles) const
+{
+	OutLiveParticles = 0;
+	OutSpawnedParticles = 0;
+	if (!IsValid(NiagaraComponent))
+	{
+		return false;
+	}
+	const FNiagaraSystemInstanceControllerConstPtr Controller = NiagaraComponent->GetSystemInstanceController();
+	const FNiagaraSystemInstance* Instance = Controller.IsValid() ? Controller->GetSystemInstance_Unsafe() : nullptr;
+	if (!Instance)
+	{
+		return false;
+	}
+	for (const FNiagaraEmitterInstanceRef& Emitter : Instance->GetEmitters())
+	{
+		OutLiveParticles += Emitter->GetNumParticles();
+		OutSpawnedParticles += Emitter->GetTotalSpawnedParticles();
+	}
+	return true;
 }
 
 TStatId URRDamageNumberSubsystem::GetStatId() const

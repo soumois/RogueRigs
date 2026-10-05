@@ -1,15 +1,24 @@
-// Rogue Rigs - automation tests of the damage number pipeline (RogueRigs.DamageNumbers.*): merge window per target, critical style, player toggle, per-tick budget.
+// Rogue Rigs - automation tests of the damage number pipeline (RogueRigs.DamageNumbers.*): merge window per target, critical style, player toggle, per-tick budget, Niagara integration through the real damage pipeline.
 
 #include "CoreMinimal.h"
 #include "Misc/AutomationTest.h"
 
 #if WITH_DEV_AUTOMATION_TESTS
 
+#include "AbilitySystemComponent.h"
 #include "Algo/Count.h"
 #include "Damage/RRDamageNumberSubsystem.h"
+#include "Damage/RRGE_Damage.h"
+#include "Debug/RRTargetDummy.h"
 #include "GameFramework/Actor.h"
+#include "Misc/App.h"
+#include "NiagaraComponent.h"
+#include "NiagaraSystem.h"
 #include "Settings/RRGameUserSettings.h"
 #include "Tests/RRTestHarness.h"
+#include "Weapons/RRAutoFireComponent.h"
+#include "Weapons/RRWeapon.h"
+#include "Weapons/RRWeaponAttributeSet.h"
 
 namespace RRDamageNumberTests
 {
@@ -300,6 +309,99 @@ bool FRRDamageNumberBudgetTest::RunTest(const FString& Parameters)
 	TestEqual(TEXT("the other 36 on the next tick"), Recorder.Frames.Last(), FirstFrame + 1);
 	TestEqual(TEXT("oldest first: robot 0 merged 1001"), Recorder.Numbers[0].Value, 1001.f);
 	TestEqual(TEXT("robot 99 merged 1100"), Recorder.Numbers.Last().Value, 1100.f);
+	return true;
+}
+
+IMPLEMENT_SIMPLE_AUTOMATION_TEST(FRRDamageNumberNiagaraTest, "RogueRigs.DamageNumbers.NiagaraIntegration",
+	EAutomationTestFlags::EditorContext | EAutomationTestFlags::EngineFilter)
+
+bool FRRDamageNumberNiagaraTest::RunTest(const FString& Parameters)
+{
+	using namespace RRDamageNumberTests;
+
+	FTestWorld TestWorld(TEXT("RRDamageNumberNiagara"));
+	URRDamageNumberSubsystem* Numbers = GetNumbers(*this, TestWorld);
+	if (!Numbers)
+	{
+		return false;
+	}
+	// The persistent component exists at world BeginPlay with the shipped asset (task-025-02).
+	UNiagaraComponent* Component = Numbers->GetNiagaraComponent();
+	if (!TestNotNull(TEXT("persistent Niagara component created at BeginPlay"), Component))
+	{
+		return false;
+	}
+	TestEqual(TEXT("component runs NS_DamageNumbers"), Component->GetAsset() ? Component->GetAsset()->GetName() : FString(), FString(TEXT("NS_DamageNumbers")));
+	const FNiagaraVariable NewCountVariable(FNiagaraTypeDefinition::GetIntDef(), URRDamageNumberSubsystem::NewCountParameter);
+	auto ReadNewCount = [Component, &NewCountVariable]()
+	{
+		return Component->GetOverrideParameters().GetParameterValueOrDefault<int32>(NewCountVariable, -1);
+	};
+	TestEqual(TEXT("NewCount user parameter exists and starts at 0"), ReadNewCount(), 0);
+
+	// Real damage pipeline: rifle damage specs (GE + execution) on two target dummies; their OnDamageReceived feeds AddHit.
+	UClass* RifleClass = LoadTestClass<ARRWeapon>(*this, TEXT("/Game/RogueRigs/Blueprints/Weapons/BP_BurstRifle.BP_BurstRifle_C"));
+	UClass* DummyClass = LoadTestClass<ARRTargetDummy>(*this, TEXT("/Game/RogueRigs/Blueprints/Debug/BP_TargetDummy.BP_TargetDummy_C"));
+	ARRWeapon* Rifle = RifleClass ? TestWorld.Spawn<ARRWeapon>(RifleClass, FVector(0.f, -2000.f, 100.f)) : nullptr;
+	ARRTargetDummy* DummyA = DummyClass ? TestWorld.Spawn<ARRTargetDummy>(DummyClass, FVector(0.f, 0.f, 0.f)) : nullptr;
+	ARRTargetDummy* DummyB = DummyClass ? TestWorld.Spawn<ARRTargetDummy>(DummyClass, FVector(1000.f, 0.f, 0.f)) : nullptr;
+	if (!TestNotNull(TEXT("rifle spawned"), Rifle) || !TestNotNull(TEXT("dummy A spawned"), DummyA) || !TestNotNull(TEXT("dummy B spawned"), DummyB))
+	{
+		return false;
+	}
+	TestTrue(TEXT("rifle acquired"), Rifle->Acquire(nullptr));
+	Rifle->GetAutoFireComponent()->StopFiring();
+	UAbilitySystemComponent* RifleASC = Rifle->GetAbilitySystemComponent();
+	auto ApplyHit = [RifleASC](ARRTargetDummy* Dummy, float CritChance)
+	{
+		RifleASC->SetNumericAttributeBase(URRWeaponAttributeSet::GetCritChanceAttribute(), CritChance);
+		const FGameplayEffectSpecHandle Spec = RifleASC->MakeOutgoingSpec(URRGE_Damage::StaticClass(), 1.f, RifleASC->MakeEffectContext());
+		Dummy->GetAbilitySystemComponent()->ApplyGameplayEffectSpecToSelf(*Spec.Data.Get());
+	};
+
+	FPushRecorder Recorder(Numbers);
+	int32 NewCountAtPush = -1;
+	const FDelegateHandle CountHandle = Numbers->OnNumbersPushed.AddLambda([&NewCountAtPush, &ReadNewCount](const TArray<FRRDamageNumber>&)
+	{
+		NewCountAtPush = ReadNewCount();
+	});
+	// Dummy A: two normal hits (10 + 10) merge; dummy B: one critical hit (10 x CritDamage 1.5).
+	ApplyHit(DummyA, 0.f);
+	ApplyHit(DummyA, 0.f);
+	ApplyHit(DummyB, 1.f);
+	TestEqual(TEXT("two open entries (one per dummy)"), Numbers->GetPendingCount(), 2);
+	Recorder.TickFrames(TestWorld, 18);
+	Numbers->OnNumbersPushed.Remove(CountHandle);
+
+	if (!TestEqual(TEXT("two numbers pushed"), Recorder.Numbers.Num(), 2))
+	{
+		return false;
+	}
+	TestEqual(TEXT("NewCount = 2 on the push frame"), NewCountAtPush, 2);
+	TestEqual(TEXT("NewCount back to 0 after the push frame"), ReadNewCount(), 0);
+	const int32 IndexA = Recorder.FindValue(20.f);
+	const int32 IndexB = Recorder.FindValue(15.f);
+	if (TestTrue(TEXT("dummy A merged 20"), IndexA != INDEX_NONE) && TestTrue(TEXT("dummy B critical 15"), IndexB != INDEX_NONE))
+	{
+		TestFalse(TEXT("merged normal hits not critical"), Recorder.Numbers[IndexA].bCritical);
+		TestTrue(TEXT("crit flagged"), Recorder.Numbers[IndexB].bCritical);
+		TestTrue(TEXT("crit larger"), Recorder.Numbers[IndexB].Size > Recorder.Numbers[IndexA].Size);
+	}
+
+	// The emitter spawns from NewCount. Niagara only simulates in a process that can render: headless (-nullrhi) runs
+	// stop at the parameter checks above.
+	if (!FApp::CanEverRender())
+	{
+		AddInfo(TEXT("DAMAGENUMBERS niagara: no renderer, particle check skipped"));
+		return true;
+	}
+	Recorder.TickFrames(TestWorld, 2);
+	int32 Live = 0;
+	int32 Spawned = 0;
+	const bool bInstance = Numbers->GetParticleStats(Live, Spawned);
+	AddInfo(FString::Printf(TEXT("DAMAGENUMBERS niagara: pushed %d, instance %d, live %d, spawned %d"), Numbers->GetTotalPushedCount(), bInstance ? 1 : 0, Live, Spawned));
+	TestTrue(TEXT("system instance exists"), bInstance);
+	TestTrue(TEXT("particles spawned from the push"), Spawned > 0);
 	return true;
 }
 

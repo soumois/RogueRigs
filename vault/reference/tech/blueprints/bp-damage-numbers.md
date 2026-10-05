@@ -21,3 +21,4 @@ kind: doc
 - [[blueprints-index]] — parent index.
 - [[sys-damage-numbers]] — the C++ subsystem and parameter contract.
 - [[damage-numbers]] — the design.
+- [[stress-damage-numbers]] — task-025-03 visual check: defects to fix in this asset.

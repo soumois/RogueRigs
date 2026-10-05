@@ -104,6 +104,15 @@ public:
 	/** The persistent Niagara component fed by the subsystem; null when NumberSystem is unset or failed to load. */
 	UNiagaraComponent* GetNiagaraComponent() const { return NiagaraComponent; }
 
+	/** Total numbers pushed to Niagara (or broadcast without a component) since the world began (tests, debug). */
+	int32 GetTotalPushedCount() const { return TotalPushedCount; }
+
+	/**
+	 * Live and total spawned particle counts summed over the emitters of the Niagara component (tests, rr.Debug.Shots).
+	 * False with both counts 0 when there is no component or no system instance.
+	 */
+	bool GetParticleStats(int32& OutLiveParticles, int32& OutSpawnedParticles) const;
+
 	/** Batch of numbers pushed on each tick that has some (tests, debug listeners). */
 	FRROnDamageNumbersPushed OnNumbersPushed;
 
@@ -184,4 +193,7 @@ protected:
 
 	/** Count pushed on the last tick, so the 0 reset is sent once. */
 	int32 LastPushedCount = 0;
+
+	/** Running total of pushed numbers. */
+	int32 TotalPushedCount = 0;
 };
