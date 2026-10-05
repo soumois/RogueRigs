@@ -13,16 +13,22 @@ status: in-progress
 - gdd_check: Read [[damage-numbers]], [[color-code]], [[sys-damage]]. Merging window open → 0.25 s (provisional). Analysis in [[drgs-analysis]]. The owner launched all lots and delegated provisional values (2026-10-05); decisions written into the GDD before planning; the grid-size lot waits for the owner after the stress report.
 - confirmed_by_owner: yes (2026-10-05, all lots launched by the owner)
 - milestone: M2
-- next_step: task-025-03-numbers-perf
+- next_step: task-025-04-per-digit-contract
 - result: open
 
 ## Subtasks
-1. task-025-01-numbers-pipeline — cpp: damage events to a pooled number system, merge, crit, toggle, tests
-2. task-025-02-bp-numbers — bp: Niagara digit-atlas system, crit pop, PIE
-3. task-025-03-numbers-perf — cpp: integration test and perf check at 400 robots
+1. task-025-01-numbers-pipeline — cpp
+2. task-025-02-bp-numbers — bp
+3. task-025-03-numbers-perf — cpp: visual check found defects
+4. task-025-04-per-digit-contract — cpp: one entry per digit, batch id
+5. task-025-05-bp-numbers-rebuild — bp: rebuild the Niagara system on it
+6. task-025-06-numbers-visual-check — cpp: screenshots and perf
 
 ## Relations
 - [[tasks-index]] — parent index.
 - [[task-025-01-numbers-pipeline]] — step 1, cpp.
 - [[task-025-02-bp-numbers]] — step 2, bp.
 - [[task-025-03-numbers-perf]] — step 3, cpp.
+- [[task-025-04-per-digit-contract]] — step 4, cpp.
+- [[task-025-05-bp-numbers-rebuild]] — step 5, bp.
+- [[task-025-06-numbers-visual-check]] — step 6, cpp.

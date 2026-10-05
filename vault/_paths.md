@@ -264,6 +264,9 @@ task-024-weapons  reference/tasks/task-024-weapons.md
 task-025-01-numbers-pipeline  reference/tasks/task-025-damage-numbers/task-025-01-numbers-pipeline.md
 task-025-02-bp-numbers  reference/tasks/task-025-damage-numbers/task-025-02-bp-numbers.md
 task-025-03-numbers-perf  reference/tasks/task-025-damage-numbers/task-025-03-numbers-perf.md
+task-025-04-per-digit-contract  reference/tasks/task-025-damage-numbers/task-025-04-per-digit-contract.md
+task-025-05-bp-numbers-rebuild  reference/tasks/task-025-damage-numbers/task-025-05-bp-numbers-rebuild.md
+task-025-06-numbers-visual-check  reference/tasks/task-025-damage-numbers/task-025-06-numbers-visual-check.md
 task-025-damage-numbers  reference/tasks/task-025-damage-numbers.md
 task-026-01-wave-director  reference/tasks/task-026-pressure/task-026-01-wave-director.md
 task-026-02-feedback-events  reference/tasks/task-026-pressure/task-026-02-feedback-events.md

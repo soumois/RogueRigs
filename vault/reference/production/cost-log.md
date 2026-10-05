@@ -54,6 +54,7 @@ kind: note
 | [[task-024-06-tests-integration]] | opus | 2 | 0k | 214k | 5029k | 61k |
 | [[task-025-01-numbers-pipeline]] | opus | 1 | 0k | 150k | 3989k | 55k |
 | [[task-025-02-bp-numbers]] | sonnet | 2 | 0k | 154k | 7174k | 52k |
+| [[task-025-03-numbers-perf]] | opus | 2 | 0k | 175k | 7657k | 55k |
 
 ## Totals
 | Scope | Input | Cache write | Cache read | Output |
