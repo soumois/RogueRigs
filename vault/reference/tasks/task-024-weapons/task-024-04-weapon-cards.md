@@ -3,7 +3,7 @@ id: task-024-04-weapon-cards
 description: "Start with the rifle only; new-weapon cards join the level-up offer while a slot is free (4 slots); picking equips it; tests."
 parent: task-024-weapons
 kind: task
-status: in-progress
+status: done
 ---
 # Weapon cards
 
@@ -15,11 +15,11 @@ status: in-progress
 - done_when: build exits 0 with the editor closed; all `RogueRigs.*` tests pass headless (new ones included); docs updated; lint clean.
 - editor_state: closed
 - token_ceiling: 110000
-- model: open
-- tokens: open
-- runs: open
+- model: opus
+- tokens: input 94, cache write 151886, cache read 4094408, output 67840
+- runs: 1
 - milestone: M2
-- result: open
+- result: FRRUpgradeCard card type (stat or new weapon) with weapon class and description; offer rule 30 % per slot, at most one per offer, only while a catalogue weapon can be acquired (no RNG draw otherwise, seeded offers unchanged); reroll never repeats the weapon; pick calls ARRMiner::AddWeapon (global replay), refused if owned or 4 owned. ARRMiner WeaponCatalogue, MaxWeapons 4, GuaranteedWeaponClasses empty; NewWeaponCardChance 0.3, MaxNewWeaponCardsPerOffer 1 (provisional). Test harness M1TestLoadout adds the shotgun explicitly for old tests. 4 WeaponCards tests; build 0, 137/137. Docs sys-upgrades, sys-weapons, sys-player, sys-automation-tests. Commits 0a06a3e, 705afe8.
 
 ## Relations
 - [[task-024-weapons]] — parent global task.
