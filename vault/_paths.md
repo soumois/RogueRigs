@@ -114,6 +114,7 @@ sys-drone  reference/tech/systems/sys-drone.md
 sys-enemies  reference/tech/systems/sys-enemies/sys-enemies.md
 sys-enemies-base  reference/tech/systems/sys-enemies/sys-enemies-base.md
 sys-enemies-chaser  reference/tech/systems/sys-enemies/sys-enemies-chaser.md
+sys-enemies-heavy  reference/tech/systems/sys-enemies/sys-enemies-heavy.md
 sys-enemies-kamikaze  reference/tech/systems/sys-enemies/sys-enemies-kamikaze.md
 sys-enemies-movement  reference/tech/systems/sys-enemies/sys-enemies-movement.md
 sys-enemies-shooter  reference/tech/systems/sys-enemies/sys-enemies-shooter.md

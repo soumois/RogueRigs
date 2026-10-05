@@ -7,7 +7,7 @@ kind: doc
 # Enemy AI
 
 - responsibility: movement and decisions of every robot.
-- main_classes: `IRRPathProvider`, `URRFlowFieldSubsystem`, `URREnemyMovementComponent` (`Source/RogueRigs/FlowField/`, [[sys-flow-field]]); per-robot state machines in `ARRChaser`, `ARRKamikaze`, `ARRShooter` ([[sys-enemies]]). The template's `ATwinStickNPC` and `ATwinStickAIController` (`Variant_TwinStick/`) stay as reference only.
+- main_classes: `IRRPathProvider`, `URRFlowFieldSubsystem`, `URREnemyMovementComponent` (`Source/RogueRigs/FlowField/`, [[sys-flow-field]]); per-robot state machines in `ARRChaser`, `ARRKamikaze`, `ARRShooter`, `ARRHeavy` ([[sys-enemies]]). The template's `ATwinStickNPC` and `ATwinStickAIController` (`Variant_TwinStick/`) stay as reference only.
 
 ## Decisions
 - Framework (approved, owner 2026-10-02): a C++ state machine per robot (chaser: Chase, WindUp, Attack, Recover), readable and testable by agents.
