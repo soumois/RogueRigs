@@ -3,7 +3,7 @@ id: task-024-02-shotgun-pellets
 description: "Replace the shotgun cone wave with 7 projectile pellets toward the aim: spread, pierce 3, knockback per pellet, rock stop, crit per pellet; tests."
 parent: task-024-weapons
 kind: task
-status: todo
+status: in-progress
 ---
 # Shotgun pellets
 

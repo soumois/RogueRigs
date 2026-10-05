@@ -46,6 +46,7 @@ kind: note
 | [[task-022-02-bp-heavy]] | sonnet | 4 | 0k | 349k | 9269k | 59k |
 | [[task-022-03-tests-integration]] | opus | 2 | 0k | 127k | 2801k | 30k |
 | [[task-023-01-cell-stress]] | opus | 2 | 0k | 458k | 7854k | 67k |
+| [[task-024-01-rifle-pierce]] | opus | 1 | 0k | 170k | 4373k | 56k |
 
 ## Totals
 | Scope | Input | Cache write | Cache read | Output |
