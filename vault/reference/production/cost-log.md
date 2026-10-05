@@ -59,6 +59,7 @@ kind: note
 | [[task-025-05-bp-numbers-rebuild]] | sonnet | 3 | 0k | 163k | 9492k | 65k |
 | [[task-025-06-numbers-visual-check]] | opus | 1 | 0k | 89k | 1720k | 19k |
 | [[task-029-01-grid-render]] | opus | 2 | 0k | 598k | 10948k | 75k |
+| [[task-029-02-flow-field-incremental]] | opus | 1 | 0k | 176k | 6095k | 87k |
 
 ## Totals
 | Scope | Input | Cache write | Cache read | Output |

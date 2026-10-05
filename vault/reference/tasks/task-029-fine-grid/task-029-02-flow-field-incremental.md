@@ -3,7 +3,7 @@ id: task-029-02-flow-field-incremental
 description: "Flow field updated incrementally from opened cells (distances only decrease) and spread over frames under a per-frame budget; tests; measured."
 parent: task-029-fine-grid
 kind: task
-status: in-progress
+status: done
 ---
 # Incremental flow field
 
@@ -15,11 +15,11 @@ status: in-progress
 - done_when: build exits 0 with the editor closed; all `RogueRigs.*` tests pass headless; docs updated; lint clean. Measurements recorded.
 - editor_state: closed
 - token_ceiling: 120000
-- model: open
-- tokens: open
-- runs: open
+- model: opus
+- tokens: input 100, cache write 176062, cache read 6094834, output 87008
+- runs: 1
 - milestone: M2
-- result: open
+- result: Opened cells queued and relaxed decrease-only (8 neighbours, same tie rule as a full rebuild, identical result tested); miner cell change = BFS into a second buffer spread over frames then swapped (robots follow the previous field meanwhile); both share a per-frame budget rr.FlowField.BudgetMs 0.3; full rebuild kept for load and MarkDirty; queries answer from the last valid field; FlushPendingWork, IsUpdatePending etc. Stress walk mode. Tests IncrementalMatchesRebuild, BudgetAt67uu (p95 0.31 ms), RobotPathsThroughNewGap; 153/153. At 67 uu: dig flow-field 2.7 → 0.015 ms per frame, miner moving 2.2 ms spikes → 0.29 ms; frames render-bound about 9.2 ms. Commits 6f0ed7c, 55c953c.
 
 ## Relations
 - [[task-029-fine-grid]] — parent global task.
