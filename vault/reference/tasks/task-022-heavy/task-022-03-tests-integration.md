@@ -3,7 +3,7 @@ id: task-022-03-tests-integration
 description: "Integration tests with the final Blueprints: heavy telegraphs and slams the miner, resists the shotgun knockback, crosses a corridor, placed spawner mix and cap."
 parent: task-022-heavy
 kind: task
-status: todo
+status: in-progress
 ---
 # Heavy integration tests
 

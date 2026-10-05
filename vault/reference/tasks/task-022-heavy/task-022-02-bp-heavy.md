@@ -3,7 +3,7 @@ id: task-022-02-bp-heavy
 description: "BP_Heavy grey-box (steel blue, hazard stripes, 2× visual), telegraph glow and tilt, shockwave visual, spawner weights 65/12/15/8 and cap 5, PIE."
 parent: task-022-heavy
 kind: task
-status: in-progress
+status: done
 ---
 # Heavy Blueprint
 
@@ -15,11 +15,11 @@ status: in-progress
 - done_when: PIE check with no error; docs updated; lint clean.
 - editor_state: open
 - token_ceiling: 110000
-- model: open
-- tokens: open
-- runs: open
+- model: sonnet
+- tokens: input 164, cache write 172541, cache read 8744302, output 57597
+- runs: 3
 - milestone: M3
-- result: open
+- result: BP_Heavy (steel-blue cylinder 2× chaser, 4 yellow/black stripes, red eyes, yellow plate, NoCollision parts, capsule untouched; ShockRing disc): OnTelegraphStart glow MI_GB_HeavyGlow + 14° tilt, OnSlam ring to Radius/50 over 0.24 s, OnRecover resets. New MI_GB_Heavy, MI_GB_HazardBlack, MI_GB_HeavyGlow. BP_EnemySpawner defaults 65/12/15/8 with heavy MaxAlive 5. PIE: 5 heavies alive (cap), telegraph → slam → recover → chase sampled on a teleported heavy; slam damage on a vulnerable miner not checked (C++ tests cover it); placed spawner in the open editor showed old weights (session-only, saved map has no override: verify in 022-03); no game log error. Docs bp-heavy (new), bp-enemy-spawner, blueprints-index. Commits 8b37df6, a54034c.
 
 ## Relations
 - [[task-022-heavy]] — parent global task.

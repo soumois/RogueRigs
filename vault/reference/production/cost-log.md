@@ -43,6 +43,7 @@ kind: note
 | [[task-021-02-bp-shooter]] | sonnet | 2 | 0k | 138k | 6637k | 39k |
 | [[task-021-03-tests-integration]] | opus | 1 | 0k | 106k | 1812k | 25k |
 | [[task-022-01-heavy-cpp]] | opus | 1 | 0k | 142k | 3564k | 44k |
+| [[task-022-02-bp-heavy]] | sonnet | 3 | 0k | 173k | 8744k | 58k |
 
 ## Totals
 | Scope | Input | Cache write | Cache read | Output |
