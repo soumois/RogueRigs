@@ -15,8 +15,8 @@ kind: doc
 - logic_in_bp: visual effect only (level-up disc)
 - assets: SKM_Quinn_Simple and ABP_Unarmed from the template mannequins.
 - owner_agent: agent-bp
-- weapons: StartingWeapons = [BP_BurstRifle_C, BP_Shotgun_C] in that order (task-015-02; GuaranteedWeaponClasses unchanged, still ARRShotgun natively, no duplicate spawned in PIE: one BP_Shotgun_C_0) ([[bp-shotgun]]); earlier, [BP_BurstRifle_C], WeaponAttachSocketName = None (task-008-03: attached to the capsule at the C++ default WeaponAttachOffset (0, 20, -40), no hand socket; the hand_r socket pitched the rifle about 84° up) ([[bp-burst-rifle]]). Read back after save; the in-game muzzle height is not yet checked.
-- verified: PIE on L_ArenaM1 spawns BP_Miner_C at (8100, 8100, 90.15); MaxWalkSpeed 600; Health 100, MaxHealth 100, MoveSpeed 600, MiningSpeed 1, PickupRadius 300, XPGain 1, Luck 0.
+- weapons (task-024-05): StartingWeapons = [BP_BurstRifle_C] only; GuaranteedWeaponClasses empty; WeaponCatalogue = BP_BurstRifle_C, BP_Shotgun_C, BP_TurretLauncher_C with French descriptions ("Des rafales précises qui traversent les robots.", "Une gerbe de plombs à courte portée qui repousse les robots.", "Pose des tourelles qui tirent seules sur les robots proches."); MaxWeapons 4. Earlier: WeaponAttachSocketName = None (attached to the capsule at WeaponAttachOffset (0, 20, -40), task-008-03) ([[bp-burst-rifle]]).
+- verified: PIE (task-024-05): starts with BP_BurstRifle_C_0 only; new-weapon cards for the shotgun and the turret launcher appeared in the offer (CurrentOffer) and picking them added BP_Shotgun_C_0 and BP_TurretLauncher_C_0. Note: granting many levels at once logged a PIE Blueprint Runtime Error from the level-up disc (accessing a destroyed AddStaticMeshComponent while several level-ups overlap), pre-existing in the BeginPlay effect, not fixed here. Earlier: PIE on L_ArenaM1 spawns BP_Miner_C at (8100, 8100, 90.15); MaxWalkSpeed 600; Health 100, MaxHealth 100, MoveSpeed 600, MiningSpeed 1, PickupRadius 300, XPGain 1, Luck 0.
 
 ## Relations
 - [[blueprints-index]] — parent index.
@@ -25,4 +25,5 @@ kind: doc
 - [[bp-drone]] — the drone Blueprint set as its `DroneClass`.
 - [[sys-level-up]] — the effect event the disc listens to.
 - [[bp-burst-rifle]] — its starting weapon.
-- [[bp-shotgun]] — its second starting weapon.
+- [[bp-shotgun]] — a catalogue weapon (no longer a starting weapon).
+- [[bp-turret]] — the turret launcher in its catalogue.

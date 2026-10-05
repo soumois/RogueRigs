@@ -42,6 +42,7 @@ bp-rr-player-controller  reference/tech/blueprints/bp-rr-player-controller.md
 bp-shooter  reference/tech/blueprints/bp-shooter.md
 bp-shotgun  reference/tech/blueprints/bp-shotgun.md
 bp-target-dummy  reference/tech/blueprints/bp-target-dummy.md
+bp-turret  reference/tech/blueprints/bp-turret.md
 build-toolchain  reference/tech/pipelines/build-toolchain.md
 burst-rifle  reference/gdd/weapons/burst-rifle.md
 code-review-m1  reference/tech/conventions/code-review-m1/code-review-m1.md

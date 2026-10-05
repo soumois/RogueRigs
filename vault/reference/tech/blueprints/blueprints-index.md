@@ -18,7 +18,8 @@ One node per Blueprint, template `blueprint.md`.
 - [[bp-rr-player-controller]] — BP_RRPlayerController, input wiring.
 - [[bp-rr-game-mode]] — BP_RRGameMode, default pawn and controller.
 - [[bp-burst-rifle]] — BP_BurstRifle, the burst rifle weapon.
-- [[bp-shotgun]] — BP_Shotgun, the shotgun weapon with the wave flash.
+- [[bp-shotgun]] — BP_Shotgun and BP_ShotgunPellet, the shotgun weapon and its pellet.
+- [[bp-turret]] — BP_TurretLauncher, BP_Turret and BP_TurretBullet, the turret weapon.
 - [[bp-projectile]] — BP_Projectile, the rifle bullet.
 - [[bp-target-dummy]] — BP_TargetDummy, the debug target.
 - [[bp-chaser]] — BP_Chaser, the chaser robot.
