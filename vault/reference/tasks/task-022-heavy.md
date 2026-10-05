@@ -3,7 +3,7 @@ id: task-022-heavy
 description: "Global task: heavy robot with a telegraphed ground slam, high knockback resistance, corridor-fitting capsule; joins the spawner mix with a cap of 5."
 parent: tasks-index
 kind: task
-status: in-progress
+status: done
 ---
 # Heavy robot
 
@@ -13,8 +13,8 @@ status: in-progress
 - gdd_check: Read [[enemy-heavy]], [[enemies-index]], [[arena-grid]], [[destruction-rules]], [[color-code]], [[xp-level-up]]. Conflict "twice the size" vs one-cell corridors resolved by the owner: 2× visual, capsule radius ≤ 80 uu. Open values set by the owner (2026-10-04, provisional). Weak point stays in the wishlist.
 - confirmed_by_owner: yes (2026-10-04, all subtasks pre-approved)
 - milestone: M3
-- next_step: task-022-03-tests-integration
-- result: open
+- next_step: none
+- result: All acceptance checks passed: 122/122 tests (slam timing, radius, damage, no terrain damage, knockback 0.8, corridor crossing, placed spawner 65/12/15/8 with cap 5); BP_Heavy readable in PIE after the ShockRing fix; docs sys-enemies-heavy, bp-heavy, bp-enemy-spawner. For the owner to judge in play: heavy pressure, slam readability; heavies often die before reaching the miner.
 
 ## Subtasks
 1. task-022-01-heavy-cpp — cpp: heavy class, slam and telegraph, CSV row, corridor capsule, spawner entry and cap, tests
