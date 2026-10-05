@@ -35,22 +35,26 @@ namespace RRGridStress
 		static float& Size(ARRArenaGrid* Grid) { return Grid->*(&FGridAccess::CellSize); }
 		static void Rebuild(ARRArenaGrid* Grid) { (Grid->*(&FGridAccess::BuildInstances))(); }
 
-		/** Every instanced component of the grid with its name (render HISMs then hidden collision ISMs). */
+		/** Chunk visuals of the grid (one per visual type and chunk; components null where the chunk holds none of the type). */
+		static TArray<FRRGridChunkVisual>& Visuals(ARRArenaGrid* Grid) { return Grid->*(&FGridAccess::ChunkVisuals); }
+
+		/** Every chunk component of the grid with its type name (render HISMs as "Rock", hidden collision ISMs as "RockCollision"). */
 		static TArray<TPair<FString, UInstancedStaticMeshComponent*>> Components(ARRArenaGrid* Grid)
 		{
-			return {
-				{ TEXT("Floor"), Grid->*(&FGridAccess::FloorInstances) },
-				{ TEXT("Rock"), Grid->*(&FGridAccess::RockInstances) },
-				{ TEXT("Ore"), Grid->*(&FGridAccess::OreInstances) },
-				{ TEXT("HealOre"), Grid->*(&FGridAccess::HealOreInstances) },
-				{ TEXT("SpecialOre"), Grid->*(&FGridAccess::SpecialOreInstances) },
-				{ TEXT("Barrel"), Grid->*(&FGridAccess::BarrelInstances) },
-				{ TEXT("RockCollision"), Grid->*(&FGridAccess::RockCollision) },
-				{ TEXT("OreCollision"), Grid->*(&FGridAccess::OreCollision) },
-				{ TEXT("HealOreCollision"), Grid->*(&FGridAccess::HealOreCollision) },
-				{ TEXT("SpecialOreCollision"), Grid->*(&FGridAccess::SpecialOreCollision) },
-				{ TEXT("BarrelCollision"), Grid->*(&FGridAccess::BarrelCollision) },
-			};
+			TArray<TPair<FString, UInstancedStaticMeshComponent*>> Result;
+			for (const FRRGridChunkVisual& Visual : Visuals(Grid))
+			{
+				const FString TypeName = StaticEnum<ERRCellType>()->GetNameStringByValue(static_cast<int64>(Visual.MapKey));
+				if (Visual.Render)
+				{
+					Result.Emplace(TypeName, Visual.Render.Get());
+				}
+				if (Visual.Collision)
+				{
+					Result.Emplace(TypeName + TEXT("Collision"), Visual.Collision.Get());
+				}
+			}
+			return Result;
 		}
 	};
 
@@ -143,16 +147,6 @@ namespace RRGridStress
 		FGridAccess::Height(Grid) = NewHeight;
 		FGridAccess::Spawn(Grid) = NewSpawn;
 		FGridAccess::Size(Grid) = FGridAccess::Size(Grid) / Factor;
-		if (bDisableNavigation)
-		{
-			for (const TPair<FString, UInstancedStaticMeshComponent*>& Pair : FGridAccess::Components(Grid))
-			{
-				if (Pair.Value)
-				{
-					Pair.Value->SetCanEverAffectNavigation(false);
-				}
-			}
-		}
 		FGridAccess::Rebuild(Grid);
 		const double BuildMs = (FPlatformTime::Seconds() - StartSeconds) * 1000.0;
 
@@ -196,20 +190,33 @@ namespace RRGridStress
 		{
 			Types += FString::Printf(TEXT(" %s=%d"), *UEnum::GetValueAsString(Pair.Key), Pair.Value);
 		}
-		FString Instances;
+		// Instances and chunk components summed per type name, in first-seen order.
+		TArray<FString> Names;
+		TMap<FString, int32> InstanceCounts;
+		TMap<FString, int32> ComponentCounts;
 		int32 CollisionInstances = 0;
 		for (const TPair<FString, UInstancedStaticMeshComponent*>& Pair : FGridAccess::Components(Grid))
 		{
 			const int32 Count = Pair.Value ? Pair.Value->GetInstanceCount() : 0;
-			Instances += FString::Printf(TEXT(" %s=%d"), *Pair.Key, Count);
+			if (!InstanceCounts.Contains(Pair.Key))
+			{
+				Names.Add(Pair.Key);
+			}
+			InstanceCounts.FindOrAdd(Pair.Key) += Count;
+			++ComponentCounts.FindOrAdd(Pair.Key);
 			if (Pair.Key.EndsWith(TEXT("Collision")) || Pair.Key == TEXT("Floor"))
 			{
 				CollisionInstances += Count;
 			}
 		}
+		FString Instances;
+		for (const FString& Name : Names)
+		{
+			Instances += FString::Printf(TEXT(" %s=%d/%d"), *Name, InstanceCounts[Name], ComponentCounts[Name]);
+		}
 		const FIntPoint Size = Grid->GetGridSize();
 		UE_LOG(LogRogueRigs, Display, TEXT("GridBench: grid %d x %d, cell %.2f uu, cells%s"), Size.X, Size.Y, Grid->GetCellSize(), *Types);
-		UE_LOG(LogRogueRigs, Display, TEXT("GridBench: instances%s, colliding instances %d, used physical %.0f MB"), *Instances,
+		UE_LOG(LogRogueRigs, Display, TEXT("GridBench: instances/chunk components%s, colliding instances %d, used physical %.0f MB"), *Instances,
 			CollisionInstances, UsedPhysicalMB());
 	}
 
@@ -274,10 +281,27 @@ namespace RRGridStress
 		// Destruction breakdown: the three component operations of DestroyCell timed alone, then the grid is rebuilt from its
 		// unchanged cells so the maps match the instances again.
 		{
-			TArray<TPair<FString, UInstancedStaticMeshComponent*>> Components = FGridAccess::Components(Grid);
-			UInstancedStaticMeshComponent* RockRender = Components[1].Value;
-			UInstancedStaticMeshComponent* RockCollision = Components[6].Value;
-			UInstancedStaticMeshComponent* Floor = Components[0].Value;
+			// The fullest rock chunk and a floor chunk (same chunk when it has one): the components a destruction touches.
+			UInstancedStaticMeshComponent* RockRender = nullptr;
+			UInstancedStaticMeshComponent* RockCollision = nullptr;
+			UInstancedStaticMeshComponent* Floor = nullptr;
+			FIntPoint RockChunk(-1, -1);
+			for (const FRRGridChunkVisual& Visual : FGridAccess::Visuals(Grid))
+			{
+				if (Visual.MapKey == ERRCellType::Rock && Visual.Render && (!RockRender || Visual.Render->GetInstanceCount() > RockRender->GetInstanceCount()))
+				{
+					RockRender = Visual.Render;
+					RockCollision = Visual.Collision;
+					RockChunk = Visual.Chunk;
+				}
+			}
+			for (const FRRGridChunkVisual& Visual : FGridAccess::Visuals(Grid))
+			{
+				if (Visual.MapKey == ERRCellType::Floor && Visual.Render && (!Floor || Visual.Chunk == RockChunk))
+				{
+					Floor = Visual.Render;
+				}
+			}
 			TArray<double> RenderMs;
 			TArray<double> CollisionMs;
 			TArray<double> FloorMs;

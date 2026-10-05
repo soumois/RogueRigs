@@ -34,51 +34,47 @@
  */
 namespace RRTestAccess
 {
-	/** ARRArenaGrid: instance maps and components, grid size, shake and drop state, pickup classes, marked custom data. */
+	/** ARRArenaGrid: chunk visuals and instance maps, grid size, shake and drop state, pickup classes, marked custom data. */
 	struct FGridAccess : public ARRArenaGrid
 	{
-		static const TMap<ERRCellType, FRRInstanceCellMap>& Maps(const ARRArenaGrid* Grid) { return Grid->*(&FGridAccess::InstanceCellMaps); }
+		static const TArray<FRRGridChunkVisual>& Visuals(const ARRArenaGrid* Grid) { return Grid->*(&FGridAccess::ChunkVisuals); }
 		static const TArray<int32>& InstanceIndices(const ARRArenaGrid* Grid) { return Grid->*(&FGridAccess::CellInstanceIndex); }
 		static const TMap<FIntPoint, float>& Shaking(const ARRArenaGrid* Grid) { return Grid->*(&FGridAccess::ShakingCells); }
 		static int32 Width(const ARRArenaGrid* Grid) { return Grid->*(&FGridAccess::GridWidth); }
 		static int32 Height(const ARRArenaGrid* Grid) { return Grid->*(&FGridAccess::GridHeight); }
+		static int32 ChunkSide(const ARRArenaGrid* Grid) { return Grid->*(&FGridAccess::ChunkCells); }
 		static int32 DropsOnDestroy(const ARRArenaGrid* Grid) { return Grid->*(&FGridAccess::DestroyDropCount); }
 		static TSubclassOf<ARRPickup>& HealClass(ARRArenaGrid* Grid) { return Grid->*(&FGridAccess::HealPickupClass); }
 		static TSubclassOf<ARRPickup> OreClass(const ARRArenaGrid* Grid) { return Grid->*(&FGridAccess::OrePickupClass); }
 
-		/** Rendering HISM of a cell type; nullptr for an unknown type. */
-		static UHierarchicalInstancedStaticMeshComponent* Component(const ARRArenaGrid* Grid, ERRCellType Key)
+		/** Rendering instances of a visual type, summed over its chunk HISMs. */
+		static int32 InstanceCount(const ARRArenaGrid* Grid, ERRCellType Key)
 		{
-			switch (Key)
+			int32 Count = 0;
+			for (const FRRGridChunkVisual& Visual : Visuals(Grid))
 			{
-			case ERRCellType::Floor:      return Grid->*(&FGridAccess::FloorInstances);
-			case ERRCellType::Rock:       return Grid->*(&FGridAccess::RockInstances);
-			case ERRCellType::Ore:        return Grid->*(&FGridAccess::OreInstances);
-			case ERRCellType::HealOre:    return Grid->*(&FGridAccess::HealOreInstances);
-			case ERRCellType::SpecialOre: return Grid->*(&FGridAccess::SpecialOreInstances);
-			case ERRCellType::Barrel:     return Grid->*(&FGridAccess::BarrelInstances);
-			default:                      return nullptr;
+				Count += Visual.MapKey == Key && Visual.Render ? Visual.Render->GetInstanceCount() : 0;
 			}
+			return Count;
 		}
 
-		/** Hidden collision ISM of a block type; nullptr for Floor (the floor HISM collides itself). */
-		static UInstancedStaticMeshComponent* CollisionComponent(const ARRArenaGrid* Grid, ERRCellType Key)
+		/** Chunk HISM rendering the current instance of Cell; nullptr when none. */
+		static UHierarchicalInstancedStaticMeshComponent* CellComponent(const ARRArenaGrid* Grid, FIntPoint Cell)
 		{
-			switch (Key)
-			{
-			case ERRCellType::Rock:       return Grid->*(&FGridAccess::RockCollision);
-			case ERRCellType::Ore:        return Grid->*(&FGridAccess::OreCollision);
-			case ERRCellType::HealOre:    return Grid->*(&FGridAccess::HealOreCollision);
-			case ERRCellType::SpecialOre: return Grid->*(&FGridAccess::SpecialOreCollision);
-			case ERRCellType::Barrel:     return Grid->*(&FGridAccess::BarrelCollision);
-			default:                      return nullptr;
-			}
+			return (Grid->*(&FGridAccess::GetCellRenderComponent))(Cell);
+		}
+
+		/** Hidden collision ISM of the chunk visual holding the block in Cell; nullptr for a floor or void cell. */
+		static UInstancedStaticMeshComponent* CellCollisionComponent(const ARRArenaGrid* Grid, FIntPoint Cell)
+		{
+			const int32 Index = (Grid->*(&FGridAccess::GetVisualIndex))((Grid->*(&FGridAccess::GetCellMapKey))(Cell), Cell);
+			return Index != INDEX_NONE ? Visuals(Grid)[Index].Collision.Get() : nullptr;
 		}
 
 		/** Marked custom data float of the rendering instance of the block in Cell; -1 when unreadable. */
 		static float GetMarkedData(const ARRArenaGrid* Grid, FIntPoint Cell)
 		{
-			UHierarchicalInstancedStaticMeshComponent* BlockComponent = (Grid->*(&FGridAccess::GetBlockComponent))(Grid->GetCellType(Cell));
+			UHierarchicalInstancedStaticMeshComponent* BlockComponent = Grid->IsBlockCell(Cell) ? CellComponent(Grid, Cell) : nullptr;
 			const TArray<int32>& Indices = Grid->*(&FGridAccess::CellInstanceIndex);
 			const int32 CellIndex = Cell.Y * Grid->GetGridSize().X + Cell.X;
 			if (!BlockComponent || !Indices.IsValidIndex(CellIndex) || Indices[CellIndex] == INDEX_NONE)

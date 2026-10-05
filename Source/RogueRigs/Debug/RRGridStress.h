@@ -11,8 +11,8 @@ class UWorld;
  * Stress tooling for the cell size question (vault: sys-stress, stress-grid-cells). Nothing here runs unless a cheat command
  * calls it; the shipped grid, layout and defaults never change.
  * - rr.Stress.Subdivide <Factor> [NoNav]: splits every cell of the arena grid into Factor x Factor cells of CellSize / Factor (same
- *   world size, same block area), rebuilds the instances and the flow field. 1 = rebuild at the original size (baseline). NoNav 1 also turns off
- *   navigation relevance of the grid components (what-if of the destruction fix measured in stress-grid-cells).
+ *   world size, same block area), rebuilds the instances and the flow field. 1 = rebuild at the original size (baseline). NoNav is kept for
+ *   old command lines and has no effect since task-029-01 (grid components are never navigation relevant).
  * - rr.Stress.GridBench [Iterations] [Quit]: logs "GridBench:" lines (instance counts, memory, flow-field BFS ms, spawn
  *   candidate scan ms, line of sight us per ray, explosion terrain destruction ms), then exits when Quit is 1.
  */
@@ -22,8 +22,8 @@ namespace RRGridStress
 	 * Splits every cell of Grid into Factor x Factor cells (CellSize / Factor). Each sub cell keeps the type of its cell, except a
 	 * spawn cell (only the middle sub cell is Spawn, the others Floor) and a barrel (only the middle sub cell is Barrel, the others
 	 * Rock, so one barrel stays one explosion). Rebuilds the instances (health, maps, marks reset) and forces a flow-field
-	 * computation. bDisableNavigation: every grid component stops affecting navigation first (no per-instance navigation
-	 * bounds update on add or remove). Returns false when Grid is null, empty or Factor < 1.
+	 * computation. bDisableNavigation: no effect since task-029-01 (the grid
+	 * never affects navigation); kept for old command lines. Returns false when Grid is null, empty or Factor < 1.
 	 */
 	ROGUERIGS_API bool SubdivideGrid(ARRArenaGrid* Grid, int32 Factor, bool bDisableNavigation = false);
 

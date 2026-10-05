@@ -67,31 +67,50 @@ namespace RRDigTests
 		int32 Errors = 0;
 		int32 MappedInstances = 0;
 
-		for (const TPair<ERRCellType, FRRInstanceCellMap>& Pair : FGridAccess::Maps(Grid))
+		const int32 ChunkSide = FGridAccess::ChunkSide(Grid);
+		for (const FRRGridChunkVisual& Visual : FGridAccess::Visuals(Grid))
 		{
-			const UHierarchicalInstancedStaticMeshComponent* Component = FGridAccess::Component(Grid, Pair.Key);
-			const TArray<FIntPoint>& InstanceCells = Pair.Value.InstanceCells;
-			if (!Component || Component->GetInstanceCount() != InstanceCells.Num())
+			const UHierarchicalInstancedStaticMeshComponent* Component = Visual.Render;
+			const TArray<FIntPoint>& InstanceCells = Visual.InstanceCells;
+			if (!Component)
 			{
-				Test.AddError(FString::Printf(TEXT("map %s has %d entries, HISM has %d instances"), *UEnum::GetValueAsString(Pair.Key),
-					InstanceCells.Num(), Component ? Component->GetInstanceCount() : -1));
+				if (InstanceCells.Num() > 0)
+				{
+					Test.AddError(FString::Printf(TEXT("chunk (%d, %d) %s has %d entries and no HISM"), Visual.Chunk.X, Visual.Chunk.Y,
+						*UEnum::GetValueAsString(Visual.MapKey), InstanceCells.Num()));
+					++Errors;
+				}
+				continue;
+			}
+			if (Component->GetInstanceCount() != InstanceCells.Num())
+			{
+				Test.AddError(FString::Printf(TEXT("chunk (%d, %d) map %s has %d entries, HISM has %d instances"), Visual.Chunk.X, Visual.Chunk.Y,
+					*UEnum::GetValueAsString(Visual.MapKey), InstanceCells.Num(), Component->GetInstanceCount()));
 				++Errors;
 				continue;
 			}
-			const UInstancedStaticMeshComponent* Collision = FGridAccess::CollisionComponent(Grid, Pair.Key);
-			if (Pair.Key != ERRCellType::Floor && (!Collision || Collision->GetInstanceCount() != InstanceCells.Num()))
+			const UInstancedStaticMeshComponent* Collision = Visual.Collision;
+			if (Visual.MapKey != ERRCellType::Floor && (!Collision || Collision->GetInstanceCount() != InstanceCells.Num()))
 			{
-				Test.AddError(FString::Printf(TEXT("map %s has %d entries, collision ISM has %d instances"), *UEnum::GetValueAsString(Pair.Key),
-					InstanceCells.Num(), Collision ? Collision->GetInstanceCount() : -1));
+				Test.AddError(FString::Printf(TEXT("chunk (%d, %d) map %s has %d entries, collision ISM has %d instances"), Visual.Chunk.X, Visual.Chunk.Y,
+					*UEnum::GetValueAsString(Visual.MapKey), InstanceCells.Num(), Collision ? Collision->GetInstanceCount() : -1));
 				++Errors;
 				continue;
 			}
+			// No grid component affects navigation (no per-instance navigation bounds update on add or remove).
+			if (Component->CanEverAffectNavigation() || (Collision && Collision->CanEverAffectNavigation()))
+			{
+				Test.AddError(FString::Printf(TEXT("chunk (%d, %d) %s is navigation relevant"), Visual.Chunk.X, Visual.Chunk.Y, *UEnum::GetValueAsString(Visual.MapKey)));
+				++Errors;
+			}
+			const ERRCellType MapKey = Visual.MapKey;
 
 			for (int32 Instance = 0; Instance < InstanceCells.Num(); ++Instance)
 			{
 				const FIntPoint Cell = InstanceCells[Instance];
 				const ERRCellType Type = Grid->GetCellType(Cell);
-				const bool bTypeMatches = Pair.Key == ERRCellType::Floor ? (Type == ERRCellType::Floor || Type == ERRCellType::Spawn) : Type == Pair.Key;
+				const bool bTypeMatches = (MapKey == ERRCellType::Floor ? (Type == ERRCellType::Floor || Type == ERRCellType::Spawn) : Type == MapKey)
+					&& Cell.X / ChunkSide == Visual.Chunk.X && Cell.Y / ChunkSide == Visual.Chunk.Y;
 				const int32 CellIndex = Cell.Y * Width + Cell.X;
 				FTransform InstanceTransform;
 				Component->GetInstanceTransform(Instance, InstanceTransform, /*bWorldSpace*/ false);
@@ -108,7 +127,7 @@ namespace RRDigTests
 					if (Errors < 10)
 					{
 						Test.AddError(FString::Printf(TEXT("%s instance %d -> cell (%d, %d): type %s, cell index %d, on cell %d"),
-							*UEnum::GetValueAsString(Pair.Key), Instance, Cell.X, Cell.Y, *UEnum::GetValueAsString(Type),
+							*UEnum::GetValueAsString(MapKey), Instance, Cell.X, Cell.Y, *UEnum::GetValueAsString(Type),
 							Indices.IsValidIndex(CellIndex) ? Indices[CellIndex] : -2, bOnCell ? 1 : 0));
 					}
 					++Errors;
@@ -160,8 +179,8 @@ bool FRRDigRockDestroyTest::RunTest(const FString& Parameters)
 	TestNearlyEqual(TEXT("rock health 1.5"), Grid->GetCellHealth(RockCell), 1.5f);
 	CheckInstanceMaps(*this, Grid);
 
-	const int32 RockBefore = FGridAccess::Component(Grid, ERRCellType::Rock)->GetInstanceCount();
-	const int32 FloorBefore = FGridAccess::Component(Grid, ERRCellType::Floor)->GetInstanceCount();
+	const int32 RockBefore = FGridAccess::InstanceCount(Grid, ERRCellType::Rock);
+	const int32 FloorBefore = FGridAccess::InstanceCount(Grid, ERRCellType::Floor);
 
 	// One ApplyTerrainDamage(dt) per frame, as the drone does at mining speed 1.
 	int32 DestroyFrame = INDEX_NONE;
@@ -179,8 +198,8 @@ bool FRRDigRockDestroyTest::RunTest(const FString& Parameters)
 	TestTrue(TEXT("rock destroyed within 1.5 s +- 1 frame"), DestroyFrame >= 89 && DestroyFrame <= 91);
 	TestEqual(TEXT("cell is floor after destruction"), Grid->GetCellType(RockCell), ERRCellType::Floor);
 	TestFalse(TEXT("cell is no longer a block"), Grid->IsBlockCell(RockCell));
-	TestEqual(TEXT("rock HISM lost one instance"), FGridAccess::Component(Grid, ERRCellType::Rock)->GetInstanceCount(), RockBefore - 1);
-	TestEqual(TEXT("floor HISM gained one instance"), FGridAccess::Component(Grid, ERRCellType::Floor)->GetInstanceCount(), FloorBefore + 1);
+	TestEqual(TEXT("rock HISM lost one instance"), FGridAccess::InstanceCount(Grid, ERRCellType::Rock), RockBefore - 1);
+	TestEqual(TEXT("floor HISM gained one instance"), FGridAccess::InstanceCount(Grid, ERRCellType::Floor), FloorBefore + 1);
 	TestTrue(TEXT("instance maps consistent after destruction"), CheckInstanceMaps(*this, Grid));
 	TestEqual(TEXT("OnCellDestroyed fired once"), Recorder->GetDestroyedCells().Num(), 1);
 	TestEqual(TEXT("rock drops nothing"), CountPickups(TestWorld.Get()), 0);
@@ -514,8 +533,8 @@ bool FRRDigShakeKeepsCollisionTest::RunTest(const FString& Parameters)
 		}
 	}
 
-	const UHierarchicalInstancedStaticMeshComponent* RockRender = FGridAccess::Component(Grid, ERRCellType::Rock);
-	const UInstancedStaticMeshComponent* RockCollisionComponent = FGridAccess::CollisionComponent(Grid, ERRCellType::Rock);
+	const UHierarchicalInstancedStaticMeshComponent* RockRender = FGridAccess::CellComponent(Grid, RockCell);
+	const UInstancedStaticMeshComponent* RockCollisionComponent = FGridAccess::CellCollisionComponent(Grid, RockCell);
 	const int32 RockIndex = FGridAccess::InstanceIndices(Grid)[RockCell.Y * FGridAccess::Width(Grid) + RockCell.X];
 	if (!TestNotNull(TEXT("rock collision ISM"), RockCollisionComponent) || !TestTrue(TEXT("rock instance mapped"), RockIndex != INDEX_NONE))
 	{
@@ -613,6 +632,61 @@ bool FRRDigShakeKeepsCollisionTest::RunTest(const FString& Parameters)
 	Grid->SetCellShaking(RockCell, false);
 	TestWorld.Tick();
 	TestTrue(TEXT("instance maps consistent after the shake"), CheckInstanceMaps(*this, Grid));
+	return true;
+}
+
+IMPLEMENT_SIMPLE_AUTOMATION_TEST(FRRDigChunkedInstancesTest, "RogueRigs.Dig.ChunkedInstances",
+	EAutomationTestFlags::EditorContext | EAutomationTestFlags::EngineFilter)
+
+bool FRRDigChunkedInstancesTest::RunTest(const FString& Parameters)
+{
+	FTestWorld TestWorld;
+	ARRArenaGrid* Grid = SpawnGrid(*this, TestWorld);
+	if (!Grid)
+	{
+		return false;
+	}
+
+	// The 80 x 80 arena splits in several rock chunks; a destruction only changes the chunk of its cell.
+	TMap<const UHierarchicalInstancedStaticMeshComponent*, int32> CountsBefore;
+	int32 RockChunks = 0;
+	for (const FRRGridChunkVisual& Visual : FGridAccess::Visuals(Grid))
+	{
+		if (Visual.Render)
+		{
+			CountsBefore.Add(Visual.Render, Visual.Render->GetInstanceCount());
+			RockChunks += Visual.MapKey == ERRCellType::Rock ? 1 : 0;
+		}
+	}
+	TestTrue(TEXT("rock split over several chunk HISMs"), RockChunks > 1);
+
+	UHierarchicalInstancedStaticMeshComponent* RockChunk = FGridAccess::CellComponent(Grid, RockCell);
+	if (!TestNotNull(TEXT("rock cell chunk HISM"), RockChunk) || !TestTrue(TEXT("destroyed"), Grid->DestroyCell(RockCell, ERRTerrainDamageSource::Drone)))
+	{
+		return false;
+	}
+	UHierarchicalInstancedStaticMeshComponent* FloorChunk = FGridAccess::CellComponent(Grid, RockCell);
+	TestNotNull(TEXT("floor chunk HISM of the destroyed cell"), FloorChunk);
+
+	int32 Changed = 0;
+	for (const FRRGridChunkVisual& Visual : FGridAccess::Visuals(Grid))
+	{
+		if (!Visual.Render)
+		{
+			continue;
+		}
+		const int32* Before = CountsBefore.Find(Visual.Render);
+		const int32 Delta = Visual.Render->GetInstanceCount() - (Before ? *Before : 0);
+		if (Delta != 0)
+		{
+			++Changed;
+			TestTrue(TEXT("only the destroyed cell's chunk changed"), Visual.Chunk.X == RockCell.X / FGridAccess::ChunkSide(Grid)
+				&& Visual.Chunk.Y == RockCell.Y / FGridAccess::ChunkSide(Grid));
+			TestEqual(TEXT("rock chunk -1, floor chunk +1"), Delta, Visual.Render == RockChunk ? -1 : 1);
+		}
+	}
+	TestEqual(TEXT("two chunk HISMs changed (rock and floor)"), Changed, 2);
+	TestTrue(TEXT("instance maps consistent"), CheckInstanceMaps(*this, Grid));
 	return true;
 }
 

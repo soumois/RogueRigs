@@ -49,6 +49,8 @@ UHierarchicalInstancedStaticMeshComponent* ARRArenaGrid::CreateGridComponent(FNa
 	UHierarchicalInstancedStaticMeshComponent* Component = CreateDefaultSubobject<UHierarchicalInstancedStaticMeshComponent>(Name);
 	Component->SetupAttachment(GridRoot);
 	Component->SetCollisionProfileName(bWithCollision ? UCollisionProfile::BlockAll_ProfileName : UCollisionProfile::NoCollision_ProfileName);
+	// No navmesh in the arena (robots use the flow field): a navigation-relevant ISM recomputes its bounds over every instance on each add or remove.
+	Component->SetCanEverAffectNavigation(false);
 	return Component;
 }
 
@@ -62,6 +64,7 @@ UInstancedStaticMeshComponent* ARRArenaGrid::CreateCollisionComponent(FName Name
 	Component->SetHiddenInGame(true);
 	Component->SetCastShadow(false);
 	Component->SetRemoveSwap();
+	Component->SetCanEverAffectNavigation(false);
 	return Component;
 }
 
@@ -245,10 +248,11 @@ bool ARRArenaGrid::IsBlockType(ERRCellType Type)
 	}
 }
 
-UHierarchicalInstancedStaticMeshComponent* ARRArenaGrid::GetBlockComponent(ERRCellType Type) const
+UHierarchicalInstancedStaticMeshComponent* ARRArenaGrid::GetTemplateComponent(ERRCellType MapKey) const
 {
-	switch (Type)
+	switch (MapKey)
 	{
+	case ERRCellType::Floor:      return FloorInstances;
 	case ERRCellType::Rock:       return RockInstances;
 	case ERRCellType::Ore:        return OreInstances;
 	case ERRCellType::HealOre:    return HealOreInstances;
@@ -258,9 +262,9 @@ UHierarchicalInstancedStaticMeshComponent* ARRArenaGrid::GetBlockComponent(ERRCe
 	}
 }
 
-UInstancedStaticMeshComponent* ARRArenaGrid::GetBlockCollisionComponent(ERRCellType Type) const
+UInstancedStaticMeshComponent* ARRArenaGrid::GetTemplateCollisionComponent(ERRCellType MapKey) const
 {
-	switch (Type)
+	switch (MapKey)
 	{
 	case ERRCellType::Rock:       return RockCollision;
 	case ERRCellType::Ore:        return OreCollision;
@@ -271,9 +275,104 @@ UInstancedStaticMeshComponent* ARRArenaGrid::GetBlockCollisionComponent(ERRCellT
 	}
 }
 
-UHierarchicalInstancedStaticMeshComponent* ARRArenaGrid::GetRenderComponent(ERRCellType MapKey) const
+int32 ARRArenaGrid::GetVisualSlot(ERRCellType MapKey)
 {
-	return MapKey == ERRCellType::Floor ? FloorInstances.Get() : GetBlockComponent(MapKey);
+	switch (MapKey)
+	{
+	case ERRCellType::Floor:      return 0;
+	case ERRCellType::Rock:       return 1;
+	case ERRCellType::Ore:        return 2;
+	case ERRCellType::HealOre:    return 3;
+	case ERRCellType::SpecialOre: return 4;
+	case ERRCellType::Barrel:     return 5;
+	default:                      return INDEX_NONE;
+	}
+}
+
+int32 ARRArenaGrid::GetVisualIndex(ERRCellType MapKey, FIntPoint Cell) const
+{
+	const int32 Slot = GetVisualSlot(MapKey);
+	if (Slot == INDEX_NONE || !IsValidCell(Cell) || ChunkCells <= 0)
+	{
+		return INDEX_NONE;
+	}
+	const int32 ChunksPerSlot = ChunkCount.X * ChunkCount.Y;
+	const int32 Index = Slot * ChunksPerSlot + (Cell.Y / ChunkCells) * ChunkCount.X + Cell.X / ChunkCells;
+	return ChunkVisuals.IsValidIndex(Index) ? Index : INDEX_NONE;
+}
+
+ERRCellType ARRArenaGrid::GetCellMapKey(FIntPoint Cell) const
+{
+	const ERRCellType Type = GetCellType(Cell);
+	if (Type == ERRCellType::Void)
+	{
+		return ERRCellType::Void;
+	}
+	return IsBlockType(Type) ? Type : ERRCellType::Floor;
+}
+
+UHierarchicalInstancedStaticMeshComponent* ARRArenaGrid::GetCellRenderComponent(FIntPoint Cell) const
+{
+	const int32 VisualIndex = GetVisualIndex(GetCellMapKey(Cell), Cell);
+	return VisualIndex != INDEX_NONE ? ChunkVisuals[VisualIndex].Render.Get() : nullptr;
+}
+
+UInstancedStaticMeshComponent* ARRArenaGrid::CreateChunkComponent(TSubclassOf<UInstancedStaticMeshComponent> Class, const UInstancedStaticMeshComponent* Template, FIntPoint Chunk)
+{
+	const FName BaseName(*FString::Printf(TEXT("%s_%d_%d"), *Template->GetName(), Chunk.X, Chunk.Y));
+	UInstancedStaticMeshComponent* Component = NewObject<UInstancedStaticMeshComponent>(this, Class, MakeUniqueObjectName(this, Class, BaseName), RF_Transient);
+	// Same look and collision as the template (set in C++ or by a Blueprint subclass).
+	Component->SetMobility(Template->Mobility);
+	Component->SetCollisionProfileName(Template->GetCollisionProfileName());
+	Component->SetCollisionEnabled(Template->GetCollisionEnabled());
+	Component->SetVisibility(Template->GetVisibleFlag());
+	Component->SetHiddenInGame(Template->bHiddenInGame);
+	Component->SetCastShadow(Template->CastShadow);
+	Component->SetStaticMesh(Template->GetStaticMesh());
+	for (int32 MaterialIndex = 0; MaterialIndex < Template->GetNumOverrideMaterials(); ++MaterialIndex)
+	{
+		Component->SetMaterial(MaterialIndex, Template->OverrideMaterials[MaterialIndex]);
+	}
+	Component->SetNumCustomDataFloats(Template->NumCustomDataFloats);
+	// No navmesh in the arena; distance fields only when bGridAffectsDistanceFields (no buffer upload on every instance change).
+	Component->SetCanEverAffectNavigation(false);
+	Component->bAffectDistanceFieldLighting = bGridAffectsDistanceFields && Template->bAffectDistanceFieldLighting;
+	if (Template->SupportsRemoveSwap())
+	{
+		Component->SetRemoveSwap();
+	}
+	Component->SetupAttachment(GridRoot);
+	if (GetWorld())
+	{
+		Component->RegisterComponent();
+	}
+	return Component;
+}
+
+FRRGridChunkVisual* ARRArenaGrid::GetOrCreateVisual(ERRCellType MapKey, FIntPoint Cell)
+{
+	const int32 VisualIndex = GetVisualIndex(MapKey, Cell);
+	UHierarchicalInstancedStaticMeshComponent* Template = GetTemplateComponent(MapKey);
+	if (VisualIndex == INDEX_NONE || !Template)
+	{
+		return nullptr;
+	}
+
+	FRRGridChunkVisual& Visual = ChunkVisuals[VisualIndex];
+	if (!Visual.Render)
+	{
+		Visual.MapKey = MapKey;
+		Visual.Chunk = FIntPoint(Cell.X / ChunkCells, Cell.Y / ChunkCells);
+		Visual.Render = CastChecked<UHierarchicalInstancedStaticMeshComponent>(
+			CreateChunkComponent(UHierarchicalInstancedStaticMeshComponent::StaticClass(), Template, Visual.Chunk));
+		VisualByComponent.Add(Visual.Render, VisualIndex);
+		if (const UInstancedStaticMeshComponent* CollisionTemplate = GetTemplateCollisionComponent(MapKey))
+		{
+			Visual.Collision = CreateChunkComponent(UInstancedStaticMeshComponent::StaticClass(), CollisionTemplate, Visual.Chunk);
+			VisualByComponent.Add(Visual.Collision, VisualIndex);
+		}
+	}
+	return &Visual;
 }
 
 float ARRArenaGrid::GetBlockMaxHealth(ERRCellType Type) const
@@ -291,17 +390,32 @@ float ARRArenaGrid::GetBlockMaxHealth(ERRCellType Type) const
 
 void ARRArenaGrid::ClearAllInstances()
 {
-	const TArray<UInstancedStaticMeshComponent*> Components = { FloorInstances.Get(), RockInstances.Get(), OreInstances.Get(),
+	for (FRRGridChunkVisual& Visual : ChunkVisuals)
+	{
+		if (IsValid(Visual.Render))
+		{
+			Visual.Render->DestroyComponent();
+		}
+		if (IsValid(Visual.Collision))
+		{
+			Visual.Collision->DestroyComponent();
+		}
+	}
+	ChunkVisuals.Reset();
+	VisualByComponent.Reset();
+	ChunkCount = FIntPoint::ZeroValue;
+
+	// Templates hold no instances (a level saved before chunking may still carry some).
+	const TArray<UInstancedStaticMeshComponent*> Templates = { FloorInstances.Get(), RockInstances.Get(), OreInstances.Get(),
 		HealOreInstances.Get(), SpecialOreInstances.Get(), BarrelInstances.Get(),
 		RockCollision.Get(), OreCollision.Get(), HealOreCollision.Get(), SpecialOreCollision.Get(), BarrelCollision.Get() };
-	for (UInstancedStaticMeshComponent* Component : Components)
+	for (UInstancedStaticMeshComponent* Component : Templates)
 	{
-		if (Component)
+		if (Component && Component->GetInstanceCount() > 0)
 		{
 			Component->ClearInstances();
 		}
 	}
-	InstanceCellMaps.Reset();
 }
 
 FTransform ARRArenaGrid::GetFloorInstanceTransform(FIntPoint Cell) const
@@ -329,13 +443,13 @@ void ARRArenaGrid::BuildInstances()
 	MarkedCells.Reset();
 	SetActorTickEnabled(false);
 
-	struct FVisual
+	struct FVisualAsset
 	{
 		ERRCellType MapKey;
 		UStaticMesh* Mesh;
 		UMaterialInterface* Material;
 	};
-	const FVisual Visuals[] = {
+	const FVisualAsset Assets[] = {
 		{ ERRCellType::Floor, FloorMesh, FloorMaterial },
 		{ ERRCellType::Rock, RockMesh, RockMaterial },
 		{ ERRCellType::Ore, OreMesh, OreMaterial },
@@ -343,27 +457,28 @@ void ARRArenaGrid::BuildInstances()
 		{ ERRCellType::SpecialOre, SpecialOreMesh, SpecialOreMaterial },
 		{ ERRCellType::Barrel, BarrelMesh, BarrelMaterial },
 	};
-	for (const FVisual& Visual : Visuals)
+	// The templates carry the settings every chunk component copies (CreateChunkComponent).
+	for (const FVisualAsset& Asset : Assets)
 	{
-		if (UHierarchicalInstancedStaticMeshComponent* Component = GetRenderComponent(Visual.MapKey))
+		if (UHierarchicalInstancedStaticMeshComponent* Template = GetTemplateComponent(Asset.MapKey))
 		{
-			Component->SetStaticMesh(Visual.Mesh);
-			Component->SetMaterial(0, Visual.Material);
+			Template->SetStaticMesh(Asset.Mesh);
+			Template->SetMaterial(0, Asset.Material);
 			// Block HISMs only render: their collision lives in the matching collision ISM (enforced in case a subclass changed it).
-			if (Visual.MapKey != ERRCellType::Floor)
+			if (Asset.MapKey != ERRCellType::Floor)
 			{
-				Component->SetCollisionEnabled(ECollisionEnabled::NoCollision);
+				Template->SetCollisionEnabled(ECollisionEnabled::NoCollision);
 				// Room for the marked flag (objective rocks); set while the component is empty.
-				if (Component->NumCustomDataFloats <= MarkedCustomDataIndex)
+				if (Template->NumCustomDataFloats <= MarkedCustomDataIndex)
 				{
-					Component->SetNumCustomDataFloats(MarkedCustomDataIndex + 1);
+					Template->SetNumCustomDataFloats(MarkedCustomDataIndex + 1);
 				}
 			}
 		}
-		if (UInstancedStaticMeshComponent* Collision = GetBlockCollisionComponent(Visual.MapKey))
+		if (UInstancedStaticMeshComponent* CollisionTemplate = GetTemplateCollisionComponent(Asset.MapKey))
 		{
 			// Same mesh, so the collision shape matches the block at rest.
-			Collision->SetStaticMesh(Visual.Mesh);
+			CollisionTemplate->SetStaticMesh(Asset.Mesh);
 		}
 	}
 
@@ -373,14 +488,21 @@ void ARRArenaGrid::BuildInstances()
 	CellDigDrops.Init(0, Cells.Num());
 	CellInstanceIndex.Init(INDEX_NONE, Cells.Num());
 
-	// Gather per component first and add in one batch; AddInstances appends, so instance i of a batch
+	ChunkCells = FMath::Max(1, ChunkCells);
+	ChunkCount = FIntPoint(FMath::DivideAndRoundUp(GridWidth, ChunkCells), FMath::DivideAndRoundUp(GridHeight, ChunkCells));
+	constexpr int32 VisualSlotCount = 6;
+	ChunkVisuals.SetNum(VisualSlotCount * ChunkCount.X * ChunkCount.Y);
+
+	// Gather per chunk visual first and add in one batch; AddInstances appends, so instance i of a batch
 	// gets index (count before batch) + i, which is recorded in both maps.
 	struct FBatch
 	{
+		ERRCellType MapKey = ERRCellType::Floor;
 		TArray<FTransform> Transforms;
 		TArray<FIntPoint> BatchCells;
 	};
-	TMap<ERRCellType, FBatch> Batches;
+	TArray<FBatch> Batches;
+	Batches.SetNum(ChunkVisuals.Num());
 
 	for (int32 Y = 0; Y < GridHeight; ++Y)
 	{
@@ -394,9 +516,15 @@ void ARRArenaGrid::BuildInstances()
 			}
 
 			// A block cell has no floor instance: a floor top coplanar with the block bottom is what we avoid.
-			const bool bIsBlock = IsBlockType(Type) && GetBlockComponent(Type) != nullptr;
+			const bool bIsBlock = IsBlockType(Type) && GetTemplateComponent(Type) != nullptr;
 			const ERRCellType MapKey = bIsBlock ? Type : ERRCellType::Floor;
-			FBatch& Batch = Batches.FindOrAdd(MapKey);
+			const int32 VisualIndex = GetVisualIndex(MapKey, Cell);
+			if (VisualIndex == INDEX_NONE)
+			{
+				continue;
+			}
+			FBatch& Batch = Batches[VisualIndex];
+			Batch.MapKey = MapKey;
 			Batch.Transforms.Add(bIsBlock ? GetBlockInstanceTransform(Cell) : GetFloorInstanceTransform(Cell));
 			Batch.BatchCells.Add(Cell);
 
@@ -408,27 +536,30 @@ void ARRArenaGrid::BuildInstances()
 		}
 	}
 
-	for (TPair<ERRCellType, FBatch>& Pair : Batches)
+	for (FBatch& Batch : Batches)
 	{
-		UHierarchicalInstancedStaticMeshComponent* Component = GetRenderComponent(Pair.Key);
-		if (!Component || Pair.Value.Transforms.Num() == 0)
+		if (Batch.Transforms.Num() == 0)
+		{
+			continue;
+		}
+		FRRGridChunkVisual* Visual = GetOrCreateVisual(Batch.MapKey, Batch.BatchCells[0]);
+		if (!Visual || !Visual->Render)
 		{
 			continue;
 		}
 
-		const int32 FirstIndex = Component->GetInstanceCount();
-		Component->AddInstances(Pair.Value.Transforms, /*bShouldReturnIndices*/ false, /*bWorldSpace*/ false);
-		if (UInstancedStaticMeshComponent* Collision = GetBlockCollisionComponent(Pair.Key))
+		const int32 FirstIndex = Visual->Render->GetInstanceCount();
+		Visual->Render->AddInstances(Batch.Transforms, /*bShouldReturnIndices*/ false, /*bWorldSpace*/ false);
+		if (Visual->Collision)
 		{
-			Collision->AddInstances(Pair.Value.Transforms, /*bShouldReturnIndices*/ false, /*bWorldSpace*/ false);
+			Visual->Collision->AddInstances(Batch.Transforms, /*bShouldReturnIndices*/ false, /*bWorldSpace*/ false);
 		}
 
-		FRRInstanceCellMap& Map = InstanceCellMaps.FindOrAdd(Pair.Key);
-		Map.InstanceCells.SetNum(FirstIndex);
-		for (int32 Offset = 0; Offset < Pair.Value.BatchCells.Num(); ++Offset)
+		Visual->InstanceCells.SetNum(FirstIndex);
+		for (int32 Offset = 0; Offset < Batch.BatchCells.Num(); ++Offset)
 		{
-			const FIntPoint Cell = Pair.Value.BatchCells[Offset];
-			Map.InstanceCells.Add(Cell);
+			const FIntPoint Cell = Batch.BatchCells[Offset];
+			Visual->InstanceCells.Add(Cell);
 			CellInstanceIndex[GetCellIndex(Cell)] = FirstIndex + Offset;
 		}
 	}
@@ -436,60 +567,58 @@ void ARRArenaGrid::BuildInstances()
 
 int32 ARRArenaGrid::AddCellInstance(ERRCellType MapKey, FIntPoint Cell, const FTransform& LocalTransform)
 {
-	UHierarchicalInstancedStaticMeshComponent* Component = GetRenderComponent(MapKey);
-	if (!Component)
+	FRRGridChunkVisual* Visual = GetOrCreateVisual(MapKey, Cell);
+	if (!Visual || !Visual->Render)
 	{
 		return INDEX_NONE;
 	}
 
 	// HISM appends: the returned index is the previous instance count. The collision ISM appends the same instance.
-	const int32 InstanceIndex = Component->AddInstance(LocalTransform, /*bWorldSpace*/ false);
+	const int32 InstanceIndex = Visual->Render->AddInstance(LocalTransform, /*bWorldSpace*/ false);
 	if (InstanceIndex == INDEX_NONE)
 	{
 		return INDEX_NONE;
 	}
-	if (UInstancedStaticMeshComponent* Collision = GetBlockCollisionComponent(MapKey))
+	if (Visual->Collision)
 	{
-		Collision->AddInstance(LocalTransform, /*bWorldSpace*/ false);
+		Visual->Collision->AddInstance(LocalTransform, /*bWorldSpace*/ false);
 	}
 
-	TArray<FIntPoint>& InstanceCells = InstanceCellMaps.FindOrAdd(MapKey).InstanceCells;
-	if (InstanceCells.Num() <= InstanceIndex)
+	if (Visual->InstanceCells.Num() <= InstanceIndex)
 	{
-		InstanceCells.SetNum(InstanceIndex + 1);
+		Visual->InstanceCells.SetNum(InstanceIndex + 1);
 	}
-	InstanceCells[InstanceIndex] = Cell;
+	Visual->InstanceCells[InstanceIndex] = Cell;
 	CellInstanceIndex[GetCellIndex(Cell)] = InstanceIndex;
 	return InstanceIndex;
 }
 
-void ARRArenaGrid::RemoveCellInstance(ERRCellType MapKey, int32 InstanceIndex)
+void ARRArenaGrid::RemoveCellInstance(ERRCellType MapKey, FIntPoint Cell, int32 InstanceIndex)
 {
-	UHierarchicalInstancedStaticMeshComponent* Component = GetRenderComponent(MapKey);
-	FRRInstanceCellMap* Map = InstanceCellMaps.Find(MapKey);
-	if (!Component || !Map || !Map->InstanceCells.IsValidIndex(InstanceIndex))
+	const int32 VisualIndex = GetVisualIndex(MapKey, Cell);
+	FRRGridChunkVisual* Visual = VisualIndex != INDEX_NONE ? &ChunkVisuals[VisualIndex] : nullptr;
+	if (!Visual || !Visual->Render || !Visual->InstanceCells.IsValidIndex(InstanceIndex))
 	{
 		return;
 	}
 
-	const FIntPoint RemovedCell = Map->InstanceCells[InstanceIndex];
-	const int32 LastIndex = Map->InstanceCells.Num() - 1;
-	if (!Component->RemoveInstance(InstanceIndex))
+	const FIntPoint RemovedCell = Visual->InstanceCells[InstanceIndex];
+	const int32 LastIndex = Visual->InstanceCells.Num() - 1;
+	if (!Visual->Render->RemoveInstance(InstanceIndex))
 	{
 		UE_LOG(LogRogueRigs, Error, TEXT("ARRArenaGrid: failed to remove instance %d of cell (%d, %d)."), InstanceIndex, RemovedCell.X, RemovedCell.Y);
 		return;
 	}
-	UInstancedStaticMeshComponent* Collision = GetBlockCollisionComponent(MapKey);
-	if (Collision && !Collision->RemoveInstance(InstanceIndex))
+	if (Visual->Collision && !Visual->Collision->RemoveInstance(InstanceIndex))
 	{
 		UE_LOG(LogRogueRigs, Error, TEXT("ARRArenaGrid: failed to remove collision instance %d of cell (%d, %d)."), InstanceIndex, RemovedCell.X, RemovedCell.Y);
 	}
 
 	// HISM and the collision ISM (SetRemoveSwap) remove at swap: the last instance now occupies InstanceIndex. Mirror it in both maps.
-	Map->InstanceCells.RemoveAtSwap(InstanceIndex, EAllowShrinking::No);
+	Visual->InstanceCells.RemoveAtSwap(InstanceIndex, EAllowShrinking::No);
 	if (InstanceIndex != LastIndex)
 	{
-		const FIntPoint MovedCell = Map->InstanceCells[InstanceIndex];
+		const FIntPoint MovedCell = Visual->InstanceCells[InstanceIndex];
 		CellInstanceIndex[GetCellIndex(MovedCell)] = InstanceIndex;
 	}
 	CellInstanceIndex[GetCellIndex(RemovedCell)] = INDEX_NONE;
@@ -672,7 +801,7 @@ bool ARRArenaGrid::DestroyCell(FIntPoint Cell, ERRTerrainDamageSource Source)
 
 	if (CellInstanceIndex.IsValidIndex(Index) && CellInstanceIndex[Index] != INDEX_NONE)
 	{
-		RemoveCellInstance(Type, CellInstanceIndex[Index]);
+		RemoveCellInstance(Type, Cell, CellInstanceIndex[Index]);
 	}
 
 	Cells[Index] = ERRCellType::Floor;
@@ -736,7 +865,7 @@ void ARRArenaGrid::WriteMarkedCustomData(FIntPoint Cell, float Value)
 		return;
 	}
 	const int32 Index = GetCellIndex(Cell);
-	UHierarchicalInstancedStaticMeshComponent* Component = GetBlockComponent(Cells[Index]);
+	UHierarchicalInstancedStaticMeshComponent* Component = GetCellRenderComponent(Cell);
 	if (!Component || !CellInstanceIndex.IsValidIndex(Index) || CellInstanceIndex[Index] == INDEX_NONE || Component->NumCustomDataFloats <= MarkedCustomDataIndex)
 	{
 		return;
@@ -753,12 +882,14 @@ FIntPoint ARRArenaGrid::GetCellFromHit(const FHitResult& Hit) const
 {
 	if (const UPrimitiveComponent* HitComponent = Hit.GetComponent())
 	{
-		for (const TPair<ERRCellType, FRRInstanceCellMap>& Pair : InstanceCellMaps)
+		// Block chunk components only (render HISM or collision ISM); a floor hit falls through to the point below.
+		const int32* VisualIndex = VisualByComponent.Find(HitComponent);
+		if (VisualIndex && ChunkVisuals.IsValidIndex(*VisualIndex))
 		{
-			const bool bBlockComponent = HitComponent == GetBlockCollisionComponent(Pair.Key) || HitComponent == GetBlockComponent(Pair.Key);
-			if (Pair.Key != ERRCellType::Floor && bBlockComponent && Pair.Value.InstanceCells.IsValidIndex(Hit.Item))
+			const FRRGridChunkVisual& Visual = ChunkVisuals[*VisualIndex];
+			if (Visual.MapKey != ERRCellType::Floor && Visual.InstanceCells.IsValidIndex(Hit.Item))
 			{
-				return Pair.Value.InstanceCells[Hit.Item];
+				return Visual.InstanceCells[Hit.Item];
 			}
 		}
 	}
@@ -938,7 +1069,7 @@ void ARRArenaGrid::StopShaking(FIntPoint Cell)
 	if (IsBlockCell(Cell))
 	{
 		const int32 Index = GetCellIndex(Cell);
-		UHierarchicalInstancedStaticMeshComponent* Component = GetBlockComponent(Cells[Index]);
+		UHierarchicalInstancedStaticMeshComponent* Component = GetCellRenderComponent(Cell);
 		if (Component && CellInstanceIndex[Index] != INDEX_NONE)
 		{
 			Component->UpdateInstanceTransform(CellInstanceIndex[Index], GetBlockInstanceTransform(Cell), /*bWorldSpace*/ false,
@@ -975,7 +1106,7 @@ void ARRArenaGrid::Tick(float DeltaSeconds)
 		}
 
 		const int32 Index = GetCellIndex(Cell);
-		UHierarchicalInstancedStaticMeshComponent* Component = GetBlockComponent(Cells[Index]);
+		UHierarchicalInstancedStaticMeshComponent* Component = GetCellRenderComponent(Cell);
 		if (!Component || CellInstanceIndex[Index] == INDEX_NONE)
 		{
 			continue;
