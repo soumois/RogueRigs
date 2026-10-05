@@ -25,6 +25,7 @@ Method: as [[stress-damage-numbers]]; 30 robots, `-Mode fire`, `rr.Debug.CritCha
 
 - Game thread: off lies between the two on runs (±1.2 ms noise): no measurable cost. Run 2: 214 numbers, 504 digits in 45 s.
 - GPU bound (22–26 ms, higher than task-025-03 on the same machine): on vs off GPU +0.7–1.4 ms, within noise of one run each.
+- Cause of the 22–26 ms (task-029-01): not the project. A third-party game (`GraveyardKeeper2.exe`) ran in the background from 14:19 (≈ 27 % of the GPU 3D engine, ≈ 2.4 CPU cores, GPU at 82 °C); the task-025-03 and 025-06 runs came after, the [[stress-grid-cells]] runs (11:18–11:28) before. Bisect with the same load: the task-023-01 commit (a416610, built in a worktree) gives S0 / S2 100 15.1 / 14.0 ms (GPU 12.4 / 11.0), HEAD 16.2 / 13.8 ms (GPU 13.4 / 11.1), versus 8.4–9.0 ms when measured at 023-01. No project or asset fix; measure with other games and GPU apps closed.
 
 ## Relations
 - [[stress-damage-numbers]] — parent: first check and the defects this recheck closes.
