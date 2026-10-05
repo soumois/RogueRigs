@@ -3,7 +3,7 @@ id: task-029-03-layout-67
 description: "L_ArenaM1 layout converted to 240 × 240 cells with organic edges on rock masses, passages at least 3 cells wide, validator updated and passing."
 parent: task-029-fine-grid
 kind: task
-status: todo
+status: in-progress
 ---
 # Layout at 67 uu
 
