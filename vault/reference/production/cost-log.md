@@ -48,6 +48,7 @@ kind: note
 | [[task-023-01-cell-stress]] | opus | 2 | 0k | 458k | 7854k | 67k |
 | [[task-024-01-rifle-pierce]] | opus | 1 | 0k | 170k | 4373k | 56k |
 | [[task-024-02-shotgun-pellets]] | opus | 1 | 0k | 184k | 5599k | 79k |
+| [[task-024-03-turret]] | opus | 2 | 0k | 206k | 9284k | 87k |
 
 ## Totals
 | Scope | Input | Cache write | Cache read | Output |

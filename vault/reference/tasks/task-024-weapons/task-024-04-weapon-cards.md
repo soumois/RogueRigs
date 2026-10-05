@@ -3,7 +3,7 @@ id: task-024-04-weapon-cards
 description: "Start with the rifle only; new-weapon cards join the level-up offer while a slot is free (4 slots); picking equips it; tests."
 parent: task-024-weapons
 kind: task
-status: todo
+status: in-progress
 ---
 # Weapon cards
 

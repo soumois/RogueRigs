@@ -3,7 +3,7 @@ id: task-024-03-turret
 description: "Turret launcher weapon placed with a button on the aimed spot: charges, recharge, lifetime, nearest-target fire with line of sight, pierce; tests."
 parent: task-024-weapons
 kind: task
-status: in-progress
+status: done
 ---
 # Turret launcher
 
@@ -15,11 +15,11 @@ status: in-progress
 - done_when: build exits 0 with the editor closed; all `RogueRigs.*` tests pass headless (new ones included); docs updated; lint clean.
 - editor_state: closed
 - token_ceiling: 130000
-- model: open
-- tokens: open
-- runs: open
+- model: opus
+- tokens: input 140, cache write 206107, cache read 9284203, output 87069
+- runs: 2
 - milestone: M2
-- result: open
+- result: ARRTurretLauncher (charges = Ammo, TryPlaceTurret on the aimed visible floor cell ≤ 400 uu, one-at-a-time 6 s recharge, OnTurretChargesChanged, OnTurretPlaced), ARRTurret (copies launcher stats at placement, 10 s life, nearest visible robot ≤ 1500 uu, pierce 4, no collision, not in the weapon list, OnTurretFired), ARRTurretBullet; ARRMiner AddWeapon, FindTurretLauncher, PlaceTurret, GetMouseAimPoint; ARRPlayerController PlaceTurretAction with C++ fallback mapping (E, right mouse, gamepad face bottom); HUD OnTurretChargesChanged, GetTurretRechargeProgress; WeaponStats TurretLauncher row + TurretLifetime column. 6 Turret tests; PierceFourRobots made deterministic (spread 0); build 0, 133/133. New sys-turret; sys-weapons, sys-player, sys-hud, sys-projectiles. Provisional: bullet speed 3000, stick placement 200 uu, name Lance-tourelles. Commits 032eb71, 1609557.
 
 ## Relations
 - [[task-024-weapons]] — parent global task.
