@@ -1,6 +1,6 @@
 ---
 id: sys-projectiles
-description: "Projectiles without GAS: ARRProjectile carries the damage spec to impact, ARREnemyProjectile robot shots, Projectile channel, stop on rock, pierce, pooling, deferred modules."
+description: "Projectiles without GAS: ARRProjectile carries the damage spec to impact, shotgun pellets with knockback, ARREnemyProjectile robot shots, Projectile channel, stop on rock, pierce, pooling."
 parent: systems-index
 kind: doc
 ---
@@ -17,13 +17,14 @@ kind: doc
 - Spawn point: the weapon's `GetShotOrigin()` ([[sys-weapons]]), `ShotHeight` (50 uu) above the floor, below the block height.
 - Speed and lifetime come from the weapon: speed `ProjectileSpeed`, lifetime `Range / ProjectileSpeed`.
 - Piercing (task-024-01): `MaxHits` (>= 1, default 1) set at spawn from the weapon's `GetPierceCount()` at fire time ([[sys-weapons]]); `HitActors` (weak set) keeps every actor already damaged, so a pierced robot is never hit twice by the same bullet; on the `MaxHits`-th distinct hit the projectile is destroyed. Rock still stops it at once; a bullet that pierced robots still damages a barrel it then hits. Robot shots keep `MaxHits` 1.
+- Knockback (task-024-02): `KnockbackSpeed` (uu/s, default 0) set at spawn; after the spec is applied to an `ARREnemy`, `ApplyKnockback(flight direction × KnockbackSpeed)` ([[sys-enemies]]; a robot the hit killed is not pushed). Used by `ARRShotgunPellet` (`RRShotgunPellet.h/.cpp`, Blueprintable, concrete so the native shotgun fires without a Blueprint; no mesh) with the shotgun's `KnockbackForce` ([[sys-weapons]]).
 - Pool projectiles before any enemy pool (provisional; M2, if stress test S2 asks for it).
 - Bounce, homing, tornado, lightning, explode on impact: deferred with the module framework ([[wishlist]]).
 
-- entry_points: static `ARRProjectile::SpawnProjectile(World, Class, Transform, Owner, Instigator, Spec, Speed, Lifetime, MaxHits = 1)` (deferred spawn, `InitProjectile`, `FinishSpawning`; `GetMaxHits()`, `GetHitCount()`; lifetime goes through `InitialLifeSpan`, speed through `InitialSpeed`), called by `ARRWeapon::FireOnce` ([[sys-weapons]]). Hit filter (task-020-02): virtual `CanHit(Actor)`, checked on overlap after the ignored actors; default = instance of `HitActorClass` (`EditDefaultsOnly`, None = any actor with an ASC); non-hittable actors are passed through. `bDamagesTerrain` (default true): barrel damage on a blocking hit. Robot shots: `ARREnemyProjectile` (`RREnemyProjectile.h/.cpp`, Blueprintable, task-021-01) sets `HitActorClass` = `ARRMiner` and `bDamagesTerrain` off: robots pass through, rock and barrels only stop it; fired by the shooter with its flat damage spec ([[sys-enemies-shooter]]).
+- entry_points: static `ARRProjectile::SpawnProjectile(World, Class, Transform, Owner, Instigator, Spec, Speed, Lifetime, MaxHits = 1, KnockbackSpeed = 0)` (deferred spawn, `InitProjectile`, `FinishSpawning`; `GetMaxHits()`, `GetHitCount()`, `GetKnockbackSpeed()`; lifetime goes through `InitialLifeSpan`, speed through `InitialSpeed`), called by `ARRWeapon::FireOnce` and `ARRShotgun::FireOnce` ([[sys-weapons]]). Hit filter (task-020-02): virtual `CanHit(Actor)`, checked on overlap after the ignored actors; default = instance of `HitActorClass` (`EditDefaultsOnly`, None = any actor with an ASC); non-hittable actors are passed through. `bDamagesTerrain` (default true): barrel damage on a blocking hit. Robot shots: `ARREnemyProjectile` (`RREnemyProjectile.h/.cpp`, Blueprintable, task-021-01) sets `HitActorClass` = `ARRMiner` and `bDamagesTerrain` off: robots pass through, rock and barrels only stop it; fired by the shooter with its flat damage spec ([[sys-enemies-shooter]]).
 - data: none of its own; values come from the weapon. Blueprint subclass sets the mesh (no collision) and may change the sphere radius.
 - depends_on: [[sys-weapons]], [[sys-damage]].
-- implements: [[burst-rifle]], [[turret]], [[enemy-shooter]]. The shotgun fires no projectile ([[sys-weapons]]).
+- implements: [[burst-rifle]], [[shotgun]], [[turret]], [[enemy-shooter]].
 - gotchas: see [[perf-risks]]. Fast bullets rely on the movement sweep for overlaps; no sub-stepping.
 
 ## Relations

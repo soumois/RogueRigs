@@ -16,14 +16,14 @@ kind: doc
 
 ## Chain
 1. On fire, the weapon's ASC creates the spec. Instigator and causer = the weapon (approved). Kill credit and XP go up through `Weapon->GetOwner()`.
-2. The projectile carries the spec and applies it only on impact ([[sys-projectiles]]); the shotgun applies one wave spec at once to each robot in its cone, no projectile ([[sys-weapons]]). The engine copies the spec on each application, so a piercing projectile reapplies the same handle.
+2. The projectile carries the spec and applies it only on impact ([[sys-projectiles]]); the shotgun's pellets carry one spec per shot ([[sys-weapons]]). The engine copies the spec on each application, so a piercing projectile reapplies the same handle.
 3. Pre-execute refuses the execution if the target has `State.Invulnerable` or `State.Dead` (provisional). This also blocks DoT ticks after death. Implemented on `URRGE_Damage` as application tag requirements (the spec is refused, not executed).
 4. The ExecCalc rolls the critical and writes `IncomingDamage` (provisional). No critical on periodic damage (`Effect.Damage.DoT`) (provisional; not implemented, the tag does not exist yet).
 5. Post-execute converts `IncomingDamage` into `Health` loss: clamp, single death, single damage log, damage number.
 6. Death fires once, when `Health` goes from above 0 to 0 or below (approved). Damage GEs and statuses also refuse `State.Dead` targets via `UTargetTagRequirementsGameplayEffectComponent` (approved).
 7. Player i-frames: `URRGE_IFrames` applied from post-execute, in the same call stack, so the next hit in the same frame is refused (provisional; 0.25 s per [[miner]]). Implemented by the opting-in pawn: `ARRMiner` binds `OnDamageReceived` and applies it on non-lethal hits ([[sys-player]]). `URRGA_OnDamaged` handles only reaction and feedback.
 
-- entry_points: `ARRWeapon::MakeDamageSpec()` ([[sys-weapons]]); the spec is applied by `ARRProjectile` on impact ([[sys-projectiles]]), or by `ARRShotgun::FireOnce` with `ApplyGameplayEffectSpecToTarget` from the weapon ASC to each target (each target's copy runs `URRDamageExecution`, so one critical roll per robot; `RogueRigs.Shotgun.IndependentCrits`); enemy melee: `ARRChaser` applies `URRGE_DamageFlat` from its own ASC ([[sys-enemies]]); explosions: `URRExplosionSubsystem` applies `URRGE_DamageExplosion` from each target ASC with the explosion instigator in the context ([[sys-explosions]]).
+- entry_points: `ARRWeapon::MakeDamageSpec()` ([[sys-weapons]]); the spec is applied by `ARRProjectile` on impact ([[sys-projectiles]]) (shotgun pellets included: each hit's copy runs `URRDamageExecution`, so one critical roll per pellet hit; `RogueRigs.Shotgun.CritPerPellet`); enemy melee: `ARRChaser` applies `URRGE_DamageFlat` from its own ASC ([[sys-enemies]]); explosions: `URRExplosionSubsystem` applies `URRGE_DamageExplosion` from each target ASC with the explosion instigator in the context ([[sys-explosions]]).
 - data: damage values from CSV.
 - depends_on: [[sys-gas-core]], [[sys-weapons]] (source attributes).
 - implements: [[damage-numbers]], [[enemy-death]], [[miner]].
