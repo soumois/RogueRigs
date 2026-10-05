@@ -18,13 +18,14 @@
 
 #include UE_INLINE_GENERATED_CPP_BY_NAME(RRDamageNumberSubsystem)
 
-const FName URRDamageNumberSubsystem::PositionsParameter(TEXT("User.DamageNumberPositions"));
-const FName URRDamageNumberSubsystem::ValuesParameter(TEXT("User.DamageNumberValues"));
-const FName URRDamageNumberSubsystem::SizesParameter(TEXT("User.DamageNumberSizes"));
-const FName URRDamageNumberSubsystem::ColorsParameter(TEXT("User.DamageNumberColors"));
-const FName URRDamageNumberSubsystem::CriticalsParameter(TEXT("User.DamageNumberCriticals"));
-const FName URRDamageNumberSubsystem::SpawnTimesParameter(TEXT("User.DamageNumberSpawnTimes"));
-const FName URRDamageNumberSubsystem::NewCountParameter(TEXT("User.DamageNumberNewCount"));
+const FName URRDamageNumberSubsystem::DigitPositionsParameter(TEXT("User.DigitPositions"));
+const FName URRDamageNumberSubsystem::DigitIndicesParameter(TEXT("User.DigitIndices"));
+const FName URRDamageNumberSubsystem::DigitSizesParameter(TEXT("User.DigitSizes"));
+const FName URRDamageNumberSubsystem::DigitColorsParameter(TEXT("User.DigitColors"));
+const FName URRDamageNumberSubsystem::DigitCriticalsParameter(TEXT("User.DigitCriticals"));
+const FName URRDamageNumberSubsystem::DigitSpawnTimesParameter(TEXT("User.DigitSpawnTimes"));
+const FName URRDamageNumberSubsystem::DigitCountParameter(TEXT("User.DigitCount"));
+const FName URRDamageNumberSubsystem::DigitBatchIdParameter(TEXT("User.DigitBatchId"));
 
 namespace RRDamageNumbers
 {
@@ -69,7 +70,15 @@ void URRDamageNumberSubsystem::OnWorldBeginPlay(UWorld& InWorld)
 	NiagaraComponent->RegisterComponentWithWorld(&InWorld);
 	NiagaraComponent->SetAbsolute(true, true, true);
 	NiagaraComponent->SetWorldLocationAndRotation(FVector::ZeroVector, FRotator::ZeroRotator);
-	NiagaraComponent->SetVariableInt(NewCountParameter, 0);
+	CheckUserParameters(*System);
+	if (HasParameter(DigitCountParameter))
+	{
+		NiagaraComponent->SetVariableInt(DigitCountParameter, 0);
+	}
+	if (HasParameter(DigitBatchIdParameter))
+	{
+		NiagaraComponent->SetVariableInt(DigitBatchIdParameter, DigitBatchId);
+	}
 	if (FApp::CanEverRender())
 	{
 		NiagaraComponent->Activate(/*bReset*/ true);
@@ -79,6 +88,8 @@ void URRDamageNumberSubsystem::OnWorldBeginPlay(UWorld& InWorld)
 void URRDamageNumberSubsystem::Deinitialize()
 {
 	Pending.Reset();
+	LastDigits.Reset();
+	MissingParameters.Reset();
 	if (IsValid(NiagaraComponent))
 	{
 		NiagaraComponent->DestroyComponent();
@@ -167,27 +178,60 @@ void URRDamageNumberSubsystem::Tick(float DeltaTime)
 		Pending.RemoveAt(0, DueCount, EAllowShrinking::No);
 	}
 
-	PushToNiagara(Numbers);
-	if (Numbers.Num() > 0)
-	{
-		TotalPushedCount += Numbers.Num();
-		OnNumbersPushed.Broadcast(Numbers);
-	}
-}
-
-void URRDamageNumberSubsystem::PushToNiagara(const TArray<FRRDamageNumber>& Numbers)
-{
-	if (!IsValid(NiagaraComponent))
+	if (Numbers.Num() == 0)
 	{
 		return;
 	}
-	if (Numbers.Num() == 0)
+	LastDigits.Reset();
+	for (const FRRDamageNumber& Number : Numbers)
 	{
-		if (LastPushedCount != 0)
-		{
-			NiagaraComponent->SetVariableInt(NewCountParameter, 0);
-			LastPushedCount = 0;
-		}
+		AppendDigits(Number, LastDigits);
+	}
+	++DigitBatchId;
+	PushToNiagara();
+	TotalPushedCount += Numbers.Num();
+	OnNumbersPushed.Broadcast(Numbers);
+}
+
+void URRDamageNumberSubsystem::AppendDigits(const FRRDamageNumber& Number, TArray<FRRDamageDigit>& OutDigits) const
+{
+	const int32 DigitLimit = FMath::Clamp(MaxDigits, 1, 9);
+	int32 MaxValue = 1;
+	for (int32 Index = 0; Index < DigitLimit; ++Index)
+	{
+		MaxValue *= 10;
+	}
+	// A positive hit never shows 0; a sum beyond the digit budget shows all nines.
+	const int32 Shown = FMath::Clamp(FMath::RoundToInt(Number.Value), 1, MaxValue - 1);
+
+	int32 DigitValues[9];
+	int32 DigitTotal = 0;
+	for (int32 Rest = Shown; Rest > 0; Rest /= 10)
+	{
+		DigitValues[DigitTotal++] = Rest % 10;
+	}
+
+	const FVector Direction = DigitDirection.GetSafeNormal(UE_SMALL_NUMBER, FVector::YAxisVector);
+	const float Step = DigitAdvance * Number.Size;
+	const float FirstOffset = -0.5f * Step * static_cast<float>(DigitTotal - 1);
+	OutDigits.Reserve(OutDigits.Num() + DigitTotal);
+	// DigitValues holds the least significant digit first: read it backwards so reading order runs along Direction.
+	for (int32 Slot = 0; Slot < DigitTotal; ++Slot)
+	{
+		FRRDamageDigit& Digit = OutDigits.AddDefaulted_GetRef();
+		Digit.Location = Number.Location + Direction * (FirstOffset + Step * static_cast<float>(Slot));
+		Digit.Digit = DigitValues[DigitTotal - 1 - Slot];
+		Digit.Size = Number.Size;
+		Digit.Color = Number.Color;
+		Digit.bCritical = Number.bCritical;
+		Digit.SpawnTime = Number.SpawnTime;
+	}
+}
+
+void URRDamageNumberSubsystem::PushToNiagara()
+{
+	if (!IsValid(NiagaraComponent) || LastDigits.Num() == 0)
+	{
 		return;
 	}
 
@@ -198,36 +242,84 @@ void URRDamageNumberSubsystem::PushToNiagara(const TArray<FRRDamageNumber>& Numb
 		NiagaraComponent->Activate(/*bReset*/ true);
 	}
 
+	const int32 Count = LastDigits.Num();
 	TArray<FVector> Positions;
-	TArray<float> Values;
+	TArray<int32> Indices;
 	TArray<float> Sizes;
 	TArray<FLinearColor> Colors;
-	TArray<bool> Criticals;
+	TArray<int32> Criticals;
 	TArray<float> SpawnTimes;
-	Positions.Reserve(Numbers.Num());
-	Values.Reserve(Numbers.Num());
-	Sizes.Reserve(Numbers.Num());
-	Colors.Reserve(Numbers.Num());
-	Criticals.Reserve(Numbers.Num());
-	SpawnTimes.Reserve(Numbers.Num());
-	for (const FRRDamageNumber& Number : Numbers)
+	Positions.Reserve(Count);
+	Indices.Reserve(Count);
+	Sizes.Reserve(Count);
+	Colors.Reserve(Count);
+	Criticals.Reserve(Count);
+	SpawnTimes.Reserve(Count);
+	for (const FRRDamageDigit& Digit : LastDigits)
 	{
-		Positions.Add(Number.Location);
-		Values.Add(Number.Value);
-		Sizes.Add(Number.Size);
-		Colors.Add(Number.Color);
-		Criticals.Add(Number.bCritical);
-		SpawnTimes.Add(Number.SpawnTime);
+		Positions.Add(Digit.Location);
+		Indices.Add(Digit.Digit);
+		Sizes.Add(Digit.Size);
+		Colors.Add(Digit.Color);
+		Criticals.Add(Digit.bCritical ? 1 : 0);
+		SpawnTimes.Add(Digit.SpawnTime);
 	}
-	UNiagaraDataInterfaceArrayFunctionLibrary::SetNiagaraArrayPosition(NiagaraComponent, PositionsParameter, Positions);
-	UNiagaraDataInterfaceArrayFunctionLibrary::SetNiagaraArrayFloat(NiagaraComponent, ValuesParameter, Values);
-	UNiagaraDataInterfaceArrayFunctionLibrary::SetNiagaraArrayFloat(NiagaraComponent, SizesParameter, Sizes);
-	UNiagaraDataInterfaceArrayFunctionLibrary::SetNiagaraArrayColor(NiagaraComponent, ColorsParameter, Colors);
-	UNiagaraDataInterfaceArrayFunctionLibrary::SetNiagaraArrayBool(NiagaraComponent, CriticalsParameter, Criticals);
-	UNiagaraDataInterfaceArrayFunctionLibrary::SetNiagaraArrayFloat(NiagaraComponent, SpawnTimesParameter, SpawnTimes);
-	NiagaraComponent->SetVariableInt(NewCountParameter, Numbers.Num());
-	LastPushedCount = Numbers.Num();
-	UE_LOG(LogRogueRigs, Verbose, TEXT("Damage numbers: pushed %d to Niagara (first value %.1f)."), Numbers.Num(), Numbers[0].Value);
+	// Arrays first, then the count, the batch id last: the emitter spawns on a batch id change only.
+	if (HasParameter(DigitPositionsParameter))
+	{
+		UNiagaraDataInterfaceArrayFunctionLibrary::SetNiagaraArrayPosition(NiagaraComponent, DigitPositionsParameter, Positions);
+	}
+	if (HasParameter(DigitIndicesParameter))
+	{
+		UNiagaraDataInterfaceArrayFunctionLibrary::SetNiagaraArrayInt32(NiagaraComponent, DigitIndicesParameter, Indices);
+	}
+	if (HasParameter(DigitSizesParameter))
+	{
+		UNiagaraDataInterfaceArrayFunctionLibrary::SetNiagaraArrayFloat(NiagaraComponent, DigitSizesParameter, Sizes);
+	}
+	if (HasParameter(DigitColorsParameter))
+	{
+		UNiagaraDataInterfaceArrayFunctionLibrary::SetNiagaraArrayColor(NiagaraComponent, DigitColorsParameter, Colors);
+	}
+	if (HasParameter(DigitCriticalsParameter))
+	{
+		UNiagaraDataInterfaceArrayFunctionLibrary::SetNiagaraArrayInt32(NiagaraComponent, DigitCriticalsParameter, Criticals);
+	}
+	if (HasParameter(DigitSpawnTimesParameter))
+	{
+		UNiagaraDataInterfaceArrayFunctionLibrary::SetNiagaraArrayFloat(NiagaraComponent, DigitSpawnTimesParameter, SpawnTimes);
+	}
+	if (HasParameter(DigitCountParameter))
+	{
+		NiagaraComponent->SetVariableInt(DigitCountParameter, Count);
+	}
+	if (HasParameter(DigitBatchIdParameter))
+	{
+		NiagaraComponent->SetVariableInt(DigitBatchIdParameter, DigitBatchId);
+	}
+	UE_LOG(LogRogueRigs, Verbose, TEXT("Damage numbers: batch %d, %d digits pushed to Niagara (first digit %d)."), DigitBatchId, Count, LastDigits[0].Digit);
+}
+
+void URRDamageNumberSubsystem::CheckUserParameters(const UNiagaraSystem& System)
+{
+	MissingParameters.Reset();
+	const FName Parameters[] = { DigitPositionsParameter, DigitIndicesParameter, DigitSizesParameter, DigitColorsParameter,
+		DigitCriticalsParameter, DigitSpawnTimesParameter, DigitCountParameter, DigitBatchIdParameter };
+	const TArrayView<const FNiagaraVariableWithOffset> Exposed = System.GetExposedParameters().ReadParameterVariables();
+	FString MissingList;
+	for (const FName Parameter : Parameters)
+	{
+		const bool bExposed = Exposed.ContainsByPredicate([Parameter](const FNiagaraVariableWithOffset& Variable) { return Variable.GetName() == Parameter; });
+		if (!bExposed)
+		{
+			MissingParameters.Add(Parameter);
+			MissingList += MissingList.IsEmpty() ? Parameter.ToString() : FString(TEXT(", ")) + Parameter.ToString();
+		}
+	}
+	if (!MissingList.IsEmpty())
+	{
+		UE_LOG(LogRogueRigs, Warning, TEXT("Damage numbers: %s does not expose %s; those parameters are not written."), *System.GetName(), *MissingList);
+	}
 }
 
 bool URRDamageNumberSubsystem::GetParticleStats(int32& OutLiveParticles, int32& OutSpawnedParticles) const

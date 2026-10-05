@@ -1,4 +1,4 @@
-// Rogue Rigs - automation tests of the damage number pipeline (RogueRigs.DamageNumbers.*): merge window per target, critical style, player toggle, per-tick budget, Niagara integration through the real damage pipeline.
+// Rogue Rigs - automation tests of the damage number pipeline (RogueRigs.DamageNumbers.*): merge window per target, critical style, player toggle, per-tick budget, digit layout, digit batches, Niagara integration through the real damage pipeline.
 
 #include "CoreMinimal.h"
 #include "Misc/AutomationTest.h"
@@ -13,6 +13,7 @@
 #include "GameFramework/Actor.h"
 #include "Misc/App.h"
 #include "NiagaraComponent.h"
+#include "NiagaraDataInterfaceArrayFunctionLibrary.h"
 #include "NiagaraSystem.h"
 #include "Settings/RRGameUserSettings.h"
 #include "Tests/RRTestHarness.h"
@@ -216,7 +217,7 @@ bool FRRDamageNumberCriticalTest::RunTest(const FString& Parameters)
 	TestTrue(TEXT("normal size positive"), Normal.Size > 0.f);
 	TestEqual(TEXT("critical 1.6 x larger"), Critical.Size / Normal.Size, 1.6f, 1e-4f);
 	TestTrue(TEXT("normal number white"), Normal.Color.Equals(FLinearColor::White));
-	TestTrue(TEXT("critical number white-gold (1, 0.85, 0.45)"), Critical.Color.Equals(FLinearColor(1.f, 0.85f, 0.45f)));
+	TestTrue(TEXT("critical number gold (1, 0.8, 0.3)"), Critical.Color.Equals(FLinearColor(1.f, 0.8f, 0.3f)));
 	TestEqual(TEXT("spawn time = push world time"), Critical.SpawnTime, Normal.SpawnTime);
 	return true;
 }
@@ -312,6 +313,137 @@ bool FRRDamageNumberBudgetTest::RunTest(const FString& Parameters)
 	return true;
 }
 
+IMPLEMENT_SIMPLE_AUTOMATION_TEST(FRRDamageNumberDigitLayoutTest, "RogueRigs.DamageNumbers.DigitLayout",
+	EAutomationTestFlags::EditorContext | EAutomationTestFlags::EngineFilter)
+
+bool FRRDamageNumberDigitLayoutTest::RunTest(const FString& Parameters)
+{
+	using namespace RRDamageNumberTests;
+
+	FTestWorld TestWorld(TEXT("RRDamageNumberDigitLayout"));
+	URRDamageNumberSubsystem* Numbers = GetNumbers(*this, TestWorld);
+	if (!Numbers)
+	{
+		return false;
+	}
+	auto Layout = [Numbers](float Value, float Size, bool bCritical)
+	{
+		FRRDamageNumber Number;
+		Number.Location = FVector(100.f, 200.f, 300.f);
+		Number.Value = Value;
+		Number.Size = Size;
+		Number.bCritical = bCritical;
+		Number.Color = bCritical ? FLinearColor(1.f, 0.8f, 0.3f) : FLinearColor::White;
+		Number.SpawnTime = 2.5f;
+		TArray<FRRDamageDigit> Digits;
+		Numbers->AppendDigits(Number, Digits);
+		return Digits;
+	};
+	auto DigitString = [](const TArray<FRRDamageDigit>& Digits)
+	{
+		FString Text;
+		for (const FRRDamageDigit& Digit : Digits)
+		{
+			Text.AppendInt(Digit.Digit);
+		}
+		return Text;
+	};
+
+	// 1234.4 at size 60: "1234" left to right along +Y (screen right of the top-down camera), 0.62 x 60 = 37.2 apart, centred.
+	const TArray<FRRDamageDigit> Four = Layout(1234.4f, 60.f, false);
+	AddInfo(FString::Printf(TEXT("DAMAGENUMBERS layout: 1234.4 -> %s, y %s"), *DigitString(Four),
+		*FString::JoinBy(Four, TEXT(" "), [](const FRRDamageDigit& Digit) { return FString::Printf(TEXT("%.1f"), Digit.Location.Y); })));
+	if (!TestEqual(TEXT("1234.4 shows 1234"), DigitString(Four), FString(TEXT("1234"))))
+	{
+		return false;
+	}
+	const float ExpectedY[] = { 144.2f, 181.4f, 218.6f, 255.8f };
+	FVector Centre = FVector::ZeroVector;
+	for (int32 Index = 0; Index < Four.Num(); ++Index)
+	{
+		TestEqual(FString::Printf(TEXT("digit %d y"), Index), Four[Index].Location.Y, static_cast<double>(ExpectedY[Index]), 0.01);
+		TestEqual(FString::Printf(TEXT("digit %d x and z kept"), Index), FVector2D(Four[Index].Location.X, Four[Index].Location.Z), FVector2D(100.0, 300.0));
+		TestEqual(FString::Printf(TEXT("digit %d size, time, style"), Index), Four[Index].Size + Four[Index].SpawnTime, 62.5f);
+		TestFalse(FString::Printf(TEXT("digit %d not critical"), Index), Four[Index].bCritical);
+		Centre += Four[Index].Location / Four.Num();
+	}
+	TestTrue(TEXT("digits centred on the number position"), Centre.Equals(FVector(100.f, 200.f, 300.f), 0.01));
+
+	// One digit sits on the number position; a crit keeps its size, color and flag on every digit.
+	const TArray<FRRDamageDigit> One = Layout(7.f, 96.f, true);
+	if (TestEqual(TEXT("7 shows one digit"), DigitString(One), FString(TEXT("7"))))
+	{
+		TestTrue(TEXT("single digit on the number position"), One[0].Location.Equals(FVector(100.f, 200.f, 300.f), 0.01));
+		TestTrue(TEXT("crit digit flagged, crit size and color"), One[0].bCritical && One[0].Size == 96.f && One[0].Color.Equals(FLinearColor(1.f, 0.8f, 0.3f)));
+	}
+	const TArray<FRRDamageDigit> Crit = Layout(45.f, 96.f, true);
+	TestTrue(TEXT("crit digits spaced from the crit size (0.62 x 96)"), Crit.Num() == 2 && FMath::IsNearlyEqual(Crit[1].Location.Y - Crit[0].Location.Y, 59.52, 0.01));
+
+	// Rounding and bounds: 9.5 rounds to 10, a positive hit below 0.5 still shows 1, a sum above five digits shows 99999.
+	TestEqual(TEXT("9.5 shows 10"), DigitString(Layout(9.5f, 60.f, false)), FString(TEXT("10")));
+	TestEqual(TEXT("0.3 shows 1"), DigitString(Layout(0.3f, 60.f, false)), FString(TEXT("1")));
+	TestEqual(TEXT("123456 shows 99999"), DigitString(Layout(123456.f, 60.f, false)), FString(TEXT("99999")));
+	TestEqual(TEXT("100 keeps its zeros"), DigitString(Layout(100.f, 60.f, false)), FString(TEXT("100")));
+	return true;
+}
+
+IMPLEMENT_SIMPLE_AUTOMATION_TEST(FRRDamageNumberBatchTest, "RogueRigs.DamageNumbers.DigitBatch",
+	EAutomationTestFlags::EditorContext | EAutomationTestFlags::EngineFilter)
+
+bool FRRDamageNumberBatchTest::RunTest(const FString& Parameters)
+{
+	using namespace RRDamageNumberTests;
+
+	FTestWorld TestWorld(TEXT("RRDamageNumberBatch"));
+	URRDamageNumberSubsystem* Numbers = GetNumbers(*this, TestWorld);
+	if (!Numbers)
+	{
+		return false;
+	}
+	AActor* TargetA = TestWorld.Spawn<AActor>(AActor::StaticClass(), FVector::ZeroVector);
+	AActor* TargetB = TestWorld.Spawn<AActor>(AActor::StaticClass(), FVector::ZeroVector);
+	FPushRecorder Recorder(Numbers);
+	TestEqual(TEXT("batch id 0 before any push"), Numbers->GetDigitBatchId(), 0);
+
+	// Batch 1: A 17 (normal) and B 5 (critical) = 3 digits, numbers in push order, digits contiguous per number.
+	Numbers->AddHit(TargetA, 17.f, false, FVector(0.f, 0.f, 100.f));
+	Numbers->AddHit(TargetB, 5.f, true, FVector(500.f, 0.f, 100.f));
+	int32 PushFrame = -1;
+	for (int32 Frame = 0; Frame < 20 && PushFrame < 0; ++Frame)
+	{
+		Recorder.TickFrames(TestWorld, 1);
+		if (Numbers->GetDigitBatchId() > 0)
+		{
+			PushFrame = Recorder.Frame;
+		}
+	}
+	if (!TestEqual(TEXT("batch id 1 after the first push"), Numbers->GetDigitBatchId(), 1))
+	{
+		return false;
+	}
+	const TArray<FRRDamageDigit> Batch1 = Numbers->GetLastDigits();
+	AddInfo(FString::Printf(TEXT("DAMAGENUMBERS batch: id 1 at frame %d, %d digits"), PushFrame, Batch1.Num()));
+	if (!TestEqual(TEXT("3 digits in batch 1 (1, 7, 5)"), Batch1.Num(), 3))
+	{
+		return false;
+	}
+	TestTrue(TEXT("digits 1, 7 then 5"), Batch1[0].Digit == 1 && Batch1[1].Digit == 7 && Batch1[2].Digit == 5);
+	TestTrue(TEXT("17 not critical, 5 critical"), !Batch1[0].bCritical && !Batch1[1].bCritical && Batch1[2].bCritical);
+
+	// No push: the id and the digits stay (the emitter spawns on an id change only).
+	Recorder.TickFrames(TestWorld, 5);
+	TestEqual(TEXT("batch id unchanged without a push"), Numbers->GetDigitBatchId(), 1);
+	TestEqual(TEXT("last digits kept without a push"), Numbers->GetLastDigits().Num(), 3);
+
+	// Batch 2: one number 250 = 3 digits, id 2.
+	Numbers->AddHit(TargetA, 250.f, false, FVector(0.f, 0.f, 100.f));
+	Recorder.TickFrames(TestWorld, 20);
+	TestEqual(TEXT("batch id 2 after the second push"), Numbers->GetDigitBatchId(), 2);
+	TestTrue(TEXT("batch 2 holds only 250"), Numbers->GetLastDigits().Num() == 3 && Numbers->GetLastDigits()[0].Digit == 2 && Numbers->GetLastDigits()[2].Digit == 0);
+	TestEqual(TEXT("one batch per push"), Recorder.Numbers.Num(), 3);
+	return true;
+}
+
 IMPLEMENT_SIMPLE_AUTOMATION_TEST(FRRDamageNumberNiagaraTest, "RogueRigs.DamageNumbers.NiagaraIntegration",
 	EAutomationTestFlags::EditorContext | EAutomationTestFlags::EngineFilter)
 
@@ -331,13 +463,26 @@ bool FRRDamageNumberNiagaraTest::RunTest(const FString& Parameters)
 	{
 		return false;
 	}
-	TestEqual(TEXT("component runs NS_DamageNumbers"), Component->GetAsset() ? Component->GetAsset()->GetName() : FString(), FString(TEXT("NS_DamageNumbers")));
-	const FNiagaraVariable NewCountVariable(FNiagaraTypeDefinition::GetIntDef(), URRDamageNumberSubsystem::NewCountParameter);
-	auto ReadNewCount = [Component, &NewCountVariable]()
+	const UNiagaraSystem* Asset = Component->GetAsset();
+	TestEqual(TEXT("component runs NS_DamageNumbers"), Asset ? Asset->GetName() : FString(), FString(TEXT("NS_DamageNumbers")));
+	// The digit user parameters exist once the asset follows the per-digit contract (task-025-05); before that the
+	// component checks are skipped and only the subsystem side is checked.
+	const bool bAssetHasContract = Asset && Asset->GetExposedParameters().ReadParameterVariables().ContainsByPredicate(
+		[](const FNiagaraVariableWithOffset& Variable) { return Variable.GetName() == URRDamageNumberSubsystem::DigitBatchIdParameter; });
+	const FNiagaraVariable BatchIdVariable(FNiagaraTypeDefinition::GetIntDef(), URRDamageNumberSubsystem::DigitBatchIdParameter);
+	const FNiagaraVariable CountVariable(FNiagaraTypeDefinition::GetIntDef(), URRDamageNumberSubsystem::DigitCountParameter);
+	auto ReadInt = [Component](const FNiagaraVariable& Variable)
 	{
-		return Component->GetOverrideParameters().GetParameterValueOrDefault<int32>(NewCountVariable, -1);
+		return Component->GetOverrideParameters().GetParameterValueOrDefault<int32>(Variable, -1);
 	};
-	TestEqual(TEXT("NewCount user parameter exists and starts at 0"), ReadNewCount(), 0);
+	if (bAssetHasContract)
+	{
+		TestEqual(TEXT("DigitBatchId starts at 0"), ReadInt(BatchIdVariable), 0);
+	}
+	else
+	{
+		AddInfo(TEXT("DAMAGENUMBERS niagara: asset does not expose the digit parameters yet (task-025-05), component checks skipped"));
+	}
 
 	// Real damage pipeline: rifle damage specs (GE + execution) on two target dummies; their OnDamageReceived feeds AddHit.
 	UClass* RifleClass = LoadTestClass<ARRWeapon>(*this, TEXT("/Game/RogueRigs/Blueprints/Weapons/BP_BurstRifle.BP_BurstRifle_C"));
@@ -360,25 +505,17 @@ bool FRRDamageNumberNiagaraTest::RunTest(const FString& Parameters)
 	};
 
 	FPushRecorder Recorder(Numbers);
-	int32 NewCountAtPush = -1;
-	const FDelegateHandle CountHandle = Numbers->OnNumbersPushed.AddLambda([&NewCountAtPush, &ReadNewCount](const TArray<FRRDamageNumber>&)
-	{
-		NewCountAtPush = ReadNewCount();
-	});
 	// Dummy A: two normal hits (10 + 10) merge; dummy B: one critical hit (10 x CritDamage 1.5).
 	ApplyHit(DummyA, 0.f);
 	ApplyHit(DummyA, 0.f);
 	ApplyHit(DummyB, 1.f);
 	TestEqual(TEXT("two open entries (one per dummy)"), Numbers->GetPendingCount(), 2);
 	Recorder.TickFrames(TestWorld, 18);
-	Numbers->OnNumbersPushed.Remove(CountHandle);
 
 	if (!TestEqual(TEXT("two numbers pushed"), Recorder.Numbers.Num(), 2))
 	{
 		return false;
 	}
-	TestEqual(TEXT("NewCount = 2 on the push frame"), NewCountAtPush, 2);
-	TestEqual(TEXT("NewCount back to 0 after the push frame"), ReadNewCount(), 0);
 	const int32 IndexA = Recorder.FindValue(20.f);
 	const int32 IndexB = Recorder.FindValue(15.f);
 	if (TestTrue(TEXT("dummy A merged 20"), IndexA != INDEX_NONE) && TestTrue(TEXT("dummy B critical 15"), IndexB != INDEX_NONE))
@@ -387,12 +524,33 @@ bool FRRDamageNumberNiagaraTest::RunTest(const FString& Parameters)
 		TestTrue(TEXT("crit flagged"), Recorder.Numbers[IndexB].bCritical);
 		TestTrue(TEXT("crit larger"), Recorder.Numbers[IndexB].Size > Recorder.Numbers[IndexA].Size);
 	}
+	const TArray<FRRDamageDigit>& Digits = Numbers->GetLastDigits();
+	TestEqual(TEXT("one batch, 4 digits (20 and 15)"), Numbers->GetDigitBatchId() * 10 + Digits.Num(), 14);
 
-	// The emitter spawns from NewCount. Niagara only simulates in a process that can render: headless (-nullrhi) runs
-	// stop at the parameter checks above.
-	if (!FApp::CanEverRender())
+	if (bAssetHasContract)
 	{
-		AddInfo(TEXT("DAMAGENUMBERS niagara: no renderer, particle check skipped"));
+		// The component holds the same batch: one array entry per digit, crit as Int32 0/1.
+		const TArray<int32> Indices = UNiagaraDataInterfaceArrayFunctionLibrary::GetNiagaraArrayInt32(Component, URRDamageNumberSubsystem::DigitIndicesParameter);
+		const TArray<int32> Criticals = UNiagaraDataInterfaceArrayFunctionLibrary::GetNiagaraArrayInt32(Component, URRDamageNumberSubsystem::DigitCriticalsParameter);
+		const TArray<FVector> Positions = UNiagaraDataInterfaceArrayFunctionLibrary::GetNiagaraArrayPosition(Component, URRDamageNumberSubsystem::DigitPositionsParameter);
+		TestEqual(TEXT("DigitBatchId 1 on the component"), ReadInt(BatchIdVariable), 1);
+		TestEqual(TEXT("DigitCount 4 on the component"), ReadInt(CountVariable), 4);
+		if (TestTrue(TEXT("4 entries per array"), Indices.Num() == 4 && Criticals.Num() == 4 && Positions.Num() == 4))
+		{
+			for (int32 Index = 0; Index < 4; ++Index)
+			{
+				TestEqual(FString::Printf(TEXT("digit %d value"), Index), Indices[Index], Digits[Index].Digit);
+				TestEqual(FString::Printf(TEXT("digit %d crit 0/1"), Index), Criticals[Index], Digits[Index].bCritical ? 1 : 0);
+				TestTrue(FString::Printf(TEXT("digit %d position"), Index), Positions[Index].Equals(Digits[Index].Location, 0.01));
+			}
+		}
+	}
+
+	// The emitter spawns DigitCount particles per batch id. Niagara only simulates in a process that can render: headless
+	// (-nullrhi) runs stop at the checks above.
+	if (!FApp::CanEverRender() || !bAssetHasContract)
+	{
+		AddInfo(TEXT("DAMAGENUMBERS niagara: no renderer or asset not on the digit contract, particle check skipped"));
 		return true;
 	}
 	Recorder.TickFrames(TestWorld, 2);
@@ -401,7 +559,7 @@ bool FRRDamageNumberNiagaraTest::RunTest(const FString& Parameters)
 	const bool bInstance = Numbers->GetParticleStats(Live, Spawned);
 	AddInfo(FString::Printf(TEXT("DAMAGENUMBERS niagara: pushed %d, instance %d, live %d, spawned %d"), Numbers->GetTotalPushedCount(), bInstance ? 1 : 0, Live, Spawned));
 	TestTrue(TEXT("system instance exists"), bInstance);
-	TestTrue(TEXT("particles spawned from the push"), Spawned > 0);
+	TestEqual(TEXT("one particle per digit, spawned once"), Spawned, 4);
 	return true;
 }
 

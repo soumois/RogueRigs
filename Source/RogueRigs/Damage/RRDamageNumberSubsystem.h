@@ -42,6 +42,37 @@ struct ROGUERIGS_API FRRDamageNumber
 	float SpawnTime = 0.f;
 };
 
+/** One digit sprite of a damage number, laid out by URRDamageNumberSubsystem: what the Niagara emitter draws per particle. */
+USTRUCT(BlueprintType)
+struct ROGUERIGS_API FRRDamageDigit
+{
+	GENERATED_BODY()
+
+	/** World position of the digit centre (number centre + its offset along DigitDirection). */
+	UPROPERTY(BlueprintReadOnly, Category = "Damage Numbers")
+	FVector Location = FVector::ZeroVector;
+
+	/** Digit value 0-9 (atlas cell). */
+	UPROPERTY(BlueprintReadOnly, Category = "Damage Numbers")
+	int32 Digit = 0;
+
+	/** Glyph world size (the number's size). */
+	UPROPERTY(BlueprintReadOnly, Category = "Damage Numbers")
+	float Size = 0.f;
+
+	/** Color (the number's color). */
+	UPROPERTY(BlueprintReadOnly, Category = "Damage Numbers")
+	FLinearColor Color = FLinearColor::White;
+
+	/** True when the number is critical (drives the pop). */
+	UPROPERTY(BlueprintReadOnly, Category = "Damage Numbers")
+	bool bCritical = false;
+
+	/** World time of the push (the number's spawn time). */
+	UPROPERTY(BlueprintReadOnly, Category = "Damage Numbers")
+	float SpawnTime = 0.f;
+};
+
 /** Native event of URRDamageNumberSubsystem: the batch of numbers pushed this tick (never broadcast empty). */
 DECLARE_MULTICAST_DELEGATE_OneParam(FRROnDamageNumbersPushed, const TArray<FRRDamageNumber>& /*Numbers*/);
 
@@ -50,9 +81,10 @@ DECLARE_MULTICAST_DELEGATE_OneParam(FRROnDamageNumbersPushed, const TArray<FRRDa
  * (ARREnemy, ARRTargetDummy). Hits on the same target within MergeWindow seconds (world time, from the first hit) add up
  * into one number, critical if any merged hit was; the number keeps the last hit location, so a robot that dies or is
  * destroyed still gets its number where it was. Nothing is spawned per hit: on each tick the due entries (at most
- * MaxNumbersPerTick, the rest wait one tick) are pushed to one persistent UNiagaraComponent through Niagara array user
- * parameters, and the batch size through an int user parameter that the emitter spawns from (reset to 0 on the next
- * tick without numbers). The Niagara system is NumberSystem (config, DefaultGame.ini section
+ * MaxNumbersPerTick, the rest wait one tick) are laid out into digits here (left to right along DigitDirection, centred
+ * on the number position, advance DigitAdvance x size) and pushed to one persistent UNiagaraComponent as one entry per
+ * digit in Niagara array user parameters, with the digit count and a batch id incremented on every push (never reset),
+ * so the emitter spawns DigitCount particles once per batch id change and particle N reads entry N. The Niagara system is NumberSystem (config, DefaultGame.ini section
  * [/Script/RogueRigs.RRDamageNumberSubsystem]); unset or missing = no rendering, the merge and OnNumbersPushed still run.
  * The player toggle is URRGameUserSettings::bShowDamageNumbers: off = hits ignored and pending numbers dropped.
  * Ticks with the world (stops while the game is paused, like the Niagara component).
@@ -63,20 +95,22 @@ class ROGUERIGS_API URRDamageNumberSubsystem : public UTickableWorldSubsystem
 	GENERATED_BODY()
 
 public:
-	/** Niagara user parameter (Niagara Position Array): world position of each new number. */
-	static const FName PositionsParameter;
-	/** Niagara user parameter (Niagara Float Array): value of each new number (already summed, not rounded). */
-	static const FName ValuesParameter;
-	/** Niagara user parameter (Niagara Float Array): glyph world size of each new number (crit = NumberSize x CriticalScale). */
-	static const FName SizesParameter;
-	/** Niagara user parameter (Niagara Color Array): color of each new number. */
-	static const FName ColorsParameter;
-	/** Niagara user parameter (Niagara Bool Array): critical flag of each new number (drives the pop). */
-	static const FName CriticalsParameter;
+	/** Niagara user parameter (Niagara Position Array): world position of each digit of the batch. */
+	static const FName DigitPositionsParameter;
+	/** Niagara user parameter (Niagara Int32 Array): value 0-9 of each digit (atlas cell). */
+	static const FName DigitIndicesParameter;
+	/** Niagara user parameter (Niagara Float Array): glyph world size of each digit (crit = NumberSize x CriticalScale). */
+	static const FName DigitSizesParameter;
+	/** Niagara user parameter (Niagara Color Array): color of each digit. */
+	static const FName DigitColorsParameter;
+	/** Niagara user parameter (Niagara Int32 Array): 1 when the digit's number is critical, else 0 (drives the pop). */
+	static const FName DigitCriticalsParameter;
 	/** Niagara user parameter (Niagara Float Array): world time of the push, same for the whole batch. */
-	static const FName SpawnTimesParameter;
-	/** Niagara user parameter (int32): count of new numbers this frame; 0 on frames without numbers. */
-	static const FName NewCountParameter;
+	static const FName DigitSpawnTimesParameter;
+	/** Niagara user parameter (int32): number of digits of the last batch (array length); kept until the next batch. */
+	static const FName DigitCountParameter;
+	/** Niagara user parameter (int32): id of the last batch, +1 per push, never reset (0 = nothing pushed yet). */
+	static const FName DigitBatchIdParameter;
 
 	/** Default values of the config properties (NumberSystem path included). */
 	URRDamageNumberSubsystem();
@@ -112,6 +146,18 @@ public:
 	 * False with both counts 0 when there is no component or no system instance.
 	 */
 	bool GetParticleStats(int32& OutLiveParticles, int32& OutSpawnedParticles) const;
+
+	/**
+	 * Lays out Number into digits appended to OutDigits: the value rounded (at least 1, at most MaxDigits nines), most
+	 * significant digit first, placed left to right along DigitDirection, DigitAdvance x Size apart, centred on Location.
+	 */
+	void AppendDigits(const FRRDamageNumber& Number, TArray<FRRDamageDigit>& OutDigits) const;
+
+	/** Digits of the last pushed batch (empty before the first push). */
+	const TArray<FRRDamageDigit>& GetLastDigits() const { return LastDigits; }
+
+	/** Id of the last pushed batch (0 before the first push, +1 per push, never reset). */
+	int32 GetDigitBatchId() const { return DigitBatchId; }
 
 	/** Batch of numbers pushed on each tick that has some (tests, debug listeners). */
 	FRROnDamageNumbersPushed OnNumbersPushed;
@@ -149,10 +195,16 @@ protected:
 	/** Drops pending entries and the component. */
 	virtual void Deinitialize() override;
 
-	/** Sends Numbers (may be empty) to the Niagara component, when there is one. */
-	void PushToNiagara(const TArray<FRRDamageNumber>& Numbers);
+	/** Sends LastDigits and DigitBatchId to the Niagara component, when there is one (parameters the asset lacks are skipped). */
+	void PushToNiagara();
 
-	/** Niagara system rendering the numbers (digit atlas, CPU sim, one emitter spawning NewCount particles per frame). */
+	/** Fills MissingParameters with the digit user parameters System does not expose; logs one warning listing them. */
+	void CheckUserParameters(const UNiagaraSystem& System);
+
+	/** True when the Niagara system exposes the user parameter (always true before CheckUserParameters ran). */
+	bool HasParameter(FName Parameter) const { return !MissingParameters.Contains(Parameter); }
+
+	/** Niagara system rendering the digits (digit atlas, CPU sim, one emitter spawning DigitCount particles per batch id). */
 	UPROPERTY(Config)
 	TSoftObjectPtr<UNiagaraSystem> NumberSystem;
 
@@ -172,9 +224,21 @@ protected:
 	UPROPERTY(Config)
 	FLinearColor NormalColor = FLinearColor::White;
 
-	/** Color of a critical number (white-gold). */
+	/** Color of a critical number (saturated gold, task-025-03 readability finding). */
 	UPROPERTY(Config)
-	FLinearColor CriticalColor = FLinearColor(1.f, 0.85f, 0.45f);
+	FLinearColor CriticalColor = FLinearColor(1.f, 0.8f, 0.3f);
+
+	/** Distance between two digit centres, as a fraction of the glyph size (matches the atlas glyph width). */
+	UPROPERTY(Config)
+	float DigitAdvance = 0.62f;
+
+	/** World direction of reading order (screen right): +Y for the top-down camera at yaw 0. Normalized on use. */
+	UPROPERTY(Config)
+	FVector DigitDirection = FVector(0.f, 1.f, 0.f);
+
+	/** Most digits per number; larger sums show that many nines. */
+	UPROPERTY(Config)
+	int32 MaxDigits = 5;
 
 	/** Random horizontal offset (uu, each axis in [-Jitter, Jitter]) drawn per entry so neighbouring numbers stay readable. */
 	UPROPERTY(Config)
@@ -191,8 +255,14 @@ protected:
 	/** Open entries, oldest first. */
 	TArray<FPendingNumber> Pending;
 
-	/** Count pushed on the last tick, so the 0 reset is sent once. */
-	int32 LastPushedCount = 0;
+	/** Digits of the last pushed batch, also the content of the Niagara digit arrays. */
+	TArray<FRRDamageDigit> LastDigits;
+
+	/** Id of the last pushed batch (DigitBatchIdParameter). */
+	int32 DigitBatchId = 0;
+
+	/** Digit user parameters the Niagara system does not expose (set at world BeginPlay); never written, so no warning per push. */
+	TSet<FName> MissingParameters;
 
 	/** Running total of pushed numbers. */
 	int32 TotalPushedCount = 0;
