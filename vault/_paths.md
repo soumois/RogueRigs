@@ -113,6 +113,7 @@ sys-auto-fire  reference/tech/systems/sys-auto-fire.md
 sys-automation-tests  reference/tech/systems/sys-automation-tests.md
 sys-cheats  reference/tech/systems/sys-cheats.md
 sys-damage  reference/tech/systems/sys-damage.md
+sys-damage-numbers  reference/tech/systems/sys-damage-numbers.md
 sys-difficulty  reference/tech/systems/sys-difficulty.md
 sys-drone  reference/tech/systems/sys-drone.md
 sys-enemies  reference/tech/systems/sys-enemies/sys-enemies.md
