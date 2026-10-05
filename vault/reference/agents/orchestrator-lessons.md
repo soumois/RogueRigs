@@ -22,11 +22,11 @@ kind: note
 - Stress procedures and history: [[stress-test-m1]], [[stress-opt-m1]], [[stress-grid-cells]].
 
 ## Owner (Pierre)
-- Write to him in French; never correct his spelling.
-- Ask all questions at once, each with a proposed default he can accept with "ok".
-- He launches whole lots and lets provisional values be set (written in the GDD as `provisional, owner <date>`); report decisions he must confirm.
-- He wants a stress-test report as soon as it ends, before the rest.
-- He tracks cost: input, cache and output tokens per subtask ([[cost-log]]).
+- Write in French; never correct the owner’s spelling.
+- Ask all questions at once, each with a proposed default the owner can accept with "ok".
+- The owner launches whole lots and lets provisional values be set (written in the GDD as `provisional, owner <date>`); report decisions to confirm.
+- The owner wants a stress-test report as soon as it ends, before the rest.
+- The owner tracks cost: input, cache and output tokens per subtask ([[cost-log]]).
 
 ## Relations
 - [[agents-index]] — parent index.
