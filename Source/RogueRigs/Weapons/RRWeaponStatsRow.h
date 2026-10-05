@@ -73,11 +73,11 @@ struct ROGUERIGS_API FRRWeaponStatsRow : public FTableRowBase
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Weapon Stats")
 	FString DisplayName;
 
-	/** Full angle of the shotgun cone in degrees (constant); 0 for weapons that are not cones. */
+	/** Projectiles fired per shot, spread evenly over +/-SpreadDeg (constant; read by the shotgun, 1 elsewhere). */
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Weapon Stats")
-	float ConeAngleDeg = 0.f;
+	int32 PelletCount = 1;
 
-	/** Knockback launch speed in uu/s given to each robot hit, before its KnockbackResistance (constant); 0 = no knockback. */
+	/** Knockback launch speed in uu/s given by each projectile hit to a robot, before its KnockbackResistance (constant); 0 = no knockback. */
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Weapon Stats")
 	float KnockbackForce = 0.f;
 };

@@ -79,7 +79,8 @@ public:
 
 	/**
 	 * Pushes a living robot horizontally: launches it (ACharacter::LaunchCharacter, XY overridden, Z kept) with Velocity's XY
-	 * scaled by (1 - GetKnockbackResistance()). Ignored when dead or when the scaled velocity is zero. Called by the shotgun.
+	 * scaled by (1 - GetKnockbackResistance()), added to a launch still pending this frame (several shotgun pellets hitting in
+	 * the same frame stack). Ignored when dead or when the scaled velocity is zero. Called by projectiles with a knockback (shotgun pellets).
 	 */
 	UFUNCTION(BlueprintCallable, Category = "Enemy")
 	void ApplyKnockback(FVector Velocity);

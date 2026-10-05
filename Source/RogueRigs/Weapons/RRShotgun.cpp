@@ -1,18 +1,14 @@
-// Rogue Rigs - shotgun: instant conical wave hitting every robot in the cone with a clear grid line of sight, with knockback.
+// Rogue Rigs - shotgun: each shot fires PelletCount piercing pellets spread evenly over +/-SpreadDeg around the aim, each with knockback.
 
 #include "Weapons/RRShotgun.h"
 
-#include "AbilitySystemComponent.h"
-#include "Components/CapsuleComponent.h"
-#include "Enemies/RREnemy.h"
 #include "Engine/World.h"
-#include "EngineUtils.h"
-#include "GAS/RRAbilitySystemComponent.h"
-#include "Grid/RRArenaGrid.h"
+#include "GameFramework/Pawn.h"
 #include "Player/RRMiner.h"
+#include "Projectiles/RRProjectile.h"
+#include "Projectiles/RRShotgunPellet.h"
 #include "RogueRigs.h"
 #include "Weapons/RRWeaponStatsRow.h"
-#include "World/RRWorld.h"
 
 #include UE_INLINE_GENERATED_CPP_BY_NAME(RRShotgun)
 
@@ -20,144 +16,68 @@ ARRShotgun::ARRShotgun(const FObjectInitializer& ObjectInitializer)
 	: Super(ObjectInitializer)
 {
 	StatsRowName = TEXT("Shotgun");
+	ProjectileClass = ARRShotgunPellet::StaticClass();
 }
 
 void ARRShotgun::ApplyStatsRow(const FRRWeaponStatsRow& Row)
 {
 	Super::ApplyStatsRow(Row);
-	ConeAngleDeg = Row.ConeAngleDeg;
-	KnockbackForce = Row.KnockbackForce;
+	PelletCount = FMath::Max(Row.PelletCount, 1);
+	KnockbackForce = FMath::Max(Row.KnockbackForce, 0.f);
 }
 
-FVector ARRShotgun::GetWaveOrigin() const
+float ARRShotgun::GetPelletYawOffset(int32 PelletIndex) const
 {
-	const UCapsuleComponent* Capsule = OwnerMiner ? OwnerMiner->GetCapsuleComponent() : nullptr;
-	if (Capsule == nullptr)
+	if (PelletCount <= 1)
 	{
-		return GetShotOrigin();
+		return 0.f;
 	}
-	// GetShotOrigin is the floor + ShotHeight, pushed ahead of the capsule: bring it back onto the miner's axis.
-	const FVector Forward = GetAimDirection().GetSafeNormal2D(UE_SMALL_NUMBER, FVector::ForwardVector);
-	return GetShotOrigin() - Forward * (Capsule->GetScaledCapsuleRadius() + ShotForwardOffset);
-}
-
-ARRArenaGrid* ARRShotgun::ResolveGrid() const
-{
-	if (OwnerMiner && OwnerMiner->GetArenaGrid())
-	{
-		return OwnerMiner->GetArenaGrid();
-	}
-	if (!CachedGrid.IsValid() && GetWorld())
-	{
-		CachedGrid = RRWorld::FindArenaGrid(GetWorld());
-	}
-	return CachedGrid.Get();
-}
-
-TArray<ARREnemy*> ARRShotgun::FindWaveTargets(const FVector& Origin, const FVector& Direction) const
-{
-	TArray<ARREnemy*> Targets;
-	UWorld* World = GetWorld();
-	if (World == nullptr || Range <= 0.f)
-	{
-		return Targets;
-	}
-	const FVector Aim = Direction.GetSafeNormal2D(UE_SMALL_NUMBER, FVector::ForwardVector);
-	const float CosHalfAngle = FMath::Cos(FMath::DegreesToRadians(FMath::Clamp(ConeAngleDeg * 0.5f, 0.f, 180.f)));
-	const ARRArenaGrid* Grid = ResolveGrid();
-
-	for (TActorIterator<ARREnemy> It(World); It; ++It)
-	{
-		ARREnemy* Enemy = *It;
-		if (!IsValid(Enemy) || Enemy->IsDead())
-		{
-			continue;
-		}
-		FVector ToEnemy = Enemy->GetActorLocation() - Origin;
-		ToEnemy.Z = 0.f;
-		const float Distance = ToEnemy.Size();
-		if (Distance > Range)
-		{
-			continue;
-		}
-		// A robot on the apex is inside the cone.
-		if (Distance > UE_KINDA_SMALL_NUMBER && FVector::DotProduct(ToEnemy / Distance, Aim) < CosHalfAngle)
-		{
-			continue;
-		}
-		if (Grid && !Grid->HasLineOfSight(Origin, Enemy->GetActorLocation()))
-		{
-			continue;
-		}
-		Targets.Add(Enemy);
-	}
-
-	Targets.Sort([&Origin](const ARREnemy& A, const ARREnemy& B)
-	{
-		return FVector::DistSquared2D(A.GetActorLocation(), Origin) < FVector::DistSquared2D(B.GetActorLocation(), Origin);
-	});
-	return Targets;
-}
-
-float ARRShotgun::GetWaveClearDistance(float YawOffsetDeg) const
-{
-	const ARRArenaGrid* Grid = ResolveGrid();
-	if (Grid == nullptr)
-	{
-		return LastWave.Range;
-	}
-	const FVector Direction = LastWave.Direction.RotateAngleAxis(YawOffsetDeg, FVector::UpVector);
-	return Grid->GetClearDistance(LastWave.Origin, Direction, LastWave.Range);
+	const float Alpha = static_cast<float>(FMath::Clamp(PelletIndex, 0, PelletCount - 1)) / static_cast<float>(PelletCount - 1);
+	return FMath::Lerp(-SpreadDeg, SpreadDeg, Alpha);
 }
 
 void ARRShotgun::FireOnce()
 {
-	const FVector Origin = GetWaveOrigin();
-	const FVector Direction = GetAimDirection().GetSafeNormal2D(UE_SMALL_NUMBER, FVector::ForwardVector);
-	const TArray<ARREnemy*> Targets = FindWaveTargets(Origin, Direction);
+	UWorld* World = GetWorld();
+	if (World == nullptr)
+	{
+		return;
+	}
+	if (!ProjectileClass)
+	{
+		UE_LOG(LogRogueRigs, Warning, TEXT("%s: ProjectileClass is not set; shot skipped."), *GetName());
+		return;
+	}
+	if (ProjectileSpeed <= 0.f || Range <= 0.f)
+	{
+		UE_LOG(LogRogueRigs, Warning, TEXT("%s: ProjectileSpeed %.1f or Range %.1f is not positive; shot skipped."), *GetName(), ProjectileSpeed, Range);
+		return;
+	}
 
-	// One spec per wave (source attributes snapshot now); each application is executed on its own copy, so each robot rolls its own critical.
+	// One spec per shot (source attributes snapshot now); each pellet hit is executed on its own copy, so each rolls its own critical.
 	const FGameplayEffectSpecHandle Spec = MakeDamageSpec();
 	if (!Spec.IsValid())
 	{
-		UE_LOG(LogRogueRigs, Warning, TEXT("%s: no damage spec (DamageEffectClass unset); the wave deals no damage."), *GetName());
+		UE_LOG(LogRogueRigs, Warning, TEXT("%s: no damage spec (DamageEffectClass unset); the pellets will deal no damage."), *GetName());
 	}
 
-	// Knockback direction recorded before the damage: a robot killed by this wave is not pushed (ApplyKnockback ignores the dead).
-	TArray<TPair<TWeakObjectPtr<ARREnemy>, FVector>> Pushes;
-	Pushes.Reserve(Targets.Num());
-	for (ARREnemy* Enemy : Targets)
+	const FVector Origin = GetShotOrigin();
+	const FVector Direction = GetAimDirection().GetSafeNormal2D(UE_SMALL_NUMBER, FVector::ForwardVector);
+	const float AimYaw = Direction.Rotation().Yaw;
+	const int32 MaxHits = GetPierceCount();
+	const float Lifetime = Range / ProjectileSpeed;
+	APawn* InstigatorPawn = OwnerMiner ? static_cast<APawn*>(OwnerMiner) : GetInstigator();
+
+	LastPelletsSpawned = 0;
+	for (int32 Index = 0; Index < PelletCount; ++Index)
 	{
-		const FVector Outward = (Enemy->GetActorLocation() - Origin).GetSafeNormal2D(UE_SMALL_NUMBER, Direction);
-		Pushes.Emplace(Enemy, Outward);
-		if (Spec.IsValid())
+		const FTransform SpawnTransform(FRotator(0.f, AimYaw + GetPelletYawOffset(Index), 0.f), Origin);
+		if (ARRProjectile::SpawnProjectile(World, ProjectileClass, SpawnTransform, this, InstigatorPawn, Spec, ProjectileSpeed, Lifetime, MaxHits, KnockbackForce))
 		{
-			if (UAbilitySystemComponent* TargetASC = Enemy->GetAbilitySystemComponent())
-			{
-				AbilitySystemComponent->ApplyGameplayEffectSpecToTarget(*Spec.Data, TargetASC);
-			}
+			++LastPelletsSpawned;
 		}
 	}
-	if (KnockbackForce > 0.f)
-	{
-		for (const TPair<TWeakObjectPtr<ARREnemy>, FVector>& Push : Pushes)
-		{
-			if (ARREnemy* Enemy = Push.Key.Get())
-			{
-				Enemy->ApplyKnockback(Push.Value * KnockbackForce);
-			}
-		}
-	}
+	++ShotCount;
 
-	const ARRArenaGrid* Grid = ResolveGrid();
-	LastWave.Origin = Origin;
-	LastWave.Direction = Direction;
-	LastWave.HalfAngleDeg = ConeAngleDeg * 0.5f;
-	LastWave.Range = Range;
-	LastWave.ClippedLength = Grid ? Grid->GetClearDistance(Origin, Direction, Range) : Range;
-	LastWave.HitCount = Targets.Num();
-	LastWave.Time = GetWorld() ? GetWorld()->GetTimeSeconds() : 0.0;
-	++WaveCount;
-
-	OnWaveFired(LastWave.Origin, LastWave.Direction, LastWave.HalfAngleDeg, LastWave.Range, LastWave.ClippedLength);
+	OnShotFired(Origin, Direction, SpreadDeg);
 }

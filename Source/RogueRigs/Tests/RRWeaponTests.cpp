@@ -666,7 +666,7 @@ bool FRRWeaponMinerStartingWeaponTest::RunTest(const FString& Parameters)
 		TestWorld.Tick();
 	}
 
-	// M1 loadout: burst rifle + shotgun (the shotgun fires no projectile and hits only robots).
+	// M1 loadout: burst rifle + shotgun (shotgun pellets: see RogueRigs.Shotgun.*).
 	if (!TestEqual(TEXT("two starting weapons"), Miner->GetWeapons().Num(), 2) || !TestNotNull(TEXT("starting shotgun"), FindShotgun(Miner)))
 	{
 		return false;
@@ -921,7 +921,7 @@ bool FRRWeaponMinerHitsFloorDummyTest::RunTest(const FString& Parameters)
 	TestTrue(TEXT("dummy rests on the floor"), DummyBounds.IsValid && FMath::IsNearlyEqual(DummyBounds.Min.Z, DummyFloor.Z, 0.5f));
 	TestTrue(TEXT("dummy is 160 uu tall"), FMath::IsNearlyEqual(DummyBounds.Max.Z - DummyBounds.Min.Z, DummyHeight, DummyHeightTolerance));
 
-	// M1 loadout: burst rifle + shotgun (the shotgun fires no projectile and hits only robots).
+	// M1 loadout: burst rifle + shotgun (shotgun pellets: see RogueRigs.Shotgun.*).
 	if (!TestEqual(TEXT("two starting weapons"), Miner->GetWeapons().Num(), 2) || !TestNotNull(TEXT("starting shotgun"), FindShotgun(Miner)))
 	{
 		return false;

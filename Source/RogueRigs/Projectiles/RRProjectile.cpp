@@ -5,6 +5,7 @@
 #include "AbilitySystemComponent.h"
 #include "AbilitySystemGlobals.h"
 #include "Components/SphereComponent.h"
+#include "Enemies/RREnemy.h"
 #include "Engine/World.h"
 #include "GameFramework/Pawn.h"
 #include "GameFramework/ProjectileMovementComponent.h"
@@ -64,10 +65,11 @@ void ARRProjectile::PostInitializeComponents()
 	ProjectileMovement->OnProjectileStop.AddDynamic(this, &ARRProjectile::OnProjectileStop);
 }
 
-void ARRProjectile::InitProjectile(const FGameplayEffectSpecHandle& InDamageSpec, float Speed, float Lifetime, int32 InMaxHits)
+void ARRProjectile::InitProjectile(const FGameplayEffectSpecHandle& InDamageSpec, float Speed, float Lifetime, int32 InMaxHits, float InKnockbackSpeed)
 {
 	DamageSpec = InDamageSpec;
 	MaxHits = FMath::Max(InMaxHits, 1);
+	KnockbackSpeed = FMath::Max(InKnockbackSpeed, 0.f);
 
 	const float ClampedSpeed = FMath::Max(Speed, 0.f);
 	ProjectileMovement->InitialSpeed = ClampedSpeed;
@@ -87,7 +89,7 @@ void ARRProjectile::InitProjectile(const FGameplayEffectSpecHandle& InDamageSpec
 }
 
 ARRProjectile* ARRProjectile::SpawnProjectile(UWorld* World, TSubclassOf<ARRProjectile> Class, const FTransform& SpawnTransform,
-	AActor* InOwner, APawn* InInstigator, const FGameplayEffectSpecHandle& InDamageSpec, float Speed, float Lifetime, int32 MaxHits)
+	AActor* InOwner, APawn* InInstigator, const FGameplayEffectSpecHandle& InDamageSpec, float Speed, float Lifetime, int32 MaxHits, float KnockbackSpeed)
 {
 	if (!World || !Class)
 	{
@@ -100,7 +102,7 @@ ARRProjectile* ARRProjectile::SpawnProjectile(UWorld* World, TSubclassOf<ARRProj
 		UE_LOG(LogRogueRigs, Error, TEXT("%s: projectile of class %s could not be spawned."), *GetNameSafe(InOwner), *Class->GetName());
 		return nullptr;
 	}
-	Projectile->InitProjectile(InDamageSpec, Speed, Lifetime, MaxHits);
+	Projectile->InitProjectile(InDamageSpec, Speed, Lifetime, MaxHits, KnockbackSpeed);
 	Projectile->FinishSpawning(SpawnTransform);
 	return Projectile;
 }
@@ -146,6 +148,15 @@ void ARRProjectile::OnSphereBeginOverlap(UPrimitiveComponent* OverlappedComponen
 	if (const FGameplayEffectSpec* Spec = DamageSpec.Data.Get())
 	{
 		TargetASC->ApplyGameplayEffectSpecToSelf(*Spec);
+	}
+	// Knockback after the damage: ApplyKnockback ignores a robot this hit killed.
+	if (KnockbackSpeed > 0.f)
+	{
+		if (ARREnemy* Enemy = Cast<ARREnemy>(OtherActor))
+		{
+			const FVector Flight = ProjectileMovement->Velocity.GetSafeNormal2D(UE_SMALL_NUMBER, GetActorForwardVector().GetSafeNormal2D());
+			Enemy->ApplyKnockback(Flight * KnockbackSpeed);
+		}
 	}
 	if (bSpent)
 	{

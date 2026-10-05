@@ -187,10 +187,15 @@ void ARREnemy::ApplyKnockback(FVector Velocity)
 	{
 		return;
 	}
-	const FVector Launch = FVector(Velocity.X, Velocity.Y, 0.f) * (1.f - GetKnockbackResistance());
+	FVector Launch = FVector(Velocity.X, Velocity.Y, 0.f) * (1.f - GetKnockbackResistance());
 	if (Launch.IsNearlyZero())
 	{
 		return;
+	}
+	// LaunchCharacter overrides the pending launch: keep the XY of hits already received this frame (one push per pellet).
+	if (const UCharacterMovementComponent* Movement = GetCharacterMovement())
+	{
+		Launch += FVector(Movement->PendingLaunchVelocity.X, Movement->PendingLaunchVelocity.Y, 0.f);
 	}
 	// Applied by CharacterMovement on its next update (falling for a frame, then ground friction brakes it).
 	LaunchCharacter(Launch, /*bXYOverride*/ true, /*bZOverride*/ false);

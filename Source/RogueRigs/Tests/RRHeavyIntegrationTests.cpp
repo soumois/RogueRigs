@@ -1,4 +1,4 @@
-// Rogue Rigs - heavy integration tests with the final Blueprints (RogueRigs.Integration.Heavy*): BP_Heavy telegraphs then slams a vulnerable BP_Miner for 25 with its glow, tilt and shock ring, misses beyond 220 uu, takes the BP_Miner shotgun knockback reduced by 0.8 and crosses a one-cell corridor of arena_m1.
+// Rogue Rigs - heavy integration tests with the final Blueprints (RogueRigs.Integration.Heavy*): BP_Heavy telegraphs then slams a vulnerable BP_Miner for 25 with its glow, tilt and shock ring, misses beyond 220 uu, takes the BP_Miner shotgun pellet knockback reduced by 0.8 and crosses a one-cell corridor of arena_m1.
 
 #include "CoreMinimal.h"
 #include "Misc/AutomationTest.h"
@@ -10,9 +10,11 @@
 #include "Components/StaticMeshComponent.h"
 #include "Enemies/RRChaser.h"
 #include "Enemies/RRHeavy.h"
+#include "EngineUtils.h"
 #include "FlowField/RRFlowFieldSubsystem.h"
 #include "GameFramework/CharacterMovementComponent.h"
 #include "GAS/RRHealthAttributeSet.h"
+#include "Projectiles/RRShotgunPellet.h"
 #include "Tests/RRTestHarness.h"
 #include "Weapons/RRAutoFireComponent.h"
 #include "Weapons/RRShotgun.h"
@@ -324,54 +326,87 @@ bool FRRIntegrationHeavyKnockbackTest::RunTest(const FString& Parameters)
 	Miner->ApplyStickAimInput(FVector2D(0.f, 1.f)); // Screen up = world +X.
 	Shotgun->GetAbilitySystemComponent()->SetNumericAttributeBase(URRWeaponAttributeSet::GetCritChanceAttribute(), 0.f);
 
-	// BP_Heavy and BP_Chaser at the same distance (300 uu) on either side of the aim (+/-15 deg): both inside the cone.
+	// BP_Heavy and BP_Chaser 500 uu from the shot origin on the edge pellet rays (+15 / -15 deg). Frozen (actor and movement ticks off)
+	// until the pellets are gone so the pending launch can be read; the wider heavy (radius 48) may also take the +10 deg pellet.
+	const FVector Origin = Shotgun->GetShotOrigin();
+	const FVector Aim = Miner->GetAimDirection().GetSafeNormal2D();
 	const float FloorZ = Grid->GetCellCenter(0, 0).Z;
-	auto Around = [Miner, FloorZ](float AngleDeg)
+	auto OnRay = [&Origin, &Aim, FloorZ](float AngleDeg)
 	{
-		const FVector Location = Miner->GetActorLocation() + FVector::ForwardVector.RotateAngleAxis(AngleDeg, FVector::UpVector) * 300.f;
+		const FVector Location = Origin + Aim.RotateAngleAxis(AngleDeg, FVector::UpVector) * 500.f;
 		return FVector(Location.X, Location.Y, FloorZ);
 	};
-	ARRHeavy* Heavy = SpawnRobot<ARRHeavy>(*this, TestWorld, HeavyClass, Around(15.f));
-	ARRChaser* Chaser = SpawnRobot<ARRChaser>(*this, TestWorld, ChaserClass, Around(-15.f));
+	ARRHeavy* Heavy = SpawnRobot<ARRHeavy>(*this, TestWorld, HeavyClass, OnRay(15.f));
+	ARRChaser* Chaser = SpawnRobot<ARRChaser>(*this, TestWorld, ChaserClass, OnRay(-15.f));
 	if (!Heavy || !Chaser)
 	{
 		return false;
+	}
+	for (ARREnemy* Robot : { static_cast<ARREnemy*>(Heavy), static_cast<ARREnemy*>(Chaser) })
+	{
+		Robot->SetActorTickEnabled(false);
+		Robot->GetCharacterMovement()->SetComponentTickEnabled(false);
 	}
 	TestEqual(TEXT("BP_Heavy knockback resistance 0.8"), Heavy->GetKnockbackResistance(), HeavyResistance);
 	TestEqual(TEXT("BP_Chaser knockback resistance 0"), Chaser->GetKnockbackResistance(), 0.f);
 	const float HeavyHealth = Health(Heavy);
 	const float ChaserHealth = Health(Chaser);
 	const float Force = Shotgun->GetKnockbackForce();
+	const float PelletDamage = Shotgun->GetAbilitySystemComponent()->GetNumericAttribute(URRWeaponAttributeSet::GetDamageAttribute());
+	int32 HeavyHits = 0;
+	int32 ChaserHits = 0;
+	Heavy->GetHealthSet()->OnDamageReceived.AddLambda([&HeavyHits](float, bool, float) { ++HeavyHits; });
+	Chaser->GetHealthSet()->OnDamageReceived.AddLambda([&ChaserHits](float, bool, float) { ++ChaserHits; });
 
-	const FVector Origin = Shotgun->GetWaveOrigin();
-	const FVector HeavyOut = (Heavy->GetActorLocation() - Origin).GetSafeNormal2D();
-	const FVector ChaserOut = (Chaser->GetActorLocation() - Origin).GetSafeNormal2D();
 	const double HeavyStart = FVector::Dist2D(Heavy->GetActorLocation(), Origin);
 	const double ChaserStart = FVector::Dist2D(Chaser->GetActorLocation(), Origin);
-	const int32 WavesBefore = Shotgun->GetWaveCount();
+	const int32 ShotsBefore = Shotgun->GetShotCount();
 	URRAutoFireComponent* AutoFire = Shotgun->GetAutoFireComponent();
 	AutoFire->StartFiring();
 	AutoFire->AdvanceTime(0.001f);
 	AutoFire->StopFiring();
-	TestEqual(TEXT("exactly one wave fired"), Shotgun->GetWaveCount(), WavesBefore + 1);
+	TestEqual(TEXT("exactly one shot fired"), Shotgun->GetShotCount(), ShotsBefore + 1);
+	auto PelletsLeft = [&TestWorld]()
+	{
+		int32 Count = 0;
+		for (TActorIterator<ARRShotgunPellet> It(TestWorld.Get()); It; ++It)
+		{
+			Count += IsValid(*It) ? 1 : 0;
+		}
+		return Count;
+	};
+	for (int32 Frame = 0; Frame < 60 && PelletsLeft() > 0; ++Frame)
+	{
+		TestWorld.Tick();
+	}
 
 	const FVector HeavyLaunch = Heavy->GetCharacterMovement()->PendingLaunchVelocity;
 	const FVector ChaserLaunch = Chaser->GetCharacterMovement()->PendingLaunchVelocity;
+	for (ARREnemy* Robot : { static_cast<ARREnemy*>(Heavy), static_cast<ARREnemy*>(Chaser) })
+	{
+		Robot->SetActorTickEnabled(true);
+		Robot->GetCharacterMovement()->SetComponentTickEnabled(true);
+	}
 	for (int32 Frame = 0; Frame < 3; ++Frame)
 	{
 		TestWorld.Tick();
 	}
 	const double HeavyPush = FVector::Dist2D(Heavy->GetActorLocation(), Origin) - HeavyStart;
 	const double ChaserPush = FVector::Dist2D(Chaser->GetActorLocation(), Origin) - ChaserStart;
-	AddInfo(FString::Printf(TEXT("force %.0f: heavy launch %s (%.0f uu/s), chaser launch %s (%.0f uu/s); pushed %.1f / %.1f uu in 3 frames; health heavy %.0f -> %.0f, chaser %.0f -> %.0f"),
-		Force, *HeavyLaunch.ToCompactString(), HeavyLaunch.Size2D(), *ChaserLaunch.ToCompactString(), ChaserLaunch.Size2D(), HeavyPush, ChaserPush,
+	AddInfo(FString::Printf(TEXT("force %.0f per pellet: heavy %d hits, launch %s (%.0f uu/s); chaser %d hits, launch %s (%.0f uu/s); pushed %.1f / %.1f uu in 3 frames; health heavy %.0f -> %.0f, chaser %.0f -> %.0f"),
+		Force, HeavyHits, *HeavyLaunch.ToCompactString(), HeavyLaunch.Size2D(), ChaserHits, *ChaserLaunch.ToCompactString(), ChaserLaunch.Size2D(), HeavyPush, ChaserPush,
 		HeavyHealth, Health(Heavy), ChaserHealth, Health(Chaser)));
 
-	TestEqual(TEXT("shotgun knockback 600"), Force, 600.f);
-	TestTrue(TEXT("BP_Chaser launched at the full force outward"), ChaserLaunch.Equals(ChaserOut * Force, 0.05f));
-	TestTrue(TEXT("BP_Heavy launched at force x (1 - 0.8) outward"), HeavyLaunch.Equals(HeavyOut * Force * (1.f - HeavyResistance), 0.05f));
-	TestTrue(TEXT("heavy launch is 0.2 of the chaser's"), FMath::IsNearlyEqual(HeavyLaunch.Size2D() / FMath::Max(ChaserLaunch.Size2D(), 1.0), 0.2, 1e-3));
-	TestEqual(TEXT("BP_Heavy took one pellet hit of 18"), Health(Heavy), HeavyHealth - 18.f);
+	TestEqual(TEXT("shotgun knockback 250 per pellet hit"), Force, 250.f);
+	TestEqual(TEXT("BP_Chaser hit by its edge pellet"), ChaserHits, 1);
+	TestTrue(TEXT("BP_Heavy hit by 1 or 2 pellets"), HeavyHits >= 1 && HeavyHits <= 2);
+	TestTrue(TEXT("BP_Chaser launched at the full force along its pellet"), ChaserLaunch.Equals(Aim.RotateAngleAxis(-15.f, FVector::UpVector) * Force, 0.05f));
+	const double HeavyPerHit = HeavyLaunch.Size2D() / FMath::Max(HeavyHits, 1);
+	const double ChaserPerHit = ChaserLaunch.Size2D() / FMath::Max(ChaserHits, 1);
+	TestTrue(TEXT("BP_Heavy launch per pellet hit is force x (1 - 0.8)"), FMath::IsNearlyEqual(HeavyPerHit, Force * (1.0 - HeavyResistance), 0.01 * Force));
+	TestTrue(TEXT("heavy launch per hit is 0.2 of the chaser's"), FMath::IsNearlyEqual(HeavyPerHit / FMath::Max(ChaserPerHit, 1.0), 0.2, 5e-3));
+	TestTrue(TEXT("BP_Heavy pushed outward"), HeavyLaunch.Dot(Aim) > 0.0);
+	TestEqual(TEXT("BP_Heavy took one pellet damage per hit"), Health(Heavy), HeavyHealth - HeavyHits * PelletDamage);
 	TestTrue(TEXT("BP_Heavy alive"), !Heavy->IsDead());
 	TestTrue(TEXT("BP_Heavy pushed less than BP_Chaser"), HeavyPush < ChaserPush);
 	return true;
