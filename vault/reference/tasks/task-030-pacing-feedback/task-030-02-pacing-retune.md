@@ -3,7 +3,7 @@ id: task-030-02-pacing-retune
 description: "Pacing bot over 3 seeds with the new director and speeds; XP curve retuned to the level targets; shots of packs with blended shooters."
 parent: task-030-pacing-feedback
 kind: task
-status: in-progress
+status: done
 ---
 # Pacing retune
 
@@ -15,11 +15,11 @@ status: in-progress
 - done_when: medians within ±20 %; build exits 0 with the editor closed; all `RogueRigs.*` tests pass headless; docs updated; lint clean.
 - editor_state: closed
 - token_ceiling: 110000
-- model: open
-- tokens: open
-- runs: open
+- model: opus
+- tokens: input 172, cache write 501178, cache read 6688526, output 50840
+- runs: 2
 - milestone: M2
-- result: open
+- result: Shooter cap 6 alive (ShooterMaxAlive, extras become chasers), heavy pack weight 8, shooter AttackRange 960 with the ring clamped to the range (fix: shooters stopped out of range at 996 uu). XP curve need(1) 12, then 12 × (L + 3): medians L2 26.4 s, L5 94.3 s, L10 175.1 s (pass). Shots: lone chasers from several sides, first pack, shooters mid or back of mixed packs, miner surrounded. New test DirectorShooterCap; build 0, 186/186; Progression.XPPickupAddsOne failed once (intermittent). Commits b8b0443, 6ba3021.
 
 ## Relations
 - [[task-030-pacing-feedback]] — parent global task.

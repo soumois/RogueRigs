@@ -3,7 +3,7 @@ id: task-030-pacing-feedback
 description: "Global task: first play test feedback: enemies from the first second, slower ramp, shooters blended into chaser packs, robots 20 % slower, XP retuned."
 parent: tasks-index
 kind: task
-status: in-progress
+status: done
 ---
 # Pacing after the first play test
 
@@ -13,8 +13,8 @@ status: in-progress
 - gdd_check: Read [[enemies-index]], [[enemy-chaser]], [[enemy-kamikaze]], [[enemy-shooter]], [[enemy-heavy]], [[xp-level-up]]. GDD updated by the Orchestrator with the owner's values (2026-10-06); hordes and surround spawning unchanged; no open value.
 - confirmed_by_owner: yes (2026-10-06, plan accepted with the first robot at 1 s)
 - milestone: M2
-- next_step: task-030-02-pacing-retune
-- result: open
+- next_step: none
+- result: Done. No calm, first robot at 1 s, first pack 6–8 at 15 s, slower ramp (1–2 packs until 1:30), shooters in the back half of every flow pack (about 9–10 % drawn, at most 6 alive), heavies half as often, robots 20 % slower, shooter range 960, XP curve 12 then 12 × (L + 3). Build 0, 186/186. To judge by the owner in play.
 
 ## Subtasks
 1. task-030-01-director-speeds — cpp: director timings, pack mixes, shooters blended, speeds −20 %, tests

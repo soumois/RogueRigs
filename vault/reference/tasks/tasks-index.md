@@ -42,4 +42,4 @@ Resuming after the pause of 2026-10-06: read [[handover-2026-10-06]] first.
 - [[task-027-juice]] — XP and ore ejection and suction, kamikaze flare, ring gauge, chevrons, heal ring. Status done.
 - [[task-028-balance]] — larger heavy slam, shield chasers, doubled upgrade values, XP pacing. Status done.
 - [[task-029-fine-grid]] — 67 uu cells: chunked rendering, incremental flow field, converted layout, arc mining by contact. Status done.
-- [[task-030-pacing-feedback]] — first play test: enemies from 1 s, slower ramp, shooters blended, robots 20 % slower, XP retune. Status in-progress.
+- [[task-030-pacing-feedback]] — first play test: enemies from 1 s, slower ramp, shooters blended, robots 20 % slower, XP retune. Status done.
