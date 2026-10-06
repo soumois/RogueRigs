@@ -25,6 +25,7 @@ kind: note
 ## Owner (Pierre)
 - Write in French; never correct the owner’s spelling.
 - Ask all questions at once, each with a proposed default the owner can accept with "ok".
+- A "non" to every proposed option means no new task: ask or wait, never relaunch work on a reinterpreted target. Never add unrequested work (new tests, bot profiles, screenshot sessions, full test reruns); only fix existing test expectations a requested change breaks (owner 2026-10-06).
 - The owner launches whole lots and lets provisional values be set (written in the GDD as `provisional, owner <date>`); report decisions to confirm.
 - The owner wants a stress-test report as soon as it ends, before the rest.
 - The owner tracks cost: input, cache and output tokens per subtask ([[cost-log]]).
