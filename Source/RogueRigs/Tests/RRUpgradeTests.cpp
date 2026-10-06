@@ -126,7 +126,7 @@ bool FRRUpgradeValueLookupTest::RunTest(const FString& Parameters)
 	float Unused = 0.f;
 	TestFalse(TEXT("no magazine row (M1)"), S.Upgrades->GetUpgradeValue(ERRUpgradeStat::MagazineSize, ERRUpgradeRarity::Grey, false, Unused));
 
-	// Cards carry the value and the French texts.
+	// Cards carry the value and the English texts.
 	const FRRUpgradeCard Global = MakeUpgradeCard(*this, S.Upgrades, ERRUpgradeStat::Damage, ERRUpgradeRarity::Blue, ERRUpgradeTarget::AllWeapons);
 	TestEqual(TEXT("global damage blue value"), Global.Value, 0.25f, 1e-5f);
 	TestEqual(TEXT("global damage name"), Global.DisplayName.ToString(), FString(TEXT("Damage")));

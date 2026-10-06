@@ -1,10 +1,11 @@
-// Rogue Rigs - XP pacing bot: a scripted -game run (real director, real pickups) that aims at the nearest robot, walks to resting XP cubes, picks the first card and logs the time of each level.
+// Rogue Rigs - XP pacing bot: a scripted -game run (real director, real pickups) that aims at the nearest robot, stands still, walks to resting XP cubes or runs straight, picks the first card and logs the time of each level.
 
 #include "Debug/RRPacingBotSubsystem.h"
 
 #include "Debug/RRCheats.h"
 #include "Enemies/RREnemy.h"
 #include "Enemies/RREnemySpawner.h"
+#include "Grid/RRArenaGrid.h"
 #include "Engine/World.h"
 #include "EngineUtils.h"
 #include "GameFramework/SpringArmComponent.h"
@@ -29,6 +30,15 @@ namespace RRPacingBot
 	TAutoConsoleVariable<float> CVarStatusInterval(TEXT("rr.Pacing.StatusInterval"), 15.f,
 		TEXT("Pacing bot: seconds of run clock between two status lines."), ECVF_Cheat);
 
+	TAutoConsoleVariable<float> CVarRunLookahead(TEXT("rr.Pacing.RunLookahead"), 200.f,
+		TEXT("Pacing bot, run profile: the miner turns when less open floor than this (uu) lies ahead."), ECVF_Cheat);
+
+	TAutoConsoleVariable<float> CVarRunProbe(TEXT("rr.Pacing.RunProbe"), 3000.f,
+		TEXT("Pacing bot, run profile: longest free distance (uu) measured when choosing a new heading."), ECVF_Cheat);
+
+	TAutoConsoleVariable<float> CVarRunStallDistance(TEXT("rr.Pacing.RunStallDistance"), 60.f,
+		TEXT("Pacing bot, run profile: moving less than this (uu) in 0.5 s of run clock counts as blocked and makes the miner turn."), ECVF_Cheat);
+
 	/** Label of the log lines and of the cheat calls. */
 	const TCHAR* const Source = TEXT("rr.Pacing.Run");
 
@@ -37,16 +47,16 @@ namespace RRPacingBot
 		const float Seconds = Args.IsValidIndex(0) ? FCString::Atof(*Args[0]) : 200.f;
 		const int32 Seed = Args.IsValidIndex(1) ? FCString::Atoi(*Args[1]) : 1;
 		const bool bQuit = !Args.IsValidIndex(2) || FCString::Atoi(*Args[2]) != 0;
-		const bool bCollect = !Args.IsValidIndex(3) || FCString::Atoi(*Args[3]) != 0;
+		const int32 ProfileIndex = Args.IsValidIndex(3) ? FMath::Clamp(FCString::Atoi(*Args[3]), 0, 2) : 1;
 		URRPacingBotSubsystem* Bot = World ? World->GetSubsystem<URRPacingBotSubsystem>() : nullptr;
-		if (!Bot || !Bot->StartRun(Seconds > 0.f ? Seconds : 200.f, Seed, bQuit, bCollect))
+		if (!Bot || !Bot->StartRun(Seconds > 0.f ? Seconds : 200.f, Seed, bQuit, static_cast<ERRPacingProfile>(ProfileIndex)))
 		{
 			UE_LOG(LogRogueRigs, Warning, TEXT("%s: refused (no game world, miner or spawner, or a run is active)."), Source);
 		}
 	}
 
 	FAutoConsoleCommandWithWorldAndArgs CmdRun(TEXT("rr.Pacing.Run"),
-		TEXT("rr.Pacing.Run [Seconds=200] [Seed=1] [Quit=1] [Collect=1]: XP pacing bot (invulnerable, aims at the nearest robot, walks to XP cubes, picks card 0); level times in the log and Saved/Pacing."),
+		TEXT("rr.Pacing.Run [Seconds=200] [Seed=1] [Quit=1] [Profile=1]: XP pacing bot (invulnerable, aims at the nearest robot, picks card 0; Profile 0 still, 1 walks to XP cubes, 2 runs straight and turns at walls); level times in the log and Saved/Pacing."),
 		FConsoleCommandWithWorldAndArgsDelegate::CreateStatic(&HandleRun), ECVF_Cheat);
 }
 
@@ -71,7 +81,7 @@ ARREnemySpawner* URRPacingBotSubsystem::FindSpawner() const
 	return It ? *It : nullptr;
 }
 
-bool URRPacingBotSubsystem::StartRun(float DurationSeconds, int32 Seed, bool bQuit, bool bCollect)
+bool URRPacingBotSubsystem::StartRun(float DurationSeconds, int32 Seed, bool bQuit, ERRPacingProfile InProfile)
 {
 	UWorld* World = GetWorld();
 	ARRMiner* Miner = RRCheats::FindPlayerMiner(World);
@@ -89,16 +99,24 @@ bool URRPacingBotSubsystem::StartRun(float DurationSeconds, int32 Seed, bool bQu
 
 	bRunning = true;
 	bQuitWhenDone = bQuit;
-	bCollectCubes = bCollect;
+	Profile = InProfile;
 	RunSeed = Seed;
+	TActorIterator<ARRArenaGrid> GridIt(World);
+	Grid = GridIt ? *GridIt : nullptr;
+	// Run profile starts toward screen north (camera forward).
+	const USpringArmComponent* Arm = Miner->FindComponentByClass<USpringArmComponent>();
+	RunHeading = Arm ? FRotator(0.f, Arm->GetComponentRotation().Yaw, 0.f).Vector() : FVector::ForwardVector;
+	StallCheckLocation = Miner->GetActorLocation();
+	RunTurns = 0;
 	StartSeconds = FoundSpawner->GetRunTime();
 	EndSeconds = StartSeconds + DurationSeconds;
 	LastLevel = Miner->GetProgression()->GetLevel();
 	CardsPicked = 0;
 	NextStatusSeconds = StartSeconds;
+	StallCheckSeconds = StartSeconds;
 	LevelTimes.Reset();
-	UE_LOG(LogRogueRigs, Log, TEXT("Pacing: run started, seed %d, %.0f s, collect %d, spawner %s (enabled %d, clock %.2f s), miner level %d, pickup radius %.0f uu."),
-		Seed, DurationSeconds, bCollect ? 1 : 0, *FoundSpawner->GetName(), FoundSpawner->IsSpawningEnabled() ? 1 : 0, StartSeconds,
+	UE_LOG(LogRogueRigs, Log, TEXT("Pacing: run started, seed %d, %.0f s, profile %d, spawner %s (enabled %d, clock %.2f s), miner level %d, pickup radius %.0f uu."),
+		Seed, DurationSeconds, static_cast<int32>(Profile), *FoundSpawner->GetName(), FoundSpawner->IsSpawningEnabled() ? 1 : 0, StartSeconds,
 		LastLevel, Miner->GetPickupRadius());
 	return true;
 }
@@ -168,10 +186,84 @@ void URRPacingBotSubsystem::Tick(float DeltaTime)
 	}
 
 	AimAtNearestRobot(Miner);
-	if (bCollectCubes)
+	if (Profile == ERRPacingProfile::Collect)
 	{
 		WalkToNearestCube(Miner);
 	}
+	else if (Profile == ERRPacingProfile::Run)
+	{
+		RunStraight(Miner, Now);
+	}
+}
+
+void URRPacingBotSubsystem::MoveAlong(ARRMiner* Miner, const FVector& Direction)
+{
+	// ApplyMoveInput takes screen axes (X right, Y up through the camera yaw): project the world direction on them.
+	const USpringArmComponent* Arm = Miner->FindComponentByClass<USpringArmComponent>();
+	if (!Arm)
+	{
+		return;
+	}
+	const FRotator CameraYaw(0.f, Arm->GetComponentRotation().Yaw, 0.f);
+	Miner->ApplyMoveInput(FVector2D(FVector::DotProduct(Direction, CameraYaw.RotateVector(FVector::RightVector)),
+		FVector::DotProduct(Direction, CameraYaw.RotateVector(FVector::ForwardVector))));
+}
+
+float URRPacingBotSubsystem::GetFreeDistance(const ARRArenaGrid& ArenaGrid, const FVector& Origin, const FVector& Direction, float MaxDistance) const
+{
+	const float Step = FMath::Max(ArenaGrid.GetCellSize() * 0.5f, 10.f);
+	const FVector Side = FVector::CrossProduct(FVector::UpVector, Direction);
+	const ARRMiner* Miner = RRCheats::FindPlayerMiner(GetWorld());
+	const float HalfWidth = Miner ? Miner->GetSimpleCollisionRadius() : 40.f;
+	for (float Distance = Step; Distance <= MaxDistance; Distance += Step)
+	{
+		for (const float Lateral : { 0.f, -HalfWidth, HalfWidth })
+		{
+			const ERRCellType Type = ArenaGrid.GetCellType(ArenaGrid.GetCellAtWorld(Origin + Direction * Distance + Side * Lateral));
+			if (Type != ERRCellType::Floor && Type != ERRCellType::Spawn)
+			{
+				return Distance - Step;
+			}
+		}
+	}
+	return MaxDistance;
+}
+
+void URRPacingBotSubsystem::RunStraight(ARRMiner* Miner, float Now)
+{
+	const ARRArenaGrid* ArenaGrid = Grid.Get();
+	const FVector Origin = Miner->GetActorLocation();
+	const float Lookahead = RRPacingBot::CVarRunLookahead.GetValueOnGameThread();
+	bool bTurn = ArenaGrid && GetFreeDistance(*ArenaGrid, Origin, RunHeading, Lookahead) < Lookahead;
+	if (Now - StallCheckSeconds >= 0.5f)
+	{
+		bTurn |= FVector::Dist2D(Origin, StallCheckLocation) < RRPacingBot::CVarRunStallDistance.GetValueOnGameThread();
+		StallCheckSeconds = Now;
+		StallCheckLocation = Origin;
+	}
+
+	if (bTurn && ArenaGrid)
+	{
+		// Freest of the 7 other 45-degree headings; going back counts half; a little seeded noise breaks ties.
+		const float Probe = RRPacingBot::CVarRunProbe.GetValueOnGameThread();
+		FVector Best = -RunHeading;
+		float BestScore = -1.f;
+		for (int32 Turn = 1; Turn < 8; ++Turn)
+		{
+			const FVector Candidate = RunHeading.RotateAngleAxis(45.f * Turn, FVector::UpVector).GetSafeNormal2D();
+			const float Score = GetFreeDistance(*ArenaGrid, Origin, Candidate, Probe) * (Turn == 4 ? 0.5f : 1.f) + FMath::FRand() * ArenaGrid->GetCellSize();
+			if (Score > BestScore)
+			{
+				BestScore = Score;
+				Best = Candidate;
+			}
+		}
+		RunHeading = Best;
+		++RunTurns;
+		StallCheckSeconds = Now;
+		StallCheckLocation = Origin;
+	}
+	MoveAlong(Miner, RunHeading);
 }
 
 void URRPacingBotSubsystem::AimAtNearestRobot(ARRMiner* Miner) const
@@ -225,16 +317,12 @@ void URRPacingBotSubsystem::WalkToNearestCube(ARRMiner* Miner) const
 			Nearest = *It;
 		}
 	}
-	const USpringArmComponent* Arm = Miner->FindComponentByClass<USpringArmComponent>();
-	if (!Nearest || !Arm)
+	if (!Nearest)
 	{
 		return;
 	}
 
-	const FVector Direction = (Nearest->GetActorLocation() - Origin).GetSafeNormal2D();
-	const FRotator CameraYaw(0.f, Arm->GetComponentRotation().Yaw, 0.f);
-	Miner->ApplyMoveInput(FVector2D(FVector::DotProduct(Direction, CameraYaw.RotateVector(FVector::RightVector)),
-		FVector::DotProduct(Direction, CameraYaw.RotateVector(FVector::ForwardVector))));
+	MoveAlong(Miner, (Nearest->GetActorLocation() - Origin).GetSafeNormal2D());
 }
 
 void URRPacingBotSubsystem::CountWorld(int32& OutRobots, int32& OutCubes) const
@@ -266,12 +354,12 @@ void URRPacingBotSubsystem::FinishRun()
 		Times += FString::Printf(TEXT(" L%d=%.1f"), Entry.Level, Entry.Seconds);
 		Csv += FString::Printf(TEXT("%d,%.2f,%d,%d\n"), Entry.Level, Entry.Seconds, Entry.RobotsAlive, Entry.CubesLeft);
 	}
-	UE_LOG(LogRogueRigs, Log, TEXT("Pacing: run done, seed %d, collect %d, start clock %.2f s, end level %d (XP %.1f / %.1f), %d cards picked; times:%s"),
-		RunSeed, bCollectCubes ? 1 : 0, StartSeconds, Progression ? Progression->GetLevel() : 0, Progression ? Progression->GetXP() : 0.f,
+	UE_LOG(LogRogueRigs, Log, TEXT("Pacing: run done, seed %d, profile %d, %d turns, start clock %.2f s, end level %d (XP %.1f / %.1f), %d cards picked; times:%s"),
+		RunSeed, static_cast<int32>(Profile), RunTurns, StartSeconds, Progression ? Progression->GetLevel() : 0, Progression ? Progression->GetXP() : 0.f,
 		Progression ? Progression->GetXPToNextLevel() : 0.f, CardsPicked, *Times);
 
 	const FString Path = FPaths::ProjectSavedDir() / TEXT("Pacing") /
-		FString::Printf(TEXT("Pacing_s%d_c%d_%s.csv"), RunSeed, bCollectCubes ? 1 : 0, *FDateTime::Now().ToString(TEXT("%Y%m%d_%H%M%S")));
+		FString::Printf(TEXT("Pacing_s%d_p%d_%s.csv"), RunSeed, static_cast<int32>(Profile), *FDateTime::Now().ToString(TEXT("%Y%m%d_%H%M%S")));
 	const bool bSaved = FFileHelper::SaveStringToFile(Csv, *Path);
 	UE_LOG(LogRogueRigs, Log, TEXT("Pacing: %s %s."), bSaved ? TEXT("wrote") : TEXT("could not write"), *Path);
 

@@ -1,4 +1,4 @@
-// Rogue Rigs - XP pacing bot: a scripted -game run (real director, real pickups) that aims at the nearest robot, walks to resting XP cubes, picks the first card and logs the time of each level.
+// Rogue Rigs - XP pacing bot: a scripted -game run (real director, real pickups) that aims at the nearest robot, stands still, walks to resting XP cubes or runs straight, picks the first card and logs the time of each level.
 
 #pragma once
 
@@ -6,8 +6,21 @@
 #include "Subsystems/WorldSubsystem.h"
 #include "RRPacingBotSubsystem.generated.h"
 
+class ARRArenaGrid;
 class ARREnemySpawner;
 class ARRMiner;
+
+/** How the pacing bot moves the miner (fourth argument of rr.Pacing.Run). */
+UENUM()
+enum class ERRPacingProfile : uint8
+{
+	/** 0: stands still; the magnet takes what comes in range. */
+	Still,
+	/** 1: walks to the nearest resting XP cube outside the pickup radius. */
+	Collect,
+	/** 2: runs in a straight line, turning only at walls (blocks or the arena edge); the magnet takes what it passes. */
+	Run
+};
 
 /** One level reached during a pacing run. */
 USTRUCT()
@@ -35,10 +48,12 @@ struct FRRPacingLevelTime
 /**
  * Pacing bot (task-028-03, sys-progression): measures the time to each level with the real wave director and the real pickup
  * motion. Debug only: Game and PIE worlds, never in shipping.
- * - rr.Pacing.Run [Seconds=200] [Seed=1] [Quit=1] [Collect=1]: seeds the placed spawner stream and the global random (crits,
- *   cube scatter) with Seed, makes the player miner invulnerable (cheat count, removed at the end), then every frame aims
- *   the miner stick at the nearest live robot and, with Collect 1, walks toward the nearest XP cube lying outside the pickup
- *   radius within rr.Pacing.CollectRange (else stands still); picks card 0 of every level-up screen (ticks while paused).
+ * - rr.Pacing.Run [Seconds=200] [Seed=1] [Quit=1] [Profile=1]: seeds the placed spawner stream and the global random (crits,
+ *   cube scatter, run turns) with Seed, makes the player miner invulnerable (cheat count, removed at the end), then every frame
+ *   aims the miner stick at the nearest live robot and moves by profile (ERRPacingProfile): 0 still; 1 collect, walks toward
+ *   the nearest XP cube lying outside the pickup radius within rr.Pacing.CollectRange (else stands still); 2 run, straight
+ *   from screen north, turning at a wall (free distance below rr.Pacing.RunLookahead, or stalled) toward the freest of 7
+ *   other 45-degree headings. Picks card 0 of every level-up screen (ticks while paused).
  *   Level time is the spawner run clock (ARREnemySpawner::GetRunTime). Logs one "Pacing: level" line per level, a "Pacing: status" line every
  *   rr.Pacing.StatusInterval s (miner position, level, XP, robots, cubes), a summary
  *   at the end (after Seconds of run clock), writes Saved/Pacing/Pacing_<time>.csv and requests exit when Quit is 1.
@@ -62,7 +77,7 @@ public:
 	virtual TStatId GetStatId() const override;
 
 	/** Starts a run of DurationSeconds of spawner clock. False without a player miner or a spawner. */
-	bool StartRun(float DurationSeconds, int32 Seed, bool bQuit, bool bCollect);
+	bool StartRun(float DurationSeconds, int32 Seed, bool bQuit, ERRPacingProfile InProfile);
 
 	/** True while a run is active. */
 	bool IsRunning() const { return bRunning; }
@@ -80,6 +95,15 @@ protected:
 	/** Walks the miner toward the nearest resting XP cube outside its pickup radius (within rr.Pacing.CollectRange). */
 	void WalkToNearestCube(ARRMiner* Miner) const;
 
+	/** Run profile: keeps RunHeading, turns at walls or when stalled, and pushes the stick along it. */
+	void RunStraight(ARRMiner* Miner, float Now);
+
+	/** Open floor (uu, capped at MaxDistance) from Origin along Direction before a block, void or off-grid cell; samples the miner's width. */
+	float GetFreeDistance(const ARRArenaGrid& Grid, const FVector& Origin, const FVector& Direction, float MaxDistance) const;
+
+	/** Pushes the miner stick along a world direction (projected on the camera's screen axes). */
+	static void MoveAlong(ARRMiner* Miner, const FVector& Direction);
+
 	/** The first spawner of the world (the one placed in the arena). */
 	ARREnemySpawner* FindSpawner() const;
 
@@ -92,8 +116,23 @@ protected:
 	/** Exit the process at the end of the run. */
 	bool bQuitWhenDone = false;
 
-	/** Walk toward resting XP cubes. */
-	bool bCollectCubes = true;
+	/** How the miner moves this run. */
+	ERRPacingProfile Profile = ERRPacingProfile::Collect;
+
+	/** Run profile: current world heading (unit, XY). */
+	FVector RunHeading = FVector::ForwardVector;
+
+	/** Run profile: miner position and spawner clock at the last stall check. */
+	FVector StallCheckLocation = FVector::ZeroVector;
+
+	/** Run profile: spawner clock of the last stall check. */
+	float StallCheckSeconds = 0.f;
+
+	/** Run profile: number of turns taken. */
+	int32 RunTurns = 0;
+
+	/** The arena grid (walls for the run profile). */
+	TWeakObjectPtr<ARRArenaGrid> Grid;
 
 	/** Spawner clock at which the run ends. */
 	float EndSeconds = 0.f;
