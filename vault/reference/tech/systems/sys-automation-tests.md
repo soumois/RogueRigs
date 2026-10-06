@@ -1,6 +1,6 @@
 ---
 id: sys-automation-tests
-description: "Tests: RogueRigs.Dig.*, Weapons.*, Player.*, FlowField.*, Enemies.*, Spawner.*, Integration.*, Explosions.*, Barrel.*, Kamikaze.*, Shooter.*, Heavy.*, ShieldChaser.*, Progression.*, Upgrades.*, LevelUp.*, Cheats.*, Shotgun.*, Turret.*, RunFlow.*, Console.*, Extraction.*, DamageNumbers.*, HUD.*; harness."
+description: "Tests: RogueRigs.Dig.*, Weapons.*, Player.*, FlowField.*, Enemies.*, Spawner.*, Integration.*, Explosions.*, Barrel.*, Kamikaze.*, Shooter.*, Heavy.*, ShieldChaser.*, Progression.*, Upgrades.*, LevelUp.*, Cheats.*, Shotgun.*, Turret.*, RunFlow.*, Console.*, Extraction.*, DamageNumbers.*, HUD.*."
 parent: systems-index
 kind: doc
 ---
