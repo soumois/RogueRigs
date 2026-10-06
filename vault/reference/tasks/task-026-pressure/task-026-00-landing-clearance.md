@@ -3,7 +3,7 @@ id: task-026-00-landing-clearance
 description: "Console and shuttle land only where their whole footprint (2 × 2 and 4 × 3 cells at 67 uu) is open floor; tests."
 parent: task-026-pressure
 kind: task
-status: in-progress
+status: done
 ---
 # Landing clearance for console and shuttle
 
@@ -15,11 +15,11 @@ status: in-progress
 - done_when: build exits 0 with the editor closed; all `RogueRigs.*` tests pass headless; docs updated; lint clean.
 - editor_state: closed
 - token_ceiling: 60000
-- model: open
-- tokens: open
-- runs: open
+- model: opus
+- tokens: input 92, cache write 82690, cache read 2512462, output 31887
+- runs: 1
 - milestone: M2
-- result: open
+- result: Console 2 × 2 and shuttle 4 × 3 footprints must be reachable floor (FootprintCells properties, shared RRLandingFootprint helpers); actor at footprint centre; logged fallbacks. FineConsoleShuttlePlacement asserts 0 rock overlap over 5 seeds. Build 0, 158/158. Docs sys-objectives, sys-automation-tests. Commit 5413618.
 
 ## Relations
 - [[task-026-pressure]] — parent global task.

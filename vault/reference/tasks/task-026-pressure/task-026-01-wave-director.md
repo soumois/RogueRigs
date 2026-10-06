@@ -3,7 +3,7 @@ id: task-026-01-wave-director
 description: "Spawner director: calm, isolated robots, first pack at 22 s, rising multi-side flow, lull and horde front; one-type packs, tough robots first; tests."
 parent: task-026-pressure
 kind: task
-status: todo
+status: in-progress
 ---
 # Wave director
 
