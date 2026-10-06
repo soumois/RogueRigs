@@ -3,7 +3,7 @@ id: task-028-03-xp-pacing
 description: "Scripted -game run measuring time to each level; tune the XP curve to level 2 at 30 s, 5 at 1:40, 10 at 3:10."
 parent: task-028-balance
 kind: task
-status: in-progress
+status: done
 ---
 # XP pacing
 
@@ -15,9 +15,9 @@ status: in-progress
 - done_when: build exits 0 with the editor closed; all `RogueRigs.*` tests pass headless (new ones included); docs updated; lint clean.
 - editor_state: closed
 - token_ceiling: 130000
-- model: open
-- tokens: open
-- runs: open
+- model: opus
+- tokens: input 174, cache write 425983, cache read 8439158, output 62021
+- runs: 2
 - milestone: M2
 - result: open
 

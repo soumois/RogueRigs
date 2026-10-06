@@ -3,7 +3,7 @@ id: task-028-balance
 description: "Global task: bigger heavy slam area, shield chasers, doubled upgrade values, faster early level-ups tuned on a measured run."
 parent: tasks-index
 kind: task
-status: in-progress
+status: done
 ---
 # Balance and enemies
 
@@ -13,8 +13,8 @@ status: in-progress
 - gdd_check: Read [[enemy-heavy]], [[enemy-chaser]], [[upgrades]], [[rarities]], [[xp-level-up]], [[color-code]]. Analysis in [[drgs-analysis]]. The owner launched all lots and delegated provisional values (2026-10-05); decisions written into the GDD before planning; the grid-size lot waits for the owner after the stress report.
 - confirmed_by_owner: yes (2026-10-05, all lots launched by the owner)
 - milestone: M2
-- next_step: task-028-03-xp-pacing
-- result: open
+- next_step: none
+- result: Done. Heavy slam 400 uu with ground disc; shield chaser (30 shield, xp 2, in chaser packs from 1:00); upgrade values doubled; XP curve 5 then 12 × (L + 3): medians L2 26.8 s, L5 93.0 s, L10 190.0 s (targets ±20 % pass); pickups never collide (C++ fix, BP_PickupXP Trail had collision). Kamikaze flare 10000, digit outline, damage number lifetime 0.7 s, heal ring on level-up. Build 0, 184/184. Not seen on screen: heal ring on level-up (maybe under the level-up disc), kamikaze flare, shield break burst; BP_PickupXP Trail asset still has collision (runtime-fixed).
 
 ## Subtasks
 1. task-028-01-heavy-shield-values — cpp: heavy slam radius 400, shield chaser, new upgrade values, tests
