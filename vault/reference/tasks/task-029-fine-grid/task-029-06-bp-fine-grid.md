@@ -3,7 +3,7 @@ id: task-029-06-bp-fine-grid
 description: "Block meshes and materials scaled to 67 uu, cracks and break debris readable at the new size, drone arc dig visual, PIE."
 parent: task-029-fine-grid
 kind: task
-status: todo
+status: in-progress
 ---
 # Fine grid visuals
 

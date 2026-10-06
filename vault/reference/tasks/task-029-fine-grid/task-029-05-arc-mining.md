@@ -3,7 +3,7 @@ id: task-029-05-arc-mining
 description: "Drone digs up to 4 blocks in a 120° arc when the miner touches rock; rock 0.5 s, ore and heal 1.5 s; tests."
 parent: task-029-fine-grid
 kind: task
-status: in-progress
+status: done
 ---
 # Arc mining by contact
 
@@ -15,9 +15,9 @@ status: in-progress
 - done_when: build exits 0 with the editor closed; all `RogueRigs.*` tests pass headless; docs updated; lint clean.
 - editor_state: closed
 - token_ceiling: 120000
-- model: open
-- tokens: open
-- runs: open
+- model: opus
+- tokens: input 118, cache write 159685, cache read 6134331, output 79785
+- runs: 1
 - milestone: M2
 - result: contact arc mining in `ARRDrone` (`RequestArcDig`, `SelectArcCells`, `ReleaseDig`, `OnDigBlockStarted` / `OnDigBlockStopped`) and `ARRMiner` (`DigContactMargin`, `IsTouchingRock`); 4 new Dig tests; build 0; 156/156 tests pass (2026-10-06). Docs: [[sys-drone]], [[sys-player]], [[sys-automation-tests]].
 

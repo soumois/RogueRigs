@@ -62,6 +62,7 @@ kind: note
 | [[task-029-02-flow-field-incremental]] | opus | 1 | 0k | 176k | 6095k | 87k |
 | [[task-029-03-layout-67]] | sonnet | 1 | 0k | 55k | 461k | 1k |
 | [[task-029-04-switch-67]] | opus | 2 | 0k | 339k | 11663k | 44k |
+| [[task-029-05-arc-mining]] | opus | 1 | 0k | 160k | 6134k | 80k |
 
 ## Totals
 | Scope | Input | Cache write | Cache read | Output |
