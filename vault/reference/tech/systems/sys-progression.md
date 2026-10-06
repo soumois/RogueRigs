@@ -1,6 +1,6 @@
 ---
 id: sys-progression
-description: "XP and level as built: URRProgressionComponent, XPCurve.csv (12, then 12 × (level + 3)) and its measured pacing, XPGain, carry-over, OnXPChanged and OnLevelUp."
+description: "XP and level as built: URRProgressionComponent, XPCurve.csv (need = level squared) and its measured pacing on two bot profiles, XPGain, carry-over, events."
 parent: systems-index
 kind: doc
 ---
@@ -13,33 +13,29 @@ kind: doc
   - Getters (BlueprintPure): `GetLevel()` (starts at 1), `GetXP()` (XP inside the level, starts at 0), `GetXPToNextLevel()`; native `GetXPToNextLevelAt(Level)`.
   - Delegates (BlueprintAssignable): `OnXPChanged(float Current, float Needed, int32 Level)`, `OnLevelUp(int32 NewLevel)` (once per level gained, before `OnXPChanged`).
   - Callers: XP pickups on collection ([[sys-pickups]]); the HUD ([[sys-hud]]) and the level-up flow ([[sys-level-up]]) listen to `OnLevelUp`.
-- data: `Content/RogueRigs/Data/Tables/XPCurve.csv`, columns `Name,XPToNextLevel`, one row per level, row name = level, levels 1 to 50: need(1) = 12, need(L ≥ 2) = 12 × (L + 3) (60, 72, 84 … 636; task-030-02: need(1) 5 → 12 after the director started at 1 s; task-028-03 set 12 × (L + 3); provisional, [[xp-level-up]]; was 5 × L). Read with `FRRBaseStatsLoader::GetCachedTable` in `InitializeComponent` (before any `BeginPlay`, so the HUD bind sees the need) and copied to an array. Levels above the last row reuse its value. Rows must run 1..N without gap with a need > 0, otherwise the curve is rejected (error logged, need 0, no level-up). Staged with the other tables ([[sys-gas-core]]).
+- data: `Content/RogueRigs/Data/Tables/XPCurve.csv`, columns `Name,XPToNextLevel`, one row per level, row name = level, levels 1 to 50: need(L) = L² (1, 4, 9, 16 … 81 at level 9 … 2500; task-031-03, provisional, [[xp-level-up]]; was 12 then 12 × (L + 3) from task-030-02, 5 × L before). Read with `FRRBaseStatsLoader::GetCachedTable` in `InitializeComponent` (before any `BeginPlay`, so the HUD bind sees the need) and copied to an array. Levels above the last row reuse its value. Rows must run 1..N without gap with a need > 0, otherwise the curve is rejected (error logged, need 0, no level-up). Staged with the other tables ([[sys-gas-core]]).
 - depends_on: [[sys-gas-core]] (XPGain, CSV loader), [[sys-player]] (owner).
 - implements: [[xp-level-up]] (XP bar data, level-up), [[player-stats]] (XPGain).
 - gotchas: XP is a float (XPGain can be fractional); the comparison is exact, so a curve with fractional needs may leave XP a hair below a level. XP is not reset on death (the level restarts). Tests: `RogueRigs.Progression.*` (level-up and weapons integration tests compute their XP from the curve rows since task-028-03) ([[sys-automation-tests]]).
 
-## Pacing (task-028-03)
-- Bot: `rr.Pacing.Run [Seconds=200] [Seed=1] [Quit=1] [Collect=1]` (`Debug/RRPacingBotSubsystem`, not in shipping): -game on L_ArenaM1, real wave director and pickup motion; seeds the placed spawner and the global random, miner invulnerable (cheat count), stick aimed at the nearest live robot each frame, walks to the nearest XP cube lying outside 0.8 × pickup radius within `rr.Pacing.CollectRange` (2500 uu), picks card 0 of each screen. Clock = spawner `GetRunTime`. Logs `Pacing: level` and `Pacing: status` (every `rr.Pacing.StatusInterval`, 15 s) lines, writes `Saved/Pacing/*.csv`. Same seed does not give the same run (frame times differ).
-- Results, level time in s (target ±20 %: L2 24–36, L5 80–120, L10 152–228):
+## Pacing bot
+- `rr.Pacing.Run [Seconds=200] [Seed=1] [Quit=1] [Profile=1]` (`Debug/RRPacingBotSubsystem`, not in shipping; task-028-03, profiles task-031-03): -game on L_ArenaM1, real director and pickups; seeds the spawner and the global random; miner invulnerable; aims at the nearest live robot; picks card 0. Profile 0 still; 1 collect (walks to the nearest resting XP cube outside 0.8 × pickup radius within `rr.Pacing.CollectRange` 2500 uu); 2 run (straight from screen north, turns when less than `rr.Pacing.RunLookahead` 200 uu of floor lies ahead or after moving under `rr.Pacing.RunStallDistance` 60 uu in 0.5 s, toward the freest of the 7 other 45° headings probed to `rr.Pacing.RunProbe` 3000 uu, going back counts half; collects only what the magnet takes). Clock = spawner `GetRunTime`. Logs `Pacing: level`, `Pacing: status` (every `rr.Pacing.StatusInterval` s: position, level, XP, robots, cubes, heading, turns) and the summary; writes `Saved/Pacing/Pacing_s<seed>_p<profile>_*.csv`. Same seed does not give the same run.
 
-| Curve | Seeds | L2 | L5 | L10 |
+## Measured pacing (task-031-03)
+Target: mean of the two profiles' medians at L2 15 s, L5 70 s, L10 180 s ± 20 %. Seeds 1–3, collect to 245 s, run to 300 s. Level time in s.
+
+| Curve | Profile | L2 | L5 | L10 |
 |---|---|---|---|---|
-| 5 × L (before) | 1 | 28.3 | 57.4 fail | 108.0 fail |
-| 5, then 5 × (L + 8) | 1 | 26.8 | 86.8 | 151.5 fail |
-| 5, then 10 × (L + 3) | 1, 2 | 26.8, 30.9 | 88.9, 76.8 | 174.7, 150.1 |
-| 5, then 12 × (L + 3) (kept) | 1, 2, 3 | 26.8, 30.8, 26.0 | 100.7, 80.2, 93.0 | ≈ 201, 164.7, 190.0 |
+| 12, then 12 × (L + 3) | collect | 40.3, 42.7, 27.4 | 92.8, 93.9, 102.8 | 176.2, 183.1, 191.4 |
+| 12, then 12 × (L + 3) | run | 26.2, 58.1, 55.8 | 163.4, 179.2, 155.2 | not reached at 245 s |
+| L² (kept) | collect | 8.3, 5.2, 9.6 | 42.7, 45.4, 46.4 | 110.9, 105.5, 111.9 |
+| L² (kept) | run | 80.0, 61.7, 63.6 | 103.2, 90.1, 71.1 | 215.8, 200.9, 143.3 |
 
-- Kept curve, median over seeds 1–3: L2 26.8 (−11 %), L5 93.0 (−7 %), L10 190.0 (0 %); every seed within ±20 % (seed 2 L5 −19.8 %). Seed 1 ended at L9 with 138.9 / 144 XP at 200 s. Variance between seeds ≈ ±10 %: pick order (card 0) and pack sides change the kill rate.
-- task-030-02 (director of task-030-01: lone chaser from 1 s, first pack at 15 s, robots −20 %; then the shooter cap 6, heavy weight 8, shooter range 960), bot run to 240 s:
-
-| Director, curve | Seeds | L2 | L5 | L10 |
-|---|---|---|---|---|
-| task-030-01, 5 then 12 × (L + 3) | 1, 2, 3 | 17.9, 22.3, 20.1 | 102.9, 100.9, 96.4 | 201.1, 183.4, 176.8 |
-| task-030-01, 12 then 12 × (L + 3) | 1, 2, 3 | 23.0, 30.1, 31.5 | 97.0, 101.9, 101.9 | 191.5, 180.6, 200.3 |
-| final (cap, weight 8, range 960), 12 then 12 × (L + 3) (kept) | 1, 2, 3 | 22.8, 26.4, 29.9 | 94.3, 99.6, 92.9 | 175.1, 183.8, 171.8 |
-
-- Medians: old curve on the new director L2 20.1 (−33 %, fail; the lone chasers from 1 s fill 5 XP by about 20 s), L5 100.9, L10 183.4; kept curve on the final director L2 26.4 (−12 %), L5 94.3 (−6 %), L10 175.1 (−8 %), all within ±20 %; seed 1 L2 22.8 is −24 % on its own. Cumulative XP at 30 s was 12.7–15 on the new director, hence need(1) 12.
-- The baseline run (5 × L) still had the pickup collision bug ([[sys-pickups]]): its miner sometimes stuck on cubes.
+- L² medians: collect 8.3 / 45.4 / 110.9, run 63.6 / 90.1 / 200.9; mean L2 36.0 (+140 %, fail), L5 67.8 (−3 %), L10 155.9 (−13 %).
+- L2 cannot be reached by the curve: the runner's first collected XP comes at 19–80 s (it kills the chasers following it, so the cubes fall behind; dozens of cubes lie unclaimed). Even a need of 1 leaves the mean above 18 s.
+- The profiles differ about 3.4 times in XP (median cumulative XP at 180 s, old curve: collect 810, run 235), so a curve set on their mean makes the collector fast (L10 at 1:51, level 16 at 4:00).
+- Overtime (from 210 s, old-curve runs): no clear effect on XP within 210–240 s: collect 7.9–8.9 XP/s over 180–210 s, 8.1–9.7 over 210–240 s; runner unchanged (below 1 XP/s).
+- Earlier results (task-028-03, task-030-02, single collect profile) are in git history of this node.
 
 ## Relations
 - [[systems-index]] — parent index.

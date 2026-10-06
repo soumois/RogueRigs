@@ -301,7 +301,18 @@ bool FRRJuiceKillStreamTest::RunTest(const FString& Parameters)
 	TStrongObjectPtr<URRTestEventRecorder> Recorder(NewObject<URRTestEventRecorder>());
 	Miner->OnPickupCollectedAt.AddDynamic(Recorder.Get(), &URRTestEventRecorder::HandlePickupCollectedAt);
 	const TArray<FVector>& CollectedAt = Recorder->GetCollectedPickupLocations();
-	const float XPBefore = Miner->FindComponentByClass<URRProgressionComponent>()->GetXP();
+	// Total XP (needs of the levels passed + XP inside the level): one chaser can complete a level (task-031-03 curve: level 1 needs 1).
+	const URRProgressionComponent* JuiceProgression = Miner->FindComponentByClass<URRProgressionComponent>();
+	auto JuiceTotalXP = [JuiceProgression]()
+	{
+		float Total = JuiceProgression->GetXP();
+		for (int32 Level = 1; Level < JuiceProgression->GetLevel(); ++Level)
+		{
+			Total += JuiceProgression->GetXPToNextLevelAt(Level);
+		}
+		return Total;
+	};
+	const float XPBefore = JuiceTotalXP();
 	TestTrue(TEXT("chaser killed"), URRStressSubsystem::KillEnemy(Chaser));
 
 	// The cubes drop at the end of the death shrink.
@@ -365,7 +376,7 @@ bool FRRJuiceKillStreamTest::RunTest(const FString& Parameters)
 	TestTrue(TEXT("cubes rest before streaming (magnet after pop + rest)"), FirstMagnetTime >= 1.0);
 	TestEqual(TEXT("every cube showed its trail while magnetized"), TrailSeen.Num(), 3);
 	TestEqual(TEXT("trail shown on every magnetized frame"), MagnetFramesWithoutTrail, 0);
-	TestEqual(TEXT("XP +1 (chaser XP split over 3 cubes)"), Miner->FindComponentByClass<URRProgressionComponent>()->GetXP() - XPBefore, 1.f, 1e-3f);
+	TestEqual(TEXT("XP +1 (chaser XP split over 3 cubes)"), JuiceTotalXP() - XPBefore, 1.f, 1e-3f);
 
 	// One sparkle per collect, at the collect location, short-lived.
 	TestEqual(TEXT("one BP_PickupSparkle per collected cube"), Sparkles.Entries.Num(), 3);

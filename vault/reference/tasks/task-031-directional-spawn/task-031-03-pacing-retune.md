@@ -19,7 +19,7 @@ status: in-progress
 - tokens: open
 - runs: open
 - milestone: M2
-- result: open
+- result: Bot profiles 0 still / 1 collect / 2 run (straight, turns at walls). XPCurve need(L) = L². Medians collect L2 8.3, L5 45.4, L10 110.9; run 63.6, 90.1, 200.9; mean L2 36.0 (fail, unreachable by the curve: runner first XP 19–80 s), L5 67.8, L10 155.9 (pass). Profiles differ 3.4× in XP. Tests follow the curve, French alternatives removed; build 0; full suite 194/195, the failing JuiceKillDropsStreamingCubes fixed and its group passes. Shots: console arrow and English upgrade screen ok; first contact still at about 3.5 s ok; north run, horde banner and end screen not captured. See sys-progression.
 
 ## Relations
 - [[task-031-directional-spawn]] — parent global task.
