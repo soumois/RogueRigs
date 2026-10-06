@@ -3,7 +3,7 @@ id: task-030-02-pacing-retune
 description: "Pacing bot over 3 seeds with the new director and speeds; XP curve retuned to the level targets; shots of packs with blended shooters."
 parent: task-030-pacing-feedback
 kind: task
-status: todo
+status: in-progress
 ---
 # Pacing retune
 

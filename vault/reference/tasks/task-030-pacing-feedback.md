@@ -13,7 +13,7 @@ status: in-progress
 - gdd_check: Read [[enemies-index]], [[enemy-chaser]], [[enemy-kamikaze]], [[enemy-shooter]], [[enemy-heavy]], [[xp-level-up]]. GDD updated by the Orchestrator with the owner's values (2026-10-06); hordes and surround spawning unchanged; no open value.
 - confirmed_by_owner: yes (2026-10-06, plan accepted with the first robot at 1 s)
 - milestone: M2
-- next_step: task-030-01-director-speeds
+- next_step: task-030-02-pacing-retune
 - result: open
 
 ## Subtasks

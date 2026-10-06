@@ -78,6 +78,7 @@ kind: note
 | [[task-028-01-heavy-shield-values]] | opus | 2 | 0k | 172k | 6777k | 58k |
 | [[task-028-02-bp-shield-heavy]] | sonnet | 2 | 0k | 132k | 6469k | 46k |
 | [[task-028-03-xp-pacing]] | opus | 2 | 0k | 426k | 8439k | 62k |
+| [[task-030-01-director-speeds]] | opus | 1 | 0k | 171k | 4580k | 53k |
 
 ## Totals
 | Scope | Input | Cache write | Cache read | Output |
