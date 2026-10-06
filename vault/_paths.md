@@ -143,6 +143,7 @@ sys-player  reference/tech/systems/sys-player.md
 sys-progression  reference/tech/systems/sys-progression.md
 sys-projectiles  reference/tech/systems/sys-projectiles.md
 sys-spawner  reference/tech/systems/sys-spawner.md
+sys-spawner-director  reference/tech/systems/sys-spawner-director.md
 sys-status-effects  reference/tech/systems/sys-status-effects.md
 sys-stress  reference/tech/systems/sys-stress.md
 sys-target-dummy  reference/tech/systems/sys-target-dummy.md
