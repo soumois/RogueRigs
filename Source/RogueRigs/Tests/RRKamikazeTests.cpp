@@ -135,7 +135,7 @@ bool FRRKamikazeFuseTest::RunTest(const FString& Parameters)
 	if (TestTrue(TEXT("EnemyStats.csv row Kamikaze read"), ARREnemy::LoadStatsRow(TEXT("Kamikaze"), Row)))
 	{
 		TestEqual(TEXT("MaxHealth 100"), Row.MaxHealth, 100.f);
-		TestEqual(TEXT("MoveSpeed 151"), Row.MoveSpeed, 151.f);
+		TestEqual(TEXT("MoveSpeed 180"), Row.MoveSpeed, 180.f);
 		TestEqual(TEXT("XPValue 1"), Row.XPValue, 1);
 	}
 

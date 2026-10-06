@@ -323,7 +323,7 @@ bool FRRIntegrationChaserReachesTest::RunTest(const FString& Parameters)
 	TArray<FHit> Hits;
 	const FDelegateHandle Handle = RecordHits(Miner, Hits);
 
-	// Up to 20 s (15 steps of 200 uu at 182 uu/s take about 16.5 s since task-032-01): the chaser must stay on walkable cells,
+	// Up to 20 s (15 steps of 200 uu at 180 uu/s take about 16.7 s since task-033-01): the chaser must stay on walkable cells,
 	// reach attack range, then land a hit.
 	const double StartTime = TestWorld.Get()->GetTimeSeconds();
 	double ReachTime = -1.0;

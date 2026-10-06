@@ -7,7 +7,7 @@ kind: doc
 # Projectiles
 
 - responsibility: carry shot data from the weapon to the impact.
-- main_classes (in `Source/RogueRigs/Projectiles/`): `ARRProjectile` (abstract; no ASC, approved for now): root `USphereComponent` `CollisionSphere` (radius 10 by default, editable in the Blueprint) + `UProjectileMovementComponent` (no gravity, no bounce, `bForceSubStepping = false`, rotation follows velocity). `RRCollisionChannels::Projectile` (`RRCollisionChannels.h`) names the channel.
+- main_classes (in `Source/RogueRigs/Projectiles/`): `ARRProjectile` (abstract; no ASC, approved for now): root `USphereComponent` `CollisionSphere` (radius 12 uu by default for miner shots: rifle, pellet, turret bullet, 1.2 × the old 10 uu, owner 2026-10-06, task-033-01, mesh not scaled; `ARREnemyProjectile` sets 10 uu; editable in the Blueprint, no projectile Blueprint overrides it) + `UProjectileMovementComponent` (no gravity, no bounce, `bForceSubStepping = false`, rotation follows velocity). `RRCollisionChannels::Projectile` (`RRCollisionChannels.h`) names the channel.
 
 ## Rules
 - The projectile carries the spec made by the weapon's ASC at fire time and applies it only on impact ([[sys-damage]]).

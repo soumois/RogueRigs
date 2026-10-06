@@ -70,10 +70,10 @@ bool FRRCheatConsoleVariablesTest::RunTest(const FString& Parameters)
 	LevelUp->OnUpgradeOfferShown.AddDynamic(Recorder.Get(), &URRTestEventRecorder::HandleUpgradeOfferShown);
 	LevelUp->OnUpgradeOfferClosed.AddDynamic(Recorder.Get(), &URRTestEventRecorder::HandleUpgradeOfferClosed);
 
-	// GrantXP: 2 raw XP (the level 1 need of XPCurve.csv) to the only miner (no player controller: first miner found), then back to 0.
-	IConsoleVariable* GrantXP = SetCheat(*this, TEXT("rr.Cheat.GrantXP"), TEXT("1"));
-	TestEqual(TEXT("GrantXP 2: level 2"), Progression->GetLevel(), 2);
-	TestEqual(TEXT("GrantXP 2: 0 XP carried"), Progression->GetXP(), 0.f);
+	// GrantXP: 4 raw XP (the level 1 need of XPCurve.csv) to the only miner (no player controller: first miner found), then back to 0.
+	IConsoleVariable* GrantXP = SetCheat(*this, TEXT("rr.Cheat.GrantXP"), TEXT("4"));
+	TestEqual(TEXT("GrantXP 4: level 2"), Progression->GetLevel(), 2);
+	TestEqual(TEXT("GrantXP 4: 0 XP carried"), Progression->GetXP(), 0.f);
 	if (GrantXP)
 	{
 		TestEqual(TEXT("GrantXP back to 0"), GrantXP->GetFloat(), 0.f);
@@ -174,11 +174,11 @@ bool FRRCheatPropertyRouteTest::RunTest(const FString& Parameters)
 	LevelUp->OnUpgradeOfferShown.AddDynamic(Recorder.Get(), &URRTestEventRecorder::HandleUpgradeOfferShown);
 	LevelUp->OnUpgradeOfferClosed.AddDynamic(Recorder.Get(), &URRTestEventRecorder::HandleUpgradeOfferClosed);
 
-	// GrantXP: applied by the next tick, then consumed.
-	Settings->GrantXP = 1.f;
+	// GrantXP: 4 raw XP (the level 1 need), applied by the next tick, then consumed.
+	Settings->GrantXP = 4.f;
 	TestEqual(TEXT("nothing before the tick"), Progression->GetLevel(), 1);
 	TestWorld.Tick();
-	TestEqual(TEXT("GrantXP 1: level 2"), Progression->GetLevel(), 2);
+	TestEqual(TEXT("GrantXP 4: level 2"), Progression->GetLevel(), 2);
 	TestEqual(TEXT("GrantXP consumed"), Settings->GrantXP, 0.f);
 
 	// Invulnerable: persistent, one loose count however many ticks, removed when cleared.

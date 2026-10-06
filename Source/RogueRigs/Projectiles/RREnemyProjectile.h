@@ -9,7 +9,7 @@
 /**
  * Shot of a ranged robot (enemy-shooter, sys-projectiles). Same flight and collision as ARRProjectile; its defaults make it a
  * robot shot: HitActorClass = ARRMiner (robots and every other actor are passed through) and bDamagesTerrain off (a blocking
- * hit on a rock or a barrel only stops it). Spawned by ARRShooter through ARRProjectile::SpawnProjectile with the robot's flat
+ * hit on a rock or a barrel only stops it); collision sphere 10 uu (miner shots 12 uu). Spawned by ARRShooter through ARRProjectile::SpawnProjectile with the robot's flat
  * damage spec. Subclass in Blueprint for the red mesh.
  */
 UCLASS(Blueprintable)

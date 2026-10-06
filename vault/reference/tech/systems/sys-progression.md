@@ -1,6 +1,6 @@
 ---
 id: sys-progression
-description: "XP and level as built: URRProgressionComponent, XPCurve.csv (need = level squared) and its measured pacing on two bot profiles, XPGain, carry-over, events."
+description: "XP and level as built: URRProgressionComponent, XPCurve.csv (4, then reference curve / 5) and its measured pacing on two bot profiles, XPGain, carry-over, events."
 parent: systems-index
 kind: doc
 ---
@@ -13,7 +13,7 @@ kind: doc
   - Getters (BlueprintPure): `GetLevel()` (starts at 1), `GetXP()` (XP inside the level, starts at 0), `GetXPToNextLevel()`; native `GetXPToNextLevelAt(Level)`.
   - Delegates (BlueprintAssignable): `OnXPChanged(float Current, float Needed, int32 Level)`, `OnLevelUp(int32 NewLevel)` (once per level gained, before `OnXPChanged`).
   - Callers: XP pickups on collection ([[sys-pickups]]); the HUD ([[sys-hud]]) and the level-up flow ([[sys-level-up]]) listen to `OnLevelUp`.
-- data: `Content/RogueRigs/Data/Tables/XPCurve.csv`, columns `Name,XPToNextLevel`, one row per level, row name = level, levels 1 to 50: need(L) = L² (1, 4, 9, 16 … 81 at level 9 … 2500; task-031-03, provisional, [[xp-level-up]]; was 12 then 12 × (L + 3) from task-030-02, 5 × L before). Read with `FRRBaseStatsLoader::GetCachedTable` in `InitializeComponent` (before any `BeginPlay`, so the HUD bind sees the need) and copied to an array. Levels above the last row reuse its value. Rows must run 1..N without gap with a need > 0, otherwise the curve is rejected (error logged, need 0, no level-up). Staged with the other tables ([[sys-gas-core]]).
+- data: `Content/RogueRigs/Data/Tables/XPCurve.csv`, columns `Name,XPToNextLevel`, one row per level, row name = level, levels 1 to 50: 4 at level 1, then the reference curve ÷ 5 (20, 25, 31, 36 at level 5 … 64 at level 10 … 440 at level 50; owner 2026-10-06, [[xp-level-up]]; was L² from task-031-03, 12 then 12 × (L + 3) from task-030-02, 5 × L before). Not measured by the pacing bot: the table below is for older curves. Read with `FRRBaseStatsLoader::GetCachedTable` in `InitializeComponent` (before any `BeginPlay`, so the HUD bind sees the need) and copied to an array. Levels above the last row reuse its value. Rows must run 1..N without gap with a need > 0, otherwise the curve is rejected (error logged, need 0, no level-up). Staged with the other tables ([[sys-gas-core]]).
 - depends_on: [[sys-gas-core]] (XPGain, CSV loader), [[sys-player]] (owner).
 - implements: [[xp-level-up]] (XP bar data, level-up), [[player-stats]] (XPGain).
 - gotchas: XP is a float (XPGain can be fractional); the comparison is exact, so a curve with fractional needs may leave XP a hair below a level. XP is not reset on death (the level restarts). Tests: `RogueRigs.Progression.*` (level-up and weapons integration tests compute their XP from the curve rows since task-028-03) ([[sys-automation-tests]]).
