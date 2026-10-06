@@ -847,7 +847,7 @@ namespace RRIntegrationExplosionTests
 	const FIntPoint PointBlankMinerCell(36, 65);
 
 	/** Open row 44 of arena_m1 running along the rocks (37-41, 45): armed miner on the west end, kamikaze 11 cells east
-	 * (slow and tough: 240 uu/s, 100 HP; measured in task-030-01: killed at 4.4 s, about 1190 uu from the miner, above the rocks). */
+	 * (slow and tough: 168 uu/s since task-031-02 (240 when measured), 100 HP; measured in task-030-01: killed at 4.4 s, about 1190 uu from the miner, above the rocks). */
 	const FIntPoint KamikazeKillMinerCell(32, 44);
 	const FIntPoint KamikazeKillStartCell(43, 44);
 
@@ -1083,10 +1083,10 @@ bool FRRIntegrationKamikazeReachesTest::RunTest(const FString& Parameters)
 	TArray<FHit> Hits;
 	const FDelegateHandle Handle = RecordHits(Miner, Hits);
 
-	// Until the fuse explodes it (max 15 s): the center must stay on walkable cells while it moves.
+	// Until the fuse explodes it (max 25 s; 168 uu/s since task-031-02): the center must stay on walkable cells while it moves.
 	const double StartTime = TestWorld.Get()->GetTimeSeconds();
 	int32 OffFloorFrames = 0;
-	for (int32 Frame = 0; Frame < 900 && Recorder->GetExplosionRows().Num() == 0; ++Frame)
+	for (int32 Frame = 0; Frame < 1500 && Recorder->GetExplosionRows().Num() == 0; ++Frame)
 	{
 		TestWorld.Tick();
 		if (Weak.IsValid() && !Weak->IsDead())
