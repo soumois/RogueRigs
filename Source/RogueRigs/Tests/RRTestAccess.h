@@ -146,6 +146,10 @@ namespace RRTestAccess
 		static const TArray<FRRHordeSlot>& HordePlanOf(const ARREnemySpawner* Spawner) { return Spawner->*(&FSpawnerAccess::HordePlan); }
 		static int32 HordeSpawnedOf(const ARREnemySpawner* Spawner) { return Spawner->*(&FSpawnerAccess::HordeSpawned); }
 		static ERRSpawnSide PrepareHordeOf(ARREnemySpawner* Spawner, int32 HordeIndex) { return (Spawner->*(&FSpawnerAccess::PrepareHorde))(HordeIndex); }
+		static bool& RecycleEnabledOf(ARREnemySpawner* Spawner) { return Spawner->*(&FSpawnerAccess::bRecycleEnabled); }
+		static float& RecycleDistanceOf(ARREnemySpawner* Spawner) { return Spawner->*(&FSpawnerAccess::RecycleDistance); }
+		static float& RecycleDelayOf(ARREnemySpawner* Spawner) { return Spawner->*(&FSpawnerAccess::RecycleDelay); }
+		static float& RecycleMarginOf(ARREnemySpawner* Spawner) { return Spawner->*(&FSpawnerAccess::RecycleOffScreenMargin); }
 	};
 
 	/** ARRExplosionFX: visual duration. */

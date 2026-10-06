@@ -47,6 +47,7 @@ void ARREnemySpawner::Tick(float DeltaSeconds)
 {
 	Super::Tick(DeltaSeconds);
 	RecordHeadingSample();
+	RecycleFarEnemies(DeltaSeconds);
 	if (!IsSpawningEnabled())
 	{
 		return;
@@ -501,6 +502,61 @@ void ARREnemySpawner::PruneAlive()
 	{
 		return !Enemy.IsValid() || Enemy->IsActorBeingDestroyed() || Enemy->IsDead();
 	});
+}
+
+void ARREnemySpawner::RecycleFarEnemies(float DeltaSeconds)
+{
+	PruneAlive();
+	FVector2D MinerLocation;
+	FBox2D View;
+	if (!bRecycleEnabled || AliveEnemies.IsEmpty() || !GetHeadingOrigin(MinerLocation) || !GetViewRectangle(View))
+	{
+		RecycleTimers.Reset();
+		return;
+	}
+	const double DistanceSquared = FMath::Square(static_cast<double>(RecycleDistance));
+	for (int32 Index = 0; Index < AliveEnemies.Num(); )
+	{
+		ARREnemy* Enemy = AliveEnemies[Index].Get();
+		const FVector2D Location(Enemy->GetActorLocation());
+		const bool bFarOffScreen = FVector2D::DistSquared(Location, MinerLocation) > DistanceSquared
+			&& GetDistanceToRectangle(View, Location) > RecycleOffScreenMargin;
+		if (!bFarOffScreen)
+		{
+			RecycleTimers.Remove(Enemy);
+			++Index;
+			continue;
+		}
+		float& Seconds = RecycleTimers.FindOrAdd(Enemy, 0.f);
+		Seconds += DeltaSeconds;
+		if (Seconds < RecycleDelay)
+		{
+			++Index;
+			continue;
+		}
+		// Not a kill: no HandleDeath, so no XP drop, no kill count, no kamikaze explosion. Removed from the list now so every
+		// count (MaxAlive, per-class caps, shooter cap) sees the free slot this frame.
+		RecycleTimers.Remove(Enemy);
+		AliveEnemies.RemoveAt(Index);
+		++RecycledCount;
+		UE_LOG(LogRogueRigs, Verbose, TEXT("ARREnemySpawner %s: %s recycled %.0f uu from the miner, %d alive."), *GetName(), *Enemy->GetName(),
+			FVector2D::Distance(Location, MinerLocation), AliveEnemies.Num());
+		OnEnemyRecycled.Broadcast(Enemy);
+		Enemy->Destroy();
+	}
+	for (auto It = RecycleTimers.CreateIterator(); It; ++It)
+	{
+		if (!It.Key().ResolveObjectPtr())
+		{
+			It.RemoveCurrent();
+		}
+	}
+}
+
+float ARREnemySpawner::GetRecycleSeconds(const ARREnemy* Enemy) const
+{
+	const float* Seconds = Enemy ? RecycleTimers.Find(Enemy) : nullptr;
+	return Seconds ? *Seconds : 0.f;
 }
 
 int32 ARREnemySpawner::GetAliveCount()
