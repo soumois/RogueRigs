@@ -16,7 +16,7 @@ kind: doc
 - data: `AlertEventPositionTolerance` on the widget.
 - depends_on: [[sys-hud]], [[sys-spawner-director]], [[sys-objectives]], [[sys-gas-core]].
 - implements: pressure feedback of [[level-flow]] (provisional, task-026).
-- gotchas: one spawner per level is assumed. Without the director (or no spawner) the list holds only console and shuttle. The horde estimate ignores the cheat alert multiplier. Tests: `RogueRigs.HUD.Pressure*` ([[sys-automation-tests]]).
+- gotchas: one spawner per level is assumed. Without the director (or no spawner) the list holds only console and shuttle. The horde estimate ignores the cheat alert multiplier. Tests: `RogueRigs.HUD.Pressure*`, and `RogueRigs.Integration.Pressure*` with the real WBP_HUD ([[sys-automation-tests]]).
 
 ## Relations
 - [[sys-hud]] — parent: the HUD widget these events belong to.

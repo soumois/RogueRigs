@@ -19,7 +19,7 @@ status: in-progress
 - tokens: open
 - runs: open
 - milestone: M2
-- result: open
+- result: Tests `Integration.PressureDirectorPhases`, `PressureHordeBanner`, `PressureVignetteOnHit` (placed spawner config, real WBP_HUD widgets) and `Cheats.LightHalo`; full headless 170/170. Halo cheat `bLightHalo` / `rr.Cheat.LightHalo` (default off; [[sys-cheats]]). New `rr.Debug.Delayed`, `rr.Debug.DamageMiner`, Shots ShowUI. -game shots: halo on dims floor and rocks, warm disc around the miner; low-health hit full red vignette, steady faint red at 25 %; first hit not visible (shader compile message on screen); banner seen over the horde. HUD layout issue for bp: ObjectiveText overlaps the alert icons row. Commits ab9feee + docs.
 
 ## Relations
 - [[task-026-pressure]] — parent global task.
