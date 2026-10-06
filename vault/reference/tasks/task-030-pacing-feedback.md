@@ -1,6 +1,6 @@
 ---
 id: task-030-pacing-feedback
-description: "Global task: owner's first play test feedback: enemies from the first second, slower ramp, shooters blended into chaser packs, robots 20 % slower, XP pacing retuned."
+description: "Global task: first play test feedback: enemies from the first second, slower ramp, shooters blended into chaser packs, robots 20 % slower, XP retuned."
 parent: tasks-index
 kind: task
 status: in-progress
