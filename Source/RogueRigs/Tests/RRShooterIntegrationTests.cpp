@@ -210,7 +210,7 @@ bool FRRIntegrationShooterRingTest::RunTest(const FString& Parameters)
 		{
 			bLaserHiddenOtherwise &= !Laser->IsVisible();
 		}
-		// It aims as soon as the miner is in range (1200 uu), then closes to the ring: from its first frame in the ring it must stay there.
+		// It aims as soon as the miner is in range (960 uu), then closes to the ring: from its first frame in the ring it must stay there.
 		const float Distance = FVector::Dist2D(Shooter->GetActorLocation(), Miner->GetActorLocation());
 		if (RingEntryTime < 0.0 && Distance <= RingMax)
 		{

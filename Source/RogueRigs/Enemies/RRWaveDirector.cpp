@@ -85,7 +85,7 @@ FRRWaveDirectorConfig FRRWaveDirectorConfig::MakeDefault()
 	Flow.WaveIntervalRampSeconds = 210.f;
 	Flow.SidesMin = 1;
 	Flow.SidesMax = 2;
-	Flow.PackWeights = { Weight(TEXT("Chasers"), 85.f), Weight(TEXT("Heavies"), 15.f) };
+	Flow.PackWeights = { Weight(TEXT("Chasers"), 92.f), Weight(TEXT("Heavies"), 8.f) };
 
 	const FRRDirectorPhase FlowCopy = Flow;
 	auto ContinueFlow = [&Config, &FlowCopy](FName Name, float StartTime) -> FRRDirectorPhase&
@@ -101,11 +101,11 @@ FRRWaveDirectorConfig FRRWaveDirectorConfig::MakeDefault()
 		return Phase;
 	};
 	FRRDirectorPhase& FlowShields = ContinueFlow(TEXT("FlowShields"), 60.f);
-	FlowShields.PackWeights = { Weight(TEXT("ShieldChasers"), 85.f), Weight(TEXT("Heavies"), 15.f) };
+	FlowShields.PackWeights = { Weight(TEXT("ShieldChasers"), 92.f), Weight(TEXT("Heavies"), 8.f) };
 	FRRDirectorPhase& FlowWide = ContinueFlow(TEXT("FlowWide"), 90.f);
 	FlowWide.SidesMin = 2;
 	FlowWide.SidesMax = 3;
-	FlowWide.PackWeights = { Weight(TEXT("ShieldChasers"), 85.f), Weight(TEXT("Heavies"), 15.f) };
+	FlowWide.PackWeights = { Weight(TEXT("ShieldChasers"), 92.f), Weight(TEXT("Heavies"), 8.f) };
 
 	// Hordes: fronts at 1:35 and 2:55, heavies in front, kamikazes among them, a carpet of chasers behind.
 	for (const float FrontTime : { 95.f, 175.f })
@@ -116,6 +116,10 @@ FRRWaveDirectorConfig FRRWaveDirectorConfig::MakeDefault()
 		Horde.Members = { Member(ARRHeavy::StaticClass(), 3, 5, /*bFront*/ true), Member(ARRKamikaze::StaticClass(), 3, 5) };
 		Horde.FillClass = ARRChaser::StaticClass();
 	}
+	// Shooter counter (owner 2026-10-06): at most 6 alive; a pack drawn at the cap gets chasers in place of its shooters.
+	Config.ShooterMaxAlive = 6;
+	Config.ShooterCapReplacement = ARRChaser::StaticClass();
+
 	return Config;
 }
 

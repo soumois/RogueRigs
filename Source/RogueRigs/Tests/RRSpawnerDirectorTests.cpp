@@ -712,4 +712,97 @@ bool FRRSpawnerDirectorCapTest::RunTest(const FString& Parameters)
 	return true;
 }
 
+IMPLEMENT_SIMPLE_AUTOMATION_TEST(FRRSpawnerDirectorShooterCapTest, "RogueRigs.Spawner.DirectorShooterCap",
+	EAutomationTestFlags::EditorContext | EAutomationTestFlags::EngineFilter)
+
+bool FRRSpawnerDirectorShooterCapTest::RunTest(const FString& Parameters)
+{
+	using namespace RRSpawnerDirectorTests;
+	using namespace RRTestAccess;
+
+	RRTestHarness::FTestWorld TestWorld(TEXT("RRDirectorShooterCap"));
+	FDirectorSetup Setup;
+	if (!MakeDirectorSetup(*this, TestWorld, 150, Setup))
+	{
+		return false;
+	}
+	FRRWaveDirectorConfig& Config = FSpawnerAccess::DirectorOf(Setup.Spawner);
+	TestEqual(TEXT("default shooter cap 6"), Config.ShooterMaxAlive, 6);
+	TestTrue(TEXT("default replacement is the chaser"), Config.ShooterCapReplacement.Get() == ARRChaser::StaticClass());
+	const int32 ChasersType = Config.FindPackType(TEXT("Chasers"));
+	if (!TestTrue(TEXT("Chasers pack type"), ChasersType != INDEX_NONE))
+	{
+		return false;
+	}
+
+	// Counts by class of one Chasers pack drawn with the stream seeded with Seed; the pack is destroyed afterwards.
+	struct FPackCounts
+	{
+		int32 Total = 0;
+		int32 Shooters = 0;
+		int32 Chasers = 0;
+		int32 ShootersInBackHalf = 0;
+	};
+	auto SpawnPack = [this, &Setup, ChasersType](int32 Seed, bool bDestroy)
+	{
+		FPackCounts Counts;
+		Setup.Spawner->SeedRandomStream(Seed);
+		const TArray<FRRSpawnedPack> Packs = Setup.Spawner->TrySpawnDirectorWave({ ChasersType });
+		if (!TestEqual(TEXT("one pack"), Packs.Num(), 1))
+		{
+			return Counts;
+		}
+		const FRRSpawnedPack& Pack = Packs[0];
+		Counts.Total = Pack.Robots.Num();
+		for (int32 Index = 0; Index < Pack.Robots.Num(); ++Index)
+		{
+			const bool bShooter = Pack.Robots[Index]->IsA<ARRShooter>();
+			Counts.Shooters += bShooter ? 1 : 0;
+			Counts.Chasers += Pack.Robots[Index]->GetClass() == ARRChaser::StaticClass() ? 1 : 0;
+			Counts.ShootersInBackHalf += bShooter && Index >= Pack.Robots.Num() / 2 ? 1 : 0;
+		}
+		if (bDestroy)
+		{
+			for (ARREnemy* Robot : Pack.Robots)
+			{
+				Robot->Destroy();
+			}
+		}
+		return Counts;
+	};
+
+	// Same seed, cap off then cap reached: the same robots, the shooters turned into chasers.
+	const int32 Seeds[] = { 20261006, 11, 4242 };
+	for (const int32 Seed : Seeds)
+	{
+		Config.ShooterMaxAlive = 100;
+		const FPackCounts Free = SpawnPack(Seed, true);
+		Config.ShooterMaxAlive = 0;
+		const FPackCounts Capped = SpawnPack(Seed, true);
+		AddInfo(FString::Printf(TEXT("SHOOTERCAP seed %d: free %d robots (%d shooters, %d chasers); at the cap %d robots (%d shooters, %d chasers)"),
+			Seed, Free.Total, Free.Shooters, Free.Chasers, Capped.Total, Capped.Shooters, Capped.Chasers));
+		TestTrue(*FString::Printf(TEXT("seed %d: 1-2 shooters without the cap"), Seed), Free.Shooters >= 1 && Free.Shooters <= 2);
+		TestEqual(*FString::Printf(TEXT("seed %d: shooters in the back half"), Seed), Free.ShootersInBackHalf, Free.Shooters);
+		TestEqual(*FString::Printf(TEXT("seed %d: no shooter at the cap"), Seed), Capped.Shooters, 0);
+		TestEqual(*FString::Printf(TEXT("seed %d: same pack size"), Seed), Capped.Total, Free.Total);
+		TestEqual(*FString::Printf(TEXT("seed %d: chasers in place of the shooters"), Seed), Capped.Chasers, Free.Chasers + Free.Shooters);
+	}
+
+	// Default cap 6: 5 shooters alive leave room for one; packs kept alive never raise the count above 6.
+	Config.ShooterMaxAlive = 6;
+	for (int32 Index = 0; Index < 5; ++Index)
+	{
+		TestNotNull(*FString::Printf(TEXT("lone shooter %d"), Index), Setup.Spawner->TrySpawnEnemyOfClass(ARRShooter::StaticClass()));
+	}
+	int32 PackShooters = 0;
+	for (int32 Repeat = 0; Repeat < 4; ++Repeat)
+	{
+		PackShooters += SpawnPack(777 + Repeat, false).Shooters;
+		TestTrue(*FString::Printf(TEXT("pack %d: at most 6 shooters alive"), Repeat), Setup.Spawner->GetAliveCountOfClass(ARRShooter::StaticClass()) <= 6);
+	}
+	TestEqual(TEXT("the packs add one shooter in all"), PackShooters, 1);
+	TestEqual(TEXT("6 shooters alive"), Setup.Spawner->GetAliveCountOfClass(ARRShooter::StaticClass()), 6);
+	return true;
+}
+
 #endif // WITH_DEV_AUTOMATION_TESTS

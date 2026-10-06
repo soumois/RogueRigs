@@ -115,7 +115,7 @@ bool FRRShooterStatsTest::RunTest(const FString& Parameters)
 		TestEqual(TEXT("MoveSpeed 240"), Row.MoveSpeed, 240.f);
 		TestEqual(TEXT("Damage 12"), Row.Damage, 12.f);
 		TestEqual(TEXT("AttackRate 0.5 (one shot every 2 s)"), Row.AttackRate, 0.5f);
-		TestEqual(TEXT("AttackRange 1200"), Row.AttackRange, 1200.f);
+		TestEqual(TEXT("AttackRange 960 (owner 2026-10-06, was 1200)"), Row.AttackRange, 960.f);
 		TestEqual(TEXT("WindUp 0.6 (laser)"), Row.WindUp, 0.6f);
 		TestEqual(TEXT("XPValue 2"), Row.XPValue, 2);
 		TestEqual(TEXT("KnockbackResistance 0.2"), Row.KnockbackResistance, 0.2f);
@@ -233,7 +233,7 @@ bool FRRShooterFireTest::RunTest(const FString& Parameters)
 	AddInfo(FString::Printf(TEXT("first aim at t=%.3f s, %.0f uu; shots at %.3f and %.3f s; miner health %.0f -> %.0f; distance after the second shot %.0f uu, state %d"),
 		FirstAimStart, AimStartDistance, FirstShotTime, SecondShotTime, HealthBefore, HealthAfterFirstHit, FinalDistance, static_cast<int32>(Shooter->GetState())));
 
-	TestTrue(TEXT("aimed once within range (<= 1200 uu)"), AimStartDistance > 0.f && AimStartDistance <= 1200.f);
+	TestTrue(TEXT("aimed once within range (<= 960 uu)"), AimStartDistance > 0.f && AimStartDistance <= 960.f);
 	TestTrue(TEXT("first aim only after approaching (beyond range at spawn)"), FirstAimStart > 0.0);
 	TestTrue(TEXT("first shot 0.6 s after the aim start (within one frame)"),
 		FirstShotTime > 0.0 && FMath::Abs(FirstShotTime - FirstAimStart - 0.6) <= FrameSeconds + 1e-3);

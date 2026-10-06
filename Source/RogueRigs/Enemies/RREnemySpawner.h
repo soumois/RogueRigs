@@ -314,9 +314,14 @@ protected:
 	/**
 	 * Draws the robots of Members (resolved classes) into OutFront and OutBack, within Room (per resolved class free slots, updated).
 	 * OutBack is shuffled so escorts mix with the main group; bBehind members are then inserted at random in its back half.
+	 * Shooters beyond ShooterRoom (DirectorConfig.ShooterMaxAlive minus the shooters alive, updated) become
+	 * DirectorConfig.ShooterCapReplacement robots in the same list (no extra random draw).
 	 */
-	void DrawMembers(const TArray<FRRDirectorPackMember>& Members, TMap<UClass*, int32>& Room, TArray<TSubclassOf<ARREnemy>>& OutFront,
-		TArray<TSubclassOf<ARREnemy>>& OutBack);
+	void DrawMembers(const TArray<FRRDirectorPackMember>& Members, TMap<UClass*, int32>& Room, int32& ShooterRoom,
+		TArray<TSubclassOf<ARREnemy>>& OutFront, TArray<TSubclassOf<ARREnemy>>& OutBack);
+
+	/** Free shooter slots under DirectorConfig.ShooterMaxAlive (ARRShooter and subclasses alive). */
+	int32 GetDirectorShooterRoom() const;
 
 	/** Splits Candidates by the side of View they lie beyond (index = ERRSpawnSide - 1). */
 	void SplitCandidatesBySide(const FBox2D& View, const TArray<FIntPoint>& Candidates, TArray<FIntPoint> (&OutBySide)[4]) const;

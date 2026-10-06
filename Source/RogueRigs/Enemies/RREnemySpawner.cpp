@@ -8,7 +8,9 @@
 #include "Engine/GameViewportClient.h"
 #include "Engine/World.h"
 #include "EngineUtils.h"
+#include "Enemies/RRChaser.h"
 #include "Enemies/RREnemy.h"
+#include "Enemies/RRShooter.h"
 #include "FlowField/RRFlowFieldSubsystem.h"
 #include "GameFramework/Pawn.h"
 #include "GameFramework/PlayerController.h"
@@ -573,9 +575,21 @@ void ARREnemySpawner::ExecuteDirectorAction(const FRRDirectorAction& Action)
 	}
 }
 
-void ARREnemySpawner::DrawMembers(const TArray<FRRDirectorPackMember>& Members, TMap<UClass*, int32>& Room,
+void ARREnemySpawner::DrawMembers(const TArray<FRRDirectorPackMember>& Members, TMap<UClass*, int32>& Room, int32& ShooterRoom,
 	TArray<TSubclassOf<ARREnemy>>& OutFront, TArray<TSubclassOf<ARREnemy>>& OutBack)
 {
+	// Room left for a resolved class (its WeightedEnemyClasses cap, shared by the whole wave).
+	auto TakeRoom = [this, &Room](const TSubclassOf<ARREnemy>& SpawnClass, int32 Wanted)
+	{
+		int32* ClassRoom = Room.Find(SpawnClass.Get());
+		if (!ClassRoom)
+		{
+			ClassRoom = &Room.Add(SpawnClass.Get(), GetClassRoom(SpawnClass));
+		}
+		const int32 Taken = FMath::Clamp(Wanted, 0, *ClassRoom);
+		*ClassRoom -= Taken;
+		return Taken;
+	};
 	TArray<TSubclassOf<ARREnemy>> Behind;
 	for (const FRRDirectorPackMember& Member : Members)
 	{
@@ -585,18 +599,34 @@ void ARREnemySpawner::DrawMembers(const TArray<FRRDirectorPackMember>& Members, 
 			continue;
 		}
 		const int32 CountMin = FMath::Max(Member.CountMin, 0);
-		int32 Count = RandomStream.RandRange(CountMin, FMath::Max(CountMin, Member.CountMax));
-		int32* ClassRoom = Room.Find(SpawnClass.Get());
-		if (!ClassRoom)
+		const int32 Drawn = RandomStream.RandRange(CountMin, FMath::Max(CountMin, Member.CountMax));
+		int32 Count = Drawn;
+		int32 Replaced = 0;
+		if (SpawnClass->IsChildOf(ARRShooter::StaticClass()))
 		{
-			ClassRoom = &Room.Add(SpawnClass.Get(), GetClassRoom(SpawnClass));
+			// Shooter counter: the shooters beyond the room become replacement robots in the same places.
+			Count = FMath::Clamp(Drawn, 0, FMath::Max(ShooterRoom, 0));
+			ShooterRoom -= Count;
+			Replaced = Drawn - Count;
 		}
-		Count = FMath::Min(Count, *ClassRoom);
-		*ClassRoom -= Count;
+		Count = TakeRoom(SpawnClass, Count);
 		TArray<TSubclassOf<ARREnemy>>& Target = Member.bFront ? OutFront : (Member.bBehind ? Behind : OutBack);
 		for (int32 Index = 0; Index < Count; ++Index)
 		{
 			Target.Add(SpawnClass);
+		}
+		if (Replaced > 0)
+		{
+			const TSubclassOf<ARREnemy> Replacement = ResolveRobotClass(DirectorConfig.ShooterCapReplacement
+				? DirectorConfig.ShooterCapReplacement : TSubclassOf<ARREnemy>(ARRChaser::StaticClass()));
+			if (Replacement && !Replacement->IsChildOf(ARRShooter::StaticClass()))
+			{
+				Replaced = TakeRoom(Replacement, Replaced);
+				for (int32 Index = 0; Index < Replaced; ++Index)
+				{
+					Target.Add(Replacement);
+				}
+			}
 		}
 	}
 	for (int32 Index = OutBack.Num() - 1; Index > 0; --Index)
@@ -609,6 +639,11 @@ void ARREnemySpawner::DrawMembers(const TArray<FRRDirectorPackMember>& Members, 
 	{
 		OutBack.Insert(SpawnClass, RandomStream.RandRange(FMath::Min(FirstBehindSlot, OutBack.Num()), OutBack.Num()));
 	}
+}
+
+int32 ARREnemySpawner::GetDirectorShooterRoom() const
+{
+	return FMath::Max(DirectorConfig.ShooterMaxAlive - GetAliveCountOfClass(ARRShooter::StaticClass()), 0);
 }
 
 void ARREnemySpawner::SplitCandidatesBySide(const FBox2D& View, const TArray<FIntPoint>& Candidates, TArray<FIntPoint> (&OutBySide)[4]) const
@@ -695,6 +730,7 @@ TArray<FRRSpawnedPack> ARREnemySpawner::TrySpawnDirectorWave(const TArray<int32>
 	};
 
 	TMap<UClass*, int32> Room;
+	int32 ShooterRoom = GetDirectorShooterRoom();
 	bool bSideUsed[4] = { false, false, false, false };
 	for (const int32 TypeIndex : PackTypeIndices)
 	{
@@ -705,7 +741,7 @@ TArray<FRRSpawnedPack> ARREnemySpawner::TrySpawnDirectorWave(const TArray<int32>
 		// Front members first, then the others mixed; clamped to the free slots.
 		TArray<TSubclassOf<ARREnemy>> Classes;
 		TArray<TSubclassOf<ARREnemy>> Back;
-		DrawMembers(DirectorConfig.PackTypes[TypeIndex].Members, Room, Classes, Back);
+		DrawMembers(DirectorConfig.PackTypes[TypeIndex].Members, Room, ShooterRoom, Classes, Back);
 		Classes.Append(Back);
 		Classes.SetNum(FMath::Min(Classes.Num(), FreeSlots));
 		if (Classes.IsEmpty())
@@ -766,9 +802,10 @@ ERRSpawnSide ARREnemySpawner::PrepareHorde(int32 HordeIndex)
 	const int32 SizeMin = FMath::Max(Horde.SizeMin, 1);
 	const int32 Size = FMath::Min(RandomStream.RandRange(SizeMin, FMath::Max(SizeMin, Horde.SizeMax)), FreeSlots);
 	TMap<UClass*, int32> Room;
+	int32 ShooterRoom = GetDirectorShooterRoom();
 	TArray<TSubclassOf<ARREnemy>> Classes;
 	TArray<TSubclassOf<ARREnemy>> Back;
-	DrawMembers(Horde.Members, Room, Classes, Back);
+	DrawMembers(Horde.Members, Room, ShooterRoom, Classes, Back);
 	if (const TSubclassOf<ARREnemy> Fill = ResolveRobotClass(Horde.FillClass))
 	{
 		for (int32 Index = Classes.Num() + Back.Num(); Index < Size; ++Index)

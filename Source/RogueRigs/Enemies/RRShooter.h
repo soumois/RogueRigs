@@ -39,7 +39,7 @@ enum class ERRShooterState : uint8
  * after Stats.WindUp it fires one ProjectileClass shot (ARREnemyProjectile: hurts the miner only, stops on rock without
  * damaging it) from the muzzle at the target's current position, speed Stats.ProjectileSpeed, lifetime AttackRange / speed,
  * carrying a DamageEffectClass spec with Data.Damage = Stats.Damage (OnAimEnd, then OnFire).
- * Movement, ring = Stats.PreferredDistance +/- Stats.PreferredDistanceTolerance: Approach (flow field, arrival at the preferred
+ * Movement, ring = Stats.PreferredDistance +/- Stats.PreferredDistanceTolerance, outer edge clamped to AttackRange: Approach (flow field, arrival at the preferred
  * distance with sight, 0 without) -> Hold once within the preferred distance with sight. Hold -> Approach beyond the ring.
  * Without sight in the ring, or too close: a repositioning search (at most every RepositionSearchInterval): among the cells of
  * URRFlowFieldSubsystem::GatherReachableCells within RepositionSearchRadiusCells, those in the ring with grid sight to the
@@ -128,8 +128,14 @@ protected:
 	/** Movement decisions of Approach, Hold and Reposition for the current target, distance and sight. */
 	void UpdateMovement(const ARRMiner* Target, float Distance);
 
-	/** True when Distance (uu) lies in the preferred ring (PreferredDistance +/- PreferredDistanceTolerance). */
+	/** True when Distance (uu) lies in the preferred ring (PreferredDistance - PreferredDistanceTolerance to GetRingOuterDistance). */
 	bool IsInRing(float Distance) const;
+
+	/**
+	 * Outer edge of the ring: PreferredDistance + PreferredDistanceTolerance, clamped to AttackRange (task-030-02: range 960 is
+	 * inside the 1000 uu edge; a shooter parked beyond its range never had sight and never fired).
+	 */
+	float GetRingOuterDistance() const;
 
 	/** Earliest world time (s) at which a new aim may start (cadence). */
 	double GetNextAimTime() const;

@@ -205,7 +205,7 @@ void ARRShooter::UpdateBehavior(float DeltaSeconds)
 void ARRShooter::UpdateMovement(const ARRMiner* Target, float Distance)
 {
 	const float PreferredDistance = Stats.PreferredDistance;
-	const float OuterDistance = PreferredDistance + Stats.PreferredDistanceTolerance;
+	const float OuterDistance = GetRingOuterDistance();
 
 	switch (State)
 	{
@@ -269,7 +269,12 @@ void ARRShooter::UpdateMovement(const ARRMiner* Target, float Distance)
 
 bool ARRShooter::IsInRing(float Distance) const
 {
-	return FMath::Abs(Distance - Stats.PreferredDistance) <= Stats.PreferredDistanceTolerance;
+	return Distance >= Stats.PreferredDistance - Stats.PreferredDistanceTolerance && Distance <= GetRingOuterDistance();
+}
+
+float ARRShooter::GetRingOuterDistance() const
+{
+	return FMath::Min(Stats.PreferredDistance + Stats.PreferredDistanceTolerance, Stats.AttackRange);
 }
 
 double ARRShooter::GetNextAimTime() const
@@ -444,7 +449,7 @@ bool ARRShooter::FindRepositionPath(const ARRMiner* Target, TArray<FVector>& Out
 	// Candidates: reachable cells of the square, locally reachable, in the ring, with grid sight to the target.
 	const FVector TargetLocation = Target->GetActorLocation();
 	const float MinDistance = Stats.PreferredDistance - Stats.PreferredDistanceTolerance;
-	const float MaxDistance = Stats.PreferredDistance + Stats.PreferredDistanceTolerance;
+	const float MaxDistance = GetRingOuterDistance();
 	TArray<FIntPoint> Candidates;
 	FlowField->GatherReachableCells(Candidates, [&](FIntPoint Cell, int32 /*GoalSteps*/)
 	{

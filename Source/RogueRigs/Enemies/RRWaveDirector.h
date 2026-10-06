@@ -224,6 +224,18 @@ struct FRRWaveDirectorConfig
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Director")
 	TArray<FRRDirectorHorde> Hordes;
 
+	/**
+	 * Shooter counter (owner 2026-10-06, provisional): at most this many shooters (ARRShooter and subclasses) alive when a pack
+	 * is drawn; the shooters of a pack beyond it become ShooterCapReplacement robots in the same places. Shooters fire from afar
+	 * and pile up while the miner backs away firing. Hordes and lone robots carry no shooters.
+	 */
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Director", meta = (ClampMin = 0))
+	int32 ShooterMaxAlive = 6;
+
+	/** Robot that takes the place of a shooter drawn at the cap; none = ARRChaser (resolved like any member class). */
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Director")
+	TSubclassOf<ARREnemy> ShooterCapReplacement;
+
 	/** Index of the pack type called Name; INDEX_NONE when none. */
 	int32 FindPackType(FName Name) const;
 
