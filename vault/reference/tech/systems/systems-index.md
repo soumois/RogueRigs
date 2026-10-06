@@ -15,7 +15,7 @@ Decision status inside each doc: approved, provisional, deferred or open. Planne
 - [[sys-hud]] — HUD widget C++ base: health, XP, level-up, upgrade choice and game-over display events, created by the player controller.
 - [[sys-progression]] — miner XP and level: XPCurve.csv, XPGain scaling, carry-over, XP and level-up events.
 - [[sys-level-up]] — level-up flow: heal, effect event, delayed pause on the upgrade cards, chained screens, Blueprint API to bind.
-- [[sys-drone]] — helper drone actor spawned by the miner: state enum, orbit tunables, MiningSpeed read.
+- [[sys-drone]] — helper drone actor spawned by the miner: orbit, contact arc dig (selection, speeds, per-block events), hack, MiningSpeed read.
 - [[sys-damage]] — damage chain from shot to death, i-frames, death guard.
 - [[sys-status-effects]] — stacking rules for bonuses and statuses, enemy stun.
 - [[sys-weapons]] — weapon ASC lifecycle, shotgun cone, magazine and reload, turret launcher and turrets, impact effects.

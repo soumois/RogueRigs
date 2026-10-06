@@ -19,7 +19,7 @@ status: in-progress
 - tokens: open
 - runs: open
 - milestone: M2
-- result: open
+- result: contact arc mining in `ARRDrone` (`RequestArcDig`, `SelectArcCells`, `ReleaseDig`, `OnDigBlockStarted` / `OnDigBlockStopped`) and `ARRMiner` (`DigContactMargin`, `IsTouchingRock`); 4 new Dig tests; build 0; 156/156 tests pass (2026-10-06). Docs: [[sys-drone]], [[sys-player]], [[sys-automation-tests]].
 
 ## Relations
 - [[task-029-fine-grid]] — parent global task.
