@@ -38,7 +38,7 @@ Resuming after the pause of 2026-10-06: read [[handover-2026-10-06]] first.
 - [[task-023-grid-perf]] — stress test of 100 uu and 67 uu cells before choosing the grid size; report to the owner. Status done.
 - [[task-024-weapons]] — rifle pierce, shotgun pellets, turret on a button, weapons as level-up cards. Status done.
 - [[task-025-damage-numbers]] — pooled Niagara damage numbers, merge, bigger crits. Status done.
-- [[task-026-pressure]] — wave director, horde banner, damage vignette, alert-bar icons, light halo test. Status in-progress.
-- [[task-027-juice]] — XP and ore ejection and suction, kamikaze flare, ring gauge, chevrons, heal ring. Status todo.
+- [[task-026-pressure]] — wave director, horde banner, damage vignette, alert-bar icons, light halo test. Status done.
+- [[task-027-juice]] — XP and ore ejection and suction, kamikaze flare, ring gauge, chevrons, heal ring. Status in-progress.
 - [[task-028-balance]] — larger heavy slam, shield chasers, doubled upgrade values, XP pacing. Status todo.
 - [[task-029-fine-grid]] — 67 uu cells: chunked rendering, incremental flow field, converted layout, arc mining by contact. Status done.

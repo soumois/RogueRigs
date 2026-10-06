@@ -3,7 +3,7 @@ id: task-027-01-pickup-motion
 description: "XP and ore chunks eject in arcs, rest, then stream into the miner; collect event; kamikaze 0.5 s flare before exploding; tests."
 parent: task-027-juice
 kind: task
-status: todo
+status: in-progress
 ---
 # Pickup motion and kamikaze flare
 

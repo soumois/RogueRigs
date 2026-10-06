@@ -3,7 +3,7 @@ id: task-026-04-tests-integration
 description: "Integration tests with the final Blueprints: director phases on the real map, horde banner then front, vignette event on hit."
 parent: task-026-pressure
 kind: task
-status: in-progress
+status: done
 ---
 # Pressure integration tests
 
@@ -15,9 +15,9 @@ status: in-progress
 - done_when: build exits 0 with the editor closed; all `RogueRigs.*` tests pass headless (new ones included); docs updated; lint clean.
 - editor_state: closed
 - token_ceiling: 110000
-- model: open
-- tokens: open
-- runs: open
+- model: opus
+- tokens: input 152, cache write 396399, cache read 9265319, output 83027
+- runs: 2
 - milestone: M2
 - result: Tests `Integration.PressureDirectorPhases`, `PressureHordeBanner`, `PressureVignetteOnHit` (placed spawner config, real WBP_HUD widgets) and `Cheats.LightHalo`; full headless 170/170. Halo cheat `bLightHalo` / `rr.Cheat.LightHalo` (default off; [[sys-cheats]]). New `rr.Debug.Delayed`, `rr.Debug.DamageMiner`, Shots ShowUI. -game shots: halo on dims floor and rocks, warm disc around the miner; low-health hit full red vignette, steady faint red at 25 %; first hit not visible (shader compile message on screen); banner seen over the horde. HUD layout issue for bp: ObjectiveText overlaps the alert icons row. Commits ab9feee + docs.
 

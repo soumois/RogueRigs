@@ -3,7 +3,7 @@ id: task-026-pressure
 description: "Global task: wave director with calm start, rising multi-side flow, lull, announced hordes; damage vignette; event icons on the alert bar; light halo test."
 parent: tasks-index
 kind: task
-status: in-progress
+status: done
 ---
 # Pressure and rhythm
 
@@ -13,8 +13,8 @@ status: in-progress
 - gdd_check: Read [[difficulty]], [[level-flow]], [[enemies-index]], [[sys-spawner]], [[sys-difficulty]]. Values provisional (owner 2026-10-05): see subtasks; alive cap 100 → 150 (perf ceiling about 1500). Analysis in [[drgs-analysis]]. The owner launched all lots and delegated provisional values (2026-10-05); decisions written into the GDD before planning; the grid-size lot waits for the owner after the stress report.
 - confirmed_by_owner: yes (2026-10-05, all lots launched by the owner)
 - milestone: M2
-- next_step: task-026-04-tests-integration
-- result: open
+- next_step: none
+- result: Done. Landing clearance (console 2 × 2, shuttle 4 × 3). Wave director: calm 10 s, lone chasers, first pack 22 s, 2–3 packs from distinct sides 6 → 3 s, hordes at 95 s and 175 s (run-time trigger, provisional) with lull, 4 s banner, 40–60 robot front, cap 150. HUD: red vignette (hit flash, low-health base), HORDE EN APPROCHE ! banner, alert icons. Light halo cheat rr.Cheat.LightHalo (off by default). Build 0, 170/170. Open: first-hit vignette missing in -game while the shader compiled (recheck in a cooked build); ObjectiveText overlaps the C/N icons (fix in task-027-02); PIE feel not judged by a human.
 
 ## Subtasks
 0. task-026-00-landing-clearance — cpp: console and shuttle land on a fully open footprint (owner, after handover-2026-10-06)

@@ -3,7 +3,7 @@ id: task-027-juice
 description: "Global task: DRGS-like XP and ore ejection then suction, kamikaze core light before exploding, console ring gauge, shuttle chevrons, heal ring."
 parent: tasks-index
 kind: task
-status: todo
+status: in-progress
 ---
 # Readability and pickup juice
 
