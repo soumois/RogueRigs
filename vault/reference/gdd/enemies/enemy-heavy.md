@@ -11,9 +11,9 @@ status: approved
 - locomotion: biped
 - rig: rigid parts, one bone per part
 - parts: open
-- size: twice the chaser visually; collision capsule radius at most 80 uu so it fits one-cell corridors (owner 2026-10-04)
+- size: twice the chaser visually; collision capsule radius at most 80 uu so it fits 3-cell corridors at 67 uu (owner 2026-10-04; corridor width owner, after handover-2026-10-06)
 - animations: none in grey-box; the telegraph uses a body tilt and a glow (owner 2026-10-04)
-- behavior: ground slam (owner 2026-10-04): stops, raises its arms, eyes and stripes glow for the telegraph, then a shockwave around it hits the miner; the shockwave never breaks rock ([[destruction-rules]]). High knockback resistance, due to its mass. Passes through every one-cell corridor ([[arena-grid]]).
+- behavior: ground slam (owner 2026-10-04): stops, raises its arms, eyes and stripes glow for the telegraph, then a shockwave around it hits the miner; the shockwave never breaks rock ([[destruction-rules]]). High knockback resistance, due to its mass. Passes through every 3-cell corridor ([[arena-grid]]).
 - telegraph: 0.8 s arms raised with eyes and stripes glowing (owner 2026-10-04)
 - colors: steel blue with yellow and black hazard stripes; red eyes, yellow logo plate ([[color-code]])
 - stats (provisional, owner 2026-10-04): hp 300, speed 200 uu/s, slam damage 25, slam radius 400 uu (owner 2026-10-05: the area must be large; was 220), the slam area shown on the ground during the telegraph, one slam every 2.5 s, xp_value 5, knockback_resistance 0.8; at most 5 alive.

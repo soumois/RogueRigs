@@ -18,7 +18,7 @@ status: approved
 
 ## Rules and values
 - It is one of the three block-destruction sources ([[destruction-rules]]).
-- Dig speed scales with the miner's mining speed stat ([[player-stats]]). Base dig time per 67 uu block at mining speed 1: rock 0.5 s, ore and heal ore 1.5 s; up to 4 blocks at once within 1.5 cells of the miner, in a 120° arc toward the wall (provisional, 2026-10-06, measured on the DRGS run: same cleared area per second as before, finer grain).
+- Dig speed scales with the miner's mining speed stat ([[player-stats]]). Base dig time per 67 uu block at mining speed 1: rock 0.5 s, ore and heal ore 1.5 s; up to 4 blocks at once within 1.5 cells of the miner, in a 120° arc toward the wall; against a flat wall this gives 3, sometimes 4, blocks, kept as is (owner, after handover-2026-10-06; values provisional, 2026-10-06, measured on the DRGS run: same cleared area per second as before, finer grain).
 - Dig feedback: the block being cut shakes until it breaks; only its rendering shakes, never its collision (owner 2026-10-02).
 - Dig trigger and cancel (provisional, 2026-10-06): the miner touching rock starts the dig of the blocks in the arc; a block keeps being cut while it stays in the arc and stops when the miner moves away; damage done stays on the block, so digging it again resumes. Pushing is only needed to walk to the next wall.
 - Laser color: red (owner decision, 2026-10-01), against [[color-code]] (white-gold) and [[readability-rules]] (red = enemy fire or healing); check readability once the shooter's red targeting laser exists.
