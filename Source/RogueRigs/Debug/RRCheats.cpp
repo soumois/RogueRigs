@@ -210,6 +210,13 @@ namespace RRCheats
 		UE_LOG(LogRogueRigs, Log, TEXT("rr.Cheat.AlertSpeed (rr.Cheat): alert gain x%.2f."), Variable->GetFloat());
 	}
 
+	/** rr.Cheat.LightHalo sink: writes bLightHalo into the URRCheatSettings default object (applied by URRCheatSubsystem next frame). */
+	void HandleLightHalo(IConsoleVariable* Variable)
+	{
+		GetMutableDefault<URRCheatSettings>()->bLightHalo = Variable->GetInt() != 0;
+		UE_LOG(LogRogueRigs, Log, TEXT("rr.Cheat.LightHalo (rr.Cheat): requested %d."), Variable->GetInt() != 0 ? 1 : 0);
+	}
+
 	/** rr.Cheat.SkipToConsole sink: 1 drops the console now, then the variable returns to 0. */
 	void HandleSkipToConsole(IConsoleVariable* Variable)
 	{
@@ -262,6 +269,10 @@ namespace RRCheats
 	TAutoConsoleVariable<float> CVarAlertSpeed(TEXT("rr.Cheat.AlertSpeed"), 1.f,
 		TEXT("Alert gain multiplier (time and kills); writes URRCheatSettings::AlertSpeedMultiplier. 1 = normal."),
 		FConsoleVariableDelegate::CreateStatic(&HandleAlertSpeed), ECVF_Cheat);
+
+	TAutoConsoleVariable<int32> CVarLightHalo(TEXT("rr.Cheat.LightHalo"), 0,
+		TEXT("1: point light halo above the player miner, sun and sky dimmed, exposure bias (URRCheatSettings LightHalo* values); 0: restored. Writes URRCheatSettings::bLightHalo."),
+		FConsoleVariableDelegate::CreateStatic(&HandleLightHalo), ECVF_Cheat);
 
 	TAutoConsoleVariable<int32> CVarSkipToConsole(TEXT("rr.Cheat.SkipToConsole"), 0,
 		TEXT("Set to 1: the alert jumps to the console threshold and the console drops now, then resets to 0."),

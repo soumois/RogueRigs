@@ -6,7 +6,14 @@
 #if WITH_DEV_AUTOMATION_TESTS
 
 #include "AbilitySystemComponent.h"
+#include "Camera/CameraComponent.h"
+#include "Components/DirectionalLightComponent.h"
+#include "Components/PointLightComponent.h"
+#include "Components/SkyLightComponent.h"
 #include "Debug/RRCheatSettings.h"
+#include "Debug/RRCheatSubsystem.h"
+#include "Engine/DirectionalLight.h"
+#include "Engine/SkyLight.h"
 #include "Misc/ScopeExit.h"
 #include "Objectives/RRRunFlowSubsystem.h"
 #include "GAS/RRGameplayTags.h"
@@ -239,6 +246,97 @@ bool FRRCheatPropertyRouteTest::RunTest(const FString& Parameters)
 	TestFalse(TEXT("bSkipToExtraction consumed"), Settings->bSkipToExtraction);
 	TestTrue(TEXT("extraction ready"), RunFlow->IsExtractionReady());
 	TestEqual(TEXT("alert full"), RunFlow->GetAlert(), 1.f);
+	return true;
+}
+
+
+IMPLEMENT_SIMPLE_AUTOMATION_TEST(FRRCheatLightHaloTest, "RogueRigs.Cheats.LightHalo",
+	EAutomationTestFlags::EditorContext | EAutomationTestFlags::EngineFilter)
+
+bool FRRCheatLightHaloTest::RunTest(const FString& Parameters)
+{
+	using namespace RRTestHarness;
+
+	// The default object outlives the test: the halo fields always go back to their defaults.
+	URRCheatSettings* Settings = GetMutableDefault<URRCheatSettings>();
+	const float DefaultIntensity = 60.f;
+	TestFalse(TEXT("halo off by default"), Settings->bLightHalo);
+	ON_SCOPE_EXIT
+	{
+		Settings->bLightHalo = false;
+		Settings->LightHaloIntensity = DefaultIntensity;
+		if (IConsoleVariable* Variable = IConsoleManager::Get().FindConsoleVariable(TEXT("rr.Cheat.LightHalo")))
+		{
+			Variable->Set(TEXT("0"), ECVF_SetByConsole);
+		}
+		Settings->bLightHalo = false;
+	};
+	TestEqual(TEXT("default halo intensity"), Settings->LightHaloIntensity, DefaultIntensity);
+
+	FTestWorld TestWorld(TEXT("RRCheatLightHalo"));
+	const ARRArenaGrid* Grid = SpawnFineGrid(*this, TestWorld);
+	ARRMiner* Miner = Grid ? SpawnMiner(*this, TestWorld, Grid, FineCell(FIntPoint(40, 40))) : nullptr;
+	ADirectionalLight* SunActor = TestWorld.Spawn<ADirectionalLight>(ADirectionalLight::StaticClass(), FVector(0.f, 0.f, 1000.f));
+	ASkyLight* SkyActor = TestWorld.Spawn<ASkyLight>(ASkyLight::StaticClass(), FVector(0.f, 0.f, 1000.f));
+	URRCheatSubsystem* Cheats = TestWorld.Get()->GetSubsystem<URRCheatSubsystem>();
+	UDirectionalLightComponent* Sun = SunActor ? SunActor->FindComponentByClass<UDirectionalLightComponent>() : nullptr;
+	USkyLightComponent* Sky = SkyActor ? SkyActor->GetLightComponent() : nullptr;
+	UCameraComponent* Camera = Miner ? Miner->FindComponentByClass<UCameraComponent>() : nullptr;
+	if (!Miner || !TestNotNull(TEXT("cheat subsystem"), Cheats) || !TestNotNull(TEXT("sun"), Sun) || !TestNotNull(TEXT("sky"), Sky)
+		|| !TestNotNull(TEXT("miner camera"), Camera))
+	{
+		return false;
+	}
+	for (ARRWeapon* Weapon : Miner->GetWeapons())
+	{
+		if (IsValid(Weapon) && Weapon->GetAutoFireComponent())
+		{
+			Weapon->GetAutoFireComponent()->StopFiring();
+		}
+	}
+	const float SunIntensity = Sun->Intensity;
+	const float SkyIntensity = Sky->Intensity;
+	const bool bBiasOverride = Camera->PostProcessSettings.bOverride_AutoExposureBias != 0;
+	const float Bias = Camera->PostProcessSettings.AutoExposureBias;
+	TestWorld.Tick();
+	TestNull(TEXT("no halo while off"), Cheats->GetLightHalo());
+
+	// On through the console variable: a point light above the miner, sun and sky scaled, exposure bias on the camera.
+	RRCheatTests::SetCheat(*this, TEXT("rr.Cheat.LightHalo"), TEXT("1"));
+	TestTrue(TEXT("rr.Cheat.LightHalo writes bLightHalo"), Settings->bLightHalo);
+	TestWorld.Tick();
+	UPointLightComponent* Halo = Cheats->GetLightHalo();
+	if (!TestNotNull(TEXT("halo light added"), Halo))
+	{
+		return false;
+	}
+	TestTrue(TEXT("halo owned by the miner"), Halo->GetOwner() == Miner && Halo->IsRegistered());
+	TestNearlyEqual(TEXT("halo above the miner"), static_cast<float>(Halo->GetComponentLocation().Z - Miner->GetActorLocation().Z), Settings->LightHaloHeight, 0.5f);
+	TestNearlyEqual(TEXT("halo intensity"), Halo->Intensity, Settings->LightHaloIntensity, KINDA_SMALL_NUMBER);
+	TestNearlyEqual(TEXT("halo radius"), Halo->AttenuationRadius, Settings->LightHaloRadius, KINDA_SMALL_NUMBER);
+	TestTrue(TEXT("halo in candelas"), Halo->IntensityUnits == ELightUnits::Candelas);
+	TestNearlyEqual(TEXT("sun dimmed"), Sun->Intensity, SunIntensity * Settings->LightHaloAmbientScale, KINDA_SMALL_NUMBER);
+	TestNearlyEqual(TEXT("sky dimmed"), Sky->Intensity, SkyIntensity * Settings->LightHaloAmbientScale, KINDA_SMALL_NUMBER);
+	TestTrue(TEXT("camera exposure bias overridden"), Camera->PostProcessSettings.bOverride_AutoExposureBias != 0);
+	TestNearlyEqual(TEXT("camera exposure bias"), Camera->PostProcessSettings.AutoExposureBias, Bias + Settings->LightHaloExposureBias, KINDA_SMALL_NUMBER);
+
+	// Values editable while on: applied on the next frame, the dimming not compounded.
+	Settings->LightHaloIntensity = 120.f;
+	TestWorld.Tick();
+	Halo = Cheats->GetLightHalo();
+	TestTrue(TEXT("edited intensity applied"), Halo && FMath::IsNearlyEqual(Halo->Intensity, 120.f));
+	TestNearlyEqual(TEXT("sun dimmed once"), Sun->Intensity, SunIntensity * Settings->LightHaloAmbientScale, KINDA_SMALL_NUMBER);
+	TestEqual(TEXT("one halo light on the miner"), TInlineComponentArray<UPointLightComponent*>(Miner).Num(), 1);
+
+	// Off through the property: everything restored.
+	Settings->bLightHalo = false;
+	TestWorld.Tick();
+	TestNull(TEXT("halo removed"), Cheats->GetLightHalo());
+	TestEqual(TEXT("no point light left on the miner"), TInlineComponentArray<UPointLightComponent*>(Miner).Num(), 0);
+	TestNearlyEqual(TEXT("sun restored"), Sun->Intensity, SunIntensity, KINDA_SMALL_NUMBER);
+	TestNearlyEqual(TEXT("sky restored"), Sky->Intensity, SkyIntensity, KINDA_SMALL_NUMBER);
+	TestEqual(TEXT("camera bias override restored"), Camera->PostProcessSettings.bOverride_AutoExposureBias != 0, bBiasOverride);
+	TestNearlyEqual(TEXT("camera bias restored"), Camera->PostProcessSettings.AutoExposureBias, Bias, KINDA_SMALL_NUMBER);
 	return true;
 }
 

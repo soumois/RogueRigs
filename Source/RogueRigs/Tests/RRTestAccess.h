@@ -7,6 +7,7 @@
 
 #if WITH_DEV_AUTOMATION_TESTS
 
+#include "Blueprint/UserWidget.h"
 #include "Components/HierarchicalInstancedStaticMeshComponent.h"
 #include "Components/InstancedStaticMeshComponent.h"
 #include "Debug/RRTargetDummy.h"
@@ -209,6 +210,13 @@ namespace RRTestAccess
 	struct FDummyAccess : public ARRTargetDummy
 	{
 		static URRHealthAttributeSet* HealthSetOf(const ARRTargetDummy* Dummy) { return Dummy->*(&FDummyAccess::HealthSet); }
+	};
+
+	/** UUserWidget: its native tick (latent actions, then the Blueprint Event Tick), which headless tests never get from Slate. */
+	struct FUserWidgetAccess : public UUserWidget
+	{
+		/** Runs Widget's NativeTick (virtual: the subclass override runs) with its cached geometry (empty headless; SlateCore is not a module dependency). */
+		static void NativeTickOf(UUserWidget* Widget, float DeltaTime) { (Widget->*(&FUserWidgetAccess::NativeTick))(Widget->GetCachedGeometry(), DeltaTime); }
 	};
 }
 
