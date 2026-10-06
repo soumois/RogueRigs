@@ -16,7 +16,55 @@ class URRLevelUpComponent;
 class URRProgressionComponent;
 class URRRunFlowSubsystem;
 class UAbilitySystemComponent;
+struct FMinimalViewInfo;
 struct FOnAttributeChangeData;
+
+/** What the objective locator points at. */
+UENUM(BlueprintType)
+enum class ERRLocatorTarget : uint8
+{
+	/** Nothing to point at (no console yet, console hacked and no shuttle yet, run ended). */
+	None,
+	/** The command console, until it is hacked. */
+	Console,
+	/** The extraction shuttle, once landed. */
+	Shuttle
+};
+
+/** Objective locator state for an edge arrow (objective-console: console until hacked, then the shuttle). */
+USTRUCT(BlueprintType)
+struct FRRObjectiveLocator
+{
+	GENERATED_BODY()
+
+	/** What the locator points at; None = hide the arrow. */
+	UPROPERTY(BlueprintReadOnly, Category = "HUD|Locator")
+	ERRLocatorTarget Target = ERRLocatorTarget::None;
+
+	/** World location of the target (actor location). */
+	UPROPERTY(BlueprintReadOnly, Category = "HUD|Locator")
+	FVector WorldLocation = FVector::ZeroVector;
+
+	/** True when the target projects inside the viewport (hide the arrow, or show an on-target marker). */
+	UPROPERTY(BlueprintReadOnly, Category = "HUD|Locator")
+	bool bOnScreen = false;
+
+	/** Projected target position in viewport widget units (DPI-scaled, top-left origin); far outside when off screen. */
+	UPROPERTY(BlueprintReadOnly, Category = "HUD|Locator")
+	FVector2D ScreenPosition = FVector2D::ZeroVector;
+
+	/** Arrow position: the target position when on screen, else the point where the line from the viewport center to it meets the viewport inset by the edge margin (widget units). */
+	UPROPERTY(BlueprintReadOnly, Category = "HUD|Locator")
+	FVector2D EdgePosition = FVector2D::ZeroVector;
+
+	/** Arrow angle in degrees, clockwise from screen right (0 = right, 90 = down, -90 = up), for a right-pointing arrow image's render angle. */
+	UPROPERTY(BlueprintReadOnly, Category = "HUD|Locator")
+	float ArrowAngle = 0.f;
+
+	/** Viewport size in widget units used for the computation. */
+	UPROPERTY(BlueprintReadOnly, Category = "HUD|Locator")
+	FVector2D ViewportSize = FVector2D::ZeroVector;
+};
 
 /** Kind of an icon on the alert bar. */
 UENUM(BlueprintType)
@@ -128,6 +176,37 @@ public:
 	/** Progress 0..1 of the bound turret launcher's running recharge (0 when none or without a launcher), for a per-frame bar. */
 	UFUNCTION(BlueprintPure, Category = "HUD|Turret")
 	float GetTurretRechargeProgress() const;
+
+	// --- Objective locator (objective-console: edge arrow to the console, then to the shuttle) ---
+
+	/**
+	 * Current objective target of the bound run flow: the console while it exists and is not hacked, else the landed shuttle;
+	 * None otherwise (no console yet, between the hack and the landing, run ended). False for None.
+	 */
+	UFUNCTION(BlueprintPure, Category = "HUD|Locator")
+	bool GetObjectiveTarget(ERRLocatorTarget& OutTarget, FVector& OutWorldLocation) const;
+
+	/**
+	 * Locator for an edge arrow, to call each frame: target (GetObjectiveTarget), its projection with the owning player's camera
+	 * in viewport widget units, on-screen flag, edge point (viewport inset by EdgeMargin widget units) and arrow angle. False
+	 * when there is no target or no owning player camera (Out.Target and Out.WorldLocation are still filled).
+	 */
+	UFUNCTION(BlueprintPure, Category = "HUD|Locator")
+	bool GetObjectiveLocator(FRRObjectiveLocator& OutLocator, float EdgeMargin = 48.f) const;
+
+	/**
+	 * Perspective projection of WorldLocation with View (horizontal FOV) on a viewport of ViewportSize (any unit, top-left
+	 * origin). A point behind the camera is pushed far out along its camera-space direction, so the edge arrow still points the
+	 * right way. False when behind the camera.
+	 */
+	static bool ProjectToViewport(const FMinimalViewInfo& View, const FVector2D& ViewportSize, const FVector& WorldLocation, FVector2D& OutScreenPosition);
+
+	/**
+	 * Edge arrow of ScreenPosition on a viewport of ViewportSize: true when it lies inside the viewport (OutEdgePosition = the
+	 * position itself); else OutEdgePosition = where the line from the center meets the viewport inset by EdgeMargin.
+	 * OutArrowAngle = direction from the center, degrees clockwise from screen right.
+	 */
+	static bool ComputeEdgeLocator(const FVector2D& ScreenPosition, const FVector2D& ViewportSize, float EdgeMargin, FVector2D& OutEdgePosition, float& OutArrowAngle);
 
 	/** Reopens the current map (restart button of the success and run-lost screens). Forwarded to URRRunFlowSubsystem::RestartLevel. */
 	UFUNCTION(BlueprintCallable, Category = "HUD|Run")

@@ -3,7 +3,10 @@
 #include "UI/RRHUDWidget.h"
 
 #include "AbilitySystemComponent.h"
+#include "Blueprint/WidgetLayoutLibrary.h"
+#include "Camera/PlayerCameraManager.h"
 #include "Enemies/RRWaveDirector.h"
+#include "GameFramework/PlayerController.h"
 #include "GAS/RRHealthAttributeSet.h"
 #include "Objectives/RRRunFlowSubsystem.h"
 #include "Objectives/RRShuttle.h"
@@ -255,6 +258,93 @@ void URRHUDWidget::ComputeAlertBarEvents(TArray<FRRAlertBarEvent>& OutEvents)
 	ShuttleIcon.Type = ERRAlertBarEventType::Extraction;
 	ShuttleIcon.Position = 1.f;
 	ShuttleIcon.bDone = RunFlow && RunFlow->IsExtractionReady();
+}
+
+bool URRHUDWidget::GetObjectiveTarget(ERRLocatorTarget& OutTarget, FVector& OutWorldLocation) const
+{
+	OutTarget = ERRLocatorTarget::None;
+	OutWorldLocation = FVector::ZeroVector;
+	const URRRunFlowSubsystem* RunFlow = BoundRunFlow.Get();
+	if (!RunFlow || RunFlow->IsRunEnded())
+	{
+		return false;
+	}
+	const ARRConsole* Console = RunFlow->GetConsole();
+	if (IsValid(Console) && Console->GetConsoleState() != ERRConsoleState::Complete)
+	{
+		OutTarget = ERRLocatorTarget::Console;
+		OutWorldLocation = Console->GetActorLocation();
+		return true;
+	}
+	const AActor* Shuttle = RunFlow->GetShuttle();
+	if (IsValid(Shuttle))
+	{
+		OutTarget = ERRLocatorTarget::Shuttle;
+		OutWorldLocation = Shuttle->GetActorLocation();
+		return true;
+	}
+	return false;
+}
+
+bool URRHUDWidget::GetObjectiveLocator(FRRObjectiveLocator& OutLocator, float EdgeMargin) const
+{
+	OutLocator = FRRObjectiveLocator();
+	if (!GetObjectiveTarget(OutLocator.Target, OutLocator.WorldLocation))
+	{
+		return false;
+	}
+	const APlayerController* Controller = GetOwningPlayer();
+	if (!Controller || !Controller->PlayerCameraManager)
+	{
+		return false;
+	}
+	const FVector2D Viewport = UWidgetLayoutLibrary::GetViewportSize(const_cast<URRHUDWidget*>(this));
+	const float Scale = UWidgetLayoutLibrary::GetViewportScale(const_cast<URRHUDWidget*>(this));
+	if (Viewport.X <= 0.f || Viewport.Y <= 0.f || Scale <= 0.f)
+	{
+		return false;
+	}
+	OutLocator.ViewportSize = Viewport / Scale;
+	ProjectToViewport(Controller->PlayerCameraManager->GetCameraCacheView(), OutLocator.ViewportSize, OutLocator.WorldLocation, OutLocator.ScreenPosition);
+	OutLocator.bOnScreen = ComputeEdgeLocator(OutLocator.ScreenPosition, OutLocator.ViewportSize, EdgeMargin, OutLocator.EdgePosition, OutLocator.ArrowAngle);
+	return true;
+}
+
+bool URRHUDWidget::ProjectToViewport(const FMinimalViewInfo& View, const FVector2D& ViewportSize, const FVector& WorldLocation, FVector2D& OutScreenPosition)
+{
+	const FVector Local = View.Rotation.UnrotateVector(WorldLocation - View.Location);
+	const double TanHalf = FMath::Tan(FMath::DegreesToRadians(FMath::Clamp(View.FOV, 1.f, 170.f) * 0.5));
+	const double Aspect = ViewportSize.Y > 0.0 ? ViewportSize.X / ViewportSize.Y : 1.0;
+	const FVector2D Center = ViewportSize * 0.5;
+	if (Local.X <= KINDA_SMALL_NUMBER)
+	{
+		// Behind the camera: far out along the camera-space direction (right = +Y, up = +Z, screen Y grows downward).
+		const FVector2D Direction = FVector2D(Local.Y, -Local.Z * Aspect).GetSafeNormal();
+		OutScreenPosition = Center + (Direction.IsNearlyZero() ? FVector2D(0.0, 1.0) : Direction) * (ViewportSize.X + ViewportSize.Y) * 10.0;
+		return false;
+	}
+	const double NdcX = Local.Y / (Local.X * TanHalf);
+	const double NdcY = Local.Z * Aspect / (Local.X * TanHalf);
+	OutScreenPosition = FVector2D((NdcX + 1.0) * 0.5 * ViewportSize.X, (1.0 - NdcY) * 0.5 * ViewportSize.Y);
+	return true;
+}
+
+bool URRHUDWidget::ComputeEdgeLocator(const FVector2D& ScreenPosition, const FVector2D& ViewportSize, float EdgeMargin, FVector2D& OutEdgePosition, float& OutArrowAngle)
+{
+	const FVector2D Center = ViewportSize * 0.5;
+	const FVector2D Delta = ScreenPosition - Center;
+	OutArrowAngle = Delta.IsNearlyZero() ? 0.f : static_cast<float>(FMath::RadiansToDegrees(FMath::Atan2(Delta.Y, Delta.X)));
+	const bool bOnScreen = ScreenPosition.X >= 0.0 && ScreenPosition.Y >= 0.0 && ScreenPosition.X <= ViewportSize.X && ScreenPosition.Y <= ViewportSize.Y;
+	if (bOnScreen)
+	{
+		OutEdgePosition = ScreenPosition;
+		return true;
+	}
+	const FVector2D Half(FMath::Max(Center.X - EdgeMargin, 0.0), FMath::Max(Center.Y - EdgeMargin, 0.0));
+	const double ScaleX = FMath::Abs(Delta.X) > KINDA_SMALL_NUMBER ? Half.X / FMath::Abs(Delta.X) : TNumericLimits<double>::Max();
+	const double ScaleY = FMath::Abs(Delta.Y) > KINDA_SMALL_NUMBER ? Half.Y / FMath::Abs(Delta.Y) : TNumericLimits<double>::Max();
+	OutEdgePosition = Center + Delta * FMath::Min(ScaleX, ScaleY);
+	return false;
 }
 
 void URRHUDWidget::RefreshAlertBarEvents()
