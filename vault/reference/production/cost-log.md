@@ -66,6 +66,7 @@ kind: note
 | [[task-029-06-bp-fine-grid]] | sonnet | 1 | 0k | 72k | 1938k | 18k |
 | [[task-029-08-laser-fan]] | opus | 1 | 0k | 58k | 716k | 16k |
 | [[task-029-09-bp-fan-holes]] | sonnet | 2 | 0k | 79k | 2354k | 29k |
+| [[task-029-07-final-check]] | opus | 2 | 0k | 178k | 8102k | 54k |
 
 ## Totals
 | Scope | Input | Cache write | Cache read | Output |

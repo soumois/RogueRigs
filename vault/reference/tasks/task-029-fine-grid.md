@@ -3,7 +3,7 @@ id: task-029-fine-grid
 description: "Global task: 67 uu cells with chunked rendering, incremental time-sliced flow field, converted layout, wall-contact arc mining, re-measured stress."
 parent: tasks-index
 kind: task
-status: in-progress
+status: done
 ---
 # Fine grid and arc mining
 
@@ -13,8 +13,8 @@ status: in-progress
 - gdd_check: Read [[arena-grid]], [[drone]], [[destruction-rules]], [[ore-blocks]], [[stress-grid-cells]], [[drgs-analysis]]. Owner chose 67 uu and time-sliced flow field (2026-10-06); conflict "every unit fits a one-cell corridor" resolved as passages ≥ 3 cells (provisional, to confirm by the owner); dig speeds measured on the DRGS run (0.5 s per rock block, 3–4 at once).
 - confirmed_by_owner: yes (2026-10-06, lot launched by the owner on 2026-10-05, size chosen on 2026-10-06)
 - milestone: M2
-- next_step: task-029-07-final-check
-- result: open
+- next_step: none
+- result: Done. 67 uu cells, arena_m1_fine 240 × 240 (passages ≥ 3 cells, owner-confirmed), chunked rendering, incremental time-sliced flow field, contact arc mining (up to 4 blocks, 120°, 3–4 against a flat wall) with a one-beam-per-block laser fan, per-instance shade and seam on blocks. Final stress at 67 uu all within 16.6 / 25 ms: S0 400 9.97 / 12.98, S2 400 11.16 / 14.93 (one 59.7 ms frame), chain 30 at 400 10.08 / 13.70, dig at 400 10.33 / 13.83. Build 0, 158/158. Open finding: console and shuttle meshes overlap rock at some landings (no clearance rule), owner to decide. Not seen by a human yet. Neighbour-aware block faces in the wishlist.
 
 ## Subtasks
 1. task-029-01-grid-render — cpp: grid not navigation-relevant, chunked instanced meshes, no distance fields, measure
