@@ -39,8 +39,8 @@ namespace RRJuiceTests
 	const TCHAR* const JuiceSparklePath = TEXT("/Game/RogueRigs/Blueprints/FX/BP_PickupSparkle.BP_PickupSparkle_C");
 	const TCHAR* const JuiceHealRingPath = TEXT("/Game/RogueRigs/Blueprints/FX/BP_HealRing.BP_HealRing_C");
 
-	/** BP_Kamikaze CoreLight peak (bp-kamikaze: intensity = flare progress x 60000). */
-	constexpr float JuiceCoreLightPeak = 60000.f;
+	/** BP_Kamikaze CoreLight peak (bp-kamikaze: intensity = flare progress x 10000 since task-028-02). */
+	constexpr float JuiceCoreLightPeak = 10000.f;
 
 	/** Open floor cell of the legacy arena_m1 layout (pickup motion and kamikaze fuse tests). */
 	const FIntPoint JuiceMinerCell(40, 40);
@@ -457,8 +457,8 @@ bool FRRJuiceKamikazeFlareTest::RunTest(const FString& Parameters)
 	TestEqual(TEXT("CoreLight off while chasing"), MaxBeforeFlare, 0.f);
 	TestTrue(TEXT("flare lasts about 0.5 s (30 frames)"), FlareFrames >= 29 && FlareFrames <= 31);
 	TestTrue(TEXT("CoreLight ramps up monotonically"), bMonotonic);
-	TestTrue(TEXT("CoreLight = flare progress x 60000"), bTracksProgress);
-	TestTrue(TEXT("CoreLight near its 60000 peak before the explosion"), PeakIntensity >= 0.9f * JuiceCoreLightPeak && PeakIntensity <= JuiceCoreLightPeak);
+	TestTrue(TEXT("CoreLight = flare progress x 10000"), bTracksProgress);
+	TestTrue(TEXT("CoreLight near its 10000 peak before the explosion"), PeakIntensity >= 0.9f * JuiceCoreLightPeak && PeakIntensity <= JuiceCoreLightPeak);
 	TestTrue(TEXT("CoreLight renders in game during the flare"), bShownInGame);
 	TestTrue(TEXT("explosion after the flare"), Kamikaze->GetExplosionQueuedTime() >= FlareStart + 0.5 - 1e-3);
 	TestEqual(TEXT("CoreLight back to 0 after the flare (OnFlareEnd)"), CoreLight->Intensity, 0.f);

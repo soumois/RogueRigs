@@ -636,8 +636,8 @@ bool FRRIntegrationLevelUpDiscTest::RunTest(const FString& Parameters)
 	TestFalse(TEXT("disc hidden at start"), IsShown());
 
 	// Chained level-ups: two levels in one call, then a third gained ThirdLevelFrame frames into the choice delay; each screen picked at once.
-	Progression->AddXP(17.f / GetXPGain(Progression));
-	TestEqual(TEXT("level 3 after 17 XP"), Progression->GetLevel(), 3);
+	Progression->AddXP((Progression->GetXPToNextLevelAt(1) + Progression->GetXPToNextLevelAt(2) + 2.f - Progression->GetXP()) / GetXPGain(Progression));
+	TestEqual(TEXT("level 3 after two levels of XP"), Progression->GetLevel(), 3);
 	FString Trace;
 	int32 LastStep = Step();
 	bool bLastShown = IsShown();

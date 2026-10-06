@@ -7,6 +7,7 @@
 
 #include "AbilitySystemComponent.h"
 #include "GAS/RRHealthAttributeSet.h"
+#include "GAS/RRPlayerAttributeSet.h"
 #include "Progression/RRLevelUpComponent.h"
 #include "Progression/RRProgressionComponent.h"
 #include "Tests/RRTestEventRecorder.h"
@@ -84,6 +85,23 @@ namespace RRLevelUpTests
 		return ASC ? ASC->GetNumericAttribute(Attribute) : -1.f;
 	}
 
+	/**
+	 * Raw XP that brings Progression exactly Levels levels up from its current XP, plus Extra XP carried, whatever the
+	 * XPCurve.csv values and the XPGain attribute (task-028-03: the tests no longer assume a 5 x level curve).
+	 */
+	float LevelUpTestRawXPFor(const URRProgressionComponent* Progression, int32 Levels, float Extra = 0.f)
+	{
+		float Needed = Extra - Progression->GetXP();
+		for (int32 Index = 0; Index < Levels; ++Index)
+		{
+			Needed += Progression->GetXPToNextLevelAt(Progression->GetLevel() + Index);
+		}
+		const UAbilitySystemComponent* ASC = Progression->GetOwner() ? Progression->GetOwner()->FindComponentByClass<UAbilitySystemComponent>() : nullptr;
+		const float Gain = ASC && ASC->HasAttributeSetForAttribute(URRPlayerAttributeSet::GetXPGainAttribute())
+			? ASC->GetNumericAttribute(URRPlayerAttributeSet::GetXPGainAttribute()) : 1.f;
+		return Needed / FMath::Max(Gain, KINDA_SMALL_NUMBER);
+	}
+
 	/** Frames of the 0.8 s delay at 1/60 s: 47 frames (0.783 s) are before it, 50 frames (0.833 s) after it. */
 	constexpr int32 FramesBeforeDelay = 47;
 	constexpr int32 FramesAfterDelay = 50;
@@ -111,7 +129,7 @@ bool FRRLevelUpHealTest::RunTest(const FString& Parameters)
 
 	// Wounded: 50 + 20 % of 100.
 	ASC->SetNumericAttributeBase(Health, 50.f);
-	S.Progression->AddXP(5.f);
+	S.Progression->AddXP(LevelUpTestRawXPFor(S.Progression, 1));
 	TestEqual(TEXT("level 2"), S.Progression->GetLevel(), 2);
 	TestEqual(TEXT("level-up heals 20 % of max: 50 -> 70"), MinerAttr(S.Miner, Health), 70.f, 1e-4f);
 	TestEqual(TEXT("one effect event"), Recorder->GetLevelUpEffects().Num(), 1);
@@ -125,14 +143,14 @@ bool FRRLevelUpHealTest::RunTest(const FString& Parameters)
 
 	// Near full: clamped to max.
 	ASC->SetNumericAttributeBase(Health, 95.f);
-	S.Progression->AddXP(10.f);
+	S.Progression->AddXP(LevelUpTestRawXPFor(S.Progression, 1));
 	TestEqual(TEXT("level 3"), S.Progression->GetLevel(), 3);
 	TestEqual(TEXT("95 + 20 clamped to 100"), MinerAttr(S.Miner, Health), 100.f, 1e-4f);
 	TestEqual(TEXT("max health unchanged"), MinerAttr(S.Miner, MaxHealth), 100.f, 1e-4f);
 
-	// Two levels in one call (15 + 20 XP): two heals.
+	// Two levels in one call: two heals.
 	ASC->SetNumericAttributeBase(Health, 40.f);
-	S.Progression->AddXP(35.f);
+	S.Progression->AddXP(LevelUpTestRawXPFor(S.Progression, 2));
 	TestEqual(TEXT("level 5"), S.Progression->GetLevel(), 5);
 	TestEqual(TEXT("two heals: 40 + 2 x 20"), MinerAttr(S.Miner, Health), 80.f, 1e-4f);
 	TestEqual(TEXT("four effect events"), Recorder->GetLevelUpEffects().Num(), 4);
@@ -154,7 +172,7 @@ bool FRRLevelUpDelayTest::RunTest(const FString& Parameters)
 	}
 
 	const float StartTime = TestWorld.Get()->GetTimeSeconds();
-	S.Progression->AddXP(5.f);
+	S.Progression->AddXP(LevelUpTestRawXPFor(S.Progression, 1));
 	TestFalse(TEXT("not paused at the level-up"), S.LevelUp->IsAwaitingChoice());
 
 	TickFrames(TestWorld, FramesBeforeDelay);
@@ -206,7 +224,7 @@ bool FRRLevelUpChainTest::RunTest(const FString& Parameters)
 	}
 
 	// Two levels at once: one delay, then two screens in sequence.
-	S.Progression->AddXP(17.f);
+	S.Progression->AddXP(LevelUpTestRawXPFor(S.Progression, 2, 2.f));
 	TestEqual(TEXT("level 3"), S.Progression->GetLevel(), 3);
 	TestEqual(TEXT("two choices owed"), S.LevelUp->GetPendingChoices(), 2);
 	TickFrames(TestWorld, FramesAfterDelay);
@@ -231,9 +249,9 @@ bool FRRLevelUpChainTest::RunTest(const FString& Parameters)
 	TestEqual(TEXT("still two offers"), Recorder->GetOfferCardCounts().Num(), 2);
 
 	// A level gained during the delay joins the running delay (no restart).
-	S.Progression->AddXP(15.f);
+	S.Progression->AddXP(LevelUpTestRawXPFor(S.Progression, 1));
 	TickFrames(TestWorld, 20);
-	S.Progression->AddXP(20.f);
+	S.Progression->AddXP(LevelUpTestRawXPFor(S.Progression, 1));
 	TestEqual(TEXT("level 5"), S.Progression->GetLevel(), 5);
 	TestEqual(TEXT("two more choices owed"), S.LevelUp->GetPendingChoices(), 2);
 	TickFrames(TestWorld, FramesAfterDelay - 20);
@@ -258,7 +276,7 @@ bool FRRLevelUpResumeTest::RunTest(const FString& Parameters)
 	TestFalse(TEXT("pick refused without a screen"), S.LevelUp->ChooseUpgrade(0));
 	TestFalse(TEXT("reroll refused without a screen"), S.LevelUp->RequestReroll());
 
-	S.Progression->AddXP(5.f);
+	S.Progression->AddXP(LevelUpTestRawXPFor(S.Progression, 1));
 	TickFrames(TestWorld, FramesAfterDelay);
 	if (!TestTrue(TEXT("screen open"), S.LevelUp->IsAwaitingChoice()))
 	{
@@ -278,7 +296,7 @@ bool FRRLevelUpResumeTest::RunTest(const FString& Parameters)
 	TestEqual(TEXT("still closed once"), Recorder->GetOfferClosedCount(), 1);
 
 	// After resuming, a new level runs the whole flow again.
-	S.Progression->AddXP(10.f);
+	S.Progression->AddXP(LevelUpTestRawXPFor(S.Progression, 1));
 	TestTrue(TEXT("new delay armed"), S.LevelUp->IsChoiceDelayActive());
 	TickFrames(TestWorld, FramesAfterDelay);
 	TestTrue(TEXT("new screen open"), S.LevelUp->IsAwaitingChoice());

@@ -458,14 +458,14 @@ bool FRRIntegrationXPLevelUpTest::RunTest(const FString& Parameters)
 	TestEqual(TEXT("no XP cube left"), CountXPPickups(TestWorld.Get()), 0);
 	TestEqual(TEXT("level 2"), Progression->GetLevel(), 2);
 	TestEqual(TEXT("0 XP carried"), Progression->GetXP(), 0.f);
-	TestEqual(TEXT("level 2 needs 10"), Progression->GetXPToNextLevel(), 10.f);
+	TestEqual(TEXT("level 2 needs the XPCurve.csv row 2"), Progression->GetXPToNextLevel(), Progression->GetXPToNextLevelAt(2));
 	if (TestEqual(TEXT("exactly one level-up event"), Recorder->GetLevelUps().Num(), 1))
 	{
 		TestEqual(TEXT("level-up to 2"), Recorder->GetLevelUps()[0], 2);
 	}
 	if (TestEqual(TEXT("one XP event per cube"), Recorder->GetXPChanges().Num(), ChaserCount * ChaserXPCubes))
 	{
-		TestEqual(TEXT("last XP event (0, 10, 2)"), Recorder->GetXPChanges().Last(), FVector(0.f, 10.f, 2.f));
+		TestEqual(TEXT("last XP event (0, need of level 2, 2)"), Recorder->GetXPChanges().Last(), FVector(0.f, Progression->GetXPToNextLevelAt(2), 2.f));
 	}
 	TestEqual(TEXT("miner untouched"), GetHealth(Miner), StartHealth);
 	return true;
