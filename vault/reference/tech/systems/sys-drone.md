@@ -10,7 +10,7 @@ kind: doc
 - main_classes (in `Source/RogueRigs/Drone/`):
   - `ARRDrone : AActor` (`RRDrone.h`, `Abstract`, subclassed in Blueprint): root `UStaticMeshComponent` `Mesh` with profile `NoCollision` (no overlap events, does not affect navigation); child `UStaticMeshComponent` `LaserMesh` (absolute transform, `NoCollision`, no shadow, hidden outside Dig). Both meshes, and the laser's red material, are set in Blueprint; `LaserMesh` expects a cylinder along local Z with a centered pivot (the engine cylinder).
   - Editable, orbit: `OrbitRadius` (150 uu), `OrbitPeriod` (2 s), `HoverHeight` (150 uu, also the dig height), `FollowInterpSpeed` (10, provisional; 0 = snap; also used in Dig).
-  - Editable, dig: `DigHoverDistance` (60 uu, provisional), `DigCancelDistanceCells` (1.5).
+  - Editable, dig: `DigHoverDistance` (60 uu, provisional), `DigCancelDistanceCells` (4.5 cells of 67 uu = the former 1.5 cells of 200 uu, task-029-04; arc digging in task-029-05 may replace it).
   - Editable, hack: `HackHoverDistance` (100 uu, provisional), `HackLinkOffset` ((0, 0, 50), provisional).
   - Editable, laser: `LaserDiameter` (8 uu), `LaserMeshBaseHeight` (100 uu), `LaserMeshBaseDiameter` (100 uu); the base sizes are the mesh's size at scale 1.
   - `ERRDroneState` (`uint8`, BlueprintType): `Orbit`, `Dig`, `Hack`.
