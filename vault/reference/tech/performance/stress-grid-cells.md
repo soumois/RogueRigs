@@ -57,6 +57,19 @@ Incremental flow field ([[sys-flow-field]], budget 0.3 ms). 67 uu, 100 robots, e
 - Openings: 2.7 ms per rebuild on every dig frame before, 0.015 ms avg now; dig game thread 7.77 → 6.33 ms avg (029-01 run, other hour).
 - Miner moving: the sliced goal rebuild holds 0.3 ms per frame instead of 2.2 ms spikes ~8 times a second; frames stay render bound (draw ≈ 9.2 ms), so frame averages move little. The field goal lags at most 13 frames (headless test).
 
+## Final check at 67 uu (task-029-07, 2026-10-05)
+Game defaults (67 uu, `arena_m1_fine`, no subdivide), all task-029 work in, editor `-game` 1920 × 1080, 5 s settle, 20 s measure, one launch per chain and dig run. Background: no game running; Steam, Epic launcher, Discord, Zoom, Brave idle; GPU 22 % from the desktop. ms avg / p99 / max; budget 16.6 avg, 25 p99 ([[task-029-fine-grid]]).
+
+| Run | 100 robots | 400 robots |
+|---|---|---|
+| S0 frame | 9.12 / 11.05 / 12.1 | 9.97 / 12.98 / 15.8 |
+| S2 frame | 9.57 / 11.74 / 12.8 | 11.16 / 14.93 / 59.7 |
+| Chain 30 frame (32 explosions, 1713 blocks; event avg / max) | 9.36 / 11.50 / 18.4 (10.8 / 17.7) | 10.08 / 13.70 / 19.4 (13.2 / 19.4) |
+| Dig 72 cells/s frame (1426 blocks; flow avg / max) | 9.72 / 12.11 / 13.8 (0.013 / 0.31) | 10.33 / 13.83 / 15.7 (0.013 / 0.31) |
+
+- All within budget. Against the 029-01 / 029-02 rows at 100 robots: S0 9.24 → 9.12, S2 9.39 → 9.57, chain 9.31 → 9.36, dig 9.19–9.59 → 9.72 (± 0.4 ms, noise and the arc dig and beam pool added since); against the task-023-01 67 uu row at 400: S0 10.47 → 9.97, S2 12.30 → 11.16.
+- S2 400 max 59.7 ms is one frame (p99 14.9); its cause was not captured (likely a GC, see [[sys-stress]] gotchas).
+
 ## Verdict
 - 200 uu: holds; the navigation fix would also help it (one destruction 0.25 ms here, 0.04–0.07 ms measured with the fix at the smaller sizes).
 - 100 uu: steady state and dig hold. Explosion chains break (52 ms frames) and are fixed by turning off navigation relevance on the grid components (≈ 1 h with test), back to the 200 uu level. Recommended.
@@ -70,3 +83,4 @@ Incremental flow field ([[sys-flow-field]], budget 0.3 ms). 67 uu, 100 robots, e
 - [[sys-grid]] — the instanced components whose costs are measured.
 - [[task-023-01-cell-stress]] — the task that produced this report.
 - [[sys-flow-field]] — the incremental field measured in the task-029-02 section.
+- [[task-029-fine-grid]] — the global task whose budget the final 67 uu check measures.

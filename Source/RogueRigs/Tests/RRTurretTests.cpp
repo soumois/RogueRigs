@@ -152,7 +152,7 @@ bool FRRTurretLauncherStatsTest::RunTest(const FString& Parameters)
 	TestFalse(TEXT("the launcher never auto-fires"), Launcher->GetAutoFireComponent()->IsFiring());
 
 	// Never automatic: standing still for 2 s places nothing.
-	TickFrames(TestWorld, 120);
+	RRTurretTests::TickFrames(TestWorld, 120);
 	int32 Turrets = 0;
 	for (TActorIterator<ARRTurret> It(TestWorld.Get()); It; ++It)
 	{
@@ -370,13 +370,13 @@ bool FRRTurretLineOfSightTest::RunTest(const FString& Parameters)
 
 	// Visible robot gone: nothing in sight, the turret holds fire.
 	Visible->Destroy();
-	TickFrames(TestWorld, 2);
+	RRTurretTests::TickFrames(TestWorld, 2);
 	TestNull(TEXT("no target without sight"), Turret->GetTarget());
 	TestFalse(TEXT("holds fire without a target"), Turret->GetAutoFireComponent()->IsFiring());
 
 	// Rock dug: the robot behind it comes into sight and is locked at the next search.
 	Grid->DestroyCell(RockCellWest, ERRTerrainDamageSource::Drone);
-	TickFrames(TestWorld, 10);
+	RRTurretTests::TickFrames(TestWorld, 10);
 	TestEqual(TEXT("retargets the robot now in sight"), Turret->GetTarget(), static_cast<ARREnemy*>(Hidden));
 	return true;
 }
@@ -426,7 +426,7 @@ bool FRRTurretFireAndLifetimeTest::RunTest(const FString& Parameters)
 	TestEqual(TEXT("keeps the locked robot"), Turret->GetTarget(), static_cast<ARREnemy*>(Near));
 
 	// 1 s of fire at 3.3 shots/s: shots at 0, 0.30, 0.61, 0.91 s.
-	TickFrames(TestWorld, 58);
+	RRTurretTests::TickFrames(TestWorld, 58);
 	TestEqual(TEXT("4 bullets in the first second"), Turret->GetShotCount(), 4);
 	bool bCheckedBullet = false;
 	for (TActorIterator<ARRTurretBullet> It(TestWorld.Get()); It; ++It)
@@ -448,9 +448,9 @@ bool FRRTurretFireAndLifetimeTest::RunTest(const FString& Parameters)
 	// Lifetime 10 s from placement (61 frames already ticked).
 	TWeakObjectPtr<ARRTurret> WeakTurret(Turret);
 	const int32 FramesTo99 = FMath::CeilToInt32(9.9f / FrameSeconds) - 61;
-	TickFrames(TestWorld, FramesTo99);
+	RRTurretTests::TickFrames(TestWorld, FramesTo99);
 	TestTrue(TEXT("turret still there at 9.9 s"), WeakTurret.IsValid() && !WeakTurret->IsActorBeingDestroyed());
-	TickFrames(TestWorld, 9);
+	RRTurretTests::TickFrames(TestWorld, 9);
 	TestTrue(TEXT("turret gone after 10 s"), !WeakTurret.IsValid() || WeakTurret->IsActorBeingDestroyed());
 	return true;
 }
