@@ -21,7 +21,7 @@ status: approved
   - the share of kamikazes per wave controls how long a chokepoint lasts.
 - telegraph: the core always pulses; within 150 uu of the miner it arms: the core pulses faster and grows for 0.5 s, then it explodes (provisional, owner 2026-10-02)
 - colors: dark gunmetal, pulsing orange core; red eyes, yellow logo plate ([[color-code]])
-- stats (provisional, owner 2026-10-02): hp 100 (about 3.3 × a chaser), speed 300 uu/s (slow and tough; owner 2026-10-02, was 15 and 520), explosion radius 312 uu (owner 2026-10-04: +25 %, was 250), character damage 30, terrain: every block in the radius, xp_value 1; knockback_resistance open
+- stats (provisional, owner 2026-10-02): hp 100 (about 3.3 × a chaser), speed 240 uu/s (owner 2026-10-06: 20 % slower, was 300; slow and tough; owner 2026-10-02, was 15 and 520), explosion radius 312 uu (owner 2026-10-04: +25 %, was 250), character damage 30, terrain: every block in the radius, xp_value 1; knockback_resistance open
 - spawn share (M1): 25 % of spawned robots
 - milestone: M1
 - references: `vault/assets/enemies-lineup.jpg`

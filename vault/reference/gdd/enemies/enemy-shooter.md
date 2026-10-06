@@ -19,7 +19,7 @@ status: approved
   - its shots stop on rock blocks ([[destruction-rules]]).
 - telegraph: a red targeting laser before each shot, shown only with line of sight.
 - colors: acid green; red eyes, yellow logo plate; red shots and laser ([[color-code]])
-- stats (provisional, owner 2026-10-04): hp 40, speed 300 uu/s, damage 12 per shot, one shot every 2 s, targeting laser 0.6 s before each shot, projectile 1200 uu/s (dodgeable), range 1200 uu (6 cells), preferred distance 800 uu (4 cells) ± 1 cell, xp_value 2, knockback_resistance 0.2.
+- stats (provisional, owner 2026-10-04): hp 40, speed 240 uu/s (owner 2026-10-06: 20 % slower, was 300), damage 12 per shot, one shot every 2 s, targeting laser 0.6 s before each shot, projectile 1200 uu/s (dodgeable), range 1200 uu (6 cells), preferred distance 800 uu (4 cells) ± 1 cell, xp_value 2, knockback_resistance 0.2.
 - fires only while it is on screen; its shots stop on rock without breaking it and never hit other robots (owner 2026-10-04).
 - milestone: M2, pulled into the current work (owner 2026-10-04)
 - references: `vault/assets/enemies-lineup.jpg`

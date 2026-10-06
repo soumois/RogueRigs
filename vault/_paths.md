@@ -303,6 +303,9 @@ task-029-07-final-check  reference/tasks/task-029-fine-grid/task-029-07-final-ch
 task-029-08-laser-fan  reference/tasks/task-029-fine-grid/task-029-08-laser-fan.md
 task-029-09-bp-fan-holes  reference/tasks/task-029-fine-grid/task-029-09-bp-fan-holes.md
 task-029-fine-grid  reference/tasks/task-029-fine-grid.md
+task-030-01-director-speeds  reference/tasks/task-030-pacing-feedback/task-030-01-director-speeds.md
+task-030-02-pacing-retune  reference/tasks/task-030-pacing-feedback/task-030-02-pacing-retune.md
+task-030-pacing-feedback  reference/tasks/task-030-pacing-feedback.md
 tasks-index  reference/tasks/tasks-index.md
 tech-index  reference/tech/tech-index.md
 terrain-index  reference/gdd/terrain/terrain-index.md
