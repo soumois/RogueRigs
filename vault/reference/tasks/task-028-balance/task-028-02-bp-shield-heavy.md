@@ -3,7 +3,7 @@ id: task-028-02-bp-shield-heavy
 description: "BP_ShieldChaser with a pale blue-white translucent shell that breaks, BP_Heavy ring at 400 uu, spawner weights, PIE."
 parent: task-028-balance
 kind: task
-status: in-progress
+status: done
 ---
 # Shield chaser and heavy visuals
 
@@ -15,11 +15,11 @@ status: in-progress
 - done_when: PIE check through the cheat property route with no log error; Blueprint docs updated; lint clean.
 - editor_state: open
 - token_ceiling: 130000
-- model: open
-- tokens: open
-- runs: open
+- model: sonnet
+- tokens: input 154, cache write 131557, cache read 6469476, output 45509
+- runs: 2
 - milestone: M2
-- result: open
+- result: BP_Kamikaze CoreLight × 10000; BP_ShieldChaser (duplicate of BP_Chaser reparented to ARRShieldChaser, ShieldShell + MI_GB_ShieldShell, pop and hide on OnShieldBroken); BP_EnemySpawner fifth entry BP_ShieldChaser_C weight 0; BP_Heavy ShockRing from telegraph at radius / 50 (8 at 400), MI_GB_HeavyTelegraph; BP_Miner spawns BP_HealRing on level-up; NS_DamageNumbers lifetime Direct 0.7; T_DamageDigitsOutline (3 px black outline) in M_DamageNumber, old T_DamageDigits deleted. PIE: ring scale 8, shield chasers after 60 s with visible shell, no BP runtime error. Placed spawner instance showed stale four-entry weights in the editor: checked in 028-03. Docs bp-shield-chaser (new) and 6 bp docs. Commits 15e4718, bdea20e, e27b07d, 72eab0c.
 
 ## Relations
 - [[task-028-balance]] — parent global task.

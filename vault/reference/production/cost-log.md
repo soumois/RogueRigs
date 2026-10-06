@@ -76,6 +76,7 @@ kind: note
 | [[task-027-02-bp-juice]] | sonnet | 2 | 0k | 129k | 5708k | 46k |
 | [[task-027-03-tests-integration]] | opus | 2 | 0k | 226k | 11364k | 76k |
 | [[task-028-01-heavy-shield-values]] | opus | 2 | 0k | 172k | 6777k | 58k |
+| [[task-028-02-bp-shield-heavy]] | sonnet | 2 | 0k | 132k | 6469k | 46k |
 
 ## Totals
 | Scope | Input | Cache write | Cache read | Output |

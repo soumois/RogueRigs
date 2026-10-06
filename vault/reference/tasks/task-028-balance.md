@@ -13,7 +13,7 @@ status: in-progress
 - gdd_check: Read [[enemy-heavy]], [[enemy-chaser]], [[upgrades]], [[rarities]], [[xp-level-up]], [[color-code]]. Analysis in [[drgs-analysis]]. The owner launched all lots and delegated provisional values (2026-10-05); decisions written into the GDD before planning; the grid-size lot waits for the owner after the stress report.
 - confirmed_by_owner: yes (2026-10-05, all lots launched by the owner)
 - milestone: M2
-- next_step: task-028-02-bp-shield-heavy
+- next_step: task-028-03-xp-pacing
 - result: open
 
 ## Subtasks
