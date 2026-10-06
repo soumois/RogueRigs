@@ -3,7 +3,7 @@ id: task-026-pressure
 description: "Global task: wave director with calm start, rising multi-side flow, lull, announced hordes; damage vignette; event icons on the alert bar; light halo test."
 parent: tasks-index
 kind: task
-status: todo
+status: in-progress
 ---
 # Pressure and rhythm
 
@@ -13,10 +13,11 @@ status: todo
 - gdd_check: Read [[difficulty]], [[level-flow]], [[enemies-index]], [[sys-spawner]], [[sys-difficulty]]. Values provisional (owner 2026-10-05): see subtasks; alive cap 100 → 150 (perf ceiling about 1500). Analysis in [[drgs-analysis]]. The owner launched all lots and delegated provisional values (2026-10-05); decisions written into the GDD before planning; the grid-size lot waits for the owner after the stress report.
 - confirmed_by_owner: yes (2026-10-05, all lots launched by the owner)
 - milestone: M2
-- next_step: task-026-01-wave-director
+- next_step: task-026-00-landing-clearance
 - result: open
 
 ## Subtasks
+0. task-026-00-landing-clearance — cpp: console and shuttle land on a fully open footprint (owner, after handover-2026-10-06)
 1. task-026-01-wave-director — cpp: wave director phases, homogeneous packs, hordes, tests
 2. task-026-02-feedback-events — cpp: vignette, horde banner and alert-bar event events, tests
 3. task-026-03-bp-pressure — bp: banner, vignette, alert icons, light halo test, PIE
@@ -24,6 +25,7 @@ status: todo
 
 ## Relations
 - [[tasks-index]] — parent index.
+- [[task-026-00-landing-clearance]] — step 0, cpp, added after task-029.
 - [[task-026-01-wave-director]] — step 1, cpp.
 - [[task-026-02-feedback-events]] — step 2, cpp.
 - [[task-026-03-bp-pressure]] — step 3, bp.
