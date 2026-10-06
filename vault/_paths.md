@@ -308,6 +308,9 @@ task-031-01-remove-dummy  reference/tasks/task-031-directional-spawn/task-031-01
 task-031-02-spawn-speed-shooter  reference/tasks/task-031-directional-spawn/task-031-02-spawn-speed-shooter.md
 task-031-03-pacing-retune  reference/tasks/task-031-directional-spawn/task-031-03-pacing-retune.md
 task-031-directional-spawn  reference/tasks/task-031-directional-spawn.md
+task-032-01-cpp-fixes  reference/tasks/task-032-third-test/task-032-01-cpp-fixes.md
+task-032-02-bp-fixes  reference/tasks/task-032-third-test/task-032-02-bp-fixes.md
+task-032-third-test  reference/tasks/task-032-third-test.md
 tasks-index  reference/tasks/tasks-index.md
 tech-index  reference/tech/tech-index.md
 terrain-index  reference/gdd/terrain/terrain-index.md

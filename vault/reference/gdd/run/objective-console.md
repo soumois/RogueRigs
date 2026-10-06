@@ -22,6 +22,8 @@ status: approved
 - Lore (provisional): the Rigs' ship detects an entry point into the claim's network and drops the console there as an access point ([[lore]]).
 - Milestone: M1.
 
+- Locator (owner 2026-10-06 third test): while the console is off screen, an arrow on the screen edge points to it; the same arrow points to the shuttle during extraction ([[extraction]]).
+
 ## Relations
 - [[run-index]] — parent index.
 - [[drone]] — the drone's hack state.

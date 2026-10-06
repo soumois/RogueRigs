@@ -29,6 +29,8 @@ status: approved
 - vfx_sfx: white + teal + rust body, white-gold shots ([[color-code]]); sound open.
 - milestone: M2, pulled into the current work (owner 2026-10-05)
 
+- Size (owner 2026-10-06 third test): the placed turret is drawn 50 % larger; it was barely visible.
+
 ## Relations
 - [[weapons-index]] — parent index.
 - [[sys-weapons]] — attribute copy at placement.

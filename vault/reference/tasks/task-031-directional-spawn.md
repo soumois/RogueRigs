@@ -25,4 +25,5 @@ status: in-progress
 - [[tasks-index]] — parent index.
 - [[task-031-01-remove-dummy]] — step 1, cpp.
 - [[task-031-02-spawn-speed-shooter]] — step 2, cpp.
-- [[task-031-03-pacing-retune]] — step 3, cpp.
+- [[task-031-03-pacing-retune]] — step 3, cpp; runs after task-032.
+- [[task-032-third-test]] — owner third test, runs before 031-03.

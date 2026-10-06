@@ -22,6 +22,9 @@ Threat never pauses so that a paused alert bar cannot be used to farm XP.
 - Threat raises enemy health and attack power and the spawn rate.
 - A threat increase affects only robots spawned afterwards; robots already in the arena keep their stats.
 
+## Overtime (owner 2026-10-06 third test, provisional)
+- A level must last 3–4 min. From 3:30 of level time the level enters overtime: a horde every 30 s, and the wave interval halves at each overtime minute, so staying in the level soon becomes untenable.
+
 ## Open values
 - Alert and threat gain per second and per kill.
 - Health and attack power bonus per (run level, threat) step.

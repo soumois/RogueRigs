@@ -15,6 +15,8 @@ applies_to: art, vfx, level-design, image prompts
 - Rarity colors appear only in the interface, never on an object in the arena.
 - The shooter must be spotted in under a second.
 
+- UI language (owner 2026-10-06 third test): every on-screen text is in English for now (HUD, cards, weapon names and descriptions, banners, end screens).
+
 ## Relations
 - [[art-audio-index]] — parent index.
 - [[color-code]] — the current palette.
