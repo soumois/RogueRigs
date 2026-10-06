@@ -170,9 +170,11 @@ bool FRRDamageNumberDisplayFromAssetTest::RunTest(const FString& Parameters)
 	}
 	AddInfo(FString::Printf(TEXT("DAMAGENUMBERS display: lifetime %.3f s, rise %s, from asset %d"), Numbers->GetDisplayLifetime(),
 		*Numbers->GetRiseVelocity().ToString(), Numbers->IsDisplayReadFromAsset() ? 1 : 0));
-	TestTrue(TEXT("lifetime read from NS_DamageNumbers"), Numbers->IsDisplayReadFromAsset());
+	// NS_DamageNumbers keeps no direct Lifetime constant (only a stale random-range Max of 1.75 s) and rises without a velocity
+	// constant: the config values stand for it (bp-damage-numbers: lifetime 0.7 s, rise 85.7 uu/s) until the asset exposes them.
+	TestFalse(TEXT("stale Lifetime Min / Max of NS_DamageNumbers ignored"), Numbers->IsDisplayReadFromAsset() && Numbers->GetDisplayLifetime() > 1.f);
 	TestEqual(TEXT("NS_DamageNumbers lifetime 0.7 s (bp-damage-numbers)"), Numbers->GetDisplayLifetime(), 0.7f, 0.01f);
-	TestTrue(TEXT("numbers rise (positive Z velocity)"), Numbers->GetRiseVelocity().Z > 0.0);
+	TestEqual(TEXT("rise 85.7 uu/s up (bp-damage-numbers)"), static_cast<float>(Numbers->GetRiseVelocity().Z), 85.7f, 0.1f);
 	return true;
 }
 

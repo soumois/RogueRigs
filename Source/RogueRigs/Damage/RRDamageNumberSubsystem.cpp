@@ -302,9 +302,9 @@ FVector URRDamageNumberSubsystem::ComputeStackOffset(const FVector& Location, fl
 
 bool URRDamageNumberSubsystem::ReadDisplayFromSystem(const UNiagaraSystem& System, float& OutLifetime, FVector& OutVelocity)
 {
-	// Initialize Particle exposes Lifetime (direct) or Lifetime Min / Max (random range): the longest one counts.
+	// Only the direct Lifetime constant counts: Lifetime Min / Max stay stored when the random mode is unused (NS_DamageNumbers
+	// keeps a stale 1.75 s Max), and a Particles.Velocity constant only when non-zero (the rise may be done in Particle Update).
 	static const FString LifetimeSuffix(TEXT(".InitializeParticle.Lifetime"));
-	static const FString LifetimeMaxSuffix(TEXT(".InitializeParticle.Lifetime Max"));
 	static const FString VelocitySuffix(TEXT(".Particles.Velocity"));
 	bool bFoundLifetime = false;
 	for (const FNiagaraEmitterHandle& Handle : System.GetEmitterHandles())
@@ -319,7 +319,7 @@ bool URRDamageNumberSubsystem::ReadDisplayFromSystem(const UNiagaraSystem& Syste
 		for (const FNiagaraVariableWithOffset& Variable : Store.ReadParameterVariables())
 		{
 			const FString Name = Variable.GetName().ToString();
-			if (Variable.GetType() == FNiagaraTypeDefinition::GetFloatDef() && (Name.EndsWith(LifetimeSuffix) || Name.EndsWith(LifetimeMaxSuffix)))
+			if (Variable.GetType() == FNiagaraTypeDefinition::GetFloatDef() && Name.EndsWith(LifetimeSuffix))
 			{
 				const float Lifetime = Store.GetParameterValue<float>(Variable);
 				OutLifetime = bFoundLifetime ? FMath::Max(OutLifetime, Lifetime) : Lifetime;
@@ -327,7 +327,8 @@ bool URRDamageNumberSubsystem::ReadDisplayFromSystem(const UNiagaraSystem& Syste
 			}
 			else if (Name.EndsWith(VelocitySuffix) && Variable.GetType() == FNiagaraTypeDefinition::GetVec3Def())
 			{
-				OutVelocity = FVector(Store.GetParameterValue<FVector3f>(Variable));
+				const FVector Velocity(Store.GetParameterValue<FVector3f>(Variable));
+				OutVelocity = Velocity.IsNearlyZero() ? OutVelocity : Velocity;
 			}
 		}
 		if (bFoundLifetime)

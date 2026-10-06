@@ -174,7 +174,16 @@ namespace RRFineGridIntegrationTests
 	/** Block cells under the components of Actor (2D bounds of every component, visual included: the Blueprints have no collision), logged with Label. */
 	int32 CountBlocksUnderActor(FAutomationTestBase& Test, const ARRArenaGrid* Grid, const AActor* Actor, const TCHAR* Label)
 	{
-		const FBox Box = Actor->GetComponentsBoundingBox(/*bNonColliding*/ true);
+		// The body mesh only (inherited component Mesh): floor decals of the Blueprint (task-027-02 shuttle chevrons, console
+		// HackRing) lie on the floor around it and are not part of the landing footprint.
+		const UStaticMeshComponent* Body = nullptr;
+		TArray<UStaticMeshComponent*> Meshes;
+		Actor->GetComponents(Meshes);
+		for (const UStaticMeshComponent* Candidate : Meshes)
+		{
+			Body = Candidate && Candidate->GetName() == TEXT("Mesh") ? Candidate : Body;
+		}
+		const FBox Box = Body ? Body->Bounds.GetBox() : Actor->GetComponentsBoundingBox(/*bNonColliding*/ true);
 		if (!Box.IsValid)
 		{
 			Test.AddInfo(FString::Printf(TEXT("%s: no component bounds"), Label));

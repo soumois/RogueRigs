@@ -168,9 +168,9 @@ public:
 	int32 GetDisplayedCount() const { return Displayed.Num(); }
 
 	/**
-	 * Reads the particle lifetime (the longest InitializeParticle "Lifetime" or "Lifetime Max" constant of an emitter spawn script) and the particle
-	 * velocity (a Particles.Velocity constant of an emitter spawn script) from the rapid iteration parameters of System.
-	 * False when no lifetime is found; OutVelocity is left unchanged when no velocity constant exists.
+	 * Reads the particle lifetime (the direct InitializeParticle Lifetime constant of an emitter spawn script; Min / Max are ignored) and the particle
+	 * velocity (a non-zero Particles.Velocity constant of an emitter spawn script) from the rapid iteration parameters of System.
+	 * False when no lifetime is found; OutVelocity is left unchanged when no non-zero velocity constant exists.
 	 */
 	static bool ReadDisplayFromSystem(const UNiagaraSystem& System, float& OutLifetime, FVector& OutVelocity);
 
