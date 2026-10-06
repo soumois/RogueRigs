@@ -20,6 +20,13 @@ namespace RRWaveDirectorDefaults
 		return Result;
 	}
 
+	FRRDirectorPackMember Behind(TSubclassOf<ARREnemy> RobotClass, int32 CountMin, int32 CountMax)
+	{
+		FRRDirectorPackMember Result = Member(RobotClass, CountMin, CountMax);
+		Result.bBehind = true;
+		return Result;
+	}
+
 	FRRDirectorPackWeight Weight(FName PackType, float Value)
 	{
 		FRRDirectorPackWeight Result;
@@ -39,61 +46,66 @@ FRRWaveDirectorConfig FRRWaveDirectorConfig::MakeDefault()
 	using namespace RRWaveDirectorDefaults;
 	FRRWaveDirectorConfig Config;
 
-	// Pack types: one type per pack; kamikazes ride with the chasers; heavies lead a chaser pack.
+	// Pack types: no shooter-only pack; 1-2 shooters ride behind the front of every flow pack (about 10 % of the robots);
+	// kamikazes ride with the chasers; heavies lead a chaser pack.
 	FRRDirectorPackType& FirstChasers = Config.PackTypes.AddDefaulted_GetRef();
 	FirstChasers.Name = TEXT("FirstChasers");
-	FirstChasers.Members = { Member(ARRChaser::StaticClass(), 8, 10) };
+	FirstChasers.Members = { Member(ARRChaser::StaticClass(), 6, 8) };
 	FRRDirectorPackType& Chasers = Config.PackTypes.AddDefaulted_GetRef();
 	Chasers.Name = TEXT("Chasers");
-	Chasers.Members = { Member(ARRChaser::StaticClass(), 8, 15), Member(ARRKamikaze::StaticClass(), 2, 3) };
-	FRRDirectorPackType& Shooters = Config.PackTypes.AddDefaulted_GetRef();
-	Shooters.Name = TEXT("Shooters");
-	Shooters.Members = { Member(ARRShooter::StaticClass(), 3, 5) };
+	Chasers.Members = { Member(ARRChaser::StaticClass(), 8, 14), Member(ARRKamikaze::StaticClass(), 2, 3), Behind(ARRShooter::StaticClass(), 1, 2) };
 	FRRDirectorPackType& Heavies = Config.PackTypes.AddDefaulted_GetRef();
 	Heavies.Name = TEXT("Heavies");
-	Heavies.Members = { Member(ARRHeavy::StaticClass(), 2, 3, /*bFront*/ true), Member(ARRChaser::StaticClass(), 8, 12) };
+	Heavies.Members = { Member(ARRHeavy::StaticClass(), 2, 3, /*bFront*/ true), Member(ARRChaser::StaticClass(), 8, 12), Behind(ARRShooter::StaticClass(), 1, 2) };
 	// Chasers after 1:00 (enemy-chaser shield variant): a quarter of the pack chasers carry a shield (2-4 of 8-16).
 	FRRDirectorPackType& ShieldChasers = Config.PackTypes.AddDefaulted_GetRef();
 	ShieldChasers.Name = TEXT("ShieldChasers");
-	ShieldChasers.Members = { Member(ARRChaser::StaticClass(), 6, 12), Member(ARRShieldChaser::StaticClass(), 2, 4), Member(ARRKamikaze::StaticClass(), 2, 3) };
+	ShieldChasers.Members = { Member(ARRChaser::StaticClass(), 6, 12), Member(ARRShieldChaser::StaticClass(), 2, 4), Member(ARRKamikaze::StaticClass(), 2, 3),
+		Behind(ARRShooter::StaticClass(), 1, 2) };
 
-	// Phases: 0-10 s calm; 10-22 s a lone chaser every 3 s; 22 s first pack from one side; from 28 s waves of 2-3 packs from
-	// distinct sides, the interval shrinking from 6 s to 3 s over 3 min; from 60 s the chaser packs carry shield chasers.
-	FRRDirectorPhase& Calm = Config.Phases.AddDefaulted_GetRef();
-	Calm.Name = TEXT("Calm");
-	Calm.StartTime = 0.f;
+	// Phases (no calm): from 1 s a lone chaser every 2 s; 15 s first pack from one side; from 21 s waves of 1-2 packs from
+	// distinct sides, the interval shrinking from 6 s to 3.5 s over 3 min 30; from 60 s the chaser packs carry shield chasers;
+	// from 90 s waves of 2-3 packs. The later phases only change the mix or the sides: they keep the wave timer and the ramp.
 	FRRDirectorPhase& Isolated = Config.Phases.AddDefaulted_GetRef();
 	Isolated.Name = TEXT("Isolated");
-	Isolated.StartTime = 10.f;
-	Isolated.SingleInterval = 3.f;
+	Isolated.StartTime = 1.f;
+	Isolated.SingleInterval = 2.f;
 	Isolated.SingleClass = ARRChaser::StaticClass();
 	FRRDirectorPhase& FirstPack = Config.Phases.AddDefaulted_GetRef();
 	FirstPack.Name = TEXT("FirstPack");
-	FirstPack.StartTime = 22.f;
+	FirstPack.StartTime = 15.f;
 	FirstPack.bWaveOnStart = true;
 	FirstPack.PackWeights = { Weight(TEXT("FirstChasers"), 1.f) };
 	FRRDirectorPhase& Flow = Config.Phases.AddDefaulted_GetRef();
 	Flow.Name = TEXT("Flow");
-	Flow.StartTime = 28.f;
+	Flow.StartTime = 21.f;
 	Flow.bWaveOnStart = true;
 	Flow.WaveIntervalStart = 6.f;
-	Flow.WaveIntervalEnd = 3.f;
-	Flow.WaveIntervalRampSeconds = 180.f;
-	Flow.SidesMin = 2;
-	Flow.SidesMax = 3;
-	Flow.PackWeights = { Weight(TEXT("Chasers"), 60.f), Weight(TEXT("Shooters"), 25.f), Weight(TEXT("Heavies"), 15.f) };
+	Flow.WaveIntervalEnd = 3.5f;
+	Flow.WaveIntervalRampSeconds = 210.f;
+	Flow.SidesMin = 1;
+	Flow.SidesMax = 2;
+	Flow.PackWeights = { Weight(TEXT("Chasers"), 85.f), Weight(TEXT("Heavies"), 15.f) };
 
-	// From 1:00 the same flow, its chaser packs mixed with shield chasers; the wave timer and the interval ramp carry on.
 	const FRRDirectorPhase FlowCopy = Flow;
-	FRRDirectorPhase& FlowShields = Config.Phases.Add_GetRef(FlowCopy);
-	FlowShields.Name = TEXT("FlowShields");
-	FlowShields.StartTime = 60.f;
-	FlowShields.bWaveOnStart = false;
-	FlowShields.bKeepWaveTimer = true;
-	const float FlowSecondsAtShields = FlowShields.StartTime - FlowCopy.StartTime;
-	FlowShields.WaveIntervalStart = FRRWaveDirector::GetWaveInterval(FlowCopy, FlowSecondsAtShields);
-	FlowShields.WaveIntervalRampSeconds = FMath::Max(FlowCopy.WaveIntervalRampSeconds - FlowSecondsAtShields, 0.f);
-	FlowShields.PackWeights = { Weight(TEXT("ShieldChasers"), 60.f), Weight(TEXT("Shooters"), 25.f), Weight(TEXT("Heavies"), 15.f) };
+	auto ContinueFlow = [&Config, &FlowCopy](FName Name, float StartTime) -> FRRDirectorPhase&
+	{
+		FRRDirectorPhase& Phase = Config.Phases.Add_GetRef(FlowCopy);
+		Phase.Name = Name;
+		Phase.StartTime = StartTime;
+		Phase.bWaveOnStart = false;
+		Phase.bKeepWaveTimer = true;
+		const float FlowSeconds = StartTime - FlowCopy.StartTime;
+		Phase.WaveIntervalStart = FRRWaveDirector::GetWaveInterval(FlowCopy, FlowSeconds);
+		Phase.WaveIntervalRampSeconds = FMath::Max(FlowCopy.WaveIntervalRampSeconds - FlowSeconds, 0.f);
+		return Phase;
+	};
+	FRRDirectorPhase& FlowShields = ContinueFlow(TEXT("FlowShields"), 60.f);
+	FlowShields.PackWeights = { Weight(TEXT("ShieldChasers"), 85.f), Weight(TEXT("Heavies"), 15.f) };
+	FRRDirectorPhase& FlowWide = ContinueFlow(TEXT("FlowWide"), 90.f);
+	FlowWide.SidesMin = 2;
+	FlowWide.SidesMax = 3;
+	FlowWide.PackWeights = { Weight(TEXT("ShieldChasers"), 85.f), Weight(TEXT("Heavies"), 15.f) };
 
 	// Hordes: fronts at 1:35 and 2:55, heavies in front, kamikazes among them, a carpet of chasers behind.
 	for (const float FrontTime : { 95.f, 175.f })

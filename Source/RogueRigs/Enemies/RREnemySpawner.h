@@ -313,7 +313,7 @@ protected:
 
 	/**
 	 * Draws the robots of Members (resolved classes) into OutFront and OutBack, within Room (per resolved class free slots, updated).
-	 * OutBack is shuffled so escorts mix with the main group.
+	 * OutBack is shuffled so escorts mix with the main group; bBehind members are then inserted at random in its back half.
 	 */
 	void DrawMembers(const TArray<FRRDirectorPackMember>& Members, TMap<UClass*, int32>& Room, TArray<TSubclassOf<ARREnemy>>& OutFront,
 		TArray<TSubclassOf<ARREnemy>>& OutBack);

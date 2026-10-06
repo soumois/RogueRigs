@@ -1,4 +1,4 @@
-// Rogue Rigs - automation tests of the spawner wave director (RogueRigs.Spawner.Director*): phase times, alert trigger, pack homogeneity with tough robots in front, horde front size and side, alive and per-class caps.
+// Rogue Rigs - automation tests of the spawner wave director (RogueRigs.Spawner.Director*): phase times, shooter share over a run, alert trigger, pack composition with tough robots in front and shooters behind, horde front size and side, alive and per-class caps.
 
 #include "CoreMinimal.h"
 #include "Misc/AutomationTest.h"
@@ -165,20 +165,20 @@ bool FRRSpawnerDirectorPhaseTimesTest::RunTest(const FString& Parameters)
 	const FRRWaveDirectorConfig Config = FRRWaveDirectorConfig::MakeDefault();
 	const int32 FirstChasers = Config.FindPackType(TEXT("FirstChasers"));
 	const int32 Chasers = Config.FindPackType(TEXT("Chasers"));
-	const int32 Shooters = Config.FindPackType(TEXT("Shooters"));
 	const int32 Heavies = Config.FindPackType(TEXT("Heavies"));
 	const int32 ShieldChasers = Config.FindPackType(TEXT("ShieldChasers"));
-	if (!TestTrue(TEXT("default pack types"), FirstChasers != INDEX_NONE && Chasers != INDEX_NONE && Shooters != INDEX_NONE && Heavies != INDEX_NONE && ShieldChasers != INDEX_NONE)
+	if (!TestTrue(TEXT("default pack types"), FirstChasers != INDEX_NONE && Chasers != INDEX_NONE && Heavies != INDEX_NONE && ShieldChasers != INDEX_NONE)
 		|| !TestEqual(TEXT("two default hordes"), Config.Hordes.Num(), 2))
 	{
 		return false;
 	}
+	TestEqual(TEXT("no shooter-only pack type"), Config.FindPackType(TEXT("Shooters")), INDEX_NONE);
 	TestEqual(TEXT("horde trigger is run time"), Config.HordeTrigger, ERRHordeTrigger::RunTime);
 	const TArray<FTimedAction> Actions = RunDirectorSchedule(Config, 240.f, [](float) { return 0.f; }, 20261005);
 
-	// Phases at 0, 10, 22, 28, 60 s (FlowShields keeps the wave timer).
+	// Phases at 1, 15, 21, 60, 90 s (no calm; FlowShields and FlowWide keep the wave timer).
 	const TArray<float> Phases = DirectorTimesOf(Actions, EType::PhaseChanged);
-	const float ExpectedPhases[] = { 0.f, 10.f, 22.f, 28.f, 60.f };
+	const float ExpectedPhases[] = { 1.f, 15.f, 21.f, 60.f, 90.f };
 	if (TestEqual(TEXT("5 phase changes"), Phases.Num(), 5))
 	{
 		for (int32 Index = 0; Index < 5; ++Index)
@@ -187,18 +187,19 @@ bool FRRSpawnerDirectorPhaseTimesTest::RunTest(const FString& Parameters)
 		}
 	}
 
-	// 0-10 s: nothing. 10-22 s: a lone chaser at 10, 13, 16, 19 s.
+	// From 1 s: a lone chaser every 2 s (1, 3 ... 13 s) until the first pack at 15 s.
 	const TArray<float> Singles = DirectorTimesOf(Actions, EType::SpawnSingle);
 	const TArray<float> Waves = DirectorTimesOf(Actions, EType::SpawnWave);
-	TestTrue(TEXT("nothing spawns before 10 s"), (Singles.IsEmpty() || Singles[0] >= 10.f - TimeTolerance) && (Waves.IsEmpty() || Waves[0] >= 10.f));
-	const float ExpectedSingles[] = { 10.f, 13.f, 16.f, 19.f };
-	if (TestEqual(TEXT("4 lone robots"), Singles.Num(), 4))
+	const float ExpectedSingles[] = { 1.f, 3.f, 5.f, 7.f, 9.f, 11.f, 13.f };
+	if (TestEqual(TEXT("7 lone robots"), Singles.Num(), 7))
 	{
-		for (int32 Index = 0; Index < 4; ++Index)
+		for (int32 Index = 0; Index < 7; ++Index)
 		{
-			TestTrue(*FString::Printf(TEXT("lone robot %d at %.0f s (%.3f)"), Index, ExpectedSingles[Index], Singles[Index]), FMath::Abs(Singles[Index] - ExpectedSingles[Index]) <= TimeTolerance);
+			// Three frames: the 1/60 s steps summed in float reach a 2 s interval one frame late now and then.
+			TestTrue(*FString::Printf(TEXT("lone robot %d at %.0f s (%.3f)"), Index, ExpectedSingles[Index], Singles[Index]), FMath::Abs(Singles[Index] - ExpectedSingles[Index]) <= 3.f / 60.f);
 		}
 	}
+	TestTrue(TEXT("no wave before the first pack"), Waves.IsEmpty() || Waves[0] >= 15.f - TimeTolerance);
 	for (const FTimedAction& Timed : Actions)
 	{
 		if (Timed.Action.Type == EType::SpawnSingle)
@@ -239,15 +240,20 @@ bool FRRSpawnerDirectorPhaseTimesTest::RunTest(const FString& Parameters)
 		}
 	}
 
-	// Waves: first pack at 22 s (one pack of 8-10 chasers), then 2-3 packs per wave from 28 s, interval 6 s shrinking to 3 s.
+	// Waves: first pack at 15 s (one pack of 6-8 chasers), flow from 21 s: 1-2 packs per wave until 1:30, 2-3 after, the
+	// interval 6 s shrinking to 3.5 s over 210 s.
+	constexpr float FlowStart = 21.f;
+	constexpr float WideStart = 90.f;
 	if (!TestTrue(TEXT("waves"), Waves.Num() > 20))
 	{
 		return false;
 	}
-	TestTrue(*FString::Printf(TEXT("first wave at 22 s (%.3f)"), Waves[0]), FMath::Abs(Waves[0] - 22.f) <= TimeTolerance);
-	TestTrue(*FString::Printf(TEXT("flow starts at 28 s (%.3f)"), Waves[1]), FMath::Abs(Waves[1] - 28.f) <= TimeTolerance);
+	TestTrue(*FString::Printf(TEXT("first wave at 15 s (%.3f)"), Waves[0]), FMath::Abs(Waves[0] - 15.f) <= TimeTolerance);
+	TestTrue(*FString::Printf(TEXT("flow starts at 21 s (%.3f)"), Waves[1]), FMath::Abs(Waves[1] - FlowStart) <= TimeTolerance);
 	TestTrue(*FString::Printf(TEXT("second flow wave 6 s later (%.3f)"), Waves[2] - Waves[1]), FMath::Abs(Waves[2] - Waves[1] - 6.f) <= 0.1f);
 	TSet<int32> TypesSeen;
+	TSet<int32> PackCountsBeforeWide;
+	TSet<int32> PackCountsAfterWide;
 	int32 WaveIndex = 0;
 	for (const FTimedAction& Timed : Actions)
 	{
@@ -255,16 +261,20 @@ bool FRRSpawnerDirectorPhaseTimesTest::RunTest(const FString& Parameters)
 		{
 			continue;
 		}
+		const int32 PackCount = Timed.Action.PackTypes.Num();
 		if (WaveIndex == 0)
 		{
-			TestTrue(TEXT("first wave is one FirstChasers pack"), Timed.Action.PackTypes.Num() == 1 && Timed.Action.PackTypes[0] == FirstChasers);
+			TestTrue(TEXT("first wave is one FirstChasers pack"), PackCount == 1 && Timed.Action.PackTypes[0] == FirstChasers);
 		}
 		else
 		{
-			TestTrue(*FString::Printf(TEXT("wave at %.2f has 2-3 packs (%d)"), Timed.Time, Timed.Action.PackTypes.Num()), Timed.Action.PackTypes.Num() >= 2 && Timed.Action.PackTypes.Num() <= 3);
+			const bool bWide = Timed.Time >= WideStart - TimeTolerance;
+			(bWide ? PackCountsAfterWide : PackCountsBeforeWide).Add(PackCount);
+			TestTrue(*FString::Printf(TEXT("wave at %.2f has %s packs (%d)"), Timed.Time, bWide ? TEXT("2-3") : TEXT("1-2"), PackCount),
+				bWide ? PackCount >= 2 && PackCount <= 3 : PackCount >= 1 && PackCount <= 2);
 			for (const int32 Type : Timed.Action.PackTypes)
 			{
-				TestTrue(TEXT("flow packs are Chasers or ShieldChasers, Shooters or Heavies"), Type == Chasers || Type == ShieldChasers || Type == Shooters || Type == Heavies);
+				TestTrue(TEXT("flow packs are Chasers or ShieldChasers, or Heavies"), Type == Chasers || Type == ShieldChasers || Type == Heavies);
 				if (Type == Chasers || Type == ShieldChasers)
 				{
 					TestEqual(*FString::Printf(TEXT("chaser pack at %.2f s is %s"), Timed.Time, Timed.Time < 60.f ? TEXT("Chasers before 1:00") : TEXT("ShieldChasers from 1:00")),
@@ -275,7 +285,9 @@ bool FRRSpawnerDirectorPhaseTimesTest::RunTest(const FString& Parameters)
 		}
 		++WaveIndex;
 	}
-	TestEqual(TEXT("the flow draws all four pack types (Chasers, ShieldChasers, Shooters, Heavies)"), TypesSeen.Num(), 4);
+	TestEqual(TEXT("the flow draws all three pack types (Chasers, ShieldChasers, Heavies)"), TypesSeen.Num(), 3);
+	TestTrue(TEXT("waves of 1 and of 2 packs before 1:30"), PackCountsBeforeWide.Contains(1) && PackCountsBeforeWide.Contains(2));
+	TestTrue(TEXT("waves of 2 and of 3 packs after 1:30"), PackCountsAfterWide.Contains(2) && PackCountsAfterWide.Contains(3));
 	FString GapLog;
 	float PreviousGap = TNumericLimits<float>::Max();
 	for (int32 Index = 2; Index < Waves.Num(); ++Index)
@@ -291,15 +303,97 @@ bool FRRSpawnerDirectorPhaseTimesTest::RunTest(const FString& Parameters)
 		{
 			continue;
 		}
-		TestTrue(*FString::Printf(TEXT("gap at %.1f s within 3-6 s (%.2f)"), Waves[Index], Gap), Gap >= 3.f - TimeTolerance && Gap <= 6.f + TimeTolerance);
+		TestTrue(*FString::Printf(TEXT("gap at %.1f s within 3.5-6 s (%.2f)"), Waves[Index], Gap), Gap >= 3.5f - TimeTolerance && Gap <= 6.f + TimeTolerance);
 		TestTrue(*FString::Printf(TEXT("gap at %.1f s not longer than the previous"), Waves[Index]), Gap <= PreviousGap + TimeTolerance);
-		if (Waves[Index - 1] >= 28.f + 180.f)
+		if (Waves[Index - 1] >= FlowStart + 210.f)
 		{
-			TestTrue(*FString::Printf(TEXT("gap after 3 min of flow is 3 s (%.2f)"), Gap), FMath::Abs(Gap - 3.f) <= TimeTolerance);
+			TestTrue(*FString::Printf(TEXT("gap after 3 min 30 of flow is 3.5 s (%.2f)"), Gap), FMath::Abs(Gap - 3.5f) <= TimeTolerance);
 		}
 		PreviousGap = Gap;
 	}
 	AddInfo(FString::Printf(TEXT("wave gaps (h = across a horde):%s"), *GapLog));
+	return true;
+}
+
+IMPLEMENT_SIMPLE_AUTOMATION_TEST(FRRSpawnerDirectorShooterShareTest, "RogueRigs.Spawner.DirectorShooterShare",
+	EAutomationTestFlags::EditorContext | EAutomationTestFlags::EngineFilter)
+
+bool FRRSpawnerDirectorShooterShareTest::RunTest(const FString& Parameters)
+{
+	using namespace RRSpawnerDirectorTests;
+	using EType = FRRDirectorAction::EType;
+
+	// Shooters never form a pack of their own: every pack type holding shooters holds 1-2 of them, behind, among other robots.
+	const FRRWaveDirectorConfig Config = FRRWaveDirectorConfig::MakeDefault();
+	for (const FRRDirectorPackType& Type : Config.PackTypes)
+	{
+		int32 ShooterMax = 0;
+		int32 OtherMin = 0;
+		for (const FRRDirectorPackMember& Member : Type.Members)
+		{
+			const bool bShooter = Member.RobotClass && Member.RobotClass->IsChildOf(ARRShooter::StaticClass());
+			if (bShooter)
+			{
+				ShooterMax += Member.CountMax;
+				TestTrue(*FString::Printf(TEXT("%s: 1-2 shooters (%d-%d)"), *Type.Name.ToString(), Member.CountMin, Member.CountMax), Member.CountMin >= 1 && Member.CountMax <= 2);
+				TestTrue(*FString::Printf(TEXT("%s: shooters ride behind, not in front"), *Type.Name.ToString()), Member.bBehind && !Member.bFront);
+			}
+			else
+			{
+				OtherMin += Member.CountMin;
+			}
+		}
+		TestTrue(*FString::Printf(TEXT("%s: not a shooter-only pack"), *Type.Name.ToString()), ShooterMax == 0 || OtherMin > ShooterMax);
+	}
+
+	// Over simulated runs of 3 min 30 (the alert bar fills in about 4 min, kills shorten it), the drawn robots: lone robots,
+	// pack members drawn within their ranges, horde fronts (40-60, no shooter). Caps are ignored: no world here.
+	constexpr float RunSeconds = 210.f;
+	const int32 Seeds[] = { 20261005, 7, 424242 };
+	for (const int32 Seed : Seeds)
+	{
+		const TArray<FTimedAction> Actions = RunDirectorSchedule(Config, RunSeconds, [](float) { return 0.f; }, Seed);
+		FRandomStream Draw(Seed + 1);
+		int32 Shooters = 0;
+		int32 NonHorde = 0;
+		int32 Horde = 0;
+		int32 Packs = 0;
+		int32 PacksWithShooters = 0;
+		for (const FTimedAction& Timed : Actions)
+		{
+			if (Timed.Action.Type == EType::SpawnSingle)
+			{
+				++NonHorde;
+				Shooters += Timed.Action.SingleClass && Timed.Action.SingleClass->IsChildOf(ARRShooter::StaticClass()) ? 1 : 0;
+			}
+			else if (Timed.Action.Type == EType::SpawnWave)
+			{
+				for (const int32 TypeIndex : Timed.Action.PackTypes)
+				{
+					int32 PackShooters = 0;
+					for (const FRRDirectorPackMember& Member : Config.PackTypes[TypeIndex].Members)
+					{
+						const int32 Count = Draw.RandRange(Member.CountMin, FMath::Max(Member.CountMin, Member.CountMax));
+						NonHorde += Count;
+						PackShooters += Member.RobotClass && Member.RobotClass->IsChildOf(ARRShooter::StaticClass()) ? Count : 0;
+					}
+					Shooters += PackShooters;
+					++Packs;
+					PacksWithShooters += PackShooters > 0 ? 1 : 0;
+				}
+			}
+			else if (Timed.Action.Type == EType::HordeStarted)
+			{
+				const FRRDirectorHorde& Front = Config.Hordes[Timed.Action.Index];
+				Horde += Draw.RandRange(Front.SizeMin, FMath::Max(Front.SizeMin, Front.SizeMax));
+			}
+		}
+		const float Share = NonHorde > 0 ? static_cast<float>(Shooters) / NonHorde : 0.f;
+		const float ShareWithHordes = NonHorde + Horde > 0 ? static_cast<float>(Shooters) / (NonHorde + Horde) : 0.f;
+		AddInfo(FString::Printf(TEXT("DIRECTORSHARE seed %d: %d shooters of %d robots outside hordes (%.1f %%), %.1f %% with the %d horde robots; %d of %d packs carry shooters"),
+			Seed, Shooters, NonHorde, Share * 100.f, ShareWithHordes * 100.f, Horde, PacksWithShooters, Packs));
+		TestTrue(*FString::Printf(TEXT("seed %d: shooters about 10 %% of the robots outside hordes (%.1f %%)"), Seed, Share * 100.f), Share >= 0.08f && Share <= 0.12f);
+	}
 	return true;
 }
 
@@ -387,6 +481,32 @@ bool FRRSpawnerDirectorPackHomogeneityTest::RunTest(const FString& Parameters)
 				TestTrue(*FString::Printf(TEXT("%s: front robots nearest to the view (%.0f <= %.0f)"), *Label, FrontFarthest, BackNearest), FrontFarthest <= BackNearest);
 			}
 
+			// Behind members (shooters riding in a pack): in the back half of the mixed robots, never in the front row.
+			TArray<float> Distances;
+			int32 FrontRobots = 0;
+			for (int32 Index = 0; Index < Pack.Robots.Num(); ++Index)
+			{
+				Distances.Add(DirectorViewDistance(Setup, Pack.Cells[Index]));
+				FrontRobots += PackType.Members.ContainsByPredicate([Robot = Pack.Robots[Index]](const FRRDirectorPackMember& Member)
+					{ return Member.bFront && Robot->GetClass() == Member.RobotClass.Get(); }) ? 1 : 0;
+			}
+			Distances.Sort();
+			const int32 BackHalfIndex = Distances.IsEmpty() ? 0 : FMath::Min(FrontRobots + (Pack.Robots.Num() - FrontRobots) / 2, Distances.Num() - 1);
+			for (int32 Index = 0; Index < Pack.Robots.Num(); ++Index)
+			{
+				const bool bBehind = PackType.Members.ContainsByPredicate([Robot = Pack.Robots[Index]](const FRRDirectorPackMember& Member)
+					{ return Member.bBehind && Robot->GetClass() == Member.RobotClass.Get(); });
+				if (!bBehind)
+				{
+					continue;
+				}
+				const float Distance = Distances.IsEmpty() ? 0.f : DirectorViewDistance(Setup, Pack.Cells[Index]);
+				TestTrue(*FString::Printf(TEXT("%s: %s behind the front row (%.0f > %.0f)"), *Label, *Pack.Robots[Index]->GetClass()->GetName(), Distance, Distances[0]),
+					Distance > Distances[0]);
+				TestTrue(*FString::Printf(TEXT("%s: %s in the back half (%.0f >= %.0f)"), *Label, *Pack.Robots[Index]->GetClass()->GetName(), Distance, Distances[BackHalfIndex]),
+					Distance >= Distances[BackHalfIndex]);
+			}
+
 			// One side, in the band, distinct spawn cells (a heavy may be nudged off its cell by its neighbours).
 			TSet<FIntPoint> Cells;
 			FIntRect Bounds(TNumericLimits<int32>::Max(), TNumericLimits<int32>::Max(), TNumericLimits<int32>::Min(), TNumericLimits<int32>::Min());
@@ -410,7 +530,7 @@ bool FRRSpawnerDirectorPackHomogeneityTest::RunTest(const FString& Parameters)
 	}
 
 	// A wave of three packs: three distinct sides.
-	const TArray<FRRSpawnedPack> Wave = Setup.Spawner->TrySpawnDirectorWave({ Config.FindPackType(TEXT("Chasers")), Config.FindPackType(TEXT("Shooters")),
+	const TArray<FRRSpawnedPack> Wave = Setup.Spawner->TrySpawnDirectorWave({ Config.FindPackType(TEXT("Chasers")), Config.FindPackType(TEXT("ShieldChasers")),
 		Config.FindPackType(TEXT("Heavies")) });
 	if (TestEqual(TEXT("wave of three packs"), Wave.Num(), 3))
 	{

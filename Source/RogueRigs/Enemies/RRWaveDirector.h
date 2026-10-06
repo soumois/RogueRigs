@@ -58,9 +58,16 @@ struct FRRDirectorPackMember
 	/** True: these robots take the cells nearest to the view (front of the pack, spawned first). */
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Director")
 	bool bFront = false;
+
+	/**
+	 * True (and bFront false): these robots never lead the pack; they are placed at random in the back half of the mixed members
+	 * (the middle or the back of the pack), e.g. 1-2 shooters riding in a chaser pack.
+	 */
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Director")
+	bool bBehind = false;
 };
 
-/** A pack of one type: its members, all spawned at once on adjacent cells of one side of the view. */
+/** A pack type: its member groups, all spawned at once on adjacent cells of one side of the view. */
 USTRUCT(BlueprintType)
 struct FRRDirectorPackType
 {
@@ -220,7 +227,7 @@ struct FRRWaveDirectorConfig
 	/** Index of the pack type called Name; INDEX_NONE when none. */
 	int32 FindPackType(FName Name) const;
 
-	/** Provisional defaults (owner 2026-10-05, enemies-index): calm, lone robots, first pack at 22 s, multi-side flow, hordes at 95 s and 175 s. */
+	/** Provisional defaults (owner 2026-10-06, enemies-index): a lone chaser from 1 s, first pack at 15 s, multi-side flow with shooters riding behind, hordes at 95 s and 175 s. */
 	static FRRWaveDirectorConfig MakeDefault();
 };
 

@@ -576,6 +576,7 @@ void ARREnemySpawner::ExecuteDirectorAction(const FRRDirectorAction& Action)
 void ARREnemySpawner::DrawMembers(const TArray<FRRDirectorPackMember>& Members, TMap<UClass*, int32>& Room,
 	TArray<TSubclassOf<ARREnemy>>& OutFront, TArray<TSubclassOf<ARREnemy>>& OutBack)
 {
+	TArray<TSubclassOf<ARREnemy>> Behind;
 	for (const FRRDirectorPackMember& Member : Members)
 	{
 		const TSubclassOf<ARREnemy> SpawnClass = ResolveRobotClass(Member.RobotClass);
@@ -592,7 +593,7 @@ void ARREnemySpawner::DrawMembers(const TArray<FRRDirectorPackMember>& Members, 
 		}
 		Count = FMath::Min(Count, *ClassRoom);
 		*ClassRoom -= Count;
-		TArray<TSubclassOf<ARREnemy>>& Target = Member.bFront ? OutFront : OutBack;
+		TArray<TSubclassOf<ARREnemy>>& Target = Member.bFront ? OutFront : (Member.bBehind ? Behind : OutBack);
 		for (int32 Index = 0; Index < Count; ++Index)
 		{
 			Target.Add(SpawnClass);
@@ -601,6 +602,12 @@ void ARREnemySpawner::DrawMembers(const TArray<FRRDirectorPackMember>& Members, 
 	for (int32 Index = OutBack.Num() - 1; Index > 0; --Index)
 	{
 		OutBack.Swap(Index, RandomStream.RandRange(0, Index));
+	}
+	// Behind members: at random in the back half of the mixed members, never leading the pack.
+	const int32 FirstBehindSlot = (OutBack.Num() + Behind.Num()) / 2;
+	for (const TSubclassOf<ARREnemy>& SpawnClass : Behind)
+	{
+		OutBack.Insert(SpawnClass, RandomStream.RandRange(FMath::Min(FirstBehindSlot, OutBack.Num()), OutBack.Num()));
 	}
 }
 

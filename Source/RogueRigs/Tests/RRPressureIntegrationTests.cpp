@@ -336,10 +336,17 @@ bool FRRIntegrationPressureDirectorPhasesTest::RunTest(const FString& Parameters
 	}
 	AddInfo(FString::Printf(TEXT("placed phases:%s"), *PhaseLog));
 
-	// Run to just past the first pack (Calm 0, Isolated 10 s every 3 s, FirstPack 22 s); the miner cannot die, robots cannot die.
+	// Run to just past the first pack (Isolated 1 s every 2 s, FirstPack 15 s); the miner cannot die, robots cannot die.
 	TestEqual(TEXT("miner made invulnerable"), RRCheats::SetInvulnerable(TestWorld.Get(), true, TEXT("RogueRigs.Integration.Pressure")), 1);
-	const float IsolatedStart = Config.Phases[1].StartTime;
-	const float PackStart = Config.Phases[2].StartTime;
+	const int32 IsolatedIndex = Config.Phases.IndexOfByPredicate([](const FRRDirectorPhase& Phase) { return Phase.Name == TEXT("Isolated"); });
+	const int32 PackIndex = Config.Phases.IndexOfByPredicate([](const FRRDirectorPhase& Phase) { return Phase.Name == TEXT("FirstPack"); });
+	if (!TestTrue(TEXT("Isolated then FirstPack phases"), IsolatedIndex != INDEX_NONE && PackIndex == IsolatedIndex + 1))
+	{
+		return false;
+	}
+	const float IsolatedStart = Config.Phases[IsolatedIndex].StartTime;
+	const float PackStart = Config.Phases[PackIndex].StartTime;
+	TestTrue(*FString::Printf(TEXT("first robot at about 1 s (%.1f s)"), IsolatedStart), IsolatedStart > 0.f && IsolatedStart <= 1.f);
 	const int32 IsolatedFrame = FMath::RoundToInt(IsolatedStart * 60.f);
 	const int32 PackFrame = FMath::RoundToInt(PackStart * 60.f);
 	const int32 Frames = PackFrame + 60;
@@ -382,15 +389,15 @@ bool FRRIntegrationPressureDirectorPhasesTest::RunTest(const FString& Parameters
 		const int32* Frame = PhaseFrames.Find(Key);
 		TestTrue(*FString::Printf(TEXT("%s at frame %d (%d)"), *Key, Expected, Frame ? *Frame : -1), Frame && FMath::Abs(*Frame - Expected) <= 1);
 	};
-	CheckPhase(1, IsolatedFrame);
-	CheckPhase(2, PackFrame);
-	TestEqual(TEXT("calm: no robot before the isolated phase"), AliveBeforeIsolated, 0);
+	CheckPhase(IsolatedIndex, IsolatedFrame);
+	CheckPhase(PackIndex, PackFrame);
+	TestEqual(TEXT("no robot before the isolated phase"), AliveBeforeIsolated, 0);
 	if (TestTrue(TEXT("robots spawned"), SpawnFrames.Num() > 0))
 	{
 		TestTrue(*FString::Printf(TEXT("first robot when the isolated phase starts (%.2f s)"), SpawnFrames[0] / 60.f), FMath::Abs(SpawnFrames[0] - IsolatedFrame) <= 1);
 	}
 	// Lone robots one at a time every SingleInterval until the pack.
-	const float SingleInterval = Config.Phases[1].SingleInterval;
+	const float SingleInterval = Config.Phases[IsolatedIndex].SingleInterval;
 	const int32 ExpectedSingles = SingleInterval > 0.f ? FMath::CeilToInt((PackStart - IsolatedStart) / SingleInterval - KINDA_SMALL_NUMBER) : 0;
 	TestEqual(*FString::Printf(TEXT("%d lone robots before the pack"), ExpectedSingles), AliveBeforePack, ExpectedSingles);
 	int32 PackSize = 0;
@@ -405,7 +412,7 @@ bool FRRIntegrationPressureDirectorPhasesTest::RunTest(const FString& Parameters
 			PackSize += SpawnCounts[Index];
 		}
 	}
-	TestTrue(*FString::Printf(TEXT("first pack of 8-10 chasers at %.1f s (%d)"), PackStart, PackSize), PackSize >= 8 && PackSize <= 10);
+	TestTrue(*FString::Printf(TEXT("first pack of 6-8 chasers at %.1f s (%d)"), PackStart, PackSize), PackSize >= 6 && PackSize <= 8);
 	int32 Chasers = 0;
 	for (const ARREnemy* Enemy : Loop.Spawner->GetAliveEnemies())
 	{

@@ -222,7 +222,7 @@ bool FRRShieldChaserDirectorTest::RunTest(const FString& Parameters)
 	AddInfo(FString::Printf(TEXT("ShieldChasers pack: %.1f shield chasers of %.1f chasers"), ShieldMean, ChaserMean));
 	TestTrue(TEXT("shield chasers are 25 % of the pack chasers"), ChaserMean > 0.f && FMath::IsNearlyEqual(ShieldMean / ChaserMean, 0.25f, 0.01f));
 
-	// Only the phase from 1:00 draws it; no other pack type holds a shield chaser.
+	// Only the phases from 1:00 draw it (FlowShields first); no other pack type holds a shield chaser.
 	int32 FlowIndex = INDEX_NONE;
 	int32 ShieldPhaseIndex = INDEX_NONE;
 	for (int32 Index = 0; Index < Config.Phases.Num(); ++Index)
@@ -231,7 +231,7 @@ bool FRRShieldChaserDirectorTest::RunTest(const FString& Parameters)
 		const bool bDrawsShields = Phase.PackWeights.ContainsByPredicate([](const FRRDirectorPackWeight& Weight) { return Weight.PackType == TEXT("ShieldChasers"); });
 		TestEqual(FString::Printf(TEXT("phase %s draws ShieldChasers only from 60 s"), *Phase.Name.ToString()), bDrawsShields, Phase.StartTime >= 60.f);
 		FlowIndex = Phase.Name == TEXT("Flow") ? Index : FlowIndex;
-		ShieldPhaseIndex = bDrawsShields ? Index : ShieldPhaseIndex;
+		ShieldPhaseIndex = bDrawsShields && ShieldPhaseIndex == INDEX_NONE ? Index : ShieldPhaseIndex;
 	}
 	for (int32 Type = 0; Type < Config.PackTypes.Num(); ++Type)
 	{
