@@ -3,7 +3,7 @@ id: task-029-05-arc-mining
 description: "Drone digs up to 4 blocks in a 120° arc when the miner touches rock; rock 0.5 s, ore and heal 1.5 s; tests."
 parent: task-029-fine-grid
 kind: task
-status: todo
+status: in-progress
 ---
 # Arc mining by contact
 
