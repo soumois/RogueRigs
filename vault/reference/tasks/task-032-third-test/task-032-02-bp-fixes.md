@@ -3,7 +3,7 @@ id: task-032-02-bp-fixes
 description: "WBP_HUD edge arrow to the console then the shuttle, Blueprint texts in English, turret drawn 50 % larger; PIE check."
 parent: task-032-third-test
 kind: task
-status: todo
+status: in-progress
 ---
 # Third test: Blueprint fixes
 

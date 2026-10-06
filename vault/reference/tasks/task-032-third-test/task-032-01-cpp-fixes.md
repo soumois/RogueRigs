@@ -3,7 +3,7 @@ id: task-032-01-cpp-fixes
 description: "Robot recycling, overtime from 3:30, speeds −10 %, faster heavy, upgrade draw weights, weapon cards every 5 levels, English C++ texts, locator target getter; tests."
 parent: task-032-third-test
 kind: task
-status: in-progress
+status: done
 ---
 # Third test: C++ fixes
 
@@ -15,11 +15,11 @@ status: in-progress
 - done_when: build exits 0 with the editor closed; all `RogueRigs.*` tests pass headless; docs updated; lint clean.
 - editor_state: closed
 - token_ceiling: 140000
-- model: open
-- tokens: open
-- runs: open
+- model: opus
+- tokens: input 230, cache write 743345, cache read 22785704, output 139170
+- runs: 2
 - milestone: M2
-- result: open
+- result: Speeds 182/182/151/151/101, heavy WindUp 0.6 and a slam every 2 s; recycling (off screen = 500 uu beyond the view, > 2500 uu for 4 s, no XP or death, frees caps; 160 front spawns between 3:00 and 3:30 vs 0 without); overtime from 210 s (interval halved at once then per minute, horde every 30 s); DrawWeight 3 for damage, fire rate, reload; weapon cards only on levels 5, 10… (2 when 2+ remain); locator API GetObjectiveTarget and GetObjectiveLocator; English C++ texts and weapon names; kamikaze test crash fixed (weak pointer). 194/195 then the failing upgrade test fixed and its group passes; full suite not rerun. Commits acf6a53, f7e8bc6, 45f2c60, df6d3d4, b219fab, 86b7459.
 
 ## Relations
 - [[task-032-third-test]] — parent global task.

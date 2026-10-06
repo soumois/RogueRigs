@@ -82,6 +82,7 @@ kind: note
 | [[task-030-02-pacing-retune]] | opus | 2 | 0k | 501k | 6689k | 51k |
 | [[task-031-01-remove-dummy]] | opus | 2 | 0k | 155k | 5632k | 38k |
 | [[task-031-02-spawn-speed-shooter]] | opus | 3 | 0k | 399k | 10460k | 89k |
+| [[task-032-01-cpp-fixes]] | opus | 2 | 0k | 743k | 22786k | 139k |
 
 ## Totals
 | Scope | Input | Cache write | Cache read | Output |

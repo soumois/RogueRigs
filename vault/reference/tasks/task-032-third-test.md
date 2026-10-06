@@ -13,7 +13,7 @@ status: in-progress
 - gdd_check: Read [[enemies-index]], enemy nodes, [[difficulty]], [[upgrades]], [[turret]], [[objective-console]], [[readability-rules]]. GDD updated by the Orchestrator with provisional values (2026-10-06). No open value.
 - confirmed_by_owner: yes (2026-10-06)
 - milestone: M2
-- next_step: task-032-01-cpp-fixes
+- next_step: task-032-02-bp-fixes
 - result: open
 
 ## Subtasks
