@@ -13,7 +13,7 @@ status: in-progress
 - gdd_check: Read [[arena-grid]], [[drone]], [[destruction-rules]], [[ore-blocks]], [[stress-grid-cells]], [[drgs-analysis]]. Owner chose 67 uu and time-sliced flow field (2026-10-06); conflict "every unit fits a one-cell corridor" resolved as passages ≥ 3 cells (provisional, to confirm by the owner); dig speeds measured on the DRGS run (0.5 s per rock block, 3–4 at once).
 - confirmed_by_owner: yes (2026-10-06, lot launched by the owner on 2026-10-05, size chosen on 2026-10-06)
 - milestone: M2
-- next_step: task-029-06-bp-fine-grid
+- next_step: task-029-08-laser-fan
 - result: open
 
 ## Subtasks
@@ -23,7 +23,9 @@ status: in-progress
 4. task-029-04-switch-67 — cpp: cell size 67 uu as default, load the new layout, rescale cell-based values, tests
 5. task-029-05-arc-mining — cpp: wall-contact arc mining by the drone at the new speeds, tests
 6. task-029-06-bp-fine-grid — bp: block meshes and materials at 67 uu, arc dig visual, PIE
-7. task-029-07-final-check — cpp: integration tests and final stress at 67 uu
+8. task-029-08-laser-fan — cpp: one beam per dug block (beam pool), tests (owner, after handover-2026-10-06)
+9. task-029-09-bp-fan-holes — bp: laser fan and explosion holes checked in PIE
+7. task-029-07-final-check — cpp: integration tests and final stress at 67 uu (runs last)
 
 ## Relations
 - [[tasks-index]] — parent index.
@@ -33,4 +35,6 @@ status: in-progress
 - [[task-029-04-switch-67]] — step 4, cpp.
 - [[task-029-05-arc-mining]] — step 5, cpp.
 - [[task-029-06-bp-fine-grid]] — step 6, bp.
-- [[task-029-07-final-check]] — step 7, cpp.
+- [[task-029-07-final-check]] — step 7, cpp; runs last, after 08 and 09.
+- [[task-029-08-laser-fan]] — step 8, cpp, added after 029-06.
+- [[task-029-09-bp-fan-holes]] — step 9, bp, added after 029-06.

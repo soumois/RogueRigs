@@ -293,6 +293,8 @@ task-029-04-switch-67  reference/tasks/task-029-fine-grid/task-029-04-switch-67.
 task-029-05-arc-mining  reference/tasks/task-029-fine-grid/task-029-05-arc-mining.md
 task-029-06-bp-fine-grid  reference/tasks/task-029-fine-grid/task-029-06-bp-fine-grid.md
 task-029-07-final-check  reference/tasks/task-029-fine-grid/task-029-07-final-check.md
+task-029-08-laser-fan  reference/tasks/task-029-fine-grid/task-029-08-laser-fan.md
+task-029-09-bp-fan-holes  reference/tasks/task-029-fine-grid/task-029-09-bp-fan-holes.md
 task-029-fine-grid  reference/tasks/task-029-fine-grid.md
 tasks-index  reference/tasks/tasks-index.md
 tech-index  reference/tech/tech-index.md
