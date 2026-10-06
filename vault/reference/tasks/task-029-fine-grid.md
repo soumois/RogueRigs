@@ -13,7 +13,7 @@ status: in-progress
 - gdd_check: Read [[arena-grid]], [[drone]], [[destruction-rules]], [[ore-blocks]], [[stress-grid-cells]], [[drgs-analysis]]. Owner chose 67 uu and time-sliced flow field (2026-10-06); conflict "every unit fits a one-cell corridor" resolved as passages ≥ 3 cells (provisional, to confirm by the owner); dig speeds measured on the DRGS run (0.5 s per rock block, 3–4 at once).
 - confirmed_by_owner: yes (2026-10-06, lot launched by the owner on 2026-10-05, size chosen on 2026-10-06)
 - milestone: M2
-- next_step: task-029-03-layout-67
+- next_step: task-029-04-switch-67
 - result: open
 
 ## Subtasks

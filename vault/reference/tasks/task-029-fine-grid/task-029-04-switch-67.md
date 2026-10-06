@@ -3,7 +3,7 @@ id: task-029-04-switch-67
 description: "Cell size 67 uu by default with the new layout; every value expressed in cells rescaled; tests updated."
 parent: task-029-fine-grid
 kind: task
-status: todo
+status: in-progress
 ---
 # Switch the game to 67 uu
 
