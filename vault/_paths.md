@@ -30,12 +30,14 @@ bp-drone  reference/tech/blueprints/bp-drone.md
 bp-enemy-spawner  reference/tech/blueprints/bp-enemy-spawner.md
 bp-explosion-fx  reference/tech/blueprints/bp-explosion-fx.md
 bp-extraction-shuttle  reference/tech/blueprints/bp-extraction-shuttle.md
+bp-heal-ring  reference/tech/blueprints/bp-heal-ring.md
 bp-heavy  reference/tech/blueprints/bp-heavy.md
 bp-kamikaze  reference/tech/blueprints/bp-kamikaze.md
 bp-miner  reference/tech/blueprints/bp-miner.md
 bp-objective-console  reference/tech/blueprints/bp-objective-console.md
 bp-pickup-heal  reference/tech/blueprints/bp-pickup-heal.md
 bp-pickup-ore  reference/tech/blueprints/bp-pickup-ore.md
+bp-pickup-sparkle  reference/tech/blueprints/bp-pickup-sparkle.md
 bp-pickup-xp  reference/tech/blueprints/bp-pickup-xp.md
 bp-projectile  reference/tech/blueprints/bp-projectile.md
 bp-rr-game-mode  reference/tech/blueprints/bp-rr-game-mode.md

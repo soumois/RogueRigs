@@ -29,6 +29,8 @@ One node per Blueprint, template `blueprint.md`.
 - [[bp-shooter]] — BP_Shooter and BP_ShooterProjectile, the shooter robot.
 - [[bp-heavy]] — BP_Heavy, the heavy slam robot.
 - [[bp-explosion-fx]] — BP_ExplosionFX, the explosion visual.
+- [[bp-pickup-sparkle]] — BP_PickupSparkle, the XP collect sparkle.
+- [[bp-heal-ring]] — BP_HealRing, the green ring on heal.
 - [[bp-objective-console]] — BP_ObjectiveConsole, the command console.
 - [[bp-extraction-shuttle]] — BP_ExtractionShuttle, the extraction shuttle.
 - [[wbp-hud]] — WBP_HUD, health bar and Game Over text.
