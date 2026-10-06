@@ -137,7 +137,7 @@ public:
 	bool MakeCard(ERRUpgradeStat Stat, ERRUpgradeRarity Tier, ERRUpgradeTarget Target, ARRWeapon* TargetWeapon, FRRUpgradeCard& OutCard) const;
 
 	/**
-	 * Builds the "Nouvelle arme" card of Entry: CardType NewWeapon, WeaponClass, Target Weapon (no TargetWeapon yet), TargetText
+	 * Builds the "New weapon" card of Entry: CardType NewWeapon, WeaponClass, Target Weapon (no TargetWeapon yet), TargetText
 	 * = the weapon's CSV name (ARRWeapon::GetClassDisplayName), DescriptionText = Entry.Description. False when the class is unset.
 	 */
 	static bool MakeWeaponCard(const FRRWeaponCatalogueEntry& Entry, FRRUpgradeCard& OutCard);

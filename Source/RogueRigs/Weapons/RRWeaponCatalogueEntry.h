@@ -1,4 +1,4 @@
-// Rogue Rigs - weapon catalogue entry: one weapon the miner can own, offered by the "Nouvelle arme" upgrade cards.
+// Rogue Rigs - weapon catalogue entry: one weapon the miner can own, offered by the "New weapon" upgrade cards.
 
 #pragma once
 

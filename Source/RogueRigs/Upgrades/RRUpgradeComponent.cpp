@@ -129,19 +129,19 @@ FText URRUpgradeComponent::GetStatDisplayName(ERRUpgradeStat Stat)
 {
 	switch (Stat)
 	{
-	case ERRUpgradeStat::Damage:       return LOCTEXT("Stat_Damage", "Dégâts");
-	case ERRUpgradeStat::FireRate:     return LOCTEXT("Stat_FireRate", "Cadence de tir");
-	case ERRUpgradeStat::ReloadSpeed:  return LOCTEXT("Stat_ReloadSpeed", "Vitesse de rechargement");
-	case ERRUpgradeStat::CritChance:   return LOCTEXT("Stat_CritChance", "Chance critique");
-	case ERRUpgradeStat::CritDamage:   return LOCTEXT("Stat_CritDamage", "Dégâts critiques");
-	case ERRUpgradeStat::MagazineSize: return LOCTEXT("Stat_MagazineSize", "Taille du chargeur");
-	case ERRUpgradeStat::MaxHealth:    return LOCTEXT("Stat_MaxHealth", "PV max");
-	case ERRUpgradeStat::MoveSpeed:    return LOCTEXT("Stat_MoveSpeed", "Vitesse");
-	case ERRUpgradeStat::PickupRadius: return LOCTEXT("Stat_PickupRadius", "Rayon de ramassage");
-	case ERRUpgradeStat::XPGain:       return LOCTEXT("Stat_XPGain", "Gain d'XP");
-	case ERRUpgradeStat::MiningSpeed:  return LOCTEXT("Stat_MiningSpeed", "Vitesse de minage");
-	case ERRUpgradeStat::Luck:         return LOCTEXT("Stat_Luck", "Chance");
-	case ERRUpgradeStat::Pierce:       return LOCTEXT("Stat_Pierce", "Perforation");
+	case ERRUpgradeStat::Damage:       return LOCTEXT("Stat_Damage", "Damage");
+	case ERRUpgradeStat::FireRate:     return LOCTEXT("Stat_FireRate", "Fire rate");
+	case ERRUpgradeStat::ReloadSpeed:  return LOCTEXT("Stat_ReloadSpeed", "Reload speed");
+	case ERRUpgradeStat::CritChance:   return LOCTEXT("Stat_CritChance", "Crit chance");
+	case ERRUpgradeStat::CritDamage:   return LOCTEXT("Stat_CritDamage", "Crit damage");
+	case ERRUpgradeStat::MagazineSize: return LOCTEXT("Stat_MagazineSize", "Magazine size");
+	case ERRUpgradeStat::MaxHealth:    return LOCTEXT("Stat_MaxHealth", "Max health");
+	case ERRUpgradeStat::MoveSpeed:    return LOCTEXT("Stat_MoveSpeed", "Move speed");
+	case ERRUpgradeStat::PickupRadius: return LOCTEXT("Stat_PickupRadius", "Pickup radius");
+	case ERRUpgradeStat::XPGain:       return LOCTEXT("Stat_XPGain", "XP gain");
+	case ERRUpgradeStat::MiningSpeed:  return LOCTEXT("Stat_MiningSpeed", "Mining speed");
+	case ERRUpgradeStat::Luck:         return LOCTEXT("Stat_Luck", "Luck");
+	case ERRUpgradeStat::Pierce:       return LOCTEXT("Stat_Pierce", "Piercing");
 	}
 	return FText::GetEmpty();
 }
@@ -152,13 +152,13 @@ FText URRUpgradeComponent::FormatValueText(ERRUpgradeStat Stat, float Value)
 		|| Stat == ERRUpgradeStat::Pierce;
 	const double Shown = bFlat ? Value : Value * 100.0;
 
-	// One decimal at most, French decimal comma, no trailing ",0".
+	// One decimal at most, decimal point, no trailing ".0" (English UI, readability-rules).
 	const double Rounded = FMath::RoundToDouble(Shown * 10.0) / 10.0;
 	FString Number = FMath::IsNearlyEqual(Rounded, FMath::RoundToDouble(Rounded))
 		? FString::Printf(TEXT("%lld"), static_cast<long long>(FMath::RoundToDouble(Rounded)))
-		: FString::Printf(TEXT("%.1f"), Rounded).Replace(TEXT("."), TEXT(","));
+		: FString::Printf(TEXT("%.1f"), Rounded);
 	const FString Sign = Rounded >= 0.0 ? TEXT("+") : TEXT("");
-	return FText::FromString(bFlat ? Sign + Number : Sign + Number + TEXT(" %"));
+	return FText::FromString(bFlat ? Sign + Number : Sign + Number + TEXT("%"));
 }
 
 bool URRUpgradeComponent::GetUpgradeValue(ERRUpgradeStat Stat, ERRUpgradeRarity Tier, bool bTargeted, float& OutValue) const
@@ -246,7 +246,7 @@ bool URRUpgradeComponent::MakeCard(ERRUpgradeStat Stat, ERRUpgradeRarity Tier, E
 	switch (Target)
 	{
 	case ERRUpgradeTarget::Player:     Card.TargetText = FText::GetEmpty(); break;
-	case ERRUpgradeTarget::AllWeapons: Card.TargetText = LOCTEXT("Target_AllWeapons", "Toutes les armes"); break;
+	case ERRUpgradeTarget::AllWeapons: Card.TargetText = LOCTEXT("Target_AllWeapons", "All weapons"); break;
 	case ERRUpgradeTarget::Weapon:     Card.TargetText = TargetWeapon->GetDisplayName(); break;
 	}
 	OutCard = Card;
@@ -263,7 +263,7 @@ bool URRUpgradeComponent::MakeWeaponCard(const FRRWeaponCatalogueEntry& Entry, F
 	Card.CardType = ERRUpgradeCardType::NewWeapon;
 	Card.WeaponClass = Entry.WeaponClass;
 	Card.Target = ERRUpgradeTarget::Weapon;
-	Card.DisplayName = LOCTEXT("Card_NewWeapon", "Nouvelle arme");
+	Card.DisplayName = LOCTEXT("Card_NewWeapon", "New weapon");
 	Card.TargetText = ARRWeapon::GetClassDisplayName(Entry.WeaponClass);
 	Card.DescriptionText = Entry.Description;
 	OutCard = Card;

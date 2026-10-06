@@ -1,4 +1,4 @@
 Name,Damage,FireRate,BurstCount,BurstDuty,CritChance,CritDamage,MagazineSize,ReloadTime,ReloadSpeed,ProjectileSpeed,Range,SpreadDeg,DisplayName,PelletCount,KnockbackForce,Pierce,TurretLifetime
-BurstRifle,10,1.25,3,0.2,0.05,1.5,30,1.5,1,3000,2000,2,Fusil à rafales,1,0,4,0
-Shotgun,6,2,1,0,0.05,1.5,2,2.5,1,3000,700,15,Fusil à pompe,7,250,3,0
-TurretLauncher,6,3.3,1,0,0.05,1.5,2,6,1,3000,1500,0,Lance-tourelles,1,0,4,10
+BurstRifle,10,1.25,3,0.2,0.05,1.5,30,1.5,1,3000,2000,2,Burst rifle,1,0,4,0
+Shotgun,6,2,1,0,0.05,1.5,2,2.5,1,3000,700,15,Shotgun,7,250,3,0
+TurretLauncher,6,3.3,1,0,0.05,1.5,2,6,1,3000,1500,0,Turret launcher,1,0,4,10

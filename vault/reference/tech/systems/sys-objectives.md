@@ -19,6 +19,7 @@ kind: doc
   - `ARRShuttle`: `OnLanded()`, `OnCountdown(Remaining)` (every countdown frame), `OnExtracted()` (win), `OnMissed()` (loss).
   - `ARRArenaGrid`: `OnCellMarkedChanged(Cell, bMarked, CellCenter)`; and per-instance custom data float `MarkedCustomDataIndex` (0) = `MarkedCustomDataValue` (1) on the block HISMs, readable by a material through PerInstanceCustomData (pulsing white outline, [[color-code]]).
   - `URRHUDWidget`: `OnAlertChanged`, `OnObjectiveChanged`, `OnObjectiveProgressChanged`, `OnExtractionReady`, `OnShuttleCountdown`, `OnRunEnded`; call `RestartLevel` ([[sys-hud]]).
+- HUD locator (task-032-01): `URRHUDWidget::GetObjectiveTarget` / `GetObjectiveLocator` point at the console until it is `Complete`, then at the landed shuttle ([[sys-hud]]).
 - data: tunables above (provisional values from [[level-flow]] M1 and [[objective-console]]); no table.
 - depends_on: [[sys-grid]], [[sys-drone]], [[sys-flow-field]], [[sys-player]], [[sys-enemies]], [[sys-cheats]] (alert multiplier).
 - implements: [[level-flow]] (M1 sequence), [[objective-console]], [[extraction]] (M1 end screens), alert counter of [[difficulty]].

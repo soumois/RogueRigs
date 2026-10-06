@@ -341,8 +341,8 @@ bool FRRIntegrationWeaponCardEquipsShotgunTest::RunTest(const FString& Parameter
 	}
 	const FRRUpgradeCard& WeaponCard = Offer[WeaponCardIndex];
 	TestTrue(TEXT("the weapon card offers BP_Shotgun"), WeaponCard.WeaponClass.Get() == ShotgunClass);
-	TestEqual(TEXT("card title"), WeaponCard.DisplayName.ToString(), FString(TEXT("Nouvelle arme")));
-	TestEqual(TEXT("card weapon name"), WeaponCard.TargetText.ToString(), FString(TEXT("Fusil à pompe")));
+	TestEqual(TEXT("card title"), WeaponCard.DisplayName.ToString(), FString(TEXT("New weapon")));
+	TestEqual(TEXT("card weapon name"), WeaponCard.TargetText.ToString(), FString(TEXT("Shotgun")));
 	TestFalse(TEXT("card has the catalogue description"), WeaponCard.DescriptionText.IsEmpty());
 	TestTrue(TEXT("UpgradeScreen visible"), GetWidgetVisibility(*this, HUD, TEXT("UpgradeScreen")) == ESlateVisibility::Visible);
 	for (int32 Index = 0; Index < Offer.Num(); ++Index)

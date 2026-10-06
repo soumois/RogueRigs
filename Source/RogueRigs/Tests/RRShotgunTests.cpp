@@ -235,8 +235,8 @@ bool FRRShotgunStatsAndLoadoutTest::RunTest(const FString& Parameters)
 	TestEqual(TEXT("7 pellets"), Shotgun->GetPelletCount(), Pellets);
 	TestEqual(TEXT("knockback 250 per pellet hit"), Shotgun->GetKnockbackForce(), Knockback);
 	TestTrue(TEXT("pellet speed set"), Shotgun->GetProjectileSpeed() > 0.f);
-	TestEqual(TEXT("display name"), Shotgun->GetDisplayName().ToString(), FString(TEXT("Fusil à pompe")));
-	TestEqual(TEXT("rifle display name"), Rifle->GetDisplayName().ToString(), FString(TEXT("Fusil à rafales")));
+	TestEqual(TEXT("display name"), Shotgun->GetDisplayName().ToString(), FString(TEXT("Shotgun")));
+	TestEqual(TEXT("rifle display name"), Rifle->GetDisplayName().ToString(), FString(TEXT("Burst rifle")));
 
 	// Cadence and magazine on the accumulator alone: shots at 0 and 0.5 s, a 2.5 s reload from the last shot, then 3.0, 3.5, 6.0 s.
 	URRAutoFireComponent* AutoFire = Shotgun->GetAutoFireComponent();
@@ -613,7 +613,7 @@ bool FRRShotgunCardsOnlyWhenEquippedTest::RunTest(const FString& Parameters)
 					++ShotgunCards;
 					if (ShotgunCards == 1)
 					{
-						TestEqual(TEXT("shotgun card target text"), Card.TargetText.ToString(), FString(TEXT("Fusil à pompe")));
+						TestEqual(TEXT("shotgun card target text"), Card.TargetText.ToString(), FString(TEXT("Shotgun")));
 					}
 				}
 				else

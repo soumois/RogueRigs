@@ -297,7 +297,7 @@ public:
 	UPROPERTY(BlueprintAssignable, Category = "Spawner|Director")
 	FRROnHordeLullSignature OnHordeLull;
 
-	/** A horde is announced, SecondsUntil its front (HUD banner "HORDE EN APPROCHE !"). */
+	/** A horde is announced, SecondsUntil its front (HUD banner "HORDE INCOMING!"). */
 	UPROPERTY(BlueprintAssignable, Category = "Spawner|Director")
 	FRROnHordeIncomingSignature OnHordeIncoming;
 

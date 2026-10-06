@@ -1861,7 +1861,12 @@ namespace RRIntegrationObjectiveTests
 
 		// WBP_HUD end screen; the level-up screen lost to it.
 		Test.TestTrue(TEXT("EndScreen visible"), GetWidgetVisibility(Test, Loop.HUD, TEXT("EndScreen")) == ESlateVisibility::Visible);
-		Test.TestEqual(TEXT("EndTitle"), GetWidgetText(Test, Loop.HUD, TEXT("EndTitle")), FString(Title));
+		// Title: "French|English" while task-032-02 translates WBP_HUD (keep only the English afterwards).
+		FString French;
+		FString English;
+		const FString EndTitle = GetWidgetText(Test, Loop.HUD, TEXT("EndTitle"));
+		Test.TestTrue(*FString::Printf(TEXT("EndTitle '%s' is %s"), *EndTitle, Title),
+			FString(Title).Split(TEXT("|"), &French, &English) ? (EndTitle == French || EndTitle == English) : EndTitle == Title);
 		Test.TestTrue(TEXT("ShuttleText hidden at the end"), GetWidgetVisibility(Test, Loop.HUD, TEXT("ShuttleText")) == ESlateVisibility::Collapsed);
 		Test.TestTrue(TEXT("UpgradeScreen collapsed at the end"), GetWidgetVisibility(Test, Loop.HUD, TEXT("UpgradeScreen")) == ESlateVisibility::Collapsed);
 		Test.TestTrue(TEXT("level-up choices blocked by the end"), LevelUp->AreChoicesBlocked());
@@ -1955,9 +1960,10 @@ bool FRRIntegrationConsoleExtractionWinTest::RunTest(const FString& Parameters)
 		TestTrue(FString::Printf(TEXT("rock (%d, %d) marked on the grid"), Cell.X, Cell.Y), Grid->IsCellMarked(Cell));
 	}
 	TestTrue(TEXT("ObjectiveText visible"), GetWidgetVisibility(*this, Loop.HUD, TEXT("ObjectiveText")) == ESlateVisibility::Visible);
-	TestTrue(TEXT("ObjectiveText asks to clear the marked rocks"), GetWidgetText(*this, Loop.HUD, TEXT("ObjectiveText")).Contains(TEXT("roches marquées")));
+	TestTrue(TEXT("ObjectiveText asks to clear the marked rocks"), GetWidgetText(*this, Loop.HUD, TEXT("ObjectiveText")).Contains(TEXT("roches marquées")) || GetWidgetText(*this, Loop.HUD, TEXT("ObjectiveText")).Contains(TEXT("marked rocks")));
 	TestEqual(TEXT("AlertBar at the threshold"), GetWidgetPercent(*this, Loop.HUD, TEXT("AlertBar")), Config.ConsoleAlertThreshold, 1e-4f);
-	TestEqual(TEXT("AlertLabel shows the pause"), GetWidgetText(*this, Loop.HUD, TEXT("AlertLabel")), FString(TEXT("ALERTE (pause)")));
+	// WBP_HUD texts: the French ones or their English translation (task-032-02); keep only the English afterwards.
+	TestTrue(TEXT("AlertLabel shows the pause"), GetWidgetText(*this, Loop.HUD, TEXT("AlertLabel")) == TEXT("ALERTE (pause)") || GetWidgetText(*this, Loop.HUD, TEXT("AlertLabel")) == TEXT("ALERT (paused)"));
 
 	// The alert holds while the console is pending.
 	TickRun(*this, TestWorld, Loop, 60, []() { return false; });
@@ -1976,7 +1982,7 @@ bool FRRIntegrationConsoleExtractionWinTest::RunTest(const FString& Parameters)
 		TestFalse(FString::Printf(TEXT("cell (%d, %d) destroyed and unmarked"), Cell.X, Cell.Y), Grid->IsCellMarked(Cell) || Grid->GetCellType(Cell) != ERRCellType::Floor);
 	}
 	TestTrue(TEXT("console Idle once cleared"), Console->GetConsoleState() == ERRConsoleState::Idle);
-	TestTrue(TEXT("ObjectiveText asks to hack"), GetWidgetText(*this, Loop.HUD, TEXT("ObjectiveText")).Contains(TEXT("Pirate la console")));
+	TestTrue(TEXT("ObjectiveText asks to hack"), GetWidgetText(*this, Loop.HUD, TEXT("ObjectiveText")).Contains(TEXT("Pirate la console")) || GetWidgetText(*this, Loop.HUD, TEXT("ObjectiveText")).Contains(TEXT("Hack the console")));
 
 	// 3. The miner stands at the console: the drone hacks it in HackDuration of game time.
 	TeleportMiner(Miner, Grid, Console->GetActorLocation());
@@ -2011,9 +2017,9 @@ bool FRRIntegrationConsoleExtractionWinTest::RunTest(const FString& Parameters)
 	TestEqual(TEXT("alert full"), RunFlow->GetAlert(), 1.f, 1e-4f);
 	TestTrue(TEXT("shuttle at least ShuttleMinDistanceCells away (within a cell)"), LandDistanceCells >= Config.ShuttleMinDistanceCells - 1.f);
 	TestEqual(TEXT("countdown from the config"), Shuttle->GetCountdownSeconds(), Config.ShuttleCountdownSeconds, 1e-4f);
-	TestTrue(TEXT("ObjectiveText says to reach the shuttle"), GetWidgetText(*this, Loop.HUD, TEXT("ObjectiveText")).Contains(TEXT("navette")));
+	TestTrue(TEXT("ObjectiveText says to reach the shuttle"), GetWidgetText(*this, Loop.HUD, TEXT("ObjectiveText")).Contains(TEXT("navette")) || GetWidgetText(*this, Loop.HUD, TEXT("ObjectiveText")).Contains(TEXT("shuttle")));
 	TestTrue(TEXT("ShuttleText visible"), GetWidgetVisibility(*this, Loop.HUD, TEXT("ShuttleText")) == ESlateVisibility::Visible);
-	TestTrue(TEXT("ShuttleText shows the countdown"), GetWidgetText(*this, Loop.HUD, TEXT("ShuttleText")).StartsWith(TEXT("Navette")));
+	TestTrue(TEXT("ShuttleText shows the countdown"), GetWidgetText(*this, Loop.HUD, TEXT("ShuttleText")).StartsWith(TEXT("Navette")) || GetWidgetText(*this, Loop.HUD, TEXT("ShuttleText")).StartsWith(TEXT("Shuttle")));
 	TickRun(*this, TestWorld, Loop, 60, []() { return false; });
 	TestTrue(TEXT("countdown running"), Shuttle->GetRemainingSeconds() < Config.ShuttleCountdownSeconds - 0.5f);
 	TestFalse(TEXT("run not ended while the miner is away"), RunFlow->IsRunEnded());
@@ -2025,7 +2031,7 @@ bool FRRIntegrationConsoleExtractionWinTest::RunTest(const FString& Parameters)
 	TestEqual(TEXT("run ends on the boarding tick"), TickRun(*this, TestWorld, Loop, 1, [RunFlow]() { return RunFlow->IsRunEnded(); }), 1);
 	TestTrue(TEXT("shuttle extracted the miner"), Shuttle->IsFinished() && Shuttle->WasExtracted());
 	AddInfo(FString::Printf(TEXT("won with %.2f s left; %d kill(s), %d upgrade choice(s) during the run"), Shuttle->GetRemainingSeconds(), RunFlow->GetKillCount(), Loop.UpgradeChoices));
-	CheckEndScreen(*this, TestWorld, Loop, Recorder.Get(), /*bSuccess*/ true, TEXT("EXTRACTION RÉUSSIE"));
+	CheckEndScreen(*this, TestWorld, Loop, Recorder.Get(), /*bSuccess*/ true, TEXT("EXTRACTION RÉUSSIE|EXTRACTION SUCCESSFUL"));
 	return true;
 }
 
@@ -2079,7 +2085,7 @@ bool FRRIntegrationShuttleTimeoutLossTest::RunTest(const FString& Parameters)
 	}
 	TestEqual(TEXT("lost when the countdown runs out (within one frame)"), CountdownSeconds, double(ShortCountdown), double(FrameSeconds) + 1e-3);
 	TestTrue(TEXT("shuttle missed"), Shuttle->IsFinished() && !Shuttle->WasExtracted());
-	CheckEndScreen(*this, TestWorld, Loop, Recorder.Get(), /*bSuccess*/ false, TEXT("RUN PERDUE"));
+	CheckEndScreen(*this, TestWorld, Loop, Recorder.Get(), /*bSuccess*/ false, TEXT("RUN PERDUE|RUN LOST"));
 	return true;
 }
 

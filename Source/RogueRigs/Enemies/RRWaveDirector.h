@@ -26,7 +26,7 @@ enum class ERRHordeState : uint8
 	Pending,
 	/** Lull: nothing spawns, banner not shown yet. */
 	Lull,
-	/** Banner shown ("HORDE EN APPROCHE !"), still nothing spawns until the front. */
+	/** Banner shown ("HORDE INCOMING!"), still nothing spawns until the front. */
 	Announced,
 	/** The front is spawning, over SpreadSeconds. */
 	Spawning,

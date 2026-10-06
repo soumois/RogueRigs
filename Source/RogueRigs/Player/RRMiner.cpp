@@ -38,9 +38,9 @@ ARRMiner::ARRMiner(const FObjectInitializer& ObjectInitializer)
 	// work without Blueprints. BP_Miner replaces them with the Blueprint classes (rifle, shotgun, turret launcher).
 	// Descriptions are provisional working texts.
 	WeaponCatalogue.Add({ ARRShotgun::StaticClass(),
-		NSLOCTEXT("RRMiner", "Catalogue_Shotgun", "Une gerbe de plombs à courte portée qui repousse les robots.") });
+		NSLOCTEXT("RRMiner", "Catalogue_Shotgun", "A short-range spray of pellets that knocks robots back.") });
 	WeaponCatalogue.Add({ ARRTurretLauncher::StaticClass(),
-		NSLOCTEXT("RRMiner", "Catalogue_TurretLauncher", "Pose des tourelles qui tirent seules sur les robots proches.") });
+		NSLOCTEXT("RRMiner", "Catalogue_TurretLauncher", "Places turrets that fire at nearby robots on their own.") });
 
 	PrimaryActorTick.bCanEverTick = true;
 

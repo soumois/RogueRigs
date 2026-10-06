@@ -249,6 +249,8 @@ bool FRRKamikazeKilledTest::RunTest(const FString& Parameters)
 		return false;
 	}
 	TWeakObjectPtr<ARRKamikaze> WeakKamikaze(Kamikaze);
+	// The chaser is destroyed after its death shrink and a world tick may collect it: read it through a weak pointer.
+	TWeakObjectPtr<ARRChaser> WeakChaser(Chaser);
 	for (int32 Frame = 0; Frame < 10; ++Frame)
 	{
 		TestWorld.Tick();
@@ -284,8 +286,9 @@ bool FRRKamikazeKilledTest::RunTest(const FString& Parameters)
 	}
 	TestFalse(TEXT("kamikaze destroyed"), WeakKamikaze.IsValid() && !WeakKamikaze->IsActorBeingDestroyed());
 	TestEqual(TEXT("one explosion"), Recorder->GetExplosionRows().Num(), 1);
-	AddInfo(FString::Printf(TEXT("chaser at 150 uu: health %.1f, dead %d"), Health(Chaser), Chaser->IsDead() ? 1 : 0));
-	TestTrue(TEXT("the explosion killed the chaser (30 damage on 30 health)"), Chaser->IsDead());
+	const bool bChaserAlive = WeakChaser.IsValid() && !WeakChaser->IsActorBeingDestroyed() && !WeakChaser->IsDead();
+	AddInfo(FString::Printf(TEXT("chaser at 150 uu: health %.1f, dead %d"), WeakChaser.IsValid() ? Health(WeakChaser.Get()) : 0.f, bChaserAlive ? 0 : 1));
+	TestFalse(TEXT("the explosion killed the chaser (30 damage on 30 health)"), bChaserAlive);
 
 	int32 NearKamikaze = 0;
 	const TArray<ARRPickup*> Pickups = GetXPPickups(TestWorld.Get());

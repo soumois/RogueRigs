@@ -14,7 +14,7 @@ enum class ERRUpgradeCardType : uint8
 {
 	/** Raises Stat on Target by Value, with a rarity Tier. */
 	StatUpgrade,
-	/** "Nouvelle arme": picking it gives the miner WeaponClass (ARRMiner::AddWeapon). No tier: the UI shows it with its own style. */
+	/** "New weapon": picking it gives the miner WeaponClass (ARRMiner::AddWeapon). No tier: the UI shows it with its own style. */
 	NewWeapon
 };
 
@@ -93,7 +93,7 @@ enum class ERRUpgradeOperation : uint8
  * units (0.12 = +12 % for a percentage stat, 0.05 = +5 points of CritChance, 20 = +20 MaxHealth), already scaled by the
  * targeted multiplier for a one-weapon card. The texts are ready for the UI (French).
  * A NewWeapon card uses only CardType, WeaponClass, Target (Weapon), TargetWeapon (null in the offer, the acquired weapon
- * once picked), DisplayName ("Nouvelle arme"), TargetText (weapon name) and DescriptionText; Stat, Tier, Value, Operation and
+ * once picked), DisplayName ("New weapon"), TargetText (weapon name) and DescriptionText; Stat, Tier, Value, Operation and
  * ValueText keep their defaults.
  */
 USTRUCT(BlueprintType)
@@ -133,11 +133,11 @@ struct ROGUERIGS_API FRRUpgradeCard
 	UPROPERTY(BlueprintReadOnly, Category = "Upgrade")
 	ERRUpgradeOperation Operation = ERRUpgradeOperation::AddBase;
 
-	/** Stat name for the UI (e.g. "Dégâts"); "Nouvelle arme" on a NewWeapon card. */
+	/** Stat name for the UI (e.g. "Damage"); "New weapon" on a NewWeapon card. */
 	UPROPERTY(BlueprintReadOnly, Category = "Upgrade|UI")
 	FText DisplayName;
 
-	/** Target for the UI: empty for a player stat, "Toutes les armes" or the weapon's display name (also on a NewWeapon card). */
+	/** Target for the UI: empty for a player stat, "All weapons" or the weapon's display name (also on a NewWeapon card). */
 	UPROPERTY(BlueprintReadOnly, Category = "Upgrade|UI")
 	FText TargetText;
 
@@ -149,7 +149,7 @@ struct ROGUERIGS_API FRRUpgradeCard
 	UPROPERTY(BlueprintReadOnly, Category = "Upgrade|UI")
 	FText DescriptionText;
 
-	/** True for a "Nouvelle arme" card. */
+	/** True for a "New weapon" card. */
 	bool IsNewWeapon() const { return CardType == ERRUpgradeCardType::NewWeapon; }
 
 	/** True when both cards raise the same stat on the same target (tier ignored), or offer the same weapon: such cards never share an offer. */

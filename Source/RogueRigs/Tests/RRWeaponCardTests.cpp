@@ -176,7 +176,7 @@ bool FRRWeaponCardsDefaultsTest::RunTest(const FString& Parameters)
 		TestEqual(*FString::Printf(TEXT("level %d: no weapon card"), Level), NativeUpgrades->GetNewWeaponCardCount(Level, 2), 0);
 	}
 
-	// Card texts: "Nouvelle arme", the CSV weapon name, the catalogue description; no value text.
+	// Card texts: "New weapon", the CSV weapon name, the catalogue description; no value text.
 	FRRUpgradeCard Shotgun;
 	FRRUpgradeCard Launcher;
 	if (!TestTrue(TEXT("shotgun card builds"), URRUpgradeComponent::MakeWeaponCard(Catalogue[0], Shotgun))
@@ -185,9 +185,9 @@ bool FRRWeaponCardsDefaultsTest::RunTest(const FString& Parameters)
 		return false;
 	}
 	TestTrue(TEXT("card type NewWeapon"), Shotgun.IsNewWeapon());
-	TestEqual(TEXT("title"), Shotgun.DisplayName.ToString(), FString(TEXT("Nouvelle arme")));
-	TestEqual(TEXT("shotgun name"), Shotgun.TargetText.ToString(), FString(TEXT("Fusil à pompe")));
-	TestEqual(TEXT("launcher name"), Launcher.TargetText.ToString(), FString(TEXT("Lance-tourelles")));
+	TestEqual(TEXT("title"), Shotgun.DisplayName.ToString(), FString(TEXT("New weapon")));
+	TestEqual(TEXT("shotgun name"), Shotgun.TargetText.ToString(), FString(TEXT("Shotgun")));
+	TestEqual(TEXT("launcher name"), Launcher.TargetText.ToString(), FString(TEXT("Turret launcher")));
 	TestEqual(TEXT("shotgun description"), Shotgun.DescriptionText.ToString(), Catalogue[0].Description.ToString());
 	TestTrue(TEXT("no value text"), Shotgun.ValueText.IsEmpty());
 	TestTrue(TEXT("weapon class kept"), Shotgun.WeaponClass.Get() == ARRShotgun::StaticClass());

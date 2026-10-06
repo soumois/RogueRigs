@@ -1215,7 +1215,7 @@ bool FRRWeaponPierceUpgradeTest::RunTest(const FString& Parameters)
 		TestNearlyEqual(Label + TEXT(": global value"), Global, Expected[Rank]);
 		TestNearlyEqual(Label + TEXT(": targeted value"), Targeted, Expected[Rank]);
 		TestTrue(Label + TEXT(": card"), bCard);
-		TestEqual(Label + TEXT(": card name"), Card.DisplayName.ToString(), FString(TEXT("Perforation")));
+		TestEqual(Label + TEXT(": card name"), Card.DisplayName.ToString(), FString(TEXT("Piercing")));
 		TestEqual(Label + TEXT(": card value text"), Card.ValueText.ToString(), FString::Printf(TEXT("+%d"), FMath::RoundToInt32(Expected[Rank])));
 		TestTrue(Label + TEXT(": weapon stat"), URRUpgradeComponent::IsWeaponStat(Card.Stat));
 	}

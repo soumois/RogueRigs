@@ -226,7 +226,7 @@ protected:
 	UFUNCTION(BlueprintNativeEvent, Category = "HUD|Pressure")
 	void OnPlayerDamaged(float Amount, float HealthFraction);
 
-	/** Display event: a horde front starts in SecondsUntil seconds (banner "HORDE EN APPROCHE !"). Implement in Blueprint. */
+	/** Display event: a horde front starts in SecondsUntil seconds (banner "HORDE INCOMING!"). Implement in Blueprint. */
 	UFUNCTION(BlueprintNativeEvent, Category = "HUD|Pressure")
 	void OnHordeIncoming(float SecondsUntil);
 

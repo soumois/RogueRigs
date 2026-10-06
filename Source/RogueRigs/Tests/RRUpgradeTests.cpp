@@ -129,24 +129,24 @@ bool FRRUpgradeValueLookupTest::RunTest(const FString& Parameters)
 	// Cards carry the value and the French texts.
 	const FRRUpgradeCard Global = MakeUpgradeCard(*this, S.Upgrades, ERRUpgradeStat::Damage, ERRUpgradeRarity::Blue, ERRUpgradeTarget::AllWeapons);
 	TestEqual(TEXT("global damage blue value"), Global.Value, 0.25f, 1e-5f);
-	TestEqual(TEXT("global damage name"), Global.DisplayName.ToString(), FString(TEXT("Dégâts")));
-	TestEqual(TEXT("global damage target"), Global.TargetText.ToString(), FString(TEXT("Toutes les armes")));
-	TestEqual(TEXT("global damage value text"), Global.ValueText.ToString(), FString(TEXT("+25 %")));
+	TestEqual(TEXT("global damage name"), Global.DisplayName.ToString(), FString(TEXT("Damage")));
+	TestEqual(TEXT("global damage target"), Global.TargetText.ToString(), FString(TEXT("All weapons")));
+	TestEqual(TEXT("global damage value text"), Global.ValueText.ToString(), FString(TEXT("+25%")));
 	TestTrue(TEXT("global damage operation"), Global.Operation == ERRUpgradeOperation::MultiplyAdditive);
 
 	const FRRUpgradeCard Targeted = MakeUpgradeCard(*this, S.Upgrades, ERRUpgradeStat::Damage, ERRUpgradeRarity::Grey, ERRUpgradeTarget::Weapon, S.Rifle);
 	TestEqual(TEXT("targeted damage grey value"), Targeted.Value, 0.15f, 1e-5f);
-	TestEqual(TEXT("targeted damage value text"), Targeted.ValueText.ToString(), FString(TEXT("+15 %")));
-	TestEqual(TEXT("targeted damage target = weapon name"), Targeted.TargetText.ToString(), FString(TEXT("Fusil à rafales")));
+	TestEqual(TEXT("targeted damage value text"), Targeted.ValueText.ToString(), FString(TEXT("+15%")));
+	TestEqual(TEXT("targeted damage target = weapon name"), Targeted.TargetText.ToString(), FString(TEXT("Burst rifle")));
 
 	const FRRUpgradeCard Health = MakeUpgradeCard(*this, S.Upgrades, ERRUpgradeStat::MaxHealth, ERRUpgradeRarity::Blue, ERRUpgradeTarget::Player);
 	TestEqual(TEXT("max health text"), Health.ValueText.ToString(), FString(TEXT("+45")));
-	TestEqual(TEXT("max health name"), Health.DisplayName.ToString(), FString(TEXT("PV max")));
+	TestEqual(TEXT("max health name"), Health.DisplayName.ToString(), FString(TEXT("Max health")));
 	TestTrue(TEXT("max health has no target text"), Health.TargetText.IsEmpty());
 	TestTrue(TEXT("max health operation"), Health.Operation == ERRUpgradeOperation::AddBase);
 
 	const FRRUpgradeCard Crit = MakeUpgradeCard(*this, S.Upgrades, ERRUpgradeStat::CritChance, ERRUpgradeRarity::Blue, ERRUpgradeTarget::AllWeapons);
-	TestEqual(TEXT("crit chance text"), Crit.ValueText.ToString(), FString(TEXT("+8 %")));
+	TestEqual(TEXT("crit chance text"), Crit.ValueText.ToString(), FString(TEXT("+8%")));
 
 	FRRUpgradeCard Invalid;
 	TestFalse(TEXT("a player stat cannot target a weapon"), S.Upgrades->MakeCard(ERRUpgradeStat::Luck, ERRUpgradeRarity::Grey, ERRUpgradeTarget::Weapon, S.Rifle, Invalid));
