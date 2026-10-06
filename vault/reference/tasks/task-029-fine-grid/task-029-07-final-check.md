@@ -19,7 +19,7 @@ status: in-progress
 - tokens: open
 - runs: open
 - milestone: M2
-- result: open
+- result: stress at 67 uu within budget (400 robots: S0 9.97 / 12.98, S2 11.16 / 14.93 (one 59.7 ms frame), chain 30 10.08 / 13.70, dig 10.33 / 13.83 ms avg / p99), table in [[stress-grid-cells]]; tests `Integration.FineContactDigOpensPassage` and `Integration.FineConsoleShuttlePlacement` added ([[sys-automation-tests]]); build 0, 158/158 headless, no pure virtual crash. Gaps: console and shuttle meshes overlap rock cells at some landings (no clearance rule); laser fan not screenshot in -game (no input driver).
 
 ## Relations
 - [[task-029-fine-grid]] — parent global task.
