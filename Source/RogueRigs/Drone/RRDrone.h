@@ -39,7 +39,7 @@ DECLARE_DYNAMIC_MULTICAST_DELEGATE_TwoParams(FRROnDigBlockStoppedSignature, FInt
  * parallel, each taking DeltaSeconds * MiningSpeed dig-seconds of terrain damage per tick. A block keeps being cut while
  * it stays in the arc; one that leaves it stops shaking and keeps its damage. ReleaseDig (miner no longer touching rock)
  * returns to Orbit. The drone hovers over the arc centre (mean of the dug cell centers, HoverHeight above the miner's
- * floor) and shows LaserMesh from itself to the first dug block's face; OnDigBlockStarted / OnDigBlockStopped fire per
+ * floor) and shows one laser beam per dug block, from itself to the block's face (LaserBeams pool); OnDigBlockStarted / OnDigBlockStopped fire per
  * block for Blueprint lasers and effects.
  * Hack (StartHack, called every tick by the objective while the miner is in its zone): the drone stops any dig, hovers
  * HackHoverDistance from the target toward the miner (same HoverHeight) and shows LaserMesh from itself to the target's
@@ -156,6 +156,9 @@ public:
 	FRROnDigBlockStoppedSignature OnDigBlockStopped;
 
 protected:
+	/** Fills the laser beam pool up to MaxArcBlocks beams, so the fan does not create components mid-dig. */
+	virtual void BeginPlay() override;
+
 	/** Stops a dig in progress so the target blocks do not keep shaking after the drone is gone. */
 	virtual void EndPlay(const EEndPlayReason::Type EndPlayReason) override;
 
@@ -186,20 +189,36 @@ protected:
 	/** Leaves Dig: stops every dug block, hides the laser, clears the arc and resumes the orbit from the drone's current angle. */
 	void StopDig();
 
-	/** Places LaserMesh as a cylinder from Start to End with LaserDiameter, and shows it. */
-	void UpdateLaser(const FVector& Start, const FVector& End);
+	/** Places Beam as a cylinder from Start to End with LaserDiameter, and shows it (hidden when Start and End coincide). */
+	void UpdateLaser(UStaticMeshComponent* Beam, const FVector& Start, const FVector& End);
+
+	/** Grows LaserBeams to at least Count beams; each new beam copies LaserMesh's mesh and materials, absolute transform, no collision, hidden. */
+	void EnsureLaserBeams(int32 Count);
+
+	/** Aims beam i at GetDigTargetPoint(DigCells[i]) and hides the beams past the arc. Grows the pool when the arc is larger. */
+	void UpdateDigLasers();
+
+	/** Hides every beam of LaserBeams (LaserMesh included). */
+	void HideLaserBeams();
 
 	/** Root visual. Collision disabled, so it never blocks or overlaps pawns. Mesh set in Blueprint. */
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Components")
 	TObjectPtr<UStaticMeshComponent> Mesh;
 
 	/**
-	 * Cutting laser shown in Dig (toward the first dug block) and Hack. Expected mesh: a cylinder along local Z with its
+	 * Cutting laser: beam 0 of LaserBeams in Dig (toward the first dug block) and the link beam in Hack; the other beams copy its mesh and materials. Expected mesh: a cylinder along local Z with its
 	 * pivot at the center (the engine cylinder); size given by LaserMeshBaseHeight and LaserMeshBaseDiameter. Mesh and
 	 * material set in Blueprint. Uses an absolute transform, set every tick. No collision, no shadow.
 	 */
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Components")
 	TObjectPtr<UStaticMeshComponent> LaserMesh;
+
+	/**
+	 * Laser fan: one beam per dug block, DigCells[i] cut by LaserBeams[i]. LaserBeams[0] is LaserMesh; the others are
+	 * created at runtime (BeginPlay, or when the arc outgrows the pool) as copies of LaserMesh. Unused beams are hidden.
+	 */
+	UPROPERTY(Transient, VisibleInstanceOnly, BlueprintReadOnly, Category = "Drone|Laser")
+	TArray<TObjectPtr<UStaticMeshComponent>> LaserBeams;
 
 	/** Horizontal distance from the miner's location to the orbit point, in uu. */
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Drone|Orbit", meta = (ClampMin = 0, Units = "cm"))

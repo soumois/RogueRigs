@@ -315,6 +315,12 @@ void ARRDrone::Tick(float DeltaSeconds)
 	}
 }
 
+void ARRDrone::BeginPlay()
+{
+	Super::BeginPlay();
+	EnsureLaserBeams(MaxArcBlocks);
+}
+
 void ARRDrone::EndPlay(const EEndPlayReason::Type EndPlayReason)
 {
 	if (State == ERRDroneState::Dig)
@@ -367,15 +373,8 @@ void ARRDrone::TickDig(float DeltaSeconds)
 
 	SetActorLocation(FMath::VInterpTo(GetActorLocation(), ComputeDigHoverPoint(), DeltaSeconds, FollowInterpSpeed));
 
-	// Laser first: the face center is still valid before the hit that may destroy the block.
-	if (DigCells.Num() > 0)
-	{
-		UpdateLaser(GetActorLocation(), GetDigTargetPoint(DigCells[0]));
-	}
-	else
-	{
-		LaserMesh->SetVisibility(false);
-	}
+	// Lasers first: the face centers are still valid before the hit that may destroy the blocks.
+	UpdateDigLasers();
 
 	// Every block of the arc is cut in parallel at the full rate. Dig holds even when the arc empties: the miner selects
 	// the next blocks (or releases the dig) on its next tick.
@@ -445,7 +444,7 @@ void ARRDrone::StopDig()
 		StopDigBlock(Cell);
 	}
 
-	LaserMesh->SetVisibility(false);
+	HideLaserBeams();
 	DigGrid = nullptr;
 
 	ResumeOrbitFromCurrentAngle();
@@ -467,12 +466,12 @@ void ARRDrone::TickHack(float DeltaSeconds)
 	const FVector HoverPoint = TargetLocation + TowardMiner * HackHoverDistance;
 
 	SetActorLocation(FMath::VInterpTo(GetActorLocation(), FVector(HoverPoint.X, HoverPoint.Y, FloorZ + HoverHeight), DeltaSeconds, FollowInterpSpeed));
-	UpdateLaser(GetActorLocation(), TargetLocation + HackLinkOffset);
+	UpdateLaser(LaserMesh, GetActorLocation(), TargetLocation + HackLinkOffset);
 }
 
 void ARRDrone::EndHack()
 {
-	LaserMesh->SetVisibility(false);
+	HideLaserBeams();
 	HackTarget = nullptr;
 	ResumeOrbitFromCurrentAngle();
 }
@@ -490,21 +489,80 @@ void ARRDrone::ResumeOrbitFromCurrentAngle()
 	}
 }
 
-void ARRDrone::UpdateLaser(const FVector& Start, const FVector& End)
+void ARRDrone::UpdateLaser(UStaticMeshComponent* Beam, const FVector& Start, const FVector& End)
 {
-	const FVector Beam = End - Start;
-	const double Length = Beam.Size();
+	const FVector Delta = End - Start;
+	const double Length = Delta.Size();
 	if (Length <= UE_KINDA_SMALL_NUMBER)
 	{
-		LaserMesh->SetVisibility(false);
+		Beam->SetVisibility(false);
 		return;
 	}
 
 	// The cylinder is centered on its pivot and runs along local Z.
 	const double WidthScale = LaserDiameter / FMath::Max(LaserMeshBaseDiameter, UE_KINDA_SMALL_NUMBER);
 	const double LengthScale = Length / FMath::Max(LaserMeshBaseHeight, UE_KINDA_SMALL_NUMBER);
-	const FRotator Rotation = FRotationMatrix::MakeFromZ(Beam / Length).Rotator();
+	const FRotator Rotation = FRotationMatrix::MakeFromZ(Delta / Length).Rotator();
 
-	LaserMesh->SetWorldTransform(FTransform(Rotation, Start + Beam * 0.5, FVector(WidthScale, WidthScale, LengthScale)));
-	LaserMesh->SetVisibility(true);
+	Beam->SetWorldTransform(FTransform(Rotation, Start + Delta * 0.5, FVector(WidthScale, WidthScale, LengthScale)));
+	Beam->SetVisibility(true);
+}
+
+void ARRDrone::EnsureLaserBeams(int32 Count)
+{
+	if (LaserBeams.Num() == 0)
+	{
+		LaserBeams.Add(LaserMesh);
+	}
+
+	while (LaserBeams.Num() < Count)
+	{
+		// Copy of LaserMesh: same mesh and materials (set on LaserMesh in Blueprint), same world-space setup.
+		UStaticMeshComponent* Beam = NewObject<UStaticMeshComponent>(this, MakeUniqueObjectName(this, UStaticMeshComponent::StaticClass(), TEXT("LaserBeam")));
+		Beam->SetupAttachment(Mesh);
+		Beam->SetUsingAbsoluteLocation(true);
+		Beam->SetUsingAbsoluteRotation(true);
+		Beam->SetUsingAbsoluteScale(true);
+		Beam->SetCollisionProfileName(UCollisionProfile::NoCollision_ProfileName);
+		Beam->SetGenerateOverlapEvents(false);
+		Beam->SetCanEverAffectNavigation(false);
+		Beam->SetCastShadow(false);
+		Beam->SetVisibility(false);
+		Beam->SetStaticMesh(LaserMesh->GetStaticMesh());
+		for (int32 MaterialIndex = 0; MaterialIndex < LaserMesh->GetNumMaterials(); ++MaterialIndex)
+		{
+			Beam->SetMaterial(MaterialIndex, LaserMesh->GetMaterial(MaterialIndex));
+		}
+		Beam->RegisterComponent();
+		LaserBeams.Add(Beam);
+	}
+}
+
+void ARRDrone::UpdateDigLasers()
+{
+	EnsureLaserBeams(DigCells.Num());
+	const FVector Start = GetActorLocation();
+	for (int32 Index = 0; Index < LaserBeams.Num(); ++Index)
+	{
+		if (Index < DigCells.Num())
+		{
+			UpdateLaser(LaserBeams[Index], Start, GetDigTargetPoint(DigCells[Index]));
+		}
+		else
+		{
+			LaserBeams[Index]->SetVisibility(false);
+		}
+	}
+}
+
+void ARRDrone::HideLaserBeams()
+{
+	LaserMesh->SetVisibility(false);
+	for (UStaticMeshComponent* Beam : LaserBeams)
+	{
+		if (Beam)
+		{
+			Beam->SetVisibility(false);
+		}
+	}
 }

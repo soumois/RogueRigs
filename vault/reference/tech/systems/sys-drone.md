@@ -1,6 +1,6 @@
 ---
 id: sys-drone
-description: "Drone C++ actor: orbit, contact arc dig (up to 4 blocks, per-block events) and hack states, laser mesh, MiningSpeed from the miner ASC."
+description: "Drone C++ actor: orbit, contact arc dig (up to 4 blocks, per-block events) and hack states, per-block laser fan, MiningSpeed from the miner ASC."
 parent: systems-index
 kind: doc
 ---
@@ -9,6 +9,7 @@ kind: doc
 - responsibility: the helper drone actor and its state behaviours: Orbit, Dig (arc mining, task-029-05), Hack. No dialogue yet.
 - main_classes (in `Source/RogueRigs/Drone/`):
   - `ARRDrone : AActor` (`RRDrone.h`, `Abstract`, subclassed in Blueprint): root `UStaticMeshComponent` `Mesh` with profile `NoCollision` (no overlap events, does not affect navigation); child `UStaticMeshComponent` `LaserMesh` (absolute transform, `NoCollision`, no shadow, hidden outside Dig and Hack). Both meshes, and the laser's red material, are set in Blueprint; `LaserMesh` expects a cylinder along local Z with a centered pivot (the engine cylinder).
+  - Laser fan (task-029-08): `LaserBeams` (transient pool, `VisibleInstanceOnly`), beam 0 = `LaserMesh`; `BeginPlay` fills it to `MaxArcBlocks` with runtime copies of `LaserMesh` (same mesh and materials, same world-space, no-collision, no-shadow setup), and it grows if an arc is larger. No Blueprint property to set.
   - Editable, orbit: `OrbitRadius` (150 uu), `OrbitPeriod` (2 s), `HoverHeight` (150 uu, also the dig and hack height), `FollowInterpSpeed` (10, provisional; 0 = snap; also used in Dig and Hack).
   - Editable, dig ([[drone]], provisional): `ArcReachCells` (1.5), `ArcAngleDegrees` (120, full cone), `MaxArcBlocks` (4). `DigHoverDistance` and `DigCancelDistanceCells` were removed in task-029-05.
   - Editable, hack: `HackHoverDistance` (100 uu, provisional), `HackLinkOffset` ((0, 0, 50), provisional).
@@ -22,9 +23,9 @@ kind: doc
   - `SelectArcCells(Grid, MinerLocation, ArcDirection, OutCells)` (C++ public, const): block cells whose center is within `ArcReachCells` × cell size of the front point (miner location + direction × capsule radius) and within `ArcAngleDegrees` / 2 of the direction seen from the miner location; sorted nearest to the front point, then smaller angle, then Y, X; at most `MaxArcBlocks`. 2D, unrotated grid. Against a flat wall at 67 uu with a 34 uu capsule: the 3 wall blocks within 60°, plus the block behind the nearest, whose center sits exactly 1.5 cells from a touching front point; it is in only with no gap (character movement keeps about 0.1 uu, so 3 blocks in play; 4 when the miner stands at a cell center, 0.5 uu into the wall, as in the tests). Corners and diagonal pushes can give 4.
   - `ReleaseDig()`: leaves Dig (no effect otherwise).
   - `StartHack(Target)` / `StopHack(Target)`: driven by the objective every tick ([[sys-objectives]]); one target at a time; a dig in progress is stopped.
-  - Dig tick: Orbit if miner or grid gone; cells no longer blocks (explosions) leave the arc (`OnDigBlockStopped(Cell, true)`); move toward the arc centre (mean of dug cell centers; Z = miner capsule bottom + `HoverHeight`); `LaserMesh` from the drone to `GetDigTargetPoint` of the first dug cell (hidden when the arc is empty); then each dug cell takes `ApplyTerrainDamage(Cell, DeltaSeconds × GetMiningSpeed(), Drone)` in parallel; a destroyed cell leaves the arc (`OnDigBlockStopped(Cell, true)`). Dig holds with an empty arc until the miner's next request or release.
+  - Dig tick: Orbit if miner or grid gone; cells no longer blocks (explosions) leave the arc (`OnDigBlockStopped(Cell, true)`); move toward the arc centre (mean of dug cell centers; Z = miner capsule bottom + `HoverHeight`); beam i from the drone to `GetDigTargetPoint(DigCells[i])`, unused beams hidden; then each dug cell takes `ApplyTerrainDamage(Cell, DeltaSeconds × GetMiningSpeed(), Drone)` in parallel; a destroyed cell leaves the arc (`OnDigBlockStopped(Cell, true)`). Dig holds with an empty arc until the miner's next request or release.
   - Orbit tick: angle += 2π / `OrbitPeriod` per second; orbit point = miner + `OrbitRadius` × (cos, sin), Z = capsule bottom + `HoverHeight`; `VInterpTo` at `FollowInterpSpeed`. Hack tick: hover `HackHoverDistance` from the target toward the miner, laser to target + `HackLinkOffset`.
-  - Leaving Dig (release, empty arc, `SetState(Orbit)`, hack, `SetOwnerMiner`, `EndPlay`): every dug cell stops shaking with `OnDigBlockStopped`, laser hidden, arc cleared, orbit resumes from the drone's current angle. Damage stays on the blocks ([[sys-grid]]).
+  - Leaving Dig (release, empty arc, `SetState(Orbit)`, hack, `SetOwnerMiner`, `EndPlay`): every dug cell stops shaking with `OnDigBlockStopped`, every beam hidden, arc cleared, orbit resumes from the drone's current angle. Damage stays on the blocks ([[sys-grid]]).
 - events (BlueprintAssignable, for the laser and dig effects): `OnDigBlockStarted(FIntPoint Cell)`, `OnDigBlockStopped(FIntPoint Cell, bool bDestroyed)`. The render shake is done by the grid in C++.
 - data: no table; tunables are `EditDefaultsOnly` defaults on the Blueprint subclass. Values from [[drone]].
 - depends_on: [[sys-player]] (miner, capsule, dig trigger), [[sys-gas-core]] (`URRPlayerAttributeSet::MiningSpeed`; the drone has no ASC), [[sys-grid]] (block queries, damage, shake, face center).

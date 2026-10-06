@@ -391,6 +391,39 @@ namespace RRDigTests
 		return INDEX_NONE;
 	}
 
+	/** Number of visible beams in the drone's laser pool. */
+	int32 CountVisibleBeams(const ARRDrone* Drone)
+	{
+		int32 Count = 0;
+		for (const UStaticMeshComponent* Beam : FDroneAccess::Beams(Drone))
+		{
+			Count += (Beam && Beam->IsVisible()) ? 1 : 0;
+		}
+		return Count;
+	}
+
+	/** Laser fan check: one visible beam per dug cell, beam i from the drone to GetDigTargetPoint(DigCells[i]) (within 0.5 uu), the rest hidden. */
+	void CheckLaserFan(FAutomationTestBase& Test, const ARRDrone* Drone, const TCHAR* When)
+	{
+		const TArray<TObjectPtr<UStaticMeshComponent>>& Beams = FDroneAccess::Beams(Drone);
+		const TArray<FIntPoint>& Cells = Drone->GetDigCells();
+		Test.TestTrue(FString::Printf(TEXT("%s: pool holds at least one beam per dug cell"), When), Beams.Num() >= Cells.Num());
+		Test.TestEqual(FString::Printf(TEXT("%s: visible beams = dug cells"), When), CountVisibleBeams(Drone), Cells.Num());
+		const float BaseHeight = FDroneAccess::BeamBaseHeight(Drone);
+		for (int32 Index = 0; Index < Cells.Num() && Index < Beams.Num(); ++Index)
+		{
+			const UStaticMeshComponent* Beam = Beams[Index];
+			const FVector HalfBeam = Beam->GetUpVector() * Beam->GetComponentScale().Z * BaseHeight * 0.5;
+			const FVector Start = Beam->GetComponentLocation() - HalfBeam;
+			const FVector End = Beam->GetComponentLocation() + HalfBeam;
+			const FVector Target = Drone->GetDigTargetPoint(Cells[Index]);
+			Test.AddInfo(FString::Printf(TEXT("%s: beam %d on %s ends %.2f uu from its target point"), When, Index, *Cells[Index].ToString(), FVector::Dist(End, Target)));
+			Test.TestTrue(FString::Printf(TEXT("%s: beam %d visible"), When, Index), Beam->IsVisible());
+			Test.TestTrue(FString::Printf(TEXT("%s: beam %d starts at the drone"), When, Index), Start.Equals(Drone->GetActorLocation(), 0.5));
+			Test.TestTrue(FString::Printf(TEXT("%s: beam %d ends at the target point"), When, Index), End.Equals(Target, 0.5));
+		}
+	}
+
 	/** True when A and B hold the same cells, in any order. */
 	bool SameCells(const TArray<FIntPoint>& A, const TArray<FIntPoint>& B)
 	{
@@ -446,6 +479,8 @@ bool FRRDigArcContactTest::RunTest(const FString& Parameters)
 
 	TestWorld.Tick();
 	TestTrue(TEXT("laser visible while digging"), FDroneAccess::Laser(Drone)->IsVisible());
+	TestTrue(TEXT("LaserMesh is beam 0"), FDroneAccess::Beams(Drone).Num() > 0 && FDroneAccess::Beams(Drone)[0] == FDroneAccess::Laser(Drone));
+	CheckLaserFan(*this, Drone, TEXT("frame 2"));
 	for (int32 Frame = 3; Frame <= 25; ++Frame)
 	{
 		TestWorld.Tick();
@@ -458,6 +493,7 @@ bool FRRDigArcContactTest::RunTest(const FString& Parameters)
 	const double HoverError = FVector::Dist2D(Drone->GetActorLocation(), ArcCentre);
 	AddInfo(FString::Printf(TEXT("frame 25: drone %.1f uu from the arc centre %s"), HoverError, *ArcCentre.ToCompactString()));
 	TestTrue(TEXT("drone hovers over the arc centre"), HoverError <= 10.0);
+	CheckLaserFan(*this, Drone, TEXT("frame 25"));
 
 	// Frames counted from the first tick: continue to the destruction.
 	const int32 LastFrame = TickUntilDestroyed(TestWorld, Grid, Arc, 60, DestroyFrames);
@@ -474,6 +510,7 @@ bool FRRDigArcContactTest::RunTest(const FString& Parameters)
 	TestEqual(TEXT("back to Orbit"), Drone->GetState(), ERRDroneState::Orbit);
 	TestEqual(TEXT("shake stopped"), FGridAccess::Shaking(Grid).Num(), 0);
 	TestFalse(TEXT("laser hidden"), FDroneAccess::Laser(Drone)->IsVisible());
+	TestEqual(TEXT("every beam hidden"), CountVisibleBeams(Drone), 0);
 	TestTrue(TEXT("one stop event per block"), SameCells(Recorder->GetDigStoppedCells(), Arc));
 	TestFalse(TEXT("every stop was a destruction"), Recorder->GetDigStoppedDestroyed().Contains(false));
 	TestTrue(TEXT("rock (129, 113) north of the arc still stands"), Grid->IsBlockCell(FIntPoint(129, 113)));
@@ -631,6 +668,8 @@ bool FRRDigArcReleaseTest::RunTest(const FString& Parameters)
 	const float HealthBeforeMove = Grid->GetCellHealth(FineRockCell);
 	TestNearlyEqual(TEXT("0.25 s of damage done"), HealthBeforeMove, 0.25f, 0.02f);
 	TestEqual(TEXT("still digging"), Drone->GetState(), ERRDroneState::Dig);
+	CheckLaserFan(*this, Drone, TEXT("frame 15"));
+	TestEqual(TEXT("4 beams before the release"), CountVisibleBeams(Drone), 4);
 
 	// Three cells west: open floor all around, nothing within reach.
 	const FVector Home = Miner->GetActorLocation();
@@ -642,6 +681,7 @@ bool FRRDigArcReleaseTest::RunTest(const FString& Parameters)
 	TestEqual(TEXT("arc cleared"), Drone->GetDigCells().Num(), 0);
 	TestEqual(TEXT("shake stopped"), FGridAccess::Shaking(Grid).Num(), 0);
 	TestFalse(TEXT("laser hidden"), FDroneAccess::Laser(Drone)->IsVisible());
+	TestEqual(TEXT("every beam hidden on release"), CountVisibleBeams(Drone), 0);
 	TestEqual(TEXT("4 stop events"), Recorder->GetDigStoppedCells().Num(), 4);
 	TestFalse(TEXT("none was a destruction"), Recorder->GetDigStoppedDestroyed().Contains(true));
 	TestNearlyEqual(TEXT("damage kept, none added after the release"), Grid->GetCellHealth(FineRockCell), HealthBeforeMove, 1e-4f);
