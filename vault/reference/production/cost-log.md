@@ -72,6 +72,7 @@ kind: note
 | [[task-026-02-feedback-events]] | opus | 1 | 0k | 131k | 4276k | 50k |
 | [[task-026-03-bp-pressure]] | sonnet | 2 | 0k | 121k | 3736k | 41k |
 | [[task-026-04-tests-integration]] | opus | 2 | 0k | 396k | 9265k | 83k |
+| [[task-027-01-pickup-motion]] | opus | 2 | 0k | 205k | 9515k | 92k |
 
 ## Totals
 | Scope | Input | Cache write | Cache read | Output |

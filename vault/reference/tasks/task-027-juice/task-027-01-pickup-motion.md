@@ -3,7 +3,7 @@ id: task-027-01-pickup-motion
 description: "XP and ore chunks eject in arcs, rest, then stream into the miner; collect event; kamikaze 0.5 s flare before exploding; tests."
 parent: task-027-juice
 kind: task
-status: in-progress
+status: done
 ---
 # Pickup motion and kamikaze flare
 
@@ -15,9 +15,9 @@ status: in-progress
 - done_when: build exits 0 with the editor closed; all `RogueRigs.*` tests pass headless (new ones included); docs updated; lint clean.
 - editor_state: closed
 - token_ceiling: 110000
-- model: open
-- tokens: open
-- runs: open
+- model: opus
+- tokens: input 160, cache write 204918, cache read 9514676, output 92394
+- runs: 2
 - milestone: M2
 - result: built (7837267): XP bursts 3/4/6/12 cubes, arc + bounce + rest + magnet via URRPickupSubsystem, OnPickupCollectedAt, kamikaze flare events/getters, crit gold, number stacking; 175/175 tests; S7 400-chaser burst avg 9.19 p99 11.34 ms. Ore and heal pop one chunk per block (GDD), not 3-5.
 
