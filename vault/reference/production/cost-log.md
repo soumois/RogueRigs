@@ -70,6 +70,7 @@ kind: note
 | [[task-026-00-landing-clearance]] | opus | 1 | 0k | 83k | 2512k | 32k |
 | [[task-026-01-wave-director]] | opus | 1 | 0k | 173k | 5774k | 99k |
 | [[task-026-02-feedback-events]] | opus | 1 | 0k | 131k | 4276k | 50k |
+| [[task-026-03-bp-pressure]] | sonnet | 2 | 0k | 121k | 3736k | 41k |
 
 ## Totals
 | Scope | Input | Cache write | Cache read | Output |
