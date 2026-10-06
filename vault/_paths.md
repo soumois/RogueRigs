@@ -306,6 +306,10 @@ task-029-fine-grid  reference/tasks/task-029-fine-grid.md
 task-030-01-director-speeds  reference/tasks/task-030-pacing-feedback/task-030-01-director-speeds.md
 task-030-02-pacing-retune  reference/tasks/task-030-pacing-feedback/task-030-02-pacing-retune.md
 task-030-pacing-feedback  reference/tasks/task-030-pacing-feedback.md
+task-031-01-remove-dummy  reference/tasks/task-031-directional-spawn/task-031-01-remove-dummy.md
+task-031-02-spawn-speed-shooter  reference/tasks/task-031-directional-spawn/task-031-02-spawn-speed-shooter.md
+task-031-03-pacing-retune  reference/tasks/task-031-directional-spawn/task-031-03-pacing-retune.md
+task-031-directional-spawn  reference/tasks/task-031-directional-spawn.md
 tasks-index  reference/tasks/tasks-index.md
 tech-index  reference/tech/tech-index.md
 terrain-index  reference/gdd/terrain/terrain-index.md
