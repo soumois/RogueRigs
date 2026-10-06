@@ -403,16 +403,17 @@ bool FRRPickupMotionSplitTest::RunTest(const FString& Parameters)
 	}
 	TestEqual(TEXT("XP of chaser + shooter + heavy + kamikaze (1 + 2 + 5 + 1)"), TotalXP, 9.f, 1e-4f);
 
-	// Fractional cubes reach the level threshold exactly: twelve heavy cubes (5/12 each) = level 1 -> 2 (5 XP), XP back to 0.
+	// Fractional cubes reach the level threshold exactly: seven cubes of a seventh of the level 1 need (XPCurve.csv) = level 1 -> 2, XP back to 0.
 	URRProgressionComponent* Progression = NewObject<URRProgressionComponent>(Grid);
 	Progression->RegisterComponent();
 	const int32 LevelBefore = Progression->GetLevel();
-	for (int32 Index = 0; Index < 12; ++Index)
+	const float LevelOneNeed = Progression->GetXPToNextLevel();
+	for (int32 Index = 0; Index < 7; ++Index)
 	{
-		Progression->AddXP(5.f / 12.f);
+		Progression->AddXP(LevelOneNeed / 7.f);
 	}
 	AddInfo(FString::Printf(TEXT("progression: level %d -> %d, XP %.6f"), LevelBefore, Progression->GetLevel(), Progression->GetXP()));
-	TestEqual(TEXT("twelve 5/12 cubes give one level"), Progression->GetLevel(), LevelBefore + 1);
+	TestEqual(TEXT("seven need/7 cubes give one level"), Progression->GetLevel(), LevelBefore + 1);
 	TestEqual(TEXT("no XP left over"), Progression->GetXP(), 0.f, 1e-3f);
 	return true;
 }

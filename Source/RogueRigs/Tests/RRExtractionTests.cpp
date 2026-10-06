@@ -267,7 +267,7 @@ bool FRRExtractionEndClosesOfferTest::RunTest(const FString& Parameters)
 	LevelUp->OnUpgradeOfferClosed.AddDynamic(Recorder.Get(), &URRTestEventRecorder::HandleUpgradeOfferClosed);
 
 	// An open card screen and a second level-up queued when the run ends.
-	Progression->AddXP(5.f);
+	Progression->AddXP(Progression->GetXPToNextLevel() - Progression->GetXP());
 	TickFrames(TestWorld, 60);
 	TestTrue(TEXT("card screen open"), LevelUp->IsAwaitingChoice());
 	TestTrue(TEXT("run ends"), Setup.RunFlow->EndRun(true));
@@ -276,7 +276,7 @@ bool FRRExtractionEndClosesOfferTest::RunTest(const FString& Parameters)
 	TestTrue(TEXT("choices blocked"), LevelUp->AreChoicesBlocked());
 
 	// A later level-up opens no screen.
-	Progression->AddXP(50.f);
+	Progression->AddXP(Progression->GetXPToNextLevel() - Progression->GetXP());
 	TickFrames(TestWorld, 60);
 	TestFalse(TEXT("no card screen after the end"), LevelUp->IsAwaitingChoice() || LevelUp->IsChoiceDelayActive());
 	TestEqual(TEXT("one run end event"), Recorder->GetRunEndedResults().Num(), 1);

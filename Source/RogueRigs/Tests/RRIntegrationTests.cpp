@@ -400,7 +400,17 @@ bool FRRIntegrationXPLevelUpTest::RunTest(const FString& Parameters)
 	}
 	TestEqual(TEXT("starts at level 1"), Progression->GetLevel(), 1);
 	TestEqual(TEXT("starts with 0 XP"), Progression->GetXP(), 0.f);
-	TestEqual(TEXT("level 1 needs 5 XP"), Progression->GetXPToNextLevel(), 5.f);
+	// The five chaser kills bring the last 5 XP of level 1 (XPGain 1): pre-fill the rest of the XPCurve.csv need (task-030-02).
+	const float LevelOneNeed = Progression->GetXPToNextLevel();
+	if (!TestTrue(TEXT("level 1 needs at least 5 XP"), LevelOneNeed >= 5.f))
+	{
+		return false;
+	}
+	if (LevelOneNeed > 5.f)
+	{
+		Progression->AddXP(LevelOneNeed - 5.f);
+	}
+	TestEqual(TEXT("still level 1, 5 XP short"), Progression->GetXPToNextLevel() - Progression->GetXP(), 5.f, 1e-3f);
 
 	// Pickups find the miner as the player 0 pawn: a player controller (no local player) possesses it.
 	APlayerController* Controller = TestWorld.Spawn<APlayerController>(APlayerController::StaticClass(), Miner->GetActorLocation());
@@ -1482,6 +1492,17 @@ bool FRRIntegrationUpgradeLoopTest::RunTest(const FString& Parameters)
 	TStrongObjectPtr<URRHUDWidget> HUDRoot(HUD);
 	HUD->BindToMiner(Miner);
 	TestTrue(TEXT("UpgradeScreen collapsed at start"), GetWidgetVisibility(*this, HUD, TEXT("UpgradeScreen")) == ESlateVisibility::Collapsed);
+
+	// The five chaser kills bring the last 5 XP of level 1 (XPGain 1): pre-fill the rest of the XPCurve.csv need (task-030-02).
+	const float LevelOneNeed = Progression->GetXPToNextLevel();
+	if (!TestTrue(TEXT("level 1 needs at least 5 XP"), LevelOneNeed >= 5.f))
+	{
+		return false;
+	}
+	if (LevelOneNeed > 5.f)
+	{
+		Progression->AddXP(LevelOneNeed - 5.f);
+	}
 
 	Upgrades->SetRandomSeed(UpgradeSeed);
 	LevelUp->OnLevelUpEffect.AddDynamic(Recorder.Get(), &URRTestEventRecorder::HandleLevelUpEffect);
