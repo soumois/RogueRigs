@@ -3,7 +3,7 @@ id: task-029-08-laser-fan
 description: "Drone shows one laser beam per dug block of the arc, from a C++ pool of beam components aimed every tick; tests."
 parent: task-029-fine-grid
 kind: task
-status: in-progress
+status: done
 ---
 # Laser fan
 
@@ -15,11 +15,11 @@ status: in-progress
 - done_when: build exits 0 with the editor closed; all `RogueRigs.*` tests pass headless; docs updated; lint clean.
 - editor_state: closed
 - token_ceiling: 80000
-- model: open
-- tokens: open
-- runs: open
+- model: opus
+- tokens: input 40, cache write 57776, cache read 715596, output 15976
+- runs: 1
 - milestone: M2
-- result: open
+- result: ARRDrone beam pool LaserBeams (LaserMesh is beam 0, copies up to MaxArcBlocks 4, same mesh and material), UpdateDigLasers aims beam i at GetDigTargetPoint of dug cell i, rest hidden; hack keeps LaserMesh alone. Fan checks added to Dig.ArcContactDig and Dig.ArcPersistAndRelease (beam ends within 0.5 uu, all hidden on release). No BP_Drone property needed. Build 0, 156/156. Docs sys-drone, sys-automation-tests, bp-drone. Commit 73204e3.
 
 ## Relations
 - [[task-029-fine-grid]] — parent global task.

@@ -64,6 +64,7 @@ kind: note
 | [[task-029-04-switch-67]] | opus | 2 | 0k | 339k | 11663k | 44k |
 | [[task-029-05-arc-mining]] | opus | 1 | 0k | 160k | 6134k | 80k |
 | [[task-029-06-bp-fine-grid]] | sonnet | 1 | 0k | 72k | 1938k | 18k |
+| [[task-029-08-laser-fan]] | opus | 1 | 0k | 58k | 716k | 16k |
 
 ## Totals
 | Scope | Input | Cache write | Cache read | Output |

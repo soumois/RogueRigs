@@ -3,7 +3,7 @@ id: task-029-09-bp-fan-holes
 description: "BP_Drone set up for the laser fan, PIE check of the fan and of explosion holes on the 67 uu grid next to open floor."
 parent: task-029-fine-grid
 kind: task
-status: todo
+status: in-progress
 ---
 # Laser fan and explosion holes in PIE
 
