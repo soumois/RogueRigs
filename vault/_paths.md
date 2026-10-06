@@ -42,6 +42,7 @@ bp-pickup-xp  reference/tech/blueprints/bp-pickup-xp.md
 bp-projectile  reference/tech/blueprints/bp-projectile.md
 bp-rr-game-mode  reference/tech/blueprints/bp-rr-game-mode.md
 bp-rr-player-controller  reference/tech/blueprints/bp-rr-player-controller.md
+bp-shield-chaser  reference/tech/blueprints/bp-shield-chaser.md
 bp-shooter  reference/tech/blueprints/bp-shooter.md
 bp-shotgun  reference/tech/blueprints/bp-shotgun.md
 bp-target-dummy  reference/tech/blueprints/bp-target-dummy.md

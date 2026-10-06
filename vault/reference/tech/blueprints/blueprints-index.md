@@ -12,6 +12,7 @@ One node per Blueprint, template `blueprint.md`.
 - [[tech-index]] — parent index.
 - [[bp-arena-grid]] — BP_ArenaGrid doc, the M1 arena grid Blueprint.
 - [[bp-miner]] — BP_Miner, the playable miner pawn.
+- [[bp-shield-chaser]] — BP_ShieldChaser, the shielded chaser with a pale shell.
 - [[bp-drone]] — BP_Drone, the orbiting helper drone.
 - [[bp-pickup-heal]] — BP_PickupHeal, the red heal pickup.
 - [[bp-pickup-ore]] — BP_PickupOre, the cyan ore pickup.
