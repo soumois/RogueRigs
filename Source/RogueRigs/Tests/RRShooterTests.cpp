@@ -112,7 +112,7 @@ bool FRRShooterStatsTest::RunTest(const FString& Parameters)
 	if (TestTrue(TEXT("EnemyStats.csv row Shooter read"), ARREnemy::LoadStatsRow(TEXT("Shooter"), Row)))
 	{
 		TestEqual(TEXT("MaxHealth 40"), Row.MaxHealth, 40.f);
-		TestEqual(TEXT("MoveSpeed 300"), Row.MoveSpeed, 300.f);
+		TestEqual(TEXT("MoveSpeed 240"), Row.MoveSpeed, 240.f);
 		TestEqual(TEXT("Damage 12"), Row.Damage, 12.f);
 		TestEqual(TEXT("AttackRate 0.5 (one shot every 2 s)"), Row.AttackRate, 0.5f);
 		TestEqual(TEXT("AttackRange 1200"), Row.AttackRange, 1200.f);
@@ -143,7 +143,7 @@ bool FRRShooterStatsTest::RunTest(const FString& Parameters)
 		return false;
 	}
 	TestEqual(TEXT("Health 40"), Health(Shooter), 40.f);
-	TestEqual(TEXT("MaxWalkSpeed 300"), Shooter->GetCharacterMovement()->MaxWalkSpeed, 300.f);
+	TestEqual(TEXT("MaxWalkSpeed 240"), Shooter->GetCharacterMovement()->MaxWalkSpeed, 240.f);
 	TestEqual(TEXT("knockback resistance 0.2"), Shooter->GetKnockbackResistance(), 0.2f);
 	TestEqual(TEXT("arrival at the preferred distance"), Shooter->GetEnemyMovement()->GetArrivalDistance(), 800.f);
 	TestEqual(TEXT("capsule radius 34 (miner size)"), Shooter->GetCapsuleComponent()->GetUnscaledCapsuleRadius(), 34.f);

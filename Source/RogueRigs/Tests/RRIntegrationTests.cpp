@@ -837,7 +837,7 @@ namespace RRIntegrationExplosionTests
 	const FIntPoint PointBlankMinerCell(36, 65);
 
 	/** Open row 44 of arena_m1 running along the rocks (37-41, 45): armed miner on the west end, kamikaze 11 cells east
-	 * (slow and tough: 300 uu/s, 100 HP, so it dies about 800 uu after its start, above the rocks). */
+	 * (slow and tough: 240 uu/s, 100 HP; measured in task-030-01: killed at 4.4 s, about 1190 uu from the miner, above the rocks). */
 	const FIntPoint KamikazeKillMinerCell(32, 44);
 	const FIntPoint KamikazeKillStartCell(43, 44);
 

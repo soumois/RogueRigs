@@ -98,7 +98,7 @@ bool FRRHeavyStatsTest::RunTest(const FString& Parameters)
 	if (TestTrue(TEXT("EnemyStats.csv row Heavy read"), ARREnemy::LoadStatsRow(TEXT("Heavy"), Row)))
 	{
 		TestEqual(TEXT("MaxHealth 300"), Row.MaxHealth, 300.f);
-		TestEqual(TEXT("MoveSpeed 200"), Row.MoveSpeed, 200.f);
+		TestEqual(TEXT("MoveSpeed 160"), Row.MoveSpeed, 160.f);
 		TestEqual(TEXT("Damage 25 (slam)"), Row.Damage, 25.f);
 		TestEqual(TEXT("AttackRate 0.4 (one slam every 2.5 s)"), Row.AttackRate, 0.4f);
 		TestEqual(TEXT("AttackRange 400 (slam radius)"), Row.AttackRange, 400.f);
@@ -119,7 +119,7 @@ bool FRRHeavyStatsTest::RunTest(const FString& Parameters)
 		return false;
 	}
 	TestEqual(TEXT("Health 300"), Health(Heavy), 300.f);
-	TestEqual(TEXT("MaxWalkSpeed 200"), Heavy->GetCharacterMovement()->MaxWalkSpeed, 200.f);
+	TestEqual(TEXT("MaxWalkSpeed 160"), Heavy->GetCharacterMovement()->MaxWalkSpeed, 160.f);
 	TestEqual(TEXT("knockback resistance 0.8"), Heavy->GetKnockbackResistance(), 0.8f);
 	TestEqual(TEXT("slam radius 400"), Heavy->GetSlamRadius(), 400.f);
 	TestEqual(TEXT("telegraph 0.8 s"), Heavy->GetTelegraphDuration(), 0.8f);
