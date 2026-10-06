@@ -3,7 +3,7 @@ id: task-026-01-wave-director
 description: "Spawner director: calm, isolated robots, first pack at 22 s, rising multi-side flow, lull and horde front; one-type packs, tough robots first; tests."
 parent: task-026-pressure
 kind: task
-status: in-progress
+status: done
 ---
 # Wave director
 
@@ -15,11 +15,11 @@ status: in-progress
 - done_when: build exits 0 with the editor closed; all `RogueRigs.*` tests pass headless (new ones included); docs updated; lint clean.
 - editor_state: closed
 - token_ceiling: 130000
-- model: open
-- tokens: open
-- runs: open
+- model: opus
+- tokens: input 108, cache write 172799, cache read 5774082, output 99251
+- runs: 1
 - milestone: M2
-- result: open
+- result: FRRWaveDirector scheduler + DirectorConfig on ARREnemySpawner (C++ defaults in MakeDefault): calm 10 s, lone chaser every 3 s, first pack 22 s, waves of 2–3 packs from distinct sides from 28 s, 6 → 3 s over 180 s, hordes (run-time trigger, provisional) fronts at 95 s and 175 s with 5 s lull and 4 s banner, 40–60 robots on one side over 2 s heavies first; cap 150. Events OnHordeIncoming/Lull/Started/Finished, OnDirectorPhaseChanged; horde queries. 5 Spawner.Director* tests; build 0, 163/163. To check: placed spawner MaxAlive override. Commits 1334d82, 28c9f76.
 
 ## Relations
 - [[task-026-pressure]] — parent global task.

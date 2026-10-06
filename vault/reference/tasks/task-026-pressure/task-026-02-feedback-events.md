@@ -3,7 +3,7 @@ id: task-026-02-feedback-events
 description: "HUD events for a red damage vignette scaled by missing health, the horde banner, and upcoming alert-bar events with their positions; tests."
 parent: task-026-pressure
 kind: task
-status: todo
+status: in-progress
 ---
 # Pressure feedback events
 

@@ -68,6 +68,7 @@ kind: note
 | [[task-029-09-bp-fan-holes]] | sonnet | 2 | 0k | 79k | 2354k | 29k |
 | [[task-029-07-final-check]] | opus | 2 | 0k | 178k | 8102k | 54k |
 | [[task-026-00-landing-clearance]] | opus | 1 | 0k | 83k | 2512k | 32k |
+| [[task-026-01-wave-director]] | opus | 1 | 0k | 173k | 5774k | 99k |
 
 ## Totals
 | Scope | Input | Cache write | Cache read | Output |
