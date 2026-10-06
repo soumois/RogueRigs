@@ -297,11 +297,15 @@ bool FRREnemyDeathTest::RunTest(const FString& Parameters)
 	TestTrue(TEXT("destroyed about 0.15 s after death"), DestroyFrame >= 8 && DestroyFrame <= 11);
 	TestTrue(TEXT("shrank before destruction"), MinScale < 0.2f);
 	const TArray<ARRPickup*> Pickups = GetXPPickups(TestWorld.Get());
-	TestEqual(TEXT("1 XP pickup dropped"), Pickups.Num(), 1);
-	if (Pickups.Num() == 1)
+	TestEqual(TEXT("1 XP in 3 cubes dropped"), Pickups.Num(), 3);
+	float CubeXP = 0.f;
+	for (const ARRPickup* Pickup : Pickups)
 	{
-		TestTrue(TEXT("XP pickup near the death point"), FVector::Dist2D(Pickups[0]->GetActorLocation(), DeathLocation) < 120.f);
+		// Ejected 80-220 uu from the death point (task-027-01).
+		TestTrue(TEXT("XP cube ejected from the death point"), FVector::Dist2D(Pickup->GetPopStart(), DeathLocation) < 1.f && FVector::Dist2D(Pickup->GetActorLocation(), DeathLocation) <= 221.f);
+		CubeXP += Pickup->GetXPAmount();
 	}
+	TestEqual(TEXT("cubes add up to 1 XP"), CubeXP, 1.f, 1e-4f);
 	return true;
 }
 

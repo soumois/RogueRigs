@@ -18,6 +18,8 @@ ARRKamikaze::ARRKamikaze(const FObjectInitializer& ObjectInitializer)
 	: Super(ObjectInitializer)
 {
 	StatsRowName = TEXT("Kamikaze");
+	// XP burst on death (task-027-01): the row XPValue split over 4 cubes.
+	XPCubeCount = 4;
 	ArrivalRangeRatio = 0.5f;
 
 	// 1.1 x the miner's capsule (34 x 88 -> 37.4 x 96.8, enemy-kamikaze size), on the ground: the flow field and avoidance are
@@ -55,8 +57,20 @@ void ARRKamikaze::BeginPlay()
 
 void ARRKamikaze::EnterState(ERRKamikazeState NewState)
 {
+	const ERRKamikazeState PreviousState = State;
 	State = NewState;
 	MarkStateStart();
+
+	if (PreviousState == ERRKamikazeState::Armed && NewState != ERRKamikazeState::Armed)
+	{
+		// Detonate sets bDetonated before the death enters Dead.
+		OnFlareEnd(bDetonated);
+	}
+	if (NewState == ERRKamikazeState::Armed && PreviousState != ERRKamikazeState::Armed)
+	{
+		OnFlareStart(GetFlareDuration());
+		OnFlareStarted.Broadcast(this);
+	}
 
 	if (NewState == ERRKamikazeState::Dead)
 	{
@@ -75,8 +89,8 @@ void ARRKamikaze::UpdateBehavior(float DeltaSeconds)
 	case ERRKamikazeState::Chase:
 		if (IsTargetInArmRange(FindTarget()))
 		{
-			EnterState(ERRKamikazeState::Armed);
 			ArmTime = Now;
+			EnterState(ERRKamikazeState::Armed);
 		}
 		break;
 
@@ -108,6 +122,20 @@ void ARRKamikaze::Detonate()
 		AbilitySystemComponent->AddLooseGameplayTag(RRGameplayTags::State_Dead);
 	}
 	HandleDeath(this);
+}
+
+float ARRKamikaze::GetFlareProgress() const
+{
+	if (bDetonated)
+	{
+		return 1.f;
+	}
+	if (State != ERRKamikazeState::Armed)
+	{
+		return 0.f;
+	}
+	const float Duration = GetFlareDuration();
+	return Duration > 0.f ? static_cast<float>(FMath::Clamp(GetTimeInState() / Duration, 0.0, 1.0)) : 1.f;
 }
 
 void ARRKamikaze::QueueOwnExplosion()

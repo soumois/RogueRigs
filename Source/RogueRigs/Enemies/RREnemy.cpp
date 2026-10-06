@@ -345,14 +345,25 @@ void ARREnemy::DropXP()
 		UE_LOG(LogRogueRigs, Warning, TEXT("%s: XPPickupClass is not set; %d XP not dropped."), *GetName(), Stats.XPValue);
 		return;
 	}
-	FActorSpawnParameters SpawnParameters;
-	SpawnParameters.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AlwaysSpawn;
-	for (int32 Index = 0; Index < Stats.XPValue; ++Index)
+	// The robot XP is split evenly over its cubes (values add up to Stats.XPValue), ejected in evenly spread directions
+	// from a random start angle, each jittered by up to a quarter of the spacing.
+	const int32 CubeCount = XPCubeCount > 0 ? XPCubeCount : Stats.XPValue;
+	const float CubeXP = static_cast<float>(Stats.XPValue) / static_cast<float>(CubeCount);
+	const float Spacing = 360.f / static_cast<float>(CubeCount);
+	const float StartYaw = FMath::FRandRange(0.f, 360.f);
+	const FTransform SpawnTransform(FRotator::ZeroRotator, DropLocation);
+	for (int32 Index = 0; Index < CubeCount; ++Index)
 	{
-		if (!GetWorld()->SpawnActor<ARRPickup>(XPPickupClass, DropLocation, FRotator::ZeroRotator, SpawnParameters))
+		ARRPickup* Cube = GetWorld()->SpawnActorDeferred<ARRPickup>(XPPickupClass, SpawnTransform, nullptr, nullptr,
+			ESpawnActorCollisionHandlingMethod::AlwaysSpawn);
+		if (!Cube)
 		{
 			UE_LOG(LogRogueRigs, Error, TEXT("%s: XP pickup of class %s could not be spawned."), *GetName(), *XPPickupClass->GetName());
+			continue;
 		}
+		Cube->SetXPAmount(CubeXP);
+		Cube->SetPopYaw(StartYaw + Spacing * (static_cast<float>(Index) + FMath::FRandRange(-0.25f, 0.25f)));
+		Cube->FinishSpawning(SpawnTransform);
 	}
 }
 

@@ -80,7 +80,8 @@ DECLARE_MULTICAST_DELEGATE_OneParam(FRROnDamageNumbersPushed, const TArray<FRRDa
  * The single path of floating damage numbers (damage-numbers, sys-damage-numbers). Damage sources call AddHit on each hit
  * (ARREnemy, ARRTargetDummy). Hits on the same target within MergeWindow seconds (world time, from the first hit) add up
  * into one number, critical if any merged hit was; the number keeps the last hit location, so a robot that dies or is
- * destroyed still gets its number where it was. Nothing is spawned per hit: on each tick the due entries (at most
+ * destroyed still gets its number where it was. A new entry whose screen footprint overlaps another open entry is stacked
+ * above it along StackDirection (crowd stacking, damage-numbers). Nothing is spawned per hit: on each tick the due entries (at most
  * MaxNumbersPerTick, the rest wait one tick) are laid out into digits here (left to right along DigitDirection, centred
  * on the number position, advance DigitAdvance x size) and pushed to one persistent UNiagaraComponent as one entry per
  * digit in Niagara array user parameters, with the digit count and a batch id incremented on every push (never reset),
@@ -178,6 +179,8 @@ protected:
 		FVector HitLocation = FVector::ZeroVector;
 		/** Horizontal jitter drawn when the entry opened, kept for its later hits. */
 		FVector Jitter = FVector::ZeroVector;
+		/** Offset along StackDirection set when the entry opened over another open number (crowd stacking), kept for its later hits. */
+		FVector Stack = FVector::ZeroVector;
 		/** Merged value. */
 		float Value = 0.f;
 		/** Any merged hit critical. */
@@ -194,6 +197,12 @@ protected:
 
 	/** Drops pending entries and the component. */
 	virtual void Deinitialize() override;
+
+	/** Screen footprint of an entry (width along DigitDirection, height along StackDirection), from its current value and style. */
+	FVector2D GetFootprint(float Value, bool bCritical) const;
+
+	/** Stack offset for a new entry at Location: lifted along StackDirection above each open entry whose footprint it overlaps (MaxStackSteps at most). */
+	FVector ComputeStackOffset(const FVector& Location, float Value, bool bCritical) const;
 
 	/** Sends LastDigits and DigitBatchId to the Niagara component, when there is one (parameters the asset lacks are skipped). */
 	void PushToNiagara();
@@ -224,9 +233,9 @@ protected:
 	UPROPERTY(Config)
 	FLinearColor NormalColor = FLinearColor::White;
 
-	/** Color of a critical number (saturated gold, task-025-03 readability finding). */
+	/** Color of a critical number (damage-numbers: gold, linear (1, 0.55, 0.08), owner-confirmed after handover-2026-10-06). */
 	UPROPERTY(Config)
-	FLinearColor CriticalColor = FLinearColor(1.f, 0.8f, 0.3f);
+	FLinearColor CriticalColor = FLinearColor(1.f, 0.55f, 0.08f);
 
 	/** Distance between two digit centres, as a fraction of the glyph size (matches the atlas glyph width). */
 	UPROPERTY(Config)
@@ -243,6 +252,18 @@ protected:
 	/** Random horizontal offset (uu, each axis in [-Jitter, Jitter]) drawn per entry so neighbouring numbers stay readable. */
 	UPROPERTY(Config)
 	float Jitter = 25.f;
+
+	/** World direction of screen up for the stacking (camera up of the top-down camera at pitch -50, yaw 0). Normalized on use. */
+	UPROPERTY(Config)
+	FVector StackDirection = FVector(0.766f, 0.f, 0.643f);
+
+	/** Gap (uu) left between a stacked number and the one it was stacked above. */
+	UPROPERTY(Config)
+	float StackGap = 4.f;
+
+	/** Most stacking moves for one new number (each lifts it above one overlapping open number); 0 = no stacking. */
+	UPROPERTY(Config)
+	int32 MaxStackSteps = 4;
 
 	/** At most this many numbers pushed per tick; the oldest go first, the rest wait (keeps horde frames readable and bounded). */
 	UPROPERTY(Config)

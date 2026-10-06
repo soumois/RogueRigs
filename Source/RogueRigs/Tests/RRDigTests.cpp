@@ -731,9 +731,9 @@ bool FRRDigPickupCollectTest::RunTest(const FString& Parameters)
 	TStrongObjectPtr<URRTestEventRecorder> Recorder(NewObject<URRTestEventRecorder>());
 	Miner->OnPickupCollected.AddDynamic(Recorder.Get(), &URRTestEventRecorder::HandlePickupCollected);
 
-	// The pop moves a pickup by up to 80 uu per axis: 100 uu stays inside the radius, radius + 300 stays outside.
+	// The pop ejects a pickup 80-220 uu (task-027-01): spawned under the miner it stays inside the radius, radius + 300 stays outside.
 	const FVector MinerFloor = Grid->GetCellCenter(RockWestFloorCell.X, RockWestFloorCell.Y);
-	ARRPickup* Near = TestWorld.Spawn<ARRPickup>(HealClass, MinerFloor + FVector(0.f, 100.f, 0.f));
+	ARRPickup* Near = TestWorld.Spawn<ARRPickup>(HealClass, MinerFloor);
 	ARRPickup* Far = TestWorld.Spawn<ARRPickup>(HealClass, MinerFloor + FVector(0.f, -(Radius + 300.f), 0.f));
 	if (!TestNotNull(TEXT("near pickup"), Near) || !TestNotNull(TEXT("far pickup"), Far))
 	{

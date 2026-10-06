@@ -291,12 +291,12 @@ bool FRRKamikazeKilledTest::RunTest(const FString& Parameters)
 	const TArray<ARRPickup*> Pickups = GetXPPickups(TestWorld.Get());
 	for (const ARRPickup* Pickup : Pickups)
 	{
-		// Dropped where the kamikaze died (the pop then moves it up to PopMaxOffset per axis in a random direction).
+		// Dropped where the kamikaze died (the pop then ejects it 80-220 uu away).
 		NearKamikaze += FVector::Dist2D(FPickupAccess::PopStartOf(Pickup), DeathLocation) < 1.f ? 1 : 0;
 	}
 	AddInfo(FString::Printf(TEXT("%d XP pickups, %d dropped at the kamikaze"), Pickups.Num(), NearKamikaze));
-	TestEqual(TEXT("1 XP from the kamikaze"), NearKamikaze, 1);
-	TestEqual(TEXT("2 XP in total (kamikaze + chaser)"), Pickups.Num(), 2);
+	TestEqual(TEXT("1 XP from the kamikaze, in 4 cubes"), NearKamikaze, 4);
+	TestEqual(TEXT("2 XP in total (kamikaze 4 cubes + chaser 3)"), Pickups.Num(), 7);
 	return true;
 }
 
@@ -337,7 +337,7 @@ bool FRRKamikazeChainTest::RunTest(const FString& Parameters)
 		TestEqual(TEXT("first Barrel"), Rows[0], FName(TEXT("Barrel")));
 		TestEqual(TEXT("second Kamikaze"), Rows[1], FName(TEXT("Kamikaze")));
 	}
-	TestEqual(TEXT("killed by the explosion: 1 XP"), GetXPPickups(TestWorld.Get()).Num(), 1);
+	TestEqual(TEXT("killed by the explosion: 1 XP in 4 cubes"), GetXPPickups(TestWorld.Get()).Num(), 4);
 	return true;
 }
 

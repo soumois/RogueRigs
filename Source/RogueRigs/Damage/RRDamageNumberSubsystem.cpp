@@ -137,6 +137,8 @@ void URRDamageNumberSubsystem::AddHit(AActor* Target, float Value, bool bCritica
 	}
 	Entry.HitLocation = Location;
 	Entry.Jitter = FVector(FMath::FRandRange(-Jitter, Jitter), FMath::FRandRange(-Jitter, Jitter), 0.f);
+	// The new entry is already the last one of Pending; the scan skips it.
+	Entry.Stack = ComputeStackOffset(Location + Entry.Jitter, Value, bCritical);
 	Entry.Value = Value;
 	Entry.bCritical = bCritical;
 	Entry.FirstHitTime = Now;
@@ -165,7 +167,7 @@ void URRDamageNumberSubsystem::Tick(float DeltaTime)
 	{
 		const FPendingNumber& Entry = Pending[DueCount];
 		FRRDamageNumber& Number = Numbers.AddDefaulted_GetRef();
-		Number.Location = Entry.HitLocation + Entry.Jitter;
+		Number.Location = Entry.HitLocation + Entry.Jitter + Entry.Stack;
 		Number.Value = Entry.Value;
 		Number.bCritical = Entry.bCritical;
 		Number.Size = Entry.bCritical ? NumberSize * CriticalScale : NumberSize;
@@ -191,6 +193,58 @@ void URRDamageNumberSubsystem::Tick(float DeltaTime)
 	PushToNiagara();
 	TotalPushedCount += Numbers.Num();
 	OnNumbersPushed.Broadcast(Numbers);
+}
+
+FVector2D URRDamageNumberSubsystem::GetFootprint(float Value, bool bCritical) const
+{
+	const float Size = bCritical ? NumberSize * CriticalScale : NumberSize;
+	const int32 DigitLimit = FMath::Clamp(MaxDigits, 1, 9);
+	int32 Digits = 1;
+	for (int32 Rest = FMath::Max(FMath::RoundToInt(Value), 1) / 10; Rest > 0 && Digits < DigitLimit; Rest /= 10)
+	{
+		++Digits;
+	}
+	// The glyph cell is DigitAdvance x Size wide per digit and Size tall.
+	return FVector2D(DigitAdvance * Size * static_cast<float>(Digits), Size);
+}
+
+FVector URRDamageNumberSubsystem::ComputeStackOffset(const FVector& Location, float Value, bool bCritical) const
+{
+	if (MaxStackSteps <= 0)
+	{
+		return FVector::ZeroVector;
+	}
+	const FVector Right = DigitDirection.GetSafeNormal(UE_SMALL_NUMBER, FVector::YAxisVector);
+	const FVector Up = StackDirection.GetSafeNormal(UE_SMALL_NUMBER, FVector::ZAxisVector);
+	const FVector2D Footprint = GetFootprint(Value, bCritical);
+
+	FVector Stack = FVector::ZeroVector;
+	for (int32 Step = 0; Step < MaxStackSteps; ++Step)
+	{
+		bool bMoved = false;
+		// The new entry is the last one of Pending: skip it.
+		for (int32 Index = 0; Index < Pending.Num() - 1; ++Index)
+		{
+			const FPendingNumber& Other = Pending[Index];
+			const FVector2D OtherFootprint = GetFootprint(Other.Value, Other.bCritical);
+			const FVector Delta = (Location + Stack) - (Other.HitLocation + Other.Jitter + Other.Stack);
+			const float HalfWidth = 0.5f * (Footprint.X + OtherFootprint.X);
+			const float HalfHeight = 0.5f * (Footprint.Y + OtherFootprint.Y);
+			const float AlongUp = static_cast<float>(FVector::DotProduct(Delta, Up));
+			if (FMath::Abs(static_cast<float>(FVector::DotProduct(Delta, Right))) < HalfWidth && FMath::Abs(AlongUp) < HalfHeight)
+			{
+				// Lift it just above the other number.
+				Stack += Up * (HalfHeight + StackGap - AlongUp);
+				bMoved = true;
+				break;
+			}
+		}
+		if (!bMoved)
+		{
+			break;
+		}
+	}
+	return Stack;
 }
 
 void URRDamageNumberSubsystem::AppendDigits(const FRRDamageNumber& Number, TArray<FRRDamageDigit>& OutDigits) const

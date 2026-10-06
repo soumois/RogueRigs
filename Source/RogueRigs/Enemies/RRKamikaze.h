@@ -6,8 +6,12 @@
 #include "Enemies/RREnemy.h"
 #include "RRKamikaze.generated.h"
 
+class ARRKamikaze;
 class ARRMiner;
 class UStaticMeshComponent;
+
+/** Native event of ARRKamikaze: its core flare started (tests, debug listeners). */
+DECLARE_MULTICAST_DELEGATE_OneParam(FRROnKamikazeFlareStart, ARRKamikaze* /*Kamikaze*/);
 
 /** State of the kamikaze's machine. */
 UENUM(BlueprintType)
@@ -15,7 +19,7 @@ enum class ERRKamikazeState : uint8
 {
 	/** Follows the path provider toward the miner. */
 	Chase,
-	/** Target came within the arm range (CSV AttackRange): stopped, the core pulses faster and grows for the fuse (CSV WindUp), then it explodes. */
+	/** Target came within the arm range (CSV AttackRange): stopped, the core flares (pulses faster, grows, Blueprint light) for the fuse (CSV WindUp, 0.5 s), then it explodes. */
 	Armed,
 	/** Exploded by fuse or killed: the base runs the death shrink. */
 	Dead
@@ -29,7 +33,9 @@ enum class ERRKamikazeState : uint8
  * grows to ArmedCoreScale over the fuse (CSV WindUp) -> after the fuse it queues one ExplosionRowName explosion (URRExplosionSubsystem,
  * instigator and source = this robot) and dies without dropping XP (State.Dead added directly, so its own explosion is
  * refused by its ASC and never counts as a kill). Killed before that (shots, another explosion): it queues the same explosion
- * and drops its XP as any robot. The robot being the explosion source, the subsystem never explodes it twice.
+ * at once (no flare) and drops its XP as any robot. The robot being the explosion source, the subsystem never explodes it twice.
+ * The Armed phase is the flare (enemy-kamikaze, owner 2026-10-05: strong core light for 0.5 s before a proximity explosion):
+ * OnFlareStart(Duration) fires on arming, GetFlareProgress runs 0 -> 1 over the fuse, OnFlareEnd fires when it leaves Armed.
  */
 UCLASS(Blueprintable)
 class ROGUERIGS_API ARRKamikaze : public ARREnemy
@@ -63,6 +69,21 @@ public:
 	/** Current core scale multiplier (pulse x arming growth), for tests and debug. */
 	float GetCoreScaleFactor() const { return CoreScaleFactor; }
 
+	/** True during the flare (Armed): the core light should be on. */
+	UFUNCTION(BlueprintPure, Category = "Kamikaze|Flare")
+	bool IsFlaring() const { return State == ERRKamikazeState::Armed; }
+
+	/** Flare duration in seconds: the fuse (CSV WindUp, enemy-kamikaze 0.5 s). */
+	UFUNCTION(BlueprintPure, Category = "Kamikaze|Flare")
+	float GetFlareDuration() const { return GetFuseTime(); }
+
+	/** Flare progress 0 -> 1 over the fuse while Armed (drive the core light intensity); 0 before arming, 1 once it detonated, 0 when killed before. */
+	UFUNCTION(BlueprintPure, Category = "Kamikaze|Flare")
+	float GetFlareProgress() const;
+
+	/** Broadcast when the flare starts (arming), after OnFlareStart. */
+	FRROnKamikazeFlareStart OnFlareStarted;
+
 protected:
 	/** Sets the movement arrival distance from the arm range and records the core base scale. */
 	virtual void BeginPlay() override;
@@ -81,6 +102,14 @@ protected:
 
 	/** True when Target is alive and within the arm range (CSV AttackRange) (2D between centers). */
 	bool IsTargetInArmRange(const ARRMiner* Target) const { return IsTargetWithin(Target, GetArmRange()); }
+
+	/** Called when the flare starts (arming): ramp the core light to a strong orange-white over Duration seconds. */
+	UFUNCTION(BlueprintImplementableEvent, Category = "Kamikaze|Flare")
+	void OnFlareStart(float Duration);
+
+	/** Called when the flare ends: bDetonated true at the fuse explosion, false when the robot was killed during the flare (light off). */
+	UFUNCTION(BlueprintImplementableEvent, Category = "Kamikaze|Flare")
+	void OnFlareEnd(bool bDetonatedByFuse);
 
 	/** Fuse end: queues the explosion, adds State.Dead and runs the death without XP. */
 	void Detonate();

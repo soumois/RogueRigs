@@ -33,7 +33,7 @@ struct FOnAttributeChangeData;
  * parts are made cheap to move (bLightAttachedParts); a walking robot far from the miner and off screen moves at a slower
  * tick interval (FarMovementDistance, FarMovementTickInterval; UpdateMovementLOD).
  * Death (health set OnDeath, once, State.Dead on the ASC): stops, disables collision, shrinks to 0 over DeathShrinkDuration,
- * then spawns Stats.XPValue pickups of XPPickupClass at its feet and destroys itself. Each hit (the killing one too) is sent to
+ * then bursts XPCubeCount pickups of XPPickupClass at its feet (Stats.XPValue split over them) and destroys itself. Each hit (the killing one too) is sent to
  * URRDamageNumberSubsystem at DamageNumberHeight above the capsule top (merged, pooled numbers). Subclasses implement their behavior in
  * UpdateBehavior (alive only) and may extend HandleDeath. Subclass in Blueprint for the mesh.
  */
@@ -131,7 +131,7 @@ protected:
 	/** Advances the shrink; at its end drops the XP pickups and destroys the robot. */
 	void UpdateDeath(float DeltaSeconds);
 
-	/** Spawns Stats.XPValue pickups of XPPickupClass at DropLocation (no owner). Overridden to suppress the drop (kamikaze fuse). */
+	/** Spawns XPCubeCount pickups of XPPickupClass at DropLocation (no owner), each worth Stats.XPValue / XPCubeCount, ejected in spread directions. Overridden to suppress the drop (kamikaze fuse). */
 	virtual void DropXP();
 
 	/** Health set hit callback (runs inside the GE execution): sends the hit to URRDamageNumberSubsystem (capsule top + DamageNumberHeight). */
@@ -222,6 +222,13 @@ protected:
 	/** Pickup class dropped on death, Stats.XPValue times (a Blueprint subclass of ARRPickup with type XP). None = no drop. */
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Enemy|Death")
 	TSubclassOf<ARRPickup> XPPickupClass;
+
+	/**
+	 * Number of XP cubes the robot bursts on death; its Stats.XPValue is split evenly over them (task-027-01, DRGS-like burst):
+	 * chaser 3, kamikaze 4, shooter 6, heavy 12 (set in each robot constructor). 0 = one cube per XP point (pre-027 rule).
+	 */
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Enemy|Death", meta = (ClampMin = 0))
+	int32 XPCubeCount = 0;
 
 	/** Duration of the death shrink to scale 0, in seconds (enemy-death M1: 0.15 s). */
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Enemy|Death", meta = (ClampMin = 0, Units = "s"))

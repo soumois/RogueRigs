@@ -30,6 +30,9 @@ struct FOnAttributeChangeData;
 /** Fired when the miner collects a pickup: the pickup's type. */
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FRROnPickupCollectedSignature, ERRPickupType, Type);
 
+/** Fired when the miner collects a pickup: its type and the world location of the collection (spawn the collect sparkle there). */
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_TwoParams(FRROnPickupCollectedAtSignature, ERRPickupType, Type, FVector, Location);
+
 /** Fired once when the miner dies: the original instigator of the killing hit (may be null). */
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FRROnMinerDeathSignature, AActor*, Instigator);
 
@@ -185,8 +188,8 @@ public:
 	UFUNCTION(BlueprintPure, Category = "Miner|Progression")
 	URRLevelUpComponent* GetLevelUp() const { return LevelUp; }
 
-	/** Called by a pickup when it reaches the miner: broadcasts OnPickupCollected. Applies no effect itself. */
-	void NotifyPickupCollected(ERRPickupType Type);
+	/** Called by a pickup when it reaches the miner: broadcasts OnPickupCollected, then OnPickupCollectedAt with Location. Applies no effect itself. */
+	void NotifyPickupCollected(ERRPickupType Type, const FVector& Location);
 
 	/** True once the miner died (its ASC has State.Dead). */
 	UFUNCTION(BlueprintPure, Category = "Miner|Damage")
@@ -206,6 +209,10 @@ public:
 	/** Broadcast each time the miner collects a pickup, with its type. */
 	UPROPERTY(BlueprintAssignable, Category = "Miner|Pickup")
 	FRROnPickupCollectedSignature OnPickupCollected;
+
+	/** Broadcast each time the miner collects a pickup, with its type and the collection location (collect sparkle). */
+	UPROPERTY(BlueprintAssignable, Category = "Miner|Pickup")
+	FRROnPickupCollectedAtSignature OnPickupCollectedAt;
 
 	/** Broadcast after each weapon acquisition (HUD: binds the turret charges of a launcher acquired mid-run). */
 	UPROPERTY(BlueprintAssignable, Category = "Miner|Weapons")

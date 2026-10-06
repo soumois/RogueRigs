@@ -35,6 +35,13 @@ public:
 	UFUNCTION()
 	void HandlePickupCollected(ERRPickupType Type) { CollectedPickups.Add(Type); }
 
+	/** Bind to ARRMiner::OnPickupCollectedAt: appends the collection location (type order matches HandlePickupCollected). */
+	UFUNCTION()
+	void HandlePickupCollectedAt(ERRPickupType Type, FVector Location) { CollectedPickupLocations.Add(Location); }
+
+	/** Collection locations received through HandlePickupCollectedAt, in order. */
+	const TArray<FVector>& GetCollectedPickupLocations() const { return CollectedPickupLocations; }
+
 	/** Bind to ARRArenaGrid::OnCellDestroyed: appends the destroyed cell. */
 	UFUNCTION()
 	void HandleCellDestroyed(FIntPoint Cell, ERRCellType Type, ERRTerrainDamageSource Source) { DestroyedCells.Add(Cell); }
@@ -231,6 +238,9 @@ protected:
 
 	/** Pickup types collected so far. */
 	TArray<ERRPickupType> CollectedPickups;
+
+	/** Pickup collection locations so far. */
+	TArray<FVector> CollectedPickupLocations;
 
 	/** Cells destroyed so far. */
 	TArray<FIntPoint> DestroyedCells;

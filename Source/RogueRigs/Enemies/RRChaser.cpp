@@ -16,6 +16,8 @@ ARRChaser::ARRChaser(const FObjectInitializer& ObjectInitializer)
 	: Super(ObjectInitializer)
 {
 	StatsRowName = TEXT("Chaser");
+	// XP burst on death (task-027-01): the row XPValue split over 3 cubes.
+	XPCubeCount = 3;
 	ArrivalRangeRatio = 0.9f;
 	DamageEffectClass = URRGE_DamageFlat::StaticClass();
 

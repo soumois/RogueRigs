@@ -49,6 +49,10 @@ namespace RRIntegrationTests
 {
 	using namespace RRTestHarness;
 
+	/** XP cubes burst by one chaser (task-027-01: its 1 XP split over 3 cubes) and by one kamikaze (4 cubes). */
+	constexpr int32 ChaserXPCubes = 3;
+	constexpr int32 KamikazeXPCubes = 4;
+
 	/** Final Blueprints of the loop. */
 	const TCHAR* const ChaserClassPath = TEXT("/Game/RogueRigs/Blueprints/Enemies/BP_Chaser.BP_Chaser_C");
 	const TCHAR* const GameModeClassPath = TEXT("/Game/RogueRigs/Blueprints/Player/BP_RRGameMode.BP_RRGameMode_C");
@@ -370,7 +374,7 @@ bool FRRIntegrationRifleKillsTest::RunTest(const FString& Parameters)
 		TestWorld.Tick();
 	}
 	TestFalse(TEXT("chaser destroyed after the shrink"), WeakChaser.IsValid() && !WeakChaser->IsActorBeingDestroyed());
-	TestEqual(TEXT("one XP pickup dropped"), CountXPPickups(TestWorld.Get()), 1);
+	TestEqual(TEXT("one chaser burst of XP cubes dropped"), CountXPPickups(TestWorld.Get()), ChaserXPCubes);
 	return true;
 }
 
@@ -434,23 +438,23 @@ bool FRRIntegrationXPLevelUpTest::RunTest(const FString& Parameters)
 			Cubes.Add(It->GetActorLocation());
 		}
 	}
-	TestEqual(TEXT("five XP cubes dropped"), Cubes.Num(), ChaserCount);
+	TestEqual(TEXT("five bursts of XP cubes dropped"), Cubes.Num(), ChaserCount * ChaserXPCubes);
 	TestEqual(TEXT("no cube collected from afar"), Recorder->GetCollectedPickups().Num(), 0);
 	TestEqual(TEXT("still level 1 before collecting"), Progression->GetLevel(), 1);
-	if (Cubes.Num() != ChaserCount)
+	if (Cubes.Num() != ChaserCount * ChaserXPCubes)
 	{
 		return false;
 	}
 
 	// The kills spread over about 600 uu (the first shots land mid-burst): the miner walks the drop zone.
 	double CollectTime = 0.0;
-	const int32 Moves = CollectXPCubes(TestWorld, Miner, Recorder.Get(), ChaserCount, CollectTime);
+	const int32 Moves = CollectXPCubes(TestWorld, Miner, Recorder.Get(), ChaserCount * ChaserXPCubes, CollectTime);
 	TestWorld.Tick();
 
 	AddInfo(FString::Printf(TEXT("kills (time after spawn / distance):%s %d miner move(s) (PickupRadius %.0f); %d collected in %.3f s; level %d, XP %.0f / %.0f; %d level-up(s), %d XP event(s); miner Health %.0f -> %.0f"),
 		*Kills, Moves, Miner->GetPickupRadius(), Recorder->GetCollectedPickups().Num(), CollectTime, Progression->GetLevel(), Progression->GetXP(),
 		Progression->GetXPToNextLevel(), Recorder->GetLevelUps().Num(), Recorder->GetXPChanges().Num(), StartHealth, GetHealth(Miner)));
-	TestEqual(TEXT("five cubes collected"), Recorder->GetCollectedPickups().Num(), ChaserCount);
+	TestEqual(TEXT("every cube collected"), Recorder->GetCollectedPickups().Num(), ChaserCount * ChaserXPCubes);
 	TestEqual(TEXT("no XP cube left"), CountXPPickups(TestWorld.Get()), 0);
 	TestEqual(TEXT("level 2"), Progression->GetLevel(), 2);
 	TestEqual(TEXT("0 XP carried"), Progression->GetXP(), 0.f);
@@ -459,7 +463,7 @@ bool FRRIntegrationXPLevelUpTest::RunTest(const FString& Parameters)
 	{
 		TestEqual(TEXT("level-up to 2"), Recorder->GetLevelUps()[0], 2);
 	}
-	if (TestEqual(TEXT("one XP event per cube"), Recorder->GetXPChanges().Num(), ChaserCount))
+	if (TestEqual(TEXT("one XP event per cube"), Recorder->GetXPChanges().Num(), ChaserCount * ChaserXPCubes))
 	{
 		TestEqual(TEXT("last XP event (0, 10, 2)"), Recorder->GetXPChanges().Last(), FVector(0.f, 10.f, 2.f));
 	}
@@ -1281,7 +1285,7 @@ bool FRRIntegrationRifleKillsKamikazeTest::RunTest(const FString& Parameters)
 	TestEqual(TEXT("every nearby block destroyed"), BlocksLeft, 0);
 	TestTrue(TEXT("miner outside the radius"), DeathDistance > Stats.Radius);
 	TestEqual(TEXT("miner untouched"), GetHealth(Miner), StartHealth);
-	TestEqual(TEXT("one XP pickup dropped"), CountXPPickups(TestWorld.Get()), 1);
+	TestEqual(TEXT("one kamikaze burst of XP cubes dropped"), CountXPPickups(TestWorld.Get()), KamikazeXPCubes);
 	return true;
 }
 
@@ -1506,7 +1510,7 @@ bool FRRIntegrationUpgradeLoopTest::RunTest(const FString& Parameters)
 	UAbilitySystemComponent* RifleASC = Rifle->GetAbilitySystemComponent();
 	MinerASC->SetNumericAttributeBase(Health, 50.f);
 	double CollectTime = 0.0;
-	const int32 Moves = CollectXPCubes(TestWorld, Miner, Recorder.Get(), ChaserCount, CollectTime);
+	const int32 Moves = CollectXPCubes(TestWorld, Miner, Recorder.Get(), ChaserCount * ChaserXPCubes, CollectTime);
 	AddInfo(FString::Printf(TEXT("kills:%s %d miner move(s); %d cubes collected in %.3f s"), *Kills, Moves, Recorder->GetCollectedPickups().Num(), CollectTime));
 	if (!TestEqual(TEXT("level 2 after the five cubes"), Progression->GetLevel(), 2) || !TestEqual(TEXT("one level-up"), Recorder->GetLevelUps().Num(), 1))
 	{

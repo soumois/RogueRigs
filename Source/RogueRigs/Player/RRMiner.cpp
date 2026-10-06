@@ -369,9 +369,10 @@ float ARRMiner::GetPickupRadius() const
 	return AbilitySystemComponent->GetNumericAttribute(URRPlayerAttributeSet::GetPickupRadiusAttribute());
 }
 
-void ARRMiner::NotifyPickupCollected(ERRPickupType Type)
+void ARRMiner::NotifyPickupCollected(ERRPickupType Type, const FVector& Location)
 {
 	OnPickupCollected.Broadcast(Type);
+	OnPickupCollectedAt.Broadcast(Type, Location);
 }
 
 bool ARRMiner::IsDead() const

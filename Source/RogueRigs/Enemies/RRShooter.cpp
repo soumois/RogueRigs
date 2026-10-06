@@ -22,6 +22,8 @@ ARRShooter::ARRShooter(const FObjectInitializer& ObjectInitializer)
 	: Super(ObjectInitializer)
 {
 	StatsRowName = TEXT("Shooter");
+	// XP burst on death (task-027-01): the row XPValue split over 6 cubes.
+	XPCubeCount = 6;
 	// The movement arrives at the preferred distance itself (the ring is the engage range).
 	ArrivalRangeRatio = 1.f;
 	DamageEffectClass = URRGE_DamageFlat::StaticClass();

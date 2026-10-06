@@ -16,6 +16,8 @@ ARRHeavy::ARRHeavy(const FObjectInitializer& ObjectInitializer)
 	: Super(ObjectInitializer)
 {
 	StatsRowName = TEXT("Heavy");
+	// XP burst on death (task-027-01): the row XPValue split over 12 cubes.
+	XPCubeCount = 12;
 	ArrivalRangeRatio = 0.5f;
 	DamageEffectClass = URRGE_DamageFlat::StaticClass();
 

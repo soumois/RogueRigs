@@ -1,4 +1,4 @@
-// Rogue Rigs - pickup actor dropped by ore and heal ore blocks and by dying robots: pops out, then flies to the miner within its pickup radius.
+// Rogue Rigs - pickup actor dropped by ore and heal ore blocks and by dying robots: pops out in an arc, rests, then is magnetized into the miner within its pickup radius.
 
 #pragma once
 
@@ -21,15 +21,32 @@ enum class ERRPickupType : uint8
 	XP
 };
 
+/** Motion phase of a pickup (drives the Blueprint visuals: trail while magnetized). */
+UENUM(BlueprintType)
+enum class ERRPickupPhase : uint8
+{
+	/** Ejection arc with a small bounce (PopDuration). */
+	Pop,
+	/** Lying at its rest point; attraction allowed once AttractDelay has elapsed. */
+	Rest,
+	/** Accelerating toward the miner until collected. */
+	Magnet,
+	/** Collected: destroyed this frame. */
+	Collected
+};
+
 /**
- * A pickup lying on the arena floor. On spawn it pops toward a random horizontal offset (within PopMaxOffset of
- * the spawn point, i.e. inside the cell) along a short arc, then rests HoverHeight above the spawn Z. Once the pop
- * is over and AttractDelay has elapsed, each tick it measures its horizontal distance to the player miner; when that distance is within the
- * miner's PickupRadius attribute it flies to the miner at FlySpeed (and keeps flying even if the miner moves away)
- * and is collected within CollectDistance: logs its type on LogRogueRigs, calls ARRMiner::NotifyPickupCollected,
- * destroys itself; an XP pickup first adds XPAmount to the miner progression (URRProgressionComponent::AddXP, scaled by
- * XPGain there). No collision at all (pawns and projectiles go through). No heal or ore effect yet.
- * Spawned by ARRArenaGrid at a cell center (floor top), and by ARREnemy at its feet on death (XP). Subclass in Blueprint: set PickupType and the mesh.
+ * A pickup lying on the arena floor (xp-level-up: DRGS-like ejection then suction). On spawn it is ejected along a random
+ * horizontal direction (or the one given by SetPopYaw) to a distance in [PopMinDistance, PopMaxDistance]: an arc of
+ * PopArcHeight then a small bounce of PopBounceHeight, over PopDuration in total, ending HoverHeight above the spawn Z.
+ * It then rests; once AttractDelay has elapsed after the pop, as soon as its horizontal distance to the player miner is
+ * within the miner's PickupRadius attribute it latches the magnet: it flies straight at the miner, starting at
+ * MagnetStartSpeed and accelerating by MagnetAcceleration up to MagnetMaxSpeed (nearby cubes form a stream), even if the
+ * miner moves away. Within CollectDistance it is collected: logs its type (Verbose), an XP pickup adds XPAmount to the
+ * miner progression (scaled by XPGain there), ARRMiner::NotifyPickupCollected broadcasts the type and the location, then
+ * it destroys itself. No physics, no collision; movement is driven by URRPickupSubsystem in one loop per frame (actor tick
+ * only as a fallback when the subsystem is missing). Spawned by ARRArenaGrid at a cell center (floor top), and by ARREnemy
+ * at its feet on death (XP, split over several cubes). Subclass in Blueprint: set PickupType and the mesh.
  */
 UCLASS(Abstract, Blueprintable)
 class ROGUERIGS_API ARRPickup : public AActor
@@ -37,31 +54,76 @@ class ROGUERIGS_API ARRPickup : public AActor
 	GENERATED_BODY()
 
 public:
-	/** Creates the mesh root without collision and enables tick. */
+	/** Creates the mesh root without collision; actor tick disabled unless the pickup subsystem is missing. */
 	ARRPickup();
 
-	/** Runs the pop, then the attraction and collection check. */
+	/** Fallback only (no URRPickupSubsystem): runs UpdateMotion with the player miner. */
 	virtual void Tick(float DeltaSeconds) override;
+
+	/**
+	 * Advances the pickup by DeltaSeconds: pop, rest, magnet and collection. Miner may be null (no attraction).
+	 * PickupRadiusSquared: the miner's PickupRadius squared (read once per frame by the caller). Called by URRPickupSubsystem.
+	 */
+	void UpdateMotion(float DeltaSeconds, ARRMiner* Miner, float PickupRadiusSquared);
 
 	/** What this pickup gives when collected. */
 	UFUNCTION(BlueprintPure, Category = "Pickup")
 	ERRPickupType GetPickupType() const { return PickupType; }
 
+	/** Current motion phase. */
+	UFUNCTION(BlueprintPure, Category = "Pickup")
+	ERRPickupPhase GetPhase() const { return Phase; }
+
+	/** True while flying to the miner (Magnet phase): show the trail. */
+	UFUNCTION(BlueprintPure, Category = "Pickup")
+	bool IsMagnetized() const { return Phase == ERRPickupPhase::Magnet; }
+
+	/** Current magnet speed in uu/s (0 before the magnet latches). */
+	UFUNCTION(BlueprintPure, Category = "Pickup")
+	float GetMagnetSpeed() const { return MagnetSpeed; }
+
+	/** Raw XP given on collection by an XP pickup. */
+	UFUNCTION(BlueprintPure, Category = "Pickup")
+	float GetXPAmount() const { return XPAmount; }
+
+	/** Sets the raw XP given on collection (ARREnemy splits a robot's XP over its cubes). Call before collection, ideally before BeginPlay (deferred spawn). */
+	void SetXPAmount(float InXPAmount) { XPAmount = FMath::Max(InXPAmount, 0.f); }
+
+	/** Forces the ejection direction (world yaw in degrees) instead of a random one. Call before BeginPlay (deferred spawn); ARREnemy spreads its cubes evenly. */
+	void SetPopYaw(float InYawDegrees) { PopYawDegrees = InYawDegrees; bHasPopYaw = true; }
+
+	/** World location where the pop started (spawn point). */
+	const FVector& GetPopStart() const { return PopStart; }
+
+	/** World rest location at the end of the pop. */
+	const FVector& GetPopEnd() const { return PopEnd; }
+
 protected:
-	/** Picks the random pop target and stores the pop start point. */
+	/** Picks the pop target, stores the pop start point and registers with URRPickupSubsystem (else enables the actor tick). */
 	virtual void BeginPlay() override;
 
-	/** Advances the pop arc; returns true once the pop is finished. */
+	/** Unregisters from URRPickupSubsystem. */
+	virtual void EndPlay(const EEndPlayReason::Type EndPlayReason) override;
+
+	/** Advances the pop arc and bounce; returns true once the pop is finished. */
 	bool UpdatePop(float DeltaSeconds);
 
-	/** Returns the player miner (player 0 pawn), cached once found; null when the player pawn is not a miner. */
+	/** Returns the player miner (player 0 pawn), cached once found; null when the player pawn is not a miner. Fallback tick only. */
 	ARRMiner* FindMiner();
 
-	/** Moves toward the miner at FlySpeed; collects when within CollectDistance. */
+	/** Accelerates toward the miner; collects when within CollectDistance or when the step reaches it. */
 	void FlyToMiner(ARRMiner* Miner, float DeltaSeconds);
 
-	/** Logs the type, adds XPAmount XP to the miner for an XP pickup, notifies the miner and destroys this pickup. */
+	/** Logs the type, adds XPAmount XP to the miner for an XP pickup, notifies the miner (type, location) and destroys this pickup. */
 	void Collect(ARRMiner* Miner);
+
+	/** Called once when the magnet latches (start the trail). */
+	UFUNCTION(BlueprintImplementableEvent, Category = "Pickup")
+	void OnMagnetStart();
+
+	/** Called once on the collection frame, at the collection location, just before the pickup is destroyed (spawn a detached sparkle here, or bind ARRMiner::OnPickupCollectedAt). */
+	UFUNCTION(BlueprintImplementableEvent, Category = "Pickup")
+	void OnCollected(FVector Location);
 
 	/** Visual root. Collision disabled: pickups find the miner by distance. Assign the mesh in the Blueprint. */
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Components")
@@ -71,23 +133,35 @@ protected:
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Pickup")
 	ERRPickupType PickupType = ERRPickupType::Ore;
 
-	/** Raw XP given by an XP pickup on collection (before the miner XPGain). Ignored by other types. */
+	/** Raw XP given by an XP pickup on collection (before the miner XPGain); set per cube by ARREnemy. Ignored by other types. */
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Pickup", meta = (ClampMin = 0))
 	float XPAmount = 1.f;
 
-	/** Maximum horizontal offset (per axis) of the pop target from the spawn point; keep under half a cell to stay in the cell. */
+	/** Shortest horizontal ejection distance from the spawn point (task-027-01: 80 uu). */
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Pickup|Pop", meta = (ClampMin = 0, Units = "cm"))
-	float PopMaxOffset = 80.f;
+	float PopMinDistance = 80.f;
 
-	/** Duration of the pop arc in seconds (0 = appear directly at the target). */
+	/** Longest horizontal ejection distance from the spawn point (task-027-01: 220 uu). */
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Pickup|Pop", meta = (ClampMin = 0, Units = "cm"))
+	float PopMaxDistance = 220.f;
+
+	/** Duration of the whole pop (arc + bounce) in seconds (0 = appear directly at the target). */
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Pickup|Pop", meta = (ClampMin = 0, Units = "s"))
 	float PopDuration = 0.35f;
 
-	/** Peak height of the pop arc above the rest height. */
+	/** Peak height of the main arc above the straight line from the spawn point to the rest point. */
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Pickup|Pop", meta = (ClampMin = 0, Units = "cm"))
 	float PopArcHeight = 80.f;
 
-	/** Rest height above the spawn point (the floor top when spawned by the grid). */
+	/** Peak height of the small bounce after the main arc lands. 0 = no bounce. */
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Pickup|Pop", meta = (ClampMin = 0, Units = "cm"))
+	float PopBounceHeight = 15.f;
+
+	/** Fraction of PopDuration spent on the bounce (the main arc takes the rest). */
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Pickup|Pop", meta = (ClampMin = 0, ClampMax = 0.9))
+	float PopBounceFraction = 0.25f;
+
+	/** Rest height above the spawn point (the floor top when spawned by the grid, the robot feet for XP). */
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Pickup|Pop", meta = (Units = "cm"))
 	float HoverHeight = 30.f;
 
@@ -95,17 +169,29 @@ protected:
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Pickup|Collect", meta = (ClampMin = 0, Units = "s"))
 	float AttractDelay = 1.f;
 
-	/** Flight speed toward the miner once attracted; keep above the miner's move speed. */
+	/** Speed toward the miner when the magnet latches (task-027-01: 400 uu/s). */
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Pickup|Collect", meta = (ClampMin = 1, Units = "CentimetersPerSecond"))
-	float FlySpeed = 1500.f;
+	float MagnetStartSpeed = 400.f;
+
+	/** Acceleration toward the miner while magnetized (task-027-01: 4000 uu/s2). */
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Pickup|Collect", meta = (ClampMin = 0))
+	float MagnetAcceleration = 4000.f;
+
+	/** Top magnet speed; keep well above the miner's move speed (task-027-01: 2500 uu/s). */
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Pickup|Collect", meta = (ClampMin = 1, Units = "CentimetersPerSecond"))
+	float MagnetMaxSpeed = 2500.f;
 
 	/** Distance to the miner's location at which a flying pickup is collected. */
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Pickup|Collect", meta = (ClampMin = 0, Units = "cm"))
 	float CollectDistance = 50.f;
 
-	/** Miner this pickup checks and flies to; found from the player 0 pawn. */
+	/** Miner this pickup flies to (latched with the magnet), or found from the player 0 pawn by the fallback tick. */
 	UPROPERTY(Transient)
 	TObjectPtr<ARRMiner> TargetMiner;
+
+	/** Current phase. */
+	UPROPERTY(VisibleInstanceOnly, BlueprintReadOnly, Category = "Pickup")
+	ERRPickupPhase Phase = ERRPickupPhase::Pop;
 
 	/** World location at spawn: the pop starts here. */
 	FVector PopStart = FVector::ZeroVector;
@@ -119,12 +205,12 @@ protected:
 	/** Seconds elapsed since the pop finished; attraction is allowed once it reaches AttractDelay. */
 	float RestElapsed = 0.f;
 
-	/** True once the pop has finished. */
-	bool bPopDone = false;
+	/** Current speed toward the miner (Magnet phase). */
+	float MagnetSpeed = 0.f;
 
-	/** True once the miner came within its pickup radius: the pickup flies until collected. */
-	bool bAttracted = false;
+	/** Ejection yaw in degrees, used when bHasPopYaw. */
+	float PopYawDegrees = 0.f;
 
-	/** True once collected, so it is never collected twice. */
-	bool bCollected = false;
+	/** True when SetPopYaw chose the ejection direction. */
+	bool bHasPopYaw = false;
 };

@@ -102,9 +102,12 @@ void URRProgressionComponent::AddXP(float Raw)
 	{
 		UE_LOG(LogRogueRigs, Warning, TEXT("URRProgressionComponent: no XP curve on %s; XP accumulates without level-up."), *GetNameSafe(GetOwner()));
 	}
-	while (Needed > 0.f && XP >= Needed)
+	// XP cubes carry fractions of a robot's XP (1/3, 5/12...; task-027-01): a tiny tolerance keeps their float sum from
+	// stopping just under the threshold.
+	constexpr float XPTolerance = 1e-3f;
+	while (Needed > 0.f && XP >= Needed - XPTolerance)
 	{
-		XP -= Needed;
+		XP = FMath::Max(XP - Needed, 0.f);
 		++Level;
 		UE_LOG(LogRogueRigs, Log, TEXT("URRProgressionComponent: %s reached level %d."), *GetNameSafe(GetOwner()), Level);
 		OnLevelUp.Broadcast(Level);
