@@ -65,7 +65,7 @@ namespace RRSpawnerTests
 			return false;
 		}
 		Test.TestEqual(TEXT("default SpawnInterval 2 s"), FSpawnerAccess::SpawnIntervalOf(Out.Spawner), 2.f);
-		Test.TestEqual(TEXT("default MaxAlive 100"), FSpawnerAccess::MaxAliveOf(Out.Spawner), 100);
+		Test.TestEqual(TEXT("default MaxAlive 150"), FSpawnerAccess::MaxAliveOf(Out.Spawner), 150);
 		Test.TestEqual(TEXT("default TrickleDuration 30 s"), FSpawnerAccess::TrickleDurationOf(Out.Spawner), 30.f);
 		Test.TestEqual(TEXT("default PackInterval 6 s"), FSpawnerAccess::PackIntervalOf(Out.Spawner), 6.f);
 		Test.TestEqual(TEXT("default PackSizeMin 8"), FSpawnerAccess::PackSizeMinOf(Out.Spawner), 8);
@@ -196,6 +196,8 @@ bool FRRSpawnerMaxAliveTest::RunTest(const FString& Parameters)
 	{
 		return false;
 	}
+	// Older timers (director off): one robot every 0.1 s.
+	FSpawnerAccess::DirectorOf(Setup.Spawner).bEnabled = false;
 
 	// rr.Spawner.Enabled 0 stops the timed spawning.
 	IConsoleVariable* CVar = IConsoleManager::Get().FindConsoleVariable(TEXT("rr.Spawner.Enabled"));
@@ -290,7 +292,8 @@ bool FRRSpawnerTrickleThenPacksTest::RunTest(const FString& Parameters)
 	{
 		return false;
 	}
-	// Short phases: 6 s of trickle (one robot per second), then a pack every 3 s with a sure lone robot at +1 and +2 s.
+	// Older timers (director off). Short phases: 6 s of trickle (one robot per second), then a pack every 3 s with a sure lone robot at +1 and +2 s.
+	FSpawnerAccess::DirectorOf(Setup.Spawner).bEnabled = false;
 	FSpawnerAccess::TrickleDurationOf(Setup.Spawner) = 6.f;
 	FSpawnerAccess::PackIntervalOf(Setup.Spawner) = 3.f;
 	FSpawnerAccess::LoneSpawnChanceOf(Setup.Spawner) = 1.f;

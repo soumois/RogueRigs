@@ -1,4 +1,4 @@
-// Rogue Rigs - test-only listener: records dynamic delegate broadcasts (pickup collected, cell destroyed, auto-fire shots and reloads, projectile stop, component hit, game over, explosion, XP and level-up) for the automation tests.
+// Rogue Rigs - test-only listener: records dynamic delegate broadcasts (pickup collected, cell destroyed, auto-fire shots and reloads, projectile stop, component hit, game over, explosion, XP and level-up, wave director phases and hordes) for the automation tests.
 
 #pragma once
 
@@ -6,6 +6,7 @@
 #include "UObject/Object.h"
 #include "UObject/WeakObjectPtr.h"
 #include "Engine/HitResult.h"
+#include "Enemies/RREnemySpawner.h"
 #include "Grid/RRArenaGrid.h"
 #include "Objectives/RRConsole.h"
 #include "Pickups/RRPickup.h"
@@ -195,7 +196,39 @@ public:
 	/** Blocking hits received through HandleComponentHit, in order. */
 	const TArray<FHitResult>& GetComponentHits() const { return ComponentHits; }
 
+	/** Bind to ARREnemySpawner::OnDirectorPhaseChanged: appends "Phase:<index>:<name>". */
+	UFUNCTION()
+	void HandleDirectorPhaseChanged(int32 PhaseIndex, FName PhaseName) { DirectorEvents.Add(FString::Printf(TEXT("Phase:%d:%s"), PhaseIndex, *PhaseName.ToString())); }
+
+	/** Bind to ARREnemySpawner::OnHordeLull: appends "Lull:<horde>". */
+	UFUNCTION()
+	void HandleHordeLull(int32 HordeIndex) { DirectorEvents.Add(FString::Printf(TEXT("Lull:%d"), HordeIndex)); }
+
+	/** Bind to ARREnemySpawner::OnHordeIncoming: appends "Incoming:<horde>" and the seconds until the front. */
+	UFUNCTION()
+	void HandleHordeIncoming(int32 HordeIndex, float SecondsUntil) { DirectorEvents.Add(FString::Printf(TEXT("Incoming:%d"), HordeIndex)); HordeIncomingSeconds.Add(SecondsUntil); }
+
+	/** Bind to ARREnemySpawner::OnHordeStarted: appends "Started:<horde>:<side>". */
+	UFUNCTION()
+	void HandleHordeStarted(int32 HordeIndex, ERRSpawnSide Side) { DirectorEvents.Add(FString::Printf(TEXT("Started:%d:%d"), HordeIndex, static_cast<int32>(Side))); }
+
+	/** Bind to ARREnemySpawner::OnHordeFinished: appends "Finished:<horde>:<spawned>". */
+	UFUNCTION()
+	void HandleHordeFinished(int32 HordeIndex, int32 Spawned) { DirectorEvents.Add(FString::Printf(TEXT("Finished:%d:%d"), HordeIndex, Spawned)); }
+
+	/** Wave director events received so far, in order. */
+	const TArray<FString>& GetDirectorEvents() const { return DirectorEvents; }
+
+	/** SecondsUntil of each OnHordeIncoming received. */
+	const TArray<float>& GetHordeIncomingSeconds() const { return HordeIncomingSeconds; }
+
 protected:
+	/** Wave director events received so far. */
+	TArray<FString> DirectorEvents;
+
+	/** SecondsUntil of each OnHordeIncoming received. */
+	TArray<float> HordeIncomingSeconds;
+
 	/** Pickup types collected so far. */
 	TArray<ERRPickupType> CollectedPickups;
 

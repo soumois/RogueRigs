@@ -120,7 +120,7 @@ namespace RRTestAccess
 		}
 	};
 
-	/** ARREnemySpawner: class, weights and every pacing tunable. */
+	/** ARREnemySpawner: class, weights, every pacing tunable, the director data and the horde plan. */
 	struct FSpawnerAccess : public ARREnemySpawner
 	{
 		static TSubclassOf<ARREnemy>& EnemyClassOf(ARREnemySpawner* Spawner) { return Spawner->*(&FSpawnerAccess::EnemyClass); }
@@ -134,6 +134,9 @@ namespace RRTestAccess
 		static int32& PackSizeMaxOf(ARREnemySpawner* Spawner) { return Spawner->*(&FSpawnerAccess::PackSizeMax); }
 		static float& LoneSpawnChanceOf(ARREnemySpawner* Spawner) { return Spawner->*(&FSpawnerAccess::LoneSpawnChance); }
 		static TArray<FRRWeightedEnemyClass>& WeightsOf(ARREnemySpawner* Spawner) { return Spawner->*(&FSpawnerAccess::WeightedEnemyClasses); }
+		static FRRWaveDirectorConfig& DirectorOf(ARREnemySpawner* Spawner) { return Spawner->*(&FSpawnerAccess::DirectorConfig); }
+		static const TArray<FRRHordeSlot>& HordePlanOf(const ARREnemySpawner* Spawner) { return Spawner->*(&FSpawnerAccess::HordePlan); }
+		static int32 HordeSpawnedOf(const ARREnemySpawner* Spawner) { return Spawner->*(&FSpawnerAccess::HordeSpawned); }
 	};
 
 	/** ARRExplosionFX: visual duration. */

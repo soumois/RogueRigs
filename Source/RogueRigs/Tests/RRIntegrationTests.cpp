@@ -1467,6 +1467,8 @@ bool FRRIntegrationUpgradeLoopTest::RunTest(const FString& Parameters)
 		return false;
 	}
 	Spawner->SetSpawningEnabled(false);
+	// Older timers (director off): this test needs a spawn within 2 s of the resume, the director is calm for 10 s.
+	RRTestAccess::FSpawnerAccess::DirectorOf(Spawner).bEnabled = false;
 	URRHUDWidget* HUD = CreateWidget<URRHUDWidget>(World, HUDClass);
 	if (!TestNotNull(TEXT("WBP_HUD created"), HUD))
 	{

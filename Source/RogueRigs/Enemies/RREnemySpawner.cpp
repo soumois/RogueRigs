@@ -1,4 +1,4 @@
-// Rogue Rigs - enemy spawner: a trickle of single robots, then packs from one side, capped alive count, on reachable floor cells just outside the camera view.
+// Rogue Rigs - enemy spawner: wave director (calm, lone robots, packs of one type from several sides, announced hordes) or the older trickle then packs, capped alive count, on reachable floor cells just outside the camera view.
 
 #include "Enemies/RREnemySpawner.h"
 
@@ -14,6 +14,7 @@
 #include "GameFramework/PlayerController.h"
 #include "Grid/RRArenaGrid.h"
 #include "HAL/IConsoleManager.h"
+#include "Objectives/RRRunFlowSubsystem.h"
 #include "RogueRigs.h"
 
 namespace RRSpawner
@@ -30,12 +31,14 @@ ARREnemySpawner::ARREnemySpawner()
 	PrimaryActorTick.bCanEverTick = true;
 	PrimaryActorTick.bStartWithTickEnabled = true;
 	RootComponent = CreateDefaultSubobject<USceneComponent>(TEXT("Root"));
+	DirectorConfig = FRRWaveDirectorConfig::MakeDefault();
 }
 
 void ARREnemySpawner::BeginPlay()
 {
 	Super::BeginPlay();
 	RandomStream.GenerateNewSeed();
+	Director.Reset();
 }
 
 void ARREnemySpawner::Tick(float DeltaSeconds)
@@ -46,6 +49,11 @@ void ARREnemySpawner::Tick(float DeltaSeconds)
 		return;
 	}
 	RunTime += DeltaSeconds;
+	if (DirectorConfig.bEnabled)
+	{
+		TickDirector(DeltaSeconds);
+		return;
+	}
 
 	if (!bPackPhase && RunTime >= TrickleDuration)
 	{
@@ -325,8 +333,13 @@ void ARREnemySpawner::GetSpawnableClasses(TArray<TSubclassOf<ARREnemy>>& OutClas
 
 ARREnemy* ARREnemySpawner::TrySpawnEnemy()
 {
-	const TSubclassOf<ARREnemy> SpawnClass = PickEnemyClass();
-	if (!GetWorld() || !SpawnClass || GetAliveCount() >= MaxAlive)
+	return TrySpawnEnemyOfClass(nullptr);
+}
+
+ARREnemy* ARREnemySpawner::TrySpawnEnemyOfClass(TSubclassOf<ARREnemy> WantedClass)
+{
+	const TSubclassOf<ARREnemy> SpawnClass = WantedClass ? ResolveRobotClass(WantedClass) : PickEnemyClass();
+	if (!GetWorld() || !SpawnClass || GetAliveCount() >= MaxAlive || (WantedClass && GetClassRoom(SpawnClass) <= 0))
 	{
 		return nullptr;
 	}
@@ -449,4 +462,382 @@ TArray<ARREnemy*> ARREnemySpawner::GetAliveEnemies()
 		Result.Add(Enemy.Get());
 	}
 	return Result;
+}
+
+// --- Wave director ---
+
+TSubclassOf<ARREnemy> ARREnemySpawner::ResolveRobotClass(TSubclassOf<ARREnemy> Wanted) const
+{
+	if (!Wanted)
+	{
+		return nullptr;
+	}
+	auto NativeOf = [](UClass* Class)
+	{
+		while (Class && !Class->HasAnyClassFlags(CLASS_Native))
+		{
+			Class = Class->GetSuperClass();
+		}
+		return Class;
+	};
+	for (const FRRWeightedEnemyClass& Entry : WeightedEnemyClasses)
+	{
+		if (Entry.EnemyClass && NativeOf(Entry.EnemyClass) == Wanted.Get())
+		{
+			return Entry.EnemyClass;
+		}
+	}
+	if (EnemyClass && NativeOf(EnemyClass) == Wanted.Get())
+	{
+		return EnemyClass;
+	}
+	return Wanted;
+}
+
+int32 ARREnemySpawner::GetClassRoom(TSubclassOf<ARREnemy> SpawnClass) const
+{
+	for (const FRRWeightedEnemyClass& Entry : WeightedEnemyClasses)
+	{
+		if (Entry.EnemyClass == SpawnClass && Entry.MaxAlive > 0)
+		{
+			return FMath::Max(Entry.MaxAlive - GetAliveCountOfClass(Entry.EnemyClass), 0);
+		}
+	}
+	return MAX_int32;
+}
+
+float ARREnemySpawner::GetDirectorAlert() const
+{
+	const UWorld* World = GetWorld();
+	const URRRunFlowSubsystem* RunFlow = World ? World->GetSubsystem<URRRunFlowSubsystem>() : nullptr;
+	return RunFlow ? RunFlow->GetAlert() : 0.f;
+}
+
+void ARREnemySpawner::TickDirector(float DeltaSeconds)
+{
+	DirectorActions.Reset();
+	Director.Advance(DirectorConfig, DeltaSeconds, GetDirectorAlert(), RandomStream, DirectorActions);
+	for (const FRRDirectorAction& Action : DirectorActions)
+	{
+		ExecuteDirectorAction(Action);
+	}
+	if (Director.GetActiveHorde() != INDEX_NONE && Director.GetHordeState(Director.GetActiveHorde()) == ERRHordeState::Spawning)
+	{
+		SpawnHordeUpTo(Director.GetHordeSpawnFraction(DirectorConfig));
+	}
+}
+
+void ARREnemySpawner::ExecuteDirectorAction(const FRRDirectorAction& Action)
+{
+	switch (Action.Type)
+	{
+	case FRRDirectorAction::EType::PhaseChanged:
+	{
+		const FName PhaseName = DirectorConfig.Phases.IsValidIndex(Action.Index) ? DirectorConfig.Phases[Action.Index].Name : NAME_None;
+		UE_LOG(LogRogueRigs, Log, TEXT("ARREnemySpawner %s: director phase %d (%s) at %.1f s."), *GetName(), Action.Index, *PhaseName.ToString(), RunTime);
+		OnDirectorPhaseChanged.Broadcast(Action.Index, PhaseName);
+		break;
+	}
+	case FRRDirectorAction::EType::SpawnSingle:
+		TrySpawnEnemyOfClass(Action.SingleClass);
+		break;
+	case FRRDirectorAction::EType::SpawnWave:
+		TrySpawnDirectorWave(TArray<int32>(Action.PackTypes));
+		break;
+	case FRRDirectorAction::EType::HordeLull:
+		UE_LOG(LogRogueRigs, Log, TEXT("ARREnemySpawner %s: horde %d lull at %.1f s."), *GetName(), Action.Index, RunTime);
+		OnHordeLull.Broadcast(Action.Index);
+		break;
+	case FRRDirectorAction::EType::HordeAnnounced:
+		OnHordeIncoming.Broadcast(Action.Index, Action.Seconds);
+		break;
+	case FRRDirectorAction::EType::HordeStarted:
+	{
+		const ERRSpawnSide Side = PrepareHorde(Action.Index);
+		UE_LOG(LogRogueRigs, Log, TEXT("ARREnemySpawner %s: horde %d front of %d from side %d at %.1f s."), *GetName(), Action.Index,
+			HordePlan.Num(), static_cast<int32>(Side), RunTime);
+		OnHordeStarted.Broadcast(Action.Index, Side);
+		break;
+	}
+	case FRRDirectorAction::EType::HordeFinished:
+	{
+		const bool bPlanned = HordePlanIndex == Action.Index;
+		if (bPlanned)
+		{
+			SpawnHordeUpTo(1.f);
+		}
+		OnHordeFinished.Broadcast(Action.Index, bPlanned ? HordeSpawned : 0);
+		HordePlanIndex = INDEX_NONE;
+		break;
+	}
+	}
+}
+
+void ARREnemySpawner::DrawMembers(const TArray<FRRDirectorPackMember>& Members, TMap<UClass*, int32>& Room,
+	TArray<TSubclassOf<ARREnemy>>& OutFront, TArray<TSubclassOf<ARREnemy>>& OutBack)
+{
+	for (const FRRDirectorPackMember& Member : Members)
+	{
+		const TSubclassOf<ARREnemy> SpawnClass = ResolveRobotClass(Member.RobotClass);
+		if (!SpawnClass)
+		{
+			continue;
+		}
+		const int32 CountMin = FMath::Max(Member.CountMin, 0);
+		int32 Count = RandomStream.RandRange(CountMin, FMath::Max(CountMin, Member.CountMax));
+		int32* ClassRoom = Room.Find(SpawnClass.Get());
+		if (!ClassRoom)
+		{
+			ClassRoom = &Room.Add(SpawnClass.Get(), GetClassRoom(SpawnClass));
+		}
+		Count = FMath::Min(Count, *ClassRoom);
+		*ClassRoom -= Count;
+		TArray<TSubclassOf<ARREnemy>>& Target = Member.bFront ? OutFront : OutBack;
+		for (int32 Index = 0; Index < Count; ++Index)
+		{
+			Target.Add(SpawnClass);
+		}
+	}
+	for (int32 Index = OutBack.Num() - 1; Index > 0; --Index)
+	{
+		OutBack.Swap(Index, RandomStream.RandRange(0, Index));
+	}
+}
+
+void ARREnemySpawner::SplitCandidatesBySide(const FBox2D& View, const TArray<FIntPoint>& Candidates, TArray<FIntPoint> (&OutBySide)[4]) const
+{
+	const ARRArenaGrid* Grid = GetGrid();
+	if (!Grid)
+	{
+		return;
+	}
+	for (const FIntPoint& Cell : Candidates)
+	{
+		const FVector Center = Grid->GetCellCenter(Cell.X, Cell.Y);
+		const ERRSpawnSide Side = GetSideOfRectangle(View, FVector2D(Center.X, Center.Y));
+		if (Side != ERRSpawnSide::None)
+		{
+			OutBySide[static_cast<int32>(Side) - 1].Add(Cell);
+		}
+	}
+}
+
+namespace RRSpawner
+{
+	/** Picks a side index among BySide: a random one (not in Used) with at least Needed cells, else the unused one with the most cells, else any with the most; INDEX_NONE when every side is empty. */
+	int32 PickSide(const TArray<FIntPoint> (&BySide)[4], const bool (&Used)[4], int32 Needed, FRandomStream& Stream)
+	{
+		TArray<int32, TInlineAllocator<4>> FullSides;
+		int32 Largest = INDEX_NONE;
+		for (int32 SideIndex = 0; SideIndex < 4; ++SideIndex)
+		{
+			if (Used[SideIndex] || BySide[SideIndex].IsEmpty())
+			{
+				continue;
+			}
+			if (BySide[SideIndex].Num() >= Needed)
+			{
+				FullSides.Add(SideIndex);
+			}
+			if (Largest == INDEX_NONE || BySide[SideIndex].Num() > BySide[Largest].Num())
+			{
+				Largest = SideIndex;
+			}
+		}
+		if (!FullSides.IsEmpty())
+		{
+			return FullSides[Stream.RandRange(0, FullSides.Num() - 1)];
+		}
+		if (Largest == INDEX_NONE)
+		{
+			for (int32 SideIndex = 0; SideIndex < 4; ++SideIndex)
+			{
+				if (!BySide[SideIndex].IsEmpty() && (Largest == INDEX_NONE || BySide[SideIndex].Num() > BySide[Largest].Num()))
+				{
+					Largest = SideIndex;
+				}
+			}
+		}
+		return Largest;
+	}
+}
+
+TArray<FRRSpawnedPack> ARREnemySpawner::TrySpawnDirectorWave(const TArray<int32>& PackTypeIndices)
+{
+	TArray<FRRSpawnedPack> Packs;
+	int32 FreeSlots = MaxAlive - GetAliveCount();
+	FBox2D View;
+	const ARRArenaGrid* Grid = GetGrid();
+	if (!GetWorld() || !Grid || FreeSlots <= 0 || PackTypeIndices.IsEmpty() || !GetViewRectangle(View))
+	{
+		return Packs;
+	}
+	TArray<FIntPoint> Candidates;
+	GetSpawnCandidates(Candidates);
+	if (Candidates.IsEmpty())
+	{
+		UE_LOG(LogRogueRigs, Verbose, TEXT("ARREnemySpawner %s: no spawn cell available for a wave."), *GetName());
+		return Packs;
+	}
+	TArray<FIntPoint> BySide[4];
+	SplitCandidatesBySide(View, Candidates, BySide);
+	auto ViewDistance = [Grid, &View](const FIntPoint& Cell)
+	{
+		const FVector Center = Grid->GetCellCenter(Cell.X, Cell.Y);
+		return GetDistanceToRectangle(View, FVector2D(Center.X, Center.Y));
+	};
+
+	TMap<UClass*, int32> Room;
+	bool bSideUsed[4] = { false, false, false, false };
+	for (const int32 TypeIndex : PackTypeIndices)
+	{
+		if (!DirectorConfig.PackTypes.IsValidIndex(TypeIndex) || FreeSlots <= 0)
+		{
+			continue;
+		}
+		// Front members first, then the others mixed; clamped to the free slots.
+		TArray<TSubclassOf<ARREnemy>> Classes;
+		TArray<TSubclassOf<ARREnemy>> Back;
+		DrawMembers(DirectorConfig.PackTypes[TypeIndex].Members, Room, Classes, Back);
+		Classes.Append(Back);
+		Classes.SetNum(FMath::Min(Classes.Num(), FreeSlots));
+		if (Classes.IsEmpty())
+		{
+			continue;
+		}
+		const int32 SideIndex = RRSpawner::PickSide(BySide, bSideUsed, Classes.Num(), RandomStream);
+		if (SideIndex == INDEX_NONE)
+		{
+			break;
+		}
+		bSideUsed[SideIndex] = true;
+		TArray<FIntPoint>& SideCells = BySide[SideIndex];
+
+		// Adjacent cells: the ones nearest to a random anchor of the side, then the nearest to the view first (the front).
+		const FIntPoint Anchor = SideCells[RandomStream.RandRange(0, SideCells.Num() - 1)];
+		SideCells.StableSort([Anchor](const FIntPoint& A, const FIntPoint& B) { return (A - Anchor).SizeSquared() < (B - Anchor).SizeSquared(); });
+		const int32 Count = FMath::Min(Classes.Num(), SideCells.Num());
+		TArray<FIntPoint> PackCells(SideCells.GetData(), Count);
+		SideCells.RemoveAt(0, Count);
+		PackCells.StableSort([&ViewDistance](const FIntPoint& A, const FIntPoint& B) { return ViewDistance(A) < ViewDistance(B); });
+
+		FRRSpawnedPack& Pack = Packs.AddDefaulted_GetRef();
+		Pack.PackType = TypeIndex;
+		Pack.Side = static_cast<ERRSpawnSide>(SideIndex + 1);
+		for (int32 Index = 0; Index < Count; ++Index)
+		{
+			if (ARREnemy* Enemy = SpawnEnemyOnCell(Classes[Index], PackCells[Index]))
+			{
+				Pack.Robots.Add(Enemy);
+				Pack.Cells.Add(PackCells[Index]);
+				--FreeSlots;
+			}
+		}
+		UE_LOG(LogRogueRigs, Verbose, TEXT("ARREnemySpawner %s: %s pack of %d from side %d, %d alive."), *GetName(),
+			*DirectorConfig.PackTypes[TypeIndex].Name.ToString(), Pack.Robots.Num(), SideIndex + 1, AliveEnemies.Num());
+	}
+	return Packs;
+}
+
+ERRSpawnSide ARREnemySpawner::PrepareHorde(int32 HordeIndex)
+{
+	HordePlan.Reset();
+	HordePlanCursor = 0;
+	HordeSpawned = 0;
+	HordePlanIndex = HordeIndex;
+	HordeSide = ERRSpawnSide::None;
+	const ARRArenaGrid* Grid = GetGrid();
+	FBox2D View;
+	const int32 FreeSlots = MaxAlive - GetAliveCount();
+	if (!DirectorConfig.Hordes.IsValidIndex(HordeIndex) || !Grid || FreeSlots <= 0 || !GetViewRectangle(View))
+	{
+		return HordeSide;
+	}
+	const FRRDirectorHorde& Horde = DirectorConfig.Hordes[HordeIndex];
+
+	// Robots: listed groups (front ones first), the rest of the size filled with FillClass, clamped to the free slots.
+	const int32 SizeMin = FMath::Max(Horde.SizeMin, 1);
+	const int32 Size = FMath::Min(RandomStream.RandRange(SizeMin, FMath::Max(SizeMin, Horde.SizeMax)), FreeSlots);
+	TMap<UClass*, int32> Room;
+	TArray<TSubclassOf<ARREnemy>> Classes;
+	TArray<TSubclassOf<ARREnemy>> Back;
+	DrawMembers(Horde.Members, Room, Classes, Back);
+	if (const TSubclassOf<ARREnemy> Fill = ResolveRobotClass(Horde.FillClass))
+	{
+		for (int32 Index = Classes.Num() + Back.Num(); Index < Size; ++Index)
+		{
+			Back.Add(Fill);
+		}
+		for (int32 Index = Back.Num() - 1; Index > 0; --Index)
+		{
+			Back.Swap(Index, RandomStream.RandRange(0, Index));
+		}
+	}
+	Classes.Append(Back);
+	Classes.SetNum(FMath::Min(Classes.Num(), Size));
+
+	TArray<FIntPoint> Candidates;
+	GetSpawnCandidates(Candidates);
+	TArray<FIntPoint> BySide[4];
+	SplitCandidatesBySide(View, Candidates, BySide);
+	const bool bNoneUsed[4] = { false, false, false, false };
+	const int32 SideIndex = Classes.IsEmpty() ? INDEX_NONE : RRSpawner::PickSide(BySide, bNoneUsed, Classes.Num(), RandomStream);
+	if (SideIndex == INDEX_NONE)
+	{
+		UE_LOG(LogRogueRigs, Verbose, TEXT("ARREnemySpawner %s: no spawn cell available for horde %d."), *GetName(), HordeIndex);
+		return HordeSide;
+	}
+	HordeSide = static_cast<ERRSpawnSide>(SideIndex + 1);
+
+	// Front: the side cells nearest to the view (shuffled first so equal rows spread along the whole side).
+	TArray<FIntPoint>& SideCells = BySide[SideIndex];
+	for (int32 Index = SideCells.Num() - 1; Index > 0; --Index)
+	{
+		SideCells.Swap(Index, RandomStream.RandRange(0, Index));
+	}
+	auto ViewDistance = [Grid, &View](const FIntPoint& Cell)
+	{
+		const FVector Center = Grid->GetCellCenter(Cell.X, Cell.Y);
+		return GetDistanceToRectangle(View, FVector2D(Center.X, Center.Y));
+	};
+	SideCells.StableSort([&ViewDistance](const FIntPoint& A, const FIntPoint& B) { return ViewDistance(A) < ViewDistance(B); });
+	const int32 Count = FMath::Min(Classes.Num(), SideCells.Num());
+	for (int32 Index = 0; Index < Count; ++Index)
+	{
+		FRRHordeSlot& Slot = HordePlan.AddDefaulted_GetRef();
+		Slot.Class = Classes[Index];
+		Slot.Cell = SideCells[Index];
+	}
+	return HordeSide;
+}
+
+void ARREnemySpawner::SpawnHordeUpTo(float Fraction)
+{
+	const int32 Target = FMath::Min(FMath::CeilToInt(HordePlan.Num() * FMath::Clamp(Fraction, 0.f, 1.f)), HordePlan.Num());
+	if (HordePlanCursor >= Target)
+	{
+		return;
+	}
+	const ARRArenaGrid* Grid = GetGrid();
+	FBox2D View;
+	const bool bHasView = Grid && GetViewRectangle(View);
+	const float MinDistance = Grid ? (ViewMargin + 0.5f) * Grid->GetCellSize() : 0.f;
+	for (; HordePlanCursor < Target; ++HordePlanCursor)
+	{
+		if (GetAliveCount() >= MaxAlive)
+		{
+			continue;
+		}
+		const FRRHordeSlot& Slot = HordePlan[HordePlanCursor];
+		// The view moved since the plan: a cell now inside the spawn margin is skipped.
+		if (bHasView)
+		{
+			const FVector Center = Grid->GetCellCenter(Slot.Cell.X, Slot.Cell.Y);
+			if (GetDistanceToRectangle(View, FVector2D(Center.X, Center.Y)) < MinDistance)
+			{
+				continue;
+			}
+		}
+		HordeSpawned += SpawnEnemyOnCell(Slot.Class, Slot.Cell) ? 1 : 0;
+	}
 }

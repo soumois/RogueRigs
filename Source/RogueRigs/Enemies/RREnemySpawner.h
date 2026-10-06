@@ -1,9 +1,10 @@
-// Rogue Rigs - enemy spawner: a trickle of single robots, then packs from one side, capped alive count, on reachable floor cells just outside the camera view.
+// Rogue Rigs - enemy spawner: wave director (calm, lone robots, packs of one type from several sides, announced hordes) or the older trickle then packs, capped alive count, on reachable floor cells just outside the camera view.
 
 #pragma once
 
 #include "CoreMinimal.h"
 #include "GameFramework/Actor.h"
+#include "Enemies/RRWaveDirector.h"
 #include "RREnemySpawner.generated.h"
 
 class ARREnemy;
@@ -25,6 +26,47 @@ enum class ERRSpawnSide : uint8
 	NegativeY,
 	/** Beyond the +Y edge. */
 	PositiveY
+};
+
+/** Wave director entered phase PhaseIndex (DirectorConfig.Phases), named PhaseName. */
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_TwoParams(FRROnDirectorPhaseChangedSignature, int32, PhaseIndex, FName, PhaseName);
+
+/** Horde HordeIndex: its lull starts (nothing spawns until its front). */
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FRROnHordeLullSignature, int32, HordeIndex);
+
+/** Horde HordeIndex is announced: its front starts in SecondsUntil seconds (the HUD banner). */
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_TwoParams(FRROnHordeIncomingSignature, int32, HordeIndex, float, SecondsUntil);
+
+/** Horde HordeIndex: its front starts spawning beyond Side of the view (None when no cell was found). */
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_TwoParams(FRROnHordeStartedSignature, int32, HordeIndex, ERRSpawnSide, Side);
+
+/** Horde HordeIndex: its front is over, Spawned robots spawned. */
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_TwoParams(FRROnHordeFinishedSignature, int32, HordeIndex, int32, Spawned);
+
+/** One pack spawned by the wave director: its type, side and robots (front robots first). */
+struct FRRSpawnedPack
+{
+	/** Index in DirectorConfig.PackTypes. */
+	int32 PackType = INDEX_NONE;
+
+	/** Side of the view it came from. */
+	ERRSpawnSide Side = ERRSpawnSide::None;
+
+	/** Robots spawned, front members first. */
+	TArray<ARREnemy*> Robots;
+
+	/** Spawn cell of each robot of Robots (the actor may be nudged off it when capsules overlap). */
+	TArray<FIntPoint> Cells;
+};
+
+/** One planned robot of a horde front: class and cell, in spawn order. */
+struct FRRHordeSlot
+{
+	/** Resolved robot class. */
+	TSubclassOf<ARREnemy> Class;
+
+	/** Spawn cell. */
+	FIntPoint Cell = FIntPoint::ZeroValue;
 };
 
 /** One entry of the spawner weighted robot list: a class, its relative weight and an optional alive cap for that class. */
@@ -51,6 +93,10 @@ struct FRRWeightedEnemyClass
 
 /**
  * Placed actor that keeps robots coming from outside the screen (sys-spawner).
+ * Wave director (DirectorConfig.bEnabled, default): FRRWaveDirector schedules phases of lone robots and waves of packs of one
+ * type (each pack from a distinct side, front members on the cells nearest to the view) and announced hordes (lull, banner event,
+ * a front along one side spawned over a few seconds, front members first). Robot classes of the director data are resolved to the
+ * WeightedEnemyClasses entries (ResolveRobotClass) and respect their MaxAlive caps. Without the director, the older timers below:
  * Trickle phase, the first TrickleDuration seconds of spawning: one robot every SpawnInterval seconds. Pack phase after it: a pack
  * of PackSizeMin to PackSizeMax robots every PackInterval seconds (the first one when the phase starts), all from one side of the
  * view rectangle, on distinct cells, clamped to the free slots; between packs, every SpawnInterval, a lone robot with chance
@@ -76,7 +122,7 @@ public:
 	/** Seeds the random stream (a new seed per run). */
 	virtual void BeginPlay() override;
 
-	/** Advances the run clock and the trickle, pack and lone-robot timers while enabled; spawns what they call for. */
+	/** Advances the run clock and the director (or the older trickle, pack and lone-robot timers) while enabled; spawns what they call for. */
 	virtual void Tick(float DeltaSeconds) override;
 
 	/**
@@ -172,7 +218,140 @@ public:
 	/** Box distance in uu from Point to Rectangle (0 inside): the larger of the X and Y gaps. */
 	static float GetDistanceToRectangle(const FBox2D& Rectangle, const FVector2D& Point);
 
+	// --- Wave director ---
+
+	/** Wave director phase changes (index in DirectorConfig.Phases, name). */
+	UPROPERTY(BlueprintAssignable, Category = "Spawner|Director")
+	FRROnDirectorPhaseChangedSignature OnDirectorPhaseChanged;
+
+	/** A horde lull starts (no spawn until the front). */
+	UPROPERTY(BlueprintAssignable, Category = "Spawner|Director")
+	FRROnHordeLullSignature OnHordeLull;
+
+	/** A horde is announced, SecondsUntil its front (HUD banner "HORDE EN APPROCHE !"). */
+	UPROPERTY(BlueprintAssignable, Category = "Spawner|Director")
+	FRROnHordeIncomingSignature OnHordeIncoming;
+
+	/** A horde front starts spawning beyond a side of the view. */
+	UPROPERTY(BlueprintAssignable, Category = "Spawner|Director")
+	FRROnHordeStartedSignature OnHordeStarted;
+
+	/** A horde front is fully spawned. */
+	UPROPERTY(BlueprintAssignable, Category = "Spawner|Director")
+	FRROnHordeFinishedSignature OnHordeFinished;
+
+	/** True when the wave director drives the timed spawning (DirectorConfig.bEnabled). */
+	UFUNCTION(BlueprintPure, Category = "Spawner|Director")
+	bool IsDirectorEnabled() const { return DirectorConfig.bEnabled; }
+
+	/** Director data (phases, pack types, hordes). */
+	const FRRWaveDirectorConfig& GetDirectorConfig() const { return DirectorConfig; }
+
+	/** Director scheduler state (phase, hordes). */
+	const FRRWaveDirector& GetDirector() const { return Director; }
+
+	/** Current director phase index; INDEX_NONE before the first. */
+	UFUNCTION(BlueprintPure, Category = "Spawner|Director")
+	int32 GetDirectorPhase() const { return Director.GetPhaseIndex(); }
+
+	/** What starts the hordes (run time or alert). */
+	UFUNCTION(BlueprintPure, Category = "Spawner|Director")
+	ERRHordeTrigger GetHordeTrigger() const { return DirectorConfig.HordeTrigger; }
+
+	/** Number of hordes in the director data. */
+	UFUNCTION(BlueprintPure, Category = "Spawner|Director")
+	int32 GetHordeCount() const { return DirectorConfig.Hordes.Num(); }
+
+	/** RunTime trigger: seconds of spawning at which the front of horde Index starts; -1 out of range. */
+	UFUNCTION(BlueprintPure, Category = "Spawner|Director")
+	float GetHordeTriggerTime(int32 Index) const { return DirectorConfig.Hordes.IsValidIndex(Index) ? DirectorConfig.Hordes[Index].TriggerTime : -1.f; }
+
+	/** Alert trigger: alert (0..1) at which the lull of horde Index starts; -1 out of range. */
+	UFUNCTION(BlueprintPure, Category = "Spawner|Director")
+	float GetHordeTriggerAlert(int32 Index) const { return DirectorConfig.Hordes.IsValidIndex(Index) ? DirectorConfig.Hordes[Index].TriggerAlert : -1.f; }
+
+	/** State of horde Index. */
+	UFUNCTION(BlueprintPure, Category = "Spawner|Director")
+	ERRHordeState GetHordeState(int32 Index) const { return Director.GetHordeState(Index); }
+
+	/** Horde in its lull, announced or spawning; INDEX_NONE (-1) when none. */
+	UFUNCTION(BlueprintPure, Category = "Spawner|Director")
+	int32 GetActiveHorde() const { return Director.GetActiveHorde(); }
+
+	/** Seconds until the front of the active horde (0 while spawning); -1 without an active horde. */
+	UFUNCTION(BlueprintPure, Category = "Spawner|Director")
+	float GetSecondsUntilHordeFront() const { return Director.GetSecondsUntilHordeFront(DirectorConfig); }
+
+	/**
+	 * Class to spawn for a director class: the WeightedEnemyClasses entry (then EnemyClass) whose nearest native class is Wanted;
+	 * Wanted itself when none (or when Wanted is already a Blueprint class). Null for null.
+	 */
+	TSubclassOf<ARREnemy> ResolveRobotClass(TSubclassOf<ARREnemy> Wanted) const;
+
+	/**
+	 * Spawns one wave now (ignores the timers and the enabled flags): one pack per entry of PackTypeIndices (DirectorConfig.PackTypes),
+	 * each from a distinct side of the view while sides remain, on adjacent cells, front members nearest to the view. Packs are
+	 * clamped to the free slots and the per-class caps. One candidate scan. Returns the packs spawned.
+	 */
+	TArray<FRRSpawnedPack> TrySpawnDirectorWave(const TArray<int32>& PackTypeIndices);
+
+	/** Spawns one robot of SpawnClass now (resolved, per-class cap and MaxAlive respected); none = weighted mix. Null when nothing spawned. */
+	ARREnemy* TrySpawnEnemyOfClass(TSubclassOf<ARREnemy> SpawnClass);
+
 protected:
+	/** Runs the director for one frame and executes its orders. */
+	void TickDirector(float DeltaSeconds);
+
+	/** Executes one director order. */
+	void ExecuteDirectorAction(const FRRDirectorAction& Action);
+
+	/** Alert of the run flow (0..1); 0 without one. */
+	float GetDirectorAlert() const;
+
+	/** Free slots for SpawnClass under its WeightedEnemyClasses MaxAlive cap (MAX_int32 when uncapped). */
+	int32 GetClassRoom(TSubclassOf<ARREnemy> SpawnClass) const;
+
+	/**
+	 * Draws the robots of Members (resolved classes) into OutFront and OutBack, within Room (per resolved class free slots, updated).
+	 * OutBack is shuffled so escorts mix with the main group.
+	 */
+	void DrawMembers(const TArray<FRRDirectorPackMember>& Members, TMap<UClass*, int32>& Room, TArray<TSubclassOf<ARREnemy>>& OutFront,
+		TArray<TSubclassOf<ARREnemy>>& OutBack);
+
+	/** Splits Candidates by the side of View they lie beyond (index = ERRSpawnSide - 1). */
+	void SplitCandidatesBySide(const FBox2D& View, const TArray<FIntPoint>& Candidates, TArray<FIntPoint> (&OutBySide)[4]) const;
+
+	/** Plans the front of horde HordeIndex (side, classes, cells) and returns its side; None when no cell. */
+	ERRSpawnSide PrepareHorde(int32 HordeIndex);
+
+	/** Spawns the planned horde robots up to Fraction (0..1) of the plan, skipping cells that entered the spawn margin. */
+	void SpawnHordeUpTo(float Fraction);
+
+	/** Wave director data: phases, pack types, hordes (provisional defaults, FRRWaveDirectorConfig::MakeDefault). */
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Spawner|Director")
+	FRRWaveDirectorConfig DirectorConfig;
+
+	/** Wave director scheduler (reset in BeginPlay). */
+	FRRWaveDirector Director;
+
+	/** Orders of the current frame (reused buffer). */
+	TArray<FRRDirectorAction> DirectorActions;
+
+	/** Current horde front, in spawn order (front members and nearest rows first). */
+	TArray<FRRHordeSlot> HordePlan;
+
+	/** Entries of HordePlan already handled (spawned or skipped). */
+	int32 HordePlanCursor = 0;
+
+	/** Robots of the current horde actually spawned. */
+	int32 HordeSpawned = 0;
+
+	/** Horde whose plan HordePlan holds; INDEX_NONE when none. */
+	int32 HordePlanIndex = INDEX_NONE;
+
+	/** Side of the current horde front. */
+	ERRSpawnSide HordeSide = ERRSpawnSide::None;
+
 	/** Flow field of the world (null outside a game world). */
 	URRFlowFieldSubsystem* GetFlowField() const;
 
@@ -220,9 +399,9 @@ protected:
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Spawner|Packs", meta = (ClampMin = 0, ClampMax = 1))
 	float LoneSpawnChance = 0.1f;
 
-	/** Maximum number of robots of this spawner alive at once; spawns beyond it are skipped (packs are clamped). */
+	/** Maximum number of robots of this spawner alive at once (150, owner 2026-10-05); spawns beyond it are skipped (packs and hordes are clamped). */
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Spawner", meta = (ClampMin = 0))
-	int32 MaxAlive = 100;
+	int32 MaxAlive = 150;
 
 	/** Minimum gap in cells between the visible floor rectangle and a spawn cell (whole cell beyond it). */
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Spawner", meta = (ClampMin = 0))
