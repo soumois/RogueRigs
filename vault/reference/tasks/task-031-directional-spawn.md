@@ -3,7 +3,7 @@ id: task-031-directional-spawn
 description: "Global task: second play test: target dummy removed, closer spawns biased toward the run heading, robots 30 % slower, steadfast shooters, faster early levels."
 parent: tasks-index
 kind: task
-status: in-progress
+status: done
 ---
 # Directional spawn and second pacing pass
 
@@ -13,8 +13,8 @@ status: in-progress
 - gdd_check: Read [[enemies-index]], enemy nodes, [[xp-level-up]]. HP already match the owner's wish (chaser 3 rifle bullets, shield chaser 6): unchanged, reported to the owner. GDD updated by the Orchestrator with provisional values (2026-10-06). No open value.
 - confirmed_by_owner: yes (2026-10-06)
 - milestone: M2
-- next_step: task-031-03-pacing-retune
-- result: open
+- next_step: none
+- result: Done. Target dummy removed; spawn band 100–500 uu with heading sectors 55/35/10 and detour filter; robots 30 % slower; shooters never retreat; XP curve level 1 = 2 then level² (owner). Running without collecting levels slower by design (owner).
 
 ## Subtasks
 1. task-031-01-remove-dummy — cpp: remove the target dummy code, assets and docs; tests use a still chaser

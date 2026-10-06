@@ -3,7 +3,7 @@ id: task-031-03-pacing-retune
 description: "Pacing bot with a collect profile and a straight-run profile; XP curve tuned so their averaged medians hit L2 0:15, L5 1:10, L10 3:00; shots."
 parent: task-031-directional-spawn
 kind: task
-status: in-progress
+status: done
 ---
 # Second pacing retune
 
@@ -19,7 +19,7 @@ status: in-progress
 - tokens: input 158, cache write 789562, cache read 7962114, output 72079
 - runs: 2
 - milestone: M2
-- result: Bot profiles 0 still / 1 collect / 2 run (straight, turns at walls). XPCurve need(L) = L². Medians collect L2 8.3, L5 45.4, L10 110.9; run 63.6, 90.1, 200.9; mean L2 36.0 (fail, unreachable by the curve: runner first XP 19–80 s), L5 67.8, L10 155.9 (pass). Profiles differ 3.4× in XP. Tests follow the curve, French alternatives removed; build 0; full suite 194/195, the failing JuiceKillDropsStreamingCubes fixed and its group passes. Shots: console arrow and English upgrade screen ok; first contact still at about 3.5 s ok; north run, horde banner and end screen not captured. See sys-progression.
+- result: Stopped by the owner (2026-10-06): no further retune task. Bot profiles 0 still / 1 collect / 2 run kept. Curve set by the owner: level 1 needs 2 XP, then level² (XPCurve.csv); not measured. Measured on level² before: collect L2 8.3, L5 45.4, L10 110.9 s; run 63.6, 90.1, 200.9 s. Unmeasured candidate curve of the stopped run discarded. Shots: console arrow and English upgrade screen ok. Commits d60beb4, 9108fc7, 79f2c03.
 
 ## Relations
 - [[task-031-directional-spawn]] — parent global task.

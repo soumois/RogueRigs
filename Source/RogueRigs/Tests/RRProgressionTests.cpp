@@ -47,7 +47,7 @@ namespace RRProgressionTests
 		}
 		Test.TestEqual(TEXT("starts at level 1"), Progression->GetLevel(), 1);
 		Test.TestEqual(TEXT("starts with 0 XP"), Progression->GetXP(), 0.f);
-		Test.TestEqual(TEXT("level 1 needs 1 XP (task-031-03 curve: level squared)"), Progression->GetXPToNextLevel(), 1.f);
+		Test.TestEqual(TEXT("level 1 needs 2 XP (owner: two kills; then level squared)"), Progression->GetXPToNextLevel(), 2.f);
 		Test.TestEqual(TEXT("level 2 needs 4 XP"), Progression->GetXPToNextLevelAt(2), 4.f);
 		Test.TestEqual(TEXT("level 9 needs 81 XP"), Progression->GetXPToNextLevelAt(9), 81.f);
 		Test.TestEqual(TEXT("level 50 needs 2500 XP"), Progression->GetXPToNextLevelAt(50), 2500.f);
@@ -78,9 +78,9 @@ bool FRRProgressionExactLevelTest::RunTest(const FString& Parameters)
 		return false;
 	}
 
-	Progression->AddXP(1.f);
-	TestEqual(TEXT("1 XP: level 2"), Progression->GetLevel(), 2);
-	TestEqual(TEXT("1 XP: 0 carried"), Progression->GetXP(), 0.f);
+	Progression->AddXP(2.f);
+	TestEqual(TEXT("2 XP: level 2"), Progression->GetLevel(), 2);
+	TestEqual(TEXT("2 XP: 0 carried"), Progression->GetXP(), 0.f);
 	TestEqual(TEXT("level 2 needs 4"), Progression->GetXPToNextLevel(), 4.f);
 	TestEqual(TEXT("one level-up event"), Recorder->GetLevelUps().Num(), 1);
 	if (Recorder->GetLevelUps().Num() == 1)
@@ -112,10 +112,10 @@ bool FRRProgressionCarryOverTest::RunTest(const FString& Parameters)
 		return false;
 	}
 
-	// 7 = 1 (level 1) + 4 (level 2) + 2 carried.
-	Progression->AddXP(7.f);
-	TestEqual(TEXT("7 XP: level 3"), Progression->GetLevel(), 3);
-	TestEqual(TEXT("7 XP: 2 carried"), Progression->GetXP(), 2.f);
+	// 8 = 2 (level 1) + 4 (level 2) + 2 carried.
+	Progression->AddXP(8.f);
+	TestEqual(TEXT("8 XP: level 3"), Progression->GetLevel(), 3);
+	TestEqual(TEXT("8 XP: 2 carried"), Progression->GetXP(), 2.f);
 	TestEqual(TEXT("level 3 needs 9"), Progression->GetXPToNextLevel(), 9.f);
 	TestEqual(TEXT("two level-up events"), Recorder->GetLevelUps().Num(), 2);
 	if (Recorder->GetLevelUps().Num() == 2)
