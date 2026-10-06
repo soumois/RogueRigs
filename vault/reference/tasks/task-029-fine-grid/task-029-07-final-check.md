@@ -3,7 +3,7 @@ id: task-029-07-final-check
 description: "Integration tests on the fine grid and final stress at 67 uu (S0, S2, chain, dig) compared with stress-grid-cells."
 parent: task-029-fine-grid
 kind: task
-status: todo
+status: in-progress
 ---
 # Fine grid final check
 
