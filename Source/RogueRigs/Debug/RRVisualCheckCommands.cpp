@@ -1,8 +1,15 @@
-// Rogue Rigs - visual check console commands for unattended -game checks (debug only, compiled out of shipping): rr.Debug.Shots (timed screenshots + damage number state), rr.Debug.CritChance (weapon crit chance override), rr.Debug.Delayed (runs a command later), rr.Debug.DamageMiner (direct hit on the player miner).
+// Rogue Rigs - visual check console commands for unattended -game checks (debug only, compiled out of shipping): rr.Debug.Shots (timed screenshots + damage number state), rr.Debug.CritChance (weapon crit chance override), rr.Debug.Delayed (runs a command later), rr.Debug.DamageMiner (direct hit on the player miner), rr.Debug.SpawnNear (actors around the miner), rr.Debug.Objective (miner moved to the console or shuttle).
 
 #include "CoreMinimal.h"
 #include "AbilitySystemComponent.h"
+#include "Components/CapsuleComponent.h"
 #include "Containers/Ticker.h"
+#include "Debug/RRStressSubsystem.h"
+#include "GameFramework/Character.h"
+#include "Grid/RRArenaGrid.h"
+#include "Objectives/RRConsole.h"
+#include "Objectives/RRRunFlowSubsystem.h"
+#include "Objectives/RRShuttle.h"
 #include "Damage/RRDamageNumberSubsystem.h"
 #include "Debug/RRCheats.h"
 #include "Engine/Engine.h"
@@ -177,6 +184,129 @@ namespace RRScreenshotCommands
 				}
 			}
 			UE_LOG(LogRogueRigs, Log, TEXT("rr.Debug.CritChance: %.2f on %d weapons."), Chance, Count);
+		}),
+		ECVF_Cheat);
+
+	/** Feet location (capsule bottom) of the player miner. */
+	FVector MinerFeet(const ARRMiner& Miner)
+	{
+		return Miner.GetActorLocation() - FVector(0.f, 0.f, Miner.GetCapsuleComponent()->GetScaledCapsuleHalfHeight());
+	}
+
+	/** First arena grid of World, or null. */
+	ARRArenaGrid* FindGrid(UWorld* World)
+	{
+		for (TActorIterator<ARRArenaGrid> It(World); It; ++It)
+		{
+			return *It;
+		}
+		return nullptr;
+	}
+
+	/**
+	 * rr.Debug.SpawnNear <Class> <Distance> [YawDegrees] [Count]: spawns Count actors (default 1) of Class Distance uu from
+	 * the player miner, the first at YawDegrees (default 0 = +X), the others spread evenly around it. Class: a /Game class
+	 * path (e.g. /Game/RogueRigs/Blueprints/Pickups/BP_PickupHeal.BP_PickupHeal_C), else a robot name resolved like
+	 * rr.Stress.Spawn. Characters stand on the miner's floor height, other actors are placed at it (a kamikaze within its
+	 * arm range flares at once: visual check of the flare).
+	 */
+	FAutoConsoleCommandWithWorldAndArgs SpawnNearCommand(
+		TEXT("rr.Debug.SpawnNear"),
+		TEXT("rr.Debug.SpawnNear <Class> <Distance> [YawDegrees] [Count]: spawns actors of Class (/Game class path or robot name) Distance uu from the player miner (visual checks)."),
+		FConsoleCommandWithWorldAndArgsDelegate::CreateLambda([](const TArray<FString>& Args, UWorld* World)
+		{
+			World = World ? World : RRCheats::FindCheatWorld();
+			ARRMiner* Miner = RRCheats::FindPlayerMiner(World);
+			if (!Miner || Args.Num() < 2)
+			{
+				UE_LOG(LogRogueRigs, Warning, TEXT("rr.Debug.SpawnNear: needs a class, a distance and a player miner."));
+				return;
+			}
+			UClass* Class = nullptr;
+			if (Args[0].StartsWith(TEXT("/")))
+			{
+				Class = LoadClass<AActor>(nullptr, *Args[0]);
+			}
+			else if (const URRStressSubsystem* Stress = World->GetSubsystem<URRStressSubsystem>())
+			{
+				Class = Stress->ResolveEnemyClass(Args[0]);
+			}
+			if (!Class)
+			{
+				UE_LOG(LogRogueRigs, Warning, TEXT("rr.Debug.SpawnNear: no class matches '%s'."), *Args[0]);
+				return;
+			}
+			const float Distance = FCString::Atof(*Args[1]);
+			const float Yaw = Args.Num() > 2 ? FCString::Atof(*Args[2]) : 0.f;
+			const int32 Count = FMath::Clamp(Args.Num() > 3 ? FCString::Atoi(*Args[3]) : 1, 1, 64);
+			const ACharacter* CharacterDefault = Cast<ACharacter>(Class->GetDefaultObject());
+			const float Lift = CharacterDefault ? CharacterDefault->GetCapsuleComponent()->GetScaledCapsuleHalfHeight() + 2.f : 0.f;
+			FActorSpawnParameters Params;
+			Params.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AlwaysSpawn;
+			int32 Spawned = 0;
+			for (int32 Index = 0; Index < Count; ++Index)
+			{
+				const float AngleDegrees = Yaw + 360.f * static_cast<float>(Index) / static_cast<float>(Count);
+				const FVector Direction = FRotator(0.f, AngleDegrees, 0.f).Vector();
+				const FVector Location = MinerFeet(*Miner) + Direction * Distance + FVector(0.f, 0.f, Lift);
+				Spawned += World->SpawnActor<AActor>(Class, Location, FRotator(0.f, AngleDegrees + 180.f, 0.f), Params) ? 1 : 0;
+			}
+			UE_LOG(LogRogueRigs, Log, TEXT("rr.Debug.SpawnNear: %d %s at %.0f uu from the miner %s (yaw %.0f)."), Spawned, *Class->GetName(), Distance,
+				*Miner->GetActorLocation().ToCompactString(), Yaw);
+		}),
+		ECVF_Cheat);
+
+	/**
+	 * rr.Debug.Objective <Console|Shuttle> [Distance]: moves the player miner Distance uu (2D) from the run's console (default
+	 * 150, inside the zone; its marked rocks are destroyed first so the drone hacks) or shuttle (default 900, so the shuttle
+	 * and the chevrons share the screen), on the side it came from (the first floor cell found turning by 30 degrees).
+	 * Logs the miner and target positions and the bearing from the miner to the target.
+	 */
+	FAutoConsoleCommandWithWorldAndArgs ObjectiveCommand(
+		TEXT("rr.Debug.Objective"),
+		TEXT("rr.Debug.Objective <Console|Shuttle> [Distance]: moves the player miner next to the run's console (marked rocks destroyed) or shuttle (visual checks)."),
+		FConsoleCommandWithWorldAndArgsDelegate::CreateLambda([](const TArray<FString>& Args, UWorld* World)
+		{
+			World = World ? World : RRCheats::FindCheatWorld();
+			ARRMiner* Miner = RRCheats::FindPlayerMiner(World);
+			const URRRunFlowSubsystem* RunFlow = World ? World->GetSubsystem<URRRunFlowSubsystem>() : nullptr;
+			ARRArenaGrid* Grid = World ? FindGrid(World) : nullptr;
+			if (!Miner || !RunFlow || !Grid || Args.Num() < 1)
+			{
+				UE_LOG(LogRogueRigs, Warning, TEXT("rr.Debug.Objective <Console|Shuttle> [Distance]: needs a run flow, a grid and a player miner."));
+				return;
+			}
+			const bool bConsole = Args[0].Equals(TEXT("Console"), ESearchCase::IgnoreCase);
+			AActor* Target = bConsole ? static_cast<AActor*>(RunFlow->GetConsole()) : static_cast<AActor*>(RunFlow->GetShuttle());
+			if (!Target)
+			{
+				UE_LOG(LogRogueRigs, Warning, TEXT("rr.Debug.Objective: no %s in the run yet."), *Args[0]);
+				return;
+			}
+			if (ARRConsole* Console = bConsole ? RunFlow->GetConsole() : nullptr)
+			{
+				for (const FIntPoint& Rock : Console->GetMarkedRocks())
+				{
+					Grid->DestroyCell(Rock, ERRTerrainDamageSource::Drone);
+				}
+			}
+			const float Distance = Args.Num() > 1 ? FCString::Atof(*Args[1]) : (bConsole ? 150.f : 900.f);
+			const FVector TargetLocation = Target->GetActorLocation();
+			const FVector Away = (Miner->GetActorLocation() - TargetLocation).GetSafeNormal2D(UE_SMALL_NUMBER, FVector::XAxisVector);
+			FVector Destination = Miner->GetActorLocation();
+			for (int32 Turn = 0; Turn < 12; ++Turn)
+			{
+				const FVector Candidate = TargetLocation + Away.RotateAngleAxis(30.f * static_cast<float>(Turn), FVector::ZAxisVector) * Distance;
+				if (!Grid->IsBlockCell(Grid->GetCellAtWorld(Candidate)))
+				{
+					Destination = FVector(Candidate.X, Candidate.Y, Miner->GetActorLocation().Z);
+					break;
+				}
+			}
+			Miner->SetActorLocation(Destination, false, nullptr, ETeleportType::TeleportPhysics);
+			const FVector ToTarget = TargetLocation - Destination;
+			UE_LOG(LogRogueRigs, Log, TEXT("rr.Debug.Objective: miner moved to %s, %s at %s, %.0f uu away, bearing yaw %.0f (screen: +X up, +Y right)."),
+				*Destination.ToCompactString(), *Target->GetName(), *TargetLocation.ToCompactString(), ToTarget.Size2D(), ToTarget.Rotation().Yaw);
 		}),
 		ECVF_Cheat);
 }

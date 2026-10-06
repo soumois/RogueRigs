@@ -80,8 +80,9 @@ DECLARE_MULTICAST_DELEGATE_OneParam(FRROnDamageNumbersPushed, const TArray<FRRDa
  * The single path of floating damage numbers (damage-numbers, sys-damage-numbers). Damage sources call AddHit on each hit
  * (ARREnemy, ARRTargetDummy). Hits on the same target within MergeWindow seconds (world time, from the first hit) add up
  * into one number, critical if any merged hit was; the number keeps the last hit location, so a robot that dies or is
- * destroyed still gets its number where it was. A new entry whose screen footprint overlaps another open entry is stacked
- * above it along StackDirection (crowd stacking, damage-numbers). Nothing is spawned per hit: on each tick the due entries (at most
+ * destroyed still gets its number where it was. A new entry whose screen footprint would overlap another open entry, or a
+ * number still on screen (pushed less than DisplayLifetime ago, risen by RiseVelocity), is stacked above it along
+ * StackDirection (crowd stacking, damage-numbers). Nothing is spawned per hit: on each tick the due entries (at most
  * MaxNumbersPerTick, the rest wait one tick) are laid out into digits here (left to right along DigitDirection, centred
  * on the number position, advance DigitAdvance x size) and pushed to one persistent UNiagaraComponent as one entry per
  * digit in Niagara array user parameters, with the digit count and a batch id incremented on every push (never reset),
@@ -154,6 +155,25 @@ public:
 	 */
 	void AppendDigits(const FRRDamageNumber& Number, TArray<FRRDamageDigit>& OutDigits) const;
 
+	/** Seconds a pushed number stays on screen (particle lifetime of NumberSystem when it could be read, else the config value). */
+	float GetDisplayLifetime() const { return DisplayLifetime; }
+
+	/** World velocity (uu/s) of a displayed number (particle velocity of NumberSystem when it could be read, else the config value). */
+	FVector GetRiseVelocity() const { return RiseVelocity; }
+
+	/** True when DisplayLifetime was read from the NumberSystem asset at world BeginPlay. */
+	bool IsDisplayReadFromAsset() const { return bDisplayReadFromAsset; }
+
+	/** Numbers pushed and still on screen (pushed less than DisplayLifetime ago); pruned on each tick. */
+	int32 GetDisplayedCount() const { return Displayed.Num(); }
+
+	/**
+	 * Reads the particle lifetime (the longest InitializeParticle "Lifetime" or "Lifetime Max" constant of an emitter spawn script) and the particle
+	 * velocity (a Particles.Velocity constant of an emitter spawn script) from the rapid iteration parameters of System.
+	 * False when no lifetime is found; OutVelocity is left unchanged when no velocity constant exists.
+	 */
+	static bool ReadDisplayFromSystem(const UNiagaraSystem& System, float& OutLifetime, FVector& OutVelocity);
+
 	/** Digits of the last pushed batch (empty before the first push). */
 	const TArray<FRRDamageDigit>& GetLastDigits() const { return LastDigits; }
 
@@ -189,6 +209,17 @@ protected:
 		double FirstHitTime = 0.0;
 	};
 
+	/** One pushed number still on screen: avoided by the stacking until it expires. */
+	struct FDisplayedNumber
+	{
+		/** World position at the push (the number's centre). */
+		FVector Location = FVector::ZeroVector;
+		/** Screen footprint (width along DigitDirection, height along StackDirection). */
+		FVector2D Footprint = FVector2D::ZeroVector;
+		/** World time of the push. */
+		double SpawnTime = 0.0;
+	};
+
 	/** Game worlds only (game, PIE): no numbers in editor worlds. */
 	virtual bool DoesSupportWorldType(const EWorldType::Type WorldType) const override;
 
@@ -201,8 +232,12 @@ protected:
 	/** Screen footprint of an entry (width along DigitDirection, height along StackDirection), from its current value and style. */
 	FVector2D GetFootprint(float Value, bool bCritical) const;
 
-	/** Stack offset for a new entry at Location: lifted along StackDirection above each open entry whose footprint it overlaps (MaxStackSteps at most). */
-	FVector ComputeStackOffset(const FVector& Location, float Value, bool bCritical) const;
+	/**
+	 * Stack offset for a new entry at Location opened at Now: lifted along StackDirection above each open entry or displayed
+	 * number whose footprint it would overlap at its push time (Now + MergeWindow; the others placed where they will be
+	 * then, risen by RiseVelocity since their own push), MaxStackSteps lifts at most.
+	 */
+	FVector ComputeStackOffset(const FVector& Location, float Value, bool bCritical, double Now) const;
 
 	/** Sends LastDigits and DigitBatchId to the Niagara component, when there is one (parameters the asset lacks are skipped). */
 	void PushToNiagara();
@@ -257,6 +292,14 @@ protected:
 	UPROPERTY(Config)
 	FVector StackDirection = FVector(0.766f, 0.f, 0.643f);
 
+	/** Seconds a pushed number stays on screen (NS_DamageNumbers particle lifetime 0.7); replaced by the asset value at BeginPlay when readable. */
+	UPROPERTY(Config)
+	float DisplayLifetime = 0.7f;
+
+	/** World velocity (uu/s) of a displayed number (NS_DamageNumbers particle velocity); replaced by the asset value at BeginPlay when readable. */
+	UPROPERTY(Config)
+	FVector RiseVelocity = FVector(0.f, 0.f, 85.7f);
+
 	/** Gap (uu) left between a stacked number and the one it was stacked above. */
 	UPROPERTY(Config)
 	float StackGap = 4.f;
@@ -272,6 +315,12 @@ protected:
 	/** The persistent component (world-owned, not attached), created at world BeginPlay. */
 	UPROPERTY(Transient)
 	TObjectPtr<UNiagaraComponent> NiagaraComponent;
+
+	/** True when DisplayLifetime comes from the asset. */
+	bool bDisplayReadFromAsset = false;
+
+	/** Pushed numbers still on screen, oldest first (the stacking avoids them). */
+	TArray<FDisplayedNumber> Displayed;
 
 	/** Open entries, oldest first. */
 	TArray<FPendingNumber> Pending;

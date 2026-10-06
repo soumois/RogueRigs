@@ -9,7 +9,10 @@
 #include "GameFramework/Actor.h"
 #include "NiagaraComponent.h"
 #include "NiagaraDataInterfaceArrayFunctionLibrary.h"
+#include "NiagaraEmitter.h"
+#include "NiagaraEmitterHandle.h"
 #include "NiagaraEmitterInstance.h"
+#include "NiagaraScript.h"
 #include "NiagaraSystemInstance.h"
 #include "NiagaraSystemInstanceController.h"
 #include "NiagaraSystem.h"
@@ -71,6 +74,16 @@ void URRDamageNumberSubsystem::OnWorldBeginPlay(UWorld& InWorld)
 	NiagaraComponent->SetAbsolute(true, true, true);
 	NiagaraComponent->SetWorldLocationAndRotation(FVector::ZeroVector, FRotator::ZeroRotator);
 	CheckUserParameters(*System);
+	float AssetLifetime = DisplayLifetime;
+	FVector AssetVelocity = RiseVelocity;
+	bDisplayReadFromAsset = ReadDisplayFromSystem(*System, AssetLifetime, AssetVelocity) && AssetLifetime > 0.f;
+	if (bDisplayReadFromAsset)
+	{
+		DisplayLifetime = AssetLifetime;
+		RiseVelocity = AssetVelocity;
+	}
+	UE_LOG(LogRogueRigs, Log, TEXT("Damage numbers: display lifetime %.3f s, rise velocity %s (%s)."), DisplayLifetime, *RiseVelocity.ToString(),
+		bDisplayReadFromAsset ? *System->GetName() : TEXT("config"));
 	if (HasParameter(DigitCountParameter))
 	{
 		NiagaraComponent->SetVariableInt(DigitCountParameter, 0);
@@ -88,6 +101,7 @@ void URRDamageNumberSubsystem::OnWorldBeginPlay(UWorld& InWorld)
 void URRDamageNumberSubsystem::Deinitialize()
 {
 	Pending.Reset();
+	Displayed.Reset();
 	LastDigits.Reset();
 	MissingParameters.Reset();
 	if (IsValid(NiagaraComponent))
@@ -138,7 +152,7 @@ void URRDamageNumberSubsystem::AddHit(AActor* Target, float Value, bool bCritica
 	Entry.HitLocation = Location;
 	Entry.Jitter = FVector(FMath::FRandRange(-Jitter, Jitter), FMath::FRandRange(-Jitter, Jitter), 0.f);
 	// The new entry is already the last one of Pending; the scan skips it.
-	Entry.Stack = ComputeStackOffset(Location + Entry.Jitter, Value, bCritical);
+	Entry.Stack = ComputeStackOffset(Location + Entry.Jitter, Value, bCritical, Now);
 	Entry.Value = Value;
 	Entry.bCritical = bCritical;
 	Entry.FirstHitTime = Now;
@@ -159,6 +173,16 @@ void URRDamageNumberSubsystem::Tick(float DeltaTime)
 	}
 
 	const double Now = World->GetTimeSeconds();
+	// Displayed numbers are appended in push order: the expired ones form a prefix.
+	int32 Expired = 0;
+	while (Expired < Displayed.Num() && Now - Displayed[Expired].SpawnTime >= DisplayLifetime)
+	{
+		++Expired;
+	}
+	if (Expired > 0)
+	{
+		Displayed.RemoveAt(0, Expired, EAllowShrinking::No);
+	}
 	TArray<FRRDamageNumber> Numbers;
 	// Entries are appended in time order: the due ones form a prefix of Pending.
 	int32 DueCount = 0;
@@ -173,6 +197,13 @@ void URRDamageNumberSubsystem::Tick(float DeltaTime)
 		Number.Size = Entry.bCritical ? NumberSize * CriticalScale : NumberSize;
 		Number.Color = Entry.bCritical ? CriticalColor : NormalColor;
 		Number.SpawnTime = static_cast<float>(Now);
+		if (MaxStackSteps > 0)
+		{
+			FDisplayedNumber& Shown = Displayed.AddDefaulted_GetRef();
+			Shown.Location = Number.Location;
+			Shown.Footprint = GetFootprint(Entry.Value, Entry.bCritical);
+			Shown.SpawnTime = Now;
+		}
 		++DueCount;
 	}
 	if (DueCount > 0)
@@ -208,7 +239,7 @@ FVector2D URRDamageNumberSubsystem::GetFootprint(float Value, bool bCritical) co
 	return FVector2D(DigitAdvance * Size * static_cast<float>(Digits), Size);
 }
 
-FVector URRDamageNumberSubsystem::ComputeStackOffset(const FVector& Location, float Value, bool bCritical) const
+FVector URRDamageNumberSubsystem::ComputeStackOffset(const FVector& Location, float Value, bool bCritical, double Now) const
 {
 	if (MaxStackSteps <= 0)
 	{
@@ -217,19 +248,41 @@ FVector URRDamageNumberSubsystem::ComputeStackOffset(const FVector& Location, fl
 	const FVector Right = DigitDirection.GetSafeNormal(UE_SMALL_NUMBER, FVector::YAxisVector);
 	const FVector Up = StackDirection.GetSafeNormal(UE_SMALL_NUMBER, FVector::ZAxisVector);
 	const FVector2D Footprint = GetFootprint(Value, bCritical);
+	// The new number appears when its window closes; every other number is compared where it will be at that moment.
+	const double PushTime = Now + MergeWindow;
+
+	// Obstacles: the other open entries (pushed when their own window closes) and the numbers still on screen at PushTime.
+	struct FObstacle
+	{
+		FVector Location;
+		FVector2D Footprint;
+	};
+	TArray<FObstacle, TInlineAllocator<32>> Obstacles;
+	// The new entry is the last one of Pending: skip it.
+	for (int32 Index = 0; Index < Pending.Num() - 1; ++Index)
+	{
+		const FPendingNumber& Other = Pending[Index];
+		const double Risen = FMath::Max(PushTime - (Other.FirstHitTime + MergeWindow), 0.0);
+		Obstacles.Add({ Other.HitLocation + Other.Jitter + Other.Stack + RiseVelocity * Risen, GetFootprint(Other.Value, Other.bCritical) });
+	}
+	for (const FDisplayedNumber& Shown : Displayed)
+	{
+		const double Age = PushTime - Shown.SpawnTime;
+		if (Age < DisplayLifetime)
+		{
+			Obstacles.Add({ Shown.Location + RiseVelocity * Age, Shown.Footprint });
+		}
+	}
 
 	FVector Stack = FVector::ZeroVector;
 	for (int32 Step = 0; Step < MaxStackSteps; ++Step)
 	{
 		bool bMoved = false;
-		// The new entry is the last one of Pending: skip it.
-		for (int32 Index = 0; Index < Pending.Num() - 1; ++Index)
+		for (const FObstacle& Other : Obstacles)
 		{
-			const FPendingNumber& Other = Pending[Index];
-			const FVector2D OtherFootprint = GetFootprint(Other.Value, Other.bCritical);
-			const FVector Delta = (Location + Stack) - (Other.HitLocation + Other.Jitter + Other.Stack);
-			const float HalfWidth = 0.5f * (Footprint.X + OtherFootprint.X);
-			const float HalfHeight = 0.5f * (Footprint.Y + OtherFootprint.Y);
+			const FVector Delta = (Location + Stack) - Other.Location;
+			const float HalfWidth = 0.5f * static_cast<float>(Footprint.X + Other.Footprint.X);
+			const float HalfHeight = 0.5f * static_cast<float>(Footprint.Y + Other.Footprint.Y);
 			const float AlongUp = static_cast<float>(FVector::DotProduct(Delta, Up));
 			if (FMath::Abs(static_cast<float>(FVector::DotProduct(Delta, Right))) < HalfWidth && FMath::Abs(AlongUp) < HalfHeight)
 			{
@@ -245,6 +298,44 @@ FVector URRDamageNumberSubsystem::ComputeStackOffset(const FVector& Location, fl
 		}
 	}
 	return Stack;
+}
+
+bool URRDamageNumberSubsystem::ReadDisplayFromSystem(const UNiagaraSystem& System, float& OutLifetime, FVector& OutVelocity)
+{
+	// Initialize Particle exposes Lifetime (direct) or Lifetime Min / Max (random range): the longest one counts.
+	static const FString LifetimeSuffix(TEXT(".InitializeParticle.Lifetime"));
+	static const FString LifetimeMaxSuffix(TEXT(".InitializeParticle.Lifetime Max"));
+	static const FString VelocitySuffix(TEXT(".Particles.Velocity"));
+	bool bFoundLifetime = false;
+	for (const FNiagaraEmitterHandle& Handle : System.GetEmitterHandles())
+	{
+		const FVersionedNiagaraEmitterData* Data = Handle.GetIsEnabled() ? Handle.GetEmitterData() : nullptr;
+		const UNiagaraScript* Script = Data ? Data->SpawnScriptProps.Script.Get() : nullptr;
+		if (!Script)
+		{
+			continue;
+		}
+		const FNiagaraParameterStore& Store = Script->RapidIterationParameters;
+		for (const FNiagaraVariableWithOffset& Variable : Store.ReadParameterVariables())
+		{
+			const FString Name = Variable.GetName().ToString();
+			if (Variable.GetType() == FNiagaraTypeDefinition::GetFloatDef() && (Name.EndsWith(LifetimeSuffix) || Name.EndsWith(LifetimeMaxSuffix)))
+			{
+				const float Lifetime = Store.GetParameterValue<float>(Variable);
+				OutLifetime = bFoundLifetime ? FMath::Max(OutLifetime, Lifetime) : Lifetime;
+				bFoundLifetime = true;
+			}
+			else if (Name.EndsWith(VelocitySuffix) && Variable.GetType() == FNiagaraTypeDefinition::GetVec3Def())
+			{
+				OutVelocity = FVector(Store.GetParameterValue<FVector3f>(Variable));
+			}
+		}
+		if (bFoundLifetime)
+		{
+			break;
+		}
+	}
+	return bFoundLifetime;
 }
 
 void URRDamageNumberSubsystem::AppendDigits(const FRRDamageNumber& Number, TArray<FRRDamageDigit>& OutDigits) const
