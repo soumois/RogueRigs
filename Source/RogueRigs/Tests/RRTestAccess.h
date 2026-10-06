@@ -44,6 +44,9 @@ namespace RRTestAccess
 		static int32 Height(const ARRArenaGrid* Grid) { return Grid->*(&FGridAccess::GridHeight); }
 		static int32 ChunkSide(const ARRArenaGrid* Grid) { return Grid->*(&FGridAccess::ChunkCells); }
 		static int32 DropsOnDestroy(const ARRArenaGrid* Grid) { return Grid->*(&FGridAccess::DestroyDropCount); }
+		static float DropIntervalOf(const ARRArenaGrid* Grid) { return Grid->*(&FGridAccess::DropInterval); }
+		static FString& LayoutNameOf(ARRArenaGrid* Grid) { return Grid->*(&FGridAccess::LayoutName); }
+		static float& CellSizeOf(ARRArenaGrid* Grid) { return Grid->*(&FGridAccess::CellSize); }
 		static TSubclassOf<ARRPickup>& HealClass(ARRArenaGrid* Grid) { return Grid->*(&FGridAccess::HealPickupClass); }
 		static TSubclassOf<ARRPickup> OreClass(const ARRArenaGrid* Grid) { return Grid->*(&FGridAccess::OrePickupClass); }
 

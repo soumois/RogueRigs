@@ -31,6 +31,17 @@ namespace RRTestHarness
 	inline const FIntPoint RockCell(43, 38);
 	inline const FIntPoint RockWestFloorCell(42, 38);
 
+	/** Legacy layout of the logic tests (80 x 80) and its cell size; the game uses arena_m1_fine at 67 uu since task-029-04. */
+	inline const TCHAR* const LegacyLayoutName = TEXT("arena_m1");
+	constexpr float LegacyCellSize = 200.f;
+
+	/** Game layout (240 x 240, each legacy cell split 3 x 3, edges roughened) and its cell size. */
+	inline const TCHAR* const FineLayoutName = TEXT("arena_m1_fine");
+	constexpr float FineCellSize = 67.f;
+
+	/** Center cell of the 3 x 3 fine cells a legacy cell became (same place in the world within half a percent). */
+	inline FIntPoint FineCell(FIntPoint LegacyCell) { return FIntPoint(LegacyCell.X * 3 + 1, LegacyCell.Y * 3 + 1); }
+
 	/** Transient game world ticked manually: actors begin play on spawn, no game mode, no local player. Destroyed with the scope. */
 	class FTestWorld
 	{
@@ -91,22 +102,45 @@ namespace RRTestHarness
 		return Class;
 	}
 
-	/** Spawns BP_ArenaGrid at the origin and checks it rebuilt from arena_m1 at BeginPlay. */
-	inline ARRArenaGrid* SpawnGrid(FAutomationTestBase& Test, const FTestWorld& TestWorld)
+	/**
+	 * Spawns BP_ArenaGrid at the origin with LayoutName and CellSize set before its construction script and BeginPlay, and
+	 * checks it built (CheckCell is not void). Used by SpawnGrid (legacy 200 uu layout) and SpawnFineGrid (game defaults).
+	 */
+	inline ARRArenaGrid* SpawnGridWithLayout(FAutomationTestBase& Test, const FTestWorld& TestWorld, const TCHAR* LayoutName, float CellSize, FIntPoint CheckCell)
 	{
 		UClass* GridClass = LoadTestClass<ARRArenaGrid>(Test, ArenaGridClassPath);
 		if (!GridClass)
 		{
 			return nullptr;
 		}
-		ARRArenaGrid* Grid = TestWorld.Spawn<ARRArenaGrid>(GridClass, FVector::ZeroVector);
+		const FTransform Origin(FVector::ZeroVector);
+		ARRArenaGrid* Grid = TestWorld.Get()->SpawnActorDeferred<ARRArenaGrid>(GridClass, Origin, nullptr, nullptr, ESpawnActorCollisionHandlingMethod::AlwaysSpawn);
 		if (!Test.TestNotNull(TEXT("grid spawned"), Grid))
 		{
 			return nullptr;
 		}
+		RRTestAccess::FGridAccess::LayoutNameOf(Grid) = LayoutName;
+		RRTestAccess::FGridAccess::CellSizeOf(Grid) = CellSize;
+		Grid->FinishSpawning(Origin);
 		Test.TestTrue(TEXT("grid has begun play"), Grid->HasActorBegunPlay());
-		Test.TestTrue(TEXT("grid layout loaded"), Grid->GetCellType(RockCell) != ERRCellType::Void);
+		Test.TestTrue(*FString::Printf(TEXT("grid layout %s loaded"), LayoutName), Grid->GetCellType(CheckCell) != ERRCellType::Void);
 		return Grid;
+	}
+
+	/**
+	 * Spawns BP_ArenaGrid at the origin on the legacy layout arena_m1 (80 x 80) at LegacyCellSize (200 uu). Logic tests keep it:
+	 * their cells were chosen on that layout and their rules do not depend on the cell size. Every other grid property keeps
+	 * the game default (block health, drops). Tests of cell-counted tunables use SpawnFineGrid.
+	 */
+	inline ARRArenaGrid* SpawnGrid(FAutomationTestBase& Test, const FTestWorld& TestWorld)
+	{
+		return SpawnGridWithLayout(Test, TestWorld, LegacyLayoutName, LegacyCellSize, RockCell);
+	}
+
+	/** Spawns BP_ArenaGrid at the origin with the game layout and cell size (arena_m1_fine, 240 x 240 cells of 67 uu). */
+	inline ARRArenaGrid* SpawnFineGrid(FAutomationTestBase& Test, const FTestWorld& TestWorld)
+	{
+		return SpawnGridWithLayout(Test, TestWorld, FineLayoutName, FineCellSize, FineCell(RockCell));
 	}
 
 	/**

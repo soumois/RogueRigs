@@ -211,7 +211,7 @@ protected:
 
 	/** Half size (cells) of the square searched around the robot for a firing position. */
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Shooter|Reposition", meta = (ClampMin = 1))
-	int32 RepositionSearchRadiusCells = 6;
+	int32 RepositionSearchRadiusCells = 18;
 
 	/** Minimum seconds between two repositioning searches of this robot. */
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Shooter|Reposition", meta = (ClampMin = 0, Units = "s"))

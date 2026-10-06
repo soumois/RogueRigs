@@ -179,9 +179,9 @@ protected:
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Components")
 	TObjectPtr<UStaticMeshComponent> Mesh;
 
-	/** Blocks whose center is within this many cells of the console cell are marked (objective-console: 2, provisional). */
+	/** Blocks whose center is within this many cells of the console cell are marked (objective-console: 2 cells of 200 uu = 6 cells of 67 uu, provisional). */
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Console", meta = (ClampMin = 0))
-	float MarkRadiusCells = 2.f;
+	float MarkRadiusCells = 6.f;
 
 	/** Block types that get marked. Barrels are left out: they explode and are not rock. */
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Console")
@@ -191,9 +191,9 @@ protected:
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Console", meta = (ClampMin = 0.1, Units = "s"))
 	float HackDuration = 20.f;
 
-	/** The miner must be within this many cells (2D, from the console center) for the drone to hack (objective-console: 3, provisional). */
+	/** The miner must be within this many cells (2D, from the console center) for the drone to hack (objective-console: 3 cells of 200 uu = 9 cells of 67 uu, provisional). */
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Console", meta = (ClampMin = 0))
-	float ZoneRadiusCells = 3.f;
+	float ZoneRadiusCells = 9.f;
 
 	/** Gauge fraction lost per second while the miner is out of the zone (objective-console: 5 %/s = 0.05, provisional). */
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Console", meta = (ClampMin = 0))

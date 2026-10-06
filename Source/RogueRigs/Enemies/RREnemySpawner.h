@@ -226,11 +226,11 @@ protected:
 
 	/** Minimum gap in cells between the visible floor rectangle and a spawn cell (whole cell beyond it). */
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Spawner", meta = (ClampMin = 0))
-	int32 ViewMargin = 1;
+	int32 ViewMargin = 3;
 
 	/** Maximum distance in cells beyond the view edge of a spawn cell (cell center within this many cells + 0.5). */
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Spawner", meta = (ClampMin = 0))
-	int32 MaxSpawnDistanceCells = 6;
+	int32 MaxSpawnDistanceCells = 18;
 
 	/** Timed spawning on or off (also see rr.Spawner.Enabled). */
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Spawner")

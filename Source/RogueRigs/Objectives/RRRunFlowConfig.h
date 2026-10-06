@@ -31,13 +31,13 @@ struct ROGUERIGS_API FRRRunFlowConfig
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Run Flow", meta = (ClampMin = 0, ClampMax = 1))
 	float ConsoleAlertThreshold = 0.4f;
 
-	/** Minimum straight-line distance, in cells, between the miner's cell and the console cell (12, provisional). */
+	/** Minimum straight-line distance, in cells, between the miner's cell and the console cell (objective-console: 12 cells of 200 uu = 36 cells of 67 uu, provisional). */
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Run Flow", meta = (ClampMin = 0))
-	float ConsoleMinDistanceCells = 12.f;
+	float ConsoleMinDistanceCells = 36.f;
 
-	/** Maximum straight-line distance, in cells, between the miner's cell and the console cell (20, provisional). */
+	/** Maximum straight-line distance, in cells, between the miner's cell and the console cell (objective-console: 20 cells of 200 uu = 60 cells of 67 uu, provisional). */
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Run Flow", meta = (ClampMin = 0))
-	float ConsoleMaxDistanceCells = 20.f;
+	float ConsoleMaxDistanceCells = 60.f;
 
 	/**
 	 * When true and at least one candidate cell has blocks to mark around it (the console class's MarkRadiusCells and
@@ -51,17 +51,17 @@ struct ROGUERIGS_API FRRRunFlowConfig
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Run Flow")
 	TSubclassOf<ARRConsole> ConsoleClass;
 
-	/** Minimum straight-line distance, in cells, between the miner's cell and the shuttle cell (extraction: 25, provisional). */
+	/** Minimum straight-line distance, in cells, between the miner's cell and the shuttle cell (extraction: 25 cells of 200 uu = 75 cells of 67 uu, provisional). */
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Run Flow|Extraction", meta = (ClampMin = 0))
-	float ShuttleMinDistanceCells = 25.f;
+	float ShuttleMinDistanceCells = 75.f;
 
 	/** Seconds between the shuttle landing and its departure without the miner (extraction: 45 s, provisional). */
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Run Flow|Extraction", meta = (ClampMin = 0.1, Units = "s"))
 	float ShuttleCountdownSeconds = 45.f;
 
-	/** Boarding radius in cells: the miner boards when its 2D distance to the shuttle is at most this (1 cell, provisional choice of task-016-02). */
+	/** Boarding radius in cells: the miner boards when its 2D distance to the shuttle is at most this (1 cell of 200 uu = 3 cells of 67 uu, provisional choice of task-016-02). */
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Run Flow|Extraction", meta = (ClampMin = 0))
-	float ShuttleBoardRadiusCells = 1.f;
+	float ShuttleBoardRadiusCells = 3.f;
 
 	/** Shuttle actor landed when extraction is ready (the shuttle Blueprint). None = the native ARRShuttle (no mesh). */
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Run Flow|Extraction")

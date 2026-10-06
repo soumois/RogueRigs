@@ -373,11 +373,11 @@ protected:
 
 	/** Layout file name without extension, read from Content/RogueRigs/Data/Levels/<LayoutName>.json. */
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Grid")
-	FString LayoutName = TEXT("arena_m1");
+	FString LayoutName = TEXT("arena_m1_fine");
 
-	/** Edge length of one cell in Unreal units. */
+	/** Edge length of one cell in Unreal units (67 since task-029-04: 240 x 240 cells cover the former 80 x 80 cells of 200 uu). */
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Grid", meta = (ClampMin = "1.0", Units = "cm"))
-	float CellSize = 200.f;
+	float CellSize = 67.f;
 
 	/** Height of a block above the floor top (provisional). */
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Grid", meta = (ClampMin = "1.0", Units = "cm"))
@@ -409,25 +409,25 @@ protected:
 
 	// --- Block health, in dig-seconds at mining speed 1 (provisional) ---
 
-	/** Health of a rock block: drone dig time in seconds at mining speed 1. */
+	/** Health of a rock block: drone dig time in seconds at mining speed 1 (drone gdd: 0.5 s per 67 uu block). */
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Grid|Destruction", meta = (ClampMin = "0.01", Units = "s"))
-	float RockHealth = 1.5f;
+	float RockHealth = 0.5f;
 
-	/** Health of an ore block: drone dig time in seconds at mining speed 1. */
+	/** Health of an ore block: drone dig time in seconds at mining speed 1 (ore-blocks gdd: 1.5 s per 67 uu block). */
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Grid|Destruction", meta = (ClampMin = "0.01", Units = "s"))
-	float OreHealth = 4.5f;
+	float OreHealth = 1.5f;
 
-	/** Health of a heal ore block: drone dig time in seconds at mining speed 1. */
+	/** Health of a heal ore block: drone dig time in seconds at mining speed 1 (drone gdd: 1.5 s per 67 uu block). */
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Grid|Destruction", meta = (ClampMin = "0.01", Units = "s"))
-	float HealOreHealth = 4.5f;
+	float HealOreHealth = 1.5f;
 
-	/** Health of a special ore block: drone dig time in seconds at mining speed 1. */
+	/** Health of a special ore block: drone dig time in seconds at mining speed 1 (same as ore). */
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Grid|Destruction", meta = (ClampMin = "0.01", Units = "s"))
-	float SpecialOreHealth = 4.5f;
+	float SpecialOreHealth = 1.5f;
 
-	/** Health of a barrel block: drone dig time in seconds at mining speed 1. */
+	/** Health of a barrel block: drone dig time in seconds at mining speed 1 (same as rock, provisional). */
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Grid|Destruction", meta = (ClampMin = "0.01", Units = "s"))
-	float BarrelHealth = 1.5f;
+	float BarrelHealth = 0.5f;
 
 	/** Health of a barrel against shots (projectile damage, e.g. 10 per rifle bullet); separate from its dig health (provisional, barrel gdd). */
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Grid|Destruction", meta = (ClampMin = "0.01"))
@@ -465,9 +465,9 @@ protected:
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Grid|Drops", meta = (ClampMin = "0.01", Units = "s"))
 	float DropInterval = 1.5f;
 
-	/** Pickups spawned when an ore or heal ore block is destroyed, whatever the source (provisional). */
+	/** Pickups spawned when an ore or heal ore block is destroyed, whatever the source (ore-blocks gdd: one chunk per broken 67 uu block, provisional). */
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Grid|Drops", meta = (ClampMin = "0"))
-	int32 DestroyDropCount = 3;
+	int32 DestroyDropCount = 1;
 
 	/** Per-instance custom data float of the block HISMs that holds the marked flag (each block HISM gets index + 1 floats). */
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Grid|Objectives", meta = (ClampMin = "0", ClampMax = "7"))

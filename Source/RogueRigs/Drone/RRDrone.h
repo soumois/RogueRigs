@@ -171,9 +171,9 @@ protected:
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Drone|Dig", meta = (ClampMin = 0, Units = "cm"))
 	float DigHoverDistance = 60.f;
 
-	/** The dig stops when the miner's horizontal distance to the block center exceeds this many cells (provisional, drone spec). */
+	/** The dig stops when the miner's horizontal distance to the block center exceeds this many cells (provisional, drone spec; 4.5 cells of 67 uu = the former 1.5 cells of 200 uu). */
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Drone|Dig", meta = (ClampMin = 0))
-	float DigCancelDistanceCells = 1.5f;
+	float DigCancelDistanceCells = 4.5f;
 
 	/** Diameter of the laser beam in uu. */
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Drone|Laser", meta = (ClampMin = 0, Units = "cm"))
