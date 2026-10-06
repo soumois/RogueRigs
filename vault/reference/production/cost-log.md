@@ -80,6 +80,7 @@ kind: note
 | [[task-028-03-xp-pacing]] | opus | 2 | 0k | 426k | 8439k | 62k |
 | [[task-030-01-director-speeds]] | opus | 1 | 0k | 171k | 4580k | 53k |
 | [[task-030-02-pacing-retune]] | opus | 2 | 0k | 501k | 6689k | 51k |
+| [[task-031-01-remove-dummy]] | opus | 2 | 0k | 155k | 5632k | 38k |
 
 ## Totals
 | Scope | Input | Cache write | Cache read | Output |

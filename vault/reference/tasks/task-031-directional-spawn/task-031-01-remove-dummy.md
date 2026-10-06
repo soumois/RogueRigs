@@ -3,7 +3,7 @@ id: task-031-01-remove-dummy
 description: "Target dummy removed: C++ class, Blueprint and material if unreferenced, docs; tests that used it switch to a still chaser."
 parent: task-031-directional-spawn
 kind: task
-status: in-progress
+status: done
 ---
 # Remove the target dummy
 
@@ -15,11 +15,11 @@ status: in-progress
 - done_when: build exits 0 with the editor closed; all `RogueRigs.*` tests pass headless; docs updated; lint clean.
 - editor_state: closed
 - token_ceiling: 60000
-- model: open
-- tokens: open
-- runs: open
+- model: opus
+- tokens: input 124, cache write 155085, cache read 5631802, output 37801
+- runs: 2
 - milestone: M2
-- result: open
+- result: RRTargetDummy.h/.cpp, BP_TargetDummy and MI_GB_Dummy removed (no other reference in Content or Config); tests use RRTestHarness::SpawnStillChaser (native chaser, tick and movement off, 1000 hp, feet snapped to the floor); Weapons.DummyRefill removed; sys-target-dummy and bp-target-dummy removed, links in old task nodes made plain text. Build 0, 185/185. Commit 19c66ff.
 
 ## Relations
 - [[task-031-directional-spawn]] — parent global task.

@@ -3,7 +3,7 @@ id: task-031-02-spawn-speed-shooter
 description: "Spawn band 100–500 uu beyond the view, spawn side biased 55/35/10 toward the run heading, robots 30 % slower, shooters never back away; tests."
 parent: task-031-directional-spawn
 kind: task
-status: todo
+status: in-progress
 ---
 # Closer directional spawns, slower robots, steadfast shooters
 
