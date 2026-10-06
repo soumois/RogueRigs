@@ -24,11 +24,14 @@
 
 namespace RRRunFlowTests
 {
-	/** Walkable start cell of the miner (flow-field tests use it too). */
-	const FIntPoint RunMinerCell(40, 40);
+	/** Walkable start cell of the miner on arena_m1_fine (the fine cell of the legacy start (40, 40), the layout spawn). */
+	const FIntPoint RunMinerCell = RRTestHarness::FineCell(FIntPoint(40, 40));
 
-	/** Floor cell with rock (43, 38) east of it; 2.83 cells from RunMinerCell, so inside a 3-cell zone. */
-	const FIntPoint RunHackConsoleCell(42, 38);
+	/** Floor cell of arena_m1_fine with rock (129, 115) two cells east (fine cell of the legacy (42, 38)); 8.49 cells from RunMinerCell, so inside a 9-cell zone. */
+	const FIntPoint RunHackConsoleCell = RRTestHarness::FineCell(FIntPoint(42, 38));
+
+	/** Marked radius of the console in cells (objective-console: 2 cells of 200 uu = 6 of 67 uu); the test checks marks against it independently. */
+	constexpr int32 RunMarkRadiusCells = 6;
 
 	/** Grid, miner (weapons stopped) and run flow of a test world. */
 	struct FRunSetup
@@ -41,7 +44,7 @@ namespace RRRunFlowTests
 	/** Spawns the grid and the miner on Cell, stops its weapons and sets the run flow to the default config with Seed. */
 	bool SetUpRun(FAutomationTestBase& Test, const RRTestHarness::FTestWorld& TestWorld, FRunSetup& Out, FIntPoint Cell = RunMinerCell, int32 Seed = 20261003)
 	{
-		Out.Grid = RRTestHarness::SpawnGrid(Test, TestWorld);
+		Out.Grid = RRTestHarness::SpawnFineGrid(Test, TestWorld);
 		Out.Miner = Out.Grid ? RRTestHarness::SpawnMiner(Test, TestWorld, Out.Grid, Cell) : nullptr;
 		Out.RunFlow = TestWorld.Get()->GetSubsystem<URRRunFlowSubsystem>();
 		if (!Out.Miner || !Test.TestNotNull(TEXT("run flow subsystem"), Out.RunFlow))
@@ -103,8 +106,8 @@ bool FRRRunFlowAlertTest::RunTest(const FString& Parameters)
 	TestEqual(TEXT("fill 240 s"), Config.AlertFillSeconds, 240.f);
 	TestEqual(TEXT("kill 0.5 s"), Config.KillAlertSeconds, 0.5f);
 	TestEqual(TEXT("console at 0.4"), Config.ConsoleAlertThreshold, 0.4f);
-	TestEqual(TEXT("console 12 cells min"), Config.ConsoleMinDistanceCells, 12.f);
-	TestEqual(TEXT("console 20 cells max"), Config.ConsoleMaxDistanceCells, 20.f);
+	TestEqual(TEXT("console 36 cells min (12 of 200 uu)"), Config.ConsoleMinDistanceCells, 36.f);
+	TestEqual(TEXT("console 60 cells max (20 of 200 uu)"), Config.ConsoleMaxDistanceCells, 60.f);
 	TestEqual(TEXT("alert starts at 0"), RunFlow->GetAlert(), 0.f);
 
 	// Time alone: 60 frames = 1 s of alert.
@@ -118,7 +121,7 @@ bool FRRRunFlowAlertTest::RunTest(const FString& Parameters)
 
 	// A real kill: a chaser killed by a flat hit from the miner adds 0.5 s.
 	UClass* ChaserClass = ARRChaser::StaticClass();
-	ARRChaser* Chaser = TestWorld.Spawn<ARRChaser>(ChaserClass, Setup.Grid->GetCellCenter(44, 41) + FVector(0.f, 0.f, 100.f));
+	ARRChaser* Chaser = TestWorld.Spawn<ARRChaser>(ChaserClass, Setup.Grid->GetCellCenter(133, 124) + FVector(0.f, 0.f, 100.f));
 	if (!TestNotNull(TEXT("chaser spawned"), Chaser))
 	{
 		return false;
@@ -288,20 +291,21 @@ bool FRRConsoleDropTest::RunTest(const FString& Parameters)
 		const float Distance = FMath::Sqrt(static_cast<float>(FMath::Square(Cell.X - RunMinerCell.X) + FMath::Square(Cell.Y - RunMinerCell.Y)));
 		AddInfo(FString::Printf(TEXT("seed %d: console on (%d, %d), %.2f cells, %d marked rocks."), Seed, Cell.X, Cell.Y, Distance, Console->GetMarkedRockCount()));
 		TestEqual(*FString::Printf(TEXT("seed %d: floor cell"), Seed), Grid->GetCellType(Cell), ERRCellType::Floor);
-		TestTrue(*FString::Printf(TEXT("seed %d: 12 to 20 cells away"), Seed), Distance >= 12.f && Distance <= 20.f);
+		TestTrue(*FString::Printf(TEXT("seed %d: 36 to 60 cells away"), Seed), Distance >= 36.f && Distance <= 60.f);
 		URRFlowFieldSubsystem* FlowField = TestWorld.Get()->GetSubsystem<URRFlowFieldSubsystem>();
 		TestTrue(*FString::Printf(TEXT("seed %d: reachable"), Seed), FlowField && FlowField->GetCellDistance(Cell) >= 0);
 		TestTrue(*FString::Printf(TEXT("seed %d: at the cell center"), Seed), Console->GetActorLocation().Equals(Grid->GetCellCenter(Cell.X, Cell.Y), 0.1));
 		TestNearlyEqual(*FString::Printf(TEXT("seed %d: alert at 0.4"), Seed), Setup.RunFlow->GetAlert(), 0.4f, 1e-6f);
 
-		// Marked = every rock-type block within 2 cells, nothing else.
+		// Marked = every rock-type block within 6 cells, nothing else.
 		int32 Expected = 0;
-		for (int32 DY = -3; DY <= 3; ++DY)
+		const int32 Scan = RunMarkRadiusCells + 1;
+		for (int32 DY = -Scan; DY <= Scan; ++DY)
 		{
-			for (int32 DX = -3; DX <= 3; ++DX)
+			for (int32 DX = -Scan; DX <= Scan; ++DX)
 			{
 				const FIntPoint Near(Cell.X + DX, Cell.Y + DY);
-				const bool bShouldMark = DX * DX + DY * DY <= 4 && IsMarkableType(Grid->GetCellType(Near));
+				const bool bShouldMark = DX * DX + DY * DY <= RunMarkRadiusCells * RunMarkRadiusCells && IsMarkableType(Grid->GetCellType(Near));
 				Expected += bShouldMark ? 1 : 0;
 				TestEqual(*FString::Printf(TEXT("seed %d: (%d, %d) marked"), Seed, Near.X, Near.Y), Grid->IsCellMarked(Near), bShouldMark);
 				if (bShouldMark)
@@ -354,10 +358,10 @@ bool FRRConsoleHackTest::RunTest(const FString& Parameters)
 	Console->InitializeConsole(Grid, Miner, RunHackConsoleCell);
 	TestEqual(TEXT("hack 20 s"), Console->GetHackDuration(), 20.f);
 	TestEqual(TEXT("drain 5 %/s"), Console->GetDrainPerSecond(), 0.05f);
-	TestEqual(TEXT("zone 3 cells"), Console->GetZoneRadius(), 3.f * Grid->GetCellSize());
-	TestTrue(TEXT("rock (43, 38) marked"), Grid->IsCellMarked(RockCell));
+	TestEqual(TEXT("zone 9 cells (3 of 200 uu)"), Console->GetZoneRadius(), 9.f * Grid->GetCellSize());
+	TestTrue(TEXT("rock (129, 115) marked"), Grid->IsCellMarked(FineRockCell));
 	const TArray<FIntPoint> Marked = Console->GetMarkedRocks();
-	AddInfo(FString::Printf(TEXT("%d marked rocks around (42, 38)."), Marked.Num()));
+	AddInfo(FString::Printf(TEXT("%d marked rocks around (127, 115)."), Marked.Num()));
 	if (!TestTrue(TEXT("rocks marked"), Marked.Num() > 0))
 	{
 		return false;

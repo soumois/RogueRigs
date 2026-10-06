@@ -22,8 +22,12 @@ namespace RRSpawnerTests
 {
 	using namespace RRTestHarness;
 
-	/** Miner cell (open floor, flow field tests). */
-	const FIntPoint MinerCell(40, 40);
+	/** Miner cell on arena_m1_fine (open floor; fine cell of the legacy (40, 40)). The spawn band is counted in cells, so these tests run on the game grid. */
+	const FIntPoint MinerCell = FineCell(FIntPoint(40, 40));
+
+	/** Spawn band in cells from the view edge, cell center: ViewMargin + 0.5 to MaxSpawnDistanceCells + 0.5 (3 and 18 cells of 67 uu = 1 and 6 of 200 uu). */
+	constexpr float BandMinCells = 3.5f;
+	constexpr float BandMaxCells = 18.5f;
 
 	/** Half extent (uu) of the fixed view rectangle centered on the miner. */
 	const FVector2D ViewHalfExtent(1600.f, 1000.f);
@@ -42,7 +46,7 @@ namespace RRSpawnerTests
 
 	bool MakeSetup(FAutomationTestBase& Test, const FTestWorld& TestWorld, int32 MaxAlive, float Interval, bool bEnabled, FSetup& Out)
 	{
-		Out.Grid = SpawnGrid(Test, TestWorld);
+		Out.Grid = SpawnFineGrid(Test, TestWorld);
 		Out.Miner = Out.Grid ? SpawnMiner(Test, TestWorld, Out.Grid, MinerCell) : nullptr;
 		if (!Out.Miner)
 		{
@@ -67,8 +71,8 @@ namespace RRSpawnerTests
 		Test.TestEqual(TEXT("default PackSizeMin 8"), FSpawnerAccess::PackSizeMinOf(Out.Spawner), 8);
 		Test.TestEqual(TEXT("default PackSizeMax 15"), FSpawnerAccess::PackSizeMaxOf(Out.Spawner), 15);
 		Test.TestEqual(TEXT("default LoneSpawnChance 0.1"), FSpawnerAccess::LoneSpawnChanceOf(Out.Spawner), 0.1f);
-		Test.TestEqual(TEXT("default ViewMargin 1"), FSpawnerAccess::ViewMarginOf(Out.Spawner), 1);
-		Test.TestEqual(TEXT("default MaxSpawnDistanceCells 6"), FSpawnerAccess::MaxSpawnDistanceOf(Out.Spawner), 6);
+		Test.TestEqual(TEXT("default ViewMargin 3"), FSpawnerAccess::ViewMarginOf(Out.Spawner), 3);
+		Test.TestEqual(TEXT("default MaxSpawnDistanceCells 18"), FSpawnerAccess::MaxSpawnDistanceOf(Out.Spawner), 18);
 		FSpawnerAccess::EnemyClassOf(Out.Spawner) = ARRChaser::StaticClass();
 		FSpawnerAccess::MaxAliveOf(Out.Spawner) = MaxAlive;
 		FSpawnerAccess::SpawnIntervalOf(Out.Spawner) = Interval;
@@ -99,7 +103,7 @@ namespace RRSpawnerTests
 				|| (Side == ERRSpawnSide::NegativeY && Point.Y < Setup.View.Min.Y) || (Side == ERRSpawnSide::PositiveY && Point.Y > Setup.View.Max.Y);
 			Test.TestTrue(*FString::Printf(TEXT("%s: (%d, %d) beyond its edge"), Label, Cell.X, Cell.Y), bBeyond);
 			const float Distance = ARREnemySpawner::GetDistanceToRectangle(Setup.View, Point);
-			Test.TestTrue(*FString::Printf(TEXT("%s: (%d, %d) in the spawn band"), Label, Cell.X, Cell.Y), Distance >= 1.5f * CellSize && Distance <= 6.5f * CellSize);
+			Test.TestTrue(*FString::Printf(TEXT("%s: (%d, %d) in the spawn band"), Label, Cell.X, Cell.Y), Distance >= BandMinCells * CellSize && Distance <= BandMaxCells * CellSize);
 			Test.TestFalse(*FString::Printf(TEXT("%s: (%d, %d) distinct"), Label, Cell.X, Cell.Y), Cells.Contains(Cell));
 			Cells.Add(Cell);
 		}
@@ -160,11 +164,11 @@ bool FRRSpawnerOutsideViewTest::RunTest(const FString& Parameters)
 		const FVector Location = Enemy->GetActorLocation();
 		const FIntPoint Cell = Setup.Grid->GetCellAtWorld(Location);
 		const FVector Center = Setup.Grid->GetCellCenter(Cell.X, Cell.Y);
-		// The whole cell lies at least ViewMargin (1) cell beyond the rectangle, and within 6 cells of its edge.
+		// The whole cell lies at least ViewMargin (3) cells beyond the rectangle, and within 18 cells of its edge.
 		const float Distance = ARREnemySpawner::GetDistanceToRectangle(Setup.View, FVector2D(Center.X, Center.Y));
-		TestTrue(*FString::Printf(TEXT("spawn %d (%d, %d) at least one cell outside the view (%.0f uu)"), Index, Cell.X, Cell.Y, Distance),
-			Distance >= 1.5f * CellSize);
-		TestTrue(*FString::Printf(TEXT("spawn %d within 6 cells of the view edge"), Index), Distance <= 6.5f * CellSize);
+		TestTrue(*FString::Printf(TEXT("spawn %d (%d, %d) at least ViewMargin cells outside the view (%.0f uu)"), Index, Cell.X, Cell.Y, Distance),
+			Distance >= BandMinCells * CellSize);
+		TestTrue(*FString::Printf(TEXT("spawn %d within 18 cells of the view edge"), Index), Distance <= BandMaxCells * CellSize);
 		TestTrue(*FString::Printf(TEXT("spawn %d on a walkable cell"), Index), FlowField->IsWalkableCell(Cell));
 		TestTrue(*FString::Printf(TEXT("spawn %d reachable"), Index), FlowField->GetCellDistance(Cell) > 0);
 		TestFalse(*FString::Printf(TEXT("spawn %d on a free cell"), Index), Used.Contains(Cell));

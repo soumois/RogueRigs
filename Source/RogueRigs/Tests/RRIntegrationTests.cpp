@@ -154,11 +154,14 @@ namespace RRIntegrationTests
 		URRFlowFieldSubsystem* FlowField = nullptr;
 	};
 
-	/** Spawns BP_ArenaGrid and BP_Miner on Cell (weapons stopped unless bArmed; the shotgun always stopped), loads BP_Chaser, ticks one frame. */
-	bool SetUp(FAutomationTestBase& Test, const FTestWorld& TestWorld, FIntPoint Cell, bool bArmed, FLoopSetup& Out)
+	/**
+	 * Spawns BP_ArenaGrid and BP_Miner on Cell (weapons stopped unless bArmed; the shotgun always stopped), loads BP_Chaser, ticks one frame.
+	 * bFineGrid: the game grid (arena_m1_fine, 67 uu) instead of the legacy 200 uu grid, for loops whose rules count cells (objectives).
+	 */
+	bool SetUp(FAutomationTestBase& Test, const FTestWorld& TestWorld, FIntPoint Cell, bool bArmed, FLoopSetup& Out, bool bFineGrid = false)
 	{
 		Out.ChaserClass = LoadTestClass<ARRChaser>(Test, ChaserClassPath);
-		Out.Grid = Out.ChaserClass ? SpawnGrid(Test, TestWorld) : nullptr;
+		Out.Grid = Out.ChaserClass ? (bFineGrid ? SpawnFineGrid(Test, TestWorld) : SpawnGrid(Test, TestWorld)) : nullptr;
 		Out.Miner = Out.Grid ? SpawnMiner(Test, TestWorld, Out.Grid, Cell, M1TestLoadout) : nullptr;
 		Out.FlowField = TestWorld.Get()->GetSubsystem<URRFlowFieldSubsystem>();
 		if (!Out.Miner || !Test.TestNotNull(TEXT("flow field subsystem"), Out.FlowField))
@@ -1743,7 +1746,8 @@ namespace RRIntegrationObjectiveTests
 			return false;
 		}
 		Out.RunFlow->SetRandomSeed(RunSeed);
-		if (!SetUp(Test, TestWorld, ChaseMinerCell, /*bArmed*/ true, Out.Setup))
+		// Game grid: console and shuttle distances are cell counts tuned for 67 uu cells.
+		if (!SetUp(Test, TestWorld, FineCell(ChaseMinerCell), /*bArmed*/ true, Out.Setup, /*bFineGrid*/ true))
 		{
 			return false;
 		}
@@ -1932,7 +1936,7 @@ bool FRRIntegrationConsoleExtractionWinTest::RunTest(const FString& Parameters)
 	TestEqual(TEXT("alert holds while the console is pending"), RunFlow->GetAlert(), Config.ConsoleAlertThreshold, 1e-4f);
 	TestFalse(TEXT("no extraction while the console is pending"), RunFlow->IsExtractionReady());
 
-	// 2. The marked rocks are destroyed: unmarked, console hackable (Idle: the miner is 12+ cells away).
+	// 2. The marked rocks are destroyed: unmarked, console hackable (Idle: the miner is 36+ cells away).
 	for (const FIntPoint& Cell : MarkedRocks)
 	{
 		Grid->DestroyCell(Cell, ERRTerrainDamageSource::Drone);
@@ -2035,7 +2039,7 @@ bool FRRIntegrationShuttleTimeoutLossTest::RunTest(const FString& Parameters)
 	TestTrue(TEXT("shuttle is BP_ExtractionShuttle"), Shuttle->IsA(Loop.ShuttleClass));
 	TestEqual(TEXT("countdown from the cheat override"), Shuttle->GetCountdownSeconds(), ShortCountdown, 1e-4f);
 
-	// The miner stays where it is (25+ cells away): the countdown runs out in game time, the run is lost.
+	// The miner stays where it is (75+ cells away): the countdown runs out in game time, the run is lost.
 	const double LandTime = World->GetTimeSeconds();
 	const int32 EndFrame = TickRun(*this, TestWorld, Loop, 600, [RunFlow]() { return RunFlow->IsRunEnded(); });
 	const double CountdownSeconds = World->GetTimeSeconds() - LandTime;

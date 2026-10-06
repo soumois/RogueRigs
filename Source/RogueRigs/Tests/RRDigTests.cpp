@@ -13,6 +13,8 @@
 #include "Engine/Engine.h"
 #include "Engine/World.h"
 #include "EngineUtils.h"
+#include "Explosions/RRExplosionStatsRow.h"
+#include "Explosions/RRExplosionSubsystem.h"
 #include "GameFramework/CharacterMovementComponent.h"
 #include "GameFramework/PlayerController.h"
 #include "GameFramework/WorldSettings.h"
@@ -35,8 +37,11 @@ namespace RRDigTests
 	/** Blueprint class of the heal pickup. */
 	const TCHAR* const HealPickupClassPath = TEXT("/Game/RogueRigs/Blueprints/Pickups/BP_PickupHeal.BP_PickupHeal_C");
 
-	/** Heal ore cell of arena_m1 used by the tests. */
+	/** Heal ore cell of arena_m1 (legacy 200 uu grid) used by the radius test. */
 	const FIntPoint HealOreCell(49, 45);
+
+	/** Heal ore cell of arena_m1_fine used by the drop test: center of the 3 x 3 cluster of the legacy heal ore (49, 45). */
+	const FIntPoint FineHealOreCell(148, 136);
 
 	// Protected-member accessors: Tests/RRTestAccess.h.
 	using namespace RRTestAccess;
@@ -164,8 +169,9 @@ IMPLEMENT_SIMPLE_AUTOMATION_TEST(FRRDigRockDestroyTest, "RogueRigs.Dig.RockDestr
 
 bool FRRDigRockDestroyTest::RunTest(const FString& Parameters)
 {
+	// Game grid (67 uu): the dig time is the GDD value per 67 uu block.
 	FTestWorld TestWorld;
-	ARRArenaGrid* Grid = SpawnGrid(*this, TestWorld);
+	ARRArenaGrid* Grid = SpawnFineGrid(*this, TestWorld);
 	if (!Grid)
 	{
 		return false;
@@ -174,9 +180,9 @@ bool FRRDigRockDestroyTest::RunTest(const FString& Parameters)
 	TStrongObjectPtr<URRTestEventRecorder> Recorder(NewObject<URRTestEventRecorder>());
 	Grid->OnCellDestroyed.AddDynamic(Recorder.Get(), &URRTestEventRecorder::HandleCellDestroyed);
 
-	TestEqual(TEXT("(43, 38) is rock"), Grid->GetCellType(RockCell), ERRCellType::Rock);
-	TestEqual(TEXT("(42, 38) is floor"), Grid->GetCellType(RockWestFloorCell), ERRCellType::Floor);
-	TestNearlyEqual(TEXT("rock health 1.5"), Grid->GetCellHealth(RockCell), 1.5f);
+	TestEqual(TEXT("(129, 115) is rock"), Grid->GetCellType(FineRockCell), ERRCellType::Rock);
+	TestEqual(TEXT("(128, 115) is floor"), Grid->GetCellType(FineRockWestFloorCell), ERRCellType::Floor);
+	TestNearlyEqual(TEXT("rock health 0.5 (drone gdd: 0.5 s per 67 uu block)"), Grid->GetCellHealth(FineRockCell), 0.5f);
 	CheckInstanceMaps(*this, Grid);
 
 	const int32 RockBefore = FGridAccess::InstanceCount(Grid, ERRCellType::Rock);
@@ -186,7 +192,7 @@ bool FRRDigRockDestroyTest::RunTest(const FString& Parameters)
 	int32 DestroyFrame = INDEX_NONE;
 	for (int32 Frame = 1; Frame <= 120 && DestroyFrame == INDEX_NONE; ++Frame)
 	{
-		if (Grid->ApplyTerrainDamage(RockCell, FrameSeconds, ERRTerrainDamageSource::Drone))
+		if (Grid->ApplyTerrainDamage(FineRockCell, FrameSeconds, ERRTerrainDamageSource::Drone))
 		{
 			DestroyFrame = Frame;
 		}
@@ -195,15 +201,15 @@ bool FRRDigRockDestroyTest::RunTest(const FString& Parameters)
 
 	const float DestroySeconds = DestroyFrame * FrameSeconds;
 	AddInfo(FString::Printf(TEXT("rock destroyed at frame %d (%.4f s)"), DestroyFrame, DestroySeconds));
-	TestTrue(TEXT("rock destroyed within 1.5 s +- 1 frame"), DestroyFrame >= 89 && DestroyFrame <= 91);
-	TestEqual(TEXT("cell is floor after destruction"), Grid->GetCellType(RockCell), ERRCellType::Floor);
-	TestFalse(TEXT("cell is no longer a block"), Grid->IsBlockCell(RockCell));
+	TestTrue(TEXT("rock destroyed within 0.5 s +- 1 frame"), DestroyFrame >= 29 && DestroyFrame <= 31);
+	TestEqual(TEXT("cell is floor after destruction"), Grid->GetCellType(FineRockCell), ERRCellType::Floor);
+	TestFalse(TEXT("cell is no longer a block"), Grid->IsBlockCell(FineRockCell));
 	TestEqual(TEXT("rock HISM lost one instance"), FGridAccess::InstanceCount(Grid, ERRCellType::Rock), RockBefore - 1);
 	TestEqual(TEXT("floor HISM gained one instance"), FGridAccess::InstanceCount(Grid, ERRCellType::Floor), FloorBefore + 1);
 	TestTrue(TEXT("instance maps consistent after destruction"), CheckInstanceMaps(*this, Grid));
 	TestEqual(TEXT("OnCellDestroyed fired once"), Recorder->GetDestroyedCells().Num(), 1);
 	TestEqual(TEXT("rock drops nothing"), CountPickups(TestWorld.Get()), 0);
-	TestFalse(TEXT("damage on a destroyed cell is ignored"), Grid->ApplyTerrainDamage(RockCell, 1.f, ERRTerrainDamageSource::Drone));
+	TestFalse(TEXT("damage on a destroyed cell is ignored"), Grid->ApplyTerrainDamage(FineRockCell, 1.f, ERRTerrainDamageSource::Drone));
 	return true;
 }
 
@@ -212,8 +218,9 @@ IMPLEMENT_SIMPLE_AUTOMATION_TEST(FRRDigHealOreDropsTest, "RogueRigs.Dig.HealOreD
 
 bool FRRDigHealOreDropsTest::RunTest(const FString& Parameters)
 {
+	// Game grid (67 uu): heal ore takes 1.5 s per block and drops one pickup when broken (ore-blocks, drone gdd).
 	FTestWorld TestWorld;
-	ARRArenaGrid* Grid = SpawnGrid(*this, TestWorld);
+	ARRArenaGrid* Grid = SpawnFineGrid(*this, TestWorld);
 	UClass* HealClass = LoadTestClass<ARRPickup>(*this, HealPickupClassPath);
 	if (!Grid || !HealClass)
 	{
@@ -226,8 +233,10 @@ bool FRRDigHealOreDropsTest::RunTest(const FString& Parameters)
 		FGridAccess::HealClass(Grid) = HealClass;
 	}
 
-	TestEqual(TEXT("(49, 45) is heal ore"), Grid->GetCellType(HealOreCell), ERRCellType::HealOre);
-	TestNearlyEqual(TEXT("heal ore health 4.5"), Grid->GetCellHealth(HealOreCell), 4.5f);
+	TestEqual(TEXT("(148, 136) is heal ore"), Grid->GetCellType(FineHealOreCell), ERRCellType::HealOre);
+	TestNearlyEqual(TEXT("heal ore health 1.5"), Grid->GetCellHealth(FineHealOreCell), 1.5f);
+	TestNearlyEqual(TEXT("drop interval 1.5 s: no multiple strictly below the health, so no dig drop"), FGridAccess::DropIntervalOf(Grid), 1.5f);
+	TestEqual(TEXT("one pickup per broken block"), FGridAccess::DropsOnDestroy(Grid), 1);
 	TestEqual(TEXT("no pickup at start"), CountPickups(TestWorld.Get()), 0);
 
 	int32 FirstDropFrame = INDEX_NONE;
@@ -237,7 +246,7 @@ bool FRRDigHealOreDropsTest::RunTest(const FString& Parameters)
 	for (int32 Frame = 1; Frame <= 300 && DestroyFrame == INDEX_NONE; ++Frame)
 	{
 		const int32 Before = CountPickups(TestWorld.Get());
-		if (Grid->ApplyTerrainDamage(HealOreCell, FrameSeconds, ERRTerrainDamageSource::Drone))
+		if (Grid->ApplyTerrainDamage(FineHealOreCell, FrameSeconds, ERRTerrainDamageSource::Drone))
 		{
 			DestroyFrame = Frame;
 			PickupsAtDestroy = CountPickups(TestWorld.Get()) - Before;
@@ -248,24 +257,19 @@ bool FRRDigHealOreDropsTest::RunTest(const FString& Parameters)
 			TestEqual(FString::Printf(TEXT("one dig drop at frame %d"), Frame), After - Before, 1);
 			(FirstDropFrame == INDEX_NONE ? FirstDropFrame : SecondDropFrame) = Frame;
 		}
-		if (Frame == 181)
-		{
-			TestEqual(TEXT("2 pickups by 3.0 s (+1 frame)"), After, 2);
-		}
 		TestWorld.Tick();
 	}
 
 	AddInfo(FString::Printf(TEXT("drops at frames %d and %d (%.4f s, %.4f s); destroyed at frame %d (%.4f s); %d pickups on destruction"),
 		FirstDropFrame, SecondDropFrame, FirstDropFrame * FrameSeconds, SecondDropFrame * FrameSeconds, DestroyFrame, DestroyFrame * FrameSeconds,
 		PickupsAtDestroy));
-	TestTrue(TEXT("first drop at 1.5 s +- 1 frame"), FirstDropFrame >= 89 && FirstDropFrame <= 91);
-	TestTrue(TEXT("second drop at 3.0 s +- 1 frame"), SecondDropFrame >= 179 && SecondDropFrame <= 181);
-	TestTrue(TEXT("destroyed at 4.5 s +- 1 frame"), DestroyFrame >= 269 && DestroyFrame <= 271);
+	TestEqual(TEXT("no dig drop before the destruction"), FirstDropFrame, static_cast<int32>(INDEX_NONE));
+	TestTrue(TEXT("destroyed at 1.5 s +- 1 frame"), DestroyFrame >= 89 && DestroyFrame <= 91);
 	TestEqual(TEXT("destruction drops DestroyDropCount"), PickupsAtDestroy, FGridAccess::DropsOnDestroy(Grid));
 
 	const int32 Total = CountPickups(TestWorld.Get());
 	AddInfo(FString::Printf(TEXT("total pickups: %d"), Total));
-	TestEqual(TEXT("5 pickups in total"), Total, 5);
+	TestEqual(TEXT("1 pickup in total"), Total, 1);
 	for (TActorIterator<ARRPickup> It(TestWorld.Get()); It; ++It)
 	{
 		TestEqual(TEXT("pickup is Heal"), It->GetPickupType(), ERRPickupType::Heal);
@@ -341,9 +345,10 @@ IMPLEMENT_SIMPLE_AUTOMATION_TEST(FRRDigDroneDigTest, "RogueRigs.Dig.DroneDig",
 
 bool FRRDigDroneDigTest::RunTest(const FString& Parameters)
 {
+	// Game grid (67 uu): the drone digs a rock block in the GDD 0.5 s.
 	FTestWorld TestWorld;
-	ARRArenaGrid* Grid = SpawnGrid(*this, TestWorld);
-	ARRMiner* Miner = Grid ? SpawnMiner(*this, TestWorld, Grid, RockWestFloorCell) : nullptr;
+	ARRArenaGrid* Grid = SpawnFineGrid(*this, TestWorld);
+	ARRMiner* Miner = Grid ? SpawnMiner(*this, TestWorld, Grid, FineRockWestFloorCell) : nullptr;
 	ARRDrone* Drone = Miner ? Miner->GetDrone() : nullptr;
 	if (!TestNotNull(TEXT("BP_Miner spawned its drone"), Drone))
 	{
@@ -358,10 +363,10 @@ bool FRRDigDroneDigTest::RunTest(const FString& Parameters)
 	TestEqual(TEXT("drone starts in Orbit"), Drone->GetState(), ERRDroneState::Orbit);
 
 	// Same call as the miner's dig trigger when pushing east into the rock: the miner is on the west side.
-	TestTrue(TEXT("RequestDig accepted"), Drone->RequestDig(Grid, RockCell, FIntPoint(-1, 0)));
+	TestTrue(TEXT("RequestDig accepted"), Drone->RequestDig(Grid, FineRockCell, FIntPoint(-1, 0)));
 	TestEqual(TEXT("state Dig"), Drone->GetState(), ERRDroneState::Dig);
-	TestEqual(TEXT("dig cell"), Drone->GetDigCell(), RockCell);
-	TestTrue(TEXT("rock shaking"), FGridAccess::Shaking(Grid).Contains(RockCell));
+	TestEqual(TEXT("dig cell"), Drone->GetDigCell(), FineRockCell);
+	TestTrue(TEXT("rock shaking"), FGridAccess::Shaking(Grid).Contains(FineRockCell));
 	TestTrue(TEXT("grid ticks while shaking"), Grid->IsActorTickEnabled());
 
 	int32 DestroyFrame = INDEX_NONE;
@@ -372,7 +377,7 @@ bool FRRDigDroneDigTest::RunTest(const FString& Parameters)
 		{
 			TestTrue(TEXT("laser visible while digging"), FDroneAccess::Laser(Drone)->IsVisible());
 		}
-		if (!Grid->IsBlockCell(RockCell))
+		if (!Grid->IsBlockCell(FineRockCell))
 		{
 			DestroyFrame = Frame;
 		}
@@ -381,8 +386,8 @@ bool FRRDigDroneDigTest::RunTest(const FString& Parameters)
 	const float DestroySeconds = DestroyFrame * FrameSeconds;
 	AddInfo(FString::Printf(TEXT("drone dig destroyed the rock at frame %d (%.4f s); drone at %s"), DestroyFrame, DestroySeconds,
 		*Drone->GetActorLocation().ToCompactString()));
-	// Damage starts on the first Dig tick (fly-in does not delay it): 90 frames, 1 frame tolerance plus 2 for the fly-in.
-	TestTrue(TEXT("rock destroyed after about 1.5 s"), DestroyFrame >= 89 && DestroyFrame <= 93);
+	// Damage starts on the first Dig tick (fly-in does not delay it): 30 frames, 1 frame tolerance plus 2 for the fly-in.
+	TestTrue(TEXT("rock destroyed after about 0.5 s"), DestroyFrame >= 29 && DestroyFrame <= 33);
 	TestEqual(TEXT("back to Orbit"), Drone->GetState(), ERRDroneState::Orbit);
 	TestEqual(TEXT("shake stopped"), FGridAccess::Shaking(Grid).Num(), 0);
 	TestFalse(TEXT("grid tick disabled"), Grid->IsActorTickEnabled());
@@ -396,41 +401,42 @@ IMPLEMENT_SIMPLE_AUTOMATION_TEST(FRRDigDroneCancelTest, "RogueRigs.Dig.DroneDigC
 
 bool FRRDigDroneCancelTest::RunTest(const FString& Parameters)
 {
+	// Game grid (67 uu): rock 0.5 s per block, cancel beyond DigCancelDistanceCells (4.5 cells = 301.5 uu).
 	FTestWorld TestWorld;
-	ARRArenaGrid* Grid = SpawnGrid(*this, TestWorld);
-	ARRMiner* Miner = Grid ? SpawnMiner(*this, TestWorld, Grid, RockWestFloorCell) : nullptr;
+	ARRArenaGrid* Grid = SpawnFineGrid(*this, TestWorld);
+	ARRMiner* Miner = Grid ? SpawnMiner(*this, TestWorld, Grid, FineRockWestFloorCell) : nullptr;
 	ARRDrone* Drone = Miner ? Miner->GetDrone() : nullptr;
 	if (!TestNotNull(TEXT("BP_Miner spawned its drone"), Drone))
 	{
 		return false;
 	}
 
-	TestTrue(TEXT("RequestDig accepted"), Drone->RequestDig(Grid, RockCell, FIntPoint(-1, 0)));
-	for (int32 Frame = 0; Frame < 30; ++Frame)
+	TestTrue(TEXT("RequestDig accepted"), Drone->RequestDig(Grid, FineRockCell, FIntPoint(-1, 0)));
+	for (int32 Frame = 0; Frame < 15; ++Frame)
 	{
 		TestWorld.Tick();
 	}
-	const float HealthBeforeMove = Grid->GetCellHealth(RockCell);
-	TestNearlyEqual(TEXT("0.5 s of damage done"), HealthBeforeMove, 1.0f, 0.02f);
+	const float HealthBeforeMove = Grid->GetCellHealth(FineRockCell);
+	TestNearlyEqual(TEXT("0.25 s of damage done"), HealthBeforeMove, 0.25f, 0.02f);
 	TestEqual(TEXT("still digging"), Drone->GetState(), ERRDroneState::Dig);
 
-	// Two cells further west: 3 cells (600 uu) from the block center, beyond DigCancelDistanceCells (1.5).
-	const FVector Away = Miner->GetActorLocation() - FVector(2.f * Grid->GetCellSize(), 0.f, 0.f);
+	// Six cells further west: 7 cells (469 uu) from the block center, beyond DigCancelDistanceCells (4.5).
+	const FVector Away = Miner->GetActorLocation() - FVector(6.f * Grid->GetCellSize(), 0.f, 0.f);
 	Miner->SetActorLocation(Away, /*bSweep*/ false, nullptr, ETeleportType::TeleportPhysics);
 	TestWorld.Tick();
 
-	AddInfo(FString::Printf(TEXT("health before move %.4f, after cancel %.4f"), HealthBeforeMove, Grid->GetCellHealth(RockCell)));
+	AddInfo(FString::Printf(TEXT("health before move %.4f, after cancel %.4f"), HealthBeforeMove, Grid->GetCellHealth(FineRockCell)));
 	TestEqual(TEXT("cancelled to Orbit"), Drone->GetState(), ERRDroneState::Orbit);
 	TestEqual(TEXT("shake stopped"), FGridAccess::Shaking(Grid).Num(), 0);
 	TestFalse(TEXT("laser hidden"), FDroneAccess::Laser(Drone)->IsVisible());
-	TestTrue(TEXT("block still stands"), Grid->IsBlockCell(RockCell));
-	TestNearlyEqual(TEXT("damage kept, none added by the cancel tick"), Grid->GetCellHealth(RockCell), HealthBeforeMove, 1e-4f);
+	TestTrue(TEXT("block still stands"), Grid->IsBlockCell(FineRockCell));
+	TestNearlyEqual(TEXT("damage kept, none added by the cancel tick"), Grid->GetCellHealth(FineRockCell), HealthBeforeMove, 1e-4f);
 
 	for (int32 Frame = 0; Frame < 60; ++Frame)
 	{
 		TestWorld.Tick();
 	}
-	TestNearlyEqual(TEXT("no damage after the cancel"), Grid->GetCellHealth(RockCell), HealthBeforeMove, 1e-4f);
+	TestNearlyEqual(TEXT("no damage after the cancel"), Grid->GetCellHealth(FineRockCell), HealthBeforeMove, 1e-4f);
 	TestEqual(TEXT("stays in Orbit"), Drone->GetState(), ERRDroneState::Orbit);
 	return true;
 }
@@ -686,6 +692,64 @@ bool FRRDigChunkedInstancesTest::RunTest(const FString& Parameters)
 		}
 	}
 	TestEqual(TEXT("two chunk HISMs changed (rock and floor)"), Changed, 2);
+	TestTrue(TEXT("instance maps consistent"), CheckInstanceMaps(*this, Grid));
+	return true;
+}
+
+IMPLEMENT_SIMPLE_AUTOMATION_TEST(FRRDigFineGridDefaultsTest, "RogueRigs.Dig.FineGridDefaults",
+	EAutomationTestFlags::EditorContext | EAutomationTestFlags::EngineFilter)
+
+bool FRRDigFineGridDefaultsTest::RunTest(const FString& Parameters)
+{
+	// BP_ArenaGrid with no override: the game loads arena_m1_fine at 67 uu (task-029-04), same world size as 80 x 80 cells of 200 uu.
+	FTestWorld TestWorld;
+	UClass* GridClass = LoadTestClass<ARRArenaGrid>(*this, ArenaGridClassPath);
+	ARRArenaGrid* Grid = GridClass ? TestWorld.Spawn<ARRArenaGrid>(GridClass, FVector::ZeroVector) : nullptr;
+	URRExplosionSubsystem* Explosions = TestWorld.Get()->GetSubsystem<URRExplosionSubsystem>();
+	if (!TestNotNull(TEXT("grid spawned"), Grid) || !TestNotNull(TEXT("explosion subsystem"), Explosions))
+	{
+		return false;
+	}
+	TestEqual(TEXT("cell size 67 uu"), Grid->GetCellSize(), FineCellSize);
+	TestEqual(TEXT("240 x 240 cells"), Grid->GetGridSize(), FIntPoint(240, 240));
+	TestNearlyEqual(TEXT("world side within 1 % of 80 x 200 uu"), Grid->GetGridSize().X * Grid->GetCellSize(), 16000.f, 160.f);
+	TestEqual(TEXT("spawn cell (121, 121)"), Grid->GetSpawnCell(), FIntPoint(121, 121));
+
+	int32 HealOre = 0;
+	for (int32 Y = 0; Y < Grid->GetGridSize().Y; ++Y)
+	{
+		for (int32 X = 0; X < Grid->GetGridSize().X; ++X)
+		{
+			HealOre += Grid->GetCellType(FIntPoint(X, Y)) == ERRCellType::HealOre ? 1 : 0;
+		}
+	}
+	TestEqual(TEXT("108 heal ore cells (12 clusters of 3 x 3)"), HealOre, 108);
+	TestNearlyEqual(TEXT("rock 0.5 s"), Grid->GetCellHealth(FineRockCell), 0.5f);
+	TestEqual(TEXT("one pickup per broken ore block"), FGridAccess::DropsOnDestroy(Grid), 1);
+
+	// Explosion radii stay in uu (ExplosionStats.csv): the barrel clears every block center within 350 uu, about 5.2 cells of 67 uu.
+	FRRExplosionStatsRow Barrel;
+	FRRExplosionStatsRow Kamikaze;
+	TestTrue(TEXT("Barrel row"), Explosions->GetExplosionStats(TEXT("Barrel"), Barrel));
+	TestTrue(TEXT("Kamikaze row"), Explosions->GetExplosionStats(TEXT("Kamikaze"), Kamikaze));
+	TestEqual(TEXT("barrel radius 350 uu"), Barrel.Radius, 350.f);
+	TestEqual(TEXT("kamikaze radius 312 uu"), Kamikaze.Radius, 312.f);
+	const FVector Center = Grid->GetCellCenter(FineRockCell.X, FineRockCell.Y);
+	TArray<FIntPoint> Inside;
+	for (int32 DY = -7; DY <= 7; ++DY)
+	{
+		for (int32 DX = -7; DX <= 7; ++DX)
+		{
+			const FIntPoint Cell(FineRockCell.X + DX, FineRockCell.Y + DY);
+			if (Grid->IsBlockCell(Cell) && FVector::Dist2D(Grid->GetCellCenter(Cell.X, Cell.Y), Center) <= Barrel.Radius)
+			{
+				Inside.Add(Cell);
+			}
+		}
+	}
+	AddInfo(FString::Printf(TEXT("%d blocks within 350 uu of (129, 115)"), Inside.Num()));
+	TestTrue(TEXT("several blocks in the radius"), Inside.Num() > 10);
+	TestEqual(TEXT("every block in the 350 uu radius destroyed"), Grid->DestroyCellsInRadius(Center, Barrel.Radius, ERRTerrainDamageSource::Barrel), Inside.Num());
 	TestTrue(TEXT("instance maps consistent"), CheckInstanceMaps(*this, Grid));
 	return true;
 }

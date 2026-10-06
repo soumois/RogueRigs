@@ -42,6 +42,10 @@ namespace RRTestHarness
 	/** Center cell of the 3 x 3 fine cells a legacy cell became (same place in the world within half a percent). */
 	inline FIntPoint FineCell(FIntPoint LegacyCell) { return FIntPoint(LegacyCell.X * 3 + 1, LegacyCell.Y * 3 + 1); }
 
+	/** Rock cell of arena_m1_fine with a floor cell to its west (the west column of the legacy rock (43, 38), the roughening opened its east one). */
+	inline const FIntPoint FineRockCell(129, 115);
+	inline const FIntPoint FineRockWestFloorCell(128, 115);
+
 	/** Transient game world ticked manually: actors begin play on spawn, no game mode, no local player. Destroyed with the scope. */
 	class FTestWorld
 	{
