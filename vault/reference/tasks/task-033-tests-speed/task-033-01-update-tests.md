@@ -3,7 +3,7 @@ id: task-033-01-update-tests
 description: "Existing tests updated to robots at 180 uu/s and the new XP curve; no new test; full headless run passing."
 parent: task-033-tests-speed
 kind: task
-status: in-progress
+status: done
 ---
 # Update tests to the current data
 
@@ -15,11 +15,11 @@ status: in-progress
 - done_when: build exits 0 with the editor closed; all `RogueRigs.*` tests pass headless; docs updated; lint clean.
 - editor_state: closed
 - token_ceiling: 80000
-- model: open
-- tokens: open
-- runs: open
+- model: opus
+- tokens: input 82, cache write 76827, cache read 1795183, output 22411
+- runs: 2
 - milestone: M2
-- result: open
+- result: Test expectations updated to robots at 180 uu/s and the XP curve (4, 20, 25 … 440); GrantXP cheat tests grant 4; ChaserReachesAndHitsMiner measured 15.4 s (limit 20 s kept). Player projectiles collision radius 10 → 12 uu in ARRProjectile, ARREnemyProjectile kept at 10; no Blueprint overrides the radius; visuals unchanged. Build 0, 195/195. Docs sys-automation-tests, sys-progression, sys-projectiles. Commit e08c3ae.
 
 ## Relations
 - [[task-033-tests-speed]] — parent global task.

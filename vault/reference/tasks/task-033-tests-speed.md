@@ -3,7 +3,7 @@ id: task-033-tests-speed
 description: "Global task: robots all at 180 uu/s and the test suite updated to the owner's data changes (speed, XP curve after the reference game)."
 parent: tasks-index
 kind: task
-status: in-progress
+status: done
 ---
 # Tests after the owner's data changes
 
@@ -13,8 +13,8 @@ status: in-progress
 - gdd_check: Read enemy nodes and [[xp-level-up]]; the Orchestrator wrote 180 uu/s and the curve in the GDD (owner 2026-10-06). No open value.
 - confirmed_by_owner: yes (2026-10-06)
 - milestone: M2
-- next_step: task-033-01-update-tests
-- result: open
+- next_step: none
+- result: Done. Robots at 180 uu/s, player projectile collision 12 uu, tests updated, 195/195.
 
 ## Subtasks
 1. task-033-01-update-tests — cpp: update existing test expectations to the current data, full run
