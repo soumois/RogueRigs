@@ -3,7 +3,7 @@ id: task-032-third-test
 description: "Global task: third play test: robot recycling, console locator, overtime, slower robots, faster heavy, English texts, upgrade weights, weapon cards every 5 levels, bigger turret."
 parent: tasks-index
 kind: task
-status: in-progress
+status: done
 ---
 # Third play test fixes
 
@@ -13,8 +13,8 @@ status: in-progress
 - gdd_check: Read [[enemies-index]], enemy nodes, [[difficulty]], [[upgrades]], [[turret]], [[objective-console]], [[readability-rules]]. GDD updated by the Orchestrator with provisional values (2026-10-06). No open value.
 - confirmed_by_owner: yes (2026-10-06)
 - milestone: M2
-- next_step: task-032-02-bp-fixes
-- result: open
+- next_step: none
+- result: Done. Robot recycling, overtime from 3:30, speeds 182/151/101, heavy 0.6 s telegraph and a slam every 2 s, upgrade draw weights, weapon cards every 5 levels, English texts, edge locator arrow, turret × 1.5. Owner to judge: recycle margin 500 uu beyond the view, interval halved at 3:30 at once. XP pacing retune follows in task-031-03.
 
 ## Subtasks
 1. task-032-01-cpp-fixes — cpp: recycling, overtime, speeds, heavy timing, upgrade weights, weapon cards every 5 levels, English C++ texts, locator target getter, tests
