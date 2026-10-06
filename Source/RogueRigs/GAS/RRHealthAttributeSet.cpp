@@ -13,6 +13,7 @@ URRHealthAttributeSet::URRHealthAttributeSet(const FObjectInitializer& ObjectIni
 	InitHealth(0.f);
 	InitMaxHealth(0.f);
 	InitIncomingDamage(0.f);
+	InitShield(0.f);
 }
 
 void URRHealthAttributeSet::PreAttributeBaseChange(const FGameplayAttribute& Attribute, float& NewValue) const
@@ -23,7 +24,7 @@ void URRHealthAttributeSet::PreAttributeBaseChange(const FGameplayAttribute& Att
 	{
 		NewValue = FMath::Clamp(NewValue, 0.f, GetMaxHealth());
 	}
-	else if (Attribute == GetMaxHealthAttribute() || Attribute == GetIncomingDamageAttribute())
+	else if (Attribute == GetMaxHealthAttribute() || Attribute == GetIncomingDamageAttribute() || Attribute == GetShieldAttribute())
 	{
 		NewValue = FMath::Max(NewValue, 0.f);
 	}
@@ -37,7 +38,7 @@ void URRHealthAttributeSet::PreAttributeChange(const FGameplayAttribute& Attribu
 	{
 		NewValue = FMath::Clamp(NewValue, 0.f, GetMaxHealth());
 	}
-	else if (Attribute == GetMaxHealthAttribute() || Attribute == GetIncomingDamageAttribute())
+	else if (Attribute == GetMaxHealthAttribute() || Attribute == GetIncomingDamageAttribute() || Attribute == GetShieldAttribute())
 	{
 		NewValue = FMath::Max(NewValue, 0.f);
 	}
@@ -63,8 +64,17 @@ void URRHealthAttributeSet::PostGameplayEffectExecute(const FGameplayEffectModCa
 		SetIncomingDamage(0.f);
 		if (Damage > 0.f)
 		{
+			// Shield first (shield chaser): it absorbs up to its value, the rest of the same hit reaches Health.
+			const float ShieldBefore = GetShield();
+			const float Absorbed = FMath::Min(ShieldBefore, Damage);
+			const bool bShieldBroke = ShieldBefore > 0.f && ShieldBefore - Absorbed <= 0.f;
+			if (Absorbed > 0.f)
+			{
+				SetShield(ShieldBefore - Absorbed);
+			}
+
 			const float HealthBefore = GetHealth();
-			SetHealth(FMath::Clamp(HealthBefore - Damage, 0.f, GetMaxHealth()));
+			SetHealth(FMath::Clamp(HealthBefore - (Damage - Absorbed), 0.f, GetMaxHealth()));
 
 			// Single death (sys-damage step 6): only the hit taking Health from above 0 to 0, only once per State.Dead.
 			UAbilitySystemComponent* OwnerASC = GetOwningAbilitySystemComponent();
@@ -78,6 +88,11 @@ void URRHealthAttributeSet::PostGameplayEffectExecute(const FGameplayEffectModCa
 			// The crit flag is a dynamic asset tag on the executed spec (sys-damage).
 			const bool bIsCritical = Data.EffectSpec.GetDynamicAssetTags().HasTagExact(RRGameplayTags::Effect_Damage_Critical);
 			OnDamageReceived.Broadcast(Damage, bIsCritical, GetHealth());
+
+			if (bShieldBroke)
+			{
+				OnShieldBroken.Broadcast();
+			}
 
 			if (bDied)
 			{

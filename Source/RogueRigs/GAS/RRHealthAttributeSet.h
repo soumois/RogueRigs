@@ -20,11 +20,16 @@ DECLARE_MULTICAST_DELEGATE_ThreeParams(FRROnDamageReceived, float /*Damage*/, bo
  */
 DECLARE_MULTICAST_DELEGATE_OneParam(FRROnDeath, AActor* /*Instigator*/);
 
+/** Fired once by URRHealthAttributeSet when a hit takes Shield from above 0 to 0 (shield chaser shell breaks). */
+DECLARE_MULTICAST_DELEGATE(FRROnShieldBroken);
+
 /**
  * Health of a combat actor (player, enemies). Health is kept in [0, MaxHealth]: base values are
  * clamped in PreAttributeBaseChange, current values in PreAttributeChange, and Health is brought
  * back under MaxHealth in PostAttributeChange when MaxHealth drops. Damage goes through the
  * IncomingDamage meta-attribute, which is consumed in PostGameplayEffectExecute.
+ * Shield (0 for most actors) absorbs a hit before Health: the part of the damage up to Shield is taken from it, the rest
+ * from Health in the same hit; the hit taking Shield from above 0 to 0 broadcasts OnShieldBroken once.
  * Single death: when a hit takes Health from above 0 to 0 and the owner has no State.Dead yet, the set adds the loose
  * tag State.Dead to the owning ASC (damage GEs then refuse the actor) and broadcasts OnDeath once. Owners that must never
  * die (target dummy) call SetDeathEnabled(false) in their constructor.
@@ -42,8 +47,9 @@ public:
 	ATTRIBUTE_ACCESSORS_BASIC(URRHealthAttributeSet, Health)
 	ATTRIBUTE_ACCESSORS_BASIC(URRHealthAttributeSet, MaxHealth)
 	ATTRIBUTE_ACCESSORS_BASIC(URRHealthAttributeSet, IncomingDamage)
+	ATTRIBUTE_ACCESSORS_BASIC(URRHealthAttributeSet, Shield)
 
-	/** Clamps base values: Health to [0, MaxHealth], MaxHealth and IncomingDamage to >= 0. */
+	/** Clamps base values: Health to [0, MaxHealth], MaxHealth, IncomingDamage and Shield to >= 0. */
 	virtual void PreAttributeBaseChange(const FGameplayAttribute& Attribute, float& NewValue) const override;
 
 	/** Clamps current values with the same rules as the base values. */
@@ -53,8 +59,8 @@ public:
 	virtual void PostAttributeChange(const FGameplayAttribute& Attribute, float OldValue, float NewValue) override;
 
 	/**
-	 * Consumes IncomingDamage: resets it to 0, subtracts it from Health (clamped at 0), detects the death (State.Dead added),
-	 * then broadcasts OnDamageReceived, then OnDeath on a death.
+	 * Consumes IncomingDamage: resets it to 0, takes it from Shield first then the rest from Health (clamped at 0), detects the
+	 * death (State.Dead added), then broadcasts OnDamageReceived, then OnShieldBroken on a shield break, then OnDeath on a death.
 	 */
 	virtual void PostGameplayEffectExecute(const FGameplayEffectModCallbackData& Data) override;
 
@@ -71,6 +77,12 @@ public:
 	 */
 	FRROnDeath OnDeath;
 
+	/**
+	 * Shield break event, broadcast once from PostGameplayEffectExecute after OnDamageReceived (before OnDeath when the same hit
+	 * kills), when a hit takes Shield from above 0 to 0. Same safety rules as OnDamageReceived.
+	 */
+	FRROnShieldBroken OnShieldBroken;
+
 	/** Enables or disables the death detection (State.Dead + OnDeath). Enabled by default; call from the owner constructor. */
 	void SetDeathEnabled(bool bEnabled) { bDeathEnabled = bEnabled; }
 
@@ -86,6 +98,10 @@ protected:
 	/** Meta-attribute: damage to apply this execution. Never persists (reset to 0 after each execute). */
 	UPROPERTY(BlueprintReadOnly, Category = "Attributes|Health")
 	FGameplayAttributeData IncomingDamage;
+
+	/** Damage absorbed before Health (robots: CSV column Shield, 0 for all but the shield chaser). Never regenerates. */
+	UPROPERTY(BlueprintReadOnly, Category = "Attributes|Health")
+	FGameplayAttributeData Shield;
 
 	/** When false, reaching 0 Health adds no State.Dead and fires no OnDeath (never-dying debug targets). */
 	bool bDeathEnabled = true;

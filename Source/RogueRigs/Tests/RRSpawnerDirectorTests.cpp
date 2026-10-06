@@ -167,7 +167,8 @@ bool FRRSpawnerDirectorPhaseTimesTest::RunTest(const FString& Parameters)
 	const int32 Chasers = Config.FindPackType(TEXT("Chasers"));
 	const int32 Shooters = Config.FindPackType(TEXT("Shooters"));
 	const int32 Heavies = Config.FindPackType(TEXT("Heavies"));
-	if (!TestTrue(TEXT("default pack types"), FirstChasers != INDEX_NONE && Chasers != INDEX_NONE && Shooters != INDEX_NONE && Heavies != INDEX_NONE)
+	const int32 ShieldChasers = Config.FindPackType(TEXT("ShieldChasers"));
+	if (!TestTrue(TEXT("default pack types"), FirstChasers != INDEX_NONE && Chasers != INDEX_NONE && Shooters != INDEX_NONE && Heavies != INDEX_NONE && ShieldChasers != INDEX_NONE)
 		|| !TestEqual(TEXT("two default hordes"), Config.Hordes.Num(), 2))
 	{
 		return false;
@@ -175,12 +176,12 @@ bool FRRSpawnerDirectorPhaseTimesTest::RunTest(const FString& Parameters)
 	TestEqual(TEXT("horde trigger is run time"), Config.HordeTrigger, ERRHordeTrigger::RunTime);
 	const TArray<FTimedAction> Actions = RunDirectorSchedule(Config, 240.f, [](float) { return 0.f; }, 20261005);
 
-	// Phases at 0, 10, 22, 28 s.
+	// Phases at 0, 10, 22, 28, 60 s (FlowShields keeps the wave timer).
 	const TArray<float> Phases = DirectorTimesOf(Actions, EType::PhaseChanged);
-	const float ExpectedPhases[] = { 0.f, 10.f, 22.f, 28.f };
-	if (TestEqual(TEXT("4 phase changes"), Phases.Num(), 4))
+	const float ExpectedPhases[] = { 0.f, 10.f, 22.f, 28.f, 60.f };
+	if (TestEqual(TEXT("5 phase changes"), Phases.Num(), 5))
 	{
-		for (int32 Index = 0; Index < 4; ++Index)
+		for (int32 Index = 0; Index < 5; ++Index)
 		{
 			TestTrue(*FString::Printf(TEXT("phase %d at %.0f s (%.3f)"), Index, ExpectedPhases[Index], Phases[Index]), FMath::Abs(Phases[Index] - ExpectedPhases[Index]) <= TimeTolerance);
 		}
@@ -263,13 +264,18 @@ bool FRRSpawnerDirectorPhaseTimesTest::RunTest(const FString& Parameters)
 			TestTrue(*FString::Printf(TEXT("wave at %.2f has 2-3 packs (%d)"), Timed.Time, Timed.Action.PackTypes.Num()), Timed.Action.PackTypes.Num() >= 2 && Timed.Action.PackTypes.Num() <= 3);
 			for (const int32 Type : Timed.Action.PackTypes)
 			{
-				TestTrue(TEXT("flow packs are Chasers, Shooters or Heavies"), Type == Chasers || Type == Shooters || Type == Heavies);
+				TestTrue(TEXT("flow packs are Chasers or ShieldChasers, Shooters or Heavies"), Type == Chasers || Type == ShieldChasers || Type == Shooters || Type == Heavies);
+				if (Type == Chasers || Type == ShieldChasers)
+				{
+					TestEqual(*FString::Printf(TEXT("chaser pack at %.2f s is %s"), Timed.Time, Timed.Time < 60.f ? TEXT("Chasers before 1:00") : TEXT("ShieldChasers from 1:00")),
+						Type, Timed.Time < 60.f ? Chasers : ShieldChasers);
+				}
 				TypesSeen.Add(Type);
 			}
 		}
 		++WaveIndex;
 	}
-	TestEqual(TEXT("the flow draws all three pack types"), TypesSeen.Num(), 3);
+	TestEqual(TEXT("the flow draws all four pack types (Chasers, ShieldChasers, Shooters, Heavies)"), TypesSeen.Num(), 4);
 	FString GapLog;
 	float PreviousGap = TNumericLimits<float>::Max();
 	for (int32 Index = 2; Index < Waves.Num(); ++Index)

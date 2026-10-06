@@ -5,6 +5,7 @@
 #include "Enemies/RRChaser.h"
 #include "Enemies/RRHeavy.h"
 #include "Enemies/RRKamikaze.h"
+#include "Enemies/RRShieldChaser.h"
 #include "Enemies/RRShooter.h"
 
 namespace RRWaveDirectorDefaults
@@ -51,9 +52,13 @@ FRRWaveDirectorConfig FRRWaveDirectorConfig::MakeDefault()
 	FRRDirectorPackType& Heavies = Config.PackTypes.AddDefaulted_GetRef();
 	Heavies.Name = TEXT("Heavies");
 	Heavies.Members = { Member(ARRHeavy::StaticClass(), 2, 3, /*bFront*/ true), Member(ARRChaser::StaticClass(), 8, 12) };
+	// Chasers after 1:00 (enemy-chaser shield variant): a quarter of the pack chasers carry a shield (2-4 of 8-16).
+	FRRDirectorPackType& ShieldChasers = Config.PackTypes.AddDefaulted_GetRef();
+	ShieldChasers.Name = TEXT("ShieldChasers");
+	ShieldChasers.Members = { Member(ARRChaser::StaticClass(), 6, 12), Member(ARRShieldChaser::StaticClass(), 2, 4), Member(ARRKamikaze::StaticClass(), 2, 3) };
 
 	// Phases: 0-10 s calm; 10-22 s a lone chaser every 3 s; 22 s first pack from one side; from 28 s waves of 2-3 packs from
-	// distinct sides, the interval shrinking from 6 s to 3 s over 3 min.
+	// distinct sides, the interval shrinking from 6 s to 3 s over 3 min; from 60 s the chaser packs carry shield chasers.
 	FRRDirectorPhase& Calm = Config.Phases.AddDefaulted_GetRef();
 	Calm.Name = TEXT("Calm");
 	Calm.StartTime = 0.f;
@@ -77,6 +82,18 @@ FRRWaveDirectorConfig FRRWaveDirectorConfig::MakeDefault()
 	Flow.SidesMin = 2;
 	Flow.SidesMax = 3;
 	Flow.PackWeights = { Weight(TEXT("Chasers"), 60.f), Weight(TEXT("Shooters"), 25.f), Weight(TEXT("Heavies"), 15.f) };
+
+	// From 1:00 the same flow, its chaser packs mixed with shield chasers; the wave timer and the interval ramp carry on.
+	const FRRDirectorPhase FlowCopy = Flow;
+	FRRDirectorPhase& FlowShields = Config.Phases.Add_GetRef(FlowCopy);
+	FlowShields.Name = TEXT("FlowShields");
+	FlowShields.StartTime = 60.f;
+	FlowShields.bWaveOnStart = false;
+	FlowShields.bKeepWaveTimer = true;
+	const float FlowSecondsAtShields = FlowShields.StartTime - FlowCopy.StartTime;
+	FlowShields.WaveIntervalStart = FRRWaveDirector::GetWaveInterval(FlowCopy, FlowSecondsAtShields);
+	FlowShields.WaveIntervalRampSeconds = FMath::Max(FlowCopy.WaveIntervalRampSeconds - FlowSecondsAtShields, 0.f);
+	FlowShields.PackWeights = { Weight(TEXT("ShieldChasers"), 60.f), Weight(TEXT("Shooters"), 25.f), Weight(TEXT("Heavies"), 15.f) };
 
 	// Hordes: fronts at 1:35 and 2:55, heavies in front, kamikazes among them, a carpet of chasers behind.
 	for (const float FrontTime : { 95.f, 175.f })
@@ -160,7 +177,10 @@ void FRRWaveDirector::Advance(const FRRWaveDirectorConfig& Config, float DeltaSe
 		PhaseIndex = NewPhase;
 		bPhaseStarted = PhaseIndex != INDEX_NONE;
 		SingleTimer = 0.f;
-		WaveTimer = 0.f;
+		if (!Config.Phases.IsValidIndex(PhaseIndex) || !Config.Phases[PhaseIndex].bKeepWaveTimer)
+		{
+			WaveTimer = 0.f;
+		}
 		FRRDirectorAction& Changed = OutActions.AddDefaulted_GetRef();
 		Changed.Type = FRRDirectorAction::EType::PhaseChanged;
 		Changed.Index = PhaseIndex;

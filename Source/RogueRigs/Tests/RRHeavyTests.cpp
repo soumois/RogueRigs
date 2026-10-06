@@ -101,7 +101,7 @@ bool FRRHeavyStatsTest::RunTest(const FString& Parameters)
 		TestEqual(TEXT("MoveSpeed 200"), Row.MoveSpeed, 200.f);
 		TestEqual(TEXT("Damage 25 (slam)"), Row.Damage, 25.f);
 		TestEqual(TEXT("AttackRate 0.4 (one slam every 2.5 s)"), Row.AttackRate, 0.4f);
-		TestEqual(TEXT("AttackRange 220 (slam radius)"), Row.AttackRange, 220.f);
+		TestEqual(TEXT("AttackRange 400 (slam radius)"), Row.AttackRange, 400.f);
 		TestEqual(TEXT("WindUp 0.8 (telegraph)"), Row.WindUp, 0.8f);
 		TestEqual(TEXT("XPValue 5"), Row.XPValue, 5);
 		TestEqual(TEXT("KnockbackResistance 0.8"), Row.KnockbackResistance, 0.8f);
@@ -121,9 +121,9 @@ bool FRRHeavyStatsTest::RunTest(const FString& Parameters)
 	TestEqual(TEXT("Health 300"), Health(Heavy), 300.f);
 	TestEqual(TEXT("MaxWalkSpeed 200"), Heavy->GetCharacterMovement()->MaxWalkSpeed, 200.f);
 	TestEqual(TEXT("knockback resistance 0.8"), Heavy->GetKnockbackResistance(), 0.8f);
-	TestEqual(TEXT("slam radius 220"), Heavy->GetSlamRadius(), 220.f);
+	TestEqual(TEXT("slam radius 400"), Heavy->GetSlamRadius(), 400.f);
 	TestEqual(TEXT("telegraph 0.8 s"), Heavy->GetTelegraphDuration(), 0.8f);
-	TestEqual(TEXT("arrival 110 uu (half the slam radius)"), Heavy->GetEnemyMovement()->GetArrivalDistance(), 110.f);
+	TestEqual(TEXT("arrival 200 uu (half the slam radius)"), Heavy->GetEnemyMovement()->GetArrivalDistance(), 200.f);
 	const float Radius = Heavy->GetCapsuleComponent()->GetScaledCapsuleRadius();
 	TestTrue(TEXT("capsule radius at most 80 uu"), Radius <= 80.f);
 	TestEqual(TEXT("capsule 2x chaser (48 x 124)"), Radius, 48.f);
@@ -200,7 +200,7 @@ bool FRRHeavyCadenceTest::RunTest(const FString& Parameters)
 		return false;
 	}
 	TestTrue(TEXT("first telegraph only after walking in (beyond the trigger at spawn)"), TelegraphStarts[0] > 0.5);
-	TestTrue(TEXT("telegraph starts within 154 uu (220 x 0.7)"), FirstTelegraphDistance > 0.f && FirstTelegraphDistance <= 154.f + 1.f);
+	TestTrue(TEXT("telegraph starts within 280 uu (400 x 0.7)"), FirstTelegraphDistance > 0.f && FirstTelegraphDistance <= 280.f + 1.f);
 	for (int32 Index = 0; Index < 3; ++Index)
 	{
 		TestTrue(FString::Printf(TEXT("slam %d lands 0.8 s after its telegraph (within one frame)"), Index + 1),
@@ -262,7 +262,7 @@ bool FRRHeavyShockwaveTest::RunTest(const FString& Parameters)
 	TestEqual(TEXT("rock 200 uu away still standing"), Grid->GetCellType(RockCell), ERRCellType::Rock);
 	TestEqual(TEXT("rock health unchanged"), Grid->GetCellHealth(RockCell), RockHealth);
 
-	// 2. Second telegraph: the miner walks out (teleported to (40, 38), beyond 220 uu) during it; the slam lands and misses.
+	// 2. Second telegraph: the miner walks out (teleported to (39, 38), 600 uu west, beyond 400 uu) during it; the slam lands and misses.
 	for (int32 Frame = 0; Frame < 60 * 4 && !Heavy->IsTelegraphing(); ++Frame)
 	{
 		TestWorld.Tick();
@@ -271,7 +271,7 @@ bool FRRHeavyShockwaveTest::RunTest(const FString& Parameters)
 	{
 		return false;
 	}
-	const FVector Escape = Grid->GetCellCenter(40, 38);
+	const FVector Escape = Grid->GetCellCenter(39, 38);
 	Miner->SetActorLocation(FVector(Escape.X, Escape.Y, Miner->GetActorLocation().Z));
 	const float HealthBeforeDodge = Health(Miner);
 	for (int32 Frame = 0; Frame < 60 && Heavy->GetSlamCount() < 2; ++Frame)
@@ -281,7 +281,7 @@ bool FRRHeavyShockwaveTest::RunTest(const FString& Parameters)
 	const float DodgeDistance = FVector::Dist2D(Heavy->GetActorLocation(), Miner->GetActorLocation());
 	AddInfo(FString::Printf(TEXT("dodged slam at %.0f uu"), DodgeDistance));
 	TestEqual(TEXT("second slam landed (committed telegraph)"), Heavy->GetSlamCount(), 2);
-	TestTrue(TEXT("miner beyond the radius"), DodgeDistance > 220.f);
+	TestTrue(TEXT("miner beyond the radius"), DodgeDistance > 400.f);
 	TestEqual(TEXT("dodged slam deals nothing"), Health(Miner), HealthBeforeDodge);
 	TestEqual(TEXT("one hit in total"), Heavy->GetSlamHitCount(), 1);
 	TestEqual(TEXT("chaser still unharmed"), Health(Chaser), ChaserHealth);

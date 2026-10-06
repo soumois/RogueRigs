@@ -9,7 +9,7 @@
 /**
  * One row of Content/RogueRigs/Data/Tables/EnemyStats.csv (row name = robot, e.g. Chaser). Column names match the
  * property names. Read by ARREnemy at BeginPlay: MaxHealth and MoveSpeed become attribute base values (Health starts
- * at MaxHealth); the others are CSV constants kept on the robot (no upgrade or status changes them during a run).
+ * at MaxHealth), Shield becomes the Shield base value; the others are CSV constants kept on the robot (no upgrade or status changes them during a run).
  */
 USTRUCT(BlueprintType)
 struct ROGUERIGS_API FRREnemyStatsRow : public FTableRowBase
@@ -59,4 +59,8 @@ struct ROGUERIGS_API FRREnemyStatsRow : public FTableRowBase
 	/** Ranged robots: speed of the robot's shots, in uu/s (shooter 1200). Lifetime = AttackRange / ProjectileSpeed. */
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Enemy Stats")
 	float ProjectileSpeed = 0.f;
+
+	/** Shield points absorbing damage before Health (URRHealthAttributeSet Shield base value; shield chaser 30, 0 otherwise). */
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Enemy Stats")
+	float Shield = 0.f;
 };

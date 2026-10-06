@@ -163,6 +163,7 @@ void ARREnemy::ApplyStats()
 	AbilitySystemComponent->SetNumericAttributeBase(URRHealthAttributeSet::GetMaxHealthAttribute(), Stats.MaxHealth);
 	AbilitySystemComponent->SetNumericAttributeBase(URRHealthAttributeSet::GetHealthAttribute(), Stats.MaxHealth);
 	AbilitySystemComponent->SetNumericAttributeBase(URRMovementAttributeSet::GetMoveSpeedAttribute(), Stats.MoveSpeed);
+	AbilitySystemComponent->SetNumericAttributeBase(URRHealthAttributeSet::GetShieldAttribute(), Stats.Shield);
 }
 
 void ARREnemy::HandleMoveSpeedChanged(const FOnAttributeChangeData& ChangeData)

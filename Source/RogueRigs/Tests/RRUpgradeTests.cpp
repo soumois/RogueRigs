@@ -97,16 +97,16 @@ bool FRRUpgradeValueLookupTest::RunTest(const FString& Parameters)
 
 	struct FExpected { ERRUpgradeStat Stat; float Values[5]; };
 	const FExpected Table[] = {
-		{ ERRUpgradeStat::Damage,       { 0.05f, 0.08f, 0.12f, 0.18f, 0.25f } },
-		{ ERRUpgradeStat::FireRate,     { 0.05f, 0.08f, 0.12f, 0.18f, 0.25f } },
-		{ ERRUpgradeStat::ReloadSpeed,  { 0.05f, 0.08f, 0.12f, 0.18f, 0.25f } },
-		{ ERRUpgradeStat::CritChance,   { 0.02f, 0.03f, 0.05f, 0.07f, 0.10f } },
-		{ ERRUpgradeStat::CritDamage,   { 0.10f, 0.15f, 0.20f, 0.30f, 0.40f } },
-		{ ERRUpgradeStat::MaxHealth,    { 10.f, 15.f, 20.f, 30.f, 40.f } },
-		{ ERRUpgradeStat::MoveSpeed,    { 0.05f, 0.08f, 0.12f, 0.18f, 0.25f } },
-		{ ERRUpgradeStat::PickupRadius, { 0.05f, 0.08f, 0.12f, 0.18f, 0.25f } },
-		{ ERRUpgradeStat::XPGain,       { 0.05f, 0.08f, 0.12f, 0.18f, 0.25f } },
-		{ ERRUpgradeStat::MiningSpeed,  { 0.05f, 0.08f, 0.12f, 0.18f, 0.25f } },
+		{ ERRUpgradeStat::Damage,       { 0.10f, 0.15f, 0.25f, 0.30f, 0.40f } },
+		{ ERRUpgradeStat::FireRate,     { 0.10f, 0.15f, 0.25f, 0.30f, 0.40f } },
+		{ ERRUpgradeStat::ReloadSpeed,  { 0.10f, 0.15f, 0.25f, 0.30f, 0.40f } },
+		{ ERRUpgradeStat::CritChance,   { 0.03f, 0.05f, 0.08f, 0.11f, 0.15f } },
+		{ ERRUpgradeStat::CritDamage,   { 0.10f, 0.20f, 0.30f, 0.40f, 0.50f } },
+		{ ERRUpgradeStat::MaxHealth,    { 20.f, 30.f, 45.f, 60.f, 80.f } },
+		{ ERRUpgradeStat::MoveSpeed,    { 0.10f, 0.15f, 0.25f, 0.30f, 0.40f } },
+		{ ERRUpgradeStat::PickupRadius, { 0.10f, 0.15f, 0.25f, 0.30f, 0.40f } },
+		{ ERRUpgradeStat::XPGain,       { 0.10f, 0.15f, 0.25f, 0.30f, 0.40f } },
+		{ ERRUpgradeStat::MiningSpeed,  { 0.10f, 0.15f, 0.25f, 0.30f, 0.40f } },
 		{ ERRUpgradeStat::Luck,         { 1.f, 2.f, 3.f, 4.f, 5.f } },
 	};
 	for (const FExpected& Row : Table)
@@ -128,25 +128,25 @@ bool FRRUpgradeValueLookupTest::RunTest(const FString& Parameters)
 
 	// Cards carry the value and the French texts.
 	const FRRUpgradeCard Global = MakeUpgradeCard(*this, S.Upgrades, ERRUpgradeStat::Damage, ERRUpgradeRarity::Blue, ERRUpgradeTarget::AllWeapons);
-	TestEqual(TEXT("global damage blue value"), Global.Value, 0.12f, 1e-5f);
+	TestEqual(TEXT("global damage blue value"), Global.Value, 0.25f, 1e-5f);
 	TestEqual(TEXT("global damage name"), Global.DisplayName.ToString(), FString(TEXT("Dégâts")));
 	TestEqual(TEXT("global damage target"), Global.TargetText.ToString(), FString(TEXT("Toutes les armes")));
-	TestEqual(TEXT("global damage value text"), Global.ValueText.ToString(), FString(TEXT("+12 %")));
+	TestEqual(TEXT("global damage value text"), Global.ValueText.ToString(), FString(TEXT("+25 %")));
 	TestTrue(TEXT("global damage operation"), Global.Operation == ERRUpgradeOperation::MultiplyAdditive);
 
 	const FRRUpgradeCard Targeted = MakeUpgradeCard(*this, S.Upgrades, ERRUpgradeStat::Damage, ERRUpgradeRarity::Grey, ERRUpgradeTarget::Weapon, S.Rifle);
-	TestEqual(TEXT("targeted damage grey value"), Targeted.Value, 0.075f, 1e-5f);
-	TestEqual(TEXT("targeted damage value text"), Targeted.ValueText.ToString(), FString(TEXT("+7,5 %")));
+	TestEqual(TEXT("targeted damage grey value"), Targeted.Value, 0.15f, 1e-5f);
+	TestEqual(TEXT("targeted damage value text"), Targeted.ValueText.ToString(), FString(TEXT("+15 %")));
 	TestEqual(TEXT("targeted damage target = weapon name"), Targeted.TargetText.ToString(), FString(TEXT("Fusil à rafales")));
 
 	const FRRUpgradeCard Health = MakeUpgradeCard(*this, S.Upgrades, ERRUpgradeStat::MaxHealth, ERRUpgradeRarity::Blue, ERRUpgradeTarget::Player);
-	TestEqual(TEXT("max health text"), Health.ValueText.ToString(), FString(TEXT("+20")));
+	TestEqual(TEXT("max health text"), Health.ValueText.ToString(), FString(TEXT("+45")));
 	TestEqual(TEXT("max health name"), Health.DisplayName.ToString(), FString(TEXT("PV max")));
 	TestTrue(TEXT("max health has no target text"), Health.TargetText.IsEmpty());
 	TestTrue(TEXT("max health operation"), Health.Operation == ERRUpgradeOperation::AddBase);
 
 	const FRRUpgradeCard Crit = MakeUpgradeCard(*this, S.Upgrades, ERRUpgradeStat::CritChance, ERRUpgradeRarity::Blue, ERRUpgradeTarget::AllWeapons);
-	TestEqual(TEXT("crit chance text"), Crit.ValueText.ToString(), FString(TEXT("+5 %")));
+	TestEqual(TEXT("crit chance text"), Crit.ValueText.ToString(), FString(TEXT("+8 %")));
 
 	FRRUpgradeCard Invalid;
 	TestFalse(TEXT("a player stat cannot target a weapon"), S.Upgrades->MakeCard(ERRUpgradeStat::Luck, ERRUpgradeRarity::Grey, ERRUpgradeTarget::Weapon, S.Rifle, Invalid));
@@ -291,19 +291,19 @@ bool FRRUpgradeDamageAppliesTest::RunTest(const FString& Parameters)
 	S.Upgrades->BuildOffer(3, 0.f);
 	TestTrue(TEXT("offer open"), S.Upgrades->HasOffer());
 	const FRRUpgradeCard Global = MakeUpgradeCard(*this, S.Upgrades, ERRUpgradeStat::Damage, ERRUpgradeRarity::Blue, ERRUpgradeTarget::AllWeapons);
-	TestTrue(TEXT("global damage +12 % applied"), S.Upgrades->ApplyUpgrade(Global));
-	TestEqual(TEXT("rifle damage 10 x 1.12"), UpgradeAttr(S.Rifle, Damage), 11.2f, 1e-4f);
+	TestTrue(TEXT("global damage +25 % applied"), S.Upgrades->ApplyUpgrade(Global));
+	TestEqual(TEXT("rifle damage 10 x 1.25"), UpgradeAttr(S.Rifle, Damage), 12.5f, 1e-4f);
 	TestEqual(TEXT("rifle damage base unchanged"), S.Rifle->GetAbilitySystemComponent()->GetNumericAttributeBase(Damage), 10.f, 1e-4f);
 	TestFalse(TEXT("applying ends the offer"), S.Upgrades->HasOffer());
 	TestEqual(TEXT("one picked upgrade"), S.Upgrades->GetPickedUpgrades().Num(), 1);
 
 	const FRRUpgradeCard Targeted = MakeUpgradeCard(*this, S.Upgrades, ERRUpgradeStat::FireRate, ERRUpgradeRarity::Blue, ERRUpgradeTarget::Weapon, S.Rifle);
-	TestTrue(TEXT("targeted fire rate +18 % applied"), S.Upgrades->ApplyUpgrade(Targeted));
-	TestEqual(TEXT("rifle fire rate 1.25 x 1.18"), UpgradeAttr(S.Rifle, URRWeaponAttributeSet::GetFireRateAttribute()), 1.25f * 1.18f, 1e-4f);
+	TestTrue(TEXT("targeted fire rate +37.5 % applied"), S.Upgrades->ApplyUpgrade(Targeted));
+	TestEqual(TEXT("rifle fire rate 1.25 x 1.375"), UpgradeAttr(S.Rifle, URRWeaponAttributeSet::GetFireRateAttribute()), 1.25f * 1.375f, 1e-4f);
 
 	const FRRUpgradeCard Speed = MakeUpgradeCard(*this, S.Upgrades, ERRUpgradeStat::MoveSpeed, ERRUpgradeRarity::Grey, ERRUpgradeTarget::Player);
-	TestTrue(TEXT("move speed +5 % applied"), S.Upgrades->ApplyUpgrade(Speed));
-	TestEqual(TEXT("miner move speed 600 x 1.05"), UpgradeAttr(S.Miner, URRMovementAttributeSet::GetMoveSpeedAttribute()), 630.f, 1e-3f);
+	TestTrue(TEXT("move speed +10 % applied"), S.Upgrades->ApplyUpgrade(Speed));
+	TestEqual(TEXT("miner move speed 600 x 1.1"), UpgradeAttr(S.Miner, URRMovementAttributeSet::GetMoveSpeedAttribute()), 660.f, 1e-3f);
 	TestEqual(TEXT("three picked upgrades"), S.Upgrades->GetPickedUpgrades().Num(), 3);
 	return true;
 }
@@ -326,15 +326,15 @@ bool FRRUpgradeMaxHealthTest::RunTest(const FString& Parameters)
 	TestEqual(TEXT("health 100"), UpgradeAttr(S.Miner, Health), 100.f, 1e-4f);
 
 	const FRRUpgradeCard Plus20 = MakeUpgradeCard(*this, S.Upgrades, ERRUpgradeStat::MaxHealth, ERRUpgradeRarity::Blue, ERRUpgradeTarget::Player);
-	TestTrue(TEXT("max health +20 applied"), S.Upgrades->ApplyUpgrade(Plus20));
-	TestEqual(TEXT("max health 120"), UpgradeAttr(S.Miner, MaxHealth), 120.f, 1e-4f);
-	TestEqual(TEXT("health 120"), UpgradeAttr(S.Miner, Health), 120.f, 1e-4f);
+	TestTrue(TEXT("max health +45 applied"), S.Upgrades->ApplyUpgrade(Plus20));
+	TestEqual(TEXT("max health 145"), UpgradeAttr(S.Miner, MaxHealth), 145.f, 1e-4f);
+	TestEqual(TEXT("health 145"), UpgradeAttr(S.Miner, Health), 145.f, 1e-4f);
 
 	// Wounded miner: the bonus raises current health by the same amount.
 	S.Miner->GetAbilitySystemComponent()->SetNumericAttributeBase(Health, 50.f);
-	TestTrue(TEXT("second max health +20 applied"), S.Upgrades->ApplyUpgrade(Plus20));
-	TestEqual(TEXT("max health 140"), UpgradeAttr(S.Miner, MaxHealth), 140.f, 1e-4f);
-	TestEqual(TEXT("health 50 + 20"), UpgradeAttr(S.Miner, Health), 70.f, 1e-4f);
+	TestTrue(TEXT("second max health +45 applied"), S.Upgrades->ApplyUpgrade(Plus20));
+	TestEqual(TEXT("max health 190"), UpgradeAttr(S.Miner, MaxHealth), 190.f, 1e-4f);
+	TestEqual(TEXT("health 50 + 45"), UpgradeAttr(S.Miner, Health), 95.f, 1e-4f);
 	return true;
 }
 
@@ -354,16 +354,16 @@ bool FRRUpgradeStackingTest::RunTest(const FString& Parameters)
 	const FRRUpgradeCard Global = MakeUpgradeCard(*this, S.Upgrades, ERRUpgradeStat::Damage, ERRUpgradeRarity::Blue, ERRUpgradeTarget::AllWeapons);
 	S.Upgrades->ApplyUpgrade(Global);
 	S.Upgrades->ApplyUpgrade(Global);
-	TestEqual(TEXT("2 x +12 % = x1.24 (added, not compounded)"), UpgradeAttr(S.Rifle, Damage), 12.4f, 1e-4f);
+	TestEqual(TEXT("2 x +25 % = x1.5 (added, not compounded)"), UpgradeAttr(S.Rifle, Damage), 15.f, 1e-4f);
 
 	const FRRUpgradeCard Targeted = MakeUpgradeCard(*this, S.Upgrades, ERRUpgradeStat::Damage, ERRUpgradeRarity::Blue, ERRUpgradeTarget::Weapon, S.Rifle);
 	S.Upgrades->ApplyUpgrade(Targeted);
-	TestEqual(TEXT("+ targeted 18 % = x1.42"), UpgradeAttr(S.Rifle, Damage), 14.2f, 1e-4f);
+	TestEqual(TEXT("+ targeted 37.5 % = x1.875"), UpgradeAttr(S.Rifle, Damage), 18.75f, 1e-4f);
 
 	const FGameplayAttribute CritDamage = URRWeaponAttributeSet::GetCritDamageAttribute();
 	TestEqual(TEXT("crit damage x1.5 base"), UpgradeAttr(S.Rifle, CritDamage), 1.5f, 1e-4f);
 	S.Upgrades->ApplyUpgrade(MakeUpgradeCard(*this, S.Upgrades, ERRUpgradeStat::CritDamage, ERRUpgradeRarity::Blue, ERRUpgradeTarget::AllWeapons));
-	TestEqual(TEXT("crit damage 1.5 + 0.2 = 1.7"), UpgradeAttr(S.Rifle, CritDamage), 1.7f, 1e-4f);
+	TestEqual(TEXT("crit damage 1.5 + 0.3 = 1.8"), UpgradeAttr(S.Rifle, CritDamage), 1.8f, 1e-4f);
 
 	const FGameplayAttribute Luck = URRPlayerAttributeSet::GetLuckAttribute();
 	S.Upgrades->ApplyUpgrade(MakeUpgradeCard(*this, S.Upgrades, ERRUpgradeStat::Luck, ERRUpgradeRarity::Blue, ERRUpgradeTarget::Player));
@@ -451,9 +451,9 @@ bool FRRUpgradeReplayTest::RunTest(const FString& Parameters)
 	}
 	TestTrue(TEXT("second rifle acquired by the miner"), Later->Acquire(S.Miner));
 	Later->GetAutoFireComponent()->StopFiring();
-	TestEqual(TEXT("global damage replayed: 11.2"), UpgradeAttr(Later, Damage), 11.2f, 1e-4f);
+	TestEqual(TEXT("global damage replayed: 12.5"), UpgradeAttr(Later, Damage), 12.5f, 1e-4f);
 	TestEqual(TEXT("targeted fire rate not replayed: 1.25"), UpgradeAttr(Later, FireRate), 1.25f, 1e-4f);
-	TestEqual(TEXT("first rifle keeps both"), UpgradeAttr(S.Rifle, FireRate), 1.25f * 1.18f, 1e-4f);
+	TestEqual(TEXT("first rifle keeps both"), UpgradeAttr(S.Rifle, FireRate), 1.25f * 1.375f, 1e-4f);
 	return true;
 }
 

@@ -116,6 +116,13 @@ struct FRRDirectorPhase
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Director")
 	bool bWaveOnStart = false;
 
+	/**
+	 * True: entering this phase keeps the wave timer of the previous one instead of restarting it, so a phase that only changes
+	 * the pack mix (FlowShields) does not shift the wave rhythm. Set its WaveIntervalStart to the previous phase interval at its start.
+	 */
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Director")
+	bool bKeepWaveTimer = false;
+
 	/** Seconds between two waves at the phase start. 0 = no timed wave (only the start wave). */
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Director", meta = (ClampMin = 0, Units = "s"))
 	float WaveIntervalStart = 0.f;
