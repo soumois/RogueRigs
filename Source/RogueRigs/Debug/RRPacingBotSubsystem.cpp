@@ -181,8 +181,9 @@ void URRPacingBotSubsystem::Tick(float DeltaTime)
 		int32 Cubes = 0;
 		CountWorld(Robots, Cubes);
 		const FVector Location = Miner->GetActorLocation();
-		UE_LOG(LogRogueRigs, Log, TEXT("Pacing: status %.1f s, miner (%.0f, %.0f, %.0f), level %d, XP %.1f / %.1f, %d robots alive, %d XP cubes lying."),
-			Now, Location.X, Location.Y, Location.Z, Level, Miner->GetProgression()->GetXP(), Miner->GetProgression()->GetXPToNextLevel(), Robots, Cubes);
+		UE_LOG(LogRogueRigs, Log, TEXT("Pacing: status %.1f s, miner (%.0f, %.0f, %.0f), level %d, XP %.1f / %.1f, %d robots alive, %d XP cubes lying, heading (%.2f, %.2f), %d turns."),
+			Now, Location.X, Location.Y, Location.Z, Level, Miner->GetProgression()->GetXP(), Miner->GetProgression()->GetXPToNextLevel(), Robots, Cubes,
+			RunHeading.X, RunHeading.Y, RunTurns);
 	}
 
 	AimAtNearestRobot(Miner);

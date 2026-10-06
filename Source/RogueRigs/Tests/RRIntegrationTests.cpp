@@ -28,6 +28,7 @@
 #include "FlowField/RRFlowFieldSubsystem.h"
 #include "GameFramework/PlayerController.h"
 #include "GAS/RRHealthAttributeSet.h"
+#include "GAS/RRPlayerAttributeSet.h"
 #include "HAL/PlatformTime.h"
 #include "Math/RandomStream.h"
 #include "Pickups/RRPickup.h"
@@ -52,6 +53,42 @@ namespace RRIntegrationTests
 	/** XP cubes burst by one chaser (task-027-01: its 1 XP split over 3 cubes) and by one kamikaze (4 cubes). */
 	constexpr int32 ChaserXPCubes = 3;
 	constexpr int32 KamikazeXPCubes = 4;
+
+	/** XPGain of the miner (attribute value; 1 without an ASC). */
+	float GetMinerXPGain(ARRMiner* Miner)
+	{
+		const UAbilitySystemComponent* ASC = Miner ? Miner->GetAbilitySystemComponent() : nullptr;
+		return ASC ? ASC->GetNumericAttribute(URRPlayerAttributeSet::GetXPGainAttribute()) : 1.f;
+	}
+
+	/**
+	 * Leaves a level 1 miner exactly 5 raw XP (five chaser kills) short of level 2 whatever the XPCurve.csv need: pre-fills
+	 * XP when the need is at least 5, else scales XPGain to need / 5 (task-031-03 curve: level 1 needs 1). True when ready.
+	 */
+	bool PrepareLevelOneForFiveKills(ARRMiner* Miner)
+	{
+		URRProgressionComponent* Progression = Miner ? Miner->GetProgression() : nullptr;
+		UAbilitySystemComponent* ASC = Miner ? Miner->GetAbilitySystemComponent() : nullptr;
+		if (!Progression || !ASC || Progression->GetLevel() != 1)
+		{
+			return false;
+		}
+		const float Need = Progression->GetXPToNextLevel() - Progression->GetXP();
+		if (Need >= 5.f)
+		{
+			ASC->SetNumericAttributeBase(URRPlayerAttributeSet::GetXPGainAttribute(), 1.f);
+			if (Need > 5.f)
+			{
+				Progression->AddXP(Need - 5.f);
+			}
+		}
+		else
+		{
+			ASC->SetNumericAttributeBase(URRPlayerAttributeSet::GetXPGainAttribute(), Need / 5.f);
+		}
+		return Progression->GetLevel() == 1
+			&& FMath::IsNearlyEqual((Progression->GetXPToNextLevel() - Progression->GetXP()) / GetMinerXPGain(Miner), 5.f, 1e-3f);
+	}
 
 	/** Final Blueprints of the loop. */
 	const TCHAR* const ChaserClassPath = TEXT("/Game/RogueRigs/Blueprints/Enemies/BP_Chaser.BP_Chaser_C");
@@ -401,17 +438,12 @@ bool FRRIntegrationXPLevelUpTest::RunTest(const FString& Parameters)
 	}
 	TestEqual(TEXT("starts at level 1"), Progression->GetLevel(), 1);
 	TestEqual(TEXT("starts with 0 XP"), Progression->GetXP(), 0.f);
-	// The five chaser kills bring the last 5 XP of level 1 (XPGain 1): pre-fill the rest of the XPCurve.csv need (task-030-02).
-	const float LevelOneNeed = Progression->GetXPToNextLevel();
-	if (!TestTrue(TEXT("level 1 needs at least 5 XP"), LevelOneNeed >= 5.f))
+	// The five chaser kills (5 raw XP) must complete level 1 exactly, whatever the XPCurve.csv need (task-031-03).
+	if (!TestTrue(TEXT("level 1 filled for five kills"), RRIntegrationTests::PrepareLevelOneForFiveKills(Miner)))
 	{
 		return false;
 	}
-	if (LevelOneNeed > 5.f)
-	{
-		Progression->AddXP(LevelOneNeed - 5.f);
-	}
-	TestEqual(TEXT("still level 1, 5 XP short"), Progression->GetXPToNextLevel() - Progression->GetXP(), 5.f, 1e-3f);
+	TestEqual(TEXT("still level 1, 5 raw XP short"), (Progression->GetXPToNextLevel() - Progression->GetXP()) / RRIntegrationTests::GetMinerXPGain(Miner), 5.f, 1e-3f);
 
 	// Pickups find the miner as the player 0 pawn: a player controller (no local player) possesses it.
 	APlayerController* Controller = TestWorld.Spawn<APlayerController>(APlayerController::StaticClass(), Miner->GetActorLocation());
@@ -1494,15 +1526,10 @@ bool FRRIntegrationUpgradeLoopTest::RunTest(const FString& Parameters)
 	HUD->BindToMiner(Miner);
 	TestTrue(TEXT("UpgradeScreen collapsed at start"), GetWidgetVisibility(*this, HUD, TEXT("UpgradeScreen")) == ESlateVisibility::Collapsed);
 
-	// The five chaser kills bring the last 5 XP of level 1 (XPGain 1): pre-fill the rest of the XPCurve.csv need (task-030-02).
-	const float LevelOneNeed = Progression->GetXPToNextLevel();
-	if (!TestTrue(TEXT("level 1 needs at least 5 XP"), LevelOneNeed >= 5.f))
+	// The five chaser kills (5 raw XP) must complete level 1 exactly, whatever the XPCurve.csv need (task-031-03).
+	if (!TestTrue(TEXT("level 1 filled for five kills"), RRIntegrationTests::PrepareLevelOneForFiveKills(Miner)))
 	{
 		return false;
-	}
-	if (LevelOneNeed > 5.f)
-	{
-		Progression->AddXP(LevelOneNeed - 5.f);
 	}
 
 	Upgrades->SetRandomSeed(UpgradeSeed);
