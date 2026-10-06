@@ -89,10 +89,11 @@ namespace RRTestAccess
 		}
 	};
 
-	/** ARRDrone: the laser mesh. */
+	/** ARRDrone: the laser mesh and the arc block cap. */
 	struct FDroneAccess : public ARRDrone
 	{
 		static const UStaticMeshComponent* Laser(const ARRDrone* Drone) { return Drone->*(&FDroneAccess::LaserMesh); }
+		static int32& MaxArcBlocksOf(ARRDrone* Drone) { return Drone->*(&FDroneAccess::MaxArcBlocks); }
 	};
 
 	/** ARREnemy: XP pickup class (tests drop ARRTestPickupXP) and the CSV stats copy. */
@@ -166,6 +167,8 @@ namespace RRTestAccess
 		static FVector WeaponAttachOffsetOf(const ARRMiner* Miner) { return Miner->*(&FMinerAccess::WeaponAttachOffset); }
 		static TArray<FRRWeaponCatalogueEntry>& WeaponCatalogueOf(ARRMiner* Miner) { return Miner->*(&FMinerAccess::WeaponCatalogue); }
 		static int32& MaxWeaponsOf(ARRMiner* Miner) { return Miner->*(&FMinerAccess::MaxWeapons); }
+		static TSubclassOf<ARRDrone>& DroneClassOf(ARRMiner* Miner) { return Miner->*(&FMinerAccess::DroneClass); }
+		static FVector& PendingMoveInputOf(ARRMiner* Miner) { return Miner->*(&FMinerAccess::PendingMoveInput); }
 	};
 
 	/** ARRPlayerController: the place-turret input path (action resolution and its Started handler). */

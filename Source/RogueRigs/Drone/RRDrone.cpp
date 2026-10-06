@@ -1,4 +1,4 @@
-// Rogue Rigs - the helper drone: separate actor spawned by the miner; orbits it, cuts blocks with a laser (dig) and links to an objective (hack).
+// Rogue Rigs - the helper drone: separate actor spawned by the miner; orbits it, cuts an arc of blocks with a laser (dig) and links to an objective (hack).
 
 #include "Drone/RRDrone.h"
 
@@ -84,17 +84,13 @@ bool ARRDrone::SetState(ERRDroneState NewState)
 			UE_LOG(LogRogueRigs, Warning, TEXT("%s: cannot dig while hacking %s."), *GetName(), *GetNameSafe(HackTarget));
 			return false;
 		}
-		if (!IsValid(OwnerMiner) || !IsValid(DigGrid) || !DigGrid->IsBlockCell(DigCell))
+		if (!IsValid(OwnerMiner) || !IsValid(DigGrid) || !DigCells.ContainsByPredicate([this](const FIntPoint& Cell) { return DigGrid->IsBlockCell(Cell); }))
 		{
-			UE_LOG(LogRogueRigs, Warning, TEXT("%s: cannot enter Dig without a miner and a block target (use RequestDig); staying in %s."),
+			UE_LOG(LogRogueRigs, Warning, TEXT("%s: cannot enter Dig without a miner and a block in the arc (use RequestArcDig); staying in %s."),
 				*GetName(), *UEnum::GetValueAsString(State));
 			return false;
 		}
-		if (State != ERRDroneState::Dig)
-		{
-			State = ERRDroneState::Dig;
-			DigGrid->SetCellShaking(DigCell, true);
-		}
+		State = ERRDroneState::Dig;
 		return true;
 
 	case ERRDroneState::Hack:
@@ -139,32 +135,155 @@ void ARRDrone::StopHack(AActor* Target)
 	}
 }
 
-bool ARRDrone::RequestDig(ARRArenaGrid* Grid, FIntPoint Cell, FIntPoint MinerSide)
+bool ARRDrone::RequestArcDig(ARRArenaGrid* Grid, FVector ArcDirection)
 {
 	// The drone cannot dig and hack at the same time: the objective releases it first.
-	if (State == ERRDroneState::Hack || !IsValid(OwnerMiner) || !IsValid(Grid) || !Grid->IsBlockCell(Cell))
+	if (State == ERRDroneState::Hack || !IsValid(OwnerMiner) || !IsValid(Grid))
 	{
 		return false;
 	}
 
-	// Same target: only the side may change.
-	if (State == ERRDroneState::Dig && DigGrid == Grid && DigCell == Cell)
+	const FVector Direction = FVector(ArcDirection.X, ArcDirection.Y, 0.0).GetSafeNormal();
+	TArray<FIntPoint> NewCells;
+	if (Direction.IsZero() || SelectArcCells(Grid, OwnerMiner->GetActorLocation(), Direction, NewCells) == 0)
 	{
-		DigSide = MinerSide;
-		return true;
+		ReleaseDig();
+		return false;
 	}
 
-	// New target: release the previous block (its damage stays), then start on this one.
-	if (State == ERRDroneState::Dig)
+	// Another grid: release everything first.
+	if (State == ERRDroneState::Dig && DigGrid != Grid)
 	{
 		StopDig();
 		State = ERRDroneState::Orbit;
 	}
 
+	// Blocks that left the arc stop (damage kept); blocks that entered it start shaking. Iterate a copy: listeners may react.
+	const TArray<FIntPoint> PreviousCells = DigCells;
+	for (const FIntPoint& Cell : PreviousCells)
+	{
+		if (!NewCells.Contains(Cell))
+		{
+			StopDigBlock(Cell);
+		}
+	}
 	DigGrid = Grid;
-	DigCell = Cell;
-	DigSide = MinerSide;
-	return SetState(ERRDroneState::Dig);
+	DigCells = NewCells;
+	DigArcDirection = Direction;
+	State = ERRDroneState::Dig;
+	for (const FIntPoint& Cell : NewCells)
+	{
+		if (!PreviousCells.Contains(Cell))
+		{
+			Grid->SetCellShaking(Cell, true);
+			OnDigBlockStarted.Broadcast(Cell);
+		}
+	}
+	return true;
+}
+
+void ARRDrone::ReleaseDig()
+{
+	if (State == ERRDroneState::Dig)
+	{
+		StopDig();
+		State = ERRDroneState::Orbit;
+	}
+}
+
+int32 ARRDrone::SelectArcCells(const ARRArenaGrid* Grid, const FVector& MinerLocation, const FVector& ArcDirection, TArray<FIntPoint>& OutCells) const
+{
+	OutCells.Reset();
+	const FVector Direction = FVector(ArcDirection.X, ArcDirection.Y, 0.0).GetSafeNormal();
+	if (!Grid || Direction.IsZero() || MaxArcBlocks <= 0)
+	{
+		return 0;
+	}
+
+	const double CellSize = Grid->GetCellSize();
+	const double MinerRadius = IsValid(OwnerMiner) ? OwnerMiner->GetCapsuleComponent()->GetScaledCapsuleRadius() : 0.0;
+	const FVector Origin(MinerLocation.X, MinerLocation.Y, 0.0);
+	const FVector Front = Origin + Direction * MinerRadius;
+	const double Reach = ArcReachCells * CellSize;
+	const double MinCosine = FMath::Cos(FMath::DegreesToRadians(0.5 * FMath::Clamp(ArcAngleDegrees, 0.f, 360.f)));
+
+	struct FCandidate
+	{
+		FIntPoint Cell;
+		double DistanceSquared;
+		double Cosine;
+	};
+	TArray<FCandidate> Candidates;
+
+	// Every cell whose center can be within the reach of the front point.
+	const FIntPoint FrontCell = Grid->GetCellAtWorld(FVector(Front.X, Front.Y, Grid->GetActorLocation().Z));
+	const int32 Span = FMath::CeilToInt32(Reach / FMath::Max(CellSize, 1.0)) + 1;
+	for (int32 Y = FrontCell.Y - Span; Y <= FrontCell.Y + Span; ++Y)
+	{
+		for (int32 X = FrontCell.X - Span; X <= FrontCell.X + Span; ++X)
+		{
+			const FIntPoint Cell(X, Y);
+			if (!Grid->IsBlockCell(Cell))
+			{
+				continue;
+			}
+			const FVector Center = Grid->GetCellCenter(X, Y);
+			const FVector Center2D(Center.X, Center.Y, 0.0);
+			const double DistanceSquared = FVector::DistSquared(Center2D, Front);
+			if (DistanceSquared > FMath::Square(Reach))
+			{
+				continue;
+			}
+			const FVector FromMiner = (Center2D - Origin).GetSafeNormal();
+			const double Cosine = FromMiner.IsZero() ? 1.0 : FVector::DotProduct(FromMiner, Direction);
+			if (Cosine < MinCosine - UE_KINDA_SMALL_NUMBER)
+			{
+				continue;
+			}
+			Candidates.Add({ Cell, DistanceSquared, Cosine });
+		}
+	}
+
+	Candidates.Sort([](const FCandidate& Left, const FCandidate& Right)
+	{
+		if (!FMath::IsNearlyEqual(Left.DistanceSquared, Right.DistanceSquared, 1e-3))
+		{
+			return Left.DistanceSquared < Right.DistanceSquared;
+		}
+		if (!FMath::IsNearlyEqual(Left.Cosine, Right.Cosine, 1e-9))
+		{
+			return Left.Cosine > Right.Cosine;
+		}
+		return Left.Cell.Y != Right.Cell.Y ? Left.Cell.Y < Right.Cell.Y : Left.Cell.X < Right.Cell.X;
+	});
+
+	const int32 Count = FMath::Min(Candidates.Num(), MaxArcBlocks);
+	for (int32 Index = 0; Index < Count; ++Index)
+	{
+		OutCells.Add(Candidates[Index].Cell);
+	}
+	return Count;
+}
+
+FVector ARRDrone::GetDigTargetPoint(FIntPoint Cell) const
+{
+	if (!IsValid(DigGrid) || !IsValid(OwnerMiner))
+	{
+		return FVector::ZeroVector;
+	}
+
+	// Face toward the miner, on the dominant axis of the miner's offset from the block center.
+	const FVector ToMiner = OwnerMiner->GetActorLocation() - DigGrid->GetCellCenter(Cell.X, Cell.Y);
+	FIntPoint Side(0, 0);
+	if (FMath::Abs(ToMiner.X) >= FMath::Abs(ToMiner.Y))
+	{
+		Side.X = ToMiner.X >= 0.0 ? 1 : -1;
+	}
+	else
+	{
+		Side.Y = ToMiner.Y >= 0.0 ? 1 : -1;
+	}
+	return DigGrid->GetCellFaceCenter(Cell, Side);
 }
 
 float ARRDrone::GetMiningSpeed() const
@@ -228,29 +347,51 @@ void ARRDrone::TickOrbit(float DeltaSeconds)
 
 void ARRDrone::TickDig(float DeltaSeconds)
 {
-	// Cancel rules: target gone (dug out or blown up), or the miner walked away.
-	if (!IsValid(OwnerMiner) || !IsValid(DigGrid) || !DigGrid->IsBlockCell(DigCell))
+	// Cancel rule: miner or grid gone. Leaving the wall is handled by the miner (ReleaseDig).
+	if (!IsValid(OwnerMiner) || !IsValid(DigGrid))
 	{
 		SetState(ERRDroneState::Orbit);
 		return;
 	}
 
-	const FVector BlockCenter = DigGrid->GetCellCenter(DigCell.X, DigCell.Y);
-	const float CancelDistance = DigCancelDistanceCells * DigGrid->GetCellSize();
-	if (FVector::DistSquared2D(OwnerMiner->GetActorLocation(), BlockCenter) > FMath::Square(CancelDistance))
+	// Blocks blown up since the last tick leave the arc.
+	for (int32 Index = DigCells.Num() - 1; Index >= 0; --Index)
 	{
-		SetState(ERRDroneState::Orbit);
-		return;
+		if (!DigGrid->IsBlockCell(DigCells[Index]))
+		{
+			const FIntPoint Cell = DigCells[Index];
+			DigCells.RemoveAt(Index);
+			StopDigBlock(Cell);
+		}
 	}
 
 	SetActorLocation(FMath::VInterpTo(GetActorLocation(), ComputeDigHoverPoint(), DeltaSeconds, FollowInterpSpeed));
 
 	// Laser first: the face center is still valid before the hit that may destroy the block.
-	UpdateLaser(GetActorLocation(), DigGrid->GetCellFaceCenter(DigCell, DigSide));
-
-	if (DigGrid->ApplyTerrainDamage(DigCell, DeltaSeconds * GetMiningSpeed(), ERRTerrainDamageSource::Drone))
+	if (DigCells.Num() > 0)
 	{
-		SetState(ERRDroneState::Orbit);
+		UpdateLaser(GetActorLocation(), GetDigTargetPoint(DigCells[0]));
+	}
+	else
+	{
+		LaserMesh->SetVisibility(false);
+	}
+
+	// Every block of the arc is cut in parallel at the full rate. Dig holds even when the arc empties: the miner selects
+	// the next blocks (or releases the dig) on its next tick.
+	const float Damage = DeltaSeconds * GetMiningSpeed();
+	for (int32 Index = 0; Index < DigCells.Num();)
+	{
+		const FIntPoint Cell = DigCells[Index];
+		if (DigGrid->ApplyTerrainDamage(Cell, Damage, ERRTerrainDamageSource::Drone))
+		{
+			DigCells.RemoveAt(Index);
+			StopDigBlock(Cell);
+		}
+		else
+		{
+			++Index;
+		}
 	}
 }
 
@@ -271,26 +412,41 @@ FVector ARRDrone::ComputeDigHoverPoint() const
 	const FVector MinerLocation = OwnerMiner->GetActorLocation();
 	const double FloorZ = MinerLocation.Z - OwnerMiner->GetCapsuleComponent()->GetScaledCapsuleHalfHeight();
 
-	// Outward normal of the cut face, in world space: from the block center to the face center.
-	const FVector FaceCenter = DigGrid->GetCellFaceCenter(DigCell, DigSide);
-	const FVector BlockCenter = DigGrid->GetCellCenter(DigCell.X, DigCell.Y);
-	const FVector FaceNormal = (FaceCenter - BlockCenter).GetSafeNormal2D();
+	// Arc centre: mean of the dug cell centers; keep the current XY while the arc is empty.
+	FVector Centre = GetActorLocation();
+	if (DigCells.Num() > 0)
+	{
+		Centre = FVector::ZeroVector;
+		for (const FIntPoint& Cell : DigCells)
+		{
+			Centre += DigGrid->GetCellCenter(Cell.X, Cell.Y);
+		}
+		Centre /= DigCells.Num();
+	}
+	return FVector(Centre.X, Centre.Y, FloorZ + HoverHeight);
+}
 
-	const FVector HoverPoint = FaceCenter + FaceNormal * DigHoverDistance;
-	return FVector(HoverPoint.X, HoverPoint.Y, FloorZ + HoverHeight);
+void ARRDrone::StopDigBlock(FIntPoint Cell)
+{
+	const bool bDestroyed = !IsValid(DigGrid) || !DigGrid->IsBlockCell(Cell);
+	if (IsValid(DigGrid))
+	{
+		DigGrid->SetCellShaking(Cell, false);
+	}
+	OnDigBlockStopped.Broadcast(Cell, bDestroyed);
 }
 
 void ARRDrone::StopDig()
 {
-	if (IsValid(DigGrid))
+	TArray<FIntPoint> StoppedCells = MoveTemp(DigCells);
+	DigCells.Reset();
+	for (const FIntPoint& Cell : StoppedCells)
 	{
-		DigGrid->SetCellShaking(DigCell, false);
+		StopDigBlock(Cell);
 	}
 
 	LaserMesh->SetVisibility(false);
 	DigGrid = nullptr;
-	DigCell = FIntPoint(-1, -1);
-	DigSide = FIntPoint(0, 0);
 
 	ResumeOrbitFromCurrentAngle();
 }

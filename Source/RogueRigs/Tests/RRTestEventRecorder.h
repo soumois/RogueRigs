@@ -38,6 +38,14 @@ public:
 	UFUNCTION()
 	void HandleCellDestroyed(FIntPoint Cell, ERRCellType Type, ERRTerrainDamageSource Source) { DestroyedCells.Add(Cell); }
 
+	/** Bind to ARRDrone::OnDigBlockStarted: appends the cell. */
+	UFUNCTION()
+	void HandleDigBlockStarted(FIntPoint Cell) { DigStartedCells.Add(Cell); }
+
+	/** Bind to ARRDrone::OnDigBlockStopped: appends the cell and whether it was destroyed. */
+	UFUNCTION()
+	void HandleDigBlockStopped(FIntPoint Cell, bool bDestroyed) { DigStoppedCells.Add(Cell); DigStoppedDestroyed.Add(bDestroyed); }
+
 	/** Bind to URRAutoFireComponent::OnShotFired: appends the shot index in its burst. */
 	UFUNCTION()
 	void HandleShotFired(int32 ShotIndexInBurst) { ShotIndices.Add(ShotIndexInBurst); }
@@ -163,6 +171,15 @@ public:
 	/** Cells received through HandleCellDestroyed, in order. */
 	const TArray<FIntPoint>& GetDestroyedCells() const { return DestroyedCells; }
 
+	/** Cells received through HandleDigBlockStarted, in order. */
+	const TArray<FIntPoint>& GetDigStartedCells() const { return DigStartedCells; }
+
+	/** Cells received through HandleDigBlockStopped, in order. */
+	const TArray<FIntPoint>& GetDigStoppedCells() const { return DigStoppedCells; }
+
+	/** bDestroyed flags received through HandleDigBlockStopped, in order (parallel to GetDigStoppedCells). */
+	const TArray<bool>& GetDigStoppedDestroyed() const { return DigStoppedDestroyed; }
+
 	/** Shot indices received through HandleShotFired, in order. */
 	const TArray<int32>& GetShotIndices() const { return ShotIndices; }
 
@@ -184,6 +201,15 @@ protected:
 
 	/** Cells destroyed so far. */
 	TArray<FIntPoint> DestroyedCells;
+
+	/** Cells received through HandleDigBlockStarted. */
+	TArray<FIntPoint> DigStartedCells;
+
+	/** Cells received through HandleDigBlockStopped. */
+	TArray<FIntPoint> DigStoppedCells;
+
+	/** bDestroyed flags received through HandleDigBlockStopped. */
+	TArray<bool> DigStoppedDestroyed;
 
 	/** Shot indices fired so far. */
 	TArray<int32> ShotIndices;

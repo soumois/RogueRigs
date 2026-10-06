@@ -43,9 +43,10 @@ DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FRROnWeaponAddedSignature, ARRWeapon
  * rotate with the pawn) frames the arena. Input is routed here by ARRPlayerController: move is a
  * world-space 2D input, aim comes from the mouse cursor projected on the floor plane or from the right
  * stick, and the pawn turns toward the aim every tick. Spawns its helper drone (DroneClass) at BeginPlay and
- * destroys it at EndPlay. Dig trigger: each tick, when the move input points into the adjacent block cell
- * (dominant axis of the world move direction) and that block face is within the dig reach, the miner asks the
- * drone to cut it (ARRDrone::RequestDig); the drone handles the cancel rule. The arena grid is found once at
+ * destroys it at EndPlay. Dig trigger (arc mining by contact, drone gdd): each tick, when a block cell lies within the
+ * capsule radius + DigContactMargin of the miner (2D, no push needed), the miner asks the drone to dig the arc toward
+ * the wall, or along the move input when it pushes into the wall (ARRDrone::RequestArcDig); without contact, or when
+ * dead, it releases the dig (ARRDrone::ReleaseDig). The arena grid is found once at
  * BeginPlay (first ARRArenaGrid in the world). Pickups (ARRPickup) read GetPickupRadius and report their collection
  * through NotifyPickupCollected, which broadcasts OnPickupCollected; no pickup effect here. XP and level live in its
  * URRProgressionComponent (GetProgression; XP pickups call AddXP on it). Upgrade offers and picked upgrades live in its
@@ -109,6 +110,10 @@ public:
 	/** The helper drone spawned at BeginPlay (null if DroneClass is unset or the spawn failed). */
 	UFUNCTION(BlueprintPure, Category = "Miner|Drone")
 	ARRDrone* GetDrone() const { return Drone; }
+
+	/** True when a block cell was within the capsule radius + DigContactMargin of the miner at its last tick (the drone digs then). */
+	UFUNCTION(BlueprintPure, Category = "Miner|Dig")
+	bool IsTouchingRock() const { return bTouchingRock; }
 
 	/** Arena grid found at BeginPlay (first ARRArenaGrid in the world); null if the level has none. */
 	UFUNCTION(BlueprintPure, Category = "Miner|Dig")
@@ -244,11 +249,13 @@ protected:
 	void FindArenaGrid();
 
 	/**
-	 * Dig trigger, run each tick with the move input of this frame: picks the cell next to the miner along the
-	 * dominant grid axis of MoveDirection; if it holds a block whose facing side is within the dig reach
-	 * (capsule radius + DigReachMargin), calls RequestDig on the drone.
+	 * Dig trigger, run each tick with the move input of this frame (zero when idle): contact = a block cell whose square
+	 * (2D) is within the capsule radius + DigContactMargin of the miner's location. Wall direction = opposite of the mean
+	 * contact normal (from the nearest block point to the miner). Arc direction = MoveInput when its length exceeds
+	 * DigMinMoveInput and it points into the wall, else the wall direction. Calls RequestArcDig on contact, ReleaseDig
+	 * otherwise; sets bTouchingRock. Assumes an unrotated grid.
 	 */
-	void UpdateDigTrigger(const FVector& MoveDirection);
+	void UpdateDigTrigger(const FVector& MoveInput);
 
 	/** Health set hit callback: applies the i-frames when the miner survives the hit. Runs inside the GE execution. */
 	void HandleDamageReceived(float Damage, bool bIsCritical, float HealthLeft);
@@ -344,11 +351,11 @@ protected:
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Miner|Drone")
 	TSubclassOf<ARRDrone> DroneClass;
 
-	/** Extra distance beyond the capsule radius within which a pushed block face triggers a dig, in uu. */
+	/** Gap beyond the capsule radius within which a block counts as touched and gets dug (no push needed), in uu (provisional). */
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Miner|Dig", meta = (ClampMin = 0, Units = "cm"))
-	float DigReachMargin = 30.f;
+	float DigContactMargin = 10.f;
 
-	/** Move inputs with a length at or below this value never trigger a dig (provisional). */
+	/** Move inputs with a length at or below this value do not steer the dig arc (it points toward the wall) (provisional). */
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Miner|Dig", meta = (ClampMin = 0, ClampMax = 1))
 	float DigMinMoveInput = 0.1f;
 
@@ -416,6 +423,9 @@ protected:
 
 	/** True while aiming with the mouse cursor. */
 	bool bUsingMouseAim = true;
+
+	/** True when a block was touched at the last dig trigger (IsTouchingRock). */
+	bool bTouchingRock = false;
 
 	/** Last cursor point on the mouse aim plane (valid when bHasMouseAimPoint). */
 	FVector MouseAimPoint = FVector::ZeroVector;

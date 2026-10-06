@@ -1,4 +1,4 @@
-// Rogue Rigs - automation tests of the dig rules (RogueRigs.Dig.*): grid damage and destruction, ore drops, radius destruction, drone dig, pickup collection, render-only shake.
+// Rogue Rigs - automation tests of the dig rules (RogueRigs.Dig.*): grid damage and destruction, ore drops, radius destruction, drone arc dig (contact, arc limits, speeds, persistence and release), pickup collection, render-only shake.
 
 #include "CoreMinimal.h"
 #include "Misc/AutomationTest.h"
@@ -18,6 +18,8 @@
 #include "GameFramework/CharacterMovementComponent.h"
 #include "GameFramework/PlayerController.h"
 #include "GameFramework/WorldSettings.h"
+#include "GAS/RRAbilitySystemComponent.h"
+#include "GAS/RRPlayerAttributeSet.h"
 #include "Grid/RRArenaGrid.h"
 #include "Kismet/GameplayStatics.h"
 #include "Pickups/RRPickup.h"
@@ -340,78 +342,288 @@ bool FRRDigRadiusTest::RunTest(const FString& Parameters)
 	return true;
 }
 
-IMPLEMENT_SIMPLE_AUTOMATION_TEST(FRRDigDroneDigTest, "RogueRigs.Dig.DroneDig",
+namespace RRDigTests
+{
+	/** Floor cell north of the heal ore cluster (147..149, 135..137) of arena_m1_fine: the miner there touches (148, 135). */
+	const FIntPoint FineHealOreNorthFloorCell(148, 134);
+
+	/** Spawns the game grid and BP_Miner standing on Cell; returns its drone (null on failure). Weapons stopped. */
+	ARRDrone* SpawnArcDigScene(FAutomationTestBase& Test, const FTestWorld& TestWorld, FIntPoint Cell, ARRArenaGrid*& OutGrid, ARRMiner*& OutMiner)
+	{
+		OutGrid = SpawnFineGrid(Test, TestWorld);
+		OutMiner = OutGrid ? SpawnMiner(Test, TestWorld, OutGrid, Cell) : nullptr;
+		ARRDrone* Drone = OutMiner ? OutMiner->GetDrone() : nullptr;
+		if (!Test.TestNotNull(TEXT("BP_Miner spawned its drone"), Drone))
+		{
+			return nullptr;
+		}
+		for (ARRWeapon* Weapon : OutMiner->GetWeapons())
+		{
+			if (IsValid(Weapon) && Weapon->GetAutoFireComponent())
+			{
+				Weapon->GetAutoFireComponent()->StopFiring();
+			}
+		}
+		return Drone;
+	}
+
+	/** Ticks until every cell of Cells is destroyed or MaxFrames pass; returns the frame of the last destruction (INDEX_NONE if one stands). */
+	int32 TickUntilDestroyed(const FTestWorld& TestWorld, const ARRArenaGrid* Grid, const TArray<FIntPoint>& Cells, int32 MaxFrames, TArray<int32>& OutFrames)
+	{
+		OutFrames.Init(INDEX_NONE, Cells.Num());
+		for (int32 Frame = 1; Frame <= MaxFrames; ++Frame)
+		{
+			TestWorld.Tick();
+			bool bAllDestroyed = true;
+			for (int32 Index = 0; Index < Cells.Num(); ++Index)
+			{
+				if (OutFrames[Index] == INDEX_NONE && !Grid->IsBlockCell(Cells[Index]))
+				{
+					OutFrames[Index] = Frame;
+				}
+				bAllDestroyed &= OutFrames[Index] != INDEX_NONE;
+			}
+			if (bAllDestroyed)
+			{
+				return Frame;
+			}
+		}
+		return INDEX_NONE;
+	}
+
+	/** True when A and B hold the same cells, in any order. */
+	bool SameCells(const TArray<FIntPoint>& A, const TArray<FIntPoint>& B)
+	{
+		if (A.Num() != B.Num())
+		{
+			return false;
+		}
+		for (const FIntPoint& Cell : A)
+		{
+			if (!B.Contains(Cell))
+			{
+				return false;
+			}
+		}
+		return true;
+	}
+}
+
+IMPLEMENT_SIMPLE_AUTOMATION_TEST(FRRDigArcContactTest, "RogueRigs.Dig.ArcContactDig",
 	EAutomationTestFlags::EditorContext | EAutomationTestFlags::EngineFilter)
 
-bool FRRDigDroneDigTest::RunTest(const FString& Parameters)
+bool FRRDigArcContactTest::RunTest(const FString& Parameters)
 {
-	// Game grid (67 uu): the drone digs a rock block in the GDD 0.5 s.
+	using namespace RRDigTests;
+
+	// Game grid (67 uu): the miner stands on (128, 115), against the rock wall x = 129, with no input. Touching is enough:
+	// the drone cuts the 4 blocks of the arc in parallel, each in the GDD 0.5 s, then goes back to Orbit.
 	FTestWorld TestWorld;
-	ARRArenaGrid* Grid = SpawnFineGrid(*this, TestWorld);
-	ARRMiner* Miner = Grid ? SpawnMiner(*this, TestWorld, Grid, FineRockWestFloorCell) : nullptr;
-	ARRDrone* Drone = Miner ? Miner->GetDrone() : nullptr;
-	if (!TestNotNull(TEXT("BP_Miner spawned its drone"), Drone))
+	ARRArenaGrid* Grid = nullptr;
+	ARRMiner* Miner = nullptr;
+	ARRDrone* Drone = SpawnArcDigScene(*this, TestWorld, FineRockWestFloorCell, Grid, Miner);
+	if (!Drone)
 	{
 		return false;
 	}
-	TestEqual(TEXT("miner found the grid"), Miner->GetArenaGrid(), Grid);
+	TStrongObjectPtr<URRTestEventRecorder> Recorder(NewObject<URRTestEventRecorder>());
+	Drone->OnDigBlockStarted.AddDynamic(Recorder.Get(), &URRTestEventRecorder::HandleDigBlockStarted);
+	Drone->OnDigBlockStopped.AddDynamic(Recorder.Get(), &URRTestEventRecorder::HandleDigBlockStopped);
 	TestNearlyEqual(TEXT("mining speed 1"), Drone->GetMiningSpeed(), 1.f);
-	for (int32 Frame = 0; Frame < 10; ++Frame)
-	{
-		TestWorld.Tick();
-	}
 	TestEqual(TEXT("drone starts in Orbit"), Drone->GetState(), ERRDroneState::Orbit);
 
-	// Same call as the miner's dig trigger when pushing east into the rock: the miner is on the west side.
-	TestTrue(TEXT("RequestDig accepted"), Drone->RequestDig(Grid, FineRockCell, FIntPoint(-1, 0)));
+	const TArray<FIntPoint> Arc = { FineRockCell, FIntPoint(129, 114), FIntPoint(129, 116), FIntPoint(130, 115) };
+	TArray<int32> DestroyFrames;
+	TestWorld.Tick();
+	TestTrue(TEXT("miner touches rock without input"), Miner->IsTouchingRock());
 	TestEqual(TEXT("state Dig"), Drone->GetState(), ERRDroneState::Dig);
-	TestEqual(TEXT("dig cell"), Drone->GetDigCell(), FineRockCell);
-	TestTrue(TEXT("rock shaking"), FGridAccess::Shaking(Grid).Contains(FineRockCell));
-	TestTrue(TEXT("grid ticks while shaking"), Grid->IsActorTickEnabled());
+	TestTrue(TEXT("arc = the 4 blocks in front"), SameCells(Drone->GetDigCells(), Arc));
+	TestEqual(TEXT("nearest block first"), Drone->GetDigCells().Num() > 0 ? Drone->GetDigCells()[0] : FIntPoint(-1, -1), FineRockCell);
+	TestTrue(TEXT("arc points east"), Drone->GetDigArcDirection().Equals(FVector::ForwardVector, 1e-3));
+	TestEqual(TEXT("4 blocks shaking"), FGridAccess::Shaking(Grid).Num(), 4);
+	TestTrue(TEXT("one start event per block"), SameCells(Recorder->GetDigStartedCells(), Arc));
+	TestNearlyEqual(TEXT("first frame of damage on every block"), Grid->GetCellHealth(FIntPoint(130, 115)), 0.5f - FrameSeconds, 1e-4f);
 
-	int32 DestroyFrame = INDEX_NONE;
-	for (int32 Frame = 1; Frame <= 180 && DestroyFrame == INDEX_NONE; ++Frame)
+	TestWorld.Tick();
+	TestTrue(TEXT("laser visible while digging"), FDroneAccess::Laser(Drone)->IsVisible());
+	for (int32 Frame = 3; Frame <= 25; ++Frame)
 	{
 		TestWorld.Tick();
-		if (Frame == 2)
-		{
-			TestTrue(TEXT("laser visible while digging"), FDroneAccess::Laser(Drone)->IsVisible());
-		}
-		if (!Grid->IsBlockCell(FineRockCell))
-		{
-			DestroyFrame = Frame;
-		}
 	}
+	FVector ArcCentre = FVector::ZeroVector;
+	for (const FIntPoint& Cell : Arc)
+	{
+		ArcCentre += Grid->GetCellCenter(Cell.X, Cell.Y) / Arc.Num();
+	}
+	const double HoverError = FVector::Dist2D(Drone->GetActorLocation(), ArcCentre);
+	AddInfo(FString::Printf(TEXT("frame 25: drone %.1f uu from the arc centre %s"), HoverError, *ArcCentre.ToCompactString()));
+	TestTrue(TEXT("drone hovers over the arc centre"), HoverError <= 10.0);
 
-	const float DestroySeconds = DestroyFrame * FrameSeconds;
-	AddInfo(FString::Printf(TEXT("drone dig destroyed the rock at frame %d (%.4f s); drone at %s"), DestroyFrame, DestroySeconds,
-		*Drone->GetActorLocation().ToCompactString()));
-	// Damage starts on the first Dig tick (fly-in does not delay it): 30 frames, 1 frame tolerance plus 2 for the fly-in.
-	TestTrue(TEXT("rock destroyed after about 0.5 s"), DestroyFrame >= 29 && DestroyFrame <= 33);
+	// Frames counted from the first tick: continue to the destruction.
+	const int32 LastFrame = TickUntilDestroyed(TestWorld, Grid, Arc, 60, DestroyFrames);
+	for (int32 Index = 0; Index < Arc.Num(); ++Index)
+	{
+		const int32 Frame = DestroyFrames[Index] == INDEX_NONE ? INDEX_NONE : DestroyFrames[Index] + 25;
+		AddInfo(FString::Printf(TEXT("block %s destroyed at frame %d"), *Arc[Index].ToString(), Frame));
+		TestTrue(FString::Printf(TEXT("block %s destroyed after about 0.5 s"), *Arc[Index].ToString()), Frame >= 29 && Frame <= 31);
+	}
+	TestTrue(TEXT("all destroyed"), LastFrame != INDEX_NONE);
+
+	TestWorld.Tick();
+	TestFalse(TEXT("no block within reach any more"), Miner->IsTouchingRock());
 	TestEqual(TEXT("back to Orbit"), Drone->GetState(), ERRDroneState::Orbit);
 	TestEqual(TEXT("shake stopped"), FGridAccess::Shaking(Grid).Num(), 0);
-	TestFalse(TEXT("grid tick disabled"), Grid->IsActorTickEnabled());
 	TestFalse(TEXT("laser hidden"), FDroneAccess::Laser(Drone)->IsVisible());
+	TestTrue(TEXT("one stop event per block"), SameCells(Recorder->GetDigStoppedCells(), Arc));
+	TestFalse(TEXT("every stop was a destruction"), Recorder->GetDigStoppedDestroyed().Contains(false));
+	TestTrue(TEXT("rock (129, 113) north of the arc still stands"), Grid->IsBlockCell(FIntPoint(129, 113)));
 	TestTrue(TEXT("instance maps consistent"), CheckInstanceMaps(*this, Grid));
 	return true;
 }
 
-IMPLEMENT_SIMPLE_AUTOMATION_TEST(FRRDigDroneCancelTest, "RogueRigs.Dig.DroneDigCancel",
+IMPLEMENT_SIMPLE_AUTOMATION_TEST(FRRDigArcLimitsTest, "RogueRigs.Dig.ArcLimits",
 	EAutomationTestFlags::EditorContext | EAutomationTestFlags::EngineFilter)
 
-bool FRRDigDroneCancelTest::RunTest(const FString& Parameters)
+bool FRRDigArcLimitsTest::RunTest(const FString& Parameters)
 {
-	// Game grid (67 uu): rock 0.5 s per block, cancel beyond DigCancelDistanceCells (4.5 cells = 301.5 uu).
+	using namespace RRDigTests;
+
+	// Arc selection on the game grid around the rock wall x = 129 (floor x <= 128): reach 1.5 cells of the front point,
+	// 120 degree cone, at most 4 blocks; the move input steers the arc only while it pushes into the wall.
 	FTestWorld TestWorld;
-	ARRArenaGrid* Grid = SpawnFineGrid(*this, TestWorld);
-	ARRMiner* Miner = Grid ? SpawnMiner(*this, TestWorld, Grid, FineRockWestFloorCell) : nullptr;
-	ARRDrone* Drone = Miner ? Miner->GetDrone() : nullptr;
-	if (!TestNotNull(TEXT("BP_Miner spawned its drone"), Drone))
+	ARRArenaGrid* Grid = nullptr;
+	ARRMiner* Miner = nullptr;
+	ARRDrone* Drone = SpawnArcDigScene(*this, TestWorld, FineRockWestFloorCell, Grid, Miner);
+	if (!Drone)
 	{
 		return false;
 	}
+	const float CellSize = Grid->GetCellSize();
+	const float Radius = Miner->GetCapsuleComponent()->GetScaledCapsuleRadius();
+	const FVector At = Grid->GetCellCenter(FineRockWestFloorCell.X, FineRockWestFloorCell.Y);
+	TArray<FIntPoint> Cells;
 
-	TestTrue(TEXT("RequestDig accepted"), Drone->RequestDig(Grid, FineRockCell, FIntPoint(-1, 0)));
+	// Every selected block satisfies the rule.
+	const TArray<FVector> Directions = { FVector(1, 0, 0), FVector(1, 1, 0).GetSafeNormal(), FVector(1, -0.5, 0).GetSafeNormal(), FVector(0, 1, 0) };
+	int32 RuleErrors = 0;
+	for (const FVector& Direction : Directions)
+	{
+		Drone->SelectArcCells(Grid, At, Direction, Cells);
+		RuleErrors += Cells.Num() > 4 ? 1 : 0;
+		for (const FIntPoint& Cell : Cells)
+		{
+			const FVector Center = Grid->GetCellCenter(Cell.X, Cell.Y);
+			const double FrontDistance = FVector::Dist2D(Center, At + Direction * Radius);
+			const double Angle = FMath::RadiansToDegrees(FMath::Acos(FVector::DotProduct((Center - At).GetSafeNormal2D(), Direction)));
+			RuleErrors += Grid->IsBlockCell(Cell) && FrontDistance <= 1.5 * CellSize + 0.01 && Angle <= 60.01 ? 0 : 1;
+		}
+	}
+	TestEqual(TEXT("selected blocks within 1.5 cells and 60 degrees, at most 4"), RuleErrors, 0);
+
+	TestEqual(TEXT("east: 4 blocks"), Drone->SelectArcCells(Grid, At, FVector::ForwardVector, Cells), 4);
+	TestTrue(TEXT("east: the 3 wall blocks in front and the one behind the nearest"),
+		SameCells(Cells, { FineRockCell, FIntPoint(129, 114), FIntPoint(129, 116), FIntPoint(130, 115) }));
+	TestEqual(TEXT("west (open floor): nothing"), Drone->SelectArcCells(Grid, At, -FVector::ForwardVector, Cells), 0);
+	Drone->SelectArcCells(Grid, At, FVector(0, 1, 0), Cells);
+	TestTrue(TEXT("along the wall (+Y): only the block within 60 degrees"), SameCells(Cells, { FIntPoint(129, 116) }));
+	TestEqual(TEXT("3 cells from the wall: out of reach"),
+		Drone->SelectArcCells(Grid, Grid->GetCellCenter(126, 115), FVector::ForwardVector, Cells), 0);
+
+	FDroneAccess::MaxArcBlocksOf(Drone) = 2;
+	TestEqual(TEXT("cap 2: 2 blocks"), Drone->SelectArcCells(Grid, At, FVector::ForwardVector, Cells), 2);
+	TestEqual(TEXT("cap 2: nearest first"), Cells.Num() > 0 ? Cells[0] : FIntPoint(-1, -1), FineRockCell);
+	FDroneAccess::MaxArcBlocksOf(Drone) = 4;
+
+	// Steering through the miner's move input of the frame (consumed by its dig trigger).
+	FVector& MoveInput = FMinerAccess::PendingMoveInputOf(Miner);
+	MoveInput = FVector(1, 1, 0).GetSafeNormal();
+	TestWorld.Tick();
+	TestTrue(TEXT("push into the wall diagonally: the arc follows the input"), Drone->GetDigArcDirection().Equals(FVector(1, 1, 0).GetSafeNormal(), 1e-3));
+	TestEqual(TEXT("digging"), Drone->GetState(), ERRDroneState::Dig);
+	MoveInput = FVector(-1, 0, 0);
+	TestWorld.Tick();
+	TestTrue(TEXT("input away from the wall: the arc points at the wall"), Drone->GetDigArcDirection().Equals(FVector::ForwardVector, 1e-3));
+	MoveInput = FVector(0.05f, 0, 0);
+	TestWorld.Tick();
+	TestTrue(TEXT("input below DigMinMoveInput: the arc points at the wall"), Drone->GetDigArcDirection().Equals(FVector::ForwardVector, 1e-3));
+	return true;
+}
+
+IMPLEMENT_SIMPLE_AUTOMATION_TEST(FRRDigArcSpeedsTest, "RogueRigs.Dig.ArcSpeeds",
+	EAutomationTestFlags::EditorContext | EAutomationTestFlags::EngineFilter)
+
+bool FRRDigArcSpeedsTest::RunTest(const FString& Parameters)
+{
+	using namespace RRDigTests;
+
+	// Heal ore at mining speed 1: 1.5 s per block, 4 in parallel (the layout has no plain ore; ore uses the same 1.5 s).
+	{
+		FTestWorld TestWorld;
+		ARRArenaGrid* Grid = nullptr;
+		ARRMiner* Miner = nullptr;
+		ARRDrone* Drone = SpawnArcDigScene(*this, TestWorld, FineHealOreNorthFloorCell, Grid, Miner);
+		if (!Drone)
+		{
+			return false;
+		}
+		TestWorld.Tick();
+		const TArray<FIntPoint> Arc = Drone->GetDigCells();
+		TestEqual(TEXT("heal ore: 4 blocks in the arc"), Arc.Num(), 4);
+		int32 HealOreCount = 0;
+		for (const FIntPoint& Cell : Arc)
+		{
+			HealOreCount += Grid->GetCellType(Cell) == ERRCellType::HealOre ? 1 : 0;
+		}
+		TestEqual(TEXT("heal ore: all 4 are heal ore"), HealOreCount, 4);
+		TArray<int32> Frames;
+		TickUntilDestroyed(TestWorld, Grid, Arc, 120, Frames);
+		for (int32 Index = 0; Index < Arc.Num(); ++Index)
+		{
+			const int32 Frame = Frames[Index] == INDEX_NONE ? INDEX_NONE : Frames[Index] + 1;
+			AddInfo(FString::Printf(TEXT("heal ore %s destroyed at frame %d"), *Arc[Index].ToString(), Frame));
+			TestTrue(FString::Printf(TEXT("heal ore %s destroyed after about 1.5 s"), *Arc[Index].ToString()), Frame >= 89 && Frame <= 91);
+		}
+	}
+
+	// Rock at mining speed 2: 0.25 s per block.
+	{
+		FTestWorld TestWorld;
+		ARRArenaGrid* Grid = nullptr;
+		ARRMiner* Miner = nullptr;
+		ARRDrone* Drone = SpawnArcDigScene(*this, TestWorld, FineRockWestFloorCell, Grid, Miner);
+		if (!Drone || !TestNotNull(TEXT("miner ASC"), Miner->GetRRAbilitySystemComponent()))
+		{
+			return false;
+		}
+		Miner->GetRRAbilitySystemComponent()->SetNumericAttributeBase(URRPlayerAttributeSet::GetMiningSpeedAttribute(), 2.f);
+		TestNearlyEqual(TEXT("mining speed 2"), Drone->GetMiningSpeed(), 2.f);
+		TArray<int32> Frames;
+		TickUntilDestroyed(TestWorld, Grid, { FineRockCell }, 60, Frames);
+		AddInfo(FString::Printf(TEXT("rock at mining speed 2 destroyed at frame %d"), Frames[0]));
+		TestTrue(TEXT("rock destroyed after about 0.25 s at mining speed 2"), Frames[0] >= 14 && Frames[0] <= 16);
+	}
+	return true;
+}
+
+IMPLEMENT_SIMPLE_AUTOMATION_TEST(FRRDigArcReleaseTest, "RogueRigs.Dig.ArcPersistAndRelease",
+	EAutomationTestFlags::EditorContext | EAutomationTestFlags::EngineFilter)
+
+bool FRRDigArcReleaseTest::RunTest(const FString& Parameters)
+{
+	using namespace RRDigTests;
+
+	// The dig stops when the miner moves away (no contact), the damage stays on the blocks, digging resumes on return.
+	FTestWorld TestWorld;
+	ARRArenaGrid* Grid = nullptr;
+	ARRMiner* Miner = nullptr;
+	ARRDrone* Drone = SpawnArcDigScene(*this, TestWorld, FineRockWestFloorCell, Grid, Miner);
+	if (!Drone)
+	{
+		return false;
+	}
+	TStrongObjectPtr<URRTestEventRecorder> Recorder(NewObject<URRTestEventRecorder>());
+	Drone->OnDigBlockStopped.AddDynamic(Recorder.Get(), &URRTestEventRecorder::HandleDigBlockStopped);
+
 	for (int32 Frame = 0; Frame < 15; ++Frame)
 	{
 		TestWorld.Tick();
@@ -420,24 +632,32 @@ bool FRRDigDroneCancelTest::RunTest(const FString& Parameters)
 	TestNearlyEqual(TEXT("0.25 s of damage done"), HealthBeforeMove, 0.25f, 0.02f);
 	TestEqual(TEXT("still digging"), Drone->GetState(), ERRDroneState::Dig);
 
-	// Six cells further west: 7 cells (469 uu) from the block center, beyond DigCancelDistanceCells (4.5).
-	const FVector Away = Miner->GetActorLocation() - FVector(6.f * Grid->GetCellSize(), 0.f, 0.f);
-	Miner->SetActorLocation(Away, /*bSweep*/ false, nullptr, ETeleportType::TeleportPhysics);
+	// Three cells west: open floor all around, nothing within reach.
+	const FVector Home = Miner->GetActorLocation();
+	Miner->SetActorLocation(Home - FVector(3.f * Grid->GetCellSize(), 0.f, 0.f), /*bSweep*/ false, nullptr, ETeleportType::TeleportPhysics);
 	TestWorld.Tick();
-
-	AddInfo(FString::Printf(TEXT("health before move %.4f, after cancel %.4f"), HealthBeforeMove, Grid->GetCellHealth(FineRockCell)));
-	TestEqual(TEXT("cancelled to Orbit"), Drone->GetState(), ERRDroneState::Orbit);
+	AddInfo(FString::Printf(TEXT("health before move %.4f, after release %.4f"), HealthBeforeMove, Grid->GetCellHealth(FineRockCell)));
+	TestFalse(TEXT("no contact"), Miner->IsTouchingRock());
+	TestEqual(TEXT("released to Orbit"), Drone->GetState(), ERRDroneState::Orbit);
+	TestEqual(TEXT("arc cleared"), Drone->GetDigCells().Num(), 0);
 	TestEqual(TEXT("shake stopped"), FGridAccess::Shaking(Grid).Num(), 0);
 	TestFalse(TEXT("laser hidden"), FDroneAccess::Laser(Drone)->IsVisible());
-	TestTrue(TEXT("block still stands"), Grid->IsBlockCell(FineRockCell));
-	TestNearlyEqual(TEXT("damage kept, none added by the cancel tick"), Grid->GetCellHealth(FineRockCell), HealthBeforeMove, 1e-4f);
-
+	TestEqual(TEXT("4 stop events"), Recorder->GetDigStoppedCells().Num(), 4);
+	TestFalse(TEXT("none was a destruction"), Recorder->GetDigStoppedDestroyed().Contains(true));
+	TestNearlyEqual(TEXT("damage kept, none added after the release"), Grid->GetCellHealth(FineRockCell), HealthBeforeMove, 1e-4f);
 	for (int32 Frame = 0; Frame < 60; ++Frame)
 	{
 		TestWorld.Tick();
 	}
-	TestNearlyEqual(TEXT("no damage after the cancel"), Grid->GetCellHealth(FineRockCell), HealthBeforeMove, 1e-4f);
+	TestNearlyEqual(TEXT("no damage while away"), Grid->GetCellHealth(FineRockCell), HealthBeforeMove, 1e-4f);
 	TestEqual(TEXT("stays in Orbit"), Drone->GetState(), ERRDroneState::Orbit);
+
+	// Back against the wall: the dig resumes where it stopped.
+	Miner->SetActorLocation(Home, /*bSweep*/ false, nullptr, ETeleportType::TeleportPhysics);
+	TArray<int32> Frames;
+	TickUntilDestroyed(TestWorld, Grid, { FineRockCell }, 60, Frames);
+	AddInfo(FString::Printf(TEXT("rock destroyed %d frames after the return"), Frames[0]));
+	TestTrue(TEXT("resumed: the remaining 0.25 s"), Frames[0] >= 14 && Frames[0] <= 16);
 	return true;
 }
 
@@ -530,6 +750,11 @@ bool FRRDigShakeKeepsCollisionTest::RunTest(const FString& Parameters)
 	if (!Miner)
 	{
 		return false;
+	}
+	// Collision only: no drone, so touching the rock does not dig it.
+	if (IsValid(Miner->GetDrone()))
+	{
+		Miner->GetDrone()->Destroy();
 	}
 	for (ARRWeapon* Weapon : Miner->GetWeapons())
 	{

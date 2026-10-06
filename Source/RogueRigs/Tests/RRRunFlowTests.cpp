@@ -394,19 +394,7 @@ bool FRRConsoleHackTest::RunTest(const FString& Parameters)
 	TestTrue(TEXT("drone linked to the console"), Drone->GetHackTarget() == Console);
 
 	// One target at a time, no dig meanwhile.
-	FIntPoint BlockCell(-1, -1);
-	for (int32 Y = 0; Y < Grid->GetGridSize().Y && BlockCell.X < 0; ++Y)
-	{
-		for (int32 X = 0; X < Grid->GetGridSize().X; ++X)
-		{
-			if (Grid->IsBlockCell(FIntPoint(X, Y)))
-			{
-				BlockCell = FIntPoint(X, Y);
-				break;
-			}
-		}
-	}
-	TestFalse(TEXT("no dig while hacking"), Drone->RequestDig(Grid, BlockCell, FIntPoint(-1, 0)));
+	TestFalse(TEXT("no dig while hacking"), Drone->RequestArcDig(Grid, FVector::ForwardVector));
 	TestFalse(TEXT("no second hack target"), Drone->StartHack(Grid));
 	TestEqual(TEXT("still in Hack"), Drone->GetState(), ERRDroneState::Hack);
 

@@ -544,6 +544,11 @@ void ARRMiner::Tick(float DeltaSeconds)
 	if (IsDead())
 	{
 		PendingMoveInput = FVector::ZeroVector;
+		bTouchingRock = false;
+		if (IsValid(Drone))
+		{
+			Drone->ReleaseDig();
+		}
 		return;
 	}
 
@@ -559,49 +564,68 @@ void ARRMiner::Tick(float DeltaSeconds)
 	// Move input arrives before the pawn ticks (the controller ticks first); consume the value of this frame.
 	const FVector MoveInput = PendingMoveInput;
 	PendingMoveInput = FVector::ZeroVector;
-	if (MoveInput.Size2D() > DigMinMoveInput)
-	{
-		UpdateDigTrigger(MoveInput);
-	}
+	UpdateDigTrigger(MoveInput);
 }
 
-void ARRMiner::UpdateDigTrigger(const FVector& MoveDirection)
+void ARRMiner::UpdateDigTrigger(const FVector& MoveInput)
 {
+	bTouchingRock = false;
 	if (!IsValid(ArenaGrid) || !IsValid(Drone))
 	{
 		return;
 	}
 
-	// Dominant axis of the move direction in grid space: a diagonal push picks one neighbour.
-	const FVector GridDirection = ArenaGrid->GetActorTransform().InverseTransformVectorNoScale(MoveDirection);
-	FIntPoint Step(0, 0);
-	if (FMath::Abs(GridDirection.X) >= FMath::Abs(GridDirection.Y))
+	// Contact: block cells whose square comes within the capsule radius + margin of the miner (2D, unrotated grid).
+	const FVector Location = GetActorLocation();
+	const double CellSize = ArenaGrid->GetCellSize();
+	const double HalfCell = 0.5 * CellSize;
+	const double ContactDistance = GetCapsuleComponent()->GetScaledCapsuleRadius() + DigContactMargin;
+	const int32 Span = FMath::CeilToInt32(ContactDistance / FMath::Max(CellSize, 1.0));
+	const FIntPoint MinerCell = ArenaGrid->GetCellAtWorld(Location);
+	FVector NormalSum = FVector::ZeroVector;
+	for (int32 Y = MinerCell.Y - Span; Y <= MinerCell.Y + Span; ++Y)
 	{
-		Step.X = GridDirection.X >= 0.0 ? 1 : -1;
-	}
-	else
-	{
-		Step.Y = GridDirection.Y >= 0.0 ? 1 : -1;
+		for (int32 X = MinerCell.X - Span; X <= MinerCell.X + Span; ++X)
+		{
+			if (!ArenaGrid->IsBlockCell(FIntPoint(X, Y)))
+			{
+				continue;
+			}
+			const FVector Center = ArenaGrid->GetCellCenter(X, Y);
+			const FVector Nearest(FMath::Clamp(Location.X, Center.X - HalfCell, Center.X + HalfCell),
+				FMath::Clamp(Location.Y, Center.Y - HalfCell, Center.Y + HalfCell), Location.Z);
+			const FVector Offset = Location - Nearest;
+			if (Offset.SizeSquared2D() > FMath::Square(ContactDistance))
+			{
+				continue;
+			}
+			bTouchingRock = true;
+			// Inside the square (overlap): push the normal away from the block center instead.
+			const FVector Normal = Offset.SizeSquared2D() > UE_KINDA_SMALL_NUMBER ? Offset.GetSafeNormal2D() : (Location - Center).GetSafeNormal2D();
+			NormalSum += Normal;
+		}
 	}
 
-	const FIntPoint MinerCell = ArenaGrid->GetCellAtWorld(GetActorLocation());
-	const FIntPoint TargetCell = MinerCell + Step;
-	if (!ArenaGrid->IsBlockCell(TargetCell))
+	if (!bTouchingRock)
 	{
+		Drone->ReleaseDig();
 		return;
 	}
 
-	// Distance from the miner to the block face that looks back at it, measured along the push axis.
-	const FIntPoint MinerSide(-Step.X, -Step.Y);
-	const FVector FaceCenter = ArenaGrid->GetCellFaceCenter(TargetCell, MinerSide);
-	const FVector BlockCenter = ArenaGrid->GetCellCenter(TargetCell.X, TargetCell.Y);
-	const FVector TowardBlock = (BlockCenter - FaceCenter).GetSafeNormal2D();
-	const double DistanceToFace = FVector::DotProduct(FaceCenter - GetActorLocation(), TowardBlock);
-	const double Reach = GetCapsuleComponent()->GetScaledCapsuleRadius() + DigReachMargin;
-	if (DistanceToFace > Reach)
+	// Toward the wall; a symmetric contact (normals cancel out) falls back to the facing direction.
+	FVector WallDirection = (-NormalSum).GetSafeNormal2D();
+	if (WallDirection.IsZero())
 	{
-		return;
+		WallDirection = GetActorForwardVector().GetSafeNormal2D();
 	}
 
-	Drone->RequestDig(ArenaGrid, TargetCell, MinerSide);
+	// The move input steers the arc while it pushes into the wall.
+	FVector ArcDirection = WallDirection;
+	const FVector MoveDirection = MoveInput.GetSafeNormal2D();
+	if (MoveInput.Size2D() > DigMinMoveInput && FVector::DotProduct(MoveDirection, WallDirection) > 0.0)
+	{
+		ArcDirection = MoveDirection;
+	}
+
+	Drone->RequestArcDig(ArenaGrid, ArcDirection);
 }
