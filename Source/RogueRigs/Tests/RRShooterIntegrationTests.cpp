@@ -1,4 +1,4 @@
-// Rogue Rigs - shooter integration tests with the final Blueprints (RogueRigs.Integration.Shooter*, Integration.PlacedSpawnerMix): BP_Shooter keeps the distance ring and fires laser-then-shot at the real camera view, repositions around rock to fire, BP_ShooterProjectile hits BP_Miner for 12 and spares robots, and the BP_EnemySpawner placed in L_ArenaM1 mixes chaser 65 / kamikaze 12 / shooter 15 / heavy 8 (heavy MaxAlive 5).
+// Rogue Rigs - shooter integration tests with the final Blueprints (RogueRigs.Integration.Shooter*, Integration.PlacedSpawnerMix): BP_Shooter keeps the distance ring and fires laser-then-shot at the real camera view, repositions around rock to fire, BP_ShooterProjectile hits BP_Miner for 12 and spares robots, and the BP_EnemySpawner placed in L_ArenaM1 mixes chaser 65 / kamikaze 12 / shooter 15 / heavy 8 (heavy MaxAlive 5) / shield chaser 0 (director only).
 
 #include "CoreMinimal.h"
 #include "Misc/AutomationTest.h"
@@ -11,6 +11,7 @@
 #include "Enemies/RREnemySpawner.h"
 #include "Enemies/RRHeavy.h"
 #include "Enemies/RRKamikaze.h"
+#include "Enemies/RRShieldChaser.h"
 #include "Enemies/RRShooter.h"
 #include "Engine/Level.h"
 #include "EngineUtils.h"
@@ -406,7 +407,8 @@ bool FRRIntegrationPlacedSpawnerMixTest::RunTest(const FString& Parameters)
 {
 	using namespace RRShooterIntegrationTests;
 
-	// Expected entries (task-022): chaser (not kamikaze) 65, kamikaze 12, shooter 15, heavy 8 with MaxAlive 5; no cap on the others.
+	// Expected entries (task-022, task-028-02): chaser (not kamikaze, not shield) 65, kamikaze 12, shooter 15, heavy 8 with MaxAlive 5,
+	// one shield chaser entry of weight 0 (director only); no cap on the others.
 	auto CheckMix = [this](const TCHAR* What, const TArray<FRRWeightedEnemyClass>& Entries)
 	{
 		FString Listing;
@@ -416,6 +418,8 @@ bool FRRIntegrationPlacedSpawnerMixTest::RunTest(const FString& Parameters)
 		float Heavy = 0.f;
 		int32 HeavyEntries = 0;
 		int32 HeavyCap = -1;
+		float Shield = -1.f;
+		int32 ShieldEntries = 0;
 		int32 OtherCaps = 0;
 		int32 Unknown = 0;
 		for (const FRRWeightedEnemyClass& Entry : Entries)
@@ -430,7 +434,12 @@ bool FRRIntegrationPlacedSpawnerMixTest::RunTest(const FString& Parameters)
 				continue;
 			}
 			OtherCaps += Entry.MaxAlive != 0 ? 1 : 0;
-			if (Class && Class->IsChildOf(ARRKamikaze::StaticClass()))
+			if (Class && Class->IsChildOf(ARRShieldChaser::StaticClass()))
+			{
+				Shield = FMath::Max(Shield, 0.f) + Entry.Weight;
+				++ShieldEntries;
+			}
+			else if (Class && Class->IsChildOf(ARRKamikaze::StaticClass()))
 			{
 				Kamikaze += Entry.Weight;
 			}
@@ -454,6 +463,8 @@ bool FRRIntegrationPlacedSpawnerMixTest::RunTest(const FString& Parameters)
 		TestEqual(FString::Printf(TEXT("%s: heavy weight 8"), What), Heavy, 8.f);
 		TestEqual(FString::Printf(TEXT("%s: one heavy entry"), What), HeavyEntries, 1);
 		TestEqual(FString::Printf(TEXT("%s: heavy MaxAlive 5"), What), HeavyCap, 5);
+		TestEqual(FString::Printf(TEXT("%s: one shield chaser entry"), What), ShieldEntries, 1);
+		TestEqual(FString::Printf(TEXT("%s: shield chaser weight 0"), What), Shield, 0.f);
 		TestEqual(FString::Printf(TEXT("%s: no cap on the other entries"), What), OtherCaps, 0);
 		TestEqual(FString::Printf(TEXT("%s: no other entry"), What), Unknown, 0);
 	};
