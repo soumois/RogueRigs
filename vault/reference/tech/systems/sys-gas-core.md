@@ -11,7 +11,7 @@ kind: doc
   - `URRAbilitySystemComponent`: one per player, weapon (turret launcher included), turret, enemy pawn (approved); none on projectiles, rock blocks or barrels ([[sys-grid]], [[sys-explosions]]). Enemy ASC on the pawn; no replication (single-player).
   - Rule: a value is an attribute only if an upgrade, status or effect changes it during a run; otherwise it is a CSV constant.
   - AttributeSets (naming provisional; attributes start at 0, base values from CSV):
-    - `URRHealthAttributeSet` (player, enemies): `Health`, `MaxHealth`, meta `IncomingDamage` — implemented;
+    - `URRHealthAttributeSet` (player, enemies): `Health`, `MaxHealth`, `Shield` (task-028-01, robots: CSV column; 0 elsewhere), meta `IncomingDamage` — implemented;
     - `URRMovementAttributeSet` (player, enemies): `MoveSpeed` (uu/s) — implemented;
     - `URRPlayerAttributeSet` (player): `PickupRadius`, `XPGain`, `MiningSpeed`, `Luck` — implemented;
     - `URRWeaponAttributeSet`: `Damage`, `FireRate`, `ReloadSpeed`, `CritChance`, `CritDamage` (base 1.5), `MagazineSize`, `Ammo`, `PierceCount` (M2) — not yet;
@@ -24,9 +24,9 @@ kind: doc
 - depends_on: plugin GameplayAbilities, modules `GameplayAbilities`, `GameplayTags`, `GameplayTasks` ([[task-004-01-enable-gas]]).
 - implements: [[player-stats]], [[upgrades]], [[enemies-index]].
 - gotchas:
-  - Clamps: base in `PreAttributeBaseChange`, current in `PreAttributeChange`. `Health` in [0, `MaxHealth`]; `MaxHealth`, `IncomingDamage`, `MoveSpeed`, `PickupRadius`, `XPGain`, `MiningSpeed` >= 0; `Luck` unclamped. `Health` is lowered in `PostAttributeChange` when `MaxHealth` drops; it is not raised when `MaxHealth` grows.
+  - Clamps: base in `PreAttributeBaseChange`, current in `PreAttributeChange`. `Health` in [0, `MaxHealth`]; `MaxHealth`, `IncomingDamage`, `Shield`, `MoveSpeed`, `PickupRadius`, `XPGain`, `MiningSpeed` >= 0; `Luck` unclamped. `Health` is lowered in `PostAttributeChange` when `MaxHealth` drops; it is not raised when `MaxHealth` grows.
   - Set `MaxHealth` before `Health` (the loader does).
-  - `IncomingDamage` is consumed in `PostGameplayEffectExecute`: reset to 0, subtracted from `Health`, then `OnDamageReceived` is broadcast ([[sys-damage]]). Single death is detected here: `State.Dead` loose tag + `OnDeath`, unless `SetDeathEnabled(false)`.
+  - `IncomingDamage` is consumed in `PostGameplayEffectExecute`: reset to 0, taken from `Shield` first and the rest from `Health`, then `OnDamageReceived` is broadcast (then `OnShieldBroken` when `Shield` went from above 0 to 0) ([[sys-damage]]). Single death is detected here: `State.Dead` loose tag + `OnDeath`, unless `SetDeathEnabled(false)`.
   - Packaging: `Data/Tables` must be staged as a non-asset directory; `Config/DefaultGame.ini` stages `RogueRigs/Data` as non-UFS ([[task-004-03-miner-classes]]).
   - A missing SetByCaller returns 0 and logs an error.
   - Debug with native tools: `showdebug abilitysystem`, `AbilitySystem.Debug.NextCategory`, `AbilitySystem.DebugAttribute <attrs>`, `AbilityListGranted`, `EffectListActive`.
