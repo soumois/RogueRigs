@@ -10,7 +10,7 @@ status: done
 - goal: the Blueprint side of the feel fixes.
 - agent: bp
 - depends_on: task-008-02-feel-values
-- inputs: [[bp-miner]], [[bp-burst-rifle]], [[bp-target-dummy]], [[bp-arena-grid]], [[sys-weapons]], [[unreal-mcp]].
+- inputs: [[bp-miner]], [[bp-burst-rifle]], `bp-target-dummy` (removed in task-031-01), [[bp-arena-grid]], [[sys-weapons]], [[unreal-mcp]].
 - expected_output: `BP_Miner` `WeaponAttachSocketName` = None (and the attach offset from [[sys-weapons]] so the rifle sits at hip height in front of the miner); `BP_TargetDummy` mesh scale 1.6 (160 uu); the three dummies in `L_ArenaM1` moved so the sphere rests on the floor (center Z 80) at their current X and Y. Doc nodes updated. Save all dirty packages (Ctrl+Shift+S if `save_assets` does not write the map's external actors) and check `git status`. Record the MCP quirks listed in the result of [[task-007-04-bp-rifle-dummy]] in [[unreal-mcp]].
 - done_when: properties read back; dummies' transforms read back; files changed on disk; lint clean.
 - editor_state: open

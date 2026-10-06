@@ -38,7 +38,7 @@ namespace RREnemyTests
 	/** Burst rifle Blueprint (the miner's starting weapon). */
 	const TCHAR* const BurstRifleClassPath = TEXT("/Game/RogueRigs/Blueprints/Weapons/BP_BurstRifle.BP_BurstRifle_C");
 
-	/** Open floor row of arena_m1 (as the dummy tests): the chaser stands on TargetCell, the muzzle two cells west. */
+	/** Open floor row of arena_m1 (as the weapon still-chaser tests): the chaser stands on TargetCell, the muzzle two cells west. */
 	const FIntPoint TargetCell(44, 41);
 	const FIntPoint ShooterCell(42, 41);
 
@@ -253,7 +253,7 @@ bool FRREnemyDeathTest::RunTest(const FString& Parameters)
 		TestWorld.Tick();
 	}
 
-	// Muzzle two cells west at half the block height, aiming +X (as the dummy tests).
+	// Muzzle two cells west at half the block height, aiming +X (as the weapon still-chaser tests).
 	const FVector MuzzleTarget = Grid->GetCellCenter(ShooterCell.X, ShooterCell.Y) + FVector(0.f, 0.f, 0.5f * Grid->GetBlockHeight());
 	const FVector MuzzleOffset = FWeaponAccess::MuzzleOf(Rifle)->GetComponentLocation() - Rifle->GetActorLocation();
 	Rifle->SetActorLocation(MuzzleTarget - MuzzleOffset, false, nullptr, ETeleportType::TeleportPhysics);

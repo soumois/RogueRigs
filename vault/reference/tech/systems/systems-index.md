@@ -33,7 +33,6 @@ Decision status inside each doc: approved, provisional, deferred or open. Planne
 - [[sys-spawner]] — enemy spawner actor: spawn band outside the camera view, alive cap, tunables.
 - [[sys-grid]] — grid data, autotiling, instanced rendering, terrain damage.
 - [[sys-pickups]] — ore, heal and XP pickups: drop rule, pop, attraction within PickupRadius, collection event, XP grant.
-- [[sys-target-dummy]] — debug target dummy: never dies, hit flash, damage numbers, health refill.
 - [[sys-damage-numbers]] — damage number subsystem: per-target merge window, Niagara user parameters contract, player toggle.
 - [[sys-stress]] — stress test tooling: rr.Stress.* cheat commands, bulk spawn around the miner, timed frame-time run.
 - [[sys-cheats]] — cheats (XP, invulnerable, cards, alert speed, console, extraction): polled URRCheatSettings properties for MCP, plus rr.Cheat.* console variables.

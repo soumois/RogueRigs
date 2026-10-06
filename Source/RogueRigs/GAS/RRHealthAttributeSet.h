@@ -32,7 +32,7 @@ DECLARE_MULTICAST_DELEGATE(FRROnShieldBroken);
  * from Health in the same hit; the hit taking Shield from above 0 to 0 broadcasts OnShieldBroken once.
  * Single death: when a hit takes Health from above 0 to 0 and the owner has no State.Dead yet, the set adds the loose
  * tag State.Dead to the owning ASC (damage GEs then refuse the actor) and broadcasts OnDeath once. Owners that must never
- * die (target dummy) call SetDeathEnabled(false) in their constructor.
+ * die call SetDeathEnabled(false) in their constructor (no such owner since the target dummy was removed, task-031-01).
  * Set MaxHealth before Health when initializing (Health is clamped against the current MaxHealth).
  */
 UCLASS()

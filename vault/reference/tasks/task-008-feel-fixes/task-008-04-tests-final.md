@@ -10,7 +10,7 @@ status: done
 - goal: prove with the final Blueprints that the miner's shots hit a dummy on the floor.
 - agent: cpp
 - depends_on: task-008-03-bp-miner-dummy
-- inputs: [[sys-automation-tests]], [[sys-weapons]], [[sys-target-dummy]], [[bp-miner]], [[bp-target-dummy]], [[build-toolchain]].
+- inputs: [[sys-automation-tests]], [[sys-weapons]], `sys-target-dummy` (removed in task-031-01), [[bp-miner]], `bp-target-dummy` (removed in task-031-01), [[build-toolchain]].
 - expected_output: new test `Weapons.MinerHitsFloorDummy`: `BP_Miner` with its starting `BP_BurstRifle`, a `BP_TargetDummy` (160 uu) resting on the floor 3 cells away in the aim direction on open floor of `arena_m1`, aim set toward it; within 2 s the dummy's `Health` drops below `MaxHealth`. Full `RogueRigs` headless run. [[sys-automation-tests]] updated.
 - done_when: build exits 0 with the editor closed; all `RogueRigs.*` tests pass headless (orchestrator re-runs); lint clean.
 - editor_state: closed

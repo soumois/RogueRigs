@@ -6,7 +6,7 @@
 #if WITH_DEV_AUTOMATION_TESTS
 
 #include "AbilitySystemComponent.h"
-#include "Debug/RRTargetDummy.h"
+#include "Enemies/RRChaser.h"
 #include "Explosions/RRExplosionSubsystem.h"
 #include "GAS/RRGameplayTags.h"
 #include "GAS/RRHealthAttributeSet.h"
@@ -19,9 +19,6 @@
 namespace RRExplosionTests
 {
 	using namespace RRTestHarness;
-
-	/** Blueprint of the target dummy. */
-	const TCHAR* const TargetDummyClassPath = TEXT("/Game/RogueRigs/Blueprints/Debug/BP_TargetDummy.BP_TargetDummy_C");
 
 	/** Health the tests give the miner (miner gdd base value). */
 	constexpr float TestMaxHealth = 100.f;
@@ -159,16 +156,15 @@ bool FRRExplosionDamagesOnceTest::RunTest(const FString& Parameters)
 	FTestWorld TestWorld(TEXT("RRExplosionDamagesOnce"));
 	ARRArenaGrid* Grid = SpawnGrid(*this, TestWorld);
 	ARRMiner* Miner = Grid ? SpawnTestMiner(*this, TestWorld, Grid, RockWestFloorCell) : nullptr;
-	UClass* DummyClass = LoadTestClass<ARRTargetDummy>(*this, TargetDummyClassPath);
 	URRExplosionSubsystem* Subsystem = Miner ? GetSubsystem(*this, TestWorld, nullptr) : nullptr;
-	if (!Subsystem || !DummyClass)
+	if (!Subsystem)
 	{
 		return false;
 	}
 	const FVector Center = Grid->GetCellCenter(RockWestFloorCell.X, RockWestFloorCell.Y);
-	ARRTargetDummy* Near = TestWorld.Spawn<ARRTargetDummy>(DummyClass, Center + FVector(0.f, 200.f, 80.f));
-	ARRTargetDummy* Far = TestWorld.Spawn<ARRTargetDummy>(DummyClass, Center + FVector(0.f, 600.f, 80.f));
-	if (!TestNotNull(TEXT("dummies spawned"), Near) || !TestNotNull(TEXT("far dummy"), Far))
+	ARRChaser* Near = SpawnStillChaser(*this, TestWorld, Center + FVector(0.f, 200.f, 0.f));
+	ARRChaser* Far = SpawnStillChaser(*this, TestWorld, Center + FVector(0.f, 600.f, 0.f));
+	if (!TestNotNull(TEXT("still chasers spawned"), Near) || !TestNotNull(TEXT("far still chaser"), Far))
 	{
 		return false;
 	}
@@ -186,10 +182,10 @@ bool FRRExplosionDamagesOnceTest::RunTest(const FString& Parameters)
 	}
 	const float MinerHealth = Attribute(MinerASC, URRHealthAttributeSet::GetHealthAttribute());
 	const float NearHealth = Attribute(NearASC, URRHealthAttributeSet::GetHealthAttribute());
-	AddInfo(FString::Printf(TEXT("miner %.1f -> %.1f, near dummy %.1f -> %.1f"), TestMaxHealth, MinerHealth, NearStart, NearHealth));
+	AddInfo(FString::Printf(TEXT("miner %.1f -> %.1f, near still chaser %.1f -> %.1f"), TestMaxHealth, MinerHealth, NearStart, NearHealth));
 	TestEqual(TEXT("miner hit once by 40"), MinerHealth, TestMaxHealth - 40.f);
-	TestEqual(TEXT("near dummy hit once by 40"), NearHealth, NearStart - 40.f);
-	TestEqual(TEXT("far dummy untouched"), Attribute(FarASC, URRHealthAttributeSet::GetHealthAttribute()), FarStart);
+	TestEqual(TEXT("near still chaser hit once by 40"), NearHealth, NearStart - 40.f);
+	TestEqual(TEXT("far still chaser untouched"), Attribute(FarASC, URRHealthAttributeSet::GetHealthAttribute()), FarStart);
 	TestFalse(TEXT("miner alive"), Miner->IsDead());
 	return true;
 }
@@ -203,8 +199,7 @@ bool FRRExplosionKamikazeReachTest::RunTest(const FString& Parameters)
 
 	FTestWorld TestWorld(TEXT("RRExplosionKamikazeReach"));
 	ARRArenaGrid* Grid = SpawnGrid(*this, TestWorld);
-	UClass* DummyClass = Grid ? LoadTestClass<ARRTargetDummy>(*this, TargetDummyClassPath) : nullptr;
-	URRExplosionSubsystem* Subsystem = DummyClass ? GetSubsystem(*this, TestWorld, nullptr) : nullptr;
+	URRExplosionSubsystem* Subsystem = Grid ? GetSubsystem(*this, TestWorld, nullptr) : nullptr;
 	FRRExplosionStatsRow Stats;
 	if (!Subsystem || !TestTrue(TEXT("Kamikaze row loads"), Subsystem->GetExplosionStats(TEXT("Kamikaze"), Stats)))
 	{
@@ -212,9 +207,9 @@ bool FRRExplosionKamikazeReachTest::RunTest(const FString& Parameters)
 	}
 	// 300 uu was outside the old 250 uu radius and is inside 312 uu; 400 uu stays outside.
 	const FVector Center = Grid->GetCellCenter(RockWestFloorCell.X, RockWestFloorCell.Y);
-	ARRTargetDummy* Reached = TestWorld.Spawn<ARRTargetDummy>(DummyClass, Center + FVector(0.f, 300.f, 80.f));
-	ARRTargetDummy* Beyond = TestWorld.Spawn<ARRTargetDummy>(DummyClass, Center + FVector(0.f, 400.f, 80.f));
-	if (!TestNotNull(TEXT("dummy at 300 uu"), Reached) || !TestNotNull(TEXT("dummy at 400 uu"), Beyond))
+	ARRChaser* Reached = SpawnStillChaser(*this, TestWorld, Center + FVector(0.f, 300.f, 0.f));
+	ARRChaser* Beyond = SpawnStillChaser(*this, TestWorld, Center + FVector(0.f, 400.f, 0.f));
+	if (!TestNotNull(TEXT("still chaser at 300 uu"), Reached) || !TestNotNull(TEXT("still chaser at 400 uu"), Beyond))
 	{
 		return false;
 	}
@@ -229,9 +224,9 @@ bool FRRExplosionKamikazeReachTest::RunTest(const FString& Parameters)
 		TestWorld.Tick();
 	}
 	const float ReachedHealth = Attribute(ReachedASC, URRHealthAttributeSet::GetHealthAttribute());
-	AddInfo(FString::Printf(TEXT("radius %.0f, dummy at 300 uu %.1f -> %.1f"), Stats.Radius, ReachedStart, ReachedHealth));
-	TestEqual(TEXT("dummy at 300 uu hit once by the Kamikaze damage"), ReachedHealth, ReachedStart - Stats.Damage);
-	TestEqual(TEXT("dummy at 400 uu untouched"), Attribute(BeyondASC, URRHealthAttributeSet::GetHealthAttribute()), BeyondStart);
+	AddInfo(FString::Printf(TEXT("radius %.0f, still chaser at 300 uu %.1f -> %.1f"), Stats.Radius, ReachedStart, ReachedHealth));
+	TestEqual(TEXT("still chaser at 300 uu hit once by the Kamikaze damage"), ReachedHealth, ReachedStart - Stats.Damage);
+	TestEqual(TEXT("still chaser at 400 uu untouched"), Attribute(BeyondASC, URRHealthAttributeSet::GetHealthAttribute()), BeyondStart);
 	return true;
 }
 

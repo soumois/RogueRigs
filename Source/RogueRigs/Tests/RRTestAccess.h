@@ -10,7 +10,6 @@
 #include "Blueprint/UserWidget.h"
 #include "Components/HierarchicalInstancedStaticMeshComponent.h"
 #include "Components/InstancedStaticMeshComponent.h"
-#include "Debug/RRTargetDummy.h"
 #include "Drone/RRDrone.h"
 #include "Enemies/RREnemy.h"
 #include "Enemies/RREnemySpawner.h"
@@ -204,12 +203,6 @@ namespace RRTestAccess
 	struct FProjectileAccess : public ARRProjectile
 	{
 		static TSubclassOf<AActor>& HitActorClassOf(ARRProjectile* Projectile) { return Projectile->*(&FProjectileAccess::HitActorClass); }
-	};
-
-	/** ARRTargetDummy: its health set. */
-	struct FDummyAccess : public ARRTargetDummy
-	{
-		static URRHealthAttributeSet* HealthSetOf(const ARRTargetDummy* Dummy) { return Dummy->*(&FDummyAccess::HealthSet); }
 	};
 
 	/** UUserWidget: its native tick (latent actions, then the Blueprint Event Tick), which headless tests never get from Slate. */

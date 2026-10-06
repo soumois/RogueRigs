@@ -1,4 +1,4 @@
-// Rogue Rigs - shared harness of the automation tests: transient game world ticked manually, Blueprint class loading, grid and miner spawning.
+// Rogue Rigs - shared harness of the automation tests: transient game world ticked manually, Blueprint class loading, grid, miner and still-chaser spawning.
 
 #pragma once
 
@@ -7,9 +7,14 @@
 
 #if WITH_DEV_AUTOMATION_TESTS
 
+#include "AbilitySystemComponent.h"
 #include "Components/CapsuleComponent.h"
+#include "Enemies/RRChaser.h"
 #include "Engine/Engine.h"
 #include "Engine/World.h"
+#include "FlowField/RREnemyMovementComponent.h"
+#include "GAS/RRHealthAttributeSet.h"
+#include "GameFramework/CharacterMovementComponent.h"
 #include "GameFramework/WorldSettings.h"
 #include "Grid/RRArenaGrid.h"
 #include "Tests/RRTestAccess.h"
@@ -168,6 +173,38 @@ namespace RRTestHarness
 			Miner->FinishSpawning(SpawnTransform);
 		}
 		return Miner;
+	}
+
+	/** MaxHealth and starting Health of a still chaser (the retired target dummy's value, which the hit tests were measured with). */
+	constexpr float StillChaserHealth = 1000.f;
+
+	/**
+	 * Spawns a native ARRChaser as an immobile hit target (replaces the target dummy, task-031-01): feet on the floor at
+	 * FloorLocation, no XP pickup class, actor tick off (no behavior, no attack), CharacterMovement and flow-field movement off,
+	 * MaxHealth = Health = Health. Its capsule (radius 24, half height 62) overlaps projectiles; hits go through the health set
+	 * and the damage numbers as on any robot. Death stays enabled: a lethal hit kills it, but the shrink never runs (no tick).
+	 */
+	inline ARRChaser* SpawnStillChaser(FAutomationTestBase& Test, const FTestWorld& TestWorld, const FVector& FloorLocation, float Health = StillChaserHealth)
+	{
+		const float HalfHeight = GetDefault<ARRChaser>()->GetCapsuleComponent()->GetScaledCapsuleHalfHeight();
+		const FTransform SpawnTransform(FloorLocation + FVector(0.f, 0.f, HalfHeight));
+		ARRChaser* Chaser = TestWorld.Get()->SpawnActorDeferred<ARRChaser>(ARRChaser::StaticClass(), SpawnTransform, nullptr, nullptr,
+			ESpawnActorCollisionHandlingMethod::AlwaysSpawn);
+		if (!Test.TestNotNull(TEXT("still chaser spawned"), Chaser))
+		{
+			return nullptr;
+		}
+		Chaser->FinishSpawning(SpawnTransform);
+		Chaser->SetActorTickEnabled(false);
+		Chaser->GetCharacterMovement()->SetComponentTickEnabled(false);
+		Chaser->GetEnemyMovement()->SetMovementEnabled(false);
+		Chaser->GetEnemyMovement()->SetComponentTickEnabled(false);
+		// The walking floor check at BeginPlay keeps the capsule about 2.4 uu above the floor: put the feet back on it.
+		Chaser->SetActorLocation(SpawnTransform.GetLocation(), /*bSweep*/ false, nullptr, ETeleportType::TeleportPhysics);
+		UAbilitySystemComponent* ASC = Chaser->GetAbilitySystemComponent();
+		ASC->SetNumericAttributeBase(URRHealthAttributeSet::GetMaxHealthAttribute(), Health);
+		ASC->SetNumericAttributeBase(URRHealthAttributeSet::GetHealthAttribute(), Health);
+		return Chaser;
 	}
 
 	// Protected-member accessors: Tests/RRTestAccess.h.

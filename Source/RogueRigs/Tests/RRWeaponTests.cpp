@@ -1,4 +1,4 @@
-// Rogue Rigs - automation tests of the weapon rules (RogueRigs.Weapons.*): burst timing, magazine and reload, projectile stop on rock, GAS damage and crits on the target dummy, dummy refill, miner starting weapon and shot origin, miner moving while firing, miner shots hitting a floor dummy, projectile hit filter, pierce (robots per bullet, rock stop, no double hit, piercing upgrade).
+// Rogue Rigs - automation tests of the weapon rules (RogueRigs.Weapons.*): burst timing, magazine and reload, projectile stop on rock, GAS damage and crits on a still chaser, miner starting weapon and shot origin, miner moving while firing, miner shots hitting a still chaser, projectile hit filter, pierce (robots per bullet, rock stop, no double hit, piercing upgrade).
 
 #include "CoreMinimal.h"
 #include "Misc/AutomationTest.h"
@@ -9,9 +9,7 @@
 #include "Components/SceneComponent.h"
 #include "Components/SkeletalMeshComponent.h"
 #include "GameFramework/CharacterMovementComponent.h"
-#include "Damage/RRGE_Damage.h"
 #include "Enemies/RRChaser.h"
-#include "Debug/RRTargetDummy.h"
 #include "EngineUtils.h"
 #include "GameFramework/ProjectileMovementComponent.h"
 #include "GAS/RRGameplayTags.h"
@@ -33,13 +31,12 @@ namespace RRWeaponTests
 {
 	using namespace RRTestHarness;
 
-	/** Blueprint classes made in task-007-04. */
+	/** Blueprint class made in task-007-04. */
 	const TCHAR* const BurstRifleClassPath = TEXT("/Game/RogueRigs/Blueprints/Weapons/BP_BurstRifle.BP_BurstRifle_C");
-	const TCHAR* const TargetDummyClassPath = TEXT("/Game/RogueRigs/Blueprints/Debug/BP_TargetDummy.BP_TargetDummy_C");
 
-	/** Open floor of arena_m1: the dummy stands on DummyCell, the rifle fires from two cells west of it. */
-	const FIntPoint DummyCell(44, 41);
-	const FIntPoint DummyShooterCell(42, 41);
+	/** Open floor of arena_m1: the still chaser stands on ChaserCell, the rifle fires from two cells west of it. */
+	const FIntPoint ChaserCell(44, 41);
+	const FIntPoint ChaserShooterCell(42, 41);
 
 	/** Tolerance on times measured from the accumulator (the schedule is exact up to float rounding). */
 	constexpr double ExactTolerance = 1.0e-4;
@@ -57,8 +54,8 @@ namespace RRWeaponTests
 		double ExactSeconds = 0.0;
 	};
 
-	/** One hit received by the dummy (URRHealthAttributeSet::OnDamageReceived). */
-	struct FDummyHit
+	/** One hit received by the still chaser (URRHealthAttributeSet::OnDamageReceived). */
+	struct FTargetHit
 	{
 		float Damage = 0.f;
 		bool bIsCritical = false;
@@ -80,26 +77,6 @@ namespace RRWeaponTests
 		}
 		Test.TestTrue(TEXT("rifle acquired (CSV row loaded, auto-fire configured)"), Rifle->Acquire(nullptr));
 		return Rifle;
-	}
-
-	/** Spawns BP_TargetDummy at Location, then lifts it so the bottom of its collision bounds rests on Location (a floor top). */
-	ARRTargetDummy* SpawnDummy(FAutomationTestBase& Test, const FTestWorld& TestWorld, const FVector& Location)
-	{
-		UClass* DummyClass = LoadTestClass<ARRTargetDummy>(Test, TargetDummyClassPath);
-		if (!DummyClass)
-		{
-			return nullptr;
-		}
-		ARRTargetDummy* Dummy = TestWorld.Spawn<ARRTargetDummy>(DummyClass, Location);
-		if (Test.TestNotNull(TEXT("dummy spawned"), Dummy))
-		{
-			const FBox Bounds = Dummy->GetComponentsBoundingBox(/*bNonColliding*/ false);
-			if (Bounds.IsValid)
-			{
-				Dummy->SetActorLocation(Location + FVector(0.f, 0.f, Location.Z - Bounds.Min.Z), /*bSweep*/ false, nullptr, ETeleportType::TeleportPhysics);
-			}
-		}
-		return Dummy;
 	}
 
 	/** Spawns BP_Miner on Cell with WeaponAttachSocketName forced to None before BeginPlay: starting weapons (M1TestLoadout: rifle + shotgun) go on the capsule at WeaponAttachOffset. */
@@ -125,10 +102,10 @@ namespace RRWeaponTests
 		return Weapon->GetAbilitySystemComponent()->GetNumericAttribute(Attribute);
 	}
 
-	/** Current Health of the dummy. */
-	float DummyHealth(const ARRTargetDummy* Dummy)
+	/** Current Health of the still chaser. */
+	float TargetHealth(const ARRChaser* StillChaser)
 	{
-		return Dummy->GetAbilitySystemComponent()->GetNumericAttribute(URRHealthAttributeSet::GetHealthAttribute());
+		return StillChaser->GetAbilitySystemComponent()->GetNumericAttribute(URRHealthAttributeSet::GetHealthAttribute());
 	}
 
 	/** Moves the weapon (facing +X) so its muzzle sits on Target. */
@@ -411,24 +388,24 @@ bool FRRWeaponProjectileRockTest::RunTest(const FString& Parameters)
 	const FVector MuzzleTarget = Grid->GetCellCenter(RockWestFloorCell.X, RockWestFloorCell.Y) + FVector(0.f, 0.f, 0.5f * Grid->GetBlockHeight());
 	PlaceMuzzleAt(Rifle, MuzzleTarget);
 
-	// A dummy on the first open cell behind the rock, within range: it must not be hit through the rock.
-	ARRTargetDummy* Dummy = nullptr;
+	// A still chaser on the first open cell behind the rock, within range: it must not be hit through the rock.
+	ARRChaser* StillChaser = nullptr;
 	const int32 RangeCells = FMath::FloorToInt(Rifle->GetRange() / Grid->GetCellSize());
-	for (int32 X = RockCell.X + 1; X <= RockWestFloorCell.X + RangeCells - 1 && !Dummy; ++X)
+	for (int32 X = RockCell.X + 1; X <= RockWestFloorCell.X + RangeCells - 1 && !StillChaser; ++X)
 	{
 		const FIntPoint Cell(X, RockCell.Y);
 		const ERRCellType Type = Grid->GetCellType(Cell);
 		if (Type == ERRCellType::Floor || Type == ERRCellType::Spawn)
 		{
-			Dummy = SpawnDummy(*this, TestWorld, Grid->GetCellCenter(Cell.X, Cell.Y));
-			AddInfo(FString::Printf(TEXT("dummy placed behind the rock on (%d, %d)"), Cell.X, Cell.Y));
+			StillChaser = SpawnStillChaser(*this, TestWorld, Grid->GetCellCenter(Cell.X, Cell.Y));
+			AddInfo(FString::Printf(TEXT("still chaser placed behind the rock on (%d, %d)"), Cell.X, Cell.Y));
 		}
 	}
-	if (!Dummy)
+	if (!StillChaser)
 	{
-		AddInfo(TEXT("no open cell behind the rock within range: no dummy behind it"));
+		AddInfo(TEXT("no open cell behind the rock within range: no still chaser behind it"));
 	}
-	const float DummyHealthBefore = Dummy ? DummyHealth(Dummy) : 0.f;
+	const float StillChaserHealthBefore = StillChaser ? TargetHealth(StillChaser) : 0.f;
 	const float RockHealthBefore = Grid->GetCellHealth(RockCell);
 
 	ARRProjectile* Projectile = FireSingleShot(*this, Rifle);
@@ -470,14 +447,14 @@ bool FRRWeaponProjectileRockTest::RunTest(const FString& Parameters)
 		TestWorld.Tick();
 	}
 	TestEqual(TEXT("no projectile left"), GetProjectiles(TestWorld.Get()).Num(), 0);
-	if (Dummy)
+	if (StillChaser)
 	{
-		TestNearlyEqual(TEXT("dummy behind the rock not hit"), DummyHealth(Dummy), DummyHealthBefore);
+		TestNearlyEqual(TEXT("still chaser behind the rock not hit"), TargetHealth(StillChaser), StillChaserHealthBefore);
 	}
 	return true;
 }
 
-IMPLEMENT_SIMPLE_AUTOMATION_TEST(FRRWeaponProjectileDamageTest, "RogueRigs.Weapons.ProjectileDamagesDummy",
+IMPLEMENT_SIMPLE_AUTOMATION_TEST(FRRWeaponProjectileDamageTest, "RogueRigs.Weapons.ProjectileDamagesStillChaser",
 	EAutomationTestFlags::EditorContext | EAutomationTestFlags::EngineFilter)
 
 bool FRRWeaponProjectileDamageTest::RunTest(const FString& Parameters)
@@ -485,32 +462,32 @@ bool FRRWeaponProjectileDamageTest::RunTest(const FString& Parameters)
 	FTestWorld TestWorld(TEXT("RRWeaponTestWorld"));
 	ARRArenaGrid* Grid = SpawnGrid(*this, TestWorld);
 	ARRWeapon* Rifle = Grid ? SpawnRifle(*this, TestWorld, FVector::ZeroVector) : nullptr;
-	ARRTargetDummy* Dummy = Rifle ? SpawnDummy(*this, TestWorld, Grid->GetCellCenter(DummyCell.X, DummyCell.Y)) : nullptr;
-	if (!Dummy)
+	ARRChaser* StillChaser = Rifle ? SpawnStillChaser(*this, TestWorld, Grid->GetCellCenter(ChaserCell.X, ChaserCell.Y)) : nullptr;
+	if (!StillChaser)
 	{
 		return false;
 	}
 	Rifle->GetAutoFireComponent()->StopFiring();
-	for (int32 X = DummyShooterCell.X; X <= DummyCell.X; ++X)
+	for (int32 X = ChaserShooterCell.X; X <= ChaserCell.X; ++X)
 	{
-		TestFalse(FString::Printf(TEXT("(%d, %d) is open floor"), X, DummyCell.Y), Grid->IsBlockCell(FIntPoint(X, DummyCell.Y)));
+		TestFalse(FString::Printf(TEXT("(%d, %d) is open floor"), X, ChaserCell.Y), Grid->IsBlockCell(FIntPoint(X, ChaserCell.Y)));
 	}
 
-	// Muzzle two cells west of the dummy, at half the block height (as in ProjectileStopsOnRock), aiming east (+X).
-	const FBox DummyBounds = Dummy->GetComponentsBoundingBox(/*bNonColliding*/ false);
-	const FVector MuzzleTarget = Grid->GetCellCenter(DummyShooterCell.X, DummyShooterCell.Y) + FVector(0.f, 0.f, 0.5f * Grid->GetBlockHeight());
-	AddInfo(FString::Printf(TEXT("dummy collision bounds %s; muzzle at %s"), *DummyBounds.ToString(), *MuzzleTarget.ToCompactString()));
-	TestTrue(TEXT("dummy stands on the floor and covers the shot height"),
-		DummyBounds.IsValid && FMath::IsNearlyEqual(DummyBounds.Min.Z, 0.f, 0.5f) && DummyBounds.Max.Z > MuzzleTarget.Z + 10.f);
+	// Muzzle two cells west of the still chaser, at half the block height (as in ProjectileStopsOnRock), aiming east (+X).
+	const FBox StillChaserBounds = StillChaser->GetComponentsBoundingBox(/*bNonColliding*/ false);
+	const FVector MuzzleTarget = Grid->GetCellCenter(ChaserShooterCell.X, ChaserShooterCell.Y) + FVector(0.f, 0.f, 0.5f * Grid->GetBlockHeight());
+	AddInfo(FString::Printf(TEXT("still chaser collision bounds %s; muzzle at %s"), *StillChaserBounds.ToString(), *MuzzleTarget.ToCompactString()));
+	TestTrue(TEXT("still chaser stands on the floor and covers the shot height"),
+		StillChaserBounds.IsValid && FMath::IsNearlyEqual(StillChaserBounds.Min.Z, 0.f, 0.5f) && StillChaserBounds.Max.Z > MuzzleTarget.Z + 10.f);
 	PlaceMuzzleAt(Rifle, MuzzleTarget);
 
-	UAbilitySystemComponent* DummyASC = Dummy->GetAbilitySystemComponent();
-	const float MaxHealth = DummyASC->GetNumericAttribute(URRHealthAttributeSet::GetMaxHealthAttribute());
-	TestNearlyEqual(TEXT("dummy MaxHealth 1000"), MaxHealth, 1000.f);
-	TestNearlyEqual(TEXT("dummy starts at MaxHealth"), DummyHealth(Dummy), MaxHealth);
+	UAbilitySystemComponent* StillChaserASC = StillChaser->GetAbilitySystemComponent();
+	const float MaxHealth = StillChaserASC->GetNumericAttribute(URRHealthAttributeSet::GetMaxHealthAttribute());
+	TestNearlyEqual(TEXT("still chaser MaxHealth 1000"), MaxHealth, 1000.f);
+	TestNearlyEqual(TEXT("still chaser starts at MaxHealth"), TargetHealth(StillChaser), MaxHealth);
 
-	TArray<FDummyHit> Hits;
-	URRHealthAttributeSet* HealthSet = FDummyAccess::HealthSetOf(Dummy);
+	TArray<FTargetHit> Hits;
+	URRHealthAttributeSet* HealthSet = StillChaser->GetHealthSet();
 	const FDelegateHandle HitHandle = HealthSet->OnDamageReceived.AddLambda([&Hits](float Damage, bool bIsCritical, float HealthLeft)
 	{
 		Hits.Add({ Damage, bIsCritical, HealthLeft });
@@ -520,16 +497,16 @@ bool FRRWeaponProjectileDamageTest::RunTest(const FString& Parameters)
 	TestNearlyEqual(TEXT("rifle Damage 10"), RifleASC->GetNumericAttribute(URRWeaponAttributeSet::GetDamageAttribute()), 10.f);
 	TestNearlyEqual(TEXT("rifle CritDamage 1.5"), RifleASC->GetNumericAttribute(URRWeaponAttributeSet::GetCritDamageAttribute()), 1.5f);
 
-	// Pierce 1: these checks are about one bullet ending on the dummy (pierce: PierceFourRobots).
+	// Pierce 1: these checks are about one bullet ending on the still chaser (pierce: PierceFourRobots).
 	RifleASC->SetNumericAttributeBase(URRWeaponAttributeSet::GetPierceAttribute(), 1.f);
 
 	// Normal hit: CritChance forced to 0 so the CSV's 5 % cannot roll a crit.
 	RifleASC->SetNumericAttributeBase(URRWeaponAttributeSet::GetCritChanceAttribute(), 0.f);
 	FVector LastLocation;
 	const int32 NormalFrame = TickUntilDestroyed(TestWorld, FireSingleShot(*this, Rifle), 30, LastLocation);
-	TestTrue(TEXT("normal shot destroyed on the dummy"), NormalFrame != INDEX_NONE);
+	TestTrue(TEXT("normal shot destroyed on the still chaser"), NormalFrame != INDEX_NONE);
 	TestEqual(TEXT("one hit after the normal shot"), Hits.Num(), 1);
-	const float HealthAfterNormal = DummyHealth(Dummy);
+	const float HealthAfterNormal = TargetHealth(StillChaser);
 	AddInfo(FString::Printf(TEXT("normal shot: destroyed at frame %d near %s; health %.1f"), NormalFrame, *LastLocation.ToCompactString(), HealthAfterNormal));
 	TestNearlyEqual(TEXT("Health lowered by 10"), HealthAfterNormal, MaxHealth - 10.f);
 	if (Hits.Num() >= 1)
@@ -542,9 +519,9 @@ bool FRRWeaponProjectileDamageTest::RunTest(const FString& Parameters)
 	// Critical hit: CritChance forced to 1 on the weapon ASC (captured when the shot makes its spec).
 	RifleASC->SetNumericAttributeBase(URRWeaponAttributeSet::GetCritChanceAttribute(), 1.f);
 	const int32 CritFrame = TickUntilDestroyed(TestWorld, FireSingleShot(*this, Rifle), 30, LastLocation);
-	TestTrue(TEXT("critical shot destroyed on the dummy"), CritFrame != INDEX_NONE);
+	TestTrue(TEXT("critical shot destroyed on the still chaser"), CritFrame != INDEX_NONE);
 	TestEqual(TEXT("two hits after the critical shot"), Hits.Num(), 2);
-	const float HealthAfterCrit = DummyHealth(Dummy);
+	const float HealthAfterCrit = TargetHealth(StillChaser);
 	AddInfo(FString::Printf(TEXT("critical shot: destroyed at frame %d near %s; health %.1f"), CritFrame, *LastLocation.ToCompactString(), HealthAfterCrit));
 	TestNearlyEqual(TEXT("Health lowered by 15"), HealthAfterNormal - HealthAfterCrit, 15.f);
 	if (Hits.Num() >= 2)
@@ -553,94 +530,7 @@ bool FRRWeaponProjectileDamageTest::RunTest(const FString& Parameters)
 		TestTrue(TEXT("hit 2 critical"), Hits[1].bIsCritical);
 		TestNearlyEqual(TEXT("hit 2 health left"), Hits[1].HealthLeft, MaxHealth - 25.f);
 	}
-	TestFalse(TEXT("dummy not dead"), DummyASC->HasMatchingGameplayTag(RRGameplayTags::State_Dead));
-
-	HealthSet->OnDamageReceived.Remove(HitHandle);
-	return true;
-}
-
-IMPLEMENT_SIMPLE_AUTOMATION_TEST(FRRWeaponDummyRefillTest, "RogueRigs.Weapons.DummyRefill",
-	EAutomationTestFlags::EditorContext | EAutomationTestFlags::EngineFilter)
-
-bool FRRWeaponDummyRefillTest::RunTest(const FString& Parameters)
-{
-	FTestWorld TestWorld(TEXT("RRWeaponTestWorld"));
-	ARRWeapon* Rifle = SpawnRifle(*this, TestWorld, FVector(0.f, -500.f, 100.f));
-	ARRTargetDummy* Dummy = Rifle ? SpawnDummy(*this, TestWorld, FVector::ZeroVector) : nullptr;
-	if (!Dummy)
-	{
-		return false;
-	}
-	Rifle->GetAutoFireComponent()->StopFiring();
-	UAbilitySystemComponent* RifleASC = Rifle->GetAbilitySystemComponent();
-	UAbilitySystemComponent* DummyASC = Dummy->GetAbilitySystemComponent();
-	RifleASC->SetNumericAttributeBase(URRWeaponAttributeSet::GetCritChanceAttribute(), 0.f);
-	const float MaxHealth = DummyASC->GetNumericAttribute(URRHealthAttributeSet::GetMaxHealthAttribute());
-
-	TArray<FDummyHit> Hits;
-	URRHealthAttributeSet* HealthSet = FDummyAccess::HealthSetOf(Dummy);
-	const FDelegateHandle HitHandle = HealthSet->OnDamageReceived.AddLambda([&Hits](float Damage, bool bIsCritical, float HealthLeft)
-	{
-		Hits.Add({ Damage, bIsCritical, HealthLeft });
-	});
-
-	// Same spec as a projectile carries: URRGE_Damage made by the rifle ASC, applied to the dummy.
-	auto ApplyHit = [RifleASC, DummyASC]()
-	{
-		const FGameplayEffectSpecHandle Spec = RifleASC->MakeOutgoingSpec(URRGE_Damage::StaticClass(), 1.f, RifleASC->MakeEffectContext());
-		DummyASC->ApplyGameplayEffectSpecToSelf(*Spec.Data.Get());
-	};
-
-	// Hit at t = 0 and t = 1 s: the refill counts from the last hit, so it lands at 4 s (frame 180 after the second hit).
-	ApplyHit();
-	TestNearlyEqual(TEXT("first hit: 10 damage"), DummyHealth(Dummy), MaxHealth - 10.f);
-	for (int32 Frame = 0; Frame < 60; ++Frame)
-	{
-		TestWorld.Tick();
-	}
-	TestNearlyEqual(TEXT("no refill 1 s after the first hit"), DummyHealth(Dummy), MaxHealth - 10.f);
-	ApplyHit();
-	TestNearlyEqual(TEXT("second hit: 20 damage in total"), DummyHealth(Dummy), MaxHealth - 20.f);
-
-	int32 RefillFrame = INDEX_NONE;
-	for (int32 Frame = 1; Frame <= 240 && RefillFrame == INDEX_NONE; ++Frame)
-	{
-		TestWorld.Tick();
-		if (DummyHealth(Dummy) >= MaxHealth)
-		{
-			RefillFrame = Frame;
-		}
-	}
-	AddInfo(FString::Printf(TEXT("refilled %d frames (%.4f s) after the last hit"), RefillFrame, RefillFrame * FrameSeconds));
-	TestTrue(TEXT("refill 3 s after the last hit +- 1 frame"), RefillFrame >= 179 && RefillFrame <= 181);
-	TestNearlyEqual(TEXT("refilled to MaxHealth"), DummyHealth(Dummy), MaxHealth);
-
-	// Lethal hit: Health reaches 0, the dummy refills at once and never gets State.Dead.
-	RifleASC->SetNumericAttributeBase(URRWeaponAttributeSet::GetDamageAttribute(), 5000.f);
-	const int32 HitsBefore = Hits.Num();
-	ApplyHit();
-	TestEqual(TEXT("lethal hit received"), Hits.Num(), HitsBefore + 1);
-	if (Hits.Num() > HitsBefore)
-	{
-		AddInfo(FString::Printf(TEXT("lethal hit: damage %.1f, health left %.1f"), Hits.Last().Damage, Hits.Last().HealthLeft));
-		TestNearlyEqual(TEXT("lethal hit leaves 0 health"), Hits.Last().HealthLeft, 0.f);
-	}
-	TestNearlyEqual(TEXT("instant refill after a lethal hit"), DummyHealth(Dummy), MaxHealth);
-	TestFalse(TEXT("no State.Dead after a lethal hit"), DummyASC->HasMatchingGameplayTag(RRGameplayTags::State_Dead));
-
-	TWeakObjectPtr<ARRTargetDummy> DummyWeak(Dummy);
-	for (int32 Frame = 0; Frame < 240; ++Frame)
-	{
-		TestWorld.Tick();
-	}
-	TestTrue(TEXT("dummy still alive 4 s later"), DummyWeak.IsValid() && !Dummy->IsActorBeingDestroyed());
-	TestNearlyEqual(TEXT("health still MaxHealth"), DummyHealth(Dummy), MaxHealth);
-	TestFalse(TEXT("still no State.Dead"), DummyASC->HasMatchingGameplayTag(RRGameplayTags::State_Dead));
-
-	// A second lethal hit still lands (no dead state blocks damage).
-	ApplyHit();
-	TestEqual(TEXT("damage still accepted after the lethal hit"), Hits.Num(), HitsBefore + 2);
-	TestNearlyEqual(TEXT("instant refill again"), DummyHealth(Dummy), MaxHealth);
+	TestFalse(TEXT("still chaser not dead"), StillChaserASC->HasMatchingGameplayTag(RRGameplayTags::State_Dead));
 
 	HealthSet->OnDamageReceived.Remove(HitHandle);
 	return true;
@@ -872,25 +762,22 @@ bool FRRWeaponMinerMovesWhileFiringTest::RunTest(const FString& Parameters)
 
 namespace RRWeaponTests
 {
-	/** Open column of arena_m1 (x = 38, y = 39..44 floor, neighbours open): the miner stands on MinerAimCell, the dummy 3 cells north (-Y). */
+	/** Open column of arena_m1 (x = 38, y = 39..44 floor, neighbours open): the miner stands on MinerAimCell, the still chaser 3 cells north (-Y). */
 	const FIntPoint MinerAimCell(38, 43);
-	const FIntPoint MinerAimDummyCell(38, 40);
+	const FIntPoint MinerAimChaserCell(38, 40);
 
-	/** Stick input (screen axes: X right, Y up) aiming from MinerAimCell at MinerAimDummyCell: screen left = world -Y with CameraYaw 0. */
+	/** Stick input (screen axes: X right, Y up) aiming from MinerAimCell at MinerAimChaserCell: screen left = world -Y with CameraYaw 0. */
 	const FVector2D MinerAimStickInput(-1.f, 0.f);
 
-	/** Time the dummy has to take its first hit from the miner. */
+	/** Time the still chaser has to take its first hit from the miner. */
 	constexpr float MinerHitDeadlineSeconds = 2.f;
 
-	/** Expected height of BP_TargetDummy (scale 1.6) and tolerance. */
-	constexpr float DummyHeight = 160.f;
-	constexpr float DummyHeightTolerance = 1.f;
 }
 
-IMPLEMENT_SIMPLE_AUTOMATION_TEST(FRRWeaponMinerHitsFloorDummyTest, "RogueRigs.Weapons.MinerHitsFloorDummy",
+IMPLEMENT_SIMPLE_AUTOMATION_TEST(FRRWeaponMinerHitsStillChaserTest, "RogueRigs.Weapons.MinerHitsStillChaser",
 	EAutomationTestFlags::EditorContext | EAutomationTestFlags::EngineFilter)
 
-bool FRRWeaponMinerHitsFloorDummyTest::RunTest(const FString& Parameters)
+bool FRRWeaponMinerHitsStillChaserTest::RunTest(const FString& Parameters)
 {
 	FTestWorld TestWorld(TEXT("RRWeaponTestWorld"));
 	ARRArenaGrid* Grid = SpawnGrid(*this, TestWorld);
@@ -898,16 +785,16 @@ bool FRRWeaponMinerHitsFloorDummyTest::RunTest(const FString& Parameters)
 	{
 		return false;
 	}
-	for (int32 Y = MinerAimDummyCell.Y; Y <= MinerAimCell.Y; ++Y)
+	for (int32 Y = MinerAimChaserCell.Y; Y <= MinerAimCell.Y; ++Y)
 	{
 		TestFalse(FString::Printf(TEXT("(%d, %d) is open floor"), MinerAimCell.X, Y), Grid->IsBlockCell(FIntPoint(MinerAimCell.X, Y)));
 	}
 
-	// Dummy resting on the floor of its cell (final BP_TargetDummy: 160 uu, centered mesh, so actor Z = floor + 80).
-	const FVector DummyFloor = Grid->GetCellCenter(MinerAimDummyCell.X, MinerAimDummyCell.Y);
-	ARRTargetDummy* Dummy = SpawnDummy(*this, TestWorld, DummyFloor);
+	// Still chaser resting on the floor of its cell (capsule 124 uu tall, so actor Z = floor + 62).
+	const FVector StillChaserFloor = Grid->GetCellCenter(MinerAimChaserCell.X, MinerAimChaserCell.Y);
+	ARRChaser* StillChaser = SpawnStillChaser(*this, TestWorld, StillChaserFloor);
 	// Final BP_Miner as authored (no socket override): starting BP_BurstRifle, firing from BeginPlay.
-	ARRMiner* Miner = Dummy ? SpawnMiner(*this, TestWorld, Grid, MinerAimCell, M1TestLoadout) : nullptr;
+	ARRMiner* Miner = StillChaser ? SpawnMiner(*this, TestWorld, Grid, MinerAimCell, M1TestLoadout) : nullptr;
 	UClass* RifleClass = LoadTestClass<ARRWeapon>(*this, BurstRifleClassPath);
 	if (!Miner || !RifleClass)
 	{
@@ -915,11 +802,10 @@ bool FRRWeaponMinerHitsFloorDummyTest::RunTest(const FString& Parameters)
 	}
 	EnableMinerMovement(Miner);
 
-	const FBox DummyBounds = Dummy->GetComponentsBoundingBox(/*bNonColliding*/ false);
-	AddInfo(FString::Printf(TEXT("dummy at %s (%.1f uu above the floor), collision bounds %s"),
-		*Dummy->GetActorLocation().ToCompactString(), Dummy->GetActorLocation().Z - DummyFloor.Z, *DummyBounds.ToString()));
-	TestTrue(TEXT("dummy rests on the floor"), DummyBounds.IsValid && FMath::IsNearlyEqual(DummyBounds.Min.Z, DummyFloor.Z, 0.5f));
-	TestTrue(TEXT("dummy is 160 uu tall"), FMath::IsNearlyEqual(DummyBounds.Max.Z - DummyBounds.Min.Z, DummyHeight, DummyHeightTolerance));
+	const FBox StillChaserBounds = StillChaser->GetComponentsBoundingBox(/*bNonColliding*/ false);
+	AddInfo(FString::Printf(TEXT("still chaser at %s (%.1f uu above the floor), collision bounds %s"),
+		*StillChaser->GetActorLocation().ToCompactString(), StillChaser->GetActorLocation().Z - StillChaserFloor.Z, *StillChaserBounds.ToString()));
+	TestTrue(TEXT("still chaser rests on the floor"), StillChaserBounds.IsValid && FMath::IsNearlyEqual(StillChaserBounds.Min.Z, StillChaserFloor.Z, 0.5f));
 
 	// M1 loadout: burst rifle + shotgun (shotgun pellets: see RogueRigs.Shotgun.*).
 	if (!TestEqual(TEXT("two starting weapons"), Miner->GetWeapons().Num(), 2) || !TestNotNull(TEXT("starting shotgun"), FindShotgun(Miner)))
@@ -934,40 +820,39 @@ bool FRRWeaponMinerHitsFloorDummyTest::RunTest(const FString& Parameters)
 	TestTrue(TEXT("starting weapon is a BP_BurstRifle"), Weapon->IsA(RifleClass));
 	TestTrue(TEXT("auto-fire running"), Weapon->GetAutoFireComponent()->IsFiring());
 
-	// Aim toward the dummy through the stick-aim path, before the first tick.
+	// Aim toward the still chaser through the stick-aim path, before the first tick.
 	Miner->ApplyStickAimInput(MinerAimStickInput);
-	const FVector ToDummy = (DummyFloor - Miner->GetActorLocation()).GetSafeNormal2D();
-	TestTrue(FString::Printf(TEXT("miner aims at the dummy (aim %s, to dummy %s)"), *Miner->GetAimDirection().ToCompactString(), *ToDummy.ToCompactString()),
-		Miner->GetAimDirection().Equals(ToDummy, 1e-3f));
+	const FVector ToChaser = (StillChaserFloor - Miner->GetActorLocation()).GetSafeNormal2D();
+	TestTrue(FString::Printf(TEXT("miner aims at the still chaser (aim %s, to still chaser %s)"), *Miner->GetAimDirection().ToCompactString(), *ToChaser.ToCompactString()),
+		Miner->GetAimDirection().Equals(ToChaser, 1e-3f));
 
-	UAbilitySystemComponent* DummyASC = Dummy->GetAbilitySystemComponent();
-	const float MaxHealth = DummyASC->GetNumericAttribute(URRHealthAttributeSet::GetMaxHealthAttribute());
-	TestNearlyEqual(TEXT("dummy starts at MaxHealth"), DummyHealth(Dummy), MaxHealth);
+	UAbilitySystemComponent* StillChaserASC = StillChaser->GetAbilitySystemComponent();
+	const float MaxHealth = StillChaserASC->GetNumericAttribute(URRHealthAttributeSet::GetMaxHealthAttribute());
+	TestNearlyEqual(TEXT("still chaser starts at MaxHealth"), TargetHealth(StillChaser), MaxHealth);
 
-	TArray<FDummyHit> Hits;
-	URRHealthAttributeSet* HealthSet = FDummyAccess::HealthSetOf(Dummy);
+	TArray<FTargetHit> Hits;
+	URRHealthAttributeSet* HealthSet = StillChaser->GetHealthSet();
 	const FDelegateHandle HitHandle = HealthSet->OnDamageReceived.AddLambda([&Hits](float Damage, bool bIsCritical, float HealthLeft)
 	{
 		Hits.Add({ Damage, bIsCritical, HealthLeft });
 	});
 
-	// Tick until the dummy loses health or the deadline passes. The dummy refills 3 s after the last hit, so within 2 s
-	// a hit leaves Health below MaxHealth.
+	// Tick until the still chaser loses health or the deadline passes (it never refills: one hit leaves Health below MaxHealth).
 	const int32 MaxFrames = FMath::CeilToInt32(MinerHitDeadlineSeconds / FrameSeconds);
 	int32 FirstHitFrame = INDEX_NONE;
 	for (int32 Frame = 1; Frame <= MaxFrames && FirstHitFrame == INDEX_NONE; ++Frame)
 	{
 		TestWorld.Tick();
-		if (DummyHealth(Dummy) < MaxHealth)
+		if (TargetHealth(StillChaser) < MaxHealth)
 		{
 			FirstHitFrame = Frame;
 		}
 	}
-	const float HealthAfter = DummyHealth(Dummy);
+	const float HealthAfter = TargetHealth(StillChaser);
 	AddInfo(FString::Printf(TEXT("first hit at frame %d (%.3f s); shots fired %d; hits %d; health %.1f / %.1f"),
 		FirstHitFrame, FirstHitFrame * FrameSeconds, Weapon->GetAutoFireComponent()->GetTotalShotsFired(), Hits.Num(), HealthAfter, MaxHealth));
-	TestTrue(TEXT("the miner's shots hit the floor dummy within 2 s"), FirstHitFrame != INDEX_NONE);
-	TestTrue(TEXT("dummy Health below MaxHealth"), HealthAfter < MaxHealth);
+	TestTrue(TEXT("the miner's shots hit the still chaser within 2 s"), FirstHitFrame != INDEX_NONE);
+	TestTrue(TEXT("still chaser Health below MaxHealth"), HealthAfter < MaxHealth);
 	TestTrue(TEXT("damage received through the health set"), Hits.Num() > 0);
 
 	HealthSet->OnDamageReceived.Remove(HitHandle);
@@ -986,54 +871,54 @@ bool FRRWeaponProjectileHitFilterTest::RunTest(const FString& Parameters)
 	FTestWorld TestWorld(TEXT("RRWeaponTestWorld"));
 	ARRArenaGrid* Grid = SpawnGrid(*this, TestWorld);
 	ARRWeapon* Rifle = Grid ? SpawnRifle(*this, TestWorld, FVector::ZeroVector) : nullptr;
-	ARRTargetDummy* Dummy = Rifle ? SpawnDummy(*this, TestWorld, Grid->GetCellCenter(DummyCell.X, DummyCell.Y)) : nullptr;
-	if (!Dummy)
+	ARRChaser* StillChaser = Rifle ? SpawnStillChaser(*this, TestWorld, Grid->GetCellCenter(ChaserCell.X, ChaserCell.Y)) : nullptr;
+	if (!StillChaser)
 	{
 		return false;
 	}
 	Rifle->GetAutoFireComponent()->StopFiring();
 	Rifle->GetAbilitySystemComponent()->SetNumericAttributeBase(URRWeaponAttributeSet::GetCritChanceAttribute(), 0.f);
-	// Pierce 1: the matching shot must end on the dummy (pierce: PierceFourRobots).
+	// Pierce 1: the matching shot must end on the still chaser (pierce: PierceFourRobots).
 	Rifle->GetAbilitySystemComponent()->SetNumericAttributeBase(URRWeaponAttributeSet::GetPierceAttribute(), 1.f);
-	PlaceMuzzleAt(Rifle, Grid->GetCellCenter(DummyShooterCell.X, DummyShooterCell.Y) + FVector(0.f, 0.f, 0.5f * Grid->GetBlockHeight()));
+	PlaceMuzzleAt(Rifle, Grid->GetCellCenter(ChaserShooterCell.X, ChaserShooterCell.Y) + FVector(0.f, 0.f, 0.5f * Grid->GetBlockHeight()));
 
 	int32 HitCount = 0;
-	URRHealthAttributeSet* HealthSet = FDummyAccess::HealthSetOf(Dummy);
+	URRHealthAttributeSet* HealthSet = StillChaser->GetHealthSet();
 	const FDelegateHandle HitHandle = HealthSet->OnDamageReceived.AddLambda([&HitCount](float, bool, float) { ++HitCount; });
-	const float MaxHealth = DummyHealth(Dummy);
+	const float MaxHealth = TargetHealth(StillChaser);
 
-	// Miner-only shot: the dummy is not hittable, the projectile passes through it.
+	// Miner-only shot: the still chaser is not hittable, the projectile passes through it.
 	ARRProjectile* Filtered = FireSingleShot(*this, Rifle);
 	if (!Filtered)
 	{
 		return false;
 	}
-	TestTrue(TEXT("unfiltered projectile can hit the dummy"), Filtered->CanHit(Dummy));
+	TestTrue(TEXT("unfiltered projectile can hit the still chaser"), Filtered->CanHit(StillChaser));
 	FProjectileAccess::HitActorClassOf(Filtered) = ARRMiner::StaticClass();
-	TestFalse(TEXT("miner-only projectile cannot hit the dummy"), Filtered->CanHit(Dummy));
+	TestFalse(TEXT("miner-only projectile cannot hit the still chaser"), Filtered->CanHit(StillChaser));
 	TWeakObjectPtr<ARRProjectile> WeakFiltered(Filtered);
 	for (int32 Frame = 0; Frame < 30; ++Frame)
 	{
 		TestWorld.Tick();
 	}
 	TestEqual(TEXT("no hit from the miner-only shot"), HitCount, 0);
-	TestNearlyEqual(TEXT("dummy health unchanged"), DummyHealth(Dummy), MaxHealth);
+	TestNearlyEqual(TEXT("still chaser health unchanged"), TargetHealth(StillChaser), MaxHealth);
 	if (WeakFiltered.IsValid())
 	{
 		WeakFiltered->Destroy();
 	}
 
-	// Filter matching the dummy's class: hit as usual.
+	// Filter matching the chaser class: hit as usual.
 	ARRProjectile* Matching = FireSingleShot(*this, Rifle);
 	if (!Matching)
 	{
 		return false;
 	}
-	FProjectileAccess::HitActorClassOf(Matching) = ARRTargetDummy::StaticClass();
+	FProjectileAccess::HitActorClassOf(Matching) = ARRChaser::StaticClass();
 	FVector LastLocation;
-	TestTrue(TEXT("matching shot destroyed on the dummy"), TickUntilDestroyed(TestWorld, Matching, 30, LastLocation) != INDEX_NONE);
+	TestTrue(TEXT("matching shot destroyed on the still chaser"), TickUntilDestroyed(TestWorld, Matching, 30, LastLocation) != INDEX_NONE);
 	TestEqual(TEXT("one hit from the matching shot"), HitCount, 1);
-	TestNearlyEqual(TEXT("Health lowered by 10"), DummyHealth(Dummy), MaxHealth - 10.f);
+	TestNearlyEqual(TEXT("Health lowered by 10"), TargetHealth(StillChaser), MaxHealth - 10.f);
 
 	HealthSet->OnDamageReceived.Remove(HitHandle);
 	return true;
@@ -1298,7 +1183,7 @@ bool FRRWeaponPierceUpgradeTest::RunTest(const FString& Parameters)
 {
 	FTestWorld TestWorld(TEXT("RRWeaponPierceUpgradeWorld"));
 	ARRArenaGrid* Grid = SpawnGrid(*this, TestWorld);
-	ARRMiner* Miner = Grid ? SpawnMiner(*this, TestWorld, Grid, DummyShooterCell, KeepRifleOnly) : nullptr;
+	ARRMiner* Miner = Grid ? SpawnMiner(*this, TestWorld, Grid, ChaserShooterCell, KeepRifleOnly) : nullptr;
 	ARRWeapon* Rifle = Miner ? FindRifle(Miner) : nullptr;
 	URRUpgradeComponent* Upgrades = Miner ? Miner->GetUpgrades() : nullptr;
 	if (!TestNotNull(TEXT("miner rifle"), Rifle) || !TestNotNull(TEXT("upgrade component"), Upgrades))

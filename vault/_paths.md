@@ -45,7 +45,6 @@ bp-rr-player-controller  reference/tech/blueprints/bp-rr-player-controller.md
 bp-shield-chaser  reference/tech/blueprints/bp-shield-chaser.md
 bp-shooter  reference/tech/blueprints/bp-shooter.md
 bp-shotgun  reference/tech/blueprints/bp-shotgun.md
-bp-target-dummy  reference/tech/blueprints/bp-target-dummy.md
 bp-turret  reference/tech/blueprints/bp-turret.md
 build-toolchain  reference/tech/pipelines/build-toolchain.md
 burst-rifle  reference/gdd/weapons/burst-rifle.md
@@ -151,7 +150,6 @@ sys-spawner  reference/tech/systems/sys-spawner.md
 sys-spawner-director  reference/tech/systems/sys-spawner-director.md
 sys-status-effects  reference/tech/systems/sys-status-effects.md
 sys-stress  reference/tech/systems/sys-stress.md
-sys-target-dummy  reference/tech/systems/sys-target-dummy.md
 sys-turret  reference/tech/systems/sys-turret.md
 sys-upgrades  reference/tech/systems/sys-upgrades.md
 sys-weapons  reference/tech/systems/sys-weapons.md

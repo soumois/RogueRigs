@@ -9,7 +9,7 @@
 #include "Algo/Count.h"
 #include "Damage/RRDamageNumberSubsystem.h"
 #include "Damage/RRGE_Damage.h"
-#include "Debug/RRTargetDummy.h"
+#include "Enemies/RRChaser.h"
 #include "GameFramework/Actor.h"
 #include "Misc/App.h"
 #include "NiagaraComponent.h"
@@ -484,32 +484,31 @@ bool FRRDamageNumberNiagaraTest::RunTest(const FString& Parameters)
 		AddInfo(TEXT("DAMAGENUMBERS niagara: asset does not expose the digit parameters yet (task-025-05), component checks skipped"));
 	}
 
-	// Real damage pipeline: rifle damage specs (GE + execution) on two target dummies; their OnDamageReceived feeds AddHit.
+	// Real damage pipeline: rifle damage specs (GE + execution) on two still chasers; their OnDamageReceived feeds AddHit.
 	UClass* RifleClass = LoadTestClass<ARRWeapon>(*this, TEXT("/Game/RogueRigs/Blueprints/Weapons/BP_BurstRifle.BP_BurstRifle_C"));
-	UClass* DummyClass = LoadTestClass<ARRTargetDummy>(*this, TEXT("/Game/RogueRigs/Blueprints/Debug/BP_TargetDummy.BP_TargetDummy_C"));
 	ARRWeapon* Rifle = RifleClass ? TestWorld.Spawn<ARRWeapon>(RifleClass, FVector(0.f, -2000.f, 100.f)) : nullptr;
-	ARRTargetDummy* DummyA = DummyClass ? TestWorld.Spawn<ARRTargetDummy>(DummyClass, FVector(0.f, 0.f, 0.f)) : nullptr;
-	ARRTargetDummy* DummyB = DummyClass ? TestWorld.Spawn<ARRTargetDummy>(DummyClass, FVector(1000.f, 0.f, 0.f)) : nullptr;
-	if (!TestNotNull(TEXT("rifle spawned"), Rifle) || !TestNotNull(TEXT("dummy A spawned"), DummyA) || !TestNotNull(TEXT("dummy B spawned"), DummyB))
+	ARRChaser* ChaserA = SpawnStillChaser(*this, TestWorld, FVector(0.f, 0.f, 0.f));
+	ARRChaser* ChaserB = SpawnStillChaser(*this, TestWorld, FVector(1000.f, 0.f, 0.f));
+	if (!TestNotNull(TEXT("rifle spawned"), Rifle) || !TestNotNull(TEXT("chaser A spawned"), ChaserA) || !TestNotNull(TEXT("chaser B spawned"), ChaserB))
 	{
 		return false;
 	}
 	TestTrue(TEXT("rifle acquired"), Rifle->Acquire(nullptr));
 	Rifle->GetAutoFireComponent()->StopFiring();
 	UAbilitySystemComponent* RifleASC = Rifle->GetAbilitySystemComponent();
-	auto ApplyHit = [RifleASC](ARRTargetDummy* Dummy, float CritChance)
+	auto ApplyHit = [RifleASC](ARRChaser* Chaser, float CritChance)
 	{
 		RifleASC->SetNumericAttributeBase(URRWeaponAttributeSet::GetCritChanceAttribute(), CritChance);
 		const FGameplayEffectSpecHandle Spec = RifleASC->MakeOutgoingSpec(URRGE_Damage::StaticClass(), 1.f, RifleASC->MakeEffectContext());
-		Dummy->GetAbilitySystemComponent()->ApplyGameplayEffectSpecToSelf(*Spec.Data.Get());
+		Chaser->GetAbilitySystemComponent()->ApplyGameplayEffectSpecToSelf(*Spec.Data.Get());
 	};
 
 	FPushRecorder Recorder(Numbers);
-	// Dummy A: two normal hits (10 + 10) merge; dummy B: one critical hit (10 x CritDamage 1.5).
-	ApplyHit(DummyA, 0.f);
-	ApplyHit(DummyA, 0.f);
-	ApplyHit(DummyB, 1.f);
-	TestEqual(TEXT("two open entries (one per dummy)"), Numbers->GetPendingCount(), 2);
+	// Chaser A: two normal hits (10 + 10) merge; chaser B: one critical hit (10 x CritDamage 1.5).
+	ApplyHit(ChaserA, 0.f);
+	ApplyHit(ChaserA, 0.f);
+	ApplyHit(ChaserB, 1.f);
+	TestEqual(TEXT("two open entries (one per chaser)"), Numbers->GetPendingCount(), 2);
 	Recorder.TickFrames(TestWorld, 18);
 
 	if (!TestEqual(TEXT("two numbers pushed"), Recorder.Numbers.Num(), 2))
@@ -518,7 +517,7 @@ bool FRRDamageNumberNiagaraTest::RunTest(const FString& Parameters)
 	}
 	const int32 IndexA = Recorder.FindValue(20.f);
 	const int32 IndexB = Recorder.FindValue(15.f);
-	if (TestTrue(TEXT("dummy A merged 20"), IndexA != INDEX_NONE) && TestTrue(TEXT("dummy B critical 15"), IndexB != INDEX_NONE))
+	if (TestTrue(TEXT("chaser A merged 20"), IndexA != INDEX_NONE) && TestTrue(TEXT("chaser B critical 15"), IndexB != INDEX_NONE))
 	{
 		TestFalse(TEXT("merged normal hits not critical"), Recorder.Numbers[IndexA].bCritical);
 		TestTrue(TEXT("crit flagged"), Recorder.Numbers[IndexB].bCritical);

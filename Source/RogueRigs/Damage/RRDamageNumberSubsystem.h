@@ -78,7 +78,7 @@ DECLARE_MULTICAST_DELEGATE_OneParam(FRROnDamageNumbersPushed, const TArray<FRRDa
 
 /**
  * The single path of floating damage numbers (damage-numbers, sys-damage-numbers). Damage sources call AddHit on each hit
- * (ARREnemy, ARRTargetDummy). Hits on the same target within MergeWindow seconds (world time, from the first hit) add up
+ * (ARREnemy). Hits on the same target within MergeWindow seconds (world time, from the first hit) add up
  * into one number, critical if any merged hit was; the number keeps the last hit location, so a robot that dies or is
  * destroyed still gets its number where it was. A new entry whose screen footprint would overlap another open entry, or a
  * number still on screen (pushed less than DisplayLifetime ago, risen by RiseVelocity), is stacked above it along
