@@ -311,6 +311,8 @@ task-031-directional-spawn  reference/tasks/task-031-directional-spawn.md
 task-032-01-cpp-fixes  reference/tasks/task-032-third-test/task-032-01-cpp-fixes.md
 task-032-02-bp-fixes  reference/tasks/task-032-third-test/task-032-02-bp-fixes.md
 task-032-third-test  reference/tasks/task-032-third-test.md
+task-033-01-update-tests  reference/tasks/task-033-tests-speed/task-033-01-update-tests.md
+task-033-tests-speed  reference/tasks/task-033-tests-speed.md
 tasks-index  reference/tasks/tasks-index.md
 tech-index  reference/tech/tech-index.md
 terrain-index  reference/gdd/terrain/terrain-index.md
