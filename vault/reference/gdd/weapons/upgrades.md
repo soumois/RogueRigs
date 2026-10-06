@@ -18,7 +18,7 @@ status: approved
 Damage, fire rate, reload speed, crit chance, crit damage, magazine size.
 
 ## Effects (always yellow rarity)
-- Each effect belongs to specific weapons' pools: 4-direction fire (burst rifle). Piercing is no longer an effect but a weapon stat upgrade: blue +1, purple +2, yellow +3 pierced robots (owner 2026-10-05); never grey or green; targeted and global piercing cards give the same whole number (no 1.5 ×).
+- Each effect belongs to specific weapons' pools: 4-direction fire (burst rifle). Piercing is no longer an effect but a weapon stat upgrade: blue +1, purple +2, yellow +3 pierced robots (owner 2026-10-05); never grey or green; targeted and global piercing cards give the same whole number (no 1.5 ×; confirmed by the owner after handover-2026-10-06).
 - New-weapon cards (owner 2026-10-05): the miner starts with the burst rifle only; while fewer than 4 weapons are owned (3 exist in the prototype), each offer slot has a 30 % chance to be a "Nouvelle arme" card, at most one per offer (provisional). Taking few weapons lets the player focus upgrades.
 - 4-direction fire: the main shot stays on the aim; the 3 extra shots are weaker, to protect pillar P2. Milestone M2, like piercing.
 - EMP, stuns machines: provisional, M3 if time allows.

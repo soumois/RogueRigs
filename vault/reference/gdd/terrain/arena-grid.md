@@ -15,7 +15,7 @@ status: approved
 - Arena shape: an irregular asteroid inside the grid, never a rectangle. Cells outside it are void: no floor, no block; the floor edge is the cliff.
 - Cell types in the layout: void, rock, ore, heal_ore, special_ore, barrel, spawn (the miner's start). Robots, consoles, bonus chests and the shuttle are placed during play, not in the layout ([[level-flow]]). Format: [[level-layout-schema]].
 - M1 arena: 240 × 240 cells of 67 uu, the same world size as the former 80 × 80 cells of 200 uu (owner 2026-10-06: finer, more organic destruction like DRGS slabs).
-- One cell = one block = one dig unit. Passages in layouts are at least 3 cells (200 uu) wide, and every unit, the heavy robot included, fits through a 3-cell corridor (provisional, 2026-10-06: a single 67 uu cell is narrower than some units).
+- One cell = one block = one dig unit. Passages in layouts are at least 3 cells (200 uu) wide, and every unit, the heavy robot included, fits through a 3-cell corridor (owner 2026-10-06, confirmed by the owner after handover-2026-10-06: a single 67 uu cell is narrower than some units).
 - Fine layout `arena_m1_fine`: the old layout upscaled 3 × 3, rock and cliff edges then roughened by a deterministic noise rule so they are irregular; ore and heal ore remain clusters, barrels single cells ([[layout-generator-recipe]]).
 - Cell size: a data constant in the grid (Unreal units), tunable in the editor without changing layouts. Value 67 uu (owner 2026-10-06; was 200 uu). The flow field updates incrementally and spread over frames: digging only opens cells, so a path that is 2–3 frames late is still valid (owner 2026-10-06).
 - Layouts are written in cell coordinates only.
