@@ -11,7 +11,7 @@ status: todo
 - agent: cpp
 - depends_on: task-028-02-bp-shield-heavy
 - inputs: [[xp-level-up]], [[sys-progression]], [[sys-stress]], [[drgs-analysis]], [[cpp-standard]], [[sys-automation-tests]], [[drgs-analysis]]
-- expected_output: a scripted bot run (miner aiming at the nearest robot, invulnerable, auto-picking the first card, same seed) logging level times; XPCurve.csv tuned (formula documented) to hit the targets ±20 %; table before/after in sys-progression; tests updated.
+- expected_output: a scripted bot run (miner aiming at the nearest robot, invulnerable, auto-picking the first card, same seed) logging level times; XPCurve.csv tuned (formula documented) to hit the targets ±20 %; table before/after in sys-progression; tests updated. From task-028-01: update Integration.PlacedSpawnerMix for the fifth WeightedEnemyClasses entry (BP_ShieldChaser_C, weight 0) added in task-028-02.
 - done_when: build exits 0 with the editor closed; all `RogueRigs.*` tests pass headless (new ones included); docs updated; lint clean.
 - editor_state: closed
 - token_ceiling: 100000

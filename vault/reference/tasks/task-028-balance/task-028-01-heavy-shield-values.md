@@ -3,7 +3,7 @@ id: task-028-01-heavy-shield-values
 description: "Heavy slam radius 400 uu; shield chaser (30 shield before health, shown as a shell); upgrade value table raised; tests."
 parent: task-028-balance
 kind: task
-status: in-progress
+status: done
 ---
 # Heavy, shield chaser, upgrade values
 
@@ -15,11 +15,11 @@ status: in-progress
 - done_when: build exits 0 with the editor closed; all `RogueRigs.*` tests pass headless (new ones included); docs updated; lint clean.
 - editor_state: closed
 - token_ceiling: 110000
-- model: open
-- tokens: open
-- runs: open
+- model: opus
+- tokens: input 126, cache write 172425, cache read 6777185, output 57532
+- runs: 2
 - milestone: M2
-- result: open
+- result: Heavy slam radius 220 → 400 uu, telegraph trigger 280, arrival 200; UpgradeValues doubled per GDD; Shield attribute (absorbs first, carry-over, OnShieldBroken once, no tick), ARRShieldChaser (ShieldChaser CSV row, shield 30, xp 2), director pack type ShieldChasers and phase FlowShields at 60 s (bKeepWaveTimer). 4 ShieldChaser tests; build 0, 184/184. Commits 257c676, 5d85faf, 12d4de4.
 
 ## Relations
 - [[task-028-balance]] — parent global task.

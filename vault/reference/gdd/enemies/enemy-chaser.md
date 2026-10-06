@@ -23,6 +23,7 @@ status: approved
 
 ## Shield variant (provisional, owner 2026-10-05)
 - A chaser with a 30-point shield that absorbs damage before health; translucent pale blue-white shell that breaks; xp 2; mixed into chaser packs (25 %) after 1:00. Inspired by the DRGS red swarmers.
+- Same hp, speed and damage as the chaser; the shield never regenerates; a hit larger than the remaining shield carries the rest into health. From 1:00, chaser packs hold 2–4 shield chasers among 8–16 chasers (25 % on average); lone chasers, the heavy escort and hordes stay plain chasers (provisional, task-028-01).
 
 ## Relations
 - [[enemies-index]] — parent index.
