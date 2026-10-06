@@ -19,6 +19,13 @@ Reference implementation (Node, seeded LCG, deterministic): `Tools/layout_gen/ar
 7. **Heal ore.** Candidates outside the 17 × 17 square around the spawn: rock cells touching the main network with 2+ rock neighbors (walls), and hidden-pocket floor cells with 3+ rock neighbors. Pick 4 in pockets and 8 in walls, each time the farthest from those already picked (best of 300 random tries).
 8. **Seed search.** Keep seeds that pass: one piece, outline runs ≤ 6, max distance to floor ≤ 5, asteroid 3600–4600 cells, coverage about 0.6, reachable floor 0.65–0.86, 4+ valid pockets; then pick the one with the shortest straight corridor.
 
+## Fine-grid conversion (240 × 240, 67 uu)
+`Tools/layout_gen/arena_fine.js` turns `arena_m1` into `arena_m1_fine` ([[task-029-03-layout-67]]), deterministic (position hash, seed 6701, no RNG state).
+1. Each old cell becomes 3 × 3 cells of the same type. Spawn and barrel keep only the centre cell (rest floor); ore and heal ore stay whole 3 × 3 clusters.
+2. Roughening with 2-octave value noise (scales 6 and 2.5 cells): two erosion passes rock to floor (thresholds 0.42, 0.40), one dilation pass floor to rock (depth 1, threshold 0.60), two erosion passes rock to void on the cliff edge (0.45). An erosion needs 2 rock cells behind the face, so no wall under 3 cells is breached and hidden pockets stay closed. Ore, heal ore, barrel, spawn and the 17 × 17 spawn zone never change.
+3. Passage rule (3 cells, provisional): eroded cells that leave a floor cell outside every all-open 3 × 3 window are reverted; each dilation is kept only if no open cell within 2 cells ends up uncovered.
+Result: 8 floor components as before, reachable floor 85.5 %, minimum passage 3.
+
 ## For the C++ port
 - Replace the LCG with `FRandomStream`; keep every parameter as data.
 - Validation rules: [[level-layout-schema]].
@@ -27,3 +34,4 @@ Reference implementation (Node, seeded LCG, deterministic): `Tools/layout_gen/ar
 - [[pipelines-index]] — parent index.
 - [[level-layout-schema]] — output format and validator.
 - [[sys-grid]] — the grid that will run the C++ port.
+- [[task-029-03-layout-67]] — the fine-grid conversion task.

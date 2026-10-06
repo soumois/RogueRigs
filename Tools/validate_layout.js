@@ -19,7 +19,8 @@ if (!file) { console.log('usage: node Tools/validate_layout.js <layout.json> [--
 
 const errors = [];
 const err = (m) => errors.push(m);
-let grid = null, W = 0, H = 0, coverage = 0, reachable = 0;
+let grid = null, W = 0, H = 0, coverage = 0, reachable = 0, minPassage = null, narrowCells = 0;
+const MAX_PASSAGE = 4; // widths are measured up to this value
 const counts = {};
 
 let L;
@@ -81,6 +82,24 @@ if (spawn && floor) {
   reachable = n / floor;
 }
 
+// passage width: for each open cell (floor, spawn, barrel: a barrel is a single destructible cell, not a wall),
+// the largest k <= MAX_PASSAGE such that the cell lies in an all-open k x k window. minPassage = smallest over all open cells.
+{
+  const isOpen = (x, y) => x >= 0 && y >= 0 && x < W && y < H && (grid[y][x] === null || grid[y][x] === 'spawn' || grid[y][x] === 'barrel');
+  const best = Array.from({ length: H }, () => new Uint8Array(W));
+  const sat = Array.from({ length: H + 1 }, () => new Int32Array(W + 1));
+  for (let y = 0; y < H; y++) for (let x = 0; x < W; x++) sat[y + 1][x + 1] = sat[y][x + 1] + sat[y + 1][x] - sat[y][x] + (isOpen(x, y) ? 1 : 0);
+  for (let k = 1; k <= MAX_PASSAGE; k++)
+    for (let y = 0; y + k <= H; y++) for (let x = 0; x + k <= W; x++)
+      if (sat[y + k][x + k] - sat[y][x + k] - sat[y + k][x] + sat[y][x] === k * k)
+        for (let dy = 0; dy < k; dy++) for (let dx = 0; dx < k; dx++) if (best[y + dy][x + dx] < k) best[y + dy][x + dx] = k;
+  for (let y = 0; y < H; y++) for (let x = 0; x < W; x++) if (isOpen(x, y)) {
+    if (minPassage === null || best[y][x] < minPassage) minPassage = best[y][x];
+  }
+  const need = briefFile ? (() => { try { return JSON.parse(fs.readFileSync(briefFile, 'utf8')).min_passage_width || 0; } catch (e) { return 0; } })() : 0;
+  if (need) for (let y = 0; y < H; y++) for (let x = 0; x < W; x++) if (isOpen(x, y) && best[y][x] < need) narrowCells++;
+}
+
 // ---- brief checks (optional) ----
 if (briefFile) {
   let B;
@@ -96,6 +115,10 @@ if (briefFile) {
     if (typeof m !== 'number' || m < 0 || m > 1) err('brief reachable_floor_min must be a number in [0, 1]');
     else if (reachable < m) err(`reachable floor ${(reachable * 100).toFixed(1)}% below brief minimum ${(m * 100).toFixed(1)}%`);
   }
+  if (B.min_passage_width !== undefined) {
+    if (!Number.isInteger(B.min_passage_width) || B.min_passage_width < 1 || B.min_passage_width > MAX_PASSAGE) err(`brief min_passage_width must be an integer in [1, ${MAX_PASSAGE}]`);
+    else if (narrowCells) err(`${narrowCells} open cell(s) lie in a passage narrower than ${B.min_passage_width} cells (minimum found ${minPassage})`);
+  }
   for (const [t, range] of Object.entries(B.counts || {})) {
     const n = counts[t] || 0;
     if (n < range[0] || n > range[1]) err(`${t} count ${n} outside brief [${range[0]}, ${range[1]}]`);
@@ -108,7 +131,7 @@ function report() {
   if (grid) {
     console.log(`layout ${L && L.name} ${W}x${H} — legend: # rock, o ore, + heal_ore, * special_ore, B barrel, S spawn, . floor, (space) void`);
     for (let y = 0; y < H; y++) console.log(grid[y].map((t) => (t ? GLYPH[t] : '.')).join(''));
-    console.log(`counts: ${JSON.stringify(counts)}; block coverage ${(coverage * 100).toFixed(1)}% of non-void cells; reachable floor ${(reachable * 100).toFixed(1)}%`);
+    console.log(`counts: ${JSON.stringify(counts)}; block coverage ${(coverage * 100).toFixed(1)}% of non-void cells; reachable floor ${(reachable * 100).toFixed(1)}%; minimum passage width ${minPassage === null ? 'n/a' : (minPassage >= MAX_PASSAGE ? '>=' + MAX_PASSAGE : minPassage)}`);
   }
   if (errors.length) { console.log(`FAIL: ${errors.length} error(s)`); for (const e of errors) console.log(` - ${e}`); process.exit(1); }
   console.log('OK'); process.exit(0);
