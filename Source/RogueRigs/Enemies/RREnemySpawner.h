@@ -58,6 +58,9 @@ DECLARE_DYNAMIC_MULTICAST_DELEGATE_TwoParams(FRROnHordeStartedSignature, int32, 
 /** Horde HordeIndex: its front is over, Spawned robots spawned. */
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_TwoParams(FRROnHordeFinishedSignature, int32, HordeIndex, int32, Spawned);
 
+/** The level entered overtime (hordes every 30 s, wave interval halving each overtime minute). */
+DECLARE_DYNAMIC_MULTICAST_DELEGATE(FRROnOvertimeStartedSignature);
+
 /** Enemy was recycled (removed far off screen without dying); called just before its Destroy. */
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FRROnEnemyRecycledSignature, ARREnemy*, Enemy);
 
@@ -306,6 +309,18 @@ public:
 	UPROPERTY(BlueprintAssignable, Category = "Spawner|Director")
 	FRROnHordeFinishedSignature OnHordeFinished;
 
+	/** The level entered overtime (DirectorConfig.Overtime, from 3:30 of level time). */
+	UPROPERTY(BlueprintAssignable, Category = "Spawner|Director")
+	FRROnOvertimeStartedSignature OnOvertimeStarted;
+
+	/** True once the level is in overtime. */
+	UFUNCTION(BlueprintPure, Category = "Spawner|Director")
+	bool IsInOvertime() const { return Director.IsInOvertime(DirectorConfig); }
+
+	/** Wave interval the director uses now (phase ramp x overtime factor); 0 without timed waves. */
+	UFUNCTION(BlueprintPure, Category = "Spawner|Director")
+	float GetCurrentWaveInterval() const { return Director.GetCurrentWaveInterval(DirectorConfig); }
+
 	/** True when the wave director drives the timed spawning (DirectorConfig.bEnabled). */
 	UFUNCTION(BlueprintPure, Category = "Spawner|Director")
 	bool IsDirectorEnabled() const { return DirectorConfig.bEnabled; }
@@ -324,7 +339,7 @@ public:
 	UFUNCTION(BlueprintPure, Category = "Spawner|Director")
 	ERRHordeTrigger GetHordeTrigger() const { return DirectorConfig.HordeTrigger; }
 
-	/** Number of hordes in the director data. */
+	/** Number of hordes in the director data (overtime hordes not included). */
 	UFUNCTION(BlueprintPure, Category = "Spawner|Director")
 	int32 GetHordeCount() const { return DirectorConfig.Hordes.Num(); }
 

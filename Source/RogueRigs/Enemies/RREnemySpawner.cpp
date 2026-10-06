@@ -682,6 +682,10 @@ void ARREnemySpawner::ExecuteDirectorAction(const FRRDirectorAction& Action)
 		HordePlanIndex = INDEX_NONE;
 		break;
 	}
+	case FRRDirectorAction::EType::OvertimeStarted:
+		UE_LOG(LogRogueRigs, Log, TEXT("ARREnemySpawner %s: overtime at %.1f s."), *GetName(), RunTime);
+		OnOvertimeStarted.Broadcast();
+		break;
 	}
 }
 
@@ -904,11 +908,11 @@ ERRSpawnSide ARREnemySpawner::PrepareHorde(int32 HordeIndex)
 	const ARRArenaGrid* Grid = GetGrid();
 	FBox2D View;
 	const int32 FreeSlots = MaxAlive - GetAliveCount();
-	if (!DirectorConfig.Hordes.IsValidIndex(HordeIndex) || !Grid || FreeSlots <= 0 || !GetViewRectangle(View))
+	if (!DirectorConfig.FindHorde(HordeIndex) || !Grid || FreeSlots <= 0 || !GetViewRectangle(View))
 	{
 		return HordeSide;
 	}
-	const FRRDirectorHorde& Horde = DirectorConfig.Hordes[HordeIndex];
+	const FRRDirectorHorde& Horde = *DirectorConfig.FindHorde(HordeIndex);
 
 	// Robots: listed groups (front ones first), the rest of the size filled with FillClass, clamped to the free slots.
 	const int32 SizeMin = FMath::Max(Horde.SizeMin, 1);

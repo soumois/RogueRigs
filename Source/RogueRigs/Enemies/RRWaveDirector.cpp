@@ -41,6 +41,29 @@ int32 FRRWaveDirectorConfig::FindPackType(FName Name) const
 	return PackTypes.IndexOfByPredicate([Name](const FRRDirectorPackType& Type) { return Type.Name == Name; });
 }
 
+const FRRDirectorHorde* FRRWaveDirectorConfig::FindHorde(int32 Index) const
+{
+	if (Hordes.IsValidIndex(Index))
+	{
+		return &Hordes[Index];
+	}
+	return Index >= 0 && IsOvertimeHorde(Index) ? &Overtime.Horde : nullptr;
+}
+
+float FRRWaveDirectorConfig::GetHordeFrontTime(int32 Index) const
+{
+	const FRRDirectorHorde* Horde = FindHorde(Index);
+	if (!Horde)
+	{
+		return -1.f;
+	}
+	if (IsOvertimeHorde(Index))
+	{
+		return Overtime.StartTime + (Index - Hordes.Num()) * Overtime.HordeInterval + FMath::Max(Horde->LullSeconds, 0.f);
+	}
+	return Horde->TriggerTime;
+}
+
 FRRWaveDirectorConfig FRRWaveDirectorConfig::MakeDefault()
 {
 	using namespace RRWaveDirectorDefaults;
@@ -116,6 +139,12 @@ FRRWaveDirectorConfig FRRWaveDirectorConfig::MakeDefault()
 		Horde.Members = { Member(ARRHeavy::StaticClass(), 3, 5, /*bFront*/ true), Member(ARRKamikaze::StaticClass(), 3, 5) };
 		Horde.FillClass = ARRChaser::StaticClass();
 	}
+	// Overtime (owner 2026-10-06 third test, provisional): from 3:30 a horde every 30 s (same front as the timed hordes), the
+	// wave interval halved at each overtime minute begun.
+	Config.Overtime.Horde = Config.Hordes[0];
+	Config.Overtime.Horde.TriggerTime = 0.f;
+	Config.Overtime.Horde.TriggerAlert = 1.f;
+
 	// Shooter counter (owner 2026-10-06): at most 6 alive; a pack drawn at the cap gets chasers in place of its shooters.
 	Config.ShooterMaxAlive = 6;
 	Config.ShooterCapReplacement = ARRChaser::StaticClass();
@@ -132,6 +161,37 @@ void FRRWaveDirector::Reset()
 	HordeStates.Reset();
 	ActiveHorde = INDEX_NONE;
 	HordeClock = 0.f;
+	bOvertimeAnnounced = false;
+}
+
+bool FRRWaveDirector::IsInOvertime(const FRRWaveDirectorConfig& Config) const
+{
+	return Config.Overtime.bEnabled && RunTime >= Config.Overtime.StartTime;
+}
+
+float FRRWaveDirector::GetOvertimeWaveFactor(const FRRWaveDirectorConfig& Config) const
+{
+	if (!IsInOvertime(Config))
+	{
+		return 1.f;
+	}
+	const int32 Steps = FMath::FloorToInt((RunTime - Config.Overtime.StartTime) / FMath::Max(Config.Overtime.StepSeconds, 1.f)) + 1;
+	return FMath::Pow(FMath::Clamp(Config.Overtime.WaveIntervalMultiplier, 0.01f, 1.f), static_cast<float>(Steps));
+}
+
+float FRRWaveDirector::GetCurrentWaveInterval(const FRRWaveDirectorConfig& Config) const
+{
+	if (!Config.Phases.IsValidIndex(PhaseIndex))
+	{
+		return 0.f;
+	}
+	const FRRDirectorPhase& Phase = Config.Phases[PhaseIndex];
+	const float Interval = GetWaveInterval(Phase, RunTime - Phase.StartTime);
+	if (Interval <= 0.f)
+	{
+		return 0.f;
+	}
+	return FMath::Max(Interval * GetOvertimeWaveFactor(Config), Config.Overtime.MinWaveInterval);
 }
 
 ERRHordeState FRRWaveDirector::GetHordeState(int32 Index) const
@@ -152,22 +212,24 @@ float FRRWaveDirector::GetWaveInterval(const FRRDirectorPhase& Phase, float Phas
 
 float FRRWaveDirector::GetHordeSpawnFraction(const FRRWaveDirectorConfig& Config) const
 {
-	if (!Config.Hordes.IsValidIndex(ActiveHorde) || GetHordeState(ActiveHorde) != ERRHordeState::Spawning)
+	const FRRDirectorHorde* HordePtr = Config.FindHorde(ActiveHorde);
+	if (!HordePtr || GetHordeState(ActiveHorde) != ERRHordeState::Spawning)
 	{
 		return 0.f;
 	}
-	const FRRDirectorHorde& Horde = Config.Hordes[ActiveHorde];
+	const FRRDirectorHorde& Horde = *HordePtr;
 	const float Lull = FMath::Max(Horde.LullSeconds, 0.f);
 	return Horde.SpreadSeconds > 0.f ? FMath::Clamp((HordeClock - Lull) / Horde.SpreadSeconds, 0.f, 1.f) : 1.f;
 }
 
 float FRRWaveDirector::GetSecondsUntilHordeFront(const FRRWaveDirectorConfig& Config) const
 {
-	if (!Config.Hordes.IsValidIndex(ActiveHorde))
+	const FRRDirectorHorde* Horde = Config.FindHorde(ActiveHorde);
+	if (!Horde)
 	{
 		return -1.f;
 	}
-	return FMath::Max(FMath::Max(Config.Hordes[ActiveHorde].LullSeconds, 0.f) - HordeClock, 0.f);
+	return FMath::Max(FMath::Max(Horde->LullSeconds, 0.f) - HordeClock, 0.f);
 }
 
 void FRRWaveDirector::Advance(const FRRWaveDirectorConfig& Config, float DeltaSeconds, float Alert, FRandomStream& Stream, TArray<FRRDirectorAction>& OutActions)
@@ -177,6 +239,20 @@ void FRRWaveDirector::Advance(const FRRWaveDirectorConfig& Config, float DeltaSe
 		HordeStates.Add(ERRHordeState::Pending);
 	}
 	RunTime += DeltaSeconds;
+	if (IsInOvertime(Config))
+	{
+		// One more overtime horde per HordeInterval begun.
+		const int32 OvertimeHordes = FMath::FloorToInt((RunTime - Config.Overtime.StartTime) / FMath::Max(Config.Overtime.HordeInterval, 1.f)) + 1;
+		while (HordeStates.Num() < Config.Hordes.Num() + OvertimeHordes)
+		{
+			HordeStates.Add(ERRHordeState::Pending);
+		}
+		if (!bOvertimeAnnounced)
+		{
+			bOvertimeAnnounced = true;
+			OutActions.AddDefaulted_GetRef().Type = FRRDirectorAction::EType::OvertimeStarted;
+		}
+	}
 
 	// Phase: the last one whose start time is reached.
 	int32 NewPhase = INDEX_NONE;
@@ -235,7 +311,7 @@ void FRRWaveDirector::Advance(const FRRWaveDirectorConfig& Config, float DeltaSe
 	bool bWaveDue = bPhaseStarted && Phase.bWaveOnStart;
 	if (!bPhaseStarted)
 	{
-		const float Interval = GetWaveInterval(Phase, RunTime - Phase.StartTime);
+		const float Interval = GetCurrentWaveInterval(Config);
 		if (Interval > 0.f)
 		{
 			WaveTimer += DeltaSeconds;
@@ -263,21 +339,40 @@ void FRRWaveDirector::AdvanceHordes(const FRRWaveDirectorConfig& Config, float D
 {
 	if (ActiveHorde == INDEX_NONE)
 	{
-		// Only the first pending horde may trigger: hordes come in order, one at a time.
-		const int32 Next = HordeStates.IndexOfByKey(ERRHordeState::Pending);
-		if (!Config.Hordes.IsValidIndex(Next))
+		// Only the first pending horde of the list may trigger (hordes come in order, one at a time); the first pending overtime
+		// horde may trigger too, so an alert horde never reached does not block overtime.
+		int32 Next = INDEX_NONE;
+		float LullStart = 0.f;
+		const int32 FirstPending = HordeStates.IndexOfByKey(ERRHordeState::Pending);
+		if (Config.Hordes.IsValidIndex(FirstPending))
 		{
-			return;
+			const FRRDirectorHorde& Listed = Config.Hordes[FirstPending];
+			LullStart = Listed.TriggerTime - FMath::Max(Listed.LullSeconds, 0.f);
+			if (Config.HordeTrigger == ERRHordeTrigger::RunTime ? RunTime >= LullStart : Alert >= Listed.TriggerAlert)
+			{
+				Next = FirstPending;
+			}
 		}
-		const FRRDirectorHorde& Horde = Config.Hordes[Next];
-		const float LullStart = Horde.TriggerTime - FMath::Max(Horde.LullSeconds, 0.f);
-		const bool bTriggered = Config.HordeTrigger == ERRHordeTrigger::RunTime ? RunTime >= LullStart : Alert >= Horde.TriggerAlert;
-		if (!bTriggered)
+		if (Next == INDEX_NONE)
+		{
+			// Overtime hordes exist in HordeStates once their lull start is reached.
+			for (int32 Index = Config.Hordes.Num(); Index < HordeStates.Num(); ++Index)
+			{
+				if (HordeStates[Index] == ERRHordeState::Pending)
+				{
+					Next = Index;
+					LullStart = Config.GetHordeFrontTime(Index) - FMath::Max(Config.Overtime.Horde.LullSeconds, 0.f);
+					break;
+				}
+			}
+		}
+		if (Next == INDEX_NONE)
 		{
 			return;
 		}
 		ActiveHorde = Next;
-		HordeClock = Config.HordeTrigger == ERRHordeTrigger::RunTime ? FMath::Max(RunTime - LullStart, 0.f) : 0.f;
+		const bool bTimed = Config.HordeTrigger == ERRHordeTrigger::RunTime || Config.IsOvertimeHorde(Next);
+		HordeClock = bTimed ? FMath::Max(RunTime - LullStart, 0.f) : 0.f;
 		HordeStates[Next] = ERRHordeState::Lull;
 		FRRDirectorAction& Lull = OutActions.AddDefaulted_GetRef();
 		Lull.Type = FRRDirectorAction::EType::HordeLull;
@@ -288,7 +383,7 @@ void FRRWaveDirector::AdvanceHordes(const FRRWaveDirectorConfig& Config, float D
 		HordeClock += DeltaSeconds;
 	}
 
-	const FRRDirectorHorde& Horde = Config.Hordes[ActiveHorde];
+	const FRRDirectorHorde& Horde = *Config.FindHorde(ActiveHorde);
 	const float Lull = FMath::Max(Horde.LullSeconds, 0.f);
 	const float Warning = FMath::Clamp(Horde.WarningSeconds, 0.f, Lull);
 	ERRHordeState& State = HordeStates[ActiveHorde];

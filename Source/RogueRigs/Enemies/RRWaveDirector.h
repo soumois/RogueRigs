@@ -198,6 +198,45 @@ struct FRRDirectorHorde
 	TSubclassOf<ARREnemy> FillClass;
 };
 
+/**
+ * Overtime (difficulty, owner 2026-10-06 third test, provisional): from StartTime seconds of spawning (level time), a horde
+ * (Horde template) whose lull starts every HordeInterval seconds (StartTime, StartTime + HordeInterval...), and the wave interval
+ * multiplied by WaveIntervalMultiplier once per overtime step begun (x0.5 from StartTime, x0.25 from StartTime + StepSeconds...).
+ */
+USTRUCT(BlueprintType)
+struct FRRDirectorOvertime
+{
+	GENERATED_BODY()
+
+	/** True: overtime starts at StartTime. */
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Director|Overtime")
+	bool bEnabled = true;
+
+	/** Seconds of spawning at which overtime starts (210 = 3:30). */
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Director|Overtime", meta = (ClampMin = 0, Units = "s"))
+	float StartTime = 210.f;
+
+	/** Seconds between the lull starts of two overtime hordes (30). */
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Director|Overtime", meta = (ClampMin = 1, Units = "s"))
+	float HordeInterval = 30.f;
+
+	/** Length of one overtime step (60 s: one overtime minute). */
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Director|Overtime", meta = (ClampMin = 1, Units = "s"))
+	float StepSeconds = 60.f;
+
+	/** Factor applied to the wave interval per overtime step begun (0.5: halved at each overtime minute). */
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Director|Overtime", meta = (ClampMin = 0.01, ClampMax = 1))
+	float WaveIntervalMultiplier = 0.5f;
+
+	/** Shortest wave interval overtime may reach (s); 0 = no floor. */
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Director|Overtime", meta = (ClampMin = 0, Units = "s"))
+	float MinWaveInterval = 0.f;
+
+	/** Template of every overtime horde (its TriggerTime and TriggerAlert are unused). */
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Director|Overtime")
+	FRRDirectorHorde Horde;
+};
+
 /** Every tunable of the wave director (edited on the spawner, ARREnemySpawner::DirectorConfig). */
 USTRUCT(BlueprintType)
 struct FRRWaveDirectorConfig
@@ -236,8 +275,24 @@ struct FRRWaveDirectorConfig
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Director")
 	TSubclassOf<ARREnemy> ShooterCapReplacement;
 
+	/** Overtime: hordes every 30 s and a shrinking wave interval from 3:30 of level time. */
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Director")
+	FRRDirectorOvertime Overtime;
+
 	/** Index of the pack type called Name; INDEX_NONE when none. */
 	int32 FindPackType(FName Name) const;
+
+	/**
+	 * Horde of index Index: Hordes[Index], or the overtime template for Index >= Hordes.Num() while overtime is enabled (overtime
+	 * horde Index - Hordes.Num()). Null otherwise.
+	 */
+	const FRRDirectorHorde* FindHorde(int32 Index) const;
+
+	/** True when Index is an overtime horde. */
+	bool IsOvertimeHorde(int32 Index) const { return Overtime.bEnabled && Index >= Hordes.Num(); }
+
+	/** Seconds of spawning at which the front of horde Index starts (RunTime trigger or overtime); -1 when none. */
+	float GetHordeFrontTime(int32 Index) const;
 
 	/** Provisional defaults (owner 2026-10-06, enemies-index): a lone chaser from 1 s, first pack at 15 s, multi-side flow with shooters riding behind, hordes at 95 s and 175 s. */
 	static FRRWaveDirectorConfig MakeDefault();
@@ -262,7 +317,9 @@ struct FRRDirectorAction
 		/** Index = horde whose front starts spawning. */
 		HordeStarted,
 		/** Index = horde whose front is fully spawned. */
-		HordeFinished
+		HordeFinished,
+		/** Overtime starts (once). */
+		OvertimeStarted
 	};
 
 	/** Kind of order. */
@@ -318,6 +375,15 @@ struct ROGUERIGS_API FRRWaveDirector
 	/** Wave interval of Phase at PhaseSeconds into it (linear ramp from WaveIntervalStart to WaveIntervalEnd). */
 	static float GetWaveInterval(const FRRDirectorPhase& Phase, float PhaseSeconds);
 
+	/** True once RunTime reached Config.Overtime.StartTime (overtime enabled). */
+	bool IsInOvertime(const FRRWaveDirectorConfig& Config) const;
+
+	/** Factor on the wave interval at RunTime: 1 before overtime, WaveIntervalMultiplier ^ (overtime steps begun) after. */
+	float GetOvertimeWaveFactor(const FRRWaveDirectorConfig& Config) const;
+
+	/** Wave interval used now (current phase ramp times the overtime factor, floored at MinWaveInterval); 0 without timed waves. */
+	float GetCurrentWaveInterval(const FRRWaveDirectorConfig& Config) const;
+
 protected:
 	/** Steps the hordes (trigger, lull, banner, front, end). */
 	void AdvanceHordes(const FRRWaveDirectorConfig& Config, float DeltaSeconds, float Alert, TArray<FRRDirectorAction>& OutActions);
@@ -345,4 +411,7 @@ protected:
 
 	/** Seconds since the lull of ActiveHorde started. */
 	float HordeClock = 0.f;
+
+	/** True once OvertimeStarted was ordered. */
+	bool bOvertimeAnnounced = false;
 };

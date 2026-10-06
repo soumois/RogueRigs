@@ -162,7 +162,9 @@ bool FRRSpawnerDirectorPhaseTimesTest::RunTest(const FString& Parameters)
 	using namespace RRSpawnerDirectorTests;
 	using EType = FRRDirectorAction::EType;
 
-	const FRRWaveDirectorConfig Config = FRRWaveDirectorConfig::MakeDefault();
+	// The phase rule before overtime (overtime from 3:30 has its own test, DirectorOvertime).
+	FRRWaveDirectorConfig Config = FRRWaveDirectorConfig::MakeDefault();
+	Config.Overtime.bEnabled = false;
 	const int32 FirstChasers = Config.FindPackType(TEXT("FirstChasers"));
 	const int32 Chasers = Config.FindPackType(TEXT("Chasers"));
 	const int32 Heavies = Config.FindPackType(TEXT("Heavies"));
@@ -801,6 +803,100 @@ bool FRRSpawnerDirectorShooterCapTest::RunTest(const FString& Parameters)
 	}
 	TestEqual(TEXT("the packs add one shooter in all"), PackShooters, 1);
 	TestEqual(TEXT("6 shooters alive"), Setup.Spawner->GetAliveCountOfClass(ARRShooter::StaticClass()), 6);
+	return true;
+}
+
+IMPLEMENT_SIMPLE_AUTOMATION_TEST(FRRSpawnerDirectorOvertimeTest, "RogueRigs.Spawner.DirectorOvertime",
+	EAutomationTestFlags::EditorContext | EAutomationTestFlags::EngineFilter)
+
+bool FRRSpawnerDirectorOvertimeTest::RunTest(const FString& Parameters)
+{
+	using namespace RRSpawnerDirectorTests;
+	using EType = FRRDirectorAction::EType;
+
+	// Defaults (difficulty gdd, owner 2026-10-06 third test, provisional): from 3:30 a horde every 30 s, the wave interval
+	// halved at each overtime minute begun.
+	const FRRWaveDirectorConfig Config = FRRWaveDirectorConfig::MakeDefault();
+	TestTrue(TEXT("overtime on"), Config.Overtime.bEnabled);
+	TestEqual(TEXT("overtime from 210 s (3:30)"), Config.Overtime.StartTime, 210.f);
+	TestEqual(TEXT("a horde every 30 s"), Config.Overtime.HordeInterval, 30.f);
+	TestEqual(TEXT("steps of 60 s"), Config.Overtime.StepSeconds, 60.f);
+	TestEqual(TEXT("interval x 0.5 per step"), Config.Overtime.WaveIntervalMultiplier, 0.5f);
+	TestEqual(TEXT("overtime horde = the timed horde front (40-60)"), Config.Overtime.Horde.SizeMin, Config.Hordes[0].SizeMin);
+	TestEqual(TEXT("first overtime horde front at 215 s (lull from 210 s)"), Config.GetHordeFrontTime(Config.Hordes.Num()), 215.f);
+	TestEqual(TEXT("second overtime horde front at 245 s"), Config.GetHordeFrontTime(Config.Hordes.Num() + 1), 245.f);
+
+	// Wave interval along the run (one scheduler, sampled each frame).
+	FRRWaveDirector Director;
+	Director.Reset();
+	FRandomStream Stream(20261006);
+	TArray<FRRDirectorAction> Frame;
+	TArray<FTimedAction> Actions;
+	TMap<int32, float> IntervalAt;
+	int32 LastSecond = -1;
+	const int32 Frames = FMath::RoundToInt(345.f * 60.f);
+	for (int32 Index = 0; Index < Frames; ++Index)
+	{
+		Frame.Reset();
+		Director.Advance(Config, 1.f / 60.f, 0.f, Stream, Frame);
+		for (const FRRDirectorAction& Action : Frame)
+		{
+			Actions.Add({ Director.GetRunTime(), Action });
+		}
+		// First frame of each second of run time.
+		const int32 Second = FMath::FloorToInt(Director.GetRunTime());
+		if (Second != LastSecond)
+		{
+			LastSecond = Second;
+			IntervalAt.Add(Second, Director.GetCurrentWaveInterval(Config));
+		}
+	}
+	const float Before = IntervalAt.FindRef(209);
+	const float FirstMinute = IntervalAt.FindRef(211);
+	const float SecondMinute = IntervalAt.FindRef(271);
+	const float ThirdMinute = IntervalAt.FindRef(331);
+	AddInfo(FString::Printf(TEXT("wave interval 209 s %.3f, 211 s %.3f, 271 s %.3f, 331 s %.3f"), Before, FirstMinute, SecondMinute, ThirdMinute));
+	TestNearlyEqual(TEXT("unchanged at 209 s (before overtime)"), Before, FRRWaveDirector::GetWaveInterval(Config.Phases.Last(), 209.f - Config.Phases.Last().StartTime), 0.02f);
+	TestNearlyEqual(TEXT("halved at 3:30"), FirstMinute, FRRWaveDirector::GetWaveInterval(Config.Phases.Last(), 211.f - Config.Phases.Last().StartTime) * 0.5f, 0.02f);
+	TestNearlyEqual(TEXT("quartered at 4:30"), SecondMinute, FRRWaveDirector::GetWaveInterval(Config.Phases.Last(), 271.f - Config.Phases.Last().StartTime) * 0.25f, 0.02f);
+	TestNearlyEqual(TEXT("an eighth at 5:30"), ThirdMinute, FRRWaveDirector::GetWaveInterval(Config.Phases.Last(), 331.f - Config.Phases.Last().StartTime) * 0.125f, 0.02f);
+
+	const TArray<float> Overtime = DirectorTimesOf(Actions, EType::OvertimeStarted);
+	TestTrue(TEXT("one OvertimeStarted at 210 s"), Overtime.Num() == 1 && FMath::Abs(Overtime[0] - 210.f) <= TimeTolerance);
+	// Hordes: the two timed ones, then overtime fronts at 215, 245, 275, 305, 335 s.
+	const TArray<float> Fronts = DirectorTimesOf(Actions, EType::HordeStarted);
+	const TArray<float> Lulls = DirectorTimesOf(Actions, EType::HordeLull);
+	AddInfo(FString::Printf(TEXT("horde lulls at %s; fronts at %s"),
+		*FString::JoinBy(Lulls, TEXT(", "), [](float Time) { return FString::Printf(TEXT("%.2f"), Time); }),
+		*FString::JoinBy(Fronts, TEXT(", "), [](float Time) { return FString::Printf(TEXT("%.2f"), Time); })));
+	const float Expected[] = { 95.f, 175.f, 215.f, 245.f, 275.f, 305.f, 335.f };
+	if (TestEqual(TEXT("seven fronts in 345 s"), Fronts.Num(), 7))
+	{
+		for (int32 Index = 0; Index < 7; ++Index)
+		{
+			TestTrue(*FString::Printf(TEXT("front %d at %.0f s"), Index, Expected[Index]), FMath::Abs(Fronts[Index] - Expected[Index]) <= TimeTolerance);
+		}
+	}
+	TestTrue(TEXT("announced (banner) for every overtime horde"), DirectorTimesOf(Actions, EType::HordeAnnounced).Num() == 7);
+
+	// Waves: more per minute in overtime than in the minute before it, despite the horde lulls.
+	auto CountWaves = [&Actions](float From, float To)
+	{
+		return Algo::CountIf(Actions, [From, To](const FTimedAction& Timed) { return Timed.Action.Type == EType::SpawnWave && Timed.Time >= From && Timed.Time < To; });
+	};
+	const int32 WavesBefore = CountWaves(150.f, 210.f);
+	const int32 WavesFirst = CountWaves(210.f, 270.f);
+	const int32 WavesSecond = CountWaves(270.f, 330.f);
+	AddInfo(FString::Printf(TEXT("waves 150-210 s: %d, 210-270 s: %d, 270-330 s: %d"), WavesBefore, WavesFirst, WavesSecond));
+	TestTrue(TEXT("more waves in the first overtime minute"), WavesFirst > WavesBefore);
+	TestTrue(TEXT("more waves again in the second"), WavesSecond > WavesFirst);
+
+	// Off: no overtime action, no extra horde.
+	FRRWaveDirectorConfig Off = Config;
+	Off.Overtime.bEnabled = false;
+	const TArray<FTimedAction> OffActions = RunDirectorSchedule(Off, 300.f, [](float) { return 0.f; }, 20261006);
+	TestEqual(TEXT("overtime off: no OvertimeStarted"), DirectorTimesOf(OffActions, EType::OvertimeStarted).Num(), 0);
+	TestEqual(TEXT("overtime off: two fronts"), DirectorTimesOf(OffActions, EType::HordeStarted).Num(), 2);
 	return true;
 }
 
