@@ -3,7 +3,7 @@ id: task-027-02-bp-juice
 description: "Cyan XP cube trail and collect sparkle, kamikaze core light ramp, console ground ring gauge, chevrons to the shuttle, green heal ring."
 parent: task-027-juice
 kind: task
-status: in-progress
+status: done
 ---
 # Juice visuals
 
@@ -15,11 +15,11 @@ status: in-progress
 - done_when: PIE check through the cheat property route with no log error; Blueprint docs updated; lint clean.
 - editor_state: open
 - token_ceiling: 120000
-- model: open
-- tokens: open
-- runs: open
+- model: sonnet
+- tokens: input 142, cache write 129353, cache read 5707966, output 46372
+- runs: 2
 - milestone: M2
-- result: open
+- result: WBP_HUD stack moved down (ObjectiveText 66, HackBar 100, ShuttleText 122); ore/heal pickups pop 25–67 uu; M_GroundRing + instances; BP_PickupSparkle and BP_HealRing (ARRExplosionFX children); BP_PickupXP trail on OnMagnetStart, sparkle on OnCollected; BP_HealRing on heal collect; BP_Kamikaze CoreLight = flare progress × 60000; BP_ObjectiveConsole HackRing scaled by progress; BP_ExtractionShuttle 4 chevrons toward the shuttle. PIE: console ring and chevrons checked, no game log error; flare, trail, sparkle and heal ring compiled only. Not done: damage digit outline; trail and sparkle are meshes, not Niagara. Visual checks moved into task-027-03. Commits 305d6c2, cfc92a3, 3cc22ff, 6b9f14d.
 
 ## Relations
 - [[task-027-juice]] — parent global task.
