@@ -31,3 +31,4 @@ kind: doc
 - [[sys-progression]] — the AddXP GrantXP calls.
 - [[sys-objectives]] — the run flow the alert and console cheats drive.
 - [[sys-automation-tests]] — the tests that prove both routes.
+- [[sys-progression]] — the rr.Pacing.Run XP pacing bot (Debug folder) and its results.
