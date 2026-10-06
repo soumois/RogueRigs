@@ -19,7 +19,7 @@ status: in-progress
 - tokens: open
 - runs: open
 - milestone: M2
-- result: open
+- result: built (7837267): XP bursts 3/4/6/12 cubes, arc + bounce + rest + magnet via URRPickupSubsystem, OnPickupCollectedAt, kamikaze flare events/getters, crit gold, number stacking; 175/175 tests; S7 400-chaser burst avg 9.19 p99 11.34 ms. Ore and heal pop one chunk per block (GDD), not 3-5.
 
 ## Relations
 - [[task-027-juice]] — parent global task.

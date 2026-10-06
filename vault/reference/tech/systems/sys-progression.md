@@ -9,7 +9,7 @@ kind: doc
 - responsibility: the miner's XP and level: accumulate XP, level up along the CSV curve with carry-over, broadcast events for the HUD. What a level-up triggers (heal, effect, paused upgrade choice) is the level-up flow, `URRLevelUpComponent` in the same folder ([[sys-level-up]]).
 - main_classes (`Source/RogueRigs/Progression/`): `URRProgressionComponent : UActorComponent` (`RRProgressionComponent.h`, no tick), a default subobject `Progression` of `ARRMiner` (`GetProgression()`); `FRRXPCurveRow` (`RRXPCurveRow.h`, `FTableRowBase`, one float `XPToNextLevel`).
 - entry_points:
-  - `AddXP(float Raw)` (BlueprintCallable): `Raw` <= 0 ignored; adds `Raw × XPGain` (owner ASC `URRPlayerAttributeSet::XPGain`, 1 without the set); while XP >= the need of the current level: subtract it, level + 1, `OnLevelUp(NewLevel)`; then `OnXPChanged(Current, Needed, Level)` once. Several levels can pass in one call.
+  - `AddXP(float Raw)` (BlueprintCallable): `Raw` <= 0 ignored; adds `Raw × XPGain` (owner ASC `URRPlayerAttributeSet::XPGain`, 1 without the set); while XP >= the need of the current level - 0.001 (fractional XP cubes, task-027-01): subtract it (floored at 0), level + 1, `OnLevelUp(NewLevel)`; then `OnXPChanged(Current, Needed, Level)` once. Several levels can pass in one call.
   - Getters (BlueprintPure): `GetLevel()` (starts at 1), `GetXP()` (XP inside the level, starts at 0), `GetXPToNextLevel()`; native `GetXPToNextLevelAt(Level)`.
   - Delegates (BlueprintAssignable): `OnXPChanged(float Current, float Needed, int32 Level)`, `OnLevelUp(int32 NewLevel)` (once per level gained, before `OnXPChanged`).
   - Callers: XP pickups on collection ([[sys-pickups]]); the HUD ([[sys-hud]]) and the level-up flow ([[sys-level-up]]) listen to `OnLevelUp`.
