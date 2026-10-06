@@ -286,11 +286,12 @@ bool FRRIntegrationChaserReachesTest::RunTest(const FString& Parameters)
 	TArray<FHit> Hits;
 	const FDelegateHandle Handle = RecordHits(Miner, Hits);
 
-	// Up to 15 s: the chaser must stay on walkable cells, reach attack range, then land a hit.
+	// Up to 20 s (15 steps of 200 uu at 182 uu/s take about 16.5 s since task-032-01): the chaser must stay on walkable cells,
+	// reach attack range, then land a hit.
 	const double StartTime = TestWorld.Get()->GetTimeSeconds();
 	double ReachTime = -1.0;
 	int32 OffFloorFrames = 0;
-	for (int32 Frame = 0; Frame < 900 && Hits.Num() == 0; ++Frame)
+	for (int32 Frame = 0; Frame < 1200 && Hits.Num() == 0; ++Frame)
 	{
 		TestWorld.Tick();
 		OffFloorFrames += Setup.FlowField->IsWalkableCell(Setup.Grid->GetCellAtWorld(Chaser->GetActorLocation())) ? 0 : 1;
@@ -305,7 +306,7 @@ bool FRRIntegrationChaserReachesTest::RunTest(const FString& Parameters)
 	AddInfo(FString::Printf(TEXT("attack range %.0f uu reached at %.3f s, first hit at %.3f s (%d damage), miner Health %.0f -> %.0f"),
 		AttackRange, ReachTime, HitTime, Hits.Num() > 0 ? FMath::RoundToInt(Hits[0].Damage) : 0, StartHealth, GetHealth(Miner)));
 	TestEqual(TEXT("chaser center never on a non-walkable cell"), OffFloorFrames, 0);
-	TestTrue(TEXT("chaser reached attack range within 15 s"), ReachTime >= 0.0);
+	TestTrue(TEXT("chaser reached attack range within 20 s"), ReachTime >= 0.0);
 	if (!TestEqual(TEXT("chaser hit the miner"), Hits.Num(), 1))
 	{
 		return false;

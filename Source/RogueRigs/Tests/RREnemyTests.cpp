@@ -170,7 +170,7 @@ bool FRREnemyStatsTest::RunTest(const FString& Parameters)
 		return false;
 	}
 	TestEqual(TEXT("MaxHealth 30"), Row.MaxHealth, 30.f);
-	TestEqual(TEXT("MoveSpeed 202"), Row.MoveSpeed, 202.f);
+	TestEqual(TEXT("MoveSpeed 182"), Row.MoveSpeed, 182.f);
 	TestEqual(TEXT("Damage 10"), Row.Damage, 10.f);
 	TestEqual(TEXT("AttackRate 1"), Row.AttackRate, 1.f);
 	TestEqual(TEXT("AttackRange 120"), Row.AttackRange, 120.f);
@@ -188,9 +188,9 @@ bool FRREnemyStatsTest::RunTest(const FString& Parameters)
 	TestEqual(TEXT("chaser Stats.XPValue from the CSV"), Chaser->GetStats().XPValue, 1);
 	TestEqual(TEXT("MaxHealth attribute 30"), Attribute(Chaser, URRHealthAttributeSet::GetMaxHealthAttribute()), 30.f);
 	TestEqual(TEXT("Health attribute 30"), Attribute(Chaser, URRHealthAttributeSet::GetHealthAttribute()), 30.f);
-	TestEqual(TEXT("MoveSpeed attribute 202"), Attribute(Chaser, URRMovementAttributeSet::GetMoveSpeedAttribute()), 202.f);
+	TestEqual(TEXT("MoveSpeed attribute 182"), Attribute(Chaser, URRMovementAttributeSet::GetMoveSpeedAttribute()), 182.f);
 	TestEqual(TEXT("AttackPower starts at 1"), Attribute(Chaser, URREnemyAttributeSet::GetAttackPowerAttribute()), 1.f);
-	TestEqual(TEXT("MaxWalkSpeed mirrors MoveSpeed"), Chaser->GetCharacterMovement()->MaxWalkSpeed, 202.f);
+	TestEqual(TEXT("MaxWalkSpeed mirrors MoveSpeed"), Chaser->GetCharacterMovement()->MaxWalkSpeed, 182.f);
 	TestTrue(TEXT("RVO avoidance on"), Chaser->GetCharacterMovement()->bUseRVOAvoidance);
 	const float Arrival = Chaser->GetEnemyMovement()->GetArrivalDistance();
 	AddInfo(FString::Printf(TEXT("arrival distance %.1f uu"), Arrival));

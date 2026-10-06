@@ -98,11 +98,11 @@ bool FRRHeavyStatsTest::RunTest(const FString& Parameters)
 	if (TestTrue(TEXT("EnemyStats.csv row Heavy read"), ARREnemy::LoadStatsRow(TEXT("Heavy"), Row)))
 	{
 		TestEqual(TEXT("MaxHealth 300"), Row.MaxHealth, 300.f);
-		TestEqual(TEXT("MoveSpeed 112"), Row.MoveSpeed, 112.f);
+		TestEqual(TEXT("MoveSpeed 101"), Row.MoveSpeed, 101.f);
 		TestEqual(TEXT("Damage 25 (slam)"), Row.Damage, 25.f);
-		TestEqual(TEXT("AttackRate 0.4 (one slam every 2.5 s)"), Row.AttackRate, 0.4f);
+		TestEqual(TEXT("AttackRate 0.5 (one slam every 2 s)"), Row.AttackRate, 0.5f);
 		TestEqual(TEXT("AttackRange 400 (slam radius)"), Row.AttackRange, 400.f);
-		TestEqual(TEXT("WindUp 0.8 (telegraph)"), Row.WindUp, 0.8f);
+		TestEqual(TEXT("WindUp 0.6 (telegraph)"), Row.WindUp, 0.6f);
 		TestEqual(TEXT("XPValue 5"), Row.XPValue, 5);
 		TestEqual(TEXT("KnockbackResistance 0.8"), Row.KnockbackResistance, 0.8f);
 	}
@@ -119,10 +119,10 @@ bool FRRHeavyStatsTest::RunTest(const FString& Parameters)
 		return false;
 	}
 	TestEqual(TEXT("Health 300"), Health(Heavy), 300.f);
-	TestEqual(TEXT("MaxWalkSpeed 112"), Heavy->GetCharacterMovement()->MaxWalkSpeed, 112.f);
+	TestEqual(TEXT("MaxWalkSpeed 101"), Heavy->GetCharacterMovement()->MaxWalkSpeed, 101.f);
 	TestEqual(TEXT("knockback resistance 0.8"), Heavy->GetKnockbackResistance(), 0.8f);
 	TestEqual(TEXT("slam radius 400"), Heavy->GetSlamRadius(), 400.f);
-	TestEqual(TEXT("telegraph 0.8 s"), Heavy->GetTelegraphDuration(), 0.8f);
+	TestEqual(TEXT("telegraph 0.6 s"), Heavy->GetTelegraphDuration(), 0.6f);
 	TestEqual(TEXT("arrival 200 uu (half the slam radius)"), Heavy->GetEnemyMovement()->GetArrivalDistance(), 200.f);
 	const float Radius = Heavy->GetCapsuleComponent()->GetScaledCapsuleRadius();
 	TestTrue(TEXT("capsule radius at most 80 uu"), Radius <= 80.f);
@@ -203,12 +203,12 @@ bool FRRHeavyCadenceTest::RunTest(const FString& Parameters)
 	TestTrue(TEXT("telegraph starts within 280 uu (400 x 0.7)"), FirstTelegraphDistance > 0.f && FirstTelegraphDistance <= 280.f + 1.f);
 	for (int32 Index = 0; Index < 3; ++Index)
 	{
-		TestTrue(FString::Printf(TEXT("slam %d lands 0.8 s after its telegraph (within one frame)"), Index + 1),
-			FMath::Abs(SlamTimes[Index] - TelegraphStarts[Index] - 0.8) <= FrameSeconds + 1e-3);
+		TestTrue(FString::Printf(TEXT("slam %d lands 0.6 s after its telegraph (within one frame)"), Index + 1),
+			FMath::Abs(SlamTimes[Index] - TelegraphStarts[Index] - 0.6) <= FrameSeconds + 1e-3);
 		TestEqual(FString::Printf(TEXT("slam %d hits for 25"), Index + 1), HealthAfterSlams[Index], HealthBefore - 25.f * (Index + 1));
 	}
-	TestTrue(TEXT("slam 2 lands 2.5 s after slam 1 (within one frame)"), FMath::Abs(SlamTimes[1] - SlamTimes[0] - 2.5) <= FrameSeconds + 1e-3);
-	TestTrue(TEXT("slam 3 lands 2.5 s after slam 2 (within one frame)"), FMath::Abs(SlamTimes[2] - SlamTimes[1] - 2.5) <= FrameSeconds + 1e-3);
+	TestTrue(TEXT("slam 2 lands 2 s after slam 1 (within one frame)"), FMath::Abs(SlamTimes[1] - SlamTimes[0] - 2.0) <= FrameSeconds + 1e-3);
+	TestTrue(TEXT("slam 3 lands 2 s after slam 2 (within one frame)"), FMath::Abs(SlamTimes[2] - SlamTimes[1] - 2.0) <= FrameSeconds + 1e-3);
 	TestTrue(TEXT("stopped while telegraphing"), bStoppedWhileTelegraphing);
 	TestTrue(TEXT("telegraph progress in [0, 1]"), bProgressInRange);
 	TestTrue(TEXT("telegraph progress reaches 0.95"), MaxProgress >= 0.95f);

@@ -45,8 +45,8 @@ namespace RRHeavyIntegrationTests
 	constexpr float SlamDamage = 25.f;
 	constexpr float SlamRadius = 400.f;
 	constexpr float TriggerDistance = 280.f;
-	constexpr double TelegraphSeconds = 0.8;
-	constexpr double SlamPeriod = 2.5;
+	constexpr double TelegraphSeconds = 0.6;
+	constexpr double SlamPeriod = 2.0;
 	constexpr float HeavyResistance = 0.8f;
 
 	/** Spawns a robot of Blueprint class Class with its feet on the floor at FloorLocation. */
@@ -223,13 +223,13 @@ bool FRRIntegrationHeavySlamTest::RunTest(const FString& Parameters)
 	TestTrue(TEXT("telegraph starts within 280 uu (400 x 0.7)"), FirstTelegraphDistance > 0.f && FirstTelegraphDistance <= TriggerDistance + 1.f);
 	for (int32 Index = 0; Index < 2; ++Index)
 	{
-		TestTrue(FString::Printf(TEXT("slam %d lands 0.8 s after its telegraph (within one frame)"), Index + 1),
+		TestTrue(FString::Printf(TEXT("slam %d lands 0.6 s after its telegraph (within one frame)"), Index + 1),
 			FMath::Abs(SlamTimes[Index] - TelegraphStarts[Index] - TelegraphSeconds) <= FrameSeconds + 1e-3);
 		TestEqual(FString::Printf(TEXT("slam %d deals 25 to the vulnerable miner"), Index + 1), HealthAfterSlams[Index], HealthBefore - SlamDamage * (Index + 1));
 		TestTrue(FString::Printf(TEXT("recovery %d ends 0.5 s after its slam (within one frame)"), Index + 1),
 			FMath::Abs(RecoverEnds[Index] - SlamTimes[Index] - 0.5) <= FrameSeconds + 1e-3);
 	}
-	TestTrue(TEXT("slams 2.5 s apart (within one frame)"), FMath::Abs(SlamTimes[1] - SlamTimes[0] - SlamPeriod) <= FrameSeconds + 1e-3);
+	TestTrue(TEXT("slams 2 s apart (within one frame)"), FMath::Abs(SlamTimes[1] - SlamTimes[0] - SlamPeriod) <= FrameSeconds + 1e-3);
 	TestTrue(TEXT("stopped while telegraphing"), bStoppedWhileTelegraphing);
 	TestEqual(TEXT("two hits counted"), Heavy->GetSlamHitCount(), 2);
 	TestTrue(TEXT("BP_Heavy tilts its body during the telegraph (pitch 14)"), FMath::IsNearlyEqual(MaxTelegraphPitch, 14.f, 1.f));

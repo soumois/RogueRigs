@@ -59,7 +59,7 @@ public:
 	UFUNCTION(BlueprintPure, Category = "Heavy")
 	float GetSlamRadius() const { return Stats.AttackRange; }
 
-	/** Telegraph duration (s) = Stats.WindUp (0.8). */
+	/** Telegraph duration (s) = Stats.WindUp (0.6). */
 	UFUNCTION(BlueprintPure, Category = "Heavy")
 	float GetTelegraphDuration() const { return Stats.WindUp; }
 
