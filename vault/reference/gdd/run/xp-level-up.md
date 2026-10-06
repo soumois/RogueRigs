@@ -14,7 +14,7 @@ status: approved
 - Bonus chests also give XP and an upgrade choice ([[objective-bonus-chest]]).
 - Each level-up offers 3 upgrades; the player picks 1 ([[upgrades]]).
 - Level-up keeps across the 4 levels of a run.
-- XP per robot (provisional): chaser 1, kamikaze 1, shooter 2, heavy 5. XP curve (owner 2026-10-06): level 1 needs 2 XP (two kills), then XP to the next level = level² (4, 9, 16, 25 … 100 at level 10); extra XP carries over, several levels can pass at once. Not measured by the pacing bot. Base pickup radius: [[player-stats]].
+- XP per robot (provisional): chaser 1, kamikaze 1, shooter 2, heavy 5. XP curve (owner 2026-10-06, after the reference game curve, nearly linear rather than exponential): level 1 needs 4 XP; from level 2, XP to the next level = reference need ÷ 5, interpolated between the reference points (level 2 → 100, 5 → 180, 10 → 320, 20 → 650, 30 → 1100, 50 → 2200): 20, 25, 31, 36 (level 5) … 64 (level 10) … 130 (level 20) … 220 (level 30) … 440 (level 50); cumulative 380 XP at level 10. Extra XP carries over, several levels can pass at once. Not measured by the pacing bot. Base pickup radius: [[player-stats]].
 - HUD (owner 2026-10-02): cyan XP bar across the bottom, level number on its left.
 - Level-up sequence (owner 2026-10-03; values provisional): a pulsing cyan ring around the miner and "LEVEL UP"; heal 20 % of max health; sound later (open); about 0.8 s later the game pauses and shows 3 upgrade cards; picking one resumes the game. Several levels gained at once chain their choice screens.
 - Level-up disc on the miner: 5-step animation, 0.5 s in total, ends hidden (confirmed by the owner after handover-2026-10-06).
