@@ -11,7 +11,7 @@ status: in-progress
 - agent: cpp
 - depends_on: none
 - inputs: [[sys-automation-tests]], [[xp-level-up]], [[sys-progression]], [[sys-enemies]], [[cpp-standard]]
-- expected_output: EnemyStats.csv MoveSpeed 180 for every robot (already set by the Orchestrator) and XPCurve.csv (level 1 = 4, then 20, 25, 31, 36 … 64 at level 10 … 440 at level 50, already set); every existing test that fails because of these values updated from measurements (speeds, travel times, XP needs, the GrantXP cheat test); no new test, no new bot profile, no screenshot session; docs sys-automation-tests (and sys-progression curve line) updated.
+- expected_output: EnemyStats.csv MoveSpeed 180 for every robot (already set by the Orchestrator) and XPCurve.csv (level 1 = 4, then 20, 25, 31, 36 … 64 at level 10 … 440 at level 50, already set); every existing test that fails because of these values updated from measurements (speeds, travel times, XP needs, the GrantXP cheat test); no new test, no new bot profile, no screenshot session; docs sys-automation-tests (and sys-progression curve line) updated. Added by the owner (2026-10-06): player projectiles (burst rifle bullet, shotgun pellet, turret bullet) collision sphere radius × 1.2 (10 → 12 uu) without changing their visual size; robot shooter shots unchanged; check whether a Blueprint (BP_ShotgunPellet, BP_TurretBullet, rifle projectile BP) overrides the sphere radius on disk and report it if so; docs sys-projectiles.
 - done_when: build exits 0 with the editor closed; all `RogueRigs.*` tests pass headless; docs updated; lint clean.
 - editor_state: closed
 - token_ceiling: 80000
