@@ -3,7 +3,7 @@ id: task-027-juice
 description: "Global task: DRGS-like XP and ore ejection then suction, kamikaze core light before exploding, console ring gauge, shuttle chevrons, heal ring."
 parent: tasks-index
 kind: task
-status: in-progress
+status: done
 ---
 # Readability and pickup juice
 
@@ -13,8 +13,8 @@ status: in-progress
 - gdd_check: Read [[xp-level-up]], [[ore-blocks]], [[heal-ore]], [[enemy-kamikaze]], [[objective-console]], [[extraction]], [[color-code]]. Analysis in [[drgs-analysis]]. The owner launched all lots and delegated provisional values (2026-10-05); decisions written into the GDD before planning; the grid-size lot waits for the owner after the stress report.
 - confirmed_by_owner: yes (2026-10-05, all lots launched by the owner)
 - milestone: M2
-- next_step: task-027-03-tests-integration
-- result: open
+- next_step: none
+- result: Done. XP split into cubes (3/4/6/12) with pop arc, 1 s rest, magnet stream; ore/heal chunks land within one cell; kamikaze 0.5 s flare with CoreLight; gold crits; damage numbers stack over pending and displayed numbers; WBP_HUD overlap fixed; sparkle, XP trail, heal ring, console HackRing, extraction chevrons. Stress S7 burst 400 (1200 cubes): 9.19 avg / 11.34 p99. Build 0, 180/180. Carried into task-028-02: flare light too bright (60000), damage digit outline, NS_DamageNumbers lifetime, heal ring on level-up. Not seen on screen: XP trail and sparkle. Trail and sparkle are meshes, not Niagara.
 
 ## Subtasks
 1. task-027-01-pickup-motion — cpp: pickup eject, rest, magnet stream, collect event; kamikaze flare state; tests

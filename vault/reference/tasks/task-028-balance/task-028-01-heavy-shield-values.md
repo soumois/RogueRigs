@@ -3,7 +3,7 @@ id: task-028-01-heavy-shield-values
 description: "Heavy slam radius 400 uu; shield chaser (30 shield before health, shown as a shell); upgrade value table raised; tests."
 parent: task-028-balance
 kind: task
-status: todo
+status: in-progress
 ---
 # Heavy, shield chaser, upgrade values
 

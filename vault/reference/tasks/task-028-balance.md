@@ -3,7 +3,7 @@ id: task-028-balance
 description: "Global task: bigger heavy slam area, shield chasers, doubled upgrade values, faster early level-ups tuned on a measured run."
 parent: tasks-index
 kind: task
-status: todo
+status: in-progress
 ---
 # Balance and enemies
 

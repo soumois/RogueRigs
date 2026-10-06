@@ -3,7 +3,7 @@ id: task-027-03-tests-integration
 description: "Integration tests with the final Blueprints: kill drops cubes that stream in, kamikaze flares before exploding, heal ring event."
 parent: task-027-juice
 kind: task
-status: in-progress
+status: done
 ---
 # Juice integration tests
 
@@ -15,9 +15,9 @@ status: in-progress
 - done_when: build exits 0 with the editor closed; all `RogueRigs.*` tests pass headless (new ones included); docs updated; lint clean.
 - editor_state: closed
 - token_ceiling: 70000
-- model: open
-- tokens: open
-- runs: open
+- model: opus
+- tokens: input 174, cache write 226054, cache read 11364091, output 76047
+- runs: 2
 - milestone: M2
 - result: open
 
