@@ -8,6 +8,7 @@
 #include "Components/CapsuleComponent.h"
 #include "FlowField/RRFlowFieldSubsystem.h"
 #include "Objectives/RRConsole.h"
+#include "Objectives/RRLandingFootprint.h"
 #include "Objectives/RRRunFlowSubsystem.h"
 #include "Objectives/RRShuttle.h"
 #include "Progression/RRLevelUpComponent.h"
@@ -104,7 +105,15 @@ bool FRRExtractionLandingTest::RunTest(const FString& Parameters)
 		TestEqual(TEXT("on a floor cell"), Setup.Grid->GetCellType(Cell), ERRCellType::Floor);
 		URRFlowFieldSubsystem* FlowField = TestWorld.Get()->GetSubsystem<URRFlowFieldSubsystem>();
 		TestTrue(TEXT("reachable from the miner"), FlowField && FlowField->GetCellDistance(Cell) >= 0);
-		TestTrue(TEXT("on the cell center"), Shuttle->GetActorLocation().Equals(Setup.Grid->GetCellCenter(Cell.X, Cell.Y), 1.f));
+		TestTrue(TEXT("at the footprint centre"), Shuttle->GetActorLocation().Equals(RRLandingFootprint::GetCenter(Setup.Grid, Cell, Shuttle->GetFootprintCells()), 1.f));
+		TArray<FIntPoint> FootprintCells;
+		RRLandingFootprint::GetCells(Cell, Shuttle->GetFootprintCells(), FootprintCells);
+		TestEqual(TEXT("4 x 3 footprint"), FootprintCells.Num(), 12);
+		for (const FIntPoint& FootprintCell : FootprintCells)
+		{
+			TestTrue(FString::Printf(TEXT("footprint cell (%d, %d) is reachable floor"), FootprintCell.X, FootprintCell.Y),
+				Setup.Grid->GetCellType(FootprintCell) == ERRCellType::Floor && FlowField && FlowField->GetCellDistance(FootprintCell) >= 0);
+		}
 		TestEqual(TEXT("countdown 45 s"), Shuttle->GetRemainingSeconds(), 45.f);
 		TestEqual(TEXT("extraction event once"), Recorder->GetExtractionReadyCount(), 1);
 		TestTrue(TEXT("countdown pushed at landing"), Recorder->GetShuttleCountdownCount() >= 1);

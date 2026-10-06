@@ -12,6 +12,7 @@
 class ARRArenaGrid;
 class ARRMiner;
 class ARRShuttle;
+class URRFlowFieldSubsystem;
 
 /** Phase of the level run flow. */
 UENUM(BlueprintType)
@@ -62,7 +63,8 @@ DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FRROnRunEndedSignature, bool, bSucce
  * Floor cell whose straight-line distance to the miner's cell is within [ConsoleMinDistanceCells, ConsoleMaxDistanceCells] and
  * that the flow field reaches from the miner, preferring cells with rocks to mark (bPreferCellsWithMarkedRocks); no candidate =
  * retried each tick (warning once). The alert stays paused until
- * the console is Complete.
+ * the console is Complete. Console and shuttle land only where every cell of their FootprintCells is reachable floor
+ * (RRLandingFootprint); when no such spot exists the fallback is logged as a warning.
  * Extraction: when Alert is 1 and no objective is pending, OnExtractionReady fires once (phase ExtractionReady) and the shuttle
  * (ShuttleClass) lands on a random reachable Floor cell at least ShuttleMinDistanceCells from the miner's cell (none = the
  * farthest reachable floor cell, warning; no reachable cell = retried each tick), with a ShuttleCountdownSeconds countdown (the
@@ -225,6 +227,12 @@ protected:
 
 	/** Spawns and initializes the console on a picked cell and binds its events. Null when no cell qualifies or the spawn failed. */
 	ARRConsole* DropConsole();
+
+	/** Every Floor cell the flow field reaches from the miner (OutCells reset first). Landing footprints are checked against it. */
+	static void GatherReachableFloor(URRFlowFieldSubsystem& FlowField, TSet<FIntPoint>& OutCells);
+
+	/** True when every cell of the Footprint (in cells, RRLandingFootprint) around Anchor is in ReachableFloor. */
+	static bool FootprintFits(const TSet<FIntPoint>& ReachableFloor, FIntPoint Anchor, FIntPoint Footprint);
 
 	/** Fires OnExtractionReady once when the bar is full and nothing is pending. */
 	void CheckExtraction();

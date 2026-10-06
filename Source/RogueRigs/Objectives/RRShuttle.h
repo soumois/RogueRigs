@@ -36,7 +36,7 @@ public:
 	ARRShuttle();
 
 	/**
-	 * Places the shuttle on Cell of Grid (cell center, floor top), remembers Miner as the one who must board, starts a countdown
+	 * Places the shuttle on Cell of Grid (centre of its FootprintCells around Cell, floor top), remembers Miner as the one who must board, starts a countdown
 	 * of CountdownSeconds and sets the boarding radius (cm). Fires OnLanded and the first countdown events. Call once, right after
 	 * spawning.
 	 */
@@ -57,9 +57,13 @@ public:
 	UFUNCTION(BlueprintPure, Category = "Shuttle")
 	float GetBoardRadius() const { return BoardRadius; }
 
-	/** Grid cell the shuttle landed on. */
+	/** Grid cell the shuttle landed on (anchor of its footprint). */
 	UFUNCTION(BlueprintPure, Category = "Shuttle")
 	FIntPoint GetCell() const { return Cell; }
+
+	/** Landing footprint in cells (X along the grid X axis, Y along Y); every footprint cell must be open reachable floor. */
+	UFUNCTION(BlueprintPure, Category = "Shuttle")
+	FIntPoint GetFootprintCells() const { return FootprintCells; }
 
 	/** True once the miner boarded or the countdown ran out. */
 	UFUNCTION(BlueprintPure, Category = "Shuttle")
@@ -118,6 +122,13 @@ protected:
 
 	/** Landing cell. */
 	FIntPoint Cell = FIntPoint(INDEX_NONE, INDEX_NONE);
+
+	/**
+	 * Landing footprint in cells of the grid, rotation zero (4 x 3 cells of 67 uu = 268 x 201 uu for the 240 x 160 uu shuttle mesh,
+	 * task-026-00). The shuttle lands only where every cell is reachable floor and stands at the footprint centre (RRLandingFootprint).
+	 */
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Shuttle", meta = (ClampMin = 1))
+	FIntPoint FootprintCells = FIntPoint(4, 3);
 
 	/** Countdown length given at landing (s). */
 	float CountdownSeconds = 0.f;

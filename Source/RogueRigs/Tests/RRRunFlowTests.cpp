@@ -14,6 +14,7 @@
 #include "FlowField/RRFlowFieldSubsystem.h"
 #include "GAS/RRGameplayTags.h"
 #include "Objectives/RRConsole.h"
+#include "Objectives/RRLandingFootprint.h"
 #include "Objectives/RRRunFlowSubsystem.h"
 #include "Tests/RRTestEventRecorder.h"
 #include "Tests/RRTestAccess.h"
@@ -294,7 +295,15 @@ bool FRRConsoleDropTest::RunTest(const FString& Parameters)
 		TestTrue(*FString::Printf(TEXT("seed %d: 36 to 60 cells away"), Seed), Distance >= 36.f && Distance <= 60.f);
 		URRFlowFieldSubsystem* FlowField = TestWorld.Get()->GetSubsystem<URRFlowFieldSubsystem>();
 		TestTrue(*FString::Printf(TEXT("seed %d: reachable"), Seed), FlowField && FlowField->GetCellDistance(Cell) >= 0);
-		TestTrue(*FString::Printf(TEXT("seed %d: at the cell center"), Seed), Console->GetActorLocation().Equals(Grid->GetCellCenter(Cell.X, Cell.Y), 0.1));
+		TestTrue(*FString::Printf(TEXT("seed %d: at the footprint centre"), Seed), Console->GetActorLocation().Equals(RRLandingFootprint::GetCenter(Grid, Cell, Console->GetFootprintCells()), 0.1));
+		TArray<FIntPoint> FootprintCells;
+		RRLandingFootprint::GetCells(Cell, Console->GetFootprintCells(), FootprintCells);
+		TestEqual(*FString::Printf(TEXT("seed %d: 2 x 2 footprint"), Seed), FootprintCells.Num(), 4);
+		for (const FIntPoint& FootprintCell : FootprintCells)
+		{
+			TestTrue(*FString::Printf(TEXT("seed %d: footprint cell (%d, %d) is reachable floor"), Seed, FootprintCell.X, FootprintCell.Y),
+				Grid->GetCellType(FootprintCell) == ERRCellType::Floor && FlowField && FlowField->GetCellDistance(FootprintCell) >= 0);
+		}
 		TestNearlyEqual(*FString::Printf(TEXT("seed %d: alert at 0.4"), Seed), Setup.RunFlow->GetAlert(), 0.4f, 1e-6f);
 
 		// Marked = every rock-type block within 6 cells, nothing else.

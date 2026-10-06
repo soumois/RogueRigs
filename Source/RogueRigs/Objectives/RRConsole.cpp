@@ -5,6 +5,7 @@
 #include "Components/SceneComponent.h"
 #include "Components/StaticMeshComponent.h"
 #include "Drone/RRDrone.h"
+#include "Objectives/RRLandingFootprint.h"
 #include "Engine/CollisionProfile.h"
 #include "Player/RRMiner.h"
 #include "RogueRigs.h"
@@ -31,7 +32,7 @@ void ARRConsole::InitializeConsole(ARRArenaGrid* InGrid, ARRMiner* InMiner, FInt
 	bInitialized = true;
 	if (Grid)
 	{
-		SetActorLocation(Grid->GetCellCenter(Cell.X, Cell.Y));
+		SetActorLocation(RRLandingFootprint::GetCenter(Grid, Cell, FootprintCells));
 	}
 
 	MarkRocks();

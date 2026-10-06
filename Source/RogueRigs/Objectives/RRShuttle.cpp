@@ -6,6 +6,7 @@
 #include "Components/StaticMeshComponent.h"
 #include "Engine/CollisionProfile.h"
 #include "Grid/RRArenaGrid.h"
+#include "Objectives/RRLandingFootprint.h"
 #include "Player/RRMiner.h"
 #include "RogueRigs.h"
 
@@ -34,7 +35,7 @@ void ARRShuttle::InitializeShuttle(ARRArenaGrid* InGrid, ARRMiner* InMiner, FInt
 	bInitialized = true;
 	if (Grid)
 	{
-		SetActorLocation(Grid->GetCellCenter(Cell.X, Cell.Y));
+		SetActorLocation(RRLandingFootprint::GetCenter(Grid, Cell, FootprintCells));
 	}
 	UE_LOG(LogRogueRigs, Log, TEXT("%s: shuttle landed on (%d, %d), countdown %.1f s."), *GetName(), Cell.X, Cell.Y, CountdownSeconds);
 	OnLanded();

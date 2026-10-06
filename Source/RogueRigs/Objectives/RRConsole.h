@@ -57,7 +57,7 @@ public:
 	ARRConsole();
 
 	/**
-	 * Places the console on Cell of Grid (cell center, floor top), remembers Miner as the one whose presence drives the hack,
+	 * Places the console on Cell of Grid (centre of its FootprintCells around Cell, floor top), remembers Miner as the one whose presence drives the hack,
 	 * marks the rocks around it and fires the first display events. Call once, right after spawning.
 	 */
 	void InitializeConsole(ARRArenaGrid* Grid, ARRMiner* Miner, FIntPoint Cell);
@@ -96,9 +96,13 @@ public:
 	UFUNCTION(BlueprintPure, Category = "Console")
 	TArray<FIntPoint> GetMarkedRocks() const { return MarkedRocks; }
 
-	/** Grid cell the console stands on. */
+	/** Grid cell the console stands on (anchor of its footprint). */
 	UFUNCTION(BlueprintPure, Category = "Console")
 	FIntPoint GetCell() const { return Cell; }
+
+	/** Landing footprint in cells (X along the grid X axis, Y along Y); every footprint cell must be open reachable floor. */
+	UFUNCTION(BlueprintPure, Category = "Console")
+	FIntPoint GetFootprintCells() const { return FootprintCells; }
 
 	/** True when the miner was inside the zone at the last tick. */
 	UFUNCTION(BlueprintPure, Category = "Console")
@@ -182,6 +186,13 @@ protected:
 	/** Blocks whose center is within this many cells of the console cell are marked (objective-console: 2 cells of 200 uu = 6 cells of 67 uu, provisional). */
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Console", meta = (ClampMin = 0))
 	float MarkRadiusCells = 6.f;
+
+	/**
+	 * Landing footprint in cells of the grid, rotation zero (2 x 2 cells of 67 uu = 134 uu for the 100 x 100 uu console mesh, task-026-00).
+	 * The console lands only where every cell is reachable floor and stands at the footprint centre (RRLandingFootprint).
+	 */
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Console", meta = (ClampMin = 1))
+	FIntPoint FootprintCells = FIntPoint(2, 2);
 
 	/** Block types that get marked. Barrels are left out: they explode and are not rock. */
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Console")

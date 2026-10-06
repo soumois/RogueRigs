@@ -18,6 +18,7 @@
 #include "GAS/RRHealthAttributeSet.h"
 #include "Grid/RRArenaGrid.h"
 #include "Objectives/RRConsole.h"
+#include "Objectives/RRLandingFootprint.h"
 #include "Objectives/RRRunFlowSubsystem.h"
 #include "Objectives/RRShuttle.h"
 #include "Player/RRGameMode.h"
@@ -413,12 +414,14 @@ bool FRRFineConsoleShuttlePlacementTest::RunTest(const FString& Parameters)
 			ConsoleDistance, ConsoleDistance / CellSize, Console->GetMarkedRockCount(), 6.f * CellSize));
 		TestTrue(*FString::Printf(TEXT("seed %d: console is BP_ObjectiveConsole"), Seed), Console->IsA(ConsoleClass));
 		TestEqual(*FString::Printf(TEXT("seed %d: console on floor"), Seed), Grid->GetCellType(ConsoleCell), ERRCellType::Floor);
-		TestTrue(*FString::Printf(TEXT("seed %d: console at the cell centre"), Seed), Console->GetActorLocation().Equals(Grid->GetCellCenter(ConsoleCell.X, ConsoleCell.Y), 0.5));
+		TestTrue(*FString::Printf(TEXT("seed %d: console at its 2 x 2 footprint centre"), Seed), Console->GetFootprintCells() == FIntPoint(2, 2)
+			&& Console->GetActorLocation().Equals(RRLandingFootprint::GetCenter(Grid, ConsoleCell, Console->GetFootprintCells()), 0.5));
 		TestTrue(*FString::Printf(TEXT("seed %d: console 2400..4000 uu away (one cell of slack)"), Seed), ConsoleDistance >= 2400.0 - CellSize && ConsoleDistance <= 4000.0 + CellSize);
 		TestTrue(*FString::Printf(TEXT("seed %d: console reachable"), Seed), FlowField->GetCellDistance(ConsoleCell) >= 0);
 		TestTrue(*FString::Printf(TEXT("seed %d: rocks marked around the console"), Seed), Console->GetMarkedRockCount() > 0);
 		TestTrue(*FString::Printf(TEXT("seed %d: console zone 9 cells = 603 uu"), Seed), FMath::IsNearlyEqual(Console->GetZoneRadius(), 9.f * CellSize, 0.5f));
-		CountBlocksUnderActor(*this, Grid, Console, *FString::Printf(TEXT("seed %d: console"), Seed));
+		TestEqual(*FString::Printf(TEXT("seed %d: no block under the console mesh"), Seed),
+			CountBlocksUnderActor(*this, Grid, Console, *FString::Printf(TEXT("seed %d: console"), Seed)), 0);
 
 		// Shuttle: Blueprint, floor cell, >= 75 cells = 5025 uu (>= 5000 at 200 uu), reachable, board radius 3 cells = 201 uu.
 		TestTrue(*FString::Printf(TEXT("seed %d: skip to extraction"), Seed), RunFlow->SkipToExtraction());
@@ -444,12 +447,14 @@ bool FRRFineConsoleShuttlePlacementTest::RunTest(const FString& Parameters)
 			Seed, ShuttleCell.X, ShuttleCell.Y, ShuttleDistance, ShuttleDistance / CellSize, Shuttle->GetBoardRadius(), BoardCells));
 		TestTrue(*FString::Printf(TEXT("seed %d: shuttle is BP_ExtractionShuttle"), Seed), Shuttle->IsA(ShuttleClass));
 		TestEqual(*FString::Printf(TEXT("seed %d: shuttle on floor"), Seed), Grid->GetCellType(ShuttleCell), ERRCellType::Floor);
-		TestTrue(*FString::Printf(TEXT("seed %d: shuttle at the cell centre"), Seed), Shuttle->GetActorLocation().Equals(Grid->GetCellCenter(ShuttleCell.X, ShuttleCell.Y), 1.0));
+		TestTrue(*FString::Printf(TEXT("seed %d: shuttle at its 4 x 3 footprint centre"), Seed), Shuttle->GetFootprintCells() == FIntPoint(4, 3)
+			&& Shuttle->GetActorLocation().Equals(RRLandingFootprint::GetCenter(Grid, ShuttleCell, Shuttle->GetFootprintCells()), 1.0));
 		TestTrue(*FString::Printf(TEXT("seed %d: shuttle at least 5000 uu away (one cell of slack)"), Seed), ShuttleDistance >= 5000.0 - CellSize);
 		TestTrue(*FString::Printf(TEXT("seed %d: shuttle reachable"), Seed), FlowField->GetCellDistance(ShuttleCell) >= 0);
 		TestTrue(*FString::Printf(TEXT("seed %d: board radius 3 cells = 201 uu"), Seed), FMath::IsNearlyEqual(Shuttle->GetBoardRadius(), 3.f * CellSize, 0.5f));
 		TestTrue(*FString::Printf(TEXT("seed %d: several floor cells to board from"), Seed), BoardCells >= 2);
-		CountBlocksUnderActor(*this, Grid, Shuttle, *FString::Printf(TEXT("seed %d: shuttle"), Seed));
+		TestEqual(*FString::Printf(TEXT("seed %d: no block under the shuttle mesh"), Seed),
+			CountBlocksUnderActor(*this, Grid, Shuttle, *FString::Printf(TEXT("seed %d: shuttle"), Seed)), 0);
 	}
 	return true;
 }
