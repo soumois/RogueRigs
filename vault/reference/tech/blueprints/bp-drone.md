@@ -14,8 +14,9 @@ kind: doc
 - events: none.
 - logic_in_bp: none
 - assets: /Game/RogueRigs/Materials/GreyBox/MI_GB_Drone (instance of M_GreyBox, vector `Color` linear (0, 0.45, 0.45, 1), teal after [[color-code]]). /Game/RogueRigs/Materials/GreyBox/MI_GB_Laser (vector `Color` linear (2, 0, 0, 1), saturated red brighter than heal ore; [[color-code]] lists the mining laser as white-gold, owner to confirm).
+- dig by contact (task-029-06): no override of the removed `DigHoverDistance` or `DigCancelDistanceCells` exists in the Blueprint. The C++ `LaserMesh` (one beam to the nearest dug block) is kept: a per-block laser fan needs several beam meshes driven every frame from `GetDigTargetPoint`, which is logic, so it waits for a C++ hook (beam pool in `ARRDrone`).
 - owner_agent: agent-bp
-- verified: PIE on L_ArenaM1 spawns one BP_Drone_C_0; with the miner at (8100, 8100, 90.15) the drone read (7950, 8100, 152.15) then 0.5 s later (8175, 7970, 152.15): horizontal distance 150 uu, height 150 uu above the capsule bottom.
+- verified: PIE (fine grid): with the miner teleported against a rock wall at (7603, 5929.5), the drone read state Dig for about 1.6 s, then Orbit once the arc was dug; no log error. PIE on L_ArenaM1 spawns one BP_Drone_C_0; with the miner at (8100, 8100, 90.15) the drone read (7950, 8100, 152.15) then 0.5 s later (8175, 7970, 152.15): horizontal distance 150 uu, height 150 uu above the capsule bottom.
 
 ## Relations
 - [[blueprints-index]] — parent index.
