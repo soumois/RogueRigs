@@ -2,7 +2,9 @@
 
 #include "Player/RRPlayerController.h"
 
+#include "EngineUtils.h"
 #include "Engine/LocalPlayer.h"
+#include "Enemies/RREnemySpawner.h"
 #include "EnhancedInputComponent.h"
 #include "EnhancedInputSubsystems.h"
 #include "InputAction.h"
@@ -42,6 +44,9 @@ void ARRPlayerController::BeginPlay()
 	HUDWidget->BindToGameMode(GetWorld()->GetAuthGameMode<ARRGameMode>());
 	HUDWidget->BindToMiner(GetMiner());
 	HUDWidget->BindToRunFlow(GetWorld()->GetSubsystem<URRRunFlowSubsystem>());
+	// Horde banner and alert-bar horde icons: the level's spawner (one per level).
+	TActorIterator<ARREnemySpawner> SpawnerIt(GetWorld());
+	HUDWidget->BindToSpawner(SpawnerIt ? *SpawnerIt : nullptr);
 }
 
 void ARRPlayerController::OnPossess(APawn* InPawn)

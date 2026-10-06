@@ -18,6 +18,41 @@ class URRRunFlowSubsystem;
 class UAbilitySystemComponent;
 struct FOnAttributeChangeData;
 
+/** Kind of an icon on the alert bar. */
+UENUM(BlueprintType)
+enum class ERRAlertBarEventType : uint8
+{
+	/** The command console drop (the bar pauses there until it is hacked). */
+	Console,
+	/** A horde front of the spawner's wave director. */
+	Horde,
+	/** The extraction shuttle (end of the bar). */
+	Extraction
+};
+
+/** One icon of the alert bar: what, where on the bar, and whether it already happened. */
+USTRUCT(BlueprintType)
+struct FRRAlertBarEvent
+{
+	GENERATED_BODY()
+
+	/** Kind of icon (console, horde, shuttle). */
+	UPROPERTY(BlueprintReadOnly, Category = "HUD|Run")
+	ERRAlertBarEventType Type = ERRAlertBarEventType::Console;
+
+	/** Position on the bar, 0..1 (same scale as OnAlertChanged's Alert). A pending horde's position is an estimate (sys-hud). */
+	UPROPERTY(BlueprintReadOnly, Category = "HUD|Run")
+	float Position = 0.f;
+
+	/** True once the event happened (console hacked, horde front started, extraction ready). */
+	UPROPERTY(BlueprintReadOnly, Category = "HUD|Run")
+	bool bDone = false;
+
+	/** Horde index (spawner DirectorConfig.Hordes) for a Horde icon; -1 otherwise. */
+	UPROPERTY(BlueprintReadOnly, Category = "HUD|Run")
+	int32 Index = INDEX_NONE;
+};
+
 /**
  * In-run HUD. Created by ARRPlayerController at BeginPlay (local player only) from its HUDWidgetClass. C++ binds it
  * to the miner's Health and MaxHealth attributes, to its URRProgressionComponent and URRLevelUpComponent (BindToMiner),
@@ -28,7 +63,9 @@ struct FOnAttributeChangeData;
  * them. Run flow (BindToRunFlow, URRRunFlowSubsystem): OnAlertChanged, OnObjectiveChanged, OnObjectiveProgressChanged and
  * OnExtractionReady, OnShuttleCountdown and OnRunEnded (end screen; its restart button calls RestartLevel). Turret charges
  * (BindToMiner: the miner's turret launcher, now or when acquired later through OnWeaponAdded): OnTurretChargesChanged, plus
- * GetTurretRechargeProgress for a per-frame bar. No gameplay logic.
+ * GetTurretRechargeProgress for a per-frame bar. Pressure feedback: OnPlayerDamaged (red vignette, BindToMiner),
+ * OnHordeIncoming (banner) and OnAlertEventsChanged (alert-bar icons: console, hordes, shuttle) from BindToSpawner and
+ * BindToRunFlow. No gameplay logic.
  */
 UCLASS(Abstract)
 class ROGUERIGS_API URRHUDWidget : public UUserWidget
@@ -50,6 +87,28 @@ public:
 	 * current alert and objective once. Null unbinds.
 	 */
 	void BindToRunFlow(URRRunFlowSubsystem* RunFlow);
+
+	/**
+	 * Listens to Spawner's wave director horde events (replaces a previous spawner): OnHordeIncoming for the banner (pushed once
+	 * when a horde is already announced) and the horde icons of the alert bar (refreshed now). Null unbinds.
+	 */
+	void BindToSpawner(ARREnemySpawner* Spawner);
+
+	/**
+	 * Recomputes the alert-bar icons from the bound run flow and spawner and calls OnAlertEventsChanged when they changed (count,
+	 * type, done flag, or a position moved by more than AlertEventPositionTolerance). Called on every bound event and each tick.
+	 */
+	void RefreshAlertBarEvents();
+
+	/** Alert-bar icons last sent to OnAlertEventsChanged (console, hordes in index order, shuttle). */
+	UFUNCTION(BlueprintPure, Category = "HUD|Run")
+	const TArray<FRRAlertBarEvent>& GetAlertBarEvents() const { return AlertBarEvents; }
+
+	/**
+	 * Estimated bar position of an event SecondsUntil seconds away: Alert + SecondsUntil / AlertFillSeconds (the base fill rate,
+	 * without kills or pause), clamped to [Alert, 1]. Never behind the fill; recomputed as the fill moves.
+	 */
+	static float EstimateBarPosition(float Alert, float SecondsUntil, float AlertFillSeconds);
 
 	/**
 	 * Card button: picks card Index (0-based, order of OnUpgradeOfferShown's Cards) through the bound miner's
@@ -77,6 +136,72 @@ public:
 protected:
 	/** Removes every binding. */
 	virtual void NativeDestruct() override;
+
+	/** Refreshes the alert-bar icons (a pending horde's estimate moves while the bar is paused). */
+	virtual void NativeTick(const FGeometry& MyGeometry, float InDeltaTime) override;
+
+	/**
+	 * Display event: the miner lost Amount health (> 0); HealthFraction is the health left over MaxHealth (0..1, 0 = dead). For the
+	 * red damage vignette, stronger at low HealthFraction. Not called for a clamp from a MaxHealth decrease. Implement in Blueprint.
+	 */
+	UFUNCTION(BlueprintNativeEvent, Category = "HUD|Pressure")
+	void OnPlayerDamaged(float Amount, float HealthFraction);
+
+	/** Display event: a horde front starts in SecondsUntil seconds (banner "HORDE EN APPROCHE !"). Implement in Blueprint. */
+	UFUNCTION(BlueprintNativeEvent, Category = "HUD|Pressure")
+	void OnHordeIncoming(float SecondsUntil);
+
+	/**
+	 * Display event: the alert-bar icons changed (also on binding): console, each horde in index order, shuttle; see
+	 * FRRAlertBarEvent. The same list is kept for GetAlertBarEvents. Implement in Blueprint.
+	 */
+	UFUNCTION(BlueprintNativeEvent, Category = "HUD|Pressure")
+	void OnAlertEventsChanged(const TArray<FRRAlertBarEvent>& Events);
+
+	/** Native default of OnPlayerDamaged: nothing (the Blueprint draws the vignette). */
+	virtual void OnPlayerDamaged_Implementation(float Amount, float HealthFraction) {}
+
+	/** Native default of OnHordeIncoming: nothing (the Blueprint shows the banner). */
+	virtual void OnHordeIncoming_Implementation(float SecondsUntil) {}
+
+	/** Native default of OnAlertEventsChanged: nothing (the Blueprint places the icons). */
+	virtual void OnAlertEventsChanged_Implementation(const TArray<FRRAlertBarEvent>& Events) {}
+
+	/** Spawner OnHordeIncoming callback: calls OnHordeIncoming and refreshes the icons. */
+	UFUNCTION()
+	void HandleHordeIncoming(int32 HordeIndex, float SecondsUntil);
+
+	/** Spawner OnHordeLull callback: refreshes the icons. */
+	UFUNCTION()
+	void HandleHordeLull(int32 HordeIndex);
+
+	/** Spawner OnHordeStarted callback: freezes the horde icon at the current alert (done) and refreshes. */
+	UFUNCTION()
+	void HandleHordeStarted(int32 HordeIndex, ERRSpawnSide Side);
+
+	/** Spawner OnHordeFinished callback: refreshes the icons. */
+	UFUNCTION()
+	void HandleHordeFinished(int32 HordeIndex, int32 Spawned);
+
+	/** Computes the current alert-bar icons into OutEvents (see sys-hud for the position rule). */
+	void ComputeAlertBarEvents(TArray<FRRAlertBarEvent>& OutEvents);
+
+	/** Alert-bar icons last sent to OnAlertEventsChanged. */
+	UPROPERTY(Transient)
+	TArray<FRRAlertBarEvent> AlertBarEvents;
+
+	/** True once OnAlertEventsChanged was called (the first refresh always calls it). */
+	bool bAlertBarEventsSent = false;
+
+	/** Bar position of each horde whose front started, frozen at the alert of that moment (key: horde index). */
+	TMap<int32, float> DoneHordePositions;
+
+	/** A pending horde icon moving by more than this (bar fraction) calls OnAlertEventsChanged again; smaller moves wait. */
+	UPROPERTY(EditDefaultsOnly, Category = "HUD|Pressure", meta = (ClampMin = 0))
+	float AlertEventPositionTolerance = 0.002f;
+
+	/** Spawner whose horde events are bound. */
+	TWeakObjectPtr<ARREnemySpawner> BoundSpawner;
 
 	/** Display event: the miner's health changed (also called once on binding). Max is always > 0. Implement in Blueprint. */
 	UFUNCTION(BlueprintImplementableEvent, Category = "HUD")
