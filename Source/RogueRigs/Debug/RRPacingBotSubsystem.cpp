@@ -26,6 +26,9 @@ namespace RRPacingBot
 	TAutoConsoleVariable<float> CVarCollectRadiusFraction(TEXT("rr.Pacing.CollectRadiusFraction"), 0.8f,
 		TEXT("Pacing bot: a cube closer than this fraction of the pickup radius is left to the magnet."), ECVF_Cheat);
 
+	TAutoConsoleVariable<float> CVarStatusInterval(TEXT("rr.Pacing.StatusInterval"), 15.f,
+		TEXT("Pacing bot: seconds of run clock between two status lines."), ECVF_Cheat);
+
 	/** Label of the log lines and of the cheat calls. */
 	const TCHAR* const Source = TEXT("rr.Pacing.Run");
 
@@ -92,6 +95,7 @@ bool URRPacingBotSubsystem::StartRun(float DurationSeconds, int32 Seed, bool bQu
 	EndSeconds = StartSeconds + DurationSeconds;
 	LastLevel = Miner->GetProgression()->GetLevel();
 	CardsPicked = 0;
+	NextStatusSeconds = StartSeconds;
 	LevelTimes.Reset();
 	UE_LOG(LogRogueRigs, Log, TEXT("Pacing: run started, seed %d, %.0f s, collect %d, spawner %s (enabled %d, clock %.2f s), miner level %d, pickup radius %.0f uu."),
 		Seed, DurationSeconds, bCollect ? 1 : 0, *FoundSpawner->GetName(), FoundSpawner->IsSpawningEnabled() ? 1 : 0, StartSeconds,
@@ -150,6 +154,17 @@ void URRPacingBotSubsystem::Tick(float DeltaTime)
 	{
 		FinishRun();
 		return;
+	}
+
+	if (Now >= NextStatusSeconds)
+	{
+		NextStatusSeconds = Now + FMath::Max(RRPacingBot::CVarStatusInterval.GetValueOnGameThread(), 1.f);
+		int32 Robots = 0;
+		int32 Cubes = 0;
+		CountWorld(Robots, Cubes);
+		const FVector Location = Miner->GetActorLocation();
+		UE_LOG(LogRogueRigs, Log, TEXT("Pacing: status %.1f s, miner (%.0f, %.0f, %.0f), level %d, XP %.1f / %.1f, %d robots alive, %d XP cubes lying."),
+			Now, Location.X, Location.Y, Location.Z, Level, Miner->GetProgression()->GetXP(), Miner->GetProgression()->GetXPToNextLevel(), Robots, Cubes);
 	}
 
 	AimAtNearestRobot(Miner);

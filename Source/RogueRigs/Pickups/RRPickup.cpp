@@ -31,6 +31,15 @@ void ARRPickup::BeginPlay()
 {
 	Super::BeginPlay();
 
+	// Motion and collection are computed, never physical: no component of a pickup may block or carry a character
+	// (a Blueprint mesh such as the hidden XP trail would otherwise stop the miner or let it climb onto the rock).
+	TInlineComponentArray<UPrimitiveComponent*> Primitives(this);
+	for (UPrimitiveComponent* Primitive : Primitives)
+	{
+		Primitive->SetCollisionEnabled(ECollisionEnabled::NoCollision);
+		Primitive->CanCharacterStepUpOn = ECB_No;
+	}
+
 	PopStart = GetActorLocation();
 	const float Yaw = bHasPopYaw ? FMath::DegreesToRadians(PopYawDegrees) : FMath::FRandRange(0.f, UE_TWO_PI);
 	const float MinDistance = FMath::Min(PopMinDistance, PopMaxDistance);

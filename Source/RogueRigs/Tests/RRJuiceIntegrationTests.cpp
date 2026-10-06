@@ -326,6 +326,15 @@ bool FRRJuiceKillStreamTest::RunTest(const FString& Parameters)
 		const UStaticMeshComponent* Trail = FindJuiceComponent<UStaticMeshComponent>(Cube.Get(), TEXT("Trail"));
 		TestNotNull(TEXT("BP_PickupXP has a Trail component"), Trail);
 		TestFalse(TEXT("trail hidden during the pop"), IsShownInGame(Trail));
+		// task-028-03: the saved Trail blocked the miner (it climbed onto the cube); no pickup component may collide.
+		TInlineComponentArray<UPrimitiveComponent*> Primitives(Cube.Get());
+		for (const UPrimitiveComponent* Primitive : Primitives)
+		{
+			TestEqual(FString::Printf(TEXT("BP_PickupXP %s has no collision"), *Primitive->GetName()),
+				static_cast<int32>(Primitive->GetCollisionEnabled()), static_cast<int32>(ECollisionEnabled::NoCollision));
+			TestEqual(FString::Printf(TEXT("BP_PickupXP %s cannot be stepped on"), *Primitive->GetName()),
+				static_cast<int32>(Primitive->CanCharacterStepUpOn.GetValue()), static_cast<int32>(ECB_No));
+		}
 	}
 
 	// Pop, rest, then the stream: every cube shows its trail once magnetized, until collected.

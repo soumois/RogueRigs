@@ -39,7 +39,8 @@ struct FRRPacingLevelTime
  *   cube scatter) with Seed, makes the player miner invulnerable (cheat count, removed at the end), then every frame aims
  *   the miner stick at the nearest live robot and, with Collect 1, walks toward the nearest XP cube lying outside the pickup
  *   radius within rr.Pacing.CollectRange (else stands still); picks card 0 of every level-up screen (ticks while paused).
- *   Level time is the spawner run clock (ARREnemySpawner::GetRunTime). Logs one "Pacing: level" line per level, a summary
+ *   Level time is the spawner run clock (ARREnemySpawner::GetRunTime). Logs one "Pacing: level" line per level, a "Pacing: status" line every
+ *   rr.Pacing.StatusInterval s (miner position, level, XP, robots, cubes), a summary
  *   at the end (after Seconds of run clock), writes Saved/Pacing/Pacing_<time>.csv and requests exit when Quit is 1.
  */
 UCLASS()
@@ -105,6 +106,9 @@ protected:
 
 	/** Miner level seen on the previous frame. */
 	int32 LastLevel = 1;
+
+	/** Spawner clock of the next status line (every rr.Pacing.StatusInterval s). */
+	float NextStatusSeconds = 0.f;
 
 	/** Level-up cards picked. */
 	int32 CardsPicked = 0;

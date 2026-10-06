@@ -99,7 +99,7 @@ public:
 	const FVector& GetPopEnd() const { return PopEnd; }
 
 protected:
-	/** Picks the pop target, stores the pop start point and registers with URRPickupSubsystem (else enables the actor tick). */
+	/** Turns collision off on every primitive component (Blueprint ones included), picks the pop target, stores the pop start point and registers with URRPickupSubsystem (else enables the actor tick). */
 	virtual void BeginPlay() override;
 
 	/** Unregisters from URRPickupSubsystem. */
