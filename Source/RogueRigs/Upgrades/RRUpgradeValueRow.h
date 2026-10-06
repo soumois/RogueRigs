@@ -38,4 +38,11 @@ struct ROGUERIGS_API FRRUpgradeValueRow : public FTableRowBase
 	/** GAS operation: AddBase for points, MultiplyAdditive for percentages. */
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Upgrade Value")
 	ERRUpgradeOperation Operation = ERRUpgradeOperation::AddBase;
+
+	/**
+	 * Relative draw weight of the stat, before rarity (upgrades gdd, owner 2026-10-06 third test: damage, fire rate, reload 3,
+	 * others 1). Write the same value on every row of a stat; the lowest tier row read wins. 0 = never offered.
+	 */
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Upgrade Value", meta = (ClampMin = 0))
+	float DrawWeight = 1.f;
 };

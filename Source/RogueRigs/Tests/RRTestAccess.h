@@ -201,7 +201,7 @@ namespace RRTestAccess
 	/** URRUpgradeComponent: new-weapon card tunables (RRTestHarness::DisableWeaponCards, WeaponCards tests). */
 	struct FUpgradeAccess : public URRUpgradeComponent
 	{
-		static float& NewWeaponCardChanceOf(URRUpgradeComponent* Upgrades) { return Upgrades->*(&FUpgradeAccess::NewWeaponCardChance); }
+		static int32& WeaponCardLevelIntervalOf(URRUpgradeComponent* Upgrades) { return Upgrades->*(&FUpgradeAccess::WeaponCardLevelInterval); }
 		static int32& MaxNewWeaponCardsPerOfferOf(URRUpgradeComponent* Upgrades) { return Upgrades->*(&FUpgradeAccess::MaxNewWeaponCardsPerOffer); }
 	};
 

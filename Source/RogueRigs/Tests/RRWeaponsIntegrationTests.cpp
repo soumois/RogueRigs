@@ -280,7 +280,7 @@ bool FRRIntegrationWeaponCardEquipsShotgunTest::RunTest(const FString& Parameter
 	}
 
 	// BP_Miner with its Blueprint loadout (rifle only); the weapon card is forced: catalogue reduced to its BP_Shotgun entry,
-	// chance 1 (the first slot of every offer becomes the shotgun card while it is not owned).
+	// level interval 1 (every level is a weapon level: the first slot becomes the shotgun card while it is not owned).
 	ARRArenaGrid* Grid = SpawnGrid(*this, TestWorld);
 	ARRMiner* Miner = Grid ? SpawnMiner(*this, TestWorld, Grid, OpenMinerCell, [](ARRMiner* NewMiner)
 	{
@@ -288,7 +288,7 @@ bool FRRIntegrationWeaponCardEquipsShotgunTest::RunTest(const FString& Parameter
 		{
 			return !Entry.WeaponClass || !Entry.WeaponClass->IsChildOf(ARRShotgun::StaticClass());
 		});
-		FUpgradeAccess::NewWeaponCardChanceOf(NewMiner->GetUpgrades()) = 1.f;
+		FUpgradeAccess::WeaponCardLevelIntervalOf(NewMiner->GetUpgrades()) = 1;
 	}) : nullptr;
 	if (!Miner || !TestEqual(TEXT("catalogue forced to the BP_Shotgun entry"), Miner->GetWeaponCatalogue().Num(), 1))
 	{

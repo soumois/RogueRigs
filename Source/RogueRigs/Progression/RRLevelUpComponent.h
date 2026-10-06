@@ -170,6 +170,9 @@ protected:
 	/** Choices still owed, the open screen included. */
 	int32 PendingChoices = 0;
 
+	/** Level of each owed choice, oldest first (the open screen's level first): weapon cards come on levels 5, 10, 15... */
+	TArray<int32> PendingLevels;
+
 	/** True while a choice screen is open. */
 	bool bAwaitingChoice = false;
 

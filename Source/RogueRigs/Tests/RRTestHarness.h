@@ -222,13 +222,13 @@ namespace RRTestHarness
 		});
 		FMinerAccess::GuaranteedWeaponClassesOf(Miner).Reset();
 		// Seeded offers of these tests were measured without new-weapon cards (task-024-04 adds them).
-		FUpgradeAccess::NewWeaponCardChanceOf(Miner->GetUpgrades()) = 0.f;
+		FUpgradeAccess::WeaponCardLevelIntervalOf(Miner->GetUpgrades()) = 0;
 	}
 
-	/** SpawnMiner hook: offers never contain a new-weapon card (chance 0), so seeded stat draws match the pre-024-04 measures. */
+	/** SpawnMiner hook: offers never contain a new-weapon card (level interval 0), so seeded stat draws match the pre-024-04 measures. */
 	inline void DisableWeaponCards(ARRMiner* Miner)
 	{
-		FUpgradeAccess::NewWeaponCardChanceOf(Miner->GetUpgrades()) = 0.f;
+		FUpgradeAccess::WeaponCardLevelIntervalOf(Miner->GetUpgrades()) = 0;
 	}
 
 	/**

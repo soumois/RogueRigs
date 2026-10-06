@@ -41,6 +41,7 @@ void URRUpgradeComponent::InitializeComponent()
 void URRUpgradeComponent::LoadTables()
 {
 	ValueRows.Reset();
+	StatDrawWeights.Reset();
 	for (int32 Rank = 0; Rank < TierCount; ++Rank)
 	{
 		BaseWeights[Rank] = 0.f;
@@ -65,6 +66,18 @@ void URRUpgradeComponent::LoadTables()
 				continue;
 			}
 			ByTier[Rank] = *Row;
+		}
+		// Draw weight per stat: the lowest tier row of the stat.
+		for (const TPair<ERRUpgradeStat, TArray<TOptional<FRRUpgradeValueRow>>>& Pair : ValueRows)
+		{
+			for (const TOptional<FRRUpgradeValueRow>& Row : Pair.Value)
+			{
+				if (Row.IsSet())
+				{
+					StatDrawWeights.Add(Pair.Key, FMath::Max(Row->DrawWeight, 0.f));
+					break;
+				}
+			}
 		}
 	}
 
@@ -306,15 +319,15 @@ TArray<URRUpgradeComponent::FChoice> URRUpgradeComponent::GatherChoices(const TA
 			StatChoices.Add({ Stat, ERRUpgradeTarget::Player, nullptr, 0.f });
 		}
 
-		// Each stat is equally likely, whatever its number of targets.
-		const float Weight = StatChoices.IsEmpty() ? 0.f : 1.f / StatChoices.Num();
+		// A stat's odds follow its DrawWeight, whatever its number of targets.
+		const float Weight = StatChoices.IsEmpty() ? 0.f : GetStatDrawWeight(Stat) / StatChoices.Num();
 		for (FChoice& Choice : StatChoices)
 		{
 			const bool bExcluded = Excluded.ContainsByPredicate([&Choice](const FRRUpgradeCard& Card)
 			{
 				return Card.Stat == Choice.Stat && Card.Target == Choice.Target && Card.TargetWeapon == Choice.Weapon;
 			});
-			if (!bExcluded)
+			if (!bExcluded && Weight > 0.f)
 			{
 				Choice.Weight = Weight;
 				Choices.Add(Choice);
@@ -365,11 +378,28 @@ TArray<FRRUpgradeCard> URRUpgradeComponent::DrawCards(TArray<FChoice> Choices, i
 	return Cards;
 }
 
+float URRUpgradeComponent::GetStatDrawWeight(ERRUpgradeStat Stat) const
+{
+	const float* Weight = StatDrawWeights.Find(Stat);
+	return Weight ? *Weight : 0.f;
+}
+
+int32 URRUpgradeComponent::GetNewWeaponCardCount(int32 InOfferLevel, int32 Acquirable) const
+{
+	if (InOfferLevel <= 0 || WeaponCardLevelInterval <= 0 || InOfferLevel % WeaponCardLevelInterval != 0)
+	{
+		return 0;
+	}
+	return FMath::Clamp(Acquirable, 0, MaxNewWeaponCardsPerOffer);
+}
+
 TArray<FRRUpgradeCard> URRUpgradeComponent::DrawOffer(int32 CardCount, float Luck, const TArray<FRRUpgradeCard>& Excluded)
 {
-	// New-weapon slots first. Nothing is drawn from the stream when no roll can succeed, so stat draws keep their sequence.
+	// New-weapon slots first, only on weapon levels. Nothing is drawn from the stream otherwise, so stat draws keep their sequence.
 	TArray<FRRWeaponCatalogueEntry> Candidates;
-	if (const ARRMiner* Miner = Cast<ARRMiner>(GetOwner()))
+	const ARRMiner* Miner = Cast<ARRMiner>(GetOwner());
+	const int32 WeaponCount = Miner ? FMath::Min(GetNewWeaponCardCount(OfferLevel, Miner->GetAcquirableWeapons().Num()), CardCount) : 0;
+	if (WeaponCount > 0)
 	{
 		Candidates = Miner->GetAcquirableWeapons();
 		Candidates.RemoveAll([&Excluded](const FRRWeaponCatalogueEntry& Entry)
@@ -379,12 +409,8 @@ TArray<FRRUpgradeCard> URRUpgradeComponent::DrawOffer(int32 CardCount, float Luc
 	}
 	TArray<int32> WeaponSlots;
 	TArray<FRRUpgradeCard> WeaponCards;
-	for (int32 Slot = 0; Slot < CardCount && NewWeaponCardChance > 0.f && WeaponCards.Num() < MaxNewWeaponCardsPerOffer && !Candidates.IsEmpty(); ++Slot)
+	for (int32 Slot = 0; Slot < CardCount && WeaponCards.Num() < WeaponCount && !Candidates.IsEmpty(); ++Slot)
 	{
-		if (RandomStream.FRand() >= NewWeaponCardChance)
-		{
-			continue;
-		}
 		const int32 Index = RandomStream.RandRange(0, Candidates.Num() - 1);
 		FRRUpgradeCard Card;
 		if (MakeWeaponCard(Candidates[Index], Card))
@@ -423,8 +449,9 @@ TArray<FRRUpgradeCard> URRUpgradeComponent::DrawOffer(int32 CardCount, float Luc
 	return Cards;
 }
 
-TArray<FRRUpgradeCard> URRUpgradeComponent::BuildOffer(int32 CardCount, float Luck)
+TArray<FRRUpgradeCard> URRUpgradeComponent::BuildOffer(int32 CardCount, float Luck, int32 InOfferLevel)
 {
+	OfferLevel = InOfferLevel;
 	CurrentOffer = DrawOffer(CardCount, Luck, {});
 	OfferLuck = Luck;
 	bHasOffer = true;
@@ -436,9 +463,9 @@ TArray<FRRUpgradeCard> URRUpgradeComponent::BuildOffer(int32 CardCount, float Lu
 	return CurrentOffer;
 }
 
-TArray<FRRUpgradeCard> URRUpgradeComponent::BuildOfferWithOwnerLuck(int32 CardCount, float BonusLuck)
+TArray<FRRUpgradeCard> URRUpgradeComponent::BuildOfferWithOwnerLuck(int32 CardCount, float BonusLuck, int32 InOfferLevel)
 {
-	return BuildOffer(CardCount, GetOwnerLuck() + BonusLuck);
+	return BuildOffer(CardCount, GetOwnerLuck() + BonusLuck, InOfferLevel);
 }
 
 bool URRUpgradeComponent::Reroll(TArray<FRRUpgradeCard>& OutCards)

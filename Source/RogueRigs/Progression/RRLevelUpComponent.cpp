@@ -58,6 +58,7 @@ void URRLevelUpComponent::EndPlay(const EEndPlayReason::Type EndPlayReason)
 	}
 	bAwaitingChoice = false;
 	PendingChoices = 0;
+	PendingLevels.Reset();
 	Super::EndPlay(EndPlayReason);
 }
 
@@ -89,6 +90,7 @@ void URRLevelUpComponent::HandleLevelUp(int32 NewLevel)
 		return;
 	}
 	++PendingChoices;
+	PendingLevels.Add(NewLevel);
 	// A running delay or an open screen picks the new choice up through the queue.
 	if (!bAwaitingChoice && !IsChoiceDelayActive())
 	{
@@ -135,6 +137,7 @@ void URRLevelUpComponent::HandleChoiceDelayElapsed()
 	{
 		// The run is over: no choice screen.
 		PendingChoices = 0;
+		PendingLevels.Reset();
 		return;
 	}
 	EnterChoicePause();
@@ -145,7 +148,8 @@ void URRLevelUpComponent::HandleChoiceDelayElapsed()
 void URRLevelUpComponent::ShowNextOffer()
 {
 	URRUpgradeComponent* Upgrades = UpgradeComponent.Get();
-	const TArray<FRRUpgradeCard> Cards = Upgrades ? Upgrades->BuildOfferWithOwnerLuck(CardCount) : TArray<FRRUpgradeCard>();
+	const int32 OfferLevel = PendingLevels.IsEmpty() ? 0 : PendingLevels[0];
+	const TArray<FRRUpgradeCard> Cards = Upgrades ? Upgrades->BuildOfferWithOwnerLuck(CardCount, 0.f, OfferLevel) : TArray<FRRUpgradeCard>();
 	if (Cards.IsEmpty())
 	{
 		UE_LOG(LogRogueRigs, Error, TEXT("URRLevelUpComponent: no upgrade card could be offered on %s; choice skipped."), *GetNameSafe(GetOwner()));
@@ -169,6 +173,10 @@ bool URRLevelUpComponent::ChooseUpgrade(int32 Index)
 	}
 
 	--PendingChoices;
+	if (!PendingLevels.IsEmpty())
+	{
+		PendingLevels.RemoveAt(0);
+	}
 	if (PendingChoices > 0)
 	{
 		ShowNextOffer();
@@ -205,6 +213,7 @@ void URRLevelUpComponent::CancelChoices()
 void URRLevelUpComponent::CloseChoice()
 {
 	PendingChoices = 0;
+	PendingLevels.Reset();
 	const bool bWasAwaiting = bAwaitingChoice;
 	bAwaitingChoice = false;
 	if (bWasAwaiting)

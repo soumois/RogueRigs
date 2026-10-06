@@ -21,17 +21,17 @@ DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FRROnUpgradeAppliedSignature, const 
 /**
  * Upgrade system of the miner (a default subobject of ARRMiner; sys-upgrades). Reads UpgradeValues.csv (FRRUpgradeValueRow)
  * and UpgradeRarities.csv (FRRUpgradeRarityRow) when it initializes.
- * Offer: BuildOffer draws distinct cards; each card picks a stat uniformly among the offerable stats (at least one row;
+ * Offer: BuildOffer draws distinct cards; each card picks a stat among the offerable stats (at least one row) by its CSV
+ * DrawWeight (damage, fire rate, reload 3, others 1;
  * weapon stats only while the miner owns a weapon), then a target uniformly among that stat's targets (player stats: the
  * player; weapon stats: all weapons or one weapon of ARRMiner::GetWeapons, so a new weapon becomes a target by itself),
  * then a tier by the luck-weighted draw; when the stat has no row at the drawn tier (Pierce below blue) that choice is
  * dropped for this offer and the card is drawn again from the other choices. Two cards of one offer never share stat and target. Reroll replaces the offer
  * once with cards sharing no (stat, target) with it. ApplyUpgrade ends the offer.
- * New-weapon cards (upgrades gdd): before the stat cards, while the owner miner can acquire a catalogue weapon
- * (ARRMiner::GetAcquirableWeapons: not owned, fewer than MaxWeapons owned), each slot in order rolls NewWeaponCardChance; a
- * success makes that slot a "Nouvelle arme" card for a weapon picked uniformly among the acquirable ones, at most
- * MaxNewWeaponCardsPerOffer per offer; the other slots get stat cards. No roll is made when the chance is 0 or nothing can be
- * acquired, so the stat draws of a seed are unchanged. Picking a new-weapon card calls ARRMiner::AddWeapon (acquisition
+ * New-weapon cards (upgrades gdd, owner 2026-10-06 third test): only on offers for a level that is a multiple of
+ * WeaponCardLevelInterval (5, 10, 15...): the first slots become "New weapon" cards, one per acquirable catalogue weapon
+ * (ARRMiner::GetAcquirableWeapons: not owned, fewer than MaxWeapons owned) up to MaxNewWeaponCardsPerOffer (2), weapons
+ * picked uniformly; the other slots get stat cards. Other offers (other levels, OfferLevel 0) hold none and draw nothing for it. Picking a new-weapon card calls ARRMiner::AddWeapon (acquisition
  * replays the global upgrades), and the new weapon becomes a target of later stat cards. A reroll excludes the weapons offered.
  * Application: an infinite runtime GE per (attribute, operation) with SetByCaller Data.UpgradeValue (AddBase: Value;
  * MultiplyAdditive: 1 + Value, so percentages add before multiplying). Player stats go to the owner's ASC (MaxHealth also
@@ -63,11 +63,22 @@ public:
 	 * pool is smaller, empty when the tables failed to load).
 	 */
 	UFUNCTION(BlueprintCallable, Category = "Upgrades")
-	TArray<FRRUpgradeCard> BuildOffer(int32 CardCount, float Luck);
+	TArray<FRRUpgradeCard> BuildOffer(int32 CardCount, float Luck, int32 OfferLevel = 0);
 
-	/** BuildOffer with the owner's current Luck attribute + BonusLuck (a bonus chest's temporary luck). */
+	/** BuildOffer with the owner's current Luck attribute + BonusLuck (a bonus chest's temporary luck), for OfferLevel (0 = not a level-up). */
 	UFUNCTION(BlueprintCallable, Category = "Upgrades")
-	TArray<FRRUpgradeCard> BuildOfferWithOwnerLuck(int32 CardCount = 3, float BonusLuck = 0.f);
+	TArray<FRRUpgradeCard> BuildOfferWithOwnerLuck(int32 CardCount = 3, float BonusLuck = 0.f, int32 OfferLevel = 0);
+
+	/**
+	 * New-weapon cards of an offer for OfferLevel with Acquirable weapons left: min(MaxNewWeaponCardsPerOffer, Acquirable) on a
+	 * level multiple of WeaponCardLevelInterval, else 0 (also for OfferLevel 0 or an interval of 0).
+	 */
+	UFUNCTION(BlueprintPure, Category = "Upgrades")
+	int32 GetNewWeaponCardCount(int32 OfferLevel, int32 Acquirable) const;
+
+	/** Relative draw weight of Stat (CSV DrawWeight); 0 when the stat has no row. */
+	UFUNCTION(BlueprintPure, Category = "Upgrades")
+	float GetStatDrawWeight(ERRUpgradeStat Stat) const;
 
 	/**
 	 * Replaces the current offer, once per offer, with the same number of cards drawn with the offer's luck, none sharing
@@ -131,9 +142,9 @@ public:
 	 */
 	static bool MakeWeaponCard(const FRRWeaponCatalogueEntry& Entry, FRRUpgradeCard& OutCard);
 
-	/** Chance (0 to 1) that one offer slot becomes a new-weapon card while a weapon can be acquired (NewWeaponCardChance). */
+	/** Levels offering new-weapon cards are multiples of this (WeaponCardLevelInterval, 5); 0 = never. */
 	UFUNCTION(BlueprintPure, Category = "Upgrades")
-	float GetNewWeaponCardChance() const { return NewWeaponCardChance; }
+	int32 GetWeaponCardLevelInterval() const { return WeaponCardLevelInterval; }
 
 	/** Most new-weapon cards in one offer (MaxNewWeaponCardsPerOffer). */
 	UFUNCTION(BlueprintPure, Category = "Upgrades")
@@ -171,7 +182,7 @@ protected:
 		ERRUpgradeTarget Target;
 		/** Weapon of a Weapon target. */
 		ARRWeapon* Weapon;
-		/** Pick weight: 1 / number of targets of the stat, so each stat is equally likely. */
+		/** Pick weight: stat DrawWeight / number of targets of the stat, so a stat's odds do not depend on its target count. */
 		float Weight;
 	};
 
@@ -227,13 +238,19 @@ protected:
 	UPROPERTY(Transient)
 	TMap<FString, TObjectPtr<UGameplayEffect>> EffectCache;
 
-	/** Chance (0 to 1) that each offer slot becomes a new-weapon card while a weapon can be acquired (upgrades gdd: 30 %, provisional). */
-	UPROPERTY(EditDefaultsOnly, Category = "Upgrades|New weapons", meta = (ClampMin = 0, ClampMax = 1))
-	float NewWeaponCardChance = 0.3f;
-
-	/** Most new-weapon cards in one offer (upgrades gdd: 1, provisional). */
+	/** Level-ups to levels that are multiples of this offer new-weapon cards (upgrades gdd: 5, provisional); 0 = never. */
 	UPROPERTY(EditDefaultsOnly, Category = "Upgrades|New weapons", meta = (ClampMin = 0))
-	int32 MaxNewWeaponCardsPerOffer = 1;
+	int32 WeaponCardLevelInterval = 5;
+
+	/** New-weapon cards of such an offer when enough weapons remain (upgrades gdd: 2 when at least 2 remain, else 1; provisional). */
+	UPROPERTY(EditDefaultsOnly, Category = "Upgrades|New weapons", meta = (ClampMin = 0))
+	int32 MaxNewWeaponCardsPerOffer = 2;
+
+	/** Draw weight of each stat (CSV DrawWeight, read by LoadTables). */
+	TMap<ERRUpgradeStat, float> StatDrawWeights;
+
+	/** Level the current offer was built for (reused by Reroll; 0 = not a level-up). */
+	int32 OfferLevel = 0;
 
 	/** Cards of the current offer. */
 	UPROPERTY(VisibleInstanceOnly, BlueprintReadOnly, Category = "Upgrades")
