@@ -3,7 +3,7 @@ id: task-031-03-pacing-retune
 description: "Pacing bot with a collect profile and a straight-run profile; XP curve tuned so their averaged medians hit L2 0:15, L5 1:10, L10 3:00; shots."
 parent: task-031-directional-spawn
 kind: task
-status: todo
+status: in-progress
 ---
 # Second pacing retune
 

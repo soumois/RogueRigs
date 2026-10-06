@@ -13,7 +13,7 @@ status: in-progress
 - gdd_check: Read [[enemies-index]], enemy nodes, [[xp-level-up]]. HP already match the owner's wish (chaser 3 rifle bullets, shield chaser 6): unchanged, reported to the owner. GDD updated by the Orchestrator with provisional values (2026-10-06). No open value.
 - confirmed_by_owner: yes (2026-10-06)
 - milestone: M2
-- next_step: task-031-02-spawn-speed-shooter
+- next_step: task-031-03-pacing-retune
 - result: open
 
 ## Subtasks

@@ -3,7 +3,7 @@ id: task-031-02-spawn-speed-shooter
 description: "Spawn band 100–500 uu beyond the view, spawn side biased 55/35/10 toward the run heading, robots 30 % slower, shooters never back away; tests."
 parent: task-031-directional-spawn
 kind: task
-status: in-progress
+status: done
 ---
 # Closer directional spawns, slower robots, steadfast shooters
 
@@ -15,11 +15,11 @@ status: in-progress
 - done_when: build exits 0 with the editor closed; all `RogueRigs.*` tests pass headless; docs updated; lint clean.
 - editor_state: closed
 - token_ceiling: 110000
-- model: open
-- tokens: open
-- runs: open
+- model: opus
+- tokens: input 162, cache write 399313, cache read 10459966, output 89294
+- runs: 3
 - milestone: M2
-- result: open
+- result: Spawn band 100–500 uu (SpawnBandMin/Max, fallback outward to 3000), detour filter MaxPathDetourRatio 1.5 (owner ok); heading over 1 s, sectors 55/35/10 (measured 56.0/34.7/9.3 lone, 56.7/35.3/8.0 packs running; still matches cell shares); first contact still miner on screen at 2.25 s; shooter never moves away (measured 0.00 uu); speeds 202/168/168/112. 4 new tests; build 0, 188/189 then the failing kamikaze test (time limit 15 → 25 s) passes alone; full suite not rerun. Late-run starvation explained: alive cap 150 filled by robots left behind, plus the arena edge. Commits d269d52, 5bfde91.
 
 ## Relations
 - [[task-031-directional-spawn]] — parent global task.
