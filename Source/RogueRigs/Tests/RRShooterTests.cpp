@@ -1,4 +1,4 @@
-// Rogue Rigs - automation tests of the shooter (RogueRigs.Shooter.*): CSV stats, approach then aim and fire cadence, on-screen gating, repositioning for line of sight, robot shots on rock and through robots, spawner share.
+// Rogue Rigs - automation tests of the shooter (RogueRigs.Shooter.*): CSV stats, approach then aim and fire cadence, on-screen gating, repositioning for line of sight, holding when approached, robot shots on rock and through robots, spawner share.
 
 #include "CoreMinimal.h"
 #include "Misc/AutomationTest.h"
@@ -112,7 +112,7 @@ bool FRRShooterStatsTest::RunTest(const FString& Parameters)
 	if (TestTrue(TEXT("EnemyStats.csv row Shooter read"), ARREnemy::LoadStatsRow(TEXT("Shooter"), Row)))
 	{
 		TestEqual(TEXT("MaxHealth 40"), Row.MaxHealth, 40.f);
-		TestEqual(TEXT("MoveSpeed 240"), Row.MoveSpeed, 240.f);
+		TestEqual(TEXT("MoveSpeed 168"), Row.MoveSpeed, 168.f);
 		TestEqual(TEXT("Damage 12"), Row.Damage, 12.f);
 		TestEqual(TEXT("AttackRate 0.5 (one shot every 2 s)"), Row.AttackRate, 0.5f);
 		TestEqual(TEXT("AttackRange 960 (owner 2026-10-06, was 1200)"), Row.AttackRange, 960.f);
@@ -143,7 +143,7 @@ bool FRRShooterStatsTest::RunTest(const FString& Parameters)
 		return false;
 	}
 	TestEqual(TEXT("Health 40"), Health(Shooter), 40.f);
-	TestEqual(TEXT("MaxWalkSpeed 240"), Shooter->GetCharacterMovement()->MaxWalkSpeed, 240.f);
+	TestEqual(TEXT("MaxWalkSpeed 168"), Shooter->GetCharacterMovement()->MaxWalkSpeed, 168.f);
 	TestEqual(TEXT("knockback resistance 0.2"), Shooter->GetKnockbackResistance(), 0.2f);
 	TestEqual(TEXT("arrival at the preferred distance"), Shooter->GetEnemyMovement()->GetArrivalDistance(), 800.f);
 	TestEqual(TEXT("capsule radius 34 (miner size)"), Shooter->GetCapsuleComponent()->GetUnscaledCapsuleRadius(), 34.f);
@@ -347,7 +347,7 @@ bool FRRShooterRepositionTest::RunTest(const FString& Parameters)
 		const FVector Center = Grid->GetCellCenter(Cell.X, Cell.Y);
 		const float Distance = FVector::Dist2D(Center, MinerLocation);
 		AddInfo(FString::Printf(TEXT("firing cell (%d, %d) at %.0f uu, path of %d cells"), Cell.X, Cell.Y, Distance, Waypoints.Num()));
-		TestTrue(TEXT("cell in the ring"), Distance >= 600.f && Distance <= 1000.f);
+		TestTrue(TEXT("cell within the hold distance (960) and no farther than the robot (it never backs away)"), Distance <= 960.f && Distance <= FVector::Dist2D(Shooter->GetActorLocation(), MinerLocation));
 		TestTrue(TEXT("cell has sight"), Grid->HasLineOfSight(Center, MinerLocation));
 		FIntPoint Previous = CoverShooterCell;
 		bool bConnected = true;
@@ -384,6 +384,61 @@ bool FRRShooterRepositionTest::RunTest(const FString& Parameters)
 	TestTrue(TEXT("entered Reposition"), bRepositioned);
 	TestFalse(TEXT("never aimed without sight"), bAimedWithoutSight);
 	TestTrue(TEXT("fired after moving to a firing position"), Shooter->GetShotCount() >= 1);
+	return true;
+}
+
+IMPLEMENT_SIMPLE_AUTOMATION_TEST(FRRShooterHoldsWhenApproachedTest, "RogueRigs.Shooter.HoldsWhenApproached",
+	EAutomationTestFlags::EditorContext | EAutomationTestFlags::EngineFilter)
+
+bool FRRShooterHoldsWhenApproachedTest::RunTest(const FString& Parameters)
+{
+	using namespace RRShooterTests;
+
+	// Open floor, shooter 800 uu east of the miner with sight; the miner walks into it at 300 uu/s and stays in contact.
+	FTestWorld TestWorld(TEXT("RRShooterHoldsWhenApproached"));
+	ARRArenaGrid* Grid = nullptr;
+	ARRMiner* Miner = nullptr;
+	if (!MakeArena(*this, TestWorld, OpenMinerCell, Grid, Miner))
+	{
+		return false;
+	}
+	const FVector MinerFloor = Grid->GetCellCenter(OpenMinerCell.X, OpenMinerCell.Y);
+	ARRShooter* Shooter = SpawnRobot<ARRShooter>(*this, TestWorld, MinerFloor + FVector(800.f, 0.f, 0.f));
+	if (!Shooter)
+	{
+		return false;
+	}
+	Shooter->SetViewRectangleOverride(ViewAround(MinerFloor, 4000.f));
+	for (int32 Frame = 0; Frame < 60; ++Frame)
+	{
+		TestWorld.Tick();
+	}
+	float MaxRetreat = 0.f;
+	float MinDistance = TNumericLimits<float>::Max();
+	bool bRepositioned = false;
+	for (int32 Frame = 0; Frame < 60 * 5; ++Frame)
+	{
+		// The miner walks east until 150 uu from the shooter (capsules almost touching), then stays.
+		const FVector ToShooter = Shooter->GetActorLocation() - Miner->GetActorLocation();
+		if (ToShooter.Size2D() > 150.f)
+		{
+			Miner->SetActorLocation(Miner->GetActorLocation() + FVector(ToShooter.GetSafeNormal2D() * 300.f * FrameSeconds), false, nullptr, ETeleportType::TeleportPhysics);
+		}
+		// The shooter's own move this frame, measured against the miner's new position.
+		const FVector MinerLocation = Miner->GetActorLocation();
+		const float Before = FVector::Dist2D(Shooter->GetActorLocation(), MinerLocation);
+		TestWorld.Tick();
+		const float After = FVector::Dist2D(Shooter->GetActorLocation(), MinerLocation);
+		MaxRetreat = FMath::Max(MaxRetreat, After - Before);
+		MinDistance = FMath::Min(MinDistance, After);
+		bRepositioned |= Shooter->GetState() == ERRShooterState::Reposition;
+	}
+	AddInfo(FString::Printf(TEXT("approached shooter: largest step away %.2f uu, closest %.0f uu, state %d, shots %d"), MaxRetreat, MinDistance,
+		static_cast<int32>(Shooter->GetState()), Shooter->GetShotCount()));
+	TestTrue(TEXT("never increases its distance to the miner (0.5 uu tolerance)"), MaxRetreat <= 0.5f);
+	TestTrue(TEXT("the miner came into contact range"), MinDistance <= 160.f);
+	TestFalse(TEXT("never repositions with sight"), bRepositioned);
+	TestTrue(TEXT("keeps firing at point blank"), Shooter->GetShotCount() >= 2);
 	return true;
 }
 

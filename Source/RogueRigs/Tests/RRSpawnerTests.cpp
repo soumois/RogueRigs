@@ -1,4 +1,4 @@
-// Rogue Rigs - automation tests of the enemy spawner (RogueRigs.Spawner.*): spawn cells outside the view and reachable, alive cap, freed slot, trickle then packs, packs from one side, kamikaze share.
+// Rogue Rigs - automation tests of the enemy spawner (RogueRigs.Spawner.*): spawn cells in the band outside the view and reachable, alive cap, freed slot, trickle then packs, packs from one side, kamikaze share, run-heading sector split, heading from movement, first contact of a still miner.
 
 #include "CoreMinimal.h"
 #include "Misc/AutomationTest.h"
@@ -25,9 +25,9 @@ namespace RRSpawnerTests
 	/** Miner cell on arena_m1_fine (open floor; fine cell of the legacy (40, 40)). The spawn band is counted in cells, so these tests run on the game grid. */
 	const FIntPoint MinerCell = FineCell(FIntPoint(40, 40));
 
-	/** Spawn band in cells from the view edge, cell center: ViewMargin + 0.5 to MaxSpawnDistanceCells + 0.5 (3 and 18 cells of 67 uu = 1 and 6 of 200 uu). */
-	constexpr float BandMinCells = 3.5f;
-	constexpr float BandMaxCells = 18.5f;
+	/** Spawn band beyond the view edge, cell center (uu): SpawnBandMinDistance to SpawnBandMaxDistance (task-031-02). */
+	constexpr float BandMin = 100.f;
+	constexpr float BandMax = 500.f;
 
 	/** Half extent (uu) of the fixed view rectangle centered on the miner. */
 	const FVector2D ViewHalfExtent(1600.f, 1000.f);
@@ -71,8 +71,8 @@ namespace RRSpawnerTests
 		Test.TestEqual(TEXT("default PackSizeMin 8"), FSpawnerAccess::PackSizeMinOf(Out.Spawner), 8);
 		Test.TestEqual(TEXT("default PackSizeMax 15"), FSpawnerAccess::PackSizeMaxOf(Out.Spawner), 15);
 		Test.TestEqual(TEXT("default LoneSpawnChance 0.1"), FSpawnerAccess::LoneSpawnChanceOf(Out.Spawner), 0.1f);
-		Test.TestEqual(TEXT("default ViewMargin 3"), FSpawnerAccess::ViewMarginOf(Out.Spawner), 3);
-		Test.TestEqual(TEXT("default MaxSpawnDistanceCells 18"), FSpawnerAccess::MaxSpawnDistanceOf(Out.Spawner), 18);
+		Test.TestEqual(TEXT("default SpawnBandMinDistance 100 uu"), FSpawnerAccess::BandMinOf(Out.Spawner), BandMin);
+		Test.TestEqual(TEXT("default SpawnBandMaxDistance 500 uu"), FSpawnerAccess::BandMaxOf(Out.Spawner), BandMax);
 		FSpawnerAccess::EnemyClassOf(Out.Spawner) = ARRChaser::StaticClass();
 		FSpawnerAccess::MaxAliveOf(Out.Spawner) = MaxAlive;
 		FSpawnerAccess::SpawnIntervalOf(Out.Spawner) = Interval;
@@ -87,7 +87,6 @@ namespace RRSpawnerTests
 	/** Checks that every robot of Pack stands on a distinct candidate-band cell beyond the same side of View; returns that side. */
 	ERRSpawnSide CheckPackOnOneSide(FAutomationTestBase& Test, const FSetup& Setup, const TArray<ARREnemy*>& Pack, const TCHAR* Label)
 	{
-		const float CellSize = Setup.Grid->GetCellSize();
 		ERRSpawnSide PackSide = ERRSpawnSide::None;
 		TSet<FIntPoint> Cells;
 		for (const ARREnemy* Enemy : Pack)
@@ -103,7 +102,7 @@ namespace RRSpawnerTests
 				|| (Side == ERRSpawnSide::NegativeY && Point.Y < Setup.View.Min.Y) || (Side == ERRSpawnSide::PositiveY && Point.Y > Setup.View.Max.Y);
 			Test.TestTrue(*FString::Printf(TEXT("%s: (%d, %d) beyond its edge"), Label, Cell.X, Cell.Y), bBeyond);
 			const float Distance = ARREnemySpawner::GetDistanceToRectangle(Setup.View, Point);
-			Test.TestTrue(*FString::Printf(TEXT("%s: (%d, %d) in the spawn band"), Label, Cell.X, Cell.Y), Distance >= BandMinCells * CellSize && Distance <= BandMaxCells * CellSize);
+			Test.TestTrue(*FString::Printf(TEXT("%s: (%d, %d) in the spawn band"), Label, Cell.X, Cell.Y), Distance >= BandMin && Distance <= BandMax);
 			Test.TestFalse(*FString::Printf(TEXT("%s: (%d, %d) distinct"), Label, Cell.X, Cell.Y), Cells.Contains(Cell));
 			Cells.Add(Cell);
 		}
@@ -133,7 +132,6 @@ bool FRRSpawnerOutsideViewTest::RunTest(const FString& Parameters)
 		return false;
 	}
 	URRFlowFieldSubsystem* FlowField = TestWorld.Get()->GetSubsystem<URRFlowFieldSubsystem>();
-	const float CellSize = Setup.Grid->GetCellSize();
 	const float FloorZ = Setup.Grid->GetActorLocation().Z;
 
 	// The headless view: the miner's camera projected on the floor (no player controller here).
@@ -164,11 +162,11 @@ bool FRRSpawnerOutsideViewTest::RunTest(const FString& Parameters)
 		const FVector Location = Enemy->GetActorLocation();
 		const FIntPoint Cell = Setup.Grid->GetCellAtWorld(Location);
 		const FVector Center = Setup.Grid->GetCellCenter(Cell.X, Cell.Y);
-		// The whole cell lies at least ViewMargin (3) cells beyond the rectangle, and within 18 cells of its edge.
+		// The cell center lies 100 to 500 uu beyond the rectangle edge.
 		const float Distance = ARREnemySpawner::GetDistanceToRectangle(Setup.View, FVector2D(Center.X, Center.Y));
-		TestTrue(*FString::Printf(TEXT("spawn %d (%d, %d) at least ViewMargin cells outside the view (%.0f uu)"), Index, Cell.X, Cell.Y, Distance),
-			Distance >= BandMinCells * CellSize);
-		TestTrue(*FString::Printf(TEXT("spawn %d within 18 cells of the view edge"), Index), Distance <= BandMaxCells * CellSize);
+		TestTrue(*FString::Printf(TEXT("spawn %d (%d, %d) at least 100 uu outside the view (%.0f uu)"), Index, Cell.X, Cell.Y, Distance),
+			Distance >= BandMin);
+		TestTrue(*FString::Printf(TEXT("spawn %d within 500 uu of the view edge"), Index), Distance <= BandMax);
 		TestTrue(*FString::Printf(TEXT("spawn %d on a walkable cell"), Index), FlowField->IsWalkableCell(Cell));
 		TestTrue(*FString::Printf(TEXT("spawn %d reachable"), Index), FlowField->GetCellDistance(Cell) > 0);
 		TestFalse(*FString::Printf(TEXT("spawn %d on a free cell"), Index), Used.Contains(Cell));
@@ -492,6 +490,328 @@ bool FRRSpawnerKamikazeShareTest::RunTest(const FString& Parameters)
 	}
 	AddInfo(FString::Printf(TEXT("spawner stream: %d kamikazes over %d picks"), OwnKamikazes, Picks));
 	TestEqual(TEXT("seeded spawner stream matches the seeded draw"), OwnKamikazes, Kamikazes);
+	return true;
+}
+
+namespace RRSpawnerTests
+{
+	/** Run heading of the sector tests: +X, the top of the screen ("north"). */
+	const FVector2D NorthHeading(1.f, 0.f);
+
+	/** Spawn counts per sector (index = ERRSpawnSector - 1) and per side (index = ERRSpawnSide - 1). */
+	struct FSpawnerSectorCounts
+	{
+		int32 Sectors[3] = { 0, 0, 0 };
+		int32 Sides[4] = { 0, 0, 0, 0 };
+		int32 Total = 0;
+
+		/** Share (0..1) of sector Index. */
+		float SectorShare(int32 Index) const { return Total > 0 ? static_cast<float>(Sectors[Index]) / Total : 0.f; }
+
+		/** Share (0..1) of side Index. */
+		float SideShare(int32 Index) const { return Total > 0 ? static_cast<float>(Sides[Index]) / Total : 0.f; }
+	};
+
+	/** Counts Point in Counts: its sector seen from the miner for NorthHeading (whatever the spawner heading) and its side of the view. */
+	void SpawnerCountPoint(const FSetup& Setup, const FVector2D& Point, FSpawnerSectorCounts& Counts)
+	{
+		const ERRSpawnSector Sector = ARREnemySpawner::GetSectorOfPoint(FVector2D(Setup.Miner->GetActorLocation()), NorthHeading, Point, 45.f, 45.f);
+		const ERRSpawnSide Side = ARREnemySpawner::GetSideOfRectangle(Setup.View, Point);
+		if (Sector != ERRSpawnSector::None)
+		{
+			++Counts.Sectors[static_cast<int32>(Sector) - 1];
+		}
+		if (Side != ERRSpawnSide::None)
+		{
+			++Counts.Sides[static_cast<int32>(Side) - 1];
+		}
+		++Counts.Total;
+	}
+
+	/** Spawns Count lone robots one by one (each destroyed after it is counted) and counts their spawn cells. */
+	FSpawnerSectorCounts SpawnerCountLoneSpawns(FAutomationTestBase& Test, const FSetup& Setup, int32 Count)
+	{
+		FSpawnerSectorCounts Counts;
+		for (int32 Index = 0; Index < Count; ++Index)
+		{
+			ARREnemy* Enemy = Setup.Spawner->TrySpawnEnemy();
+			if (!Enemy)
+			{
+				Test.AddError(FString::Printf(TEXT("lone spawn %d failed"), Index));
+				break;
+			}
+			const FIntPoint Cell = Setup.Grid->GetCellAtWorld(Enemy->GetActorLocation());
+			SpawnerCountPoint(Setup, FVector2D(Setup.Grid->GetCellCenter(Cell.X, Cell.Y)), Counts);
+			Enemy->Destroy();
+		}
+		return Counts;
+	}
+
+	/** Spawns Count one-pack waves of PackType (each destroyed after it is counted) and counts each pack by the mean of its cells. */
+	FSpawnerSectorCounts SpawnerCountPacks(FAutomationTestBase& Test, const FSetup& Setup, int32 PackType, int32 Count)
+	{
+		FSpawnerSectorCounts Counts;
+		for (int32 Index = 0; Index < Count; ++Index)
+		{
+			const TArray<FRRSpawnedPack> Packs = Setup.Spawner->TrySpawnDirectorWave({ PackType });
+			if (Packs.Num() != 1 || Packs[0].Cells.IsEmpty())
+			{
+				Test.AddError(FString::Printf(TEXT("pack %d failed"), Index));
+				break;
+			}
+			FVector2D Mean = FVector2D::ZeroVector;
+			for (const FIntPoint& Cell : Packs[0].Cells)
+			{
+				Mean += FVector2D(Setup.Grid->GetCellCenter(Cell.X, Cell.Y));
+			}
+			SpawnerCountPoint(Setup, Mean / Packs[0].Cells.Num(), Counts);
+			for (ARREnemy* Robot : Packs[0].Robots)
+			{
+				Robot->Destroy();
+			}
+		}
+		return Counts;
+	}
+
+	/** Plans Count fronts of horde 0 (nothing spawned) and counts their sides. */
+	FSpawnerSectorCounts SpawnerCountHordeSides(const FSetup& Setup, int32 Count)
+	{
+		FSpawnerSectorCounts Counts;
+		for (int32 Index = 0; Index < Count; ++Index)
+		{
+			const ERRSpawnSide Side = FSpawnerAccess::PrepareHordeOf(Setup.Spawner, 0);
+			if (Side != ERRSpawnSide::None)
+			{
+				++Counts.Sides[static_cast<int32>(Side) - 1];
+			}
+			++Counts.Total;
+		}
+		return Counts;
+	}
+
+	/** Logs Counts with Label. */
+	void SpawnerLogCounts(FAutomationTestBase& Test, const TCHAR* Label, const FSpawnerSectorCounts& Counts)
+	{
+		Test.AddInfo(FString::Printf(TEXT("%s (%d): front %.1f %%, sides %.1f %%, back %.1f %%; sides -X %.1f %%, +X %.1f %%, -Y %.1f %%, +Y %.1f %%"),
+			Label, Counts.Total, 100.f * Counts.SectorShare(0), 100.f * Counts.SectorShare(1), 100.f * Counts.SectorShare(2),
+			100.f * Counts.SideShare(0), 100.f * Counts.SideShare(1), 100.f * Counts.SideShare(2), 100.f * Counts.SideShare(3)));
+	}
+}
+
+IMPLEMENT_SIMPLE_AUTOMATION_TEST(FRRSpawnerHeadingSplitTest, "RogueRigs.Spawner.HeadingSectorSplit",
+	EAutomationTestFlags::EditorContext | EAutomationTestFlags::EngineFilter)
+
+bool FRRSpawnerHeadingSplitTest::RunTest(const FString& Parameters)
+{
+	using namespace RRSpawnerTests;
+
+	FTestWorld TestWorld(TEXT("RRSpawnerHeadingSplit"));
+	FSetup Setup;
+	if (!MakeSetup(*this, TestWorld, 150, 2.f, false, Setup))
+	{
+		return false;
+	}
+	TestEqual(TEXT("default front weight 55"), FSpawnerAccess::FrontWeightOf(Setup.Spawner), 55.f);
+	TestEqual(TEXT("default side weight 35"), FSpawnerAccess::SideWeightOf(Setup.Spawner), 35.f);
+	TestEqual(TEXT("default back weight 10"), FSpawnerAccess::BackWeightOf(Setup.Spawner), 10.f);
+	TestEqual(TEXT("default front half angle 45"), FSpawnerAccess::FrontHalfAngleOf(Setup.Spawner), 45.f);
+	TestEqual(TEXT("default back half angle 45"), FSpawnerAccess::BackHalfAngleOf(Setup.Spawner), 45.f);
+	Setup.Spawner->SeedRandomStream(31021);
+
+	// Uniform reference: the share of each sector among the candidate cells.
+	FSpawnerSectorCounts CellShare;
+	TArray<FIntPoint> Candidates;
+	Setup.Spawner->GetSpawnCandidates(Candidates);
+	for (const FIntPoint& Cell : Candidates)
+	{
+		SpawnerCountPoint(Setup, FVector2D(Setup.Grid->GetCellCenter(Cell.X, Cell.Y)), CellShare);
+	}
+	SpawnerLogCounts(*this, TEXT("candidate cells"), CellShare);
+
+	// Running north: lone robots.
+	constexpr int32 LoneCount = 600;
+	Setup.Spawner->SetHeadingOverride(NorthHeading);
+	const FSpawnerSectorCounts Moving = SpawnerCountLoneSpawns(*this, Setup, LoneCount);
+	SpawnerLogCounts(*this, TEXT("lone robots, running north"), Moving);
+	TestEqual(TEXT("every lone spawn counted"), Moving.Total, LoneCount);
+	TestTrue(TEXT("running: front 55 % (50-60)"), FMath::Abs(Moving.SectorShare(0) - 0.55f) <= 0.05f);
+	TestTrue(TEXT("running: sides 35 % (30-40)"), FMath::Abs(Moving.SectorShare(1) - 0.35f) <= 0.05f);
+	TestTrue(TEXT("running: back 10 % (7-13)"), FMath::Abs(Moving.SectorShare(2) - 0.10f) <= 0.03f);
+
+	// Standing still: uniform over the cells.
+	Setup.Spawner->SetHeadingOverride(FVector2D::ZeroVector);
+	const FSpawnerSectorCounts Still = SpawnerCountLoneSpawns(*this, Setup, LoneCount);
+	SpawnerLogCounts(*this, TEXT("lone robots, standing still"), Still);
+	for (int32 Index = 0; Index < 3; ++Index)
+	{
+		TestTrue(*FString::Printf(TEXT("still: sector %d share %.3f near its cell share %.3f"), Index + 1, Still.SectorShare(Index), CellShare.SectorShare(Index)),
+			FMath::Abs(Still.SectorShare(Index) - CellShare.SectorShare(Index)) <= 0.05f);
+	}
+
+	// Packs (FirstChasers, 6-8 chasers) follow the same split.
+	const int32 PackType = FSpawnerAccess::DirectorOf(Setup.Spawner).PackTypes.IndexOfByPredicate([](const FRRDirectorPackType& Type) { return Type.Name == TEXT("FirstChasers"); });
+	if (TestTrue(TEXT("FirstChasers pack type"), PackType != INDEX_NONE))
+	{
+		constexpr int32 PackCount = 150;
+		Setup.Spawner->SetHeadingOverride(NorthHeading);
+		const FSpawnerSectorCounts MovingPacks = SpawnerCountPacks(*this, Setup, PackType, PackCount);
+		SpawnerLogCounts(*this, TEXT("packs, running north"), MovingPacks);
+		TestTrue(TEXT("packs running: front 55 % (45-65)"), FMath::Abs(MovingPacks.SectorShare(0) - 0.55f) <= 0.10f);
+		TestTrue(TEXT("packs running: sides 35 % (25-45)"), FMath::Abs(MovingPacks.SectorShare(1) - 0.35f) <= 0.10f);
+		TestTrue(TEXT("packs running: back 10 % (3-17)"), FMath::Abs(MovingPacks.SectorShare(2) - 0.10f) <= 0.07f);
+		Setup.Spawner->SetHeadingOverride(FVector2D::ZeroVector);
+		const FSpawnerSectorCounts StillPacks = SpawnerCountPacks(*this, Setup, PackType, PackCount);
+		SpawnerLogCounts(*this, TEXT("packs, standing still"), StillPacks);
+		TestTrue(TEXT("packs still: back no longer rare (> 17 %)"), StillPacks.SectorShare(2) > 0.17f);
+		TestTrue(TEXT("packs still: front not dominant (< 45 %)"), StillPacks.SectorShare(0) < 0.45f);
+	}
+
+	// Horde side: the side of a random cell of the drawn sector.
+	constexpr int32 HordeCount = 200;
+	Setup.Spawner->SetHeadingOverride(NorthHeading);
+	const FSpawnerSectorCounts MovingHordes = SpawnerCountHordeSides(Setup, HordeCount);
+	SpawnerLogCounts(*this, TEXT("horde sides, running north"), MovingHordes);
+	// Expected side shares: sum over the sectors of weight x share of that sector's candidate cells lying beyond the side.
+	int32 SectorSideCells[3][4] = {};
+	for (const FIntPoint& Cell : Candidates)
+	{
+		const FVector2D Point(Setup.Grid->GetCellCenter(Cell.X, Cell.Y));
+		const ERRSpawnSector Sector = ARREnemySpawner::GetSectorOfPoint(FVector2D(Setup.Miner->GetActorLocation()), NorthHeading, Point, 45.f, 45.f);
+		const ERRSpawnSide Side = ARREnemySpawner::GetSideOfRectangle(Setup.View, Point);
+		if (Sector != ERRSpawnSector::None && Side != ERRSpawnSide::None)
+		{
+			++SectorSideCells[static_cast<int32>(Sector) - 1][static_cast<int32>(Side) - 1];
+		}
+	}
+	const float SectorWeights[3] = { 0.55f, 0.35f, 0.10f };
+	for (int32 Side = 0; Side < 4; ++Side)
+	{
+		float Expected = 0.f;
+		for (int32 Sector = 0; Sector < 3; ++Sector)
+		{
+			const int32 SectorTotal = SectorSideCells[Sector][0] + SectorSideCells[Sector][1] + SectorSideCells[Sector][2] + SectorSideCells[Sector][3];
+			Expected += SectorTotal > 0 ? SectorWeights[Sector] * SectorSideCells[Sector][Side] / SectorTotal : 0.f;
+		}
+		TestTrue(*FString::Printf(TEXT("hordes running: side %d share %.3f near the sector-weighted %.3f"), Side + 1, MovingHordes.SideShare(Side), Expected),
+			FMath::Abs(MovingHordes.SideShare(Side) - Expected) <= 0.08f);
+	}
+	TestTrue(TEXT("hordes running: -X side (behind) at most 12 %"), MovingHordes.SideShare(0) <= 0.12f);
+	Setup.Spawner->SetHeadingOverride(FVector2D::ZeroVector);
+	const FSpawnerSectorCounts StillHordes = SpawnerCountHordeSides(Setup, HordeCount);
+	SpawnerLogCounts(*this, TEXT("horde sides, standing still"), StillHordes);
+	for (int32 Index = 0; Index < 4; ++Index)
+	{
+		TestTrue(*FString::Printf(TEXT("hordes still: side %d share %.3f in 15-35 %%"), Index + 1, StillHordes.SideShare(Index)),
+			StillHordes.SideShare(Index) >= 0.15f && StillHordes.SideShare(Index) <= 0.35f);
+	}
+	return true;
+}
+
+IMPLEMENT_SIMPLE_AUTOMATION_TEST(FRRSpawnerHeadingFromMovementTest, "RogueRigs.Spawner.HeadingFromMovement",
+	EAutomationTestFlags::EditorContext | EAutomationTestFlags::EngineFilter)
+
+bool FRRSpawnerHeadingFromMovementTest::RunTest(const FString& Parameters)
+{
+	using namespace RRSpawnerTests;
+
+	FTestWorld TestWorld(TEXT("RRSpawnerHeadingFromMovement"));
+	FSetup Setup;
+	if (!MakeSetup(*this, TestWorld, 150, 2.f, false, Setup))
+	{
+		return false;
+	}
+	TestEqual(TEXT("default heading window 1 s"), FSpawnerAccess::HeadingWindowOf(Setup.Spawner), 1.f);
+	TestEqual(TEXT("default heading min speed 150 uu/s"), FSpawnerAccess::HeadingMinSpeedOf(Setup.Spawner), 150.f);
+
+	// Moves the miner by Velocity (uu/s, world XY) for Seconds, ticking the world (the spawner samples every tick).
+	auto Walk = [&](const FVector2D& Velocity, float Seconds)
+	{
+		const int32 Frames = FMath::RoundToInt(Seconds / FrameSeconds);
+		for (int32 Frame = 0; Frame < Frames; ++Frame)
+		{
+			Setup.Miner->SetActorLocation(Setup.Miner->GetActorLocation() + FVector(Velocity * FrameSeconds, 0.f), false, nullptr, ETeleportType::TeleportPhysics);
+			TestWorld.Tick();
+		}
+	};
+	FVector2D Heading;
+	TestFalse(TEXT("no heading before moving"), Setup.Spawner->GetRunHeading(Heading));
+
+	// Diagonal run at 400 uu/s for 1.5 s.
+	const FVector2D Diagonal = FVector2D(1.f, 1.f).GetSafeNormal();
+	Walk(Diagonal * 400.f, 1.5f);
+	const bool bRunning = Setup.Spawner->GetRunHeading(Heading);
+	AddInfo(FString::Printf(TEXT("running 400 uu/s diagonal: heading (%.3f, %.3f), speed %.1f"), Heading.X, Heading.Y, Setup.Spawner->GetRunSpeed()));
+	TestTrue(TEXT("running: heading measured"), bRunning);
+	TestTrue(TEXT("running: heading along the run"), FVector2D::DotProduct(Heading, Diagonal) > 0.999f);
+	TestNearlyEqual(TEXT("running: speed 400 over the window"), Setup.Spawner->GetRunSpeed(), 400.f, 10.f);
+	const FVector2D Ahead = FVector2D(Setup.Miner->GetActorLocation()) + Diagonal * 2000.f;
+	TestEqual(TEXT("running: a point ahead is in the front sector"), Setup.Spawner->GetSpawnSector(Ahead), ERRSpawnSector::Front);
+
+	// Slow walk below the threshold: still.
+	Walk(FVector2D(100.f, 0.f), 1.5f);
+	AddInfo(FString::Printf(TEXT("walking 100 uu/s: speed %.1f"), Setup.Spawner->GetRunSpeed()));
+	TestFalse(TEXT("100 uu/s counts as standing still"), Setup.Spawner->GetRunHeading(Heading));
+	TestEqual(TEXT("still: no sector"), Setup.Spawner->GetSpawnSector(Ahead), ERRSpawnSector::None);
+
+	// Turn: one second of running west replaces the heading.
+	Walk(FVector2D(-600.f, 0.f), 1.1f);
+	TestTrue(TEXT("turned: heading measured"), Setup.Spawner->GetRunHeading(Heading));
+	TestTrue(TEXT("turned: heading west"), Heading.X < -0.99f);
+
+	// Stop: one second later, still again.
+	Walk(FVector2D::ZeroVector, 1.1f);
+	TestFalse(TEXT("stopped: no heading"), Setup.Spawner->GetRunHeading(Heading));
+	return true;
+}
+
+IMPLEMENT_SIMPLE_AUTOMATION_TEST(FRRSpawnerFirstContactTest, "RogueRigs.Spawner.FirstContactStill",
+	EAutomationTestFlags::EditorContext | EAutomationTestFlags::EngineFilter)
+
+bool FRRSpawnerFirstContactTest::RunTest(const FString& Parameters)
+{
+	using namespace RRSpawnerTests;
+
+	// Still miner, the miner camera's view (no override), default director, native chasers (MoveSpeed from EnemyStats.csv).
+	FTestWorld TestWorld(TEXT("RRSpawnerFirstContact"));
+	FSetup Setup;
+	if (!MakeSetup(*this, TestWorld, 150, 2.f, true, Setup))
+	{
+		return false;
+	}
+	Setup.Spawner->ClearViewRectangleOverride();
+	Setup.Spawner->SeedRandomStream(31022);
+	FBox2D View;
+	if (!TestTrue(TEXT("camera view rectangle"), Setup.Spawner->GetViewRectangle(View)))
+	{
+		return false;
+	}
+	double FirstSpawn = -1.0;
+	double FirstContact = -1.0;
+	float SpawnDistance = 0.f;
+	const double Start = TestWorld.Get()->GetTimeSeconds();
+	for (int32 Frame = 0; Frame < 600 && FirstContact < 0.0; ++Frame)
+	{
+		TestWorld.Tick();
+		for (ARREnemy* Robot : Setup.Spawner->GetAliveEnemies())
+		{
+			const float Distance = ARREnemySpawner::GetDistanceToRectangle(View, FVector2D(Robot->GetActorLocation()));
+			if (FirstSpawn < 0.0)
+			{
+				FirstSpawn = TestWorld.Get()->GetTimeSeconds() - Start;
+				SpawnDistance = Distance;
+			}
+			if (Distance <= 0.f)
+			{
+				FirstContact = TestWorld.Get()->GetTimeSeconds() - Start;
+				break;
+			}
+		}
+	}
+	AddInfo(FString::Printf(TEXT("still miner: first robot spawned at %.2f s, %.0f uu beyond the view edge; first robot on screen at %.2f s"),
+		FirstSpawn, SpawnDistance, FirstContact));
+	TestTrue(TEXT("first robot spawned at about 1 s"), FirstSpawn > 0.9 && FirstSpawn < 1.2);
+	TestTrue(TEXT("first robot within the 100-500 uu band"), SpawnDistance >= BandMin && SpawnDistance <= BandMax);
+	TestTrue(TEXT("first robot on screen within 4 s (target about 2 s)"), FirstContact > 0.0 && FirstContact <= 4.0);
 	return true;
 }
 

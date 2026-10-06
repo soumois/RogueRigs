@@ -46,6 +46,7 @@ void ARREnemySpawner::BeginPlay()
 void ARREnemySpawner::Tick(float DeltaSeconds)
 {
 	Super::Tick(DeltaSeconds);
+	RecordHeadingSample();
 	if (!IsSpawningEnabled())
 	{
 		return;
@@ -249,16 +250,63 @@ void ARREnemySpawner::GetSpawnCandidates(TArray<FIntPoint>& OutCells)
 	TSet<FIntPoint> Occupied;
 	FlowField->GatherPawnCells(Occupied);
 
-	// Reachable free cells in the ring between ViewMargin and MaxSpawnDistanceCells outside the view rectangle.
-	const float CellSize = Grid->GetCellSize();
-	const float MinDistance = (ViewMargin + 0.5f) * CellSize;
-	const float MaxDistance = (MaxSpawnDistanceCells + 0.5f) * CellSize;
-	FlowField->GatherReachableCells(OutCells, [Grid, &View, MinDistance, MaxDistance](FIntPoint Cell, int32 Steps)
+	// Reachable free cells between SpawnBandMinDistance and the fallback limit outside the view rectangle (one scan).
+	const float MinDistance = SpawnBandMinDistance;
+	const float BandWidth = FMath::Max(SpawnBandMaxDistance - SpawnBandMinDistance, 0.f);
+	const float SearchLimit = FMath::Max(SpawnBandMaxDistance, SpawnBandFallbackMaxDistance + BandWidth);
+	float Nearest = TNumericLimits<float>::Max();
+	auto CellDistance = [Grid, &View](const FIntPoint& Cell)
 	{
 		const FVector Center = Grid->GetCellCenter(Cell.X, Cell.Y);
-		const float Distance = GetDistanceToRectangle(View, FVector2D(Center.X, Center.Y));
-		return Distance >= MinDistance && Distance <= MaxDistance;
+		return GetDistanceToRectangle(View, FVector2D(Center.X, Center.Y));
+	};
+	// Cells whose walk to the miner is a long detour (path steps x cell size over the straight distance above MaxPathDetourRatio).
+	const AActor* Goal = FlowField->GetGoalActor();
+	const FVector2D GoalLocation = Goal ? FVector2D(Goal->GetActorLocation()) : FVector2D::ZeroVector;
+	const float CellSize = Grid->GetCellSize();
+	TSet<FIntPoint> Detours;
+	FlowField->GatherReachableCells(OutCells, [this, Grid, Goal, &GoalLocation, CellSize, &CellDistance, MinDistance, SearchLimit, &Nearest, &Detours](FIntPoint Cell, int32 Steps)
+	{
+		const float Distance = CellDistance(Cell);
+		if (Distance < MinDistance || Distance > SearchLimit)
+		{
+			return false;
+		}
+		Nearest = FMath::Min(Nearest, Distance);
+		if (Goal && MaxPathDetourRatio > 0.f)
+		{
+			const double Straight = FVector2D::Distance(FVector2D(Grid->GetCellCenter(Cell.X, Cell.Y)), GoalLocation);
+			if (Steps * CellSize > Straight * MaxPathDetourRatio)
+			{
+				Detours.Add(Cell);
+			}
+		}
+		return true;
 	}, /*bFloorOnly*/ false, &Occupied);
+	if (OutCells.IsEmpty())
+	{
+		return;
+	}
+
+	// The band; when it is empty, the nearest band of the same width beyond it (near edge within SpawnBandFallbackMaxDistance).
+	float Limit = SpawnBandMaxDistance;
+	if (Nearest > SpawnBandMaxDistance)
+	{
+		if (Nearest > SpawnBandFallbackMaxDistance)
+		{
+			OutCells.Reset();
+			return;
+		}
+		Limit = Nearest + BandWidth;
+		UE_LOG(LogRogueRigs, Verbose, TEXT("ARREnemySpawner %s: spawn band empty, fallback band %.0f-%.0f uu."), *GetName(), Nearest, Limit);
+	}
+	OutCells.RemoveAll([&CellDistance, Limit](const FIntPoint& Cell) { return CellDistance(Cell) > Limit; });
+
+	// Direct cells first: detour cells only when the band has nothing else.
+	if (!Detours.IsEmpty() && OutCells.ContainsByPredicate([&Detours](const FIntPoint& Cell) { return !Detours.Contains(Cell); }))
+	{
+		OutCells.RemoveAll([&Detours](const FIntPoint& Cell) { return Detours.Contains(Cell); });
+	}
 }
 
 TSubclassOf<ARREnemy> ARREnemySpawner::PickEnemyClass(const FRandomStream& Stream) const
@@ -351,6 +399,12 @@ ARREnemy* ARREnemySpawner::TrySpawnEnemyOfClass(TSubclassOf<ARREnemy> WantedClas
 	{
 		UE_LOG(LogRogueRigs, Verbose, TEXT("ARREnemySpawner %s: no spawn cell available."), *GetName());
 		return nullptr;
+	}
+	// Running: keep the cells of the drawn sector (front, sides or back of the run heading).
+	const ERRSpawnSector Sector = DrawSpawnSector(Candidates);
+	if (Sector != ERRSpawnSector::None)
+	{
+		Candidates.RemoveAll([this, Sector](const FIntPoint& Cell) { return GetCellSector(Cell) != Sector; });
 	}
 	return SpawnEnemyOnCell(SpawnClass, Candidates[RandomStream.RandRange(0, Candidates.Num() - 1)]);
 }
@@ -748,7 +802,10 @@ TArray<FRRSpawnedPack> ARREnemySpawner::TrySpawnDirectorWave(const TArray<int32>
 		{
 			continue;
 		}
-		const int32 SideIndex = RRSpawner::PickSide(BySide, bSideUsed, Classes.Num(), RandomStream);
+		// Running: the pack's sector is drawn first (front, sides, back), its side follows a random cell of that sector.
+		const ERRSpawnSector Sector = DrawSpawnSector(Candidates);
+		FIntPoint Anchor;
+		const int32 SideIndex = PickSideForSector(BySide, bSideUsed, Classes.Num(), Sector, &Anchor);
 		if (SideIndex == INDEX_NONE)
 		{
 			break;
@@ -756,8 +813,7 @@ TArray<FRRSpawnedPack> ARREnemySpawner::TrySpawnDirectorWave(const TArray<int32>
 		bSideUsed[SideIndex] = true;
 		TArray<FIntPoint>& SideCells = BySide[SideIndex];
 
-		// Adjacent cells: the ones nearest to a random anchor of the side, then the nearest to the view first (the front).
-		const FIntPoint Anchor = SideCells[RandomStream.RandRange(0, SideCells.Num() - 1)];
+		// Adjacent cells: the ones nearest to the anchor of the side, then the nearest to the view first (the front).
 		SideCells.StableSort([Anchor](const FIntPoint& A, const FIntPoint& B) { return (A - Anchor).SizeSquared() < (B - Anchor).SizeSquared(); });
 		const int32 Count = FMath::Min(Classes.Num(), SideCells.Num());
 		TArray<FIntPoint> PackCells(SideCells.GetData(), Count);
@@ -825,7 +881,8 @@ ERRSpawnSide ARREnemySpawner::PrepareHorde(int32 HordeIndex)
 	TArray<FIntPoint> BySide[4];
 	SplitCandidatesBySide(View, Candidates, BySide);
 	const bool bNoneUsed[4] = { false, false, false, false };
-	const int32 SideIndex = Classes.IsEmpty() ? INDEX_NONE : RRSpawner::PickSide(BySide, bNoneUsed, Classes.Num(), RandomStream);
+	// Running: the side follows a random cell of the drawn sector, like a pack.
+	const int32 SideIndex = Classes.IsEmpty() ? INDEX_NONE : PickSideForSector(BySide, bNoneUsed, Classes.Num(), DrawSpawnSector(Candidates), nullptr);
 	if (SideIndex == INDEX_NONE)
 	{
 		UE_LOG(LogRogueRigs, Verbose, TEXT("ARREnemySpawner %s: no spawn cell available for horde %d."), *GetName(), HordeIndex);
@@ -865,7 +922,7 @@ void ARREnemySpawner::SpawnHordeUpTo(float Fraction)
 	const ARRArenaGrid* Grid = GetGrid();
 	FBox2D View;
 	const bool bHasView = Grid && GetViewRectangle(View);
-	const float MinDistance = Grid ? (ViewMargin + 0.5f) * Grid->GetCellSize() : 0.f;
+	const float MinDistance = SpawnBandMinDistance;
 	for (; HordePlanCursor < Target; ++HordePlanCursor)
 	{
 		if (GetAliveCount() >= MaxAlive)
@@ -884,4 +941,197 @@ void ARREnemySpawner::SpawnHordeUpTo(float Fraction)
 		}
 		HordeSpawned += SpawnEnemyOnCell(Slot.Class, Slot.Cell) ? 1 : 0;
 	}
+}
+
+// --- Run heading ---
+
+ERRSpawnSector ARREnemySpawner::GetSectorOfPoint(const FVector2D& Origin, const FVector2D& Heading, const FVector2D& Point, float InFrontHalfAngle, float InBackHalfAngle)
+{
+	const FVector2D Direction = Heading.GetSafeNormal();
+	const FVector2D ToPoint = (Point - Origin).GetSafeNormal();
+	if (Direction.IsNearlyZero() || ToPoint.IsNearlyZero())
+	{
+		return ERRSpawnSector::None;
+	}
+	const double Angle = FMath::RadiansToDegrees(FMath::Acos(FMath::Clamp(FVector2D::DotProduct(Direction, ToPoint), -1.0, 1.0)));
+	if (Angle <= InFrontHalfAngle)
+	{
+		return ERRSpawnSector::Front;
+	}
+	return Angle >= 180.0 - InBackHalfAngle ? ERRSpawnSector::Back : ERRSpawnSector::Side;
+}
+
+void ARREnemySpawner::SetHeadingOverride(const FVector2D& Direction)
+{
+	HeadingOverride = Direction.GetSafeNormal();
+	bHasHeadingOverride = true;
+}
+
+bool ARREnemySpawner::GetHeadingOrigin(FVector2D& OutOrigin) const
+{
+	const URRFlowFieldSubsystem* FlowField = GetFlowField();
+	const AActor* Miner = FlowField ? FlowField->GetGoalActor() : nullptr;
+	if (!Miner)
+	{
+		return false;
+	}
+	OutOrigin = FVector2D(Miner->GetActorLocation());
+	return true;
+}
+
+void ARREnemySpawner::RecordHeadingSample()
+{
+	const UWorld* World = GetWorld();
+	FVector2D Location;
+	if (!World || !GetHeadingOrigin(Location))
+	{
+		HeadingSamples.Reset();
+		return;
+	}
+	const double Now = World->GetTimeSeconds();
+	HeadingSamples.Add({ Now, Location });
+	// Keep one sample at or before the window start, so the measure spans the whole window once it is full.
+	int32 Drop = 0;
+	while (Drop + 1 < HeadingSamples.Num() && HeadingSamples[Drop + 1].Time <= Now - HeadingWindowSeconds)
+	{
+		++Drop;
+	}
+	HeadingSamples.RemoveAt(0, Drop, EAllowShrinking::No);
+}
+
+float ARREnemySpawner::GetRunSpeed() const
+{
+	if (bHasHeadingOverride)
+	{
+		return HeadingOverride.IsNearlyZero() ? 0.f : HeadingMinSpeed;
+	}
+	if (HeadingSamples.Num() < 2)
+	{
+		return 0.f;
+	}
+	const FHeadingSample& Oldest = HeadingSamples[0];
+	const FHeadingSample& Latest = HeadingSamples.Last();
+	const double Elapsed = Latest.Time - Oldest.Time;
+	return Elapsed > KINDA_SMALL_NUMBER ? static_cast<float>(FVector2D::Distance(Latest.Location, Oldest.Location) / Elapsed) : 0.f;
+}
+
+bool ARREnemySpawner::GetRunHeading(FVector2D& OutDirection) const
+{
+	OutDirection = FVector2D::ZeroVector;
+	if (bHasHeadingOverride)
+	{
+		OutDirection = HeadingOverride;
+		return !OutDirection.IsNearlyZero();
+	}
+	if (HeadingSamples.Num() < 2 || GetRunSpeed() < FMath::Max(HeadingMinSpeed, KINDA_SMALL_NUMBER))
+	{
+		return false;
+	}
+	OutDirection = (HeadingSamples.Last().Location - HeadingSamples[0].Location).GetSafeNormal();
+	return !OutDirection.IsNearlyZero();
+}
+
+ERRSpawnSector ARREnemySpawner::GetSpawnSector(const FVector2D& Point) const
+{
+	FVector2D Heading;
+	FVector2D Origin;
+	if (!GetRunHeading(Heading) || !GetHeadingOrigin(Origin))
+	{
+		return ERRSpawnSector::None;
+	}
+	return GetSectorOfPoint(Origin, Heading, Point, FrontHalfAngle, BackHalfAngle);
+}
+
+ERRSpawnSector ARREnemySpawner::GetCellSector(const FIntPoint& Cell) const
+{
+	const ARRArenaGrid* Grid = GetGrid();
+	return Grid ? GetSpawnSector(FVector2D(Grid->GetCellCenter(Cell.X, Cell.Y))) : ERRSpawnSector::None;
+}
+
+ERRSpawnSector ARREnemySpawner::DrawSpawnSector(const TArray<FIntPoint>& Cells)
+{
+	FVector2D Heading;
+	FVector2D Origin;
+	const ARRArenaGrid* Grid = GetGrid();
+	if (Cells.IsEmpty() || !Grid || !GetRunHeading(Heading) || !GetHeadingOrigin(Origin))
+	{
+		return ERRSpawnSector::None;
+	}
+	// Sectors holding at least one cell (index = ERRSpawnSector - 1).
+	bool bHasCells[3] = { false, false, false };
+	for (const FIntPoint& Cell : Cells)
+	{
+		const ERRSpawnSector Sector = GetSectorOfPoint(Origin, Heading, FVector2D(Grid->GetCellCenter(Cell.X, Cell.Y)), FrontHalfAngle, BackHalfAngle);
+		if (Sector != ERRSpawnSector::None)
+		{
+			bHasCells[static_cast<int32>(Sector) - 1] = true;
+		}
+	}
+	const float Weights[3] = {
+		bHasCells[0] ? FMath::Max(FrontSectorWeight, 0.f) : 0.f,
+		bHasCells[1] ? FMath::Max(SideSectorWeight, 0.f) : 0.f,
+		bHasCells[2] ? FMath::Max(BackSectorWeight, 0.f) : 0.f };
+	const float Total = Weights[0] + Weights[1] + Weights[2];
+	if (Total <= 0.f)
+	{
+		return ERRSpawnSector::None;
+	}
+	float Draw = RandomStream.FRand() * Total;
+	int32 LastWeighted = INDEX_NONE;
+	for (int32 Index = 0; Index < 3; ++Index)
+	{
+		if (Weights[Index] <= 0.f)
+		{
+			continue;
+		}
+		LastWeighted = Index;
+		if (Draw < Weights[Index])
+		{
+			return static_cast<ERRSpawnSector>(Index + 1);
+		}
+		Draw -= Weights[Index];
+	}
+	// Float rounding at the top of the range: the last sector with a weight.
+	return static_cast<ERRSpawnSector>(LastWeighted + 1);
+}
+
+int32 ARREnemySpawner::PickSideForSector(const TArray<FIntPoint> (&BySide)[4], const bool (&Used)[4], int32 Needed, ERRSpawnSector Sector, FIntPoint* OutAnchor)
+{
+	if (Sector != ERRSpawnSector::None)
+	{
+		// (side, cell) of every cell of the sector; three passes from the strictest side rule to the loosest.
+		TArray<TPair<int32, FIntPoint>> Entries;
+		for (int32 Pass = 0; Pass < 3 && Entries.IsEmpty(); ++Pass)
+		{
+			for (int32 SideIndex = 0; SideIndex < 4; ++SideIndex)
+			{
+				if ((Pass < 2 && Used[SideIndex]) || (Pass == 0 && BySide[SideIndex].Num() < Needed))
+				{
+					continue;
+				}
+				for (const FIntPoint& Cell : BySide[SideIndex])
+				{
+					if (GetCellSector(Cell) == Sector)
+					{
+						Entries.Emplace(SideIndex, Cell);
+					}
+				}
+			}
+		}
+		if (!Entries.IsEmpty())
+		{
+			const TPair<int32, FIntPoint>& Entry = Entries[RandomStream.RandRange(0, Entries.Num() - 1)];
+			if (OutAnchor)
+			{
+				*OutAnchor = Entry.Value;
+			}
+			return Entry.Key;
+		}
+	}
+	const int32 SideIndex = RRSpawner::PickSide(BySide, Used, Needed, RandomStream);
+	if (SideIndex != INDEX_NONE && OutAnchor)
+	{
+		*OutAnchor = BySide[SideIndex][RandomStream.RandRange(0, BySide[SideIndex].Num() - 1)];
+	}
+	return SideIndex;
 }

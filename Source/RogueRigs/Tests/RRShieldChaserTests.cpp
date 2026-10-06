@@ -68,7 +68,7 @@ bool FRRShieldChaserStatsTest::RunTest(const FString& Parameters)
 	TestEqual(TEXT("Shield 30"), Shield.Shield, 30.f);
 	TestEqual(TEXT("XPValue 2"), Shield.XPValue, 2);
 	TestEqual(TEXT("same MaxHealth as the chaser"), Shield.MaxHealth, Chaser.MaxHealth);
-	TestEqual(TEXT("same MoveSpeed as the chaser (288)"), Shield.MoveSpeed, Chaser.MoveSpeed);
+	TestEqual(TEXT("same MoveSpeed as the chaser (202)"), Shield.MoveSpeed, Chaser.MoveSpeed);
 	TestEqual(TEXT("same Damage as the chaser"), Shield.Damage, Chaser.Damage);
 	TestEqual(TEXT("same AttackRange as the chaser"), Shield.AttackRange, Chaser.AttackRange);
 	TestEqual(TEXT("same WindUp as the chaser"), Shield.WindUp, Chaser.WindUp);

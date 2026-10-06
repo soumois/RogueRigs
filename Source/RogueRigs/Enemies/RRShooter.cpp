@@ -1,4 +1,4 @@
-// Rogue Rigs - shooter robot: keeps a ring of distance from the miner, fires dodgeable shots with grid line of sight while on screen, telegraphs each shot with a targeting laser (C++ state machine Approach, Hold, Reposition, Aim, Dead).
+// Rogue Rigs - shooter robot: closes in to its hold distance and never backs away from the miner, fires dodgeable shots with grid line of sight while on screen, telegraphs each shot with a targeting laser (C++ state machine Approach, Hold, Reposition, Aim, Dead).
 
 #include "Enemies/RRShooter.h"
 
@@ -224,22 +224,21 @@ void ARRShooter::UpdateMovement(const ARRMiner* Target, float Distance)
 		break;
 
 	case ERRShooterState::Hold:
-		if (bHasSight && IsInRing(Distance))
-		{
-			break;
-		}
 		if (Distance > OuterDistance)
 		{
 			EnterState(ERRShooterState::Approach);
 			break;
 		}
-		// No sight in the ring, or too close.
-		TryReposition(Target);
+		// With sight it stays put, however close the miner comes (it never backs away).
+		if (!bHasSight)
+		{
+			TryReposition(Target);
+		}
 		break;
 
 	case ERRShooterState::Reposition:
 	{
-		if (bHasSight && IsInRing(Distance))
+		if (bHasSight && Distance <= OuterDistance)
 		{
 			EnterState(ERRShooterState::Hold);
 			break;
@@ -254,7 +253,7 @@ void ARRShooter::UpdateMovement(const ARRMiner* Target, float Distance)
 				break;
 			}
 		}
-		if (FollowRepositionPath() || HasStateLasted(RepositionMaxDuration))
+		if (FollowRepositionPath(Target) || HasStateLasted(RepositionMaxDuration))
 		{
 			EnterState(ERRShooterState::Hold);
 		}
@@ -265,11 +264,6 @@ void ARRShooter::UpdateMovement(const ARRMiner* Target, float Distance)
 	case ERRShooterState::Dead:
 		break;
 	}
-}
-
-bool ARRShooter::IsInRing(float Distance) const
-{
-	return Distance >= Stats.PreferredDistance - Stats.PreferredDistanceTolerance && Distance <= GetRingOuterDistance();
 }
 
 float ARRShooter::GetRingOuterDistance() const
@@ -446,10 +440,10 @@ bool ARRShooter::FindRepositionPath(const ARRMiner* Target, TArray<FVector>& Out
 		}
 	}
 
-	// Candidates: reachable cells of the square, locally reachable, in the ring, with grid sight to the target.
+	// Candidates: reachable cells of the square, locally reachable, no farther from the target than the robot now (it never
+	// backs away) and within the hold distance, with grid sight to the target.
 	const FVector TargetLocation = Target->GetActorLocation();
-	const float MinDistance = Stats.PreferredDistance - Stats.PreferredDistanceTolerance;
-	const float MaxDistance = GetRingOuterDistance();
+	const float MaxDistance = FMath::Min(GetRingOuterDistance(), static_cast<float>(FVector::Dist2D(GetActorLocation(), TargetLocation)));
 	TArray<FIntPoint> Candidates;
 	FlowField->GatherReachableCells(Candidates, [&](FIntPoint Cell, int32 /*GoalSteps*/)
 	{
@@ -460,7 +454,7 @@ bool ARRShooter::FindRepositionPath(const ARRMiner* Target, TArray<FVector>& Out
 		}
 		const FVector Center = Grid->GetCellCenter(Cell.X, Cell.Y);
 		const float Distance = FVector::Dist2D(Center, TargetLocation);
-		return Distance >= MinDistance && Distance <= MaxDistance && Grid->HasLineOfSight(Center, TargetLocation);
+		return Distance <= MaxDistance && Grid->HasLineOfSight(Center, TargetLocation);
 	});
 
 	int32 BestIndex = INDEX_NONE;
@@ -496,7 +490,25 @@ bool ARRShooter::FindRepositionPath(const ARRMiner* Target, TArray<FVector>& Out
 	return true;
 }
 
-bool ARRShooter::FollowRepositionPath()
+FVector ARRShooter::MakeNonRetreatingDirection(const FVector& Direction, const FVector& TargetLocation) const
+{
+	const FVector Location = GetActorLocation();
+	const FVector Away = FVector(Location.X - TargetLocation.X, Location.Y - TargetLocation.Y, 0.f).GetSafeNormal();
+	const double AwayPart = FVector::DotProduct(Direction, Away);
+	if (Away.IsNearlyZero() || AwayPart <= 0.0)
+	{
+		return Direction;
+	}
+	// Slide around the target instead: the tangential part, nudged inward so the distance never grows.
+	const FVector Tangent = Direction - Away * AwayPart;
+	if (Tangent.IsNearlyZero(1.e-3))
+	{
+		return FVector::ZeroVector;
+	}
+	return (Tangent.GetSafeNormal() - Away * RepositionInwardBias).GetSafeNormal();
+}
+
+bool ARRShooter::FollowRepositionPath(const ARRMiner* Target)
 {
 	if (RepositionWaypoints.IsEmpty())
 	{
@@ -516,8 +528,15 @@ bool ARRShooter::FollowRepositionPath()
 			return true;
 		}
 	}
-	const FVector Direction = FVector(RepositionWaypoints[0].X - Location.X, RepositionWaypoints[0].Y - Location.Y, 0.f).GetSafeNormal();
-	AddMovementInput(Direction, 1.f);
+	FVector Direction = FVector(RepositionWaypoints[0].X - Location.X, RepositionWaypoints[0].Y - Location.Y, 0.f).GetSafeNormal();
+	if (Target)
+	{
+		Direction = MakeNonRetreatingDirection(Direction, Target->GetActorLocation());
+	}
+	if (!Direction.IsNearlyZero())
+	{
+		AddMovementInput(Direction, 1.f);
+	}
 	return false;
 }
 

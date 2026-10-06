@@ -437,7 +437,6 @@ bool FRRSpawnerDirectorPackHomogeneityTest::RunTest(const FString& Parameters)
 		return false;
 	}
 	const FRRWaveDirectorConfig& Config = Setup.Spawner->GetDirectorConfig();
-	const float CellSize = Setup.Grid->GetCellSize();
 	for (int32 Type = 0; Type < Config.PackTypes.Num(); ++Type)
 	{
 		const FRRDirectorPackType& PackType = Config.PackTypes[Type];
@@ -515,7 +514,7 @@ bool FRRSpawnerDirectorPackHomogeneityTest::RunTest(const FString& Parameters)
 			{
 				TestEqual(*FString::Printf(TEXT("%s: (%d, %d) on the pack side"), *Label, Cell.X, Cell.Y), DirectorSideOf(Setup, Cell), Pack.Side);
 				const float Distance = DirectorViewDistance(Setup, Cell);
-				TestTrue(*FString::Printf(TEXT("%s: (%d, %d) in the spawn band"), *Label, Cell.X, Cell.Y), Distance >= 3.5f * CellSize && Distance <= 18.5f * CellSize);
+				TestTrue(*FString::Printf(TEXT("%s: (%d, %d) in the spawn band"), *Label, Cell.X, Cell.Y), Distance >= 100.f && Distance <= 500.f);
 				TestFalse(*FString::Printf(TEXT("%s: (%d, %d) distinct"), *Label, Cell.X, Cell.Y), Cells.Contains(Cell));
 				Cells.Add(Cell);
 				Bounds.Include(Cell);

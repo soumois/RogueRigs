@@ -1,4 +1,4 @@
-// Rogue Rigs - shooter robot: keeps a ring of distance from the miner, fires dodgeable shots with grid line of sight while on screen, telegraphs each shot with a targeting laser (C++ state machine Approach, Hold, Reposition, Aim, Dead).
+// Rogue Rigs - shooter robot: closes in to its hold distance and never backs away from the miner, fires dodgeable shots with grid line of sight while on screen, telegraphs each shot with a targeting laser (C++ state machine Approach, Hold, Reposition, Aim, Dead).
 
 #pragma once
 
@@ -39,12 +39,14 @@ enum class ERRShooterState : uint8
  * after Stats.WindUp it fires one ProjectileClass shot (ARREnemyProjectile: hurts the miner only, stops on rock without
  * damaging it) from the muzzle at the target's current position, speed Stats.ProjectileSpeed, lifetime AttackRange / speed,
  * carrying a DamageEffectClass spec with Data.Damage = Stats.Damage (OnAimEnd, then OnFire).
- * Movement, ring = Stats.PreferredDistance +/- Stats.PreferredDistanceTolerance, outer edge clamped to AttackRange: Approach (flow field, arrival at the preferred
- * distance with sight, 0 without) -> Hold once within the preferred distance with sight. Hold -> Approach beyond the ring.
- * Without sight in the ring, or too close: a repositioning search (at most every RepositionSearchInterval): among the cells of
- * URRFlowFieldSubsystem::GatherReachableCells within RepositionSearchRadiusCells, those in the ring with grid sight to the
- * target; the one with the shortest local grid path (8-neighbour BFS around the robot, no corner cutting) wins and the robot
- * walks that path (Reposition). No cell: Approach without sight (closing in gives sight), Hold with sight. The C++ drives a
+ * Movement (task-031-02: it never backs away from the miner): hold distance = Stats.PreferredDistance + PreferredDistanceTolerance,
+ * clamped to AttackRange. Approach (flow field, arrival at the preferred distance with sight, 0 without) -> Hold once within the
+ * preferred distance with sight. Hold -> Approach beyond the hold distance; with sight it stays put however close the miner comes.
+ * Without sight within the hold distance: a repositioning search (at most every RepositionSearchInterval): among the cells of
+ * URRFlowFieldSubsystem::GatherReachableCells within RepositionSearchRadiusCells, those no farther from the target than the robot
+ * is now (and within the hold distance) with grid sight to it; the one with the shortest local grid path (8-neighbour BFS around
+ * the robot, no corner cutting) wins and the robot walks that path (Reposition), each step stripped of any component away from
+ * the target. No cell: Approach without sight (closing in gives sight), Hold with sight. The C++ drives a
  * LaserBeam mesh between the muzzle and the line-of-sight-clipped aim point while aiming; Blueprint events add the rest.
  */
 UCLASS(Blueprintable)
@@ -128,14 +130,18 @@ protected:
 	/** Movement decisions of Approach, Hold and Reposition for the current target, distance and sight. */
 	void UpdateMovement(const ARRMiner* Target, float Distance);
 
-	/** True when Distance (uu) lies in the preferred ring (PreferredDistance - PreferredDistanceTolerance to GetRingOuterDistance). */
-	bool IsInRing(float Distance) const;
-
 	/**
-	 * Outer edge of the ring: PreferredDistance + PreferredDistanceTolerance, clamped to AttackRange (task-030-02: range 960 is
-	 * inside the 1000 uu edge; a shooter parked beyond its range never had sight and never fired).
+	 * Hold distance: PreferredDistance + PreferredDistanceTolerance, clamped to AttackRange (task-030-02: range 960 is inside the
+	 * 1000 uu edge; a shooter parked beyond its range never had sight and never fired). Beyond it the robot approaches; within it
+	 * it holds with sight. There is no inner edge (task-031-02: it never backs away).
 	 */
 	float GetRingOuterDistance() const;
+
+	/**
+	 * Steering direction toward a waypoint that never moves away from TargetLocation: the component of Direction pointing away
+	 * from the target is removed and RepositionInwardBias of the inward direction added. Zero when nothing is left.
+	 */
+	FVector MakeNonRetreatingDirection(const FVector& Direction, const FVector& TargetLocation) const;
 
 	/** Earliest world time (s) at which a new aim may start (cadence). */
 	double GetNextAimTime() const;
@@ -160,14 +166,18 @@ protected:
 
 	/**
 	 * Repositioning search around the robot for Target: candidate cells from URRFlowFieldSubsystem::GatherReachableCells within
-	 * RepositionSearchRadiusCells (Chebyshev), in the preferred ring and with grid sight to the target; the one with the fewest
+	 * RepositionSearchRadiusCells (Chebyshev), no farther from the target than the robot now and within GetRingOuterDistance, and
+	 * with grid sight to the target; the one with the fewest
 	 * steps of a local 8-neighbour BFS from the robot's cell (no corner cutting) wins, ties to the ring center then scan order.
 	 * Fills OutWaypoints (cell centers from the first step to the chosen cell) and OutCell. False when no cell qualifies.
 	 */
 	bool FindRepositionPath(const ARRMiner* Target, TArray<FVector>& OutWaypoints, FIntPoint& OutCell);
 
-	/** Walks the repositioning path: skips a waypoint already in direct reach, steers at the next one. True once arrived. */
-	bool FollowRepositionPath();
+	/**
+	 * Walks the repositioning path: skips a waypoint already in direct reach, steers at the next one through
+	 * MakeNonRetreatingDirection (never away from Target). True once arrived.
+	 */
+	bool FollowRepositionPath(const ARRMiner* Target);
 
 	/** Arena grid (cached; RRWorld::FindArenaGrid). */
 	ARRArenaGrid* GetGrid();
@@ -230,6 +240,13 @@ protected:
 	/** Seconds after which an unfinished repositioning walk is abandoned (Hold, then a new search). */
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Shooter|Reposition", meta = (ClampMin = 0, Units = "s"))
 	float RepositionMaxDuration = 4.f;
+
+	/**
+	 * Inward part (0..1) added to a repositioning step whose away-from-the-miner component was removed, so that sliding around
+	 * the miner never increases the distance (task-031-02).
+	 */
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Shooter|Reposition", meta = (ClampMin = 0, ClampMax = 1))
+	float RepositionInwardBias = 0.1f;
 
 	/** Current state. */
 	UPROPERTY(VisibleInstanceOnly, BlueprintReadOnly, Category = "Shooter")

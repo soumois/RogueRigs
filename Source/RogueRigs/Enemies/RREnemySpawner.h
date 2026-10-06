@@ -28,6 +28,20 @@ enum class ERRSpawnSide : uint8
 	PositiveY
 };
 
+/** Sector of a spawn point around the miner relative to its run heading (front within FrontHalfAngle, back within BackHalfAngle of the reverse heading, sides between). */
+UENUM(BlueprintType)
+enum class ERRSpawnSector : uint8
+{
+	/** No heading (the miner stands still) or no origin. */
+	None,
+	/** Within FrontHalfAngle of the heading. */
+	Front,
+	/** Between the front and the back cones (both sides). */
+	Side,
+	/** Within BackHalfAngle of the reverse heading. */
+	Back
+};
+
 /** Wave director entered phase PhaseIndex (DirectorConfig.Phases), named PhaseName. */
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_TwoParams(FRROnDirectorPhaseChangedSignature, int32, PhaseIndex, FName, PhaseName);
 
@@ -102,9 +116,13 @@ struct FRRWeightedEnemyClass
  * view rectangle, on distinct cells, clamped to the free slots; between packs, every SpawnInterval, a lone robot with chance
  * LoneSpawnChance. Nothing spawns beyond MaxAlive robots alive. Each robot class is a weighted draw among WeightedEnemyClasses,
  * else EnemyClass. A robot spawns on a random cell that is walkable and reachable in the flow field (URRFlowFieldSubsystem), not occupied by a pawn, and lies in a
- * band around the visible floor rectangle: the cell center is at least ViewMargin + 0.5 cells and at most
- * MaxSpawnDistanceCells + 0.5 cells outside the rectangle (box distance), so with ViewMargin 1 the whole cell is at least one
- * cell beyond the view edge. The robot spawns at the cell center, its capsule resting on the floor.
+ * band around the visible floor rectangle: the cell center is SpawnBandMinDistance to SpawnBandMaxDistance uu outside the
+ * rectangle (box distance); when the band has no such cell, the nearest band of the same width farther out (up to
+ * SpawnBandFallbackMaxDistance); cells whose path to the miner detours more than MaxPathDetourRatio are left out while others
+ * remain. The robot spawns at the cell center, its capsule resting on the floor.
+ * Run heading: the miner's (flow-field goal) movement over the last HeadingWindowSeconds; at HeadingMinSpeed or faster, each lone
+ * robot, each director pack and each horde side first draws a sector around the miner (front / sides / back, weights
+ * FrontSectorWeight / SideSectorWeight / BackSectorWeight, empty sectors left out) and spawns there; slower = uniform draw.
  * View rectangle source, first available: the override (SetViewRectangleOverride, used by tests); the first local player's
  * camera manager (its camera cache view, viewport aspect ratio); the first camera component of the flow-field goal actor (the
  * miner's camera, works headless). Each is the bounding box of the four frustum corner rays projected on the floor plane.
@@ -218,6 +236,34 @@ public:
 	/** Box distance in uu from Point to Rectangle (0 inside): the larger of the X and Y gaps. */
 	static float GetDistanceToRectangle(const FBox2D& Rectangle, const FVector2D& Point);
 
+	// --- Run heading ---
+
+	/**
+	 * Sector of Point seen from Origin for a run toward Heading (unit or not): Front within FrontHalfAngle degrees of Heading,
+	 * Back within BackHalfAngle degrees of -Heading, Side otherwise. None for a zero Heading or Point on Origin.
+	 */
+	static ERRSpawnSector GetSectorOfPoint(const FVector2D& Origin, const FVector2D& Heading, const FVector2D& Point, float FrontHalfAngle, float BackHalfAngle);
+
+	/**
+	 * Run heading (unit, world XY) of the miner: its movement over the last HeadingWindowSeconds, or the override. False (and a
+	 * zero direction) while it moves slower than HeadingMinSpeed or without a miner: the spawns are uniform then.
+	 */
+	UFUNCTION(BlueprintCallable, Category = "Spawner|Heading")
+	bool GetRunHeading(FVector2D& OutDirection) const;
+
+	/** Miner speed (uu/s) over the last HeadingWindowSeconds; 0 without samples. The override reports HeadingMinSpeed or 0. */
+	UFUNCTION(BlueprintPure, Category = "Spawner|Heading")
+	float GetRunSpeed() const;
+
+	/** Sector of Point for the current heading, around the miner; None while still. Used by tests and debug views. */
+	ERRSpawnSector GetSpawnSector(const FVector2D& Point) const;
+
+	/** Forces the run heading to Direction (tests); a zero Direction means standing still. */
+	void SetHeadingOverride(const FVector2D& Direction);
+
+	/** Returns to the heading measured from the miner's movement. */
+	void ClearHeadingOverride() { bHasHeadingOverride = false; }
+
 	// --- Wave director ---
 
 	/** Wave director phase changes (index in DirectorConfig.Phases, name). */
@@ -326,6 +372,28 @@ protected:
 	/** Splits Candidates by the side of View they lie beyond (index = ERRSpawnSide - 1). */
 	void SplitCandidatesBySide(const FBox2D& View, const TArray<FIntPoint>& Candidates, TArray<FIntPoint> (&OutBySide)[4]) const;
 
+	/** Records the miner's location for the run heading (every tick, spawning on or off); drops samples older than the window. */
+	void RecordHeadingSample();
+
+	/** Miner location (world XY) the sectors are measured from; false without a miner. */
+	bool GetHeadingOrigin(FVector2D& OutOrigin) const;
+
+	/**
+	 * Draws the sector of the next spawn among Cells while running (weights FrontSectorWeight, SideSectorWeight,
+	 * BackSectorWeight; sectors without a cell of Cells left out); None while still, without cells or when every weight is 0.
+	 */
+	ERRSpawnSector DrawSpawnSector(const TArray<FIntPoint>& Cells);
+
+	/** Sector of the center of Cell for the current heading; None while still. */
+	ERRSpawnSector GetCellSector(const FIntPoint& Cell) const;
+
+	/**
+	 * Side index (ERRSpawnSide - 1) and anchor cell for a pack or horde of Needed robots. Sector None: RRSpawner::PickSide (uniform
+	 * among the unused sides with room) and a random anchor of it. Otherwise a random cell of Sector among the unused sides with
+	 * at least Needed cells, else among the unused sides, else among all sides; its side wins. OutAnchor (optional; no extra draw when null) gets that cell. INDEX_NONE when every side is empty.
+	 */
+	int32 PickSideForSector(const TArray<FIntPoint> (&BySide)[4], const bool (&Used)[4], int32 Needed, ERRSpawnSector Sector, FIntPoint* OutAnchor);
+
 	/** Plans the front of horde HordeIndex (side, classes, cells) and returns its side; None when no cell. */
 	ERRSpawnSide PrepareHorde(int32 HordeIndex);
 
@@ -408,13 +476,56 @@ protected:
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Spawner", meta = (ClampMin = 0))
 	int32 MaxAlive = 150;
 
-	/** Minimum gap in cells between the visible floor rectangle and a spawn cell (whole cell beyond it). */
-	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Spawner", meta = (ClampMin = 0))
-	int32 ViewMargin = 3;
+	/** Nearest a spawn cell center lies beyond the visible floor rectangle edge (box distance, uu; owner 2026-10-06, provisional). */
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Spawner|Band", meta = (ClampMin = 0, Units = "cm"))
+	float SpawnBandMinDistance = 100.f;
 
-	/** Maximum distance in cells beyond the view edge of a spawn cell (cell center within this many cells + 0.5). */
-	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Spawner", meta = (ClampMin = 0))
-	int32 MaxSpawnDistanceCells = 18;
+	/** Farthest a spawn cell center lies beyond the visible floor rectangle edge (box distance, uu; owner 2026-10-06, provisional). */
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Spawner|Band", meta = (ClampMin = 0, Units = "cm"))
+	float SpawnBandMaxDistance = 500.f;
+
+	/**
+	 * Fallback search limit (uu beyond the view edge): when the band holds no candidate (rock, arena edge), the nearest band of
+	 * the same width beyond it is used, as long as its near edge is within this distance.
+	 */
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Spawner|Band", meta = (ClampMin = 0, Units = "cm"))
+	float SpawnBandFallbackMaxDistance = 3000.f;
+
+	/**
+	 * Longest walk accepted for a spawn cell, as a ratio of its straight distance to the miner (flow-field steps x cell size /
+	 * straight distance; open floor is about 0.7 to 1). Longer detours (behind rock) are used only when the band has no other
+	 * cell, so the first robot arrives quickly. 0 = no check.
+	 */
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Spawner|Band", meta = (ClampMin = 0))
+	float MaxPathDetourRatio = 1.5f;
+
+	/** Seconds of miner movement the run heading is measured over. */
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Spawner|Heading", meta = (ClampMin = 0.05, Units = "s"))
+	float HeadingWindowSeconds = 1.f;
+
+	/** Average miner speed over the window (uu/s) from which it counts as running; slower = standing still (uniform spawns). Miner walk speed: 600. */
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Spawner|Heading", meta = (ClampMin = 0, Units = "CentimetersPerSecond"))
+	float HeadingMinSpeed = 150.f;
+
+	/** Relative weight of the front sector while running (55, owner 2026-10-06, provisional). */
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Spawner|Heading", meta = (ClampMin = 0))
+	float FrontSectorWeight = 55.f;
+
+	/** Relative weight of the two side sectors together while running (35, owner 2026-10-06, provisional). */
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Spawner|Heading", meta = (ClampMin = 0))
+	float SideSectorWeight = 35.f;
+
+	/** Relative weight of the back sector while running (10, owner 2026-10-06, provisional). */
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Spawner|Heading", meta = (ClampMin = 0))
+	float BackSectorWeight = 10.f;
+
+	/** Half angle (degrees) of the front sector around the heading (45: NW to NE when running north). */
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Spawner|Heading", meta = (ClampMin = 0, ClampMax = 180, Units = "deg"))
+	float FrontHalfAngle = 45.f;
+
+	/** Half angle (degrees) of the back sector around the reverse heading (45: SW to SE when running north). */
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Spawner|Heading", meta = (ClampMin = 0, ClampMax = 180, Units = "deg"))
+	float BackHalfAngle = 45.f;
 
 	/** Timed spawning on or off (also see rr.Spawner.Enabled). */
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Spawner")
@@ -450,4 +561,23 @@ protected:
 
 	/** True while ViewOverride replaces the camera. */
 	bool bHasViewOverride = false;
+
+	/** One miner location sample of the run heading. */
+	struct FHeadingSample
+	{
+		/** World time (s). */
+		double Time = 0.0;
+
+		/** Miner location (world XY). */
+		FVector2D Location = FVector2D::ZeroVector;
+	};
+
+	/** Miner locations of the last HeadingWindowSeconds (oldest first; the first one may be just older than the window). */
+	TArray<FHeadingSample> HeadingSamples;
+
+	/** Heading set by SetHeadingOverride (zero = still). */
+	FVector2D HeadingOverride = FVector2D::ZeroVector;
+
+	/** True while HeadingOverride replaces the measured heading. */
+	bool bHasHeadingOverride = false;
 };

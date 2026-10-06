@@ -126,8 +126,16 @@ namespace RRTestAccess
 		static TSubclassOf<ARREnemy>& EnemyClassOf(ARREnemySpawner* Spawner) { return Spawner->*(&FSpawnerAccess::EnemyClass); }
 		static float& SpawnIntervalOf(ARREnemySpawner* Spawner) { return Spawner->*(&FSpawnerAccess::SpawnInterval); }
 		static int32& MaxAliveOf(ARREnemySpawner* Spawner) { return Spawner->*(&FSpawnerAccess::MaxAlive); }
-		static int32& ViewMarginOf(ARREnemySpawner* Spawner) { return Spawner->*(&FSpawnerAccess::ViewMargin); }
-		static int32& MaxSpawnDistanceOf(ARREnemySpawner* Spawner) { return Spawner->*(&FSpawnerAccess::MaxSpawnDistanceCells); }
+		static float& BandMinOf(ARREnemySpawner* Spawner) { return Spawner->*(&FSpawnerAccess::SpawnBandMinDistance); }
+		static float& BandMaxOf(ARREnemySpawner* Spawner) { return Spawner->*(&FSpawnerAccess::SpawnBandMaxDistance); }
+		static float& BandFallbackMaxOf(ARREnemySpawner* Spawner) { return Spawner->*(&FSpawnerAccess::SpawnBandFallbackMaxDistance); }
+		static float& HeadingMinSpeedOf(ARREnemySpawner* Spawner) { return Spawner->*(&FSpawnerAccess::HeadingMinSpeed); }
+		static float& HeadingWindowOf(ARREnemySpawner* Spawner) { return Spawner->*(&FSpawnerAccess::HeadingWindowSeconds); }
+		static float& FrontWeightOf(ARREnemySpawner* Spawner) { return Spawner->*(&FSpawnerAccess::FrontSectorWeight); }
+		static float& SideWeightOf(ARREnemySpawner* Spawner) { return Spawner->*(&FSpawnerAccess::SideSectorWeight); }
+		static float& BackWeightOf(ARREnemySpawner* Spawner) { return Spawner->*(&FSpawnerAccess::BackSectorWeight); }
+		static float& FrontHalfAngleOf(ARREnemySpawner* Spawner) { return Spawner->*(&FSpawnerAccess::FrontHalfAngle); }
+		static float& BackHalfAngleOf(ARREnemySpawner* Spawner) { return Spawner->*(&FSpawnerAccess::BackHalfAngle); }
 		static float& TrickleDurationOf(ARREnemySpawner* Spawner) { return Spawner->*(&FSpawnerAccess::TrickleDuration); }
 		static float& PackIntervalOf(ARREnemySpawner* Spawner) { return Spawner->*(&FSpawnerAccess::PackInterval); }
 		static int32& PackSizeMinOf(ARREnemySpawner* Spawner) { return Spawner->*(&FSpawnerAccess::PackSizeMin); }
@@ -137,6 +145,7 @@ namespace RRTestAccess
 		static FRRWaveDirectorConfig& DirectorOf(ARREnemySpawner* Spawner) { return Spawner->*(&FSpawnerAccess::DirectorConfig); }
 		static const TArray<FRRHordeSlot>& HordePlanOf(const ARREnemySpawner* Spawner) { return Spawner->*(&FSpawnerAccess::HordePlan); }
 		static int32 HordeSpawnedOf(const ARREnemySpawner* Spawner) { return Spawner->*(&FSpawnerAccess::HordeSpawned); }
+		static ERRSpawnSide PrepareHordeOf(ARREnemySpawner* Spawner, int32 HordeIndex) { return (Spawner->*(&FSpawnerAccess::PrepareHorde))(HordeIndex); }
 	};
 
 	/** ARRExplosionFX: visual duration. */
