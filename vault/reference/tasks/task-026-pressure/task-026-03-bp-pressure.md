@@ -3,7 +3,7 @@ id: task-026-03-bp-pressure
 description: "HORDE EN APPROCHE banner, red damage vignette, event icons on the alert bar, and a light-halo test with a darker arena."
 parent: task-026-pressure
 kind: task
-status: todo
+status: in-progress
 ---
 # Pressure visuals
 

@@ -13,7 +13,7 @@ status: in-progress
 - gdd_check: Read [[difficulty]], [[level-flow]], [[enemies-index]], [[sys-spawner]], [[sys-difficulty]]. Values provisional (owner 2026-10-05): see subtasks; alive cap 100 → 150 (perf ceiling about 1500). Analysis in [[drgs-analysis]]. The owner launched all lots and delegated provisional values (2026-10-05); decisions written into the GDD before planning; the grid-size lot waits for the owner after the stress report.
 - confirmed_by_owner: yes (2026-10-05, all lots launched by the owner)
 - milestone: M2
-- next_step: task-026-02-feedback-events
+- next_step: task-026-03-bp-pressure
 - result: open
 
 ## Subtasks
