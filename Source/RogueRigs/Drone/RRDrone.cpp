@@ -158,8 +158,14 @@ bool ARRDrone::RequestArcDig(ARRArenaGrid* Grid, FVector ArcDirection)
 		State = ERRDroneState::Orbit;
 	}
 
-	// Blocks that left the arc stop (damage kept); blocks that entered it start shaking. Iterate a copy: listeners may react.
+	// The whole veins of the new arc shake (heal-ore, owner 2026-10-07 fifth test); blocks that left the arc stop (damage
+	// kept), blocks that entered it start. Iterate copies: listeners may react.
 	const TArray<FIntPoint> PreviousCells = DigCells;
+	DigGrid = Grid;
+	DigCells = NewCells;
+	DigArcDirection = Direction;
+	State = ERRDroneState::Dig;
+	RefreshDigShake();
 	for (const FIntPoint& Cell : PreviousCells)
 	{
 		if (!NewCells.Contains(Cell))
@@ -167,15 +173,10 @@ bool ARRDrone::RequestArcDig(ARRArenaGrid* Grid, FVector ArcDirection)
 			StopDigBlock(Cell);
 		}
 	}
-	DigGrid = Grid;
-	DigCells = NewCells;
-	DigArcDirection = Direction;
-	State = ERRDroneState::Dig;
 	for (const FIntPoint& Cell : NewCells)
 	{
 		if (!PreviousCells.Contains(Cell))
 		{
-			Grid->SetCellShaking(Cell, true);
 			OnDigBlockStarted.Broadcast(Cell);
 		}
 	}
@@ -382,19 +383,7 @@ void ARRDrone::TickDig(float DeltaSeconds)
 	// the miner selects the next blocks (or releases the dig) on its next tick.
 	const float Damage = DeltaSeconds * GetMiningSpeed();
 	TArray<FIntPoint> Targets;
-	TArray<FIntPoint> Vein;
-	for (const FIntPoint& Cell : DigCells)
-	{
-		if (Targets.Contains(Cell))
-		{
-			continue;
-		}
-		DigGrid->GetVeinCells(Cell, Vein);
-		for (const FIntPoint& VeinCell : Vein)
-		{
-			Targets.AddUnique(VeinCell);
-		}
-	}
+	CollectDigTargets(Targets);
 	for (const FIntPoint& Cell : Targets)
 	{
 		DigGrid->ApplyTerrainDamage(Cell, Damage, ERRTerrainDamageSource::Drone);
@@ -412,6 +401,51 @@ void ARRDrone::TickDig(float DeltaSeconds)
 			++Index;
 		}
 	}
+
+	// Vein blocks destroyed this tick (or blown up out of the arc) stop shaking; the rest of the veins keep shaking.
+	RefreshDigShake();
+}
+
+void ARRDrone::CollectDigTargets(TArray<FIntPoint>& OutTargets) const
+{
+	OutTargets.Reset();
+	TArray<FIntPoint> Vein;
+	for (const FIntPoint& Cell : DigCells)
+	{
+		if (OutTargets.Contains(Cell))
+		{
+			continue;
+		}
+		DigGrid->GetVeinCells(Cell, Vein);
+		for (const FIntPoint& VeinCell : Vein)
+		{
+			OutTargets.AddUnique(VeinCell);
+		}
+	}
+}
+
+void ARRDrone::RefreshDigShake()
+{
+	TArray<FIntPoint> Targets;
+	if (IsValid(DigGrid))
+	{
+		CollectDigTargets(Targets);
+	}
+	for (const FIntPoint& Cell : ShakeCells)
+	{
+		if (!Targets.Contains(Cell) && IsValid(DigGrid))
+		{
+			DigGrid->SetCellShaking(Cell, false);
+		}
+	}
+	for (const FIntPoint& Cell : Targets)
+	{
+		if (!ShakeCells.Contains(Cell))
+		{
+			DigGrid->SetCellShaking(Cell, true);
+		}
+	}
+	ShakeCells = MoveTemp(Targets);
 }
 
 FVector ARRDrone::ComputeOrbitPoint() const
@@ -448,10 +482,6 @@ FVector ARRDrone::ComputeDigHoverPoint() const
 void ARRDrone::StopDigBlock(FIntPoint Cell)
 {
 	const bool bDestroyed = !IsValid(DigGrid) || !DigGrid->IsBlockCell(Cell);
-	if (IsValid(DigGrid))
-	{
-		DigGrid->SetCellShaking(Cell, false);
-	}
 	OnDigBlockStopped.Broadcast(Cell, bDestroyed);
 }
 
@@ -459,6 +489,7 @@ void ARRDrone::StopDig()
 {
 	TArray<FIntPoint> StoppedCells = MoveTemp(DigCells);
 	DigCells.Reset();
+	RefreshDigShake();
 	for (const FIntPoint& Cell : StoppedCells)
 	{
 		StopDigBlock(Cell);

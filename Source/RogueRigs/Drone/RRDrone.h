@@ -183,10 +183,22 @@ protected:
 	/** World position the drone hovers at while digging: the arc centre (mean of the dug cell centers, or the drone's XY when none) at HoverHeight above the miner's floor. Requires a valid miner and dig grid. */
 	FVector ComputeDigHoverPoint() const;
 
-	/** Stops one dug block: stops its shaking and broadcasts OnDigBlockStopped (bDestroyed = the cell no longer holds a block). Does not touch DigCells. */
+	/** Stops one dug block: broadcasts OnDigBlockStopped (bDestroyed = the cell no longer holds a block). Touches neither DigCells nor the shake (RefreshDigShake). */
 	void StopDigBlock(FIntPoint Cell);
 
-	/** Leaves Dig: stops every dug block, hides the laser, clears the arc and resumes the orbit from the drone's current angle. */
+	/**
+	 * Every block of the veins of DigCells (ARRArenaGrid::GetVeinCells, duplicates removed): the whole-vein dig targets
+	 * (ore-blocks, heal-ore). Requires a valid dig grid.
+	 */
+	void CollectDigTargets(TArray<FIntPoint>& OutTargets) const;
+
+	/**
+	 * Makes ShakeCells match the dig targets (heal-ore, owner 2026-10-07 fifth test: a vein being mined shakes whole): blocks
+	 * entering start shaking, blocks leaving (out of the arc veins or destroyed) stop. Without a dig grid, stops them all.
+	 */
+	void RefreshDigShake();
+
+	/** Leaves Dig: stops the whole-vein shake, stops every dug block, hides the laser, clears the arc and resumes the orbit from the drone's current angle. */
 	void StopDig();
 
 	/** Places Beam as a cylinder from Start to End with LaserDiameter, and shows it (hidden when Start and End coincide). */
@@ -280,9 +292,13 @@ protected:
 	UPROPERTY(VisibleInstanceOnly, BlueprintReadOnly, Category = "Drone|Dig")
 	TObjectPtr<ARRArenaGrid> DigGrid;
 
-	/** Cells being cut (the arc), nearest to the miner's front first. Each one is shaking. */
+	/** Cells being cut (the arc), nearest to the miner's front first. Their whole veins shake (ShakeCells). */
 	UPROPERTY(VisibleInstanceOnly, BlueprintReadOnly, Category = "Drone|Dig")
 	TArray<FIntPoint> DigCells;
+
+	/** Cells this drone makes shake on DigGrid: every block of the veins of DigCells. Kept in sync by RefreshDigShake. */
+	UPROPERTY(VisibleInstanceOnly, BlueprintReadOnly, Category = "Drone|Dig")
+	TArray<FIntPoint> ShakeCells;
 
 	/** Arc direction (unit, Z = 0) of the last accepted RequestArcDig. */
 	UPROPERTY(VisibleInstanceOnly, BlueprintReadOnly, Category = "Drone|Dig")
