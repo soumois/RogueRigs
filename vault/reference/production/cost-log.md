@@ -102,6 +102,7 @@ kind: note
 | [[task-044-01-fewer-kamikazes]] | opus | 1 | 0k | 47k | 977k | 14k |
 | [[task-045-01-easier-first-level]] | opus | 1 | 0k | 141k | 1122k | 15k |
 | [[task-045-02-bp-heavy-cap]] | sonnet | 1 | 0k | 62k | 941k | 8k |
+| [[task-048-01-last-level-profile]] | opus | 1 | 0k | 33k | 235k | 5k |
 
 ## Totals
 | Scope | Input | Cache write | Cache read | Output |

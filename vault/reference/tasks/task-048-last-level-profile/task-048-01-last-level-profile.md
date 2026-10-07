@@ -3,7 +3,7 @@ id: task-048-01-last-level-profile
 description: "Current wave director values saved as a last-level profile in the data, not wired."
 parent: task-048-last-level-profile
 kind: task
-status: in-progress
+status: done
 ---
 # Last-level director profile
 
@@ -15,11 +15,11 @@ status: in-progress
 - done_when: build exits 0 with the editor closed; all `RogueRigs.*` tests pass headless; docs updated; lint clean.
 - editor_state: closed
 - token_ceiling: 30000
-- model: open
-- tokens: open
-- runs: open
+- model: opus
+- tokens: input 22, cache write 33109, cache read 234587, output 5205
+- runs: 1
 - milestone: M2
-- result: open
+- result: FRRWaveDirectorConfig::MakeLastLevel() is a frozen copy of the current MakeDefault (waves 7.1 → 4.1 s, distinct-side packs, packs, hordes, overtime, shooter counter), unused until levels exist; the 150 alive cap stays on ARREnemySpawner::MaxAlive. Build 0; full run 194/195, the failure (PlacedSpawnerMix expecting heavy cap 5) is stale since task-045-02 and is fixed in task-046. Commit fff7142.
 
 ## Relations
 - [[task-048-last-level-profile]] — parent global task.
