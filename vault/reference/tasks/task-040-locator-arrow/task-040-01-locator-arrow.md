@@ -3,7 +3,7 @@ id: task-040-01-locator-arrow
 description: "Console locator: real arrow about 64 px, pulsing, with the distance in metres."
 parent: task-040-locator-arrow
 kind: task
-status: in-progress
+status: done
 ---
 # Clearer console locator
 
@@ -15,11 +15,11 @@ status: in-progress
 - done_when: PIE check with no error; docs updated; lint clean.
 - editor_state: open
 - token_ceiling: 80000
-- model: open
-- tokens: open
-- runs: open
+- model: sonnet
+- tokens: input 116, cache write 150607, cache read 5574820, output 39686
+- runs: 2
 - milestone: M2
-- result: open
+- result: M_LocatorArrow (UI triangle tinted by vertex colour); WBP_HUD LocatorArrow is a 64 px Image rotated by ArrowAngle at EdgePosition, pulsing 1 + 0.15 sin(360 t); LocatorDistance text in metres 50 px below or above; teal console, white shuttle. PIE: arrow image and '36 m' shown with the console off screen; no runtime log error; pulse, rotation and shuttle colour not seen. Doc wbp-hud. Commits 1db00cc, b93ca58.
 
 ## Relations
 - [[task-040-locator-arrow]] — parent global task.

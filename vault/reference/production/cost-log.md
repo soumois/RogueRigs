@@ -98,6 +98,7 @@ kind: note
 | [[task-041-01-front-detour]] | opus | 2 | 0k | 34k | 589k | 8k |
 | [[task-042-01-hack-time]] | opus | 1 | 0k | 22k | 239k | 5k |
 | [[task-043-01-vein-shake]] | opus | 1 | 0k | 34k | 542k | 10k |
+| [[task-040-01-locator-arrow]] | sonnet | 2 | 0k | 151k | 5575k | 40k |
 
 ## Totals
 | Scope | Input | Cache write | Cache read | Output |
