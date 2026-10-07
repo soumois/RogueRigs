@@ -3,7 +3,7 @@ id: task-050-01-flaky-stacking-test
 description: "DamageNumbers.StackOverDisplayed made reliable: find why it fails intermittently and fix the cause."
 parent: task-050-flaky-stacking-test
 kind: task
-status: in-progress
+status: done
 ---
 # Flaky damage-number stacking test
 
@@ -15,11 +15,11 @@ status: in-progress
 - done_when: the test passes 10 runs in a row; build exits 0 with the editor closed; all `RogueRigs.*` tests pass headless; docs updated; lint clean.
 - editor_state: closed
 - token_ceiling: 50000
-- model: open
-- tokens: open
-- runs: open
+- model: opus
+- tokens: input 54, cache write 53588, cache read 986682, output 13926
+- runs: 1
 - milestone: M2
-- result: open
+- result: Cause in the test, not the game: random ±25 uu side offsets (clock-seeded) sometimes put robot B's number more than 55.8 uu from A's column (2-digit plus 1-digit half widths), so it rightly stayed unstacked (about 1.4 % of runs, confirmed by logs and a simulation). Fix: B hit 5 uu from A instead of 20 (0 failures over 500k draws); checks unchanged. 10/10 runs alone, full run 195/195. Commit 719af2d.
 
 ## Relations
 - [[task-050-flaky-stacking-test]] — parent global task.

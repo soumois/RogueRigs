@@ -106,6 +106,7 @@ kind: note
 | [[task-046-01-level1-pressure]] | opus | 1 | 0k | 229k | 1032k | 28k |
 | [[task-047-01-heavy-speed]] | opus | 1 | 0k | 40k | 191k | 4k |
 | [[task-049-01-shuttle-distance]] | opus | 1 | 0k | 51k | 760k | 13k |
+| [[task-050-01-flaky-stacking-test]] | opus | 1 | 0k | 54k | 987k | 14k |
 
 ## Totals
 | Scope | Input | Cache write | Cache read | Output |
