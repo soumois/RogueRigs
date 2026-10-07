@@ -1,4 +1,4 @@
-// Rogue Rigs - pressure integration tests with the final Blueprints (RogueRigs.Integration.Pressure*, task-026-04): the director config of the BP_EnemySpawner placed in L_ArenaM1 runs calm, lone robots then the first pack; a horde is announced 4 s before a front of 40+ robots with the WBP_HUD HordeBanner and alert icons; a BP_Chaser hit lights the WBP_HUD DamageVignette, stronger at low health.
+// Rogue Rigs - pressure integration tests with the final Blueprints (RogueRigs.Integration.Pressure*, task-026-04): the director config of the BP_EnemySpawner placed in L_ArenaM1 runs calm, lone robots then the first pack; a horde is announced 4 s before a front of 34+ robots with the WBP_HUD HordeBanner and alert icons; a BP_Chaser hit lights the WBP_HUD DamageVignette, stronger at low health.
 
 #include "CoreMinimal.h"
 #include "Misc/AutomationTest.h"
@@ -463,7 +463,7 @@ bool FRRIntegrationPressureHordeBannerTest::RunTest(const FString& Parameters)
 	{
 		return false;
 	}
-	TestTrue(TEXT("placed horde of 40+ robots"), Config.Hordes[0].SizeMin >= 40);
+	TestTrue(TEXT("placed horde of 34+ robots"), Config.Hordes[0].SizeMin >= 34);
 	TestEqual(TEXT("miner made invulnerable"), RRCheats::SetInvulnerable(TestWorld.Get(), true, TEXT("RogueRigs.Integration.Pressure")), 1);
 	URRHUDWidget* HUD = Loop.HUD;
 	UWidget* Banner = FindHUDWidget(*this, HUD, TEXT("HordeBanner"));
@@ -563,7 +563,7 @@ bool FRRIntegrationPressureHordeBannerTest::RunTest(const FString& Parameters)
 		TestNearlyEqual(TEXT("OnHordeIncoming announces 4 s"), Loop.Recorder->GetHordeIncomingSeconds()[0], Warning, 2.f / 60.f);
 	}
 
-	// Front: at 8 s, 40+ robots over the spread, nothing before it.
+	// Front: at 8 s, 34+ robots over the spread (task-045-01), nothing before it.
 	TestTrue(*FString::Printf(TEXT("front at %.1f s (frame %d)"), FrontTime, StartFrame), FMath::Abs(StartFrame - FrontFrame) <= 1);
 	TestEqual(TEXT("nothing spawned before the front"), AliveBeforeFront, 0);
 	const int32 Finished = FindDirectorEvent(Events, TEXT("Finished:0"));
@@ -572,7 +572,7 @@ bool FRRIntegrationPressureHordeBannerTest::RunTest(const FString& Parameters)
 	{
 		LexFromString(Spawned, *Events[Finished].RightChop(FCString::Strlen(TEXT("Finished:0:"))));
 	}
-	TestTrue(*FString::Printf(TEXT("front of 40+ robots (%d spawned, %d alive)"), Spawned, Loop.Spawner->GetAliveCount()), Spawned >= 40 && Loop.Spawner->GetAliveCount() >= 40);
+	TestTrue(*FString::Printf(TEXT("front of 34+ robots (%d spawned, %d alive)"), Spawned, Loop.Spawner->GetAliveCount()), Spawned >= 34 && Loop.Spawner->GetAliveCount() >= 34);
 	return true;
 }
 
