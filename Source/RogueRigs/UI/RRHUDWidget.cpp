@@ -14,7 +14,9 @@
 #include "Player/RRMiner.h"
 #include "Progression/RRLevelUpComponent.h"
 #include "Progression/RRProgressionComponent.h"
+#include "Weapons/RRAutoFireComponent.h"
 #include "Weapons/RRTurretLauncher.h"
+#include "Weapons/RRWeaponAttributeSet.h"
 
 void URRHUDWidget::BindToMiner(ARRMiner* Miner)
 {
@@ -92,6 +94,99 @@ float URRHUDWidget::GetTurretRechargeProgress() const
 {
 	const ARRTurretLauncher* Launcher = BoundTurretLauncher.Get();
 	return Launcher ? Launcher->GetRechargeProgress() : 0.f;
+}
+
+int32 URRHUDWidget::GetWeaponSlotCount() const
+{
+	const ARRMiner* Miner = BoundMiner.Get();
+	return Miner ? FMath::Max(Miner->GetMaxWeapons(), 0) : 0;
+}
+
+FRRWeaponSlotHUD URRHUDWidget::GetWeaponSlot(int32 SlotIndex) const
+{
+	const ARRMiner* Miner = BoundMiner.Get();
+	if (!Miner || SlotIndex < 0 || SlotIndex >= GetWeaponSlotCount())
+	{
+		return FRRWeaponSlotHUD();
+	}
+	// Slots follow acquisition order over the valid weapons, so a destroyed entry never leaves a hole.
+	int32 ValidIndex = 0;
+	for (const TObjectPtr<ARRWeapon>& Weapon : Miner->GetWeapons())
+	{
+		if (IsValid(Weapon))
+		{
+			if (ValidIndex == SlotIndex)
+			{
+				return MakeWeaponSlot(Weapon);
+			}
+			++ValidIndex;
+		}
+	}
+	return FRRWeaponSlotHUD();
+}
+
+TArray<FRRWeaponSlotHUD> URRHUDWidget::GetWeaponSlots() const
+{
+	TArray<FRRWeaponSlotHUD> Slots;
+	const int32 SlotCount = GetWeaponSlotCount();
+	Slots.Reserve(SlotCount);
+	if (const ARRMiner* Miner = BoundMiner.Get())
+	{
+		for (const TObjectPtr<ARRWeapon>& Weapon : Miner->GetWeapons())
+		{
+			if (Slots.Num() >= SlotCount)
+			{
+				break;
+			}
+			if (IsValid(Weapon))
+			{
+				Slots.Add(MakeWeaponSlot(Weapon));
+			}
+		}
+	}
+	Slots.SetNum(SlotCount);
+	return Slots;
+}
+
+FRRWeaponSlotHUD URRHUDWidget::MakeWeaponSlot(const ARRWeapon* Weapon)
+{
+	FRRWeaponSlotHUD Slot;
+	if (!IsValid(Weapon))
+	{
+		return Slot;
+	}
+	Slot.bOwned = true;
+	Slot.Weapon = const_cast<ARRWeapon*>(Weapon);
+
+	if (const ARRTurretLauncher* Launcher = Cast<ARRTurretLauncher>(Weapon))
+	{
+		Slot.bIsTurretLauncher = true;
+		Slot.Charges = Launcher->GetCharges();
+		Slot.MaxCharges = Launcher->GetMaxCharges();
+		Slot.Rounds = Slot.Charges;
+		Slot.MagazineSize = Slot.MaxCharges;
+		Slot.bRecharging = Launcher->IsRecharging();
+		Slot.RechargeProgress = Launcher->GetRechargeProgress();
+		return Slot;
+	}
+
+	if (const UAbilitySystemComponent* ASC = Weapon->GetAbilitySystemComponent())
+	{
+		const float Ammo = ASC->GetNumericAttribute(URRWeaponAttributeSet::GetAmmoAttribute());
+		const float Magazine = ASC->GetNumericAttribute(URRWeaponAttributeSet::GetMagazineSizeAttribute());
+		Slot.Rounds = FMath::Max(FMath::FloorToInt32(Ammo + KINDA_SMALL_NUMBER), 0);
+		Slot.MagazineSize = FMath::Max(FMath::FloorToInt32(Magazine + KINDA_SMALL_NUMBER), 0);
+	}
+	if (const URRAutoFireComponent* AutoFire = Weapon->GetAutoFireComponent())
+	{
+		Slot.bReloading = AutoFire->IsReloading();
+		const float Duration = AutoFire->GetReloadDuration();
+		if (Slot.bReloading && Duration > 0.f)
+		{
+			Slot.ReloadProgress = FMath::Clamp(1.f - AutoFire->GetReloadTimeRemaining() / Duration, 0.f, 1.f);
+		}
+	}
+	return Slot;
 }
 
 bool URRHUDWidget::ChooseUpgrade(int32 Index)

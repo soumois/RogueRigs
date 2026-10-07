@@ -101,6 +101,57 @@ struct FRRAlertBarEvent
 	int32 Index = INDEX_NONE;
 };
 
+/** HUD state of one weapon slot (index 0..MaxWeapons-1), read each frame by the Blueprint (GetWeaponSlot / GetWeaponSlots). */
+USTRUCT(BlueprintType)
+struct FRRWeaponSlotHUD
+{
+	GENERATED_BODY()
+
+	/** True when the slot holds a weapon; false = locked slot (padlock), every other field is at its default. */
+	UPROPERTY(BlueprintReadOnly, Category = "HUD|Weapons")
+	bool bOwned = false;
+
+	/** Weapon in the slot (null when locked). */
+	UPROPERTY(BlueprintReadOnly, Category = "HUD|Weapons")
+	TObjectPtr<ARRWeapon> Weapon = nullptr;
+
+	/** True when the weapon is a turret launcher: draw Charges, MaxCharges and RechargeProgress instead of the magazine. */
+	UPROPERTY(BlueprintReadOnly, Category = "HUD|Weapons")
+	bool bIsTurretLauncher = false;
+
+	/** Rounds left in the magazine (Ammo rounded down; the charges for a turret launcher). */
+	UPROPERTY(BlueprintReadOnly, Category = "HUD|Weapons")
+	int32 Rounds = 0;
+
+	/** Magazine size (MagazineSize rounded down; the maximum charges for a turret launcher). */
+	UPROPERTY(BlueprintReadOnly, Category = "HUD|Weapons")
+	int32 MagazineSize = 0;
+
+	/** True while the magazine reloads (always false for a turret launcher, see bRecharging). */
+	UPROPERTY(BlueprintReadOnly, Category = "HUD|Weapons")
+	bool bReloading = false;
+
+	/** Progress 0..1 of the running reload (0 when not reloading or when the reload never ends). */
+	UPROPERTY(BlueprintReadOnly, Category = "HUD|Weapons")
+	float ReloadProgress = 0.f;
+
+	/** Turret launcher: charges ready (0 for other weapons). */
+	UPROPERTY(BlueprintReadOnly, Category = "HUD|Weapons")
+	int32 Charges = 0;
+
+	/** Turret launcher: maximum charges (0 for other weapons). */
+	UPROPERTY(BlueprintReadOnly, Category = "HUD|Weapons")
+	int32 MaxCharges = 0;
+
+	/** Turret launcher: true while one charge recharges (one at a time; drawn in the leftmost empty block). */
+	UPROPERTY(BlueprintReadOnly, Category = "HUD|Weapons")
+	bool bRecharging = false;
+
+	/** Turret launcher: progress 0..1 of the charge recharging now (0 when none). */
+	UPROPERTY(BlueprintReadOnly, Category = "HUD|Weapons")
+	float RechargeProgress = 0.f;
+};
+
 /**
  * In-run HUD. Created by ARRPlayerController at BeginPlay (local player only) from its HUDWidgetClass. C++ binds it
  * to the miner's Health and MaxHealth attributes, to its URRProgressionComponent and URRLevelUpComponent (BindToMiner),
@@ -111,7 +162,7 @@ struct FRRAlertBarEvent
  * them. Run flow (BindToRunFlow, URRRunFlowSubsystem): OnAlertChanged, OnObjectiveChanged, OnObjectiveProgressChanged and
  * OnExtractionReady, OnShuttleCountdown and OnRunEnded (end screen; its restart button calls RestartLevel). Turret charges
  * (BindToMiner: the miner's turret launcher, now or when acquired later through OnWeaponAdded): OnTurretChargesChanged, plus
- * GetTurretRechargeProgress for a per-frame bar. Pressure feedback: OnPlayerDamaged (red vignette, BindToMiner),
+ * GetTurretRechargeProgress for a per-frame bar. Weapon slots (ammo, reload, turret charges, locked slots): GetWeaponSlots / GetWeaponSlot. Pressure feedback: OnPlayerDamaged (red vignette, BindToMiner),
  * OnHordeIncoming (banner) and OnAlertEventsChanged (alert-bar icons: console, hordes, shuttle) from BindToSpawner and
  * BindToRunFlow. No gameplay logic.
  */
@@ -176,6 +227,24 @@ public:
 	/** Progress 0..1 of the bound turret launcher's running recharge (0 when none or without a launcher), for a per-frame bar. */
 	UFUNCTION(BlueprintPure, Category = "HUD|Turret")
 	float GetTurretRechargeProgress() const;
+
+	/** Number of weapon slots to draw: the bound miner's MaxWeapons (0 without a bound miner). */
+	UFUNCTION(BlueprintPure, Category = "HUD|Weapons")
+	int32 GetWeaponSlotCount() const;
+
+	/**
+	 * HUD state of weapon slot SlotIndex (0-based, the miner's weapons in acquisition order: slot 0 = starting burst rifle). A slot
+	 * past the owned weapons, an index out of range or no bound miner gives a locked slot (bOwned false). Cheap; call each frame.
+	 */
+	UFUNCTION(BlueprintPure, Category = "HUD|Weapons")
+	FRRWeaponSlotHUD GetWeaponSlot(int32 SlotIndex) const;
+
+	/** Every slot, GetWeaponSlotCount entries in slot order (owned weapons first, then locked slots). Call each frame. */
+	UFUNCTION(BlueprintPure, Category = "HUD|Weapons")
+	TArray<FRRWeaponSlotHUD> GetWeaponSlots() const;
+
+	/** HUD state of Weapon (locked slot when null): magazine and reload, or charges and recharge for a turret launcher. */
+	static FRRWeaponSlotHUD MakeWeaponSlot(const ARRWeapon* Weapon);
 
 	// --- Objective locator (objective-console: edge arrow to the console, then to the shuttle) ---
 
