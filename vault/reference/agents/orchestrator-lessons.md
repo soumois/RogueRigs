@@ -9,6 +9,7 @@ kind: note
 ## Splitting (owner 2026-10-06, mandatory)
 - One owner point = one small independent subtask, with only the inputs it needs. Never bundle several points into one subtask to save editor switches or re-reading: task-034-01 bundled 10 points across 9 systems and hit the 60-turn limit before point 2.
 - When showing a plan, the list of subtasks must match the list of points the owner sees; a table of points followed by one big subtask is a fault.
+- Numbering (owner 2026-10-06): each logically separate owner point is its own global task (task-NNN). Subtasks task-NNN-SS exist only when one request needs several systems or agents (e.g. the 67 uu grid: render, flow field, layout, switch). Never file unrelated points as subtasks of one test-feedback task.
 
 ## Blueprint agent and Unreal MCP
 - 40-turn limit: most bp subtasks needed 2 to 4 runs. Ask it to work in groups and commit after each.
