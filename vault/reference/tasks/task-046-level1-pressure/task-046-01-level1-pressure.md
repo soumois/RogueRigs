@@ -3,7 +3,7 @@ id: task-046-01-level1-pressure
 description: "Level 1 pressure: 80 robots alive at most, wave interval ending at 5.5 s, packs of one wave at least 120° apart."
 parent: task-046-level1-pressure
 kind: task
-status: in-progress
+status: done
 ---
 # Level 1 pressure
 
@@ -15,11 +15,11 @@ status: in-progress
 - done_when: build exits 0 with the editor closed; all `RogueRigs.*` tests pass headless; docs updated; lint clean.
 - editor_state: closed
 - token_ceiling: 50000
-- model: open
-- tokens: open
-- runs: open
+- model: opus
+- tokens: input 58, cache write 229116, cache read 1032073, output 28101
+- runs: 1
 - milestone: M2
-- result: open
+- result: ARREnemySpawner::MaxAlive 150 → 80 (C++, not overridden; shared by all levels); MakeDefault wave interval end 4.1 → 5.5 s; PackMinSeparationDegrees 120 (anchor angles; 3-pack waves placed at 120° steps); MakeLastLevel untouched; PlacedSpawnerMix fixed to heavy cap 3. Build 0, 195/195. Commit 5ccbb9b.
 
 ## Relations
 - [[task-046-level1-pressure]] — parent global task.

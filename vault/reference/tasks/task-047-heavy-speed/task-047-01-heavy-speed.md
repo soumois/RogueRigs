@@ -3,7 +3,7 @@ id: task-047-01-heavy-speed
 description: "Heavy robot speed 180 → 153 uu/s; the other robots stay at 180."
 parent: task-047-heavy-speed
 kind: task
-status: todo
+status: in-progress
 ---
 # Slower heavy
 
