@@ -355,6 +355,15 @@ task-051-01-turret-spacing  reference/tasks/task-051-turret-spacing/task-051-01-
 task-051-turret-spacing  reference/tasks/task-051-turret-spacing.md
 task-052-01-heavy-radius-2  reference/tasks/task-052-heavy-radius-2/task-052-01-heavy-radius-2.md
 task-052-heavy-radius-2  reference/tasks/task-052-heavy-radius-2.md
+task-053-01-weapon-info-centred  reference/tasks/task-053-weapon-info-centred/task-053-01-weapon-info-centred.md
+task-053-weapon-info-centred  reference/tasks/task-053-weapon-info-centred.md
+task-054-01-niagara-trail-sparkle  reference/tasks/task-054-niagara-trail-sparkle/task-054-01-niagara-trail-sparkle.md
+task-054-niagara-trail-sparkle  reference/tasks/task-054-niagara-trail-sparkle.md
+task-055-01-first-hit-vignette  reference/tasks/task-055-first-hit-vignette/task-055-01-first-hit-vignette.md
+task-055-first-hit-vignette  reference/tasks/task-055-first-hit-vignette.md
+task-056-01-bonus-chest  reference/tasks/task-056-bonus-chest/task-056-01-bonus-chest.md
+task-056-02-bp-bonus-chest  reference/tasks/task-056-bonus-chest/task-056-02-bp-bonus-chest.md
+task-056-bonus-chest  reference/tasks/task-056-bonus-chest.md
 tasks-index  reference/tasks/tasks-index.md
 tech-index  reference/tech/tech-index.md
 terrain-index  reference/gdd/terrain/terrain-index.md
