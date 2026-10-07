@@ -1,4 +1,4 @@
-// Rogue Rigs - heavy integration tests with the final Blueprints (RogueRigs.Integration.Heavy*): BP_Heavy telegraphs then slams a vulnerable BP_Miner for 25 with its glow, tilt and shock ring, misses beyond 400 uu, takes the BP_Miner shotgun pellet knockback reduced by 0.8 and crosses a one-cell corridor of arena_m1.
+// Rogue Rigs - heavy integration tests with the final Blueprints (RogueRigs.Integration.Heavy*): BP_Heavy telegraphs then slams a vulnerable BP_Miner for 25 with its glow, tilt and shock ring, misses beyond 340 uu, takes the BP_Miner shotgun pellet knockback reduced by 0.8 and crosses a one-cell corridor of arena_m1.
 
 #include "CoreMinimal.h"
 #include "Misc/AutomationTest.h"
@@ -41,10 +41,10 @@ namespace RRHeavyIntegrationTests
 	constexpr int32 CorridorMinY = 66;
 	constexpr int32 CorridorMaxY = 68;
 
-	/** Heavy CSV row: slam damage, radius, telegraph, cadence, knockback resistance; trigger 400 x SlamTriggerRatio 0.7. */
+	/** Heavy CSV row: slam damage, radius, telegraph, cadence, knockback resistance; trigger 340 x SlamTriggerRatio 0.7. */
 	constexpr float SlamDamage = 25.f;
-	constexpr float SlamRadius = 400.f;
-	constexpr float TriggerDistance = 280.f;
+	constexpr float SlamRadius = 340.f;
+	constexpr float TriggerDistance = 238.f;
 	constexpr double TelegraphSeconds = 0.6;
 	constexpr double SlamPeriod = 2.0;
 	constexpr float HeavyResistance = 0.8f;
@@ -220,7 +220,7 @@ bool FRRIntegrationHeavySlamTest::RunTest(const FString& Parameters)
 	{
 		return false;
 	}
-	TestTrue(TEXT("telegraph starts within 280 uu (400 x 0.7)"), FirstTelegraphDistance > 0.f && FirstTelegraphDistance <= TriggerDistance + 1.f);
+	TestTrue(TEXT("telegraph starts within 238 uu (340 x 0.7)"), FirstTelegraphDistance > 0.f && FirstTelegraphDistance <= TriggerDistance + 1.f);
 	for (int32 Index = 0; Index < 2; ++Index)
 	{
 		TestTrue(FString::Printf(TEXT("slam %d lands 0.6 s after its telegraph (within one frame)"), Index + 1),
@@ -236,7 +236,7 @@ bool FRRIntegrationHeavySlamTest::RunTest(const FString& Parameters)
 	TestTrue(TEXT("BP_Heavy OnSlam sets its shock ring visible on the slam frame"), bRingFlagOnSlam);
 	// Rendering needs bHiddenInGame off too (USceneComponent::IsVisible): a ring left Hidden In Game never shows in a game world.
 	TestTrue(TEXT("BP_Heavy shock ring renders in game on the slam frame (not Hidden In Game)"), bRingShownOnSlam);
-	TestTrue(TEXT("shock ring grows to the slam radius (scale 400 / 50)"), FMath::IsNearlyEqual(MaxRingScale, SlamRadius / 50.f, 0.05f));
+	TestTrue(TEXT("shock ring grows to the slam radius (scale 340 / 50)"), FMath::IsNearlyEqual(MaxRingScale, SlamRadius / 50.f, 0.05f));
 	TestTrue(TEXT("shock ring hidden once the recovery ends"), bRingHiddenAfterRecover);
 	TestTrue(TEXT("body pose reset once the recovery ends"), bPoseResetAfterRecover);
 	TestTrue(TEXT("miner alive"), !Miner->IsDead());
@@ -266,12 +266,12 @@ bool FRRIntegrationHeavyRadiusTest::RunTest(const FString& Parameters)
 	}
 	const float HealthBefore = Health(Miner);
 
-	// 1. During the first telegraph the miner steps to 390 uu (inside the 400 uu radius, outside the 280 uu trigger): hit for 25.
+	// 1. During the first telegraph the miner steps to 330 uu (inside the 340 uu radius, outside the 238 uu trigger): hit for 25.
 	if (!TestTrue(TEXT("first telegraph within 5 s"), TickUntilTelegraph(TestWorld, Heavy, 60 * 5)))
 	{
 		return false;
 	}
-	TeleportWestOf(Miner, Heavy, 390.f);
+	TeleportWestOf(Miner, Heavy, 330.f);
 	for (int32 Frame = 0; Frame < 60 && Heavy->GetSlamCount() < 1; ++Frame)
 	{
 		TestWorld.Tick();
@@ -279,12 +279,12 @@ bool FRRIntegrationHeavyRadiusTest::RunTest(const FString& Parameters)
 	const float InsideDistance = FVector::Dist2D(Heavy->GetActorLocation(), Miner->GetActorLocation());
 	const float HealthAfterInside = Health(Miner);
 
-	// 2. During the second telegraph the miner steps to 410 uu (just outside the radius): the slam lands and misses.
+	// 2. During the second telegraph the miner steps to 350 uu (just outside the radius): the slam lands and misses.
 	if (!TestTrue(TEXT("second telegraph within 5 s"), TickUntilTelegraph(TestWorld, Heavy, 60 * 5)))
 	{
 		return false;
 	}
-	TeleportWestOf(Miner, Heavy, 410.f);
+	TeleportWestOf(Miner, Heavy, 350.f);
 	for (int32 Frame = 0; Frame < 60 && Heavy->GetSlamCount() < 2; ++Frame)
 	{
 		TestWorld.Tick();
@@ -294,9 +294,9 @@ bool FRRIntegrationHeavyRadiusTest::RunTest(const FString& Parameters)
 		OutsideDistance, Health(Miner)));
 
 	TestEqual(TEXT("two slams landed"), Heavy->GetSlamCount(), 2);
-	TestTrue(TEXT("slam 1 with the miner inside 400 uu"), InsideDistance < SlamRadius && InsideDistance > TriggerDistance);
+	TestTrue(TEXT("slam 1 with the miner inside 340 uu"), InsideDistance < SlamRadius && InsideDistance > TriggerDistance);
 	TestEqual(TEXT("slam 1 deals 25"), HealthAfterInside, HealthBefore - SlamDamage);
-	TestTrue(TEXT("slam 2 with the miner beyond 400 uu"), OutsideDistance > SlamRadius);
+	TestTrue(TEXT("slam 2 with the miner beyond 340 uu"), OutsideDistance > SlamRadius);
 	TestEqual(TEXT("slam 2 deals nothing"), Health(Miner), HealthAfterInside);
 	TestEqual(TEXT("one hit in total"), Heavy->GetSlamHitCount(), 1);
 	return true;
