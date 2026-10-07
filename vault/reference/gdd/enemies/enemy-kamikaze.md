@@ -26,6 +26,8 @@ status: approved
 - milestone: M1
 - references: `vault/assets/enemies-lineup.jpg`
 
+- Trigger (owner 2026-10-06 fourth test, provisional): it arms when the miner comes within 250 uu (was 150), stops dead once armed, and explodes 0.65 s later (was 0.5 s).
+
 ## Relations
 - [[enemies-index]] — parent index.
 - [[destruction-rules]] — it is one of three block-destruction sources.

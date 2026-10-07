@@ -313,6 +313,9 @@ task-032-02-bp-fixes  reference/tasks/task-032-third-test/task-032-02-bp-fixes.m
 task-032-third-test  reference/tasks/task-032-third-test.md
 task-033-01-update-tests  reference/tasks/task-033-tests-speed/task-033-01-update-tests.md
 task-033-tests-speed  reference/tasks/task-033-tests-speed.md
+task-034-01-cpp-fixes  reference/tasks/task-034-fourth-test/task-034-01-cpp-fixes.md
+task-034-02-bp-ammo-hud  reference/tasks/task-034-fourth-test/task-034-02-bp-ammo-hud.md
+task-034-fourth-test  reference/tasks/task-034-fourth-test.md
 tasks-index  reference/tasks/tasks-index.md
 tech-index  reference/tech/tech-index.md
 terrain-index  reference/gdd/terrain/terrain-index.md

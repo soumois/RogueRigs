@@ -17,6 +17,8 @@ applies_to: art, vfx, level-design, image prompts
 
 - UI language (owner 2026-10-06 third test): every on-screen text is in English for now (HUD, cards, weapon names and descriptions, banners, end screens).
 
+- Weapon slots (owner 2026-10-06 fourth test): under each owned weapon, ammo shows as a bar of the remaining percentage above 7 rounds, as one block per round at 7 or fewer; reloading shows a red bar filling over the reload time; turret charges show as blocks, and a recharging charge shows as a red bar in the leftmost empty block. Slots not owned yet show a padlock.
+
 ## Relations
 - [[art-audio-index]] — parent index.
 - [[color-code]] — the current palette.

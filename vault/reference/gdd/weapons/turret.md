@@ -31,6 +31,8 @@ status: approved
 
 - Size (owner 2026-10-06 third test): the placed turret is drawn 50 % larger; it was barely visible.
 
+- Recharge (owner 2026-10-06 fourth test): one charge recharges in 12 s (was 6 s).
+
 ## Relations
 - [[weapons-index]] — parent index.
 - [[sys-weapons]] — attribute copy at placement.

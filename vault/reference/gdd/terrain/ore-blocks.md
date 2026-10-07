@@ -16,6 +16,8 @@ status: approved
 - Values above are provisional, set by the owner on 2026-10-01; ore value per pickup: open.
 - Milestone: M1.
 
+- Veins (owner 2026-10-06 fourth test): touching any block of a 3 × 3 vein mines the whole vein at once; its 9 blocks break together after one block dig time (1.5 s) and pop their 9 chunks.
+
 ## Relations
 - [[terrain-index]] — parent index.
 - [[explosions]] — destroy every block in the radius, ore included.

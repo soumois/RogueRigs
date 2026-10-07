@@ -23,6 +23,8 @@ Final English name: open (one name for tag, asset and this node; "burst rifle" i
 - vfx_sfx: white-gold shots ([[color-code]]); muzzle, impact and sound open.
 - milestone: M1
 
+- Player projectiles (rifle bullets, shotgun pellets, turret bullets) collide with a 14 uu sphere, larger than they look (owner 2026-10-06 fourth test; was 12, before that 10); robot shots keep 10 uu.
+
 ## Relations
 - [[weapons-index]] — parent index.
 - [[sys-weapons]] — how it is built.

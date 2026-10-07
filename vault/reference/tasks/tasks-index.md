@@ -46,3 +46,4 @@ Resuming after the pause of 2026-10-06: read [[handover-2026-10-06]] first.
 - [[task-031-directional-spawn]] — second play test: dummy removed, closer spawns toward the run heading, robots 30 % slower, steadfast shooters, faster early levels. Status done.
 - [[task-032-third-test]] — third play test: robot recycling, console locator, overtime, slower robots, faster heavy, English texts, upgrade weights, weapons every 5 levels, bigger turret. Status done.
 - [[task-033-tests-speed]] — robots all at 180 uu/s; existing tests updated to the owner data changes. Status done.
+- [[task-034-fourth-test]] — fourth play test: projectile hitbox, whole-vein mining, heal pickup, small terrain capsules, kamikaze, softer early waves, crowd, ammo HUD. Status in-progress.
