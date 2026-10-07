@@ -336,6 +336,8 @@ task-042-01-hack-time  reference/tasks/task-042-hack-time/task-042-01-hack-time.
 task-042-hack-time  reference/tasks/task-042-hack-time.md
 task-043-01-vein-shake  reference/tasks/task-043-vein-shake/task-043-01-vein-shake.md
 task-043-vein-shake  reference/tasks/task-043-vein-shake.md
+task-044-01-fewer-kamikazes  reference/tasks/task-044-fewer-kamikazes/task-044-01-fewer-kamikazes.md
+task-044-fewer-kamikazes  reference/tasks/task-044-fewer-kamikazes.md
 tasks-index  reference/tasks/tasks-index.md
 tech-index  reference/tech/tech-index.md
 terrain-index  reference/gdd/terrain/terrain-index.md

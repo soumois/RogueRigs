@@ -56,3 +56,4 @@ Resuming after the pause of 2026-10-06: read [[handover-2026-10-06]] first.
 - [[task-041-front-detour]] — In the front sector the spawn detour filter is off, so robots spawn beyond the rock the miner digs toward. Status done.
 - [[task-042-hack-time]] — Console hack time 20 → 16 s. Status done.
 - [[task-043-vein-shake]] — All blocks of a vein being mined shake together. Status done.
+- [[task-044-fewer-kamikazes]] — At most 1 kamikaze per pack in one pack out of two; hordes 1–2 kamikazes (was 3–5). Status in-progress.

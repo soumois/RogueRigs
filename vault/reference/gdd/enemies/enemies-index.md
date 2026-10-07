@@ -16,6 +16,8 @@ Recycling by relocation (owner 2026-10-06, provisional): a robot off screen and 
 
 Digging toward robots (owner 2026-10-07 fifth test, provisional): in the front sector the detour filter does not apply, so robots spawn beyond the rock the miner is digging toward and walk around to wait at the exit; the filter stays on the sides and behind.
 
+Kamikaze share (owner 2026-10-07: at least twice too many, provisional): at most 1 kamikaze per pack, in one pack out of two on average; hordes carry 1–2 kamikazes (was 3–5).
+
 ## Relations
 - [[gdd-index]] — parent index.
 - [[enemy-chaser]] — small yellow biped, melee rusher.
