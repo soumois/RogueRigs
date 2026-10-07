@@ -198,9 +198,9 @@ protected:
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Console")
 	TArray<ERRCellType> MarkedCellTypes = { ERRCellType::Rock, ERRCellType::Ore, ERRCellType::HealOre, ERRCellType::SpecialOre };
 
-	/** Seconds of hacking from 0 to complete (objective-console: 20 s, provisional). */
+	/** Seconds of hacking from 0 to complete (objective-console: 16 s, provisional; 20 s before task-042-01). */
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Console", meta = (ClampMin = 0.1, Units = "s"))
-	float HackDuration = 20.f;
+	float HackDuration = 16.f;
 
 	/** The miner must be within this many cells (2D, from the console center) for the drone to hack (objective-console: 3 cells of 200 uu = 9 cells of 67 uu, provisional). */
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Console", meta = (ClampMin = 0))
