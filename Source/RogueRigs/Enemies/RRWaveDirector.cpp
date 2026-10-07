@@ -165,6 +165,109 @@ FRRWaveDirectorConfig FRRWaveDirectorConfig::MakeDefault()
 	return Config;
 }
 
+// Last-level profile (owner 2026-10-07, difficulty): a frozen copy of the MakeDefault values tuned before 2026-10-07. Not used
+// until the game has several levels; keep it unchanged when MakeDefault is softened for level 1.
+FRRWaveDirectorConfig FRRWaveDirectorConfig::MakeLastLevel()
+{
+	using namespace RRWaveDirectorDefaults;
+	FRRWaveDirectorConfig Config;
+
+	// Pack types (owner 2026-10-07, task-044-01, provisional): 0-1 kamikaze rides with the chasers (one pack out of two on
+	// average); heavies lead a chaser pack.
+	// Until 1:30 the packs hold 5-10 robots and no shooter. From 1:30 (Wide types) the packs are bigger and carry 0-1 shooter
+	// behind their front: at most 1, in one pack out of two on average; never a shooter-only pack.
+	FRRDirectorPackType& FirstChasers = Config.PackTypes.AddDefaulted_GetRef();
+	FirstChasers.Name = TEXT("FirstChasers");
+	FirstChasers.Members = { Member(ARRChaser::StaticClass(), 6, 8) };
+	FRRDirectorPackType& Chasers = Config.PackTypes.AddDefaulted_GetRef();
+	Chasers.Name = TEXT("Chasers");
+	Chasers.Members = { Member(ARRChaser::StaticClass(), 5, 8), Member(ARRKamikaze::StaticClass(), 0, 1) };
+	FRRDirectorPackType& Heavies = Config.PackTypes.AddDefaulted_GetRef();
+	Heavies.Name = TEXT("Heavies");
+	Heavies.Members = { Member(ARRHeavy::StaticClass(), 2, 3, /*bFront*/ true), Member(ARRChaser::StaticClass(), 4, 7) };
+	// Chasers after 1:00 (enemy-chaser shield variant): a quarter of the pack chasers carry a shield (1-2 of 5-7 until 1:30).
+	FRRDirectorPackType& ShieldChasers = Config.PackTypes.AddDefaulted_GetRef();
+	ShieldChasers.Name = TEXT("ShieldChasers");
+	ShieldChasers.Members = { Member(ARRChaser::StaticClass(), 4, 5), Member(ARRShieldChaser::StaticClass(), 1, 2), Member(ARRKamikaze::StaticClass(), 0, 1) };
+	// From 1:30: bigger packs (2-4 shields of 8-16 chasers) and 0-1 shooter behind.
+	FRRDirectorPackType& WideShieldChasers = Config.PackTypes.AddDefaulted_GetRef();
+	WideShieldChasers.Name = TEXT("WideShieldChasers");
+	WideShieldChasers.Members = { Member(ARRChaser::StaticClass(), 6, 12), Member(ARRShieldChaser::StaticClass(), 2, 4), Member(ARRKamikaze::StaticClass(), 0, 1),
+		Behind(ARRShooter::StaticClass(), 0, 1) };
+	FRRDirectorPackType& WideHeavies = Config.PackTypes.AddDefaulted_GetRef();
+	WideHeavies.Name = TEXT("WideHeavies");
+	WideHeavies.Members = { Member(ARRHeavy::StaticClass(), 2, 3, /*bFront*/ true), Member(ARRChaser::StaticClass(), 8, 12), Behind(ARRShooter::StaticClass(), 0, 1) };
+
+	// Phases (no calm; task-045-01 eased the first level by about 15 %): from 1 s a lone chaser every 2.35 s; 15 s first pack
+	// from one side; from 21 s waves of 1-2 packs from distinct sides, the interval shrinking from 7.1 s to 4.1 s over 3 min 30
+	// (heavy packs at weight 4 of 100); from 60 s the chaser packs carry shield chasers; from 90 s waves of 2-3 bigger packs with the shooters. The later phases only change the mix or the sides: they keep the wave timer and the ramp.
+	FRRDirectorPhase& Isolated = Config.Phases.AddDefaulted_GetRef();
+	Isolated.Name = TEXT("Isolated");
+	Isolated.StartTime = 1.f;
+	Isolated.SingleInterval = 2.35f;
+	Isolated.SingleClass = ARRChaser::StaticClass();
+	FRRDirectorPhase& FirstPack = Config.Phases.AddDefaulted_GetRef();
+	FirstPack.Name = TEXT("FirstPack");
+	FirstPack.StartTime = 15.f;
+	FirstPack.bWaveOnStart = true;
+	FirstPack.PackWeights = { Weight(TEXT("FirstChasers"), 1.f) };
+	FRRDirectorPhase& Flow = Config.Phases.AddDefaulted_GetRef();
+	Flow.Name = TEXT("Flow");
+	Flow.StartTime = 21.f;
+	Flow.bWaveOnStart = true;
+	Flow.WaveIntervalStart = 7.1f;
+	Flow.WaveIntervalEnd = 4.1f;
+	Flow.WaveIntervalRampSeconds = 210.f;
+	Flow.SidesMin = 1;
+	Flow.SidesMax = 2;
+	Flow.PackWeights = { Weight(TEXT("Chasers"), 96.f), Weight(TEXT("Heavies"), 4.f) };
+
+	const FRRDirectorPhase FlowCopy = Flow;
+	auto ContinueFlow = [&Config, &FlowCopy](FName Name, float StartTime) -> FRRDirectorPhase&
+	{
+		FRRDirectorPhase& Phase = Config.Phases.Add_GetRef(FlowCopy);
+		Phase.Name = Name;
+		Phase.StartTime = StartTime;
+		Phase.bWaveOnStart = false;
+		Phase.bKeepWaveTimer = true;
+		const float FlowSeconds = StartTime - FlowCopy.StartTime;
+		Phase.WaveIntervalStart = FRRWaveDirector::GetWaveInterval(FlowCopy, FlowSeconds);
+		Phase.WaveIntervalRampSeconds = FMath::Max(FlowCopy.WaveIntervalRampSeconds - FlowSeconds, 0.f);
+		return Phase;
+	};
+	FRRDirectorPhase& FlowShields = ContinueFlow(TEXT("FlowShields"), 60.f);
+	FlowShields.PackWeights = { Weight(TEXT("ShieldChasers"), 96.f), Weight(TEXT("Heavies"), 4.f) };
+	FRRDirectorPhase& FlowWide = ContinueFlow(TEXT("FlowWide"), 90.f);
+	FlowWide.SidesMin = 2;
+	FlowWide.SidesMax = 3;
+	FlowWide.PackWeights = { Weight(TEXT("WideShieldChasers"), 96.f), Weight(TEXT("WideHeavies"), 4.f) };
+
+	// Hordes: fronts at 1:35 and 2:55, 34-51 robots, 2-3 heavies in front (task-045-01), 1-2 kamikazes among them
+	// (task-044-01), a carpet of chasers behind.
+	for (const float FrontTime : { 95.f, 175.f })
+	{
+		FRRDirectorHorde& Horde = Config.Hordes.AddDefaulted_GetRef();
+		Horde.TriggerTime = FrontTime;
+		Horde.TriggerAlert = FrontTime < 100.f ? 0.4f : 0.75f;
+		Horde.Members = { Member(ARRHeavy::StaticClass(), 2, 3, /*bFront*/ true), Member(ARRKamikaze::StaticClass(), 1, 2) };
+		Horde.SizeMin = 34;
+		Horde.SizeMax = 51;
+		Horde.FillClass = ARRChaser::StaticClass();
+	}
+	// Overtime (owner 2026-10-06 third test, provisional): from 3:30 a horde every 30 s (same front as the timed hordes), the
+	// wave interval halved at each overtime minute begun.
+	Config.Overtime.Horde = Config.Hordes[0];
+	Config.Overtime.Horde.TriggerTime = 0.f;
+	Config.Overtime.Horde.TriggerAlert = 1.f;
+
+	// Shooter counter (owner 2026-10-06 fourth test, provisional): at most 4 alive; a pack drawn at the cap gets chasers in place
+	// of its shooters.
+	Config.ShooterMaxAlive = 4;
+	Config.ShooterCapReplacement = ARRChaser::StaticClass();
+
+	return Config;
+}
+
 void FRRWaveDirector::Reset()
 {
 	RunTime = 0.f;

@@ -296,6 +296,13 @@ struct FRRWaveDirectorConfig
 
 	/** Provisional defaults (owner 2026-10-06, enemies-index): a lone chaser from 1 s, first pack at 15 s, multi-side flow (packs of 6-10 until 90 s, then 0-1 shooter riding behind), hordes at 95 s and 175 s. */
 	static FRRWaveDirectorConfig MakeDefault();
+
+	/**
+	 * Last-level profile (owner 2026-10-07, difficulty): a frozen copy of the MakeDefault values tuned before 2026-10-07 (waves
+	 * 7.1 -> 4.1 s, packs from distinct sides, the same pack types and hordes; the 150-alive cap is ARREnemySpawner::MaxAlive, not
+	 * part of this config). Not used until levels exist: the game has one level, which runs MakeDefault.
+	 */
+	static FRRWaveDirectorConfig MakeLastLevel();
 };
 
 /** One order of the scheduler for the spawner. */
