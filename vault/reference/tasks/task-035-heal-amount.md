@@ -3,7 +3,7 @@ id: task-035-heal-amount
 description: "Global task: a heal vein restores 60 HP in total, about 6.67 HP per heal pickup."
 parent: tasks-index
 kind: task
-status: todo
+status: in-progress
 ---
 # Heal amount
 

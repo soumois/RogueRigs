@@ -3,7 +3,7 @@ id: task-034-fourth-test
 description: "Global task: fourth play test: bigger projectile hitbox, whole-vein mining, heal pickup fix, small terrain capsules, kamikaze trigger, softer early waves, crowd, ammo HUD."
 parent: tasks-index
 kind: task
-status: in-progress
+status: done
 ---
 # Fourth play test fixes
 
@@ -13,8 +13,8 @@ status: in-progress
 - gdd_check: GDD updated by the Orchestrator with provisional values (2026-10-06): burst-rifle, ore-blocks, heal-ore, enemy-kamikaze, enemies-index, turret, readability-rules. No open value.
 - confirmed_by_owner: yes (2026-10-06)
 - milestone: M2
-- next_step: task-034-04-director-mix
-- result: open
+- next_step: none
+- result: Done for points 1–9: projectile 14 uu, whole-vein mining, heal pickups apply heal (amount in task-035), chaser capsule on rock with hit capsule, separation instead of RVO, kamikaze 250 uu and 0.65 s, softer early waves and rare shooters (cap 4), recycling 1800 uu 3 s margin 0 (relocation in task-036), turret recharge 12 s. Point 10 moved to task-037. 195/195.
 
 ## Subtasks
 1. task-034-01-cpp-fixes — cpp: points 1 to 6, 8, 9 (stopped there, split ordered by the owner)

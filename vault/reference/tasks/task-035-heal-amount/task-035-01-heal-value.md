@@ -3,7 +3,7 @@ id: task-035-01-heal-value
 description: "HealAmount of heal pickups set so a 9-pickup heal vein restores 60 HP."
 parent: task-035-heal-amount
 kind: task
-status: todo
+status: in-progress
 ---
 # Heal value
 
