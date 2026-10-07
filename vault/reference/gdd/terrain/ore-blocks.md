@@ -18,6 +18,8 @@ status: approved
 
 - Veins (owner 2026-10-06 fourth test): touching any block of a 3 × 3 vein mines the whole vein at once; its 9 blocks break together after one block dig time (1.5 s) and pop their 9 chunks.
 
+- Vein shake (owner 2026-10-07 fifth test): all blocks of a vein being mined shake together.
+
 ## Relations
 - [[terrain-index]] — parent index.
 - [[explosions]] — destroy every block in the radius, ore included.

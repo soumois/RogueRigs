@@ -17,6 +17,8 @@ status: approved
 
 - Veins (owner 2026-10-06 fourth test): a 3 × 3 heal vein is mined as one, like ore veins ([[ore-blocks]]); every heal pickup must be collectable even when it pops inside the miner pickup radius.
 
+- Vein shake (owner 2026-10-07 fifth test): while a vein is mined, all its blocks shake together, not only those in the drone arc.
+
 ## Relations
 - [[terrain-index]] — parent index.
 - [[destruction-rules]] — what can break it.

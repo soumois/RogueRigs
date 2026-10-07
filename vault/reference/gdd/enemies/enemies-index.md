@@ -14,6 +14,8 @@ Fourth test (owner 2026-10-06 fourth test, provisional): every robot uses the ch
 
 Recycling by relocation (owner 2026-10-06, provisional): a robot off screen and more than 1800 uu from the miner is not removed but moved back into the spawn band ahead of the miner (heading split), keeping its type and health, so the pressure stays; it qualifies 3 s after leaving the screen if it has been on screen, 6 s after spawning if never seen; robots near the camera are never relocated.
 
+Digging toward robots (owner 2026-10-07 fifth test, provisional): in the front sector the detour filter does not apply, so robots spawn beyond the rock the miner is digging toward and walk around to wait at the exit; the filter stays on the sides and behind.
+
 ## Relations
 - [[gdd-index]] — parent index.
 - [[enemy-chaser]] — small yellow biped, melee rusher.

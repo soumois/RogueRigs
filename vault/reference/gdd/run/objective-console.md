@@ -16,13 +16,15 @@ status: approved
   - the console shows its gauge, so the player sees why progress stops.
 - The drone hacks one target at a time and cannot dig and hack at once.
 - While the console is not hacked, the alert bar is paused.
-- Values (provisional, owner 2026-10-03): dropped 36 to 60 cells (67 uu) from the miner; marked rocks within 6 cells, pulsing white outline; hack 20 s; zone radius 9 cells; progress drains 5 %/s while the miner is out. Cell counts converted to 67 uu cells in task-029-04, same world distances.
+- Values (provisional, owner 2026-10-03): dropped 36 to 60 cells (67 uu) from the miner; marked rocks within 6 cells, pulsing white outline; hack 16 s (owner 2026-10-07 fifth test: 20 % shorter, was 20 s); zone radius 9 cells; progress drains 5 %/s while the miner is out. Cell counts converted to 67 uu cells in task-029-04, same world distances.
 - Landing clearance (provisional, owner after handover-2026-10-06): the console lands only where its whole 2 × 2-cell footprint is open floor, so its mesh never overlaps rock.
 - M1: one console, dropped when the alert bar reaches 40 % ([[level-flow]]).
 - Lore (provisional): the Rigs' ship detects an entry point into the claim's network and drops the console there as an access point ([[lore]]).
 - Milestone: M1.
 
 - Locator (owner 2026-10-06 third test): while the console is off screen, an arrow on the screen edge points to it; the same arrow points to the shuttle during extraction ([[extraction]]).
+
+- Locator look (owner 2026-10-07 fifth test, provisional): a real arrow image about 64 px, pulsing, with the distance in metres next to it.
 
 ## Relations
 - [[run-index]] — parent index.

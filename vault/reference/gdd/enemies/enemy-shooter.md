@@ -27,6 +27,8 @@ status: approved
 
 Must be spotted in under a second: it changes how the player moves.
 
+- Without line of sight (owner 2026-10-07 fifth test): a shooter in range but blocked by rock walks around like the other robots until it reaches a firing position, still never moving away from the miner.
+
 ## Relations
 - [[enemies-index]] — parent index.
 - [[sys-enemy-ai]] — line of sight and repositioning as built.
