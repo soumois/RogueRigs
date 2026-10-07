@@ -1,6 +1,6 @@
 ---
 id: task-034-01-cpp-fixes
-description: "Projectile hitbox 14 uu, whole-vein mining, heal pickup fix, chaser capsule on rock, no robot blocking, kamikaze trigger, pack mix, recycling, turret recharge, HUD ammo data."
+description: "Projectile hitbox 14 uu, whole-vein mining, heal pickup fix, chaser capsule on rock, no robot blocking, kamikaze, pack mix, recycling, turret, ammo data."
 parent: task-034-fourth-test
 kind: task
 status: in-progress
