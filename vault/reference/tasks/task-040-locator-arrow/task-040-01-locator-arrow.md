@@ -3,7 +3,7 @@ id: task-040-01-locator-arrow
 description: "Console locator: real arrow about 64 px, pulsing, with the distance in metres."
 parent: task-040-locator-arrow
 kind: task
-status: todo
+status: in-progress
 ---
 # Clearer console locator
 

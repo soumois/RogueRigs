@@ -3,7 +3,7 @@ id: task-043-01-vein-shake
 description: "All blocks of a vein being mined shake together."
 parent: task-043-vein-shake
 kind: task
-status: in-progress
+status: done
 ---
 # Whole-vein shake
 
@@ -15,11 +15,11 @@ status: in-progress
 - done_when: build exits 0 with the editor closed; all `RogueRigs.*` tests pass headless; docs updated; lint clean.
 - editor_state: closed
 - token_ceiling: 40000
-- model: open
-- tokens: open
-- runs: open
+- model: opus
+- tokens: input 40, cache write 33999, cache read 542040, output 9745
+- runs: 1
 - milestone: M2
-- result: open
+- result: ARRDrone shakes every block of the dug veins (ShakeCells, RefreshDigShake, CollectDigTargets); laser and dig events still arc-only; stops on release or break. Build 0, 195/195. Commit 0d8b2d9.
 
 ## Relations
 - [[task-043-vein-shake]] — parent global task.

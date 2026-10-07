@@ -3,7 +3,7 @@ id: task-043-vein-shake
 description: "Global task: All blocks of a vein being mined shake together."
 parent: tasks-index
 kind: task
-status: in-progress
+status: done
 ---
 # Whole-vein shake
 
@@ -13,8 +13,8 @@ status: in-progress
 - gdd_check: GDD updated by the Orchestrator (owner 2026-10-07, fifth test). No open value.
 - confirmed_by_owner: yes (2026-10-07)
 - milestone: M2
-- next_step: task-043-01-vein-shake
-- result: open
+- next_step: none
+- result: Done. ARRDrone shakes every block of the dug veins (ShakeCells, RefreshDigShake, CollectDigTargets); laser and dig events still arc-only; stops on release or break. Build 0, 195/195. Commit 0d8b2d9.
 
 ## Subtasks
 1. task-043-01-vein-shake — cpp

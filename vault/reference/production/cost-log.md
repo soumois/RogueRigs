@@ -97,6 +97,7 @@ kind: note
 | [[task-039-01-heavy-radius]] | opus | 1 | 0k | 26k | 294k | 7k |
 | [[task-041-01-front-detour]] | opus | 2 | 0k | 34k | 589k | 8k |
 | [[task-042-01-hack-time]] | opus | 1 | 0k | 22k | 239k | 5k |
+| [[task-043-01-vein-shake]] | opus | 1 | 0k | 34k | 542k | 10k |
 
 ## Totals
 | Scope | Input | Cache write | Cache read | Output |
