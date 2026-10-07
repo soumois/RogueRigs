@@ -66,8 +66,9 @@ DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FRROnRunEndedSignature, bool, bSucce
  * the console is Complete. Console and shuttle land only where every cell of their FootprintCells is reachable floor
  * (RRLandingFootprint); when no such spot exists the fallback is logged as a warning.
  * Extraction: when Alert is 1 and no objective is pending, OnExtractionReady fires once (phase ExtractionReady) and the shuttle
- * (ShuttleClass) lands on a random reachable Floor cell at least ShuttleMinDistanceCells from the miner's cell (none = the
- * farthest reachable floor cell, warning; no reachable cell = retried each tick), with a ShuttleCountdownSeconds countdown (the
+ * (ShuttleClass) lands on a random reachable Floor cell within [ShuttleMinDistanceCells, ShuttleMaxDistanceCells] of the miner's
+ * cell (none = the fitting spot nearest to that band, then the reachable floor cell nearest to it, warning; no reachable cell =
+ * retried each tick), with a ShuttleCountdownSeconds countdown (the
  * cheat ShuttleCountdownOverride replaces it when > 0). Robots keep coming. The shuttle finishing ends the run (EndRun): the
  * miner's level-up offer is cancelled, player 0's controller pauses the game with UI input and the cursor shown, OnRunEnded
  * fires once (phase Ended). RestartLevel reopens the map. Display data: OnAlertChanged, OnObjectiveChanged, OnObjectiveProgressChanged (URRHUDWidget binds).

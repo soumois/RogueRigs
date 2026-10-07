@@ -2037,7 +2037,8 @@ bool FRRIntegrationConsoleExtractionWinTest::RunTest(const FString& Parameters)
 	TestTrue(TEXT("shuttle is BP_ExtractionShuttle"), Shuttle->IsA(Loop.ShuttleClass));
 	TestEqual(TEXT("extraction ready once"), Recorder->GetExtractionReadyCount(), 1);
 	TestEqual(TEXT("alert full"), RunFlow->GetAlert(), 1.f, 1e-4f);
-	TestTrue(TEXT("shuttle at least ShuttleMinDistanceCells away (within a cell)"), LandDistanceCells >= Config.ShuttleMinDistanceCells - 1.f);
+	TestTrue(TEXT("shuttle ShuttleMinDistanceCells to ShuttleMaxDistanceCells away (within a cell)"),
+		LandDistanceCells >= Config.ShuttleMinDistanceCells - 1.f && LandDistanceCells <= Config.ShuttleMaxDistanceCells + 1.f);
 	TestEqual(TEXT("countdown from the config"), Shuttle->GetCountdownSeconds(), Config.ShuttleCountdownSeconds, 1e-4f);
 	TestTrue(TEXT("ObjectiveText says to reach the shuttle"), GetWidgetText(*this, Loop.HUD, TEXT("ObjectiveText")).Contains(TEXT("shuttle")));
 	TestTrue(TEXT("ShuttleText visible"), GetWidgetVisibility(*this, Loop.HUD, TEXT("ShuttleText")) == ESlateVisibility::Visible);

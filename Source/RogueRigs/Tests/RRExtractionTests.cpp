@@ -77,7 +77,8 @@ bool FRRExtractionLandingTest::RunTest(const FString& Parameters)
 	using namespace RRExtractionTests;
 
 	const FRRRunFlowConfig Defaults;
-	TestEqual(TEXT("shuttle 75 cells min (25 of 200 uu)"), Defaults.ShuttleMinDistanceCells, 75.f);
+	TestEqual(TEXT("shuttle 37 cells min"), Defaults.ShuttleMinDistanceCells, 37.f);
+	TestEqual(TEXT("shuttle 50 cells max"), Defaults.ShuttleMaxDistanceCells, 50.f);
 	TestEqual(TEXT("board radius 3 cells (1 of 200 uu)"), Defaults.ShuttleBoardRadiusCells, 3.f);
 	TestEqual(TEXT("countdown 45 s"), Defaults.ShuttleCountdownSeconds, 45.f);
 
@@ -101,7 +102,7 @@ bool FRRExtractionLandingTest::RunTest(const FString& Parameters)
 		const FIntPoint Cell = Shuttle->GetCell();
 		const FIntPoint From = Setup.Grid->GetCellAtWorld(Setup.Miner->GetActorLocation());
 		const float Distance = FMath::Sqrt(static_cast<float>(FMath::Square(Cell.X - From.X) + FMath::Square(Cell.Y - From.Y)));
-		TestTrue(FString::Printf(TEXT("seed %d: at least 75 cells (%.1f)"), Seed, Distance), Distance >= 75.f);
+		TestTrue(FString::Printf(TEXT("seed %d: 37 to 50 cells (%.1f)"), Seed, Distance), Distance >= 37.f && Distance <= 50.f);
 		TestEqual(TEXT("on a floor cell"), Setup.Grid->GetCellType(Cell), ERRCellType::Floor);
 		URRFlowFieldSubsystem* FlowField = TestWorld.Get()->GetSubsystem<URRFlowFieldSubsystem>();
 		TestTrue(TEXT("reachable from the miner"), FlowField && FlowField->GetCellDistance(Cell) >= 0);

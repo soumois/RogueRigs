@@ -51,9 +51,13 @@ struct ROGUERIGS_API FRRRunFlowConfig
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Run Flow")
 	TSubclassOf<ARRConsole> ConsoleClass;
 
-	/** Minimum straight-line distance, in cells, between the miner's cell and the shuttle cell (extraction: 25 cells of 200 uu = 75 cells of 67 uu, provisional). */
+	/** Minimum straight-line distance, in cells, between the miner's cell and the shuttle cell (extraction: 37 cells of 67 uu, provisional; 75 before task-049-01). */
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Run Flow|Extraction", meta = (ClampMin = 0))
-	float ShuttleMinDistanceCells = 75.f;
+	float ShuttleMinDistanceCells = 37.f;
+
+	/** Maximum straight-line distance, in cells, between the miner's cell and the shuttle cell (extraction: 50 cells of 67 uu, provisional, task-049-01). Below ShuttleMinDistanceCells it is treated as equal to it. */
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Run Flow|Extraction", meta = (ClampMin = 0))
+	float ShuttleMaxDistanceCells = 50.f;
 
 	/** Seconds between the shuttle landing and its departure without the miner (extraction: 45 s, provisional). */
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Run Flow|Extraction", meta = (ClampMin = 0.1, Units = "s"))

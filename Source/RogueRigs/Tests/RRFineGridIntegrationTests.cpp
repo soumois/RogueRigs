@@ -381,7 +381,8 @@ bool FRRFineConsoleShuttlePlacementTest::RunTest(const FString& Parameters)
 	TestTrue(TEXT("BP_RRGameMode shuttle is BP_ExtractionShuttle"), Config.ShuttleClass.Get() == ShuttleClass);
 	TestEqual(TEXT("console ring 36 cells"), Config.ConsoleMinDistanceCells, 36.f);
 	TestEqual(TEXT("console ring 60 cells"), Config.ConsoleMaxDistanceCells, 60.f);
-	TestEqual(TEXT("shuttle 75 cells"), Config.ShuttleMinDistanceCells, 75.f);
+	TestEqual(TEXT("shuttle 37 cells min"), Config.ShuttleMinDistanceCells, 37.f);
+	TestEqual(TEXT("shuttle 50 cells max"), Config.ShuttleMaxDistanceCells, 50.f);
 	TestEqual(TEXT("board radius 3 cells"), Config.ShuttleBoardRadiusCells, 3.f);
 
 	for (const int32 Seed : { 1, 20261003, 777, 4242, 90210 })
@@ -432,7 +433,7 @@ bool FRRFineConsoleShuttlePlacementTest::RunTest(const FString& Parameters)
 		TestEqual(*FString::Printf(TEXT("seed %d: no block under the console mesh"), Seed),
 			CountBlocksUnderActor(*this, Grid, Console, *FString::Printf(TEXT("seed %d: console"), Seed)), 0);
 
-		// Shuttle: Blueprint, floor cell, >= 75 cells = 5025 uu (>= 5000 at 200 uu), reachable, board radius 3 cells = 201 uu.
+		// Shuttle: Blueprint, floor cell, 37 to 50 cells = 2479 to 3350 uu, reachable, board radius 3 cells = 201 uu.
 		TestTrue(*FString::Printf(TEXT("seed %d: skip to extraction"), Seed), RunFlow->SkipToExtraction());
 		ARRShuttle* Shuttle = RunFlow->GetShuttle();
 		if (!TestNotNull(*FString::Printf(TEXT("seed %d: shuttle landed"), Seed), Shuttle))
@@ -458,7 +459,8 @@ bool FRRFineConsoleShuttlePlacementTest::RunTest(const FString& Parameters)
 		TestEqual(*FString::Printf(TEXT("seed %d: shuttle on floor"), Seed), Grid->GetCellType(ShuttleCell), ERRCellType::Floor);
 		TestTrue(*FString::Printf(TEXT("seed %d: shuttle at its 4 x 3 footprint centre"), Seed), Shuttle->GetFootprintCells() == FIntPoint(4, 3)
 			&& Shuttle->GetActorLocation().Equals(RRLandingFootprint::GetCenter(Grid, ShuttleCell, Shuttle->GetFootprintCells()), 1.0));
-		TestTrue(*FString::Printf(TEXT("seed %d: shuttle at least 5000 uu away (one cell of slack)"), Seed), ShuttleDistance >= 5000.0 - CellSize);
+		TestTrue(*FString::Printf(TEXT("seed %d: shuttle 37 to 50 cells away (one cell of slack)"), Seed),
+			ShuttleDistance >= 37.0 * CellSize - CellSize && ShuttleDistance <= 50.0 * CellSize + CellSize);
 		TestTrue(*FString::Printf(TEXT("seed %d: shuttle reachable"), Seed), FlowField->GetCellDistance(ShuttleCell) >= 0);
 		TestTrue(*FString::Printf(TEXT("seed %d: board radius 3 cells = 201 uu"), Seed), FMath::IsNearlyEqual(Shuttle->GetBoardRadius(), 3.f * CellSize, 0.5f));
 		TestTrue(*FString::Printf(TEXT("seed %d: several floor cells to board from"), Seed), BoardCells >= 2);

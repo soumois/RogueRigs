@@ -364,39 +364,54 @@ bool URRRunFlowSubsystem::FindShuttleCell(FIntPoint& OutCell)
 		return false;
 	}
 	const FIntPoint MinerCell = Grid->GetCellAtWorld(Miner->GetActorLocation());
-	const int32 MinSquared = FMath::CeilToInt(FMath::Square(Config.ShuttleMinDistanceCells));
+	const float MinCells = FMath::Max(0.f, Config.ShuttleMinDistanceCells);
+	const float MaxCells = FMath::Max(MinCells, Config.ShuttleMaxDistanceCells);
+	const int32 MinSquared = FMath::CeilToInt(FMath::Square(MinCells));
+	const int32 MaxSquared = FMath::FloorToInt(FMath::Square(MaxCells));
 
 	const UClass* ShuttleClass = Config.ShuttleClass ? Config.ShuttleClass.Get() : ARRShuttle::StaticClass();
 	const FIntPoint Footprint = ShuttleClass->GetDefaultObject<ARRShuttle>()->GetFootprintCells();
 
-	// Reachable floor cells at least the minimum distance away whose whole footprint is reachable floor. Fallbacks: the farthest
-	// fitting spot, then the farthest reachable floor cell (footprint ignored).
+	// Distance, in cells, from a squared cell distance to the [Min, Max] band (0 inside it).
+	auto BandGap = [MinCells, MaxCells](int32 DistanceSquared)
+	{
+		const float Distance = FMath::Sqrt(static_cast<float>(DistanceSquared));
+		return Distance < MinCells ? MinCells - Distance : (Distance > MaxCells ? Distance - MaxCells : 0.f);
+	};
+
+	// Reachable floor cells within the band whose whole footprint is reachable floor. Fallbacks: the fitting spot nearest to the
+	// band, then the reachable floor cell nearest to it (footprint ignored).
 	TArray<FIntPoint> ReachableCells;
 	FlowField->GatherReachableCells(ReachableCells, [](FIntPoint Cell, int32 Steps) { return true; }, /*bFloorOnly*/ true);
 	TSet<FIntPoint> ReachableFloor(ReachableCells);
 	TArray<FIntPoint> Candidates;
-	FIntPoint Farthest(INDEX_NONE, INDEX_NONE);
-	int32 FarthestSquared = -1;
-	FIntPoint FarthestFitting(INDEX_NONE, INDEX_NONE);
-	int32 FarthestFittingSquared = -1;
+	FIntPoint Nearest(INDEX_NONE, INDEX_NONE);
+	float NearestGap = TNumericLimits<float>::Max();
+	int32 NearestSquared = -1;
+	FIntPoint NearestFitting(INDEX_NONE, INDEX_NONE);
+	float NearestFittingGap = TNumericLimits<float>::Max();
+	int32 NearestFittingSquared = -1;
 	for (const FIntPoint& Cell : ReachableCells)
 	{
 		const int32 DistanceSquared = FMath::Square(Cell.X - MinerCell.X) + FMath::Square(Cell.Y - MinerCell.Y);
-		if (DistanceSquared > FarthestSquared)
+		const float Gap = BandGap(DistanceSquared);
+		if (Gap < NearestGap)
 		{
-			FarthestSquared = DistanceSquared;
-			Farthest = Cell;
+			NearestGap = Gap;
+			NearestSquared = DistanceSquared;
+			Nearest = Cell;
 		}
 		if (!FootprintFits(ReachableFloor, Cell, Footprint))
 		{
 			continue;
 		}
-		if (DistanceSquared > FarthestFittingSquared)
+		if (Gap < NearestFittingGap)
 		{
-			FarthestFittingSquared = DistanceSquared;
-			FarthestFitting = Cell;
+			NearestFittingGap = Gap;
+			NearestFittingSquared = DistanceSquared;
+			NearestFitting = Cell;
 		}
-		if (DistanceSquared >= MinSquared)
+		if (DistanceSquared >= MinSquared && DistanceSquared <= MaxSquared)
 		{
 			Candidates.Add(Cell);
 		}
@@ -406,20 +421,20 @@ bool URRRunFlowSubsystem::FindShuttleCell(FIntPoint& OutCell)
 		OutCell = Candidates[RandomStream.RandRange(0, Candidates.Num() - 1)];
 		return true;
 	}
-	if (FarthestFittingSquared >= 0)
+	if (NearestFittingSquared >= 0)
 	{
-		UE_LOG(LogRogueRigs, Warning, TEXT("URRRunFlowSubsystem: no %d x %d cell spot of reachable floor %.0f cells from the miner; shuttle lands on the farthest one (%d, %d), %.1f cells."),
-			Footprint.X, Footprint.Y, Config.ShuttleMinDistanceCells, FarthestFitting.X, FarthestFitting.Y, FMath::Sqrt(static_cast<float>(FarthestFittingSquared)));
-		OutCell = FarthestFitting;
+		UE_LOG(LogRogueRigs, Warning, TEXT("URRRunFlowSubsystem: no %d x %d cell spot of reachable floor %.0f to %.0f cells from the miner; shuttle lands on the nearest one outside that band (%d, %d), %.1f cells."),
+			Footprint.X, Footprint.Y, MinCells, MaxCells, NearestFitting.X, NearestFitting.Y, FMath::Sqrt(static_cast<float>(NearestFittingSquared)));
+		OutCell = NearestFitting;
 		return true;
 	}
-	if (FarthestSquared < 0)
+	if (NearestSquared < 0)
 	{
 		return false;
 	}
-	UE_LOG(LogRogueRigs, Warning, TEXT("URRRunFlowSubsystem: no %d x %d cell spot of reachable floor; shuttle lands on the farthest reachable floor cell (%d, %d), %.1f cells (mesh may overlap blocks)."),
-		Footprint.X, Footprint.Y, Farthest.X, Farthest.Y, FMath::Sqrt(static_cast<float>(FarthestSquared)));
-	OutCell = Farthest;
+	UE_LOG(LogRogueRigs, Warning, TEXT("URRRunFlowSubsystem: no %d x %d cell spot of reachable floor; shuttle lands on the reachable floor cell nearest to %.0f to %.0f cells (%d, %d), %.1f cells (mesh may overlap blocks)."),
+		Footprint.X, Footprint.Y, MinCells, MaxCells, Nearest.X, Nearest.Y, FMath::Sqrt(static_cast<float>(NearestSquared)));
+	OutCell = Nearest;
 	return true;
 }
 
