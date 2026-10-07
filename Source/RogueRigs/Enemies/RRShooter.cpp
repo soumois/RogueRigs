@@ -565,3 +565,11 @@ void ARRShooter::HandleDeath(AActor* DeathInstigator)
 	// The base death shows every mesh again; the laser stays off.
 	LaserBeam->SetVisibility(false);
 }
+
+void ARRShooter::ResetStateMachine()
+{
+	if (State != ERRShooterState::Dead)
+	{
+		EnterState(ERRShooterState::Approach);
+	}
+}

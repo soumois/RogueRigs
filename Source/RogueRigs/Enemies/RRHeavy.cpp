@@ -138,3 +138,11 @@ void ARRHeavy::HandleDeath(AActor* DeathInstigator)
 	}
 	Super::HandleDeath(DeathInstigator);
 }
+
+void ARRHeavy::ResetStateMachine()
+{
+	if (State != ERRHeavyState::Dead)
+	{
+		EnterState(ERRHeavyState::Chase);
+	}
+}

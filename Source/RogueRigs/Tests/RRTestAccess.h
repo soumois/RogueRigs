@@ -150,6 +150,7 @@ namespace RRTestAccess
 		static float& RecycleDistanceOf(ARREnemySpawner* Spawner) { return Spawner->*(&FSpawnerAccess::RecycleDistance); }
 		static float& RecycleDelayOf(ARREnemySpawner* Spawner) { return Spawner->*(&FSpawnerAccess::RecycleDelay); }
 		static float& RecycleMarginOf(ARREnemySpawner* Spawner) { return Spawner->*(&FSpawnerAccess::RecycleOffScreenMargin); }
+		static float& RecycleUnseenDelayOf(ARREnemySpawner* Spawner) { return Spawner->*(&FSpawnerAccess::RecycleUnseenDelay); }
 	};
 
 	/** ARRExplosionFX: visual duration. */

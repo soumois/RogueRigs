@@ -1,4 +1,4 @@
-// Rogue Rigs - enemy spawner: wave director (calm, lone robots, packs of one type from several sides, announced hordes) or the older trickle then packs, capped alive count, on reachable floor cells just outside the camera view.
+// Rogue Rigs - enemy spawner: wave director (calm, lone robots, packs of one type from several sides, announced hordes) or the older trickle then packs, capped alive count, on reachable floor cells just outside the camera view; robots left far off screen are relocated into the spawn band.
 
 #pragma once
 
@@ -61,7 +61,7 @@ DECLARE_DYNAMIC_MULTICAST_DELEGATE_TwoParams(FRROnHordeFinishedSignature, int32,
 /** The level entered overtime (hordes every 30 s, wave interval halving each overtime minute). */
 DECLARE_DYNAMIC_MULTICAST_DELEGATE(FRROnOvertimeStartedSignature);
 
-/** Enemy was recycled (removed far off screen without dying); called just before its Destroy. */
+/** Enemy was recycled: moved from far off screen back into the spawn band (same robot, class and health); called just after the move. */
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FRROnEnemyRecycledSignature, ARREnemy*, Enemy);
 
 /** One pack spawned by the wave director: its type, side and robots (front robots first). */
@@ -134,9 +134,12 @@ struct FRRWeightedEnemyClass
  * camera manager (its camera cache view, viewport aspect ratio); the first camera component of the flow-field goal actor (the
  * miner's camera, works headless). Each is the bounding box of the four frustum corner rays projected on the floor plane.
  * A robot stops counting as alive when it dies (IsDead) or is destroyed. Off when bEnabled is false or rr.Spawner.Enabled is 0.
- * Recycling (bRecycleEnabled, every tick, spawning on or off): a robot of this spawner farther than RecycleDistance from the miner
- * and more than RecycleOffScreenMargin beyond the view rectangle for RecycleDelay seconds in a row is destroyed: no death, no XP,
- * no kill, no explosion; its slot (MaxAlive, per-class caps, shooter cap) is free at once.
+ * Recycling by relocation (bRecycleEnabled, every tick, spawning on or off): each robot of this spawner counts its seconds off
+ * screen (more than RecycleOffScreenMargin beyond the view rectangle) since it spawned or last left the screen. Once farther than
+ * RecycleDistance from the miner with RecycleDelay seconds off screen after having been on screen, or RecycleUnseenDelay seconds
+ * if never seen, it is moved (ARREnemy::RelocateTo) to a spawn cell drawn like a new lone robot (band, heading sector), keeping
+ * its class and health, its motion and state machine reset; it then counts as never seen. One candidate scan per tick with a
+ * robot due; no cell: it stays and retries next tick. Never a death, kill, XP or explosion; it keeps its slot (no new spawn).
  */
 UCLASS(Blueprintable)
 class ROGUERIGS_API ARREnemySpawner : public AActor
@@ -276,16 +279,19 @@ public:
 
 	// --- Recycling ---
 
-	/** A robot was recycled (far off screen for RecycleDelay seconds); broadcast before it is destroyed. */
+	/** A robot was recycled (relocated into the spawn band); broadcast after the move. */
 	UPROPERTY(BlueprintAssignable, Category = "Spawner|Recycling")
 	FRROnEnemyRecycledSignature OnEnemyRecycled;
 
-	/** Robots recycled since BeginPlay. */
+	/** Robots recycled (relocations, a robot counted at each move) since BeginPlay. */
 	UFUNCTION(BlueprintPure, Category = "Spawner|Recycling")
 	int32 GetRecycledCount() const { return RecycledCount; }
 
-	/** Seconds Enemy has been recyclable in a row (far and off screen); 0 when it is not or not tracked. */
+	/** Seconds Enemy has been off screen in a row (since it spawned, was relocated or last left the screen); 0 on screen or not tracked. */
 	float GetRecycleSeconds(const ARREnemy* Enemy) const;
+
+	/** True once Enemy has been on screen since it spawned or was last relocated (its recycle delay is then RecycleDelay, else RecycleUnseenDelay). */
+	bool HasBeenOnScreen(const ARREnemy* Enemy) const;
 
 	// --- Wave director ---
 
@@ -470,10 +476,16 @@ protected:
 	void PruneAlive();
 
 	/**
-	 * Advances the recycle timer of every alive robot by DeltaSeconds and destroys those far off screen for RecycleDelay seconds
-	 * (Destroy only: no death, no XP, no kill). A robot near the miner or within RecycleOffScreenMargin of the view resets its timer.
+	 * Advances the off-screen timer of every alive robot by DeltaSeconds (on screen: marked seen, timer reset) and relocates those
+	 * due (farther than RecycleDistance, RecycleDelay seen or RecycleUnseenDelay never seen) to a cell drawn by PickSpawnCellIndex.
 	 */
 	void RecycleFarEnemies(float DeltaSeconds);
+
+	/** Draws a spawn cell among Candidates like a lone robot: heading sector first while running, then a random cell of it. INDEX_NONE when empty. */
+	int32 PickSpawnCellIndex(const TArray<FIntPoint>& Candidates);
+
+	/** Location of the capsule center of Enemy standing on Cell (cell center, capsule half height plus SpawnFloorClearance). */
+	FVector GetStandingLocation(const ARREnemy* Enemy, const FIntPoint& Cell) const;
 
 	/** Spawns one robot of SpawnClass on Cell (capsule on the floor) and tracks it; null when the spawn fails. */
 	ARREnemy* SpawnEnemyOnCell(TSubclassOf<ARREnemy> SpawnClass, const FIntPoint& Cell);
@@ -568,21 +580,25 @@ protected:
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Spawner|Heading", meta = (ClampMin = 0, ClampMax = 180, Units = "deg"))
 	float BackHalfAngle = 45.f;
 
-	/** Recycling on or off: far off-screen robots are removed so the alive cap never starves spawns ahead of a running miner. */
+	/** Recycling on or off: robots left far off screen are moved back into the spawn band, so the pressure stays ahead of a running miner. */
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Spawner|Recycling")
 	bool bRecycleEnabled = true;
 
-	/** Straight distance (2D, uu) from the miner beyond which an off-screen robot counts down to recycling (1800, owner 2026-10-06 fourth test, was 2500; provisional). */
+	/** Straight distance (2D, uu) from the miner beyond which an off-screen robot whose delay ran out is relocated (1800, owner 2026-10-06 fourth test, was 2500; provisional). */
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Spawner|Recycling", meta = (ClampMin = 0, Units = "cm"))
 	float RecycleDistance = 1800.f;
 
-	/** Seconds a robot must stay far and off screen in a row before it is recycled (3, owner 2026-10-06 fourth test, was 4; provisional). */
+	/** Seconds off screen after a robot that has been on screen left it, before it may be relocated (3, owner 2026-10-06; provisional). */
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Spawner|Recycling", meta = (ClampMin = 0, Units = "s"))
 	float RecycleDelay = 3.f;
 
+	/** Seconds after it spawned (or was relocated) before a robot never seen on screen may be relocated (6, owner 2026-10-06; provisional). */
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Spawner|Recycling", meta = (ClampMin = 0, Units = "s"))
+	float RecycleUnseenDelay = 6.f;
+
 	/**
-	 * Box distance (uu) beyond the view rectangle under which a robot still counts as on screen for recycling. Equal to
-	 * SpawnBandMaxDistance by default, so a fresh robot walking in from the spawn band is never recycled (implementation choice).
+	 * Box distance (uu) beyond the view rectangle under which a robot still counts as on screen for recycling (marks it
+	 * seen, resets its off-screen timer, never relocated). 0 = the view rectangle itself (owner 2026-10-06 fourth test, was 500).
 	 */
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Spawner|Recycling", meta = (ClampMin = 0, Units = "cm"))
 	float RecycleOffScreenMargin = 0.f;
@@ -598,10 +614,20 @@ protected:
 	/** Robots spawned and still alive (pruned on query). */
 	TArray<TWeakObjectPtr<ARREnemy>> AliveEnemies;
 
-	/** Seconds in a row each recyclable robot has been far and off screen (entries removed when it comes back or goes). */
-	TMap<TObjectKey<ARREnemy>, float> RecycleTimers;
+	/** Recycling state of one robot. */
+	struct FRecycleState
+	{
+		/** Seconds off screen in a row (since spawn, relocation or the last on-screen frame). */
+		float OffScreenSeconds = 0.f;
 
-	/** Robots recycled since BeginPlay. */
+		/** True once on screen since spawn or relocation. */
+		bool bSeenOnScreen = false;
+	};
+
+	/** Recycling state of each tracked robot (entries of destroyed robots dropped every tick). */
+	TMap<TObjectKey<ARREnemy>, FRecycleState> RecycleStates;
+
+	/** Robots recycled (relocations) since BeginPlay. */
 	int32 RecycledCount = 0;
 
 	/** Trickle phase: seconds accumulated toward the next single spawn. */

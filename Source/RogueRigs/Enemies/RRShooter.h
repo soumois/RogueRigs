@@ -124,6 +124,9 @@ protected:
 	/** Ends a running aim, enters Dead, then runs the base death. */
 	virtual void HandleDeath(AActor* DeathInstigator) override;
 
+	/** Recycling relocation: back to Approach (leaving the current state as EnterState does); nothing while Dead. */
+	virtual void ResetStateMachine() override;
+
 	/** Leaves the current state and enters NewState (flow-field movement on in Approach only). Leaving Aim hides the laser and calls OnAimEnd. */
 	void EnterState(ERRShooterState NewState);
 

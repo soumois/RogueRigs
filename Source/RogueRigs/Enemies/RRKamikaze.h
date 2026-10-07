@@ -94,6 +94,9 @@ protected:
 	/** Enters Dead; queues the explosion unless the fuse already did; then runs the base death. */
 	virtual void HandleDeath(AActor* DeathInstigator) override;
 
+	/** Recycling relocation: back to Chase (leaving the current state as EnterState does); nothing while Dead. */
+	virtual void ResetStateMachine() override;
+
 	/** Drops the XP only when the robot was killed (not after its fuse). */
 	virtual void DropXP() override;
 

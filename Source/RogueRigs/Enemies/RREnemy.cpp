@@ -337,6 +337,24 @@ void ARREnemy::SetFarMovement(bool bFar)
 	EnemyMovement->SetComponentTickInterval(Interval);
 }
 
+bool ARREnemy::RelocateTo(const FVector& Location)
+{
+	if (bDying || IsDead())
+	{
+		return false;
+	}
+	UCharacterMovementComponent* Movement = GetCharacterMovement();
+	ConsumeMovementInputVector();
+	Movement->StopMovementImmediately();
+	Movement->PendingLaunchVelocity = FVector::ZeroVector;
+	SetActorLocation(Location, /*bSweep*/ false, nullptr, ETeleportType::ResetPhysics);
+	SetFarMovement(false);
+	MovementLODTimer = 0.f;
+	SetMeshesVisible(true);
+	ResetStateMachine();
+	return true;
+}
+
 void ARREnemy::HandleDeath(AActor* DeathInstigator)
 {
 	if (bDying)

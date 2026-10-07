@@ -1,4 +1,4 @@
-// Rogue Rigs - automation tests of robot recycling (RogueRigs.Spawner.Recycle*): far off-screen robots removed after the delay without death, kill or explosion, slots and class caps freed, timer reset on screen; a miner running for 3 min 30 keeps getting spawns in its front sector.
+// Rogue Rigs - automation tests of robot recycling (RogueRigs.Spawner.Recycle*): far off-screen robots relocated into the spawn band after the seen (3 s) or unseen (6 s) delay, same robot, class and health, state reset, no death, kill, explosion or new slot; a miner running for 3 min 30 keeps getting robots in its front sector.
 
 #include "CoreMinimal.h"
 #include "Misc/AutomationTest.h"
@@ -7,6 +7,7 @@
 
 #include "AbilitySystemComponent.h"
 #include "Algo/AllOf.h"
+#include "Algo/AnyOf.h"
 #include "Algo/Reverse.h"
 #include "Enemies/RRChaser.h"
 #include "FlowField/RREnemyMovementComponent.h"
@@ -15,6 +16,7 @@
 #include "Enemies/RRKamikaze.h"
 #include "Enemies/RRShooter.h"
 #include "Explosions/RRExplosionSubsystem.h"
+#include "GAS/RRHealthAttributeSet.h"
 #include "GameFramework/CharacterMovementComponent.h"
 #include "GAS/RRGameplayTags.h"
 #include "Objectives/RRRunFlowSubsystem.h"
@@ -35,6 +37,19 @@ namespace RRRecyclingTests
 	constexpr float RecycleDistanceDefault = 1800.f;
 	constexpr float RecycleDelayDefault = 3.f;
 	constexpr float RecycleMarginDefault = 0.f;
+	constexpr float RecycleUnseenDelayDefault = 6.f;
+
+	/** Puts a heavy in a given state (protected EnterState). */
+	struct FHeavyStateAccess : public ARRHeavy
+	{
+		static void Enter(ARRHeavy* Heavy, ERRHeavyState NewState) { (Heavy->*(&FHeavyStateAccess::EnterState))(NewState); }
+	};
+
+	/** Puts a kamikaze in a given state (protected EnterState). */
+	struct FKamikazeStateAccess : public ARRKamikaze
+	{
+		static void Enter(ARRKamikaze* Kamikaze, ERRKamikazeState NewState) { (Kamikaze->*(&FKamikazeStateAccess::EnterState))(NewState); }
+	};
 
 	/** World with the fine grid, an unarmed invulnerable miner and a native spawner (chaser, kamikaze, shooter, heavy capped at HeavyCap). */
 	struct FRecycleSetup
@@ -148,10 +163,11 @@ namespace RRRecyclingTests
 		return Path;
 	}
 
-	/** Spawn counts of one 30 s window of the runner test. */
+	/** Arrival counts of one 30 s window of the runner test (arrival = a new robot or a relocated one). */
 	struct FRunnerWindow
 	{
 		int32 Spawned = 0;
+		int32 Relocated = 0;
 		int32 Front = 0;
 		int32 MaxAlive = 0;
 		int32 Recycled = 0;
@@ -223,7 +239,9 @@ namespace RRRecyclingTests
 		constexpr float RunSpeed = 600.f;
 		const int32 Frames = FMath::RoundToInt(Seconds / RRTestHarness::FrameSeconds);
 		const int32 FramesPerWindow = FMath::RoundToInt(30.f / RRTestHarness::FrameSeconds);
-		TSet<TObjectKey<ARREnemy>> Seen;
+		// Last location of each robot: a jump of more than RelocationJump in one frame is a relocation (robots walk 10 uu a frame at most).
+		constexpr double RelocationJump = 500.0;
+		TMap<TObjectKey<ARREnemy>, FVector2D> LastLocations;
 		OutWindows.Reset();
 		for (int32 Frame = 0; Frame < Frames; ++Frame)
 		{
@@ -267,21 +285,25 @@ namespace RRRecyclingTests
 			Window.MaxAlive = FMath::Max(Window.MaxAlive, Alive.Num());
 			for (ARREnemy* Robot : Alive)
 			{
-				bool bAlreadySeen = false;
-				Seen.Add(Robot, &bAlreadySeen);
-				if (!bAlreadySeen)
+				const FVector2D RobotLocation(Robot->GetActorLocation());
+				FVector2D* Last = LastLocations.Find(Robot);
+				const bool bNew = !Last;
+				const bool bRelocated = Last && FVector2D::Distance(*Last, RobotLocation) > RelocationJump;
+				if (bNew || bRelocated)
 				{
-					++Window.Spawned;
-					Window.Front += Setup.Spawner->GetSpawnSector(FVector2D(Robot->GetActorLocation())) == ERRSpawnSector::Front ? 1 : 0;
+					Window.Spawned += bNew ? 1 : 0;
+					Window.Relocated += bRelocated ? 1 : 0;
+					Window.Front += Setup.Spawner->GetSpawnSector(RobotLocation) == ERRSpawnSector::Front ? 1 : 0;
 				}
+				LastLocations.Add(Robot, RobotLocation);
 			}
 			Window.Recycled = Setup.Spawner->GetRecycledCount();
 		}
 		for (int32 Index = 0; Index < OutWindows.Num(); ++Index)
 		{
 			const FRunnerWindow& Window = OutWindows[Index];
-			Test.AddInfo(FString::Printf(TEXT("%s, %3d-%3d s: %3d spawned, %3d in front, max %3d alive, %4d recycled so far"),
-				bRecycle ? TEXT("recycling") : TEXT("no recycling"), Index * 30, Index * 30 + 30, Window.Spawned, Window.Front, Window.MaxAlive, Window.Recycled));
+			Test.AddInfo(FString::Printf(TEXT("%s, %3d-%3d s: %3d spawned, %3d relocated, %3d arrivals in front, max %3d alive, %4d recycled so far"),
+				bRecycle ? TEXT("recycling") : TEXT("no recycling"), Index * 30, Index * 30 + 30, Window.Spawned, Window.Relocated, Window.Front, Window.MaxAlive, Window.Recycled));
 		}
 		return true;
 	}
@@ -303,29 +325,28 @@ bool FRRSpawnerRecycleFarRobotTest::RunTest(const FString& Parameters)
 	}
 	TestTrue(TEXT("recycling on by default"), FSpawnerAccess::RecycleEnabledOf(Setup.Spawner));
 	TestEqual(TEXT("default RecycleDistance 1800 uu"), FSpawnerAccess::RecycleDistanceOf(Setup.Spawner), RecycleDistanceDefault);
-	TestEqual(TEXT("default RecycleDelay 3 s"), FSpawnerAccess::RecycleDelayOf(Setup.Spawner), RecycleDelayDefault);
+	TestEqual(TEXT("default RecycleDelay 3 s (seen once)"), FSpawnerAccess::RecycleDelayOf(Setup.Spawner), RecycleDelayDefault);
+	TestEqual(TEXT("default RecycleUnseenDelay 6 s (never seen)"), FSpawnerAccess::RecycleUnseenDelayOf(Setup.Spawner), RecycleUnseenDelayDefault);
 	TestEqual(TEXT("default RecycleOffScreenMargin 0 uu (off screen = recyclable)"), FSpawnerAccess::RecycleMarginOf(Setup.Spawner), RecycleMarginDefault);
 	Setup.Spawner->SetSpawningEnabled(false);
 	const FVector MinerLocation = Setup.Miner->GetActorLocation();
 	const FVector2D Center(MinerLocation);
-	Setup.Spawner->SetViewRectangleOverride(FBox2D(Center - RecycleViewHalfExtent, Center + RecycleViewHalfExtent));
+	const FBox2D View(Center - RecycleViewHalfExtent, Center + RecycleViewHalfExtent);
+	Setup.Spawner->SetViewRectangleOverride(View);
+	const float BandMin = FSpawnerAccess::BandMinOf(Setup.Spawner);
+	const float BandMax = FSpawnerAccess::BandMaxOf(Setup.Spawner);
 
-	ARREnemy* Kamikaze = Setup.Spawner->TrySpawnEnemyOfClass(ARRKamikaze::StaticClass());
+	ARRKamikaze* Kamikaze = Cast<ARRKamikaze>(Setup.Spawner->TrySpawnEnemyOfClass(ARRKamikaze::StaticClass()));
 	ARREnemy* Shooter = Setup.Spawner->TrySpawnEnemyOfClass(ARRShooter::StaticClass());
-	ARREnemy* Heavy = Setup.Spawner->TrySpawnEnemyOfClass(ARRHeavy::StaticClass());
+	ARRHeavy* Heavy = Cast<ARRHeavy>(Setup.Spawner->TrySpawnEnemyOfClass(ARRHeavy::StaticClass()));
 	ARREnemy* Chaser = Setup.Spawner->TrySpawnEnemyOfClass(ARRChaser::StaticClass());
-	if (!TestTrue(TEXT("four robots spawned"), Kamikaze && Shooter && Heavy && Chaser))
+	ARREnemy* Unseen = Setup.Spawner->TrySpawnEnemyOfClass(ARRChaser::StaticClass());
+	if (!TestTrue(TEXT("five robots spawned"), Kamikaze && Shooter && Heavy && Chaser && Unseen))
 	{
 		return false;
 	}
 	TestNull(TEXT("heavy cap 1 reached: no second heavy"), Setup.Spawner->TrySpawnEnemyOfClass(ARRHeavy::StaticClass()));
-	// Kamikaze 3500 uu ahead (1900 beyond the view), shooter 3000 behind, heavy 3000 aside (2000 beyond): far off screen.
-	// Chaser off screen (500 beyond the view edge) but only 1500 uu away, within RecycleDistance: never recycled.
-	PlaceFrozen(Kamikaze, MinerLocation, FVector2D(3500.f, 0.f));
-	PlaceFrozen(Shooter, MinerLocation, FVector2D(-3000.f, 0.f));
-	PlaceFrozen(Heavy, MinerLocation, FVector2D(0.f, 3000.f));
-	PlaceFrozen(Chaser, MinerLocation, FVector2D(0.f, -1500.f));
-	const TWeakObjectPtr<ARREnemy> KamikazeRef(Kamikaze), ShooterRef(Shooter), HeavyRef(Heavy), ChaserRef(Chaser);
+	const TWeakObjectPtr<ARREnemy> KamikazeRef(Kamikaze), ShooterRef(Shooter), HeavyRef(Heavy), ChaserRef(Chaser), UnseenRef(Unseen);
 	URRRunFlowSubsystem* RunFlow = TestWorld.Get()->GetSubsystem<URRRunFlowSubsystem>();
 	URRExplosionSubsystem* Explosions = TestWorld.Get()->GetSubsystem<URRExplosionSubsystem>();
 	const int32 KillsBefore = RunFlow ? RunFlow->GetKillCount() : 0;
@@ -336,19 +357,50 @@ bool FRRSpawnerRecycleFarRobotTest::RunTest(const FString& Parameters)
 		for (int32 Frame = 0; Frame < Frames; ++Frame)
 		{
 			TestWorld.Tick();
-			for (const TWeakObjectPtr<ARREnemy>& Robot : { KamikazeRef, ShooterRef, HeavyRef, ChaserRef })
+			for (const TWeakObjectPtr<ARREnemy>& Robot : { KamikazeRef, ShooterRef, HeavyRef, ChaserRef, UnseenRef })
 			{
 				bSeenDead |= Robot.IsValid() && Robot->IsDead();
 			}
 			bSeenDead |= Explosions && Explosions->GetPendingCount() > 0;
 		}
 	};
+	auto InBand = [&View, BandMin, BandMax](const ARREnemy* Robot)
+	{
+		const float Distance = ARREnemySpawner::GetDistanceToRectangle(View, FVector2D(Robot->GetActorLocation()));
+		return Distance >= BandMin - 1.f && Distance <= BandMax + 1.f;
+	};
+
+	// Kamikaze, shooter, heavy and chaser are on screen for one frame (seen once); the unseen chaser never is.
+	PlaceFrozen(Kamikaze, MinerLocation, FVector2D(300.f, 0.f));
+	PlaceFrozen(Shooter, MinerLocation, FVector2D(-300.f, 0.f));
+	PlaceFrozen(Heavy, MinerLocation, FVector2D(0.f, 300.f));
+	PlaceFrozen(Chaser, MinerLocation, FVector2D(0.f, -300.f));
+	PlaceFrozen(Unseen, MinerLocation, FVector2D(2500.f, 2500.f));
+	TickSeconds(RRTestHarness::FrameSeconds);
+	TestTrue(TEXT("kamikaze seen on screen"), Setup.Spawner->HasBeenOnScreen(Kamikaze));
+	TestFalse(TEXT("far chaser never seen"), Setup.Spawner->HasBeenOnScreen(Unseen));
+
+	// Wounded, armed kamikaze and telegraphing heavy: health kept, state reset by the relocation.
+	const float KamikazeHealth = Kamikaze->GetHealthSet()->GetMaxHealth() * 0.5f;
+	Kamikaze->GetAbilitySystemComponent()->SetNumericAttributeBase(URRHealthAttributeSet::GetHealthAttribute(), KamikazeHealth);
+	FKamikazeStateAccess::Enter(Kamikaze, ERRKamikazeState::Armed);
+	FHeavyStateAccess::Enter(Heavy, ERRHeavyState::Telegraph);
+
+	// Kamikaze 3500 uu ahead (1900 beyond the view), shooter 3000 behind, heavy 3000 aside (2000 beyond): far off screen.
+	// Chaser off screen (500 beyond the view edge) but only 1500 uu away, within RecycleDistance: never relocated.
+	PlaceFrozen(Kamikaze, MinerLocation, FVector2D(3500.f, 0.f));
+	PlaceFrozen(Shooter, MinerLocation, FVector2D(-3000.f, 0.f));
+	PlaceFrozen(Heavy, MinerLocation, FVector2D(0.f, 3000.f));
+	PlaceFrozen(Chaser, MinerLocation, FVector2D(0.f, -1500.f));
+	const FVector ChaserLocation = Chaser->GetActorLocation();
+	const FVector UnseenLocation = Unseen->GetActorLocation();
 
 	TickSeconds(2.f);
-	AddInfo(FString::Printf(TEXT("after 2 s: kamikaze %.2f s, heavy %.2f s, chaser %.2f s recyclable"),
-		Setup.Spawner->GetRecycleSeconds(Kamikaze), Setup.Spawner->GetRecycleSeconds(Heavy), Setup.Spawner->GetRecycleSeconds(Chaser)));
-	TestNearlyEqual(TEXT("kamikaze far off screen counts 2 s"), Setup.Spawner->GetRecycleSeconds(Kamikaze), 2.f, 0.05f);
-	TestEqual(TEXT("chaser within RecycleDistance does not count"), Setup.Spawner->GetRecycleSeconds(Chaser), 0.f);
+	AddInfo(FString::Printf(TEXT("after 2 s: kamikaze %.2f s, heavy %.2f s, chaser %.2f s, unseen %.2f s off screen"),
+		Setup.Spawner->GetRecycleSeconds(Kamikaze), Setup.Spawner->GetRecycleSeconds(Heavy), Setup.Spawner->GetRecycleSeconds(Chaser),
+		Setup.Spawner->GetRecycleSeconds(Unseen)));
+	TestNearlyEqual(TEXT("kamikaze off screen counts 2 s"), Setup.Spawner->GetRecycleSeconds(Kamikaze), 2.f, 0.05f);
+	TestNearlyEqual(TEXT("chaser within RecycleDistance counts its off-screen time too"), Setup.Spawner->GetRecycleSeconds(Chaser), 2.f, 0.05f);
 	TestEqual(TEXT("nothing recycled before 3 s"), Setup.Spawner->GetRecycledCount(), 0);
 
 	// The heavy steps on screen for one frame: its timer restarts.
@@ -358,32 +410,44 @@ bool FRRSpawnerRecycleFarRobotTest::RunTest(const FString& Parameters)
 	PlaceFrozen(Heavy, MinerLocation, FVector2D(0.f, 3000.f));
 
 	TickSeconds(1.1f);
-	TestTrue(TEXT("kamikaze recycled after 3 s"), IsGone(KamikazeRef));
-	TestTrue(TEXT("shooter recycled after 3 s"), IsGone(ShooterRef));
-	TestFalse(TEXT("heavy kept (timer restarted at 2 s)"), IsGone(HeavyRef));
-	TestFalse(TEXT("chaser within RecycleDistance kept"), IsGone(ChaserRef));
+	TestFalse(TEXT("kamikaze kept (relocated, not destroyed)"), IsGone(KamikazeRef));
+	TestFalse(TEXT("shooter kept (relocated, not destroyed)"), IsGone(ShooterRef));
+	TestTrue(TEXT("kamikaze relocated into the spawn band 3 s after it left the screen"), InBand(Kamikaze));
+	TestTrue(TEXT("shooter relocated into the spawn band 3 s after it left the screen"), InBand(Shooter));
+	TestEqual(TEXT("kamikaze health kept"), Kamikaze->GetHealthSet()->GetHealth(), KamikazeHealth);
+	TestTrue(TEXT("armed kamikaze back to Chase"), Kamikaze->GetState() == ERRKamikazeState::Chase);
+	TestFalse(TEXT("relocated kamikaze counts as never seen"), Setup.Spawner->HasBeenOnScreen(Kamikaze));
+	TestTrue(TEXT("relocated kamikaze off-screen timer restarted"), Setup.Spawner->GetRecycleSeconds(Kamikaze) < 0.5f);
+	TestFalse(TEXT("heavy not relocated yet (timer restarted at 2 s)"), InBand(Heavy));
+	TestTrue(TEXT("chaser within RecycleDistance not moved"), Chaser->GetActorLocation().Equals(ChaserLocation, 1.f));
+	TestTrue(TEXT("unseen chaser not moved before 6 s"), Unseen->GetActorLocation().Equals(UnseenLocation, 1.f));
 	TestEqual(TEXT("two recycled"), Setup.Spawner->GetRecycledCount(), 2);
-	TestEqual(TEXT("two alive"), Setup.Spawner->GetAliveCount(), 2);
-	TestEqual(TEXT("shooter slot freed (shooter cap count 0)"), Setup.Spawner->GetAliveCountOfClass(ARRShooter::StaticClass()), 0);
-	TestEqual(TEXT("kamikaze slot freed"), Setup.Spawner->GetAliveCountOfClass(ARRKamikaze::StaticClass()), 0);
+	TestEqual(TEXT("five alive: no slot freed, no new spawn"), Setup.Spawner->GetAliveCount(), 5);
+	TestEqual(TEXT("shooter still counted"), Setup.Spawner->GetAliveCountOfClass(ARRShooter::StaticClass()), 1);
+	TestEqual(TEXT("kamikaze still counted"), Setup.Spawner->GetAliveCountOfClass(ARRKamikaze::StaticClass()), 1);
 
-	TickSeconds(2.5f);
-	TestTrue(TEXT("heavy recycled 3 s after it left the screen"), IsGone(HeavyRef));
-	TestEqual(TEXT("heavy slot freed"), Setup.Spawner->GetAliveCountOfClass(ARRHeavy::StaticClass()), 0);
-	TestNotNull(TEXT("heavy cap 1 has room again"), Setup.Spawner->TrySpawnEnemyOfClass(ARRHeavy::StaticClass()));
-	TestFalse(TEXT("chaser within RecycleDistance still kept after 5.6 s"), IsGone(ChaserRef));
+	TickSeconds(2.f);
+	TestTrue(TEXT("heavy relocated into the spawn band 3 s after it left the screen"), InBand(Heavy));
+	TestTrue(TEXT("telegraphing heavy back to Chase"), Heavy->GetState() == ERRHeavyState::Chase);
+	TestTrue(TEXT("unseen chaser not moved at 5.1 s"), Unseen->GetActorLocation().Equals(UnseenLocation, 1.f));
+	TestEqual(TEXT("three recycled"), Setup.Spawner->GetRecycledCount(), 3);
+	TestNull(TEXT("heavy cap 1 still reached: the relocated heavy keeps its slot"), Setup.Spawner->TrySpawnEnemyOfClass(ARRHeavy::StaticClass()));
+
+	TickSeconds(1.f);
+	TestTrue(TEXT("never-seen chaser relocated 6 s after spawning"), InBand(Unseen));
+	TestEqual(TEXT("four recycled"), Setup.Spawner->GetRecycledCount(), 4);
+	TestTrue(TEXT("chaser within RecycleDistance still not moved after 6.1 s"), Chaser->GetActorLocation().Equals(ChaserLocation, 1.f));
+	TestEqual(TEXT("still five alive"), Setup.Spawner->GetAliveCount(), 5);
 	TestFalse(TEXT("no recycled robot died, no explosion queued"), bSeenDead);
 	TestEqual(TEXT("no kill counted"), RunFlow ? RunFlow->GetKillCount() : 0, KillsBefore);
 
-	// Off: nothing is recycled.
+	// Off: nothing is relocated.
 	FSpawnerAccess::RecycleEnabledOf(Setup.Spawner) = false;
-	const TWeakObjectPtr<ARREnemy> Far(Setup.Spawner->TrySpawnEnemyOfClass(ARRChaser::StaticClass()));
-	if (TestTrue(TEXT("one more chaser"), Far.IsValid()))
-	{
-		PlaceFrozen(Far.Get(), MinerLocation, FVector2D(-3500.f, 0.f));
-		TickSeconds(4.5f);
-		TestFalse(TEXT("recycling off: far chaser kept"), IsGone(Far));
-	}
+	PlaceFrozen(Shooter, MinerLocation, FVector2D(-3500.f, 0.f));
+	const FVector FarLocation = Shooter->GetActorLocation();
+	TickSeconds(6.5f);
+	TestTrue(TEXT("recycling off: far shooter not moved"), Shooter->GetActorLocation().Equals(FarLocation, 1.f));
+	TestEqual(TEXT("recycling off: count unchanged"), Setup.Spawner->GetRecycledCount(), 4);
 	return true;
 }
 
@@ -395,6 +459,7 @@ bool FRRSpawnerRecycleRunnerTest::RunTest(const FString& Parameters)
 	using namespace RRRecyclingTests;
 
 	// The third play test: running nonstop from 2-3 min, no robot popped ahead (150 alive cap filled by robots left behind).
+	// Relocation (task-036-01): robots left behind come back ahead, so arrivals count new and relocated robots.
 	constexpr float RunSeconds = 210.f;
 	TArray<FRunnerWindow> WithRecycling;
 	if (!RunRunner(*this, TEXT("RRSpawnerRecycleRunner"), true, RunSeconds, WithRecycling) || !TestEqual(TEXT("seven windows"), WithRecycling.Num(), 7))
@@ -407,11 +472,13 @@ bool FRRSpawnerRecycleRunnerTest::RunTest(const FString& Parameters)
 		return false;
 	}
 	TestTrue(TEXT("robots recycled while running"), WithRecycling.Last().Recycled > 0);
+	TestTrue(TEXT("relocations seen as jumps while running"), Algo::AnyOf(WithRecycling, [](const FRunnerWindow& Window) { return Window.Relocated > 0; }));
+	TestTrue(TEXT("no relocation without recycling"), Algo::AllOf(WithoutRecycling, [](const FRunnerWindow& Window) { return Window.Relocated == 0; }));
 	for (int32 Index = 4; Index < 7; ++Index)
 	{
-		TestTrue(*FString::Printf(TEXT("%d-%d s: at least 20 spawns in the front sector"), Index * 30, Index * 30 + 30), WithRecycling[Index].Front >= 20);
+		TestTrue(*FString::Printf(TEXT("%d-%d s: at least 20 arrivals (spawned or relocated) in the front sector"), Index * 30, Index * 30 + 30), WithRecycling[Index].Front >= 20);
 	}
-	TestTrue(TEXT("the last 30 s get more front spawns with recycling than without"), WithRecycling.Last().Front > WithoutRecycling.Last().Front);
+	TestTrue(TEXT("the last 30 s get more front arrivals with recycling than without"), WithRecycling.Last().Front > WithoutRecycling.Last().Front);
 	TestTrue(TEXT("never above 150 alive"), Algo::AllOf(WithRecycling, [](const FRunnerWindow& Window) { return Window.MaxAlive <= 150; }));
 	return true;
 }

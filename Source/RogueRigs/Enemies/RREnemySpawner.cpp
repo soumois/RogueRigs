@@ -1,4 +1,4 @@
-// Rogue Rigs - enemy spawner: wave director (calm, lone robots, packs of one type from several sides, announced hordes) or the older trickle then packs, capped alive count, on reachable floor cells just outside the camera view.
+// Rogue Rigs - enemy spawner: wave director (calm, lone robots, packs of one type from several sides, announced hordes) or the older trickle then packs, capped alive count, on reachable floor cells just outside the camera view; robots left far off screen are relocated into the spawn band.
 
 #include "Enemies/RREnemySpawner.h"
 
@@ -401,13 +401,38 @@ ARREnemy* ARREnemySpawner::TrySpawnEnemyOfClass(TSubclassOf<ARREnemy> WantedClas
 		UE_LOG(LogRogueRigs, Verbose, TEXT("ARREnemySpawner %s: no spawn cell available."), *GetName());
 		return nullptr;
 	}
+	return SpawnEnemyOnCell(SpawnClass, Candidates[PickSpawnCellIndex(Candidates)]);
+}
+
+int32 ARREnemySpawner::PickSpawnCellIndex(const TArray<FIntPoint>& Candidates)
+{
+	if (Candidates.IsEmpty())
+	{
+		return INDEX_NONE;
+	}
 	// Running: keep the cells of the drawn sector (front, sides or back of the run heading).
 	const ERRSpawnSector Sector = DrawSpawnSector(Candidates);
-	if (Sector != ERRSpawnSector::None)
+	if (Sector == ERRSpawnSector::None)
 	{
-		Candidates.RemoveAll([this, Sector](const FIntPoint& Cell) { return GetCellSector(Cell) != Sector; });
+		return RandomStream.RandRange(0, Candidates.Num() - 1);
 	}
-	return SpawnEnemyOnCell(SpawnClass, Candidates[RandomStream.RandRange(0, Candidates.Num() - 1)]);
+	TArray<int32> InSector;
+	for (int32 Index = 0; Index < Candidates.Num(); ++Index)
+	{
+		if (GetCellSector(Candidates[Index]) == Sector)
+		{
+			InSector.Add(Index);
+		}
+	}
+	// DrawSpawnSector only returns a sector holding a cell; the guard keeps a draw if the heading changed in between.
+	return InSector.IsEmpty() ? RandomStream.RandRange(0, Candidates.Num() - 1) : InSector[RandomStream.RandRange(0, InSector.Num() - 1)];
+}
+
+FVector ARREnemySpawner::GetStandingLocation(const ARREnemy* Enemy, const FIntPoint& Cell) const
+{
+	const ARRArenaGrid* Grid = GetGrid();
+	const float HalfHeight = Enemy->GetCapsuleComponent()->GetScaledCapsuleHalfHeight();
+	return Grid->GetCellCenter(Cell.X, Cell.Y) + FVector(0.f, 0.f, HalfHeight + SpawnFloorClearance);
 }
 
 TArray<ARREnemy*> ARREnemySpawner::TrySpawnPack()
@@ -507,44 +532,71 @@ void ARREnemySpawner::PruneAlive()
 void ARREnemySpawner::RecycleFarEnemies(float DeltaSeconds)
 {
 	PruneAlive();
-	FVector2D MinerLocation;
-	FBox2D View;
-	if (!bRecycleEnabled || AliveEnemies.IsEmpty() || !GetHeadingOrigin(MinerLocation) || !GetViewRectangle(View))
+	if (!bRecycleEnabled || AliveEnemies.IsEmpty())
 	{
-		RecycleTimers.Reset();
+		RecycleStates.Reset();
 		return;
 	}
-	const double DistanceSquared = FMath::Square(static_cast<double>(RecycleDistance));
-	for (int32 Index = 0; Index < AliveEnemies.Num(); )
+	FVector2D MinerLocation;
+	FBox2D View;
+	if (!GetHeadingOrigin(MinerLocation) || !GetViewRectangle(View))
 	{
-		ARREnemy* Enemy = AliveEnemies[Index].Get();
-		const FVector2D Location(Enemy->GetActorLocation());
-		const bool bFarOffScreen = FVector2D::DistSquared(Location, MinerLocation) > DistanceSquared
-			&& GetDistanceToRectangle(View, Location) > RecycleOffScreenMargin;
-		if (!bFarOffScreen)
-		{
-			RecycleTimers.Remove(Enemy);
-			++Index;
-			continue;
-		}
-		float& Seconds = RecycleTimers.FindOrAdd(Enemy, 0.f);
-		Seconds += DeltaSeconds;
-		if (Seconds < RecycleDelay)
-		{
-			++Index;
-			continue;
-		}
-		// Not a kill: no HandleDeath, so no XP drop, no kill count, no kamikaze explosion. Removed from the list now so every
-		// count (MaxAlive, per-class caps, shooter cap) sees the free slot this frame.
-		RecycleTimers.Remove(Enemy);
-		AliveEnemies.RemoveAt(Index);
-		++RecycledCount;
-		UE_LOG(LogRogueRigs, Verbose, TEXT("ARREnemySpawner %s: %s recycled %.0f uu from the miner, %d alive."), *GetName(), *Enemy->GetName(),
-			FVector2D::Distance(Location, MinerLocation), AliveEnemies.Num());
-		OnEnemyRecycled.Broadcast(Enemy);
-		Enemy->Destroy();
+		return;
 	}
-	for (auto It = RecycleTimers.CreateIterator(); It; ++It)
+
+	// Off-screen timers; robots far away whose delay ran out are due.
+	const double DistanceSquared = FMath::Square(static_cast<double>(RecycleDistance));
+	TArray<ARREnemy*, TInlineAllocator<16>> Due;
+	for (const TWeakObjectPtr<ARREnemy>& Entry : AliveEnemies)
+	{
+		ARREnemy* Enemy = Entry.Get();
+		FRecycleState& State = RecycleStates.FindOrAdd(Enemy);
+		const FVector2D Location(Enemy->GetActorLocation());
+		if (GetDistanceToRectangle(View, Location) <= RecycleOffScreenMargin)
+		{
+			State.bSeenOnScreen = true;
+			State.OffScreenSeconds = 0.f;
+			continue;
+		}
+		State.OffScreenSeconds += DeltaSeconds;
+		const float Delay = State.bSeenOnScreen ? RecycleDelay : RecycleUnseenDelay;
+		if (State.OffScreenSeconds >= Delay && FVector2D::DistSquared(Location, MinerLocation) > DistanceSquared)
+		{
+			Due.Add(Enemy);
+		}
+	}
+
+	// One candidate scan for every robot due; each takes a distinct cell. No cell: it stays due and retries next tick.
+	TArray<FIntPoint> Candidates;
+	if (!Due.IsEmpty())
+	{
+		GetSpawnCandidates(Candidates);
+	}
+	const ARRArenaGrid* Grid = Candidates.IsEmpty() ? nullptr : GetGrid();
+	for (ARREnemy* Enemy : Due)
+	{
+		const int32 CellIndex = Grid ? PickSpawnCellIndex(Candidates) : INDEX_NONE;
+		if (CellIndex == INDEX_NONE)
+		{
+			UE_LOG(LogRogueRigs, Verbose, TEXT("ARREnemySpawner %s: no spawn cell to relocate %s, retry next tick."), *GetName(), *Enemy->GetName());
+			continue;
+		}
+		const FIntPoint Cell = Candidates[CellIndex];
+		const FVector2D From(Enemy->GetActorLocation());
+		// Not a kill: no HandleDeath, so no XP drop, no kill count, no explosion; the robot keeps its slot, class and health.
+		if (!Enemy->RelocateTo(GetStandingLocation(Enemy, Cell)))
+		{
+			continue;
+		}
+		Candidates.RemoveAt(CellIndex);
+		RecycleStates.Add(Enemy, FRecycleState());
+		++RecycledCount;
+		UE_LOG(LogRogueRigs, Verbose, TEXT("ARREnemySpawner %s: %s relocated from %.0f uu to cell (%d, %d), %.0f uu from the miner."), *GetName(),
+			*Enemy->GetName(), FVector2D::Distance(From, MinerLocation), Cell.X, Cell.Y, FVector2D::Distance(FVector2D(Enemy->GetActorLocation()), MinerLocation));
+		OnEnemyRecycled.Broadcast(Enemy);
+	}
+
+	for (auto It = RecycleStates.CreateIterator(); It; ++It)
 	{
 		if (!It.Key().ResolveObjectPtr())
 		{
@@ -555,8 +607,14 @@ void ARREnemySpawner::RecycleFarEnemies(float DeltaSeconds)
 
 float ARREnemySpawner::GetRecycleSeconds(const ARREnemy* Enemy) const
 {
-	const float* Seconds = Enemy ? RecycleTimers.Find(Enemy) : nullptr;
-	return Seconds ? *Seconds : 0.f;
+	const FRecycleState* State = Enemy ? RecycleStates.Find(Enemy) : nullptr;
+	return State ? State->OffScreenSeconds : 0.f;
+}
+
+bool ARREnemySpawner::HasBeenOnScreen(const ARREnemy* Enemy) const
+{
+	const FRecycleState* State = Enemy ? RecycleStates.Find(Enemy) : nullptr;
+	return State && State->bSeenOnScreen;
 }
 
 int32 ARREnemySpawner::GetAliveCount()

@@ -198,3 +198,11 @@ void ARRKamikaze::UpdateCore(float DeltaSeconds)
 	CoreScaleFactor = Growth * (1.f + CorePulseAmplitude * FMath::Sin(UE_TWO_PI * CorePulsePhase));
 	CoreMesh->SetRelativeScale3D(CoreBaseScale * CoreScaleFactor);
 }
+
+void ARRKamikaze::ResetStateMachine()
+{
+	if (State != ERRKamikazeState::Dead)
+	{
+		EnterState(ERRKamikazeState::Chase);
+	}
+}

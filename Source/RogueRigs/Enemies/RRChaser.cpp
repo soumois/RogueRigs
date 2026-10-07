@@ -110,3 +110,11 @@ void ARRChaser::HandleDeath(AActor* DeathInstigator)
 	}
 	Super::HandleDeath(DeathInstigator);
 }
+
+void ARRChaser::ResetStateMachine()
+{
+	if (State != ERRChaserState::Dead)
+	{
+		EnterState(ERRChaserState::Chase);
+	}
+}

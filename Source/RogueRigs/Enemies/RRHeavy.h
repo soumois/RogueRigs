@@ -84,6 +84,9 @@ protected:
 	/** Enters Dead (resets the telegraph visuals through OnRecover) then runs the base death. */
 	virtual void HandleDeath(AActor* DeathInstigator) override;
 
+	/** Recycling relocation: back to Chase (leaving the current state as EnterState does); nothing while Dead. */
+	virtual void ResetStateMachine() override;
+
 	/** Leaves the current state and enters NewState (movement on in Chase only). */
 	void EnterState(ERRHeavyState NewState);
 

@@ -114,7 +114,18 @@ public:
 	/** Capsule of the robot's own size that takes the miner's shots (Projectile overlap); the root capsule only moves. */
 	UCapsuleComponent* GetHitCapsule() const { return HitCapsule; }
 
+	/**
+	 * Teleports the robot to Location (the capsule center) for the spawner's recycling and resets its motion: velocity, pending
+	 * knockback and movement input cleared, far-movement level of detail off, meshes shown, then ResetStateMachine (attack,
+	 * wind-up, flare or aim cancelled). Class, health, stats and attack cadence are kept. Does nothing while dead or dying;
+	 * returns false then.
+	 */
+	bool RelocateTo(const FVector& Location);
+
 protected:
+	/** Returns the subclass state machine to its first state (Chase, Approach) after a relocation. Base: nothing. */
+	virtual void ResetStateMachine() {}
+
 	/**
 	 * Sizes the hit capsule to the robot's own capsule (BodyRadius, half height), then shrinks the root capsule radius to
 	 * TerrainCapsuleRadius, so every robot meets the rock like a chaser (enemies-index fourth test).
