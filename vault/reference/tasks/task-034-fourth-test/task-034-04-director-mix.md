@@ -1,6 +1,6 @@
 ---
 id: task-034-04-director-mix
-description: "Wave director: 1–2 kamikazes per pack, at most 1 shooter in one pack out of two, none before 90 s, shooter cap 4, packs of 6–10 robots until 90 s."
+description: "Wave director: 1–2 kamikazes per pack, rare shooters (none before 90 s, cap 4), packs of 6–10 robots until 90 s."
 parent: task-034-fourth-test
 kind: task
 status: todo
