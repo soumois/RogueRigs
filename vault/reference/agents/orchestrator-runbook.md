@@ -10,7 +10,7 @@ Complements [[orchestration-protocol]] (the rules) with the commands that worked
 
 ## Git
 - The repo is flagged "dubious ownership": prefix every git command with `git -c "safe.directory=C:/Users/soumo/Documents/Unreal Projects/RogueRigs"` (never change the global config). The pre-commit hook is not installed (`git config core.hooksPath vault/scripts/hooks` would fix it; owner's call).
-- While an agent works in the background, commit only the vault: `git commit -m "..." -- vault`.
+- While an agent works in the background, commit only the files you edited, by name (`git commit -m "..." -- <file> <file>`): the agent also edits vault docs, and `-- vault` sweeps its unfinished work into your commit.
 
 ## Editor
 - Exe: `C:\Program Files\Epic Games\UE_5.8\Engine\Binaries\Win64\UnrealEditor.exe "<repo>\RogueRigs.uproject"`.
