@@ -3,7 +3,7 @@ id: task-036-recycle-relocate
 description: "Global task: robots left far behind are moved back ahead of the miner instead of removed, so pressure stays."
 parent: tasks-index
 kind: task
-status: todo
+status: in-progress
 ---
 # Recycling by relocation
 

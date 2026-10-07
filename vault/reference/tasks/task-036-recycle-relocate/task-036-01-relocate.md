@@ -3,7 +3,7 @@ id: task-036-01-relocate
 description: "Recycled robots are relocated into the spawn band ahead of the miner (same type and health); seen-once 3 s, never seen 6 s."
 parent: task-036-recycle-relocate
 kind: task
-status: todo
+status: in-progress
 ---
 # Relocate recycled robots
 

@@ -3,7 +3,7 @@ id: task-035-heal-amount
 description: "Global task: a heal vein restores 60 HP in total, about 6.67 HP per heal pickup."
 parent: tasks-index
 kind: task
-status: in-progress
+status: done
 ---
 # Heal amount
 
@@ -13,8 +13,8 @@ status: in-progress
 - gdd_check: GDD heal-ore updated by the Orchestrator (owner 2026-10-06: 60 HP per vein). No open value.
 - confirmed_by_owner: yes (2026-10-06)
 - milestone: M2
-- next_step: task-035-01-heal-value
-- result: open
+- next_step: none
+- result: Done. A 3 × 3 heal vein restores 60 HP (60 / 9 per pickup). 195/195.
 
 ## Subtasks
 1. task-035-01-heal-value — cpp: HealAmount default, existing tests

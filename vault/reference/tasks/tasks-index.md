@@ -47,6 +47,6 @@ Resuming after the pause of 2026-10-06: read [[handover-2026-10-06]] first.
 - [[task-032-third-test]] — third play test: robot recycling, console locator, overtime, slower robots, faster heavy, English texts, upgrade weights, weapons every 5 levels, bigger turret. Status done.
 - [[task-033-tests-speed]] — robots all at 180 uu/s; existing tests updated to the owner data changes. Status done.
 - [[task-034-fourth-test]] — fourth play test: projectile hitbox, whole-vein mining, heal pickup, small terrain capsules, kamikaze, softer early waves, crowd, ammo HUD. Status done.
-- [[task-035-heal-amount]] — a heal vein restores 60 HP. Status in-progress.
-- [[task-036-recycle-relocate]] — robots left behind are moved back ahead instead of removed. Status todo.
+- [[task-035-heal-amount]] — a heal vein restores 60 HP. Status done.
+- [[task-036-recycle-relocate]] — robots left behind are moved back ahead instead of removed. Status in-progress.
 - [[task-037-ammo-hud]] — weapon slot ammo HUD, reload and turret recharge, padlocks. Status todo.
