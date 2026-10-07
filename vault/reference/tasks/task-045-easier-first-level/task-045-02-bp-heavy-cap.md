@@ -3,7 +3,7 @@ id: task-045-02-bp-heavy-cap
 description: "BP_EnemySpawner WeightedEnemyClasses: BP_Heavy MaxAlive 5 → 3."
 parent: task-045-easier-first-level
 kind: task
-status: in-progress
+status: done
 ---
 # Heavy alive cap in the spawner Blueprint
 
@@ -15,11 +15,11 @@ status: in-progress
 - done_when: value read back 3 on the Blueprint (and the placed actor); docs updated; lint clean.
 - editor_state: open
 - token_ceiling: 30000
-- model: open
-- tokens: open
-- runs: open
+- model: sonnet
+- tokens: input 46, cache write 62021, cache read 940834, output 7632
+- runs: 1
 - milestone: M2
-- result: open
+- result: BP_EnemySpawner BP_Heavy MaxAlive 5 → 3 (placed spawner reads 3, no override on disk). Doc bp-enemy-spawner. Commit 1531665. With task-045-01: about 15 % fewer robots, rarer heavies, overtime hordes shrink too (copy of the first horde), 195/195.
 
 ## Relations
 - [[task-045-easier-first-level]] — parent global task.

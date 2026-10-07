@@ -3,7 +3,7 @@ id: task-045-easier-first-level
 description: "Global task: about 15 % fewer robots (lone 2.35 s, waves 7.1 → 4.1 s, hordes 34–51) and rarer heavies."
 parent: tasks-index
 kind: task
-status: in-progress
+status: done
 ---
 # Easier first level
 
@@ -13,8 +13,8 @@ status: in-progress
 - gdd_check: GDD updated by the Orchestrator (owner 2026-10-07, fifth test). No open value.
 - confirmed_by_owner: yes (2026-10-07)
 - milestone: M2
-- next_step: task-045-02-bp-heavy-cap
-- result: open
+- next_step: none
+- result: Done. BP_EnemySpawner BP_Heavy MaxAlive 5 → 3 (placed spawner reads 3, no override on disk). Doc bp-enemy-spawner. Commit 1531665. With task-045-01: about 15 % fewer robots, rarer heavies, overtime hordes shrink too (copy of the first horde), 195/195.
 
 ## Subtasks
 1. task-045-01-easier-first-level — cpp
