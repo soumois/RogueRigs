@@ -147,10 +147,11 @@ protected:
 
 	/**
 	 * Health a Heal pickup restores on collection, through HealEffectClass (SetByCaller Data.Heal, clamped to MaxHealth).
-	 * The amount is open in heal-ore: 0 (no heal) until it is decided; set it on BP_PickupHeal or here.
+	 * heal-ore (owner 2026-10-06, task-035-01): 60 / 9 HP per pickup, so a 3 x 3 vein (9 pickups) restores 60 HP.
+	 * Only read by Heal pickups; BP_PickupHeal keeps this default.
 	 */
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Pickup|Heal", meta = (ClampMin = 0))
-	float HealAmount = 0.f;
+	float HealAmount = 60.f / 9.f;
 
 	/** Instant effect applied to the miner by a Heal pickup (URRGE_Heal by default). */
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Pickup|Heal")
