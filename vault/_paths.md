@@ -347,6 +347,8 @@ task-047-01-heavy-speed  reference/tasks/task-047-heavy-speed/task-047-01-heavy-
 task-047-heavy-speed  reference/tasks/task-047-heavy-speed.md
 task-048-01-last-level-profile  reference/tasks/task-048-last-level-profile/task-048-01-last-level-profile.md
 task-048-last-level-profile  reference/tasks/task-048-last-level-profile.md
+task-049-01-shuttle-distance  reference/tasks/task-049-shuttle-distance/task-049-01-shuttle-distance.md
+task-049-shuttle-distance  reference/tasks/task-049-shuttle-distance.md
 tasks-index  reference/tasks/tasks-index.md
 tech-index  reference/tech/tech-index.md
 terrain-index  reference/gdd/terrain/terrain-index.md
