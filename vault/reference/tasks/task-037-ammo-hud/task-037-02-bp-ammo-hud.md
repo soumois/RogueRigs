@@ -3,7 +3,7 @@ id: task-037-02-bp-ammo-hud
 description: "WBP_HUD weapon slots: ammo bar above 7 rounds, blocks at 7 or fewer, red reload bar, turret charge blocks with recharge block, padlocks."
 parent: task-037-ammo-hud
 kind: task
-status: todo
+status: in-progress
 ---
 # Fourth test: ammo HUD
 

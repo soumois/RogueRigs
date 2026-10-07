@@ -13,7 +13,7 @@ status: in-progress
 - gdd_check: GDD updated by the Orchestrator (owner 2026-10-06). No open value.
 - confirmed_by_owner: yes (2026-10-06, part of the fourth test plan)
 - milestone: M2
-- next_step: task-037-01-hud-ammo-data — cpp: getters; then task-037-02-bp-ammo-hud — bp: widgets, PIE
+- next_step: task-037-02-bp-ammo-hud
 - result: open
 
 ## Subtasks

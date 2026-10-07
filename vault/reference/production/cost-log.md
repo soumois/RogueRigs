@@ -91,6 +91,7 @@ kind: note
 | [[task-034-04-director-mix]] | opus | 2 | 0k | 95k | 2042k | 27k |
 | [[task-035-01-heal-value]] | opus | 1 | 0k | 40k | 487k | 6k |
 | [[task-036-01-relocate]] | opus | 1 | 0k | 147k | 4931k | 49k |
+| [[task-037-01-hud-ammo-data]] | opus | 1 | 0k | 56k | 592k | 11k |
 
 ## Totals
 | Scope | Input | Cache write | Cache read | Output |
