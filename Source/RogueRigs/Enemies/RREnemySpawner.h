@@ -126,7 +126,7 @@ struct FRRWeightedEnemyClass
  * band around the visible floor rectangle: the cell center is SpawnBandMinDistance to SpawnBandMaxDistance uu outside the
  * rectangle (box distance); when the band has no such cell, the nearest band of the same width farther out (up to
  * SpawnBandFallbackMaxDistance); cells whose path to the miner detours more than MaxPathDetourRatio are left out while others
- * remain. The robot spawns at the cell center, its capsule resting on the floor.
+ * remain, except front sector cells while the miner runs (robots also wait beyond the rock ahead). The robot spawns at the cell center, its capsule resting on the floor.
  * Run heading: the miner's (flow-field goal) movement over the last HeadingWindowSeconds; at HeadingMinSpeed or faster, each lone
  * robot, each director pack and each horde side first draws a sector around the miner (front / sides / back, weights
  * FrontSectorWeight / SideSectorWeight / BackSectorWeight, empty sectors left out) and spawns there; slower = uniform draw.
@@ -547,7 +547,8 @@ protected:
 	/**
 	 * Longest walk accepted for a spawn cell, as a ratio of its straight distance to the miner (flow-field steps x cell size /
 	 * straight distance; open floor is about 0.7 to 1). Longer detours (behind rock) are used only when the band has no other
-	 * cell, so the first robot arrives quickly. 0 = no check.
+	 * cell, so the first robot arrives quickly. Applies to side and back sector cells, and to every cell while the miner is
+	 * still; front sector cells are accepted whatever their detour (still reachable). 0 = no check.
 	 */
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Spawner|Band", meta = (ClampMin = 0))
 	float MaxPathDetourRatio = 1.5f;

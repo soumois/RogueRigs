@@ -262,11 +262,15 @@ void ARREnemySpawner::GetSpawnCandidates(TArray<FIntPoint>& OutCells)
 		return GetDistanceToRectangle(View, FVector2D(Center.X, Center.Y));
 	};
 	// Cells whose walk to the miner is a long detour (path steps x cell size over the straight distance above MaxPathDetourRatio).
+	// While the miner runs, front sector cells are exempt: robots must also wait beyond the rock it digs toward.
 	const AActor* Goal = FlowField->GetGoalActor();
+	FVector2D Heading;
+	FVector2D HeadingOrigin;
+	const bool bRunning = GetRunHeading(Heading) && GetHeadingOrigin(HeadingOrigin);
 	const FVector2D GoalLocation = Goal ? FVector2D(Goal->GetActorLocation()) : FVector2D::ZeroVector;
 	const float CellSize = Grid->GetCellSize();
 	TSet<FIntPoint> Detours;
-	FlowField->GatherReachableCells(OutCells, [this, Grid, Goal, &GoalLocation, CellSize, &CellDistance, MinDistance, SearchLimit, &Nearest, &Detours](FIntPoint Cell, int32 Steps)
+	FlowField->GatherReachableCells(OutCells, [this, Grid, Goal, &GoalLocation, CellSize, &CellDistance, MinDistance, SearchLimit, &Nearest, &Detours, bRunning, &Heading, &HeadingOrigin](FIntPoint Cell, int32 Steps)
 	{
 		const float Distance = CellDistance(Cell);
 		if (Distance < MinDistance || Distance > SearchLimit)
@@ -276,8 +280,10 @@ void ARREnemySpawner::GetSpawnCandidates(TArray<FIntPoint>& OutCells)
 		Nearest = FMath::Min(Nearest, Distance);
 		if (Goal && MaxPathDetourRatio > 0.f)
 		{
-			const double Straight = FVector2D::Distance(FVector2D(Grid->GetCellCenter(Cell.X, Cell.Y)), GoalLocation);
-			if (Steps * CellSize > Straight * MaxPathDetourRatio)
+			const FVector2D Center(Grid->GetCellCenter(Cell.X, Cell.Y));
+			const double Straight = FVector2D::Distance(Center, GoalLocation);
+			if (Steps * CellSize > Straight * MaxPathDetourRatio
+				&& (!bRunning || GetSectorOfPoint(HeadingOrigin, Heading, Center, FrontHalfAngle, BackHalfAngle) != ERRSpawnSector::Front))
 			{
 				Detours.Add(Cell);
 			}
