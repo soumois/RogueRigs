@@ -3,7 +3,7 @@ id: task-036-recycle-relocate
 description: "Global task: robots left far behind are moved back ahead of the miner instead of removed, so pressure stays."
 parent: tasks-index
 kind: task
-status: in-progress
+status: done
 ---
 # Recycling by relocation
 
@@ -13,8 +13,8 @@ status: in-progress
 - gdd_check: GDD enemies-index updated by the Orchestrator (owner 2026-10-06). No open value.
 - confirmed_by_owner: yes (2026-10-06)
 - milestone: M2
-- next_step: task-036-01-relocate
-- result: open
+- next_step: none
+- result: Done. Robots left far behind are moved back ahead with their type and health. 195/195.
 
 ## Subtasks
 1. task-036-01-relocate — cpp: relocation instead of removal, seen-once and grace timers

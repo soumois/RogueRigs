@@ -3,7 +3,7 @@ id: task-037-ammo-hud
 description: "Global task: weapon slot ammo HUD: ammo bar or blocks, red reload bar, turret recharge block, padlocks on slots not owned."
 parent: tasks-index
 kind: task
-status: todo
+status: in-progress
 ---
 # weapon slot ammo HUD: ammo bar or blocks, red reload bar, turret recharge block, padlocks on slots not owned
 

@@ -3,7 +3,7 @@ id: task-037-01-hud-ammo-data
 description: "HUD data for the weapon slots: rounds left, magazine size, reload progress per weapon; turret charges and recharge progress; slot owned or locked."
 parent: task-037-ammo-hud
 kind: task
-status: todo
+status: in-progress
 ---
 # Ammo data for the HUD
 

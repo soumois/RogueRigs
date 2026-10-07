@@ -90,6 +90,7 @@ kind: note
 | [[task-034-03-docs]] | opus | 1 | 0k | 91k | 1414k | 16k |
 | [[task-034-04-director-mix]] | opus | 2 | 0k | 95k | 2042k | 27k |
 | [[task-035-01-heal-value]] | opus | 1 | 0k | 40k | 487k | 6k |
+| [[task-036-01-relocate]] | opus | 1 | 0k | 147k | 4931k | 49k |
 
 ## Totals
 | Scope | Input | Cache write | Cache read | Output |
