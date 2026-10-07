@@ -58,3 +58,6 @@ Resuming after the pause of 2026-10-06: read [[handover-2026-10-06]] first.
 - [[task-043-vein-shake]] — All blocks of a vein being mined shake together. Status done.
 - [[task-044-fewer-kamikazes]] — At most 1 kamikaze per pack in one pack out of two; hordes 1–2 kamikazes (was 3–5). Status done.
 - [[task-045-easier-first-level]] — About 15 % fewer robots (lone 2.35 s, waves 7.1 → 4.1 s, hordes 34–51) and rarer heavies (weight 4, 2–3 per horde, cap 3). Status done.
+- [[task-046-level1-pressure]] — Level 1 pressure: 80 robots alive at most, wave interval ending at 5.5 s, packs of one wave at least 120° apart. Status todo.
+- [[task-047-heavy-speed]] — Heavy robot speed 180 → 153 uu/s; the other robots stay at 180. Status todo.
+- [[task-048-last-level-profile]] — Current wave director values saved as a last-level profile in the data, not wired. Status in-progress.

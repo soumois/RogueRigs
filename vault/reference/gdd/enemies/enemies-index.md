@@ -20,6 +20,8 @@ Kamikaze share (owner 2026-10-07: at least twice too many, provisional): at most
 
 First level too hard (owner 2026-10-07, provisional): about 15 % fewer robots: lone chaser every 2.35 s (was 2), wave interval 7.1 → 4.1 s (was 6 → 3.5), hordes 34–51 robots (was 40–60), overtime unchanged; heavies rarer: heavy pack weight 4 (was 8), 2–3 heavies per horde (was 3–5), at most 3 alive (was 5).
 
+Level 1 pressure (owner 2026-10-07, provisional; the earlier values become the last-level profile): at most 80 robots alive (was 150); wave interval ends at 5.5 s (was 4.1); waves of 2–3 packs still from 1:30, but the packs of one wave spawn at least 120° apart around the miner.
+
 ## Relations
 - [[gdd-index]] — parent index.
 - [[enemy-chaser]] — small yellow biped, melee rusher.

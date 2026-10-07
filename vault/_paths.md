@@ -341,6 +341,12 @@ task-044-fewer-kamikazes  reference/tasks/task-044-fewer-kamikazes.md
 task-045-01-easier-first-level  reference/tasks/task-045-easier-first-level/task-045-01-easier-first-level.md
 task-045-02-bp-heavy-cap  reference/tasks/task-045-easier-first-level/task-045-02-bp-heavy-cap.md
 task-045-easier-first-level  reference/tasks/task-045-easier-first-level.md
+task-046-01-level1-pressure  reference/tasks/task-046-level1-pressure/task-046-01-level1-pressure.md
+task-046-level1-pressure  reference/tasks/task-046-level1-pressure.md
+task-047-01-heavy-speed  reference/tasks/task-047-heavy-speed/task-047-01-heavy-speed.md
+task-047-heavy-speed  reference/tasks/task-047-heavy-speed.md
+task-048-01-last-level-profile  reference/tasks/task-048-last-level-profile/task-048-01-last-level-profile.md
+task-048-last-level-profile  reference/tasks/task-048-last-level-profile.md
 tasks-index  reference/tasks/tasks-index.md
 tech-index  reference/tech/tech-index.md
 terrain-index  reference/gdd/terrain/terrain-index.md
