@@ -68,4 +68,4 @@ Resuming after the pause of 2026-10-06: read [[handover-2026-10-06]] first.
 - [[task-053-weapon-info-centred]] — Weapon slot info (name, ammo bar or blocks, reload bar, LOCKED) centred under each slot. Status todo.
 - [[task-054-niagara-trail-sparkle]] — XP cube trail and pickup sparkle rebuilt as Niagara systems. Status todo.
 - [[task-055-first-hit-vignette]] — The red damage vignette shows on the very first hit, including in a packaged build. Status in-progress.
-- [[task-056-bonus-chest]] — Bonus chest: one per level at 60 % alert, 8 s hack, XP, ore and a lucky upgrade choice. Status todo.
+- [[task-056-bonus-chest]] — Bonus chest: one per level at 60 % alert, 8 s hack, XP, ore and a lucky upgrade choice. Status in-progress.

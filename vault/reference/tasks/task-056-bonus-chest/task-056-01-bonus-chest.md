@@ -3,7 +3,7 @@ id: task-056-01-bonus-chest
 description: "Bonus chest: one per level at 60 % alert, 8 s hack, XP, ore and a lucky upgrade choice."
 parent: task-056-bonus-chest
 kind: task
-status: todo
+status: in-progress
 ---
 # Bonus chest
 
