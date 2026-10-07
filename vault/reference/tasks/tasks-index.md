@@ -49,4 +49,4 @@ Resuming after the pause of 2026-10-06: read [[handover-2026-10-06]] first.
 - [[task-034-fourth-test]] — fourth play test: projectile hitbox, whole-vein mining, heal pickup, small terrain capsules, kamikaze, softer early waves, crowd, ammo HUD. Status done.
 - [[task-035-heal-amount]] — a heal vein restores 60 HP. Status done.
 - [[task-036-recycle-relocate]] — robots left behind are moved back ahead instead of removed. Status done.
-- [[task-037-ammo-hud]] — weapon slot ammo HUD, reload and turret recharge, padlocks. Status in-progress.
+- [[task-037-ammo-hud]] — weapon slot ammo HUD, reload and turret recharge, padlocks. Status done.

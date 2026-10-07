@@ -3,7 +3,7 @@ id: task-037-ammo-hud
 description: "Global task: weapon slot ammo HUD: ammo bar or blocks, red reload bar, turret recharge block, padlocks on slots not owned."
 parent: tasks-index
 kind: task
-status: in-progress
+status: done
 ---
 # weapon slot ammo HUD: ammo bar or blocks, red reload bar, turret recharge block, padlocks on slots not owned
 
@@ -13,8 +13,8 @@ status: in-progress
 - gdd_check: GDD updated by the Orchestrator (owner 2026-10-06). No open value.
 - confirmed_by_owner: yes (2026-10-06, part of the fourth test plan)
 - milestone: M2
-- next_step: task-037-02-bp-ammo-hud
-- result: open
+- next_step: none
+- result: Done. Ammo bar or blocks, red reload bar, turret recharge in the leftmost empty block, LOCKED on slots not owned. Owner to check the reload and turret display in play.
 
 ## Subtasks
 1. task-037-01-hud-ammo-data — cpp: getters; then task-037-02-bp-ammo-hud — bp: widgets, PIE
