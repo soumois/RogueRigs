@@ -3,7 +3,7 @@ id: task-041-01-front-detour
 description: "In the front sector the spawn detour filter is off, so robots spawn beyond the rock the miner digs toward."
 parent: task-041-front-detour
 kind: task
-status: todo
+status: in-progress
 ---
 # Spawns beyond the rock ahead
 

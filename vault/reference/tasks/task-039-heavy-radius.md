@@ -3,7 +3,7 @@ id: task-039-heavy-radius
 description: "Global task: Heavy slam radius 400 → 340 uu (trigger 0.7 × radius = 238 uu); ground ring follows."
 parent: tasks-index
 kind: task
-status: in-progress
+status: done
 ---
 # Heavy slam radius −15 %
 
@@ -13,8 +13,8 @@ status: in-progress
 - gdd_check: GDD updated by the Orchestrator (owner 2026-10-07, fifth test). No open value.
 - confirmed_by_owner: yes (2026-10-07)
 - milestone: M2
-- next_step: task-039-01-heavy-radius
-- result: open
+- next_step: none
+- result: Done. Heavy AttackRange 340 in EnemyStats.csv: telegraph 238 uu, chase stop 170 uu; BP_Heavy ring follows GetSlamRadius (scale 6.8); heavy tests updated (hit 330, miss 350). Build 0, 195/195. Commit f51c081.
 
 ## Subtasks
 1. task-039-01-heavy-radius — cpp
