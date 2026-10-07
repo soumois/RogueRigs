@@ -1,6 +1,6 @@
 ---
 id: sys-drone
-description: "Drone C++ actor: orbit, contact arc dig (up to 4 blocks, per-block events) and hack states, per-block laser fan, MiningSpeed from the miner ASC."
+description: "Drone C++ actor: orbit, contact arc dig (up to 4 blocks, whole ore veins, per-block events), hack, laser fan, MiningSpeed from the miner ASC."
 parent: systems-index
 kind: doc
 ---
@@ -23,7 +23,7 @@ kind: doc
   - `SelectArcCells(Grid, MinerLocation, ArcDirection, OutCells)` (C++ public, const): block cells whose center is within `ArcReachCells` × cell size of the front point (miner location + direction × capsule radius) and within `ArcAngleDegrees` / 2 of the direction seen from the miner location; sorted nearest to the front point, then smaller angle, then Y, X; at most `MaxArcBlocks`. 2D, unrotated grid. Against a flat wall at 67 uu with a 34 uu capsule: the 3 wall blocks within 60°, plus the block behind the nearest, whose center sits exactly 1.5 cells from a touching front point; it is in only with no gap (character movement keeps about 0.1 uu, so 3 blocks in play; 4 when the miner stands at a cell center, 0.5 uu into the wall, as in the tests). Corners and diagonal pushes can give 4.
   - `ReleaseDig()`: leaves Dig (no effect otherwise).
   - `StartHack(Target)` / `StopHack(Target)`: driven by the objective every tick ([[sys-objectives]]); one target at a time; a dig in progress is stopped.
-  - Dig tick: Orbit if miner or grid gone; cells no longer blocks (explosions) leave the arc (`OnDigBlockStopped(Cell, true)`); move toward the arc centre (mean of dug cell centers; Z = miner capsule bottom + `HoverHeight`); beam i from the drone to `GetDigTargetPoint(DigCells[i])`, unused beams hidden; then each dug cell takes `ApplyTerrainDamage(Cell, DeltaSeconds × GetMiningSpeed(), Drone)` in parallel; a destroyed cell leaves the arc (`OnDigBlockStopped(Cell, true)`). Dig holds with an empty arc until the miner's next request or release.
+  - Dig tick: Orbit if miner or grid gone; cells no longer blocks (explosions) leave the arc (`OnDigBlockStopped(Cell, true)`); move toward the arc centre (mean of dug cell centers; Z = miner capsule bottom + `HoverHeight`); beam i from the drone to `GetDigTargetPoint(DigCells[i])`, unused beams hidden; then the targets are built: each dug cell expanded to its vein with `GetVeinCells` ([[sys-grid]]; Ore and HealOre only, task-034-01), duplicates removed, and each target takes `ApplyTerrainDamage(Cell, DeltaSeconds × GetMiningSpeed(), Drone)` once per tick, however many of its vein blocks are in the arc; a dug cell no longer a block leaves the arc (`OnDigBlockStopped(Cell, true)`). Dig holds with an empty arc until the miner's next request or release.
   - Orbit tick: angle += 2π / `OrbitPeriod` per second; orbit point = miner + `OrbitRadius` × (cos, sin), Z = capsule bottom + `HoverHeight`; `VInterpTo` at `FollowInterpSpeed`. Hack tick: hover `HackHoverDistance` from the target toward the miner, laser to target + `HackLinkOffset`.
   - Leaving Dig (release, empty arc, `SetState(Orbit)`, hack, `SetOwnerMiner`, `EndPlay`): every dug cell stops shaking with `OnDigBlockStopped`, every beam hidden, arc cleared, orbit resumes from the drone's current angle. Damage stays on the blocks ([[sys-grid]]).
 - events (BlueprintAssignable, for the laser and dig effects): `OnDigBlockStarted(FIntPoint Cell)`, `OnDigBlockStopped(FIntPoint Cell, bool bDestroyed)`. The render shake is done by the grid in C++.
@@ -33,6 +33,7 @@ kind: doc
 - gotchas:
   - Damage starts on the first Dig tick, while the drone still flies to the arc centre.
   - Each block of the arc is cut at the full rate (4 rock blocks in 0.5 s), as the GDD's cleared area per second requires.
+  - Whole-vein mining (task-034-01, [[ore-blocks]]): touching one block of a 3 × 3 ore or heal vein damages all 9 blocks at the full rate, so the vein breaks whole after one block dig time (1.5 s) and drops 9 chunks; vein blocks outside the arc get no laser and no shake.
   - Arc direction is world-space; the miner's facing does not steer it.
   - Tick order: the miner requests, then the drone ticks (prerequisite), so a request is served the same frame.
   - The laser is red ([[drone]]); readability against the shooter's red targeting laser is still to check. Can the drone be hit: open ([[drone]]); collision is off.
