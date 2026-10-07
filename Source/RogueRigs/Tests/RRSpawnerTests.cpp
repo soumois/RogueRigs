@@ -669,7 +669,7 @@ bool FRRSpawnerHeadingSplitTest::RunTest(const FString& Parameters)
 	}
 
 	// Horde side: the side of a random cell of the drawn sector.
-	constexpr int32 HordeCount = 200;
+	constexpr int32 HordeCount = 2000;
 	Setup.Spawner->SetHeadingOverride(NorthHeading);
 	const FSpawnerSectorCounts MovingHordes = SpawnerCountHordeSides(Setup, HordeCount);
 	SpawnerLogCounts(*this, TEXT("horde sides, running north"), MovingHordes);

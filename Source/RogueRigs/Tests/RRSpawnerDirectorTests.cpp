@@ -658,7 +658,7 @@ bool FRRSpawnerDirectorHordeTest::RunTest(const FString& Parameters)
 	}
 	AddInfo(FString::Printf(TEXT("side %d: %d heavies, %d kamikazes, %d chasers, front %d cells long"), static_cast<int32>(Side), Heavies, Kamikazes, Chasers, MaxAlong - MinAlong + 1));
 	TestTrue(*FString::Printf(TEXT("3-5 heavies (%d)"), Heavies), Heavies >= 3 && Heavies <= 5);
-	TestTrue(*FString::Printf(TEXT("3-5 kamikazes (%d)"), Kamikazes), Kamikazes >= 3 && Kamikazes <= 5);
+	TestTrue(*FString::Printf(TEXT("1-2 kamikazes (%d)"), Kamikazes), Kamikazes >= 1 && Kamikazes <= 2);
 	TestEqual(TEXT("the rest are chasers"), Heavies + Kamikazes + Chasers, Plan.Num());
 	TestTrue(TEXT("heavies spawn first"), bHeaviesFirst);
 	TestTrue(*FString::Printf(TEXT("heavies in the front row (%.0f <= %.0f)"), HeavyFarthest, OtherNearest), HeavyFarthest <= OtherNearest);

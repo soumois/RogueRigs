@@ -69,26 +69,27 @@ FRRWaveDirectorConfig FRRWaveDirectorConfig::MakeDefault()
 	using namespace RRWaveDirectorDefaults;
 	FRRWaveDirectorConfig Config;
 
-	// Pack types (owner 2026-10-06 fourth test, provisional): 1-2 kamikazes ride with the chasers; heavies lead a chaser pack.
-	// Until 1:30 the packs hold 6-10 robots and no shooter. From 1:30 (Wide types) the packs are bigger and carry 0-1 shooter
+	// Pack types (owner 2026-10-07, task-044-01, provisional): 0-1 kamikaze rides with the chasers (one pack out of two on
+	// average); heavies lead a chaser pack.
+	// Until 1:30 the packs hold 5-10 robots and no shooter. From 1:30 (Wide types) the packs are bigger and carry 0-1 shooter
 	// behind their front: at most 1, in one pack out of two on average; never a shooter-only pack.
 	FRRDirectorPackType& FirstChasers = Config.PackTypes.AddDefaulted_GetRef();
 	FirstChasers.Name = TEXT("FirstChasers");
 	FirstChasers.Members = { Member(ARRChaser::StaticClass(), 6, 8) };
 	FRRDirectorPackType& Chasers = Config.PackTypes.AddDefaulted_GetRef();
 	Chasers.Name = TEXT("Chasers");
-	Chasers.Members = { Member(ARRChaser::StaticClass(), 5, 8), Member(ARRKamikaze::StaticClass(), 1, 2) };
+	Chasers.Members = { Member(ARRChaser::StaticClass(), 5, 8), Member(ARRKamikaze::StaticClass(), 0, 1) };
 	FRRDirectorPackType& Heavies = Config.PackTypes.AddDefaulted_GetRef();
 	Heavies.Name = TEXT("Heavies");
 	Heavies.Members = { Member(ARRHeavy::StaticClass(), 2, 3, /*bFront*/ true), Member(ARRChaser::StaticClass(), 4, 7) };
 	// Chasers after 1:00 (enemy-chaser shield variant): a quarter of the pack chasers carry a shield (1-2 of 5-7 until 1:30).
 	FRRDirectorPackType& ShieldChasers = Config.PackTypes.AddDefaulted_GetRef();
 	ShieldChasers.Name = TEXT("ShieldChasers");
-	ShieldChasers.Members = { Member(ARRChaser::StaticClass(), 4, 5), Member(ARRShieldChaser::StaticClass(), 1, 2), Member(ARRKamikaze::StaticClass(), 1, 2) };
+	ShieldChasers.Members = { Member(ARRChaser::StaticClass(), 4, 5), Member(ARRShieldChaser::StaticClass(), 1, 2), Member(ARRKamikaze::StaticClass(), 0, 1) };
 	// From 1:30: bigger packs (2-4 shields of 8-16 chasers) and 0-1 shooter behind.
 	FRRDirectorPackType& WideShieldChasers = Config.PackTypes.AddDefaulted_GetRef();
 	WideShieldChasers.Name = TEXT("WideShieldChasers");
-	WideShieldChasers.Members = { Member(ARRChaser::StaticClass(), 6, 12), Member(ARRShieldChaser::StaticClass(), 2, 4), Member(ARRKamikaze::StaticClass(), 1, 2),
+	WideShieldChasers.Members = { Member(ARRChaser::StaticClass(), 6, 12), Member(ARRShieldChaser::StaticClass(), 2, 4), Member(ARRKamikaze::StaticClass(), 0, 1),
 		Behind(ARRShooter::StaticClass(), 0, 1) };
 	FRRDirectorPackType& WideHeavies = Config.PackTypes.AddDefaulted_GetRef();
 	WideHeavies.Name = TEXT("WideHeavies");
@@ -138,13 +139,13 @@ FRRWaveDirectorConfig FRRWaveDirectorConfig::MakeDefault()
 	FlowWide.SidesMax = 3;
 	FlowWide.PackWeights = { Weight(TEXT("WideShieldChasers"), 92.f), Weight(TEXT("WideHeavies"), 8.f) };
 
-	// Hordes: fronts at 1:35 and 2:55, heavies in front, kamikazes among them, a carpet of chasers behind.
+	// Hordes: fronts at 1:35 and 2:55, heavies in front, 1-2 kamikazes among them (task-044-01), a carpet of chasers behind.
 	for (const float FrontTime : { 95.f, 175.f })
 	{
 		FRRDirectorHorde& Horde = Config.Hordes.AddDefaulted_GetRef();
 		Horde.TriggerTime = FrontTime;
 		Horde.TriggerAlert = FrontTime < 100.f ? 0.4f : 0.75f;
-		Horde.Members = { Member(ARRHeavy::StaticClass(), 3, 5, /*bFront*/ true), Member(ARRKamikaze::StaticClass(), 3, 5) };
+		Horde.Members = { Member(ARRHeavy::StaticClass(), 3, 5, /*bFront*/ true), Member(ARRKamikaze::StaticClass(), 1, 2) };
 		Horde.FillClass = ARRChaser::StaticClass();
 	}
 	// Overtime (owner 2026-10-06 third test, provisional): from 3:30 a horde every 30 s (same front as the timed hordes), the
