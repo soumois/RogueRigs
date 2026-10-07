@@ -3,7 +3,7 @@ id: task-051-turret-spacing
 description: "Global task: A turret placed less than 100 uu from a standing turret moves to the nearest free floor cell at least 100 uu away."
 parent: tasks-index
 kind: task
-status: in-progress
+status: done
 ---
 # Turret spacing
 
@@ -13,8 +13,8 @@ status: in-progress
 - gdd_check: GDD updated by the Orchestrator (owner 2026-10-07, fifth test). No open value.
 - confirmed_by_owner: yes (2026-10-07)
 - milestone: M2
-- next_step: task-051-01-turret-spacing
-- result: open
+- next_step: none
+- result: Done. ARRTurretLauncher::FindSpacedCell: an aimed cell within TurretMinSpacing (100 uu, editable, 0 off) of a standing turret is replaced by the nearest visible floor cell within the 400 uu reach that is at least 100 uu from every turret; otherwise placed as aimed. No test changed. Build 0, 195/195. Commit cbe2a67.
 
 ## Subtasks
 1. task-051-01-turret-spacing — cpp

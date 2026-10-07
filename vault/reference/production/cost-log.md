@@ -107,6 +107,7 @@ kind: note
 | [[task-047-01-heavy-speed]] | opus | 1 | 0k | 40k | 191k | 4k |
 | [[task-049-01-shuttle-distance]] | opus | 1 | 0k | 51k | 760k | 13k |
 | [[task-050-01-flaky-stacking-test]] | opus | 1 | 0k | 54k | 987k | 14k |
+| [[task-051-01-turret-spacing]] | opus | 1 | 0k | 50k | 613k | 10k |
 
 ## Totals
 | Scope | Input | Cache write | Cache read | Output |

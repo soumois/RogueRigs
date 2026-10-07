@@ -3,7 +3,7 @@ id: task-052-heavy-radius-2
 description: "Global task: Heavy slam radius 340 → 289 uu (trigger 202 uu, chase stop 145 uu); ground ring follows."
 parent: tasks-index
 kind: task
-status: todo
+status: in-progress
 ---
 # Heavy slam radius −15 % again
 

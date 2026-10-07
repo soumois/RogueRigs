@@ -3,7 +3,7 @@ id: task-051-01-turret-spacing
 description: "A turret placed less than 100 uu from a standing turret moves to the nearest free floor cell at least 100 uu away."
 parent: task-051-turret-spacing
 kind: task
-status: in-progress
+status: done
 ---
 # Turret spacing
 
@@ -15,11 +15,11 @@ status: in-progress
 - done_when: build exits 0 with the editor closed; all `RogueRigs.*` tests pass headless; docs updated; lint clean.
 - editor_state: closed
 - token_ceiling: 40000
-- model: open
-- tokens: open
-- runs: open
+- model: opus
+- tokens: input 36, cache write 49950, cache read 613117, output 10490
+- runs: 1
 - milestone: M2
-- result: open
+- result: ARRTurretLauncher::FindSpacedCell: an aimed cell within TurretMinSpacing (100 uu, editable, 0 off) of a standing turret is replaced by the nearest visible floor cell within the 400 uu reach that is at least 100 uu from every turret; otherwise placed as aimed. No test changed. Build 0, 195/195. Commit cbe2a67.
 
 ## Relations
 - [[task-051-turret-spacing]] — parent global task.
