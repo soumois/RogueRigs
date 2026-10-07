@@ -315,6 +315,9 @@ task-033-01-update-tests  reference/tasks/task-033-tests-speed/task-033-01-updat
 task-033-tests-speed  reference/tasks/task-033-tests-speed.md
 task-034-01-cpp-fixes  reference/tasks/task-034-fourth-test/task-034-01-cpp-fixes.md
 task-034-02-bp-ammo-hud  reference/tasks/task-034-fourth-test/task-034-02-bp-ammo-hud.md
+task-034-03-docs  reference/tasks/task-034-fourth-test/task-034-03-docs.md
+task-034-04-director-mix  reference/tasks/task-034-fourth-test/task-034-04-director-mix.md
+task-034-05-hud-ammo-data  reference/tasks/task-034-fourth-test/task-034-05-hud-ammo-data.md
 task-034-fourth-test  reference/tasks/task-034-fourth-test.md
 tasks-index  reference/tasks/tasks-index.md
 tech-index  reference/tech/tech-index.md

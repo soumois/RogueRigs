@@ -13,14 +13,20 @@ status: in-progress
 - gdd_check: GDD updated by the Orchestrator with provisional values (2026-10-06): burst-rifle, ore-blocks, heal-ore, enemy-kamikaze, enemies-index, turret, readability-rules. No open value.
 - confirmed_by_owner: yes (2026-10-06)
 - milestone: M2
-- next_step: task-034-01-cpp-fixes
+- next_step: task-034-03-docs
 - result: open
 
 ## Subtasks
-1. task-034-01-cpp-fixes — cpp: points 1 to 9 and the HUD ammo data; existing tests updated
-2. task-034-02-bp-ammo-hud — bp: weapon slot ammo bars, blocks, reload and recharge, padlocks; PIE
+1. task-034-01-cpp-fixes — cpp: points 1 to 6, 8, 9 (stopped there, split ordered by the owner)
+2. task-034-03-docs — cpp: docs for 034-01, full run
+3. task-034-04-director-mix — cpp: point 7, softer early waves
+4. task-034-05-hud-ammo-data — cpp: point 10 data
+5. task-034-02-bp-ammo-hud — bp: weapon slot ammo HUD, padlocks; PIE
 
 ## Relations
 - [[tasks-index]] — parent index.
 - [[task-034-01-cpp-fixes]] — step 1, cpp.
-- [[task-034-02-bp-ammo-hud]] — step 2, bp.
+- [[task-034-03-docs]] — step 2, cpp.
+- [[task-034-04-director-mix]] — step 3, cpp.
+- [[task-034-05-hud-ammo-data]] — step 4, cpp.
+- [[task-034-02-bp-ammo-hud]] — step 5, bp.

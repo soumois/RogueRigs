@@ -3,7 +3,7 @@ id: task-034-01-cpp-fixes
 description: "Projectile hitbox 14 uu, whole-vein mining, heal pickup fix, chaser capsule on rock, no robot blocking, kamikaze, pack mix, recycling, turret, ammo data."
 parent: task-034-fourth-test
 kind: task
-status: in-progress
+status: done
 ---
 # Fourth test: C++ fixes
 
@@ -15,11 +15,11 @@ status: in-progress
 - done_when: build exits 0 with the editor closed; all `RogueRigs.*` tests pass headless; docs updated; lint clean.
 - editor_state: closed
 - token_ceiling: 150000
-- model: open
-- tokens: open
-- runs: open
+- model: opus
+- tokens: input 176, cache write 211498, cache read 10173682, output 68304
+- runs: 3
 - milestone: M2
-- result: open
+- result: Stopped after points 1, 2, 3 (mechanism), 4, 5, 6, 8, 9 (split ordered by the owner): projectile sphere 14 uu; whole-vein mining (ARRArenaGrid::GetVeinCells, 9 blocks break together); heal pickups were collected but never healed: ARRPickup now applies URRGE_Heal (HealAmount open, 0); every robot root capsule 24 uu (TerrainCapsuleRadius) with a HitCapsule at its own size; RVO off and URRRobotSeparationSubsystem (weight 0.5); kamikaze arm 250 uu, fuse 0.65 s, already stopped when armed; recycling margin 0, 1800 uu, 3 s; turret recharge 12 s. 8 broken tests updated and passing; full suite not rerun. Points 7 and 10 and the docs moved to new subtasks. Commits 03ac10a, 659b75b.
 
 ## Relations
 - [[task-034-fourth-test]] — parent global task.

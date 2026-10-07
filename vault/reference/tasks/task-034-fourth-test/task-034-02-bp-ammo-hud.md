@@ -9,9 +9,9 @@ status: todo
 
 - goal: each weapon slot shows its ammo and reload state; empty slots look locked.
 - agent: bp
-- depends_on: task-034-01-cpp-fixes
+- depends_on: task-034-05-hud-ammo-data
 - inputs: [[wbp-hud]], [[sys-hud]], [[readability-rules]], [[color-code]], [[unreal-mcp]], [[sys-cheats]]
-- expected_output: WBP_HUD, under each owned weapon slot: above 7 rounds a bar of rounds left / magazine size; at 7 or fewer one block per round (filled = loaded); while reloading a red bar filling with the reload progress; turret launcher: one block per charge, the recharging charge shown as a red bar in the leftmost empty block (it moves left when another charge is used); slots not owned show a padlock (no level text). Driven by the task-034-01 getters. Docs wbp-hud. PIE: no log error; read back the bar, the block count and the reload bar during a reload.
+- expected_output: WBP_HUD, under each owned weapon slot: above 7 rounds a bar of rounds left / magazine size; at 7 or fewer one block per round (filled = loaded); while reloading a red bar filling with the reload progress; turret launcher: one block per charge, the recharging charge shown as a red bar in the leftmost empty block (it moves left when another charge is used); slots not owned show a padlock (no level text). Driven by the task-034-05 getters. Docs wbp-hud. PIE: no log error; read back the bar, the block count and the reload bar during a reload.
 - done_when: PIE check with no error; docs updated; lint clean.
 - editor_state: open
 - token_ceiling: 110000
