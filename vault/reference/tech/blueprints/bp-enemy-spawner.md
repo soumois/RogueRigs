@@ -10,7 +10,7 @@ kind: doc
 - parent_class: ARREnemySpawner (/Script/RogueRigs.RREnemySpawner)
 - purpose: spawns chasers, kamikazes and shooters outside the screen ([[sys-spawner]]).
 - components: inherited only.
-- exposed_defaults: WeightedEnemyClasses = BP_Chaser_C 65, BP_Kamikaze_C 12, BP_Shooter_C 15 (all MaxAlive 0), BP_Heavy_C 8 (MaxAlive 5), BP_ShieldChaser_C 0 (MaxAlive 0, director only, task-028-02) (task-022-02; before it 70 / 15 / 15; the placed instance inherits it, its saved actor file has no override); EnemyClass = BP_Chaser_C (fallback); other tunables at C++ defaults. One instance placed in L_ArenaM1 at (8100, 8100, 100) (location irrelevant).
+- exposed_defaults: WeightedEnemyClasses = BP_Chaser_C 65, BP_Kamikaze_C 12, BP_Shooter_C 15 (all MaxAlive 0), BP_Heavy_C 8 (MaxAlive 3, was 5 before task-045-02), BP_ShieldChaser_C 0 (MaxAlive 0, director only, task-028-02) (task-022-02; before it 70 / 15 / 15; the placed instance inherits it, its saved actor file has no override); EnemyClass = BP_Chaser_C (fallback); other tunables at C++ defaults. One instance placed in L_ArenaM1 at (8100, 8100, 100) (location irrelevant).
 - events: none
 - logic_in_bp: none
 - assets: none
@@ -23,4 +23,4 @@ kind: doc
 - [[bp-kamikaze]] — the other enemy it spawns.
 - [[bp-shooter]] — the third enemy it spawns.
 - [[bp-shield-chaser]] — fifth entry, spawned by the director only.
-- [[bp-heavy]] — the fourth enemy it spawns, capped at 5 alive.
+- [[bp-heavy]] — the fourth enemy it spawns, capped at 3 alive.
