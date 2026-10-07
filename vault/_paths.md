@@ -338,6 +338,8 @@ task-043-01-vein-shake  reference/tasks/task-043-vein-shake/task-043-01-vein-sha
 task-043-vein-shake  reference/tasks/task-043-vein-shake.md
 task-044-01-fewer-kamikazes  reference/tasks/task-044-fewer-kamikazes/task-044-01-fewer-kamikazes.md
 task-044-fewer-kamikazes  reference/tasks/task-044-fewer-kamikazes.md
+task-045-01-easier-first-level  reference/tasks/task-045-easier-first-level/task-045-01-easier-first-level.md
+task-045-easier-first-level  reference/tasks/task-045-easier-first-level.md
 tasks-index  reference/tasks/tasks-index.md
 tech-index  reference/tech/tech-index.md
 terrain-index  reference/gdd/terrain/terrain-index.md
