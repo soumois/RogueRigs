@@ -12,6 +12,8 @@ Robot recycling (owner 2026-10-06 third test, provisional): a robot off screen, 
 
 Fourth test (owner 2026-10-06 fourth test, provisional): every robot uses the chaser capsule against rock (render and hits on the miner unchanged) so none gets stuck; robots no longer block each other, a light separation keeps them from stacking; robots left behind are removed once off screen and more than 1800 uu away for 3 s; packs hold 1–2 kamikazes, and at most 1 shooter in one pack out of two, never before 1:30, at most 4 shooters alive; packs hold 6–10 robots until 1:30.
 
+Recycling by relocation (owner 2026-10-06, provisional): a robot off screen and more than 1800 uu from the miner is not removed but moved back into the spawn band ahead of the miner (heading split), keeping its type and health, so the pressure stays; it qualifies 3 s after leaving the screen if it has been on screen, 6 s after spawning if never seen; robots near the camera are never relocated.
+
 ## Relations
 - [[gdd-index]] — parent index.
 - [[enemy-chaser]] — small yellow biped, melee rusher.
