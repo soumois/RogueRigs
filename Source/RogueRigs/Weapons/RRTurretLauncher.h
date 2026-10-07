@@ -47,8 +47,10 @@ public:
 	 * Placement of the next turret: the floor cell under the aimed point (the mouse cursor point with mouse aim, clamped to
 	 * PlacementMaxDistance; else PlacementDistance ahead of the miner along the aim) when it is floor and in grid line of sight
 	 * from the miner; otherwise the floor cell in line of sight sampled along the aim (every half cell from the miner up to
-	 * PlacementMaxDistance) nearest to that point. Out: the cell center on the floor top. Without a grid: the aimed point at the
-	 * miner's feet. False when no cell qualifies.
+	 * PlacementMaxDistance) nearest to that point. Spacing (task-051-01): when that cell is closer than TurretMinSpacing (2D) to
+	 * a standing turret, the nearest floor cell in line of sight, within PlacementMaxDistance of the miner and at least
+	 * TurretMinSpacing from every standing turret is used instead (FindSpacedCell); if none, the cell is kept. Out: the cell
+	 * center on the floor top. Without a grid: the aimed point at the miner's feet (no spacing). False when no cell qualifies.
 	 */
 	bool FindPlacementLocation(FVector& OutLocation) const;
 
@@ -111,6 +113,14 @@ protected:
 	/** Arena grid of the miner, or the first of the world. */
 	ARRArenaGrid* GetGrid() const;
 
+	/**
+	 * Spacing step of FindPlacementLocation. When InOutLocation is closer than TurretMinSpacing (2D) to a standing turret
+	 * (any ARRTurret not being destroyed), replaces it by the center of the floor cell nearest to it (2D) that is within
+	 * MaxDistance of Origin, in grid line of sight from Origin and at least TurretMinSpacing from every standing turret.
+	 * Returns false (InOutLocation untouched) when no turret is too close or no cell qualifies.
+	 */
+	bool FindSpacedCell(const ARRArenaGrid& Grid, const FVector& Origin, float MaxDistance, FVector& InOutLocation) const;
+
 	/** Turret spawned by TryPlaceTurret (a Blueprint of ARRTurret for the mesh). */
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Weapon|Turret")
 	TSubclassOf<ARRTurret> TurretClass;
@@ -122,6 +132,10 @@ protected:
 	/** Farthest placement from the miner along the aim, in uu (task-024-03: 400). */
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Weapon|Turret", meta = (ClampMin = 0, Units = "cm"))
 	float PlacementMaxDistance = 400.f;
+
+	/** Minimum 2D distance between a new turret and every standing turret, in uu (task-051-01: 100); 0 disables the spacing. */
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Weapon|Turret", meta = (ClampMin = 0, Units = "cm"))
+	float TurretMinSpacing = 100.f;
 
 	/** Turret lifetime in seconds, copied from the CSV at acquisition. */
 	UPROPERTY(VisibleInstanceOnly, BlueprintReadOnly, Category = "Weapon|Turret")

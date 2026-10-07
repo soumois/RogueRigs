@@ -4,6 +4,7 @@
 
 #include "Components/CapsuleComponent.h"
 #include "Engine/World.h"
+#include "EngineUtils.h"
 #include "GAS/RRAbilitySystemComponent.h"
 #include "Grid/RRArenaGrid.h"
 #include "Player/RRMiner.h"
@@ -120,6 +121,7 @@ bool ARRTurretLauncher::FindPlacementLocation(FVector& OutLocation) const
 
 	if (TryCell(Origin + Aim * Desired, OutLocation))
 	{
+		FindSpacedCell(*Grid, Origin, MaxDistance, OutLocation);
 		return true;
 	}
 
@@ -137,6 +139,82 @@ bool ARRTurretLauncher::FindPlacementLocation(FVector& OutLocation) const
 			OutLocation = Center;
 			bFound = true;
 		}
+	}
+	if (bFound)
+	{
+		FindSpacedCell(*Grid, Origin, MaxDistance, OutLocation);
+	}
+	return bFound;
+}
+
+bool ARRTurretLauncher::FindSpacedCell(const ARRArenaGrid& Grid, const FVector& Origin, float MaxDistance, FVector& InOutLocation) const
+{
+	const UWorld* World = GetWorld();
+	if (!World || TurretMinSpacing <= 0.f)
+	{
+		return false;
+	}
+
+	// Standing turrets of every launcher.
+	TArray<FVector, TInlineAllocator<16>> TurretLocations;
+	for (TActorIterator<ARRTurret> It(World); It; ++It)
+	{
+		if (!It->IsActorBeingDestroyed())
+		{
+			TurretLocations.Add(It->GetActorLocation());
+		}
+	}
+
+	const double MinSpacingSquared = FMath::Square(static_cast<double>(TurretMinSpacing));
+	auto IsSpaced = [&TurretLocations, MinSpacingSquared](const FVector& Point)
+	{
+		for (const FVector& TurretLocation : TurretLocations)
+		{
+			if (FVector::DistSquared2D(Point, TurretLocation) < MinSpacingSquared)
+			{
+				return false;
+			}
+		}
+		return true;
+	};
+
+	if (IsSpaced(InOutLocation))
+	{
+		return false;
+	}
+
+	// Every floor cell within the placement reach, in sight of the miner and spaced from every turret; nearest to the aimed cell wins.
+	const float CellSize = FMath::Max(Grid.GetCellSize(), 1.f);
+	const int32 Radius = FMath::CeilToInt32(MaxDistance / CellSize) + 1;
+	const FIntPoint OriginCell = Grid.GetCellAtWorld(Origin);
+	const double MaxDistanceSquared = FMath::Square(static_cast<double>(MaxDistance) + KINDA_SMALL_NUMBER);
+	bool bFound = false;
+	double BestDistanceSquared = TNumericLimits<double>::Max();
+	FVector Best = InOutLocation;
+	for (int32 Y = OriginCell.Y - Radius; Y <= OriginCell.Y + Radius; ++Y)
+	{
+		for (int32 X = OriginCell.X - Radius; X <= OriginCell.X + Radius; ++X)
+		{
+			if (Grid.GetCellType(FIntPoint(X, Y)) != ERRCellType::Floor)
+			{
+				continue;
+			}
+			const FVector Center = Grid.GetCellCenter(X, Y);
+			const double DistanceSquared = FVector::DistSquared2D(Center, InOutLocation);
+			if (DistanceSquared >= BestDistanceSquared || FVector::DistSquared2D(Center, Origin) > MaxDistanceSquared
+				|| !IsSpaced(Center) || !Grid.HasLineOfSight(Origin, Center))
+			{
+				continue;
+			}
+			BestDistanceSquared = DistanceSquared;
+			Best = Center;
+			bFound = true;
+		}
+	}
+
+	if (bFound)
+	{
+		InOutLocation = Best;
 	}
 	return bFound;
 }
