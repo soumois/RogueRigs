@@ -3,7 +3,7 @@ id: task-045-01-easier-first-level
 description: "About 15 % fewer robots (lone 2.35 s, waves 7.1 → 4.1 s, hordes 34–51) and rarer heavies (weight 4, 2–3 per horde, cap 3)."
 parent: task-045-easier-first-level
 kind: task
-status: in-progress
+status: done
 ---
 # Easier first level
 
@@ -15,11 +15,11 @@ status: in-progress
 - done_when: build exits 0 with the editor closed; all `RogueRigs.*` tests pass headless; docs updated; lint clean.
 - editor_state: closed
 - token_ceiling: 50000
-- model: open
-- tokens: open
-- runs: open
+- model: opus
+- tokens: input 50, cache write 141260, cache read 1122096, output 15089
+- runs: 1
 - milestone: M2
-- result: open
+- result: Lone 2.35 s (6 before the first pack), waves 7.1 → 4.1 s over 210 s, pack weights 96 / 4, hordes 34–51 with 2–3 heavies (overtime horde copies the first, so it shrinks too). Heavy alive cap lives only on BP_EnemySpawner (moved to task-045-02). Director and pressure tests updated; DamageNumbers.StackOverDisplayed failed once then passed (flaky). Build 0, 195/195. Commit 12ee203.
 
 ## Relations
 - [[task-045-easier-first-level]] — parent global task.

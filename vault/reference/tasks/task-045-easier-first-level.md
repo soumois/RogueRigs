@@ -13,12 +13,14 @@ status: in-progress
 - gdd_check: GDD updated by the Orchestrator (owner 2026-10-07, fifth test). No open value.
 - confirmed_by_owner: yes (2026-10-07)
 - milestone: M2
-- next_step: task-045-01-easier-first-level
+- next_step: task-045-02-bp-heavy-cap
 - result: open
 
 ## Subtasks
 1. task-045-01-easier-first-level — cpp
+2. task-045-02-bp-heavy-cap — bp: heavy alive cap 3 on BP_EnemySpawner
 
 ## Relations
 - [[tasks-index]] — parent index.
 - [[task-045-01-easier-first-level]] — step 1, cpp.
+- [[task-045-02-bp-heavy-cap]] — step 2, bp.

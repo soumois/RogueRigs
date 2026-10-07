@@ -100,6 +100,7 @@ kind: note
 | [[task-043-01-vein-shake]] | opus | 1 | 0k | 34k | 542k | 10k |
 | [[task-040-01-locator-arrow]] | sonnet | 2 | 0k | 151k | 5575k | 40k |
 | [[task-044-01-fewer-kamikazes]] | opus | 1 | 0k | 47k | 977k | 14k |
+| [[task-045-01-easier-first-level]] | opus | 1 | 0k | 141k | 1122k | 15k |
 
 ## Totals
 | Scope | Input | Cache write | Cache read | Output |
