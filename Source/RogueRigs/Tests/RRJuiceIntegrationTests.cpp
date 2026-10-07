@@ -212,7 +212,9 @@ bool FRRDamageNumberStackOverDisplayedTest::RunTest(const FString& Parameters)
 	const double Lifetime = Numbers->GetDisplayLifetime();
 
 	// Sustained fire on one robot, as in screenshot Juice_06: a hit every 0.25 s (15 frames) for 1 s, so each new number
-	// opens while the previous ones are still rising on screen. A second robot 20 uu away is hit in between.
+	// opens while the previous ones are still rising on screen. A second robot 5 uu away is hit in between: with the
+	// +-25 uu random jitter, B stays within the 55.8 uu half-width shared with a 2-digit A number, so it always overlaps
+	// their column and must stack (at 20 uu, about 1.4 % of jitter draws put it beside the column: not stacked, task-050-01).
 	for (int32 Frame = 0; Frame < 90; ++Frame)
 	{
 		if (Frame % 15 == 0 && Frame < 75)
@@ -221,7 +223,7 @@ bool FRRDamageNumberStackOverDisplayedTest::RunTest(const FString& Parameters)
 		}
 		if (Frame == 22)
 		{
-			Numbers->AddHit(RobotB, 8.f, false, Hit + FVector(0.f, 20.f, 0.f));
+			Numbers->AddHit(RobotB, 8.f, false, Hit + FVector(0.f, 5.f, 0.f));
 		}
 		TestWorld.Tick();
 	}
