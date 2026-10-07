@@ -50,8 +50,8 @@ Resuming after the pause of 2026-10-06: read [[handover-2026-10-06]] first.
 - [[task-035-heal-amount]] — a heal vein restores 60 HP. Status done.
 - [[task-036-recycle-relocate]] — robots left behind are moved back ahead instead of removed. Status done.
 - [[task-037-ammo-hud]] — weapon slot ammo HUD, reload and turret recharge, padlocks. Status done.
-- [[task-038-shooter-detour]] — Shooter without line of sight walks around rock like the other robots until it can fire, never moving away from the miner. Status in-progress.
-- [[task-039-heavy-radius]] — Heavy slam radius 400 → 340 uu (trigger 0.7 × radius = 238 uu); ground ring follows. Status todo.
+- [[task-038-shooter-detour]] — Shooter without line of sight walks around rock like the other robots until it can fire, never moving away from the miner. Status done.
+- [[task-039-heavy-radius]] — Heavy slam radius 400 → 340 uu (trigger 0.7 × radius = 238 uu); ground ring follows. Status in-progress.
 - [[task-040-locator-arrow]] — Console locator: real arrow about 64 px, pulsing, with the distance in metres. Status todo.
 - [[task-041-front-detour]] — In the front sector the spawn detour filter is off, so robots spawn beyond the rock the miner digs toward. Status todo.
 - [[task-042-hack-time]] — Console hack time 20 → 16 s. Status todo.

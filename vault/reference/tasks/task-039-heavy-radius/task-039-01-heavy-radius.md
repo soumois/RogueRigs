@@ -3,7 +3,7 @@ id: task-039-01-heavy-radius
 description: "Heavy slam radius 400 → 340 uu (trigger 0.7 × radius = 238 uu); ground ring follows."
 parent: task-039-heavy-radius
 kind: task
-status: todo
+status: in-progress
 ---
 # Heavy slam radius −15 %
 

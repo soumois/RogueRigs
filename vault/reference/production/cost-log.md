@@ -93,6 +93,7 @@ kind: note
 | [[task-036-01-relocate]] | opus | 1 | 0k | 147k | 4931k | 49k |
 | [[task-037-01-hud-ammo-data]] | opus | 1 | 0k | 56k | 592k | 11k |
 | [[task-037-02-bp-ammo-hud]] | sonnet | 2 | 0k | 99k | 2916k | 34k |
+| [[task-038-01-shooter-detour]] | opus | 1 | 0k | 109k | 3137k | 30k |
 
 ## Totals
 | Scope | Input | Cache write | Cache read | Output |
