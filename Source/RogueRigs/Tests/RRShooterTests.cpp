@@ -126,8 +126,8 @@ bool FRRShooterStatsTest::RunTest(const FString& Parameters)
 	FRREnemyStatsRow KamikazeRow;
 	if (TestTrue(TEXT("EnemyStats.csv row Kamikaze read"), ARREnemy::LoadStatsRow(TEXT("Kamikaze"), KamikazeRow)))
 	{
-		TestEqual(TEXT("kamikaze arm range = AttackRange 150"), KamikazeRow.AttackRange, 150.f);
-		TestEqual(TEXT("kamikaze fuse = WindUp 0.5"), KamikazeRow.WindUp, 0.5f);
+		TestEqual(TEXT("kamikaze arm range = AttackRange 250"), KamikazeRow.AttackRange, 250.f);
+		TestEqual(TEXT("kamikaze fuse = WindUp 0.65"), KamikazeRow.WindUp, 0.65f);
 	}
 
 	FTestWorld TestWorld(TEXT("RRShooterStats"));
@@ -148,9 +148,9 @@ bool FRRShooterStatsTest::RunTest(const FString& Parameters)
 	TestEqual(TEXT("arrival at the preferred distance"), Shooter->GetEnemyMovement()->GetArrivalDistance(), 800.f);
 	TestEqual(TEXT("capsule radius 34 (miner size)"), Shooter->GetCapsuleComponent()->GetUnscaledCapsuleRadius(), 34.f);
 	TestFalse(TEXT("laser hidden at rest"), FShooterAccess::LaserOf(Shooter)->IsVisible());
-	TestEqual(TEXT("kamikaze arm range from the CSV"), Kamikaze->GetArmRange(), 150.f);
-	TestEqual(TEXT("kamikaze fuse from the CSV"), Kamikaze->GetFuseTime(), 0.5f);
-	TestEqual(TEXT("kamikaze arrival 75 (unchanged)"), Kamikaze->GetEnemyMovement()->GetArrivalDistance(), 75.f);
+	TestEqual(TEXT("kamikaze arm range from the CSV"), Kamikaze->GetArmRange(), 250.f);
+	TestEqual(TEXT("kamikaze fuse from the CSV"), Kamikaze->GetFuseTime(), 0.65f);
+	TestEqual(TEXT("kamikaze arrival 125 (0.5 x the 250 uu arm range)"), Kamikaze->GetEnemyMovement()->GetArrivalDistance(), 125.f);
 
 	const TSubclassOf<ARRProjectile> ShotClass = FShooterAccess::ProjectileClassOf(Shooter);
 	TestTrue(TEXT("default shot class is ARREnemyProjectile"), ShotClass == ARREnemyProjectile::StaticClass());

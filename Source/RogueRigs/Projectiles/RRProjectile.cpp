@@ -22,8 +22,8 @@ ARRProjectile::ARRProjectile(const FObjectInitializer& ObjectInitializer)
 	PrimaryActorTick.bCanEverTick = false;
 
 	CollisionSphere = CreateDefaultSubobject<USphereComponent>(TEXT("CollisionSphere"));
-	// Miner shots (rifle, shotgun pellet, turret bullet): 12 uu, 1.2 x the old 10 uu (owner 2026-10-06); the mesh is not scaled. Robot shots keep 10 uu (ARREnemyProjectile).
-	CollisionSphere->InitSphereRadius(12.f);
+	// Miner shots (rifle, shotgun pellet, turret bullet): 14 uu (owner 2026-10-06 fourth test; was 12, before that 10); the mesh is not scaled. Robot shots keep 10 uu (ARREnemyProjectile).
+	CollisionSphere->InitSphereRadius(14.f);
 	CollisionSphere->SetCollisionEnabled(ECollisionEnabled::QueryOnly);
 	CollisionSphere->SetCollisionObjectType(RRCollisionChannels::Projectile);
 	CollisionSphere->SetCollisionResponseToAllChannels(ECR_Ignore);

@@ -19,7 +19,7 @@ enum class ERRKamikazeState : uint8
 {
 	/** Follows the path provider toward the miner. */
 	Chase,
-	/** Target came within the arm range (CSV AttackRange): stopped, the core flares (pulses faster, grows, Blueprint light) for the fuse (CSV WindUp, 0.5 s), then it explodes. */
+	/** Target came within the arm range (CSV AttackRange): stopped, the core flares (pulses faster, grows, Blueprint light) for the fuse (CSV WindUp, 0.65 s), then it explodes. */
 	Armed,
 	/** Exploded by fuse or killed: the base runs the death shrink. */
 	Dead
@@ -73,7 +73,7 @@ public:
 	UFUNCTION(BlueprintPure, Category = "Kamikaze|Flare")
 	bool IsFlaring() const { return State == ERRKamikazeState::Armed; }
 
-	/** Flare duration in seconds: the fuse (CSV WindUp, enemy-kamikaze 0.5 s). */
+	/** Flare duration in seconds: the fuse (CSV WindUp, enemy-kamikaze 0.65 s). */
 	UFUNCTION(BlueprintPure, Category = "Kamikaze|Flare")
 	float GetFlareDuration() const { return GetFuseTime(); }
 

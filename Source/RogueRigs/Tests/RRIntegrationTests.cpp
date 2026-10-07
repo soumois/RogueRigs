@@ -1144,7 +1144,7 @@ bool FRRIntegrationKamikazeReachesTest::RunTest(const FString& Parameters)
 		return false;
 	}
 	TestTrue(TEXT("exploded by its fuse"), Kamikaze->HasDetonated());
-	TestTrue(TEXT("fuse 0.5 s (within one frame)"), Fuse >= 0.5 - 1e-3 && Fuse <= 0.5 + FrameSeconds + 1e-3);
+	TestTrue(TEXT("fuse 0.65 s (within one frame)"), Fuse >= 0.65 - 1e-3 && Fuse <= 0.65 + FrameSeconds + 1e-3);
 	TestEqual(TEXT("row Kamikaze"), Recorder->GetExplosionRows()[0], FName(TEXT("Kamikaze")));
 	if (TestEqual(TEXT("miner hit once"), Hits.Num(), 1))
 	{

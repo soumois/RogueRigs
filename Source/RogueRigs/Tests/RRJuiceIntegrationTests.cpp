@@ -466,12 +466,12 @@ bool FRRJuiceKamikazeFlareTest::RunTest(const FString& Parameters)
 	AddInfo(FString::Printf(TEXT("JUICE flare: started %.3f s, %d frames, peak CoreLight %.0f, before flare max %.0f, explosion queued %.3f s"),
 		FlareStart, FlareFrames, PeakIntensity, MaxBeforeFlare, Kamikaze->GetExplosionQueuedTime()));
 	TestEqual(TEXT("CoreLight off while chasing"), MaxBeforeFlare, 0.f);
-	TestTrue(TEXT("flare lasts about 0.5 s (30 frames)"), FlareFrames >= 29 && FlareFrames <= 31);
+	TestTrue(TEXT("flare lasts about 0.65 s (39 frames)"), FlareFrames >= 38 && FlareFrames <= 40);
 	TestTrue(TEXT("CoreLight ramps up monotonically"), bMonotonic);
 	TestTrue(TEXT("CoreLight = flare progress x 10000"), bTracksProgress);
 	TestTrue(TEXT("CoreLight near its 10000 peak before the explosion"), PeakIntensity >= 0.9f * JuiceCoreLightPeak && PeakIntensity <= JuiceCoreLightPeak);
 	TestTrue(TEXT("CoreLight renders in game during the flare"), bShownInGame);
-	TestTrue(TEXT("explosion after the flare"), Kamikaze->GetExplosionQueuedTime() >= FlareStart + 0.5 - 1e-3);
+	TestTrue(TEXT("explosion after the flare"), Kamikaze->GetExplosionQueuedTime() >= FlareStart + 0.65 - 1e-3);
 	TestEqual(TEXT("CoreLight back to 0 after the flare (OnFlareEnd)"), CoreLight->Intensity, 0.f);
 	for (int32 Frame = 0; Frame < 10; ++Frame)
 	{

@@ -44,7 +44,7 @@ namespace RRTurretTests
 	constexpr float TurretCritChance = 0.05f;
 	constexpr float TurretCritDamage = 1.5f;
 	constexpr int32 TurretCharges = 2;
-	constexpr float RechargeSeconds = 6.f;
+	constexpr float RechargeSeconds = 12.f;
 	constexpr float TurretLifetime = 10.f;
 	constexpr float TurretRange = 1500.f;
 
@@ -145,7 +145,7 @@ bool FRRTurretLauncherStatsTest::RunTest(const FString& Parameters)
 	TestEqual(TEXT("crit damage x1.5"), GetAttribute(Launcher, URRWeaponAttributeSet::GetCritDamageAttribute()), TurretCritDamage, 1e-4f);
 	TestEqual(TEXT("2 charges max"), Launcher->GetMaxCharges(), TurretCharges);
 	TestEqual(TEXT("starts with 2 charges"), Launcher->GetCharges(), TurretCharges);
-	TestEqual(TEXT("recharge 6 s"), Launcher->GetRechargeDuration(), RechargeSeconds, 1e-4f);
+	TestEqual(TEXT("recharge 12 s"), Launcher->GetRechargeDuration(), RechargeSeconds, 1e-4f);
 	TestEqual(TEXT("turret lifetime 10 s"), Launcher->GetTurretLifetime(), TurretLifetime, 1e-4f);
 	TestEqual(TEXT("range 1500 uu"), Launcher->GetRange(), TurretRange, 1e-3f);
 	TestFalse(TEXT("not recharging when full"), Launcher->IsRecharging());
@@ -186,10 +186,10 @@ bool FRRTurretChargesTest::RunTest(const FString& Parameters)
 	TestNotNull(TEXT("first press places a turret"), First);
 	TestEqual(TEXT("1 charge left"), Launcher->GetCharges(), 1);
 	TestTrue(TEXT("the spent charge recharges"), Launcher->IsRecharging());
-	TestEqual(TEXT("recharge 6 s left"), Launcher->GetRechargeRemaining(), RechargeSeconds, 1e-4f);
+	TestEqual(TEXT("recharge 12 s left"), Launcher->GetRechargeRemaining(), RechargeSeconds, 1e-4f);
 	if (TestEqual(TEXT("one charge broadcast"), Recorder->GetTurretCharges().Num(), 1))
 	{
-		TestEqual(TEXT("broadcast (1, 2, 6)"), Recorder->GetTurretCharges()[0], FVector(1.f, TurretCharges, RechargeSeconds));
+		TestEqual(TEXT("broadcast (1, 2, 12)"), Recorder->GetTurretCharges()[0], FVector(1.f, TurretCharges, RechargeSeconds));
 	}
 
 	ARRTurret* Second = Miner->PlaceTurret();
@@ -199,26 +199,26 @@ bool FRRTurretChargesTest::RunTest(const FString& Parameters)
 	TestNull(TEXT("third press without a charge places nothing"), Miner->PlaceTurret());
 	TestEqual(TEXT("2 turrets placed"), Launcher->GetTurretsPlaced(), 2);
 
-	// One charge at a time: 5.9 s nothing, 6 s one charge, 12 s the second.
-	Launcher->AdvanceRecharge(5.9f);
-	TestEqual(TEXT("no charge after 5.9 s"), Launcher->GetCharges(), 0);
-	TestEqual(TEXT("progress 5.9 / 6"), Launcher->GetRechargeProgress(), 5.9f / 6.f, 1e-3f);
+	// One charge at a time: 11.9 s nothing, 12 s one charge, 24 s the second (float steps: the last one overshoots).
+	Launcher->AdvanceRecharge(11.9f);
+	TestEqual(TEXT("no charge after 11.9 s"), Launcher->GetCharges(), 0);
+	TestEqual(TEXT("progress 11.9 / 12"), Launcher->GetRechargeProgress(), 11.9f / 12.f, 1e-3f);
 	Launcher->AdvanceRecharge(0.2f);
-	TestEqual(TEXT("1 charge after 6.1 s"), Launcher->GetCharges(), 1);
+	TestEqual(TEXT("1 charge after 12.1 s"), Launcher->GetCharges(), 1);
 	TestTrue(TEXT("the second charge recharges next"), Launcher->IsRecharging());
-	TestEqual(TEXT("leftover 0.1 s carried"), Launcher->GetRechargeRemaining(), 5.9f, 1e-3f);
-	Launcher->AdvanceRecharge(5.9f);
-	TestEqual(TEXT("2 charges after 12 s"), Launcher->GetCharges(), TurretCharges);
+	TestEqual(TEXT("leftover 0.1 s carried"), Launcher->GetRechargeRemaining(), 11.9f, 1e-3f);
+	Launcher->AdvanceRecharge(12.f);
+	TestEqual(TEXT("2 charges after 24.1 s"), Launcher->GetCharges(), TurretCharges);
 	TestFalse(TEXT("no recharge when full"), Launcher->IsRecharging());
 	TestEqual(TEXT("last broadcast (2, 2, 0)"), Recorder->GetTurretCharges().Last(), FVector(TurretCharges, TurretCharges, 0.f));
 
 	// ReloadSpeed shortens the recharge (reload speed upgrades).
 	SetAttribute(Launcher, URRWeaponAttributeSet::GetReloadSpeedAttribute(), 2.f);
 	TestNotNull(TEXT("placement after the recharge"), Miner->PlaceTurret());
-	TestEqual(TEXT("recharge 6 / 2 = 3 s"), Launcher->GetRechargeRemaining(), 3.f, 1e-4f);
+	TestEqual(TEXT("recharge 12 / 2 = 6 s"), Launcher->GetRechargeRemaining(), 6.f, 1e-4f);
 
 	// A MagazineSize upgrade adds a charge to recharge.
-	Launcher->AdvanceRecharge(3.f);
+	Launcher->AdvanceRecharge(6.f);
 	SetAttribute(Launcher, URRWeaponAttributeSet::GetMagazineSizeAttribute(), 3.f);
 	Launcher->AdvanceRecharge(0.01f);
 	TestEqual(TEXT("3 charges max after the upgrade"), Launcher->GetMaxCharges(), 3);

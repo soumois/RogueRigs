@@ -572,20 +572,20 @@ protected:
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Spawner|Recycling")
 	bool bRecycleEnabled = true;
 
-	/** Straight distance (2D, uu) from the miner beyond which an off-screen robot counts down to recycling (2500, owner 2026-10-06, provisional). */
+	/** Straight distance (2D, uu) from the miner beyond which an off-screen robot counts down to recycling (1800, owner 2026-10-06 fourth test, was 2500; provisional). */
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Spawner|Recycling", meta = (ClampMin = 0, Units = "cm"))
-	float RecycleDistance = 2500.f;
+	float RecycleDistance = 1800.f;
 
-	/** Seconds a robot must stay far and off screen in a row before it is recycled (4, owner 2026-10-06, provisional). */
+	/** Seconds a robot must stay far and off screen in a row before it is recycled (3, owner 2026-10-06 fourth test, was 4; provisional). */
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Spawner|Recycling", meta = (ClampMin = 0, Units = "s"))
-	float RecycleDelay = 4.f;
+	float RecycleDelay = 3.f;
 
 	/**
 	 * Box distance (uu) beyond the view rectangle under which a robot still counts as on screen for recycling. Equal to
 	 * SpawnBandMaxDistance by default, so a fresh robot walking in from the spawn band is never recycled (implementation choice).
 	 */
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Spawner|Recycling", meta = (ClampMin = 0, Units = "cm"))
-	float RecycleOffScreenMargin = 500.f;
+	float RecycleOffScreenMargin = 0.f;
 
 	/** Timed spawning on or off (also see rr.Spawner.Enabled). */
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Spawner")

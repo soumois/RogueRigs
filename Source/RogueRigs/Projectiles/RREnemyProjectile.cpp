@@ -12,6 +12,6 @@ ARREnemyProjectile::ARREnemyProjectile(const FObjectInitializer& ObjectInitializ
 {
 	HitActorClass = ARRMiner::StaticClass();
 	bDamagesTerrain = false;
-	// Robot shots keep the 10 uu sphere; the miner shots of the base class use 12 uu.
+	// Robot shots keep the 10 uu sphere; the miner shots of the base class use 14 uu.
 	CollisionSphere->InitSphereRadius(10.f);
 }

@@ -24,7 +24,7 @@ struct FHitResult;
  * destroyed, after damaging the cell when bDamagesTerrain and it is a barrel of the arena grid (carried Damage, no GAS on
  * barrels). Straight flight, no gravity, no sub-stepping; speed and lifetime set by InitProjectile. Spawn with
  * SpawnProjectile (deferred spawn + InitProjectile + FinishSpawning; Owner = the firing actor, Instigator = its pawn).
- * Sphere radius 12 uu (miner shots: rifle, pellet, turret bullet); robot shots 10 uu. Robot shots: HitActorClass = the miner
+ * Sphere radius 14 uu (miner shots: rifle, pellet, turret bullet); robot shots 10 uu. Robot shots: HitActorClass = the miner
  * class (robots are passed through) and bDamagesTerrain off. Subclass in Blueprint
  * for the mesh and the sphere radius.
  */

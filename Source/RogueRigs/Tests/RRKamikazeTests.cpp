@@ -169,6 +169,8 @@ bool FRRKamikazeFuseTest::RunTest(const FString& Parameters)
 
 	float ArmDistance = -1.f;
 	float MaxCoreScaleArmed = 0.f;
+	FVector ArmLocation = FVector::ZeroVector;
+	float MaxArmedDrift = 0.f;
 	for (int32 Frame = 0; Frame < 300 && Weak.IsValid() && !Weak->HasDetonated(); ++Frame)
 	{
 		const ERRKamikazeState Previous = Weak->GetState();
@@ -180,10 +182,12 @@ bool FRRKamikazeFuseTest::RunTest(const FString& Parameters)
 		if (Previous == ERRKamikazeState::Chase && Weak->GetState() == ERRKamikazeState::Armed)
 		{
 			ArmDistance = FVector::Dist2D(Weak->GetActorLocation(), Miner->GetActorLocation());
+			ArmLocation = Weak->GetActorLocation();
 		}
 		if (Weak->GetState() == ERRKamikazeState::Armed)
 		{
 			MaxCoreScaleArmed = FMath::Max(MaxCoreScaleArmed, Weak->GetCoreScaleFactor());
+			MaxArmedDrift = FMath::Max(MaxArmedDrift, static_cast<float>(FVector::Dist2D(Weak->GetActorLocation(), ArmLocation)));
 		}
 	}
 	if (!TestTrue(TEXT("kamikaze detonated"), Weak.IsValid() && Weak->HasDetonated()))
@@ -191,13 +195,14 @@ bool FRRKamikazeFuseTest::RunTest(const FString& Parameters)
 		return false;
 	}
 	const double Fuse = Kamikaze->GetExplosionQueuedTime() - Kamikaze->GetArmTime();
-	AddInfo(FString::Printf(TEXT("armed at %.1f uu from the miner at t=%.3f s, explosion queued %.3f s later, max armed core scale %.2f"),
-		ArmDistance, Kamikaze->GetArmTime(), Fuse, MaxCoreScaleArmed));
-	TestTrue(TEXT("armed within 150 uu"), ArmDistance > 0.f && ArmDistance <= 150.f);
-	TestTrue(TEXT("armed near the 150 uu edge (one frame of travel)"), ArmDistance > 150.f - 2.f * Row.MoveSpeed * FrameSeconds);
+	AddInfo(FString::Printf(TEXT("armed at %.1f uu from the miner at t=%.3f s, explosion queued %.3f s later, max armed core scale %.2f, armed drift %.2f uu"),
+		ArmDistance, Kamikaze->GetArmTime(), Fuse, MaxCoreScaleArmed, MaxArmedDrift));
+	TestTrue(TEXT("armed within 250 uu"), ArmDistance > 0.f && ArmDistance <= 250.f);
+	TestTrue(TEXT("armed near the 250 uu edge (one frame of travel)"), ArmDistance > 250.f - 2.f * Row.MoveSpeed * FrameSeconds);
+	TestTrue(TEXT("stopped once armed"), MaxArmedDrift < 1.f);
 	const float ContactDistance = Kamikaze->GetCapsuleComponent()->GetScaledCapsuleRadius() + Miner->GetCapsuleComponent()->GetScaledCapsuleRadius();
 	TestTrue(TEXT("armed before its capsule touches the miner"), ArmDistance > ContactDistance);
-	TestTrue(TEXT("fuse 0.5 s (within one frame)"), Fuse >= 0.5 - 1e-3 && Fuse <= 0.5 + FrameSeconds + 1e-3);
+	TestTrue(TEXT("fuse 0.65 s (within one frame)"), Fuse >= 0.65 - 1e-3 && Fuse <= 0.65 + FrameSeconds + 1e-3);
 	TestTrue(TEXT("core grew while armed"), MaxCoreScaleArmed > 1.5f);
 	TestTrue(TEXT("dead after the fuse"), Kamikaze->IsDead());
 	TestEqual(TEXT("state Dead"), Kamikaze->GetState(), ERRKamikazeState::Dead);
