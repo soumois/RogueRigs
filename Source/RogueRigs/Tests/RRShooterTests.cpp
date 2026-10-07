@@ -339,35 +339,23 @@ bool FRRShooterRepositionTest::RunTest(const FString& Parameters)
 	const FVector MinerLocation = Miner->GetActorLocation();
 	TestFalse(TEXT("no sight through the rock at spawn"), Grid->HasLineOfSight(Shooter->GetActorLocation(), MinerLocation));
 
-	// The search itself: a ring cell with sight, reached by a walkable 8-neighbour path from the robot's cell.
-	TArray<FVector> Waypoints;
-	FIntPoint Cell;
-	if (TestTrue(TEXT("a firing position is found"), FShooterAccess::FindPath(Shooter, Miner, Waypoints, Cell)))
-	{
-		const FVector Center = Grid->GetCellCenter(Cell.X, Cell.Y);
-		const float Distance = FVector::Dist2D(Center, MinerLocation);
-		AddInfo(FString::Printf(TEXT("firing cell (%d, %d) at %.0f uu, path of %d cells"), Cell.X, Cell.Y, Distance, Waypoints.Num()));
-		TestTrue(TEXT("cell within the hold distance (960) and no farther than the robot (it never backs away)"), Distance <= 960.f && Distance <= FVector::Dist2D(Shooter->GetActorLocation(), MinerLocation));
-		TestTrue(TEXT("cell has sight"), Grid->HasLineOfSight(Center, MinerLocation));
-		FIntPoint Previous = CoverShooterCell;
-		bool bConnected = true;
-		for (const FVector& Waypoint : Waypoints)
-		{
-			const FIntPoint Step = Grid->GetCellAtWorld(Waypoint);
-			bConnected &= FMath::Abs(Step.X - Previous.X) <= 1 && FMath::Abs(Step.Y - Previous.Y) <= 1 && FlowField->IsWalkableCell(Step);
-			Previous = Step;
-		}
-		TestTrue(TEXT("path steps one walkable cell at a time"), bConnected);
-		TestEqual(TEXT("path ends on the firing cell"), Previous, Cell);
-	}
-
 	bool bRepositioned = false;
 	bool bAimedWithoutSight = false;
 	double FirstAim = -1.0;
+	float MaxRetreat = 0.f;
+	float RetreatAt = 0.f;
 	for (int32 Frame = 0; Frame < 60 * 10 && Shooter->GetShotCount() == 0; ++Frame)
 	{
 		const ERRShooterState Previous = Shooter->GetState();
+		const float Before = FVector::Dist2D(Shooter->GetActorLocation(), MinerLocation);
 		TestWorld.Tick();
+		const float Step = static_cast<float>(FVector::Dist2D(Shooter->GetActorLocation(), MinerLocation)) - Before;
+		// Only the detour itself (Reposition before and after the step): beyond the hold distance Approach is a plain flow-field walk.
+		if (Previous == ERRShooterState::Reposition && Shooter->GetState() == ERRShooterState::Reposition && Step > MaxRetreat)
+		{
+			MaxRetreat = Step;
+			RetreatAt = Before;
+		}
 		bRepositioned |= Shooter->GetState() == ERRShooterState::Reposition;
 		if (Previous != ERRShooterState::Aim && Shooter->IsAiming())
 		{
@@ -380,8 +368,10 @@ bool FRRShooterRepositionTest::RunTest(const FString& Parameters)
 	}
 	const float Distance = FVector::Dist2D(Shooter->GetActorLocation(), Miner->GetActorLocation());
 	const FIntPoint EndCell = Grid->GetCellAtWorld(Shooter->GetActorLocation());
-	AddInfo(FString::Printf(TEXT("first aim at t=%.3f s from cell (%d, %d), %.0f uu; shots %d"), FirstAim, EndCell.X, EndCell.Y, Distance, Shooter->GetShotCount()));
-	TestTrue(TEXT("entered Reposition"), bRepositioned);
+	AddInfo(FString::Printf(TEXT("first aim at t=%.3f s from cell (%d, %d), %.0f uu; shots %d; largest detour step away %.2f uu at %.0f uu"), FirstAim, EndCell.X, EndCell.Y, Distance,
+		Shooter->GetShotCount(), MaxRetreat, RetreatAt));
+	TestTrue(TEXT("entered Reposition (flow-field detour)"), bRepositioned);
+	TestTrue(TEXT("never increases its distance to the miner while detouring (0.5 uu tolerance)"), MaxRetreat <= 0.5f);
 	TestFalse(TEXT("never aimed without sight"), bAimedWithoutSight);
 	TestTrue(TEXT("fired after moving to a firing position"), Shooter->GetShotCount() >= 1);
 	return true;

@@ -10,7 +10,6 @@ class ARRArenaGrid;
 class ARRMiner;
 class ARRProjectile;
 class UGameplayEffect;
-class URRFlowFieldSubsystem;
 class UStaticMeshComponent;
 
 /** State of the shooter's machine. */
@@ -19,9 +18,9 @@ enum class ERRShooterState : uint8
 {
 	/** Follows the flow field toward the miner: to the preferred distance with line of sight, closer until it has sight. */
 	Approach,
-	/** Stands still in the preferred ring with line of sight (or nowhere better to go). */
+	/** Stands still within the hold distance with line of sight, however close the miner comes. */
 	Hold,
-	/** Walks a local grid path to a cell of the preferred ring that has line of sight to the miner. */
+	/** Within the hold distance without line of sight: follows the flow field like a chaser (never stepping away from the miner) until it has sight. */
 	Reposition,
 	/** Stopped, facing the miner, targeting laser on for Stats.WindUp seconds, then fires. */
 	Aim,
@@ -42,11 +41,10 @@ enum class ERRShooterState : uint8
  * Movement (task-031-02: it never backs away from the miner): hold distance = Stats.PreferredDistance + PreferredDistanceTolerance,
  * clamped to AttackRange. Approach (flow field, arrival at the preferred distance with sight, 0 without) -> Hold once within the
  * preferred distance with sight. Hold -> Approach beyond the hold distance; with sight it stays put however close the miner comes.
- * Without sight within the hold distance: a repositioning search (at most every RepositionSearchInterval): among the cells of
- * URRFlowFieldSubsystem::GatherReachableCells within RepositionSearchRadiusCells, those no farther from the target than the robot
- * is now (and within the hold distance) with grid sight to it; the one with the shortest local grid path (8-neighbour BFS around
- * the robot, no corner cutting) wins and the robot walks that path (Reposition), each step stripped of any component away from
- * the target. No cell: Approach without sight (closing in gives sight), Hold with sight. The C++ drives a
+ * Without sight within the hold distance (task-038-01): Reposition, the flow field again (no arrival stop, the same detour
+ * around rock as the chasers) until sight returns, then Hold and fire; beyond the hold distance, Approach. Within the hold
+ * distance every flow-field step goes through MakeNonRetreatingDirection (URREnemyMovementComponent direction filter), so the
+ * robot never moves away from the target. The C++ drives a
  * LaserBeam mesh between the muzzle and the line-of-sight-clipped aim point while aiming; Blueprint events add the rest.
  */
 UCLASS(Blueprintable)
@@ -111,9 +109,6 @@ public:
 	/** World time (s) at which the last aim started; negative before the first. */
 	double GetLastAimStartTime() const { return LastAimStartTime; }
 
-	/** Cell the current repositioning path ends on; (INDEX_NONE, INDEX_NONE) when none. */
-	FIntPoint GetRepositionCell() const { return RepositionCell; }
-
 protected:
 	/** Sets the movement arrival distance from the preferred distance and enters Approach. */
 	virtual void BeginPlay() override;
@@ -127,7 +122,7 @@ protected:
 	/** Recycling relocation: back to Approach (leaving the current state as EnterState does); nothing while Dead. */
 	virtual void ResetStateMachine() override;
 
-	/** Leaves the current state and enters NewState (flow-field movement on in Approach only). Leaving Aim hides the laser and calls OnAimEnd. */
+	/** Leaves the current state and enters NewState. Flow-field movement on in Approach and Reposition (arrival 0 in Reposition). Leaving Aim hides the laser and calls OnAimEnd. */
 	void EnterState(ERRShooterState NewState);
 
 	/** Movement decisions of Approach, Hold and Reposition for the current target, distance and sight. */
@@ -161,32 +156,8 @@ protected:
 	/** Places, scales and shows LaserBeam between the muzzle and the clipped aim point. */
 	void UpdateLaserBeam();
 
-	/**
-	 * Runs a repositioning search if RepositionSearchInterval has passed since the last one: enters Reposition with the found
-	 * path, else Approach without sight or Hold with sight. When the search is throttled, nothing changes.
-	 */
-	void TryReposition(const ARRMiner* Target);
-
-	/**
-	 * Repositioning search around the robot for Target: candidate cells from URRFlowFieldSubsystem::GatherReachableCells within
-	 * RepositionSearchRadiusCells (Chebyshev), no farther from the target than the robot now and within GetRingOuterDistance, and
-	 * with grid sight to the target; the one with the fewest
-	 * steps of a local 8-neighbour BFS from the robot's cell (no corner cutting) wins, ties to the ring center then scan order.
-	 * Fills OutWaypoints (cell centers from the first step to the chosen cell) and OutCell. False when no cell qualifies.
-	 */
-	bool FindRepositionPath(const ARRMiner* Target, TArray<FVector>& OutWaypoints, FIntPoint& OutCell);
-
-	/**
-	 * Walks the repositioning path: skips a waypoint already in direct reach, steers at the next one through
-	 * MakeNonRetreatingDirection (never away from Target). True once arrived.
-	 */
-	bool FollowRepositionPath(const ARRMiner* Target);
-
 	/** Arena grid (cached; RRWorld::FindArenaGrid). */
 	ARRArenaGrid* GetGrid();
-
-	/** Flow field subsystem of the world. */
-	URRFlowFieldSubsystem* GetFlowField() const;
 
 	/** Called when an aim starts (laser on). Target = the miner. */
 	UFUNCTION(BlueprintImplementableEvent, Category = "Shooter")
@@ -228,22 +199,6 @@ protected:
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Shooter|Laser", meta = (ClampMin = 0, Units = "cm"))
 	float LaserThickness = 4.f;
 
-	/** Half size (cells) of the square searched around the robot for a firing position. */
-	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Shooter|Reposition", meta = (ClampMin = 1))
-	int32 RepositionSearchRadiusCells = 18;
-
-	/** Minimum seconds between two repositioning searches of this robot. */
-	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Shooter|Reposition", meta = (ClampMin = 0, Units = "s"))
-	float RepositionSearchInterval = 0.5f;
-
-	/** Distance (uu, 2D) under which a path waypoint counts as reached. */
-	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Shooter|Reposition", meta = (ClampMin = 1, Units = "cm"))
-	float WaypointAcceptanceRadius = 40.f;
-
-	/** Seconds after which an unfinished repositioning walk is abandoned (Hold, then a new search). */
-	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Shooter|Reposition", meta = (ClampMin = 0, Units = "s"))
-	float RepositionMaxDuration = 4.f;
-
 	/**
 	 * Inward part (0..1) added to a repositioning step whose away-from-the-miner component was removed, so that sliding around
 	 * the miner never increases the distance (task-031-02).
@@ -261,15 +216,6 @@ protected:
 	/** Cached arena grid. */
 	TWeakObjectPtr<ARRArenaGrid> CachedGrid;
 
-	/** Waypoints (cell centers) left on the repositioning path. */
-	TArray<FVector> RepositionWaypoints;
-
-	/** Last cell of the repositioning path; (INDEX_NONE, INDEX_NONE) when none. */
-	FIntPoint RepositionCell = FIntPoint(INDEX_NONE, INDEX_NONE);
-
-	/** Target cell when the repositioning path was computed (a new search runs when the target leaves it). */
-	FIntPoint RepositionTargetCell = FIntPoint(INDEX_NONE, INDEX_NONE);
-
 	/** View rectangle set by SetViewRectangleOverride. */
 	FBox2D ViewOverride = FBox2D(ForceInit);
 
@@ -278,9 +224,6 @@ protected:
 
 	/** Grid line of sight to the target at the last step. */
 	bool bHasSight = false;
-
-	/** World time (s) of the last repositioning search; very negative before the first. */
-	double LastSearchTime = -1.0e9;
 
 	/** World time (s) of the last shot; negative before the first. */
 	double LastShotTime = -1.0;

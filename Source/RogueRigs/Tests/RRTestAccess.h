@@ -105,7 +105,7 @@ namespace RRTestAccess
 		static FRREnemyStatsRow& StatsOf(ARREnemy* Enemy) { return Enemy->*(&FEnemyAccess::Stats); }
 	};
 
-	/** ARRShooter: laser component, shot class, flat damage spec and the repositioning search. */
+	/** ARRShooter: laser component, shot class, flat damage spec. */
 	struct FShooterAccess : public ARRShooter
 	{
 		static UStaticMeshComponent* LaserOf(const ARRShooter* Shooter) { return Shooter->*(&FShooterAccess::LaserBeam); }
@@ -113,10 +113,6 @@ namespace RRTestAccess
 		static FGameplayEffectSpecHandle DamageSpecOf(const ARRShooter* Shooter)
 		{
 			return (Shooter->*(&FShooterAccess::MakeDamageSpec))(Shooter->*(&FShooterAccess::DamageEffectClass), Shooter->GetStats().Damage);
-		}
-		static bool FindPath(ARRShooter* Shooter, const ARRMiner* Target, TArray<FVector>& OutWaypoints, FIntPoint& OutCell)
-		{
-			return (Shooter->*(&FShooterAccess::FindRepositionPath))(Target, OutWaypoints, OutCell);
 		}
 	};
 

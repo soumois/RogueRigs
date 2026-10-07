@@ -70,6 +70,10 @@ void URREnemyMovementComponent::TickComponent(float DeltaTime, ELevelTick TickTy
 	{
 		Direction = ToGoal / GoalDistance;
 	}
+	if (DirectionFilter && !Direction.IsNearlyZero())
+	{
+		Direction = DirectionFilter(Direction, Goal);
+	}
 	if (!Direction.IsNearlyZero())
 	{
 		LastMoveDirection = Direction;

@@ -2,14 +2,12 @@
 
 #include "Enemies/RRShooter.h"
 
-#include "Algo/Reverse.h"
 #include "Components/CapsuleComponent.h"
 #include "Components/StaticMeshComponent.h"
 #include "Damage/RRGE_DamageFlat.h"
 #include "Enemies/RREnemySpawner.h"
 #include "Engine/World.h"
 #include "FlowField/RREnemyMovementComponent.h"
-#include "FlowField/RRFlowFieldSubsystem.h"
 #include "Grid/RRArenaGrid.h"
 #include "Player/RRMiner.h"
 #include "Projectiles/RREnemyProjectile.h"
@@ -51,6 +49,11 @@ void ARRShooter::BeginPlay()
 	Super::BeginPlay();
 
 	EnemyMovement->SetArrivalDistance(Stats.PreferredDistance * ArrivalRangeRatio);
+	// Within the hold distance every flow-field step is stripped of its away-from-the-miner part (it never backs away).
+	EnemyMovement->SetDirectionFilter([this](const FVector& Direction, const FVector& Goal)
+	{
+		return FVector::Dist2D(GetActorLocation(), Goal) <= GetRingOuterDistance() ? MakeNonRetreatingDirection(Direction, Goal) : Direction;
+	});
 	EnterState(ERRShooterState::Approach);
 }
 
@@ -127,12 +130,6 @@ void ARRShooter::EnterState(ERRShooterState NewState)
 		AimTarget.Reset();
 		OnAimEnd();
 	}
-	if (NewState != ERRShooterState::Reposition)
-	{
-		RepositionWaypoints.Reset();
-		RepositionCell = FIntPoint(INDEX_NONE, INDEX_NONE);
-	}
-
 	State = NewState;
 	MarkStateStart();
 
@@ -141,8 +138,13 @@ void ARRShooter::EnterState(ERRShooterState NewState)
 		// The base death stops the movement.
 		return;
 	}
-	// Reposition steers with its own input; the flow field drives Approach only.
-	SetMovementActive(NewState == ERRShooterState::Approach);
+	if (NewState == ERRShooterState::Reposition)
+	{
+		// Detour without sight: walk the flow field like a chaser, no arrival stop, until sight returns.
+		EnemyMovement->SetArrivalDistance(0.f);
+	}
+	// The flow field drives Approach and Reposition; Hold and Aim stand still.
+	SetMovementActive(NewState == ERRShooterState::Approach || NewState == ERRShooterState::Reposition);
 }
 
 void ARRShooter::UpdateBehavior(float DeltaSeconds)
@@ -219,7 +221,8 @@ void ARRShooter::UpdateMovement(const ARRMiner* Target, float Distance)
 		}
 		else if (!bHasSight && Distance <= OuterDistance)
 		{
-			TryReposition(Target);
+			// In range without sight: detour around the rock along the flow field.
+			EnterState(ERRShooterState::Reposition);
 		}
 		break;
 
@@ -227,38 +230,25 @@ void ARRShooter::UpdateMovement(const ARRMiner* Target, float Distance)
 		if (Distance > OuterDistance)
 		{
 			EnterState(ERRShooterState::Approach);
-			break;
+		}
+		else if (!bHasSight)
+		{
+			EnterState(ERRShooterState::Reposition);
 		}
 		// With sight it stays put, however close the miner comes (it never backs away).
-		if (!bHasSight)
-		{
-			TryReposition(Target);
-		}
 		break;
 
 	case ERRShooterState::Reposition:
-	{
-		if (bHasSight && Distance <= OuterDistance)
+		if (Distance > OuterDistance)
 		{
-			EnterState(ERRShooterState::Hold);
-			break;
+			EnterState(ERRShooterState::Approach);
 		}
-		const ARRArenaGrid* Grid = CachedGrid.Get();
-		if (Grid && Grid->GetCellAtWorld(Target->GetActorLocation()) != RepositionTargetCell)
+		else if (bHasSight)
 		{
-			// The target changed cell: plan again (throttled).
-			TryReposition(Target);
-			if (State != ERRShooterState::Reposition)
-			{
-				break;
-			}
-		}
-		if (FollowRepositionPath(Target) || HasStateLasted(RepositionMaxDuration))
-		{
+			// Sight regained: stop here and fire.
 			EnterState(ERRShooterState::Hold);
 		}
 		break;
-	}
 
 	case ERRShooterState::Aim:
 	case ERRShooterState::Dead:
@@ -347,149 +337,6 @@ void ARRShooter::UpdateLaserBeam()
 	LaserBeam->SetVisibility(Length > 0.f);
 }
 
-void ARRShooter::TryReposition(const ARRMiner* Target)
-{
-	const double Now = GetWorld()->GetTimeSeconds();
-	if (Now - LastSearchTime + TimeTolerance < RepositionSearchInterval)
-	{
-		return;
-	}
-	LastSearchTime = Now;
-
-	TArray<FVector> Waypoints;
-	FIntPoint Cell;
-	if (FindRepositionPath(Target, Waypoints, Cell))
-	{
-		if (State != ERRShooterState::Reposition)
-		{
-			EnterState(ERRShooterState::Reposition);
-		}
-		else
-		{
-			MarkStateStart();
-		}
-		RepositionWaypoints = MoveTemp(Waypoints);
-		RepositionCell = Cell;
-		RepositionTargetCell = CachedGrid.IsValid() ? CachedGrid->GetCellAtWorld(Target->GetActorLocation()) : FIntPoint(INDEX_NONE, INDEX_NONE);
-		return;
-	}
-
-	// Nowhere better: close in without sight (sight comes nearer), stand with sight.
-	const ERRShooterState Fallback = bHasSight ? ERRShooterState::Hold : ERRShooterState::Approach;
-	if (State != Fallback)
-	{
-		EnterState(Fallback);
-	}
-}
-
-bool ARRShooter::FindRepositionPath(const ARRMiner* Target, TArray<FVector>& OutWaypoints, FIntPoint& OutCell)
-{
-	OutWaypoints.Reset();
-	const ARRArenaGrid* Grid = GetGrid();
-	URRFlowFieldSubsystem* FlowField = GetFlowField();
-	if (!Grid || !FlowField || !Target)
-	{
-		return false;
-	}
-	FlowField->UpdateField();
-
-	// Local BFS from the robot's cell over walkable cells of the square (8-neighbour, a diagonal only when both orthogonal
-	// cells are walkable, like the flow field).
-	const int32 Radius = FMath::Max(1, RepositionSearchRadiusCells);
-	const int32 Side = 2 * Radius + 1;
-	const FIntPoint StartCell = Grid->GetCellAtWorld(GetActorLocation());
-	const FIntPoint Corner = StartCell - FIntPoint(Radius, Radius);
-	auto LocalIndex = [Corner, Side](FIntPoint Cell) -> int32
-	{
-		const FIntPoint Local = Cell - Corner;
-		return (Local.X < 0 || Local.Y < 0 || Local.X >= Side || Local.Y >= Side) ? INDEX_NONE : Local.Y * Side + Local.X;
-	};
-
-	TArray<int32> Steps;
-	Steps.Init(INDEX_NONE, Side * Side);
-	TArray<int32> Parents;
-	Parents.Init(INDEX_NONE, Side * Side);
-	TArray<FIntPoint> Queue;
-	Queue.Reserve(Side * Side);
-	Steps[LocalIndex(StartCell)] = 0;
-	Queue.Add(StartCell);
-
-	static const FIntPoint Offsets[8] = {
-		FIntPoint(1, 0), FIntPoint(-1, 0), FIntPoint(0, 1), FIntPoint(0, -1),
-		FIntPoint(1, 1), FIntPoint(1, -1), FIntPoint(-1, 1), FIntPoint(-1, -1) };
-	for (int32 Head = 0; Head < Queue.Num(); ++Head)
-	{
-		const FIntPoint Cell = Queue[Head];
-		const int32 CellIndex = LocalIndex(Cell);
-		for (const FIntPoint& Offset : Offsets)
-		{
-			const FIntPoint Next = Cell + Offset;
-			const int32 NextIndex = LocalIndex(Next);
-			if (NextIndex == INDEX_NONE || Steps[NextIndex] != INDEX_NONE || !FlowField->IsWalkableCell(Next))
-			{
-				continue;
-			}
-			if (Offset.X != 0 && Offset.Y != 0
-				&& (!FlowField->IsWalkableCell(FIntPoint(Next.X, Cell.Y)) || !FlowField->IsWalkableCell(FIntPoint(Cell.X, Next.Y))))
-			{
-				continue;
-			}
-			Steps[NextIndex] = Steps[CellIndex] + 1;
-			Parents[NextIndex] = CellIndex;
-			Queue.Add(Next);
-		}
-	}
-
-	// Candidates: reachable cells of the square, locally reachable, no farther from the target than the robot now (it never
-	// backs away) and within the hold distance, with grid sight to the target.
-	const FVector TargetLocation = Target->GetActorLocation();
-	const float MaxDistance = FMath::Min(GetRingOuterDistance(), static_cast<float>(FVector::Dist2D(GetActorLocation(), TargetLocation)));
-	TArray<FIntPoint> Candidates;
-	FlowField->GatherReachableCells(Candidates, [&](FIntPoint Cell, int32 /*GoalSteps*/)
-	{
-		const int32 Index = LocalIndex(Cell);
-		if (Index == INDEX_NONE || Steps[Index] == INDEX_NONE)
-		{
-			return false;
-		}
-		const FVector Center = Grid->GetCellCenter(Cell.X, Cell.Y);
-		const float Distance = FVector::Dist2D(Center, TargetLocation);
-		return Distance <= MaxDistance && Grid->HasLineOfSight(Center, TargetLocation);
-	});
-
-	int32 BestIndex = INDEX_NONE;
-	float BestRingError = 0.f;
-	for (const FIntPoint& Cell : Candidates)
-	{
-		const int32 Index = LocalIndex(Cell);
-		const float RingError = FMath::Abs(FVector::Dist2D(Grid->GetCellCenter(Cell.X, Cell.Y), TargetLocation) - Stats.PreferredDistance);
-		if (BestIndex == INDEX_NONE || Steps[Index] < Steps[BestIndex] || (Steps[Index] == Steps[BestIndex] && RingError < BestRingError))
-		{
-			BestIndex = Index;
-			BestRingError = RingError;
-		}
-	}
-	if (BestIndex == INDEX_NONE)
-	{
-		return false;
-	}
-
-	OutCell = Corner + FIntPoint(BestIndex % Side, BestIndex / Side);
-	const float Z = GetActorLocation().Z;
-	for (int32 Index = BestIndex; Index != INDEX_NONE; Index = Parents[Index])
-	{
-		const FIntPoint Cell = Corner + FIntPoint(Index % Side, Index / Side);
-		// The start cell is skipped unless it is the destination itself.
-		if (Index != LocalIndex(StartCell) || OutWaypoints.IsEmpty())
-		{
-			const FVector Center = Grid->GetCellCenter(Cell.X, Cell.Y);
-			OutWaypoints.Add(FVector(Center.X, Center.Y, Z));
-		}
-	}
-	Algo::Reverse(OutWaypoints);
-	return true;
-}
-
 FVector ARRShooter::MakeNonRetreatingDirection(const FVector& Direction, const FVector& TargetLocation) const
 {
 	const FVector Location = GetActorLocation();
@@ -508,38 +355,6 @@ FVector ARRShooter::MakeNonRetreatingDirection(const FVector& Direction, const F
 	return (Tangent.GetSafeNormal() - Away * RepositionInwardBias).GetSafeNormal();
 }
 
-bool ARRShooter::FollowRepositionPath(const ARRMiner* Target)
-{
-	if (RepositionWaypoints.IsEmpty())
-	{
-		return true;
-	}
-	const FVector Location = GetActorLocation();
-	URRFlowFieldSubsystem* FlowField = GetFlowField();
-	if (RepositionWaypoints.Num() > 1 && FlowField && FlowField->HasDirectPath(Location, RepositionWaypoints[1]))
-	{
-		RepositionWaypoints.RemoveAt(0);
-	}
-	if (FVector::Dist2D(Location, RepositionWaypoints[0]) <= WaypointAcceptanceRadius)
-	{
-		RepositionWaypoints.RemoveAt(0);
-		if (RepositionWaypoints.IsEmpty())
-		{
-			return true;
-		}
-	}
-	FVector Direction = FVector(RepositionWaypoints[0].X - Location.X, RepositionWaypoints[0].Y - Location.Y, 0.f).GetSafeNormal();
-	if (Target)
-	{
-		Direction = MakeNonRetreatingDirection(Direction, Target->GetActorLocation());
-	}
-	if (!Direction.IsNearlyZero())
-	{
-		AddMovementInput(Direction, 1.f);
-	}
-	return false;
-}
-
 ARRArenaGrid* ARRShooter::GetGrid()
 {
 	if (!CachedGrid.IsValid())
@@ -547,12 +362,6 @@ ARRArenaGrid* ARRShooter::GetGrid()
 		CachedGrid = RRWorld::FindArenaGrid(GetWorld());
 	}
 	return CachedGrid.Get();
-}
-
-URRFlowFieldSubsystem* ARRShooter::GetFlowField() const
-{
-	UWorld* World = GetWorld();
-	return World ? World->GetSubsystem<URRFlowFieldSubsystem>() : nullptr;
 }
 
 void ARRShooter::HandleDeath(AActor* DeathInstigator)
