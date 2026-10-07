@@ -62,3 +62,4 @@ Resuming after the pause of 2026-10-06: read [[handover-2026-10-06]] first.
 - [[task-047-heavy-speed]] — Heavy robot speed 180 → 153 uu/s; the other robots stay at 180. Status done.
 - [[task-048-last-level-profile]] — Current wave director values saved as a last-level profile in the data, not wired. Status done.
 - [[task-049-shuttle-distance]] — Shuttle lands 37 to 50 cells from the miner (was at least 75, no maximum). Status done.
+- [[task-050-flaky-stacking-test]] — DamageNumbers.StackOverDisplayed made reliable: find why it fails intermittently and fix the cause. Status in-progress.
