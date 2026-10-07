@@ -462,7 +462,7 @@ bool FRRIntegrationPlacedSpawnerMixTest::RunTest(const FString& Parameters)
 		TestEqual(FString::Printf(TEXT("%s: shooter weight 15"), What), Shooter, 15.f);
 		TestEqual(FString::Printf(TEXT("%s: heavy weight 8"), What), Heavy, 8.f);
 		TestEqual(FString::Printf(TEXT("%s: one heavy entry"), What), HeavyEntries, 1);
-		TestEqual(FString::Printf(TEXT("%s: heavy MaxAlive 5"), What), HeavyCap, 5);
+		TestEqual(FString::Printf(TEXT("%s: heavy MaxAlive 3"), What), HeavyCap, 3);
 		TestEqual(FString::Printf(TEXT("%s: one shield chaser entry"), What), ShieldEntries, 1);
 		TestEqual(FString::Printf(TEXT("%s: shield chaser weight 0"), What), Shield, 0.f);
 		TestEqual(FString::Printf(TEXT("%s: no cap on the other entries"), What), OtherCaps, 0);

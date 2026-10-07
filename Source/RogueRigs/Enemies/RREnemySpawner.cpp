@@ -910,6 +910,17 @@ TArray<FRRSpawnedPack> ARREnemySpawner::TrySpawnDirectorWave(const TArray<int32>
 	TMap<UClass*, int32> Room;
 	int32 ShooterRoom = GetDirectorShooterRoom();
 	bool bSideUsed[4] = { false, false, false, false };
+	// Angles around the miner (the view center without one) of the anchors already placed in this wave.
+	const bool bSeparated = DirectorConfig.PackMinSeparationDegrees > 0.f;
+	// When the packs cannot all keep the angle at random (3 packs at 120 degrees), the later ones aim at even steps from the first.
+	const bool bEvenSpread = bSeparated && PackTypeIndices.Num() > 1
+		&& PackTypeIndices.Num() * DirectorConfig.PackMinSeparationDegrees >= 360.f - UE_KINDA_SMALL_NUMBER;
+	FVector2D Origin;
+	if (!GetHeadingOrigin(Origin))
+	{
+		Origin = View.GetCenter();
+	}
+	TArray<double> UsedAngles;
 	for (const int32 TypeIndex : PackTypeIndices)
 	{
 		if (!DirectorConfig.PackTypes.IsValidIndex(TypeIndex) || FreeSlots <= 0)
@@ -927,14 +938,23 @@ TArray<FRRSpawnedPack> ARREnemySpawner::TrySpawnDirectorWave(const TArray<int32>
 			continue;
 		}
 		// Running: the pack's sector is drawn first (front, sides, back), its side follows a random cell of that sector.
+		// Level 1 (PackMinSeparationDegrees > 0): the anchor keeps that angle from the anchors already placed, else a distinct side per pack.
 		const ERRSpawnSector Sector = DrawSpawnSector(Candidates);
 		FIntPoint Anchor;
-		const int32 SideIndex = PickSideForSector(BySide, bSideUsed, Classes.Num(), Sector, &Anchor);
+		const int32 SideIndex = bEvenSpread && !UsedAngles.IsEmpty()
+			? PickAnchorNearAngle(BySide, Classes.Num(), Origin, UsedAngles[0] + UsedAngles.Num() * 360.0 / PackTypeIndices.Num(), Anchor)
+			: bEvenSpread
+			? PickEvenSpreadStart(BySide, Classes.Num(), Sector, Origin, PackTypeIndices.Num(), Anchor)
+			: bSeparated
+			? PickSeparatedAnchor(BySide, Classes.Num(), Sector, Origin, UsedAngles, DirectorConfig.PackMinSeparationDegrees, Anchor)
+			: PickSideForSector(BySide, bSideUsed, Classes.Num(), Sector, &Anchor);
 		if (SideIndex == INDEX_NONE)
 		{
 			break;
 		}
 		bSideUsed[SideIndex] = true;
+		const FVector AnchorCenter = Grid->GetCellCenter(Anchor.X, Anchor.Y);
+		UsedAngles.Add(FMath::RadiansToDegrees(FMath::Atan2(AnchorCenter.Y - Origin.Y, AnchorCenter.X - Origin.X)));
 		TArray<FIntPoint>& SideCells = BySide[SideIndex];
 
 		// Adjacent cells: the ones nearest to the anchor of the side, then the nearest to the view first (the front).
@@ -947,6 +967,7 @@ TArray<FRRSpawnedPack> ARREnemySpawner::TrySpawnDirectorWave(const TArray<int32>
 		FRRSpawnedPack& Pack = Packs.AddDefaulted_GetRef();
 		Pack.PackType = TypeIndex;
 		Pack.Side = static_cast<ERRSpawnSide>(SideIndex + 1);
+		Pack.AnchorAngle = UsedAngles.Last();
 		for (int32 Index = 0; Index < Count; ++Index)
 		{
 			if (ARREnemy* Enemy = SpawnEnemyOnCell(Classes[Index], PackCells[Index]))
@@ -960,6 +981,193 @@ TArray<FRRSpawnedPack> ARREnemySpawner::TrySpawnDirectorWave(const TArray<int32>
 			*DirectorConfig.PackTypes[TypeIndex].Name.ToString(), Pack.Robots.Num(), SideIndex + 1, AliveEnemies.Num());
 	}
 	return Packs;
+}
+
+int32 ARREnemySpawner::PickSeparatedAnchor(const TArray<FIntPoint> (&BySide)[4], int32 Needed, ERRSpawnSector Sector, const FVector2D& Origin,
+	const TArray<double>& UsedAngles, float MinSeparationDegrees, FIntPoint& OutAnchor)
+{
+	const ARRArenaGrid* Grid = GetGrid();
+	if (!Grid)
+	{
+		return INDEX_NONE;
+	}
+	// Smallest angle between the direction of Cell from Origin and the anchors already placed (360 when none).
+	auto Separation = [Grid, &Origin, &UsedAngles](const FIntPoint& Cell)
+	{
+		const FVector Center = Grid->GetCellCenter(Cell.X, Cell.Y);
+		const double Angle = FMath::RadiansToDegrees(FMath::Atan2(Center.Y - Origin.Y, Center.X - Origin.X));
+		double Smallest = 360.0;
+		for (const double Used : UsedAngles)
+		{
+			Smallest = FMath::Min(Smallest, FMath::Abs(FMath::FindDeltaAngleDegrees(Used, Angle)));
+		}
+		return Smallest;
+	};
+	// Four passes from the strictest rule to the loosest: sector and room, sector, room, anything; all far enough.
+	const double MinSeparation = MinSeparationDegrees - UE_KINDA_SMALL_NUMBER;
+	TArray<TPair<int32, FIntPoint>> Entries;
+	for (int32 Pass = 0; Pass < 4 && Entries.IsEmpty(); ++Pass)
+	{
+		const bool bSectorRule = Pass < 2 && Sector != ERRSpawnSector::None;
+		const bool bRoomRule = Pass % 2 == 0;
+		for (int32 SideIndex = 0; SideIndex < 4; ++SideIndex)
+		{
+			if (bRoomRule && BySide[SideIndex].Num() < Needed)
+			{
+				continue;
+			}
+			for (const FIntPoint& Cell : BySide[SideIndex])
+			{
+				if ((!bSectorRule || GetCellSector(Cell) == Sector) && Separation(Cell) >= MinSeparation)
+				{
+					Entries.Emplace(SideIndex, Cell);
+				}
+			}
+		}
+	}
+	if (!Entries.IsEmpty())
+	{
+		const TPair<int32, FIntPoint>& Entry = Entries[RandomStream.RandRange(0, Entries.Num() - 1)];
+		OutAnchor = Entry.Value;
+		return Entry.Key;
+	}
+	// No cell far enough: the farthest one (the first on ties, no random draw).
+	int32 BestSide = INDEX_NONE;
+	double BestSeparation = -1.0;
+	for (int32 SideIndex = 0; SideIndex < 4; ++SideIndex)
+	{
+		for (const FIntPoint& Cell : BySide[SideIndex])
+		{
+			const double CellSeparation = Separation(Cell);
+			if (CellSeparation > BestSeparation)
+			{
+				BestSeparation = CellSeparation;
+				BestSide = SideIndex;
+				OutAnchor = Cell;
+			}
+		}
+	}
+	return BestSide;
+}
+
+int32 ARREnemySpawner::PickEvenSpreadStart(const TArray<FIntPoint> (&BySide)[4], int32 Needed, ERRSpawnSector Sector, const FVector2D& Origin, int32 PackCount, FIntPoint& OutAnchor)
+{
+	const ARRArenaGrid* Grid = GetGrid();
+	if (!Grid)
+	{
+		return INDEX_NONE;
+	}
+	auto AngleOf = [Grid, &Origin](const FIntPoint& Cell)
+	{
+		const FVector Center = Grid->GetCellCenter(Cell.X, Cell.Y);
+		return FMath::RadiansToDegrees(FMath::Atan2(Center.Y - Origin.Y, Center.X - Origin.X));
+	};
+	auto BinOf = [](double Angle) { return static_cast<int32>(FMath::Fmod(FMath::Fmod(Angle + 180.0, 360.0) + 360.0, 360.0)) % 360; };
+	// One-degree bins around the miner that hold a candidate cell.
+	bool bOccupied[360] = {};
+	for (int32 SideIndex = 0; SideIndex < 4; ++SideIndex)
+	{
+		for (const FIntPoint& Cell : BySide[SideIndex])
+		{
+			bOccupied[BinOf(AngleOf(Cell))] = true;
+		}
+	}
+	// Degrees from Angle to the nearest occupied bin (360 when none).
+	auto Miss = [&bOccupied, &BinOf](double Angle)
+	{
+		const int32 Bin = BinOf(Angle);
+		for (int32 Offset = 0; Offset <= 180; ++Offset)
+		{
+			if (bOccupied[(Bin + Offset) % 360] || bOccupied[(Bin - Offset + 360) % 360])
+			{
+				return static_cast<double>(Offset);
+			}
+		}
+		return 360.0;
+	};
+	// Candidate first anchors: sector and room, sector, room, anything (as PickSeparatedAnchor); each scored by the worst miss of
+	// the later packs at even steps. A random one within 3 degrees, else the best.
+	constexpr double GoodMiss = 3.0;
+	TArray<TPair<int32, FIntPoint>> Good;
+	int32 BestSide = INDEX_NONE;
+	double BestMiss = TNumericLimits<double>::Max();
+	for (int32 Pass = 0; Pass < 4 && Good.IsEmpty(); ++Pass)
+	{
+		const bool bSectorRule = Pass < 2 && Sector != ERRSpawnSector::None;
+		const bool bRoomRule = Pass % 2 == 0;
+		for (int32 SideIndex = 0; SideIndex < 4; ++SideIndex)
+		{
+			if (bRoomRule && BySide[SideIndex].Num() < Needed)
+			{
+				continue;
+			}
+			for (const FIntPoint& Cell : BySide[SideIndex])
+			{
+				if (bSectorRule && GetCellSector(Cell) != Sector)
+				{
+					continue;
+				}
+				const double Angle = AngleOf(Cell);
+				double WorstMiss = 0.0;
+				for (int32 Step = 1; Step < PackCount; ++Step)
+				{
+					WorstMiss = FMath::Max(WorstMiss, Miss(Angle + Step * 360.0 / PackCount));
+				}
+				if (WorstMiss <= GoodMiss)
+				{
+					Good.Emplace(SideIndex, Cell);
+				}
+				if (WorstMiss < BestMiss)
+				{
+					BestMiss = WorstMiss;
+					BestSide = SideIndex;
+					OutAnchor = Cell;
+				}
+			}
+		}
+	}
+	if (!Good.IsEmpty())
+	{
+		const TPair<int32, FIntPoint>& Entry = Good[RandomStream.RandRange(0, Good.Num() - 1)];
+		OutAnchor = Entry.Value;
+		return Entry.Key;
+	}
+	return BestSide;
+}
+
+int32 ARREnemySpawner::PickAnchorNearAngle(const TArray<FIntPoint> (&BySide)[4], int32 Needed, const FVector2D& Origin, double TargetAngle, FIntPoint& OutAnchor)
+{
+	const ARRArenaGrid* Grid = GetGrid();
+	if (!Grid)
+	{
+		return INDEX_NONE;
+	}
+	// Two passes: sides with at least Needed cells, then any side; the first cell on ties (no random draw).
+	int32 BestSide = INDEX_NONE;
+	double BestDelta = TNumericLimits<double>::Max();
+	for (int32 Pass = 0; Pass < 2 && BestSide == INDEX_NONE; ++Pass)
+	{
+		for (int32 SideIndex = 0; SideIndex < 4; ++SideIndex)
+		{
+			if (Pass == 0 && BySide[SideIndex].Num() < Needed)
+			{
+				continue;
+			}
+			for (const FIntPoint& Cell : BySide[SideIndex])
+			{
+				const FVector Center = Grid->GetCellCenter(Cell.X, Cell.Y);
+				const double Angle = FMath::RadiansToDegrees(FMath::Atan2(Center.Y - Origin.Y, Center.X - Origin.X));
+				const double Delta = FMath::Abs(FMath::FindDeltaAngleDegrees(TargetAngle, Angle));
+				if (Delta < BestDelta)
+				{
+					BestDelta = Delta;
+					BestSide = SideIndex;
+					OutAnchor = Cell;
+				}
+			}
+		}
+	}
+	return BestSide;
 }
 
 ERRSpawnSide ARREnemySpawner::PrepareHorde(int32 HordeIndex)

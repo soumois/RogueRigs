@@ -112,7 +112,7 @@ namespace RRSpawnerDirectorTests
 			return false;
 		}
 		Test.TestTrue(TEXT("director on by default"), Out.Spawner->IsDirectorEnabled());
-		Test.TestEqual(TEXT("default MaxAlive 150"), FSpawnerAccess::MaxAliveOf(Out.Spawner), 150);
+		Test.TestEqual(TEXT("default MaxAlive 80"), FSpawnerAccess::MaxAliveOf(Out.Spawner), 80);
 		Out.Spawner->SetSpawningEnabled(false);
 		FSpawnerAccess::MaxAliveOf(Out.Spawner) = MaxAlive;
 		FSpawnerAccess::WeightsOf(Out.Spawner) = { DirectorEntry(ARRChaser::StaticClass(), 65.f), DirectorEntry(ARRKamikaze::StaticClass(), 12.f),
@@ -246,7 +246,7 @@ bool FRRSpawnerDirectorPhaseTimesTest::RunTest(const FString& Parameters)
 	}
 
 	// Waves: first pack at 15 s (one pack of 6-8 chasers), flow from 21 s: 1-2 packs per wave until 1:30, 2-3 after, the
-	// interval 7.1 s shrinking to 4.1 s over 210 s (task-045-01).
+	// interval 7.1 s shrinking to 5.5 s over 210 s (task-046-01; 4.1 s since task-045-01).
 	constexpr float FlowStart = 21.f;
 	constexpr float WideStart = 90.f;
 	if (!TestTrue(TEXT("waves"), Waves.Num() > 20))
@@ -319,11 +319,11 @@ bool FRRSpawnerDirectorPhaseTimesTest::RunTest(const FString& Parameters)
 		{
 			continue;
 		}
-		TestTrue(*FString::Printf(TEXT("gap at %.1f s within 4.1-7.1 s (%.2f)"), Waves[Index], Gap), Gap >= 4.1f - TimeTolerance && Gap <= 7.1f + TimeTolerance);
+		TestTrue(*FString::Printf(TEXT("gap at %.1f s within 5.5-7.1 s (%.2f)"), Waves[Index], Gap), Gap >= 5.5f - TimeTolerance && Gap <= 7.1f + TimeTolerance);
 		TestTrue(*FString::Printf(TEXT("gap at %.1f s not longer than the previous"), Waves[Index]), Gap <= PreviousGap + TimeTolerance);
 		if (Waves[Index - 1] >= FlowStart + 210.f)
 		{
-			TestTrue(*FString::Printf(TEXT("gap after 3 min 30 of flow is 4.1 s (%.2f)"), Gap), FMath::Abs(Gap - 4.1f) <= TimeTolerance);
+			TestTrue(*FString::Printf(TEXT("gap after 3 min 30 of flow is 5.5 s (%.2f)"), Gap), FMath::Abs(Gap - 5.5f) <= TimeTolerance);
 		}
 		PreviousGap = Gap;
 	}
@@ -555,18 +555,21 @@ bool FRRSpawnerDirectorPackHomogeneityTest::RunTest(const FString& Parameters)
 		}
 	}
 
-	// A wave of three packs: three distinct sides.
+	// A wave of three packs (task-046-01): anchors 120 degrees apart around the miner (the later packs aim at even steps from the
+	// first; the nearest band cell, so a few degrees of grid tolerance).
 	const TArray<FRRSpawnedPack> Wave = Setup.Spawner->TrySpawnDirectorWave({ Config.FindPackType(TEXT("Chasers")), Config.FindPackType(TEXT("ShieldChasers")),
 		Config.FindPackType(TEXT("Heavies")) });
 	if (TestEqual(TEXT("wave of three packs"), Wave.Num(), 3))
 	{
-		TSet<ERRSpawnSide> Sides;
 		for (const FRRSpawnedPack& Pack : Wave)
 		{
-			Sides.Add(Pack.Side);
 			TestTrue(TEXT("wave pack not empty"), !Pack.Robots.IsEmpty());
 		}
-		TestEqual(TEXT("three distinct sides"), Sides.Num(), 3);
+		auto Separation = [&Wave](int32 A, int32 B) { return FMath::Abs(FMath::FindDeltaAngleDegrees(Wave[A].AnchorAngle, Wave[B].AnchorAngle)); };
+		AddInfo(FString::Printf(TEXT("wave anchors %.0f, %.0f, %.0f degrees"), Wave[0].AnchorAngle, Wave[1].AnchorAngle, Wave[2].AnchorAngle));
+		TestTrue(*FString::Printf(TEXT("packs 1-2 about 120 degrees apart (%.1f)"), Separation(0, 1)), Separation(0, 1) >= 110.0);
+		TestTrue(*FString::Printf(TEXT("packs 1-3 about 120 degrees apart (%.1f)"), Separation(0, 2)), Separation(0, 2) >= 110.0);
+		TestTrue(*FString::Printf(TEXT("packs 2-3 about 120 degrees apart (%.1f)"), Separation(1, 2)), Separation(1, 2) >= 110.0);
 	}
 	return true;
 }

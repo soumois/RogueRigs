@@ -65,7 +65,7 @@ namespace RRSpawnerTests
 			return false;
 		}
 		Test.TestEqual(TEXT("default SpawnInterval 2 s"), FSpawnerAccess::SpawnIntervalOf(Out.Spawner), 2.f);
-		Test.TestEqual(TEXT("default MaxAlive 150"), FSpawnerAccess::MaxAliveOf(Out.Spawner), 150);
+		Test.TestEqual(TEXT("default MaxAlive 80"), FSpawnerAccess::MaxAliveOf(Out.Spawner), 80);
 		Test.TestEqual(TEXT("default TrickleDuration 30 s"), FSpawnerAccess::TrickleDurationOf(Out.Spawner), 30.f);
 		Test.TestEqual(TEXT("default PackInterval 6 s"), FSpawnerAccess::PackIntervalOf(Out.Spawner), 6.f);
 		Test.TestEqual(TEXT("default PackSizeMin 8"), FSpawnerAccess::PackSizeMinOf(Out.Spawner), 8);

@@ -316,7 +316,7 @@ bool FRRIntegrationPressureDirectorPhasesTest::RunTest(const FString& Parameters
 	const FRRWaveDirectorConfig& Config = FSpawnerAccess::DirectorOf(Loop.Spawner);
 	const FRRWaveDirectorConfig Default = FRRWaveDirectorConfig::MakeDefault();
 	TestTrue(TEXT("placed director enabled"), Config.bEnabled);
-	TestEqual(TEXT("placed MaxAlive 150"), FSpawnerAccess::MaxAliveOf(Loop.Spawner), 150);
+	TestEqual(TEXT("placed MaxAlive 80"), FSpawnerAccess::MaxAliveOf(Loop.Spawner), 80);
 	if (!TestEqual(TEXT("placed phases match the default count"), Config.Phases.Num(), Default.Phases.Num()) || Config.Phases.Num() < 4)
 	{
 		return false;

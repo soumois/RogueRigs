@@ -78,6 +78,9 @@ struct FRRSpawnedPack
 
 	/** Spawn cell of each robot of Robots (the actor may be nudged off it when capsules overlap). */
 	TArray<FIntPoint> Cells;
+
+	/** Direction of the pack anchor cell from the miner (the view center without one), in degrees (-180 to 180, atan2 of Y, X). */
+	double AnchorAngle = 0.0;
 };
 
 /** One planned robot of a horde front: class and cell, in spawn order. */
@@ -115,7 +118,7 @@ struct FRRWeightedEnemyClass
 /**
  * Placed actor that keeps robots coming from outside the screen (sys-spawner).
  * Wave director (DirectorConfig.bEnabled, default): FRRWaveDirector schedules phases of lone robots and waves of packs of one
- * type (each pack from a distinct side, front members on the cells nearest to the view) and announced hordes (lull, banner event,
+ * type (each pack from a distinct side, or PackMinSeparationDegrees apart around the miner, front members on the cells nearest to the view) and announced hordes (lull, banner event,
  * a front along one side spawned over a few seconds, front members first). Robot classes of the director data are resolved to the
  * WeightedEnemyClasses entries (ResolveRobotClass) and respect their MaxAlive caps. Without the director, the older timers below:
  * Trickle phase, the first TrickleDuration seconds of spawning: one robot every SpawnInterval seconds. Pack phase after it: a pack
@@ -377,7 +380,7 @@ public:
 
 	/**
 	 * Spawns one wave now (ignores the timers and the enabled flags): one pack per entry of PackTypeIndices (DirectorConfig.PackTypes),
-	 * each from a distinct side of the view while sides remain, on adjacent cells, front members nearest to the view. Packs are
+	 * each from a distinct side of the view while sides remain (or DirectorConfig.PackMinSeparationDegrees apart around the miner), on adjacent cells, front members nearest to the view. Packs are
 	 * clamped to the free slots and the per-class caps. One candidate scan. Returns the packs spawned.
 	 */
 	TArray<FRRSpawnedPack> TrySpawnDirectorWave(const TArray<int32>& PackTypeIndices);
@@ -434,6 +437,28 @@ protected:
 	 * at least Needed cells, else among the unused sides, else among all sides; its side wins. OutAnchor (optional; no extra draw when null) gets that cell. INDEX_NONE when every side is empty.
 	 */
 	int32 PickSideForSector(const TArray<FIntPoint> (&BySide)[4], const bool (&Used)[4], int32 Needed, ERRSpawnSector Sector, FIntPoint* OutAnchor);
+
+	/**
+	 * Wave pack anchor with DirectorConfig.PackMinSeparationDegrees > 0 (task-046-01): a random cell whose direction from Origin
+	 * (the miner) is at least MinSeparationDegrees from every angle of UsedAngles, taken in Sector on a side with at least Needed
+	 * cells, else in Sector, else anywhere with Needed cells, else anywhere (Sector None skips the sector rule). When no cell is
+	 * far enough, the cell farthest from UsedAngles. Returns the side index of OutAnchor; INDEX_NONE when every side is empty.
+	 */
+	int32 PickSeparatedAnchor(const TArray<FIntPoint> (&BySide)[4], int32 Needed, ERRSpawnSector Sector, const FVector2D& Origin,
+		const TArray<double>& UsedAngles, float MinSeparationDegrees, FIntPoint& OutAnchor);
+
+	/**
+	 * Wave pack anchor when the packs of a wave cannot all keep PackMinSeparationDegrees at random (packs x angle >= 360, e.g. 3 at
+	 * 120): the cell whose direction from Origin is nearest TargetAngle (first pack angle + i x 360 / packs), on a side with at least
+	 * Needed cells, else any side. Returns the side index of OutAnchor; INDEX_NONE when every side is empty.
+	 */
+	int32 PickAnchorNearAngle(const TArray<FIntPoint> (&BySide)[4], int32 Needed, const FVector2D& Origin, double TargetAngle, FIntPoint& OutAnchor);
+
+	/**
+	 * First pack anchor of such a wave: a random cell (Sector and room rules as PickSeparatedAnchor) from which every even step
+	 * (i x 360 / PackCount) has a candidate cell within 3 degrees, else the cell with the smallest worst miss. Returns its side index.
+	 */
+	int32 PickEvenSpreadStart(const TArray<FIntPoint> (&BySide)[4], int32 Needed, ERRSpawnSector Sector, const FVector2D& Origin, int32 PackCount, FIntPoint& OutAnchor);
 
 	/** Plans the front of horde HordeIndex (side, classes, cells) and returns its side; None when no cell. */
 	ERRSpawnSide PrepareHorde(int32 HordeIndex);
@@ -525,9 +550,9 @@ protected:
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Spawner|Packs", meta = (ClampMin = 0, ClampMax = 1))
 	float LoneSpawnChance = 0.1f;
 
-	/** Maximum number of robots of this spawner alive at once (150, owner 2026-10-05); spawns beyond it are skipped (packs and hordes are clamped). */
+	/** Maximum number of robots of this spawner alive at once (80 for level 1, task-046-01; 150 from owner 2026-10-05 before); spawns beyond it are skipped (packs and hordes are clamped). */
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Spawner", meta = (ClampMin = 0))
-	int32 MaxAlive = 150;
+	int32 MaxAlive = 80;
 
 	/** Nearest a spawn cell center lies beyond the visible floor rectangle edge (box distance, uu; owner 2026-10-06, provisional). */
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Spawner|Band", meta = (ClampMin = 0, Units = "cm"))

@@ -96,7 +96,7 @@ FRRWaveDirectorConfig FRRWaveDirectorConfig::MakeDefault()
 	WideHeavies.Members = { Member(ARRHeavy::StaticClass(), 2, 3, /*bFront*/ true), Member(ARRChaser::StaticClass(), 8, 12), Behind(ARRShooter::StaticClass(), 0, 1) };
 
 	// Phases (no calm; task-045-01 eased the first level by about 15 %): from 1 s a lone chaser every 2.35 s; 15 s first pack
-	// from one side; from 21 s waves of 1-2 packs from distinct sides, the interval shrinking from 7.1 s to 4.1 s over 3 min 30
+	// from one side; from 21 s waves of 1-2 packs at least 120 degrees apart around the miner (task-046-01), the interval shrinking from 7.1 s to 5.5 s over 3 min 30 (task-046-01; 4.1 s before)
 	// (heavy packs at weight 4 of 100); from 60 s the chaser packs carry shield chasers; from 90 s waves of 2-3 bigger packs with the shooters. The later phases only change the mix or the sides: they keep the wave timer and the ramp.
 	FRRDirectorPhase& Isolated = Config.Phases.AddDefaulted_GetRef();
 	Isolated.Name = TEXT("Isolated");
@@ -113,7 +113,7 @@ FRRWaveDirectorConfig FRRWaveDirectorConfig::MakeDefault()
 	Flow.StartTime = 21.f;
 	Flow.bWaveOnStart = true;
 	Flow.WaveIntervalStart = 7.1f;
-	Flow.WaveIntervalEnd = 4.1f;
+	Flow.WaveIntervalEnd = 5.5f;
 	Flow.WaveIntervalRampSeconds = 210.f;
 	Flow.SidesMin = 1;
 	Flow.SidesMax = 2;
@@ -161,6 +161,9 @@ FRRWaveDirectorConfig FRRWaveDirectorConfig::MakeDefault()
 	// of its shooters.
 	Config.ShooterMaxAlive = 4;
 	Config.ShooterCapReplacement = ARRChaser::StaticClass();
+
+	// Level 1 (task-046-01, owner 2026-10-07): the packs of one wave come from directions at least 120 degrees apart around the miner.
+	Config.PackMinSeparationDegrees = 120.f;
 
 	return Config;
 }

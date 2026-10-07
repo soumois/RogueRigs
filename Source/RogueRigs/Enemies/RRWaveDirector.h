@@ -275,6 +275,14 @@ struct FRRWaveDirectorConfig
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Director")
 	TSubclassOf<ARREnemy> ShooterCapReplacement;
 
+	/**
+	 * Smallest angle, in degrees around the miner, between the anchors of two packs of one wave (task-046-01, level 1: 120).
+	 * 0 = the older rule: a distinct side of the view per pack. When packs x angle >= 360 (3 at 120),
+	 * the later packs aim at even steps from the first; else when no cell is far enough, the cell farthest from the packs placed.
+	 */
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Director", meta = (ClampMin = 0, ClampMax = 180))
+	float PackMinSeparationDegrees = 0.f;
+
 	/** Overtime: hordes every 30 s and a shrinking wave interval from 3:30 of level time. */
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Director")
 	FRRDirectorOvertime Overtime;
@@ -299,8 +307,8 @@ struct FRRWaveDirectorConfig
 
 	/**
 	 * Last-level profile (owner 2026-10-07, difficulty): a frozen copy of the MakeDefault values tuned before 2026-10-07 (waves
-	 * 7.1 -> 4.1 s, packs from distinct sides, the same pack types and hordes; the 150-alive cap is ARREnemySpawner::MaxAlive, not
-	 * part of this config). Not used until levels exist: the game has one level, which runs MakeDefault.
+	 * 7.1 -> 4.1 s, packs from distinct sides, the same pack types and hordes; the 150-alive cap was ARREnemySpawner::MaxAlive, not
+	 * part of this config, 80 since task-046-01; PackMinSeparationDegrees stays 0). Not used until levels exist: the game has one level, which runs MakeDefault.
 	 */
 	static FRRWaveDirectorConfig MakeLastLevel();
 };
