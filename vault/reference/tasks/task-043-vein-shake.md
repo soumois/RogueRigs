@@ -3,7 +3,7 @@ id: task-043-vein-shake
 description: "Global task: All blocks of a vein being mined shake together."
 parent: tasks-index
 kind: task
-status: todo
+status: in-progress
 ---
 # Whole-vein shake
 

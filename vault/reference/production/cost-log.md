@@ -96,6 +96,7 @@ kind: note
 | [[task-038-01-shooter-detour]] | opus | 1 | 0k | 109k | 3137k | 30k |
 | [[task-039-01-heavy-radius]] | opus | 1 | 0k | 26k | 294k | 7k |
 | [[task-041-01-front-detour]] | opus | 2 | 0k | 34k | 589k | 8k |
+| [[task-042-01-hack-time]] | opus | 1 | 0k | 22k | 239k | 5k |
 
 ## Totals
 | Scope | Input | Cache write | Cache read | Output |
