@@ -61,4 +61,4 @@ Resuming after the pause of 2026-10-06: read [[handover-2026-10-06]] first.
 - [[task-046-level1-pressure]] — Level 1 pressure: 80 robots alive at most, wave interval ending at 5.5 s, packs of one wave at least 120° apart. Status done.
 - [[task-047-heavy-speed]] — Heavy robot speed 180 → 153 uu/s; the other robots stay at 180. Status done.
 - [[task-048-last-level-profile]] — Current wave director values saved as a last-level profile in the data, not wired. Status done.
-- [[task-049-shuttle-distance]] — Shuttle lands 37 to 50 cells from the miner (was at least 75, no maximum). Status in-progress.
+- [[task-049-shuttle-distance]] — Shuttle lands 37 to 50 cells from the miner (was at least 75, no maximum). Status done.
