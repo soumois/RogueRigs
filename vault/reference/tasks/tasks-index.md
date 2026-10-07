@@ -64,4 +64,4 @@ Resuming after the pause of 2026-10-06: read [[handover-2026-10-06]] first.
 - [[task-049-shuttle-distance]] — Shuttle lands 37 to 50 cells from the miner (was at least 75, no maximum). Status done.
 - [[task-050-flaky-stacking-test]] — DamageNumbers.StackOverDisplayed made reliable: find why it fails intermittently and fix the cause. Status done.
 - [[task-051-turret-spacing]] — A turret placed less than 100 uu from a standing turret moves to the nearest free floor cell at least 100 uu away. Status done.
-- [[task-052-heavy-radius-2]] — Heavy slam radius 340 → 289 uu (trigger 202 uu, chase stop 145 uu); ground ring follows. Status in-progress.
+- [[task-052-heavy-radius-2]] — Heavy slam radius 340 → 289 uu (trigger 202 uu, chase stop 145 uu); ground ring follows. Status done.

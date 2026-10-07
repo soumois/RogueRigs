@@ -3,7 +3,7 @@ id: task-052-01-heavy-radius-2
 description: "Heavy slam radius 340 → 289 uu (trigger 202 uu, chase stop 145 uu); ground ring follows."
 parent: task-052-heavy-radius-2
 kind: task
-status: in-progress
+status: done
 ---
 # Heavy slam radius −15 % again
 
@@ -15,11 +15,11 @@ status: in-progress
 - done_when: build exits 0 with the editor closed; all `RogueRigs.*` tests pass headless; docs updated; lint clean.
 - editor_state: closed
 - token_ceiling: 30000
-- model: open
-- tokens: open
-- runs: open
+- model: opus
+- tokens: input 32, cache write 33666, cache read 434327, output 7407
+- runs: 1
 - milestone: M2
-- result: open
+- result: EnemyStats.csv Heavy AttackRange 340 → 289: trigger 202.3 uu, chase stop 144.5 uu, ring scale 5.78; heavy tests updated (telegraph at 202 uu, hit at 279, miss at 299). Build 0, 195/195. Commit 96fafcf.
 
 ## Relations
 - [[task-052-heavy-radius-2]] — parent global task.
