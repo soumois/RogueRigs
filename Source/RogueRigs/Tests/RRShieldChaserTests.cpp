@@ -198,44 +198,53 @@ bool FRRShieldChaserDirectorTest::RunTest(const FString& Parameters)
 	using namespace RRShieldChaserTests;
 
 	const FRRWaveDirectorConfig Config = FRRWaveDirectorConfig::MakeDefault();
-	const int32 ShieldType = Config.FindPackType(TEXT("ShieldChasers"));
-	if (!TestTrue(TEXT("ShieldChasers pack type"), ShieldType != INDEX_NONE))
+	// ShieldChasers until 1:30, WideShieldChasers (bigger, with shooters) after.
+	const FName ShieldTypeNames[] = { TEXT("ShieldChasers"), TEXT("WideShieldChasers") };
+	TArray<int32> ShieldTypes;
+	for (const FName ShieldTypeName : ShieldTypeNames)
 	{
-		return false;
+		const int32 ShieldType = Config.FindPackType(ShieldTypeName);
+		if (!TestTrue(FString::Printf(TEXT("%s pack type"), *ShieldTypeName.ToString()), ShieldType != INDEX_NONE))
+		{
+			return false;
+		}
+		ShieldTypes.Add(ShieldType);
+
+		// A quarter of the pack chasers carry a shield (mean counts).
+		float ShieldMean = 0.f;
+		float ChaserMean = 0.f;
+		for (const FRRDirectorPackMember& Member : Config.PackTypes[ShieldType].Members)
+		{
+			const float Mean = 0.5f * (Member.CountMin + Member.CountMax);
+			if (Member.RobotClass == ARRShieldChaser::StaticClass())
+			{
+				ShieldMean += Mean;
+			}
+			if (Member.RobotClass && Member.RobotClass->IsChildOf(ARRChaser::StaticClass()))
+			{
+				ChaserMean += Mean;
+			}
+		}
+		AddInfo(FString::Printf(TEXT("%s pack: %.1f shield chasers of %.1f chasers"), *ShieldTypeName.ToString(), ShieldMean, ChaserMean));
+		TestTrue(FString::Printf(TEXT("%s: shield chasers are 25 %% of the pack chasers"), *ShieldTypeName.ToString()),
+			ChaserMean > 0.f && FMath::IsNearlyEqual(ShieldMean / ChaserMean, 0.25f, 0.01f));
 	}
 
-	// A quarter of the pack chasers carry a shield (mean counts).
-	float ShieldMean = 0.f;
-	float ChaserMean = 0.f;
-	for (const FRRDirectorPackMember& Member : Config.PackTypes[ShieldType].Members)
-	{
-		const float Mean = 0.5f * (Member.CountMin + Member.CountMax);
-		if (Member.RobotClass == ARRShieldChaser::StaticClass())
-		{
-			ShieldMean += Mean;
-		}
-		if (Member.RobotClass && Member.RobotClass->IsChildOf(ARRChaser::StaticClass()))
-		{
-			ChaserMean += Mean;
-		}
-	}
-	AddInfo(FString::Printf(TEXT("ShieldChasers pack: %.1f shield chasers of %.1f chasers"), ShieldMean, ChaserMean));
-	TestTrue(TEXT("shield chasers are 25 % of the pack chasers"), ChaserMean > 0.f && FMath::IsNearlyEqual(ShieldMean / ChaserMean, 0.25f, 0.01f));
-
-	// Only the phases from 1:00 draw it (FlowShields first); no other pack type holds a shield chaser.
+	// Only the phases from 1:00 draw them (FlowShields first); no other pack type holds a shield chaser.
 	int32 FlowIndex = INDEX_NONE;
 	int32 ShieldPhaseIndex = INDEX_NONE;
 	for (int32 Index = 0; Index < Config.Phases.Num(); ++Index)
 	{
 		const FRRDirectorPhase& Phase = Config.Phases[Index];
-		const bool bDrawsShields = Phase.PackWeights.ContainsByPredicate([](const FRRDirectorPackWeight& Weight) { return Weight.PackType == TEXT("ShieldChasers"); });
-		TestEqual(FString::Printf(TEXT("phase %s draws ShieldChasers only from 60 s"), *Phase.Name.ToString()), bDrawsShields, Phase.StartTime >= 60.f);
+		const bool bDrawsShields = Phase.PackWeights.ContainsByPredicate([&ShieldTypeNames](const FRRDirectorPackWeight& Weight)
+			{ return Weight.PackType == ShieldTypeNames[0] || Weight.PackType == ShieldTypeNames[1]; });
+		TestEqual(FString::Printf(TEXT("phase %s draws shield chaser packs only from 60 s"), *Phase.Name.ToString()), bDrawsShields, Phase.StartTime >= 60.f);
 		FlowIndex = Phase.Name == TEXT("Flow") ? Index : FlowIndex;
 		ShieldPhaseIndex = bDrawsShields && ShieldPhaseIndex == INDEX_NONE ? Index : ShieldPhaseIndex;
 	}
 	for (int32 Type = 0; Type < Config.PackTypes.Num(); ++Type)
 	{
-		if (Type == ShieldType)
+		if (ShieldTypes.Contains(Type))
 		{
 			continue;
 		}

@@ -264,12 +264,12 @@ struct FRRWaveDirectorConfig
 	TArray<FRRDirectorHorde> Hordes;
 
 	/**
-	 * Shooter counter (owner 2026-10-06, provisional): at most this many shooters (ARRShooter and subclasses) alive when a pack
+	 * Shooter counter (owner 2026-10-06, 4 since the fourth test, provisional): at most this many shooters (ARRShooter and subclasses) alive when a pack
 	 * is drawn; the shooters of a pack beyond it become ShooterCapReplacement robots in the same places. Shooters fire from afar
 	 * and pile up while the miner backs away firing. Hordes and lone robots carry no shooters.
 	 */
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Director", meta = (ClampMin = 0))
-	int32 ShooterMaxAlive = 6;
+	int32 ShooterMaxAlive = 4;
 
 	/** Robot that takes the place of a shooter drawn at the cap; none = ARRChaser (resolved like any member class). */
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Director")
@@ -294,7 +294,7 @@ struct FRRWaveDirectorConfig
 	/** Seconds of spawning at which the front of horde Index starts (RunTime trigger or overtime); -1 when none. */
 	float GetHordeFrontTime(int32 Index) const;
 
-	/** Provisional defaults (owner 2026-10-06, enemies-index): a lone chaser from 1 s, first pack at 15 s, multi-side flow with shooters riding behind, hordes at 95 s and 175 s. */
+	/** Provisional defaults (owner 2026-10-06, enemies-index): a lone chaser from 1 s, first pack at 15 s, multi-side flow (packs of 6-10 until 90 s, then 0-1 shooter riding behind), hordes at 95 s and 175 s. */
 	static FRRWaveDirectorConfig MakeDefault();
 };
 

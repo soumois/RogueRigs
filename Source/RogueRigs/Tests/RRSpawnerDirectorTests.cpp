@@ -169,7 +169,10 @@ bool FRRSpawnerDirectorPhaseTimesTest::RunTest(const FString& Parameters)
 	const int32 Chasers = Config.FindPackType(TEXT("Chasers"));
 	const int32 Heavies = Config.FindPackType(TEXT("Heavies"));
 	const int32 ShieldChasers = Config.FindPackType(TEXT("ShieldChasers"));
-	if (!TestTrue(TEXT("default pack types"), FirstChasers != INDEX_NONE && Chasers != INDEX_NONE && Heavies != INDEX_NONE && ShieldChasers != INDEX_NONE)
+	const int32 WideShieldChasers = Config.FindPackType(TEXT("WideShieldChasers"));
+	const int32 WideHeavies = Config.FindPackType(TEXT("WideHeavies"));
+	if (!TestTrue(TEXT("default pack types"), FirstChasers != INDEX_NONE && Chasers != INDEX_NONE && Heavies != INDEX_NONE && ShieldChasers != INDEX_NONE
+			&& WideShieldChasers != INDEX_NONE && WideHeavies != INDEX_NONE)
 		|| !TestEqual(TEXT("two default hordes"), Config.Hordes.Num(), 2))
 	{
 		return false;
@@ -276,18 +279,18 @@ bool FRRSpawnerDirectorPhaseTimesTest::RunTest(const FString& Parameters)
 				bWide ? PackCount >= 2 && PackCount <= 3 : PackCount >= 1 && PackCount <= 2);
 			for (const int32 Type : Timed.Action.PackTypes)
 			{
-				TestTrue(TEXT("flow packs are Chasers or ShieldChasers, or Heavies"), Type == Chasers || Type == ShieldChasers || Type == Heavies);
-				if (Type == Chasers || Type == ShieldChasers)
-				{
-					TestEqual(*FString::Printf(TEXT("chaser pack at %.2f s is %s"), Timed.Time, Timed.Time < 60.f ? TEXT("Chasers before 1:00") : TEXT("ShieldChasers from 1:00")),
-						Type, Timed.Time < 60.f ? Chasers : ShieldChasers);
-				}
+				// Chasers or Heavies before 1:00, ShieldChasers or Heavies until 1:30, WideShieldChasers or WideHeavies after.
+				const int32 ChaserType = bWide ? WideShieldChasers : (Timed.Time < 60.f ? Chasers : ShieldChasers);
+				const int32 HeavyType = bWide ? WideHeavies : Heavies;
+				TestTrue(*FString::Printf(TEXT("pack at %.2f s is %s or %s"), Timed.Time, *Config.PackTypes[ChaserType].Name.ToString(), *Config.PackTypes[HeavyType].Name.ToString()),
+					Type == ChaserType || Type == HeavyType);
 				TypesSeen.Add(Type);
 			}
 		}
 		++WaveIndex;
 	}
-	TestEqual(TEXT("the flow draws all three pack types (Chasers, ShieldChasers, Heavies)"), TypesSeen.Num(), 3);
+	TestTrue(TEXT("the flow draws Chasers, ShieldChasers, WideShieldChasers and a heavy pack"), TypesSeen.Contains(Chasers) && TypesSeen.Contains(ShieldChasers)
+		&& TypesSeen.Contains(WideShieldChasers) && (TypesSeen.Contains(Heavies) || TypesSeen.Contains(WideHeavies)));
 	TestTrue(TEXT("waves of 1 and of 2 packs before 1:30"), PackCountsBeforeWide.Contains(1) && PackCountsBeforeWide.Contains(2));
 	TestTrue(TEXT("waves of 2 and of 3 packs after 1:30"), PackCountsAfterWide.Contains(2) && PackCountsAfterWide.Contains(3));
 	FString GapLog;
@@ -325,7 +328,7 @@ bool FRRSpawnerDirectorShooterShareTest::RunTest(const FString& Parameters)
 	using namespace RRSpawnerDirectorTests;
 	using EType = FRRDirectorAction::EType;
 
-	// Shooters never form a pack of their own: every pack type holding shooters holds 1-2 of them, behind, among other robots.
+	// Shooters never form a pack of their own: every pack type holding shooters holds at most 1, behind, among other robots.
 	const FRRWaveDirectorConfig Config = FRRWaveDirectorConfig::MakeDefault();
 	for (const FRRDirectorPackType& Type : Config.PackTypes)
 	{
@@ -337,7 +340,7 @@ bool FRRSpawnerDirectorShooterShareTest::RunTest(const FString& Parameters)
 			if (bShooter)
 			{
 				ShooterMax += Member.CountMax;
-				TestTrue(*FString::Printf(TEXT("%s: 1-2 shooters (%d-%d)"), *Type.Name.ToString(), Member.CountMin, Member.CountMax), Member.CountMin >= 1 && Member.CountMax <= 2);
+				TestTrue(*FString::Printf(TEXT("%s: at most 1 shooter (%d-%d)"), *Type.Name.ToString(), Member.CountMin, Member.CountMax), Member.CountMax <= 1);
 				TestTrue(*FString::Printf(TEXT("%s: shooters ride behind, not in front"), *Type.Name.ToString()), Member.bBehind && !Member.bFront);
 			}
 			else
@@ -361,6 +364,9 @@ bool FRRSpawnerDirectorShooterShareTest::RunTest(const FString& Parameters)
 		int32 Horde = 0;
 		int32 Packs = 0;
 		int32 PacksWithShooters = 0;
+		int32 ShootersBefore90 = 0;
+		int32 PacksFrom90 = 0;
+		int32 PacksWithShootersFrom90 = 0;
 		for (const FTimedAction& Timed : Actions)
 		{
 			if (Timed.Action.Type == EType::SpawnSingle)
@@ -382,6 +388,10 @@ bool FRRSpawnerDirectorShooterShareTest::RunTest(const FString& Parameters)
 					Shooters += PackShooters;
 					++Packs;
 					PacksWithShooters += PackShooters > 0 ? 1 : 0;
+					const bool bFrom90 = Timed.Time >= 90.f - TimeTolerance;
+					ShootersBefore90 += bFrom90 ? 0 : PackShooters;
+					PacksFrom90 += bFrom90 ? 1 : 0;
+					PacksWithShootersFrom90 += bFrom90 && PackShooters > 0 ? 1 : 0;
 				}
 			}
 			else if (Timed.Action.Type == EType::HordeStarted)
@@ -394,7 +404,11 @@ bool FRRSpawnerDirectorShooterShareTest::RunTest(const FString& Parameters)
 		const float ShareWithHordes = NonHorde + Horde > 0 ? static_cast<float>(Shooters) / (NonHorde + Horde) : 0.f;
 		AddInfo(FString::Printf(TEXT("DIRECTORSHARE seed %d: %d shooters of %d robots outside hordes (%.1f %%), %.1f %% with the %d horde robots; %d of %d packs carry shooters"),
 			Seed, Shooters, NonHorde, Share * 100.f, ShareWithHordes * 100.f, Horde, PacksWithShooters, Packs));
-		TestTrue(*FString::Printf(TEXT("seed %d: shooters about 10 %% of the robots outside hordes (%.1f %%)"), Seed, Share * 100.f), Share >= 0.08f && Share <= 0.12f);
+		// Fourth test (owner 2026-10-06, provisional): no shooter before 1:30, then one pack out of two carries one.
+		TestEqual(*FString::Printf(TEXT("seed %d: no shooter before 90 s"), Seed), ShootersBefore90, 0);
+		const float PackShare = PacksFrom90 > 0 ? static_cast<float>(PacksWithShootersFrom90) / PacksFrom90 : 0.f;
+		TestTrue(*FString::Printf(TEXT("seed %d: about one pack out of two carries a shooter from 90 s (%d of %d)"), Seed, PacksWithShootersFrom90, PacksFrom90),
+			PackShare >= 0.3f && PackShare <= 0.7f);
 	}
 	return true;
 }
@@ -730,12 +744,22 @@ bool FRRSpawnerDirectorShooterCapTest::RunTest(const FString& Parameters)
 		return false;
 	}
 	FRRWaveDirectorConfig& Config = FSpawnerAccess::DirectorOf(Setup.Spawner);
-	TestEqual(TEXT("default shooter cap 6"), Config.ShooterMaxAlive, 6);
+	TestEqual(TEXT("default shooter cap 4"), Config.ShooterMaxAlive, 4);
 	TestTrue(TEXT("default replacement is the chaser"), Config.ShooterCapReplacement.Get() == ARRChaser::StaticClass());
-	const int32 ChasersType = Config.FindPackType(TEXT("Chasers"));
-	if (!TestTrue(TEXT("Chasers pack type"), ChasersType != INDEX_NONE))
+	const int32 ChasersType = Config.FindPackType(TEXT("WideShieldChasers"));
+	if (!TestTrue(TEXT("WideShieldChasers pack type"), ChasersType != INDEX_NONE))
 	{
 		return false;
+	}
+	// The default pack carries 0-1 shooter (one pack out of two); the cap is checked here with exactly one per pack.
+	for (FRRDirectorPackMember& Member : Config.PackTypes[ChasersType].Members)
+	{
+		if (Member.RobotClass && Member.RobotClass->IsChildOf(ARRShooter::StaticClass()))
+		{
+			TestTrue(TEXT("default pack: at most 1 shooter"), Member.CountMax <= 1);
+			Member.CountMin = 1;
+			Member.CountMax = 1;
+		}
 	}
 
 	// Counts by class of one Chasers pack drawn with the stream seeded with Seed; the pack is destroyed afterwards.
@@ -784,16 +808,16 @@ bool FRRSpawnerDirectorShooterCapTest::RunTest(const FString& Parameters)
 		const FPackCounts Capped = SpawnPack(Seed, true);
 		AddInfo(FString::Printf(TEXT("SHOOTERCAP seed %d: free %d robots (%d shooters, %d chasers); at the cap %d robots (%d shooters, %d chasers)"),
 			Seed, Free.Total, Free.Shooters, Free.Chasers, Capped.Total, Capped.Shooters, Capped.Chasers));
-		TestTrue(*FString::Printf(TEXT("seed %d: 1-2 shooters without the cap"), Seed), Free.Shooters >= 1 && Free.Shooters <= 2);
+		TestEqual(*FString::Printf(TEXT("seed %d: 1 shooter without the cap"), Seed), Free.Shooters, 1);
 		TestEqual(*FString::Printf(TEXT("seed %d: shooters in the back half"), Seed), Free.ShootersInBackHalf, Free.Shooters);
 		TestEqual(*FString::Printf(TEXT("seed %d: no shooter at the cap"), Seed), Capped.Shooters, 0);
 		TestEqual(*FString::Printf(TEXT("seed %d: same pack size"), Seed), Capped.Total, Free.Total);
 		TestEqual(*FString::Printf(TEXT("seed %d: chasers in place of the shooters"), Seed), Capped.Chasers, Free.Chasers + Free.Shooters);
 	}
 
-	// Default cap 6: 5 shooters alive leave room for one; packs kept alive never raise the count above 6.
-	Config.ShooterMaxAlive = 6;
-	for (int32 Index = 0; Index < 5; ++Index)
+	// Default cap 4: 3 shooters alive leave room for one; packs kept alive never raise the count above 4.
+	Config.ShooterMaxAlive = 4;
+	for (int32 Index = 0; Index < 3; ++Index)
 	{
 		TestNotNull(*FString::Printf(TEXT("lone shooter %d"), Index), Setup.Spawner->TrySpawnEnemyOfClass(ARRShooter::StaticClass()));
 	}
@@ -801,10 +825,10 @@ bool FRRSpawnerDirectorShooterCapTest::RunTest(const FString& Parameters)
 	for (int32 Repeat = 0; Repeat < 4; ++Repeat)
 	{
 		PackShooters += SpawnPack(777 + Repeat, false).Shooters;
-		TestTrue(*FString::Printf(TEXT("pack %d: at most 6 shooters alive"), Repeat), Setup.Spawner->GetAliveCountOfClass(ARRShooter::StaticClass()) <= 6);
+		TestTrue(*FString::Printf(TEXT("pack %d: at most 4 shooters alive"), Repeat), Setup.Spawner->GetAliveCountOfClass(ARRShooter::StaticClass()) <= 4);
 	}
 	TestEqual(TEXT("the packs add one shooter in all"), PackShooters, 1);
-	TestEqual(TEXT("6 shooters alive"), Setup.Spawner->GetAliveCountOfClass(ARRShooter::StaticClass()), 6);
+	TestEqual(TEXT("4 shooters alive"), Setup.Spawner->GetAliveCountOfClass(ARRShooter::StaticClass()), 4);
 	return true;
 }
 
