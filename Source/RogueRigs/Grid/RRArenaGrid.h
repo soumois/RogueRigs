@@ -161,6 +161,12 @@ public:
 	bool IsBlockCell(FIntPoint Cell) const;
 
 	/**
+	 * Vein of Cell (ore-blocks, heal-ore: a 3 x 3 vein is mined as one): when Cell is an Ore or HealOre block, every block of
+	 * the same type 4-connected to it, Cell included; otherwise Cell alone when it is a block, else nothing. Returns the count.
+	 */
+	int32 GetVeinCells(FIntPoint Cell, TArray<FIntPoint>& OutCells) const;
+
+	/**
 	 * Grid line of sight on the XY plane (Z ignored): distance from From along Direction to the first block cell crossed,
 	 * capped at MaxDistance. 0 when From is inside a block cell. A ray passing exactly through a cell corner is blocked if
 	 * either side cell is a block. Void and floor never block. Assumes an unscaled grid actor. Use it for sight checks and

@@ -7,6 +7,7 @@
 #include "RRPickup.generated.h"
 
 class ARRMiner;
+class UGameplayEffect;
 class UStaticMeshComponent;
 
 /** Kind of a pickup; tells the miner what was collected. */
@@ -86,6 +87,10 @@ public:
 	UFUNCTION(BlueprintPure, Category = "Pickup")
 	float GetXPAmount() const { return XPAmount; }
 
+	/** Health restored on collection by a Heal pickup (0 = none). */
+	UFUNCTION(BlueprintPure, Category = "Pickup")
+	float GetHealAmount() const { return HealAmount; }
+
 	/** Sets the raw XP given on collection (ARREnemy splits a robot's XP over its cubes). Call before collection, ideally before BeginPlay (deferred spawn). */
 	void SetXPAmount(float InXPAmount) { XPAmount = FMath::Max(InXPAmount, 0.f); }
 
@@ -114,6 +119,9 @@ protected:
 	/** Accelerates toward the miner; collects when within CollectDistance or when the step reaches it. */
 	void FlyToMiner(ARRMiner* Miner, float DeltaSeconds);
 
+	/** Heal pickup: applies HealEffectClass with SetByCaller Data.Heal = HealAmount to Miner (skipped when 0, dead or no ASC). */
+	void ApplyHeal(ARRMiner* Miner) const;
+
 	/** Logs the type, adds XPAmount XP to the miner for an XP pickup, notifies the miner (type, location) and destroys this pickup. */
 	void Collect(ARRMiner* Miner);
 
@@ -136,6 +144,17 @@ protected:
 	/** Raw XP given by an XP pickup on collection (before the miner XPGain); set per cube by ARREnemy. Ignored by other types. */
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Pickup", meta = (ClampMin = 0))
 	float XPAmount = 1.f;
+
+	/**
+	 * Health a Heal pickup restores on collection, through HealEffectClass (SetByCaller Data.Heal, clamped to MaxHealth).
+	 * The amount is open in heal-ore: 0 (no heal) until it is decided; set it on BP_PickupHeal or here.
+	 */
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Pickup|Heal", meta = (ClampMin = 0))
+	float HealAmount = 0.f;
+
+	/** Instant effect applied to the miner by a Heal pickup (URRGE_Heal by default). */
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Pickup|Heal")
+	TSubclassOf<UGameplayEffect> HealEffectClass;
 
 	/** Shortest horizontal ejection distance from the spawn point (task-027-01: 80 uu). */
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Pickup|Pop", meta = (ClampMin = 0, Units = "cm"))

@@ -695,6 +695,8 @@ bool FRRSpawnerDirectorCapTest::RunTest(const FString& Parameters)
 
 	// Horde clamped to the 25 free slots, no heavy (capped); the alive count never exceeds 30.
 	FSpawnerAccess::DirectorOf(Setup.Spawner) = ShortHordeConfig();
+	// Recycling off: this test counts spawns through the alive count; far frozen robots would be recycled (task-034-01 margin 0).
+	RRTestAccess::FSpawnerAccess::RecycleEnabledOf(Setup.Spawner) = false;
 	Setup.Spawner->SetSpawningEnabled(true);
 	int32 MaxSeen = 0;
 	for (int32 Frame = 1; Frame <= 190; ++Frame)

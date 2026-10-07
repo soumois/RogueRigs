@@ -376,13 +376,33 @@ void ARRDrone::TickDig(float DeltaSeconds)
 	// Lasers first: the face centers are still valid before the hit that may destroy the blocks.
 	UpdateDigLasers();
 
-	// Every block of the arc is cut in parallel at the full rate. Dig holds even when the arc empties: the miner selects
-	// the next blocks (or releases the dig) on its next tick.
+	// Every block of the arc is cut in parallel at the full rate. A block of an ore or heal vein makes the whole vein one
+	// target (ore-blocks, owner 2026-10-06 fourth test): each vein block takes the damage once per tick, however many of
+	// its blocks are in the arc, so the vein breaks whole after one block dig time. Dig holds even when the arc empties:
+	// the miner selects the next blocks (or releases the dig) on its next tick.
 	const float Damage = DeltaSeconds * GetMiningSpeed();
+	TArray<FIntPoint> Targets;
+	TArray<FIntPoint> Vein;
+	for (const FIntPoint& Cell : DigCells)
+	{
+		if (Targets.Contains(Cell))
+		{
+			continue;
+		}
+		DigGrid->GetVeinCells(Cell, Vein);
+		for (const FIntPoint& VeinCell : Vein)
+		{
+			Targets.AddUnique(VeinCell);
+		}
+	}
+	for (const FIntPoint& Cell : Targets)
+	{
+		DigGrid->ApplyTerrainDamage(Cell, Damage, ERRTerrainDamageSource::Drone);
+	}
 	for (int32 Index = 0; Index < DigCells.Num();)
 	{
 		const FIntPoint Cell = DigCells[Index];
-		if (DigGrid->ApplyTerrainDamage(Cell, Damage, ERRTerrainDamageSource::Drone))
+		if (!DigGrid->IsBlockCell(Cell))
 		{
 			DigCells.RemoveAt(Index);
 			StopDigBlock(Cell);

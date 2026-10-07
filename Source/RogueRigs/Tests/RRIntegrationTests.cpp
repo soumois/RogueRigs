@@ -848,7 +848,7 @@ bool FRRIntegrationCrowdPackingTest::RunTest(const FString& Parameters)
 		{
 			const ARREnemy* Robot = RobotClass->GetDefaultObject<ARREnemy>();
 			TestEqual(FString::Printf(TEXT("%s RVO consideration radius 250 uu"), *RobotClass->GetName()), Robot->GetCharacterMovement()->AvoidanceConsiderationRadius, 250.f);
-			TestTrue(FString::Printf(TEXT("%s uses RVO"), *RobotClass->GetName()), Robot->GetCharacterMovement()->bUseRVOAvoidance != 0);
+			TestTrue(FString::Printf(TEXT("%s has RVO off (light separation)"), *RobotClass->GetName()), Robot->GetCharacterMovement()->bUseRVOAvoidance == 0);
 		}
 	}
 	TestEqual(TEXT("every BP_Chaser ignores other robots by default (inherited from ARREnemy)"), Packed.AllIgnoring, ChaserCount);

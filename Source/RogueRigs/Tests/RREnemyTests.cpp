@@ -191,11 +191,12 @@ bool FRREnemyStatsTest::RunTest(const FString& Parameters)
 	TestEqual(TEXT("MoveSpeed attribute 180"), Attribute(Chaser, URRMovementAttributeSet::GetMoveSpeedAttribute()), 180.f);
 	TestEqual(TEXT("AttackPower starts at 1"), Attribute(Chaser, URREnemyAttributeSet::GetAttackPowerAttribute()), 1.f);
 	TestEqual(TEXT("MaxWalkSpeed mirrors MoveSpeed"), Chaser->GetCharacterMovement()->MaxWalkSpeed, 180.f);
-	TestTrue(TEXT("RVO avoidance on"), Chaser->GetCharacterMovement()->bUseRVOAvoidance);
+	TestFalse(TEXT("RVO avoidance off (light separation, task-034-01)"), Chaser->GetCharacterMovement()->bUseRVOAvoidance);
 	const float Arrival = Chaser->GetEnemyMovement()->GetArrivalDistance();
 	AddInfo(FString::Printf(TEXT("arrival distance %.1f uu"), Arrival));
 	TestTrue(TEXT("arrival distance just under the attack range"), Arrival > 0.f && Arrival < 120.f);
-	TestEqual(TEXT("capsule overlaps Projectile"), Chaser->GetCapsuleComponent()->GetCollisionResponseToChannel(RRCollisionChannels::Projectile), ECR_Overlap);
+	TestEqual(TEXT("hit capsule overlaps Projectile"), Chaser->GetHitCapsule()->GetCollisionResponseToChannel(RRCollisionChannels::Projectile), ECR_Overlap);
+	TestEqual(TEXT("root capsule ignores Projectile"), Chaser->GetCapsuleComponent()->GetCollisionResponseToChannel(RRCollisionChannels::Projectile), ECR_Ignore);
 	TestEqual(TEXT("starts in Chase"), Chaser->GetState(), ERRChaserState::Chase);
 	return true;
 }

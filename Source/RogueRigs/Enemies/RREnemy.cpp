@@ -9,6 +9,7 @@
 #include "Components/SkeletalMeshComponent.h"
 #include "Damage/RRDamageNumberSubsystem.h"
 #include "Enemies/RRRobotMovementComponent.h"
+#include "Enemies/RRRobotSeparationSubsystem.h"
 #include "Engine/DataTable.h"
 #include "Engine/World.h"
 #include "EngineUtils.h"
@@ -57,13 +58,23 @@ ARREnemy::ARREnemy(const FObjectInitializer& ObjectInitializer)
 	Movement->RotationRate = FRotator(0.f, 720.f, 0.f);
 	Movement->bRunPhysicsWithNoController = true;
 	Movement->bCanWalkOffLedges = false;
-	Movement->bUseRVOAvoidance = true;
-	// RVO is the only robot-robot separation (bIgnoreOtherRobots): consider neighbors within 250 uu (engine default 500).
+	// RVO off (task-034-01): robots gave way to each other; the light separation (UpdateSeparation) keeps them from stacking.
+	Movement->bUseRVOAvoidance = false;
 	Movement->AvoidanceConsiderationRadius = 250.f;
 
-	// Shots (Projectile channel) overlap the capsule: the projectile applies its spec to the ASC, never blocks (sys-projectiles).
-	GetCapsuleComponent()->SetCollisionResponseToChannel(RRCollisionChannels::Projectile, ECR_Overlap);
-	GetCapsuleComponent()->SetGenerateOverlapEvents(true);
+	// Shots (Projectile channel) overlap the body-size hit capsule only: the projectile applies its spec to the ASC, never
+	// blocks (sys-projectiles). The root capsule (terrain size) ignores them.
+	GetCapsuleComponent()->SetCollisionResponseToChannel(RRCollisionChannels::Projectile, ECR_Ignore);
+	HitCapsule = CreateDefaultSubobject<UCapsuleComponent>(TEXT("HitCapsule"));
+	HitCapsule->SetupAttachment(GetCapsuleComponent());
+	HitCapsule->SetCollisionEnabled(ECollisionEnabled::QueryOnly);
+	HitCapsule->SetCollisionObjectType(ECC_Pawn);
+	HitCapsule->SetCollisionResponseToAllChannels(ECR_Ignore);
+	HitCapsule->SetCollisionResponseToChannel(RRCollisionChannels::Projectile, ECR_Overlap);
+	HitCapsule->SetGenerateOverlapEvents(true);
+	HitCapsule->SetCanEverAffectNavigation(false);
+	HitCapsule->CanCharacterStepUpOn = ECB_No;
+	HitCapsule->SetHiddenInGame(true);
 
 }
 
@@ -88,6 +99,19 @@ bool ARREnemy::IsIgnoringOtherRobots() const
 bool ARREnemy::LoadStatsRow(FName RowName, FRREnemyStatsRow& OutRow)
 {
 	return FRRBaseStatsLoader::FindRow(EnemyStatsPath, RowName, OutRow, TEXT("ARREnemy::LoadStatsRow"));
+}
+
+void ARREnemy::PostInitializeComponents()
+{
+	Super::PostInitializeComponents();
+
+	UCapsuleComponent* Capsule = GetCapsuleComponent();
+	BodyRadius = Capsule->GetScaledCapsuleRadius();
+	HitCapsule->SetCapsuleSize(Capsule->GetUnscaledCapsuleRadius(), Capsule->GetUnscaledCapsuleHalfHeight());
+	if (TerrainCapsuleRadius > 0.f && TerrainCapsuleRadius < Capsule->GetUnscaledCapsuleRadius())
+	{
+		Capsule->SetCapsuleRadius(TerrainCapsuleRadius);
+	}
 }
 
 void ARREnemy::BeginPlay()
@@ -135,10 +159,19 @@ void ARREnemy::BeginPlay()
 
 	DeathHandle = HealthSet->OnDeath.AddUObject(this, &ARREnemy::HandleDeath);
 	DamageReceivedHandle = HealthSet->OnDamageReceived.AddUObject(this, &ARREnemy::HandleDamageReceived);
+
+	if (URRRobotSeparationSubsystem* Separation = GetWorld()->GetSubsystem<URRRobotSeparationSubsystem>())
+	{
+		Separation->RegisterRobot(this);
+	}
 }
 
 void ARREnemy::EndPlay(const EEndPlayReason::Type EndPlayReason)
 {
+	if (URRRobotSeparationSubsystem* Separation = GetWorld() ? GetWorld()->GetSubsystem<URRRobotSeparationSubsystem>() : nullptr)
+	{
+		Separation->UnregisterRobot(this);
+	}
 	if (MoveSpeedChangedHandle.IsValid())
 	{
 		AbilitySystemComponent
@@ -224,6 +257,21 @@ void ARREnemy::Tick(float DeltaSeconds)
 	}
 	UpdateMovementLOD(DeltaSeconds);
 	UpdateBehavior(DeltaSeconds);
+	UpdateSeparation();
+}
+
+void ARREnemy::UpdateSeparation()
+{
+	if (!bUseSeparation || SeparationWeight <= 0.f || bDying || IsDead() || !EnemyMovement->IsMovementEnabled())
+	{
+		return;
+	}
+	URRRobotSeparationSubsystem* Separation = GetWorld()->GetSubsystem<URRRobotSeparationSubsystem>();
+	const FVector Push = Separation ? Separation->GetSeparation(this) : FVector::ZeroVector;
+	if (!Push.IsNearlyZero())
+	{
+		AddMovementInput(Push, SeparationWeight);
+	}
 }
 
 void ARREnemy::ApplyLightAttachedParts()

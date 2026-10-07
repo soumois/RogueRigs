@@ -350,6 +350,8 @@ bool FRRIntegrationPressureDirectorPhasesTest::RunTest(const FString& Parameters
 	const int32 IsolatedFrame = FMath::RoundToInt(IsolatedStart * 60.f);
 	const int32 PackFrame = FMath::RoundToInt(PackStart * 60.f);
 	const int32 Frames = PackFrame + 60;
+	// Recycling off: this test counts spawns through the alive count; far frozen robots would be recycled (task-034-01 margin 0).
+	RRTestAccess::FSpawnerAccess::RecycleEnabledOf(Loop.Spawner) = false;
 	Loop.Spawner->SetSpawningEnabled(true);
 	TArray<int32> SpawnFrames;
 	TArray<int32> SpawnCounts;

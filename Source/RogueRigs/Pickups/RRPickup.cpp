@@ -5,6 +5,9 @@
 #include "Components/StaticMeshComponent.h"
 #include "Engine/CollisionProfile.h"
 #include "Engine/World.h"
+#include "GAS/RRAbilitySystemComponent.h"
+#include "GAS/RRGE_Heal.h"
+#include "GAS/RRGameplayTags.h"
 #include "Kismet/GameplayStatics.h"
 #include "Pickups/RRPickupSubsystem.h"
 #include "Player/RRMiner.h"
@@ -25,6 +28,8 @@ ARRPickup::ARRPickup()
 	PickupMesh->SetCanEverAffectNavigation(false);
 	PickupMesh->CanCharacterStepUpOn = ECB_No;
 	SetRootComponent(PickupMesh);
+
+	HealEffectClass = URRGE_Heal::StaticClass();
 }
 
 void ARRPickup::BeginPlay()
@@ -199,8 +204,27 @@ void ARRPickup::Collect(ARRMiner* Miner)
 		{
 			Miner->GetProgression()->AddXP(XPAmount);
 		}
+		if (PickupType == ERRPickupType::Heal)
+		{
+			ApplyHeal(Miner);
+		}
 		Miner->NotifyPickupCollected(PickupType, Location);
 	}
 	OnCollected(Location);
 	Destroy();
+}
+
+void ARRPickup::ApplyHeal(ARRMiner* Miner) const
+{
+	URRAbilitySystemComponent* ASC = Miner ? Miner->GetRRAbilitySystemComponent() : nullptr;
+	if (!ASC || !HealEffectClass || HealAmount <= 0.f || Miner->IsDead())
+	{
+		return;
+	}
+	const FGameplayEffectSpecHandle Spec = ASC->MakeOutgoingSpec(HealEffectClass, 1.f, ASC->MakeEffectContext());
+	if (Spec.IsValid())
+	{
+		Spec.Data->SetSetByCallerMagnitude(RRGameplayTags::Data_Heal, HealAmount);
+		ASC->ApplyGameplayEffectSpecToSelf(*Spec.Data.Get());
+	}
 }

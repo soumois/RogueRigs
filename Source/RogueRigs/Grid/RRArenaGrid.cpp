@@ -673,6 +673,37 @@ bool ARRArenaGrid::IsBlockCell(FIntPoint Cell) const
 	return IsBlockType(GetCellType(Cell));
 }
 
+int32 ARRArenaGrid::GetVeinCells(FIntPoint Cell, TArray<FIntPoint>& OutCells) const
+{
+	OutCells.Reset();
+	const ERRCellType Type = GetCellType(Cell);
+	if (!IsBlockType(Type))
+	{
+		return 0;
+	}
+	OutCells.Add(Cell);
+	if (Type != ERRCellType::Ore && Type != ERRCellType::HealOre)
+	{
+		return 1;
+	}
+
+	// Flood fill on the 4 neighbours; OutCells doubles as the visited list (veins are a few cells).
+	static const FIntPoint Steps[] = { FIntPoint(1, 0), FIntPoint(-1, 0), FIntPoint(0, 1), FIntPoint(0, -1) };
+	for (int32 Index = 0; Index < OutCells.Num(); ++Index)
+	{
+		const FIntPoint Current = OutCells[Index];
+		for (const FIntPoint& Step : Steps)
+		{
+			const FIntPoint Next = Current + Step;
+			if (GetCellType(Next) == Type && !OutCells.Contains(Next))
+			{
+				OutCells.Add(Next);
+			}
+		}
+	}
+	return OutCells.Num();
+}
+
 float ARRArenaGrid::GetClearDistance(FVector From, FVector Direction, float MaxDistance) const
 {
 	if (MaxDistance <= 0.f || CellSize <= 0.f)

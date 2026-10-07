@@ -146,7 +146,7 @@ bool FRRShooterStatsTest::RunTest(const FString& Parameters)
 	TestEqual(TEXT("MaxWalkSpeed 180"), Shooter->GetCharacterMovement()->MaxWalkSpeed, 180.f);
 	TestEqual(TEXT("knockback resistance 0.2"), Shooter->GetKnockbackResistance(), 0.2f);
 	TestEqual(TEXT("arrival at the preferred distance"), Shooter->GetEnemyMovement()->GetArrivalDistance(), 800.f);
-	TestEqual(TEXT("capsule radius 34 (miner size)"), Shooter->GetCapsuleComponent()->GetUnscaledCapsuleRadius(), 34.f);
+	TestEqual(TEXT("body radius 34 (miner size)"), Shooter->GetBodyRadius(), 34.f);
 	TestFalse(TEXT("laser hidden at rest"), FShooterAccess::LaserOf(Shooter)->IsVisible());
 	TestEqual(TEXT("kamikaze arm range from the CSV"), Kamikaze->GetArmRange(), 250.f);
 	TestEqual(TEXT("kamikaze fuse from the CSV"), Kamikaze->GetFuseTime(), 0.65f);

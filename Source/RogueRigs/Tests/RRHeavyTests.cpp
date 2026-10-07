@@ -124,9 +124,11 @@ bool FRRHeavyStatsTest::RunTest(const FString& Parameters)
 	TestEqual(TEXT("slam radius 400"), Heavy->GetSlamRadius(), 400.f);
 	TestEqual(TEXT("telegraph 0.6 s"), Heavy->GetTelegraphDuration(), 0.6f);
 	TestEqual(TEXT("arrival 200 uu (half the slam radius)"), Heavy->GetEnemyMovement()->GetArrivalDistance(), 200.f);
-	const float Radius = Heavy->GetCapsuleComponent()->GetScaledCapsuleRadius();
-	TestTrue(TEXT("capsule radius at most 80 uu"), Radius <= 80.f);
-	TestEqual(TEXT("capsule 2x chaser (48 x 124)"), Radius, 48.f);
+	const float Radius = Heavy->GetBodyRadius();
+	TestTrue(TEXT("body radius at most 80 uu"), Radius <= 80.f);
+	TestEqual(TEXT("body 2x chaser (48 x 124)"), Radius, 48.f);
+	TestEqual(TEXT("hit capsule radius 48"), Heavy->GetHitCapsule()->GetScaledCapsuleRadius(), 48.f);
+	TestEqual(TEXT("terrain capsule radius 24 (chaser)"), Heavy->GetCapsuleComponent()->GetScaledCapsuleRadius(), 24.f);
 	TestEqual(TEXT("capsule half height 124"), Heavy->GetCapsuleComponent()->GetScaledCapsuleHalfHeight(), 124.f);
 	TestEqual(TEXT("starts in Chase"), Heavy->GetState(), ERRHeavyState::Chase);
 	TestEqual(TEXT("no telegraph progress at rest"), Heavy->GetTelegraphProgress(), 0.f);

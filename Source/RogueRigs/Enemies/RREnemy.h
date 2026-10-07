@@ -12,6 +12,7 @@
 class ARRMiner;
 class ARRPickup;
 class UAbilitySystemComponent;
+class UCapsuleComponent;
 class URRAbilitySystemComponent;
 class URREnemyAttributeSet;
 class URREnemyMovementComponent;
@@ -25,9 +26,10 @@ struct FOnAttributeChangeData;
  * movement and enemy AttributeSets. At BeginPlay it reads row StatsRowName of EnemyStats.csv: MaxHealth, Health and
  * MoveSpeed become base values (MoveSpeed is mirrored to CharacterMovement->MaxWalkSpeed), the rest is kept in Stats.
  * Moves without a controller: URREnemyMovementComponent feeds the flow-field direction to CharacterMovement (RVO
- * avoidance on). The capsule overlaps the Projectile channel, so shots hit it through the ASC (sys-projectiles).
+ * off since task-034-01: URRRobotSeparationSubsystem pushes overlapping robots apart). The root capsule has the chaser radius
+ * against the world (TerrainCapsuleRadius); HitCapsule keeps the robot's own size for the miner's shots. HitCapsule overlaps the Projectile channel, so shots hit it through the ASC (sys-projectiles).
  * Crowd: when bIgnoreOtherRobots is on, the capsule carries RRCollisionChannels::RobotMaskFilter and its movement sweeps ignore
- * that mask, so robots pass through each other (RVO alone separates them) while the miner, terrain and every query still
+ * that mask, so robots pass through each other (the light separation spaces them) while the miner, terrain and every query still
  * collide with them. At BeginPlay the robot also writes the crowd RVO settings to the world avoidance manager.
  * Light movement: CharacterMovement is URRRobotMovementComponent (cached floor on the flat arena); at BeginPlay the attached
  * parts are made cheap to move (bLightAttachedParts); a walking robot far from the miner and off screen moves at a slower
@@ -106,7 +108,19 @@ public:
 	/** True while the movement runs at the far tick interval. */
 	bool IsFarMovementActive() const { return bFarMovementActive; }
 
+	/** Radius (uu) of the robot body: its own capsule radius before the terrain capsule shrink; used by the hit capsule and the separation. */
+	float GetBodyRadius() const { return BodyRadius; }
+
+	/** Capsule of the robot's own size that takes the miner's shots (Projectile overlap); the root capsule only moves. */
+	UCapsuleComponent* GetHitCapsule() const { return HitCapsule; }
+
 protected:
+	/**
+	 * Sizes the hit capsule to the robot's own capsule (BodyRadius, half height), then shrinks the root capsule radius to
+	 * TerrainCapsuleRadius, so every robot meets the rock like a chaser (enemies-index fourth test).
+	 */
+	virtual void PostInitializeComponents() override;
+
 	/** Initializes the ASC, applies the CSV stats, enables controller-less walking and binds the health set events. */
 	virtual void BeginPlay() override;
 
@@ -234,9 +248,38 @@ protected:
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Enemy|Death", meta = (ClampMin = 0, Units = "s"))
 	float DeathShrinkDuration = 0.15f;
 
-	/** Robots pass through each other when moving (crowd collision left to RVO avoidance); applied at BeginPlay. */
+	/** Robots pass through each other when moving (crowd spacing left to the light separation); applied at BeginPlay. */
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Enemy|Crowd")
 	bool bIgnoreOtherRobots = true;
+
+	/**
+	 * Light separation (task-034-01, replaces RVO, which made robots give way to each other): each living tick, while the
+	 * movement is on, the push of URRRobotSeparationSubsystem::GetSeparation x SeparationWeight is added to the movement input.
+	 */
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Enemy|Crowd")
+	bool bUseSeparation = true;
+
+	/** Weight of the separation push against the flow-field input (1). 0.5 = a full overlap steers at half the path weight (provisional). */
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Enemy|Crowd", meta = (ClampMin = "0"))
+	float SeparationWeight = 0.5f;
+
+	/**
+	 * Root capsule radius against the world (rock, floor, the miner) for every robot: the chaser's 24 uu (enemies-index fourth
+	 * test), so no robot gets stuck where a chaser passes. The robot keeps its look and its body-size hit capsule. 0 = own radius.
+	 */
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Enemy|Collision", meta = (ClampMin = "0", Units = "cm"))
+	float TerrainCapsuleRadius = 24.f;
+
+	/** Body-size capsule taking the miner's shots (Pawn object type, overlaps Projectile only); sized in PostInitializeComponents. */
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Enemy|Collision")
+	TObjectPtr<UCapsuleComponent> HitCapsule;
+
+	/** Own capsule radius before the shrink (uu). */
+	UPROPERTY(VisibleInstanceOnly, Transient, Category = "Enemy|Collision")
+	float BodyRadius = 0.f;
+
+	/** Adds the separation push to the movement input (alive, movement on, bUseSeparation). */
+	void UpdateSeparation();
 
 	/**
 	 * RVO radius multiplier written to the world avoidance manager at BeginPlay (ArtificialRadiusExpansion, engine default 1.5):

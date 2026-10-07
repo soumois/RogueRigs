@@ -440,7 +440,7 @@ bool FRRIntegrationHeavyCorridorTest::RunTest(const FString& Parameters)
 	{
 		return false;
 	}
-	TestEqual(TEXT("BP_Heavy keeps the C++ capsule radius 48"), Heavy->GetCapsuleComponent()->GetScaledCapsuleRadius(), 48.f);
+	TestEqual(TEXT("BP_Heavy keeps the C++ body radius 48"), Heavy->GetBodyRadius(), 48.f);
 
 	TSet<int32> CorridorRowsVisited;
 	bool bAlwaysWalkable = true;

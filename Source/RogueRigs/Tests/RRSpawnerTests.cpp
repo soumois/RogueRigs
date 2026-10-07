@@ -296,6 +296,8 @@ bool FRRSpawnerTrickleThenPacksTest::RunTest(const FString& Parameters)
 	FSpawnerAccess::PackIntervalOf(Setup.Spawner) = 3.f;
 	FSpawnerAccess::LoneSpawnChanceOf(Setup.Spawner) = 1.f;
 	Setup.Spawner->SeedRandomStream(20261003);
+	// Recycling off: this test counts spawns through the alive count; far frozen robots would be recycled (task-034-01 margin 0).
+	RRTestAccess::FSpawnerAccess::RecycleEnabledOf(Setup.Spawner) = false;
 	Setup.Spawner->SetSpawningEnabled(true);
 
 	struct FEvent
