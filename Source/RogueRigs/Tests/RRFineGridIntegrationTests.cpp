@@ -84,6 +84,7 @@ namespace RRFineGridIntegrationTests
 				Actors.AddUnique(Actor);
 			}
 		}
+#if WITH_EDITOR // external actor packages (one file per actor) exist only in editor builds; a cooked map holds its actors
 		if (Level->IsUsingExternalActors())
 		{
 			for (const FString& ActorPackageName : Level->GetOnDiskExternalActorPackages(/*bTryUsingPackageLoadedPath*/ true))
@@ -101,6 +102,7 @@ namespace RRFineGridIntegrationTests
 				}
 			}
 		}
+#endif // WITH_EDITOR
 		return Actors;
 	}
 

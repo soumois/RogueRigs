@@ -4,6 +4,7 @@
 
 #include "AbilitySystemComponent.h"
 #include "Blueprint/WidgetLayoutLibrary.h"
+#include "Components/Widget.h"
 #include "Camera/PlayerCameraManager.h"
 #include "Enemies/RRWaveDirector.h"
 #include "GameFramework/PlayerController.h"
@@ -467,6 +468,28 @@ void URRHUDWidget::NativeTick(const FGeometry& MyGeometry, float InDeltaTime)
 {
 	Super::NativeTick(MyGeometry, InDeltaTime);
 	RefreshAlertBarEvents();
+	KeepVignetteWarm();
+}
+
+void URRHUDWidget::NativeConstruct()
+{
+	Super::NativeConstruct();
+	KeepVignetteWarm();
+}
+
+void URRHUDWidget::KeepVignetteWarm()
+{
+	if (!bDamageVignetteLookedUp)
+	{
+		// First call (construct, or the first tick of a widget ticked without Slate): the tree exists from Initialize on.
+		bDamageVignetteLookedUp = true;
+		DamageVignette = DamageVignetteWidgetName.IsNone() ? nullptr : GetWidgetFromName(DamageVignetteWidgetName);
+	}
+	UWidget* Vignette = DamageVignette.Get();
+	if (Vignette && Vignette->GetRenderOpacity() < VignetteWarmOpacity)
+	{
+		Vignette->SetRenderOpacity(VignetteWarmOpacity);
+	}
 }
 
 void URRHUDWidget::HandleHordeIncoming(int32 HordeIndex, float SecondsUntil)

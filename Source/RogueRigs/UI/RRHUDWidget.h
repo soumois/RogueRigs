@@ -16,6 +16,7 @@ class URRLevelUpComponent;
 class URRProgressionComponent;
 class URRRunFlowSubsystem;
 class UAbilitySystemComponent;
+class UWidget;
 struct FMinimalViewInfo;
 struct FOnAttributeChangeData;
 
@@ -203,6 +204,9 @@ public:
 	UFUNCTION(BlueprintPure, Category = "HUD|Run")
 	const TArray<FRRAlertBarEvent>& GetAlertBarEvents() const { return AlertBarEvents; }
 
+	/** Lowest render opacity the damage vignette is kept at (VignetteWarmOpacity): its "no vignette" value for checks and tests. */
+	float GetVignetteWarmOpacity() const { return VignetteWarmOpacity; }
+
 	/**
 	 * Estimated bar position of an event SecondsUntil seconds away: Alert + SecondsUntil / AlertFillSeconds (the base fill rate,
 	 * without kills or pause), clamped to [Alert, 1]. Never behind the fill; recomputed as the fill moves.
@@ -282,11 +286,25 @@ public:
 	void RestartLevel();
 
 protected:
+	/** Starts drawing the damage vignette at VignetteWarmOpacity (KeepVignetteWarm). */
+	virtual void NativeConstruct() override;
+
 	/** Removes every binding. */
 	virtual void NativeDestruct() override;
 
-	/** Refreshes the alert-bar icons (a pending horde's estimate moves while the bar is paused). */
+	/**
+	 * Refreshes the alert-bar icons (a pending horde's estimate moves while the bar is paused), then, after the Blueprint tick
+	 * (UpdateVignette), keeps the damage vignette at VignetteWarmOpacity at least.
+	 */
 	virtual void NativeTick(const FGeometry& MyGeometry, float InDeltaTime) override;
+
+	/**
+	 * Raises the damage vignette's render opacity to VignetteWarmOpacity when lower. Slate culls a draw whose opacity is 0, so a
+	 * vignette at 0 never renders its material until the first hit: its shaders (and pipeline state) are then not ready on that
+	 * frame and the first flash is skipped. A floor keeps the material drawn, hence warm, from the HUD construct on. The first
+	 * call looks the widget up by DamageVignetteWidgetName.
+	 */
+	void KeepVignetteWarm();
 
 	/**
 	 * Display event: the miner lost Amount health (> 0); HealthFraction is the health left over MaxHealth (0..1, 0 = dead). For the
@@ -347,6 +365,23 @@ protected:
 	/** A pending horde icon moving by more than this (bar fraction) calls OnAlertEventsChanged again; smaller moves wait. */
 	UPROPERTY(EditDefaultsOnly, Category = "HUD|Pressure", meta = (ClampMin = 0))
 	float AlertEventPositionTolerance = 0.002f;
+
+	/** Name of the damage vignette Image in the HUD Blueprint (WBP_HUD: DamageVignette); none found = no warm-up. */
+	UPROPERTY(EditDefaultsOnly, Category = "HUD|Pressure")
+	FName DamageVignetteWidgetName = TEXT("DamageVignette");
+
+	/**
+	 * Lowest render opacity of the damage vignette: above Slate's cull threshold (1e-4) so its material keeps rendering, small
+	 * enough to stay invisible (under half an 8-bit step). 0 disables the warm-up.
+	 */
+	UPROPERTY(EditDefaultsOnly, Category = "HUD|Pressure", meta = (ClampMin = 0, ClampMax = 0.01))
+	float VignetteWarmOpacity = 0.001f;
+
+	/** The damage vignette widget found by the first KeepVignetteWarm (null when the Blueprint has none). */
+	TWeakObjectPtr<UWidget> DamageVignette;
+
+	/** True once KeepVignetteWarm looked DamageVignetteWidgetName up (done once). */
+	bool bDamageVignetteLookedUp = false;
 
 	/** Spawner whose horde events are bound. */
 	TWeakObjectPtr<ARREnemySpawner> BoundSpawner;

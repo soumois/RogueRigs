@@ -131,6 +131,7 @@ namespace RRPressureIntegrationTests
 				Spawners.AddUnique(Spawner);
 			}
 		}
+#if WITH_EDITOR // external actor packages (one file per actor) exist only in editor builds; a cooked map holds its actors
 		if (Spawners.IsEmpty() && Level->IsUsingExternalActors())
 		{
 			for (const FString& ActorPackageName : Level->GetOnDiskExternalActorPackages(/*bTryUsingPackageLoadedPath*/ true))
@@ -148,6 +149,7 @@ namespace RRPressureIntegrationTests
 				}
 			}
 		}
+#endif // WITH_EDITOR
 		return Test.TestEqual(TEXT("exactly one spawner placed in L_ArenaM1"), Spawners.Num(), 1) ? Spawners[0] : nullptr;
 	}
 
@@ -612,7 +614,9 @@ bool FRRIntegrationPressureVignetteTest::RunTest(const FString& Parameters)
 	{
 		TickPressureFrame(TestWorld, HUD);
 	}
-	TestNearlyEqual(TEXT("no vignette at full health"), Vignette->GetRenderOpacity(), 0.f, KINDA_SMALL_NUMBER);
+	// "No vignette" is the invisible warm-up floor that keeps its material rendering (task-055-01).
+	const float WarmOpacity = HUD->GetVignetteWarmOpacity();
+	TestNearlyEqual(TEXT("no vignette at full health (warm floor)"), Vignette->GetRenderOpacity(), WarmOpacity, KINDA_SMALL_NUMBER);
 
 	// A real BP_Chaser hit: ticks until the miner's Health drops; returns the vignette opacity on that frame (-1 when no hit).
 	auto HitByChaser = [this, &TestWorld, HUD, Vignette, ChaserClass, Grid, &Health](const TCHAR* What, float& OutHitFlash) -> float
@@ -643,13 +647,13 @@ bool FRRIntegrationPressureVignetteTest::RunTest(const FString& Parameters)
 	// Hit at full health: a flash that fades back to nothing.
 	float FullHitFlash = 0.f;
 	const float FullPeak = HitByChaser(TEXT("full health"), FullHitFlash);
-	TestTrue(*FString::Printf(TEXT("vignette shown after a hit (%.3f)"), FullPeak), FullPeak > 0.f);
+	TestTrue(*FString::Printf(TEXT("vignette shown after a hit (%.3f)"), FullPeak), FullPeak > WarmOpacity);
 	TestTrue(TEXT("OnPlayerDamaged set HitFlash"), FullHitFlash > 0.f);
 	for (int32 Frame = 0; Frame < 60; ++Frame)
 	{
 		TickPressureFrame(TestWorld, HUD);
 	}
-	TestNearlyEqual(TEXT("the flash fades within 1 s above 40 % health"), Vignette->GetRenderOpacity(), 0.f, KINDA_SMALL_NUMBER);
+	TestNearlyEqual(TEXT("the flash fades within 1 s above 40 % health"), Vignette->GetRenderOpacity(), WarmOpacity, KINDA_SMALL_NUMBER);
 
 	// Low health (25 %): a steady base once the flash is gone, and a stronger flash on the next hit.
 	ASC->SetNumericAttributeBase(URRHealthAttributeSet::GetHealthAttribute(), MaxHealth * 0.25f);
@@ -660,7 +664,7 @@ bool FRRIntegrationPressureVignetteTest::RunTest(const FString& Parameters)
 	const float LowBase = Vignette->GetRenderOpacity();
 	AddInfo(FString::Printf(TEXT("low health %.0f / %.0f: steady vignette %.3f, LowHealthAlpha %.3f"), Health(), MaxHealth, LowBase,
 		GetHUDNumber(*this, HUD, TEXT("LowHealthAlpha"))));
-	TestTrue(*FString::Printf(TEXT("steady vignette below 40 %% health (%.3f)"), LowBase), LowBase > 0.f);
+	TestTrue(*FString::Printf(TEXT("steady vignette below 40 %% health (%.3f)"), LowBase), LowBase > WarmOpacity);
 	float LowHitFlash = 0.f;
 	const float LowPeak = HitByChaser(TEXT("low health"), LowHitFlash);
 	TestTrue(*FString::Printf(TEXT("stronger vignette on a hit at low health (%.3f > %.3f)"), LowPeak, FullPeak), LowPeak > FullPeak);

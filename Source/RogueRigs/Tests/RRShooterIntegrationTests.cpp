@@ -492,6 +492,7 @@ bool FRRIntegrationPlacedSpawnerMixTest::RunTest(const FString& Parameters)
 			Spawners.AddUnique(Spawner);
 		}
 	}
+#if WITH_EDITOR // external actor packages (one file per actor) exist only in editor builds; a cooked map holds its actors
 	if (Spawners.IsEmpty() && Level->IsUsingExternalActors())
 	{
 		for (const FString& ActorPackageName : Level->GetOnDiskExternalActorPackages(/*bTryUsingPackageLoadedPath*/ true))
@@ -509,6 +510,7 @@ bool FRRIntegrationPlacedSpawnerMixTest::RunTest(const FString& Parameters)
 			}
 		}
 	}
+#endif // WITH_EDITOR
 	if (!TestEqual(TEXT("exactly one spawner placed in L_ArenaM1"), Spawners.Num(), 1))
 	{
 		return false;

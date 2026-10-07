@@ -1,4 +1,4 @@
-// Rogue Rigs - visual check console commands for unattended -game checks (debug only, compiled out of shipping): rr.Debug.Shots (timed screenshots + damage number state), rr.Debug.CritChance (weapon crit chance override), rr.Debug.Delayed (runs a command later), rr.Debug.DamageMiner (direct hit on the player miner), rr.Debug.SpawnNear (actors around the miner), rr.Debug.Objective (miner moved to the console or shuttle).
+// Rogue Rigs - visual check console commands for unattended -game checks (debug only, compiled out of shipping): rr.Debug.Shots (timed screenshots + damage number state), rr.Debug.CritChance (weapon crit chance override), rr.Debug.Delayed (runs a command later), rr.Debug.DamageMiner (direct hit on the player miner, logs the vignette state for 6 frames), rr.Debug.SpawnNear (actors around the miner), rr.Debug.Objective (miner moved to the console or shuttle).
 
 #include "CoreMinimal.h"
 #include "AbilitySystemComponent.h"
@@ -23,6 +23,10 @@
 #include "RogueRigs.h"
 #include "EngineUtils.h"
 #include "UnrealClient.h"
+#include "Misc/App.h"
+#include "Components/Widget.h"
+#include "UI/RRHUDWidget.h"
+#include "UObject/UObjectIterator.h"
 #include "Weapons/RRWeapon.h"
 #include "Weapons/RRWeaponAttributeSet.h"
 
@@ -71,6 +75,33 @@ namespace RRScreenshotCommands
 		}
 	}
 
+	/** Logs, for each HUD widget of a game world, the damage vignette's render opacity and the Blueprint HitFlash (vignette checks). */
+	void LogVignetteState(const TCHAR* Context)
+	{
+		for (TObjectIterator<URRHUDWidget> It; It; ++It)
+		{
+			URRHUDWidget* HUD = *It;
+			const UWorld* World = HUD->GetWorld();
+			if (!World || !World->IsGameWorld() || HUD->IsTemplate())
+			{
+				continue;
+			}
+			const UWidget* Vignette = HUD->GetWidgetFromName(TEXT("DamageVignette"));
+			double HitFlash = -1.0;
+			if (const FDoubleProperty* Double = FindFProperty<FDoubleProperty>(HUD->GetClass(), TEXT("HitFlash")))
+			{
+				HitFlash = Double->GetPropertyValue_InContainer(HUD);
+			}
+			else if (const FFloatProperty* Float = FindFProperty<FFloatProperty>(HUD->GetClass(), TEXT("HitFlash")))
+			{
+				HitFlash = Float->GetPropertyValue_InContainer(HUD);
+			}
+			UE_LOG(LogRogueRigs, Log, TEXT("%s: frame %llu, delta %.3f s, vignette opacity %.3f (%s), HitFlash %.3f, in viewport %s"), Context,
+				GFrameCounter, FApp::GetDeltaTime(), Vignette ? Vignette->GetRenderOpacity() : -1.f, Vignette ? Vignette->GetVisibility() == ESlateVisibility::Collapsed ? TEXT("collapsed") : TEXT("shown") : TEXT("missing"),
+				HitFlash, HUD->IsInViewport() ? TEXT("yes") : TEXT("no"));
+		}
+	}
+
 	/** Ticks a series: requests one screenshot of the game viewport (no UI) when due; false once the series is done. */
 	bool TickSeries(float DeltaTime, TSharedRef<FShotSeries> Series)
 	{
@@ -83,6 +114,7 @@ namespace RRScreenshotCommands
 		FScreenshotRequest::RequestScreenshot(File, Series->bShowUI, /*bAddFilenameSuffix*/ false);
 		UE_LOG(LogRogueRigs, Log, TEXT("rr.Debug.Shots: requested %s%s"), *File, Series->bShowUI ? TEXT(" (with UI)") : TEXT(""));
 		LogDamageNumberState();
+		LogVignetteState(TEXT("rr.Debug.Shots"));
 		++Series->Index;
 		Series->TimeToNext = Series->Interval;
 		return --Series->Remaining > 0;
@@ -160,6 +192,13 @@ namespace RRScreenshotCommands
 			const float NewHealth = FMath::Max(1.f, Health - FMath::Max(0.f, FCString::Atof(*Args[0])));
 			ASC->SetNumericAttributeBase(URRHealthAttributeSet::GetHealthAttribute(), NewHealth);
 			UE_LOG(LogRogueRigs, Log, TEXT("rr.Debug.DamageMiner: Health %.1f -> %.1f."), Health, NewHealth);
+			// The vignette state on the next frames (the flash decays fast: shows whether it was ever drawn).
+			TSharedRef<int32> FramesLeft = MakeShared<int32>(6);
+			FTSTicker::GetCoreTicker().AddTicker(FTickerDelegate::CreateLambda([FramesLeft](float)
+			{
+				LogVignetteState(TEXT("rr.Debug.DamageMiner"));
+				return --(*FramesLeft) > 0;
+			}));
 		}),
 		ECVF_Cheat);
 
