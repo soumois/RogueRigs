@@ -1,6 +1,6 @@
 ---
 id: task-045-easier-first-level
-description: "Global task: About 15 % fewer robots (lone 2.35 s, waves 7.1 → 4.1 s, hordes 34–51) and rarer heavies (weight 4, 2–3 per horde, cap 3)."
+description: "Global task: about 15 % fewer robots (lone 2.35 s, waves 7.1 → 4.1 s, hordes 34–51) and rarer heavies."
 parent: tasks-index
 kind: task
 status: in-progress
