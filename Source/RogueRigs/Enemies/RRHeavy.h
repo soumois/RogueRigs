@@ -55,7 +55,7 @@ public:
 	UFUNCTION(BlueprintPure, Category = "Heavy")
 	float GetTelegraphProgress() const;
 
-	/** Radius (uu) of the shockwave = Stats.AttackRange (340). */
+	/** Radius (uu) of the shockwave = Stats.AttackRange (289). */
 	UFUNCTION(BlueprintPure, Category = "Heavy")
 	float GetSlamRadius() const { return Stats.AttackRange; }
 
