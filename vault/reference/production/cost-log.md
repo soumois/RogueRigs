@@ -104,6 +104,7 @@ kind: note
 | [[task-045-02-bp-heavy-cap]] | sonnet | 1 | 0k | 62k | 941k | 8k |
 | [[task-048-01-last-level-profile]] | opus | 1 | 0k | 33k | 235k | 5k |
 | [[task-046-01-level1-pressure]] | opus | 1 | 0k | 229k | 1032k | 28k |
+| [[task-047-01-heavy-speed]] | opus | 1 | 0k | 40k | 191k | 4k |
 
 ## Totals
 | Scope | Input | Cache write | Cache read | Output |

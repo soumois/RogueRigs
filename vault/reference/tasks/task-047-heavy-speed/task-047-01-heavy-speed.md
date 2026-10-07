@@ -3,7 +3,7 @@ id: task-047-01-heavy-speed
 description: "Heavy robot speed 180 → 153 uu/s; the other robots stay at 180."
 parent: task-047-heavy-speed
 kind: task
-status: in-progress
+status: done
 ---
 # Slower heavy
 
@@ -15,11 +15,11 @@ status: in-progress
 - done_when: build exits 0 with the editor closed; all `RogueRigs.*` tests pass headless; docs updated; lint clean.
 - editor_state: closed
 - token_ceiling: 30000
-- model: open
-- tokens: open
-- runs: open
+- model: opus
+- tokens: input 26, cache write 39995, cache read 191008, output 4459
+- runs: 1
 - milestone: M2
-- result: open
+- result: EnemyStats.csv Heavy MoveSpeed 180 → 153; Heavy.StatsFromCSV updated. Build 0, 195/195. Commit 6c95137.
 
 ## Relations
 - [[task-047-heavy-speed]] — parent global task.
