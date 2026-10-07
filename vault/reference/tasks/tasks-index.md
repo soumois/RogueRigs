@@ -53,6 +53,6 @@ Resuming after the pause of 2026-10-06: read [[handover-2026-10-06]] first.
 - [[task-038-shooter-detour]] — Shooter without line of sight walks around rock like the other robots until it can fire, never moving away from the miner. Status done.
 - [[task-039-heavy-radius]] — Heavy slam radius 400 → 340 uu (trigger 0.7 × radius = 238 uu); ground ring follows. Status done.
 - [[task-040-locator-arrow]] — Console locator: real arrow about 64 px, pulsing, with the distance in metres. Status todo.
-- [[task-041-front-detour]] — In the front sector the spawn detour filter is off, so robots spawn beyond the rock the miner digs toward. Status in-progress.
-- [[task-042-hack-time]] — Console hack time 20 → 16 s. Status todo.
+- [[task-041-front-detour]] — In the front sector the spawn detour filter is off, so robots spawn beyond the rock the miner digs toward. Status done.
+- [[task-042-hack-time]] — Console hack time 20 → 16 s. Status in-progress.
 - [[task-043-vein-shake]] — All blocks of a vein being mined shake together. Status todo.

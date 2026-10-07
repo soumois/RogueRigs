@@ -3,7 +3,7 @@ id: task-041-01-front-detour
 description: "In the front sector the spawn detour filter is off, so robots spawn beyond the rock the miner digs toward."
 parent: task-041-front-detour
 kind: task
-status: in-progress
+status: done
 ---
 # Spawns beyond the rock ahead
 
@@ -15,11 +15,11 @@ status: in-progress
 - done_when: build exits 0 with the editor closed; all `RogueRigs.*` tests pass headless; docs updated; lint clean.
 - editor_state: closed
 - token_ceiling: 50000
-- model: open
-- tokens: open
-- runs: open
+- model: opus
+- tokens: input 48, cache write 33865, cache read 589460, output 7574
+- runs: 2
 - milestone: M2
-- result: open
+- result: Front-sector cells exempt from MaxPathDetourRatio while running (side, back and still unchanged); cause confirmed by reading: cells behind rock exceeded the 1.5 ratio. Limit: rock thicker than the 100–500 uu band leaves no floor ahead to spawn on. Build 0, 195/195. Commit 6a1f3bd.
 
 ## Relations
 - [[task-041-front-detour]] — parent global task.

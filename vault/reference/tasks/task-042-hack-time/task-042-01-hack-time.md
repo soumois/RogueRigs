@@ -3,7 +3,7 @@ id: task-042-01-hack-time
 description: "Console hack time 20 → 16 s."
 parent: task-042-hack-time
 kind: task
-status: todo
+status: in-progress
 ---
 # Hack time −20 %
 
