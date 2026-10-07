@@ -3,7 +3,7 @@ id: task-044-01-fewer-kamikazes
 description: "At most 1 kamikaze per pack in one pack out of two; hordes 1–2 kamikazes (was 3–5)."
 parent: task-044-fewer-kamikazes
 kind: task
-status: in-progress
+status: done
 ---
 # Fewer kamikazes
 
@@ -15,11 +15,11 @@ status: in-progress
 - done_when: build exits 0 with the editor closed; all `RogueRigs.*` tests pass headless; docs updated; lint clean.
 - editor_state: closed
 - token_ceiling: 40000
-- model: open
-- tokens: open
-- runs: open
+- model: opus
+- tokens: input 64, cache write 46987, cache read 976575, output 14164
+- runs: 1
 - milestone: M2
-- result: open
+- result: Kamikazes 0–1 per Chasers, ShieldChasers and WideShieldChasers pack (was 1–2), hordes 1–2 (was 3–5; overtime horde copies it); early packs 5–10 robots. Director horde test updated; Spawner.HeadingSectorSplit sample 200 → 2000 hordes (the shift broke the small sample, cause not found). Build 0, 195/195. Commit d9a4454.
 
 ## Relations
 - [[task-044-fewer-kamikazes]] — parent global task.
