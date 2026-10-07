@@ -351,6 +351,10 @@ task-049-01-shuttle-distance  reference/tasks/task-049-shuttle-distance/task-049
 task-049-shuttle-distance  reference/tasks/task-049-shuttle-distance.md
 task-050-01-flaky-stacking-test  reference/tasks/task-050-flaky-stacking-test/task-050-01-flaky-stacking-test.md
 task-050-flaky-stacking-test  reference/tasks/task-050-flaky-stacking-test.md
+task-051-01-turret-spacing  reference/tasks/task-051-turret-spacing/task-051-01-turret-spacing.md
+task-051-turret-spacing  reference/tasks/task-051-turret-spacing.md
+task-052-01-heavy-radius-2  reference/tasks/task-052-heavy-radius-2/task-052-01-heavy-radius-2.md
+task-052-heavy-radius-2  reference/tasks/task-052-heavy-radius-2.md
 tasks-index  reference/tasks/tasks-index.md
 tech-index  reference/tech/tech-index.md
 terrain-index  reference/gdd/terrain/terrain-index.md

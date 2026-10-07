@@ -33,6 +33,8 @@ status: approved
 
 - Recharge (owner 2026-10-06 fourth test): one charge recharges in 12 s (was 6 s).
 
+- Spacing (owner 2026-10-07, provisional): a turret placed less than 100 uu from a standing turret moves to the nearest free reachable floor cell at least 100 uu away; if none is near, it lands where aimed.
+
 ## Relations
 - [[weapons-index]] — parent index.
 - [[sys-weapons]] — attribute copy at placement.
