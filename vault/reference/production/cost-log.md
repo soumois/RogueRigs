@@ -87,6 +87,7 @@ kind: note
 | [[task-031-03-pacing-retune]] | opus | 2 | 0k | 790k | 7962k | 72k |
 | [[task-033-01-update-tests]] | opus | 2 | 0k | 77k | 1795k | 22k |
 | [[task-034-01-cpp-fixes]] | opus | 3 | 0k | 211k | 10174k | 68k |
+| [[task-034-03-docs]] | opus | 1 | 0k | 91k | 1414k | 16k |
 
 ## Totals
 | Scope | Input | Cache write | Cache read | Output |

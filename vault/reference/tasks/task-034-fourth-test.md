@@ -13,7 +13,7 @@ status: in-progress
 - gdd_check: GDD updated by the Orchestrator with provisional values (2026-10-06): burst-rifle, ore-blocks, heal-ore, enemy-kamikaze, enemies-index, turret, readability-rules. No open value.
 - confirmed_by_owner: yes (2026-10-06)
 - milestone: M2
-- next_step: task-034-03-docs
+- next_step: task-034-04-director-mix
 - result: open
 
 ## Subtasks
