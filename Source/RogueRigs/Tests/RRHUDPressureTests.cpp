@@ -197,20 +197,21 @@ bool FRRHUDPressureHordeTest::RunTest(const FString& Parameters)
 	const FRRAlertBarEvent* AlertHorde = FindPressureIcon(Setup.HUD->GetAlertBarEvents(), ERRAlertBarEventType::Horde, 0);
 	TestTrue(TEXT("alert trigger: icon at 0.3"), AlertHorde && FMath::IsNearlyEqual(AlertHorde->Position, 0.3f, KINDA_SMALL_NUMBER));
 
-	// Run-time trigger: console, horde, shuttle; the horde 2 s / 20 s ahead of the empty bar.
+	// Run-time trigger: console, bonus chest, horde, shuttle; the horde 2 s / 20 s ahead of the empty bar.
 	Director.HordeTrigger = ERRHordeTrigger::RunTime;
 	Setup.HUD->BindToSpawner(Spawner);
 	const TArray<FRRAlertBarEvent> Initial = Setup.HUD->GetAlertBarEvents();
-	TestEqual(TEXT("three icons"), Initial.Num(), 3);
-	if (Initial.Num() == 3)
+	TestEqual(TEXT("four icons"), Initial.Num(), 4);
+	if (Initial.Num() == 4)
 	{
-		TestTrue(TEXT("order console, horde, shuttle"), Initial[0].Type == ERRAlertBarEventType::Console && Initial[1].Type == ERRAlertBarEventType::Horde
-			&& Initial[2].Type == ERRAlertBarEventType::Extraction);
+		TestTrue(TEXT("order console, chest, horde, shuttle"), Initial[0].Type == ERRAlertBarEventType::Console && Initial[1].Type == ERRAlertBarEventType::BonusChest
+			&& Initial[2].Type == ERRAlertBarEventType::Horde && Initial[3].Type == ERRAlertBarEventType::Extraction);
 		TestNearlyEqual(TEXT("console at the threshold"), Initial[0].Position, RunConfig.ConsoleAlertThreshold, KINDA_SMALL_NUMBER);
-		TestNearlyEqual(TEXT("horde estimate 0.1"), Initial[1].Position, 0.1f, PressureBarTolerance);
-		TestEqual(TEXT("horde index 0"), Initial[1].Index, 0);
-		TestNearlyEqual(TEXT("shuttle at the end"), Initial[2].Position, 1.f, KINDA_SMALL_NUMBER);
-		TestTrue(TEXT("nothing done yet"), !Initial[0].bDone && !Initial[1].bDone && !Initial[2].bDone);
+		TestNearlyEqual(TEXT("chest at its threshold"), Initial[1].Position, RunConfig.BonusChestAlertThreshold, KINDA_SMALL_NUMBER);
+		TestNearlyEqual(TEXT("horde estimate 0.1"), Initial[2].Position, 0.1f, PressureBarTolerance);
+		TestEqual(TEXT("horde index 0"), Initial[2].Index, 0);
+		TestNearlyEqual(TEXT("shuttle at the end"), Initial[3].Position, 1.f, KINDA_SMALL_NUMBER);
+		TestTrue(TEXT("nothing done yet"), !Initial[0].bDone && !Initial[1].bDone && !Initial[2].bDone && !Initial[3].bDone);
 	}
 	// Run flow bind (console, shuttle), spawner bind (alert trigger), rebind (run time): one call each.
 	TestEqual(TEXT("one call per changed list"), Setup.HUD->AlertEventCalls.Num(), 3);

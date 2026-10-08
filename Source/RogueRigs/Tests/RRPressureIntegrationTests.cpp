@@ -498,7 +498,7 @@ bool FRRIntegrationPressureHordeBannerTest::RunTest(const FString& Parameters)
 		return HUD->GetAlertBarEvents().FindByPredicate([Type, Index](const FRRAlertBarEvent& Event) { return Event.Type == Type && (Index == INDEX_NONE || Event.Index == Index); });
 	};
 	TickPressureFrame(TestWorld, HUD);
-	TestEqual(TEXT("four alert events (console, 2 hordes, shuttle)"), HUD->GetAlertBarEvents().Num(), 4);
+	TestEqual(TEXT("five alert events (console, bonus chest, 2 hordes, shuttle)"), HUD->GetAlertBarEvents().Num(), 5);
 	CheckIcon(TEXT("console"), ConsoleIcon, FindEvent(ERRAlertBarEventType::Console, INDEX_NONE));
 	CheckIcon(TEXT("shuttle"), ShuttleIcon, FindEvent(ERRAlertBarEventType::Extraction, INDEX_NONE));
 	CheckIcon(TEXT("horde 0"), HordeIcons[0], FindEvent(ERRAlertBarEventType::Horde, 0));

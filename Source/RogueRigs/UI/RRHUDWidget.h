@@ -76,7 +76,9 @@ enum class ERRAlertBarEventType : uint8
 	/** A horde front of the spawner's wave director. */
 	Horde,
 	/** The extraction shuttle (end of the bar). */
-	Extraction
+	Extraction,
+	/** The optional bonus chest drop (gold icon; done once hacked; the bar never pauses there). */
+	BonusChest
 };
 
 /** One icon of the alert bar: what, where on the bar, and whether it already happened. */
@@ -85,7 +87,7 @@ struct FRRAlertBarEvent
 {
 	GENERATED_BODY()
 
-	/** Kind of icon (console, horde, shuttle). */
+	/** Kind of icon (console, bonus chest, horde, shuttle). */
 	UPROPERTY(BlueprintReadOnly, Category = "HUD|Run")
 	ERRAlertBarEventType Type = ERRAlertBarEventType::Console;
 
@@ -93,7 +95,7 @@ struct FRRAlertBarEvent
 	UPROPERTY(BlueprintReadOnly, Category = "HUD|Run")
 	float Position = 0.f;
 
-	/** True once the event happened (console hacked, horde front started, extraction ready). */
+	/** True once the event happened (console hacked, bonus chest hacked, horde front started, extraction ready). */
 	UPROPERTY(BlueprintReadOnly, Category = "HUD|Run")
 	bool bDone = false;
 
@@ -164,7 +166,7 @@ struct FRRWeaponSlotHUD
  * OnExtractionReady, OnShuttleCountdown and OnRunEnded (end screen; its restart button calls RestartLevel). Turret charges
  * (BindToMiner: the miner's turret launcher, now or when acquired later through OnWeaponAdded): OnTurretChargesChanged, plus
  * GetTurretRechargeProgress for a per-frame bar. Weapon slots (ammo, reload, turret charges, locked slots): GetWeaponSlots / GetWeaponSlot. Pressure feedback: OnPlayerDamaged (red vignette, BindToMiner),
- * OnHordeIncoming (banner) and OnAlertEventsChanged (alert-bar icons: console, hordes, shuttle) from BindToSpawner and
+ * OnHordeIncoming (banner) and OnAlertEventsChanged (alert-bar icons: console, bonus chest, hordes, shuttle) from BindToSpawner and
  * BindToRunFlow. No gameplay logic.
  */
 UCLASS(Abstract)
@@ -200,7 +202,7 @@ public:
 	 */
 	void RefreshAlertBarEvents();
 
-	/** Alert-bar icons last sent to OnAlertEventsChanged (console, hordes in index order, shuttle). */
+	/** Alert-bar icons last sent to OnAlertEventsChanged (console, bonus chest, hordes in index order, shuttle). */
 	UFUNCTION(BlueprintPure, Category = "HUD|Run")
 	const TArray<FRRAlertBarEvent>& GetAlertBarEvents() const { return AlertBarEvents; }
 
@@ -318,7 +320,7 @@ protected:
 	void OnHordeIncoming(float SecondsUntil);
 
 	/**
-	 * Display event: the alert-bar icons changed (also on binding): console, each horde in index order, shuttle; see
+	 * Display event: the alert-bar icons changed (also on binding): console, bonus chest (when its threshold is > 0), each horde in index order, shuttle; see
 	 * FRRAlertBarEvent. The same list is kept for GetAlertBarEvents. Implement in Blueprint.
 	 */
 	UFUNCTION(BlueprintNativeEvent, Category = "HUD|Pressure")

@@ -9,6 +9,7 @@
 #include "Enemies/RRWaveDirector.h"
 #include "GameFramework/PlayerController.h"
 #include "GAS/RRHealthAttributeSet.h"
+#include "Objectives/RRBonusChest.h"
 #include "Objectives/RRRunFlowSubsystem.h"
 #include "Objectives/RRShuttle.h"
 #include "Player/RRGameMode.h"
@@ -318,6 +319,16 @@ void URRHUDWidget::ComputeAlertBarEvents(TArray<FRRAlertBarEvent>& OutEvents)
 	ConsoleIcon.Position = FMath::Clamp(Config.ConsoleAlertThreshold, 0.f, 1.f);
 	const ARRConsole* Console = RunFlow ? RunFlow->GetConsole() : nullptr;
 	ConsoleIcon.bDone = (Console && Console->GetConsoleState() == ERRConsoleState::Complete) || (RunFlow && RunFlow->IsExtractionReady());
+
+	// Bonus chest (optional): at its threshold, done once hacked; no icon when the chest is disabled (threshold 0).
+	if (Config.BonusChestAlertThreshold > 0.f)
+	{
+		FRRAlertBarEvent& ChestIcon = OutEvents.AddDefaulted_GetRef();
+		ChestIcon.Type = ERRAlertBarEventType::BonusChest;
+		ChestIcon.Position = FMath::Clamp(Config.BonusChestAlertThreshold, 0.f, 1.f);
+		const ARRBonusChest* Chest = RunFlow ? RunFlow->GetBonusChest() : nullptr;
+		ChestIcon.bDone = Chest && Chest->IsComplete();
+	}
 
 	if (const ARREnemySpawner* Spawner = BoundSpawner.Get(); Spawner && Spawner->IsDirectorEnabled())
 	{
