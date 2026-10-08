@@ -3,7 +3,7 @@ id: task-054-01-niagara-trail-sparkle
 description: "XP cube trail and pickup sparkle rebuilt as Niagara systems."
 parent: task-054-niagara-trail-sparkle
 kind: task
-status: todo
+status: in-progress
 ---
 # Niagara trail and sparkle
 

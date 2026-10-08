@@ -3,7 +3,7 @@ id: task-053-01-weapon-info-centred
 description: "Weapon slot info (name, ammo bar or blocks, reload bar, LOCKED) centred under each slot."
 parent: task-053-weapon-info-centred
 kind: task
-status: in-progress
+status: done
 ---
 # Centred weapon info
 
@@ -15,11 +15,11 @@ status: in-progress
 - done_when: PIE check with no error; docs updated; lint clean.
 - editor_state: open
 - token_ceiling: 40000
-- model: open
-- tokens: open
-- runs: open
+- model: sonnet
+- tokens: input 68, cache write 56129, cache read 1184229, output 15703
+- runs: 2
 - milestone: M2
-- result: open
+- result: WBP_HUD: per slot the text (LOCKED included), AmmoBar, ReloadBar and BlockRow share one centre x (76, 246, 416, 586; canvas alignment 0.5); unused blocks collapsed, blocks auto-sized 12 × 10 with 1 px padding, rows auto-sized so visible blocks are centred. PIE: no log error; block rows not seen on screen. Doc wbp-hud. Commits 838e1f2, 01baf1d.
 
 ## Relations
 - [[task-053-weapon-info-centred]] — parent global task.
