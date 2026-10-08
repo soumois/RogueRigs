@@ -3,7 +3,7 @@ id: task-055-02-bp-flash-hold
 description: "WBP_HUD vignette flash held at full strength for at least 0.15 s before fading."
 parent: task-055-first-hit-vignette
 kind: task
-status: todo
+status: in-progress
 ---
 # Vignette flash hold
 

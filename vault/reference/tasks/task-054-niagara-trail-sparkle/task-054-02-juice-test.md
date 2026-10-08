@@ -3,7 +3,7 @@ id: task-054-02-juice-test
 description: "Integration.JuiceKillDropsStreamingCubes updated to the Niagara trail and sparkle of task-054-01."
 parent: task-054-niagara-trail-sparkle
 kind: task
-status: in-progress
+status: done
 ---
 # Juice test after Niagara
 
@@ -15,11 +15,11 @@ status: in-progress
 - done_when: build exits 0 with the editor closed; all `RogueRigs.*` tests pass headless; docs updated; lint clean.
 - editor_state: closed
 - token_ceiling: 40000
-- model: open
-- tokens: open
-- runs: open
+- model: opus
+- tokens: input 58, cache write 111745, cache read 1044044, output 19023
+- runs: 2
 - milestone: M2
-- result: open
+- result: Integration.JuiceKillDropsStreamingCubes reads TrailFX and NS_PickupSparkle; Niagara activation and sparkle checks guarded by FApp::CanEverRender() (skipped and logged under -nullrhi; with -RenderOffScreen 3 trails, 3 sparkles at the collect points, none active 2 s later). Build 0; full run 194/195, the failure Progression.XPPickupAddsOne is unrelated and intermittent (third time). Commit 73b4144.
 
 ## Relations
 - [[task-054-niagara-trail-sparkle]] — parent global task.
