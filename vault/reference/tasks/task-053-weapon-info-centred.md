@@ -3,7 +3,7 @@ id: task-053-weapon-info-centred
 description: "Global task: Weapon slot info (name, ammo bar or blocks, reload bar, LOCKED) centred under each slot."
 parent: tasks-index
 kind: task
-status: todo
+status: in-progress
 ---
 # Centred weapon info
 

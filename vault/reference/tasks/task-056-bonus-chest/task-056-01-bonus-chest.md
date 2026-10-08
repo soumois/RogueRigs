@@ -3,7 +3,7 @@ id: task-056-01-bonus-chest
 description: "Bonus chest: one per level at 60 % alert, 8 s hack, XP, ore and a lucky upgrade choice."
 parent: task-056-bonus-chest
 kind: task
-status: in-progress
+status: done
 ---
 # Bonus chest
 
@@ -15,11 +15,11 @@ status: in-progress
 - done_when: build exits 0 with the editor closed; all `RogueRigs.*` tests pass headless; docs updated; lint clean.
 - editor_state: closed
 - token_ceiling: 90000
-- model: open
-- tokens: open
-- runs: open
+- model: opus
+- tokens: input 104, cache write 132430, cache read 4868945, output 41548
+- runs: 1
 - milestone: M2
-- result: open
+- result: ARRBonusChest subclass of ARRConsole (8 s, zone 6 cells, drain 0.05/s, no marked rocks, 2 × 2); run flow drops one per level at alert 0.6, 30–45 cells, not after extraction is ready (shared FindObjectiveCell); reward once: 0.5 × level need XP via AddXP (XP gain stat applies), 5 ore pickups, URRLevelUpComponent::QueueBonusChoice(3) with luck +3 and no weapon card; HUD alert entry BonusChest at 0.6. HUD and pressure tests updated. Build 0, 195/195. Commits 3a45c35, 1e99320, ecf7714.
 
 ## Relations
 - [[task-056-bonus-chest]] — parent global task.

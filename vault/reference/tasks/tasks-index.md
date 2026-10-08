@@ -65,7 +65,7 @@ Resuming after the pause of 2026-10-06: read [[handover-2026-10-06]] first.
 - [[task-050-flaky-stacking-test]] — DamageNumbers.StackOverDisplayed made reliable: find why it fails intermittently and fix the cause. Status done.
 - [[task-051-turret-spacing]] — A turret placed less than 100 uu from a standing turret moves to the nearest free floor cell at least 100 uu away. Status done.
 - [[task-052-heavy-radius-2]] — Heavy slam radius 340 → 289 uu (trigger 202 uu, chase stop 145 uu); ground ring follows. Status done.
-- [[task-053-weapon-info-centred]] — Weapon slot info (name, ammo bar or blocks, reload bar, LOCKED) centred under each slot. Status todo.
+- [[task-053-weapon-info-centred]] — Weapon slot info (name, ammo bar or blocks, reload bar, LOCKED) centred under each slot. Status in-progress.
 - [[task-054-niagara-trail-sparkle]] — XP cube trail and pickup sparkle rebuilt as Niagara systems. Status todo.
 - [[task-055-first-hit-vignette]] — The red damage vignette shows on the very first hit, including in a packaged build. Status in-progress.
 - [[task-056-bonus-chest]] — Bonus chest: one per level at 60 % alert, 8 s hack, XP, ore and a lucky upgrade choice. Status in-progress.

@@ -13,7 +13,7 @@ status: in-progress
 - gdd_check: GDD updated by the Orchestrator (owner 2026-10-07, fifth test). No open value.
 - confirmed_by_owner: yes (2026-10-07)
 - milestone: M2
-- next_step: task-056-01-bonus-chest
+- next_step: task-056-02-bp-bonus-chest
 - result: open
 
 ## Subtasks
