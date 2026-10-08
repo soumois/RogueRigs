@@ -73,7 +73,7 @@ DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FRROnRunEndedSignature, bool, bSucce
  * ready, the chest (BonusChestClass) drops on a random reachable Floor cell within [BonusChestMinDistanceCells,
  * BonusChestMaxDistanceCells] of the miner's cell whose footprint is reachable floor (same picker as the console, no marked-rock
  * preference; no candidate = retried each tick). Optional: the alert keeps filling, nothing waits for it. An alert that jumps
- * straight to full (cheat) skips it.
+ * straight to full (cheat) skips it when extraction becomes ready in that same tick.
  * Extraction: when Alert is 1 and no objective is pending, OnExtractionReady fires once (phase ExtractionReady) and the shuttle
  * (ShuttleClass) lands on a random reachable Floor cell within [ShuttleMinDistanceCells, ShuttleMaxDistanceCells] of the miner's
  * cell (none = the fitting spot nearest to that band, then the reachable floor cell nearest to it, warning; no reachable cell =
