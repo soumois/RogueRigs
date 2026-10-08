@@ -3,7 +3,7 @@ id: task-056-02-bp-bonus-chest
 description: "BP_BonusChest look, its gold alert-bar icon in WBP_HUD and its hack visual; PIE."
 parent: task-056-bonus-chest
 kind: task
-status: todo
+status: in-progress
 ---
 # Bonus chest Blueprint
 

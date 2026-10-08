@@ -358,6 +358,7 @@ task-052-heavy-radius-2  reference/tasks/task-052-heavy-radius-2.md
 task-053-01-weapon-info-centred  reference/tasks/task-053-weapon-info-centred/task-053-01-weapon-info-centred.md
 task-053-weapon-info-centred  reference/tasks/task-053-weapon-info-centred.md
 task-054-01-niagara-trail-sparkle  reference/tasks/task-054-niagara-trail-sparkle/task-054-01-niagara-trail-sparkle.md
+task-054-02-juice-test  reference/tasks/task-054-niagara-trail-sparkle/task-054-02-juice-test.md
 task-054-niagara-trail-sparkle  reference/tasks/task-054-niagara-trail-sparkle.md
 task-055-01-first-hit-vignette  reference/tasks/task-055-first-hit-vignette/task-055-01-first-hit-vignette.md
 task-055-first-hit-vignette  reference/tasks/task-055-first-hit-vignette.md

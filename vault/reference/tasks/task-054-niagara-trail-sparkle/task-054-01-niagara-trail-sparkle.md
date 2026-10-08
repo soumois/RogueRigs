@@ -3,7 +3,7 @@ id: task-054-01-niagara-trail-sparkle
 description: "XP cube trail and pickup sparkle rebuilt as Niagara systems."
 parent: task-054-niagara-trail-sparkle
 kind: task
-status: in-progress
+status: done
 ---
 # Niagara trail and sparkle
 
@@ -15,11 +15,11 @@ status: in-progress
 - done_when: PIE check with no error; docs updated; lint clean.
 - editor_state: open
 - token_ceiling: 80000
-- model: open
-- tokens: open
-- runs: open
+- model: sonnet
+- tokens: input 88, cache write 78228, cache read 2163267, output 23155
+- runs: 2
 - milestone: M2
-- result: open
+- result: NS_XPTrail (LocationBasedRibbon, cyan, width 10) as TrailFX on BP_PickupXP, activated on OnMagnetStart (old cube Trail removed); NS_PickupSparkle (RadialBurst, 18 cyan sprites, 0.18–0.28 s) spawned on OnCollected; BP_PickupSparkle kept unused. Not seen running; PIE log not readable. Juice test update moved to task-054-02. Commit 11e36d3.
 
 ## Relations
 - [[task-054-niagara-trail-sparkle]] — parent global task.

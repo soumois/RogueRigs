@@ -112,6 +112,7 @@ kind: note
 | [[task-055-01-first-hit-vignette]] | opus | 2 | 0k | 300k | 3962k | 39k |
 | [[task-056-01-bonus-chest]] | opus | 1 | 0k | 132k | 4869k | 42k |
 | [[task-053-01-weapon-info-centred]] | sonnet | 2 | 0k | 56k | 1184k | 16k |
+| [[task-054-01-niagara-trail-sparkle]] | sonnet | 2 | 0k | 78k | 2163k | 23k |
 
 ## Totals
 | Scope | Input | Cache write | Cache read | Output |

@@ -13,12 +13,14 @@ status: in-progress
 - gdd_check: GDD updated by the Orchestrator (owner 2026-10-07, fifth test). No open value.
 - confirmed_by_owner: yes (2026-10-07)
 - milestone: M2
-- next_step: task-054-01-niagara-trail-sparkle
+- next_step: task-054-02-juice-test
 - result: open
 
 ## Subtasks
 1. task-054-01-niagara-trail-sparkle — bp
+2. task-054-02-juice-test — cpp
 
 ## Relations
 - [[tasks-index]] — parent index.
 - [[task-054-01-niagara-trail-sparkle]] — step 1, bp.
+- [[task-054-02-juice-test]] — step 2, cpp.
