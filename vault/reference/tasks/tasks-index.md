@@ -67,5 +67,5 @@ Resuming after the pause of 2026-10-06: read [[handover-2026-10-06]] first.
 - [[task-052-heavy-radius-2]] — Heavy slam radius 340 → 289 uu (trigger 202 uu, chase stop 145 uu); ground ring follows. Status done.
 - [[task-053-weapon-info-centred]] — Weapon slot info (name, ammo bar or blocks, reload bar, LOCKED) centred under each slot. Status done.
 - [[task-054-niagara-trail-sparkle]] — XP cube trail and pickup sparkle rebuilt as Niagara systems. Status done.
-- [[task-055-first-hit-vignette]] — The red damage vignette shows on the very first hit, including in a packaged build. Status in-progress.
+- [[task-055-first-hit-vignette]] — The red damage vignette shows on the very first hit, including in a packaged build. Status done.
 - [[task-056-bonus-chest]] — Bonus chest: one per level at 60 % alert, 8 s hack, XP, ore and a lucky upgrade choice. Status done.

@@ -3,7 +3,7 @@ id: task-055-first-hit-vignette
 description: "Global task: The red damage vignette shows on the very first hit, including in a packaged build."
 parent: tasks-index
 kind: task
-status: in-progress
+status: done
 ---
 # First-hit vignette
 
@@ -13,8 +13,8 @@ status: in-progress
 - gdd_check: GDD updated by the Orchestrator (owner 2026-10-07, fifth test). No open value.
 - confirmed_by_owner: yes (2026-10-07)
 - milestone: M2
-- next_step: task-055-02-bp-flash-hold
-- result: open
+- next_step: none
+- result: Done. WBP_HUD UpdateVignette: HitHoldTime 0.15 s (editable) holds the flash at full value after a new hit before the 2 per second decay; hold decremented after the flash is applied so a long frame still shows it; a lower new hit during a decay is not seen as new (after healing only). With task-055-01 (warm opacity floor, packaged vignette on the first hit at normal frame rate). PIE: no log error. Commit a10d0f2.
 
 ## Subtasks
 1. task-055-01-first-hit-vignette — cpp

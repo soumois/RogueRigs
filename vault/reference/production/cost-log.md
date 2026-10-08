@@ -115,6 +115,7 @@ kind: note
 | [[task-054-01-niagara-trail-sparkle]] | sonnet | 2 | 0k | 78k | 2163k | 23k |
 | [[task-056-02-bp-bonus-chest]] | sonnet | 2 | 0k | 82k | 3135k | 28k |
 | [[task-054-02-juice-test]] | opus | 2 | 0k | 112k | 1044k | 19k |
+| [[task-055-02-bp-flash-hold]] | sonnet | 1 | 0k | 48k | 636k | 10k |
 
 ## Totals
 | Scope | Input | Cache write | Cache read | Output |
