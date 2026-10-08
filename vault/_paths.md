@@ -66,6 +66,7 @@ destruction-rules  reference/gdd/terrain/destruction-rules.md
 dialogue-tone  reference/gdd/art-audio/dialogue-tone.md
 difficulty  reference/gdd/run/difficulty.md
 drgs-analysis  reference/production/drgs-analysis.md
+drgs-video-2026-10-06  reference/production/drgs-video-2026-10-06.md
 drone  reference/gdd/player/drone.md
 editor-workflow  reference/tech/conventions/editor-workflow.md
 enemies-index  reference/gdd/enemies/enemies-index.md
