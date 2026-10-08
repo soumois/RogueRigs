@@ -3,7 +3,7 @@ id: task-054-02-juice-test
 description: "Integration.JuiceKillDropsStreamingCubes updated to the Niagara trail and sparkle of task-054-01."
 parent: task-054-niagara-trail-sparkle
 kind: task
-status: todo
+status: in-progress
 ---
 # Juice test after Niagara
 
