@@ -1,4 +1,4 @@
-// Rogue Rigs - tunables of the level run flow (alert bar, console drop, extraction shuttle), edited on the game mode Blueprint.
+// Rogue Rigs - tunables of the level run flow (alert bar, console drop, bonus chest drop, extraction shuttle), edited on the game mode Blueprint.
 
 #pragma once
 
@@ -6,6 +6,7 @@
 #include "Templates/SubclassOf.h"
 #include "RRRunFlowConfig.generated.h"
 
+class ARRBonusChest;
 class ARRConsole;
 class ARRShuttle;
 
@@ -50,6 +51,22 @@ struct ROGUERIGS_API FRRRunFlowConfig
 	/** Console actor spawned at the threshold (the console Blueprint). None = the native ARRConsole (no mesh). */
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Run Flow")
 	TSubclassOf<ARRConsole> ConsoleClass;
+
+	/** Alert value (0..1) at which the bonus chest drops, once per level; optional, the bar keeps filling (objective-bonus-chest: 0.6, provisional). 0 = no chest. */
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Run Flow|Bonus Chest", meta = (ClampMin = 0, ClampMax = 1))
+	float BonusChestAlertThreshold = 0.6f;
+
+	/** Minimum straight-line distance, in cells, between the miner's cell and the chest cell (objective-bonus-chest: 30 cells of 67 uu, provisional). */
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Run Flow|Bonus Chest", meta = (ClampMin = 0))
+	float BonusChestMinDistanceCells = 30.f;
+
+	/** Maximum straight-line distance, in cells, between the miner's cell and the chest cell (objective-bonus-chest: 45 cells of 67 uu, provisional). */
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Run Flow|Bonus Chest", meta = (ClampMin = 0))
+	float BonusChestMaxDistanceCells = 45.f;
+
+	/** Bonus chest actor dropped at its threshold (the chest Blueprint). None = the native ARRBonusChest (no mesh). */
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Run Flow|Bonus Chest")
+	TSubclassOf<ARRBonusChest> BonusChestClass;
 
 	/** Minimum straight-line distance, in cells, between the miner's cell and the shuttle cell (extraction: 37 cells of 67 uu, provisional; 75 before task-049-01). */
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Run Flow|Extraction", meta = (ClampMin = 0))

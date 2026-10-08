@@ -66,6 +66,14 @@ public:
 	 */
 	void CancelChoices();
 
+	/**
+	 * Queues one extra choice that is not a level-up (bonus chest, objective-bonus-chest): offer level 0 (no weapon card), drawn with
+	 * the owner luck + BonusLuck for that offer only (its reroll keeps it). No heal, no OnLevelUpEffect; same delay, pause and
+	 * chaining as a level-up choice. Returns false when choices are blocked (run over) or the owner is dead.
+	 */
+	UFUNCTION(BlueprintCallable, Category = "LevelUp")
+	bool QueueBonusChoice(float BonusLuck);
+
 	/** True once CancelChoices ran: no more choice screens. */
 	UFUNCTION(BlueprintPure, Category = "LevelUp")
 	bool AreChoicesBlocked() const { return bChoicesBlocked; }
@@ -114,6 +122,9 @@ protected:
 	/** Progression OnLevelUp callback: heal, OnLevelUpEffect, queue one choice (arms the delay when none is running or open). */
 	UFUNCTION()
 	void HandleLevelUp(int32 NewLevel);
+
+	/** Adds one owed choice (offer level, bonus luck) and arms the delay when none is running or open. */
+	void QueueChoice(int32 OfferLevel, float BonusLuck);
 
 	/** Applies HealEffectClass with SetByCaller Data.Heal = HealFraction x MaxHealth to the owner's ASC (skipped when dead). */
 	void ApplyLevelUpHeal();
@@ -172,6 +183,9 @@ protected:
 
 	/** Level of each owed choice, oldest first (the open screen's level first): weapon cards come on levels 5, 10, 15... */
 	TArray<int32> PendingLevels;
+
+	/** Bonus luck of each owed choice, parallel to PendingLevels (0 for a level-up, the chest bonus for a chest choice). */
+	TArray<float> PendingBonusLuck;
 
 	/** True while a choice screen is open. */
 	bool bAwaitingChoice = false;

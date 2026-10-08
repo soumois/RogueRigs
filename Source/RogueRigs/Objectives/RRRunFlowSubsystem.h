@@ -10,6 +10,7 @@
 #include "RRRunFlowSubsystem.generated.h"
 
 class ARRArenaGrid;
+class ARRBonusChest;
 class ARRMiner;
 class ARRShuttle;
 class URRFlowFieldSubsystem;
@@ -40,6 +41,9 @@ DECLARE_DYNAMIC_MULTICAST_DELEGATE_TwoParams(FRROnObjectiveProgressChangedSignat
 /** Fired once when a console is dropped. */
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FRROnConsoleDroppedSignature, ARRConsole*, Console);
 
+/** Fired once when the bonus chest is dropped. */
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FRROnBonusChestDroppedSignature, ARRBonusChest*, BonusChest);
+
 /** Fired once when the alert bar is full and no mandatory objective is pending (the shuttle hooks here). */
 DECLARE_DYNAMIC_MULTICAST_DELEGATE(FRROnExtractionReadySignature);
 
@@ -65,6 +69,11 @@ DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FRROnRunEndedSignature, bool, bSucce
  * retried each tick (warning once). The alert stays paused until
  * the console is Complete. Console and shuttle land only where every cell of their FootprintCells is reachable floor
  * (RRLandingFootprint); when no such spot exists the fallback is logged as a warning.
+ * Bonus chest (objective-bonus-chest): once per level, when Alert reaches BonusChestAlertThreshold (> 0) before extraction is
+ * ready, the chest (BonusChestClass) drops on a random reachable Floor cell within [BonusChestMinDistanceCells,
+ * BonusChestMaxDistanceCells] of the miner's cell whose footprint is reachable floor (same picker as the console, no marked-rock
+ * preference; no candidate = retried each tick). Optional: the alert keeps filling, nothing waits for it. An alert that jumps
+ * straight to full (cheat) skips it.
  * Extraction: when Alert is 1 and no objective is pending, OnExtractionReady fires once (phase ExtractionReady) and the shuttle
  * (ShuttleClass) lands on a random reachable Floor cell within [ShuttleMinDistanceCells, ShuttleMaxDistanceCells] of the miner's
  * cell (none = the fitting spot nearest to that band, then the reachable floor cell nearest to it, warning; no reachable cell =
@@ -128,6 +137,14 @@ public:
 	/** The console of this level (null before the drop). */
 	UFUNCTION(BlueprintPure, Category = "RunFlow")
 	ARRConsole* GetConsole() const { return Console; }
+
+	/** The bonus chest of this level (null before its drop or when disabled). */
+	UFUNCTION(BlueprintPure, Category = "RunFlow")
+	ARRBonusChest* GetBonusChest() const { return BonusChest; }
+
+	/** True once the alert reached the bonus chest threshold (the chest drops, or its drop is being retried). */
+	UFUNCTION(BlueprintPure, Category = "RunFlow")
+	bool IsBonusChestTriggered() const { return bBonusChestTriggered; }
 
 	/** Kills counted so far (those that added alert time or arrived while paused). */
 	UFUNCTION(BlueprintPure, Category = "RunFlow")
@@ -200,6 +217,10 @@ public:
 	UPROPERTY(BlueprintAssignable, Category = "RunFlow")
 	FRROnConsoleDroppedSignature OnConsoleDropped;
 
+	/** Broadcast once when the bonus chest drops. */
+	UPROPERTY(BlueprintAssignable, Category = "RunFlow")
+	FRROnBonusChestDroppedSignature OnBonusChestDropped;
+
 	/** Broadcast once when the bar is full and no objective is pending. */
 	UPROPERTY(BlueprintAssignable, Category = "RunFlow")
 	FRROnExtractionReadySignature OnExtractionReady;
@@ -225,6 +246,16 @@ protected:
 
 	/** Picks the console cell (see class comment). False when no cell qualifies. */
 	bool FindConsoleCell(FIntPoint& OutCell);
+
+	/**
+	 * Shared console and chest picker: a random reachable Floor cell straight-line [MinCells, MaxCells] from the miner's cell whose
+	 * Defaults footprint is reachable floor (none fits: any ring cell, warning naming What); with bPreferMarkedRocks, cells where
+	 * Defaults would mark rocks win. False when the ring is empty.
+	 */
+	bool FindObjectiveCell(const ARRConsole* Defaults, float MinCells, float MaxCells, bool bPreferMarkedRocks, const TCHAR* What, FIntPoint& OutCell);
+
+	/** Spawns and initializes the bonus chest on a picked cell. Null when no cell qualifies or the spawn failed. */
+	ARRBonusChest* DropBonusChest();
 
 	/** Spawns and initializes the console on a picked cell and binds its events. Null when no cell qualifies or the spawn failed. */
 	ARRConsole* DropConsole();
@@ -289,6 +320,10 @@ protected:
 	UPROPERTY(Transient)
 	TObjectPtr<ARRConsole> Console;
 
+	/** The dropped bonus chest. */
+	UPROPERTY(Transient)
+	TObjectPtr<ARRBonusChest> BonusChest;
+
 	/** The landed shuttle. */
 	UPROPERTY(Transient)
 	TObjectPtr<ARRShuttle> Shuttle;
@@ -314,6 +349,12 @@ protected:
 
 	/** True once OnExtractionReady fired. */
 	bool bExtractionReady = false;
+
+	/** True once the alert reached the bonus chest threshold. */
+	bool bBonusChestTriggered = false;
+
+	/** True once the "no chest cell" warning was logged. */
+	bool bBonusChestFailureLogged = false;
 
 	/** True once the run ended. */
 	bool bRunEnded = false;

@@ -142,8 +142,8 @@ protected:
 	/** Releases the drone and unmarks the rocks left when the console goes away. */
 	virtual void EndPlay(const EEndPlayReason::Type EndPlayReason) override;
 
-	/** Completes the hack: unmarks the rocks left, progress 1, state Complete, drone released. No-op once complete. Called by Tick when the gauge fills, and by ForceComplete. */
-	void CompleteHack();
+	/** Completes the hack: unmarks the rocks left, progress 1, state Complete, drone released. No-op once complete. Called by Tick when the gauge fills, and by ForceComplete. Virtual: ARRBonusChest grants its reward after it. */
+	virtual void CompleteHack();
 
 	/** Display event: marked rocks left (Remaining) out of Total; also called at initialization. Implement in Blueprint. */
 	UFUNCTION(BlueprintImplementableEvent, Category = "Console")

@@ -262,6 +262,9 @@ public:
 	UFUNCTION(BlueprintPure, Category = "Grid|Objectives")
 	int32 GetMarkedCustomDataIndex() const { return MarkedCustomDataIndex; }
 
+	/** Pickup class this grid drops for a block type (OrePickupClass for Ore, HealPickupClass for HealOre, none otherwise); used by ARRBonusChest for its ore reward. */
+	TSubclassOf<ARRPickup> GetDropPickupClass(ERRCellType Type) const { return GetPickupClass(Type); }
+
 	/** Broadcast each time a block takes terrain damage (ApplyTerrainDamage), before a possible destruction. */
 	UPROPERTY(BlueprintAssignable, Category = "Grid|Destruction")
 	FRROnCellDamagedSignature OnCellDamaged;

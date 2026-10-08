@@ -59,6 +59,7 @@ void URRLevelUpComponent::EndPlay(const EEndPlayReason::Type EndPlayReason)
 	bAwaitingChoice = false;
 	PendingChoices = 0;
 	PendingLevels.Reset();
+	PendingBonusLuck.Reset();
 	Super::EndPlay(EndPlayReason);
 }
 
@@ -89,8 +90,24 @@ void URRLevelUpComponent::HandleLevelUp(int32 NewLevel)
 	{
 		return;
 	}
+	QueueChoice(NewLevel, 0.f);
+}
+
+bool URRLevelUpComponent::QueueBonusChoice(float BonusLuck)
+{
+	if (bChoicesBlocked || IsOwnerDead())
+	{
+		return false;
+	}
+	QueueChoice(0, BonusLuck);
+	return true;
+}
+
+void URRLevelUpComponent::QueueChoice(int32 OfferLevel, float BonusLuck)
+{
 	++PendingChoices;
-	PendingLevels.Add(NewLevel);
+	PendingLevels.Add(OfferLevel);
+	PendingBonusLuck.Add(BonusLuck);
 	// A running delay or an open screen picks the new choice up through the queue.
 	if (!bAwaitingChoice && !IsChoiceDelayActive())
 	{
@@ -138,6 +155,7 @@ void URRLevelUpComponent::HandleChoiceDelayElapsed()
 		// The run is over: no choice screen.
 		PendingChoices = 0;
 		PendingLevels.Reset();
+		PendingBonusLuck.Reset();
 		return;
 	}
 	EnterChoicePause();
@@ -149,7 +167,8 @@ void URRLevelUpComponent::ShowNextOffer()
 {
 	URRUpgradeComponent* Upgrades = UpgradeComponent.Get();
 	const int32 OfferLevel = PendingLevels.IsEmpty() ? 0 : PendingLevels[0];
-	const TArray<FRRUpgradeCard> Cards = Upgrades ? Upgrades->BuildOfferWithOwnerLuck(CardCount, 0.f, OfferLevel) : TArray<FRRUpgradeCard>();
+	const float BonusLuck = PendingBonusLuck.IsEmpty() ? 0.f : PendingBonusLuck[0];
+	const TArray<FRRUpgradeCard> Cards = Upgrades ? Upgrades->BuildOfferWithOwnerLuck(CardCount, BonusLuck, OfferLevel) : TArray<FRRUpgradeCard>();
 	if (Cards.IsEmpty())
 	{
 		UE_LOG(LogRogueRigs, Error, TEXT("URRLevelUpComponent: no upgrade card could be offered on %s; choice skipped."), *GetNameSafe(GetOwner()));
@@ -176,6 +195,10 @@ bool URRLevelUpComponent::ChooseUpgrade(int32 Index)
 	if (!PendingLevels.IsEmpty())
 	{
 		PendingLevels.RemoveAt(0);
+	}
+	if (!PendingBonusLuck.IsEmpty())
+	{
+		PendingBonusLuck.RemoveAt(0);
 	}
 	if (PendingChoices > 0)
 	{
@@ -214,6 +237,7 @@ void URRLevelUpComponent::CloseChoice()
 {
 	PendingChoices = 0;
 	PendingLevels.Reset();
+	PendingBonusLuck.Reset();
 	const bool bWasAwaiting = bAwaitingChoice;
 	bAwaitingChoice = false;
 	if (bWasAwaiting)

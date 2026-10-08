@@ -9,6 +9,7 @@
 #include "Grid/RRArenaGrid.h"
 #include "Kismet/GameplayStatics.h"
 #include "GameFramework/PlayerController.h"
+#include "Objectives/RRBonusChest.h"
 #include "Objectives/RRLandingFootprint.h"
 #include "Objectives/RRShuttle.h"
 #include "Player/RRGameMode.h"
@@ -101,6 +102,13 @@ void URRRunFlowSubsystem::Tick(float DeltaTime)
 	}
 
 	CheckExtraction();
+
+	// Bonus chest: once per level at its threshold, optional (nothing pauses); retried every tick until a cell qualifies.
+	if (!bExtractionReady && !BonusChest && Config.BonusChestAlertThreshold > 0.f && GetAlert() >= Config.BonusChestAlertThreshold)
+	{
+		bBonusChestTriggered = true;
+		DropBonusChest();
+	}
 	BroadcastAlertIfChanged();
 }
 
@@ -235,7 +243,14 @@ void URRRunFlowSubsystem::ResolveConfig()
 
 bool URRRunFlowSubsystem::FindConsoleCell(FIntPoint& OutCell)
 {
-	if (!Grid || !Miner)
+	const UClass* ConsoleClass = Config.ConsoleClass ? Config.ConsoleClass.Get() : ARRConsole::StaticClass();
+	return FindObjectiveCell(ConsoleClass->GetDefaultObject<ARRConsole>(), Config.ConsoleMinDistanceCells, Config.ConsoleMaxDistanceCells,
+		Config.bPreferCellsWithMarkedRocks, TEXT("console"), OutCell);
+}
+
+bool URRRunFlowSubsystem::FindObjectiveCell(const ARRConsole* Defaults, float MinCells, float MaxCells, bool bPreferMarkedRocks, const TCHAR* What, FIntPoint& OutCell)
+{
+	if (!Grid || !Miner || !Defaults)
 	{
 		return false;
 	}
@@ -245,12 +260,9 @@ bool URRRunFlowSubsystem::FindConsoleCell(FIntPoint& OutCell)
 		return false;
 	}
 	const FIntPoint MinerCell = Grid->GetCellAtWorld(Miner->GetActorLocation());
-	const float MinSquared = FMath::Square(Config.ConsoleMinDistanceCells);
-	const float MaxSquared = FMath::Square(Config.ConsoleMaxDistanceCells);
-
-	const UClass* ConsoleClass = Config.ConsoleClass ? Config.ConsoleClass.Get() : ARRConsole::StaticClass();
-	const ARRConsole* ConsoleDefaults = ConsoleClass->GetDefaultObject<ARRConsole>();
-	const FIntPoint Footprint = ConsoleDefaults->GetFootprintCells();
+	const float MinSquared = FMath::Square(MinCells);
+	const float MaxSquared = FMath::Square(MaxCells);
+	const FIntPoint Footprint = Defaults->GetFootprintCells();
 
 	// Reachable floor cells in the distance ring around the miner whose whole footprint is reachable floor.
 	TSet<FIntPoint> ReachableFloor;
@@ -272,17 +284,17 @@ bool URRRunFlowSubsystem::FindConsoleCell(FIntPoint& OutCell)
 	if (Candidates.IsEmpty())
 	{
 		// Fallback: no spot of the ring fits the footprint; land on a ring cell anyway (the mesh may overlap blocks).
-		UE_LOG(LogRogueRigs, Warning, TEXT("URRRunFlowSubsystem: no %d x %d cell spot of reachable floor %.0f to %.0f cells from the miner; console lands on a single reachable floor cell (mesh may overlap blocks)."),
-			Footprint.X, Footprint.Y, Config.ConsoleMinDistanceCells, Config.ConsoleMaxDistanceCells);
+		UE_LOG(LogRogueRigs, Warning, TEXT("URRRunFlowSubsystem: no %d x %d cell spot of reachable floor %.0f to %.0f cells from the miner; %s lands on a single reachable floor cell (mesh may overlap blocks)."),
+			Footprint.X, Footprint.Y, MinCells, MaxCells, What);
 		Candidates = MoveTemp(Ring);
 	}
 
 	// Prefer cells with rocks to mark, so the console has something to clear.
-	if (Config.bPreferCellsWithMarkedRocks)
+	if (bPreferMarkedRocks)
 	{
-		TArray<FIntPoint> WithRocks = Candidates.FilterByPredicate([this, ConsoleDefaults](const FIntPoint& Cell)
+		TArray<FIntPoint> WithRocks = Candidates.FilterByPredicate([this, Defaults](const FIntPoint& Cell)
 		{
-			return !ConsoleDefaults->FindMarkableCells(Grid, Cell).IsEmpty();
+			return !Defaults->FindMarkableCells(Grid, Cell).IsEmpty();
 		});
 		if (!WithRocks.IsEmpty())
 		{
@@ -338,6 +350,38 @@ ARRConsole* URRRunFlowSubsystem::DropConsole()
 	UE_LOG(LogRogueRigs, Log, TEXT("URRRunFlowSubsystem: alert %.2f, console dropped on (%d, %d)."), GetAlert(), Cell.X, Cell.Y);
 	OnConsoleDropped.Broadcast(NewConsole);
 	return NewConsole;
+}
+
+ARRBonusChest* URRRunFlowSubsystem::DropBonusChest()
+{
+	UClass* ChestClass = Config.BonusChestClass ? Config.BonusChestClass.Get() : ARRBonusChest::StaticClass();
+	FIntPoint Cell;
+	if (!FindObjectiveCell(ChestClass->GetDefaultObject<ARRBonusChest>(), Config.BonusChestMinDistanceCells, Config.BonusChestMaxDistanceCells,
+		/*bPreferMarkedRocks*/ false, TEXT("bonus chest"), Cell))
+	{
+		if (!bBonusChestFailureLogged)
+		{
+			bBonusChestFailureLogged = true;
+			UE_LOG(LogRogueRigs, Warning, TEXT("URRRunFlowSubsystem: no reachable floor cell %.0f to %.0f cells from the miner; bonus chest drop retried every tick."),
+				Config.BonusChestMinDistanceCells, Config.BonusChestMaxDistanceCells);
+		}
+		return nullptr;
+	}
+
+	FActorSpawnParameters Params;
+	Params.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AlwaysSpawn;
+	ARRBonusChest* NewChest = GetWorld()->SpawnActor<ARRBonusChest>(ChestClass, Grid->GetCellCenter(Cell.X, Cell.Y), FRotator::ZeroRotator, Params);
+	if (!NewChest)
+	{
+		UE_LOG(LogRogueRigs, Error, TEXT("URRRunFlowSubsystem: could not spawn bonus chest %s."), *GetNameSafe(ChestClass));
+		return nullptr;
+	}
+	BonusChest = NewChest;
+	NewChest->InitializeConsole(Grid, Miner, Cell);
+
+	UE_LOG(LogRogueRigs, Log, TEXT("URRRunFlowSubsystem: alert %.2f, bonus chest dropped on (%d, %d)."), GetAlert(), Cell.X, Cell.Y);
+	OnBonusChestDropped.Broadcast(NewChest);
+	return NewChest;
 }
 
 void URRRunFlowSubsystem::CheckExtraction()
