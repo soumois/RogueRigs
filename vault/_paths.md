@@ -23,6 +23,7 @@ audio-direction  reference/gdd/art-audio/audio-direction.md
 barrel  reference/gdd/terrain/barrel.md
 blueprints-index  reference/tech/blueprints/blueprints-index.md
 bp-arena-grid  reference/tech/blueprints/bp-arena-grid.md
+bp-bonus-chest  reference/tech/blueprints/bp-bonus-chest.md
 bp-burst-rifle  reference/tech/blueprints/bp-burst-rifle.md
 bp-chaser  reference/tech/blueprints/bp-chaser.md
 bp-damage-numbers  reference/tech/blueprints/bp-damage-numbers.md

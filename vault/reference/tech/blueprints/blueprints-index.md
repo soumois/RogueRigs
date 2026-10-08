@@ -32,6 +32,7 @@ One node per Blueprint, template `blueprint.md`.
 - [[bp-pickup-sparkle]] — BP_PickupSparkle, the XP collect sparkle.
 - [[bp-heal-ring]] — BP_HealRing, the green ring on heal.
 - [[bp-objective-console]] — BP_ObjectiveConsole, the command console.
+- [[bp-bonus-chest]] — BP_BonusChest, the optional gold bonus chest.
 - [[bp-extraction-shuttle]] — BP_ExtractionShuttle, the extraction shuttle.
 - [[wbp-hud]] — WBP_HUD, health bar and Game Over text.
 - [[bp-damage-numbers]] — NS_DamageNumbers, M_DamageNumber and the digit atlas, the floating damage numbers.
