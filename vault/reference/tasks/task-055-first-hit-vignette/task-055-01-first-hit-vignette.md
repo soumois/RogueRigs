@@ -3,7 +3,7 @@ id: task-055-01-first-hit-vignette
 description: "The red damage vignette shows on the very first hit, including in a packaged build."
 parent: task-055-first-hit-vignette
 kind: task
-status: review
+status: done
 ---
 # First-hit vignette
 

@@ -13,12 +13,14 @@ status: in-progress
 - gdd_check: GDD updated by the Orchestrator (owner 2026-10-07, fifth test). No open value.
 - confirmed_by_owner: yes (2026-10-07)
 - milestone: M2
-- next_step: owner-decision-flash-hold
+- next_step: task-055-02-bp-flash-hold
 - result: open
 
 ## Subtasks
 1. task-055-01-first-hit-vignette — cpp
+2. task-055-02-bp-flash-hold — bp
 
 ## Relations
 - [[tasks-index]] — parent index.
 - [[task-055-01-first-hit-vignette]] — step 1, cpp.
+- [[task-055-02-bp-flash-hold]] — step 2, bp.

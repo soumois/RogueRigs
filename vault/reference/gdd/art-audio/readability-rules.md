@@ -19,6 +19,8 @@ applies_to: art, vfx, level-design, image prompts
 
 - Weapon slots (owner 2026-10-06 fourth test): under each owned weapon, ammo shows as a bar of the remaining percentage above 7 rounds, as one block per round at 7 or fewer; reloading shows a red bar filling over the reload time; turret charges show as blocks, and a recharging charge shows as a red bar in the leftmost empty block. Slots not owned yet show a padlock.
 
+- Damage vignette (owner 2026-10-08): the red flash stays at full strength for at least 0.15 s before fading, so a long frame never hides the first hit.
+
 ## Relations
 - [[art-audio-index]] — parent index.
 - [[color-code]] — the current palette.

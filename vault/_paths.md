@@ -362,6 +362,7 @@ task-054-01-niagara-trail-sparkle  reference/tasks/task-054-niagara-trail-sparkl
 task-054-02-juice-test  reference/tasks/task-054-niagara-trail-sparkle/task-054-02-juice-test.md
 task-054-niagara-trail-sparkle  reference/tasks/task-054-niagara-trail-sparkle.md
 task-055-01-first-hit-vignette  reference/tasks/task-055-first-hit-vignette/task-055-01-first-hit-vignette.md
+task-055-02-bp-flash-hold  reference/tasks/task-055-first-hit-vignette/task-055-02-bp-flash-hold.md
 task-055-first-hit-vignette  reference/tasks/task-055-first-hit-vignette.md
 task-056-01-bonus-chest  reference/tasks/task-056-bonus-chest/task-056-01-bonus-chest.md
 task-056-02-bp-bonus-chest  reference/tasks/task-056-bonus-chest/task-056-02-bp-bonus-chest.md
