@@ -2,6 +2,7 @@
 
 #include "CoreMinimal.h"
 #include "Misc/AutomationTest.h"
+#include "Misc/App.h"
 
 #if WITH_DEV_AUTOMATION_TESTS
 
@@ -15,6 +16,7 @@
 #include "Enemies/RRKamikaze.h"
 #include "Engine/World.h"
 #include "NiagaraComponent.h"
+#include "NiagaraSystem.h"
 #include "EngineUtils.h"
 #include "Explosions/RRExplosionFX.h"
 #include "GameFramework/PlayerController.h"
@@ -26,6 +28,7 @@
 #include "Tests/RRTestEventRecorder.h"
 #include "Tests/RRTestHarness.h"
 #include "UObject/StrongObjectPtr.h"
+#include "UObject/UObjectIterator.h"
 #include "Weapons/RRAutoFireComponent.h"
 #include "Weapons/RRWeapon.h"
 
@@ -36,7 +39,8 @@ namespace RRJuiceTests
 	const TCHAR* const JuiceKamikazePath = TEXT("/Game/RogueRigs/Blueprints/Enemies/BP_Kamikaze.BP_Kamikaze_C");
 	const TCHAR* const JuicePickupXPPath = TEXT("/Game/RogueRigs/Blueprints/Pickups/BP_PickupXP.BP_PickupXP_C");
 	const TCHAR* const JuicePickupHealPath = TEXT("/Game/RogueRigs/Blueprints/Pickups/BP_PickupHeal.BP_PickupHeal_C");
-	const TCHAR* const JuiceSparklePath = TEXT("/Game/RogueRigs/Blueprints/FX/BP_PickupSparkle.BP_PickupSparkle_C");
+	/** Collect sparkle BP_PickupXP spawns with SpawnSystemAtLocation since task-054-01 (bp-pickup-xp). */
+	const TCHAR* const JuiceSparkleSystemPath = TEXT("/Game/RogueRigs/FX/NS_PickupSparkle.NS_PickupSparkle");
 	const TCHAR* const JuiceHealRingPath = TEXT("/Game/RogueRigs/Blueprints/FX/BP_HealRing.BP_HealRing_C");
 
 	/** BP_Kamikaze CoreLight peak (bp-kamikaze: intensity = flare progress x 10000 since task-028-02). */
@@ -136,6 +140,48 @@ namespace RRJuiceTests
 		~FJuiceSpawnLog()
 		{
 			World->RemoveOnActorSpawnedHandler(Handle);
+		}
+	};
+
+	/** True when the TrailFX Niagara component of an XP pickup is active (task-054-01: replaces the Trail static mesh). */
+	bool IsJuiceTrailActive(const AActor* Cube)
+	{
+		const UNiagaraComponent* TrailFX = FindJuiceComponent<UNiagaraComponent>(Cube, TEXT("TrailFX"));
+		return TrailFX && TrailFX->IsActive();
+	}
+
+	/** Records the Niagara components of one system created in a world (first-seen location), polled after each tick. */
+	struct FJuiceNiagaraLog
+	{
+		struct FEntry
+		{
+			TWeakObjectPtr<UNiagaraComponent> Component;
+			FVector Location = FVector::ZeroVector;
+		};
+		TArray<FEntry> Entries;
+		TSet<const UNiagaraComponent*> Known;
+
+		/** Registers the components of System already in World so only later spawns are recorded. */
+		FJuiceNiagaraLog(const UWorld* World, const UNiagaraSystem* System)
+		{
+			Poll(World, System, false);
+		}
+
+		void Poll(const UWorld* World, const UNiagaraSystem* System, bool bRecord = true)
+		{
+			for (TObjectIterator<UNiagaraComponent> It; It; ++It)
+			{
+				UNiagaraComponent* Component = *It;
+				if (Component->GetWorld() != World || Component->GetAsset() != System || Known.Contains(Component))
+				{
+					continue;
+				}
+				Known.Add(Component);
+				if (bRecord)
+				{
+					Entries.Add({ Component, Component->GetComponentLocation() });
+				}
+			}
 		}
 	};
 
@@ -284,9 +330,10 @@ bool FRRJuiceKillStreamTest::RunTest(const FString& Parameters)
 	RRTestHarness::FTestWorld TestWorld(TEXT("RRJuiceKillStream"));
 	UClass* ChaserClass = RRTestHarness::LoadTestClass<ARREnemy>(*this, JuiceChaserPath);
 	UClass* CubeClass = RRTestHarness::LoadTestClass<ARRPickup>(*this, JuicePickupXPPath);
-	UClass* SparkleClass = RRTestHarness::LoadTestClass<AActor>(*this, JuiceSparklePath);
+	const UNiagaraSystem* SparkleSystem = LoadObject<UNiagaraSystem>(nullptr, JuiceSparkleSystemPath);
+	TestNotNull(TEXT("NS_PickupSparkle loads"), SparkleSystem);
 	ARRArenaGrid* Grid = nullptr;
-	ARRMiner* Miner = ChaserClass && CubeClass && SparkleClass ? SpawnJuiceMiner(*this, TestWorld, Grid) : nullptr;
+	ARRMiner* Miner = ChaserClass && CubeClass && SparkleSystem ? SpawnJuiceMiner(*this, TestWorld, Grid) : nullptr;
 	if (!Miner)
 	{
 		return false;
@@ -299,7 +346,7 @@ bool FRRJuiceKillStreamTest::RunTest(const FString& Parameters)
 	}
 	TestWorld.Tick();
 
-	FJuiceSpawnLog Sparkles(TestWorld.Get(), SparkleClass);
+	FJuiceNiagaraLog Sparkles(TestWorld.Get(), SparkleSystem);
 	TStrongObjectPtr<URRTestEventRecorder> Recorder(NewObject<URRTestEventRecorder>());
 	Miner->OnPickupCollectedAt.AddDynamic(Recorder.Get(), &URRTestEventRecorder::HandlePickupCollectedAt);
 	const TArray<FVector>& CollectedAt = Recorder->GetCollectedPickupLocations();
@@ -336,9 +383,8 @@ bool FRRJuiceKillStreamTest::RunTest(const FString& Parameters)
 	}
 	for (const TWeakObjectPtr<ARRPickup>& Cube : Cubes)
 	{
-		const UStaticMeshComponent* Trail = FindJuiceComponent<UStaticMeshComponent>(Cube.Get(), TEXT("Trail"));
-		TestNotNull(TEXT("BP_PickupXP has a Trail component"), Trail);
-		TestFalse(TEXT("trail hidden during the pop"), IsShownInGame(Trail));
+		TestNotNull(TEXT("BP_PickupXP has a TrailFX Niagara component"), FindJuiceComponent<UNiagaraComponent>(Cube.Get(), TEXT("TrailFX")));
+		TestFalse(TEXT("TrailFX inactive during the pop"), IsJuiceTrailActive(Cube.Get()));
 		// task-028-03: the saved Trail blocked the miner (it climbed onto the cube); no pickup component may collide.
 		TInlineComponentArray<UPrimitiveComponent*> Primitives(Cube.Get());
 		for (const UPrimitiveComponent* Primitive : Primitives)
@@ -350,7 +396,7 @@ bool FRRJuiceKillStreamTest::RunTest(const FString& Parameters)
 		}
 	}
 
-	// Pop, rest, then the stream: every cube shows its trail once magnetized, until collected.
+	// Pop, rest, then the stream: every cube's TrailFX is active once magnetized, until collected.
 	TSet<const ARRPickup*> TrailSeen;
 	int32 MagnetFramesWithoutTrail = 0;
 	int32 Frame = 0;
@@ -358,12 +404,13 @@ bool FRRJuiceKillStreamTest::RunTest(const FString& Parameters)
 	for (; Frame < 300 && CollectedAt.Num() < 3; ++Frame)
 	{
 		TestWorld.Tick();
+		Sparkles.Poll(TestWorld.Get(), SparkleSystem);
 		for (const TWeakObjectPtr<ARRPickup>& Cube : Cubes)
 		{
 			if (Cube.IsValid() && !Cube->IsActorBeingDestroyed() && Cube->IsMagnetized())
 			{
 				FirstMagnetTime = FirstMagnetTime < 0.0 ? TestWorld.Get()->GetTimeSeconds() : FirstMagnetTime;
-				const bool bTrail = IsShownInGame(FindJuiceComponent<UStaticMeshComponent>(Cube.Get(), TEXT("Trail")));
+				const bool bTrail = IsJuiceTrailActive(Cube.Get());
 				MagnetFramesWithoutTrail += bTrail ? 0 : 1;
 				if (bTrail)
 				{
@@ -376,26 +423,47 @@ bool FRRJuiceKillStreamTest::RunTest(const FString& Parameters)
 		CollectedAt.Num(), Frame, TestWorld.Get()->GetTimeSeconds(), TrailSeen.Num(), Sparkles.Entries.Num()));
 	TestEqual(TEXT("3 cubes collected"), CollectedAt.Num(), 3);
 	TestTrue(TEXT("cubes rest before streaming (magnet after pop + rest)"), FirstMagnetTime >= 1.0);
-	TestEqual(TEXT("every cube showed its trail while magnetized"), TrailSeen.Num(), 3);
-	TestEqual(TEXT("trail shown on every magnetized frame"), MagnetFramesWithoutTrail, 0);
+	// Niagara never activates nor spawns when the application cannot render (UNiagaraComponent::Activate and
+	// CreateNiagaraSystem check FApp::CanEverRender(), false under -nullrhi): the Niagara checks need a real RHI (-RenderOffScreen).
+	const bool bNiagaraRuns = FApp::CanEverRender();
+	if (!bNiagaraRuns)
+	{
+		AddInfo(TEXT("JUICE Niagara checks SKIPPED (TrailFX activation, NS_PickupSparkle count): FApp::CanEverRender() is false under -nullrhi; run with -RenderOffScreen to check them."));
+	}
+	if (bNiagaraRuns)
+	{
+		TestEqual(TEXT("every cube's TrailFX was active while magnetized"), TrailSeen.Num(), 3);
+		TestEqual(TEXT("TrailFX active on every magnetized frame"), MagnetFramesWithoutTrail, 0);
+	}
 	TestEqual(TEXT("XP +1 (chaser XP split over 3 cubes)"), JuiceTotalXP() - XPBefore, 1.f, 1e-3f);
 
-	// One sparkle per collect, at the collect location, short-lived.
-	TestEqual(TEXT("one BP_PickupSparkle per collected cube"), Sparkles.Entries.Num(), 3);
-	for (int32 Index = 0; Index < FMath::Min(Sparkles.Entries.Num(), CollectedAt.Num()); ++Index)
+	// One NS_PickupSparkle component per collect, at the collect location, short-lived (auto-destroy).
+	if (bNiagaraRuns)
 	{
-		TestTrue(TEXT("sparkle at the collect location"), FVector::Dist(Sparkles.Entries[Index].Location, CollectedAt[Index]) < 1.f);
-		TestTrue(TEXT("collect within 50 uu of the miner"), FVector::Dist2D(CollectedAt[Index], Miner->GetActorLocation()) < 60.f);
+		TestEqual(TEXT("one NS_PickupSparkle per collected cube"), Sparkles.Entries.Num(), 3);
+	}
+	for (const FVector& Collect : CollectedAt)
+	{
+		if (bNiagaraRuns)
+		{
+			const bool bSparkleThere = Sparkles.Entries.ContainsByPredicate([&Collect](const FJuiceNiagaraLog::FEntry& Entry)
+			{
+				return FVector::Dist(Entry.Location, Collect) < 1.f;
+			});
+			TestTrue(TEXT("NS_PickupSparkle at the collect location"), bSparkleThere);
+		}
+		TestTrue(TEXT("collect within 50 uu of the miner"), FVector::Dist2D(Collect, Miner->GetActorLocation()) < 60.f);
 	}
 	for (int32 Extra = 0; Extra < 120; ++Extra)
 	{
 		TestWorld.Tick();
 	}
 	int32 SparklesAlive = 0;
-	for (const FJuiceSpawnLog::FEntry& Entry : Sparkles.Entries)
+	for (const FJuiceNiagaraLog::FEntry& Entry : Sparkles.Entries)
 	{
-		SparklesAlive += Entry.Actor.IsValid() && !Entry.Actor->IsActorBeingDestroyed() ? 1 : 0;
+		SparklesAlive += Entry.Component.IsValid() && !Entry.Component->IsBeingDestroyed() && Entry.Component->IsActive() ? 1 : 0;
 	}
+	AddInfo(FString::Printf(TEXT("JUICE sparkles: %d NS_PickupSparkle spawned, %d still active 2 s later"), Sparkles.Entries.Num(), SparklesAlive));
 	TestEqual(TEXT("sparkles gone 2 s later"), SparklesAlive, 0);
 	return true;
 }
