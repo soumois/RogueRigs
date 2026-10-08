@@ -113,6 +113,7 @@ kind: note
 | [[task-056-01-bonus-chest]] | opus | 1 | 0k | 132k | 4869k | 42k |
 | [[task-053-01-weapon-info-centred]] | sonnet | 2 | 0k | 56k | 1184k | 16k |
 | [[task-054-01-niagara-trail-sparkle]] | sonnet | 2 | 0k | 78k | 2163k | 23k |
+| [[task-056-02-bp-bonus-chest]] | sonnet | 2 | 0k | 82k | 3135k | 28k |
 
 ## Totals
 | Scope | Input | Cache write | Cache read | Output |

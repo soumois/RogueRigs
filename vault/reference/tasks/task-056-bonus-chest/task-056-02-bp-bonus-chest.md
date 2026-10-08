@@ -3,7 +3,7 @@ id: task-056-02-bp-bonus-chest
 description: "BP_BonusChest look, its gold alert-bar icon in WBP_HUD and its hack visual; PIE."
 parent: task-056-bonus-chest
 kind: task
-status: in-progress
+status: done
 ---
 # Bonus chest Blueprint
 
@@ -15,11 +15,11 @@ status: in-progress
 - done_when: PIE check with no error; docs updated; lint clean.
 - editor_state: open
 - token_ceiling: 80000
-- model: open
-- tokens: open
-- runs: open
+- model: sonnet
+- tokens: input 114, cache write 81653, cache read 3134770, output 27590
+- runs: 2
 - milestone: M2
-- result: open
+- result: BP_BonusChest (child of ARRBonusChest, gold cube, gold hack ring, glow on OnRewardGranted), MI_GB_BonusChest, MI_GroundRingGold; BP_RRGameMode RunFlowConfig.BonusChestClass set (recompile needed after editing); WBP_HUD gold 'B' AlertIconChest with the BonusChest case. PIE: chest dropped at 60 % alert, no log error; hack completion and rewards not exercised (no cheat targets the chest); not seen on screen. Docs bp-bonus-chest (new), wbp-hud, bp-rr-game-mode, blueprints-index. Commits 12bd69e, e7e20f2, a90285c.
 
 ## Relations
 - [[task-056-bonus-chest]] — parent global task.
