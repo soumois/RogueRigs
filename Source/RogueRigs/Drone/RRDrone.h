@@ -248,17 +248,17 @@ protected:
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Drone|Orbit", meta = (ClampMin = 0))
 	float FollowInterpSpeed = 10.f;
 
-	/** Reach of the arc: a block is dug when its center is within this many cells of the miner's front point (drone gdd: 1.5, provisional). */
+	/** Reach of the arc: a block is dug when its center is within this many cells of the miner's front point (drone gdd depth: 2.5, to test; about two rows deep). */
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Drone|Dig", meta = (ClampMin = 0))
-	float ArcReachCells = 1.5f;
+	float ArcReachCells = 2.5f;
 
 	/** Full opening angle of the arc cone around the arc direction, in degrees (drone gdd: 120, provisional). */
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Drone|Dig", meta = (ClampMin = 0, ClampMax = 360, Units = "deg"))
 	float ArcAngleDegrees = 120.f;
 
-	/** Most blocks dug at once (drone gdd: 4, provisional). */
+	/** Most blocks dug at once (drone gdd depth: 8, to test); nearest first, so the front row goes before the second. */
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Drone|Dig", meta = (ClampMin = 1))
-	int32 MaxArcBlocks = 4;
+	int32 MaxArcBlocks = 8;
 
 	/** Diameter of the laser beam in uu. */
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Drone|Laser", meta = (ClampMin = 0, Units = "cm"))

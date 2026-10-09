@@ -319,7 +319,8 @@ bool FRRFineContactDigPassageTest::RunTest(const FString& Parameters)
 	TestTrue(TEXT("opened within 3 s of pushing"), OpenFrame != INDEX_NONE && OpenFrame <= 180);
 	TestTrue(TEXT("pocket reachable within 3 frames of the opening"), ReachableFrame != INDEX_NONE && OpenFrame != INDEX_NONE && ReachableFrame - OpenFrame <= 3);
 	TestTrue(TEXT("every dug cell lies in the wall and pocket in front of the miner"), !Recorder->GetDestroyedCells().ContainsByPredicate([](const FIntPoint& Cell) { return Cell.X < 116 || Cell.X > 124 || Cell.Y < 100 || Cell.Y > 110; }));
-	TestTrue(TEXT("the miner advanced into the wall"), MinerCell.Y <= 109);
+	// The 2.5-cell arc cuts through to the pocket from the notch: the miner reaches the notch and need not step past it.
+	TestTrue(TEXT("the miner walked into the notch"), MinerCell.Y <= NotchCell.Y);
 
 	// The miner backs out of its tunnel for 1.5 s and waits: the chaser must leave the pocket through the dug cells to reach it.
 	TSet<FIntPoint> DugSet(Dug);
