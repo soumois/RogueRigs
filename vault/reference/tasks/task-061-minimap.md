@@ -3,7 +3,7 @@ id: task-061-minimap
 description: "Global task: Round minimap at the top left: seen cells of rock, floor and heal veins, markers for miner, console, chest and shuttle."
 parent: tasks-index
 kind: task
-status: todo
+status: in-progress
 ---
 # Minimap
 
