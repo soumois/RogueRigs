@@ -3,7 +3,7 @@ id: task-060-01-deep-mining
 description: "Drone arc reaches 2.5 cells and cuts up to 8 blocks at once, about two rows deep."
 parent: task-060-deep-mining
 kind: task
-status: todo
+status: in-progress
 ---
 # Mining in depth
 

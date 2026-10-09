@@ -3,7 +3,7 @@ id: task-059-01-damage-numbers-no-merge
 description: "Damage numbers: one per hit, no merging, each starting at a random point of a 30 uu disc (45 uu on the heavy); stacking kept."
 parent: task-059-damage-numbers-no-merge
 kind: task
-status: in-progress
+status: done
 ---
 # Damage numbers without merging
 
@@ -15,11 +15,11 @@ status: in-progress
 - done_when: build exits 0 with the editor closed; all `RogueRigs.*` tests pass headless; docs updated; lint clean.
 - editor_state: closed
 - token_ceiling: 50000
-- model: open
-- tokens: open
-- runs: open
+- model: opus
+- tokens: input 78, cache write 213203, cache read 2835294, output 38094
+- runs: 1
 - milestone: M2
-- result: open
+- result: URRDamageNumberSubsystem: 0.25 s merge window removed (one number per hit, pushed next tick); random start in a flat disc of SpawnRadius 30 uu (ARREnemy::DamageNumberSpawnRadius, 45 on ARRHeavy) replacing the ±25 uu jitter; stacking kept; AddHit gains InSpawnRadius. MergeWindow test replaced by OnePerHit; CriticalStyle, TickBudget, NiagaraIntegration expect one number per hit. Full run 194/195: FlowField.DestroyedRockOpensPocket (0.3 ms per-tick budget, load-sensitive) failed, passes alone. Commit b709cf0.
 
 ## Relations
 - [[task-059-damage-numbers-no-merge]] — parent global task.
