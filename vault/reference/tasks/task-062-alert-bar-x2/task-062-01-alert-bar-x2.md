@@ -3,7 +3,7 @@ id: task-062-01-alert-bar-x2
 description: "Alert bar twice as wide and twice as tall, its icons scaled and repositioned."
 parent: task-062-alert-bar-x2
 kind: task
-status: in-progress
+status: done
 ---
 # Bigger alert bar
 
@@ -15,11 +15,11 @@ status: in-progress
 - done_when: PIE check with no error; docs updated; lint clean.
 - editor_state: open
 - token_ceiling: 50000
-- model: open
-- tokens: open
-- runs: open
+- model: sonnet
+- tokens: input 48, cache write 48774, cache read 843329, output 11787
+- runs: 1
 - milestone: M2
-- result: open
+- result: WBP_HUD AlertBar 300 × 18 → 600 × 36 (top 48), AlertLabel font 36 right-aligned, icons font 44, PlaceIcon Position × 600, ObjectiveText 140, HackBar 174, ShuttleText 196. Minimap not overlapped at 1920 wide (the long ALERT (paused) label may reach it below about 1300 px). PIE: no new error; not seen on screen. Doc wbp-hud. Commit dc64481.
 
 ## Relations
 - [[task-062-alert-bar-x2]] — parent global task.
