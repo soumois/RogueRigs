@@ -118,6 +118,7 @@ kind: note
 | [[task-055-02-bp-flash-hold]] | sonnet | 1 | 0k | 48k | 636k | 10k |
 | [[task-057-01-flaky-xp-pickup-test]] | opus | 1 | 0k | 77k | 578k | 10k |
 | [[task-059-01-damage-numbers-no-merge]] | opus | 1 | 0k | 213k | 2835k | 38k |
+| [[task-060-01-deep-mining]] | opus | 1 | 0k | 153k | 1244k | 19k |
 
 ## Totals
 | Scope | Input | Cache write | Cache read | Output |
