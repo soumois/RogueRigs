@@ -11,6 +11,7 @@ status: provisional
 - invoked_by: orchestrator, after each generation.
 - trigger: a text or art output ready for review.
 - reads: the output only (never the generator's prompt or reasoning), [[lore]], [[dialogue-tone]], [[crew-characters]], [[fictional-films]], [[company-voice]]. For art: [[art-style-guide]], [[color-code]], [[readability-rules]].
+- definition_file: `.claude/agents/style-guide.md`.
 - produces: a review file next to the run log: `Tools/content/logs/<run-id>.review.json`.
 - output_format: per item: `pass` or `fail`, the violated rule id, the reason in one sentence, a corrected version.
 - definition_of_done: every item has a verdict; every fail cites an existing rule id.
