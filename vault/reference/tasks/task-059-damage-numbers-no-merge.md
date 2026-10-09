@@ -1,6 +1,6 @@
 ---
 id: task-059-damage-numbers-no-merge
-description: "Global task: Damage numbers: one per hit, no merging, each starting at a random point of a 30 uu disc (45 uu on the heavy); stacking kept."
+description: "Global task: damage numbers one per hit, no merging, random start in a 30 uu disc (45 uu on the heavy); stacking kept."
 parent: tasks-index
 kind: task
 status: todo
