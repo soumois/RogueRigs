@@ -13,7 +13,7 @@ kind: doc
 - exposed_defaults: PickupType = XP; PickupMesh = /Engine/BasicShapes/Cube, scale (0.3, 0.3, 0.3), OverrideMaterials[0] = MI_GB_PickupXP.
 - events: OnMagnetStart activates TrailFX and rotates the actor to face the miner (FindLookAtRotation, set once); OnCollected(Location) calls Niagara SpawnSystemAtLocation with NS_PickupSparkle at Location, auto-destroy ([[bp-pickup-sparkle]]).
 - logic_in_bp: display only (two events).
-- assets: /Game/RogueRigs/Materials/GreyBox/MI_GB_PickupXP (Color 0, 0.9, 1, 1, glowing cyan, [[color-code]]). NS_XPTrail (/Game/RogueRigs/FX/NS_XPTrail, ribbon, cyan 0/0.9/1, width 10, lifetime 0.35 s) and NS_PickupSparkle (/Game/RogueRigs/FX/NS_PickupSparkle, 18-sprite cyan burst, lifetime 0.18-0.28 s, no gravity). MI_XPTrail is no longer used.
+- assets: /Game/RogueRigs/Materials/GreyBox/MI_GB_PickupXP (Color 0, 0.9, 1, 1, glowing cyan, [[color-code]]). NS_XPTrail (/Game/RogueRigs/FX/NS_XPTrail, ribbon in world space, cyan 0/0.9/1, width 10, lifetime 0.35 s, SpawnRate 60 per second in the emitter update: without a spawn module the emitter produced no particle and the trail was invisible, task-058-01) and NS_PickupSparkle (/Game/RogueRigs/FX/NS_PickupSparkle, 18-sprite cyan burst, lifetime 0.18-0.28 s, no gravity). MI_XPTrail is no longer used.
 - owner_agent: agent-bp
 
 ## Relations
