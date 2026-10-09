@@ -3,7 +3,7 @@ id: task-061-02-bp-minimap
 description: "WBP_HUD round 200 px minimap at the top left from the task-061-01 texture and markers."
 parent: task-061-minimap
 kind: task
-status: in-progress
+status: done
 ---
 # Minimap widget
 
@@ -15,11 +15,11 @@ status: in-progress
 - done_when: PIE check with no error; docs updated; lint clean.
 - editor_state: open
 - token_ceiling: 80000
-- model: open
-- tokens: open
-- runs: open
+- model: sonnet
+- tokens: input 122, cache write 99670, cache read 3758270, output 40505
+- runs: 2
 - milestone: M2
-- result: open
+- result: M_Minimap (UI translucent, MinerUV, ViewRadiusUV, MinimapTex, circular mask, dark unseen disc); WBP_HUD MinimapImage 200 × 200 at (20, 20), markers miner, console, chest, shuttle placed by GetMinimapOffset each tick, texture bound once on OnMinimapTextureReady through the brush dynamic material; HealthBar and HealthText moved down to 232 and 264. PIE: no runtime error; drawing not seen on screen. Doc wbp-hud. Commits 551716c, 3988940, 9e130c1, 5495033.
 
 ## Relations
 - [[task-061-minimap]] — parent global task.

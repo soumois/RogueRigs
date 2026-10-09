@@ -3,7 +3,7 @@ id: task-062-alert-bar-x2
 description: "Global task: Alert bar twice as wide and twice as tall, its icons scaled and repositioned."
 parent: tasks-index
 kind: task
-status: todo
+status: in-progress
 ---
 # Bigger alert bar
 

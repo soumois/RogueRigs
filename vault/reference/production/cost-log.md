@@ -121,6 +121,7 @@ kind: note
 | [[task-060-01-deep-mining]] | opus | 1 | 0k | 153k | 1244k | 19k |
 | [[task-061-01-minimap]] | opus | 1 | 0k | 135k | 1217k | 29k |
 | [[task-058-01-xp-trail-visible]] | sonnet | 1 | 0k | 47k | 728k | 11k |
+| [[task-061-02-bp-minimap]] | sonnet | 2 | 0k | 100k | 3758k | 41k |
 
 ## Totals
 | Scope | Input | Cache write | Cache read | Output |
