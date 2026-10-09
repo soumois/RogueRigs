@@ -30,10 +30,10 @@ Decision status inside each doc: approved, provisional, deferred or open. Planne
 - [[sys-flow-field]] — flow field path provider and generic enemy movement component as built.
 - [[sys-enemies]] — robots index: base and shared state-machine helpers, light movement, chaser, kamikaze, EnemyStats.csv.
 - [[sys-world-queries]] — RRWorld lookups: the arena grid and the (living) miner of a world.
-- [[sys-spawner]] — enemy spawner actor: spawn band outside the camera view, alive cap, tunables.
+- [[sys-spawner]] — enemy spawner actor: spawn band outside the camera view, alive cap, recycling, tunables; its child sys-spawner-director holds the wave director (phases, packs, hordes, overtime, last-level profile).
 - [[sys-grid]] — grid data, autotiling, instanced rendering, terrain damage.
 - [[sys-pickups]] — ore, heal and XP pickups: drop rule, pop, attraction within PickupRadius, collection event, XP grant.
-- [[sys-damage-numbers]] — damage number subsystem: per-target merge window, Niagara user parameters contract, player toggle.
+- [[sys-damage-numbers]] — damage number subsystem: one number per hit with a spawn disc (no merge since task-059), stacking, Niagara user parameters contract, player toggle.
 - [[sys-stress]] — stress test tooling: rr.Stress.* cheat commands, bulk spawn around the miner, timed frame-time run.
 - [[sys-cheats]] — cheats (XP, invulnerable, cards, alert speed, console, extraction): polled URRCheatSettings properties for MCP, plus rr.Cheat.* console variables.
 - [[sys-automation-tests]] — headless C++ automation tests (RogueRigs.Dig.*, RogueRigs.Weapons.*): test world harness, what each test proves, gotchas.

@@ -28,7 +28,7 @@ Threat never pauses so that a paused alert bar cannot be used to farm XP.
 ## Open values
 - Alert and threat gain per second and per kill.
 - Health and attack power bonus per (run level, threat) step.
-- Spawn rate curve.
+- Spawn rate curve: set by the wave director ([[enemies-index]]); only the per-level variation stays open.
 
 - Last-level profile (owner 2026-10-07): the wave director values tuned before 2026-10-07 (150 alive, waves 7.1 → 4.1 s, packs on distinct sides) are kept as the last-level profile; level 1 uses the softer values in [[enemies-index]]. Not wired yet: the game has one level.
 

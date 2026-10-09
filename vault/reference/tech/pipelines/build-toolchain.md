@@ -28,6 +28,8 @@ kind: doc
 - `Source/RogueRigsEditor` does not exist (only `RogueRigsEditor.Target.cs`); create it only if the Slate debug tool returns ([[wishlist]]).
 - Rendering settings: see [[perf-risks]].
 
+- Niagara never runs under `-nullrhi` (`FApp::CanEverRender()` is false): tests guard their Niagara checks; to check Niagara for real, run the same command with `-RenderOffScreen` instead of `-nullrhi`.
+
 ## Relations
 - [[pipelines-index]] — parent index.
 - [[editor-workflow]] — when to compile with the editor closed.
