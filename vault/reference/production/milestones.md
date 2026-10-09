@@ -7,11 +7,11 @@ status: approved
 ---
 # Milestones
 
-| Milestone | Content | Target |
-|---|---|---|
-| M1 · Playable prototype | One fixed arena from a Level-Design JSON; movement and aim; burst rifle and shotgun; chaser and kamikaze; grid with block destruction (barrel, kamikaze, drone); XP, level-up, stat upgrades; command console hack and shuttle extraction; stress test | Mid-October |
-| M2 · Full run | Shooter (line of sight, repositioning, targeting laser); turrets; 4-level run; grid generator; rarities; bonus chests and heal ore (provisional); piercing and 4-direction fire; logs; damage numbers | End of October |
-| M3 · Polish | Heavy robot; sound and music; barks; juice (debris, VFX, critical-hit pop); EMP if time allows | November 9 submission |
+| Milestone               | Content                                                                                                                                                                                                                                                | Target                |
+| ----------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ | --------------------- |
+| M1 · Playable prototype | One fixed arena from a Level-Design JSON; movement and aim; burst rifle and shotgun; chaser and kamikaze; grid with block destruction (barrel, kamikaze, drone); XP, level-up, stat upgrades; command console hack and shuttle extraction; stress test | Mid-October           |
+| M2 · Full run           | Shooter (line of sight, repositioning, targeting laser); turrets; 4-level run; grid generator; rarities; bonus chests and heal ore (provisional); piercing and 4-direction fire; logs; damage numbers                                                  | End of October        |
+| M3 · Polish             | Heavy robot; sound and music; barks; juice (debris, VFX, critical-hit pop); EMP if time allows                                                                                                                                                         | November 9 submission |
 
 - Budget: about 6 weeks at 5–6 h/week (30–35 h); M1 has about 10–12 h.
 - M1 is tight: GAS alone takes about 9 h of it ([[gas-scope]]); M1 will likely spill into M2.
