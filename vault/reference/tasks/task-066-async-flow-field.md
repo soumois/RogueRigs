@@ -1,6 +1,6 @@
 ---
 id: task-066-async-flow-field
-description: "Global task: Flow field rebuilt on a worker thread with a double buffer, so robots follow a new path within 1–2 frames under normal PC load."
+description: "Global task: flow field rebuilt on a worker thread with a double buffer; robots follow a new path within 1–2 frames under load."
 parent: tasks-index
 kind: task
 status: in-progress
