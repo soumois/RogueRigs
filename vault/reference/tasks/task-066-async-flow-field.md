@@ -3,7 +3,7 @@ id: task-066-async-flow-field
 description: "Global task: flow field rebuilt on a worker thread with a double buffer; robots follow a new path within 1–2 frames under load."
 parent: tasks-index
 kind: task
-status: in-progress
+status: done
 ---
 # Flow field on a worker thread
 
@@ -13,8 +13,8 @@ status: in-progress
 - gdd_check: GDD updated by the Orchestrator (owner 2026-10-07, fifth test). No open value.
 - confirmed_by_owner: yes (2026-10-07)
 - milestone: M2
-- next_step: task-066-02-perf-check
-- result: Done. Flow field on a UE::Tasks worker with a double buffer: FRRFlowFieldData works on a walkable-cell snapshot, one job at a time, finished job swapped on the game thread without waiting, openings queued for the next job, rr.FlowField.Async (default 1) with the time-sliced fallback at 0. Headless 67 uu: goal age max 1 frame (was 33–38), game-thread flow cost 0.07 / 0.11 / 0.36 ms avg / p95 / max, worker rebuild 4.6–6.3 ms. Flow-field tests now pace each tick to 1/60 s real time (limits unchanged). Build 0, 195/195. No -game measurement (owner deferred). Commits 131d67a, a68f8b6.
+- next_step: none
+- result: Done. In game at 67 uu on the owner's normal profile (no 60 Hz pacing this time, idle CPU 0–23 %): all scenarios within 16.6 / 25 ms (p99 at most 14.05 ms); worker flow-field cost on the game thread about 0.03–0.05 ms avg, 0.27 ms max while digging; Async 1 vs 0 within noise (0.2–0.6 ms); one 57.9 ms frame in dig 400 not from the game thread; goal age not logged by the stress harness. With task-066-01: headless goal age 1 frame. Commit 39c10db.
 
 ## Subtasks
 1. task-066-01-async-flow-field — cpp

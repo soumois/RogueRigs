@@ -3,7 +3,7 @@ id: task-066-02-perf-check
 description: "In-game -game measurement of the worker-thread flow field on the owner's normal PC profile, compared with task-063."
 parent: task-066-async-flow-field
 kind: task
-status: in-progress
+status: done
 ---
 # Flow field worker: in-game measurement
 
@@ -15,11 +15,11 @@ status: in-progress
 - done_when: table reported and written in stress-grid-cells; lint clean.
 - editor_state: closed
 - token_ceiling: 50000
-- model: open
-- tokens: open
-- runs: open
+- model: opus
+- tokens: input 54, cache write 98165, cache read 964415, output 13957
+- runs: 1
 - milestone: M2
-- result: open
+- result: In game at 67 uu on the owner's normal profile (no 60 Hz pacing this time, idle CPU 0–23 %): all scenarios within 16.6 / 25 ms (p99 at most 14.05 ms); worker flow-field cost on the game thread about 0.03–0.05 ms avg, 0.27 ms max while digging; Async 1 vs 0 within noise (0.2–0.6 ms); one 57.9 ms frame in dig 400 not from the game thread; goal age not logged by the stress harness. With task-066-01: headless goal age 1 frame. Commit 39c10db.
 
 ## Relations
 - [[task-066-async-flow-field]] — parent global task.

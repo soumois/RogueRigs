@@ -128,6 +128,7 @@ kind: note
 | [[task-065-01-diagonal-dig]] | opus | 1 | 0k | 82k | 499k | 14k |
 | [[task-062-02-pressure-test]] | opus | 1 | 0k | 32k | 172k | 4k |
 | [[task-066-01-async-flow-field]] | opus | 1 | 0k | 273k | 3725k | 49k |
+| [[task-066-02-perf-check]] | opus | 1 | 0k | 98k | 964k | 14k |
 
 ## Totals
 | Scope | Input | Cache write | Cache read | Output |
