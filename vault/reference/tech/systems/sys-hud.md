@@ -1,6 +1,6 @@
 ---
 id: sys-hud
-description: "In-run HUD C++ base: URRHUDWidget display events (health, XP, cards, alert, objective, shuttle, run end, pressure), objective locator, weapon slot ammo, buttons, controller."
+description: "In-run HUD C++ base: URRHUDWidget display events (health, XP, cards, alert, objective, shuttle, run end, pressure), objective locator, weapon slot ammo, minimap, buttons, controller."
 parent: systems-index
 kind: doc
 ---
@@ -31,3 +31,4 @@ kind: doc
 - [[sys-level-up]] — the card offer events it forwards and the choice calls it relays.
 - [[sys-objectives]] — the run flow events it forwards.
 - [[sys-hud-pressure]] — child: damage vignette, horde banner and alert-bar icon events.
+- [[sys-hud-minimap]] — child: minimap texture of seen cells, marker state and UV mapping (task-061-01).

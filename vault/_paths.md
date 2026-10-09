@@ -141,6 +141,7 @@ sys-flow-field  reference/tech/systems/sys-flow-field.md
 sys-gas-core  reference/tech/systems/sys-gas-core.md
 sys-grid  reference/tech/systems/sys-grid.md
 sys-hud  reference/tech/systems/sys-hud.md
+sys-hud-minimap  reference/tech/systems/sys-hud-minimap.md
 sys-hud-pressure  reference/tech/systems/sys-hud-pressure.md
 sys-level-up  reference/tech/systems/sys-level-up.md
 sys-objectives  reference/tech/systems/sys-objectives.md
