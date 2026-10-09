@@ -74,7 +74,7 @@ Resuming after the pause of 2026-10-06: read [[handover-2026-10-06]] first.
 - [[task-059-damage-numbers-no-merge]] — Damage numbers: one per hit, no merging, each starting at a random point of a 30 uu disc (45 uu on the heavy); stacking kept. Status done.
 - [[task-060-deep-mining]] — Drone arc reaches 2.5 cells and cuts up to 8 blocks at once, about two rows deep. Status done.
 - [[task-061-minimap]] — Round minimap at the top left: seen cells of rock, floor and heal veins, markers for miner, console, chest and shuttle. Status done.
-- [[task-062-alert-bar-x2]] — Alert bar twice as wide and twice as tall, its icons scaled and repositioned. Status done.
+- [[task-062-alert-bar-x2]] — Alert bar twice as wide and twice as tall, its icons scaled and repositioned. Status in-progress.
 - [[task-063-perf-session]] — Performance session on a quiet PC: -game stress at 67 uu and the flow-field budget tests, compared with the last results. Status done.
 - [[task-064-minimap-circle-reveal]] — Minimap reveal is a circle of 18 cells around the miner, the same in every direction. Status done.
-- [[task-065-diagonal-dig]] — Moving diagonally into a corner of two blocks still digs the nearest touching block(s). Status in-progress.
+- [[task-065-diagonal-dig]] — Moving diagonally into a corner of two blocks still digs the nearest touching block(s). Status done.

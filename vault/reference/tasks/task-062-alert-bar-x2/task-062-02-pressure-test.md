@@ -3,7 +3,7 @@ id: task-062-02-pressure-test
 description: "Integration.PressureHordeBanner updated to the doubled alert bar (icons at Position × 600)."
 parent: task-062-alert-bar-x2
 kind: task
-status: todo
+status: in-progress
 ---
 # Pressure test after the bigger alert bar
 

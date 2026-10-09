@@ -125,6 +125,7 @@ kind: note
 | [[task-062-01-alert-bar-x2]] | sonnet | 1 | 0k | 49k | 843k | 12k |
 | [[task-063-01-perf-session]] | opus | 1 | 0k | 232k | 1527k | 20k |
 | [[task-064-01-minimap-circle-reveal]] | opus | 1 | 0k | 76k | 460k | 9k |
+| [[task-065-01-diagonal-dig]] | opus | 1 | 0k | 82k | 499k | 14k |
 
 ## Totals
 | Scope | Input | Cache write | Cache read | Output |
