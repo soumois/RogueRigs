@@ -8,7 +8,7 @@ kind: note
 
 One global task per owner request (template `task-global.md`, id `task-<number>-<slug>`), with its subtasks in a folder of the same name (template `task.md`, id `task-<number>-<step>-<slug>`). Status lives in the nodes, so any session or account can resume from `next_step`. Done tasks stay until the milestone retrospective.
 
-Resuming after the pause of 2026-10-06: read [[handover-2026-10-06]] first.
+Resuming: read [[handover-2026-10-09]] first (previous: [[handover-2026-10-06]]).
 
 ## Relations
 - [[root]] — the vault map.
@@ -79,3 +79,7 @@ Resuming after the pause of 2026-10-06: read [[handover-2026-10-06]] first.
 - [[task-064-minimap-circle-reveal]] — Minimap reveal is a circle of 18 cells around the miner, the same in every direction. Status done.
 - [[task-065-diagonal-dig]] — Moving diagonally into a corner of two blocks still digs the nearest touching block(s). Status done.
 - [[task-066-async-flow-field]] — Flow field rebuilt on a worker thread with a double buffer, so robots follow a new path within 1–2 frames under normal PC load. Status done.
+- [[task-067-real-game-stress]] — Stress scenario close to a real game: 150 robots, a horde, full HUD and minimap, Niagara on, miner running and digging. Status todo.
+- [[task-068-shipping-insights]] — Measurement in a packaged build with an Unreal Insights capture of the isolated frame spikes. Status todo.
+- [[task-069-min-spec]] — Minimum PC specification defined and checked against the stress scenarios. Status todo.
+- [[task-070-ore-in-rock]] — Ore scattered through the rock: nuggets inside rock blocks so ore drips during the whole dig, as in DRGS. Status todo.

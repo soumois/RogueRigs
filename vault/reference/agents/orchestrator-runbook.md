@@ -25,12 +25,18 @@ Complements [[orchestration-protocol]] (the rules) with the commands that worked
 - On "turn limit": `SendMessage` to the same agent: continue, commit what works first.
 - The previous run's left-over files: tell the next agent to inspect `git diff` and finish them.
 
+## Creating tasks
+- One logical owner point = one global task ([[orchestration-protocol]]). Write a spec module and run `node vault/scripts/task-create.js <spec.js> <last-task-id>`: it writes each global task with one subtask, resolves the input ids to paths (the delegation hands those paths to the agent) and adds them to tasks-index. A second subtask for another agent is written by hand from `vault/templates/task.md`.
+
 ## Closing a subtask
 1. Check the report against `done_when`.
-2. `node vault/scripts/record-cost.js task-NNN-SS <runs>`.
-3. `node vault/scripts/task-status.js <global>/<subtask>.md status=done "result=..."`, set the global `next_step`, mark the next subtask `status=in-progress`.
-4. `node vault/scripts/lint.js --write`, commit.
-5. `node vault/scripts/crew-board.js "<note in French>"` writes `Saved/CrewBoard/crew-board.html`; publish it as an artifact for the owner.
+2. `node vault/scripts/task-next.js <global> <subtask> <runs> "<result>" [<next-global> <next-subtask>]`: records the cost, closes the subtask (and the global when it was the last one), starts the next one, lints and commits only those vault files. Pass the same global as next to continue its next subtask.
+3. `node vault/scripts/crew-board.js "<note in French>"` writes `Saved/CrewBoard/crew-board.html`; publish it as an artifact for the owner when asked.
+
+## Editor and shells
+- `Build.bat` refuses to build while Live Coding is active: the owner's editor is open; ask him to close it, never kill it.
+- Close our own editor with `CloseMainWindow()`; force-close only when `git status` is clean.
+- An agent may leave a shell stuck on an unterminated heredoc: find it by command line (`Win32_Process`) and stop it after checking its work was committed another way.
 
 ## Lessons
 See [[orchestrator-lessons]].

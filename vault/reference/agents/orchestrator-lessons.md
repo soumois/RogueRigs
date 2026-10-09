@@ -16,7 +16,7 @@ kind: note
 - Never let it call CaptureEditorImage, Screenshot or CaptureViewport: the base64 floods its context.
 - It cannot create calls from one Blueprint to another Blueprint's functions, nor Enhanced Input assets. Put every hook as a BlueprintImplementableEvent on the actor that shows it.
 - MCP cannot set console variables: drive PIE with the property route on `/Script/RogueRigs.Default__RRCheatSettings` ([[sys-cheats]]). Reset persistent values after.
-- If the MCP tools are not exposed to a subagent, JSON-RPC over HTTP to the endpoint works. More quirks: [[unreal-mcp]].
+- If the MCP tools are not exposed to a subagent, JSON-RPC over HTTP to the endpoint works. Workarounds for graphs, widgets, Niagara and logs: [[unreal-mcp-quirks]]; hand its path to every bp subtask.
 - PIE can stop ticking after long idle gaps between MCP calls: restart PIE. Ask the bp agent to batch PIE probes in one Node JSON-RPC script (4 connections at most); short digs are easy to miss with slow polls.
 - A PIE check that reads a visibility flag is not a render check (the heavy's ring was hidden in game; an integration test caught it).
 
@@ -24,6 +24,7 @@ kind: note
 - Nobody sees the screen. Ask the cpp agent to run `-game`, take shots with `rr.Debug.Shots`, open the PNGs and describe them. This found the Niagara damage-number defects (task-025-03).
 
 ## Measuring
+- The owner's normal PC profile (browser, Discord, Steam open) is the reference for measurements: do not ask him to close apps. Note any 60 Hz pacing: frame times then show the display interval, only game-thread time is usable.
 - Close other GPU-heavy programs first: a background game made the 025 runs look twice slower.
 - Stress procedures and history: [[stress-test-m1]], [[stress-opt-m1]], [[stress-grid-cells]].
 

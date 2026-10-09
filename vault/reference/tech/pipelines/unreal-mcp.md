@@ -40,6 +40,7 @@ Named in Epic's documentation: `ActorTools`, `SceneTools`, `MaterialInstanceTool
 Source: https://dev.epicgames.com/documentation/unreal-engine/unreal-mcp-in-unreal-editor
 
 ## Relations
+- [[unreal-mcp-quirks]] — workarounds for graphs, widgets, materials, Niagara and logs found in tasks 040–062; read before a bp subtask.
 - [[pipelines-index]] — parent index.
 - [[agent-bp]] — the agent that uses it.
 - [[sys-cheats]] — cheat properties MCP sets on the CDO to drive PIE checks.
