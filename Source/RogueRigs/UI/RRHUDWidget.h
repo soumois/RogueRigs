@@ -5,6 +5,7 @@
 #include "CoreMinimal.h"
 #include "Blueprint/UserWidget.h"
 #include "Objectives/RRConsole.h"
+#include "UI/RRMinimap.h"
 #include "Upgrades/RRUpgradeCard.h"
 #include "RRHUDWidget.generated.h"
 
@@ -287,6 +288,27 @@ public:
 	UFUNCTION(BlueprintCallable, Category = "HUD|Run")
 	void RestartLevel();
 
+	// --- Minimap (readability-rules Minimap line: 200 px circle centred on the miner, seen terrain, objective markers) ---
+
+	/**
+	 * Minimap texture: one pixel per grid cell, UnseenColor until seen, nearest filter, clamp. Null until the HUD found a built
+	 * grid (OnMinimapTextureReady fires then). Screen-aligned for camera yaw 0 (up = world +X, right = world +Y).
+	 */
+	UFUNCTION(BlueprintPure, Category = "HUD|Minimap")
+	UTexture2D* GetMinimapTexture() const;
+
+	/** Per-frame minimap state (miner and marker positions in texture pixels, UVs, view radius). False without a texture. */
+	UFUNCTION(BlueprintPure, Category = "HUD|Minimap")
+	bool GetMinimapState(FRRMinimapState& OutState) const;
+
+	/**
+	 * Offset of Position from Center in circle radii (Radius in the same unit, e.g. ViewRadiusCells): multiply by the widget
+	 * circle radius (100 px) to place a marker. bOutOfRange true beyond the circle; with bClampToCircle the result is then
+	 * clamped to length 1 (marker pinned on the rim).
+	 */
+	UFUNCTION(BlueprintPure, Category = "HUD|Minimap")
+	static FVector2D GetMinimapOffset(FVector2D Position, FVector2D Center, float Radius, bool bClampToCircle, bool& bOutOfRange);
+
 protected:
 	/** Starts drawing the damage vignette at VignetteWarmOpacity (KeepVignetteWarm). */
 	virtual void NativeConstruct() override;
@@ -307,6 +329,21 @@ protected:
 	 * call looks the widget up by DamageVignetteWidgetName.
 	 */
 	void KeepVignetteWarm();
+
+	/** Creates the minimap on the first built grid found (fires OnMinimapTextureReady), then ticks it (seen cells, texture). */
+	void UpdateMinimap();
+
+	/** Display event: the minimap texture exists (once per HUD; set it on the minimap material). Implement in Blueprint. */
+	UFUNCTION(BlueprintImplementableEvent, Category = "HUD|Minimap")
+	void OnMinimapTextureReady(UTexture2D* Texture);
+
+	/** Minimap data (texture, seen mask); null until a built grid is found or when MinimapConfig.bEnabled is false. */
+	UPROPERTY(Transient)
+	TObjectPtr<URRMinimap> Minimap;
+
+	/** Minimap tunables: enable flag, view radius in cells, terrain and unseen colors (edit on the HUD widget Blueprint). */
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "HUD|Minimap")
+	FRRMinimapConfig MinimapConfig;
 
 	/**
 	 * Display event: the miner lost Amount health (> 0); HealthFraction is the health left over MaxHealth (0..1, 0 = dead). For the

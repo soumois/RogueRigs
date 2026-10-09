@@ -5,6 +5,7 @@
 #include "AbilitySystemComponent.h"
 #include "Blueprint/WidgetLayoutLibrary.h"
 #include "Components/Widget.h"
+#include "EngineUtils.h"
 #include "Camera/PlayerCameraManager.h"
 #include "Enemies/RRWaveDirector.h"
 #include "GameFramework/PlayerController.h"
@@ -480,6 +481,77 @@ void URRHUDWidget::NativeTick(const FGeometry& MyGeometry, float InDeltaTime)
 	Super::NativeTick(MyGeometry, InDeltaTime);
 	RefreshAlertBarEvents();
 	KeepVignetteWarm();
+	UpdateMinimap();
+}
+
+void URRHUDWidget::UpdateMinimap()
+{
+	if (!MinimapConfig.bEnabled)
+	{
+		return;
+	}
+	if (!Minimap || !Minimap->GetGrid())
+	{
+		// Look for a built grid until one exists (the grid builds in its BeginPlay); the texture is created once per HUD.
+		if (Minimap && Minimap->GetTexture())
+		{
+			return;
+		}
+		ARRArenaGrid* Grid = nullptr;
+		if (UWorld* World = GetWorld())
+		{
+			for (TActorIterator<ARRArenaGrid> It(World); It; ++It)
+			{
+				Grid = *It;
+				break;
+			}
+		}
+		if (!Grid || Grid->GetGridSize().X <= 0 || Grid->GetGridSize().Y <= 0)
+		{
+			return;
+		}
+		Minimap = NewObject<URRMinimap>(this);
+		if (!Minimap->Initialize(Grid, MinimapConfig))
+		{
+			Minimap = nullptr;
+			return;
+		}
+		OnMinimapTextureReady(Minimap->GetTexture());
+	}
+	Minimap->Tick(GetOwningPlayer());
+}
+
+UTexture2D* URRHUDWidget::GetMinimapTexture() const
+{
+	return Minimap ? Minimap->GetTexture() : nullptr;
+}
+
+bool URRHUDWidget::GetMinimapState(FRRMinimapState& OutState) const
+{
+	if (!Minimap)
+	{
+		OutState = FRRMinimapState();
+		return false;
+	}
+	const URRRunFlowSubsystem* RunFlow = BoundRunFlow.Get();
+	if (!RunFlow)
+	{
+		const UWorld* World = GetWorld();
+		RunFlow = World ? World->GetSubsystem<URRRunFlowSubsystem>() : nullptr;
+	}
+	return Minimap->GetState(BoundMiner.Get(), RunFlow, OutState);
+}
+
+FVector2D URRHUDWidget::GetMinimapOffset(FVector2D Position, FVector2D Center, float Radius, bool bClampToCircle, bool& bOutOfRange)
+{
+	FVector2D Offset = Radius > 0.f ? (Position - Center) / Radius : FVector2D::ZeroVector;
+	const double LengthSquared = Offset.SizeSquared();
+	bOutOfRange = LengthSquared > 1.0;
+	if (bOutOfRange && bClampToCircle)
+	{
+		Offset /= FMath::Sqrt(LengthSquared);
+	}
+	return Offset;
 }
 
 void URRHUDWidget::NativeConstruct()
@@ -580,6 +652,10 @@ void URRHUDWidget::NativeDestruct()
 	BindToGameMode(nullptr);
 	BindToRunFlow(nullptr);
 	BindToSpawner(nullptr);
+	if (Minimap)
+	{
+		Minimap->Shutdown();
+	}
 	Super::NativeDestruct();
 }
 
