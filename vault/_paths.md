@@ -11,10 +11,14 @@ directory you are reading (cross-branch jump). This is resolution, not search: y
 must already hold the id from a `## Relations` gloss. Do not read it to find a topic.
 
 ```
+agent-3d  reference/agents/agent-3d.md
+agent-art  reference/agents/agent-art.md
 agent-bp  reference/agents/agent-bp.md
 agent-cpp  reference/agents/agent-cpp.md
 agent-level-design  reference/agents/agent-level-design.md
 agent-orchestrator  reference/agents/agent-orchestrator.md
+agent-style-guide  reference/agents/agent-style-guide.md
+agent-text  reference/agents/agent-text.md
 agents-index  reference/agents/agents-index.md
 arena-grid  reference/gdd/terrain/arena-grid.md
 art-audio-index  reference/gdd/art-audio/art-audio-index.md
@@ -62,11 +66,13 @@ code-review-m1-hooks  reference/tech/conventions/code-review-m1/code-review-m1-h
 code-review-m1-plan  reference/tech/conventions/code-review-m1/code-review-m1-plan.md
 code-review-m1-systems  reference/tech/conventions/code-review-m1/code-review-m1-systems.md
 color-code  reference/gdd/art-audio/color-code.md
+company-voice  reference/gdd/company-voice.md
 conventions-index  reference/tech/conventions/conventions-index.md
 cost-log  reference/production/cost-log.md
 course-index  reference/course/course-index.md
 cpp-bp-split  reference/tech/conventions/cpp-bp-split.md
 cpp-standard  reference/tech/conventions/cpp-standard.md
+crew-characters  reference/gdd/crew-characters.md
 damage-numbers  reference/gdd/weapons/damage-numbers.md
 destruction-rules  reference/gdd/terrain/destruction-rules.md
 dialogue-tone  reference/gdd/art-audio/dialogue-tone.md
@@ -83,6 +89,7 @@ enemy-kamikaze  reference/gdd/enemies/enemy-kamikaze.md
 enemy-shooter  reference/gdd/enemies/enemy-shooter.md
 explosions  reference/gdd/terrain/explosions.md
 extraction  reference/gdd/run/extraction.md
+fictional-films  reference/gdd/fictional-films.md
 gas-api-notes  reference/tech/systems/gas-api-notes.md
 gas-engine-facts  reference/tech/systems/gas-engine-facts.md
 gas-scope  reference/production/gas-scope.md

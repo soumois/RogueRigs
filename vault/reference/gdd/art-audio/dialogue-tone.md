@@ -1,21 +1,29 @@
 ---
 id: dialogue-tone
-description: "Dialogue voice of the Rigs: cocky smuggler crossed with a sarcastic blue-collar worker; bark length, targets, forbidden content, examples."
+description: "Checkable text rules T1–T8: bark length, joke targets, film-quote rule, Rook, Vesna and company voices, language, no example reuse."
 parent: art-audio-index
 kind: rule
 applies_to: text, barks, upgrade texts, style-guide checks
 ---
 # Dialogue tone
 
-- Voice: a cocky, odds-dismissing smuggler crossed with a tired, sarcastic blue-collar worker.
-- Speakers: the colleague (through the drone) and the miner.
-- Combat barks: 3 to 8 words.
-- Self-mockery is fine; mocking the player is not.
-- Jokes target the company.
-- No famous film lines, quoted or paraphrased.
-- Examples: "Send the invoice to corporate." · "They noticed. Great. Love it when they notice." · "Of course it's on the other side of the rock."
+Each rule has an id that the critic cites ([[agent-style-guide]]). Owner update 2026-10-09.
+
+- T1 Combat barks: 3 to 8 words.
+- T2 Jokes target the company. Self-mockery is fine. Vesna teases Rook's plans and bravado, never the player's skill or performance.
+- T3 No real film line, quoted or paraphrased, and no well-known catchphrase. Rook quotes only [[fictional-films]], with original lines.
+- T4 Rook: a cocky, odds-dismissing smuggler crossed with a tired, sarcastic blue-collar worker; punchlines and Rigs jargon under stress ([[crew-characters]]).
+- T5 Vesna: calm, dry, short; deflates Rook; may name only a past job listed in [[crew-characters]].
+- T6 Kessler-Voss: propaganda toward the public, cold bureaucracy toward threats, never jokes ([[company-voice]]).
+- T7 Every on-screen text is in English ([[readability-rules]]).
+- T8 Never reuse a vault example line verbatim in generated content.
+
+- Examples (reference only, T8): "Send the invoice to corporate." · "They noticed. Great. Love it when they notice." · "Of course it's on the other side of the rock."
 - Barks are nice-to-have; milestone M3.
 
 ## Relations
 - [[art-audio-index]] — parent index.
-- [[lore]] — who is speaking.
+- [[lore]] — who is speaking; rules L1–L4.
+- [[crew-characters]] — Rook and Vesna in detail.
+- [[company-voice]] — Kessler-Voss registers.
+- [[agent-style-guide]] — the critic that enforces these rules.
