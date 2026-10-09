@@ -78,4 +78,4 @@ Resuming after the pause of 2026-10-06: read [[handover-2026-10-06]] first.
 - [[task-063-perf-session]] — Performance session on a quiet PC: -game stress at 67 uu and the flow-field budget tests, compared with the last results. Status done.
 - [[task-064-minimap-circle-reveal]] — Minimap reveal is a circle of 18 cells around the miner, the same in every direction. Status done.
 - [[task-065-diagonal-dig]] — Moving diagonally into a corner of two blocks still digs the nearest touching block(s). Status done.
-- [[task-066-async-flow-field]] — Flow field rebuilt on a worker thread with a double buffer, so robots follow a new path within 1–2 frames under normal PC load. Status in-progress.
+- [[task-066-async-flow-field]] — Flow field rebuilt on a worker thread with a double buffer, so robots follow a new path within 1–2 frames under normal PC load. Status done.
