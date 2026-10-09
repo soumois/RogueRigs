@@ -3,7 +3,7 @@ id: task-059-01-damage-numbers-no-merge
 description: "Damage numbers: one per hit, no merging, each starting at a random point of a 30 uu disc (45 uu on the heavy); stacking kept."
 parent: task-059-damage-numbers-no-merge
 kind: task
-status: todo
+status: in-progress
 ---
 # Damage numbers without merging
 

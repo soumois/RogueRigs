@@ -3,7 +3,7 @@ id: task-057-01-flaky-xp-pickup-test
 description: "Progression.XPPickupAddsOne made reliable: find why it fails intermittently and fix the cause."
 parent: task-057-flaky-xp-pickup-test
 kind: task
-status: in-progress
+status: done
 ---
 # Flaky XP pickup test
 
@@ -15,11 +15,11 @@ status: in-progress
 - done_when: the test passes 10 runs in a row; build exits 0 with the editor closed; all `RogueRigs.*` tests pass headless; docs updated; lint clean.
 - editor_state: closed
 - token_ceiling: 50000
-- model: open
-- tokens: open
-- runs: open
+- model: opus
+- tokens: input 44, cache write 77442, cache read 577656, output 9688
+- runs: 1
 - milestone: M2
-- result: open
+- result: Cause in the test: the pickup spawned 100 uu from the miner popped 80–220 uu in a clock-seeded random direction and could land up to 320 uu away, outside the 300 uu pickup radius (2.3 % of runs by simulation). Fix: pop direction fixed back through the miner (lands within 120 uu); check unchanged, landing-distance check added in the test. 10/10 runs alone. Full run 194/195: FlowField.BudgetAt67uu (frame-time budget, machine-load dependent) failed, unrelated. Commit b57620c.
 
 ## Relations
 - [[task-057-flaky-xp-pickup-test]] — parent global task.

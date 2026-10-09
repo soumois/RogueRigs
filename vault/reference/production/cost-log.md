@@ -116,6 +116,7 @@ kind: note
 | [[task-056-02-bp-bonus-chest]] | sonnet | 2 | 0k | 82k | 3135k | 28k |
 | [[task-054-02-juice-test]] | opus | 2 | 0k | 112k | 1044k | 19k |
 | [[task-055-02-bp-flash-hold]] | sonnet | 1 | 0k | 48k | 636k | 10k |
+| [[task-057-01-flaky-xp-pickup-test]] | opus | 1 | 0k | 77k | 578k | 10k |
 
 ## Totals
 | Scope | Input | Cache write | Cache read | Output |
