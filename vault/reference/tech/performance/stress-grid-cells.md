@@ -70,6 +70,21 @@ Game defaults (67 uu, `arena_m1_fine`, no subdivide), all task-029 work in, edit
 - All within budget. Against the 029-01 / 029-02 rows at 100 robots: S0 9.24 → 9.12, S2 9.39 → 9.57, chain 9.31 → 9.36, dig 9.19–9.59 → 9.72 (± 0.4 ms, noise and the arc dig and beam pool added since); against the task-023-01 67 uu row at 400: S0 10.47 → 9.97, S2 12.30 → 11.16.
 - S2 400 max 59.7 ms is one frame (p99 14.9); its cause was not captured (likely a GC, see [[sys-stress]] gotchas).
 
+## Perf session (task-063-01, 2026-10-09)
+Same commands as task-029-07, HEAD 94abe5e. PC not quiet: Brave (many tabs), Discord, Steam, Epic launcher, Creative Cloud, uTorrent, NVIDIA Share overlay and other Claude sessions running; CPU load 53–61 % idle, GPU 23 % from the desktop, on AC, Performance plan. The game window presented at 60 Hz (an external 60 Hz monitor on the NVIDIA GPU, the internal panel is 360 Hz): every run is capped at 1200 frames per 20 s, also with `-fullscreen` or `-WinX=1920`; nothing in the project sets a cap (`t.MaxFPS 0`, `r.VSync 0`, `FrameRateLimit 0`). Frame and draw times are therefore the 16.67 ms present interval, not the cost; the game thread is the usable value. ms avg / p99 / max (game avg).
+
+| Run | 100 robots | 400 robots |
+|---|---|---|
+| S0 frame | 17.18 / 20.93 / 27.1 (9.29) | 19.64 / 24.86 / 28.2 (17.26) |
+| S2 frame | 16.71 / 17.10 / 68.7 (6.92) | 16.67 / 18.76 / 21.0 (12.12) |
+| Chain 30 (32 explosions, 1713 blocks; event avg / max) | 16.67 / 17.20 / 21.1 (7.00; 16.9 / 21.1) | 16.71 / 20.15 / 26.2 (12.26; 18.4 / 26.2) |
+| Dig (1425 blocks; flow avg / max) | 16.67 / 17.26 / 19.3 (7.63; 0.019 / 0.31) | 16.72 / 19.72 / 27.1 (12.68; 0.020 / 0.31) |
+
+- p99 within 25 ms everywhere; averages sit on the 60 Hz cap, so the 16.6 avg check cannot be judged against the task-029-07 table. GPU avg 12.9–14.4 ms (9.4 before) is read at low clocks under the cap. Game thread at 100: chain 6.22 → 7.00, dig 6.33 → 7.63 (task-029-02 rows).
+- `FlowField.BudgetAt67uu` alone: 0 / 5 pass (full rebuild 4.74–5.65 ms, work p95 0.32–0.35 ms, goal age max 33–37 frames > 30); in the full run 6.65 ms, 38 frames. `FlowField.DestroyedRockOpensPocket` alone: 5 / 5 pass, and in the full run.
+- Full headless run: 193 pass, 2 fail: `BudgetAt67uu`, `Integration.PressureHordeBanner` (icon positions twice the expected x, from the alert bar doubled in task-062-01, unrelated to the flow field).
+- Verdict, load: `RRFlowFieldSubsystem` and `RRFlowFieldTests.cpp` are unchanged since task-029-02 (git diff from 9f1fd69); the test spawns no robot and destroys cells directly, so tasks 036, 041, 046 and 060 are not in its path. The same BFS takes 4.7–6.7 ms against 1.8–2.6 ms at task-029-02, and the goal age scales with it (≈ 13 frames then): the 30-frame check is wall-clock bound and fails on a loaded CPU.
+
 ## Verdict
 - 200 uu: holds; the navigation fix would also help it (one destruction 0.25 ms here, 0.04–0.07 ms measured with the fix at the smaller sizes).
 - 100 uu: steady state and dig hold. Explosion chains break (52 ms frames) and are fixed by turning off navigation relevance on the grid components (≈ 1 h with test), back to the 200 uu level. Recommended.
@@ -84,3 +99,4 @@ Game defaults (67 uu, `arena_m1_fine`, no subdivide), all task-029 work in, edit
 - [[task-023-01-cell-stress]] — the task that produced this report.
 - [[sys-flow-field]] — the incremental field measured in the task-029-02 section.
 - [[task-029-fine-grid]] — the global task whose budget the final 67 uu check measures.
+- [[task-063-01-perf-session]] — the task that produced the 2026-10-09 perf session section.
