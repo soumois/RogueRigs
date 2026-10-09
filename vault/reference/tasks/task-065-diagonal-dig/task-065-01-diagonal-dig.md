@@ -3,7 +3,7 @@ id: task-065-01-diagonal-dig
 description: "Moving diagonally into a corner of two blocks still digs the nearest touching block(s)."
 parent: task-065-diagonal-dig
 kind: task
-status: todo
+status: in-progress
 ---
 # Diagonal dig fallback
 

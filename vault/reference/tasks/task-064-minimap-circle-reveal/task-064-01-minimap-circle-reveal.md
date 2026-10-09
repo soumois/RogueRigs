@@ -3,7 +3,7 @@ id: task-064-01-minimap-circle-reveal
 description: "Minimap reveal is a circle of 18 cells around the miner, the same in every direction."
 parent: task-064-minimap-circle-reveal
 kind: task
-status: in-progress
+status: done
 ---
 # Circular minimap reveal
 
@@ -15,11 +15,11 @@ status: in-progress
 - done_when: build exits 0 with the editor closed; all `RogueRigs.*` tests pass headless; docs updated; lint clean.
 - editor_state: closed
 - token_ceiling: 40000
-- model: open
-- tokens: open
-- runs: open
+- model: opus
+- tokens: input 36, cache write 75936, cache read 460269, output 8606
+- runs: 1
 - milestone: M2
-- result: open
+- result: URRMinimap reveal: circle of RevealRadiusCells 18 (editable) around the miner cell, checked only when the miner changes cell (about 1000 cell tests), replacing the perspective view trapezoid; Tick takes the reveal actor. No test changed. Build 0; full run 193/195 (known BudgetAt67uu and PressureHordeBanner). Commit b53047b.
 
 ## Relations
 - [[task-064-minimap-circle-reveal]] — parent global task.
