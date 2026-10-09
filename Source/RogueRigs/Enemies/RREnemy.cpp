@@ -436,11 +436,11 @@ void ARREnemy::DropXP()
 
 void ARREnemy::HandleDamageReceived(float Damage, bool bIsCritical, float HealthLeft)
 {
-	// Capsule top (scaled) + height; the subsystem merges per robot and adds the jitter.
+	// Capsule top (scaled) + height; one number per hit, starting at a random point of this robot's spawn disc.
 	if (URRDamageNumberSubsystem* Numbers = GetWorld()->GetSubsystem<URRDamageNumberSubsystem>())
 	{
 		const float CapsuleTop = GetCapsuleComponent()->GetScaledCapsuleHalfHeight();
-		Numbers->AddHit(this, Damage, bIsCritical, GetActorLocation() + FVector(0.f, 0.f, CapsuleTop + DamageNumberHeight));
+		Numbers->AddHit(this, Damage, bIsCritical, GetActorLocation() + FVector(0.f, 0.f, CapsuleTop + DamageNumberHeight), DamageNumberSpawnRadius);
 	}
 }
 

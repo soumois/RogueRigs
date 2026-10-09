@@ -259,8 +259,8 @@ bool FRRDamageNumberStackOverDisplayedTest::RunTest(const FString& Parameters)
 
 	// Sustained fire on one robot, as in screenshot Juice_06: a hit every 0.25 s (15 frames) for 1 s, so each new number
 	// opens while the previous ones are still rising on screen. A second robot 5 uu away is hit in between: with the
-	// +-25 uu random jitter, B stays within the 55.8 uu half-width shared with a 2-digit A number, so it always overlaps
-	// their column and must stack (at 20 uu, about 1.4 % of jitter draws put it beside the column: not stacked, task-050-01).
+	// 30 uu random spawn disc (task-059-01), B falls outside the 55.8 uu half-width shared with a 2-digit A number only on rare
+	// draws (B more than 50.8 uu right of A); the 4+ stacked check below tolerates one unstacked number (at 20 uu: task-050-01).
 	for (int32 Frame = 0; Frame < 90; ++Frame)
 	{
 		if (Frame % 15 == 0 && Frame < 75)

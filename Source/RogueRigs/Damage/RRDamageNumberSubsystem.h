@@ -1,31 +1,30 @@
-// Rogue Rigs - damage number world subsystem: every hit number of the world, merged per target over a short window, pushed in batches to one Niagara system.
+// Rogue Rigs - damage number world subsystem: every hit number of the world, one per hit from a random point of a spawn disc, pushed in batches to one Niagara system.
 
 #pragma once
 
 #include "CoreMinimal.h"
 #include "Subsystems/WorldSubsystem.h"
-#include "UObject/ObjectKey.h"
 #include "RRDamageNumberSubsystem.generated.h"
 
 class AActor;
 class UNiagaraComponent;
 class UNiagaraSystem;
 
-/** One damage number ready to show: merged value, style and world position. */
+/** One damage number ready to show: hit value, style and world position. */
 USTRUCT(BlueprintType)
 struct ROGUERIGS_API FRRDamageNumber
 {
 	GENERATED_BODY()
 
-	/** World position of the number (last hit location of its target + the entry's horizontal jitter). */
+	/** World position of the number (hit location + its random spawn-disc offset + its stack offset). */
 	UPROPERTY(BlueprintReadOnly, Category = "Damage Numbers")
 	FVector Location = FVector::ZeroVector;
 
-	/** Sum of the merged hits (raw damage, before the health clamp). */
+	/** Damage of the hit (raw damage, before the health clamp). */
 	UPROPERTY(BlueprintReadOnly, Category = "Damage Numbers")
 	float Value = 0.f;
 
-	/** True when at least one merged hit was critical. */
+	/** True when the hit was critical. */
 	UPROPERTY(BlueprintReadOnly, Category = "Damage Numbers")
 	bool bCritical = false;
 
@@ -78,16 +77,17 @@ DECLARE_MULTICAST_DELEGATE_OneParam(FRROnDamageNumbersPushed, const TArray<FRRDa
 
 /**
  * The single path of floating damage numbers (damage-numbers, sys-damage-numbers). Damage sources call AddHit on each hit
- * (ARREnemy). Hits on the same target within MergeWindow seconds (world time, from the first hit) add up
- * into one number, critical if any merged hit was; the number keeps the last hit location, so a robot that dies or is
- * destroyed still gets its number where it was. A new entry whose screen footprint would overlap another open entry, or a
- * number still on screen (pushed less than DisplayLifetime ago, risen by RiseVelocity), is stacked above it along
- * StackDirection (crowd stacking, damage-numbers). Nothing is spawned per hit: on each tick the due entries (at most
+ * (ARREnemy). Every hit is its own number (no merging, task-059-01): it starts at a random point of a horizontal disc
+ * around the hit (radius SpawnRadius, or the caller's radius, e.g. ARREnemy::DamageNumberSpawnRadius), so repeated hits on
+ * one robot do not start from the same spot, and it stays where it was hit even if the robot dies or is destroyed. A new
+ * number whose screen footprint would overlap another pending number, or a number still on screen (pushed less than
+ * DisplayLifetime ago, risen by RiseVelocity), is stacked above it along StackDirection (crowd stacking, damage-numbers).
+ * Nothing is spawned per hit: on each tick the pending numbers (at most
  * MaxNumbersPerTick, the rest wait one tick) are laid out into digits here (left to right along DigitDirection, centred
  * on the number position, advance DigitAdvance x size) and pushed to one persistent UNiagaraComponent as one entry per
  * digit in Niagara array user parameters, with the digit count and a batch id incremented on every push (never reset),
  * so the emitter spawns DigitCount particles once per batch id change and particle N reads entry N. The Niagara system is NumberSystem (config, DefaultGame.ini section
- * [/Script/RogueRigs.RRDamageNumberSubsystem]); unset or missing = no rendering, the merge and OnNumbersPushed still run.
+ * [/Script/RogueRigs.RRDamageNumberSubsystem]); unset or missing = no rendering, the numbers and OnNumbersPushed still run.
  * The player toggle is URRGameUserSettings::bShowDamageNumbers: off = hits ignored and pending numbers dropped.
  * Ticks with the world (stops while the game is paused, like the Niagara component).
  */
@@ -118,24 +118,25 @@ public:
 	URRDamageNumberSubsystem();
 
 	/**
-	 * Records a hit of Value on Target shown at Location (world, e.g. above the capsule). Merges into Target's open entry
-	 * when its window is still open, else opens a new one (with a random horizontal jitter). Ignored when Value <= 0 or
-	 * the player turned damage numbers off. A null Target never merges. Safe inside a GE execution (no spawn, no broadcast).
+	 * Records a hit of Value on Target (may be null; hits never merge) shown at Location (world, e.g. above the capsule): one
+	 * new number, pushed on the next tick, starting at a random point of a horizontal disc of radius InSpawnRadius around
+	 * Location (negative = the config SpawnRadius). Ignored when Value <= 0 or the player turned damage numbers off. Safe
+	 * inside a GE execution (no spawn, no broadcast).
 	 */
 	UFUNCTION(BlueprintCallable, Category = "Damage Numbers")
-	void AddHit(AActor* Target, float Value, bool bCritical, FVector Location);
+	void AddHit(AActor* Target, float Value, bool bCritical, FVector Location, float InSpawnRadius = -1.f);
 
 	/** True when the player setting shows damage numbers (true when the game user settings are not URRGameUserSettings). */
 	UFUNCTION(BlueprintPure, Category = "Damage Numbers")
 	bool AreNumbersShown() const;
 
-	/** Number of entries waiting for their merge window to close. */
+	/** Number of hits recorded and not pushed yet (pushed on the next tick, MaxNumbersPerTick at most per tick). */
 	UFUNCTION(BlueprintPure, Category = "Damage Numbers")
 	int32 GetPendingCount() const { return Pending.Num(); }
 
-	/** Merge window in seconds. */
+	/** Default radius (uu) of the horizontal disc a number starts in around its hit (callers without their own radius). */
 	UFUNCTION(BlueprintPure, Category = "Damage Numbers")
-	float GetMergeWindow() const { return MergeWindow; }
+	float GetSpawnRadius() const { return SpawnRadius; }
 
 	/** The persistent Niagara component fed by the subsystem; null when NumberSystem is unset or failed to load. */
 	UNiagaraComponent* GetNiagaraComponent() const { return NiagaraComponent; }
@@ -190,23 +191,19 @@ public:
 	virtual TStatId GetStatId() const override;
 
 protected:
-	/** One open merge entry. */
+	/** One hit waiting for the next push. */
 	struct FPendingNumber
 	{
-		/** Target key (unset for hits without a target). */
-		FObjectKey Target;
-		/** Last hit location (without jitter). */
+		/** Hit location (without offsets). */
 		FVector HitLocation = FVector::ZeroVector;
-		/** Horizontal jitter drawn when the entry opened, kept for its later hits. */
-		FVector Jitter = FVector::ZeroVector;
-		/** Offset along StackDirection set when the entry opened over another open number (crowd stacking), kept for its later hits. */
+		/** Random horizontal offset inside the spawn disc, drawn at the hit. */
+		FVector SpawnOffset = FVector::ZeroVector;
+		/** Offset along StackDirection set at the hit when it would overlap another number (crowd stacking). */
 		FVector Stack = FVector::ZeroVector;
-		/** Merged value. */
+		/** Damage of the hit. */
 		float Value = 0.f;
-		/** Any merged hit critical. */
+		/** Critical hit. */
 		bool bCritical = false;
-		/** World time of the first hit; the entry is due MergeWindow seconds later. */
-		double FirstHitTime = 0.0;
 	};
 
 	/** One pushed number still on screen: avoided by the stacking until it expires. */
@@ -229,13 +226,12 @@ protected:
 	/** Drops pending entries and the component. */
 	virtual void Deinitialize() override;
 
-	/** Screen footprint of an entry (width along DigitDirection, height along StackDirection), from its current value and style. */
+	/** Screen footprint of a number (width along DigitDirection, height along StackDirection), from its value and style. */
 	FVector2D GetFootprint(float Value, bool bCritical) const;
 
 	/**
-	 * Stack offset for a new entry at Location opened at Now: lifted along StackDirection above each open entry or displayed
-	 * number whose footprint it would overlap at its push time (Now + MergeWindow; the others placed where they will be
-	 * then, risen by RiseVelocity since their own push), MaxStackSteps lifts at most.
+	 * Stack offset for a new number at Location recorded at Now: lifted along StackDirection above each pending number or
+	 * displayed number (risen by RiseVelocity since its push) whose footprint it would overlap, MaxStackSteps lifts at most.
 	 */
 	FVector ComputeStackOffset(const FVector& Location, float Value, bool bCritical, double Now) const;
 
@@ -251,10 +247,6 @@ protected:
 	/** Niagara system rendering the digits (digit atlas, CPU sim, one emitter spawning DigitCount particles per batch id). */
 	UPROPERTY(Config)
 	TSoftObjectPtr<UNiagaraSystem> NumberSystem;
-
-	/** Hits on one target within this many seconds (from its first hit) merge into one number (damage-numbers: 0.25 s). */
-	UPROPERTY(Config)
-	float MergeWindow = 0.25f;
 
 	/** Glyph world size of a normal number (uu). */
 	UPROPERTY(Config)
@@ -284,9 +276,9 @@ protected:
 	UPROPERTY(Config)
 	int32 MaxDigits = 5;
 
-	/** Random horizontal offset (uu, each axis in [-Jitter, Jitter]) drawn per entry so neighbouring numbers stay readable. */
+	/** Default radius (uu) of the horizontal disc around the hit where a number starts, uniform random point (damage-numbers: 30). */
 	UPROPERTY(Config)
-	float Jitter = 25.f;
+	float SpawnRadius = 30.f;
 
 	/** World direction of screen up for the stacking (camera up of the top-down camera at pitch -50, yaw 0). Normalized on use. */
 	UPROPERTY(Config)
@@ -322,7 +314,7 @@ protected:
 	/** Pushed numbers still on screen, oldest first (the stacking avoids them). */
 	TArray<FDisplayedNumber> Displayed;
 
-	/** Open entries, oldest first. */
+	/** Hits not pushed yet, oldest first. */
 	TArray<FPendingNumber> Pending;
 
 	/** Digits of the last pushed batch, also the content of the Niagara digit arrays. */

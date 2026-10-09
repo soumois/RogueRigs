@@ -20,6 +20,8 @@ ARRHeavy::ARRHeavy(const FObjectInitializer& ObjectInitializer)
 	XPCubeCount = 12;
 	ArrivalRangeRatio = 0.5f;
 	DamageEffectClass = URRGE_DamageFlat::StaticClass();
+	// Wider damage number disc for the larger body (damage-numbers: 45 uu, task-059-01).
+	DamageNumberSpawnRadius = 45.f;
 
 	// Twice the chaser (24 x 62), radius well under the 80 uu limit so it crosses one-cell (200 uu) corridors (enemy-heavy).
 	GetCapsuleComponent()->InitCapsuleSize(48.f, 124.f);

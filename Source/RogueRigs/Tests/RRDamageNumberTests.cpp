@@ -1,4 +1,4 @@
-// Rogue Rigs - automation tests of the damage number pipeline (RogueRigs.DamageNumbers.*): merge window per target, critical style, player toggle, per-tick budget, digit layout, digit batches, Niagara integration through the real damage pipeline.
+// Rogue Rigs - automation tests of the damage number pipeline (RogueRigs.DamageNumbers.*): one number per hit in a spawn disc, critical style, player toggle, per-tick budget, digit layout, digit batches, Niagara integration through the real damage pipeline.
 
 #include "CoreMinimal.h"
 #include "Misc/AutomationTest.h"
@@ -25,8 +25,8 @@ namespace RRDamageNumberTests
 {
 	using namespace RRTestHarness;
 
-	/** Horizontal jitter bound of a number around its hit location (config Jitter 25 on each axis). */
-	constexpr float MaxJitter2D = 25.f * UE_SQRT_2 + 0.01f;
+	/** Horizontal offset bound of a number around its hit location (config SpawnRadius 30, disc). */
+	constexpr float MaxSpawnOffset2D = 30.f + 0.01f;
 
 	/** Records every pushed batch with the frame it was pushed on. */
 	struct FPushRecorder
@@ -81,91 +81,86 @@ namespace RRDamageNumberTests
 		return Numbers;
 	}
 
-	/** True when Number sits at HitLocation's height, within the jitter horizontally. */
+	/** True when Number sits at HitLocation's height, within the spawn disc horizontally. */
 	bool IsAt(const FRRDamageNumber& Number, const FVector& HitLocation)
 	{
-		return FMath::IsNearlyEqual(Number.Location.Z, HitLocation.Z, 0.01) && FVector::Dist2D(Number.Location, HitLocation) <= MaxJitter2D;
+		return FMath::IsNearlyEqual(Number.Location.Z, HitLocation.Z, 0.01) && FVector::Dist2D(Number.Location, HitLocation) <= MaxSpawnOffset2D;
 	}
 }
 
-IMPLEMENT_SIMPLE_AUTOMATION_TEST(FRRDamageNumberMergeTest, "RogueRigs.DamageNumbers.MergeWindow",
+IMPLEMENT_SIMPLE_AUTOMATION_TEST(FRRDamageNumberOnePerHitTest, "RogueRigs.DamageNumbers.OnePerHit",
 	EAutomationTestFlags::EditorContext | EAutomationTestFlags::EngineFilter)
 
-bool FRRDamageNumberMergeTest::RunTest(const FString& Parameters)
+bool FRRDamageNumberOnePerHitTest::RunTest(const FString& Parameters)
 {
 	using namespace RRDamageNumberTests;
 
-	FTestWorld TestWorld(TEXT("RRDamageNumberMerge"));
+	FTestWorld TestWorld(TEXT("RRDamageNumberOnePerHit"));
 	URRDamageNumberSubsystem* Numbers = GetNumbers(*this, TestWorld);
 	if (!Numbers)
 	{
 		return false;
 	}
-	TestEqual(TEXT("merge window 0.25 s"), Numbers->GetMergeWindow(), 0.25f);
+	TestEqual(TEXT("spawn radius 30 uu"), Numbers->GetSpawnRadius(), 30.f);
 
 	AActor* TargetA = TestWorld.Spawn<AActor>(AActor::StaticClass(), FVector::ZeroVector);
 	AActor* TargetB = TestWorld.Spawn<AActor>(AActor::StaticClass(), FVector::ZeroVector);
 	AActor* TargetC = TestWorld.Spawn<AActor>(AActor::StaticClass(), FVector::ZeroVector);
 	FPushRecorder Recorder(Numbers);
 
-	// Frame 0: A 10 and B 7; frame 6 (0.1 s): A 5 at a new location; frame 12 (0.2 s): A 2.
+	// Frame 0: A 10 twice at the same spot and B 7. No merging: one number per hit, pushed on the next tick.
 	const FVector LocationA1(100.f, 0.f, 150.f);
 	const FVector LocationA2(160.f, 40.f, 150.f);
 	const FVector LocationB(-300.f, 200.f, 150.f);
 	Numbers->AddHit(TargetA, 10.f, false, LocationA1);
+	Numbers->AddHit(TargetA, 10.f, false, LocationA1);
 	Numbers->AddHit(TargetB, 7.f, false, LocationB);
-	Recorder.TickFrames(TestWorld, 6);
-	Numbers->AddHit(TargetA, 5.f, false, LocationA2);
-	Recorder.TickFrames(TestWorld, 6);
-	Numbers->AddHit(TargetA, 2.f, false, LocationA2);
-	TestEqual(TEXT("one open entry per target (A, B)"), Numbers->GetPendingCount(), 2);
-
-	// Frame 14 (0.233 s): window still open.
-	Recorder.TickFrames(TestWorld, 2);
-	TestEqual(TEXT("nothing pushed before the window closes"), Recorder.Numbers.Num(), 0);
-	Recorder.TickFrames(TestWorld, 2);
-	AddInfo(FString::Printf(TEXT("DAMAGENUMBERS merge: %d numbers, first at frame %d"), Recorder.Numbers.Num(), Recorder.Frames.Num() > 0 ? Recorder.Frames[0] : -1));
-	if (!TestEqual(TEXT("A and B pushed once each"), Recorder.Numbers.Num(), 2))
+	TestEqual(TEXT("one pending number per hit"), Numbers->GetPendingCount(), 3);
+	Recorder.TickFrames(TestWorld, 1);
+	AddInfo(FString::Printf(TEXT("DAMAGENUMBERS one per hit: %d numbers at frame %d"), Recorder.Numbers.Num(), Recorder.Frames.Num() > 0 ? Recorder.Frames[0] : -1));
+	if (!TestEqual(TEXT("three numbers pushed on the next tick"), Recorder.Numbers.Num(), 3))
 	{
 		return false;
 	}
-	const int32 IndexA = Recorder.FindValue(17.f);
-	const int32 IndexB = Recorder.FindValue(7.f);
-	if (!TestTrue(TEXT("A merged into 17, B alone 7"), IndexA != INDEX_NONE && IndexB != INDEX_NONE))
-	{
-		return false;
-	}
-	TestTrue(TEXT("window closes 0.25 s after the first hit (frame 15, +1)"), Recorder.Frames[IndexA] >= 15 && Recorder.Frames[IndexA] <= 16);
-	TestEqual(TEXT("A and B pushed in the same batch"), Recorder.Frames[IndexA], Recorder.Frames[IndexB]);
-	TestTrue(TEXT("A at its last hit location (within the jitter)"), IsAt(Recorder.Numbers[IndexA], LocationA2));
-	TestTrue(TEXT("B at its hit location (within the jitter)"), IsAt(Recorder.Numbers[IndexB], LocationB));
-	TestFalse(TEXT("no critical"), Recorder.Numbers[IndexA].bCritical || Recorder.Numbers[IndexB].bCritical);
 	TestEqual(TEXT("nothing left pending"), Numbers->GetPendingCount(), 0);
+	TestTrue(TEXT("values 10, 10, 7 in hit order"), FMath::IsNearlyEqual(Recorder.Numbers[0].Value, 10.f) && FMath::IsNearlyEqual(Recorder.Numbers[1].Value, 10.f)
+		&& FMath::IsNearlyEqual(Recorder.Numbers[2].Value, 7.f));
+	// The second A number may also be stacked above the first one (along StackDirection, which has a horizontal part).
+	TestTrue(TEXT("first A number at its hit (within the spawn disc)"), IsAt(Recorder.Numbers[0], LocationA1));
+	TestTrue(TEXT("two hits on one spot start from different points"), FVector::Dist2D(Recorder.Numbers[0].Location, Recorder.Numbers[1].Location) > 0.01);
+	TestTrue(TEXT("B at its hit location (within the disc)"), IsAt(Recorder.Numbers[2], LocationB));
+	TestFalse(TEXT("no critical"), Recorder.Numbers[0].bCritical || Recorder.Numbers[1].bCritical || Recorder.Numbers[2].bCritical);
 
-	// A hit after the window closed opens a new number.
-	const int32 SecondStart = Recorder.Frame;
-	Numbers->AddHit(TargetA, 3.f, false, LocationA1);
-	Recorder.TickFrames(TestWorld, 16);
-	Numbers->AddHit(TargetA, 4.f, false, LocationA1);
-	TestEqual(TEXT("a hit after the window opens a new entry"), Numbers->GetPendingCount(), 1);
-	Recorder.TickFrames(TestWorld, 16);
-	const int32 Index3 = Recorder.FindValue(3.f);
-	const int32 Index4 = Recorder.FindValue(4.f);
-	TestTrue(TEXT("3 and 4 pushed separately"), Index3 != INDEX_NONE && Index4 != INDEX_NONE && Recorder.Numbers.Num() == 4);
-	if (Index3 != INDEX_NONE)
+	// A later hit on the same target is its own number, at its own hit location.
+	Recorder.TickFrames(TestWorld, 60);
+	Numbers->AddHit(TargetA, 5.f, false, LocationA2);
+	const int32 HitFrame = Recorder.Frame;
+	Recorder.TickFrames(TestWorld, 1);
+	const int32 Index5 = Recorder.FindValue(5.f);
+	if (TestTrue(TEXT("a later hit is its own number"), Index5 != INDEX_NONE && Recorder.Numbers.Num() == 4))
 	{
-		TestTrue(TEXT("second number 0.25 s after its hit"), Recorder.Frames[Index3] - SecondStart >= 15 && Recorder.Frames[Index3] - SecondStart <= 16);
+		TestEqual(TEXT("pushed on the tick after its hit"), Recorder.Frames[Index5], HitFrame + 1);
+		TestTrue(TEXT("at its own hit location (within the disc)"), IsAt(Recorder.Numbers[Index5], LocationA2));
 	}
 
 	// A destroyed target keeps its number where it was hit.
 	const FVector LocationC(500.f, -500.f, 190.f);
 	Numbers->AddHit(TargetC, 30.f, true, LocationC);
 	TargetC->Destroy();
-	Recorder.TickFrames(TestWorld, 16);
+	Recorder.TickFrames(TestWorld, 2);
 	const int32 IndexC = Recorder.FindValue(30.f);
 	if (TestTrue(TEXT("destroyed target's number pushed"), IndexC != INDEX_NONE))
 	{
 		TestTrue(TEXT("destroyed target's number at its hit location"), IsAt(Recorder.Numbers[IndexC], LocationC));
+	}
+
+	// A caller radius replaces the default (the heavy passes 45 uu): radius 0 starts exactly on the hit (B's number has expired).
+	Numbers->AddHit(TargetB, 40.f, false, LocationB, 0.f);
+	Recorder.TickFrames(TestWorld, 1);
+	const int32 Index40 = Recorder.FindValue(40.f);
+	if (TestTrue(TEXT("number with radius 0 pushed"), Index40 != INDEX_NONE))
+	{
+		TestTrue(TEXT("radius 0 starts on the hit"), Recorder.Numbers[Index40].Location.Equals(LocationB, 0.01));
 	}
 
 	// Null target and non-positive values.
@@ -174,7 +169,7 @@ bool FRRDamageNumberMergeTest::RunTest(const FString& Parameters)
 	TestEqual(TEXT("values <= 0 ignored"), Numbers->GetPendingCount(), 0);
 	Numbers->AddHit(nullptr, 1.f, false, LocationC);
 	Numbers->AddHit(nullptr, 2.f, false, LocationC);
-	TestEqual(TEXT("hits without a target never merge"), Numbers->GetPendingCount(), 2);
+	TestEqual(TEXT("hits without a target are numbers too"), Numbers->GetPendingCount(), 2);
 	return true;
 }
 
@@ -195,16 +190,14 @@ bool FRRDamageNumberCriticalTest::RunTest(const FString& Parameters)
 	AActor* TargetB = TestWorld.Spawn<AActor>(AActor::StaticClass(), FVector::ZeroVector);
 	FPushRecorder Recorder(Numbers);
 
-	// A: normal then critical within the window = one critical number; B: normal only.
-	Numbers->AddHit(TargetA, 10.f, false, FVector(0.f, 0.f, 100.f));
+	// A: one critical hit; B: one normal hit, pushed in the same batch.
+	Numbers->AddHit(TargetA, 15.f, true, FVector(0.f, 0.f, 100.f));
 	Numbers->AddHit(TargetB, 10.f, false, FVector(400.f, 0.f, 100.f));
 	Recorder.TickFrames(TestWorld, 3);
-	Numbers->AddHit(TargetA, 15.f, true, FVector(0.f, 0.f, 100.f));
-	Recorder.TickFrames(TestWorld, 20);
 
-	const int32 IndexA = Recorder.FindValue(25.f);
+	const int32 IndexA = Recorder.FindValue(15.f);
 	const int32 IndexB = Recorder.FindValue(10.f);
-	if (!TestTrue(TEXT("A 25 and B 10 pushed"), IndexA != INDEX_NONE && IndexB != INDEX_NONE && Recorder.Numbers.Num() == 2))
+	if (!TestTrue(TEXT("A 15 and B 10 pushed"), IndexA != INDEX_NONE && IndexB != INDEX_NONE && Recorder.Numbers.Num() == 2))
 	{
 		return false;
 	}
@@ -212,7 +205,7 @@ bool FRRDamageNumberCriticalTest::RunTest(const FString& Parameters)
 	const FRRDamageNumber& Normal = Recorder.Numbers[IndexB];
 	AddInfo(FString::Printf(TEXT("DAMAGENUMBERS style: normal size %.2f color %s, critical size %.2f color %s"),
 		Normal.Size, *Normal.Color.ToString(), Critical.Size, *Critical.Color.ToString()));
-	TestTrue(TEXT("A critical (one critical hit in the merge)"), Critical.bCritical);
+	TestTrue(TEXT("A critical"), Critical.bCritical);
 	TestFalse(TEXT("B normal"), Normal.bCritical);
 	TestTrue(TEXT("normal size positive"), Normal.Size > 0.f);
 	TestEqual(TEXT("critical 1.6 x larger"), Critical.Size / Normal.Size, 1.6f, 1e-4f);
@@ -285,7 +278,7 @@ bool FRRDamageNumberBudgetTest::RunTest(const FString& Parameters)
 	{
 		return false;
 	}
-	// 100 robots hit twice in the same frame: 100 entries, the first 64 (config MaxNumbersPerTick) pushed when the window closes, the rest on the next tick.
+	// 100 robots hit in the same frame: 100 numbers, the first 64 (config MaxNumbersPerTick) pushed on the next tick, the rest one tick later.
 	TArray<AActor*> Targets;
 	for (int32 Index = 0; Index < 100; ++Index)
 	{
@@ -295,10 +288,9 @@ bool FRRDamageNumberBudgetTest::RunTest(const FString& Parameters)
 	for (int32 Index = 0; Index < Targets.Num(); ++Index)
 	{
 		Numbers->AddHit(Targets[Index], 1.f + Index, false, FVector(Index * 100.f, 0.f, 100.f));
-		Numbers->AddHit(Targets[Index], 1000.f, false, FVector(Index * 100.f, 0.f, 100.f));
 	}
-	TestEqual(TEXT("one entry per robot"), Numbers->GetPendingCount(), 100);
-	Recorder.TickFrames(TestWorld, 18);
+	TestEqual(TEXT("one pending number per hit"), Numbers->GetPendingCount(), 100);
+	Recorder.TickFrames(TestWorld, 4);
 	if (!TestEqual(TEXT("100 numbers pushed"), Recorder.Numbers.Num(), 100))
 	{
 		return false;
@@ -308,8 +300,9 @@ bool FRRDamageNumberBudgetTest::RunTest(const FString& Parameters)
 	AddInfo(FString::Printf(TEXT("DAMAGENUMBERS budget: %d pushed at frame %d, %d at frame %d"), InFirst, FirstFrame, 100 - InFirst, Recorder.Frames.Last()));
 	TestEqual(TEXT("64 in the first batch"), InFirst, 64);
 	TestEqual(TEXT("the other 36 on the next tick"), Recorder.Frames.Last(), FirstFrame + 1);
-	TestEqual(TEXT("oldest first: robot 0 merged 1001"), Recorder.Numbers[0].Value, 1001.f);
-	TestEqual(TEXT("robot 99 merged 1100"), Recorder.Numbers.Last().Value, 1100.f);
+	TestEqual(TEXT("pushed on the tick after the hits"), FirstFrame, 1);
+	TestEqual(TEXT("oldest first: robot 0 hit 1"), Recorder.Numbers[0].Value, 1.f);
+	TestEqual(TEXT("robot 99 hit 100 last"), Recorder.Numbers.Last().Value, 100.f);
 	return true;
 }
 
@@ -504,27 +497,28 @@ bool FRRDamageNumberNiagaraTest::RunTest(const FString& Parameters)
 	};
 
 	FPushRecorder Recorder(Numbers);
-	// Chaser A: two normal hits (10 + 10) merge; chaser B: one critical hit (10 x CritDamage 1.5).
+	// Chaser A: two normal hits of 10 = two numbers (no merging); chaser B: one critical hit (10 x CritDamage 1.5).
 	ApplyHit(ChaserA, 0.f);
 	ApplyHit(ChaserA, 0.f);
 	ApplyHit(ChaserB, 1.f);
-	TestEqual(TEXT("two open entries (one per chaser)"), Numbers->GetPendingCount(), 2);
-	Recorder.TickFrames(TestWorld, 18);
+	TestEqual(TEXT("three pending numbers (one per hit)"), Numbers->GetPendingCount(), 3);
+	Recorder.TickFrames(TestWorld, 3);
 
-	if (!TestEqual(TEXT("two numbers pushed"), Recorder.Numbers.Num(), 2))
+	if (!TestEqual(TEXT("three numbers pushed"), Recorder.Numbers.Num(), 3))
 	{
 		return false;
 	}
-	const int32 IndexA = Recorder.FindValue(20.f);
+	const int32 IndexA = Recorder.FindValue(10.f);
 	const int32 IndexB = Recorder.FindValue(15.f);
-	if (TestTrue(TEXT("chaser A merged 20"), IndexA != INDEX_NONE) && TestTrue(TEXT("chaser B critical 15"), IndexB != INDEX_NONE))
+	const int32 TensCount = Algo::CountIf(Recorder.Numbers, [](const FRRDamageNumber& Number) { return FMath::IsNearlyEqual(Number.Value, 10.f); });
+	if (TestTrue(TEXT("chaser A 10 twice"), IndexA != INDEX_NONE && TensCount == 2) && TestTrue(TEXT("chaser B critical 15"), IndexB != INDEX_NONE))
 	{
-		TestFalse(TEXT("merged normal hits not critical"), Recorder.Numbers[IndexA].bCritical);
+		TestFalse(TEXT("normal hits not critical"), Recorder.Numbers[IndexA].bCritical);
 		TestTrue(TEXT("crit flagged"), Recorder.Numbers[IndexB].bCritical);
 		TestTrue(TEXT("crit larger"), Recorder.Numbers[IndexB].Size > Recorder.Numbers[IndexA].Size);
 	}
 	const TArray<FRRDamageDigit>& Digits = Numbers->GetLastDigits();
-	TestEqual(TEXT("one batch, 4 digits (20 and 15)"), Numbers->GetDigitBatchId() * 10 + Digits.Num(), 14);
+	TestEqual(TEXT("one batch, 6 digits (10, 10 and 15)"), Numbers->GetDigitBatchId() * 10 + Digits.Num(), 16);
 
 	if (bAssetHasContract)
 	{
@@ -533,10 +527,10 @@ bool FRRDamageNumberNiagaraTest::RunTest(const FString& Parameters)
 		const TArray<int32> Criticals = UNiagaraDataInterfaceArrayFunctionLibrary::GetNiagaraArrayInt32(Component, URRDamageNumberSubsystem::DigitCriticalsParameter);
 		const TArray<FVector> Positions = UNiagaraDataInterfaceArrayFunctionLibrary::GetNiagaraArrayPosition(Component, URRDamageNumberSubsystem::DigitPositionsParameter);
 		TestEqual(TEXT("DigitBatchId 1 on the component"), ReadInt(BatchIdVariable), 1);
-		TestEqual(TEXT("DigitCount 4 on the component"), ReadInt(CountVariable), 4);
-		if (TestTrue(TEXT("4 entries per array"), Indices.Num() == 4 && Criticals.Num() == 4 && Positions.Num() == 4))
+		TestEqual(TEXT("DigitCount 6 on the component"), ReadInt(CountVariable), 6);
+		if (TestTrue(TEXT("6 entries per array"), Indices.Num() == 6 && Criticals.Num() == 6 && Positions.Num() == 6))
 		{
-			for (int32 Index = 0; Index < 4; ++Index)
+			for (int32 Index = 0; Index < 6; ++Index)
 			{
 				TestEqual(FString::Printf(TEXT("digit %d value"), Index), Indices[Index], Digits[Index].Digit);
 				TestEqual(FString::Printf(TEXT("digit %d crit 0/1"), Index), Criticals[Index], Digits[Index].bCritical ? 1 : 0);
@@ -558,7 +552,7 @@ bool FRRDamageNumberNiagaraTest::RunTest(const FString& Parameters)
 	const bool bInstance = Numbers->GetParticleStats(Live, Spawned);
 	AddInfo(FString::Printf(TEXT("DAMAGENUMBERS niagara: pushed %d, instance %d, live %d, spawned %d"), Numbers->GetTotalPushedCount(), bInstance ? 1 : 0, Live, Spawned));
 	TestTrue(TEXT("system instance exists"), bInstance);
-	TestEqual(TEXT("one particle per digit, spawned once"), Spawned, 4);
+	TestEqual(TEXT("one particle per digit, spawned once"), Spawned, 6);
 	return true;
 }
 

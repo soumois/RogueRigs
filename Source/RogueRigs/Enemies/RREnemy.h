@@ -36,7 +36,7 @@ struct FOnAttributeChangeData;
  * tick interval (FarMovementDistance, FarMovementTickInterval; UpdateMovementLOD).
  * Death (health set OnDeath, once, State.Dead on the ASC): stops, disables collision, shrinks to 0 over DeathShrinkDuration,
  * then bursts XPCubeCount pickups of XPPickupClass at its feet (Stats.XPValue split over them) and destroys itself. Each hit (the killing one too) is sent to
- * URRDamageNumberSubsystem at DamageNumberHeight above the capsule top (merged, pooled numbers). Subclasses implement their behavior in
+ * URRDamageNumberSubsystem at DamageNumberHeight above the capsule top (one pooled number per hit, starting in a DamageNumberSpawnRadius disc). Subclasses implement their behavior in
  * UpdateBehavior (alive only) and may extend HandleDeath. Subclass in Blueprint for the mesh.
  */
 UCLASS(Abstract)
@@ -159,7 +159,7 @@ protected:
 	/** Spawns XPCubeCount pickups of XPPickupClass at DropLocation (no owner), each worth Stats.XPValue / XPCubeCount, ejected in spread directions. Overridden to suppress the drop (kamikaze fuse). */
 	virtual void DropXP();
 
-	/** Health set hit callback (runs inside the GE execution): sends the hit to URRDamageNumberSubsystem (capsule top + DamageNumberHeight). */
+	/** Health set hit callback (runs inside the GE execution): sends the hit to URRDamageNumberSubsystem (capsule top + DamageNumberHeight, disc DamageNumberSpawnRadius). */
 	void HandleDamageReceived(float Damage, bool bIsCritical, float HealthLeft);
 
 	/**
@@ -329,6 +329,10 @@ protected:
 	/** Height (uu) of the damage number above the capsule top. */
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Enemy|Damage Numbers", meta = (Units = "cm"))
 	float DamageNumberHeight = 40.f;
+
+	/** Radius (uu) of the horizontal disc around the hit where each damage number starts (damage-numbers: 30, heavy 45 in ARRHeavy). */
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Enemy|Damage Numbers", meta = (ClampMin = "0", Units = "cm"))
+	float DamageNumberSpawnRadius = 30.f;
 
 	/**
 	 * Arrival distance of the movement = the subclass's engage range (chaser AttackRange, kamikaze arm range = AttackRange, shooter PreferredDistance) * this ratio (< 1 so

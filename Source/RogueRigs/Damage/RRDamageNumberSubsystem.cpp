@@ -1,4 +1,4 @@
-// Rogue Rigs - damage number world subsystem: every hit number of the world, merged per target over a short window, pushed in batches to one Niagara system.
+// Rogue Rigs - damage number world subsystem: every hit number of the world, one per hit from a random point of a spawn disc, pushed in batches to one Niagara system.
 
 #include "Damage/RRDamageNumberSubsystem.h"
 
@@ -30,12 +30,6 @@ const FName URRDamageNumberSubsystem::DigitSpawnTimesParameter(TEXT("User.DigitS
 const FName URRDamageNumberSubsystem::DigitCountParameter(TEXT("User.DigitCount"));
 const FName URRDamageNumberSubsystem::DigitBatchIdParameter(TEXT("User.DigitBatchId"));
 
-namespace RRDamageNumbers
-{
-	/** Tolerance on the window end, so a window of N fixed frames closes on frame N despite float accumulation. */
-	constexpr double WindowTolerance = 1e-3;
-}
-
 URRDamageNumberSubsystem::URRDamageNumberSubsystem()
 {
 	NumberSystem = TSoftObjectPtr<UNiagaraSystem>(FSoftObjectPath(TEXT("/Game/RogueRigs/FX/NS_DamageNumbers.NS_DamageNumbers")));
@@ -58,7 +52,7 @@ void URRDamageNumberSubsystem::OnWorldBeginPlay(UWorld& InWorld)
 	UNiagaraSystem* System = FPackageName::DoesPackageExist(NumberSystem.ToSoftObjectPath().GetLongPackageName()) ? NumberSystem.LoadSynchronous() : nullptr;
 	if (!System)
 	{
-		// Not an error before the Niagara asset exists (task-025-02): numbers still merge, nothing renders.
+		// Not an error before the Niagara asset exists (task-025-02): numbers are still recorded and broadcast, nothing renders.
 		UE_LOG(LogRogueRigs, Log, TEXT("Damage numbers: Niagara system %s not found; numbers are not rendered."), *NumberSystem.ToString());
 		return;
 	}
@@ -118,7 +112,7 @@ bool URRDamageNumberSubsystem::AreNumbersShown() const
 	return Settings == nullptr || Settings->GetShowDamageNumbers();
 }
 
-void URRDamageNumberSubsystem::AddHit(AActor* Target, float Value, bool bCritical, FVector Location)
+void URRDamageNumberSubsystem::AddHit(AActor* Target, float Value, bool bCritical, FVector Location, float InSpawnRadius)
 {
 	const UWorld* World = GetWorld();
 	if (!World || Value <= 0.f || !AreNumbersShown())
@@ -127,35 +121,17 @@ void URRDamageNumberSubsystem::AddHit(AActor* Target, float Value, bool bCritica
 	}
 	const double Now = World->GetTimeSeconds();
 
-	if (Target)
-	{
-		const FObjectKey Key(Target);
-		// Newest first: an open entry of this target is near the end.
-		for (int32 Index = Pending.Num() - 1; Index >= 0; --Index)
-		{
-			FPendingNumber& Entry = Pending[Index];
-			if (Entry.Target == Key && Now - Entry.FirstHitTime < MergeWindow - RRDamageNumbers::WindowTolerance)
-			{
-				Entry.Value += Value;
-				Entry.bCritical |= bCritical;
-				Entry.HitLocation = Location;
-				return;
-			}
-		}
-	}
-
+	// One number per hit (no merging, task-059-01); Target is not needed: the number stays where it was hit.
 	FPendingNumber& Entry = Pending.AddDefaulted_GetRef();
-	if (Target)
-	{
-		Entry.Target = FObjectKey(Target);
-	}
 	Entry.HitLocation = Location;
-	Entry.Jitter = FVector(FMath::FRandRange(-Jitter, Jitter), FMath::FRandRange(-Jitter, Jitter), 0.f);
+	// Uniform point of the horizontal disc, so repeated hits on one robot start from different spots.
+	const float Radius = FMath::Max(InSpawnRadius < 0.f ? SpawnRadius : InSpawnRadius, 0.f);
+	const FVector2D DiscPoint = Radius > 0.f ? FMath::RandPointInCircle(Radius) : FVector2D::ZeroVector;
+	Entry.SpawnOffset = FVector(DiscPoint.X, DiscPoint.Y, 0.f);
 	// The new entry is already the last one of Pending; the scan skips it.
-	Entry.Stack = ComputeStackOffset(Location + Entry.Jitter, Value, bCritical, Now);
+	Entry.Stack = ComputeStackOffset(Location + Entry.SpawnOffset, Value, bCritical, Now);
 	Entry.Value = Value;
 	Entry.bCritical = bCritical;
-	Entry.FirstHitTime = Now;
 }
 
 void URRDamageNumberSubsystem::Tick(float DeltaTime)
@@ -184,14 +160,13 @@ void URRDamageNumberSubsystem::Tick(float DeltaTime)
 		Displayed.RemoveAt(0, Expired, EAllowShrinking::No);
 	}
 	TArray<FRRDamageNumber> Numbers;
-	// Entries are appended in time order: the due ones form a prefix of Pending.
+	// Every pending hit is due on the next tick, oldest first, at most MaxNumbersPerTick (the rest wait one tick).
 	int32 DueCount = 0;
-	while (DueCount < Pending.Num() && DueCount < MaxNumbersPerTick
-		&& Now - Pending[DueCount].FirstHitTime >= MergeWindow - RRDamageNumbers::WindowTolerance)
+	while (DueCount < Pending.Num() && DueCount < MaxNumbersPerTick)
 	{
 		const FPendingNumber& Entry = Pending[DueCount];
 		FRRDamageNumber& Number = Numbers.AddDefaulted_GetRef();
-		Number.Location = Entry.HitLocation + Entry.Jitter + Entry.Stack;
+		Number.Location = Entry.HitLocation + Entry.SpawnOffset + Entry.Stack;
 		Number.Value = Entry.Value;
 		Number.bCritical = Entry.bCritical;
 		Number.Size = Entry.bCritical ? NumberSize * CriticalScale : NumberSize;
@@ -248,10 +223,10 @@ FVector URRDamageNumberSubsystem::ComputeStackOffset(const FVector& Location, fl
 	const FVector Right = DigitDirection.GetSafeNormal(UE_SMALL_NUMBER, FVector::YAxisVector);
 	const FVector Up = StackDirection.GetSafeNormal(UE_SMALL_NUMBER, FVector::ZAxisVector);
 	const FVector2D Footprint = GetFootprint(Value, bCritical);
-	// The new number appears when its window closes; every other number is compared where it will be at that moment.
-	const double PushTime = Now + MergeWindow;
+	// The new number is pushed on the next tick: every other number is compared where it is now.
+	const double PushTime = Now;
 
-	// Obstacles: the other open entries (pushed when their own window closes) and the numbers still on screen at PushTime.
+	// Obstacles: the other pending numbers (pushed with it, not risen yet) and the numbers still on screen.
 	struct FObstacle
 	{
 		FVector Location;
@@ -262,8 +237,7 @@ FVector URRDamageNumberSubsystem::ComputeStackOffset(const FVector& Location, fl
 	for (int32 Index = 0; Index < Pending.Num() - 1; ++Index)
 	{
 		const FPendingNumber& Other = Pending[Index];
-		const double Risen = FMath::Max(PushTime - (Other.FirstHitTime + MergeWindow), 0.0);
-		Obstacles.Add({ Other.HitLocation + Other.Jitter + Other.Stack + RiseVelocity * Risen, GetFootprint(Other.Value, Other.bCritical) });
+		Obstacles.Add({ Other.HitLocation + Other.SpawnOffset + Other.Stack, GetFootprint(Other.Value, Other.bCritical) });
 	}
 	for (const FDisplayedNumber& Shown : Displayed)
 	{
