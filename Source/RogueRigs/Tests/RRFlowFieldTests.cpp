@@ -1,4 +1,4 @@
-// Rogue Rigs - automation tests of the flow field and the generic enemy movement (RogueRigs.FlowField.*): paths, pockets, recompute triggers, BFS time, incremental updates and budget.
+// Rogue Rigs - automation tests of the flow field and the generic enemy movement (RogueRigs.FlowField.*): paths, pockets, recompute triggers, BFS time, incremental updates, worker-thread swap and budget.
 
 #include "CoreMinimal.h"
 #include "Misc/AutomationTest.h"
@@ -12,6 +12,8 @@
 #include "FlowField/RREnemyMovementComponent.h"
 #include "FlowField/RRFlowFieldSubsystem.h"
 #include "HAL/IConsoleManager.h"
+#include "HAL/PlatformProcess.h"
+#include "HAL/PlatformTime.h"
 #include "Math/RandomStream.h"
 #include "RogueRigs.h"
 #include "Tests/RRTestHarness.h"
@@ -35,6 +37,43 @@ namespace RRFlowFieldTests
 
 	/** Floor cell of arena_m1 the movement test starts from: rocks (38-39, 45-47) stand between it and the miner. */
 	const FIntPoint RobotStartCell(38, 48);
+
+	/**
+	 * Ticks one frame and waits until FrameSeconds of wall time have passed since the frame started, as at the 60 Hz cap of the
+	 * game: the worker job launched in a frame gets a real frame of time before the next Tick polls it (task-066-01).
+	 */
+	void TickFrame(const FTestWorld& TestWorld)
+	{
+		const double FrameEnd = FPlatformTime::Seconds() + FrameSeconds;
+		TestWorld.Tick();
+		while (FPlatformTime::Seconds() < FrameEnd)
+		{
+			FPlatformProcess::Sleep(0.f);
+		}
+	}
+
+	/** Sets a float console variable for the scope of a test and restores the previous value. */
+	struct FScopedConsoleValue
+	{
+		FScopedConsoleValue(const TCHAR* Name, float Value)
+		{
+			Variable = IConsoleManager::Get().FindConsoleVariable(Name);
+			if (Variable)
+			{
+				Previous = Variable->GetFloat();
+				Variable->Set(Value, ECVF_SetByCode);
+			}
+		}
+		~FScopedConsoleValue()
+		{
+			if (Variable)
+			{
+				Variable->Set(Previous, ECVF_SetByCode);
+			}
+		}
+		IConsoleVariable* Variable = nullptr;
+		float Previous = 0.f;
+	};
 
 	/** Grid, miner and flow field of one test world. */
 	struct FFlowFieldSetup
@@ -166,13 +205,17 @@ bool FRRFlowFieldOpenPocketTest::RunTest(const FString& Parameters)
 	const int32 CountBefore = Setup.FlowField->GetComputeCount();
 	const int32 OpenedBefore = Setup.FlowField->GetOpenedCellCount();
 
-	// Two destructions in one frame: applied incrementally by the next tick, no full rebuild.
+	// Two destructions in one frame: the next tick launches one incremental worker job, the tick after swaps it in; no full rebuild.
+	TestTrue(TEXT("flow field on the worker thread (default)"), URRFlowFieldSubsystem::IsAsyncEnabled());
 	TestTrue(TEXT("pocket rock destroyed"), Setup.Grid->DestroyCell(PocketRockCell, ERRTerrainDamageSource::Drone));
 	TestTrue(TEXT("(43, 38) destroyed"), Setup.Grid->DestroyCell(RockCell, ERRTerrainDamageSource::Drone));
-	TestWorld.Tick();
+	TickFrame(TestWorld);
+	TestFalse(TEXT("live field untouched while the job runs (double buffer)"), Setup.FlowField->IsReachable(PocketCenter));
+	TestTrue(TEXT("job pending until the swap"), Setup.FlowField->IsUpdatePending());
+	TickFrame(TestWorld);
 	TestEqual(TEXT("no full rebuild for two destructions"), Setup.FlowField->GetComputeCount(), CountBefore);
 	TestEqual(TEXT("two cells opened incrementally"), Setup.FlowField->GetOpenedCellCount(), OpenedBefore + 2);
-	TestFalse(TEXT("nothing pending after one tick"), Setup.FlowField->IsUpdatePending());
+	TestFalse(TEXT("nothing pending after the swap (second frame)"), Setup.FlowField->IsUpdatePending());
 
 	TestTrue(TEXT("pocket reachable after"), Setup.FlowField->IsReachable(PocketCenter));
 	TestTrue(TEXT("direct path through the opened cell"), Setup.FlowField->HasDirectPath(PocketCenter, Setup.Grid->GetCellCenter(PocketSouthCell.X, PocketSouthCell.Y)));
@@ -200,11 +243,11 @@ bool FRRFlowFieldMinerMoveTest::RunTest(const FString& Parameters)
 
 	const FVector Offset = Setup.Grid->GetCellCenter(NewCell.X, NewCell.Y) - Setup.Grid->GetCellCenter(MinerCell.X, MinerCell.Y);
 	Setup.Miner->SetActorLocation(Setup.Miner->GetActorLocation() + Offset, false, nullptr, ETeleportType::TeleportPhysics);
-	// The goal rebuild is time-sliced (rr.FlowField.BudgetMs): 80 x 80 takes one or two frames.
+	// The goal rebuild runs on a worker thread: launched in the first frame, swapped in by a later one.
 	int32 Frames = 0;
 	do
 	{
-		TestWorld.Tick();
+		TickFrame(TestWorld);
 	}
 	while (++Frames < 10 && Setup.FlowField->GetGoalCell() != NewCell);
 	AddInfo(FString::Printf(TEXT("goal rebuild done in %d frame(s)"), Frames));
@@ -295,29 +338,6 @@ namespace RRFlowFieldIncrementalTests
 {
 	using namespace RRFlowFieldTests;
 
-	/** Sets rr.FlowField.BudgetMs for the scope of a test and restores the previous value. */
-	struct FScopedBudget
-	{
-		explicit FScopedBudget(float Milliseconds)
-		{
-			Variable = IConsoleManager::Get().FindConsoleVariable(TEXT("rr.FlowField.BudgetMs"));
-			if (Variable)
-			{
-				Previous = Variable->GetFloat();
-				Variable->Set(Milliseconds, ECVF_SetByCode);
-			}
-		}
-		~FScopedBudget()
-		{
-			if (Variable)
-			{
-				Variable->Set(Previous, ECVF_SetByCode);
-			}
-		}
-		IConsoleVariable* Variable = nullptr;
-		float Previous = 0.f;
-	};
-
 	/** Current budget of the incremental work in ms (rr.FlowField.BudgetMs). */
 	float GetBudgetMs()
 	{
@@ -358,13 +378,13 @@ namespace RRFlowFieldIncrementalTests
 		return Rocks;
 	}
 
-	/** Ticks until the flow field has no pending work (at most MaxFrames); returns the frames ticked. */
+	/** Ticks paced frames until the flow field has no pending work (at most MaxFrames); returns the frames ticked. */
 	int32 TickUntilSettled(const FTestWorld& TestWorld, URRFlowFieldSubsystem* FlowField, int32 MaxFrames)
 	{
 		int32 Frames = 0;
 		while (FlowField->IsUpdatePending() && Frames < MaxFrames)
 		{
-			TestWorld.Tick();
+			TickFrame(TestWorld);
 			++Frames;
 		}
 		return Frames;
@@ -440,47 +460,59 @@ using namespace RRFlowFieldIncrementalTests;
 IMPLEMENT_SIMPLE_AUTOMATION_TEST(FRRFlowFieldIncrementalMatchesTest, "RogueRigs.FlowField.IncrementalMatchesRebuild",
 	EAutomationTestFlags::EditorContext | EAutomationTestFlags::EngineFilter)
 
+namespace RRFlowFieldIncrementalTests
+{
+	/** IncrementalMatchesRebuild in one mode: bAsync true on the worker thread (openings land while a job runs), false the time-sliced fallback. */
+	void RunIncrementalMatches(FAutomationTestBase& Test, bool bAsync)
+	{
+		FScopedConsoleValue Async(TEXT("rr.FlowField.Async"), bAsync ? 1.f : 0.f);
+		Test.AddInfo(bAsync ? TEXT("worker thread") : TEXT("time-sliced fallback"));
+		FTestWorld TestWorld;
+		FFlowFieldSetup Setup;
+		if (!SetUp(Test, TestWorld, Setup))
+		{
+			return;
+		}
+		// A tiny budget slices the fallback over many frames; on the worker path openings land while a job runs: either way they meet half-done work.
+		FScopedConsoleValue Budget(TEXT("rr.FlowField.BudgetMs"), 0.001f);
+		const TArray<FIntPoint> Rocks = ListRockCells(Setup.Grid, MinerCell, /*bSortFromCenter*/ false, 2902);
+		if (!Test.TestTrue(TEXT("enough rock cells"), Rocks.Num() >= 150))
+		{
+			return;
+		}
+		const int32 ComputesBefore = Setup.FlowField->GetComputeCount();
+		const int32 OpenedBefore = Setup.FlowField->GetOpenedCellCount();
+		const float CellSize = Setup.Grid->GetCellSize();
+		int32 Destroyed = 0;
+		int32 GoalMoves = 0;
+		for (int32 Frame = 0; Frame < 50; ++Frame)
+		{
+			for (int32 Count = 0; Count < 3; ++Count)
+			{
+				Destroyed += Setup.Grid->DestroyCell(Rocks[Frame * 3 + Count], ERRTerrainDamageSource::Drone) ? 1 : 0;
+			}
+			if (Frame == 10 || Frame == 20 || Frame == 35)
+			{
+				// The goal changes cell while openings keep coming: rebuild and relaxation interleave.
+				GoalMoves += MoveMinerTo(Setup, Setup.Miner->GetActorLocation() + FVector(CellSize, (Frame == 20 ? CellSize : 0.f), 0.f)) ? 1 : 0;
+			}
+			TestWorld.Tick();
+		}
+		const int32 SettleFrames = TickUntilSettled(TestWorld, Setup.FlowField, 5000);
+		Test.AddInfo(FString::Printf(TEXT("%d rocks destroyed, %d goal moves, settled %d frames after the last opening"), Destroyed, GoalMoves, SettleFrames));
+		Test.TestEqual(TEXT("150 rocks destroyed"), Destroyed, 150);
+		Test.TestTrue(TEXT("the goal moved"), GoalMoves >= 2);
+		Test.TestFalse(TEXT("settled"), Setup.FlowField->IsUpdatePending());
+		Test.TestEqual(TEXT("every opening applied incrementally"), Setup.FlowField->GetOpenedCellCount() - OpenedBefore, Destroyed);
+		Test.TestTrue(TEXT("only goal rebuilds, no fallback rebuild"), Setup.FlowField->GetComputeCount() - ComputesBefore <= GoalMoves);
+		CheckMatchesFullRebuild(Test, Setup);
+	}
+}
+
 bool FRRFlowFieldIncrementalMatchesTest::RunTest(const FString& Parameters)
 {
-	FTestWorld TestWorld;
-	FFlowFieldSetup Setup;
-	if (!SetUp(*this, TestWorld, Setup))
-	{
-		return false;
-	}
-	// A tiny budget slices everything over many frames, so openings land while relaxations and goal rebuilds are half done.
-	FScopedBudget Budget(0.001f);
-	const TArray<FIntPoint> Rocks = ListRockCells(Setup.Grid, MinerCell, /*bSortFromCenter*/ false, 2902);
-	if (!TestTrue(TEXT("enough rock cells"), Rocks.Num() >= 150))
-	{
-		return false;
-	}
-	const int32 ComputesBefore = Setup.FlowField->GetComputeCount();
-	const int32 OpenedBefore = Setup.FlowField->GetOpenedCellCount();
-	const float CellSize = Setup.Grid->GetCellSize();
-	int32 Destroyed = 0;
-	int32 GoalMoves = 0;
-	for (int32 Frame = 0; Frame < 50; ++Frame)
-	{
-		for (int32 Count = 0; Count < 3; ++Count)
-		{
-			Destroyed += Setup.Grid->DestroyCell(Rocks[Frame * 3 + Count], ERRTerrainDamageSource::Drone) ? 1 : 0;
-		}
-		if (Frame == 10 || Frame == 20 || Frame == 35)
-		{
-			// The goal changes cell while openings keep coming: rebuild and relaxation interleave.
-			GoalMoves += MoveMinerTo(Setup, Setup.Miner->GetActorLocation() + FVector(CellSize, (Frame == 20 ? CellSize : 0.f), 0.f)) ? 1 : 0;
-		}
-		TestWorld.Tick();
-	}
-	const int32 SettleFrames = TickUntilSettled(TestWorld, Setup.FlowField, 5000);
-	AddInfo(FString::Printf(TEXT("%d rocks destroyed, %d goal moves, settled %d frames after the last opening"), Destroyed, GoalMoves, SettleFrames));
-	TestEqual(TEXT("150 rocks destroyed"), Destroyed, 150);
-	TestTrue(TEXT("the goal moved"), GoalMoves >= 2);
-	TestFalse(TEXT("settled"), Setup.FlowField->IsUpdatePending());
-	TestEqual(TEXT("every opening applied incrementally"), Setup.FlowField->GetOpenedCellCount() - OpenedBefore, Destroyed);
-	TestTrue(TEXT("only goal rebuilds, no fallback rebuild"), Setup.FlowField->GetComputeCount() - ComputesBefore <= GoalMoves);
-	CheckMatchesFullRebuild(*this, Setup);
+	RunIncrementalMatches(*this, /*bAsync*/ true);
+	RunIncrementalMatches(*this, /*bAsync*/ false);
 	return true;
 }
 
@@ -504,6 +536,8 @@ bool FRRFlowFieldBudgetTest::RunTest(const FString& Parameters)
 	TestEqual(TEXT("grid is 240 x 240"), Setup.Grid->GetGridSize(), FIntPoint(240, 240));
 	const float BudgetMs = GetBudgetMs();
 	TestTrue(TEXT("default budget set"), BudgetMs > 0.f);
+	// Worker thread (default): the budget bounds the game-thread part, i.e. the swap and the job launch (copies).
+	TestTrue(TEXT("flow field on the worker thread (default)"), URRFlowFieldSubsystem::IsAsyncEnabled());
 
 	// Reference: synchronous full rebuild at this size.
 	float RebuildSum = 0.f;
@@ -537,7 +571,7 @@ bool FRRFlowFieldBudgetTest::RunTest(const FString& Parameters)
 			Setup.Grid->DestroyCell(Rocks[Frame], ERRTerrainDamageSource::Drone);
 		}
 		const int32 WorkFramesBefore = Setup.FlowField->GetWorkFrameCount();
-		TestWorld.Tick();
+		TickFrame(TestWorld);
 		if (Setup.FlowField->GetWorkFrameCount() != WorkFramesBefore)
 		{
 			WorkMs.Add(Setup.FlowField->GetLastFrameWorkMilliseconds());
@@ -567,14 +601,14 @@ bool FRRFlowFieldBudgetTest::RunTest(const FString& Parameters)
 	const float Max = WorkMs.IsEmpty() ? 0.f : WorkMs.Last();
 	const int32 GoalRebuilds = Setup.FlowField->GetComputeCount() - ComputesBefore;
 	const FString Summary = FString::Printf(
-		TEXT("RogueRigs.FlowField.BudgetAt67uu: 240 x 240, budget %.2f ms; full rebuild %.3f ms; walk 600 uu/s + dig 60 cells/s over %d frames: ")
+		TEXT("RogueRigs.FlowField.BudgetAt67uu: 240 x 240, worker thread, game-thread budget %.2f ms; full rebuild %.3f ms (last worker rebuild %.3f ms); paced 60 Hz walk 600 uu/s + dig 60 cells/s over %d frames: ")
 		TEXT("%d work frames avg %.3f ms, p95 %.3f ms, max %.3f ms; %d goal cell changes, %d goal rebuilds, field goal behind the miner on %d frames, goal age max %d frames, miner up to %.0f uu from the goal cell center (teleports skip rock)"),
-		BudgetMs, RebuildSum / RebuildRuns, Frames, WorkMs.Num(), WorkMs.IsEmpty() ? 0.f : WorkSum / WorkMs.Num(), P95, Max, GoalCellChanges,
+		BudgetMs, RebuildSum / RebuildRuns, Setup.FlowField->GetLastComputeMilliseconds(), Frames, WorkMs.Num(), WorkMs.IsEmpty() ? 0.f : WorkSum / WorkMs.Num(), P95, Max, GoalCellChanges,
 		GoalRebuilds, GoalLagFrames, MaxGoalAge, MaxGoalOffset);
 	AddInfo(Summary);
 	UE_LOG(LogRogueRigs, Display, TEXT("%s"), *Summary);
 	TestTrue(TEXT("work done on most frames"), WorkMs.Num() > Frames / 2);
-	TestTrue(TEXT("p95 of the per-frame work within the budget (+0.15 ms clock granularity and noise)"), P95 <= BudgetMs + 0.15f);
+	TestTrue(TEXT("p95 of the per-frame game-thread work within the budget (+0.15 ms clock granularity and noise)"), P95 <= BudgetMs + 0.15f);
 	TestTrue(TEXT("the goal rebuilds keep up (field goal at most 30 frames old)"), MaxGoalAge <= 30);
 	TestTrue(TEXT("goal rebuilds completed"), GoalRebuilds > 0);
 
@@ -620,7 +654,7 @@ bool FRRFlowFieldGapTest::RunTest(const FString& Parameters)
 	int32 ReachableFrame = INDEX_NONE;
 	for (int32 Frame = 1; Frame <= MaxFieldFrames && ReachableFrame == INDEX_NONE; ++Frame)
 	{
-		TestWorld.Tick();
+		TickFrame(TestWorld);
 		ReachableFrame = Setup.FlowField->IsReachable(Robot->GetActorLocation()) ? Frame : INDEX_NONE;
 	}
 	TestTrue(FString::Printf(TEXT("path through the gap within %d frames"), MaxFieldFrames), ReachableFrame != INDEX_NONE);

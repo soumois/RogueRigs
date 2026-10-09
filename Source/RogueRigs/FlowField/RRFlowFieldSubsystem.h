@@ -1,12 +1,14 @@
 // Rogue Rigs - flow field world subsystem: one grid BFS from the miner's cell gives every ground robot its direction,
-// repaired incrementally when cells open and refreshed over several frames when the miner changes cell.
+// repaired incrementally when cells open and refreshed when the miner changes cell, on a worker thread (double buffer) or time-sliced.
 
 #pragma once
 
 #include "CoreMinimal.h"
 #include "Subsystems/WorldSubsystem.h"
 #include "FlowField/RRPathProvider.h"
+#include "FlowField/RRFlowFieldData.h"
 #include "Grid/RRArenaGrid.h"
+#include "Tasks/Task.h"
 #include "RRFlowFieldSubsystem.generated.h"
 
 /**
@@ -25,6 +27,11 @@
  * - goal changed cell: Tick runs a BFS into a second buffer under the same budget (after the opening work) and swaps it in when
  *   done; cells opened meanwhile are re-relaxed on the new field. Until then queries answer from the field of the previous
  *   goal cell. A goal move during a rebuild is picked up by the next one.
+ * Worker thread (task-066-01, rr.FlowField.Async 1, the default): openings and goal rebuilds are computed by a UE::Tasks job
+ * over a private copy (FRRFlowFieldJob: walkability with the validated openings applied, plus the distances for an incremental
+ * update). The live field stays untouched and readable until the job is complete; the next Tick swaps it in (double buffer).
+ * Cells destroyed while a job runs stay queued and go into the next job. One job at a time; the game thread never waits for it
+ * (except FlushPendingWork). rr.FlowField.Async 0 keeps the time-sliced game-thread path above (platforms without spare cores).
  * Queries never wait for pending work: they return the last valid field. FlushPendingWork completes it on demand.
  * Grid and goal: set with SetGrid / SetGoalActor, otherwise the first ARRArenaGrid and the first living ARRMiner of the world.
  * Debug: console variable rr.FlowField.Debug 1 draws the directions within rr.FlowField.DebugRadius cells of the goal.
@@ -87,7 +94,7 @@ public:
 	UFUNCTION(BlueprintCallable, Category = "FlowField")
 	void FlushPendingWork();
 
-	/** True while openings, a relaxation or a goal rebuild are pending, or the goal is in another cell than the field's. */
+	/** True while openings, a relaxation, a goal rebuild or a worker job are pending, or the goal is in another cell than the field's. */
 	UFUNCTION(BlueprintPure, Category = "FlowField")
 	bool IsUpdatePending() const;
 
@@ -101,7 +108,7 @@ public:
 
 	/** Cell the current field leads to; (INDEX_NONE, INDEX_NONE) before the first computation. Lags the goal while a rebuild runs. */
 	UFUNCTION(BlueprintPure, Category = "FlowField")
-	FIntPoint GetGoalCell() const { return FieldGoalCell; }
+	FIntPoint GetGoalCell() const { return Field.GoalCell; }
 
 	/** True when a robot can stand on Cell (Floor or Spawn of the current grid). */
 	UFUNCTION(BlueprintPure, Category = "FlowField")
@@ -121,7 +128,10 @@ public:
 	/** Adds the cell of every valid pawn of the world (robots, miner) to OutCells, on the current grid; spawn searches exclude them. */
 	void GatherPawnCells(TSet<FIntPoint>& OutCells) const;
 
-	/** Duration of the last complete field computation in ms: a synchronous rebuild, or the summed slices of a goal rebuild. */
+	/** True when openings and goal rebuilds run on a worker thread (rr.FlowField.Async), false for the time-sliced path. */
+	static bool IsAsyncEnabled();
+
+	/** Duration of the last complete field computation in ms: a synchronous rebuild, the summed slices or the worker time of a goal rebuild. */
 	UFUNCTION(BlueprintPure, Category = "FlowField")
 	float GetLastComputeMilliseconds() const { return LastComputeMilliseconds; }
 
@@ -133,7 +143,7 @@ public:
 	UFUNCTION(BlueprintPure, Category = "FlowField")
 	int32 GetOpenedCellCount() const { return OpenedCellCount; }
 
-	/** Total flow-field time (rebuilds and incremental work) of the last frame that did any, in ms. */
+	/** Game-thread flow-field time (rebuilds, incremental work, or the swap and launch of worker jobs) of the last frame that did any, in ms. */
 	UFUNCTION(BlueprintPure, Category = "FlowField")
 	float GetLastFrameWorkMilliseconds() const { return FrameWorkMilliseconds; }
 
@@ -142,60 +152,35 @@ public:
 	int32 GetWorkFrameCount() const { return WorkFrameCount; }
 
 protected:
-	/** Value of Directions for a cell without a next cell. */
-	static constexpr uint8 NoDirection = 0xFF;
-
-	/** Relaxation steps between two clock reads while working under a budget. */
-	static constexpr int32 BudgetCheckInterval = 32;
-
 	/** Finds the grid and the goal when not set or no longer valid; binds OnCellDestroyed. False when either is missing. */
 	bool ResolveGridAndGoal();
 
 	/** Synchronous full rebuild from GoalCell over a field of Size cells: walkability from the grid, distances, directions. Drops pending work. */
 	void ComputeField(FIntPoint GoalCell, FIntPoint Size);
 
-	/**
-	 * Advances a BFS from Goal into OutDistances / OutDirections: Queue / Head hold the breadth-first front, DirectionHead the
-	 * direction pass over the visited cells. Stops at DeadlineSeconds (FPlatformTime::Seconds; <= 0 means none). True when done.
-	 */
-	bool AdvanceBfs(FIntPoint Goal, TArray<int32>& OutDistances, TArray<uint8>& OutDirections, TArray<int32>& Queue, int32& Head,
-		int32& DirectionHead, double DeadlineSeconds) const;
-
 	/** Budgeted work of a frame: queued openings, relaxation, then the goal rebuild. DeadlineSeconds <= 0: run to completion. */
 	void ProcessPendingWork(double DeadlineSeconds);
 
-	/** Marks the queued opened cells walkable and seeds the relaxation around them. */
+	/** Marks the queued opened cells walkable and seeds the relaxation around them (time-sliced path). */
 	void ApplyPendingOpenings();
 
-	/** Pushes Cell and its 8 neighbours with their current distance (and gives Cell a distance from its neighbours if shorter). */
-	void SeedAround(FIntPoint Cell);
+	/** Worker path of a frame: applies a completed job, then launches the next one when work is queued. True when it did either. */
+	bool ProcessAsyncWork();
 
-	/** Pops relaxation entries (lowest distance first) until empty or DeadlineSeconds. True when the relaxation is empty. */
-	bool RunRelaxation(double DeadlineSeconds);
+	/** Swaps the completed job's field into the live field (dropped when outdated) and keeps the job as the spare buffer. */
+	void ApplyCompletedJob();
 
-	/** Pushes a relaxation entry for the cell of index Index at its current distance. */
-	void PushRelax(int32 Index);
+	/** Fills a job from the live field and the queued openings and launches it on a worker. True when launched or openings consumed. */
+	bool LaunchJob();
 
-	/** Next-cell neighbour index of Cell in InDistances: lowest distance, then closest to Goal in a straight line, then neighbour order; NoDirection when none. */
-	uint8 ChooseDirection(FIntPoint Cell, const TArray<int32>& InDistances, FIntPoint Goal) const;
+	/** True when Cell is inside the live field. */
+	bool IsInField(FIntPoint Cell) const { return Field.IsInField(Cell); }
 
-	/** True when neighbour Candidate of Cell beats neighbour Current as next cell toward Goal, both at the same distance. */
-	static bool IsBetterTie(FIntPoint Cell, int32 Candidate, int32 Current, FIntPoint Goal);
+	/** Row-major index of a cell of the live field. */
+	int32 GetFieldIndex(FIntPoint Cell) const { return Field.GetIndex(Cell); }
 
 	/** Adds Milliseconds to the work total of the current frame (resets it on a new frame). */
 	void AddFrameWork(double Milliseconds);
-
-	/** True when the step from Cell along neighbour offset Index stays on walkable cells without cutting a corner. Uses Walkable. */
-	bool CanStep(FIntPoint Cell, int32 Index) const;
-
-	/** True when Cell is inside the current field. */
-	bool IsInField(FIntPoint Cell) const { return Cell.X >= 0 && Cell.Y >= 0 && Cell.X < FieldSize.X && Cell.Y < FieldSize.Y; }
-
-	/** Row-major index of a cell of the field. */
-	int32 GetFieldIndex(FIntPoint Cell) const { return Cell.Y * FieldSize.X + Cell.X; }
-
-	/** Cell of a row-major index of the field. */
-	FIntPoint GetFieldCell(int32 Index) const { return FIntPoint(Index % FieldSize.X, Index / FieldSize.X); }
 
 	/** Queues the opened cell for the incremental update. */
 	UFUNCTION()
@@ -216,28 +201,25 @@ protected:
 	/** True when the goal was set explicitly (SetGoalActor): no automatic miner lookup. */
 	bool bExplicitGoal = false;
 
-	/** Walkable flag per cell, row-major: set by full rebuilds, then only turned on by openings. Shared by the live field and the goal rebuild. */
-	TArray<bool> Walkable;
-
-	/** Live field: BFS steps to the goal per cell, row-major; INDEX_NONE when unreachable. */
-	TArray<int32> Distances;
-
-	/** Live field: neighbour offset index (into the 8-neighbour table) to move to per cell, row-major; NoDirection when none. */
-	TArray<uint8> Directions;
-
-	/** Dimensions of the computed field (grid size at computation). */
-	FIntPoint FieldSize = FIntPoint::ZeroValue;
-
-	/** Goal cell of the live field. */
-	FIntPoint FieldGoalCell = FIntPoint(INDEX_NONE, INDEX_NONE);
+	/** Live field read by every query (walkability, distances, directions, goal cell, relaxation heap); only the game thread touches it. */
+	FRRFlowFieldData Field;
 
 	/** Opened cells received from the grid, not applied yet. */
 	TArray<FIntPoint> PendingOpenings;
 
-	/** Relaxation min-heap of the live field: (distance << 32) | cell index; stale entries (distance changed) are skipped. */
-	TArray<uint64> RelaxHeap;
+	/** Worker job in flight (null when none); only the worker touches it until JobTask is complete. */
+	TSharedPtr<FRRFlowFieldJob, ESPMode::ThreadSafe> Job;
 
-	/** True while a goal rebuild runs over several frames. */
+	/** Completed job kept as the buffer of the next one (its arrays hold the previous live field, so copies reuse the allocations). */
+	TSharedPtr<FRRFlowFieldJob, ESPMode::ThreadSafe> SpareJob;
+
+	/** Task running Job. */
+	UE::Tasks::FTask JobTask;
+
+	/** Incremented by every synchronous full rebuild: a job launched before it is dropped on completion. */
+	uint32 JobGeneration = 0;
+
+	/** True while a time-sliced goal rebuild runs over several frames. */
 	bool bGoalRebuildActive = false;
 
 	/** Goal cell of the running goal rebuild. */
