@@ -180,12 +180,22 @@ bool FRRProgressionXPPickupTest::RunTest(const FString& Parameters)
 	Controller->Possess(Miner);
 	Miner->OnPickupCollected.AddDynamic(Recorder.Get(), &URRTestEventRecorder::HandlePickupCollected);
 
-	ARRPickup* Pickup = TestWorld.Spawn<ARRPickup>(XPClass, Miner->GetActorLocation() + FVector(0.f, 100.f, 0.f));
+	// The pop has a random yaw and distance (80-220 uu, global RNG): from 100 uu out, a draw away from the miner could land
+	// up to 320 uu off, beyond its 300 uu PickupRadius, and rest there uncollected (task-057-01). Yaw 270 pops it back
+	// along -Y, through the miner: it lands within 120 uu whatever the distance draw.
+	const FTransform PickupTransform(Miner->GetActorLocation() + FVector(0.f, 100.f, 0.f));
+	ARRPickup* Pickup = TestWorld.Get()->SpawnActorDeferred<ARRPickup>(XPClass, PickupTransform, nullptr, nullptr,
+		ESpawnActorCollisionHandlingMethod::AlwaysSpawn);
 	if (!TestNotNull(TEXT("XP pickup spawned"), Pickup))
 	{
 		return false;
 	}
+	Pickup->SetPopYaw(270.f);
+	Pickup->FinishSpawning(PickupTransform);
 	TestEqual(TEXT("pickup type XP"), Pickup->GetPickupType(), ERRPickupType::XP);
+	const float PopEndDistance = FVector::Dist2D(Pickup->GetPopEnd(), Miner->GetActorLocation());
+	AddInfo(FString::Printf(TEXT("pop end %.1f uu from the miner (PickupRadius %.0f)"), PopEndDistance, Miner->GetPickupRadius()));
+	TestTrue(TEXT("pop lands inside the pickup radius"), PopEndDistance <= Miner->GetPickupRadius());
 	// XPGain 0.5: the 1 raw XP of the cube stays under the level 1 need (4 XP) and no level-up flow starts.
 	Miner->GetAbilitySystemComponent()->SetNumericAttributeBase(URRPlayerAttributeSet::GetXPGainAttribute(), 0.5f);
 
