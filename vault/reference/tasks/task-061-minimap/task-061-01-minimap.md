@@ -3,7 +3,7 @@ id: task-061-01-minimap
 description: "Round minimap at the top left: seen cells of rock, floor and heal veins, markers for miner, console, chest and shuttle."
 parent: task-061-minimap
 kind: task
-status: in-progress
+status: done
 ---
 # Minimap
 
@@ -15,11 +15,11 @@ status: in-progress
 - done_when: build exits 0 with the editor closed; all `RogueRigs.*` tests pass headless; docs updated; lint clean.
 - editor_state: closed
 - token_ceiling: 70000
-- model: open
-- tokens: open
-- runs: open
+- model: opus
+- tokens: input 56, cache write 134977, cache read 1217488, output 28983
+- runs: 1
 - milestone: M2
-- result: open
+- result: URRMinimap owned by URRHUDWidget: transient 240 × 240 UTexture2D (one pixel per cell, camera yaw 0 mapping), seen cells from the projected view corners, pixels written only when a cell becomes seen or is destroyed (one UpdateTextureRegions per frame with changes); API GetMinimapTexture, OnMinimapTextureReady, GetMinimapState, GetMinimapOffset; MinimapConfig colours (floor dark grey and void near-black provisional). No test changed. Build 0; full run 194/195 (FlowField.BudgetAt67uu, known). Commits af0631d, cb24a37.
 
 ## Relations
 - [[task-061-minimap]] — parent global task.

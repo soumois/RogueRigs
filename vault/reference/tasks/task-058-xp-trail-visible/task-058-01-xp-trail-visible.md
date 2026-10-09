@@ -3,7 +3,7 @@ id: task-058-01-xp-trail-visible
 description: "The XP cube Niagara trail is visible in game (the sparkle already is)."
 parent: task-058-xp-trail-visible
 kind: task
-status: todo
+status: in-progress
 ---
 # Visible XP trail
 
