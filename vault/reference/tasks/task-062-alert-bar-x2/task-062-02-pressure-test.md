@@ -3,7 +3,7 @@ id: task-062-02-pressure-test
 description: "Integration.PressureHordeBanner updated to the doubled alert bar (icons at Position × 600)."
 parent: task-062-alert-bar-x2
 kind: task
-status: in-progress
+status: done
 ---
 # Pressure test after the bigger alert bar
 
@@ -15,11 +15,11 @@ status: in-progress
 - done_when: build exits 0 with the editor closed; all `RogueRigs.*` tests pass headless except the known load-sensitive FlowField.BudgetAt67uu (task-063); docs updated; lint clean.
 - editor_state: closed
 - token_ceiling: 30000
-- model: open
-- tokens: open
-- runs: open
+- model: opus
+- tokens: input 26, cache write 32163, cache read 171776, output 3673
+- runs: 1
 - milestone: M2
-- result: open
+- result: Integration.PressureHordeBanner expects icons at Position × 600 (PressureAlertBarWidth 300 → 600). Build 0; full run 194/195 (only the known FlowField.BudgetAt67uu). Commit 693b54a. With task-062-01: alert bar 600 × 36, icons × 2.
 
 ## Relations
 - [[task-062-alert-bar-x2]] — parent global task.

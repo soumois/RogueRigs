@@ -126,6 +126,7 @@ kind: note
 | [[task-063-01-perf-session]] | opus | 1 | 0k | 232k | 1527k | 20k |
 | [[task-064-01-minimap-circle-reveal]] | opus | 1 | 0k | 76k | 460k | 9k |
 | [[task-065-01-diagonal-dig]] | opus | 1 | 0k | 82k | 499k | 14k |
+| [[task-062-02-pressure-test]] | opus | 1 | 0k | 32k | 172k | 4k |
 
 ## Totals
 | Scope | Input | Cache write | Cache read | Output |
