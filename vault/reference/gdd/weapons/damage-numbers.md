@@ -15,5 +15,7 @@ status: provisional
 - Merging window duration: 0.25 s (provisional, owner 2026-10-05).
 - Milestone: M2, built now (owner 2026-10-05). M1 has a debug text version on the test target dummy (owner, 2026-10-01), extended to every enemy (owner, 2026-10-02); not pooled, so not for horde scale.
 
+- No merging (owner 2026-10-08, after the DRGS video): one number per hit; each number starts at a random point of a 30 uu disc around the hit (45 uu on the heavy) so repeated hits on one robot do not start from the same spot; the vertical stacking against overlap is kept. Replaces the 0.25 s merge window above.
+
 ## Relations
 - [[weapons-index]] — parent index.

@@ -21,6 +21,9 @@ applies_to: art, vfx, level-design, image prompts
 
 - Damage vignette (owner 2026-10-08): the red flash stays at full strength for at least 0.15 s before fading, so a long frame never hides the first hit.
 
+- Minimap (owner 2026-10-08): 200 px circle at the top left, centred on the miner, about 40 cells of radius; shows rock, floor and heal veins for cells already seen only; markers for the miner, the console (teal), the bonus chest (gold) and the shuttle (white); no enemies.
+- Alert bar (owner 2026-10-08): twice as wide and twice as tall as before, its event icons scaled with it.
+
 ## Relations
 - [[art-audio-index]] — parent index.
 - [[color-code]] — the current palette.

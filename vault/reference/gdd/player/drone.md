@@ -27,6 +27,8 @@ status: approved
 - Look: small, white + teal + rust; white-gold laser ([[color-code]]).
 - Milestone: M1.
 
+- Depth (owner 2026-10-08, to test): the arc reaches 2.5 cells (was 1.5) and cuts up to 8 blocks at once (was 4), about two rows deep, at the same speed per block.
+
 ## Relations
 - [[player-index]] — parent index.
 - [[miner]] — who it follows.

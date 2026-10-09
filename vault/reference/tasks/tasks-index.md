@@ -69,3 +69,9 @@ Resuming after the pause of 2026-10-06: read [[handover-2026-10-06]] first.
 - [[task-054-niagara-trail-sparkle]] — XP cube trail and pickup sparkle rebuilt as Niagara systems. Status done.
 - [[task-055-first-hit-vignette]] — The red damage vignette shows on the very first hit, including in a packaged build. Status done.
 - [[task-056-bonus-chest]] — Bonus chest: one per level at 60 % alert, 8 s hack, XP, ore and a lucky upgrade choice. Status done.
+- [[task-057-flaky-xp-pickup-test]] — Progression.XPPickupAddsOne made reliable: find why it fails intermittently and fix the cause. Status in-progress.
+- [[task-058-xp-trail-visible]] — The XP cube Niagara trail is visible in game (the sparkle already is). Status todo.
+- [[task-059-damage-numbers-no-merge]] — Damage numbers: one per hit, no merging, each starting at a random point of a 30 uu disc (45 uu on the heavy); stacking kept. Status todo.
+- [[task-060-deep-mining]] — Drone arc reaches 2.5 cells and cuts up to 8 blocks at once, about two rows deep. Status todo.
+- [[task-061-minimap]] — Round minimap at the top left: seen cells of rock, floor and heal veins, markers for miner, console, chest and shuttle. Status todo.
+- [[task-062-alert-bar-x2]] — Alert bar twice as wide and twice as tall, its icons scaled and repositioned. Status todo.

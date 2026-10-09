@@ -17,6 +17,7 @@ kind: note
 - Robots knocked into the void by explosions or shotgun knockback.
 - Ice, burn/DoT, other elements and immunities, elemental reactions (explosion, lightning, tornado).
 - Projectile behaviors: bounce, homing, explode on impact.
+- Ore scattered through the rock (owner 2026-10-08, next task, after the DRGS video): nuggets embedded in rock blocks so ore drips during the whole dig (about 3 chunks per second in DRGS) instead of 3 × 3 ore veins.
 
 ## Art
 - Block faces that depend on neighbours (owner, after handover-2026-10-06; for the final block assets): a face with no neighbouring block gets a decoration layer so the wall is not smooth. One mesh variant per count of free faces (1, 2, 3, 4), rotated per instance toward the free sides instead of one mesh per direction; 2 free faces needs a corner and an opposite variant. Later: cracked blocks near the wall edge.
