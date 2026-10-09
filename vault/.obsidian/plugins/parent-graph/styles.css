@@ -1,0 +1,75 @@
+.parent-graph-container {
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+  padding: 0;
+}
+
+.parent-graph-svg {
+  display: block;
+  width: 100%;
+  height: 100%;
+  cursor: grab;
+  background: var(--background-primary);
+}
+
+.parent-graph-svg:active {
+  cursor: grabbing;
+}
+
+/* Edges */
+.parent-graph-link {
+  stroke: var(--graph-line, #4c4c4c);
+  stroke-opacity: 0.6;
+  stroke-width: 1px;
+}
+
+.parent-graph-link.is-highlight {
+  stroke-opacity: 1;
+  stroke-width: 2px;
+}
+
+/* Nodes */
+.parent-graph-node {
+  cursor: pointer;
+}
+
+.parent-graph-node circle {
+  stroke: var(--background-primary);
+  stroke-width: 1px;
+}
+
+.parent-graph-node-dead circle {
+  stroke: #999999;
+  stroke-width: 1.5px;
+}
+
+/* Labels */
+.parent-graph-label {
+  fill: var(--text-normal);
+  pointer-events: none;
+  user-select: none;
+}
+
+.parent-graph-label-muted {
+  fill: #999999;
+  font-style: italic;
+}
+
+/* Hover fade */
+.parent-graph-node.is-faded,
+.parent-graph-link.is-faded {
+  opacity: 0.15;
+  transition: opacity 0.15s ease;
+}
+
+.parent-graph-node,
+.parent-graph-link {
+  transition: opacity 0.15s ease;
+}
+
+/* Empty state */
+.parent-graph-empty {
+  fill: var(--text-muted);
+  font-size: 14px;
+}
