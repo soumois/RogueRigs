@@ -25,7 +25,7 @@ kind: note
 
 ## Measuring
 - The owner's normal PC profile (browser, Discord, Steam open) is the reference for measurements: do not ask him to close apps. Note any 60 Hz pacing: frame times then show the display interval, only game-thread time is usable.
-- A background game made the 025 runs look twice slower; since 2026-10-09 the owner's everyday apps are the reference profile (see below), only a running game is worth noting.
+- A background game made the 025 runs look twice slower; since 2026-10-09 the owner's everyday apps are the reference profile (see the line above), only a running game is worth noting.
 - Stress procedures and history: [[stress-test-m1]], [[stress-opt-m1]], [[stress-grid-cells]].
 
 ## Owner (Pierre)
