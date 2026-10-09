@@ -382,6 +382,12 @@ task-061-02-bp-minimap  reference/tasks/task-061-minimap/task-061-02-bp-minimap.
 task-061-minimap  reference/tasks/task-061-minimap.md
 task-062-01-alert-bar-x2  reference/tasks/task-062-alert-bar-x2/task-062-01-alert-bar-x2.md
 task-062-alert-bar-x2  reference/tasks/task-062-alert-bar-x2.md
+task-063-01-perf-session  reference/tasks/task-063-perf-session/task-063-01-perf-session.md
+task-063-perf-session  reference/tasks/task-063-perf-session.md
+task-064-01-minimap-circle-reveal  reference/tasks/task-064-minimap-circle-reveal/task-064-01-minimap-circle-reveal.md
+task-064-minimap-circle-reveal  reference/tasks/task-064-minimap-circle-reveal.md
+task-065-01-diagonal-dig  reference/tasks/task-065-diagonal-dig/task-065-01-diagonal-dig.md
+task-065-diagonal-dig  reference/tasks/task-065-diagonal-dig.md
 tasks-index  reference/tasks/tasks-index.md
 tech-index  reference/tech/tech-index.md
 terrain-index  reference/gdd/terrain/terrain-index.md

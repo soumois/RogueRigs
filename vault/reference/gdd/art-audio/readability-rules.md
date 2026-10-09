@@ -24,6 +24,8 @@ applies_to: art, vfx, level-design, image prompts
 - Minimap (owner 2026-10-08): 200 px circle at the top left, centred on the miner, about 40 cells of radius; shows rock, floor and heal veins for cells already seen only; markers for the miner, the console (teal), the bonus chest (gold) and the shuttle (white); no enemies.
 - Alert bar (owner 2026-10-08): twice as wide and twice as tall as before, its event icons scaled with it.
 
+- Minimap reveal (owner 2026-10-09, provisional radius): cells are revealed in a circle of 18 cells around the miner (about the short half of the screen), the same in every direction, not the camera trapezoid.
+
 ## Relations
 - [[art-audio-index]] — parent index.
 - [[color-code]] — the current palette.

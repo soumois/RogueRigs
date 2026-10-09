@@ -29,6 +29,8 @@ status: approved
 
 - Depth (owner 2026-10-08, to test): the arc reaches 2.5 cells (was 1.5) and cuts up to 8 blocks at once (was 4), about two rows deep, at the same speed per block.
 
+- Diagonal contact (owner 2026-10-09): when the miner touches rock but no block falls inside the arc (e.g. moving diagonally into a corner of two blocks), the drone still digs the nearest touching block(s), never nothing.
+
 ## Relations
 - [[player-index]] — parent index.
 - [[miner]] — who it follows.
