@@ -7,7 +7,7 @@
 #include "Grid/RRArenaGrid.h"
 #include "RRMinimap.generated.h"
 
-class APlayerController;
+class AActor;
 class ARRMiner;
 class URRRunFlowSubsystem;
 class UTexture2D;
@@ -25,6 +25,11 @@ struct FRRMinimapConfig
 	/** Radius of the circle in cells (owner: about 40). The widget shows the texture from MinerPosition - radius to + radius. */
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Minimap", meta = (ClampMin = "1"))
 	float ViewRadiusCells = 40.f;
+
+	/** Reveal radius in cells around the miner cell (readability-rules Minimap reveal, provisional 18): a cell whose center lies
+	 *  within this distance of the miner cell center becomes seen. Same in every direction (not the camera footprint). */
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Minimap", meta = (ClampMin = "0"))
+	float RevealRadiusCells = 18.f;
 
 	/** Rock, ore, special ore and barrel cells (breakable rock: light grey tinted violet). */
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Minimap")
@@ -104,8 +109,8 @@ struct FRRMinimapState
 
 /**
  * Minimap data owned by URRHUDWidget: a transient UTexture2D (B8G8R8A8, sRGB, nearest filter), one pixel per grid cell,
- * UnseenColor until the cell has been inside the owning player's camera view once, then its terrain color. Updates are cheap:
- * the seen pass runs only when the camera footprint covers another cell rectangle, a destroyed cell rewrites one pixel, and the
+ * UnseenColor until the cell has been within RevealRadiusCells of the miner once, then its terrain color. Updates are cheap:
+ * the seen pass runs only when the miner enters another cell, a destroyed cell rewrites one pixel, and the
  * changed pixels of a frame go to the GPU as one dirty rectangle (UpdateTextureRegions), nothing on a frame without change.
  */
 UCLASS()
@@ -120,8 +125,9 @@ public:
 	/** Unbinds from the grid. */
 	void Shutdown();
 
-	/** Per frame: marks the cells inside Controller's camera view as seen (when its footprint changed) and flushes changed pixels. */
-	void Tick(const APlayerController* Controller);
+	/** Per frame: marks the cells within RevealRadiusCells of RevealCenter's cell as seen (when that cell changed) and flushes
+	 *  changed pixels. RevealCenter is the miner (null: no seen pass). */
+	void Tick(const AActor* RevealCenter);
 
 	/** The minimap texture (null before Initialize). */
 	UTexture2D* GetTexture() const { return Texture; }
@@ -135,7 +141,7 @@ public:
 	/** World location to texture pixels (float), see FRRMinimapState for the orientation. */
 	FVector2D WorldToTexture(const FVector& WorldLocation) const;
 
-	/** True once Cell has been inside the camera view. */
+	/** True once Cell has been within the reveal radius of the miner. */
 	bool IsCellSeen(FIntPoint Cell) const;
 
 	/** Marks Cell as seen and writes its color (no-op when outside the grid or already seen). Used by the seen pass. */
@@ -155,8 +161,8 @@ protected:
 	/** Writes Color at Cell's pixel and grows the dirty rectangle. */
 	void WritePixel(FIntPoint Cell, const FColor& Color);
 
-	/** Marks the cells whose centers lie in the ground footprint of Controller's camera view, when that footprint changed. */
-	void UpdateSeenCells(const APlayerController* Controller);
+	/** Marks the cells whose centers lie within RevealRadiusCells of RevealCenter's cell center, when that cell changed. */
+	void UpdateSeenCells(const AActor* RevealCenter);
 
 	/** Sends the dirty rectangle of Pixels to the texture, then clears it. */
 	void FlushDirtyPixels();
@@ -186,6 +192,6 @@ protected:
 	/** See DirtyMin. */
 	FIntPoint DirtyMax = FIntPoint::ZeroValue;
 
-	/** Cell rectangle of the last seen pass (min, max inclusive); the pass is skipped while it stays the same. */
-	FIntRect LastSeenRect = FIntRect(0, 0, -1, -1);
+	/** Center cell of the last seen pass; the pass is skipped while the miner stays on it. */
+	FIntPoint LastSeenCell = FIntPoint(INDEX_NONE, INDEX_NONE);
 };

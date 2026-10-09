@@ -3,38 +3,12 @@
 #include "UI/RRMinimap.h"
 
 #include "Engine/Texture2D.h"
-#include "GameFramework/PlayerController.h"
+#include "GameFramework/Actor.h"
 #include "Objectives/RRBonusChest.h"
 #include "Objectives/RRConsole.h"
 #include "Objectives/RRRunFlowSubsystem.h"
 #include "Objectives/RRShuttle.h"
 #include "Player/RRMiner.h"
-
-namespace RRMinimap
-{
-	/** Ray length used for a view corner that never meets the floor plane (looking at or above the horizon). */
-	constexpr float HorizonRayLength = 20000.f;
-
-	/** 2D cross product of (B - A) and (P - A). */
-	static float Cross2D(const FVector2D& A, const FVector2D& B, const FVector2D& P)
-	{
-		return (B.X - A.X) * (P.Y - A.Y) - (B.Y - A.Y) * (P.X - A.X);
-	}
-
-	/** True when P lies inside the convex quad Corners (either winding), edges included. */
-	static bool IsInsideConvexQuad(const FVector2D (&Corners)[4], const FVector2D& P)
-	{
-		bool bHasPositive = false;
-		bool bHasNegative = false;
-		for (int32 Index = 0; Index < 4; ++Index)
-		{
-			const float Value = Cross2D(Corners[Index], Corners[(Index + 1) % 4], P);
-			bHasPositive |= Value > 0.f;
-			bHasNegative |= Value < 0.f;
-		}
-		return !(bHasPositive && bHasNegative);
-	}
-}
 
 bool URRMinimap::Initialize(ARRArenaGrid* InGrid, const FRRMinimapConfig& InConfig)
 {
@@ -54,7 +28,7 @@ bool URRMinimap::Initialize(ARRArenaGrid* InGrid, const FRRMinimapConfig& InConf
 	Pixels.Init(Config.UnseenColor, TextureWidth * TextureHeight);
 	SeenCells.Init(false, GridSize.X * GridSize.Y);
 	DirtyMin = DirtyMax = FIntPoint::ZeroValue;
-	LastSeenRect = FIntRect(0, 0, -1, -1);
+	LastSeenCell = FIntPoint(INDEX_NONE, INDEX_NONE);
 
 	const TConstArrayView64<uint8> InitialData(reinterpret_cast<const uint8*>(Pixels.GetData()), static_cast<int64>(Pixels.Num()) * sizeof(FColor));
 	Texture = UTexture2D::CreateTransient(TextureWidth, TextureHeight, PF_B8G8R8A8, MakeUniqueObjectName(this, UTexture2D::StaticClass(), TEXT("MinimapTexture")), InitialData);
@@ -83,13 +57,13 @@ void URRMinimap::Shutdown()
 	Grid.Reset();
 }
 
-void URRMinimap::Tick(const APlayerController* Controller)
+void URRMinimap::Tick(const AActor* RevealCenter)
 {
 	if (!Texture || !Grid.IsValid())
 	{
 		return;
 	}
-	UpdateSeenCells(Controller);
+	UpdateSeenCells(RevealCenter);
 	FlushDirtyPixels();
 }
 
@@ -225,67 +199,36 @@ void URRMinimap::WritePixel(FIntPoint Cell, const FColor& Color)
 	}
 }
 
-void URRMinimap::UpdateSeenCells(const APlayerController* Controller)
+void URRMinimap::UpdateSeenCells(const AActor* RevealCenter)
 {
 	const ARRArenaGrid* BoundGrid = Grid.Get();
-	if (!Controller || !BoundGrid || !Controller->PlayerCameraManager)
+	if (!RevealCenter || !BoundGrid)
 	{
 		return;
 	}
-	int32 ViewportWidth = 0;
-	int32 ViewportHeight = 0;
-	Controller->GetViewportSize(ViewportWidth, ViewportHeight);
-	if (ViewportWidth <= 0 || ViewportHeight <= 0)
+	const FIntPoint Center = BoundGrid->GetCellAtWorld(RevealCenter->GetActorLocation());
+	if (Center == LastSeenCell)
 	{
 		return;
 	}
+	LastSeenCell = Center;
 
-	// Ground footprint of the view: the four viewport corners deprojected onto the floor plane, in grid cell units.
-	const FTransform& GridTransform = BoundGrid->GetActorTransform();
-	const float FloorZ = GridTransform.GetLocation().Z;
-	const float CellSize = BoundGrid->GetCellSize();
-	const FVector2D ScreenCorners[4] = {
-		FVector2D(0.f, 0.f), FVector2D(ViewportWidth, 0.f), FVector2D(ViewportWidth, ViewportHeight), FVector2D(0.f, ViewportHeight)};
-	FVector2D Corners[4];
-	FVector2D Min(TNumericLimits<float>::Max());
-	FVector2D Max(TNumericLimits<float>::Lowest());
-	for (int32 Index = 0; Index < 4; ++Index)
+	// Disc of cell centers within the radius of the center cell's center: per row, the half-width is floor(sqrt(R^2 - dY^2)),
+	// so the pass is about (2R + 1)^2 * pi / 4 bit tests, only when the miner enters another cell.
+	const float Radius = FMath::Max(0.f, Config.RevealRadiusCells);
+	const int32 RadiusCells = FMath::FloorToInt32(Radius);
+	const float RadiusSquared = Radius * Radius;
+	const int32 MinY = FMath::Max(0, Center.Y - RadiusCells);
+	const int32 MaxY = FMath::Min(GridSize.Y - 1, Center.Y + RadiusCells);
+	for (int32 Y = MinY; Y <= MaxY; ++Y)
 	{
-		FVector Origin;
-		FVector Direction;
-		if (!Controller->DeprojectScreenPositionToWorld(ScreenCorners[Index].X, ScreenCorners[Index].Y, Origin, Direction))
+		const int32 DeltaY = Y - Center.Y;
+		const int32 HalfWidth = FMath::FloorToInt32(FMath::Sqrt(FMath::Max(0.f, RadiusSquared - static_cast<float>(DeltaY * DeltaY))));
+		const int32 MinX = FMath::Max(0, Center.X - HalfWidth);
+		const int32 MaxX = FMath::Min(GridSize.X - 1, Center.X + HalfWidth);
+		for (int32 X = MinX; X <= MaxX; ++X)
 		{
-			return;
-		}
-		FVector Ground = Origin + Direction * RRMinimap::HorizonRayLength;
-		if (Direction.Z < -KINDA_SMALL_NUMBER)
-		{
-			const float Distance = (FloorZ - Origin.Z) / Direction.Z;
-			if (Distance > 0.f)
-			{
-				Ground = Origin + Direction * FMath::Min(Distance, RRMinimap::HorizonRayLength);
-			}
-		}
-		const FVector Local = GridTransform.InverseTransformPosition(Ground) / CellSize;
-		Corners[Index] = FVector2D(Local.X, Local.Y);
-		Min = Min.ComponentMin(Corners[Index]);
-		Max = Max.ComponentMax(Corners[Index]);
-	}
-
-	const FIntRect Rect(
-		FMath::Max(0, FMath::FloorToInt32(Min.X)), FMath::Max(0, FMath::FloorToInt32(Min.Y)),
-		FMath::Min(GridSize.X - 1, FMath::FloorToInt32(Max.X)), FMath::Min(GridSize.Y - 1, FMath::FloorToInt32(Max.Y)));
-	if (Rect == LastSeenRect)
-	{
-		return;
-	}
-	LastSeenRect = Rect;
-
-	for (int32 Y = Rect.Min.Y; Y <= Rect.Max.Y; ++Y)
-	{
-		for (int32 X = Rect.Min.X; X <= Rect.Max.X; ++X)
-		{
-			if (!SeenCells[Y * GridSize.X + X] && RRMinimap::IsInsideConvexQuad(Corners, FVector2D(X + 0.5f, Y + 0.5f)))
+			if (!SeenCells[Y * GridSize.X + X])
 			{
 				MarkCellSeen(FIntPoint(X, Y));
 			}

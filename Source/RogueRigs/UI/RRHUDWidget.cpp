@@ -518,7 +518,8 @@ void URRHUDWidget::UpdateMinimap()
 		}
 		OnMinimapTextureReady(Minimap->GetTexture());
 	}
-	Minimap->Tick(GetOwningPlayer());
+	const AActor* RevealCenter = BoundMiner.Get();
+	Minimap->Tick(RevealCenter ? RevealCenter : GetOwningPlayerPawn());
 }
 
 UTexture2D* URRHUDWidget::GetMinimapTexture() const
