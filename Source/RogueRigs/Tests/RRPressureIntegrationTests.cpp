@@ -49,7 +49,7 @@ namespace RRPressureIntegrationTests
 	const FVector2D PressureViewHalfExtent(1600.f, 1000.f);
 
 	/** Width (px) of the WBP_HUD alert bar: an icon's RenderTranslation X is Position x this (wbp-hud). */
-	constexpr float PressureAlertBarWidth = 300.f;
+	constexpr float PressureAlertBarWidth = 600.f;
 
 	/** Frame length of the tests. */
 	constexpr float PressureFrame = 1.f / 60.f;
@@ -489,7 +489,7 @@ bool FRRIntegrationPressureHordeBannerTest::RunTest(const FString& Parameters)
 			return;
 		}
 		TestTrue(*FString::Printf(TEXT("%s icon shown"), What), IsHUDWidgetShown(Icon));
-		TestNearlyEqual(*FString::Printf(TEXT("%s icon at Position x 300 (%.3f)"), What, Event->Position), static_cast<float>(Icon->GetRenderTransform().Translation.X),
+		TestNearlyEqual(*FString::Printf(TEXT("%s icon at Position x 600 (%.3f)"), What, Event->Position), static_cast<float>(Icon->GetRenderTransform().Translation.X),
 			Event->Position * PressureAlertBarWidth, 0.5f);
 		TestNearlyEqual(*FString::Printf(TEXT("%s icon opacity (done %d)"), What, Event->bDone ? 1 : 0), Icon->GetRenderOpacity(), Event->bDone ? 0.35f : 1.f, 0.01f);
 	};
