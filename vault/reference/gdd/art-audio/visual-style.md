@@ -12,6 +12,7 @@ status: approved
 - Blocks are always low (no occlusion); the top face is the most visible face.
 - Clean floor; arena edge is a cliff into space with stars and a planet.
 - The Rigs' side looks repaired and bolted together; corporate robots look clean.
+- No textures, no UI in reference art; strong directional light with lifted shadows; floor clean with no pebbles so robots, pickups and blocks stand out.
 - Key art: `vault/assets/keyart.jpg` (readability reference, not a fidelity promise).
 - M1 is grey box: plain cubes colored by block type after [[color-code]]; final assets come later ([[sys-grid]]).
 
@@ -19,3 +20,4 @@ status: approved
 - [[art-audio-index]] — parent index.
 - [[color-code]] — colors.
 - [[asset-pipeline]] — how assets are made.
+- [[art-prompts]] — exact prompts and locked phrases that produce this style.

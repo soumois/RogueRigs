@@ -14,8 +14,9 @@ kind: doc
 6. Import and Blueprint setup through Unreal MCP (BP agent).
 
 - Miner reference sheet: use front (and back) only; the side view is inconsistent with the T-pose.
-- References: `vault/assets/keyart.jpg`, `enemies-lineup.jpg`, `rigs-lineup.jpg`.
+- References: `vault/assets/keyart.jpg`, `enemies-lineup.jpg`, `rigs-lineup.jpg`, `miner-turnaround.jpg`.
 
 ## Relations
 - [[pipelines-index]] — parent index.
 - [[color-code]] — colors every asset must follow.
+- [[art-prompts]] — verbatim source-image prompts for step 1.
