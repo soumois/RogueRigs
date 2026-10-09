@@ -389,6 +389,8 @@ task-064-01-minimap-circle-reveal  reference/tasks/task-064-minimap-circle-revea
 task-064-minimap-circle-reveal  reference/tasks/task-064-minimap-circle-reveal.md
 task-065-01-diagonal-dig  reference/tasks/task-065-diagonal-dig/task-065-01-diagonal-dig.md
 task-065-diagonal-dig  reference/tasks/task-065-diagonal-dig.md
+task-066-01-async-flow-field  reference/tasks/task-066-async-flow-field/task-066-01-async-flow-field.md
+task-066-async-flow-field  reference/tasks/task-066-async-flow-field.md
 tasks-index  reference/tasks/tasks-index.md
 tech-index  reference/tech/tech-index.md
 terrain-index  reference/gdd/terrain/terrain-index.md
