@@ -584,6 +584,7 @@ void ARRMiner::UpdateDigTrigger(const FVector& MoveInput)
 	const int32 Span = FMath::CeilToInt32(ContactDistance / FMath::Max(CellSize, 1.0));
 	const FIntPoint MinerCell = ArenaGrid->GetCellAtWorld(Location);
 	FVector NormalSum = FVector::ZeroVector;
+	TArray<FIntPoint> TouchingCells;
 	for (int32 Y = MinerCell.Y - Span; Y <= MinerCell.Y + Span; ++Y)
 	{
 		for (int32 X = MinerCell.X - Span; X <= MinerCell.X + Span; ++X)
@@ -601,6 +602,7 @@ void ARRMiner::UpdateDigTrigger(const FVector& MoveInput)
 				continue;
 			}
 			bTouchingRock = true;
+			TouchingCells.Add(FIntPoint(X, Y));
 			// Inside the square (overlap): push the normal away from the block center instead.
 			const FVector Normal = Offset.SizeSquared2D() > UE_KINDA_SMALL_NUMBER ? Offset.GetSafeNormal2D() : (Location - Center).GetSafeNormal2D();
 			NormalSum += Normal;
@@ -628,5 +630,6 @@ void ARRMiner::UpdateDigTrigger(const FVector& MoveInput)
 		ArcDirection = MoveDirection;
 	}
 
-	Drone->RequestArcDig(ArenaGrid, ArcDirection);
+	// The touching cells let the drone dig the nearest one when the steered arc misses them all (task-065-01).
+	Drone->RequestArcDig(ArenaGrid, ArcDirection, TouchingCells);
 }

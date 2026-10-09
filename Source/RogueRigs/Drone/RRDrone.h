@@ -87,10 +87,18 @@ public:
 	 * (SelectArcCells) from the miner's current location; blocks entering it start shaking (OnDigBlockStarted), blocks
 	 * leaving it stop (OnDigBlockStopped, damage kept). Enters Dig when the arc holds a block; an empty arc leaves Dig.
 	 * Returns true when the drone digs at least one block afterwards; false without a miner or grid, with a zero
-	 * direction, with an empty arc, or while hacking (it cannot dig and hack at once).
+	 * direction, with an empty arc, or while hacking (it cannot dig and hack at once). No contact fallback: see the overload.
 	 */
 	UFUNCTION(BlueprintCallable, Category = "Drone|Dig")
 	bool RequestArcDig(ARRArenaGrid* Grid, FVector ArcDirection);
+
+	/**
+	 * Same as RequestArcDig, with the block cells the miner touches (task-065-01). When the arc is empty (the move
+	 * direction steers the cone away from every touching block, e.g. moving diagonally into a corner or along a wall),
+	 * the drone digs the touching block nearest the arc direction instead (SelectContactFallbackCells), so contact
+	 * always digs at least one block. Called by ARRMiner::UpdateDigTrigger.
+	 */
+	bool RequestArcDig(ARRArenaGrid* Grid, FVector ArcDirection, const TArray<FIntPoint>& TouchingCells);
 
 	/** Stops digging (miner no longer touching rock): every dug block stops shaking and keeps its damage; back to Orbit. No effect outside Dig. */
 	UFUNCTION(BlueprintCallable, Category = "Drone|Dig")
@@ -104,6 +112,14 @@ public:
 	 * a grid or with a zero direction. Without an owner miner the capsule radius is 0.
 	 */
 	int32 SelectArcCells(const ARRArenaGrid* Grid, const FVector& MinerLocation, const FVector& ArcDirection, TArray<FIntPoint>& OutCells) const;
+
+	/**
+	 * Contact fallback for an empty arc: fills OutCells with the block cells of TouchingCells whose direction from
+	 * MinerLocation is closest to ArcDirection (largest cosine; cells tied within 0.01 all kept, so a symmetric corner
+	 * gives both), at most MaxArcBlocks, sorted by lower Y then lower X. 2D only. Returns the count; 0 without a grid,
+	 * with a zero direction or without a touching block.
+	 */
+	int32 SelectContactFallbackCells(const ARRArenaGrid* Grid, const FVector& MinerLocation, const FVector& ArcDirection, const TArray<FIntPoint>& TouchingCells, TArray<FIntPoint>& OutCells) const;
 
 	/**
 	 * Links the drone to Target (an objective actor) and enters Hack: stops a dig in progress. Called every tick by the

@@ -137,6 +137,11 @@ void ARRDrone::StopHack(AActor* Target)
 
 bool ARRDrone::RequestArcDig(ARRArenaGrid* Grid, FVector ArcDirection)
 {
+	return RequestArcDig(Grid, ArcDirection, TArray<FIntPoint>());
+}
+
+bool ARRDrone::RequestArcDig(ARRArenaGrid* Grid, FVector ArcDirection, const TArray<FIntPoint>& TouchingCells)
+{
 	// The drone cannot dig and hack at the same time: the objective releases it first.
 	if (State == ERRDroneState::Hack || !IsValid(OwnerMiner) || !IsValid(Grid))
 	{
@@ -145,7 +150,13 @@ bool ARRDrone::RequestArcDig(ARRArenaGrid* Grid, FVector ArcDirection)
 
 	const FVector Direction = FVector(ArcDirection.X, ArcDirection.Y, 0.0).GetSafeNormal();
 	TArray<FIntPoint> NewCells;
-	if (Direction.IsZero() || SelectArcCells(Grid, OwnerMiner->GetActorLocation(), Direction, NewCells) == 0)
+	// Empty arc while touching rock (the cone misses every touching block): dig the touching block nearest the arc
+	// direction instead, never nothing (task-065-01).
+	if (!Direction.IsZero() && SelectArcCells(Grid, OwnerMiner->GetActorLocation(), Direction, NewCells) == 0)
+	{
+		SelectContactFallbackCells(Grid, OwnerMiner->GetActorLocation(), Direction, TouchingCells, NewCells);
+	}
+	if (Direction.IsZero() || NewCells.Num() == 0)
 	{
 		ReleaseDig();
 		return false;
@@ -264,6 +275,51 @@ int32 ARRDrone::SelectArcCells(const ARRArenaGrid* Grid, const FVector& MinerLoc
 		OutCells.Add(Candidates[Index].Cell);
 	}
 	return Count;
+}
+
+int32 ARRDrone::SelectContactFallbackCells(const ARRArenaGrid* Grid, const FVector& MinerLocation, const FVector& ArcDirection, const TArray<FIntPoint>& TouchingCells, TArray<FIntPoint>& OutCells) const
+{
+	OutCells.Reset();
+	const FVector Direction = FVector(ArcDirection.X, ArcDirection.Y, 0.0).GetSafeNormal();
+	if (!Grid || Direction.IsZero() || MaxArcBlocks <= 0)
+	{
+		return 0;
+	}
+
+	const FVector Origin(MinerLocation.X, MinerLocation.Y, 0.0);
+	TArray<TPair<FIntPoint, double>> Candidates;
+	double BestCosine = -2.0;
+	for (const FIntPoint& Cell : TouchingCells)
+	{
+		if (!Grid->IsBlockCell(Cell) || Candidates.ContainsByPredicate([&Cell](const TPair<FIntPoint, double>& Entry) { return Entry.Key == Cell; }))
+		{
+			continue;
+		}
+		const FVector Center = Grid->GetCellCenter(Cell.X, Cell.Y);
+		const FVector FromMiner = (FVector(Center.X, Center.Y, 0.0) - Origin).GetSafeNormal();
+		const double Cosine = FromMiner.IsZero() ? 1.0 : FVector::DotProduct(FromMiner, Direction);
+		Candidates.Add({ Cell, Cosine });
+		BestCosine = FMath::Max(BestCosine, Cosine);
+	}
+
+	// Ties within ContactFallbackTieCosine are kept together, so a symmetric corner digs both of its blocks.
+	constexpr double ContactFallbackTieCosine = 0.01;
+	for (const TPair<FIntPoint, double>& Entry : Candidates)
+	{
+		if (Entry.Value >= BestCosine - ContactFallbackTieCosine)
+		{
+			OutCells.Add(Entry.Key);
+		}
+	}
+	OutCells.Sort([](const FIntPoint& Left, const FIntPoint& Right)
+	{
+		return Left.Y != Right.Y ? Left.Y < Right.Y : Left.X < Right.X;
+	});
+	if (OutCells.Num() > MaxArcBlocks)
+	{
+		OutCells.SetNum(MaxArcBlocks);
+	}
+	return OutCells.Num();
 }
 
 FVector ARRDrone::GetDigTargetPoint(FIntPoint Cell) const

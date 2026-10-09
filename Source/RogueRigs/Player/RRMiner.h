@@ -259,7 +259,8 @@ protected:
 	 * Dig trigger, run each tick with the move input of this frame (zero when idle): contact = a block cell whose square
 	 * (2D) is within the capsule radius + DigContactMargin of the miner's location. Wall direction = opposite of the mean
 	 * contact normal (from the nearest block point to the miner). Arc direction = MoveInput when its length exceeds
-	 * DigMinMoveInput and it points into the wall, else the wall direction. Calls RequestArcDig on contact, ReleaseDig
+	 * DigMinMoveInput and it points into the wall, else the wall direction. Calls RequestArcDig (with the touching cells,
+	 * for the drone's empty-arc fallback) on contact, ReleaseDig
 	 * otherwise; sets bTouchingRock. Assumes an unrotated grid.
 	 */
 	void UpdateDigTrigger(const FVector& MoveInput);
