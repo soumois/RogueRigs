@@ -3,7 +3,7 @@ id: task-063-perf-session
 description: "Global task: Performance session on a quiet PC: -game stress at 67 uu and the flow-field budget tests, compared with the last results."
 parent: tasks-index
 kind: task
-status: in-progress
+status: done
 ---
 # Performance session
 
@@ -13,8 +13,8 @@ status: in-progress
 - gdd_check: GDD updated by the Orchestrator (owner 2026-10-07, fifth test). No open value.
 - confirmed_by_owner: yes (2026-10-07)
 - milestone: M2
-- next_step: task-063-01-perf-session
-- result: open
+- next_step: none
+- result: Done. Measurements under load and a 60 Hz cap; flow-field budget failure is CPU load, not a regression; stale pressure test found.
 
 ## Subtasks
 1. task-063-01-perf-session — cpp

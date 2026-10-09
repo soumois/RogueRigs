@@ -123,6 +123,7 @@ kind: note
 | [[task-058-01-xp-trail-visible]] | sonnet | 1 | 0k | 47k | 728k | 11k |
 | [[task-061-02-bp-minimap]] | sonnet | 2 | 0k | 100k | 3758k | 41k |
 | [[task-062-01-alert-bar-x2]] | sonnet | 1 | 0k | 49k | 843k | 12k |
+| [[task-063-01-perf-session]] | opus | 1 | 0k | 232k | 1527k | 20k |
 
 ## Totals
 | Scope | Input | Cache write | Cache read | Output |

@@ -3,7 +3,7 @@ id: task-064-minimap-circle-reveal
 description: "Global task: Minimap reveal is a circle of 18 cells around the miner, the same in every direction."
 parent: tasks-index
 kind: task
-status: todo
+status: in-progress
 ---
 # Circular minimap reveal
 

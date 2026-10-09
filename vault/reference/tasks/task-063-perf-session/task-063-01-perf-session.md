@@ -3,7 +3,7 @@ id: task-063-01-perf-session
 description: "Performance session on a quiet PC: -game stress at 67 uu and the flow-field budget tests, compared with the last results."
 parent: task-063-perf-session
 kind: task
-status: in-progress
+status: done
 ---
 # Performance session
 
@@ -15,11 +15,11 @@ status: in-progress
 - done_when: stress table and budget test results reported and written in stress-grid-cells; lint clean.
 - editor_state: closed
 - token_ceiling: 60000
-- model: open
-- tokens: open
-- runs: open
+- model: opus
+- tokens: input 70, cache write 232351, cache read 1527200, output 19551
+- runs: 1
 - milestone: M2
-- result: open
+- result: PC not quiet (Brave, Discord, Steam, Epic, Creative Cloud, uTorrent, NVIDIA overlay, other Claude sessions; CPU 53–61 % idle) and -game capped at 60 Hz by the external monitor, so frame times are not comparable with task-029-07; all runs pass the 25 ms p99, averages sit on the 16.67 ms cap; game thread at 100 robots chain 7.00 ms, dig 7.63 ms (6.22, 6.33 in task-029-02). FlowField.BudgetAt67uu 0/5 (rebuild 4.7–6.7 ms vs 1.8–2.6 documented, goal age 33–38 > 30): CPU load, not a regression (flow field code unchanged since task-029-07, test spawns no robots). DestroyedRockOpensPocket 5/5. Full run 193/195: BudgetAt67uu and PressureHordeBanner (stale since task-062-01, fixed in task-062-02). Clean numbers need the external monitor unplugged and background apps closed. Commit 86856cf.
 
 ## Relations
 - [[task-063-perf-session]] — parent global task.

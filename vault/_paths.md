@@ -381,6 +381,7 @@ task-061-01-minimap  reference/tasks/task-061-minimap/task-061-01-minimap.md
 task-061-02-bp-minimap  reference/tasks/task-061-minimap/task-061-02-bp-minimap.md
 task-061-minimap  reference/tasks/task-061-minimap.md
 task-062-01-alert-bar-x2  reference/tasks/task-062-alert-bar-x2/task-062-01-alert-bar-x2.md
+task-062-02-pressure-test  reference/tasks/task-062-alert-bar-x2/task-062-02-pressure-test.md
 task-062-alert-bar-x2  reference/tasks/task-062-alert-bar-x2.md
 task-063-01-perf-session  reference/tasks/task-063-perf-session/task-063-01-perf-session.md
 task-063-perf-session  reference/tasks/task-063-perf-session.md
