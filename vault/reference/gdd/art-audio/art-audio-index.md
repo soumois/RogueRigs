@@ -12,5 +12,6 @@ kind: note
 - [[color-code]] — the color of every element.
 - [[readability-rules]] — rules that keep future biomes readable.
 - [[audio-direction]] — sound sourcing and music.
+- [[art-style-guide]] — applicable rules for new assets: shapes, factions, materials, effects, forbidden elements, formats.
 - [[art-prompts]] — verbatim image prompts and the method that produced the key art; open to generate new art.
 - [[dialogue-tone]] — how the Rigs talk; bark rules and examples.

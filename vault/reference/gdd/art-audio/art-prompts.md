@@ -35,5 +35,6 @@ Reference images are generated in ChatGPT image generation. The prompts are stor
 - [[art-prompts-arena-final]] — final arena prompt and the miner pose fix.
 - [[art-prompts-robots]] — corporate robot sheet and its four corrections.
 - [[art-prompts-rigs]] — miner, drone, turret sheet, drone fix, T-pose.
+- [[art-style-guide]] — the general style rules derived from these prompts.
 - [[visual-style]] — the style these prompts produce.
 - [[asset-pipeline]] — where the images go next (Meshy, Tripo).

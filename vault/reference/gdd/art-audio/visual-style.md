@@ -20,4 +20,5 @@ status: approved
 - [[art-audio-index]] — parent index.
 - [[color-code]] — colors.
 - [[asset-pipeline]] — how assets are made.
+- [[art-style-guide]] — detailed rules for shapes, factions and effects.
 - [[art-prompts]] — exact prompts and locked phrases that produce this style.
