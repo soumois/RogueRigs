@@ -120,6 +120,7 @@ kind: note
 | [[task-059-01-damage-numbers-no-merge]] | opus | 1 | 0k | 213k | 2835k | 38k |
 | [[task-060-01-deep-mining]] | opus | 1 | 0k | 153k | 1244k | 19k |
 | [[task-061-01-minimap]] | opus | 1 | 0k | 135k | 1217k | 29k |
+| [[task-058-01-xp-trail-visible]] | sonnet | 1 | 0k | 47k | 728k | 11k |
 
 ## Totals
 | Scope | Input | Cache write | Cache read | Output |

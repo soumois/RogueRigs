@@ -3,7 +3,7 @@ id: task-061-02-bp-minimap
 description: "WBP_HUD round 200 px minimap at the top left from the task-061-01 texture and markers."
 parent: task-061-minimap
 kind: task
-status: todo
+status: in-progress
 ---
 # Minimap widget
 
