@@ -85,6 +85,27 @@ Same commands as task-029-07, HEAD 94abe5e. PC not quiet: Brave (many tabs), Dis
 - Full headless run: 193 pass, 2 fail: `BudgetAt67uu`, `Integration.PressureHordeBanner` (icon positions twice the expected x, from the alert bar doubled in task-062-01, unrelated to the flow field).
 - Verdict, load: `RRFlowFieldSubsystem` and `RRFlowFieldTests.cpp` are unchanged since task-029-02 (git diff from 9f1fd69); the test spawns no robot and destroys cells directly, so tasks 036, 041, 046 and 060 are not in its path. The same BFS takes 4.7–6.7 ms against 1.8–2.6 ms at task-029-02, and the goal age scales with it (≈ 13 frames then): the 30-frame check is wall-clock bound and fails on a loaded CPU.
 
+## Worker-thread flow field in game (task-066-02, 2026-10-09)
+Same commands as task-063-01, HEAD 659833f, `rr.FlowField.Async 1` (default, [[sys-flow-field]]). Owner's normal player profile, nothing closed: Brave, Discord, Steam, Epic launcher, Creative Cloud, uTorrent, NVIDIA Share, Armoury Crate, Logitech G Hub, NordVPN, ShareX, WhatsApp, Parsec, McAfee and other Claude sessions running; CPU load 0–23 % idle, Performance plan, external 60 Hz monitor on the NVIDIA GPU. This time the frames were not paced at 60 Hz (1800–2230 frames per 20 s, cause not identified), so frame times are the cost again. The stress does not log the flow-field goal age (the miner is static in every mode); flow = game-thread flow-field time of frames with work, avg / max. ms avg / p99 / max (game avg; flow), task-063-01 values beside.
+
+| Run | 100 robots | task-063 100 | 400 robots | task-063 400 |
+|---|---|---|---|---|
+| S0 frame | 8.96 / 11.20 / 21.0 (4.89) | 17.18 / 20.93 / 27.1 (9.29) | 10.69 / 13.61 / 15.6 (9.26) | 19.64 / 24.86 / 28.2 (17.26) |
+| S2 frame | 9.23 / 11.52 / 12.2 (5.16) | 16.71 / 17.10 / 68.7 (6.92) | 11.10 / 14.05 / 15.3 (9.62) | 16.67 / 18.76 / 21.0 (12.12) |
+| Chain 30 (event avg / max) | 9.19 / 11.69 / 14.0 (5.14; 9.5 / 12.8; flow 0.032 / 0.095) | 16.67 / 17.20 / 21.1 (7.00; 16.9 / 21.1) | 10.08 / 12.88 / 18.9 (8.62; 11.4 / 18.9; flow 0.030 / 0.092) | 16.71 / 20.15 / 26.2 (12.26; 18.4 / 26.2) |
+| Dig (1425 blocks) | 9.23 / 11.50 / 20.2 (5.44; flow 0.047 / 0.50) | 16.67 / 17.26 / 19.3 (7.63; 0.019 / 0.31) | 10.44 / 13.17 / 57.9 (9.28; flow 0.046 / 0.27) | 16.72 / 19.72 / 27.1 (12.68; 0.020 / 0.31) |
+
+`rr.FlowField.Async 0` (time-sliced), same hour, 400 robots:
+
+| Run | Async 1 | Async 0 |
+|---|---|---|
+| S0 frame (game) | 10.69 / 13.61 / 15.6 (9.26) | 10.12 / 12.75 / 13.5 (8.70) |
+| Dig frame (game; flow work frames, avg / max) | 10.44 / 13.17 / 57.9 (9.28; 1915, 0.046 / 0.27) | 10.23 / 13.03 / 14.5 (9.04; 1431, 0.012 / 0.31) |
+
+- All runs within 16.6 avg / 25 p99. Dig 400 Async 1 max 57.9 ms is one frame whose game time stays ≤ 15.8 ms: not game-thread work, cause not captured.
+- Game thread is 1.8–8 ms lower than task-063 everywhere, also in S0 and S2 where the flow field does no work: the PC load differs (idle CPU 0–23 % vs 53–61 %), so the gain cannot be credited to the worker.
+- Worker path on the game thread: work on every dig frame (launch copies of the field), avg 0.046 ms vs 0.012 ms sliced, max 0.27 vs 0.31 ms; negligible against ≈ 9 ms of game thread. Async 1 vs 0 differences (0.2–0.6 ms) are within run noise.
+
 ## Verdict
 - 200 uu: holds; the navigation fix would also help it (one destruction 0.25 ms here, 0.04–0.07 ms measured with the fix at the smaller sizes).
 - 100 uu: steady state and dig hold. Explosion chains break (52 ms frames) and are fixed by turning off navigation relevance on the grid components (≈ 1 h with test), back to the 200 uu level. Recommended.
@@ -100,3 +121,4 @@ Same commands as task-029-07, HEAD 94abe5e. PC not quiet: Brave (many tabs), Dis
 - [[sys-flow-field]] — the incremental field measured in the task-029-02 section.
 - [[task-029-fine-grid]] — the global task whose budget the final 67 uu check measures.
 - [[task-063-01-perf-session]] — the task that produced the 2026-10-09 perf session section.
+- [[task-066-02-perf-check]] — the task that produced the worker-thread flow field section.
