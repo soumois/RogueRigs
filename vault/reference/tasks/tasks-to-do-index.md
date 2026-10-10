@@ -14,4 +14,3 @@ A global task moves to [[tasks-done-index]] when it is done (`vault/scripts/task
 - [[task-070-ore-in-rock]] — Ore scattered through the rock: nuggets inside rock blocks so ore drips during the whole dig, as in DRGS. Status todo.
 - [[task-071-robot-light-movement]] — Robots move with a light custom movement instead of CharacterMovement, before/after on the real-game stress. Status todo, on hold (owner 2026-10-10).
 - [[task-080-text-display]] — A4 display: upgrade card flavor lines and Kessler-Voss alerts are shown in game; bark subtitle only if time allows. Status in-progress.
-- [[task-081-a4-readme]] — A4 README: assignments/A4-dynamic-content-pipeline/README.md filled from the real logs and reviews. Status todo.

@@ -3,7 +3,7 @@ id: task-081-01-a4-readme
 description: "A4 README: assignments/A4-dynamic-content-pipeline/README.md filled from the real logs and reviews."
 parent: task-081-a4-readme
 kind: task
-status: todo
+status: done
 ---
 # A4 README
 
@@ -15,11 +15,11 @@ status: todo
 - done_when: every claim traced to a log or a file; links resolve; lint clean.
 - editor_state: any
 - token_ceiling: 20000
-- model: open
-- tokens: open
-- runs: open
+- model: sonnet
+- tokens: input 54, cache write 177836, cache read 3296681, output 44563
+- runs: 1
 - milestone: M2
-- result: open
+- result: A4 README filled from real logs (rubric sections, 11-row RAG table, 3 critic catches, 18-line baseline comparison), root README pipeline section; commit 6c75477. Voice tweak evidence thin (no recorded iteration); display unverified by a human.
 
 ## Relations
 - [[task-081-a4-readme]] — parent global task.
