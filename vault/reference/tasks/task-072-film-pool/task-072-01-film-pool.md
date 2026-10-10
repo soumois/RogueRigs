@@ -3,7 +3,7 @@ id: task-072-01-film-pool
 description: "A4 film pool: fictional-films grows to about 50 parody titles of badass 80s and 90s action films, checked by the critic."
 parent: task-072-film-pool
 kind: task
-status: in-progress
+status: done
 ---
 # A4 film pool
 
@@ -19,7 +19,7 @@ status: in-progress
 - tokens: open
 - runs: open
 - milestone: M2
-- result: open
+- result: 50 titles in fictional-films (44 new, provisional), commit eca35ee
 
 ## Relations
 - [[task-072-film-pool]] — parent global task.

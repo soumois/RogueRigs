@@ -3,7 +3,7 @@ id: task-072-02-film-pool
 description: "Critic review of the film list: verdict, rule id, reason and correction per item."
 parent: task-072-film-pool
 kind: task
-status: todo
+status: in-progress
 ---
 # Critic review (film-pool)
 
