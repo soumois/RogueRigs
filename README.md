@@ -13,7 +13,7 @@ All assignments: [assignments/](assignments/).
 
 ## Project vault
 
-[`vault/`](vault/) is the single source of truth of the project: the game design, technical docs, agent specs and every task the crew has run (415 nodes). Start at [`vault/root.md`](vault/root.md).
+[`vault/`](vault/) is the single source of truth of the project: the game design, technical docs, agent specs and every task the crew has run (435 nodes). Start at [`vault/root.md`](vault/root.md).
 
 | Branch | Nodes | Holds |
 |---|---|---|
@@ -22,7 +22,7 @@ All assignments: [assignments/](assignments/).
 | [`agents`](vault/reference/agents/) | 12 | the dev crew: one spec per agent, the orchestration protocol |
 | [`tasks`](vault/reference/tasks/) | 243 | every request and subtask, with status and results |
 | [`production`](vault/reference/production/) | 9 | milestones, scope, wishlist, cost log, handovers |
-| [`course`](vault/reference/course/) | 1 | course material index |
+| [`course`](vault/reference/course/) | 18 | course frame, lesson summaries, assignments with briefs, rubrics, deadlines and plans |
 
 Reading and writing rules: [`_navigation.md`](vault/_navigation.md) (descend from the root, never search) and [`_authoring.md`](vault/_authoring.md) (frontmatter, one concept per node, lint). The visual references and their prompts are in [`vault/assets/`](vault/assets/) and [`art-prompts`](vault/reference/gdd/art-audio/art-prompts.md).
 
