@@ -3,19 +3,21 @@
 //   node Tools/layout_gen/arena_fine.js [in.json] [out.json]
 // Rules (vault: layout-generator-recipe, "Fine-grid conversion"):
 //  1. Every old cell becomes 3 x 3 cells of the same type. Spawn: centre cell only (rest floor).
-//     Barrel: centre cell only (rest floor). Ore / heal ore: whole 3 x 3 stays a cluster.
+//     Barrel: centre cell only (rest floor). Ore / heal ore: whole 3 x 3 stays a cluster during steps 2-3.
 //  2. Edge roughening on rock masses (ore, heal ore, barrel, spawn never change), all driven by a
 //     position hash (value noise, 2 octaves): two erosion passes rock -> floor, one dilation pass floor -> rock,
 //     two erosion passes rock -> void on the cliff edge. An erosion needs 2 rock cells behind the face,
 //     so no wall thinner than 3 cells is ever breached and hidden pockets stay closed.
 //  3. Spawn zone (radius 8 cells) is never touched. Passage repair: floor cells not covered by an
 //     all-open 3 x 3 window are turned to rock (when not reachable-critical) or the rock around is opened.
+//  4. Heal veins 2 x 2 (heal-ore, owner 2026-10-10; task-088-02): last step, after roughening and repair (which read
+//     the 3 x 3 clusters), each heal-ore cluster keeps its top-left 2 x 2 (min x, min y); the 5 freed cells become rock.
 const fs = require('fs');
 const path = require('path');
 const root = path.join(__dirname, '..', '..');
 const inF = process.argv[2] || path.join(root, 'Content/RogueRigs/Data/Levels/arena_m1.json');
 const outF = process.argv[3] || path.join(root, 'Content/RogueRigs/Data/Levels/arena_m1_fine.json');
-const S = 3, SEED = 6701;
+const S = 3, SEED = 6701, HEAL_VEIN = 2;
 const old = JSON.parse(fs.readFileSync(inF, 'utf8'));
 const OW = old.width, OH = old.height, W = OW * S, H = OH * S;
 const g = Array.from({ length: H }, () => Array(W).fill(null)); // null = floor
@@ -126,6 +128,17 @@ while (rounds < 30) {
   rounds++;
 }
 console.error(`narrow floor cells before repair: ${first}; repair rounds: ${rounds}; left: ${uncovered().length}`);
+
+// ---- heal veins 2 x 2: shrink every 3 x 3 heal-ore cluster to its top-left HEAL_VEIN x HEAL_VEIN, rest rock ----
+let healFreed = 0;
+for (const c of old.cells) {
+  if (c.type !== 'heal_ore') continue;
+  const bx = c.x * S, by = c.y * S;
+  for (let dy = 0; dy < S; dy++) for (let dx = 0; dx < S; dx++) {
+    if ((dx >= HEAL_VEIN || dy >= HEAL_VEIN) && g[by + dy][bx + dx] === 'heal_ore') { g[by + dy][bx + dx] = 'rock'; healFreed++; }
+  }
+}
+console.error(`heal veins shrunk to ${HEAL_VEIN} x ${HEAL_VEIN}: ${healFreed} cells turned to rock`);
 
 const cells = [];
 for (let y = 0; y < H; y++) for (let x = 0; x < W; x++) if (g[y][x]) cells.push({ x, y, type: g[y][x] });
