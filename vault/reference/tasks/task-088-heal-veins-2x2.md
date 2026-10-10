@@ -1,9 +1,9 @@
 ---
 id: task-088-heal-veins-2x2
 description: "Global task: Heal veins are 2 x 2 in the layout and in code: 12 veins, 15 HP per pickup, 60 HP per vein."
-parent: tasks-to-do-index
+parent: tasks-done-index
 kind: task
-status: in-progress
+status: done
 ---
 # Heal veins 2 x 2 (layout)
 
@@ -13,14 +13,14 @@ status: in-progress
 - gdd_check: done by the Orchestrator when the task is planned (2026-10-10).
 - confirmed_by_owner: yes (2026-10-10)
 - milestone: M2
-- next_step: task-088-02-heal-veins-2x2
-- result: open
+- next_step: none
+- result: Done. Heal 15 HP per pickup from OreTypes.csv (HealValue), 2 x 2 veins mined as one, 209/209 tests, generator arena_fine.js regenerates arena_m1_fine.json byte for byte. Commits 8e902b2, 1831dc7, 5a72a77.
 
 ## Subtasks
 1. task-088-01-heal-veins-2x2 — level-design
 2. task-088-02-heal-veins-2x2 — cpp
 
 ## Relations
-- [[tasks-to-do-index]] — parent index.
+- [[tasks-done-index]] — parent index.
 - [[task-088-01-heal-veins-2x2]] — step 1, level-design.
 - [[task-088-02-heal-veins-2x2]] — step 2, cpp.

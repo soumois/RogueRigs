@@ -3,7 +3,7 @@ id: task-089-heal-not-at-full
 description: "Global task: a heal pickup is not taken at full health and stays on the floor until health drops."
 parent: tasks-to-do-index
 kind: task
-status: todo
+status: in-progress
 ---
 # Heal pickup not taken at full health
 

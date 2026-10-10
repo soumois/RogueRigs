@@ -3,7 +3,7 @@ id: task-089-01-heal-not-at-full
 description: "A heal pickup is not taken when the miner is at full health; it stays on the floor until health is below the maximum."
 parent: task-089-heal-not-at-full
 kind: task
-status: todo
+status: in-progress
 ---
 # Heal pickup not taken at full health
 

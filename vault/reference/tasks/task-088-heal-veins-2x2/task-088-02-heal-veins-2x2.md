@@ -3,7 +3,7 @@ id: task-088-02-heal-veins-2x2
 description: "Heal veins are mined as one 2 x 2 deposit with 15 HP per pickup (60 HP per vein), driven by the data."
 parent: task-088-heal-veins-2x2
 kind: task
-status: in-progress
+status: done
 ---
 # Heal veins 2 x 2 in code
 
@@ -15,11 +15,11 @@ status: in-progress
 - done_when: build exits 0 with the editor closed; all RogueRigs.* tests pass headless; docs updated; lint clean; committed.
 - editor_state: closed
 - token_ceiling: 60000
-- model: open
-- tokens: open
-- runs: open
+- model: opus
+- tokens: input 106, cache write 226886, cache read 3936874, output 38832
+- runs: 2
 - milestone: M2
-- result: open
+- result: Heal 15 HP per pickup from OreTypes.csv (HealValue), 2 x 2 veins mined as one, 209/209 tests, generator arena_fine.js regenerates arena_m1_fine.json byte for byte. Commits 8e902b2, 1831dc7, 5a72a77.
 
 ## Relations
 - [[task-088-heal-veins-2x2]] — parent global task.
