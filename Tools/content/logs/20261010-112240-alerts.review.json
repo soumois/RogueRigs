@@ -1,0 +1,33 @@
+{"run_id": "20261010-112240-alerts", "rounds": [{"loop": 0, "reviews": [
+  {"item_id": "kv_console_dropped_01", "verdict": "pass", "rule": null, "reason": "", "suggestion": null},
+  {"item_id": "kv_console_dropped_02", "verdict": "pass", "rule": null, "reason": "", "suggestion": null},
+  {"item_id": "kv_console_dropped_03", "verdict": "pass", "rule": null, "reason": "", "suggestion": null},
+  {"item_id": "kv_bonus_chest_dropped_01", "verdict": "fail", "rule": "T9", "reason": "Declaring retrieval by unauthorized personnel prohibited forbids the player from taking the chest, which contradicts the objective instead of stating what the company does.", "suggestion": "Unregistered cache detected. Contents logged as company property."},
+  {"item_id": "kv_bonus_chest_dropped_02", "verdict": "pass", "rule": null, "reason": "", "suggestion": null},
+  {"item_id": "kv_bonus_chest_dropped_03", "verdict": "pass", "rule": null, "reason": "", "suggestion": null},
+  {"item_id": "kv_horde_incoming_01", "verdict": "fail", "rule": "T9", "reason": "Advising unauthorized personnel to disperse is an order aimed at the player rather than a statement of what the company does.", "suggestion": "Security response escalated. Additional units assigned to the claim."},
+  {"item_id": "kv_horde_incoming_02", "verdict": "pass", "rule": null, "reason": "", "suggestion": null},
+  {"item_id": "kv_horde_incoming_03", "verdict": "pass", "rule": null, "reason": "", "suggestion": null},
+  {"item_id": "kv_extraction_ready_01", "verdict": "fail", "rule": "T9", "reason": "Extraction route is now active does not state a company action and can read as the company opening the route for the player or announcing its own extraction.", "suggestion": "Unregistered shuttle detected. Recovery units assigned to its landing zone."},
+  {"item_id": "kv_extraction_ready_02", "verdict": "fail", "rule": "T6", "reason": "Tagged propaganda but reads as a cold surveillance warning, with none of the upbeat public register of the company voice.", "suggestion": "Kessler-Voss is proud to send more protection, for everyone's future."},
+  {"item_id": "kv_extraction_ready_03", "verdict": "pass", "rule": null, "reason": "", "suggestion": null},
+  {"item_id": "kv_shuttle_countdown_01", "verdict": "pass", "rule": null, "reason": "", "suggestion": null},
+  {"item_id": "kv_shuttle_countdown_02", "verdict": "pass", "rule": null, "reason": "", "suggestion": null},
+  {"item_id": "kv_shuttle_countdown_03", "verdict": "pass", "rule": null, "reason": "", "suggestion": null}
+]}, {"loop": 1, "reviews": [
+  {"item_id": "kv_console_dropped_01", "verdict": "pass", "rule": null, "reason": "", "suggestion": null},
+  {"item_id": "kv_console_dropped_02", "verdict": "pass", "rule": null, "reason": "", "suggestion": null},
+  {"item_id": "kv_console_dropped_03", "verdict": "pass", "rule": null, "reason": "", "suggestion": null},
+  {"item_id": "kv_bonus_chest_dropped_01", "verdict": "pass", "rule": null, "reason": "Corrected: the company now only logs the cache, so it no longer forbids the player anything.", "suggestion": null},
+  {"item_id": "kv_bonus_chest_dropped_02", "verdict": "pass", "rule": null, "reason": "", "suggestion": null},
+  {"item_id": "kv_bonus_chest_dropped_03", "verdict": "pass", "rule": null, "reason": "", "suggestion": null},
+  {"item_id": "kv_horde_incoming_01", "verdict": "pass", "rule": null, "reason": "Corrected: the order to disperse is gone and the line states a company action.", "suggestion": null},
+  {"item_id": "kv_horde_incoming_02", "verdict": "pass", "rule": null, "reason": "", "suggestion": null},
+  {"item_id": "kv_horde_incoming_03", "verdict": "pass", "rule": null, "reason": "", "suggestion": null},
+  {"item_id": "kv_extraction_ready_01", "verdict": "pass", "rule": null, "reason": "Corrected: the company detects the shuttle and sends units, which cannot be read as the company opening the route.", "suggestion": null},
+  {"item_id": "kv_extraction_ready_02", "verdict": "pass", "rule": null, "reason": "Corrected: now upbeat propaganda with the future theme and no jokes or jargon.", "suggestion": null},
+  {"item_id": "kv_extraction_ready_03", "verdict": "pass", "rule": null, "reason": "", "suggestion": null},
+  {"item_id": "kv_shuttle_countdown_01", "verdict": "pass", "rule": null, "reason": "", "suggestion": null},
+  {"item_id": "kv_shuttle_countdown_02", "verdict": "pass", "rule": null, "reason": "", "suggestion": null},
+  {"item_id": "kv_shuttle_countdown_03", "verdict": "pass", "rule": null, "reason": "", "suggestion": null}
+]}]}
