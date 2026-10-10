@@ -144,6 +144,7 @@ kind: note
 | [[task-082-02-shuttle-lines]] | opus | 3 | 0k | 73k | 187k | 11k |
 | [[task-083-02-voice-tweak]] | opus | 3 | 0k | 69k | 153k | 11k |
 | [[task-086-01-a4-readme-update]] | sonnet | 1 | 0k | 133k | 2425k | 36k |
+| [[task-070-01-ore-in-rock]] | opus | 1 | 0k | 43k | 453k | 13k |
 
 ## Totals
 | Scope | Input | Cache write | Cache read | Output |

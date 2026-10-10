@@ -3,7 +3,7 @@ id: task-070-ore-in-rock
 description: "Global task: Ore scattered through the rock: nuggets inside rock blocks so ore drips during the whole dig, as in DRGS."
 parent: tasks-to-do-index
 kind: task
-status: in-progress
+status: review
 ---
 # Ore scattered in the rock
 
@@ -14,7 +14,7 @@ status: in-progress
 - confirmed_by_owner: yes (2026-10-10), design phase only: the owner reviews the numbers before any code
 - milestone: M2
 - next_step: task-070-01-ore-in-rock
-- result: open
+- result: Design proposal written, awaiting the owner's values.
 
 ## Subtasks
 1. task-070-01-ore-in-rock — cpp

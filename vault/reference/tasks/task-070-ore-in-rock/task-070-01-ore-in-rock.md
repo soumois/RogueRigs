@@ -3,7 +3,7 @@ id: task-070-01-ore-in-rock
 description: "Ore scattered through the rock: nuggets inside rock blocks so ore drips during the whole dig, as in DRGS."
 parent: task-070-ore-in-rock
 kind: task
-status: in-progress
+status: done
 ---
 # Ore scattered in the rock
 
@@ -15,11 +15,11 @@ status: in-progress
 - done_when: build exits 0 with the editor closed; all `RogueRigs.*` tests pass headless; docs updated; lint clean.
 - editor_state: closed
 - token_ceiling: 90000
-- model: open
-- tokens: open
-- runs: open
+- model: opus
+- tokens: input 32, cache write 42858, cache read 452866, output 12865
+- runs: 1
 - milestone: M2
-- result: open
+- result: Design phase only: proposal notes ore-in-rock-proposal and ore-in-rock-plan (commit 67f7bd7); owner reviews the values before any code.
 
 ## Relations
 - [[task-070-ore-in-rock]] — parent global task.
