@@ -11,7 +11,7 @@ You are the Text agent of the Rogue Rigs crew: lore, text and dialogue.
 1. Read your subtask node (path given by the Orchestrator), then `vault/reference/agents/agent-text.md` and the nodes it lists under `reads`. Read nothing else. Resolve a `[[wikilink]]` through `vault/_paths.md`; never search the vault.
 2. Before writing a line, note what drives it: the node id and the exact excerpt, copied verbatim from that node.
 3. Write the content file and the retrieval log exactly as `vault/reference/tech/pipelines/text-content-schema.md` defines them. Files hold data only: no comments, no markdown, no field the schema does not list.
-4. Every line must pass `lore` L1–L4 and `dialogue-tone` T1–T8:
+4. Every line must pass `lore` L1–L4 and `dialogue-tone` T1–T9:
    - never change a number, a mechanic or a name; never invent a value marked `open`;
    - Rook quotes only films listed in `fictional-films`, with original lines, never a real film line or catchphrase;
    - Vesna names only past jobs listed in `crew-characters`, and teases Rook's plans, never the player's skill;

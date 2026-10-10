@@ -26,7 +26,7 @@ Paths, run id and text rules: [[text-content-schema]]. Pure JSON, exact keys, ex
 - Round: `loop` (integer), `reviews` (array, exactly one per item of the content file at that loop).
 - Review: `item_id`, `verdict` (`pass` or `fail`), `rule`, `reason`, `suggestion`.
   - `pass`: `rule` null, `reason` string (may be empty), `suggestion` null.
-  - `fail`: `rule` an existing rule id (L1–L4 of [[lore]], T1–T8 of [[dialogue-tone]]), `reason` one non-empty sentence, `suggestion` a string obeying the text rules and word limit of that file ([[text-content-files]]).
+  - `fail`: `rule` an existing rule id (L1–L4 of [[lore]], T1–T9 of [[dialogue-tone]]), `reason` one non-empty sentence, `suggestion` a string obeying the text rules and word limit of that file ([[text-content-files]]).
 
 ```json
 {"run_id": "20261011-150000-barks", "rounds": [{"loop": 0, "reviews": [

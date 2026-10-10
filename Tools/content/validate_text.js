@@ -13,7 +13,7 @@
 //
 // Read at run time from the vault (never duplicated here): bark triggers and alert events
 // (text-content-events), stat display names (sys-upgrades), rule ids L1-L4 (lore) and
-// T1-T8 (dialogue-tone), the id -> path map (_paths.md), and the T8 example corpus
+// T1-T9 (dialogue-tone), the id -> path map (_paths.md), and the T8 example corpus
 // (every double-quoted string of 3+ words in EXAMPLE_NODES).
 // Node only, no dependencies, like vault/scripts/lint.js.
 
@@ -269,7 +269,7 @@ function main() {
             if (v.suggestion !== null) err(id, 'review-pass', `round ${i}: a pass must have suggestion null`);
           } else if (v.verdict === 'fail') {
             failed[i].add(id);
-            if (!V.rules.has(v.rule)) err(id, 'review-rule', `round ${i}: rule ${JSON.stringify(v.rule)} is not an existing rule id (L1-L4, T1-T8)`);
+            if (!V.rules.has(v.rule)) err(id, 'review-rule', `round ${i}: rule ${JSON.stringify(v.rule)} is not an existing rule id (L1-L4, T1-T9)`);
             if (typeof v.reason !== 'string' || v.reason.trim() === '' || /[\r\n]/.test(v.reason)) err(id, 'review-reason', `round ${i}: a fail needs a one-line non-empty reason`);
             checkText(id, `round ${i} suggestion`, v.suggestion, spec);
           } else err(id, 'review-verdict', `round ${i}: verdict must be "pass" or "fail"`);
