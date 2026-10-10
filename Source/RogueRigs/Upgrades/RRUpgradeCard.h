@@ -145,7 +145,10 @@ struct ROGUERIGS_API FRRUpgradeCard
 	UPROPERTY(BlueprintReadOnly, Category = "Upgrade|UI")
 	FText ValueText;
 
-	/** Short weapon description of a NewWeapon card (ARRMiner weapon catalogue); empty for a stat upgrade. */
+	/**
+	 * NewWeapon card: short weapon description (ARRMiner weapon catalogue). Stat card: the stat name, then its Rook flavor line on a
+	 * second line (upgrade_texts.json, URRTextContentSubsystem); empty when the file or the stat line is missing. Never holds the value.
+	 */
 	UPROPERTY(BlueprintReadOnly, Category = "Upgrade|UI")
 	FText DescriptionText;
 

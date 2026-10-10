@@ -13,6 +13,7 @@
 #include "GAS/RRPlayerAttributeSet.h"
 #include "Player/RRMiner.h"
 #include "RogueRigs.h"
+#include "Text/RRTextContentSubsystem.h"
 #include "Upgrades/RRUpgradeRarityRow.h"
 #include "Weapons/RRWeapon.h"
 #include "Weapons/RRWeaponAttributeSet.h"
@@ -243,6 +244,15 @@ bool URRUpgradeComponent::MakeCard(ERRUpgradeStat Stat, ERRUpgradeRarity Tier, E
 	Card.Operation = ByTier[static_cast<int32>(Tier)]->Operation;
 	Card.DisplayName = GetStatDisplayName(Stat);
 	Card.ValueText = FormatValueText(Stat, Value);
+	// Flavor line from upgrade_texts.json under the stat name; no line (file or stat missing) keeps the description empty.
+	if (URRTextContentSubsystem* TextContent = URRTextContentSubsystem::Get(this))
+	{
+		FText Flavor;
+		if (TextContent->GetUpgradeFlavor(Card.DisplayName.ToString(), Flavor))
+		{
+			Card.DescriptionText = URRTextContentSubsystem::ComposeUpgradeDescription(Card.DisplayName, Flavor);
+		}
+	}
 	switch (Target)
 	{
 	case ERRUpgradeTarget::Player:     Card.TargetText = FText::GetEmpty(); break;

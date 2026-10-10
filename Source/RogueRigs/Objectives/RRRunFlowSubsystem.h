@@ -275,6 +275,12 @@ protected:
 	/** Spawns and initializes the shuttle and binds its events. Null when no cell qualifies or the spawn failed. */
 	ARRShuttle* LandShuttle();
 
+	/**
+	 * Picks the Kessler-Voss line of alert event EventId (URRTextContentSubsystem::GetAlertLine) just before its event is raised, so
+	 * Blueprint handlers read it with GetCurrentAlertLine. Nothing when the text subsystem is absent; no line = empty (fallback).
+	 */
+	void PickAlertLine(const TCHAR* EventId);
+
 	/** Pauses the game through player 0's controller and switches it to game-and-UI input with the cursor shown. */
 	void EnterEndPause();
 

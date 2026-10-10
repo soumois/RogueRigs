@@ -16,6 +16,7 @@
 #include "Player/RRMiner.h"
 #include "Progression/RRLevelUpComponent.h"
 #include "RogueRigs.h"
+#include "Text/RRTextContentSubsystem.h"
 #include "World/RRWorld.h"
 
 void URRRunFlowSubsystem::Initialize(FSubsystemCollectionBase& Collection)
@@ -348,6 +349,7 @@ ARRConsole* URRRunFlowSubsystem::DropConsole()
 	NewConsole->InitializeConsole(Grid, Miner, Cell);
 
 	UE_LOG(LogRogueRigs, Log, TEXT("URRRunFlowSubsystem: alert %.2f, console dropped on (%d, %d)."), GetAlert(), Cell.X, Cell.Y);
+	PickAlertLine(FRRTextContentLibrary::AlertConsoleDropped);
 	OnConsoleDropped.Broadcast(NewConsole);
 	return NewConsole;
 }
@@ -380,6 +382,7 @@ ARRBonusChest* URRRunFlowSubsystem::DropBonusChest()
 	NewChest->InitializeConsole(Grid, Miner, Cell);
 
 	UE_LOG(LogRogueRigs, Log, TEXT("URRRunFlowSubsystem: alert %.2f, bonus chest dropped on (%d, %d)."), GetAlert(), Cell.X, Cell.Y);
+	PickAlertLine(FRRTextContentLibrary::AlertBonusChestDropped);
 	OnBonusChestDropped.Broadcast(NewChest);
 	return NewChest;
 }
@@ -392,6 +395,7 @@ void URRRunFlowSubsystem::CheckExtraction()
 	}
 	bExtractionReady = true;
 	UE_LOG(LogRogueRigs, Log, TEXT("URRRunFlowSubsystem: alert full, no objective pending: extraction ready."));
+	PickAlertLine(FRRTextContentLibrary::AlertExtractionReady);
 	OnExtractionReady.Broadcast();
 	LandShuttle();
 }
@@ -514,6 +518,8 @@ ARRShuttle* URRRunFlowSubsystem::LandShuttle()
 
 	const float CheatCountdown = GetDefault<URRCheatSettings>()->ShuttleCountdownOverride;
 	const float Countdown = CheatCountdown > 0.f ? CheatCountdown : Config.ShuttleCountdownSeconds;
+	// One countdown line per countdown start (OnShuttleCountdown fires every frame): picked before the first countdown event.
+	PickAlertLine(FRRTextContentLibrary::AlertShuttleCountdown);
 	NewShuttle->InitializeShuttle(Grid, Miner, Cell, Countdown, Config.ShuttleBoardRadiusCells * Grid->GetCellSize());
 	OnShuttleLanded.Broadcast(NewShuttle);
 	return NewShuttle;
@@ -639,5 +645,14 @@ void URRRunFlowSubsystem::HandleConsoleMarkedRocksChanged(ARRConsole* InConsole,
 	if (InConsole == Console)
 	{
 		OnObjectiveChanged.Broadcast(InConsole, InConsole->GetConsoleState(), Remaining, Total);
+	}
+}
+
+void URRRunFlowSubsystem::PickAlertLine(const TCHAR* EventId)
+{
+	if (URRTextContentSubsystem* TextContent = URRTextContentSubsystem::Get(this))
+	{
+		FText Unused;
+		TextContent->GetAlertLine(FName(EventId), Unused);
 	}
 }

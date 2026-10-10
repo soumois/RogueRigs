@@ -207,6 +207,14 @@ public:
 	UFUNCTION(BlueprintPure, Category = "HUD|Run")
 	const TArray<FRRAlertBarEvent>& GetAlertBarEvents() const { return AlertBarEvents; }
 
+	/**
+	 * Kessler-Voss line raised with alert event EventId (console_dropped, bonus_chest_dropped, horde_incoming, extraction_ready,
+	 * shuttle_countdown; URRTextContentSubsystem::GetCurrentAlertLine): read it in the matching display event. Empty when no line was
+	 * picked (missing file or id): keep the functional text.
+	 */
+	UFUNCTION(BlueprintPure, Category = "HUD|Run")
+	FText GetAlertLine(FName EventId) const;
+
 	/** Lowest render opacity the damage vignette is kept at (VignetteWarmOpacity): its "no vignette" value for checks and tests. */
 	float GetVignetteWarmOpacity() const { return VignetteWarmOpacity; }
 
@@ -352,7 +360,10 @@ protected:
 	UFUNCTION(BlueprintNativeEvent, Category = "HUD|Pressure")
 	void OnPlayerDamaged(float Amount, float HealthFraction);
 
-	/** Display event: a horde front starts in SecondsUntil seconds (banner "HORDE INCOMING!"). Implement in Blueprint. */
+	/**
+	 * Display event: a horde front starts in SecondsUntil seconds (banner "HORDE INCOMING!"). Its Kessler-Voss line is picked just
+	 * before (GetAlertLine(horde_incoming)). Implement in Blueprint.
+	 */
 	UFUNCTION(BlueprintNativeEvent, Category = "HUD|Pressure")
 	void OnHordeIncoming(float SecondsUntil);
 
