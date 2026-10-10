@@ -512,6 +512,36 @@
     }
    ],
    "output": "Rook. Get up. We are not done."
+  },
+  {
+   "item_id": "rook_console_hacked_02",
+   "loop": 1,
+   "query": "Original film line for a console hack, Rook (critic T3)",
+   "node_ids": [
+    "fictional-films"
+   ],
+   "excerpts": [
+    {
+     "node_id": "fictional-films",
+     "text": "The line is always original: never a real film line"
+    }
+   ],
+   "output": "Like in Universal Solder: firewall folded first."
+  },
+  {
+   "item_id": "rook_run_lost_01",
+   "loop": 1,
+   "query": "Rook line with Rigs jargon for a lost run (critic T4)",
+   "node_ids": [
+    "crew-characters"
+   ],
+   "excerpts": [
+    {
+     "node_id": "crew-characters",
+     "text": "coolant, torque, drill bit, payload, burn window, hull patch, yield, redline"
+    }
+   ],
+   "output": "Missed the burn window. Corporate keeps the yield."
   }
  ]
 }

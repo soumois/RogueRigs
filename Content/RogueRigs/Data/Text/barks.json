@@ -126,7 +126,7 @@
    "speaker_id": "rook",
    "trigger": "console_hacked",
    "tone": "cocky",
-   "text": "Like in Universal Solder: access granted, feelings optional."
+   "text": "Like in Universal Solder: firewall folded first."
   },
   {
    "line_id": "rook_bonus_chest_dropped_01",
@@ -210,7 +210,7 @@
    "speaker_id": "rook",
    "trigger": "run_lost",
    "tone": "technical",
-   "text": "Missed the shuttle. Corporate wins, again."
+   "text": "Missed the burn window. Corporate keeps the yield."
   },
   {
    "line_id": "vesna_run_lost_01",
