@@ -11,7 +11,7 @@ status: todo
 - agent: claude
 - depends_on: task-080-01-text-display
 - inputs: assignment-4-content-pipeline (vault/reference/course/assignments/assignment-4-content-pipeline.md), assignment-4-plan (vault/reference/course/assignments/assignment-4-plan.md), lesson-05-rag-content (vault/reference/course/lessons/lesson-05-rag-content.md)
-- expected_output: README with: the gap filled per content type, links to the 3 content files, a table of query / retrieved excerpt / output taken from the real logs, at least one critic correction with before and after, the voice self-assessment with the concrete tweak against the baseline run, how to run the pipeline. Nothing that was not produced. No assignment history in the root README.
+- expected_output: the A4 README is the judged deliverable (owner 2026-10-10): complete on its own, with real paths, tables and one correction shown before/after. Also a short section in the root README (the text and style-guide agents, the content pipeline, the run commands), no assignment history. Details: README with: the gap filled per content type, links to the 3 content files, a table of query / retrieved excerpt / output taken from the real logs, at least one critic correction with before and after, the voice self-assessment with the concrete tweak against the baseline run, how to run the pipeline. Nothing that was not produced. No assignment history in the root README.
 - done_when: every claim traced to a log or a file; links resolve; lint clean.
 - editor_state: any
 - token_ceiling: 20000

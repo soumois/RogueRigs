@@ -13,7 +13,7 @@ Envelope, text rules and run id: [[text-content-schema]]. Examples below are ref
 |---|---|---|
 | `id` | string | `upg_` + `stat` lowercased, spaces replaced by `_` (`Fire rate` → `upg_fire_rate`) |
 | `stat` | string | exactly one display stat name of [[sys-upgrades]] (Display), unchanged, case included; each stat at most once |
-| `flavor` | string | 3 to 12 words (provisional schema choice), no digit |
+| `flavor` | string | 3 to 12 words (owner 2026-10-10), no digit; spoken by Rook, one sentence about the upgrade |
 
 ```json
 {"schema_version": 1, "run_id": "20261011-143000-upgrade_texts", "items": [
@@ -26,7 +26,7 @@ Envelope, text rules and run id: [[text-content-schema]]. Examples below are ref
 | `line_id` | string | `<speaker_id>_<trigger>_<NN>`, NN two digits from `01` |
 | `speaker_id` | string | `rook` or `vesna` ([[crew-characters]]) |
 | `trigger` | string | one trigger id of [[text-content-events]] |
-| `tone` | string | `cocky`, `deadpan`, `technical`, `propaganda` or `bureaucratic` |
+| `tone` | string | `cocky`, `deadpan`, `technical`, `propaganda` or `bureaucratic`; the last two are Rook or Vesna parodying the company (owner 2026-10-10, T2) |
 | `text` | string | 3 to 8 words ([[dialogue-tone]] T1) |
 
 ```json
@@ -40,7 +40,7 @@ Envelope, text rules and run id: [[text-content-schema]]. Examples below are ref
 | `line_id` | string | `kv_<event>_<NN>`, NN two digits from `01` |
 | `event` | string | one alert event id of [[text-content-events]] |
 | `register` | string | `propaganda` or `bureaucratic` ([[company-voice]]) |
-| `text` | string | 3 to 12 words (provisional schema choice) |
+| `text` | string | 3 to 12 words (owner 2026-10-10) |
 
 ```json
 {"schema_version": 1, "run_id": "20261011-153000-alerts", "items": [

@@ -15,6 +15,13 @@ All six answered by the owner on 2026-10-10.
 5. Deadline time: aim for 11:59 BST on October 12 (03:59 Pacific) until the owner confirms the real time. Decided.
 6. Baseline run without retrieval for the voice-judgment comparison: yes, kept in the logs, never loaded in game. Decided.
 
+Schema decisions, answered 2026-10-10 (all proposals accepted):
+7. Tones `propaganda` and `bureaucratic` stay allowed for Rook and Vesna, as parody of the company.
+8. An upgrade flavor line is spoken by Rook, one sentence about the upgrade.
+9. Flavor lines and alerts are 3 to 12 words.
+
+The judged deliverable is the README in `assignments/A4-dynamic-content-pipeline/`; it must be complete on its own. The root README gets a short pipeline section (agents, run command), not assignment history.
+
 ## Relations
 - [[assignment-4-content-pipeline]] — parent: brief and rubric.
 - [[assignment-4-plan]] — the plan these decisions complete.
