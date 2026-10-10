@@ -3,7 +3,7 @@ id: task-067-real-game-stress
 description: "Global task: Stress scenario close to a real game: 150 robots, a horde, full HUD and minimap, Niagara on, miner running and digging."
 parent: tasks-index
 kind: task
-status: todo
+status: in-progress
 ---
 # Real-game stress scenario
 
