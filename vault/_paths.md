@@ -473,6 +473,8 @@ task-085-01-alert-line-once  reference/tasks/task-085-alert-line-once/task-085-0
 task-085-alert-line-once  reference/tasks/task-085-alert-line-once.md
 task-086-01-a4-readme-update  reference/tasks/task-086-a4-readme-update/task-086-01-a4-readme-update.md
 task-086-a4-readme-update  reference/tasks/task-086-a4-readme-update.md
+task-087-01-card-desc-test  reference/tasks/task-087-card-desc-test/task-087-01-card-desc-test.md
+task-087-card-desc-test  reference/tasks/task-087-card-desc-test.md
 tasks-done-index  reference/tasks/tasks-done-index.md
 tasks-index  reference/tasks/tasks-index.md
 tasks-to-do-index  reference/tasks/tasks-to-do-index.md
