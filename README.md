@@ -129,8 +129,12 @@ Agents never talk to each other. Every hand-off goes through files: the Orchestr
 | **Level-Design** | Sonnet | a subtask with a layout brief; layout schema; terrain specs | `Content/RogueRigs/Data/Levels/<name>.json` that passes the validator | no arena: the grid has nothing to build |
 | **C++** | Opus | a subtask; C++ standard; GDD and system docs; engine source | C++ under `Source/RogueRigs/<System>/`, built from the command line; automation tests; system docs | no gameplay code: no grid, player, GAS, weapons or tests |
 | **BP** | Sonnet | a subtask; Unreal MCP doc; system docs | Blueprints derived from C++, material instances, maps, placed actors; one doc node per Blueprint | C++ classes never reach a playable map |
+| **Text** *(Assignment 4, being set up)* | Sonnet | a subtask; lore, characters, fictional films, company voice, dialogue tone; the mechanic node it writes for | upgrade texts, barks and alert lines in `Content/RogueRigs/Data/Text/`; a retrieval log (query, excerpt, output) | player-facing text sounds generic or breaks the lore |
+| **Style-guide** *(critic, Assignment 4, being set up)* | Opus | the generated output only, never the generator's prompt; numbered rules L1–L4 and T1–T8 | a verdict per item: pass or fail, rule id, reason, corrected line | lore breaks and tone drift reach the game unnoticed |
+| *Art (planned)* | Sonnet | an asset need; art style guide, art prompts, color code, the entity spec | image prompts and candidate images (GPT image model through Kie.ai), self-reviewed against the style guide | every new asset needs a hand-written prompt and a manual style check |
+| *3D (planned)* | Sonnet | an owner-validated image; asset pipeline | a cleaned, split FBX through Meshy or Tripo and Blender MCP, ready for the BP agent to import | images never become game meshes without hours of manual work |
 
-Agent definitions: `.claude/agents/*.md` (Claude Code subagents: model, tools, turn limit) point to their specs in `vault/reference/agents/`, the single source of truth any AI tool can read.
+The first four agents are the Assignment 3 crew; Text and Style-guide were added for Assignment 4, Art and 3D are specified but not built yet. Agent definitions: `.claude/agents/*.md` (Claude Code subagents: model, tools, turn limit) point to their specs in `vault/reference/agents/`, the single source of truth any AI tool can read.
 
 ## How a request runs
 
@@ -175,7 +179,7 @@ How-to and pitfalls for whoever takes over the Orchestrator role are in `vault/r
 
 ## Run log
 
-Thirty-one requests have gone through the crew so far (full records in `vault/reference/tasks/`). From task 013 on, every subtask's tokens are recorded in `vault/reference/production/cost-log.md`. Uncached input is close to zero; the totals below give cache write, cache read and output.
+Sixty-six requests (tasks 001 to 066) have gone through the crew so far, and four more are queued (full records in `vault/reference/tasks/`). From task 013 on, every subtask's tokens are recorded in `vault/reference/production/cost-log.md`. Uncached input is close to zero; the totals below give cache write, cache read and output.
 
 | Task | Request | Result |
 |---|---|---|
@@ -209,7 +213,43 @@ Thirty-one requests have gone through the crew so far (full records in `vault/re
 | 027 | Juice | XP cubes pop and stream, kamikaze flare, sparkle, heal ring, console ring, chevrons, damage number stacking; write 560k, read 26.6M, output 214k |
 | 028 | Balance | 400 uu heavy slam, shield chaser, doubled upgrades, XP curve tuned by a pacing bot; write 730k, read 21.7M, output 166k |
 | 030 | First play test | enemies from 1 s, slower ramp, shooters blended and capped at 6, heavies half as often, robots 20 % slower, shorter shooter range, XP retune; write 672k, read 11.3M, output 104k |
-| 031 | Second play test (in progress) | target dummy removed, closer spawns biased toward the run heading, robots 30 % slower, shooters never retreat, faster early levels |
+| 031 | Second play test | target dummy removed, closer spawns biased toward the run heading, robots 30 % slower, shooters never retreat, faster early levels; write 1.3M, read 24.1M, output 199k |
+| 032 | Third play test | robot recycling, console locator, overtime, faster heavy, English texts, upgrade draw weights, weapon cards every 5 levels, bigger turret; write 852k, read 26.6M, output 171k |
+| 033 | Robot speed and tests | every robot at 180 uu/s; tests updated to the owner's data changes; write 77k, read 1.8M, output 22k |
+| 034 | Fourth play test | projectile hitbox, whole-vein mining, heal pickup, small terrain capsules, softer early waves, crowd mix; write 397k, read 13.6M, output 111k |
+| 035 | Heal amount | a heal vein restores 60 HP; write 40k, read 0.5M, output 6k |
+| 036 | Robot relocation | robots left behind are moved back ahead instead of removed; write 147k, read 4.9M, output 49k |
+| 037 | Ammo HUD | ammo under each weapon slot, reload and turret recharge bars, padlocks; write 155k, read 3.5M, output 45k |
+| 038 | Shooter detour | a shooter without line of sight walks around rock until it can fire; write 109k, read 3.1M, output 30k |
+| 039 | Heavy slam radius | 400 → 340 uu, ground ring follows; write 26k, read 0.3M, output 7k |
+| 040 | Locator arrow | pulsing console arrow with the distance in metres; write 151k, read 5.6M, output 40k |
+| 041 | Front-sector spawns | robots spawn beyond the rock the miner digs toward; write 34k, read 0.6M, output 8k |
+| 042 | Hack time | console hack 20 → 16 s; write 22k, read 0.2M, output 5k |
+| 043 | Vein shake | every block of a vein being mined shakes together; write 34k, read 0.5M, output 10k |
+| 044 | Fewer kamikazes | at most one per pack in one pack out of two, 1–2 per horde; write 47k, read 1.0M, output 14k |
+| 045 | Easier first level | about 15 % fewer robots, rarer heavies, heavy cap 3; write 203k, read 2.1M, output 23k |
+| 046 | Level 1 pressure | 80 robots alive at most, waves at least 120° apart; write 229k, read 1.0M, output 28k |
+| 047 | Heavy speed | 180 → 153 uu/s; write 40k, read 0.2M, output 4k |
+| 048 | Last-level profile | current wave director values saved as a data profile; write 33k, read 0.2M, output 5k |
+| 049 | Shuttle distance | the shuttle lands 37 to 50 cells from the miner; write 51k, read 0.8M, output 13k |
+| 050 | Flaky test | damage-number stacking test made reliable by fixing its cause; write 54k, read 1.0M, output 14k |
+| 051 | Turret spacing | turrets kept at least 100 uu apart; write 50k, read 0.6M, output 10k |
+| 052 | Heavy slam radius | 340 → 289 uu; write 34k, read 0.4M, output 7k |
+| 053 | Weapon slot info | name, ammo and reload centred under each slot; write 56k, read 1.2M, output 16k |
+| 054 | Niagara trail and sparkle | XP cube trail and pickup sparkle rebuilt in Niagara; write 190k, read 3.2M, output 42k |
+| 055 | First-hit vignette | red vignette on the very first hit, packaged build included; write 348k, read 4.6M, output 49k |
+| 056 | Bonus chest | one per level at 60 % alert, 8 s hack, XP, ore and a lucky upgrade choice; write 214k, read 8.0M, output 70k |
+| 057 | Flaky test | XP pickup test made reliable by fixing its cause; write 77k, read 0.6M, output 10k |
+| 058 | XP trail visible | the Niagara XP trail shows in game; write 47k, read 0.7M, output 11k |
+| 059 | Damage numbers | one number per hit, no merging, random start on a small disc; write 213k, read 2.8M, output 38k |
+| 060 | Deep mining | drone arc reaches 2.5 cells and cuts up to 8 blocks at once; write 153k, read 1.2M, output 19k |
+| 061 | Minimap | round minimap of seen cells, markers for miner, console, chest and shuttle; write 235k, read 5.0M, output 70k |
+| 062 | Alert bar ×2 | alert bar twice as wide and tall, icons rescaled; write 81k, read 1.0M, output 16k |
+| 063 | Performance session | `-game` stress at 67 uu cells and flow-field budget tests on a quiet PC; write 232k, read 1.5M, output 20k |
+| 064 | Minimap reveal | reveal circle of 18 cells around the miner; write 76k, read 0.5M, output 9k |
+| 065 | Diagonal dig | moving into a corner of two blocks still digs; write 82k, read 0.5M, output 14k |
+| 066 | Async flow field | flow field rebuilt on a worker thread with a double buffer; robots follow a new path within 1–2 frames; write 371k, read 4.7M, output 63k |
+| 067–070 | Queued | stress scenario close to a real game, Unreal Insights capture in a packaged build, minimum PC spec, ore nuggets inside rock |
 
 ## Evidence: two real runs
 
