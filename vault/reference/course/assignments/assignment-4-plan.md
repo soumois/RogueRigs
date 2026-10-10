@@ -6,7 +6,7 @@ kind: note
 ---
 # Assignment 4 — Plan
 
-Decided with the owner on 2026-10-09 unless marked proposed.
+Decided with the owner on 2026-10-09; open decisions answered on 2026-10-10 ([[assignment-4-open-decisions]]).
 
 ## Knowledge base
 The lore nodes, an extension of the GDD lore: [[lore]] (L1–L4), [[crew-characters]] (Rook, Vesna), [[fictional-films]], [[company-voice]], [[dialogue-tone]] (T1–T8). No vector database: the agent reads nodes by descent.
@@ -25,12 +25,15 @@ Request → text agent (reads lore) → deterministic validator (schema, word co
 - Validator: `Tools/content/validate_text.js`.
 - Schema node: `text-content-schema` in `tech/pipelines/`.
 
-## Content types (proposed, owner confirmation pending)
+## Content types (confirmed by the owner, 2026-10-10)
 1. Upgrade card texts: one line per stat. Gap: cards are purely functional ("Damage", "All weapons", "+12%"); `FRRUpgradeCard` already has `DescriptionText` ([[sys-upgrades]]).
 2. Barks, Rook and Vesna, per game event. Gap: no dialogue exists. Format from the final GDD: `line_id`, `speaker_id`, `trigger`, `tone` (fixed list of 5), text of 8 words max. Triggers come from existing events ([[sys-hud]], [[sys-objectives]]).
 3. Kessler-Voss alerts and announcements per alert event (console, bonus chest, hordes, extraction, shuttle countdown). Gap: the alert bar shows icons, no company voice.
 
-## Voice judgment (proposed)
+## Film pool (owner 2026-10-10)
+Before the runs, [[fictional-films]] grows from 6 to about 50 parody titles of badass 80s and 90s action films (newer ones allowed if they keep the spirit), each recognisable as a parody. The text agent draws from the pool and may leave titles unused. The critic checks the list against T3 (parody titles only).
+
+## Voice judgment (confirmed)
 A first run without lore retrieval, compared with the run that reads the vault: the concrete retrieval tweak the rubric asks for.
 
 ## Built

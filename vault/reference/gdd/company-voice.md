@@ -7,7 +7,7 @@ status: provisional
 ---
 # Company voice (Kessler-Voss)
 
-Registers from the owner (2026-10-09). Example lines are provisional.
+Registers from the owner (2026-10-09). Example slogans confirmed by the owner (2026-10-10); example lines are never reused.
 
 ## To customers and the public: propaganda
 - Upbeat, glossy, absolute confidence; "we" and "your future"; mining sold as a gift to humanity.

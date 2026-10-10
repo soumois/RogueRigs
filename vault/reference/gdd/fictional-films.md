@@ -24,6 +24,9 @@ Rook quotes action films that exist only in his universe (owner 2026-10-09).
 - Total Refund (provisional)
 - Hard Vacuum 2 (provisional)
 
+## Pool (owner 2026-10-10)
+The six titles above are examples. The catalogue grows to about 50 parody titles of badass 80s and 90s action films (newer ones allowed if they keep the spirit), recognisable as parodies. The text agent draws from it and need not use every title. Status: to be generated (task A4 film pool).
+
 ## Relations
 - [[crew-characters]] — parent: Rook, who quotes them.
 - [[dialogue-tone]] — T3, the rule these quotes must pass.

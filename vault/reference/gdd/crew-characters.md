@@ -7,7 +7,7 @@ status: provisional
 ---
 # Crew characters
 
-Names and personalities from the owner (2026-10-09). Example lines and past jobs are provisional.
+Names and personalities from the owner (2026-10-09). Past jobs confirmed by the owner (2026-10-10); example lines are provisional.
 
 ## Rook — the miner (player character)
 - Cocky; waves the odds away; improvises first, thinks later, and defends a shaky plan with total confidence.
