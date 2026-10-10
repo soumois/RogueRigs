@@ -1,0 +1,3 @@
+{"run_id": "20261010-120200-upgrade_texts", "content_file": "upgrade_texts.json", "retrieval": true, "entries": [
+  {"item_id": "upg_damage", "loop": 0, "query": "what a damage upgrade does", "node_ids": ["upgrades"],
+   "excerpts": [{"node_id": "upgrades", "text": "At equal rarity, a targeted upgrade is stronger than a global one."}], "output": "Hits 2 times harder than the warranty allows."}]}

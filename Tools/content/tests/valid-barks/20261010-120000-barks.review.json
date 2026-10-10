@@ -1,0 +1,7 @@
+{"run_id": "20261010-120000-barks", "rounds": [
+  {"loop": 0, "reviews": [
+    {"item_id": "rook_horde_incoming_01", "verdict": "pass", "rule": null, "reason": "", "suggestion": null},
+    {"item_id": "vesna_shuttle_landed_01", "verdict": "fail", "rule": "T2", "reason": "Calling Rook champion mocks the player's performance.", "suggestion": "Shuttle is down. Board it, no detours."}]},
+  {"loop": 1, "reviews": [
+    {"item_id": "rook_horde_incoming_01", "verdict": "pass", "rule": null, "reason": "", "suggestion": null},
+    {"item_id": "vesna_shuttle_landed_01", "verdict": "pass", "rule": null, "reason": "Dry and short.", "suggestion": null}]}]}

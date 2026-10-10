@@ -1,0 +1,1 @@
+{"item_id":"upg_damage","check":"number-in-flavor","message":"flavor must contain no digit (values live in UpgradeValues.csv)"}

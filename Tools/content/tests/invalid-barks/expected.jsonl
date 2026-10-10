@@ -1,0 +1,4 @@
+{"item_id":"rook_level_up_01","check":"tone","message":"tone \"smug\" is not one of cocky, deadpan, technical, propaganda, bureaucratic"}
+{"item_id":"vesna_horde_incoming_01","check":"T1-word-count","message":"text has 9 words, allowed 3 to 8"}
+{"item_id":"rook_coffee_break_01","check":"trigger","message":"trigger \"coffee_break\" is not a bark trigger of text-content-events"}
+{"item_id":"vesna_console_hacked_01","check":"excerpt-verbatim","message":"excerpt not found word for word in node crew-characters: \"Vesna loves long speeches about feelings.\""}

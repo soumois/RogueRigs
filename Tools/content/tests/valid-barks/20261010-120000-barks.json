@@ -1,0 +1,7 @@
+{"run_id": "20261010-120000-barks", "content_file": "barks.json", "retrieval": true, "entries": [
+  {"item_id": "rook_horde_incoming_01", "loop": 0, "query": "Rook reaction to a robot horde", "node_ids": ["crew-characters"],
+   "excerpts": [{"node_id": "crew-characters", "text": "Proud scrapper: loves his gear, loves it when things blow up, always counting his cut."}], "output": "More robots, more payload. I love overtime."},
+  {"item_id": "vesna_shuttle_landed_01", "loop": 0, "query": "Vesna voice when the shuttle lands", "node_ids": ["crew-characters"],
+   "excerpts": [{"node_id": "crew-characters", "text": "The Pallas run: Rook cut through a debris field \"for the shortcut\"."}], "output": "Shuttle is down. Try the Pallas shortcut, champion."},
+  {"item_id": "vesna_shuttle_landed_01", "loop": 1, "query": "Vesna deflating Rook, short and dry", "node_ids": ["crew-characters"],
+   "excerpts": [{"node_id": "crew-characters", "text": "Cuts Rook down when he gets carried away"}], "output": "Shuttle is down. Board it, no detours."}]}

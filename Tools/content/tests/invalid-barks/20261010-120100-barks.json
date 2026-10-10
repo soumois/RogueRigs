@@ -1,0 +1,9 @@
+{"run_id": "20261010-120100-barks", "content_file": "barks.json", "retrieval": true, "entries": [
+  {"item_id": "rook_level_up_01", "loop": 0, "query": "Rook jargon", "node_ids": ["crew-characters"],
+   "excerpts": [{"node_id": "crew-characters", "text": "coolant, torque, drill bit, payload"}], "output": "New torque settings. Nobody touch the dial."},
+  {"item_id": "vesna_horde_incoming_01", "loop": 0, "query": "Vesna on a horde", "node_ids": ["crew-characters"],
+   "excerpts": [{"node_id": "crew-characters", "text": "Calm, precise, mission first; short dry sentences."}], "output": "Big crowd incoming. Please do not start another plan."},
+  {"item_id": "rook_coffee_break_01", "loop": 0, "query": "Rook complaining", "node_ids": ["crew-characters"],
+   "excerpts": [{"node_id": "crew-characters", "text": "complains about it and keeps fighting"}], "output": "Break time. The robots can wait."},
+  {"item_id": "vesna_console_hacked_01", "loop": 0, "query": "Vesna on a hacked console", "node_ids": ["crew-characters"],
+   "excerpts": [{"node_id": "crew-characters", "text": "Vesna loves long speeches about feelings."}], "output": "Console is ours. Payload window open."}]}

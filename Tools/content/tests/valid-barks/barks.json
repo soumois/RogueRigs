@@ -1,0 +1,3 @@
+{"schema_version": 1, "run_id": "20261010-120000-barks", "items": [
+  {"line_id": "rook_horde_incoming_01", "speaker_id": "rook", "trigger": "horde_incoming", "tone": "cocky", "text": "More robots, more payload. I love overtime."},
+  {"line_id": "vesna_shuttle_landed_01", "speaker_id": "vesna", "trigger": "shuttle_landed", "tone": "deadpan", "text": "Shuttle is down. Board it, no detours."}]}

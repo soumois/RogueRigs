@@ -1,0 +1,5 @@
+{"schema_version": 1, "run_id": "20261010-120100-barks", "items": [
+  {"line_id": "rook_level_up_01", "speaker_id": "rook", "trigger": "level_up", "tone": "smug", "text": "New torque settings. Nobody touch the dial."},
+  {"line_id": "vesna_horde_incoming_01", "speaker_id": "vesna", "trigger": "horde_incoming", "tone": "deadpan", "text": "Big crowd incoming. Please do not start another plan."},
+  {"line_id": "rook_coffee_break_01", "speaker_id": "rook", "trigger": "coffee_break", "tone": "cocky", "text": "Break time. The robots can wait."},
+  {"line_id": "vesna_console_hacked_01", "speaker_id": "vesna", "trigger": "console_hacked", "tone": "technical", "text": "Console is ours. Payload window open."}]}

@@ -464,6 +464,7 @@ terrain-index  reference/gdd/terrain/terrain-index.md
 text-content-events  reference/tech/pipelines/text-content-events.md
 text-content-files  reference/tech/pipelines/text-content-files.md
 text-content-schema  reference/tech/pipelines/text-content-schema.md
+text-content-validator  reference/tech/pipelines/text-content-validator.md
 text-run-log-schema  reference/tech/pipelines/text-run-log-schema.md
 turret  reference/gdd/weapons/turret.md
 unreal-mcp  reference/tech/pipelines/unreal-mcp.md
