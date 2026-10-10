@@ -9,6 +9,7 @@
 
 class ARRArenaGrid;
 class ARREnemy;
+class ARREnemySpawner;
 
 /** What the miner and the robots do during a stress run (stress-test-m1 scenarios). */
 UENUM()
@@ -25,7 +26,15 @@ enum class ERRStressMode : uint8
 	/** Grid stress (task-023-01): peace, tough robots; during the measure window destroys the block cells nearest the miner at rr.Stress.DigRate. */
 	Dig,
 	/** Flow-field stress (task-029-02): peace, tough robots; during the measure window the miner is teleported along a circle (rr.Stress.WalkRadius, rr.Stress.WalkSpeed), only onto walkable cells, so the goal keeps changing cell. */
-	Walk
+	Walk,
+	/**
+	 * Real game (task-067-01): wave director live with each step count as the spawner MaxAlive, no stress robot; the miner is
+	 * driven by the pacing bot (rr.Stress.GameProfile; invulnerable, aims, picks card 0) and its weapons fire, so kills, XP
+	 * pickups, damage numbers, HUD and minimap run. Director waves are added every rr.Stress.GameFillInterval while the alive
+	 * count is under the cap; one horde of rr.Stress.GameHordeMin-Max is forced, its front rr.Stress.GameHordeAt s into the
+	 * first measure window (room kept for it under the cap until its lull).
+	 */
+	Game
 };
 
 /** Frame-time averages of one stress step, in milliseconds (same sources as stat unit). */
@@ -101,6 +110,26 @@ struct FRRStressStepResult
 	float FlowAvg = 0.f;
 	UPROPERTY()
 	float FlowMax = 0.f;
+
+	/** Robots alive in the world per measured frame (game mode: the spawner count; else the stress robots): average, minimum, maximum. */
+	UPROPERTY()
+	float AliveAvg = 0.f;
+	UPROPERTY()
+	int32 AliveMin = 0;
+	UPROPERTY()
+	int32 AliveMax = 0;
+
+	/** Measured frames over rr.Stress.SpikeMs (each one is logged as a "Stress spike:" line). */
+	UPROPERTY()
+	int32 Spikes = 0;
+
+	/** Game mode: robots spawned by the forced horde front, credited to the step in which it finished. */
+	UPROPERTY()
+	int32 HordeSpawned = 0;
+
+	/** Game mode: miner level at the end of the step. */
+	UPROPERTY()
+	int32 MinerLevel = 0;
 };
 
 /**
@@ -110,7 +139,7 @@ struct FRRStressStepResult
  * - rr.Stress.Clear: destroys every robot the tool spawned (no death, no XP).
  * - rr.Stress.Peace <0|1>: 1 makes the miner invulnerable (loose State.Invulnerable) and stops its weapons, so counts hold.
  * - rr.Stress.Run [Counts] [SettleSeconds] [MeasureSeconds] [Quit] [Mode] [Class]: Mode peace (S0, default), fire (S2),
- *   burst (S7), chain, dig or walk, see ERRStressMode; Class as rr.Stress.Spawn. Disables timed spawners, applies the mode, then for each
+ *   burst (S7), chain, dig, walk or game (real game, counts = MaxAlive steps), see ERRStressMode; Class as rr.Stress.Spawn. Disables timed spawners, applies the mode, then for each
  *   count (list separated by commas or +, e.g. 50+100+200) tops the stress robots up to it, waits the settle time, samples every frame for the
  *   measure time and logs average and p99 frame, game, draw and GPU ms; writes Saved/Stress/Stress_<time>.csv at the end and
  *   requests exit when Quit is 1.
@@ -224,6 +253,29 @@ protected:
 	/** Measure window: records the event frame costs and the flow-field computations of this frame. */
 	void SampleGridEvents(float FrameMs);
 
+	/** Game mode: starts the pacing bot, makes the weapons fire, keeps the timed spawner on and binds the horde events. */
+	void StartGameMode();
+
+	/** Game mode: sets the spawner MaxAlive for the current step (minus the room kept for the forced horde until its lull) and schedules the horde once. */
+	void ApplyGameStep();
+
+	/** Game mode: adds a director wave (pack types drawn from the current phase weights) when the alive count is under the cap. */
+	void TickGameFill(float DeltaSeconds);
+
+	/** Game mode, end of run: restores the spawner MaxAlive and stops the pacing bot drive. */
+	void EndGameMode();
+
+	/** Game mode: the forced horde enters its lull; the full cap is given back so its front is not shrunk. */
+	UFUNCTION()
+	void HandleHordeLull(int32 HordeIndex);
+
+	/** Game mode: the forced horde front is over; records how many robots it spawned. */
+	UFUNCTION()
+	void HandleHordeFinished(int32 HordeIndex, int32 Spawned);
+
+	/** Robots alive in the world now (game mode: the spawner count; else the stress robots). */
+	int32 GetWorldAliveCount();
+
 	/** Robots spawned by the tool. */
 	TArray<TWeakObjectPtr<ARREnemy>> StressEnemies;
 
@@ -295,6 +347,31 @@ protected:
 	/** Walk mode: circle center (the miner location at the start of the measure window) and current angle in radians. */
 	FVector WalkCenter = FVector::ZeroVector;
 	float WalkAngle = 0.f;
+
+	/** Robots alive per measured frame of the current step. */
+	TArray<int32> AliveSamples;
+
+	/** Measured frames over rr.Stress.SpikeMs in the current step. */
+	int32 StepSpikes = 0;
+
+	/** Game mode: spawner the run drives, its MaxAlive before the run (restored at the end) and the cap of the current step. */
+	TWeakObjectPtr<ARREnemySpawner> GameSpawner;
+	int32 GameOriginalMaxAlive = 0;
+	int32 GameStepCap = 0;
+
+	/** Game mode: forced horde index (INDEX_NONE before it is scheduled) and the room kept for it under the cap until its lull. */
+	int32 GameHordeIndex = INDEX_NONE;
+	int32 GameHordeRoom = 0;
+
+	/** Game mode: the forced horde reached its lull (cap given back) / its front is over. */
+	bool bGameHordeLull = false;
+	bool bGameHordeDone = false;
+
+	/** Game mode: robots of the forced horde front, credited to the step in which it finished. */
+	int32 StepHordeSpawned = 0;
+
+	/** Game mode: seconds until the next fill check. */
+	float GameFillTimer = 0.f;
 
 	/** Grid whose OnCellDestroyed is bound to HandleCellDestroyed. */
 	TWeakObjectPtr<ARRArenaGrid> BoundGrid;

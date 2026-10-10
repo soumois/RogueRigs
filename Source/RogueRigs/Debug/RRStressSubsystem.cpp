@@ -7,6 +7,7 @@
 #include "Damage/RRGE_DamageExplosion.h"
 #include "Debug/RRCheats.h"
 #include "Debug/RRGridStress.h"
+#include "Debug/RRPacingBotSubsystem.h"
 #include "Enemies/RRChaser.h"
 #include "Enemies/RREnemy.h"
 #include "Enemies/RREnemySpawner.h"
@@ -30,6 +31,9 @@
 #include "ProfilingDebugging/CsvProfiler.h"
 #include "ProfilingDebugging/MiscTrace.h"
 #include "RogueRigs.h"
+#include "Progression/RRProgressionComponent.h"
+#include "UI/RRHUDWidget.h"
+#include "UObject/UObjectIterator.h"
 #include "Weapons/RRAutoFireComponent.h"
 #include "Weapons/RRWeapon.h"
 #include "World/RRWorld.h"
@@ -78,8 +82,39 @@ namespace RRStress
 	TAutoConsoleVariable<float> CVarWalkSpeed(TEXT("rr.Stress.WalkSpeed"), 600.f,
 		TEXT("Walk mode: miner speed (uu/s) along the circle."), ECVF_Cheat);
 
+	TAutoConsoleVariable<float> CVarSpikeMs(TEXT("rr.Stress.SpikeMs"), 25.f,
+		TEXT("Measured frames longer than this (ms) are counted and logged as 'Stress spike:' lines with their frame, game, draw, GPU, flow ms and robots alive."), ECVF_Cheat);
+
+	TAutoConsoleVariable<int32> CVarGameProfile(TEXT("rr.Stress.GameProfile"), 3,
+		TEXT("Game mode: pacing bot profile driving the miner (0 still, 1 collect, 2 run, 3 run-and-collect)."), ECVF_Cheat);
+
+	TAutoConsoleVariable<int32> CVarGameSeed(TEXT("rr.Stress.GameSeed"), 1,
+		TEXT("Game mode: seed of the pacing bot (spawner stream and global random)."), ECVF_Cheat);
+
+	TAutoConsoleVariable<float> CVarGameFillInterval(TEXT("rr.Stress.GameFillInterval"), 0.5f,
+		TEXT("Game mode: seconds between two added director waves while the robots alive are under the cap (<= 0: no added wave, director only)."), ECVF_Cheat);
+
+	TAutoConsoleVariable<int32> CVarGameFillPacks(TEXT("rr.Stress.GameFillPacks"), 2,
+		TEXT("Game mode: packs per added director wave (pack types drawn from the current phase weights)."), ECVF_Cheat);
+
+	TAutoConsoleVariable<int32> CVarGameHordeMin(TEXT("rr.Stress.GameHordeMin"), 40,
+		TEXT("Game mode: minimum size of the forced horde."), ECVF_Cheat);
+
+	TAutoConsoleVariable<int32> CVarGameHordeMax(TEXT("rr.Stress.GameHordeMax"), 60,
+		TEXT("Game mode: maximum size of the forced horde (room kept under the cap until its lull)."), ECVF_Cheat);
+
+	TAutoConsoleVariable<float> CVarGameHordeAt(TEXT("rr.Stress.GameHordeAt"), 20.f,
+		TEXT("Game mode: seconds after the start of the first measure window at which the forced horde front starts (< 0: no forced horde)."), ECVF_Cheat);
+
 	TAutoConsoleVariable<FString> CVarCounts(TEXT("rr.Stress.Counts"), TEXT("50,100,200,300,400"),
 		TEXT("Default comma-separated robot counts of rr.Stress.Run."), ECVF_Cheat);
+
+	/** Protected spawner members the game mode drives (same idiom as Tests/RRTestAccess.h; the spawner class is unchanged). */
+	struct FSpawnerAccess : public ARREnemySpawner
+	{
+		static int32& MaxAliveOf(ARREnemySpawner* Spawner) { return Spawner->*(&FSpawnerAccess::MaxAlive); }
+		static FRRWaveDirectorConfig& DirectorOf(ARREnemySpawner* Spawner) { return Spawner->*(&FSpawnerAccess::DirectorConfig); }
+	};
 
 	/** Stress subsystem of World, null outside a game world. */
 	URRStressSubsystem* Get(UWorld* World)
@@ -173,7 +208,7 @@ namespace RRStress
 		ERRStressMode Mode = ERRStressMode::Peace;
 		if (Args.IsValidIndex(4) && !URRStressSubsystem::ParseMode(Args[4], Mode))
 		{
-			UE_LOG(LogRogueRigs, Warning, TEXT("rr.Stress.Run: unknown mode '%s' (peace, fire, burst, chain, dig)."), *Args[4]);
+			UE_LOG(LogRogueRigs, Warning, TEXT("rr.Stress.Run: unknown mode '%s' (peace, fire, burst, chain, dig, walk, game)."), *Args[4]);
 			return;
 		}
 		const TSubclassOf<ARREnemy> EnemyClass = Stress->ResolveEnemyClass(Args.IsValidIndex(5) ? Args[5] : FString());
@@ -198,7 +233,7 @@ namespace RRStress
 		FConsoleCommandWithWorldAndArgsDelegate::CreateStatic(&HandlePeace), ECVF_Cheat);
 
 	FAutoConsoleCommandWithWorldAndArgs CmdRun(TEXT("rr.Stress.Run"),
-		TEXT("rr.Stress.Run [Counts] [SettleSeconds] [MeasureSeconds] [Quit] [peace|fire|burst|chain|dig|walk] [Class]: timed frame-time steps, results in Saved/Stress."),
+		TEXT("rr.Stress.Run [Counts] [SettleSeconds] [MeasureSeconds] [Quit] [peace|fire|burst|chain|dig|walk|game] [Class]: timed frame-time steps (game: counts are MaxAlive caps of the live director), results in Saved/Stress."),
 		FConsoleCommandWithWorldAndArgsDelegate::CreateStatic(&HandleRun), ECVF_Cheat);
 }
 
@@ -428,6 +463,11 @@ bool URRStressSubsystem::ParseMode(const FString& Text, ERRStressMode& OutMode)
 		OutMode = ERRStressMode::Walk;
 		return true;
 	}
+	if (Mode.Equals(TEXT("game"), ESearchCase::IgnoreCase) || Mode == TEXT("6"))
+	{
+		OutMode = ERRStressMode::Game;
+		return true;
+	}
 	return false;
 }
 
@@ -635,7 +675,10 @@ void URRStressSubsystem::StartRun(const TArray<int32>& Counts, float SettleSecon
 		UE_LOG(LogRogueRigs, Warning, TEXT("Stress: run needs at least one count."));
 		return;
 	}
-	IConsoleManager::Get().ProcessUserConsoleInput(TEXT("rr.Spawner.Enabled 0"), *GLog, GetWorld());
+	if (Mode != ERRStressMode::Game)
+	{
+		IConsoleManager::Get().ProcessUserConsoleInput(TEXT("rr.Spawner.Enabled 0"), *GLog, GetWorld());
+	}
 	if (UGameViewportClient* Viewport = GetWorld()->GetGameViewport(); Viewport && !Viewport->IsStatEnabled(TEXT("Unit")))
 	{
 		GEngine->Exec(GetWorld(), TEXT("stat unit"));
@@ -649,7 +692,7 @@ void URRStressSubsystem::StartRun(const TArray<int32>& Counts, float SettleSecon
 		SetMinersInvulnerable(true);
 		SetMinerWeaponsFiring(true);
 	}
-	else
+	else if (RunMode != ERRStressMode::Game)
 	{
 		SetPeace(true);
 	}
@@ -669,6 +712,10 @@ void URRStressSubsystem::StartRun(const TArray<int32>& Counts, float SettleSecon
 	bQuitWhenDone = bQuit;
 	Results.Reset();
 	bRunning = true;
+	if (RunMode == ERRStressMode::Game)
+	{
+		StartGameMode();
+	}
 	UE_LOG(LogRogueRigs, Log, TEXT("Stress: run started, %d steps, settle %.1f s, measure %.1f s, mode %s, class %s."), RunCounts.Num(),
 		RunSettleSeconds, RunMeasureSeconds, *UEnum::GetValueAsString(RunMode), *GetNameSafe(RunEnemyClass));
 	BeginStep(0);
@@ -680,6 +727,10 @@ void URRStressSubsystem::BeginStep(int32 InStepIndex)
 	if (!RunCounts.IsValidIndex(StepIndex))
 	{
 		bRunning = false;
+		if (RunMode == ERRStressMode::Game)
+		{
+			EndGameMode();
+		}
 		WriteResults();
 		if (bQuitWhenDone)
 		{
@@ -693,7 +744,12 @@ void URRStressSubsystem::BeginStep(int32 InStepIndex)
 		ClearStressEnemies();
 	}
 	const int32 Missing = RunCounts[StepIndex] - GetStressEnemyCount();
-	if (Missing > 0)
+	if (RunMode == ERRStressMode::Game)
+	{
+		// The live director spawns; the step count is its cap.
+		ApplyGameStep();
+	}
+	else if (Missing > 0)
 	{
 		SpawnStressEnemies(Missing, RunEnemyClass);
 	}
@@ -710,6 +766,9 @@ void URRStressSubsystem::BeginStep(int32 InStepIndex)
 	GameSamples.Reset();
 	DrawSamples.Reset();
 	GpuSamples.Reset();
+	AliveSamples.Reset();
+	StepSpikes = 0;
+	StepHordeSpawned = 0;
 	CSV_EVENT_GLOBAL(TEXT("Stress_%d_Settle"), RunCounts[StepIndex]);
 }
 
@@ -726,6 +785,10 @@ void URRStressSubsystem::Tick(float DeltaTime)
 		return;
 	}
 	const double RealDelta = FApp::GetDeltaTime();
+	if (RunMode == ERRStressMode::Game)
+	{
+		TickGameFill(static_cast<float>(RealDelta));
+	}
 	const bool bWasSettling = StepElapsed < RunSettleSeconds;
 	StepElapsed += RealDelta;
 	if (StepElapsed < RunSettleSeconds)
@@ -780,10 +843,25 @@ void URRStressSubsystem::Tick(float DeltaTime)
 	// stat unit raw values (FStatUnitData, refreshed each frame while stat unit is shown, which StartRun ensures).
 	const UGameViewportClient* Viewport = GetWorld()->GetGameViewport();
 	const FStatUnitData* Unit = Viewport ? Viewport->GetStatUnitData() : nullptr;
-	FrameSamples.Add(static_cast<float>(RealDelta * 1000.0));
-	GameSamples.Add(Unit ? Unit->RawGameThreadTime : 0.f);
-	DrawSamples.Add(Unit ? Unit->RawRenderThreadTime : 0.f);
-	GpuSamples.Add(Unit ? Unit->RawGPUFrameTime[0] : 0.f);
+	const float FrameMs = static_cast<float>(RealDelta * 1000.0);
+	const float GameMs = Unit ? Unit->RawGameThreadTime : 0.f;
+	const float DrawMs = Unit ? Unit->RawRenderThreadTime : 0.f;
+	const float GpuMs = Unit ? Unit->RawGPUFrameTime[0] : 0.f;
+	const int32 Alive = GetWorldAliveCount();
+	FrameSamples.Add(FrameMs);
+	GameSamples.Add(GameMs);
+	DrawSamples.Add(DrawMs);
+	GpuSamples.Add(GpuMs);
+	AliveSamples.Add(Alive);
+	if (FrameMs > RRStress::CVarSpikeMs.GetValueOnGameThread())
+	{
+		++StepSpikes;
+		const URRFlowFieldSubsystem* Flow = GetWorld()->GetSubsystem<URRFlowFieldSubsystem>();
+		// stat unit values are those of the last completed frame of each thread; the flow ms is that of the last frame with flow work.
+		UE_LOG(LogRogueRigs, Display, TEXT("Stress spike: step %d, t %.2f s, frame %.2f, game %.2f, draw %.2f, gpu %.2f ms, flow last %.3f ms (work frames %d), robots %d, blocks %d, explosions %d"),
+			RunCounts[StepIndex], StepElapsed - RunSettleSeconds, FrameMs, GameMs, DrawMs, GpuMs, Flow ? Flow->GetLastFrameWorkMilliseconds() : 0.f,
+			Flow ? Flow->GetWorkFrameCount() : 0, Alive, StepBlocksDestroyed, StepExplosions);
+	}
 	if (StepElapsed >= RunSettleSeconds + RunMeasureSeconds)
 	{
 		FinishStep();
@@ -806,6 +884,41 @@ void URRStressSubsystem::FinishStep()
 	Result.EventFrameMax = EventSamples.IsEmpty() ? 0.f : FMath::Max(EventSamples);
 	Result.FlowComputes = FlowSamples.Num();
 	Result.FlowMax = FlowSamples.IsEmpty() ? 0.f : FMath::Max(FlowSamples);
+	if (!AliveSamples.IsEmpty())
+	{
+		int64 AliveSum = 0;
+		for (const int32 Alive : AliveSamples)
+		{
+			AliveSum += Alive;
+		}
+		Result.AliveAvg = static_cast<float>(static_cast<double>(AliveSum) / AliveSamples.Num());
+		Result.AliveMin = FMath::Min(AliveSamples);
+		Result.AliveMax = FMath::Max(AliveSamples);
+	}
+	Result.Spikes = StepSpikes;
+	Result.HordeSpawned = StepHordeSpawned;
+	if (const ARRMiner* Miner = RRWorld::FindLivingMiner(GetWorld()); Miner && Miner->GetProgression())
+	{
+		Result.MinerLevel = Miner->GetProgression()->GetLevel();
+	}
+	if (RunMode == ERRStressMode::Game)
+	{
+		// The step count is the cap; the robots reached are AliveAvg / AliveMax.
+		Result.EnemyCount = RunCounts[StepIndex];
+		// Real-game check: the HUD is on screen and its minimap texture exists.
+		int32 HudsShown = 0;
+		bool bMinimap = false;
+		for (TObjectIterator<URRHUDWidget> It; It; ++It)
+		{
+			if (It->GetWorld() == GetWorld() && It->IsInViewport())
+			{
+				++HudsShown;
+				bMinimap |= It->GetMinimapTexture() != nullptr;
+			}
+		}
+		UE_LOG(LogRogueRigs, Display, TEXT("Stress: game step %d, HUD widgets in viewport %d, minimap texture %s."), RunCounts[StepIndex], HudsShown,
+			bMinimap ? TEXT("yes") : TEXT("no"));
+	}
 	float UnusedP99 = 0.f;
 	RRStress::Summarize(EventSamples, Result.EventFrameAvg, UnusedP99);
 	RRStress::Summarize(FlowSamples, Result.FlowAvg, UnusedP99);
@@ -816,25 +929,195 @@ void URRStressSubsystem::FinishStep()
 	Results.Add(Result);
 	TRACE_END_REGION(*FString::Printf(TEXT("Stress_%d_Measure"), RunCounts[StepIndex]));
 	UE_LOG(LogRogueRigs, Display,
-		TEXT("Stress step: enemies %d, frames %d, frame avg %.2f p99 %.2f max %.2f, game avg %.2f p99 %.2f max %.2f, draw avg %.2f p99 %.2f, gpu avg %.2f p99 %.2f ms, burst kills %d barrels %d, explosions %d, blocks %d, event frames %d avg %.2f max %.2f, flow computes %d avg %.3f max %.3f ms"),
+		TEXT("Stress step: enemies %d, frames %d, frame avg %.2f p99 %.2f max %.2f, game avg %.2f p99 %.2f max %.2f, draw avg %.2f p99 %.2f, gpu avg %.2f p99 %.2f ms, burst kills %d barrels %d, explosions %d, blocks %d, event frames %d avg %.2f max %.2f, flow computes %d avg %.3f max %.3f ms, alive avg %.1f min %d max %d, spikes %d, horde %d, level %d"),
 		Result.EnemyCount, Result.FrameCount, Result.FrameAvg, Result.FrameP99, Result.FrameMax, Result.GameAvg, Result.GameP99,
 		Result.GameMax, Result.DrawAvg, Result.DrawP99, Result.GpuAvg, Result.GpuP99, Result.BurstKills, Result.BurstBarrels, Result.Explosions,
-		Result.BlocksDestroyed, Result.EventFrames, Result.EventFrameAvg, Result.EventFrameMax, Result.FlowComputes, Result.FlowAvg, Result.FlowMax);
+		Result.BlocksDestroyed, Result.EventFrames, Result.EventFrameAvg, Result.EventFrameMax, Result.FlowComputes, Result.FlowAvg, Result.FlowMax, Result.AliveAvg, Result.AliveMin, Result.AliveMax,
+		Result.Spikes, Result.HordeSpawned, Result.MinerLevel);
 }
 
 void URRStressSubsystem::WriteResults() const
 {
-	FString Csv = TEXT("Enemies,Frames,FrameAvg,FrameP99,FrameMax,GameAvg,GameP99,GameMax,DrawAvg,DrawP99,GpuAvg,GpuP99,Kills,Barrels,Explosions,Blocks,EventFrames,EventAvg,EventMax,FlowComputes,FlowAvg,FlowMax\n");
+	FString Csv = TEXT("Enemies,Frames,FrameAvg,FrameP99,FrameMax,GameAvg,GameP99,GameMax,DrawAvg,DrawP99,GpuAvg,GpuP99,Kills,Barrels,Explosions,Blocks,EventFrames,EventAvg,EventMax,FlowComputes,FlowAvg,FlowMax,AliveAvg,AliveMin,AliveMax,Spikes,Horde,Level\n");
 	for (const FRRStressStepResult& R : Results)
 	{
-		Csv += FString::Printf(TEXT("%d,%d,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%d,%d,%d,%d,%d,%.3f,%.3f,%d,%.3f,%.3f\n"), R.EnemyCount,
+		Csv += FString::Printf(TEXT("%d,%d,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%d,%d,%d,%d,%d,%.3f,%.3f,%d,%.3f,%.3f,%.1f,%d,%d,%d,%d,%d\n"), R.EnemyCount,
 			R.FrameCount, R.FrameAvg, R.FrameP99, R.FrameMax, R.GameAvg, R.GameP99, R.GameMax, R.DrawAvg, R.DrawP99, R.GpuAvg, R.GpuP99,
 			R.BurstKills, R.BurstBarrels, R.Explosions, R.BlocksDestroyed, R.EventFrames, R.EventFrameAvg, R.EventFrameMax, R.FlowComputes,
-			R.FlowAvg, R.FlowMax);
+			R.FlowAvg, R.FlowMax, R.AliveAvg, R.AliveMin, R.AliveMax, R.Spikes, R.HordeSpawned, R.MinerLevel);
 	}
 	const FString Path = FPaths::ProjectSavedDir() / TEXT("Stress") /
 		FString::Printf(TEXT("Stress_%s.csv"), *FDateTime::Now().ToString(TEXT("%Y%m%d_%H%M%S")));
 	const bool bSaved = FFileHelper::SaveStringToFile(Csv, *Path);
 	UE_LOG(LogRogueRigs, Display, TEXT("Stress: run finished, %d steps, results %s %s"), Results.Num(),
 		bSaved ? TEXT("written to") : TEXT("NOT written to"), *FPaths::ConvertRelativePathToFull(Path));
+}
+
+// --- Game mode (task-067-01) ---
+
+void URRStressSubsystem::StartGameMode()
+{
+	TActorIterator<ARREnemySpawner> It(GetWorld());
+	ARREnemySpawner* Spawner = It ? *It : nullptr;
+	GameSpawner = Spawner;
+	GameHordeIndex = INDEX_NONE;
+	GameHordeRoom = 0;
+	bGameHordeLull = false;
+	bGameHordeDone = false;
+	GameFillTimer = 0.f;
+	if (!Spawner)
+	{
+		UE_LOG(LogRogueRigs, Warning, TEXT("Stress: game mode needs an ARREnemySpawner in the level."));
+		return;
+	}
+	IConsoleManager::Get().ProcessUserConsoleInput(TEXT("rr.Spawner.Enabled 1"), *GLog, GetWorld());
+	GameOriginalMaxAlive = RRStress::FSpawnerAccess::MaxAliveOf(Spawner);
+	Spawner->OnHordeLull.AddUniqueDynamic(this, &URRStressSubsystem::HandleHordeLull);
+	Spawner->OnHordeFinished.AddUniqueDynamic(this, &URRStressSubsystem::HandleHordeFinished);
+	SetMinerWeaponsFiring(true);
+
+	// The pacing bot drives the miner for the whole run (and a margin): invulnerable, aims at the nearest robot, picks card 0.
+	const float RunSeconds = RunCounts.Num() * (RunSettleSeconds + RunMeasureSeconds) + 60.f;
+	const int32 Profile = FMath::Clamp(RRStress::CVarGameProfile.GetValueOnGameThread(), 0, 3);
+	URRPacingBotSubsystem* Bot = GetWorld()->GetSubsystem<URRPacingBotSubsystem>();
+	const bool bBot = Bot && (Bot->IsRunning() || Bot->StartRun(RunSeconds, RRStress::CVarGameSeed.GetValueOnGameThread(), false, static_cast<ERRPacingProfile>(Profile)));
+	UE_LOG(LogRogueRigs, Log, TEXT("Stress: game mode, spawner %s (MaxAlive %d, clock %.1f s), pacing bot profile %d %s."), *Spawner->GetName(),
+		GameOriginalMaxAlive, Spawner->GetRunTime(), Profile, bBot ? TEXT("driving") : TEXT("NOT started"));
+}
+
+void URRStressSubsystem::ApplyGameStep()
+{
+	ARREnemySpawner* Spawner = GameSpawner.Get();
+	if (!Spawner || !RunCounts.IsValidIndex(StepIndex))
+	{
+		return;
+	}
+	GameStepCap = RunCounts[StepIndex];
+	const float HordeAt = RRStress::CVarGameHordeAt.GetValueOnGameThread();
+	if (GameHordeIndex == INDEX_NONE && HordeAt >= 0.f)
+	{
+		// Force the first pending listed horde: its front lands HordeAt s into this step's measure window, at the forced size.
+		FRRWaveDirectorConfig& Config = RRStress::FSpawnerAccess::DirectorOf(Spawner);
+		for (int32 Index = 0; Index < Config.Hordes.Num(); ++Index)
+		{
+			if (Spawner->GetHordeState(Index) != ERRHordeState::Pending)
+			{
+				continue;
+			}
+			FRRDirectorHorde& Horde = Config.Hordes[Index];
+			Config.HordeTrigger = ERRHordeTrigger::RunTime;
+			Horde.TriggerTime = Spawner->GetRunTime() + RunSettleSeconds + HordeAt;
+			Horde.SizeMin = FMath::Max(1, RRStress::CVarGameHordeMin.GetValueOnGameThread());
+			Horde.SizeMax = FMath::Max(Horde.SizeMin, RRStress::CVarGameHordeMax.GetValueOnGameThread());
+			GameHordeIndex = Index;
+			GameHordeRoom = Horde.SizeMax;
+			UE_LOG(LogRogueRigs, Log, TEXT("Stress: forced horde %d, size %d-%d, front at %.1f s of spawner clock (lull %.1f s before)."), Index,
+				Horde.SizeMin, Horde.SizeMax, Horde.TriggerTime, Horde.LullSeconds);
+			break;
+		}
+	}
+	const bool bKeepRoom = GameHordeIndex != INDEX_NONE && !bGameHordeLull && !bGameHordeDone;
+	RRStress::FSpawnerAccess::MaxAliveOf(Spawner) = bKeepRoom ? FMath::Max(GameStepCap - GameHordeRoom, 0) : GameStepCap;
+	UE_LOG(LogRogueRigs, Log, TEXT("Stress: game step cap %d, spawner MaxAlive %d, %d robots alive."), GameStepCap,
+		RRStress::FSpawnerAccess::MaxAliveOf(Spawner), Spawner->GetAliveCount());
+}
+
+void URRStressSubsystem::TickGameFill(float DeltaSeconds)
+{
+	ARREnemySpawner* Spawner = GameSpawner.Get();
+	const float Interval = RRStress::CVarGameFillInterval.GetValueOnGameThread();
+	if (!Spawner || Interval <= 0.f)
+	{
+		return;
+	}
+	GameFillTimer -= DeltaSeconds;
+	if (GameFillTimer > 0.f)
+	{
+		return;
+	}
+	GameFillTimer = Interval;
+	// The director silences waves from a horde lull to the end of its front: so does the fill.
+	if (Spawner->GetActiveHorde() != INDEX_NONE || Spawner->GetAliveCount() >= RRStress::FSpawnerAccess::MaxAliveOf(Spawner))
+	{
+		return;
+	}
+	// Pack mix of the current phase, else of the next phase that has one (the opening phases spawn lone robots only).
+	const FRRWaveDirectorConfig& Config = Spawner->GetDirectorConfig();
+	const FRRDirectorPhase* Phase = nullptr;
+	for (int32 Index = FMath::Max(Spawner->GetDirectorPhase(), 0); Index < Config.Phases.Num() && !Phase; ++Index)
+	{
+		Phase = Config.Phases[Index].PackWeights.IsEmpty() ? nullptr : &Config.Phases[Index];
+	}
+	if (!Phase)
+	{
+		return;
+	}
+	float TotalWeight = 0.f;
+	for (const FRRDirectorPackWeight& Entry : Phase->PackWeights)
+	{
+		TotalWeight += Config.FindPackType(Entry.PackType) != INDEX_NONE ? FMath::Max(Entry.Weight, 0.f) : 0.f;
+	}
+	if (TotalWeight <= 0.f)
+	{
+		return;
+	}
+	TArray<int32> PackTypes;
+	const int32 Packs = FMath::Clamp(RRStress::CVarGameFillPacks.GetValueOnGameThread(), 1, 4);
+	for (int32 Pack = 0; Pack < Packs; ++Pack)
+	{
+		float Draw = FMath::FRand() * TotalWeight;
+		for (const FRRDirectorPackWeight& Entry : Phase->PackWeights)
+		{
+			const int32 TypeIndex = Config.FindPackType(Entry.PackType);
+			const float Weight = TypeIndex != INDEX_NONE ? FMath::Max(Entry.Weight, 0.f) : 0.f;
+			if (Weight > 0.f && (Draw < Weight || &Entry == &Phase->PackWeights.Last()))
+			{
+				PackTypes.Add(TypeIndex);
+				break;
+			}
+			Draw -= Weight;
+		}
+	}
+	Spawner->TrySpawnDirectorWave(PackTypes);
+}
+
+void URRStressSubsystem::EndGameMode()
+{
+	if (ARREnemySpawner* Spawner = GameSpawner.Get())
+	{
+		RRStress::FSpawnerAccess::MaxAliveOf(Spawner) = GameOriginalMaxAlive;
+	}
+}
+
+void URRStressSubsystem::HandleHordeLull(int32 HordeIndex)
+{
+	if (HordeIndex != GameHordeIndex || !GameSpawner.IsValid())
+	{
+		return;
+	}
+	bGameHordeLull = true;
+	RRStress::FSpawnerAccess::MaxAliveOf(GameSpawner.Get()) = GameStepCap;
+	UE_LOG(LogRogueRigs, Log, TEXT("Stress: forced horde %d lull, %d robots alive, cap %d."), HordeIndex, GameSpawner->GetAliveCount(), GameStepCap);
+}
+
+void URRStressSubsystem::HandleHordeFinished(int32 HordeIndex, int32 Spawned)
+{
+	if (HordeIndex != GameHordeIndex)
+	{
+		return;
+	}
+	bGameHordeDone = true;
+	StepHordeSpawned = Spawned;
+	UE_LOG(LogRogueRigs, Log, TEXT("Stress: forced horde %d front over, %d robots spawned, %d alive."), HordeIndex, Spawned,
+		GameSpawner.IsValid() ? GameSpawner->GetAliveCount() : 0);
+}
+
+int32 URRStressSubsystem::GetWorldAliveCount()
+{
+	if (RunMode == ERRStressMode::Game)
+	{
+		ARREnemySpawner* Spawner = GameSpawner.Get();
+		return Spawner ? Spawner->GetAliveCount() : 0;
+	}
+	return GetStressEnemyCount();
 }

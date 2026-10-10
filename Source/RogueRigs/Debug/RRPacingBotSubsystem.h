@@ -19,7 +19,9 @@ enum class ERRPacingProfile : uint8
 	/** 1: walks to the nearest resting XP cube outside the pickup radius. */
 	Collect,
 	/** 2: runs in a straight line, turning only at walls (blocks or the arena edge); the magnet takes what it passes. */
-	Run
+	Run,
+	/** 3 (task-067-01): walks to the nearest resting XP cube like Collect when one lies within rr.Pacing.CollectRange, else runs like Run. */
+	RunCollect
 };
 
 /** One level reached during a pacing run. */
@@ -53,7 +55,7 @@ struct FRRPacingLevelTime
  *   aims the miner stick at the nearest live robot and moves by profile (ERRPacingProfile): 0 still; 1 collect, walks toward
  *   the nearest XP cube lying outside the pickup radius within rr.Pacing.CollectRange (else stands still); 2 run, straight
  *   from screen north, turning at a wall (free distance below rr.Pacing.RunLookahead, or stalled) toward the freest of 7
- *   other 45-degree headings. Picks card 0 of every level-up screen (ticks while paused).
+ *   other 45-degree headings; 3 run-and-collect, collect when a cube is in range, else run. Picks card 0 of every level-up screen (ticks while paused).
  *   Level time is the spawner run clock (ARREnemySpawner::GetRunTime). Logs one "Pacing: level" line per level, a "Pacing: status" line every
  *   rr.Pacing.StatusInterval s (miner position, level, XP, robots, cubes), a summary
  *   at the end (after Seconds of run clock), writes Saved/Pacing/Pacing_<time>.csv and requests exit when Quit is 1.
@@ -92,8 +94,8 @@ protected:
 	/** Turns the miner stick toward the nearest live robot (keeps the last aim when none). */
 	void AimAtNearestRobot(ARRMiner* Miner) const;
 
-	/** Walks the miner toward the nearest resting XP cube outside its pickup radius (within rr.Pacing.CollectRange). */
-	void WalkToNearestCube(ARRMiner* Miner) const;
+	/** Walks the miner toward the nearest resting XP cube outside its pickup radius (within rr.Pacing.CollectRange). False when none (no input given). */
+	bool WalkToNearestCube(ARRMiner* Miner) const;
 
 	/** Run profile: keeps RunHeading, turns at walls or when stalled, and pushes the stick along it. */
 	void RunStraight(ARRMiner* Miner, float Now);

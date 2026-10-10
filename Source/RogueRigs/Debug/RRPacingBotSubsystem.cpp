@@ -47,7 +47,7 @@ namespace RRPacingBot
 		const float Seconds = Args.IsValidIndex(0) ? FCString::Atof(*Args[0]) : 200.f;
 		const int32 Seed = Args.IsValidIndex(1) ? FCString::Atoi(*Args[1]) : 1;
 		const bool bQuit = !Args.IsValidIndex(2) || FCString::Atoi(*Args[2]) != 0;
-		const int32 ProfileIndex = Args.IsValidIndex(3) ? FMath::Clamp(FCString::Atoi(*Args[3]), 0, 2) : 1;
+		const int32 ProfileIndex = Args.IsValidIndex(3) ? FMath::Clamp(FCString::Atoi(*Args[3]), 0, 3) : 1;
 		URRPacingBotSubsystem* Bot = World ? World->GetSubsystem<URRPacingBotSubsystem>() : nullptr;
 		if (!Bot || !Bot->StartRun(Seconds > 0.f ? Seconds : 200.f, Seed, bQuit, static_cast<ERRPacingProfile>(ProfileIndex)))
 		{
@@ -56,7 +56,7 @@ namespace RRPacingBot
 	}
 
 	FAutoConsoleCommandWithWorldAndArgs CmdRun(TEXT("rr.Pacing.Run"),
-		TEXT("rr.Pacing.Run [Seconds=200] [Seed=1] [Quit=1] [Profile=1]: XP pacing bot (invulnerable, aims at the nearest robot, picks card 0; Profile 0 still, 1 walks to XP cubes, 2 runs straight and turns at walls); level times in the log and Saved/Pacing."),
+		TEXT("rr.Pacing.Run [Seconds=200] [Seed=1] [Quit=1] [Profile=1]: XP pacing bot (invulnerable, aims at the nearest robot, picks card 0; Profile 0 still, 1 walks to XP cubes, 2 runs straight and turns at walls, 3 collects when a cube is in range else runs); level times in the log and Saved/Pacing."),
 		FConsoleCommandWithWorldAndArgsDelegate::CreateStatic(&HandleRun), ECVF_Cheat);
 }
 
@@ -195,6 +195,10 @@ void URRPacingBotSubsystem::Tick(float DeltaTime)
 	{
 		RunStraight(Miner, Now);
 	}
+	else if (Profile == ERRPacingProfile::RunCollect && !WalkToNearestCube(Miner))
+	{
+		RunStraight(Miner, Now);
+	}
 }
 
 void URRPacingBotSubsystem::MoveAlong(ARRMiner* Miner, const FVector& Direction)
@@ -299,7 +303,7 @@ void URRPacingBotSubsystem::AimAtNearestRobot(ARRMiner* Miner) const
 	Miner->ApplyStickAimInput(Stick);
 }
 
-void URRPacingBotSubsystem::WalkToNearestCube(ARRMiner* Miner) const
+bool URRPacingBotSubsystem::WalkToNearestCube(ARRMiner* Miner) const
 {
 	const FVector Origin = Miner->GetActorLocation();
 	const double MinSquared = FMath::Square(Miner->GetPickupRadius() * RRPacingBot::CVarCollectRadiusFraction.GetValueOnGameThread());
@@ -320,10 +324,11 @@ void URRPacingBotSubsystem::WalkToNearestCube(ARRMiner* Miner) const
 	}
 	if (!Nearest)
 	{
-		return;
+		return false;
 	}
 
 	MoveAlong(Miner, (Nearest->GetActorLocation() - Origin).GetSafeNormal2D());
+	return true;
 }
 
 void URRPacingBotSubsystem::CountWorld(int32& OutRobots, int32& OutCubes) const
