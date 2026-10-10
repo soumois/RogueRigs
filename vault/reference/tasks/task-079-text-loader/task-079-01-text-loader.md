@@ -3,7 +3,7 @@ id: task-079-01-text-loader
 description: "A4 loader: the text files are loaded in game and feed FRRUpgradeCard.DescriptionText and the existing alert events."
 parent: task-079-text-loader
 kind: task
-status: in-progress
+status: done
 ---
 # A4 text loader
 
@@ -15,11 +15,11 @@ status: in-progress
 - done_when: build exits 0 with the editor closed; all RogueRigs.* tests pass headless; docs updated; lint clean.
 - editor_state: closed
 - token_ceiling: 70000
-- model: open
-- tokens: open
-- runs: open
+- model: opus
+- tokens: input 102, cache write 295020, cache read 4535778, output 58662
+- runs: 2
 - milestone: M2
-- result: open
+- result: Loader subsystem + hooks (cards, 5 alert events), 6 new tests; build 0; 201/201 tests pass. Commits 8cc0f4e, 5529410.
 
 ## Relations
 - [[task-079-text-loader]] — parent global task.

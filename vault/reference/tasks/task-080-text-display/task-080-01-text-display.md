@@ -3,7 +3,7 @@ id: task-080-01-text-display
 description: "A4 display: upgrade card flavor lines and Kessler-Voss alerts are shown in game; bark subtitle only if time allows."
 parent: task-080-text-display
 kind: task
-status: todo
+status: in-progress
 ---
 # A4 text display
 
