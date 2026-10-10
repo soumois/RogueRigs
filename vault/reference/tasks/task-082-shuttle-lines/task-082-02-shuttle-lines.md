@@ -3,7 +3,7 @@ id: task-082-02-shuttle-lines
 description: "Critic review of the rewritten alerts.json (15 lines): verdict, rule id, reason and correction per item."
 parent: task-082-shuttle-lines
 kind: task
-status: todo
+status: done
 ---
 # Critic review (shuttle-lines)
 
@@ -15,11 +15,11 @@ status: todo
 - done_when: every item has a verdict; every fail cites an existing rule id; review file kept in logs.
 - editor_state: any
 - token_ceiling: 20000
-- model: open
-- tokens: open
-- runs: open
+- model: opus
+- tokens: input 22, cache write 73194, cache read 186876, output 10668
+- runs: 3
 - milestone: M2
-- result: open
+- result: Shuttle and extraction lines rewritten under new rule T9; critic round 0: 11 pass 4 fail (3 T9, 1 T6), corrected; round 1: 15 pass. Run 20261010-112240-alerts.
 
 ## Relations
 - [[task-082-shuttle-lines]] — parent global task.

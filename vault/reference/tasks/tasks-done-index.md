@@ -88,3 +88,4 @@ Archive: it exceeds the index size limits of [[_authoring]] on purpose (owner, 2
 - [[task-078-alert-texts]] — A4 Kessler-Voss alerts: text agent writes, validator checks, critic reviews, corrections applied (2 loops at most). Status done.
 - [[task-079-text-loader]] — A4 loader: the text files are loaded in game and feed FRRUpgradeCard.DescriptionText and the existing alert events. Status done.
 - [[task-081-a4-readme]] — A4 README: assignments/A4-dynamic-content-pipeline/README.md filled from the real logs and reviews. Status done.
+- [[task-082-shuttle-lines]] — A4 shuttle and extraction lines rewritten so the company states what it does and never orders the player (new rule T9), then reviewed. Status done.

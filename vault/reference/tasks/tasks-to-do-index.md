@@ -14,7 +14,6 @@ A global task moves to [[tasks-done-index]] when it is done (`vault/scripts/task
 - [[task-070-ore-in-rock]] — Ore scattered through the rock: nuggets inside rock blocks so ore drips during the whole dig, as in DRGS. Status todo.
 - [[task-071-robot-light-movement]] — Robots move with a light custom movement instead of CharacterMovement, before/after on the real-game stress. Status todo, on hold (owner 2026-10-10).
 - [[task-080-text-display]] — A4 display: upgrade card flavor lines and Kessler-Voss alerts are shown in game; bark subtitle only if time allows. Status in-progress.
-- [[task-082-shuttle-lines]] — A4 shuttle and extraction lines rewritten so the company states what it does and never orders the player (new rule T9), then reviewed. Status in-progress.
 - [[task-083-voice-tweak]] — A4 voice tweak: upgrade flavor lines regenerated with an item-specific retrieval, compared with the first version, so the README shows a real prompt or retrieval tweak. Status in-progress.
 - [[task-084-card-flavor-fix]] — The upgrade card flavor line is visible in game: the newline delimiter bug in WBP_HUD GetCardFlavor is fixed. Status todo.
 - [[task-085-alert-line-once]] — The company alert line shows once for 8 s at the start of the shuttle countdown, then hides; the countdown number stays to the end. Status todo.

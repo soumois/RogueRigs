@@ -141,6 +141,7 @@ kind: note
 | [[task-077-02-barks]] | opus | 3 | 0k | 78k | 242k | 14k |
 | [[task-079-01-text-loader]] | opus | 2 | 0k | 295k | 4536k | 59k |
 | [[task-081-01-a4-readme]] | sonnet | 1 | 0k | 178k | 3297k | 45k |
+| [[task-082-02-shuttle-lines]] | opus | 3 | 0k | 73k | 187k | 11k |
 
 ## Totals
 | Scope | Input | Cache write | Cache read | Output |
