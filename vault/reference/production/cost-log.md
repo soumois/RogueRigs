@@ -146,6 +146,7 @@ kind: note
 | [[task-086-01-a4-readme-update]] | sonnet | 1 | 0k | 133k | 2425k | 36k |
 | [[task-070-01-ore-in-rock]] | opus | 1 | 0k | 43k | 453k | 13k |
 | [[task-071-01-robot-light-movement]] | opus | 2 | 0k | 580k | 9409k | 74k |
+| [[task-087-01-card-desc-test]] | opus | 1 | 0k | 36k | 485k | 7k |
 
 ## Totals
 | Scope | Input | Cache write | Cache read | Output |

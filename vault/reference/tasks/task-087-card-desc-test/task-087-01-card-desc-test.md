@@ -3,7 +3,7 @@ id: task-087-01-card-desc-test
 description: "The existing test Integration.WeaponCardEquipsShotgun matches the card flavor line now shown on stat cards."
 parent: task-087-card-desc-test
 kind: task
-status: in-progress
+status: done
 ---
 # Card description test update
 
@@ -15,11 +15,11 @@ status: in-progress
 - done_when: build exits 0 with the editor closed; all RogueRigs.* tests pass headless (204/204); sys-automation-tests updated; lint clean; committed.
 - editor_state: closed
 - token_ceiling: 40000
-- model: open
-- tokens: open
-- runs: open
+- model: opus
+- tokens: input 32, cache write 35856, cache read 484580, output 6657
+- runs: 1
 - milestone: M2
-- result: open
+- result: Test expectation updated (stat card shows the flavor block when the loader gives a line); no defect; 204/204 headless. Commit b7882c6.
 
 ## Relations
 - [[task-087-card-desc-test]] — parent global task.

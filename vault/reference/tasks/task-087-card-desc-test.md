@@ -1,9 +1,9 @@
 ---
 id: task-087-card-desc-test
 description: "Global task: The existing test Integration.WeaponCardEquipsShotgun matches the card flavor line now shown on stat cards."
-parent: tasks-to-do-index
+parent: tasks-done-index
 kind: task
-status: in-progress
+status: done
 ---
 # Card description test update
 
@@ -13,12 +13,12 @@ status: in-progress
 - gdd_check: done by the Orchestrator when the task is planned (2026-10-10).
 - confirmed_by_owner: yes (2026-10-10)
 - milestone: M2
-- next_step: task-087-01-card-desc-test
-- result: open
+- next_step: none
+- result: Done. Test expectation updated (stat card shows the flavor block when the loader gives a line); no defect; 204/204 headless. Commit b7882c6.
 
 ## Subtasks
 1. task-087-01-card-desc-test — cpp
 
 ## Relations
-- [[tasks-to-do-index]] — parent index.
+- [[tasks-done-index]] — parent index.
 - [[task-087-01-card-desc-test]] — step 1, cpp.

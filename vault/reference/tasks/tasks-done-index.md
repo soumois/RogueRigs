@@ -94,3 +94,4 @@ Archive: it exceeds the index size limits of [[_authoring]] on purpose (owner, 2
 - [[task-084-card-flavor-fix]] — The upgrade card flavor line is visible in game: the newline delimiter bug in WBP_HUD GetCardFlavor is fixed. Status done.
 - [[task-085-alert-line-once]] — The company alert line shows once for 8 s at the start of the shuttle countdown, then hides; the countdown number stays to the end. Status done.
 - [[task-086-a4-readme-update]] — A4 README updated with the new rule T9 catch, the voice-tweak comparison and the corrected display status. Status done.
+- [[task-087-card-desc-test]] — The existing test Integration.WeaponCardEquipsShotgun matches the card flavor line now shown on stat cards. Status done.
