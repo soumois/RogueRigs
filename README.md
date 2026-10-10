@@ -1,5 +1,17 @@
 # Rogue Rigs — a four-agent dev crew for an Unreal Engine game
 
+## Course assignments
+
+| # | Assignment | Folder | Status |
+|---|---|---|---|
+| 1 | GDD First Draft | [A1-gdd-first-draft](assignments/A1-gdd-first-draft/) | Submitted |
+| 2 | GDD Final Draft | [A2-gdd-final-draft](assignments/A2-gdd-final-draft/) | Submitted |
+| 3 | Building an Agent Crew | [A3-agent-crew](assignments/A3-agent-crew/) | Submitted (tag [`a3-submission`](https://github.com/soumois/RogueRigs/tree/a3-submission)) |
+| 4 | Dynamic Content Pipeline | [A4-dynamic-content-pipeline](assignments/A4-dynamic-content-pipeline/) | In progress |
+
+All assignments: [assignments/](assignments/). The rest of this page is the Assignment 3 README.
+
+
 **Game:** *Rogue Rigs*, a top-down roguelite auto-shooter built in Unreal Engine 5.8 (C++ first). An independent miner steals ore from a corporate asteroid claim guarded by security robots; the destructible rock arena is the player's best weapon. Capstone project of the ELVTR course *Multi-Agent AI for Game Development* (instructor: Joshua Burdick).
 
 **What the crew produces:** playable game content for Rogue Rigs, from a plain-language request. One request becomes a GDD-checked plan, then real project files: arena layouts (JSON), C++ gameplay systems, Blueprints and maps in the editor, automation tests, and up-to-date documentation in the project vault.
