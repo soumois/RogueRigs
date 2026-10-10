@@ -13,12 +13,12 @@ All assignments: [assignments/](assignments/).
 
 ## Project vault
 
-[`vault/`](vault/) is the single source of truth of the project: the game design, technical docs, agent specs and every task the crew has run (469 nodes). Start at [`vault/root.md`](vault/root.md).
+[`vault/`](vault/) is the single source of truth of the project: the game design, technical docs, agent specs and every task the crew has run (466 nodes). Start at [`vault/root.md`](vault/root.md).
 
 <!-- vault-map:start -->
 ```mermaid
 flowchart LR
-  root(("root · 469 nodes"))
+  root(("root · 466 nodes"))
   root --> tasks_index["tasks · 271"]
   tasks_index --> tasks_done_index["tasks-done · 246"]
   tasks_index --> tasks_to_do_index["tasks-to-do · 24"]

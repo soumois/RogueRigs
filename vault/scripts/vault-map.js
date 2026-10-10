@@ -18,7 +18,7 @@ for (const f of walk(VAULT)) {
   parent[id.trim()] = par ? par.trim() : null;
   if (par) (kids[par.trim()] = kids[par.trim()] || []).push(id.trim());
 }
-const total = Object.keys(parent).length;
+const total = Object.keys(parent).filter(id => !id.startsWith('_')).length; // same count as lint.js
 const size = id => 1 + (kids[id] || []).reduce((s, k) => s + size(k), 0);
 const safe = id => id.replace(/[^A-Za-z0-9]/g, '_');
 const label = id => id.replace(/-index$/, '');
