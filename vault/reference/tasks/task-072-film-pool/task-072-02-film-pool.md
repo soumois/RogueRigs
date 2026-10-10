@@ -3,7 +3,7 @@ id: task-072-02-film-pool
 description: "Critic review of the film list: verdict, rule id, reason and correction per item."
 parent: task-072-film-pool
 kind: task
-status: in-progress
+status: done
 ---
 # Critic review (film-pool)
 
@@ -19,7 +19,7 @@ status: in-progress
 - tokens: open
 - runs: open
 - milestone: M2
-- result: open
+- result: Critic loop 1: 48 pass, 2 fail (T3), both corrected in 8ecf10f; owner reads the list.
 
 ## Relations
 - [[task-072-film-pool]] — parent global task.
