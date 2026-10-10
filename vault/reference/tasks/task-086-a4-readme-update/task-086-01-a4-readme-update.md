@@ -3,7 +3,7 @@ id: task-086-01-a4-readme-update
 description: "A4 README updated with the new rule T9 catch, the voice-tweak comparison and the corrected display status."
 parent: task-086-a4-readme-update
 kind: task
-status: todo
+status: in-progress
 ---
 # A4 README update
 
