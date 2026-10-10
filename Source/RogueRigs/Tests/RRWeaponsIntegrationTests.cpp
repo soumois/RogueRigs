@@ -350,10 +350,28 @@ bool FRRIntegrationWeaponCardEquipsShotgunTest::RunTest(const FString& Parameter
 		const bool bWeapon = Offer[Index].IsNewWeapon();
 		TestEqual(FString::Printf(TEXT("CardName%d shows the card name"), Index), GetWidgetText(*this, HUD, FString::Printf(TEXT("CardName%d"), Index)), Offer[Index].DisplayName.ToString());
 		TestEqual(FString::Printf(TEXT("CardTarget%d shows the target"), Index), GetWidgetText(*this, HUD, FString::Printf(TEXT("CardTarget%d"), Index)), Offer[Index].TargetText.ToString());
-		const ESlateVisibility DescVisibility = GetWidgetVisibility(*this, HUD, FString::Printf(TEXT("CardDesc%d"), Index));
+		const FString DescName = FString::Printf(TEXT("CardDesc%d"), Index);
+		const ESlateVisibility DescVisibility = GetWidgetVisibility(*this, HUD, DescName);
 		const ESlateVisibility ValueVisibility = GetWidgetVisibility(*this, HUD, FString::Printf(TEXT("CardValue%d"), Index));
-		TestEqual(FString::Printf(TEXT("CardDesc%d %s"), Index, bWeapon ? TEXT("visible on the weapon card") : TEXT("collapsed on a stat card")),
-			DescVisibility == ESlateVisibility::Visible || DescVisibility == ESlateVisibility::SelfHitTestInvisible || DescVisibility == ESlateVisibility::HitTestInvisible, bWeapon);
+		const bool bDescShown = DescVisibility == ESlateVisibility::Visible || DescVisibility == ESlateVisibility::SelfHitTestInvisible || DescVisibility == ESlateVisibility::HitTestInvisible;
+		if (bWeapon)
+		{
+			TestTrue(FString::Printf(TEXT("CardDesc%d visible on the weapon card"), Index), bDescShown);
+		}
+		else
+		{
+			// Stat card (task-080/084, wbp-hud card flavor line): CardDesc shows the flavor, the text after the first newline of
+			// DescriptionText ("stat name\nflavor" from the text loader), visible only when that flavor is not empty.
+			FString StatName;
+			FString Flavor;
+			Offer[Index].DescriptionText.ToString().Split(TEXT("\n"), &StatName, &Flavor);
+			TestEqual(FString::Printf(TEXT("CardDesc%d %s"), Index, Flavor.IsEmpty() ? TEXT("collapsed on a stat card without flavor") : TEXT("visible on a stat card with a flavor line")),
+				bDescShown, !Flavor.IsEmpty());
+			if (bDescShown)
+			{
+				TestEqual(FString::Printf(TEXT("CardDesc%d shows the stat card flavor line"), Index), GetWidgetText(*this, HUD, DescName), Flavor);
+			}
+		}
 		TestEqual(FString::Printf(TEXT("CardValue%d %s"), Index, bWeapon ? TEXT("hidden on the weapon card") : TEXT("shown on a stat card")),
 			ValueVisibility == ESlateVisibility::Collapsed || ValueVisibility == ESlateVisibility::Hidden, bWeapon);
 		if (bWeapon)
