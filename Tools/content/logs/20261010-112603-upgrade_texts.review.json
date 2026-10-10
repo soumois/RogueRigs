@@ -1,0 +1,29 @@
+{"run_id": "20261010-112603-upgrade_texts", "rounds": [{"loop": 0, "reviews": [
+  {"item_id": "upg_damage", "verdict": "pass", "rule": null, "reason": "", "suggestion": null},
+  {"item_id": "upg_fire_rate", "verdict": "pass", "rule": null, "reason": "", "suggestion": null},
+  {"item_id": "upg_reload_speed", "verdict": "pass", "rule": null, "reason": "", "suggestion": null},
+  {"item_id": "upg_crit_chance", "verdict": "pass", "rule": null, "reason": "", "suggestion": null},
+  {"item_id": "upg_crit_damage", "verdict": "fail", "rule": "T3", "reason": "\"I do love it when things blow up\" paraphrases the well-known catchphrase \"I love it when a plan comes together\", and crits do not make things blow up.", "suggestion": "Crits hit harder now; corporate gets to price the extra dents."},
+  {"item_id": "upg_magazine_size", "verdict": "pass", "rule": null, "reason": "", "suggestion": null},
+  {"item_id": "upg_max_health", "verdict": "pass", "rule": null, "reason": "", "suggestion": null},
+  {"item_id": "upg_move_speed", "verdict": "pass", "rule": null, "reason": "", "suggestion": null},
+  {"item_id": "upg_pickup_radius", "verdict": "pass", "rule": null, "reason": "", "suggestion": null},
+  {"item_id": "upg_xp_gain", "verdict": "fail", "rule": "T2", "reason": "With no speaker marker, \"thinking comes later\" reads as a jab at the player's thinking rather than Rook's self-mockery.", "suggestion": "XP gain up: I level up sooner, and still plan later."},
+  {"item_id": "upg_mining_speed", "verdict": "pass", "rule": null, "reason": "", "suggestion": null},
+  {"item_id": "upg_luck", "verdict": "pass", "rule": null, "reason": "", "suggestion": null},
+  {"item_id": "upg_piercing", "verdict": "fail", "rule": "T3", "reason": "The title is in the pool, but \"one shot, several robots\" riffs on the well-known catchphrase \"one shot, one kill\" (the film Sniper), so the line is not original.", "suggestion": "Like in Last Inaction Hero: each round punches through the robot queue."}
+]}, {"loop": 1, "reviews": [
+  {"item_id": "upg_damage", "verdict": "pass", "rule": null, "reason": "", "suggestion": null},
+  {"item_id": "upg_fire_rate", "verdict": "pass", "rule": null, "reason": "", "suggestion": null},
+  {"item_id": "upg_reload_speed", "verdict": "pass", "rule": null, "reason": "", "suggestion": null},
+  {"item_id": "upg_crit_chance", "verdict": "pass", "rule": null, "reason": "", "suggestion": null},
+  {"item_id": "upg_crit_damage", "verdict": "pass", "rule": null, "reason": "Corrected line: the joke targets the company and no catchphrase remains.", "suggestion": null},
+  {"item_id": "upg_magazine_size", "verdict": "pass", "rule": null, "reason": "", "suggestion": null},
+  {"item_id": "upg_max_health", "verdict": "pass", "rule": null, "reason": "", "suggestion": null},
+  {"item_id": "upg_move_speed", "verdict": "pass", "rule": null, "reason": "", "suggestion": null},
+  {"item_id": "upg_pickup_radius", "verdict": "pass", "rule": null, "reason": "", "suggestion": null},
+  {"item_id": "upg_xp_gain", "verdict": "pass", "rule": null, "reason": "Corrected line: the first-person \"I\" makes it Rook's self-mockery, not a jab at the player.", "suggestion": null},
+  {"item_id": "upg_mining_speed", "verdict": "pass", "rule": null, "reason": "", "suggestion": null},
+  {"item_id": "upg_luck", "verdict": "pass", "rule": null, "reason": "", "suggestion": null},
+  {"item_id": "upg_piercing", "verdict": "pass", "rule": null, "reason": "Corrected line: the title is in fictional-films and the quote is original.", "suggestion": null}
+]}]}
