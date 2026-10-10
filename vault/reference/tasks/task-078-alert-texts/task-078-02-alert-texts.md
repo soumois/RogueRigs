@@ -3,7 +3,7 @@ id: task-078-02-alert-texts
 description: "Critic review of alerts.json: verdict, rule id, reason and correction per item."
 parent: task-078-alert-texts
 kind: task
-status: todo
+status: done
 ---
 # Critic review (alert-texts)
 
@@ -15,11 +15,11 @@ status: todo
 - done_when: every item has a verdict; every fail cites an existing rule id; review file kept in logs.
 - editor_state: any
 - token_ceiling: 20000
-- model: open
-- tokens: open
-- runs: open
+- model: opus
+- tokens: input 10, cache write 33475, cache read 73517, output 5047
+- runs: 2
 - milestone: M2
-- result: open
+- result: Alerts: 15 lines, critic round 0: 15 pass, 0 fail. Run 20261010-103242-alerts.
 
 ## Relations
 - [[task-078-alert-texts]] — parent global task.

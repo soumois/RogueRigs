@@ -1,9 +1,9 @@
 ---
 id: task-078-alert-texts
 description: "Global task: A4 Kessler-Voss alerts: text agent writes, validator checks, critic reviews, corrections applied (2 loops at most)."
-parent: tasks-to-do-index
+parent: tasks-done-index
 kind: task
-status: in-progress
+status: done
 ---
 # A4 Kessler-Voss alerts
 
@@ -13,14 +13,14 @@ status: in-progress
 - gdd_check: done by the Orchestrator when the task is planned (2026-10-10).
 - confirmed_by_owner: yes (2026-10-10)
 - milestone: M2
-- next_step: task-078-01-alert-texts
-- result: open
+- next_step: none
+- result: Done. Alerts: 15 lines, critic round 0: 15 pass, 0 fail. Run 20261010-103242-alerts.
 
 ## Subtasks
 1. task-078-01-alert-texts — text
 2. task-078-02-alert-texts — style-guide
 
 ## Relations
-- [[tasks-to-do-index]] — parent index.
+- [[tasks-done-index]] — parent index.
 - [[task-078-01-alert-texts]] — step 1, text.
 - [[task-078-02-alert-texts]] — step 2, style-guide.
