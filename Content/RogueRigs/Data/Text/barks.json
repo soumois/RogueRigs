@@ -1,0 +1,244 @@
+{
+ "schema_version": 1,
+ "run_id": "20261010-103303-barks",
+ "items": [
+  {
+   "line_id": "rook_level_up_01",
+   "speaker_id": "rook",
+   "trigger": "level_up",
+   "tone": "cocky",
+   "text": "Level up. Odds just got nervous."
+  },
+  {
+   "line_id": "rook_level_up_02",
+   "speaker_id": "rook",
+   "trigger": "level_up",
+   "tone": "technical",
+   "text": "Torque up, yield up, redline optional."
+  },
+  {
+   "line_id": "vesna_level_up_01",
+   "speaker_id": "vesna",
+   "trigger": "level_up",
+   "tone": "deadpan",
+   "text": "Stronger now. Try not to celebrate."
+  },
+  {
+   "line_id": "rook_upgrade_offer_01",
+   "speaker_id": "rook",
+   "trigger": "upgrade_offer",
+   "tone": "cocky",
+   "text": "Pick fast. My cut is waiting."
+  },
+  {
+   "line_id": "vesna_upgrade_offer_01",
+   "speaker_id": "vesna",
+   "trigger": "upgrade_offer",
+   "tone": "deadpan",
+   "text": "Choose. Rook will want the loud one."
+  },
+  {
+   "line_id": "rook_player_damaged_01",
+   "speaker_id": "rook",
+   "trigger": "player_damaged",
+   "tone": "technical",
+   "text": "Hull patch is peeling. Keep shooting."
+  },
+  {
+   "line_id": "rook_player_damaged_02",
+   "speaker_id": "rook",
+   "trigger": "player_damaged",
+   "tone": "cocky",
+   "text": "Dent! Barely counts. Bill corporate."
+  },
+  {
+   "line_id": "vesna_player_damaged_01",
+   "speaker_id": "vesna",
+   "trigger": "player_damaged",
+   "tone": "deadpan",
+   "text": "Another shortcut, Rook? Like the Pallas run."
+  },
+  {
+   "line_id": "rook_horde_incoming_01",
+   "speaker_id": "rook",
+   "trigger": "horde_incoming",
+   "tone": "cocky",
+   "text": "Like in Cliffhangover: everybody panic politely."
+  },
+  {
+   "line_id": "rook_horde_incoming_02",
+   "speaker_id": "rook",
+   "trigger": "horde_incoming",
+   "tone": "technical",
+   "text": "Payload hot, burn window short. Brace."
+  },
+  {
+   "line_id": "vesna_horde_incoming_01",
+   "speaker_id": "vesna",
+   "trigger": "horde_incoming",
+   "tone": "deadpan",
+   "text": "Company sent a crowd. Rude."
+  },
+  {
+   "line_id": "vesna_console_dropped_01",
+   "speaker_id": "vesna",
+   "trigger": "console_dropped",
+   "tone": "technical",
+   "text": "Access point deployed. Go find it."
+  },
+  {
+   "line_id": "rook_console_dropped_01",
+   "speaker_id": "rook",
+   "trigger": "console_dropped",
+   "tone": "cocky",
+   "text": "Free gift from the sky. Taking it."
+  },
+  {
+   "line_id": "rook_console_hack_started_01",
+   "speaker_id": "rook",
+   "trigger": "console_hack_started",
+   "tone": "technical",
+   "text": "Hacking in. Nobody touch the coolant."
+  },
+  {
+   "line_id": "vesna_console_hack_started_01",
+   "speaker_id": "vesna",
+   "trigger": "console_hack_started",
+   "tone": "deadpan",
+   "text": "Stay near it. Rook, that includes you."
+  },
+  {
+   "line_id": "rook_console_hacked_01",
+   "speaker_id": "rook",
+   "trigger": "console_hacked",
+   "tone": "cocky",
+   "text": "Network cracked. Corporate password was probably admin."
+  },
+  {
+   "line_id": "vesna_console_hacked_01",
+   "speaker_id": "vesna",
+   "trigger": "console_hacked",
+   "tone": "technical",
+   "text": "Hack complete. Nice and tidy."
+  },
+  {
+   "line_id": "rook_console_hacked_02",
+   "speaker_id": "rook",
+   "trigger": "console_hacked",
+   "tone": "cocky",
+   "text": "Like in Universal Solder: access granted, feelings optional."
+  },
+  {
+   "line_id": "rook_bonus_chest_dropped_01",
+   "speaker_id": "rook",
+   "trigger": "bonus_chest_dropped",
+   "tone": "cocky",
+   "text": "Loot from the sky. Mine, obviously."
+  },
+  {
+   "line_id": "vesna_bonus_chest_dropped_01",
+   "speaker_id": "vesna",
+   "trigger": "bonus_chest_dropped",
+   "tone": "deadpan",
+   "text": "Chest dropped. Rook is already counting."
+  },
+  {
+   "line_id": "rook_bonus_chest_opened_01",
+   "speaker_id": "rook",
+   "trigger": "bonus_chest_opened",
+   "tone": "cocky",
+   "text": "Jackpot. Add it to my cut."
+  },
+  {
+   "line_id": "vesna_bonus_chest_opened_01",
+   "speaker_id": "vesna",
+   "trigger": "bonus_chest_opened",
+   "tone": "deadpan",
+   "text": "Nice haul. Corporate will call it theft."
+  },
+  {
+   "line_id": "rook_bonus_chest_opened_02",
+   "speaker_id": "rook",
+   "trigger": "bonus_chest_opened",
+   "tone": "technical",
+   "text": "Yield looks great. Hull patch still ugly."
+  },
+  {
+   "line_id": "vesna_extraction_ready_01",
+   "speaker_id": "vesna",
+   "trigger": "extraction_ready",
+   "tone": "technical",
+   "text": "Extraction is ready. Move your feet."
+  },
+  {
+   "line_id": "rook_extraction_ready_01",
+   "speaker_id": "rook",
+   "trigger": "extraction_ready",
+   "tone": "technical",
+   "text": "Burn window open. Run, run, run."
+  },
+  {
+   "line_id": "rook_shuttle_landed_01",
+   "speaker_id": "rook",
+   "trigger": "shuttle_landed",
+   "tone": "cocky",
+   "text": "Taxi is here. Tip is the ore."
+  },
+  {
+   "line_id": "vesna_shuttle_landed_01",
+   "speaker_id": "vesna",
+   "trigger": "shuttle_landed",
+   "tone": "deadpan",
+   "text": "Shuttle is down. Board it."
+  },
+  {
+   "line_id": "rook_run_won_01",
+   "speaker_id": "rook",
+   "trigger": "run_won",
+   "tone": "cocky",
+   "text": "Told you. Odds never stood a chance."
+  },
+  {
+   "line_id": "vesna_run_won_01",
+   "speaker_id": "vesna",
+   "trigger": "run_won",
+   "tone": "deadpan",
+   "text": "Clean extraction. Better than the Ceres job."
+  },
+  {
+   "line_id": "rook_run_lost_01",
+   "speaker_id": "rook",
+   "trigger": "run_lost",
+   "tone": "technical",
+   "text": "Missed the shuttle. Corporate wins, again."
+  },
+  {
+   "line_id": "vesna_run_lost_01",
+   "speaker_id": "vesna",
+   "trigger": "run_lost",
+   "tone": "deadpan",
+   "text": "Another Ceres job. Different asteroid."
+  },
+  {
+   "line_id": "rook_run_lost_02",
+   "speaker_id": "rook",
+   "trigger": "run_lost",
+   "tone": "cocky",
+   "text": "Like in Broken Arrears: next time, bigger bombs."
+  },
+  {
+   "line_id": "rook_game_over_01",
+   "speaker_id": "rook",
+   "trigger": "game_over",
+   "tone": "cocky",
+   "text": "Okay, that one was on the odds."
+  },
+  {
+   "line_id": "vesna_game_over_01",
+   "speaker_id": "vesna",
+   "trigger": "game_over",
+   "tone": "deadpan",
+   "text": "Rook. Get up. We are not done."
+  }
+ ]
+}

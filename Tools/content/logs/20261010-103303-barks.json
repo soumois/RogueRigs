@@ -1,0 +1,517 @@
+{
+ "run_id": "20261010-103303-barks",
+ "content_file": "barks.json",
+ "retrieval": true,
+ "entries": [
+  {
+   "item_id": "rook_level_up_01",
+   "loop": 0,
+   "query": "rook voice for level_up",
+   "node_ids": [
+    "crew-characters"
+   ],
+   "excerpts": [
+    {
+     "node_id": "crew-characters",
+     "text": "Cocky; waves the odds away; improvises first, thinks later, and defends a shaky plan with total confidence."
+    }
+   ],
+   "output": "Level up. Odds just got nervous."
+  },
+  {
+   "item_id": "rook_level_up_02",
+   "loop": 0,
+   "query": "rook voice for level_up",
+   "node_ids": [
+    "dialogue-tone"
+   ],
+   "excerpts": [
+    {
+     "node_id": "dialogue-tone",
+     "text": "Rook: a cocky, odds-dismissing smuggler crossed with a tired, sarcastic blue-collar worker; punchlines and Rigs jargon under stress"
+    }
+   ],
+   "output": "Torque up, yield up, redline optional."
+  },
+  {
+   "item_id": "vesna_level_up_01",
+   "loop": 0,
+   "query": "vesna voice for level_up",
+   "node_ids": [
+    "crew-characters"
+   ],
+   "excerpts": [
+    {
+     "node_id": "crew-characters",
+     "text": "Calm, precise, mission first; short dry sentences."
+    }
+   ],
+   "output": "Stronger now. Try not to celebrate."
+  },
+  {
+   "item_id": "rook_upgrade_offer_01",
+   "loop": 0,
+   "query": "rook voice for upgrade_offer",
+   "node_ids": [
+    "crew-characters"
+   ],
+   "excerpts": [
+    {
+     "node_id": "crew-characters",
+     "text": "Proud scrapper: loves his gear, loves it when things blow up, always counting his cut."
+    }
+   ],
+   "output": "Pick fast. My cut is waiting."
+  },
+  {
+   "item_id": "vesna_upgrade_offer_01",
+   "loop": 0,
+   "query": "vesna voice for upgrade_offer",
+   "node_ids": [
+    "crew-characters"
+   ],
+   "excerpts": [
+    {
+     "node_id": "crew-characters",
+     "text": "Cuts Rook down when he gets carried away: a small joke, or the name of one of his plans that already failed."
+    }
+   ],
+   "output": "Choose. Rook will want the loud one."
+  },
+  {
+   "item_id": "rook_player_damaged_01",
+   "loop": 0,
+   "query": "rook voice for player_damaged",
+   "node_ids": [
+    "dialogue-tone"
+   ],
+   "excerpts": [
+    {
+     "node_id": "dialogue-tone",
+     "text": "Rook: a cocky, odds-dismissing smuggler crossed with a tired, sarcastic blue-collar worker; punchlines and Rigs jargon under stress"
+    }
+   ],
+   "output": "Hull patch is peeling. Keep shooting."
+  },
+  {
+   "item_id": "rook_player_damaged_02",
+   "loop": 0,
+   "query": "rook voice for player_damaged",
+   "node_ids": [
+    "dialogue-tone"
+   ],
+   "excerpts": [
+    {
+     "node_id": "dialogue-tone",
+     "text": "Jokes target the company."
+    }
+   ],
+   "output": "Dent! Barely counts. Bill corporate."
+  },
+  {
+   "item_id": "vesna_player_damaged_01",
+   "loop": 0,
+   "query": "vesna voice for player_damaged",
+   "node_ids": [
+    "crew-characters"
+   ],
+   "excerpts": [
+    {
+     "node_id": "crew-characters",
+     "text": "The Pallas run: Rook cut through a debris field"
+    }
+   ],
+   "output": "Another shortcut, Rook? Like the Pallas run."
+  },
+  {
+   "item_id": "rook_horde_incoming_01",
+   "loop": 0,
+   "query": "rook voice for horde_incoming",
+   "node_ids": [
+    "fictional-films"
+   ],
+   "excerpts": [
+    {
+     "node_id": "fictional-films",
+     "text": "The line is always original: never a real film line"
+    }
+   ],
+   "output": "Like in Cliffhangover: everybody panic politely."
+  },
+  {
+   "item_id": "rook_horde_incoming_02",
+   "loop": 0,
+   "query": "rook voice for horde_incoming",
+   "node_ids": [
+    "dialogue-tone"
+   ],
+   "excerpts": [
+    {
+     "node_id": "dialogue-tone",
+     "text": "Rook: a cocky, odds-dismissing smuggler crossed with a tired, sarcastic blue-collar worker; punchlines and Rigs jargon under stress"
+    }
+   ],
+   "output": "Payload hot, burn window short. Brace."
+  },
+  {
+   "item_id": "vesna_horde_incoming_01",
+   "loop": 0,
+   "query": "vesna voice for horde_incoming",
+   "node_ids": [
+    "lore"
+   ],
+   "excerpts": [
+    {
+     "node_id": "lore",
+     "text": "Company reinforcements arriving"
+    }
+   ],
+   "output": "Company sent a crowd. Rude."
+  },
+  {
+   "item_id": "vesna_console_dropped_01",
+   "loop": 0,
+   "query": "vesna voice for console_dropped",
+   "node_ids": [
+    "lore"
+   ],
+   "excerpts": [
+    {
+     "node_id": "lore",
+     "text": "drops a console there as an access point"
+    }
+   ],
+   "output": "Access point deployed. Go find it."
+  },
+  {
+   "item_id": "rook_console_dropped_01",
+   "loop": 0,
+   "query": "rook voice for console_dropped",
+   "node_ids": [
+    "crew-characters"
+   ],
+   "excerpts": [
+    {
+     "node_id": "crew-characters",
+     "text": "Cocky; waves the odds away; improvises first, thinks later, and defends a shaky plan with total confidence."
+    }
+   ],
+   "output": "Free gift from the sky. Taking it."
+  },
+  {
+   "item_id": "rook_console_hack_started_01",
+   "loop": 0,
+   "query": "rook voice for console_hack_started",
+   "node_ids": [
+    "dialogue-tone"
+   ],
+   "excerpts": [
+    {
+     "node_id": "dialogue-tone",
+     "text": "Rook: a cocky, odds-dismissing smuggler crossed with a tired, sarcastic blue-collar worker; punchlines and Rigs jargon under stress"
+    }
+   ],
+   "output": "Hacking in. Nobody touch the coolant."
+  },
+  {
+   "item_id": "vesna_console_hack_started_01",
+   "loop": 0,
+   "query": "vesna voice for console_hack_started",
+   "node_ids": [
+    "crew-characters"
+   ],
+   "excerpts": [
+    {
+     "node_id": "crew-characters",
+     "text": "Cuts Rook down when he gets carried away: a small joke, or the name of one of his plans that already failed."
+    }
+   ],
+   "output": "Stay near it. Rook, that includes you."
+  },
+  {
+   "item_id": "rook_console_hacked_01",
+   "loop": 0,
+   "query": "rook voice for console_hacked",
+   "node_ids": [
+    "dialogue-tone"
+   ],
+   "excerpts": [
+    {
+     "node_id": "dialogue-tone",
+     "text": "Jokes target the company."
+    }
+   ],
+   "output": "Network cracked. Corporate password was probably admin."
+  },
+  {
+   "item_id": "vesna_console_hacked_01",
+   "loop": 0,
+   "query": "vesna voice for console_hacked",
+   "node_ids": [
+    "crew-characters"
+   ],
+   "excerpts": [
+    {
+     "node_id": "crew-characters",
+     "text": "Calm, precise, mission first; short dry sentences."
+    }
+   ],
+   "output": "Hack complete. Nice and tidy."
+  },
+  {
+   "item_id": "rook_console_hacked_02",
+   "loop": 0,
+   "query": "rook voice for console_hacked",
+   "node_ids": [
+    "fictional-films"
+   ],
+   "excerpts": [
+    {
+     "node_id": "fictional-films",
+     "text": "The line is always original: never a real film line"
+    }
+   ],
+   "output": "Like in Universal Solder: access granted, feelings optional."
+  },
+  {
+   "item_id": "rook_bonus_chest_dropped_01",
+   "loop": 0,
+   "query": "rook voice for bonus_chest_dropped",
+   "node_ids": [
+    "crew-characters"
+   ],
+   "excerpts": [
+    {
+     "node_id": "crew-characters",
+     "text": "Proud scrapper: loves his gear, loves it when things blow up, always counting his cut."
+    }
+   ],
+   "output": "Loot from the sky. Mine, obviously."
+  },
+  {
+   "item_id": "vesna_bonus_chest_dropped_01",
+   "loop": 0,
+   "query": "vesna voice for bonus_chest_dropped",
+   "node_ids": [
+    "crew-characters"
+   ],
+   "excerpts": [
+    {
+     "node_id": "crew-characters",
+     "text": "Cuts Rook down when he gets carried away: a small joke, or the name of one of his plans that already failed."
+    }
+   ],
+   "output": "Chest dropped. Rook is already counting."
+  },
+  {
+   "item_id": "rook_bonus_chest_opened_01",
+   "loop": 0,
+   "query": "rook voice for bonus_chest_opened",
+   "node_ids": [
+    "crew-characters"
+   ],
+   "excerpts": [
+    {
+     "node_id": "crew-characters",
+     "text": "Proud scrapper: loves his gear, loves it when things blow up, always counting his cut."
+    }
+   ],
+   "output": "Jackpot. Add it to my cut."
+  },
+  {
+   "item_id": "vesna_bonus_chest_opened_01",
+   "loop": 0,
+   "query": "vesna voice for bonus_chest_opened",
+   "node_ids": [
+    "lore"
+   ],
+   "excerpts": [
+    {
+     "node_id": "lore",
+     "text": "Independent miners who land in that window to strip the ore first."
+    }
+   ],
+   "output": "Nice haul. Corporate will call it theft."
+  },
+  {
+   "item_id": "rook_bonus_chest_opened_02",
+   "loop": 0,
+   "query": "rook voice for bonus_chest_opened",
+   "node_ids": [
+    "dialogue-tone"
+   ],
+   "excerpts": [
+    {
+     "node_id": "dialogue-tone",
+     "text": "Rook: a cocky, odds-dismissing smuggler crossed with a tired, sarcastic blue-collar worker; punchlines and Rigs jargon under stress"
+    }
+   ],
+   "output": "Yield looks great. Hull patch still ugly."
+  },
+  {
+   "item_id": "vesna_extraction_ready_01",
+   "loop": 0,
+   "query": "vesna voice for extraction_ready",
+   "node_ids": [
+    "crew-characters"
+   ],
+   "excerpts": [
+    {
+     "node_id": "crew-characters",
+     "text": "Calm, precise, mission first; short dry sentences."
+    }
+   ],
+   "output": "Extraction is ready. Move your feet."
+  },
+  {
+   "item_id": "rook_extraction_ready_01",
+   "loop": 0,
+   "query": "rook voice for extraction_ready",
+   "node_ids": [
+    "dialogue-tone"
+   ],
+   "excerpts": [
+    {
+     "node_id": "dialogue-tone",
+     "text": "Rook: a cocky, odds-dismissing smuggler crossed with a tired, sarcastic blue-collar worker; punchlines and Rigs jargon under stress"
+    }
+   ],
+   "output": "Burn window open. Run, run, run."
+  },
+  {
+   "item_id": "rook_shuttle_landed_01",
+   "loop": 0,
+   "query": "rook voice for shuttle_landed",
+   "node_ids": [
+    "lore"
+   ],
+   "excerpts": [
+    {
+     "node_id": "lore",
+     "text": "The Rigs' extraction craft"
+    }
+   ],
+   "output": "Taxi is here. Tip is the ore."
+  },
+  {
+   "item_id": "vesna_shuttle_landed_01",
+   "loop": 0,
+   "query": "vesna voice for shuttle_landed",
+   "node_ids": [
+    "lore"
+   ],
+   "excerpts": [
+    {
+     "node_id": "lore",
+     "text": "The Rigs' extraction craft"
+    }
+   ],
+   "output": "Shuttle is down. Board it."
+  },
+  {
+   "item_id": "rook_run_won_01",
+   "loop": 0,
+   "query": "rook voice for run_won",
+   "node_ids": [
+    "crew-characters"
+   ],
+   "excerpts": [
+    {
+     "node_id": "crew-characters",
+     "text": "Cocky; waves the odds away; improvises first, thinks later, and defends a shaky plan with total confidence."
+    }
+   ],
+   "output": "Told you. Odds never stood a chance."
+  },
+  {
+   "item_id": "vesna_run_won_01",
+   "loop": 0,
+   "query": "vesna voice for run_won",
+   "node_ids": [
+    "crew-characters"
+   ],
+   "excerpts": [
+    {
+     "node_id": "crew-characters",
+     "text": "The Ceres job: Rook's plan; they lost the ship."
+    }
+   ],
+   "output": "Clean extraction. Better than the Ceres job."
+  },
+  {
+   "item_id": "rook_run_lost_01",
+   "loop": 0,
+   "query": "rook voice for run_lost",
+   "node_ids": [
+    "dialogue-tone"
+   ],
+   "excerpts": [
+    {
+     "node_id": "dialogue-tone",
+     "text": "Rook: a cocky, odds-dismissing smuggler crossed with a tired, sarcastic blue-collar worker; punchlines and Rigs jargon under stress"
+    }
+   ],
+   "output": "Missed the shuttle. Corporate wins, again."
+  },
+  {
+   "item_id": "vesna_run_lost_01",
+   "loop": 0,
+   "query": "vesna voice for run_lost",
+   "node_ids": [
+    "crew-characters"
+   ],
+   "excerpts": [
+    {
+     "node_id": "crew-characters",
+     "text": "The Ceres job: Rook's plan; they lost the ship."
+    }
+   ],
+   "output": "Another Ceres job. Different asteroid."
+  },
+  {
+   "item_id": "rook_run_lost_02",
+   "loop": 0,
+   "query": "rook voice for run_lost",
+   "node_ids": [
+    "fictional-films"
+   ],
+   "excerpts": [
+    {
+     "node_id": "fictional-films",
+     "text": "The line is always original: never a real film line"
+    }
+   ],
+   "output": "Like in Broken Arrears: next time, bigger bombs."
+  },
+  {
+   "item_id": "rook_game_over_01",
+   "loop": 0,
+   "query": "rook voice for game_over",
+   "node_ids": [
+    "crew-characters"
+   ],
+   "excerpts": [
+    {
+     "node_id": "crew-characters",
+     "text": "Cocky; waves the odds away; improvises first, thinks later, and defends a shaky plan with total confidence."
+    }
+   ],
+   "output": "Okay, that one was on the odds."
+  },
+  {
+   "item_id": "vesna_game_over_01",
+   "loop": 0,
+   "query": "vesna voice for game_over",
+   "node_ids": [
+    "crew-characters"
+   ],
+   "excerpts": [
+    {
+     "node_id": "crew-characters",
+     "text": "Calm, precise, mission first; short dry sentences."
+    }
+   ],
+   "output": "Rook. Get up. We are not done."
+  }
+ ]
+}
