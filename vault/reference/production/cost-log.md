@@ -138,6 +138,7 @@ kind: note
 | [[task-075-01-baseline-run]] | sonnet | 1 | 0k | 21k | 46k | 4k |
 | [[task-078-02-alert-texts]] | opus | 2 | 0k | 33k | 74k | 5k |
 | [[task-076-02-upgrade-texts]] | opus | 3 | 0k | 68k | 150k | 9k |
+| [[task-077-02-barks]] | opus | 3 | 0k | 78k | 242k | 14k |
 
 ## Totals
 | Scope | Input | Cache write | Cache read | Output |

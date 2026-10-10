@@ -3,7 +3,7 @@ id: task-077-02-barks
 description: "Critic review of barks.json: verdict, rule id, reason and correction per item."
 parent: task-077-barks
 kind: task
-status: todo
+status: done
 ---
 # Critic review (barks)
 
@@ -15,11 +15,11 @@ status: todo
 - done_when: every item has a verdict; every fail cites an existing rule id; review file kept in logs.
 - editor_state: any
 - token_ceiling: 20000
-- model: open
-- tokens: open
-- runs: open
+- model: opus
+- tokens: input 24, cache write 78211, cache read 242234, output 14199
+- runs: 3
 - milestone: M2
-- result: open
+- result: Barks: 34; critic round 0: 32 pass 2 fail (T3, T4) corrected; round 1: 34 pass. Run 20261010-103303-barks.
 
 ## Relations
 - [[task-077-barks]] — parent global task.
