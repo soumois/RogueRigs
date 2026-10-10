@@ -15,9 +15,9 @@ status: done
 - done_when: node has about 50 titles; lint clean; critic verdict recorded; no real line or tagline; committed.
 - editor_state: any
 - token_ceiling: 30000
-- model: open
-- tokens: open
-- runs: open
+- model: sonnet
+- tokens: input 16, cache write 16869, cache read 85759, output 5565
+- runs: 1
 - milestone: M2
 - result: 50 titles in fictional-films (44 new, provisional), commit eca35ee
 
