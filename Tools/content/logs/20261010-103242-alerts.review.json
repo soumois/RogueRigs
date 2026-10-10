@@ -1,0 +1,17 @@
+{"run_id": "20261010-103242-alerts", "rounds": [{"loop": 0, "reviews": [
+  {"item_id": "kv_console_dropped_01", "verdict": "pass", "rule": null, "reason": "Cold procedural notice; the breach is logged without naming the Rigs.", "suggestion": null},
+  {"item_id": "kv_console_dropped_02", "verdict": "pass", "rule": null, "reason": "Asset language, no emotion, fits the bureaucratic register.", "suggestion": null},
+  {"item_id": "kv_console_dropped_03", "verdict": "pass", "rule": null, "reason": "Glossy 'your future' propaganda; the humor comes from the gap with the hack.", "suggestion": null},
+  {"item_id": "kv_bonus_chest_dropped_01", "verdict": "pass", "rule": null, "reason": "Uses 'unauthorized personnel' as company-voice prescribes; procedural prohibition.", "suggestion": null},
+  {"item_id": "kv_bonus_chest_dropped_02", "verdict": "pass", "rule": null, "reason": "Upbeat public propaganda, no joke, no jargon.", "suggestion": null},
+  {"item_id": "kv_bonus_chest_dropped_03", "verdict": "pass", "rule": null, "reason": "Invoice language fits the bureaucratic register and does not reuse the 'Notice 7-B' example verbatim.", "suggestion": null},
+  {"item_id": "kv_horde_incoming_01", "verdict": "pass", "rule": null, "reason": "Impersonal escalation notice; robots are just security doing their job.", "suggestion": null},
+  {"item_id": "kv_horde_incoming_02", "verdict": "pass", "rule": null, "reason": "Stock corporate safety phrasing, not a film line or a catchphrase tied to anyone; fits the propaganda register.", "suggestion": null},
+  {"item_id": "kv_horde_incoming_03", "verdict": "pass", "rule": null, "reason": "Asset protection language; cold and procedural.", "suggestion": null},
+  {"item_id": "kv_extraction_ready_01", "verdict": "pass", "rule": null, "reason": "Uses the prescribed 'extraction irregularity' term without naming the Rigs.", "suggestion": null},
+  {"item_id": "kv_extraction_ready_02", "verdict": "pass", "rule": null, "reason": "Glossy propaganda; the irony comes from the gap, not a joke.", "suggestion": null},
+  {"item_id": "kv_extraction_ready_03", "verdict": "pass", "rule": null, "reason": "Procedural notice; reinforcements are routed, not yet on site.", "suggestion": null},
+  {"item_id": "kv_shuttle_countdown_01", "verdict": "pass", "rule": null, "reason": "Matches the lore meaning of the countdown (reinforcements arriving), cold and short.", "suggestion": null},
+  {"item_id": "kv_shuttle_countdown_02", "verdict": "pass", "rule": null, "reason": "Bureaucratic order; recovery units are inbound, not present on site.", "suggestion": null},
+  {"item_id": "kv_shuttle_countdown_03", "verdict": "pass", "rule": null, "reason": "Propaganda echoing 'your future' without copying an example slogan; the company is still arriving, not on site.", "suggestion": null}
+]}]}
