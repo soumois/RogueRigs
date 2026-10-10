@@ -3,7 +3,7 @@ id: task-068-shipping-insights
 description: "Global task: Measurement in a packaged build with an Unreal Insights capture of the isolated frame spikes."
 parent: tasks-index
 kind: task
-status: todo
+status: in-progress
 ---
 # Packaged build and Insights
 

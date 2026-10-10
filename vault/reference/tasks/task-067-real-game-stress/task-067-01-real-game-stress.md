@@ -3,7 +3,7 @@ id: task-067-01-real-game-stress
 description: "Stress scenario close to a real game: 150 robots, a horde, full HUD and minimap, Niagara on, miner running and digging."
 parent: task-067-real-game-stress
 kind: task
-status: in-progress
+status: done
 ---
 # Real-game stress scenario
 
@@ -15,11 +15,11 @@ status: in-progress
 - done_when: build exits 0 with the editor closed; all `RogueRigs.*` tests pass headless; docs updated; lint clean.
 - editor_state: closed
 - token_ceiling: 70000
-- model: open
-- tokens: open
-- runs: open
+- model: opus
+- tokens: input 94, cache write 182868, cache read 5745185, output 52450
+- runs: 1
 - milestone: M2
-- result: open
+- result: Real-game stress mode (live director, fill, forced horde, run-and-collect bot). Limit 250 robots (p99 31.9 ms); no step under 16.7 ms p99 (150: 19.4-20.3 ms); game thread bounds every step (about 10.5 ms at 150), render 10-11 ms and GPU 7.6 ms flat, flow field under 0.2 ms. Spikes: one GC per run, wave spawns about 1.3 ms per robot, untagged spikes up to 95 ms during mass robot losses. 195 tests pass.
 
 ## Relations
 - [[task-067-real-game-stress]] — parent global task.

@@ -79,7 +79,7 @@ Resuming: read [[handover-2026-10-09]] first (previous: [[handover-2026-10-06]])
 - [[task-064-minimap-circle-reveal]] — Minimap reveal is a circle of 18 cells around the miner, the same in every direction. Status done.
 - [[task-065-diagonal-dig]] — Moving diagonally into a corner of two blocks still digs the nearest touching block(s). Status done.
 - [[task-066-async-flow-field]] — Flow field rebuilt on a worker thread with a double buffer, so robots follow a new path within 1–2 frames under normal PC load. Status done.
-- [[task-067-real-game-stress]] — Stress scenario close to a real game: 150 robots, a horde, full HUD and minimap, Niagara on, miner running and digging. Status in-progress.
-- [[task-068-shipping-insights]] — Measurement in a packaged build with an Unreal Insights capture of the isolated frame spikes. Status todo.
+- [[task-067-real-game-stress]] — Stress scenario close to a real game: 150 robots, a horde, full HUD and minimap, Niagara on, miner running and digging. Status done.
+- [[task-068-shipping-insights]] — Measurement in a packaged build with an Unreal Insights capture of the isolated frame spikes. Status in-progress.
 - [[task-069-min-spec]] — Minimum PC specification defined and checked against the stress scenarios. Status todo.
 - [[task-070-ore-in-rock]] — Ore scattered through the rock: nuggets inside rock blocks so ore drips during the whole dig, as in DRGS. Status todo.
