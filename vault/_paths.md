@@ -415,6 +415,8 @@ task-069-01-min-spec  reference/tasks/task-069-min-spec/task-069-01-min-spec.md
 task-069-min-spec  reference/tasks/task-069-min-spec.md
 task-070-01-ore-in-rock  reference/tasks/task-070-ore-in-rock/task-070-01-ore-in-rock.md
 task-070-ore-in-rock  reference/tasks/task-070-ore-in-rock.md
+task-071-01-robot-light-movement  reference/tasks/task-071-robot-light-movement/task-071-01-robot-light-movement.md
+task-071-robot-light-movement  reference/tasks/task-071-robot-light-movement.md
 tasks-index  reference/tasks/tasks-index.md
 tech-index  reference/tech/tech-index.md
 terrain-index  reference/gdd/terrain/terrain-index.md
