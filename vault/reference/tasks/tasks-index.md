@@ -84,3 +84,13 @@ Resuming: read [[handover-2026-10-09]] first (previous: [[handover-2026-10-06]])
 - [[task-069-min-spec]] — Minimum PC specification defined and checked against the stress scenarios. Status todo.
 - [[task-070-ore-in-rock]] — Ore scattered through the rock: nuggets inside rock blocks so ore drips during the whole dig, as in DRGS. Status todo.
 - [[task-071-robot-light-movement]] — Robots move with a light custom movement instead of CharacterMovement, before/after on the real-game stress. Status todo, on hold (owner 2026-10-10).
+- [[task-072-film-pool]] — A4 film pool: fictional-films grows to about 50 parody titles of badass 80s and 90s action films, checked by the critic. Status in-progress.
+- [[task-073-text-schema]] — A4 schema: the text-content-schema node defines the 3 content files, the retrieval log and the critic review file. Status in-progress.
+- [[task-074-text-validator]] — A4 validator: Tools/content/validate_text.js checks schema, word counts, numbers and log excerpts, with a test on an invalid file. Status todo.
+- [[task-075-baseline-run]] — A4 baseline: a small sample of each content type generated without reading the lore, kept as the comparison point. Status todo.
+- [[task-076-upgrade-texts]] — A4 upgrade card texts: text agent writes, validator checks, critic reviews, corrections applied (2 loops at most). Status todo.
+- [[task-077-barks]] — A4 Rook and Vesna barks: text agent writes, validator checks, critic reviews, corrections applied (2 loops at most). Status todo.
+- [[task-078-alert-texts]] — A4 Kessler-Voss alerts: text agent writes, validator checks, critic reviews, corrections applied (2 loops at most). Status todo.
+- [[task-079-text-loader]] — A4 loader: the text files are loaded in game and feed FRRUpgradeCard.DescriptionText and the existing alert events. Status todo.
+- [[task-080-text-display]] — A4 display: upgrade card flavor lines and Kessler-Voss alerts are shown in game; bark subtitle only if time allows. Status todo.
+- [[task-081-a4-readme]] — A4 README: assignments/A4-dynamic-content-pipeline/README.md filled from the real logs and reviews. Status todo.
