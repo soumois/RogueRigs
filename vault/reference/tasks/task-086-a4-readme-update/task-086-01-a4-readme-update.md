@@ -3,7 +3,7 @@ id: task-086-01-a4-readme-update
 description: "A4 README updated with the new rule T9 catch, the voice-tweak comparison and the corrected display status."
 parent: task-086-a4-readme-update
 kind: task
-status: in-progress
+status: done
 ---
 # A4 README update
 
@@ -15,11 +15,11 @@ status: in-progress
 - done_when: every claim traced to a file or log; links resolve; lint clean.
 - editor_state: any
 - token_ceiling: 20000
-- model: open
-- tokens: open
-- runs: open
+- model: sonnet
+- tokens: input 48, cache write 133193, cache read 2425450, output 36247
+- runs: 1
 - milestone: M2
-- result: open
+- result: A4 README updated: T9 playtest catch, v1/v2 voice tweak with 13 lines side by side, counts and quotes matched to the shipped files, no 'What is not verified' section; root README T1-T9. Commit 3ba22c7.
 
 ## Relations
 - [[task-086-a4-readme-update]] — parent global task.

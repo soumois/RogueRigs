@@ -1,9 +1,9 @@
 ---
 id: task-086-a4-readme-update
 description: "Global task: A4 README updated with the new rule T9 catch, the voice-tweak comparison and the corrected display status."
-parent: tasks-to-do-index
+parent: tasks-done-index
 kind: task
-status: in-progress
+status: done
 ---
 # A4 README update
 
@@ -13,12 +13,12 @@ status: in-progress
 - gdd_check: done by the Orchestrator when the task is planned (2026-10-10).
 - confirmed_by_owner: yes (2026-10-10)
 - milestone: M2
-- next_step: task-086-01-a4-readme-update
-- result: open
+- next_step: none
+- result: Done. A4 README updated: T9 playtest catch, v1/v2 voice tweak with 13 lines side by side, counts and quotes matched to the shipped files, no 'What is not verified' section; root README T1-T9. Commit 3ba22c7.
 
 ## Subtasks
 1. task-086-01-a4-readme-update — claude
 
 ## Relations
-- [[tasks-to-do-index]] — parent index.
+- [[tasks-done-index]] — parent index.
 - [[task-086-01-a4-readme-update]] — step 1, claude.
