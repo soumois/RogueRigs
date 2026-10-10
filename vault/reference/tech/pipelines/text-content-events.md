@@ -34,7 +34,7 @@ The alert-bar subjects of [[sys-hud-pressure]] (`ERRAlertBarEventType`) plus the
 | `bonus_chest_dropped` | `URRRunFlowSubsystem::OnBonusChestDropped` (`BonusChest`) |
 | `horde_incoming` | `URRHUDWidget::OnHordeIncoming` (`Horde`) |
 | `extraction_ready` | `URRRunFlowSubsystem::OnExtractionReady` (`Extraction`) |
-| `shuttle_countdown` | `URRRunFlowSubsystem::OnShuttleCountdown` (every countdown frame; when the line shows is the loader's choice, open) |
+| `shuttle_countdown` | `URRRunFlowSubsystem::OnShuttleCountdown` (every countdown frame; the loader picks one line per countdown start, [[sys-text-content]]) |
 
 ## Relations
 - [[text-content-schema]] — parent: the pipeline contract.

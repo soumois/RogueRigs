@@ -9,12 +9,12 @@ kind: doc
 Contract between the text agent, the validator and the critic of [[assignment-4-plan]]. Every rule here is machine-checkable; a file that breaks one fails.
 
 - responsibility: format of the player-facing text files, the retrieval log and the critic review.
-- main_classes: none yet (the in-game loader is not built).
+- main_classes: the in-game loader `URRTextContentSubsystem` ([[sys-text-content]]).
 - entry_points: `node Tools/content/validate_text.js <content file> --log <log file> [--review <review file>]`, exit 0 = valid ([[text-content-validator]]).
 - data: `Content/RogueRigs/Data/Text/upgrade_texts.json`, `barks.json`, `alerts.json`; `Tools/content/logs/<run-id>.json` (log), `Tools/content/logs/<run-id>.review.json` (review).
 - depends_on: [[sys-upgrades]], [[sys-hud]], [[sys-hud-pressure]], [[sys-objectives]].
 - implements: [[assignment-4-plan]] content types 1–3, [[dialogue-tone]] T1 and T7.
-- gotchas: the Text folder must be added to "Additional Non-Asset Directories to Package" when the loader reads it at runtime. Each run overwrites its content file; history is the log.
+- gotchas: the Text folder is staged as non-UFS through `RogueRigs/Data` (`Config/DefaultGame.ini`), read by the loader at runtime. Each run overwrites its content file; history is the log.
 
 ## Run id
 - Pattern `^[0-9]{8}-[0-9]{6}-(upgrade_texts|barks|alerts)(-noretrieval)?$`: local date `YYYYMMDD`, time `HHMMSS`, the content file stem, and `-noretrieval` for the baseline run without lore (voice judgment). A `-noretrieval` content file lives under `Tools/content/logs/`, never under `Content/`.
