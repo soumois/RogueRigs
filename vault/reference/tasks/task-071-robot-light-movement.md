@@ -1,9 +1,9 @@
 ---
 id: task-071-robot-light-movement
 description: "Global task: robots move with a light custom movement instead of CharacterMovement; game thread measured before and after. On hold."
-parent: tasks-to-do-index
+parent: tasks-done-index
 kind: task
-status: in-progress
+status: done
 ---
 # Robot light movement
 
@@ -13,12 +13,12 @@ status: in-progress
 - gdd_check: done by the Orchestrator when the task is planned (2026-10-10).
 - confirmed_by_owner: yes (2026-10-10), launched 2026-10-10
 - milestone: M2
-- next_step: task-071-01-robot-light-movement
-- result: open
+- next_step: none
+- result: Done. Light kinematic robot movement behind rr.Enemy.LightMovement (default on): game thread -2.4 to -4.4 ms at 250 real-game robots, movement 5.56 -> 4.39 ms per frame (Insights), spikes 140-188 -> 75-100; S0 400 game 9.12 -> 7.84. Build 0, 203/204 tests (Integration.WeaponCardEquipsShotgun already failing, card text change). Commits b28e4bf, 918f154.
 
 ## Subtasks
 1. task-071-01-robot-light-movement — cpp
 
 ## Relations
-- [[tasks-to-do-index]] — parent index.
+- [[tasks-done-index]] — parent index.
 - [[task-071-01-robot-light-movement]] — step 1, cpp.
