@@ -1,4 +1,4 @@
-// Rogue Rigs - pickup world subsystem: moves every live pickup in one loop per frame (no actor tick per pickup, no physics).
+// Rogue Rigs - pickup world subsystem: moves every live pickup in one loop per frame (no actor tick per pickup, no physics) and spawns queued grid drops under a per-frame cap.
 
 #include "Pickups/RRPickupSubsystem.h"
 
@@ -19,7 +19,77 @@ bool URRPickupSubsystem::DoesSupportWorldType(const EWorldType::Type WorldType) 
 void URRPickupSubsystem::Deinitialize()
 {
 	Pickups.Reset();
+	SpawnQueue.Reset();
 	Super::Deinitialize();
+}
+
+void URRPickupSubsystem::RefreshFrameBudget()
+{
+	const UWorld* World = GetWorld();
+	const double Now = World ? World->GetTimeSeconds() : 0.0;
+	if (Now != BudgetWorldTime)
+	{
+		BudgetWorldTime = Now;
+		SpawnedThisFrame = 0;
+	}
+}
+
+ARRPickup* URRPickupSubsystem::RequestSpawn(TSubclassOf<ARRPickup> PickupClass, const FVector& Location, AActor* Owner, int32 OreValue)
+{
+	if (!PickupClass)
+	{
+		return nullptr;
+	}
+	FRRPickupSpawnRequest Request;
+	Request.PickupClass = PickupClass;
+	Request.Location = Location;
+	Request.Owner = Owner;
+	Request.OreValue = OreValue;
+
+	RefreshFrameBudget();
+	// Older requests go first: spawn now only when nothing waits and the frame budget allows.
+	if (SpawnQueue.Num() == 0 && SpawnedThisFrame < MaxSpawnsPerFrame)
+	{
+		return SpawnNow(Request);
+	}
+	SpawnQueue.Add(Request);
+	return nullptr;
+}
+
+ARRPickup* URRPickupSubsystem::SpawnNow(const FRRPickupSpawnRequest& Request)
+{
+	UWorld* World = GetWorld();
+	++SpawnedThisFrame;
+	if (!World || !Request.PickupClass)
+	{
+		return nullptr;
+	}
+	const FTransform SpawnTransform(Request.Location);
+	ARRPickup* Pickup = World->SpawnActorDeferred<ARRPickup>(Request.PickupClass, SpawnTransform, Request.Owner.Get(), nullptr,
+		ESpawnActorCollisionHandlingMethod::AlwaysSpawn);
+	if (!Pickup)
+	{
+		return nullptr;
+	}
+	Pickup->SetOreValue(Request.OreValue);
+	Pickup->FinishSpawning(SpawnTransform);
+	return Pickup;
+}
+
+void URRPickupSubsystem::SpawnQueued()
+{
+	if (SpawnQueue.Num() == 0)
+	{
+		return;
+	}
+	RefreshFrameBudget();
+	int32 Spawned = 0;
+	while (Spawned < SpawnQueue.Num() && SpawnedThisFrame < MaxSpawnsPerFrame)
+	{
+		SpawnNow(SpawnQueue[Spawned]);
+		++Spawned;
+	}
+	SpawnQueue.RemoveAt(0, Spawned, EAllowShrinking::No);
 }
 
 void URRPickupSubsystem::RegisterPickup(ARRPickup* Pickup)
@@ -74,6 +144,9 @@ void URRPickupSubsystem::Tick(float DeltaTime)
 {
 	SCOPE_CYCLE_COUNTER(STAT_RRPickupsTick);
 	Super::Tick(DeltaTime);
+
+	// Queued drops first (spawned outside the motion loop; they move from the next frame).
+	SpawnQueued();
 
 	if (Pickups.Num() == 0)
 	{

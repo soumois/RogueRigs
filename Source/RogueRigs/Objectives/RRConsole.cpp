@@ -161,7 +161,8 @@ TArray<FIntPoint> ARRConsole::FindMarkableCells(const ARRArenaGrid* InGrid, FInt
 			{
 				continue;
 			}
-			if (MarkedCellTypes.Contains(InGrid->GetCellType(Candidate)))
+			// Ore table deposits are never console-marked rocks (ore-blocks, owner 2026-10-10).
+			if (MarkedCellTypes.Contains(InGrid->GetCellType(Candidate)) && !InGrid->IsTableDepositCell(Candidate))
 			{
 				Result.Add(Candidate);
 			}

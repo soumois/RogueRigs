@@ -203,7 +203,7 @@ protected:
 	void StopDigBlock(FIntPoint Cell);
 
 	/**
-	 * Every block of the veins of DigCells (ARRArenaGrid::GetVeinCells, duplicates removed): the whole-vein dig targets
+	 * Every block of the deposits of DigCells (ARRArenaGrid::GetDepositCells, by deposit id, duplicates removed): the whole-deposit dig targets
 	 * (ore-blocks, heal-ore). Requires a valid dig grid.
 	 */
 	void CollectDigTargets(TArray<FIntPoint>& OutTargets) const;

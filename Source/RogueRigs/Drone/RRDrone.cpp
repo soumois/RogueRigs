@@ -433,9 +433,9 @@ void ARRDrone::TickDig(float DeltaSeconds)
 	// Lasers first: the face centers are still valid before the hit that may destroy the blocks.
 	UpdateDigLasers();
 
-	// Every block of the arc is cut in parallel at the full rate. A block of an ore or heal vein makes the whole vein one
-	// target (ore-blocks, owner 2026-10-06 fourth test): each vein block takes the damage once per tick, however many of
-	// its blocks are in the arc, so the vein breaks whole after one block dig time. Dig holds even when the arc empties:
+	// Every block of the arc is cut in parallel at the full rate. A block of a deposit (gold 2 x 2, heal vein) makes the whole
+	// deposit one target (ore-blocks, owner 2026-10-06 fourth test and 2026-10-10): each deposit block takes the damage once
+	// per tick, however many of its blocks are in the arc, so the deposit breaks whole after one block dig time. Dig holds even when the arc empties:
 	// the miner selects the next blocks (or releases the dig) on its next tick.
 	const float Damage = DeltaSeconds * GetMiningSpeed();
 	TArray<FIntPoint> Targets;
@@ -472,7 +472,7 @@ void ARRDrone::CollectDigTargets(TArray<FIntPoint>& OutTargets) const
 		{
 			continue;
 		}
-		DigGrid->GetVeinCells(Cell, Vein);
+		DigGrid->GetDepositCells(Cell, Vein);
 		for (const FIntPoint& VeinCell : Vein)
 		{
 			OutTargets.AddUnique(VeinCell);

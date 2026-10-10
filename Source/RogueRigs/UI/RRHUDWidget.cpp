@@ -7,6 +7,7 @@
 #include "Components/Widget.h"
 #include "EngineUtils.h"
 #include "Camera/PlayerCameraManager.h"
+#include "Enemies/RREnemySpawner.h"
 #include "Enemies/RRWaveDirector.h"
 #include "GameFramework/PlayerController.h"
 #include "GAS/RRHealthAttributeSet.h"

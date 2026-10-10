@@ -87,12 +87,19 @@ public:
 	UFUNCTION(BlueprintPure, Category = "Pickup")
 	float GetXPAmount() const { return XPAmount; }
 
+	/** Ore value of an Ore pickup (ore-economy: 1 per chunk), set by the grid from the ore type table (ChunkValue). Ignored by other types. */
+	UFUNCTION(BlueprintPure, Category = "Pickup")
+	int32 GetOreValue() const { return OreValue; }
+
 	/** Health restored on collection by a Heal pickup (0 = none). */
 	UFUNCTION(BlueprintPure, Category = "Pickup")
 	float GetHealAmount() const { return HealAmount; }
 
 	/** Sets the raw XP given on collection (ARREnemy splits a robot's XP over its cubes). Call before collection, ideally before BeginPlay (deferred spawn). */
 	void SetXPAmount(float InXPAmount) { XPAmount = FMath::Max(InXPAmount, 0.f); }
+
+	/** Sets the ore value of an Ore pickup (clamped at 0). Call before collection, ideally before BeginPlay (deferred spawn); the grid passes the ore type ChunkValue. */
+	void SetOreValue(int32 InOreValue) { OreValue = FMath::Max(InOreValue, 0); }
 
 	/** Forces the ejection direction (world yaw in degrees) instead of a random one. Call before BeginPlay (deferred spawn); ARREnemy spreads its cubes evenly. */
 	void SetPopYaw(float InYawDegrees) { PopYawDegrees = InYawDegrees; bHasPopYaw = true; }
@@ -144,6 +151,10 @@ protected:
 	/** Raw XP given by an XP pickup on collection (before the miner XPGain); set per cube by ARREnemy. Ignored by other types. */
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Pickup", meta = (ClampMin = 0))
 	float XPAmount = 1.f;
+
+	/** Ore value of an Ore pickup (ore-economy, owner 2026-10-10: 1 per chunk); the grid sets it from OreTypes.csv ChunkValue. Ignored by other types. */
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Pickup", meta = (ClampMin = 0))
+	int32 OreValue = 1;
 
 	/**
 	 * Health a Heal pickup restores on collection, through HealEffectClass (SetByCaller Data.Heal, clamped to MaxHealth).

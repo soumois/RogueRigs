@@ -15,6 +15,7 @@ class UPrimitiveComponent;
 class USceneComponent;
 class UStaticMesh;
 struct FHitResult;
+struct FRROreTypeRow;
 
 /** Content of one grid cell, as read from the layout file. Unlisted cells are Floor. */
 UENUM(BlueprintType)
@@ -82,6 +83,45 @@ struct FRRGridChunkVisual
 	TArray<FIntPoint> InstanceCells;
 };
 
+/**
+ * One deposit: blocks of one type mined as one (ore-blocks, heal-ore). Ore table deposits are GroupSize x GroupSize squares
+ * placed at build (OreTypes.csv); layout veins (ore or heal ore cells written in the layout) are their 4-connected groups.
+ * A deposit is identified by its id (index in ARRArenaGrid::Deposits), never by neighbouring blocks: deposits may touch.
+ */
+USTRUCT(BlueprintType)
+struct FRRGridDeposit
+{
+	GENERATED_BODY()
+
+	/** Ore type row (OreTypes.csv row name) the deposit was placed from, or the first row of its block type for a layout vein; None when no row matches (heal veins today). */
+	UPROPERTY(VisibleInstanceOnly, BlueprintReadOnly, Category = "Deposit")
+	FName OreId;
+
+	/** Block type of every cell of the deposit. */
+	UPROPERTY(VisibleInstanceOnly, BlueprintReadOnly, Category = "Deposit")
+	ERRCellType CellType = ERRCellType::Ore;
+
+	/** Every cell of the deposit as built (destroyed cells stay listed; GetDepositCells filters them). */
+	UPROPERTY(VisibleInstanceOnly, BlueprintReadOnly, Category = "Deposit")
+	TArray<FIntPoint> Cells;
+
+	/** Ore value of each chunk dropped by a block of this deposit (row ChunkValue; 1 without a row). */
+	UPROPERTY(VisibleInstanceOnly, BlueprintReadOnly, Category = "Deposit")
+	int32 ChunkValue = 1;
+
+	/** Ore colour of the row (written into the instance custom data when bHasColor). */
+	UPROPERTY(VisibleInstanceOnly, BlueprintReadOnly, Category = "Deposit")
+	FLinearColor Color = FLinearColor::White;
+
+	/** True when an ore type row gave the deposit its value and colour. */
+	UPROPERTY(VisibleInstanceOnly, BlueprintReadOnly, Category = "Deposit")
+	bool bHasColor = false;
+
+	/** True when the deposit came from the ore table placement (not from the layout file). */
+	UPROPERTY(VisibleInstanceOnly, BlueprintReadOnly, Category = "Deposit")
+	bool bPlacedFromTable = false;
+};
+
 /** Fired when a block takes terrain damage without necessarily being destroyed: cell, block type, damage applied (dig-seconds), source. */
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_FourParams(FRROnCellDamagedSignature, FIntPoint, Cell, ERRCellType, Type, float, Amount, ERRTerrainDamageSource, Source);
 
@@ -103,7 +143,10 @@ DECLARE_DYNAMIC_MULTICAST_DELEGATE_ThreeParams(FRROnCellDestroyedSignature, FInt
  * Terrain damage (dig) and destruction (explosions) go through ApplyTerrainDamage / DestroyCell / DestroyCellsInRadius.
  * Drops: ore and heal ore blocks spawn one pickup (OrePickupClass / HealPickupClass) each time their accumulated damage
  * crosses a multiple of DropInterval, except on the hit that destroys them, and DestroyDropCount pickups when destroyed,
- * whatever the source. Derive a Blueprint to assign meshes, materials and pickup classes.
+ * whatever the source, each worth its deposit's ChunkValue, spawned through URRPickupSubsystem (per-frame cap, queue).
+ * Deposits (ore-blocks, owner 2026-10-10): the layout's ore and heal veins plus the OreTypes.csv deposits placed at build on
+ * rock (BuildDeposits); every deposit has an id and is mined as one (GetDepositCells). Derive a Blueprint to assign meshes,
+ * materials and pickup classes.
  */
 UCLASS(Blueprintable)
 class ROGUERIGS_API ARRArenaGrid : public AActor
@@ -161,10 +204,43 @@ public:
 	bool IsBlockCell(FIntPoint Cell) const;
 
 	/**
-	 * Vein of Cell (ore-blocks, heal-ore: a 3 x 3 vein is mined as one): when Cell is an Ore or HealOre block, every block of
-	 * the same type 4-connected to it, Cell included; otherwise Cell alone when it is a block, else nothing. Returns the count.
+	 * Deposit of Cell (ore-blocks, heal-ore: a deposit is mined as one): when Cell belongs to a deposit, every block of that
+	 * deposit still standing, Cell included (by deposit id, never by neighbouring blocks); otherwise Cell alone when it is a
+	 * block, else nothing. Returns the count. The drone expands each dug cell with it.
 	 */
-	int32 GetVeinCells(FIntPoint Cell, TArray<FIntPoint>& OutCells) const;
+	int32 GetDepositCells(FIntPoint Cell, TArray<FIntPoint>& OutCells) const;
+
+	/** Id of the deposit holding the standing block in Cell (index into the deposit list); INDEX_NONE for any other cell. */
+	UFUNCTION(BlueprintPure, Category = "Grid|Deposits")
+	int32 GetDepositId(FIntPoint Cell) const;
+
+	/** Ore type row of the deposit holding Cell (e.g. Gold); None when Cell is in no deposit or its deposit has no row (heal veins). */
+	UFUNCTION(BlueprintPure, Category = "Grid|Deposits")
+	FName GetDepositOreId(FIntPoint Cell) const;
+
+	/** True when Cell is a standing block of a deposit placed from the ore table (consoles never mark those). */
+	UFUNCTION(BlueprintPure, Category = "Grid|Deposits")
+	bool IsTableDepositCell(FIntPoint Cell) const;
+
+	/** Deposit DepositId as built, or nullptr for an invalid id. */
+	const FRRGridDeposit* GetDeposit(int32 DepositId) const { return Deposits.IsValidIndex(DepositId) ? &Deposits[DepositId] : nullptr; }
+
+	/** Number of deposits built (layout veins and table deposits), destroyed ones included. */
+	int32 GetDepositCount() const { return Deposits.Num(); }
+
+	/** Number of deposits placed from the ore table row OreId at the last build. */
+	UFUNCTION(BlueprintPure, Category = "Grid|Deposits")
+	int32 GetPlacedDepositCount(FName OreId) const;
+
+	/** Index of the first of the 3 per-instance custom data floats (R, G, B) holding the ore colour on deposit block HISMs. */
+	UFUNCTION(BlueprintPure, Category = "Grid|Deposits")
+	int32 GetOreColorCustomDataIndex() const { return OreColorCustomDataIndex; }
+
+	/** Path of the ore type table, relative to FPaths::ProjectContentDir(). */
+	static const TCHAR* OreTypesPath;
+
+	/** Copies row OreId of OreTypes.csv into OutRow. Returns false (logged) when the file or the row is missing. */
+	static bool GetOreType(FName OreId, FRROreTypeRow& OutRow);
 
 	/**
 	 * Grid line of sight on the XY plane (Z ignored): distance from From along Direction to the first block cell crossed,
@@ -291,6 +367,20 @@ protected:
 	/** Loads the layout and builds instances, or clears everything when loading fails. */
 	void RebuildFromLayout();
 
+	/**
+	 * Builds Deposits and CellDepositId from the freshly loaded Cells: first the layout veins (4-connected Ore and HealOre
+	 * groups, as the former vein flood fill), then, when bPlaceOreDeposits, every OreTypes.csv row with a RockShare: its
+	 * deposits of GroupSize x GroupSize rock blocks (turned into the row CellType), chosen by a hash of the anchor cell, OreSeed
+	 * and the ore id, so the result depends only on the layout, the table and the seed. Logs the count per ore type.
+	 */
+	void BuildDeposits();
+
+	/** Places the deposits of one ore type row on rock blocks (see BuildDeposits); OriginalRockCount sets the target. Returns the count placed. */
+	int32 PlaceOreDeposits(FName OreId, const FRROreTypeRow& Row, int32 OriginalRockCount);
+
+	/** Writes the ore colour of every deposit with a row into the custom data of its rendering instances (OreColorCustomDataIndex). */
+	void WriteDepositColors();
+
 	/** Reads and parses the layout file into Cells, GridWidth, GridHeight and SpawnCell. Returns false on any error (logged). */
 	bool LoadLayout();
 
@@ -375,8 +465,11 @@ protected:
 	/** Queues the explosion of the barrel in Cell (row BarrelExplosionRow, at the cell center, source GetBarrelSource) in the world's URRExplosionSubsystem, during play only. */
 	void QueueBarrelExplosion(FIntPoint Cell);
 
-	/** Spawns Count pickups of the class dropped by Type at the center of Cell (floor top), during play only. */
-	void SpawnPickups(FIntPoint Cell, ERRCellType Type, int32 Count);
+	/**
+	 * Requests Count pickups of the class dropped by Type at the center of Cell (floor top), each worth OreValue, during play
+	 * only, through URRPickupSubsystem::RequestSpawn (at most its MaxSpawnsPerFrame per frame, the rest queued).
+	 */
+	void SpawnPickups(FIntPoint Cell, ERRCellType Type, int32 Count, int32 OreValue = 1);
 
 	// --- Layout and dimensions ---
 
@@ -477,6 +570,20 @@ protected:
 	/** Pickups spawned when an ore or heal ore block is destroyed, whatever the source (ore-blocks gdd: one chunk per broken 67 uu block, provisional). */
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Grid|Drops", meta = (ClampMin = "0"))
 	int32 DestroyDropCount = 1;
+
+	// --- Ore deposits (ore-blocks, owner 2026-10-10) ---
+
+	/** When true, the build places the ore table deposits (OreTypes.csv) on the layout rock. Layout veins are deposits either way. */
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Grid|Deposits")
+	bool bPlaceOreDeposits = true;
+
+	/** Seed of the deterministic deposit placement: same layout, table and seed give the same deposits. */
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Grid|Deposits")
+	int32 OreSeed = 1;
+
+	/** First of the 3 per-instance custom data floats (R, G, B) receiving the ore colour on the HISMs of deposit block types with a row (after the marked flag). */
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Grid|Deposits", meta = (ClampMin = "0", ClampMax = "5"))
+	int32 OreColorCustomDataIndex = 1;
 
 	/** Per-instance custom data float of the block HISMs that holds the marked flag (each block HISM gets index + 1 floats). */
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Grid|Objectives", meta = (ClampMin = "0", ClampMax = "7"))
@@ -615,6 +722,18 @@ protected:
 	/** Explosion source object per barrel cell, created on first request (GetBarrelSource); kept so each stays unique and alive. */
 	UPROPERTY(Transient)
 	TMap<FIntPoint, TObjectPtr<URRBarrelSource>> BarrelSources;
+
+	/** Deposit id per cell, row-major; INDEX_NONE outside deposits and once the block is destroyed. */
+	UPROPERTY(Transient)
+	TArray<int32> CellDepositId;
+
+	/** Every deposit of the last build, id = index (layout veins first, then table deposits). */
+	UPROPERTY(VisibleInstanceOnly, Transient, Category = "Grid|State")
+	TArray<FRRGridDeposit> Deposits;
+
+	/** Deposits placed per ore type row at the last build. */
+	UPROPERTY(VisibleInstanceOnly, Transient, Category = "Grid|State")
+	TMap<FName, int32> PlacedDepositCounts;
 
 	/** Dig drops already spawned per cell, row-major; compared with the DropInterval multiples crossed. */
 	UPROPERTY(Transient)

@@ -11,16 +11,37 @@
 #include "Engine/CollisionProfile.h"
 #include "Engine/StaticMesh.h"
 #include "Engine/World.h"
+#include "Engine/DataTable.h"
 #include "Explosions/RRExplosionSubsystem.h"
+#include "GAS/RRBaseStatsLoader.h"
 #include "Grid/RRBarrelSource.h"
+#include "Grid/RROreTypeRow.h"
 #include "Materials/MaterialInterface.h"
+#include "Misc/Crc.h"
 #include "Misc/FileHelper.h"
 #include "Misc/Paths.h"
 #include "Pickups/RRPickup.h"
+#include "Pickups/RRPickupSubsystem.h"
 #include "Serialization/JsonReader.h"
 #include "Serialization/JsonSerializer.h"
 
 #include UE_INLINE_GENERATED_CPP_BY_NAME(RRArenaGrid)
+
+const TCHAR* ARRArenaGrid::OreTypesPath = TEXT("RogueRigs/Data/Tables/OreTypes.csv");
+
+namespace RRArenaGridPrivate
+{
+	/** 32-bit integer hash with good avalanche (lowbias32): the same input always gives the same value, on every platform and run. */
+	uint32 MixHash(uint32 Value)
+	{
+		Value ^= Value >> 16;
+		Value *= 0x7feb352du;
+		Value ^= Value >> 15;
+		Value *= 0x846ca68bu;
+		Value ^= Value >> 16;
+		return Value;
+	}
+}
 
 ARRArenaGrid::ARRArenaGrid()
 {
@@ -99,6 +120,9 @@ void ARRArenaGrid::RebuildFromLayout()
 		CellShotHealth.Reset();
 		CellDigDrops.Reset();
 		CellInstanceIndex.Reset();
+		CellDepositId.Reset();
+		Deposits.Reset();
+		PlacedDepositCounts.Reset();
 		ShakingCells.Reset();
 		SetActorTickEnabled(false);
 		GridWidth = 0;
@@ -108,7 +132,216 @@ void ARRArenaGrid::RebuildFromLayout()
 		return;
 	}
 
+	BuildDeposits();
 	BuildInstances();
+}
+
+bool ARRArenaGrid::GetOreType(FName OreId, FRROreTypeRow& OutRow)
+{
+	return FRRBaseStatsLoader::FindRow(OreTypesPath, OreId, OutRow, TEXT("ARRArenaGrid"));
+}
+
+void ARRArenaGrid::BuildDeposits()
+{
+	CellDepositId.Init(INDEX_NONE, Cells.Num());
+	Deposits.Reset();
+	PlacedDepositCounts.Reset();
+
+	// Ore type rows sorted by id, so placement order (and result) never depends on the table's map order.
+	const UDataTable* Table = FRRBaseStatsLoader::GetCachedTable(OreTypesPath, FRROreTypeRow::StaticStruct());
+	TArray<TPair<FName, const FRROreTypeRow*>> Rows;
+	if (Table)
+	{
+		for (const TPair<FName, uint8*>& Pair : Table->GetRowMap())
+		{
+			Rows.Emplace(Pair.Key, reinterpret_cast<const FRROreTypeRow*>(Pair.Value));
+		}
+		Rows.Sort([](const TPair<FName, const FRROreTypeRow*>& A, const TPair<FName, const FRROreTypeRow*>& B)
+		{
+			return A.Key.LexicalLess(B.Key);
+		});
+	}
+
+	// 1. Layout veins: each 4-connected group of layout Ore or HealOre cells is one deposit (the former whole-vein rule).
+	static const FIntPoint Steps[] = { FIntPoint(1, 0), FIntPoint(-1, 0), FIntPoint(0, 1), FIntPoint(0, -1) };
+	for (int32 Index = 0; Index < Cells.Num(); ++Index)
+	{
+		const ERRCellType Type = Cells[Index];
+		if ((Type != ERRCellType::Ore && Type != ERRCellType::HealOre) || CellDepositId[Index] != INDEX_NONE)
+		{
+			continue;
+		}
+		const int32 DepositId = Deposits.AddDefaulted();
+		FRRGridDeposit& Deposit = Deposits[DepositId];
+		Deposit.CellType = Type;
+		for (const TPair<FName, const FRROreTypeRow*>& Row : Rows)
+		{
+			if (Row.Value->CellType == Type)
+			{
+				Deposit.OreId = Row.Key;
+				Deposit.ChunkValue = Row.Value->ChunkValue;
+				Deposit.Color = Row.Value->Color;
+				Deposit.bHasColor = true;
+				break;
+			}
+		}
+		Deposit.Cells.Add(FIntPoint(Index % GridWidth, Index / GridWidth));
+		CellDepositId[Index] = DepositId;
+		for (int32 Visit = 0; Visit < Deposit.Cells.Num(); ++Visit)
+		{
+			for (const FIntPoint& Step : Steps)
+			{
+				const FIntPoint Next = Deposit.Cells[Visit] + Step;
+				if (IsValidCell(Next) && Cells[GetCellIndex(Next)] == Type && CellDepositId[GetCellIndex(Next)] == INDEX_NONE)
+				{
+					CellDepositId[GetCellIndex(Next)] = DepositId;
+					Deposit.Cells.Add(Next);
+				}
+			}
+		}
+	}
+
+	// 2. Ore table deposits on the layout rock; every row's share is taken from the rock count before any placement.
+	if (!bPlaceOreDeposits)
+	{
+		return;
+	}
+	int32 RockCount = 0;
+	for (const ERRCellType Type : Cells)
+	{
+		RockCount += Type == ERRCellType::Rock ? 1 : 0;
+	}
+	for (const TPair<FName, const FRROreTypeRow*>& Row : Rows)
+	{
+		if (Row.Value->RockShare <= 0.f)
+		{
+			continue;
+		}
+		const int32 Placed = PlaceOreDeposits(Row.Key, *Row.Value, RockCount);
+		PlacedDepositCounts.Add(Row.Key, Placed);
+		UE_LOG(LogRogueRigs, Log, TEXT("ARRArenaGrid %s: %d %s deposits of %d x %d placed on layout %s (share %.3f of %d rock blocks, seed %d)."),
+			*GetName(), Placed, *Row.Key.ToString(), Row.Value->GroupSize, Row.Value->GroupSize, *LayoutName, Row.Value->RockShare, RockCount, OreSeed);
+	}
+}
+
+int32 ARRArenaGrid::PlaceOreDeposits(FName OreId, const FRROreTypeRow& Row, int32 OriginalRockCount)
+{
+	const int32 Size = FMath::Max(1, Row.GroupSize);
+	if (!IsBlockType(Row.CellType) || Row.CellType == ERRCellType::Rock || Row.CellType == ERRCellType::Barrel)
+	{
+		UE_LOG(LogRogueRigs, Error, TEXT("ARRArenaGrid: ore type %s has CellType %s, not an ore block type; no deposit placed."),
+			*OreId.ToString(), *UEnum::GetValueAsString(Row.CellType));
+		return 0;
+	}
+	const int32 Target = FMath::RoundToInt32(Row.RockShare * OriginalRockCount / static_cast<float>(Size * Size));
+	if (Target <= 0 || GridWidth < Size || GridHeight < Size)
+	{
+		return 0;
+	}
+
+	// Every anchor (top-left cell) whose Size x Size square is all rock, scored by a hash of the anchor, the seed and the ore id.
+	const uint32 OreHash = FCrc::StrCrc32(*OreId.ToString().ToLower());
+	const uint32 SeedHash = RRArenaGridPrivate::MixHash(static_cast<uint32>(OreSeed) ^ OreHash);
+	auto IsFreeRockSquare = [this, Size](int32 AnchorX, int32 AnchorY)
+	{
+		for (int32 DY = 0; DY < Size; ++DY)
+		{
+			for (int32 DX = 0; DX < Size; ++DX)
+			{
+				if (Cells[GetCellIndex(FIntPoint(AnchorX + DX, AnchorY + DY))] != ERRCellType::Rock)
+				{
+					return false;
+				}
+			}
+		}
+		return true;
+	};
+	TArray<TPair<uint32, int32>> Candidates;
+	for (int32 Y = 0; Y + Size <= GridHeight; ++Y)
+	{
+		for (int32 X = 0; X + Size <= GridWidth; ++X)
+		{
+			if (IsFreeRockSquare(X, Y))
+			{
+				const uint32 Score = RRArenaGridPrivate::MixHash(RRArenaGridPrivate::MixHash(SeedHash + static_cast<uint32>(X)) + static_cast<uint32>(Y));
+				Candidates.Emplace(Score, GetCellIndex(FIntPoint(X, Y)));
+			}
+		}
+	}
+	Candidates.Sort([](const TPair<uint32, int32>& A, const TPair<uint32, int32>& B)
+	{
+		return A.Key != B.Key ? A.Key < B.Key : A.Value < B.Value;
+	});
+
+	// Greedy in score order: an anchor is kept while its whole square is still rock (earlier deposits claim cells).
+	int32 Placed = 0;
+	for (const TPair<uint32, int32>& Candidate : Candidates)
+	{
+		if (Placed >= Target)
+		{
+			break;
+		}
+		const int32 AnchorX = Candidate.Value % GridWidth;
+		const int32 AnchorY = Candidate.Value / GridWidth;
+		if (!IsFreeRockSquare(AnchorX, AnchorY))
+		{
+			continue;
+		}
+		const int32 DepositId = Deposits.AddDefaulted();
+		FRRGridDeposit& Deposit = Deposits[DepositId];
+		Deposit.OreId = OreId;
+		Deposit.CellType = Row.CellType;
+		Deposit.ChunkValue = Row.ChunkValue;
+		Deposit.Color = Row.Color;
+		Deposit.bHasColor = true;
+		Deposit.bPlacedFromTable = true;
+		for (int32 DY = 0; DY < Size; ++DY)
+		{
+			for (int32 DX = 0; DX < Size; ++DX)
+			{
+				const FIntPoint Cell(AnchorX + DX, AnchorY + DY);
+				Cells[GetCellIndex(Cell)] = Row.CellType;
+				CellDepositId[GetCellIndex(Cell)] = DepositId;
+				Deposit.Cells.Add(Cell);
+			}
+		}
+		++Placed;
+	}
+	if (Placed < Target)
+	{
+		UE_LOG(LogRogueRigs, Warning, TEXT("ARRArenaGrid: only %d of %d %s deposits fit on layout %s."), Placed, Target, *OreId.ToString(), *LayoutName);
+	}
+	return Placed;
+}
+
+void ARRArenaGrid::WriteDepositColors()
+{
+	TSet<UHierarchicalInstancedStaticMeshComponent*> Dirty;
+	for (const FRRGridDeposit& Deposit : Deposits)
+	{
+		if (!Deposit.bHasColor)
+		{
+			continue;
+		}
+		for (const FIntPoint& Cell : Deposit.Cells)
+		{
+			const int32 Index = GetCellIndex(Cell);
+			UHierarchicalInstancedStaticMeshComponent* Component = GetCellRenderComponent(Cell);
+			if (!Component || CellInstanceIndex[Index] == INDEX_NONE || Component->NumCustomDataFloats < OreColorCustomDataIndex + 3)
+			{
+				continue;
+			}
+			const int32 Instance = CellInstanceIndex[Index];
+			Component->SetCustomDataValue(Instance, OreColorCustomDataIndex, Deposit.Color.R, /*bMarkRenderStateDirty*/ false);
+			Component->SetCustomDataValue(Instance, OreColorCustomDataIndex + 1, Deposit.Color.G, /*bMarkRenderStateDirty*/ false);
+			Component->SetCustomDataValue(Instance, OreColorCustomDataIndex + 2, Deposit.Color.B, /*bMarkRenderStateDirty*/ false);
+			Dirty.Add(Component);
+		}
+	}
+	for (UHierarchicalInstancedStaticMeshComponent* Component : Dirty)
+	{
+		Component->MarkRenderStateDirty();
+	}
 }
 
 FString ARRArenaGrid::GetLayoutFilePath() const
@@ -457,6 +690,22 @@ void ARRArenaGrid::BuildInstances()
 		{ ERRCellType::SpecialOre, SpecialOreMesh, SpecialOreMaterial },
 		{ ERRCellType::Barrel, BarrelMesh, BarrelMaterial },
 	};
+	// Deposits come from BuildDeposits on the same cells; a caller that replaced Cells (stress tool) gets none.
+	if (CellDepositId.Num() != Cells.Num())
+	{
+		CellDepositId.Init(INDEX_NONE, Cells.Num());
+		Deposits.Reset();
+		PlacedDepositCounts.Reset();
+	}
+	TSet<ERRCellType> ColoredTypes;
+	for (const FRRGridDeposit& Deposit : Deposits)
+	{
+		if (Deposit.bHasColor)
+		{
+			ColoredTypes.Add(Deposit.CellType);
+		}
+	}
+
 	// The templates carry the settings every chunk component copies (CreateChunkComponent).
 	for (const FVisualAsset& Asset : Assets)
 	{
@@ -472,6 +721,11 @@ void ARRArenaGrid::BuildInstances()
 				if (Template->NumCustomDataFloats <= MarkedCustomDataIndex)
 				{
 					Template->SetNumCustomDataFloats(MarkedCustomDataIndex + 1);
+				}
+				// Room for the ore colour (R, G, B) on the block types of deposits with an ore type row.
+				if (ColoredTypes.Contains(Asset.MapKey) && Template->NumCustomDataFloats < OreColorCustomDataIndex + 3)
+				{
+					Template->SetNumCustomDataFloats(OreColorCustomDataIndex + 3);
 				}
 			}
 		}
@@ -563,6 +817,8 @@ void ARRArenaGrid::BuildInstances()
 			CellInstanceIndex[GetCellIndex(Cell)] = FirstIndex + Offset;
 		}
 	}
+
+	WriteDepositColors();
 }
 
 int32 ARRArenaGrid::AddCellInstance(ERRCellType MapKey, FIntPoint Cell, const FTransform& LocalTransform)
@@ -673,35 +929,59 @@ bool ARRArenaGrid::IsBlockCell(FIntPoint Cell) const
 	return IsBlockType(GetCellType(Cell));
 }
 
-int32 ARRArenaGrid::GetVeinCells(FIntPoint Cell, TArray<FIntPoint>& OutCells) const
+int32 ARRArenaGrid::GetDepositCells(FIntPoint Cell, TArray<FIntPoint>& OutCells) const
 {
 	OutCells.Reset();
-	const ERRCellType Type = GetCellType(Cell);
-	if (!IsBlockType(Type))
+	if (!IsBlockCell(Cell))
 	{
 		return 0;
 	}
-	OutCells.Add(Cell);
-	if (Type != ERRCellType::Ore && Type != ERRCellType::HealOre)
+	const int32 DepositId = GetDepositId(Cell);
+	if (DepositId == INDEX_NONE)
 	{
+		OutCells.Add(Cell);
 		return 1;
 	}
 
-	// Flood fill on the 4 neighbours; OutCells doubles as the visited list (veins are a few cells).
-	static const FIntPoint Steps[] = { FIntPoint(1, 0), FIntPoint(-1, 0), FIntPoint(0, 1), FIntPoint(0, -1) };
-	for (int32 Index = 0; Index < OutCells.Num(); ++Index)
+	// By id only: a neighbouring deposit of the same type is never pulled in. Cell comes first.
+	OutCells.Add(Cell);
+	for (const FIntPoint& Member : Deposits[DepositId].Cells)
 	{
-		const FIntPoint Current = OutCells[Index];
-		for (const FIntPoint& Step : Steps)
+		if (Member != Cell && GetDepositId(Member) == DepositId)
 		{
-			const FIntPoint Next = Current + Step;
-			if (GetCellType(Next) == Type && !OutCells.Contains(Next))
-			{
-				OutCells.Add(Next);
-			}
+			OutCells.Add(Member);
 		}
 	}
 	return OutCells.Num();
+}
+
+int32 ARRArenaGrid::GetDepositId(FIntPoint Cell) const
+{
+	if (!IsValidCell(Cell) || !CellDepositId.IsValidIndex(GetCellIndex(Cell)))
+	{
+		return INDEX_NONE;
+	}
+	const int32 DepositId = CellDepositId[GetCellIndex(Cell)];
+	// The cell must still hold the deposit's block (destroyed cells are cleared; a replaced grid keeps nothing stale).
+	return Deposits.IsValidIndex(DepositId) && Deposits[DepositId].CellType == Cells[GetCellIndex(Cell)] ? DepositId : INDEX_NONE;
+}
+
+FName ARRArenaGrid::GetDepositOreId(FIntPoint Cell) const
+{
+	const int32 DepositId = GetDepositId(Cell);
+	return DepositId != INDEX_NONE ? Deposits[DepositId].OreId : NAME_None;
+}
+
+bool ARRArenaGrid::IsTableDepositCell(FIntPoint Cell) const
+{
+	const int32 DepositId = GetDepositId(Cell);
+	return DepositId != INDEX_NONE && Deposits[DepositId].bPlacedFromTable;
+}
+
+int32 ARRArenaGrid::GetPlacedDepositCount(FName OreId) const
+{
+	const int32* Count = PlacedDepositCounts.Find(OreId);
+	return Count ? *Count : 0;
 }
 
 float ARRArenaGrid::GetClearDistance(FVector From, FVector Direction, float MaxDistance) const
@@ -830,6 +1110,14 @@ bool ARRArenaGrid::DestroyCell(FIntPoint Cell, ERRTerrainDamageSource Source)
 	}
 	const bool bWasMarked = MarkedCells.Remove(Cell) > 0;
 
+	// Chunk value of the block's deposit (ore type row), read before the cell leaves it.
+	const int32 DepositId = GetDepositId(Cell);
+	const int32 ChunkValue = DepositId != INDEX_NONE ? Deposits[DepositId].ChunkValue : 1;
+	if (CellDepositId.IsValidIndex(Index))
+	{
+		CellDepositId[Index] = INDEX_NONE;
+	}
+
 	if (CellInstanceIndex.IsValidIndex(Index) && CellInstanceIndex[Index] != INDEX_NONE)
 	{
 		RemoveCellInstance(Type, Cell, CellInstanceIndex[Index]);
@@ -850,7 +1138,8 @@ bool ARRArenaGrid::DestroyCell(FIntPoint Cell, ERRTerrainDamageSource Source)
 	UE_LOG(LogRogueRigs, Verbose, TEXT("ARRArenaGrid: block destroyed at (%d, %d), type %s, source %s."), Cell.X, Cell.Y,
 		*UEnum::GetValueAsString(Type), *UEnum::GetValueAsString(Source));
 
-	SpawnPickups(Cell, Type, DestroyDropCount);
+	// One chunk per broken block whatever the source (drone or explosion, start zone included: no protection, ore-blocks).
+	SpawnPickups(Cell, Type, DestroyDropCount, ChunkValue);
 
 	// Every destroyed barrel explodes, whatever destroyed it (shots, dig, another explosion); queued, never synchronous.
 	if (Type == ERRCellType::Barrel)
@@ -1006,11 +1295,12 @@ void ARRArenaGrid::SpawnDigDrops(FIntPoint Cell, ERRCellType Type)
 	if (NewDrops > 0)
 	{
 		CellDigDrops[Index] = Crossed;
-		SpawnPickups(Cell, Type, NewDrops);
+		const int32 DepositId = GetDepositId(Cell);
+		SpawnPickups(Cell, Type, NewDrops, DepositId != INDEX_NONE ? Deposits[DepositId].ChunkValue : 1);
 	}
 }
 
-void ARRArenaGrid::SpawnPickups(FIntPoint Cell, ERRCellType Type, int32 Count)
+void ARRArenaGrid::SpawnPickups(FIntPoint Cell, ERRCellType Type, int32 Count, int32 OreValue)
 {
 	UWorld* World = GetWorld();
 	const TSubclassOf<ARRPickup> PickupClass = GetPickupClass(Type);
@@ -1019,18 +1309,29 @@ void ARRArenaGrid::SpawnPickups(FIntPoint Cell, ERRCellType Type, int32 Count)
 		return;
 	}
 
-	FActorSpawnParameters SpawnParams;
-	SpawnParams.Owner = this;
-	SpawnParams.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AlwaysSpawn;
-
+	// Through the pickup subsystem: at most MaxSpawnsPerFrame per frame, the rest queued (explosions break many blocks at once).
+	URRPickupSubsystem* Pickups = World->GetSubsystem<URRPickupSubsystem>();
 	const FVector Location = GetCellCenter(Cell.X, Cell.Y);
 	for (int32 Drop = 0; Drop < Count; ++Drop)
 	{
-		World->SpawnActor<ARRPickup>(PickupClass, Location, FRotator::ZeroRotator, SpawnParams);
+		if (Pickups)
+		{
+			Pickups->RequestSpawn(PickupClass, Location, this, OreValue);
+			continue;
+		}
+		FActorSpawnParameters SpawnParams;
+		SpawnParams.Owner = this;
+		SpawnParams.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AlwaysSpawn;
+		SpawnParams.bDeferConstruction = true;
+		if (ARRPickup* Pickup = World->SpawnActor<ARRPickup>(PickupClass, Location, FRotator::ZeroRotator, SpawnParams))
+		{
+			Pickup->SetOreValue(OreValue);
+			Pickup->FinishSpawning(FTransform(Location));
+		}
 	}
 
-	UE_LOG(LogRogueRigs, Verbose, TEXT("ARRArenaGrid: %d pickup(s) dropped at (%d, %d), type %s."), Count, Cell.X, Cell.Y,
-		*UEnum::GetValueAsString(Type));
+	UE_LOG(LogRogueRigs, Verbose, TEXT("ARRArenaGrid: %d pickup(s) dropped at (%d, %d), type %s, value %d."), Count, Cell.X, Cell.Y,
+		*UEnum::GetValueAsString(Type), OreValue);
 }
 
 int32 ARRArenaGrid::DestroyCellsInRadius(FVector Center, float Radius, ERRTerrainDamageSource Source)

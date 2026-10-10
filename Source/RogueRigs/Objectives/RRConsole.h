@@ -62,7 +62,7 @@ public:
 	 */
 	void InitializeConsole(ARRArenaGrid* Grid, ARRMiner* Miner, FIntPoint Cell);
 
-	/** Cells around Center of InGrid this console would mark (MarkedCellTypes within MarkRadiusCells). Works on the class default object. */
+	/** Cells around Center of InGrid this console would mark (MarkedCellTypes within MarkRadiusCells, ore table deposit blocks excluded). Works on the class default object. */
 	TArray<FIntPoint> FindMarkableCells(const ARRArenaGrid* InGrid, FIntPoint Center) const;
 
 	/** Updates the marked rocks, the zone check, the drone link and the hack progress. */

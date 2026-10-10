@@ -9,6 +9,7 @@
 #include "Upgrades/RRUpgradeCard.h"
 #include "RRHUDWidget.generated.h"
 
+class ARREnemySpawner;
 class ARRGameMode;
 class ARRMiner;
 class ARRTurretLauncher;
