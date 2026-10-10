@@ -3,7 +3,7 @@ id: task-085-01-alert-line-once
 description: "The company alert line shows once for 8 s at the start of the shuttle countdown, then hides; the countdown number stays to the end."
 parent: task-085-alert-line-once
 kind: task
-status: in-progress
+status: done
 ---
 # Alert line shown once
 
@@ -19,7 +19,7 @@ status: in-progress
 - tokens: open
 - runs: open
 - milestone: M2
-- result: open
+- result: shuttle_countdown line shown once for 8 s (NoteShuttle, once flag reset on run end); other alerts keep 6 s; graph read back, compile 0 errors, saved. Timing not seen on screen. Commit 3b9f72d. Cost counted in the resumed bp agent.
 
 ## Relations
 - [[task-085-alert-line-once]] — parent global task.

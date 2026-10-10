@@ -1,9 +1,9 @@
 ---
 id: task-085-alert-line-once
 description: "Global task: the company alert line shows once for 8 s when the shuttle countdown starts; the number stays."
-parent: tasks-to-do-index
+parent: tasks-done-index
 kind: task
-status: in-progress
+status: done
 ---
 # Alert line shown once
 
@@ -13,12 +13,12 @@ status: in-progress
 - gdd_check: done by the Orchestrator when the task is planned (2026-10-10).
 - confirmed_by_owner: yes (2026-10-10)
 - milestone: M2
-- next_step: task-085-01-alert-line-once
-- result: open
+- next_step: none
+- result: Shuttle alert line shown once for 8 s (3b9f72d).
 
 ## Subtasks
 1. task-085-01-alert-line-once — bp
 
 ## Relations
-- [[tasks-to-do-index]] — parent index.
+- [[tasks-done-index]] — parent index.
 - [[task-085-01-alert-line-once]] — step 1, bp.

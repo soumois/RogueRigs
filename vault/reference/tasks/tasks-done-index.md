@@ -91,3 +91,4 @@ Archive: it exceeds the index size limits of [[_authoring]] on purpose (owner, 2
 - [[task-082-shuttle-lines]] — A4 shuttle and extraction lines rewritten so the company states what it does and never orders the player (new rule T9), then reviewed. Status done.
 - [[task-083-voice-tweak]] — A4 voice tweak: upgrade flavor lines regenerated with an item-specific retrieval, compared with the first version, so the README shows a real prompt or retrieval tweak. Status done.
 - [[task-084-card-flavor-fix]] — The upgrade card flavor line is visible in game: the newline delimiter bug in WBP_HUD GetCardFlavor is fixed. Status done.
+- [[task-085-alert-line-once]] — The company alert line shows once for 8 s at the start of the shuttle countdown, then hides; the countdown number stays to the end. Status done.
