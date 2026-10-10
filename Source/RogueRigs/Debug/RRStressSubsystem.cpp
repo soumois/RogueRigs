@@ -33,6 +33,7 @@
 #include "RogueRigs.h"
 #include "Progression/RRProgressionComponent.h"
 #include "UI/RRHUDWidget.h"
+#include "UObject/UObjectGlobals.h"
 #include "UObject/UObjectIterator.h"
 #include "Weapons/RRAutoFireComponent.h"
 #include "Weapons/RRWeapon.h"
@@ -245,6 +246,13 @@ bool URRStressSubsystem::DoesSupportWorldType(const EWorldType::Type WorldType) 
 #else
 	return WorldType == EWorldType::Game || WorldType == EWorldType::PIE;
 #endif
+}
+
+void URRStressSubsystem::Deinitialize()
+{
+	FCoreUObjectDelegates::GetPostGarbageCollect().Remove(PostGarbageCollectHandle);
+	PostGarbageCollectHandle.Reset();
+	Super::Deinitialize();
 }
 
 TStatId URRStressSubsystem::GetStatId() const
@@ -712,6 +720,10 @@ void URRStressSubsystem::StartRun(const TArray<int32>& Counts, float SettleSecon
 	bQuitWhenDone = bQuit;
 	Results.Reset();
 	bRunning = true;
+	if (!PostGarbageCollectHandle.IsValid())
+	{
+		PostGarbageCollectHandle = FCoreUObjectDelegates::GetPostGarbageCollect().AddWeakLambda(this, [this]() { LastGarbageCollectFrame = GFrameCounter; });
+	}
 	if (RunMode == ERRStressMode::Game)
 	{
 		StartGameMode();
@@ -768,6 +780,9 @@ void URRStressSubsystem::BeginStep(int32 InStepIndex)
 	GpuSamples.Reset();
 	AliveSamples.Reset();
 	StepSpikes = 0;
+	StepSpikesFill = 0;
+	StepSpikesGarbageCollect = 0;
+	StepSpikesPause = 0;
 	StepHordeSpawned = 0;
 	CSV_EVENT_GLOBAL(TEXT("Stress_%d_Settle"), RunCounts[StepIndex]);
 }
@@ -782,6 +797,7 @@ void URRStressSubsystem::Tick(float DeltaTime)
 	{
 		// A level-up screen (XP of killed robots) would hold the run: pick the first card; paused frames are not sampled.
 		RRCheats::ChooseUpgrade(GetWorld(), 0, TEXT("rr.Stress.Run"));
+		LastPausedFrame = GFrameCounter;
 		return;
 	}
 	const double RealDelta = FApp::GetDeltaTime();
@@ -855,12 +871,19 @@ void URRStressSubsystem::Tick(float DeltaTime)
 	AliveSamples.Add(Alive);
 	if (FrameMs > RRStress::CVarSpikeMs.GetValueOnGameThread())
 	{
+		// The sampled delta is the previous frame's: a cause tagged on the previous (or this) frame counter is the spike's.
+		const bool bGarbageCollect = GFrameCounter - LastGarbageCollectFrame <= 1;
+		const bool bAfterPause = GFrameCounter - LastPausedFrame <= 2;
+		const int32 FillRobots = GFrameCounter - GameFillFrame <= 1 ? GameFillSpawned : 0;
 		++StepSpikes;
+		StepSpikesGarbageCollect += bGarbageCollect ? 1 : 0;
+		StepSpikesFill += FillRobots > 0 && !bGarbageCollect ? 1 : 0;
+		StepSpikesPause += bAfterPause && !bGarbageCollect && FillRobots == 0 ? 1 : 0;
 		const URRFlowFieldSubsystem* Flow = GetWorld()->GetSubsystem<URRFlowFieldSubsystem>();
 		// stat unit values are those of the last completed frame of each thread; the flow ms is that of the last frame with flow work.
-		UE_LOG(LogRogueRigs, Display, TEXT("Stress spike: step %d, t %.2f s, frame %.2f, game %.2f, draw %.2f, gpu %.2f ms, flow last %.3f ms (work frames %d), robots %d, blocks %d, explosions %d"),
+		UE_LOG(LogRogueRigs, Display, TEXT("Stress spike: step %d, t %.2f s, frame %.2f, game %.2f, draw %.2f, gpu %.2f ms, flow last %.3f ms (work frames %d), robots %d, blocks %d, explosions %d, fill robots %d, gc %d, after pause %d"),
 			RunCounts[StepIndex], StepElapsed - RunSettleSeconds, FrameMs, GameMs, DrawMs, GpuMs, Flow ? Flow->GetLastFrameWorkMilliseconds() : 0.f,
-			Flow ? Flow->GetWorkFrameCount() : 0, Alive, StepBlocksDestroyed, StepExplosions);
+			Flow ? Flow->GetWorkFrameCount() : 0, Alive, StepBlocksDestroyed, StepExplosions, FillRobots, bGarbageCollect ? 1 : 0, bAfterPause ? 1 : 0);
 	}
 	if (StepElapsed >= RunSettleSeconds + RunMeasureSeconds)
 	{
@@ -896,6 +919,9 @@ void URRStressSubsystem::FinishStep()
 		Result.AliveMax = FMath::Max(AliveSamples);
 	}
 	Result.Spikes = StepSpikes;
+	Result.SpikesFill = StepSpikesFill;
+	Result.SpikesGarbageCollect = StepSpikesGarbageCollect;
+	Result.SpikesPause = StepSpikesPause;
 	Result.HordeSpawned = StepHordeSpawned;
 	if (const ARRMiner* Miner = RRWorld::FindLivingMiner(GetWorld()); Miner && Miner->GetProgression())
 	{
@@ -929,22 +955,22 @@ void URRStressSubsystem::FinishStep()
 	Results.Add(Result);
 	TRACE_END_REGION(*FString::Printf(TEXT("Stress_%d_Measure"), RunCounts[StepIndex]));
 	UE_LOG(LogRogueRigs, Display,
-		TEXT("Stress step: enemies %d, frames %d, frame avg %.2f p99 %.2f max %.2f, game avg %.2f p99 %.2f max %.2f, draw avg %.2f p99 %.2f, gpu avg %.2f p99 %.2f ms, burst kills %d barrels %d, explosions %d, blocks %d, event frames %d avg %.2f max %.2f, flow computes %d avg %.3f max %.3f ms, alive avg %.1f min %d max %d, spikes %d, horde %d, level %d"),
+		TEXT("Stress step: enemies %d, frames %d, frame avg %.2f p99 %.2f max %.2f, game avg %.2f p99 %.2f max %.2f, draw avg %.2f p99 %.2f, gpu avg %.2f p99 %.2f ms, burst kills %d barrels %d, explosions %d, blocks %d, event frames %d avg %.2f max %.2f, flow computes %d avg %.3f max %.3f ms, alive avg %.1f min %d max %d, spikes %d (fill %d, gc %d, after pause %d), horde %d, level %d"),
 		Result.EnemyCount, Result.FrameCount, Result.FrameAvg, Result.FrameP99, Result.FrameMax, Result.GameAvg, Result.GameP99,
 		Result.GameMax, Result.DrawAvg, Result.DrawP99, Result.GpuAvg, Result.GpuP99, Result.BurstKills, Result.BurstBarrels, Result.Explosions,
 		Result.BlocksDestroyed, Result.EventFrames, Result.EventFrameAvg, Result.EventFrameMax, Result.FlowComputes, Result.FlowAvg, Result.FlowMax, Result.AliveAvg, Result.AliveMin, Result.AliveMax,
-		Result.Spikes, Result.HordeSpawned, Result.MinerLevel);
+		Result.Spikes, Result.SpikesFill, Result.SpikesGarbageCollect, Result.SpikesPause, Result.HordeSpawned, Result.MinerLevel);
 }
 
 void URRStressSubsystem::WriteResults() const
 {
-	FString Csv = TEXT("Enemies,Frames,FrameAvg,FrameP99,FrameMax,GameAvg,GameP99,GameMax,DrawAvg,DrawP99,GpuAvg,GpuP99,Kills,Barrels,Explosions,Blocks,EventFrames,EventAvg,EventMax,FlowComputes,FlowAvg,FlowMax,AliveAvg,AliveMin,AliveMax,Spikes,Horde,Level\n");
+	FString Csv = TEXT("Enemies,Frames,FrameAvg,FrameP99,FrameMax,GameAvg,GameP99,GameMax,DrawAvg,DrawP99,GpuAvg,GpuP99,Kills,Barrels,Explosions,Blocks,EventFrames,EventAvg,EventMax,FlowComputes,FlowAvg,FlowMax,AliveAvg,AliveMin,AliveMax,Spikes,SpikesFill,SpikesGC,SpikesPause,Horde,Level\n");
 	for (const FRRStressStepResult& R : Results)
 	{
-		Csv += FString::Printf(TEXT("%d,%d,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%d,%d,%d,%d,%d,%.3f,%.3f,%d,%.3f,%.3f,%.1f,%d,%d,%d,%d,%d\n"), R.EnemyCount,
+		Csv += FString::Printf(TEXT("%d,%d,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%d,%d,%d,%d,%d,%.3f,%.3f,%d,%.3f,%.3f,%.1f,%d,%d,%d,%d,%d,%d,%d,%d\n"), R.EnemyCount,
 			R.FrameCount, R.FrameAvg, R.FrameP99, R.FrameMax, R.GameAvg, R.GameP99, R.GameMax, R.DrawAvg, R.DrawP99, R.GpuAvg, R.GpuP99,
 			R.BurstKills, R.BurstBarrels, R.Explosions, R.BlocksDestroyed, R.EventFrames, R.EventFrameAvg, R.EventFrameMax, R.FlowComputes,
-			R.FlowAvg, R.FlowMax, R.AliveAvg, R.AliveMin, R.AliveMax, R.Spikes, R.HordeSpawned, R.MinerLevel);
+			R.FlowAvg, R.FlowMax, R.AliveAvg, R.AliveMin, R.AliveMax, R.Spikes, R.SpikesFill, R.SpikesGarbageCollect, R.SpikesPause, R.HordeSpawned, R.MinerLevel);
 	}
 	const FString Path = FPaths::ProjectSavedDir() / TEXT("Stress") /
 		FString::Printf(TEXT("Stress_%s.csv"), *FDateTime::Now().ToString(TEXT("%Y%m%d_%H%M%S")));
@@ -1078,7 +1104,10 @@ void URRStressSubsystem::TickGameFill(float DeltaSeconds)
 			Draw -= Weight;
 		}
 	}
+	const int32 AliveBefore = Spawner->GetAliveCount();
 	Spawner->TrySpawnDirectorWave(PackTypes);
+	GameFillSpawned = Spawner->GetAliveCount() - AliveBefore;
+	GameFillFrame = GFrameCounter;
 }
 
 void URRStressSubsystem::EndGameMode()

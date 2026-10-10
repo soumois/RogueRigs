@@ -123,6 +123,14 @@ struct FRRStressStepResult
 	UPROPERTY()
 	int32 Spikes = 0;
 
+	/** Spikes tagged by cause: frame of an added game-mode wave (robot spawns), garbage collection frame, frame right after a pause (level-up screen). */
+	UPROPERTY()
+	int32 SpikesFill = 0;
+	UPROPERTY()
+	int32 SpikesGarbageCollect = 0;
+	UPROPERTY()
+	int32 SpikesPause = 0;
+
 	/** Game mode: robots spawned by the forced horde front, credited to the step in which it finished. */
 	UPROPERTY()
 	int32 HordeSpawned = 0;
@@ -152,6 +160,9 @@ class ROGUERIGS_API URRStressSubsystem : public UTickableWorldSubsystem
 public:
 	/** Game and PIE worlds only; never created in shipping builds. */
 	virtual bool DoesSupportWorldType(const EWorldType::Type WorldType) const override;
+
+	/** Unbinds the garbage collection hook. */
+	virtual void Deinitialize() override;
 
 	/** Advances the sequencer and samples frame times while a run is active. */
 	virtual void Tick(float DeltaTime) override;
@@ -351,8 +362,20 @@ protected:
 	/** Robots alive per measured frame of the current step. */
 	TArray<int32> AliveSamples;
 
-	/** Measured frames over rr.Stress.SpikeMs in the current step. */
+	/** Measured frames over rr.Stress.SpikeMs in the current step, and those tagged fill, garbage collection, after pause. */
 	int32 StepSpikes = 0;
+	int32 StepSpikesFill = 0;
+	int32 StepSpikesGarbageCollect = 0;
+	int32 StepSpikesPause = 0;
+
+	/** GFrameCounter of the last garbage collection, of the last paused tick, and of the last game-mode fill with the robots it spawned. */
+	uint64 LastGarbageCollectFrame = 0;
+	uint64 LastPausedFrame = 0;
+	uint64 GameFillFrame = 0;
+	int32 GameFillSpawned = 0;
+
+	/** Post garbage collection hook (tags spike frames). */
+	FDelegateHandle PostGarbageCollectHandle;
 
 	/** Game mode: spawner the run drives, its MaxAlive before the run (restored at the end) and the cap of the current step. */
 	TWeakObjectPtr<ARREnemySpawner> GameSpawner;
