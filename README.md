@@ -1,4 +1,4 @@
-# Rogue Rigs — a four-agent dev crew for an Unreal Engine game
+# Rogue Rigs — an AI agent dev crew for an Unreal Engine game
 
 ## Course assignments
 
@@ -9,7 +9,7 @@
 | 3 | Building an Agent Crew | [A3-agent-crew](assignments/A3-agent-crew/) | Submitted (tag [`a3-submission`](https://github.com/soumois/RogueRigs/tree/a3-submission)) |
 | 4 | Dynamic Content Pipeline | [A4-dynamic-content-pipeline](assignments/A4-dynamic-content-pipeline/) | In progress |
 
-All assignments: [assignments/](assignments/). Everything after the vault section below is the Assignment 3 README.
+All assignments: [assignments/](assignments/).
 
 ## Project vault
 
@@ -129,12 +129,12 @@ Agents never talk to each other. Every hand-off goes through files: the Orchestr
 | **Level-Design** | Sonnet | a subtask with a layout brief; layout schema; terrain specs | `Content/RogueRigs/Data/Levels/<name>.json` that passes the validator | no arena: the grid has nothing to build |
 | **C++** | Opus | a subtask; C++ standard; GDD and system docs; engine source | C++ under `Source/RogueRigs/<System>/`, built from the command line; automation tests; system docs | no gameplay code: no grid, player, GAS, weapons or tests |
 | **BP** | Sonnet | a subtask; Unreal MCP doc; system docs | Blueprints derived from C++, material instances, maps, placed actors; one doc node per Blueprint | C++ classes never reach a playable map |
-| **Text** *(Assignment 4, being set up)* | Sonnet | a subtask; lore, characters, fictional films, company voice, dialogue tone; the mechanic node it writes for | upgrade texts, barks and alert lines in `Content/RogueRigs/Data/Text/`; a retrieval log (query, excerpt, output) | player-facing text sounds generic or breaks the lore |
-| **Style-guide** *(critic, Assignment 4, being set up)* | Opus | the generated output only, never the generator's prompt; numbered rules L1–L4 and T1–T8 | a verdict per item: pass or fail, rule id, reason, corrected line | lore breaks and tone drift reach the game unnoticed |
+| **Text** | Sonnet | a subtask; lore, characters, fictional films, company voice, dialogue tone; the mechanic node it writes for | upgrade texts, barks and alert lines in `Content/RogueRigs/Data/Text/`; a retrieval log (query, excerpt, output) | player-facing text sounds generic or breaks the lore |
+| **Style-guide** (critic) | Opus | the generated output only, never the generator's prompt; numbered rules L1–L4 and T1–T8 | a verdict per item: pass or fail, rule id, reason, corrected line | lore breaks and tone drift reach the game unnoticed |
 | *Art (planned)* | Sonnet | an asset need; art style guide, art prompts, color code, the entity spec | image prompts and candidate images (GPT image model through Kie.ai), self-reviewed against the style guide | every new asset needs a hand-written prompt and a manual style check |
 | *3D (planned)* | Sonnet | an owner-validated image; asset pipeline | a cleaned, split FBX through Meshy or Tripo and Blender MCP, ready for the BP agent to import | images never become game meshes without hours of manual work |
 
-The first four agents are the Assignment 3 crew; Text and Style-guide were added for Assignment 4, Art and 3D are specified but not built yet. Agent definitions: `.claude/agents/*.md` (Claude Code subagents: model, tools, turn limit) point to their specs in `vault/reference/agents/`, the single source of truth any AI tool can read.
+Art and 3D are specified but not built yet. Agent definitions: `.claude/agents/*.md` (Claude Code subagents: model, tools, turn limit) point to their specs in `vault/reference/agents/`, the single source of truth any AI tool can read.
 
 ## How a request runs
 
