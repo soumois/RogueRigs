@@ -13,7 +13,7 @@ status: in-progress
 - gdd_check: done by the Orchestrator when the task is planned (2026-10-09).
 - confirmed_by_owner: yes (2026-10-10), design decisions answered; gold only for now
 - milestone: M2
-- next_step: task-070-01-ore-in-rock
+- next_step: task-070-02-ore-in-rock
 - result: Design proposal written, awaiting the owner's values.
 
 ## Subtasks

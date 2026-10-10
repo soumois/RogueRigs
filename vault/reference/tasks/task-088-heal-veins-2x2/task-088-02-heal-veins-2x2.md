@@ -3,7 +3,7 @@ id: task-088-02-heal-veins-2x2
 description: "Heal veins are mined as one 2 x 2 deposit with 15 HP per pickup (60 HP per vein), driven by the data."
 parent: task-088-heal-veins-2x2
 kind: task
-status: todo
+status: in-progress
 ---
 # Heal veins 2 x 2 in code
 

@@ -3,7 +3,7 @@ id: task-070-01-ore-in-rock
 description: "Ore scattered through the rock: nuggets inside rock blocks so ore drips during the whole dig, as in DRGS."
 parent: task-070-ore-in-rock
 kind: task
-status: in-progress
+status: done
 ---
 # Ore scattered in the rock
 
@@ -19,7 +19,7 @@ status: in-progress
 - tokens: input 32, cache write 42858, cache read 452866, output 12865
 - runs: 1
 - milestone: M2
-- result: open
+- result: Gold ore: table OreTypes.csv (gold 8 %, 2 x 2, value 1), 359 deposits on arena_m1_fine, deposit mining by id (4 blocks 1.5 s, 4 chunks), pickup spawn queue 4 per frame; build 0, 208/208 tests. Commits 5b360eb, f107a0a, e07b924.
 
 ## Relations
 - [[task-070-ore-in-rock]] — parent global task.
