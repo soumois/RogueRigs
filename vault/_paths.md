@@ -461,6 +461,10 @@ task-081-a4-readme  reference/tasks/task-081-a4-readme.md
 tasks-index  reference/tasks/tasks-index.md
 tech-index  reference/tech/tech-index.md
 terrain-index  reference/gdd/terrain/terrain-index.md
+text-content-events  reference/tech/pipelines/text-content-events.md
+text-content-files  reference/tech/pipelines/text-content-files.md
+text-content-schema  reference/tech/pipelines/text-content-schema.md
+text-run-log-schema  reference/tech/pipelines/text-run-log-schema.md
 turret  reference/gdd/weapons/turret.md
 unreal-mcp  reference/tech/pipelines/unreal-mcp.md
 unreal-mcp-quirks  reference/tech/pipelines/unreal-mcp-quirks.md
