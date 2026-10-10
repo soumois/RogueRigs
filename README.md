@@ -13,7 +13,38 @@ All assignments: [assignments/](assignments/).
 
 ## Project vault
 
-[`vault/`](vault/) is the single source of truth of the project: the game design, technical docs, agent specs and every task the crew has run (466 nodes). Start at [`vault/root.md`](vault/root.md).
+[`vault/`](vault/) is the single source of truth of the project: the game design, technical docs, agent specs and every task the crew has run (469 nodes). Start at [`vault/root.md`](vault/root.md).
+
+<!-- vault-map:start -->
+```mermaid
+flowchart LR
+  root(("root · 469 nodes"))
+  root --> tasks_index["tasks · 271"]
+  tasks_index --> tasks_done_index["tasks-done · 246"]
+  tasks_index --> tasks_to_do_index["tasks-to-do · 24"]
+  root --> tech_index["tech · 104"]
+  tech_index --> systems_index["systems · 41"]
+  tech_index --> blueprints_index["blueprints · 27"]
+  tech_index --> pipelines_index["pipelines · 13"]
+  tech_index --> conventions_index["conventions · 11"]
+  tech_index --> performance_index["performance · 11"]
+  root --> gdd_index["gdd · 51"]
+  gdd_index --> art_audio_index["art-audio · 12"]
+  gdd_index --> run_index["run · 10"]
+  gdd_index --> terrain_index["terrain · 7"]
+  gdd_index --> weapons_index["weapons · 7"]
+  gdd_index --> enemies_index["enemies · 6"]
+  gdd_index --> lore["lore · 4"]
+  gdd_index --> player_index["player · 4"]
+  root --> course_index["course · 18"]
+  course_index --> assignments_index["assignments · 8"]
+  course_index --> lessons_index["lessons · 7"]
+  root --> agents_index["agents · 12"]
+  root --> production_index["production · 9"]
+```
+<!-- vault-map:end -->
+
+The map above is generated from each node's `parent` field: `node vault/scripts/vault-map.js` (it also refreshes the counts below).
 
 | Branch | Nodes | Holds |
 |---|---|---|
@@ -27,6 +58,10 @@ All assignments: [assignments/](assignments/).
 Reading and writing rules: [`_navigation.md`](vault/_navigation.md) (descend from the root, never search) and [`_authoring.md`](vault/_authoring.md) (frontmatter, one concept per node, lint). The visual references and their prompts are in [`vault/assets/`](vault/assets/) and [`art-prompts`](vault/reference/gdd/art-audio/art-prompts.md).
 
 **Browse it in Obsidian:** open the `vault/` folder as a vault. The **Parent Graph** plugin ships with it (`vault/.obsidian/plugins/parent-graph`): enable community plugins, then click the fork icon in the ribbon to see the tree drawn from each node's `parent` field.
+
+| The whole vault (Parent Graph view) | Zoom on the game design branch |
+|---|---|
+| [![All vault nodes drawn from their parent field](docs/images/vault-overview.png)](docs/images/vault-overview.png) | [![gdd-index and its sub-indexes](docs/images/vault-gdd-zoom.png)](docs/images/vault-gdd-zoom.png) |
 
 
 **Game:** *Rogue Rigs*, a top-down roguelite auto-shooter built in Unreal Engine 5.8 (C++ first). An independent miner steals ore from a corporate asteroid claim guarded by security robots; the destructible rock arena is the player's best weapon. Capstone project of the ELVTR course *Multi-Agent AI for Game Development* (instructor: Joshua Burdick).
@@ -158,6 +193,7 @@ The Orchestrator's tooling lives in `vault/scripts/`:
 | `agent-usage.js`, `record-cost.js` | read this machine's Claude Code transcripts and add the subtask's tokens to `cost-log` |
 | `crew-board.js` | render `Saved/CrewBoard/crew-board.html`, a dashboard of agents, queue and costs, published as an artifact for the owner |
 | `lint.js` | check the vault and regenerate `_paths.md` |
+| `vault-map.js` | regenerate the vault map and node counts in this README |
 
 How-to and pitfalls for whoever takes over the Orchestrator role are in `vault/reference/agents/orchestrator-runbook.md` and `orchestrator-lessons.md`.
 
