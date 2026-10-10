@@ -1,0 +1,29 @@
+{"run_id": "20261010-103239-upgrade_texts", "rounds": [{"loop": 0, "reviews": [
+  {"item_id": "upg_damage", "verdict": "pass", "rule": null, "reason": "Rook voice, robots framed as company property.", "suggestion": null},
+  {"item_id": "upg_fire_rate", "verdict": "pass", "rule": null, "reason": "Self-deprecating blue-collar joke, original.", "suggestion": null},
+  {"item_id": "upg_reload_speed", "verdict": "pass", "rule": null, "reason": "Joke targets corporate, fits Rook.", "suggestion": null},
+  {"item_id": "upg_crit_chance", "verdict": "pass", "rule": null, "reason": "Cocky self-mockery by Rook, not aimed at the player.", "suggestion": null},
+  {"item_id": "upg_crit_damage", "verdict": "pass", "rule": null, "reason": "Original mining-flavored punchline.", "suggestion": null},
+  {"item_id": "upg_magazine_size", "verdict": "fail", "rule": "L3", "reason": "The joke gloats over making the robots suffer instead of aiming at the company.", "suggestion": "Bigger mag, fewer reloads, more company hardware on the scrap pile."},
+  {"item_id": "upg_max_health", "verdict": "pass", "rule": null, "reason": "Patched salvage gear, Rigs jargon, fits Rook.", "suggestion": null},
+  {"item_id": "upg_move_speed", "verdict": "pass", "rule": null, "reason": "Sarcastic Rook line, no rule touched.", "suggestion": null},
+  {"item_id": "upg_pickup_radius", "verdict": "pass", "rule": null, "reason": "Rook counting his cut, original.", "suggestion": null},
+  {"item_id": "upg_xp_gain", "verdict": "pass", "rule": null, "reason": "Joke targets the company.", "suggestion": null},
+  {"item_id": "upg_mining_speed", "verdict": "pass", "rule": null, "reason": "Here-first framing matches L4, drill jargon fits Rook.", "suggestion": null},
+  {"item_id": "upg_luck", "verdict": "pass", "rule": null, "reason": "Odds-dismissing bravado, fits Rook.", "suggestion": null},
+  {"item_id": "upg_piercing", "verdict": "pass", "rule": null, "reason": "Die Hardly is in the fictional-films pool and no real film line is used.", "suggestion": null}
+]}, {"loop": 1, "reviews": [
+  {"item_id": "upg_damage", "verdict": "pass", "rule": null, "reason": "Unchanged pass: robots framed as company property, joke on the company.", "suggestion": null},
+  {"item_id": "upg_fire_rate", "verdict": "pass", "rule": null, "reason": "Unchanged pass: original blue-collar self-mockery.", "suggestion": null},
+  {"item_id": "upg_reload_speed", "verdict": "pass", "rule": null, "reason": "Unchanged pass: joke targets corporate.", "suggestion": null},
+  {"item_id": "upg_crit_chance", "verdict": "pass", "rule": null, "reason": "Unchanged pass: Rook's own bravado mocked, not the player.", "suggestion": null},
+  {"item_id": "upg_crit_damage", "verdict": "pass", "rule": null, "reason": "Unchanged pass: original mining punchline.", "suggestion": null},
+  {"item_id": "upg_magazine_size", "verdict": "pass", "rule": null, "reason": "Corrected: robots are now company hardware being scrapped, no gloating over robot suffering (L3).", "suggestion": null},
+  {"item_id": "upg_max_health", "verdict": "pass", "rule": null, "reason": "Unchanged pass: patched salvage gear, hull jargon fits Rook.", "suggestion": null},
+  {"item_id": "upg_move_speed", "verdict": "pass", "rule": null, "reason": "Unchanged pass: sarcastic Rook line.", "suggestion": null},
+  {"item_id": "upg_pickup_radius", "verdict": "pass", "rule": null, "reason": "Unchanged pass: Rook counting his cut.", "suggestion": null},
+  {"item_id": "upg_xp_gain", "verdict": "pass", "rule": null, "reason": "Unchanged pass: joke targets the company.", "suggestion": null},
+  {"item_id": "upg_mining_speed", "verdict": "pass", "rule": null, "reason": "Unchanged pass: here-first framing matches L4.", "suggestion": null},
+  {"item_id": "upg_luck", "verdict": "pass", "rule": null, "reason": "Unchanged pass: odds-dismissing bravado.", "suggestion": null},
+  {"item_id": "upg_piercing", "verdict": "pass", "rule": null, "reason": "Unchanged pass: Die Hardly is in fictional-films and no real film line is used.", "suggestion": null}
+]}]}
