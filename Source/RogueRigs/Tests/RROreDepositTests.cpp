@@ -1,4 +1,4 @@
-// Rogue Rigs - automation tests of the ore deposits (task-070-01): ore type table, 2 x 2 gold placement, whole-deposit mining, drops and the pickup spawn cap.
+// Rogue Rigs - automation tests of the ore deposits (task-070-01, task-088-02): ore type table, 2 x 2 gold placement, whole-deposit mining, drops, the pickup spawn cap and the 2 x 2 heal veins.
 
 #include "Misc/AutomationTest.h"
 
@@ -7,13 +7,17 @@
 #include "RogueRigs.h"
 #include "Drone/RRDrone.h"
 #include "EngineUtils.h"
+#include "GameFramework/PlayerController.h"
+#include "GAS/RRAbilitySystemComponent.h"
 #include "Grid/RRArenaGrid.h"
 #include "Grid/RROreTypeRow.h"
 #include "Objectives/RRConsole.h"
 #include "Pickups/RRPickup.h"
 #include "Pickups/RRPickupSubsystem.h"
 #include "Tests/RRTestAccess.h"
+#include "Tests/RRTestEventRecorder.h"
 #include "Tests/RRTestHarness.h"
+#include "UObject/StrongObjectPtr.h"
 #include "Weapons/RRAutoFireComponent.h"
 #include "Weapons/RRWeapon.h"
 
@@ -24,6 +28,18 @@ namespace RROreDepositTests
 
 	/** Ore id of gold in OreTypes.csv. */
 	const FName GoldId(TEXT("Gold"));
+
+	/** Ore id of the heal veins in OreTypes.csv (task-088-02). */
+	const FName HealId(TEXT("Heal"));
+
+	/** Blueprint heal pickup, set on the grid by the heal vein test. */
+	const TCHAR* const HealPickupClassPath = TEXT("/Game/RogueRigs/Blueprints/Pickups/BP_PickupHeal.BP_PickupHeal_C");
+
+	/** A block of the 2 x 2 heal vein (147-148, 135-136) of arena_m1_fine (task-088-01). */
+	const FIntPoint HealVeinCell(148, 136);
+
+	/** Floor cell north of that vein, where the heal vein test stands the miner. */
+	const FIntPoint HealVeinNorthFloorCell(148, 134);
 
 	/** Blueprint ore pickup, used when BP_ArenaGrid has no OrePickupClass. */
 	const TCHAR* const OrePickupClassPath = TEXT("/Game/RogueRigs/Blueprints/Pickups/BP_PickupOre.BP_PickupOre_C");
@@ -454,6 +470,171 @@ bool FRROreExplosionDropsTest::RunTest(const FString& Parameters)
 	TestEqual(TEXT("the last 4 the frame after"), CountOrePickups(TestWorld.Get(), ValueSum), 16);
 	TestEqual(TEXT("queue empty"), Pickups->GetQueuedSpawnCount(), 0);
 	TestEqual(TEXT("16 chunks worth 16"), ValueSum, 16);
+	return true;
+}
+
+IMPLEMENT_SIMPLE_AUTOMATION_TEST(FRROreHealVeinTest, "RogueRigs.Ore.HealVein",
+	EAutomationTestFlags::EditorContext | EAutomationTestFlags::EngineFilter)
+
+bool FRROreHealVeinTest::RunTest(const FString& Parameters)
+{
+	using namespace RROreDepositTests;
+
+	// heal-ore (owner 2026-10-10): 12 veins of 2 x 2 (48 cells), each one deposit; 15 HP per pickup (OreTypes.csv row Heal),
+	// so a vein restores 60. Every heal pickup is collected, even those that pop inside the pickup radius.
+	FRROreTypeRow HealRow;
+	if (!TestTrue(TEXT("row Heal found in OreTypes.csv"), ARRArenaGrid::GetOreType(HealId, HealRow)))
+	{
+		return false;
+	}
+	TestEqual(TEXT("row Heal is the HealOre block type"), HealRow.CellType, ERRCellType::HealOre);
+	TestNearlyEqual(TEXT("row Heal never placed on rock (veins come from the layout)"), HealRow.RockShare, 0.f);
+	TestNearlyEqual(TEXT("row Heal: 15 HP per pickup"), HealRow.HealValue, 15.f);
+	TestTrue(TEXT("row Heal writes no colour (alpha 0)"), HealRow.Color.A <= 0.f);
+
+	FTestWorld TestWorld;
+	ARRArenaGrid* Grid = SpawnOreGrid(*this, TestWorld, /*bPlaceDeposits*/ false);
+	UClass* HealClass = LoadTestClass<ARRPickup>(*this, HealPickupClassPath);
+	if (!Grid || !HealClass)
+	{
+		return false;
+	}
+	if (FGridAccess::HealClass(Grid) != HealClass)
+	{
+		FGridAccess::HealClass(Grid) = HealClass;
+	}
+
+	// 12 heal deposits, each a 2 x 2 square, 48 cells in all.
+	int32 Veins = 0;
+	int32 VeinCells = 0;
+	int32 TargetId = INDEX_NONE;
+	for (int32 Id = 0; Id < Grid->GetDepositCount(); ++Id)
+	{
+		const FRRGridDeposit& Deposit = *Grid->GetDeposit(Id);
+		if (Deposit.CellType != ERRCellType::HealOre)
+		{
+			continue;
+		}
+		++Veins;
+		VeinCells += Deposit.Cells.Num();
+		FIntPoint Min(INT32_MAX, INT32_MAX);
+		FIntPoint Max(INT32_MIN, INT32_MIN);
+		for (const FIntPoint& Cell : Deposit.Cells)
+		{
+			Min = FIntPoint(FMath::Min(Min.X, Cell.X), FMath::Min(Min.Y, Cell.Y));
+			Max = FIntPoint(FMath::Max(Max.X, Cell.X), FMath::Max(Max.Y, Cell.Y));
+		}
+		TestTrue(FString::Printf(TEXT("heal vein at %s is a 2 x 2 square"), *Min.ToString()), Deposit.Cells.Num() == 4 && Max - Min == FIntPoint(1, 1));
+		TestTrue(FString::Printf(TEXT("heal vein at %s: row Heal, 15 HP, no colour"), *Min.ToString()),
+			Deposit.OreId == HealId && FMath::IsNearlyEqual(Deposit.HealValue, 15.f) && !Deposit.bHasColor);
+		if (Deposit.Cells.Contains(HealVeinCell))
+		{
+			TargetId = Id;
+		}
+	}
+	TestEqual(TEXT("12 heal veins"), Veins, 12);
+	TestEqual(TEXT("48 heal vein cells"), VeinCells, 48);
+	if (!TestTrue(TEXT("(148, 136) is in a heal vein"), TargetId != INDEX_NONE))
+	{
+		return false;
+	}
+	const TArray<FIntPoint> VeinCellsOfTarget = Grid->GetDeposit(TargetId)->Cells;
+	TArray<FIntPoint> FromOneBlock;
+	Grid->GetDepositCells(HealVeinCell, FromOneBlock);
+	TestEqual(TEXT("touching one block reaches the 4 blocks of its vein"), FromOneBlock.Num(), 4);
+
+	// Miner north of the vein, damaged, possessed (pickups look for the player 0 pawn), weapons silent.
+	ARRMiner* Miner = SpawnMiner(*this, TestWorld, Grid, HealVeinNorthFloorCell);
+	ARRDrone* Drone = Miner ? Miner->GetDrone() : nullptr;
+	URRAbilitySystemComponent* ASC = Miner ? Miner->GetRRAbilitySystemComponent() : nullptr;
+	APlayerController* Controller = Miner ? TestWorld.Spawn<APlayerController>(APlayerController::StaticClass(), Miner->GetActorLocation()) : nullptr;
+	if (!TestNotNull(TEXT("BP_Miner spawned its drone"), Drone) || !TestNotNull(TEXT("miner ASC"), ASC) || !TestNotNull(TEXT("player controller"), Controller))
+	{
+		return false;
+	}
+	Controller->Possess(Miner);
+	for (ARRWeapon* Weapon : Miner->GetWeapons())
+	{
+		if (IsValid(Weapon) && Weapon->GetAutoFireComponent())
+		{
+			Weapon->GetAutoFireComponent()->StopFiring();
+		}
+	}
+	ASC->SetNumericAttributeBase(URRHealthAttributeSet::GetMaxHealthAttribute(), 100.f);
+	ASC->SetNumericAttributeBase(URRHealthAttributeSet::GetHealthAttribute(), 10.f);
+	TStrongObjectPtr<URRTestEventRecorder> Recorder(NewObject<URRTestEventRecorder>());
+	Miner->OnPickupCollected.AddDynamic(Recorder.Get(), &URRTestEventRecorder::HandlePickupCollected);
+
+	// Dig: the 4 blocks shake together and break on the same frame, about 1.5 s in; each drops one heal pickup worth 15.
+	TArray<int32> BreakFrames;
+	BreakFrames.Init(INDEX_NONE, VeinCellsOfTarget.Num());
+	int32 MaxVeinBlocksInArc = 0;
+	bool bAllShookTogether = false;
+	int32 HealPickupsSeen = 0;
+	TSet<TWeakObjectPtr<ARRPickup>> Seen;
+	for (int32 Frame = 1; Frame <= 150; ++Frame)
+	{
+		TestWorld.Tick();
+		int32 InArc = 0;
+		for (const FIntPoint& Cell : Drone->GetDigCells())
+		{
+			InArc += VeinCellsOfTarget.Contains(Cell) ? 1 : 0;
+		}
+		MaxVeinBlocksInArc = FMath::Max(MaxVeinBlocksInArc, InArc);
+		if (Frame == 30)
+		{
+			bAllShookTogether = true;
+			for (const FIntPoint& Cell : VeinCellsOfTarget)
+			{
+				bAllShookTogether &= FGridAccess::Shaking(Grid).Contains(Cell);
+			}
+		}
+		for (TActorIterator<ARRPickup> It(TestWorld.Get()); It; ++It)
+		{
+			if (It->GetPickupType() == ERRPickupType::Heal && !Seen.Contains(*It))
+			{
+				Seen.Add(*It);
+				++HealPickupsSeen;
+				TestNearlyEqual(TEXT("heal pickup worth 15 HP (row Heal)"), It->GetHealAmount(), 15.f);
+			}
+		}
+		bool bAllBroken = true;
+		for (int32 Index = 0; Index < VeinCellsOfTarget.Num(); ++Index)
+		{
+			if (BreakFrames[Index] == INDEX_NONE && !Grid->IsBlockCell(VeinCellsOfTarget[Index]))
+			{
+				BreakFrames[Index] = Frame;
+			}
+			bAllBroken &= BreakFrames[Index] != INDEX_NONE;
+		}
+		if (bAllBroken && HealPickupsSeen >= 4)
+		{
+			break;
+		}
+	}
+	AddInfo(FString::Printf(TEXT("vein blocks in the arc at most %d; break frames %d %d %d %d"), MaxVeinBlocksInArc,
+		BreakFrames[0], BreakFrames[1], BreakFrames[2], BreakFrames[3]));
+	TestTrue(TEXT("the drone arc touched the vein"), MaxVeinBlocksInArc >= 1);
+	TestTrue(TEXT("the 4 blocks shake together while mined"), bAllShookTogether);
+	for (int32 Index = 0; Index < VeinCellsOfTarget.Num(); ++Index)
+	{
+		TestEqual(FString::Printf(TEXT("block %s breaks with the first"), *VeinCellsOfTarget[Index].ToString()), BreakFrames[Index], BreakFrames[0]);
+	}
+	TestTrue(TEXT("the vein breaks after about 1.5 s"), BreakFrames[0] >= 89 && BreakFrames[0] <= 91);
+	TestEqual(TEXT("4 heal pickups"), HealPickupsSeen, 4);
+
+	// Every heal pickup is collected (they pop next to the miner, inside the pickup radius): +60 HP.
+	for (int32 Frame = 0; Frame < 600 && Recorder->GetCollectedPickups().Num() < 4; ++Frame)
+	{
+		TestWorld.Tick();
+	}
+	int32 HealCollected = 0;
+	for (const ERRPickupType Type : Recorder->GetCollectedPickups())
+	{
+		HealCollected += Type == ERRPickupType::Heal ? 1 : 0;
+	}
+	TestEqual(TEXT("the 4 heal pickups are collected"), HealCollected, 4);
+	TestNearlyEqual(TEXT("the vein restored 60 HP (10 -> 70)"), ASC->GetNumericAttribute(URRHealthAttributeSet::GetHealthAttribute()), 70.f, 0.01f);
 	return true;
 }
 

@@ -93,7 +93,7 @@ struct FRRGridDeposit
 {
 	GENERATED_BODY()
 
-	/** Ore type row (OreTypes.csv row name) the deposit was placed from, or the first row of its block type for a layout vein; None when no row matches (heal veins today). */
+	/** Ore type row (OreTypes.csv row name) the deposit was placed from, or the first row of its block type for a layout vein; None when no row matches. */
 	UPROPERTY(VisibleInstanceOnly, BlueprintReadOnly, Category = "Deposit")
 	FName OreId;
 
@@ -109,11 +109,15 @@ struct FRRGridDeposit
 	UPROPERTY(VisibleInstanceOnly, BlueprintReadOnly, Category = "Deposit")
 	int32 ChunkValue = 1;
 
+	/** Health restored by each heal pickup dropped by a block of this deposit (row HealValue; 0 without a row). */
+	UPROPERTY(VisibleInstanceOnly, BlueprintReadOnly, Category = "Deposit")
+	float HealValue = 0.f;
+
 	/** Ore colour of the row (written into the instance custom data when bHasColor). */
 	UPROPERTY(VisibleInstanceOnly, BlueprintReadOnly, Category = "Deposit")
 	FLinearColor Color = FLinearColor::White;
 
-	/** True when an ore type row gave the deposit its value and colour. */
+	/** True when an ore type row with a colour (alpha above 0) gave the deposit its colour. */
 	UPROPERTY(VisibleInstanceOnly, BlueprintReadOnly, Category = "Deposit")
 	bool bHasColor = false;
 
@@ -214,7 +218,7 @@ public:
 	UFUNCTION(BlueprintPure, Category = "Grid|Deposits")
 	int32 GetDepositId(FIntPoint Cell) const;
 
-	/** Ore type row of the deposit holding Cell (e.g. Gold); None when Cell is in no deposit or its deposit has no row (heal veins). */
+	/** Ore type row of the deposit holding Cell (e.g. Gold); None when Cell is in no deposit or its deposit has no row. */
 	UFUNCTION(BlueprintPure, Category = "Grid|Deposits")
 	FName GetDepositOreId(FIntPoint Cell) const;
 
@@ -466,10 +470,11 @@ protected:
 	void QueueBarrelExplosion(FIntPoint Cell);
 
 	/**
-	 * Requests Count pickups of the class dropped by Type at the center of Cell (floor top), each worth OreValue, during play
-	 * only, through URRPickupSubsystem::RequestSpawn (at most its MaxSpawnsPerFrame per frame, the rest queued).
+	 * Requests Count pickups of the class dropped by Type at the center of Cell (floor top), each worth OreValue (ore) and
+	 * HealValue (heal, 0 = pickup default), during play only, through URRPickupSubsystem::RequestSpawn (at most its
+	 * MaxSpawnsPerFrame per frame, the rest queued).
 	 */
-	void SpawnPickups(FIntPoint Cell, ERRCellType Type, int32 Count, int32 OreValue = 1);
+	void SpawnPickups(FIntPoint Cell, ERRCellType Type, int32 Count, int32 OreValue = 1, float HealValue = 0.f);
 
 	// --- Layout and dimensions ---
 

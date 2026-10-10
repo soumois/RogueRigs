@@ -34,7 +34,7 @@ void URRPickupSubsystem::RefreshFrameBudget()
 	}
 }
 
-ARRPickup* URRPickupSubsystem::RequestSpawn(TSubclassOf<ARRPickup> PickupClass, const FVector& Location, AActor* Owner, int32 OreValue)
+ARRPickup* URRPickupSubsystem::RequestSpawn(TSubclassOf<ARRPickup> PickupClass, const FVector& Location, AActor* Owner, int32 OreValue, float HealAmount)
 {
 	if (!PickupClass)
 	{
@@ -45,6 +45,7 @@ ARRPickup* URRPickupSubsystem::RequestSpawn(TSubclassOf<ARRPickup> PickupClass, 
 	Request.Location = Location;
 	Request.Owner = Owner;
 	Request.OreValue = OreValue;
+	Request.HealAmount = HealAmount;
 
 	RefreshFrameBudget();
 	// Older requests go first: spawn now only when nothing waits and the frame budget allows.
@@ -72,6 +73,10 @@ ARRPickup* URRPickupSubsystem::SpawnNow(const FRRPickupSpawnRequest& Request)
 		return nullptr;
 	}
 	Pickup->SetOreValue(Request.OreValue);
+	if (Request.HealAmount > 0.f)
+	{
+		Pickup->SetHealAmount(Request.HealAmount);
+	}
 	Pickup->FinishSpawning(SpawnTransform);
 	return Pickup;
 }

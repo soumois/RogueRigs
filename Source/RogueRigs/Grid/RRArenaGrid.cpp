@@ -180,8 +180,9 @@ void ARRArenaGrid::BuildDeposits()
 			{
 				Deposit.OreId = Row.Key;
 				Deposit.ChunkValue = Row.Value->ChunkValue;
+				Deposit.HealValue = Row.Value->HealValue;
 				Deposit.Color = Row.Value->Color;
-				Deposit.bHasColor = true;
+				Deposit.bHasColor = Row.Value->Color.A > 0.f;
 				break;
 			}
 		}
@@ -292,8 +293,9 @@ int32 ARRArenaGrid::PlaceOreDeposits(FName OreId, const FRROreTypeRow& Row, int3
 		Deposit.OreId = OreId;
 		Deposit.CellType = Row.CellType;
 		Deposit.ChunkValue = Row.ChunkValue;
+		Deposit.HealValue = Row.HealValue;
 		Deposit.Color = Row.Color;
-		Deposit.bHasColor = true;
+		Deposit.bHasColor = Row.Color.A > 0.f;
 		Deposit.bPlacedFromTable = true;
 		for (int32 DY = 0; DY < Size; ++DY)
 		{
@@ -1110,9 +1112,10 @@ bool ARRArenaGrid::DestroyCell(FIntPoint Cell, ERRTerrainDamageSource Source)
 	}
 	const bool bWasMarked = MarkedCells.Remove(Cell) > 0;
 
-	// Chunk value of the block's deposit (ore type row), read before the cell leaves it.
+	// Chunk and heal values of the block's deposit (ore type row), read before the cell leaves it.
 	const int32 DepositId = GetDepositId(Cell);
 	const int32 ChunkValue = DepositId != INDEX_NONE ? Deposits[DepositId].ChunkValue : 1;
+	const float HealValue = DepositId != INDEX_NONE ? Deposits[DepositId].HealValue : 0.f;
 	if (CellDepositId.IsValidIndex(Index))
 	{
 		CellDepositId[Index] = INDEX_NONE;
@@ -1139,7 +1142,7 @@ bool ARRArenaGrid::DestroyCell(FIntPoint Cell, ERRTerrainDamageSource Source)
 		*UEnum::GetValueAsString(Type), *UEnum::GetValueAsString(Source));
 
 	// One chunk per broken block whatever the source (drone or explosion, start zone included: no protection, ore-blocks).
-	SpawnPickups(Cell, Type, DestroyDropCount, ChunkValue);
+	SpawnPickups(Cell, Type, DestroyDropCount, ChunkValue, HealValue);
 
 	// Every destroyed barrel explodes, whatever destroyed it (shots, dig, another explosion); queued, never synchronous.
 	if (Type == ERRCellType::Barrel)
@@ -1296,11 +1299,12 @@ void ARRArenaGrid::SpawnDigDrops(FIntPoint Cell, ERRCellType Type)
 	{
 		CellDigDrops[Index] = Crossed;
 		const int32 DepositId = GetDepositId(Cell);
-		SpawnPickups(Cell, Type, NewDrops, DepositId != INDEX_NONE ? Deposits[DepositId].ChunkValue : 1);
+		SpawnPickups(Cell, Type, NewDrops, DepositId != INDEX_NONE ? Deposits[DepositId].ChunkValue : 1,
+			DepositId != INDEX_NONE ? Deposits[DepositId].HealValue : 0.f);
 	}
 }
 
-void ARRArenaGrid::SpawnPickups(FIntPoint Cell, ERRCellType Type, int32 Count, int32 OreValue)
+void ARRArenaGrid::SpawnPickups(FIntPoint Cell, ERRCellType Type, int32 Count, int32 OreValue, float HealValue)
 {
 	UWorld* World = GetWorld();
 	const TSubclassOf<ARRPickup> PickupClass = GetPickupClass(Type);
@@ -1316,7 +1320,7 @@ void ARRArenaGrid::SpawnPickups(FIntPoint Cell, ERRCellType Type, int32 Count, i
 	{
 		if (Pickups)
 		{
-			Pickups->RequestSpawn(PickupClass, Location, this, OreValue);
+			Pickups->RequestSpawn(PickupClass, Location, this, OreValue, HealValue);
 			continue;
 		}
 		FActorSpawnParameters SpawnParams;
@@ -1326,12 +1330,16 @@ void ARRArenaGrid::SpawnPickups(FIntPoint Cell, ERRCellType Type, int32 Count, i
 		if (ARRPickup* Pickup = World->SpawnActor<ARRPickup>(PickupClass, Location, FRotator::ZeroRotator, SpawnParams))
 		{
 			Pickup->SetOreValue(OreValue);
+			if (HealValue > 0.f)
+			{
+				Pickup->SetHealAmount(HealValue);
+			}
 			Pickup->FinishSpawning(FTransform(Location));
 		}
 	}
 
-	UE_LOG(LogRogueRigs, Verbose, TEXT("ARRArenaGrid: %d pickup(s) dropped at (%d, %d), type %s, value %d."), Count, Cell.X, Cell.Y,
-		*UEnum::GetValueAsString(Type), OreValue);
+	UE_LOG(LogRogueRigs, Verbose, TEXT("ARRArenaGrid: %d pickup(s) dropped at (%d, %d), type %s, value %d, heal %.2f."), Count, Cell.X, Cell.Y,
+		*UEnum::GetValueAsString(Type), OreValue, HealValue);
 }
 
 int32 ARRArenaGrid::DestroyCellsInRadius(FVector Center, float Radius, ERRTerrainDamageSource Source)

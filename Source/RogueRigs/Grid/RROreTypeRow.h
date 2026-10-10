@@ -1,4 +1,4 @@
-// Rogue Rigs - DataTable row holding one ore type (OreTypes.csv): share of the rock, deposit size, chunk value, colour.
+// Rogue Rigs - DataTable row holding one ore type (OreTypes.csv): share of the rock, deposit size, chunk value, heal value, colour.
 
 #pragma once
 
@@ -33,7 +33,14 @@ struct ROGUERIGS_API FRROreTypeRow : public FTableRowBase
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Ore Type", meta = (ClampMin = "0"))
 	int32 ChunkValue = 1;
 
-	/** Colour parameter of the ore crystals (linear RGB), written into the per-instance custom data of its blocks for the material. */
+	/**
+	 * Health restored by each heal pickup a broken block of this type drops (ARRPickup::SetHealAmount); 0 for non-heal ores.
+	 * Row Heal (heal-ore, owner 2026-10-10): 15 per pickup, so a 2 x 2 heal vein restores 60.
+	 */
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Ore Type", meta = (ClampMin = "0"))
+	float HealValue = 0.f;
+
+	/** Colour parameter of the ore crystals (linear RGB), written into the per-instance custom data of its blocks for the material; alpha 0 = no colour written (the material keeps its own). */
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Ore Type")
 	FLinearColor Color = FLinearColor::White;
 };

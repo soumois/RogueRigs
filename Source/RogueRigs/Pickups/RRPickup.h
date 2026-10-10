@@ -101,6 +101,9 @@ public:
 	/** Sets the ore value of an Ore pickup (clamped at 0). Call before collection, ideally before BeginPlay (deferred spawn); the grid passes the ore type ChunkValue. */
 	void SetOreValue(int32 InOreValue) { OreValue = FMath::Max(InOreValue, 0); }
 
+	/** Sets the health a Heal pickup restores (clamped at 0). Call before collection, ideally before BeginPlay (deferred spawn); the grid passes the ore type HealValue. */
+	void SetHealAmount(float InHealAmount) { HealAmount = FMath::Max(InHealAmount, 0.f); }
+
 	/** Forces the ejection direction (world yaw in degrees) instead of a random one. Call before BeginPlay (deferred spawn); ARREnemy spreads its cubes evenly. */
 	void SetPopYaw(float InYawDegrees) { PopYawDegrees = InYawDegrees; bHasPopYaw = true; }
 
@@ -158,11 +161,11 @@ protected:
 
 	/**
 	 * Health a Heal pickup restores on collection, through HealEffectClass (SetByCaller Data.Heal, clamped to MaxHealth).
-	 * heal-ore (owner 2026-10-06, task-035-01): 60 / 9 HP per pickup, so a 3 x 3 vein (9 pickups) restores 60 HP.
-	 * Only read by Heal pickups; BP_PickupHeal keeps this default.
+	 * The grid sets it from OreTypes.csv HealValue (row Heal: 15 per pickup, a 2 x 2 vein restores 60; heal-ore, owner
+	 * 2026-10-10). 0 by default: a heal pickup spawned outside the grid heals nothing. Only read by Heal pickups.
 	 */
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Pickup|Heal", meta = (ClampMin = 0))
-	float HealAmount = 60.f / 9.f;
+	float HealAmount = 0.f;
 
 	/** Instant effect applied to the miner by a Heal pickup (URRGE_Heal by default). */
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Pickup|Heal")

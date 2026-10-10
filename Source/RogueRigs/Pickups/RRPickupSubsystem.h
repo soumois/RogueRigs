@@ -31,6 +31,10 @@ struct FRRPickupSpawnRequest
 	/** Ore value given to an Ore pickup (ARRPickup::SetOreValue); ignored by other types. */
 	UPROPERTY()
 	int32 OreValue = 1;
+
+	/** Health given by a Heal pickup (ARRPickup::SetHealAmount) when above 0; 0 keeps the pickup default. */
+	UPROPERTY()
+	float HealAmount = 0.f;
 };
 
 /**
@@ -61,10 +65,10 @@ public:
 	int32 GetMagnetizedCount() const;
 
 	/**
-	 * Spawns a pickup of PickupClass at Location (owner Owner, ore value OreValue) now when the frame budget allows, else
+	 * Spawns a pickup of PickupClass at Location (owner Owner, ore value OreValue, heal amount HealAmount when above 0) now when the frame budget allows, else
 	 * queues it for the next frames (FIFO). Returns the pickup when spawned now, nullptr when queued or on failure.
 	 */
-	ARRPickup* RequestSpawn(TSubclassOf<ARRPickup> PickupClass, const FVector& Location, AActor* Owner, int32 OreValue);
+	ARRPickup* RequestSpawn(TSubclassOf<ARRPickup> PickupClass, const FVector& Location, AActor* Owner, int32 OreValue, float HealAmount = 0.f);
 
 	/** Number of spawn requests still waiting in the queue (tests, stress). */
 	int32 GetQueuedSpawnCount() const { return SpawnQueue.Num(); }
