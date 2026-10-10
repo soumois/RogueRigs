@@ -9,7 +9,7 @@
 | 3 | Building an Agent Crew | [A3-agent-crew](assignments/A3-agent-crew/) | Submitted (tag [`a3-submission`](https://github.com/soumois/RogueRigs/tree/a3-submission)) |
 | 4 | Dynamic Content Pipeline | [A4-dynamic-content-pipeline](assignments/A4-dynamic-content-pipeline/) | In progress |
 
-All assignments: [assignments/](assignments/). The rest of this page is the Assignment 3 README.
+All assignments: [assignments/](assignments/). Everything after the vault section below is the Assignment 3 README.
 
 ## Project vault
 
