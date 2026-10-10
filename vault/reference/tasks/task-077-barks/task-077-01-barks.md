@@ -3,7 +3,7 @@ id: task-077-01-barks
 description: "A4 Rook and Vesna barks: text agent writes, validator checks, critic reviews, corrections applied (2 loops at most)."
 parent: task-077-barks
 kind: task
-status: todo
+status: in-progress
 ---
 # A4 Rook and Vesna barks
 

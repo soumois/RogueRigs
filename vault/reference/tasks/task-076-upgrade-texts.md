@@ -3,7 +3,7 @@ id: task-076-upgrade-texts
 description: "Global task: A4 upgrade card texts: text agent writes, validator checks, critic reviews, corrections applied (2 loops at most)."
 parent: tasks-to-do-index
 kind: task
-status: todo
+status: in-progress
 ---
 # A4 upgrade card texts
 

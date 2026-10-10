@@ -3,7 +3,7 @@ id: task-078-alert-texts
 description: "Global task: A4 Kessler-Voss alerts: text agent writes, validator checks, critic reviews, corrections applied (2 loops at most)."
 parent: tasks-to-do-index
 kind: task
-status: todo
+status: in-progress
 ---
 # A4 Kessler-Voss alerts
 
