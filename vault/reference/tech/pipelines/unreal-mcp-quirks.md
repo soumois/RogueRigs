@@ -12,6 +12,9 @@ kind: doc
 - Rewriting a graph with the DSL does not clear its old nodes: delete strays with `delete_node`, check with `read_graph_dsl`.
 - An `AddEvent` can only bind to an event that already exists before the write; a custom event defined in the same write gets a suffixed name.
 - Removing and re-adding a function graph may return the old name (`UpdateLocator_0`).
+- `write_graph_dsl` does not unescape `
+` in string literals: a pin default written as "
+" holds two characters (backslash, n); set a real newline with `set_pin_value` (task-084-01). `set_pin_value` alone does not dirty the asset: also touch a widget property before `save_assets`, then check the file changed.
 - Function ids that work: `Math|Trig|Sin(Degrees)`, `Widget|SetText(Text)`, `Class|Image|SetColorandOpacity`, `Class|Text|SetColorandOpacity`.
 
 ## Widgets and materials
