@@ -3,7 +3,7 @@ id: task-076-01-upgrade-texts
 description: "A4 upgrade card texts: text agent writes, validator checks, critic reviews, corrections applied (2 loops at most)."
 parent: task-076-upgrade-texts
 kind: task
-status: in-progress
+status: done
 ---
 # A4 upgrade card texts
 
@@ -19,7 +19,7 @@ status: in-progress
 - tokens: open
 - runs: open
 - milestone: M2
-- result: open
+- result: 13 flavor lines, validator exit 0, run 20261010-103239-upgrade_texts
 
 ## Relations
 - [[task-076-upgrade-texts]] — parent global task.

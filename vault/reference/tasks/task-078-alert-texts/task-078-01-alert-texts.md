@@ -3,7 +3,7 @@ id: task-078-01-alert-texts
 description: "A4 Kessler-Voss alerts: text agent writes, validator checks, critic reviews, corrections applied (2 loops at most)."
 parent: task-078-alert-texts
 kind: task
-status: in-progress
+status: done
 ---
 # A4 Kessler-Voss alerts
 
@@ -19,7 +19,7 @@ status: in-progress
 - tokens: open
 - runs: open
 - milestone: M2
-- result: open
+- result: 15 alert lines, validator exit 0, run 20261010-103242-alerts
 
 ## Relations
 - [[task-078-alert-texts]] — parent global task.

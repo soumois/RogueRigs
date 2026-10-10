@@ -3,7 +3,7 @@ id: task-077-01-barks
 description: "A4 Rook and Vesna barks: text agent writes, validator checks, critic reviews, corrections applied (2 loops at most)."
 parent: task-077-barks
 kind: task
-status: in-progress
+status: done
 ---
 # A4 Rook and Vesna barks
 
@@ -19,7 +19,7 @@ status: in-progress
 - tokens: open
 - runs: open
 - milestone: M2
-- result: open
+- result: 34 barks on 14 triggers, validator exit 0, run 20261010-103303-barks
 
 ## Relations
 - [[task-077-barks]] — parent global task.
