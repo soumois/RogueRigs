@@ -129,6 +129,8 @@ orchestrator-lessons  reference/agents/orchestrator-lessons.md
 orchestrator-runbook  reference/agents/orchestrator-runbook.md
 ore-blocks  reference/gdd/terrain/ore-blocks.md
 ore-economy  reference/gdd/run/ore-economy.md
+ore-in-rock-plan  reference/production/ore-in-rock-plan.md
+ore-in-rock-proposal  reference/production/ore-in-rock-proposal.md
 perf-leads  reference/tech/performance/perf-leads.md
 perf-risks  reference/tech/performance/perf-risks.md
 perf-trace-m1  reference/tech/performance/perf-trace-m1.md
