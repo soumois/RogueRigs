@@ -36,6 +36,9 @@ Before the runs, [[fictional-films]] grows from 6 to about 50 parody titles of b
 ## Voice judgment (confirmed)
 A first run without lore retrieval, compared with the run that reads the vault: the concrete retrieval tweak the rubric asks for.
 
+## README
+`assignments/A4-dynamic-content-pipeline/README.md` keeps the vault map markers (`<!-- vault-map:start -->` / `<!-- vault-map:end -->`, filled by `node vault/scripts/vault-map.js`) and the two vault captures in its knowledge base section (owner 2026-10-10).
+
 ## Built
 Lore nodes, agent specs and definitions, README skeleton.
 

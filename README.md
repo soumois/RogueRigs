@@ -13,12 +13,12 @@ All assignments: [assignments/](assignments/).
 
 ## Project vault
 
-[`vault/`](vault/) is the single source of truth of the project: the game design, technical docs, agent specs and every task the crew has run (466 nodes). Start at [`vault/root.md`](vault/root.md).
+[`vault/`](vault/) is the single source of truth of the project: the game design, technical docs, agent specs and every task the crew has run (459 nodes). Start at [`vault/root.md`](vault/root.md).
 
 <!-- vault-map:start -->
 ```mermaid
 flowchart LR
-  root(("root · 466 nodes"))
+  root(("root · 459 nodes"))
   root --> tasks_index["tasks · 271"]
   tasks_index --> tasks_done_index["tasks-done · 246"]
   tasks_index --> tasks_to_do_index["tasks-to-do · 24"]
@@ -36,10 +36,9 @@ flowchart LR
   gdd_index --> enemies_index["enemies · 6"]
   gdd_index --> lore["lore · 4"]
   gdd_index --> player_index["player · 4"]
-  root --> course_index["course · 18"]
-  course_index --> assignments_index["assignments · 8"]
-  course_index --> lessons_index["lessons · 7"]
   root --> agents_index["agents · 12"]
+  root --> course_index["course · 11"]
+  course_index --> assignments_index["assignments · 8"]
   root --> production_index["production · 9"]
 ```
 <!-- vault-map:end -->
@@ -53,7 +52,7 @@ The map above is generated from each node's `parent` field: `node vault/scripts/
 | [`agents`](vault/reference/agents/) | 12 | the dev crew: one spec per agent, the orchestration protocol |
 | [`tasks`](vault/reference/tasks/) | 271 | open tasks in [`tasks-to-do-index`](vault/reference/tasks/tasks-to-do-index.md), finished ones archived in [`tasks-done-index`](vault/reference/tasks/tasks-done-index.md) |
 | [`production`](vault/reference/production/) | 9 | milestones, scope, wishlist, cost log, handovers |
-| [`course`](vault/reference/course/) | 18 | course frame, lesson summaries, assignments with briefs, rubrics, deadlines and plans |
+| [`course`](vault/reference/course/) | 11 | course frame, assignments with briefs, rubrics, deadlines and plans |
 
 Reading and writing rules: [`_navigation.md`](vault/_navigation.md) (descend from the root, never search) and [`_authoring.md`](vault/_authoring.md) (frontmatter, one concept per node, lint). The visual references and their prompts are in [`vault/assets/`](vault/assets/) and [`art-prompts`](vault/reference/gdd/art-audio/art-prompts.md).
 
