@@ -130,6 +130,7 @@ kind: note
 | [[task-066-01-async-flow-field]] | opus | 1 | 0k | 273k | 3725k | 49k |
 | [[task-066-02-perf-check]] | opus | 1 | 0k | 98k | 964k | 14k |
 | [[task-067-01-real-game-stress]] | opus | 1 | 0k | 183k | 5745k | 52k |
+| [[task-068-01-shipping-insights]] | opus | 2 | 0k | 146k | 5846k | 48k |
 
 ## Totals
 | Scope | Input | Cache write | Cache read | Output |

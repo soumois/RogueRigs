@@ -3,7 +3,7 @@ id: task-068-01-shipping-insights
 description: "Measurement in a packaged build with an Unreal Insights capture of the isolated frame spikes."
 parent: task-068-shipping-insights
 kind: task
-status: in-progress
+status: done
 ---
 # Packaged build and Insights
 
@@ -15,11 +15,11 @@ status: in-progress
 - done_when: spikes explained or listed with their trace evidence; results written in stress-grid-cells; lint clean.
 - editor_state: closed
 - token_ceiling: 70000
-- model: open
-- tokens: open
-- runs: open
+- model: opus
+- tokens: input 130, cache write 145884, cache read 5846395, output 48119
+- runs: 2
 - milestone: M2
-- result: open
+- result: Development packaged build (Test not available on the launcher engine). Packaged saves 2.0-3.5 ms of game thread; game 250 p99 22.3 ms packaged vs 30.1 editor. S0 21 ms spike: D3D12 submit stall (GPU/driver), dig 57.9 ms not reproduced; untagged real-game spikes: XP bursts (mass deaths drop cubes in one frame, 0.37 ms per robot) and wave spawns (0.74 ms per robot); packaged GC never spikes. Top cost: CharacterMovement 4.9 ms of 12.5 ms at 250 robots. Details in perf-trace-real-game.
 
 ## Relations
 - [[task-068-shipping-insights]] — parent global task.
