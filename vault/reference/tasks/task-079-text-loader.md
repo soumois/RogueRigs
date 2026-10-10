@@ -3,7 +3,7 @@ id: task-079-text-loader
 description: "Global task: A4 loader: the text files are loaded in game and feed FRRUpgradeCard.DescriptionText and the existing alert events."
 parent: tasks-to-do-index
 kind: task
-status: todo
+status: in-progress
 ---
 # A4 text loader
 

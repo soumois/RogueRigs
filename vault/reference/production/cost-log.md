@@ -137,6 +137,7 @@ kind: note
 | [[task-074-01-text-validator]] | opus | 1 | 0k | 53k | 473k | 27k |
 | [[task-075-01-baseline-run]] | sonnet | 1 | 0k | 21k | 46k | 4k |
 | [[task-078-02-alert-texts]] | opus | 2 | 0k | 33k | 74k | 5k |
+| [[task-076-02-upgrade-texts]] | opus | 3 | 0k | 68k | 150k | 9k |
 
 ## Totals
 | Scope | Input | Cache write | Cache read | Output |

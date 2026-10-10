@@ -1,9 +1,9 @@
 ---
 id: task-076-upgrade-texts
 description: "Global task: A4 upgrade card texts: text agent writes, validator checks, critic reviews, corrections applied (2 loops at most)."
-parent: tasks-to-do-index
+parent: tasks-done-index
 kind: task
-status: in-progress
+status: done
 ---
 # A4 upgrade card texts
 
@@ -13,14 +13,14 @@ status: in-progress
 - gdd_check: done by the Orchestrator when the task is planned (2026-10-10).
 - confirmed_by_owner: yes (2026-10-10)
 - milestone: M2
-- next_step: task-076-01-upgrade-texts
-- result: open
+- next_step: none
+- result: Done. Upgrade texts: 13 lines; critic round 0: 12 pass 1 fail (L3, magazine size), corrected; round 1: 13 pass. Run 20261010-103239-upgrade_texts.
 
 ## Subtasks
 1. task-076-01-upgrade-texts — text
 2. task-076-02-upgrade-texts — style-guide
 
 ## Relations
-- [[tasks-to-do-index]] — parent index.
+- [[tasks-done-index]] — parent index.
 - [[task-076-01-upgrade-texts]] — step 1, text.
 - [[task-076-02-upgrade-texts]] — step 2, style-guide.

@@ -3,7 +3,7 @@ id: task-076-02-upgrade-texts
 description: "Critic review of upgrade_texts.json: verdict, rule id, reason and correction per item."
 parent: task-076-upgrade-texts
 kind: task
-status: todo
+status: done
 ---
 # Critic review (upgrade-texts)
 
@@ -15,11 +15,11 @@ status: todo
 - done_when: every item has a verdict; every fail cites an existing rule id; review file kept in logs.
 - editor_state: any
 - token_ceiling: 20000
-- model: open
-- tokens: open
-- runs: open
+- model: opus
+- tokens: input 20, cache write 68352, cache read 149956, output 8851
+- runs: 3
 - milestone: M2
-- result: open
+- result: Upgrade texts: 13 lines; critic round 0: 12 pass 1 fail (L3, magazine size), corrected; round 1: 13 pass. Run 20261010-103239-upgrade_texts.
 
 ## Relations
 - [[task-076-upgrade-texts]] — parent global task.
