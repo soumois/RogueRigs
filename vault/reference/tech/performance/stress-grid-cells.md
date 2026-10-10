@@ -1,6 +1,6 @@
 ---
 id: stress-grid-cells
-description: "Cell size stress (task-023-01): 200 vs 100 vs 67 uu cells, explosions, dig, flow field, memory, fixes, verdict; real-game stress and robot-count limits (task-067-01)."
+description: "Cell size stress (200, 100, 67 uu): explosions, dig, flow field, memory, verdict; real-game limits (task-067-01); packaged vs editor, spike causes (task-068-01)."
 parent: performance-index
 kind: doc
 ---
@@ -125,6 +125,22 @@ Spike lines (frame, game, draw, GPU ms): GC at t 46 s, 150: 48.1 / 46.8 / 10.3 /
 - Hordes: drawn 41–60, but a runner heading toward the horde side brings planned cells inside the spawn margin and the spawner skips them (24–27 spawned in 2 of 5 runs).
 - The harness fill (a director wave every 0.5 s while under the cap) spawns more often than the director; real games see the same per-wave spike every 5.5–7 s.
 
+## Packaged build and spike causes (task-068-01, 2026-10-10)
+Staged Development build ([[build-toolchain]]; Test cannot be built with the launcher engine: "Targets cannot be built in the Test configuration with this engine distribution"), HEAD 0525a68, same commands as task-066-02 (S0 100+400, dig 400) and task-067-01 (game 250, `rr.Pacing.RunLookahead 0`), one launch each, all runs within 11 min. Owner's normal profile, nothing closed. ms avg / p99 / max (game avg); game spikes = frames > 25 ms (wave / GC / untagged).
+
+| Run | Packaged | Editor `-game` | Packaged, traced |
+|---|---|---|---|
+| S0 100 | 8.45 / 9.70 / 14.9 (3.16) | 8.93 / 11.07 / 18.1 (5.15) | 9.01 / 10.73 / 22.4 (3.93) |
+| S0 400 | 9.18 / 10.48 / 13.1 (6.06) | 10.34 / 12.94 / 15.3 (9.10) | 10.05 / 11.72 / 13.5 (7.37) |
+| Dig 400 | 9.77 / 11.28 / 12.7 (6.12) | 9.87 / 12.00 / 17.9 (8.84) | 10.07 / 11.49 / 12.4 (7.28) |
+| Game 250 | 11.27 / 22.31 / 44.3 (10.42); 20 spikes (8 / 0 / 12) | 14.05 / 30.14 / 84.2 (13.96); 93 (64 / 1 / 28) | 12.46 / 23.33 / 34.9 (12.11); 32 (28 / 0 / 4) |
+
+- Packaged vs editor: game thread −2.0 ms (S0 100) to −3.5 ms (game 250); frames render bound in S0 and dig (draw ≈ frame), so frame gains are 0.1–1.2 ms there; game 250 p99 30.1 → 22.3 ms, under the 25 ms budget.
+- S0 100 21 ms frame (task-066-02): reproduced in the trace (22.4 ms, game work 3.4 ms). The game thread waits 18 ms in `Sync_RenderingThread`; the render thread waits 14.5 ms on the RHI occlusion fence; `FD3D12Queue::ExecuteCommandLists` blocks 17.7 ms and the GPU frame stretches to 22 ms (TSR 14 ms vs 2.3). Cause: GPU/driver submission stall outside the game; no GC, PSO, shader or loading event.
+- Dig 400 57.9 ms frame (task-066-02): not reproduced in 3 runs (max 12.4–17.9 ms); its game time was ≤ 15.8 ms, same signature as the S0 stall.
+- Game 250 spikes, untagged ones explained ([[perf-trace-real-game]]): robot waves (0.74 ms per robot spawned) and XP bursts (robots killed together drop all their cubes on one frame, 195 cubes and 67 destroys = 34.9 ms). Packaged GC: 5.3 ms then 2.1 ms purge on 20 frames, never a spike; the 47–60 ms GC frames of task-067-01 are editor-only.
+- Untraced runs also show 5–8 consecutive render-bound frames (draw 22–32 ms, GPU normal) early in the game measure; the trace shows render-thread frames up to 18 ms from RHI fence waits and ray-tracing instance gathering (3.5 ms), cause not isolated.
+
 ## Verdict
 - 200 uu: holds; the navigation fix would also help it (one destruction 0.25 ms here, 0.04–0.07 ms measured with the fix at the smaller sizes).
 - 100 uu: steady state and dig hold. Explosion chains break (52 ms frames) and are fixed by turning off navigation relevance on the grid components (≈ 1 h with test), back to the 200 uu level. Recommended.
@@ -142,3 +158,5 @@ Spike lines (frame, game, draw, GPU ms): GC at t 46 s, 150: 48.1 / 46.8 / 10.3 /
 - [[task-063-01-perf-session]] — the task that produced the 2026-10-09 perf session section.
 - [[task-066-02-perf-check]] — the task that produced the worker-thread flow field section.
 - [[task-067-01-real-game-stress]] — the task that produced the real-game stress and limits section.
+- [[task-068-01-shipping-insights]] — the task that produced the packaged build and spike causes section.
+- [[perf-trace-real-game]] — the packaged real-game trace behind the spike causes.

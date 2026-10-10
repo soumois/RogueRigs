@@ -16,3 +16,4 @@ kind: note
 - [[stress-opt-m1]] — after task-018: S0, S2, S7 vs stress-final-m1, new ceilings, staged Development build ceilings.
 - [[stress-damage-numbers]] — Niagara damage numbers: screenshot findings, asset defects for the bp agent, S2 100/400 with numbers on vs off.
 - [[stress-grid-cells]] — 200 vs 100 vs 67 uu cells: frame times, explosions, dig, flow field, memory, fixes, verdict; real-game stress and robot-count limits (task-067-01).
+- [[perf-trace-real-game]] — packaged real-game trace at 250 robots: game-thread cost ranking, wave spawn and XP burst costs, GC, spike causes.
