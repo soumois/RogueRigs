@@ -11,6 +11,23 @@
 
 All assignments: [assignments/](assignments/). The rest of this page is the Assignment 3 README.
 
+## Project vault
+
+[`vault/`](vault/) is the single source of truth of the project: the game design, technical docs, agent specs and every task the crew has run (415 nodes). Start at [`vault/root.md`](vault/root.md).
+
+| Branch | Nodes | Holds |
+|---|---|---|
+| [`gdd`](vault/reference/gdd/) | 51 | what the game is: pillars, lore, characters, weapons, enemies, terrain, art, audio, dialogue tone |
+| [`tech`](vault/reference/tech/) | 98 | how it is built: conventions, C++ systems, Blueprint docs, pipelines |
+| [`agents`](vault/reference/agents/) | 12 | the dev crew: one spec per agent, the orchestration protocol |
+| [`tasks`](vault/reference/tasks/) | 243 | every request and subtask, with status and results |
+| [`production`](vault/reference/production/) | 9 | milestones, scope, wishlist, cost log, handovers |
+| [`course`](vault/reference/course/) | 1 | course material index |
+
+Reading and writing rules: [`_navigation.md`](vault/_navigation.md) (descend from the root, never search) and [`_authoring.md`](vault/_authoring.md) (frontmatter, one concept per node, lint). The visual references and their prompts are in [`vault/assets/`](vault/assets/) and [`art-prompts`](vault/reference/gdd/art-audio/art-prompts.md).
+
+**Browse it in Obsidian:** open the `vault/` folder as a vault. The **Parent Graph** plugin ships with it (`vault/.obsidian/plugins/parent-graph`): enable community plugins, then click the fork icon in the ribbon to see the tree drawn from each node's `parent` field.
+
 
 **Game:** *Rogue Rigs*, a top-down roguelite auto-shooter built in Unreal Engine 5.8 (C++ first). An independent miner steals ore from a corporate asteroid claim guarded by security robots; the destructible rock arena is the player's best weapon. Capstone project of the ELVTR course *Multi-Agent AI for Game Development* (instructor: Joshua Burdick).
 
@@ -142,7 +159,7 @@ How-to and pitfalls for whoever takes over the Orchestrator role are in `vault/r
 
 ## Shared memory: the vault
 
-`vault/` holds the game design (split into one-concept nodes), technical docs, agent specs and tasks. Agents read it by descending from `vault/root.md` through indexes, never by searching, so each one loads only what its subtask needs. `vault/scripts/lint.js` enforces structure (links, parents, statuses). It runs as a git pre-commit hook once `git config core.hooksPath vault/scripts/hooks` is set; otherwise every vault edit is followed by `node vault/scripts/lint.js --write`.
+`vault/` holds the game design (split into one-concept nodes), technical docs, agent specs and tasks; branch overview in [Project vault](#project-vault) above. Agents read it by descending from `vault/root.md` through indexes, never by searching, so each one loads only what its subtask needs. `vault/scripts/lint.js` enforces structure (links, parents, statuses). It runs as a git pre-commit hook once `git config core.hooksPath vault/scripts/hooks` is set; otherwise every vault edit is followed by `node vault/scripts/lint.js --write`.
 
 ## Guardrails that do not rely on the prompt
 
