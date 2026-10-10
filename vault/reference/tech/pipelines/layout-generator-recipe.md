@@ -21,10 +21,11 @@ Reference implementation (Node, seeded LCG, deterministic): `Tools/layout_gen/ar
 
 ## Fine-grid conversion (240 × 240, 67 uu)
 `Tools/layout_gen/arena_fine.js` turns `arena_m1` into `arena_m1_fine` ([[task-029-03-layout-67]]), deterministic (position hash, seed 6701, no RNG state).
-1. Each old cell becomes 3 × 3 cells of the same type. Spawn and barrel keep only the centre cell (rest floor); ore and heal ore stay whole 3 × 3 clusters.
+1. Each old cell becomes 3 × 3 cells of the same type. Spawn and barrel keep only the centre cell (rest floor); ore and heal ore stay whole 3 × 3 clusters (heal veins are then shrunk to 2 × 2, step 4).
 2. Roughening with 2-octave value noise (scales 6 and 2.5 cells): two erosion passes rock to floor (thresholds 0.42, 0.40), one dilation pass floor to rock (depth 1, threshold 0.60), two erosion passes rock to void on the cliff edge (0.45). An erosion needs 2 rock cells behind the face, so no wall under 3 cells is breached and hidden pockets stay closed. Ore, heal ore, barrel, spawn and the 17 × 17 spawn zone never change.
 3. Passage rule (3 cells, confirmed by the owner after handover-2026-10-06): eroded cells that leave a floor cell outside every all-open 3 × 3 window are reverted; each dilation is kept only if no open cell within 2 cells ends up uncovered.
 Result: 8 floor components as before, reachable floor 85.5 %, minimum passage 3.
+4. **Heal vein shrink (owner decision 2026-10-10, [[task-088-01-heal-veins-2x2]]).** `arena_fine.js` still emits 3 × 3 heal clusters; a deterministic post-step (no RNG, no seed) turns each one into a 2 × 2 vein. Each connected heal cluster (12, 9 cells each) keeps the 2 × 2 block at its minimum x and minimum y (top-left corner of the former 3 × 3, same footprint corner for all veins); the 5 freed cells (row and column at max x or max y) become `rock` (every vein was embedded in rock, so no passage changes). Counts before/after: rock 17904 to 17964 (+60), heal_ore 108 to 48; void, barrel (16), spawn unchanged; reachable floor 85.5 %, minimum passage 3. Brief bound `heal_ore` is [48, 48]. Barrels are never touched; console marks are placed at runtime, not in the layout.
 
 ## For the C++ port
 - Replace the LCG with `FRandomStream`; keep every parameter as data.
@@ -35,3 +36,4 @@ Result: 8 floor components as before, reachable floor 85.5 %, minimum passage 3.
 - [[level-layout-schema]] — output format and validator.
 - [[sys-grid]] — the grid that will run the C++ port.
 - [[task-029-03-layout-67]] — the fine-grid conversion task.
+- [[task-088-01-heal-veins-2x2]] — heal veins shrunk to 2 × 2.

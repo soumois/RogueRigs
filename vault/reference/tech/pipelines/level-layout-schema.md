@@ -27,7 +27,7 @@ kind: doc
 - `node Tools/validate_layout.js <layout.json> [--brief <brief.json>]`; exit 0 = valid.
 - Checks: header, bounds, known types, no duplicates, one spawn, a 5 × 5 area around the spawn with no block and no void, brief bounds.
 - Passage width: for each open cell (floor, spawn or barrel; a barrel is one destructible cell, not a wall) the largest k ≤ 4 such that it lies in an all-open k × k window; the smallest value is always printed, and a brief with `min_passage_width` fails when any open cell is below it. Cells are 67 uu on the fine grid, so the rule is 3 cells (200 uu; confirmed by the owner after handover-2026-10-06).
-- Size: width and height in [8, 256]. Layouts: `arena_m1` (80 × 80, kept for tests) and `arena_m1_fine` (240 × 240, 67 uu cells; brief `arena_m1_fine.brief.json`; heal ore counts are in cells, 9 per former cell).
+- Size: width and height in [8, 256]. Layouts: `arena_m1` (80 × 80, kept for tests) and `arena_m1_fine` (240 × 240, 67 uu cells; brief `arena_m1_fine.brief.json`; heal ore counts are in cells: 12 veins of 2 × 2 = 48 cells, brief bound [48, 48]).
 - Reachable floor: share of floor cells (non-void, non-block) 4-connected to the spawn; always printed, fails only below `reachable_floor_min`.
 - Prints an ASCII preview: `#` rock, `o` ore, `+` heal ore, `*` special ore, `B` barrel, `S` spawn, `.` floor, space void.
 - A layout that fails never reaches the engine; the error goes back to the Level-Design agent.
