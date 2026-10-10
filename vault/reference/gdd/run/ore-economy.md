@@ -7,7 +7,7 @@ status: approved
 ---
 # Ore economy
 
-- Ore drops from ore blocks, whatever destroyed them ([[ore-blocks]]), and from bonus chests ([[objective-bonus-chest]]). Ore pickups use the `PickupRadius` stat.
+- Ore drops from ore blocks, whatever destroyed them ([[ore-blocks]]), and from bonus chests ([[objective-bonus-chest]]). Ore pickups use the `PickupRadius` stat. Each ore chunk is worth 1 (owner 2026-10-10, provisional).
 - Ore carried during a level is secured only by a successful extraction. Missing the shuttle loses what the miner carries. This gives the risk window its stake.
 - Ore feeds meta-progression between runs: deferred (the meta shop is cut from the capstone).
 - Losing a share of secured ore when a run fails: open (balance parameter).

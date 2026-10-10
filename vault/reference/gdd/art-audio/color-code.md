@@ -10,7 +10,7 @@ status: approved
 | Element | Color |
 |---|---|
 | Breakable rock | light grey tinted violet, visible cracks |
-| Ore rock | same base + glowing violet crystals |
+| Ore rock (gold) | same base + glowing amber-gold crystals, darker and warmer than the chaser yellow and the white-gold shots (owner 2026-10-10) |
 | Barrel | orange |
 | Heal ore and heal pickups | red |
 | XP and resource pickups | glowing cyan |

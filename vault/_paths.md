@@ -434,6 +434,7 @@ task-068-shipping-insights  reference/tasks/task-068-shipping-insights.md
 task-069-01-min-spec  reference/tasks/task-069-min-spec/task-069-01-min-spec.md
 task-069-min-spec  reference/tasks/task-069-min-spec.md
 task-070-01-ore-in-rock  reference/tasks/task-070-ore-in-rock/task-070-01-ore-in-rock.md
+task-070-02-ore-in-rock  reference/tasks/task-070-ore-in-rock/task-070-02-ore-in-rock.md
 task-070-ore-in-rock  reference/tasks/task-070-ore-in-rock.md
 task-071-01-robot-light-movement  reference/tasks/task-071-robot-light-movement/task-071-01-robot-light-movement.md
 task-071-robot-light-movement  reference/tasks/task-071-robot-light-movement.md
@@ -475,6 +476,11 @@ task-086-01-a4-readme-update  reference/tasks/task-086-a4-readme-update/task-086
 task-086-a4-readme-update  reference/tasks/task-086-a4-readme-update.md
 task-087-01-card-desc-test  reference/tasks/task-087-card-desc-test/task-087-01-card-desc-test.md
 task-087-card-desc-test  reference/tasks/task-087-card-desc-test.md
+task-088-01-heal-veins-2x2  reference/tasks/task-088-heal-veins-2x2/task-088-01-heal-veins-2x2.md
+task-088-02-heal-veins-2x2  reference/tasks/task-088-heal-veins-2x2/task-088-02-heal-veins-2x2.md
+task-088-heal-veins-2x2  reference/tasks/task-088-heal-veins-2x2.md
+task-089-01-heal-not-at-full  reference/tasks/task-089-heal-not-at-full/task-089-01-heal-not-at-full.md
+task-089-heal-not-at-full  reference/tasks/task-089-heal-not-at-full.md
 tasks-done-index  reference/tasks/tasks-done-index.md
 tasks-index  reference/tasks/tasks-index.md
 tasks-to-do-index  reference/tasks/tasks-to-do-index.md

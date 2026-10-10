@@ -8,6 +8,9 @@ kind: note
 
 Every value below is `proposal`; nothing is built. The owner answers "ok" or amends by number. Code, performance, subtasks and open values: [[ore-in-rock-plan]].
 
+## Superseded by the owner (2026-10-10)
+This proposal was amended: 8 % of the rock blocks are gold, in groups of 2 × 2 never isolated, mined as one deposit (4 chunks, 1.5 s), amber-gold look, 1 per chunk, a per-ore table with only gold for now, heal veins also 2 × 2, no start-zone protection. Decided values live in [[ore-blocks]], [[heal-ore]] and [[color-code]]; items 1, 3, 5, 6 and 7 below no longer apply as written.
+
 ## Reference and current state
 - DRGS: nuggets sit in the rock mass; each broken slab pops its nugget, about 3 chunks per second while digging; each arcs, lands, is pulled in 0.5–1 s later ([[drgs-video-2026-10-06]]). The video note gives no nugget size or colour beyond "gold", nor a scatter distance.
 - Rogue Rigs: one chunk per broken Ore block, Ore blocks in 3 × 3 veins mined whole in 1.5 s ([[ore-blocks]]); rock 0.5 s per block; drone arc up to 8 blocks within 2.5 cells ([[sys-drone]]).
