@@ -1,7 +1,7 @@
 ---
 id: task-060-deep-mining
 description: "Global task: Drone arc reaches 2.5 cells and cuts up to 8 blocks at once, about two rows deep."
-parent: tasks-index
+parent: tasks-done-index
 kind: task
 status: done
 ---
@@ -20,5 +20,5 @@ status: done
 1. task-060-01-deep-mining — cpp
 
 ## Relations
-- [[tasks-index]] — parent index.
+- [[tasks-done-index]] — parent index.
 - [[task-060-01-deep-mining]] — step 1, cpp.

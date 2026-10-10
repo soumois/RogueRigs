@@ -1,7 +1,7 @@
 ---
 id: task-047-heavy-speed
 description: "Global task: Heavy robot speed 180 → 153 uu/s; the other robots stay at 180."
-parent: tasks-index
+parent: tasks-done-index
 kind: task
 status: done
 ---
@@ -20,5 +20,5 @@ status: done
 1. task-047-01-heavy-speed — cpp
 
 ## Relations
-- [[tasks-index]] — parent index.
+- [[tasks-done-index]] — parent index.
 - [[task-047-01-heavy-speed]] — step 1, cpp.

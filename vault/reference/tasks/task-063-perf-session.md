@@ -1,7 +1,7 @@
 ---
 id: task-063-perf-session
 description: "Global task: Performance session on a quiet PC: -game stress at 67 uu and the flow-field budget tests, compared with the last results."
-parent: tasks-index
+parent: tasks-done-index
 kind: task
 status: done
 ---
@@ -20,5 +20,5 @@ status: done
 1. task-063-01-perf-session — cpp
 
 ## Relations
-- [[tasks-index]] — parent index.
+- [[tasks-done-index]] — parent index.
 - [[task-063-01-perf-session]] — step 1, cpp.

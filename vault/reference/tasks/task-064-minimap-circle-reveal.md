@@ -1,7 +1,7 @@
 ---
 id: task-064-minimap-circle-reveal
 description: "Global task: Minimap reveal is a circle of 18 cells around the miner, the same in every direction."
-parent: tasks-index
+parent: tasks-done-index
 kind: task
 status: done
 ---
@@ -20,5 +20,5 @@ status: done
 1. task-064-01-minimap-circle-reveal — cpp
 
 ## Relations
-- [[tasks-index]] — parent index.
+- [[tasks-done-index]] — parent index.
 - [[task-064-01-minimap-circle-reveal]] — step 1, cpp.

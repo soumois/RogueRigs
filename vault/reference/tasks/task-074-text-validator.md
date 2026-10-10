@@ -1,7 +1,7 @@
 ---
 id: task-074-text-validator
 description: "Global task: A4 validator: Tools/content/validate_text.js checks schema, word counts, numbers and log excerpts, with a test on an invalid file."
-parent: tasks-index
+parent: tasks-done-index
 kind: task
 status: done
 ---
@@ -20,5 +20,5 @@ status: done
 1. task-074-01-text-validator — cpp
 
 ## Relations
-- [[tasks-index]] — parent index.
+- [[tasks-done-index]] — parent index.
 - [[task-074-01-text-validator]] — step 1, cpp.

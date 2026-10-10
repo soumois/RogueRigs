@@ -1,7 +1,7 @@
 ---
 id: task-045-easier-first-level
 description: "Global task: about 15 % fewer robots (lone 2.35 s, waves 7.1 → 4.1 s, hordes 34–51) and rarer heavies."
-parent: tasks-index
+parent: tasks-done-index
 kind: task
 status: done
 ---
@@ -21,6 +21,6 @@ status: done
 2. task-045-02-bp-heavy-cap — bp: heavy alive cap 3 on BP_EnemySpawner
 
 ## Relations
-- [[tasks-index]] — parent index.
+- [[tasks-done-index]] — parent index.
 - [[task-045-01-easier-first-level]] — step 1, cpp.
 - [[task-045-02-bp-heavy-cap]] — step 2, bp.

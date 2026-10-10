@@ -1,7 +1,7 @@
 ---
 id: task-066-async-flow-field
 description: "Global task: flow field rebuilt on a worker thread with a double buffer; robots follow a new path within 1–2 frames under load."
-parent: tasks-index
+parent: tasks-done-index
 kind: task
 status: done
 ---
@@ -21,6 +21,6 @@ status: done
 2. task-066-02-perf-check — cpp
 
 ## Relations
-- [[tasks-index]] — parent index.
+- [[tasks-done-index]] — parent index.
 - [[task-066-01-async-flow-field]] — step 1, cpp.
 - [[task-066-02-perf-check]] — step 2, cpp.

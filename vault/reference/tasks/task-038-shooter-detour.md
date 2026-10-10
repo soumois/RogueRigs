@@ -1,7 +1,7 @@
 ---
 id: task-038-shooter-detour
 description: "Global task: Shooter without line of sight walks around rock like the other robots until it can fire, never moving away from the miner."
-parent: tasks-index
+parent: tasks-done-index
 kind: task
 status: done
 ---
@@ -20,5 +20,5 @@ status: done
 1. task-038-01-shooter-detour — cpp
 
 ## Relations
-- [[tasks-index]] — parent index.
+- [[tasks-done-index]] — parent index.
 - [[task-038-01-shooter-detour]] — step 1, cpp.

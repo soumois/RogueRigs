@@ -1,7 +1,7 @@
 ---
 id: task-008-feel-fixes
 description: "Global task: owner PIE feedback: fixed shot height, rifle no longer blocks movement, longer pause between bursts, pickups, shake, readable damage text, bigger dummy."
-parent: tasks-index
+parent: tasks-done-index
 kind: task
 status: done
 ---
@@ -23,7 +23,7 @@ status: done
 4. task-008-04-tests-final — cpp: dummy-hit test with the final Blueprints, full headless run.
 
 ## Relations
-- [[tasks-index]] — parent index.
+- [[tasks-done-index]] — parent index.
 - [[task-008-01-shot-height-movement]] — step 1, cpp.
 - [[task-008-02-feel-values]] — step 2, cpp.
 - [[task-008-03-bp-miner-dummy]] — step 3, bp.

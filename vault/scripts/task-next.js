@@ -18,7 +18,7 @@ if (!doneGlobal || !doneSub || !runs || result === undefined) {
 const costId = doneSub.split('-').slice(0, 3).join('-'); // task-NNN-SS
 process.stdout.write(node('record-cost.js', costId, runs));
 node('task-status.js', `${doneGlobal}/${doneSub}.md`, 'status=done', `result=${result}`);
-const files = ['vault/_paths.md', 'vault/reference/production/cost-log.md', 'vault/reference/tasks/tasks-index.md',
+const files = ['vault/_paths.md', 'vault/reference/production/cost-log.md', 'vault/reference/tasks/tasks-to-do-index.md', 'vault/reference/tasks/tasks-done-index.md',
   `vault/reference/tasks/${doneGlobal}.md`, `vault/reference/tasks/${doneGlobal}/${doneSub}.md`];
 if (nextGlobal === doneGlobal) {
   node('task-status.js', `${doneGlobal}.md`, `next_step=${nextSub}`);

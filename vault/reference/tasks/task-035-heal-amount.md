@@ -1,7 +1,7 @@
 ---
 id: task-035-heal-amount
 description: "Global task: a heal vein restores 60 HP in total, about 6.67 HP per heal pickup."
-parent: tasks-index
+parent: tasks-done-index
 kind: task
 status: done
 ---
@@ -20,5 +20,5 @@ status: done
 1. task-035-01-heal-value — cpp: HealAmount default, existing tests
 
 ## Relations
-- [[tasks-index]] — parent index.
+- [[tasks-done-index]] — parent index.
 - [[task-035-01-heal-value]] — step 1, cpp.

@@ -1,7 +1,7 @@
 ---
 id: task-075-baseline-run
 description: "Global task: A4 baseline: a small sample of each content type generated without reading the lore, kept as the comparison point."
-parent: tasks-index
+parent: tasks-to-do-index
 kind: task
 status: todo
 ---
@@ -20,5 +20,5 @@ status: todo
 1. task-075-01-baseline-run — text
 
 ## Relations
-- [[tasks-index]] — parent index.
+- [[tasks-to-do-index]] — parent index.
 - [[task-075-01-baseline-run]] — step 1, text.

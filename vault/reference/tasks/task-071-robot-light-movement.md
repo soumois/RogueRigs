@@ -1,7 +1,7 @@
 ---
 id: task-071-robot-light-movement
 description: "Global task: robots move with a light custom movement instead of CharacterMovement; game thread measured before and after. On hold."
-parent: tasks-index
+parent: tasks-to-do-index
 kind: task
 status: todo
 ---
@@ -20,5 +20,5 @@ status: todo
 1. task-071-01-robot-light-movement — cpp
 
 ## Relations
-- [[tasks-index]] — parent index.
+- [[tasks-to-do-index]] — parent index.
 - [[task-071-01-robot-light-movement]] — step 1, cpp.

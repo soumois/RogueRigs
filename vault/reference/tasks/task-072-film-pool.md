@@ -1,7 +1,7 @@
 ---
 id: task-072-film-pool
 description: "Global task: A4 film pool: fictional-films grows to about 50 parody titles of badass 80s and 90s action films, checked by the critic."
-parent: tasks-index
+parent: tasks-done-index
 kind: task
 status: done
 ---
@@ -21,6 +21,6 @@ status: done
 2. task-072-02-film-pool — style-guide
 
 ## Relations
-- [[tasks-index]] — parent index.
+- [[tasks-done-index]] — parent index.
 - [[task-072-01-film-pool]] — step 1, text.
 - [[task-072-02-film-pool]] — step 2, style-guide.

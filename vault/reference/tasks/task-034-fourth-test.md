@@ -1,7 +1,7 @@
 ---
 id: task-034-fourth-test
 description: "Global task: fourth play test: bigger projectile hitbox, whole-vein mining, heal pickup fix, small terrain capsules, kamikaze trigger, softer early waves, crowd, ammo HUD."
-parent: tasks-index
+parent: tasks-done-index
 kind: task
 status: done
 ---
@@ -23,7 +23,7 @@ status: done
 Point 10 (ammo HUD) moved to [[task-037-ammo-hud]]; heal amount to [[task-035-heal-amount]]; recycling relocation to [[task-036-recycle-relocate]].
 
 ## Relations
-- [[tasks-index]] — parent index.
+- [[tasks-done-index]] — parent index.
 - [[task-034-01-cpp-fixes]] — step 1, cpp.
 - [[task-034-03-docs]] — step 2, cpp.
 - [[task-034-04-director-mix]] — step 3, cpp.

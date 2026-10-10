@@ -1,7 +1,7 @@
 ---
 id: task-065-diagonal-dig
 description: "Global task: Moving diagonally into a corner of two blocks still digs the nearest touching block(s)."
-parent: tasks-index
+parent: tasks-done-index
 kind: task
 status: done
 ---
@@ -20,5 +20,5 @@ status: done
 1. task-065-01-diagonal-dig — cpp
 
 ## Relations
-- [[tasks-index]] — parent index.
+- [[tasks-done-index]] — parent index.
 - [[task-065-01-diagonal-dig]] — step 1, cpp.

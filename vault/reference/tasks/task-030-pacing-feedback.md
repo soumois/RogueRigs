@@ -1,7 +1,7 @@
 ---
 id: task-030-pacing-feedback
 description: "Global task: first play test feedback: enemies from the first second, slower ramp, shooters blended into chaser packs, robots 20 % slower, XP retuned."
-parent: tasks-index
+parent: tasks-done-index
 kind: task
 status: done
 ---
@@ -21,6 +21,6 @@ status: done
 2. task-030-02-pacing-retune — cpp: bot pacing over 3 seeds, XP curve retune, pack arrival shots
 
 ## Relations
-- [[tasks-index]] — parent index.
+- [[tasks-done-index]] — parent index.
 - [[task-030-01-director-speeds]] — step 1, cpp.
 - [[task-030-02-pacing-retune]] — step 2, cpp.

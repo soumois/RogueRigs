@@ -1,7 +1,7 @@
 ---
 id: task-019-packaging-fix
 description: "Global task: add GameFeatureData to the asset manager settings so BuildCookRun cook, stage and pak exits 0."
-parent: tasks-index
+parent: tasks-done-index
 kind: task
 status: done
 ---
@@ -20,5 +20,5 @@ status: done
 1. task-019-01-asset-manager — cpp: asset manager config, full BuildCookRun, staged run check
 
 ## Relations
-- [[tasks-index]] — parent index.
+- [[tasks-done-index]] — parent index.
 - [[task-019-01-asset-manager]] — step 1, cpp.

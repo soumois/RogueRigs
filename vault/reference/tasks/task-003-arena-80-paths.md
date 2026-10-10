@@ -1,7 +1,7 @@
 ---
 id: task-003-arena-80-paths
 description: "Global task: M1 arena grows to 80 x 80 and becomes a network of paths walled by rock; map follow-ups; project renamed Rogue Rigs."
-parent: tasks-index
+parent: tasks-done-index
 kind: task
 status: done
 ---
@@ -22,7 +22,7 @@ status: done
 3. task-003-03-project-name — cpp: `ProjectName=Rogue Rigs` in `DefaultGame.ini`.
 
 ## Relations
-- [[tasks-index]] — parent index.
+- [[tasks-done-index]] — parent index.
 - [[task-003-01-layout-80-paths]] — step 1, level-design, the layout.
 - [[task-003-02-map-update]] — step 2, bp, the map.
 - [[task-003-03-project-name]] — step 3, cpp, project name.

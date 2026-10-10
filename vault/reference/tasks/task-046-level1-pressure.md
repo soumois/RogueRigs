@@ -1,7 +1,7 @@
 ---
 id: task-046-level1-pressure
 description: "Global task: Level 1 pressure: 80 robots alive at most, wave interval ending at 5.5 s, packs of one wave at least 120° apart."
-parent: tasks-index
+parent: tasks-done-index
 kind: task
 status: done
 ---
@@ -20,5 +20,5 @@ status: done
 1. task-046-01-level1-pressure — cpp
 
 ## Relations
-- [[tasks-index]] — parent index.
+- [[tasks-done-index]] — parent index.
 - [[task-046-01-level1-pressure]] — step 1, cpp.

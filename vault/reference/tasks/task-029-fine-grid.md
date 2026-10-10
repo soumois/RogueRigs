@@ -1,7 +1,7 @@
 ---
 id: task-029-fine-grid
 description: "Global task: 67 uu cells with chunked rendering, incremental time-sliced flow field, converted layout, wall-contact arc mining, re-measured stress."
-parent: tasks-index
+parent: tasks-done-index
 kind: task
 status: done
 ---
@@ -28,7 +28,7 @@ status: done
 7. task-029-07-final-check — cpp: integration tests and final stress at 67 uu (runs last)
 
 ## Relations
-- [[tasks-index]] — parent index.
+- [[tasks-done-index]] — parent index.
 - [[task-029-01-grid-render]] — step 1, cpp.
 - [[task-029-02-flow-field-incremental]] — step 2, cpp.
 - [[task-029-03-layout-67]] — step 3, level-design.

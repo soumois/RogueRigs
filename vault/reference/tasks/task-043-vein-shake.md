@@ -1,7 +1,7 @@
 ---
 id: task-043-vein-shake
 description: "Global task: All blocks of a vein being mined shake together."
-parent: tasks-index
+parent: tasks-done-index
 kind: task
 status: done
 ---
@@ -20,5 +20,5 @@ status: done
 1. task-043-01-vein-shake — cpp
 
 ## Relations
-- [[tasks-index]] — parent index.
+- [[tasks-done-index]] — parent index.
 - [[task-043-01-vein-shake]] — step 1, cpp.

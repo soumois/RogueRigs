@@ -1,7 +1,7 @@
 ---
 id: task-005-drone-orbit
 description: "Global task: the drone as a separate C++ actor spawned by the miner, a grey-box sphere circling it; dig state comes with the digging task."
-parent: tasks-index
+parent: tasks-done-index
 kind: task
 status: done
 ---
@@ -21,6 +21,6 @@ status: done
 2. task-005-02-bp-drone — bp: `BP_Drone` sphere, assigned on `BP_Miner`, PIE check.
 
 ## Relations
-- [[tasks-index]] — parent index.
+- [[tasks-done-index]] — parent index.
 - [[task-005-01-drone-cpp]] — step 1, cpp, drone actor.
 - [[task-005-02-bp-drone]] — step 2, bp, drone Blueprint.

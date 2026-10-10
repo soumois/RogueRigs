@@ -1,7 +1,7 @@
 ---
 id: task-048-last-level-profile
 description: "Global task: Current wave director values saved as a last-level profile in the data, not wired."
-parent: tasks-index
+parent: tasks-done-index
 kind: task
 status: done
 ---
@@ -20,5 +20,5 @@ status: done
 1. task-048-01-last-level-profile — cpp
 
 ## Relations
-- [[tasks-index]] — parent index.
+- [[tasks-done-index]] — parent index.
 - [[task-048-01-last-level-profile]] — step 1, cpp.

@@ -1,7 +1,7 @@
 ---
 id: task-011-explosions
 description: "Global task: feel tweaks (camera, shake, chaser wind-up), then explosions: queue and chains, barrels in the arena, kamikaze robot, assets, tests."
-parent: tasks-index
+parent: tasks-done-index
 kind: task
 status: done
 ---
@@ -26,7 +26,7 @@ status: done
 7. task-011-07-tests-integration — cpp: integration tests of chains, terrain, damage cap.
 
 ## Relations
-- [[tasks-index]] — parent index.
+- [[tasks-done-index]] — parent index.
 - [[task-011-01-feel-tweaks]] — step 1, cpp.
 - [[task-011-02-layout-barrels]] — step 2, level-design.
 - [[task-011-03-explosion-system]] — step 3, cpp.

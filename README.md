@@ -13,14 +13,14 @@ All assignments: [assignments/](assignments/).
 
 ## Project vault
 
-[`vault/`](vault/) is the single source of truth of the project: the game design, technical docs, agent specs and every task the crew has run (435 nodes). Start at [`vault/root.md`](vault/root.md).
+[`vault/`](vault/) is the single source of truth of the project: the game design, technical docs, agent specs and every task the crew has run (466 nodes). Start at [`vault/root.md`](vault/root.md).
 
 | Branch | Nodes | Holds |
 |---|---|---|
 | [`gdd`](vault/reference/gdd/) | 51 | what the game is: pillars, lore, characters, weapons, enemies, terrain, art, audio, dialogue tone |
-| [`tech`](vault/reference/tech/) | 98 | how it is built: conventions, C++ systems, Blueprint docs, pipelines |
+| [`tech`](vault/reference/tech/) | 104 | how it is built: conventions, C++ systems, Blueprint docs, pipelines |
 | [`agents`](vault/reference/agents/) | 12 | the dev crew: one spec per agent, the orchestration protocol |
-| [`tasks`](vault/reference/tasks/) | 243 | every request and subtask, with status and results |
+| [`tasks`](vault/reference/tasks/) | 271 | open tasks in [`tasks-to-do-index`](vault/reference/tasks/tasks-to-do-index.md), finished ones archived in [`tasks-done-index`](vault/reference/tasks/tasks-done-index.md) |
 | [`production`](vault/reference/production/) | 9 | milestones, scope, wishlist, cost log, handovers |
 | [`course`](vault/reference/course/) | 18 | course frame, lesson summaries, assignments with briefs, rubrics, deadlines and plans |
 

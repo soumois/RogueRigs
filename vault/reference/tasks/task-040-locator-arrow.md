@@ -1,7 +1,7 @@
 ---
 id: task-040-locator-arrow
 description: "Global task: Console locator: real arrow about 64 px, pulsing, with the distance in metres."
-parent: tasks-index
+parent: tasks-done-index
 kind: task
 status: done
 ---
@@ -20,5 +20,5 @@ status: done
 1. task-040-01-locator-arrow — bp
 
 ## Relations
-- [[tasks-index]] — parent index.
+- [[tasks-done-index]] — parent index.
 - [[task-040-01-locator-arrow]] — step 1, bp.

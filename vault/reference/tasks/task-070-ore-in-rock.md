@@ -1,7 +1,7 @@
 ---
 id: task-070-ore-in-rock
 description: "Global task: Ore scattered through the rock: nuggets inside rock blocks so ore drips during the whole dig, as in DRGS."
-parent: tasks-index
+parent: tasks-to-do-index
 kind: task
 status: todo
 ---
@@ -20,5 +20,5 @@ status: todo
 1. task-070-01-ore-in-rock — cpp
 
 ## Relations
-- [[tasks-index]] — parent index.
+- [[tasks-to-do-index]] — parent index.
 - [[task-070-01-ore-in-rock]] — step 1, cpp.

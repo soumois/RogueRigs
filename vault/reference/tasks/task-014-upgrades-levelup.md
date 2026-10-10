@@ -1,7 +1,7 @@
 ---
 id: task-014-upgrades-levelup
 description: "Global task: 100 robots in packs with fewer kamikazes, stat upgrades with rarities, level-up heal, effect, pause, 3 cards and one reroll."
-parent: tasks-index
+parent: tasks-done-index
 kind: task
 status: done
 ---
@@ -24,7 +24,7 @@ status: done
 5. task-014-05-tests-integration — cpp: kill, level up, pick, stat changed, with final Blueprints
 
 ## Relations
-- [[tasks-index]] — parent index.
+- [[tasks-done-index]] — parent index.
 - [[task-014-01-spawn-packs]] — step 1, cpp.
 - [[task-014-02-upgrade-system]] — step 2, cpp.
 - [[task-014-03-levelup-flow]] — step 3, cpp.

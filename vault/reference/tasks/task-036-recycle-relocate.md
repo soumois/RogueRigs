@@ -1,7 +1,7 @@
 ---
 id: task-036-recycle-relocate
 description: "Global task: robots left far behind are moved back ahead of the miner instead of removed, so pressure stays."
-parent: tasks-index
+parent: tasks-done-index
 kind: task
 status: done
 ---
@@ -20,5 +20,5 @@ status: done
 1. task-036-01-relocate — cpp: relocation instead of removal, seen-once and grace timers
 
 ## Relations
-- [[tasks-index]] — parent index.
+- [[tasks-done-index]] — parent index.
 - [[task-036-01-relocate]] — step 1, cpp.

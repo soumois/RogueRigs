@@ -458,7 +458,9 @@ task-080-01-text-display  reference/tasks/task-080-text-display/task-080-01-text
 task-080-text-display  reference/tasks/task-080-text-display.md
 task-081-01-a4-readme  reference/tasks/task-081-a4-readme/task-081-01-a4-readme.md
 task-081-a4-readme  reference/tasks/task-081-a4-readme.md
+tasks-done-index  reference/tasks/tasks-done-index.md
 tasks-index  reference/tasks/tasks-index.md
+tasks-to-do-index  reference/tasks/tasks-to-do-index.md
 tech-index  reference/tech/tech-index.md
 terrain-index  reference/gdd/terrain/terrain-index.md
 text-content-events  reference/tech/pipelines/text-content-events.md

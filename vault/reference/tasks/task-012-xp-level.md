@@ -1,7 +1,7 @@
 ---
 id: task-012-xp-level
 description: "Global task: slower bigger tougher kamikaze, slower chasers, render-only block shake, then XP and level-up without upgrade cards, HUD bar and tests."
-parent: tasks-index
+parent: tasks-done-index
 kind: task
 status: done
 ---
@@ -23,7 +23,7 @@ status: done
 4. task-012-04-tests-integration — cpp: kill, collect, level up with the final Blueprints.
 
 ## Relations
-- [[tasks-index]] — parent index.
+- [[tasks-done-index]] — parent index.
 - [[task-012-01-tuning-shake]] — step 1, cpp.
 - [[task-012-02-progression]] — step 2, cpp.
 - [[task-012-03-bp-hud-kamikaze]] — step 3, bp.

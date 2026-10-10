@@ -1,7 +1,7 @@
 ---
 id: task-076-upgrade-texts
 description: "Global task: A4 upgrade card texts: text agent writes, validator checks, critic reviews, corrections applied (2 loops at most)."
-parent: tasks-index
+parent: tasks-to-do-index
 kind: task
 status: todo
 ---
@@ -21,6 +21,6 @@ status: todo
 2. task-076-02-upgrade-texts — style-guide
 
 ## Relations
-- [[tasks-index]] — parent index.
+- [[tasks-to-do-index]] — parent index.
 - [[task-076-01-upgrade-texts]] — step 1, text.
 - [[task-076-02-upgrade-texts]] — step 2, style-guide.

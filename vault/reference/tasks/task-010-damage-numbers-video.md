@@ -1,7 +1,7 @@
 ---
 id: task-010-damage-numbers-video
 description: "Global task: quick damage numbers above every enemy, reusing the dummy's floating text, for the owner's assignment video."
-parent: tasks-index
+parent: tasks-done-index
 kind: task
 status: done
 ---
@@ -20,5 +20,5 @@ status: done
 1. task-010-01-enemy-damage-text — cpp: floating damage text on `ARREnemy`.
 
 ## Relations
-- [[tasks-index]] — parent index.
+- [[tasks-done-index]] — parent index.
 - [[task-010-01-enemy-damage-text]] — step 1, cpp.

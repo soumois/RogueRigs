@@ -1,7 +1,7 @@
 ---
 id: task-017-kamikaze-radius
 description: "Global task: kamikaze explosion radius from 250 to 312 uu (owner +25 %), data, tests and docs; the explosion visual follows the radius."
-parent: tasks-index
+parent: tasks-done-index
 kind: task
 status: done
 ---
@@ -20,5 +20,5 @@ status: done
 1. task-017-01-radius — cpp: radius 312 in data, visual check, tests, docs
 
 ## Relations
-- [[tasks-index]] — parent index.
+- [[tasks-done-index]] — parent index.
 - [[task-017-01-radius]] — step 1, cpp.

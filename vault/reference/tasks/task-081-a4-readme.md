@@ -1,7 +1,7 @@
 ---
 id: task-081-a4-readme
 description: "Global task: A4 README: assignments/A4-dynamic-content-pipeline/README.md filled from the real logs and reviews."
-parent: tasks-index
+parent: tasks-to-do-index
 kind: task
 status: todo
 ---
@@ -20,5 +20,5 @@ status: todo
 1. task-081-01-a4-readme — claude
 
 ## Relations
-- [[tasks-index]] — parent index.
+- [[tasks-to-do-index]] — parent index.
 - [[task-081-01-a4-readme]] — step 1, claude.

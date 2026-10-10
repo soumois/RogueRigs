@@ -1,7 +1,7 @@
 ---
 id: task-009-chaser
 description: "Global task: the chaser robot with player health, i-frames, death and game over, grid flow-field movement, enemy base, spawner, HUD and tests."
-parent: tasks-index
+parent: tasks-done-index
 kind: task
 status: done
 ---
@@ -26,7 +26,7 @@ status: done
 7. task-009-07-tests-perf — cpp: integration tests and a 50-chaser timing run.
 
 ## Relations
-- [[tasks-index]] — parent index.
+- [[tasks-done-index]] — parent index.
 - [[task-009-01-player-damage]] — step 1, cpp.
 - [[task-009-02-game-over-hud]] — step 2, cpp.
 - [[task-009-03-flow-field]] — step 3, cpp.

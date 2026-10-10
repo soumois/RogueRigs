@@ -1,7 +1,7 @@
 ---
 id: task-026-pressure
 description: "Global task: wave director with calm start, rising multi-side flow, lull, announced hordes; damage vignette; event icons on the alert bar; light halo test."
-parent: tasks-index
+parent: tasks-done-index
 kind: task
 status: done
 ---
@@ -24,7 +24,7 @@ status: done
 4. task-026-04-tests-integration — cpp: integration tests with the final Blueprints
 
 ## Relations
-- [[tasks-index]] — parent index.
+- [[tasks-done-index]] — parent index.
 - [[task-026-00-landing-clearance]] — step 0, cpp, added after task-029.
 - [[task-026-01-wave-director]] — step 1, cpp.
 - [[task-026-02-feedback-events]] — step 2, cpp.

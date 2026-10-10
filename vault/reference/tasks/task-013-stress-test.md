@@ -1,7 +1,7 @@
 ---
 id: task-013-stress-test
 description: "Global task: measure frame time against enemy count in -game, find the ceiling, list optimizations; baseline first, final run after task-016."
-parent: tasks-index
+parent: tasks-done-index
 kind: task
 status: done
 ---
@@ -21,6 +21,6 @@ status: done
 2. task-013-02-final — cpp: same after task-016 with S0, S2, S7, compare, leads
 
 ## Relations
-- [[tasks-index]] — parent index.
+- [[tasks-done-index]] — parent index.
 - [[task-013-01-baseline]] — step 1, cpp.
 - [[task-013-02-final]] — step 2, cpp.

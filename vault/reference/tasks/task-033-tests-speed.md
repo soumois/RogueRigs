@@ -1,7 +1,7 @@
 ---
 id: task-033-tests-speed
 description: "Global task: robots all at 180 uu/s and the test suite updated to the owner's data changes (speed, XP curve after the reference game)."
-parent: tasks-index
+parent: tasks-done-index
 kind: task
 status: done
 ---
@@ -20,5 +20,5 @@ status: done
 1. task-033-01-update-tests — cpp: update existing test expectations to the current data, full run
 
 ## Relations
-- [[tasks-index]] — parent index.
+- [[tasks-done-index]] — parent index.
 - [[task-033-01-update-tests]] — step 1, cpp.

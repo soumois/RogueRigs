@@ -1,7 +1,7 @@
 ---
 id: task-062-alert-bar-x2
 description: "Global task: Alert bar twice as wide and twice as tall, its icons scaled and repositioned."
-parent: tasks-index
+parent: tasks-done-index
 kind: task
 status: done
 ---
@@ -21,6 +21,6 @@ status: done
 2. task-062-02-pressure-test — cpp
 
 ## Relations
-- [[tasks-index]] — parent index.
+- [[tasks-done-index]] — parent index.
 - [[task-062-01-alert-bar-x2]] — step 1, bp.
 - [[task-062-02-pressure-test]] — step 2, cpp.

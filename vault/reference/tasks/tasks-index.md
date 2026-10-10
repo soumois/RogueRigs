@@ -1,9 +1,11 @@
 ---
 id: tasks-index
-description: "Orchestrator work items, one node per task with goal, agent, inputs, expected output, token ceiling and status. Open to pick up or log work."
+description: "Orchestrator work items: entry to the open tasks (read on every start) and to the archive of finished tasks."
 parent: root
 kind: note
 ---
+# Tasks
+
 # Tasks
 
 One global task per owner request (template `task-global.md`, id `task-<number>-<slug>`), with its subtasks in a folder of the same name (template `task.md`, id `task-<number>-<step>-<slug>`). Status lives in the nodes, so any session or account can resume from `next_step`. Done tasks stay until the milestone retrospective.
@@ -12,85 +14,5 @@ Resuming: read [[handover-2026-10-09]] first (previous: [[handover-2026-10-06]])
 
 ## Relations
 - [[root]] — the vault map.
-- [[task-000-enable-gas]] — enable the GAS plugin and modules; blocks all GAS code. Executed as task-004-01. Status done.
-- [[task-001-arena-m1]] — M1 arena: layout JSON, C++ grid, grey-box map visible in the editor. Status done.
-- [[task-002-cleanup-twinstick]] — delete TopDown and Strategy templates, TwinStick character on L_ArenaM1, 60 % rock layout. Status done.
-- [[task-003-arena-80-paths]] — M1 arena 80 × 80 as a path network, map follow-ups, project rename. Status done.
-- [[task-004-miner-gas]] — GAS enabled, C++ miner with ASC and CSV base stats replacing the TwinStick pawn. Status done.
-- [[task-005-drone-orbit]] — drone actor circling the miner (grey-box sphere). Status done.
-- [[task-006-dig]] — the drone digs pushed blocks (red laser, shake, drops, pickups) and the floor flicker fix. Status done.
-- [[task-007-burst-rifle-dummy]] — burst rifle with GAS damage and an immobile target dummy. Status done.
-- [[task-008-feel-fixes]] — owner PIE feedback: shot height, free movement, burst pause, pickups, shake, damage text, bigger dummy. Status done.
-- [[task-009-chaser]] — chaser robot: player damage, i-frames, death, flow field, enemy base, spawner, HUD. Status done.
-- [[task-010-damage-numbers-video]] — quick damage numbers above every enemy for the assignment video. Status done.
-- [[task-011-explosions]] — feel tweaks, then explosions: barrel, kamikaze, chains, tests. Status done.
-- [[task-012-xp-level]] — tougher slower kamikaze, slower chasers, render-only shake, XP and level-up without upgrades. Status done.
-- [[task-013-stress-test]] — stress test in -game: baseline at 50 to 400 robots first, final S0, S2, S7 after task-016. Status done.
-- [[task-014-upgrades-levelup]] — spawn packs (100 max, 15 % kamikazes), stat upgrades with rarities, level-up heal, pause, 3 cards, one reroll. Status done.
-- [[task-015-shotgun]] — shotgun conical wave with knockback, given at start with the burst rifle. Status done.
-- [[task-016-console-extraction]] — alert bar, command console hack, shuttle extraction, end screens. Status done.
-- [[task-017-kamikaze-radius]] — kamikaze explosion radius 250 → 312 uu. Status done.
-- [[task-018-robot-perf]] — robot count optimization: trace, crowd collision, light movement, hitch fix, final stress. Status done.
-- [[task-019-packaging-fix]] — asset manager config so BuildCookRun exits 0. Status done.
-- [[task-020-code-review]] — C++ review for readability and generalization, refactor, Blueprint check. Status done.
-- [[task-021-shooter]] — shooter robot: distance, line of sight, repositioning, laser, shots, spawner mix. Status done.
-- [[task-022-heavy]] — heavy robot: telegraphed ground slam, knockback resistance, corridor capsule, spawner mix and cap. Status done.
-- [[task-023-grid-perf]] — stress test of 100 uu and 67 uu cells before choosing the grid size; report to the owner. Status done.
-- [[task-024-weapons]] — rifle pierce, shotgun pellets, turret on a button, weapons as level-up cards. Status done.
-- [[task-025-damage-numbers]] — pooled Niagara damage numbers, merge, bigger crits. Status done.
-- [[task-026-pressure]] — wave director, horde banner, damage vignette, alert-bar icons, light halo test. Status done.
-- [[task-027-juice]] — XP and ore ejection and suction, kamikaze flare, ring gauge, chevrons, heal ring. Status done.
-- [[task-028-balance]] — larger heavy slam, shield chasers, doubled upgrade values, XP pacing. Status done.
-- [[task-029-fine-grid]] — 67 uu cells: chunked rendering, incremental flow field, converted layout, arc mining by contact. Status done.
-- [[task-030-pacing-feedback]] — first play test: enemies from 1 s, slower ramp, shooters blended, robots 20 % slower, XP retune. Status done.
-- [[task-031-directional-spawn]] — second play test: dummy removed, closer spawns toward the run heading, robots 30 % slower, steadfast shooters, faster early levels. Status done.
-- [[task-032-third-test]] — third play test: robot recycling, console locator, overtime, slower robots, faster heavy, English texts, upgrade weights, weapons every 5 levels, bigger turret. Status done.
-- [[task-033-tests-speed]] — robots all at 180 uu/s; existing tests updated to the owner data changes. Status done.
-- [[task-034-fourth-test]] — fourth play test: projectile hitbox, whole-vein mining, heal pickup, small terrain capsules, kamikaze, softer early waves, crowd, ammo HUD. Status done.
-- [[task-035-heal-amount]] — a heal vein restores 60 HP. Status done.
-- [[task-036-recycle-relocate]] — robots left behind are moved back ahead instead of removed. Status done.
-- [[task-037-ammo-hud]] — weapon slot ammo HUD, reload and turret recharge, padlocks. Status done.
-- [[task-038-shooter-detour]] — Shooter without line of sight walks around rock like the other robots until it can fire, never moving away from the miner. Status done.
-- [[task-039-heavy-radius]] — Heavy slam radius 400 → 340 uu (trigger 0.7 × radius = 238 uu); ground ring follows. Status done.
-- [[task-040-locator-arrow]] — Console locator: real arrow about 64 px, pulsing, with the distance in metres. Status done.
-- [[task-041-front-detour]] — In the front sector the spawn detour filter is off, so robots spawn beyond the rock the miner digs toward. Status done.
-- [[task-042-hack-time]] — Console hack time 20 → 16 s. Status done.
-- [[task-043-vein-shake]] — All blocks of a vein being mined shake together. Status done.
-- [[task-044-fewer-kamikazes]] — At most 1 kamikaze per pack in one pack out of two; hordes 1–2 kamikazes (was 3–5). Status done.
-- [[task-045-easier-first-level]] — About 15 % fewer robots (lone 2.35 s, waves 7.1 → 4.1 s, hordes 34–51) and rarer heavies (weight 4, 2–3 per horde, cap 3). Status done.
-- [[task-046-level1-pressure]] — Level 1 pressure: 80 robots alive at most, wave interval ending at 5.5 s, packs of one wave at least 120° apart. Status done.
-- [[task-047-heavy-speed]] — Heavy robot speed 180 → 153 uu/s; the other robots stay at 180. Status done.
-- [[task-048-last-level-profile]] — Current wave director values saved as a last-level profile in the data, not wired. Status done.
-- [[task-049-shuttle-distance]] — Shuttle lands 37 to 50 cells from the miner (was at least 75, no maximum). Status done.
-- [[task-050-flaky-stacking-test]] — DamageNumbers.StackOverDisplayed made reliable: find why it fails intermittently and fix the cause. Status done.
-- [[task-051-turret-spacing]] — A turret placed less than 100 uu from a standing turret moves to the nearest free floor cell at least 100 uu away. Status done.
-- [[task-052-heavy-radius-2]] — Heavy slam radius 340 → 289 uu (trigger 202 uu, chase stop 145 uu); ground ring follows. Status done.
-- [[task-053-weapon-info-centred]] — Weapon slot info (name, ammo bar or blocks, reload bar, LOCKED) centred under each slot. Status done.
-- [[task-054-niagara-trail-sparkle]] — XP cube trail and pickup sparkle rebuilt as Niagara systems. Status done.
-- [[task-055-first-hit-vignette]] — The red damage vignette shows on the very first hit, including in a packaged build. Status done.
-- [[task-056-bonus-chest]] — Bonus chest: one per level at 60 % alert, 8 s hack, XP, ore and a lucky upgrade choice. Status done.
-- [[task-057-flaky-xp-pickup-test]] — Progression.XPPickupAddsOne made reliable: find why it fails intermittently and fix the cause. Status done.
-- [[task-058-xp-trail-visible]] — The XP cube Niagara trail is visible in game (the sparkle already is). Status done.
-- [[task-059-damage-numbers-no-merge]] — Damage numbers: one per hit, no merging, each starting at a random point of a 30 uu disc (45 uu on the heavy); stacking kept. Status done.
-- [[task-060-deep-mining]] — Drone arc reaches 2.5 cells and cuts up to 8 blocks at once, about two rows deep. Status done.
-- [[task-061-minimap]] — Round minimap at the top left: seen cells of rock, floor and heal veins, markers for miner, console, chest and shuttle. Status done.
-- [[task-062-alert-bar-x2]] — Alert bar twice as wide and twice as tall, its icons scaled and repositioned. Status done.
-- [[task-063-perf-session]] — Performance session on a quiet PC: -game stress at 67 uu and the flow-field budget tests, compared with the last results. Status done.
-- [[task-064-minimap-circle-reveal]] — Minimap reveal is a circle of 18 cells around the miner, the same in every direction. Status done.
-- [[task-065-diagonal-dig]] — Moving diagonally into a corner of two blocks still digs the nearest touching block(s). Status done.
-- [[task-066-async-flow-field]] — Flow field rebuilt on a worker thread with a double buffer, so robots follow a new path within 1–2 frames under normal PC load. Status done.
-- [[task-067-real-game-stress]] — Stress scenario close to a real game: 150 robots, a horde, full HUD and minimap, Niagara on, miner running and digging. Status done.
-- [[task-068-shipping-insights]] — Measurement in a packaged build with an Unreal Insights capture of the isolated frame spikes. Status done.
-- [[task-069-min-spec]] — Minimum PC specification defined and checked against the stress scenarios. Status todo.
-- [[task-070-ore-in-rock]] — Ore scattered through the rock: nuggets inside rock blocks so ore drips during the whole dig, as in DRGS. Status todo.
-- [[task-071-robot-light-movement]] — Robots move with a light custom movement instead of CharacterMovement, before/after on the real-game stress. Status todo, on hold (owner 2026-10-10).
-- [[task-072-film-pool]] — A4 film pool: fictional-films grows to about 50 parody titles of badass 80s and 90s action films, checked by the critic. Status done.
-- [[task-073-text-schema]] — A4 schema: the text-content-schema node defines the 3 content files, the retrieval log and the critic review file. Status done.
-- [[task-074-text-validator]] — A4 validator: Tools/content/validate_text.js checks schema, word counts, numbers and log excerpts, with a test on an invalid file. Status done.
-- [[task-075-baseline-run]] — A4 baseline: a small sample of each content type generated without reading the lore, kept as the comparison point. Status todo.
-- [[task-076-upgrade-texts]] — A4 upgrade card texts: text agent writes, validator checks, critic reviews, corrections applied (2 loops at most). Status todo.
-- [[task-077-barks]] — A4 Rook and Vesna barks: text agent writes, validator checks, critic reviews, corrections applied (2 loops at most). Status todo.
-- [[task-078-alert-texts]] — A4 Kessler-Voss alerts: text agent writes, validator checks, critic reviews, corrections applied (2 loops at most). Status todo.
-- [[task-079-text-loader]] — A4 loader: the text files are loaded in game and feed FRRUpgradeCard.DescriptionText and the existing alert events. Status todo.
-- [[task-080-text-display]] — A4 display: upgrade card flavor lines and Kessler-Voss alerts are shown in game; bark subtitle only if time allows. Status todo.
-- [[task-081-a4-readme]] — A4 README: assignments/A4-dynamic-content-pipeline/README.md filled from the real logs and reviews. Status todo.
+- [[tasks-to-do-index]] — global tasks in progress, todo, review or blocked. Read on every start.
+- [[tasks-done-index]] — archive of every finished global task, one line each. Open only to look up past work.

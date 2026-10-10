@@ -26,7 +26,7 @@ Complements [[orchestration-protocol]] (the rules) with the commands that worked
 - The previous run's left-over files: tell the next agent to inspect `git diff` and finish them.
 
 ## Creating tasks
-- One logical owner point = one global task ([[orchestration-protocol]]). Write a spec module and run `node vault/scripts/task-create.js <spec.js> <last-task-id>`: it writes each global task with one subtask, resolves the input ids to paths (the delegation hands those paths to the agent) and adds them to tasks-index. A second subtask for another agent is written by hand from `vault/templates/task.md`.
+- One logical owner point = one global task ([[orchestration-protocol]]). Write a spec module and run `node vault/scripts/task-create.js <spec.js> <last-task-id>`: it writes each global task with one subtask, resolves the input ids to paths (the delegation hands those paths to the agent) and adds them to tasks-to-do-index (at the end of the list when the anchor is not there). `task-status.js` moves a global task to tasks-done-index when it is set to done. A second subtask for another agent is written by hand from `vault/templates/task.md`.
 
 ## Closing a subtask
 1. Check the report against `done_when`.

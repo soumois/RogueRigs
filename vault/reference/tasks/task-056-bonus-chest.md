@@ -1,7 +1,7 @@
 ---
 id: task-056-bonus-chest
 description: "Global task: Bonus chest: one per level at 60 % alert, 8 s hack, XP, ore and a lucky upgrade choice."
-parent: tasks-index
+parent: tasks-done-index
 kind: task
 status: done
 ---
@@ -21,6 +21,6 @@ status: done
 2. task-056-02-bp-bonus-chest — bp
 
 ## Relations
-- [[tasks-index]] — parent index.
+- [[tasks-done-index]] — parent index.
 - [[task-056-01-bonus-chest]] — step 1, cpp.
 - [[task-056-02-bp-bonus-chest]] — step 2, bp.

@@ -1,7 +1,7 @@
 ---
 id: task-057-flaky-xp-pickup-test
 description: "Global task: Progression.XPPickupAddsOne made reliable: find why it fails intermittently and fix the cause."
-parent: tasks-index
+parent: tasks-done-index
 kind: task
 status: done
 ---
@@ -20,5 +20,5 @@ status: done
 1. task-057-01-flaky-xp-pickup-test — cpp
 
 ## Relations
-- [[tasks-index]] — parent index.
+- [[tasks-done-index]] — parent index.
 - [[task-057-01-flaky-xp-pickup-test]] — step 1, cpp.

@@ -1,6 +1,6 @@
 // node vault/scripts/task-create.js <spec.js> <index-anchor-task-id>
-// Creates global tasks with one subtask each from a spec module, and adds them to tasks-index after the
-// line of <index-anchor-task-id> (the last listed task). Input ids are resolved to paths through _paths.md,
+// Creates global tasks with one subtask each from a spec module, and adds them to tasks-to-do-index after the
+// line of <index-anchor-task-id> (the last listed task; if it is not in tasks-to-do-index, at the end of the list). Input ids are resolved to paths through _paths.md,
 // so delegations can hand agents direct paths. Does not commit; lint and commit by name afterwards.
 // Spec: module.exports = [ [num, slug, desc, agent, title, request, [input ids], expected_output, done_when,
 //        editor_state, token_ceiling, confirmed_by_owner (optional, default "yes (<today>)")], ... ]
@@ -16,16 +16,17 @@ for (const l of fs.readFileSync(path.join(V, '_paths.md'), 'utf8').split('\n')) 
 }
 const res = ids => ids.map(i => { if (!P[i]) throw new Error('no path for ' + i); return `${i} (vault/${P[i]})`; }).join(', ');
 const today = new Date().toISOString().slice(0, 10);
-let idx = fs.readFileSync(path.join(T, 'tasks-index.md'), 'utf8');
+const IDX = path.join(T, 'tasks-to-do-index.md');
+let idx = fs.readFileSync(IDX, 'utf8');
 let add = '';
 for (const [num, slug, desc, agent, title, req, inputs, out, done, ed, ceil, confirmed] of require(path.resolve(specFile))) {
   const gid = `task-${num}-${slug}`, sid = `task-${num}-01-${slug}`;
   const conf = confirmed || `yes (${today})`;
-  fs.writeFileSync(path.join(T, gid + '.md'), ['---', `id: ${gid}`, `description: "Global task: ${desc}"`, 'parent: tasks-index',
+  fs.writeFileSync(path.join(T, gid + '.md'), ['---', `id: ${gid}`, `description: "Global task: ${desc}"`, 'parent: tasks-to-do-index',
     'kind: task', 'status: todo', '---', `# ${title}`, '', `- request: ${req} (owner, ${today})`, `- goal: ${desc}`,
     `- acceptance: ${done.replace(/\.$/, '')}; committed.`, `- gdd_check: done by the Orchestrator when the task is planned (${today}).`,
     `- confirmed_by_owner: ${conf}`, '- milestone: M2', `- next_step: ${sid}`, '- result: open', '', '## Subtasks', `1. ${sid} — ${agent}`, '',
-    '## Relations', '- [[tasks-index]] — parent index.', `- [[${sid}]] — step 1, ${agent}.`, ''].join('\n'));
+    '## Relations', '- [[tasks-to-do-index]] — parent index.', `- [[${sid}]] — step 1, ${agent}.`, ''].join('\n'));
   fs.mkdirSync(path.join(T, gid), { recursive: true });
   fs.writeFileSync(path.join(T, gid, sid + '.md'), ['---', `id: ${sid}`, `description: "${desc}"`, `parent: ${gid}`, 'kind: task',
     'status: todo', '---', `# ${title}`, '', `- goal: ${desc}`, `- agent: ${agent}`, '- depends_on: none', `- inputs: ${res(inputs)}`,
@@ -35,5 +36,6 @@ for (const [num, slug, desc, agent, title, req, inputs, out, done, ed, ceil, con
   console.log('created', gid);
 }
 const re = new RegExp(`(- \\[\\[${anchor}\\]\\][^\\n]*)`);
-if (!re.test(idx)) throw new Error('anchor not found in tasks-index: ' + anchor);
-fs.writeFileSync(path.join(T, 'tasks-index.md'), idx.replace(re, m => m + add));
+if (re.test(idx)) idx = idx.replace(re, m => m + add);
+else idx = idx.replace(/\n*$/, '') + add + '\n';
+fs.writeFileSync(IDX, idx);

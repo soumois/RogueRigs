@@ -1,7 +1,7 @@
 ---
 id: task-051-turret-spacing
 description: "Global task: A turret placed less than 100 uu from a standing turret moves to the nearest free floor cell at least 100 uu away."
-parent: tasks-index
+parent: tasks-done-index
 kind: task
 status: done
 ---
@@ -20,5 +20,5 @@ status: done
 1. task-051-01-turret-spacing — cpp
 
 ## Relations
-- [[tasks-index]] — parent index.
+- [[tasks-done-index]] — parent index.
 - [[task-051-01-turret-spacing]] — step 1, cpp.

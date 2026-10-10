@@ -1,7 +1,7 @@
 ---
 id: task-061-minimap
 description: "Global task: Round minimap at the top left: seen cells of rock, floor and heal veins, markers for miner, console, chest and shuttle."
-parent: tasks-index
+parent: tasks-done-index
 kind: task
 status: done
 ---
@@ -21,6 +21,6 @@ status: done
 2. task-061-02-bp-minimap — bp
 
 ## Relations
-- [[tasks-index]] — parent index.
+- [[tasks-done-index]] — parent index.
 - [[task-061-01-minimap]] — step 1, cpp.
 - [[task-061-02-bp-minimap]] — step 2, bp.

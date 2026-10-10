@@ -1,7 +1,7 @@
 ---
 id: task-049-shuttle-distance
 description: "Global task: Shuttle lands 37 to 50 cells from the miner (was at least 75, no maximum)."
-parent: tasks-index
+parent: tasks-done-index
 kind: task
 status: done
 ---
@@ -20,5 +20,5 @@ status: done
 1. task-049-01-shuttle-distance — cpp
 
 ## Relations
-- [[tasks-index]] — parent index.
+- [[tasks-done-index]] — parent index.
 - [[task-049-01-shuttle-distance]] — step 1, cpp.

@@ -1,7 +1,7 @@
 ---
 id: task-007-burst-rifle-dummy
 description: "Global task: the burst rifle (weapon ASC, auto-fire bursts, projectiles, GAS damage with crits) and an immobile target dummy showing hits."
-parent: tasks-index
+parent: tasks-done-index
 kind: task
 status: done
 ---
@@ -24,7 +24,7 @@ status: done
 5. task-007-05-weapon-tests — cpp: headless automation tests of timing, magazine, projectile and damage (added: MCP cannot drive PIE input).
 
 ## Relations
-- [[tasks-index]] — parent index.
+- [[tasks-done-index]] — parent index.
 - [[task-007-01-weapon-autofire]] — step 1, cpp, weapon and auto-fire.
 - [[task-007-02-projectile-damage]] — step 2, cpp, projectile and damage.
 - [[task-007-03-target-dummy]] — step 3, cpp, target dummy.

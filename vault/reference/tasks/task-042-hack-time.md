@@ -1,7 +1,7 @@
 ---
 id: task-042-hack-time
 description: "Global task: Console hack time 20 → 16 s."
-parent: tasks-index
+parent: tasks-done-index
 kind: task
 status: done
 ---
@@ -20,5 +20,5 @@ status: done
 1. task-042-01-hack-time — cpp
 
 ## Relations
-- [[tasks-index]] — parent index.
+- [[tasks-done-index]] — parent index.
 - [[task-042-01-hack-time]] — step 1, cpp.

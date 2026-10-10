@@ -1,7 +1,7 @@
 ---
 id: task-041-front-detour
 description: "Global task: In the front sector the spawn detour filter is off, so robots spawn beyond the rock the miner digs toward."
-parent: tasks-index
+parent: tasks-done-index
 kind: task
 status: done
 ---
@@ -20,5 +20,5 @@ status: done
 1. task-041-01-front-detour — cpp
 
 ## Relations
-- [[tasks-index]] — parent index.
+- [[tasks-done-index]] — parent index.
 - [[task-041-01-front-detour]] — step 1, cpp.

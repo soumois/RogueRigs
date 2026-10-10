@@ -1,7 +1,7 @@
 ---
 id: task-022-heavy
 description: "Global task: heavy robot with a telegraphed ground slam, high knockback resistance, corridor-fitting capsule; joins the spawner mix with a cap of 5."
-parent: tasks-index
+parent: tasks-done-index
 kind: task
 status: done
 ---
@@ -22,7 +22,7 @@ status: done
 3. task-022-03-tests-integration — cpp: integration tests with the final Blueprints
 
 ## Relations
-- [[tasks-index]] — parent index.
+- [[tasks-done-index]] — parent index.
 - [[task-022-01-heavy-cpp]] — step 1, cpp.
 - [[task-022-02-bp-heavy]] — step 2, bp.
 - [[task-022-03-tests-integration]] — step 3, cpp.

@@ -1,7 +1,7 @@
 ---
 id: task-059-damage-numbers-no-merge
 description: "Global task: damage numbers one per hit, no merging, random start in a 30 uu disc (45 uu on the heavy); stacking kept."
-parent: tasks-index
+parent: tasks-done-index
 kind: task
 status: done
 ---
@@ -20,5 +20,5 @@ status: done
 1. task-059-01-damage-numbers-no-merge — cpp
 
 ## Relations
-- [[tasks-index]] — parent index.
+- [[tasks-done-index]] — parent index.
 - [[task-059-01-damage-numbers-no-merge]] — step 1, cpp.

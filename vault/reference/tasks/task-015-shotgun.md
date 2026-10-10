@@ -1,7 +1,7 @@
 ---
 id: task-015-shotgun
 description: "Global task: shotgun conical wave with line of sight, crit per enemy, knockback; given at start with the rifle; its upgrades join the pool."
-parent: tasks-index
+parent: tasks-done-index
 kind: task
 status: done
 ---
@@ -21,6 +21,6 @@ status: done
 2. task-015-02-bp-shotgun — bp: wave VFX, weapon Blueprint, loadout, PIE
 
 ## Relations
-- [[tasks-index]] — parent index.
+- [[tasks-done-index]] — parent index.
 - [[task-015-01-shotgun-cpp]] — step 1, cpp.
 - [[task-015-02-bp-shotgun]] — step 2, bp.

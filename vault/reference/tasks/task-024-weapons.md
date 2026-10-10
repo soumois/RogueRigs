@@ -1,7 +1,7 @@
 ---
 id: task-024-weapons
 description: "Global task: rifle pierces 4, shotgun pellets toward the aim, turret launcher on a button, weapons as level-up cards, piercing as a stat."
-parent: tasks-index
+parent: tasks-done-index
 kind: task
 status: done
 ---
@@ -25,7 +25,7 @@ status: done
 6. task-024-06-tests-integration — cpp: integration tests with the final Blueprints
 
 ## Relations
-- [[tasks-index]] — parent index.
+- [[tasks-done-index]] — parent index.
 - [[task-024-01-rifle-pierce]] — step 1, cpp.
 - [[task-024-02-shotgun-pellets]] — step 2, cpp.
 - [[task-024-03-turret]] — step 3, cpp.

@@ -1,7 +1,7 @@
 ---
 id: task-001-arena-m1
 description: "Global task: the M1 arena as an irregular asteroid with rocks and heal ore, from layout JSON to a grey-box map visible in the editor."
-parent: tasks-index
+parent: tasks-done-index
 kind: task
 status: done
 ---
@@ -25,7 +25,7 @@ status: done
 6. task-001-06-map-arena-m1 — bp: map `L_ArenaM1` with the grid, lights, player start and game mode.
 
 ## Relations
-- [[tasks-index]] — parent index.
+- [[tasks-done-index]] — parent index.
 - [[task-001-01-validator-void]] — step 1, cpp, validator and schema.
 - [[task-001-02-layout-arena-m1]] — step 2, level-design, the layout.
 - [[task-001-03-arena-grid-cpp]] — step 3, cpp, the grid actor.

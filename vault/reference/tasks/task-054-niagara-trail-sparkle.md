@@ -1,7 +1,7 @@
 ---
 id: task-054-niagara-trail-sparkle
 description: "Global task: XP cube trail and pickup sparkle rebuilt as Niagara systems."
-parent: tasks-index
+parent: tasks-done-index
 kind: task
 status: done
 ---
@@ -21,6 +21,6 @@ status: done
 2. task-054-02-juice-test — cpp
 
 ## Relations
-- [[tasks-index]] — parent index.
+- [[tasks-done-index]] — parent index.
 - [[task-054-01-niagara-trail-sparkle]] — step 1, bp.
 - [[task-054-02-juice-test]] — step 2, cpp.

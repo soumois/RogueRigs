@@ -1,7 +1,7 @@
 ---
 id: task-023-grid-perf
 description: "Global task: measure 100 uu and about 67 uu cells (rendering, destruction, flow field, spawn, line of sight) before choosing the grid size."
-parent: tasks-index
+parent: tasks-done-index
 kind: task
 status: done
 ---
@@ -20,5 +20,5 @@ status: done
 1. task-023-01-cell-stress — cpp: test-only smaller-cell arenas, -game measurements, report
 
 ## Relations
-- [[tasks-index]] — parent index.
+- [[tasks-done-index]] — parent index.
 - [[task-023-01-cell-stress]] — step 1, cpp.

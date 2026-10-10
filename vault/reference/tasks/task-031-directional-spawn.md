@@ -1,7 +1,7 @@
 ---
 id: task-031-directional-spawn
 description: "Global task: second play test: target dummy removed, closer spawns biased toward the run heading, robots 30 % slower, steadfast shooters, faster early levels."
-parent: tasks-index
+parent: tasks-done-index
 kind: task
 status: done
 ---
@@ -22,7 +22,7 @@ status: done
 3. task-031-03-pacing-retune — cpp: two bot profiles, XP curve to the new targets, shots running north
 
 ## Relations
-- [[tasks-index]] — parent index.
+- [[tasks-done-index]] — parent index.
 - [[task-031-01-remove-dummy]] — step 1, cpp.
 - [[task-031-02-spawn-speed-shooter]] — step 2, cpp.
 - [[task-031-03-pacing-retune]] — step 3, cpp; runs after task-032.

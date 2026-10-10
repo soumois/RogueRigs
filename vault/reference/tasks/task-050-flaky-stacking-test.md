@@ -1,7 +1,7 @@
 ---
 id: task-050-flaky-stacking-test
 description: "Global task: DamageNumbers.StackOverDisplayed made reliable: find why it fails intermittently and fix the cause."
-parent: tasks-index
+parent: tasks-done-index
 kind: task
 status: done
 ---
@@ -20,5 +20,5 @@ status: done
 1. task-050-01-flaky-stacking-test — cpp
 
 ## Relations
-- [[tasks-index]] — parent index.
+- [[tasks-done-index]] — parent index.
 - [[task-050-01-flaky-stacking-test]] — step 1, cpp.

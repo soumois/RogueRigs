@@ -1,7 +1,7 @@
 ---
 id: task-080-text-display
 description: "Global task: A4 display: upgrade card flavor lines and Kessler-Voss alerts are shown in game; bark subtitle only if time allows."
-parent: tasks-index
+parent: tasks-to-do-index
 kind: task
 status: todo
 ---
@@ -20,5 +20,5 @@ status: todo
 1. task-080-01-text-display — bp
 
 ## Relations
-- [[tasks-index]] — parent index.
+- [[tasks-to-do-index]] — parent index.
 - [[task-080-01-text-display]] — step 1, bp.

@@ -1,7 +1,7 @@
 ---
 id: task-052-heavy-radius-2
 description: "Global task: Heavy slam radius 340 → 289 uu (trigger 202 uu, chase stop 145 uu); ground ring follows."
-parent: tasks-index
+parent: tasks-done-index
 kind: task
 status: done
 ---
@@ -20,5 +20,5 @@ status: done
 1. task-052-01-heavy-radius-2 — cpp
 
 ## Relations
-- [[tasks-index]] — parent index.
+- [[tasks-done-index]] — parent index.
 - [[task-052-01-heavy-radius-2]] — step 1, cpp.

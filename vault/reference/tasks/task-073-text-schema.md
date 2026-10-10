@@ -1,7 +1,7 @@
 ---
 id: task-073-text-schema
 description: "Global task: A4 schema: the text-content-schema node defines the 3 content files, the retrieval log and the critic review file."
-parent: tasks-index
+parent: tasks-done-index
 kind: task
 status: done
 ---
@@ -20,5 +20,5 @@ status: done
 1. task-073-01-text-schema — cpp
 
 ## Relations
-- [[tasks-index]] — parent index.
+- [[tasks-done-index]] — parent index.
 - [[task-073-01-text-schema]] — step 1, cpp.

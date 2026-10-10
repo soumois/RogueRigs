@@ -1,7 +1,7 @@
 ---
 id: task-028-balance
 description: "Global task: bigger heavy slam area, shield chasers, doubled upgrade values, faster early level-ups tuned on a measured run."
-parent: tasks-index
+parent: tasks-done-index
 kind: task
 status: done
 ---
@@ -22,7 +22,7 @@ status: done
 3. task-028-03-xp-pacing — cpp: measure level times in -game, tune the XP curve, tests
 
 ## Relations
-- [[tasks-index]] — parent index.
+- [[tasks-done-index]] — parent index.
 - [[task-028-01-heavy-shield-values]] — step 1, cpp.
 - [[task-028-02-bp-shield-heavy]] — step 2, bp.
 - [[task-028-03-xp-pacing]] — step 3, cpp.

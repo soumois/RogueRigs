@@ -1,7 +1,7 @@
 ---
 id: task-032-third-test
 description: "Global task: third play test: robot recycling, console locator, overtime, slower robots, faster heavy, English texts, upgrade weights, weapon cards every 5 levels, bigger turret."
-parent: tasks-index
+parent: tasks-done-index
 kind: task
 status: done
 ---
@@ -21,7 +21,7 @@ status: done
 2. task-032-02-bp-fixes — bp: edge locator arrow, English Blueprint texts, turret 50 % larger, PIE
 
 ## Relations
-- [[tasks-index]] — parent index.
+- [[tasks-done-index]] — parent index.
 - [[task-032-01-cpp-fixes]] — step 1, cpp.
 - [[task-032-02-bp-fixes]] — step 2, bp.
 - [[task-031-directional-spawn]] — its XP retune (031-03) runs after this task.

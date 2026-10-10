@@ -1,7 +1,7 @@
 ---
 id: task-025-damage-numbers
 description: "Global task: pooled Niagara damage numbers fed by the damage pipeline, merged per robot, bigger white-gold crits, toggle in settings."
-parent: tasks-index
+parent: tasks-done-index
 kind: task
 status: done
 ---
@@ -25,7 +25,7 @@ status: done
 6. task-025-06-numbers-visual-check — cpp: screenshots and perf
 
 ## Relations
-- [[tasks-index]] — parent index.
+- [[tasks-done-index]] — parent index.
 - [[task-025-01-numbers-pipeline]] — step 1, cpp.
 - [[task-025-02-bp-numbers]] — step 2, bp.
 - [[task-025-03-numbers-perf]] — step 3, cpp.

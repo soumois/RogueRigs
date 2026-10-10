@@ -1,7 +1,7 @@
 ---
 id: task-068-shipping-insights
 description: "Global task: Measurement in a packaged build with an Unreal Insights capture of the isolated frame spikes."
-parent: tasks-index
+parent: tasks-done-index
 kind: task
 status: done
 ---
@@ -20,5 +20,5 @@ status: done
 1. task-068-01-shipping-insights — cpp
 
 ## Relations
-- [[tasks-index]] — parent index.
+- [[tasks-done-index]] — parent index.
 - [[task-068-01-shipping-insights]] — step 1, cpp.

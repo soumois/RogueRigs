@@ -1,7 +1,7 @@
 ---
 id: task-067-real-game-stress
 description: "Global task: Stress scenario close to a real game: 150 robots, a horde, full HUD and minimap, Niagara on, miner running and digging."
-parent: tasks-index
+parent: tasks-done-index
 kind: task
 status: done
 ---
@@ -20,5 +20,5 @@ status: done
 1. task-067-01-real-game-stress — cpp
 
 ## Relations
-- [[tasks-index]] — parent index.
+- [[tasks-done-index]] — parent index.
 - [[task-067-01-real-game-stress]] — step 1, cpp.

@@ -1,7 +1,7 @@
 ---
 id: task-002-cleanup-twinstick
 description: "Global task: remove the TopDown and Strategy template code and content, play the M1 arena with the TwinStick character, rock coverage 60 percent."
-parent: tasks-index
+parent: tasks-done-index
 kind: task
 status: done
 ---
@@ -24,7 +24,7 @@ status: done
 5. task-002-05-verify-pie — bp: editor opens clean on `L_ArenaM1`; PIE check of the TwinStick character on the new layout.
 
 ## Relations
-- [[tasks-index]] — parent index.
+- [[tasks-done-index]] — parent index.
 - [[task-002-01-twinstick-defaults]] — step 1, bp, game mode and default maps.
 - [[task-002-02-delete-template-content]] — step 2, bp, content deletion.
 - [[task-002-03-layout-rock-60]] — step 3, level-design, denser layout.

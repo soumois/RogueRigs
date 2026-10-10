@@ -1,7 +1,7 @@
 ---
 id: task-069-min-spec
 description: "Global task: Minimum PC specification defined and checked against the stress scenarios."
-parent: tasks-index
+parent: tasks-to-do-index
 kind: task
 status: todo
 ---
@@ -20,5 +20,5 @@ status: todo
 1. task-069-01-min-spec — cpp
 
 ## Relations
-- [[tasks-index]] — parent index.
+- [[tasks-to-do-index]] — parent index.
 - [[task-069-01-min-spec]] — step 1, cpp.

@@ -1,7 +1,7 @@
 ---
 id: task-044-fewer-kamikazes
 description: "Global task: At most 1 kamikaze per pack in one pack out of two; hordes 1–2 kamikazes (was 3–5)."
-parent: tasks-index
+parent: tasks-done-index
 kind: task
 status: done
 ---
@@ -20,5 +20,5 @@ status: done
 1. task-044-01-fewer-kamikazes — cpp
 
 ## Relations
-- [[tasks-index]] — parent index.
+- [[tasks-done-index]] — parent index.
 - [[task-044-01-fewer-kamikazes]] — step 1, cpp.

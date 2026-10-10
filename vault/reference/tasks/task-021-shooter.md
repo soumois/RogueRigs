@@ -1,7 +1,7 @@
 ---
 id: task-021-shooter
 description: "Global task: ranged shooter robot with line of sight, repositioning, red targeting laser, dodgeable shots stopped by rock; joins the spawner mix."
-parent: tasks-index
+parent: tasks-done-index
 kind: task
 status: done
 ---
@@ -22,7 +22,7 @@ status: done
 3. task-021-03-tests-integration — cpp: integration tests with the final Blueprints
 
 ## Relations
-- [[tasks-index]] — parent index.
+- [[tasks-done-index]] — parent index.
 - [[task-021-01-shooter-cpp]] — step 1, cpp.
 - [[task-021-02-bp-shooter]] — step 2, bp.
 - [[task-021-03-tests-integration]] — step 3, cpp.

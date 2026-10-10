@@ -1,7 +1,7 @@
 ---
 id: task-020-code-review
 description: "Global task: review the C++ for human readability and generalization, refactor high-value items without behavior change, check Blueprints in PIE."
-parent: tasks-index
+parent: tasks-done-index
 kind: task
 status: done
 ---
@@ -23,7 +23,7 @@ status: done
 4. task-020-04-bp-check — bp: all Blueprints load, PIE smoke test
 
 ## Relations
-- [[tasks-index]] — parent index.
+- [[tasks-done-index]] — parent index.
 - [[task-020-01-review]] — step 1, cpp.
 - [[task-020-02-refactor]] — step 2, cpp.
 - [[task-020-03-refactor-cleanup]] — step 3, cpp.

@@ -1,7 +1,7 @@
 ---
 id: task-018-robot-perf
 description: "Global task: Insights trace, no robot-robot capsule collision with lighter RVO, lighter movement, periodic hitch fix; stress compared after each step."
-parent: tasks-index
+parent: tasks-done-index
 kind: task
 status: done
 ---
@@ -24,7 +24,7 @@ status: done
 5. task-018-05-final-stress — cpp: final S0, S2, S7 run and comparison
 
 ## Relations
-- [[tasks-index]] — parent index.
+- [[tasks-done-index]] — parent index.
 - [[task-018-01-trace]] — step 1, cpp.
 - [[task-018-02-crowd-collision]] — step 2, cpp.
 - [[task-018-03-light-movement]] — step 3, cpp.

@@ -1,7 +1,7 @@
 ---
 id: task-016-console-extraction
 description: "Global task: minimal alert bar, command console with marked rocks and drone hack, shuttle landing with countdown, success and run-lost screens."
-parent: tasks-index
+parent: tasks-done-index
 kind: task
 status: done
 ---
@@ -23,7 +23,7 @@ status: done
 4. task-016-04-tests-integration — cpp: full loop integration test with final Blueprints
 
 ## Relations
-- [[tasks-index]] — parent index.
+- [[tasks-done-index]] — parent index.
 - [[task-016-01-alert-console]] — step 1, cpp.
 - [[task-016-02-shuttle]] — step 2, cpp.
 - [[task-016-03-bp-objectives]] — step 3, bp.

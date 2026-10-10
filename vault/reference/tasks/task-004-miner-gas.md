@@ -1,7 +1,7 @@
 ---
 id: task-004-miner-gas
 description: "Global task: enable GAS and build the C++ miner from scratch (ASC, attribute sets, CSV base stats, move, aim), replacing the TwinStick pawn."
-parent: tasks-index
+parent: tasks-done-index
 kind: task
 status: done
 ---
@@ -23,7 +23,7 @@ status: done
 4. task-004-04-bp-miner — bp: `BP_Miner`, `BP_RRPlayerController`, `BP_RRGameMode`, map switch, PIE check.
 
 ## Relations
-- [[tasks-index]] — parent index.
+- [[tasks-done-index]] — parent index.
 - [[task-004-01-enable-gas]] — step 1, cpp, GAS plugin and modules.
 - [[task-004-02-gas-core]] — step 2, cpp, ASC, attribute sets, CSV.
 - [[task-004-03-miner-classes]] — step 3, cpp, miner, controller, game mode.

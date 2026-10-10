@@ -1,7 +1,7 @@
 ---
 id: task-055-first-hit-vignette
 description: "Global task: The red damage vignette shows on the very first hit, including in a packaged build."
-parent: tasks-index
+parent: tasks-done-index
 kind: task
 status: done
 ---
@@ -21,6 +21,6 @@ status: done
 2. task-055-02-bp-flash-hold — bp
 
 ## Relations
-- [[tasks-index]] — parent index.
+- [[tasks-done-index]] — parent index.
 - [[task-055-01-first-hit-vignette]] — step 1, cpp.
 - [[task-055-02-bp-flash-hold]] — step 2, bp.

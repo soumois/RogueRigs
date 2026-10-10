@@ -1,7 +1,7 @@
 ---
 id: task-027-juice
 description: "Global task: DRGS-like XP and ore ejection then suction, kamikaze core light before exploding, console ring gauge, shuttle chevrons, heal ring."
-parent: tasks-index
+parent: tasks-done-index
 kind: task
 status: done
 ---
@@ -22,7 +22,7 @@ status: done
 3. task-027-03-tests-integration — cpp: integration tests with the final Blueprints
 
 ## Relations
-- [[tasks-index]] — parent index.
+- [[tasks-done-index]] — parent index.
 - [[task-027-01-pickup-motion]] — step 1, cpp.
 - [[task-027-02-bp-juice]] — step 2, bp.
 - [[task-027-03-tests-integration]] — step 3, cpp.

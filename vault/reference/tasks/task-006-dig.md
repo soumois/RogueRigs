@@ -1,7 +1,7 @@
 ---
 id: task-006-dig
 description: "Global task: the drone digs blocks the miner pushes into (red laser, shaking block, dig times, ore and heal drops), and the floor flicker fix."
-parent: tasks-index
+parent: tasks-done-index
 kind: task
 status: done
 ---
@@ -24,7 +24,7 @@ status: done
 5. task-006-05-dig-tests — cpp: headless automation tests of the dig rules (added: MCP cannot drive PIE input).
 
 ## Relations
-- [[tasks-index]] — parent index.
+- [[tasks-done-index]] — parent index.
 - [[task-006-01-grid-destruction]] — step 1, cpp, grid.
 - [[task-006-02-drone-dig]] — step 2, cpp, drone and miner.
 - [[task-006-03-pickups]] — step 3, cpp, pickups.
