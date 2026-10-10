@@ -31,8 +31,9 @@ struct FOnAttributeChangeData;
  * Crowd: when bIgnoreOtherRobots is on, the capsule carries RRCollisionChannels::RobotMaskFilter and its movement sweeps ignore
  * that mask, so robots pass through each other (the light separation spaces them) while the miner, terrain and every query still
  * collide with them. At BeginPlay the robot also writes the crowd RVO settings to the world avoidance manager.
- * Light movement: CharacterMovement is URRRobotMovementComponent (cached floor on the flat arena); at BeginPlay the attached
- * parts are made cheap to move (bLightAttachedParts); a walking robot far from the miner and off screen moves at a slower
+ * Light movement: CharacterMovement is URRRobotMovementComponent (light kinematic step on the flat arena behind
+ * rr.Enemy.LightMovement, cached floor on the engine path); at BeginPlay the attached parts are made cheap to move
+ * (bLightAttachedParts) and, with rr.Enemy.LightMovement on, the root capsule stops generating overlap events; a walking robot far from the miner and off screen moves at a slower
  * tick interval (FarMovementDistance, FarMovementTickInterval; UpdateMovementLOD).
  * Death (health set OnDeath, once, State.Dead on the ASC): stops, disables collision, shrinks to 0 over DeathShrinkDuration,
  * then bursts XPCubeCount pickups of XPPickupClass at its feet (Stats.XPValue split over them) and destroys itself. Each hit (the killing one too) is sent to

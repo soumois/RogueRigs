@@ -583,11 +583,20 @@ bool FRREnemyLightMovementTest::RunTest(const FString& Parameters)
 		TestWorld.Tick();
 	}
 	const FVector Walked = Chaser->GetActorLocation();
-	AddInfo(FString::Printf(TEXT("walked %.1f uu, height change %.3f uu, cached floor hits %d"), FVector::Dist2D(Settled, Walked), Walked.Z - Settled.Z, Movement->GetCachedFloorHits()));
+	AddInfo(FString::Printf(TEXT("walked %.1f uu, height change %.3f uu, cached floor hits %d, light ticks %d, engine ticks %d"), FVector::Dist2D(Settled, Walked),
+		Walked.Z - Settled.Z, Movement->GetCachedFloorHits(), Movement->GetLightMoveCount(), Movement->GetEngineMoveCount()));
 	TestTrue(TEXT("robot walked"), FVector::Dist2D(Settled, Walked) > 10.f);
 	TestTrue(TEXT("robot still walking"), Movement->IsMovingOnGround());
 	TestTrue(TEXT("robot kept its height on the flat floor"), FMath::Abs(Walked.Z - Settled.Z) < 1.f);
-	TestTrue(TEXT("floor checks answered from the cache"), Movement->GetCachedFloorHits() > 0);
+	// Light step (rr.Enemy.LightMovement on): no floor search at all; engine path: floor checks answered from the cache.
+	if (URRRobotMovementComponent::IsLightMovementEnabled())
+	{
+		TestTrue(TEXT("walked with the light step"), Movement->GetLightMoveCount() > Movement->GetEngineMoveCount());
+	}
+	else
+	{
+		TestTrue(TEXT("floor checks answered from the cache"), Movement->GetCachedFloorHits() > 0);
+	}
 
 	// Far movement: slower movement tick, the robot still moves and a knockback still launches it.
 	TestFalse(TEXT("no far movement without a game viewport"), Chaser->IsFarMovementActive());

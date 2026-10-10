@@ -152,6 +152,12 @@ void ARREnemy::BeginPlay()
 	{
 		ApplyLightAttachedParts();
 	}
+	// Light movement (rr.Enemy.LightMovement): the root capsule's overlaps have no listener (shots overlap HitCapsule; pickups,
+	// explosions and weapons query), so its moves skip the overlap update.
+	if (URRRobotMovementComponent::IsLightMovementEnabled())
+	{
+		GetCapsuleComponent()->SetGenerateOverlapEvents(false);
+	}
 	MovementLODTimer = FMath::FRand() * MovementLODCheckInterval;
 
 	// An unpossessed character stays in MOVE_None: start walking (falling until it lands).
