@@ -15,11 +15,11 @@ status: done
 - done_when: every item has a verdict; every fail cites an existing rule id; review file kept in logs.
 - editor_state: any
 - token_ceiling: 20000
-- model: open
-- tokens: open
-- runs: open
+- model: opus
+- tokens: input 10, cache write 32553, cache read 67262, output 6041
+- runs: 1
 - milestone: M2
-- result: Critic loop 1: 48 pass, 2 fail (T3), both corrected in 8ecf10f; owner reads the list.
+- result: Critic loop 1: 48 pass, 2 fail (T3) corrected in 8ecf10f.
 
 ## Relations
 - [[task-072-film-pool]] — parent global task.

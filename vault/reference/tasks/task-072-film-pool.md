@@ -14,7 +14,7 @@ status: done
 - confirmed_by_owner: yes (2026-10-10)
 - milestone: M2
 - next_step: none
-- result: 50 parody titles in fictional-films, critic loop 1 applied (commit 8ecf10f), awaiting owner reading
+- result: Done. Critic loop 1: 48 pass, 2 fail (T3) corrected in 8ecf10f.
 
 ## Subtasks
 1. task-072-01-film-pool — text
