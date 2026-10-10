@@ -134,6 +134,7 @@ kind: note
 | [[task-072-02-film-pool]] | opus | 1 | 0k | 33k | 67k | 6k |
 | [[task-072-01-film-pool]] | sonnet | 1 | 0k | 17k | 86k | 6k |
 | [[task-073-01-text-schema]] | opus | 1 | 0k | 55k | 263k | 18k |
+| [[task-074-01-text-validator]] | opus | 1 | 0k | 53k | 473k | 27k |
 
 ## Totals
 | Scope | Input | Cache write | Cache read | Output |

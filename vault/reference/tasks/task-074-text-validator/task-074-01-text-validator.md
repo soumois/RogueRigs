@@ -3,7 +3,7 @@ id: task-074-01-text-validator
 description: "A4 validator: Tools/content/validate_text.js checks schema, word counts, numbers and log excerpts, with a test on an invalid file."
 parent: task-074-text-validator
 kind: task
-status: in-progress
+status: done
 ---
 # A4 text validator
 
@@ -15,11 +15,11 @@ status: in-progress
 - done_when: both test files give the expected exit codes; docs updated in the schema node; lint clean; committed.
 - editor_state: any
 - token_ceiling: 50000
-- model: open
-- tokens: open
-- runs: open
+- model: opus
+- tokens: input 28, cache write 52579, cache read 473212, output 26628
+- runs: 1
 - milestone: M2
-- result: open
+- result: validate_text.js with selftest (3 cases pass), schema fixed minimally, commit f4ad495.
 
 ## Relations
 - [[task-074-text-validator]] — parent global task.
