@@ -1,9 +1,9 @@
 ---
 id: task-083-voice-tweak
 description: "Global task: upgrade lines regenerated with an item-specific retrieval and compared with v1, a real tweak for the README."
-parent: tasks-to-do-index
+parent: tasks-done-index
 kind: task
-status: in-progress
+status: done
 ---
 # A4 voice tweak (upgrade lines v2)
 
@@ -13,14 +13,14 @@ status: in-progress
 - gdd_check: done by the Orchestrator when the task is planned (2026-10-10).
 - confirmed_by_owner: yes (2026-10-10)
 - milestone: M2
-- next_step: task-083-01-voice-tweak
-- result: open
+- next_step: none
+- result: Done. v2 upgrade lines (per-stat retrieval): critic round 0: 10 pass 3 fail (T3 x2, T2), corrected; round 1: 13 pass; adopted in Content/, v1 kept in Tools/content/logs/v1. Run 20261010-112603-upgrade_texts.
 
 ## Subtasks
 1. task-083-01-voice-tweak — text
 2. task-083-02-voice-tweak — style-guide
 
 ## Relations
-- [[tasks-to-do-index]] — parent index.
+- [[tasks-done-index]] — parent index.
 - [[task-083-01-voice-tweak]] — step 1, text.
 - [[task-083-02-voice-tweak]] — step 2, style-guide.

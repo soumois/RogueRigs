@@ -3,7 +3,7 @@ id: task-083-02-voice-tweak
 description: "Critic review of the v2 upgrade_texts.json (13 lines): verdict, rule id, reason and correction per item."
 parent: task-083-voice-tweak
 kind: task
-status: todo
+status: done
 ---
 # Critic review (voice-tweak)
 
@@ -15,11 +15,11 @@ status: todo
 - done_when: every item has a verdict; every fail cites an existing rule id; review file kept in logs.
 - editor_state: any
 - token_ceiling: 20000
-- model: open
-- tokens: open
-- runs: open
+- model: opus
+- tokens: input 20, cache write 69021, cache read 153152, output 10642
+- runs: 3
 - milestone: M2
-- result: open
+- result: v2 upgrade lines (per-stat retrieval): critic round 0: 10 pass 3 fail (T3 x2, T2), corrected; round 1: 13 pass; adopted in Content/, v1 kept in Tools/content/logs/v1. Run 20261010-112603-upgrade_texts.
 
 ## Relations
 - [[task-083-voice-tweak]] — parent global task.
