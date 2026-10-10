@@ -3,7 +3,7 @@ id: task-082-01-shuttle-lines
 description: "A4 shuttle and extraction lines rewritten so the company states what it does and never orders the player (new rule T9), then reviewed."
 parent: task-082-shuttle-lines
 kind: task
-status: in-progress
+status: done
 ---
 # A4 shuttle and extraction lines
 
@@ -19,7 +19,7 @@ status: in-progress
 - tokens: open
 - runs: open
 - milestone: M2
-- result: open
+- result: 6 lines rewritten (run 20261010-112240-alerts), validator exit 0, commit efb38e7
 
 ## Relations
 - [[task-082-shuttle-lines]] — parent global task.

@@ -3,7 +3,7 @@ id: task-084-01-card-flavor-fix
 description: "The upgrade card flavor line is visible in game: the newline delimiter bug in WBP_HUD GetCardFlavor is fixed."
 parent: task-084-card-flavor-fix
 kind: task
-status: in-progress
+status: done
 ---
 # Card flavor line fix
 
@@ -19,7 +19,7 @@ status: in-progress
 - tokens: open
 - runs: open
 - milestone: M2
-- result: open
+- result: Delimiter in GetCardFlavor is a real newline (read back from graph and asset bytes), compiled and saved; quirks and wbp-hud updated; owner confirms on screen. Commit d24c512. Cost counted in the resumed bp agent (task-080-01 description).
 
 ## Relations
 - [[task-084-card-flavor-fix]] — parent global task.

@@ -3,7 +3,7 @@ id: task-085-alert-line-once
 description: "Global task: the company alert line shows once for 8 s when the shuttle countdown starts; the number stays."
 parent: tasks-to-do-index
 kind: task
-status: todo
+status: in-progress
 ---
 # Alert line shown once
 

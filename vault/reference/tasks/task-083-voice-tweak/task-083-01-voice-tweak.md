@@ -3,7 +3,7 @@ id: task-083-01-voice-tweak
 description: "A4 voice tweak: upgrade lines regenerated with an item-specific retrieval and compared with v1, a real tweak for the README."
 parent: task-083-voice-tweak
 kind: task
-status: in-progress
+status: done
 ---
 # A4 voice tweak (upgrade lines v2)
 
@@ -19,7 +19,7 @@ status: in-progress
 - tokens: open
 - runs: open
 - milestone: M2
-- result: open
+- result: v2: 13 lines with per-stat retrieval, run 20261010-112603-upgrade_texts in logs/v2, validator exit 0
 
 ## Relations
 - [[task-083-voice-tweak]] — parent global task.
