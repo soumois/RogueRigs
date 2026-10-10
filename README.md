@@ -164,7 +164,7 @@ Agents never talk to each other. Every hand-off goes through files: the Orchestr
 | **C++** | Opus | a subtask; C++ standard; GDD and system docs; engine source | C++ under `Source/RogueRigs/<System>/`, built from the command line; automation tests; system docs | no gameplay code: no grid, player, GAS, weapons or tests |
 | **BP** | Sonnet | a subtask; Unreal MCP doc; system docs | Blueprints derived from C++, material instances, maps, placed actors; one doc node per Blueprint | C++ classes never reach a playable map |
 | **Text** | Sonnet | a subtask; lore, characters, fictional films, company voice, dialogue tone; the mechanic node it writes for | upgrade texts, barks and alert lines in `Content/RogueRigs/Data/Text/`; a retrieval log (query, excerpt, output) | player-facing text sounds generic or breaks the lore |
-| **Style-guide** (critic) | Opus | the generated output only, never the generator's prompt; numbered rules L1–L4 and T1–T8 | a verdict per item: pass or fail, rule id, reason, corrected line | lore breaks and tone drift reach the game unnoticed |
+| **Style-guide** (critic) | Opus | the generated output only, never the generator's prompt; numbered rules L1–L4 and T1–T9 | a verdict per item: pass or fail, rule id, reason, corrected line | lore breaks and tone drift reach the game unnoticed |
 | *Art (planned)* | Sonnet | an asset need; art style guide, art prompts, color code, the entity spec | image prompts and candidate images (GPT image model through Kie.ai), self-reviewed against the style guide | every new asset needs a hand-written prompt and a manual style check |
 | *3D (planned)* | Sonnet | an owner-validated image; asset pipeline | a cleaned, split FBX through Meshy or Tripo and Blender MCP, ready for the BP agent to import | images never become game meshes without hours of manual work |
 
@@ -175,7 +175,7 @@ Art and 3D are specified but not built yet. Agent definitions: `.claude/agents/*
 Two agents of the crew produce the game's text, from the same vault lore that describes the game.
 
 - **`text` agent** (Sonnet, [`.claude/agents/text.md`](.claude/agents/text.md)): reads the lore, crew, company-voice and dialogue-tone nodes and writes Rook's upgrade card lines, Rook and Vesna barks and Kessler-Voss alert lines to `Content/RogueRigs/Data/Text/`. For each line it logs the query, the nodes read and the verbatim excerpt used (`Tools/content/logs/`).
-- **`style-guide` agent** (Opus, [`.claude/agents/style-guide.md`](.claude/agents/style-guide.md)): the critic. It sees the output only and returns pass or fail per line with a rule id (L1-L4, T1-T8), a reason and a corrected line. At most 2 correction loops, then the owner rules.
+- **`style-guide` agent** (Opus, [`.claude/agents/style-guide.md`](.claude/agents/style-guide.md)): the critic. It sees the output only and returns pass or fail per line with a rule id (L1-L4, T1-T9), a reason and a corrected line. At most 2 correction loops, then the owner rules.
 - **Validator** `Tools/content/validate_text.js`: schema, word counts, ids, verbatim excerpts and the correction loop, checked without a model.
 
 ```
