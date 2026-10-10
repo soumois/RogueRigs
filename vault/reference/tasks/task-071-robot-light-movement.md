@@ -3,7 +3,7 @@ id: task-071-robot-light-movement
 description: "Global task: robots move with a light custom movement instead of CharacterMovement; game thread measured before and after. On hold."
 parent: tasks-to-do-index
 kind: task
-status: todo
+status: in-progress
 ---
 # Robot light movement
 
@@ -11,7 +11,7 @@ status: todo
 - goal: Robots move with a light custom movement instead of CharacterMovement, same behaviour in play, game thread measured before and after on the real-game stress.
 - acceptance: build exits 0 with the editor closed; all `RogueRigs.*` tests pass headless; before/after numbers recorded in stress-grid-cells; robots still reach the miner around rock in the real-game stress (kills and damage to the miner logged); docs updated; lint clean; committed.
 - gdd_check: done by the Orchestrator when the task is planned (2026-10-10).
-- confirmed_by_owner: yes (2026-10-10), on hold: the owner launches it later, after his course assignments
+- confirmed_by_owner: yes (2026-10-10), launched 2026-10-10
 - milestone: M2
 - next_step: task-071-01-robot-light-movement
 - result: open

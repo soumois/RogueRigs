@@ -3,7 +3,7 @@ id: task-070-01-ore-in-rock
 description: "Ore scattered through the rock: nuggets inside rock blocks so ore drips during the whole dig, as in DRGS."
 parent: task-070-ore-in-rock
 kind: task
-status: todo
+status: in-progress
 ---
 # Ore scattered in the rock
 

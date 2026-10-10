@@ -3,7 +3,7 @@ id: task-071-01-robot-light-movement
 description: "Robots move with a light custom movement instead of CharacterMovement, same behaviour in play, game thread measured before and after on the real-game stress."
 parent: task-071-robot-light-movement
 kind: task
-status: todo
+status: in-progress
 ---
 # Robot light movement
 

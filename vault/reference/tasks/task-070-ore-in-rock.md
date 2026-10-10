@@ -3,7 +3,7 @@ id: task-070-ore-in-rock
 description: "Global task: Ore scattered through the rock: nuggets inside rock blocks so ore drips during the whole dig, as in DRGS."
 parent: tasks-to-do-index
 kind: task
-status: todo
+status: in-progress
 ---
 # Ore scattered in the rock
 
@@ -11,7 +11,7 @@ status: todo
 - goal: Ore scattered through the rock: nuggets inside rock blocks so ore drips during the whole dig, as in DRGS.
 - acceptance: build exits 0 with the editor closed; all `RogueRigs.*` tests pass headless; docs updated; lint clean; committed.
 - gdd_check: done by the Orchestrator when the task is planned (2026-10-09).
-- confirmed_by_owner: no (2026-10-09: open values to set with the owner at launch)
+- confirmed_by_owner: yes (2026-10-10), design phase only: the owner reviews the numbers before any code
 - milestone: M2
 - next_step: task-070-01-ore-in-rock
 - result: open
