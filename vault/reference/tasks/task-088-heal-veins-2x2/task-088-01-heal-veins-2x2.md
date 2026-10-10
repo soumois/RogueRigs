@@ -3,7 +3,7 @@ id: task-088-01-heal-veins-2x2
 description: "Heal veins are 2 x 2 in the layout and in code: 12 veins, 15 HP per pickup, 60 HP per vein."
 parent: task-088-heal-veins-2x2
 kind: task
-status: in-progress
+status: done
 ---
 # Heal veins 2 x 2 (layout)
 
@@ -15,11 +15,11 @@ status: in-progress
 - done_when: validate_layout.js exits 0; 12 heal veins of 2 x 2 (48 cells) counted by script; layout notes updated; lint clean; committed.
 - editor_state: any
 - token_ceiling: 50000
-- model: open
-- tokens: open
-- runs: open
+- model: sonnet
+- tokens: input 18, cache write 28330, cache read 154958, output 5750
+- runs: 1
 - milestone: M2
-- result: open
+- result: 12 heal veins of arena_m1_fine are 2 x 2 (48 cells, rock +60), validator exit 0, commit d4063e0. Tools/layout_gen/arena_fine.js still emits 3 x 3 (follow-up in 088-02).
 
 ## Relations
 - [[task-088-heal-veins-2x2]] — parent global task.

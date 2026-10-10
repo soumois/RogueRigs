@@ -147,6 +147,7 @@ kind: note
 | [[task-070-01-ore-in-rock]] | opus | 1 | 0k | 43k | 453k | 13k |
 | [[task-071-01-robot-light-movement]] | opus | 2 | 0k | 580k | 9409k | 74k |
 | [[task-087-01-card-desc-test]] | opus | 1 | 0k | 36k | 485k | 7k |
+| [[task-088-01-heal-veins-2x2]] | sonnet | 1 | 0k | 28k | 155k | 6k |
 
 ## Totals
 | Scope | Input | Cache write | Cache read | Output |
