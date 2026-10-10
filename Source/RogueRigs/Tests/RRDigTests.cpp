@@ -326,6 +326,11 @@ bool FRRDigRadiusTest::RunTest(const FString& Parameters)
 
 	const int32 Destroyed = Grid->DestroyCellsInRadius(Center, Radius, ERRTerrainDamageSource::Barrel);
 	TestEqual(TEXT("returned count = blocks inside"), Destroyed, Inside.Num());
+	// Drops go through the pickup spawn queue (4 per frame, task-070-01): let it drain before counting.
+	for (int32 Frame = 0; Frame < 4; ++Frame)
+	{
+		TestWorld.Tick();
+	}
 	for (const FIntPoint& Cell : Inside)
 	{
 		TestEqual(FString::Printf(TEXT("(%d, %d) destroyed"), Cell.X, Cell.Y), Grid->GetCellType(Cell), ERRCellType::Floor);
@@ -595,8 +600,8 @@ bool FRRDigArcSpeedsTest::RunTest(const FString& Parameters)
 {
 	using namespace RRDigTests;
 
-	// Heal ore at mining speed 1: 1.5 s per block, in parallel (the layout has no plain ore; ore uses the same 1.5 s). The
-		// 8-block arc takes 7 heal ore blocks and the rock (146, 136), which keeps its 0.5 s.
+	// Heal ore at mining speed 1: 1.5 s per block, in parallel (gold uses the same 1.5 s, RogueRigs.Ore.MineDeposit). Since
+	// task-088-01 the vein is 2 x 2 (147-148, 135-136): the 8-block arc holds its 4 blocks and 4 rocks, which keep their 0.5 s.
 	{
 		FTestWorld TestWorld;
 		ARRArenaGrid* Grid = nullptr;
@@ -614,7 +619,7 @@ bool FRRDigArcSpeedsTest::RunTest(const FString& Parameters)
 		{
 			HealOreCount += Grid->GetCellType(Cell) == ERRCellType::HealOre ? 1 : 0;
 		}
-		TestEqual(TEXT("heal ore: 7 of them are heal ore"), HealOreCount, 7);
+		TestEqual(TEXT("heal ore: the 4 blocks of the 2 x 2 vein are in the arc"), HealOreCount, 4);
 		TArray<bool> IsHealOre;
 		for (const FIntPoint& Cell : Arc)
 		{
@@ -998,7 +1003,7 @@ bool FRRDigFineGridDefaultsTest::RunTest(const FString& Parameters)
 			HealOre += Grid->GetCellType(FIntPoint(X, Y)) == ERRCellType::HealOre ? 1 : 0;
 		}
 	}
-	TestEqual(TEXT("108 heal ore cells (12 clusters of 3 x 3)"), HealOre, 108);
+	TestEqual(TEXT("48 heal ore cells (12 veins of 2 x 2, task-088-01)"), HealOre, 48);
 	TestNearlyEqual(TEXT("rock 0.5 s"), Grid->GetCellHealth(FineRockCell), 0.5f);
 	TestEqual(TEXT("one pickup per broken ore block"), FGridAccess::DropsOnDestroy(Grid), 1);
 

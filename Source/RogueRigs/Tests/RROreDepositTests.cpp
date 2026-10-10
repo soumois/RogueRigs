@@ -1,0 +1,460 @@
+// Rogue Rigs - automation tests of the ore deposits (task-070-01): ore type table, 2 x 2 gold placement, whole-deposit mining, drops and the pickup spawn cap.
+
+#include "Misc/AutomationTest.h"
+
+#if WITH_DEV_AUTOMATION_TESTS
+
+#include "RogueRigs.h"
+#include "Drone/RRDrone.h"
+#include "EngineUtils.h"
+#include "Grid/RRArenaGrid.h"
+#include "Grid/RROreTypeRow.h"
+#include "Objectives/RRConsole.h"
+#include "Pickups/RRPickup.h"
+#include "Pickups/RRPickupSubsystem.h"
+#include "Tests/RRTestAccess.h"
+#include "Tests/RRTestHarness.h"
+#include "Weapons/RRAutoFireComponent.h"
+#include "Weapons/RRWeapon.h"
+
+namespace RROreDepositTests
+{
+	using namespace RRTestHarness;
+	using namespace RRTestAccess;
+
+	/** Ore id of gold in OreTypes.csv. */
+	const FName GoldId(TEXT("Gold"));
+
+	/** Blueprint ore pickup, used when BP_ArenaGrid has no OrePickupClass. */
+	const TCHAR* const OrePickupClassPath = TEXT("/Game/RogueRigs/Blueprints/Pickups/BP_PickupOre.BP_PickupOre_C");
+
+	/** Spawns BP_ArenaGrid on the game layout (arena_m1_fine, 67 uu) with ore deposits on or off and the given seed. */
+	ARRArenaGrid* SpawnOreGrid(FAutomationTestBase& Test, const FTestWorld& TestWorld, bool bPlaceDeposits, int32 Seed = 1)
+	{
+		UClass* GridClass = LoadTestClass<ARRArenaGrid>(Test, ArenaGridClassPath);
+		if (!GridClass)
+		{
+			return nullptr;
+		}
+		const FTransform Origin(FVector::ZeroVector);
+		ARRArenaGrid* Grid = TestWorld.Get()->SpawnActorDeferred<ARRArenaGrid>(GridClass, Origin, nullptr, nullptr, ESpawnActorCollisionHandlingMethod::AlwaysSpawn);
+		if (!Test.TestNotNull(TEXT("grid spawned"), Grid))
+		{
+			return nullptr;
+		}
+		FGridAccess::LayoutNameOf(Grid) = FineLayoutName;
+		FGridAccess::CellSizeOf(Grid) = FineCellSize;
+		FGridAccess::PlaceOreDepositsOf(Grid) = bPlaceDeposits;
+		FGridAccess::OreSeedOf(Grid) = Seed;
+		if (!FGridAccess::OreClassRef(Grid))
+		{
+			FGridAccess::OreClassRef(Grid) = LoadTestClass<ARRPickup>(Test, OrePickupClassPath);
+		}
+		Grid->FinishSpawning(Origin);
+		Test.TestTrue(TEXT("fine layout loaded"), Grid->GetGridSize() == FIntPoint(240, 240));
+		return Grid;
+	}
+
+	/** Ids of every deposit placed from the ore table. */
+	TArray<int32> GetTableDepositIds(const ARRArenaGrid* Grid)
+	{
+		TArray<int32> Ids;
+		for (int32 Id = 0; Id < Grid->GetDepositCount(); ++Id)
+		{
+			if (Grid->GetDeposit(Id)->bPlacedFromTable)
+			{
+				Ids.Add(Id);
+			}
+		}
+		return Ids;
+	}
+
+	/** Live Ore pickups in the world; OutValueSum receives the sum of their ore values. */
+	int32 CountOrePickups(UWorld* World, int32& OutValueSum)
+	{
+		int32 Count = 0;
+		OutValueSum = 0;
+		for (TActorIterator<ARRPickup> It(World); It; ++It)
+		{
+			if (IsValid(*It) && It->GetPickupType() == ERRPickupType::Ore)
+			{
+				++Count;
+				OutValueSum += It->GetOreValue();
+			}
+		}
+		return Count;
+	}
+
+	/** Mean world center of a deposit's cells. */
+	FVector GetDepositCenter(const ARRArenaGrid* Grid, const FRRGridDeposit& Deposit)
+	{
+		FVector Sum = FVector::ZeroVector;
+		for (const FIntPoint& Cell : Deposit.Cells)
+		{
+			Sum += Grid->GetCellCenter(Cell.X, Cell.Y);
+		}
+		return Deposit.Cells.Num() > 0 ? Sum / Deposit.Cells.Num() : Sum;
+	}
+}
+
+IMPLEMENT_SIMPLE_AUTOMATION_TEST(FRROreTableRowTest, "RogueRigs.Ore.TableRow",
+	EAutomationTestFlags::EditorContext | EAutomationTestFlags::EngineFilter)
+
+bool FRROreTableRowTest::RunTest(const FString& Parameters)
+{
+	using namespace RROreDepositTests;
+
+	// OreTypes.csv, row Gold (owner 2026-10-10): 8 % of the rock, 2 x 2 deposits, value 1, amber-gold colour.
+	FRROreTypeRow Gold;
+	if (!TestTrue(TEXT("row Gold found in OreTypes.csv"), ARRArenaGrid::GetOreType(GoldId, Gold)))
+	{
+		return false;
+	}
+	TestEqual(TEXT("gold is the Ore block type"), Gold.CellType, ERRCellType::Ore);
+	TestNearlyEqual(TEXT("gold share of rock 0.08"), Gold.RockShare, 0.08f);
+	TestEqual(TEXT("gold deposits are 2 x 2"), Gold.GroupSize, 2);
+	TestEqual(TEXT("gold chunk value 1"), Gold.ChunkValue, 1);
+	TestTrue(TEXT("gold colour is amber-gold (R > G > B)"), Gold.Color.R > Gold.Color.G && Gold.Color.G > Gold.Color.B);
+	AddExpectedError(TEXT("row 'Silver' not found"), EAutomationExpectedErrorFlags::Contains, 1);
+	FRROreTypeRow Missing;
+	TestFalse(TEXT("an unknown ore id is not found"), ARRArenaGrid::GetOreType(TEXT("Silver"), Missing));
+	return true;
+}
+
+IMPLEMENT_SIMPLE_AUTOMATION_TEST(FRROrePlacementTest, "RogueRigs.Ore.Placement",
+	EAutomationTestFlags::EditorContext | EAutomationTestFlags::EngineFilter)
+
+bool FRROrePlacementTest::RunTest(const FString& Parameters)
+{
+	using namespace RROreDepositTests;
+
+	FTestWorld TestWorld;
+	ARRArenaGrid* Grid = SpawnOreGrid(*this, TestWorld, /*bPlaceDeposits*/ true);
+	ARRArenaGrid* Plain = SpawnOreGrid(*this, TestWorld, /*bPlaceDeposits*/ false);
+	ARRArenaGrid* Same = SpawnOreGrid(*this, TestWorld, /*bPlaceDeposits*/ true);
+	if (!Grid || !Plain || !Same)
+	{
+		return false;
+	}
+
+	// Count: 8 % of the layout rock in 2 x 2 groups (17 904 rock blocks before task-088-01 gave 358).
+	int32 PlainRock = 0;
+	for (int32 Y = 0; Y < 240; ++Y)
+	{
+		for (int32 X = 0; X < 240; ++X)
+		{
+			PlainRock += Plain->GetCellType(FIntPoint(X, Y)) == ERRCellType::Rock ? 1 : 0;
+		}
+	}
+	const int32 Expected = FMath::RoundToInt32(0.08f * PlainRock / 4.f);
+	const TArray<int32> Ids = GetTableDepositIds(Grid);
+	const int32 Placed = Grid->GetPlacedDepositCount(GoldId);
+	UE_LOG(LogRogueRigs, Display, TEXT("RogueRigs.Ore.Placement: %d gold deposits on arena_m1_fine (%d rock blocks, expected %d)."), Placed, PlainRock, Expected);
+	AddInfo(FString::Printf(TEXT("%d gold deposits on arena_m1_fine (%d rock blocks, expected %d)"), Placed, PlainRock, Expected));
+	TestEqual(TEXT("placed count = 8 % of rock / 4"), Placed, Expected);
+	TestEqual(TEXT("one table deposit per placed count"), Ids.Num(), Placed);
+	TestTrue(TEXT("count close to 358"), FMath::Abs(Placed - 358) <= 10);
+	TestEqual(TEXT("no deposit without the table"), GetTableDepositIds(Plain).Num(), 0);
+
+	// Shape and overlap: each deposit is a 2 x 2 square of gold, every cell was rock in the plain layout (never heal ore,
+	// barrel, floor or void), no cell in two deposits, and the cell's id is its deposit.
+	TSet<FIntPoint> Seen;
+	int32 Errors = 0;
+	for (const int32 Id : Ids)
+	{
+		const FRRGridDeposit& Deposit = *Grid->GetDeposit(Id);
+		FIntPoint Min(TNumericLimits<int32>::Max(), TNumericLimits<int32>::Max());
+		FIntPoint Max(TNumericLimits<int32>::Min(), TNumericLimits<int32>::Min());
+		bool bOk = Deposit.Cells.Num() == 4 && Deposit.OreId == GoldId && Deposit.CellType == ERRCellType::Ore && Deposit.ChunkValue == 1;
+		for (const FIntPoint& Cell : Deposit.Cells)
+		{
+			Min = FIntPoint(FMath::Min(Min.X, Cell.X), FMath::Min(Min.Y, Cell.Y));
+			Max = FIntPoint(FMath::Max(Max.X, Cell.X), FMath::Max(Max.Y, Cell.Y));
+			bool bAlreadySeen = false;
+			Seen.Add(Cell, &bAlreadySeen);
+			bOk &= !bAlreadySeen && Grid->GetCellType(Cell) == ERRCellType::Ore && Plain->GetCellType(Cell) == ERRCellType::Rock
+				&& Grid->GetDepositId(Cell) == Id && Grid->IsTableDepositCell(Cell);
+		}
+		bOk &= Max - Min == FIntPoint(1, 1);
+		if (!bOk && ++Errors <= 5)
+		{
+			AddError(FString::Printf(TEXT("deposit %d is not a 2 x 2 gold square on rock (%d cells, from %s to %s)"), Id, Deposit.Cells.Num(), *Min.ToString(), *Max.ToString()));
+		}
+	}
+	TestEqual(TEXT("every deposit is a 2 x 2 gold square on former rock"), Errors, 0);
+	TestEqual(TEXT("gold cells = 4 x deposits"), Seen.Num(), 4 * Ids.Num());
+
+	// Heal veins and barrels are untouched: same cells as the plain build.
+	int32 Changed = 0;
+	for (int32 Y = 0; Y < 240; ++Y)
+	{
+		for (int32 X = 0; X < 240; ++X)
+		{
+			const ERRCellType PlainType = Plain->GetCellType(FIntPoint(X, Y));
+			if ((PlainType == ERRCellType::HealOre || PlainType == ERRCellType::Barrel) && Grid->GetCellType(FIntPoint(X, Y)) != PlainType)
+			{
+				++Changed;
+			}
+		}
+	}
+	TestEqual(TEXT("heal ore and barrel cells unchanged"), Changed, 0);
+
+	// Deterministic: same layout, table and seed give the same deposits.
+	const TArray<int32> SameIds = GetTableDepositIds(Same);
+	bool bSame = SameIds.Num() == Ids.Num();
+	for (int32 Index = 0; bSame && Index < Ids.Num(); ++Index)
+	{
+		bSame = Grid->GetDeposit(Ids[Index])->Cells == Same->GetDeposit(SameIds[Index])->Cells;
+	}
+	TestTrue(TEXT("same seed, same deposits"), bSame);
+
+	// Mining unit: every block of a deposit returns its 4 blocks, never a touching deposit's (deposits may touch).
+	int32 Touching = 0;
+	int32 WrongUnits = 0;
+	TArray<FIntPoint> Unit;
+	for (const int32 Id : Ids)
+	{
+		for (const FIntPoint& Cell : Grid->GetDeposit(Id)->Cells)
+		{
+			if (Grid->GetDepositCells(Cell, Unit) != 4 || !Unit.ContainsByPredicate([Id, Grid](const FIntPoint& C) { return Grid->GetDepositId(C) == Id; }))
+			{
+				++WrongUnits;
+			}
+			for (const FIntPoint Step : { FIntPoint(1, 0), FIntPoint(0, 1) })
+			{
+				const int32 Other = Grid->GetDepositId(Cell + Step);
+				Touching += Other != INDEX_NONE && Other != Id ? 1 : 0;
+			}
+		}
+	}
+	AddInfo(FString::Printf(TEXT("%d touching deposit edges"), Touching));
+	TestEqual(TEXT("each deposit block mines exactly its 4 blocks"), WrongUnits, 0);
+
+	// Consoles never mark table deposit blocks.
+	if (Ids.Num() > 0)
+	{
+		const FIntPoint Center = Grid->GetDeposit(Ids[0])->Cells[0];
+		const TArray<FIntPoint> Markable = GetDefault<ARRConsole>()->FindMarkableCells(Grid, Center);
+		TestTrue(TEXT("console marks rocks around a deposit"), Markable.Num() > 0);
+		TestFalse(TEXT("console never marks a deposit block"), Markable.ContainsByPredicate([Grid](const FIntPoint& Cell) { return Grid->IsTableDepositCell(Cell); }));
+	}
+
+	// Colour: the gold blocks' rendering instances carry the row colour in custom data (R, G, B).
+	if (Ids.Num() > 0)
+	{
+		const FIntPoint Cell = Grid->GetDeposit(Ids[0])->Cells[0];
+		UHierarchicalInstancedStaticMeshComponent* Component = FGridAccess::CellComponent(Grid, Cell);
+		const int32 Instance = FGridAccess::InstanceIndices(Grid)[Cell.Y * 240 + Cell.X];
+		const int32 First = Grid->GetOreColorCustomDataIndex();
+		FRROreTypeRow Gold;
+		ARRArenaGrid::GetOreType(GoldId, Gold);
+		if (TestNotNull(TEXT("gold block has a rendering instance"), Component) && TestTrue(TEXT("room for the colour"), Component->NumCustomDataFloats >= First + 3))
+		{
+			const int32 Base = Instance * Component->NumCustomDataFloats;
+			TestNearlyEqual(TEXT("custom data R"), Component->PerInstanceSMCustomData[Base + First], Gold.Color.R);
+			TestNearlyEqual(TEXT("custom data G"), Component->PerInstanceSMCustomData[Base + First + 1], Gold.Color.G);
+			TestNearlyEqual(TEXT("custom data B"), Component->PerInstanceSMCustomData[Base + First + 2], Gold.Color.B);
+		}
+	}
+	return true;
+}
+
+IMPLEMENT_SIMPLE_AUTOMATION_TEST(FRROreMineDepositTest, "RogueRigs.Ore.MineDeposit",
+	EAutomationTestFlags::EditorContext | EAutomationTestFlags::EngineFilter)
+
+bool FRROreMineDepositTest::RunTest(const FString& Parameters)
+{
+	using namespace RROreDepositTests;
+
+	// The miner stands on a floor cell touching a gold deposit block from the north, with no input: the drone digs the arc,
+	// the whole deposit takes the damage, shakes together and breaks at once after 1.5 s, popping 4 chunks of value 1.
+	FTestWorld TestWorld;
+	ARRArenaGrid* Grid = SpawnOreGrid(*this, TestWorld, /*bPlaceDeposits*/ true);
+	if (!Grid)
+	{
+		return false;
+	}
+	int32 TargetId = INDEX_NONE;
+	FIntPoint StandCell(-1, -1);
+	for (const int32 Id : GetTableDepositIds(Grid))
+	{
+		for (const FIntPoint& Cell : Grid->GetDeposit(Id)->Cells)
+		{
+			const FIntPoint North = Cell - FIntPoint(0, 1);
+			// Open 3 x 2 area north of the block so the capsule stands on floor.
+			bool bOpen = true;
+			for (int32 DX = -1; DX <= 1 && bOpen; ++DX)
+			{
+				for (int32 DY = 0; DY <= 1 && bOpen; ++DY)
+				{
+					const ERRCellType Type = Grid->GetCellType(North + FIntPoint(DX, -DY));
+					bOpen = Type == ERRCellType::Floor || Type == ERRCellType::Spawn;
+				}
+			}
+			if (bOpen)
+			{
+				TargetId = Id;
+				StandCell = North;
+				break;
+			}
+		}
+		if (TargetId != INDEX_NONE)
+		{
+			break;
+		}
+	}
+	if (!TestTrue(TEXT("a gold deposit with open floor to its north exists"), TargetId != INDEX_NONE))
+	{
+		return false;
+	}
+	const TArray<FIntPoint> DepositCells = Grid->GetDeposit(TargetId)->Cells;
+	AddInfo(FString::Printf(TEXT("deposit %d at %s, miner on %s"), TargetId, *DepositCells[0].ToString(), *StandCell.ToString()));
+
+	ARRMiner* Miner = SpawnMiner(*this, TestWorld, Grid, StandCell);
+	ARRDrone* Drone = Miner ? Miner->GetDrone() : nullptr;
+	if (!TestNotNull(TEXT("BP_Miner spawned its drone"), Drone))
+	{
+		return false;
+	}
+	for (ARRWeapon* Weapon : Miner->GetWeapons())
+	{
+		if (IsValid(Weapon) && Weapon->GetAutoFireComponent())
+		{
+			Weapon->GetAutoFireComponent()->StopFiring();
+		}
+	}
+
+	// Every deposit dug by the arc, recorded each frame; frames at which each target cell broke.
+	TSet<int32> DugDeposits;
+	TArray<int32> BreakFrames;
+	BreakFrames.Init(INDEX_NONE, DepositCells.Num());
+	bool bAllShookTogether = false;
+	for (int32 Frame = 1; Frame <= 150; ++Frame)
+	{
+		TestWorld.Tick();
+		for (const FIntPoint& Cell : Drone->GetDigCells())
+		{
+			const int32 Id = Grid->GetDepositId(Cell);
+			if (Id != INDEX_NONE)
+			{
+				DugDeposits.Add(Id);
+			}
+		}
+		if (Frame == 30)
+		{
+			bAllShookTogether = true;
+			for (const FIntPoint& Cell : DepositCells)
+			{
+				bAllShookTogether &= FGridAccess::Shaking(Grid).Contains(Cell);
+			}
+		}
+		bool bAllBroken = true;
+		for (int32 Index = 0; Index < DepositCells.Num(); ++Index)
+		{
+			if (BreakFrames[Index] == INDEX_NONE && !Grid->IsBlockCell(DepositCells[Index]))
+			{
+				BreakFrames[Index] = Frame;
+			}
+			bAllBroken &= BreakFrames[Index] != INDEX_NONE;
+		}
+		if (bAllBroken)
+		{
+			break;
+		}
+	}
+	TestTrue(TEXT("the deposit was dug"), DugDeposits.Contains(TargetId));
+	TestTrue(TEXT("the 4 blocks shake together while mined"), bAllShookTogether);
+	AddInfo(FString::Printf(TEXT("break frames %d %d %d %d"), BreakFrames[0], BreakFrames[1], BreakFrames[2], BreakFrames[3]));
+	for (int32 Index = 0; Index < DepositCells.Num(); ++Index)
+	{
+		TestEqual(FString::Printf(TEXT("block %s breaks with the first"), *DepositCells[Index].ToString()), BreakFrames[Index], BreakFrames[0]);
+	}
+	TestTrue(TEXT("the deposit breaks after about 1.5 s"), BreakFrames[0] >= 89 && BreakFrames[0] <= 91);
+
+	// Drops: 4 chunks of value 1 per broken deposit (other deposits of the arc broke with the same rule).
+	for (int32 Frame = 0; Frame < 4; ++Frame)
+	{
+		TestWorld.Tick();
+	}
+	int32 Broken = 0;
+	for (const int32 Id : DugDeposits)
+	{
+		bool bGone = true;
+		for (const FIntPoint& Cell : Grid->GetDeposit(Id)->Cells)
+		{
+			bGone &= !Grid->IsBlockCell(Cell);
+		}
+		Broken += bGone ? 1 : 0;
+	}
+	int32 ValueSum = 0;
+	const int32 Chunks = CountOrePickups(TestWorld.Get(), ValueSum);
+	AddInfo(FString::Printf(TEXT("%d deposit(s) broken, %d ore chunks, value %d"), Broken, Chunks, ValueSum));
+	TestEqual(TEXT("4 chunks per broken deposit"), Chunks, 4 * Broken);
+	TestEqual(TEXT("each chunk is worth 1"), ValueSum, Chunks);
+	return true;
+}
+
+IMPLEMENT_SIMPLE_AUTOMATION_TEST(FRROreExplosionDropsTest, "RogueRigs.Ore.ExplosionDrops",
+	EAutomationTestFlags::EditorContext | EAutomationTestFlags::EngineFilter)
+
+bool FRROreExplosionDropsTest::RunTest(const FString& Parameters)
+{
+	using namespace RROreDepositTests;
+
+	// No start-zone protection: the deposit nearest the spawn is blown up (as an arrival capsule or a barrel would); its
+	// chunks are thrown like any explosion drop. Then three deposits broken in one frame respect the 4-per-frame spawn cap.
+	FTestWorld TestWorld;
+	ARRArenaGrid* Grid = SpawnOreGrid(*this, TestWorld, /*bPlaceDeposits*/ true);
+	URRPickupSubsystem* Pickups = TestWorld.Get()->GetSubsystem<URRPickupSubsystem>();
+	if (!Grid || !TestNotNull(TEXT("pickup subsystem"), Pickups))
+	{
+		return false;
+	}
+	TestEqual(TEXT("cap of 4 pickups per frame"), Pickups->GetMaxSpawnsPerFrame(), 4);
+	TArray<int32> Ids = GetTableDepositIds(Grid);
+	if (!TestTrue(TEXT("at least 4 deposits"), Ids.Num() >= 4))
+	{
+		return false;
+	}
+	const FVector SpawnCenter = Grid->GetCellCenter(Grid->GetSpawnCell().X, Grid->GetSpawnCell().Y);
+	Ids.Sort([Grid, SpawnCenter](int32 A, int32 B)
+	{
+		return FVector::DistSquared2D(GetDepositCenter(Grid, *Grid->GetDeposit(A)), SpawnCenter)
+			< FVector::DistSquared2D(GetDepositCenter(Grid, *Grid->GetDeposit(B)), SpawnCenter);
+	});
+	const FRRGridDeposit& Nearest = *Grid->GetDeposit(Ids[0]);
+	AddInfo(FString::Printf(TEXT("nearest deposit to the spawn at %s, %.0f uu away"), *Nearest.Cells[0].ToString(),
+		FVector::Dist2D(GetDepositCenter(Grid, Nearest), SpawnCenter)));
+
+	// Radius 0.75 cell around the deposit centre: exactly its 4 blocks (their centres are 0.71 cell away, the next 1.58).
+	const int32 Destroyed = Grid->DestroyCellsInRadius(GetDepositCenter(Grid, Nearest), 0.75f * Grid->GetCellSize(), ERRTerrainDamageSource::Barrel);
+	TestEqual(TEXT("explosion breaks the 4 blocks"), Destroyed, 4);
+	int32 ValueSum = 0;
+	TestEqual(TEXT("4 chunks thrown at once"), CountOrePickups(TestWorld.Get(), ValueSum), 4);
+	TestEqual(TEXT("chunks worth 1 each"), ValueSum, 4);
+	for (TActorIterator<ARRPickup> It(TestWorld.Get()); It; ++It)
+	{
+		TestEqual(TEXT("chunk pops from the grid"), It->GetPhase(), ERRPickupPhase::Pop);
+	}
+
+	// Next frame: three more deposits in one frame = 12 chunks, 4 now and 4 per following frame.
+	TestWorld.Tick();
+	for (int32 Index = 1; Index <= 3; ++Index)
+	{
+		for (const FIntPoint& Cell : Grid->GetDeposit(Ids[Index])->Cells)
+		{
+			Grid->DestroyCell(Cell, ERRTerrainDamageSource::Kamikaze);
+		}
+	}
+	TestEqual(TEXT("only 4 spawned this frame"), CountOrePickups(TestWorld.Get(), ValueSum), 8);
+	TestEqual(TEXT("8 queued"), Pickups->GetQueuedSpawnCount(), 8);
+	TestWorld.Tick();
+	TestEqual(TEXT("4 more the next frame"), CountOrePickups(TestWorld.Get(), ValueSum), 12);
+	TestWorld.Tick();
+	TestEqual(TEXT("the last 4 the frame after"), CountOrePickups(TestWorld.Get(), ValueSum), 16);
+	TestEqual(TEXT("queue empty"), Pickups->GetQueuedSpawnCount(), 0);
+	TestEqual(TEXT("16 chunks worth 16"), ValueSum, 16);
+	return true;
+}
+
+#endif // WITH_DEV_AUTOMATION_TESTS

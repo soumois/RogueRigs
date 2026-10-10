@@ -49,6 +49,9 @@ namespace RRTestAccess
 		static float& CellSizeOf(ARRArenaGrid* Grid) { return Grid->*(&FGridAccess::CellSize); }
 		static TSubclassOf<ARRPickup>& HealClass(ARRArenaGrid* Grid) { return Grid->*(&FGridAccess::HealPickupClass); }
 		static TSubclassOf<ARRPickup> OreClass(const ARRArenaGrid* Grid) { return Grid->*(&FGridAccess::OrePickupClass); }
+		static TSubclassOf<ARRPickup>& OreClassRef(ARRArenaGrid* Grid) { return Grid->*(&FGridAccess::OrePickupClass); }
+		static bool& PlaceOreDepositsOf(ARRArenaGrid* Grid) { return Grid->*(&FGridAccess::bPlaceOreDeposits); }
+		static int32& OreSeedOf(ARRArenaGrid* Grid) { return Grid->*(&FGridAccess::OreSeed); }
 
 		/** Rendering instances of a visual type, summed over its chunk HISMs. */
 		static int32 InstanceCount(const ARRArenaGrid* Grid, ERRCellType Key)
