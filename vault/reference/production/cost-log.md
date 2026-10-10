@@ -132,6 +132,8 @@ kind: note
 | [[task-067-01-real-game-stress]] | opus | 1 | 0k | 183k | 5745k | 52k |
 | [[task-068-01-shipping-insights]] | opus | 2 | 0k | 146k | 5846k | 48k |
 | [[task-072-02-film-pool]] | opus | 1 | 0k | 33k | 67k | 6k |
+| [[task-072-01-film-pool]] | sonnet | 1 | 0k | 17k | 86k | 6k |
+| [[task-073-01-text-schema]] | opus | 1 | 0k | 55k | 263k | 18k |
 
 ## Totals
 | Scope | Input | Cache write | Cache read | Output |

@@ -3,7 +3,7 @@ id: task-073-01-text-schema
 description: "A4 schema: the text-content-schema node defines the 3 content files, the retrieval log and the critic review file."
 parent: task-073-text-schema
 kind: task
-status: in-progress
+status: done
 ---
 # A4 text-content-schema
 
@@ -15,11 +15,11 @@ status: in-progress
 - done_when: node written with a valid example per file; lint clean; committed.
 - editor_state: any
 - token_ceiling: 40000
-- model: open
-- tokens: open
-- runs: open
+- model: opus
+- tokens: input 18, cache write 54704, cache read 263285, output 17821
+- runs: 1
 - milestone: M2
-- result: open
+- result: Schema split in 4 nodes (text-content-schema, -files, -events, text-run-log-schema), commit 308f3ac; 14 bark triggers and 5 alert events from existing events.
 
 ## Relations
 - [[task-073-text-schema]] — parent global task.

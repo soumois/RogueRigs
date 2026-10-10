@@ -3,7 +3,7 @@ id: task-074-text-validator
 description: "Global task: A4 validator: Tools/content/validate_text.js checks schema, word counts, numbers and log excerpts, with a test on an invalid file."
 parent: tasks-index
 kind: task
-status: todo
+status: in-progress
 ---
 # A4 text validator
 
