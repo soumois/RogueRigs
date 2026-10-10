@@ -13,7 +13,6 @@ A global task moves to [[tasks-done-index]] when it is done (`vault/scripts/task
 - [[task-069-min-spec]] — Minimum PC specification defined and checked against the stress scenarios. Status todo.
 - [[task-070-ore-in-rock]] — Ore scattered through the rock: nuggets inside rock blocks so ore drips during the whole dig, as in DRGS. Status todo.
 - [[task-071-robot-light-movement]] — Robots move with a light custom movement instead of CharacterMovement, before/after on the real-game stress. Status todo, on hold (owner 2026-10-10).
-- [[task-075-baseline-run]] — A4 baseline: a small sample of each content type generated without reading the lore, kept as the comparison point. Status todo.
 - [[task-076-upgrade-texts]] — A4 upgrade card texts: text agent writes, validator checks, critic reviews, corrections applied (2 loops at most). Status todo.
 - [[task-077-barks]] — A4 Rook and Vesna barks: text agent writes, validator checks, critic reviews, corrections applied (2 loops at most). Status todo.
 - [[task-078-alert-texts]] — A4 Kessler-Voss alerts: text agent writes, validator checks, critic reviews, corrections applied (2 loops at most). Status todo.

@@ -82,3 +82,4 @@ Archive: it exceeds the index size limits of [[_authoring]] on purpose (owner, 2
 - [[task-072-film-pool]] — A4 film pool: fictional-films grows to about 50 parody titles of badass 80s and 90s action films, checked by the critic. Status done.
 - [[task-073-text-schema]] — A4 schema: the text-content-schema node defines the 3 content files, the retrieval log and the critic review file. Status done.
 - [[task-074-text-validator]] — A4 validator: Tools/content/validate_text.js checks schema, word counts, numbers and log excerpts, with a test on an invalid file. Status done.
+- [[task-075-baseline-run]] — A4 baseline: a small sample of each content type generated without reading the lore, kept as the comparison point. Status done.

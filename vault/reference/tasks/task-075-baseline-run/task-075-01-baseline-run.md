@@ -3,7 +3,7 @@ id: task-075-01-baseline-run
 description: "A4 baseline: a small sample of each content type generated without reading the lore, kept as the comparison point."
 parent: task-075-baseline-run
 kind: task
-status: in-progress
+status: done
 ---
 # A4 baseline run without lore
 
@@ -15,11 +15,11 @@ status: in-progress
 - done_when: baseline file exists in logs only; nothing added to Content/; committed.
 - editor_state: any
 - token_ceiling: 30000
-- model: open
-- tokens: open
-- runs: open
+- model: sonnet
+- tokens: input 8, cache write 20524, cache read 46323, output 3913
+- runs: 1
 - milestone: M2
-- result: open
+- result: Baseline without lore: 3 files x 6 items in Tools/content/logs/baseline/, validator exit 0, commit 45967ec.
 
 ## Relations
 - [[task-075-baseline-run]] — parent global task.
