@@ -7,7 +7,7 @@
 | 1 | GDD First Draft | [A1-gdd-first-draft](assignments/A1-gdd-first-draft/) | Submitted |
 | 2 | GDD Final Draft | [A2-gdd-final-draft](assignments/A2-gdd-final-draft/) | Submitted |
 | 3 | Building an Agent Crew | [A3-agent-crew](assignments/A3-agent-crew/) | Submitted (tag [`a3-submission`](https://github.com/soumois/RogueRigs/tree/a3-submission)) |
-| 4 | Dynamic Content Pipeline | [A4-dynamic-content-pipeline](assignments/A4-dynamic-content-pipeline/) | In progress |
+| 4 | Dynamic Content Pipeline | [A4-dynamic-content-pipeline](assignments/A4-dynamic-content-pipeline/) | Submitted-ready |
 
 All assignments: [assignments/](assignments/).
 
@@ -169,6 +169,21 @@ Agents never talk to each other. Every hand-off goes through files: the Orchestr
 | *3D (planned)* | Sonnet | an owner-validated image; asset pipeline | a cleaned, split FBX through Meshy or Tripo and Blender MCP, ready for the BP agent to import | images never become game meshes without hours of manual work |
 
 Art and 3D are specified but not built yet. Agent definitions: `.claude/agents/*.md` (Claude Code subagents: model, tools, turn limit) point to their specs in `vault/reference/agents/`, the single source of truth any AI tool can read.
+
+## Content pipeline: player-facing text
+
+Two agents of the crew produce the game's text, from the same vault lore that describes the game.
+
+- **`text` agent** (Sonnet, [`.claude/agents/text.md`](.claude/agents/text.md)): reads the lore, crew, company-voice and dialogue-tone nodes and writes Rook's upgrade card lines, Rook and Vesna barks and Kessler-Voss alert lines to `Content/RogueRigs/Data/Text/`. For each line it logs the query, the nodes read and the verbatim excerpt used (`Tools/content/logs/`).
+- **`style-guide` agent** (Opus, [`.claude/agents/style-guide.md`](.claude/agents/style-guide.md)): the critic. It sees the output only and returns pass or fail per line with a rule id (L1-L4, T1-T8), a reason and a corrected line. At most 2 correction loops, then the owner rules.
+- **Validator** `Tools/content/validate_text.js`: schema, word counts, ids, verbatim excerpts and the correction loop, checked without a model.
+
+```
+node Tools/content/validate_text.js <content file> --log <log file> [--review <review file>]
+node Tools/content/validate_text.js --selftest
+```
+
+A C++ loader (`Source/RogueRigs/Text/`) reads the files at runtime; no AI runs in the game. Retrieval tables, critic corrections and the full run commands: [assignments/A4-dynamic-content-pipeline/](assignments/A4-dynamic-content-pipeline/).
 
 ## How a request runs
 

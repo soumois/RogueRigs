@@ -7,6 +7,6 @@ Capstone game: **Rogue Rigs**, a top-down roguelite auto-shooter in Unreal Engin
 | 1 | GDD First Draft | [A1-gdd-first-draft](A1-gdd-first-draft/) | Submitted |
 | 2 | GDD Final Draft | [A2-gdd-final-draft](A2-gdd-final-draft/) | Submitted |
 | 3 | Building an Agent Crew | [A3-agent-crew](A3-agent-crew/) | Submitted (tag [`a3-submission`](https://github.com/soumois/RogueRigs/tree/a3-submission)) |
-| 4 | Dynamic Content Pipeline | [A4-dynamic-content-pipeline](A4-dynamic-content-pipeline/) | In progress |
+| 4 | Dynamic Content Pipeline | [A4-dynamic-content-pipeline](A4-dynamic-content-pipeline/) | Submitted-ready |
 
 The project itself, its vault and the agent crew are described in the [root README](../README.md).
