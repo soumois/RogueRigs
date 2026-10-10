@@ -3,7 +3,7 @@ id: task-075-01-baseline-run
 description: "A4 baseline: a small sample of each content type generated without reading the lore, kept as the comparison point."
 parent: task-075-baseline-run
 kind: task
-status: todo
+status: in-progress
 ---
 # A4 baseline run without lore
 
