@@ -12,7 +12,7 @@ Measure in S0 ([[stress-test-m1]]) before changing any architecture.
 
 | Cost center | Finding in the repo or GDD | Measure or fallback | Hours |
 |---|---|---|---|
-| Enemy movement | `ATwinStickNPC` is an `ACharacter`: one CharacterMovement per enemy, capsule, enemy-enemy collision | S0 with 200 enemies. Fallback: pawn with simple flat-floor movement, hand-made separation | 0.5 measure; 2–3 fallback |
+| Enemy movement | Robots are `ACharacter`s; CharacterMovement cost 5.56 ms per frame at ≈ 205 real-game robots (task-068-01 trace) | Done (task-071-01): light kinematic step on the flat floor behind `rr.Enemy.LightMovement`, movement 4.39 ms, game thread −2.4 to −4.4 ms at 250 ([[stress-grid-cells]], [[sys-enemies-movement]]); next: the remaining swept move (child transforms, hit capsule overlaps) | done |
 | Pathfinding | `RuntimeGeneration=Dynamic`, 1000 uu tiles: each destroyed block rebuilds tiles, then 200 agents re-path | Flow field: BFS from the miner on the grid, no navmesh | 2 |
 | Animation | 150+ animated skeletal meshes (rigid parts on bones) | Animation Budget Allocator plugin, or lower animation rate at distance | 1 |
 | Rendering | `DefaultEngine.ini` enables Lumen GI and reflections, virtual shadows, hardware ray tracing, Substrate | Test without Lumen and ray tracing for flat low-poly with one main light; 5.8 also offers Lumen Lite | 0.5 |
@@ -32,3 +32,5 @@ Ranked optimization leads, with what task-018 already did: [[perf-leads]].
 - [[perf-trace-m1]] — per-timer trace of the cost centers.
 - [[perf-leads]] — ranked optimization leads split out of this node.
 - [[stress-opt-m1]] — post-optimization tables and ceiling.
+- [[stress-grid-cells]] — before/after numbers of the robot light movement (task-071-01).
+- [[sys-enemies-movement]] — the light movement that replaced the robots' walking physics.
