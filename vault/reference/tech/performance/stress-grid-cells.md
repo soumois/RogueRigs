@@ -1,6 +1,6 @@
 ---
 id: stress-grid-cells
-description: "Cell size stress (task-023-01): 200 vs 100 vs 67 uu cells, frame times, explosions, dig, flow field, spawn scan, memory, bottlenecks, fixes with hours, verdict."
+description: "Cell size stress (task-023-01): 200 vs 100 vs 67 uu cells, explosions, dig, flow field, memory, fixes, verdict; real-game stress and robot-count limits (task-067-01)."
 parent: performance-index
 kind: doc
 ---
@@ -106,6 +106,25 @@ Same commands as task-063-01, HEAD 659833f, `rr.FlowField.Async 1` (default, [[s
 - Game thread is 1.8–8 ms lower than task-063 everywhere, also in S0 and S2 where the flow field does no work: the PC load differs (idle CPU 0–23 % vs 53–61 %), so the gain cannot be credited to the worker.
 - Worker path on the game thread: work on every dig frame (launch copies of the field), avg 0.046 ms vs 0.012 ms sliced, max 0.27 vs 0.31 ms; negligible against ≈ 9 ms of game thread. Async 1 vs 0 differences (0.2–0.6 ms) are within run noise.
 
+## Real-game stress and limits (task-067-01, 2026-10-09)
+`rr.Stress.Run <cap> <settle> 60 1 game` ([[sys-stress]] game mode), HEAD e584b09, editor `-game` 1920 × 1080, Niagara on, HUD and minimap shown (checked each step), miner on the pacing bot run-and-collect profile with `rr.Pacing.RunLookahead 0` (pushes into walls, so it digs), weapons firing, real kills, XP cubes, damage numbers and kamikaze explosions; forced horde 20 s into the measure. Owner's normal profile, nothing closed. Not paced at 60 Hz (5200–5300 frames per 60 s at 150; `t.MaxFPS 0`, `r.VSync 0`). ms avg / p99 / max; flow = game-thread flow-field ms of frames with work, avg / max; spikes = frames > 25 ms (wave spawn / GC / untagged).
+
+| Run | Robots avg (max) | Frame | Game | Draw avg | GPU avg | Flow | Spikes | Horde |
+|---|---|---|---|---|---|---|---|---|
+| 150 seed 1 (settle 15) | 114 (150) | 11.34 / 20.29 / 48.1 | 10.40 / 20.11 | 10.23 | 7.62 | 0.014 / 0.17 | 34 (24 / 1 / 9) | 42 planned, 24 |
+| 150 seed 2 | 119 (150) | 11.45 / 19.36 / 52.5 | 10.81 / 19.61 | 10.24 | 7.83 | 0.013 / 0.12 | 25 (19 / 1 / 5) | 41, 27 |
+| 150 seed 3 | 116 (150) | 11.49 / 20.11 / 48.6 | 10.63 / 20.00 | 10.33 | 7.94 | 0.013 / 0.11 | 30 (24 / 1 / 5) | 60, 60 |
+| 250 (settle 30) | 212 (250) | 15.52 / 31.93 / 66.3 | 15.49 / 32.31 | 10.64 | 7.64 | 0.013 / 0.11 | 97 (69 / 1 / 27) | 41, 42 |
+| 400 (settle 30) | 293 (400) | 20.21 / 39.81 / 95.0 | 20.21 / 40.35 | 10.99 | 7.56 | 0.013 / 0.09 | 322 (112 / 1 / 207) | 41, 41 |
+
+Spike lines (frame, game, draw, GPU ms): GC at t 46 s, 150: 48.1 / 46.8 / 10.3 / 8.1; wave spawn, 150 (13 robots in one frame): 41.1 / 43.8 / 9.5 / 8.0; untagged, 250 (robots 250 → 126): 66.3 / 66.7 / 10.3 / 7.5; untagged, 400: 95.0 / 95.1 / 10.9 / 7.2.
+
+- Limits: no step holds 16.7 ms p99 (150 is at 19.4–20.3). Highest step under 33 ms p99: 250 (31.9). 400 exceeds it (39.8): ramp stopped, 600 and 800 not run.
+- Bound: the game thread at every step (game ≈ frame; draw 10–11 ms, GPU 7.6 ms flat from 150 to 400). Flow field negligible (≤ 0.17 ms, worker thread). Game thread at 150 real game ≈ 10.5 ms vs 4.9 ms for 100 static S0 robots (task-066-02).
+- Spikes: robot spawning costs ≈ 1.3 ms of game thread per robot (a wave or the harness fill of 10–15 robots in one frame = 25–44 ms frames); one full GC per run (≈ 61 s, 47–60 ms); untagged frames grow with the count (9 → 207), several at falling robot counts (mass kills, kamikaze chains); cause not traced.
+- Hordes: drawn 41–60, but a runner heading toward the horde side brings planned cells inside the spawn margin and the spawner skips them (24–27 spawned in 2 of 5 runs).
+- The harness fill (a director wave every 0.5 s while under the cap) spawns more often than the director; real games see the same per-wave spike every 5.5–7 s.
+
 ## Verdict
 - 200 uu: holds; the navigation fix would also help it (one destruction 0.25 ms here, 0.04–0.07 ms measured with the fix at the smaller sizes).
 - 100 uu: steady state and dig hold. Explosion chains break (52 ms frames) and are fixed by turning off navigation relevance on the grid components (≈ 1 h with test), back to the 200 uu level. Recommended.
@@ -122,3 +141,4 @@ Same commands as task-063-01, HEAD 659833f, `rr.FlowField.Async 1` (default, [[s
 - [[task-029-fine-grid]] — the global task whose budget the final 67 uu check measures.
 - [[task-063-01-perf-session]] — the task that produced the 2026-10-09 perf session section.
 - [[task-066-02-perf-check]] — the task that produced the worker-thread flow field section.
+- [[task-067-01-real-game-stress]] — the task that produced the real-game stress and limits section.
