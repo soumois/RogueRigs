@@ -35,4 +35,5 @@ One node per Blueprint, template `blueprint.md`.
 - [[bp-bonus-chest]] — BP_BonusChest, the optional gold bonus chest.
 - [[bp-extraction-shuttle]] — BP_ExtractionShuttle, the extraction shuttle.
 - [[wbp-hud]] — WBP_HUD, health bar and Game Over text.
+- [[wbp-subtitles]] — WBP_Subtitles, the company subtitle line, a sub-widget of WBP_HUD.
 - [[bp-damage-numbers]] — NS_DamageNumbers, M_DamageNumber and the digit atlas, the floating damage numbers.
