@@ -617,7 +617,7 @@ bool FRRDigArcSpeedsTest::RunTest(const FString& Parameters)
 {
 	using namespace RRDigTests;
 
-	// Heal ore at mining speed 1: 1.5 s per block, in parallel (gold uses the same 1.5 s, RogueRigs.Ore.MineDeposit). Since
+	// Heal ore at mining speed 1: 1.5 s per block, in parallel (Duskite uses the same 1.5 s, RogueRigs.Ore.MineDeposit). Since
 	// task-088-01 the vein is 2 x 2 (147-148, 135-136): the 8-block arc holds its 4 blocks and 4 rocks, which keep their 0.5 s.
 	{
 		FTestWorld TestWorld;

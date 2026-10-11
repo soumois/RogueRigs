@@ -8,7 +8,7 @@
 #include "RROreTypeRow.generated.h"
 
 /**
- * One row of Content/RogueRigs/Data/Tables/OreTypes.csv (row name = ore id, e.g. Gold). Column names match the property
+ * One row of Content/RogueRigs/Data/Tables/OreTypes.csv (row name = ore id, e.g. Duskite). Column names match the property
  * names. Read by ARRArenaGrid at build: RockShare of the layout's rock blocks become deposits of GroupSize x GroupSize blocks
  * of CellType, placed deterministically from the cell and the grid's OreSeed (ore-blocks, owner 2026-10-10).
  */
@@ -17,7 +17,7 @@ struct ROGUERIGS_API FRROreTypeRow : public FTableRowBase
 {
 	GENERATED_BODY()
 
-	/** Block type the deposits are made of (Ore for gold): its health, mesh, material and pickup class come from the grid. */
+	/** Block type the deposits are made of (Ore for Duskite): its health, mesh, material and pickup class come from the grid. */
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Ore Type")
 	ERRCellType CellType = ERRCellType::Ore;
 

@@ -1,4 +1,4 @@
-// Rogue Rigs - automation tests of the ore deposits (task-070-01, task-088-02): ore type table, 2 x 2 gold placement, whole-deposit mining, drops, the pickup spawn cap and the 2 x 2 heal veins.
+// Rogue Rigs - automation tests of the ore deposits (task-070-01, task-088-02): ore type table, 2 x 2 Duskite placement, whole-deposit mining, drops, the pickup spawn cap and the 2 x 2 heal veins.
 
 #include "Misc/AutomationTest.h"
 
@@ -27,8 +27,8 @@ namespace RROreDepositTests
 	using namespace RRTestHarness;
 	using namespace RRTestAccess;
 
-	/** Ore id of gold in OreTypes.csv. */
-	const FName GoldId(TEXT("Gold"));
+	/** Ore id of Duskite in OreTypes.csv. */
+	const FName DuskiteId(TEXT("Duskite"));
 
 	/** Ore id of the heal veins in OreTypes.csv (task-088-02). */
 	const FName HealId(TEXT("Heal"));
@@ -126,17 +126,17 @@ bool FRROreTableRowTest::RunTest(const FString& Parameters)
 {
 	using namespace RROreDepositTests;
 
-	// OreTypes.csv, row Gold (owner 2026-10-10): 8 % of the rock, 2 x 2 deposits, value 1, amber-gold colour.
-	FRROreTypeRow Gold;
-	if (!TestTrue(TEXT("row Gold found in OreTypes.csv"), ARRArenaGrid::GetOreType(GoldId, Gold)))
+	// OreTypes.csv, row Duskite (owner 2026-10-10, renamed 2026-10-11): 8 % of the rock, 2 x 2 deposits, value 1, no colour (alpha 0, violet material kept).
+	FRROreTypeRow Duskite;
+	if (!TestTrue(TEXT("row Duskite found in OreTypes.csv"), ARRArenaGrid::GetOreType(DuskiteId, Duskite)))
 	{
 		return false;
 	}
-	TestEqual(TEXT("gold is the Ore block type"), Gold.CellType, ERRCellType::Ore);
-	TestNearlyEqual(TEXT("gold share of rock 0.08"), Gold.RockShare, 0.08f);
-	TestEqual(TEXT("gold deposits are 2 x 2"), Gold.GroupSize, 2);
-	TestEqual(TEXT("gold chunk value 1"), Gold.ChunkValue, 1);
-	TestTrue(TEXT("gold colour is amber-gold (R > G > B)"), Gold.Color.R > Gold.Color.G && Gold.Color.G > Gold.Color.B);
+	TestEqual(TEXT("Duskite is the Ore block type"), Duskite.CellType, ERRCellType::Ore);
+	TestNearlyEqual(TEXT("Duskite share of rock 0.08"), Duskite.RockShare, 0.08f);
+	TestEqual(TEXT("Duskite deposits are 2 x 2"), Duskite.GroupSize, 2);
+	TestEqual(TEXT("Duskite chunk value 1"), Duskite.ChunkValue, 1);
+	TestTrue(TEXT("Duskite writes no colour (alpha 0)"), Duskite.Color.A <= 0.f);
 	AddExpectedError(TEXT("row 'Silver' not found"), EAutomationExpectedErrorFlags::Contains, 1);
 	FRROreTypeRow Missing;
 	TestFalse(TEXT("an unknown ore id is not found"), ARRArenaGrid::GetOreType(TEXT("Silver"), Missing));
@@ -170,15 +170,15 @@ bool FRROrePlacementTest::RunTest(const FString& Parameters)
 	}
 	const int32 Expected = FMath::RoundToInt32(0.08f * PlainRock / 4.f);
 	const TArray<int32> Ids = GetTableDepositIds(Grid);
-	const int32 Placed = Grid->GetPlacedDepositCount(GoldId);
-	UE_LOG(LogRogueRigs, Display, TEXT("RogueRigs.Ore.Placement: %d gold deposits on arena_m1_fine (%d rock blocks, expected %d)."), Placed, PlainRock, Expected);
-	AddInfo(FString::Printf(TEXT("%d gold deposits on arena_m1_fine (%d rock blocks, expected %d)"), Placed, PlainRock, Expected));
+	const int32 Placed = Grid->GetPlacedDepositCount(DuskiteId);
+	UE_LOG(LogRogueRigs, Display, TEXT("RogueRigs.Ore.Placement: %d Duskite deposits on arena_m1_fine (%d rock blocks, expected %d)."), Placed, PlainRock, Expected);
+	AddInfo(FString::Printf(TEXT("%d Duskite deposits on arena_m1_fine (%d rock blocks, expected %d)"), Placed, PlainRock, Expected));
 	TestEqual(TEXT("placed count = 8 % of rock / 4"), Placed, Expected);
 	TestEqual(TEXT("one table deposit per placed count"), Ids.Num(), Placed);
 	TestTrue(TEXT("count close to 358"), FMath::Abs(Placed - 358) <= 10);
 	TestEqual(TEXT("no deposit without the table"), GetTableDepositIds(Plain).Num(), 0);
 
-	// Shape and overlap: each deposit is a 2 x 2 square of gold, every cell was rock in the plain layout (never heal ore,
+	// Shape and overlap: each deposit is a 2 x 2 square of Duskite, every cell was rock in the plain layout (never heal ore,
 	// barrel, floor or void), no cell in two deposits, and the cell's id is its deposit.
 	TSet<FIntPoint> Seen;
 	int32 Errors = 0;
@@ -187,7 +187,7 @@ bool FRROrePlacementTest::RunTest(const FString& Parameters)
 		const FRRGridDeposit& Deposit = *Grid->GetDeposit(Id);
 		FIntPoint Min(TNumericLimits<int32>::Max(), TNumericLimits<int32>::Max());
 		FIntPoint Max(TNumericLimits<int32>::Min(), TNumericLimits<int32>::Min());
-		bool bOk = Deposit.Cells.Num() == 4 && Deposit.OreId == GoldId && Deposit.CellType == ERRCellType::Ore && Deposit.ChunkValue == 1;
+		bool bOk = Deposit.Cells.Num() == 4 && Deposit.OreId == DuskiteId && Deposit.CellType == ERRCellType::Ore && Deposit.ChunkValue == 1;
 		for (const FIntPoint& Cell : Deposit.Cells)
 		{
 			Min = FIntPoint(FMath::Min(Min.X, Cell.X), FMath::Min(Min.Y, Cell.Y));
@@ -200,11 +200,11 @@ bool FRROrePlacementTest::RunTest(const FString& Parameters)
 		bOk &= Max - Min == FIntPoint(1, 1);
 		if (!bOk && ++Errors <= 5)
 		{
-			AddError(FString::Printf(TEXT("deposit %d is not a 2 x 2 gold square on rock (%d cells, from %s to %s)"), Id, Deposit.Cells.Num(), *Min.ToString(), *Max.ToString()));
+			AddError(FString::Printf(TEXT("deposit %d is not a 2 x 2 Duskite square on rock (%d cells, from %s to %s)"), Id, Deposit.Cells.Num(), *Min.ToString(), *Max.ToString()));
 		}
 	}
-	TestEqual(TEXT("every deposit is a 2 x 2 gold square on former rock"), Errors, 0);
-	TestEqual(TEXT("gold cells = 4 x deposits"), Seen.Num(), 4 * Ids.Num());
+	TestEqual(TEXT("every deposit is a 2 x 2 Duskite square on former rock"), Errors, 0);
+	TestEqual(TEXT("Duskite cells = 4 x deposits"), Seen.Num(), 4 * Ids.Num());
 
 	// Heal veins and barrels are untouched: same cells as the plain build.
 	int32 Changed = 0;
@@ -261,23 +261,14 @@ bool FRROrePlacementTest::RunTest(const FString& Parameters)
 		TestFalse(TEXT("console never marks a deposit block"), Markable.ContainsByPredicate([Grid](const FIntPoint& Cell) { return Grid->IsTableDepositCell(Cell); }));
 	}
 
-	// Colour: the gold blocks' rendering instances carry the row colour in custom data (R, G, B).
-	if (Ids.Num() > 0)
+	// Colour (task-100-01): row Duskite has alpha 0, so no deposit carries a colour and the grid writes no ore colour into the
+	// instance custom data; the crystals keep the violet of their own material.
+	int32 Coloured = 0;
+	for (const int32 Id : Ids)
 	{
-		const FIntPoint Cell = Grid->GetDeposit(Ids[0])->Cells[0];
-		UHierarchicalInstancedStaticMeshComponent* Component = FGridAccess::CellComponent(Grid, Cell);
-		const int32 Instance = FGridAccess::InstanceIndices(Grid)[Cell.Y * 240 + Cell.X];
-		const int32 First = Grid->GetOreColorCustomDataIndex();
-		FRROreTypeRow Gold;
-		ARRArenaGrid::GetOreType(GoldId, Gold);
-		if (TestNotNull(TEXT("gold block has a rendering instance"), Component) && TestTrue(TEXT("room for the colour"), Component->NumCustomDataFloats >= First + 3))
-		{
-			const int32 Base = Instance * Component->NumCustomDataFloats;
-			TestNearlyEqual(TEXT("custom data R"), Component->PerInstanceSMCustomData[Base + First], Gold.Color.R);
-			TestNearlyEqual(TEXT("custom data G"), Component->PerInstanceSMCustomData[Base + First + 1], Gold.Color.G);
-			TestNearlyEqual(TEXT("custom data B"), Component->PerInstanceSMCustomData[Base + First + 2], Gold.Color.B);
-		}
+		Coloured += Grid->GetDeposit(Id)->bHasColor ? 1 : 0;
 	}
+	TestEqual(TEXT("no Duskite deposit writes a colour"), Coloured, 0);
 	return true;
 }
 
@@ -288,7 +279,7 @@ bool FRROreMineDepositTest::RunTest(const FString& Parameters)
 {
 	using namespace RROreDepositTests;
 
-	// The miner stands on a floor cell touching a gold deposit block from the north, with no input: the drone digs the arc,
+	// The miner stands on a floor cell touching a Duskite deposit block from the north, with no input: the drone digs the arc,
 	// the whole deposit takes the damage, shakes together and breaks at once after 1.5 s, popping 4 chunks of value 1.
 	FTestWorld TestWorld;
 	ARRArenaGrid* Grid = SpawnOreGrid(*this, TestWorld, /*bPlaceDeposits*/ true);
@@ -325,7 +316,7 @@ bool FRROreMineDepositTest::RunTest(const FString& Parameters)
 			break;
 		}
 	}
-	if (!TestTrue(TEXT("a gold deposit with open floor to its north exists"), TargetId != INDEX_NONE))
+	if (!TestTrue(TEXT("a Duskite deposit with open floor to its north exists"), TargetId != INDEX_NONE))
 	{
 		return false;
 	}

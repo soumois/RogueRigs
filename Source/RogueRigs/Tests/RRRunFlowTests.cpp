@@ -306,7 +306,7 @@ bool FRRConsoleDropTest::RunTest(const FString& Parameters)
 		}
 		TestNearlyEqual(*FString::Printf(TEXT("seed %d: alert at 0.4"), Seed), Setup.RunFlow->GetAlert(), 0.4f, 1e-6f);
 
-		// Marked = every rock-type block within 6 cells except gold deposit blocks (task-070-01), nothing else.
+		// Marked = every rock-type block within 6 cells except Duskite deposit blocks (task-070-01), nothing else.
 		int32 Expected = 0;
 		const int32 Scan = RunMarkRadiusCells + 1;
 		for (int32 DY = -Scan; DY <= Scan; ++DY)

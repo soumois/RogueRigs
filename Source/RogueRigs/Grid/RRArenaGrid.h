@@ -218,7 +218,7 @@ public:
 	UFUNCTION(BlueprintPure, Category = "Grid|Deposits")
 	int32 GetDepositId(FIntPoint Cell) const;
 
-	/** Ore type row of the deposit holding Cell (e.g. Gold); None when Cell is in no deposit or its deposit has no row. */
+	/** Ore type row of the deposit holding Cell (e.g. Duskite); None when Cell is in no deposit or its deposit has no row. */
 	UFUNCTION(BlueprintPure, Category = "Grid|Deposits")
 	FName GetDepositOreId(FIntPoint Cell) const;
 
