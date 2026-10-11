@@ -211,6 +211,7 @@ namespace RRPressureIntegrationTests
 		{
 			return false;
 		}
+		Out.Spawner->SetSpawnMaxFrames(0); // task-091-01: robots delivered at once (these checks read spawn results in the same frame); spread covered by RogueRigs.RobotPool.
 		Out.Spawner->SetSpawningEnabled(false);
 		FSpawnerAccess::DirectorOf(Out.Spawner) = FSpawnerAccess::DirectorOf(Placed);
 		FSpawnerAccess::WeightsOf(Out.Spawner) = FSpawnerAccess::WeightsOf(Placed);

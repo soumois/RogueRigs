@@ -13,6 +13,7 @@
 #include "FlowField/RRFlowFieldSubsystem.h"
 #include "GAS/RRGameplayTags.h"
 #include "HAL/IConsoleManager.h"
+#include "Pool/RRActorPoolSubsystem.h"
 #include "Tests/RRTestAccess.h"
 #include "Tests/RRTestHarness.h"
 #include "Weapons/RRAutoFireComponent.h"
@@ -64,6 +65,7 @@ namespace RRSpawnerTests
 		{
 			return false;
 		}
+		Out.Spawner->SetSpawnMaxFrames(0); // task-091-01: robots delivered at once (these checks read spawn results in the same frame); spread covered by RogueRigs.RobotPool.
 		Test.TestEqual(TEXT("default SpawnInterval 2 s"), FSpawnerAccess::SpawnIntervalOf(Out.Spawner), 2.f);
 		Test.TestEqual(TEXT("default MaxAlive 80"), FSpawnerAccess::MaxAliveOf(Out.Spawner), 80);
 		Test.TestEqual(TEXT("default TrickleDuration 30 s"), FSpawnerAccess::TrickleDurationOf(Out.Spawner), 30.f);
@@ -268,7 +270,8 @@ bool FRRSpawnerFreedSlotTest::RunTest(const FString& Parameters)
 	{
 		TestWorld.Tick();
 	}
-	TestTrue(TEXT("dead robot destroyed"), !WeakFirst.IsValid() || WeakFirst->IsActorBeingDestroyed());
+	// task-091-01: a robot from the pool is parked idle after its shrink instead of being destroyed.
+	TestTrue(TEXT("dead robot destroyed or back in the pool"), !WeakFirst.IsValid() || WeakFirst->IsActorBeingDestroyed() || URRActorPoolSubsystem::IsPooledIdle(WeakFirst.Get()));
 	TestEqual(TEXT("still 2 alive after the destroy"), Setup.Spawner->GetAliveCount(), 2);
 
 	// A destroyed (not killed) robot frees a slot too.
@@ -457,6 +460,7 @@ bool FRRSpawnerKamikazeShareTest::RunTest(const FString& Parameters)
 	{
 		return false;
 	}
+	Spawner->SetSpawnMaxFrames(0); // task-091-01: robots delivered at once (these checks read spawn results in the same frame); spread covered by RogueRigs.RobotPool.
 	Spawner->SetSpawningEnabled(false);
 
 	// M1 default of the placed spawner: chaser 85, kamikaze 15.

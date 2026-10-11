@@ -90,6 +90,7 @@ namespace RRRecyclingTests
 		{
 			return false;
 		}
+		Out.Spawner->SetSpawnMaxFrames(0); // task-091-01: robots delivered at once (these checks read spawn results in the same frame); spread covered by RogueRigs.RobotPool.
 		FSpawnerAccess::WeightsOf(Out.Spawner) = { RecycleEntry(ARRChaser::StaticClass(), 65.f), RecycleEntry(ARRKamikaze::StaticClass(), 12.f),
 			RecycleEntry(ARRShooter::StaticClass(), 15.f), RecycleEntry(ARRHeavy::StaticClass(), 8.f, HeavyCap) };
 		return true;
@@ -242,6 +243,7 @@ namespace RRRecyclingTests
 		// Last location of each robot: a jump of more than RelocationJump in one frame is a relocation (robots walk 10 uu a frame at most).
 		constexpr double RelocationJump = 500.0;
 		TMap<TObjectKey<ARREnemy>, FVector2D> LastLocations;
+		TMap<TObjectKey<ARREnemy>, int32> LastLives;
 		OutWindows.Reset();
 		for (int32 Frame = 0; Frame < Frames; ++Frame)
 		{
@@ -286,7 +288,9 @@ namespace RRRecyclingTests
 			for (ARREnemy* Robot : Alive)
 			{
 				const FVector2D RobotLocation(Robot->GetActorLocation());
-				FVector2D* Last = LastLocations.Find(Robot);
+				// A robot reused from the actor pool (task-091-01) is the same actor in a new life: a new spawn, not a relocation.
+				const int32* LastLife = LastLives.Find(Robot);
+				FVector2D* Last = LastLife && *LastLife == Robot->GetPoolLifeCount() ? LastLocations.Find(Robot) : nullptr;
 				const bool bNew = !Last;
 				const bool bRelocated = Last && FVector2D::Distance(*Last, RobotLocation) > RelocationJump;
 				if (bNew || bRelocated)
@@ -296,6 +300,7 @@ namespace RRRecyclingTests
 					Window.Front += Setup.Spawner->GetSpawnSector(RobotLocation) == ERRSpawnSector::Front ? 1 : 0;
 				}
 				LastLocations.Add(Robot, RobotLocation);
+				LastLives.Add(Robot, Robot->GetPoolLifeCount());
 			}
 			Window.Recycled = Setup.Spawner->GetRecycledCount();
 		}

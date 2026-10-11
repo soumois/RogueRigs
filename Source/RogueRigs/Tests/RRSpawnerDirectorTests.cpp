@@ -111,6 +111,7 @@ namespace RRSpawnerDirectorTests
 		{
 			return false;
 		}
+		Out.Spawner->SetSpawnMaxFrames(0); // task-091-01: robots delivered at once (these checks read spawn results in the same frame); spread covered by RogueRigs.RobotPool.
 		Test.TestTrue(TEXT("director on by default"), Out.Spawner->IsDirectorEnabled());
 		Test.TestEqual(TEXT("default MaxAlive 80"), FSpawnerAccess::MaxAliveOf(Out.Spawner), 80);
 		Out.Spawner->SetSpawningEnabled(false);

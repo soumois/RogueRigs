@@ -366,6 +366,7 @@ bool FRRHeavySpawnerCapTest::RunTest(const FString& Parameters)
 	{
 		return false;
 	}
+	Spawner->SetSpawnMaxFrames(0); // task-091-01: robots delivered at once (these checks read spawn results in the same frame); spread covered by RogueRigs.RobotPool.
 	Spawner->SetSpawningEnabled(false);
 	const FVector MinerLocation = Miner->GetActorLocation();
 	Spawner->SetViewRectangleOverride(FBox2D(FVector2D(MinerLocation.X - 1600.f, MinerLocation.Y - 1000.f),
