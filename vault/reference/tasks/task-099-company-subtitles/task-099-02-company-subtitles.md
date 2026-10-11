@@ -3,7 +3,7 @@ id: task-099-02-company-subtitles
 description: "Subtitle widget at the bottom centre, placed by WBP_HUD, showing the company voice lines; the old alert line text is removed from WBP_HUD."
 parent: task-099-company-subtitles
 kind: task
-status: todo
+status: in-progress
 ---
 # Subtitle widget
 

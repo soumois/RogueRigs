@@ -3,7 +3,7 @@ id: task-098-01-weapon-info-centred
 description: "The weapon slot info (name, ammo, LOCKED) is really centred under each slot, not on the left."
 parent: task-098-weapon-info-centred
 kind: task
-status: in-progress
+status: done
 ---
 # Weapon info centred
 
@@ -19,7 +19,7 @@ status: in-progress
 - tokens: open
 - runs: open
 - milestone: M2
-- result: open
+- result: WeaponSlot0..3 are fixed-size boxes (width 160, height 24) with centre justification on the same centre x as the bars (76 + 170 i); read back, compiled, saved. Owner confirms on screen. Commit 9a130a6. Cost counted in the resumed bp agent.
 
 ## Relations
 - [[task-098-weapon-info-centred]] — parent global task.

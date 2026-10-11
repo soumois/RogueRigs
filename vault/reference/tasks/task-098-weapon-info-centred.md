@@ -1,9 +1,9 @@
 ---
 id: task-098-weapon-info-centred
 description: "Global task: The weapon slot info (name, ammo, LOCKED) is really centred under each slot, not on the left."
-parent: tasks-to-do-index
+parent: tasks-done-index
 kind: task
-status: in-progress
+status: done
 ---
 # Weapon info centred
 
@@ -13,12 +13,12 @@ status: in-progress
 - gdd_check: done by the Orchestrator when the task is planned (2026-10-11).
 - confirmed_by_owner: yes (2026-10-11)
 - milestone: M2
-- next_step: task-098-01-weapon-info-centred
-- result: open
+- next_step: none
+- result: Weapon info centred (9a130a6), owner confirms on screen.
 
 ## Subtasks
 1. task-098-01-weapon-info-centred — bp
 
 ## Relations
-- [[tasks-to-do-index]] — parent index.
+- [[tasks-done-index]] — parent index.
 - [[task-098-01-weapon-info-centred]] — step 1, bp.
