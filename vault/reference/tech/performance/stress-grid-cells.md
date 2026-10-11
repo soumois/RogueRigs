@@ -1,6 +1,6 @@
 ---
 id: stress-grid-cells
-description: "Cell size stress (200, 100, 67 uu); real-game limits (task-067-01); packaged vs editor, spike causes (task-068-01); robot movement (task-071-01), robot and XP pools (task-091-01, task-092-01) before/after."
+description: "Cell size stress (200, 100, 67 uu); real-game limits (task-067-01); packaged vs editor, spike causes (task-068-01); robot movement (task-071-01), robot and XP pools (task-091-01, 092-01)."
 parent: performance-index
 kind: doc
 ---
