@@ -519,6 +519,8 @@ task-099-02-company-subtitles  reference/tasks/task-099-company-subtitles/task-0
 task-099-company-subtitles  reference/tasks/task-099-company-subtitles.md
 task-100-01-ore-rename-duskite  reference/tasks/task-100-ore-rename-duskite/task-100-01-ore-rename-duskite.md
 task-100-ore-rename-duskite  reference/tasks/task-100-ore-rename-duskite.md
+task-101-01-barrel-asset  reference/tasks/task-101-barrel-asset/task-101-01-barrel-asset.md
+task-101-barrel-asset  reference/tasks/task-101-barrel-asset.md
 tasks-done-index  reference/tasks/tasks-done-index.md
 tasks-index  reference/tasks/tasks-index.md
 tasks-to-do-index  reference/tasks/tasks-to-do-index.md
