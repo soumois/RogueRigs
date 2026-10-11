@@ -481,6 +481,14 @@ task-088-02-heal-veins-2x2  reference/tasks/task-088-heal-veins-2x2/task-088-02-
 task-088-heal-veins-2x2  reference/tasks/task-088-heal-veins-2x2.md
 task-089-01-heal-not-at-full  reference/tasks/task-089-heal-not-at-full/task-089-01-heal-not-at-full.md
 task-089-heal-not-at-full  reference/tasks/task-089-heal-not-at-full.md
+task-090-01-actor-pool  reference/tasks/task-090-actor-pool/task-090-01-actor-pool.md
+task-090-actor-pool  reference/tasks/task-090-actor-pool.md
+task-091-01-robot-pool  reference/tasks/task-091-robot-pool/task-091-01-robot-pool.md
+task-091-robot-pool  reference/tasks/task-091-robot-pool.md
+task-092-01-xp-pool  reference/tasks/task-092-xp-pool/task-092-01-xp-pool.md
+task-092-xp-pool  reference/tasks/task-092-xp-pool.md
+task-093-01-robot-overlap-cost  reference/tasks/task-093-robot-overlap-cost/task-093-01-robot-overlap-cost.md
+task-093-robot-overlap-cost  reference/tasks/task-093-robot-overlap-cost.md
 tasks-done-index  reference/tasks/tasks-done-index.md
 tasks-index  reference/tasks/tasks-index.md
 tasks-to-do-index  reference/tasks/tasks-to-do-index.md
