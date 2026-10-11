@@ -17,3 +17,4 @@ kind: note
 - [[stress-damage-numbers]] — Niagara damage numbers: screenshot findings, asset defects for the bp agent, S2 100/400 with numbers on vs off.
 - [[stress-grid-cells]] — 200 vs 100 vs 67 uu cells: frame times, explosions, dig, flow field, memory, fixes, verdict; real-game stress and robot-count limits (task-067-01).
 - [[perf-trace-real-game]] — packaged real-game trace at 250 robots: game-thread cost ranking, wave spawn and XP burst costs, GC, spike causes.
+- [[robot-components-audit]] — robot components per class, overlap flags, what needs them, movement cost ranking (task-093-01).

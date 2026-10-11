@@ -142,6 +142,7 @@ player-stats  reference/gdd/player/player-stats.md
 production-index  reference/production/production-index.md
 rarities  reference/gdd/weapons/rarities.md
 readability-rules  reference/gdd/art-audio/readability-rules.md
+robot-components-audit  reference/tech/performance/robot-components-audit.md
 root  root.md
 run-index  reference/gdd/run/run-index.md
 run-log-schema  reference/tech/pipelines/run-log-schema.md
