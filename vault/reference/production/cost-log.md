@@ -151,6 +151,7 @@ kind: note
 | [[task-088-02-heal-veins-2x2]] | opus | 2 | 0k | 227k | 3937k | 39k |
 | [[task-089-01-heal-not-at-full]] | opus | 1 | 0k | 160k | 1518k | 22k |
 | [[task-090-01-actor-pool]] | opus | 1 | 0k | 101k | 2076k | 54k |
+| [[task-091-01-robot-pool]] | opus | 3 | 0k | 318k | 22362k | 109k |
 
 ## Totals
 | Scope | Input | Cache write | Cache read | Output |

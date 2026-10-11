@@ -3,7 +3,7 @@ id: task-092-01-xp-pool
 description: "XP cubes come from the pool with creation spread over at most 3 frames, so a mass kill no longer spikes the frame."
 parent: task-092-xp-pool
 kind: task
-status: todo
+status: in-progress
 ---
 # XP cubes from the actor pool
 

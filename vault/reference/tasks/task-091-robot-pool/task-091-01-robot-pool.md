@@ -3,7 +3,7 @@ id: task-091-01-robot-pool
 description: "Robots come from the pool, missing ones created over at most 20 frames, wave spikes measured before and after."
 parent: task-091-robot-pool
 kind: task
-status: in-progress
+status: done
 ---
 # Robots from the actor pool
 
@@ -15,11 +15,11 @@ status: in-progress
 - done_when: build exits 0 with the editor closed; all RogueRigs.* tests pass headless; before/after numbers in stress-grid-cells; docs updated; lint clean; committed.
 - editor_state: closed
 - token_ceiling: 90000
-- model: open
-- tokens: open
-- runs: open
+- model: opus
+- tokens: input 222, cache write 317687, cache read 22361531, output 108840
+- runs: 3
 - milestone: M2
-- result: open
+- result: Robots from the pool (SpawnMaxFrames 20): wave-spawn spikes 46-61 -> 4 per run, game-thread p99 28 -> 19-20 ms, longest wait 15-16 frames; 220/220 tests. Commits f5ae896, 4f45fc1, 1226f1d, 5c0c6d9.
 
 ## Relations
 - [[task-091-robot-pool]] — parent global task.

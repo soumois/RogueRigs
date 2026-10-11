@@ -98,3 +98,4 @@ Archive: it exceeds the index size limits of [[_authoring]] on purpose (owner, 2
 - [[task-088-heal-veins-2x2]] — Heal veins are 2 x 2 in the layout and in code: 12 veins, 15 HP per pickup, 60 HP per vein. Status done.
 - [[task-089-heal-not-at-full]] — A heal pickup is not taken when the miner is at full health; it stays on the floor until health is below the maximum. Status done.
 - [[task-090-actor-pool]] — A generic actor pool subsystem reuses actors and spreads the creation of missing ones over a capped number of frames. Status done.
+- [[task-091-robot-pool]] — Robots come from the pool: reuse on spawn and death, missing ones created over at most 20 frames; wave spawn spikes measured before and after. Status done.
