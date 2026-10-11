@@ -3,7 +3,7 @@ id: task-093-robot-overlap-cost
 description: "Global task: Robot components audited, then unneeded attached-part transforms and overlap updates are removed, with before/after numbers."
 parent: tasks-to-do-index
 kind: task
-status: todo
+status: in-progress
 ---
 # Robot overlap and attached parts cost
 

@@ -3,7 +3,7 @@ id: task-092-01-xp-pool
 description: "XP cubes come from the pool with creation spread over at most 3 frames, so a mass kill no longer spikes the frame."
 parent: task-092-xp-pool
 kind: task
-status: in-progress
+status: done
 ---
 # XP cubes from the actor pool
 
@@ -15,11 +15,11 @@ status: in-progress
 - done_when: build exits 0 with the editor closed; all RogueRigs.* tests pass headless; before/after numbers in stress-grid-cells; docs updated; lint clean; committed.
 - editor_state: closed
 - token_ceiling: 70000
-- model: open
-- tokens: open
-- runs: open
+- model: opus
+- tokens: input 126, cache write 169606, cache read 6540151, output 64317
+- runs: 2
 - milestone: M2
-- result: open
+- result: XP cubes, ore and heal pickups from the pool (SpawnMaxFrames 3), old 4-per-frame queue removed; game spikes 15-17 -> 1-2 per minute, p99 19.6 -> 18.1-18.9 ms; burst worst frame 204 -> 91 ms; 224/224 tests. Commits 34017e4, a70f821, 454636c, fc0845e.
 
 ## Relations
 - [[task-092-xp-pool]] — parent global task.

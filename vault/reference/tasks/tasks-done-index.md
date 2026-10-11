@@ -99,3 +99,4 @@ Archive: it exceeds the index size limits of [[_authoring]] on purpose (owner, 2
 - [[task-089-heal-not-at-full]] — A heal pickup is not taken when the miner is at full health; it stays on the floor until health is below the maximum. Status done.
 - [[task-090-actor-pool]] — A generic actor pool subsystem reuses actors and spreads the creation of missing ones over a capped number of frames. Status done.
 - [[task-091-robot-pool]] — Robots come from the pool: reuse on spawn and death, missing ones created over at most 20 frames; wave spawn spikes measured before and after. Status done.
+- [[task-092-xp-pool]] — XP cubes come from the pool with creation spread over at most 3 frames, so a mass kill no longer spikes the frame. Status done.

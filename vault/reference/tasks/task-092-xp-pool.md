@@ -1,9 +1,9 @@
 ---
 id: task-092-xp-pool
 description: "Global task: XP cubes come from the pool with creation spread over at most 3 frames, so a mass kill no longer spikes the frame."
-parent: tasks-to-do-index
+parent: tasks-done-index
 kind: task
-status: in-progress
+status: done
 ---
 # XP cubes from the actor pool
 
@@ -13,12 +13,12 @@ status: in-progress
 - gdd_check: done by the Orchestrator when the task is planned (2026-10-11).
 - confirmed_by_owner: yes (2026-10-11)
 - milestone: M2
-- next_step: task-092-01-xp-pool
-- result: open
+- next_step: none
+- result: Done. XP cubes, ore and heal pickups from the pool (SpawnMaxFrames 3), old 4-per-frame queue removed; game spikes 15-17 -> 1-2 per minute, p99 19.6 -> 18.1-18.9 ms; burst worst frame 204 -> 91 ms; 224/224 tests. Commits 34017e4, a70f821, 454636c, fc0845e.
 
 ## Subtasks
 1. task-092-01-xp-pool — cpp
 
 ## Relations
-- [[tasks-to-do-index]] — parent index.
+- [[tasks-done-index]] — parent index.
 - [[task-092-01-xp-pool]] — step 1, cpp.
