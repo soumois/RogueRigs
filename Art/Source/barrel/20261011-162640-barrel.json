@@ -1,0 +1,37 @@
+{
+  "run_id": "20261011-162640-barrel",
+  "asset": "barrel",
+  "model": "gpt-image-2-image-to-image",
+  "aspect_ratio": "1:1",
+  "resolution": "1K",
+  "variants": 2,
+  "prompt_file": "Art/Source/barrel/prompts/01-barrel.txt",
+  "prompt": "Image 1 is a style reference only: copy its art style, facet size and flat shading. Do not copy any object, color or composition from it.\n\nCreate one isolated game prop: an orange explosive industrial barrel for a flat-shaded low-poly 3D game.\nShape: chunky, slightly squat cylinder built from 8 large flat sides, visible facets, two raised rings around the body, a flat dark grey lid with one bolted cap. Rigid mechanical parts only.\nColor: flat saturated orange body, slightly darker orange rings, dark grey lid and cap. Orange must dominate: it signals \"explodes\".\nView: three-quarter front view from slightly above, the whole barrel visible and centered, filling about 70 % of the frame.\nBackground: plain white, even neutral lighting, no shadows, no floor, no reflections.\nExclude: textures, smoothing, text, labels, logos, hazard symbols, yellow and black stripes, rust, dirt, cracks, any other object, no UI, no text.",
+  "refs": [
+    "vault/assets/keyart.jpg"
+  ],
+  "tasks": [
+    {
+      "task_id": "f36507d7d47f4f5e1f6fc40485504625",
+      "state": "success",
+      "credits": 6,
+      "error": null,
+      "result_urls": [
+        "https://tempfile.aiquickdraw.com/images/chatgpt/file_00000000168081f790a60d902f2eeb00.png"
+      ]
+    },
+    {
+      "task_id": "9ac261a9e4fcc0002e411eb0f9d255ec",
+      "state": "success",
+      "credits": 6,
+      "error": null,
+      "result_urls": [
+        "https://tempfile.aiquickdraw.com/images/chatgpt/file_00000000f7b881f5b2e1800d472d7fc0.png"
+      ]
+    }
+  ],
+  "files": [
+    "Art/Source/barrel/20261011-162640-barrel-1.png",
+    "Art/Source/barrel/20261011-162640-barrel-2.png"
+  ]
+}

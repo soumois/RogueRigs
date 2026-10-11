@@ -16,6 +16,7 @@ kind: doc
   - `BindToMiner(ARRMiner*)`: subscribes to the ASC value-change delegates of `Health` and `MaxHealth` (either change calls `OnHealthChanged` with both current values, skipped while MaxHealth is 0) to the miner `URRProgressionComponent` `OnXPChanged` / `OnLevelUp` and `URRLevelUpComponent` `OnUpgradeOfferShown` / `OnUpgradeOfferClosed` (forwarded to the display events), then pushes the current health and XP once (and an open card screen); also binds the miner's turret launcher (now, or on `OnWeaponAdded` when acquired later) and pushes its charges; null unbinds.
   - `BindToRunFlow(URRRunFlowSubsystem*)`: called by `ARRPlayerController::BeginPlay`; binds the six run-flow delegates and pushes the current alert, objective (and progress), shuttle countdown and run end once; null unbinds.
   - `BindToSpawner(ARREnemySpawner*)`: called by `ARRPlayerController::BeginPlay` with the first spawner of the world; horde banner and alert-bar icons ([[sys-hud-pressure]]); null unbinds.
+  - Panels and late binding (task-094-02, [[sys-hud-events]]): every Bind call also hands its object once to each `URRHUDPanelWidget` of the HUD tree (`GetPanels`); a miner or spawner registering with the run flow after the HUD is bound when none is.
   - `BindToGameMode(ARRGameMode*)`: binds `ARRGameMode::OnGameOver` to `OnGameOver` ([[sys-player]] game over); null unbinds. `NativeDestruct` removes every binding.
 - data: editable on the controller Blueprint: `HUDWidgetClass` (category HUD, none by default; set to the HUD widget Blueprint).
 - depends_on: [[sys-player]] (miner, controller, game mode), [[sys-gas-core]] (health attribute set), [[sys-progression]]; module `UMG`.
@@ -32,3 +33,4 @@ kind: doc
 - [[sys-objectives]] — the run flow events it forwards.
 - [[sys-hud-pressure]] — child: damage vignette, horde banner and alert-bar icon events.
 - [[sys-hud-minimap]] — child: minimap texture of seen cells, marker state and UV mapping (task-061-01).
+- [[sys-hud-events]] — child: gameplay events for the HUD panels and the URRHUDPanelWidget base (task-094-02).

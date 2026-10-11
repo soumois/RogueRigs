@@ -20,6 +20,8 @@ Missing (dynamic multicast, so Blueprints can bind them):
 
 Binding hook (not an event): sub-widgets still need the miner, run flow and spawner. Proposal: a C++ base class URRHUDPanelWidget with virtual BindToMiner, BindToRunFlow, BindToSpawner; URRHUDWidget calls them once on each child of that class in its widget tree, so code initialises only WBP_HUD.
 
+Done in task-094-02 ([[sys-hud-events]]): all eight events and the binding hook, with these differences: `OnWeaponSlotChanged` passes the slot by const reference; the panel hooks also receive the previous object and a fourth hook `BindToGameMode` exists (game over); the run flow learns the spawner and miner through `RegisterSpawner` / `RegisterMiner` (`OnSpawnerRegistered` / `OnMinerRegistered`), which also gives the HUD its late binding. The HUD's own events and NativeTick are unchanged.
+
 Stays per frame (no event): reload and recharge progress, locator arrow position and pulse, minimap scroll and markers, vignette decay after a hit.
 
 ## Relations
@@ -27,3 +29,4 @@ Stays per frame (no event): reload and recharge progress, locator arrow position
 - [[hud-refactor-audit-core]] — features that use these events.
 - [[hud-refactor-audit-run]] — features that use these events.
 - [[sys-hud]] — the C++ base class that fires today's events.
+- [[sys-hud-events]] — what 094-02 built.
