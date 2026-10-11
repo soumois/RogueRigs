@@ -1,6 +1,6 @@
 ---
 id: stress-grid-cells
-description: "Cell size stress (200, 100, 67 uu); real-game limits (task-067-01); packaged vs editor, spike causes (task-068-01); robot light movement (task-071-01), robot pool (task-091-01) before/after."
+description: "Cell size stress (200, 100, 67 uu); real-game limits (task-067-01); packaged vs editor, spike causes (task-068-01); robot movement (task-071-01), robot and XP pools (task-091-01, task-092-01) before/after."
 parent: performance-index
 kind: doc
 ---
@@ -171,6 +171,22 @@ Editor `-game`, `rr.Stress.Run 250 30 60 1 game` with `rr.Pacing.RunLookahead 0`
 - The 4 remaining spawn-tagged spikes are fill frames served by reuse (10–15 robots reactivated in one frame: 25–29 ms, one 73 ms frame at t 13 s, not traced). Reuse is not spread; spreading it is the next lead if those frames matter.
 - A first pair of after runs was discarded: robots released at the death-shrink scale hit a Chaos ensure on reuse (one 2984 ms frame); fixed by restoring the scale on release before the runs above.
 
+## XP pickup pool (task-092-01, 2026-10-10)
+Same procedure as the robot pool section. Before = 1bc689b (cubes, ore and heal spawned, 4-per-frame grid queue), after = every grid and robot drop from the actor pool, `SpawnMaxFrames` 3 ([[sys-pickups]], [[sys-actor-pool]]); same session within 20 min, owner normal profile, nothing closed. Burst = S7 `rr.Stress.Run 400 5 20 1 burst Chaser` (400 chasers, 1200 cubes, 16 barrels, `rr.Stress.MinCells 8`), one launch each. XP spikes = frames over 25 ms tagged `xp drop` (cubes requested on the last two samples; tag added by this task, absent before). ms avg / p99 / max.
+
+| Run | Game thread | Frame | Spikes (gc) | XP-burst frames | Pickup pool: created / reused, longest wait |
+|---|---|---|---|---|---|
+| Game before #1 | 11.76 / 19.55 / 71.07 | 12.03 / 19.97 / 71.80 | 17 (1) | not tagged | none |
+| Game before #2 | 12.24 / 19.68 / 50.45 | 12.51 / 19.66 / 50.53 | 15 (1) | not tagged | none |
+| Game after #1 | 12.48 / 18.90 / 47.03 | 12.63 / 19.03 / 46.34 | 2 (1) | 1 (30.9, 321 cubes, t 4.3 s) | 587 / 2493, 3 frames |
+| Game after #2 | 11.37 / 18.14 / 48.63 | 12.02 / 18.25 / 47.98 | 1 (1) | 0 | 433 / 2514, 3 frames |
+| Burst before | 4.42 / 17.55 / 203.71 | 8.84 / 19.29 / 204.01 | 11 | 1 frame 204.0 (t 0.37 s) | none |
+| Burst after | 4.45 / 17.36 / 91.66 | 8.85 / 20.04 / 90.79 | 15 | 3 frames 90.8, 62.9, 62.2 (t 0.25-0.38 s) | 1223 / 0, 3 frames |
+
+- Game 250: spikes 15–17 → 1–2 per minute, the only one left besides the GC frame is one mass drop of 321 cubes (30.9 ms at t 4.3 s); game-thread p99 19.6–19.7 → 18.1–18.9 ms, average unchanged within run noise. Before, 13–14 spikes per run carried no tag (no fill, no robot creation, no GC); they disappear with the pool, so they were most likely the cube spawns of mass kills (the tag did not exist yet to prove it). Cubes are reused 81–85 % of the time after the first minute (433–587 created, about 2500 reused).
+- Burst: the 1200-cube frame (400 deaths) drops from 204 ms to 91 ms on the death frame (robot death and release, cube requests), then 2 frames of about 62 ms while the pool creates 400 cubes per frame in a fresh process (nothing to reuse). Spike count rises 11 → 15 (more frames over 25 ms, all lower). The 1.6–2.0 s cluster (25–68 ms, draw up to 50 ms, untagged) is the same before and after: the magnet stream of 1200 cubes, not a spawn cost.
+- Longest wait 3 frames in every run. Lead if the first mass kill of a run matters: prewarm XP cubes at level start (the pool supports `Prewarm`; default none), or a longer `SpawnMaxFrames` (owner contract: 3).
+
 ## Verdict
 - 200 uu: holds; the navigation fix would also help it (one destruction 0.25 ms here, 0.04–0.07 ms measured with the fix at the smaller sizes).
 - 100 uu: steady state and dig hold. Explosion chains break (52 ms frames) and are fixed by turning off navigation relevance on the grid components (≈ 1 h with test), back to the 200 uu level. Recommended.
@@ -178,6 +194,7 @@ Editor `-game`, `rr.Stress.Run 250 30 60 1 game` with `rr.Pacing.RunLookahead 0`
 - Any smaller size also needs cell-counted tunables rescaled (spawner band, drops per ore cell, dig health): gameplay task, not measured here.
 
 ## Relations
+- [[sys-pickups]] — the pooled pickups measured in the XP pool section.
 - [[performance-index]] — parent index.
 - [[sys-stress]] — subdivide, bench, chain and dig tools used here.
 - [[stress-opt-m1]] — the 200 uu tables of the same procedure.
