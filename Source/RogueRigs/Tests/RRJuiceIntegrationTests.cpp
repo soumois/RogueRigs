@@ -568,6 +568,12 @@ bool FRRJuiceHealRingTest::RunTest(const FString& Parameters)
 		return false;
 	}
 	const FVector MinerFloor = Grid->GetCellCenter(JuiceMinerCell.X, JuiceMinerCell.Y);
+	// heal-ore (task-089-01): a heal pickup is refused at full health; the miner is damaged so the chunk is collected.
+	if (UAbilitySystemComponent* MinerASC = Miner->GetAbilitySystemComponent())
+	{
+		MinerASC->SetNumericAttributeBase(URRHealthAttributeSet::GetMaxHealthAttribute(), 100.f);
+		MinerASC->SetNumericAttributeBase(URRHealthAttributeSet::GetHealthAttribute(), 50.f);
+	}
 	FJuiceSpawnLog Rings(TestWorld.Get(), RingClass);
 	TStrongObjectPtr<URRTestEventRecorder> Recorder(NewObject<URRTestEventRecorder>());
 	Miner->OnPickupCollected.AddDynamic(Recorder.Get(), &URRTestEventRecorder::HandlePickupCollected);

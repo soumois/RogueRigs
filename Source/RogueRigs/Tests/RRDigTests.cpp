@@ -19,6 +19,7 @@
 #include "GameFramework/PlayerController.h"
 #include "GameFramework/WorldSettings.h"
 #include "GAS/RRAbilitySystemComponent.h"
+#include "GAS/RRHealthAttributeSet.h"
 #include "GAS/RRPlayerAttributeSet.h"
 #include "Grid/RRArenaGrid.h"
 #include "Kismet/GameplayStatics.h"
@@ -738,6 +739,9 @@ bool FRRDigPickupCollectTest::RunTest(const FString& Parameters)
 	}
 	Controller->Possess(Miner);
 	TestEqual(TEXT("miner is the player 0 pawn"), UGameplayStatics::GetPlayerPawn(TestWorld.Get(), 0), static_cast<APawn*>(Miner));
+	// heal-ore (task-089-01): a heal pickup is refused at full health; the miner is damaged so the near one is collected.
+	Miner->GetRRAbilitySystemComponent()->SetNumericAttributeBase(URRHealthAttributeSet::GetMaxHealthAttribute(), 100.f);
+	Miner->GetRRAbilitySystemComponent()->SetNumericAttributeBase(URRHealthAttributeSet::GetHealthAttribute(), 50.f);
 
 	const float Radius = Miner->GetPickupRadius();
 	AddInfo(FString::Printf(TEXT("PickupRadius %.1f"), Radius));

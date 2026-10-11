@@ -8,6 +8,7 @@
 #include "GAS/RRAbilitySystemComponent.h"
 #include "GAS/RRGE_Heal.h"
 #include "GAS/RRGameplayTags.h"
+#include "GAS/RRHealthAttributeSet.h"
 #include "Kismet/GameplayStatics.h"
 #include "Pickups/RRPickupSubsystem.h"
 #include "Player/RRMiner.h"
@@ -108,6 +109,12 @@ void ARRPickup::UpdateMotion(float DeltaSeconds, ARRMiner* Miner, float PickupRa
 		{
 			return;
 		}
+		// heal-ore: a heal pickup waits on the floor while the miner is at full health; re-checked every frame, so it latches
+		// on the first frame the miner is both damaged and within radius (no event binding, nothing to reset).
+		if (IsRefusedByMiner(Miner))
+		{
+			return;
+		}
 		TargetMiner = Miner;
 		Phase = ERRPickupPhase::Magnet;
 		MagnetSpeed = MagnetStartSpeed;
@@ -164,8 +171,35 @@ ARRMiner* ARRPickup::FindMiner()
 	return TargetMiner;
 }
 
+bool ARRPickup::IsRefusedByMiner(const ARRMiner* Miner) const
+{
+	if (PickupType != ERRPickupType::Heal || !Miner)
+	{
+		return false;
+	}
+	const URRHealthAttributeSet* Health = Miner->GetHealthSet();
+	return Health && Health->GetHealth() >= Health->GetMaxHealth();
+}
+
+void ARRPickup::ReturnToRest()
+{
+	Phase = ERRPickupPhase::Rest;
+	MagnetSpeed = 0.f;
+	// RestElapsed already passed AttractDelay: attracted again on the first frame the miner is damaged and in radius.
+	FVector Location = GetActorLocation();
+	Location.Z = PopEnd.Z;
+	SetActorLocation(Location);
+}
+
 void ARRPickup::FlyToMiner(ARRMiner* Miner, float DeltaSeconds)
 {
+	// A heal pickup in flight when the miner reaches full health (another heal collected first) is not consumed.
+	if (IsRefusedByMiner(Miner))
+	{
+		ReturnToRest();
+		return;
+	}
+
 	MagnetSpeed = FMath::Min(MagnetSpeed + MagnetAcceleration * DeltaSeconds, MagnetMaxSpeed);
 
 	const FVector Target = Miner->GetActorLocation();

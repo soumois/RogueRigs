@@ -43,7 +43,8 @@ enum class ERRPickupPhase : uint8
  * It then rests; once AttractDelay has elapsed after the pop, as soon as its horizontal distance to the player miner is
  * within the miner's PickupRadius attribute it latches the magnet: it flies straight at the miner, starting at
  * MagnetStartSpeed and accelerating by MagnetAcceleration up to MagnetMaxSpeed (nearby cubes form a stream), even if the
- * miner moves away. Within CollectDistance it is collected: logs its type (Verbose), an XP pickup adds XPAmount to the
+ * miner moves away. A Heal pickup is ignored while the miner is at full health (IsRefusedByMiner): it stays where it is
+ * and is attracted once the miner is damaged and within its radius. Within CollectDistance it is collected: logs its type (Verbose), an XP pickup adds XPAmount to the
  * miner progression (scaled by XPGain there), ARRMiner::NotifyPickupCollected broadcasts the type and the location, then
  * it destroys itself. No physics, no collision; movement is driven by URRPickupSubsystem in one loop per frame (actor tick
  * only as a fallback when the subsystem is missing). Spawned by ARRArenaGrid at a cell center (floor top), and by ARREnemy
@@ -126,7 +127,17 @@ protected:
 	/** Returns the player miner (player 0 pawn), cached once found; null when the player pawn is not a miner. Fallback tick only. */
 	ARRMiner* FindMiner();
 
-	/** Accelerates toward the miner; collects when within CollectDistance or when the step reaches it. */
+	/**
+	 * heal-ore (owner 2026-10-10): true when this is a Heal pickup and Miner is at full health (Health >= MaxHealth). Such a
+	 * pickup is neither attracted nor collected: it rests where it is until the miner is damaged and within PickupRadius.
+	 * False for every other type, for a null miner and for a miner without a health set. Read only by Heal pickups each frame.
+	 */
+	bool IsRefusedByMiner(const ARRMiner* Miner) const;
+
+	/** Leaves the Magnet phase when a flying Heal pickup is refused (the miner got back to full health): stops where it is, at its rest height, back in Rest (attracted again as soon as the miner is damaged and in radius). */
+	void ReturnToRest();
+
+	/** Accelerates toward the miner; collects when within CollectDistance or when the step reaches it. A refused Heal pickup (IsRefusedByMiner) returns to Rest instead. */
 	void FlyToMiner(ARRMiner* Miner, float DeltaSeconds);
 
 	/** Heal pickup: applies HealEffectClass with SetByCaller Data.Heal = HealAmount to Miner (skipped when 0, dead or no ASC). */
