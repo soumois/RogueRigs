@@ -160,6 +160,7 @@ kind: note
 | [[task-097-01-explosion-visual]] | opus | 1 | 0k | 74k | 1202k | 23k |
 | [[task-099-01-company-subtitles]] | opus | 3 | 0k | 92k | 2398k | 39k |
 | [[task-094-01-hud-refactor]] | sonnet | 1 | 0k | 107k | 1424k | 30k |
+| [[task-094-02-hud-events]] | opus | 2 | 0k | 203k | 8786k | 92k |
 
 ## Totals
 | Scope | Input | Cache write | Cache read | Output |

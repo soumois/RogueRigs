@@ -3,7 +3,7 @@ id: task-094-03-hud-health
 description: "Health bar and text, game over text and damage vignette move into their own widget bound to the health events."
 parent: task-094-hud-refactor
 kind: task
-status: todo
+status: in-progress
 ---
 # WBP_HealthStatus
 

@@ -3,7 +3,7 @@ id: task-094-02-hud-events
 description: "The C++ events the HUD sub-widgets bind to exist, with a panel base class so code initialises only WBP_HUD."
 parent: task-094-hud-refactor
 kind: task
-status: in-progress
+status: done
 ---
 # Missing gameplay events and the panel base class
 
@@ -15,11 +15,11 @@ status: in-progress
 - done_when: build exits 0 with the editor closed; all RogueRigs.* tests pass headless; docs updated; lint clean; committed.
 - editor_state: closed
 - token_ceiling: 90000
-- model: open
-- tokens: open
-- runs: open
+- model: opus
+- tokens: input 128, cache write 202560, cache read 8785516, output 91645
+- runs: 2
 - milestone: M2
-- result: open
+- result: 8 HUD events (health, damage, weapon slot, ammo, alert bar, horde, locator, XP gained) plus registry events and the URRHUDPanelWidget base (BindToMiner/RunFlow/Spawner/GameMode); 236/236 tests. Commits 74129ba, 937f4cf.
 
 ## Relations
 - [[task-094-hud-refactor]] — parent global task.
