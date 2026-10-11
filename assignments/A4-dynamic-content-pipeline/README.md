@@ -105,6 +105,13 @@ flowchart LR
 
 **In the game** (C++, no AI at runtime): the loader in [`Source/RogueRigs/Text/`](../../Source/RogueRigs/Text/) ([`sys-text-content`](../../vault/reference/tech/systems/sys-text-content.md)) reads the three files at game start. The upgrade card shows Rook's line under the stat name, confirmed on screen by the owner (tasks 080, 084). The company alert line appears once, for 8 s, under the shuttle countdown (task 085). Barks are loaded but not displayed yet (owner decision). The loader has 6 automation tests (`RogueRigs.Text.*`); the full headless suite passed 201/201 when it was committed.
 
+In the game (owner playtest, 2026-10-10):
+
+| Level-up cards: Rook's line under each stat | Shuttle countdown: a Kessler-Voss alert under the timer |
+|---|---|
+| [![Three upgrade cards with Rook's flavor lines](../../docs/images/a4/text-upgrade-cards.jpg)](../../docs/images/a4/text-upgrade-cards.jpg) | [![Company alert line under the shuttle countdown](../../docs/images/a4/text-shuttle-alert.jpg)](../../docs/images/a4/text-shuttle-alert.jpg) |
+| `upg_crit_chance`, `upg_reload_speed`, `upg_damage` from [`upgrade_texts.json`](../../Content/RogueRigs/Data/Text/upgrade_texts.json) | `kv_horde_incoming_03` (bureaucratic) from [`alerts.json`](../../Content/RogueRigs/Data/Text/alerts.json): "Asset protection units dispatched to the affected sector." |
+
 ## RAG implementation
 
 There is no vector database: at this scale the lore fits in context. The text agent *retrieves by descent*: it reads the lore nodes the vault index leads to, notes which node and which exact sentence drives a line, then writes it. Every item is logged with its query, the node ids read, the excerpt and the output. The validator then checks that **each logged excerpt appears word for word in the node it cites**, that the logged output equals the shipped text, and that any number in a line appears in a retrieved excerpt.
