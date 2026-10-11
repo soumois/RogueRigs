@@ -153,6 +153,7 @@ stress-final-m1  reference/tech/performance/stress-final-m1.md
 stress-grid-cells  reference/tech/performance/stress-grid-cells.md
 stress-opt-m1  reference/tech/performance/stress-opt-m1.md
 stress-test-m1  reference/tech/performance/stress-test-m1.md
+sys-actor-pool  reference/tech/systems/sys-actor-pool.md
 sys-auto-fire  reference/tech/systems/sys-auto-fire.md
 sys-automation-tests  reference/tech/systems/sys-automation-tests.md
 sys-cheats  reference/tech/systems/sys-cheats.md
