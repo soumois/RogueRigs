@@ -14,9 +14,11 @@
 #include "Objectives/RRRunFlowSubsystem.h"
 #include "Serialization/JsonReader.h"
 #include "Serialization/JsonSerializer.h"
+#include "Tests/RRTestEventRecorder.h"
 #include "Tests/RRTestHarness.h"
 #include "Tests/RRTestHUDWidget.h"
 #include "Text/RRTextContentLibrary.h"
+#include "Text/RRSubtitleSubsystem.h"
 #include "Text/RRTextContentSubsystem.h"
 #include "UObject/StrongObjectPtr.h"
 #include "Upgrades/RRUpgradeComponent.h"
@@ -356,10 +358,14 @@ bool FRRTextAlertEventsTest::RunTest(const FString& Parameters)
 	ARRMiner* Miner = Grid ? RRTestHarness::SpawnMiner(*this, TestWorld, Grid, RRTestHarness::FineCell(FIntPoint(40, 40))) : nullptr;
 	URRRunFlowSubsystem* RunFlow = TestWorld.Get()->GetSubsystem<URRRunFlowSubsystem>();
 	URRTextContentSubsystem* TextContent = TestWorld.Get()->GetSubsystem<URRTextContentSubsystem>();
-	if (!Miner || !TestNotNull(TEXT("run flow"), RunFlow) || !TestNotNull(TEXT("text subsystem"), TextContent))
+	URRSubtitleSubsystem* Subtitles = TestWorld.Get()->GetSubsystem<URRSubtitleSubsystem>();
+	if (!Miner || !TestNotNull(TEXT("run flow"), RunFlow) || !TestNotNull(TEXT("text subsystem"), TextContent)
+		|| !TestNotNull(TEXT("subtitle subsystem"), Subtitles))
 	{
 		return false;
 	}
+	TStrongObjectPtr<URRTestEventRecorder> Recorder(NewObject<URRTestEventRecorder>());
+	Subtitles->OnSubtitleShown.AddDynamic(Recorder.Get(), &URRTestEventRecorder::HandleSubtitleShown);
 	for (ARRWeapon* Weapon : Miner->GetWeapons())
 	{
 		if (IsValid(Weapon) && Weapon->GetAutoFireComponent())
@@ -372,11 +378,15 @@ bool FRRTextAlertEventsTest::RunTest(const FString& Parameters)
 	TextContent->SetRandomSeed(20261010);
 	const FRRTextContentLibrary& Library = TextContent->GetLibrary();
 
-	auto CheckLine = [this, TextContent, &Library](const TCHAR* Event)
+	// Each event picks one of its lines and shows it as a Kessler-Voss subtitle (ShownIndex = index of its OnSubtitleShown in the recorder).
+	auto CheckLine = [this, TextContent, &Library, &Recorder](const TCHAR* Event, int32 ShownIndex)
 	{
 		const FString Line = TextContent->GetCurrentAlertLine(Event).ToString();
 		const TArray<FString>* Lines = Library.FindAlertLines(Event);
 		TestTrue(FString::Printf(TEXT("'%s' raised with one of its lines ('%s')"), Event, *Line), Lines != nullptr && Lines->Contains(Line));
+		const FString Expected = FString::Printf(TEXT("Shown:kessler_voss:Kessler-Voss: %s"), *Line);
+		TestTrue(FString::Printf(TEXT("'%s' shown as a Kessler-Voss subtitle"), Event),
+			Recorder->SubtitleEvents.IsValidIndex(ShownIndex) && Recorder->SubtitleEvents[ShownIndex] == Expected);
 		return Line;
 	};
 
@@ -387,7 +397,8 @@ bool FRRTextAlertEventsTest::RunTest(const FString& Parameters)
 
 	// Console drop.
 	TestNotNull(TEXT("console dropped"), RunFlow->SkipToConsole());
-	CheckLine(FRRTextContentLibrary::AlertConsoleDropped);
+	CheckLine(FRRTextContentLibrary::AlertConsoleDropped, 0);
+	TestEqual(TEXT("console subtitle is current"), Subtitles->GetCurrentSpeakerId(), URRSubtitleSubsystem::SpeakerKesslerVoss);
 
 	// Bonus chest drop (alert past its threshold once the console is done).
 	TestTrue(TEXT("console completed"), RunFlow->CompleteConsoleHack());
@@ -398,18 +409,21 @@ bool FRRTextAlertEventsTest::RunTest(const FString& Parameters)
 	}
 	if (TestNotNull(TEXT("bonus chest dropped"), RunFlow->GetBonusChest()))
 	{
-		CheckLine(FRRTextContentLibrary::AlertBonusChestDropped);
+		CheckLine(FRRTextContentLibrary::AlertBonusChestDropped, 1);
 	}
 
 	// Extraction ready, and one countdown line for the whole countdown (OnShuttleCountdown fires every frame).
 	TestTrue(TEXT("extraction"), RunFlow->SkipToExtraction());
-	CheckLine(FRRTextContentLibrary::AlertExtractionReady);
-	const FString Countdown = CheckLine(FRRTextContentLibrary::AlertShuttleCountdown);
+	const int32 ExtractionIndex = Recorder->SubtitleEvents.Num();
+	CheckLine(FRRTextContentLibrary::AlertExtractionReady, ExtractionIndex - 2);
+	const FString Countdown = CheckLine(FRRTextContentLibrary::AlertShuttleCountdown, ExtractionIndex - 1);
+	TestEqual(TEXT("countdown subtitle is current"), Subtitles->GetCurrentText().ToString(), Countdown);
 	for (int32 Frame = 0; Frame < 30; ++Frame)
 	{
 		TestWorld.Tick();
 	}
 	TestEqual(TEXT("countdown line unchanged over 30 countdown frames"), TextContent->GetCurrentAlertLine(FRRTextContentLibrary::AlertShuttleCountdown).ToString(), Countdown);
+	TestEqual(TEXT("countdown subtitle shown once over 30 countdown frames"), Recorder->SubtitleEvents.Num(), ExtractionIndex);
 
 	// Horde banner through the HUD: line picked before OnHordeIncoming, readable from the HUD getter.
 	TStrongObjectPtr<URRTestHUDWidget> HUD(CreateWidget<URRTestHUDWidget>(TestWorld.Get(), URRTestHUDWidget::StaticClass()));
@@ -422,7 +436,8 @@ bool FRRTextAlertEventsTest::RunTest(const FString& Parameters)
 	HUD->BindToSpawner(Spawner);
 	Spawner->OnHordeIncoming.Broadcast(0, 2.f);
 	TestEqual(TEXT("banner raised once"), HUD->HordeIncomingCalls.Num(), 1);
-	const FString Horde = CheckLine(FRRTextContentLibrary::AlertHordeIncoming);
+	const FString Horde = CheckLine(FRRTextContentLibrary::AlertHordeIncoming, Recorder->SubtitleEvents.Num() - 1);
+	TestEqual(TEXT("horde subtitle is current"), Subtitles->GetCurrentText().ToString(), Horde);
 	TestEqual(TEXT("HUD getter returns the same line"), HUD->GetAlertLine(FRRTextContentLibrary::AlertHordeIncoming).ToString(), Horde);
 	Spawner->OnHordeIncoming.Broadcast(1, 2.f);
 	TestNotEqual(TEXT("next horde banner: another line"), HUD->GetAlertLine(FRRTextContentLibrary::AlertHordeIncoming).ToString(), Horde);

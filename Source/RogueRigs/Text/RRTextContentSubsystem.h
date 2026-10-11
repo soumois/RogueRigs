@@ -15,7 +15,7 @@
  * (per file at load, per unknown id at lookup), never a crash. No AI at runtime: the files are written offline.
  * Hooks: URRUpgradeComponent::MakeCard (upgrade flavor), URRRunFlowSubsystem (console_dropped, bonus_chest_dropped,
  * extraction_ready, shuttle_countdown once per countdown start) and URRHUDWidget (horde_incoming) pick an alert line just before
- * raising their event; Blueprint handlers read it with GetCurrentAlertLine. Barks are loaded but nothing displays them yet.
+ * raising their event, through URRSubtitleSubsystem::ShowAlertLine (shown as a subtitle); GetCurrentAlertLine still returns it. Barks are loaded but nothing displays them yet.
  */
 UCLASS()
 class ROGUERIGS_API URRTextContentSubsystem : public UWorldSubsystem

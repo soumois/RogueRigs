@@ -276,8 +276,8 @@ protected:
 	ARRShuttle* LandShuttle();
 
 	/**
-	 * Picks the Kessler-Voss line of alert event EventId (URRTextContentSubsystem::GetAlertLine) just before its event is raised, so
-	 * Blueprint handlers read it with GetCurrentAlertLine. Nothing when the text subsystem is absent; no line = empty (fallback).
+	 * Picks the Kessler-Voss line of alert event EventId and shows it as a subtitle (URRSubtitleSubsystem::ShowAlertLine) just before
+	 * its event is raised; the line also stays readable with URRTextContentSubsystem::GetCurrentAlertLine. No line = no subtitle.
 	 */
 	void PickAlertLine(const TCHAR* EventId);
 

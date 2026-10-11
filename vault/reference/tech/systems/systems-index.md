@@ -37,6 +37,7 @@ Decision status inside each doc: approved, provisional, deferred or open. Planne
 - [[sys-damage-numbers]] — damage number subsystem: one number per hit with a spawn disc (no merge since task-059), stacking, Niagara user parameters contract, player toggle.
 - [[sys-stress]] — stress test tooling: rr.Stress.* cheat commands, bulk spawn around the miner, timed frame-time run.
 - [[sys-text-content]] — runtime loader of the A4 text files: upgrade flavor, alert lines, barks, fallback, hooks.
+- [[sys-subtitles]] — subtitle subsystem: one voice line at a time, speaker prefix, C++ timer, company alert hooks, widget delegates.
 - [[sys-cheats]] — cheats (XP, invulnerable, cards, alert speed, console, extraction): polled URRCheatSettings properties for MCP, plus rr.Cheat.* console variables.
 - [[sys-automation-tests]] — headless C++ automation tests (RogueRigs.Dig.*, RogueRigs.Weapons.*): test world harness, what each test proves, gotchas.
 - [[gas-engine-facts]] — GAS 5.8 behaviors read in engine source that fix project rules.

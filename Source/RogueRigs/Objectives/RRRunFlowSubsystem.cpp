@@ -16,6 +16,7 @@
 #include "Player/RRMiner.h"
 #include "Progression/RRLevelUpComponent.h"
 #include "RogueRigs.h"
+#include "Text/RRSubtitleSubsystem.h"
 #include "Text/RRTextContentSubsystem.h"
 #include "World/RRWorld.h"
 
@@ -518,7 +519,7 @@ ARRShuttle* URRRunFlowSubsystem::LandShuttle()
 
 	const float CheatCountdown = GetDefault<URRCheatSettings>()->ShuttleCountdownOverride;
 	const float Countdown = CheatCountdown > 0.f ? CheatCountdown : Config.ShuttleCountdownSeconds;
-	// One countdown line per countdown start (OnShuttleCountdown fires every frame): picked before the first countdown event.
+	// One countdown subtitle per countdown start (OnShuttleCountdown fires every frame): shown before the first countdown event.
 	PickAlertLine(FRRTextContentLibrary::AlertShuttleCountdown);
 	NewShuttle->InitializeShuttle(Grid, Miner, Cell, Countdown, Config.ShuttleBoardRadiusCells * Grid->GetCellSize());
 	OnShuttleLanded.Broadcast(NewShuttle);
@@ -650,7 +651,11 @@ void URRRunFlowSubsystem::HandleConsoleMarkedRocksChanged(ARRConsole* InConsole,
 
 void URRRunFlowSubsystem::PickAlertLine(const TCHAR* EventId)
 {
-	if (URRTextContentSubsystem* TextContent = URRTextContentSubsystem::Get(this))
+	if (URRSubtitleSubsystem* Subtitles = URRSubtitleSubsystem::Get(this))
+	{
+		Subtitles->ShowAlertLine(FName(EventId));
+	}
+	else if (URRTextContentSubsystem* TextContent = URRTextContentSubsystem::Get(this))
 	{
 		FText Unused;
 		TextContent->GetAlertLine(FName(EventId), Unused);

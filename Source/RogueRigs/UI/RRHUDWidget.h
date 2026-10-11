@@ -362,8 +362,8 @@ protected:
 	void OnPlayerDamaged(float Amount, float HealthFraction);
 
 	/**
-	 * Display event: a horde front starts in SecondsUntil seconds (banner "HORDE INCOMING!"). Its Kessler-Voss line is picked just
-	 * before (GetAlertLine(horde_incoming)). Implement in Blueprint.
+	 * Display event: a horde front starts in SecondsUntil seconds (banner "HORDE INCOMING!"). Its Kessler-Voss line is shown as a
+	 * subtitle just before (URRSubtitleSubsystem; the banner does not show it). Implement in Blueprint.
 	 */
 	UFUNCTION(BlueprintNativeEvent, Category = "HUD|Pressure")
 	void OnHordeIncoming(float SecondsUntil);
@@ -384,7 +384,10 @@ protected:
 	/** Native default of OnAlertEventsChanged: nothing (the Blueprint places the icons). */
 	virtual void OnAlertEventsChanged_Implementation(const TArray<FRRAlertBarEvent>& Events) {}
 
-	/** Spawner OnHordeIncoming callback: calls OnHordeIncoming and refreshes the icons. */
+	/** Picks the horde_incoming Kessler-Voss line and shows it as a subtitle (URRSubtitleSubsystem::ShowAlertLine). */
+	void ShowHordeAlertLine();
+
+	/** Spawner OnHordeIncoming callback: shows the horde subtitle, calls OnHordeIncoming and refreshes the icons. */
 	UFUNCTION()
 	void HandleHordeIncoming(int32 HordeIndex, float SecondsUntil);
 

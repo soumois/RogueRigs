@@ -18,6 +18,7 @@
 #include "Player/RRMiner.h"
 #include "Progression/RRLevelUpComponent.h"
 #include "Progression/RRProgressionComponent.h"
+#include "Text/RRSubtitleSubsystem.h"
 #include "Text/RRTextContentSubsystem.h"
 #include "Weapons/RRAutoFireComponent.h"
 #include "Weapons/RRTurretLauncher.h"
@@ -298,12 +299,11 @@ void URRHUDWidget::BindToSpawner(ARREnemySpawner* Spawner)
 	const int32 Active = Spawner->GetActiveHorde();
 	if (Active != INDEX_NONE && Spawner->GetHordeState(Active) == ERRHordeState::Announced)
 	{
-		// Same banner: keep its line, pick one only when none was picked yet.
-		URRTextContentSubsystem* TextContent = URRTextContentSubsystem::Get(this);
+		// Same banner: keep its line (and subtitle), show one only when none was picked yet.
+		const URRTextContentSubsystem* TextContent = URRTextContentSubsystem::Get(this);
 		if (TextContent && TextContent->GetCurrentAlertLine(FRRTextContentLibrary::AlertHordeIncoming).IsEmpty())
 		{
-			FText Unused;
-			TextContent->GetAlertLine(FRRTextContentLibrary::AlertHordeIncoming, Unused);
+			ShowHordeAlertLine();
 		}
 		OnHordeIncoming(Spawner->GetSecondsUntilHordeFront());
 	}
@@ -591,13 +591,22 @@ FText URRHUDWidget::GetAlertLine(FName EventId) const
 	return TextContent ? TextContent->GetCurrentAlertLine(EventId) : FText::GetEmpty();
 }
 
-void URRHUDWidget::HandleHordeIncoming(int32 HordeIndex, float SecondsUntil)
+void URRHUDWidget::ShowHordeAlertLine()
 {
-	if (URRTextContentSubsystem* TextContent = URRTextContentSubsystem::Get(this))
+	if (URRSubtitleSubsystem* Subtitles = URRSubtitleSubsystem::Get(this))
+	{
+		Subtitles->ShowAlertLine(FRRTextContentLibrary::AlertHordeIncoming);
+	}
+	else if (URRTextContentSubsystem* TextContent = URRTextContentSubsystem::Get(this))
 	{
 		FText Unused;
 		TextContent->GetAlertLine(FRRTextContentLibrary::AlertHordeIncoming, Unused);
 	}
+}
+
+void URRHUDWidget::HandleHordeIncoming(int32 HordeIndex, float SecondsUntil)
+{
+	ShowHordeAlertLine();
 	OnHordeIncoming(SecondsUntil);
 	RefreshAlertBarEvents();
 }

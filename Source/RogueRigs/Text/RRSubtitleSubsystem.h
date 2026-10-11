@@ -1,0 +1,165 @@
+// Rogue Rigs - subtitle subsystem: one voice line at a time (speaker prefix, timed in C++), raised by the company alert events, shown by the HUD subtitle widget.
+
+#pragma once
+
+#include "CoreMinimal.h"
+#include "Subsystems/WorldSubsystem.h"
+#include "RRSubtitleSubsystem.generated.h"
+
+/** Broadcast when a subtitle starts (also when it replaces the current one): speaker id, speaker display name, line, ready-to-show text ("Speaker: line"), seconds on screen. */
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_FiveParams(FRROnSubtitleShownSignature, FName, SpeakerId, const FText&, Speaker, const FText&, Text, const FText&, Subtitle, float, Duration);
+
+/** Broadcast when the current subtitle ends: its time ran out or Clear was called. Not broadcast when a new line replaces it. */
+DECLARE_DYNAMIC_MULTICAST_DELEGATE(FRROnSubtitleClearedSignature);
+
+/** One speaker of the subtitle table: id used by the callers and the bark data, English display name shown in front of the line. */
+USTRUCT(BlueprintType)
+struct FRRSubtitleSpeaker
+{
+	GENERATED_BODY()
+
+	/** Speaker id (kessler_voss, rook, vesna). */
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Subtitles")
+	FName Id;
+
+	/** Name shown before the line ("Kessler-Voss"). */
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Subtitles")
+	FText DisplayName;
+};
+
+/**
+ * Subtitles of voice lines (sys-subtitles): one line at a time, a new line replaces the current one (queue of one). The line is
+ * shown as "<Speaker>: <line>" for BaseSeconds + SecondsPerCharacter x line length (or an explicit duration); the remaining time
+ * is ticked here (world time, frozen while the game is paused), so the widget never polls: it binds OnSubtitleShown and
+ * OnSubtitleCleared. Callers: URRRunFlowSubsystem (console_dropped, bonus_chest_dropped, extraction_ready, shuttle_countdown once
+ * per countdown start) and URRHUDWidget (horde_incoming) through ShowAlertLine, which picks the Kessler-Voss line with
+ * URRTextContentSubsystem::GetAlertLine. Barks (rook, vesna) can use Show later; nothing shows them yet. Game and PIE worlds.
+ */
+UCLASS(Config = Game)
+class ROGUERIGS_API URRSubtitleSubsystem : public UTickableWorldSubsystem
+{
+	GENERATED_BODY()
+
+public:
+	/** Speaker id of the company voice (alert lines). */
+	static const FName SpeakerKesslerVoss;
+	/** Speaker id of Rook (barks). */
+	static const FName SpeakerRook;
+	/** Speaker id of Vesna (barks). */
+	static const FName SpeakerVesna;
+
+	/** Default speaker table and timing. */
+	URRSubtitleSubsystem();
+
+	/** Game and PIE worlds only. */
+	virtual bool DoesSupportWorldType(const EWorldType::Type WorldType) const override;
+
+	/** The subsystem of WorldContext's world; null without a world or in an unsupported world type. */
+	static URRSubtitleSubsystem* Get(const UObject* WorldContext);
+
+	/** "Speaker: Text"; Text alone when Speaker is empty. */
+	static FText ComposeSubtitle(const FText& Speaker, const FText& Text);
+
+	/**
+	 * Shows Text spoken by SpeakerId, replacing the current subtitle (no OnSubtitleCleared in between), then broadcasts
+	 * OnSubtitleShown. DisplayName empty = the speaker table name (no prefix for an unknown speaker). DurationOverride <= 0 =
+	 * GetDurationForText(Text). Returns false (nothing changes) when Text is empty.
+	 */
+	UFUNCTION(BlueprintCallable, Category = "Subtitles")
+	bool Show(FName SpeakerId, FText DisplayName, FText Text, float DurationOverride = -1.f);
+
+	/**
+	 * Picks a Kessler-Voss line of alert event EventId (URRTextContentSubsystem::GetAlertLine, which also keeps it as the
+	 * event's current line) and shows it. False when the event has no line (missing file or id): nothing is shown.
+	 */
+	UFUNCTION(BlueprintCallable, Category = "Subtitles")
+	bool ShowAlertLine(FName EventId);
+
+	/** Ends the current subtitle now and broadcasts OnSubtitleCleared; nothing when none is shown. */
+	UFUNCTION(BlueprintCallable, Category = "Subtitles")
+	void Clear();
+
+	/** True while a subtitle is shown. */
+	UFUNCTION(BlueprintPure, Category = "Subtitles")
+	bool HasSubtitle() const { return bActive; }
+
+	/** Speaker id of the current subtitle; None when none. */
+	UFUNCTION(BlueprintPure, Category = "Subtitles")
+	FName GetCurrentSpeakerId() const { return bActive ? CurrentSpeakerId : NAME_None; }
+
+	/** Speaker display name of the current subtitle; empty when none. */
+	UFUNCTION(BlueprintPure, Category = "Subtitles")
+	FText GetCurrentSpeaker() const { return bActive ? CurrentSpeaker : FText::GetEmpty(); }
+
+	/** Line of the current subtitle (without the speaker); empty when none. */
+	UFUNCTION(BlueprintPure, Category = "Subtitles")
+	FText GetCurrentText() const { return bActive ? CurrentText : FText::GetEmpty(); }
+
+	/** Current subtitle as shown ("Speaker: line"); empty when none. */
+	UFUNCTION(BlueprintPure, Category = "Subtitles")
+	FText GetCurrentSubtitle() const { return bActive ? CurrentSubtitle : FText::GetEmpty(); }
+
+	/** Seconds the current subtitle stays on screen in total; 0 when none. */
+	UFUNCTION(BlueprintPure, Category = "Subtitles")
+	float GetCurrentDuration() const { return bActive ? CurrentDuration : 0.f; }
+
+	/** Seconds left before the current subtitle clears; 0 when none. */
+	UFUNCTION(BlueprintPure, Category = "Subtitles")
+	float GetRemainingSeconds() const { return bActive ? RemainingSeconds : 0.f; }
+
+	/** Display name of SpeakerId in the speaker table; empty when unknown. */
+	UFUNCTION(BlueprintPure, Category = "Subtitles")
+	FText GetSpeakerDisplayName(FName SpeakerId) const;
+
+	/** On-screen seconds of a line: BaseSeconds + SecondsPerCharacter x its character count. */
+	UFUNCTION(BlueprintPure, Category = "Subtitles")
+	float GetDurationForText(const FText& Text) const;
+
+	/** A subtitle started or replaced the current one. Bind in the subtitle widget. */
+	UPROPERTY(BlueprintAssignable, Category = "Subtitles")
+	FRROnSubtitleShownSignature OnSubtitleShown;
+
+	/** The current subtitle ended (time out or Clear). Bind in the subtitle widget. */
+	UPROPERTY(BlueprintAssignable, Category = "Subtitles")
+	FRROnSubtitleClearedSignature OnSubtitleCleared;
+
+	/** Counts the remaining time down and clears the subtitle when it reaches 0. */
+	virtual void Tick(float DeltaTime) override;
+
+	/** Stat id of the tick. */
+	virtual TStatId GetStatId() const override;
+
+protected:
+	/** Speakers and their English display names (kessler_voss, rook, vesna). */
+	UPROPERTY(Config, EditAnywhere, Category = "Subtitles")
+	TArray<FRRSubtitleSpeaker> Speakers;
+
+	/** Fixed part of a subtitle duration, seconds (owner decision 2026-10-10: 4). */
+	UPROPERTY(Config, EditAnywhere, Category = "Subtitles", meta = (ClampMin = "0"))
+	float BaseSeconds = 4.f;
+
+	/** Duration added per character of the line, seconds (owner decision 2026-10-10: 0.06). */
+	UPROPERTY(Config, EditAnywhere, Category = "Subtitles", meta = (ClampMin = "0"))
+	float SecondsPerCharacter = 0.06f;
+
+	/** True while a subtitle is shown. */
+	bool bActive = false;
+
+	/** Speaker id of the current subtitle. */
+	FName CurrentSpeakerId;
+
+	/** Speaker display name of the current subtitle. */
+	FText CurrentSpeaker;
+
+	/** Line of the current subtitle. */
+	FText CurrentText;
+
+	/** Composed current subtitle ("Speaker: line"). */
+	FText CurrentSubtitle;
+
+	/** Total on-screen seconds of the current subtitle. */
+	float CurrentDuration = 0.f;
+
+	/** Seconds left of the current subtitle. */
+	float RemainingSeconds = 0.f;
+};

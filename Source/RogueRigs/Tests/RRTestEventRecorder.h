@@ -82,6 +82,24 @@ public:
 	UFUNCTION()
 	void HandleExtractionReady() { ++ExtractionReadyCount; }
 
+	/** Bind to URRSubtitleSubsystem::OnSubtitleShown: appends "Shown:<speaker id>:<subtitle>" to SubtitleEvents and the duration to SubtitleDurations. */
+	UFUNCTION()
+	void HandleSubtitleShown(FName SpeakerId, const FText& Speaker, const FText& Text, const FText& Subtitle, float Duration)
+	{
+		SubtitleEvents.Add(FString::Printf(TEXT("Shown:%s:%s"), *SpeakerId.ToString(), *Subtitle.ToString()));
+		SubtitleDurations.Add(Duration);
+	}
+
+	/** Bind to URRSubtitleSubsystem::OnSubtitleCleared: appends "Cleared" to SubtitleEvents. */
+	UFUNCTION()
+	void HandleSubtitleCleared() { SubtitleEvents.Add(TEXT("Cleared")); }
+
+	/** Subtitle broadcasts in order ("Shown:<speaker id>:<subtitle>" or "Cleared"). */
+	TArray<FString> SubtitleEvents;
+
+	/** Duration of each OnSubtitleShown received. */
+	TArray<float> SubtitleDurations;
+
 	/** Bind to URRRunFlowSubsystem::OnRunEnded: records each result. */
 	UFUNCTION()
 	void HandleRunEnded(bool bSuccess) { RunEndedResults.Add(bSuccess); }
