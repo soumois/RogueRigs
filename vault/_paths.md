@@ -522,6 +522,8 @@ task-100-01-ore-rename-duskite  reference/tasks/task-100-ore-rename-duskite/task
 task-100-ore-rename-duskite  reference/tasks/task-100-ore-rename-duskite.md
 task-101-01-barrel-asset  reference/tasks/task-101-barrel-asset/task-101-01-barrel-asset.md
 task-101-barrel-asset  reference/tasks/task-101-barrel-asset.md
+task-102-01-company-logo  reference/tasks/task-102-company-logo/task-102-01-company-logo.md
+task-102-company-logo  reference/tasks/task-102-company-logo.md
 tasks-done-index  reference/tasks/tasks-done-index.md
 tasks-index  reference/tasks/tasks-index.md
 tasks-to-do-index  reference/tasks/tasks-to-do-index.md

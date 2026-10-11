@@ -12,3 +12,4 @@ A global task moves to [[tasks-done-index]] when it is done (`vault/scripts/task
 - [[tasks-index]] — parent index.
 - [[task-094-hud-refactor]] — The HUD is split into one widget per logic, all placed by WBP_HUD, which only lays them out; widgets react to events, tick only for continuous values. Status in-progress.
 - [[task-101-barrel-asset]] — The explosive barrel has an owner-validated source image, then a Blender-built export-ready mesh. Status in-progress.
+- [[task-102-company-logo]] — Four distinct logo proposals for the Kessler-Voss Mining Consortium exist as candidate images; the owner keeps one. Status in-progress.

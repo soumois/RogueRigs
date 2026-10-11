@@ -9,7 +9,7 @@ kind: note
 Derived from the four approved reference images and their prompts ([[art-prompts]]). Colors live in [[color-code]]; brightness and color-meaning rules live in [[readability-rules]]; do not restate them here. Reviews cite the rule ids below.
 
 ## Shape language
-- A1. Chunky, blocky volumes with large flat facets; facets stay visible, no textures, no smoothing.
+- A1. Chunky, blocky volumes with large flat facets; facets stay visible, no smoothing. The main design stays flat-shaded without textures; a texture is allowed only on a small decal or sign (logo sticker, advertising panel) (owner 2026-10-11).
 - A2. Rigid mechanical parts only: plates, pistons, bolts, big gripping hands. No cloth, no organic forms.
 - A3. Every enemy role reads by silhouette alone: chaser = lanky biped, arms forward; kamikaze = round body with a glowing core and four limbs; shooter = bulky, one arm is a built-in cannon, thin antenna; heavy = chaser silhouette at twice the size, hunched.
 - A4. The drone is about the size of the miner's head and shoulders; the turret sits low and wide on a tripod base.
@@ -30,7 +30,7 @@ Derived from the four approved reference images and their prompts ([[art-prompts
 - A13. Clean flat floor with subtle large facets and no pebbles; the arena edge is a cliff into space with stars and a planet.
 
 ## Forbidden
-- A14. Textures, UI or text inside reference art, small scattered rubble on the floor, grey rock walls as arena borders.
+- A14. UI inside reference art, small scattered rubble on the floor, grey rock walls as arena borders. Text is allowed only on logos, stickers and advertising panels, never as UI or captions in a reference image (owner 2026-10-11).
 - A15. Handheld weapons on the corporate shooter (its cannon is part of the arm).
 
 ## Delivery formats
