@@ -3,7 +3,7 @@ id: task-096-01-kamikaze-death-fuse
 description: "A kamikaze killed by the player goes through the same 0.65 s preparation as a proximity trigger and releases its XP only at the explosion."
 parent: task-096-kamikaze-death-fuse
 kind: task
-status: todo
+status: in-progress
 ---
 # Kamikaze death fuse
 

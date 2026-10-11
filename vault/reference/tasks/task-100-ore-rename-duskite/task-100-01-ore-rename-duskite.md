@@ -3,7 +3,7 @@ id: task-100-01-ore-rename-duskite
 description: "The first ore is renamed Duskite in data, docs and tests and keeps its existing violet look (no colour written)."
 parent: task-100-ore-rename-duskite
 kind: task
-status: in-progress
+status: done
 ---
 # Ore renamed Duskite, violet kept
 
@@ -15,11 +15,11 @@ status: in-progress
 - done_when: build exits 0 with the editor closed; all RogueRigs.* tests pass headless; no gold left in code and docs except historical task results; lint clean; committed.
 - editor_state: closed
 - token_ceiling: 30000
-- model: open
-- tokens: open
-- runs: open
+- model: opus
+- tokens: input 42, cache write 66282, cache read 492443, output 9825
+- runs: 1
 - milestone: M2
-- result: open
+- result: Ore row renamed Duskite, colour alpha 0 keeps the violet material; 359 deposits (positions moved: the placement hash includes the ore id); 227/227 tests. Commit e05cf15.
 
 ## Relations
 - [[task-100-ore-rename-duskite]] — parent global task.

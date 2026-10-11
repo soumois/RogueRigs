@@ -105,3 +105,4 @@ Archive: it exceeds the index size limits of [[_authoring]] on purpose (owner, 2
 - [[task-092-xp-pool]] — XP cubes come from the pool with creation spread over at most 3 frames, so a mass kill no longer spikes the frame. Status done.
 - [[task-093-robot-overlap-cost]] — Robot components audited, then unneeded attached-part transforms and overlap updates are removed, with before/after numbers. Status done.
 - [[task-095-xp-cube-scale]] — Reused XP cubes come back at their normal size: the pooled reset restores the scale (and any other visual state that differs from a fresh cube). Status done.
+- [[task-100-ore-rename-duskite]] — The first ore is renamed Duskite in data, docs and tests and keeps its existing violet look (no colour written). Status done.

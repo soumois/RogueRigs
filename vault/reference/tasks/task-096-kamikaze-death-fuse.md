@@ -3,7 +3,7 @@ id: task-096-kamikaze-death-fuse
 description: "Global task: a kamikaze killed by the player goes through the 0.65 s preparation and releases XP at the explosion."
 parent: tasks-to-do-index
 kind: task
-status: todo
+status: in-progress
 ---
 # Kamikaze death fuse
 
