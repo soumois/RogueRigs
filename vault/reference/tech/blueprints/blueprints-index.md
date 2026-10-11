@@ -36,4 +36,5 @@ One node per Blueprint, template `blueprint.md`.
 - [[bp-extraction-shuttle]] — BP_ExtractionShuttle, the extraction shuttle.
 - [[wbp-hud]] — WBP_HUD, health bar and Game Over text.
 - [[wbp-subtitles]] — WBP_Subtitles, the company subtitle line, a sub-widget of WBP_HUD.
+- [[hud-refactor-audit]] — audit of WBP_HUD: tick cost, per-feature tables, sub-widget plan, missing C++ events.
 - [[bp-damage-numbers]] — NS_DamageNumbers, M_DamageNumber and the digit atlas, the floating damage numbers.

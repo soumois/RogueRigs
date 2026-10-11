@@ -106,6 +106,10 @@ gdd-index  reference/gdd/gdd-index.md
 handover-2026-10-06  reference/production/handover-2026-10-06.md
 handover-2026-10-09  reference/production/handover-2026-10-09.md
 heal-ore  reference/gdd/terrain/heal-ore.md
+hud-refactor-audit  reference/tech/blueprints/hud-refactor-audit.md
+hud-refactor-audit-core  reference/tech/blueprints/hud-refactor-audit-core.md
+hud-refactor-audit-run  reference/tech/blueprints/hud-refactor-audit-run.md
+hud-refactor-missing-events  reference/tech/blueprints/hud-refactor-missing-events.md
 instructor-feedback  reference/course/instructor-feedback.md
 layout-generator-recipe  reference/tech/pipelines/layout-generator-recipe.md
 lesson-00-01-foundations  reference/course/lessons/lesson-00-01-foundations.md
