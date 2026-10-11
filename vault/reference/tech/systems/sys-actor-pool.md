@@ -15,7 +15,8 @@ kind: doc
 - data: none (MaxFrames comes from each caller's tunables).
 - depends_on: none.
 - implements: [[perf-trace-real-game]] recommendations 2 and 3 (pool robots, pool XP cubes).
-- gotchas: game thread only. `Release` refuses actors not created by the pool, already idle, or being destroyed (warning). Members destroyed by anyone leave the pool (`OnDestroyed`). DontSpawnIfColliding is not honoured on reuse. World end: `Deinitialize` drops pending requests without callbacks and leaves idle actors to the world.
+- callers: robots (task-091-01, [[sys-spawner]] `SpawnMaxFrames` 20, [[sys-enemies-base]] reset hook). Measured in [[stress-grid-cells]] (game 250): about 325 robots created and 809 to 863 reused per 60 s window, longest wait 15 to 16 frames.
+- gotchas: game thread only. Reuse turns collision on before the transform is restored: a caller that shrinks its actor must restore its scale in `OnPoolReleased` (robots do; otherwise Chaos ensures NewMP.Mass > 1e-8, a 3 s hitch). `Release` refuses actors not created by the pool, already idle, or being destroyed (warning). Members destroyed by anyone leave the pool (`OnDestroyed`). DontSpawnIfColliding is not honoured on reuse. World end: `Deinitialize` drops pending requests without callbacks and leaves idle actors to the world.
 
 ## Relations
 - [[systems-index]] — parent index.

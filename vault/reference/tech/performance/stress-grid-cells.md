@@ -1,6 +1,6 @@
 ---
 id: stress-grid-cells
-description: "Cell size stress (200, 100, 67 uu); real-game limits (task-067-01); packaged vs editor, spike causes (task-068-01); robot light movement before/after (task-071-01)."
+description: "Cell size stress (200, 100, 67 uu); real-game limits (task-067-01); packaged vs editor, spike causes (task-068-01); robot light movement (task-071-01), robot pool (task-091-01) before/after."
 parent: performance-index
 kind: doc
 ---
@@ -157,6 +157,20 @@ Editor `-game`, same commands as task-067-01 (game 250, settle 30, measure 60, `
 - Spikes: fewer frames over 25 ms (75–100 vs 140–188), same causes (wave fill, XP bursts, one GC); max frame unchanged in kind.
 - Kills 860–1064 per run (before 940–1099): robots still reach the miner around rock (also `RogueRigs.Enemies.LightMovementAroundRock`). Miner damage is not logged: the pacing harness keeps the miner invulnerable.
 
+## Robot pool (task-091-01, 2026-10-10)
+Editor `-game`, `rr.Stress.Run 250 30 60 1 game` with `rr.Pacing.RunLookahead 0` (same command as task-071-01). Before = d2e8ca9 (spawn in one frame), after = robots from the actor pool, `SpawnMaxFrames` 20 ([[sys-spawner]], [[sys-actor-pool]]); two runs each, same session within 25 min, owner's normal profile, nothing closed. Wave spawn spikes = frames over 25 ms tagged `fill robots` (a fill wave on the previous frame; after: also frames where the pool created robots), GC frames excluded. ms avg / p99 / max.
+
+| Run | Game thread | Frame | Wave spawn spikes (max frame) | All spikes | Pool: created / reused, longest wait |
+|---|---|---|---|---|---|
+| Before #1 | 12.21 / 27.66 / 54.39 | 12.47 / 27.40 / 54.28 | 46 (54.3) | 64 | none |
+| Before #2 | 12.46 / 27.90 / 51.34 | 12.67 / 27.76 / 50.44 | 61 (46.1) | 81 | none |
+| After #1 | 11.81 / 19.24 / 72.62 | 12.13 / 19.41 / 72.97 | 4 (73.0) | 16 | 325 / 809, 16 frames |
+| After #2 | 12.65 / 20.34 / 66.68 | 12.84 / 20.58 / 66.84 | 4 (28.5) | 17 | 326 / 863, 15 frames |
+
+- Wave spawn spikes 46–61 → 4 per run; game-thread p99 27.7–27.9 → 19.2–20.3 ms (now under the 25 ms budget); average unchanged within run noise (12.2–12.5 → 11.8–12.7). The pool creates about 325 robots in the first minute, then reuses (72 % of the deliveries); no request waited more than 16 frames.
+- The 4 remaining spawn-tagged spikes are fill frames served by reuse (10–15 robots reactivated in one frame: 25–29 ms, one 73 ms frame at t 13 s, not traced). Reuse is not spread; spreading it is the next lead if those frames matter.
+- A first pair of after runs was discarded: robots released at the death-shrink scale hit a Chaos ensure on reuse (one 2984 ms frame); fixed by restoring the scale on release before the runs above.
+
 ## Verdict
 - 200 uu: holds; the navigation fix would also help it (one destruction 0.25 ms here, 0.04–0.07 ms measured with the fix at the smaller sizes).
 - 100 uu: steady state and dig hold. Explosion chains break (52 ms frames) and are fixed by turning off navigation relevance on the grid components (≈ 1 h with test), back to the 200 uu level. Recommended.
@@ -178,3 +192,4 @@ Editor `-game`, same commands as task-067-01 (game 250, settle 30, measure 60, `
 - [[perf-trace-real-game]] — the packaged real-game trace behind the spike causes.
 - [[task-071-01-robot-light-movement]] — the task that produced the robot light movement section.
 - [[sys-enemies-movement]] — the light movement measured in the task-071-01 section.
+- [[task-091-01-robot-pool]] — the task that produced the robot pool section.
