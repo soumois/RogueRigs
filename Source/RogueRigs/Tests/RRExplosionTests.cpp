@@ -1,4 +1,4 @@
-// Rogue Rigs - automation tests of the explosion system (RogueRigs.Explosions.*): blocks in the radius, characters hit once, kamikaze reach (312 uu), chain delay, single explosion per source, miner no-one-shot.
+// Rogue Rigs - automation tests of the explosion system (RogueRigs.Explosions.*): blocks in the radius, characters hit once, kamikaze reach (312 uu), chain delay, single explosion per source, miner no-one-shot, visual radius (x 1.05) and hold (0.1 s) per row.
 
 #include "CoreMinimal.h"
 #include "Misc/AutomationTest.h"
@@ -6,10 +6,14 @@
 #if WITH_DEV_AUTOMATION_TESTS
 
 #include "AbilitySystemComponent.h"
+#include "Components/StaticMeshComponent.h"
 #include "Enemies/RRChaser.h"
+#include "EngineUtils.h"
+#include "Explosions/RRExplosionFX.h"
 #include "Explosions/RRExplosionSubsystem.h"
 #include "GAS/RRGameplayTags.h"
 #include "GAS/RRHealthAttributeSet.h"
+#include "Tests/RRTestAccess.h"
 #include "Tests/RRTestEventRecorder.h"
 #include "Tests/RRTestHarness.h"
 #include "UObject/StrongObjectPtr.h"
@@ -358,6 +362,90 @@ bool FRRExplosionNoOneShotTest::RunTest(const FString& Parameters)
 	TickUntilIdle(TestWorld, Subsystem);
 	TestEqual(TEXT("wounded miner killed"), Attribute(MinerASC, URRHealthAttributeSet::GetHealthAttribute()), 0.f);
 	TestTrue(TEXT("miner dead"), Miner->IsDead());
+	return true;
+}
+
+IMPLEMENT_SIMPLE_AUTOMATION_TEST(FRRExplosionVisualTest, "RogueRigs.Explosions.VisualRadiusAndHold",
+	EAutomationTestFlags::EditorContext | EAutomationTestFlags::EngineFilter)
+
+bool FRRExplosionVisualTest::RunTest(const FString& Parameters)
+{
+	using namespace RRExplosionTests;
+
+	FTestWorld TestWorld(TEXT("RRExplosionVisual"));
+	ARRArenaGrid* Grid = SpawnGrid(*this, TestWorld);
+	URRExplosionSubsystem* Subsystem = Grid ? GetSubsystem(*this, TestWorld, nullptr) : nullptr;
+	if (!Subsystem)
+	{
+		return false;
+	}
+	// explosions gdd (owner 2026-10-10): visible part about 5 % larger than the collision radius, final state held 0.1 s.
+	TestNearlyEqual(TEXT("VisualRadiusScale 1.05"), Subsystem->GetVisualRadiusScale(), 1.05f, 1e-5f);
+	TestNearlyEqual(TEXT("VisualHoldSeconds 0.1"), Subsystem->GetVisualHoldSeconds(), 0.1f, 1e-5f);
+
+	struct FRowCase
+	{
+		const TCHAR* Row;
+		float CollisionRadius;
+		float Damage;
+	};
+	const FRowCase Cases[] = { { TEXT("Barrel"), 350.f, 40.f }, { TEXT("Kamikaze"), 312.f, 30.f } };
+	for (int32 Index = 0; Index < UE_ARRAY_COUNT(Cases); ++Index)
+	{
+		const FRowCase& Case = Cases[Index];
+		FRRExplosionStatsRow Stats;
+		if (!TestTrue(FString::Printf(TEXT("%s row loads"), Case.Row), Subsystem->GetExplosionStats(Case.Row, Stats)))
+		{
+			continue;
+		}
+		TestEqual(FString::Printf(TEXT("%s collision radius unchanged (%.0f)"), Case.Row, Case.CollisionRadius), Stats.Radius, Case.CollisionRadius);
+		TestEqual(FString::Printf(TEXT("%s damage unchanged (%.0f)"), Case.Row, Case.Damage), Stats.Damage, Case.Damage);
+		const float VisualRadius = Subsystem->GetVisualRadius(Stats.Radius);
+		TestNearlyEqual(FString::Printf(TEXT("%s visual radius = 1.05 x radius"), Case.Row), VisualRadius, 1.05f * Case.CollisionRadius, 0.01f);
+
+		// The spawned FX gets the visual radius and the hold; it holds its final state, then fades and goes.
+		const FVector Center = Grid->GetCellCenter(RockWestFloorCell.X, RockWestFloorCell.Y);
+		if (!TestTrue(FString::Printf(TEXT("%s explosion queued"), Case.Row), Subsystem->QueueExplosion(Center, Case.Row, nullptr, nullptr)))
+		{
+			continue;
+		}
+		TickUntilIdle(TestWorld, Subsystem);
+		ARRExplosionFX* FX = nullptr;
+		for (TActorIterator<ARRExplosionFX> It(TestWorld.Get()); It; ++It)
+		{
+			if (IsValid(*It) && !It->IsActorBeingDestroyed())
+			{
+				FX = *It;
+			}
+		}
+		if (!TestNotNull(FString::Printf(TEXT("%s FX spawned"), Case.Row), FX))
+		{
+			continue;
+		}
+		TestNearlyEqual(FString::Printf(TEXT("%s FX radius = visual radius"), Case.Row), FX->GetRadius(), VisualRadius, 0.01f);
+		TestNearlyEqual(FString::Printf(TEXT("%s FX hold = VisualHoldSeconds"), Case.Row), FX->GetHoldSeconds(), Subsystem->GetVisualHoldSeconds(), 1e-5f);
+		const float GrowSeconds = RRTestAccess::FExplosionFXAccess::DurationOf(FX);
+		TestTrue(FString::Printf(TEXT("%s FX lifetime longer than grow + hold"), Case.Row), FX->GetLifetime() > GrowSeconds + FX->GetHoldSeconds());
+
+		// Middle of the hold: full size (Radius / 50 for the engine sphere).
+		const UStaticMeshComponent* Mesh = FX->FindComponentByClass<UStaticMeshComponent>();
+		const float FullScale = FX->GetRadius() / 50.f;
+		const TWeakObjectPtr<ARRExplosionFX> WeakFX(FX);
+		const int32 HoldMiddleFrames = FMath::CeilToInt32((GrowSeconds + 0.5f * FX->GetHoldSeconds()) / FrameSeconds) - 1;
+		for (int32 Frame = 0; Frame < HoldMiddleFrames; ++Frame)
+		{
+			TestWorld.Tick();
+		}
+		if (TestTrue(FString::Printf(TEXT("%s FX alive during the hold"), Case.Row), WeakFX.IsValid() && !WeakFX->IsActorBeingDestroyed()) && Mesh)
+		{
+			TestNearlyEqual(FString::Printf(TEXT("%s FX at full size during the hold"), Case.Row), static_cast<float>(Mesh->GetRelativeScale3D().X), FullScale, 0.01f);
+		}
+		for (int32 Frame = 0; Frame < 120 && WeakFX.IsValid() && !WeakFX->IsActorBeingDestroyed(); ++Frame)
+		{
+			TestWorld.Tick();
+		}
+		TestTrue(FString::Printf(TEXT("%s FX destroyed after its lifetime"), Case.Row), !WeakFX.IsValid() || WeakFX->IsActorBeingDestroyed());
+	}
 	return true;
 }
 

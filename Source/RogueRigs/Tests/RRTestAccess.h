@@ -152,7 +152,7 @@ namespace RRTestAccess
 		static float& RecycleUnseenDelayOf(ARREnemySpawner* Spawner) { return Spawner->*(&FSpawnerAccess::RecycleUnseenDelay); }
 	};
 
-	/** ARRExplosionFX: visual duration. */
+	/** ARRExplosionFX: growth duration (Duration). */
 	struct FExplosionFXAccess : public ARRExplosionFX
 	{
 		static float DurationOf(const ARRExplosionFX* FX) { return FX->*(&FExplosionFXAccess::Duration); }

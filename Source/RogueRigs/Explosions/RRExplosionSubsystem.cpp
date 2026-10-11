@@ -210,7 +210,8 @@ void URRExplosionSubsystem::SpawnFX(const FPendingExplosion& Explosion)
 	ARRExplosionFX* FX = World->SpawnActorDeferred<ARRExplosionFX>(FXClass, SpawnTransform, nullptr, nullptr, ESpawnActorCollisionHandlingMethod::AlwaysSpawn);
 	if (FX)
 	{
-		FX->SetRadius(Explosion.Stats.Radius);
+		FX->SetRadius(GetVisualRadius(Explosion.Stats.Radius));
+		FX->SetHoldSeconds(VisualHoldSeconds);
 		FX->FinishSpawning(SpawnTransform);
 	}
 }

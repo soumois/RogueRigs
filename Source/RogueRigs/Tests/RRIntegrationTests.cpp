@@ -984,7 +984,7 @@ namespace RRIntegrationExplosionTests
 			ARRExplosionFX* FX = *It;
 			if (IsValid(FX) && !FX->IsActorBeingDestroyed() && !Records.ContainsByPredicate([FX](const FFXRecord& Record) { return Record.FX.Get() == FX; }))
 			{
-				Records.Add({ FX, FX->GetClass(), FX->GetRadius(), FExplosionFXAccess::DurationOf(FX), Now, -1.0 });
+				Records.Add({ FX, FX->GetClass(), FX->GetRadius(), FX->GetLifetime(), Now, -1.0 });
 			}
 		}
 	}
@@ -1079,7 +1079,7 @@ bool FRRIntegrationBarrelChainTest::RunTest(const FString& Parameters)
 	TestEqual(TEXT("every block in both radii destroyed"), BlocksLeft, 0);
 	TestEqual(TEXT("miner outside the radii untouched"), GetHealth(Miner), StartHealth);
 
-	// One BP_ExplosionFX per explosion, at the radius, gone after its Duration.
+	// One BP_ExplosionFX per explosion, at the visual radius (collision radius x VisualRadiusScale), gone after its lifetime (grow, hold, fade).
 	if (TestEqual(TEXT("one explosion visual per explosion"), FXRecords.Num(), 2))
 	{
 		for (int32 Index = 0; Index < FXRecords.Num(); ++Index)
@@ -1087,13 +1087,13 @@ bool FRRIntegrationBarrelChainTest::RunTest(const FString& Parameters)
 			const FFXRecord& Record = FXRecords[Index];
 			const double Seen = Record.SeenTime - Start;
 			const double Life = Record.GoneTime - Record.SeenTime;
-			AddInfo(FString::Printf(TEXT("FX %d (%s): seen at %.4f s, radius %.0f, destroyed %.4f s later (Duration %.2f)"),
+			AddInfo(FString::Printf(TEXT("FX %d (%s): seen at %.4f s, radius %.0f, destroyed %.4f s later (lifetime %.2f)"),
 				Index, Record.Class ? *Record.Class->GetName() : TEXT("none"), Seen, Record.Radius, Life, Record.Duration));
 			TestTrue(TEXT("FX is BP_ExplosionFX"), Record.Class == FXClass);
-			TestNearlyEqual(TEXT("FX radius = Barrel radius"), Record.Radius, Stats.Radius);
+			TestNearlyEqual(TEXT("FX radius = Barrel radius x VisualRadiusScale"), Record.Radius, Explosions->GetVisualRadius(Stats.Radius));
 			TestNearlyEqual(TEXT("FX spawned with its explosion"), Seen, Times[Index], 1e-4);
 			TestTrue(TEXT("FX destroyed itself"), Record.GoneTime >= 0.0);
-			TestTrue(TEXT("FX lifetime = Duration, within one frame"), Life >= Record.Duration - FrameSeconds - 1e-4 && Life <= Record.Duration + FrameSeconds + 1e-4);
+			TestTrue(TEXT("FX lifetime = Duration + hold + fade, within one frame"), Life >= Record.Duration - FrameSeconds - 1e-4 && Life <= Record.Duration + FrameSeconds + 1e-4);
 		}
 	}
 	return true;

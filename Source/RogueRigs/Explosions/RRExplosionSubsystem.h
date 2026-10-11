@@ -26,7 +26,10 @@ DECLARE_DYNAMIC_MULTICAST_DELEGATE_TwoParams(FRROnExplosionSignature, FVector, C
  * No-one-shot rule: when the target is an ARRMiner at full health (Health >= MaxHealth), the damage is capped at
  * Health - MinerHealthLeftAtFullHealth, so an explosion never takes a full-health miner to 0. Below full health the damage
  * is not capped. I-frames are respected: the GE is refused while the miner has State.Invulnerable.
- * Stats come from ExplosionStats.csv (FRRExplosionStatsRow). ChainDelay and MinerHealthLeftAtFullHealth are config
+ * Visual (explosions gdd, owner 2026-10-10): the FX radius is the collision radius x VisualRadiusScale (1.05) and the FX holds its
+ * final state VisualHoldSeconds (0.1 s) before fading; the collision radius and the damage are not changed.
+ * Stats come from ExplosionStats.csv (FRRExplosionStatsRow). ChainDelay, MinerHealthLeftAtFullHealth, VisualRadiusScale and
+ * VisualHoldSeconds are config
  * properties (DefaultGame.ini, section [/Script/RogueRigs.RRExplosionSubsystem]) with runtime setters.
  */
 UCLASS(Config = Game)
@@ -84,6 +87,18 @@ public:
 	UFUNCTION(BlueprintCallable, Category = "Explosions")
 	void SetChainDelay(float InChainDelay) { ChainDelay = FMath::Max(InChainDelay, 0.f); }
 
+	/** Visible radius over collision radius of every explosion FX (explosions gdd: about 5 % larger, 1.05). */
+	UFUNCTION(BlueprintPure, Category = "Explosions")
+	float GetVisualRadiusScale() const { return VisualRadiusScale; }
+
+	/** Radius the FX of an explosion of collision radius CollisionRadius grows to: CollisionRadius x VisualRadiusScale. */
+	UFUNCTION(BlueprintPure, Category = "Explosions")
+	float GetVisualRadius(float CollisionRadius) const { return FMath::Max(CollisionRadius, 0.f) * VisualRadiusScale; }
+
+	/** Seconds every explosion FX holds its final state (full size, opaque) before fading (explosions gdd: 0.1 s). */
+	UFUNCTION(BlueprintPure, Category = "Explosions")
+	float GetVisualHoldSeconds() const { return VisualHoldSeconds; }
+
 	/** Uses Grid as the terrain (instead of the first ARRArenaGrid of the world). */
 	UFUNCTION(BlueprintCallable, Category = "Explosions")
 	void SetGrid(ARRArenaGrid* InGrid) { Grid = InGrid; }
@@ -117,7 +132,7 @@ protected:
 	/** Damage dealt to Target after the miner no-one-shot cap. */
 	float ComputeCharacterDamage(const AActor* Target, const UAbilitySystemComponent& TargetASC, float Damage) const;
 
-	/** Spawns the row's FX class at the center, sized to the radius; nothing when the class is empty or missing. */
+	/** Spawns the row's FX class at the center, sized to GetVisualRadius(radius) with VisualHoldSeconds; nothing when the class is empty or missing. */
 	void SpawnFX(const FPendingExplosion& Explosion);
 
 	/** Loads (once) and returns a concrete FX class; null when empty, missing or abstract (logged once per path). */
@@ -133,6 +148,14 @@ protected:
 	/** Health a full-health miner keeps at least after one explosion (no-one-shot rule). */
 	UPROPERTY(Config, EditAnywhere, Category = "Explosions", meta = (ClampMin = "0"))
 	float MinerHealthLeftAtFullHealth = 1.f;
+
+	/** Visible radius over collision radius of every explosion FX (explosions gdd, owner 2026-10-10: about 5 % larger). */
+	UPROPERTY(Config, EditAnywhere, Category = "Explosions", meta = (ClampMin = "0"))
+	float VisualRadiusScale = 1.05f;
+
+	/** Seconds every explosion FX holds its final state before fading (explosions gdd, owner 2026-10-10: 0.1 s). */
+	UPROPERTY(Config, EditAnywhere, Category = "Explosions", meta = (ClampMin = "0"))
+	float VisualHoldSeconds = 0.1f;
 
 	/** Terrain of the explosions. */
 	TWeakObjectPtr<ARRArenaGrid> Grid;

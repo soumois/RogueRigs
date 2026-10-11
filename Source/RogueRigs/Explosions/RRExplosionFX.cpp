@@ -1,4 +1,4 @@
-// Rogue Rigs - grey-box explosion visual: a mesh growing from 0 to the explosion radius while fading, then destroyed.
+// Rogue Rigs - grey-box explosion visual: a mesh growing from 0 to its radius while fading (or growing, holding, then fading), then destroyed.
 
 #include "Explosions/RRExplosionFX.h"
 
@@ -29,7 +29,13 @@ void ARRExplosionFX::BeginPlay()
 		FadeMaterial = Mesh->CreateDynamicMaterialInstance(0);
 	}
 	Age = 0.f;
-	ApplyProgress(0.f);
+	ApplyAge();
+}
+
+float ARRExplosionFX::GetLifetime() const
+{
+	const float GrowSeconds = FMath::Max(Duration, KINDA_SMALL_NUMBER);
+	return HoldSeconds > 0.f ? GrowSeconds + HoldSeconds + FMath::Max(FadeSeconds, KINDA_SMALL_NUMBER) : GrowSeconds;
 }
 
 void ARRExplosionFX::Tick(float DeltaSeconds)
@@ -37,20 +43,35 @@ void ARRExplosionFX::Tick(float DeltaSeconds)
 	Super::Tick(DeltaSeconds);
 
 	Age += DeltaSeconds;
-	const float Alpha = FMath::Clamp(Age / FMath::Max(Duration, KINDA_SMALL_NUMBER), 0.f, 1.f);
-	ApplyProgress(Alpha);
-	if (Alpha >= 1.f)
+	ApplyAge();
+	if (Age >= GetLifetime())
 	{
 		Destroy();
 	}
 }
 
-void ARRExplosionFX::ApplyProgress(float Alpha)
+void ARRExplosionFX::ApplyAge()
 {
-	const float Scale = Alpha * Radius / FMath::Max(MeshRadius, KINDA_SMALL_NUMBER);
+	const float GrowSeconds = FMath::Max(Duration, KINDA_SMALL_NUMBER);
+	const float GrowAlpha = FMath::Clamp(Age / GrowSeconds, 0.f, 1.f);
+	if (HoldSeconds <= 0.f)
+	{
+		// Legacy: grow and fade together.
+		ApplyState(GrowAlpha, 1.f - GrowAlpha);
+		return;
+	}
+	// Grow at full opacity, hold the final state, then fade at full size.
+	const float FadeAge = Age - GrowSeconds - HoldSeconds;
+	const float FadeAlpha = FMath::Clamp(FadeAge / FMath::Max(FadeSeconds, KINDA_SMALL_NUMBER), 0.f, 1.f);
+	ApplyState(GrowAlpha, 1.f - FadeAlpha);
+}
+
+void ARRExplosionFX::ApplyState(float GrowAlpha, float Opacity)
+{
+	const float Scale = GrowAlpha * Radius / FMath::Max(MeshRadius, KINDA_SMALL_NUMBER);
 	Mesh->SetRelativeScale3D(FVector(Scale));
 	if (FadeMaterial)
 	{
-		FadeMaterial->SetScalarParameterValue(FadeParameterName, 1.f - Alpha);
+		FadeMaterial->SetScalarParameterValue(FadeParameterName, Opacity);
 	}
 }
