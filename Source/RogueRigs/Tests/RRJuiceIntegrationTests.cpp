@@ -23,6 +23,7 @@
 #include "GAS/RRHealthAttributeSet.h"
 #include "Grid/RRArenaGrid.h"
 #include "Pickups/RRPickup.h"
+#include "Pickups/RRPickupSubsystem.h"
 #include "Pool/RRActorPoolSubsystem.h"
 #include "Player/RRMiner.h"
 #include "Progression/RRProgressionComponent.h"
@@ -362,6 +363,10 @@ bool FRRJuiceKillStreamTest::RunTest(const FString& Parameters)
 		}
 		return Total;
 	};
+	if (URRPickupSubsystem* PickupSystem = TestWorld.Get()->GetSubsystem<URRPickupSubsystem>())
+	{
+		PickupSystem->SetSpawnMaxFrames(0); // task-092-01: drops delivered at once (these checks read them in the same frame); spread covered by RogueRigs.PickupPool.
+	}
 	const float XPBefore = JuiceTotalXP();
 	TestTrue(TEXT("chaser killed"), URRStressSubsystem::KillEnemy(Chaser));
 

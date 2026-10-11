@@ -23,6 +23,7 @@
 #include "Projectiles/RRProjectile.h"
 #include "Tests/RRTestAccess.h"
 #include "Tests/RRTestHarness.h"
+#include "Pickups/RRPickupSubsystem.h"
 #include "Pool/RRActorPoolSubsystem.h"
 #include "Tests/RRTestPickupXP.h"
 #include "Weapons/RRAutoFireComponent.h"
@@ -285,6 +286,10 @@ bool FRREnemyDeathTest::RunTest(const FString& Parameters)
 	TestFalse(TEXT("collision disabled"), Chaser->GetActorEnableCollision());
 	TestEqual(TEXT("no XP before the shrink ends"), GetXPPickups(TestWorld.Get()).Num(), 0);
 
+	if (URRPickupSubsystem* PickupSystem = TestWorld.Get()->GetSubsystem<URRPickupSubsystem>())
+	{
+		PickupSystem->SetSpawnMaxFrames(0); // task-092-01: drops delivered at once (these checks read them in the same frame); spread covered by RogueRigs.PickupPool.
+	}
 	// Shrink 0.15 s (9 frames), then drop and destroy.
 	int32 DestroyFrame = INDEX_NONE;
 	float MinScale = 1.f;

@@ -24,6 +24,7 @@
 #include "Grid/RRArenaGrid.h"
 #include "Kismet/GameplayStatics.h"
 #include "Pickups/RRPickup.h"
+#include "Pickups/RRPickupSubsystem.h"
 #include "Pool/RRActorPoolSubsystem.h"
 #include "Player/RRMiner.h"
 #include "Tests/RRTestEventRecorder.h"
@@ -252,6 +253,10 @@ bool FRRDigHealOreDropsTest::RunTest(const FString& Parameters)
 	int32 SecondDropFrame = INDEX_NONE;
 	int32 DestroyFrame = INDEX_NONE;
 	int32 PickupsAtDestroy = 0;
+	if (URRPickupSubsystem* PickupSystem = TestWorld.Get()->GetSubsystem<URRPickupSubsystem>())
+	{
+		PickupSystem->SetSpawnMaxFrames(0); // task-092-01: drops delivered at once (these checks read them in the same frame); spread covered by RogueRigs.PickupPool.
+	}
 	for (int32 Frame = 1; Frame <= 300 && DestroyFrame == INDEX_NONE; ++Frame)
 	{
 		const int32 Before = CountPickups(TestWorld.Get());
