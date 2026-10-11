@@ -31,6 +31,7 @@ struct FOnAttributeChangeData;
  * Moves without a controller: URREnemyMovementComponent feeds the flow-field direction to CharacterMovement (RVO
  * off since task-034-01: URRRobotSeparationSubsystem pushes overlapping robots apart). The root capsule has the chaser radius
  * against the world (TerrainCapsuleRadius); HitCapsule keeps the robot's own size for the miner's shots. HitCapsule overlaps the Projectile channel, so shots hit it through the ASC (sys-projectiles).
+ * HitCapsule is a URRHitCapsuleComponent: it runs no overlap query of its own when the robot moves (task-093-01; projectiles find it).
  * Crowd: when bIgnoreOtherRobots is on, the capsule carries RRCollisionChannels::RobotMaskFilter and its movement sweeps ignore
  * that mask, so robots pass through each other (the light separation spaces them) while the miner, terrain and every query still
  * collide with them. At BeginPlay the robot also writes the crowd RVO settings to the world avoidance manager.
@@ -322,7 +323,7 @@ protected:
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Enemy|Collision", meta = (ClampMin = "0", Units = "cm"))
 	float TerrainCapsuleRadius = 24.f;
 
-	/** Body-size capsule taking the miner's shots (Pawn object type, overlaps Projectile only); sized in PostInitializeComponents. */
+	/** Body-size capsule taking the miner's shots (Pawn object type, overlaps Projectile only; URRHitCapsuleComponent, passive on moves since task-093-01); sized in PostInitializeComponents. */
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Enemy|Collision")
 	TObjectPtr<UCapsuleComponent> HitCapsule;
 

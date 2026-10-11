@@ -1,4 +1,4 @@
-// Rogue Rigs - automation tests of the robots (RogueRigs.Enemies.*): CSV stats and their parse cache, chaser death and XP drop, attack timing, i-frames against two chasers, damage number per hit, robots moving through robots but not through the miner.
+// Rogue Rigs - automation tests of the robots (RogueRigs.Enemies.*): CSV stats and their parse cache, chaser death and XP drop, attack timing, i-frames against two chasers, damage number per hit, robots moving through robots but not through the miner; shots hit a walking BP_Chaser with the passive hit capsule and its parts shrink at death.
 
 #include "CoreMinimal.h"
 #include "Misc/AutomationTest.h"
@@ -9,7 +9,9 @@
 #include "Damage/RRGE_DamageFlat.h"
 #include "Damage/RRDamageNumberSubsystem.h"
 #include "Components/SkeletalMeshComponent.h"
+#include "Components/StaticMeshComponent.h"
 #include "Enemies/RRChaser.h"
+#include "Enemies/RRHitCapsuleComponent.h"
 #include "Enemies/RRRobotMovementComponent.h"
 #include "EngineUtils.h"
 #include "FlowField/RREnemyMovementComponent.h"
@@ -632,6 +634,105 @@ bool FRREnemyLightMovementTest::RunTest(const FString& Parameters)
 	TestTrue(TEXT("far movement: robot back on the floor"), Movement->IsMovingOnGround() && FMath::Abs(Chaser->GetActorLocation().Z - Settled.Z) < 1.f);
 	Chaser->SetFarMovement(false);
 	TestEqual(TEXT("near movement: tick interval back to 0"), Movement->GetComponentTickInterval(), 0.f);
+	return true;
+}
+
+IMPLEMENT_SIMPLE_AUTOMATION_TEST(FRREnemyPassiveHitCapsuleTest, "RogueRigs.Enemies.ShotHitsMovingRobotAndDeathShowsParts",
+	EAutomationTestFlags::EditorContext | EAutomationTestFlags::EngineFilter)
+
+bool FRREnemyPassiveHitCapsuleTest::RunTest(const FString& Parameters)
+{
+	using namespace RREnemyTests;
+
+	// task-093-01: the hit capsule runs no overlap query when the robot moves; shots still hit a walking BP_Chaser, and the death
+	// shrink still shows and shrinks its Blueprint parts.
+	FTestWorld TestWorld(TEXT("RREnemyPassiveHitCapsule"));
+	ARRArenaGrid* Grid = SpawnGrid(*this, TestWorld);
+	UClass* ChaserClass = Grid ? LoadTestClass<ARREnemy>(*this, ChaserClassPath) : nullptr;
+	UClass* RifleClass = ChaserClass ? LoadTestClass<ARRWeapon>(*this, BurstRifleClassPath) : nullptr;
+	ARRWeapon* Rifle = RifleClass ? TestWorld.Spawn<ARRWeapon>(RifleClass, FVector::ZeroVector) : nullptr;
+	if (!Rifle || !TestTrue(TEXT("rifle acquired"), Rifle->Acquire(nullptr)) || !SpawnUnarmedMiner(*this, TestWorld, Grid))
+	{
+		return false;
+	}
+	Rifle->GetAutoFireComponent()->StopFiring();
+	Rifle->GetAbilitySystemComponent()->SetNumericAttributeBase(URRWeaponAttributeSet::GetCritChanceAttribute(), 0.f);
+	Rifle->GetAbilitySystemComponent()->SetNumericAttributeBase(URRWeaponAttributeSet::GetPierceAttribute(), 1.f);
+
+	const FVector Floor = Grid->GetCellCenter(TargetCell.X, TargetCell.Y);
+	const float HalfHeight = ChaserClass->GetDefaultObject<ARREnemy>()->GetCapsuleComponent()->GetScaledCapsuleHalfHeight();
+	const FTransform SpawnTransform(Floor + FVector(0.f, 0.f, HalfHeight + 2.f));
+	ARREnemy* Chaser = TestWorld.Get()->SpawnActorDeferred<ARREnemy>(ChaserClass, SpawnTransform, nullptr, nullptr, ESpawnActorCollisionHandlingMethod::AlwaysSpawn);
+	if (!TestNotNull(TEXT("BP_Chaser spawned"), Chaser))
+	{
+		return false;
+	}
+	FEnemyAccess::XPPickupClassOf(Chaser) = ARRTestPickupXP::StaticClass();
+	Chaser->FinishSpawning(SpawnTransform);
+	URRHitCapsuleComponent* HitCapsule = Cast<URRHitCapsuleComponent>(Chaser->GetHitCapsule());
+	if (!TestNotNull(TEXT("hit capsule is a URRHitCapsuleComponent"), HitCapsule))
+	{
+		return false;
+	}
+	TestTrue(TEXT("hit capsule keeps overlap events (the projectile needs them)"), HitCapsule->GetGenerateOverlapEvents());
+
+	// Walk toward the miner (west).
+	const FVector Start = Chaser->GetActorLocation();
+	for (int32 Frame = 0; Frame < 30; ++Frame)
+	{
+		TestWorld.Tick();
+	}
+	const float Walked = FVector::Dist2D(Start, Chaser->GetActorLocation());
+	AddInfo(FString::Printf(TEXT("walked %.0f uu in 30 frames, hit capsule overlap queries %d"), Walked, HitCapsule->GetOverlapQueryCount()));
+	TestTrue(TEXT("the chaser walks"), Walked > 50.f);
+	if (URRHitCapsuleComponent::IsPassiveEnabled())
+	{
+		TestEqual(TEXT("no hit capsule overlap query while walking"), HitCapsule->GetOverlapQueryCount(), 0);
+	}
+
+	// Visual parts (BodyMesh, EyeMesh) and their world scale at full size.
+	TInlineComponentArray<UStaticMeshComponent*> Parts(Chaser);
+	TestTrue(TEXT("BP_Chaser has at least 2 mesh parts"), Parts.Num() >= 2);
+	TArray<float> FullScale;
+	for (const UStaticMeshComponent* Part : Parts)
+	{
+		FullScale.Add(Part->GetComponentScale().X);
+	}
+
+	// Three shots of 10 into the walking chaser (30 health), fired 300 uu in front of it along +X while it walks west.
+	const FVector MuzzleOffset = FWeaponAccess::MuzzleOf(Rifle)->GetComponentLocation() - Rifle->GetActorLocation();
+	const float ShotHeight = Floor.Z + 0.5f * Grid->GetBlockHeight();
+	const float ExpectedHealth[] = { 20.f, 10.f, 0.f };
+	for (int32 Shot = 0; Shot < 3; ++Shot)
+	{
+		const FVector Robot = Chaser->GetActorLocation();
+		const FVector MuzzleTarget(Robot.X - 300.f, Robot.Y, ShotHeight);
+		Rifle->SetActorLocation(MuzzleTarget - MuzzleOffset, false, nullptr, ETeleportType::TeleportPhysics);
+		const int32 Frame = TickUntilDestroyed(TestWorld, FireSingleShot(*this, Rifle), 30);
+		TestTrue(FString::Printf(TEXT("shot %d stopped on the robot"), Shot + 1), Frame != INDEX_NONE);
+		TestEqual(FString::Printf(TEXT("health after shot %d"), Shot + 1), Attribute(Chaser, URRHealthAttributeSet::GetHealthAttribute()), ExpectedHealth[Shot]);
+	}
+	if (!TestTrue(TEXT("dead after 3 hits"), Chaser->IsDead()))
+	{
+		return false;
+	}
+
+	// Death shrink: every part shown, still attached to the robot and shrinking with it.
+	TWeakObjectPtr<ARREnemy> WeakChaser(Chaser);
+	for (int32 Frame = 0; Frame < 4; ++Frame)
+	{
+		TestWorld.Tick();
+	}
+	if (TestTrue(TEXT("still shrinking"), WeakChaser.IsValid() && !WeakChaser->IsActorBeingDestroyed() && !URRActorPoolSubsystem::IsPooledIdle(Chaser)))
+	{
+		for (int32 Index = 0; Index < Parts.Num(); ++Index)
+		{
+			const UStaticMeshComponent* Part = Parts[Index];
+			TestTrue(FString::Printf(TEXT("%s visible during the death"), *Part->GetName()), Part->IsVisible());
+			TestTrue(FString::Printf(TEXT("%s attached to the robot"), *Part->GetName()), Part->GetAttachmentRootActor() == Chaser);
+			TestTrue(FString::Printf(TEXT("%s shrinks"), *Part->GetName()), Part->GetComponentScale().X < 0.9f * FullScale[Index]);
+		}
+	}
 	return true;
 }
 

@@ -9,6 +9,7 @@
 #include "Components/MeshComponent.h"
 #include "Components/SkeletalMeshComponent.h"
 #include "Damage/RRDamageNumberSubsystem.h"
+#include "Enemies/RRHitCapsuleComponent.h"
 #include "Enemies/RRRobotMovementComponent.h"
 #include "Enemies/RRRobotSeparationSubsystem.h"
 #include "Engine/DataTable.h"
@@ -70,7 +71,8 @@ ARREnemy::ARREnemy(const FObjectInitializer& ObjectInitializer)
 	// Shots (Projectile channel) overlap the body-size hit capsule only: the projectile applies its spec to the ASC, never
 	// blocks (sys-projectiles). The root capsule (terrain size) ignores them.
 	GetCapsuleComponent()->SetCollisionResponseToChannel(RRCollisionChannels::Projectile, ECR_Ignore);
-	HitCapsule = CreateDefaultSubobject<UCapsuleComponent>(TEXT("HitCapsule"));
+	// URRHitCapsuleComponent (task-093-01): passive on robot moves, projectiles find it with their own sweep and overlap.
+	HitCapsule = CreateDefaultSubobject<URRHitCapsuleComponent>(TEXT("HitCapsule"));
 	HitCapsule->SetupAttachment(GetCapsuleComponent());
 	HitCapsule->SetCollisionEnabled(ECollisionEnabled::QueryOnly);
 	HitCapsule->SetCollisionObjectType(ECC_Pawn);
