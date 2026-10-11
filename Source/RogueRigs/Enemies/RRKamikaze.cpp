@@ -4,11 +4,13 @@
 
 #include "Components/CapsuleComponent.h"
 #include "Components/StaticMeshComponent.h"
+#include "Damage/RRGE_DamageExplosion.h"
 #include "Engine/World.h"
 #include "Explosions/RRExplosionSubsystem.h"
 #include "FlowField/RREnemyMovementComponent.h"
 #include "GAS/RRAbilitySystemComponent.h"
 #include "GAS/RRGameplayTags.h"
+#include "GAS/RRHealthAttributeSet.h"
 #include "Player/RRMiner.h"
 #include "RogueRigs.h"
 
@@ -116,12 +118,13 @@ void ARRKamikaze::Detonate()
 	QueueOwnExplosion();
 	bDetonated = true;
 
-	// Dies by its own fuse: State.Dead directly (its explosion is then refused by its ASC and is never a kill), no XP.
+	// Dies by its own fuse: State.Dead directly (its explosion is then refused by its ASC). Proximity fuse: self-instigated, never a
+	// kill, no XP. Kill fuse: State.Dead is already there, the kill is credited to the killer now and the XP drops.
 	if (!AbilitySystemComponent->HasMatchingGameplayTag(RRGameplayTags::State_Dead))
 	{
 		AbilitySystemComponent->AddLooseGameplayTag(RRGameplayTags::State_Dead);
 	}
-	HandleDeath(this);
+	FinishDeath(bKilledByPlayer ? KillInstigator.Get() : this);
 }
 
 float ARRKamikaze::GetFlareProgress() const
@@ -156,19 +159,62 @@ void ARRKamikaze::QueueOwnExplosion()
 
 void ARRKamikaze::HandleDeath(AActor* DeathInstigator)
 {
-	if (bDying)
+	if (bDying || bKilledByPlayer)
 	{
 		return;
 	}
+	// task-096-01: the damage path tells the killer. Explosion damage (URRGE_DamageExplosion: chain, barrel, another kamikaze)
+	// keeps the instant explosion; any other lethal effect comes from the player side (weapons, turrets, drone) and starts the fuse.
+	const TSubclassOf<UGameplayEffect> LethalEffect = HealthSet ? HealthSet->GetLethalEffectClass() : nullptr;
+	const bool bKilledByExplosion = LethalEffect && LethalEffect->IsChildOf(URRGE_DamageExplosion::StaticClass());
+	if (bKilledByExplosion || State == ERRKamikazeState::Dead)
+	{
+		FinishDeath(DeathInstigator);
+		return;
+	}
+
+	// Kill fuse: State.Dead stays (damage refused, turrets skip it), shots pass through, death and XP wait for the explosion.
+	bKilledByPlayer = true;
+	KillInstigator = DeathInstigator;
+	SetHitCapsuleCollision(false);
+	if (State != ERRKamikazeState::Armed)
+	{
+		// As a proximity trigger; an already armed robot keeps its running fuse.
+		ArmTime = GetWorld()->GetTimeSeconds();
+		EnterState(ERRKamikazeState::Armed);
+	}
+}
+
+void ARRKamikaze::FinishDeath(AActor* DeathInstigator)
+{
 	EnterState(ERRKamikazeState::Dead);
-	// Killed (shots, another explosion): same explosion as the fuse; no-op after the fuse.
+	// Same explosion as the fuse; no-op after the fuse.
 	QueueOwnExplosion();
 	Super::HandleDeath(DeathInstigator);
 }
 
+void ARRKamikaze::SetHitCapsuleCollision(bool bEnabled)
+{
+	if (!HitCapsule)
+	{
+		return;
+	}
+	if (!bEnabled)
+	{
+		if (HitCapsule->GetCollisionEnabled() != ECollisionEnabled::NoCollision)
+		{
+			HitCapsuleCollision = HitCapsule->GetCollisionEnabled();
+		}
+		HitCapsule->SetCollisionEnabled(ECollisionEnabled::NoCollision);
+		return;
+	}
+	HitCapsule->SetCollisionEnabled(HitCapsuleCollision);
+}
+
 void ARRKamikaze::DropXP()
 {
-	if (bDetonated)
+	// A proximity fuse dies without XP; a kill fuse drops it at its explosion (never before: the death waits for the fuse).
+	if (bDetonated && !bKilledByPlayer)
 	{
 		return;
 	}
@@ -208,6 +254,12 @@ void ARRKamikaze::ResetForNewLife()
 	}
 	bExplosionRequested = false;
 	bDetonated = false;
+	if (bKilledByPlayer)
+	{
+		SetHitCapsuleCollision(true);
+	}
+	bKilledByPlayer = false;
+	KillInstigator.Reset();
 	ArmTime = -1.0;
 	ExplosionQueuedTime = -1.0;
 	CorePulsePhase = 0.0;

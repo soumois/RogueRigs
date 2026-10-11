@@ -96,6 +96,7 @@ void URRHealthAttributeSet::PostGameplayEffectExecute(const FGameplayEffectModCa
 
 			if (bDied)
 			{
+				LethalEffectClass = Data.EffectSpec.Def ? Data.EffectSpec.Def->GetClass() : nullptr;
 				OnDeath.Broadcast(Data.EffectSpec.GetEffectContext().GetOriginalInstigator());
 			}
 		}

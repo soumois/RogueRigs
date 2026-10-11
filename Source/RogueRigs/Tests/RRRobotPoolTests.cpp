@@ -261,8 +261,17 @@ bool FRRRobotPoolResetTest::RunTest(const FString& Parameters)
 		TestEqual(TEXT("kamikaze back in Chase"), Kamikaze->GetState(), ERRKamikazeState::Chase);
 		TestFalse(TEXT("kamikaze not detonated"), Kamikaze->HasDetonated());
 		TestFalse(TEXT("kamikaze explosion source forgotten"), Explosions->IsSourceSpent(Kamikaze));
+		// task-096-01: the first life ended by a kill fuse (flat damage = player side); nothing of it is left.
+		TestFalse(TEXT("kamikaze kill fuse cleared"), Kamikaze->IsKillFuseRunning());
+		TestEqual(TEXT("kamikaze hit capsule takes shots again"), Kamikaze->GetHitCapsule()->GetCollisionEnabled(), ECollisionEnabled::QueryOnly);
 		Kill(Setup, Kamikaze);
-		TestTrue(TEXT("killed again: its explosion is queued again"), Explosions->IsSourceSpent(Kamikaze));
+		TestTrue(TEXT("killed again: kill fuse running"), Kamikaze->IsKillFuseRunning());
+		TestFalse(TEXT("killed again: no explosion before the fuse"), Explosions->IsSourceSpent(Kamikaze));
+		for (int32 Tick = 0; Tick < 45; ++Tick)
+		{
+			TestWorld.Tick();
+		}
+		TestTrue(TEXT("killed again: its explosion is queued again after the fuse"), Explosions->IsSourceSpent(Kamikaze));
 	}
 
 	// Shield chaser: shield back to full after a break, break count cleared.

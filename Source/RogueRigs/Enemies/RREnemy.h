@@ -98,6 +98,15 @@ public:
 	UFUNCTION(BlueprintPure, Category = "Enemy")
 	bool IsDead() const;
 
+	/**
+	 * True while the robot is dead for damage and targeting (State.Dead) but has not left the fight yet: a kamikaze killed by
+	 * the player runs its fuse first (task-096-01). Such a robot still holds its spawner slot and class cap. Base: false.
+	 */
+	virtual bool IsDeathPending() const { return false; }
+
+	/** True while the robot holds its spawner slot: not dead, or dead with a pending death (IsDeathPending). */
+	bool HoldsSpawnSlot() const { return !IsDead() || IsDeathPending(); }
+
 	/** Knockback resistance from the CSV stats, clamped to [0, 1] (0 = full knockback). */
 	UFUNCTION(BlueprintPure, Category = "Enemy")
 	float GetKnockbackResistance() const;

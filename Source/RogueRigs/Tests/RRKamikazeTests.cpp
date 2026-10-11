@@ -1,4 +1,4 @@
-// Rogue Rigs - automation tests of the kamikaze (RogueRigs.Kamikaze.*): arming and fuse, death by shots with explosion and XP, chain death in another explosion, weighted spawner picks.
+// Rogue Rigs - automation tests of the kamikaze (RogueRigs.Kamikaze.*): arming and fuse, kill fuse after a player kill (explosion and XP 0.65 s later), chain death in another explosion (instant), damage ignored during the kill fuse, weighted spawner picks.
 
 #include "CoreMinimal.h"
 #include "Misc/AutomationTest.h"
@@ -11,6 +11,8 @@
 #include "Enemies/RRKamikaze.h"
 #include "EngineUtils.h"
 #include "Explosions/RRExplosionSubsystem.h"
+#include "Damage/RRGE_DamageFlat.h"
+#include "GAS/RRGameplayTags.h"
 #include "GAS/RRHealthAttributeSet.h"
 #include "Projectiles/RRProjectile.h"
 #include "Tests/RRTestEventRecorder.h"
@@ -231,7 +233,7 @@ bool FRRKamikazeFuseTest::RunTest(const FString& Parameters)
 	return true;
 }
 
-IMPLEMENT_SIMPLE_AUTOMATION_TEST(FRRKamikazeKilledTest, "RogueRigs.Kamikaze.KilledExplodesAndDropsXP",
+IMPLEMENT_SIMPLE_AUTOMATION_TEST(FRRKamikazeKilledTest, "RogueRigs.Kamikaze.KilledFusesThenExplodesAndDropsXP",
 	EAutomationTestFlags::EditorContext | EAutomationTestFlags::EngineFilter)
 
 bool FRRKamikazeKilledTest::RunTest(const FString& Parameters)
@@ -286,9 +288,40 @@ bool FRRKamikazeKilledTest::RunTest(const FString& Parameters)
 	}
 
 	TestTrue(TEXT("last shot stopped"), FireOneShot(*this, TestWorld, Rifle));
-	TestTrue(*FString::Printf(TEXT("dead after %d shots"), ShotsToKill), Kamikaze->IsDead());
-	TestFalse(TEXT("killed, not detonated"), Kamikaze->HasDetonated());
-	TestTrue(TEXT("explosion queued at death"), Explosions->IsSourceSpent(Kamikaze));
+	// task-096-01: killed by a weapon, it runs the proximity fuse first; no explosion, no XP, no death yet.
+	TestTrue(*FString::Printf(TEXT("dead for damage after %d shots (State.Dead)"), ShotsToKill), Kamikaze->IsDead());
+	TestTrue(TEXT("kill fuse running"), Kamikaze->IsKillFuseRunning());
+	TestTrue(TEXT("still holds its spawner slot"), Kamikaze->HoldsSpawnSlot());
+	TestEqual(TEXT("state Armed"), Kamikaze->GetState(), ERRKamikazeState::Armed);
+	TestTrue(TEXT("flaring"), Kamikaze->IsFlaring());
+	TestTrue(TEXT("armed at the kill"), Kamikaze->GetArmTime() >= 0.0);
+	TestFalse(TEXT("no explosion at the kill"), Explosions->IsSourceSpent(Kamikaze));
+	// The chaser behind may already be dead (rifle pierce): its 3 cubes are the baseline.
+	const int32 XPAtKill = GetXPPickups(TestWorld.Get()).Num();
+	TestTrue(TEXT("no XP from the kamikaze at the kill (only the chaser's 3 cubes at most)"), XPAtKill == 0 || XPAtKill == 3);
+	TestEqual(TEXT("hit capsule off during the fuse"), Kamikaze->GetHitCapsule()->GetCollisionEnabled(), ECollisionEnabled::NoCollision);
+
+	// One more shot during the fuse passes through (hits the chaser behind); the kamikaze is not killed twice.
+	TestTrue(TEXT("shot during the fuse stopped"), FireOneShot(*this, TestWorld, Rifle));
+	TestEqual(TEXT("health stays 0"), Health(Kamikaze), 0.f);
+	TestTrue(TEXT("fuse still running after another shot"), Kamikaze->IsKillFuseRunning());
+
+	for (int32 Frame = 0; Frame < 60 && !Explosions->IsSourceSpent(Kamikaze); ++Frame)
+	{
+		TestWorld.Tick();
+		if (!Explosions->IsSourceSpent(Kamikaze) && GetXPPickups(TestWorld.Get()).Num() > 3)
+		{
+			AddError(TEXT("XP dropped before the explosion"));
+			break;
+		}
+	}
+	TestTrue(TEXT("explosion queued after the fuse"), Explosions->IsSourceSpent(Kamikaze));
+	TestTrue(TEXT("detonated by the fuse"), Kamikaze->HasDetonated());
+	TestEqual(TEXT("state Dead"), Kamikaze->GetState(), ERRKamikazeState::Dead);
+	TestFalse(TEXT("slot freed once exploded"), Kamikaze->HoldsSpawnSlot());
+	const double Fuse = Kamikaze->GetExplosionQueuedTime() - Kamikaze->GetArmTime();
+	AddInfo(FString::Printf(TEXT("killed at t=%.3f s, explosion queued %.3f s later"), Kamikaze->GetArmTime(), Fuse));
+	TestTrue(TEXT("kill fuse 0.65 s (within one frame)"), Fuse >= Kamikaze->GetFuseTime() - 1e-3 && Fuse <= Kamikaze->GetFuseTime() + FrameSeconds + 1e-3);
 	const FVector DeathLocation = Kamikaze->GetActorLocation();
 
 	for (int32 Frame = 0; Frame < 30; ++Frame)
@@ -340,6 +373,15 @@ bool FRRKamikazeChainTest::RunTest(const FString& Parameters)
 		Kamikaze->GetAbilitySystemComponent()->SetNumericAttributeBase(URRHealthAttributeSet::GetHealthAttribute(), BarrelStats.Damage);
 	}
 	TestTrue(TEXT("barrel explosion queued"), Explosions->QueueExplosion(Floor + FVector(100.f, 0.f, 0.f), TEXT("Barrel"), nullptr, nullptr));
+	// Killed by an explosion: the death explosion stays instant (no kill fuse, task-096-01).
+	for (int32 Frame = 0; Frame < 3 && !Kamikaze->IsDead(); ++Frame)
+	{
+		TestWorld.Tick();
+	}
+	TestTrue(TEXT("killed by the barrel"), Kamikaze->IsDead());
+	TestTrue(TEXT("explosion queued at once"), Explosions->IsSourceSpent(Kamikaze));
+	TestFalse(TEXT("no kill fuse"), Kamikaze->IsKillFuseRunning());
+	TestTrue(TEXT("never armed"), Kamikaze->GetArmTime() < 0.0);
 	for (int32 Frame = 0; Frame < 40; ++Frame)
 	{
 		TestWorld.Tick();
@@ -352,6 +394,58 @@ bool FRRKamikazeChainTest::RunTest(const FString& Parameters)
 		TestEqual(TEXT("second Kamikaze"), Rows[1], FName(TEXT("Kamikaze")));
 	}
 	TestEqual(TEXT("killed by the explosion: 1 XP in 4 cubes"), GetXPPickups(TestWorld.Get()).Num(), 4);
+	return true;
+}
+
+IMPLEMENT_SIMPLE_AUTOMATION_TEST(FRRKamikazeKillFuseIgnoresDamageTest, "RogueRigs.Kamikaze.KillFuseIgnoresDamage",
+	EAutomationTestFlags::EditorContext | EAutomationTestFlags::EngineFilter)
+
+bool FRRKamikazeKillFuseIgnoresDamageTest::RunTest(const FString& Parameters)
+{
+	using namespace RRKamikazeTests;
+
+	FTestWorld TestWorld(TEXT("RRKamikazeKillFuseDamage"));
+	TStrongObjectPtr<URRTestEventRecorder> Recorder(NewObject<URRTestEventRecorder>());
+	ARRArenaGrid* Grid = SpawnGrid(*this, TestWorld);
+	URRExplosionSubsystem* Explosions = Grid ? GetExplosions(*this, TestWorld, Recorder.Get()) : nullptr;
+	const FVector Floor = Grid ? Grid->GetCellCenter(KamikazeCell.X, KamikazeCell.Y + 1) : FVector::ZeroVector;
+	ARRKamikaze* Kamikaze = Explosions ? SpawnRobot<ARRKamikaze>(*this, TestWorld, Floor) : nullptr;
+	if (!Kamikaze)
+	{
+		return false;
+	}
+	TestWorld.Tick();
+
+	// Player-side kill (flat damage, as turrets and the drone deal it).
+	UAbilitySystemComponent* ASC = Kamikaze->GetAbilitySystemComponent();
+	FGameplayEffectSpecHandle Spec = ASC->MakeOutgoingSpec(URRGE_DamageFlat::StaticClass(), 1.f, ASC->MakeEffectContext());
+	Spec.Data->SetSetByCallerMagnitude(RRGameplayTags::Data_Damage, 1000.f);
+	ASC->ApplyGameplayEffectSpecToSelf(*Spec.Data);
+	TestTrue(TEXT("flat damage starts the kill fuse"), Kamikaze->IsKillFuseRunning());
+	TestEqual(TEXT("armed"), Kamikaze->GetState(), ERRKamikazeState::Armed);
+
+	// A barrel explosion during the fuse: refused (State.Dead), no instant explosion, no second death.
+	TestTrue(TEXT("barrel explosion queued"), Explosions->QueueExplosion(Floor + FVector(100.f, 0.f, 0.f), TEXT("Barrel"), nullptr, nullptr));
+	for (int32 Frame = 0; Frame < 5; ++Frame)
+	{
+		TestWorld.Tick();
+	}
+	TestEqual(TEXT("barrel exploded"), Recorder->GetExplosionRows().Num(), 1);
+	TestTrue(TEXT("fuse still running after the barrel"), Kamikaze->IsKillFuseRunning());
+	TestFalse(TEXT("no instant explosion"), Explosions->IsSourceSpent(Kamikaze));
+	TestEqual(TEXT("no XP during the fuse"), GetXPPickups(TestWorld.Get()).Num(), 0);
+
+	for (int32 Frame = 0; Frame < 90; ++Frame)
+	{
+		TestWorld.Tick();
+	}
+	const TArray<FName>& Rows = Recorder->GetExplosionRows();
+	TestEqual(TEXT("two explosions (barrel, then kamikaze once)"), Rows.Num(), 2);
+	if (Rows.Num() == 2)
+	{
+		TestEqual(TEXT("second Kamikaze"), Rows[1], FName(TEXT("Kamikaze")));
+	}
+	TestEqual(TEXT("XP once: 1 XP in 4 cubes"), GetXPPickups(TestWorld.Get()).Num(), 4);
 	return true;
 }
 

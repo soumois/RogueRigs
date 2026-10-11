@@ -86,6 +86,9 @@ public:
 	/** Enables or disables the death detection (State.Dead + OnDeath). Enabled by default; call from the owner constructor. */
 	void SetDeathEnabled(bool bEnabled) { bDeathEnabled = bEnabled; }
 
+	/** Class of the gameplay effect whose execution caused the last death (set just before OnDeath; null before any death). Lets OnDeath listeners tell the damage path (e.g. URRGE_DamageExplosion). */
+	TSubclassOf<UGameplayEffect> GetLethalEffectClass() const { return LethalEffectClass; }
+
 protected:
 	/** Current health; the actor dies when a hit takes it to 0 (see OnDeath). */
 	UPROPERTY(BlueprintReadOnly, Category = "Attributes|Health")
@@ -105,4 +108,8 @@ protected:
 
 	/** When false, reaching 0 Health adds no State.Dead and fires no OnDeath (never-dying debug targets). */
 	bool bDeathEnabled = true;
+
+	/** Effect class of the last killing hit (GetLethalEffectClass). */
+	UPROPERTY(Transient)
+	TSubclassOf<UGameplayEffect> LethalEffectClass;
 };

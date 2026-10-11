@@ -1320,6 +1320,11 @@ bool FRRIntegrationRifleKillsKamikazeTest::RunTest(const FString& Parameters)
 	{
 		TestEqual(TEXT("every rifle hit deals 10"), Hit.Damage, 10.f);
 	}
+	// task-096-01: a rifle kill runs the 0.65 s kill fuse (as a proximity trigger), then the explosion and the XP.
+	for (int32 Frame = 0; Frame < 60 && !Kamikaze->HasDetonated(); ++Frame)
+	{
+		TestWorld.Tick();
+	}
 	for (int32 Frame = 0; Frame < 30; ++Frame)
 	{
 		TestWorld.Tick();
@@ -1333,8 +1338,10 @@ bool FRRIntegrationRifleKillsKamikazeTest::RunTest(const FString& Parameters)
 	AddInfo(FString::Printf(TEXT("kamikaze killed at %.3f s, %.0f uu from the miner, detonated %d; %d explosion(s); %d blocks within %.0f uu, %d left; miner Health %.0f -> %.0f; %d XP"),
 		DeathTime, DeathDistance, Kamikaze->HasDetonated() ? 1 : 0, Recorder->GetExplosionRows().Num(), Blocks.Num(), Stats.Radius, BlocksLeft,
 		StartHealth, GetHealth(Miner), CountXPPickups(TestWorld.Get())));
-	TestFalse(TEXT("killed, not detonated"), Kamikaze->HasDetonated());
-	TestTrue(TEXT("killed before arming"), Kamikaze->GetArmTime() < 0.0);
+	TestTrue(TEXT("killed by the rifle: exploded by its kill fuse"), Kamikaze->HasDetonated());
+	TestTrue(TEXT("armed at the kill"), FMath::Abs(Kamikaze->GetArmTime() - (StartTime + DeathTime)) < 1e-3);
+	const double KillFuse = Kamikaze->GetExplosionQueuedTime() - Kamikaze->GetArmTime();
+	TestTrue(TEXT("explosion 0.65 s after the kill (within one frame)"), KillFuse >= Kamikaze->GetFuseTime() - 1e-3 && KillFuse <= Kamikaze->GetFuseTime() + FrameSeconds + 1e-3);
 	if (TestEqual(TEXT("one explosion"), Recorder->GetExplosionRows().Num(), 1))
 	{
 		TestEqual(TEXT("row Kamikaze"), Recorder->GetExplosionRows()[0], FName(TEXT("Kamikaze")));

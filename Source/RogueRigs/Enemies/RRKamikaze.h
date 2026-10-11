@@ -32,8 +32,12 @@ enum class ERRKamikazeState : uint8
  * target (first living miner) is within the arm range (CSV AttackRange), 2D between centers: movement off, the core pulses at ArmedPulseRate and
  * grows to ArmedCoreScale over the fuse (CSV WindUp) -> after the fuse it queues one ExplosionRowName explosion (URRExplosionSubsystem,
  * instigator and source = this robot) and dies without dropping XP (State.Dead added directly, so its own explosion is
- * refused by its ASC and never counts as a kill). Killed before that (shots, another explosion): it queues the same explosion
- * at once (no flare) and drops its XP as any robot. The robot being the explosion source, the subsystem never explodes it twice.
+ * refused by its ASC and never counts as a kill). Killed by the player side (task-096-01: the lethal effect is not
+ * URRGE_DamageExplosion, i.e. weapons, turrets, drone): it does not die yet; State.Dead stays on (further damage refused, never
+ * targeted again, shots pass through its hit capsule) and it enters Armed as on a proximity trigger (same flare, same fuse); at
+ * the fuse end it queues its explosion, dies with the killer as instigator (the kill counts then) and drops its XP. Killed by an
+ * explosion (chain, barrel, another kamikaze): it queues the same explosion at once (no flare) and drops its XP as any robot.
+ * The robot being the explosion source, the subsystem never explodes it twice.
  * The Armed phase is the flare (enemy-kamikaze, owner 2026-10-05: strong core light for 0.5 s before a proximity explosion):
  * OnFlareStart(Duration) fires on arming, GetFlareProgress runs 0 -> 1 over the fuse, OnFlareEnd fires when it leaves Armed.
  */
@@ -81,6 +85,13 @@ public:
 	UFUNCTION(BlueprintPure, Category = "Kamikaze|Flare")
 	float GetFlareProgress() const;
 
+	/** True while a player kill runs the fuse (dead for damage and targeting, death and XP at the explosion). */
+	UFUNCTION(BlueprintPure, Category = "Kamikaze")
+	bool IsKillFuseRunning() const { return bKilledByPlayer && !bDying; }
+
+	/** A fusing kamikaze keeps its spawner slot until it exploded. */
+	virtual bool IsDeathPending() const override { return IsKillFuseRunning(); }
+
 	/** Broadcast when the flare starts (arming), after OnFlareStart. */
 	FRROnKamikazeFlareStart OnFlareStarted;
 
@@ -91,7 +102,10 @@ protected:
 	/** Runs one step of the state machine. */
 	virtual void UpdateBehavior(float DeltaSeconds) override;
 
-	/** Enters Dead; queues the explosion unless the fuse already did; then runs the base death. */
+	/**
+	 * Health reached 0. Lethal effect URRGE_DamageExplosion (or the robot is already dying): FinishDeath now (instant explosion).
+	 * Otherwise (player side): starts the kill fuse (Armed, or keeps the running proximity fuse), the death waits for Detonate.
+	 */
 	virtual void HandleDeath(AActor* DeathInstigator) override;
 
 	/** Recycling relocation: back to Chase (leaving the current state as EnterState does); nothing while Dead. */
@@ -116,12 +130,18 @@ protected:
 	UFUNCTION(BlueprintImplementableEvent, Category = "Kamikaze|Flare")
 	void OnFlareStart(float Duration);
 
-	/** Called when the flare ends: bDetonated true at the fuse explosion, false when the robot was killed during the flare (light off). */
+	/** Called when the flare ends: true at the fuse explosion (proximity or kill fuse), false when an explosion killed the robot during the flare (light off). */
 	UFUNCTION(BlueprintImplementableEvent, Category = "Kamikaze|Flare")
 	void OnFlareEnd(bool bDetonatedByFuse);
 
-	/** Fuse end: queues the explosion, adds State.Dead and runs the death without XP. */
+	/** Fuse end: queues the explosion, adds State.Dead and runs the death (instigator: the killer after a kill fuse, itself otherwise). */
 	void Detonate();
+
+	/** Enters Dead, queues the explosion (no-op after the fuse), then runs the base death with DeathInstigator. */
+	void FinishDeath(AActor* DeathInstigator);
+
+	/** Turns the hit capsule's collision off (fusing: shots pass through) or back to its profile. */
+	void SetHitCapsuleCollision(bool bEnabled);
 
 	/** Queues one ExplosionRowName explosion at the robot (instigator and source: this robot). Once. */
 	void QueueOwnExplosion();
@@ -201,6 +221,15 @@ protected:
 	/** True once the explosion was requested (fuse or death); it is never requested twice. */
 	bool bExplosionRequested = false;
 
-	/** True when the fuse exploded the robot: no XP drop. */
+	/** True when the fuse exploded the robot: no XP drop unless bKilledByPlayer. */
 	bool bDetonated = false;
+
+	/** True once the player side killed it (kill fuse): its fuse explosion drops the XP. */
+	bool bKilledByPlayer = false;
+
+	/** Instigator of the player-side kill, credited when the fuse explodes. */
+	TWeakObjectPtr<AActor> KillInstigator;
+
+	/** Collision setting of the hit capsule before the kill fuse turned it off. */
+	TEnumAsByte<ECollisionEnabled::Type> HitCapsuleCollision = ECollisionEnabled::QueryOnly;
 };

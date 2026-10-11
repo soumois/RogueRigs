@@ -369,7 +369,7 @@ int32 ARREnemySpawner::GetAliveCountOfClass(TSubclassOf<ARREnemy> Class) const
 	for (const TWeakObjectPtr<ARREnemy>& Enemy : AliveEnemies)
 	{
 		const ARREnemy* Robot = Enemy.Get();
-		Count += Robot && Class && Robot->IsA(Class) && !Robot->IsActorBeingDestroyed() && !Robot->IsDead() ? 1 : 0;
+		Count += Robot && Class && Robot->IsA(Class) && !Robot->IsActorBeingDestroyed() && Robot->HoldsSpawnSlot() ? 1 : 0;
 	}
 	// Pending robots hold their class slot too (a wave never overshoots a class cap while the pool creates it).
 	for (const FPendingSpawn& Pending : PendingSpawns)
@@ -622,7 +622,7 @@ void ARREnemySpawner::PruneAlive()
 {
 	AliveEnemies.RemoveAll([](const TWeakObjectPtr<ARREnemy>& Enemy)
 	{
-		return !Enemy.IsValid() || Enemy->IsActorBeingDestroyed() || Enemy->IsDead() || URRActorPoolSubsystem::IsPooledIdle(Enemy.Get());
+		return !Enemy.IsValid() || Enemy->IsActorBeingDestroyed() || !Enemy->HoldsSpawnSlot() || URRActorPoolSubsystem::IsPooledIdle(Enemy.Get());
 	});
 }
 
