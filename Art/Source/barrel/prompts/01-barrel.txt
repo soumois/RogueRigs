@@ -1,0 +1,8 @@
+Image 1 is a style reference only: copy its art style, facet size and flat shading. Do not copy any object, color or composition from it.
+
+Create one isolated game prop: an orange explosive industrial barrel for a flat-shaded low-poly 3D game.
+Shape: chunky, slightly squat cylinder built from 8 large flat sides, visible facets, two raised rings around the body, a flat dark grey lid with one bolted cap. Rigid mechanical parts only.
+Color: flat saturated orange body, slightly darker orange rings, dark grey lid and cap. Orange must dominate: it signals "explodes".
+View: three-quarter front view from slightly above, the whole barrel visible and centered, filling about 70 % of the frame.
+Background: plain white, even neutral lighting, no shadows, no floor, no reflections.
+Exclude: textures, smoothing, text, labels, logos, hazard symbols, yellow and black stripes, rust, dirt, cracks, any other object, no UI, no text.

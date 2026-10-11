@@ -3,7 +3,7 @@
 // Spec: vault node `agent-art`; prompt method: `art-prompts`.
 //
 //   node Tools/art/kie_image.js --asset <name> --prompt-file <txt> [--ref <png|url>]...
-//        [--aspect 1:1|16:9|9:16|4:3|3:4] [--resolution 1K|2K|4K] [--variants N]
+//        [--aspect 1:1|16:9|9:16|4:3|3:4] [--variants N]
 //        [--dry-run]
 //
 // With --ref the image-to-image model is used (references attached, max 16); without,
@@ -12,20 +12,21 @@
 // Output: Art/Source/<asset>/<run-id>-<n>.png and the run log Art/Source/<asset>/<run-id>.json
 // (prompt verbatim, refs, model, task ids, credits, result URLs, files).
 // Exit 0 = every variant downloaded; 1 = a task failed (the log says which); 2 = usage error.
-// Key: environment variable KIE_API_KEY. Paid: each variant is one task.
+// Resolution is capped at 1K (owner 2026-10-11): Kie prices by resolution, and 1K is
+// enough for review and for Meshy input. Key: KIE_API_KEY. Paid: each variant is one task.
 
 const fs = require('fs');
 const path = require('path');
 const L = require('./lib');
 
 L.setUsage('usage: node Tools/art/kie_image.js --asset <name> --prompt-file <txt> [--ref <img>]... '
-  + '[--aspect 1:1] [--resolution 2K] [--variants 1] [--dry-run]');
+  + '[--aspect 1:1] [--variants 1] [--dry-run]');
 
 const BASE = process.env.KIE_BASE_URL || 'https://api.kie.ai';
 const MODEL_T2I = 'gpt-image-2-text-to-image';
 const MODEL_I2I = 'gpt-image-2-image-to-image';
 const ASPECTS = ['1:1', '16:9', '9:16', '4:3', '3:4'];
-const RESOLUTIONS = ['1K', '2K', '4K'];
+const RESOLUTIONS = ['1K']; // cap, owner 2026-10-11
 const MAX_VARIANTS = 4;
 
 async function uploadRef(ref, key) {
@@ -63,11 +64,10 @@ async function main() {
   const prompt = fs.readFileSync(a['prompt-file'], 'utf8').trim();
   if (!prompt) L.usage('prompt file is empty');
   const aspect = a.aspect || '1:1';
-  const resolution = a.resolution || '2K';
+  const resolution = a.resolution || '1K';
   const variants = Number(a.variants || 1);
   if (!ASPECTS.includes(aspect)) L.usage(`--aspect must be one of ${ASPECTS.join(', ')}`);
-  if (!RESOLUTIONS.includes(resolution)) L.usage(`--resolution must be one of ${RESOLUTIONS.join(', ')}`);
-  if (aspect === '1:1' && resolution === '4K') L.usage('1:1 cannot be 4K (API constraint)');
+  if (!RESOLUTIONS.includes(resolution)) L.usage(`--resolution is capped at ${RESOLUTIONS.join(', ')}`);
   if (!Number.isInteger(variants) || variants < 1 || variants > MAX_VARIANTS) L.usage(`--variants must be 1..${MAX_VARIANTS}`);
   if (a.ref.length > 16) L.usage('at most 16 --ref images');
 
