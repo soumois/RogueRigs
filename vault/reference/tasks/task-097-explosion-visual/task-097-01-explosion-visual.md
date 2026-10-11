@@ -3,7 +3,7 @@ id: task-097-01-explosion-visual
 description: "The visible explosion is about 5 % larger than its collision radius and holds its final state 0.1 s before fading."
 parent: task-097-explosion-visual
 kind: task
-status: todo
+status: in-progress
 ---
 # Explosion visual size and hold
 

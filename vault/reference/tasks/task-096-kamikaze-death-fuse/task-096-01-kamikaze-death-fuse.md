@@ -3,7 +3,7 @@ id: task-096-01-kamikaze-death-fuse
 description: "A kamikaze killed by the player goes through the same 0.65 s preparation as a proximity trigger and releases its XP only at the explosion."
 parent: task-096-kamikaze-death-fuse
 kind: task
-status: in-progress
+status: done
 ---
 # Kamikaze death fuse
 
@@ -15,11 +15,11 @@ status: in-progress
 - done_when: build exits 0 with the editor closed; all RogueRigs.* tests pass headless; docs updated; lint clean; committed.
 - editor_state: closed
 - token_ceiling: 60000
-- model: open
-- tokens: open
-- runs: open
+- model: opus
+- tokens: input 80, cache write 293748, cache read 2552688, output 36523
+- runs: 1
 - milestone: M2
-- result: open
+- result: Kamikaze killed by the player side fuses 0.65 s then explodes, XP only after the explosion; killed by an explosion stays instant (rule: lethal effect class recorded by the health set); slot held during the fuse; 228/228 tests. Commit 636ab2b.
 
 ## Relations
 - [[task-096-kamikaze-death-fuse]] — parent global task.
