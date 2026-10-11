@@ -1,9 +1,9 @@
 ---
 id: task-095-xp-cube-scale
 description: "Global task: reused XP cubes come back at their normal size, the pooled reset restores the scale."
-parent: tasks-to-do-index
+parent: tasks-done-index
 kind: task
-status: in-progress
+status: done
 ---
 # XP cube scale after reuse
 
@@ -13,12 +13,12 @@ status: in-progress
 - gdd_check: done by the Orchestrator when the task is planned (2026-10-11).
 - confirmed_by_owner: yes (2026-10-11)
 - milestone: M2
-- next_step: task-095-01-xp-cube-scale
-- result: open
+- next_step: none
+- result: Done. Root cause: the pool reused cubes at requested scale 1 while the Blueprint root mesh is 0.3 (fresh spawn multiplies), so reused cubes were 3.3x bigger. Pool records root scale / requested scale at creation and reapplies on reuse; 2 regression tests; 227/227. Commit fd920a2.
 
 ## Subtasks
 1. task-095-01-xp-cube-scale — cpp
 
 ## Relations
-- [[tasks-to-do-index]] — parent index.
+- [[tasks-done-index]] — parent index.
 - [[task-095-01-xp-cube-scale]] — step 1, cpp.

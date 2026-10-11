@@ -3,7 +3,7 @@ id: task-100-01-ore-rename-duskite
 description: "The first ore is renamed Duskite in data, docs and tests and keeps its existing violet look (no colour written)."
 parent: task-100-ore-rename-duskite
 kind: task
-status: todo
+status: in-progress
 ---
 # Ore renamed Duskite, violet kept
 

@@ -154,6 +154,7 @@ kind: note
 | [[task-091-01-robot-pool]] | opus | 3 | 0k | 318k | 22362k | 109k |
 | [[task-092-01-xp-pool]] | opus | 2 | 0k | 170k | 6540k | 64k |
 | [[task-093-01-robot-overlap-cost]] | opus | 1 | 0k | 128k | 4650k | 42k |
+| [[task-095-01-xp-cube-scale]] | opus | 1 | 0k | 131k | 836k | 20k |
 
 ## Totals
 | Scope | Input | Cache write | Cache read | Output |

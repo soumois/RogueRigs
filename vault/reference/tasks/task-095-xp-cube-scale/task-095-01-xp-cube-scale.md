@@ -3,7 +3,7 @@ id: task-095-01-xp-cube-scale
 description: "Reused XP cubes come back at their normal size: the pooled reset restores the scale."
 parent: task-095-xp-cube-scale
 kind: task
-status: in-progress
+status: done
 ---
 # XP cube scale after reuse
 
@@ -15,11 +15,11 @@ status: in-progress
 - done_when: build exits 0 with the editor closed; all RogueRigs.* tests pass headless; docs sys-pickups and sys-actor-pool updated if a statement changes; lint clean; committed.
 - editor_state: closed
 - token_ceiling: 40000
-- model: open
-- tokens: open
-- runs: open
+- model: opus
+- tokens: input 46, cache write 131332, cache read 835605, output 20285
+- runs: 1
 - milestone: M2
-- result: open
+- result: Root cause: the pool reused cubes at requested scale 1 while the Blueprint root mesh is 0.3 (fresh spawn multiplies), so reused cubes were 3.3x bigger. Pool records root scale / requested scale at creation and reapplies on reuse; 2 regression tests; 227/227. Commit fd920a2.
 
 ## Relations
 - [[task-095-xp-cube-scale]] — parent global task.
