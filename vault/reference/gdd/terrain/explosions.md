@@ -15,6 +15,8 @@ status: approved
 - An explosion source explodes only once.
 - Radius and damage per source: [[barrel]], [[enemy-kamikaze]]. Grey-box look (M1): an orange sphere that grows to the radius and fades in 0.25 s.
 
+- Visible explosion (owner 2026-10-10): the visible part is about 5 % larger than the collision radius, so the player is never hit outside what is shown, and it stays 0.1 s at its final state before fading, so it can be seen.
+
 ## Relations
 - [[terrain-index]] — parent index.
 - [[sys-explosions]] — the explosion queue as built.

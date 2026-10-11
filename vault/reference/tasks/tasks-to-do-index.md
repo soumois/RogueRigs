@@ -10,6 +10,9 @@ A global task moves to [[tasks-done-index]] when it is done (`vault/scripts/task
 
 ## Relations
 - [[tasks-index]] — parent index.
-- [[task-069-min-spec]] — Minimum PC specification defined and checked against the stress scenarios. Status todo, on hold (owner 2026-10-10).
-- [[task-070-ore-in-rock]] — Ore scattered through the rock: nuggets inside rock blocks so ore drips during the whole dig, as in DRGS. Status in-progress.
-- [[task-080-text-display]] — A4 display: upgrade card flavor lines and Kessler-Voss alerts are shown in game; bark subtitle only if time allows. Status in-progress.
+- [[task-095-xp-cube-scale]] — Reused XP cubes come back at their normal size: the pooled reset restores the scale (and any other visual state that differs from a fresh cube). Status in-progress.
+- [[task-096-kamikaze-death-fuse]] — A kamikaze killed by the player goes through the same 0.65 s preparation as a proximity trigger and releases its XP only at the explosion. Status todo.
+- [[task-097-explosion-visual]] — The visible explosion is about 5 % larger than its collision radius and holds its final state 0.1 s before fading. Status todo.
+- [[task-098-weapon-info-centred]] — The weapon slot info (name, ammo, LOCKED) is really centred under each slot, not on the left. Status todo.
+- [[task-099-company-subtitles]] — Company voice lines are shown as one-line subtitles at the bottom centre, from a separate widget; no more stacking on the horde banner. Status todo.
+- [[task-100-ore-rename-duskite]] — The first ore is renamed Duskite in data, docs and tests and keeps its existing violet look (no colour written). Status todo.

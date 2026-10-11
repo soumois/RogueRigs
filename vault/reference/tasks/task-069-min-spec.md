@@ -1,9 +1,9 @@
 ---
 id: task-069-min-spec
 description: "Global task: Minimum PC specification defined and checked against the stress scenarios."
-parent: tasks-to-do-index
+parent: tasks-done-index
 kind: task
-status: todo
+status: done
 ---
 # Minimum specification
 
@@ -13,12 +13,12 @@ status: todo
 - gdd_check: done by the Orchestrator when the task is planned (2026-10-09).
 - confirmed_by_owner: no, on hold (owner 2026-10-10): the owner chooses the minimum hardware later
 - milestone: M2
-- next_step: task-069-01-min-spec
-- result: open
+- next_step: none
+- result: Cancelled by the owner (2026-10-11), to redo at the end of the project.
 
 ## Subtasks
 1. task-069-01-min-spec — cpp
 
 ## Relations
-- [[tasks-to-do-index]] — parent index.
+- [[tasks-done-index]] — parent index.
 - [[task-069-01-min-spec]] — step 1, cpp.

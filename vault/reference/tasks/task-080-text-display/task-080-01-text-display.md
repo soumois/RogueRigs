@@ -3,7 +3,7 @@ id: task-080-01-text-display
 description: "A4 display: upgrade card flavor lines and Kessler-Voss alerts are shown in game; bark subtitle only if time allows."
 parent: task-080-text-display
 kind: task
-status: review
+status: done
 ---
 # A4 text display
 
@@ -19,7 +19,7 @@ status: review
 - tokens: open
 - runs: open
 - milestone: M2
-- result: WBP_HUD: card flavor line and alert text added (commit 0bb04d7); compiled and saved; not checked at runtime or on screen, owner check pending.
+- result: Validated by the owner after play tests (2026-10-11); weapon info and horde text bugs filed as tasks 098 and 099.
 
 ## Relations
 - [[task-080-text-display]] — parent global task.

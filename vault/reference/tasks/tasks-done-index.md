@@ -79,6 +79,8 @@ Archive: it exceeds the index size limits of [[_authoring]] on purpose (owner, 2
 - [[task-066-async-flow-field]] — Flow field rebuilt on a worker thread with a double buffer, so robots follow a new path within 1–2 frames under normal PC load. Status done.
 - [[task-067-real-game-stress]] — Stress scenario close to a real game: 150 robots, a horde, full HUD and minimap, Niagara on, miner running and digging. Status done.
 - [[task-068-shipping-insights]] — Measurement in a packaged build with an Unreal Insights capture of the isolated frame spikes. Status done.
+- [[task-069-min-spec]] — Minimum PC specification defined and checked against the stress scenarios. Status todo, on hold (owner 2026-10-10).
+- [[task-070-ore-in-rock]] — Ore scattered through the rock: nuggets inside rock blocks so ore drips during the whole dig, as in DRGS. Status done.
 - [[task-071-robot-light-movement]] — Robots move with a light custom movement instead of CharacterMovement, before/after on the real-game stress. Status todo, on hold (owner 2026-10-10).
 - [[task-072-film-pool]] — A4 film pool: fictional-films grows to about 50 parody titles of badass 80s and 90s action films, checked by the critic. Status done.
 - [[task-073-text-schema]] — A4 schema: the text-content-schema node defines the 3 content files, the retrieval log and the critic review file. Status done.
@@ -88,6 +90,7 @@ Archive: it exceeds the index size limits of [[_authoring]] on purpose (owner, 2
 - [[task-077-barks]] — A4 Rook and Vesna barks: text agent writes, validator checks, critic reviews, corrections applied (2 loops at most). Status done.
 - [[task-078-alert-texts]] — A4 Kessler-Voss alerts: text agent writes, validator checks, critic reviews, corrections applied (2 loops at most). Status done.
 - [[task-079-text-loader]] — A4 loader: the text files are loaded in game and feed FRRUpgradeCard.DescriptionText and the existing alert events. Status done.
+- [[task-080-text-display]] — A4 display: upgrade card flavor lines and Kessler-Voss alerts are shown in game; bark subtitle only if time allows. Status done.
 - [[task-081-a4-readme]] — A4 README: assignments/A4-dynamic-content-pipeline/README.md filled from the real logs and reviews. Status done.
 - [[task-082-shuttle-lines]] — A4 shuttle and extraction lines rewritten so the company states what it does and never orders the player (new rule T9), then reviewed. Status done.
 - [[task-083-voice-tweak]] — A4 voice tweak: upgrade flavor lines regenerated with an item-specific retrieval, compared with the first version, so the README shows a real prompt or retrieval tweak. Status done.

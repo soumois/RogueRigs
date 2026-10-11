@@ -12,12 +12,12 @@ status: approved
 - The chunk drops whatever destroyed the block, drone or explosion; no extra bundle ([[ore-economy]]; owner, after handover-2026-10-06).
 - The chunk lands within about one cell of the broken block, so it never rests over unbroken rock (provisional, task-027-01, owner to judge).
 - Any explosion destroys every block in its radius ([[explosions]]): luring a kamikaze onto a vein is a valid tactic.
-- Look (owner 2026-10-10): same base as breakable rock, with glowing amber-gold crystals; gold is the only ore for now ([[color-code]]).
+- Look (owner 2026-10-10, validated): same base as breakable rock, with glowing violet crystals, kept as built. The ore is called Duskite (provisional name, replaces "gold"; the owner wanted a name apart from the gold colour); Duskite is the only ore for now ([[color-code]]).
 - Values above are provisional, set by the owner on 2026-10-01; ore value per pickup: 1 (owner 2026-10-10).
 - Milestone: M1.
 
 - Deposits (owner 2026-10-10, replaces the 3 × 3 veins): ore comes in groups of 2 × 2 blocks, never isolated; touching any block mines the whole deposit at once, its 4 blocks break together after one block dig time (1.5 s) and pop their 4 chunks. A deposit is identified by its own id, not by neighbouring blocks: deposits may touch.
-- Gold spawn rate (owner 2026-10-10): 8 % of the rock blocks are gold, in 2 × 2 groups (about 358 deposits on the current layout), placed at grid build. Each ore type has its own row in a table (share of rock, group size, value, colour); only gold exists for now. A deposit may not overlap heal veins, barrels or console-marked rocks; the start zone needs no protection: if a block of a deposit is destroyed there (for example by the arrival capsule), its chunks are thrown to the ground like any explosion drop.
+- Duskite spawn rate (owner 2026-10-10): 8 % of the rock blocks are Duskite, in 2 × 2 groups (about 358 deposits on the current layout), placed at grid build. Each ore type has its own row in a table (share of rock, group size, value, colour); only Duskite exists for now. A deposit may not overlap heal veins, barrels or console-marked rocks; the start zone needs no protection: if a block of a deposit is destroyed there (for example by the arrival capsule), its chunks are thrown to the ground like any explosion drop.
 
 - Vein shake (owner 2026-10-07 fifth test): all blocks of a vein being mined shake together.
 

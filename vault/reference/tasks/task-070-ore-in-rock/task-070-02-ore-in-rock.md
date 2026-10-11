@@ -3,7 +3,7 @@ id: task-070-02-ore-in-rock
 description: "Gold ore blocks show glowing amber-gold crystals on the rock base, readable against rock and distinct from the chaser yellow and the white-gold shots."
 parent: task-070-ore-in-rock
 kind: task
-status: in-progress
+status: done
 ---
 # Gold ore look
 
@@ -19,7 +19,7 @@ status: in-progress
 - tokens: open
 - runs: open
 - milestone: M2
-- result: open
+- result: Cancelled: the owner keeps the existing violet look (2026-10-11); ore renamed Duskite in task-100.
 
 ## Relations
 - [[task-070-ore-in-rock]] — parent global task.

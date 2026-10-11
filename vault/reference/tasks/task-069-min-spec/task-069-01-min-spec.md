@@ -3,7 +3,7 @@ id: task-069-01-min-spec
 description: "Minimum PC specification defined and checked against the stress scenarios."
 parent: task-069-min-spec
 kind: task
-status: todo
+status: done
 ---
 # Minimum specification
 
@@ -19,7 +19,7 @@ status: todo
 - tokens: open
 - runs: open
 - milestone: M2
-- result: open
+- result: Cancelled by the owner (2026-10-11): the minimum specification comes at the end of the project.
 
 ## Relations
 - [[task-069-min-spec]] — parent global task.

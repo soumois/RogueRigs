@@ -1,9 +1,9 @@
 ---
 id: task-080-text-display
 description: "Global task: A4 display: upgrade card flavor lines and Kessler-Voss alerts are shown in game; bark subtitle only if time allows."
-parent: tasks-to-do-index
+parent: tasks-done-index
 kind: task
-status: in-progress
+status: done
 ---
 # A4 text display
 
@@ -13,12 +13,12 @@ status: in-progress
 - gdd_check: done by the Orchestrator when the task is planned (2026-10-10).
 - confirmed_by_owner: yes (2026-10-10)
 - milestone: M2
-- next_step: task-081-01-a4-readme
-- result: open
+- next_step: none
+- result: Cards and alerts validated by the owner (2026-10-11).
 
 ## Subtasks
 1. task-080-01-text-display — bp
 
 ## Relations
-- [[tasks-to-do-index]] — parent index.
+- [[tasks-done-index]] — parent index.
 - [[task-080-01-text-display]] — step 1, bp.
