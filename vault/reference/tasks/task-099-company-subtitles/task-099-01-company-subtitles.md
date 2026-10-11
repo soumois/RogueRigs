@@ -3,7 +3,7 @@ id: task-099-01-company-subtitles
 description: "Company voice lines are shown as one-line subtitles at the bottom centre, from a separate widget; no more stacking on the horde banner."
 parent: task-099-company-subtitles
 kind: task
-status: todo
+status: in-progress
 ---
 # Subtitles for the company voice
 

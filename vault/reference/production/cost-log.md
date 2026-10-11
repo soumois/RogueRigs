@@ -157,6 +157,7 @@ kind: note
 | [[task-095-01-xp-cube-scale]] | opus | 1 | 0k | 131k | 836k | 20k |
 | [[task-100-01-ore-rename-duskite]] | opus | 1 | 0k | 66k | 492k | 10k |
 | [[task-096-01-kamikaze-death-fuse]] | opus | 1 | 0k | 294k | 2553k | 37k |
+| [[task-097-01-explosion-visual]] | opus | 1 | 0k | 74k | 1202k | 23k |
 
 ## Totals
 | Scope | Input | Cache write | Cache read | Output |

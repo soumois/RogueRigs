@@ -3,7 +3,7 @@ id: task-097-01-explosion-visual
 description: "The visible explosion is about 5 % larger than its collision radius and holds its final state 0.1 s before fading."
 parent: task-097-explosion-visual
 kind: task
-status: in-progress
+status: done
 ---
 # Explosion visual size and hold
 
@@ -15,11 +15,11 @@ status: in-progress
 - done_when: build exits 0 with the editor closed; all RogueRigs.* tests pass headless; C++ part done and the Blueprint part listed if needed; docs sys-explosions updated; lint clean; committed.
 - editor_state: closed
 - token_ceiling: 50000
-- model: open
-- tokens: open
-- runs: open
+- model: opus
+- tokens: input 50, cache write 73556, cache read 1202090, output 23278
+- runs: 1
 - milestone: M2
-- result: open
+- result: Every explosion FX is 1.05 x the collision radius and holds 0.1 s at full size before a 0.25 s fade (VisualRadiusScale, VisualHoldSeconds, FadeSeconds); collision and damage unchanged; no Blueprint change; 229/229 tests. Commit 8dfaaa2.
 
 ## Relations
 - [[task-097-explosion-visual]] — parent global task.
