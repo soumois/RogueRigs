@@ -189,6 +189,7 @@ sys-spawner  reference/tech/systems/sys-spawner.md
 sys-spawner-director  reference/tech/systems/sys-spawner-director.md
 sys-status-effects  reference/tech/systems/sys-status-effects.md
 sys-stress  reference/tech/systems/sys-stress.md
+sys-subtitles  reference/tech/systems/sys-subtitles.md
 sys-text-content  reference/tech/systems/sys-text-content.md
 sys-turret  reference/tech/systems/sys-turret.md
 sys-upgrades  reference/tech/systems/sys-upgrades.md
@@ -516,6 +517,7 @@ text-content-validator  reference/tech/pipelines/text-content-validator.md
 text-run-log-schema  reference/tech/pipelines/text-run-log-schema.md
 turret  reference/gdd/weapons/turret.md
 unreal-mcp  reference/tech/pipelines/unreal-mcp.md
+unreal-mcp-epic-plugin  reference/tech/pipelines/unreal-mcp-epic-plugin.md
 unreal-mcp-quirks  reference/tech/pipelines/unreal-mcp-quirks.md
 upgrades  reference/gdd/weapons/upgrades.md
 visual-style  reference/gdd/art-audio/visual-style.md

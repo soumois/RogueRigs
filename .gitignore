@@ -43,6 +43,7 @@ secrets/
 *.pfx
 
 # ── Vault / tooling ─────────────────────────────────────
+Art/Meshes/*/raw/
 node_modules/
 vault/.obsidian/workspace*
 .claude/settings.local.json

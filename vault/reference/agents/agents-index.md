@@ -21,8 +21,8 @@ Planned, not written yet: agent-balance, agent-animation, agent-sound, agent-qa 
 - [[agent-bp]] — builds the Blueprint layer through Unreal MCP and documents each Blueprint.
 - [[agent-text]] — writes player-facing text from the lore nodes, with a retrieval log.
 - [[agent-style-guide]] — the critic: verdict and correction per item against numbered rules.
-- [[agent-art]] — image prompts and candidate images through the Kie.ai image API.
-- [[agent-3d]] — validated image to cleaned, split FBX through Meshy or Tripo and Blender MCP.
+- [[agent-art]] — image prompts and candidate images with GPT Image 2 through Kie.ai (`Tools/art/kie_image.js`).
+- [[agent-3d]] — validated image to cleaned FBX through Meshy and headless Blender (`Tools/art/`).
 - [[orchestration-protocol]] — the step-by-step procedure the Orchestrator follows for every request, including resume after a limit.
 - [[orchestrator-runbook]] — the commands that work: git, editor start and stop, delegation prompt, closing a subtask, dashboard.
 - [[orchestrator-lessons]] — bp agent and MCP limits, visual checks, measuring, owner preferences.

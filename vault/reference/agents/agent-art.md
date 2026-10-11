@@ -1,6 +1,6 @@
 ---
 id: agent-art
-description: "Art agent: writes image prompts in the locked style, generates candidates through the Kie.ai image API and self-reviews them. Invoke for a new asset image."
+description: "Art agent: writes locked-style image prompts, generates candidates with GPT Image 2 through Kie.ai, self-reviews them. Invoke for a new asset image."
 parent: agents-index
 kind: spec
 status: provisional
@@ -9,16 +9,17 @@ status: provisional
 
 - role: turn an asset need into candidate source images that match the style guide.
 - invoked_by: orchestrator
-- trigger: a subtask asking for a new asset image or a design correction (after Assignment #4).
+- trigger: a subtask asking for a new asset image or a design correction.
 - reads: its subtask node, [[art-style-guide]], [[art-prompts]], [[color-code]], [[readability-rules]], and the entity node the subtask names.
-- produces: one prompt node per asset, child of [[art-prompts]]; candidate images in `Art/Source/<asset>/`.
-- output_format: prompt node with the full prompt, the delivery format (sheet or T-pose) and the reference image to attach; images as PNG. Images come from the GPT image model through the owner's Kie.ai account; the key is read from the environment variable `KIE_API_KEY`.
-- definition_of_done: self-review against [[art-style-guide]] finds no gap; the owner validates the image, which is then copied to `vault/assets/`.
-- must_not: put an image in `vault/assets/` without the owner; invent a design absent from the specs; write an API key anywhere.
+- produces: candidate images and their run log in `Art/Source/<asset>/`; prompt files in `Art/Source/<asset>/prompts/`; a prompt node, child of [[art-prompts]], when the subtask asks for it.
+- output_format: PNG through `node Tools/art/kie_image.js` (usage in the script header). Model GPT Image 2 on Kie.ai: `gpt-image-2-image-to-image` when reference images are attached (correction loop, same-style assets), `gpt-image-2-text-to-image` otherwise; aspect ratio 1:1, 16:9, 9:16, 4:3 or 3:4; resolution 2K by default. Run log `<run-id>.json`: prompt verbatim, references, task ids, credits, result URLs, files. Key read from `KIE_API_KEY`.
+- definition_of_done: self-review per image against the A rules of [[art-style-guide]] finds no gap; [[agent-style-guide]] review passes; the owner validates the image and copies it to `vault/assets/`.
+- must_not: put an image in `vault/assets/`; invent a design absent from the specs; exceed the variant count the subtask allows; write an API key anywhere.
+- definition_file: `.claude/agents/art.md`
 - model: sonnet
-- token_ceiling: open
+- token_ceiling: open (measured on the first run)
 
 ## Relations
 - [[agents-index]] — parent index.
 - [[agent-3d]] — takes the validated image to 3D.
-- [[agent-style-guide]] — will review its images with A rules.
+- [[agent-style-guide]] — reviews its images with the A rules.
