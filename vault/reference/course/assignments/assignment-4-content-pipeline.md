@@ -24,7 +24,7 @@ kind: note
 October 12, 2026. Time open: the lesson 05 slide says 23:59 BST (15:59 Pacific); the brief the owner pasted says 11:59 BST (03:59 Pacific). Plan for the earlier one until the owner confirms.
 
 ## Status
-In progress. Folder: `assignments/A4-dynamic-content-pipeline/` (README skeleton). Plan: [[assignment-4-plan]]. Owner decisions pending: [[assignment-4-open-decisions]].
+Done. Final commit `0790c65`, tag `a4-submission`, after task 085. Folder: `assignments/A4-dynamic-content-pipeline/`. Plan: [[assignment-4-plan]]. Decisions: [[assignment-4-open-decisions]].
 
 ## Relations
 - [[assignments-index]] — parent index.

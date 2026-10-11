@@ -6,8 +6,8 @@
 |---|---|---|---|
 | 1 | GDD First Draft | [A1-gdd-first-draft](assignments/A1-gdd-first-draft/) | Submitted |
 | 2 | GDD Final Draft | [A2-gdd-final-draft](assignments/A2-gdd-final-draft/) | Submitted |
-| 3 | Building an Agent Crew | [A3-agent-crew](assignments/A3-agent-crew/) | Submitted (tag [`a3-submission`](https://github.com/soumois/RogueRigs/tree/a3-submission)) |
-| 4 | Dynamic Content Pipeline | [A4-dynamic-content-pipeline](assignments/A4-dynamic-content-pipeline/) | Submitted-ready |
+| 3 | Building an Agent Crew | [A3-agent-crew](assignments/A3-agent-crew/) | Submitted (commit `b119b86`, tag [`a3-submission`](https://github.com/soumois/RogueRigs/tree/a3-submission)) |
+| 4 | Dynamic Content Pipeline | [A4-dynamic-content-pipeline](assignments/A4-dynamic-content-pipeline/) | Submitted (commit `0790c65`, tag [`a4-submission`](https://github.com/soumois/RogueRigs/tree/a4-submission)) |
 
 All assignments: [assignments/](assignments/).
 
