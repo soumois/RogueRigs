@@ -3,7 +3,7 @@ id: task-099-02-company-subtitles
 description: "Subtitle widget at the bottom centre, placed by WBP_HUD, showing the company voice lines; the old alert line text is removed from WBP_HUD."
 parent: task-099-company-subtitles
 kind: task
-status: in-progress
+status: done
 ---
 # Subtitle widget
 
@@ -19,7 +19,7 @@ status: in-progress
 - tokens: open
 - runs: open
 - milestone: M2
-- result: open
+- result: WBP_Subtitles (own logic, bound to OnSubtitleShown/Cleared, no tick) placed by WBP_HUD at the bottom centre; old alert line logic removed from WBP_HUD; compiled and saved, not seen on screen. Commits ac2cb86, 0c25397. Cost counted in the resumed bp agent.
 
 ## Relations
 - [[task-099-company-subtitles]] — parent global task.
