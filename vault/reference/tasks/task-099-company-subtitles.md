@@ -1,9 +1,9 @@
 ---
 id: task-099-company-subtitles
 description: "Global task: Company voice lines are shown as one-line subtitles at the bottom centre, from a separate widget; no more stacking on the horde banner."
-parent: tasks-to-do-index
+parent: tasks-done-index
 kind: task
-status: in-progress
+status: done
 ---
 # Subtitles for the company voice
 
@@ -13,14 +13,14 @@ status: in-progress
 - gdd_check: done by the Orchestrator when the task is planned (2026-10-11).
 - confirmed_by_owner: yes (2026-10-11)
 - milestone: M2
-- next_step: task-099-01-company-subtitles
-- result: open
+- next_step: none
+- result: Done. URRSubtitleSubsystem (Text/): Show/ShowAlertLine/Clear, replace rule, 4 s + 0.06 s per char, delegates OnSubtitleShown/OnSubtitleCleared, 5 alert events wired; 231/231 tests. Commit 8a0fec0. Step 2 (bp widget) next.
 
 ## Subtasks
 1. task-099-01-company-subtitles — cpp
 2. task-099-02-company-subtitles — bp
 
 ## Relations
-- [[tasks-to-do-index]] — parent index.
+- [[tasks-done-index]] — parent index.
 - [[task-099-01-company-subtitles]] — step 1, cpp.
 - [[task-099-02-company-subtitles]] — step 2, bp.

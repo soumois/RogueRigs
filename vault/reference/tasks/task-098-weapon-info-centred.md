@@ -3,7 +3,7 @@ id: task-098-weapon-info-centred
 description: "Global task: The weapon slot info (name, ammo, LOCKED) is really centred under each slot, not on the left."
 parent: tasks-to-do-index
 kind: task
-status: todo
+status: in-progress
 ---
 # Weapon info centred
 

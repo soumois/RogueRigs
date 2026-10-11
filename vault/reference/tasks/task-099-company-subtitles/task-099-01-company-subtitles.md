@@ -3,7 +3,7 @@ id: task-099-01-company-subtitles
 description: "Company voice lines are shown as one-line subtitles at the bottom centre, from a separate widget; no more stacking on the horde banner."
 parent: task-099-company-subtitles
 kind: task
-status: in-progress
+status: done
 ---
 # Subtitles for the company voice
 
@@ -15,11 +15,11 @@ status: in-progress
 - done_when: build exits 0 with the editor closed; all RogueRigs.* tests pass headless; docs sys-text-content and sys-hud-pressure updated; lint clean; committed.
 - editor_state: closed
 - token_ceiling: 60000
-- model: open
-- tokens: open
-- runs: open
+- model: opus
+- tokens: input 76, cache write 91607, cache read 2397902, output 39020
+- runs: 3
 - milestone: M2
-- result: open
+- result: URRSubtitleSubsystem (Text/): Show/ShowAlertLine/Clear, replace rule, 4 s + 0.06 s per char, delegates OnSubtitleShown/OnSubtitleCleared, 5 alert events wired; 231/231 tests. Commit 8a0fec0. Step 2 (bp widget) next.
 
 ## Relations
 - [[task-099-company-subtitles]] — parent global task.
