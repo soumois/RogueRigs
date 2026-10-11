@@ -3,7 +3,7 @@ id: task-070-02-ore-in-rock
 description: "Gold ore blocks show glowing amber-gold crystals on the rock base, readable against rock and distinct from the chaser yellow and the white-gold shots."
 parent: task-070-ore-in-rock
 kind: task
-status: todo
+status: in-progress
 ---
 # Gold ore look
 
