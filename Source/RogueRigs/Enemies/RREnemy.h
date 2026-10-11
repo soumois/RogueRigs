@@ -69,7 +69,7 @@ public:
 	 */
 	virtual void OnPoolAcquired_Implementation() override;
 
-	/** Back to the pool: leaves the separation subsystem, stops the movement, cancels latent actions (Blueprint Delay nodes). */
+	/** Back to the pool: leaves the separation subsystem, stops the movement, undoes the death shrink, cancels latent actions (Blueprint Delay nodes). */
 	virtual void OnPoolReleased_Implementation() override;
 
 	/** Lives started from the actor pool (1 after the first delivery, +1 per reuse; 0 for a robot spawned outside the pool). */

@@ -444,6 +444,9 @@ void ARREnemy::OnPoolReleased_Implementation()
 	}
 	SetMovementActive(false);
 	SetFarMovement(false);
+	// Undo the death shrink now, collision still off: re-enabling collision on a near-zero scale (the pool does it before it
+	// moves the actor) makes Chaos compute the mass of a degenerate body (ensure NewMP.Mass > 1e-8).
+	SetActorScale3D(ScaleAtDeath);
 	if (UWorld* World = GetWorld())
 	{
 		// Blueprint Delay nodes of this life (shield shell pop, slam ring) must not fire on the next one.
