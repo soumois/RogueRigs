@@ -1,6 +1,6 @@
 ---
 id: stress-grid-cells
-description: "Cell size stress (200, 100, 67 uu); real-game limits (task-067-01); packaged vs editor, spike causes (task-068-01); robot movement (task-071-01), robot and XP pools (task-091-01, 092-01)."
+description: "Cell size stress; real-game limits (067-01); packaged vs editor (068-01); robot movement (071-01), robot and XP pools (091-01, 092-01), passive hit capsule (093-01)."
 parent: performance-index
 kind: doc
 ---
@@ -187,6 +187,22 @@ Same procedure as the robot pool section. Before = 1bc689b (cubes, ore and heal 
 - Burst: the 1200-cube frame (400 deaths) drops from 204 ms to 91 ms on the death frame (robot death and release, cube requests), then 2 frames of about 62 ms while the pool creates 400 cubes per frame in a fresh process (nothing to reuse). Spike count rises 11 → 15 (more frames over 25 ms, all lower). The 1.6–2.0 s cluster (25–68 ms, draw up to 50 ms, untagged) is the same before and after: the magnet stream of 1200 cubes, not a spawn cost.
 - Longest wait 3 frames in every run. Lead if the first mass kill of a run matters: prewarm XP cubes at level start (the pool supports `Prewarm`; default none), or a longer `SpawnMaxFrames` (owner contract: 3).
 
+## Passive hit capsule (task-093-01, 2026-10-10)
+Editor `-game`, same commands as task-071-01 (game 250 settle 30 measure 60, `rr.Pacing.RunLookahead 0`; S0 400 settle 5 measure 20). Before = 9ad55cc, after = 1deed6f (`rr.Enemy.PassiveHitCapsule` 1, [[sys-enemies-movement]], audit [[robot-components-audit]]); all runs within 25 min, owner normal profile, nothing closed, no editor running. Game thread avg / p99 / max; movement = `-statnamedevents` trace of a third game 250 run, `URRRobotMovementComponent_Tick` inclusive ms per frame (Insights, trace outside the repo).
+
+| Run | Before | After |
+|---|---|---|
+| Game 250 #1 (alive avg) | 12.48 / 18.00 / 45.63 (202) | 12.06 / 17.42 / 46.55 (195) |
+| Game 250 #2 | 12.44 / 18.32 / 46.65 (199) | 11.60 / 17.35 / 49.51 (196) |
+| Game 250 traced (frame avg / p99) | 13.29 / 19.51 (13.38 / 19.60) | 13.11 / 19.28 (13.20 / 19.06) |
+| S0 400 | 6.62 / 8.62 / 9.80 | 6.51 / 8.48 / 12.99 |
+| Movement ms / frame (robots per frame) | 3.64 (198) | 3.16 (203) |
+| … overlap update / hit capsule overlap queries | 0.83 / 0.61 | 0.19 / 0.016 |
+| … child transforms (physics body moves) | 1.07 (0.64) | 1.12 (0.68) |
+
+- Movement 18.4 → 15.6 µs per robot: the hit capsule overlap query (one per robot move) is gone; what remains is the swept move (1.6 ms) and the transform update of the visible parts and the two capsule bodies (1.1 ms).
+- Game thread at 250: −0.4 to −0.8 ms avg, −0.6 to −1.0 ms p99 untraced, inside the run spread (≈ 0.5 ms); S0 400 within noise (render bound). Spikes unchanged (1–2 per run, the GC frame).
+
 ## Verdict
 - 200 uu: holds; the navigation fix would also help it (one destruction 0.25 ms here, 0.04–0.07 ms measured with the fix at the smaller sizes).
 - 100 uu: steady state and dig hold. Explosion chains break (52 ms frames) and are fixed by turning off navigation relevance on the grid components (≈ 1 h with test), back to the 200 uu level. Recommended.
@@ -210,3 +226,5 @@ Same procedure as the robot pool section. Before = 1bc689b (cubes, ore and heal 
 - [[task-071-01-robot-light-movement]] — the task that produced the robot light movement section.
 - [[sys-enemies-movement]] — the light movement measured in the task-071-01 section.
 - [[task-091-01-robot-pool]] — the task that produced the robot pool section.
+- [[task-093-01-robot-overlap-cost]] — the task that produced the passive hit capsule section.
+- [[robot-components-audit]] — robot component audit behind the passive hit capsule section.
