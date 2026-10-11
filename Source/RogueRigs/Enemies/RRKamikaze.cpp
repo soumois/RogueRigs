@@ -199,6 +199,31 @@ void ARRKamikaze::UpdateCore(float DeltaSeconds)
 	CoreMesh->SetRelativeScale3D(CoreBaseScale * CoreScaleFactor);
 }
 
+void ARRKamikaze::ResetForNewLife()
+{
+	Super::ResetForNewLife();
+	if (URRExplosionSubsystem* Explosions = GetWorld()->GetSubsystem<URRExplosionSubsystem>())
+	{
+		Explosions->ForgetSource(this);
+	}
+	bExplosionRequested = false;
+	bDetonated = false;
+	ArmTime = -1.0;
+	ExplosionQueuedTime = -1.0;
+	CorePulsePhase = 0.0;
+	CoreScaleFactor = 1.f;
+	EnemyMovement->SetArrivalDistance(GetArmRange() * ArrivalRangeRatio);
+	EnterState(ERRKamikazeState::Chase);
+	UpdateHover();
+	UpdateCore(0.f);
+}
+
+bool ARRKamikaze::CanReleaseToPool() const
+{
+	const URRExplosionSubsystem* Explosions = GetWorld() ? GetWorld()->GetSubsystem<URRExplosionSubsystem>() : nullptr;
+	return !bExplosionRequested || !Explosions || !Explosions->IsSourcePending(this);
+}
+
 void ARRKamikaze::ResetStateMachine()
 {
 	if (State != ERRKamikazeState::Dead)

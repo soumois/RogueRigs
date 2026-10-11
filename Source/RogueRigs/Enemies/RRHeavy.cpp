@@ -141,6 +141,16 @@ void ARRHeavy::HandleDeath(AActor* DeathInstigator)
 	Super::HandleDeath(DeathInstigator);
 }
 
+void ARRHeavy::ResetForNewLife()
+{
+	Super::ResetForNewLife();
+	LastSlamTime = -1.0;
+	SlamCount = 0;
+	SlamHitCount = 0;
+	EnemyMovement->SetArrivalDistance(Stats.AttackRange * ArrivalRangeRatio);
+	EnterState(ERRHeavyState::Chase);
+}
+
 void ARRHeavy::ResetStateMachine()
 {
 	if (State != ERRHeavyState::Dead)

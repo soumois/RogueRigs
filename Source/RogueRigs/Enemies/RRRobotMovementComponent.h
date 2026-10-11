@@ -32,6 +32,14 @@ public:
 	/** Light step when CanUseLightMovement, else the engine CharacterMovement tick (then records the floor height). */
 	virtual void TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction) override;
 
+	/** Forgets the cached floor, the recorded light-step floor and any launch flight time (robot reused from the actor pool). */
+	void ResetLightMovementState()
+	{
+		bFloorCacheValid = false;
+		bLightFloorValid = false;
+		LaunchFlightTimeLeft = 0.f;
+	}
+
 	//~ UCharacterMovementComponent
 	/** Returns the cached walking floor when still valid (see class comment), else the engine floor check (and caches it). */
 	virtual void FindFloor(const FVector& CapsuleLocation, FFindFloorResult& OutFloorResult, bool bCanUseCachedLocation, const FHitResult* DownwardSweepResult = nullptr) const override;

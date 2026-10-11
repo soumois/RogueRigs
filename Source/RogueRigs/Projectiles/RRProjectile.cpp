@@ -127,9 +127,15 @@ bool ARRProjectile::IsIgnoredActor(const AActor* OtherActor) const
 	return OtherActor == GetInstigator();
 }
 
+int32 ARRProjectile::GetHitLife(const AActor* OtherActor)
+{
+	const ARREnemy* Enemy = Cast<ARREnemy>(OtherActor);
+	return Enemy ? Enemy->GetPoolLifeCount() : 0;
+}
+
 void ARRProjectile::OnSphereBeginOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
 {
-	if (bSpent || !IsValid(this) || IsIgnoredActor(OtherActor) || !CanHit(OtherActor) || HitActors.Contains(OtherActor))
+	if (bSpent || !IsValid(this) || IsIgnoredActor(OtherActor) || !CanHit(OtherActor) || (HitActors.Contains(OtherActor) && HitActors[OtherActor] == GetHitLife(OtherActor)))
 	{
 		return;
 	}
@@ -141,8 +147,9 @@ void ARRProjectile::OnSphereBeginOverlap(UPrimitiveComponent* OverlappedComponen
 	}
 
 	// Pierce: each distinct actor is hit once; the projectile flies on until MaxHits actors were hit.
-	HitActors.Add(OtherActor);
-	if (HitActors.Num() >= MaxHits)
+	HitActors.Add(OtherActor, GetHitLife(OtherActor));
+	++HitCount;
+	if (HitCount >= MaxHits)
 	{
 		bSpent = true;
 	}

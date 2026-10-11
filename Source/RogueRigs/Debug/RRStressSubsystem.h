@@ -374,6 +374,11 @@ protected:
 	uint64 GameFillFrame = 0;
 	int32 GameFillSpawned = 0;
 
+	/** Actors created by the actor pool (URRActorPoolSubsystem TotalCreated) at the previous sample, and created during the last two samples (spike tag). */
+	int32 LastPoolCreatedTotal = 0;
+	int32 PoolCreatedPrevious = 0;
+	int32 PoolCreatedLatest = 0;
+
 	/** Post garbage collection hook (tags spike frames). */
 	FDelegateHandle PostGarbageCollectHandle;
 

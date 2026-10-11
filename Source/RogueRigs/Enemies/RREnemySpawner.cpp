@@ -43,6 +43,12 @@ void ARREnemySpawner::BeginPlay()
 	Director.Reset();
 }
 
+void ARREnemySpawner::EndPlay(const EEndPlayReason::Type EndPlayReason)
+{
+	CancelPendingSpawns();
+	Super::EndPlay(EndPlayReason);
+}
+
 void ARREnemySpawner::Tick(float DeltaSeconds)
 {
 	Super::Tick(DeltaSeconds);
@@ -365,6 +371,11 @@ int32 ARREnemySpawner::GetAliveCountOfClass(TSubclassOf<ARREnemy> Class) const
 		const ARREnemy* Robot = Enemy.Get();
 		Count += Robot && Class && Robot->IsA(Class) && !Robot->IsActorBeingDestroyed() && !Robot->IsDead() ? 1 : 0;
 	}
+	// Pending robots hold their class slot too (a wave never overshoots a class cap while the pool creates it).
+	for (const FPendingSpawn& Pending : PendingSpawns)
+	{
+		Count += Class && Pending.Class && Pending.Class->IsChildOf(Class) ? 1 : 0;
+	}
 	return Count;
 }
 
@@ -396,7 +407,7 @@ ARREnemy* ARREnemySpawner::TrySpawnEnemy()
 ARREnemy* ARREnemySpawner::TrySpawnEnemyOfClass(TSubclassOf<ARREnemy> WantedClass)
 {
 	const TSubclassOf<ARREnemy> SpawnClass = WantedClass ? ResolveRobotClass(WantedClass) : PickEnemyClass();
-	if (!GetWorld() || !SpawnClass || GetAliveCount() >= MaxAlive || (WantedClass && GetClassRoom(SpawnClass) <= 0))
+	if (!GetWorld() || !SpawnClass || GetOccupiedCount() >= MaxAlive || (WantedClass && GetClassRoom(SpawnClass) <= 0))
 	{
 		return nullptr;
 	}
@@ -407,7 +418,9 @@ ARREnemy* ARREnemySpawner::TrySpawnEnemyOfClass(TSubclassOf<ARREnemy> WantedClas
 		UE_LOG(LogRogueRigs, Verbose, TEXT("ARREnemySpawner %s: no spawn cell available."), *GetName());
 		return nullptr;
 	}
-	return SpawnEnemyOnCell(SpawnClass, Candidates[PickSpawnCellIndex(Candidates)]);
+	ARREnemy* Enemy = nullptr;
+	SpawnEnemyOnCell(SpawnClass, Candidates[PickSpawnCellIndex(Candidates)], Enemy);
+	return Enemy;
 }
 
 int32 ARREnemySpawner::PickSpawnCellIndex(const TArray<FIntPoint>& Candidates)
@@ -444,7 +457,7 @@ FVector ARREnemySpawner::GetStandingLocation(const ARREnemy* Enemy, const FIntPo
 TArray<ARREnemy*> ARREnemySpawner::TrySpawnPack()
 {
 	TArray<ARREnemy*> Spawned;
-	const int32 FreeSlots = MaxAlive - GetAliveCount();
+	const int32 FreeSlots = MaxAlive - GetOccupiedCount();
 	FBox2D View;
 	if (!GetWorld() || FreeSlots <= 0 || !GetViewRectangle(View))
 	{
@@ -495,7 +508,8 @@ TArray<ARREnemy*> ARREnemySpawner::TrySpawnPack()
 	{
 		Cells.Swap(Index, RandomStream.RandRange(Index, Cells.Num() - 1));
 		const TSubclassOf<ARREnemy> SpawnClass = PickEnemyClass();
-		if (ARREnemy* Enemy = SpawnClass ? SpawnEnemyOnCell(SpawnClass, Cells[Index]) : nullptr)
+		ARREnemy* Enemy = nullptr;
+		if (SpawnClass && SpawnEnemyOnCell(SpawnClass, Cells[Index], Enemy) && Enemy)
 		{
 			Spawned.Add(Enemy);
 		}
@@ -505,33 +519,110 @@ TArray<ARREnemy*> ARREnemySpawner::TrySpawnPack()
 	return Spawned;
 }
 
-ARREnemy* ARREnemySpawner::SpawnEnemyOnCell(TSubclassOf<ARREnemy> SpawnClass, const FIntPoint& Cell)
+bool ARREnemySpawner::SpawnEnemyOnCell(TSubclassOf<ARREnemy> SpawnClass, const FIntPoint& Cell, ARREnemy*& OutEnemy)
 {
+	OutEnemy = nullptr;
 	UWorld* World = GetWorld();
 	const ARRArenaGrid* Grid = GetGrid();
 	if (!World || !Grid || !SpawnClass)
 	{
-		return nullptr;
+		return false;
 	}
 	const float HalfHeight = SpawnClass->GetDefaultObject<ARREnemy>()->GetCapsuleComponent()->GetScaledCapsuleHalfHeight();
 	const FVector Location = Grid->GetCellCenter(Cell.X, Cell.Y) + FVector(0.f, 0.f, HalfHeight + SpawnFloorClearance);
-	FActorSpawnParameters Params;
-	Params.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AdjustIfPossibleButAlwaysSpawn;
-	ARREnemy* Enemy = World->SpawnActor<ARREnemy>(SpawnClass, Location, FRotator::ZeroRotator, Params);
-	if (Enemy)
+
+	URRActorPoolSubsystem* Pool = World->GetSubsystem<URRActorPoolSubsystem>();
+	if (!Pool)
 	{
-		AliveEnemies.Add(Enemy);
-		UE_LOG(LogRogueRigs, Verbose, TEXT("ARREnemySpawner %s: %s spawned on (%d, %d), %d alive."), *GetName(), *Enemy->GetName(),
-			Cell.X, Cell.Y, AliveEnemies.Num());
+		// No pool in this world type: plain spawn, as before task-091-01.
+		FActorSpawnParameters SpawnParams;
+		SpawnParams.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AdjustIfPossibleButAlwaysSpawn;
+		OutEnemy = World->SpawnActor<ARREnemy>(SpawnClass, Location, FRotator::ZeroRotator, SpawnParams);
+		TrackSpawnedEnemy(OutEnemy);
+		return OutEnemy != nullptr;
 	}
-	return Enemy;
+
+	const FTransform Transform(FRotator::ZeroRotator, Location);
+	FRRPoolAcquireParams Params;
+	Params.CollisionHandling = ESpawnActorCollisionHandlingMethod::AdjustIfPossibleButAlwaysSpawn;
+	Params.Requester = this;
+	if (SpawnMaxFrames <= 0)
+	{
+		OutEnemy = Pool->AcquireImmediate<ARREnemy>(TSubclassOf<ARREnemy>(SpawnClass), Transform, Params);
+		TrackSpawnedEnemy(OutEnemy);
+		return OutEnemy != nullptr;
+	}
+	Params.MaxFrames = SpawnMaxFrames;
+	// The robot joins the alive list only on delivery (at once for a reused robot, inside Acquire; later for a creation).
+	TSharedRef<TWeakObjectPtr<ARREnemy>> Delivered = MakeShared<TWeakObjectPtr<ARREnemy>>();
+	TWeakObjectPtr<ARREnemySpawner> WeakThis(this);
+	Params.OnReady = [WeakThis, Delivered](AActor* Actor)
+	{
+		ARREnemy* Enemy = Cast<ARREnemy>(Actor);
+		*Delivered = Enemy;
+		if (ARREnemySpawner* Spawner = WeakThis.Get())
+		{
+			Spawner->TrackSpawnedEnemy(Enemy);
+		}
+	};
+	const FRRPoolRequestHandle Handle = Pool->Acquire(SpawnClass, Transform, MoveTemp(Params));
+	if (Handle.IsValid())
+	{
+		PendingSpawns.Add({ Handle, SpawnClass });
+		return true;
+	}
+	OutEnemy = Delivered->Get();
+	return OutEnemy != nullptr;
+}
+
+void ARREnemySpawner::TrackSpawnedEnemy(ARREnemy* Enemy)
+{
+	PrunePending();
+	if (!Enemy)
+	{
+		return;
+	}
+	AliveEnemies.AddUnique(Enemy);
+	RecycleStates.Add(Enemy, FRecycleState());
+	UE_LOG(LogRogueRigs, Verbose, TEXT("ARREnemySpawner %s: %s spawned, %d alive, %d pending."), *GetName(), *Enemy->GetName(),
+		AliveEnemies.Num(), PendingSpawns.Num());
+}
+
+void ARREnemySpawner::PrunePending()
+{
+	const URRActorPoolSubsystem* Pool = GetWorld() ? GetWorld()->GetSubsystem<URRActorPoolSubsystem>() : nullptr;
+	PendingSpawns.RemoveAll([Pool](const FPendingSpawn& Pending) { return !Pool || !Pool->IsRequestPending(Pending.Handle); });
+}
+
+void ARREnemySpawner::CancelPendingSpawns()
+{
+	URRActorPoolSubsystem* Pool = GetWorld() ? GetWorld()->GetSubsystem<URRActorPoolSubsystem>() : nullptr;
+	for (FPendingSpawn& Pending : PendingSpawns)
+	{
+		if (Pool)
+		{
+			Pool->CancelRequest(Pending.Handle);
+		}
+	}
+	PendingSpawns.Reset();
+}
+
+int32 ARREnemySpawner::GetPendingCount()
+{
+	PrunePending();
+	return PendingSpawns.Num();
+}
+
+int32 ARREnemySpawner::GetOccupiedCount()
+{
+	return GetAliveCount() + GetPendingCount();
 }
 
 void ARREnemySpawner::PruneAlive()
 {
 	AliveEnemies.RemoveAll([](const TWeakObjectPtr<ARREnemy>& Enemy)
 	{
-		return !Enemy.IsValid() || Enemy->IsActorBeingDestroyed() || Enemy->IsDead();
+		return !Enemy.IsValid() || Enemy->IsActorBeingDestroyed() || Enemy->IsDead() || URRActorPoolSubsystem::IsPooledIdle(Enemy.Get());
 	});
 }
 
@@ -604,7 +695,9 @@ void ARREnemySpawner::RecycleFarEnemies(float DeltaSeconds)
 
 	for (auto It = RecycleStates.CreateIterator(); It; ++It)
 	{
-		if (!It.Key().ResolveObjectPtr())
+		// Destroyed, dead or parked in the pool (a reused robot gets a fresh state on delivery).
+		const ARREnemy* Tracked = It.Key().ResolveObjectPtr();
+		if (!Tracked || Tracked->IsDead())
 		{
 			It.RemoveCurrent();
 		}
@@ -885,7 +978,7 @@ namespace RRSpawner
 TArray<FRRSpawnedPack> ARREnemySpawner::TrySpawnDirectorWave(const TArray<int32>& PackTypeIndices)
 {
 	TArray<FRRSpawnedPack> Packs;
-	int32 FreeSlots = MaxAlive - GetAliveCount();
+	int32 FreeSlots = MaxAlive - GetOccupiedCount();
 	FBox2D View;
 	const ARRArenaGrid* Grid = GetGrid();
 	if (!GetWorld() || !Grid || FreeSlots <= 0 || PackTypeIndices.IsEmpty() || !GetViewRectangle(View))
@@ -970,15 +1063,24 @@ TArray<FRRSpawnedPack> ARREnemySpawner::TrySpawnDirectorWave(const TArray<int32>
 		Pack.AnchorAngle = UsedAngles.Last();
 		for (int32 Index = 0; Index < Count; ++Index)
 		{
-			if (ARREnemy* Enemy = SpawnEnemyOnCell(Classes[Index], PackCells[Index]))
+			ARREnemy* Enemy = nullptr;
+			if (!SpawnEnemyOnCell(Classes[Index], PackCells[Index], Enemy))
+			{
+				continue;
+			}
+			--FreeSlots;
+			if (Enemy)
 			{
 				Pack.Robots.Add(Enemy);
 				Pack.Cells.Add(PackCells[Index]);
-				--FreeSlots;
+			}
+			else
+			{
+				++Pack.Queued;
 			}
 		}
 		UE_LOG(LogRogueRigs, Verbose, TEXT("ARREnemySpawner %s: %s pack of %d from side %d, %d alive."), *GetName(),
-			*DirectorConfig.PackTypes[TypeIndex].Name.ToString(), Pack.Robots.Num(), SideIndex + 1, AliveEnemies.Num());
+			*DirectorConfig.PackTypes[TypeIndex].Name.ToString(), Pack.GetCount(), SideIndex + 1, AliveEnemies.Num());
 	}
 	return Packs;
 }
@@ -1179,7 +1281,7 @@ ERRSpawnSide ARREnemySpawner::PrepareHorde(int32 HordeIndex)
 	HordeSide = ERRSpawnSide::None;
 	const ARRArenaGrid* Grid = GetGrid();
 	FBox2D View;
-	const int32 FreeSlots = MaxAlive - GetAliveCount();
+	const int32 FreeSlots = MaxAlive - GetOccupiedCount();
 	if (!DirectorConfig.FindHorde(HordeIndex) || !Grid || FreeSlots <= 0 || !GetViewRectangle(View))
 	{
 		return HordeSide;
@@ -1257,7 +1359,7 @@ void ARREnemySpawner::SpawnHordeUpTo(float Fraction)
 	const float MinDistance = SpawnBandMinDistance;
 	for (; HordePlanCursor < Target; ++HordePlanCursor)
 	{
-		if (GetAliveCount() >= MaxAlive)
+		if (GetOccupiedCount() >= MaxAlive)
 		{
 			continue;
 		}
@@ -1271,7 +1373,8 @@ void ARREnemySpawner::SpawnHordeUpTo(float Fraction)
 				continue;
 			}
 		}
-		HordeSpawned += SpawnEnemyOnCell(Slot.Class, Slot.Cell) ? 1 : 0;
+		ARREnemy* Enemy = nullptr;
+		HordeSpawned += SpawnEnemyOnCell(Slot.Class, Slot.Cell, Enemy) ? 1 : 0;
 	}
 }
 

@@ -69,7 +69,7 @@ public:
 	float GetKnockbackSpeed() const { return KnockbackSpeed; }
 
 	/** Distinct actors damaged so far. */
-	int32 GetHitCount() const { return HitActors.Num(); }
+	int32 GetHitCount() const { return HitCount; }
 
 	/** The collision sphere (root component). */
 	USphereComponent* GetCollisionSphere() const { return CollisionSphere; }
@@ -126,8 +126,17 @@ protected:
 	/** Knockback launch speed in uu/s per robot hit, along the flight direction, before the robot's resistance (0 = none). Set by InitProjectile. */
 	float KnockbackSpeed = 0.f;
 
-	/** Actors already damaged by this projectile: a pierced robot is never hit twice by the same bullet. */
-	TSet<TWeakObjectPtr<AActor>> HitActors;
+	/**
+	 * Actors already damaged by this projectile, with the pool life of a robot (ARREnemy::GetPoolLifeCount, 0 otherwise): a
+	 * pierced robot is never hit twice by the same bullet, but the same actor reused from the actor pool is a new target.
+	 */
+	TMap<TWeakObjectPtr<AActor>, int32> HitActors;
+
+	/** Distinct hits so far (MaxHits counts them). */
+	int32 HitCount = 0;
+
+	/** Pool life of OtherActor when it is a robot, else 0 (key of HitActors). */
+	static int32 GetHitLife(const AActor* OtherActor);
 
 	/** True once the projectile is spent (MaxHits reached or stopped); guards against any application before destruction. */
 	bool bSpent = false;

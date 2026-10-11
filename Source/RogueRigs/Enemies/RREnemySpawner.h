@@ -5,6 +5,7 @@
 #include "CoreMinimal.h"
 #include "GameFramework/Actor.h"
 #include "Enemies/RRWaveDirector.h"
+#include "Pool/RRActorPoolSubsystem.h"
 #include "UObject/ObjectKey.h"
 #include "RREnemySpawner.generated.h"
 
@@ -73,11 +74,17 @@ struct FRRSpawnedPack
 	/** Side of the view it came from. */
 	ERRSpawnSide Side = ERRSpawnSide::None;
 
-	/** Robots spawned, front members first. */
+	/** Robots delivered at once (reused from the actor pool or created synchronously), front members first. */
 	TArray<ARREnemy*> Robots;
 
 	/** Spawn cell of each robot of Robots (the actor may be nudged off it when capsules overlap). */
 	TArray<FIntPoint> Cells;
+
+	/** Robots of the pack queued in the actor pool, delivered within SpawnMaxFrames frames (not in Robots). */
+	int32 Queued = 0;
+
+	/** Robots of the pack: delivered plus queued. */
+	int32 GetCount() const { return Robots.Num() + Queued; }
 
 	/** Direction of the pack anchor cell from the miner (the view center without one), in degrees (-180 to 180, atan2 of Y, X). */
 	double AnchorAngle = 0.0;
@@ -136,7 +143,10 @@ struct FRRWeightedEnemyClass
  * View rectangle source, first available: the override (SetViewRectangleOverride, used by tests); the first local player's
  * camera manager (its camera cache view, viewport aspect ratio); the first camera component of the flow-field goal actor (the
  * miner's camera, works headless). Each is the bounding box of the four frustum corner rays projected on the floor plane.
- * A robot stops counting as alive when it dies (IsDead) or is destroyed. Off when bEnabled is false or rr.Spawner.Enabled is 0.
+ * Robots come from URRActorPoolSubsystem (task-091-01): a released robot is reused at once; missing ones are created by the
+ * pool within SpawnMaxFrames frames (20), so a wave never creates all its robots in one frame. A requested robot not yet
+ * delivered is pending: it holds a slot against MaxAlive and its class caps (GetOccupiedCount) and joins the alive list on
+ * delivery. A robot stops counting as alive when it dies (IsDead), is destroyed or is parked in the pool. Off when bEnabled is false or rr.Spawner.Enabled is 0.
  * Recycling by relocation (bRecycleEnabled, every tick, spawning on or off): each robot of this spawner counts its seconds off
  * screen (more than RecycleOffScreenMargin beyond the view rectangle) since it spawned or last left the screen. Once farther than
  * RecycleDistance from the miner with RecycleDelay seconds off screen after having been on screen, or RecycleUnseenDelay seconds
@@ -155,6 +165,9 @@ public:
 
 	/** Seeds the random stream (a new seed per run). */
 	virtual void BeginPlay() override;
+
+	/** Cancels the robots still pending in the actor pool. */
+	virtual void EndPlay(const EEndPlayReason::Type EndPlayReason) override;
 
 	/** Advances the run clock and the director (or the older trickle, pack and lone-robot timers) while enabled; spawns what they call for. */
 	virtual void Tick(float DeltaSeconds) override;
@@ -201,7 +214,7 @@ public:
 	/** Robot classes this spawner can spawn: EnemyClass, then each WeightedEnemyClasses entry with a class (no duplicates). */
 	void GetSpawnableClasses(TArray<TSubclassOf<ARREnemy>>& OutClasses) const;
 
-	/** Number of robots of Class (IsA) spawned by this spawner that are alive (not dead, not destroyed). Does not prune. */
+	/** Number of robots of Class (IsA) spawned by this spawner that are alive (not dead, not destroyed) or pending in the pool. Does not prune. */
 	int32 GetAliveCountOfClass(TSubclassOf<ARREnemy> Class) const;
 
 	/** Number of robots spawned by this spawner that are alive (not dead, not destroyed). Prunes the list. */
@@ -210,6 +223,23 @@ public:
 
 	/** Robots spawned by this spawner that are alive. Prunes the list. */
 	TArray<ARREnemy*> GetAliveEnemies();
+
+	/** Robots requested from the actor pool and not delivered yet (each holds a slot). Prunes the list. */
+	UFUNCTION(BlueprintPure, Category = "Spawner")
+	int32 GetPendingCount();
+
+	/** Slots taken under MaxAlive: alive plus pending robots. Prunes the lists. */
+	UFUNCTION(BlueprintPure, Category = "Spawner")
+	int32 GetOccupiedCount();
+
+	/** Frames within which the pool creates a missing robot (SpawnMaxFrames); 0 = synchronous creation. */
+	int32 GetSpawnMaxFrames() const { return SpawnMaxFrames; }
+
+	/** Sets SpawnMaxFrames (tests that need every robot at once use 0). */
+	void SetSpawnMaxFrames(int32 InMaxFrames) { SpawnMaxFrames = FMath::Max(InMaxFrames, 0); }
+
+	/** Cancels every pending pool request of this spawner (their slots free at once). */
+	void CancelPendingSpawns();
 
 	/** True when the spawner runs on its own: bEnabled and rr.Spawner.Enabled != 0. */
 	UFUNCTION(BlueprintPure, Category = "Spawner")
@@ -512,8 +542,18 @@ protected:
 	/** Location of the capsule center of Enemy standing on Cell (cell center, capsule half height plus SpawnFloorClearance). */
 	FVector GetStandingLocation(const ARREnemy* Enemy, const FIntPoint& Cell) const;
 
-	/** Spawns one robot of SpawnClass on Cell (capsule on the floor) and tracks it; null when the spawn fails. */
-	ARREnemy* SpawnEnemyOnCell(TSubclassOf<ARREnemy> SpawnClass, const FIntPoint& Cell);
+	/**
+	 * Requests one robot of SpawnClass on Cell (capsule on the floor, AdjustIfPossibleButAlwaysSpawn) from the actor pool with
+	 * SpawnMaxFrames (0: AcquireImmediate); SpawnActor when the world has no pool. Returns true when a robot was delivered
+	 * (OutEnemy set, tracked as alive) or queued (OutEnemy null, tracked as pending); false when nothing could be requested.
+	 */
+	bool SpawnEnemyOnCell(TSubclassOf<ARREnemy> SpawnClass, const FIntPoint& Cell, ARREnemy*& OutEnemy);
+
+	/** Adds a delivered robot to the alive list with a fresh recycling state; drops the pool requests already served. */
+	void TrackSpawnedEnemy(ARREnemy* Enemy);
+
+	/** Drops pending entries whose request is no longer pending (delivered, cancelled, dropped by the pool). */
+	void PrunePending();
 
 	/** Robot class spawned when WeightedEnemyClasses has no valid entry (a Blueprint subclass of ARRChaser for the mesh). None = no spawn. */
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Spawner")
@@ -637,8 +677,27 @@ protected:
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Spawner", meta = (ClampMin = 0, Units = "cm"))
 	float SpawnFloorClearance = 2.f;
 
+	/**
+	 * Frames within which the actor pool creates a robot it has no idle one for (owner 2026-10-10: at most 20; a wave of N
+	 * missing robots is created at ceil(N / 20) per frame). 0 = created at once (old one-frame cost, used by tests).
+	 */
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Spawner|Pool", meta = (ClampMin = 0))
+	int32 SpawnMaxFrames = 20;
+
 	/** Robots spawned and still alive (pruned on query). */
 	TArray<TWeakObjectPtr<ARREnemy>> AliveEnemies;
+
+	/** One robot requested from the actor pool, not delivered yet. */
+	struct FPendingSpawn
+	{
+		/** Pool request. */
+		FRRPoolRequestHandle Handle;
+		/** Requested class (per-class caps count it). */
+		TSubclassOf<ARREnemy> Class;
+	};
+
+	/** Robots pending in the actor pool (pruned on query). */
+	TArray<FPendingSpawn> PendingSpawns;
 
 	/** Recycling state of one robot. */
 	struct FRecycleState

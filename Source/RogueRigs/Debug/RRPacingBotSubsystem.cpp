@@ -15,6 +15,7 @@
 #include "Misc/Paths.h"
 #include "Pickups/RRPickup.h"
 #include "Player/RRMiner.h"
+#include "Pool/RRActorPoolSubsystem.h"
 #include "Progression/RRLevelUpComponent.h"
 #include "Progression/RRProgressionComponent.h"
 #include "RogueRigs.h"
@@ -278,7 +279,7 @@ void URRPacingBotSubsystem::AimAtNearestRobot(ARRMiner* Miner) const
 	double NearestSquared = TNumericLimits<double>::Max();
 	for (TActorIterator<ARREnemy> It(GetWorld()); It; ++It)
 	{
-		if (It->IsDead())
+		if (It->IsDead() || URRActorPoolSubsystem::IsPooledIdle(*It))
 		{
 			continue;
 		}
@@ -337,7 +338,7 @@ void URRPacingBotSubsystem::CountWorld(int32& OutRobots, int32& OutCubes) const
 	OutCubes = 0;
 	for (TActorIterator<ARREnemy> It(GetWorld()); It; ++It)
 	{
-		OutRobots += It->IsDead() ? 0 : 1;
+		OutRobots += It->IsDead() || URRActorPoolSubsystem::IsPooledIdle(*It) ? 0 : 1;
 	}
 	for (TActorIterator<ARRPickup> It(GetWorld()); It; ++It)
 	{

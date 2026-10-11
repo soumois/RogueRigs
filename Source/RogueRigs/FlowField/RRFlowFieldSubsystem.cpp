@@ -9,6 +9,7 @@
 #include "HAL/IConsoleManager.h"
 #include "HAL/PlatformTime.h"
 #include "Player/RRMiner.h"
+#include "Pool/RRActorPoolSubsystem.h"
 #include "RogueRigs.h"
 #include "World/RRWorld.h"
 
@@ -481,7 +482,8 @@ void URRFlowFieldSubsystem::GatherPawnCells(TSet<FIntPoint>& OutCells) const
 	}
 	for (TActorIterator<APawn> It(World); It; ++It)
 	{
-		if (IsValid(*It))
+		// Robots parked idle in the actor pool occupy nothing (sys-actor-pool).
+		if (IsValid(*It) && !URRActorPoolSubsystem::IsPooledIdle(*It))
 		{
 			OutCells.Add(CurrentGrid->GetCellAtWorld(It->GetActorLocation()));
 		}

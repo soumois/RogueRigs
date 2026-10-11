@@ -30,6 +30,7 @@
 #include "Player/RRMiner.h"
 #include "ProfilingDebugging/CsvProfiler.h"
 #include "ProfilingDebugging/MiscTrace.h"
+#include "Pool/RRActorPoolSubsystem.h"
 #include "RogueRigs.h"
 #include "Progression/RRProgressionComponent.h"
 #include "UI/RRHUDWidget.h"
@@ -779,6 +780,11 @@ void URRStressSubsystem::BeginStep(int32 InStepIndex)
 	DrawSamples.Reset();
 	GpuSamples.Reset();
 	AliveSamples.Reset();
+	if (URRActorPoolSubsystem* Pool = GetWorld()->GetSubsystem<URRActorPoolSubsystem>())
+	{
+		Pool->ResetStats();
+	}
+	LastPoolCreatedTotal = 0;
 	StepSpikes = 0;
 	StepSpikesFill = 0;
 	StepSpikesGarbageCollect = 0;
@@ -864,6 +870,12 @@ void URRStressSubsystem::Tick(float DeltaTime)
 	const float DrawMs = Unit ? Unit->RawRenderThreadTime : 0.f;
 	const float GpuMs = Unit ? Unit->RawGPUFrameTime[0] : 0.f;
 	const int32 Alive = GetWorldAliveCount();
+	// Robots created by the pool since the previous sample (task-091-01: a wave is created over up to 20 frames).
+	const URRActorPoolSubsystem* Pool = GetWorld()->GetSubsystem<URRActorPoolSubsystem>();
+	const int32 PoolCreatedTotal = Pool ? Pool->GetStats().TotalCreated : 0;
+	PoolCreatedPrevious = PoolCreatedLatest;
+	PoolCreatedLatest = FMath::Max(PoolCreatedTotal - LastPoolCreatedTotal, 0);
+	LastPoolCreatedTotal = PoolCreatedTotal;
 	FrameSamples.Add(FrameMs);
 	GameSamples.Add(GameMs);
 	DrawSamples.Add(DrawMs);
@@ -875,15 +887,18 @@ void URRStressSubsystem::Tick(float DeltaTime)
 		const bool bGarbageCollect = GFrameCounter - LastGarbageCollectFrame <= 1;
 		const bool bAfterPause = GFrameCounter - LastPausedFrame <= 2;
 		const int32 FillRobots = GFrameCounter - GameFillFrame <= 1 ? GameFillSpawned : 0;
+		const int32 PoolCreated = PoolCreatedLatest + PoolCreatedPrevious;
+		// Wave spawn tag: a fill wave requested on the previous frame, or robots created by the pool on the last two samples.
+		const bool bSpawn = FillRobots > 0 || PoolCreated > 0;
 		++StepSpikes;
 		StepSpikesGarbageCollect += bGarbageCollect ? 1 : 0;
-		StepSpikesFill += FillRobots > 0 && !bGarbageCollect ? 1 : 0;
-		StepSpikesPause += bAfterPause && !bGarbageCollect && FillRobots == 0 ? 1 : 0;
+		StepSpikesFill += bSpawn && !bGarbageCollect ? 1 : 0;
+		StepSpikesPause += bAfterPause && !bGarbageCollect && !bSpawn ? 1 : 0;
 		const URRFlowFieldSubsystem* Flow = GetWorld()->GetSubsystem<URRFlowFieldSubsystem>();
 		// stat unit values are those of the last completed frame of each thread; the flow ms is that of the last frame with flow work.
-		UE_LOG(LogRogueRigs, Display, TEXT("Stress spike: step %d, t %.2f s, frame %.2f, game %.2f, draw %.2f, gpu %.2f ms, flow last %.3f ms (work frames %d), robots %d, blocks %d, explosions %d, fill robots %d, gc %d, after pause %d"),
+		UE_LOG(LogRogueRigs, Display, TEXT("Stress spike: step %d, t %.2f s, frame %.2f, game %.2f, draw %.2f, gpu %.2f ms, flow last %.3f ms (work frames %d), robots %d, blocks %d, explosions %d, fill robots %d, pool created %d, gc %d, after pause %d"),
 			RunCounts[StepIndex], StepElapsed - RunSettleSeconds, FrameMs, GameMs, DrawMs, GpuMs, Flow ? Flow->GetLastFrameWorkMilliseconds() : 0.f,
-			Flow ? Flow->GetWorkFrameCount() : 0, Alive, StepBlocksDestroyed, StepExplosions, FillRobots, bGarbageCollect ? 1 : 0, bAfterPause ? 1 : 0);
+			Flow ? Flow->GetWorkFrameCount() : 0, Alive, StepBlocksDestroyed, StepExplosions, FillRobots, PoolCreated, bGarbageCollect ? 1 : 0, bAfterPause ? 1 : 0);
 	}
 	if (StepElapsed >= RunSettleSeconds + RunMeasureSeconds)
 	{
@@ -944,6 +959,13 @@ void URRStressSubsystem::FinishStep()
 		}
 		UE_LOG(LogRogueRigs, Display, TEXT("Stress: game step %d, HUD widgets in viewport %d, minimap texture %s."), RunCounts[StepIndex], HudsShown,
 			bMinimap ? TEXT("yes") : TEXT("no"));
+	}
+	if (const URRActorPoolSubsystem* Pool = GetWorld()->GetSubsystem<URRActorPoolSubsystem>())
+	{
+		const FRRActorPoolStats PoolStats = Pool->GetStats();
+		UE_LOG(LogRogueRigs, Display, TEXT("Stress pool: step %d, created %d, reused %d, longest wait %d frames, pool size %d (idle %d, acquired %d, pending %d)."),
+			RunCounts[StepIndex], PoolStats.TotalCreated, PoolStats.TotalReused, PoolStats.LongestWaitFrames, PoolStats.PoolSize, PoolStats.Idle,
+			PoolStats.Acquired, PoolStats.Pending);
 	}
 	float UnusedP99 = 0.f;
 	RRStress::Summarize(EventSamples, Result.EventFrameAvg, UnusedP99);
@@ -1063,7 +1085,7 @@ void URRStressSubsystem::TickGameFill(float DeltaSeconds)
 	}
 	GameFillTimer = Interval;
 	// The director silences waves from a horde lull to the end of its front: so does the fill.
-	if (Spawner->GetActiveHorde() != INDEX_NONE || Spawner->GetAliveCount() >= RRStress::FSpawnerAccess::MaxAliveOf(Spawner))
+	if (Spawner->GetActiveHorde() != INDEX_NONE || Spawner->GetOccupiedCount() >= RRStress::FSpawnerAccess::MaxAliveOf(Spawner))
 	{
 		return;
 	}
@@ -1104,9 +1126,9 @@ void URRStressSubsystem::TickGameFill(float DeltaSeconds)
 			Draw -= Weight;
 		}
 	}
-	const int32 AliveBefore = Spawner->GetAliveCount();
+	const int32 OccupiedBefore = Spawner->GetOccupiedCount();
 	Spawner->TrySpawnDirectorWave(PackTypes);
-	GameFillSpawned = Spawner->GetAliveCount() - AliveBefore;
+	GameFillSpawned = Spawner->GetOccupiedCount() - OccupiedBefore;
 	GameFillFrame = GFrameCounter;
 }
 

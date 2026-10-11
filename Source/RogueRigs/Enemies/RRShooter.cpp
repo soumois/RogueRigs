@@ -375,6 +375,20 @@ void ARRShooter::HandleDeath(AActor* DeathInstigator)
 	LaserBeam->SetVisibility(false);
 }
 
+void ARRShooter::ResetForNewLife()
+{
+	Super::ResetForNewLife();
+	AimTarget.Reset();
+	bHasSight = false;
+	bHasViewOverride = false;
+	LastShotTime = -1.0;
+	LastAimStartTime = -1.0;
+	ShotCount = 0;
+	LaserBeam->SetVisibility(false);
+	EnemyMovement->SetArrivalDistance(Stats.PreferredDistance * ArrivalRangeRatio);
+	EnterState(ERRShooterState::Approach);
+}
+
 void ARRShooter::ResetStateMachine()
 {
 	if (State != ERRShooterState::Dead)

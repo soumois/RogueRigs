@@ -111,6 +111,15 @@ void ARRChaser::HandleDeath(AActor* DeathInstigator)
 	Super::HandleDeath(DeathInstigator);
 }
 
+void ARRChaser::ResetForNewLife()
+{
+	Super::ResetForNewLife();
+	LastAttackTime = -1.0;
+	AttackCount = 0;
+	EnemyMovement->SetArrivalDistance(Stats.AttackRange * ArrivalRangeRatio);
+	EnterState(ERRChaserState::Chase);
+}
+
 void ARRChaser::ResetStateMachine()
 {
 	if (State != ERRChaserState::Dead)

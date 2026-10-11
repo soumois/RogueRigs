@@ -15,6 +15,7 @@
 #include "Grid/RRArenaGrid.h"
 #include "Misc/PackageName.h"
 #include "Player/RRMiner.h"
+#include "Pool/RRActorPoolSubsystem.h"
 #include "RogueRigs.h"
 #include "World/RRWorld.h"
 
@@ -88,6 +89,24 @@ bool URRExplosionSubsystem::IsSourceSpent(const UObject* SourceObject) const
 	return SourceObject && SpentSources.Contains(FObjectKey(SourceObject));
 }
 
+bool URRExplosionSubsystem::IsSourcePending(const UObject* SourceObject) const
+{
+	return SourceObject && Pending.ContainsByPredicate([SourceObject](const FPendingExplosion& Explosion)
+	{
+		return Explosion.SourceObject.Get() == SourceObject;
+	});
+}
+
+bool URRExplosionSubsystem::ForgetSource(const UObject* SourceObject)
+{
+	if (!SourceObject || IsSourcePending(SourceObject))
+	{
+		return false;
+	}
+	SpentSources.Remove(FObjectKey(SourceObject));
+	return true;
+}
+
 void URRExplosionSubsystem::Explode(const FPendingExplosion& Explosion)
 {
 	if (ARRArenaGrid* CurrentGrid = ResolveGrid())
@@ -115,7 +134,9 @@ void URRExplosionSubsystem::DamageCharacters(const FPendingExplosion& Explosion)
 	for (TActorIterator<AActor> It(World); It; ++It)
 	{
 		AActor* Actor = *It;
-		if (!IsValid(Actor) || FVector::DistSquared2D(Actor->GetActorLocation(), Explosion.Center) > RadiusSquared)
+		// Robots parked idle in the actor pool are not in the game (sys-actor-pool).
+		if (!IsValid(Actor) || FVector::DistSquared2D(Actor->GetActorLocation(), Explosion.Center) > RadiusSquared
+			|| URRActorPoolSubsystem::IsPooledIdle(Actor))
 		{
 			continue;
 		}

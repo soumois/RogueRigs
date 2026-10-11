@@ -5,12 +5,14 @@
 #include "AbilitySystemComponent.h"
 #include "AI/Navigation/AvoidanceManager.h"
 #include "Components/CapsuleComponent.h"
+#include "Components/LightComponent.h"
 #include "Components/MeshComponent.h"
 #include "Components/SkeletalMeshComponent.h"
 #include "Damage/RRDamageNumberSubsystem.h"
 #include "Enemies/RRRobotMovementComponent.h"
 #include "Enemies/RRRobotSeparationSubsystem.h"
 #include "Engine/DataTable.h"
+#include "Engine/LatentActionManager.h"
 #include "Engine/World.h"
 #include "EngineUtils.h"
 #include "FlowField/RREnemyMovementComponent.h"
@@ -19,12 +21,14 @@
 #include "GAS/RRAbilitySystemComponent.h"
 #include "GAS/RRBaseStatsLoader.h"
 #include "GAS/RREnemyAttributeSet.h"
+#include "GameplayEffectTypes.h"
 #include "GAS/RRGameplayTags.h"
 #include "GAS/RRHealthAttributeSet.h"
 #include "GAS/RRMovementAttributeSet.h"
 #include "Objectives/RRRunFlowSubsystem.h"
 #include "Pickups/RRPickup.h"
 #include "Player/RRMiner.h"
+#include "Pool/RRActorPoolSubsystem.h"
 #include "Projectiles/RRCollisionChannels.h"
 #include "RogueRigs.h"
 #include "World/RRWorld.h"
@@ -390,21 +394,172 @@ void ARREnemy::HandleDeath(AActor* DeathInstigator)
 
 void ARREnemy::UpdateDeath(float DeltaSeconds)
 {
-	if (bDeathFinished)
+	if (!bDeathFinished)
 	{
-		return;
-	}
-	DeathElapsed += DeltaSeconds;
-	if (DeathElapsed >= DeathShrinkDuration)
-	{
+		DeathElapsed += DeltaSeconds;
+		if (DeathElapsed < DeathShrinkDuration)
+		{
+			// Never scale to exactly 0 (degenerate transforms); the robot leaves the game at the end of the shrink.
+			const float Alpha = FMath::Max(1.f - DeathElapsed / DeathShrinkDuration, UE_KINDA_SMALL_NUMBER);
+			SetActorScale3D(ScaleAtDeath * Alpha);
+			return;
+		}
 		bDeathFinished = true;
 		DropXP();
-		Destroy();
+	}
+	// Pooled robots go back to the pool (a kamikaze waits for its own blast to leave the queue); others are destroyed.
+	URRActorPoolSubsystem* Pool = GetWorld() ? GetWorld()->GetSubsystem<URRActorPoolSubsystem>() : nullptr;
+	if (Pool && Pool->IsPoolMember(this))
+	{
+		if (CanReleaseToPool())
+		{
+			Pool->Release(this);
+		}
 		return;
 	}
-	// Never scale to exactly 0 (degenerate transforms); the robot is destroyed at the end of the shrink.
-	const float Alpha = FMath::Max(1.f - DeathElapsed / DeathShrinkDuration, UE_KINDA_SMALL_NUMBER);
-	SetActorScale3D(ScaleAtDeath * Alpha);
+	Destroy();
+}
+
+void ARREnemy::OnPoolAcquired_Implementation()
+{
+	++PoolLifeCount;
+	if (!bVisualPartsCaptured)
+	{
+		// First delivery: BeginPlay set everything up; remember the look of the parts for the next lives.
+		CaptureVisualParts();
+		bVisualPartsCaptured = true;
+	}
+	if (bPoolReleasedOnce)
+	{
+		ResetForNewLife();
+	}
+}
+
+void ARREnemy::OnPoolReleased_Implementation()
+{
+	bPoolReleasedOnce = true;
+	if (URRRobotSeparationSubsystem* Separation = GetWorld() ? GetWorld()->GetSubsystem<URRRobotSeparationSubsystem>() : nullptr)
+	{
+		Separation->UnregisterRobot(this);
+	}
+	SetMovementActive(false);
+	SetFarMovement(false);
+	if (UWorld* World = GetWorld())
+	{
+		// Blueprint Delay nodes of this life (shield shell pop, slam ring) must not fire on the next one.
+		World->GetLatentActionManager().RemoveActionsForObject(this);
+	}
+}
+
+void ARREnemy::ResetForNewLife()
+{
+	// GAS: no effect of the previous life (status effects, slows), alive again, CSV stats and attributes back.
+	AbilitySystemComponent->RemoveActiveEffects(FGameplayEffectQuery());
+	AbilitySystemComponent->SetLooseGameplayTagCount(RRGameplayTags::State_Dead, 0);
+	AbilitySystemComponent->SetNumericAttributeBase(URREnemyAttributeSet::GetAttackPowerAttribute(), GetDefault<URREnemyAttributeSet>()->GetAttackPower());
+	AbilitySystemComponent->SetNumericAttributeBase(URRHealthAttributeSet::GetIncomingDamageAttribute(), 0.f);
+	ApplyStats();
+	GetCharacterMovement()->MaxWalkSpeed = MovementSet->GetMoveSpeed();
+
+	// Death state.
+	bDying = false;
+	bDeathFinished = false;
+	DeathElapsed = 0.f;
+	ScaleAtDeath = FVector::OneVector;
+	DropLocation = FVector::ZeroVector;
+
+	// Movement: the pool already placed the robot (transform, scale 1, collision on); clear the motion of the last life.
+	UCharacterMovementComponent* Movement = GetCharacterMovement();
+	ConsumeMovementInputVector();
+	Movement->StopMovementImmediately();
+	Movement->PendingLaunchVelocity = FVector::ZeroVector;
+	if (URRRobotMovementComponent* RobotMovement = Cast<URRRobotMovementComponent>(Movement))
+	{
+		RobotMovement->ResetLightMovementState();
+	}
+	Movement->SetDefaultMovementMode();
+	EnemyMovement->ResetMovementState();
+	SetMovementActive(true);
+	SetFarMovement(false);
+	MovementLODTimer = FMath::FRand() * MovementLODCheckInterval;
+	CachedTarget.Reset();
+	MarkStateStart();
+
+	RestoreVisualParts();
+
+	if (URRRobotSeparationSubsystem* Separation = GetWorld()->GetSubsystem<URRRobotSeparationSubsystem>())
+	{
+		Separation->RegisterRobot(this);
+	}
+}
+
+void ARREnemy::CaptureVisualParts()
+{
+	VisualParts.Reset();
+	TInlineComponentArray<USceneComponent*> Components(this);
+	for (USceneComponent* Component : Components)
+	{
+		// The root follows the actor transform; absolute parts (the hidden character mesh) are not part of the look.
+		if (Component == GetRootComponent() || Component->IsUsingAbsoluteLocation())
+		{
+			continue;
+		}
+		FVisualPartState& Part = VisualParts.AddDefaulted_GetRef();
+		Part.Component = Component;
+		Part.RelativeTransform = Component->GetRelativeTransform();
+		Part.bVisible = Component->IsVisible();
+		Part.bHiddenInGame = Component->bHiddenInGame;
+		if (const UPrimitiveComponent* Primitive = Cast<UPrimitiveComponent>(Component))
+		{
+			for (int32 Slot = 0; Slot < Primitive->GetNumMaterials(); ++Slot)
+			{
+				Part.Materials.Add(Primitive->GetMaterial(Slot));
+			}
+		}
+		if (const ULightComponent* Light = Cast<ULightComponent>(Component))
+		{
+			Part.LightIntensity = Light->Intensity;
+		}
+	}
+}
+
+void ARREnemy::RestoreVisualParts()
+{
+	for (const FVisualPartState& Part : VisualParts)
+	{
+		USceneComponent* Component = Part.Component.Get();
+		if (!Component)
+		{
+			continue;
+		}
+		if (!Component->GetRelativeTransform().Equals(Part.RelativeTransform))
+		{
+			Component->SetRelativeTransform(Part.RelativeTransform);
+		}
+		if (Component->IsVisible() != Part.bVisible)
+		{
+			Component->SetVisibility(Part.bVisible);
+		}
+		if (Component->bHiddenInGame != Part.bHiddenInGame)
+		{
+			Component->SetHiddenInGame(Part.bHiddenInGame);
+		}
+		if (UPrimitiveComponent* Primitive = Cast<UPrimitiveComponent>(Component))
+		{
+			for (int32 Slot = 0; Slot < Part.Materials.Num() && Slot < Primitive->GetNumMaterials(); ++Slot)
+			{
+				UMaterialInterface* Material = Part.Materials[Slot].Get();
+				if (Material && Primitive->GetMaterial(Slot) != Material)
+				{
+					Primitive->SetMaterial(Slot, Material);
+				}
+			}
+		}
+		if (ULightComponent* Light = Cast<ULightComponent>(Component); Light && Part.LightIntensity >= 0.f && Light->Intensity != Part.LightIntensity)
+		{
+			Light->SetIntensity(Part.LightIntensity);
+		}
+	}
 }
 
 void ARREnemy::DropXP()

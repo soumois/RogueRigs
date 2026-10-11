@@ -63,6 +63,15 @@ public:
 	UFUNCTION(BlueprintPure, Category = "Explosions")
 	bool IsSourceSpent(const UObject* SourceObject) const;
 
+	/** True while an explosion of SourceObject waits in the queue (a pooled kamikaze is released only after its own blast). */
+	bool IsSourcePending(const UObject* SourceObject) const;
+
+	/**
+	 * Lets SourceObject explode again: removes it from the spent sources unless one of its explosions is still queued (returns
+	 * false then). For pooled sources reused in a new life (kamikaze, sys-actor-pool).
+	 */
+	bool ForgetSource(const UObject* SourceObject);
+
 	/** Number of explosions waiting in the queue. */
 	UFUNCTION(BlueprintPure, Category = "Explosions")
 	int32 GetPendingCount() const { return Pending.Num(); }

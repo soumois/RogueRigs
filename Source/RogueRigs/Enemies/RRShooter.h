@@ -122,6 +122,9 @@ protected:
 	/** Recycling relocation: back to Approach (leaving the current state as EnterState does); nothing while Dead. */
 	virtual void ResetStateMachine() override;
 
+	/** Pool reuse: base reset, then aim, sight, shot counters, laser and view override cleared, back to Approach. */
+	virtual void ResetForNewLife() override;
+
 	/** Leaves the current state and enters NewState. Flow-field movement on in Approach and Reposition (arrival 0 in Reposition). Leaving Aim hides the laser and calls OnAimEnd. */
 	void EnterState(ERRShooterState NewState);
 

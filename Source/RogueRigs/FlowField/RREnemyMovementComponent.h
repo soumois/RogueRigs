@@ -35,6 +35,9 @@ public:
 	UFUNCTION(BlueprintCallable, Category = "EnemyMovement")
 	void SetMovementEnabled(bool bEnabled) { bMovementEnabled = bEnabled; }
 
+	/** Forgets the arrival flag and the last direction (a robot reused from the actor pool starts a new life). */
+	void ResetMovementState() { bArrived = false; LastMoveDirection = FVector::ZeroVector; }
+
 	/** True while the component adds movement input. */
 	UFUNCTION(BlueprintPure, Category = "EnemyMovement")
 	bool IsMovementEnabled() const { return bMovementEnabled; }

@@ -87,6 +87,9 @@ protected:
 	/** Recycling relocation: back to Chase (leaving the current state as EnterState does); nothing while Dead. */
 	virtual void ResetStateMachine() override;
 
+	/** Pool reuse: base reset, then slam time and counters cleared, back to Chase. */
+	virtual void ResetForNewLife() override;
+
 	/** Leaves the current state and enters NewState (movement on in Chase only). */
 	void EnterState(ERRHeavyState NewState);
 

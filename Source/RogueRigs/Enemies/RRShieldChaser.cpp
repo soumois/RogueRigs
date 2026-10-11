@@ -33,6 +33,12 @@ void ARRShieldChaser::EndPlay(const EEndPlayReason::Type EndPlayReason)
 	Super::EndPlay(EndPlayReason);
 }
 
+void ARRShieldChaser::ResetForNewLife()
+{
+	Super::ResetForNewLife();
+	ShieldBreakCount = 0;
+}
+
 float ARRShieldChaser::GetShield() const
 {
 	return HealthSet ? HealthSet->GetShield() : 0.f;

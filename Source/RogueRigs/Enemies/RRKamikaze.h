@@ -97,6 +97,12 @@ protected:
 	/** Recycling relocation: back to Chase (leaving the current state as EnterState does); nothing while Dead. */
 	virtual void ResetStateMachine() override;
 
+	/** Pool reuse: base reset, then fuse, explosion and flare state cleared (its explosion source forgotten so it can blow up again), back to Chase. */
+	virtual void ResetForNewLife() override;
+
+	/** Released only once its own explosion left the explosion queue (the blast never meets the next life). */
+	virtual bool CanReleaseToPool() const override;
+
 	/** Drops the XP only when the robot was killed (not after its fuse). */
 	virtual void DropXP() override;
 

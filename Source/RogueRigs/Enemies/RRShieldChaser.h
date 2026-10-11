@@ -48,6 +48,9 @@ protected:
 	/** Removes the OnShieldBroken binding. */
 	virtual void EndPlay(const EEndPlayReason::Type EndPlayReason) override;
 
+	/** Pool reuse: chaser reset (shield back through the CSV stats, shell through the restored visual parts), break count cleared. */
+	virtual void ResetForNewLife() override;
+
 	/** Health set callback: counts the break and calls OnShieldBroken. Runs inside the GE execution (sys-damage safety rules). */
 	void HandleShieldBroken();
 

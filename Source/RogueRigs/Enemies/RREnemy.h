@@ -7,6 +7,7 @@
 #include "AbilitySystemInterface.h"
 #include "GameplayEffectTypes.h"
 #include "Enemies/RREnemyStatsRow.h"
+#include "Pool/RRPoolable.h"
 #include "RREnemy.generated.h"
 
 class ARRMiner;
@@ -19,6 +20,8 @@ class URREnemyMovementComponent;
 class URRHealthAttributeSet;
 class URRMovementAttributeSet;
 class UGameplayEffect;
+class UMaterialInterface;
+class USceneComponent;
 struct FOnAttributeChangeData;
 
 /**
@@ -36,12 +39,18 @@ struct FOnAttributeChangeData;
  * (bLightAttachedParts) and, with rr.Enemy.LightMovement on, the root capsule stops generating overlap events; a walking robot far from the miner and off screen moves at a slower
  * tick interval (FarMovementDistance, FarMovementTickInterval; UpdateMovementLOD).
  * Death (health set OnDeath, once, State.Dead on the ASC): stops, disables collision, shrinks to 0 over DeathShrinkDuration,
- * then bursts XPCubeCount pickups of XPPickupClass at its feet (Stats.XPValue split over them) and destroys itself. Each hit (the killing one too) is sent to
+ * then bursts XPCubeCount pickups of XPPickupClass at its feet (Stats.XPValue split over them) and goes back to the actor pool
+ * (URRActorPoolSubsystem::Release; a robot not created by the pool is destroyed instead).
+ * Pool (task-091-01, IRRPoolable): BeginPlay runs once per actor; every later life starts in OnPoolAcquired, which calls
+ * ResetForNewLife (subclasses extend it): GAS effects and State.Dead removed, CSV stats and attributes back, death flags,
+ * movement, far-movement LOD, visual parts (relative transforms, visibility, materials, light intensity captured at the first
+ * life) restored, separation registration. OnPoolReleased leaves the separation and cancels latent actions. A released robot
+ * keeps State.Dead while idle, so every IsDead filter also skips it. Each hit (the killing one too) is sent to
  * URRDamageNumberSubsystem at DamageNumberHeight above the capsule top (one pooled number per hit, starting in a DamageNumberSpawnRadius disc). Subclasses implement their behavior in
  * UpdateBehavior (alive only) and may extend HandleDeath. Subclass in Blueprint for the mesh.
  */
 UCLASS(Abstract)
-class ROGUERIGS_API ARREnemy : public ACharacter, public IAbilitySystemInterface
+class ROGUERIGS_API ARREnemy : public ACharacter, public IAbilitySystemInterface, public IRRPoolable
 {
 	GENERATED_BODY()
 
@@ -52,6 +61,19 @@ public:
 	//~ IAbilitySystemInterface
 	/** Returns the robot's ASC. */
 	virtual UAbilitySystemComponent* GetAbilitySystemComponent() const override;
+
+	//~ IRRPoolable
+	/**
+	 * Start of a life handed out by the actor pool. First delivery: captures the visual parts. Every delivery after a release:
+	 * ResetForNewLife, so the robot behaves like a fresh one.
+	 */
+	virtual void OnPoolAcquired_Implementation() override;
+
+	/** Back to the pool: leaves the separation subsystem, stops the movement, cancels latent actions (Blueprint Delay nodes). */
+	virtual void OnPoolReleased_Implementation() override;
+
+	/** Lives started from the actor pool (1 after the first delivery, +1 per reuse; 0 for a robot spawned outside the pool). */
+	int32 GetPoolLifeCount() const { return PoolLifeCount; }
 
 	/** Runs the death shrink when dead, else UpdateBehavior. */
 	virtual void Tick(float DeltaSeconds) override;
@@ -124,6 +146,24 @@ public:
 	bool RelocateTo(const FVector& Location);
 
 protected:
+	/**
+	 * Per-life reset of a robot reused from the actor pool (called by OnPoolAcquired from the second life on). Base: every
+	 * active gameplay effect removed, State.Dead cleared, CSV stats re-applied (MaxHealth, Health, MoveSpeed, Shield,
+	 * AttackPower default), death state (bDying, bDeathFinished, DeathElapsed, drop point), movement (velocity, pending launch,
+	 * input, default movement mode, movement on), far-movement LOD off, cached target, visual parts restored, separation
+	 * registration. Overrides call Super first, then reset their own state machine and counters.
+	 */
+	virtual void ResetForNewLife();
+
+	/** True when the dead robot may go back to the pool now (after the shrink and the XP drop). Kamikaze: once its blast left the queue. */
+	virtual bool CanReleaseToPool() const { return true; }
+
+	/** Captures the visual state of every attached scene component (relative transform, visibility, materials, light intensity). */
+	void CaptureVisualParts();
+
+	/** Restores the state captured by CaptureVisualParts (Blueprint events such as a broken shield shell or a slam pose undone). */
+	void RestoreVisualParts();
+
 	/** Returns the subclass state machine to its first state (Chase, Approach) after a relocation. Base: nothing. */
 	virtual void ResetStateMachine() {}
 
@@ -154,7 +194,7 @@ protected:
 	/** ASC callback: MoveSpeed changed; pushes it to CharacterMovement->MaxWalkSpeed. */
 	void HandleMoveSpeedChanged(const FOnAttributeChangeData& ChangeData);
 
-	/** Advances the shrink; at its end drops the XP pickups and destroys the robot. */
+	/** Advances the shrink; at its end drops the XP pickups, then releases the robot to the actor pool (destroys it outside the pool). */
 	void UpdateDeath(float DeltaSeconds);
 
 	/** Spawns XPCubeCount pickups of XPPickupClass at DropLocation (no owner), each worth Stats.XPValue / XPCubeCount, ejected in spread directions. Overridden to suppress the drop (kamikaze fuse). */
@@ -367,11 +407,40 @@ protected:
 	/** True while the movement runs at FarMovementTickInterval. */
 	bool bFarMovementActive = false;
 
-	/** True once HandleDeath ran (never reset). */
+	/** True once HandleDeath ran (reset only by ResetForNewLife). */
 	bool bDying = false;
 
-	/** True once the XP was dropped and Destroy called. */
+	/** True once the shrink ended and the XP was dropped (release or Destroy follows). */
 	bool bDeathFinished = false;
+
+	/** Lives started from the actor pool (see GetPoolLifeCount). */
+	int32 PoolLifeCount = 0;
+
+	/** Visual state of one attached scene component, captured at the first pooled life. */
+	struct FVisualPartState
+	{
+		/** The component (owned by this robot). */
+		TWeakObjectPtr<USceneComponent> Component;
+		/** Relative transform. */
+		FTransform RelativeTransform;
+		/** USceneComponent::IsVisible. */
+		bool bVisible = true;
+		/** USceneComponent::bHiddenInGame. */
+		bool bHiddenInGame = false;
+		/** Materials of a primitive component, by slot (empty otherwise). */
+		TArray<TWeakObjectPtr<UMaterialInterface>> Materials;
+		/** Intensity of a light component; negative for other components. */
+		float LightIntensity = -1.f;
+	};
+
+	/** True once CaptureVisualParts ran (first pooled delivery). */
+	bool bVisualPartsCaptured = false;
+
+	/** True once the robot went back to the pool (every later delivery runs ResetForNewLife; also covers prewarmed robots). */
+	bool bPoolReleasedOnce = false;
+
+	/** Captured visual parts (CaptureVisualParts). */
+	TArray<FVisualPartState> VisualParts;
 
 	/** Handle of the MoveSpeed change subscription on the ASC. */
 	FDelegateHandle MoveSpeedChangedHandle;

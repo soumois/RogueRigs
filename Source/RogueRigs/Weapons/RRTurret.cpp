@@ -7,6 +7,7 @@
 #include "EngineUtils.h"
 #include "GAS/RRAbilitySystemComponent.h"
 #include "Grid/RRArenaGrid.h"
+#include "Pool/RRActorPoolSubsystem.h"
 #include "RogueRigs.h"
 #include "UObject/UnrealType.h"
 #include "Weapons/RRAutoFireComponent.h"
@@ -106,7 +107,7 @@ FVector ARRTurret::GetShotOrigin() const
 
 bool ARRTurret::IsValidTarget(const ARREnemy* Enemy) const
 {
-	if (!IsValid(Enemy) || Enemy->IsActorBeingDestroyed() || Enemy->IsDead())
+	if (!IsValid(Enemy) || Enemy->IsActorBeingDestroyed() || Enemy->IsDead() || URRActorPoolSubsystem::IsPooledIdle(Enemy))
 	{
 		return false;
 	}
