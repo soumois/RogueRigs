@@ -492,6 +492,8 @@ task-092-01-xp-pool  reference/tasks/task-092-xp-pool/task-092-01-xp-pool.md
 task-092-xp-pool  reference/tasks/task-092-xp-pool.md
 task-093-01-robot-overlap-cost  reference/tasks/task-093-robot-overlap-cost/task-093-01-robot-overlap-cost.md
 task-093-robot-overlap-cost  reference/tasks/task-093-robot-overlap-cost.md
+task-094-01-hud-refactor  reference/tasks/task-094-hud-refactor/task-094-01-hud-refactor.md
+task-094-hud-refactor  reference/tasks/task-094-hud-refactor.md
 task-095-01-xp-cube-scale  reference/tasks/task-095-xp-cube-scale/task-095-01-xp-cube-scale.md
 task-095-xp-cube-scale  reference/tasks/task-095-xp-cube-scale.md
 task-096-01-kamikaze-death-fuse  reference/tasks/task-096-kamikaze-death-fuse/task-096-01-kamikaze-death-fuse.md
