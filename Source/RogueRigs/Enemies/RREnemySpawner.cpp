@@ -1,6 +1,7 @@
 // Rogue Rigs - enemy spawner: wave director (calm, lone robots, packs of one type from several sides, announced hordes) or the older trickle then packs, capped alive count, on reachable floor cells just outside the camera view; robots left far off screen are relocated into the spawn band.
 
 #include "Enemies/RREnemySpawner.h"
+#include "Objectives/RRRunFlowSubsystem.h"
 
 #include "Camera/CameraComponent.h"
 #include "Camera/PlayerCameraManager.h"
@@ -41,6 +42,12 @@ void ARREnemySpawner::BeginPlay()
 	Super::BeginPlay();
 	RandomStream.GenerateNewSeed();
 	Director.Reset();
+
+	// The run flow relays the horde events and draws the alert-bar icons (sys-hud).
+	if (URRRunFlowSubsystem* RunFlow = GetWorld() ? GetWorld()->GetSubsystem<URRRunFlowSubsystem>() : nullptr)
+	{
+		RunFlow->RegisterSpawner(this);
+	}
 }
 
 void ARREnemySpawner::EndPlay(const EEndPlayReason::Type EndPlayReason)

@@ -7,6 +7,7 @@
 #include "EngineUtils.h"
 #include "FlowField/RRFlowFieldSubsystem.h"
 #include "Grid/RRArenaGrid.h"
+#include "Enemies/RRWaveDirector.h"
 #include "Kismet/GameplayStatics.h"
 #include "GameFramework/PlayerController.h"
 #include "Objectives/RRBonusChest.h"
@@ -63,6 +64,16 @@ ERRRunPhase URRRunFlowSubsystem::GetPhase() const
 void URRRunFlowSubsystem::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
+	TickRunFlow(DeltaTime);
+	if (bRunFlowEnabled && !bRunEnded)
+	{
+		// A pending horde's estimate moves with time while the bar is paused: recomputed here, sent only on change.
+		RefreshAlertBarEvents();
+	}
+}
+
+void URRRunFlowSubsystem::TickRunFlow(float DeltaTime)
+{
 
 	if (!bRunFlowEnabled || bRunEnded)
 	{
@@ -352,6 +363,7 @@ ARRConsole* URRRunFlowSubsystem::DropConsole()
 	UE_LOG(LogRogueRigs, Log, TEXT("URRRunFlowSubsystem: alert %.2f, console dropped on (%d, %d)."), GetAlert(), Cell.X, Cell.Y);
 	PickAlertLine(FRRTextContentLibrary::AlertConsoleDropped);
 	OnConsoleDropped.Broadcast(NewConsole);
+	UpdateLocatorTarget();
 	return NewConsole;
 }
 
@@ -398,6 +410,7 @@ void URRRunFlowSubsystem::CheckExtraction()
 	UE_LOG(LogRogueRigs, Log, TEXT("URRRunFlowSubsystem: alert full, no objective pending: extraction ready."));
 	PickAlertLine(FRRTextContentLibrary::AlertExtractionReady);
 	OnExtractionReady.Broadcast();
+	RefreshAlertBarEvents();
 	LandShuttle();
 }
 
@@ -523,6 +536,8 @@ ARRShuttle* URRRunFlowSubsystem::LandShuttle()
 	PickAlertLine(FRRTextContentLibrary::AlertShuttleCountdown);
 	NewShuttle->InitializeShuttle(Grid, Miner, Cell, Countdown, Config.ShuttleBoardRadiusCells * Grid->GetCellSize());
 	OnShuttleLanded.Broadcast(NewShuttle);
+	UpdateLocatorTarget();
+	RefreshAlertBarEvents();
 	return NewShuttle;
 }
 
@@ -549,6 +564,7 @@ bool URRRunFlowSubsystem::EndRun(bool bSuccess)
 
 	UE_LOG(LogRogueRigs, Log, TEXT("URRRunFlowSubsystem: run ended, %s."), bSuccess ? TEXT("miner extracted") : TEXT("shuttle missed, run lost"));
 	OnRunEnded.Broadcast(bSuccess);
+	UpdateLocatorTarget();
 	return true;
 }
 
@@ -631,6 +647,8 @@ void URRRunFlowSubsystem::HandleConsoleStateChanged(ARRConsole* InConsole, ERRCo
 	}
 	OnObjectiveChanged.Broadcast(InConsole, NewState, InConsole->GetMarkedRockCount(), InConsole->GetInitialMarkedRockCount());
 	BroadcastAlertIfChanged();
+	UpdateLocatorTarget();
+	RefreshAlertBarEvents();
 }
 
 void URRRunFlowSubsystem::HandleConsoleProgressChanged(ARRConsole* InConsole, float Progress, bool bHacking)
@@ -660,4 +678,180 @@ void URRRunFlowSubsystem::PickAlertLine(const TCHAR* EventId)
 		FText Unused;
 		TextContent->GetAlertLine(FName(EventId), Unused);
 	}
+}
+
+void URRRunFlowSubsystem::RegisterMiner(ARRMiner* InMiner)
+{
+	if (!IsValid(InMiner))
+	{
+		return;
+	}
+	if (!IsValid(Miner) || Miner->IsActorBeingDestroyed())
+	{
+		Miner = InMiner;
+	}
+	OnMinerRegistered.Broadcast(InMiner);
+}
+
+void URRRunFlowSubsystem::RegisterSpawner(ARREnemySpawner* InSpawner)
+{
+	if (!IsValid(InSpawner) || Spawner.IsValid())
+	{
+		return;
+	}
+	Spawner = InSpawner;
+	DoneHordePositions.Reset();
+	InSpawner->OnHordeIncoming.AddUniqueDynamic(this, &URRRunFlowSubsystem::HandleHordeIncoming);
+	InSpawner->OnHordeLull.AddUniqueDynamic(this, &URRRunFlowSubsystem::HandleHordeLull);
+	InSpawner->OnHordeStarted.AddUniqueDynamic(this, &URRRunFlowSubsystem::HandleHordeStarted);
+	InSpawner->OnHordeFinished.AddUniqueDynamic(this, &URRRunFlowSubsystem::HandleHordeFinished);
+	OnSpawnerRegistered.Broadcast(InSpawner);
+	RefreshAlertBarEvents();
+}
+
+const TArray<FRRAlertBarEvent>& URRRunFlowSubsystem::GetAlertBarEvents()
+{
+	if (!bAlertBarEventsSent)
+	{
+		RefreshAlertBarEvents();
+	}
+	return AlertBarEvents;
+}
+
+void URRRunFlowSubsystem::RefreshAlertBarEvents()
+{
+	TArray<FRRAlertBarEvent> Events;
+	ComputeAlertBarEvents(this, Spawner.Get(), DoneHordePositions, Events);
+	if (bAlertBarEventsSent && !FRRAlertBarEvent::ListsDiffer(Events, AlertBarEvents, Config.AlertEventPositionTolerance))
+	{
+		return;
+	}
+	AlertBarEvents = MoveTemp(Events);
+	bAlertBarEventsSent = true;
+	OnAlertBarEventsChanged.Broadcast(AlertBarEvents);
+}
+
+float URRRunFlowSubsystem::EstimateBarPosition(float Alert, float SecondsUntil, float AlertFillSeconds)
+{
+	const float Current = FMath::Clamp(Alert, 0.f, 1.f);
+	return FMath::Clamp(Current + FMath::Max(SecondsUntil, 0.f) / FMath::Max(AlertFillSeconds, 1.f), Current, 1.f);
+}
+
+void URRRunFlowSubsystem::ComputeAlertBarEvents(const URRRunFlowSubsystem* RunFlow, const ARREnemySpawner* InSpawner, TMap<int32, float>& InOutDoneHordePositions, TArray<FRRAlertBarEvent>& OutEvents)
+{
+	OutEvents.Reset();
+	static const FRRRunFlowConfig DefaultConfig;
+	const FRRRunFlowConfig& RunConfig = RunFlow ? RunFlow->GetConfig() : DefaultConfig;
+	const float Alert = RunFlow ? RunFlow->GetAlert() : 0.f;
+
+	FRRAlertBarEvent& ConsoleIcon = OutEvents.AddDefaulted_GetRef();
+	ConsoleIcon.Type = ERRAlertBarEventType::Console;
+	ConsoleIcon.Position = FMath::Clamp(RunConfig.ConsoleAlertThreshold, 0.f, 1.f);
+	const ARRConsole* RunConsole = RunFlow ? RunFlow->GetConsole() : nullptr;
+	ConsoleIcon.bDone = (RunConsole && RunConsole->GetConsoleState() == ERRConsoleState::Complete) || (RunFlow && RunFlow->IsExtractionReady());
+
+	// Bonus chest (optional): at its threshold, done once hacked; no icon when the chest is disabled (threshold 0).
+	if (RunConfig.BonusChestAlertThreshold > 0.f)
+	{
+		FRRAlertBarEvent& ChestIcon = OutEvents.AddDefaulted_GetRef();
+		ChestIcon.Type = ERRAlertBarEventType::BonusChest;
+		ChestIcon.Position = FMath::Clamp(RunConfig.BonusChestAlertThreshold, 0.f, 1.f);
+		const ARRBonusChest* Chest = RunFlow ? RunFlow->GetBonusChest() : nullptr;
+		ChestIcon.bDone = Chest && Chest->IsComplete();
+	}
+
+	if (InSpawner && InSpawner->IsDirectorEnabled())
+	{
+		const bool bAlertTrigger = InSpawner->GetHordeTrigger() == ERRHordeTrigger::Alert;
+		const int32 ActiveHorde = InSpawner->GetActiveHorde();
+		for (int32 Index = 0; Index < InSpawner->GetHordeCount(); ++Index)
+		{
+			FRRAlertBarEvent& HordeIcon = OutEvents.AddDefaulted_GetRef();
+			HordeIcon.Type = ERRAlertBarEventType::Horde;
+			HordeIcon.Index = Index;
+			const ERRHordeState State = InSpawner->GetHordeState(Index);
+			HordeIcon.bDone = State == ERRHordeState::Spawning || State == ERRHordeState::Done;
+			if (bAlertTrigger)
+			{
+				// Alert trigger: the lull starts at a fixed alert.
+				HordeIcon.Position = FMath::Clamp(InSpawner->GetHordeTriggerAlert(Index), 0.f, 1.f);
+			}
+			else if (HordeIcon.bDone)
+			{
+				// Frozen where the fill was when the front started (first seen now when bound after it).
+				HordeIcon.Position = InOutDoneHordePositions.FindOrAdd(Index, Alert);
+			}
+			else
+			{
+				const float SecondsUntil = Index == ActiveHorde
+					? InSpawner->GetSecondsUntilHordeFront()
+					: InSpawner->GetHordeTriggerTime(Index) - InSpawner->GetDirector().GetRunTime();
+				HordeIcon.Position = EstimateBarPosition(Alert, SecondsUntil, RunConfig.AlertFillSeconds);
+			}
+		}
+	}
+
+	FRRAlertBarEvent& ShuttleIcon = OutEvents.AddDefaulted_GetRef();
+	ShuttleIcon.Type = ERRAlertBarEventType::Extraction;
+	ShuttleIcon.Position = 1.f;
+	ShuttleIcon.bDone = RunFlow && RunFlow->IsExtractionReady();
+}
+
+bool URRRunFlowSubsystem::GetLocatorTarget(ERRLocatorTarget& OutTarget, FVector& OutWorldLocation) const
+{
+	OutTarget = ERRLocatorTarget::None;
+	OutWorldLocation = FVector::ZeroVector;
+	if (bRunEnded)
+	{
+		return false;
+	}
+	if (IsValid(Console) && Console->GetConsoleState() != ERRConsoleState::Complete)
+	{
+		OutTarget = ERRLocatorTarget::Console;
+		OutWorldLocation = Console->GetActorLocation();
+		return true;
+	}
+	if (IsValid(Shuttle))
+	{
+		OutTarget = ERRLocatorTarget::Shuttle;
+		OutWorldLocation = Shuttle->GetActorLocation();
+		return true;
+	}
+	return false;
+}
+
+void URRRunFlowSubsystem::UpdateLocatorTarget()
+{
+	ERRLocatorTarget Target;
+	FVector Location;
+	GetLocatorTarget(Target, Location);
+	if (Target == LastLocatorTarget && Location.Equals(LastLocatorLocation))
+	{
+		return;
+	}
+	LastLocatorTarget = Target;
+	LastLocatorLocation = Location;
+	OnLocatorTargetChanged.Broadcast(Target, Location);
+}
+
+void URRRunFlowSubsystem::HandleHordeIncoming(int32 HordeIndex, float SecondsUntil)
+{
+	OnHordeIncoming.Broadcast(HordeIndex, SecondsUntil);
+	RefreshAlertBarEvents();
+}
+
+void URRRunFlowSubsystem::HandleHordeLull(int32 HordeIndex)
+{
+	RefreshAlertBarEvents();
+}
+
+void URRRunFlowSubsystem::HandleHordeStarted(int32 HordeIndex, ERRSpawnSide Side)
+{
+	DoneHordePositions.FindOrAdd(HordeIndex, GetAlert());
+	RefreshAlertBarEvents();
+}
+
+void URRRunFlowSubsystem::HandleHordeFinished(int32 HordeIndex, int32 Spawned)
+{
+	RefreshAlertBarEvents();
 }

@@ -12,6 +12,9 @@ DECLARE_DYNAMIC_MULTICAST_DELEGATE_ThreeParams(FRROnXPChangedSignature, float, C
 /** Fired once per level gained, with the level just reached. */
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FRROnLevelUpSignature, int32, NewLevel);
 
+/** Fired by each AddXP that added XP: the amount after the XPGain multiplier (XP pop on the HUD). */
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FRROnXPGainedSignature, float, Amount);
+
 /**
  * XP and level progression of the miner (a default subobject of ARRMiner). The XP curve is read from XPCurve.csv
  * (FRRXPCurveRow, row name = level) when the component initializes; levels above the last row reuse its value.
@@ -61,6 +64,10 @@ public:
 	/** Broadcast once per level gained, before OnXPChanged, with the new level. Bind for the level-up feedback. */
 	UPROPERTY(BlueprintAssignable, Category = "Progression")
 	FRROnLevelUpSignature OnLevelUp;
+
+	/** Broadcast once per AddXP that added XP (Amount > 0, XPGain applied), after OnLevelUp and OnXPChanged. */
+	UPROPERTY(BlueprintAssignable, Category = "Progression")
+	FRROnXPGainedSignature OnXPGained;
 
 protected:
 	/** Loads the XP curve (LoadCurve). */

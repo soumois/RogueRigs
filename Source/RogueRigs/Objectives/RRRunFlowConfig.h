@@ -87,4 +87,8 @@ struct ROGUERIGS_API FRRRunFlowConfig
 	/** Shuttle actor landed when extraction is ready (the shuttle Blueprint). None = the native ARRShuttle (no mesh). */
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Run Flow|Extraction")
 	TSubclassOf<ARRShuttle> ShuttleClass;
+
+	/** A pending horde icon moving by more than this (bar fraction) re-sends OnAlertBarEventsChanged; smaller moves wait (HUD). */
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Run Flow|HUD", meta = (ClampMin = 0))
+	float AlertEventPositionTolerance = 0.002f;
 };

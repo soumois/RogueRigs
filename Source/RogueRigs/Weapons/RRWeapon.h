@@ -17,6 +17,10 @@ class URRAutoFireComponent;
 class URRWeaponAttributeSet;
 class USceneComponent;
 struct FRRWeaponStatsRow;
+struct FOnAttributeChangeData;
+
+/** Fired when the weapon magazine shown on the HUD changed: Ammo or MagazineSize rounded down (shot, refill, upgrade). */
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_ThreeParams(FRROnWeaponAmmoChangedSignature, ARRWeapon*, Weapon, int32, Rounds, int32, MagazineSize);
 
 /**
  * Base class of the miner's weapons (sys-weapons). Owns its URRAbilitySystemComponent (owner and avatar: the
@@ -135,7 +139,37 @@ public:
 	UFUNCTION(BlueprintPure, Category = "Weapon")
 	int32 GetPierceCount() const;
 
+	/** Rounds in the magazine as shown on the HUD (Ammo rounded down, at least 0). */
+	UFUNCTION(BlueprintPure, Category = "Weapon")
+	int32 GetRounds() const;
+
+	/** Magazine size as shown on the HUD (MagazineSize rounded down, at least 0). */
+	UFUNCTION(BlueprintPure, Category = "Weapon")
+	int32 GetMagazineRounds() const;
+
+	/**
+	 * Broadcast when GetRounds or GetMagazineRounds changed (ASC Ammo or MagazineSize change: shot, reload refill, upgrade, CSV
+	 * stats at acquisition), once per change of the rounded values; never when they stay the same. Bound from Acquire on.
+	 */
+	UPROPERTY(BlueprintAssignable, Category = "Weapon")
+	FRROnWeaponAmmoChangedSignature OnAmmoChanged;
+
 protected:
+	/** ASC callback for Ammo and MagazineSize: broadcasts OnAmmoChanged when the rounded values changed. */
+	void HandleAmmoAttributeChanged(const FOnAttributeChangeData& ChangeData);
+
+	/** Handle of the Ammo change binding on the ASC. */
+	FDelegateHandle AmmoChangedHandle;
+
+	/** Handle of the MagazineSize change binding on the ASC. */
+	FDelegateHandle MagazineSizeChangedHandle;
+
+	/** Rounds last sent by OnAmmoChanged (-1 before the first). */
+	int32 LastBroadcastRounds = INDEX_NONE;
+
+	/** Magazine size last sent by OnAmmoChanged (-1 before the first). */
+	int32 LastBroadcastMagazine = INDEX_NONE;
+
 	/** Stops the auto-fire. */
 	virtual void EndPlay(const EEndPlayReason::Type EndPlayReason) override;
 

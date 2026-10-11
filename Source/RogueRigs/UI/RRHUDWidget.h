@@ -5,6 +5,7 @@
 #include "CoreMinimal.h"
 #include "Blueprint/UserWidget.h"
 #include "Objectives/RRConsole.h"
+#include "UI/RRHUDTypes.h"
 #include "UI/RRMinimap.h"
 #include "Upgrades/RRUpgradeCard.h"
 #include "RRHUDWidget.generated.h"
@@ -15,147 +16,13 @@ class ARRMiner;
 class ARRTurretLauncher;
 class ARRWeapon;
 class URRLevelUpComponent;
+class URRHUDPanelWidget;
 class URRProgressionComponent;
 class URRRunFlowSubsystem;
 class UAbilitySystemComponent;
 class UWidget;
 struct FMinimalViewInfo;
 struct FOnAttributeChangeData;
-
-/** What the objective locator points at. */
-UENUM(BlueprintType)
-enum class ERRLocatorTarget : uint8
-{
-	/** Nothing to point at (no console yet, console hacked and no shuttle yet, run ended). */
-	None,
-	/** The command console, until it is hacked. */
-	Console,
-	/** The extraction shuttle, once landed. */
-	Shuttle
-};
-
-/** Objective locator state for an edge arrow (objective-console: console until hacked, then the shuttle). */
-USTRUCT(BlueprintType)
-struct FRRObjectiveLocator
-{
-	GENERATED_BODY()
-
-	/** What the locator points at; None = hide the arrow. */
-	UPROPERTY(BlueprintReadOnly, Category = "HUD|Locator")
-	ERRLocatorTarget Target = ERRLocatorTarget::None;
-
-	/** World location of the target (actor location). */
-	UPROPERTY(BlueprintReadOnly, Category = "HUD|Locator")
-	FVector WorldLocation = FVector::ZeroVector;
-
-	/** True when the target projects inside the viewport (hide the arrow, or show an on-target marker). */
-	UPROPERTY(BlueprintReadOnly, Category = "HUD|Locator")
-	bool bOnScreen = false;
-
-	/** Projected target position in viewport widget units (DPI-scaled, top-left origin); far outside when off screen. */
-	UPROPERTY(BlueprintReadOnly, Category = "HUD|Locator")
-	FVector2D ScreenPosition = FVector2D::ZeroVector;
-
-	/** Arrow position: the target position when on screen, else the point where the line from the viewport center to it meets the viewport inset by the edge margin (widget units). */
-	UPROPERTY(BlueprintReadOnly, Category = "HUD|Locator")
-	FVector2D EdgePosition = FVector2D::ZeroVector;
-
-	/** Arrow angle in degrees, clockwise from screen right (0 = right, 90 = down, -90 = up), for a right-pointing arrow image's render angle. */
-	UPROPERTY(BlueprintReadOnly, Category = "HUD|Locator")
-	float ArrowAngle = 0.f;
-
-	/** Viewport size in widget units used for the computation. */
-	UPROPERTY(BlueprintReadOnly, Category = "HUD|Locator")
-	FVector2D ViewportSize = FVector2D::ZeroVector;
-};
-
-/** Kind of an icon on the alert bar. */
-UENUM(BlueprintType)
-enum class ERRAlertBarEventType : uint8
-{
-	/** The command console drop (the bar pauses there until it is hacked). */
-	Console,
-	/** A horde front of the spawner's wave director. */
-	Horde,
-	/** The extraction shuttle (end of the bar). */
-	Extraction,
-	/** The optional bonus chest drop (gold icon; done once hacked; the bar never pauses there). */
-	BonusChest
-};
-
-/** One icon of the alert bar: what, where on the bar, and whether it already happened. */
-USTRUCT(BlueprintType)
-struct FRRAlertBarEvent
-{
-	GENERATED_BODY()
-
-	/** Kind of icon (console, bonus chest, horde, shuttle). */
-	UPROPERTY(BlueprintReadOnly, Category = "HUD|Run")
-	ERRAlertBarEventType Type = ERRAlertBarEventType::Console;
-
-	/** Position on the bar, 0..1 (same scale as OnAlertChanged's Alert). A pending horde's position is an estimate (sys-hud). */
-	UPROPERTY(BlueprintReadOnly, Category = "HUD|Run")
-	float Position = 0.f;
-
-	/** True once the event happened (console hacked, bonus chest hacked, horde front started, extraction ready). */
-	UPROPERTY(BlueprintReadOnly, Category = "HUD|Run")
-	bool bDone = false;
-
-	/** Horde index (spawner DirectorConfig.Hordes) for a Horde icon; -1 otherwise. */
-	UPROPERTY(BlueprintReadOnly, Category = "HUD|Run")
-	int32 Index = INDEX_NONE;
-};
-
-/** HUD state of one weapon slot (index 0..MaxWeapons-1), read each frame by the Blueprint (GetWeaponSlot / GetWeaponSlots). */
-USTRUCT(BlueprintType)
-struct FRRWeaponSlotHUD
-{
-	GENERATED_BODY()
-
-	/** True when the slot holds a weapon; false = locked slot (padlock), every other field is at its default. */
-	UPROPERTY(BlueprintReadOnly, Category = "HUD|Weapons")
-	bool bOwned = false;
-
-	/** Weapon in the slot (null when locked). */
-	UPROPERTY(BlueprintReadOnly, Category = "HUD|Weapons")
-	TObjectPtr<ARRWeapon> Weapon = nullptr;
-
-	/** True when the weapon is a turret launcher: draw Charges, MaxCharges and RechargeProgress instead of the magazine. */
-	UPROPERTY(BlueprintReadOnly, Category = "HUD|Weapons")
-	bool bIsTurretLauncher = false;
-
-	/** Rounds left in the magazine (Ammo rounded down; the charges for a turret launcher). */
-	UPROPERTY(BlueprintReadOnly, Category = "HUD|Weapons")
-	int32 Rounds = 0;
-
-	/** Magazine size (MagazineSize rounded down; the maximum charges for a turret launcher). */
-	UPROPERTY(BlueprintReadOnly, Category = "HUD|Weapons")
-	int32 MagazineSize = 0;
-
-	/** True while the magazine reloads (always false for a turret launcher, see bRecharging). */
-	UPROPERTY(BlueprintReadOnly, Category = "HUD|Weapons")
-	bool bReloading = false;
-
-	/** Progress 0..1 of the running reload (0 when not reloading or when the reload never ends). */
-	UPROPERTY(BlueprintReadOnly, Category = "HUD|Weapons")
-	float ReloadProgress = 0.f;
-
-	/** Turret launcher: charges ready (0 for other weapons). */
-	UPROPERTY(BlueprintReadOnly, Category = "HUD|Weapons")
-	int32 Charges = 0;
-
-	/** Turret launcher: maximum charges (0 for other weapons). */
-	UPROPERTY(BlueprintReadOnly, Category = "HUD|Weapons")
-	int32 MaxCharges = 0;
-
-	/** Turret launcher: true while one charge recharges (one at a time; drawn in the leftmost empty block). */
-	UPROPERTY(BlueprintReadOnly, Category = "HUD|Weapons")
-	bool bRecharging = false;
-
-	/** Turret launcher: progress 0..1 of the charge recharging now (0 when none). */
-	UPROPERTY(BlueprintReadOnly, Category = "HUD|Weapons")
-	float RechargeProgress = 0.f;
-};
 
 /**
  * In-run HUD. Created by ARRPlayerController at BeginPlay (local player only) from its HUDWidgetClass. C++ binds it
@@ -197,6 +64,12 @@ public:
 	 * when a horde is already announced) and the horde icons of the alert bar (refreshed now). Null unbinds.
 	 */
 	void BindToSpawner(ARREnemySpawner* Spawner);
+
+	/**
+	 * HUD panels (URRHUDPanelWidget) placed in this widget's tree, in tree order. Every Bind call above hands its object to each
+	 * of them (URRHUDPanelWidget::SetMiner...), so the game creates and binds only this root widget.
+	 */
+	TArray<URRHUDPanelWidget*> GetPanels() const;
 
 	/**
 	 * Recomputes the alert-bar icons from the bound run flow and spawner and calls OnAlertEventsChanged when they changed (count,
@@ -386,6 +259,14 @@ protected:
 
 	/** Picks the horde_incoming Kessler-Voss line and shows it as a subtitle (URRSubtitleSubsystem::ShowAlertLine). */
 	void ShowHordeAlertLine();
+
+	/** Run flow OnMinerRegistered callback: binds that miner when none is bound yet (miner created after the HUD). */
+	UFUNCTION()
+	void HandleMinerRegistered(ARRMiner* Miner);
+
+	/** Run flow OnSpawnerRegistered callback: binds that spawner when none is bound yet (spawner created after the HUD). */
+	UFUNCTION()
+	void HandleSpawnerRegistered(ARREnemySpawner* Spawner);
 
 	/** Spawner OnHordeIncoming callback: shows the horde subtitle, calls OnHordeIncoming and refreshes the icons. */
 	UFUNCTION()

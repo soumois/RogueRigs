@@ -5,7 +5,9 @@
 #include "CoreMinimal.h"
 #include "Math/RandomStream.h"
 #include "Objectives/RRConsole.h"
+#include "Enemies/RREnemySpawner.h"
 #include "Objectives/RRRunFlowConfig.h"
+#include "UI/RRHUDTypes.h"
 #include "Subsystems/WorldSubsystem.h"
 #include "RRRunFlowSubsystem.generated.h"
 
@@ -55,6 +57,21 @@ DECLARE_DYNAMIC_MULTICAST_DELEGATE_TwoParams(FRROnShuttleCountdownSignature, flo
 
 /** Fired once when the run ends: bSuccess true = extracted, false = the shuttle left without the miner. */
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FRROnRunEndedSignature, bool, bSuccess);
+
+/** Fired when the alert-bar icons changed (console, bonus chest, hordes in index order, shuttle). */
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FRROnAlertBarEventsChangedSignature, const TArray<FRRAlertBarEvent>&, Events);
+
+/** Relay of the registered spawner's horde announcement: horde HordeIndex starts in SecondsUntil seconds. */
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_TwoParams(FRROnRunFlowHordeIncomingSignature, int32, HordeIndex, float, SecondsUntil);
+
+/** Fired when the objective locator target changed (None = hide the arrow). */
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_TwoParams(FRROnLocatorTargetChangedSignature, ERRLocatorTarget, Target, FVector, WorldLocation);
+
+/** Fired when a miner registered at its BeginPlay (late HUD binding). */
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FRROnMinerRegisteredSignature, ARRMiner*, Miner);
+
+/** Fired when an enemy spawner registered at its BeginPlay and became the run's spawner. */
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FRROnSpawnerRegisteredSignature, ARREnemySpawner*, Spawner);
 
 /**
  * Run flow of one level (level-flow M1, difficulty alert counter). Game and PIE worlds; active once the world has an
@@ -237,7 +254,118 @@ public:
 	UPROPERTY(BlueprintAssignable, Category = "RunFlow")
 	FRROnRunEndedSignature OnRunEnded;
 
+	/**
+	 * Broadcast when the alert-bar icons changed: count, type, done flag, or a pending horde's estimated position moved by more
+	 * than Config.AlertEventPositionTolerance. Recomputed on the run flow events, the spawner horde events and the run flow tick
+	 * (the estimate moves while the bar is paused); sent only on change. Read GetAlertBarEvents when binding.
+	 */
+	UPROPERTY(BlueprintAssignable, Category = "RunFlow")
+	FRROnAlertBarEventsChangedSignature OnAlertBarEventsChanged;
+
+	/** Relay of the registered spawner's OnHordeIncoming (banner without a spawner reference); once per announcement. */
+	UPROPERTY(BlueprintAssignable, Category = "RunFlow")
+	FRROnRunFlowHordeIncomingSignature OnHordeIncoming;
+
+	/**
+	 * Broadcast when the objective locator target (GetLocatorTarget) changed: console dropped, console hacked, shuttle landed, run
+	 * ended. The arrow needs per-frame placement only while Target is not None.
+	 */
+	UPROPERTY(BlueprintAssignable, Category = "RunFlow")
+	FRROnLocatorTargetChangedSignature OnLocatorTargetChanged;
+
+	/** Broadcast when a miner registered (RegisterMiner, at the end of its BeginPlay: base stats applied). */
+	UPROPERTY(BlueprintAssignable, Category = "RunFlow")
+	FRROnMinerRegisteredSignature OnMinerRegistered;
+
+	/** Broadcast when the run's spawner registered (RegisterSpawner: the first one of the level). */
+	UPROPERTY(BlueprintAssignable, Category = "RunFlow")
+	FRROnSpawnerRegisteredSignature OnSpawnerRegistered;
+
+	/** Called by ARRMiner at the end of its BeginPlay: becomes the run's miner when none is valid, then OnMinerRegistered. */
+	void RegisterMiner(ARRMiner* InMiner);
+
+	/**
+	 * Called by ARREnemySpawner at its BeginPlay: the first valid one becomes the run's spawner (horde relay and alert-bar icons),
+	 * then OnSpawnerRegistered. Later spawners are ignored while it is valid.
+	 */
+	void RegisterSpawner(ARREnemySpawner* InSpawner);
+
+	/** The run's miner (registered or resolved by the tick); null before. */
+	UFUNCTION(BlueprintPure, Category = "RunFlow")
+	ARRMiner* GetMiner() const { return Miner; }
+
+	/** The run's enemy spawner (RegisterSpawner); null in a level without spawner. */
+	UFUNCTION(BlueprintPure, Category = "RunFlow")
+	ARREnemySpawner* GetSpawner() const { return Spawner.Get(); }
+
+	/** Alert-bar icons last sent by OnAlertBarEventsChanged (computed now when never sent). */
+	UFUNCTION(BlueprintPure, Category = "RunFlow")
+	const TArray<FRRAlertBarEvent>& GetAlertBarEvents();
+
+	/**
+	 * Objective locator target: the console while it exists and is not hacked, else the landed shuttle; None before the drop,
+	 * between the hack and the landing, and after the run end. False for None.
+	 */
+	UFUNCTION(BlueprintPure, Category = "RunFlow")
+	bool GetLocatorTarget(ERRLocatorTarget& OutTarget, FVector& OutWorldLocation) const;
+
+	/** Recomputes the alert-bar icons and broadcasts OnAlertBarEventsChanged when they changed (see the event). */
+	void RefreshAlertBarEvents();
+
+	/**
+	 * Alert-bar icons of RunFlow (may be null: defaults) and Spawner (may be null: no horde icons): console, bonus chest (threshold
+	 * > 0), hordes in index order, shuttle. InOutDoneHordePositions freezes a started horde at the alert of that moment.
+	 */
+	static void ComputeAlertBarEvents(const URRRunFlowSubsystem* RunFlow, const ARREnemySpawner* InSpawner, TMap<int32, float>& InOutDoneHordePositions, TArray<FRRAlertBarEvent>& OutEvents);
+
+	/**
+	 * Estimated bar position of an event SecondsUntil seconds away: Alert + SecondsUntil / AlertFillSeconds (the base fill rate,
+	 * without kills or pause), clamped to [Alert, 1].
+	 */
+	static float EstimateBarPosition(float Alert, float SecondsUntil, float AlertFillSeconds);
+
 protected:
+	/** Run flow work of a tick (alert fill, drops, extraction); Tick then refreshes the alert-bar icons. */
+	void TickRunFlow(float DeltaTime);
+
+	/** Computes GetLocatorTarget and broadcasts OnLocatorTargetChanged when the target or its location changed. */
+	void UpdateLocatorTarget();
+
+	/** Spawner OnHordeIncoming callback: relays OnHordeIncoming and refreshes the icons. */
+	UFUNCTION()
+	void HandleHordeIncoming(int32 HordeIndex, float SecondsUntil);
+
+	/** Spawner OnHordeLull callback: refreshes the icons. */
+	UFUNCTION()
+	void HandleHordeLull(int32 HordeIndex);
+
+	/** Spawner OnHordeStarted callback: freezes the horde icon at the current alert and refreshes. */
+	UFUNCTION()
+	void HandleHordeStarted(int32 HordeIndex, ERRSpawnSide Side);
+
+	/** Spawner OnHordeFinished callback: refreshes the icons. */
+	UFUNCTION()
+	void HandleHordeFinished(int32 HordeIndex, int32 Spawned);
+
+	/** The run's spawner (RegisterSpawner). */
+	TWeakObjectPtr<ARREnemySpawner> Spawner;
+
+	/** Alert-bar icons last sent by OnAlertBarEventsChanged. */
+	UPROPERTY(Transient)
+	TArray<FRRAlertBarEvent> AlertBarEvents;
+
+	/** True once OnAlertBarEventsChanged was sent. */
+	bool bAlertBarEventsSent = false;
+
+	/** Bar position of each started horde, frozen at the alert of that moment (key: horde index). */
+	TMap<int32, float> DoneHordePositions;
+
+	/** Locator target last sent by OnLocatorTargetChanged. */
+	ERRLocatorTarget LastLocatorTarget = ERRLocatorTarget::None;
+
+	/** Locator location last sent by OnLocatorTargetChanged. */
+	FVector LastLocatorLocation = FVector::ZeroVector;
+
 	/** Finds the grid (first ARRArenaGrid) and the miner (player 0's pawn, else the first living ARRMiner). False when either is missing. */
 	bool ResolveRunActors();
 

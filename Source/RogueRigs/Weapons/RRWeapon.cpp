@@ -58,6 +58,15 @@ bool ARRWeapon::Acquire(ARRMiner* InOwnerMiner)
 	// Acquisition order (sys-weapons): actor info, base values from CSV, replay of the global upgrades; registry comes later.
 	AbilitySystemComponent->InitAbilityActorInfo(this, this);
 
+	// HUD ammo event (sys-hud): bound before the CSV values so their first application is sent.
+	if (!AmmoChangedHandle.IsValid())
+	{
+		AmmoChangedHandle = AbilitySystemComponent->GetGameplayAttributeValueChangeDelegate(URRWeaponAttributeSet::GetAmmoAttribute())
+			.AddUObject(this, &ARRWeapon::HandleAmmoAttributeChanged);
+		MagazineSizeChangedHandle = AbilitySystemComponent->GetGameplayAttributeValueChangeDelegate(URRWeaponAttributeSet::GetMagazineSizeAttribute())
+			.AddUObject(this, &ARRWeapon::HandleAmmoAttributeChanged);
+	}
+
 	FRRWeaponStatsRow Row;
 	if (!LoadStatsRow(Row))
 	{
@@ -228,5 +237,37 @@ void ARRWeapon::EndPlay(const EEndPlayReason::Type EndPlayReason)
 	{
 		AutoFire->StopFiring();
 	}
+	if (AbilitySystemComponent && AmmoChangedHandle.IsValid())
+	{
+		AbilitySystemComponent->GetGameplayAttributeValueChangeDelegate(URRWeaponAttributeSet::GetAmmoAttribute()).Remove(AmmoChangedHandle);
+		AbilitySystemComponent->GetGameplayAttributeValueChangeDelegate(URRWeaponAttributeSet::GetMagazineSizeAttribute()).Remove(MagazineSizeChangedHandle);
+	}
+	AmmoChangedHandle.Reset();
+	MagazineSizeChangedHandle.Reset();
 	Super::EndPlay(EndPlayReason);
+}
+
+int32 ARRWeapon::GetRounds() const
+{
+	const float Ammo = AbilitySystemComponent ? AbilitySystemComponent->GetNumericAttribute(URRWeaponAttributeSet::GetAmmoAttribute()) : 0.f;
+	return FMath::Max(FMath::FloorToInt32(Ammo + KINDA_SMALL_NUMBER), 0);
+}
+
+int32 ARRWeapon::GetMagazineRounds() const
+{
+	const float Magazine = AbilitySystemComponent ? AbilitySystemComponent->GetNumericAttribute(URRWeaponAttributeSet::GetMagazineSizeAttribute()) : 0.f;
+	return FMath::Max(FMath::FloorToInt32(Magazine + KINDA_SMALL_NUMBER), 0);
+}
+
+void ARRWeapon::HandleAmmoAttributeChanged(const FOnAttributeChangeData& ChangeData)
+{
+	const int32 Rounds = GetRounds();
+	const int32 Magazine = GetMagazineRounds();
+	if (Rounds == LastBroadcastRounds && Magazine == LastBroadcastMagazine)
+	{
+		return;
+	}
+	LastBroadcastRounds = Rounds;
+	LastBroadcastMagazine = Magazine;
+	OnAmmoChanged.Broadcast(this, Rounds, Magazine);
 }

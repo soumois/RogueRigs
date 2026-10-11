@@ -6,6 +6,7 @@
 #include "GameFramework/Character.h"
 #include "AbilitySystemInterface.h"
 #include "Pickups/RRPickup.h"
+#include "UI/RRHUDTypes.h"
 #include "Weapons/RRWeaponCatalogueEntry.h"
 #include "RRMiner.generated.h"
 
@@ -38,6 +39,15 @@ DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FRROnMinerDeathSignature, AActor*, I
 
 /** Fired after the miner acquired a weapon (starting loadout or AddWeapon): the weapon, already in GetWeapons. */
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FRROnWeaponAddedSignature, ARRWeapon*, Weapon);
+
+/** Fired when the miner's Health or MaxHealth changed (Max always > 0). */
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_TwoParams(FRROnMinerHealthChangedSignature, float, Current, float, Max);
+
+/** Fired when the miner lost Amount health (> 0); HealthFraction = health left over MaxHealth (0..1). */
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_TwoParams(FRROnMinerDamagedSignature, float, Amount, float, HealthFraction);
+
+/** Fired when the HUD state of weapon slot SlotIndex changed (weapon acquired, ammo, reload start or end, turret charges). */
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_TwoParams(FRROnWeaponSlotChangedSignature, int32, SlotIndex, const FRRWeaponSlotHUD&, Slot);
 
 /**
  * Player character. Owns the player's URRAbilitySystemComponent and its three AttributeSets (health,
@@ -217,6 +227,45 @@ public:
 	/** Broadcast after each weapon acquisition (HUD: binds the turret charges of a launcher acquired mid-run). */
 	UPROPERTY(BlueprintAssignable, Category = "Miner|Weapons")
 	FRROnWeaponAddedSignature OnWeaponAdded;
+
+	/** Current Health attribute (0 before the base stats are applied). */
+	UFUNCTION(BlueprintPure, Category = "Miner|Damage")
+	float GetCurrentHealth() const;
+
+	/** Current MaxHealth attribute (0 before the base stats are applied: never divide by it then). */
+	UFUNCTION(BlueprintPure, Category = "Miner|Damage")
+	float GetMaxHealth() const;
+
+	/**
+	 * HUD state of weapon slot SlotIndex (0-based, valid weapons of GetWeapons in acquisition order: slot 0 = starting rifle). An
+	 * index past the owned weapons, below 0 or at or above MaxWeapons gives a locked slot (bOwned false).
+	 */
+	UFUNCTION(BlueprintPure, Category = "Miner|Weapons")
+	FRRWeaponSlotHUD GetWeaponSlotHUD(int32 SlotIndex) const;
+
+	/**
+	 * Broadcast when Health or MaxHealth changed, with both values; once per real change (a write of the same values sends
+	 * nothing), never while MaxHealth is 0 (base stats not applied yet: the stat application sends the first one). Read the
+	 * current values with GetCurrentHealth / GetMaxHealth when binding.
+	 */
+	UPROPERTY(BlueprintAssignable, Category = "Miner|Damage")
+	FRROnMinerHealthChangedSignature OnHealthChanged;
+
+	/**
+	 * Broadcast when Health went down: Amount lost (> 0), HealthFraction left (0..1, 0 = dead). Not for a heal nor for the clamp of
+	 * a MaxHealth decrease. Same payload as URRHUDWidget::OnPlayerDamaged (damage vignette).
+	 */
+	UPROPERTY(BlueprintAssignable, Category = "Miner|Damage")
+	FRROnMinerDamagedSignature OnDamaged;
+
+	/**
+	 * Broadcast when the HUD state of a weapon slot changed (GetWeaponSlotHUD): weapon acquired (slots shift if one is destroyed),
+	 * ammo or magazine (ARRWeapon::OnAmmoChanged), reload start or end, turret charges or recharge start or end. Once per change;
+	 * the per-frame ReloadProgress and RechargeProgress alone never fire it (read them each frame only while bReloading or
+	 * bRecharging). Locked slots send nothing until a weapon fills them.
+	 */
+	UPROPERTY(BlueprintAssignable, Category = "Miner|Weapons")
+	FRROnWeaponSlotChangedSignature OnWeaponSlotChanged;
 
 	/** Updates the i-frames blink; while alive, updates the mouse aim if active, turns the pawn toward the aim, then checks the dig trigger. */
 	virtual void Tick(float DeltaSeconds) override;
@@ -449,6 +498,47 @@ protected:
 
 	/** Handle of the binding on HealthSet->OnDeath. */
 	FDelegateHandle DeathHandle;
+
+	/** ASC callback for Health and MaxHealth: OnHealthChanged when the values changed, OnDamaged when Health went down. */
+	void HandleHealthAttributeChanged(const FOnAttributeChangeData& ChangeData);
+
+	/** Binds Weapon's ammo, reload and turret charge events to RefreshWeaponSlots. */
+	void BindWeaponSlotEvents(ARRWeapon* Weapon);
+
+	/** Recomputes every slot (GetWeaponSlotHUD) and broadcasts OnWeaponSlotChanged for each one whose state changed. */
+	void RefreshWeaponSlots();
+
+	/** ARRWeapon::OnAmmoChanged callback: RefreshWeaponSlots. */
+	UFUNCTION()
+	void HandleWeaponAmmoChanged(ARRWeapon* Weapon, int32 Rounds, int32 MagazineSize);
+
+	/** URRAutoFireComponent::OnReloadStarted callback: RefreshWeaponSlots. */
+	UFUNCTION()
+	void HandleWeaponReloadStarted(float ReloadDuration);
+
+	/** URRAutoFireComponent::OnReloadFinished callback: RefreshWeaponSlots. */
+	UFUNCTION()
+	void HandleWeaponReloadFinished();
+
+	/** ARRTurretLauncher::OnTurretChargesChanged callback: RefreshWeaponSlots. */
+	UFUNCTION()
+	void HandleTurretChargesChanged(int32 Charges, int32 MaxCharges, float RechargeDuration);
+
+	/** Handle of the Health change binding on the ASC. */
+	FDelegateHandle HealthChangedHandle;
+
+	/** Handle of the MaxHealth change binding on the ASC. */
+	FDelegateHandle MaxHealthChangedHandle;
+
+	/** Health last sent by OnHealthChanged (-1 before the first). */
+	float LastBroadcastHealth = -1.f;
+
+	/** MaxHealth last sent by OnHealthChanged (-1 before the first). */
+	float LastBroadcastMaxHealth = -1.f;
+
+	/** Slot states last sent by OnWeaponSlotChanged (MaxWeapons entries, locked at BeginPlay). */
+	UPROPERTY(Transient)
+	TArray<FRRWeaponSlotHUD> LastWeaponSlots;
 
 	/** World time at which the current blink started (the last i-frames application). */
 	double BlinkStartTime = 0.0;

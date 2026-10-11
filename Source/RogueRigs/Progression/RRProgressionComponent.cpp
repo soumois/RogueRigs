@@ -95,7 +95,8 @@ void URRProgressionComponent::AddXP(float Raw)
 		return;
 	}
 
-	XP += Raw * GetXPGain();
+	const float Gained = Raw * GetXPGain();
+	XP += Gained;
 
 	float Needed = GetXPToNextLevel();
 	if (Needed <= 0.f)
@@ -115,4 +116,8 @@ void URRProgressionComponent::AddXP(float Raw)
 	}
 
 	OnXPChanged.Broadcast(XP, Needed, Level);
+	if (Gained > 0.f)
+	{
+		OnXPGained.Broadcast(Gained);
+	}
 }

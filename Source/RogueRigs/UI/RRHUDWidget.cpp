@@ -4,6 +4,7 @@
 
 #include "AbilitySystemComponent.h"
 #include "Blueprint/WidgetLayoutLibrary.h"
+#include "Blueprint/WidgetTree.h"
 #include "Components/Widget.h"
 #include "EngineUtils.h"
 #include "Camera/PlayerCameraManager.h"
@@ -20,13 +21,34 @@
 #include "Progression/RRProgressionComponent.h"
 #include "Text/RRSubtitleSubsystem.h"
 #include "Text/RRTextContentSubsystem.h"
+#include "UI/RRHUDPanelWidget.h"
 #include "Weapons/RRAutoFireComponent.h"
 #include "Weapons/RRTurretLauncher.h"
 #include "Weapons/RRWeaponAttributeSet.h"
 
+TArray<URRHUDPanelWidget*> URRHUDWidget::GetPanels() const
+{
+	TArray<URRHUDPanelWidget*> Panels;
+	if (WidgetTree)
+	{
+		WidgetTree->ForEachWidget([&Panels](UWidget* Widget)
+		{
+			if (URRHUDPanelWidget* Panel = Cast<URRHUDPanelWidget>(Widget))
+			{
+				Panels.Add(Panel);
+			}
+		});
+	}
+	return Panels;
+}
+
 void URRHUDWidget::BindToMiner(ARRMiner* Miner)
 {
 	UnbindMiner();
+	for (URRHUDPanelWidget* Panel : GetPanels())
+	{
+		Panel->SetMiner(Miner);
+	}
 
 	UAbilitySystemComponent* ASC = Miner ? Miner->GetAbilitySystemComponent() : nullptr;
 	if (!ASC)
@@ -111,24 +133,7 @@ int32 URRHUDWidget::GetWeaponSlotCount() const
 FRRWeaponSlotHUD URRHUDWidget::GetWeaponSlot(int32 SlotIndex) const
 {
 	const ARRMiner* Miner = BoundMiner.Get();
-	if (!Miner || SlotIndex < 0 || SlotIndex >= GetWeaponSlotCount())
-	{
-		return FRRWeaponSlotHUD();
-	}
-	// Slots follow acquisition order over the valid weapons, so a destroyed entry never leaves a hole.
-	int32 ValidIndex = 0;
-	for (const TObjectPtr<ARRWeapon>& Weapon : Miner->GetWeapons())
-	{
-		if (IsValid(Weapon))
-		{
-			if (ValidIndex == SlotIndex)
-			{
-				return MakeWeaponSlot(Weapon);
-			}
-			++ValidIndex;
-		}
-	}
-	return FRRWeaponSlotHUD();
+	return Miner ? Miner->GetWeaponSlotHUD(SlotIndex) : FRRWeaponSlotHUD();
 }
 
 TArray<FRRWeaponSlotHUD> URRHUDWidget::GetWeaponSlots() const
@@ -156,43 +161,7 @@ TArray<FRRWeaponSlotHUD> URRHUDWidget::GetWeaponSlots() const
 
 FRRWeaponSlotHUD URRHUDWidget::MakeWeaponSlot(const ARRWeapon* Weapon)
 {
-	FRRWeaponSlotHUD Slot;
-	if (!IsValid(Weapon))
-	{
-		return Slot;
-	}
-	Slot.bOwned = true;
-	Slot.Weapon = const_cast<ARRWeapon*>(Weapon);
-
-	if (const ARRTurretLauncher* Launcher = Cast<ARRTurretLauncher>(Weapon))
-	{
-		Slot.bIsTurretLauncher = true;
-		Slot.Charges = Launcher->GetCharges();
-		Slot.MaxCharges = Launcher->GetMaxCharges();
-		Slot.Rounds = Slot.Charges;
-		Slot.MagazineSize = Slot.MaxCharges;
-		Slot.bRecharging = Launcher->IsRecharging();
-		Slot.RechargeProgress = Launcher->GetRechargeProgress();
-		return Slot;
-	}
-
-	if (const UAbilitySystemComponent* ASC = Weapon->GetAbilitySystemComponent())
-	{
-		const float Ammo = ASC->GetNumericAttribute(URRWeaponAttributeSet::GetAmmoAttribute());
-		const float Magazine = ASC->GetNumericAttribute(URRWeaponAttributeSet::GetMagazineSizeAttribute());
-		Slot.Rounds = FMath::Max(FMath::FloorToInt32(Ammo + KINDA_SMALL_NUMBER), 0);
-		Slot.MagazineSize = FMath::Max(FMath::FloorToInt32(Magazine + KINDA_SMALL_NUMBER), 0);
-	}
-	if (const URRAutoFireComponent* AutoFire = Weapon->GetAutoFireComponent())
-	{
-		Slot.bReloading = AutoFire->IsReloading();
-		const float Duration = AutoFire->GetReloadDuration();
-		if (Slot.bReloading && Duration > 0.f)
-		{
-			Slot.ReloadProgress = FMath::Clamp(1.f - AutoFire->GetReloadTimeRemaining() / Duration, 0.f, 1.f);
-		}
-	}
-	return Slot;
+	return FRRWeaponSlotHUD::Make(Weapon);
 }
 
 bool URRHUDWidget::ChooseUpgrade(int32 Index)
@@ -220,6 +189,10 @@ void URRHUDWidget::BindToGameMode(ARRGameMode* GameMode)
 		Previous->OnGameOver.RemoveDynamic(this, &URRHUDWidget::HandleGameOver);
 	}
 	BoundGameMode = GameMode;
+	for (URRHUDPanelWidget* Panel : GetPanels())
+	{
+		Panel->SetGameMode(GameMode);
+	}
 	if (GameMode)
 	{
 		GameMode->OnGameOver.AddUniqueDynamic(this, &URRHUDWidget::HandleGameOver);
@@ -236,12 +209,21 @@ void URRHUDWidget::BindToRunFlow(URRRunFlowSubsystem* RunFlow)
 		Previous->OnExtractionReady.RemoveDynamic(this, &URRHUDWidget::HandleExtractionReady);
 		Previous->OnShuttleCountdown.RemoveDynamic(this, &URRHUDWidget::HandleShuttleCountdown);
 		Previous->OnRunEnded.RemoveDynamic(this, &URRHUDWidget::HandleRunEnded);
+		Previous->OnMinerRegistered.RemoveDynamic(this, &URRHUDWidget::HandleMinerRegistered);
+		Previous->OnSpawnerRegistered.RemoveDynamic(this, &URRHUDWidget::HandleSpawnerRegistered);
 	}
 	BoundRunFlow = RunFlow;
+	for (URRHUDPanelWidget* Panel : GetPanels())
+	{
+		Panel->SetRunFlow(RunFlow);
+	}
 	if (!RunFlow)
 	{
 		return;
 	}
+	// Late binding: a miner or spawner that begins play after this HUD registers with the run flow.
+	RunFlow->OnMinerRegistered.AddUniqueDynamic(this, &URRHUDWidget::HandleMinerRegistered);
+	RunFlow->OnSpawnerRegistered.AddUniqueDynamic(this, &URRHUDWidget::HandleSpawnerRegistered);
 	RunFlow->OnAlertChanged.AddUniqueDynamic(this, &URRHUDWidget::HandleAlertChanged);
 	RunFlow->OnObjectiveChanged.AddUniqueDynamic(this, &URRHUDWidget::HandleObjectiveChanged);
 	RunFlow->OnObjectiveProgressChanged.AddUniqueDynamic(this, &URRHUDWidget::HandleObjectiveProgressChanged);
@@ -286,6 +268,10 @@ void URRHUDWidget::BindToSpawner(ARREnemySpawner* Spawner)
 	}
 	BoundSpawner = Spawner;
 	DoneHordePositions.Reset();
+	for (URRHUDPanelWidget* Panel : GetPanels())
+	{
+		Panel->SetSpawner(Spawner);
+	}
 	if (!Spawner)
 	{
 		return;
@@ -312,69 +298,12 @@ void URRHUDWidget::BindToSpawner(ARREnemySpawner* Spawner)
 
 float URRHUDWidget::EstimateBarPosition(float Alert, float SecondsUntil, float AlertFillSeconds)
 {
-	const float Current = FMath::Clamp(Alert, 0.f, 1.f);
-	return FMath::Clamp(Current + FMath::Max(SecondsUntil, 0.f) / FMath::Max(AlertFillSeconds, 1.f), Current, 1.f);
+	return URRRunFlowSubsystem::EstimateBarPosition(Alert, SecondsUntil, AlertFillSeconds);
 }
 
 void URRHUDWidget::ComputeAlertBarEvents(TArray<FRRAlertBarEvent>& OutEvents)
 {
-	OutEvents.Reset();
-	const URRRunFlowSubsystem* RunFlow = BoundRunFlow.Get();
-	static const FRRRunFlowConfig DefaultConfig;
-	const FRRRunFlowConfig& Config = RunFlow ? RunFlow->GetConfig() : DefaultConfig;
-	const float Alert = RunFlow ? RunFlow->GetAlert() : 0.f;
-
-	FRRAlertBarEvent& ConsoleIcon = OutEvents.AddDefaulted_GetRef();
-	ConsoleIcon.Type = ERRAlertBarEventType::Console;
-	ConsoleIcon.Position = FMath::Clamp(Config.ConsoleAlertThreshold, 0.f, 1.f);
-	const ARRConsole* Console = RunFlow ? RunFlow->GetConsole() : nullptr;
-	ConsoleIcon.bDone = (Console && Console->GetConsoleState() == ERRConsoleState::Complete) || (RunFlow && RunFlow->IsExtractionReady());
-
-	// Bonus chest (optional): at its threshold, done once hacked; no icon when the chest is disabled (threshold 0).
-	if (Config.BonusChestAlertThreshold > 0.f)
-	{
-		FRRAlertBarEvent& ChestIcon = OutEvents.AddDefaulted_GetRef();
-		ChestIcon.Type = ERRAlertBarEventType::BonusChest;
-		ChestIcon.Position = FMath::Clamp(Config.BonusChestAlertThreshold, 0.f, 1.f);
-		const ARRBonusChest* Chest = RunFlow ? RunFlow->GetBonusChest() : nullptr;
-		ChestIcon.bDone = Chest && Chest->IsComplete();
-	}
-
-	if (const ARREnemySpawner* Spawner = BoundSpawner.Get(); Spawner && Spawner->IsDirectorEnabled())
-	{
-		const bool bAlertTrigger = Spawner->GetHordeTrigger() == ERRHordeTrigger::Alert;
-		const int32 ActiveHorde = Spawner->GetActiveHorde();
-		for (int32 Index = 0; Index < Spawner->GetHordeCount(); ++Index)
-		{
-			FRRAlertBarEvent& HordeIcon = OutEvents.AddDefaulted_GetRef();
-			HordeIcon.Type = ERRAlertBarEventType::Horde;
-			HordeIcon.Index = Index;
-			const ERRHordeState State = Spawner->GetHordeState(Index);
-			HordeIcon.bDone = State == ERRHordeState::Spawning || State == ERRHordeState::Done;
-			if (bAlertTrigger)
-			{
-				// Alert trigger: the lull starts at a fixed alert.
-				HordeIcon.Position = FMath::Clamp(Spawner->GetHordeTriggerAlert(Index), 0.f, 1.f);
-			}
-			else if (HordeIcon.bDone)
-			{
-				// Frozen where the fill was when the front started (first seen now when bound after it).
-				HordeIcon.Position = DoneHordePositions.FindOrAdd(Index, Alert);
-			}
-			else
-			{
-				const float SecondsUntil = Index == ActiveHorde
-					? Spawner->GetSecondsUntilHordeFront()
-					: Spawner->GetHordeTriggerTime(Index) - Spawner->GetDirector().GetRunTime();
-				HordeIcon.Position = EstimateBarPosition(Alert, SecondsUntil, Config.AlertFillSeconds);
-			}
-		}
-	}
-
-	FRRAlertBarEvent& ShuttleIcon = OutEvents.AddDefaulted_GetRef();
-	ShuttleIcon.Type = ERRAlertBarEventType::Extraction;
-	ShuttleIcon.Position = 1.f;
-	ShuttleIcon.bDone = RunFlow && RunFlow->IsExtractionReady();
+	URRRunFlowSubsystem::ComputeAlertBarEvents(BoundRunFlow.Get(), BoundSpawner.Get(), DoneHordePositions, OutEvents);
 }
 
 bool URRHUDWidget::GetObjectiveTarget(ERRLocatorTarget& OutTarget, FVector& OutWorldLocation) const
@@ -382,25 +311,7 @@ bool URRHUDWidget::GetObjectiveTarget(ERRLocatorTarget& OutTarget, FVector& OutW
 	OutTarget = ERRLocatorTarget::None;
 	OutWorldLocation = FVector::ZeroVector;
 	const URRRunFlowSubsystem* RunFlow = BoundRunFlow.Get();
-	if (!RunFlow || RunFlow->IsRunEnded())
-	{
-		return false;
-	}
-	const ARRConsole* Console = RunFlow->GetConsole();
-	if (IsValid(Console) && Console->GetConsoleState() != ERRConsoleState::Complete)
-	{
-		OutTarget = ERRLocatorTarget::Console;
-		OutWorldLocation = Console->GetActorLocation();
-		return true;
-	}
-	const AActor* Shuttle = RunFlow->GetShuttle();
-	if (IsValid(Shuttle))
-	{
-		OutTarget = ERRLocatorTarget::Shuttle;
-		OutWorldLocation = Shuttle->GetActorLocation();
-		return true;
-	}
-	return false;
+	return RunFlow && RunFlow->GetLocatorTarget(OutTarget, OutWorldLocation);
 }
 
 bool URRHUDWidget::GetObjectiveLocator(FRRObjectiveLocator& OutLocator, float EdgeMargin) const
@@ -468,14 +379,7 @@ void URRHUDWidget::RefreshAlertBarEvents()
 {
 	TArray<FRRAlertBarEvent> Events;
 	ComputeAlertBarEvents(Events);
-	bool bChanged = !bAlertBarEventsSent || Events.Num() != AlertBarEvents.Num();
-	for (int32 Index = 0; !bChanged && Index < Events.Num(); ++Index)
-	{
-		const FRRAlertBarEvent& New = Events[Index];
-		const FRRAlertBarEvent& Old = AlertBarEvents[Index];
-		bChanged = New.Type != Old.Type || New.Index != Old.Index || New.bDone != Old.bDone
-			|| FMath::Abs(New.Position - Old.Position) > AlertEventPositionTolerance;
-	}
+	const bool bChanged = !bAlertBarEventsSent || FRRAlertBarEvent::ListsDiffer(Events, AlertBarEvents, AlertEventPositionTolerance);
 	if (!bChanged)
 	{
 		return;
@@ -609,6 +513,22 @@ void URRHUDWidget::HandleHordeIncoming(int32 HordeIndex, float SecondsUntil)
 	ShowHordeAlertLine();
 	OnHordeIncoming(SecondsUntil);
 	RefreshAlertBarEvents();
+}
+
+void URRHUDWidget::HandleMinerRegistered(ARRMiner* Miner)
+{
+	if (!BoundMiner.IsValid() && IsValid(Miner))
+	{
+		BindToMiner(Miner);
+	}
+}
+
+void URRHUDWidget::HandleSpawnerRegistered(ARREnemySpawner* Spawner)
+{
+	if (!BoundSpawner.IsValid() && IsValid(Spawner))
+	{
+		BindToSpawner(Spawner);
+	}
 }
 
 void URRHUDWidget::HandleHordeLull(int32 HordeIndex)

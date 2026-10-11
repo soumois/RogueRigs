@@ -19,6 +19,7 @@
 #include "GAS/RRMovementAttributeSet.h"
 #include "GAS/RRPlayerAttributeSet.h"
 #include "Grid/RRArenaGrid.h"
+#include "Objectives/RRRunFlowSubsystem.h"
 #include "Player/RRGameMode.h"
 #include "Progression/RRLevelUpComponent.h"
 #include "Progression/RRProgressionComponent.h"
@@ -112,6 +113,14 @@ void ARRMiner::BeginPlay()
 	// Init order (sys-gas-core): actor info, then base stats once the three sets are on the ASC.
 	AbilitySystemComponent->InitAbilityActorInfo(this, this);
 
+	// HUD health events (sys-hud): bound before the base stats so their application sends the first OnHealthChanged.
+	HealthChangedHandle = AbilitySystemComponent->GetGameplayAttributeValueChangeDelegate(URRHealthAttributeSet::GetHealthAttribute())
+		.AddUObject(this, &ARRMiner::HandleHealthAttributeChanged);
+	MaxHealthChangedHandle = AbilitySystemComponent->GetGameplayAttributeValueChangeDelegate(URRHealthAttributeSet::GetMaxHealthAttribute())
+		.AddUObject(this, &ARRMiner::HandleHealthAttributeChanged);
+	LastWeaponSlots.Reset();
+	LastWeaponSlots.SetNum(FMath::Max(MaxWeapons, 0));
+
 	MoveSpeedChangedHandle = AbilitySystemComponent
 		->GetGameplayAttributeValueChangeDelegate(URRMovementAttributeSet::GetMoveSpeedAttribute())
 		.AddUObject(this, &ARRMiner::HandleMoveSpeedChanged);
@@ -137,6 +146,12 @@ void ARRMiner::BeginPlay()
 	SpawnDrone();
 	FindArenaGrid();
 	SpawnStartingWeapons();
+
+	// Registry for late HUD binding (sys-hud): after the base stats, so a listener reads real health values.
+	if (URRRunFlowSubsystem* RunFlow = GetWorld()->GetSubsystem<URRRunFlowSubsystem>())
+	{
+		RunFlow->RegisterMiner(this);
+	}
 }
 
 void ARRMiner::FindArenaGrid()
@@ -271,6 +286,8 @@ ARRWeapon* ARRMiner::AddWeapon(TSubclassOf<ARRWeapon> WeaponClass)
 	GetCapsuleComponent()->IgnoreActorWhenMoving(Weapon, true);
 	Weapon->Acquire(this);
 	Weapons.Add(Weapon);
+	BindWeaponSlotEvents(Weapon);
+	RefreshWeaponSlots();
 	OnWeaponAdded.Broadcast(Weapon);
 	return Weapon;
 }
@@ -331,6 +348,14 @@ void ARRMiner::EndPlay(const EEndPlayReason::Type EndPlayReason)
 	}
 	DamageReceivedHandle.Reset();
 	DeathHandle.Reset();
+
+	if (AbilitySystemComponent)
+	{
+		AbilitySystemComponent->GetGameplayAttributeValueChangeDelegate(URRHealthAttributeSet::GetHealthAttribute()).Remove(HealthChangedHandle);
+		AbilitySystemComponent->GetGameplayAttributeValueChangeDelegate(URRHealthAttributeSet::GetMaxHealthAttribute()).Remove(MaxHealthChangedHandle);
+	}
+	HealthChangedHandle.Reset();
+	MaxHealthChangedHandle.Reset();
 
 	if (IsValid(Drone))
 	{
@@ -632,4 +657,110 @@ void ARRMiner::UpdateDigTrigger(const FVector& MoveInput)
 
 	// The touching cells let the drone dig the nearest one when the steered arc misses them all (task-065-01).
 	Drone->RequestArcDig(ArenaGrid, ArcDirection, TouchingCells);
+}
+
+float ARRMiner::GetCurrentHealth() const
+{
+	return AbilitySystemComponent ? AbilitySystemComponent->GetNumericAttribute(URRHealthAttributeSet::GetHealthAttribute()) : 0.f;
+}
+
+float ARRMiner::GetMaxHealth() const
+{
+	return AbilitySystemComponent ? AbilitySystemComponent->GetNumericAttribute(URRHealthAttributeSet::GetMaxHealthAttribute()) : 0.f;
+}
+
+void ARRMiner::HandleHealthAttributeChanged(const FOnAttributeChangeData& ChangeData)
+{
+	const float Current = GetCurrentHealth();
+	const float Max = GetMaxHealth();
+	if (Max > 0.f && (Current != LastBroadcastHealth || Max != LastBroadcastMaxHealth))
+	{
+		LastBroadcastHealth = Current;
+		LastBroadcastMaxHealth = Max;
+		OnHealthChanged.Broadcast(Current, Max);
+	}
+
+	// Damage: Health went down. A MaxHealth decrease clamps Health to the new maximum (OldValue above it): not a hit.
+	if (ChangeData.Attribute == URRHealthAttributeSet::GetHealthAttribute() && ChangeData.NewValue < ChangeData.OldValue
+		&& Max > 0.f && ChangeData.OldValue <= Max)
+	{
+		OnDamaged.Broadcast(ChangeData.OldValue - ChangeData.NewValue, FMath::Clamp(ChangeData.NewValue / Max, 0.f, 1.f));
+	}
+}
+
+FRRWeaponSlotHUD ARRMiner::GetWeaponSlotHUD(int32 SlotIndex) const
+{
+	if (SlotIndex < 0 || SlotIndex >= MaxWeapons)
+	{
+		return FRRWeaponSlotHUD();
+	}
+	// Slots follow acquisition order over the valid weapons, so a destroyed entry never leaves a hole.
+	int32 ValidIndex = 0;
+	for (const TObjectPtr<ARRWeapon>& Weapon : Weapons)
+	{
+		if (IsValid(Weapon))
+		{
+			if (ValidIndex == SlotIndex)
+			{
+				return FRRWeaponSlotHUD::Make(Weapon);
+			}
+			++ValidIndex;
+		}
+	}
+	return FRRWeaponSlotHUD();
+}
+
+void ARRMiner::BindWeaponSlotEvents(ARRWeapon* Weapon)
+{
+	if (!IsValid(Weapon))
+	{
+		return;
+	}
+	Weapon->OnAmmoChanged.AddUniqueDynamic(this, &ARRMiner::HandleWeaponAmmoChanged);
+	if (URRAutoFireComponent* WeaponAutoFire = Weapon->GetAutoFireComponent())
+	{
+		WeaponAutoFire->OnReloadStarted.AddUniqueDynamic(this, &ARRMiner::HandleWeaponReloadStarted);
+		WeaponAutoFire->OnReloadFinished.AddUniqueDynamic(this, &ARRMiner::HandleWeaponReloadFinished);
+	}
+	if (ARRTurretLauncher* Launcher = Cast<ARRTurretLauncher>(Weapon))
+	{
+		Launcher->OnTurretChargesChanged.AddUniqueDynamic(this, &ARRMiner::HandleTurretChargesChanged);
+	}
+}
+
+void ARRMiner::RefreshWeaponSlots()
+{
+	if (LastWeaponSlots.Num() != FMath::Max(MaxWeapons, 0))
+	{
+		LastWeaponSlots.SetNum(FMath::Max(MaxWeapons, 0));
+	}
+	for (int32 SlotIndex = 0; SlotIndex < LastWeaponSlots.Num(); ++SlotIndex)
+	{
+		const FRRWeaponSlotHUD Slot = GetWeaponSlotHUD(SlotIndex);
+		if (!Slot.HasSameState(LastWeaponSlots[SlotIndex]))
+		{
+			LastWeaponSlots[SlotIndex] = Slot;
+			OnWeaponSlotChanged.Broadcast(SlotIndex, Slot);
+		}
+	}
+}
+
+void ARRMiner::HandleWeaponAmmoChanged(ARRWeapon* Weapon, int32 Rounds, int32 MagazineSize)
+{
+	RefreshWeaponSlots();
+}
+
+void ARRMiner::HandleWeaponReloadStarted(float ReloadDuration)
+{
+	RefreshWeaponSlots();
+}
+
+void ARRMiner::HandleWeaponReloadFinished()
+{
+	RefreshWeaponSlots();
+}
+
+void ARRMiner::HandleTurretChargesChanged(int32 Charges, int32 MaxCharges, float RechargeDuration)
+{
+	RefreshWeaponSlots();
 }
