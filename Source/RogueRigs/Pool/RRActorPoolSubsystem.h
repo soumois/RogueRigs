@@ -263,6 +263,13 @@ protected:
 	/** Class of every member actor (Release, IsPoolMember). */
 	TMap<TObjectKey<AActor>, TObjectKey<UClass>> MemberClasses;
 
+	/**
+	 * Template root scale of every member (task-095-01): root relative scale at creation divided by the spawn scale. A spawn
+	 * multiplies the requested scale with the root template scale (ESpawnActorScaleMethod::MultiplyWithRoot, e.g. the 0.3
+	 * PickupMesh of BP_PickupXP); a reuse must do the same, else the root takes the requested scale alone (3.3x cubes).
+	 */
+	TMap<TObjectKey<AActor>, FVector> MemberRootScales;
+
 	/** Requests waiting for a creation, earliest deadline first after each sort. */
 	TArray<FPendingRequest> Pending;
 

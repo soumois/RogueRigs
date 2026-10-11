@@ -222,6 +222,7 @@ void URRActorPoolSubsystem::ClearPool(bool bDestroyIdle)
 	ClassPools.Reset();
 	IdleActors.Reset();
 	MemberClasses.Reset();
+	MemberRootScales.Reset();
 	for (AActor* Actor : ToDestroy)
 	{
 		Actor->Destroy();
@@ -236,6 +237,7 @@ void URRActorPoolSubsystem::HandleMemberDestroyed(AActor* DestroyedActor)
 	{
 		return;
 	}
+	MemberRootScales.Remove(Key);
 	if (FClassPool* ClassPool = ClassPools.Find(ClassKey))
 	{
 		--ClassPool->MemberCount;
@@ -299,6 +301,18 @@ AActor* URRActorPoolSubsystem::CreateActor(UClass* Class, const FTransform& Tran
 	++ClassPool.TotalCreated;
 	++ClassPool.MemberCount;
 	MemberClasses.Add(TObjectKey<AActor>(Actor), TObjectKey<UClass>(Class));
+	// Template root scale = root scale after the spawn / requested scale (a zero requested axis keeps 1: nothing to undo).
+	FVector RootScale = FVector::OneVector;
+	if (const USceneComponent* Root = Actor->GetRootComponent())
+	{
+		const FVector Created = Root->GetRelativeScale3D();
+		const FVector Requested = Transform.GetScale3D();
+		for (int32 Axis = 0; Axis < 3; ++Axis)
+		{
+			RootScale[Axis] = FMath::Abs(Requested[Axis]) > UE_KINDA_SMALL_NUMBER ? Created[Axis] / Requested[Axis] : 1.0;
+		}
+	}
+	MemberRootScales.Add(TObjectKey<AActor>(Actor), RootScale);
 	Actor->OnDestroyed.AddDynamic(this, &URRActorPoolSubsystem::HandleMemberDestroyed);
 	return Actor;
 }
@@ -319,7 +333,10 @@ void URRActorPoolSubsystem::ReactivateActor(AActor* Actor, const FTransform& Tra
 			World->FindTeleportSpot(Actor, Location, Transform.Rotator());
 		}
 	}
-	Actor->SetActorTransform(FTransform(Transform.GetRotation(), Location, Transform.GetScale3D()), false, nullptr, ETeleportType::ResetPhysics);
+	// Same scale as a fresh spawn: requested scale times the root template scale (task-095-01).
+	const FVector* RootScale = MemberRootScales.Find(TObjectKey<AActor>(Actor));
+	const FVector Scale = Transform.GetScale3D() * (RootScale ? *RootScale : FVector::OneVector);
+	Actor->SetActorTransform(FTransform(Transform.GetRotation(), Location, Scale), false, nullptr, ETeleportType::ResetPhysics);
 	Actor->SetActorHiddenInGame(false);
 	if (Actor->PrimaryActorTick.bCanEverTick && Actor->PrimaryActorTick.bStartWithTickEnabled)
 	{
