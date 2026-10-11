@@ -3,7 +3,7 @@ id: task-094-04-hud-xp
 description: "XP bar, level text and the LEVEL UP flash move into their own widget bound to the XP and level events."
 parent: task-094-hud-refactor
 kind: task
-status: todo
+status: in-progress
 ---
 # WBP_XPStatus
 

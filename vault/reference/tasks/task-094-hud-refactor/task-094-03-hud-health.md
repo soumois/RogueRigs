@@ -3,7 +3,7 @@ id: task-094-03-hud-health
 description: "Health bar and text, game over text and damage vignette move into their own widget bound to the health events."
 parent: task-094-hud-refactor
 kind: task
-status: in-progress
+status: done
 ---
 # WBP_HealthStatus
 
@@ -19,7 +19,7 @@ status: in-progress
 - tokens: open
 - runs: open
 - milestone: M2
-- result: open
+- result: WBP_HealthStatus (parent URRHUDPanelWidget) holds health bar/text, GAME OVER and the vignette with a self-stopping fade timer; WBP_HUD places it full-screen at child 0 and lost the moved logic; compiled and saved, not seen on screen. Side effect: C++ KeepVignetteWarm and the vignette debug commands no longer find the vignette (task-094-10). Commits c179c2f, 5c2aeb6, da160c2.
 
 ## Relations
 - [[task-094-hud-refactor]] — parent global task.

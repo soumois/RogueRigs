@@ -506,6 +506,7 @@ task-094-06-hud-cards  reference/tasks/task-094-hud-refactor/task-094-06-hud-car
 task-094-07-hud-alerts  reference/tasks/task-094-hud-refactor/task-094-07-hud-alerts.md
 task-094-08-hud-minimap  reference/tasks/task-094-hud-refactor/task-094-08-hud-minimap.md
 task-094-09-hud-root  reference/tasks/task-094-hud-refactor/task-094-09-hud-root.md
+task-094-10-hud-cpp-lookups  reference/tasks/task-094-hud-refactor/task-094-10-hud-cpp-lookups.md
 task-094-hud-refactor  reference/tasks/task-094-hud-refactor.md
 task-095-01-xp-cube-scale  reference/tasks/task-095-xp-cube-scale/task-095-01-xp-cube-scale.md
 task-095-xp-cube-scale  reference/tasks/task-095-xp-cube-scale.md

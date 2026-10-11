@@ -13,7 +13,7 @@ status: in-progress
 - gdd_check: done by the Orchestrator when the task is planned (2026-10-11).
 - confirmed_by_owner: yes (2026-10-11)
 - milestone: M2
-- next_step: task-094-03-hud-health
+- next_step: task-094-04-hud-xp
 - result: open
 
 ## Subtasks
@@ -26,6 +26,7 @@ status: in-progress
 7. task-094-07-hud-alerts — bp
 8. task-094-08-hud-minimap — bp
 9. task-094-09-hud-root — bp
+10. task-094-10-hud-cpp-lookups — cpp
 
 ## Relations
 - [[tasks-to-do-index]] — parent index.
@@ -38,3 +39,4 @@ status: in-progress
 - [[task-094-07-hud-alerts]] — step 7, bp.
 - [[task-094-08-hud-minimap]] — step 8, bp.
 - [[task-094-09-hud-root]] — step 9, bp.
+- [[task-094-10-hud-cpp-lookups]] — step 10, cpp.
