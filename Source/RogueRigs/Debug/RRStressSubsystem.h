@@ -368,16 +368,24 @@ protected:
 	int32 StepSpikesGarbageCollect = 0;
 	int32 StepSpikesPause = 0;
 
+	/** Spikes of the current step tagged xp drop (task-092-01: XP cubes requested on the last two samples). */
+	int32 StepSpikesXP = 0;
+
 	/** GFrameCounter of the last garbage collection, of the last paused tick, and of the last game-mode fill with the robots it spawned. */
 	uint64 LastGarbageCollectFrame = 0;
 	uint64 LastPausedFrame = 0;
 	uint64 GameFillFrame = 0;
 	int32 GameFillSpawned = 0;
 
-	/** Actors created by the actor pool (URRActorPoolSubsystem TotalCreated) at the previous sample, and created during the last two samples (spike tag). */
+	/** Robots created by the actor pool (URRActorPoolSubsystem TotalCreated minus pickup creations) at the previous sample, and created during the last two samples (spike tag). */
 	int32 LastPoolCreatedTotal = 0;
 	int32 PoolCreatedPrevious = 0;
 	int32 PoolCreatedLatest = 0;
+
+	/** XP cubes requested (URRPickupSubsystem::GetTotalXPCubesRequested) at the previous sample, and during the last two samples (spike tag). */
+	int32 LastXPRequestedTotal = -1;
+	int32 XPRequestedPrevious = 0;
+	int32 XPRequestedLatest = 0;
 
 	/** Post garbage collection hook (tags spike frames). */
 	FDelegateHandle PostGarbageCollectHandle;

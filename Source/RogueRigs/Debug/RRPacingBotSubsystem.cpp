@@ -312,6 +312,11 @@ bool URRPacingBotSubsystem::WalkToNearestCube(ARRMiner* Miner) const
 	const ARRPickup* Nearest = nullptr;
 	for (TActorIterator<ARRPickup> It(GetWorld()); It; ++It)
 	{
+		// task-092-01: idle pool pickups are not live pickups.
+		if (URRActorPoolSubsystem::IsPooledIdle(*It))
+		{
+			continue;
+		}
 		if (It->GetPickupType() != ERRPickupType::XP || It->GetPhase() == ERRPickupPhase::Magnet || It->GetPhase() == ERRPickupPhase::Collected)
 		{
 			continue;
@@ -342,6 +347,11 @@ void URRPacingBotSubsystem::CountWorld(int32& OutRobots, int32& OutCubes) const
 	}
 	for (TActorIterator<ARRPickup> It(GetWorld()); It; ++It)
 	{
+		// task-092-01: idle pool pickups are not live pickups.
+		if (URRActorPoolSubsystem::IsPooledIdle(*It))
+		{
+			continue;
+		}
 		OutCubes += It->GetPickupType() == ERRPickupType::XP && It->GetPhase() != ERRPickupPhase::Collected ? 1 : 0;
 	}
 }

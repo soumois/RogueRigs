@@ -4,6 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/Actor.h"
+#include "Pool/RRPoolable.h"
 #include "RRPickup.generated.h"
 
 class ARRMiner;
@@ -32,7 +33,7 @@ enum class ERRPickupPhase : uint8
 	Rest,
 	/** Accelerating toward the miner until collected. */
 	Magnet,
-	/** Collected: destroyed this frame. */
+	/** Collected: released to the actor pool (or destroyed outside it) this frame. */
 	Collected
 };
 
@@ -46,12 +47,18 @@ enum class ERRPickupPhase : uint8
  * miner moves away. A Heal pickup is ignored while the miner is at full health (IsRefusedByMiner): it stays where it is
  * and is attracted once the miner is damaged and within its radius. Within CollectDistance it is collected: logs its type (Verbose), an XP pickup adds XPAmount to the
  * miner progression (scaled by XPGain there), ARRMiner::NotifyPickupCollected broadcasts the type and the location, then
- * it destroys itself. No physics, no collision; movement is driven by URRPickupSubsystem in one loop per frame (actor tick
+ * it returns to URRActorPoolSubsystem when the pool created it (task-092-01: URRPickupSubsystem::RequestSpawn and
+ * RequestXPCube acquire every grid and robot drop from the pool), else it destroys itself. Pool reset (IRRPoolable):
+ * OnPoolReleased unregisters from the pickup subsystem, deactivates every FX component (BP_PickupXP TrailFX) at once and
+ * resets motion state (phase, magnet latch and speed, pop timers) and per-drop values (XPAmount, OreValue, HealAmount back
+ * to the class defaults, pop yaw cleared); OnPoolAcquired starts a new life (pop from the new location, registration) after
+ * the caller set the values, and re-activates auto-activate FX components. The pool resets the rotation (BP_PickupXP faces
+ * the miner on magnet start). No physics, no collision; movement is driven by URRPickupSubsystem in one loop per frame (actor tick
  * only as a fallback when the subsystem is missing). Spawned by ARRArenaGrid at a cell center (floor top), and by ARREnemy
  * at its feet on death (XP, split over several cubes). Subclass in Blueprint: set PickupType and the mesh.
  */
 UCLASS(Abstract, Blueprintable)
-class ROGUERIGS_API ARRPickup : public AActor
+class ROGUERIGS_API ARRPickup : public AActor, public IRRPoolable
 {
 	GENERATED_BODY()
 
@@ -108,6 +115,15 @@ public:
 	/** Forces the ejection direction (world yaw in degrees) instead of a random one. Call before BeginPlay (deferred spawn); ARREnemy spreads its cubes evenly. */
 	void SetPopYaw(float InYawDegrees) { PopYawDegrees = InYawDegrees; bHasPopYaw = true; }
 
+	/** True between the start of a life (BeginPlay or OnPoolAcquired) and its end (OnPoolReleased). */
+	bool IsLifeStarted() const { return bLifeStarted; }
+
+	/** IRRPoolable: starts a new life at the current location (values already set by the caller) and re-activates auto-activate FX. */
+	virtual void OnPoolAcquired_Implementation() override;
+
+	/** IRRPoolable: unregisters, stops every FX component and resets motion state and per-drop values (see the class comment). */
+	virtual void OnPoolReleased_Implementation() override;
+
 	/** World location where the pop started (spawn point). */
 	const FVector& GetPopStart() const { return PopStart; }
 
@@ -115,8 +131,14 @@ public:
 	const FVector& GetPopEnd() const { return PopEnd; }
 
 protected:
-	/** Turns collision off on every primitive component (Blueprint ones included), picks the pop target, stores the pop start point and registers with URRPickupSubsystem (else enables the actor tick). */
+	/** Turns collision off on every primitive component (Blueprint ones included), then StartLife. */
 	virtual void BeginPlay() override;
+
+	/**
+	 * Starts a life once (no-op while one is running): picks the pop target from the current location, resets the motion
+	 * state and registers with URRPickupSubsystem (else enables the actor tick). Called by BeginPlay and OnPoolAcquired.
+	 */
+	void StartLife();
 
 	/** Unregisters from URRPickupSubsystem. */
 	virtual void EndPlay(const EEndPlayReason::Type EndPlayReason) override;
@@ -143,14 +165,14 @@ protected:
 	/** Heal pickup: applies HealEffectClass with SetByCaller Data.Heal = HealAmount to Miner (skipped when 0, dead or no ASC). */
 	void ApplyHeal(ARRMiner* Miner) const;
 
-	/** Logs the type, adds XPAmount XP to the miner for an XP pickup, notifies the miner (type, location) and destroys this pickup. */
+	/** Logs the type, adds XPAmount XP to the miner for an XP pickup, notifies the miner (type, location), then releases this pickup to the pool (destroys it outside the pool). */
 	void Collect(ARRMiner* Miner);
 
 	/** Called once when the magnet latches (start the trail). */
 	UFUNCTION(BlueprintImplementableEvent, Category = "Pickup")
 	void OnMagnetStart();
 
-	/** Called once on the collection frame, at the collection location, just before the pickup is destroyed (spawn a detached sparkle here, or bind ARRMiner::OnPickupCollectedAt). */
+	/** Called once on the collection frame, at the collection location, just before the pickup is released or destroyed (spawn a detached sparkle here, or bind ARRMiner::OnPickupCollectedAt). */
 	UFUNCTION(BlueprintImplementableEvent, Category = "Pickup")
 	void OnCollected(FVector Location);
 
@@ -258,4 +280,7 @@ protected:
 
 	/** True when SetPopYaw chose the ejection direction. */
 	bool bHasPopYaw = false;
+
+	/** True while a life runs (see IsLifeStarted). */
+	bool bLifeStarted = false;
 };

@@ -10,8 +10,10 @@
 #include "GAS/RRGameplayTags.h"
 #include "GAS/RRHealthAttributeSet.h"
 #include "Kismet/GameplayStatics.h"
+#include "Particles/ParticleSystemComponent.h"
 #include "Pickups/RRPickupSubsystem.h"
 #include "Player/RRMiner.h"
+#include "Pool/RRActorPoolSubsystem.h"
 #include "Progression/RRProgressionComponent.h"
 #include "RogueRigs.h"
 
@@ -46,6 +48,17 @@ void ARRPickup::BeginPlay()
 		Primitive->CanCharacterStepUpOn = ECB_No;
 	}
 
+	StartLife();
+}
+
+void ARRPickup::StartLife()
+{
+	if (bLifeStarted)
+	{
+		return;
+	}
+	bLifeStarted = true;
+
 	PopStart = GetActorLocation();
 	const float Yaw = bHasPopYaw ? FMath::DegreesToRadians(PopYawDegrees) : FMath::FRandRange(0.f, UE_TWO_PI);
 	const float MinDistance = FMath::Min(PopMinDistance, PopMaxDistance);
@@ -55,6 +68,7 @@ void ARRPickup::BeginPlay()
 	RestElapsed = 0.f;
 	MagnetSpeed = 0.f;
 	Phase = ERRPickupPhase::Pop;
+	TargetMiner = nullptr;
 
 	URRPickupSubsystem* Pickups = GetWorld() ? GetWorld()->GetSubsystem<URRPickupSubsystem>() : nullptr;
 	if (Pickups)
@@ -65,6 +79,53 @@ void ARRPickup::BeginPlay()
 	{
 		SetActorTickEnabled(true);
 	}
+}
+
+void ARRPickup::OnPoolAcquired_Implementation()
+{
+	// Fresh pool actors started their life in BeginPlay; reused ones start it here, after the caller set their values.
+	StartLife();
+	TInlineComponentArray<UFXSystemComponent*> Effects(this);
+	for (UFXSystemComponent* Effect : Effects)
+	{
+		if (Effect->bAutoActivate && !Effect->IsActive())
+		{
+			Effect->Activate(true);
+		}
+	}
+}
+
+void ARRPickup::OnPoolReleased_Implementation()
+{
+	if (URRPickupSubsystem* Pickups = GetWorld() ? GetWorld()->GetSubsystem<URRPickupSubsystem>() : nullptr)
+	{
+		Pickups->UnregisterPickup(this);
+	}
+	SetActorTickEnabled(false);
+	bLifeStarted = false;
+
+	// Trail (BP_PickupXP TrailFX, activated by OnMagnetStart): particles killed now so a reused cube never shows an old ribbon.
+	TInlineComponentArray<UFXSystemComponent*> Effects(this);
+	for (UFXSystemComponent* Effect : Effects)
+	{
+		Effect->DeactivateImmediate();
+	}
+
+	// Motion state and magnet latch.
+	Phase = ERRPickupPhase::Pop;
+	TargetMiner = nullptr;
+	PopElapsed = 0.f;
+	RestElapsed = 0.f;
+	MagnetSpeed = 0.f;
+
+	// Per-drop values back to the class defaults: the next caller sets its own before OnPoolAcquired (a heal request with
+	// HealAmount 0 keeps the class default, as a fresh spawn would).
+	const ARRPickup* Defaults = GetDefault<ARRPickup>(GetClass());
+	XPAmount = Defaults->XPAmount;
+	OreValue = Defaults->OreValue;
+	HealAmount = Defaults->HealAmount;
+	PopYawDegrees = 0.f;
+	bHasPopYaw = false;
 }
 
 void ARRPickup::EndPlay(const EEndPlayReason::Type EndPlayReason)
@@ -245,6 +306,13 @@ void ARRPickup::Collect(ARRMiner* Miner)
 		Miner->NotifyPickupCollected(PickupType, Location);
 	}
 	OnCollected(Location);
+	// task-092-01: pool pickups go back to the pool (OnPoolReleased unregisters them, safe inside the subsystem loop).
+	URRActorPoolSubsystem* Pool = GetWorld() ? GetWorld()->GetSubsystem<URRActorPoolSubsystem>() : nullptr;
+	if (Pool && Pool->IsPoolMember(this) && !Pool->IsIdle(this))
+	{
+		Pool->Release(this);
+		return;
+	}
 	Destroy();
 }
 

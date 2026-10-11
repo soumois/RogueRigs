@@ -27,6 +27,7 @@
 #include "GAS/RRMovementAttributeSet.h"
 #include "Objectives/RRRunFlowSubsystem.h"
 #include "Pickups/RRPickup.h"
+#include "Pickups/RRPickupSubsystem.h"
 #include "Player/RRMiner.h"
 #include "Pool/RRActorPoolSubsystem.h"
 #include "Projectiles/RRCollisionChannels.h"
@@ -583,8 +584,17 @@ void ARREnemy::DropXP()
 	const float Spacing = 360.f / static_cast<float>(CubeCount);
 	const float StartYaw = FMath::FRandRange(0.f, 360.f);
 	const FTransform SpawnTransform(FRotator::ZeroRotator, DropLocation);
+	// task-092-01: cubes come from the actor pool through the pickup subsystem (missing ones created within 3 frames, so a
+	// mass kill does not create every cube in one frame); direct spawn only in worlds without the subsystem.
+	URRPickupSubsystem* Pickups = GetWorld()->GetSubsystem<URRPickupSubsystem>();
 	for (int32 Index = 0; Index < CubeCount; ++Index)
 	{
+		const float CubeYaw = StartYaw + Spacing * (static_cast<float>(Index) + FMath::FRandRange(-0.25f, 0.25f));
+		if (Pickups)
+		{
+			Pickups->RequestXPCube(XPPickupClass, DropLocation, CubeXP, CubeYaw);
+			continue;
+		}
 		ARRPickup* Cube = GetWorld()->SpawnActorDeferred<ARRPickup>(XPPickupClass, SpawnTransform, nullptr, nullptr,
 			ESpawnActorCollisionHandlingMethod::AlwaysSpawn);
 		if (!Cube)
@@ -593,7 +603,7 @@ void ARREnemy::DropXP()
 			continue;
 		}
 		Cube->SetXPAmount(CubeXP);
-		Cube->SetPopYaw(StartYaw + Spacing * (static_cast<float>(Index) + FMath::FRandRange(-0.25f, 0.25f)));
+		Cube->SetPopYaw(CubeYaw);
 		Cube->FinishSpawning(SpawnTransform);
 	}
 }

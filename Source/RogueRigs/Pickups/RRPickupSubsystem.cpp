@@ -1,4 +1,4 @@
-// Rogue Rigs - pickup world subsystem: moves every live pickup in one loop per frame (no actor tick per pickup, no physics) and spawns queued grid drops under a per-frame cap.
+// Rogue Rigs - pickup world subsystem: moves every live pickup in one loop per frame (no actor tick per pickup, no physics) and acquires grid and robot drops from the actor pool.
 
 #include "Pickups/RRPickupSubsystem.h"
 
@@ -19,82 +19,105 @@ bool URRPickupSubsystem::DoesSupportWorldType(const EWorldType::Type WorldType) 
 void URRPickupSubsystem::Deinitialize()
 {
 	Pickups.Reset();
-	SpawnQueue.Reset();
 	Super::Deinitialize();
-}
-
-void URRPickupSubsystem::RefreshFrameBudget()
-{
-	const UWorld* World = GetWorld();
-	const double Now = World ? World->GetTimeSeconds() : 0.0;
-	if (Now != BudgetWorldTime)
-	{
-		BudgetWorldTime = Now;
-		SpawnedThisFrame = 0;
-	}
 }
 
 ARRPickup* URRPickupSubsystem::RequestSpawn(TSubclassOf<ARRPickup> PickupClass, const FVector& Location, AActor* Owner, int32 OreValue, float HealAmount)
 {
-	if (!PickupClass)
+	return AcquirePickup(PickupClass, Location, Owner, [OreValue, HealAmount](ARRPickup* Pickup)
 	{
-		return nullptr;
-	}
-	FRRPickupSpawnRequest Request;
-	Request.PickupClass = PickupClass;
-	Request.Location = Location;
-	Request.Owner = Owner;
-	Request.OreValue = OreValue;
-	Request.HealAmount = HealAmount;
-
-	RefreshFrameBudget();
-	// Older requests go first: spawn now only when nothing waits and the frame budget allows.
-	if (SpawnQueue.Num() == 0 && SpawnedThisFrame < MaxSpawnsPerFrame)
-	{
-		return SpawnNow(Request);
-	}
-	SpawnQueue.Add(Request);
-	return nullptr;
+		Pickup->SetOreValue(OreValue);
+		if (HealAmount > 0.f)
+		{
+			Pickup->SetHealAmount(HealAmount);
+		}
+	});
 }
 
-ARRPickup* URRPickupSubsystem::SpawnNow(const FRRPickupSpawnRequest& Request)
+ARRPickup* URRPickupSubsystem::RequestXPCube(TSubclassOf<ARRPickup> PickupClass, const FVector& Location, float XPAmount, float PopYawDegrees)
+{
+	++TotalXPCubesRequested;
+	return AcquirePickup(PickupClass, Location, nullptr, [XPAmount, PopYawDegrees](ARRPickup* Pickup)
+	{
+		Pickup->SetXPAmount(XPAmount);
+		Pickup->SetPopYaw(PopYawDegrees);
+	});
+}
+
+ARRPickup* URRPickupSubsystem::AcquirePickup(TSubclassOf<ARRPickup> PickupClass, const FVector& Location, AActor* Owner, TFunction<void(ARRPickup*)> Init)
 {
 	UWorld* World = GetWorld();
-	++SpawnedThisFrame;
-	if (!World || !Request.PickupClass)
+	if (!PickupClass || !World)
 	{
 		return nullptr;
 	}
-	const FTransform SpawnTransform(Request.Location);
-	ARRPickup* Pickup = World->SpawnActorDeferred<ARRPickup>(Request.PickupClass, SpawnTransform, Request.Owner.Get(), nullptr,
-		ESpawnActorCollisionHandlingMethod::AlwaysSpawn);
-	if (!Pickup)
+	const FTransform SpawnTransform(Location);
+	URRActorPoolSubsystem* Pool = World->GetSubsystem<URRActorPoolSubsystem>();
+	if (!Pool)
 	{
-		return nullptr;
+		ARRPickup* Pickup = World->SpawnActorDeferred<ARRPickup>(PickupClass, SpawnTransform, Owner, nullptr, ESpawnActorCollisionHandlingMethod::AlwaysSpawn);
+		if (Pickup)
+		{
+			Init(Pickup);
+			Pickup->FinishSpawning(SpawnTransform);
+		}
+		return Pickup;
 	}
-	Pickup->SetOreValue(Request.OreValue);
-	if (Request.HealAmount > 0.f)
+
+	RequestedClasses.AddUnique(PickupClass.Get());
+	FRRPoolAcquireParams Params;
+	Params.Owner = Owner;
+	Params.CollisionHandling = ESpawnActorCollisionHandlingMethod::AlwaysSpawn;
+	Params.MaxFrames = FMath::Max(SpawnMaxFrames, 1);
+	// The drop outlives the robot (released at once) or grid that asked for it: the world-long subsystem is the requester.
+	Params.Requester = this;
+	Params.OnInit = [Init](AActor* Actor)
 	{
-		Pickup->SetHealAmount(Request.HealAmount);
+		if (ARRPickup* Pickup = Cast<ARRPickup>(Actor))
+		{
+			Init(Pickup);
+		}
+	};
+	if (SpawnMaxFrames <= 0)
+	{
+		return Pool->AcquireImmediate<ARRPickup>(PickupClass, SpawnTransform, Params);
 	}
-	Pickup->FinishSpawning(SpawnTransform);
-	return Pickup;
+	// Delivered now when an idle pickup is reused (OnReady runs inside Acquire); a later delivery writes to the shared slot only.
+	const TSharedRef<TWeakObjectPtr<ARRPickup>> Delivered = MakeShared<TWeakObjectPtr<ARRPickup>>();
+	Params.OnReady = [Delivered](AActor* Actor) { *Delivered = Cast<ARRPickup>(Actor); };
+	const FRRPoolRequestHandle Handle = Pool->Acquire(PickupClass, SpawnTransform, MoveTemp(Params));
+	return Handle.IsValid() ? nullptr : Delivered->Get();
 }
 
-void URRPickupSubsystem::SpawnQueued()
+int32 URRPickupSubsystem::GetQueuedSpawnCount() const
 {
-	if (SpawnQueue.Num() == 0)
+	return GetPoolStats().Pending;
+}
+
+FRRActorPoolStats URRPickupSubsystem::GetPoolStats() const
+{
+	FRRActorPoolStats Sum;
+	const URRActorPoolSubsystem* Pool = GetWorld() ? GetWorld()->GetSubsystem<URRActorPoolSubsystem>() : nullptr;
+	if (!Pool)
 	{
-		return;
+		return Sum;
 	}
-	RefreshFrameBudget();
-	int32 Spawned = 0;
-	while (Spawned < SpawnQueue.Num() && SpawnedThisFrame < MaxSpawnsPerFrame)
+	for (const TWeakObjectPtr<UClass>& Class : RequestedClasses)
 	{
-		SpawnNow(SpawnQueue[Spawned]);
-		++Spawned;
+		if (UClass* Resolved = Class.Get())
+		{
+			const FRRActorPoolStats Stats = Pool->GetStats(Resolved);
+			Sum.PoolSize += Stats.PoolSize;
+			Sum.Idle += Stats.Idle;
+			Sum.Acquired += Stats.Acquired;
+			Sum.Pending += Stats.Pending;
+			Sum.CreatedThisFrame += Stats.CreatedThisFrame;
+			Sum.LongestWaitFrames = FMath::Max(Sum.LongestWaitFrames, Stats.LongestWaitFrames);
+			Sum.TotalCreated += Stats.TotalCreated;
+			Sum.TotalReused += Stats.TotalReused;
+		}
 	}
-	SpawnQueue.RemoveAt(0, Spawned, EAllowShrinking::No);
+	return Sum;
 }
 
 void URRPickupSubsystem::RegisterPickup(ARRPickup* Pickup)
@@ -149,9 +172,6 @@ void URRPickupSubsystem::Tick(float DeltaTime)
 {
 	SCOPE_CYCLE_COUNTER(STAT_RRPickupsTick);
 	Super::Tick(DeltaTime);
-
-	// Queued drops first (spawned outside the motion loop; they move from the next frame).
-	SpawnQueued();
 
 	if (Pickups.Num() == 0)
 	{

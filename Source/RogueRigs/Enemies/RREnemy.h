@@ -197,7 +197,7 @@ protected:
 	/** Advances the shrink; at its end drops the XP pickups, then releases the robot to the actor pool (destroys it outside the pool). */
 	void UpdateDeath(float DeltaSeconds);
 
-	/** Spawns XPCubeCount pickups of XPPickupClass at DropLocation (no owner), each worth Stats.XPValue / XPCubeCount, ejected in spread directions. Overridden to suppress the drop (kamikaze fuse). */
+	/** Requests XPCubeCount pickups of XPPickupClass at DropLocation (no owner) from URRPickupSubsystem::RequestXPCube (actor pool, created within 3 frames; direct spawn without the subsystem), each worth Stats.XPValue / XPCubeCount, ejected in spread directions. Overridden to suppress the drop (kamikaze fuse). */
 	virtual void DropXP();
 
 	/** Health set hit callback (runs inside the GE execution): sends the hit to URRDamageNumberSubsystem (capsule top + DamageNumberHeight, disc DamageNumberSpawnRadius). */

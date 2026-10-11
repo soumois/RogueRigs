@@ -15,6 +15,7 @@
 #include "HAL/PlatformMemory.h"
 #include "HAL/PlatformTime.h"
 #include "Pickups/RRPickup.h"
+#include "Pool/RRActorPoolSubsystem.h"
 #include "Player/RRMiner.h"
 #include "RogueRigs.h"
 #include "TimerManager.h"
@@ -332,7 +333,7 @@ namespace RRGridStress
 			ForceFlowFieldCompute(World);
 		}
 
-		const int32 PickupsBefore = [World]() { int32 Count = 0; for (TActorIterator<ARRPickup> It(World); It; ++It) { ++Count; } return Count; }();
+		const int32 PickupsBefore = [World]() { int32 Count = 0; for (TActorIterator<ARRPickup> It(World); It; ++It) { Count += URRActorPoolSubsystem::IsPooledIdle(*It) ? 0 : 1; } return Count; }();
 
 		// Single-cell destruction (dig): the block cells nearest to the miner, each followed by the forced flow-field rebuild it causes.
 		{
@@ -387,7 +388,7 @@ namespace RRGridStress
 				ExplosionMs.Add((FPlatformTime::Seconds() - Start) * 1000.0);
 			}
 			MeanMax(ExplosionMs, Mean, Max);
-			const int32 PickupsAfter = [World]() { int32 Count = 0; for (TActorIterator<ARRPickup> It(World); It; ++It) { ++Count; } return Count; }();
+			const int32 PickupsAfter = [World]() { int32 Count = 0; for (TActorIterator<ARRPickup> It(World); It; ++It) { Count += URRActorPoolSubsystem::IsPooledIdle(*It) ? 0 : 1; } return Count; }();
 			UE_LOG(LogRogueRigs, Display,
 				TEXT("GridBench: explosion terrain (radius %.0f) mean %.3f max %.3f ms, %d explosions, %d blocks (%.1f per explosion, %.2f us per block), pickups spawned by bench %d"),
 				Radius, Mean, Max, Points.Num(), Destroyed, Points.IsEmpty() ? 0.f : static_cast<float>(Destroyed) / Points.Num(),

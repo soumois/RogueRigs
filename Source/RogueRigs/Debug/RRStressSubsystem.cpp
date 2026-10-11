@@ -30,6 +30,7 @@
 #include "Player/RRMiner.h"
 #include "ProfilingDebugging/CsvProfiler.h"
 #include "ProfilingDebugging/MiscTrace.h"
+#include "Pickups/RRPickupSubsystem.h"
 #include "Pool/RRActorPoolSubsystem.h"
 #include "RogueRigs.h"
 #include "Progression/RRProgressionComponent.h"
@@ -789,6 +790,7 @@ void URRStressSubsystem::BeginStep(int32 InStepIndex)
 	StepSpikesFill = 0;
 	StepSpikesGarbageCollect = 0;
 	StepSpikesPause = 0;
+	StepSpikesXP = 0;
 	StepHordeSpawned = 0;
 	CSV_EVENT_GLOBAL(TEXT("Stress_%d_Settle"), RunCounts[StepIndex]);
 }
@@ -872,7 +874,13 @@ void URRStressSubsystem::Tick(float DeltaTime)
 	const int32 Alive = GetWorldAliveCount();
 	// Robots created by the pool since the previous sample (task-091-01: a wave is created over up to 20 frames).
 	const URRActorPoolSubsystem* Pool = GetWorld()->GetSubsystem<URRActorPoolSubsystem>();
-	const int32 PoolCreatedTotal = Pool ? Pool->GetStats().TotalCreated : 0;
+	const URRPickupSubsystem* PickupSystem = GetWorld()->GetSubsystem<URRPickupSubsystem>();
+	// task-092-01: pickups share the pool; only robot creations count as wave spawns.
+	const int32 PoolCreatedTotal = Pool ? Pool->GetStats().TotalCreated - (PickupSystem ? PickupSystem->GetPoolStats().TotalCreated : 0) : 0;
+	const int32 XPRequestedTotal = PickupSystem ? PickupSystem->GetTotalXPCubesRequested() : 0;
+	XPRequestedPrevious = XPRequestedLatest;
+	XPRequestedLatest = LastXPRequestedTotal >= 0 ? FMath::Max(XPRequestedTotal - LastXPRequestedTotal, 0) : 0;
+	LastXPRequestedTotal = XPRequestedTotal;
 	PoolCreatedPrevious = PoolCreatedLatest;
 	PoolCreatedLatest = FMath::Max(PoolCreatedTotal - LastPoolCreatedTotal, 0);
 	LastPoolCreatedTotal = PoolCreatedTotal;
@@ -890,15 +898,17 @@ void URRStressSubsystem::Tick(float DeltaTime)
 		const int32 PoolCreated = PoolCreatedLatest + PoolCreatedPrevious;
 		// Wave spawn tag: a fill wave requested on the previous frame, or robots created by the pool on the last two samples.
 		const bool bSpawn = FillRobots > 0 || PoolCreated > 0;
+		const int32 XPCubes = XPRequestedLatest + XPRequestedPrevious;
 		++StepSpikes;
+		StepSpikesXP += XPCubes > 0 && !bGarbageCollect ? 1 : 0;
 		StepSpikesGarbageCollect += bGarbageCollect ? 1 : 0;
 		StepSpikesFill += bSpawn && !bGarbageCollect ? 1 : 0;
 		StepSpikesPause += bAfterPause && !bGarbageCollect && !bSpawn ? 1 : 0;
 		const URRFlowFieldSubsystem* Flow = GetWorld()->GetSubsystem<URRFlowFieldSubsystem>();
 		// stat unit values are those of the last completed frame of each thread; the flow ms is that of the last frame with flow work.
-		UE_LOG(LogRogueRigs, Display, TEXT("Stress spike: step %d, t %.2f s, frame %.2f, game %.2f, draw %.2f, gpu %.2f ms, flow last %.3f ms (work frames %d), robots %d, blocks %d, explosions %d, fill robots %d, pool created %d, gc %d, after pause %d"),
+		UE_LOG(LogRogueRigs, Display, TEXT("Stress spike: step %d, t %.2f s, frame %.2f, game %.2f, draw %.2f, gpu %.2f ms, flow last %.3f ms (work frames %d), robots %d, blocks %d, explosions %d, fill robots %d, pool created %d, xp drop %d, gc %d, after pause %d"),
 			RunCounts[StepIndex], StepElapsed - RunSettleSeconds, FrameMs, GameMs, DrawMs, GpuMs, Flow ? Flow->GetLastFrameWorkMilliseconds() : 0.f,
-			Flow ? Flow->GetWorkFrameCount() : 0, Alive, StepBlocksDestroyed, StepExplosions, FillRobots, PoolCreated, bGarbageCollect ? 1 : 0, bAfterPause ? 1 : 0);
+			Flow ? Flow->GetWorkFrameCount() : 0, Alive, StepBlocksDestroyed, StepExplosions, FillRobots, PoolCreated, XPCubes, bGarbageCollect ? 1 : 0, bAfterPause ? 1 : 0);
 	}
 	if (StepElapsed >= RunSettleSeconds + RunMeasureSeconds)
 	{
@@ -966,6 +976,13 @@ void URRStressSubsystem::FinishStep()
 		UE_LOG(LogRogueRigs, Display, TEXT("Stress pool: step %d, created %d, reused %d, longest wait %d frames, pool size %d (idle %d, acquired %d, pending %d)."),
 			RunCounts[StepIndex], PoolStats.TotalCreated, PoolStats.TotalReused, PoolStats.LongestWaitFrames, PoolStats.PoolSize, PoolStats.Idle,
 			PoolStats.Acquired, PoolStats.Pending);
+	}
+	if (const URRPickupSubsystem* PickupSystem = GetWorld()->GetSubsystem<URRPickupSubsystem>())
+	{
+		const FRRActorPoolStats PickupStats = PickupSystem->GetPoolStats();
+		UE_LOG(LogRogueRigs, Display, TEXT("Stress pickup pool: step %d, created %d, reused %d, longest wait %d frames, pool size %d (idle %d, acquired %d, pending %d), xp drop spikes %d."),
+			RunCounts[StepIndex], PickupStats.TotalCreated, PickupStats.TotalReused, PickupStats.LongestWaitFrames, PickupStats.PoolSize,
+			PickupStats.Idle, PickupStats.Acquired, PickupStats.Pending, StepSpikesXP);
 	}
 	float UnusedP99 = 0.f;
 	RRStress::Summarize(EventSamples, Result.EventFrameAvg, UnusedP99);

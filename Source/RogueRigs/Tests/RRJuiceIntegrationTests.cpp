@@ -23,6 +23,7 @@
 #include "GAS/RRHealthAttributeSet.h"
 #include "Grid/RRArenaGrid.h"
 #include "Pickups/RRPickup.h"
+#include "Pool/RRActorPoolSubsystem.h"
 #include "Player/RRMiner.h"
 #include "Progression/RRProgressionComponent.h"
 #include "Tests/RRTestEventRecorder.h"
@@ -372,6 +373,11 @@ bool FRRJuiceKillStreamTest::RunTest(const FString& Parameters)
 	}
 	for (TActorIterator<ARRPickup> It(TestWorld.Get()); It; ++It)
 	{
+		// task-092-01: idle pool pickups are not live pickups.
+		if (URRActorPoolSubsystem::IsPooledIdle(*It))
+		{
+			continue;
+		}
 		if (It->IsA(CubeClass))
 		{
 			Cubes.Add(*It);

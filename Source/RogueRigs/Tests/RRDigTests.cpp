@@ -24,6 +24,7 @@
 #include "Grid/RRArenaGrid.h"
 #include "Kismet/GameplayStatics.h"
 #include "Pickups/RRPickup.h"
+#include "Pool/RRActorPoolSubsystem.h"
 #include "Player/RRMiner.h"
 #include "Tests/RRTestEventRecorder.h"
 #include "Tests/RRTestAccess.h"
@@ -55,6 +56,11 @@ namespace RRDigTests
 		int32 Count = 0;
 		for (TActorIterator<ARRPickup> It(World); It; ++It)
 		{
+			// task-092-01: idle pool pickups are not live pickups.
+			if (URRActorPoolSubsystem::IsPooledIdle(*It))
+			{
+				continue;
+			}
 			Count += IsValid(*It) ? 1 : 0;
 		}
 		return Count;
@@ -275,6 +281,11 @@ bool FRRDigHealOreDropsTest::RunTest(const FString& Parameters)
 	TestEqual(TEXT("1 pickup in total"), Total, 1);
 	for (TActorIterator<ARRPickup> It(TestWorld.Get()); It; ++It)
 	{
+		// task-092-01: idle pool pickups are not live pickups.
+		if (URRActorPoolSubsystem::IsPooledIdle(*It))
+		{
+			continue;
+		}
 		TestEqual(TEXT("pickup is Heal"), It->GetPickupType(), ERRPickupType::Heal);
 		TestTrue(TEXT("pickup is a BP_PickupHeal"), It->IsA(HealClass));
 	}

@@ -32,6 +32,7 @@
 #include "HAL/PlatformTime.h"
 #include "Math/RandomStream.h"
 #include "Pickups/RRPickup.h"
+#include "Pool/RRActorPoolSubsystem.h"
 #include "Projectiles/RRProjectile.h"
 #include "Player/RRGameMode.h"
 #include "Progression/RRLevelUpComponent.h"
@@ -162,6 +163,11 @@ namespace RRIntegrationTests
 		int32 Count = 0;
 		for (TActorIterator<ARRPickup> It(World); It; ++It)
 		{
+			// task-092-01: idle pool pickups are not live pickups.
+			if (URRActorPoolSubsystem::IsPooledIdle(*It))
+			{
+				continue;
+			}
 			Count += IsValid(*It) && !It->IsActorBeingDestroyed() && It->GetPickupType() == ERRPickupType::XP ? 1 : 0;
 		}
 		return Count;
@@ -270,6 +276,11 @@ namespace RRIntegrationTests
 			float NearestDistance = TNumericLimits<float>::Max();
 			for (TActorIterator<ARRPickup> It(TestWorld.Get()); It; ++It)
 			{
+				// task-092-01: idle pool pickups are not live pickups.
+				if (URRActorPoolSubsystem::IsPooledIdle(*It))
+				{
+					continue;
+				}
 				if (IsValid(*It) && !It->IsActorBeingDestroyed() && It->GetPickupType() == ERRPickupType::XP)
 				{
 					const float Distance = FVector::Dist2D(It->GetActorLocation(), Miner->GetActorLocation());
@@ -476,6 +487,11 @@ bool FRRIntegrationXPLevelUpTest::RunTest(const FString& Parameters)
 	TArray<FVector> Cubes;
 	for (TActorIterator<ARRPickup> It(TestWorld.Get()); It; ++It)
 	{
+		// task-092-01: idle pool pickups are not live pickups.
+		if (URRActorPoolSubsystem::IsPooledIdle(*It))
+		{
+			continue;
+		}
 		if (IsValid(*It) && !It->IsActorBeingDestroyed() && It->GetPickupType() == ERRPickupType::XP)
 		{
 			Cubes.Add(It->GetActorLocation());

@@ -13,6 +13,7 @@
 #include "Grid/RROreTypeRow.h"
 #include "Objectives/RRConsole.h"
 #include "Pickups/RRPickup.h"
+#include "Pool/RRActorPoolSubsystem.h"
 #include "Pickups/RRPickupSubsystem.h"
 #include "Tests/RRTestAccess.h"
 #include "Tests/RRTestEventRecorder.h"
@@ -92,6 +93,11 @@ namespace RROreDepositTests
 		OutValueSum = 0;
 		for (TActorIterator<ARRPickup> It(World); It; ++It)
 		{
+			// task-092-01: idle pool pickups are not live pickups.
+			if (URRActorPoolSubsystem::IsPooledIdle(*It))
+			{
+				continue;
+			}
 			if (IsValid(*It) && It->GetPickupType() == ERRPickupType::Ore)
 			{
 				++Count;
@@ -418,7 +424,8 @@ bool FRROreExplosionDropsTest::RunTest(const FString& Parameters)
 	using namespace RROreDepositTests;
 
 	// No start-zone protection: the deposit nearest the spawn is blown up (as an arrival capsule or a barrel would); its
-	// chunks are thrown like any explosion drop. Then three deposits broken in one frame respect the 4-per-frame spawn cap.
+	// chunks are thrown like any explosion drop. Then three deposits broken in one frame are created by the actor pool within
+	// 3 frames (task-092-01, replaces the 4-per-frame queue), and reuse collected chunks at once.
 	FTestWorld TestWorld;
 	ARRArenaGrid* Grid = SpawnOreGrid(*this, TestWorld, /*bPlaceDeposits*/ true);
 	URRPickupSubsystem* Pickups = TestWorld.Get()->GetSubsystem<URRPickupSubsystem>();
@@ -426,7 +433,7 @@ bool FRROreExplosionDropsTest::RunTest(const FString& Parameters)
 	{
 		return false;
 	}
-	TestEqual(TEXT("cap of 4 pickups per frame"), Pickups->GetMaxSpawnsPerFrame(), 4);
+	TestEqual(TEXT("pickups created within 3 frames"), Pickups->GetSpawnMaxFrames(), 3);
 	TArray<int32> Ids = GetTableDepositIds(Grid);
 	if (!TestTrue(TEXT("at least 4 deposits"), Ids.Num() >= 4))
 	{
@@ -446,14 +453,24 @@ bool FRROreExplosionDropsTest::RunTest(const FString& Parameters)
 	const int32 Destroyed = Grid->DestroyCellsInRadius(GetDepositCenter(Grid, Nearest), 0.75f * Grid->GetCellSize(), ERRTerrainDamageSource::Barrel);
 	TestEqual(TEXT("explosion breaks the 4 blocks"), Destroyed, 4);
 	int32 ValueSum = 0;
-	TestEqual(TEXT("4 chunks thrown at once"), CountOrePickups(TestWorld.Get(), ValueSum), 4);
+	TestEqual(TEXT("4 chunk creations queued in the pool"), Pickups->GetQueuedSpawnCount(), 4);
+	for (int32 Frame = 0; Frame < 3 && Pickups->GetQueuedSpawnCount() > 0; ++Frame)
+	{
+		TestWorld.Tick();
+	}
+	TestEqual(TEXT("4 chunks thrown within 3 frames"), CountOrePickups(TestWorld.Get(), ValueSum), 4);
 	TestEqual(TEXT("chunks worth 1 each"), ValueSum, 4);
 	for (TActorIterator<ARRPickup> It(TestWorld.Get()); It; ++It)
 	{
+		// task-092-01: idle pool pickups are not live pickups.
+		if (URRActorPoolSubsystem::IsPooledIdle(*It))
+		{
+			continue;
+		}
 		TestEqual(TEXT("chunk pops from the grid"), It->GetPhase(), ERRPickupPhase::Pop);
 	}
 
-	// Next frame: three more deposits in one frame = 12 chunks, 4 now and 4 per following frame.
+	// Next frame: three more deposits in one frame = 12 chunks, created by the pool over 3 frames (ceil(12 / 3) = 4 per frame).
 	TestWorld.Tick();
 	for (int32 Index = 1; Index <= 3; ++Index)
 	{
@@ -462,12 +479,18 @@ bool FRROreExplosionDropsTest::RunTest(const FString& Parameters)
 			Grid->DestroyCell(Cell, ERRTerrainDamageSource::Kamikaze);
 		}
 	}
-	TestEqual(TEXT("only 4 spawned this frame"), CountOrePickups(TestWorld.Get(), ValueSum), 8);
-	TestEqual(TEXT("8 queued"), Pickups->GetQueuedSpawnCount(), 8);
-	TestWorld.Tick();
-	TestEqual(TEXT("4 more the next frame"), CountOrePickups(TestWorld.Get(), ValueSum), 12);
-	TestWorld.Tick();
-	TestEqual(TEXT("the last 4 the frame after"), CountOrePickups(TestWorld.Get(), ValueSum), 16);
+	TestEqual(TEXT("12 queued"), Pickups->GetQueuedSpawnCount(), 12);
+	int32 MaxCreatedPerFrame = 0;
+	int32 Frames = 0;
+	while (Pickups->GetQueuedSpawnCount() > 0 && Frames < 10)
+	{
+		TestWorld.Tick();
+		++Frames;
+		MaxCreatedPerFrame = FMath::Max(MaxCreatedPerFrame, Pickups->GetPoolStats().CreatedThisFrame);
+	}
+	TestTrue(TEXT("12 chunks created within 3 frames"), Frames <= 3);
+	TestEqual(TEXT("at most 4 created per frame"), MaxCreatedPerFrame, 4);
+	TestEqual(TEXT("16 chunks on the floor"), CountOrePickups(TestWorld.Get(), ValueSum), 16);
 	TestEqual(TEXT("queue empty"), Pickups->GetQueuedSpawnCount(), 0);
 	TestEqual(TEXT("16 chunks worth 16"), ValueSum, 16);
 	return true;
@@ -591,6 +614,11 @@ bool FRROreHealVeinTest::RunTest(const FString& Parameters)
 		}
 		for (TActorIterator<ARRPickup> It(TestWorld.Get()); It; ++It)
 		{
+			// task-092-01: idle pool pickups are not live pickups.
+			if (URRActorPoolSubsystem::IsPooledIdle(*It))
+			{
+				continue;
+			}
 			if (It->GetPickupType() == ERRPickupType::Heal && !Seen.Contains(*It))
 			{
 				Seen.Add(*It);

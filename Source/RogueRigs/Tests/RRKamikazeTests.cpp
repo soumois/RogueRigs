@@ -16,6 +16,7 @@
 #include "Tests/RRTestEventRecorder.h"
 #include "Tests/RRTestAccess.h"
 #include "Tests/RRTestHarness.h"
+#include "Pool/RRActorPoolSubsystem.h"
 #include "Tests/RRTestPickupXP.h"
 #include "UObject/StrongObjectPtr.h"
 #include "Weapons/RRAutoFireComponent.h"
@@ -78,6 +79,11 @@ namespace RRKamikazeTests
 		TArray<ARRPickup*> Result;
 		for (TActorIterator<ARRPickup> It(World); It; ++It)
 		{
+			// task-092-01: idle pool pickups are not live pickups.
+			if (URRActorPoolSubsystem::IsPooledIdle(*It))
+			{
+				continue;
+			}
 			if (IsValid(*It) && It->GetPickupType() == ERRPickupType::XP)
 			{
 				Result.Add(*It);

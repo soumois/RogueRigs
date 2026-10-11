@@ -1313,7 +1313,7 @@ void ARRArenaGrid::SpawnPickups(FIntPoint Cell, ERRCellType Type, int32 Count, i
 		return;
 	}
 
-	// Through the pickup subsystem: at most MaxSpawnsPerFrame per frame, the rest queued (explosions break many blocks at once).
+	// Through the pickup subsystem: from the actor pool, missing pickups created within its SpawnMaxFrames (explosions break many blocks at once).
 	URRPickupSubsystem* Pickups = World->GetSubsystem<URRPickupSubsystem>();
 	const FVector Location = GetCellCenter(Cell.X, Cell.Y);
 	for (int32 Drop = 0; Drop < Count; ++Drop)

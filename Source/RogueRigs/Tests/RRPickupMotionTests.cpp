@@ -19,6 +19,7 @@
 #include "GAS/RRPlayerAttributeSet.h"
 #include "Kismet/GameplayStatics.h"
 #include "Pickups/RRPickup.h"
+#include "Pool/RRActorPoolSubsystem.h"
 #include "Pickups/RRPickupSubsystem.h"
 #include "Player/RRMiner.h"
 #include "Progression/RRProgressionComponent.h"
@@ -113,6 +114,11 @@ namespace RRPickupMotionTests
 		TArray<ARRPickup*> Result;
 		for (TActorIterator<ARRPickup> It(World); It; ++It)
 		{
+			// task-092-01: idle pool pickups are not live pickups.
+			if (URRActorPoolSubsystem::IsPooledIdle(*It))
+			{
+				continue;
+			}
 			if (IsValid(*It) && !It->IsActorBeingDestroyed() && FVector::Dist2D(It->GetPopStart(), Location) < 1.f)
 			{
 				Result.Add(*It);
