@@ -23,6 +23,7 @@ L.setUsage('usage: node Tools/art/kie_image.js --asset <name> --prompt-file <txt
   + '[--aspect 1:1] [--variants 1] [--dry-run]');
 
 const BASE = process.env.KIE_BASE_URL || 'https://api.kie.ai';
+const UPLOAD_BASE = process.env.KIE_UPLOAD_URL || 'https://kieai.redpandaai.co'; // file upload host, distinct from the API host
 const MODEL_T2I = 'gpt-image-2-text-to-image';
 const MODEL_I2I = 'gpt-image-2-image-to-image';
 const ASPECTS = ['1:1', '16:9', '9:16', '4:3', '3:4'];
@@ -32,7 +33,7 @@ const MAX_VARIANTS = 4;
 async function uploadRef(ref, key) {
   if (/^https?:\/\//.test(ref)) return ref;
   if (!fs.existsSync(ref)) L.usage(`reference not found: ${ref}`);
-  const res = await L.httpJson('POST', `${BASE}/api/v1/file-base64-upload`, {
+  const res = await L.httpJson('POST', `${UPLOAD_BASE}/api/file-base64-upload`, {
     key,
     body: { base64Data: L.dataUri(ref), uploadPath: 'rogue-rigs/refs', fileName: path.basename(ref) },
   });
