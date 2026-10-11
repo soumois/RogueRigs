@@ -497,6 +497,14 @@ task-092-xp-pool  reference/tasks/task-092-xp-pool.md
 task-093-01-robot-overlap-cost  reference/tasks/task-093-robot-overlap-cost/task-093-01-robot-overlap-cost.md
 task-093-robot-overlap-cost  reference/tasks/task-093-robot-overlap-cost.md
 task-094-01-hud-refactor  reference/tasks/task-094-hud-refactor/task-094-01-hud-refactor.md
+task-094-02-hud-events  reference/tasks/task-094-hud-refactor/task-094-02-hud-events.md
+task-094-03-hud-health  reference/tasks/task-094-hud-refactor/task-094-03-hud-health.md
+task-094-04-hud-xp  reference/tasks/task-094-hud-refactor/task-094-04-hud-xp.md
+task-094-05-hud-weapons  reference/tasks/task-094-hud-refactor/task-094-05-hud-weapons.md
+task-094-06-hud-cards  reference/tasks/task-094-hud-refactor/task-094-06-hud-cards.md
+task-094-07-hud-alerts  reference/tasks/task-094-hud-refactor/task-094-07-hud-alerts.md
+task-094-08-hud-minimap  reference/tasks/task-094-hud-refactor/task-094-08-hud-minimap.md
+task-094-09-hud-root  reference/tasks/task-094-hud-refactor/task-094-09-hud-root.md
 task-094-hud-refactor  reference/tasks/task-094-hud-refactor.md
 task-095-01-xp-cube-scale  reference/tasks/task-095-xp-cube-scale/task-095-01-xp-cube-scale.md
 task-095-xp-cube-scale  reference/tasks/task-095-xp-cube-scale.md

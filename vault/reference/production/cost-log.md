@@ -159,6 +159,7 @@ kind: note
 | [[task-096-01-kamikaze-death-fuse]] | opus | 1 | 0k | 294k | 2553k | 37k |
 | [[task-097-01-explosion-visual]] | opus | 1 | 0k | 74k | 1202k | 23k |
 | [[task-099-01-company-subtitles]] | opus | 3 | 0k | 92k | 2398k | 39k |
+| [[task-094-01-hud-refactor]] | sonnet | 1 | 0k | 107k | 1424k | 30k |
 
 ## Totals
 | Scope | Input | Cache write | Cache read | Output |

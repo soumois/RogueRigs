@@ -3,7 +3,7 @@ id: task-094-01-hud-refactor
 description: "Audit of WBP_HUD: per feature, its widgets, tick reads, driving events, placement, and the proposed sub-widget list."
 parent: task-094-hud-refactor
 kind: task
-status: in-progress
+status: done
 ---
 # HUD refactor: audit
 
@@ -15,11 +15,11 @@ status: in-progress
 - done_when: the audit note exists with the table per feature, the proposed sub-widget list and the missing-events list with payloads; no asset changed (git status shows no uasset change); lint clean; committed.
 - editor_state: open
 - token_ceiling: 60000
-- model: open
-- tokens: open
-- runs: open
+- model: sonnet
+- tokens: input 46, cache write 106627, cache read 1424145, output 30029
+- runs: 1
 - milestone: M2
-- result: open
+- result: x
 
 ## Relations
 - [[task-094-hud-refactor]] — parent global task.
