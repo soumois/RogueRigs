@@ -1,9 +1,9 @@
 ---
 id: task-090-actor-pool
 description: "Global task: A generic actor pool subsystem reuses actors and spreads the creation of missing ones over a capped number of frames."
-parent: tasks-to-do-index
+parent: tasks-done-index
 kind: task
-status: in-progress
+status: done
 ---
 # Generic actor pool with staggered creation
 
@@ -13,12 +13,12 @@ status: in-progress
 - gdd_check: done by the Orchestrator when the task is planned (2026-10-11).
 - confirmed_by_owner: yes (2026-10-11)
 - milestone: M2
-- next_step: task-090-01-actor-pool
-- result: open
+- next_step: none
+- result: Done. URRActorPoolSubsystem (Pool/): Acquire with MaxFrames spread, AcquireImmediate, Release, IRRPoolable, IsPooledIdle, cancel, stats; 6 RogueRigs.ActorPool tests, 217/217. Commits a086199, 7f71c4c.
 
 ## Subtasks
 1. task-090-01-actor-pool — cpp
 
 ## Relations
-- [[tasks-to-do-index]] — parent index.
+- [[tasks-done-index]] — parent index.
 - [[task-090-01-actor-pool]] — step 1, cpp.

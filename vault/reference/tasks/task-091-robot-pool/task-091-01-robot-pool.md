@@ -3,7 +3,7 @@ id: task-091-01-robot-pool
 description: "Robots come from the pool, missing ones created over at most 20 frames, wave spikes measured before and after."
 parent: task-091-robot-pool
 kind: task
-status: todo
+status: in-progress
 ---
 # Robots from the actor pool
 

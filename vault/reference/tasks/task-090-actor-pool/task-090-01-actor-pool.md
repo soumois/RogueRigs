@@ -3,7 +3,7 @@ id: task-090-01-actor-pool
 description: "A generic actor pool subsystem reuses actors and spreads the creation of missing ones over a capped number of frames."
 parent: task-090-actor-pool
 kind: task
-status: in-progress
+status: done
 ---
 # Generic actor pool with staggered creation
 
@@ -15,11 +15,11 @@ status: in-progress
 - done_when: build exits 0 with the editor closed; all RogueRigs.* tests pass headless; sys-actor-pool written and linked from systems-index; lint clean; committed.
 - editor_state: closed
 - token_ceiling: 80000
-- model: open
-- tokens: open
-- runs: open
+- model: opus
+- tokens: input 70, cache write 100555, cache read 2076171, output 53915
+- runs: 1
 - milestone: M2
-- result: open
+- result: URRActorPoolSubsystem (Pool/): Acquire with MaxFrames spread, AcquireImmediate, Release, IRRPoolable, IsPooledIdle, cancel, stats; 6 RogueRigs.ActorPool tests, 217/217. Commits a086199, 7f71c4c.
 
 ## Relations
 - [[task-090-actor-pool]] — parent global task.
