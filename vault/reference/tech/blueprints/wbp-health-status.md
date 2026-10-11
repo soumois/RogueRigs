@@ -1,6 +1,6 @@
 ---
 id: wbp-health-status
-description: "WBP_HealthStatus, HUD panel for the health bar and text, GAME OVER text and the damage vignette, driven by ARRMiner health events; open for its tree, graphs and vignette timer."
+description: "WBP_HealthStatus, HUD panel for health bar and text, GAME OVER and damage vignette, driven by miner events; open for its tree and graphs."
 parent: blueprints-index
 kind: doc
 ---
