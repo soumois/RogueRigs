@@ -153,6 +153,7 @@ kind: note
 | [[task-090-01-actor-pool]] | opus | 1 | 0k | 101k | 2076k | 54k |
 | [[task-091-01-robot-pool]] | opus | 3 | 0k | 318k | 22362k | 109k |
 | [[task-092-01-xp-pool]] | opus | 2 | 0k | 170k | 6540k | 64k |
+| [[task-093-01-robot-overlap-cost]] | opus | 1 | 0k | 128k | 4650k | 42k |
 
 ## Totals
 | Scope | Input | Cache write | Cache read | Output |

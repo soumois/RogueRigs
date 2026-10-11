@@ -3,7 +3,7 @@ id: task-093-01-robot-overlap-cost
 description: "Robot components audited, then unneeded attached-part transforms and overlap updates are removed, with before/after numbers."
 parent: task-093-robot-overlap-cost
 kind: task
-status: in-progress
+status: done
 ---
 # Robot overlap and attached parts cost
 
@@ -15,11 +15,11 @@ status: in-progress
 - done_when: build exits 0 with the editor closed; all RogueRigs.* tests pass headless; audit note and before/after numbers recorded; docs updated; lint clean; committed.
 - editor_state: closed
 - token_ceiling: 60000
-- model: open
-- tokens: open
-- runs: open
+- model: opus
+- tokens: input 108, cache write 128351, cache read 4650075, output 42020
+- runs: 1
 - milestone: M2
-- result: open
+- result: Robot hit capsule no longer runs its own overlap query on move (URRHitCapsuleComponent, rr.Enemy.PassiveHitCapsule): overlap searches 0.61 -> 0.016 ms per frame, robot movement 3.64 -> 3.16 ms per frame; game-thread gain within noise; audit note robot-components-audit; 225/225 tests. Commits e852c95, 1deed6f, c23fce0.
 
 ## Relations
 - [[task-093-robot-overlap-cost]] — parent global task.
