@@ -3,7 +3,7 @@ id: task-089-01-heal-not-at-full
 description: "A heal pickup is not taken when the miner is at full health; it stays on the floor until health is below the maximum."
 parent: task-089-heal-not-at-full
 kind: task
-status: in-progress
+status: done
 ---
 # Heal pickup not taken at full health
 
@@ -15,11 +15,11 @@ status: in-progress
 - done_when: build exits 0 with the editor closed; all RogueRigs.* tests pass headless; docs updated (sys-pickups); lint clean; committed.
 - editor_state: closed
 - token_ceiling: 50000
-- model: open
-- tokens: open
-- runs: open
+- model: opus
+- tokens: input 56, cache write 160160, cache read 1517863, output 22407
+- runs: 1
 - milestone: M2
-- result: open
+- result: Heal pickup refused at full health (ARRPickup::IsRefusedByMiner), stays on the floor, re-checked each frame; partial heal clamps; 211/211 tests; two existing tests start at 50 HP. Commits 5dd5e81, bbc1927.
 
 ## Relations
 - [[task-089-heal-not-at-full]] — parent global task.

@@ -149,6 +149,7 @@ kind: note
 | [[task-087-01-card-desc-test]] | opus | 1 | 0k | 36k | 485k | 7k |
 | [[task-088-01-heal-veins-2x2]] | sonnet | 1 | 0k | 28k | 155k | 6k |
 | [[task-088-02-heal-veins-2x2]] | opus | 2 | 0k | 227k | 3937k | 39k |
+| [[task-089-01-heal-not-at-full]] | opus | 1 | 0k | 160k | 1518k | 22k |
 
 ## Totals
 | Scope | Input | Cache write | Cache read | Output |
