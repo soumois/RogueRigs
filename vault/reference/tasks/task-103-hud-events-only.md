@@ -3,7 +3,7 @@ id: task-103-hud-events-only
 description: "Global task: the HUD parts that still poll every frame react to events; only continuous values keep a per-frame update."
 parent: tasks-to-do-index
 kind: task
-status: todo
+status: in-progress
 ---
 # HUD per-frame polling to events: C++ events
 

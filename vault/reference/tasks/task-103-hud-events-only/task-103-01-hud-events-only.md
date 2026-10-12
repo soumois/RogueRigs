@@ -3,7 +3,7 @@ id: task-103-01-hud-events-only
 description: "C++ events for the minimap and locator and a one-shot vignette warm-up, so the HUD no longer polls every frame."
 parent: task-103-hud-events-only
 kind: task
-status: todo
+status: in-progress
 ---
 # HUD per-frame polling to events: C++ events
 
