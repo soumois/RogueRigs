@@ -9,7 +9,7 @@ kind: note
 Derived from the four approved reference images and their prompts ([[art-prompts]]). Colors live in [[color-code]]; brightness and color-meaning rules live in [[readability-rules]]; do not restate them here. Reviews cite the rule ids below.
 
 ## Shape language
-- A1. Chunky, blocky volumes with large flat facets; facets stay visible, no smoothing. The main design stays flat-shaded without textures; a texture is allowed only on a small decal or sign (logo sticker, advertising panel) (owner 2026-10-11).
+- A1. Chunky, blocky volumes with large flat facets; facets stay visible, no smoothing. Colour stays flat per material; detail (edge wear, scratches, light grime) comes from one small shared grayscale mask texture multiplied on the flat colour, and stickers and signs are textured decals (owner 2026-10-11, level 1: details by mask, no per-asset painted base texture, no normal or roughness maps).
 - A2. Rigid mechanical parts only: plates, pistons, bolts, big gripping hands. No cloth, no organic forms.
 - A3. Every enemy role reads by silhouette alone: chaser = lanky biped, arms forward; kamikaze = round body with a glowing core and four limbs; shooter = bulky, one arm is a built-in cannon, thin antenna; heavy = chaser silhouette at twice the size, hunched.
 - A4. The drone is about the size of the miner's head and shoulders; the turret sits low and wide on a tripod base.

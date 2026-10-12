@@ -535,6 +535,8 @@ task-104-01-hud-regressions  reference/tasks/task-104-hud-regressions/task-104-0
 task-104-hud-regressions  reference/tasks/task-104-hud-regressions.md
 task-105-01-hud-insights  reference/tasks/task-105-hud-insights/task-105-01-hud-insights.md
 task-105-hud-insights  reference/tasks/task-105-hud-insights.md
+task-106-01-wear-mask-texture  reference/tasks/task-106-wear-mask-texture/task-106-01-wear-mask-texture.md
+task-106-wear-mask-texture  reference/tasks/task-106-wear-mask-texture.md
 tasks-done-index  reference/tasks/tasks-done-index.md
 tasks-index  reference/tasks/tasks-index.md
 tasks-to-do-index  reference/tasks/tasks-to-do-index.md
