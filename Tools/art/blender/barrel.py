@@ -21,18 +21,18 @@ P = [
     (0.0, 34.0, "body"), (12.0, 42.5, "body"),
     (33.0, 42.5, "ring"), (36.0, 45.0, "ring"), (48.0, 45.0, "ring"), (51.0, 42.5, "body"),
     (80.0, 42.5, "ring"), (83.0, 45.0, "ring"), (97.0, 45.0, "ring"), (100.0, 42.5, "body"),
-    (126.0, 42.5, "body"), (130.0, 38.0, "lid"), (132.0, 34.0, "lid"),
+    (126.0, 42.5, "body"), (130.0, 38.0, "edge"), (132.0, 34.0, "lid"),
 ]
 # materials: name -> RGBA (linear). Colours read on the image: orange, darker orange, dark greys.
 def srgb(h):
     c = [int(h[i:i + 2], 16) / 255 for i in (1, 3, 5)]
     return tuple(((x + 0.055) / 1.055) ** 2.4 if x > 0.04045 else x / 12.92 for x in c) + (1.0,)
-MATS = {"body": srgb("#FF6A00"), "ring": srgb("#D9480F"), "lid": srgb("#3C4048"), "cap": srgb("#2B2E34")}
+MATS = {"body": srgb("#FF6A00"), "ring": srgb("#D9480F"), "lid": srgb("#3C4048"), "cap": srgb("#2B2E34"), "edge": srgb("#8A9099")}
 
 bpy.ops.wm.read_factory_settings(use_empty=True)
 mats = {}
 for n, c in MATS.items():
-    m = bpy.data.materials.new("M_Barrel_" + n)
+    m = bpy.data.materials.new("M_Barrel_" + ("edge_wear" if n == "edge" else n))
     m.diffuse_color = c
     m.use_nodes = True
     b = m.node_tree.nodes["Principled BSDF"]
@@ -67,8 +67,8 @@ disc(rings[0], "body", up=False)   # bottom
 disc(rings[-1], "lid", up=True)    # lid top at z=132
 # cap: 10-sided short cylinder, back right of the lid, grey
 cx, cy = 14.0, 12.0
-c0 = ring(132.0, 9.0, 10, cx, cy); c1 = ring(133.2, 9.0, 10, cx, cy); c2 = ring(134.0, 7.5, 10, cx, cy)
-band(c0, c1, "cap"); band(c1, c2, "cap"); disc(c2, "cap")
+c0 = ring(132.0, 9.0, 10, cx, cy); c1 = ring(132.5, 9.0, 10, cx, cy); c2 = ring(134.0, 7.0, 10, cx, cy)
+band(c0, c1, "cap"); band(c1, c2, "edge"); disc(c2, "cap")
 
 # decals: quads on two adjacent facets (left and right of the front corner at -90 deg)
 def facet_quad(angle_deg, zc, w, h, off=0.25):

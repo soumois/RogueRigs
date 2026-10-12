@@ -24,6 +24,7 @@
   "materials": [
     "M_Barrel_body",
     "M_Barrel_ring",
+    "M_Barrel_edge_wear",
     "M_Barrel_lid",
     "M_Barrel_cap",
     "M_Barrel_sticker",
