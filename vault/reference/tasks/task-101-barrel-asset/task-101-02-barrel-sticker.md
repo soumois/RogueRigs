@@ -3,7 +3,7 @@ id: task-101-02-barrel-sticker
 description: "Barrel with the Kessler-Voss logo sticker: one correction of the validated barrel image (owner 2026-10-11)."
 parent: task-101-barrel-asset
 kind: task
-status: in-progress
+status: done
 ---
 # Barrel with the Kessler-Voss logo sticker
 
@@ -15,11 +15,11 @@ status: in-progress
 - done_when: 2 PNG and their run log exist in Art/Source/barrel/; each reviewed against the A rules (A1 and A14 as amended 2026-10-11) and for the exact spelling of the logo text; only the sticker changed; no more than 2 variants; nothing committed.
 - editor_state: any
 - token_ceiling: 25000
-- model: open
-- tokens: open
-- runs: open
+- model: sonnet
+- tokens: input 24, cache write 61004, cache read 196723, output 2411
+- runs: 2
 - milestone: M2
-- result: open
+- result: Sticker added (12 credits) then moved onto a single facet (12 credits); owner retained Art/Source/barrel/20261011-220936-barrel-1.png, tracked with its log and prompts.
 
 ## Relations
 - [[task-101-barrel-asset]] — parent global task.
