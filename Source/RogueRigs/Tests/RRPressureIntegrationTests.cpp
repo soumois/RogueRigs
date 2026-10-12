@@ -234,6 +234,8 @@ namespace RRPressureIntegrationTests
 			{
 				return false;
 			}
+			// The panels construct as in game (headless tests build no Slate widget).
+			RRTestAccess::FUserWidgetAccess::ConstructNestedOf(Out.HUD);
 			Out.HUD->BindToMiner(Out.Miner);
 			Out.HUD->BindToRunFlow(TestWorld.Get()->GetSubsystem<URRRunFlowSubsystem>());
 			Out.HUD->BindToSpawner(Out.Spawner);

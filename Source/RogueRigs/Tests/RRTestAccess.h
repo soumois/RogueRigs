@@ -8,6 +8,7 @@
 #if WITH_DEV_AUTOMATION_TESTS
 
 #include "Blueprint/UserWidget.h"
+#include "Blueprint/WidgetTree.h"
 #include "Components/HierarchicalInstancedStaticMeshComponent.h"
 #include "Components/InstancedStaticMeshComponent.h"
 #include "Drone/RRDrone.h"
@@ -223,6 +224,32 @@ namespace RRTestAccess
 	{
 		/** Runs Widget's NativeTick (virtual: the subclass override runs) with its cached geometry (empty headless; SlateCore is not a module dependency). */
 		static void NativeTickOf(UUserWidget* Widget, float DeltaTime) { (Widget->*(&FUserWidgetAccess::NativeTick))(Widget->GetCachedGeometry(), DeltaTime); }
+
+		/**
+		 * Runs NativeConstruct (then the Blueprint Construct) of every user widget nested in Root, children first, as Slate does when
+		 * the HUD is added to the viewport in game; headless tests never build Slate widgets. The HUD panels bind their buttons there
+		 * (WBP_AlertObjectives RestartButton). Root itself is not constructed (unchanged headless behaviour of the root HUD).
+		 */
+		static void ConstructNestedOf(UUserWidget* Root)
+		{
+			if (!Root || !Root->WidgetTree)
+			{
+				return;
+			}
+			TArray<UUserWidget*> Children;
+			Root->WidgetTree->ForEachWidget([&Children](UWidget* Widget)
+			{
+				if (UUserWidget* Child = Cast<UUserWidget>(Widget))
+				{
+					Children.Add(Child);
+				}
+			});
+			for (UUserWidget* Child : Children)
+			{
+				ConstructNestedOf(Child);
+				(Child->*(&FUserWidgetAccess::NativeConstruct))();
+			}
+		}
 	};
 }
 

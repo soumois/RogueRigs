@@ -1847,6 +1847,8 @@ namespace RRIntegrationObjectiveTests
 		{
 			return false;
 		}
+		// The panels construct as in game (their Construct binds the end screen RestartButton).
+		RRTestAccess::FUserWidgetAccess::ConstructNestedOf(Out.HUD);
 		Out.Spawner->SeedRandomStream(RunSeed);
 		Out.Spawner->SetSpawningEnabled(true);
 		Out.HUD->BindToMiner(Miner);
