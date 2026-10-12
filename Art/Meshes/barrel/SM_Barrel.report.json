@@ -3,7 +3,7 @@
   "route": "blender",
   "script": "Tools/art/blender/barrel.py",
   "source_image": "vault/assets/barrel.png",
-  "tris_out": 256,
+  "tris_out": 560,
   "budget_tris": 600,
   "dimensions_cm": {
     "x": 90.0,
@@ -47,8 +47,8 @@
       "note": "non-decal faces tile past 0..1 (mask is tileable, wrap/repeat)"
     },
     "LightMap": {
-      "faces": 121,
-      "triangles": 256,
+      "faces": 265,
+      "triangles": 560,
       "overlapping_face_pairs": 0,
       "bounds_min": [
         0.01172
@@ -60,19 +60,41 @@
       "min_border_px_at_256": 3.0,
       "required_margin_px": 2,
       "pass": true,
-      "texel_scale_px_per_cm_at_256": 0.9039
+      "texel_scale_px_per_cm_at_256": 0.8532
     }
   },
   "mask_contract": {
-    "mask_file": "Art/Textures/T_WearMask.png",
+    "scratch_mask_file": "Art/Textures/T_WearMask.png",
     "mask_colour_space": "linear/grayscale (sRGB off)",
     "uv_channel": 0,
     "uv_channel_name": "UVMap",
     "tile_cm": 100.0,
     "wrap": "repeat",
-    "formula": "colour = lerp(bare_metal, paint_colour, mask)  (mask white = clean paint, dark = worn bare metal); a BLEND, not a multiply",
+    "scratch_applies_to": [
+      "M_Barrel_lid",
+      "M_Barrel_cap"
+    ],
+    "scratch_not_on": [
+      "M_Barrel_body",
+      "M_Barrel_ring",
+      "M_Barrel_sticker",
+      "M_Barrel_pictogram"
+    ],
+    "edge_wear_vertex_colour": {
+      "attribute": "EdgeWear",
+      "channel": "R (linear, no sRGB conversion)",
+      "threshold": 0.5,
+      "applies_to": [
+        "M_Barrel_body",
+        "M_Barrel_ring",
+        "M_Barrel_lid",
+        "M_Barrel_cap"
+      ],
+      "hard_edge": "step(0.5, EdgeWear.R)"
+    },
+    "formula": "worn = max(step(0.5, EdgeWear.R) on body, ring, lid, cap ; (1 - T_WearMask) on lid and cap only); colour = lerp(paint_colour, bare_metal, worn)",
     "bare_metal_srgb": "#8A9099",
-    "masked_materials": {
+    "paint_colours_srgb": {
       "M_Barrel_body": "#FF6A00",
       "M_Barrel_ring": "#D9480F",
       "M_Barrel_lid": "#3C4048",
@@ -82,16 +104,53 @@
       "M_Barrel_sticker",
       "M_Barrel_pictogram"
     ],
-    "note": "FBX cannot hold the node graph: the Unreal master material applies it; paint colour = the per-material flat colour exported in the FBX"
+    "note": "FBX cannot hold the node graph: the Unreal master material applies it; paint colour = the per-material flat colour exported in the FBX. The importer must keep vertex colours (do not override) and a VertexColor node (R) feeds the threshold."
   },
   "removed": [
-    "M_Barrel_edge_wear",
-    "geometric wear chip triangles (worn_band)"
+    "scratch/blotch mask on body and ring (mask now lid and cap only)",
+    "linear blend lerp(bare, paint, mask) as the only wear term (replaced by max(hard EdgeWear, 1 - mask on lid/cap))",
+    "8-column rings (now 16 columns, 15 bands)"
   ],
   "decal_faces": 2,
   "shading": "flat",
   "warnings": [
     "pictogram material uses alpha blend: Unreal import must set it Masked/Translucent",
     "decal crop is an approximate bilinear unwarp of the 3/4 view, edges not pixel-perfect"
-  ]
+  ],
+  "vertex_colour_attribute": "EdgeWear",
+  "edge_wear": {
+    "attribute": "EdgeWear",
+    "domain": "corner (same value on all corners of a vertex)",
+    "channel": "R",
+    "range": [
+      0.0,
+      1.0
+    ],
+    "fbx_export": "colors_type LINEAR (no sRGB curve: red channel exact)",
+    "fbx_roundtrip_ok": true,
+    "fbx_roundtrip_attrs": [
+      "EdgeWear"
+    ],
+    "fbx_roundtrip_max_abs_diff": 0.0,
+    "seed": 1011,
+    "hit_value_range": [
+      0.62,
+      1.0
+    ],
+    "threshold": 0.5,
+    "vertices_total": 294,
+    "vertices_high_gt_0_5": 25,
+    "share_high_of_all_vertices": 0.085,
+    "eligible_convex_edge_vertices": 154,
+    "eligible_high": 25,
+    "share_high_of_eligible": 0.1623,
+    "edge_length_above_threshold_share": {
+      "rings": 0.122,
+      "lid_rim": 0.1188,
+      "cap_top": 0.2417,
+      "body_corners": 0.0645
+    },
+    "edge_length_above_threshold_share_all": 0.11,
+    "zero_on": "all vertices not on a convex outer edge, decal quads, bottom"
+  }
 }

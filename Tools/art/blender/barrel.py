@@ -1,8 +1,8 @@
-"""Barrel mesh (Blender route, task-101-04). Headless:
+"""Barrel mesh (Blender route, task-101-04, edge wear task-101-06). Headless:
   "$BLENDER_EXE" -b --factory-startup -P Tools/art/blender/barrel.py -- [--out Art/Meshes/barrel/SM_Barrel.fbx] [--image vault/assets/barrel.png]
 Units: 1 Blender unit = 1 cm (same convention as cleanup.py). Pivot bottom centre. Never imports into Unreal.
 Body flat-shaded, flat per-material colours; two small textured decals (sticker, pictogram) cropped from the image."""
-import bpy, bmesh, math, json, os, sys
+import bpy, bmesh, math, json, os, sys, random
 import numpy as np
 from mathutils import Vector
 
@@ -14,15 +14,22 @@ OUT = os.path.abspath(opt["--out"]); IMG = os.path.abspath(opt["--image"])
 OUTDIR = os.path.dirname(OUT)
 os.makedirs(OUTDIR, exist_ok=True)
 
-SIDES = 8
+SIDES = 16     # 16 columns: even vertices = the 8 facet corners, odd = facet mid-edge (collinear) so wear chips can sit mid-edge
+FACETS = 8
+SEED = 1011
 R_BODY, R_RING = 42.5, 45.0   # circumradius (corner to axis); width across corners = 90
-# Profile (z, r, material of the band ABOVE this ring up to the next one)
+# Profile (z, r, material of the band ABOVE this ring up to the next one, wear tag)
+# wear tag: "corner" = vertical body corners (even columns only), "ring"/"lid" = convex horizontal edges (all columns), None = no wear
 P = [
-    (0.0, 34.0, "body"), (12.0, 42.5, "body"),
-    (33.0, 42.5, "ring"), (36.0, 45.0, "ring"), (48.0, 45.0, "ring"), (51.0, 42.5, "body"),
-    (80.0, 42.5, "ring"), (83.0, 45.0, "ring"), (97.0, 45.0, "ring"), (100.0, 42.5, "body"),
-    (126.0, 42.5, "body"), (130.0, 38.0, "lid"), (132.0, 34.0, "lid"),
+    (0.0, 34.0, "body", None), (12.0, 42.5, "body", "corner"), (22.5, 42.5, "body", "corner"),
+    (33.0, 42.5, "ring", None), (36.0, 45.0, "ring", "ring"), (48.0, 45.0, "ring", "ring"), (51.0, 42.5, "body", None),
+    (65.5, 42.5, "body", "corner"),
+    (80.0, 42.5, "ring", None), (83.0, 45.0, "ring", "ring"), (97.0, 45.0, "ring", "ring"), (100.0, 42.5, "body", None),
+    (113.0, 42.5, "body", "corner"),
+    (126.0, 42.5, "body", "lid"), (130.0, 38.0, "lid", "lid"), (132.0, 34.0, "lid", "lid"),
 ]
+P_LID_BAND = 14   # band 130 -> 132 is lid coloured (the chamfer 126 -> 130 keeps the body colour)
+P_PROB = {"corner": 0.17, "ring": 0.13, "lid": 0.20, "cap": 0.20}
 # materials: name -> RGBA (linear). Colours read on the image: orange, darker orange, dark greys.
 def srgb(h):
     c = [int(h[i:i + 2], 16) / 255 for i in (1, 3, 5)]
@@ -54,6 +61,13 @@ bm = bmesh.new()
 def ring(z, r, sides, cx=0.0, cy=0.0, off=-90.0):
     return [bm.verts.new((cx + r * math.cos(math.radians(off + 360.0 * k / sides)),
                           cy + r * math.sin(math.radians(off + 360.0 * k / sides)), z)) for k in range(sides)]
+def ring16(z, r):
+    out = []
+    for k in range(SIDES):
+        rr = r if k % 2 == 0 else r * math.cos(math.radians(180.0 / FACETS))
+        a = math.radians(-90.0 + 360.0 * k / SIDES)
+        out.append(bm.verts.new((rr * math.cos(a), rr * math.sin(a), z)))
+    return out
 def band(a, b, mat):
     n = len(a)
     for k in range(n):
@@ -61,21 +75,31 @@ def band(a, b, mat):
 def disc(a, mat, up=True):
     f = bm.faces.new(a if up else a[::-1]); f.material_index = mslot(mat)
 
-rings = [ring(z, r, SIDES) for z, r, _ in P]
+rings = [ring16(z, r) for z, r, _, _ in P]
 for i in range(len(P) - 1):
-    band(rings[i], rings[i + 1], "lid" if i == 11 else P[i][2])   # i == 11: lid chamfer
+    band(rings[i], rings[i + 1], "lid" if i == P_LID_BAND else P[i][2])
 disc(rings[0], "body", up=False)   # bottom
 disc(rings[-1], "lid", up=True)    # lid top at z=132
 # cap: 10-sided short cylinder, back right of the lid, grey
 cx, cy = 14.0, 12.0
 c0 = ring(132.0, 9.0, 10, cx, cy); c1 = ring(132.5, 9.0, 10, cx, cy); c2 = ring(134.0, 7.0, 10, cx, cy)
 band(c0, c1, "cap"); band(c1, c2, "cap"); disc(c2, "cap")
+# ---- EdgeWear: per-vertex value (0..1), high only on convex outer edges, deterministic. Hit vertex = 0.62..1.0, else 0.
+rng = random.Random(SEED)
+wear = {}
+for ri, (rv, (z, r, _m, tag)) in enumerate(zip(rings, P)):
+    if tag is None: continue
+    for k, v in enumerate(rv):
+        if tag == "corner" and k % 2: continue
+        wear[v] = (0.62 + 0.38 * rng.random()) if rng.random() < P_PROB[tag] else 0.0
+for v in c2:
+    wear[v] = (0.62 + 0.38 * rng.random()) if rng.random() < P_PROB["cap"] else 0.0
 
 # decals: quads on two adjacent facets (left and right of the front corner at -90 deg)
 def facet_quad(angle_deg, zc, w, h, off=0.25):
     a = math.radians(angle_deg)
     n = Vector((math.cos(a), math.sin(a), 0)); t = Vector((-math.sin(a), math.cos(a), 0))
-    d = R_BODY * math.cos(math.radians(180.0 / SIDES)) + off
+    d = R_BODY * math.cos(math.radians(180.0 / FACETS)) + off
     c = n * d + Vector((0, 0, zc))
     pts = [c - t * w / 2 - Vector((0, 0, h / 2)), c + t * w / 2 - Vector((0, 0, h / 2)),
            c + t * w / 2 + Vector((0, 0, h / 2)), c - t * w / 2 + Vector((0, 0, h / 2))]
@@ -139,6 +163,32 @@ for f in bm.faces:
         l[uv1].uv = ((x + lx * lm_scale) / LM_RES, (y + ly * lm_scale) / LM_RES)
 for f in bm.faces:
     f.smooth = False
+# vertex colour attribute EdgeWear (corner domain, float, red channel = wear); decal quads and flat faces stay 0
+cl = bm.loops.layers.float_color.new("EdgeWear")
+for f in bm.faces:
+    for l in f.loops:
+        l[cl] = (wear.get(l.vert, 0.0), 0.0, 0.0, 1.0)
+# edge-length coverage where the linearly interpolated value exceeds the 0.5 threshold, per family of convex edges
+cover = {"rings": [0.0, 0.0], "lid_rim": [0.0, 0.0], "cap_top": [0.0, 0.0], "body_corners": [0.0, 0.0]}
+def frac_above(a, b, t=0.5):
+    if a > t and b > t: return 1.0
+    if a <= t and b <= t: return 0.0
+    hi_, lo_ = max(a, b), min(a, b)
+    return (hi_ - t) / (hi_ - lo_)
+ring_of = {v: ri for ri, rv in enumerate(rings) for v in rv}
+c2set = set(c2)
+for e in bm.edges:
+    a, b = e.verts
+    key = None
+    if a in c2set and b in c2set: key = "cap_top"
+    elif a in ring_of and b in ring_of:
+        ra, rb = ring_of[a], ring_of[b]
+        if ra == rb:
+            key = {"ring": "rings", "lid": "lid_rim"}.get(P[ra][3])
+        elif abs(P[ra][1] - P[rb][1]) < 1e-6 and rings[ra].index(a) == rings[rb].index(b) and rings[ra].index(a) % 2 == 0:
+            key = "rings" if P[ra][3] == "ring" and P[rb][3] == "ring" else ("body_corners" if "body" in (P[ra][2], P[rb][2]) else None)
+    if key:
+        L = (a.co - b.co).length; cover[key][0] += L * frac_above(wear.get(a, 0.0), wear.get(b, 0.0)); cover[key][1] += L
 bm.to_mesh(mesh); bm.free()
 for p in mesh.polygons:
     p.use_smooth = False
@@ -242,20 +292,54 @@ report = {
                      "min_gap_px_at_256": round(float(min_gap), 3), "min_border_px_at_256": round(float(border), 3), "required_margin_px": 2, "pass": bool(lm_ok), "texel_scale_px_per_cm_at_256": round(lm_scale, 4)},
     },
     "mask_contract": {
-        "mask_file": "Art/Textures/T_WearMask.png", "mask_colour_space": "linear/grayscale (sRGB off)", "uv_channel": 0, "uv_channel_name": "UVMap", "tile_cm": 100.0, "wrap": "repeat",
-        "formula": "colour = lerp(bare_metal, paint_colour, mask)  (mask white = clean paint, dark = worn bare metal); a BLEND, not a multiply",
-        "bare_metal_srgb": BARE, "masked_materials": {"M_Barrel_body": "#FF6A00", "M_Barrel_ring": "#D9480F", "M_Barrel_lid": "#3C4048", "M_Barrel_cap": "#2B2E34"},
+        "scratch_mask_file": "Art/Textures/T_WearMask.png", "mask_colour_space": "linear/grayscale (sRGB off)", "uv_channel": 0, "uv_channel_name": "UVMap", "tile_cm": 100.0, "wrap": "repeat",
+        "scratch_applies_to": ["M_Barrel_lid", "M_Barrel_cap"], "scratch_not_on": ["M_Barrel_body", "M_Barrel_ring", "M_Barrel_sticker", "M_Barrel_pictogram"],
+        "edge_wear_vertex_colour": {"attribute": "EdgeWear", "channel": "R (linear, no sRGB conversion)", "threshold": 0.5,
+                                    "applies_to": ["M_Barrel_body", "M_Barrel_ring", "M_Barrel_lid", "M_Barrel_cap"], "hard_edge": "step(0.5, EdgeWear.R)"},
+        "formula": "worn = max(step(0.5, EdgeWear.R) on body, ring, lid, cap ; (1 - T_WearMask) on lid and cap only); colour = lerp(paint_colour, bare_metal, worn)",
+        "bare_metal_srgb": BARE, "paint_colours_srgb": {"M_Barrel_body": "#FF6A00", "M_Barrel_ring": "#D9480F", "M_Barrel_lid": "#3C4048", "M_Barrel_cap": "#2B2E34"},
         "unmasked_materials": ["M_Barrel_sticker", "M_Barrel_pictogram"],
-        "note": "FBX cannot hold the node graph: the Unreal master material applies it; paint colour = the per-material flat colour exported in the FBX",
+        "note": "FBX cannot hold the node graph: the Unreal master material applies it; paint colour = the per-material flat colour exported in the FBX. The importer must keep vertex colours (do not override) and a VertexColor node (R) feeds the threshold.",
     },
-    "removed": ["M_Barrel_edge_wear", "geometric wear chip triangles (worn_band)"],
+    "removed": ["scratch/blotch mask on body and ring (mask now lid and cap only)", "linear blend lerp(bare, paint, mask) as the only wear term (replaced by max(hard EdgeWear, 1 - mask on lid/cap))", "8-column rings (now 16 columns, 15 bands)"],
     "decal_faces": 2, "shading": "flat", "warnings": warnings,
 }
 bpy.ops.object.select_all(action="DESELECT"); obj.select_set(True)
 bpy.context.view_layer.objects.active = obj
 bpy.ops.export_scene.fbx(filepath=OUT, use_selection=True, object_types={"MESH"},
                          apply_scale_options="FBX_SCALE_UNITS", mesh_smooth_type="FACE",
-                         add_leaf_bones=False, path_mode="RELATIVE", embed_textures=False)
+                         add_leaf_bones=False, path_mode="RELATIVE", embed_textures=False, colors_type="LINEAR")
+# ---- EdgeWear stats + proof that the attribute survives the FBX export (re-import and read the red channel)
+ca = mesh.color_attributes["EdgeWear"]
+red0 = np.array([c.color[0] for c in ca.data], dtype=np.float64)
+vred = {}
+for p in mesh.polygons:
+    for li in range(p.loop_start, p.loop_start + p.loop_total):
+        vred[mesh.loops[li].vertex_index] = red0[li]
+hv = sum(1 for x in vred.values() if x > 0.5)
+elig = len(wear); elig_hi = sum(1 for x in wear.values() if x > 0.5)
+before = set(bpy.data.objects)
+bpy.ops.import_scene.fbx(filepath=OUT, colors_type="LINEAR")
+imp = next(o for o in bpy.data.objects if o not in before and o.type == "MESH")
+im_names = [c.name for c in imp.data.color_attributes]
+fbx_ok = False; fbx_maxdiff = None
+if "EdgeWear" in im_names:
+    red1 = np.array([c.color[0] for c in imp.data.color_attributes["EdgeWear"].data], dtype=np.float64)
+    if len(red1) == len(red0):
+        fbx_maxdiff = float(np.abs(np.sort(red0) - np.sort(red1)).max()); fbx_ok = fbx_maxdiff < 0.02
+print("FBX reimport color attributes:", im_names, "maxdiff", fbx_maxdiff)
+if not fbx_ok: report["warnings"].append("EdgeWear vertex colour did NOT survive FBX export")
+report["vertex_colour_attribute"] = "EdgeWear"
+report["edge_wear"] = {
+    "attribute": "EdgeWear", "domain": "corner (same value on all corners of a vertex)", "channel": "R", "range": [0.0, 1.0],
+    "fbx_export": "colors_type LINEAR (no sRGB curve: red channel exact)", "fbx_roundtrip_ok": fbx_ok, "fbx_roundtrip_attrs": im_names, "fbx_roundtrip_max_abs_diff": fbx_maxdiff,
+    "seed": SEED, "hit_value_range": [0.62, 1.0], "threshold": 0.5,
+    "vertices_total": len(mesh.vertices), "vertices_high_gt_0_5": hv, "share_high_of_all_vertices": round(hv / len(mesh.vertices), 4),
+    "eligible_convex_edge_vertices": elig, "eligible_high": elig_hi, "share_high_of_eligible": round(elig_hi / elig, 4),
+    "edge_length_above_threshold_share": {k: round(v[0] / v[1], 4) for k, v in cover.items() if v[1] > 0},
+    "edge_length_above_threshold_share_all": round(sum(v[0] for v in cover.values()) / sum(v[1] for v in cover.values()), 4),
+    "zero_on": "all vertices not on a convex outer edge, decal quads, bottom",
+}
 with open(os.path.splitext(OUT)[0] + ".report.json", "w", encoding="utf-8") as f:
     json.dump(report, f, indent=2)
 print(json.dumps(report))
