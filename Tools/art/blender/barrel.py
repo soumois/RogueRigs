@@ -136,11 +136,11 @@ def facet_quad(angle_deg, zc, w, h, off=0.25):
            c + t * w / 2 + Vector((0, 0, h / 2)), c - t * w / 2 + Vector((0, 0, h / 2))]
     return [bm.verts.new(p) for p in pts]
 
-# sticker (task-101-09): flat on the lid top (z 132 + 0.25), 28 x 11.5 cm, upright for the reference camera (azimuth -35 deg):
+# sticker (task-101-09): flat on the lid top (z 132 + 0.25), 36.4 x 15 cm (x1.3), upright for the reference camera (azimuth -35 deg):
 # texture right = screen right, texture up = away from the camera; centred front-left of the cap, clear of cap, bolts and edge bands.
 mats["sticker"] = bpy.data.materials.new("M_Barrel_sticker")
 AZ = math.radians(-35.0)
-STK_W, STK_H, STK_RU, STK_Z = 28.0, 11.5, (-8.0, -3.0), 132.0 + 0.25
+STK_W, STK_H, STK_RU, STK_Z = 36.4, 15.0, (-8.0, -3.0), 132.0 + 0.25
 # camera sits at (sin az, -cos az); screen-up on the lid = away from it = u_ax, screen-right = r_ax
 u_ax = Vector((math.sin(-AZ), math.cos(AZ), 0)); r_ax = Vector((u_ax.y, -u_ax.x, 0))
 stk_c = r_ax * STK_RU[0] + u_ax * STK_RU[1]
