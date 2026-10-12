@@ -46,7 +46,7 @@
       "tile_cm": 100.0,
       "cm_per_uv_unit_min": 100.0,
       "cm_per_uv_unit_max": 100.0,
-      "decal_quads_uv": "sticker: own 0..1 quad; warning: ONE planar projection over 2 facet copies (u along the tangent of the corner at -45 deg, 27 cm = 0..1, v = z 52..79 = 0..1)",
+      "decal_quads_uv": "sticker: own 0..1 quad; warning: ONE planar projection over 2 facet copies (u along the tangent of the corner at -90 deg, 27 cm = 0..1, v = z 52..79 = 0..1)",
       "note": "non-decal faces tile past 0..1 (mask is tileable, wrap/repeat)"
     },
     "LightMap": {
@@ -174,7 +174,7 @@
       79.0
     ],
     "offset_cm": 0.25,
-    "projection": "single planar (bisector of the corner at -45 deg), continues across the facet edge",
+    "projection": "single planar (bisector of the corner at -90 deg), continues across the facet edge",
     "blend": "alpha: Masked or Translucent in Unreal",
     "artwork": "own drawing, no text, not traced from a reference"
   },

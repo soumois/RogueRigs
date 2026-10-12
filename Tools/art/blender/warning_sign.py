@@ -1,7 +1,7 @@
 """Explosion warning sign texture (task-101-08). Headless:
   "$BLENDER_EXE" -b --factory-startup -P Tools/art/blender/warning_sign.py -- [--out Art/Meshes/barrel/T_Barrel_Warning.png]
 Own drawing, deterministic, no text: 512 x 512 RGBA, transparent background, rounded yellow triangle (#FFD500),
-thick rounded black border, black explosion burst (8 irregular spikes of different heights on a jagged base). Hard edges (binary alpha)."""
+thick rounded black border, black explosion burst (9 irregular spikes of different lengths, radial star). Hard edges (binary alpha)."""
 import bpy, os, sys
 import numpy as np
 
@@ -31,10 +31,15 @@ def rounded_tri(rho, a):
 outer = rounded_tri(128.0, 34.0)        # yellow plate
 black = rounded_tri(114.0, 26.0)        # black border outer edge
 inner = rounded_tri(80.0, 10.0)         # yellow field inside the border
-# burst polygon (px, y down): own shape, 8 spikes of different heights and widths on a jagged base
-BURST = [(196, 378), (172, 324), (208, 336), (203, 262), (229, 320), (236, 222), (251, 301), (262, 250), (271, 309),
-         (291, 212), (297, 292), (323, 260), (311, 320), (341, 298), (319, 342), (339, 352), (318, 378),
-         (298, 364), (281, 378), (263, 362), (245, 378), (227, 364), (210, 378)]
+# burst: own design, a radial star around the incentre with 9 spikes of different lengths at irregular angles (math angle in degrees, y up;
+# tip radius in px), irregular valleys in between. Tips toward the triangle corners are longer than the ones toward its sides.
+TIPS = [(80, 100), (118, 62), (160, 70), (205, 105), (250, 58), (292, 74), (335, 108), (12, 66), (45, 70)]
+VAL = [(98, 34), (140, 40), (183, 30), (228, 36), (271, 27), (314, 38), (355, 31), (28, 42), (62, 33)]
+BC = np.array([256.0, 306.0])
+BURST = []
+for (ta, tr), (va, vr) in zip(TIPS, VAL):
+    for ang, rad in ((ta, tr), (va, vr)):
+        BURST.append((BC[0] + rad * np.cos(np.radians(ang)), BC[1] - rad * np.sin(np.radians(ang))))
 def poly_mask(pts):
     m = np.zeros((N, N), bool); n = len(pts)
     for i in range(n):

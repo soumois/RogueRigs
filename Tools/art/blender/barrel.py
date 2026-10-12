@@ -161,9 +161,9 @@ STK_CAP_CLEAR = rect_dist_to(cx, cy) - 9.5 if not (abs((Vector((cx, cy, 0)) - st
 LID_AP = 34.0 * math.cos(math.radians(180.0 / FACETS))
 STK_EDGE_CLEAR = min(LID_AP - max(p.x * math.cos(math.radians(-90.0 + 45.0 * k + 22.5)) + p.y * math.sin(math.radians(-90.0 + 45.0 * k + 22.5)) for k in range(FACETS)) for p in stk_pts)
 # warning sign (task-101-08): offset copies (0.25 cm) of the body facets it covers, ONE planar projection (plane normal = the bisector of the
-# vertical corner at -45 deg, u along the tangent, v = z), so the sign runs across the facet edge. 27 cm wide, between the rings (z 52..79).
+# vertical corner at -90 deg, u along the tangent, v = z), so the sign runs across the facet edge. 27 cm wide, between the rings (z 52..79).
 mats["warning"] = bpy.data.materials.new("M_Barrel_warning")
-SIGN_W, SIGN_ZC, SIGN_OFF, SIGN_CORNER = 27.0, 65.5, 0.25, 1
+SIGN_W, SIGN_ZC, SIGN_OFF, SIGN_CORNER = 27.0, 65.5, 0.25, 0   # corner at -90 deg: right of the old sticker facet, visible from azimuth -35
 a_c = math.radians(-90.0 + 45.0 * SIGN_CORNER)
 n_c = Vector((math.cos(a_c), math.sin(a_c), 0)); t_c = Vector((-math.sin(a_c), math.cos(a_c), 0))
 zb = rings[5][0].co.z   # body band 51 -> 80 (vertical facets)
@@ -339,7 +339,7 @@ report = {
     "uv_layers": [u.name for u in mesh.uv_layers],
     "uv_checks": {
         "UVMap": {"purpose": "wear mask + decals", "tile_cm": 100.0, "cm_per_uv_unit_min": round(min(dens), 3), "cm_per_uv_unit_max": round(max(dens), 3),
-                  "decal_quads_uv": "sticker: own 0..1 quad; warning: ONE planar projection over 2 facet copies (u along the tangent of the corner at -45 deg, 27 cm = 0..1, v = z 52..79 = 0..1)", "note": "non-decal faces tile past 0..1 (mask is tileable, wrap/repeat)"},
+                  "decal_quads_uv": "sticker: own 0..1 quad; warning: ONE planar projection over 2 facet copies (u along the tangent of the corner at -90 deg, 27 cm = 0..1, v = z 52..79 = 0..1)", "note": "non-decal faces tile past 0..1 (mask is tileable, wrap/repeat)"},
         "LightMap": {"faces": len(boxes), "triangles": tris, "overlapping_face_pairs": overlaps, "bounds_min": [round(float(u1a.min()), 5)], "bounds_max": [round(float(u1a.max()), 5)],
                      "min_gap_px_at_256": round(float(min_gap), 3), "min_border_px_at_256": round(float(border), 3), "required_margin_px": 2, "pass": bool(lm_ok), "texel_scale_px_per_cm_at_256": round(lm_scale, 4)},
     },
@@ -357,7 +357,7 @@ report = {
     "edge_bands": {"seed": SEED, "width_cm": 1.0, "offset_cm": 0.15, "loops": band_stats,
                    "cap": "stepped base (r 9.5 then r 8.5), chamfer to r 7.5, 4 hex bolts (r 1.3, height 0.7, material M_Barrel_cap_edge) at radius 4.2, top z = 134"},
     "removed": ["flame pictogram decal and T_Barrel_Pictogram.png", "EdgeWear vertex colour attribute", "hard-threshold edge chips", "bare metal #8A9099 mix", "16-column rings and the intermediate edge loops added for EdgeWear (back to 8 columns, 12 bands)"],
-    "decal_faces": 1 + sign_faces, "sticker_lid": {"flat_on_lid_z_cm": STK_Z, "size_cm": [STK_W, STK_H], "centre_xy_cm": [round(stk_c.x, 2), round(stk_c.y, 2)], "upright_for_azimuth_deg": -35, "clearance_to_cap_rim_cm": round(STK_CAP_CLEAR, 2), "clearance_to_lid_top_edge_cm": round(STK_EDGE_CLEAR, 2), "body_facet_left_clean": True}, "warning_sign": {"script": "Tools/art/blender/warning_sign.py", "texture": "T_Barrel_Warning.png", "size_px": [512, 512], "faces": sign_faces, "width_cm": SIGN_W, "z_range_cm": [SIGN_ZC - half, SIGN_ZC + half], "offset_cm": SIGN_OFF, "projection": "single planar (bisector of the corner at -45 deg), continues across the facet edge", "blend": "alpha: Masked or Translucent in Unreal", "artwork": "own drawing, no text, not traced from a reference"}, "shading": "flat", "warnings": warnings,
+    "decal_faces": 1 + sign_faces, "sticker_lid": {"flat_on_lid_z_cm": STK_Z, "size_cm": [STK_W, STK_H], "centre_xy_cm": [round(stk_c.x, 2), round(stk_c.y, 2)], "upright_for_azimuth_deg": -35, "clearance_to_cap_rim_cm": round(STK_CAP_CLEAR, 2), "clearance_to_lid_top_edge_cm": round(STK_EDGE_CLEAR, 2), "body_facet_left_clean": True}, "warning_sign": {"script": "Tools/art/blender/warning_sign.py", "texture": "T_Barrel_Warning.png", "size_px": [512, 512], "faces": sign_faces, "width_cm": SIGN_W, "z_range_cm": [SIGN_ZC - half, SIGN_ZC + half], "offset_cm": SIGN_OFF, "projection": "single planar (bisector of the corner at -90 deg), continues across the facet edge", "blend": "alpha: Masked or Translucent in Unreal", "artwork": "own drawing, no text, not traced from a reference"}, "shading": "flat", "warnings": warnings,
 }
 bpy.ops.object.select_all(action="DESELECT"); obj.select_set(True)
 bpy.context.view_layer.objects.active = obj
