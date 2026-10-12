@@ -1,0 +1,37 @@
+{
+  "run_id": "20261011-221704-barrel",
+  "asset": "barrel",
+  "model": "gpt-image-2-image-to-image",
+  "aspect_ratio": "1:1",
+  "resolution": "1K",
+  "variants": 2,
+  "prompt_file": "Art/Source/barrel/prompts/03-warning.txt",
+  "prompt": "Keep this exact image: same orange flat-shaded low-poly barrel with the yellow Kessler-Voss plate sticker, same 8-10 flat-sided body with visible facets, same two darker orange raised rings, same dark grey lid with one bolted round cap, same orange colors, same three-quarter top-down view, same framing and size, same plain white background, no shadow. The Kessler-Voss sticker stays exactly where it is, unchanged, with exactly the same text, KESSLER-VOSS above MINING CONSORTIUM. Only change: add one flat warning pictogram, a simple stylised flame (explosion burst) symbol with no text, on the single flat facet immediately to the right of the sticker's facet (the facet on the other side of the vertical front edge), between the two rings. The pictogram is a flat solid white shape (or flat dark grey), a clear bold flame silhouette, similar in size to the sticker or a little smaller, lying flat on that facet with only the slight perspective of that facet. It sits entirely inside that one facet, does not cross or touch any edge or ring, with clear orange margin all around it. No yellow, no black stripes, no orange or red in the pictogram, no text, no border plate, no other decal, no other change.",
+  "refs": [
+    "Art/Source/barrel/20261011-220936-barrel-1.png"
+  ],
+  "tasks": [
+    {
+      "task_id": "3d50a6cb1825fe249ab644efc9acef57",
+      "state": "success",
+      "credits": 6,
+      "error": null,
+      "result_urls": [
+        "https://tempfile.aiquickdraw.com/images/chatgpt/file_0000000096f0822f95708577381e4f3d.png"
+      ]
+    },
+    {
+      "task_id": "8ba02e6b60bf73aaf804b75f7094de37",
+      "state": "success",
+      "credits": 6,
+      "error": null,
+      "result_urls": [
+        "https://tempfile.aiquickdraw.com/images/chatgpt/file_0000000033d481f7896788d4e89773cd.png"
+      ]
+    }
+  ],
+  "files": [
+    "Art/Source/barrel/20261011-221704-barrel-1.png",
+    "Art/Source/barrel/20261011-221704-barrel-2.png"
+  ]
+}
