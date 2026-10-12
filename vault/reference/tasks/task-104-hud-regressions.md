@@ -1,9 +1,9 @@
 ---
 id: task-104-hud-regressions
 description: "Global task: Two Blueprint regressions of the HUD split are fixed: the damage vignette never fades and WBP_XPStatus divides by zero."
-parent: tasks-to-do-index
+parent: tasks-done-index
 kind: task
-status: in-progress
+status: done
 ---
 # HUD split regressions: vignette fade and XP divide by zero
 
@@ -13,12 +13,12 @@ status: in-progress
 - gdd_check: done by the Orchestrator when the task is planned (2026-10-12).
 - confirmed_by_owner: yes (2026-10-12)
 - milestone: M2
-- next_step: task-104-01-hud-regressions
-- result: open
+- next_step: none
+- result: Done. Vignette FadeStep used pure nodes re-evaluated after SetLastFadeTime so dt was 0: now dt = GetWorldDeltaSeconds; XP percent division behind a Branch. Compiled and saved; PressureVignetteOnHit rerun in task-103-01. Commits 340e42c, e2750e0.
 
 ## Subtasks
 1. task-104-01-hud-regressions — bp
 
 ## Relations
-- [[tasks-to-do-index]] — parent index.
+- [[tasks-done-index]] — parent index.
 - [[task-104-01-hud-regressions]] — step 1, bp.

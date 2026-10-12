@@ -170,6 +170,7 @@ kind: note
 | [[task-102-01-company-logo]] | sonnet | 2 | 0k | 68k | 175k | 2k |
 | [[task-101-01-barrel-asset]] | sonnet | 4 | 0k | 29k | 272k | 1k |
 | [[task-101-02-barrel-sticker]] | sonnet | 2 | 0k | 61k | 197k | 2k |
+| [[task-104-01-hud-regressions]] | sonnet | 1 | 0k | 41k | 532k | 9k |
 
 ## Totals
 | Scope | Input | Cache write | Cache read | Output |
