@@ -1,7 +1,7 @@
-"""Barrel preview (task-101-06). Headless:
+"""Barrel preview (task-101-07). Headless:
   "$BLENDER_EXE" -b --factory-startup -P Tools/art/blender/barrel_preview.py -- <in.fbx> <out.png>
-Loads the FBX, rebuilds the wear on body/ring/lid/cap: worn = max(EdgeWear.R > 0.5 on all four, 1 - T_WearMask on lid and cap only, UV channel 0, 100 cm per tile),
-colour = mix(paint, bare metal #8A9099, worn), decals unmasked, then renders ONE 1000x1000 EEVEE image. Units: 1 Blender unit = 1 cm."""
+Loads the FBX; materials are flat colours (edge bands and bolts have their own lighter materials); faint scratches on lid and cap only:
+colour = lerp(surface colour, lighter tone, (1 - T_WearMask) * 0.6) on UV channel 0, 100 cm per tile; decals unmasked, then renders ONE 1000x1000 EEVEE image. Units: 1 Blender unit = 1 cm."""
 import bpy, math, os, sys
 from mathutils import Vector, Euler
 
@@ -14,13 +14,14 @@ TILE_CM = 100.0
 def srgb(h):
     c = [int(h[i:i + 2], 16) / 255 for i in (1, 3, 5)]
     return tuple(((x + 0.055) / 1.055) ** 2.4 if x > 0.04045 else x / 12.92 for x in c) + (1.0,)
-BARE = srgb("#8A9099")
-PAINT = {"body": "#FF6A00", "ring": "#D9480F", "lid": "#3C4048", "cap": "#2B2E34"}
+PAINT = {"body": "#FF6A00", "ring": "#D9480F", "lid": "#3C4048", "cap": "#2B2E34",
+         "lid_edge": "#5C626D", "cap_edge": "#4A4F58", "ring_edge": "#EE6A2E"}
+LIGHT = {"lid": "#5C626D", "cap": "#4A4F58"}   # lighter tones for the faint scratch lerp
 
 bpy.ops.wm.read_factory_settings(use_empty=True)
-bpy.ops.import_scene.fbx(filepath=FBX, colors_type="LINEAR")
+bpy.ops.import_scene.fbx(filepath=FBX)
 obj = next(o for o in bpy.context.scene.objects if o.type == "MESH")
-print("UV layers:", [u.name for u in obj.data.uv_layers], "colour attrs:", [c.name for c in obj.data.color_attributes])
+print("UV layers:", [u.name for u in obj.data.uv_layers])
 # normalise to 1 unit = 1 cm whatever the importer scale
 h = max(v.co.z for v in obj.data.vertices) * obj.scale.z
 if h > 0 and abs(h - 134.0) > 1.0:
@@ -33,28 +34,19 @@ for m in obj.data.materials:
     m.use_nodes = True
     nt = m.node_tree; bsdf = nt.nodes.get("Principled BSDF") or nt.nodes.new("ShaderNodeBsdfPrincipled")
     bsdf.inputs["Roughness"].default_value = 0.8
-    if key in PAINT:
-        # worn = max(step(EdgeWear.R, 0.5), 1 - mask on lid and cap only); colour = mix(paint, bare metal, worn)
-        vc = nt.nodes.new("ShaderNodeVertexColor"); vc.layer_name = "EdgeWear"
-        sep = nt.nodes.new("ShaderNodeSeparateColor")
-        thr = nt.nodes.new("ShaderNodeMath"); thr.operation = "GREATER_THAN"; thr.inputs[1].default_value = 0.5
-        nt.links.new(vc.outputs["Color"], sep.inputs["Color"]); nt.links.new(sep.outputs["Red"], thr.inputs[0])
-        worn = thr.outputs["Value"]
-        if key in ("lid", "cap"):
-            uv = nt.nodes.new("ShaderNodeUVMap"); uv.uv_map = "UVMap"
-            # UV is already 1 unit = 100 cm, so the mask repeats every 100 cm as is
-            tx = nt.nodes.new("ShaderNodeTexImage"); tx.image = mask; tx.extension = "REPEAT"; tx.interpolation = "Linear"
-            inv = nt.nodes.new("ShaderNodeMath"); inv.operation = "SUBTRACT"; inv.inputs[0].default_value = 1.0
-            mx = nt.nodes.new("ShaderNodeMath"); mx.operation = "MAXIMUM"
-            nt.links.new(uv.outputs["UV"], tx.inputs["Vector"])
-            nt.links.new(tx.outputs["Color"], inv.inputs[1])
-            nt.links.new(worn, mx.inputs[0]); nt.links.new(inv.outputs["Value"], mx.inputs[1])
-            worn = mx.outputs["Value"]
+    if key in ("lid", "cap"):
+        # faint scratches: colour = lerp(surface colour, lighter tone, (1 - mask) * 0.6), UV channel 0, 100 cm per tile
+        uv = nt.nodes.new("ShaderNodeUVMap"); uv.uv_map = "UVMap"
+        tx = nt.nodes.new("ShaderNodeTexImage"); tx.image = mask; tx.extension = "REPEAT"; tx.interpolation = "Linear"
+        inv = nt.nodes.new("ShaderNodeMath"); inv.operation = "SUBTRACT"; inv.inputs[0].default_value = 1.0
+        mul = nt.nodes.new("ShaderNodeMath"); mul.operation = "MULTIPLY"; mul.inputs[1].default_value = 0.6
         mix = nt.nodes.new("ShaderNodeMix"); mix.data_type = "RGBA"; mix.blend_type = "MIX"
-        mix.inputs[6].default_value = srgb(PAINT[key])     # A (factor 0) = paint
-        mix.inputs[7].default_value = BARE                 # B (factor 1) = bare metal
-        nt.links.new(worn, mix.inputs[0])
+        mix.inputs[6].default_value = srgb(PAINT[key]); mix.inputs[7].default_value = srgb(LIGHT[key])
+        nt.links.new(uv.outputs["UV"], tx.inputs["Vector"]); nt.links.new(tx.outputs["Color"], inv.inputs[1])
+        nt.links.new(inv.outputs["Value"], mul.inputs[0]); nt.links.new(mul.outputs["Value"], mix.inputs[0])
         nt.links.new(mix.outputs[2], bsdf.inputs["Base Color"])
+    elif key in PAINT:
+        bsdf.inputs["Base Color"].default_value = srgb(PAINT[key])   # flat colour, no mask
     elif key in ("sticker", "pictogram"):
         img = bpy.data.images.load(os.path.join(os.path.dirname(FBX), "T_Barrel_%s.png" % key.capitalize()))
         tx = nt.nodes.new("ShaderNodeTexImage"); tx.image = img
