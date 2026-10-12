@@ -21,18 +21,19 @@ P = [
     (0.0, 34.0, "body"), (12.0, 42.5, "body"),
     (33.0, 42.5, "ring"), (36.0, 45.0, "ring"), (48.0, 45.0, "ring"), (51.0, 42.5, "body"),
     (80.0, 42.5, "ring"), (83.0, 45.0, "ring"), (97.0, 45.0, "ring"), (100.0, 42.5, "body"),
-    (126.0, 42.5, "body"), (130.0, 38.0, "edge"), (132.0, 34.0, "lid"),
+    (126.0, 42.5, "body"), (130.0, 38.0, "lid"), (132.0, 34.0, "lid"),
 ]
 # materials: name -> RGBA (linear). Colours read on the image: orange, darker orange, dark greys.
 def srgb(h):
     c = [int(h[i:i + 2], 16) / 255 for i in (1, 3, 5)]
     return tuple(((x + 0.055) / 1.055) ** 2.4 if x > 0.04045 else x / 12.92 for x in c) + (1.0,)
-MATS = {"body": srgb("#FF6A00"), "ring": srgb("#D9480F"), "lid": srgb("#3C4048"), "cap": srgb("#2B2E34"), "edge": srgb("#8A9099")}
+MATS = {"body": srgb("#FF6A00"), "ring": srgb("#D9480F"), "lid": srgb("#3C4048"), "cap": srgb("#2B2E34")}
+BARE = "#8A9099"   # bare metal, blended in by the wear mask (see report mask_contract)
 
 bpy.ops.wm.read_factory_settings(use_empty=True)
 mats = {}
 for n, c in MATS.items():
-    m = bpy.data.materials.new("M_Barrel_" + ("edge_wear" if n == "edge" else n))
+    m = bpy.data.materials.new("M_Barrel_" + n)
     m.diffuse_color = c
     m.use_nodes = True
     b = m.node_tree.nodes["Principled BSDF"]
@@ -60,60 +61,15 @@ def band(a, b, mat):
 def disc(a, mat, up=True):
     f = bm.faces.new(a if up else a[::-1]); f.material_index = mslot(mat)
 
-import random
-def wear_plan(nfacets, seed0):
-    """Deterministic irregular wear: per facet 2-4 segments of unequal length (t0, t1, worn, scale).
-    Seed is searched from seed0 until worn length is 40-50 % and no facet alternates strictly worn/normal."""
-    seed = seed0
-    while True:
-        rng = random.Random(seed); plan = []; worn_len = 0.0
-        for _ in range(nfacets):
-            n = rng.randint(2, 4)
-            w = [rng.uniform(0.5, 1.6) for _ in range(n)]; tot = sum(w); t = 0.0; segs = []
-            for x in w:
-                t1 = t + x / tot; wr = rng.random() < 0.45
-                segs.append([t, t1, wr, False]); worn_len += (t1 - t) * wr; t = t1
-            plan.append(segs)
-        frac = worn_len / nfacets
-        alt = any(len(sg) >= 3 and all(sg[j][2] != sg[j + 1][2] for j in range(len(sg) - 1)) for sg in plan)
-        if 0.40 <= frac <= 0.50 and not alt:
-            rng2 = random.Random(seed + 1000)
-            norm = [(i, j) for i, sg in enumerate(plan) for j, g in enumerate(sg) if not g[2]]
-            for i, j in rng2.sample(norm, min(len(norm), max(3, nfacets // 2))):
-                plan[i][j][3] = True       # scale: one triangle of this normal segment is worn
-            return plan, frac, seed
-        seed += 1
-def worn_band(a, b, base, plan):
-    n = len(a)
-    for k in range(n):
-        a0, a1, b0, b1 = a[k], a[(k + 1) % n], b[k], b[(k + 1) % n]
-        def pt(p, q, t):
-            return p if t <= 0 else q if t >= 1 else bm.verts.new(p.co.lerp(q.co, t))
-        pa = {}; pb = {}
-        def A(t): return pa.setdefault(round(t, 6), pt(a0, a1, t))
-        def B(t): return pb.setdefault(round(t, 6), pt(b0, b1, t))
-        for t0, t1, wr, sc in plan[k]:
-            q = (A(t0), A(t1), B(t1), B(t0))
-            if sc:
-                f1 = bm.faces.new((q[0], q[1], q[2])); f2 = bm.faces.new((q[0], q[2], q[3]))
-                f1.material_index = mslot("edge"); f2.material_index = mslot(base)
-            else:
-                f = bm.faces.new(q); f.material_index = mslot("edge" if wr else base)
-
 rings = [ring(z, r, SIDES) for z, r, _ in P]
-lid_plan, lid_frac, lid_seed = wear_plan(SIDES, 11)
-cap_plan, cap_frac, cap_seed = wear_plan(10, 23)
 for i in range(len(P) - 1):
-    if i == 11:
-        worn_band(rings[i], rings[i + 1], "lid", lid_plan)
-    else:
-        band(rings[i], rings[i + 1], P[i][2])
+    band(rings[i], rings[i + 1], "lid" if i == 11 else P[i][2])   # i == 11: lid chamfer
 disc(rings[0], "body", up=False)   # bottom
 disc(rings[-1], "lid", up=True)    # lid top at z=132
 # cap: 10-sided short cylinder, back right of the lid, grey
 cx, cy = 14.0, 12.0
 c0 = ring(132.0, 9.0, 10, cx, cy); c1 = ring(132.5, 9.0, 10, cx, cy); c2 = ring(134.0, 7.0, 10, cx, cy)
-band(c0, c1, "cap"); worn_band(c1, c2, "cap", cap_plan); disc(c2, "cap")
+band(c0, c1, "cap"); band(c1, c2, "cap"); disc(c2, "cap")
 
 # decals: quads on two adjacent facets (left and right of the front corner at -90 deg)
 def facet_quad(angle_deg, zc, w, h, off=0.25):
@@ -129,17 +85,58 @@ for dn, ang, zc, w, h in (("sticker", -112.5, 66.0, 28.0, 11.5), ("pictogram", -
     mats[dn] = bpy.data.materials.new("M_Barrel_" + dn)
     vs = facet_quad(ang, zc, w, h)
     f = bm.faces.new(vs); f.material_index = mslot(dn)
-    uvl = bm.loops.layers.uv.verify()
+    uvl = bm.loops.layers.uv.get("UVMap") or bm.loops.layers.uv.new("UVMap")
     for l, uv in zip(f.loops, ((0, 0), (1, 0), (1, 1), (0, 1))):
         l[uvl].uv = uv
 bm.faces.ensure_lookup_table()
-# UVs for the non-decal faces: planar top projection normalised to 0..1 (flat colours, no texture)
-uvl = bm.loops.layers.uv.verify()
+bm.faces.index_update(); bm.normal_update()
+# ---- UV channel 0 "UVMap": planar projection on each face's own plane, 1 tile of the wear mask = 100 cm
+# (constant texel density). Decal quads keep their own 0..1 UV. Channel 1 "LightMap": one island per face, packed.
+DECALS = ("sticker", "pictogram")
+uv0 = bm.loops.layers.uv.get("UVMap") or bm.loops.layers.uv.new("UVMap")
+uv1 = bm.loops.layers.uv.new("LightMap")
+TILE_CM = 100.0
+def plane_basis(f):
+    n = f.normal.normalized()
+    if abs(n.z) > 0.99:
+        return Vector((1, 0, 0)), Vector((0, 1, 0))
+    t = Vector((-n.y, n.x, 0)).normalized()
+    return t, n.cross(t).normalized() * (1 if n.cross(t).z > 0 else -1)   # t horizontal, s points up the slope
+island = {}    # face index -> (list of local 2D cm coords per loop, w, h)
 for f in bm.faces:
-    if mesh.materials[f.material_index].name[9:] in ("sticker", "pictogram"):
+    t, s_ = plane_basis(f)
+    loc = [(l.vert.co.dot(t), l.vert.co.dot(s_)) for l in f.loops]
+    mnx = min(p[0] for p in loc); mny = min(p[1] for p in loc)
+    loc = [(x - mnx, y - mny) for x, y in loc]
+    island[f.index] = (loc, max(p[0] for p in loc), max(p[1] for p in loc))
+    if mesh.materials[f.material_index].name[9:] in DECALS:
         continue
     for l in f.loops:
-        l[uvl].uv = (l.vert.co.x / 100.0 + 0.5, l.vert.co.y / 100.0 + 0.5)
+        l[uv0].uv = (l.vert.co.dot(t) / TILE_CM, l.vert.co.dot(s_) / TILE_CM)
+
+# LightMap packing: shelf packing in pixel units at 256 px, gap and border >= PAD px between island bounding boxes
+LM_RES, PAD = 256, 3.0
+def pack(scale):
+    items = sorted(island.items(), key=lambda kv: -kv[1][2])
+    x = y = PAD; rowh = 0.0; out = {}
+    for fi, (loc, w, h) in items:
+        pw, ph = w * scale, h * scale
+        if x + pw + PAD > LM_RES:
+            x = PAD; y += rowh + PAD; rowh = 0.0
+        if x + pw + PAD > LM_RES or y + ph + PAD > LM_RES:
+            return None
+        out[fi] = (x, y, pw, ph); x += pw + PAD; rowh = max(rowh, ph)
+    return out
+lo_s, hi_s = 0.01, 20.0
+for _ in range(40):
+    mid = (lo_s + hi_s) / 2
+    if pack(mid): lo_s = mid
+    else: hi_s = mid
+lm_scale = lo_s; placed = pack(lm_scale)
+for f in bm.faces:
+    x, y, pw, ph = placed[f.index]; loc = island[f.index][0]
+    for l, (lx, ly) in zip(f.loops, loc):
+        l[uv1].uv = ((x + lx * lm_scale) / LM_RES, (y + ly * lm_scale) / LM_RES)
 for f in bm.faces:
     f.smooth = False
 bm.to_mesh(mesh); bm.free()
@@ -194,8 +191,37 @@ bb = [obj.matrix_world @ Vector(c) for c in obj.bound_box]
 lo = Vector((min(v.x for v in bb), min(v.y for v in bb), min(v.z for v in bb)))
 hi = Vector((max(v.x for v in bb), max(v.y for v in bb), max(v.z for v in bb)))
 tris = sum(len(p.vertices) - 2 for p in mesh.polygons)
-uvs = [l.uv for l in mesh.uv_layers.active.data]
+def layer_arr(name): return np.array([l.uv[:] for l in mesh.uv_layers[name].data], dtype=np.float64)
+u0a, u1a = layer_arr("UVMap"), layer_arr("LightMap")
+# LightMap checks on the real mesh data: per-face bbox in px at 256, pairwise gap (separated boxes => no triangle overlap)
+boxes = []
+for p in mesh.polygons:
+    q = u1a[p.loop_start:p.loop_start + p.loop_total] * LM_RES
+    boxes.append((q[:, 0].min(), q[:, 1].min(), q[:, 0].max(), q[:, 1].max()))
+min_gap = 1e9
+for i in range(len(boxes)):
+    for j in range(i + 1, len(boxes)):
+        A, B = boxes[i], boxes[j]
+        gx = max(B[0] - A[2], A[0] - B[2]); gy = max(B[1] - A[3], A[1] - B[3])
+        min_gap = min(min_gap, max(gx, gy))
+border = min(min(b[0], b[1], LM_RES - b[2], LM_RES - b[3]) for b in boxes)
+overlaps = sum(1 for i in range(len(boxes)) for j in range(i + 1, len(boxes))
+               if max(max(boxes[j][0] - boxes[i][2], boxes[i][0] - boxes[j][2]), max(boxes[j][1] - boxes[i][3], boxes[i][1] - boxes[j][3])) < 0)
+lm_ok = overlaps == 0 and min_gap >= 2.0 and border >= 2.0 and u1a.min() >= 0 and u1a.max() <= 1
+# texel density check on UVMap (non-decal faces): cm per UV unit must be 100
+dens = []
+for p in mesh.polygons:
+    if mesh.materials[p.material_index].name[9:] in DECALS: continue
+    ls = list(range(p.loop_start, p.loop_start + p.loop_total))
+    for k in range(len(ls)):
+        a_, b_ = ls[k], ls[(k + 1) % len(ls)]
+        va, vb = mesh.loops[a_].vertex_index, mesh.loops[b_].vertex_index
+        d3 = (mesh.vertices[va].co - mesh.vertices[vb].co).length; d2 = np.linalg.norm(u0a[a_] - u0a[b_])
+        if d3 > 1e-6:
+            dens.append(d3 / d2 if d2 > 1e-9 else float("inf"))
+            if d2 <= 1e-9: print("DEGEN", p.index, mesh.materials[p.material_index].name, p.normal[:], d3)
 warnings = []
+if not lm_ok: warnings.append("LightMap check FAILED")
 if tris > 600: warnings.append("tris above 600 budget")
 if abs((hi.z - lo.z) - 134) > 1.0: warnings.append("height off 134 cm")
 if max(hi.x - lo.x, hi.y - lo.y) > 91.0: warnings.append("width above 90 cm")
@@ -209,8 +235,21 @@ report = {
     "pivot": "bottom", "bbox_min": [round(c, 3) for c in lo], "bbox_max": [round(c, 3) for c in hi],
     "materials": [m.name for m in mesh.materials], "decal_textures": ["T_Barrel_Sticker.png", "T_Barrel_Pictogram.png"],
     "uv_layers": [u.name for u in mesh.uv_layers],
-    "uv_bounds": {"min": [min(u[0] for u in uvs), min(u[1] for u in uvs)], "max": [max(u[0] for u in uvs), max(u[1] for u in uvs)]},
-    "decal_faces": 2, "edge_wear": {"lid_worn_fraction": round(lid_frac, 3), "lid_seed": lid_seed, "cap_worn_fraction": round(cap_frac, 3), "cap_seed": cap_seed}, "shading": "flat", "warnings": warnings,
+    "uv_checks": {
+        "UVMap": {"purpose": "wear mask + decals", "tile_cm": 100.0, "cm_per_uv_unit_min": round(min(dens), 3), "cm_per_uv_unit_max": round(max(dens), 3),
+                  "decal_quads_uv": "0..1 own", "note": "non-decal faces tile past 0..1 (mask is tileable, wrap/repeat)"},
+        "LightMap": {"faces": len(boxes), "triangles": tris, "overlapping_face_pairs": overlaps, "bounds_min": [round(float(u1a.min()), 5)], "bounds_max": [round(float(u1a.max()), 5)],
+                     "min_gap_px_at_256": round(float(min_gap), 3), "min_border_px_at_256": round(float(border), 3), "required_margin_px": 2, "pass": bool(lm_ok), "texel_scale_px_per_cm_at_256": round(lm_scale, 4)},
+    },
+    "mask_contract": {
+        "mask_file": "Art/Textures/T_WearMask.png", "mask_colour_space": "linear/grayscale (sRGB off)", "uv_channel": 0, "uv_channel_name": "UVMap", "tile_cm": 100.0, "wrap": "repeat",
+        "formula": "colour = lerp(bare_metal, paint_colour, mask)  (mask white = clean paint, dark = worn bare metal); a BLEND, not a multiply",
+        "bare_metal_srgb": BARE, "masked_materials": {"M_Barrel_body": "#FF6A00", "M_Barrel_ring": "#D9480F", "M_Barrel_lid": "#3C4048", "M_Barrel_cap": "#2B2E34"},
+        "unmasked_materials": ["M_Barrel_sticker", "M_Barrel_pictogram"],
+        "note": "FBX cannot hold the node graph: the Unreal master material applies it; paint colour = the per-material flat colour exported in the FBX",
+    },
+    "removed": ["M_Barrel_edge_wear", "geometric wear chip triangles (worn_band)"],
+    "decal_faces": 2, "shading": "flat", "warnings": warnings,
 }
 bpy.ops.object.select_all(action="DESELECT"); obj.select_set(True)
 bpy.context.view_layer.objects.active = obj
