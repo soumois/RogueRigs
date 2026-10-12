@@ -445,8 +445,15 @@ protected:
 	/** Actor-space rest transform of the floor slab instance of a cell. */
 	FTransform GetFloorInstanceTransform(FIntPoint Cell) const;
 
-	/** Actor-space rest transform of the block instance of a cell. */
+	/** Actor-space rest transform of the block instance of a cell: the MeshBaseSize cube filling the block volume. Collision instances always use it. */
 	FTransform GetBlockInstanceTransform(FIntPoint Cell) const;
+
+	/**
+	 * Actor-space rest transform of the rendering instance of a block cell. Barrels: BarrelMesh uniformly scaled from its bounds to fit
+	 * CellSize in width and BlockHeight in height (smaller factor), bounds bottom centre on the cell centre at the block bottom.
+	 * Other types, or a null / boundless BarrelMesh: GetBlockInstanceTransform.
+	 */
+	FTransform GetBlockRenderTransform(FIntPoint Cell) const;
 
 	/** Adds an instance for Cell to the rendering component of MapKey in Cell's chunk (and to its collision ISM for a block) and records it in the chunk map. Returns the instance index, or INDEX_NONE. */
 	int32 AddCellInstance(ERRCellType MapKey, FIntPoint Cell, const FTransform& LocalTransform);
@@ -640,9 +647,13 @@ protected:
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Grid|Visuals")
 	TObjectPtr<UMaterialInterface> SpecialOreMaterial;
 
-	/** Mesh of barrel blocks. */
+	/** Mesh of barrel blocks (render only). Fitted to one cell from its bounds (GetBlockRenderTransform); its collision is never used. */
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Grid|Visuals")
 	TObjectPtr<UStaticMesh> BarrelMesh;
+
+	/** Shape of the hidden barrel collision ISM, scaled like a MeshBaseSize cube to the block volume. Defaults to the engine cylinder (the barrel shape before task-107); null falls back to BarrelMesh. */
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Grid|Visuals")
+	TObjectPtr<UStaticMesh> BarrelCollisionMesh;
 
 	/** Material of barrel blocks. */
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Grid|Visuals")

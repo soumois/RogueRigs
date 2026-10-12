@@ -24,6 +24,7 @@
 #include "Pickups/RRPickupSubsystem.h"
 #include "Serialization/JsonReader.h"
 #include "Serialization/JsonSerializer.h"
+#include "UObject/ConstructorHelpers.h"
 
 #include UE_INLINE_GENERATED_CPP_BY_NAME(RRArenaGrid)
 
@@ -63,6 +64,10 @@ ARRArenaGrid::ARRArenaGrid()
 	HealOreCollision = CreateCollisionComponent(TEXT("HealOreCollision"));
 	SpecialOreCollision = CreateCollisionComponent(TEXT("SpecialOreCollision"));
 	BarrelCollision = CreateCollisionComponent(TEXT("BarrelCollision"));
+
+	// The barrel collision keeps the shape it had before the decorative barrel mesh (task-107): the engine cylinder.
+	static ConstructorHelpers::FObjectFinder<UStaticMesh> DefaultBarrelCollisionMesh(TEXT("/Engine/BasicShapes/Cylinder.Cylinder"));
+	BarrelCollisionMesh = DefaultBarrelCollisionMesh.Object;
 }
 
 UHierarchicalInstancedStaticMeshComponent* ARRArenaGrid::CreateGridComponent(FName Name, bool bWithCollision)
@@ -671,6 +676,28 @@ FTransform ARRArenaGrid::GetBlockInstanceTransform(FIntPoint Cell) const
 	return FTransform(FRotator::ZeroRotator, Location, FVector(HorizontalScale, HorizontalScale, Height / MeshBaseSize));
 }
 
+FTransform ARRArenaGrid::GetBlockRenderTransform(FIntPoint Cell) const
+{
+	if (!BarrelMesh || !IsValidCell(Cell) || Cells[GetCellIndex(Cell)] != ERRCellType::Barrel)
+	{
+		return GetBlockInstanceTransform(Cell);
+	}
+	const FBox Box = BarrelMesh->GetBoundingBox();
+	const FVector Size = Box.GetSize();
+	const float Width = FMath::Max(Size.X, Size.Y);
+	if (Width <= UE_KINDA_SMALL_NUMBER || Size.Z <= UE_KINDA_SMALL_NUMBER)
+	{
+		return GetBlockInstanceTransform(Cell);
+	}
+	// Uniform scale: the mesh fits one cell in width and BlockHeight in height. Its bounds bottom centre (the pivot of a
+	// bottom-pivot mesh) sits on the cell centre at the block bottom (same bottom as GetBlockInstanceTransform).
+	const float Scale = FMath::Min(CellSize / Width, BlockHeight / Size.Z);
+	const float Bottom = bBlocksFillFloorSlab ? -FloorThickness : 0.f;
+	const FVector Anchor(Box.GetCenter().X, Box.GetCenter().Y, Box.Min.Z);
+	const FVector Location = FVector((Cell.X + 0.5f) * CellSize, (Cell.Y + 0.5f) * CellSize, Bottom) - Scale * Anchor;
+	return FTransform(FRotator::ZeroRotator, Location, FVector(Scale));
+}
+
 void ARRArenaGrid::BuildInstances()
 {
 	ClearAllInstances();
@@ -733,8 +760,14 @@ void ARRArenaGrid::BuildInstances()
 		}
 		if (UInstancedStaticMeshComponent* CollisionTemplate = GetTemplateCollisionComponent(Asset.MapKey))
 		{
-			// Same mesh, so the collision shape matches the block at rest.
-			CollisionTemplate->SetStaticMesh(Asset.Mesh);
+			// Same mesh, so the collision shape matches the block at rest. Barrels: the decorative BarrelMesh (no simple collision)
+			// never drives collision; BarrelCollisionMesh keeps the block-sized shape.
+			UStaticMesh* CollisionMesh = Asset.Mesh;
+			if (Asset.MapKey == ERRCellType::Barrel && BarrelCollisionMesh)
+			{
+				CollisionMesh = BarrelCollisionMesh;
+			}
+			CollisionTemplate->SetStaticMesh(CollisionMesh);
 		}
 	}
 
@@ -755,6 +788,7 @@ void ARRArenaGrid::BuildInstances()
 	{
 		ERRCellType MapKey = ERRCellType::Floor;
 		TArray<FTransform> Transforms;
+		TArray<FTransform> CollisionTransforms;
 		TArray<FIntPoint> BatchCells;
 	};
 	TArray<FBatch> Batches;
@@ -781,7 +815,8 @@ void ARRArenaGrid::BuildInstances()
 			}
 			FBatch& Batch = Batches[VisualIndex];
 			Batch.MapKey = MapKey;
-			Batch.Transforms.Add(bIsBlock ? GetBlockInstanceTransform(Cell) : GetFloorInstanceTransform(Cell));
+			Batch.Transforms.Add(bIsBlock ? GetBlockRenderTransform(Cell) : GetFloorInstanceTransform(Cell));
+			Batch.CollisionTransforms.Add(bIsBlock ? GetBlockInstanceTransform(Cell) : GetFloorInstanceTransform(Cell));
 			Batch.BatchCells.Add(Cell);
 
 			if (bIsBlock)
@@ -808,7 +843,7 @@ void ARRArenaGrid::BuildInstances()
 		Visual->Render->AddInstances(Batch.Transforms, /*bShouldReturnIndices*/ false, /*bWorldSpace*/ false);
 		if (Visual->Collision)
 		{
-			Visual->Collision->AddInstances(Batch.Transforms, /*bShouldReturnIndices*/ false, /*bWorldSpace*/ false);
+			Visual->Collision->AddInstances(Batch.CollisionTransforms, /*bShouldReturnIndices*/ false, /*bWorldSpace*/ false);
 		}
 
 		Visual->InstanceCells.SetNum(FirstIndex);
@@ -1412,7 +1447,7 @@ void ARRArenaGrid::StopShaking(FIntPoint Cell)
 		UHierarchicalInstancedStaticMeshComponent* Component = GetCellRenderComponent(Cell);
 		if (Component && CellInstanceIndex[Index] != INDEX_NONE)
 		{
-			Component->UpdateInstanceTransform(CellInstanceIndex[Index], GetBlockInstanceTransform(Cell), /*bWorldSpace*/ false,
+			Component->UpdateInstanceTransform(CellInstanceIndex[Index], GetBlockRenderTransform(Cell), /*bWorldSpace*/ false,
 				/*bMarkRenderStateDirty*/ true, /*bTeleport*/ true);
 		}
 	}
@@ -1458,7 +1493,7 @@ void ARRArenaGrid::Tick(float DeltaSeconds)
 			ShakeAmplitude * FMath::Sin(Angle + Pair.Value),
 			ShakeAmplitude * FMath::Sin(1.37f * Angle + 2.f * Pair.Value),
 			ShakeVerticalAmplitude * FMath::Sin(1.71f * Angle + 3.f * Pair.Value));
-		FTransform Transform = GetBlockInstanceTransform(Cell);
+		FTransform Transform = GetBlockRenderTransform(Cell);
 		Transform.AddToTranslation(Offset);
 		Component->UpdateInstanceTransform(CellInstanceIndex[Index], Transform, /*bWorldSpace*/ false,
 			/*bMarkRenderStateDirty*/ true, /*bTeleport*/ true);
