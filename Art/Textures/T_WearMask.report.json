@@ -1,0 +1,25 @@
+{
+  "file": "Art/Textures/T_WearMask.png",
+  "width": 1024,
+  "height": 1024,
+  "channels": "RGB equal (grayscale), 8 bit",
+  "seed": 106,
+  "seeds_note": "numpy default_rng(106); single stream, fixed order grime, scuff, chip, scratches",
+  "layers": {
+    "grime": "tone 0.90 on 30 percent",
+    "scuff": "tone 0.55 on 7 percent",
+    "chip": "tone 0.22 on 7 percent",
+    "scratches": "28 lines tone 0.40, wrapped"
+  },
+  "mean_grey": 0.8864,
+  "dark_fraction_below_0.6": 0.1435,
+  "dark_fraction_below_0.5": 0.075,
+  "tileable_check": {
+    "left_right_mean_abs_diff": 0.00015,
+    "top_bottom_mean_abs_diff": 0.00586,
+    "adjacent_column_mean_abs_diff_reference": 0.00611,
+    "threshold": 0.02,
+    "pass": true
+  },
+  "applied_to_assets": []
+}
