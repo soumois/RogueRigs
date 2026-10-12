@@ -29,6 +29,7 @@ status: in-progress
 10. task-101-10-barrel-sign-double — 3d (sign twice as large) (done)
 11. task-101-11-barrel-logo-130 — 3d (lid logo 30 percent larger) (done)
 12. task-101-12-barrel-sign-160 — 3d (sign 60 percent larger again)
+13. task-101-13-barrel-sign-recentre — 3d (sign burst centred in height)
 
 ## Relations
 - [[tasks-to-do-index]] — parent index.
@@ -44,3 +45,4 @@ status: in-progress
 - [[task-101-10-barrel-sign-double]] — step 10, 3d.
 - [[task-101-11-barrel-logo-130]] — step 11, 3d.
 - [[task-101-12-barrel-sign-160]] — step 12, 3d.
+- [[task-101-13-barrel-sign-recentre]] — step 13, 3d.
