@@ -544,6 +544,7 @@ visual-style  reference/gdd/art-audio/visual-style.md
 wbp-health-status  reference/tech/blueprints/wbp-health-status.md
 wbp-hud  reference/tech/blueprints/wbp-hud.md
 wbp-subtitles  reference/tech/blueprints/wbp-subtitles.md
+wbp-xp-status  reference/tech/blueprints/wbp-xp-status.md
 weapons-index  reference/gdd/weapons/weapons-index.md
 wishlist  reference/production/wishlist.md
 xp-level-up  reference/gdd/run/xp-level-up.md
