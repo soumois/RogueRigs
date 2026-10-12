@@ -161,6 +161,7 @@ kind: note
 | [[task-099-01-company-subtitles]] | opus | 3 | 0k | 92k | 2398k | 39k |
 | [[task-094-01-hud-refactor]] | sonnet | 1 | 0k | 107k | 1424k | 30k |
 | [[task-094-02-hud-events]] | opus | 2 | 0k | 203k | 8786k | 92k |
+| [[task-094-04-hud-xp]] | sonnet | 2 | 0k | 159k | 2420k | 29k |
 
 ## Totals
 | Scope | Input | Cache write | Cache read | Output |

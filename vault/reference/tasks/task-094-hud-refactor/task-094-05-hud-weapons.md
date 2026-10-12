@@ -3,7 +3,7 @@ id: task-094-05-hud-weapons
 description: "Weapon slots, ammo, reload, turret charges and locked slots move into their own widget, centred as a row at the screen bottom."
 parent: task-094-hud-refactor
 kind: task
-status: todo
+status: in-progress
 ---
 # WBP_Weapons
 

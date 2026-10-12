@@ -3,7 +3,7 @@ id: task-094-04-hud-xp
 description: "XP bar, level text and the LEVEL UP flash move into their own widget bound to the XP and level events."
 parent: task-094-hud-refactor
 kind: task
-status: in-progress
+status: done
 ---
 # WBP_XPStatus
 
@@ -15,11 +15,11 @@ status: in-progress
 - done_when: compiled 0 errors, saved, WBP_HUD places the widget, moved logic removed, docs updated, lint clean, committed.
 - editor_state: open
 - token_ceiling: 50000
-- model: open
-- tokens: open
-- runs: open
+- model: sonnet
+- tokens: input 80, cache write 159063, cache read 2419557, output 28651
+- runs: 2
 - milestone: M2
-- result: open
+- result: WBP_XPStatus (XP bar, level text, LEVEL UP flash, one-shot 1 s timer) bound to the progression events; placed full-screen by WBP_HUD at child 2; moved logic removed; compiled and saved, not seen on screen; no C++ lookup broken. Commits 23ae7c4, ce839a4.
 
 ## Relations
 - [[task-094-hud-refactor]] — parent global task.
