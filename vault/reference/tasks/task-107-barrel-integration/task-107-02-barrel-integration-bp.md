@@ -3,7 +3,7 @@ id: task-107-02-barrel-integration-bp
 description: "SM_Barrel and its textures are imported, its materials built, and BP_ArenaGrid uses them for barrel cells in L_ArenaM1."
 parent: task-107-barrel-integration
 kind: task
-status: todo
+status: in-progress
 ---
 # Barrel import and BP_ArenaGrid
 

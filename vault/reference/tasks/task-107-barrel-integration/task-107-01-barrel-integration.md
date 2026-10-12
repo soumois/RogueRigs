@@ -3,7 +3,7 @@ id: task-107-01-barrel-integration
 description: "The validated barrel mesh replaces the grid barrel cylinder in the arena: C++ fits it to one cell, then BP_ArenaGrid uses it with its materials."
 parent: task-107-barrel-integration
 kind: task
-status: in-progress
+status: done
 ---
 # Barrel grid scale
 
@@ -15,11 +15,11 @@ status: in-progress
 - done_when: build exits 0 with the editor closed; the RogueRigs.* tests pass headless (existing ones; only fixed if broken by this change); barrels still use the cube transform when BarrelMesh is null; the collision of barrels is unchanged (stated in the report); sys-grid updated; lint clean; committed.
 - editor_state: closed
 - token_ceiling: 35000
-- model: open
-- tokens: open
-- runs: open
+- model: opus
+- tokens: input 36, cache write 40058, cache read 474224, output 8796
+- runs: 1
 - milestone: M2
-- result: open
+- result: Barrel cells get their own render transform in ARRArenaGrid (uniform scale from the mesh bounds, S = min(CellSize/width, BlockHeight/height), bottom pivot at the block bottom, fallback to the cube transform); collision unchanged through the new BarrelCollisionMesh property (default Cylinder); build 0, 240 tests pass. Commit c850e83.
 
 ## Relations
 - [[task-107-barrel-integration]] — parent global task.
