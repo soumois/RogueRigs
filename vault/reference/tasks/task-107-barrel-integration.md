@@ -1,6 +1,6 @@
 ---
 id: task-107-barrel-integration
-description: "Global task: The validated barrel mesh replaces the grid barrel cylinder in the arena: C++ fits it to one cell, then BP_ArenaGrid uses it with its materials."
+description: "Global task: the validated barrel mesh replaces the grid cylinder: C++ fits it to one cell, then BP_ArenaGrid uses it with its materials."
 parent: tasks-to-do-index
 kind: task
 status: in-progress
