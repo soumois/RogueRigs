@@ -162,13 +162,19 @@ LID_AP = 34.0 * math.cos(math.radians(180.0 / FACETS))
 STK_EDGE_CLEAR = min(LID_AP - max(p.x * math.cos(math.radians(-90.0 + 45.0 * k + 22.5)) + p.y * math.sin(math.radians(-90.0 + 45.0 * k + 22.5)) for k in range(FACETS)) for p in stk_pts)
 # warning sign (task-101-08/10): offset copies (0.25 cm) of every body and ring facet piece it covers, ONE planar projection (plane normal = the
 # bisector of the vertical corner at -90 deg, u along the tangent, v = z), so the sign runs across the facet edge and across the ring faces.
-# 83.2 cm square (x1.6 of 52): z 23.9 .. 107.1 crosses both rings and their chamfers; only facets with normal within 70 deg of the projection are covered.
+# 83.2 cm square (x1.6 of 52): z 32 .. 115.2 crosses both rings and their chamfers; only facets with normal within 70 deg of the projection are covered.
 mats["warning"] = bpy.data.materials.new("M_Barrel_warning")
 SIGN_W, SIGN_ZC, SIGN_OFF, SIGN_CORNER = 83.2, 65.5, 0.25, 0   # corner at -90 deg: right of the old sticker facet, visible from azimuth -35
 a_c = math.radians(-90.0 + 45.0 * SIGN_CORNER)
 n_c = Vector((math.cos(a_c), math.sin(a_c), 0)); t_c = Vector((-math.sin(a_c), math.cos(a_c), 0))
 half = SIGN_W / 2.0; cos_h = math.cos(math.radians(180.0 / FACETS))   # facet direction . t_c = cos(22.5 deg)
-Z0, Z1 = SIGN_ZC - half, SIGN_ZC + half
+# task-101-13: the CENTRE OF THE BURST in the texture (area centroid, y = 305.66 px of 512, y down) sits at the middle of the band between the top of the
+# lower ring (z 48; its chamfer ends at 51) and the bottom of the upper ring (z 83; its chamfer starts at 80): both pairs give z = 65.5.
+RING_LOW_TOP, RING_HIGH_BOTTOM = 48.0, 83.0
+BURST_CY_PX = 305.66
+BURST_V = 1.0 - BURST_CY_PX / 512.0                      # v of the burst centre in the texture (0 = bottom)
+BURST_Z = (RING_LOW_TOP + RING_HIGH_BOTTOM) / 2.0
+Z0 = BURST_Z - BURST_V * SIGN_W; Z1 = Z0 + SIGN_W
 def r_at(z):
     for i in range(len(P) - 1):
         if P[i][0] <= z <= P[i + 1][0]:
@@ -389,7 +395,7 @@ report = {
     "edge_bands": {"seed": SEED, "width_cm": 1.0, "offset_cm": 0.15, "loops": band_stats,
                    "cap": "stepped base (r 9.5 then r 8.5), chamfer to r 7.5, 4 hex bolts (r 1.3, height 0.7, material M_Barrel_cap_edge) at radius 4.2, top z = 134"},
     "removed": ["flame pictogram decal and T_Barrel_Pictogram.png", "EdgeWear vertex colour attribute", "hard-threshold edge chips", "bare metal #8A9099 mix", "16-column rings and the intermediate edge loops added for EdgeWear (back to 8 columns, 12 bands)"],
-    "decal_faces": 1 + sign_faces, "sticker_lid": {"flat_on_lid_z_cm": STK_Z, "size_cm": [STK_W, STK_H], "centre_xy_cm": [round(stk_c.x, 2), round(stk_c.y, 2)], "upright_for_azimuth_deg": -35, "clearance_to_cap_rim_cm": round(STK_CAP_CLEAR, 2), "clearance_to_lid_top_edge_cm": round(STK_EDGE_CLEAR, 2), "body_facet_left_clean": True}, "warning_sign": {"script": "Tools/art/blender/warning_sign.py", "texture": "T_Barrel_Warning.png", "size_px": [512, 512], "faces": sign_faces, "width_cm": SIGN_W, "z_range_cm": [Z0, Z1], "z_breakpoints_cm": zs, "extended_to_ring_faces": True, "covered_facets": covered_facets, "max_normal_angle_deg": MAX_ANGLE, "extension_note": "83.2 cm crosses both rings: decal copies follow the profile (same 0.25 cm offset, ONE planar UV projection); facets beyond 70 deg from the projection direction are not covered; each side is clipped at u = +-41.6 cm", "offset_cm": SIGN_OFF, "projection": "single planar (bisector of the corner at -90 deg), continues across the facet edge", "blend": "alpha: Masked or Translucent in Unreal", "artwork": "own drawing, no text, not traced from a reference"}, "shading": "flat", "warnings": warnings,
+    "decal_faces": 1 + sign_faces, "sticker_lid": {"flat_on_lid_z_cm": STK_Z, "size_cm": [STK_W, STK_H], "centre_xy_cm": [round(stk_c.x, 2), round(stk_c.y, 2)], "upright_for_azimuth_deg": -35, "clearance_to_cap_rim_cm": round(STK_CAP_CLEAR, 2), "clearance_to_lid_top_edge_cm": round(STK_EDGE_CLEAR, 2), "body_facet_left_clean": True}, "warning_sign": {"script": "Tools/art/blender/warning_sign.py", "texture": "T_Barrel_Warning.png", "size_px": [512, 512], "faces": sign_faces, "width_cm": SIGN_W, "z_range_cm": [round(Z0, 2), round(Z1, 2)], "burst_centre": {"texture_centroid_px_y_down": BURST_CY_PX, "texture_bbox_centre_px_y_down": 291.1, "v": round(BURST_V, 4), "z_cm": round(Z0 + BURST_V * SIGN_W, 2), "band_middle_z_cm": BURST_Z, "lower_ring_z_cm": [36, 48], "upper_ring_z_cm": [83, 97], "lower_ring_chamfers_z_cm": [[33, 36], [48, 51]], "upper_ring_chamfers_z_cm": [[80, 83], [97, 100]]}, "z_breakpoints_cm": zs, "extended_to_ring_faces": True, "covered_facets": covered_facets, "max_normal_angle_deg": MAX_ANGLE, "extension_note": "83.2 cm crosses both rings: decal copies follow the profile (same 0.25 cm offset, ONE planar UV projection); facets beyond 70 deg from the projection direction are not covered; each side is clipped at u = +-41.6 cm", "offset_cm": SIGN_OFF, "projection": "single planar (bisector of the corner at -90 deg), continues across the facet edge", "blend": "alpha: Masked or Translucent in Unreal", "artwork": "own drawing, no text, not traced from a reference"}, "shading": "flat", "warnings": warnings,
 }
 bpy.ops.object.select_all(action="DESELECT"); obj.select_set(True)
 bpy.context.view_layer.objects.active = obj

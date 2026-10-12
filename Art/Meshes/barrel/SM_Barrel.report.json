@@ -63,7 +63,7 @@
       "min_border_px_at_256": 3.0,
       "required_margin_px": 2,
       "pass": true,
-      "texel_scale_px_per_cm_at_256": 0.7763
+      "texel_scale_px_per_cm_at_256": 0.7718
     }
   },
   "mask_contract": {
@@ -170,11 +170,46 @@
     "faces": 36,
     "width_cm": 83.2,
     "z_range_cm": [
-      23.9,
-      107.1
+      31.97,
+      115.17
     ],
+    "burst_centre": {
+      "texture_centroid_px_y_down": 305.66,
+      "texture_bbox_centre_px_y_down": 291.1,
+      "v": 0.403,
+      "z_cm": 65.5,
+      "band_middle_z_cm": 65.5,
+      "lower_ring_z_cm": [
+        36,
+        48
+      ],
+      "upper_ring_z_cm": [
+        83,
+        97
+      ],
+      "lower_ring_chamfers_z_cm": [
+        [
+          33,
+          36
+        ],
+        [
+          48,
+          51
+        ]
+      ],
+      "upper_ring_chamfers_z_cm": [
+        [
+          80,
+          83
+        ],
+        [
+          97,
+          100
+        ]
+      ]
+    },
     "z_breakpoints_cm": [
-      23.9,
+      31.969750000000005,
       33.0,
       36.0,
       48.0,
@@ -183,7 +218,7 @@
       83.0,
       97.0,
       100.0,
-      107.1
+      115.16975000000001
     ],
     "extended_to_ring_faces": true,
     "covered_facets": [
