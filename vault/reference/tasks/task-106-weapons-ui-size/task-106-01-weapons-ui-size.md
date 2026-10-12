@@ -3,7 +3,7 @@ id: task-106-01-weapons-ui-size
 description: "Weapon slots resized like the DRGS reference at the bottom centre; column width bug fixed."
 parent: task-106-weapons-ui-size
 kind: task
-status: todo
+status: in-progress
 ---
 # Weapons UI size
 
