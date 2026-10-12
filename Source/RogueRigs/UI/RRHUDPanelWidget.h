@@ -1,4 +1,4 @@
-// Rogue Rigs - base class of the HUD sub-widgets (panels placed in WBP_HUD): receives the miner, run flow, spawner and game mode from the HUD root once each.
+// Rogue Rigs - base class of the HUD sub-widgets (panels placed in WBP_HUD): receives the miner, run flow, spawner, game mode and the HUD root itself from the HUD root once each.
 
 #pragma once
 
@@ -9,12 +9,13 @@
 class ARREnemySpawner;
 class ARRGameMode;
 class ARRMiner;
+class URRHUDWidget;
 class URRRunFlowSubsystem;
 
 /**
  * HUD panel (sub-widget of the HUD root, e.g. WBP_HealthStatus, WBP_Weapons). The game creates and binds only the HUD root
  * (URRHUDWidget); the root finds every panel of this class in its widget tree and hands each one the objects it binds to:
- * BindToMiner, BindToRunFlow, BindToSpawner, BindToGameMode. Each hook runs once per distinct object (a repeated bind with the
+ * BindToMiner, BindToRunFlow, BindToSpawner, BindToGameMode, and itself through BindToHUD. Each hook runs once per distinct object (a repeated bind with the
  * same object is ignored; a new object calls it again, null = unbind and clear the display). The Blueprint subclass binds the
  * C++ events it needs (ARRMiner::OnHealthChanged, URRRunFlowSubsystem::OnAlertBarEventsChanged...) inside the hook and reads the
  * current values there; it never polls in Tick. No gameplay logic.
@@ -36,6 +37,13 @@ public:
 
 	/** Called by the HUD root: stores GameMode and calls BindToGameMode when it differs from the stored one. */
 	void SetGameMode(ARRGameMode* GameMode);
+
+	/** Called by the HUD root (its initialization and construct): stores HUD and calls BindToHUD when it differs from the stored one. */
+	void SetHUD(URRHUDWidget* HUD);
+
+	/** HUD root this panel lives in (null before the root initialized). Its minimap and locator delegates are bound in BindToHUD. */
+	UFUNCTION(BlueprintPure, Category = "HUD|Panel")
+	URRHUDWidget* GetHUD() const { return BoundHUD.Get(); }
 
 	/** Miner this panel is bound to (null before binding or after the miner was destroyed). */
 	UFUNCTION(BlueprintPure, Category = "HUD|Panel")
@@ -61,6 +69,9 @@ public:
 
 	/** Number of BindToSpawner calls received (tests). */
 	int32 GetSpawnerBindCount() const { return SpawnerBindCount; }
+
+	/** Number of BindToHUD calls received (tests). */
+	int32 GetHUDBindCount() const { return HUDBindCount; }
 
 protected:
 	/**
@@ -95,6 +106,17 @@ protected:
 	/** Native default: nothing. */
 	virtual void BindToGameMode_Implementation(ARRGameMode* GameMode, ARRGameMode* PreviousGameMode) {}
 
+	/**
+	 * Hook: the HUD root this panel lives in (once per root). Bind its delegates here (URRHUDWidget::OnMinimapTextureReady,
+	 * OnMinimapViewChanged, OnLocatorViewChanged) and read the current values (GetMinimapTexture, GetMinimapState,
+	 * GetObjectiveLocator): the texture may already exist. Replaces any GetAllWidgetsOfClass lookup of the root.
+	 */
+	UFUNCTION(BlueprintNativeEvent, Category = "HUD|Panel")
+	void BindToHUD(URRHUDWidget* HUD, URRHUDWidget* PreviousHUD);
+
+	/** Native default: counts the call. Overrides call Super. */
+	virtual void BindToHUD_Implementation(URRHUDWidget* HUD, URRHUDWidget* PreviousHUD);
+
 	/** Miner handed by the HUD root. */
 	TWeakObjectPtr<ARRMiner> BoundMiner;
 
@@ -106,6 +128,9 @@ protected:
 
 	/** Game mode handed by the HUD root. */
 	TWeakObjectPtr<ARRGameMode> BoundGameMode;
+
+	/** HUD root handed by itself. */
+	TWeakObjectPtr<URRHUDWidget> BoundHUD;
 
 	/** True once SetMiner was called (a first null still runs the hook so the panel clears). */
 	bool bMinerSet = false;
@@ -127,4 +152,7 @@ protected:
 
 	/** BindToSpawner calls received. */
 	int32 SpawnerBindCount = 0;
+
+	/** BindToHUD calls received. */
+	int32 HUDBindCount = 0;
 };

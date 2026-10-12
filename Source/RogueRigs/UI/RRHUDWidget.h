@@ -4,6 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "Blueprint/UserWidget.h"
+#include "Components/SceneComponent.h"
 #include "Objectives/RRConsole.h"
 #include "UI/RRHUDTypes.h"
 #include "UI/RRMinimap.h"
@@ -21,8 +22,20 @@ class URRProgressionComponent;
 class URRRunFlowSubsystem;
 class UAbilitySystemComponent;
 class UWidget;
+class FViewport;
+class ARRBonusChest;
+class ARRShuttle;
 struct FMinimalViewInfo;
 struct FOnAttributeChangeData;
+
+/** URRHUDWidget::OnMinimapTextureReady: the minimap texture exists (once per HUD). */
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FRROnMinimapTextureReadySignature, UTexture2D*, Texture);
+
+/** URRHUDWidget::OnMinimapViewChanged: the minimap content or view changed; State = GetMinimapState now. */
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FRROnMinimapViewChangedSignature, const FRRMinimapState&, State);
+
+/** URRHUDWidget::OnLocatorViewChanged: the locator arrow inputs changed; Locator = GetObjectiveLocator now (bHasLocator its result). */
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_TwoParams(FRROnLocatorViewChangedSignature, bool, bHasLocator, const FRRObjectiveLocator&, Locator);
 
 /**
  * In-run HUD. Created by ARRPlayerController at BeginPlay (local player only) from its HUDWidgetClass. C++ binds it
@@ -34,7 +47,9 @@ struct FOnAttributeChangeData;
  * them. Run flow (BindToRunFlow, URRRunFlowSubsystem): OnAlertChanged, OnObjectiveChanged, OnObjectiveProgressChanged and
  * OnExtractionReady, OnShuttleCountdown and OnRunEnded (end screen; its restart button calls RestartLevel). Turret charges
  * (BindToMiner: the miner's turret launcher, now or when acquired later through OnWeaponAdded): OnTurretChargesChanged, plus
- * GetTurretRechargeProgress for a per-frame bar. Weapon slots (ammo, reload, turret charges, locked slots): GetWeaponSlots / GetWeaponSlot. Pressure feedback: OnPlayerDamaged (red vignette, BindToMiner),
+ * GetTurretRechargeProgress for a per-frame bar (reload and recharge progress are the only per-frame HUD values). Minimap and
+ * locator: OnMinimapTextureReady, OnMinimapViewChanged and OnLocatorViewChanged, driven by the miner's and its camera's transform
+ * updates (no tick: an idle miner costs nothing). Weapon slots (ammo, reload, turret charges, locked slots): GetWeaponSlots / GetWeaponSlot. Pressure feedback: OnPlayerDamaged (red vignette, BindToMiner),
  * OnHordeIncoming (banner) and OnAlertEventsChanged (alert-bar icons: console, bonus chest, hordes, shuttle) from BindToSpawner and
  * BindToRunFlow. No gameplay logic.
  */
@@ -104,6 +119,42 @@ public:
 	/** Lowest render opacity the damage vignette is kept at (VignetteWarmOpacity): its "no vignette" value for checks and tests. */
 	float GetVignetteWarmOpacity() const { return VignetteWarmOpacity; }
 
+	/** Number of vignette warm-ups applied (tests: exactly 1 once the vignette exists, never per frame). */
+	int32 GetVignetteWarmUpCount() const { return VignetteWarmUpCount; }
+
+	/** Number of OnMinimapTextureReady broadcasts (tests: 1 per HUD). */
+	int32 GetMinimapTextureReadyCount() const { return MinimapTextureReadyCount; }
+
+	/** Number of OnMinimapViewChanged broadcasts (tests: none while the miner is idle). */
+	int32 GetMinimapViewChangedCount() const { return MinimapViewChangedCount; }
+
+	/** Number of OnLocatorViewChanged broadcasts (tests: none while nothing moves). */
+	int32 GetLocatorViewChangedCount() const { return LocatorViewChangedCount; }
+
+	/** Minimap data object (null until a built grid was found); tests read its seen-pass and update counters. */
+	const URRMinimap* GetMinimap() const { return Minimap; }
+
+	/** Fired once when the minimap texture exists (set it on the minimap material). Read GetMinimapTexture at bind time too. */
+	UPROPERTY(BlueprintAssignable, Category = "HUD|Minimap")
+	FRROnMinimapTextureReadySignature OnMinimapTextureReady;
+
+	/**
+	 * Fired only when the minimap content or view changed: cells revealed or a seen cell destroyed (pixels sent), the miner moved by
+	 * more than MinimapConfig.ViewChangeThresholdCells, a marker appeared (console or bonus chest dropped, shuttle landed), a new
+	 * miner bound, or the texture was created. Never while the miner is idle. Payload = GetMinimapState.
+	 */
+	UPROPERTY(BlueprintAssignable, Category = "HUD|Minimap")
+	FRROnMinimapViewChangedSignature OnMinimapViewChanged;
+
+	/**
+	 * Fired only when the locator arrow can change: the objective target changed (run flow OnLocatorTargetChanged, also to None:
+	 * hide), the miner camera moved by more than LocatorMoveThreshold or turned by more than LocatorTurnThresholdDegrees, the miner
+	 * moved by more than LocatorMoveThreshold (distance text), the viewport was resized, or a new miner bound. Never while no target
+	 * exists, never while nothing moves. Payload = GetObjectiveLocator(LocatorEdgeMargin).
+	 */
+	UPROPERTY(BlueprintAssignable, Category = "HUD|Locator")
+	FRROnLocatorViewChangedSignature OnLocatorViewChanged;
+
 	/**
 	 * Estimated bar position of an event SecondsUntil seconds away: Alert + SecondsUntil / AlertFillSeconds (the base fill rate,
 	 * without kills or pause), clamped to [Alert, 1]. Never behind the fill; recomputed as the fill moves.
@@ -157,8 +208,8 @@ public:
 	bool GetObjectiveTarget(ERRLocatorTarget& OutTarget, FVector& OutWorldLocation) const;
 
 	/**
-	 * Locator for an edge arrow, to call each frame: target (GetObjectiveTarget), its projection with the owning player's camera
-	 * in viewport widget units, on-screen flag, edge point (viewport inset by EdgeMargin widget units) and arrow angle. False
+	 * Locator for an edge arrow (OnLocatorViewChanged sends it whenever it can change): target (GetObjectiveTarget), its projection with the locator view
+	 * (GetLocatorView) in viewport widget units, on-screen flag, edge point (viewport inset by EdgeMargin widget units) and arrow angle. False
 	 * when there is no target or no owning player camera (Out.Target and Out.WorldLocation are still filled).
 	 */
 	UFUNCTION(BlueprintPure, Category = "HUD|Locator")
@@ -204,32 +255,77 @@ public:
 	static FVector2D GetMinimapOffset(FVector2D Position, FVector2D Center, float Radius, bool bClampToCircle, bool& bOutOfRange);
 
 protected:
-	/** Starts drawing the damage vignette at VignetteWarmOpacity (KeepVignetteWarm). */
+	/** Hands itself to the panels (BindToHUD), warms the vignette up and creates the minimap when a built grid exists. */
+	virtual void NativeOnInitialized() override;
+
+	/** Same as NativeOnInitialized (idempotent), and listens to viewport resizes for the locator. */
 	virtual void NativeConstruct() override;
 
 	/** Removes every binding. */
 	virtual void NativeDestruct() override;
 
-	/**
-	 * Per-frame work with no event to drive it: keeps the damage vignette at VignetteWarmOpacity at least (after the panels'
-	 * own ticks) and ticks the minimap (cells seen around the moving miner). The alert-bar icons are event driven (run flow).
-	 */
-	virtual void NativeTick(const FGeometry& MyGeometry, float InDeltaTime) override;
+	// No NativeTick override (task-103-01): nothing in this root changes every frame. The reload and turret recharge progress
+	// are read per frame by their panels (GetTurretRechargeProgress, FRRWeaponSlotHUD::ReloadProgress) only while they run.
 
 	/**
-	 * Raises the damage vignette's render opacity to VignetteWarmOpacity when lower. Slate culls a draw whose opacity is 0, so a
-	 * vignette at 0 never renders its material until the first hit: its shaders (and pipeline state) are then not ready on that
-	 * frame and the first flash is skipped. A floor keeps the material drawn, hence warm, from the HUD construct on. The first
-	 * call looks the widget up by DamageVignetteWidgetName through FindHUDWidget (it lives in WBP_HealthStatus).
+	 * One-shot warm-up: raises the damage vignette's render opacity to VignetteWarmOpacity when lower. Slate culls a draw whose
+	 * opacity is 0, so a vignette at 0 never renders its material until the first hit: its shaders (and pipeline state) are then
+	 * not ready on that frame and the first flash is skipped (task-055). WBP_HealthStatus keeps the floor itself afterwards
+	 * (ApplyVignette clamps to 0.001), so one call is enough. Looks the widget up by DamageVignetteWidgetName through FindHUDWidget
+	 * until found (initialization, construct, each BindToMiner = when the panel holding it is bound), then never again.
 	 */
-	void KeepVignetteWarm();
+	void WarmUpVignette();
 
-	/** Creates the minimap on the first built grid found (fires OnMinimapTextureReady), then ticks it (seen cells, texture). */
-	void UpdateMinimap();
+	/** Creates the minimap on the first built grid found (fires OnMinimapTextureReady, then OnMinimapViewChanged). Retries on the
+	 *  next ticks (MinimapRetryFrames at most) and on each miner move while no built grid exists. */
+	void TryCreateMinimap();
 
-	/** Display event: the minimap texture exists (once per HUD; set it on the minimap material). Implement in Blueprint. */
-	UFUNCTION(BlueprintImplementableEvent, Category = "HUD|Minimap")
-	void OnMinimapTextureReady(UTexture2D* Texture);
+	/** Next-tick retry of TryCreateMinimap (startup only: the grid builds in its BeginPlay). */
+	void RetryCreateMinimap();
+
+	/** Miner root TransformUpdated: seen pass and texture flush, then OnMinimapViewChanged when content or view changed. */
+	void HandleMinerMoved(USceneComponent* UpdatedComponent, EUpdateTransformFlags UpdateTransformFlags, ETeleportType Teleport);
+
+	/** Miner camera TransformUpdated (after the camera's own update, so its view is fresh): OnLocatorViewChanged beyond the thresholds. */
+	void HandleLocatorViewMoved(USceneComponent* UpdatedComponent, EUpdateTransformFlags UpdateTransformFlags, ETeleportType Teleport);
+
+	/** Minimap OnPixelsDirtied (a seen cell destroyed): one flush on the next tick for every cell destroyed this frame. */
+	void HandleMinimapPixelsDirtied();
+
+	/** Next-tick flush of the destroyed cells' pixels, then OnMinimapViewChanged. */
+	void FlushMinimapPixels();
+
+	/** FViewport::ViewportResizedEvent: the locator's edge positions depend on the viewport size. */
+	void HandleViewportResized(FViewport* Viewport, uint32 Unused);
+
+	/** Run flow OnLocatorTargetChanged: OnLocatorViewChanged. */
+	UFUNCTION()
+	void HandleLocatorTargetChanged(ERRLocatorTarget Target, FVector WorldLocation);
+
+	/** Run flow OnConsoleDropped: a minimap marker appeared. */
+	UFUNCTION()
+	void HandleConsoleDropped(ARRConsole* Console);
+
+	/** Run flow OnBonusChestDropped: a minimap marker appeared. */
+	UFUNCTION()
+	void HandleBonusChestDropped(ARRBonusChest* BonusChest);
+
+	/** Run flow OnShuttleLanded: a minimap marker appeared. */
+	UFUNCTION()
+	void HandleShuttleLanded(ARRShuttle* Shuttle);
+
+	/** Broadcasts OnMinimapViewChanged with GetMinimapState (no-op without minimap) and remembers the miner position sent. */
+	void BroadcastMinimapView();
+
+	/** Broadcasts OnLocatorViewChanged with GetObjectiveLocator and remembers the camera and miner positions sent. */
+	void BroadcastLocatorView();
+
+	/** Locator view: the bound miner's camera component view (fresh in its TransformUpdated) when it has one, else the owning
+	 *  player's camera cache. False when neither exists. Camera shake (render-only) is ignored. */
+	bool GetLocatorView(FMinimalViewInfo& OutView) const;
+
+	/** Removes the miner transform bindings. */
+	void UnbindMinerMovement();
 
 	/** Minimap data (texture, seen mask); null until a built grid is found or when MinimapConfig.bEnabled is false. */
 	UPROPERTY(Transient)
@@ -300,11 +396,84 @@ protected:
 	UPROPERTY(EditDefaultsOnly, Category = "HUD|Pressure", meta = (ClampMin = 0, ClampMax = 0.01))
 	float VignetteWarmOpacity = 0.001f;
 
-	/** The damage vignette widget found by the first KeepVignetteWarm (null when the Blueprint has none). */
+	/** The damage vignette widget found by WarmUpVignette (null when the Blueprint has none). */
 	TWeakObjectPtr<UWidget> DamageVignette;
 
-	/** True once KeepVignetteWarm looked DamageVignetteWidgetName up (done once). */
-	bool bDamageVignetteLookedUp = false;
+	/** True once WarmUpVignette found and warmed the vignette (never again). */
+	bool bVignetteWarmedUp = false;
+
+	/** See GetVignetteWarmUpCount. */
+	int32 VignetteWarmUpCount = 0;
+
+	/** Camera move (uu) and miner move (uu, distance text) below which OnLocatorViewChanged is not sent (about 0.4 px at 1700 uu). */
+	UPROPERTY(EditDefaultsOnly, Category = "HUD|Locator", meta = (ClampMin = 0))
+	float LocatorMoveThreshold = 1.f;
+
+	/** Camera turn in degrees below which OnLocatorViewChanged is not sent. */
+	UPROPERTY(EditDefaultsOnly, Category = "HUD|Locator", meta = (ClampMin = 0))
+	float LocatorTurnThresholdDegrees = 0.1f;
+
+	/** Edge margin (widget units) of the locator sent by OnLocatorViewChanged (GetObjectiveLocator's default). */
+	UPROPERTY(EditDefaultsOnly, Category = "HUD|Locator", meta = (ClampMin = 0))
+	float LocatorEdgeMargin = 48.f;
+
+	/** Next-tick retries of TryCreateMinimap at startup before relying on miner moves only. */
+	UPROPERTY(EditDefaultsOnly, Category = "HUD|Minimap", meta = (ClampMin = 0))
+	int32 MinimapRetryFrames = 120;
+
+	/** Retries of TryCreateMinimap done. */
+	int32 MinimapRetries = 0;
+
+	/** True while a next-tick retry is scheduled. */
+	bool bMinimapRetryPending = false;
+
+	/** True while a next-tick pixel flush is scheduled. */
+	bool bMinimapFlushPending = false;
+
+	/** Miner position (texture pixels) of the last OnMinimapViewChanged. */
+	FVector2D LastMinimapMinerPosition = FVector2D::ZeroVector;
+
+	/** True once OnMinimapViewChanged was sent (the first move always sends). */
+	bool bMinimapViewSent = false;
+
+	/** Camera location of the last OnLocatorViewChanged. */
+	FVector LastLocatorViewLocation = FVector::ZeroVector;
+
+	/** Camera rotation of the last OnLocatorViewChanged. */
+	FRotator LastLocatorViewRotation = FRotator::ZeroRotator;
+
+	/** Miner location of the last OnLocatorViewChanged. */
+	FVector LastLocatorMinerLocation = FVector::ZeroVector;
+
+	/** True once OnLocatorViewChanged was sent. */
+	bool bLocatorViewSent = false;
+
+	/** See GetMinimapTextureReadyCount. */
+	int32 MinimapTextureReadyCount = 0;
+
+	/** See GetMinimapViewChangedCount. */
+	int32 MinimapViewChangedCount = 0;
+
+	/** See GetLocatorViewChangedCount. */
+	int32 LocatorViewChangedCount = 0;
+
+	/** Miner root whose TransformUpdated drives the minimap. */
+	TWeakObjectPtr<USceneComponent> BoundMinerRoot;
+
+	/** Miner camera (or root when it has none) whose TransformUpdated drives the locator. */
+	TWeakObjectPtr<USceneComponent> BoundLocatorComponent;
+
+	/** Handle of the miner root TransformUpdated binding. */
+	FDelegateHandle MinerMovedHandle;
+
+	/** Handle of the locator component TransformUpdated binding. */
+	FDelegateHandle LocatorMovedHandle;
+
+	/** Handle of the minimap OnPixelsDirtied binding. */
+	FDelegateHandle MinimapDirtiedHandle;
+
+	/** Handle of the FViewport::ViewportResizedEvent binding. */
+	FDelegateHandle ViewportResizedHandle;
 
 	/** Spawner whose horde events are bound. */
 	TWeakObjectPtr<ARREnemySpawner> BoundSpawner;

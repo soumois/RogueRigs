@@ -1,4 +1,4 @@
-// Rogue Rigs - minimap data: a one-pixel-per-cell texture of the seen terrain, updated only on change, plus the marker positions.
+// Rogue Rigs - minimap data: a one-pixel-per-cell texture of the seen terrain, updated only on change (never ticked), plus the marker positions.
 
 #include "UI/RRMinimap.h"
 
@@ -28,6 +28,7 @@ bool URRMinimap::Initialize(ARRArenaGrid* InGrid, const FRRMinimapConfig& InConf
 	Pixels.Init(Config.UnseenColor, TextureWidth * TextureHeight);
 	SeenCells.Init(false, GridSize.X * GridSize.Y);
 	DirtyMin = DirtyMax = FIntPoint::ZeroValue;
+	bPixelsChanged = false;
 	LastSeenCell = FIntPoint(INDEX_NONE, INDEX_NONE);
 
 	const TConstArrayView64<uint8> InitialData(reinterpret_cast<const uint8*>(Pixels.GetData()), static_cast<int64>(Pixels.Num()) * sizeof(FColor));
@@ -57,14 +58,15 @@ void URRMinimap::Shutdown()
 	Grid.Reset();
 }
 
-void URRMinimap::Tick(const AActor* RevealCenter)
+bool URRMinimap::Update(const AActor* RevealCenter)
 {
 	if (!Texture || !Grid.IsValid())
 	{
-		return;
+		return false;
 	}
+	++UpdateCount;
 	UpdateSeenCells(RevealCenter);
-	FlushDirtyPixels();
+	return FlushDirtyPixels();
 }
 
 bool URRMinimap::GetState(const ARRMiner* Miner, const URRRunFlowSubsystem* RunFlow, FRRMinimapState& OutState) const
@@ -146,7 +148,12 @@ void URRMinimap::HandleCellDestroyed(FIntPoint Cell, ERRCellType Type, ERRTerrai
 	const ARRArenaGrid* BoundGrid = Grid.Get();
 	if (BoundGrid && IsCellSeen(Cell))
 	{
+		const bool bWasClean = !bPixelsChanged;
 		WritePixel(Cell, GetCellColor(BoundGrid->GetCellType(Cell)));
+		if (bWasClean && bPixelsChanged)
+		{
+			OnPixelsDirtied.Broadcast();
+		}
 	}
 }
 
@@ -185,6 +192,7 @@ void URRMinimap::WritePixel(FIntPoint Cell, const FColor& Color)
 		return;
 	}
 	Pixels[Index] = Color;
+	bPixelsChanged = true;
 
 	const FIntPoint Pixel(Cell.Y, GridSize.X - 1 - Cell.X);
 	if (DirtyMin.X >= DirtyMax.X || DirtyMin.Y >= DirtyMax.Y)
@@ -212,6 +220,7 @@ void URRMinimap::UpdateSeenCells(const AActor* RevealCenter)
 		return;
 	}
 	LastSeenCell = Center;
+	++SeenPassCount;
 
 	// Disc of cell centers within the radius of the center cell's center: per row, the half-width is floor(sqrt(R^2 - dY^2)),
 	// so the pass is about (2R + 1)^2 * pi / 4 bit tests, only when the miner enters another cell.
@@ -236,11 +245,13 @@ void URRMinimap::UpdateSeenCells(const AActor* RevealCenter)
 	}
 }
 
-void URRMinimap::FlushDirtyPixels()
+bool URRMinimap::FlushDirtyPixels()
 {
+	const bool bChanged = bPixelsChanged;
+	bPixelsChanged = false;
 	if (DirtyMin.X >= DirtyMax.X || DirtyMin.Y >= DirtyMax.Y || !Texture || !Texture->GetResource())
 	{
-		return;
+		return bChanged;
 	}
 
 	// Copy the dirty rectangle: the render thread reads it later, while Pixels may change next frame. Without a resource the
@@ -261,4 +272,5 @@ void URRMinimap::FlushDirtyPixels()
 			delete Regions;
 		});
 	DirtyMin = DirtyMax = FIntPoint::ZeroValue;
+	return bChanged;
 }

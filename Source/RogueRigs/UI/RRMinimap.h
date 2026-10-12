@@ -31,6 +31,11 @@ struct FRRMinimapConfig
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Minimap", meta = (ClampMin = "0"))
 	float RevealRadiusCells = 18.f;
 
+	/** Miner move in cells (texture pixels) below which OnMinimapViewChanged is not sent (0.05 cell = 0.125 px on the 200 px disc
+	 *  of 80 cells: the scroll still looks continuous, an idle or jittering miner sends nothing). */
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Minimap", meta = (ClampMin = "0"))
+	float ViewChangeThresholdCells = 0.05f;
+
 	/** Rock, ore, special ore and barrel cells (breakable rock: light grey tinted violet). */
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Minimap")
 	FColor RockColor = FColor(176, 166, 196, 255);
@@ -109,9 +114,10 @@ struct FRRMinimapState
 
 /**
  * Minimap data owned by URRHUDWidget: a transient UTexture2D (B8G8R8A8, sRGB, nearest filter), one pixel per grid cell,
- * UnseenColor until the cell has been within RevealRadiusCells of the miner once, then its terrain color. Updates are cheap:
- * the seen pass runs only when the miner enters another cell, a destroyed cell rewrites one pixel, and the
- * changed pixels of a frame go to the GPU as one dirty rectangle (UpdateTextureRegions), nothing on a frame without change.
+ * UnseenColor until the cell has been within RevealRadiusCells of the miner once, then its terrain color. Never ticked: the HUD
+ * calls Update from the miner's movement notification (the seen pass runs only when the miner enters another cell) and
+ * FlushDirtyPixels once after a destroyed seen cell (OnPixelsDirtied); the changed pixels go to the GPU as one dirty rectangle
+ * (UpdateTextureRegions), nothing without change.
  */
 UCLASS()
 class ROGUERIGS_API URRMinimap : public UObject
@@ -125,9 +131,24 @@ public:
 	/** Unbinds from the grid. */
 	void Shutdown();
 
-	/** Per frame: marks the cells within RevealRadiusCells of RevealCenter's cell as seen (when that cell changed) and flushes
-	 *  changed pixels. RevealCenter is the miner (null: no seen pass). */
-	void Tick(const AActor* RevealCenter);
+	/** On a miner move: marks the cells within RevealRadiusCells of RevealCenter's cell as seen (when that cell changed) and
+	 *  flushes changed pixels. RevealCenter is the miner (null: no seen pass). True when pixels changed (fog revealed). */
+	bool Update(const AActor* RevealCenter);
+
+	/** Sends the dirty rectangle of Pixels to the texture, then clears it. True when pixels had changed since the last flush. */
+	bool FlushDirtyPixels();
+
+	/** True while pixels changed since the last FlushDirtyPixels (a destroyed seen cell waits for the HUD's coalesced flush). */
+	bool HasDirtyPixels() const { return bPixelsChanged; }
+
+	/** Fired when a destroyed seen cell dirties the texture while it was clean (once per batch): the HUD flushes on the next tick. */
+	FSimpleMulticastDelegate OnPixelsDirtied;
+
+	/** Number of seen passes run (tests: none while the miner stays in its cell). */
+	int32 GetSeenPassCount() const { return SeenPassCount; }
+
+	/** Number of Update calls (tests: none without a miner move). */
+	int32 GetUpdateCount() const { return UpdateCount; }
 
 	/** The minimap texture (null before Initialize). */
 	UTexture2D* GetTexture() const { return Texture; }
@@ -164,8 +185,14 @@ protected:
 	/** Marks the cells whose centers lie within RevealRadiusCells of RevealCenter's cell center, when that cell changed. */
 	void UpdateSeenCells(const AActor* RevealCenter);
 
-	/** Sends the dirty rectangle of Pixels to the texture, then clears it. */
-	void FlushDirtyPixels();
+	/** True once a pixel changed since the last FlushDirtyPixels (kept when the texture has no resource yet). */
+	bool bPixelsChanged = false;
+
+	/** See GetSeenPassCount. */
+	int32 SeenPassCount = 0;
+
+	/** See GetUpdateCount. */
+	int32 UpdateCount = 0;
 
 	/** Grid the texture mirrors. */
 	TWeakObjectPtr<ARRArenaGrid> Grid;

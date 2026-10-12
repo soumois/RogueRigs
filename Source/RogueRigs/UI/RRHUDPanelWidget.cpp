@@ -1,4 +1,4 @@
-// Rogue Rigs - base class of the HUD sub-widgets (panels placed in WBP_HUD): receives the miner, run flow, spawner and game mode from the HUD root once each.
+// Rogue Rigs - base class of the HUD sub-widgets (panels placed in WBP_HUD): receives the miner, run flow, spawner, game mode and the HUD root itself from the HUD root once each.
 
 #include "UI/RRHUDPanelWidget.h"
 
@@ -6,6 +6,7 @@
 #include "Objectives/RRRunFlowSubsystem.h"
 #include "Player/RRGameMode.h"
 #include "Player/RRMiner.h"
+#include "UI/RRHUDWidget.h"
 
 void URRHUDPanelWidget::SetMiner(ARRMiner* Miner)
 {
@@ -68,4 +69,20 @@ void URRHUDPanelWidget::BindToRunFlow_Implementation(URRRunFlowSubsystem* RunFlo
 void URRHUDPanelWidget::BindToSpawner_Implementation(ARREnemySpawner* Spawner, ARREnemySpawner* PreviousSpawner)
 {
 	++SpawnerBindCount;
+}
+
+void URRHUDPanelWidget::SetHUD(URRHUDWidget* HUD)
+{
+	URRHUDWidget* Previous = BoundHUD.Get();
+	if (!HUD || Previous == HUD)
+	{
+		return;
+	}
+	BoundHUD = HUD;
+	BindToHUD(HUD, Previous);
+}
+
+void URRHUDPanelWidget::BindToHUD_Implementation(URRHUDWidget* HUD, URRHUDWidget* PreviousHUD)
+{
+	++HUDBindCount;
 }

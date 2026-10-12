@@ -7,7 +7,10 @@
 #include "Blueprint/WidgetTree.h"
 #include "Components/Widget.h"
 #include "EngineUtils.h"
+#include "Camera/CameraComponent.h"
 #include "Camera/PlayerCameraManager.h"
+#include "TimerManager.h"
+#include "UnrealClient.h"
 #include "Enemies/RREnemySpawner.h"
 #include "Enemies/RRWaveDirector.h"
 #include "GameFramework/PlayerController.h"
@@ -107,6 +110,7 @@ void URRHUDWidget::BindToMiner(ARRMiner* Miner)
 	UnbindMiner();
 	for (URRHUDPanelWidget* Panel : GetPanels())
 	{
+		Panel->SetHUD(this);
 		Panel->SetMiner(Miner);
 	}
 
@@ -144,6 +148,45 @@ void URRHUDWidget::BindToMiner(ARRMiner* Miner)
 	BoundMiner = Miner;
 	Miner->OnWeaponAdded.AddUniqueDynamic(this, &URRHUDWidget::HandleWeaponAdded);
 	BindToTurretLauncher(Miner->FindTurretLauncher());
+
+	// Minimap and locator follow the miner's own transform updates (fired only when it really moves), never a HUD tick.
+	if (USceneComponent* Root = Miner->GetRootComponent())
+	{
+		BoundMinerRoot = Root;
+		MinerMovedHandle = Root->TransformUpdated.AddUObject(this, &URRHUDWidget::HandleMinerMoved);
+		USceneComponent* LocatorComponent = Miner->FindComponentByClass<UCameraComponent>();
+		LocatorComponent = LocatorComponent ? LocatorComponent : Root;
+		BoundLocatorComponent = LocatorComponent;
+		LocatorMovedHandle = LocatorComponent->TransformUpdated.AddUObject(this, &URRHUDWidget::HandleLocatorViewMoved);
+	}
+	WarmUpVignette();
+	// A minimap created here already sent its texture and view (with this miner); an existing one shows the new miner once.
+	const bool bHadMinimap = Minimap != nullptr;
+	TryCreateMinimap();
+	if (bHadMinimap && Minimap)
+	{
+		Minimap->Update(Miner);
+		BroadcastMinimapView();
+	}
+	BroadcastLocatorView();
+}
+
+void URRHUDWidget::UnbindMinerMovement()
+{
+	if (USceneComponent* Root = BoundMinerRoot.Get())
+	{
+		Root->TransformUpdated.Remove(MinerMovedHandle);
+	}
+	if (USceneComponent* LocatorComponent = BoundLocatorComponent.Get())
+	{
+		LocatorComponent->TransformUpdated.Remove(LocatorMovedHandle);
+	}
+	BoundMinerRoot.Reset();
+	BoundLocatorComponent.Reset();
+	MinerMovedHandle.Reset();
+	LocatorMovedHandle.Reset();
+	bMinimapViewSent = false;
+	bLocatorViewSent = false;
 }
 
 void URRHUDWidget::BindToTurretLauncher(ARRTurretLauncher* Launcher)
@@ -251,6 +294,7 @@ void URRHUDWidget::BindToGameMode(ARRGameMode* GameMode)
 	BoundGameMode = GameMode;
 	for (URRHUDPanelWidget* Panel : GetPanels())
 	{
+		Panel->SetHUD(this);
 		Panel->SetGameMode(GameMode);
 	}
 	if (GameMode)
@@ -272,10 +316,15 @@ void URRHUDWidget::BindToRunFlow(URRRunFlowSubsystem* RunFlow)
 		Previous->OnMinerRegistered.RemoveDynamic(this, &URRHUDWidget::HandleMinerRegistered);
 		Previous->OnSpawnerRegistered.RemoveDynamic(this, &URRHUDWidget::HandleSpawnerRegistered);
 		Previous->OnAlertBarEventsChanged.RemoveDynamic(this, &URRHUDWidget::HandleAlertBarEventsChanged);
+		Previous->OnLocatorTargetChanged.RemoveDynamic(this, &URRHUDWidget::HandleLocatorTargetChanged);
+		Previous->OnConsoleDropped.RemoveDynamic(this, &URRHUDWidget::HandleConsoleDropped);
+		Previous->OnBonusChestDropped.RemoveDynamic(this, &URRHUDWidget::HandleBonusChestDropped);
+		Previous->OnShuttleLanded.RemoveDynamic(this, &URRHUDWidget::HandleShuttleLanded);
 	}
 	BoundRunFlow = RunFlow;
 	for (URRHUDPanelWidget* Panel : GetPanels())
 	{
+		Panel->SetHUD(this);
 		Panel->SetRunFlow(RunFlow);
 	}
 	if (!RunFlow)
@@ -292,6 +341,10 @@ void URRHUDWidget::BindToRunFlow(URRRunFlowSubsystem* RunFlow)
 	RunFlow->OnShuttleCountdown.AddUniqueDynamic(this, &URRHUDWidget::HandleShuttleCountdown);
 	RunFlow->OnRunEnded.AddUniqueDynamic(this, &URRHUDWidget::HandleRunEnded);
 	RunFlow->OnAlertBarEventsChanged.AddUniqueDynamic(this, &URRHUDWidget::HandleAlertBarEventsChanged);
+	RunFlow->OnLocatorTargetChanged.AddUniqueDynamic(this, &URRHUDWidget::HandleLocatorTargetChanged);
+	RunFlow->OnConsoleDropped.AddUniqueDynamic(this, &URRHUDWidget::HandleConsoleDropped);
+	RunFlow->OnBonusChestDropped.AddUniqueDynamic(this, &URRHUDWidget::HandleBonusChestDropped);
+	RunFlow->OnShuttleLanded.AddUniqueDynamic(this, &URRHUDWidget::HandleShuttleLanded);
 
 	// Push the current state once.
 	OnAlertChanged(RunFlow->GetAlert(), RunFlow->HasPendingObjective());
@@ -328,6 +381,7 @@ void URRHUDWidget::BindToSpawner(ARREnemySpawner* Spawner)
 	BoundSpawner = Spawner;
 	for (URRHUDPanelWidget* Panel : GetPanels())
 	{
+		Panel->SetHUD(this);
 		Panel->SetSpawner(Spawner);
 	}
 	if (!Spawner)
@@ -376,8 +430,8 @@ bool URRHUDWidget::GetObjectiveLocator(FRRObjectiveLocator& OutLocator, float Ed
 	{
 		return false;
 	}
-	const APlayerController* Controller = GetOwningPlayer();
-	if (!Controller || !Controller->PlayerCameraManager)
+	FMinimalViewInfo View;
+	if (!GetLocatorView(View))
 	{
 		return false;
 	}
@@ -388,7 +442,7 @@ bool URRHUDWidget::GetObjectiveLocator(FRRObjectiveLocator& OutLocator, float Ed
 		return false;
 	}
 	OutLocator.ViewportSize = Viewport / Scale;
-	ProjectToViewport(Controller->PlayerCameraManager->GetCameraCacheView(), OutLocator.ViewportSize, OutLocator.WorldLocation, OutLocator.ScreenPosition);
+	ProjectToViewport(View, OutLocator.ViewportSize, OutLocator.WorldLocation, OutLocator.ScreenPosition);
 	OutLocator.bOnScreen = ComputeEdgeLocator(OutLocator.ScreenPosition, OutLocator.ViewportSize, EdgeMargin, OutLocator.EdgePosition, OutLocator.ArrowAngle);
 	return true;
 }
@@ -430,49 +484,191 @@ bool URRHUDWidget::ComputeEdgeLocator(const FVector2D& ScreenPosition, const FVe
 	return false;
 }
 
-void URRHUDWidget::NativeTick(const FGeometry& MyGeometry, float InDeltaTime)
+bool URRHUDWidget::GetLocatorView(FMinimalViewInfo& OutView) const
 {
-	Super::NativeTick(MyGeometry, InDeltaTime);
-	KeepVignetteWarm();
-	UpdateMinimap();
+	// The miner camera component is current inside its own TransformUpdated; the camera manager cache is only refreshed after
+	// every tick group (one frame late there, and it would miss the last frame of a move).
+	if (UCameraComponent* Camera = Cast<UCameraComponent>(BoundLocatorComponent.Get()))
+	{
+		Camera->GetCameraView(0.f, OutView);
+		return true;
+	}
+	const APlayerController* Controller = GetOwningPlayer();
+	if (!Controller || !Controller->PlayerCameraManager)
+	{
+		return false;
+	}
+	OutView = Controller->PlayerCameraManager->GetCameraCacheView();
+	return true;
 }
 
-void URRHUDWidget::UpdateMinimap()
+void URRHUDWidget::TryCreateMinimap()
 {
-	if (!MinimapConfig.bEnabled)
+	if (!MinimapConfig.bEnabled || Minimap)
+	{
+		// Created once per HUD (a destroyed grid is not replaced).
+		return;
+	}
+	ARRArenaGrid* Grid = nullptr;
+	if (UWorld* World = GetWorld())
+	{
+		for (TActorIterator<ARRArenaGrid> It(World); It; ++It)
+		{
+			Grid = *It;
+			break;
+		}
+	}
+	if (!Grid || Grid->GetGridSize().X <= 0 || Grid->GetGridSize().Y <= 0)
+	{
+		// The grid builds in its BeginPlay: retry on the next ticks at startup only (miner moves retry too).
+		UWorld* World = GetWorld();
+		if (World && !bMinimapRetryPending && MinimapRetries < MinimapRetryFrames)
+		{
+			bMinimapRetryPending = true;
+			World->GetTimerManager().SetTimerForNextTick(FTimerDelegate::CreateUObject(this, &URRHUDWidget::RetryCreateMinimap));
+		}
+		return;
+	}
+	URRMinimap* NewMinimap = NewObject<URRMinimap>(this);
+	if (!NewMinimap->Initialize(Grid, MinimapConfig))
 	{
 		return;
 	}
-	if (!Minimap || !Minimap->GetGrid())
+	Minimap = NewMinimap;
+	MinimapDirtiedHandle = Minimap->OnPixelsDirtied.AddUObject(this, &URRHUDWidget::HandleMinimapPixelsDirtied);
+	++MinimapTextureReadyCount;
+	OnMinimapTextureReady.Broadcast(Minimap->GetTexture());
+	Minimap->Update(BoundMiner.Get());
+	BroadcastMinimapView();
+}
+
+void URRHUDWidget::RetryCreateMinimap()
+{
+	bMinimapRetryPending = false;
+	++MinimapRetries;
+	TryCreateMinimap();
+}
+
+void URRHUDWidget::HandleMinerMoved(USceneComponent* UpdatedComponent, EUpdateTransformFlags UpdateTransformFlags, ETeleportType Teleport)
+{
+	const ARRMiner* Miner = BoundMiner.Get();
+	if (!Miner || !MinimapConfig.bEnabled)
 	{
-		// Look for a built grid until one exists (the grid builds in its BeginPlay); the texture is created once per HUD.
-		if (Minimap && Minimap->GetTexture())
-		{
-			return;
-		}
-		ARRArenaGrid* Grid = nullptr;
-		if (UWorld* World = GetWorld())
-		{
-			for (TActorIterator<ARRArenaGrid> It(World); It; ++It)
-			{
-				Grid = *It;
-				break;
-			}
-		}
-		if (!Grid || Grid->GetGridSize().X <= 0 || Grid->GetGridSize().Y <= 0)
-		{
-			return;
-		}
-		Minimap = NewObject<URRMinimap>(this);
-		if (!Minimap->Initialize(Grid, MinimapConfig))
-		{
-			Minimap = nullptr;
-			return;
-		}
-		OnMinimapTextureReady(Minimap->GetTexture());
+		return;
 	}
-	const AActor* RevealCenter = BoundMiner.Get();
-	Minimap->Tick(RevealCenter ? RevealCenter : GetOwningPlayerPawn());
+	if (!Minimap)
+	{
+		TryCreateMinimap();
+		return;
+	}
+	// Seen pass only when the miner entered another cell; pixels sent at once (one dirty rectangle).
+	const bool bContentChanged = Minimap->Update(Miner);
+	const FVector2D MinerPosition = Minimap->WorldToTexture(Miner->GetActorLocation());
+	const bool bViewMoved = !bMinimapViewSent
+		|| FVector2D::DistSquared(MinerPosition, LastMinimapMinerPosition) > FMath::Square(static_cast<double>(MinimapConfig.ViewChangeThresholdCells));
+	if (bContentChanged || bViewMoved)
+	{
+		BroadcastMinimapView();
+	}
+}
+
+void URRHUDWidget::HandleLocatorViewMoved(USceneComponent* UpdatedComponent, EUpdateTransformFlags UpdateTransformFlags, ETeleportType Teleport)
+{
+	ERRLocatorTarget Target = ERRLocatorTarget::None;
+	FVector TargetLocation;
+	const ARRMiner* Miner = BoundMiner.Get();
+	FMinimalViewInfo View;
+	if (!Miner || !GetObjectiveTarget(Target, TargetLocation) || !GetLocatorView(View))
+	{
+		// No target: the arrow is hidden (the target change already sent None), nothing moves on screen.
+		return;
+	}
+	if (bLocatorViewSent
+		&& View.Location.Equals(LastLocatorViewLocation, LocatorMoveThreshold)
+		&& View.Rotation.Equals(LastLocatorViewRotation, LocatorTurnThresholdDegrees)
+		&& Miner->GetActorLocation().Equals(LastLocatorMinerLocation, LocatorMoveThreshold))
+	{
+		return;
+	}
+	BroadcastLocatorView();
+}
+
+void URRHUDWidget::HandleMinimapPixelsDirtied()
+{
+	UWorld* World = GetWorld();
+	if (!World || bMinimapFlushPending)
+	{
+		return;
+	}
+	bMinimapFlushPending = true;
+	World->GetTimerManager().SetTimerForNextTick(FTimerDelegate::CreateUObject(this, &URRHUDWidget::FlushMinimapPixels));
+}
+
+void URRHUDWidget::FlushMinimapPixels()
+{
+	bMinimapFlushPending = false;
+	if (Minimap && Minimap->FlushDirtyPixels())
+	{
+		BroadcastMinimapView();
+	}
+}
+
+void URRHUDWidget::HandleViewportResized(FViewport* Viewport, uint32 Unused)
+{
+	if (bLocatorViewSent)
+	{
+		BroadcastLocatorView();
+	}
+}
+
+void URRHUDWidget::HandleLocatorTargetChanged(ERRLocatorTarget Target, FVector WorldLocation)
+{
+	BroadcastLocatorView();
+}
+
+void URRHUDWidget::HandleConsoleDropped(ARRConsole* Console)
+{
+	BroadcastMinimapView();
+}
+
+void URRHUDWidget::HandleBonusChestDropped(ARRBonusChest* BonusChest)
+{
+	BroadcastMinimapView();
+}
+
+void URRHUDWidget::HandleShuttleLanded(ARRShuttle* Shuttle)
+{
+	BroadcastMinimapView();
+}
+
+void URRHUDWidget::BroadcastMinimapView()
+{
+	FRRMinimapState State;
+	if (!GetMinimapState(State))
+	{
+		return;
+	}
+	bMinimapViewSent = BoundMiner.IsValid();
+	LastMinimapMinerPosition = State.MinerPosition;
+	++MinimapViewChangedCount;
+	OnMinimapViewChanged.Broadcast(State);
+}
+
+void URRHUDWidget::BroadcastLocatorView()
+{
+	FRRObjectiveLocator Locator;
+	const bool bHasLocator = GetObjectiveLocator(Locator, LocatorEdgeMargin);
+	FMinimalViewInfo View;
+	const ARRMiner* Miner = BoundMiner.Get();
+	if (Miner && GetLocatorView(View))
+	{
+		bLocatorViewSent = true;
+		LastLocatorViewLocation = View.Location;
+		LastLocatorViewRotation = View.Rotation;
+		LastLocatorMinerLocation = Miner->GetActorLocation();
+	}
+	++LocatorViewChangedCount;
+	OnLocatorViewChanged.Broadcast(bHasLocator, Locator);
 }
 
 UTexture2D* URRHUDWidget::GetMinimapTexture() const
@@ -508,22 +704,47 @@ FVector2D URRHUDWidget::GetMinimapOffset(FVector2D Position, FVector2D Center, f
 	return Offset;
 }
 
+void URRHUDWidget::NativeOnInitialized()
+{
+	Super::NativeOnInitialized();
+	for (URRHUDPanelWidget* Panel : GetPanels())
+	{
+		Panel->SetHUD(this);
+	}
+	WarmUpVignette();
+	TryCreateMinimap();
+}
+
 void URRHUDWidget::NativeConstruct()
 {
 	Super::NativeConstruct();
-	KeepVignetteWarm();
+	for (URRHUDPanelWidget* Panel : GetPanels())
+	{
+		Panel->SetHUD(this);
+	}
+	WarmUpVignette();
+	TryCreateMinimap();
+	if (!ViewportResizedHandle.IsValid())
+	{
+		ViewportResizedHandle = FViewport::ViewportResizedEvent.AddUObject(this, &URRHUDWidget::HandleViewportResized);
+	}
 }
 
-void URRHUDWidget::KeepVignetteWarm()
+void URRHUDWidget::WarmUpVignette()
 {
-	if (!bDamageVignetteLookedUp)
+	if (bVignetteWarmedUp || VignetteWarmOpacity <= 0.f || DamageVignetteWidgetName.IsNone())
 	{
-		// First call (construct, or the first tick of a widget ticked without Slate): the tree exists from Initialize on.
-		bDamageVignetteLookedUp = true;
-		DamageVignette = DamageVignetteWidgetName.IsNone() ? nullptr : FindHUDWidget(DamageVignetteWidgetName);
+		return;
 	}
-	UWidget* Vignette = DamageVignette.Get();
-	if (Vignette && Vignette->GetRenderOpacity() < VignetteWarmOpacity)
+	UWidget* Vignette = FindHUDWidget(DamageVignetteWidgetName);
+	if (!Vignette)
+	{
+		return;
+	}
+	bVignetteWarmedUp = true;
+	DamageVignette = Vignette;
+	++VignetteWarmUpCount;
+	if (Vignette->GetRenderOpacity() < VignetteWarmOpacity)
 	{
 		Vignette->SetRenderOpacity(VignetteWarmOpacity);
 	}
@@ -620,8 +841,20 @@ void URRHUDWidget::NativeDestruct()
 	BindToGameMode(nullptr);
 	BindToRunFlow(nullptr);
 	BindToSpawner(nullptr);
+	if (ViewportResizedHandle.IsValid())
+	{
+		FViewport::ViewportResizedEvent.Remove(ViewportResizedHandle);
+		ViewportResizedHandle.Reset();
+	}
+	if (UWorld* World = GetWorld())
+	{
+		World->GetTimerManager().ClearAllTimersForObject(this);
+	}
+	bMinimapRetryPending = false;
+	bMinimapFlushPending = false;
 	if (Minimap)
 	{
+		Minimap->OnPixelsDirtied.Remove(MinimapDirtiedHandle);
 		Minimap->Shutdown();
 	}
 	Super::NativeDestruct();
@@ -710,6 +943,7 @@ void URRHUDWidget::UnbindMiner()
 	{
 		Miner->OnWeaponAdded.RemoveDynamic(this, &URRHUDWidget::HandleWeaponAdded);
 	}
+	UnbindMinerMovement();
 	BindToTurretLauncher(nullptr);
 	BoundMiner.Reset();
 	BoundLevelUp.Reset();
