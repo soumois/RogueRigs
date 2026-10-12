@@ -104,6 +104,7 @@ Archive: it exceeds the index size limits of [[_authoring]] on purpose (owner, 2
 - [[task-091-robot-pool]] — Robots come from the pool: reuse on spawn and death, missing ones created over at most 20 frames; wave spawn spikes measured before and after. Status done.
 - [[task-092-xp-pool]] — XP cubes come from the pool with creation spread over at most 3 frames, so a mass kill no longer spikes the frame. Status done.
 - [[task-093-robot-overlap-cost]] — Robot components audited, then unneeded attached-part transforms and overlap updates are removed, with before/after numbers. Status done.
+- [[task-094-hud-refactor]] — The HUD is split into one widget per logic, all placed by WBP_HUD, which only lays them out; widgets react to events, tick only for continuous values. Status done.
 - [[task-095-xp-cube-scale]] — Reused XP cubes come back at their normal size: the pooled reset restores the scale (and any other visual state that differs from a fresh cube). Status done.
 - [[task-096-kamikaze-death-fuse]] — A kamikaze killed by the player goes through the same 0.65 s preparation as a proximity trigger and releases its XP only at the explosion. Status done.
 - [[task-097-explosion-visual]] — The visible explosion is about 5 % larger than its collision radius and holds its final state 0.1 s before fading. Status done.

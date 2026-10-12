@@ -3,7 +3,7 @@ id: task-094-10-hud-cpp-lookups
 description: "C++ HUD code that looked widgets up by name in WBP_HUD finds them inside the sub-widgets, and the moved per-frame work leaves NativeTick."
 parent: task-094-hud-refactor
 kind: task
-status: in-progress
+status: done
 ---
 # HUD C++ lookups after the split
 
@@ -19,7 +19,7 @@ status: in-progress
 - tokens: open
 - runs: open
 - milestone: M2
-- result: open
+- result: FindHUDWidget helper (nested panels), every HUD name lookup in code, tests and debug commands updated (expectations unchanged), RefreshAlertBarEvents out of NativeTick (run flow list), test harness constructs the panels headless, new test FindWidgetInPanels; 236/237 tests: PressureVignetteOnHit fails from a Blueprint bug (vignette fade step 0) fixed in task-104. Commits 42b8678, e5f705e, 45cd333.
 
 ## Relations
 - [[task-094-hud-refactor]] — parent global task.

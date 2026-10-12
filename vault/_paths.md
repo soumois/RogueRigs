@@ -531,6 +531,8 @@ task-102-company-logo  reference/tasks/task-102-company-logo.md
 task-103-01-hud-events-only  reference/tasks/task-103-hud-events-only/task-103-01-hud-events-only.md
 task-103-02-hud-events-only  reference/tasks/task-103-hud-events-only/task-103-02-hud-events-only.md
 task-103-hud-events-only  reference/tasks/task-103-hud-events-only.md
+task-104-01-hud-regressions  reference/tasks/task-104-hud-regressions/task-104-01-hud-regressions.md
+task-104-hud-regressions  reference/tasks/task-104-hud-regressions.md
 tasks-done-index  reference/tasks/tasks-done-index.md
 tasks-index  reference/tasks/tasks-index.md
 tasks-to-do-index  reference/tasks/tasks-to-do-index.md

@@ -1,9 +1,9 @@
 ---
 id: task-094-hud-refactor
 description: "Global task: the HUD is split into one widget per logic, placed by WBP_HUD, and driven by events instead of ticks."
-parent: tasks-to-do-index
+parent: tasks-done-index
 kind: task
-status: in-progress
+status: done
 ---
 # HUD refactor: audit
 
@@ -13,8 +13,8 @@ status: in-progress
 - gdd_check: done by the Orchestrator when the task is planned (2026-10-11).
 - confirmed_by_owner: yes (2026-10-11)
 - milestone: M2
-- next_step: task-094-10-hud-cpp-lookups
-- result: open
+- next_step: none
+- result: HUD split into 7 panels under a placement-only WBP_HUD, events instead of ticks; remaining regressions in task-104, remaining polling in task-103.
 
 ## Subtasks
 1. task-094-01-hud-refactor — bp
@@ -29,7 +29,7 @@ status: in-progress
 10. task-094-10-hud-cpp-lookups — cpp
 
 ## Relations
-- [[tasks-to-do-index]] — parent index.
+- [[tasks-done-index]] — parent index.
 - [[task-094-01-hud-refactor]] — step 1, bp.
 - [[task-094-02-hud-events]] — step 2, cpp.
 - [[task-094-03-hud-health]] — step 3, bp.
