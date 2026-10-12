@@ -3,7 +3,7 @@
   "route": "blender",
   "script": "Tools/art/blender/barrel.py",
   "source_image": "vault/assets/barrel.png",
-  "tris_out": 446,
+  "tris_out": 498,
   "budget_tris": 600,
   "dimensions_cm": {
     "x": 90.0,
@@ -50,8 +50,8 @@
       "note": "non-decal faces tile past 0..1 (mask is tileable, wrap/repeat)"
     },
     "LightMap": {
-      "faces": 212,
-      "triangles": 446,
+      "faces": 238,
+      "triangles": 498,
       "overlapping_face_pairs": 0,
       "bounds_min": [
         0.01172
@@ -63,7 +63,7 @@
       "min_border_px_at_256": 3.0,
       "required_margin_px": 2,
       "pass": true,
-      "texel_scale_px_per_cm_at_256": 0.8489
+      "texel_scale_px_per_cm_at_256": 0.7763
     }
   },
   "mask_contract": {
@@ -144,7 +144,7 @@
     "bare metal #8A9099 mix",
     "16-column rings and the intermediate edge loops added for EdgeWear (back to 8 columns, 12 bands)"
   ],
-  "decal_faces": 11,
+  "decal_faces": 37,
   "sticker_lid": {
     "flat_on_lid_z_cm": 132.25,
     "size_cm": [
@@ -167,22 +167,49 @@
       512,
       512
     ],
-    "faces": 10,
-    "width_cm": 52.0,
+    "faces": 36,
+    "width_cm": 83.2,
     "z_range_cm": [
-      39.5,
-      91.5
+      23.9,
+      107.1
     ],
     "z_breakpoints_cm": [
-      39.5,
+      23.9,
+      33.0,
+      36.0,
       48.0,
       51.0,
       80.0,
       83.0,
-      91.5
+      97.0,
+      100.0,
+      107.1
     ],
     "extended_to_ring_faces": true,
-    "extension_note": "52 cm no longer fits between the rings (z 51..80): the decal copies continue over the ring faces crossed (same 0.25 cm offset, same single planar UV projection)",
+    "covered_facets": [
+      {
+        "side": "left",
+        "facet_normal_deg_from_projection": 22.5,
+        "clipped_at_sign_edge": false
+      },
+      {
+        "side": "left",
+        "facet_normal_deg_from_projection": 67.5,
+        "clipped_at_sign_edge": true
+      },
+      {
+        "side": "right",
+        "facet_normal_deg_from_projection": 22.5,
+        "clipped_at_sign_edge": false
+      },
+      {
+        "side": "right",
+        "facet_normal_deg_from_projection": 67.5,
+        "clipped_at_sign_edge": true
+      }
+    ],
+    "max_normal_angle_deg": 70.0,
+    "extension_note": "83.2 cm crosses both rings: decal copies follow the profile (same 0.25 cm offset, ONE planar UV projection); facets beyond 70 deg from the projection direction are not covered; each side is clipped at u = +-41.6 cm",
     "offset_cm": 0.25,
     "projection": "single planar (bisector of the corner at -90 deg), continues across the facet edge",
     "blend": "alpha: Masked or Translucent in Unreal",
