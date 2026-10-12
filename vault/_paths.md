@@ -527,6 +527,7 @@ task-101-03-barrel-warning  reference/tasks/task-101-barrel-asset/task-101-03-ba
 task-101-04-barrel-mesh  reference/tasks/task-101-barrel-asset/task-101-04-barrel-mesh.md
 task-101-05-barrel-wear-mask  reference/tasks/task-101-barrel-asset/task-101-05-barrel-wear-mask.md
 task-101-06-barrel-edge-wear  reference/tasks/task-101-barrel-asset/task-101-06-barrel-edge-wear.md
+task-101-07-barrel-edge-highlights  reference/tasks/task-101-barrel-asset/task-101-07-barrel-edge-highlights.md
 task-101-barrel-asset  reference/tasks/task-101-barrel-asset.md
 task-102-01-company-logo  reference/tasks/task-102-company-logo/task-102-01-company-logo.md
 task-102-company-logo  reference/tasks/task-102-company-logo.md

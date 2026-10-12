@@ -3,7 +3,7 @@ id: task-101-06-barrel-edge-wear
 description: "Barrel wear becomes light edge wear plus lid scratches: vertex-colour edge wear and the scratch mask on the lid (owner 2026-10-11)."
 parent: task-101-barrel-asset
 kind: task
-status: in-progress
+status: done
 ---
 # Barrel wear becomes light edge wear plus lid scratches
 
@@ -15,11 +15,11 @@ status: in-progress
 - done_when: tris under 600, dimensions and pivot unchanged, UVMap and LightMap checks pass after the new edge loops, EdgeWear attribute present with its share of high vertices reported, mask contract updated, barrel_preview.py runs; committed by name.
 - editor_state: any
 - token_ceiling: 40000
-- model: open
-- tokens: open
-- runs: open
+- model: sonnet
+- tokens: input 20, cache write 45126, cache read 328887, output 579
+- runs: 1
 - milestone: M2
-- result: open
+- result: EdgeWear vertex colour (560 tris, UV and lightmap checks passed, FBX needs colors_type LINEAR); the look (metal chips) was rejected by the owner: the validated image shows thin lighter edge bands, not patches; redone in task-101-07. Commit in log.
 
 ## Relations
 - [[task-101-barrel-asset]] — parent global task.

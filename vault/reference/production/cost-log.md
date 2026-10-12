@@ -178,6 +178,7 @@ kind: note
 | [[task-101-04-barrel-mesh]] | sonnet | 3 | 0k | 69k | 355k | 6k |
 | [[task-101-05-barrel-wear-mask]] | sonnet | 1 | 0k | 35k | 520k | 1k |
 | [[task-106-02-scratch-mask]] | sonnet | 1 | 0k | 18k | 101k | 1k |
+| [[task-101-06-barrel-edge-wear]] | sonnet | 1 | 0k | 45k | 329k | 1k |
 
 ## Totals
 | Scope | Input | Cache write | Cache read | Output |
