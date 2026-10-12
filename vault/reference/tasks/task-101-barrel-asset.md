@@ -23,7 +23,9 @@ status: in-progress
 4. task-101-04-barrel-mesh — 3d (Blender route)
 5. task-101-05-barrel-wear-mask — 3d (UVs, wear mask, lightmap) (done)
 6. task-101-06-barrel-edge-wear — 3d (edge wear, lid scratches) (done, rejected by the owner: patches)
-7. task-101-07-barrel-edge-highlights — 3d (thin edge bands, bolts, stepped cap)
+7. task-101-07-barrel-edge-highlights — 3d (thin edge bands, bolts, stepped cap) (done)
+8. task-101-08-barrel-warning-sign — 3d (explosion triangle replaces the flame, spans facets)
+9. task-101-09-barrel-lid-logo — 3d (logo sticker on the lid)
 
 ## Relations
 - [[tasks-to-do-index]] — parent index.
@@ -34,3 +36,5 @@ status: in-progress
 - [[task-101-05-barrel-wear-mask]] — step 5, 3d.
 - [[task-101-06-barrel-edge-wear]] — step 6, 3d.
 - [[task-101-07-barrel-edge-highlights]] — step 7, 3d.
+- [[task-101-08-barrel-warning-sign]] — step 8, 3d.
+- [[task-101-09-barrel-lid-logo]] — step 9, 3d.
