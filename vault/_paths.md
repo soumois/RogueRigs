@@ -533,6 +533,8 @@ task-103-02-hud-events-only  reference/tasks/task-103-hud-events-only/task-103-0
 task-103-hud-events-only  reference/tasks/task-103-hud-events-only.md
 task-104-01-hud-regressions  reference/tasks/task-104-hud-regressions/task-104-01-hud-regressions.md
 task-104-hud-regressions  reference/tasks/task-104-hud-regressions.md
+task-105-01-hud-insights  reference/tasks/task-105-hud-insights/task-105-01-hud-insights.md
+task-105-hud-insights  reference/tasks/task-105-hud-insights.md
 tasks-done-index  reference/tasks/tasks-done-index.md
 tasks-index  reference/tasks/tasks-index.md
 tasks-to-do-index  reference/tasks/tasks-to-do-index.md
