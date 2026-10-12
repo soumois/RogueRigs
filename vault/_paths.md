@@ -544,8 +544,10 @@ task-104-01-hud-regressions  reference/tasks/task-104-hud-regressions/task-104-0
 task-104-hud-regressions  reference/tasks/task-104-hud-regressions.md
 task-105-01-hud-insights  reference/tasks/task-105-hud-insights/task-105-01-hud-insights.md
 task-105-hud-insights  reference/tasks/task-105-hud-insights.md
+task-106-01-weapons-ui-size  reference/tasks/task-106-weapons-ui-size/task-106-01-weapons-ui-size.md
 task-106-01-wear-mask-texture  reference/tasks/task-106-wear-mask-texture/task-106-01-wear-mask-texture.md
 task-106-02-scratch-mask  reference/tasks/task-106-wear-mask-texture/task-106-02-scratch-mask.md
+task-106-weapons-ui-size  reference/tasks/task-106-weapons-ui-size.md
 task-106-wear-mask-texture  reference/tasks/task-106-wear-mask-texture.md
 task-107-01-barrel-integration  reference/tasks/task-107-barrel-integration/task-107-01-barrel-integration.md
 task-107-02-barrel-integration-bp  reference/tasks/task-107-barrel-integration/task-107-02-barrel-integration-bp.md
