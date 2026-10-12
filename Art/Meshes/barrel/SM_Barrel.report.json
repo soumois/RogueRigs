@@ -3,17 +3,17 @@
   "route": "blender",
   "script": "Tools/art/blender/barrel.py",
   "source_image": "vault/assets/barrel.png",
-  "tris_out": 430,
+  "tris_out": 446,
   "budget_tris": 600,
   "dimensions_cm": {
     "x": 90.0,
-    "y": 90.0,
+    "y": 90.27,
     "z": 134.0
   },
   "pivot": "bottom",
   "bbox_min": [
     -45.0,
-    -45.0,
+    -45.271,
     0.0
   ],
   "bbox_max": [
@@ -50,8 +50,8 @@
       "note": "non-decal faces tile past 0..1 (mask is tileable, wrap/repeat)"
     },
     "LightMap": {
-      "faces": 204,
-      "triangles": 430,
+      "faces": 212,
+      "triangles": 446,
       "overlapping_face_pairs": 0,
       "bounds_min": [
         0.01172
@@ -63,7 +63,7 @@
       "min_border_px_at_256": 3.0,
       "required_margin_px": 2,
       "pass": true,
-      "texel_scale_px_per_cm_at_256": 0.8736
+      "texel_scale_px_per_cm_at_256": 0.8489
     }
   },
   "mask_contract": {
@@ -144,7 +144,7 @@
     "bare metal #8A9099 mix",
     "16-column rings and the intermediate edge loops added for EdgeWear (back to 8 columns, 12 bands)"
   ],
-  "decal_faces": 3,
+  "decal_faces": 11,
   "sticker_lid": {
     "flat_on_lid_z_cm": 132.25,
     "size_cm": [
@@ -167,12 +167,22 @@
       512,
       512
     ],
-    "faces": 2,
-    "width_cm": 27.0,
+    "faces": 10,
+    "width_cm": 52.0,
     "z_range_cm": [
-      52.0,
-      79.0
+      39.5,
+      91.5
     ],
+    "z_breakpoints_cm": [
+      39.5,
+      48.0,
+      51.0,
+      80.0,
+      83.0,
+      91.5
+    ],
+    "extended_to_ring_faces": true,
+    "extension_note": "52 cm no longer fits between the rings (z 51..80): the decal copies continue over the ring faces crossed (same 0.25 cm offset, same single planar UV projection)",
     "offset_cm": 0.25,
     "projection": "single planar (bisector of the corner at -90 deg), continues across the facet edge",
     "blend": "alpha: Masked or Translucent in Unreal",
