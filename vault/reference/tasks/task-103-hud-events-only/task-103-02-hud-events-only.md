@@ -3,7 +3,7 @@ id: task-103-02-hud-events-only
 description: "WBP_MinimapLocator reacts to the new minimap and locator events; its always-on timer and texture polling are removed."
 parent: task-103-hud-events-only
 kind: task
-status: todo
+status: in-progress
 ---
 # Minimap and locator widget on events
 

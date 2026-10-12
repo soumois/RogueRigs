@@ -3,7 +3,7 @@ id: task-103-01-hud-events-only
 description: "C++ events for the minimap and locator and a one-shot vignette warm-up, so the HUD no longer polls every frame."
 parent: task-103-hud-events-only
 kind: task
-status: in-progress
+status: done
 ---
 # HUD per-frame polling to events: C++ events
 
@@ -15,11 +15,11 @@ status: in-progress
 - done_when: build exits 0 with the editor closed; all RogueRigs.* tests pass headless; NativeTick holds no per-frame polling except a justified continuous value; docs updated; lint clean; committed.
 - editor_state: closed
 - token_ceiling: 70000
-- model: open
-- tokens: open
-- runs: open
+- model: opus
+- tokens: input 118, cache write 182072, cache read 7158505, output 79301
+- runs: 2
 - milestone: M2
-- result: open
+- result: C++ HUD events: OnMinimapTextureReady, OnMinimapViewChanged (payload FRRMinimapState), OnLocatorViewChanged; sourced from the engine TransformUpdated of the miner root and camera (idle miner runs no HUD code); NativeTick removed, KeepVignetteWarm now a one-shot warm-up; BindToHUD hook on panels; PressureVignetteOnHit passes (task-104 fix confirmed); 240/240 tests. Commit d891415.
 
 ## Relations
 - [[task-103-hud-events-only]] — parent global task.
