@@ -163,6 +163,7 @@ kind: note
 | [[task-094-02-hud-events]] | opus | 2 | 0k | 203k | 8786k | 92k |
 | [[task-094-04-hud-xp]] | sonnet | 2 | 0k | 159k | 2420k | 29k |
 | [[task-094-05-hud-weapons]] | sonnet | 2 | 0k | 136k | 4831k | 50k |
+| [[task-094-06-hud-cards]] | sonnet | 2 | 0k | 152k | 5006k | 45k |
 
 ## Totals
 | Scope | Input | Cache write | Cache read | Output |

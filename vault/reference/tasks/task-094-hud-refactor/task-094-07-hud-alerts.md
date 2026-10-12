@@ -3,7 +3,7 @@ id: task-094-07-hud-alerts
 description: "The alert bar, icons, horde banner, objective, hack and shuttle texts and the end screen move into their own widget."
 parent: task-094-hud-refactor
 kind: task
-status: todo
+status: in-progress
 ---
 # WBP_AlertObjectives
 

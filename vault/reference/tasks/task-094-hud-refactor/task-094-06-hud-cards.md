@@ -3,7 +3,7 @@ id: task-094-06-hud-cards
 description: "The level-up cards and the reroll move into their own widget bound to the upgrade offer events."
 parent: task-094-hud-refactor
 kind: task
-status: in-progress
+status: done
 ---
 # WBP_UpgradeChoice
 
@@ -15,11 +15,11 @@ status: in-progress
 - done_when: compiled 0 errors, saved, WBP_HUD places the widget, moved logic removed, docs updated, lint clean, committed.
 - editor_state: open
 - token_ceiling: 60000
-- model: open
-- tokens: open
-- runs: open
+- model: sonnet
+- tokens: input 100, cache write 151524, cache read 5006488, output 45485
+- runs: 2
 - milestone: M2
-- result: open
+- result: WBP_UpgradeChoice (cards, reroll, flavor line; bound to OnUpgradeOfferShown/Closed; no tick; clicks via custom events) placed by WBP_HUD at z 10; old card functions and handlers removed; not run or seen on screen. Breaks C++ test lookups by name (RRIntegrationTests, RRWeaponsIntegrationTests incl. Integration.WeaponCardEquipsShotgun): to fix in task-094-10. Commits c0f0700, 7bf1eaf.
 
 ## Relations
 - [[task-094-hud-refactor]] — parent global task.
