@@ -3,7 +3,7 @@ id: task-108-01-barrel-on-floor
 description: "Barrels stand on the floor and keep the floor slab under them: the barrel is no longer sunk into a floorless cell."
 parent: task-108-barrel-on-floor
 kind: task
-status: in-progress
+status: done
 ---
 # Barrel on the floor
 
@@ -15,11 +15,11 @@ status: in-progress
 - done_when: build exits 0 with the editor closed; the RogueRigs.* tests pass headless; barrel bottom at z = 0 in the transform; barrel cells have a floor instance and no duplicate appears once the barrel is destroyed (explained in the report with the code path); collision and gameplay of barrels unchanged; sys-grid updated; lint clean; committed.
 - editor_state: closed
 - token_ceiling: 40000
-- model: open
-- tokens: open
-- runs: open
+- model: opus
+- tokens: input 54, cache write 69322, cache read 1251426, output 16091
+- runs: 1
 - milestone: M2
-- result: open
+- result: Barrel render transform anchored at z = 0; barrel cells also get a floor slab instance (HasFloorSlab: Floor, Spawn, Barrel); CellInstanceIndex split into block and floor maps so a destroyed barrel adds no second floor; collision and gameplay unchanged; one existing test helper (CheckInstanceMaps) adapted; build 0, 240 tests pass. Commit a29b64c.
 
 ## Relations
 - [[task-108-barrel-on-floor]] — parent global task.

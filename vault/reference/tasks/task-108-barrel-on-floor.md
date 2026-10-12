@@ -1,9 +1,9 @@
 ---
 id: task-108-barrel-on-floor
 description: "Global task: Barrels stand on the floor and keep the floor slab under them: the barrel is no longer sunk into a floorless cell."
-parent: tasks-to-do-index
+parent: tasks-done-index
 kind: task
-status: in-progress
+status: done
 ---
 # Barrel on the floor
 
@@ -13,12 +13,12 @@ status: in-progress
 - gdd_check: done by the Orchestrator when the task is planned (2026-10-12).
 - confirmed_by_owner: yes (2026-10-12)
 - milestone: M2
-- next_step: task-108-01-barrel-on-floor
-- result: open
+- next_step: none
+- result: Done. Barrel render transform anchored at z = 0; barrel cells also get a floor slab instance (HasFloorSlab: Floor, Spawn, Barrel); CellInstanceIndex split into block and floor maps so a destroyed barrel adds no second floor; collision and gameplay unchanged; one existing test helper (CheckInstanceMaps) adapted; build 0, 240 tests pass. Commit a29b64c.
 
 ## Subtasks
 1. task-108-01-barrel-on-floor — cpp
 
 ## Relations
-- [[tasks-to-do-index]] — parent index.
+- [[tasks-done-index]] — parent index.
 - [[task-108-01-barrel-on-floor]] — step 1, cpp.
