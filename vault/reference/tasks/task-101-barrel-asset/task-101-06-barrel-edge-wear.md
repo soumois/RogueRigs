@@ -3,7 +3,7 @@ id: task-101-06-barrel-edge-wear
 description: "Barrel wear becomes light edge wear plus lid scratches: vertex-colour edge wear and the scratch mask on the lid (owner 2026-10-11)."
 parent: task-101-barrel-asset
 kind: task
-status: todo
+status: in-progress
 ---
 # Barrel wear becomes light edge wear plus lid scratches
 

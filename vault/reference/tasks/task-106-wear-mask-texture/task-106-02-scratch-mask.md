@@ -3,7 +3,7 @@ id: task-106-02-scratch-mask
 description: "The shared mask becomes a scratch-only mask: a few thin hard-edged scratch lines, no blobs (owner 2026-10-11)."
 parent: task-106-wear-mask-texture
 kind: task
-status: in-progress
+status: done
 ---
 # The shared mask becomes a scratch-only mask
 
@@ -15,11 +15,11 @@ status: in-progress
 - done_when: T_WearMask.png is scratch lines only on white, tileable (numeric check), dark fraction 1 to 2 %, deterministic, report updated, committed by name.
 - editor_state: any
 - token_ceiling: 30000
-- model: open
-- tokens: open
-- runs: open
+- model: sonnet
+- tokens: input 14, cache write 17989, cache read 100704, output 792
+- runs: 1
 - milestone: M2
-- result: open
+- result: Mask rewritten as scratch lines only: 37 lines (26 isolated, 3 clusters), 1.44 % dark, tileable (edge diffs 0.0018 and 0.0047), seed 108; commits 62db100, 81e0b80. Shared wear mask delivered; applied to the barrel in task-101-06.
 
 ## Relations
 - [[task-106-wear-mask-texture]] — parent global task.

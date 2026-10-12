@@ -1,9 +1,9 @@
 ---
 id: task-106-wear-mask-texture
 description: "Global task: One shared grayscale wear mask texture exists, tileable, ready to be multiplied on flat colours for edge wear, scratches and light grime."
-parent: tasks-to-do-index
+parent: tasks-done-index
 kind: task
-status: in-progress
+status: done
 ---
 # Shared wear mask texture
 
@@ -13,14 +13,14 @@ status: in-progress
 - gdd_check: done by the Orchestrator when the task is planned (2026-10-12).
 - confirmed_by_owner: yes (2026-10-12)
 - milestone: M2
-- next_step: task-106-02-scratch-mask
-- result: open
+- next_step: none
+- result: Done. Mask rewritten as scratch lines only: 37 lines (26 isolated, 3 clusters), 1.44 % dark, tileable (edge diffs 0.0018 and 0.0047), seed 108; commits 62db100, 81e0b80. Shared wear mask delivered; applied to the barrel in task-101-06.
 
 ## Subtasks
 1. task-106-01-wear-mask-texture — 3d (done)
 2. task-106-02-scratch-mask — 3d
 
 ## Relations
-- [[tasks-to-do-index]] — parent index.
+- [[tasks-done-index]] — parent index.
 - [[task-106-01-wear-mask-texture]] — step 1, 3d.
 - [[task-106-02-scratch-mask]] — step 2, 3d.
