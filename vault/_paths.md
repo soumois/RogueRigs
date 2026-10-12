@@ -522,6 +522,9 @@ task-099-company-subtitles  reference/tasks/task-099-company-subtitles.md
 task-100-01-ore-rename-duskite  reference/tasks/task-100-ore-rename-duskite/task-100-01-ore-rename-duskite.md
 task-100-ore-rename-duskite  reference/tasks/task-100-ore-rename-duskite.md
 task-101-01-barrel-asset  reference/tasks/task-101-barrel-asset/task-101-01-barrel-asset.md
+task-101-02-barrel-sticker  reference/tasks/task-101-barrel-asset/task-101-02-barrel-sticker.md
+task-101-03-barrel-warning  reference/tasks/task-101-barrel-asset/task-101-03-barrel-warning.md
+task-101-04-barrel-mesh  reference/tasks/task-101-barrel-asset/task-101-04-barrel-mesh.md
 task-101-barrel-asset  reference/tasks/task-101-barrel-asset.md
 task-102-01-company-logo  reference/tasks/task-102-company-logo/task-102-01-company-logo.md
 task-102-company-logo  reference/tasks/task-102-company-logo.md

@@ -168,6 +168,7 @@ kind: note
 | [[task-094-08-hud-minimap]] | sonnet | 2 | 0k | 126k | 4151k | 43k |
 | [[task-094-09-hud-root]] | sonnet | 1 | 0k | 60k | 798k | 16k |
 | [[task-102-01-company-logo]] | sonnet | 2 | 0k | 68k | 175k | 2k |
+| [[task-101-01-barrel-asset]] | sonnet | 4 | 0k | 29k | 272k | 1k |
 
 ## Totals
 | Scope | Input | Cache write | Cache read | Output |
