@@ -541,6 +541,7 @@ unreal-mcp-epic-plugin  reference/tech/pipelines/unreal-mcp-epic-plugin.md
 unreal-mcp-quirks  reference/tech/pipelines/unreal-mcp-quirks.md
 upgrades  reference/gdd/weapons/upgrades.md
 visual-style  reference/gdd/art-audio/visual-style.md
+wbp-alert-objectives  reference/tech/blueprints/wbp-alert-objectives.md
 wbp-health-status  reference/tech/blueprints/wbp-health-status.md
 wbp-hud  reference/tech/blueprints/wbp-hud.md
 wbp-subtitles  reference/tech/blueprints/wbp-subtitles.md
