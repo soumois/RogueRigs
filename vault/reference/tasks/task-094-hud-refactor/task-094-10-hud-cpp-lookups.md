@@ -3,7 +3,7 @@ id: task-094-10-hud-cpp-lookups
 description: "C++ HUD code that looked widgets up by name in WBP_HUD finds them inside the sub-widgets, and the moved per-frame work leaves NativeTick."
 parent: task-094-hud-refactor
 kind: task
-status: todo
+status: in-progress
 ---
 # HUD C++ lookups after the split
 

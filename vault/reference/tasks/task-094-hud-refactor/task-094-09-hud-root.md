@@ -3,7 +3,7 @@ id: task-094-09-hud-root
 description: "WBP_HUD contains only the sub-widgets and their placement, with no logic and no tick; code initialises it only."
 parent: task-094-hud-refactor
 kind: task
-status: in-progress
+status: done
 ---
 # WBP_HUD as the placement root
 
@@ -15,11 +15,11 @@ status: in-progress
 - done_when: WBP_HUD has no logic and no tick, sub-widgets placed with anchors read back, compiled 0 errors, saved, docs updated, lint clean, committed.
 - editor_state: open
 - token_ceiling: 60000
-- model: open
-- tokens: open
-- runs: open
+- model: sonnet
+- tokens: input 36, cache write 60240, cache read 798131, output 15765
+- runs: 1
 - milestone: M2
-- result: open
+- result: WBP_HUD holds only the root canvas and 7 sub-widget instances (no variables, functions or tick graph); AlertObjectives lowered to z 8 so cards (10) are above it; no overlap computed from read-back values; not seen on screen. Commits 088a3f1, d609050.
 
 ## Relations
 - [[task-094-hud-refactor]] — parent global task.
