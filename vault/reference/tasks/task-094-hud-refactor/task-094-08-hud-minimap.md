@@ -3,7 +3,7 @@ id: task-094-08-hud-minimap
 description: "The minimap, its markers and the locator arrow with its distance move into their own widget."
 parent: task-094-hud-refactor
 kind: task
-status: todo
+status: in-progress
 ---
 # WBP_MinimapLocator
 

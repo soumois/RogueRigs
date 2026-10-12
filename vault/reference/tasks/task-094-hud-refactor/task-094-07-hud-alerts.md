@@ -3,7 +3,7 @@ id: task-094-07-hud-alerts
 description: "The alert bar, icons, horde banner, objective, hack and shuttle texts and the end screen move into their own widget."
 parent: task-094-hud-refactor
 kind: task
-status: in-progress
+status: done
 ---
 # WBP_AlertObjectives
 
@@ -15,11 +15,11 @@ status: in-progress
 - done_when: compiled 0 errors, saved, WBP_HUD places the widget, moved logic removed, docs updated, lint clean, committed.
 - editor_state: open
 - token_ceiling: 60000
-- model: open
-- tokens: open
-- runs: open
+- model: sonnet
+- tokens: input 110, cache write 173311, cache read 6364189, output 53585
+- runs: 3
 - milestone: M2
-- result: open
+- result: WBP_AlertObjectives (alert bar, icons, horde banner, objective/hack, shuttle text, end screen) bound to run-flow events, placed z 20 SelfHitTestInvisible; moved logic removed; not seen or run. Breaks C++ lookups by name (RRIntegrationTests ~1855-2068, RRPressureIntegrationTests, RRVisualCheckCommands, URRHUDWidget RefreshAlertBarEvents): task-094-10. Commits 75d24ca, 930d455.
 
 ## Relations
 - [[task-094-hud-refactor]] — parent global task.
