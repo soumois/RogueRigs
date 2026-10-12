@@ -125,6 +125,7 @@ void ARRArenaGrid::RebuildFromLayout()
 		CellShotHealth.Reset();
 		CellDigDrops.Reset();
 		CellInstanceIndex.Reset();
+		CellFloorInstanceIndex.Reset();
 		CellDepositId.Reset();
 		Deposits.Reset();
 		PlacedDepositCounts.Reset();
@@ -690,11 +691,10 @@ FTransform ARRArenaGrid::GetBlockRenderTransform(FIntPoint Cell) const
 		return GetBlockInstanceTransform(Cell);
 	}
 	// Uniform scale: the mesh fits one cell in width and BlockHeight in height. Its bounds bottom centre (the pivot of a
-	// bottom-pivot mesh) sits on the cell centre at the block bottom (same bottom as GetBlockInstanceTransform).
+	// bottom-pivot mesh) sits on the cell centre at the floor top (z = 0): a barrel cell keeps its floor slab, the barrel stands on it.
 	const float Scale = FMath::Min(CellSize / Width, BlockHeight / Size.Z);
-	const float Bottom = bBlocksFillFloorSlab ? -FloorThickness : 0.f;
 	const FVector Anchor(Box.GetCenter().X, Box.GetCenter().Y, Box.Min.Z);
-	const FVector Location = FVector((Cell.X + 0.5f) * CellSize, (Cell.Y + 0.5f) * CellSize, Bottom) - Scale * Anchor;
+	const FVector Location = FVector((Cell.X + 0.5f) * CellSize, (Cell.Y + 0.5f) * CellSize, 0.f) - Scale * Anchor;
 	return FTransform(FRotator::ZeroRotator, Location, FVector(Scale));
 }
 
@@ -776,6 +776,7 @@ void ARRArenaGrid::BuildInstances()
 	BarrelSources.Reset();
 	CellDigDrops.Init(0, Cells.Num());
 	CellInstanceIndex.Init(INDEX_NONE, Cells.Num());
+	CellFloorInstanceIndex.Init(INDEX_NONE, Cells.Num());
 
 	ChunkCells = FMath::Max(1, ChunkCells);
 	ChunkCount = FIntPoint(FMath::DivideAndRoundUp(GridWidth, ChunkCells), FMath::DivideAndRoundUp(GridHeight, ChunkCells));
@@ -805,18 +806,34 @@ void ARRArenaGrid::BuildInstances()
 				continue;
 			}
 
-			// A block cell has no floor instance: a floor top coplanar with the block bottom is what we avoid.
+			// A block cell has no floor instance (a floor top coplanar with the block bottom is what we avoid), except a barrel:
+			// it stands on its floor slab, so its cell gets both a floor instance and a barrel instance.
 			const bool bIsBlock = IsBlockType(Type) && GetTemplateComponent(Type) != nullptr;
-			const ERRCellType MapKey = bIsBlock ? Type : ERRCellType::Floor;
-			const int32 VisualIndex = GetVisualIndex(MapKey, Cell);
+			if (!bIsBlock || HasFloorSlab(Type))
+			{
+				const int32 FloorVisualIndex = GetVisualIndex(ERRCellType::Floor, Cell);
+				if (FloorVisualIndex != INDEX_NONE)
+				{
+					FBatch& FloorBatch = Batches[FloorVisualIndex];
+					FloorBatch.MapKey = ERRCellType::Floor;
+					FloorBatch.Transforms.Add(GetFloorInstanceTransform(Cell));
+					FloorBatch.CollisionTransforms.Add(GetFloorInstanceTransform(Cell));
+					FloorBatch.BatchCells.Add(Cell);
+				}
+			}
+			if (!bIsBlock)
+			{
+				continue;
+			}
+			const int32 VisualIndex = GetVisualIndex(Type, Cell);
 			if (VisualIndex == INDEX_NONE)
 			{
 				continue;
 			}
 			FBatch& Batch = Batches[VisualIndex];
-			Batch.MapKey = MapKey;
-			Batch.Transforms.Add(bIsBlock ? GetBlockRenderTransform(Cell) : GetFloorInstanceTransform(Cell));
-			Batch.CollisionTransforms.Add(bIsBlock ? GetBlockInstanceTransform(Cell) : GetFloorInstanceTransform(Cell));
+			Batch.MapKey = Type;
+			Batch.Transforms.Add(GetBlockRenderTransform(Cell));
+			Batch.CollisionTransforms.Add(GetBlockInstanceTransform(Cell));
 			Batch.BatchCells.Add(Cell);
 
 			if (bIsBlock)
@@ -847,11 +864,12 @@ void ARRArenaGrid::BuildInstances()
 		}
 
 		Visual->InstanceCells.SetNum(FirstIndex);
+		TArray<int32>& IndexMap = GetInstanceIndexMap(Batch.MapKey);
 		for (int32 Offset = 0; Offset < Batch.BatchCells.Num(); ++Offset)
 		{
 			const FIntPoint Cell = Batch.BatchCells[Offset];
 			Visual->InstanceCells.Add(Cell);
-			CellInstanceIndex[GetCellIndex(Cell)] = FirstIndex + Offset;
+			IndexMap[GetCellIndex(Cell)] = FirstIndex + Offset;
 		}
 	}
 
@@ -882,8 +900,18 @@ int32 ARRArenaGrid::AddCellInstance(ERRCellType MapKey, FIntPoint Cell, const FT
 		Visual->InstanceCells.SetNum(InstanceIndex + 1);
 	}
 	Visual->InstanceCells[InstanceIndex] = Cell;
-	CellInstanceIndex[GetCellIndex(Cell)] = InstanceIndex;
+	GetInstanceIndexMap(MapKey)[GetCellIndex(Cell)] = InstanceIndex;
 	return InstanceIndex;
+}
+
+TArray<int32>& ARRArenaGrid::GetInstanceIndexMap(ERRCellType MapKey)
+{
+	return MapKey == ERRCellType::Floor ? CellFloorInstanceIndex : CellInstanceIndex;
+}
+
+bool ARRArenaGrid::HasFloorSlab(ERRCellType Type)
+{
+	return Type == ERRCellType::Floor || Type == ERRCellType::Spawn || Type == ERRCellType::Barrel;
 }
 
 void ARRArenaGrid::RemoveCellInstance(ERRCellType MapKey, FIntPoint Cell, int32 InstanceIndex)
@@ -908,13 +936,15 @@ void ARRArenaGrid::RemoveCellInstance(ERRCellType MapKey, FIntPoint Cell, int32 
 	}
 
 	// HISM and the collision ISM (SetRemoveSwap) remove at swap: the last instance now occupies InstanceIndex. Mirror it in both maps.
+	// The floor map and the block map are separate (a barrel cell is in both visuals), so patch the map of MapKey only.
+	TArray<int32>& IndexMap = GetInstanceIndexMap(MapKey);
 	Visual->InstanceCells.RemoveAtSwap(InstanceIndex, EAllowShrinking::No);
 	if (InstanceIndex != LastIndex)
 	{
 		const FIntPoint MovedCell = Visual->InstanceCells[InstanceIndex];
-		CellInstanceIndex[GetCellIndex(MovedCell)] = InstanceIndex;
+		IndexMap[GetCellIndex(MovedCell)] = InstanceIndex;
 	}
-	CellInstanceIndex[GetCellIndex(RemovedCell)] = INDEX_NONE;
+	IndexMap[GetCellIndex(RemovedCell)] = INDEX_NONE;
 }
 
 FVector ARRArenaGrid::GetCellCenter(int32 X, int32 Y) const
@@ -1171,7 +1201,11 @@ bool ARRArenaGrid::DestroyCell(FIntPoint Cell, ERRTerrainDamageSource Source)
 	{
 		CellDigDrops[Index] = 0;
 	}
-	AddCellInstance(ERRCellType::Floor, Cell, GetFloorInstanceTransform(Cell));
+	// A barrel cell already has its floor slab (BuildInstances): keep it, never add a second one (no duplicate, no z-fighting).
+	if (!CellFloorInstanceIndex.IsValidIndex(Index) || CellFloorInstanceIndex[Index] == INDEX_NONE)
+	{
+		AddCellInstance(ERRCellType::Floor, Cell, GetFloorInstanceTransform(Cell));
+	}
 
 	UE_LOG(LogRogueRigs, Verbose, TEXT("ARRArenaGrid: block destroyed at (%d, %d), type %s, source %s."), Cell.X, Cell.Y,
 		*UEnum::GetValueAsString(Type), *UEnum::GetValueAsString(Source));

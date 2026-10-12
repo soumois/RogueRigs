@@ -70,15 +70,16 @@ namespace RRDigTests
 	/**
 	 * Checks the grid's instance maps against its HISMs: each map has one entry per instance, every instance maps back
 	 * to a cell whose index points at it, of the map's type, and the instance sits on that cell's center; each block type's
-	 * collision ISM has the same instances in the same order, at rest; every non-void cell has exactly one instance.
-	 * Returns true when consistent.
+	 * collision ISM has the same instances in the same order, at rest; every block cell has exactly one block instance and every
+	 * open or barrel cell exactly one floor instance (a barrel stands on its slab, task-108-01). Returns true when consistent.
 	 */
 	bool CheckInstanceMaps(FAutomationTestBase& Test, const ARRArenaGrid* Grid)
 	{
 		const int32 Width = FGridAccess::Width(Grid);
 		const int32 Height = FGridAccess::Height(Grid);
 		const float CellSize = Grid->GetCellSize();
-		const TArray<int32>& Indices = FGridAccess::InstanceIndices(Grid);
+		const TArray<int32>& BlockIndices = FGridAccess::InstanceIndices(Grid);
+		const TArray<int32>& FloorIndices = FGridAccess::FloorInstanceIndices(Grid);
 		int32 Errors = 0;
 		int32 MappedInstances = 0;
 
@@ -119,12 +120,13 @@ namespace RRDigTests
 				++Errors;
 			}
 			const ERRCellType MapKey = Visual.MapKey;
+			const TArray<int32>& Indices = MapKey == ERRCellType::Floor ? FloorIndices : BlockIndices;
 
 			for (int32 Instance = 0; Instance < InstanceCells.Num(); ++Instance)
 			{
 				const FIntPoint Cell = InstanceCells[Instance];
 				const ERRCellType Type = Grid->GetCellType(Cell);
-				const bool bTypeMatches = (MapKey == ERRCellType::Floor ? (Type == ERRCellType::Floor || Type == ERRCellType::Spawn) : Type == MapKey)
+				const bool bTypeMatches = (MapKey == ERRCellType::Floor ? (Type == ERRCellType::Floor || Type == ERRCellType::Spawn || Type == ERRCellType::Barrel) : Type == MapKey)
 					&& Cell.X / ChunkSide == Visual.Chunk.X && Cell.Y / ChunkSide == Visual.Chunk.Y;
 				const int32 CellIndex = Cell.Y * Width + Cell.X;
 				FTransform InstanceTransform;
@@ -151,24 +153,29 @@ namespace RRDigTests
 			}
 		}
 
-		int32 NonVoidCells = 0;
+		// Expected instances: one per block cell (block HISM) plus one per open or barrel cell (floor HISM).
+		int32 ExpectedInstances = 0;
 		for (int32 Y = 0; Y < Height; ++Y)
 		{
 			for (int32 X = 0; X < Width; ++X)
 			{
-				if (Grid->GetCellType(FIntPoint(X, Y)) != ERRCellType::Void)
+				const ERRCellType Type = Grid->GetCellType(FIntPoint(X, Y));
+				if (Type == ERRCellType::Void)
 				{
-					++NonVoidCells;
-					if (Indices[Y * Width + X] == INDEX_NONE)
-					{
-						Test.AddError(FString::Printf(TEXT("cell (%d, %d) has no instance"), X, Y));
-						++Errors;
-					}
+					continue;
+				}
+				const bool bBlock = Grid->IsBlockCell(FIntPoint(X, Y));
+				const bool bSlab = !bBlock || Type == ERRCellType::Barrel;
+				ExpectedInstances += (bBlock ? 1 : 0) + (bSlab ? 1 : 0);
+				if ((bBlock && BlockIndices[Y * Width + X] == INDEX_NONE) || (bSlab && FloorIndices[Y * Width + X] == INDEX_NONE))
+				{
+					Test.AddError(FString::Printf(TEXT("cell (%d, %d) misses its block or floor instance"), X, Y));
+					++Errors;
 				}
 			}
 		}
-		Test.TestEqual(TEXT("one instance per non-void cell"), MappedInstances, NonVoidCells);
-		return Errors == 0 && MappedInstances == NonVoidCells;
+		Test.TestEqual(TEXT("one block instance per block cell, one floor instance per open or barrel cell"), MappedInstances, ExpectedInstances);
+		return Errors == 0 && MappedInstances == ExpectedInstances;
 	}
 }
 

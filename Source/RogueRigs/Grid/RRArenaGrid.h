@@ -450,8 +450,8 @@ protected:
 
 	/**
 	 * Actor-space rest transform of the rendering instance of a block cell. Barrels: BarrelMesh uniformly scaled from its bounds to fit
-	 * CellSize in width and BlockHeight in height (smaller factor), bounds bottom centre on the cell centre at the block bottom.
-	 * Other types, or a null / boundless BarrelMesh: GetBlockInstanceTransform.
+	 * CellSize in width and BlockHeight in height (smaller factor), bounds bottom centre on the cell centre at the floor top (z = 0:
+	 * a barrel cell keeps its floor slab and the barrel stands on it). Other types, or a null / boundless BarrelMesh: GetBlockInstanceTransform.
 	 */
 	FTransform GetBlockRenderTransform(FIntPoint Cell) const;
 
@@ -460,6 +460,12 @@ protected:
 
 	/** Removes Cell's instance InstanceIndex from the rendering component of MapKey in Cell's chunk (and its collision ISM) and patches both maps for the instance moved into the freed slot. */
 	void RemoveCellInstance(ERRCellType MapKey, FIntPoint Cell, int32 InstanceIndex);
+
+	/** Cell -> instance index map of a visual type: CellFloorInstanceIndex for Floor, CellInstanceIndex for a block type. */
+	TArray<int32>& GetInstanceIndexMap(ERRCellType MapKey);
+
+	/** True when a cell of this type has a floor slab instance: open cells (floor, spawn) and barrels (they stand on the floor). */
+	static bool HasFloorSlab(ERRCellType Type);
 
 	/** Stops shaking Cell, restoring its rest transform if it still has a block. */
 	void StopShaking(FIntPoint Cell);
@@ -755,9 +761,13 @@ protected:
 	UPROPERTY(Transient)
 	TArray<int32> CellDigDrops;
 
-	/** Cell -> instance index in the chunk HISM of the cell's current visual (block, or floor), row-major; INDEX_NONE on void cells. A block's collision ISM uses the same index. */
+	/** Cell -> instance index of the cell's block in its chunk block HISM, row-major; INDEX_NONE on non-block cells. A block's collision ISM uses the same index. */
 	UPROPERTY(Transient)
 	TArray<int32> CellInstanceIndex;
+
+	/** Cell -> instance index of the cell's floor slab in its chunk floor HISM, row-major; INDEX_NONE without a slab (void, blocks other than barrels). */
+	UPROPERTY(Transient)
+	TArray<int32> CellFloorInstanceIndex;
 
 	/** Chunk counts along X and Y at the last build (grid size / ChunkCells, rounded up). */
 	UPROPERTY(Transient)

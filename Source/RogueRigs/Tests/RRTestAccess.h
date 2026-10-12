@@ -40,6 +40,7 @@ namespace RRTestAccess
 	{
 		static const TArray<FRRGridChunkVisual>& Visuals(const ARRArenaGrid* Grid) { return Grid->*(&FGridAccess::ChunkVisuals); }
 		static const TArray<int32>& InstanceIndices(const ARRArenaGrid* Grid) { return Grid->*(&FGridAccess::CellInstanceIndex); }
+		static const TArray<int32>& FloorInstanceIndices(const ARRArenaGrid* Grid) { return Grid->*(&FGridAccess::CellFloorInstanceIndex); }
 		static const TMap<FIntPoint, float>& Shaking(const ARRArenaGrid* Grid) { return Grid->*(&FGridAccess::ShakingCells); }
 		static int32 Width(const ARRArenaGrid* Grid) { return Grid->*(&FGridAccess::GridWidth); }
 		static int32 Height(const ARRArenaGrid* Grid) { return Grid->*(&FGridAccess::GridHeight); }
