@@ -3,7 +3,7 @@ id: task-101-08-barrel-warning-sign
 description: "The flame pictogram is replaced by an explosion warning triangle that can wrap over several facets (owner 2026-10-11)."
 parent: task-101-barrel-asset
 kind: task
-status: todo
+status: in-progress
 ---
 # The flame pictogram is replaced by an explosion warning tria
 

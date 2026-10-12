@@ -3,7 +3,7 @@ id: task-101-07-barrel-edge-highlights
 description: "Barrel edge wear as in the validated image: thin lighter edge bands, bolts and stepped base on the cap, no metal patches."
 parent: task-101-barrel-asset
 kind: task
-status: in-progress
+status: done
 ---
 # Barrel edge highlights, bolts and stepped cap
 
@@ -17,9 +17,9 @@ status: in-progress
 - token_ceiling: 40000
 - model: open
 - tokens: open
-- runs: open
+- runs: 1
 - milestone: M2
-- result: open
+- result: Thin lighter edge bands (flat tone materials, seeded gaps), 4 bolts and stepped cap base, faint lid scratches; 428 tris, UV and lightmap checks passed; owner judged it closer to the image. Commit 2b60278. Cost counted with task-101-06 (same resumed agent).
 
 ## Relations
 - [[task-101-barrel-asset]] — parent global task.
