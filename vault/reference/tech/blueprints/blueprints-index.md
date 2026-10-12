@@ -39,5 +39,6 @@ One node per Blueprint, template `blueprint.md`.
 - [[wbp-health-status]] — WBP_HealthStatus, health bar and text, Game Over text and damage vignette, a sub-widget of WBP_HUD.
 - [[wbp-xp-status]] — WBP_XPStatus, XP bar, level text and LEVEL UP flash, a sub-widget of WBP_HUD.
 - [[wbp-weapons]] — WBP_Weapons, weapon slots, ammo, reload and turret line, a sub-widget of WBP_HUD.
+- [[wbp-upgrade-choice]] — WBP_UpgradeChoice, level-up cards and reroll, a sub-widget of WBP_HUD.
 - [[hud-refactor-audit]] — audit of WBP_HUD: tick cost, per-feature tables, sub-widget plan, missing C++ events.
 - [[bp-damage-numbers]] — NS_DamageNumbers, M_DamageNumber and the digit atlas, the floating damage numbers.
