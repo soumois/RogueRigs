@@ -63,7 +63,7 @@
       "min_border_px_at_256": 3.0,
       "required_margin_px": 2,
       "pass": true,
-      "texel_scale_px_per_cm_at_256": 0.8673
+      "texel_scale_px_per_cm_at_256": 0.8736
     }
   },
   "mask_contract": {
@@ -145,6 +145,21 @@
     "16-column rings and the intermediate edge loops added for EdgeWear (back to 8 columns, 12 bands)"
   ],
   "decal_faces": 3,
+  "sticker_lid": {
+    "flat_on_lid_z_cm": 132.25,
+    "size_cm": [
+      28.0,
+      11.5
+    ],
+    "centre_xy_cm": [
+      -8.27,
+      2.13
+    ],
+    "upright_for_azimuth_deg": -35,
+    "clearance_to_cap_rim_cm": 5.61,
+    "clearance_to_lid_top_edge_cm": 8.04,
+    "body_facet_left_clean": true
+  },
   "warning_sign": {
     "script": "Tools/art/blender/warning_sign.py",
     "texture": "T_Barrel_Warning.png",
