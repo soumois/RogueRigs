@@ -528,6 +528,9 @@ task-101-04-barrel-mesh  reference/tasks/task-101-barrel-asset/task-101-04-barre
 task-101-barrel-asset  reference/tasks/task-101-barrel-asset.md
 task-102-01-company-logo  reference/tasks/task-102-company-logo/task-102-01-company-logo.md
 task-102-company-logo  reference/tasks/task-102-company-logo.md
+task-103-01-hud-events-only  reference/tasks/task-103-hud-events-only/task-103-01-hud-events-only.md
+task-103-02-hud-events-only  reference/tasks/task-103-hud-events-only/task-103-02-hud-events-only.md
+task-103-hud-events-only  reference/tasks/task-103-hud-events-only.md
 tasks-done-index  reference/tasks/tasks-done-index.md
 tasks-index  reference/tasks/tasks-index.md
 tasks-to-do-index  reference/tasks/tasks-to-do-index.md
