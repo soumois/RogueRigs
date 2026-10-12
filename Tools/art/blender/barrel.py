@@ -136,18 +136,47 @@ def facet_quad(angle_deg, zc, w, h, off=0.25):
            c + t * w / 2 + Vector((0, 0, h / 2)), c - t * w / 2 + Vector((0, 0, h / 2))]
     return [bm.verts.new(p) for p in pts]
 
-for dn, ang, zc, w, h in (("sticker", -112.5, 66.0, 28.0, 11.5), ("pictogram", -67.5, 64.0, 19.0, 22.0)):
+for dn, ang, zc, w, h in (("sticker", -112.5, 66.0, 28.0, 11.5),):
     mats[dn] = bpy.data.materials.new("M_Barrel_" + dn)
     vs = facet_quad(ang, zc, w, h)
     f = bm.faces.new(vs); f.material_index = mslot(dn)
     uvl = bm.loops.layers.uv.get("UVMap") or bm.loops.layers.uv.new("UVMap")
     for l, uv in zip(f.loops, ((0, 0), (1, 0), (1, 1), (0, 1))):
         l[uvl].uv = uv
+# warning sign (task-101-08): offset copies (0.25 cm) of the body facets it covers, ONE planar projection (plane normal = the bisector of the
+# vertical corner at -45 deg, u along the tangent, v = z), so the sign runs across the facet edge. 27 cm wide, between the rings (z 52..79).
+mats["warning"] = bpy.data.materials.new("M_Barrel_warning")
+SIGN_W, SIGN_ZC, SIGN_OFF, SIGN_CORNER = 27.0, 65.5, 0.25, 1
+a_c = math.radians(-90.0 + 45.0 * SIGN_CORNER)
+n_c = Vector((math.cos(a_c), math.sin(a_c), 0)); t_c = Vector((-math.sin(a_c), math.cos(a_c), 0))
+zb = rings[5][0].co.z   # body band 51 -> 80 (vertical facets)
+corner_xy = rings[5][SIGN_CORNER].co.copy(); corner_xy.z = 0
+half = SIGN_W / 2.0; cos_h = math.cos(math.radians(180.0 / FACETS))   # facet direction . t_c = cos(22.5 deg)
+uvl = bm.loops.layers.uv.get("UVMap") or bm.loops.layers.uv.new("UVMap")
+sign_faces = 0
+for side in (-1, 1):   # -1: facet towards the previous corner, +1: towards the next one
+    other = rings[5][(SIGN_CORNER + side) % SIDES].co.copy(); other.z = 0
+    d = (other - corner_xy).normalized(); nrm = Vector((d.y, -d.x, 0)) if side > 0 else Vector((-d.y, d.x, 0))
+    if nrm.dot(n_c) < 0: nrm = -nrm
+    far = corner_xy + d * (half / cos_h) + nrm * SIGN_OFF
+    cor = corner_xy + n_c * (SIGN_OFF / cos_h)   # shared corner point: both offset planes meet on the bisector
+    ztop, zbot = SIGN_ZC + half, SIGN_ZC - half
+    pts = []
+    for xy in (cor, far):
+        for z in (zbot, ztop):
+            pts.append(Vector((xy.x, xy.y, z)))
+    # order around the face with the outward normal: bottom pair then top pair
+    quad = [pts[0], pts[2], pts[3], pts[1]]
+    if (quad[1] - quad[0]).cross(quad[2] - quad[0]).dot(n_c) < 0: quad = quad[::-1]
+    f = bm.faces.new([bm.verts.new(p) for p in quad]); f.material_index = mslot("warning")
+    for l in f.loops:
+        l[uvl].uv = ((l.vert.co.dot(t_c) - corner_xy.dot(t_c) + half) / SIGN_W, (l.vert.co.z - (SIGN_ZC - half)) / SIGN_W)
+    sign_faces += 1
 bm.faces.ensure_lookup_table()
 bm.faces.index_update(); bm.normal_update()
 # ---- UV channel 0 "UVMap": planar projection on each face's own plane, 1 tile of the wear mask = 100 cm
 # (constant texel density). Decal quads keep their own 0..1 UV. Channel 1 "LightMap": one island per face, packed.
-DECALS = ("sticker", "pictogram")
+DECALS = ("sticker", "warning")
 uv0 = bm.loops.layers.uv.get("UVMap") or bm.loops.layers.uv.new("UVMap")
 uv1 = bm.loops.layers.uv.new("LightMap")
 TILE_CM = 100.0
@@ -225,20 +254,21 @@ def save_tex(name, arr):
 # sticker: yellow plate, quad corners read on the image (TL, TR, BR, BL)
 st = unwarp((410, 673), (615, 708), (613, 797), (410, 757), 512, 210)
 st[..., 3] = 1.0
-# pictogram: dark flame on orange; shear of the right facet (rises 0.15 px/px to the right); alpha from the red channel
-pg = unwarp((668, 699), (822, 676), (822, 831), (668, 855), 256, 300)
-alpha = np.clip((200.0 / 255.0 - pg[..., 0]) / (60.0 / 255.0), 0, 1)
-pg[..., :3] = np.array([0.17, 0.18, 0.21]); pg[..., 3] = alpha
-for name, arr, dn in (("T_Barrel_Sticker", st, "sticker"), ("T_Barrel_Pictogram", pg, "pictogram")):
-    im = save_tex(name, arr)
-    m = mats[dn]; m.use_nodes = True
-    nt = m.node_tree; bsdf = nt.nodes["Principled BSDF"]
-    tx = nt.nodes.new("ShaderNodeTexImage"); tx.image = im
-    nt.links.new(tx.outputs["Color"], bsdf.inputs["Base Color"])
-    bsdf.inputs["Roughness"].default_value = 0.8
-    if dn == "pictogram":
-        nt.links.new(tx.outputs["Alpha"], bsdf.inputs["Alpha"])
-        m.blend_method = "BLEND" if hasattr(m, "blend_method") else None
+im = save_tex("T_Barrel_Sticker", st)
+m = mats["sticker"]; m.use_nodes = True
+nt = m.node_tree; bsdf = nt.nodes["Principled BSDF"]
+tx = nt.nodes.new("ShaderNodeTexImage"); tx.image = im
+nt.links.new(tx.outputs["Color"], bsdf.inputs["Base Color"]); bsdf.inputs["Roughness"].default_value = 0.8
+# warning sign: drawn by Tools/art/blender/warning_sign.py (own artwork, RGBA, transparent background)
+WARN = os.path.join(OUTDIR, "T_Barrel_Warning.png")
+if not os.path.exists(WARN): raise SystemExit("run Tools/art/blender/warning_sign.py first: " + WARN)
+im = bpy.data.images.load(WARN)
+m = mats["warning"]; m.use_nodes = True
+nt = m.node_tree; bsdf = nt.nodes["Principled BSDF"]
+tx = nt.nodes.new("ShaderNodeTexImage"); tx.image = im
+nt.links.new(tx.outputs["Color"], bsdf.inputs["Base Color"]); nt.links.new(tx.outputs["Alpha"], bsdf.inputs["Alpha"])
+bsdf.inputs["Roughness"].default_value = 0.8
+m.blend_method = "BLEND" if hasattr(m, "blend_method") else None
 
 # ---- checks, report, export
 dg = bpy.context.evaluated_depsgraph_get()
@@ -281,36 +311,36 @@ if tris > 600: warnings.append("tris above 600 budget")
 if abs((hi.z - lo.z) - 134) > 1.0: warnings.append("height off 134 cm")
 if max(hi.x - lo.x, hi.y - lo.y) > 91.0: warnings.append("width above 90 cm")
 if abs(lo.z) > 1e-4 or abs((lo.x + hi.x) / 2) > 1e-3: warnings.append("pivot not bottom centre")
-warnings.append("pictogram material uses alpha blend: Unreal import must set it Masked/Translucent")
+warnings.append("M_Barrel_warning uses alpha (transparent background): in Unreal set it Masked or Translucent")
 warnings.append("decal crop is an approximate bilinear unwarp of the 3/4 view, edges not pixel-perfect")
 report = {
     "asset": "SM_Barrel", "route": "blender", "script": "Tools/art/blender/barrel.py", "source_image": "vault/assets/barrel.png",
     "tris_out": tris, "budget_tris": 600,
     "dimensions_cm": {"x": round(hi.x - lo.x, 2), "y": round(hi.y - lo.y, 2), "z": round(hi.z - lo.z, 2)},
     "pivot": "bottom", "bbox_min": [round(c, 3) for c in lo], "bbox_max": [round(c, 3) for c in hi],
-    "materials": [m.name for m in mesh.materials], "decal_textures": ["T_Barrel_Sticker.png", "T_Barrel_Pictogram.png"],
+    "materials": [m.name for m in mesh.materials], "decal_textures": ["T_Barrel_Sticker.png", "T_Barrel_Warning.png"],
     "uv_layers": [u.name for u in mesh.uv_layers],
     "uv_checks": {
         "UVMap": {"purpose": "wear mask + decals", "tile_cm": 100.0, "cm_per_uv_unit_min": round(min(dens), 3), "cm_per_uv_unit_max": round(max(dens), 3),
-                  "decal_quads_uv": "0..1 own", "note": "non-decal faces tile past 0..1 (mask is tileable, wrap/repeat)"},
+                  "decal_quads_uv": "sticker: own 0..1 quad; warning: ONE planar projection over 2 facet copies (u along the tangent of the corner at -45 deg, 27 cm = 0..1, v = z 52..79 = 0..1)", "note": "non-decal faces tile past 0..1 (mask is tileable, wrap/repeat)"},
         "LightMap": {"faces": len(boxes), "triangles": tris, "overlapping_face_pairs": overlaps, "bounds_min": [round(float(u1a.min()), 5)], "bounds_max": [round(float(u1a.max()), 5)],
                      "min_gap_px_at_256": round(float(min_gap), 3), "min_border_px_at_256": round(float(border), 3), "required_margin_px": 2, "pass": bool(lm_ok), "texel_scale_px_per_cm_at_256": round(lm_scale, 4)},
     },
     "mask_contract": {
         "scratch_mask_file": "Art/Textures/T_WearMask.png", "mask_colour_space": "linear/grayscale (sRGB off)", "uv_channel": 0, "uv_channel_name": "UVMap", "tile_cm": 100.0, "wrap": "repeat",
         "scratch_applies_to": ["M_Barrel_lid", "M_Barrel_cap"],
-        "scratch_not_on": ["M_Barrel_body", "M_Barrel_ring", "M_Barrel_lid_edge", "M_Barrel_cap_edge", "M_Barrel_ring_edge", "M_Barrel_sticker", "M_Barrel_pictogram"],
+        "scratch_not_on": ["M_Barrel_body", "M_Barrel_ring", "M_Barrel_lid_edge", "M_Barrel_cap_edge", "M_Barrel_ring_edge", "M_Barrel_sticker", "M_Barrel_warning"],
         "formula": "M_Barrel_lid colour = lerp(lid colour #3C4048, lighter lid tone #5C626D, (1 - T_WearMask) * 0.6); M_Barrel_cap colour = lerp(cap colour #2B2E34, lighter cap tone #4A4F58, (1 - T_WearMask) * 0.6)",
         "paint_colours_srgb": {"M_Barrel_body": "#FF6A00", "M_Barrel_ring": "#D9480F", "M_Barrel_lid": "#3C4048", "M_Barrel_cap": "#2B2E34",
                                "M_Barrel_lid_edge": "#5C626D", "M_Barrel_cap_edge": "#4A4F58", "M_Barrel_ring_edge": "#EE6A2E"},
-        "unmasked_materials": ["M_Barrel_body", "M_Barrel_ring", "M_Barrel_lid_edge", "M_Barrel_cap_edge", "M_Barrel_ring_edge", "M_Barrel_sticker", "M_Barrel_pictogram"],
+        "unmasked_materials": ["M_Barrel_body", "M_Barrel_ring", "M_Barrel_lid_edge", "M_Barrel_cap_edge", "M_Barrel_ring_edge", "M_Barrel_sticker", "M_Barrel_warning"],
         "no_vertex_colour": True, "no_bare_metal": True,
         "note": "FBX cannot hold the node graph: the Unreal master material applies the lerp on lid and cap only; every other material is the flat colour exported in the FBX (edge bands are real geometry with their own flat materials).",
     },
     "edge_bands": {"seed": SEED, "width_cm": 1.0, "offset_cm": 0.15, "loops": band_stats,
                    "cap": "stepped base (r 9.5 then r 8.5), chamfer to r 7.5, 4 hex bolts (r 1.3, height 0.7, material M_Barrel_cap_edge) at radius 4.2, top z = 134"},
-    "removed": ["EdgeWear vertex colour attribute", "hard-threshold edge chips", "bare metal #8A9099 mix", "16-column rings and the intermediate edge loops added for EdgeWear (back to 8 columns, 12 bands)"],
-    "decal_faces": 2, "shading": "flat", "warnings": warnings,
+    "removed": ["flame pictogram decal and T_Barrel_Pictogram.png", "EdgeWear vertex colour attribute", "hard-threshold edge chips", "bare metal #8A9099 mix", "16-column rings and the intermediate edge loops added for EdgeWear (back to 8 columns, 12 bands)"],
+    "decal_faces": 1 + sign_faces, "warning_sign": {"script": "Tools/art/blender/warning_sign.py", "texture": "T_Barrel_Warning.png", "size_px": [512, 512], "faces": sign_faces, "width_cm": SIGN_W, "z_range_cm": [SIGN_ZC - half, SIGN_ZC + half], "offset_cm": SIGN_OFF, "projection": "single planar (bisector of the corner at -45 deg), continues across the facet edge", "blend": "alpha: Masked or Translucent in Unreal", "artwork": "own drawing, no text, not traced from a reference"}, "shading": "flat", "warnings": warnings,
 }
 bpy.ops.object.select_all(action="DESELECT"); obj.select_set(True)
 bpy.context.view_layer.objects.active = obj

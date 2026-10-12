@@ -47,11 +47,12 @@ for m in obj.data.materials:
         nt.links.new(mix.outputs[2], bsdf.inputs["Base Color"])
     elif key in PAINT:
         bsdf.inputs["Base Color"].default_value = srgb(PAINT[key])   # flat colour, no mask
-    elif key in ("sticker", "pictogram"):
+    elif key in ("sticker", "warning"):
         img = bpy.data.images.load(os.path.join(os.path.dirname(FBX), "T_Barrel_%s.png" % key.capitalize()))
         tx = nt.nodes.new("ShaderNodeTexImage"); tx.image = img
         nt.links.new(tx.outputs["Color"], bsdf.inputs["Base Color"])
-        if key == "pictogram":
+        if key == "warning":   # alpha blend (transparent background)
+            m.surface_render_method = "BLENDED" if hasattr(m, "surface_render_method") else None
             nt.links.new(tx.outputs["Alpha"], bsdf.inputs["Alpha"])
 
 sc = bpy.context.scene

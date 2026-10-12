@@ -3,7 +3,7 @@
   "route": "blender",
   "script": "Tools/art/blender/barrel.py",
   "source_image": "vault/assets/barrel.png",
-  "tris_out": 428,
+  "tris_out": 430,
   "budget_tris": 600,
   "dimensions_cm": {
     "x": 90.0,
@@ -30,11 +30,11 @@
     "M_Barrel_lid_edge",
     "M_Barrel_ring_edge",
     "M_Barrel_sticker",
-    "M_Barrel_pictogram"
+    "M_Barrel_warning"
   ],
   "decal_textures": [
     "T_Barrel_Sticker.png",
-    "T_Barrel_Pictogram.png"
+    "T_Barrel_Warning.png"
   ],
   "uv_layers": [
     "UVMap",
@@ -46,12 +46,12 @@
       "tile_cm": 100.0,
       "cm_per_uv_unit_min": 100.0,
       "cm_per_uv_unit_max": 100.0,
-      "decal_quads_uv": "0..1 own",
+      "decal_quads_uv": "sticker: own 0..1 quad; warning: ONE planar projection over 2 facet copies (u along the tangent of the corner at -45 deg, 27 cm = 0..1, v = z 52..79 = 0..1)",
       "note": "non-decal faces tile past 0..1 (mask is tileable, wrap/repeat)"
     },
     "LightMap": {
-      "faces": 203,
-      "triangles": 428,
+      "faces": 204,
+      "triangles": 430,
       "overlapping_face_pairs": 0,
       "bounds_min": [
         0.01172
@@ -84,7 +84,7 @@
       "M_Barrel_cap_edge",
       "M_Barrel_ring_edge",
       "M_Barrel_sticker",
-      "M_Barrel_pictogram"
+      "M_Barrel_warning"
     ],
     "formula": "M_Barrel_lid colour = lerp(lid colour #3C4048, lighter lid tone #5C626D, (1 - T_WearMask) * 0.6); M_Barrel_cap colour = lerp(cap colour #2B2E34, lighter cap tone #4A4F58, (1 - T_WearMask) * 0.6)",
     "paint_colours_srgb": {
@@ -103,7 +103,7 @@
       "M_Barrel_cap_edge",
       "M_Barrel_ring_edge",
       "M_Barrel_sticker",
-      "M_Barrel_pictogram"
+      "M_Barrel_warning"
     ],
     "no_vertex_colour": true,
     "no_bare_metal": true,
@@ -138,15 +138,34 @@
     "cap": "stepped base (r 9.5 then r 8.5), chamfer to r 7.5, 4 hex bolts (r 1.3, height 0.7, material M_Barrel_cap_edge) at radius 4.2, top z = 134"
   },
   "removed": [
+    "flame pictogram decal and T_Barrel_Pictogram.png",
     "EdgeWear vertex colour attribute",
     "hard-threshold edge chips",
     "bare metal #8A9099 mix",
     "16-column rings and the intermediate edge loops added for EdgeWear (back to 8 columns, 12 bands)"
   ],
-  "decal_faces": 2,
+  "decal_faces": 3,
+  "warning_sign": {
+    "script": "Tools/art/blender/warning_sign.py",
+    "texture": "T_Barrel_Warning.png",
+    "size_px": [
+      512,
+      512
+    ],
+    "faces": 2,
+    "width_cm": 27.0,
+    "z_range_cm": [
+      52.0,
+      79.0
+    ],
+    "offset_cm": 0.25,
+    "projection": "single planar (bisector of the corner at -45 deg), continues across the facet edge",
+    "blend": "alpha: Masked or Translucent in Unreal",
+    "artwork": "own drawing, no text, not traced from a reference"
+  },
   "shading": "flat",
   "warnings": [
-    "pictogram material uses alpha blend: Unreal import must set it Masked/Translucent",
+    "M_Barrel_warning uses alpha (transparent background): in Unreal set it Masked or Translucent",
     "decal crop is an approximate bilinear unwarp of the 3/4 view, edges not pixel-perfect"
   ],
   "vertex_colour_attribute": null
