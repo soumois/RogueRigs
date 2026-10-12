@@ -42,6 +42,66 @@ TArray<URRHUDPanelWidget*> URRHUDWidget::GetPanels() const
 	return Panels;
 }
 
+UWidget* URRHUDWidget::FindWidgetInTree(const UUserWidget* Root, FName Name)
+{
+	if (!Root || !Root->WidgetTree || Name.IsNone())
+	{
+		return nullptr;
+	}
+	if (UWidget* Found = Root->WidgetTree->FindWidget(Name))
+	{
+		return Found;
+	}
+	// Not in this tree: search the trees of the user widgets placed in it (HUD panels), depth first in tree order.
+	UWidget* Found = nullptr;
+	Root->WidgetTree->ForEachWidget([&Found, Name](UWidget* Widget)
+	{
+		const UUserWidget* Child = Found ? nullptr : Cast<UUserWidget>(Widget);
+		if (Child)
+		{
+			Found = FindWidgetInTree(Child, Name);
+		}
+	});
+	return Found;
+}
+
+UUserWidget* URRHUDWidget::FindUserWidgetWithProperty(const UUserWidget* Root, FName PropertyName)
+{
+	if (!Root || PropertyName.IsNone())
+	{
+		return nullptr;
+	}
+	if (Root->GetClass()->FindPropertyByName(PropertyName))
+	{
+		return const_cast<UUserWidget*>(Root);
+	}
+	UUserWidget* Found = nullptr;
+	if (Root->WidgetTree)
+	{
+		Root->WidgetTree->ForEachWidget([&Found, PropertyName](UWidget* Widget)
+		{
+			const UUserWidget* Child = Found ? nullptr : Cast<UUserWidget>(Widget);
+			if (Child)
+			{
+				Found = FindUserWidgetWithProperty(Child, PropertyName);
+			}
+		});
+	}
+	return Found;
+}
+
+const TArray<FRRAlertBarEvent>& URRHUDWidget::GetAlertBarEvents() const
+{
+	static const TArray<FRRAlertBarEvent> NoEvents;
+	URRRunFlowSubsystem* RunFlow = BoundRunFlow.Get();
+	return RunFlow ? RunFlow->GetAlertBarEvents() : NoEvents;
+}
+
+void URRHUDWidget::HandleAlertBarEventsChanged(const TArray<FRRAlertBarEvent>& Events)
+{
+	OnAlertEventsChanged(Events);
+}
+
 void URRHUDWidget::BindToMiner(ARRMiner* Miner)
 {
 	UnbindMiner();
@@ -211,6 +271,7 @@ void URRHUDWidget::BindToRunFlow(URRRunFlowSubsystem* RunFlow)
 		Previous->OnRunEnded.RemoveDynamic(this, &URRHUDWidget::HandleRunEnded);
 		Previous->OnMinerRegistered.RemoveDynamic(this, &URRHUDWidget::HandleMinerRegistered);
 		Previous->OnSpawnerRegistered.RemoveDynamic(this, &URRHUDWidget::HandleSpawnerRegistered);
+		Previous->OnAlertBarEventsChanged.RemoveDynamic(this, &URRHUDWidget::HandleAlertBarEventsChanged);
 	}
 	BoundRunFlow = RunFlow;
 	for (URRHUDPanelWidget* Panel : GetPanels())
@@ -230,6 +291,7 @@ void URRHUDWidget::BindToRunFlow(URRRunFlowSubsystem* RunFlow)
 	RunFlow->OnExtractionReady.AddUniqueDynamic(this, &URRHUDWidget::HandleExtractionReady);
 	RunFlow->OnShuttleCountdown.AddUniqueDynamic(this, &URRHUDWidget::HandleShuttleCountdown);
 	RunFlow->OnRunEnded.AddUniqueDynamic(this, &URRHUDWidget::HandleRunEnded);
+	RunFlow->OnAlertBarEventsChanged.AddUniqueDynamic(this, &URRHUDWidget::HandleAlertBarEventsChanged);
 
 	// Push the current state once.
 	OnAlertChanged(RunFlow->GetAlert(), RunFlow->HasPendingObjective());
@@ -254,20 +316,16 @@ void URRHUDWidget::BindToRunFlow(URRRunFlowSubsystem* RunFlow)
 	{
 		OnRunEnded(RunFlow->WasRunSuccessful());
 	}
-	RefreshAlertBarEvents();
+	OnAlertEventsChanged(RunFlow->GetAlertBarEvents());
 }
 
 void URRHUDWidget::BindToSpawner(ARREnemySpawner* Spawner)
 {
 	if (ARREnemySpawner* Previous = BoundSpawner.Get())
 	{
-		Previous->OnHordeLull.RemoveDynamic(this, &URRHUDWidget::HandleHordeLull);
 		Previous->OnHordeIncoming.RemoveDynamic(this, &URRHUDWidget::HandleHordeIncoming);
-		Previous->OnHordeStarted.RemoveDynamic(this, &URRHUDWidget::HandleHordeStarted);
-		Previous->OnHordeFinished.RemoveDynamic(this, &URRHUDWidget::HandleHordeFinished);
 	}
 	BoundSpawner = Spawner;
-	DoneHordePositions.Reset();
 	for (URRHUDPanelWidget* Panel : GetPanels())
 	{
 		Panel->SetSpawner(Spawner);
@@ -276,10 +334,7 @@ void URRHUDWidget::BindToSpawner(ARREnemySpawner* Spawner)
 	{
 		return;
 	}
-	Spawner->OnHordeLull.AddUniqueDynamic(this, &URRHUDWidget::HandleHordeLull);
 	Spawner->OnHordeIncoming.AddUniqueDynamic(this, &URRHUDWidget::HandleHordeIncoming);
-	Spawner->OnHordeStarted.AddUniqueDynamic(this, &URRHUDWidget::HandleHordeStarted);
-	Spawner->OnHordeFinished.AddUniqueDynamic(this, &URRHUDWidget::HandleHordeFinished);
 
 	// Bound during a banner: show it for the time left.
 	const int32 Active = Spawner->GetActiveHorde();
@@ -293,17 +348,17 @@ void URRHUDWidget::BindToSpawner(ARREnemySpawner* Spawner)
 		}
 		OnHordeIncoming(Spawner->GetSecondsUntilHordeFront());
 	}
-	RefreshAlertBarEvents();
+	// The run flow owns the alert-bar icons (its registered spawner): recompute them now; a change comes back through
+	// HandleAlertBarEventsChanged.
+	if (URRRunFlowSubsystem* RunFlow = BoundRunFlow.Get())
+	{
+		RunFlow->RefreshAlertBarEvents();
+	}
 }
 
 float URRHUDWidget::EstimateBarPosition(float Alert, float SecondsUntil, float AlertFillSeconds)
 {
 	return URRRunFlowSubsystem::EstimateBarPosition(Alert, SecondsUntil, AlertFillSeconds);
-}
-
-void URRHUDWidget::ComputeAlertBarEvents(TArray<FRRAlertBarEvent>& OutEvents)
-{
-	URRRunFlowSubsystem::ComputeAlertBarEvents(BoundRunFlow.Get(), BoundSpawner.Get(), DoneHordePositions, OutEvents);
 }
 
 bool URRHUDWidget::GetObjectiveTarget(ERRLocatorTarget& OutTarget, FVector& OutWorldLocation) const
@@ -375,24 +430,9 @@ bool URRHUDWidget::ComputeEdgeLocator(const FVector2D& ScreenPosition, const FVe
 	return false;
 }
 
-void URRHUDWidget::RefreshAlertBarEvents()
-{
-	TArray<FRRAlertBarEvent> Events;
-	ComputeAlertBarEvents(Events);
-	const bool bChanged = !bAlertBarEventsSent || FRRAlertBarEvent::ListsDiffer(Events, AlertBarEvents, AlertEventPositionTolerance);
-	if (!bChanged)
-	{
-		return;
-	}
-	AlertBarEvents = MoveTemp(Events);
-	bAlertBarEventsSent = true;
-	OnAlertEventsChanged(AlertBarEvents);
-}
-
 void URRHUDWidget::NativeTick(const FGeometry& MyGeometry, float InDeltaTime)
 {
 	Super::NativeTick(MyGeometry, InDeltaTime);
-	RefreshAlertBarEvents();
 	KeepVignetteWarm();
 	UpdateMinimap();
 }
@@ -480,7 +520,7 @@ void URRHUDWidget::KeepVignetteWarm()
 	{
 		// First call (construct, or the first tick of a widget ticked without Slate): the tree exists from Initialize on.
 		bDamageVignetteLookedUp = true;
-		DamageVignette = DamageVignetteWidgetName.IsNone() ? nullptr : GetWidgetFromName(DamageVignetteWidgetName);
+		DamageVignette = DamageVignetteWidgetName.IsNone() ? nullptr : FindHUDWidget(DamageVignetteWidgetName);
 	}
 	UWidget* Vignette = DamageVignette.Get();
 	if (Vignette && Vignette->GetRenderOpacity() < VignetteWarmOpacity)
@@ -512,7 +552,6 @@ void URRHUDWidget::HandleHordeIncoming(int32 HordeIndex, float SecondsUntil)
 {
 	ShowHordeAlertLine();
 	OnHordeIncoming(SecondsUntil);
-	RefreshAlertBarEvents();
 }
 
 void URRHUDWidget::HandleMinerRegistered(ARRMiner* Miner)
@@ -529,23 +568,6 @@ void URRHUDWidget::HandleSpawnerRegistered(ARREnemySpawner* Spawner)
 	{
 		BindToSpawner(Spawner);
 	}
-}
-
-void URRHUDWidget::HandleHordeLull(int32 HordeIndex)
-{
-	RefreshAlertBarEvents();
-}
-
-void URRHUDWidget::HandleHordeStarted(int32 HordeIndex, ERRSpawnSide Side)
-{
-	const URRRunFlowSubsystem* RunFlow = BoundRunFlow.Get();
-	DoneHordePositions.FindOrAdd(HordeIndex, RunFlow ? RunFlow->GetAlert() : 0.f);
-	RefreshAlertBarEvents();
-}
-
-void URRHUDWidget::HandleHordeFinished(int32 HordeIndex, int32 Spawned)
-{
-	RefreshAlertBarEvents();
 }
 
 void URRHUDWidget::RestartLevel()
@@ -575,25 +597,21 @@ void URRHUDWidget::HandleRunEnded(bool bSuccess)
 void URRHUDWidget::HandleAlertChanged(float Alert, bool bPaused)
 {
 	OnAlertChanged(Alert, bPaused);
-	RefreshAlertBarEvents();
 }
 
 void URRHUDWidget::HandleObjectiveChanged(ARRConsole* Console, ERRConsoleState State, int32 MarkedRocksLeft, int32 MarkedRocksTotal)
 {
 	OnObjectiveChanged(IsValid(Console), State, MarkedRocksLeft, MarkedRocksTotal);
-	RefreshAlertBarEvents();
 }
 
 void URRHUDWidget::HandleObjectiveProgressChanged(float Progress, bool bHacking)
 {
 	OnObjectiveProgressChanged(Progress, bHacking);
-	RefreshAlertBarEvents();
 }
 
 void URRHUDWidget::HandleExtractionReady()
 {
 	OnExtractionReady();
-	RefreshAlertBarEvents();
 }
 
 void URRHUDWidget::NativeDestruct()

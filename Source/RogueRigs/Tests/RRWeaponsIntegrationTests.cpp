@@ -164,7 +164,7 @@ namespace RRWeaponsIntegrationTests
 	/** Visibility of the widget named Name in Widget (Hidden when missing, with a test failure). */
 	ESlateVisibility GetWidgetVisibility(FAutomationTestBase& Test, UUserWidget* Widget, const FString& Name)
 	{
-		const UWidget* Child = Widget->GetWidgetFromName(*Name);
+		const UWidget* Child = URRHUDWidget::FindWidgetInTree(Widget, *Name);
 		Test.TestNotNull(FString::Printf(TEXT("WBP_HUD has %s"), *Name), Child);
 		return Child ? Child->GetVisibility() : ESlateVisibility::Hidden;
 	}
@@ -172,7 +172,7 @@ namespace RRWeaponsIntegrationTests
 	/** Text of the text block named Name in Widget (empty when missing, with a test failure). */
 	FString GetWidgetText(FAutomationTestBase& Test, UUserWidget* Widget, const FString& Name)
 	{
-		const UTextBlock* Text = Cast<UTextBlock>(Widget->GetWidgetFromName(*Name));
+		const UTextBlock* Text = Cast<UTextBlock>(URRHUDWidget::FindWidgetInTree(Widget, *Name));
 		Test.TestNotNull(FString::Printf(TEXT("WBP_HUD has text %s"), *Name), Text);
 		return Text ? Text->GetText().ToString() : FString();
 	}

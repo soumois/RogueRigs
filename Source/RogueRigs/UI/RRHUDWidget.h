@@ -72,14 +72,26 @@ public:
 	TArray<URRHUDPanelWidget*> GetPanels() const;
 
 	/**
-	 * Recomputes the alert-bar icons from the bound run flow and spawner and calls OnAlertEventsChanged when they changed (count,
-	 * type, done flag, or a position moved by more than AlertEventPositionTolerance). Called on every bound event and each tick.
+	 * Widget named Name anywhere in this HUD: its own tree first, then, depth first, the tree of every UUserWidget placed in it
+	 * (the URRHUDPanelWidget children such as WBP_HealthStatus, and their own nested user widgets). Null when absent.
 	 */
-	void RefreshAlertBarEvents();
+	UWidget* FindHUDWidget(FName Name) const { return FindWidgetInTree(this, Name); }
 
-	/** Alert-bar icons last sent to OnAlertEventsChanged (console, bonus chest, hordes in index order, shuttle). */
+	/** FindHUDWidget for any user widget Root (tests, debug commands): Root's tree, then the trees of its nested user widgets. */
+	static UWidget* FindWidgetInTree(const UUserWidget* Root, FName Name);
+
+	/**
+	 * User widget owning the (Blueprint) variable PropertyName: Root when its class has it, else the first nested user widget
+	 * that has it, searched like FindWidgetInTree (e.g. HitFlash, now in WBP_HealthStatus). Null when absent. Tests and debug only.
+	 */
+	static UUserWidget* FindUserWidgetWithProperty(const UUserWidget* Root, FName PropertyName);
+
+	/**
+	 * Alert-bar icons of the bound run flow (URRRunFlowSubsystem::GetAlertBarEvents: console, bonus chest, hordes in index order,
+	 * shuttle); empty without a bound run flow. The run flow computes them; this HUD only forwards them to OnAlertEventsChanged.
+	 */
 	UFUNCTION(BlueprintPure, Category = "HUD|Run")
-	const TArray<FRRAlertBarEvent>& GetAlertBarEvents() const { return AlertBarEvents; }
+	const TArray<FRRAlertBarEvent>& GetAlertBarEvents() const;
 
 	/**
 	 * Kessler-Voss line raised with alert event EventId (console_dropped, bonus_chest_dropped, horde_incoming, extraction_ready,
@@ -199,8 +211,8 @@ protected:
 	virtual void NativeDestruct() override;
 
 	/**
-	 * Refreshes the alert-bar icons (a pending horde's estimate moves while the bar is paused), then, after the Blueprint tick
-	 * (UpdateVignette), keeps the damage vignette at VignetteWarmOpacity at least.
+	 * Per-frame work with no event to drive it: keeps the damage vignette at VignetteWarmOpacity at least (after the panels'
+	 * own ticks) and ticks the minimap (cells seen around the moving miner). The alert-bar icons are event driven (run flow).
 	 */
 	virtual void NativeTick(const FGeometry& MyGeometry, float InDeltaTime) override;
 
@@ -208,7 +220,7 @@ protected:
 	 * Raises the damage vignette's render opacity to VignetteWarmOpacity when lower. Slate culls a draw whose opacity is 0, so a
 	 * vignette at 0 never renders its material until the first hit: its shaders (and pipeline state) are then not ready on that
 	 * frame and the first flash is skipped. A floor keeps the material drawn, hence warm, from the HUD construct on. The first
-	 * call looks the widget up by DamageVignetteWidgetName.
+	 * call looks the widget up by DamageVignetteWidgetName through FindHUDWidget (it lives in WBP_HealthStatus).
 	 */
 	void KeepVignetteWarm();
 
@@ -243,7 +255,8 @@ protected:
 
 	/**
 	 * Display event: the alert-bar icons changed (also on binding): console, bonus chest (when its threshold is > 0), each horde in index order, shuttle; see
-	 * FRRAlertBarEvent. The same list is kept for GetAlertBarEvents. Implement in Blueprint.
+	 * FRRAlertBarEvent. Forwarded from the bound run flow's OnAlertBarEventsChanged (same list as GetAlertBarEvents). WBP_HUD does not
+	 * implement it (WBP_AlertObjectives binds the run flow directly); kept for C++ subclasses and tests.
 	 */
 	UFUNCTION(BlueprintNativeEvent, Category = "HUD|Pressure")
 	void OnAlertEventsChanged(const TArray<FRRAlertBarEvent>& Events);
@@ -268,40 +281,15 @@ protected:
 	UFUNCTION()
 	void HandleSpawnerRegistered(ARREnemySpawner* Spawner);
 
-	/** Spawner OnHordeIncoming callback: shows the horde subtitle, calls OnHordeIncoming and refreshes the icons. */
+	/** Spawner OnHordeIncoming callback: shows the horde subtitle and calls OnHordeIncoming. */
 	UFUNCTION()
 	void HandleHordeIncoming(int32 HordeIndex, float SecondsUntil);
 
-	/** Spawner OnHordeLull callback: refreshes the icons. */
+	/** Run flow OnAlertBarEventsChanged callback: forwards the list to OnAlertEventsChanged. */
 	UFUNCTION()
-	void HandleHordeLull(int32 HordeIndex);
+	void HandleAlertBarEventsChanged(const TArray<FRRAlertBarEvent>& Events);
 
-	/** Spawner OnHordeStarted callback: freezes the horde icon at the current alert (done) and refreshes. */
-	UFUNCTION()
-	void HandleHordeStarted(int32 HordeIndex, ERRSpawnSide Side);
-
-	/** Spawner OnHordeFinished callback: refreshes the icons. */
-	UFUNCTION()
-	void HandleHordeFinished(int32 HordeIndex, int32 Spawned);
-
-	/** Computes the current alert-bar icons into OutEvents (see sys-hud for the position rule). */
-	void ComputeAlertBarEvents(TArray<FRRAlertBarEvent>& OutEvents);
-
-	/** Alert-bar icons last sent to OnAlertEventsChanged. */
-	UPROPERTY(Transient)
-	TArray<FRRAlertBarEvent> AlertBarEvents;
-
-	/** True once OnAlertEventsChanged was called (the first refresh always calls it). */
-	bool bAlertBarEventsSent = false;
-
-	/** Bar position of each horde whose front started, frozen at the alert of that moment (key: horde index). */
-	TMap<int32, float> DoneHordePositions;
-
-	/** A pending horde icon moving by more than this (bar fraction) calls OnAlertEventsChanged again; smaller moves wait. */
-	UPROPERTY(EditDefaultsOnly, Category = "HUD|Pressure", meta = (ClampMin = 0))
-	float AlertEventPositionTolerance = 0.002f;
-
-	/** Name of the damage vignette Image in the HUD Blueprint (WBP_HUD: DamageVignette); none found = no warm-up. */
+	/** Name of the damage vignette Image, searched through the panels (WBP_HealthStatus: DamageVignette); none found = no warm-up. */
 	UPROPERTY(EditDefaultsOnly, Category = "HUD|Pressure")
 	FName DamageVignetteWidgetName = TEXT("DamageVignette");
 

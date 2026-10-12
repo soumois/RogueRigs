@@ -8,6 +8,7 @@
 #include "AbilitySystemComponent.h"
 #include "Blueprint/WidgetTree.h"
 #include "Components/CanvasPanel.h"
+#include "Components/TextBlock.h"
 #include "Components/VerticalBox.h"
 #include "Enemies/RREnemySpawner.h"
 #include "GAS/RRHealthAttributeSet.h"
@@ -358,6 +359,53 @@ bool FRRHUDEventsPanelBindingTest::RunTest(const FString& Parameters)
 		TestEqual(TEXT("run flow still bound once"), Panel->GetRunFlowBindCount(), 1);
 	}
 	TestEqual(TEXT("the HUD slots read the late miner"), HUD->GetWeaponSlotCount(), Miner->GetMaxWeapons());
+	return true;
+}
+
+IMPLEMENT_SIMPLE_AUTOMATION_TEST(FRRHUDFindWidgetInPanelsTest, "RogueRigs.HUD.FindWidgetInPanels",
+	EAutomationTestFlags::EditorContext | EAutomationTestFlags::EngineFilter)
+
+bool FRRHUDFindWidgetInPanelsTest::RunTest(const FString& Parameters)
+{
+	RRTestHarness::FTestWorld TestWorld(TEXT("RRHUDFindWidgetInPanels"));
+	URRTestHUDWidget* HUD = CreateWidget<URRTestHUDWidget>(TestWorld.Get(), URRTestHUDWidget::StaticClass());
+	if (!TestNotNull(TEXT("HUD"), HUD) || !TestNotNull(TEXT("HUD widget tree"), HUD->WidgetTree.Get()))
+	{
+		return false;
+	}
+	TStrongObjectPtr<URRTestHUDWidget> HUDRoot(HUD);
+
+	// HUD: canvas > box > panel A; panel A: box > text PanelText + panel B; panel B: text DeepText (a panel inside a panel).
+	UCanvasPanel* Canvas = HUD->WidgetTree->ConstructWidget<UCanvasPanel>(UCanvasPanel::StaticClass(), TEXT("Root"));
+	UVerticalBox* Box = HUD->WidgetTree->ConstructWidget<UVerticalBox>(UVerticalBox::StaticClass(), TEXT("Box"));
+	HUD->WidgetTree->RootWidget = Canvas;
+	Canvas->AddChild(Box);
+	URRTestHUDPanelWidget* PanelA = CreateWidget<URRTestHUDPanelWidget>(HUD, URRTestHUDPanelWidget::StaticClass(), TEXT("PanelA"));
+	URRTestHUDPanelWidget* PanelB = PanelA ? CreateWidget<URRTestHUDPanelWidget>(PanelA, URRTestHUDPanelWidget::StaticClass(), TEXT("PanelB")) : nullptr;
+	if (!TestNotNull(TEXT("panel A tree"), PanelA ? PanelA->WidgetTree.Get() : nullptr) || !TestNotNull(TEXT("panel B tree"), PanelB ? PanelB->WidgetTree.Get() : nullptr))
+	{
+		return false;
+	}
+	Box->AddChild(PanelA);
+	UVerticalBox* PanelBox = PanelA->WidgetTree->ConstructWidget<UVerticalBox>(UVerticalBox::StaticClass(), TEXT("PanelBox"));
+	PanelA->WidgetTree->RootWidget = PanelBox;
+	UTextBlock* PanelText = PanelA->WidgetTree->ConstructWidget<UTextBlock>(UTextBlock::StaticClass(), TEXT("PanelText"));
+	PanelBox->AddChild(PanelText);
+	PanelBox->AddChild(PanelB);
+	UTextBlock* DeepText = PanelB->WidgetTree->ConstructWidget<UTextBlock>(UTextBlock::StaticClass(), TEXT("DeepText"));
+	PanelB->WidgetTree->RootWidget = DeepText;
+
+	// The engine lookup only sees the root tree: the reason for the helper.
+	TestNull(TEXT("GetWidgetFromName misses a panel widget"), HUD->GetWidgetFromName(TEXT("PanelText")));
+	TestTrue(TEXT("root tree widget found"), HUD->FindHUDWidget(TEXT("Box")) == Box);
+	TestTrue(TEXT("panel widget found"), HUD->FindHUDWidget(TEXT("PanelText")) == PanelText);
+	TestTrue(TEXT("widget of a nested panel found"), HUD->FindHUDWidget(TEXT("DeepText")) == DeepText);
+	TestTrue(TEXT("static helper, same result"), URRHUDWidget::FindWidgetInTree(HUD, TEXT("DeepText")) == DeepText);
+	TestNull(TEXT("unknown name"), HUD->FindHUDWidget(TEXT("NoSuchWidget")));
+	TestNull(TEXT("no name"), HUD->FindHUDWidget(NAME_None));
+	TestNull(TEXT("a panel does not search its parent"), URRHUDWidget::FindWidgetInTree(PanelA, TEXT("Box")));
+	TestNull(TEXT("null root"), URRHUDWidget::FindWidgetInTree(nullptr, TEXT("Box")));
+	TestNull(TEXT("unknown variable"), URRHUDWidget::FindUserWidgetWithProperty(HUD, TEXT("NoSuchVariable")));
 	return true;
 }
 

@@ -254,7 +254,7 @@ namespace RRPressureIntegrationTests
 	/** Widget Name of WBP_HUD (null with a failure). */
 	UWidget* FindHUDWidget(FAutomationTestBase& Test, URRHUDWidget* HUD, const TCHAR* Name)
 	{
-		UWidget* Widget = HUD->GetWidgetFromName(Name);
+		UWidget* Widget = URRHUDWidget::FindWidgetInTree(HUD, Name);
 		Test.TestNotNull(FString::Printf(TEXT("WBP_HUD has %s"), Name), Widget);
 		return Widget;
 	}
@@ -269,12 +269,14 @@ namespace RRPressureIntegrationTests
 	/** Value of the numeric Blueprint variable Name of WBP_HUD (-1 with a failure when missing). */
 	double GetHUDNumber(FAutomationTestBase& Test, const URRHUDWidget* HUD, const TCHAR* Name)
 	{
-		const FNumericProperty* Property = CastField<FNumericProperty>(HUD->GetClass()->FindPropertyByName(Name));
+		// The variable lives in the panel that uses it (e.g. WBP_HealthStatus): search the HUD and its nested panels.
+		const UUserWidget* Owner = URRHUDWidget::FindUserWidgetWithProperty(HUD, Name);
+		const FNumericProperty* Property = Owner ? CastField<FNumericProperty>(Owner->GetClass()->FindPropertyByName(Name)) : nullptr;
 		if (!Test.TestNotNull(FString::Printf(TEXT("WBP_HUD has variable %s"), Name), Property))
 		{
 			return -1.0;
 		}
-		const void* Value = Property->ContainerPtrToValuePtr<void>(HUD);
+		const void* Value = Property->ContainerPtrToValuePtr<void>(Owner);
 		return Property->IsFloatingPoint() ? Property->GetFloatingPointPropertyValue(Value) : static_cast<double>(Property->GetSignedIntPropertyValue(Value));
 	}
 

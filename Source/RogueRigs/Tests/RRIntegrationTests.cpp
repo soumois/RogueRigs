@@ -1417,7 +1417,7 @@ namespace RRIntegrationUpgradeTests
 	/** Visibility of the widget named Name in Widget (Hidden when missing, with a test failure). */
 	ESlateVisibility GetWidgetVisibility(FAutomationTestBase& Test, UUserWidget* Widget, const TCHAR* Name)
 	{
-		const UWidget* Child = Widget->GetWidgetFromName(Name);
+		const UWidget* Child = URRHUDWidget::FindWidgetInTree(Widget, Name);
 		Test.TestNotNull(FString::Printf(TEXT("WBP_HUD has %s"), Name), Child);
 		return Child ? Child->GetVisibility() : ESlateVisibility::Hidden;
 	}
@@ -1426,7 +1426,7 @@ namespace RRIntegrationUpgradeTests
 	void CheckHUDCards(FAutomationTestBase& Test, UUserWidget* HUD, const TArray<FRRUpgradeCard>& Cards, bool bCanReroll, const TCHAR* Label)
 	{
 		Test.TestTrue(FString::Printf(TEXT("%s: UpgradeScreen visible"), Label), GetWidgetVisibility(Test, HUD, TEXT("UpgradeScreen")) == ESlateVisibility::Visible);
-		const UWidget* Reroll = HUD->GetWidgetFromName(TEXT("RerollButton"));
+		const UWidget* Reroll = URRHUDWidget::FindWidgetInTree(HUD, TEXT("RerollButton"));
 		if (Test.TestNotNull(TEXT("WBP_HUD has RerollButton"), Reroll))
 		{
 			Test.TestTrue(FString::Printf(TEXT("%s: RerollButton enabled = %d"), Label, bCanReroll ? 1 : 0), Reroll->GetIsEnabled() == bCanReroll);
@@ -1434,7 +1434,7 @@ namespace RRIntegrationUpgradeTests
 		for (int32 Index = 0; Index < Cards.Num(); ++Index)
 		{
 			const FString Name = FString::Printf(TEXT("CardName%d"), Index);
-			const UTextBlock* Text = Cast<UTextBlock>(HUD->GetWidgetFromName(*Name));
+			const UTextBlock* Text = Cast<UTextBlock>(URRHUDWidget::FindWidgetInTree(HUD, *Name));
 			if (Test.TestNotNull(FString::Printf(TEXT("WBP_HUD has %s"), *Name), Text))
 			{
 				Test.TestEqual(FString::Printf(TEXT("%s: %s shows the card name"), Label, *Name), Text->GetText().ToString(), Cards[Index].DisplayName.ToString());
@@ -1727,7 +1727,7 @@ namespace RRIntegrationObjectiveTests
 	/** Text of a TextBlock of WBP_HUD (empty with a test failure when missing). */
 	FString GetWidgetText(FAutomationTestBase& Test, UUserWidget* Widget, const TCHAR* Name)
 	{
-		const UTextBlock* Text = Cast<UTextBlock>(Widget->GetWidgetFromName(Name));
+		const UTextBlock* Text = Cast<UTextBlock>(URRHUDWidget::FindWidgetInTree(Widget, Name));
 		Test.TestNotNull(FString::Printf(TEXT("WBP_HUD has TextBlock %s"), Name), Text);
 		return Text ? Text->GetText().ToString() : FString();
 	}
@@ -1735,7 +1735,7 @@ namespace RRIntegrationObjectiveTests
 	/** Percent of a ProgressBar of WBP_HUD (-1 with a test failure when missing). */
 	float GetWidgetPercent(FAutomationTestBase& Test, UUserWidget* Widget, const TCHAR* Name)
 	{
-		const UProgressBar* Bar = Cast<UProgressBar>(Widget->GetWidgetFromName(Name));
+		const UProgressBar* Bar = Cast<UProgressBar>(URRHUDWidget::FindWidgetInTree(Widget, Name));
 		Test.TestNotNull(FString::Printf(TEXT("WBP_HUD has ProgressBar %s"), Name), Bar);
 		return Bar ? Bar->GetPercent() : -1.f;
 	}
@@ -1938,7 +1938,7 @@ namespace RRIntegrationObjectiveTests
 		Test.TestEqual(TEXT("still one OnRunEnded"), Recorder->GetRunEndedResults().Num(), 1);
 
 		// Rejouer: clicking the button reaches RestartLevel, which asks the engine to reopen this map (travel cleared before it runs).
-		UButton* Restart = Cast<UButton>(Loop.HUD->GetWidgetFromName(TEXT("RestartButton")));
+		UButton* Restart = Cast<UButton>(URRHUDWidget::FindWidgetInTree(Loop.HUD, TEXT("RestartButton")));
 		FWorldContext* Context = GEngine->GetWorldContextFromWorld(World);
 		if (Test.TestNotNull(TEXT("WBP_HUD has RestartButton"), Restart) && Test.TestNotNull(TEXT("world context"), Context))
 		{

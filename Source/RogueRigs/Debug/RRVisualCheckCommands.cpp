@@ -86,15 +86,17 @@ namespace RRScreenshotCommands
 			{
 				continue;
 			}
-			const UWidget* Vignette = HUD->GetWidgetFromName(TEXT("DamageVignette"));
+			const UWidget* Vignette = HUD->FindHUDWidget(TEXT("DamageVignette"));
+			// HitFlash lives in the panel that draws the vignette (WBP_HealthStatus), not in WBP_HUD itself.
 			double HitFlash = -1.0;
-			if (const FDoubleProperty* Double = FindFProperty<FDoubleProperty>(HUD->GetClass(), TEXT("HitFlash")))
+			const UUserWidget* FlashOwner = URRHUDWidget::FindUserWidgetWithProperty(HUD, TEXT("HitFlash"));
+			if (const FDoubleProperty* Double = FlashOwner ? FindFProperty<FDoubleProperty>(FlashOwner->GetClass(), TEXT("HitFlash")) : nullptr)
 			{
-				HitFlash = Double->GetPropertyValue_InContainer(HUD);
+				HitFlash = Double->GetPropertyValue_InContainer(FlashOwner);
 			}
-			else if (const FFloatProperty* Float = FindFProperty<FFloatProperty>(HUD->GetClass(), TEXT("HitFlash")))
+			else if (const FFloatProperty* Float = FlashOwner ? FindFProperty<FFloatProperty>(FlashOwner->GetClass(), TEXT("HitFlash")) : nullptr)
 			{
-				HitFlash = Float->GetPropertyValue_InContainer(HUD);
+				HitFlash = Float->GetPropertyValue_InContainer(FlashOwner);
 			}
 			UE_LOG(LogRogueRigs, Log, TEXT("%s: frame %llu, delta %.3f s, vignette opacity %.3f (%s), HitFlash %.3f, in viewport %s"), Context,
 				GFrameCounter, FApp::GetDeltaTime(), Vignette ? Vignette->GetRenderOpacity() : -1.f, Vignette ? Vignette->GetVisibility() == ESlateVisibility::Collapsed ? TEXT("collapsed") : TEXT("shown") : TEXT("missing"),
