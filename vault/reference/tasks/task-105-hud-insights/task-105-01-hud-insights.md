@@ -3,7 +3,7 @@ id: task-105-01-hud-insights
 description: "Unreal Insights measures the HUD cost per frame after the refactor and compares it with the task-068-01 trace."
 parent: task-105-hud-insights
 kind: task
-status: in-progress
+status: done
 ---
 # HUD cost with Insights after the refactor
 
@@ -15,11 +15,11 @@ status: in-progress
 - done_when: one traced and two untraced runs done; HUD cost before/after table; top costs ranking updated; results written; lint clean; committed.
 - editor_state: closed
 - token_ceiling: 50000
-- model: open
-- tokens: open
-- runs: open
+- model: opus
+- tokens: input 48, cache write 74790, cache read 1096526, output 17544
+- runs: 1
 - milestone: M2
-- result: open
+- result: HUD Blueprint 0.40 -> 0.11 ms per frame (all panel events; WBP_HUD tick scope 0.005); Slate 0.86 -> 0.69; per-panel costs read by name; untraced 12.35-13.72 ms avg, p99 20.3-20.7 (PC load; not attributable to the HUD). Commit 2843106.
 
 ## Relations
 - [[task-105-hud-insights]] — parent global task.

@@ -114,3 +114,4 @@ Archive: it exceeds the index size limits of [[_authoring]] on purpose (owner, 2
 - [[task-102-company-logo]] — Four variations of one logo for the Kessler-Voss Mining Consortium exist as candidate images; the owner keeps one. Status done.
 - [[task-103-hud-events-only]] — The HUD parts that still poll every frame (minimap redraw and texture, locator arrow, vignette warm-up) react to events instead; only genuinely continuous values keep a per-frame update. Status done.
 - [[task-104-hud-regressions]] — Two Blueprint regressions of the HUD split are fixed: the damage vignette never fades and WBP_XPStatus divides by zero. Status done.
+- [[task-105-hud-insights]] — Unreal Insights measures the HUD cost per frame after the refactor and compares it with the task-068-01 trace. Status done.
