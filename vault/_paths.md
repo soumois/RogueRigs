@@ -544,6 +544,7 @@ visual-style  reference/gdd/art-audio/visual-style.md
 wbp-alert-objectives  reference/tech/blueprints/wbp-alert-objectives.md
 wbp-health-status  reference/tech/blueprints/wbp-health-status.md
 wbp-hud  reference/tech/blueprints/wbp-hud.md
+wbp-minimap-locator  reference/tech/blueprints/wbp-minimap-locator.md
 wbp-subtitles  reference/tech/blueprints/wbp-subtitles.md
 wbp-upgrade-choice  reference/tech/blueprints/wbp-upgrade-choice.md
 wbp-weapons  reference/tech/blueprints/wbp-weapons.md
