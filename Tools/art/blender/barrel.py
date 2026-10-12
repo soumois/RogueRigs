@@ -60,15 +60,60 @@ def band(a, b, mat):
 def disc(a, mat, up=True):
     f = bm.faces.new(a if up else a[::-1]); f.material_index = mslot(mat)
 
+import random
+def wear_plan(nfacets, seed0):
+    """Deterministic irregular wear: per facet 2-4 segments of unequal length (t0, t1, worn, scale).
+    Seed is searched from seed0 until worn length is 40-50 % and no facet alternates strictly worn/normal."""
+    seed = seed0
+    while True:
+        rng = random.Random(seed); plan = []; worn_len = 0.0
+        for _ in range(nfacets):
+            n = rng.randint(2, 4)
+            w = [rng.uniform(0.5, 1.6) for _ in range(n)]; tot = sum(w); t = 0.0; segs = []
+            for x in w:
+                t1 = t + x / tot; wr = rng.random() < 0.45
+                segs.append([t, t1, wr, False]); worn_len += (t1 - t) * wr; t = t1
+            plan.append(segs)
+        frac = worn_len / nfacets
+        alt = any(len(sg) >= 3 and all(sg[j][2] != sg[j + 1][2] for j in range(len(sg) - 1)) for sg in plan)
+        if 0.40 <= frac <= 0.50 and not alt:
+            rng2 = random.Random(seed + 1000)
+            norm = [(i, j) for i, sg in enumerate(plan) for j, g in enumerate(sg) if not g[2]]
+            for i, j in rng2.sample(norm, min(len(norm), max(3, nfacets // 2))):
+                plan[i][j][3] = True       # scale: one triangle of this normal segment is worn
+            return plan, frac, seed
+        seed += 1
+def worn_band(a, b, base, plan):
+    n = len(a)
+    for k in range(n):
+        a0, a1, b0, b1 = a[k], a[(k + 1) % n], b[k], b[(k + 1) % n]
+        def pt(p, q, t):
+            return p if t <= 0 else q if t >= 1 else bm.verts.new(p.co.lerp(q.co, t))
+        pa = {}; pb = {}
+        def A(t): return pa.setdefault(round(t, 6), pt(a0, a1, t))
+        def B(t): return pb.setdefault(round(t, 6), pt(b0, b1, t))
+        for t0, t1, wr, sc in plan[k]:
+            q = (A(t0), A(t1), B(t1), B(t0))
+            if sc:
+                f1 = bm.faces.new((q[0], q[1], q[2])); f2 = bm.faces.new((q[0], q[2], q[3]))
+                f1.material_index = mslot("edge"); f2.material_index = mslot(base)
+            else:
+                f = bm.faces.new(q); f.material_index = mslot("edge" if wr else base)
+
 rings = [ring(z, r, SIDES) for z, r, _ in P]
+lid_plan, lid_frac, lid_seed = wear_plan(SIDES, 11)
+cap_plan, cap_frac, cap_seed = wear_plan(10, 23)
 for i in range(len(P) - 1):
-    band(rings[i], rings[i + 1], P[i][2])
+    if i == 11:
+        worn_band(rings[i], rings[i + 1], "lid", lid_plan)
+    else:
+        band(rings[i], rings[i + 1], P[i][2])
 disc(rings[0], "body", up=False)   # bottom
 disc(rings[-1], "lid", up=True)    # lid top at z=132
 # cap: 10-sided short cylinder, back right of the lid, grey
 cx, cy = 14.0, 12.0
 c0 = ring(132.0, 9.0, 10, cx, cy); c1 = ring(132.5, 9.0, 10, cx, cy); c2 = ring(134.0, 7.0, 10, cx, cy)
-band(c0, c1, "cap"); band(c1, c2, "edge"); disc(c2, "cap")
+band(c0, c1, "cap"); worn_band(c1, c2, "cap", cap_plan); disc(c2, "cap")
 
 # decals: quads on two adjacent facets (left and right of the front corner at -90 deg)
 def facet_quad(angle_deg, zc, w, h, off=0.25):
@@ -165,7 +210,7 @@ report = {
     "materials": [m.name for m in mesh.materials], "decal_textures": ["T_Barrel_Sticker.png", "T_Barrel_Pictogram.png"],
     "uv_layers": [u.name for u in mesh.uv_layers],
     "uv_bounds": {"min": [min(u[0] for u in uvs), min(u[1] for u in uvs)], "max": [max(u[0] for u in uvs), max(u[1] for u in uvs)]},
-    "decal_faces": 2, "shading": "flat", "warnings": warnings,
+    "decal_faces": 2, "edge_wear": {"lid_worn_fraction": round(lid_frac, 3), "lid_seed": lid_seed, "cap_worn_fraction": round(cap_frac, 3), "cap_seed": cap_seed}, "shading": "flat", "warnings": warnings,
 }
 bpy.ops.object.select_all(action="DESELECT"); obj.select_set(True)
 bpy.context.view_layer.objects.active = obj

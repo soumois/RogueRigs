@@ -3,7 +3,7 @@
   "route": "blender",
   "script": "Tools/art/blender/barrel.py",
   "source_image": "vault/assets/barrel.png",
-  "tris_out": 256,
+  "tris_out": 322,
   "budget_tris": 600,
   "dimensions_cm": {
     "x": 90.0,
@@ -48,6 +48,12 @@
     ]
   },
   "decal_faces": 2,
+  "edge_wear": {
+    "lid_worn_fraction": 0.466,
+    "lid_seed": 30,
+    "cap_worn_fraction": 0.403,
+    "cap_seed": 30
+  },
   "shading": "flat",
   "warnings": [
     "pictogram material uses alpha blend: Unreal import must set it Masked/Translucent",
