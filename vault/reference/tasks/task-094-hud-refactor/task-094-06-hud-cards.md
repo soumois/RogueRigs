@@ -3,7 +3,7 @@ id: task-094-06-hud-cards
 description: "The level-up cards and the reroll move into their own widget bound to the upgrade offer events."
 parent: task-094-hud-refactor
 kind: task
-status: todo
+status: in-progress
 ---
 # WBP_UpgradeChoice
 

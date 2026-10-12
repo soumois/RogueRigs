@@ -3,7 +3,7 @@ id: task-094-05-hud-weapons
 description: "Weapon slots, ammo, reload, turret charges and locked slots move into their own widget, centred as a row at the screen bottom."
 parent: task-094-hud-refactor
 kind: task
-status: in-progress
+status: done
 ---
 # WBP_Weapons
 
@@ -15,11 +15,11 @@ status: in-progress
 - done_when: compiled 0 errors, saved, row centred by values read back, subtitles moved clear of it, moved logic removed, docs updated, lint clean, committed.
 - editor_state: open
 - token_ceiling: 60000
-- model: open
-- tokens: open
-- runs: open
+- model: sonnet
+- tokens: input 106, cache write 136410, cache read 4830568, output 49813
+- runs: 2
 - milestone: M2
-- result: open
+- result: WBP_Weapons (4 columns + turret line, bound to OnWeaponSlotChanged, 0.016 s timer only during reload/recharge) placed bottom centre (anchors 0.5/1, y -54); subtitles moved up (top -140); ammo update (185 calls) and turret/slot-name tick calls removed; no C++ lookup broken; not seen on screen. Commits c1521e9, e3c160b.
 
 ## Relations
 - [[task-094-hud-refactor]] — parent global task.
