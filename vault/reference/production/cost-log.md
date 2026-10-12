@@ -175,6 +175,7 @@ kind: note
 | [[task-101-03-barrel-warning]] | sonnet | 1 | 0k | 24k | 77k | 0k |
 | [[task-103-02-hud-events-only]] | sonnet | 2 | 0k | 97k | 3106k | 41k |
 | [[task-105-01-hud-insights]] | opus | 1 | 0k | 75k | 1097k | 18k |
+| [[task-101-04-barrel-mesh]] | sonnet | 3 | 0k | 69k | 355k | 6k |
 
 ## Totals
 | Scope | Input | Cache write | Cache read | Output |

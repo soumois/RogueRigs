@@ -3,7 +3,7 @@ id: task-101-04-barrel-mesh
 description: "Barrel mesh built in Blender from the owner-validated image, exported as a cleaned FBX with a report."
 parent: task-101-barrel-asset
 kind: task
-status: in-progress
+status: done
 ---
 # Barrel mesh built in Blender from the owner-validated image, exported as a cleaned FBX with a report.
 
@@ -15,11 +15,11 @@ status: in-progress
 - done_when: report within 600 triangles, 134 cm x 90 cm, pivot bottom centre, UVs on the decals, materials listed; FBX and report committed; the owner validates the mesh.
 - editor_state: any
 - token_ceiling: 40000
-- model: open
-- tokens: open
-- runs: open
+- model: sonnet
+- tokens: input 32, cache write 68593, cache read 355299, output 6130
+- runs: 3
 - milestone: M2
-- result: open
+- result: Blender mesh 322 tris, 90 x 90 x 134 cm, pivot bottom centre, 7 materials, decals for sticker and pictogram; edge wear made in geometry judged insufficient by the owner, replaced by the shared wear mask in task-101-05 (charter level 1). Commits 6ee35fd, 8f3504f, 3a6e0ca.
 
 ## Relations
 - [[task-101-barrel-asset]] — parent global task.
