@@ -38,6 +38,12 @@ Detail per feature: [[hud-refactor-audit-core]], [[hud-refactor-audit-run]]. New
 Today: four slot texts (160 x 24, alignment x 0.5, anchor bottom-left 0/1, left 76 + 170 i, top -78), bars and blocks at top -54 (112 x 10) on the same centres. The row spans x -4 to 666 from the left edge, so it sits bottom-left and slot 0's box starts 4 px off screen.
 Proposal: in WBP_Weapons a HorizontalBox of four slot columns (each a 160 wide SizeBox with a VerticalBox: name, then bar or blocks, centred), the sub-widget anchored bottom centre (0.5/1), alignment (0.5, 1), auto size, bottom edge 54 above the screen bottom (name row at about -78 as now). The subtitles (bottom centre, 900 x 80, bottom 50) would then overlap it: raise the subtitles or the row; to decide with the owner (open). The turret line (left 20, top -124 and -100) moves into the sub-widget above the row.
 
+## Final structure (task-094-09)
+- WBP_HUD: Root canvas and 7 sub-widget instances only (HealthStatus, XPStatus, Weapons, Subtitles z 0; MinimapLocator z 6; AlertObjectives z 8; UpgradeChoice z 10); no variable, function, graph node or Tick. Table in [[wbp-hud]]. Moved: health, game over and vignette to [[wbp-health-status]]; XP and LEVEL UP to [[wbp-xp-status]]; weapon row and turret line to [[wbp-weapons]] (bottom centre, bottom edge 54); cards to [[wbp-upgrade-choice]]; alert bar, icons, banner, objectives, shuttle and end screen to [[wbp-alert-objectives]]; minimap, markers and locator to [[wbp-minimap-locator]]; subtitles above the weapons row (bottom edge 140).
+- Still ticking: the reload and recharge progress timer in Weapons (only while one runs), the vignette fade timer in HealthStatus, the minimap timer in MinimapLocator. C++ still has NativeTick in URRHUDWidget (alert event list refresh, vignette warm-up, minimap tick), not a Blueprint cost.
+- Z-order: AlertObjectives lowered from 20 to 8 so the cards (10) are above the alert bar; the end screen lives inside AlertObjectives, so it is above everything except the cards, which never coexist with it (the run end closes the cards first).
+- Weapons (bottom 54) and subtitles (bottom 140) do not overlap, which closes the open point of the proposal above.
+
 ## Relations
 - [[blueprints-index]] — parent index.
 - [[hud-refactor-audit-core]] — table: health, game over, vignette, XP, weapons, turret.
