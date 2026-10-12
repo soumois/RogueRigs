@@ -173,6 +173,7 @@ kind: note
 | [[task-104-01-hud-regressions]] | sonnet | 1 | 0k | 41k | 532k | 9k |
 | [[task-103-01-hud-events-only]] | opus | 2 | 0k | 182k | 7159k | 79k |
 | [[task-101-03-barrel-warning]] | sonnet | 1 | 0k | 24k | 77k | 0k |
+| [[task-103-02-hud-events-only]] | sonnet | 2 | 0k | 97k | 3106k | 41k |
 
 ## Totals
 | Scope | Input | Cache write | Cache read | Output |

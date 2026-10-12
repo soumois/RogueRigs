@@ -1,9 +1,9 @@
 ---
 id: task-103-hud-events-only
 description: "Global task: the HUD parts that still poll every frame react to events; only continuous values keep a per-frame update."
-parent: tasks-to-do-index
+parent: tasks-done-index
 kind: task
-status: in-progress
+status: done
 ---
 # HUD per-frame polling to events: C++ events
 
@@ -13,14 +13,14 @@ status: in-progress
 - gdd_check: done by the Orchestrator when the task is planned (2026-10-12).
 - confirmed_by_owner: yes (2026-10-12)
 - milestone: M2
-- next_step: task-103-02-hud-events-only
-- result: open
+- next_step: none
+- result: Done. WBP_MinimapLocator bound to OnMinimapTextureReady / OnMinimapViewChanged / OnLocatorViewChanged through BindToHUD; always-on timer, FindHUD, texture polling and the run-flow binding removed; only the arrow pulse (looping 0.016 s timer while the arrow is visible off screen) still runs; not run in PIE. Commits cc01437, 0dddb85.
 
 ## Subtasks
 1. task-103-01-hud-events-only — cpp
 2. task-103-02-hud-events-only — bp
 
 ## Relations
-- [[tasks-to-do-index]] — parent index.
+- [[tasks-done-index]] — parent index.
 - [[task-103-01-hud-events-only]] — step 1, cpp.
 - [[task-103-02-hud-events-only]] — step 2, bp.

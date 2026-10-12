@@ -10,5 +10,4 @@ A global task moves to [[tasks-done-index]] when it is done (`vault/scripts/task
 
 ## Relations
 - [[tasks-index]] — parent index.
-- [[task-103-hud-events-only]] — The HUD parts that still poll every frame (minimap redraw and texture, locator arrow, vignette warm-up) react to events instead; only genuinely continuous values keep a per-frame update. Status in-progress.
 - [[task-101-barrel-asset]] — The explosive barrel has an owner-validated source image, then a Blender-built export-ready mesh. Status in-progress.

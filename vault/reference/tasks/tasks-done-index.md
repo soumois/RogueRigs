@@ -112,4 +112,5 @@ Archive: it exceeds the index size limits of [[_authoring]] on purpose (owner, 2
 - [[task-099-company-subtitles]] — Company voice lines are shown as one-line subtitles at the bottom centre, from a separate widget; no more stacking on the horde banner. Status done.
 - [[task-100-ore-rename-duskite]] — The first ore is renamed Duskite in data, docs and tests and keeps its existing violet look (no colour written). Status done.
 - [[task-102-company-logo]] — Four variations of one logo for the Kessler-Voss Mining Consortium exist as candidate images; the owner keeps one. Status done.
+- [[task-103-hud-events-only]] — The HUD parts that still poll every frame (minimap redraw and texture, locator arrow, vignette warm-up) react to events instead; only genuinely continuous values keep a per-frame update. Status done.
 - [[task-104-hud-regressions]] — Two Blueprint regressions of the HUD split are fixed: the damage vignette never fades and WBP_XPStatus divides by zero. Status done.

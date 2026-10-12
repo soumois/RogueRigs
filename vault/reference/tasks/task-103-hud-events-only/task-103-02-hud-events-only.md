@@ -3,7 +3,7 @@ id: task-103-02-hud-events-only
 description: "WBP_MinimapLocator reacts to the new minimap and locator events; its always-on timer and texture polling are removed."
 parent: task-103-hud-events-only
 kind: task
-status: in-progress
+status: done
 ---
 # Minimap and locator widget on events
 
@@ -15,11 +15,11 @@ status: in-progress
 - done_when: compiled 0 errors, saved, no timer or polling left in the widget except a justified continuous update, docs updated, lint clean, committed.
 - editor_state: open
 - token_ceiling: 50000
-- model: open
-- tokens: open
-- runs: open
+- model: sonnet
+- tokens: input 94, cache write 96964, cache read 3105615, output 41038
+- runs: 2
 - milestone: M2
-- result: open
+- result: WBP_MinimapLocator bound to OnMinimapTextureReady / OnMinimapViewChanged / OnLocatorViewChanged through BindToHUD; always-on timer, FindHUD, texture polling and the run-flow binding removed; only the arrow pulse (looping 0.016 s timer while the arrow is visible off screen) still runs; not run in PIE. Commits cc01437, 0dddb85.
 
 ## Relations
 - [[task-103-hud-events-only]] — parent global task.
