@@ -547,6 +547,9 @@ task-105-hud-insights  reference/tasks/task-105-hud-insights.md
 task-106-01-wear-mask-texture  reference/tasks/task-106-wear-mask-texture/task-106-01-wear-mask-texture.md
 task-106-02-scratch-mask  reference/tasks/task-106-wear-mask-texture/task-106-02-scratch-mask.md
 task-106-wear-mask-texture  reference/tasks/task-106-wear-mask-texture.md
+task-107-01-barrel-integration  reference/tasks/task-107-barrel-integration/task-107-01-barrel-integration.md
+task-107-02-barrel-integration-bp  reference/tasks/task-107-barrel-integration/task-107-02-barrel-integration-bp.md
+task-107-barrel-integration  reference/tasks/task-107-barrel-integration.md
 tasks-done-index  reference/tasks/tasks-done-index.md
 tasks-index  reference/tasks/tasks-index.md
 tasks-to-do-index  reference/tasks/tasks-to-do-index.md
