@@ -13,7 +13,7 @@ status: in-progress
 - gdd_check: done by the Orchestrator when the task is planned (2026-10-11).
 - confirmed_by_owner: yes (2026-10-11)
 - milestone: M2
-- next_step: task-101-05-barrel-wear-mask
+- next_step: task-101-06-barrel-edge-wear
 - result: open
 
 ## Subtasks
@@ -21,7 +21,8 @@ status: in-progress
 2. task-101-02-barrel-sticker — art
 3. task-101-03-barrel-warning — art
 4. task-101-04-barrel-mesh — 3d (Blender route)
-5. task-101-05-barrel-wear-mask — 3d (UVs, wear mask, lightmap)
+5. task-101-05-barrel-wear-mask — 3d (UVs, wear mask, lightmap) (done)
+6. task-101-06-barrel-edge-wear — 3d (edge wear, lid scratches)
 
 ## Relations
 - [[tasks-to-do-index]] — parent index.
@@ -30,3 +31,4 @@ status: in-progress
 - [[task-101-03-barrel-warning]] — step 3, art.
 - [[task-101-04-barrel-mesh]] — step 4, 3d.
 - [[task-101-05-barrel-wear-mask]] — step 5, 3d.
+- [[task-101-06-barrel-edge-wear]] — step 6, 3d.

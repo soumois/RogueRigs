@@ -526,6 +526,7 @@ task-101-02-barrel-sticker  reference/tasks/task-101-barrel-asset/task-101-02-ba
 task-101-03-barrel-warning  reference/tasks/task-101-barrel-asset/task-101-03-barrel-warning.md
 task-101-04-barrel-mesh  reference/tasks/task-101-barrel-asset/task-101-04-barrel-mesh.md
 task-101-05-barrel-wear-mask  reference/tasks/task-101-barrel-asset/task-101-05-barrel-wear-mask.md
+task-101-06-barrel-edge-wear  reference/tasks/task-101-barrel-asset/task-101-06-barrel-edge-wear.md
 task-101-barrel-asset  reference/tasks/task-101-barrel-asset.md
 task-102-01-company-logo  reference/tasks/task-102-company-logo/task-102-01-company-logo.md
 task-102-company-logo  reference/tasks/task-102-company-logo.md
@@ -537,6 +538,7 @@ task-104-hud-regressions  reference/tasks/task-104-hud-regressions.md
 task-105-01-hud-insights  reference/tasks/task-105-hud-insights/task-105-01-hud-insights.md
 task-105-hud-insights  reference/tasks/task-105-hud-insights.md
 task-106-01-wear-mask-texture  reference/tasks/task-106-wear-mask-texture/task-106-01-wear-mask-texture.md
+task-106-02-scratch-mask  reference/tasks/task-106-wear-mask-texture/task-106-02-scratch-mask.md
 task-106-wear-mask-texture  reference/tasks/task-106-wear-mask-texture.md
 tasks-done-index  reference/tasks/tasks-done-index.md
 tasks-index  reference/tasks/tasks-index.md

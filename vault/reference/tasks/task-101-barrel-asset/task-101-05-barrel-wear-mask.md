@@ -3,7 +3,7 @@ id: task-101-05-barrel-wear-mask
 description: "Barrel body gets UVs and the shared wear mask (level 1 charter) plus a lightmap UV channel, replacing the wear made in geometry."
 parent: task-101-barrel-asset
 kind: task
-status: in-progress
+status: done
 ---
 # Barrel wear mask and lightmap
 
@@ -15,11 +15,11 @@ status: in-progress
 - done_when: report lists UV channels UVMap and LightMap with numeric overlap and bounds checks, no overlap, tris under 600, dimensions 90 x 90 x 134 cm and pivot unchanged, M_Barrel_edge_wear removed, the mask contract written; barrel_preview.py runs headless and writes the PNG; committed by name.
 - editor_state: any
 - token_ceiling: 40000
-- model: open
-- tokens: open
-- runs: open
+- model: sonnet
+- tokens: input 38, cache write 35176, cache read 520390, output 592
+- runs: 1
 - milestone: M2
-- result: open
+- result: UV channels UVMap and LightMap (no overlap, 3 px margin), wear mask contract, geometric wear removed, barrel_preview.py; 256 tris. Rendered: random blobs, not light edge wear; owner wants light edge wear and a few scratches on the lid, handled in task-106-02 and task-101-06. Commit b185f74.
 
 ## Relations
 - [[task-101-barrel-asset]] — parent global task.

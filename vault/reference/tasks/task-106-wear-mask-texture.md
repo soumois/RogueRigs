@@ -13,12 +13,14 @@ status: in-progress
 - gdd_check: done by the Orchestrator when the task is planned (2026-10-12).
 - confirmed_by_owner: yes (2026-10-12)
 - milestone: M2
-- next_step: task-106-01-wear-mask-texture
+- next_step: task-106-02-scratch-mask
 - result: open
 
 ## Subtasks
-1. task-106-01-wear-mask-texture — 3d
+1. task-106-01-wear-mask-texture — 3d (done)
+2. task-106-02-scratch-mask — 3d
 
 ## Relations
 - [[tasks-to-do-index]] — parent index.
 - [[task-106-01-wear-mask-texture]] — step 1, 3d.
+- [[task-106-02-scratch-mask]] — step 2, 3d.
