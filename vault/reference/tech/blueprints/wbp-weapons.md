@@ -1,6 +1,6 @@
 ---
 id: wbp-weapons
-description: "WBP_Weapons, HUD panel with the four weapon slot columns (name, ammo, blocks, reload, LOCKED) and the turret line, driven by the miner weapon slot event; open for its tree and graphs."
+description: "WBP_Weapons, HUD panel: four weapon slot columns and the turret line, driven by the miner weapon slot event; open for its tree and graphs."
 parent: blueprints-index
 kind: doc
 ---
