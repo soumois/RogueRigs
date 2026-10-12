@@ -1,9 +1,9 @@
 ---
 id: task-102-company-logo
 description: "Global task: Four variations of one logo for the Kessler-Voss Mining Consortium exist as candidate images; the owner keeps one."
-parent: tasks-to-do-index
+parent: tasks-done-index
 kind: task
-status: in-progress
+status: done
 ---
 # Kessler-Voss logo proposals
 
@@ -13,12 +13,12 @@ status: in-progress
 - gdd_check: done by the Orchestrator when the task is planned (2026-10-11).
 - confirmed_by_owner: yes (2026-10-11)
 - milestone: M2
-- next_step: task-102-01-company-logo
-- result: open
+- next_step: none
+- result: Done. 4 variations of one Kessler-Voss logo generated (24 credits); owner kept variation 1 (yellow bolted plate, KV asteroid emblem, KESSLER-VOSS and MINING CONSORTIUM); only that image, its log and prompt are tracked: Art/Source/kessler-voss-logo/20261011-201828-kessler-voss-logo-1.png. Commit 6d40471.
 
 ## Subtasks
 1. task-102-01-company-logo — art
 
 ## Relations
-- [[tasks-to-do-index]] — parent index.
+- [[tasks-done-index]] — parent index.
 - [[task-102-01-company-logo]] — step 1, art.
