@@ -1,0 +1,37 @@
+{
+  "run_id": "20261011-220936-barrel",
+  "asset": "barrel",
+  "model": "gpt-image-2-image-to-image",
+  "aspect_ratio": "1:1",
+  "resolution": "1K",
+  "variants": 2,
+  "prompt_file": "Art/Source/barrel/prompts/02b-sticker-facet.txt",
+  "prompt": "Keep this exact image: same orange flat-shaded low-poly barrel with the yellow Kessler-Voss plate sticker, same 8-10 flat-sided body with visible facets, same two darker orange raised rings, same dark grey lid with one bolted round cap, same orange colors, same three-quarter top-down view, same framing and size, same plain white background, no shadow. Only change: move the sticker so that it sits entirely on one single flat facet of the barrel body, the flat facet immediately to the left of the vertical front edge, between the two rings. The sticker keeps the same yellow plate, same black border, same four rivets, same KV rock emblem and exactly the same text, KESSLER-VOSS above MINING CONSORTIUM, spelled exactly. It may be scaled down only as much as needed to fit inside that one facet. It lies flat on the facet with only the slight perspective of that facet, it is not bent, it does not cross the vertical front edge or any other edge, it does not touch or overlap an edge or a ring, and there is clear orange margin around it inside the facet. No warning sign, no other decal, no other change.",
+  "refs": [
+    "Art/Source/barrel/20261011-220258-barrel-2.png"
+  ],
+  "tasks": [
+    {
+      "task_id": "a0bb9f2a8121a8b7684dd6f5c4e5e793",
+      "state": "success",
+      "credits": 6,
+      "error": null,
+      "result_urls": [
+        "https://tempfile.aiquickdraw.com/images/chatgpt/file_00000000cd1881fdbb6c8c1c4a20aa00.png"
+      ]
+    },
+    {
+      "task_id": "d2c5e72fff0438f22789967e1795ac76",
+      "state": "success",
+      "credits": 6,
+      "error": null,
+      "result_urls": [
+        "https://tempfile.aiquickdraw.com/images/chatgpt/file_000000006e1881f98c47c124ee4d7022.png"
+      ]
+    }
+  ],
+  "files": [
+    "Art/Source/barrel/20261011-220936-barrel-1.png",
+    "Art/Source/barrel/20261011-220936-barrel-2.png"
+  ]
+}
