@@ -1,6 +1,6 @@
 ---
 id: agent-3d
-description: "3D agent: validated image to export-ready mesh, by Meshy then headless Blender cleanup, or by a Blender script alone when the subtask says so. Invoke after validation."
+description: "3D agent: validated image to export-ready mesh, via Meshy then Blender cleanup, or a Blender script alone when the subtask says so."
 parent: agents-index
 kind: spec
 status: provisional
