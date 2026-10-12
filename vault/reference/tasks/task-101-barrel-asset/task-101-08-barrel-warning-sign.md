@@ -3,7 +3,7 @@ id: task-101-08-barrel-warning-sign
 description: "The flame pictogram is replaced by an explosion warning triangle that can wrap over several facets (owner 2026-10-11)."
 parent: task-101-barrel-asset
 kind: task
-status: in-progress
+status: done
 ---
 # The flame pictogram is replaced by an explosion warning tria
 
@@ -17,9 +17,9 @@ status: in-progress
 - token_ceiling: 35000
 - model: open
 - tokens: open
-- runs: open
+- runs: 1
 - milestone: M2
-- result: open
+- result: Explosion triangle sign (own burst shape, no text), decal wrapped over two facets with one UV projection, recentred on the visible corner; 430 tris. Commits ab94f39, 7c3dbfe. Cost counted with task-101-06 (same resumed agent).
 
 ## Relations
 - [[task-101-barrel-asset]] — parent global task.

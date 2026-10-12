@@ -3,7 +3,7 @@ id: task-101-09-barrel-lid-logo
 description: "The Kessler-Voss plate sticker moves from the body to the top of the lid (owner 2026-10-11)."
 parent: task-101-barrel-asset
 kind: task
-status: todo
+status: done
 ---
 # The Kessler-Voss plate sticker moves from the body to the to
 
@@ -17,9 +17,9 @@ status: todo
 - token_ceiling: 35000
 - model: open
 - tokens: open
-- runs: open
+- runs: 1
 - milestone: M2
-- result: open
+- result: Kessler-Voss sticker moved onto the lid top. Commit c519e31. Cost counted with task-101-06 (same resumed agent).
 
 ## Relations
 - [[task-101-barrel-asset]] — parent global task.

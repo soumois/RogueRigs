@@ -530,6 +530,8 @@ task-101-06-barrel-edge-wear  reference/tasks/task-101-barrel-asset/task-101-06-
 task-101-07-barrel-edge-highlights  reference/tasks/task-101-barrel-asset/task-101-07-barrel-edge-highlights.md
 task-101-08-barrel-warning-sign  reference/tasks/task-101-barrel-asset/task-101-08-barrel-warning-sign.md
 task-101-09-barrel-lid-logo  reference/tasks/task-101-barrel-asset/task-101-09-barrel-lid-logo.md
+task-101-10-barrel-sign-double  reference/tasks/task-101-barrel-asset/task-101-10-barrel-sign-double.md
+task-101-11-barrel-logo-130  reference/tasks/task-101-barrel-asset/task-101-11-barrel-logo-130.md
 task-101-barrel-asset  reference/tasks/task-101-barrel-asset.md
 task-102-01-company-logo  reference/tasks/task-102-company-logo/task-102-01-company-logo.md
 task-102-company-logo  reference/tasks/task-102-company-logo.md

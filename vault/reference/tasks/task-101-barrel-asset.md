@@ -13,7 +13,7 @@ status: in-progress
 - gdd_check: done by the Orchestrator when the task is planned (2026-10-11).
 - confirmed_by_owner: yes (2026-10-11)
 - milestone: M2
-- next_step: task-101-08-barrel-warning-sign
+- next_step: task-101-10-barrel-sign-double
 - result: open
 
 ## Subtasks
@@ -25,7 +25,9 @@ status: in-progress
 6. task-101-06-barrel-edge-wear — 3d (edge wear, lid scratches) (done, rejected by the owner: patches)
 7. task-101-07-barrel-edge-highlights — 3d (thin edge bands, bolts, stepped cap) (done)
 8. task-101-08-barrel-warning-sign — 3d (explosion triangle replaces the flame, spans facets)
-9. task-101-09-barrel-lid-logo — 3d (logo sticker on the lid)
+9. task-101-09-barrel-lid-logo — 3d (logo sticker on the lid) (done)
+10. task-101-10-barrel-sign-double — 3d (sign twice as large)
+11. task-101-11-barrel-logo-130 — 3d (lid logo 30 percent larger)
 
 ## Relations
 - [[tasks-to-do-index]] — parent index.
@@ -38,3 +40,5 @@ status: in-progress
 - [[task-101-07-barrel-edge-highlights]] — step 7, 3d.
 - [[task-101-08-barrel-warning-sign]] — step 8, 3d.
 - [[task-101-09-barrel-lid-logo]] — step 9, 3d.
+- [[task-101-10-barrel-sign-double]] — step 10, 3d.
+- [[task-101-11-barrel-logo-130]] — step 11, 3d.
