@@ -165,6 +165,7 @@ kind: note
 | [[task-094-05-hud-weapons]] | sonnet | 2 | 0k | 136k | 4831k | 50k |
 | [[task-094-06-hud-cards]] | sonnet | 2 | 0k | 152k | 5006k | 45k |
 | [[task-094-07-hud-alerts]] | sonnet | 3 | 0k | 173k | 6364k | 54k |
+| [[task-094-08-hud-minimap]] | sonnet | 2 | 0k | 126k | 4151k | 43k |
 
 ## Totals
 | Scope | Input | Cache write | Cache read | Output |

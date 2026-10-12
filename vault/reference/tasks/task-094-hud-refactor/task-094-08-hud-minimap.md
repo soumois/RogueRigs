@@ -3,7 +3,7 @@ id: task-094-08-hud-minimap
 description: "The minimap, its markers and the locator arrow with its distance move into their own widget."
 parent: task-094-hud-refactor
 kind: task
-status: in-progress
+status: done
 ---
 # WBP_MinimapLocator
 
@@ -15,11 +15,11 @@ status: in-progress
 - done_when: compiled 0 errors, saved, WBP_HUD places the widget, moved logic removed, docs updated, lint clean, committed.
 - editor_state: open
 - token_ceiling: 60000
-- model: open
-- tokens: open
-- runs: open
+- model: sonnet
+- tokens: input 102, cache write 126003, cache read 4151484, output 43404
+- runs: 2
 - milestone: M2
-- result: open
+- result: WBP_MinimapLocator (minimap, markers, locator arrow and distance; bound to OnLocatorTargetChanged; 0.016 s timer; arrow part only while a target exists) placed full-screen z 6; WBP_HUD EventTick emptied; no C++ lookup broken; not seen or run.
 
 ## Relations
 - [[task-094-hud-refactor]] — parent global task.

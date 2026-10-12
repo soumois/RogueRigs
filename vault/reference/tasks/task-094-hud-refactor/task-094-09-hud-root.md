@@ -3,7 +3,7 @@ id: task-094-09-hud-root
 description: "WBP_HUD contains only the sub-widgets and their placement, with no logic and no tick; code initialises it only."
 parent: task-094-hud-refactor
 kind: task
-status: todo
+status: in-progress
 ---
 # WBP_HUD as the placement root
 
