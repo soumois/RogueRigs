@@ -3,7 +3,7 @@ id: task-101-04-barrel-mesh
 description: "Barrel mesh built in Blender from the owner-validated image, exported as a cleaned FBX with a report."
 parent: task-101-barrel-asset
 kind: task
-status: todo
+status: in-progress
 ---
 # Barrel mesh built in Blender from the owner-validated image, exported as a cleaned FBX with a report.
 

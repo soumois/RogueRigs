@@ -3,7 +3,7 @@ id: task-101-03-barrel-warning
 description: "Barrel with an explosive warning sign: one correction of the sticker image (owner 2026-10-11)."
 parent: task-101-barrel-asset
 kind: task
-status: in-progress
+status: done
 ---
 # Barrel with an explosive warning sign
 
@@ -15,11 +15,11 @@ status: in-progress
 - done_when: 2 PNG and their run log exist in Art/Source/barrel/; each reviewed against the A rules and readability-rules (orange means explodes; no enemy-only colours, no yellow and black stripes); only the pictogram changed; no more than 2 variants; nothing committed.
 - editor_state: any
 - token_ceiling: 25000
-- model: open
-- tokens: open
-- runs: open
+- model: sonnet
+- tokens: input 12, cache write 23863, cache read 77348, output 433
+- runs: 1
 - milestone: M2
-- result: open
+- result: Explosion pictogram added (12 credits); owner retained Art/Source/barrel/20261011-221704-barrel-2.png, copied to vault/assets/barrel.png (validated image).
 
 ## Relations
 - [[task-101-barrel-asset]] — parent global task.

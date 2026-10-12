@@ -13,7 +13,7 @@ status: in-progress
 - gdd_check: done by the Orchestrator when the task is planned (2026-10-11).
 - confirmed_by_owner: yes (2026-10-11)
 - milestone: M2
-- next_step: task-101-03-barrel-warning
+- next_step: task-101-04-barrel-mesh
 - result: open
 
 ## Subtasks
