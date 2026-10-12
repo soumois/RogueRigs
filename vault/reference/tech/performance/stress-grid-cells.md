@@ -203,6 +203,19 @@ Editor `-game`, same commands as task-071-01 (game 250 settle 30 measure 60, `rr
 - Movement 18.4 → 15.6 µs per robot: the hit capsule overlap query (one per robot move) is gone; what remains is the swept move (1.6 ms) and the transform update of the visible parts and the two capsule bodies (1.1 ms).
 - Game thread at 250: −0.4 to −0.8 ms avg, −0.6 to −1.0 ms p99 untraced, inside the run spread (≈ 0.5 ms); S0 400 within noise (render bound). Spikes unchanged (1–2 per run, the GC frame).
 
+## HUD after the refactor (task-105-01, 2026-10-11)
+Editor `-game`, HEAD 6561e13 (HUD of tasks 094 and 103: seven event-driven panels, no HUD tick, [[sys-hud]]), `rr.Stress.Run 250 30 60 1 game` with `rr.Pacing.RunLookahead 0`; one Insights run (`-Trace cpu,frame,gpu,bookmark,region -ExtraArgs -statnamedevents`, trace outside the repo) then two untraced runs, all within 10 min, owner normal profile, nothing closed, no editor running. Game thread avg / p99 / max; spikes = frames over 25 ms.
+
+| Run | Game thread | Frame avg / p99 | Alive avg | Spikes (gc / fill / xp drop) |
+|---|---|---|---|---|
+| Traced | 13.94 / 20.49 / 55.22 | 14.00 / 20.42 | 201 | 3 (1 / 0 / 1) |
+| Untraced #1 | 12.35 / 20.74 / 50.40 | 13.10 / 21.04 | 205 | 4 (1 / 1 / 1) |
+| Untraced #2 | 13.72 / 20.25 / 56.80 | 13.98 / 20.69 | 193 | 8 (1 / 3 / 0) |
+
+- Against task-093-01 after (11.6–12.1 / 17.4 untraced, 13.11 / 19.28 traced): +0.3 to +1.6 ms avg, +2.9 to +3.3 ms p99. The HUD cannot explain it: all HUD Blueprint work is 0.11 ms per frame in the trace ([[perf-trace-real-game]]). This is the PC load spread (≈ 2 ms), with no code change between the runs.
+- Run #2: 4 frames of 25–27 ms at t 1.0 s are render bound (draw 22–26 ms, game 17–25), the same signature as the task-068-01 untraced runs. The other spikes are wave fills, one GC and one 270-cube drop, as before.
+- HUD before/after: [[perf-trace-real-game]] (WBP_HUD Blueprint tick 0.40 ms → 0.11 ms for every panel Blueprint event together).
+
 ## Verdict
 - 200 uu: holds; the navigation fix would also help it (one destruction 0.25 ms here, 0.04–0.07 ms measured with the fix at the smaller sizes).
 - 100 uu: steady state and dig hold. Explosion chains break (52 ms frames) and are fixed by turning off navigation relevance on the grid components (≈ 1 h with test), back to the 200 uu level. Recommended.
@@ -228,3 +241,5 @@ Editor `-game`, same commands as task-071-01 (game 250 settle 30 measure 60, `rr
 - [[task-091-01-robot-pool]] — the task that produced the robot pool section.
 - [[task-093-01-robot-overlap-cost]] — the task that produced the passive hit capsule section.
 - [[robot-components-audit]] — robot component audit behind the passive hit capsule section.
+- [[task-105-01-hud-insights]] — the task that produced the HUD after the refactor section.
+- [[sys-hud]] — the refactored HUD measured in the task-105-01 section.
