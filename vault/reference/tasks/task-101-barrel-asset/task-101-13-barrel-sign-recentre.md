@@ -3,7 +3,7 @@ id: task-101-13-barrel-sign-recentre
 description: "The explosion sign is raised so that its burst centre sits at mid-height between the rings (owner 2026-10-11)."
 parent: task-101-barrel-asset
 kind: task
-status: todo
+status: done
 ---
 # Sign recentred in height
 
@@ -17,9 +17,9 @@ status: todo
 - token_ceiling: 25000
 - model: open
 - tokens: open
-- runs: open
+- runs: 1
 - milestone: M2
-- result: open
+- result: Burst centre at z 65.5 cm, middle of the band between the rings; 498 tris. Commit 93ec8d1. Cost counted with task-101-06 (same resumed agent).
 
 ## Relations
 - [[task-101-barrel-asset]] — parent global task.

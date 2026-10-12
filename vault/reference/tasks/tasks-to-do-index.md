@@ -10,4 +10,3 @@ A global task moves to [[tasks-done-index]] when it is done (`vault/scripts/task
 
 ## Relations
 - [[tasks-index]] — parent index.
-- [[task-101-barrel-asset]] — The explosive barrel has an owner-validated source image, then a Blender-built export-ready mesh. Status in-progress.

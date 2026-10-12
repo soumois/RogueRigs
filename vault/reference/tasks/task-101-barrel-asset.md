@@ -1,9 +1,9 @@
 ---
 id: task-101-barrel-asset
 description: "Global task: The explosive barrel has an owner-validated source image, then a Blender-built export-ready mesh."
-parent: tasks-to-do-index
+parent: tasks-done-index
 kind: task
-status: in-progress
+status: done
 ---
 # Barrel asset: image, corrections, Blender mesh
 
@@ -13,8 +13,8 @@ status: in-progress
 - gdd_check: done by the Orchestrator when the task is planned (2026-10-11).
 - confirmed_by_owner: yes (2026-10-11)
 - milestone: M2
-- next_step: task-101-12-barrel-sign-160
-- result: open
+- next_step: none
+- result: Barrel validated by the owner 2026-10-11: Blender route (no Meshy), SM_Barrel.fbx 498 tris, 90 x 90 x 134 cm (decal offset 0.27 cm), pivot bottom centre, 9 flat materials, Kessler-Voss sticker on the lid, explosion sign wrapped over facets, thin edge bands, bolts and stepped cap, UVMap and LightMap channels, mask contract in SM_Barrel.report.json. Source image vault/assets/barrel.png (historic: mesh differs). Import into Unreal not done (bp task).
 
 ## Subtasks
 1. task-101-01-barrel-asset — art (done)
@@ -32,7 +32,7 @@ status: in-progress
 13. task-101-13-barrel-sign-recentre — 3d (sign burst centred in height)
 
 ## Relations
-- [[tasks-to-do-index]] — parent index.
+- [[tasks-done-index]] — parent index.
 - [[task-101-01-barrel-asset]] — step 1, art.
 - [[task-101-02-barrel-sticker]] — step 2, art.
 - [[task-101-03-barrel-warning]] — step 3, art.

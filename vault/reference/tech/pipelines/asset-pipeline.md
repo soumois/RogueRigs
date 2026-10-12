@@ -17,7 +17,7 @@ kind: doc
 - Triangle budget: chaser, shooter, kamikaze 3000; heavy 4000; drone 1500; turret 2500.
 - Height: the collision capsule height of the entity's Blueprint, read by the 3D agent before the run.
 - Pivot: bottom centre.
-- Texture (owner 2026-10-11, level 1): flat colours per material from [[color-code]]; detail through one shared grayscale wear mask multiplied on the flat colour (UVs on the body needed); stickers and signs are textured decals. No per-asset painted base texture, no normal or roughness map. Meshy base color texture is not used.
+- Texture (owner 2026-10-11, level 1, validated on the barrel): flat colours per material from [[color-code]]; wear is a thin lighter band on some edges (geometry, flat material) plus faint scratches from one shared grayscale mask (`Art/Textures/T_WearMask.png`, UV 0, 100 cm per tile) blended toward a lighter tone, on the lid and cap only; stickers and signs are textured decals (alpha: Masked or Translucent in Unreal); a second UV channel `LightMap` without overlap. No per-asset painted base texture, no normal or roughness map. Meshy base color texture is not used. Blender scripts: `Tools/art/blender/` (barrel, warning_sign, wear_mask, barrel_preview).
 - Git: `Art/Source/` and the cleaned FBX are committed; `Art/Meshes/*/raw/` is ignored.
 
 ## References

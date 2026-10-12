@@ -3,7 +3,7 @@ id: task-101-12-barrel-sign-160
 description: "The explosion warning sign is 60 percent larger again (owner 2026-10-11)."
 parent: task-101-barrel-asset
 kind: task
-status: in-progress
+status: done
 ---
 # Sign 60 percent larger
 
@@ -17,9 +17,9 @@ status: in-progress
 - token_ceiling: 25000
 - model: open
 - tokens: open
-- runs: open
+- runs: 1
 - milestone: M2
-- result: open
+- result: Sign 1.6 times larger (83.2 cm), 36 decal faces, same centre. Commit 45d1433. Cost counted with task-101-06 (same resumed agent).
 
 ## Relations
 - [[task-101-barrel-asset]] — parent global task.
