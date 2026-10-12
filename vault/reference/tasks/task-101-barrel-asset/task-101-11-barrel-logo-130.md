@@ -3,7 +3,7 @@ id: task-101-11-barrel-logo-130
 description: "The Kessler-Voss sticker on the lid is 30 percent larger (owner 2026-10-11)."
 parent: task-101-barrel-asset
 kind: task
-status: todo
+status: done
 ---
 # The Kessler-Voss sticker on the lid is 30 percent larger (ow
 
@@ -17,9 +17,9 @@ status: todo
 - token_ceiling: 25000
 - model: open
 - tokens: open
-- runs: open
+- runs: 1
 - milestone: M2
-- result: open
+- result: Lid sticker 1.3 times larger. 446 tris, y extent 90.27 cm (decal offset). Commit 36d6a79. Cost counted with task-101-06 (same resumed agent).
 
 ## Relations
 - [[task-101-barrel-asset]] — parent global task.

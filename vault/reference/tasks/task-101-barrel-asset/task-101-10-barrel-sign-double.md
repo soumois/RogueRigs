@@ -3,7 +3,7 @@ id: task-101-10-barrel-sign-double
 description: "The explosion warning sign is twice as large (owner 2026-10-11)."
 parent: task-101-barrel-asset
 kind: task
-status: in-progress
+status: done
 ---
 # The explosion warning sign is twice as large (owner 2026-10-
 
@@ -17,9 +17,9 @@ status: in-progress
 - token_ceiling: 25000
 - model: open
 - tokens: open
-- runs: open
+- runs: 1
 - milestone: M2
-- result: open
+- result: Sign doubled (about 52 cm), decal extended over ring faces. Commit e5bbe5f. Cost counted with task-101-06 (same resumed agent).
 
 ## Relations
 - [[task-101-barrel-asset]] — parent global task.
