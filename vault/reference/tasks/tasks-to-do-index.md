@@ -10,5 +10,4 @@ A global task moves to [[tasks-done-index]] when it is done (`vault/scripts/task
 
 ## Relations
 - [[tasks-index]] — parent index.
-- [[task-107-barrel-integration]] — The validated barrel mesh replaces the grid barrel cylinder in the arena: C++ fits it to one cell, then BP_ArenaGrid uses it with its materials. Status in-progress.
 - [[task-106-weapons-ui-size]] — The weapon slots are bigger, like the DRGS reference (framed slots at the bottom centre), and the columns really have their set width. Status todo.

@@ -3,7 +3,7 @@ id: task-107-02-barrel-integration-bp
 description: "SM_Barrel and its textures are imported, its materials built, and BP_ArenaGrid uses them for barrel cells in L_ArenaM1."
 parent: task-107-barrel-integration
 kind: task
-status: in-progress
+status: done
 ---
 # Barrel import and BP_ArenaGrid
 
@@ -15,11 +15,11 @@ status: in-progress
 - done_when: assets saved under /Game/RogueRigs/Art/Barrel/; BP_ArenaGrid.BarrelMesh is SM_Barrel and BarrelMaterial the body instance, the level has no override; barrel HISM instance count unchanged and no error in the log; docs updated; lint clean; committed.
 - editor_state: open
 - token_ceiling: 40000
-- model: open
-- tokens: open
-- runs: open
+- model: sonnet
+- tokens: input 84, cache write 117203, cache read 3234836, output 708
+- runs: 3
 - milestone: M2
-- result: open
+- result: SM_Barrel and its textures imported to /Game/RogueRigs/Art/Barrel/ (9 slots in order, slot 0 body, no collision, lightmap index 1), M_BarrelPaint with scratch blend on lid and cap, 7 instances, sticker opaque, warning Masked; BP_ArenaGrid BarrelMesh = SM_Barrel and BarrelMaterial = MI_Barrel_body, level inherits; 16 barrel instances unchanged, uniform scale 0.742; no log error. Open: an unused UV channel 2 from the auto lightmap generation, two MapCheck usage-flag warnings not re-run, no in-game render seen. Commits ab45fb4, d1043f8, 179bb93.
 
 ## Relations
 - [[task-107-barrel-integration]] — parent global task.

@@ -117,3 +117,4 @@ Archive: it exceeds the index size limits of [[_authoring]] on purpose (owner, 2
 - [[task-104-hud-regressions]] — Two Blueprint regressions of the HUD split are fixed: the damage vignette never fades and WBP_XPStatus divides by zero. Status done.
 - [[task-105-hud-insights]] — Unreal Insights measures the HUD cost per frame after the refactor and compares it with the task-068-01 trace. Status done.
 - [[task-106-wear-mask-texture]] — One shared grayscale wear mask texture exists, tileable, ready to be multiplied on flat colours for edge wear, scratches and light grime. Status done.
+- [[task-107-barrel-integration]] — The validated barrel mesh replaces the grid barrel cylinder in the arena: C++ fits it to one cell, then BP_ArenaGrid uses it with its materials. Status done.
