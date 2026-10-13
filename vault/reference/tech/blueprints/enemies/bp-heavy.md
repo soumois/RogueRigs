@@ -1,6 +1,6 @@
 ---
 id: bp-heavy
-description: "BP_Heavy, Blueprint of ARRHeavy: steel-blue 2x body with hazard stripes, telegraph glow and tilt; the slam zone is drawn by the ground telegraph; open for components, events and PIE results."
+description: "BP_Heavy, Blueprint of ARRHeavy: steel-blue 2x body with hazard stripes, telegraph glow and tilt; slam zone drawn by the ground telegraph."
 parent: blueprints-enemies-index
 kind: doc
 ---
