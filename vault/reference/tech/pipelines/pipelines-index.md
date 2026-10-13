@@ -17,6 +17,7 @@ kind: note
 - [[text-content-schema]] — player-facing text JSON files, retrieval log and critic review; read before writing, validating or loading game text.
 - [[unreal-mcp]] — Epic's MCP plugin: start, connection, toolsets, limits.
 - [[build-toolchain]] — engine, compiler, plugins, regenerating project files.
+- [[tool-unreal-reimport]] — headless reimport of static meshes in place from their FBX; use after a Blender re-export.
 - [[barrel-asset]] — the barrel as built and integrated: files, slots, decals, wear, rejected approaches, Unreal side.
 - [[kie-image-workflow]] — Kie.ai image generation in practice: hosts, variables, costs, permissions, rules.
 - [[barrel-asset-history]] — task map of the barrel work, what each step superseded, Kie credits spent.

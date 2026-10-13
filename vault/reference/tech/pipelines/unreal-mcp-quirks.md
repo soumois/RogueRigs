@@ -26,6 +26,7 @@ kind: doc
 - Class defaults: `/Game/.../BP_X.Default__BP_X_C`, not the `_C` class path.
 - After editing a game mode Blueprint, compile and save it, or PIE keeps the old value.
 - An asset cannot be re-imported over itself: import under a new name and switch the reference.
+- MCP has no reimport (`StaticMeshTools.import_file` refuses an existing asset): with the editor closed, use [[tool-unreal-reimport]].
 
 ## Niagara
 - `NiagaraToolsets.NiagaraToolset_System` can create a system from a template, add or remove emitters, renderers and modules, and set module inputs.
@@ -38,3 +39,4 @@ kind: doc
 
 ## Relations
 - [[unreal-mcp]] — parent: the MCP setup and its general limits.
+- [[tool-unreal-reimport]] — headless in-place reimport that MCP lacks.

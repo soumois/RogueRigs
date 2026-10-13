@@ -28,6 +28,7 @@ Agents never open a viewport. They check by numbers. The Orchestrator renders `b
 - Unreal import flips the sign of Y in the bounds; sizes are unchanged. The importer adds an unused third UV channel (auto lightmap) unless disabled in the editor: the MCP import tool has no such option.
 - The FBX references textures by relative path; Unreal needs them imported separately.
 - Git: only the script, the FBX, the report and the textures are committed.
+- After a re-export of an FBX already in Unreal, reimport it in place with [[tool-unreal-reimport]] (editor closed).
 
 ## Relations
 - [[pipelines-index]] — parent index.
@@ -35,4 +36,5 @@ Agents never open a viewport. They check by numbers. The Orchestrator renders `b
 - [[agent-3d]] — the agent that runs this route.
 - [[barrel-asset]] — the first asset built this way.
 - [[art-style-guide]] — A1, the texture charter.
+- [[tool-unreal-reimport]] — reimport a mesh in place after a re-export.
 - [[mesh-fidelity-loop]] — how a mesh is judged against its image; the subtask lists criteria and a max number of returns.
