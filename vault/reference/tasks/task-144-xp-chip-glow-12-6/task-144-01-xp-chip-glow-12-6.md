@@ -3,7 +3,7 @@ id: task-144-01-xp-chip-glow-12-6
 description: "Set the big XP chip core glow to 12 and 6, a starting point to tune by eye."
 parent: task-144-xp-chip-glow-12-6
 kind: task
-status: todo
+status: in-progress
 ---
 # XP chip: glow 12 and 6
 

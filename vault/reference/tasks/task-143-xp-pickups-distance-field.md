@@ -1,9 +1,9 @@
 ---
 id: task-143-xp-pickups-distance-field
 description: "Global task: Turn on the mesh distance field of the XP nut and chip and test whether they light the floor."
-parent: tasks-to-do-index
+parent: tasks-done-index
 kind: task
-status: in-progress
+status: done
 ---
 # XP pickups: mesh distance field test
 
@@ -13,12 +13,12 @@ status: in-progress
 - gdd_check: done by the Orchestrator when the task is planned (2026-10-13).
 - confirmed_by_owner: yes (2026-10-13)
 - milestone: M2
-- next_step: task-143-01-xp-pickups-distance-field
-- result: open
+- next_step: none
+- result: Done. bGenerateMeshDistanceField true on SM_XPNut and SM_XPChipBig, saved; no tool rebuilds the distance field (owner presses Apply Changes); project: Lumen, Generate Mesh Distance Fields true, hardware RT allowed, Software Ray Tracing Mode GlobalTracing (per-mesh distance fields are traced only in Detail Tracing); nothing global changed.
 
 ## Subtasks
 1. task-143-01-xp-pickups-distance-field — bp
 
 ## Relations
-- [[tasks-to-do-index]] — parent index.
+- [[tasks-done-index]] — parent index.
 - [[task-143-01-xp-pickups-distance-field]] — step 1, bp.
