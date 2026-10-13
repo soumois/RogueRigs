@@ -169,6 +169,10 @@ stress-damage-numbers  reference/tech/performance/stress-damage-numbers.md
 stress-damage-numbers-recheck  reference/tech/performance/stress-damage-numbers-recheck.md
 stress-final-m1  reference/tech/performance/stress-final-m1.md
 stress-grid-cells  reference/tech/performance/stress-grid-cells.md
+stress-grid-fine-grid  reference/tech/performance/stress-grid-cells/stress-grid-fine-grid.md
+stress-grid-packaged-movement  reference/tech/performance/stress-grid-cells/stress-grid-packaged-movement.md
+stress-grid-perf-session  reference/tech/performance/stress-grid-cells/stress-grid-perf-session.md
+stress-grid-pools-hud  reference/tech/performance/stress-grid-cells/stress-grid-pools-hud.md
 stress-opt-m1  reference/tech/performance/stress-opt-m1.md
 stress-test-m1  reference/tech/performance/stress-test-m1.md
 sys-actor-pool  reference/tech/systems/sys-actor-pool.md
