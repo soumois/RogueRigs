@@ -135,3 +135,4 @@ Archive: it exceeds the index size limits of [[_authoring]] on purpose (owner, 2
 - [[task-122-xp-big-block-magenta]] — The big XP block is bright magenta-pink with a glow of the same hue instead of white. Status done.
 - [[task-123-heavy-remove-shockring]] — BP_Heavy no longer shows its ShockRing mesh: the slam zone is drawn only by the ground telegraph. Status done.
 - [[task-124-heavy-shockring-cleanup]] — The hidden ShockRing component of BP_Heavy is deleted: its test lookups are removed in C++, then the component is removed from the Blueprint. Status done.
+- [[task-125-xp-chip-images]] — Two candidate images of a data chip as the basic XP pickup, from two different prompts. Status done.

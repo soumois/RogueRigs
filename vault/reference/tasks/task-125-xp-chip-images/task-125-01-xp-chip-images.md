@@ -3,7 +3,7 @@ id: task-125-01-xp-chip-images
 description: "Two candidate images of a data chip as the basic XP pickup, from two different prompts."
 parent: task-125-xp-chip-images
 kind: task
-status: in-progress
+status: done
 ---
 # XP pickup: data chip, 2 images
 
@@ -15,11 +15,11 @@ status: in-progress
 - done_when: Style A1, A2, A6, A16 (plain light grey background, three-quarter top view); glowing cyan main colour, never magenta, red, orange, acid green or steel blue; two different prompts, one image each (2 variants in total, 2 prompt files); self-review each image against the A rules; send both images to the owner with SendUserFile; nothing goes to vault/assets/.
 - editor_state: any
 - token_ceiling: open
-- model: open
-- tokens: open
-- runs: open
+- model: sonnet
+- tokens: input 18, cache write 27178, cache read 146850, output 883
+- runs: 1
 - milestone: M2
-- result: open
+- result: Two chip images (plate, micro-chip) generated, 12 credits; owner kept B, recoloured by task-127.
 
 ## Relations
 - [[task-125-xp-chip-images]] — parent global task.
