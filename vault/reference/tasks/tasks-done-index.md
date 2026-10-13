@@ -151,3 +151,4 @@ Archive: it exceeds the index size limits of [[_authoring]] on purpose (owner, 2
 - [[task-138-xp-pickups-perf-test]] — Measure the frame-time cost of a burst of XP nuts and chips, with and without bloom and pulse, and record the results. Status done.
 - [[task-140-xp-chip-glow-violet]] — Give the big XP chip the nut glow level and the lilac-violet colour of the owner sample. Status done.
 - [[task-141-xp-pickups-lumen-test]] — Try to make the XP nut and chip emit light on the floor through Lumen: emissive light source flag and mesh cards. Status done.
+- [[task-142-xp-bloom-post-process]] — Add a PostProcessVolume with explicit bloom settings to the arena level so the halo effect can be tuned and tested. Status done.

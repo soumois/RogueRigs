@@ -3,7 +3,7 @@ id: task-142-01-xp-bloom-post-process
 description: "Add a PostProcessVolume with explicit bloom settings to the arena level so the halo effect can be tuned and tested."
 parent: task-142-xp-bloom-post-process
 kind: task
-status: in-progress
+status: done
 ---
 # Arena: post process bloom volume
 
@@ -15,11 +15,11 @@ status: in-progress
 - done_when: The volume exists with the listed overrides read back, level saved and git shows it modified, doc written, lint clean
 - editor_state: open
 - token_ceiling: open
-- model: open
-- tokens: open
-- runs: open
+- model: sonnet
+- tokens: input 78, cache write 50591, cache read 1368803, output 1089
+- runs: 1
 - milestone: M2
-- result: open
+- result: PPV_XPGlow added to L_ArenaM1 (unbound, bloom overrides only: Gaussian, intensity 1.0, threshold -1); saved through a Ctrl+S sent to the editor, which also wrote an untracked actor file of the owner (a BP_PickupXPBig instance); doc ppv-xp-glow.
 
 ## Relations
 - [[task-142-xp-bloom-post-process]] — parent global task.
