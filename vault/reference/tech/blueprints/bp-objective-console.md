@@ -1,6 +1,6 @@
 ---
 id: bp-objective-console
-description: "BP_ObjectiveConsole, Blueprint of ARRConsole: white cylinder with a teal glow that brightens with the hack progress; open for its mesh, material and event. The zone circle is drawn by the C++ ground telegraph."
+description: "BP_ObjectiveConsole, Blueprint of ARRConsole: white cylinder whose teal glow follows the hack progress; zone circle drawn by the C++ ground telegraph."
 parent: blueprints-index
 kind: doc
 ---

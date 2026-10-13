@@ -1,6 +1,6 @@
 ---
 id: bp-bonus-chest
-description: "BP_BonusChest, Blueprint of ARRBonusChest: gold grey-box chest with a glow that grows with the hack and a glow burst on reward; open for its mesh, materials and events."
+description: "BP_BonusChest, Blueprint of ARRBonusChest: gold grey-box chest whose glow follows the hack, with a glow burst on reward; open for its mesh, materials and events."
 parent: blueprints-index
 kind: doc
 ---
