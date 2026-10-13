@@ -21,6 +21,7 @@ agent-style-guide  reference/agents/agent-style-guide.md
 agent-text  reference/agents/agent-text.md
 agents-index  reference/agents/agents-index.md
 arena-grid  reference/gdd/terrain/arena-grid.md
+art-3d-lessons  reference/agents/art-3d-lessons.md
 art-audio-index  reference/gdd/art-audio/art-audio-index.md
 art-prompts  reference/gdd/art-audio/art-prompts.md
 art-prompts-arena-draft  reference/gdd/art-audio/art-prompts-arena-draft.md
@@ -39,6 +40,8 @@ assignment-5-goal-oriented-agent  reference/course/assignments/assignment-5-goal
 assignments-index  reference/course/assignments/assignments-index.md
 audio-direction  reference/gdd/art-audio/audio-direction.md
 barrel  reference/gdd/terrain/barrel.md
+barrel-asset  reference/tech/pipelines/barrel-asset.md
+blender-asset-route  reference/tech/pipelines/blender-asset-route.md
 blueprints-index  reference/tech/blueprints/blueprints-index.md
 bp-arena-grid  reference/tech/blueprints/bp-arena-grid.md
 bp-bonus-chest  reference/tech/blueprints/bp-bonus-chest.md
@@ -106,12 +109,15 @@ gdd-index  reference/gdd/gdd-index.md
 ground-telegraph  reference/gdd/art-audio/ground-telegraph.md
 handover-2026-10-06  reference/production/handover-2026-10-06.md
 handover-2026-10-09  reference/production/handover-2026-10-09.md
+handover-2026-10-12  reference/production/handover-2026-10-12.md
 heal-ore  reference/gdd/terrain/heal-ore.md
 hud-refactor-audit  reference/tech/blueprints/hud-refactor-audit.md
 hud-refactor-audit-core  reference/tech/blueprints/hud-refactor-audit-core.md
 hud-refactor-audit-run  reference/tech/blueprints/hud-refactor-audit-run.md
 hud-refactor-missing-events  reference/tech/blueprints/hud-refactor-missing-events.md
 instructor-feedback  reference/course/instructor-feedback.md
+kessler-voss-logo  reference/gdd/art-audio/kessler-voss-logo.md
+kie-image-workflow  reference/tech/pipelines/kie-image-workflow.md
 layout-generator-recipe  reference/tech/pipelines/layout-generator-recipe.md
 lesson-00-01-foundations  reference/course/lessons/lesson-00-01-foundations.md
 lesson-02-gdd-anatomy  reference/course/lessons/lesson-02-gdd-anatomy.md
@@ -132,6 +138,7 @@ objective-variants  reference/gdd/run/objective-variants.md
 orchestration-protocol  reference/agents/orchestration-protocol.md
 orchestrator-lessons  reference/agents/orchestrator-lessons.md
 orchestrator-runbook  reference/agents/orchestrator-runbook.md
+orchestrator-script-quirks  reference/agents/orchestrator-script-quirks.md
 ore-blocks  reference/gdd/terrain/ore-blocks.md
 ore-economy  reference/gdd/run/ore-economy.md
 ore-in-rock-plan  reference/production/ore-in-rock-plan.md

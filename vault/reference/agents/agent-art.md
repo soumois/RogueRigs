@@ -10,7 +10,7 @@ status: provisional
 - role: turn an asset need into candidate source images that match the style guide.
 - invoked_by: orchestrator
 - trigger: a subtask asking for a new asset image or a design correction.
-- reads: its subtask node, [[art-style-guide]], [[art-prompts]], [[color-code]], [[readability-rules]], and the entity node the subtask names.
+- reads: its subtask node, [[art-style-guide]], [[art-prompts]], [[color-code]], [[readability-rules]], [[kie-image-workflow]], and the entity node the subtask names.
 - produces: candidate images and their run log in `Art/Source/<asset>/`; prompt files in `Art/Source/<asset>/prompts/`; a prompt node, child of [[art-prompts]], when the subtask asks for it.
 - output_format: PNG through `node Tools/art/kie_image.js` (usage in the script header). Model GPT Image 2 on Kie.ai: `gpt-image-2-image-to-image` when reference images are attached (correction loop, same-style assets), `gpt-image-2-text-to-image` otherwise; aspect ratio 1:1, 16:9, 9:16, 4:3 or 3:4; resolution capped at 1K (owner 2026-10-11). Run log `<run-id>.json`: prompt verbatim, references, task ids, credits, result URLs, files. Key read from `KIE_API_KEY`.
 - definition_of_done: self-review per image against the A rules of [[art-style-guide]] finds no gap; [[agent-style-guide]] review passes; the owner validates the image and copies it to `vault/assets/`.
@@ -23,3 +23,4 @@ status: provisional
 - [[agents-index]] — parent index.
 - [[agent-3d]] — takes the validated image to 3D.
 - [[agent-style-guide]] — reviews its images with the A rules.
+- [[kie-image-workflow]] — hosts, variables, costs, permissions and rules of image generation.

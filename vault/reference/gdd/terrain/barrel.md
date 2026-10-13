@@ -19,3 +19,4 @@ status: approved
 
 ## Relations
 - [[terrain-index]] — parent index.
+- [[barrel-asset]] — the asset as built (Blender script, decals, wear) and its Unreal integration.

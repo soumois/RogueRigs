@@ -15,9 +15,9 @@ status: in-progress
 - done_when: T_WearMask.png is 1024 x 1024 grayscale, tileable (numeric edge check in the report), hard-edged patchy look (described after opening it), deterministic script; the report exists; nothing applied to an asset; committed by name.
 - editor_state: any
 - token_ceiling: 30000
-- model: open
-- tokens: open
-- runs: open
+- model: sonnet
+- tokens: input 58, cache write 70055, cache read 947252, output 17187
+- runs: 1
 - milestone: M2
 - result: open
 

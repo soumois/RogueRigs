@@ -33,3 +33,5 @@ kind: doc
 - [[art-prompts]] — verbatim source-image prompts for step 1.
 - [[agent-art]] — runs step 1.
 - [[agent-3d]] — runs steps 2 and 4.
+- [[blender-asset-route]] — the Blender route for simple props (barrel).
+- [[barrel-asset]] — the barrel as built.

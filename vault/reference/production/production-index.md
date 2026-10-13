@@ -19,3 +19,4 @@ Capstone submission: November 9, 2026. Budget: one person, 5 to 6 hours a week.
 - [[handover-2026-10-09]] — state at the end of the 2026-10-06 to 10-09 session: planned night tasks, unseen features, provisional values, tests, performance; open first when resuming.
 - [[handover-2026-10-06]] — state at the pause of 2026-10-06: next subtask, queue, pending owner decisions; open first when resuming.
 - [[cost-log]] — tokens, model and runs per subtask from task 013; open to estimate cost.
+- [[handover-2026-10-12]] — state after the barrel, logo and art charter session: delivered, open, rules; open first when resuming.

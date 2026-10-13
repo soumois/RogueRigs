@@ -40,3 +40,4 @@ kind: note
 - [[agents-index]] — parent index.
 - [[orchestrator-runbook]] — the commands.
 - [[agent-bp]] — the Blueprint agent these limits apply to.
+- [[art-3d-lessons]] — preferences and limits learned on art and 3D work.

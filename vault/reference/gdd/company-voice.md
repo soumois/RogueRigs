@@ -30,3 +30,4 @@ Registers from the owner (2026-10-09). Example slogans confirmed by the owner (2
 - [[lore]] — parent: world and factions.
 - [[dialogue-tone]] — T6, the rule that enforces these registers.
 - [[crew-characters]] — the Rigs voices it plays against.
+- [[kessler-voss-logo]] — the retained company logo.

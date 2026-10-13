@@ -16,8 +16,8 @@ status: done
 - editor_state: any
 - token_ceiling: 30000
 - model: sonnet
-- tokens: input 14, cache write 17989, cache read 100704, output 792
-- runs: 1
+- tokens: input 124, cache write 119024, cache read 3397449, output 38229
+- runs: 2
 - milestone: M2
 - result: Mask rewritten as scratch lines only: 37 lines (26 isolated, 3 clusters), 1.44 % dark, tileable (edge diffs 0.0018 and 0.0047), seed 108; commits 62db100, 81e0b80. Shared wear mask delivered; applied to the barrel in task-101-06.
 

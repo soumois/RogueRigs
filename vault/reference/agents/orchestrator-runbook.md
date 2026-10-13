@@ -46,3 +46,4 @@ See [[orchestrator-lessons]].
 - [[orchestration-protocol]] — the rules this runbook applies.
 - [[orchestrator-lessons]] — agent limits and owner preferences.
 - [[cost-log]] — filled by record-cost.js.
+- [[orchestrator-script-quirks]] — defects of the scripts used here and their workarounds.
