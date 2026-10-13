@@ -3,7 +3,7 @@ id: task-136-01-xp-pickups-stronger-glow
 description: "Strengthen the emissive and widen the pulse range of the XP nut and chip so the bloom is stronger."
 parent: task-136-xp-pickups-stronger-glow
 kind: task
-status: in-progress
+status: done
 ---
 # XP pickups: stronger glow and wider pulse
 
@@ -15,11 +15,11 @@ status: in-progress
 - done_when: Parameters read back with the new values; no new asset beyond parameter changes; doc node updated; bloom read-only report
 - editor_state: open
 - token_ceiling: open
-- model: open
-- tokens: open
-- runs: open
+- model: sonnet
+- tokens: input 38, cache write 29215, cache read 442133, output 621
+- runs: 1
 - milestone: M2
-- result: open
+- result: GlowAmount 10 (nut hole, chip core_bright) and 5 (core_dark), PulseAmount 0.4 on the three instances (parent default stays 0.15), period unchanged; no global bloom change; engine default camera bloom 0.675, threshold -1, no overrides.
 
 ## Relations
 - [[task-136-xp-pickups-stronger-glow]] — parent global task.
