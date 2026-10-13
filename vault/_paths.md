@@ -41,6 +41,7 @@ assignments-index  reference/course/assignments/assignments-index.md
 audio-direction  reference/gdd/art-audio/audio-direction.md
 barrel  reference/gdd/terrain/barrel.md
 barrel-asset  reference/tech/pipelines/barrel-asset.md
+barrel-asset-history  reference/tech/pipelines/barrel-asset-history.md
 blender-asset-route  reference/tech/pipelines/blender-asset-route.md
 blueprints-index  reference/tech/blueprints/blueprints-index.md
 bp-arena-grid  reference/tech/blueprints/bp-arena-grid.md

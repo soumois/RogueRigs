@@ -32,3 +32,6 @@ An unused third UV channel from the importer; two MapCheck usage-flag warnings o
 - [[kessler-voss-logo]] — the sticker.
 - [[bp-arena-grid]] — where the mesh is assigned.
 - [[sys-grid]] — the render transform and floor slab rules.
+- [[barrel-asset-history]] — task map, what was superseded, Kie credits spent.
+- [[art-style-guide]] — the texture charter A1 and the text rule A14.
+- [[color-code]] — barrel orange and the warning-sign exception.

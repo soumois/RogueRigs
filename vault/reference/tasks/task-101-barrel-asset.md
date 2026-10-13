@@ -14,7 +14,7 @@ status: done
 - confirmed_by_owner: yes (2026-10-11)
 - milestone: M2
 - next_step: none
-- result: Barrel validated by the owner 2026-10-11: Blender route (no Meshy), SM_Barrel.fbx 498 tris, 90 x 90 x 134 cm (decal offset 0.27 cm), pivot bottom centre, 9 flat materials, Kessler-Voss sticker on the lid, explosion sign wrapped over facets, thin edge bands, bolts and stepped cap, UVMap and LightMap channels, mask contract in SM_Barrel.report.json. Source image vault/assets/barrel.png (historic: mesh differs). Import into Unreal not done (bp task).
+- result: Barrel validated by the owner 2026-10-11: Blender route (no Meshy), SM_Barrel.fbx 498 tris, 90 x 90 x 134 cm (decal offset 0.27 cm), pivot bottom centre, 9 flat materials, Kessler-Voss sticker on the lid, explosion sign wrapped over facets, thin edge bands, bolts and stepped cap, UVMap and LightMap channels, mask contract in SM_Barrel.report.json. Source image vault/assets/barrel.png (historic: mesh differs). Import into Unreal done in task-107 and task-108; history and superseded steps in barrel-asset-history.
 
 ## Subtasks
 1. task-101-01-barrel-asset — art (done)

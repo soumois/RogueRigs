@@ -10,7 +10,7 @@ Spec of the agent: [[agent-art]]. Tool: `Tools/art/kie_image.js` (GPT Image 2).
 
 ## Use
 - `node Tools/art/kie_image.js --asset <name> --prompt-file Art/Source/<asset>/prompts/<NN>-<slug>.txt [--ref <img>]... --aspect 1:1 --variants <n>`. Output `Art/Source/<asset>/<run-id>-<n>.png` plus a run log `.json` (prompt verbatim, refs, task ids, credits, URLs).
-- At most 4 variants per run; resolution capped at 1K. About 6 credits per image (a 2-variant run is 12).
+- At most 4 variants per run; resolution capped at 1K. About 6 credits per image (a 2-variant run is 12). Totals spent on the barrel and the logo: [[barrel-asset-history]].
 - `--ref` switches to image-to-image. A correction prompt opens with "Keep this exact image: same ..." and changes ONE thing; pass the image being corrected first, then any extra reference (state in the prompt which is Image 1 and Image 2).
 - Run `--dry-run` first on a new subtask.
 
@@ -33,3 +33,5 @@ Spec of the agent: [[agent-art]]. Tool: `Tools/art/kie_image.js` (GPT Image 2).
 - [[agent-art]] — the agent that runs it.
 - [[art-prompts]] — prompt method and locked style phrases.
 - [[kessler-voss-logo]] — an asset made this way.
+- [[art-3d-lessons]] — owner preferences and agent limits, including the classifier refusals.
+- [[barrel-asset-history]] — credits spent on the barrel and the logo.

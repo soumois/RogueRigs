@@ -44,3 +44,4 @@ One node per Blueprint, template `blueprint.md`.
 - [[wbp-minimap-locator]] — WBP_MinimapLocator, minimap, markers and locator arrow with distance, a sub-widget of WBP_HUD.
 - [[hud-refactor-audit]] — audit of WBP_HUD: tick cost, per-feature tables, sub-widget plan, missing C++ events.
 - [[bp-damage-numbers]] — NS_DamageNumbers, M_DamageNumber and the digit atlas, the floating damage numbers.
+- [[barrel-asset]] — there is NO barrel Blueprint: barrels are a grid cell type drawn by BP_ArenaGrid; open this for the barrel mesh, materials and integration.

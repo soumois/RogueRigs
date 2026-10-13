@@ -21,7 +21,7 @@ Used when a 3D subtask says "Blender route" ([[agent-3d]]): no Meshy call, no cr
 - `mask_contract` in the report is the recipe for the Unreal master material: colour = lerp(paint, lighter tone, (1 - mask) x strength), mask on UV0, wrap.
 
 ## Checking without a screen
-Agents never open a viewport. They check by numbers. The Orchestrator renders `barrel_preview.py` (EEVEE, orthographic scale 200, azimuth -35, elevation 28, distance 400 cm, target z 67, one sun energy 4.0 rotated (50, 10, -60), white world 0.35, Standard) and sends the PNG to the owner with `SendUserFile`.
+Agents never open a viewport. They check by numbers. The Orchestrator renders `barrel_preview.py` (1000 x 1000 PNG, EEVEE, orthographic scale 200, azimuth -35, elevation 28, distance 400 cm, target z 67, one sun energy 4.0 rotated (50, 10, -60), white world 0.35, Standard) and sends the PNG to the owner with `SendUserFile`.
 
 ## Quirks
 - Vertex colours survive FBX export only with `colors_type="LINEAR"` (unused in the final barrel).

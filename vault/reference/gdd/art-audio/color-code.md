@@ -27,6 +27,9 @@ status: approved
 | Heavy | steel blue + yellow/black hazard stripes |
 | Normal / critical damage number | white / larger white-gold |
 
+Exception (owner 2026-10-11): the explosion warning sign on the barrel is a yellow triangle with a black border and a black burst, chosen by the owner after a reference sign; the yellow and black hazard stripes stay reserved for the heavy ([[barrel-asset]]).
+
 ## Relations
 - [[art-audio-index]] — parent index.
 - [[readability-rules]] — why these colors.
+- [[barrel-asset]] — the barrel and its yellow and black warning sign.

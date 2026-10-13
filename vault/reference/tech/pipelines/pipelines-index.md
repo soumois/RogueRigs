@@ -18,3 +18,4 @@ kind: note
 - [[build-toolchain]] — engine, compiler, plugins, regenerating project files.
 - [[barrel-asset]] — the barrel as built and integrated: files, slots, decals, wear, rejected approaches, Unreal side.
 - [[kie-image-workflow]] — Kie.ai image generation in practice: hosts, variables, costs, permissions, rules.
+- [[barrel-asset-history]] — task map of the barrel work, what each step superseded, Kie credits spent.
