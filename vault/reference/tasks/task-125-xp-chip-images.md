@@ -3,7 +3,7 @@ id: task-125-xp-chip-images
 description: "Global task: Two candidate images of a data chip as the basic XP pickup, from two different prompts."
 parent: tasks-to-do-index
 kind: task
-status: todo
+status: in-progress
 ---
 # XP pickup: data chip, 2 images
 

@@ -3,7 +3,7 @@ id: task-126-xp-nut-images
 description: "Global task: Two candidate images of a hex nut as the basic XP pickup, from two different prompts."
 parent: tasks-to-do-index
 kind: task
-status: todo
+status: in-progress
 ---
 # XP pickup: hex nut, 2 images
 
