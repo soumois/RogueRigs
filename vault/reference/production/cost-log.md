@@ -229,6 +229,7 @@ kind: note
 | [[task-144-01-xp-chip-glow-12-6]] | sonnet | 1 | 0k | 15k | 138k | 0k |
 | [[task-145-01-xp-glow-disc]] | sonnet | 1 | 0k | 34k | 182k | 0k |
 | [[task-145-02-disc-reimport]] | sonnet | 1 | 0k | 14k | 70k | 0k |
+| [[task-145-03-disc-material]] | sonnet | 1 | 0k | 56k | 1276k | 1k |
 
 ## Totals
 | Scope | Input | Cache write | Cache read | Output |

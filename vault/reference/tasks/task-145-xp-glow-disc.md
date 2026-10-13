@@ -1,9 +1,9 @@
 ---
 id: task-145-xp-glow-disc
 description: "Global task: Add a flat glowing disc under the XP nut and chip: geometry in the FBX, additive material, reimport and Blueprint slots."
-parent: tasks-to-do-index
+parent: tasks-done-index
 kind: task
-status: in-progress
+status: done
 ---
 # XP pickups: glow disc on the floor
 
@@ -13,8 +13,8 @@ status: in-progress
 - gdd_check: done by the Orchestrator when the task is planned (2026-10-13).
 - confirmed_by_owner: yes (2026-10-13)
 - milestone: M2
-- next_step: task-145-03-disc-material
-- result: open
+- next_step: none
+- result: Done. M_XPGlowDisc (unlit, additive, radial falloff) and two instances created; slot 2 of BP_PickupXP and slot 7 of BP_PickupXPBig set; values provisional (Intensity 0.5, Falloff 2); wishlist line done; no performance test (owner declined).
 
 ## Subtasks
 1. task-145-01-xp-glow-disc — 3d (disc in the FBX files)
@@ -22,7 +22,7 @@ status: in-progress
 3. task-145-03-disc-material — bp (material and Blueprint slots, editor open)
 
 ## Relations
-- [[tasks-to-do-index]] — parent index.
+- [[tasks-done-index]] — parent index.
 - [[task-145-01-xp-glow-disc]] — step 1, 3d.
 - [[task-145-02-disc-reimport]] — step 2, bp.
 - [[task-145-03-disc-material]] — step 3, bp.

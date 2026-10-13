@@ -3,7 +3,7 @@ id: task-145-03-disc-material
 description: "Create the additive radial disc material and its two instances and set the new slot on both pickup Blueprints."
 parent: task-145-xp-glow-disc
 kind: task
-status: in-progress
+status: done
 ---
 # XP glow disc: material and Blueprint slots
 
@@ -15,11 +15,11 @@ status: in-progress
 - done_when: All values read back; assets saved with save_assets (the named assets only) and modified in git; the editor was not driven by key presses or UI automation; if a save fails STOP and report; doc and wishlist updated; lint clean
 - editor_state: open
 - token_ceiling: open
-- model: open
-- tokens: open
-- runs: open
+- model: sonnet
+- tokens: input 62, cache write 55778, cache read 1275981, output 843
+- runs: 1
 - milestone: M2
-- result: open
+- result: M_XPGlowDisc (unlit, additive, radial falloff) and two instances created; slot 2 of BP_PickupXP and slot 7 of BP_PickupXPBig set; values provisional (Intensity 0.5, Falloff 2); wishlist line done; no performance test (owner declined).
 
 ## Relations
 - [[task-145-xp-glow-disc]] — parent global task.
