@@ -3,7 +3,7 @@ id: task-138-01-xp-pickups-perf-test
 description: "Add the rr.Stress.Pickups and rr.Stress.ClearPickups console commands that spawn XP nuts and chips for the cost measurement."
 parent: task-138-xp-pickups-perf-test
 kind: task
-status: in-progress
+status: done
 ---
 # XP pickups: add the stress command
 
@@ -15,11 +15,11 @@ status: in-progress
 - done_when: The project compiles (RogueRigsEditor, editor closed); rr.Stress.Pickups 100 6 followed by rr.Stress.ClearPickups works in a -game run with the counts read back in the log; sys-stress updated; lint clean; committed
 - editor_state: closed
 - token_ceiling: open
-- model: open
-- tokens: open
-- runs: open
+- model: opus
+- tokens: input 50, cache write 115342, cache read 1963895, output 10713
+- runs: 1
 - milestone: M2
-- result: open
+- result: rr.Stress.Pickups <nuts> [chips] and rr.Stress.ClearPickups added to URRStressSubsystem (pool path via RequestSpawn, outside the magnet radius); log proof 100 nuts + 6 chips held 8 s, then cleared; the frame rate fell to about 10 fps while 106 pickups were alive, to investigate in 138-02.
 
 ## Relations
 - [[task-138-xp-pickups-perf-test]] — parent global task.

@@ -3,7 +3,7 @@ id: task-138-02-xp-pickups-perf-test
 description: "Run the XP pickup cost measurements and record the results in the vault."
 parent: task-138-xp-pickups-perf-test
 kind: task
-status: todo
+status: in-progress
 ---
 # XP pickups: measure and record
 
