@@ -3,7 +3,7 @@ id: task-135-03-xp-pickups-pivot-reimport
 description: "Reimport the two centred FBX over the existing Unreal assets so the pickups no longer float, Blueprint references kept."
 parent: task-135-xp-pickups-pivot-float
 kind: task
-status: todo
+status: in-progress
 ---
 # XP pickups: reimport the centred meshes
 

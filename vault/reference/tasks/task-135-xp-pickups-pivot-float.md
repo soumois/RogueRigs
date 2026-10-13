@@ -13,7 +13,7 @@ status: in-progress
 - gdd_check: done by the Orchestrator when the task is planned (2026-10-13).
 - confirmed_by_owner: yes (2026-10-13)
 - milestone: M2
-- next_step: task-135-02-xp-pickups-pivot-export
+- next_step: task-135-03-xp-pickups-pivot-reimport
 - result: open
 
 ## Subtasks

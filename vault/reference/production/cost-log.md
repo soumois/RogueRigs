@@ -216,6 +216,7 @@ kind: note
 | [[task-133-01-xp-chip-integration]] | sonnet | 1 | 0k | 44k | 668k | 1k |
 | [[task-134-01-xp-pickups-no-shadow]] | sonnet | 1 | 0k | 23k | 212k | 1k |
 | [[task-135-01-xp-pickups-pivot-float]] | sonnet | 1 | 0k | 26k | 113k | 0k |
+| [[task-135-02-xp-pickups-pivot-export]] | sonnet | 1 | 0k | 29k | 126k | 3k |
 
 ## Totals
 | Scope | Input | Cache write | Cache read | Output |
