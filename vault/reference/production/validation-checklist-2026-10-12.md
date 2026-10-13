@@ -18,12 +18,12 @@ Everything below is built, compiled and read back, but not seen. Tick when seen;
 | Minimap, arrow (094-08, 103) | minimap follows the miner, arrow shows off screen and pulses, nothing runs when idle | texture event, pulse timer |
 | XP bar (094-04) | bar, level text, LEVEL UP flash 1 s | |
 | Pools (090 to 092, 095, 111) | reused XP cubes same size as new ones; robots appear within 20 frames; first mass kill about 60 ms hitch | pop-in at the screen edge |
-| Big XP block (110) | 8 cubes become one block, 1.8 times bigger, white with a cyan glow, same total XP | glow and trail scale |
+| Big XP block (110, 122) | 8 cubes become one block, 1.8 times bigger, magenta-pink with a glow of the same hue (white until 2026-10-13), same total XP | glow, trail and sparkle copies (NS_XPTrailBig, NS_PickupSparkleBig) |
 | Kamikaze (096) | killed by a shot: flares 0.65 s then explodes, XP only at the explosion; killed by an explosion: instant | auto-aim may waste shots on it |
 | Explosions (097) | visible 1.05 times the radius, held 0.1 s, 0.6 s in all | |
-| Barrel (114) | radius 700, 1.5 s fuse after 0 health, orange danger zone and a growing circle; a chain adds 1.5 s per barrel | about 8 ms hitch; miner takes 40 twice in a chain |
-| Capture zones (113) | console and chest: dotted gold ring while rocks remain, white-blue when capturable, solid white circle grows to the edge and shrinks when out; old diffuse ring gone | shader of `M_GroundTelegraph` never confirmed compiled: check the editor log |
-| Heavy slam (115) | orange ring at the slam radius (289 uu) and a growing circle during the 0.6 s telegraph, gone if it dies | |
+| Barrel (114, 121) | radius 700, 1.5 s fuse after 0 health, orange danger zone and a growing filled disc; a chain adds 1.5 s per barrel; blocks break nearest first over several frames (2 ms budget per frame) | miner takes 40 twice in a chain; hitch not re-measured |
+| Capture zones (113, 118, 120) | console zone 7 cells, every rock in it (ore included) marked and to destroy, hack 12 s; dotted ring; growing circle is a transparent filled disc, zone interior transparent; chest unchanged | `FillOpacity` 0.25 is a guess; shader recompiled but never seen; a block whose centre is just outside the zone stays unmarked |
+| Heavy slam (115, 118, 119) | orange ring at 289 uu and a filled disc growing during the 0.6 s telegraph, gone if it dies; no ring on a heavy that is running from far away | BP_Heavy `ShockRing` mesh is still shown in OnTelegraphStart on top of the ground circle (double signal, bp task not created) |
 | Heal (088, 089) | veins 2 x 2, 15 HP each; a heal pickup is not taken at full health and is taken later | |
 | Duskite (070, 100) | violet 2 x 2 groups at 8 % of the rock (359 deposits), mined whole in 1.5 s, 4 chunks, no start-zone protection | positions changed with the rename |
 | Robots (071, 093) | slide around rock, shotgun knockback, heavy slower, shots still hit | knockback compared only on the new path |
