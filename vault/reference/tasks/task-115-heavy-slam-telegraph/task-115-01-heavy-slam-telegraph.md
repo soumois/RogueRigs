@@ -3,7 +3,7 @@ id: task-115-01-heavy-slam-telegraph
 description: "Heavy slam ground signal: orange zone and growing circle during the telegraph, gone when the robot dies."
 parent: task-115-heavy-slam-telegraph
 kind: task
-status: in-progress
+status: done
 ---
 # Heavy slam ground signal
 
@@ -15,11 +15,11 @@ status: in-progress
 - done_when: build exits 0 with the editor closed; all RogueRigs.* tests pass headless; docs updated; lint clean; committed.
 - editor_state: closed
 - token_ceiling: 40000
-- model: open
-- tokens: open
-- runs: open
+- model: opus
+- tokens: input 58, cache write 92271, cache read 1797231, output 26427
+- runs: 1
 - milestone: M2
-- result: open
+- result: ARRHeavy GroundTelegraph (Danger, slam radius from Stats.AttackRange = 289, progress = GetTelegraphProgress, hidden at slam/recover/death/pool release); 3 tests; 258/258. Commits 809054d, 37766be.
 
 ## Relations
 - [[task-115-heavy-slam-telegraph]] — parent global task.

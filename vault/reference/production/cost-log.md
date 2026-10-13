@@ -191,6 +191,7 @@ kind: note
 | [[task-111-02-pool-prewarm]] | opus | 1 | 0k | 88k | 1644k | 24k |
 | [[task-112-01-ground-telegraph]] | opus | 1 | 0k | 92k | 2199k | 39k |
 | [[task-113-01-capture-zone-visual]] | opus | 2 | 0k | 68k | 1470k | 21k |
+| [[task-115-01-heavy-slam-telegraph]] | opus | 1 | 0k | 92k | 1797k | 26k |
 
 ## Totals
 | Scope | Input | Cache write | Cache read | Output |

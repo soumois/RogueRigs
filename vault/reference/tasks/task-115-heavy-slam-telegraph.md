@@ -1,9 +1,9 @@
 ---
 id: task-115-heavy-slam-telegraph
 description: "Global task: The heavy slam shows its danger zone and a growing circle during the telegraph, and dies with the robot."
-parent: tasks-to-do-index
+parent: tasks-done-index
 kind: task
-status: in-progress
+status: done
 ---
 # Heavy slam ground signal
 
@@ -13,12 +13,12 @@ status: in-progress
 - gdd_check: done by the Orchestrator when the task is planned (2026-10-13).
 - confirmed_by_owner: yes (2026-10-13)
 - milestone: M2
-- next_step: task-115-01-heavy-slam-telegraph
-- result: open
+- next_step: none
+- result: Done. ARRHeavy GroundTelegraph (Danger, slam radius from Stats.AttackRange = 289, progress = GetTelegraphProgress, hidden at slam/recover/death/pool release); 3 tests; 258/258. Commits 809054d, 37766be.
 
 ## Subtasks
 1. task-115-01-heavy-slam-telegraph — cpp
 
 ## Relations
-- [[tasks-to-do-index]] — parent index.
+- [[tasks-done-index]] — parent index.
 - [[task-115-01-heavy-slam-telegraph]] — step 1, cpp.
