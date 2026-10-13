@@ -18,6 +18,8 @@
 #include "Grid/RRArenaGrid.h"
 #include "HAL/IConsoleManager.h"
 #include "Objectives/RRRunFlowSubsystem.h"
+#include "Pickups/RRPickup.h"
+#include "Pool/RRActorPoolSubsystem.h"
 #include "RogueRigs.h"
 
 namespace RRSpawner
@@ -25,8 +27,21 @@ namespace RRSpawner
 	TAutoConsoleVariable<int32> CVarEnabled(TEXT("rr.Spawner.Enabled"), 1,
 		TEXT("0: enemy spawners stop spawning on their own. 1: they spawn (default)."), ECVF_Cheat);
 
+	TAutoConsoleVariable<int32> CVarPoolPrewarm(TEXT("rr.Pool.Prewarm"), 1,
+		TEXT("0: spawners do not prewarm the robot and XP cube pools at level start (the test harness sets 0). 1: they do (default)."), ECVF_Default);
+
 	/** Shallowest downward slope (Z per horizontal unit) of a frustum corner ray, so rays above the horizon still hit the floor. */
 	constexpr float MinRaySlope = 0.05f;
+
+	/** Nearest native class of Class (Class itself when native); null for null. */
+	UClass* NativeClassOf(UClass* Class)
+	{
+		while (Class && !Class->HasAnyClassFlags(CLASS_Native))
+		{
+			Class = Class->GetSuperClass();
+		}
+		return Class;
+	}
 }
 
 ARREnemySpawner::ARREnemySpawner()
@@ -59,6 +74,10 @@ void ARREnemySpawner::EndPlay(const EEndPlayReason::Type EndPlayReason)
 void ARREnemySpawner::Tick(float DeltaSeconds)
 {
 	Super::Tick(DeltaSeconds);
+	if (!bPoolPrewarmQueued && bPrewarmPools && RRSpawner::CVarPoolPrewarm.GetValueOnGameThread() != 0 && ++PrewarmTicks > PrewarmStartDelayFrames)
+	{
+		QueuePoolPrewarm();
+	}
 	RecordHeadingSample();
 	RecycleFarEnemies(DeltaSeconds);
 	if (!IsSpawningEnabled())
@@ -768,6 +787,166 @@ TSubclassOf<ARREnemy> ARREnemySpawner::ResolveRobotClass(TSubclassOf<ARREnemy> W
 		return EnemyClass;
 	}
 	return Wanted;
+}
+
+void ARREnemySpawner::GetLevelRobotClasses(TArray<TSubclassOf<ARREnemy>>& OutClasses) const
+{
+	auto AddResolved = [this, &OutClasses](TSubclassOf<ARREnemy> Wanted)
+	{
+		if (const TSubclassOf<ARREnemy> Resolved = ResolveRobotClass(Wanted))
+		{
+			OutClasses.AddUnique(Resolved);
+		}
+	};
+	auto AddWeightedMix = [this, &OutClasses]()
+	{
+		bool bAnyEntry = false;
+		for (const FRRWeightedEnemyClass& Entry : WeightedEnemyClasses)
+		{
+			if (Entry.EnemyClass && Entry.Weight > 0.f)
+			{
+				OutClasses.AddUnique(Entry.EnemyClass);
+				bAnyEntry = true;
+			}
+		}
+		if (!bAnyEntry && EnemyClass)
+		{
+			OutClasses.AddUnique(EnemyClass);
+		}
+	};
+	auto AddMembers = [&AddResolved](const TArray<FRRDirectorPackMember>& Members, bool& bOutShooter)
+	{
+		for (const FRRDirectorPackMember& Member : Members)
+		{
+			if (Member.RobotClass && FMath::Max(Member.CountMin, Member.CountMax) > 0)
+			{
+				AddResolved(Member.RobotClass);
+				bOutShooter |= Member.RobotClass->IsChildOf(ARRShooter::StaticClass());
+			}
+		}
+	};
+
+	if (!DirectorConfig.bEnabled)
+	{
+		AddWeightedMix();
+		return;
+	}
+	bool bPackShooter = false;
+	bool bUnusedShooter = false;
+	for (const FRRDirectorPhase& Phase : DirectorConfig.Phases)
+	{
+		if (Phase.SingleInterval > 0.f)
+		{
+			if (Phase.SingleClass)
+			{
+				AddResolved(Phase.SingleClass);
+			}
+			else
+			{
+				AddWeightedMix();
+			}
+		}
+		for (const FRRDirectorPackWeight& PackWeight : Phase.PackWeights)
+		{
+			if (PackWeight.Weight <= 0.f)
+			{
+				continue;
+			}
+			for (const FRRDirectorPackType& PackType : DirectorConfig.PackTypes)
+			{
+				if (PackType.Name == PackWeight.PackType)
+				{
+					AddMembers(PackType.Members, bPackShooter);
+				}
+			}
+		}
+	}
+	TArray<const FRRDirectorHorde*> Hordes;
+	for (const FRRDirectorHorde& Horde : DirectorConfig.Hordes)
+	{
+		Hordes.Add(&Horde);
+	}
+	if (DirectorConfig.Overtime.bEnabled)
+	{
+		Hordes.Add(&DirectorConfig.Overtime.Horde);
+	}
+	for (const FRRDirectorHorde* Horde : Hordes)
+	{
+		AddMembers(Horde->Members, bUnusedShooter);
+		if (Horde->FillClass)
+		{
+			AddResolved(Horde->FillClass);
+		}
+	}
+	if (bPackShooter)
+	{
+		AddResolved(DirectorConfig.ShooterCapReplacement ? DirectorConfig.ShooterCapReplacement : TSubclassOf<ARREnemy>(ARRChaser::StaticClass()));
+	}
+}
+
+void ARREnemySpawner::BuildPoolPrewarmOrders(TArray<FRRPoolPrewarmOrder>& OutOrders) const
+{
+	TArray<TSubclassOf<ARREnemy>> RobotClasses;
+	GetLevelRobotClasses(RobotClasses);
+	TArray<TSubclassOf<AActor>> XPClasses;
+	for (const TSubclassOf<ARREnemy>& RobotClass : RobotClasses)
+	{
+		const bool bChaser = RRSpawner::NativeClassOf(RobotClass.Get()) == ARRChaser::StaticClass();
+		int32 Count = bChaser ? ChaserPrewarmCount : OtherRobotPrewarmCount;
+		for (const FRRWeightedEnemyClass& Entry : WeightedEnemyClasses)
+		{
+			if (Entry.EnemyClass == RobotClass && Entry.MaxAlive > 0)
+			{
+				Count = FMath::Min(Count, Entry.MaxAlive);
+				break;
+			}
+		}
+		if (Count > 0)
+		{
+			OutOrders.Add({ RobotClass.Get(), Count, FMath::Max(bChaser ? ChaserPrewarmMaxFrames : OtherRobotPrewarmMaxFrames, 1) });
+		}
+		if (const ARREnemy* Defaults = RobotClass->GetDefaultObject<ARREnemy>(); Defaults && Defaults->GetXPPickupClass())
+		{
+			XPClasses.AddUnique(Defaults->GetXPPickupClass().Get());
+		}
+	}
+	if (XPCubePrewarmCount > 0)
+	{
+		for (const TSubclassOf<AActor>& XPClass : XPClasses)
+		{
+			OutOrders.Add({ XPClass, XPCubePrewarmCount, FMath::Max(XPCubePrewarmMaxFrames, 1) });
+		}
+	}
+}
+
+int32 ARREnemySpawner::GetPoolPrewarmCount(TSubclassOf<AActor> Class) const
+{
+	TArray<FRRPoolPrewarmOrder> Orders;
+	BuildPoolPrewarmOrders(Orders);
+	int32 Count = 0;
+	for (const FRRPoolPrewarmOrder& Order : Orders)
+	{
+		Count += Order.Class == Class ? Order.Count : 0;
+	}
+	return Count;
+}
+
+bool ARREnemySpawner::QueuePoolPrewarm()
+{
+	URRActorPoolSubsystem* Pool = GetWorld() ? GetWorld()->GetSubsystem<URRActorPoolSubsystem>() : nullptr;
+	if (bPoolPrewarmQueued || !Pool)
+	{
+		return false;
+	}
+	bPoolPrewarmQueued = true;
+	TArray<FRRPoolPrewarmOrder> Orders;
+	BuildPoolPrewarmOrders(Orders);
+	for (const FRRPoolPrewarmOrder& Order : Orders)
+	{
+		Pool->Prewarm(Order.Class, Order.Count, Order.MaxFrames);
+		UE_LOG(LogRogueRigs, Verbose, TEXT("Spawner %s: prewarm %d x %s over %d frames"), *GetName(), Order.Count, *GetNameSafe(Order.Class.Get()), Order.MaxFrames);
+	}
+	return true;
 }
 
 int32 ARREnemySpawner::GetClassRoom(TSubclassOf<ARREnemy> SpawnClass) const

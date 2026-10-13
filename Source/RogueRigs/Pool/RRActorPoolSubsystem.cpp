@@ -97,13 +97,19 @@ void URRActorPoolSubsystem::Prewarm(TSubclassOf<AActor> Class, int32 Count, int3
 	{
 		return;
 	}
+	// Staggered deadlines (task-111-01): creation Index is due by tick ceil((Index + 1) * MaxFrames / Count), so the batch keeps
+	// its own rate of ceil(Count / MaxFrames) per tick even when other batches with the same MaxFrames are queued alongside
+	// (earliest deadline first interleaves them instead of finishing one class before the next).
+	const int32 Frames = FMath::Max(MaxFrames, 1);
 	for (int32 Index = 0; Index < Count; ++Index)
 	{
 		FPendingRequest& Request = Pending.AddDefaulted_GetRef();
 		Request.Id = ++LastRequestId;
 		Request.Class = ActorClass;
 		Request.bPrewarm = true;
-		Request.FramesLeft = FMath::Max(MaxFrames, 1);
+		const double ExactDeadline = static_cast<double>(Index + 1) * Frames / Count;
+		Request.FramesLeft = FMath::Clamp(FMath::CeilToInt32(ExactDeadline - UE_KINDA_SMALL_NUMBER), 1, Frames);
+		Request.DeadlineOffset = static_cast<float>(FMath::Min(ExactDeadline - Request.FramesLeft, 0.0));
 		Request.QueuedTick = TickCount;
 	}
 }
@@ -479,24 +485,44 @@ void URRActorPoolSubsystem::Tick(float DeltaTime)
 	{
 		const bool bNewA = A.QueuedTick >= ServedTick;
 		const bool bNewB = B.QueuedTick >= ServedTick;
-		return bNewA != bNewB ? bNewB : A.FramesLeft < B.FramesLeft;
+		if (bNewA != bNewB)
+		{
+			return bNewB;
+		}
+		// Same tick deadline: the earlier exact prewarm deadline first, so concurrent prewarm batches interleave.
+		return A.FramesLeft != B.FramesLeft ? A.FramesLeft < B.FramesLeft : A.DeadlineOffset < B.DeadlineOffset;
 	});
+	// Prewarm creations run just in time, on the tick of their staggered deadline (task-111-01): a prewarm not due yet neither
+	// raises the budget nor takes a slot, so Prewarm(Class, 5, 60) creates one actor every 12 ticks.
+	auto IsWaitingPrewarm = [](const FPendingRequest& Request) { return Request.bPrewarm && Request.FramesLeft > 1; };
 	int32 Budget = 0;
+	int32 Due = 0;
 	for (int32 Index = 0; Index < Pending.Num() && Pending[Index].QueuedTick < ServedTick; ++Index)
 	{
-		const int32 Due = Index + 1;
+		if (IsWaitingPrewarm(Pending[Index]))
+		{
+			continue;
+		}
+		++Due;
 		const int32 Window = FMath::Max(Pending[Index].FramesLeft, 1);
 		Budget = FMath::Max(Budget, FMath::DivideAndRoundUp(Due, Window));
 	}
-	for (int32 Served = 0; Served < Budget && Pending.Num() > 0; ++Served)
+	for (int32 Index = 0, Served = 0; Served < Budget && Index < Pending.Num();)
 	{
-		if (Pending[0].QueuedTick >= ServedTick)
+		if (Pending[Index].QueuedTick >= ServedTick)
 		{
 			break; // queued by a callback of this tick: next tick
 		}
-		FPendingRequest Request = MoveTemp(Pending[0]);
-		Pending.RemoveAt(0);
+		if (IsWaitingPrewarm(Pending[Index]))
+		{
+			++Index;
+			continue;
+		}
+		FPendingRequest Request = MoveTemp(Pending[Index]);
+		Pending.RemoveAt(Index);
 		ServeRequest(Request, true);
+		++Served;
+		Index = 0; // a callback may have cancelled an earlier request: rescan (waiting prewarms are skipped again)
 	}
 
 	// Age the requests that went through this tick.

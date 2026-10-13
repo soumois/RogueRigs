@@ -155,6 +155,9 @@ public:
 	 */
 	bool RelocateTo(const FVector& Location);
 
+	/** XP pickup class dropped on death (the spawner prewarms it from the class defaults, task-111-01). */
+	TSubclassOf<ARRPickup> GetXPPickupClass() const { return XPPickupClass; }
+
 protected:
 	/**
 	 * Per-life reset of a robot reused from the actor pool (called by OnPoolAcquired from the second life on). Base: every

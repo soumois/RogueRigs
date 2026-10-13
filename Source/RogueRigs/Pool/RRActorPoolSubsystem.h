@@ -127,7 +127,10 @@ public:
 
 	/**
 	 * Queues Count creations of idle actors of Class within MaxFrames ticks (parked at once, OnPoolReleased called; no
-	 * callbacks). Default pools are empty: prewarm only where a caller asks for it.
+	 * callbacks). Deadlines are staggered (creation i due on tick ceil((i + 1) * MaxFrames / Count)) and each prewarm creation
+	 * runs on its deadline tick, not earlier: the batch spans MaxFrames ticks at most ceil(Count / MaxFrames) per tick (5 over
+	 * 60 = one every 12 ticks), also when several batches run together (task-111-01). Default pools are empty:
+	 * prewarm only where a caller asks for it (ARREnemySpawner at level start).
 	 */
 	void Prewarm(TSubclassOf<AActor> Class, int32 Count, int32 MaxFrames);
 
@@ -192,6 +195,11 @@ protected:
 		bool bPrewarm = false;
 		/** Ticks left before the deadline (1 = must be served in the next tick). */
 		int32 FramesLeft = 1;
+		/**
+		 * Exact deadline minus FramesLeft, in (-1, 0]: 0 for Acquire, the fraction of a staggered prewarm deadline otherwise
+		 * (tie-break between requests due the same tick, task-111-01).
+		 */
+		float DeadlineOffset = 0.f;
 		/** Ticks this request has been through. */
 		int32 FramesWaited = 0;
 		/** TickCount when queued (requests queued during a tick are not aged by it). */

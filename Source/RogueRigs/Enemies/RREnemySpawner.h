@@ -122,6 +122,19 @@ struct FRRWeightedEnemyClass
 	int32 MaxAlive = 0;
 };
 
+/** One pool prewarm order of the spawner (task-111-01): Count idle actors of Class created within MaxFrames frames. */
+struct FRRPoolPrewarmOrder
+{
+	/** Pooled class (a robot class of the level or the XP cube class its robots drop). */
+	TSubclassOf<AActor> Class;
+
+	/** Idle actors to create (0 never ordered). */
+	int32 Count = 0;
+
+	/** Frames over which the pool spreads the creations (ceil(Count / MaxFrames) per frame). */
+	int32 MaxFrames = 1;
+};
+
 /**
  * Placed actor that keeps robots coming from outside the screen (sys-spawner).
  * Wave director (DirectorConfig.bEnabled, default): FRRWaveDirector schedules phases of lone robots and waves of packs of one
@@ -240,6 +253,37 @@ public:
 
 	/** Cancels every pending pool request of this spawner (their slots free at once). */
 	void CancelPendingSpawns();
+
+	/**
+	 * Robot classes part of this level (task-111-01), resolved like spawned robots (ResolveRobotClass). Director on: every class the
+	 * director data can spawn: phase SingleClass (none with SingleInterval > 0 = the weighted mix below), members with CountMax > 0
+	 * of pack types weighted > 0 by a phase with waves, timed horde members and FillClass, the overtime horde when overtime is on,
+	 * and ShooterCapReplacement (none = ARRChaser) when a shooter is in a drawn pack. Director off (or the weighted mix): the
+	 * WeightedEnemyClasses entries with a class and a weight > 0, else EnemyClass. An entry weight of 0 does not remove a class the
+	 * director spawns (BP_ShieldChaser is weight 0, director only). A class whose entry MaxAlive cap is > 0 stays in (0 = no cap).
+	 */
+	void GetLevelRobotClasses(TArray<TSubclassOf<ARREnemy>>& OutClasses) const;
+
+	/**
+	 * Prewarm orders at level start (task-111-01): each level robot class (GetLevelRobotClasses): ChaserPrewarmCount over
+	 * ChaserPrewarmMaxFrames when its nearest native class is ARRChaser, else OtherRobotPrewarmCount over OtherRobotPrewarmMaxFrames,
+	 * clamped to its WeightedEnemyClasses MaxAlive cap when > 0; then each distinct XPPickupClass of those robots (class defaults):
+	 * XPCubePrewarmCount over XPCubePrewarmMaxFrames. Classes absent from the level get no order; zero counts are left out.
+	 */
+	void BuildPoolPrewarmOrders(TArray<FRRPoolPrewarmOrder>& OutOrders) const;
+
+	/** Idle actors of Class that BuildPoolPrewarmOrders orders (0 when Class is not part of the level). */
+	int32 GetPoolPrewarmCount(TSubclassOf<AActor> Class) const;
+
+	/**
+	 * Sends BuildPoolPrewarmOrders to the actor pool (URRActorPoolSubsystem::Prewarm) once per play; later calls do nothing. Tick
+	 * calls it after PrewarmStartDelayFrames ticks when bPrewarmPools and rr.Pool.Prewarm are on. False without a pool or when
+	 * already queued.
+	 */
+	bool QueuePoolPrewarm();
+
+	/** True once QueuePoolPrewarm sent its orders. */
+	bool HasQueuedPoolPrewarm() const { return bPoolPrewarmQueued; }
 
 	/** True when the spawner runs on its own: bEnabled and rr.Spawner.Enabled != 0. */
 	UFUNCTION(BlueprintPure, Category = "Spawner")
@@ -683,6 +727,50 @@ protected:
 	 */
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Spawner|Pool", meta = (ClampMin = 0))
 	int32 SpawnMaxFrames = 20;
+
+	/**
+	 * True: the robot and XP cube pools are prewarmed at level start (task-111-01, owner 2026-10-12). Prewarmed actors are pooled
+	 * idle: not alive, not pending, outside every cap; the first spawns and drops reuse them. Also gated by rr.Pool.Prewarm.
+	 */
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Spawner|Pool")
+	bool bPrewarmPools = true;
+
+	/**
+	 * Spawner ticks to let pass before the prewarm is queued: the grid is built in its BeginPlay (loading frame); 1 = queued on the
+	 * second tick, so no creation lands in the loading frame nor in the first gameplay frame.
+	 */
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Spawner|Pool", meta = (ClampMin = 0))
+	int32 PrewarmStartDelayFrames = 1;
+
+	/** Idle chasers (nearest native class ARRChaser) prewarmed when the class is part of the level (owner: 30). */
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Spawner|Pool", meta = (ClampMin = 0))
+	int32 ChaserPrewarmCount = 30;
+
+	/** Frames over which the chaser prewarm is spread (owner: 20). */
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Spawner|Pool", meta = (ClampMin = 1))
+	int32 ChaserPrewarmMaxFrames = 20;
+
+	/** Idle robots prewarmed per other class of the level (shield chaser, shooter, kamikaze, heavy), at most its MaxAlive cap (owner: 5). */
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Spawner|Pool", meta = (ClampMin = 0))
+	int32 OtherRobotPrewarmCount = 5;
+
+	/** Frames over which each other robot prewarm is spread (owner: 60). */
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Spawner|Pool", meta = (ClampMin = 1))
+	int32 OtherRobotPrewarmMaxFrames = 60;
+
+	/** Idle XP cubes prewarmed per XPPickupClass dropped by the level robots (owner: 30). */
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Spawner|Pool", meta = (ClampMin = 0))
+	int32 XPCubePrewarmCount = 30;
+
+	/** Frames over which the XP cube prewarm is spread (owner: 20). */
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Spawner|Pool", meta = (ClampMin = 1))
+	int32 XPCubePrewarmMaxFrames = 20;
+
+	/** Spawner ticks counted toward PrewarmStartDelayFrames. */
+	int32 PrewarmTicks = 0;
+
+	/** True once QueuePoolPrewarm sent its orders. */
+	bool bPoolPrewarmQueued = false;
 
 	/** Robots spawned and still alive (pruned on query). */
 	TArray<TWeakObjectPtr<ARREnemy>> AliveEnemies;

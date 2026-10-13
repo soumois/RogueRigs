@@ -16,6 +16,7 @@
 #include "GAS/RRHealthAttributeSet.h"
 #include "GameFramework/CharacterMovementComponent.h"
 #include "GameFramework/WorldSettings.h"
+#include "HAL/IConsoleManager.h"
 #include "Grid/RRArenaGrid.h"
 #include "Tests/RRTestAccess.h"
 #include "Player/RRMiner.h"
@@ -58,6 +59,13 @@ namespace RRTestHarness
 		/** Creates, initializes and begins play on a game world named Name. */
 		explicit FTestWorld(const TCHAR* Name = TEXT("RRTestWorld"))
 		{
+			// Spawners in test worlds do not prewarm the pools on their own (pool counters stay exact); prewarm tests call
+			// ARREnemySpawner::QueuePoolPrewarm or set rr.Pool.Prewarm back to 1 (task-111-01).
+			if (IConsoleVariable* Prewarm = IConsoleManager::Get().FindConsoleVariable(TEXT("rr.Pool.Prewarm")))
+			{
+				PreviousPoolPrewarm = Prewarm->GetInt();
+				Prewarm->Set(0, ECVF_SetByCode);
+			}
 			World = UWorld::CreateWorld(EWorldType::Game, /*bInformEngineOfWorld*/ false, Name);
 			FWorldContext& Context = GEngine->CreateNewWorldContext(EWorldType::Game);
 			Context.SetCurrentWorld(World);
@@ -73,6 +81,10 @@ namespace RRTestHarness
 			World->EndPlay(EEndPlayReason::Quit);
 			World->DestroyWorld(/*bInformEngineOfWorld*/ false);
 			GEngine->DestroyWorldContext(World);
+			if (IConsoleVariable* Prewarm = IConsoleManager::Get().FindConsoleVariable(TEXT("rr.Pool.Prewarm")); Prewarm && PreviousPoolPrewarm != INDEX_NONE)
+			{
+				Prewarm->Set(PreviousPoolPrewarm, ECVF_SetByCode);
+			}
 		}
 
 		/** The world. */
@@ -100,6 +112,9 @@ namespace RRTestHarness
 	protected:
 		/** The transient world. */
 		UWorld* World = nullptr;
+
+		/** rr.Pool.Prewarm before this world (restored on destruction); INDEX_NONE when the variable was not found. */
+		int32 PreviousPoolPrewarm = INDEX_NONE;
 	};
 
 	/** Loads a Blueprint class, failing the test when it is missing. */
