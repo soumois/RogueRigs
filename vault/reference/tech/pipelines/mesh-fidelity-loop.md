@@ -1,6 +1,6 @@
 ---
 id: mesh-fidelity-loop
-description: "Validation loop for Blender-route meshes built from a source image: criteria list in the subtask, comparison render, max returns, report fields. Open before a 3D subtask."
+description: "Validation loop for Blender-route meshes built from a source image: criteria in the subtask, comparison render, max returns, report fields. Open before a 3D subtask."
 parent: pipelines-index
 kind: doc
 ---
