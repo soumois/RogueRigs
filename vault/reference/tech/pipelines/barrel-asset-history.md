@@ -1,6 +1,6 @@
 ---
 id: barrel-asset-history
-description: "Task map of the barrel work (tasks 101 to 108), what later steps superseded, Kie credits spent. Open when a task node disagrees with the asset."
+description: "Task map of the barrel work (tasks 101 to 108), what later steps superseded, Kie credits spent. Open if a task node disagrees with the asset."
 parent: pipelines-index
 kind: note
 ---
