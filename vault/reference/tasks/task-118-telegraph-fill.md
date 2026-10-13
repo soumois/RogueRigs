@@ -3,7 +3,7 @@ id: task-118-telegraph-fill
 description: "Global task: The ground telegraph draws the growing circle as a transparent filled disc (inside of the zone transparent) for console, chest, barrel and heavy."
 parent: tasks-to-do-index
 kind: task
-status: todo
+status: in-progress
 ---
 # Ground telegraph fill
 

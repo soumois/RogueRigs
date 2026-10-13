@@ -3,7 +3,7 @@ id: task-121-01-barrel-explosion-spread
 description: "The destruction of the blocks of a barrel explosion (radius 700 uu) is spread over several frames, about 2 ms of game-thread work per frame."
 parent: task-121-barrel-explosion-spread
 kind: task
-status: in-progress
+status: done
 ---
 # Spread barrel explosion
 
@@ -15,11 +15,11 @@ status: in-progress
 - done_when: build exits 0 with the editor closed; RogueRigs.Explosions.*, Barrel.*, BarrelFuse.* pass headless (expectations updated only where the spread changes timing); one test shows the work is split over frames; lint clean
 - editor_state: editor closed (C++ build)
 - token_ceiling: 60 turns, commit after each group
-- model: open
-- tokens: open
-- runs: open
+- model: opus
+- tokens: input 84, cache write 157207, cache read 4541378, output 37763
+- runs: 1
 - milestone: M2
-- result: explosions call grid `QueueDestroyCellsInRadius`: barrels at once (chain timing kept), other blocks nearest first under `CellDestructionBudgetMs` 2 ms per frame (at least one per frame), dropped on rebuild and `EndPlay`; damage, FX, `OnExplosion` unchanged in the explosion frame. Build 0; Explosions.*, Barrel.*, BarrelFuse.* (BlocksInRadius and Radius700 wait for the queue), new Explosions.BlocksSpreadOverFrames (9 blocks over 9 frames), Ore.Placement, Integration.FineConsoleShuttlePlacement: 16/16 pass headless. No timing measured.
+- result: Block destruction queued, nearest first, budget CellDestructionBudgetMs 2 ms per frame; barrels fuse at once; 16 tests pass incl Ore.Placement and FineConsoleShuttlePlacement; commits 4fdc0b0 ac20c4e
 
 ## Relations
 - [[task-121-barrel-explosion-spread]] — parent global task.

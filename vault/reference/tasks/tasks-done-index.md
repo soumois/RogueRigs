@@ -130,3 +130,4 @@ Archive: it exceeds the index size limits of [[_authoring]] on purpose (owner, 2
 - [[task-117-barrel-on-floor]] — Barrels stand on the floor and keep the floor slab under them: the barrel is no longer sunk into a floorless cell. Status done.
 - [[task-119-heavy-telegraph-far-bug]] — A heavy robot shows its slam zone only during its telegraph, never while it runs toward the miner from far away. Status done.
 - [[task-120-console-rules]] — The console hack zone radius is 7 cells, every rock in the zone (ore included) must be destroyed before hacking, and the hack lasts 12 s. Status done.
+- [[task-121-barrel-explosion-spread]] — The destruction of the blocks of a barrel explosion (radius 700 uu) is spread over several frames, about 2 ms of game-thread work per frame. Status done.
