@@ -3,7 +3,7 @@ id: task-124-02-remove-shockring-component
 description: "Delete the hidden ShockRing component from BP_Heavy after the C++ test no longer looks it up."
 parent: task-124-heavy-shockring-cleanup
 kind: task
-status: in-progress
+status: done
 ---
 # Remove the ShockRing component from BP_Heavy
 
@@ -15,11 +15,11 @@ status: in-progress
 - done_when: component list read back without ShockRing; compile and save succeed; bp-heavy doc matches; lint clean
 - editor_state: editor open (Unreal MCP); no screenshots by the agent
 - token_ceiling: 40 turns, commit after each group
-- model: open
-- tokens: open
-- runs: open
+- model: sonnet
+- tokens: input 36, cache write 34807, cache read 391936, output 7302
+- runs: 1
 - milestone: M2
-- result: ShockRing component deleted from BP_Heavy; no node or variable referenced it; compiled and saved; bp-heavy and sys-enemies-heavy updated.
+- result: ShockRing component removed from BP_Heavy, compiled and saved, read back; commit 36483d2
 
 ## Relations
 - [[task-124-heavy-shockring-cleanup]] — parent global task.

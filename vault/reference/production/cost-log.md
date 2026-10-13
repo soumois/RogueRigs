@@ -204,6 +204,7 @@ kind: note
 | [[task-122-01-xp-big-block-magenta]] | sonnet | 1 | 0k | 56k | 1039k | 16k |
 | [[task-123-01-heavy-remove-shockring]] | sonnet | 1 | 0k | 46k | 738k | 12k |
 | [[task-124-01-heavy-shockring-cleanup]] | opus | 1 | 0k | 43k | 504k | 10k |
+| [[task-124-02-remove-shockring-component]] | sonnet | 1 | 0k | 35k | 392k | 7k |
 
 ## Totals
 | Scope | Input | Cache write | Cache read | Output |
