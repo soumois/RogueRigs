@@ -13,3 +13,4 @@ A global task moves to [[tasks-done-index]] when it is done (`vault/scripts/task
 - [[task-124-heavy-shockring-cleanup]] — The hidden ShockRing component of BP_Heavy is deleted: its test lookups are removed in C++, then the component is removed from the Blueprint. Status in-progress.
 - [[task-125-xp-chip-images]] — Two candidate images of a data chip as the basic XP pickup, from two different prompts. Status todo.
 - [[task-126-xp-nut-images]] — Two candidate images of a hex nut as the basic XP pickup, from two different prompts. Status todo.
+- [[task-127-xp-chip-magenta]] — Recolour the retained data chip B image so its glowing core is bright magenta-pink, for the big XP block. Status todo.
