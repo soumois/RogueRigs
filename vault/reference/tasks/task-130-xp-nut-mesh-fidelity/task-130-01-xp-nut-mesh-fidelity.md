@@ -35,6 +35,12 @@ status: in-progress
   - C2 Hole reads as EMPTY and deep: depth at least 65 % of the nut height (floor well below the top face); at least 3 stepped bands on the walls; the far wall is lit and the near wall is hidden by the rim; walls and floor are two different materials (walls saturated cyan (0, 0.9, 1), floor a paler cyan about (0.55, 0.95, 1)); the bands alternate in brightness with a visible difference (at least 25 %); seen from the render camera the hole must read as a hollow with a floor, never as a filled dome or a flat disc.
   - C7 Rim glow cue: the hole mouth chamfer is the brightest ring, so the eye reads rim, then walls, then floor, as in the source.
 - render: same camera as run 1 (azimuth 11, elevation 52, ortho 42). In the preview only you may lower the emission strength so the shading of the walls shows; the mesh materials keep their emissive colours.
+- run: 3 (owner 2026-10-13: a nut has a real through hole; the blue inside will be Unreal bloom, not a cyan floor; the source image shows a floor, the owner overrides it; 5 new returns from the committed files)
+- fidelity_criteria run 3 (C1, C3, C5, C6 unchanged; C2, C4, C7 replaced):
+  - C2 Through hole: the hole goes through the whole nut, no floor, the ground shows through it; diameter about 60 to 65 % of the across-flats width at the top; at least 3 stepped bands (thread-like) on the wall; the wall is grey, not cyan.
+  - C4 Materials: exactly two: M_XPNut_body (grey, body, hole wall and chamfer) and M_XPNut_glow (emissive cyan (0, 0.9, 1)). The pale floor material is removed.
+  - C7 Glow source: M_XPNut_glow is ONE thin ring about 1.2 cm tall, inset in the hole wall at mid height, seen as a glowing seam; nothing else is cyan. In Unreal the bloom spreads this glow over the inside of the hole.
+- render: same camera as run 1 (azimuth 11, elevation 52, ortho 42); in the preview you may lower the emission so the ring reads as a band; the ground plane under the nut is the light-grey background.
 
 ## Relations
 - [[task-130-xp-nut-mesh-fidelity]] — parent global task.
