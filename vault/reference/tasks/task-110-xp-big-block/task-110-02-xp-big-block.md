@@ -3,7 +3,7 @@ id: task-110-02-xp-big-block
 description: "A pooled big XP pickup Blueprint exists (bigger, bright white with a cyan glow) and is set as the big block class."
 parent: task-110-xp-big-block
 kind: task
-status: todo
+status: in-progress
 ---
 # Big XP block Blueprint
 

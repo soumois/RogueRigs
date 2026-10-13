@@ -3,7 +3,7 @@ id: task-113-02-capture-zone-visual
 description: "The old diffuse growing circle of the console and chest is removed from their Blueprints."
 parent: task-113-capture-zone-visual
 kind: task
-status: todo
+status: in-progress
 ---
 # Remove the old diffuse circle
 
