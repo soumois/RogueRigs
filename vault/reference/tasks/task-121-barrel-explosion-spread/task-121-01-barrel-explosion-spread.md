@@ -3,7 +3,7 @@ id: task-121-01-barrel-explosion-spread
 description: "The destruction of the blocks of a barrel explosion (radius 700 uu) is spread over several frames, about 2 ms of game-thread work per frame."
 parent: task-121-barrel-explosion-spread
 kind: task
-status: todo
+status: in-progress
 ---
 # Spread barrel explosion
 

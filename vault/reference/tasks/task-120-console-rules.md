@@ -1,9 +1,9 @@
 ---
 id: task-120-console-rules
 description: "Global task: Console hack zone radius 7 cells, every rock in the zone (ore included) destroyed before hacking, hack time 12 s."
-parent: tasks-to-do-index
+parent: tasks-done-index
 kind: task
-status: in-progress
+status: done
 ---
 # Console zone and hack rules
 
@@ -13,12 +13,12 @@ status: in-progress
 - gdd_check: done by the Orchestrator when the task is planned (2026-10-13).
 - confirmed_by_owner: yes (2026-10-13)
 - milestone: M2
-- next_step: task-120-01-console-rules
-- result: open
+- next_step: none
+- result: Done. Zone 7 cells, 12 s hack, all rocks incl ore marked (MarkRadiusCells removed); no BP overrides; 13 tests pass; Ore.Placement and FineConsoleShuttlePlacement expectations updated, still to run; commit 78da5d2
 
 ## Subtasks
 1. task-120-01-console-rules — cpp
 
 ## Relations
-- [[tasks-to-do-index]] — parent index.
+- [[tasks-done-index]] — parent index.
 - [[task-120-01-console-rules]] — step 1, cpp.

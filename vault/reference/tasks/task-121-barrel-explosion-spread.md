@@ -3,7 +3,7 @@ id: task-121-barrel-explosion-spread
 description: "Global task: Block destruction of a barrel explosion (radius 700 uu) is spread over several frames, about 2 ms of game-thread work per frame."
 parent: tasks-to-do-index
 kind: task
-status: todo
+status: in-progress
 ---
 # Spread barrel explosion
 

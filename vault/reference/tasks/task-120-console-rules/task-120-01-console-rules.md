@@ -3,7 +3,7 @@ id: task-120-01-console-rules
 description: "The console hack zone radius is 7 cells, every rock in the zone (ore included) must be destroyed before hacking, and the hack lasts 12 s."
 parent: task-120-console-rules
 kind: task
-status: in-progress
+status: done
 ---
 # Console zone and hack rules
 
@@ -15,11 +15,11 @@ status: in-progress
 - done_when: build exits 0 with the editor closed; RogueRigs.Console.*, RunFlow.*, Extraction.*, Integration.ConsoleExtractionWin pass headless (expectations updated only where the new values change them); sys-objectives-console-chest updated; lint clean
 - editor_state: editor closed (C++ build)
 - token_ceiling: 60 turns, commit after each group
-- model: open
-- tokens: open
-- runs: open
+- model: opus
+- tokens: input 88, cache write 103550, cache read 2794064, output 30995
+- runs: 1
 - milestone: M2
-- result: `ARRConsole` `ZoneRadiusCells` 7 (469 uu), `HackDuration` 12, `DrainPerSecond` 0.05 unchanged; `MarkRadiusCells` removed: `FindMarkableCells` marks every `MarkedCellTypes` block (Rock, Ore, HealOre, SpecialOre) whose center is within `ZoneRadiusCells` of the footprint centre (the zone centre), ore table deposits now included (the 2026-10-10 deposit exclusion is dropped). Chest unchanged (8 s, 6 cells, no marks). No override: BP_ObjectiveConsole, BP_BonusChest, BP_RRGameMode, CSVs and Config hold none of these properties. Tests updated: HackRules and ZoneTelegraph use console anchor (125, 117) (the old cell was outside 7 cells), 12 s timings; DropPlacementAndMarks checks the 7-cell zone, deposits included; FineConsoleShuttlePlacement 469 uu and Ore.Placement deposit marked (both edited, not run). Build exit 0; Console.*, RunFlow.*, Extraction.*, Integration.ConsoleExtractionWin: 13/13 pass headless.
+- result: Zone 7 cells, 12 s hack, all rocks incl ore marked (MarkRadiusCells removed); no BP overrides; 13 tests pass; Ore.Placement and FineConsoleShuttlePlacement expectations updated, still to run; commit 78da5d2
 
 ## Relations
 - [[task-120-console-rules]] — parent global task.
