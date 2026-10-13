@@ -3,7 +3,7 @@ id: task-120-console-rules
 description: "Global task: Console hack zone radius 7 cells, every rock in the zone (ore included) destroyed before hacking, hack time 12 s."
 parent: tasks-to-do-index
 kind: task
-status: todo
+status: in-progress
 ---
 # Console zone and hack rules
 

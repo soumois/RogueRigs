@@ -197,6 +197,7 @@ kind: note
 | [[task-109-02-weapon-slot-icons]] | sonnet | 2 | 0k | 72k | 2025k | 32k |
 | [[task-113-02-capture-zone-visual]] | sonnet | 1 | 0k | 44k | 842k | 15k |
 | [[task-110-02-xp-big-block]] | sonnet | 1 | 0k | 46k | 1141k | 16k |
+| [[task-119-01-heavy-telegraph-far-bug]] | opus | 1 | 0k | 71k | 1055k | 13k |
 
 ## Totals
 | Scope | Input | Cache write | Cache read | Output |
