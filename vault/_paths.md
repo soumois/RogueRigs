@@ -179,6 +179,7 @@ pipelines-index  reference/tech/pipelines/pipelines-index.md
 placeholder-weapon-icons  reference/gdd/art-audio/placeholder-weapon-icons.md
 player-index  reference/gdd/player/player-index.md
 player-stats  reference/gdd/player/player-stats.md
+ppv-xp-glow  reference/tech/blueprints/world/ppv-xp-glow.md
 production-index  reference/production/production-index.md
 rarities  reference/gdd/weapons/rarities.md
 readability-rules  reference/gdd/art-audio/readability-rules.md
