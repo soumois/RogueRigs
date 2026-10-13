@@ -1,0 +1,25 @@
+{
+  "run_id": "20261013-092045-xp-chip",
+  "asset": "xp-chip",
+  "model": "gpt-image-2-text-to-image",
+  "aspect_ratio": "1:1",
+  "resolution": "1K",
+  "variants": 1,
+  "prompt_file": "Art/Source/xp-chip/prompts/01-plate.txt",
+  "prompt": "A single game pickup asset: the memory data chip of a destroyed robot, shown as a thick rectangular plate with gold contacts along one short edge and one thin glowing cyan line across its top face. Flat-shaded low-poly, visible facets, chunky blocky volume with large flat facets, rigid mechanical plate with a few bolts, dark gunmetal body, no textures. The glowing cyan line is the dominant colour accent; no magenta, red, orange, acid green or steel blue. The chip lies flat on the ground, seen from a three-quarter top view, centred, with its whole shape readable at small size. Plain light grey background, strong directional light with lifted shadows so everything stays readable. No UI, no text, no scattered rubble, no hands, no characters. 1:1.",
+  "refs": [],
+  "tasks": [
+    {
+      "task_id": "1ade26e3a1702b8d80abf98b8183d3fc",
+      "state": "success",
+      "credits": 6,
+      "error": null,
+      "result_urls": [
+        "https://tempfile.aiquickdraw.com/images/chatgpt/file_00000000af3c82308fc62b75a99516fd.png"
+      ]
+    }
+  ],
+  "files": [
+    "Art/Source/xp-chip/20261013-092045-xp-chip-1.png"
+  ]
+}
