@@ -40,6 +40,10 @@ status: in-progress
   - C9 Volume reads: looking at the render without the source, a viewer can tell the core is a raised faceted crystal sitting in a casing with a sloped top; no part of the core is hidden by a recess wall; the core does not read as a flat pink square.
 - materials: board, casing_wall, casing_chamfer (lighter), edge_band, legs and bolts and traces (light grey), core_bright, core_dark. Triangle ceiling stays 1000.
 - render: same camera as run 1 and 2 (ortho 50 cm, azimuth 45, elevation 35); in the preview only you may lower the emission so facet shading shows.
+- run: 4 (owner 2026-10-13: the gem is liked; the light part around it was added as extra triangles instead of colouring the inside of the opening, so dark gunmetal still shows between the gem and the light rim; and the light is too bright; 5 returns maximum, a small change is expected to need 1 or 2)
+- fidelity_criteria run 4 (C1 to C8 and C9 unchanged and must keep passing; C10 added):
+  - C10 Opening colour: the faces that form the inside of the casing opening (its floor around the gem base and its inner walls) take the light edge_band material by recolouring those faces, not by adding geometry; from the render camera NO dark gunmetal is visible between the gem and the light rim. The edge_band colour is no brighter than the light grey of the legs, bolts and traces (#8A9099 to #959CA6, down from #A9B0BA). The thin band along the top edge of the chamfer uses the same colour. Triangle count does not go up (at most 872).
+- render: same camera as runs 1 to 3 (ortho 50 cm, azimuth 45, elevation 35); also render one close crop on the gem base (ortho scale 16, same angles) and open it to judge C10.
 
 ## Relations
 - [[task-131-xp-chip-big-mesh-fidelity]] — parent global task.
