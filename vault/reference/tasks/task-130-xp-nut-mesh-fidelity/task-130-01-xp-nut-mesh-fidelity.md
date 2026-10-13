@@ -47,6 +47,13 @@ status: in-progress
   - C4 Materials: exactly two: M_XPNut_body (grey: body, slope ring) and M_XPNut_glow (emissive cyan (0, 0.9, 1)).
   - C7 Glow source: M_XPNut_glow is ONLY the flat centre disc; nothing else is cyan; no blue band anywhere. In Unreal the bloom spreads the glow.
 - render: same camera as runs 1 to 3 (azimuth 11, elevation 52, ortho 42); in the preview only you may lower the emission so the disc is not a flat white blob.
+- run: 5 (owner 2026-10-13: run 4 regressed, the owner misexpressed; go back to the run 3 version (commit 024333d: through hole, stepped bands, thin cyan ring), remove the blue, and simplify the centre so it is smooth; 5 returns maximum, 1 expected)
+- start: take the script of commit 024333d (git show 024333d:Tools/art/blender/xp_nut_mesh.py) as the base, not the run 4 script. Run 4 (flat disc) is abandoned.
+- fidelity_criteria run 5 (C1, C3, C5, C6 unchanged; C2, C4, C7 replaced):
+  - C2 Smooth through hole: the hole goes through the whole nut (no floor, the ground shows through); diameter about 60 to 65 % of the across-flats width at the top; keep the mouth chamfer of run 3; below it ONE smooth straight 12-sided wall down to the bottom face: no stepped bands, no threads, no groove, no ring.
+  - C4 Materials: exactly two slots, both plain grey: M_XPNut_body (body, chamfer) and M_XPNut_hole (the smooth hole wall, same grey as the body or a slightly darker grey). No emissive in Blender.
+  - C7 No blue: no cyan or blue anywhere in the mesh or the render. The separate M_XPNut_hole slot is there so Unreal can later set an emissive on it for bloom; say so in the report warnings.
+- render: same camera as runs 1 to 4 (azimuth 11, elevation 52, ortho 42), the ground shows through the hole.
 
 ## Relations
 - [[task-130-xp-nut-mesh-fidelity]] — parent global task.
