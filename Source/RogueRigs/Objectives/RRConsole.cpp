@@ -8,6 +8,7 @@
 #include "Objectives/RRLandingFootprint.h"
 #include "Engine/CollisionProfile.h"
 #include "Player/RRMiner.h"
+#include "Telegraph/RRGroundTelegraphComponent.h"
 #include "RogueRigs.h"
 
 ARRConsole::ARRConsole()
@@ -22,6 +23,9 @@ ARRConsole::ARRConsole()
 	Mesh->SetCollisionProfileName(UCollisionProfile::NoCollision_ProfileName);
 	Mesh->SetGenerateOverlapEvents(false);
 	Mesh->SetCanEverAffectNavigation(false);
+
+	GroundTelegraph = CreateDefaultSubobject<URRGroundTelegraphComponent>(TEXT("GroundTelegraph"));
+	GroundTelegraph->SetupAttachment(ConsoleRoot);
 }
 
 void ARRConsole::InitializeConsole(ARRArenaGrid* InGrid, ARRMiner* InMiner, FIntPoint InCell)
@@ -45,6 +49,13 @@ void ARRConsole::InitializeConsole(ARRArenaGrid* InGrid, ARRMiner* InMiner, FInt
 	OnConsoleStateChanged.Broadcast(this, ConsoleState);
 	OnHackProgress(HackProgress, bDroneLinked);
 	OnConsoleProgressChanged.Broadcast(this, HackProgress, bDroneLinked);
+
+	if (GroundTelegraph)
+	{
+		GroundTelegraph->SetRadius(GetZoneRadius());
+		RefreshGroundTelegraph();
+		GroundTelegraph->Show();
+	}
 }
 
 float ARRConsole::GetZoneRadius() const
@@ -122,11 +133,19 @@ void ARRConsole::CompleteHack()
 	ReleaseDrone();
 	SetProgress(1.f, false);
 	SetConsoleState(ERRConsoleState::Complete);
+	if (GroundTelegraph)
+	{
+		GroundTelegraph->Hide();
+	}
 	UE_LOG(LogRogueRigs, Log, TEXT("%s: hack complete."), *GetName());
 }
 
 void ARRConsole::EndPlay(const EEndPlayReason::Type EndPlayReason)
 {
+	if (GroundTelegraph)
+	{
+		GroundTelegraph->Hide();
+	}
 	ReleaseDrone();
 	if (IsValid(Grid))
 	{
@@ -214,12 +233,14 @@ void ARRConsole::SetProgress(float NewProgress, bool bNewHacking)
 	}
 	HackProgress = NewProgress;
 	bDroneLinked = bNewHacking;
+	RefreshGroundTelegraph();
 	OnHackProgress(HackProgress, bDroneLinked);
 	OnConsoleProgressChanged.Broadcast(this, HackProgress, bDroneLinked);
 }
 
 void ARRConsole::BroadcastMarkedRocks()
 {
+	RefreshGroundTelegraph();
 	OnMarkedRocksChanged(MarkedRocks.Num(), InitialMarkedRockCount);
 	OnConsoleMarkedRocksChanged.Broadcast(this, MarkedRocks.Num(), InitialMarkedRockCount);
 }
@@ -230,4 +251,14 @@ void ARRConsole::ReleaseDrone()
 	{
 		Drone->StopHack(this);
 	}
+}
+
+void ARRConsole::RefreshGroundTelegraph()
+{
+	if (!GroundTelegraph)
+	{
+		return;
+	}
+	GroundTelegraph->SetMode(MarkedRocks.IsEmpty() ? ERRGroundTelegraphMode::ZoneActive : ERRGroundTelegraphMode::ZoneBlocked);
+	GroundTelegraph->SetProgress(HackProgress);
 }

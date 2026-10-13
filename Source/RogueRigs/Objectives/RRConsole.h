@@ -10,6 +10,7 @@
 class ARRMiner;
 class USceneComponent;
 class UStaticMeshComponent;
+class URRGroundTelegraphComponent;
 
 /** Where a console stands in its objective. */
 UENUM(BlueprintType)
@@ -45,7 +46,9 @@ DECLARE_DYNAMIC_MULTICAST_DELEGATE_ThreeParams(FRROnConsoleMarkedRocksChangedSig
  * Hacking). Otherwise the drone is released (StopHack) and progress drains by DrainPerSecond per second (state Idle). At 1 the
  * state becomes Complete (final) and the drone is released. Display events for the Blueprint subclass: OnMarkedRocksChanged,
  * OnHackProgress, OnHackStateChanged. The run flow listens to the matching delegates. Not abstract, so a run without the
- * Blueprint (headless tests) still works; subclass in Blueprint for the mesh and the gauge.
+ * Blueprint (headless tests) still works; subclass in Blueprint for the mesh and the gauge. The zone is drawn on the ground by
+ * GroundTelegraph (sys-ground-telegraph): radius = GetZoneRadius, mode ZoneBlocked while marked rocks remain else ZoneActive,
+ * progress = the hack progress (drain included); shown from InitializeConsole, hidden at completion and at EndPlay.
  */
 UCLASS(Blueprintable)
 class ROGUERIGS_API ARRConsole : public AActor
@@ -112,6 +115,10 @@ public:
 	UFUNCTION(BlueprintPure, Category = "Console")
 	float GetZoneRadius() const;
 
+	/** Ground telegraph drawing the zone circle and the progress circle. */
+	UFUNCTION(BlueprintPure, Category = "Console")
+	URRGroundTelegraphComponent* GetGroundTelegraph() const { return GroundTelegraph; }
+
 	/** Seconds of uninterrupted hacking from 0 to complete. */
 	UFUNCTION(BlueprintPure, Category = "Console")
 	float GetHackDuration() const { return HackDuration; }
@@ -175,6 +182,9 @@ protected:
 	/** Releases the miner's drone if it is hacking this console. */
 	void ReleaseDrone();
 
+	/** Writes the zone mode (ZoneBlocked while marked rocks remain, else ZoneActive) and the hack progress to GroundTelegraph. */
+	void RefreshGroundTelegraph();
+
 	/** Root: the console origin, on the floor at the cell center. */
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Components")
 	TObjectPtr<USceneComponent> ConsoleRoot;
@@ -182,6 +192,10 @@ protected:
 	/** Console visual; mesh and material set in Blueprint. No collision by default (robots path through the flow field, which ignores it). */
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Components")
 	TObjectPtr<UStaticMeshComponent> Mesh;
+
+	/** Ground signal of the hack zone (sharp zone circle, growing progress circle); hidden until InitializeConsole, hidden again at completion. */
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Components")
+	TObjectPtr<URRGroundTelegraphComponent> GroundTelegraph;
 
 	/** Blocks whose center is within this many cells of the console cell are marked (objective-console: 2 cells of 200 uu = 6 cells of 67 uu, provisional). */
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Console", meta = (ClampMin = 0))
