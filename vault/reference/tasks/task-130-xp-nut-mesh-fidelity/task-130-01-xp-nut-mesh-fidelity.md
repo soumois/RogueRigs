@@ -29,6 +29,12 @@ status: in-progress
   - C4 Materials: one flat mid-grey for the body; every hole surface in the emissive cyan material (0, 0.9, 1); no other colour.
   - C5 Numbers: tris_out at most 300; 30 cm across corners; pivot bottom centre.
   - C6 Style: flat shading, large facets visible, no texture.
+- run: 2 (owner 2026-10-13: the hole reads as a filled cyan dome, not as an empty hole; run 1 passed C2 too leniently; 5 new returns from the committed files)
+- strictness: a criterion passes only if someone comparing the render and vault/assets/xp-nut.png side by side would not call that part different. Name in the evidence what still differs even when you pass.
+- fidelity_criteria run 2 (C1, C3, C4, C5, C6 unchanged and passed in run 1; C2 replaced, C7 added):
+  - C2 Hole reads as EMPTY and deep: depth at least 65 % of the nut height (floor well below the top face); at least 3 stepped bands on the walls; the far wall is lit and the near wall is hidden by the rim; walls and floor are two different materials (walls saturated cyan (0, 0.9, 1), floor a paler cyan about (0.55, 0.95, 1)); the bands alternate in brightness with a visible difference (at least 25 %); seen from the render camera the hole must read as a hollow with a floor, never as a filled dome or a flat disc.
+  - C7 Rim glow cue: the hole mouth chamfer is the brightest ring, so the eye reads rim, then walls, then floor, as in the source.
+- render: same camera as run 1 (azimuth 11, elevation 52, ortho 42). In the preview only you may lower the emission strength so the shading of the walls shows; the mesh materials keep their emissive colours.
 
 ## Relations
 - [[task-130-xp-nut-mesh-fidelity]] — parent global task.
