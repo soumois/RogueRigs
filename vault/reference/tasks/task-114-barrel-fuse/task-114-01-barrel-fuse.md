@@ -3,7 +3,7 @@ id: task-114-01-barrel-fuse
 description: "Barrels have a doubled explosion radius and explode 1.5 s after reaching 0 health, with an orange danger zone and a growing circle."
 parent: task-114-barrel-fuse
 kind: task
-status: todo
+status: in-progress
 ---
 # Barrel fuse and double radius
 
