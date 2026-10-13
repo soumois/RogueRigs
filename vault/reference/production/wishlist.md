@@ -21,7 +21,7 @@ kind: note
 
 ## Art
 - Block faces that depend on neighbours (owner, after handover-2026-10-06; for the final block assets): a face with no neighbouring block gets a decoration layer so the wall is not smooth. One mesh variant per count of free faces (1, 2, 3, 4), rotated per instance toward the free sides instead of one mesh per direction; 2 free faces needs a corner and an opposite variant. Later: cracked blocks near the wall edge.
-- XP pickup ground glow (owner 2026-10-13, set aside): a flat additive radial sprite under each XP nut and big chip, cyan or magenta, no shadow, one shared material, a quad component in the pickup Blueprints; only if the bloom and the emissive pulse alone are not enough. A real point light per pickup is rejected (Lumen and virtual shadow maps are on).
+- Done (task-145-03, 2026-10-13): XP pickup ground glow, see [[bp-pickup-xp]] (original wish, owner 2026-10-13, set aside): a flat additive radial sprite under each XP nut and big chip, cyan or magenta, no shadow, one shared material, a quad component in the pickup Blueprints; only if the bloom and the emissive pulse alone are not enough. A real point light per pickup is rejected (Lumen and virtual shadow maps are on).
 
 ## Tech and tools
 - Projectile behavior module framework (`Projectile.Behavior.*` tags, tag → module table, `OnHit` / `OnWallHit` / `Tick` hooks, no behavior rules in the projectile class).
@@ -37,3 +37,4 @@ kind: note
 - [[production-index]] — parent index.
 - [[milestones]] — the scope these were cut from.
 - [[perf-xp-pickups-glow]] — result of the XP pickup glow cost check.
+- [[bp-pickup-xp]] — the XP pickups, with their ground glow disc.
