@@ -3,7 +3,7 @@ id: task-123-01-heavy-remove-shockring
 description: "BP_Heavy no longer shows its ShockRing mesh: the slam zone is drawn only by the ground telegraph."
 parent: task-123-heavy-remove-shockring
 kind: task
-status: in-progress
+status: done
 ---
 # Remove the heavy ShockRing
 
@@ -15,11 +15,11 @@ status: in-progress
 - done_when: Blueprint compiles and is saved; read back shows no ShockRing visibility call left; bp-heavy doc matches; lint clean
 - editor_state: editor open (Unreal MCP); no screenshots by the agent
 - token_ceiling: 40 turns, commit after each group
-- model: open
-- tokens: open
-- runs: open
+- model: sonnet
+- tokens: input 50, cache write 46348, cache read 738042, output 12286
+- runs: 1
 - milestone: M2
-- result: ShockRing nodes removed from OnTelegraphStart, OnSlam, OnRecover (BP_Heavy compiled, saved, commit 8ec0b97); component kept hidden because the C++ test RRHeavyIntegrationTests.cpp looks it up by name (needs a C++ change to delete it); glow and tilt unchanged.
+- result: ShockRing show, scale and hide nodes removed from BP_Heavy (OnTelegraphStart, OnSlam, OnRecover); the component stays hidden because Integration.HeavyTelegraphSlamsMiner looks it up; commits 8ec0b97 2fb3829 2784013
 
 ## Relations
 - [[task-123-heavy-remove-shockring]] — parent global task.
