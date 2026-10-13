@@ -1,13 +1,13 @@
 ---
 id: task-133-01-xp-chip-integration
-description: "Import the big XP data chip mesh into Unreal, give it a glowing magenta core with a light emissive pulse, and use it in BP_PickupXPBig."
+description: "Import the big XP chip mesh into Unreal, give it a glowing magenta core with a light pulse, use it in BP_PickupXPBig."
 parent: task-133-xp-chip-integration
 kind: task
 status: todo
 ---
 # Big XP chip integration in Unreal
 
-- goal: Import the big XP data chip mesh into Unreal, give it a glowing magenta core with a light emissive pulse, and use it in BP_PickupXPBig.
+- goal: Import the big XP chip mesh into Unreal, give it a glowing magenta core with a light pulse, use it in BP_PickupXPBig.
 - agent: bp
 - depends_on: none
 - inputs: bp-pickup-xp (vault/reference/tech/blueprints/fx/bp-pickup-xp.md), sys-pickups (vault/reference/tech/systems/world/sys-pickups.md), sys-pickups-xp (vault/reference/tech/systems/world/sys-pickups/sys-pickups-xp.md), unreal-mcp (vault/reference/tech/pipelines/unreal-mcp.md), unreal-mcp-quirks (vault/reference/tech/pipelines/unreal-mcp-quirks.md), editor-workflow (vault/reference/tech/conventions/editor-workflow.md), color-code (vault/reference/gdd/art-audio/color-code.md), xp-level-up (vault/reference/gdd/run/xp-level-up.md)

@@ -3,7 +3,7 @@ id: task-132-xp-nut-integration
 description: "Global task: Import the XP hex nut mesh into Unreal, give it a glowing material with a light emissive pulse, and use it in BP_PickupXP."
 parent: tasks-to-do-index
 kind: task
-status: todo
+status: in-progress
 ---
 # XP nut integration in Unreal
 
