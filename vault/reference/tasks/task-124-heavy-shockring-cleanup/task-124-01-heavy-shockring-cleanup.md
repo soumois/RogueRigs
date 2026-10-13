@@ -19,7 +19,7 @@ status: in-progress
 - tokens: open
 - runs: open
 - milestone: M2
-- result: open
+- result: C++ part done. RRHeavyIntegrationTests.cpp no longer looks up ShockRing (lookup, null check, rest/slam/scale/recover assertions and the IsShown helper removed; BodyMesh tilt, telegraph/slam/recovery timings and miner damage kept); ShockRing comments cleaned in RREnemy.h, RREnemy.cpp, RRHeavy.cpp; grep finds no ShockRing in Source/. Build exit 0; RogueRigs.Integration.HeavyTelegraphSlamsMiner and RogueRigs.Heavy.* (9 tests) pass headless. sys-tests-heavy updated. Blueprint component removal left to the next subtask.
 
 ## Relations
 - [[task-124-heavy-shockring-cleanup]] — parent global task.

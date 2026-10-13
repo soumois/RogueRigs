@@ -631,8 +631,8 @@ void ARREnemy::SetMeshesVisible(bool bVisible)
 {
 	if (bVisible)
 	{
-		// Only what the flash hid: showing every mesh also lit Blueprint effect meshes kept hidden at rest (task-119-01: the
-		// heavy ShockRing appeared at full slam radius on far, chasing heavies after a recycling relocation and on death).
+		// Only what the flash hid: showing every mesh also lit Blueprint effect meshes kept hidden at rest (task-119-01: a
+		// hidden heavy effect mesh appeared at full slam radius on far, chasing heavies after a recycling relocation and on death).
 		for (const TWeakObjectPtr<UMeshComponent>& Hidden : BlinkHiddenMeshes)
 		{
 			if (UMeshComponent* MeshComponent = Hidden.Get())

@@ -1,4 +1,4 @@
-// Rogue Rigs - heavy integration tests with the final Blueprints (RogueRigs.Integration.Heavy*): BP_Heavy telegraphs then slams a vulnerable BP_Miner for 25 with its glow, tilt and shock ring, misses beyond 289 uu, takes the BP_Miner shotgun pellet knockback reduced by 0.8 and crosses a one-cell corridor of arena_m1.
+// Rogue Rigs - heavy integration tests with the final Blueprints (RogueRigs.Integration.Heavy*): BP_Heavy telegraphs then slams a vulnerable BP_Miner for 25 with its glow and tilt, misses beyond 289 uu, takes the BP_Miner shotgun pellet knockback reduced by 0.8 and crosses a one-cell corridor of arena_m1.
 
 #include "CoreMinimal.h"
 #include "Misc/AutomationTest.h"
@@ -104,12 +104,6 @@ namespace RRHeavyIntegrationTests
 		return nullptr;
 	}
 
-	/** True when Mesh renders in game (visible and not hidden in game). */
-	bool IsShown(const UStaticMeshComponent* Mesh)
-	{
-		return Mesh->IsVisible() && !Mesh->bHiddenInGame;
-	}
-
 	/** Places Miner at Distance uu west (-X) of Heavy on the heavy's row, keeping the miner's height. */
 	void TeleportWestOf(ARRMiner* Miner, const ARRHeavy* Heavy, float Distance)
 	{
@@ -150,12 +144,10 @@ bool FRRIntegrationHeavySlamTest::RunTest(const FString& Parameters)
 		return false;
 	}
 	UStaticMeshComponent* Body = FindMesh(Heavy, TEXT("BodyMesh"));
-	UStaticMeshComponent* Ring = FindMesh(Heavy, TEXT("ShockRing"));
-	if (!TestNotNull(TEXT("BP_Heavy BodyMesh"), Body) || !TestNotNull(TEXT("BP_Heavy ShockRing"), Ring))
+	if (!TestNotNull(TEXT("BP_Heavy BodyMesh"), Body))
 	{
 		return false;
 	}
-	TestFalse(TEXT("shock ring hidden at rest"), IsShown(Ring));
 	const float HealthBefore = Health(Miner);
 	TestEqual(TEXT("miner at full health"), HealthBefore, Miner->GetHealthSet()->GetMaxHealth());
 
@@ -165,11 +157,7 @@ bool FRRIntegrationHeavySlamTest::RunTest(const FString& Parameters)
 	TArray<double> RecoverEnds;
 	float FirstTelegraphDistance = -1.f;
 	float MaxTelegraphPitch = 0.f;
-	float MaxRingScale = 0.f;
 	bool bStoppedWhileTelegraphing = true;
-	bool bRingFlagOnSlam = true;
-	bool bRingShownOnSlam = true;
-	bool bRingHiddenAfterRecover = true;
 	bool bPoseResetAfterRecover = true;
 	for (int32 Frame = 0; Frame < 60 * 10 && RecoverEnds.Num() < 2; ++Frame)
 	{
@@ -194,17 +182,10 @@ bool FRRIntegrationHeavySlamTest::RunTest(const FString& Parameters)
 		{
 			SlamTimes.Add(Heavy->GetLastSlamTime());
 			HealthAfterSlams.Add(Health(Miner));
-			bRingFlagOnSlam &= Ring->GetVisibleFlag();
-			bRingShownOnSlam &= IsShown(Ring);
-		}
-		if (Ring->GetVisibleFlag())
-		{
-			MaxRingScale = FMath::Max(MaxRingScale, static_cast<float>(Ring->GetRelativeScale3D().X));
 		}
 		if (Previous == ERRHeavyState::Recover && Heavy->GetState() == ERRHeavyState::Chase)
 		{
 			RecoverEnds.Add(Now);
-			bRingHiddenAfterRecover &= !Ring->GetVisibleFlag() && !IsShown(Ring);
 			bPoseResetAfterRecover &= FMath::Abs(Body->GetRelativeRotation().Pitch) < 1.f;
 		}
 	}
@@ -212,8 +193,8 @@ bool FRRIntegrationHeavySlamTest::RunTest(const FString& Parameters)
 	{
 		return FString::JoinBy(Times, TEXT(", "), [](double Time) { return FString::Printf(TEXT("%.3f"), Time); });
 	};
-	AddInfo(FString::Printf(TEXT("BP_Heavy from 600 uu: telegraphs at %s (first at %.0f uu); slams at %s; recover ends at %s; miner %.0f -> %.0f; body pitch %.1f; ring scale %.2f (rendered on slam frames: %d)"),
-		*Join(TelegraphStarts), FirstTelegraphDistance, *Join(SlamTimes), *Join(RecoverEnds), HealthBefore, Health(Miner), MaxTelegraphPitch, MaxRingScale, bRingShownOnSlam ? 1 : 0));
+	AddInfo(FString::Printf(TEXT("BP_Heavy from 600 uu: telegraphs at %s (first at %.0f uu); slams at %s; recover ends at %s; miner %.0f -> %.0f; body pitch %.1f"),
+		*Join(TelegraphStarts), FirstTelegraphDistance, *Join(SlamTimes), *Join(RecoverEnds), HealthBefore, Health(Miner), MaxTelegraphPitch));
 
 	if (!TestEqual(TEXT("two slams within 10 s"), SlamTimes.Num(), 2) || !TestTrue(TEXT("one telegraph per slam"), TelegraphStarts.Num() >= 2)
 		|| !TestEqual(TEXT("two recoveries"), RecoverEnds.Num(), 2))
@@ -233,11 +214,6 @@ bool FRRIntegrationHeavySlamTest::RunTest(const FString& Parameters)
 	TestTrue(TEXT("stopped while telegraphing"), bStoppedWhileTelegraphing);
 	TestEqual(TEXT("two hits counted"), Heavy->GetSlamHitCount(), 2);
 	TestTrue(TEXT("BP_Heavy tilts its body during the telegraph (pitch 14)"), FMath::IsNearlyEqual(MaxTelegraphPitch, 14.f, 1.f));
-	TestTrue(TEXT("BP_Heavy OnSlam sets its shock ring visible on the slam frame"), bRingFlagOnSlam);
-	// Rendering needs bHiddenInGame off too (USceneComponent::IsVisible): a ring left Hidden In Game never shows in a game world.
-	TestTrue(TEXT("BP_Heavy shock ring renders in game on the slam frame (not Hidden In Game)"), bRingShownOnSlam);
-	TestTrue(TEXT("shock ring grows to the slam radius (scale 289 / 50)"), FMath::IsNearlyEqual(MaxRingScale, SlamRadius / 50.f, 0.05f));
-	TestTrue(TEXT("shock ring hidden once the recovery ends"), bRingHiddenAfterRecover);
 	TestTrue(TEXT("body pose reset once the recovery ends"), bPoseResetAfterRecover);
 	TestTrue(TEXT("miner alive"), !Miner->IsDead());
 	return true;

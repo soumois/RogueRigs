@@ -232,7 +232,7 @@ protected:
 
 	/**
 	 * Wind-up flash (task-119-01). false hides every visible mesh component and remembers it; true shows again only the meshes
-	 * a previous false hid. A mesh hidden by the Blueprint (heavy ShockRing, effect meshes) is never turned on here.
+	 * a previous false hid. A mesh hidden by the Blueprint (effect meshes kept hidden at rest) is never turned on here.
 	 */
 	void SetMeshesVisible(bool bVisible);
 
