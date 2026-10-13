@@ -153,3 +153,4 @@ Archive: it exceeds the index size limits of [[_authoring]] on purpose (owner, 2
 - [[task-141-xp-pickups-lumen-test]] — Try to make the XP nut and chip emit light on the floor through Lumen: emissive light source flag and mesh cards. Status done.
 - [[task-142-xp-bloom-post-process]] — Add a PostProcessVolume with explicit bloom settings to the arena level so the halo effect can be tuned and tested. Status done.
 - [[task-143-xp-pickups-distance-field]] — Turn on the mesh distance field of the XP nut and chip so Lumen can see them and test whether they light the floor. Status done.
+- [[task-144-xp-chip-glow-12-6]] — Set the big XP chip core glow to 12 and 6, a starting point to tune by eye. Status done.

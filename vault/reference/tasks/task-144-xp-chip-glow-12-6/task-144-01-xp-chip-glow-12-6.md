@@ -3,7 +3,7 @@ id: task-144-01-xp-chip-glow-12-6
 description: "Set the big XP chip core glow to 12 and 6, a starting point to tune by eye."
 parent: task-144-xp-chip-glow-12-6
 kind: task
-status: in-progress
+status: done
 ---
 # XP chip: glow 12 and 6
 
@@ -15,11 +15,11 @@ status: in-progress
 - done_when: GlowAmount reads 12 and 6, both assets saved and modified in git, nothing else changed, doc updated
 - editor_state: open
 - token_ceiling: open
-- model: open
-- tokens: open
-- runs: open
+- model: sonnet
+- tokens: input 20, cache write 14913, cache read 137999, output 421
+- runs: 1
 - milestone: M2
-- result: open
+- result: M_XPChip_core_bright GlowAmount 12 and core_dark 6 (colours and pulse unchanged), saved; a starting point for the owner to tune by eye; nut stays 25.
 
 ## Relations
 - [[task-144-xp-chip-glow-12-6]] — parent global task.
