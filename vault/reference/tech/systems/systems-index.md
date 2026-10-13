@@ -34,6 +34,7 @@ Decision status inside each doc: approved, provisional, deferred or open. Planne
 - [[sys-grid]] — grid data, autotiling, instanced rendering, terrain damage.
 - [[sys-pickups]] — ore, heal and XP pickups: drop rule, pop, attraction within PickupRadius, collection event, XP grant.
 - [[sys-actor-pool]] — generic actor pool subsystem: reuse, creation spread over MaxFrames, IRRPoolable reset hooks, IsPooledIdle filter.
+- [[sys-ground-telegraph]] — ground circle decal component: API, material parameter names (Radius, Progress, ZoneColor, ProgressColor, Opacity), hiding rules.
 - [[sys-damage-numbers]] — damage number subsystem: one number per hit with a spawn disc (no merge since task-059), stacking, Niagara user parameters contract, player toggle.
 - [[sys-stress]] — stress test tooling: rr.Stress.* cheat commands, bulk spawn around the miner, timed frame-time run.
 - [[sys-text-content]] — runtime loader of the A4 text files: upgrade flavor, alert lines, barks, fallback, hooks.

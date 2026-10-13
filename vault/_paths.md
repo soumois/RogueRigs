@@ -183,6 +183,7 @@ sys-explosions  reference/tech/systems/sys-explosions.md
 sys-flow-field  reference/tech/systems/sys-flow-field.md
 sys-gas-core  reference/tech/systems/sys-gas-core.md
 sys-grid  reference/tech/systems/sys-grid.md
+sys-ground-telegraph  reference/tech/systems/sys-ground-telegraph.md
 sys-hud  reference/tech/systems/sys-hud.md
 sys-hud-events  reference/tech/systems/sys-hud-events.md
 sys-hud-minimap  reference/tech/systems/sys-hud-minimap.md
