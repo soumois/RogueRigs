@@ -3,7 +3,7 @@ id: task-113-01-capture-zone-visual
 description: "Console and chest zones use the ground telegraph: sharp zone circle, growing progress circle, rules unchanged."
 parent: task-113-capture-zone-visual
 kind: task
-status: in-progress
+status: done
 ---
 # Capture zone visual (C++ side)
 
@@ -15,11 +15,11 @@ status: in-progress
 - done_when: build exits 0 with the editor closed; all RogueRigs.* tests pass headless; docs updated; lint clean; committed.
 - editor_state: closed
 - token_ceiling: 50000
-- model: open
-- tokens: open
-- runs: open
+- model: opus
+- tokens: input 58, cache write 68497, cache read 1469509, output 21292
+- runs: 2
 - milestone: M2
-- result: open
+- result: Console and chest GroundTelegraph: radius from ZoneRadiusCells (603 / 402 uu), ZoneBlocked then ZoneActive, progress follows the hack and the drain, hidden at completion; hack rules unchanged; list of old HackRing parts for 113-02; 255/255 tests. Commits 5db7481, ddf56c3.
 
 ## Relations
 - [[task-113-capture-zone-visual]] — parent global task.

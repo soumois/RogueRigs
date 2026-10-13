@@ -3,7 +3,7 @@ id: task-115-01-heavy-slam-telegraph
 description: "Heavy slam ground signal: orange zone and growing circle during the telegraph, gone when the robot dies."
 parent: task-115-heavy-slam-telegraph
 kind: task
-status: todo
+status: in-progress
 ---
 # Heavy slam ground signal
 

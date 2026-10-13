@@ -3,7 +3,7 @@ id: task-115-heavy-slam-telegraph
 description: "Global task: The heavy slam shows its danger zone and a growing circle during the telegraph, and dies with the robot."
 parent: tasks-to-do-index
 kind: task
-status: todo
+status: in-progress
 ---
 # Heavy slam ground signal
 
