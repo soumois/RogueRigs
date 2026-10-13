@@ -1,9 +1,9 @@
 ---
 id: task-133-xp-chip-integration
 description: "Global task: Import the big XP chip mesh into Unreal, give it a glowing magenta core with a light pulse, use it in BP_PickupXPBig."
-parent: tasks-to-do-index
+parent: tasks-done-index
 kind: task
-status: in-progress
+status: done
 ---
 # Big XP chip integration in Unreal
 
@@ -13,12 +13,12 @@ status: in-progress
 - gdd_check: done by the Orchestrator when the task is planned (2026-10-13).
 - confirmed_by_owner: yes (2026-10-13)
 - milestone: M2
-- next_step: task-133-01-xp-chip-integration
-- result: open
+- next_step: none
+- result: Done. SM_XPChipBig imported, 7 slot materials, BP_PickupXPBig scale 1.8 and TrailFX 0.3; pool restores the template scale (no C++ change); pivot offset not applied; bloom unconfirmed; CastShadow unchanged.
 
 ## Subtasks
 1. task-133-01-xp-chip-integration — bp
 
 ## Relations
-- [[tasks-to-do-index]] — parent index.
+- [[tasks-done-index]] — parent index.
 - [[task-133-01-xp-chip-integration]] — step 1, bp.

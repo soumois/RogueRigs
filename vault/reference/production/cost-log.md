@@ -213,6 +213,7 @@ kind: note
 | [[task-130-01-xp-nut-mesh-fidelity]] | sonnet | 5 | 0k | 165k | 1182k | 11k |
 | [[task-131-01-xp-chip-big-mesh-fidelity]] | sonnet | 5 | 0k | 236k | 1831k | 10k |
 | [[task-132-01-xp-nut-integration]] | sonnet | 2 | 0k | 59k | 1472k | 1k |
+| [[task-133-01-xp-chip-integration]] | sonnet | 1 | 0k | 44k | 668k | 1k |
 
 ## Totals
 | Scope | Input | Cache write | Cache read | Output |
