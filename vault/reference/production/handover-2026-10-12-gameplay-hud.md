@@ -23,6 +23,11 @@ Nobody has looked at the result of most of this work: the owner judges, agents o
 ## Task numbering collisions
 Two sessions created numbers in parallel: 106 is both `weapons-ui-size` and `wear-mask-texture`, 108 is both `weapon-icons-placeholder` and `barrel-on-floor`. Run `ls vault/reference/tasks` right before creating a task, and renumber one of each pair when convenient.
 
+## Things to know
+- Dates: nodes created after midnight (machine time) read 2026-10-13 (tasks 110 to 115 and later): same session.
+- The owner's two weapon UI captures live in `Reference/DRGS/` (git-ignored, local only): `ui-weapons-current-2026-10-12.webp`, `ui-weapons-reference-2026-10-12.webp`.
+- The HUD z-order: cards 10, alerts 8, minimap 6, the other panels 0 ([[wbp-hud]]).
+
 ## How to resume
 Read [[tasks-to-do-index]] (empty), this node, the checklist, then [[orchestrator-lessons-2026-10-12]]. Assignment 4 is described in [[assignment-4-content-pipeline]]; its README is submitted-ready.
 
@@ -32,4 +37,10 @@ Read [[tasks-to-do-index]] (empty), this node, the checklist, then [[orchestrato
 - [[validation-checklist-2026-10-12]] — what to look at on screen, per area.
 - [[orchestrator-lessons-2026-10-12]] — owner rules and agent lessons of this session.
 - [[hud-refactor-audit]] — the HUD split, its structure and events.
+- [[ground-telegraph]] — the ground circles used by zones, barrel and heavy.
+- [[sys-actor-pool]] — pools, prewarm and the reuse cost.
+- [[sys-spawner]] — the prewarm rule and the wave data it reads.
+- [[placeholder-weapon-icons]] — the temporary icons and how to replace them.
+- [[projectile-pool-evaluation]] — why projectiles are not pooled yet.
+- [[assignment-4-content-pipeline]] — Assignment 4 brief and status.
 - [[tasks-index]] — tasks and status.

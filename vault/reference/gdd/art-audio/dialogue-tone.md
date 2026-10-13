@@ -17,7 +17,7 @@ Each rule has an id that the critic cites ([[agent-style-guide]]). Owner update 
 - T6 Kessler-Voss: propaganda toward the public, cold bureaucracy toward threats, never jokes ([[company-voice]]).
 - T7 Every on-screen text is in English ([[readability-rules]]).
 - T8 Never reuse a vault example line verbatim in generated content.
-- T9 Company text never orders the player to stop or do something that contradicts the objective; it states what the company does (owner 2026-10-10, after the shuttle countdown line "Cease all extraction" was misread).
+- T9 Company text never orders the player to stop or do something that contradicts the objective; it states what the company does (owner 2026-10-10, found in a playtest: the shuttle countdown line "Cease all extraction" was misread).
 
 - Examples (reference only, T8): "Send the invoice to corporate." · "They noticed. Great. Love it when they notice." · "Of course it's on the other side of the rock."
 - Barks are nice-to-have; milestone M3.

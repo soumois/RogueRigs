@@ -9,7 +9,7 @@ kind: note
 Decided with the owner on 2026-10-09; open decisions answered on 2026-10-10 ([[assignment-4-open-decisions]]).
 
 ## Knowledge base
-The lore nodes, an extension of the GDD lore: [[lore]] (L1–L4), [[crew-characters]] (Rook, Vesna), [[fictional-films]], [[company-voice]], [[dialogue-tone]] (T1–T8). No vector database: the agent reads nodes by descent.
+The lore nodes, an extension of the GDD lore: [[lore]] (L1–L4), [[crew-characters]] (Rook, Vesna), [[fictional-films]], [[company-voice]], [[dialogue-tone]] (T1–T9; T9 was added on 2026-10-10 after the owner misread the shuttle line "Cease all extraction" in a playtest). No vector database: the agent reads nodes by descent.
 
 ## Agents
 - Generator: [[agent-text]] (`.claude/agents/text.md`, sonnet). Logs per item the query, the node ids read, the verbatim excerpt used and the output.
@@ -39,11 +39,11 @@ A first run without lore retrieval, compared with the run that reads the vault: 
 ## README
 `assignments/A4-dynamic-content-pipeline/README.md` keeps the vault map markers (`<!-- vault-map:start -->` / `<!-- vault-map:end -->`, filled by `node vault/scripts/vault-map.js`) and the two vault captures in its knowledge base section (owner 2026-10-10).
 
-## Built
-Lore nodes, agent specs and definitions, README skeleton.
+## Built (status 2026-10-12: done)
+Lore nodes, agent specs and definitions, the schema nodes, the validator (`Tools/content/validate_text.js` with a selftest), the loader and the in-game display of the card flavor lines and company alerts (barks are data files, not displayed), the runs with critic reviews (logs in `Tools/content/logs/`), the README `assignments/A4-dynamic-content-pipeline/README.md` (repo path, outside the vault; submitted-ready, tag `a4-submission`).
 
-## Not built yet
-`text-content-schema`, `validate_text.js`, the loader and the in-game display, the runs.
+## Not built
+A display of the barks (subtitle widget exists: [[sys-subtitles]], barks are not wired).
 
 ## Relations
 - [[assignment-4-content-pipeline]] — parent: brief and rubric.
