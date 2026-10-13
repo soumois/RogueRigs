@@ -3,7 +3,7 @@ id: task-111-02-pool-prewarm
 description: "A measured note says whether pooling the projectiles is worth it; nothing is migrated."
 parent: task-111-pool-prewarm
 kind: task
-status: in-progress
+status: done
 ---
 # Projectile pooling evaluation
 
@@ -15,11 +15,11 @@ status: in-progress
 - done_when: evaluation note written with measured numbers and a recommendation; lint clean; committed.
 - editor_state: closed
 - token_ceiling: 50000
-- model: open
-- tokens: open
-- runs: open
+- model: opus
+- tokens: input 58, cache write 88099, cache read 1643632, output 23662
+- runs: 1
 - milestone: M2
-- result: open
+- result: Projectile pool evaluation: rifle 3.4 spawns/s at 1.13 ms (0.41 core), pellets 7 per shot at 0.54 ms, 0.11 ms per frame = 0.67 % of the game thread; saving about 0.07 ms per frame; recommendation: do not migrate now, revisit at 15+ projectiles per frame or 30+ per second. Note projectile-pool-evaluation. Commit dfdce4a.
 
 ## Relations
 - [[task-111-pool-prewarm]] — parent global task.

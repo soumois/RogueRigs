@@ -3,7 +3,7 @@ id: task-112-01-ground-telegraph
 description: "Ground telegraph component: a zone circle and a growing circle on the floor, ignoring robots, miner and weapons."
 parent: task-112-ground-telegraph
 kind: task
-status: todo
+status: in-progress
 ---
 # Ground telegraph component (C++)
 

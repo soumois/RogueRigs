@@ -188,6 +188,7 @@ kind: note
 | [[task-109-01-weapon-slot-icons]] | opus | 1 | 0k | 30k | 255k | 8k |
 | [[task-110-01-xp-big-block]] | opus | 1 | 0k | 81k | 1842k | 29k |
 | [[task-111-01-pool-prewarm]] | opus | 2 | 0k | 175k | 7717k | 57k |
+| [[task-111-02-pool-prewarm]] | opus | 1 | 0k | 88k | 1644k | 24k |
 
 ## Totals
 | Scope | Input | Cache write | Cache read | Output |

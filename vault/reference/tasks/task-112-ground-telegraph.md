@@ -3,7 +3,7 @@ id: task-112-ground-telegraph
 description: "Global task: A generic ground signal component draws a zone circle and a growing circle, and dies with its owner."
 parent: tasks-to-do-index
 kind: task
-status: todo
+status: in-progress
 ---
 # Ground telegraph component (C++)
 
