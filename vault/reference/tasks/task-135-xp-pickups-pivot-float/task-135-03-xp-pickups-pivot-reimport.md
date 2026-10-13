@@ -3,7 +3,7 @@ id: task-135-03-xp-pickups-pivot-reimport
 description: "Reimport the two centred FBX over the existing Unreal assets so the pickups no longer float, Blueprint references kept."
 parent: task-135-xp-pickups-pivot-float
 kind: task
-status: in-progress
+status: done
 ---
 # XP pickups: reimport the centred meshes
 
@@ -15,11 +15,11 @@ status: in-progress
 - done_when: Bounds read back centred (nut z -5.85 to 5.85, chip z -5.3 to 5.3); both Blueprints compile and save with the same mesh and the override instances in place (BP_PickupXP: M_XPNut_body, M_XPNut_hole; BP_PickupXPBig: seven M_XPChip_*); doc node updated; no screenshot tool
 - editor_state: open
 - token_ceiling: open
-- model: open
-- tokens: open
-- runs: open
+- model: sonnet
+- tokens: input 28, cache write 33418, cache read 349221, output 523
+- runs: 1
 - milestone: M2
-- result: open
+- result: Reimport done by the owner in the editor (the agent was blocked: import_file refuses an existing asset and the delete was denied); bounds read back by the Orchestrator: nut z -5.85 to 5.85, chip z -5.3 to 5.3; slots and Blueprint overrides intact; doc updated.
 
 ## Relations
 - [[task-135-xp-pickups-pivot-float]] — parent global task.

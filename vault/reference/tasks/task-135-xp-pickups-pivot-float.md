@@ -1,9 +1,9 @@
 ---
 id: task-135-xp-pickups-pivot-float
 description: "Global task: Stop the XP nut and chip from floating: put their pivot at their centre like the old cube."
-parent: tasks-to-do-index
+parent: tasks-done-index
 kind: task
-status: in-progress
+status: done
 ---
 # XP pickups: fix the floating pivot
 
@@ -13,8 +13,8 @@ status: in-progress
 - gdd_check: done by the Orchestrator when the task is planned (2026-10-13).
 - confirmed_by_owner: yes (2026-10-13)
 - milestone: M2
-- next_step: task-135-03-xp-pickups-pivot-reimport
-- result: open
+- next_step: none
+- result: Done. Reimport done by the owner in the editor (the agent was blocked: import_file refuses an existing asset and the delete was denied); bounds read back by the Orchestrator: nut z -5.85 to 5.85, chip z -5.3 to 5.3; slots and Blueprint overrides intact; doc updated.
 
 ## Subtasks
 1. task-135-01-xp-pickups-pivot-float — bp (stopped: the import tool cannot offset the pivot)
@@ -22,7 +22,7 @@ status: in-progress
 3. task-135-03-xp-pickups-pivot-reimport — bp (reimport in place)
 
 ## Relations
-- [[tasks-to-do-index]] — parent index.
+- [[tasks-done-index]] — parent index.
 - [[task-135-01-xp-pickups-pivot-float]] — step 1, bp.
 - [[task-135-02-xp-pickups-pivot-export]] — step 2, 3d.
 - [[task-135-03-xp-pickups-pivot-reimport]] — step 3, bp.

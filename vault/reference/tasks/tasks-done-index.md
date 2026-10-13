@@ -145,4 +145,5 @@ Archive: it exceeds the index size limits of [[_authoring]] on purpose (owner, 2
 - [[task-132-xp-nut-integration]] — Import the XP hex nut mesh into Unreal, give it a glowing material with a light emissive pulse, and use it in BP_PickupXP. Status done.
 - [[task-133-xp-chip-integration]] — Import the big XP data chip mesh into Unreal, give it a glowing magenta core with a light emissive pulse, and use it in BP_PickupXPBig. Status done.
 - [[task-134-xp-pickups-no-shadow]] — Turn off the mesh shadow of the XP nut and chip Blueprints. Status done.
+- [[task-135-xp-pickups-pivot-float]] — Stop the XP nut and chip from floating: put their pivot at their centre like the old cube. Status done.
 - [[task-136-xp-pickups-stronger-glow]] — Strengthen the emissive and widen the pulse range of the XP nut and chip so the bloom is stronger. Status done.
