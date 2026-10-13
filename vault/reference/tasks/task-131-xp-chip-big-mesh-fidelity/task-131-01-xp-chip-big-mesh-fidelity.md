@@ -44,6 +44,10 @@ status: in-progress
 - fidelity_criteria run 4 (C1 to C8 and C9 unchanged and must keep passing; C10 added):
   - C10 Opening colour: the faces that form the inside of the casing opening (its floor around the gem base and its inner walls) take the light edge_band material by recolouring those faces, not by adding geometry; from the render camera NO dark gunmetal is visible between the gem and the light rim. The edge_band colour is no brighter than the light grey of the legs, bolts and traces (#8A9099 to #959CA6, down from #A9B0BA). The thin band along the top edge of the chamfer uses the same colour. Triangle count does not go up (at most 872).
 - render: same camera as runs 1 to 3 (ortho 50 cm, azimuth 45, elevation 35); also render one close crop on the gem base (ortho scale 16, same angles) and open it to judge C10.
+- run: 5 (owner 2026-10-13: at the casing corners the surface seems to sink into a V; the owner does not want that; the rest is OK; 5 returns maximum, 1 or 2 expected)
+- fidelity_criteria run 5 (C2 corner notches REPLACED by C11; everything else unchanged and must keep passing, gem included):
+  - C11 Clean corners: the 4 top corners of the casing have NO notch and NO dip: the chamfer slope and the light edge band run continuously around each corner with no V, no inset, no crack. The plan corner cut stays but is a clean vertical facet about 2 cm wide in the SAME wall material as the walls (not near-black), the chamfer wraps around it. The dark base ledge follows the casing outline around the corner (no dark triangle left on the board under the corner). From the render camera a corner reads as a solid chamfered corner, not as a gap.
+- render: same camera as before plus one close crop on the front corner of the casing (ortho scale 16, azimuth 45, elevation 35, target on that corner, the one nearest the viewer) opened at each judgement.
 
 ## Relations
 - [[task-131-xp-chip-big-mesh-fidelity]] — parent global task.
