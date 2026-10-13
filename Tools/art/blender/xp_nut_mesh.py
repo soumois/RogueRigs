@@ -1,9 +1,9 @@
 """XP nut mesh (Blender route, task-128-01). Headless:
   "$BLENDER_EXE" -b --factory-startup -P Tools/art/blender/xp_nut_mesh.py -- [--out Art/Meshes/xp-nut-mesh/SM_XPNut.fbx]
 Units: 1 Blender unit = 1 cm. Pivot bottom centre. Never imports into Unreal.
-Hex nut from vault/assets/xp-nut.png: hexagonal prism (corner on +X), chamfered, stepped 12-sided hole with a floor, 6 bevelled top corners (task-130-01 fidelity rebuild), flat shading.
+Hex nut from vault/assets/xp-nut.png: hexagonal prism (corner on +X), chamfered, stepped 12-sided THROUGH hole (run 3), 6 bevelled top corners (task-130-01 fidelity rebuild), flat shading.
 Footprint: the placeholder XP cube is /Engine/BasicShapes/Cube (100 cm) at scale 0.3 = 30 cm (bp-pickup-xp); the hex is 30 cm across corners (X) so it fits the 30 x 30 footprint.
-Materials: M_XPNut_body (mid grey), M_XPNut_hole (cyan 0, 0.9, 1, walls), M_XPNut_hole_floor (pale cyan 0.55, 0.95, 1: rim chamfer and floor); both emissive in Unreal."""
+Materials: M_XPNut_body (mid grey), M_XPNut_glow (emissive cyan 0, 0.9, 1): one 1.2 cm ring in the hole wall at mid height."""
 import bpy, bmesh, math, json, os, sys
 import numpy as np
 from mathutils import Vector
@@ -17,26 +17,29 @@ os.makedirs(os.path.dirname(OUT), exist_ok=True)
 
 R_OUT, H = 15.0, 11.7         # circumradius (30 cm across corners), height = 45 % of across-flats 25.98
 BEVEL = 0.9                     # corner bevel: the 6 top corners are lowered by this much
-HOLE = [(H, 8.3), (H - 1.3, 7.6), (H - 2.8, 7.4), (H - 3.6, 6.4), (H - 5.1, 6.2), (H - 5.9, 5.2), (H - 7.4, 5.0), (H - 8.2, 4.2)]   # (z, radius): mouth, chamfer foot, then 3 steep+shallow bands down to the floor ring (depth 8.2 = 70 % of H)
+# Through hole (run 3): (z, radius) points, segment i joins point i to i+1. Chamfer, then alternating steep/shallow thread-like bands.
+# Segment 5 (z 6.45 -> 5.25, 1.2 cm tall, mid height 5.85) is the ONLY glow material.
+HOLE = [(H, 8.3), (10.6, 7.7), (9.0, 7.6), (8.4, 6.9), (7.2, 6.8), (6.45, 6.2), (5.25, 6.1), (4.7, 5.5), (2.9, 5.4), (2.3, 4.8), (0.0, 4.7)]
+GLOW_SEG = 5
 BUDGET = 300
 
 def srgb(h):
     c = [int(h[i:i + 2], 16) / 255 for i in (1, 3, 5)]
     return tuple(((x + 0.055) / 1.055) ** 2.4 if x > 0.04045 else x / 12.92 for x in c) + (1.0,)
-MATS = {"body": srgb("#70757B"), "hole": srgb("#00E5FF"), "hole_floor": srgb("#8CF2FF")}
+MATS = {"body": srgb("#70757B"), "glow": srgb("#00E5FF")}
 
 bpy.ops.wm.read_factory_settings(use_empty=True)
 mats = {}
 for n, c in MATS.items():
     m = bpy.data.materials.new("M_XPNut_" + n); m.diffuse_color = c; m.use_nodes = True
     b = m.node_tree.nodes["Principled BSDF"]; b.inputs["Base Color"].default_value = c; b.inputs["Roughness"].default_value = 0.8
-    if n.startswith("hole"):
+    if n == "glow":
         b.inputs["Emission Color"].default_value = c; b.inputs["Emission Strength"].default_value = 4.0
     mats[n] = m
 mesh = bpy.data.meshes.new("SM_XPNut"); obj = bpy.data.objects.new("SM_XPNut", mesh)
 bpy.context.scene.collection.objects.link(obj)
-mesh.materials.append(mats["body"]); mesh.materials.append(mats["hole"]); mesh.materials.append(mats["hole_floor"])
-MB, MH, MF = 0, 1, 2
+mesh.materials.append(mats["body"]); mesh.materials.append(mats["glow"])
+MB, MG = 0, 1
 
 bm = bmesh.new()
 def ring(z, r, n, off=0.0):
@@ -56,15 +59,16 @@ for k in range(12):
 for k in range(6):   # side pentagon (split in triangles by Blender)
     c0, m, c1 = top[2 * k], top[2 * k + 1], top[(2 * k + 2) % 12]
     f = bm.faces.new((hex_b[k], hex_b[(k + 1) % 6], c1, m, c0)); f.material_index = MB
-bm.faces.new(hex_b[::-1]).material_index = MB   # bottom
 hole = [ring(z, r, 12) for z, r in HOLE]
+for k in range(6):   # bottom: hexagon with the through hole (pentagon per hex edge)
+    b = hole[-1]
+    bm.faces.new((hex_b[k], b[2 * k], b[2 * k + 1], b[(2 * k + 2) % 12], hex_b[(k + 1) % 6])).material_index = MB
 inn = hole[0]
 for k in range(12):   # top face: bevelled corners + flat mid-edges, to the chamfer mouth
     quad(top[k], top[(k + 1) % 12], inn[(k + 1) % 12], inn[k], MB)
 for j in range(len(hole) - 1):
     for k in range(12):
-        quad(hole[j][k], hole[j + 1][k], hole[j + 1][(k + 1) % 12], hole[j][(k + 1) % 12], MF if j == 0 else MH)   # j == 0: rim chamfer (pale, brightest ring)
-bm.faces.new(hole[-1][::-1]).material_index = MF   # floor
+        quad(hole[j][k], hole[j + 1][k], hole[j + 1][(k + 1) % 12], hole[j][(k + 1) % 12], MG if j == GLOW_SEG else MB)
 bmesh.ops.recalc_face_normals(bm, faces=bm.faces[:])
 bm.faces.ensure_lookup_table(); bm.faces.index_update()
 
@@ -122,18 +126,18 @@ if not lm_ok: warnings.append("LightMap check FAILED")
 if tris > BUDGET: warnings.append("tris above 300 budget")
 if abs(lo.z) > 1e-4 or abs((lo.x + hi.x) / 2) > 1e-3 or abs((lo.y + hi.y) / 2) > 1e-3: warnings.append("pivot not bottom centre")
 if max(hi.x - lo.x, hi.y - lo.y) > 30.01: warnings.append("footprint above 30 cm")
-warnings.append("hole emissive is not carried by the FBX: the Unreal material must set the emissive colour (0, 0.9, 1) on M_XPNut_hole")
+warnings.append("glow emissive is not carried by the FBX: the Unreal material must set the emissive colour (0, 0.9, 1) on M_XPNut_glow")
 FIDELITY = {
-    "run": 2, "returns_used": 3, "final_render": "Art/Meshes/xp-nut-mesh/SM_XPNut.preview.png",
+    "run": 3, "returns_used": 0, "final_render": "Art/Meshes/xp-nut-mesh/SM_XPNut.preview.png",
     "camera": "azimuth 11, elevation 52, ortho 42 (Tools/art/blender/xp_nut_preview.py)",
     "criteria": {
-        "C1": {"verdict": "pass", "evidence": "Hexagonal prism 30 x 25.98 x 11.7 cm, height 45 % of across-flats; still differs: source is slightly taller-looking from its higher camera."},
-        "C2": {"verdict": "pass", "evidence": "Hole depth 8.2 cm = 70 % of height; floor visible as a pale ellipse well below the top face; 3 steep + 2 shallow wall bands, far wall lit, near wall hidden by the rim; walls (0,0.9,1) and floor (0.55,0.95,1) are two materials; shallow bands read clearly brighter than steep bands on the far wall. Still differs: source bands are broader and its floor is larger; ours has thinner far-wall bands and a smaller floor."},
-        "C3": {"verdict": "pass", "evidence": "Chamfer ring around the hole mouth and 6 bevelled top corners visible as facets; still differs: source bevels are a bit larger."},
-        "C4": {"verdict": "pass", "evidence": "Body one mid grey; every hole surface cyan or pale cyan; no other colour."},
-        "C5": {"verdict": "pass", "evidence": "tris_out 224 (budget 300); 30 cm across corners; pivot bottom centre."},
+        "C1": {"verdict": "pass", "evidence": "Hexagonal prism 30 x 25.98 x 11.7 cm, height 45 % of across-flats; still differs: the source looks slightly taller from its higher camera."},
+        "C2": {"verdict": "pass", "evidence": "The light-grey background shows through a 12-sided opening at the bottom of the hole, no floor; top diameter 63.9 % of across-flats; 4 stepped bands (steep/shallow alternation) clearly visible on the far wall; the whole wall is grey. Still differs: bands are thinner and the hole narrows more than the source, which has a wide floor."},
+        "C3": {"verdict": "pass", "evidence": "Chamfer facets around the hole mouth and 6 bevelled top corners visible; still differs: source bevels are a bit larger."},
+        "C4": {"verdict": "pass", "evidence": "Exactly two materials, M_XPNut_body (grey: body, chamfer, whole hole wall) and M_XPNut_glow (cyan 0, 0.9, 1); pale floor material removed."},
+        "C5": {"verdict": "pass", "evidence": "tris_out 300 (budget 300); 30 cm across corners; pivot bottom centre."},
         "C6": {"verdict": "pass", "evidence": "Flat shading, large facets, no texture."},
-        "C7": {"verdict": "pass", "evidence": "Rim chamfer (pale cyan) is the brightest ring, then the saturated walls, then the floor; still differs: the source rim has a soft glow halo that Blender does not render."},
+        "C7": {"verdict": "pass", "evidence": "Cyan appears only as one thin band (z 5.25 to 6.45 cm, 1.2 cm tall, mid height) on the far wall, reads as a glowing seam; nothing else cyan. Still differs: no bloom in Blender (Unreal adds it), so the source's cyan wash is absent here by owner decision."},
     },
 }
 report = {
@@ -147,7 +151,7 @@ report = {
         "bounds_min": [round(float(u1a.min()), 5)], "bounds_max": [round(float(u1a.max()), 5)], "min_gap_px_at_256": round(float(min_gap), 3),
         "min_border_px_at_256": round(float(border), 3), "required_margin_px": 2, "pass": bool(lm_ok)}},
     "shading": "flat", "warnings": warnings,
-    "hole_depth_cm": round(H - HOLE[-1][0], 2), "hole_depth_pct_of_height": round(100 * (H - HOLE[-1][0]) / H, 1),
+    "hole": "through, no floor", "hole_top_diameter_pct_of_across_flats": round(100 * 2 * HOLE[0][1] / (2 * RF), 1), "glow_ring_cm": {"z_from": HOLE[GLOW_SEG + 1][0], "z_to": HOLE[GLOW_SEG][0]},
     "fidelity": FIDELITY,
 }
 bpy.ops.object.select_all(action="DESELECT"); obj.select_set(True); bpy.context.view_layer.objects.active = obj

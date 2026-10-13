@@ -3,7 +3,7 @@
   "route": "blender",
   "script": "Tools/art/blender/xp_nut_mesh.py",
   "source_image": "vault/assets/xp-nut.png",
-  "tris_out": 224,
+  "tris_out": 300,
   "budget_tris": 300,
   "dimensions_cm": {
     "x": 30.0,
@@ -24,8 +24,7 @@
   ],
   "materials": [
     "M_XPNut_body",
-    "M_XPNut_hole",
-    "M_XPNut_hole_floor"
+    "M_XPNut_glow"
   ],
   "uv_layers": [
     "UVMap",
@@ -36,7 +35,7 @@
       "tile_cm": 100.0
     },
     "LightMap": {
-      "faces": 104,
+      "faces": 144,
       "overlapping_face_pairs": 0,
       "bounds_min": [
         0.01172
@@ -52,35 +51,39 @@
   },
   "shading": "flat",
   "warnings": [
-    "hole emissive is not carried by the FBX: the Unreal material must set the emissive colour (0, 0.9, 1) on M_XPNut_hole"
+    "glow emissive is not carried by the FBX: the Unreal material must set the emissive colour (0, 0.9, 1) on M_XPNut_glow"
   ],
-  "hole_depth_cm": 8.2,
-  "hole_depth_pct_of_height": 70.1,
+  "hole": "through, no floor",
+  "hole_top_diameter_pct_of_across_flats": 63.9,
+  "glow_ring_cm": {
+    "z_from": 5.25,
+    "z_to": 6.45
+  },
   "fidelity": {
-    "run": 2,
-    "returns_used": 3,
+    "run": 3,
+    "returns_used": 0,
     "final_render": "Art/Meshes/xp-nut-mesh/SM_XPNut.preview.png",
     "camera": "azimuth 11, elevation 52, ortho 42 (Tools/art/blender/xp_nut_preview.py)",
     "criteria": {
       "C1": {
         "verdict": "pass",
-        "evidence": "Hexagonal prism 30 x 25.98 x 11.7 cm, height 45 % of across-flats; still differs: source is slightly taller-looking from its higher camera."
+        "evidence": "Hexagonal prism 30 x 25.98 x 11.7 cm, height 45 % of across-flats; still differs: the source looks slightly taller from its higher camera."
       },
       "C2": {
         "verdict": "pass",
-        "evidence": "Hole depth 8.2 cm = 70 % of height; floor visible as a pale ellipse well below the top face; 3 steep + 2 shallow wall bands, far wall lit, near wall hidden by the rim; walls (0,0.9,1) and floor (0.55,0.95,1) are two materials; shallow bands read clearly brighter than steep bands on the far wall. Still differs: source bands are broader and its floor is larger; ours has thinner far-wall bands and a smaller floor."
+        "evidence": "The light-grey background shows through a 12-sided opening at the bottom of the hole, no floor; top diameter 63.9 % of across-flats; 4 stepped bands (steep/shallow alternation) clearly visible on the far wall; the whole wall is grey. Still differs: bands are thinner and the hole narrows more than the source, which has a wide floor."
       },
       "C3": {
         "verdict": "pass",
-        "evidence": "Chamfer ring around the hole mouth and 6 bevelled top corners visible as facets; still differs: source bevels are a bit larger."
+        "evidence": "Chamfer facets around the hole mouth and 6 bevelled top corners visible; still differs: source bevels are a bit larger."
       },
       "C4": {
         "verdict": "pass",
-        "evidence": "Body one mid grey; every hole surface cyan or pale cyan; no other colour."
+        "evidence": "Exactly two materials, M_XPNut_body (grey: body, chamfer, whole hole wall) and M_XPNut_glow (cyan 0, 0.9, 1); pale floor material removed."
       },
       "C5": {
         "verdict": "pass",
-        "evidence": "tris_out 224 (budget 300); 30 cm across corners; pivot bottom centre."
+        "evidence": "tris_out 300 (budget 300); 30 cm across corners; pivot bottom centre."
       },
       "C6": {
         "verdict": "pass",
@@ -88,7 +91,7 @@
       },
       "C7": {
         "verdict": "pass",
-        "evidence": "Rim chamfer (pale cyan) is the brightest ring, then the saturated walls, then the floor; still differs: the source rim has a soft glow halo that Blender does not render."
+        "evidence": "Cyan appears only as one thin band (z 5.25 to 6.45 cm, 1.2 cm tall, mid height) on the far wall, reads as a glowing seam; nothing else cyan. Still differs: no bloom in Blender (Unreal adds it), so the source's cyan wash is absent here by owner decision."
       }
     }
   }
