@@ -30,6 +30,7 @@
 #include "Player/RRMiner.h"
 #include "ProfilingDebugging/CsvProfiler.h"
 #include "ProfilingDebugging/MiscTrace.h"
+#include "Pickups/RRPickup.h"
 #include "Pickups/RRPickupSubsystem.h"
 #include "Pool/RRActorPoolSubsystem.h"
 #include "RogueRigs.h"
@@ -112,6 +113,18 @@ namespace RRStress
 	TAutoConsoleVariable<FString> CVarCounts(TEXT("rr.Stress.Counts"), TEXT("50,100,200,300,400"),
 		TEXT("Default comma-separated robot counts of rr.Stress.Run."), ECVF_Cheat);
 
+	TAutoConsoleVariable<FString> CVarPickupClass(TEXT("rr.Stress.PickupClass"), TEXT("/Game/RogueRigs/Blueprints/Pickups/BP_PickupXP.BP_PickupXP_C"),
+		TEXT("Class path of the XP nuts spawned by rr.Stress.Pickups."), ECVF_Cheat);
+
+	TAutoConsoleVariable<FString> CVarPickupBigClass(TEXT("rr.Stress.PickupBigClass"), TEXT("/Game/RogueRigs/Blueprints/Pickups/BP_PickupXPBig.BP_PickupXPBig_C"),
+		TEXT("Class path of the big XP chips spawned by rr.Stress.Pickups."), ECVF_Cheat);
+
+	/** Protected pickup members read by rr.Stress.Pickups (same idiom as FSpawnerAccess; the pickup class is unchanged). */
+	struct FPickupAccess : public ARRPickup
+	{
+		static float PopMaxDistanceOf(const ARRPickup* Pickup) { return Pickup->*(&FPickupAccess::PopMaxDistance); }
+	};
+
 	/** Protected spawner members the game mode drives (same idiom as Tests/RRTestAccess.h; the spawner class is unchanged). */
 	struct FSpawnerAccess : public ARREnemySpawner
 	{
@@ -189,6 +202,25 @@ namespace RRStress
 		}
 	}
 
+	void HandlePickups(const TArray<FString>& Args, UWorld* World)
+	{
+		URRStressSubsystem* Stress = Get(World);
+		if (!Stress || Args.IsEmpty())
+		{
+			UE_LOG(LogRogueRigs, Warning, TEXT("rr.Stress.Pickups <Nuts> [Chips]: needs a count and a game world."));
+			return;
+		}
+		Stress->SpawnStressPickups(FCString::Atoi(*Args[0]), Args.IsValidIndex(1) ? FCString::Atoi(*Args[1]) : 0);
+	}
+
+	void HandleClearPickups(const TArray<FString>& Args, UWorld* World)
+	{
+		if (URRStressSubsystem* Stress = Get(World))
+		{
+			Stress->ClearStressPickups();
+		}
+	}
+
 	void HandlePeace(const TArray<FString>& Args, UWorld* World)
 	{
 		if (URRStressSubsystem* Stress = Get(World))
@@ -230,6 +262,14 @@ namespace RRStress
 	FAutoConsoleCommandWithWorldAndArgs CmdClear(TEXT("rr.Stress.Clear"),
 		TEXT("rr.Stress.Clear: destroys every robot spawned by rr.Stress.Spawn."),
 		FConsoleCommandWithWorldAndArgsDelegate::CreateStatic(&HandleClear), ECVF_Cheat);
+
+	FAutoConsoleCommandWithWorldAndArgs CmdPickups(TEXT("rr.Stress.Pickups"),
+		TEXT("rr.Stress.Pickups <Nuts> [Chips]: spawns XP nuts and big XP chips through the pickup pool around the miner, outside its pickup radius (never collected)."),
+		FConsoleCommandWithWorldAndArgsDelegate::CreateStatic(&HandlePickups), ECVF_Cheat);
+
+	FAutoConsoleCommandWithWorldAndArgs CmdClearPickups(TEXT("rr.Stress.ClearPickups"),
+		TEXT("rr.Stress.ClearPickups: returns every pickup spawned by rr.Stress.Pickups to the pool (no collection, no XP)."),
+		FConsoleCommandWithWorldAndArgsDelegate::CreateStatic(&HandleClearPickups), ECVF_Cheat);
 
 	FAutoConsoleCommandWithWorldAndArgs CmdPeace(TEXT("rr.Stress.Peace"),
 		TEXT("rr.Stress.Peace <0|1>: 1 = miner invulnerable and weapons stopped."),
@@ -398,6 +438,154 @@ int32 URRStressSubsystem::GetStressEnemyCount()
 		return !Enemy.IsValid() || Enemy->IsActorBeingDestroyed() || Enemy->IsDead();
 	});
 	return StressEnemies.Num();
+}
+
+int32 URRStressSubsystem::SpawnStressPickups(int32 Nuts, int32 Chips)
+{
+	UWorld* World = GetWorld();
+	Nuts = FMath::Max(0, Nuts);
+	Chips = FMath::Max(0, Chips);
+	const TSubclassOf<ARRPickup> NutClass = LoadClass<ARRPickup>(nullptr, *RRStress::CVarPickupClass.GetValueOnGameThread());
+	const TSubclassOf<ARRPickup> ChipClass = LoadClass<ARRPickup>(nullptr, *RRStress::CVarPickupBigClass.GetValueOnGameThread());
+	URRFlowFieldSubsystem* FlowField = World ? World->GetSubsystem<URRFlowFieldSubsystem>() : nullptr;
+	URRPickupSubsystem* PickupSubsystem = World ? World->GetSubsystem<URRPickupSubsystem>() : nullptr;
+	const ARRMiner* Miner = World ? RRWorld::FindLivingMiner(World) : nullptr;
+	if (!FlowField || !PickupSubsystem || !Miner || (Nuts > 0 && !NutClass) || (Chips > 0 && !ChipClass) || Nuts + Chips <= 0)
+	{
+		UE_LOG(LogRogueRigs, Warning, TEXT("Stress: cannot spawn pickups (world, flow field, pickup subsystem, miner, class or count missing)."));
+		return 0;
+	}
+	FlowField->UpdateField();
+	const ARRArenaGrid* Grid = FlowField->GetGrid();
+	if (!Grid)
+	{
+		return 0;
+	}
+
+	// Keep out of the magnet: the pop moves a pickup up to PopMaxDistance from its cell center, a wrap pass up to a quarter-cell
+	// corner offset; the magnet latches within the miner's PickupRadius (2D).
+	const float Quarter = Grid->GetCellSize() * 0.25f;
+	float PopMax = 0.f;
+	for (const TSubclassOf<ARRPickup>& Class : { NutClass, ChipClass })
+	{
+		if (Class)
+		{
+			PopMax = FMath::Max(PopMax, RRStress::FPickupAccess::PopMaxDistanceOf(GetDefault<ARRPickup>(Class)));
+		}
+	}
+	const float PickupRadius = Miner->GetPickupRadius();
+	const float MinDistance = PickupRadius + PopMax + Quarter * UE_SQRT_2;
+	const FVector MinerLocation = Miner->GetActorLocation();
+
+	// Reachable walkable cells at least MinCells steps from the miner and outside MinDistance, nearest first.
+	const int32 MinCells = FMath::Max(0, RRStress::CVarMinCells.GetValueOnGameThread());
+	TArray<TPair<int32, FIntPoint>> Cells;
+	TArray<FIntPoint> Reachable;
+	FlowField->GatherReachableCells(Reachable, [MinCells, Grid, &MinerLocation, MinDistance, &Cells](FIntPoint Cell, int32 Steps)
+	{
+		if (Steps < MinCells || FVector::DistSquared2D(Grid->GetCellCenter(Cell.X, Cell.Y), MinerLocation) <= FMath::Square(MinDistance))
+		{
+			return false;
+		}
+		Cells.Emplace(Steps, Cell);
+		return true;
+	});
+	if (Cells.IsEmpty())
+	{
+		UE_LOG(LogRogueRigs, Warning, TEXT("Stress: no reachable cell farther than %.0f uu from the miner to spawn pickups on."), MinDistance);
+		return 0;
+	}
+	Cells.Sort([](const TPair<int32, FIntPoint>& A, const TPair<int32, FIntPoint>& B) { return A.Key < B.Key; });
+
+	const int32 Total = Nuts + Chips;
+	if (Total > Cells.Num())
+	{
+		UE_LOG(LogRogueRigs, Log, TEXT("Stress: %d pickups for %d cells outside the radius: wrapping with quarter-cell corner offsets."), Total, Cells.Num());
+	}
+
+	// Synchronous pool delivery (the test setting, SpawnMaxFrames 0) so every pickup is known now; the reuse and reset path is the real one.
+	const int32 SavedMaxFrames = PickupSubsystem->GetSpawnMaxFrames();
+	PickupSubsystem->SetSpawnMaxFrames(0);
+	int32 SpawnedNuts = 0;
+	int32 SpawnedChips = 0;
+	for (int32 Index = 0; Index < Total; ++Index)
+	{
+		// Chips spread evenly among the nuts (index i is a chip when floor((i + 1) * Chips / Total) steps up).
+		const bool bChip = (Index + 1) * Chips / Total > Index * Chips / Total;
+		const TSubclassOf<ARRPickup> Class = bChip ? ChipClass : NutClass;
+		const int32 Pass = Index / Cells.Num();
+		const FIntPoint Cell = Cells[Index % Cells.Num()].Value;
+		FVector Offset = FVector::ZeroVector;
+		if (Pass > 0)
+		{
+			const int32 Corner = (Pass - 1) % 4;
+			Offset = FVector((Corner & 1) ? Quarter : -Quarter, (Corner & 2) ? Quarter : -Quarter, 0.f);
+		}
+		// Same request as a grid drop at a cell center (pooled acquire, reset hooks, root template scale); no XP merge.
+		const FVector Location = Grid->GetCellCenter(Cell.X, Cell.Y) + Offset;
+		if (ARRPickup* Pickup = PickupSubsystem->RequestSpawn(Class, Location, nullptr, GetDefault<ARRPickup>(Class)->GetOreValue()))
+		{
+			StressPickups.Add(Pickup);
+			++(bChip ? SpawnedChips : SpawnedNuts);
+		}
+	}
+	PickupSubsystem->SetSpawnMaxFrames(SavedMaxFrames);
+
+	int32 AliveChips = 0;
+	int32 Magnetized = 0;
+	const int32 Alive = GetStressPickupCount(&AliveChips, &Magnetized);
+	UE_LOG(LogRogueRigs, Log, TEXT("Stress: spawned %d %s and %d %s on %d candidate cells farther than %.0f uu (pickup radius %.0f + pop %.0f + corner %.0f); stress pickups alive %d (nuts %d, chips %d, magnetized %d), pickups registered %d."),
+		SpawnedNuts, NutClass ? *NutClass->GetName() : TEXT("-"), SpawnedChips, ChipClass ? *ChipClass->GetName() : TEXT("-"), Cells.Num(),
+		MinDistance, PickupRadius, PopMax, Quarter * UE_SQRT_2, Alive, Alive - AliveChips, AliveChips, Magnetized, PickupSubsystem->GetPickupCount());
+	return SpawnedNuts + SpawnedChips;
+}
+
+int32 URRStressSubsystem::ClearStressPickups()
+{
+	int32 Chips = 0;
+	int32 Magnetized = 0;
+	const int32 Alive = GetStressPickupCount(&Chips, &Magnetized);
+	URRActorPoolSubsystem* Pool = GetWorld() ? GetWorld()->GetSubsystem<URRActorPoolSubsystem>() : nullptr;
+	int32 Removed = 0;
+	for (const TWeakObjectPtr<ARRPickup>& Pickup : StressPickups)
+	{
+		// The pool release runs OnPoolReleased (unregister, reset), the end of a collection without its XP and events.
+		if (Pool && Pool->IsPoolMember(Pickup.Get()) ? Pool->Release(Pickup.Get()) : Pickup->Destroy())
+		{
+			++Removed;
+		}
+	}
+	StressPickups.Reset();
+	const URRPickupSubsystem* PickupSubsystem = GetWorld() ? GetWorld()->GetSubsystem<URRPickupSubsystem>() : nullptr;
+	UE_LOG(LogRogueRigs, Log, TEXT("Stress: removed %d stress pickups (alive before: %d, nuts %d, chips %d, magnetized %d); pickups registered %d."),
+		Removed, Alive, Alive - Chips, Chips, Magnetized, PickupSubsystem ? PickupSubsystem->GetPickupCount() : 0);
+	return Removed;
+}
+
+int32 URRStressSubsystem::GetStressPickupCount(int32* OutChips, int32* OutMagnetized)
+{
+	StressPickups.RemoveAll([](const TWeakObjectPtr<ARRPickup>& Pickup)
+	{
+		return !Pickup.IsValid() || Pickup->IsActorBeingDestroyed() || URRActorPoolSubsystem::IsPooledIdle(Pickup.Get())
+			|| Pickup->GetPhase() == ERRPickupPhase::Collected;
+	});
+	const UClass* ChipClass = LoadClass<ARRPickup>(nullptr, *RRStress::CVarPickupBigClass.GetValueOnGameThread());
+	int32 Chips = 0;
+	int32 Magnetized = 0;
+	for (const TWeakObjectPtr<ARRPickup>& Pickup : StressPickups)
+	{
+		Chips += ChipClass && Pickup->GetClass() == ChipClass ? 1 : 0;
+		Magnetized += Pickup->IsMagnetized() ? 1 : 0;
+	}
+	if (OutChips)
+	{
+		*OutChips = Chips;
+	}
+	if (OutMagnetized)
+	{
+		*OutMagnetized = Magnetized;
+	}
+	return StressPickups.Num();
 }
 
 void URRStressSubsystem::SetPeace(bool bInPeace)

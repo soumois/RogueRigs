@@ -10,6 +10,7 @@
 class ARRArenaGrid;
 class ARREnemy;
 class ARREnemySpawner;
+class ARRPickup;
 
 /** What the miner and the robots do during a stress run (stress-test-m1 scenarios). */
 UENUM()
@@ -145,6 +146,10 @@ struct FRRStressStepResult
  * - rr.Stress.Spawn <N> [Class]: spawns N robots (default: the chaser class of the first ARREnemySpawner) on walkable cells
  *   reachable in the flow field, nearest first from rr.Stress.MinCells flow-field steps away from the miner, ignoring MaxAlive.
  * - rr.Stress.Clear: destroys every robot the tool spawned (no death, no XP).
+ * - rr.Stress.Pickups <Nuts> <Chips>: spawns XP nuts (rr.Stress.PickupClass) and big XP chips (rr.Stress.PickupBigClass)
+ *   through the pickup pool on reachable walkable cells outside the miner's pickup radius plus the pop distance, so none is
+ *   attracted or collected (task-138-01).
+ * - rr.Stress.ClearPickups: returns every stress pickup to the pool (no collection, no XP).
  * - rr.Stress.Peace <0|1>: 1 makes the miner invulnerable (loose State.Invulnerable) and stops its weapons, so counts hold.
  * - rr.Stress.Run [Counts] [SettleSeconds] [MeasureSeconds] [Quit] [Mode] [Class]: Mode peace (S0, default), fire (S2),
  *   burst (S7), chain, dig, walk or game (real game, counts = MaxAlive steps), see ERRStressMode; Class as rr.Stress.Spawn. Disables timed spawners, applies the mode, then for each
@@ -184,6 +189,20 @@ public:
 
 	/** Stress robots alive (valid, not being destroyed, not dead). Prunes the list. */
 	int32 GetStressEnemyCount();
+
+	/**
+	 * Spawns Nuts pickups of rr.Stress.PickupClass and Chips of rr.Stress.PickupBigClass (chips spread evenly among the nuts)
+	 * through URRPickupSubsystem::RequestSpawn (the pooled drop path, no XP merge), one per reachable walkable cell at least
+	 * rr.Stress.MinCells flow-field steps away and farther (2D) than the miner's PickupRadius plus the largest PopMaxDistance,
+	 * nearest first; wraps with a quarter-cell corner offset when cells run out. Returns the number spawned.
+	 */
+	int32 SpawnStressPickups(int32 Nuts, int32 Chips);
+
+	/** Returns every live stress pickup to the actor pool (destroys it when not pooled): no collection, no XP. Returns how many. */
+	int32 ClearStressPickups();
+
+	/** Stress pickups alive (valid, not idle in the pool, not collected); prunes the list. OutChips, when set, gets those of rr.Stress.PickupBigClass, OutMagnetized those attracted. */
+	int32 GetStressPickupCount(int32* OutChips = nullptr, int32* OutMagnetized = nullptr);
 
 	/** Peace on: miner invulnerable and weapons stopped. Off: tag removed and weapons fire again. */
 	void SetPeace(bool bInPeace);
@@ -289,6 +308,9 @@ protected:
 
 	/** Robots spawned by the tool. */
 	TArray<TWeakObjectPtr<ARREnemy>> StressEnemies;
+
+	/** Pickups spawned by SpawnStressPickups. */
+	TArray<TWeakObjectPtr<ARRPickup>> StressPickups;
 
 	/** Steps of the active run. */
 	TArray<int32> RunCounts;
