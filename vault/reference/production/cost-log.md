@@ -182,6 +182,7 @@ kind: note
 | [[task-107-01-barrel-integration]] | opus | 1 | 0k | 40k | 474k | 9k |
 | [[task-107-02-barrel-integration-bp]] | sonnet | 3 | 0k | 117k | 3235k | 1k |
 | [[task-108-01-barrel-on-floor]] | opus | 1 | 0k | 69k | 1251k | 16k |
+| [[task-106-01-wear-mask-texture]] | sonnet | 1 | 0k | 70k | 947k | 17k |
 
 ## Totals
 | Scope | Input | Cache write | Cache read | Output |

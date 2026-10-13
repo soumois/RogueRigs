@@ -13,7 +13,7 @@ status: in-progress
 - gdd_check: done by the Orchestrator when the task is planned (2026-10-12).
 - confirmed_by_owner: yes (2026-10-12): the proposed sizes are OK for now; the owner will come back later for better positions
 - milestone: M2
-- next_step: task-106-01-weapons-ui-size
+- next_step: task-106-02-weapons-ui-size
 - result: open
 
 ## Subtasks

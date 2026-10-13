@@ -3,7 +3,7 @@ id: task-106-01-weapons-ui-size
 description: "Weapon slots resized like the DRGS reference at the bottom centre; column width bug fixed."
 parent: task-106-weapons-ui-size
 kind: task
-status: in-progress
+status: done
 ---
 # Weapons UI size
 
@@ -19,7 +19,7 @@ status: in-progress
 - tokens: open
 - runs: open
 - milestone: M2
-- result: open
+- result: Cause: SizeBox bOverride_WidthOverride flags were false so the 160 px columns collapsed to their text; fixed (and BarBox); cells 150 x 90, gap 12, row 636 px, frames, IconZone 120 x 50, bars 130 x 14, subtitles top -190; read back, saved, not seen on screen. Commits 4251176, d4d5744.
 
 ## Relations
 - [[task-106-weapons-ui-size]] — parent global task.
