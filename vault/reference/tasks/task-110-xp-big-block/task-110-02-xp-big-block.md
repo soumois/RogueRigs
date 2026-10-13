@@ -3,7 +3,7 @@ id: task-110-02-xp-big-block
 description: "A pooled big XP pickup Blueprint exists (bigger, bright white with a cyan glow) and is set as the big block class."
 parent: task-110-xp-big-block
 kind: task
-status: in-progress
+status: done
 ---
 # Big XP block Blueprint
 
@@ -15,11 +15,11 @@ status: in-progress
 - done_when: BP_PickupXPBig compiled 0 errors and saved; set as the big block class; docs updated; lint clean; committed.
 - editor_state: open
 - token_ceiling: 40000
-- model: open
-- tokens: open
-- runs: open
+- model: sonnet
+- tokens: input 70, cache write 45814, cache read 1141405, output 15905
+- runs: 1
 - milestone: M2
-- result: open
+- result: BP_PickupXPBig (duplicate of BP_PickupXP, root scale 0.54, MI_PickupXPBig on M_GreyBoxGlow: white, GlowColor 0.75/1/1, GlowAmount 4) and XPBigPickupClass set on BP_PickupXP (feature on); trail inherits the scale; headless rerun to confirm; not seen. Commits 6e1eff5, 7247abb.
 
 ## Relations
 - [[task-110-xp-big-block]] — parent global task.

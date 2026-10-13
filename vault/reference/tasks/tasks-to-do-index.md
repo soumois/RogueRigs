@@ -10,4 +10,3 @@ A global task moves to [[tasks-done-index]] when it is done (`vault/scripts/task
 
 ## Relations
 - [[tasks-index]] — parent index.
-- [[task-110-xp-big-block]] — When many XP cubes fall in one place they become one bigger block of another colour worth the same total XP. Status in-progress.
