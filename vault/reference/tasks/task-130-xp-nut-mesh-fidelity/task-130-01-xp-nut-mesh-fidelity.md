@@ -41,6 +41,12 @@ status: in-progress
   - C4 Materials: exactly two: M_XPNut_body (grey, body, hole wall and chamfer) and M_XPNut_glow (emissive cyan (0, 0.9, 1)). The pale floor material is removed.
   - C7 Glow source: M_XPNut_glow is ONE thin ring about 1.2 cm tall, inset in the hole wall at mid height, seen as a glowing seam; nothing else is cyan. In Unreal the bloom spreads this glow over the inside of the hole.
 - render: same camera as run 1 (azimuth 11, elevation 52, ortho 42); in the preview you may lower the emission so the ring reads as a band; the ground plane under the nut is the light-grey background.
+- run: 4 (owner 2026-10-13: the blue band is still there; simplify the centre: flat top face, a slope as the transition, then a FLAT centre; the owner says the slope joins two faces that are 90 degrees apart and is not sure it is 45 degrees; 5 returns maximum, 1 or 2 expected)
+- fidelity_criteria run 4 (C1, C3, C5, C6 unchanged; C2, C4, C7 replaced; C3 now means the 6 corner bevels of the top face and the slope ring below):
+  - C2 Flat centre: top face flat; a single sloped ring goes down from the top face to the centre; the centre is ONE flat disc at the bottom of the slope, parallel to the top face, no vertical wall, no steps, no bands, no ring. Estimate the slope angle from vault/assets/xp-nut.png (do NOT assume 45 degrees) and report your estimate; the slope depth is what that angle gives between the top face and the disc. Disc diameter about 40 to 50 % of the across-flats width, outer edge of the slope about 60 to 65 %.
+  - C4 Materials: exactly two: M_XPNut_body (grey: body, slope ring) and M_XPNut_glow (emissive cyan (0, 0.9, 1)).
+  - C7 Glow source: M_XPNut_glow is ONLY the flat centre disc; nothing else is cyan; no blue band anywhere. In Unreal the bloom spreads the glow.
+- render: same camera as runs 1 to 3 (azimuth 11, elevation 52, ortho 42); in the preview only you may lower the emission so the disc is not a flat white blob.
 
 ## Relations
 - [[task-130-xp-nut-mesh-fidelity]] — parent global task.
