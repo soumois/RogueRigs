@@ -3,7 +3,7 @@ id: task-145-03-disc-material
 description: "Create the additive radial disc material and its two instances and set the new slot on both pickup Blueprints."
 parent: task-145-xp-glow-disc
 kind: task
-status: todo
+status: in-progress
 ---
 # XP glow disc: material and Blueprint slots
 

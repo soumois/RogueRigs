@@ -3,7 +3,7 @@ id: task-145-02-disc-reimport
 description: "Reimport SM_XPNut and SM_XPChipBig in place so they gain the glow_disc slot."
 parent: task-145-xp-glow-disc
 kind: task
-status: in-progress
+status: done
 ---
 # XP glow disc: reimport the two meshes
 
@@ -15,11 +15,11 @@ status: in-progress
 - done_when: Tool exits 0; both assets show the glow_disc slot last (nut 3 slots, chip 8), paths unchanged, no duplicate asset; the body bounds checked from the script output or the report (the total bounds include the disc); the two .uasset committed by name; the Blueprints are NOT edited here (their overrides are step 3)
 - editor_state: closed
 - token_ceiling: open
-- model: open
-- tokens: open
-- runs: open
+- model: sonnet
+- tokens: input 12, cache write 13582, cache read 69816, output 126
+- runs: 1
 - milestone: M2
-- result: open
+- result: SM_XPNut (3 slots) and SM_XPChipBig (8 slots) reimported in place with glow_disc, scale correct, no duplicate asset, tool exit 0.
 
 ## Relations
 - [[task-145-xp-glow-disc]] — parent global task.
