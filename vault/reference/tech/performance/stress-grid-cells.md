@@ -1,6 +1,6 @@
 ---
 id: stress-grid-cells
-description: "Cell size stress test (80², 160², 240² cells), cause, verdict and index of the later measurement sections. Open for the verdict or to pick a period."
+description: "Cell size stress test (80², 160², 240² cells), cause, verdict and index of the later measurement sections. Open for the verdict or a period."
 parent: performance-index
 kind: doc
 ---
