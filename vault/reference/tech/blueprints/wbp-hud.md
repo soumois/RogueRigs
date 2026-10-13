@@ -17,13 +17,13 @@ kind: doc
 | HealthStatus ([[wbp-health-status]]) | 0,0 to 1,1 | 0,0,0,0 | 0,0 | 0 | HitTestInvisible |
 | XPStatus ([[wbp-xp-status]]) | 0,0 to 1,1 | 0,0,0,0 | 0,0 | 0 | HitTestInvisible |
 | Weapons ([[wbp-weapons]]) | 0.5,1 | 0,-54, auto size | 0.5,1 | 0 | HitTestInvisible |
-| Subtitles ([[wbp-subtitles]]) | 0.5,1 | 0,-140,900,80 | 0.5,1 | 0 | HitTestInvisible |
+| Subtitles ([[wbp-subtitles]]) | 0.5,1 | 0,-190,900,80 | 0.5,1 | 0 | HitTestInvisible |
 | UpgradeChoice ([[wbp-upgrade-choice]]) | 0,0 to 1,1 | 0,0,0,0 | 0,0 | 10 | SelfHitTestInvisible |
 | AlertObjectives ([[wbp-alert-objectives]]) | 0,0 to 1,1 | 0,0,0,0 | 0,0 | 8 (was 20 in task-094-07) | SelfHitTestInvisible |
 | MinimapLocator ([[wbp-minimap-locator]]) | 0,0 to 1,1 | 0,0,0,0 | 0,0 | 6 | HitTestInvisible |
 
 - z-order rule: the cards screen (10) paints above the alert bar and the objective texts (8), which are above the minimap and locator (6) and the always-on panels (0). The end screen is inside WBP_AlertObjectives, so it is above everything except UpgradeChoice; this is correct because the run end closes any upgrade screen first ([[sys-hud-events]]), so the two never show together. A z-order of a canvas child orders the whole sub-widget, so an inner z cannot get above a sibling with a higher z.
-- layout check (task-094-09, computed from the read-back values, not seen on screen): weapons row x 640..1280, y about 962..1026 with the turret line visible (about 994 without); subtitles x 510..1410, y 860..940; XP bar y 1044..1060 (x 90..1900), level text y 1038..; alert bar x 660..1260, y 48..84; objective texts y 140..236; minimap x 20..220, y 20..220; health bar x 20..300, y 232..260, text from 264. No overlap in the stack; the horde and event icons overlap the alert bar edge by design.
+- layout check (task-094-09, computed from the read-back values, not seen on screen): weapons row (task-106-01: cells 150 x 90, gap 12) x 642..1278, y 936..1026 with the turret line above it (y about 900..936); subtitles x 510..1410, y 810..890 (bottom edge 190 above the screen bottom, moved up by task-106-01); XP bar y 1044..1060 (x 90..1900), level text y 1038..; alert bar x 660..1260, y 48..84; objective texts y 140..236; minimap x 20..220, y 20..220; health bar x 20..300, y 232..260, text from 264. No overlap in the stack; the horde and event icons overlap the alert bar edge by design.
 - exposed_defaults: none.
 - logic_in_bp: none.
 - history: the former contents (cards, alerts, weapons, health, XP, minimap, locator, subtitles) moved to the sub-widget nodes in tasks 094-03 to 094-08; read the sub-widget node for any former behaviour.
