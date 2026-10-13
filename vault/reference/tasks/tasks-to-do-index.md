@@ -10,4 +10,3 @@ A global task moves to [[tasks-done-index]] when it is done (`vault/scripts/task
 
 ## Relations
 - [[tasks-index]] — parent index.
-- [[task-106-weapons-ui-size]] — The weapon slots are bigger, like the DRGS reference (framed slots at the bottom centre), and the columns really have their set width. Status in-progress.

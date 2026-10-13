@@ -177,7 +177,7 @@ kind: note
 | [[task-105-01-hud-insights]] | opus | 1 | 0k | 75k | 1097k | 18k |
 | [[task-101-04-barrel-mesh]] | sonnet | 3 | 0k | 69k | 355k | 6k |
 | [[task-101-05-barrel-wear-mask]] | sonnet | 1 | 0k | 35k | 520k | 1k |
-| [[task-106-02-scratch-mask]] | sonnet | 1 | 0k | 18k | 101k | 1k |
+| [[task-106-02-scratch-mask]] | sonnet | 2 | 0k | 119k | 3397k | 38k |
 | [[task-101-06-barrel-edge-wear]] | sonnet | 1 | 0k | 45k | 329k | 1k |
 | [[task-107-01-barrel-integration]] | opus | 1 | 0k | 40k | 474k | 9k |
 | [[task-107-02-barrel-integration-bp]] | sonnet | 3 | 0k | 117k | 3235k | 1k |

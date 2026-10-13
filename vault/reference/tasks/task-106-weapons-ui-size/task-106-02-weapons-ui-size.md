@@ -3,7 +3,7 @@ id: task-106-02-weapons-ui-size
 description: "The weapon slots show the placeholder weapon icons and the padlock instead of the weapon name and the LOCKED text."
 parent: task-106-weapons-ui-size
 kind: task
-status: in-progress
+status: done
 ---
 # Icons in the weapon slots
 
@@ -19,7 +19,7 @@ status: in-progress
 - tokens: open
 - runs: open
 - milestone: M2
-- result: open
+- result: Four icons imported (TextureTools.import_file, UI group, no mips, sRGB) and shown in the weapon slots; GetWeaponIcon(Name) single mapping; padlock for LOCKED slots; cell 150 x 90 with icon 42 x 42, name 16 pt, bar 130 x 14; not seen on screen. Commits c046e63, aa51dc7, 6271733.
 
 ## Relations
 - [[task-106-weapons-ui-size]] — parent global task.
