@@ -13,7 +13,7 @@ status: in-progress
 - gdd_check: done by the Orchestrator when the task is planned (2026-10-12).
 - confirmed_by_owner: yes (2026-10-12)
 - milestone: M2
-- next_step: task-108-01-weapon-icons-placeholder
+- next_step: task-108-02-weapon-icons-placeholder
 - result: open
 
 ## Subtasks

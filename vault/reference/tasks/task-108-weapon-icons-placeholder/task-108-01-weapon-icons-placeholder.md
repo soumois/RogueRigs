@@ -3,7 +3,7 @@ id: task-108-01-weapon-icons-placeholder
 description: "Placeholder UI icons (padlock and the three current weapons) exist as source images, validated by the owner, then prepared as transparent 256 x 256 PNGs."
 parent: task-108-weapon-icons-placeholder
 kind: task
-status: in-progress
+status: done
 ---
 # Placeholder weapon and lock icons
 
@@ -15,11 +15,11 @@ status: in-progress
 - done_when: candidates for the padlock and the three weapons exist with their run logs; self-review and style-guide review done; the owner validates; lint clean; committed (Art/Source is tracked).
 - editor_state: any
 - token_ceiling: 30000
-- model: open
-- tokens: open
-- runs: open
+- model: opus+sonnet
+- tokens: input 72, cache write 132629, cache read 1536212, output 21713
+- runs: 1
 - milestone: M2
-- result: open
+- result: 8 candidates (2 per icon), critic 8/8 pass; owner picks: padlock 1, burst rifle 2, shotgun 1, turret launcher 2, copied to vault/assets as TEMPORARY placeholders (note placeholder-weapon-icons). Commits c5c3fdf and the vault copy.
 
 ## Relations
 - [[task-108-weapon-icons-placeholder]] — parent global task.

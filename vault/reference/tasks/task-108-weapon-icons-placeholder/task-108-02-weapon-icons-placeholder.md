@@ -3,7 +3,7 @@ id: task-108-02-weapon-icons-placeholder
 description: "The validated icon images become transparent 256 x 256 PNGs, ready to import."
 parent: task-108-weapon-icons-placeholder
 kind: task
-status: todo
+status: in-progress
 ---
 # Prepare the icons
 
