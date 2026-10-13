@@ -165,23 +165,33 @@ TArray<FIntPoint> ARRConsole::FindMarkableCells(const ARRArenaGrid* InGrid, FInt
 	{
 		return Result;
 	}
-	const int32 Reach = FMath::FloorToInt32(MarkRadiusCells);
-	const FIntPoint Size = InGrid->GetGridSize();
-	for (int32 DY = -Reach; DY <= Reach; ++DY)
+	if (MarkedCellTypes.IsEmpty())
 	{
-		for (int32 DX = -Reach; DX <= Reach; ++DX)
+		return Result;
+	}
+	// Zone centre in cell units: the footprint centre, where InitializeConsole places the actor (a cell corner for an even size).
+	const FIntPoint ClampedFootprint = RRLandingFootprint::ClampSize(FootprintCells);
+	const FIntPoint MinCell = RRLandingFootprint::GetMinCell(Center, ClampedFootprint);
+	const double CenterX = MinCell.X + 0.5 * (ClampedFootprint.X - 1);
+	const double CenterY = MinCell.Y + 0.5 * (ClampedFootprint.Y - 1);
+	const double RadiusSquared = FMath::Square(static_cast<double>(ZoneRadiusCells));
+	const int32 Reach = FMath::CeilToInt32(ZoneRadiusCells) + 1;
+	const FIntPoint Size = InGrid->GetGridSize();
+	for (int32 Y = Center.Y - Reach; Y <= Center.Y + Reach; ++Y)
+	{
+		for (int32 X = Center.X - Reach; X <= Center.X + Reach; ++X)
 		{
-			const FIntPoint Candidate(Center.X + DX, Center.Y + DY);
+			const FIntPoint Candidate(X, Y);
 			if (Candidate.X < 0 || Candidate.Y < 0 || Candidate.X >= Size.X || Candidate.Y >= Size.Y)
 			{
 				continue;
 			}
-			if (FMath::Square(static_cast<float>(DX)) + FMath::Square(static_cast<float>(DY)) > FMath::Square(MarkRadiusCells))
+			if (FMath::Square(X - CenterX) + FMath::Square(Y - CenterY) > RadiusSquared)
 			{
 				continue;
 			}
-			// Ore table deposits are never console-marked rocks (ore-blocks, owner 2026-10-10).
-			if (MarkedCellTypes.Contains(InGrid->GetCellType(Candidate)) && !InGrid->IsTableDepositCell(Candidate))
+			// Every rock kind inside the zone is marked, ore deposits included (objective-console, owner 2026-10-13).
+			if (MarkedCellTypes.Contains(InGrid->GetCellType(Candidate)))
 			{
 				Result.Add(Candidate);
 			}

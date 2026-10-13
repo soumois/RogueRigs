@@ -19,7 +19,7 @@ status: in-progress
 - tokens: open
 - runs: open
 - milestone: M2
-- result: open
+- result: `ARRConsole` `ZoneRadiusCells` 7 (469 uu), `HackDuration` 12, `DrainPerSecond` 0.05 unchanged; `MarkRadiusCells` removed: `FindMarkableCells` marks every `MarkedCellTypes` block (Rock, Ore, HealOre, SpecialOre) whose center is within `ZoneRadiusCells` of the footprint centre (the zone centre), ore table deposits now included (the 2026-10-10 deposit exclusion is dropped). Chest unchanged (8 s, 6 cells, no marks). No override: BP_ObjectiveConsole, BP_BonusChest, BP_RRGameMode, CSVs and Config hold none of these properties. Tests updated: HackRules and ZoneTelegraph use console anchor (125, 117) (the old cell was outside 7 cells), 12 s timings; DropPlacementAndMarks checks the 7-cell zone, deposits included; FineConsoleShuttlePlacement 469 uu and Ore.Placement deposit marked (both edited, not run). Build exit 0; Console.*, RunFlow.*, Extraction.*, Integration.ConsoleExtractionWin: 13/13 pass headless.
 
 ## Relations
 - [[task-120-console-rules]] — parent global task.

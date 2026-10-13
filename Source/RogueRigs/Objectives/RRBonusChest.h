@@ -13,7 +13,7 @@ class ARRPickup;
  * Bonus chest (objective-bonus-chest). Dropped by URRRunFlowSubsystem once per level when the alert reaches
  * BonusChestAlertThreshold; optional: it never pauses the alert bar. Hacked with the console rules it inherits from ARRConsole
  * (miner alive within ZoneRadiusCells -> ARRDrone::StartHack, progress dt / HackDuration, DrainPerSecond while out), but marks no
- * rock (MarkRadiusCells 0, MarkedCellTypes empty), so it starts Idle. When the hack completes (CompleteHack, or ForceComplete
+ * rock (MarkedCellTypes empty), so it starts Idle. When the hack completes (CompleteHack, or ForceComplete
  * cheat) it grants its reward once: XP = XPNeedFraction x the miner's current level need (URRProgressionComponent::AddXP, so the
  * XPGain stat applies like any XP), OreChunkCount ore pickups popped around it (OrePickupClass, none = the grid's ore pickup),
  * and one upgrade choice drawn with the miner's luck + BonusLuck for that draw only (URRLevelUpComponent::QueueBonusChoice).

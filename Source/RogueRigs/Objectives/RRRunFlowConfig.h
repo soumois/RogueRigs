@@ -41,7 +41,7 @@ struct ROGUERIGS_API FRRRunFlowConfig
 	float ConsoleMaxDistanceCells = 60.f;
 
 	/**
-	 * When true and at least one candidate cell has blocks to mark around it (the console class's MarkRadiusCells and
+	 * When true and at least one candidate cell has blocks to mark around it (the console class's ZoneRadiusCells and
 	 * MarkedCellTypes), the console drops only on such a cell, so there are rocks to clear (objective-console: "the rocks around
 	 * it are marked"). False = any candidate. Provisional choice of task-016-01.
 	 */

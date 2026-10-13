@@ -28,11 +28,11 @@ namespace RRRunFlowTests
 	/** Walkable start cell of the miner on arena_m1_fine (the fine cell of the legacy start (40, 40), the layout spawn). */
 	const FIntPoint RunMinerCell = RRTestHarness::FineCell(FIntPoint(40, 40));
 
-	/** Floor cell of arena_m1_fine with rock (129, 115) two cells east (fine cell of the legacy (42, 38)); 8.49 cells from RunMinerCell, so inside a 9-cell zone. */
-	const FIntPoint RunHackConsoleCell = RRTestHarness::FineCell(FIntPoint(42, 38));
+	/** Floor anchor cell of arena_m1_fine whose 2 x 2 footprint is open floor, rock (129, 115) 4.3 cells from the zone centre (125.5, 117.5); the zone centre is 5.70 cells from RunMinerCell, so inside the 7-cell zone. */
+	const FIntPoint RunHackConsoleCell(125, 117);
 
-	/** Marked radius of the console in cells (objective-console: 2 cells of 200 uu = 6 of 67 uu); the test checks marks against it independently. */
-	constexpr int32 RunMarkRadiusCells = 6;
+	/** Zone radius of the console in cells, also its marking radius (objective-console, owner 2026-10-13: 7 of 67 uu); the test checks marks against it independently. */
+	constexpr int32 RunZoneRadiusCells = 7;
 
 	/** Grid, miner (weapons stopped) and run flow of a test world. */
 	struct FRunSetup
@@ -306,16 +306,20 @@ bool FRRConsoleDropTest::RunTest(const FString& Parameters)
 		}
 		TestNearlyEqual(*FString::Printf(TEXT("seed %d: alert at 0.4"), Seed), Setup.RunFlow->GetAlert(), 0.4f, 1e-6f);
 
-		// Marked = every rock-type block within 6 cells except Duskite deposit blocks (task-070-01), nothing else.
+		// Marked = every rock-type block (Duskite deposits included) whose centre is within the 7-cell zone of the footprint centre
+		// (anchor + 0.5 cell on X and Y for the 2 x 2 footprint), nothing else.
 		int32 Expected = 0;
-		const int32 Scan = RunMarkRadiusCells + 1;
+		int32 DepositMarked = 0;
+		const int32 Scan = RunZoneRadiusCells + 2;
 		for (int32 DY = -Scan; DY <= Scan; ++DY)
 		{
 			for (int32 DX = -Scan; DX <= Scan; ++DX)
 			{
 				const FIntPoint Near(Cell.X + DX, Cell.Y + DY);
-				const bool bShouldMark = DX * DX + DY * DY <= RunMarkRadiusCells * RunMarkRadiusCells && IsMarkableType(Grid->GetCellType(Near))
-					&& !Grid->IsTableDepositCell(Near);
+				const double OffsetX = DX - 0.5;
+				const double OffsetY = DY - 0.5;
+				const bool bShouldMark = OffsetX * OffsetX + OffsetY * OffsetY <= RunZoneRadiusCells * RunZoneRadiusCells && IsMarkableType(Grid->GetCellType(Near));
+				DepositMarked += bShouldMark && Grid->IsTableDepositCell(Near) ? 1 : 0;
 				Expected += bShouldMark ? 1 : 0;
 				TestEqual(*FString::Printf(TEXT("seed %d: (%d, %d) marked"), Seed, Near.X, Near.Y), Grid->IsCellMarked(Near), bShouldMark);
 				if (bShouldMark)
@@ -324,6 +328,7 @@ bool FRRConsoleDropTest::RunTest(const FString& Parameters)
 				}
 			}
 		}
+		AddInfo(FString::Printf(TEXT("seed %d: %d marked Duskite deposit block(s)."), Seed, DepositMarked));
 		TestEqual(*FString::Printf(TEXT("seed %d: marked count"), Seed), Console->GetMarkedRockCount(), Expected);
 		TestEqual(*FString::Printf(TEXT("seed %d: grid marked count"), Seed), Grid->GetMarkedCells().Num(), Expected);
 		TestTrue(*FString::Printf(TEXT("seed %d: rocks to clear (cells with rocks preferred)"), Seed), Expected > 0);
@@ -366,12 +371,12 @@ bool FRRConsoleHackTest::RunTest(const FString& Parameters)
 	}
 	Console->OnConsoleStateChanged.AddDynamic(Recorder.Get(), &URRTestEventRecorder::HandleConsoleStateChanged);
 	Console->InitializeConsole(Grid, Miner, RunHackConsoleCell);
-	TestEqual(TEXT("hack 16 s"), Console->GetHackDuration(), 16.f);
+	TestEqual(TEXT("hack 12 s"), Console->GetHackDuration(), 12.f);
 	TestEqual(TEXT("drain 5 %/s"), Console->GetDrainPerSecond(), 0.05f);
-	TestEqual(TEXT("zone 9 cells (3 of 200 uu)"), Console->GetZoneRadius(), 9.f * Grid->GetCellSize());
+	TestEqual(TEXT("zone 7 cells"), Console->GetZoneRadius(), 7.f * Grid->GetCellSize());
 	TestTrue(TEXT("rock (129, 115) marked"), Grid->IsCellMarked(FineRockCell));
 	const TArray<FIntPoint> Marked = Console->GetMarkedRocks();
-	AddInfo(FString::Printf(TEXT("%d marked rocks around (127, 115)."), Marked.Num()));
+	AddInfo(FString::Printf(TEXT("%d marked rocks around (125, 117)."), Marked.Num()));
 	if (!TestTrue(TEXT("rocks marked"), Marked.Num() > 0))
 	{
 		return false;
@@ -408,12 +413,12 @@ bool FRRConsoleHackTest::RunTest(const FString& Parameters)
 	TestFalse(TEXT("no second hack target"), Drone->StartHack(Grid));
 	TestEqual(TEXT("still in Hack"), Drone->GetState(), ERRDroneState::Hack);
 
-	// 480 frames of hacking (the first was the frame the rocks cleared) = 8 s = half the gauge.
-	for (int32 Frame = 1; Frame < 480; ++Frame)
+	// 360 frames of hacking (the first was the frame the rocks cleared) = 6 s = half the gauge.
+	for (int32 Frame = 1; Frame < 360; ++Frame)
 	{
 		TestWorld.Tick();
 	}
-	TestNearlyEqual(TEXT("half after 8 s"), Console->GetHackProgress(), 0.5f, 0.002f);
+	TestNearlyEqual(TEXT("half after 6 s"), Console->GetHackProgress(), 0.5f, 0.002f);
 
 	// Miner leaves: the drone follows him, progress drains 5 %/s.
 	const FVector InZone = Miner->GetActorLocation();
@@ -428,7 +433,7 @@ bool FRRConsoleHackTest::RunTest(const FString& Parameters)
 	TestNull(TEXT("drone unlinked"), Drone->GetHackTarget());
 	TestNearlyEqual(TEXT("drained 5 % in 1 s"), Console->GetHackProgress(), 0.45f, 0.002f);
 
-	// Back in: 0.55 of the gauge left = 8.8 s = 528 frames.
+	// Back in: 0.55 of the gauge left = 6.6 s = 396 frames.
 	Miner->SetActorLocation(InZone);
 	int32 CompleteFrame = -1;
 	for (int32 Frame = 1; Frame <= 800 && CompleteFrame < 0; ++Frame)
@@ -440,7 +445,7 @@ bool FRRConsoleHackTest::RunTest(const FString& Parameters)
 		}
 	}
 	AddInfo(FString::Printf(TEXT("complete %d frames after coming back."), CompleteFrame));
-	TestTrue(TEXT("complete after 528 frames (+-2)"), FMath::Abs(CompleteFrame - 528) <= 2);
+	TestTrue(TEXT("complete after 396 frames (+-2)"), FMath::Abs(CompleteFrame - 396) <= 2);
 	TestEqual(TEXT("progress 1"), Console->GetHackProgress(), 1.f);
 	TestEqual(TEXT("drone released"), Drone->GetState(), ERRDroneState::Orbit);
 	for (int32 Frame = 0; Frame < 30; ++Frame)

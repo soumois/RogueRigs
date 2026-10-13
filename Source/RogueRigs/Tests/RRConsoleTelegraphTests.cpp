@@ -19,8 +19,11 @@ namespace RRConsoleTelegraphTests
 	/** Miner start cell on arena_m1_fine (same as the RunFlow tests). */
 	const FIntPoint MinerCell = RRTestHarness::FineCell(FIntPoint(40, 40));
 
-	/** Console cell with marked rocks around it, 8.49 cells from MinerCell (inside the 9-cell console zone). */
+	/** Chest cell, 8.49 cells from MinerCell (outside the 6-cell chest zone). */
 	const FIntPoint ConsoleCell = RRTestHarness::FineCell(FIntPoint(42, 38));
+
+	/** Console anchor cell with marked rocks around it; its zone centre (125.5, 117.5) is 5.70 cells from MinerCell (inside the 7-cell console zone). */
+	const FIntPoint HackConsoleCell(125, 117);
 
 	/** Spawns the fine grid and the miner on MinerCell (weapons stopped) and turns the run flow off. */
 	bool SetUp(FAutomationTestBase& Test, const RRTestHarness::FTestWorld& TestWorld, ARRArenaGrid*& OutGrid, ARRMiner*& OutMiner)
@@ -71,7 +74,7 @@ bool FRRConsoleZoneTelegraphTest::RunTest(const FString& Parameters)
 		return false;
 	}
 
-	ARRConsole* Console = TestWorld.Spawn<ARRConsole>(ARRConsole::StaticClass(), Grid->GetCellCenter(ConsoleCell.X, ConsoleCell.Y));
+	ARRConsole* Console = TestWorld.Spawn<ARRConsole>(ARRConsole::StaticClass(), Grid->GetCellCenter(HackConsoleCell.X, HackConsoleCell.Y));
 	if (!TestNotNull(TEXT("console spawned"), Console))
 	{
 		return false;
@@ -83,10 +86,10 @@ bool FRRConsoleZoneTelegraphTest::RunTest(const FString& Parameters)
 	}
 	TestFalse(TEXT("hidden before the landing"), Telegraph->IsShown());
 
-	Console->InitializeConsole(Grid, Miner, ConsoleCell);
+	Console->InitializeConsole(Grid, Miner, HackConsoleCell);
 	TestTrue(TEXT("shown at the landing"), Telegraph->IsShown());
 	TestEqual(TEXT("radius = zone radius"), Telegraph->GetRadius(), Console->GetZoneRadius());
-	TestNearlyEqual(TEXT("radius = 9 cells x cell size"), Telegraph->GetRadius(), 9.f * Grid->GetCellSize(), 0.01f);
+	TestNearlyEqual(TEXT("radius = 7 cells x cell size"), Telegraph->GetRadius(), 7.f * Grid->GetCellSize(), 0.01f);
 	TestEqual(TEXT("progress 0"), Telegraph->GetProgress(), 0.f);
 	const TArray<FIntPoint> Marked = Console->GetMarkedRocks();
 	if (!TestTrue(TEXT("rocks marked"), Marked.Num() > 1))
@@ -111,8 +114,8 @@ bool FRRConsoleZoneTelegraphTest::RunTest(const FString& Parameters)
 	TestEqual(TEXT("ZoneActive once the last marked rock is gone"), Telegraph->GetMode(), ERRGroundTelegraphMode::ZoneActive);
 
 	// Progress follows the hack.
-	TickFrames(TestWorld, 479);
-	TestNearlyEqual(TEXT("half after 8 s"), Console->GetHackProgress(), 0.5f, 0.002f);
+	TickFrames(TestWorld, 359);
+	TestNearlyEqual(TEXT("half after 6 s"), Console->GetHackProgress(), 0.5f, 0.002f);
 	TestEqual(TEXT("telegraph progress = hack progress"), Telegraph->GetProgress(), Console->GetHackProgress());
 
 	// Miner out of the zone: the progress circle shrinks with the drain.

@@ -252,13 +252,13 @@ bool FRROrePlacementTest::RunTest(const FString& Parameters)
 	AddInfo(FString::Printf(TEXT("%d touching deposit edges"), Touching));
 	TestEqual(TEXT("each deposit block mines exactly its 4 blocks"), WrongUnits, 0);
 
-	// Consoles never mark table deposit blocks.
+	// Consoles mark every rock in their zone, table deposit blocks included (objective-console, owner 2026-10-13).
 	if (Ids.Num() > 0)
 	{
 		const FIntPoint Center = Grid->GetDeposit(Ids[0])->Cells[0];
 		const TArray<FIntPoint> Markable = GetDefault<ARRConsole>()->FindMarkableCells(Grid, Center);
 		TestTrue(TEXT("console marks rocks around a deposit"), Markable.Num() > 0);
-		TestFalse(TEXT("console never marks a deposit block"), Markable.ContainsByPredicate([Grid](const FIntPoint& Cell) { return Grid->IsTableDepositCell(Cell); }));
+		TestTrue(TEXT("console marks the deposit block at its centre"), Markable.Contains(Center));
 	}
 
 	// Colour (task-100-01): row Duskite has alpha 0, so no deposit carries a colour and the grid writes no ore colour into the

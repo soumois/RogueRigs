@@ -39,8 +39,8 @@ DECLARE_DYNAMIC_MULTICAST_DELEGATE_ThreeParams(FRROnConsoleMarkedRocksChangedSig
 
 /**
  * Command console (objective-console). Spawned by URRRunFlowSubsystem on a floor cell, then InitializeConsole marks every
- * block of MarkedCellTypes whose center lies within MarkRadiusCells cells of the console cell (ARRArenaGrid::SetCellMarked:
- * outline data on the block). State Locked until every marked block is destroyed (polled each tick: dig and explosions alike).
+ * block of MarkedCellTypes whose center lies within ZoneRadiusCells cells of the zone centre (the footprint centre, where the
+ * console stands), so the hack zone never holds an unmarked rock (ARRArenaGrid::SetCellMarked: outline data on the block). State Locked until every marked block is destroyed (polled each tick: dig and explosions alike).
  * Then, each tick: when the miner is alive and within ZoneRadiusCells cells (2D) of the console, the console asks the miner's
  * drone to hack it (ARRDrone::StartHack); while the drone is linked, progress rises by DeltaSeconds / HackDuration (state
  * Hacking). Otherwise the drone is released (StopHack) and progress drains by DrainPerSecond per second (state Idle). At 1 the
@@ -65,7 +65,10 @@ public:
 	 */
 	void InitializeConsole(ARRArenaGrid* Grid, ARRMiner* Miner, FIntPoint Cell);
 
-	/** Cells around Center of InGrid this console would mark (MarkedCellTypes within MarkRadiusCells, ore table deposit blocks excluded). Works on the class default object. */
+	/**
+	 * Cells this console would mark if it landed on anchor cell Center of InGrid: every block of MarkedCellTypes (ore deposits included)
+	 * whose center lies within ZoneRadiusCells of the footprint centre (the zone centre). Works on the class default object.
+	 */
 	TArray<FIntPoint> FindMarkableCells(const ARRArenaGrid* InGrid, FIntPoint Center) const;
 
 	/** Updates the marked rocks, the zone check, the drone link and the hack progress. */
@@ -197,10 +200,6 @@ protected:
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Components")
 	TObjectPtr<URRGroundTelegraphComponent> GroundTelegraph;
 
-	/** Blocks whose center is within this many cells of the console cell are marked (objective-console: 2 cells of 200 uu = 6 cells of 67 uu, provisional). */
-	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Console", meta = (ClampMin = 0))
-	float MarkRadiusCells = 6.f;
-
 	/**
 	 * Landing footprint in cells of the grid, rotation zero (2 x 2 cells of 67 uu = 134 uu for the 100 x 100 uu console mesh, task-026-00).
 	 * The console lands only where every cell is reachable floor and stands at the footprint centre (RRLandingFootprint).
@@ -208,17 +207,20 @@ protected:
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Console", meta = (ClampMin = 1))
 	FIntPoint FootprintCells = FIntPoint(2, 2);
 
-	/** Block types that get marked. Barrels are left out: they explode and are not rock. */
+	/** Block types that get marked inside the zone (every rock kind, ore included). Barrels are left out: they explode and are not rock. Empty = no marked rock. */
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Console")
 	TArray<ERRCellType> MarkedCellTypes = { ERRCellType::Rock, ERRCellType::Ore, ERRCellType::HealOre, ERRCellType::SpecialOre };
 
-	/** Seconds of hacking from 0 to complete (objective-console: 16 s, provisional; 20 s before task-042-01). */
+	/** Seconds of hacking from 0 to complete (objective-console, owner 2026-10-13: 12 s, provisional; 16 s before task-120-01, 20 s before task-042-01). */
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Console", meta = (ClampMin = 0.1, Units = "s"))
-	float HackDuration = 16.f;
+	float HackDuration = 12.f;
 
-	/** The miner must be within this many cells (2D, from the console center) for the drone to hack (objective-console: 3 cells of 200 uu = 9 cells of 67 uu, provisional). */
+	/**
+	 * Hack zone radius in cells, from the console center (footprint centre): the miner must be within it (2D) for the drone to hack,
+	 * and every block of MarkedCellTypes within it is marked (objective-console, owner 2026-10-13: 7 cells of 67 uu, provisional; 9 before task-120-01).
+	 */
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Console", meta = (ClampMin = 0))
-	float ZoneRadiusCells = 9.f;
+	float ZoneRadiusCells = 7.f;
 
 	/** Gauge fraction lost per second while the miner is out of the zone (objective-console: 5 %/s = 0.05, provisional). */
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Console", meta = (ClampMin = 0))

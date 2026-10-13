@@ -424,7 +424,7 @@ bool FRRFineConsoleShuttlePlacementTest::RunTest(const FString& Parameters)
 		const FIntPoint ConsoleCell = Console->GetCell();
 		const double ConsoleDistance = FVector::Dist2D(Console->GetActorLocation(), MinerAt);
 		AddInfo(FString::Printf(TEXT("seed %d: console on (%d, %d), %.0f uu (%.1f cells), %d marked rocks within %.0f uu"), Seed, ConsoleCell.X, ConsoleCell.Y,
-			ConsoleDistance, ConsoleDistance / CellSize, Console->GetMarkedRockCount(), 6.f * CellSize));
+			ConsoleDistance, ConsoleDistance / CellSize, Console->GetMarkedRockCount(), Console->GetZoneRadius()));
 		TestTrue(*FString::Printf(TEXT("seed %d: console is BP_ObjectiveConsole"), Seed), Console->IsA(ConsoleClass));
 		TestEqual(*FString::Printf(TEXT("seed %d: console on floor"), Seed), Grid->GetCellType(ConsoleCell), ERRCellType::Floor);
 		TestTrue(*FString::Printf(TEXT("seed %d: console at its 2 x 2 footprint centre"), Seed), Console->GetFootprintCells() == FIntPoint(2, 2)
@@ -432,7 +432,7 @@ bool FRRFineConsoleShuttlePlacementTest::RunTest(const FString& Parameters)
 		TestTrue(*FString::Printf(TEXT("seed %d: console 2400..4000 uu away (one cell of slack)"), Seed), ConsoleDistance >= 2400.0 - CellSize && ConsoleDistance <= 4000.0 + CellSize);
 		TestTrue(*FString::Printf(TEXT("seed %d: console reachable"), Seed), FlowField->GetCellDistance(ConsoleCell) >= 0);
 		TestTrue(*FString::Printf(TEXT("seed %d: rocks marked around the console"), Seed), Console->GetMarkedRockCount() > 0);
-		TestTrue(*FString::Printf(TEXT("seed %d: console zone 9 cells = 603 uu"), Seed), FMath::IsNearlyEqual(Console->GetZoneRadius(), 9.f * CellSize, 0.5f));
+		TestTrue(*FString::Printf(TEXT("seed %d: console zone 7 cells = 469 uu"), Seed), FMath::IsNearlyEqual(Console->GetZoneRadius(), 7.f * CellSize, 0.5f));
 		TestEqual(*FString::Printf(TEXT("seed %d: no block under the console mesh"), Seed),
 			CountBlocksUnderActor(*this, Grid, Console, *FString::Printf(TEXT("seed %d: console"), Seed)), 0);
 

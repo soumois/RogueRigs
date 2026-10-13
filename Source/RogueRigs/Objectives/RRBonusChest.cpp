@@ -7,13 +7,13 @@
 #include "Player/RRMiner.h"
 #include "Progression/RRLevelUpComponent.h"
 #include "Progression/RRProgressionComponent.h"
+#include "Weapons/RRWeapon.h"
 #include "RogueRigs.h"
 
 ARRBonusChest::ARRBonusChest()
 {
 	HackDuration = 8.f;
 	ZoneRadiusCells = 6.f;
-	MarkRadiusCells = 0.f;
 	MarkedCellTypes.Reset();
 }
 
