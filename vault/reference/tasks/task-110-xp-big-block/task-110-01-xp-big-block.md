@@ -3,7 +3,7 @@ id: task-110-01-xp-big-block
 description: "When many XP cubes fall in one place they become one bigger block of another colour worth the same total XP."
 parent: task-110-xp-big-block
 kind: task
-status: todo
+status: in-progress
 ---
 # Big XP block (C++ rule)
 

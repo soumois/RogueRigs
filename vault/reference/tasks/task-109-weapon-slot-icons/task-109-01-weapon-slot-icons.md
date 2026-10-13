@@ -3,7 +3,7 @@ id: task-109-01-weapon-slot-icons
 description: "Active weapon slots show the weapon icon large without its name, like the reference game; the icon tool keeps the icon aspect ratio."
 parent: task-109-weapon-slot-icons
 kind: task
-status: in-progress
+status: done
 ---
 # Weapon icon larger, no name on active slots
 
@@ -15,11 +15,11 @@ status: in-progress
 - done_when: three trimmed weapon icons with their aspect ratio kept, checked by script; tool option documented; lint clean; committed.
 - editor_state: any
 - token_ceiling: 30000
-- model: open
-- tokens: open
-- runs: open
+- model: opus
+- tokens: input 24, cache write 30499, cache read 254508, output 7935
+- runs: 1
 - milestone: M2
-- result: open
+- result: --keep-aspect option in ui_icon_prepare.js; three weapon icons trimmed 256 x 105 / 98 / 170 with a 10 px margin, checks pass (0 pink pixels, corners transparent); padlock unchanged. Commit 28f227e.
 
 ## Relations
 - [[task-109-weapon-slot-icons]] — parent global task.
