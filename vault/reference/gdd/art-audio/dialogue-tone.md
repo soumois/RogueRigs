@@ -24,7 +24,7 @@ Each rule has an id that the critic cites ([[agent-style-guide]]). Owner update 
 
 ## Relations
 - [[art-audio-index]] — parent index.
-- [[lore]] — who is speaking; rules L1–L4.
+- [[lore]] — who is speaking; rules L1, L2, L4.
 - [[crew-characters]] — Rook and Vesna in detail.
 - [[company-voice]] — Kessler-Voss registers.
 - [[agent-style-guide]] — the critic that enforces these rules.

@@ -1,6 +1,6 @@
 ---
 id: lore
-description: "World and factions with checkable rules L1–L4: the asteroid claim, Kessler-Voss, the Rigs (Rook and Vesna), lore-to-mechanic mapping."
+description: "World and factions with checkable rules L1, L2, L4: the asteroid claim, Kessler-Voss, the Rigs (Rook and Vesna), lore-to-mechanic mapping."
 parent: gdd-index
 kind: spec
 status: approved
@@ -19,8 +19,8 @@ status: approved
 ## Rules (the critic cites these ids)
 - L1 Every enemy on site is a robot; no company human is on the asteroid. Rook is the only person on the ground.
 - L2 Vesna never sets foot on the asteroid; she speaks only through the drone.
-- L3 The robots are only doing their job; jokes target the company, not robot cruelty.
 - L4 The Rigs know the claim is not theirs yet: they are here first, not in the right.
+- L3 was removed by the owner (2026-10-13); its id is not reused, so the rules are L1, L2, L4.
 
 ## Lore behind each mechanic
 | Mechanic | Lore meaning |
