@@ -10,4 +10,3 @@ A global task moves to [[tasks-done-index]] when it is done (`vault/scripts/task
 
 ## Relations
 - [[tasks-index]] — parent index.
-- [[task-138-xp-pickups-perf-test]] — Measure the frame-time cost of a burst of XP nuts and chips, with and without bloom and pulse, and record the results. Status in-progress.

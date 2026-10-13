@@ -148,3 +148,4 @@ Archive: it exceeds the index size limits of [[_authoring]] on purpose (owner, 2
 - [[task-135-xp-pickups-pivot-float]] — Stop the XP nut and chip from floating: put their pivot at their centre like the old cube. Status done.
 - [[task-136-xp-pickups-stronger-glow]] — Strengthen the emissive and widen the pulse range of the XP nut and chip so the bloom is stronger. Status done.
 - [[task-137-unreal-reimport-tool]] — Create a headless Python tool that reimports a static mesh from its FBX in place, and document it in the vault. Status done.
+- [[task-138-xp-pickups-perf-test]] — Measure the frame-time cost of a burst of XP nuts and chips, with and without bloom and pulse, and record the results. Status done.

@@ -3,7 +3,7 @@ id: task-138-02-xp-pickups-perf-test
 description: "Run the XP pickup cost measurements and record the results in the vault."
 parent: task-138-xp-pickups-perf-test
 kind: task
-status: in-progress
+status: done
 ---
 # XP pickups: measure and record
 
@@ -15,11 +15,11 @@ status: in-progress
 - done_when: all runs done on the same machine state (no other Unreal process, owner apps as in orchestrator-lessons), the table filled, a verdict per threshold, the three material instances unchanged in git status at the end, lint clean, committed; the results reported to the owner in a short summary
 - editor_state: closed
 - token_ceiling: open
-- model: open
-- tokens: open
-- runs: open
+- model: opus
+- tokens: input 98, cache write 231562, cache read 4210637, output 14769
+- runs: 1
 - milestone: M2
-- result: open
+- result: Measured 0 to 400 pickups, bloom on and off, pulse off pass: frame 8.3 to 9.0 ms average, p99 at most 11.3 ms, no measurable cost; the 10 fps seen in 138-01 was a frame-counter misread; assets restored with git.
 
 ## Relations
 - [[task-138-xp-pickups-perf-test]] — parent global task.
