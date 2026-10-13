@@ -28,6 +28,10 @@ Everything below is built, compiled and read back, but not seen. Tick when seen;
 | Duskite (070, 100) | violet 2 x 2 groups at 8 % of the rock (359 deposits), mined whole in 1.5 s, 4 chunks, no start-zone protection | positions changed with the rename |
 | Robots (071, 093) | slide around rock, shotgun knockback, heavy slower, shots still hit | knockback compared only on the new path |
 
+## Owner status (2026-10-13)
+- Validated by the owner: weapon row (106, 109), barrel (114), ground material (112, parameters left to tune), heavy ground effect (115, 119, 123, 124); on the owner's word "the rest works" after tasks 118 to 122: capture zones, big XP block, barrel spread.
+- Still unseen: subtitles (099), cards (080, 084, 094), alerts (085, 094), vignette (104), minimap and arrow (103), XP bar (094-04), pools and prewarm (090 to 092, 095, 111), kamikaze (096), explosions (097), heal (088, 089), Duskite (070, 100), robots (071, 093).
+
 ## Relations
 - [[production-index]] — parent index.
 - [[handover-2026-10-12-gameplay-hud]] — the state this list belongs to.
