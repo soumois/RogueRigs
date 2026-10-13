@@ -3,7 +3,7 @@ id: task-143-01-xp-pickups-distance-field
 description: "Turn on the mesh distance field of the XP nut and chip and test whether they light the floor."
 parent: task-143-xp-pickups-distance-field
 kind: task
-status: todo
+status: in-progress
 ---
 # XP pickups: mesh distance field test
 
