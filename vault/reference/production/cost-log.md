@@ -210,6 +210,7 @@ kind: note
 | [[task-127-01-xp-chip-magenta]] | sonnet | 1 | 0k | 14k | 94k | 1k |
 | [[task-128-01-xp-nut-mesh]] | sonnet | 1 | 0k | 59k | 486k | 5k |
 | [[task-129-01-xp-chip-big-mesh]] | sonnet | 1 | 0k | 61k | 568k | 8k |
+| [[task-130-01-xp-nut-mesh-fidelity]] | sonnet | 5 | 0k | 165k | 1182k | 11k |
 
 ## Totals
 | Scope | Input | Cache write | Cache read | Output |

@@ -3,7 +3,7 @@ id: task-130-01-xp-nut-mesh-fidelity
 description: "Rebuild the XP hex nut mesh so it matches the validated image, judged by the fidelity loop."
 parent: task-130-xp-nut-mesh-fidelity
 kind: task
-status: in-progress
+status: done
 ---
 # XP pickup mesh: hex nut, fidelity pass
 
@@ -15,11 +15,11 @@ status: in-progress
 - done_when: All criteria C1 to C6 of the subtask pass in the comparison render, or the report lists the criteria still failing after 5 returns; tris_out at most 300; nothing imported in Unreal
 - editor_state: closed
 - token_ceiling: open
-- model: open
-- tokens: open
-- runs: open
+- model: sonnet
+- tokens: input 98, cache write 165178, cache read 1181584, output 10836
+- runs: 5
 - milestone: M2
-- result: open
+- result: Hex nut SM_XPNut.fbx validated by the owner 2026-10-13: through hole, smooth wall, no blue, 108 tris, two grey slots M_XPNut_body and M_XPNut_hole (hole slot kept for a later Unreal emissive); 5 runs of the fidelity loop.
 - max_returns: 5 (owner 2026-10-13, provisional)
 - render: camera about 40 degrees elevation, yaw as in the source (two side faces visible), light-grey background, light of blender-asset-route; read the source image first and note the camera you estimate.
 - fidelity_criteria (judged on the render against vault/assets/xp-nut.png):
