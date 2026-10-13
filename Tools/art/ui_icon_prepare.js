@@ -3,7 +3,7 @@
 //
 // Usage:
 //   node Tools/art/ui_icon_prepare.js --in <png> --name <icon_name> [--size 256] [--margin 0.1]
-//        [--inner 40] [--outer 110] [--naive]
+//        [--inner 40] [--outer 110] [--naive] [--keep-aspect]
 //   node Tools/art/ui_icon_prepare.js --check <png>...
 //
 // Output: Art/UI/Icons/T_Icon_<name>.png (8-bit RGBA).
@@ -16,7 +16,11 @@
 //   3. unmix: colour = (c - (1 - a) * bg) / a, then despill: the magenta excess
 //      min(R,B) - G, when positive, is removed from R and B (no pink fringe);
 //   4. trim to the alpha bounding box (alpha > 2), area-resample with premultiplied
-//      alpha to fit size * (1 - 2 * margin), centre on a transparent canvas.
+//      alpha to fit size * (1 - 2 * margin), centre on a transparent canvas, despill again
+//      (the resize can mix colours back into a magenta excess).
+// --keep-aspect: no square canvas; the content is scaled so that the longest side of the
+//   canvas is size, with round(size * margin) px on each side (margin defaults to 0.04),
+//   and the canvas is exactly the content plus that margin (aspect ratio kept).
 // --naive: distance key only, no unmix or despill (used to measure the halo it leaves).
 // --check: prints size, alpha, corners, content bbox and margins, magenta-like pixels.
 
@@ -25,7 +29,7 @@ const path = require('path');
 const zlib = require('zlib');
 const L = require('./lib');
 
-L.setUsage('node Tools/art/ui_icon_prepare.js --in <png> --name <icon_name> [--size 256] [--margin 0.1] [--inner 40] [--outer 110] [--naive]\n'
+L.setUsage('node Tools/art/ui_icon_prepare.js --in <png> --name <icon_name> [--size 256] [--margin 0.1] [--inner 40] [--outer 110] [--naive] [--keep-aspect]\n'
   + '       node Tools/art/ui_icon_prepare.js --check <png>...');
 
 // ---------- PNG codec (8-bit, non-interlaced; grey, grey+alpha, RGB, RGBA, palette) ----------
@@ -229,31 +233,46 @@ function resample(px, width, box, dw, dh) {
 }
 
 function prepare(a) {
-  const size = Number(a.size || 256), margin = Number(a.margin ?? 0.1);
+  const keepAspect = !!a['keep-aspect'];
+  const size = Number(a.size || 256), margin = Number(a.margin ?? (keepAspect ? 0.04 : 0.1));
   const opts = { inner: Number(a.inner || 40), outer: Number(a.outer || 110), naive: !!a.naive };
   const img = decodePng(a.in);
   const bg = cornerBackground(img);
   const cut = cutOut(img, bg, opts);
   const box = alphaBox(cut, img.width, img.height, 2 / 255);
   if (!box) throw new Error(`${a.in}: no content found`);
-  const avail = Math.floor(size * (1 - 2 * margin));
-  const scale = avail / Math.max(box.w, box.h);
-  const dw = Math.max(1, Math.round(box.w * scale)), dh = Math.max(1, Math.round(box.h * scale));
+  let cw = size, ch = size, dw, dh, ox, oy;
+  if (keepAspect) {
+    // Longest side = size; a fixed pixel margin on every side; canvas = content + margins.
+    const pad = Math.round(size * margin), avail = size - 2 * pad;
+    const scale = avail / Math.max(box.w, box.h);
+    dw = Math.max(1, Math.round(box.w * scale)); dh = Math.max(1, Math.round(box.h * scale));
+    cw = dw + 2 * pad; ch = dh + 2 * pad; ox = pad; oy = pad;
+  } else {
+    const avail = Math.floor(size * (1 - 2 * margin));
+    const scale = avail / Math.max(box.w, box.h);
+    dw = Math.max(1, Math.round(box.w * scale)); dh = Math.max(1, Math.round(box.h * scale));
+    ox = Math.floor((size - dw) / 2); oy = Math.floor((size - dh) / 2);
+  }
   const small = resample(cut, img.width, box, dw, dh);
-  const ox = Math.floor((size - dw) / 2), oy = Math.floor((size - dh) / 2);
-  const data = new Uint8Array(size * size * 4);
+  const data = new Uint8Array(cw * ch * 4);
   for (let y = 0; y < dh; y++) {
     for (let x = 0; x < dw; x++) {
-      const s = (y * dw + x) * 4, d = ((oy + y) * size + ox + x) * 4, al = small[s + 3];
+      const s = (y * dw + x) * 4, d = ((oy + y) * cw + ox + x) * 4, al = small[s + 3];
       if (al <= 0) continue;
-      for (let c = 0; c < 3; c++) data[d + c] = Math.round(Math.min(255, small[s + c] / al));
+      const col = [0, 1, 2].map((c) => Math.min(255, small[s + c] / al));
+      // Averaging despilled pixels (a red one next to a blue one) can recreate a magenta excess.
+      const spill = opts.naive ? 0 : Math.min(col[0], col[2]) - col[1];
+      if (spill > 0) { col[0] -= spill; col[2] -= spill; }
+      for (let c = 0; c < 3; c++) data[d + c] = Math.round(col[c]);
       data[d + 3] = Math.round(Math.min(1, al) * 255);
     }
   }
   const outFile = a.out || path.join(L.REPO, 'Art', 'UI', 'Icons', `T_Icon_${a.name}.png`);
-  encodePng(outFile, { width: size, height: size, data });
+  encodePng(outFile, { width: cw, height: ch, data });
   console.log(`${path.relative(L.REPO, outFile)}: bg rgb(${bg.map((v) => v.toFixed(0)).join(',')}), `
-    + `source content ${box.w}x${box.h} at (${box.x0},${box.y0}), scaled to ${dw}x${dh} at (${ox},${oy})`);
+    + `source content ${box.w}x${box.h} at (${box.x0},${box.y0}) aspect ${(box.w / box.h).toFixed(3)}, `
+    + `scaled to ${dw}x${dh} at (${ox},${oy}) aspect ${(dw / dh).toFixed(3)}, canvas ${cw}x${ch}`);
 }
 
 // ---------- Check ----------
@@ -282,7 +301,7 @@ function check(file) {
 function main() {
   const argv = process.argv.slice(2);
   if (argv[0] === '--check') { argv.slice(1).forEach(check); return; }
-  const a = L.parseArgs(argv, { flags: ['naive'] });
+  const a = L.parseArgs(argv, { flags: ['naive', 'keep-aspect'] });
   if (!a.in || !fs.existsSync(a.in)) L.usage('--in is required and must exist');
   if (!a.out && !a.name) L.usage('--name is required');
   if (a.name && !/^[a-z0-9][a-z0-9_]*$/.test(a.name)) L.usage('--name must be snake_case (a-z, 0-9, _)');

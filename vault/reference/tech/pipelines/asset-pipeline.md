@@ -21,7 +21,7 @@ kind: doc
 - Git: `Art/Source/` and the cleaned FBX are committed; `Art/Meshes/*/raw/` is ignored.
 
 ## UI icons
-`Tools/art/ui_icon_prepare.js --in <png> --name <name>` (Node, no dependency, PNG codec on built-in zlib) cuts a flat-magenta icon into `Art/UI/Icons/T_Icon_<name>.png`: 256 x 256 RGBA, trimmed, centred, 10 % margin. Alpha = min(smoothstep colour-distance key from the corner colour, magenta colour-difference key), then unmix and despill (no pink fringe), premultiplied area resize. `--check <png>...` prints size, corner alpha, bbox, margins and remaining magenta-like pixels.
+`Tools/art/ui_icon_prepare.js --in <png> --name <name>` (Node, no dependency, PNG codec on built-in zlib) cuts a flat-magenta icon into `Art/UI/Icons/T_Icon_<name>.png`: 256 x 256 RGBA, trimmed, centred, 10 % margin. Alpha = min(smoothstep colour-distance key from the corner colour, magenta colour-difference key), then unmix and despill (no pink fringe), premultiplied area resize. `--keep-aspect` (used for the weapon icons) drops the square canvas: the trimmed content keeps its aspect ratio, the longest side is 256 px and the canvas is the content plus a 4 % margin (of 256) on each side. `--check <png>...` prints size, corner alpha, bbox, margins and remaining magenta-like pixels.
 
 ## References
 - Miner reference sheet: use front (and back) only; the side view is inconsistent with the T-pose.
