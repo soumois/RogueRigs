@@ -119,3 +119,4 @@ Archive: it exceeds the index size limits of [[_authoring]] on purpose (owner, 2
 - [[task-106-wear-mask-texture]] — One shared grayscale wear mask texture exists, tileable, ready to be multiplied on flat colours for edge wear, scratches and light grime. Status done.
 - [[task-107-barrel-integration]] — The validated barrel mesh replaces the grid barrel cylinder in the arena: C++ fits it to one cell, then BP_ArenaGrid uses it with its materials. Status done.
 - [[task-108-barrel-on-floor]] — Barrels stand on the floor and keep the floor slab under them: the barrel is no longer sunk into a floorless cell. Status done.
+- [[task-108-weapon-icons-placeholder]] — Placeholder UI icons (padlock and the three current weapons) exist as source images, validated by the owner, then prepared as transparent 256 x 256 PNGs. Status done.

@@ -3,7 +3,7 @@ id: task-108-02-weapon-icons-placeholder
 description: "The validated icon images become transparent 256 x 256 PNGs, ready to import."
 parent: task-108-weapon-icons-placeholder
 kind: task
-status: in-progress
+status: done
 ---
 # Prepare the icons
 
@@ -15,11 +15,11 @@ status: in-progress
 - done_when: four transparent 256 x 256 PNGs in Art/UI/Icons, checked by script; tool documented; lint clean; committed.
 - editor_state: any
 - token_ceiling: 30000
-- model: open
-- tokens: open
-- runs: open
+- model: opus
+- tokens: input 30, cache write 40265, cache read 373011, output 16565
+- runs: 1
 - milestone: M2
-- result: open
+- result: Tools/art/ui_icon_prepare.js (dependency-free, distance key plus magenta key, despill, trim, 256 px, 10 % margin) and four transparent 256 x 256 icons in Art/UI/Icons; checks pass (corners transparent, no magenta residue, shotgun halo 293 -> 0 pink pixels). Commit f3e43d0.
 
 ## Relations
 - [[task-108-weapon-icons-placeholder]] — parent global task.
