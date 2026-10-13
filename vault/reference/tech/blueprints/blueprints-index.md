@@ -1,6 +1,6 @@
 ---
 id: blueprints-index
-description: "One doc per Blueprint: parent class, components, exposed defaults, events, logic, assets. Open instead of opening the Blueprint asset."
+description: "Index of the Blueprint doc groups: world, player and weapons, enemies, effects and pickups, UI. Open the group matching the Blueprint you need."
 parent: tech-index
 kind: note
 ---
@@ -10,38 +10,8 @@ One node per Blueprint, template `blueprint.md`.
 
 ## Relations
 - [[tech-index]] — parent index.
-- [[bp-arena-grid]] — BP_ArenaGrid doc, the M1 arena grid Blueprint.
-- [[bp-miner]] — BP_Miner, the playable miner pawn.
-- [[bp-shield-chaser]] — BP_ShieldChaser, the shielded chaser with a pale shell.
-- [[bp-drone]] — BP_Drone, the orbiting helper drone.
-- [[bp-pickup-heal]] — BP_PickupHeal, the red heal pickup.
-- [[bp-pickup-ore]] — BP_PickupOre, the cyan ore pickup.
-- [[bp-rr-player-controller]] — BP_RRPlayerController, input wiring.
-- [[bp-rr-game-mode]] — BP_RRGameMode, default pawn and controller.
-- [[bp-burst-rifle]] — BP_BurstRifle, the burst rifle weapon.
-- [[bp-shotgun]] — BP_Shotgun and BP_ShotgunPellet, the shotgun weapon and its pellet.
-- [[bp-turret]] — BP_TurretLauncher, BP_Turret and BP_TurretBullet, the turret weapon.
-- [[bp-projectile]] — BP_Projectile, the rifle bullet.
-- [[bp-chaser]] — BP_Chaser, the chaser robot.
-- [[bp-pickup-xp]] — BP_PickupXP, the cyan XP pickup.
-- [[bp-enemy-spawner]] — BP_EnemySpawner, the enemy spawner placed in the arena.
-- [[bp-kamikaze]] — BP_Kamikaze, the kamikaze robot.
-- [[bp-shooter]] — BP_Shooter and BP_ShooterProjectile, the shooter robot.
-- [[bp-heavy]] — BP_Heavy, the heavy slam robot.
-- [[bp-explosion-fx]] — BP_ExplosionFX, the explosion visual.
-- [[bp-pickup-sparkle]] — BP_PickupSparkle, the XP collect sparkle.
-- [[bp-heal-ring]] — BP_HealRing, the green ring on heal.
-- [[bp-objective-console]] — BP_ObjectiveConsole, the command console.
-- [[bp-bonus-chest]] — BP_BonusChest, the optional gold bonus chest.
-- [[bp-extraction-shuttle]] — BP_ExtractionShuttle, the extraction shuttle.
-- [[wbp-hud]] — WBP_HUD, health bar and Game Over text.
-- [[wbp-subtitles]] — WBP_Subtitles, the company subtitle line, a sub-widget of WBP_HUD.
-- [[wbp-health-status]] — WBP_HealthStatus, health bar and text, Game Over text and damage vignette, a sub-widget of WBP_HUD.
-- [[wbp-xp-status]] — WBP_XPStatus, XP bar, level text and LEVEL UP flash, a sub-widget of WBP_HUD.
-- [[wbp-weapons]] — WBP_Weapons, weapon slots, ammo, reload and turret line, a sub-widget of WBP_HUD.
-- [[wbp-upgrade-choice]] — WBP_UpgradeChoice, level-up cards and reroll, a sub-widget of WBP_HUD.
-- [[wbp-alert-objectives]] — WBP_AlertObjectives, alert bar and icons, horde banner, objective, shuttle and end screen, a sub-widget of WBP_HUD.
-- [[wbp-minimap-locator]] — WBP_MinimapLocator, minimap, markers and locator arrow with distance, a sub-widget of WBP_HUD.
-- [[hud-refactor-audit]] — audit of WBP_HUD: tick cost, per-feature tables, sub-widget plan, missing C++ events.
-- [[bp-damage-numbers]] — NS_DamageNumbers, M_DamageNumber and the digit atlas, the floating damage numbers.
-- [[barrel-asset]] — there is NO barrel Blueprint: barrels are a grid cell type drawn by BP_ArenaGrid; open this for the barrel mesh, materials and integration.
+- [[blueprints-world-index]] — Arena grid, objective console, bonus chest, shuttle, spawner and barrel asset: the placed world Blueprints.
+- [[blueprints-player-index]] — Miner, drone, controller, game mode and the weapon Blueprints: the player side.
+- [[blueprints-enemies-index]] — The robot Blueprints: chaser, shield chaser, kamikaze, shooter, heavy.
+- [[blueprints-fx-index]] — Pickups, explosion and heal visuals, damage numbers: effects and collectibles.
+- [[blueprints-ui-index]] — WBP_HUD and its seven panels plus the HUD refactor audit.
