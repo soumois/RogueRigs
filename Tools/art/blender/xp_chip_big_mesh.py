@@ -79,7 +79,7 @@ def box(x0, x1, y0, y1, z0, z1, mat, bottom=True):
 
 
 def hexring(z, r, cx, cy):
-    return [bm.verts.new((cx + r * math.cos(math.radians(60 * k)), cy + r * math.sin(math.radians(60 * k)), z)) for k in range(6)]
+    return [bm.verts.new((cx + r * math.cos(math.radians(60 * k + 15)), cy + r * math.sin(math.radians(60 * k + 15)), z)) for k in range(6)]
 
 
 H = FOOT / 2
@@ -89,28 +89,87 @@ G = 0.3
 for x0, x1 in ((-H, -G), (G, H)):
     for y0, y1 in ((-H, -G), (G, H)):
         box(x0, x1, y0, y1, 2.6, ZB, "board", bottom=False)                # four tiles
-loft([sq(ZB, 10.2, 10.2), sq(ZB + 1.0, 10.2, 10.2)], "casing")             # flange 20.4
-loft([sq(ZB + 1.0, 9.5, 9.5), sq(6.0, 9.5, 9.5), sq(9.5, 6.9, 6.9)], "casing", top=False)     # body 18 wide, slope to 14 at z 9.5 (rise 6.1 = 20 %)
-loft([sq(9.5, 6.2, 6.2), sq(7.8, 6.2, 6.2)], "casing", bottom=False, top=False)   # recess wall 12.4
-loft([sq(9.5, 6.9, 6.9), sq(9.5, 6.2, 6.2)], "casing", bottom=False, top=False)   # rim
-# stepped faceted core pyramid 11.6 wide (39 % of 30), magenta
-loft([sq(7.8, 5.8, 5.8), sq(8.3, 5.8, 5.8), sq(8.9, 4.2, 4.2), sq(9.0, 4.2, 4.2), sq(9.7, 2.4, 2.4)], "core", bottom=False)
-# corner notches: small dark pits on the four top corners of the slope
-for sx in (-1, 1):
-    for sy in (-1, 1):
-        cx, cy = sx * 7.6, sy * 7.6
-        box(cx - 0.8, cx + 0.8, cy - 0.8, cy + 0.8, 8.2, 9.6, "board", bottom=False)
-# six L-shaped legs, 3 on +x side and 3 on -y side (facing the viewer): one extruded L profile each (arm out of the casing, chamfered elbow, drop, foot)
-PROFILE = [(10.8, ZB), (13.4, ZB), (13.4, ZB + 0.9), (12.4, ZB + 0.9), (12.4, 5.9), (11.7, 6.5), (9.2, 6.5), (9.2, 5.0), (10.8, 5.0)]
+
+
+def ring12(z, h, off=1.6, dip=0.0, dipz=0.0):
+    """12-point square ring (3 points per corner), counter-clockwise; the corner point can dip inward and down (notch)."""
+    cs = [(h, -h), (h, h), (-h, h), (-h, -h)]
+    pts = []
+    for k, (cx, cy) in enumerate(cs):
+        px, py = cs[k - 1]
+        nx, ny = cs[(k + 1) % 4]
+        dp = math.hypot(px - cx, py - cy)
+        dn = math.hypot(nx - cx, ny - cy)
+        pts.append(((cx + (px - cx) / dp * off, cy + (py - cy) / dp * off), z))
+        pts.append(((cx - math.copysign(dip, cx), cy - math.copysign(dip, cy)), z - dipz))
+        pts.append(((cx + (nx - cx) / dn * off, cy + (ny - cy) / dn * off), z))
+    return [bm.verts.new((p[0], p[1], zz)) for p, zz in pts]
+
+
+def strip(ra, rb, mat, dark_corner=False):
+    n = len(ra)
+    for k in range(n):
+        m = "board" if (dark_corner and k % 3 in (0, 1)) else mat
+        quad((ra[k], ra[(k + 1) % n], rb[(k + 1) % n], rb[k]), m)
+
+
+# casing: 18 wide, 4.5 cm above the board (15 % of 30): ledge 0.7, wall to 2.7, 45 degree chamfer 1.8 high / 1.8 run, thin rim, recess 12.8 wide
+box(-9.9, 9.9, -9.9, 9.9, ZB, ZB + 0.7, "board", bottom=False)             # thin darker ledge at the base
+Z0, Z1, Z2 = ZB + 0.7, ZB + 2.5, ZB + 4.5
+strip(ring12(Z0, 9.0, dip=1.0), ring12(Z1, 9.0, dip=1.0), "casing")                          # vertical wall
+strip(ring12(Z1, 9.0, dip=1.0), ring12(Z2, 7.0, dip=0.8, dipz=1.5), "casing", dark_corner=True)   # chamfer; dipped corner points = notches
+strip(ring12(Z2, 7.0, dip=0.8, dipz=1.5), ring12(Z2, 6.2), "casing")       # thin flat rim
+strip(ring12(Z2, 6.2), ring12(ZB + 2.2, 6.2), "casing")                    # recess wall
+quad(sq(ZB + 2.2, 6.2, 6.2), "casing")                                      # recess floor
+# stepped faceted core pyramid 12 wide (40 % of 30), magenta, sunk below the rim
+loft([sq(ZB + 2.2, 6.0, 6.0), sq(ZB + 2.6, 6.0, 6.0), sq(ZB + 3.4, 4.6, 4.6), sq(ZB + 3.7, 4.6, 4.6), sq(ZB + 4.4, 3.0, 3.0)], "core", bottom=False)
+
+
+# six compact legs (3 on +x, 3 on -y, facing the viewer): bent strip, 2.1 wide, leaves the wall at half height, rounded elbow (3 segments), small foot on the board
+def centerline():
+    cx, cz, r = 10.1, 1.0, 1.0
+    pts = [(8.6, 2.0), (cx, 2.0)]
+    for a in (60, 30, 0):
+        pts.append((cx + r * math.sin(math.radians(90 - a)) if False else cx + r * math.cos(math.radians(a)), cz + r * math.sin(math.radians(a))))
+    pts += [(11.1, 0.8), (11.5, 0.5), (12.7, 0.5)]
+    return pts
+
+
+def offset_poly(pts, t):
+    L, R = [], []
+    for i, p in enumerate(pts):
+        if i == 0:
+            d = (pts[1][0] - p[0], pts[1][1] - p[1])
+            dl = math.hypot(*d)
+            nrm = (-d[1] / dl, d[0] / dl)
+            s = 1.0
+        elif i == len(pts) - 1:
+            d = (p[0] - pts[i - 1][0], p[1] - pts[i - 1][1])
+            dl = math.hypot(*d)
+            nrm = (-d[1] / dl, d[0] / dl)
+            s = 1.0
+        else:
+            d1 = (p[0] - pts[i - 1][0], p[1] - pts[i - 1][1])
+            d2 = (pts[i + 1][0] - p[0], pts[i + 1][1] - p[1])
+            l1, l2 = math.hypot(*d1), math.hypot(*d2)
+            n1 = (-d1[1] / l1, d1[0] / l1)
+            n2 = (-d2[1] / l2, d2[0] / l2)
+            m = (n1[0] + n2[0], n1[1] + n2[1])
+            ml = math.hypot(*m)
+            nrm = (m[0] / ml, m[1] / ml)
+            s = 1.0 / max(0.3, nrm[0] * n1[0] + nrm[1] * n1[1])
+        L.append((p[0] + nrm[0] * t / 2 * s, p[1] + nrm[1] * t / 2 * s))
+        R.append((p[0] - nrm[0] * t / 2 * s, p[1] - nrm[1] * t / 2 * s))
+    return L + R[::-1]
+
+
+PROFILE = [(u, z + ZB) for (u, z) in offset_poly(centerline(), 1.0)]
 
 
 def leg(side, c):
     vs = []
-    for w in (-1.3, 1.3):
-        ring = []
-        for (u, z) in PROFILE:
-            ring.append(bm.verts.new((u, c + w, z) if side == "x" else (c + w, -u, z)))
-        vs.append(ring)
+    for w in (-1.05, 1.05):
+        vs.append([bm.verts.new((u, c + w, z) if side == "x" else (c + w, -u, z)) for (u, z) in PROFILE])
     fs = []
     n = len(PROFILE)
     for k in range(n):
@@ -120,30 +179,44 @@ def leg(side, c):
     bmesh.ops.recalc_face_normals(bm, faces=fs)
 
 
-for c in (-4.6, 0.0, 4.6):
+for c in (-4.4, 0.0, 4.4):
     leg("x", c)
     leg("y", c)
-# box components: two larger on opposite sides, one smaller (dark body, light end cap on the larger ones)
-box(-14.2, -10.6, 0.5, 8.0, ZB, ZB + 2.2, "casing", bottom=False)
-box(-14.3, -10.5, 0.5, 1.6, ZB, ZB + 2.3, "legs", bottom=False)
-box(10.6, 14.2, 6.4, 11.0, ZB, ZB + 2.2, "casing", bottom=False)
-box(10.5, 14.3, 6.4, 7.4, ZB, ZB + 2.3, "legs", bottom=False)
-box(-9.0, -5.0, 11.2, 13.6, ZB, ZB + 1.4, "casing", bottom=False)
-# light traces with right-angle bends, thin raised strips
-def trace(pts, w=0.5, hgt=0.25):
+
+
+# box components: dark body with a lighter band on top. two larger on opposite sides, one smaller
+def comp(x0, x1, y0, y1, hgt, along_x):
+    box(x0, x1, y0, y1, ZB, ZB + hgt, "casing", bottom=False)
+    if along_x:
+        a = (x0 + x1) / 2
+        box(a - (x1 - x0) * 0.2, a + (x1 - x0) * 0.2, y0, y1, ZB + hgt, ZB + hgt + 0.3, "legs", bottom=False)
+    else:
+        a = (y0 + y1) / 2
+        box(x0, x1, a - (y1 - y0) * 0.2, a + (y1 - y0) * 0.2, ZB + hgt, ZB + hgt + 0.3, "legs", bottom=False)
+
+
+comp(-14.2, -10.6, 0.5, 8.0, 2.0, False)
+comp(10.6, 14.2, 6.4, 11.0, 2.0, False)
+comp(-9.0, -5.0, 11.2, 13.6, 1.3, True)
+
+
+# light traces, 1.2 wide, right-angle bends, thin raised strips (0.25)
+def trace(pts, w=0.6, hgt=0.25):
     for (ax, ay), (bx, by) in zip(pts[:-1], pts[1:]):
         box(min(ax, bx) - w, max(ax, bx) + w, min(ay, by) - w, max(ay, by) + w, ZB, ZB + hgt, "legs", bottom=False)
-trace([(-14.5, -2.0), (-11.5, -2.0), (-11.5, -8.5)])
-trace([(1.0, 14.5), (1.0, 12.0), (8.0, 12.0)])
-trace([(7.5, -14.5), (7.5, -10.8), (10.2, -10.8)])
-trace([(14.5, -9.0), (11.5, -9.0), (11.5, -6.8)])
-# four grey hex bolts at the corners, 3.4 cm across, 1.7 cm tall
+
+
+trace([(-14.3, -3.0), (-12.0, -3.0), (-12.0, -7.5)])
+trace([(2.0, 14.3), (2.0, 11.2), (8.0, 11.2)])
+trace([(8.5, -14.3), (8.5, -9.5), (13.9, -9.5)])
+trace([(14.2, -6.2), (14.2, 1.5)])
+trace([(-8.5, -14.3), (-8.5, -9.5), (-10.5, -9.5)])
+# four grey bolts: short wide base + flat-topped regular hexagonal head, about 3 cm across
 for bx, by in ((-12.6, -12.6), (12.6, -12.6), (-12.6, 12.6), (12.6, 12.6)):
     n0 = len(bm.faces)
-    loft([hexring(ZB, 1.75, bx, by), hexring(ZB + 1.7, 1.75, bx, by)], "legs", top=False)
-    loft([hexring(ZB + 1.7, 1.75, bx, by), hexring(ZB + 1.9, 1.2, bx, by)], "legs", bottom=False)
+    loft([hexring(ZB, 1.7, bx, by), hexring(ZB + 0.5, 1.7, bx, by)], "legs", top=True)
+    loft([hexring(ZB + 0.5, 1.5, bx, by), hexring(ZB + 1.7, 1.5, bx, by)], "legs", bottom=False)
     bmesh.ops.recalc_face_normals(bm, faces=list(bm.faces)[n0:])
-pass
 bm.faces.ensure_lookup_table()
 bm.faces.index_update()
 bm.normal_update()
@@ -275,6 +348,14 @@ obj.select_set(True)
 bpy.context.view_layer.objects.active = obj
 bpy.ops.export_scene.fbx(filepath=OUT, use_selection=True, object_types={"MESH"}, apply_scale_options="FBX_SCALE_UNITS", mesh_smooth_type="FACE",
                          add_leaf_bones=False, path_mode="RELATIVE", embed_textures=False, colors_type="NONE")
-with open(os.path.splitext(OUT)[0] + ".report.json", "w", encoding="utf-8") as f:
+RP = os.path.splitext(OUT)[0] + ".report.json"
+if os.path.exists(RP):                                   # keep the fidelity verdicts written after the visual judgement
+    try:
+        old = json.load(open(RP, encoding="utf-8"))
+        if "fidelity" in old:
+            report["fidelity"] = old["fidelity"]
+    except Exception:
+        pass
+with open(RP, "w", encoding="utf-8") as f:
     json.dump(report, f, indent=2)
 print(json.dumps(report))

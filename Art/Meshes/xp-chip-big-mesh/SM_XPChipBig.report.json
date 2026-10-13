@@ -3,28 +3,28 @@
   "route": "blender",
   "script": "Tools/art/blender/xp_chip_big_mesh.py",
   "source_image": "vault/assets/xp-chip-big.png",
-  "tris_out": 622,
+  "tris_out": 848,
   "budget_tris": 1000,
   "dimensions_cm": {
-    "x": 30.0,
-    "y": 30.0,
-    "z": 9.7
+    "x": 30,
+    "y": 30,
+    "z": 7.9
   },
   "footprint_target_cm": {
-    "x": 30.0,
-    "y": 30.0,
+    "x": 30,
+    "y": 30,
     "source": "BP_PickupXP PickupMesh /Engine/BasicShapes/Cube (100 cm) x scale 0.3; big block scale 1.8 (root 0.54) applied in game, not baked"
   },
   "pivot": "bottom",
   "bbox_min": [
-    -15.0,
-    -15.0,
-    0.0
+    -15,
+    -15,
+    0
   ],
   "bbox_max": [
-    15.0,
-    15.0,
-    9.7
+    15,
+    15,
+    7.9
   ],
   "materials": [
     "M_XPChipBig_board",
@@ -45,18 +45,18 @@
   ],
   "uv_checks": {
     "UVMap": {
-      "tile_cm": 100.0,
-      "cm_per_uv_unit_min": 99.999,
-      "cm_per_uv_unit_max": 100.0
+      "tile_cm": 100,
+      "cm_per_uv_unit_min": 99.998,
+      "cm_per_uv_unit_max": 166.067
     },
     "LightMap": {
-      "faces": 273,
-      "triangles": 622,
+      "faces": 340,
+      "triangles": 848,
       "overlapping_face_pairs": 0,
       "bounds_min": 0.01172,
       "bounds_max": 0.98828,
-      "min_gap_px_at_256": 3.0,
-      "min_border_px_at_256": 3.0,
+      "min_gap_px_at_256": 3,
+      "min_border_px_at_256": 3,
       "required_margin_px": 2,
       "pass": true
     }
@@ -66,45 +66,44 @@
     "M_XPChipBig_core is emissive in Blender (strength 4, #FF26BF): the FBX does not carry emission, the Unreal material sets the glow (MI_PickupXPBig)"
   ],
   "fidelity": {
-    "returns_used": 5,
-    "camera": "ortho 50 cm, azimuth 45 (board corner toward viewer), elevation 35, light-grey world, sun 3.0; source estimated at about 35 deg elevation, corner toward viewer",
+    "run": 2,
+    "returns_used": 3,
+    "max_returns": 5,
     "final_render": "Art/Meshes/xp-chip-big-mesh/SM_XPChipBig_final.png",
     "criteria": {
       "C1": {
         "verdict": "pass",
-        "evidence": "Slab 30 x 30 x 3.4 cm (11 %), four tiles with 0.3 cm seams visible as steps down to the base slab."
+        "evidence": "Slab 30 x 30 x 3.4 cm (11 %), four tiles, seams read as steps. Differs: source seams are thinner and flush."
       },
       "C2": {
-        "verdict": "fail",
-        "evidence": "Square body 19 cm (63 %), top 9.5 cm (rise 6.1 cm = 20 %), slope toward the core visible on the back faces; but the 4 corner notches are small raised dark blocks, not cuts, so they read only roughly."
+        "verdict": "pass",
+        "evidence": "Casing 18 cm (60 %), 4.5 cm above the board (15 %), thin darker ledge, short vertical wall then a 45 degree chamfer of 2.0 cm (44 % of height) to a 0.8 cm flat rim, plan corners cut; 4 triangular notches dip into the chamfer corners and read as dents in the render. Differs: the chamfer is shaded almost like the wall under this light so the bevel reads less strongly than the source, and the source notches are crisper small triangles."
       },
       "C3": {
         "verdict": "pass",
-        "evidence": "Core 11.6 cm (39 %) is a two-step faceted pyramid in a square recess below the rim, steps visible in the render; magenta."
+        "evidence": "Core 12 cm (40 %) stepped faceted pyramid (vertical step, 45 degree slope, step, slope, flat top) in a square recess, magenta; steps visible. Differs: sunk deeper than the source so the lower step is hidden by the recess wall; no glow (not judged)."
       },
       "C4": {
         "verdict": "pass",
-        "evidence": "3 light-grey L legs with a chamfered elbow and foot on each of the +x and -y sides, both facing the viewer; less curved than the source (angular elbow only)."
+        "evidence": "3 identical compact legs 2.1 cm wide on each of the two viewer-facing sides, leaving the wall at about half casing height, rounded elbow with 3 arc segments, small flat foot on the board, evenly spaced (4.4 cm). Differs: source legs are a little taller and chunkier with a boxier shoulder; ours are thinner strips."
       },
       "C5": {
         "verdict": "pass",
-        "evidence": "4 hexagonal bolts 3.5 cm across (about 11 %), 1.9 cm high, clearly raised at the corners."
+        "evidence": "4 flat-topped regular hexagonal bolts (6 equal sides, 3.2 cm across corners, 10 %) on a short wider base, light grey, clean facets in the render. Differs: source bolt heads have a small top chamfer."
       },
       "C6": {
         "verdict": "pass",
-        "evidence": "4 light-grey traces with right-angle bends (thin raised strips), 2 larger box components on opposite sides (-x and +x) and 1 smaller on +y; traces are thinner and shorter than in the source."
+        "evidence": "5 light-grey traces 1.2 cm wide (4 %), 7.5 to 10.4 cm long (25 to 35 %), with one or two right-angle bends (one straight), raised 0.25 cm, clearly visible; 3 box components (two larger on opposite sides, one smaller), dark with a light band on top. Differs: source traces use 45 degree bends and run closer to the legs; source components are a bit larger."
       },
       "C7": {
         "verdict": "pass",
-        "evidence": "Board and casing gunmetal, legs, bolts, traces light grey, core magenta #FF26BF, no cyan."
+        "evidence": "Board and casing gunmetal, legs, bolts, traces, bands light grey, core magenta #FF26BF, no cyan."
       },
       "C8": {
         "verdict": "pass",
-        "evidence": "622 tris (max 1000), 30 x 30 x 9.7 cm, pivot bottom centre, flat shading, UV0 and LightMap UV1 checks pass."
+        "evidence": "848 tris (max 1000), 30 x 30 x 7.9 cm, pivot bottom centre, flat shading, UV0 and LightMap UV1 checks pass."
       }
     },
-    "open_failures": [
-      "C2 corner notches are raised dark blocks, not real notches"
-    ]
+    "open_failures": []
   }
 }
