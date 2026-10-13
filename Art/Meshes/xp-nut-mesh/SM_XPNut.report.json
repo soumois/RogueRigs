@@ -3,7 +3,7 @@
   "route": "blender",
   "script": "Tools/art/blender/xp_nut_mesh.py",
   "source_image": "vault/assets/xp-nut.png",
-  "tris_out": 300,
+  "tris_out": 80,
   "budget_tris": 300,
   "dimensions_cm": {
     "x": 30.0,
@@ -35,7 +35,7 @@
       "tile_cm": 100.0
     },
     "LightMap": {
-      "faces": 144,
+      "faces": 32,
       "overlapping_face_pairs": 0,
       "bounds_min": [
         0.01172
@@ -53,17 +53,20 @@
   "warnings": [
     "glow emissive is not carried by the FBX: the Unreal material must set the emissive colour (0, 0.9, 1) on M_XPNut_glow"
   ],
-  "hole": "through, no floor",
-  "hole_top_diameter_pct_of_across_flats": 63.9,
-  "glow_ring_cm": {
-    "z_from": 5.25,
-    "z_to": 6.45
+  "centre": {
+    "slope_deg_estimate": 40.0,
+    "slope_depth_cm": 1.888,
+    "rim_pct_of_across_flats": 62.0,
+    "disc_pct_of_across_flats": 44.6,
+    "disc_z_cm": 9.812
   },
   "fidelity": {
-    "run": 3,
+    "run": 4,
     "returns_used": 0,
     "final_render": "Art/Meshes/xp-nut-mesh/SM_XPNut.preview.png",
     "camera": "azimuth 11, elevation 52, ortho 42 (Tools/art/blender/xp_nut_preview.py)",
+    "slope_angle_estimate_deg": 40.0,
+    "slope_angle_note": "estimated from the source ring between the flat top and the hole, about 40 degrees from horizontal (not 45); uncertain by about 5 degrees because the ring is seen at 52 degrees elevation",
     "criteria": {
       "C1": {
         "verdict": "pass",
@@ -71,19 +74,19 @@
       },
       "C2": {
         "verdict": "pass",
-        "evidence": "The light-grey background shows through a 12-sided opening at the bottom of the hole, no floor; top diameter 63.9 % of across-flats; 4 stepped bands (steep/shallow alternation) clearly visible on the far wall; the whole wall is grey. Still differs: bands are thinner and the hole narrows more than the source, which has a wide floor."
+        "evidence": "Flat top, one sloped ring (40 deg estimate, 1.9 cm deep), one flat 12-gon disc parallel to the top, no wall, steps, bands or ring; rim 62 %, disc 44.7 % of across-flats. Still differs: the source hole is deeper with stepped walls, removed by owner decision."
       },
       "C3": {
         "verdict": "pass",
-        "evidence": "Chamfer facets around the hole mouth and 6 bevelled top corners visible; still differs: source bevels are a bit larger."
+        "evidence": "6 corner bevels visible as facets on the top face and the 12 slope facets below; still differs: bevels are subtler than the source."
       },
       "C4": {
         "verdict": "pass",
-        "evidence": "Exactly two materials, M_XPNut_body (grey: body, chamfer, whole hole wall) and M_XPNut_glow (cyan 0, 0.9, 1); pale floor material removed."
+        "evidence": "Exactly two materials: M_XPNut_body (grey, body and slope ring) and M_XPNut_glow (cyan 0, 0.9, 1)."
       },
       "C5": {
         "verdict": "pass",
-        "evidence": "tris_out 300 (budget 300); 30 cm across corners; pivot bottom centre."
+        "evidence": "tris_out 80 (budget 300); 30 cm across corners; pivot bottom centre."
       },
       "C6": {
         "verdict": "pass",
@@ -91,7 +94,7 @@
       },
       "C7": {
         "verdict": "pass",
-        "evidence": "Cyan appears only as one thin band (z 5.25 to 6.45 cm, 1.2 cm tall, mid height) on the far wall, reads as a glowing seam; nothing else cyan. Still differs: no bloom in Blender (Unreal adds it), so the source's cyan wash is absent here by owner decision."
+        "evidence": "Cyan only on the flat centre disc, no blue band anywhere. Still differs: no bloom in Blender (Unreal adds it); preview disc looks flat saturated cyan."
       }
     }
   }
