@@ -141,3 +141,4 @@ Archive: it exceeds the index size limits of [[_authoring]] on purpose (owner, 2
 - [[task-128-xp-nut-mesh]] — Build the hex nut mesh for the basic XP pickup from the validated image, Blender route. Status done.
 - [[task-129-xp-chip-big-mesh]] — Build the data chip mesh for the big XP block from the validated image, Blender route. Status done.
 - [[task-130-xp-nut-mesh-fidelity]] — Rebuild the XP hex nut mesh so it matches the validated image, judged by the fidelity loop. Status done.
+- [[task-131-xp-chip-big-mesh-fidelity]] — Rebuild the big XP data chip mesh so it matches the validated image, judged by the fidelity loop. Status done.

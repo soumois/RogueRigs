@@ -3,7 +3,7 @@ id: task-131-01-xp-chip-big-mesh-fidelity
 description: "Rebuild the big XP data chip mesh so it matches the validated image, judged by the fidelity loop."
 parent: task-131-xp-chip-big-mesh-fidelity
 kind: task
-status: in-progress
+status: done
 ---
 # Big XP block mesh: data chip, fidelity pass
 
@@ -15,11 +15,11 @@ status: in-progress
 - done_when: All criteria C1 to C8 of the subtask pass in the comparison render, or the report lists the criteria still failing after 5 returns; tris_out at most 1000; nothing imported in Unreal
 - editor_state: closed
 - token_ceiling: open
-- model: open
-- tokens: open
-- runs: open
+- model: sonnet
+- tokens: input 108, cache write 236027, cache read 1830968, output 10490
+- runs: 5
 - milestone: M2
-- result: open
+- result: Data chip SM_XPChipBig.fbx validated by the owner 2026-10-13: raised magenta gem, clean corners, 844 tris, 7 materials; 5 runs of the fidelity loop.
 - run: 2 (owner 2026-10-13: first run left C2 failing and was judged too lenient; criteria tightened; 5 new returns, starting from the committed files)
 - max_returns: 5 (owner 2026-10-13, provisional)
 - render: camera about 35 degrees elevation, the board turned about 45 degrees so a corner points at the viewer and the two board sides with legs face the viewer, light-grey background, light of blender-asset-route. Use the camera of run 1 (orthographic 50 cm, azimuth 45, elevation 35) so renders stay comparable.

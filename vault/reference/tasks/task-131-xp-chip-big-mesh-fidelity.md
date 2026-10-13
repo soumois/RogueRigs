@@ -1,9 +1,9 @@
 ---
 id: task-131-xp-chip-big-mesh-fidelity
 description: "Global task: Rebuild the big XP data chip mesh so it matches the validated image, judged by the fidelity loop."
-parent: tasks-to-do-index
+parent: tasks-done-index
 kind: task
-status: in-progress
+status: done
 ---
 # Big XP block mesh: data chip, fidelity pass
 
@@ -13,12 +13,12 @@ status: in-progress
 - gdd_check: done by the Orchestrator when the task is planned (2026-10-13).
 - confirmed_by_owner: yes (2026-10-13)
 - milestone: M2
-- next_step: task-131-01-xp-chip-big-mesh-fidelity
-- result: open
+- next_step: none
+- result: Done. Data chip SM_XPChipBig.fbx validated by the owner 2026-10-13: raised magenta gem, clean corners, 844 tris, 7 materials; 5 runs of the fidelity loop.
 
 ## Subtasks
 1. task-131-01-xp-chip-big-mesh-fidelity — 3d
 
 ## Relations
-- [[tasks-to-do-index]] — parent index.
+- [[tasks-done-index]] — parent index.
 - [[task-131-01-xp-chip-big-mesh-fidelity]] — step 1, 3d.
