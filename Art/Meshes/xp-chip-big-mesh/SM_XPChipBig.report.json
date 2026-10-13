@@ -3,12 +3,12 @@
   "route": "blender",
   "script": "Tools/art/blender/xp_chip_big_mesh.py",
   "source_image": "vault/assets/xp-chip-big.png",
-  "tris_out": 296,
-  "budget_tris": 600,
+  "tris_out": 622,
+  "budget_tris": 1000,
   "dimensions_cm": {
     "x": 30.0,
     "y": 30.0,
-    "z": 10.3
+    "z": 9.7
   },
   "footprint_target_cm": {
     "x": 30.0,
@@ -24,7 +24,7 @@
   "bbox_max": [
     15.0,
     15.0,
-    10.3
+    9.7
   ],
   "materials": [
     "M_XPChipBig_board",
@@ -46,12 +46,12 @@
   "uv_checks": {
     "UVMap": {
       "tile_cm": 100.0,
-      "cm_per_uv_unit_min": 100.0,
+      "cm_per_uv_unit_min": 99.999,
       "cm_per_uv_unit_max": 100.0
     },
     "LightMap": {
-      "faces": 144,
-      "triangles": 296,
+      "faces": 273,
+      "triangles": 622,
       "overlapping_face_pairs": 0,
       "bounds_min": 0.01172,
       "bounds_max": 0.98828,
@@ -64,5 +64,47 @@
   "shading": "flat",
   "warnings": [
     "M_XPChipBig_core is emissive in Blender (strength 4, #FF26BF): the FBX does not carry emission, the Unreal material sets the glow (MI_PickupXPBig)"
-  ]
+  ],
+  "fidelity": {
+    "returns_used": 5,
+    "camera": "ortho 50 cm, azimuth 45 (board corner toward viewer), elevation 35, light-grey world, sun 3.0; source estimated at about 35 deg elevation, corner toward viewer",
+    "final_render": "Art/Meshes/xp-chip-big-mesh/SM_XPChipBig_final.png",
+    "criteria": {
+      "C1": {
+        "verdict": "pass",
+        "evidence": "Slab 30 x 30 x 3.4 cm (11 %), four tiles with 0.3 cm seams visible as steps down to the base slab."
+      },
+      "C2": {
+        "verdict": "fail",
+        "evidence": "Square body 19 cm (63 %), top 9.5 cm (rise 6.1 cm = 20 %), slope toward the core visible on the back faces; but the 4 corner notches are small raised dark blocks, not cuts, so they read only roughly."
+      },
+      "C3": {
+        "verdict": "pass",
+        "evidence": "Core 11.6 cm (39 %) is a two-step faceted pyramid in a square recess below the rim, steps visible in the render; magenta."
+      },
+      "C4": {
+        "verdict": "pass",
+        "evidence": "3 light-grey L legs with a chamfered elbow and foot on each of the +x and -y sides, both facing the viewer; less curved than the source (angular elbow only)."
+      },
+      "C5": {
+        "verdict": "pass",
+        "evidence": "4 hexagonal bolts 3.5 cm across (about 11 %), 1.9 cm high, clearly raised at the corners."
+      },
+      "C6": {
+        "verdict": "pass",
+        "evidence": "4 light-grey traces with right-angle bends (thin raised strips), 2 larger box components on opposite sides (-x and +x) and 1 smaller on +y; traces are thinner and shorter than in the source."
+      },
+      "C7": {
+        "verdict": "pass",
+        "evidence": "Board and casing gunmetal, legs, bolts, traces light grey, core magenta #FF26BF, no cyan."
+      },
+      "C8": {
+        "verdict": "pass",
+        "evidence": "622 tris (max 1000), 30 x 30 x 9.7 cm, pivot bottom centre, flat shading, UV0 and LightMap UV1 checks pass."
+      }
+    },
+    "open_failures": [
+      "C2 corner notches are raised dark blocks, not real notches"
+    ]
+  }
 }

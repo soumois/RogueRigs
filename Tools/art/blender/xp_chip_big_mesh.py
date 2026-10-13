@@ -1,4 +1,4 @@
-"""Big XP block mesh: data chip (Blender route, task-129-01). Headless:
+"""Big XP block mesh: data chip (Blender route, task-131-01). Headless:
   "$BLENDER_EXE" -b --factory-startup -P Tools/art/blender/xp_chip_big_mesh.py -- --out Art/Meshes/xp-chip-big-mesh/SM_XPChipBig.fbx
 Units: 1 Blender unit = 1 cm. Pivot bottom centre. Footprint 30 x 30 cm = the placeholder XP cube (/Engine/BasicShapes/Cube 100 cm x PickupMesh scale 0.3);
 the 1.8 scale of the big block is applied in game (BP_PickupXPBig root scale 0.54), not baked. Flat shading, flat per-material colours, emissive magenta core."""
@@ -12,7 +12,7 @@ for i in range(0, len(argv) - 1, 2):
     opt[argv[i]] = argv[i + 1]
 OUT = os.path.abspath(opt["--out"])
 os.makedirs(os.path.dirname(OUT), exist_ok=True)
-BUDGET = 600
+BUDGET = 1000
 FOOT = 30.0
 
 
@@ -83,29 +83,67 @@ def hexring(z, r, cx, cy):
 
 
 H = FOOT / 2
-ZB = 3.0
-box(-H, H, -H, H, 0.0, ZB, "board")                                        # board 30 x 30 x 3
-loft([sq(ZB, 10, 10), sq(ZB + 1.4, 10, 10)], "casing")                      # dark flange under the casing (20 x 20)
-loft([sq(ZB + 1.4, 9, 9), sq(ZB + 4.0, 9, 9), sq(9.0, 7, 7)], "casing")     # casing 18 x 18, chamfered top to 14 x 14 at z 9
-loft([sq(8.9, 5, 5), sq(9.3, 5, 5), sq(10.3, 2.8, 2.8)], "core", bottom=False)   # faceted crystal core 10 x 10, flat top 5.6 at z 10.3
-# legs: 3 per side on the two x sides, horizontal foot from the casing and a vertical drop to the board (grey)
+ZB = 3.4                                                                    # board top (tiles), 11.3 % of width
+box(-H, H, -H, H, 0.0, 2.6, "board")                                       # base slab, seams show as 0.8 cm steps between tiles
+G = 0.3
+for x0, x1 in ((-H, -G), (G, H)):
+    for y0, y1 in ((-H, -G), (G, H)):
+        box(x0, x1, y0, y1, 2.6, ZB, "board", bottom=False)                # four tiles
+loft([sq(ZB, 10.2, 10.2), sq(ZB + 1.0, 10.2, 10.2)], "casing")             # flange 20.4
+loft([sq(ZB + 1.0, 9.5, 9.5), sq(6.0, 9.5, 9.5), sq(9.5, 6.9, 6.9)], "casing", top=False)     # body 18 wide, slope to 14 at z 9.5 (rise 6.1 = 20 %)
+loft([sq(9.5, 6.2, 6.2), sq(7.8, 6.2, 6.2)], "casing", bottom=False, top=False)   # recess wall 12.4
+loft([sq(9.5, 6.9, 6.9), sq(9.5, 6.2, 6.2)], "casing", bottom=False, top=False)   # rim
+# stepped faceted core pyramid 11.6 wide (39 % of 30), magenta
+loft([sq(7.8, 5.8, 5.8), sq(8.3, 5.8, 5.8), sq(8.9, 4.2, 4.2), sq(9.0, 4.2, 4.2), sq(9.7, 2.4, 2.4)], "core", bottom=False)
+# corner notches: small dark pits on the four top corners of the slope
 for sx in (-1, 1):
-    for yc in (-5.5, 0.0, 5.5):
-        xa, xb = sorted((sx * 8.5, sx * 12.5))
-        box(xa, xb, yc - 1.3, yc + 1.3, 4.6, 5.8, "legs", bottom=False)
-        xa, xb = sorted((sx * 11.0, sx * 12.5))
-        box(xa, xb, yc - 1.3, yc + 1.3, ZB, 4.6, "legs", bottom=False)
-# small dark components on the board
-box(-12.5, -8.0, 9.0, 12.0, ZB, ZB + 1.8, "casing", bottom=False)
-box(8.5, 12.5, -12.0, -9.0, ZB, ZB + 1.8, "casing", bottom=False)
-box(10.0, 12.5, 8.0, 12.0, ZB, ZB + 1.2, "casing", bottom=False)
-# light traces: thin grey strips on the board
-for (x0, x1, y0, y1) in ((-5.0, 5.0, -12.0, -11.0), (-5.0, 5.0, 11.0, 12.0)):
-    box(x0, x1, y0, y1, ZB, ZB + 0.3, "legs", bottom=False)
-# four grey hex bolts at the corners
-for bx, by in ((-12.0, -12.0), (12.0, -12.0), (-12.0, 12.0), (12.0, 12.0)):
-    loft([hexring(ZB, 1.7, bx, by), hexring(ZB + 1.3, 1.7, bx, by)], "legs", bottom=False)
-bmesh.ops.recalc_face_normals(bm, faces=bm.faces)
+    for sy in (-1, 1):
+        cx, cy = sx * 7.6, sy * 7.6
+        box(cx - 0.8, cx + 0.8, cy - 0.8, cy + 0.8, 8.2, 9.6, "board", bottom=False)
+# six L-shaped legs, 3 on +x side and 3 on -y side (facing the viewer): one extruded L profile each (arm out of the casing, chamfered elbow, drop, foot)
+PROFILE = [(10.8, ZB), (13.4, ZB), (13.4, ZB + 0.9), (12.4, ZB + 0.9), (12.4, 5.9), (11.7, 6.5), (9.2, 6.5), (9.2, 5.0), (10.8, 5.0)]
+
+
+def leg(side, c):
+    vs = []
+    for w in (-1.3, 1.3):
+        ring = []
+        for (u, z) in PROFILE:
+            ring.append(bm.verts.new((u, c + w, z) if side == "x" else (c + w, -u, z)))
+        vs.append(ring)
+    fs = []
+    n = len(PROFILE)
+    for k in range(n):
+        fs.append(quad((vs[0][k], vs[0][(k + 1) % n], vs[1][(k + 1) % n], vs[1][k]), "legs"))
+    fs.append(quad(vs[0][::-1], "legs"))
+    fs.append(quad(vs[1], "legs"))
+    bmesh.ops.recalc_face_normals(bm, faces=fs)
+
+
+for c in (-4.6, 0.0, 4.6):
+    leg("x", c)
+    leg("y", c)
+# box components: two larger on opposite sides, one smaller (dark body, light end cap on the larger ones)
+box(-14.2, -10.6, 0.5, 8.0, ZB, ZB + 2.2, "casing", bottom=False)
+box(-14.3, -10.5, 0.5, 1.6, ZB, ZB + 2.3, "legs", bottom=False)
+box(10.6, 14.2, 6.4, 11.0, ZB, ZB + 2.2, "casing", bottom=False)
+box(10.5, 14.3, 6.4, 7.4, ZB, ZB + 2.3, "legs", bottom=False)
+box(-9.0, -5.0, 11.2, 13.6, ZB, ZB + 1.4, "casing", bottom=False)
+# light traces with right-angle bends, thin raised strips
+def trace(pts, w=0.5, hgt=0.25):
+    for (ax, ay), (bx, by) in zip(pts[:-1], pts[1:]):
+        box(min(ax, bx) - w, max(ax, bx) + w, min(ay, by) - w, max(ay, by) + w, ZB, ZB + hgt, "legs", bottom=False)
+trace([(-14.5, -2.0), (-11.5, -2.0), (-11.5, -8.5)])
+trace([(1.0, 14.5), (1.0, 12.0), (8.0, 12.0)])
+trace([(7.5, -14.5), (7.5, -10.8), (10.2, -10.8)])
+trace([(14.5, -9.0), (11.5, -9.0), (11.5, -6.8)])
+# four grey hex bolts at the corners, 3.4 cm across, 1.7 cm tall
+for bx, by in ((-12.6, -12.6), (12.6, -12.6), (-12.6, 12.6), (12.6, 12.6)):
+    n0 = len(bm.faces)
+    loft([hexring(ZB, 1.75, bx, by), hexring(ZB + 1.7, 1.75, bx, by)], "legs", top=False)
+    loft([hexring(ZB + 1.7, 1.75, bx, by), hexring(ZB + 1.9, 1.2, bx, by)], "legs", bottom=False)
+    bmesh.ops.recalc_face_normals(bm, faces=list(bm.faces)[n0:])
+pass
 bm.faces.ensure_lookup_table()
 bm.faces.index_update()
 bm.normal_update()
