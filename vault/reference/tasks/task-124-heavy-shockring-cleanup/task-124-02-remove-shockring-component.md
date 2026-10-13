@@ -19,7 +19,7 @@ status: in-progress
 - tokens: open
 - runs: open
 - milestone: M2
-- result: open
+- result: ShockRing component deleted from BP_Heavy; no node or variable referenced it; compiled and saved; bp-heavy and sys-enemies-heavy updated.
 
 ## Relations
 - [[task-124-heavy-shockring-cleanup]] — parent global task.
