@@ -13,7 +13,7 @@ def srgb(h):
     return tuple(((x + 0.055) / 1.055) ** 2.4 if x > 0.04045 else x / 12.92 for x in c) + (1.0,)
 
 
-PAINT = {"board": "#2B2E34", "casing": "#3C4048", "legs": "#8A9099", "core": "#FF26BF"}
+PAINT = {"board": "#2B2E34", "casing": "#3C4048", "casing_chamfer": "#585E69", "edge_band": "#A9B0BA", "legs": "#8A9099", "core_bright": "#FF26BF", "core_dark": "#B0107F"}
 bpy.ops.wm.read_factory_settings(use_empty=True)
 bpy.ops.import_scene.fbx(filepath=FBX)
 obj = next(o for o in bpy.context.scene.objects if o.type == "MESH")
@@ -28,7 +28,7 @@ for m in obj.data.materials:
     bsdf.inputs["Roughness"].default_value = 0.8
     if key in PAINT:
         bsdf.inputs["Base Color"].default_value = srgb(PAINT[key])
-    if key == "core":
+    if key.startswith("core"):
         bsdf.inputs["Emission Color"].default_value = srgb(PAINT[key])
         bsdf.inputs["Emission Strength"].default_value = 0.5
 

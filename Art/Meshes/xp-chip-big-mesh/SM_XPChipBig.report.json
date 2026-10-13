@@ -3,12 +3,12 @@
   "route": "blender",
   "script": "Tools/art/blender/xp_chip_big_mesh.py",
   "source_image": "vault/assets/xp-chip-big.png",
-  "tris_out": 848,
+  "tris_out": 872,
   "budget_tris": 1000,
   "dimensions_cm": {
     "x": 30,
     "y": 30,
-    "z": 7.9
+    "z": 10.6
   },
   "footprint_target_cm": {
     "x": 30,
@@ -24,21 +24,30 @@
   "bbox_max": [
     15,
     15,
-    7.9
+    10.6
   ],
   "materials": [
     "M_XPChipBig_board",
     "M_XPChipBig_casing",
-    "M_XPChipBig_core",
+    "M_XPChipBig_casing_chamfer",
+    "M_XPChipBig_edge_band",
+    "M_XPChipBig_core_bright",
+    "M_XPChipBig_core_dark",
     "M_XPChipBig_legs"
   ],
   "paint_colours_srgb": {
     "M_XPChipBig_board": "#2B2E34",
     "M_XPChipBig_casing": "#3C4048",
+    "M_XPChipBig_casing_chamfer": "#585E69",
+    "M_XPChipBig_edge_band": "#A9B0BA",
     "M_XPChipBig_legs": "#8A9099",
-    "M_XPChipBig_core": "#FF26BF"
+    "M_XPChipBig_core_bright": "#FF26BF",
+    "M_XPChipBig_core_dark": "#B0107F"
   },
-  "emissive_material": "M_XPChipBig_core",
+  "emissive_material": [
+    "M_XPChipBig_core_bright",
+    "M_XPChipBig_core_dark"
+  ],
   "uv_layers": [
     "UVMap",
     "LightMap"
@@ -47,11 +56,11 @@
     "UVMap": {
       "tile_cm": 100,
       "cm_per_uv_unit_min": 99.998,
-      "cm_per_uv_unit_max": 166.067
+      "cm_per_uv_unit_max": 223.607
     },
     "LightMap": {
-      "faces": 340,
-      "triangles": 848,
+      "faces": 352,
+      "triangles": 872,
       "overlapping_face_pairs": 0,
       "bounds_min": 0.01172,
       "bounds_max": 0.98828,
@@ -63,45 +72,49 @@
   },
   "shading": "flat",
   "warnings": [
-    "M_XPChipBig_core is emissive in Blender (strength 4, #FF26BF): the FBX does not carry emission, the Unreal material sets the glow (MI_PickupXPBig)"
+    "M_XPChipBig_core_bright and _dark are emissive in Blender (strength 4, #FF26BF and #B0107F): the FBX does not carry emission, the Unreal material sets the glow (MI_PickupXPBig)"
   ],
   "fidelity": {
-    "run": 2,
-    "returns_used": 3,
+    "run": 3,
+    "returns_used": 1,
     "max_returns": 5,
     "final_render": "Art/Meshes/xp-chip-big-mesh/SM_XPChipBig_final.png",
     "criteria": {
       "C1": {
         "verdict": "pass",
-        "evidence": "Slab 30 x 30 x 3.4 cm (11 %), four tiles, seams read as steps. Differs: source seams are thinner and flush."
+        "evidence": "same as run 2, untouched: slab 30 x 30 x 3.4 cm (11 %), four tiles. Differs: source seams thinner and flush."
       },
       "C2": {
         "verdict": "pass",
-        "evidence": "Casing 18 cm (60 %), 4.5 cm above the board (15 %), thin darker ledge, short vertical wall then a 45 degree chamfer of 2.0 cm (44 % of height) to a 0.8 cm flat rim, plan corners cut; 4 triangular notches dip into the chamfer corners and read as dents in the render. Differs: the chamfer is shaded almost like the wall under this light so the bevel reads less strongly than the source, and the source notches are crisper small triangles."
+        "evidence": "Casing 18 cm (60 %), 4.5 cm high (15 %), 45 degree chamfer on 2.0 of 4.5 cm. Chamfer is #585E69 against the wall #3C4048 (about 45 % lighter luminance); in the render the chamfer faces are clearly lighter than the dark vertical wall at the base. A 0.3 cm light band (#A9B0BA) runs along the chamfer top edge and a 0.4 cm light rim around the opening, visible as a thin bright outline. Differs: the 4 corner notches are small and hard to read at this scale, source notches are crisper triangles; the chamfer reads a little lighter and flatter than the source."
       },
       "C3": {
         "verdict": "pass",
-        "evidence": "Core 12 cm (40 %) stepped faceted pyramid (vertical step, 45 degree slope, step, slope, flat top) in a square recess, magenta; steps visible. Differs: sunk deeper than the source so the lower step is hidden by the recess wall; no glow (not judged)."
+        "evidence": "Gem 11.8 cm wide (39 %), stepped faceted (slope, vertical step, slope, flat top), top 2.7 cm above the rim (rim at 7.9, top 10.6); opening 0.9 cm deep; slope facets alternate #FF26BF and #B0107F by orientation with flat shading, so 3 tones are visible in the render (bright, dark, mid). Differs: the source gem is flatter and sits flush in its opening; ours stands taller by design (owner request)."
       },
       "C4": {
         "verdict": "pass",
-        "evidence": "3 identical compact legs 2.1 cm wide on each of the two viewer-facing sides, leaving the wall at about half casing height, rounded elbow with 3 arc segments, small flat foot on the board, evenly spaced (4.4 cm). Differs: source legs are a little taller and chunkier with a boxier shoulder; ours are thinner strips."
+        "evidence": "same as run 2, untouched: 6 identical legs, rounded elbow, flat feet. Differs: source legs chunkier."
       },
       "C5": {
         "verdict": "pass",
-        "evidence": "4 flat-topped regular hexagonal bolts (6 equal sides, 3.2 cm across corners, 10 %) on a short wider base, light grey, clean facets in the render. Differs: source bolt heads have a small top chamfer."
+        "evidence": "same as run 2, untouched: 4 regular hex bolts. Differs: source heads have a small top chamfer."
       },
       "C6": {
         "verdict": "pass",
-        "evidence": "5 light-grey traces 1.2 cm wide (4 %), 7.5 to 10.4 cm long (25 to 35 %), with one or two right-angle bends (one straight), raised 0.25 cm, clearly visible; 3 box components (two larger on opposite sides, one smaller), dark with a light band on top. Differs: source traces use 45 degree bends and run closer to the legs; source components are a bit larger."
+        "evidence": "same as run 2, untouched: 5 traces, 3 components. Differs: source traces use 45 degree bends."
       },
       "C7": {
         "verdict": "pass",
-        "evidence": "Board and casing gunmetal, legs, bolts, traces, bands light grey, core magenta #FF26BF, no cyan."
+        "evidence": "Board and casing gunmetal, chamfer lighter gunmetal, legs, bolts, traces and bands light grey, core magenta, no cyan."
       },
       "C8": {
         "verdict": "pass",
-        "evidence": "848 tris (max 1000), 30 x 30 x 7.9 cm, pivot bottom centre, flat shading, UV0 and LightMap UV1 checks pass."
+        "evidence": "872 tris (max 1000), 30 x 30 x 10.6 cm, pivot bottom centre, flat shading, UV checks pass."
+      },
+      "C9": {
+        "verdict": "pass",
+        "evidence": "Without the source the core reads as a raised faceted crystal standing proud of a sloped casing: its lower facets are fully visible down to the opening floor, no recess wall hides any part, light and dark facets give volume, it does not read as a flat pink square. Differs: the gem is taller and its base sits close to the light rim."
       }
     },
     "open_failures": []

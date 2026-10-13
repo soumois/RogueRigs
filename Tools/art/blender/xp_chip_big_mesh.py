@@ -21,7 +21,7 @@ def srgb(h):
     return tuple(((x + 0.055) / 1.055) ** 2.4 if x > 0.04045 else x / 12.92 for x in c) + (1.0,)
 
 
-HEX = {"board": "#2B2E34", "casing": "#3C4048", "legs": "#8A9099", "core": "#FF26BF"}
+HEX = {"board": "#2B2E34", "casing": "#3C4048", "casing_chamfer": "#585E69", "edge_band": "#A9B0BA", "legs": "#8A9099", "core_bright": "#FF26BF", "core_dark": "#B0107F"}
 bpy.ops.wm.read_factory_settings(use_empty=True)
 mats = {}
 for n, h in HEX.items():
@@ -32,7 +32,7 @@ for n, h in HEX.items():
     b = m.node_tree.nodes["Principled BSDF"]
     b.inputs["Base Color"].default_value = c
     b.inputs["Roughness"].default_value = 0.8
-    if n == "core":
+    if n.startswith("core"):
         b.inputs["Emission Color"].default_value = c
         b.inputs["Emission Strength"].default_value = 4.0
     mats[n] = m
@@ -113,16 +113,33 @@ def strip(ra, rb, mat, dark_corner=False):
         quad((ra[k], ra[(k + 1) % n], rb[(k + 1) % n], rb[k]), m)
 
 
-# casing: 18 wide, 4.5 cm above the board (15 % of 30): ledge 0.7, wall to 2.7, 45 degree chamfer 1.8 high / 1.8 run, thin rim, recess 12.8 wide
+# casing: 18 wide, 4.5 cm above the board (15 % of 30): ledge 0.7, wall to 2.7, 45 degree chamfer 2.0 high / 2.0 run (lighter material, 0.3 cm light band on its top edge),
+# thin light rim band, shallow opening 0.9 cm deep, raised faceted gem rising 2.7 cm above the rim
 box(-9.9, 9.9, -9.9, 9.9, ZB, ZB + 0.7, "board", bottom=False)             # thin darker ledge at the base
 Z0, Z1, Z2 = ZB + 0.7, ZB + 2.5, ZB + 4.5
-strip(ring12(Z0, 9.0, dip=1.0), ring12(Z1, 9.0, dip=1.0), "casing")                          # vertical wall
-strip(ring12(Z1, 9.0, dip=1.0), ring12(Z2, 7.0, dip=0.8, dipz=1.5), "casing", dark_corner=True)   # chamfer; dipped corner points = notches
-strip(ring12(Z2, 7.0, dip=0.8, dipz=1.5), ring12(Z2, 6.2), "casing")       # thin flat rim
-strip(ring12(Z2, 6.2), ring12(ZB + 2.2, 6.2), "casing")                    # recess wall
-quad(sq(ZB + 2.2, 6.2, 6.2), "casing")                                      # recess floor
-# stepped faceted core pyramid 12 wide (40 % of 30), magenta, sunk below the rim
-loft([sq(ZB + 2.2, 6.0, 6.0), sq(ZB + 2.6, 6.0, 6.0), sq(ZB + 3.4, 4.6, 4.6), sq(ZB + 3.7, 4.6, 4.6), sq(ZB + 4.4, 3.0, 3.0)], "core", bottom=False)
+RIM_IN = 6.6
+strip(ring12(Z0, 9.0, dip=1.0), ring12(Z1, 9.0, dip=1.0), "casing")                          # vertical wall (darker)
+ZBAND = Z2 - 0.3
+strip(ring12(Z1, 9.0, dip=1.0), ring12(ZBAND, 7.3, dip=0.83, dipz=1.275), "casing_chamfer", dark_corner=True)   # chamfer, lighter; dipped corner points = notches
+strip(ring12(ZBAND, 7.3, dip=0.83, dipz=1.275), ring12(Z2, 7.0, dip=0.8, dipz=1.5), "edge_band", dark_corner=True)   # 0.3 cm light band on the chamfer top edge
+strip(ring12(Z2, 7.0, dip=0.8, dipz=1.5), ring12(Z2, RIM_IN), "edge_band")  # thin light rim band
+ZF = Z2 - 0.9
+strip(ring12(Z2, RIM_IN), ring12(ZF, RIM_IN), "casing")                    # shallow opening wall, 0.9 cm
+quad(sq(ZF, RIM_IN, RIM_IN), "casing")                                      # opening floor
+# raised faceted gem, 11.8 wide (about 40 %), top 2.7 cm above the rim; slope facets alternate bright / dark by orientation (edge 0 = -y, 1 = +x, 2 = +y, 3 = -x)
+GEM = [(ZF, 5.9, None), (Z2, 5.9, "wall"), (Z2 + 1.1, 4.4, "slope1"), (Z2 + 1.6, 4.4, "wall"), (Z2 + 2.7, 2.6, "slope2")]
+rings = [sq(z, r, r) for z, r, _ in GEM]
+for i in range(1, len(GEM)):
+    kind = GEM[i][2]
+    for k in range(4):
+        if kind == "wall":
+            m = "core_bright"
+        elif kind == "slope1":
+            m = "core_dark" if k in (1, 3) else "core_bright"
+        else:
+            m = "core_bright" if k in (1, 3) else "core_dark"
+        quad((rings[i - 1][k], rings[i - 1][(k + 1) % 4], rings[i][(k + 1) % 4], rings[i][k]), m)
+quad(rings[-1], "core_bright")
 
 
 # six compact legs (3 on +x, 3 on -y, facing the viewer): bent strip, 2.1 wide, leaves the wall at half height, rounded elbow (3 segments), small foot on the board
@@ -326,7 +343,7 @@ if abs((hi.x - lo.x) - FOOT) > 0.01 or abs((hi.y - lo.y) - FOOT) > 0.01:
     warnings.append("footprint off 30 cm")
 if abs(lo.z) > 1e-4 or abs((lo.x + hi.x) / 2) > 1e-3 or abs((lo.y + hi.y) / 2) > 1e-3:
     warnings.append("pivot not bottom centre")
-warnings.append("M_XPChipBig_core is emissive in Blender (strength 4, #FF26BF): the FBX does not carry emission, the Unreal material sets the glow (MI_PickupXPBig)")
+warnings.append("M_XPChipBig_core_bright and _dark are emissive in Blender (strength 4, #FF26BF and #B0107F): the FBX does not carry emission, the Unreal material sets the glow (MI_PickupXPBig)")
 report = {
     "asset": "SM_XPChipBig", "route": "blender", "script": "Tools/art/blender/xp_chip_big_mesh.py", "source_image": "vault/assets/xp-chip-big.png",
     "tris_out": tris, "budget_tris": BUDGET,
@@ -334,7 +351,7 @@ report = {
     "footprint_target_cm": {"x": FOOT, "y": FOOT, "source": "BP_PickupXP PickupMesh /Engine/BasicShapes/Cube (100 cm) x scale 0.3; big block scale 1.8 (root 0.54) applied in game, not baked"},
     "pivot": "bottom", "bbox_min": [round(c, 3) for c in lo], "bbox_max": [round(c, 3) for c in hi],
     "materials": [m.name for m in mesh.materials],
-    "paint_colours_srgb": {"M_XPChipBig_" + k: v for k, v in HEX.items()}, "emissive_material": "M_XPChipBig_core",
+    "paint_colours_srgb": {"M_XPChipBig_" + k: v for k, v in HEX.items()}, "emissive_material": ["M_XPChipBig_core_bright", "M_XPChipBig_core_dark"],
     "uv_layers": [u.name for u in mesh.uv_layers],
     "uv_checks": {"UVMap": {"tile_cm": 100.0, "cm_per_uv_unit_min": round(min(dens), 3), "cm_per_uv_unit_max": round(max(dens), 3)},
                   "LightMap": {"faces": len(boxes), "triangles": tris, "overlapping_face_pairs": overlaps,
