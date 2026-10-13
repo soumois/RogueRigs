@@ -6,25 +6,25 @@
   "tris_out": 844,
   "budget_tris": 1000,
   "dimensions_cm": {
-    "x": 30,
-    "y": 30,
+    "x": 30.0,
+    "y": 30.0,
     "z": 10.6
   },
   "footprint_target_cm": {
-    "x": 30,
-    "y": 30,
+    "x": 30.0,
+    "y": 30.0,
     "source": "BP_PickupXP PickupMesh /Engine/BasicShapes/Cube (100 cm) x scale 0.3; big block scale 1.8 (root 0.54) applied in game, not baked"
   },
-  "pivot": "bottom",
+  "pivot": "center",
   "bbox_min": [
-    -15,
-    -15,
-    0
+    -15.0,
+    -15.0,
+    -5.3
   ],
   "bbox_max": [
-    15,
-    15,
-    10.6
+    15.0,
+    15.0,
+    5.3
   ],
   "materials": [
     "M_XPChipBig_board",
@@ -54,7 +54,7 @@
   ],
   "uv_checks": {
     "UVMap": {
-      "tile_cm": 100,
+      "tile_cm": 100.0,
       "cm_per_uv_unit_min": 99.998,
       "cm_per_uv_unit_max": 100.001
     },
@@ -64,8 +64,8 @@
       "overlapping_face_pairs": 0,
       "bounds_min": 0.01172,
       "bounds_max": 0.98828,
-      "min_gap_px_at_256": 3,
-      "min_border_px_at_256": 3,
+      "min_gap_px_at_256": 3.0,
+      "min_border_px_at_256": 3.0,
       "required_margin_px": 2,
       "pass": true
     }

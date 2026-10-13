@@ -1,6 +1,6 @@
 """Big XP block mesh: data chip (Blender route, task-131-01). Headless:
   "$BLENDER_EXE" -b --factory-startup -P Tools/art/blender/xp_chip_big_mesh.py -- --out Art/Meshes/xp-chip-big-mesh/SM_XPChipBig.fbx
-Units: 1 Blender unit = 1 cm. Pivot bottom centre. Footprint 30 x 30 cm = the placeholder XP cube (/Engine/BasicShapes/Cube 100 cm x PickupMesh scale 0.3);
+Units: 1 Blender unit = 1 cm. Pivot: geometric centre of the bbox by default (--pivot center|bottom; task-135-02). Footprint 30 x 30 cm = the placeholder XP cube (/Engine/BasicShapes/Cube 100 cm x PickupMesh scale 0.3);
 the 1.8 scale of the big block is applied in game (BP_PickupXPBig root scale 0.54), not baked. Flat shading, flat per-material colours, emissive magenta core."""
 import bpy, bmesh, math, json, os, sys
 import numpy as np
@@ -301,6 +301,13 @@ bm.free()
 for p in mesh.polygons:
     p.use_smooth = False
 
+# Pivot (task-135-02): "center" = geometric centre of the bounding box (pickup actor root placed by SetActorLocation); "bottom" = bottom centre.
+PIVOT = opt.get("--pivot", "center")
+if PIVOT == "center":
+    zs = [v.co.z for v in mesh.vertices]
+    mesh.transform(__import__("mathutils").Matrix.Translation((0.0, 0.0, -(min(zs) + max(zs)) / 2)))
+    mesh.update()
+
 # ---- checks, report, export
 bb = [Vector(c) for c in obj.bound_box]
 lo = Vector((min(v.x for v in bb), min(v.y for v in bb), min(v.z for v in bb)))
@@ -339,15 +346,15 @@ if tris > BUDGET:
     warnings.append("tris above %d budget" % BUDGET)
 if abs((hi.x - lo.x) - FOOT) > 0.01 or abs((hi.y - lo.y) - FOOT) > 0.01:
     warnings.append("footprint off 30 cm")
-if abs(lo.z) > 1e-4 or abs((lo.x + hi.x) / 2) > 1e-3 or abs((lo.y + hi.y) / 2) > 1e-3:
-    warnings.append("pivot not bottom centre")
+if abs(lo.z if PIVOT == "bottom" else (lo.z + hi.z) / 2) > 1e-4 or abs((lo.x + hi.x) / 2) > 1e-3 or abs((lo.y + hi.y) / 2) > 1e-3:
+    warnings.append("pivot not " + PIVOT + " centre")
 warnings.append("M_XPChipBig_core_bright and _dark are emissive in Blender (strength 4, #FF26BF and #B0107F): the FBX does not carry emission, the Unreal material sets the glow (MI_PickupXPBig)")
 report = {
     "asset": "SM_XPChipBig", "route": "blender", "script": "Tools/art/blender/xp_chip_big_mesh.py", "source_image": "vault/assets/xp-chip-big.png",
     "tris_out": tris, "budget_tris": BUDGET,
     "dimensions_cm": {"x": round(hi.x - lo.x, 2), "y": round(hi.y - lo.y, 2), "z": round(hi.z - lo.z, 2)},
     "footprint_target_cm": {"x": FOOT, "y": FOOT, "source": "BP_PickupXP PickupMesh /Engine/BasicShapes/Cube (100 cm) x scale 0.3; big block scale 1.8 (root 0.54) applied in game, not baked"},
-    "pivot": "bottom", "bbox_min": [round(c, 3) for c in lo], "bbox_max": [round(c, 3) for c in hi],
+    "pivot": PIVOT, "bbox_min": [round(c, 3) for c in lo], "bbox_max": [round(c, 3) for c in hi],
     "materials": [m.name for m in mesh.materials],
     "paint_colours_srgb": {"M_XPChipBig_" + k: v for k, v in HEX.items()}, "emissive_material": ["M_XPChipBig_core_bright", "M_XPChipBig_core_dark"],
     "uv_layers": [u.name for u in mesh.uv_layers],

@@ -1,6 +1,6 @@
 """XP nut mesh (Blender route, task-128-01). Headless:
   "$BLENDER_EXE" -b --factory-startup -P Tools/art/blender/xp_nut_mesh.py -- [--out Art/Meshes/xp-nut-mesh/SM_XPNut.fbx]
-Units: 1 Blender unit = 1 cm. Pivot bottom centre. Never imports into Unreal.
+Units: 1 Blender unit = 1 cm. Pivot: geometric centre of the bbox by default (--pivot center|bottom; task-135-02). Never imports into Unreal.
 Hex nut from vault/assets/xp-nut.png: hexagonal prism (corner on +X), chamfered, smooth 12-sided THROUGH hole (run 5), 6 bevelled top corners (task-130-01 fidelity rebuild), flat shading.
 Footprint: the placeholder XP cube is /Engine/BasicShapes/Cube (100 cm) at scale 0.3 = 30 cm (bp-pickup-xp); the hex is 30 cm across corners (X) so it fits the 30 x 30 footprint.
 Materials: M_XPNut_body (mid grey), M_XPNut_hole (hole wall, slightly darker grey). No emissive, no blue (run 5)."""
@@ -104,6 +104,13 @@ for f in bm.faces: f.smooth = False
 bm.to_mesh(mesh); bm.free()
 for p in mesh.polygons: p.use_smooth = False
 
+# Pivot (task-135-02): "center" = geometric centre of the bounding box (pickup actor root placed by SetActorLocation); "bottom" = bottom centre.
+PIVOT = opt.get("--pivot", "center")
+if PIVOT == "center":
+    zs = [v.co.z for v in mesh.vertices]
+    mesh.transform(__import__("mathutils").Matrix.Translation((0.0, 0.0, -(min(zs) + max(zs)) / 2)))
+    mesh.update()
+
 # checks
 bb = [Vector(c) for c in obj.bound_box]
 lo = Vector([min(v[i] for v in bb) for i in range(3)]); hi = Vector([max(v[i] for v in bb) for i in range(3)])
@@ -120,7 +127,7 @@ lm_ok = overlaps == 0 and min_gap >= 2.0 and border >= 2.0 and u1a.min() >= 0 an
 warnings = []
 if not lm_ok: warnings.append("LightMap check FAILED")
 if tris > BUDGET: warnings.append("tris above 300 budget")
-if abs(lo.z) > 1e-4 or abs((lo.x + hi.x) / 2) > 1e-3 or abs((lo.y + hi.y) / 2) > 1e-3: warnings.append("pivot not bottom centre")
+if abs(lo.z if PIVOT == "bottom" else (lo.z + hi.z) / 2) > 1e-4 or abs((lo.x + hi.x) / 2) > 1e-3 or abs((lo.y + hi.y) / 2) > 1e-3: warnings.append("pivot not " + PIVOT + " centre")
 if max(hi.x - lo.x, hi.y - lo.y) > 30.01: warnings.append("footprint above 30 cm")
 warnings.append("M_XPNut_hole is a separate slot so Unreal can later set an emissive on it for bloom; the mesh itself has no emissive and no blue")
 FIDELITY = {
@@ -142,7 +149,7 @@ report = {
     "tris_out": tris, "budget_tris": BUDGET,
     "dimensions_cm": {"x": round(hi.x - lo.x, 2), "y": round(hi.y - lo.y, 2), "z": round(hi.z - lo.z, 2)},
     "footprint_reference": "placeholder XP cube /Engine/BasicShapes/Cube (100 cm) x scale 0.3 = 30 cm (BP_PickupXP, bp-pickup-xp); hex 30 cm across corners (X), 25.98 across flats (Y)",
-    "pivot": "bottom", "bbox_min": [round(c, 3) for c in lo], "bbox_max": [round(c, 3) for c in hi],
+    "pivot": PIVOT, "bbox_min": [round(c, 3) for c in lo], "bbox_max": [round(c, 3) for c in hi],
     "materials": [m.name for m in mesh.materials], "uv_layers": [u.name for u in mesh.uv_layers],
     "uv_checks": {"UVMap": {"tile_cm": 100.0}, "LightMap": {"faces": len(boxes), "overlapping_face_pairs": overlaps,
         "bounds_min": [round(float(u1a.min()), 5)], "bounds_max": [round(float(u1a.max()), 5)], "min_gap_px_at_256": round(float(min_gap), 3),

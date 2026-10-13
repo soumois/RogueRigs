@@ -11,16 +11,16 @@
     "z": 11.7
   },
   "footprint_reference": "placeholder XP cube /Engine/BasicShapes/Cube (100 cm) x scale 0.3 = 30 cm (BP_PickupXP, bp-pickup-xp); hex 30 cm across corners (X), 25.98 across flats (Y)",
-  "pivot": "bottom",
+  "pivot": "center",
   "bbox_min": [
     -15.0,
     -12.99,
-    0.0
+    -5.85
   ],
   "bbox_max": [
     15.0,
     12.99,
-    11.7
+    5.85
   ],
   "materials": [
     "M_XPNut_body",
