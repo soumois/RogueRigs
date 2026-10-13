@@ -1028,8 +1028,9 @@ bool FRRIntegrationBarrelChainTest::RunTest(const FString& Parameters)
 	const FVector ShotCenter = Grid->GetCellCenter(ChainShotBarrelCell.X, ChainShotBarrelCell.Y);
 	const FVector PartnerCenter = Grid->GetCellCenter(ChainPartnerCell.X, ChainPartnerCell.Y);
 	TestTrue(TEXT("partner inside the shot barrel's radius"), FVector::Dist2D(ShotCenter, PartnerCenter) <= Stats.Radius);
-	TestTrue(TEXT("miner outside both radii"), FVector::Dist2D(Miner->GetActorLocation(), ShotCenter) > Stats.Radius
-		&& FVector::Dist2D(Miner->GetActorLocation(), PartnerCenter) > Stats.Radius);
+	// Since the 700 uu radius (task-114-01) the miner, 400 uu from the shot barrel, is inside both radii: hit by each explosion.
+	TestTrue(TEXT("miner inside both radii"), FVector::Dist2D(Miner->GetActorLocation(), ShotCenter) <= Stats.Radius
+		&& FVector::Dist2D(Miner->GetActorLocation(), PartnerCenter) <= Stats.Radius);
 
 	// Every block in both radii, the barrels included, before the shot.
 	TArray<FIntPoint> Blocks = GetBlocksWithin(Grid, ShotCenter, Stats.Radius);
@@ -1046,14 +1047,14 @@ bool FRRIntegrationBarrelChainTest::RunTest(const FString& Parameters)
 	TArray<double> Times;
 	TArray<FFXRecord> FXRecords;
 	const double Start = TestWorld.Get()->GetTimeSeconds();
-	for (int32 Frame = 0; Frame < 300 && (Times.Num() < 2 || FXRecords.ContainsByPredicate([](const FFXRecord& Record) { return Record.GoneTime < 0.0; })); ++Frame)
+	for (int32 Frame = 0; Frame < 400 && (Times.Num() < 2 || FXRecords.ContainsByPredicate([](const FFXRecord& Record) { return Record.GoneTime < 0.0; })); ++Frame)
 	{
 		TestWorld.Tick();
 		StampExplosions(TestWorld.Get(), Recorder.Get(), Start, Times);
 		TrackFX(TestWorld.Get(), FXRecords);
 		if (Times.Num() == 1)
 		{
-			TestEqual(TEXT("first explosion destroyed the partner"), Grid->GetCellType(ChainPartnerCell), ERRCellType::Floor);
+			TestTrue(TEXT("first explosion lit the partner"), Grid->IsBarrelFusing(ChainPartnerCell));
 		}
 	}
 	// A few more frames: nothing else explodes.
@@ -1074,10 +1075,10 @@ bool FRRIntegrationBarrelChainTest::RunTest(const FString& Parameters)
 	TestEqual(TEXT("second row Barrel"), Recorder->GetExplosionRows()[1], FName(TEXT("Barrel")));
 	TestTrue(TEXT("first at the shot barrel"), Recorder->GetExplosionCenters()[0].Equals(ShotCenter));
 	TestTrue(TEXT("second at the partner"), Recorder->GetExplosionCenters()[1].Equals(PartnerCenter));
-	TestTrue(TEXT("partner 0.08 s later, within one frame"), Gap >= Explosions->GetChainDelay() - 1e-4 && Gap < Explosions->GetChainDelay() + FrameSeconds);
+	TestTrue(TEXT("partner one barrel fuse later, within two frames"), Gap >= Grid->GetBarrelFuseSeconds() - 1e-4 && Gap < Grid->GetBarrelFuseSeconds() + 2.f * FrameSeconds);
 	TestTrue(TEXT("blocks around (not only the barrels)"), Blocks.Num() > 2);
 	TestEqual(TEXT("every block in both radii destroyed"), BlocksLeft, 0);
-	TestEqual(TEXT("miner outside the radii untouched"), GetHealth(Miner), StartHealth);
+	TestEqual(TEXT("miner hit by both explosions (1.5 s apart, past the i-frames)"), GetHealth(Miner), StartHealth - 2.f * Stats.Damage);
 
 	// One BP_ExplosionFX per explosion, at the visual radius (collision radius x VisualRadiusScale), gone after its lifetime (grow, hold, fade).
 	if (TestEqual(TEXT("one explosion visual per explosion"), FXRecords.Num(), 2))
@@ -1207,10 +1208,12 @@ bool FRRIntegrationPointBlankBarrelTest::RunTest(const FString& Parameters)
 
 	TArray<FHit> Hits;
 	const FDelegateHandle Handle = RecordHits(Miner, Hits);
-	TestTrue(TEXT("shot damage destroys the barrel"), Grid->ApplyShotDamage(PointBlankBarrelCell, Grid->GetCellShotHealth(PointBlankBarrelCell)));
+	TestTrue(TEXT("shot damage lights the barrel"), Grid->ApplyShotDamage(PointBlankBarrelCell, Grid->GetCellShotHealth(PointBlankBarrelCell)));
 	TArray<double> Times;
 	const double Start = TestWorld.Get()->GetTimeSeconds();
-	for (int32 Frame = 0; Frame < 60; ++Frame)
+	// Barrel fuse (task-114-01): both fuses, then one more second.
+	const int32 Frames = FMath::CeilToInt32((2.f * Grid->GetBarrelFuseSeconds() + 1.f) / FrameSeconds);
+	for (int32 Frame = 0; Frame < Frames; ++Frame)
 	{
 		TestWorld.Tick();
 		StampExplosions(TestWorld.Get(), Recorder.Get(), Start, Times);
@@ -1223,11 +1226,14 @@ bool FRRIntegrationPointBlankBarrelTest::RunTest(const FString& Parameters)
 	TestEqual(TEXT("both barrels exploded (chain)"), Times.Num(), 2);
 	TestFalse(TEXT("miner alive"), Miner->IsDead());
 	TestTrue(TEXT("miner keeps at least 1 Health"), EndHealth >= 1.f);
-	if (TestEqual(TEXT("one hit: the chained link falls in the i-frames"), Hits.Num(), 1))
+	// The chained link now comes one fuse (1.5 s) later, past the 0.25 s i-frames: two hits; only the first can be capped.
+	const float FirstHit = FMath::Min(Stats.Damage, StartHealth - 1.f);
+	if (TestEqual(TEXT("two hits: the chained link comes after the i-frames"), Hits.Num(), 2))
 	{
-		TestEqual(TEXT("hit = min(Barrel damage, Health - 1)"), Hits[0].Damage, FMath::Min(Stats.Damage, StartHealth - 1.f));
+		TestEqual(TEXT("first hit = min(Barrel damage, Health - 1)"), Hits[0].Damage, FirstHit);
+		TestEqual(TEXT("second hit = Barrel damage"), Hits[1].Damage, Stats.Damage);
 	}
-	TestEqual(TEXT("Health after one capped explosion"), EndHealth, StartHealth - FMath::Min(Stats.Damage, StartHealth - 1.f));
+	TestEqual(TEXT("Health after both explosions"), EndHealth, StartHealth - FirstHit - Stats.Damage);
 	return true;
 }
 

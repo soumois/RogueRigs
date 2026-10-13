@@ -82,9 +82,11 @@ bool FRRStressBurstTest::RunTest(const FString& Parameters)
 	}
 	TestTrue(TEXT("arena_m1 has barrels"), BarrelCells > 0);
 	const int32 PendingBefore = Explosions->GetPendingCount();
-	TestEqual(TEXT("every barrel destroyed"), URRStressSubsystem::DestroyAllBarrels(Grid), BarrelCells);
-	TestEqual(TEXT("one explosion queued per barrel"), Explosions->GetPendingCount(), PendingBefore + BarrelCells);
-	TestEqual(TEXT("no barrel left"), URRStressSubsystem::DestroyAllBarrels(Grid), 0);
+	// Barrel fuse (task-114-01): every barrel is lit, none queued yet; lit barrels ignore a second call.
+	TestEqual(TEXT("every barrel lit"), URRStressSubsystem::DestroyAllBarrels(Grid), BarrelCells);
+	TestEqual(TEXT("every barrel fusing"), Grid->GetFusingBarrelCount(), BarrelCells);
+	TestEqual(TEXT("nothing queued during the fuse"), Explosions->GetPendingCount(), PendingBefore);
+	TestEqual(TEXT("fusing barrels ignored"), URRStressSubsystem::DestroyAllBarrels(Grid), 0);
 	TestEqual(TEXT("null grid"), URRStressSubsystem::DestroyAllBarrels(nullptr), 0);
 	return true;
 }

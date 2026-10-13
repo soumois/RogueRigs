@@ -98,7 +98,7 @@ bool FRRExplosionBlocksInRadiusTest::RunTest(const FString& Parameters)
 	{
 		return false;
 	}
-	TestEqual(TEXT("Barrel radius 350"), Stats.Radius, 350.f);
+	TestEqual(TEXT("Barrel radius 700 (owner 2026-10-12, was 350)"), Stats.Radius, 700.f);
 	TestEqual(TEXT("Barrel damage 40"), Stats.Damage, 40.f);
 	TestTrue(TEXT("Barrel terrain source"), Stats.TerrainSource == ERRTerrainDamageSource::Barrel);
 	FRRExplosionStatsRow KamikazeStats;
@@ -167,7 +167,8 @@ bool FRRExplosionDamagesOnceTest::RunTest(const FString& Parameters)
 	}
 	const FVector Center = Grid->GetCellCenter(RockWestFloorCell.X, RockWestFloorCell.Y);
 	ARRChaser* Near = SpawnStillChaser(*this, TestWorld, Center + FVector(0.f, 200.f, 0.f));
-	ARRChaser* Far = SpawnStillChaser(*this, TestWorld, Center + FVector(0.f, 600.f, 0.f));
+	// Outside the 700 uu Barrel radius (was 600 with the 350 uu radius, task-114-01).
+	ARRChaser* Far = SpawnStillChaser(*this, TestWorld, Center + FVector(0.f, 800.f, 0.f));
 	if (!TestNotNull(TEXT("still chasers spawned"), Near) || !TestNotNull(TEXT("far still chaser"), Far))
 	{
 		return false;
@@ -389,7 +390,7 @@ bool FRRExplosionVisualTest::RunTest(const FString& Parameters)
 		float CollisionRadius;
 		float Damage;
 	};
-	const FRowCase Cases[] = { { TEXT("Barrel"), 350.f, 40.f }, { TEXT("Kamikaze"), 312.f, 30.f } };
+	const FRowCase Cases[] = { { TEXT("Barrel"), 700.f, 40.f }, { TEXT("Kamikaze"), 312.f, 30.f } };
 	for (int32 Index = 0; Index < UE_ARRAY_COUNT(Cases); ++Index)
 	{
 		const FRowCase& Case = Cases[Index];

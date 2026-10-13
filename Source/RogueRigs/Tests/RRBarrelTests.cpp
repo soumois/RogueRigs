@@ -1,4 +1,5 @@
-// Rogue Rigs - automation tests of barrels (RogueRigs.Barrel.*): two rifle shots explode a barrel, barrels chain, a dug barrel explodes.
+// Rogue Rigs - automation tests of barrels (RogueRigs.Barrel.*): two rifle shots explode a barrel, barrels chain, a dug barrel explodes
+// (each after the barrel fuse since task-114-01).
 
 #include "CoreMinimal.h"
 #include "Misc/AutomationTest.h"
@@ -22,11 +23,11 @@ namespace RRBarrelTests
 	/** Blueprint of the rifle. */
 	const TCHAR* const BurstRifleClassPath = TEXT("/Game/RogueRigs/Blueprints/Weapons/BP_BurstRifle.BP_BurstRifle_C");
 
-	/** Single barrel of arena_m1 with open floor to its west (shooting cell), no other barrel within 350 uu. */
+	/** Single barrel of arena_m1 with open floor to its west (shooting cell). */
 	const FIntPoint ShotBarrelCell(43, 6);
 	const FIntPoint ShotFromCell(42, 6);
 
-	/** Barrel pair of arena_m1, 200 uu apart (inside the 350 uu barrel radius). */
+	/** Barrel pair of arena_m1, 200 uu apart (inside the barrel radius). */
 	const FIntPoint ChainFirstCell(73, 31);
 	const FIntPoint ChainSecondCell(73, 32);
 
@@ -42,6 +43,18 @@ namespace RRBarrelTests
 			Subsystem->OnExplosion.AddDynamic(Recorder, &URRTestEventRecorder::HandleExplosion);
 		}
 		return Subsystem;
+	}
+
+	/** Ticks until the recorder holds Count explosions or MaxSeconds of world time pass. Returns the frames ticked. */
+	int32 TickUntilExplosions(const FTestWorld& TestWorld, const URRTestEventRecorder* Recorder, int32 Count, float MaxSeconds)
+	{
+		int32 Frames = 0;
+		while (Recorder->GetExplosionRows().Num() < Count && Frames * FrameSeconds < MaxSeconds)
+		{
+			TestWorld.Tick();
+			++Frames;
+		}
+		return Frames;
 	}
 
 	/** Live projectiles in the world. */
@@ -117,10 +130,13 @@ bool FRRBarrelShotTest::RunTest(const FString& Parameters)
 	const int32 SecondFrames = FireOneShotAndWait(*this, TestWorld, Rifle);
 	AddInfo(FString::Printf(TEXT("shot 2: projectile gone after %d frame(s), pending %d, explosions %d"), SecondFrames,
 		Subsystem->GetPendingCount(), Recorder->GetExplosionRows().Num()));
-	TestEqual(TEXT("second shot: barrel destroyed"), Grid->GetCellType(ShotBarrelCell), ERRCellType::Floor);
+	// Barrel fuse (task-114-01): the barrel stands and fuses, then explodes and breaks.
+	TestTrue(TEXT("second shot: barrel fusing"), Grid->IsBarrelFusing(ShotBarrelCell));
+	TestEqual(TEXT("second shot: barrel still standing during the fuse"), Grid->GetCellType(ShotBarrelCell), ERRCellType::Barrel);
+	TickUntilExplosions(TestWorld, Recorder.Get(), 1, Grid->GetBarrelFuseSeconds() + 0.5f);
+	TestEqual(TEXT("barrel destroyed at its explosion"), Grid->GetCellType(ShotBarrelCell), ERRCellType::Floor);
 	TestTrue(TEXT("barrel source spent"), Subsystem->IsSourceSpent(Grid->GetBarrelSource(ShotBarrelCell)));
-
-	for (int32 Frame = 0; Frame < 30; ++Frame)
+	for (int32 Frame = 0; Frame < 10; ++Frame)
 	{
 		TestWorld.Tick();
 	}
@@ -159,22 +175,28 @@ bool FRRBarrelChainTest::RunTest(const FString& Parameters)
 	TestTrue(TEXT("second barrel inside the first's radius"), FVector::Dist2D(FirstCenter, SecondCenter) <= Stats.Radius);
 
 	// Shoot the first barrel to 0 through the grid (the projectile path is covered by TwoRifleShotsExplode).
-	TestTrue(TEXT("shot damage destroys the first barrel"), Grid->ApplyShotDamage(ChainFirstCell, Grid->GetCellShotHealth(ChainFirstCell)));
-	TestEqual(TEXT("first explosion queued"), Subsystem->GetPendingCount(), 1);
+	TestTrue(TEXT("shot damage brings the first barrel to 0"), Grid->ApplyShotDamage(ChainFirstCell, Grid->GetCellShotHealth(ChainFirstCell)));
+	TestTrue(TEXT("first barrel fusing"), Grid->IsBarrelFusing(ChainFirstCell));
+	TestEqual(TEXT("nothing queued during the fuse"), Subsystem->GetPendingCount(), 0);
 	TestEqual(TEXT("second barrel still there"), Grid->GetCellType(ChainSecondCell), ERRCellType::Barrel);
 
+	// Barrel fuse (task-114-01): the chained barrel fuses too, so the link takes the fuse, not the 0.08 s chain delay.
+	const float Fuse = Grid->GetBarrelFuseSeconds();
 	TArray<double> Times;
 	const double Start = TestWorld.Get()->GetTimeSeconds();
-	for (int32 Frame = 0; Frame < 60; ++Frame)
+	const int32 MaxFrames = FMath::CeilToInt32((2.f * Fuse + 1.f) / FrameSeconds);
+	for (int32 Frame = 0; Frame < MaxFrames && Times.Num() < 2; ++Frame)
 	{
 		TestWorld.Tick();
 		while (Times.Num() < Recorder->GetExplosionRows().Num())
 		{
 			Times.Add(TestWorld.Get()->GetTimeSeconds() - Start);
-		}
-		if (Times.Num() == 1)
-		{
-			TestEqual(TEXT("first explosion destroyed the second barrel"), Grid->GetCellType(ChainSecondCell), ERRCellType::Floor);
+			if (Times.Num() == 1)
+			{
+				TestEqual(TEXT("first explosion: first barrel broken"), Grid->GetCellType(ChainFirstCell), ERRCellType::Floor);
+				TestTrue(TEXT("first explosion lit the second barrel"), Grid->IsBarrelFusing(ChainSecondCell));
+				TestEqual(TEXT("second barrel stands during its fuse"), Grid->GetCellType(ChainSecondCell), ERRCellType::Barrel);
+			}
 		}
 	}
 	TestEqual(TEXT("two explosions, each barrel once"), Recorder->GetExplosionRows().Num(), 2);
@@ -184,8 +206,11 @@ bool FRRBarrelChainTest::RunTest(const FString& Parameters)
 		AddInfo(FString::Printf(TEXT("explosions at %.4f and %.4f s, gap %.4f s (chain delay %.2f)"), Times[0], Times[1], Gap, Subsystem->GetChainDelay()));
 		TestTrue(TEXT("first at the barrel center"), Recorder->GetExplosionCenters()[0].Equals(FirstCenter));
 		TestTrue(TEXT("second at the chained barrel center"), Recorder->GetExplosionCenters()[1].Equals(SecondCenter));
-		TestTrue(TEXT("chain link after the chain delay, within one frame"), Gap >= Subsystem->GetChainDelay() - 1e-4 && Gap < Subsystem->GetChainDelay() + FrameSeconds);
+		TestTrue(TEXT("first explosion after the fuse, within two frames"), Times[0] >= Fuse - 1e-4 && Times[0] < Fuse + 2.f * FrameSeconds);
+		TestTrue(TEXT("chain link after the second fuse, within two frames"), Gap >= Fuse - 1e-4 && Gap < Fuse + 2.f * FrameSeconds);
+		TestTrue(TEXT("two-barrel chain takes about twice the fuse"), FMath::Abs(Times[1] - 2.0 * Fuse) < 4.0 * FrameSeconds);
 	}
+	TestEqual(TEXT("second barrel broken at its explosion"), Grid->GetCellType(ChainSecondCell), ERRCellType::Floor);
 	TestTrue(TEXT("both sources spent"), Subsystem->IsSourceSpent(Grid->GetBarrelSource(ChainFirstCell)) && Subsystem->IsSourceSpent(Grid->GetBarrelSource(ChainSecondCell)));
 	TestTrue(TEXT("sources distinct per cell"), Grid->GetBarrelSource(ChainFirstCell) != Grid->GetBarrelSource(ChainSecondCell));
 	return true;
@@ -212,17 +237,25 @@ bool FRRBarrelDigTest::RunTest(const FString& Parameters)
 
 	// The drone's dig path: per-frame terrain damage at mining speed 1 until the block breaks.
 	int32 DigFrames = 0;
-	while (Grid->GetCellType(DugBarrelCell) == ERRCellType::Barrel && DigFrames < 600)
+	while (Grid->GetCellType(DugBarrelCell) == ERRCellType::Barrel && !Grid->IsBarrelFusing(DugBarrelCell) && DigFrames < 600)
 	{
 		Grid->ApplyTerrainDamage(DugBarrelCell, FrameSeconds, ERRTerrainDamageSource::Drone);
 		++DigFrames;
 		TestEqual(TEXT("no explosion while it stands"), Recorder->GetExplosionRows().Num(), 0);
 	}
 	AddInfo(FString::Printf(TEXT("dug in %d frames"), DigFrames));
-	TestEqual(TEXT("barrel destroyed by the dig"), Grid->GetCellType(DugBarrelCell), ERRCellType::Floor);
-	TestEqual(TEXT("explosion queued"), Subsystem->GetPendingCount(), 1);
-
-	TestWorld.Tick();
+	while (!Grid->IsBarrelFusing(DugBarrelCell) && DigFrames < 600)
+	{
+		Grid->ApplyTerrainDamage(DugBarrelCell, FrameSeconds, ERRTerrainDamageSource::Drone);
+		++DigFrames;
+	}
+	AddInfo(FString::Printf(TEXT("fuse lit after %d dig frames"), DigFrames));
+	// Barrel fuse (task-114-01): the dug barrel stands and fuses, digging it further does nothing, then it explodes.
+	TestTrue(TEXT("dug barrel fusing"), Grid->IsBarrelFusing(DugBarrelCell));
+	TestFalse(TEXT("dig ignored during the fuse"), Grid->ApplyTerrainDamage(DugBarrelCell, 1.f, ERRTerrainDamageSource::Drone));
+	TestEqual(TEXT("nothing queued during the fuse"), Subsystem->GetPendingCount(), 0);
+	TickUntilExplosions(TestWorld, Recorder.Get(), 1, Grid->GetBarrelFuseSeconds() + 0.5f);
+	TestEqual(TEXT("barrel destroyed at its explosion"), Grid->GetCellType(DugBarrelCell), ERRCellType::Floor);
 	TestEqual(TEXT("one explosion"), Recorder->GetExplosionRows().Num(), 1);
 	if (Recorder->GetExplosionRows().Num() == 1)
 	{

@@ -1034,18 +1034,18 @@ bool FRRDigFineGridDefaultsTest::RunTest(const FString& Parameters)
 	TestNearlyEqual(TEXT("rock 0.5 s"), Grid->GetCellHealth(FineRockCell), 0.5f);
 	TestEqual(TEXT("one pickup per broken ore block"), FGridAccess::DropsOnDestroy(Grid), 1);
 
-	// Explosion radii stay in uu (ExplosionStats.csv): the barrel clears every block center within 350 uu, about 5.2 cells of 67 uu.
+	// Explosion radii stay in uu (ExplosionStats.csv): the barrel clears every block center within 700 uu (owner 2026-10-12, was 350), about 10.4 cells of 67 uu.
 	FRRExplosionStatsRow Barrel;
 	FRRExplosionStatsRow Kamikaze;
 	TestTrue(TEXT("Barrel row"), Explosions->GetExplosionStats(TEXT("Barrel"), Barrel));
 	TestTrue(TEXT("Kamikaze row"), Explosions->GetExplosionStats(TEXT("Kamikaze"), Kamikaze));
-	TestEqual(TEXT("barrel radius 350 uu"), Barrel.Radius, 350.f);
+	TestEqual(TEXT("barrel radius 700 uu"), Barrel.Radius, 700.f);
 	TestEqual(TEXT("kamikaze radius 312 uu"), Kamikaze.Radius, 312.f);
 	const FVector Center = Grid->GetCellCenter(FineRockCell.X, FineRockCell.Y);
 	TArray<FIntPoint> Inside;
-	for (int32 DY = -7; DY <= 7; ++DY)
+	for (int32 DY = -11; DY <= 11; ++DY)
 	{
-		for (int32 DX = -7; DX <= 7; ++DX)
+		for (int32 DX = -11; DX <= 11; ++DX)
 		{
 			const FIntPoint Cell(FineRockCell.X + DX, FineRockCell.Y + DY);
 			if (Grid->IsBlockCell(Cell) && FVector::Dist2D(Grid->GetCellCenter(Cell.X, Cell.Y), Center) <= Barrel.Radius)
@@ -1054,9 +1054,9 @@ bool FRRDigFineGridDefaultsTest::RunTest(const FString& Parameters)
 			}
 		}
 	}
-	AddInfo(FString::Printf(TEXT("%d blocks within 350 uu of (129, 115)"), Inside.Num()));
+	AddInfo(FString::Printf(TEXT("%d blocks within 700 uu of (129, 115)"), Inside.Num()));
 	TestTrue(TEXT("several blocks in the radius"), Inside.Num() > 10);
-	TestEqual(TEXT("every block in the 350 uu radius destroyed"), Grid->DestroyCellsInRadius(Center, Barrel.Radius, ERRTerrainDamageSource::Barrel), Inside.Num());
+	TestEqual(TEXT("every block in the 700 uu radius destroyed"), Grid->DestroyCellsInRadius(Center, Barrel.Radius, ERRTerrainDamageSource::Barrel), Inside.Num());
 	TestTrue(TEXT("instance maps consistent"), CheckInstanceMaps(*this, Grid));
 	return true;
 }

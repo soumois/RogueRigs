@@ -8,6 +8,7 @@
 
 class ARRPickup;
 class URRBarrelSource;
+class URRGroundTelegraphComponent;
 class UHierarchicalInstancedStaticMeshComponent;
 class UInstancedStaticMeshComponent;
 class UMaterialInterface;
@@ -267,7 +268,8 @@ public:
 	 * Removes Amount dig-seconds of health from the block in Cell (the drone passes DeltaSeconds * MiningSpeed).
 	 * Spawns the dig drops of ore and heal ore when the hit does not destroy the block, broadcasts OnCellDamaged,
 	 * then destroys the block (DestroyCell) when its health reaches 0.
-	 * Returns true when this call destroyed the block; false otherwise (no block, Amount <= 0, or still standing).
+	 * Returns true when this call destroyed the block (or lit a barrel's fuse, see DestroyCell); false otherwise (no block,
+	 * Amount <= 0, still standing, or a barrel already fusing: damage during the fuse is ignored).
 	 */
 	UFUNCTION(BlueprintCallable, Category = "Grid|Destruction")
 	bool ApplyTerrainDamage(FIntPoint Cell, float Amount, ERRTerrainDamageSource Source);
@@ -276,13 +278,18 @@ public:
 	 * Destroys the block in Cell outright, whatever its health: removes its instance, adds a floor instance,
 	 * sets the cell to Floor, spawns DestroyDropCount pickups for ore and heal ore, and broadcasts OnCellDestroyed.
 	 * Returns false when the cell has no block.
+	 * Barrels (task-114-01, barrel gdd): during play a barrel brought to 0 is not destroyed at once: it lights its fuse
+	 * (BarrelFuseSeconds) and returns true; the cell, mesh and collision stay, a Danger ground telegraph is drawn at the
+	 * explosion radius, further calls return false (ignored) until the fuse ends; then the explosion is queued and the cell
+	 * is destroyed when that explosion resolves (it is inside its own radius). BarrelFuseSeconds 0, or outside a game world:
+	 * destroyed at once and queued as before.
 	 */
 	UFUNCTION(BlueprintCallable, Category = "Grid|Destruction")
 	bool DestroyCell(FIntPoint Cell, ERRTerrainDamageSource Source);
 
 	/**
 	 * Destroys every block whose cell center lies within Radius (horizontal distance) of Center, whatever its type
-	 * or health (explosions rule). Returns the number of blocks destroyed.
+	 * or health (explosions rule). Returns the number of blocks destroyed (barrels whose fuse it lit included).
 	 */
 	UFUNCTION(BlueprintCallable, Category = "Grid|Destruction")
 	int32 DestroyCellsInRadius(FVector Center, float Radius, ERRTerrainDamageSource Source);
@@ -300,7 +307,8 @@ public:
 	/**
 	 * Applies Damage from a projectile to the block in Cell. Only barrels take shot damage (shots never break other
 	 * blocks): it lowers the barrel's shot health and destroys the cell (DestroyCell, source Shot) at 0, which queues its
-	 * explosion. Returns true when this call destroyed the barrel.
+	 * explosion (after the barrel fuse). Returns true when this call brought the barrel to 0 (fuse lit or destroyed); a
+	 * fusing barrel ignores shots.
 	 */
 	UFUNCTION(BlueprintCallable, Category = "Grid|Destruction")
 	bool ApplyShotDamage(FIntPoint Cell, float Damage);
@@ -311,6 +319,27 @@ public:
 	 */
 	UFUNCTION(BlueprintCallable, Category = "Grid|Destruction")
 	URRBarrelSource* GetBarrelSource(FIntPoint Cell);
+
+	/** Fuse of a barrel brought to 0 before it explodes, in seconds (BarrelFuseSeconds). */
+	UFUNCTION(BlueprintPure, Category = "Grid|Destruction")
+	float GetBarrelFuseSeconds() const { return BarrelFuseSeconds; }
+
+	/** True while the barrel in Cell is fusing: at 0 health, still standing, its explosion not yet resolved. */
+	UFUNCTION(BlueprintPure, Category = "Grid|Destruction")
+	bool IsBarrelFusing(FIntPoint Cell) const { return BarrelFuses.Contains(Cell); }
+
+	/** Elapsed fuse fraction of the barrel in Cell, 0..1 (1 once its explosion is queued); 0 when it is not fusing. */
+	UFUNCTION(BlueprintPure, Category = "Grid|Destruction")
+	float GetBarrelFuseProgress(FIntPoint Cell) const;
+
+	/** Number of barrels currently fusing. */
+	int32 GetFusingBarrelCount() const { return BarrelFuses.Num(); }
+
+	/** Ground telegraph drawn for the fusing barrel in Cell; nullptr when it is not fusing. Pooled: do not keep it. */
+	URRGroundTelegraphComponent* GetBarrelTelegraph(FIntPoint Cell) const;
+
+	/** Telegraph components created so far for barrel fuses (in use and free); for tests and stress checks. */
+	int32 GetBarrelTelegraphPoolSize() const { return BarrelTelegraphs.Num(); }
 
 	/**
 	 * Starts or stops the jitter of the block in Cell (dig feedback). Only the rendering instance moves: the collision
@@ -479,8 +508,37 @@ protected:
 	 */
 	void SpawnDigDrops(FIntPoint Cell, ERRCellType Type);
 
-	/** Queues the explosion of the barrel in Cell (row BarrelExplosionRow, at the cell center, source GetBarrelSource) in the world's URRExplosionSubsystem, during play only. */
-	void QueueBarrelExplosion(FIntPoint Cell);
+	/** Queues the explosion of the barrel in Cell (row BarrelExplosionRow, at the cell center, source GetBarrelSource) in the world's URRExplosionSubsystem, during play only. Returns true when queued. */
+	bool QueueBarrelExplosion(FIntPoint Cell);
+
+	/** Fuse state of one barrel brought to 0 (BarrelFuses). The telegraph is kept alive by BarrelTelegraphs. */
+	struct FBarrelFuse
+	{
+		/** World time when the fuse was lit. */
+		double StartTime = 0.0;
+		/** True once the fuse ended and the explosion was queued: the next DestroyCell on the cell destroys it for real. */
+		bool bExplosionQueued = false;
+		/** Danger ground telegraph at the cell centre, from the pool. */
+		URRGroundTelegraphComponent* Telegraph = nullptr;
+	};
+
+	/** Lights the fuse of the barrel in Cell: stops its shake, zeroes its healths, records the start time and shows a pooled Danger telegraph at the explosion radius. */
+	void StartBarrelFuse(FIntPoint Cell);
+
+	/** Ends the fuse of Cell (if any): hides its telegraph and returns it to the pool. */
+	void EndBarrelFuse(FIntPoint Cell);
+
+	/** Ends every fuse (rebuild). */
+	void ClearBarrelFuses();
+
+	/** Advances every fuse: telegraph progress = elapsed / BarrelFuseSeconds; at the end queues the explosion (destroys the cell at once if it cannot be queued). */
+	void TickBarrelFuses();
+
+	/** Enables the actor tick while a block shakes or a barrel fuses, disables it otherwise. */
+	void UpdateTickEnabled();
+
+	/** Radius of the barrel explosion row (BarrelExplosionRow), 0 when it cannot be read. */
+	float GetBarrelExplosionRadius() const;
 
 	/**
 	 * Requests Count pickups of the class dropped by Type at the center of Cell (floor top), each worth OreValue (ore) and
@@ -556,6 +614,10 @@ protected:
 	/** Row of ExplosionStats.csv queued when a barrel is destroyed, whatever the source. */
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Grid|Destruction")
 	FName BarrelExplosionRow = TEXT("Barrel");
+
+	/** Delay between a barrel reaching 0 health (any source) and its explosion, in seconds (owner 2026-10-12, barrel gdd). 0 = explodes at once. */
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Grid|Destruction", meta = (ClampMin = "0.0", Units = "s"))
+	float BarrelFuseSeconds = 1.5f;
 
 	// --- Shake (dig feedback) ---
 
@@ -782,6 +844,17 @@ protected:
 
 	/** Cells whose block is currently shaking, with a per-cell phase so neighbors do not move in lockstep. */
 	TMap<FIntPoint, float> ShakingCells;
+
+	/** Fusing barrels by cell (task-114-01): lit at 0 health, removed when the cell is destroyed or on rebuild. */
+	TMap<FIntPoint, FBarrelFuse> BarrelFuses;
+
+	/** Every ground telegraph created for barrel fuses (created on demand, registered on this actor, reused). */
+	UPROPERTY(Transient)
+	TArray<TObjectPtr<URRGroundTelegraphComponent>> BarrelTelegraphs;
+
+	/** Hidden telegraphs of BarrelTelegraphs ready for the next fuse. */
+	UPROPERTY(Transient)
+	TArray<TObjectPtr<URRGroundTelegraphComponent>> FreeBarrelTelegraphs;
 
 	/** Block cells marked as objective rocks (SetCellMarked). Reset on rebuild; a destroyed block leaves the set. */
 	TSet<FIntPoint> MarkedCells;

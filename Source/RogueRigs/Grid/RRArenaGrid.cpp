@@ -24,6 +24,7 @@
 #include "Pickups/RRPickupSubsystem.h"
 #include "Serialization/JsonReader.h"
 #include "Serialization/JsonSerializer.h"
+#include "Telegraph/RRGroundTelegraphComponent.h"
 #include "UObject/ConstructorHelpers.h"
 
 #include UE_INLINE_GENERATED_CPP_BY_NAME(RRArenaGrid)
@@ -130,6 +131,7 @@ void ARRArenaGrid::RebuildFromLayout()
 		Deposits.Reset();
 		PlacedDepositCounts.Reset();
 		ShakingCells.Reset();
+		ClearBarrelFuses();
 		SetActorTickEnabled(false);
 		GridWidth = 0;
 		GridHeight = 0;
@@ -703,6 +705,7 @@ void ARRArenaGrid::BuildInstances()
 	ClearAllInstances();
 	ShakingCells.Reset();
 	MarkedCells.Reset();
+	ClearBarrelFuses();
 	SetActorTickEnabled(false);
 
 	struct FVisualAsset
@@ -1134,7 +1137,8 @@ float ARRArenaGrid::GetCellHealth(FIntPoint Cell) const
 
 bool ARRArenaGrid::ApplyTerrainDamage(FIntPoint Cell, float Amount, ERRTerrainDamageSource Source)
 {
-	if (Amount <= 0.f || !IsBlockCell(Cell) || !CellHealth.IsValidIndex(GetCellIndex(Cell)))
+	// A fusing barrel ignores every damage until it explodes.
+	if (Amount <= 0.f || !IsBlockCell(Cell) || !CellHealth.IsValidIndex(GetCellIndex(Cell)) || BarrelFuses.Contains(Cell))
 	{
 		return false;
 	}
@@ -1170,11 +1174,31 @@ bool ARRArenaGrid::DestroyCell(FIntPoint Cell, ERRTerrainDamageSource Source)
 	const int32 Index = GetCellIndex(Cell);
 	const ERRCellType Type = Cells[Index];
 
-	ShakingCells.Remove(Cell);
-	if (ShakingCells.IsEmpty())
+	// Barrel fuse (task-114-01): a barrel brought to 0 during play lights its fuse instead of breaking; while it fuses every
+	// destruction request is ignored, except once its explosion is queued (that explosion destroys its own cell).
+	bool bExplosionAlreadyQueued = false;
+	if (Type == ERRCellType::Barrel)
 	{
-		SetActorTickEnabled(false);
+		if (const FBarrelFuse* Fuse = BarrelFuses.Find(Cell))
+		{
+			if (!Fuse->bExplosionQueued)
+			{
+				return false;
+			}
+			bExplosionAlreadyQueued = true;
+			EndBarrelFuse(Cell);
+		}
+		else if (BarrelFuseSeconds > 0.f && GetWorld() && GetWorld()->IsGameWorld())
+		{
+			StartBarrelFuse(Cell);
+			UE_LOG(LogRogueRigs, Verbose, TEXT("ARRArenaGrid: barrel (%d, %d) fuse lit (%.2f s), source %s."), Cell.X, Cell.Y,
+				BarrelFuseSeconds, *UEnum::GetValueAsString(Source));
+			return true;
+		}
 	}
+
+	ShakingCells.Remove(Cell);
+	UpdateTickEnabled();
 	const bool bWasMarked = MarkedCells.Remove(Cell) > 0;
 
 	// Chunk and heal values of the block's deposit (ore type row), read before the cell leaves it.
@@ -1214,7 +1238,7 @@ bool ARRArenaGrid::DestroyCell(FIntPoint Cell, ERRTerrainDamageSource Source)
 	SpawnPickups(Cell, Type, DestroyDropCount, ChunkValue, HealValue);
 
 	// Every destroyed barrel explodes, whatever destroyed it (shots, dig, another explosion); queued, never synchronous.
-	if (Type == ERRCellType::Barrel)
+	if (Type == ERRCellType::Barrel && !bExplosionAlreadyQueued)
 	{
 		QueueBarrelExplosion(Cell);
 	}
@@ -1291,7 +1315,7 @@ FIntPoint ARRArenaGrid::GetCellFromHit(const FHitResult& Hit) const
 
 bool ARRArenaGrid::ApplyShotDamage(FIntPoint Cell, float Damage)
 {
-	if (Damage <= 0.f || GetCellType(Cell) != ERRCellType::Barrel || !CellShotHealth.IsValidIndex(GetCellIndex(Cell)))
+	if (Damage <= 0.f || GetCellType(Cell) != ERRCellType::Barrel || !CellShotHealth.IsValidIndex(GetCellIndex(Cell)) || BarrelFuses.Contains(Cell))
 	{
 		return false;
 	}
@@ -1323,20 +1347,163 @@ URRBarrelSource* ARRArenaGrid::GetBarrelSource(FIntPoint Cell)
 	return Source;
 }
 
-void ARRArenaGrid::QueueBarrelExplosion(FIntPoint Cell)
+bool ARRArenaGrid::QueueBarrelExplosion(FIntPoint Cell)
 {
 	UWorld* World = GetWorld();
 	if (!World || !World->IsGameWorld())
 	{
-		return;
+		return false;
 	}
 	URRExplosionSubsystem* Explosions = World->GetSubsystem<URRExplosionSubsystem>();
 	if (!Explosions)
 	{
 		UE_LOG(LogRogueRigs, Warning, TEXT("ARRArenaGrid: no explosion subsystem, barrel (%d, %d) does not explode."), Cell.X, Cell.Y);
+		return false;
+	}
+	return Explosions->QueueExplosion(GetCellCenter(Cell.X, Cell.Y), BarrelExplosionRow, this, GetBarrelSource(Cell));
+}
+
+float ARRArenaGrid::GetBarrelExplosionRadius() const
+{
+	const UWorld* World = GetWorld();
+	URRExplosionSubsystem* Explosions = World ? World->GetSubsystem<URRExplosionSubsystem>() : nullptr;
+	FRRExplosionStatsRow Stats;
+	return Explosions && Explosions->GetExplosionStats(BarrelExplosionRow, Stats) ? Stats.Radius : 0.f;
+}
+
+float ARRArenaGrid::GetBarrelFuseProgress(FIntPoint Cell) const
+{
+	const FBarrelFuse* Fuse = BarrelFuses.Find(Cell);
+	if (!Fuse)
+	{
+		return 0.f;
+	}
+	if (Fuse->bExplosionQueued || BarrelFuseSeconds <= 0.f)
+	{
+		return 1.f;
+	}
+	const UWorld* World = GetWorld();
+	const double Elapsed = World ? World->GetTimeSeconds() - Fuse->StartTime : 0.0;
+	return FMath::Clamp(static_cast<float>(Elapsed / BarrelFuseSeconds), 0.f, 1.f);
+}
+
+URRGroundTelegraphComponent* ARRArenaGrid::GetBarrelTelegraph(FIntPoint Cell) const
+{
+	const FBarrelFuse* Fuse = BarrelFuses.Find(Cell);
+	return Fuse ? Fuse->Telegraph : nullptr;
+}
+
+void ARRArenaGrid::StartBarrelFuse(FIntPoint Cell)
+{
+	StopShaking(Cell);
+	const int32 Index = GetCellIndex(Cell);
+	CellHealth[Index] = 0.f;
+	if (CellShotHealth.IsValidIndex(Index))
+	{
+		CellShotHealth[Index] = 0.f;
+	}
+
+	FBarrelFuse& Fuse = BarrelFuses.Add(Cell);
+	Fuse.StartTime = GetWorld()->GetTimeSeconds();
+
+	// One decal per fusing barrel, hosted by the grid (barrels are cells, not actors): reused from the free list, created only
+	// when every created one is in use, so a long chain never allocates more than the peak of simultaneous fuses.
+	URRGroundTelegraphComponent* Telegraph = nullptr;
+	while (!Telegraph && FreeBarrelTelegraphs.Num() > 0)
+	{
+		Telegraph = FreeBarrelTelegraphs.Pop(EAllowShrinking::No);
+	}
+	if (!Telegraph)
+	{
+		Telegraph = NewObject<URRGroundTelegraphComponent>(this, NAME_None, RF_Transient);
+		Telegraph->SetupAttachment(GetRootComponent());
+		Telegraph->RegisterComponent();
+		BarrelTelegraphs.Add(Telegraph);
+	}
+	Fuse.Telegraph = Telegraph;
+	// Cell centre on the floor top (the decal projects ProjectionHalfDepth above and below).
+	Telegraph->SetWorldLocation(GetCellCenter(Cell.X, Cell.Y));
+	Telegraph->SetRadius(GetBarrelExplosionRadius());
+	Telegraph->SetMode(ERRGroundTelegraphMode::Danger);
+	Telegraph->SetProgress(0.f);
+	Telegraph->Show();
+
+	UpdateTickEnabled();
+}
+
+void ARRArenaGrid::EndBarrelFuse(FIntPoint Cell)
+{
+	FBarrelFuse Fuse;
+	if (!BarrelFuses.RemoveAndCopyValue(Cell, Fuse))
+	{
 		return;
 	}
-	Explosions->QueueExplosion(GetCellCenter(Cell.X, Cell.Y), BarrelExplosionRow, this, GetBarrelSource(Cell));
+	if (Fuse.Telegraph)
+	{
+		Fuse.Telegraph->Hide();
+		FreeBarrelTelegraphs.Add(Fuse.Telegraph);
+	}
+	UpdateTickEnabled();
+}
+
+void ARRArenaGrid::ClearBarrelFuses()
+{
+	for (const TPair<FIntPoint, FBarrelFuse>& Pair : BarrelFuses)
+	{
+		if (Pair.Value.Telegraph)
+		{
+			Pair.Value.Telegraph->Hide();
+			FreeBarrelTelegraphs.Add(Pair.Value.Telegraph);
+		}
+	}
+	BarrelFuses.Reset();
+}
+
+void ARRArenaGrid::TickBarrelFuses()
+{
+	const UWorld* World = GetWorld();
+	if (BarrelFuses.IsEmpty() || !World)
+	{
+		return;
+	}
+	const double Now = World->GetTimeSeconds();
+	TArray<FIntPoint, TInlineAllocator<8>> Ended;
+	for (TPair<FIntPoint, FBarrelFuse>& Pair : BarrelFuses)
+	{
+		FBarrelFuse& Fuse = Pair.Value;
+		if (Fuse.bExplosionQueued)
+		{
+			continue;
+		}
+		const double Elapsed = Now - Fuse.StartTime;
+		const float Progress = BarrelFuseSeconds > 0.f ? FMath::Clamp(static_cast<float>(Elapsed / BarrelFuseSeconds), 0.f, 1.f) : 1.f;
+		if (Fuse.Telegraph)
+		{
+			Fuse.Telegraph->SetProgress(Progress);
+		}
+		if (Elapsed >= BarrelFuseSeconds - UE_KINDA_SMALL_NUMBER)
+		{
+			Ended.Add(Pair.Key);
+		}
+	}
+	// Queue after the loop: queuing never resolves synchronously, but DestroyCell (fallback) edits BarrelFuses.
+	for (const FIntPoint& Cell : Ended)
+	{
+		if (FBarrelFuse* Fuse = BarrelFuses.Find(Cell))
+		{
+			Fuse->bExplosionQueued = true;
+			if (!QueueBarrelExplosion(Cell))
+			{
+				// Explosion refused (no subsystem, missing row, source spent): never leave a barrel fusing forever.
+				DestroyCell(Cell, ERRTerrainDamageSource::Barrel);
+			}
+		}
+	}
+}
+
+void ARRArenaGrid::UpdateTickEnabled()
+{
+	SetActorTickEnabled(!ShakingCells.IsEmpty() || !BarrelFuses.IsEmpty());
 }
 
 TSubclassOf<ARRPickup> ARRArenaGrid::GetPickupClass(ERRCellType Type) const
@@ -1486,19 +1653,17 @@ void ARRArenaGrid::StopShaking(FIntPoint Cell)
 		}
 	}
 
-	if (ShakingCells.IsEmpty())
-	{
-		SetActorTickEnabled(false);
-	}
+	UpdateTickEnabled();
 }
 
 void ARRArenaGrid::Tick(float DeltaSeconds)
 {
 	Super::Tick(DeltaSeconds);
 
+	TickBarrelFuses();
 	if (ShakingCells.IsEmpty())
 	{
-		SetActorTickEnabled(false);
+		UpdateTickEnabled();
 		return;
 	}
 
