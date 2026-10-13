@@ -6,6 +6,8 @@ from mathutils import Vector, Euler
 
 args = sys.argv[sys.argv.index("--") + 1:]
 FBX, OUT = os.path.abspath(args[0]), os.path.abspath(args[1])
+ORTHO = float(args[2]) if len(args) > 2 else 50.0
+TZ = float(args[3]) if len(args) > 3 else 4.5
 
 
 def srgb(h):
@@ -13,7 +15,7 @@ def srgb(h):
     return tuple(((x + 0.055) / 1.055) ** 2.4 if x > 0.04045 else x / 12.92 for x in c) + (1.0,)
 
 
-PAINT = {"board": "#2B2E34", "casing": "#3C4048", "casing_chamfer": "#585E69", "edge_band": "#A9B0BA", "legs": "#8A9099", "core_bright": "#FF26BF", "core_dark": "#B0107F"}
+PAINT = {"board": "#2B2E34", "casing": "#3C4048", "casing_chamfer": "#585E69", "edge_band": "#8F959F", "legs": "#8A9099", "core_bright": "#FF26BF", "core_dark": "#B0107F"}
 bpy.ops.wm.read_factory_settings(use_empty=True)
 bpy.ops.import_scene.fbx(filepath=FBX)
 obj = next(o for o in bpy.context.scene.objects if o.type == "MESH")
@@ -53,11 +55,11 @@ sc.world = w
 bg = w.node_tree.nodes["Background"]
 bg.inputs["Color"].default_value = (0.65, 0.65, 0.65, 1)
 bg.inputs["Strength"].default_value = 1.0
-target = Vector((0, 0, 4.5))
+target = Vector((0, 0, TZ))
 az, el, dist = math.radians(45), math.radians(35), 400.0
 cam_d = bpy.data.cameras.new("Cam")
 cam_d.type = "ORTHO"
-cam_d.ortho_scale = 50.0
+cam_d.ortho_scale = ORTHO
 cam_d.clip_start = 1
 cam_d.clip_end = 2000
 cam = bpy.data.objects.new("Cam", cam_d)

@@ -21,7 +21,7 @@ def srgb(h):
     return tuple(((x + 0.055) / 1.055) ** 2.4 if x > 0.04045 else x / 12.92 for x in c) + (1.0,)
 
 
-HEX = {"board": "#2B2E34", "casing": "#3C4048", "casing_chamfer": "#585E69", "edge_band": "#A9B0BA", "legs": "#8A9099", "core_bright": "#FF26BF", "core_dark": "#B0107F"}
+HEX = {"board": "#2B2E34", "casing": "#3C4048", "casing_chamfer": "#585E69", "edge_band": "#8F959F", "legs": "#8A9099", "core_bright": "#FF26BF", "core_dark": "#B0107F"}
 bpy.ops.wm.read_factory_settings(use_empty=True)
 mats = {}
 for n, h in HEX.items():
@@ -124,8 +124,8 @@ strip(ring12(Z1, 9.0, dip=1.0), ring12(ZBAND, 7.3, dip=0.83, dipz=1.275), "casin
 strip(ring12(ZBAND, 7.3, dip=0.83, dipz=1.275), ring12(Z2, 7.0, dip=0.8, dipz=1.5), "edge_band", dark_corner=True)   # 0.3 cm light band on the chamfer top edge
 strip(ring12(Z2, 7.0, dip=0.8, dipz=1.5), ring12(Z2, RIM_IN), "edge_band")  # thin light rim band
 ZF = Z2 - 0.9
-strip(ring12(Z2, RIM_IN), ring12(ZF, RIM_IN), "casing")                    # shallow opening wall, 0.9 cm
-quad(sq(ZF, RIM_IN, RIM_IN), "casing")                                      # opening floor
+strip(ring12(Z2, RIM_IN), ring12(ZF, RIM_IN), "edge_band")                # opening inner wall, 0.9 cm, light (recoloured, no extra geometry)
+quad(sq(ZF, RIM_IN, RIM_IN), "edge_band")                                   # opening floor around the gem base, light
 # raised faceted gem, 11.8 wide (about 40 %), top 2.7 cm above the rim; slope facets alternate bright / dark by orientation (edge 0 = -y, 1 = +x, 2 = +y, 3 = -x)
 GEM = [(ZF, 5.9, None), (Z2, 5.9, "wall"), (Z2 + 1.1, 4.4, "slope1"), (Z2 + 1.6, 4.4, "wall"), (Z2 + 2.7, 2.6, "slope2")]
 rings = [sq(z, r, r) for z, r, _ in GEM]

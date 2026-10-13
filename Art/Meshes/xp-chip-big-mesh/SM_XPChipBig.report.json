@@ -39,7 +39,7 @@
     "M_XPChipBig_board": "#2B2E34",
     "M_XPChipBig_casing": "#3C4048",
     "M_XPChipBig_casing_chamfer": "#585E69",
-    "M_XPChipBig_edge_band": "#A9B0BA",
+    "M_XPChipBig_edge_band": "#8F959F",
     "M_XPChipBig_legs": "#8A9099",
     "M_XPChipBig_core_bright": "#FF26BF",
     "M_XPChipBig_core_dark": "#B0107F"
@@ -75,38 +75,38 @@
     "M_XPChipBig_core_bright and _dark are emissive in Blender (strength 4, #FF26BF and #B0107F): the FBX does not carry emission, the Unreal material sets the glow (MI_PickupXPBig)"
   ],
   "fidelity": {
-    "run": 3,
-    "returns_used": 1,
+    "run": 4,
+    "returns_used": 0,
     "max_returns": 5,
     "final_render": "Art/Meshes/xp-chip-big-mesh/SM_XPChipBig_final.png",
     "criteria": {
       "C1": {
         "verdict": "pass",
-        "evidence": "same as run 2, untouched: slab 30 x 30 x 3.4 cm (11 %), four tiles. Differs: source seams thinner and flush."
+        "evidence": "run 4: unchanged, same geometry and colours as run 3. (run 3: same as run 2, untouched: slab 30 x 30 x 3.4 cm (11 %), four tiles. Differs: source seams thinner and flush.)"
       },
       "C2": {
         "verdict": "pass",
-        "evidence": "Casing 18 cm (60 %), 4.5 cm high (15 %), 45 degree chamfer on 2.0 of 4.5 cm. Chamfer is #585E69 against the wall #3C4048 (about 45 % lighter luminance); in the render the chamfer faces are clearly lighter than the dark vertical wall at the base. A 0.3 cm light band (#A9B0BA) runs along the chamfer top edge and a 0.4 cm light rim around the opening, visible as a thin bright outline. Differs: the 4 corner notches are small and hard to read at this scale, source notches are crisper triangles; the chamfer reads a little lighter and flatter than the source."
+        "evidence": "Proportions, chamfer, notches unchanged; the 0.3 cm band on the chamfer top edge is now #8F959F, same grey as legs, no longer brighter. Differs: notches small, chamfer a little lighter than source."
       },
       "C3": {
         "verdict": "pass",
-        "evidence": "Gem 11.8 cm wide (39 %), stepped faceted (slope, vertical step, slope, flat top), top 2.7 cm above the rim (rim at 7.9, top 10.6); opening 0.9 cm deep; slope facets alternate #FF26BF and #B0107F by orientation with flat shading, so 3 tones are visible in the render (bright, dark, mid). Differs: the source gem is flatter and sits flush in its opening; ours stands taller by design (owner request)."
+        "evidence": "run 4: unchanged, same geometry and colours as run 3. (run 3: Gem 11.8 cm wide (39 %), stepped faceted (slope, vertical step, slope, flat top), top 2.7 cm above the rim (rim at 7.9, top 10.6); opening 0.9 cm deep; slope facets alternate #FF26BF and #B0107F by orientation with flat shading, so 3 tones are visible in the render (bright, dark, mid). Differs: the source gem is flatter and sits flush in its opening; ours stands taller by design (owner request).)"
       },
       "C4": {
         "verdict": "pass",
-        "evidence": "same as run 2, untouched: 6 identical legs, rounded elbow, flat feet. Differs: source legs chunkier."
+        "evidence": "run 4: unchanged, same geometry and colours as run 3. (run 3: same as run 2, untouched: 6 identical legs, rounded elbow, flat feet. Differs: source legs chunkier.)"
       },
       "C5": {
         "verdict": "pass",
-        "evidence": "same as run 2, untouched: 4 regular hex bolts. Differs: source heads have a small top chamfer."
+        "evidence": "run 4: unchanged, same geometry and colours as run 3. (run 3: same as run 2, untouched: 4 regular hex bolts. Differs: source heads have a small top chamfer.)"
       },
       "C6": {
         "verdict": "pass",
-        "evidence": "same as run 2, untouched: 5 traces, 3 components. Differs: source traces use 45 degree bends."
+        "evidence": "run 4: unchanged, same geometry and colours as run 3. (run 3: same as run 2, untouched: 5 traces, 3 components. Differs: source traces use 45 degree bends.)"
       },
       "C7": {
         "verdict": "pass",
-        "evidence": "Board and casing gunmetal, chamfer lighter gunmetal, legs, bolts, traces and bands light grey, core magenta, no cyan."
+        "evidence": "Gunmetal board and casing, lighter gunmetal chamfer, legs, bolts, traces and bands light grey (#8A9099 to #8F959F), core magenta, no cyan."
       },
       "C8": {
         "verdict": "pass",
@@ -114,9 +114,14 @@
       },
       "C9": {
         "verdict": "pass",
-        "evidence": "Without the source the core reads as a raised faceted crystal standing proud of a sloped casing: its lower facets are fully visible down to the opening floor, no recess wall hides any part, light and dark facets give volume, it does not read as a flat pink square. Differs: the gem is taller and its base sits close to the light rim."
+        "evidence": "run 4: unchanged, same geometry and colours as run 3. (run 3: Without the source the core reads as a raised faceted crystal standing proud of a sloped casing: its lower facets are fully visible down to the opening floor, no recess wall hides any part, light and dark facets give volume, it does not read as a flat pink square. Differs: the gem is taller and its base sits close to the light rim.)"
+      },
+      "C10": {
+        "verdict": "pass",
+        "evidence": "Opening inner wall (0.9 cm) and floor around the gem base are now edge_band by recolouring; tris 872, unchanged. In the close crop (ortho 16) a continuous light grey ring runs from the gem base to the rim and the chamfer band, no dark gunmetal visible between gem and rim. edge_band #8F959F, in the legs range (#8A9099 to #959CA6); the chamfer top band uses it too. Differs: the flat rim strip is kept as the C2 thin flat rim, now merged visually with the opening."
       }
     },
-    "open_failures": []
+    "open_failures": [],
+    "close_crop": "Art/Meshes/xp-chip-big-mesh/SM_XPChipBig_crop.png"
   }
 }
