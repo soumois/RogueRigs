@@ -91,7 +91,7 @@ protected:
 	/** Enters Dead (resets the telegraph visuals through OnRecover) then runs the base death. */
 	virtual void HandleDeath(AActor* DeathInstigator) override;
 
-	/** Recycling relocation: back to Chase (leaving the current state as EnterState does); nothing while Dead. */
+	/** Recycling relocation: back to Chase (leaving the current state as EnterState does), OnRecover when it left Telegraph, Slam or Recover; nothing while Dead. */
 	virtual void ResetStateMachine() override;
 
 	/** Pool reuse: base reset, then slam time and counters cleared, back to Chase, ground signal hidden with progress 0. */

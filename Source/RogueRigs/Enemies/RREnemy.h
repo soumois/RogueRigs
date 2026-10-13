@@ -21,6 +21,7 @@ class URRHealthAttributeSet;
 class URRMovementAttributeSet;
 class UGameplayEffect;
 class UMaterialInterface;
+class UMeshComponent;
 class USceneComponent;
 struct FOnAttributeChangeData;
 
@@ -229,7 +230,10 @@ protected:
 	 */
 	void UpdateMovementLOD(float DeltaSeconds);
 
-	/** Shows or hides every mesh component of the robot (used by the wind-up flash). */
+	/**
+	 * Wind-up flash (task-119-01). false hides every visible mesh component and remembers it; true shows again only the meshes
+	 * a previous false hid. A mesh hidden by the Blueprint (heavy ShockRing, effect meshes) is never turned on here.
+	 */
 	void SetMeshesVisible(bool bVisible);
 
 	/**
@@ -454,6 +458,9 @@ protected:
 
 	/** Captured visual parts (CaptureVisualParts). */
 	TArray<FVisualPartState> VisualParts;
+
+	/** Meshes hidden by the wind-up flash (SetMeshesVisible(false)), the only ones SetMeshesVisible(true) shows again. */
+	TArray<TWeakObjectPtr<UMeshComponent>> BlinkHiddenMeshes;
 
 	/** Handle of the MoveSpeed change subscription on the ASC. */
 	FDelegateHandle MoveSpeedChangedHandle;

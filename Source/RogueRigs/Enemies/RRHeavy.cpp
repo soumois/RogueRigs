@@ -185,8 +185,16 @@ void ARRHeavy::ResetForNewLife()
 
 void ARRHeavy::ResetStateMachine()
 {
-	if (State != ERRHeavyState::Dead)
+	if (State == ERRHeavyState::Dead)
 	{
-		EnterState(ERRHeavyState::Chase);
+		return;
+	}
+	// Relocated mid-slam cycle: the Blueprint telegraph visuals (ShockRing, glow, tilt) are reset like at the end of a recovery,
+	// so the heavy never chases with its slam zone shown (task-119-01).
+	const bool bResetPose = State == ERRHeavyState::Telegraph || State == ERRHeavyState::Slam || State == ERRHeavyState::Recover;
+	EnterState(ERRHeavyState::Chase);
+	if (bResetPose)
+	{
+		OnRecover();
 	}
 }

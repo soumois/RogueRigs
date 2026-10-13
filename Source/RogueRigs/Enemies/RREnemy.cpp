@@ -497,6 +497,7 @@ void ARREnemy::ResetForNewLife()
 	CachedTarget.Reset();
 	MarkStateStart();
 
+	BlinkHiddenMeshes.Reset();
 	RestoreVisualParts();
 
 	if (URRRobotSeparationSubsystem* Separation = GetWorld()->GetSubsystem<URRRobotSeparationSubsystem>())
@@ -628,10 +629,28 @@ void ARREnemy::HandleDamageReceived(float Damage, bool bIsCritical, float Health
 
 void ARREnemy::SetMeshesVisible(bool bVisible)
 {
+	if (bVisible)
+	{
+		// Only what the flash hid: showing every mesh also lit Blueprint effect meshes kept hidden at rest (task-119-01: the
+		// heavy ShockRing appeared at full slam radius on far, chasing heavies after a recycling relocation and on death).
+		for (const TWeakObjectPtr<UMeshComponent>& Hidden : BlinkHiddenMeshes)
+		{
+			if (UMeshComponent* MeshComponent = Hidden.Get())
+			{
+				MeshComponent->SetVisibility(true);
+			}
+		}
+		BlinkHiddenMeshes.Reset();
+		return;
+	}
 	TInlineComponentArray<UMeshComponent*> Meshes(this);
 	for (UMeshComponent* MeshComponent : Meshes)
 	{
-		MeshComponent->SetVisibility(bVisible);
+		if (MeshComponent->IsVisible())
+		{
+			MeshComponent->SetVisibility(false);
+			BlinkHiddenMeshes.Add(MeshComponent);
+		}
 	}
 }
 
