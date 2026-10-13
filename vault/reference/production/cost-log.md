@@ -227,6 +227,7 @@ kind: note
 | [[task-142-01-xp-bloom-post-process]] | sonnet | 1 | 0k | 51k | 1369k | 1k |
 | [[task-143-01-xp-pickups-distance-field]] | sonnet | 1 | 0k | 35k | 496k | 1k |
 | [[task-144-01-xp-chip-glow-12-6]] | sonnet | 1 | 0k | 15k | 138k | 0k |
+| [[task-145-01-xp-glow-disc]] | sonnet | 1 | 0k | 34k | 182k | 0k |
 
 ## Totals
 | Scope | Input | Cache write | Cache read | Output |

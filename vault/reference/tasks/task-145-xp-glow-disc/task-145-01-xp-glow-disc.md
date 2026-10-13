@@ -3,7 +3,7 @@ id: task-145-01-xp-glow-disc
 description: "Add a flat glowing disc under the XP nut and chip: geometry in the FBX, additive material, reimport and Blueprint slots."
 parent: task-145-xp-glow-disc
 kind: task
-status: in-progress
+status: done
 ---
 # XP pickups: glow disc on the floor
 
@@ -15,11 +15,11 @@ status: in-progress
 - done_when: Reports: nut slots [M_XPNut_body, M_XPNut_hole, glow_disc], chip slots the seven M_XPChipBig_* then glow_disc; body tris unchanged (nut 108, chip 844) and disc 16 tris each; body bounds unchanged (nut z -5.85 to 5.85, chip z -5.3 to 5.3); disc radius and z as specified; nothing imported into Unreal; no Unreal process used
 - editor_state: closed
 - token_ceiling: open
-- model: open
-- tokens: open
-- runs: open
+- model: sonnet
+- tokens: input 16, cache write 34173, cache read 182007, output 378
+- runs: 1
 - milestone: M2
-- result: open
+- result: glow_disc added as the last slot of SM_XPNut (3 slots, 124 tris) and SM_XPChipBig (8 slots, 860 tris), radius 50 and 44.44 at z -29.8 and -16.56, body bounds and pivot unchanged; FBX re-exported.
 
 ## Relations
 - [[task-145-xp-glow-disc]] — parent global task.

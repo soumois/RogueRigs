@@ -3,7 +3,7 @@ id: task-145-02-disc-reimport
 description: "Reimport SM_XPNut and SM_XPChipBig in place so they gain the glow_disc slot."
 parent: task-145-xp-glow-disc
 kind: task
-status: todo
+status: in-progress
 ---
 # XP glow disc: reimport the two meshes
 
