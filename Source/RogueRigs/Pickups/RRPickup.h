@@ -95,6 +95,9 @@ public:
 	UFUNCTION(BlueprintPure, Category = "Pickup")
 	float GetXPAmount() const { return XPAmount; }
 
+	/** Big XP block class the cubes of this class merge into (null = never merged); read on the class default by URRPickupSubsystem. */
+	TSubclassOf<ARRPickup> GetXPBigPickupClass() const { return XPBigPickupClass; }
+
 	/** Ore value of an Ore pickup (ore-economy: 1 per chunk), set by the grid from the ore type table (ChunkValue). Ignored by other types. */
 	UFUNCTION(BlueprintPure, Category = "Pickup")
 	int32 GetOreValue() const { return OreValue; }
@@ -187,6 +190,14 @@ protected:
 	/** Raw XP given by an XP pickup on collection (before the miner XPGain); set per cube by ARREnemy. Ignored by other types. */
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Pickup", meta = (ClampMin = 0))
 	float XPAmount = 1.f;
+
+	/**
+	 * Big XP block (task-110-01, xp-level-up): pooled pickup class that groups of XP cubes of this class merge into when more
+	 * than XPMergeThreshold of them fall in one URRPickupSubsystem bucket in a frame (its XPAmount = the sum of the group).
+	 * Set on the small cube Blueprint (BP_PickupXP class defaults); null = no merge for this class (feature off).
+	 */
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Pickup|XP")
+	TSubclassOf<ARRPickup> XPBigPickupClass;
 
 	/** Ore value of an Ore pickup (ore-economy, owner 2026-10-10: 1 per chunk); the grid sets it from OreTypes.csv ChunkValue. Ignored by other types. */
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Pickup", meta = (ClampMin = 0))

@@ -10,10 +10,12 @@
 #include "GameFramework/PlayerController.h"
 #include "GAS/RRAbilitySystemComponent.h"
 #include "GAS/RRHealthAttributeSet.h"
+#include "GAS/RRPlayerAttributeSet.h"
 #include "Pickups/RRPickup.h"
 #include "Pickups/RRPickupSubsystem.h"
 #include "Player/RRMiner.h"
 #include "Pool/RRActorPoolSubsystem.h"
+#include "Progression/RRProgressionComponent.h"
 #include "Tests/RRTestEventRecorder.h"
 #include "Tests/RRTestHarness.h"
 #include "Tests/RRTestPickupXP.h"
@@ -358,6 +360,152 @@ bool FRRPickupPoolHealFullHealthTest::RunTest(const FString& Parameters)
 	}
 	TestEqual(TEXT("reused heal collected once damaged"), CountCollected(Recorder.Get(), ERRPickupType::Heal), 2);
 	TestNearlyEqual(TEXT("70 + 15 = 85 again"), HealthOf(Miner), 85.f, 0.01f);
+	return true;
+}
+
+namespace RRPickupPoolTests
+{
+	/** Live (not pooled idle) pickups of exactly Class, and their summed XP. */
+	int32 CountLiveOfClass(UWorld* World, const UClass* Class, float& OutXP)
+	{
+		int32 Count = 0;
+		OutXP = 0.f;
+		for (TActorIterator<ARRPickup> It(World); It; ++It)
+		{
+			if (It->GetClass() == Class && !URRActorPoolSubsystem::IsPooledIdle(*It))
+			{
+				++Count;
+				OutXP += It->GetXPAmount();
+			}
+		}
+		return Count;
+	}
+
+	/** Requests Count merging test cubes worth XP each at Location (pop yaws spread). */
+	void RequestMergingCubes(URRPickupSubsystem* Pickups, const FVector& Location, int32 Count, float XP)
+	{
+		for (int32 Cube = 0; Cube < Count; ++Cube)
+		{
+			Pickups->RequestXPCube(ARRTestPickupXPMerging::StaticClass(), Location, XP, 360.f * Cube / Count);
+		}
+	}
+}
+
+IMPLEMENT_SIMPLE_AUTOMATION_TEST(FRRXPBigBlockMergeTest, "RogueRigs.PickupPool.XPBigBlock.MergeRule",
+	EAutomationTestFlags::EditorContext | EAutomationTestFlags::EngineFilter)
+
+bool FRRXPBigBlockMergeTest::RunTest(const FString& Parameters)
+{
+	using namespace RRPickupPoolTests;
+
+	// task-110-01: per frame and per 200 uu bucket, more than 8 cubes = groups of 8 become one big block, total XP kept.
+	FTestWorld TestWorld(TEXT("RRXPBigBlockMerge"));
+	URRPickupSubsystem* Pickups = TestWorld.Get()->GetSubsystem<URRPickupSubsystem>();
+	if (!TestNotNull(TEXT("pickup subsystem"), Pickups))
+	{
+		return false;
+	}
+	Pickups->SetSpawnMaxFrames(0);
+	UClass* Small = ARRTestPickupXPMerging::StaticClass();
+	UClass* Big = ARRTestPickupXPBig::StaticClass();
+	float SmallXP = 0.f;
+	float BigXP = 0.f;
+
+	// 8 cubes: collected for the frame, then delivered unchanged.
+	TestNull(TEXT("merging cube request collected"), Pickups->RequestXPCube(Small, FVector(50.f, 50.f, 100.f), 1.f, 0.f));
+	RequestMergingCubes(Pickups, FVector(50.f, 50.f, 100.f), 7, 1.f);
+	TestEqual(TEXT("8 requests pending"), Pickups->GetPendingXPCubeCount(), 8);
+	Pickups->FlushXPCubes();
+	TestEqual(TEXT("none pending after flush"), Pickups->GetPendingXPCubeCount(), 0);
+	TestEqual(TEXT("8 cubes stay small"), CountLiveOfClass(TestWorld.Get(), Small, SmallXP), 8);
+	TestEqual(TEXT("no big block for 8"), CountLiveOfClass(TestWorld.Get(), Big, BigXP), 0);
+	for (TActorIterator<ARRPickup> It(TestWorld.Get()); It; ++It)
+	{
+		if (!URRActorPoolSubsystem::IsPooledIdle(*It)) { TestWorld.Get()->GetSubsystem<URRActorPoolSubsystem>()->Release(*It); }
+	}
+
+	// 20 cubes worth 1.5 in one bucket, resolved by the subsystem tick: 2 big (12 XP each) + 4 small, 30 XP in total.
+	RequestMergingCubes(Pickups, FVector(50.f, 50.f, 100.f), 20, 1.5f);
+	TestWorld.Tick();
+	TestEqual(TEXT("tick flushed the requests"), Pickups->GetPendingXPCubeCount(), 0);
+	TestEqual(TEXT("2 big blocks"), CountLiveOfClass(TestWorld.Get(), Big, BigXP), 2);
+	TestEqual(TEXT("4 small cubes left"), CountLiveOfClass(TestWorld.Get(), Small, SmallXP), 4);
+	TestNearlyEqual(TEXT("big blocks worth 2 x 12"), BigXP, 24.f, 0.001f);
+	TestNearlyEqual(TEXT("total XP kept (20 x 1.5)"), BigXP + SmallXP, 30.f, 0.001f);
+	for (TActorIterator<ARRPickup> It(TestWorld.Get()); It; ++It)
+	{
+		if (!URRActorPoolSubsystem::IsPooledIdle(*It)) { TestWorld.Get()->GetSubsystem<URRActorPoolSubsystem>()->Release(*It); }
+	}
+
+	// Two buckets far apart, 6 cubes each: 12 in the frame but no bucket above 8, nothing merged.
+	RequestMergingCubes(Pickups, FVector(50.f, 50.f, 100.f), 6, 1.f);
+	RequestMergingCubes(Pickups, FVector(1050.f, 50.f, 100.f), 6, 1.f);
+	Pickups->FlushXPCubes();
+	TestEqual(TEXT("far buckets: 12 small cubes"), CountLiveOfClass(TestWorld.Get(), Small, SmallXP), 12);
+	TestEqual(TEXT("far buckets: no big block"), CountLiveOfClass(TestWorld.Get(), Big, BigXP), 0);
+	TestEqual(TEXT("2 big blocks requested in total"), Pickups->GetTotalXPBigBlocksRequested(), 2);
+	return true;
+}
+
+IMPLEMENT_SIMPLE_AUTOMATION_TEST(FRRXPBigBlockOffTest, "RogueRigs.PickupPool.XPBigBlock.OffWithoutClass",
+	EAutomationTestFlags::EditorContext | EAutomationTestFlags::EngineFilter)
+
+bool FRRXPBigBlockOffTest::RunTest(const FString& Parameters)
+{
+	using namespace RRPickupPoolTests;
+
+	// task-110-01: a cube class without XPBigPickupClass is never collected nor merged: delivered at once as before.
+	FTestWorld TestWorld(TEXT("RRXPBigBlockOff"));
+	URRPickupSubsystem* Pickups = TestWorld.Get()->GetSubsystem<URRPickupSubsystem>();
+	if (!TestNotNull(TEXT("pickup subsystem"), Pickups))
+	{
+		return false;
+	}
+	TestNull(TEXT("ARRTestPickupXP has no big block class"), GetDefault<ARRPickup>(ARRTestPickupXP::StaticClass())->GetXPBigPickupClass().Get());
+	Pickups->SetSpawnMaxFrames(0);
+	int32 Delivered = 0;
+	for (int32 Cube = 0; Cube < 20; ++Cube)
+	{
+		Delivered += Pickups->RequestXPCube(ARRTestPickupXP::StaticClass(), FVector(50.f, 50.f, 100.f), 1.5f, 18.f * Cube) ? 1 : 0;
+	}
+	TestEqual(TEXT("20 cubes delivered at once"), Delivered, 20);
+	TestEqual(TEXT("nothing collected for a merge"), Pickups->GetPendingXPCubeCount(), 0);
+	TestWorld.Tick();
+	float XP = 0.f;
+	TestEqual(TEXT("still 20 small cubes after the tick"), CountLiveOfClass(TestWorld.Get(), ARRTestPickupXP::StaticClass(), XP), 20);
+	TestNearlyEqual(TEXT("30 XP"), XP, 30.f, 0.001f);
+	TestEqual(TEXT("no big block requested"), Pickups->GetTotalXPBigBlocksRequested(), 0);
+	return true;
+}
+
+IMPLEMENT_SIMPLE_AUTOMATION_TEST(FRRXPBigBlockCollectTest, "RogueRigs.PickupPool.XPBigBlock.CollectedXPEqualsDropped",
+	EAutomationTestFlags::EditorContext | EAutomationTestFlags::EngineFilter)
+
+bool FRRXPBigBlockCollectTest::RunTest(const FString& Parameters)
+{
+	using namespace RRPickupPoolTests;
+
+	// task-110-01: 20 cubes of 0.15 XP at the miner's feet (2 big + 4 small, under the 4 XP of level 1): all collected, 3 XP gained.
+	FTestWorld TestWorld(TEXT("RRXPBigBlockCollect"));
+	ARRMiner* Miner = SpawnMiner(*this, TestWorld, 100.f);
+	URRPickupSubsystem* Pickups = TestWorld.Get()->GetSubsystem<URRPickupSubsystem>();
+	if (!Miner || !TestNotNull(TEXT("pickup subsystem"), Pickups) || !TestNotNull(TEXT("miner progression"), Miner->GetProgression()))
+	{
+		return false;
+	}
+	TStrongObjectPtr<URRTestEventRecorder> Recorder(NewObject<URRTestEventRecorder>());
+	Miner->OnPickupCollected.AddDynamic(Recorder.Get(), &URRTestEventRecorder::HandlePickupCollected);
+	const float StartXP = Miner->GetProgression()->GetXP();
+	RequestMergingCubes(Pickups, MinerFeet(Miner), 20, 0.15f);
+	for (int32 Frame = 0; Frame < 300 && CountCollected(Recorder.Get(), ERRPickupType::XP) < 6; ++Frame)
+	{
+		TestWorld.Tick();
+	}
+	TestEqual(TEXT("2 big blocks + 4 cubes collected"), CountCollected(Recorder.Get(), ERRPickupType::XP), 6);
+	TestEqual(TEXT("2 big blocks requested"), Pickups->GetTotalXPBigBlocksRequested(), 2);
+	TestEqual(TEXT("still level 1"), Miner->GetProgression()->GetLevel(), 1);
+	TestNearlyEqual(TEXT("XP collected = XP dropped (3 x XPGain)"), Miner->GetProgression()->GetXP() - StartXP,
+		3.f * Miner->GetRRAbilitySystemComponent()->GetNumericAttribute(URRPlayerAttributeSet::GetXPGainAttribute()), 0.001f);
 	return true;
 }
 

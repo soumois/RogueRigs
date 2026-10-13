@@ -11,6 +11,19 @@ class AActor;
 class ARRPickup;
 class ARRMiner;
 
+/** One collected XP cube request (task-110-01), resolved by URRPickupSubsystem::FlushXPCubes. */
+struct FRRPendingXPCube
+{
+	/** Small cube class requested. */
+	TSubclassOf<ARRPickup> PickupClass;
+	/** Requested drop point. */
+	FVector Location = FVector::ZeroVector;
+	/** Raw XP of the cube. */
+	float XPAmount = 0.f;
+	/** Ejection yaw in degrees. */
+	float PopYawDegrees = 0.f;
+};
+
 /**
  * Drives ARRPickup motion (sys-pickups). Pickups register at BeginPlay and unregister at EndPlay; each frame the subsystem
  * reads the player miner (player 0 pawn) and its PickupRadius once, then calls ARRPickup::UpdateMotion on every pickup.
@@ -51,8 +64,24 @@ public:
 	/**
 	 * Acquires an XP cube of PickupClass at Location from the pool, giving XPAmount raw XP, ejected along PopYawDegrees (world
 	 * yaw). Same delivery rules and return value as RequestSpawn. Used by ARREnemy::DropXP.
+	 * Big XP block (task-110-01): when the PickupClass default has an XPBigPickupClass, the request is collected instead (returns
+	 * nullptr) and resolved by FlushXPCubes at the end of the frame (this subsystem's Tick).
 	 */
 	ARRPickup* RequestXPCube(TSubclassOf<ARRPickup> PickupClass, const FVector& Location, float XPAmount, float PopYawDegrees);
+
+	/**
+	 * Resolves the XP cube requests collected since the last flush (task-110-01): grouped per small class and per XPMergeBucketSize
+	 * square cell of the request location; a bucket of more than XPMergeThreshold cubes turns each full group of XPMergeGroupSize
+	 * cubes (in request order) into one XPBigPickupClass block worth the group's XP sum, at the group's mean location, ejected
+	 * along the first cube's yaw; the remainder stays small cubes. Total XP is preserved. Called by Tick; tests call it directly.
+	 */
+	void FlushXPCubes();
+
+	/** XP cube requests collected and not yet flushed (tests). */
+	int32 GetPendingXPCubeCount() const { return PendingXPCubes.Num(); }
+
+	/** Big XP blocks requested since the world started (tests, stress). */
+	int32 GetTotalXPBigBlocksRequested() const { return TotalXPBigBlocksRequested; }
 
 	/** Pickup creations still waiting in the pool (tests, stress). */
 	int32 GetQueuedSpawnCount() const;
@@ -91,6 +120,24 @@ protected:
 	/** Frames within which the pool creates a missing pickup (task-092-01: 3). Config (Game), default 3; 0 = synchronous. */
 	UPROPERTY(Config, EditAnywhere, Category = "Pickups", meta = (ClampMin = "0"))
 	int32 SpawnMaxFrames = 3;
+
+	/** Size in uu of the square cells XP cube requests are grouped by (task-110-01, provisional 200). Config (Game). */
+	UPROPERTY(Config, EditAnywhere, Category = "Pickups|XP Big Block", meta = (ClampMin = "1", Units = "cm"))
+	float XPMergeBucketSize = 200.f;
+
+	/** A bucket merges only when it holds more than this many cubes in a frame (task-110-01, provisional 8). Config (Game). */
+	UPROPERTY(Config, EditAnywhere, Category = "Pickups|XP Big Block", meta = (ClampMin = "0"))
+	int32 XPMergeThreshold = 8;
+
+	/** Cubes per big block (task-110-01, provisional 8); below 2 nothing merges. Config (Game). */
+	UPROPERTY(Config, EditAnywhere, Category = "Pickups|XP Big Block", meta = (ClampMin = "2"))
+	int32 XPMergeGroupSize = 8;
+
+	/** XP cube requests collected since the last FlushXPCubes. */
+	TArray<FRRPendingXPCube> PendingXPCubes;
+
+	/** See GetTotalXPBigBlocksRequested. */
+	int32 TotalXPBigBlocksRequested = 0;
 
 	/** Pickup classes requested through the pool (GetPoolStats, GetQueuedSpawnCount). */
 	TArray<TWeakObjectPtr<UClass>> RequestedClasses;

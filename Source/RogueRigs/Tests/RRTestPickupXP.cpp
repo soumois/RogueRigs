@@ -8,3 +8,13 @@ ARRTestPickupXP::ARRTestPickupXP()
 {
 	PickupType = ERRPickupType::XP;
 }
+
+ARRTestPickupXPBig::ARRTestPickupXPBig()
+{
+	PickupType = ERRPickupType::XP;
+}
+
+ARRTestPickupXPMerging::ARRTestPickupXPMerging()
+{
+	XPBigPickupClass = ARRTestPickupXPBig::StaticClass();
+}

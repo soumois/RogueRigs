@@ -19,3 +19,25 @@ public:
 	/** Sets the type to XP. */
 	ARRTestPickupXP();
 };
+
+/** Test-only big XP block (task-110-01): native XP pickup the merging test cubes turn into. Never used by gameplay. */
+UCLASS(NotBlueprintable, NotPlaceable, HideDropdown)
+class ROGUERIGS_API ARRTestPickupXPBig : public ARRPickup
+{
+	GENERATED_BODY()
+
+public:
+	/** Sets the type to XP. */
+	ARRTestPickupXPBig();
+};
+
+/** Test-only XP cube whose XPBigPickupClass is ARRTestPickupXPBig (task-110-01 merge tests). Never used by gameplay. */
+UCLASS(NotBlueprintable, NotPlaceable, HideDropdown)
+class ROGUERIGS_API ARRTestPickupXPMerging : public ARRTestPickupXP
+{
+	GENERATED_BODY()
+
+public:
+	/** Sets XPBigPickupClass to ARRTestPickupXPBig. */
+	ARRTestPickupXPMerging();
+};
