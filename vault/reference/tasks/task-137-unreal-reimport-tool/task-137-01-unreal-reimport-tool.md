@@ -3,7 +3,7 @@ id: task-137-01-unreal-reimport-tool
 description: "Create a headless Python tool that reimports a static mesh from its FBX in place, and document it in the vault."
 parent: task-137-unreal-reimport-tool
 kind: task
-status: in-progress
+status: done
 ---
 # Tool: reimport a static mesh in place
 
@@ -15,11 +15,11 @@ status: in-progress
 - done_when: Test on SM_XPNut and SM_XPChipBig reimporting their unchanged FBX: the command exits 0, each asset path is unchanged with no duplicate, bounds and material slots identical before and after (nut z -5.85 to 5.85, slots M_XPNut_body and M_XPNut_hole; chip z -5.3 to 5.3, seven M_XPChipBig_* slots), the Blueprint overrides of BP_PickupXP and BP_PickupXPBig keep their instances; a failing path gives a non-zero exit code and a clear error; no other asset modified; lint clean; committed
 - editor_state: closed
 - token_ceiling: open
-- model: open
-- tokens: open
-- runs: open
+- model: opus
+- tokens: input 104, cache write 93607, cache read 2734061, output 11632
+- runs: 1
 - milestone: M2
-- result: open
+- result: Tools/unreal/reimport_static_mesh.py and tool-unreal-reimport: headless in-place reimport through the Interchange manager (EditorReimportHandler does not exist in UE 5.8 Python); tested on the nut and chip, unchanged, exit codes checked; translator settings forced because a headless reimport scaled meshes x100.
 
 ## Relations
 - [[task-137-unreal-reimport-tool]] — parent global task.

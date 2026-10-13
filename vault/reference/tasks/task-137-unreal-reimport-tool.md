@@ -1,9 +1,9 @@
 ---
 id: task-137-unreal-reimport-tool
 description: "Global task: Create a headless Python tool that reimports a static mesh from its FBX in place, and document it in the vault."
-parent: tasks-to-do-index
+parent: tasks-done-index
 kind: task
-status: in-progress
+status: done
 ---
 # Tool: reimport a static mesh in place
 
@@ -13,12 +13,12 @@ status: in-progress
 - gdd_check: done by the Orchestrator when the task is planned (2026-10-13).
 - confirmed_by_owner: yes (2026-10-13)
 - milestone: M2
-- next_step: task-137-01-unreal-reimport-tool
-- result: open
+- next_step: none
+- result: Done. Tools/unreal/reimport_static_mesh.py and tool-unreal-reimport: headless in-place reimport through the Interchange manager (EditorReimportHandler does not exist in UE 5.8 Python); tested on the nut and chip, unchanged, exit codes checked; translator settings forced because a headless reimport scaled meshes x100.
 
 ## Subtasks
 1. task-137-01-unreal-reimport-tool — cpp
 
 ## Relations
-- [[tasks-to-do-index]] — parent index.
+- [[tasks-done-index]] — parent index.
 - [[task-137-01-unreal-reimport-tool]] — step 1, cpp.

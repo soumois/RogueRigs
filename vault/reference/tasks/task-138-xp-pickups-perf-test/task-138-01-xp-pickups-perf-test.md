@@ -3,7 +3,7 @@ id: task-138-01-xp-pickups-perf-test
 description: "Add the rr.Stress.Pickups and rr.Stress.ClearPickups console commands that spawn XP nuts and chips for the cost measurement."
 parent: task-138-xp-pickups-perf-test
 kind: task
-status: todo
+status: in-progress
 ---
 # XP pickups: add the stress command
 

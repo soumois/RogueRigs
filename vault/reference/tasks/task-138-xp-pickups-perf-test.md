@@ -3,7 +3,7 @@ id: task-138-xp-pickups-perf-test
 description: "Global task: Measure the frame-time cost of a burst of XP nuts and chips, with and without bloom and pulse, and record the results."
 parent: tasks-to-do-index
 kind: task
-status: todo
+status: in-progress
 ---
 # XP pickups: add the stress command
 

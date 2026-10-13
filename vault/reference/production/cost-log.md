@@ -219,6 +219,7 @@ kind: note
 | [[task-135-02-xp-pickups-pivot-export]] | sonnet | 1 | 0k | 29k | 126k | 3k |
 | [[task-136-01-xp-pickups-stronger-glow]] | sonnet | 1 | 0k | 29k | 442k | 1k |
 | [[task-135-03-xp-pickups-pivot-reimport]] | sonnet | 1 | 0k | 33k | 349k | 1k |
+| [[task-137-01-unreal-reimport-tool]] | opus | 1 | 0k | 94k | 2734k | 12k |
 
 ## Totals
 | Scope | Input | Cache write | Cache read | Output |
