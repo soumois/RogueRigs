@@ -1,0 +1,68 @@
+{
+  "asset": "SM_XPChipBig",
+  "route": "blender",
+  "script": "Tools/art/blender/xp_chip_big_mesh.py",
+  "source_image": "vault/assets/xp-chip-big.png",
+  "tris_out": 296,
+  "budget_tris": 600,
+  "dimensions_cm": {
+    "x": 30.0,
+    "y": 30.0,
+    "z": 10.3
+  },
+  "footprint_target_cm": {
+    "x": 30.0,
+    "y": 30.0,
+    "source": "BP_PickupXP PickupMesh /Engine/BasicShapes/Cube (100 cm) x scale 0.3; big block scale 1.8 (root 0.54) applied in game, not baked"
+  },
+  "pivot": "bottom",
+  "bbox_min": [
+    -15.0,
+    -15.0,
+    0.0
+  ],
+  "bbox_max": [
+    15.0,
+    15.0,
+    10.3
+  ],
+  "materials": [
+    "M_XPChipBig_board",
+    "M_XPChipBig_casing",
+    "M_XPChipBig_core",
+    "M_XPChipBig_legs"
+  ],
+  "paint_colours_srgb": {
+    "M_XPChipBig_board": "#2B2E34",
+    "M_XPChipBig_casing": "#3C4048",
+    "M_XPChipBig_legs": "#8A9099",
+    "M_XPChipBig_core": "#FF26BF"
+  },
+  "emissive_material": "M_XPChipBig_core",
+  "uv_layers": [
+    "UVMap",
+    "LightMap"
+  ],
+  "uv_checks": {
+    "UVMap": {
+      "tile_cm": 100.0,
+      "cm_per_uv_unit_min": 100.0,
+      "cm_per_uv_unit_max": 100.0
+    },
+    "LightMap": {
+      "faces": 144,
+      "triangles": 296,
+      "overlapping_face_pairs": 0,
+      "bounds_min": 0.01172,
+      "bounds_max": 0.98828,
+      "min_gap_px_at_256": 3.0,
+      "min_border_px_at_256": 3.0,
+      "required_margin_px": 2,
+      "pass": true
+    }
+  },
+  "shading": "flat",
+  "warnings": [
+    "M_XPChipBig_core is emissive in Blender (strength 4, #FF26BF): the FBX does not carry emission, the Unreal material sets the glow (MI_PickupXPBig)"
+  ]
+}
