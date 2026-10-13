@@ -8,6 +8,8 @@ args = sys.argv[sys.argv.index("--") + 1:]
 FBX, OUT = os.path.abspath(args[0]), os.path.abspath(args[1])
 ORTHO = float(args[2]) if len(args) > 2 else 50.0
 TZ = float(args[3]) if len(args) > 3 else 4.5
+CX = float(args[4]) if len(args) > 4 else 0.0
+CY = float(args[5]) if len(args) > 5 else 0.0
 
 
 def srgb(h):
@@ -55,7 +57,7 @@ sc.world = w
 bg = w.node_tree.nodes["Background"]
 bg.inputs["Color"].default_value = (0.65, 0.65, 0.65, 1)
 bg.inputs["Strength"].default_value = 1.0
-target = Vector((0, 0, TZ))
+target = Vector((CX, CY, TZ))
 az, el, dist = math.radians(45), math.radians(35), 400.0
 cam_d = bpy.data.cameras.new("Cam")
 cam_d.type = "ORTHO"

@@ -91,8 +91,8 @@ for x0, x1 in ((-H, -G), (G, H)):
         box(x0, x1, y0, y1, 2.6, ZB, "board", bottom=False)                # four tiles
 
 
-def ring12(z, h, off=1.6, dip=0.0, dipz=0.0):
-    """12-point square ring (3 points per corner), counter-clockwise; the corner point can dip inward and down (notch)."""
+def ring12(z, h, off=1.4):
+    """8-point square ring (2 points per corner = a clean plan corner facet, no inward dip), counter-clockwise."""
     cs = [(h, -h), (h, h), (-h, h), (-h, -h)]
     pts = []
     for k, (cx, cy) in enumerate(cs):
@@ -100,29 +100,27 @@ def ring12(z, h, off=1.6, dip=0.0, dipz=0.0):
         nx, ny = cs[(k + 1) % 4]
         dp = math.hypot(px - cx, py - cy)
         dn = math.hypot(nx - cx, ny - cy)
-        pts.append(((cx + (px - cx) / dp * off, cy + (py - cy) / dp * off), z))
-        pts.append(((cx - math.copysign(dip, cx), cy - math.copysign(dip, cy)), z - dipz))
-        pts.append(((cx + (nx - cx) / dn * off, cy + (ny - cy) / dn * off), z))
-    return [bm.verts.new((p[0], p[1], zz)) for p, zz in pts]
+        pts.append((cx + (px - cx) / dp * off, cy + (py - cy) / dp * off))
+        pts.append((cx + (nx - cx) / dn * off, cy + (ny - cy) / dn * off))
+    return [bm.verts.new((p[0], p[1], z)) for p in pts]
 
 
 def strip(ra, rb, mat, dark_corner=False):
     n = len(ra)
     for k in range(n):
-        m = "board" if (dark_corner and k % 3 in (0, 1)) else mat
-        quad((ra[k], ra[(k + 1) % n], rb[(k + 1) % n], rb[k]), m)
+        quad((ra[k], ra[(k + 1) % n], rb[(k + 1) % n], rb[k]), mat)
 
 
 # casing: 18 wide, 4.5 cm above the board (15 % of 30): ledge 0.7, wall to 2.7, 45 degree chamfer 2.0 high / 2.0 run (lighter material, 0.3 cm light band on its top edge),
 # thin light rim band, shallow opening 0.9 cm deep, raised faceted gem rising 2.7 cm above the rim
-box(-9.9, 9.9, -9.9, 9.9, ZB, ZB + 0.7, "board", bottom=False)             # thin darker ledge at the base
+loft([ring12(ZB, 9.9, off=1.93), ring12(ZB + 0.7, 9.9, off=1.93)], "board", bottom=False)   # ledge follows the cut outline             # thin darker ledge at the base
 Z0, Z1, Z2 = ZB + 0.7, ZB + 2.5, ZB + 4.5
 RIM_IN = 6.6
-strip(ring12(Z0, 9.0, dip=1.0), ring12(Z1, 9.0, dip=1.0), "casing")                          # vertical wall (darker)
+strip(ring12(Z0, 9.0), ring12(Z1, 9.0), "casing")                          # vertical wall (darker)
 ZBAND = Z2 - 0.3
-strip(ring12(Z1, 9.0, dip=1.0), ring12(ZBAND, 7.3, dip=0.83, dipz=1.275), "casing_chamfer", dark_corner=True)   # chamfer, lighter; dipped corner points = notches
-strip(ring12(ZBAND, 7.3, dip=0.83, dipz=1.275), ring12(Z2, 7.0, dip=0.8, dipz=1.5), "edge_band", dark_corner=True)   # 0.3 cm light band on the chamfer top edge
-strip(ring12(Z2, 7.0, dip=0.8, dipz=1.5), ring12(Z2, RIM_IN), "edge_band")  # thin light rim band
+strip(ring12(Z1, 9.0), ring12(ZBAND, 7.3), "casing_chamfer")   # chamfer, lighter, wraps the corner facet
+strip(ring12(ZBAND, 7.3), ring12(Z2, 7.0), "edge_band")   # 0.3 cm light band on the chamfer top edge
+strip(ring12(Z2, 7.0), ring12(Z2, RIM_IN), "edge_band")  # thin light rim band
 ZF = Z2 - 0.9
 strip(ring12(Z2, RIM_IN), ring12(ZF, RIM_IN), "edge_band")                # opening inner wall, 0.9 cm, light (recoloured, no extra geometry)
 quad(sq(ZF, RIM_IN, RIM_IN), "edge_band")                                   # opening floor around the gem base, light
