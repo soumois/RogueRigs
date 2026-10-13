@@ -10,7 +10,7 @@ applies_to: text, barks, upgrade texts, style-guide checks
 Each rule has an id that the critic cites ([[agent-style-guide]]). Owner update 2026-10-09.
 
 - T1 Combat barks: 3 to 8 words.
-- T2 Jokes target the company. Self-mockery is fine. Vesna teases Rook's plans and bravado, never the player's skill or performance.
+- T2 Jokes target the company or the robots (owner 2026-10-13). Self-mockery is fine. Vesna teases Rook's plans and bravado, never the player's skill or performance.
 - T3 No real film line, quoted or paraphrased, and no well-known catchphrase. Rook quotes only [[fictional-films]], with original lines.
 - T4 Rook: a cocky, odds-dismissing smuggler crossed with a tired, sarcastic blue-collar worker; punchlines and Rigs jargon under stress ([[crew-characters]]).
 - T5 Vesna: calm, dry, short; deflates Rook; may name only a past job listed in [[crew-characters]].
