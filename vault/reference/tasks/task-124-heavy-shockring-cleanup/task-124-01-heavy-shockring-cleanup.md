@@ -3,7 +3,7 @@ id: task-124-01-heavy-shockring-cleanup
 description: "The hidden ShockRing component of BP_Heavy is deleted: its test lookups are removed in C++, then the component is removed from the Blueprint."
 parent: task-124-heavy-shockring-cleanup
 kind: task
-status: todo
+status: in-progress
 ---
 # Delete the heavy ShockRing component
 

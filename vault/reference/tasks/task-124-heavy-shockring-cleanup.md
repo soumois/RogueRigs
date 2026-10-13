@@ -3,7 +3,7 @@ id: task-124-heavy-shockring-cleanup
 description: "Global task: The hidden ShockRing component of BP_Heavy is deleted: its test lookups are removed in C++, then the component is removed from the Blueprint."
 parent: tasks-to-do-index
 kind: task
-status: todo
+status: in-progress
 ---
 # Delete the heavy ShockRing component
 
@@ -11,7 +11,7 @@ status: todo
 - goal: The hidden ShockRing component of BP_Heavy is deleted: its test lookups are removed in C++, then the component is removed from the Blueprint.
 - acceptance: build exits 0 with the editor closed; RogueRigs.Integration.HeavyTelegraphSlamsMiner and RogueRigs.Heavy.* pass headless; grep finds no ShockRing in Source/; sys-tests-heavy updated; lint clean; committed.
 - gdd_check: done by the Orchestrator when the task is planned (2026-10-13).
-- confirmed_by_owner: created at the owner's request (2026-10-13); not launched yet
+- confirmed_by_owner: yes (2026-10-13, launched by the owner)
 - milestone: M2
 - next_step: task-124-01-heavy-shockring-cleanup
 - result: open
