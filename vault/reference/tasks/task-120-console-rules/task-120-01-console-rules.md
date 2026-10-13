@@ -1,6 +1,6 @@
 ---
 id: task-120-01-console-rules
-description: "The console hack zone radius is 7 cells, every rock in the zone (ore included) must be destroyed before hacking, and the hack lasts 12 s."
+description: "Console zone 7 cells, all rocks in it (ore included) destroyed before hacking, hack time 12 s."
 parent: task-120-console-rules
 kind: task
 status: done

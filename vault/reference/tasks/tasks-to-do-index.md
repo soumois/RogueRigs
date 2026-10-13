@@ -10,3 +10,4 @@ A global task moves to [[tasks-done-index]] when it is done (`vault/scripts/task
 
 ## Relations
 - [[tasks-index]] — parent index.
+- [[task-124-heavy-shockring-cleanup]] — The hidden ShockRing component of BP_Heavy is deleted: its test lookups are removed in C++, then the component is removed from the Blueprint. Status todo.
