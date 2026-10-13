@@ -1,9 +1,9 @@
 ---
 id: task-112-ground-telegraph
 description: "Global task: A generic ground signal component draws a zone circle and a growing circle, and dies with its owner."
-parent: tasks-to-do-index
+parent: tasks-done-index
 kind: task
-status: in-progress
+status: done
 ---
 # Ground telegraph component (C++)
 
@@ -13,14 +13,14 @@ status: in-progress
 - gdd_check: done by the Orchestrator when the task is planned (2026-10-13).
 - confirmed_by_owner: yes (2026-10-13)
 - milestone: M2
-- next_step: task-112-02-ground-telegraph
-- result: open
+- next_step: none
+- result: Done. M_GroundTelegraph created through MaterialTools (Deferred Decal, Translucent, Unlit, DBuffer response none; world-unit 12 uu line width, 48 dashes 55 % on, solid progress ring, no disc or glow); saved, shader compile not confirmed, not seen. Commit ffc32aa.
 
 ## Subtasks
 1. task-112-01-ground-telegraph — cpp
 2. task-112-02-ground-telegraph — bp
 
 ## Relations
-- [[tasks-to-do-index]] — parent index.
+- [[tasks-done-index]] — parent index.
 - [[task-112-01-ground-telegraph]] — step 1, cpp.
 - [[task-112-02-ground-telegraph]] — step 2, bp.

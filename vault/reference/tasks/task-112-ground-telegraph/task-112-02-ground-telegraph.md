@@ -3,7 +3,7 @@ id: task-112-02-ground-telegraph
 description: "M_GroundTelegraph draws sharp rings: a dotted zone circle and a solid growing circle, driven by the component parameters."
 parent: task-112-ground-telegraph
 kind: task
-status: in-progress
+status: done
 ---
 # Ground telegraph material
 
@@ -15,11 +15,11 @@ status: in-progress
 - done_when: material created at the expected path, compiled with no errors, parameters match the component; docs updated; lint clean; committed.
 - editor_state: open
 - token_ceiling: 60000
-- model: open
-- tokens: open
-- runs: open
+- model: sonnet
+- tokens: input 60, cache write 56801, cache read 1037317, output 19629
+- runs: 1
 - milestone: M2
-- result: open
+- result: M_GroundTelegraph created through MaterialTools (Deferred Decal, Translucent, Unlit, DBuffer response none; world-unit 12 uu line width, 48 dashes 55 % on, solid progress ring, no disc or glow); saved, shader compile not confirmed, not seen. Commit ffc32aa.
 
 ## Relations
 - [[task-112-ground-telegraph]] — parent global task.

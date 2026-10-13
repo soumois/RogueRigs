@@ -193,6 +193,7 @@ kind: note
 | [[task-113-01-capture-zone-visual]] | opus | 2 | 0k | 68k | 1470k | 21k |
 | [[task-115-01-heavy-slam-telegraph]] | opus | 1 | 0k | 92k | 1797k | 26k |
 | [[task-114-01-barrel-fuse]] | opus | 1 | 0k | 161k | 6636k | 66k |
+| [[task-112-02-ground-telegraph]] | sonnet | 1 | 0k | 57k | 1037k | 20k |
 
 ## Totals
 | Scope | Input | Cache write | Cache read | Output |
