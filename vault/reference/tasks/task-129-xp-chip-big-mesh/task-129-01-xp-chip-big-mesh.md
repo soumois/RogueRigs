@@ -3,7 +3,7 @@ id: task-129-01-xp-chip-big-mesh
 description: "Build the data chip mesh for the big XP block from the validated image, Blender route."
 parent: task-129-xp-chip-big-mesh
 kind: task
-status: in-progress
+status: done
 ---
 # Big XP block mesh: data chip
 
@@ -15,11 +15,11 @@ status: in-progress
 - done_when: Blender route, no Meshy call; SM_XPChipBig.fbx and report exist; tris_out at most 600; dimensions_cm match the placeholder cube footprint; flat shading; pivot bottom centre; materials as listed; UV checks pass; preview render produced with the barrel_preview camera for the Orchestrator to send to the owner; nothing imported in Unreal; image read from vault/assets/xp-chip-big.png
 - editor_state: closed
 - token_ceiling: open
-- model: open
-- tokens: open
-- runs: open
+- model: sonnet
+- tokens: input 30, cache write 61327, cache read 567768, output 8286
+- runs: 1
 - milestone: M2
-- result: open
+- result: Superseded by task-131 (first chip far from the image).
 
 ## Relations
 - [[task-129-xp-chip-big-mesh]] — parent global task.

@@ -1,9 +1,9 @@
 ---
 id: task-129-xp-chip-big-mesh
 description: "Global task: Build the data chip mesh for the big XP block from the validated image, Blender route."
-parent: tasks-to-do-index
+parent: tasks-done-index
 kind: task
-status: in-progress
+status: done
 ---
 # Big XP block mesh: data chip
 
@@ -13,12 +13,12 @@ status: in-progress
 - gdd_check: done by the Orchestrator when the task is planned (2026-10-13).
 - confirmed_by_owner: yes (2026-10-13)
 - milestone: M2
-- next_step: task-129-01-xp-chip-big-mesh
-- result: open
+- next_step: none
+- result: Done. Superseded by task-131 (first chip far from the image).
 
 ## Subtasks
 1. task-129-01-xp-chip-big-mesh — 3d
 
 ## Relations
-- [[tasks-to-do-index]] — parent index.
+- [[tasks-done-index]] — parent index.
 - [[task-129-01-xp-chip-big-mesh]] — step 1, 3d.
