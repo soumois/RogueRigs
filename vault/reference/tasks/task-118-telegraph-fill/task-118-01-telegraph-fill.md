@@ -19,7 +19,7 @@ status: in-progress
 - tokens: open
 - runs: open
 - milestone: M2
-- result: open
+- result: M_GroundTelegraph gains a fill disc (Custom node fill, radius = zone radius x Progress, ZoneColor, FillOpacity 0.25 default); recompiled without error and saved; no C++ change, no instances exist.
 
 ## Relations
 - [[task-118-telegraph-fill]] — parent global task.
