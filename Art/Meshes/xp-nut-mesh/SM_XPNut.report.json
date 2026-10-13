@@ -3,7 +3,7 @@
   "route": "blender",
   "script": "Tools/art/blender/xp_nut_mesh.py",
   "source_image": "vault/assets/xp-nut.png",
-  "tris_out": 152,
+  "tris_out": 224,
   "budget_tris": 300,
   "dimensions_cm": {
     "x": 30.0,
@@ -24,7 +24,8 @@
   ],
   "materials": [
     "M_XPNut_body",
-    "M_XPNut_hole"
+    "M_XPNut_hole",
+    "M_XPNut_hole_floor"
   ],
   "uv_layers": [
     "UVMap",
@@ -35,7 +36,7 @@
       "tile_cm": 100.0
     },
     "LightMap": {
-      "faces": 68,
+      "faces": 104,
       "overlapping_face_pairs": 0,
       "bounds_min": [
         0.01172
@@ -53,36 +54,42 @@
   "warnings": [
     "hole emissive is not carried by the FBX: the Unreal material must set the emissive colour (0, 0.9, 1) on M_XPNut_hole"
   ],
+  "hole_depth_cm": 8.2,
+  "hole_depth_pct_of_height": 70.1,
   "fidelity": {
-    "returns_used": 2,
-    "camera": "estimated from vault/assets/xp-nut.png: elevation about 52 degrees (side height about 23 % of across-corners width), yaw about 11 degrees toward +X (front edge slopes down to the right), three side faces visible; orthographic scale 42, light grey background; command: xp_nut_preview.py <fbx> <png> 11 52",
+    "run": 2,
+    "returns_used": 3,
+    "final_render": "Art/Meshes/xp-nut-mesh/SM_XPNut.preview.png",
+    "camera": "azimuth 11, elevation 52, ortho 42 (Tools/art/blender/xp_nut_preview.py)",
     "criteria": {
       "C1": {
         "verdict": "pass",
-        "evidence": "Render: front vertical edge about 157 px tall at 23.8 px/cm and cos(52)=0.62, i.e. about 10.7 to 11.7 cm against 25.98 cm across flats: about 45 %, thick but low like the source."
+        "evidence": "Hexagonal prism 30 x 25.98 x 11.7 cm, height 45 % of across-flats; still differs: source is slightly taller-looking from its higher camera."
       },
       "C2": {
         "verdict": "pass",
-        "evidence": "Render: mouth spans about 377 px against about 618 px across flats (about 62 %); the far wall shows the chamfer plus 3 stepped bands narrowing down (alternating steep and shallow shading) and a floor patch; the hole is not a flat disc. Rings are less contrasted than in the source."
+        "evidence": "Hole depth 8.2 cm = 70 % of height; floor visible as a pale ellipse well below the top face; 3 steep + 2 shallow wall bands, far wall lit, near wall hidden by the rim; walls (0,0.9,1) and floor (0.55,0.95,1) are two materials; shallow bands read clearly brighter than steep bands on the far wall. Still differs: source bands are broader and its floor is larger; ours has thinner far-wall bands and a smaller floor."
       },
       "C3": {
         "verdict": "pass",
-        "evidence": "Render: a chamfer band rings the hole mouth, and 6 facets radiate from the lowered top corners (the top outline dips at each corner), visible as lighter and darker facets."
+        "evidence": "Chamfer ring around the hole mouth and 6 bevelled top corners visible as facets; still differs: source bevels are a bit larger."
       },
       "C4": {
         "verdict": "pass",
-        "evidence": "Render: one flat mid-grey body (#70757B) and every hole surface in cyan (0, 0.9, 1); no other colour."
+        "evidence": "Body one mid grey; every hole surface cyan or pale cyan; no other colour."
       },
       "C5": {
         "verdict": "pass",
-        "evidence": "Report: tris_out 152 (max 300), 30.0 cm across corners (X), pivot bottom centre (bbox z min 0, x/y centred); total 30 x 25.98 x 11.7 cm."
+        "evidence": "tris_out 224 (budget 300); 30 cm across corners; pivot bottom centre."
       },
       "C6": {
         "verdict": "pass",
-        "evidence": "Render: flat shading, large facets, no texture."
+        "evidence": "Flat shading, large facets, no texture."
+      },
+      "C7": {
+        "verdict": "pass",
+        "evidence": "Rim chamfer (pale cyan) is the brightest ring, then the saturated walls, then the floor; still differs: the source rim has a soft glow halo that Blender does not render."
       }
-    },
-    "final_render": "Art/Meshes/xp-nut-mesh/SM_XPNut.preview.png",
-    "notes": "Return 1: corner bevel lowered from 1.3 to 0.9 cm (spokes too strong), preview emission 4.0 to 0.5. Return 2: hole rings changed to alternate steep and shallow bands (rings were not readable), preview hole base colour darkened so shading shows. The report fidelity object is added after the script run (re-running xp_nut_mesh.py rewrites the report without it)."
+    }
   }
 }

@@ -22,9 +22,10 @@ for m in obj.data.materials:
     m.use_nodes = True
     b = m.node_tree.nodes.get("Principled BSDF") or m.node_tree.nodes.new("ShaderNodeBsdfPrincipled")
     b.inputs["Roughness"].default_value = 0.8
-    if "hole" in m.name:
-        b.inputs["Base Color"].default_value = srgb("#00E5FF")[:3] + (1.0,); b.inputs["Base Color"].default_value = [x * 0.35 for x in srgb("#00E5FF")[:3]] + [1.0]
-        b.inputs["Emission Color"].default_value = srgb("#00E5FF"); b.inputs["Emission Strength"].default_value = 0.7
+    if "hole" in m.name:   # preview only: low emission so the shading of the walls shows (mesh materials keep full emission)
+        hc = srgb("#8CF2FF") if "floor" in m.name else srgb("#00E5FF")
+        b.inputs["Base Color"].default_value = [x * 0.6 for x in hc[:3]] + [1.0]
+        b.inputs["Emission Color"].default_value = hc; b.inputs["Emission Strength"].default_value = 0.3
     else:
         b.inputs["Base Color"].default_value = srgb("#70757B")
 
