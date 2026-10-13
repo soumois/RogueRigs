@@ -10,3 +10,5 @@ A global task moves to [[tasks-done-index]] when it is done (`vault/scripts/task
 
 ## Relations
 - [[tasks-index]] — parent index.
+- [[task-128-xp-nut-mesh]] — Build the hex nut mesh for the basic XP pickup from the validated image, Blender route. Status todo.
+- [[task-129-xp-chip-big-mesh]] — Build the data chip mesh for the big XP block from the validated image, Blender route. Status todo.
