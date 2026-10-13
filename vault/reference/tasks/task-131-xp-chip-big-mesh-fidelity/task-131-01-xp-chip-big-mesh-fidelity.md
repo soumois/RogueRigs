@@ -33,6 +33,13 @@ status: in-progress
   - C6 Traces and components: at least 4 light-grey traces, each about 4 % of the board width wide and 20 to 35 % long, with one or two right-angle or 45 degree bends, flush or raised at most 0.3 cm, clearly visible as lines from the camera (thin geometry or a textured decal); 3 box components (two larger on opposite corners, one smaller), dark with a lighter band on top.
   - C7 Colours: board and casing dark gunmetal, legs, bolts and traces light grey, core magenta (#FF26BF); no cyan anywhere. (passed in run 1, keep)
   - C8 Numbers: tris_out at most 1000; 30 x 30 cm footprint; pivot bottom centre; flat shading; UV checks pass. (passed in run 1, keep)
+- run: 3 (owner 2026-10-13: the sides work well, the volume of the middle is hard to understand; 5 new returns from the committed files; C1, C4, C5, C6, C7, C8 unchanged)
+- fidelity_criteria run 3 (C2 and C3 replaced, C9 added):
+  - C2 Casing: keep run 2 proportions (about 60 % of the board width, about 15 % high, 45 degree chamfer on the top 40 %, notched corners) AND the chamfer is a separate, lighter gunmetal material than the vertical wall (tone difference at least 20 % in the render), AND a thin lighter band (about 0.3 cm) runs along the top edge of the chamfer and the top rim (charter A1 edge wear).
+  - C3 Core as a raised gem: a faceted stepped pyramid, magenta emissive, about 40 % of the board width, that rises at least 1 cm ABOVE the casing rim; the opening in the casing is shallow (at most 1 cm deep); facets use two magenta materials by orientation: bright (#FF26BF) and darker (#B0107F), alternating so at least 3 distinct tones are visible across the facets.
+  - C9 Volume reads: looking at the render without the source, a viewer can tell the core is a raised faceted crystal sitting in a casing with a sloped top; no part of the core is hidden by a recess wall; the core does not read as a flat pink square.
+- materials: board, casing_wall, casing_chamfer (lighter), edge_band, legs and bolts and traces (light grey), core_bright, core_dark. Triangle ceiling stays 1000.
+- render: same camera as run 1 and 2 (ortho 50 cm, azimuth 45, elevation 35); in the preview only you may lower the emission so facet shading shows.
 
 ## Relations
 - [[task-131-xp-chip-big-mesh-fidelity]] — parent global task.
