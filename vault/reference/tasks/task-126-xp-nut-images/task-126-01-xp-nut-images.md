@@ -3,7 +3,7 @@ id: task-126-01-xp-nut-images
 description: "Two candidate images of a hex nut as the basic XP pickup, from two different prompts."
 parent: task-126-xp-nut-images
 kind: task
-status: in-progress
+status: done
 ---
 # XP pickup: hex nut, 2 images
 
@@ -15,11 +15,11 @@ status: in-progress
 - done_when: Style A1, A2, A6, A16 (plain light grey background, three-quarter top view); glowing cyan main colour, never magenta, red, orange, acid green or steel blue; two different prompts, one image each (2 variants in total, 2 prompt files); self-review each image against the A rules; send both images to the owner with SendUserFile; nothing goes to vault/assets/.
 - editor_state: any
 - token_ceiling: open
-- model: open
-- tokens: open
-- runs: open
+- model: sonnet
+- tokens: input 14, cache write 21953, cache read 86687, output 574
+- runs: 1
 - milestone: M2
-- result: open
+- result: Two nut images (clean, worn) generated, 12 credits; owner kept A as the basic XP pickup.
 
 ## Relations
 - [[task-126-xp-nut-images]] — parent global task.

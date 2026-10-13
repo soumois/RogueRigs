@@ -136,3 +136,4 @@ Archive: it exceeds the index size limits of [[_authoring]] on purpose (owner, 2
 - [[task-123-heavy-remove-shockring]] — BP_Heavy no longer shows its ShockRing mesh: the slam zone is drawn only by the ground telegraph. Status done.
 - [[task-124-heavy-shockring-cleanup]] — The hidden ShockRing component of BP_Heavy is deleted: its test lookups are removed in C++, then the component is removed from the Blueprint. Status done.
 - [[task-125-xp-chip-images]] — Two candidate images of a data chip as the basic XP pickup, from two different prompts. Status done.
+- [[task-126-xp-nut-images]] — Two candidate images of a hex nut as the basic XP pickup, from two different prompts. Status done.

@@ -1,9 +1,9 @@
 ---
 id: task-126-xp-nut-images
 description: "Global task: Two candidate images of a hex nut as the basic XP pickup, from two different prompts."
-parent: tasks-to-do-index
+parent: tasks-done-index
 kind: task
-status: in-progress
+status: done
 ---
 # XP pickup: hex nut, 2 images
 
@@ -13,12 +13,12 @@ status: in-progress
 - gdd_check: done by the Orchestrator when the task is planned (2026-10-13).
 - confirmed_by_owner: yes (2026-10-13)
 - milestone: M2
-- next_step: task-126-01-xp-nut-images
-- result: open
+- next_step: none
+- result: Done. Two nut images (clean, worn) generated, 12 credits; owner kept A as the basic XP pickup.
 
 ## Subtasks
 1. task-126-01-xp-nut-images — art
 
 ## Relations
-- [[tasks-to-do-index]] — parent index.
+- [[tasks-done-index]] — parent index.
 - [[task-126-01-xp-nut-images]] — step 1, art.
