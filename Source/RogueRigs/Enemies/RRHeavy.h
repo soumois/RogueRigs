@@ -7,6 +7,7 @@
 #include "RRHeavy.generated.h"
 
 class UGameplayEffect;
+class URRGroundTelegraphComponent;
 
 /** State of the heavy's machine. */
 UENUM(BlueprintType)
@@ -33,6 +34,8 @@ enum class ERRHeavyState : uint8
  * Recover (movement off) for RecoverDuration, then OnRecover -> Chase. In contact, slams are 1 / Stats.AttackRate seconds apart.
  * Knockback resistance comes from the CSV (base ApplyKnockback). The capsule (48 x 124) fits one-cell corridors (200 uu); the
  * Blueprint mesh is twice the chaser's.
+ * GroundTelegraph (sys-ground-telegraph, task-115-01): shown in Danger mode at radius GetSlamRadius on entering Telegraph,
+ * progress = GetTelegraphProgress each telegraph frame, hidden on leaving Telegraph (Slam, death) and on pool reuse (progress 0).
  */
 UCLASS(Blueprintable)
 class ROGUERIGS_API ARRHeavy : public ARREnemy
@@ -40,7 +43,7 @@ class ROGUERIGS_API ARRHeavy : public ARREnemy
 	GENERATED_BODY()
 
 public:
-	/** Sets the stats row (Heavy), the damage effect, the arrival ratio and the corridor-fitting capsule. */
+	/** Sets the stats row (Heavy), the damage effect, the arrival ratio, the corridor-fitting capsule and the ground telegraph. */
 	ARRHeavy(const FObjectInitializer& ObjectInitializer = FObjectInitializer::Get());
 
 	/** Current state of the machine. */
@@ -74,6 +77,10 @@ public:
 	/** Number of slams that applied their damage to the miner (for tests and debug). */
 	int32 GetSlamHitCount() const { return SlamHitCount; }
 
+	/** Ground signal of the slam (danger zone at the slam radius, progress circle growing to it over the telegraph). */
+	UFUNCTION(BlueprintPure, Category = "Heavy")
+	URRGroundTelegraphComponent* GetGroundTelegraph() const { return GroundTelegraph; }
+
 protected:
 	/** Sets the movement arrival distance from the slam radius. */
 	virtual void BeginPlay() override;
@@ -87,7 +94,7 @@ protected:
 	/** Recycling relocation: back to Chase (leaving the current state as EnterState does); nothing while Dead. */
 	virtual void ResetStateMachine() override;
 
-	/** Pool reuse: base reset, then slam time and counters cleared, back to Chase. */
+	/** Pool reuse: base reset, then slam time and counters cleared, back to Chase, ground signal hidden with progress 0. */
 	virtual void ResetForNewLife() override;
 
 	/** Leaves the current state and enters NewState (movement on in Chase only). */
@@ -126,6 +133,10 @@ protected:
 	/** Blink frequency of the meshes during the telegraph (base UpdateTelegraphBlink). 0 = no blink: the Blueprint glows instead. */
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Heavy|Slam", meta = (ClampMin = 0, Units = "Hz"))
 	float TelegraphFlashRate = 0.f;
+
+	/** Ground signal of the slam, centered on the heavy's feet; visible only during Telegraph. */
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Components")
+	TObjectPtr<URRGroundTelegraphComponent> GroundTelegraph;
 
 	/** Current state. */
 	UPROPERTY(VisibleInstanceOnly, BlueprintReadOnly, Category = "Heavy")

@@ -9,6 +9,7 @@
 #include "FlowField/RREnemyMovementComponent.h"
 #include "Player/RRMiner.h"
 #include "RogueRigs.h"
+#include "Telegraph/RRGroundTelegraphComponent.h"
 
 #include UE_INLINE_GENERATED_CPP_BY_NAME(RRHeavy)
 
@@ -25,6 +26,12 @@ ARRHeavy::ARRHeavy(const FObjectInitializer& ObjectInitializer)
 
 	// Twice the chaser (24 x 62), radius well under the 80 uu limit so it crosses one-cell (200 uu) corridors (enemy-heavy).
 	GetCapsuleComponent()->InitCapsuleSize(48.f, 124.f);
+
+	// Slam ground signal (task-115-01): centered on the feet, hidden until a telegraph starts.
+	GroundTelegraph = CreateDefaultSubobject<URRGroundTelegraphComponent>(TEXT("GroundTelegraph"));
+	GroundTelegraph->SetupAttachment(GetCapsuleComponent());
+	GroundTelegraph->SetRelativeLocation(FVector(0.f, 0.f, -GetCapsuleComponent()->GetUnscaledCapsuleHalfHeight()));
+	GroundTelegraph->SetMode(ERRGroundTelegraphMode::Danger);
 }
 
 void ARRHeavy::BeginPlay()
@@ -49,11 +56,24 @@ void ARRHeavy::EnterState(ERRHeavyState NewState)
 	if (State == ERRHeavyState::Telegraph && NewState != ERRHeavyState::Telegraph)
 	{
 		SetMeshesVisible(true);
+		if (GroundTelegraph)
+		{
+			GroundTelegraph->Hide();
+		}
 	}
 
 	State = NewState;
 	MarkStateStart();
 	SetMovementActive(NewState == ERRHeavyState::Chase);
+
+	if (NewState == ERRHeavyState::Telegraph && GroundTelegraph)
+	{
+		// The danger zone is the slam radius itself (Stats.AttackRange, the value PerformSlam tests against).
+		GroundTelegraph->SetRadius(GetSlamRadius());
+		GroundTelegraph->SetMode(ERRGroundTelegraphMode::Danger);
+		GroundTelegraph->SetProgress(0.f);
+		GroundTelegraph->Show();
+	}
 }
 
 bool ARRHeavy::IsSlamReady(double Now) const
@@ -82,6 +102,11 @@ void ARRHeavy::UpdateBehavior(float DeltaSeconds)
 		break;
 
 	case ERRHeavyState::Telegraph:
+		if (GroundTelegraph)
+		{
+			// Reaches 1 on the slam frame, just before EnterState(Slam) hides the signal.
+			GroundTelegraph->SetProgress(GetTelegraphProgress());
+		}
 		if (HasStateLasted(Stats.WindUp))
 		{
 			EnterState(ERRHeavyState::Slam);
@@ -149,6 +174,13 @@ void ARRHeavy::ResetForNewLife()
 	SlamHitCount = 0;
 	EnemyMovement->SetArrivalDistance(Stats.AttackRange * ArrivalRangeRatio);
 	EnterState(ERRHeavyState::Chase);
+	if (GroundTelegraph)
+	{
+		// No stale signal from the last life: hidden, progress back to 0, radius from this life's stats.
+		GroundTelegraph->SetProgress(0.f);
+		GroundTelegraph->SetRadius(GetSlamRadius());
+		GroundTelegraph->Hide();
+	}
 }
 
 void ARRHeavy::ResetStateMachine()
