@@ -17,6 +17,7 @@ kind: doc
   - `Opacity` (scalar, 0..1): global opacity of both circles.
   - Look ([[ground-telegraph]]): sharp lines, no diffuse disc; zone circle dotted, progress circle solid.
 - data (component defaults, `EditDefaultsOnly`): `DefaultMaterialPath` (config `[/Script/RogueRigs.RRGroundTelegraphComponent]`, default `/Game/RogueRigs/FX/M_GroundTelegraph`; used when `DecalMaterial` is not set on the component); `DangerColor` (1.0, 0.45, 0.05), `ZoneBlockedColor` (1.0, 0.8, 0.2), `ZoneActiveColor` (0.7, 0.9, 1.0), `ProgressColor` white; `ProjectionHalfDepth` 256 uu (box above and below the component). Starts hidden, `FadeScreenSize` 0, absolute rotation pitch −90.
+- users: `ARRConsole` and `ARRBonusChest` hack zones (task-113-01, `GroundTelegraph` default subobject: radius = zone radius, ZoneBlocked / ZoneActive from the marked rocks, progress = hack progress, hidden at completion; [[sys-objectives]]).
 - hiding: `ARREnemy::HandleDeath` (every death, pending kamikaze fuse included) and `ARREnemy::OnPoolReleased` call `HideAllOn`; `ARRMiner::HandleDeath` too. While shown, the component ticks and hides when `IsOwnerGone` (owner invalid, being destroyed, `IsPooledIdle`, robot `IsDead` / `IsDeathPending`, miner `IsDead`): covers barrels, consoles and any other owner. Reuse from the pool leaves it hidden until the owner shows it. Destroyed with its owner (a component).
 - no decals on actors: `DisableDecalsOn` turns `bReceivesDecals` off on every primitive: `ARREnemy::PostInitializeComponents` (every robot, Blueprint meshes included), `ARRMiner::BeginPlay` and each carried weapon in `ARRMiner` weapon attach.
 - depends_on: [[sys-actor-pool]] (`IsPooledIdle`), [[sys-enemies]], [[sys-player]].
@@ -31,3 +32,4 @@ kind: doc
 - [[sys-enemies-heavy]] — slam owner to wire later.
 - [[bp-explosion-fx]] — the other ground effect.
 - [[sys-automation-tests]] — RogueRigs.GroundTelegraph.* tests.
+- [[sys-objectives]] — console and chest hack zone, the first user.
