@@ -1,6 +1,6 @@
 ---
 id: bp-pickup-xp
-description: "BP_PickupXP, Blueprint of ARRPickup for the XP pickup: 30 uu cyan cube with a Niagara ribbon trail and Niagara collect sparkle."
+description: "BP_PickupXP (cyan cube, Niagara trail and sparkle) and its sibling BP_PickupXPBig, the big XP block set in XPBigPickupClass."
 parent: blueprints-index
 kind: doc
 ---
@@ -14,6 +14,8 @@ kind: doc
 - events: OnMagnetStart activates TrailFX and rotates the actor to face the miner (FindLookAtRotation, set once); OnCollected(Location) calls Niagara SpawnSystemAtLocation with NS_PickupSparkle at Location, auto-destroy ([[bp-pickup-sparkle]]).
 - logic_in_bp: display only (two events).
 - assets: /Game/RogueRigs/Materials/GreyBox/MI_GB_PickupXP (Color 0, 0.9, 1, 1, glowing cyan, [[color-code]]). NS_XPTrail (/Game/RogueRigs/FX/NS_XPTrail, ribbon in world space, cyan 0/0.9/1, width 10, lifetime 0.35 s, SpawnRate 60 per second in the emitter update: without a spawn module the emitter produced no particle and the trail was invisible, task-058-01) and NS_PickupSparkle (/Game/RogueRigs/FX/NS_PickupSparkle, 18-sprite cyan burst, lifetime 0.18-0.28 s, no gravity). MI_XPTrail is no longer used.
+- big_block (task-110-02): the cube class default `XPBigPickupClass` = BP_PickupXPBig (/Game/RogueRigs/Blueprints/Pickups/BP_PickupXPBig), which turns the big XP block feature on ([[sys-pickups]]). To turn it off, clear `XPBigPickupClass` in the class defaults of BP_PickupXP (set it to None), compile and save.
+- sibling BP_PickupXPBig: a duplicate of BP_PickupXP (same parent ARRPickup, NOT a child of the cube, so its own `XPBigPickupClass` stays empty); PickupType XP, same components and events (TrailFX, magnet look-at, sparkle); root PickupMesh template scale 0.54 (1.8 x the cube 0.3, restored by the pool); OverrideMaterials[0] = /Game/RogueRigs/Materials/GreyBox/MI_PickupXPBig. TrailFX keeps relative scale 1 and is attached to the root, so it inherits the 1.8 x scale (no separate parameter). MI_PickupXPBig: parent M_GreyBoxGlow (the cube material M_GreyBox has no emissive input), Color (1, 1, 1), GlowColor (0.75, 1, 1) white with a cyan tint, GlowAmount 4, Roughness 0.6 (parent default), [[color-code]].
 - owner_agent: agent-bp
 
 ## Relations
