@@ -3,7 +3,7 @@ id: task-141-01-xp-pickups-lumen-test
 description: "Try to make the XP nut and chip emit light on the floor through Lumen: emissive light source flag and mesh cards."
 parent: task-141-xp-pickups-lumen-test
 kind: task
-status: todo
+status: in-progress
 ---
 # XP pickups: Lumen emissive light test
 

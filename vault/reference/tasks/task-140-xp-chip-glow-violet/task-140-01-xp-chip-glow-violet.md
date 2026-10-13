@@ -3,7 +3,7 @@ id: task-140-01-xp-chip-glow-violet
 description: "Give the big XP chip the nut glow level and the lilac-violet colour of the owner sample."
 parent: task-140-xp-chip-glow-violet
 kind: task
-status: in-progress
+status: done
 ---
 # XP chip: glow level and lilac colour
 
@@ -15,11 +15,11 @@ status: in-progress
 - done_when: GlowAmount and colour read back on both instances, assets saved, git shows them modified, doc node and color-code updated
 - editor_state: open
 - token_ceiling: open
-- model: open
-- tokens: open
-- runs: open
+- model: sonnet
+- tokens: input 16, cache write 18657, cache read 97402, output 188
+- runs: 1
 - milestone: M2
-- result: open
+- result: M_XPChip_core_bright GlowAmount 25 colour (0.8, 0.25, 1.0); core_dark 12 and (0.45, 0.12, 0.6); lilac guess from the owner sample; Niagara sparkle and trail stay magenta (to decide).
 
 ## Relations
 - [[task-140-xp-chip-glow-violet]] — parent global task.
