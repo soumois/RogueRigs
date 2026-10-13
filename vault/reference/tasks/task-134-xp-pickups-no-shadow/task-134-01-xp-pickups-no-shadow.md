@@ -3,7 +3,7 @@ id: task-134-01-xp-pickups-no-shadow
 description: "Turn off the mesh shadow of the XP nut and chip Blueprints."
 parent: task-134-xp-pickups-no-shadow
 kind: task
-status: in-progress
+status: done
 ---
 # XP pickups: no mesh shadow
 
@@ -15,11 +15,11 @@ status: in-progress
 - done_when: CastShadow reads false on both Blueprints after compile and save; both .uasset modified in git; doc node updated
 - editor_state: open
 - token_ceiling: open
-- model: open
-- tokens: open
-- runs: open
+- model: sonnet
+- tokens: input 24, cache write 22973, cache read 212062, output 520
+- runs: 1
 - milestone: M2
-- result: open
+- result: CastShadow false on the PickupMesh of BP_PickupXP and BP_PickupXPBig (set on the CDO path), read back after compile and save.
 
 ## Relations
 - [[task-134-xp-pickups-no-shadow]] — parent global task.

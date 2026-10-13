@@ -144,3 +144,4 @@ Archive: it exceeds the index size limits of [[_authoring]] on purpose (owner, 2
 - [[task-131-xp-chip-big-mesh-fidelity]] — Rebuild the big XP data chip mesh so it matches the validated image, judged by the fidelity loop. Status done.
 - [[task-132-xp-nut-integration]] — Import the XP hex nut mesh into Unreal, give it a glowing material with a light emissive pulse, and use it in BP_PickupXP. Status done.
 - [[task-133-xp-chip-integration]] — Import the big XP data chip mesh into Unreal, give it a glowing magenta core with a light emissive pulse, and use it in BP_PickupXPBig. Status done.
+- [[task-134-xp-pickups-no-shadow]] — Turn off the mesh shadow of the XP nut and chip Blueprints. Status done.

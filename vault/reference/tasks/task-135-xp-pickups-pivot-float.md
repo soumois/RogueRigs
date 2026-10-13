@@ -3,7 +3,7 @@ id: task-135-xp-pickups-pivot-float
 description: "Global task: Stop the XP nut and chip from floating: put their pivot at their centre like the old cube."
 parent: tasks-to-do-index
 kind: task
-status: todo
+status: in-progress
 ---
 # XP pickups: fix the floating pivot
 
