@@ -3,7 +3,7 @@ id: task-132-01-xp-nut-integration
 description: "Import the XP hex nut mesh into Unreal, give it a glowing material with a light emissive pulse, and use it in BP_PickupXP."
 parent: task-132-xp-nut-integration
 kind: task
-status: in-progress
+status: done
 ---
 # XP nut integration in Unreal
 
@@ -15,11 +15,11 @@ status: in-progress
 - done_when: Blueprint compiles and is saved; mesh, two material slots and emissive in place; doc node bp-pickup-xp updated; bloom status reported; no screenshot tool used
 - editor_state: open
 - token_ceiling: open
-- model: open
-- tokens: open
-- runs: open
+- model: sonnet
+- tokens: input 82, cache write 59226, cache read 1471819, output 927
+- runs: 2
 - milestone: M2
-- result: open
+- result: Nut mesh, three materials, BP_PickupXP updated; trail scale 0.3 relative to keep the old look; vertical offset not applied (root cannot be offset); bloom unconfirmed, no PostProcessVolume; CastShadow unchanged.
 
 ## Relations
 - [[task-132-xp-nut-integration]] — parent global task.

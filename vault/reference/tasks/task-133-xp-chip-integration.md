@@ -3,7 +3,7 @@ id: task-133-xp-chip-integration
 description: "Global task: Import the big XP chip mesh into Unreal, give it a glowing magenta core with a light pulse, use it in BP_PickupXPBig."
 parent: tasks-to-do-index
 kind: task
-status: todo
+status: in-progress
 ---
 # Big XP chip integration in Unreal
 

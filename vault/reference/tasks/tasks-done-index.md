@@ -142,3 +142,4 @@ Archive: it exceeds the index size limits of [[_authoring]] on purpose (owner, 2
 - [[task-129-xp-chip-big-mesh]] — Build the data chip mesh for the big XP block from the validated image, Blender route. Status done.
 - [[task-130-xp-nut-mesh-fidelity]] — Rebuild the XP hex nut mesh so it matches the validated image, judged by the fidelity loop. Status done.
 - [[task-131-xp-chip-big-mesh-fidelity]] — Rebuild the big XP data chip mesh so it matches the validated image, judged by the fidelity loop. Status done.
+- [[task-132-xp-nut-integration]] — Import the XP hex nut mesh into Unreal, give it a glowing material with a light emissive pulse, and use it in BP_PickupXP. Status done.
