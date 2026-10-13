@@ -17,6 +17,8 @@ status: approved
 
 - Owner rules 2026-10-12 (replace the explosion radius and the instant explosion above): the explosion radius is doubled, 350 to 700 uu (character damage 40 unchanged); when its health reaches 0 it does not explode at once: it explodes 1.5 s later, whatever killed it (a barrel hit by another explosion too, so chains become slow and readable); from 0 health a danger zone appears on the ground at the explosion radius (orange, "explodes") and a second circle grows inside it until it reaches the edge of the zone at the moment of the explosion, the same ground-circle logic as the capture zones ([[ground-telegraph]]).
 
+- Barrel count (owner 2026-10-13, provisional): 25 % more barrels than the first value: about 20 in `arena_m1` instead of 16, and the same ratio on larger layouts. GDD only: the current map is not changed.
+
 ## Relations
 - [[terrain-index]] — parent index.
 - [[barrel-asset]] — the asset as built (Blender script, decals, wear) and its Unreal integration.
