@@ -33,6 +33,7 @@
 #include "Pool/RRActorPoolSubsystem.h"
 #include "Projectiles/RRCollisionChannels.h"
 #include "RogueRigs.h"
+#include "Telegraph/RRGroundTelegraphComponent.h"
 #include "World/RRWorld.h"
 
 #include UE_INLINE_GENERATED_CPP_BY_NAME(RREnemy)
@@ -111,6 +112,8 @@ bool ARREnemy::LoadStatsRow(FName RowName, FRREnemyStatsRow& OutRow)
 void ARREnemy::PostInitializeComponents()
 {
 	Super::PostInitializeComponents();
+	// Ground telegraphs (sys-ground-telegraph) never tint a robot: every mesh of the class and of its Blueprint ignores decals.
+	URRGroundTelegraphComponent::DisableDecalsOn(this);
 
 	UCapsuleComponent* Capsule = GetCapsuleComponent();
 	BodyRadius = Capsule->GetScaledCapsuleRadius();
@@ -375,6 +378,8 @@ void ARREnemy::HandleDeath(AActor* DeathInstigator)
 		return;
 	}
 	bDying = true;
+	// A dead (or pending-death) robot shows no ground signal.
+	URRGroundTelegraphComponent::HideAllOn(this);
 	DeathElapsed = 0.f;
 	ScaleAtDeath = GetActorScale3D();
 
@@ -441,6 +446,7 @@ void ARREnemy::OnPoolAcquired_Implementation()
 void ARREnemy::OnPoolReleased_Implementation()
 {
 	bPoolReleasedOnce = true;
+	URRGroundTelegraphComponent::HideAllOn(this);
 	if (URRRobotSeparationSubsystem* Separation = GetWorld() ? GetWorld()->GetSubsystem<URRRobotSeparationSubsystem>() : nullptr)
 	{
 		Separation->UnregisterRobot(this);

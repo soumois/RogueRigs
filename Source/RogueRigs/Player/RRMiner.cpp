@@ -26,6 +26,7 @@
 #include "Projectiles/RRCollisionChannels.h"
 #include "Upgrades/RRUpgradeComponent.h"
 #include "RogueRigs.h"
+#include "Telegraph/RRGroundTelegraphComponent.h"
 #include "Weapons/RRAutoFireComponent.h"
 #include "Weapons/RRShotgun.h"
 #include "Weapons/RRTurretLauncher.h"
@@ -107,6 +108,8 @@ void ARRMiner::OnConstruction(const FTransform& Transform)
 void ARRMiner::BeginPlay()
 {
 	Super::BeginPlay();
+	// Ground telegraphs (sys-ground-telegraph) never tint the miner.
+	URRGroundTelegraphComponent::DisableDecalsOn(this);
 
 	AimDirection = GetActorForwardVector().GetSafeNormal2D(UE_SMALL_NUMBER, FVector::ForwardVector);
 
@@ -284,6 +287,8 @@ ARRWeapon* ARRMiner::AddWeapon(TSubclassOf<ARRWeapon> WeaponClass)
 	}
 	// The weapon is carried inside the capsule: never let it block the miner's own moves.
 	GetCapsuleComponent()->IgnoreActorWhenMoving(Weapon, true);
+	// Carried weapons are part of the miner look: ground telegraphs do not tint them either.
+	URRGroundTelegraphComponent::DisableDecalsOn(Weapon);
 	Weapon->Acquire(this);
 	Weapons.Add(Weapon);
 	BindWeaponSlotEvents(Weapon);
@@ -471,6 +476,7 @@ void ARRMiner::SetMeshVisible(bool bVisible)
 
 void ARRMiner::HandleDeath(AActor* DeathInstigator)
 {
+	URRGroundTelegraphComponent::HideAllOn(this);
 	// Controls cut (miner gdd): no more input-driven movement or aim, weapons stop firing.
 	PendingMoveInput = FVector::ZeroVector;
 	ConsumeMovementInputVector();
