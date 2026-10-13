@@ -184,6 +184,7 @@ sys-damage-numbers  reference/tech/systems/sys-damage-numbers.md
 sys-damage-numbers-niagara  reference/tech/systems/sys-damage-numbers-niagara.md
 sys-difficulty  reference/tech/systems/sys-difficulty.md
 sys-drone  reference/tech/systems/sys-drone.md
+sys-drone-dig  reference/tech/systems/sys-drone/sys-drone-dig.md
 sys-enemies  reference/tech/systems/sys-enemies/sys-enemies.md
 sys-enemies-base  reference/tech/systems/sys-enemies/sys-enemies-base.md
 sys-enemies-chaser  reference/tech/systems/sys-enemies/sys-enemies-chaser.md
@@ -195,6 +196,7 @@ sys-enemies-shooter  reference/tech/systems/sys-enemies/sys-enemies-shooter.md
 sys-enemy-ai  reference/tech/systems/sys-enemy-ai.md
 sys-explosions  reference/tech/systems/sys-explosions.md
 sys-flow-field  reference/tech/systems/sys-flow-field.md
+sys-flow-field-updates  reference/tech/systems/sys-flow-field/sys-flow-field-updates.md
 sys-gas-core  reference/tech/systems/sys-gas-core.md
 sys-grid  reference/tech/systems/sys-grid.md
 sys-grid-api  reference/tech/systems/sys-grid/sys-grid-api.md
@@ -202,7 +204,9 @@ sys-grid-barrels  reference/tech/systems/sys-grid/sys-grid-barrels.md
 sys-grid-deposits  reference/tech/systems/sys-grid/sys-grid-deposits.md
 sys-ground-telegraph  reference/tech/systems/sys-ground-telegraph.md
 sys-hud  reference/tech/systems/sys-hud.md
+sys-hud-bindings  reference/tech/systems/sys-hud/sys-hud-bindings.md
 sys-hud-events  reference/tech/systems/sys-hud-events.md
+sys-hud-locator  reference/tech/systems/sys-hud/sys-hud-locator.md
 sys-hud-minimap  reference/tech/systems/sys-hud-minimap.md
 sys-hud-pressure  reference/tech/systems/sys-hud-pressure.md
 sys-level-up  reference/tech/systems/sys-level-up.md
@@ -215,11 +219,14 @@ sys-pickups  reference/tech/systems/sys-pickups.md
 sys-pickups-lifecycle  reference/tech/systems/sys-pickups/sys-pickups-lifecycle.md
 sys-pickups-xp  reference/tech/systems/sys-pickups/sys-pickups-xp.md
 sys-player  reference/tech/systems/sys-player.md
+sys-player-classes  reference/tech/systems/sys-player/sys-player-classes.md
+sys-player-input-aim  reference/tech/systems/sys-player/sys-player-input-aim.md
 sys-progression  reference/tech/systems/sys-progression.md
 sys-projectiles  reference/tech/systems/sys-projectiles.md
 sys-spawner  reference/tech/systems/sys-spawner.md
 sys-spawner-cells-heading  reference/tech/systems/sys-spawner/sys-spawner-cells-heading.md
 sys-spawner-director  reference/tech/systems/sys-spawner-director.md
+sys-spawner-director-defaults  reference/tech/systems/sys-spawner-director/sys-spawner-director-defaults.md
 sys-spawner-pool-prewarm  reference/tech/systems/sys-spawner/sys-spawner-pool-prewarm.md
 sys-spawner-recycling  reference/tech/systems/sys-spawner/sys-spawner-recycling.md
 sys-status-effects  reference/tech/systems/sys-status-effects.md
@@ -244,6 +251,7 @@ sys-text-content  reference/tech/systems/sys-text-content.md
 sys-turret  reference/tech/systems/sys-turret.md
 sys-upgrades  reference/tech/systems/sys-upgrades.md
 sys-weapons  reference/tech/systems/sys-weapons.md
+sys-weapons-shotgun  reference/tech/systems/sys-weapons/sys-weapons-shotgun.md
 sys-world-queries  reference/tech/systems/sys-world-queries.md
 systems-index  reference/tech/systems/systems-index.md
 task-000-enable-gas  reference/tasks/task-000-enable-gas.md
