@@ -8,6 +8,7 @@
 #if WITH_DEV_AUTOMATION_TESTS
 
 #include "Explosions/RRExplosionSubsystem.h"
+#include "Grid/RRBarrelSource.h"
 #include "HAL/PlatformTime.h"
 #include "RogueRigs.h"
 #include "Telegraph/RRGroundTelegraphComponent.h"
@@ -264,6 +265,14 @@ bool FRRBarrelFuseRadiusFineTest::RunTest(const FString& Parameters)
 	TestWorld.Tick();
 	const double ExplosionFrameMs = (FPlatformTime::Seconds() - T0) * 1000.0;
 	TestEqual(TEXT("warm-up and measured explosions resolved"), Recorder->GetExplosionRows().Num(), 2);
+	// Task-121-01: the blocks are destroyed over the next frames under the grid budget; the frame above is the first slice.
+	int32 SpreadFrames = 0;
+	while (Grid->GetPendingCellDestructionCount() > 0 && SpreadFrames < 600)
+	{
+		TestWorld.Tick();
+		++SpreadFrames;
+	}
+	TestEqual(TEXT("no block left queued"), Grid->GetPendingCellDestructionCount(), 0);
 
 	int32 Kept = 0;
 	for (const FIntPoint& Cell : Inside)

@@ -111,7 +111,7 @@ void URRExplosionSubsystem::Explode(const FPendingExplosion& Explosion)
 {
 	if (ARRArenaGrid* CurrentGrid = ResolveGrid())
 	{
-		CurrentGrid->DestroyCellsInRadius(Explosion.Center, Explosion.Stats.Radius, Explosion.Stats.TerrainSource);
+		CurrentGrid->QueueDestroyCellsInRadius(Explosion.Center, Explosion.Stats.Radius, Explosion.Stats.TerrainSource);
 	}
 	DamageCharacters(Explosion);
 	SpawnFX(Explosion);

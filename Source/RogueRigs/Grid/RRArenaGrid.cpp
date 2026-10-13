@@ -6,6 +6,7 @@
 #include "Components/HierarchicalInstancedStaticMeshComponent.h"
 #include "Components/InstancedStaticMeshComponent.h"
 #include "Components/SceneComponent.h"
+#include "Algo/StableSort.h"
 #include "Dom/JsonObject.h"
 #include "Dom/JsonValue.h"
 #include "Engine/CollisionProfile.h"
@@ -14,6 +15,7 @@
 #include "Engine/DataTable.h"
 #include "Explosions/RRExplosionSubsystem.h"
 #include "GAS/RRBaseStatsLoader.h"
+#include "HAL/PlatformTime.h"
 #include "Grid/RRBarrelSource.h"
 #include "Grid/RROreTypeRow.h"
 #include "Materials/MaterialInterface.h"
@@ -132,6 +134,7 @@ void ARRArenaGrid::RebuildFromLayout()
 		PlacedDepositCounts.Reset();
 		ShakingCells.Reset();
 		ClearBarrelFuses();
+		ClearPendingCellDestructions();
 		SetActorTickEnabled(false);
 		GridWidth = 0;
 		GridHeight = 0;
@@ -706,6 +709,7 @@ void ARRArenaGrid::BuildInstances()
 	ShakingCells.Reset();
 	MarkedCells.Reset();
 	ClearBarrelFuses();
+	ClearPendingCellDestructions();
 	SetActorTickEnabled(false);
 
 	struct FVisualAsset
@@ -1503,7 +1507,7 @@ void ARRArenaGrid::TickBarrelFuses()
 
 void ARRArenaGrid::UpdateTickEnabled()
 {
-	SetActorTickEnabled(!ShakingCells.IsEmpty() || !BarrelFuses.IsEmpty());
+	SetActorTickEnabled(!ShakingCells.IsEmpty() || !BarrelFuses.IsEmpty() || GetPendingCellDestructionCount() > 0);
 }
 
 TSubclassOf<ARRPickup> ARRArenaGrid::GetPickupClass(ERRCellType Type) const
@@ -1578,11 +1582,11 @@ void ARRArenaGrid::SpawnPickups(FIntPoint Cell, ERRCellType Type, int32 Count, i
 		*UEnum::GetValueAsString(Type), OreValue, HealValue);
 }
 
-int32 ARRArenaGrid::DestroyCellsInRadius(FVector Center, float Radius, ERRTerrainDamageSource Source)
+void ARRArenaGrid::CollectBlocksInRadius(const FVector& Center, float Radius, TArray<FIntPoint>& OutCells) const
 {
 	if (Radius < 0.f || GridWidth <= 0 || GridHeight <= 0)
 	{
-		return 0;
+		return;
 	}
 
 	// Candidate cells: the local bounding square of the circle, widened by one cell for rounding.
@@ -1593,8 +1597,6 @@ int32 ARRArenaGrid::DestroyCellsInRadius(FVector Center, float Radius, ERRTerrai
 	const int32 MinY = FMath::Max(0, CenterCell.Y - Reach);
 	const int32 MaxY = FMath::Min(GridHeight - 1, CenterCell.Y + Reach);
 
-	// Collect first: OnCellDestroyed listeners may change cells while we destroy.
-	TArray<FIntPoint> Targets;
 	const float RadiusSquared = FMath::Square(Radius);
 	for (int32 Y = MinY; Y <= MaxY; ++Y)
 	{
@@ -1603,10 +1605,17 @@ int32 ARRArenaGrid::DestroyCellsInRadius(FVector Center, float Radius, ERRTerrai
 			const FIntPoint Cell(X, Y);
 			if (IsBlockCell(Cell) && FVector::DistSquared2D(GetCellCenter(X, Y), Center) <= RadiusSquared)
 			{
-				Targets.Add(Cell);
+				OutCells.Add(Cell);
 			}
 		}
 	}
+}
+
+int32 ARRArenaGrid::DestroyCellsInRadius(FVector Center, float Radius, ERRTerrainDamageSource Source)
+{
+	// Collect first: OnCellDestroyed listeners may change cells while we destroy.
+	TArray<FIntPoint> Targets;
+	CollectBlocksInRadius(Center, Radius, Targets);
 
 	int32 Destroyed = 0;
 	for (const FIntPoint& Cell : Targets)
@@ -1614,6 +1623,103 @@ int32 ARRArenaGrid::DestroyCellsInRadius(FVector Center, float Radius, ERRTerrai
 		Destroyed += DestroyCell(Cell, Source) ? 1 : 0;
 	}
 	return Destroyed;
+}
+
+int32 ARRArenaGrid::QueueDestroyCellsInRadius(FVector Center, float Radius, ERRTerrainDamageSource Source)
+{
+	const UWorld* World = GetWorld();
+	if (CellDestructionBudgetMs <= 0.f || !World || !World->IsGameWorld())
+	{
+		return DestroyCellsInRadius(Center, Radius, Source);
+	}
+
+	TArray<FIntPoint> Targets;
+	CollectBlocksInRadius(Center, Radius, Targets);
+	// Nearest to the center first; ties in row-major order (stable sort of a row-major list), so the order is deterministic.
+	Algo::StableSortBy(Targets, [this, &Center](const FIntPoint& Cell)
+	{
+		return FVector::DistSquared2D(GetCellCenter(Cell.X, Cell.Y), Center);
+	});
+
+	// Barrels at once: lighting a fuse moves no instance, and a chained barrel must start its fuse at the explosion (the
+	// exploding barrel's own cell, whose explosion is queued, breaks here too). Every other block waits for its frame.
+	int32 Handled = 0;
+	TArray<FIntPoint, TInlineAllocator<8>> Barrels;
+	PendingCellDestructions.Reserve(PendingCellDestructions.Num() + Targets.Num());
+	for (const FIntPoint& Cell : Targets)
+	{
+		if (GetCellType(Cell) == ERRCellType::Barrel)
+		{
+			Barrels.Add(Cell);
+			continue;
+		}
+		FPendingCellDestruction& Pending = PendingCellDestructions.AddDefaulted_GetRef();
+		Pending.Cell = Cell;
+		Pending.Source = Source;
+		++Handled;
+	}
+	for (const FIntPoint& Cell : Barrels)
+	{
+		Handled += DestroyCell(Cell, Source) ? 1 : 0;
+	}
+
+	UpdateTickEnabled();
+	// First slice in the explosion frame; the rest in the next grid ticks.
+	ProcessPendingCellDestructions();
+	return Handled;
+}
+
+void ARRArenaGrid::ProcessPendingCellDestructions()
+{
+	if (GetPendingCellDestructionCount() <= 0)
+	{
+		ClearPendingCellDestructions();
+		return;
+	}
+
+	if (DestructionBudgetFrame != GFrameCounter)
+	{
+		DestructionBudgetFrame = GFrameCounter;
+		DestructionSpentSeconds = 0.0;
+		DestructionCellsThisFrame = 0;
+	}
+
+	const double BudgetSeconds = CellDestructionBudgetMs * 0.001;
+	const double Start = FPlatformTime::Seconds();
+	double Now = Start;
+	while (PendingCellDestructionHead < PendingCellDestructions.Num())
+	{
+		// Always progress by one block per frame, then stop once the frame's budget is spent.
+		if (DestructionCellsThisFrame > 0 && DestructionSpentSeconds + (Now - Start) >= BudgetSeconds)
+		{
+			break;
+		}
+		// Copy: DestroyCell's listeners may queue more blocks (array reallocation).
+		const FPendingCellDestruction Pending = PendingCellDestructions[PendingCellDestructionHead++];
+		// A block destroyed meanwhile (dig, another explosion) is skipped by DestroyCell.
+		DestroyCell(Pending.Cell, Pending.Source);
+		++DestructionCellsThisFrame;
+		Now = FPlatformTime::Seconds();
+	}
+	DestructionSpentSeconds += Now - Start;
+
+	if (PendingCellDestructionHead >= PendingCellDestructions.Num())
+	{
+		ClearPendingCellDestructions();
+	}
+}
+
+void ARRArenaGrid::ClearPendingCellDestructions()
+{
+	PendingCellDestructions.Reset();
+	PendingCellDestructionHead = 0;
+	UpdateTickEnabled();
+}
+
+void ARRArenaGrid::EndPlay(const EEndPlayReason::Type EndPlayReason)
+{
+	ClearPendingCellDestructions();
+	Super::EndPlay(EndPlayReason);
 }
 
 void ARRArenaGrid::SetCellShaking(FIntPoint Cell, bool bShaking)
@@ -1661,6 +1767,10 @@ void ARRArenaGrid::Tick(float DeltaSeconds)
 	Super::Tick(DeltaSeconds);
 
 	TickBarrelFuses();
+	if (GetPendingCellDestructionCount() > 0)
+	{
+		ProcessPendingCellDestructions();
+	}
 	if (ShakingCells.IsEmpty())
 	{
 		UpdateTickEnabled();

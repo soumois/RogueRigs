@@ -165,7 +165,7 @@ public:
 	/** Reloads the layout and rebuilds every instance. Runs on placement, move and property edit; ignored once play has begun. */
 	virtual void OnConstruction(const FTransform& Transform) override;
 
-	/** Advances the jitter of shaking blocks. */
+	/** Advances barrel fuses, destroys queued explosion blocks under the frame budget and advances the jitter of shaking blocks. */
 	virtual void Tick(float DeltaSeconds) override;
 
 	/** World-space center of cell (X, Y) at floor-top height. Cells outside the grid are not clamped. */
@@ -294,6 +294,25 @@ public:
 	UFUNCTION(BlueprintCallable, Category = "Grid|Destruction")
 	int32 DestroyCellsInRadius(FVector Center, float Radius, ERRTerrainDamageSource Source);
 
+	/**
+	 * Explosion terrain path (task-121-01): same cells as DestroyCellsInRadius, but the destruction is spread over frames.
+	 * Barrels in the radius are handled at once (fuse lit, or the exploding barrel's own cell broken), so chains keep their
+	 * timing; the other blocks are queued nearest to Center first and destroyed under CellDestructionBudgetMs of game-thread
+	 * time per frame (at least one block per frame), starting in this call. A queued block stays a block for every reader
+	 * until its frame. Budget 0 or outside a game world: destroyed at once (DestroyCellsInRadius). Returns the number of
+	 * blocks handled at once or queued.
+	 */
+	int32 QueueDestroyCellsInRadius(FVector Center, float Radius, ERRTerrainDamageSource Source);
+
+	/** Blocks queued by QueueDestroyCellsInRadius and not destroyed yet. */
+	int32 GetPendingCellDestructionCount() const { return PendingCellDestructions.Num() - PendingCellDestructionHead; }
+
+	/** Game-thread time per frame spent destroying queued explosion blocks, in ms (0 = no spreading). */
+	float GetCellDestructionBudgetMs() const { return CellDestructionBudgetMs; }
+
+	/** Sets CellDestructionBudgetMs (clamped at 0); for tests and tuning. */
+	void SetCellDestructionBudgetMs(float BudgetMs) { CellDestructionBudgetMs = FMath::Max(0.f, BudgetMs); }
+
 	/** Remaining shot health of a barrel cell (separate from its dig health); 0 when the cell holds no barrel. */
 	UFUNCTION(BlueprintPure, Category = "Grid|Destruction")
 	float GetCellShotHealth(FIntPoint Cell) const;
@@ -385,6 +404,21 @@ public:
 protected:
 	/** Rebuilds the grid from the layout so play starts from a fresh, fully indexed state (placed actors do not rerun construction in PIE or cooked builds). */
 	virtual void BeginPlay() override;
+
+	/** Drops the queued explosion blocks (level end, grid destroyed): nothing is destroyed after the grid leaves play. */
+	virtual void EndPlay(const EEndPlayReason::Type EndPlayReason) override;
+
+	/** Every block cell whose center lies within Radius (2D) of Center, in row-major order. */
+	void CollectBlocksInRadius(const FVector& Center, float Radius, TArray<FIntPoint>& OutCells) const;
+
+	/**
+	 * Destroys queued explosion blocks in queue order until this frame's CellDestructionBudgetMs is spent (shared by every
+	 * call in the same frame, GFrameCounter); at least one block per frame. Called by QueueDestroyCellsInRadius and Tick.
+	 */
+	void ProcessPendingCellDestructions();
+
+	/** Empties the queue of explosion blocks (rebuild, end of play) and updates the tick. */
+	void ClearPendingCellDestructions();
 
 	/**
 	 * Display event: the block in Cell was marked or unmarked (SetCellMarked, or a marked block destroyed). CellCenter is the
@@ -534,7 +568,7 @@ protected:
 	/** Advances every fuse: telegraph progress = elapsed / BarrelFuseSeconds; at the end queues the explosion (destroys the cell at once if it cannot be queued). */
 	void TickBarrelFuses();
 
-	/** Enables the actor tick while a block shakes or a barrel fuses, disables it otherwise. */
+	/** Enables the actor tick while a block shakes, a barrel fuses or explosion blocks are queued; disables it otherwise. */
 	void UpdateTickEnabled();
 
 	/** Radius of the barrel explosion row (BarrelExplosionRow), 0 when it cannot be read. */
@@ -618,6 +652,14 @@ protected:
 	/** Delay between a barrel reaching 0 health (any source) and its explosion, in seconds (owner 2026-10-12, barrel gdd). 0 = explodes at once. */
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Grid|Destruction", meta = (ClampMin = "0.0", Units = "s"))
 	float BarrelFuseSeconds = 1.5f;
+
+	/**
+	 * Game-thread time per frame for destroying the blocks of explosions, in ms (task-121-01: a 700 uu barrel explosion cost
+	 * about 8 ms in one frame). The blocks of an explosion are destroyed nearest first over as many frames as needed, at
+	 * least one per frame. 0 = every block destroyed in the explosion frame (former behaviour).
+	 */
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Grid|Destruction", meta = (ClampMin = "0.0", Units = "ms"))
+	float CellDestructionBudgetMs = 2.f;
 
 	// --- Shake (dig feedback) ---
 
@@ -858,4 +900,28 @@ protected:
 
 	/** Block cells marked as objective rocks (SetCellMarked). Reset on rebuild; a destroyed block leaves the set. */
 	TSet<FIntPoint> MarkedCells;
+
+	/** One queued explosion block (QueueDestroyCellsInRadius). */
+	struct FPendingCellDestruction
+	{
+		/** Cell to destroy; skipped if it is no longer a block when its turn comes. */
+		FIntPoint Cell = FIntPoint::ZeroValue;
+		/** Terrain source passed to DestroyCell. */
+		ERRTerrainDamageSource Source = ERRTerrainDamageSource::Barrel;
+	};
+
+	/** Queued explosion blocks, FIFO per explosion, each explosion's blocks nearest to its center first; consumed from PendingCellDestructionHead. */
+	TArray<FPendingCellDestruction> PendingCellDestructions;
+
+	/** Index of the next block to destroy in PendingCellDestructions (the array is reset when it is consumed). */
+	int32 PendingCellDestructionHead = 0;
+
+	/** GFrameCounter of the frame whose budget DestructionSpentSeconds and DestructionCellsThisFrame count. */
+	uint64 DestructionBudgetFrame = MAX_uint64;
+
+	/** Game-thread seconds already spent destroying queued blocks in DestructionBudgetFrame. */
+	double DestructionSpentSeconds = 0.0;
+
+	/** Queued blocks destroyed in DestructionBudgetFrame (the first one of a frame ignores the budget). */
+	int32 DestructionCellsThisFrame = 0;
 };

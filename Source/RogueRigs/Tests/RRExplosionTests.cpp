@@ -1,4 +1,4 @@
-// Rogue Rigs - automation tests of the explosion system (RogueRigs.Explosions.*): blocks in the radius, characters hit once, kamikaze reach (312 uu), chain delay, single explosion per source, miner no-one-shot, visual radius (x 1.05) and hold (0.1 s) per row.
+// Rogue Rigs - automation tests of the explosion system (RogueRigs.Explosions.*): blocks in the radius, characters hit once, kamikaze reach (312 uu), chain delay, single explosion per source, miner no-one-shot, visual radius (x 1.05) and hold (0.1 s) per row, blocks destroyed over frames nearest first (task-121-01).
 
 #include "CoreMinimal.h"
 #include "Misc/AutomationTest.h"
@@ -76,6 +76,18 @@ namespace RRExplosionTests
 		}
 		return Frames;
 	}
+
+	/** Ticks until the grid has no queued explosion block left (at most MaxFrames); returns the frames ticked. */
+	int32 TickUntilGridIdle(const FTestWorld& TestWorld, const ARRArenaGrid* Grid, int32 MaxFrames = 600)
+	{
+		int32 Frames = 0;
+		while (Grid->GetPendingCellDestructionCount() > 0 && Frames < MaxFrames)
+		{
+			TestWorld.Tick();
+			++Frames;
+		}
+		return Frames;
+	}
 }
 
 IMPLEMENT_SIMPLE_AUTOMATION_TEST(FRRExplosionBlocksInRadiusTest, "RogueRigs.Explosions.BlocksInRadius",
@@ -139,6 +151,10 @@ bool FRRExplosionBlocksInRadiusTest::RunTest(const FString& Parameters)
 		TestEqual(TEXT("OnExplosion row"), Recorder->GetExplosionRows()[0], FName(TEXT("Barrel")));
 		TestTrue(TEXT("OnExplosion center"), Recorder->GetExplosionCenters()[0].Equals(Center));
 	}
+	// Task-121-01: the blocks are destroyed over frames under the grid budget (time based, so the frame count varies).
+	const int32 SpreadFrames = TickUntilGridIdle(TestWorld, Grid);
+	AddInfo(FString::Printf(TEXT("blocks destroyed over %d more frame(s)"), SpreadFrames));
+	TestEqual(TEXT("no block left queued"), Grid->GetPendingCellDestructionCount(), 0);
 	for (const FIntPoint& Cell : Inside)
 	{
 		TestFalse(FString::Printf(TEXT("block (%d, %d) inside destroyed"), Cell.X, Cell.Y), Grid->IsBlockCell(Cell));
@@ -446,6 +462,146 @@ bool FRRExplosionVisualTest::RunTest(const FString& Parameters)
 			TestWorld.Tick();
 		}
 		TestTrue(FString::Printf(TEXT("%s FX destroyed after its lifetime"), Case.Row), !WeakFX.IsValid() || WeakFX->IsActorBeingDestroyed());
+	}
+	return true;
+}
+
+IMPLEMENT_SIMPLE_AUTOMATION_TEST(FRRExplosionBlocksSpreadTest, "RogueRigs.Explosions.BlocksSpreadOverFrames",
+	EAutomationTestFlags::EditorContext | EAutomationTestFlags::EngineFilter)
+
+bool FRRExplosionBlocksSpreadTest::RunTest(const FString& Parameters)
+{
+	using namespace RRExplosionTests;
+
+	FTestWorld TestWorld(TEXT("RRExplosionBlocksSpread"));
+	ARRArenaGrid* Grid = SpawnGrid(*this, TestWorld);
+	ARRMiner* Miner = Grid ? SpawnTestMiner(*this, TestWorld, Grid, RockWestFloorCell) : nullptr;
+	TStrongObjectPtr<URRTestEventRecorder> Recorder(NewObject<URRTestEventRecorder>());
+	URRExplosionSubsystem* Subsystem = Miner ? GetSubsystem(*this, TestWorld, Recorder.Get()) : nullptr;
+	FRRExplosionStatsRow Stats;
+	if (!Subsystem || !TestTrue(TEXT("Barrel row loads"), Subsystem->GetExplosionStats(TEXT("Barrel"), Stats)))
+	{
+		return false;
+	}
+	TestNearlyEqual(TEXT("default budget 2 ms"), Grid->GetCellDestructionBudgetMs(), 2.f);
+	// A budget far below one block's cost: exactly one block per frame, so the split is deterministic.
+	Grid->SetCellDestructionBudgetMs(1.e-6f);
+
+	// Every non-barrel block in the radius (barrels are handled at once), and the ring of one cell beyond it.
+	const FVector Center = Grid->GetCellCenter(RockWestFloorCell.X, RockWestFloorCell.Y);
+	const int32 Reach = FMath::CeilToInt32(Stats.Radius / Grid->GetCellSize()) + 2;
+	TArray<FIntPoint> Inside;
+	TArray<FIntPoint> Outside;
+	int32 BarrelsInside = 0;
+	for (int32 Y = RockWestFloorCell.Y - Reach; Y <= RockWestFloorCell.Y + Reach; ++Y)
+	{
+		for (int32 X = RockWestFloorCell.X - Reach; X <= RockWestFloorCell.X + Reach; ++X)
+		{
+			const FIntPoint Cell(X, Y);
+			const float Distance = FVector::Dist2D(Grid->GetCellCenter(X, Y), Center);
+			if (Grid->GetCellType(Cell) == ERRCellType::Barrel)
+			{
+				BarrelsInside += Distance <= Stats.Radius ? 1 : 0;
+				continue;
+			}
+			if (!Grid->IsBlockCell(Cell))
+			{
+				continue;
+			}
+			if (Distance <= Stats.Radius)
+			{
+				Inside.Add(Cell);
+			}
+			else if (Distance <= Stats.Radius + Grid->GetCellSize())
+			{
+				Outside.Add(Cell);
+			}
+		}
+	}
+	TestEqual(TEXT("no barrel in the radius (no chain during the test)"), BarrelsInside, 0);
+	if (!TestTrue(TEXT("several blocks inside the radius"), Inside.Num() > 2))
+	{
+		return false;
+	}
+	auto CountStanding = [Grid](const TArray<FIntPoint>& Cells)
+	{
+		int32 Count = 0;
+		for (const FIntPoint& Cell : Cells)
+		{
+			Count += Grid->IsBlockCell(Cell) ? 1 : 0;
+		}
+		return Count;
+	};
+	auto DistanceOf = [Grid, &Center](const FIntPoint& Cell) { return FVector::Dist2D(Grid->GetCellCenter(Cell.X, Cell.Y), Center); };
+	// Largest distance among the destroyed blocks and smallest among the standing ones: nearest first means Destroyed <= Standing.
+	auto CheckNearestFirst = [&]()
+	{
+		float FarthestDestroyed = 0.f;
+		float NearestStanding = TNumericLimits<float>::Max();
+		for (const FIntPoint& Cell : Inside)
+		{
+			if (Grid->IsBlockCell(Cell))
+			{
+				NearestStanding = FMath::Min(NearestStanding, DistanceOf(Cell));
+			}
+			else
+			{
+				FarthestDestroyed = FMath::Max(FarthestDestroyed, DistanceOf(Cell));
+			}
+		}
+		return FarthestDestroyed <= NearestStanding + 1e-3f;
+	};
+
+	UAbilitySystemComponent* MinerASC = Miner->GetAbilitySystemComponent();
+	TestTrue(TEXT("explosion queued"), Subsystem->QueueExplosion(Center, TEXT("Barrel"), nullptr, nullptr));
+	TestWorld.Tick();
+
+	// Explosion frame: event, damage and visual at once; one block destroyed (the nearest), the others still blocks, queued.
+	TestEqual(TEXT("OnExplosion once"), Recorder->GetExplosionRows().Num(), 1);
+	TestEqual(TEXT("miner hit at the explosion"), Attribute(MinerASC, URRHealthAttributeSet::GetHealthAttribute()), TestMaxHealth - 40.f);
+	int32 FXCount = 0;
+	for (TActorIterator<ARRExplosionFX> It(TestWorld.Get()); It; ++It)
+	{
+		FXCount += IsValid(*It) ? 1 : 0;
+	}
+	TestEqual(TEXT("visual spawned at the explosion"), FXCount, 1);
+	TestEqual(TEXT("one block destroyed in the explosion frame"), Inside.Num() - CountStanding(Inside), 1);
+	TestEqual(TEXT("the others queued"), Grid->GetPendingCellDestructionCount(), Inside.Num() - 1);
+	TestTrue(TEXT("nearest block first"), CheckNearestFirst());
+
+	int32 Frames = 1;
+	bool bOnePerFrame = true;
+	bool bNearestFirst = true;
+	while (Grid->GetPendingCellDestructionCount() > 0 && Frames < Inside.Num() + 10)
+	{
+		const int32 Before = CountStanding(Inside);
+		TestWorld.Tick();
+		++Frames;
+		bOnePerFrame &= Before - CountStanding(Inside) == 1;
+		bNearestFirst &= CheckNearestFirst();
+	}
+	AddInfo(FString::Printf(TEXT("%d blocks destroyed over %d frames"), Inside.Num(), Frames));
+	TestTrue(TEXT("split over more than one frame"), Frames > 1);
+	TestEqual(TEXT("one block per frame at a tiny budget"), Frames, Inside.Num());
+	TestTrue(TEXT("one block destroyed each frame"), bOnePerFrame);
+	TestTrue(TEXT("nearest blocks first every frame"), bNearestFirst);
+	TestEqual(TEXT("every block inside destroyed"), CountStanding(Inside), 0);
+	TestEqual(TEXT("ring beyond the radius kept"), CountStanding(Outside), Outside.Num());
+	TestEqual(TEXT("miner hit once"), Attribute(MinerASC, URRHealthAttributeSet::GetHealthAttribute()), TestMaxHealth - 40.f);
+
+	// Cleanup: blocks still queued when the grid leaves play are dropped, never destroyed later.
+	if (Outside.Num() > 0)
+	{
+		const FIntPoint Other = Outside[0];
+		TestTrue(TEXT("second explosion queued"), Subsystem->QueueExplosion(Grid->GetCellCenter(Other.X, Other.Y), TEXT("Barrel"), nullptr, nullptr));
+		TickUntilIdle(TestWorld, Subsystem);
+		TestTrue(TEXT("second explosion leaves blocks queued"), Grid->GetPendingCellDestructionCount() > 0);
+		Grid->Destroy();
+		TestEqual(TEXT("queue dropped when the grid is destroyed"), Grid->GetPendingCellDestructionCount(), 0);
+		for (int32 Frame = 0; Frame < 5; ++Frame)
+		{
+			TestWorld.Tick();
+		}
 	}
 	return true;
 }

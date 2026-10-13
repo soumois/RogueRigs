@@ -20,8 +20,8 @@ DECLARE_DYNAMIC_MULTICAST_DELEGATE_TwoParams(FRROnExplosionSignature, FVector, C
  * The single path of every explosion (sys-explosions). QueueExplosion never explodes in the caller's call stack: it adds
  * the explosion to a FIFO queue resolved in Tick, one explosion (link) per tick at most, and at least ChainDelay seconds
  * (world time) after the previous one. Each source object explodes once: a source already queued or exploded is refused.
- * An explosion, in order: destroys every block whose cell center is within the 2D radius (grid DestroyCellsInRadius,
- * source from the row); applies URRGE_DamageExplosion once to every actor whose ASC owns a URRHealthAttributeSet and whose
+ * An explosion, in order: destroys every block whose cell center is within the 2D radius (grid QueueDestroyCellsInRadius,
+ * source from the row: barrels at once, the other blocks nearest first under the grid's per-frame budget, task-121-01); applies URRGE_DamageExplosion once to every actor whose ASC owns a URRHealthAttributeSet and whose
  * location is within the 2D radius; spawns the row's FX class; broadcasts OnExplosion.
  * No-one-shot rule: when the target is an ARRMiner at full health (Health >= MaxHealth), the damage is capped at
  * Health - MinerHealthLeftAtFullHealth, so an explosion never takes a full-health miner to 0. Below full health the damage
