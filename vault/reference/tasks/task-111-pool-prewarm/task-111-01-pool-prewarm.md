@@ -3,7 +3,7 @@ id: task-111-01-pool-prewarm
 description: "Staggered prewarm per class at level start: XP 30 over 20 frames, chasers 30 over 20, other robots up to 5 over 60."
 parent: task-111-pool-prewarm
 kind: task
-status: todo
+status: in-progress
 ---
 # Staggered prewarm
 

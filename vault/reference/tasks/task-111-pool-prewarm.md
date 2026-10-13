@@ -3,7 +3,7 @@ id: task-111-pool-prewarm
 description: "Global task: The pools are prewarmed at level start, spread over frames per class, and projectile pooling is evaluated."
 parent: tasks-to-do-index
 kind: task
-status: todo
+status: in-progress
 ---
 # Staggered prewarm
 

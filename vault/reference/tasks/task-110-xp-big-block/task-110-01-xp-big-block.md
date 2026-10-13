@@ -3,7 +3,7 @@ id: task-110-01-xp-big-block
 description: "When many XP cubes fall in one place they become one bigger block of another colour worth the same total XP."
 parent: task-110-xp-big-block
 kind: task
-status: in-progress
+status: done
 ---
 # Big XP block (C++ rule)
 
@@ -15,11 +15,11 @@ status: in-progress
 - done_when: build exits 0 with the editor closed; all RogueRigs.* tests pass headless; docs updated; lint clean; committed.
 - editor_state: closed
 - token_ceiling: 60000
-- model: open
-- tokens: open
-- runs: open
+- model: opus
+- tokens: input 64, cache write 81299, cache read 1842254, output 29226
+- runs: 1
 - milestone: M2
-- result: open
+- result: Big XP block rule in URRPickupSubsystem (200 uu buckets, more than 8 cubes, groups of 8, exact XP sum, OFF until ARRPickup::XPBigPickupClass is set); 3 tests; 243/243. Commits e659abd, efca69e.
 
 ## Relations
 - [[task-110-xp-big-block]] — parent global task.

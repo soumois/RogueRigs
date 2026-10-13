@@ -186,6 +186,7 @@ kind: note
 | [[task-108-01-weapon-icons-placeholder]] | opus+sonnet | 1 | 0k | 133k | 1536k | 22k |
 | [[task-108-02-weapon-icons-placeholder]] | opus | 1 | 0k | 40k | 373k | 17k |
 | [[task-109-01-weapon-slot-icons]] | opus | 1 | 0k | 30k | 255k | 8k |
+| [[task-110-01-xp-big-block]] | opus | 1 | 0k | 81k | 1842k | 29k |
 
 ## Totals
 | Scope | Input | Cache write | Cache read | Output |
