@@ -3,7 +3,7 @@ id: task-111-02-pool-prewarm
 description: "A measured note says whether pooling the projectiles is worth it; nothing is migrated."
 parent: task-111-pool-prewarm
 kind: task
-status: todo
+status: in-progress
 ---
 # Projectile pooling evaluation
 

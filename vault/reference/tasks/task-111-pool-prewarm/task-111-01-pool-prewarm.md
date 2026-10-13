@@ -3,7 +3,7 @@ id: task-111-01-pool-prewarm
 description: "Staggered prewarm per class at level start: XP 30 over 20 frames, chasers 30 over 20, other robots up to 5 over 60."
 parent: task-111-pool-prewarm
 kind: task
-status: in-progress
+status: done
 ---
 # Staggered prewarm
 
@@ -15,11 +15,11 @@ status: in-progress
 - done_when: build exits 0 with the editor closed; all RogueRigs.* tests pass headless; docs updated; lint clean; committed.
 - editor_state: closed
 - token_ceiling: 60000
-- model: open
-- tokens: open
-- runs: open
+- model: opus
+- tokens: input 124, cache write 174886, cache read 7717457, output 57130
+- runs: 2
 - milestone: M2
-- result: open
+- result: Prewarm at the spawner second tick: XP 30/20, chasers 30/20, others min(5, cap)/60; absent class = not in the director data nor weighted > 0 (differs from the literal weight 0 rule: director spawns weight 0 classes); pool batches now really spread (creation i due on frame ceil((i+1) x MaxFrames / Count)); 248/248 tests. Commits fa0f54c, 80061c3.
 
 ## Relations
 - [[task-111-pool-prewarm]] — parent global task.

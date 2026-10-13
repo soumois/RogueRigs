@@ -13,7 +13,7 @@ status: in-progress
 - gdd_check: done by the Orchestrator when the task is planned (2026-10-13).
 - confirmed_by_owner: yes (2026-10-13)
 - milestone: M2
-- next_step: task-111-01-pool-prewarm
+- next_step: task-111-02-pool-prewarm
 - result: open
 
 ## Subtasks
