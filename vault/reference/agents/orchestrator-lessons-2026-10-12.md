@@ -31,6 +31,8 @@ Complements [[orchestrator-lessons]] and [[orchestrator-runbook]].
 - A Windows Store `python3` alias hangs on stdin and leaves stuck shells (the app showed "4 running tasks"): use node, and kill the stuck `bash.exe` and `python3.exe` trees.
 - Headless tests and builds need the editor closed; a build "up to date" after asset-only work means the tests do not exercise the Blueprints.
 
+- Colours (owner 2026-10-13): code an object by its main colour only; a detail may reuse another element's colour ([[color-code]]). Do not refuse a colour because a detail elsewhere uses it.
+
 ## Relations
 - [[agents-index]] — parent index.
 - [[orchestrator-lessons]] — the earlier lessons.

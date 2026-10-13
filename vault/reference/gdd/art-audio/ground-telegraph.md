@@ -14,6 +14,9 @@ status: provisional
 - Final values (task-112-02): lines 12 uu wide (constant in world units, whatever the zone radius), sharp with one-pixel anti-aliasing; zone circle 48 dashes, 55 % drawn, for all modes including danger; progress circle solid white, radius = zone radius x progress (0..1), invisible at 0; no disc fill. Parameters Radius, Progress, Opacity 0..1, see [[sys-ground-telegraph]].
 - Status: values provisional (owner 2026-10-12).
 
+- Fill (owner 2026-10-13, replaces "no disc fill" above and in the final values): the inside of the zone circle stays transparent and the growing progress circle is a disc filled with a transparent colour of its mode (white-blue for hacks, orange for danger), with its solid edge kept. At progress 0 nothing is filled; a danger zone is never fully filled before the effect is complete. Applies to the console, chest, barrel and heavy zones alike.
+- Visibility: a telegraph exists only while its owner is in the matching state (hack zone while the objective is active, barrel from 0 health, heavy slam only during the telegraph); a robot running toward the miner shows none (owner 2026-10-13, bug report).
+
 ## Relations
 - [[art-audio-index]] — parent index.
 - [[readability-rules]] — colour meanings it follows.

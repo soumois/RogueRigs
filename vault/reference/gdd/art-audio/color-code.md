@@ -29,6 +29,9 @@ status: approved
 
 Exception (owner 2026-10-11): the explosion warning sign on the barrel is a yellow triangle with a black border and a black burst, chosen by the owner after a reference sign; the yellow and black hazard stripes stay reserved for the heavy ([[barrel-asset]]).
 
+- Colour principle (owner 2026-10-13): an element is coded by its main colour, the colour that dominates it, not by a detail. A small detail may reuse a colour that belongs to another element (the barrel is orange with a yellow sign, and yellow stays the chaser colour). The same colour may appear as a detail on any element.
+- Big XP block (owner 2026-10-13, replaces the white block of 2026-10-12): bright magenta-pink with a glow of the same hue, scale 1.8 unchanged; magenta is not the main colour of any other element.
+
 ## Relations
 - [[art-audio-index]] — parent index.
 - [[readability-rules]] — why these colors.
