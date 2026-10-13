@@ -1,9 +1,9 @@
 """XP nut mesh (Blender route, task-128-01). Headless:
   "$BLENDER_EXE" -b --factory-startup -P Tools/art/blender/xp_nut_mesh.py -- [--out Art/Meshes/xp-nut-mesh/SM_XPNut.fbx]
 Units: 1 Blender unit = 1 cm. Pivot bottom centre. Never imports into Unreal.
-Hex nut from vault/assets/xp-nut.png: hexagonal prism (corner on +X), tapered 12-sided hole with a floor, flat shading.
+Hex nut from vault/assets/xp-nut.png: hexagonal prism (corner on +X), chamfered, stepped 12-sided hole with a floor, 6 bevelled top corners (task-130-01 fidelity rebuild), flat shading.
 Footprint: the placeholder XP cube is /Engine/BasicShapes/Cube (100 cm) at scale 0.3 = 30 cm (bp-pickup-xp); the hex is 30 cm across corners (X) so it fits the 30 x 30 footprint.
-Materials: M_XPNut_body (dark grey), M_XPNut_hole (cyan 0, 0.9, 1, emissive in Unreal)."""
+Materials: M_XPNut_body (mid grey), M_XPNut_hole (cyan 0, 0.9, 1, emissive in Unreal)."""
 import bpy, bmesh, math, json, os, sys
 import numpy as np
 from mathutils import Vector
@@ -15,14 +15,15 @@ for i in range(0, len(argv) - 1, 2):
 OUT = os.path.abspath(opt["--out"])
 os.makedirs(os.path.dirname(OUT), exist_ok=True)
 
-R_OUT, H = 15.0, 17.0           # circumradius (30 cm across corners), height
-HOLE = [(H, 8.5), (H * 0.55, 7.2), (H * 0.25, 6.4)]   # (z, radius) of the hole rings, then the floor
+R_OUT, H = 15.0, 11.7         # circumradius (30 cm across corners), height = 45 % of across-flats 25.98
+BEVEL = 0.9                     # corner bevel: the 6 top corners are lowered by this much
+HOLE = [(H, 8.05), (H - 1.2, 7.2), (H - 4.0, 6.8), (H - 5.2, 6.1), (H - 8.2, 5.8)]   # (z, radius): mouth, chamfer foot, steep+shallow stepped rings; then the floor ring below
 BUDGET = 300
 
 def srgb(h):
     c = [int(h[i:i + 2], 16) / 255 for i in (1, 3, 5)]
     return tuple(((x + 0.055) / 1.055) ** 2.4 if x > 0.04045 else x / 12.92 for x in c) + (1.0,)
-MATS = {"body": srgb("#4A4F58"), "hole": srgb("#00E5FF")}
+MATS = {"body": srgb("#70757B"), "hole": srgb("#00E5FF")}
 
 bpy.ops.wm.read_factory_settings(use_empty=True)
 mats = {}
@@ -45,16 +46,21 @@ def tri(a, b, c, mi):
 def quad(a, b, c, d, mi):
     f = bm.faces.new((a, b, c, d)); f.material_index = mi
 
-hex_b = ring(0.0, R_OUT, 6); hex_t = ring(H, R_OUT, 6)
-for k in range(6):
-    quad(hex_b[k], hex_b[(k + 1) % 6], hex_t[(k + 1) % 6], hex_t[k], MB)
+hex_b = ring(0.0, R_OUT, 6)
+RF = R_OUT * math.cos(math.radians(30))
+top = []   # 12 outline verts: even = corner (lowered by BEVEL), odd = mid-edge (full height)
+for k in range(12):
+    a = math.radians(30.0 * k)
+    if k % 2 == 0: top.append(bm.verts.new((R_OUT * math.cos(a), R_OUT * math.sin(a), H - BEVEL)))
+    else: top.append(bm.verts.new((RF * math.cos(a), RF * math.sin(a), H)))
+for k in range(6):   # side pentagon (split in triangles by Blender)
+    c0, m, c1 = top[2 * k], top[2 * k + 1], top[(2 * k + 2) % 12]
+    f = bm.faces.new((hex_b[k], hex_b[(k + 1) % 6], c1, m, c0)); f.material_index = MB
 bm.faces.new(hex_b[::-1]).material_index = MB   # bottom
 hole = [ring(z, r, 12) for z, r in HOLE]
 inn = hole[0]
-for k in range(6):   # top annulus, hex corner k aligned with hole vertex 2k
-    o0, o1 = hex_t[k], hex_t[(k + 1) % 6]
-    i0, i1, i2 = inn[2 * k], inn[2 * k + 1], inn[(2 * k + 2) % 12]
-    tri(o0, o1, i1, MB); tri(o0, i1, i0, MB); tri(o1, i2, i1, MB)
+for k in range(12):   # top face: bevelled corners + flat mid-edges, to the chamfer mouth
+    quad(top[k], top[(k + 1) % 12], inn[(k + 1) % 12], inn[k], MB)
 for j in range(len(hole) - 1):
     for k in range(12):
         quad(hole[j][k], hole[j + 1][k], hole[j + 1][(k + 1) % 12], hole[j][(k + 1) % 12], MH)
