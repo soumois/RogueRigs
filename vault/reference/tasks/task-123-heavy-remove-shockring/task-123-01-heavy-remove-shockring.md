@@ -19,7 +19,7 @@ status: in-progress
 - tokens: open
 - runs: open
 - milestone: M2
-- result: open
+- result: ShockRing nodes removed from OnTelegraphStart, OnSlam, OnRecover (BP_Heavy compiled, saved, commit 8ec0b97); component kept hidden because the C++ test RRHeavyIntegrationTests.cpp looks it up by name (needs a C++ change to delete it); glow and tilt unchanged.
 
 ## Relations
 - [[task-123-heavy-remove-shockring]] — parent global task.
