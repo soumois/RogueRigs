@@ -100,6 +100,7 @@ drgs-video-2026-10-06  reference/production/drgs-video-2026-10-06.md
 drone  reference/gdd/player/drone.md
 editor-workflow  reference/tech/conventions/editor-workflow.md
 enemies-index  reference/gdd/enemies/enemies-index.md
+enemies-tuning-history  reference/gdd/enemies/enemies-tuning-history.md
 enemy-chaser  reference/gdd/enemies/enemy-chaser.md
 enemy-death  reference/gdd/enemies/enemy-death.md
 enemy-heavy  reference/gdd/enemies/enemy-heavy.md
