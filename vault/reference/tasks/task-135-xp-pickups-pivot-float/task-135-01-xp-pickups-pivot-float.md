@@ -19,7 +19,7 @@ status: done
 - tokens: input 14, cache write 26109, cache read 112896, output 425
 - runs: 1
 - milestone: M2
-- result: x
+- result: Stopped as planned: StaticMeshTools.import_file has no offset or pivot option; nothing changed. Fallback: Blender export with a centred pivot (135-02), then reimport (135-03).
 
 ## Relations
 - [[task-135-xp-pickups-pivot-float]] — parent global task.
