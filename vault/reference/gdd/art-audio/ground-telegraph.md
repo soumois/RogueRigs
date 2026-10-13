@@ -11,6 +11,7 @@ status: provisional
 - Uses: console and bonus chest hack zones ([[objective-console]], [[objective-bonus-chest]]), the barrel fuse ([[barrel]]), the heavy slam ([[enemy-heavy]]).
 - Look: circles are sharp (no diffuse disc). Zone circle dotted; progress circle solid white. Colours: gold dotted while a hack is blocked by marked rocks, white-blue dotted when active; orange for danger ([[readability-rules]]).
 - Behaviour: no collision; ignores robots, the miner and the player weapons; it never changes gameplay (rules stay in the objective, barrel or robot); it disappears with its owner, at once when the owner dies or is destroyed.
+- Final values (task-112-02): lines 12 uu wide (constant in world units, whatever the zone radius), sharp with one-pixel anti-aliasing; zone circle 48 dashes, 55 % drawn, for all modes including danger; progress circle solid white, radius = zone radius x progress (0..1), invisible at 0; no disc fill. Parameters Radius, Progress, Opacity 0..1, see [[sys-ground-telegraph]].
 - Status: values provisional (owner 2026-10-12).
 
 ## Relations
