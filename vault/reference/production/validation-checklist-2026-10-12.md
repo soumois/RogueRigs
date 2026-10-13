@@ -6,7 +6,7 @@ kind: note
 ---
 # Validation checklist (2026-10-12)
 
-Everything below is built, compiled and read back, but not seen. Tick when seen; report what differs. Task ids point to the nodes with the details.
+Everything below is built, compiled, read back and, since 2026-10-13, validated by the owner (see Owner status). Task ids point to the nodes with the details.
 
 | Area | Look for | Known risk |
 |---|---|---|

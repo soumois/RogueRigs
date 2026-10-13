@@ -1,6 +1,6 @@
 ---
 id: handover-2026-10-12-gameplay-hud
-description: "State after the gameplay, HUD, pool and ground-circle session of 2026-10-07 to 10-12: what is built but never seen, open owner decisions, how to resume."
+description: "State after the gameplay, HUD, pool and ground-circle session of 2026-10-07 to 10-12: all validated by the owner, open owner decisions, how to resume."
 parent: production-index
 kind: note
 ---
