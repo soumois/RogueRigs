@@ -8,8 +8,8 @@ kind: note
 
 Scope: the Orchestrator session that ran tasks 070 to 071, 080 to 100, 103 to 105 and 109 to 115, plus Assignment 4 (tasks 072 to 087). The art and barrel session has its own note: [[handover-2026-10-12]]. Nothing is running, the editor is closed, every task of this session is `done` ([[tasks-index]]). Last full headless run: 261 of 261 `RogueRigs.*` tests (after the last Blueprint change). Build "up to date" means only assets changed: the tests do not check Blueprints.
 
-## Built but never seen on screen
-Nobody has looked at the result of most of this work: the owner judges, agents only read values back. The exact checks are in [[validation-checklist-2026-10-12]]. Areas: the HUD split into seven panels and its events; weapon slots with placeholder icons; subtitles; level-up card flavor line; alert once; vignette fade; minimap and locator events; pools and prewarm; big XP block; kamikaze fuse; explosion visual; barrel radius and fuse; ground circles (console, chest, barrel, heavy); heal veins; Duskite deposits; light robot movement.
+## Built, now validated on screen
+On 2026-10-13 the owner validated everything listed in [[validation-checklist-2026-10-12]] (HUD, pools, gameplay, zones, barrel, heavy ground effect, big XP block). Nothing is left to validate; the checklist stays as the record of what was checked.
 
 ## Open owner decisions
 - Subtitle queue: `extraction_ready` is replaced by `shuttle_countdown` in the same frame, so its line is never seen. Proposal: a queue of one pending line.
