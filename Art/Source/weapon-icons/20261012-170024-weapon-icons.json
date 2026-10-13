@@ -1,0 +1,35 @@
+{
+  "run_id": "20261012-170024-weapon-icons",
+  "asset": "weapon-icons",
+  "model": "gpt-image-2-text-to-image",
+  "aspect_ratio": "1:1",
+  "resolution": "1K",
+  "variants": 2,
+  "prompt_file": "Art/Source/weapon-icons/prompts/padlock.txt",
+  "prompt": "Icon of a padlock for a locked weapon slot: a chunky blocky padlock with a thick rectangular shackle on top and a rectangular body with a simple keyhole slot, white and teal plates with rust chips and four bolts. Seen straight from the front, symmetrical. Flat-shaded low-poly game UI icon, visible facets, chunky blocky volumes with large flat facets, flat colour per material, no textures, no gradients. A single object, centred with a wide empty margin on all sides, filling about 70 percent of the frame width. Patched, mismatched white and teal plates with a few rust chips, repaired, bolted and improvised, rigid mechanical parts only, bold readable silhouette. Strong directional light with lifted shadows so everything stays readable. The background is one perfectly flat plain magenta colour (#FF00FF) with nothing else on it: no shadow, no floor, no glow, no gradient, and no magenta anywhere on the object. No text, no letters, no numbers, no UI frame, no hands, no characters.",
+  "refs": [],
+  "tasks": [
+    {
+      "task_id": "847dd29e48955d52ea79558afd5df76f",
+      "state": "success",
+      "credits": 6,
+      "error": null,
+      "result_urls": [
+        "https://tempfile.aiquickdraw.com/images/chatgpt/file_00000000e61c822f8598ae41dbb83eb2.png"
+      ]
+    },
+    {
+      "task_id": "6a6fb5ea5802245be52d26b767566467",
+      "state": "success",
+      "credits": 6,
+      "error": null,
+      "result_urls": [
+        "https://tempfile.aiquickdraw.com/images/chatgpt/file_000000007d0481f99fb026975cc64343.png"
+      ]
+    }
+  ],
+  "files": [
+    "Art/Source/weapon-icons/20261012-170024-weapon-icons-1.png",
+    "Art/Source/weapon-icons/20261012-170024-weapon-icons-2.png"
+  ]
+}

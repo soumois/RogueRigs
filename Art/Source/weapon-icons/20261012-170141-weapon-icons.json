@@ -1,0 +1,35 @@
+{
+  "run_id": "20261012-170141-weapon-icons",
+  "asset": "weapon-icons",
+  "model": "gpt-image-2-text-to-image",
+  "aspect_ratio": "1:1",
+  "resolution": "1K",
+  "variants": 2,
+  "prompt_file": "Art/Source/weapon-icons/prompts/burst-rifle.txt",
+  "prompt": "Icon of an assault rifle, a burst rifle: a long blocky rifle with a boxy receiver, a straight magazine below, a stock at the left and a long barrel pointing right with a small muzzle brake. White body with teal side plates and rust chips. A small white-gold glowing bolt tip at the muzzle. Flat-shaded low-poly game UI icon, visible facets, chunky blocky volumes with large flat facets, flat colour per material, no textures, no gradients. A single object in strict side view facing right, centred with a wide empty margin on all sides, filling about 70 percent of the frame width. Patched, mismatched white and teal plates with a few rust chips, repaired, bolted and improvised, rigid mechanical parts only, bold readable silhouette. Strong directional light with lifted shadows so everything stays readable. The background is one perfectly flat plain magenta colour (#FF00FF) with nothing else on it: no shadow, no floor, no glow, no gradient, and no magenta anywhere on the object. No text, no letters, no numbers, no UI frame, no hands, no characters.",
+  "refs": [],
+  "tasks": [
+    {
+      "task_id": "161d0400b147b046dd53940488bd622f",
+      "state": "success",
+      "credits": 6,
+      "error": null,
+      "result_urls": [
+        "https://tempfile.aiquickdraw.com/images/chatgpt/file_00000000baec81f5b41f333d6fd95643.png"
+      ]
+    },
+    {
+      "task_id": "3eeedf99d9767d6b32d8b91a72a15728",
+      "state": "success",
+      "credits": 6,
+      "error": null,
+      "result_urls": [
+        "https://tempfile.aiquickdraw.com/images/chatgpt/file_00000000b588820d88266f3375796737.png"
+      ]
+    }
+  ],
+  "files": [
+    "Art/Source/weapon-icons/20261012-170141-weapon-icons-1.png",
+    "Art/Source/weapon-icons/20261012-170141-weapon-icons-2.png"
+  ]
+}
