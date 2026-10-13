@@ -201,6 +201,7 @@ kind: note
 | [[task-120-01-console-rules]] | opus | 1 | 0k | 104k | 2794k | 31k |
 | [[task-121-01-barrel-explosion-spread]] | opus | 1 | 0k | 157k | 4541k | 38k |
 | [[task-118-01-telegraph-fill]] | sonnet | 1 | 0k | 50k | 702k | 12k |
+| [[task-122-01-xp-big-block-magenta]] | sonnet | 1 | 0k | 56k | 1039k | 16k |
 
 ## Totals
 | Scope | Input | Cache write | Cache read | Output |

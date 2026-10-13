@@ -3,7 +3,7 @@ id: task-122-01-xp-big-block-magenta
 description: "The big XP block is bright magenta-pink with a glow of the same hue instead of white."
 parent: task-122-xp-big-block-magenta
 kind: task
-status: in-progress
+status: done
 ---
 # Big XP block colour
 
@@ -15,11 +15,11 @@ status: in-progress
 - done_when: material instance parameters read back; bp-pickup-xp doc matches; no scale or XP value changed; lint clean
 - editor_state: editor open (Unreal MCP); no screenshots by the agent
 - token_ceiling: 40 turns, commit after each group
-- model: open
-- tokens: open
-- runs: open
+- model: sonnet
+- tokens: input 56, cache write 56041, cache read 1038772, output 15612
+- runs: 1
 - milestone: M2
-- result: MI_PickupXPBig Color (1, 0.15, 0.75), GlowColor (1, 0.2, 0.8), GlowAmount 4 (read back). Trail and sparkle were shared with the cyan cube: added magenta copies NS_XPTrailBig (BP_PickupXPBig TrailFX Asset) and NS_PickupSparkleBig (OnCollected spawn), cube untouched. Scale 0.54 and XP unchanged. Colour was in the material instance, no C++ involved. bp-pickup-xp, color-code, xp-level-up updated.
+- result: MI_PickupXPBig magenta-pink, NS_XPTrailBig and NS_PickupSparkleBig copies, BP_PickupXPBig repointed; commits 32372ab fd032ef a70892e
 
 ## Relations
 - [[task-122-xp-big-block-magenta]] — parent global task.
