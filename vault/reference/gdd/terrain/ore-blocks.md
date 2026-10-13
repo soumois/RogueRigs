@@ -17,7 +17,7 @@ status: approved
 - Milestone: M1.
 
 - Deposits (owner 2026-10-10, replaces the 3 × 3 veins): ore comes in groups of 2 × 2 blocks, never isolated; touching any block mines the whole deposit at once, its 4 blocks break together after one block dig time (1.5 s) and pop their 4 chunks. A deposit is identified by its own id, not by neighbouring blocks: deposits may touch.
-- Duskite spawn rate (owner 2026-10-10): 8 % of the rock blocks are Duskite, in 2 × 2 groups (about 358 deposits on the current layout), placed at grid build. Each ore type has its own row in a table (share of rock, group size, value, colour); only Duskite exists for now. A deposit may not overlap heal veins, barrels or console-marked rocks; the start zone needs no protection: if a block of a deposit is destroyed there (for example by the arrival capsule), its chunks are thrown to the ground like any explosion drop.
+- Duskite spawn rate (owner 2026-10-10): 8 % of the rock blocks are Duskite, in 2 × 2 groups (about 358 deposits on the current layout), placed at grid build. Each ore type has its own row in a table (share of rock, group size, value, colour); only Duskite exists for now. A deposit may not overlap heal veins or barrels; since 2026-10-13 console-marked rocks include ore deposits ([[objective-console]]); the start zone needs no protection: if a block of a deposit is destroyed there (for example by the arrival capsule), its chunks are thrown to the ground like any explosion drop.
 
 - Vein shake (owner 2026-10-07 fifth test): all blocks of a vein being mined shake together.
 
