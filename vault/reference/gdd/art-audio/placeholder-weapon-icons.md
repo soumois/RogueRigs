@@ -17,6 +17,7 @@ kind: note
 
 - Made by the art agent ([[agent-art]]) on a flat magenta background; reviewed by the critic (8 of 8 pass, `Tools/content/logs/20261012-weapon-icons.review.json`); the owner chose the padlock variant 1, the others follow the critic's picks. The Orchestrator copied them to `vault/assets/` on the owner's instruction.
 - The weapon shapes are generic gun anatomy chosen by the agent: the weapon nodes give no visual detail beyond colours.
+- Where to replace: textures /Game/RogueRigs/UI/Icons/T_Icon_* (imported from Art/UI/Icons/); the weapon-name to texture mapping is the function GetWeaponIcon in WBP_Weapons (the padlock is the brush of LockImage0..3). A new weapon needs a new branch in GetWeaponIcon.
 - Use: cut out to 256 x 256 transparent PNGs (task-108-02) and shown in the weapon slots (task-106-02, [[wbp-weapons]]). When the final weapons exist, replace the icons in the single mapping place of WBP_Weapons and delete these files.
 
 ## Relations
