@@ -1,13 +1,13 @@
 ---
 id: task-143-01-xp-pickups-distance-field
-description: "Turn on the mesh distance field of the XP nut and chip so Lumen can see them and test whether they light the floor."
+description: "Turn on the mesh distance field of the XP nut and chip and test whether they light the floor."
 parent: task-143-xp-pickups-distance-field
 kind: task
 status: todo
 ---
 # XP pickups: mesh distance field test
 
-- goal: Turn on the mesh distance field of the XP nut and chip so Lumen can see them and test whether they light the floor.
+- goal: Turn on the mesh distance field of the XP nut and chip and test whether they light the floor.
 - agent: bp
 - depends_on: none
 - inputs: bp-pickup-xp (vault/reference/tech/blueprints/fx/bp-pickup-xp.md), unreal-mcp (vault/reference/tech/pipelines/unreal-mcp.md), unreal-mcp-quirks (vault/reference/tech/pipelines/unreal-mcp-quirks.md), editor-workflow (vault/reference/tech/conventions/editor-workflow.md), ppv-xp-glow (vault/reference/tech/blueprints/world/ppv-xp-glow.md), color-code (vault/reference/gdd/art-audio/color-code.md)
