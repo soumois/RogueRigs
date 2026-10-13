@@ -15,5 +15,7 @@ status: approved
 - Asset: modeled by hand.
 - Milestone: M1.
 
+- Owner rules 2026-10-12 (replace the explosion radius and the instant explosion above): the explosion radius is doubled, 350 to 700 uu (character damage 40 unchanged); when its health reaches 0 it does not explode at once: it explodes 1.5 s later, whatever killed it (a barrel hit by another explosion too, so chains become slow and readable); from 0 health a danger zone appears on the ground at the explosion radius (orange, "explodes") and a second circle grows inside it until it reaches the edge of the zone at the moment of the explosion, the same ground-circle logic as the capture zones ([[ground-telegraph]]).
+
 ## Relations
 - [[terrain-index]] — parent index.

@@ -16,6 +16,8 @@ status: approved
 - Values (owner 2026-10-07, provisional): one chest per level, dropped when the alert reaches 60 %, 30–45 cells (67 uu) from the miner on a free 2 × 2 floor footprint; hack 8 s with the console rules (zone radius 6 cells, progress drains when the miner leaves); no marked rocks; reward XP = 50 % of the current level need (the XP gain stat applies, owner owner 2026-10-08), 5 ore chunks, one upgrade choice with +3 luck for that draw only. The locator arrow keeps the console or shuttle; the chest shows as a gold icon on the alert bar.
 - Milestone: M2 (provisional).
 
+- Zone look (owner 2026-10-12): the same ground circles as the console zone, at the chest zone radius ([[objective-console]], [[ground-telegraph]]).
+
 ## Relations
 - [[run-index]] — parent index.
 - [[upgrades]] — what the choice offers.

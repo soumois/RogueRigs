@@ -17,6 +17,8 @@ status: approved
 
 - Visible explosion (owner 2026-10-10): the visible part is about 5 % larger than the collision radius, so the player is never hit outside what is shown, and it stays 0.1 s at its final state before fading, so it can be seen.
 
+- Barrel fuse (owner 2026-10-12): a barrel explodes 1.5 s after its health reaches 0, so the 0.08 s link delay of a chain becomes the barrel fuse for barrels; the kamikaze rules are unchanged ([[barrel]], [[enemy-kamikaze]]).
+
 ## Relations
 - [[terrain-index]] — parent index.
 - [[sys-explosions]] — the explosion queue as built.

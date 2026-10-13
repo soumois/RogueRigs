@@ -22,5 +22,7 @@ status: approved
 
 Glowing weak point on its back: [[wishlist]].
 
+- Slam ground signal (owner 2026-10-12): during the telegraph the slam area is drawn on the ground (orange danger circle at the slam radius, 289 uu) and a second circle grows inside it and reaches the edge when the slam lands; it disappears at once if the heavy dies ([[ground-telegraph]]).
+
 ## Relations
 - [[enemies-index]] — parent index.

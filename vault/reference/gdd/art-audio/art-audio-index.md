@@ -15,4 +15,5 @@ kind: note
 - [[art-style-guide]] — applicable rules for new assets: shapes, factions, materials, effects, forbidden elements, formats.
 - [[art-prompts]] — verbatim image prompts and the method that produced the key art; open to generate new art.
 - [[placeholder-weapon-icons]] — TEMPORARY HUD icons for the weapon slots (padlock and three weapons), to replace with the final weapons.
+- [[ground-telegraph]] — ground circles for capture zones and danger zones (barrel, heavy slam): growing circle to the edge.
 - [[dialogue-tone]] — how the Rigs talk; bark rules and examples.

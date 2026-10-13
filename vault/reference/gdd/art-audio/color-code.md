@@ -13,7 +13,7 @@ status: approved
 | Ore rock (Duskite) | same base + glowing violet crystals (kept, owner 2026-10-10) |
 | Barrel | orange |
 | Heal ore and heal pickups | red |
-| XP and resource pickups | glowing cyan |
+| XP and resource pickups | glowing cyan; the big XP block (many cubes merged) is bright white with the cyan glow (owner 2026-10-12) |
 | Miner, turrets, drone | white + teal + rust |
 | Player shots, mining laser | white-gold |
 | Command console, shuttle | white + teal (player side) |

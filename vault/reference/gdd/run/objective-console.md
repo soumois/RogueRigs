@@ -26,6 +26,8 @@ status: approved
 
 - Locator look (owner 2026-10-07 fifth test, provisional): a real arrow image about 64 px, pulsing, with the distance in metres next to it.
 
+- Zone look (owner 2026-10-12, rendering only, the rules above are unchanged): the hack zone is drawn on the ground as a sharp circle of the zone radius (dotted gold while marked rocks remain, dotted white-blue once they are all destroyed and hacking can start) and a second sharp solid white circle grows from the console to the edge of the zone: when it reaches the zone circle the hack is at 100 %; it shrinks while the miner is out of the zone as the progress drains. No diffuse growing disc ([[ground-telegraph]]).
+
 ## Relations
 - [[run-index]] — parent index.
 - [[drone]] — the drone's hack state.

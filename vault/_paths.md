@@ -103,6 +103,7 @@ gas-api-notes  reference/tech/systems/gas-api-notes.md
 gas-engine-facts  reference/tech/systems/gas-engine-facts.md
 gas-scope  reference/production/gas-scope.md
 gdd-index  reference/gdd/gdd-index.md
+ground-telegraph  reference/gdd/art-audio/ground-telegraph.md
 handover-2026-10-06  reference/production/handover-2026-10-06.md
 handover-2026-10-09  reference/production/handover-2026-10-09.md
 heal-ore  reference/gdd/terrain/heal-ore.md
