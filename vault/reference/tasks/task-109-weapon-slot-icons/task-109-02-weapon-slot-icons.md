@@ -3,7 +3,7 @@ id: task-109-02-weapon-slot-icons
 description: "WBP_Weapons shows the active weapon icon large without the name, the status bar under it."
 parent: task-109-weapon-slot-icons
 kind: task
-status: in-progress
+status: done
 ---
 # Weapon slots without name, big icon
 
@@ -15,11 +15,11 @@ status: in-progress
 - done_when: icons reimported with their aspect ratio; owned slot shows no name and a larger icon by values read back; compiled 0 errors; saved; docs updated; lint clean; committed.
 - editor_state: open
 - token_ceiling: 40000
-- model: open
-- tokens: open
-- runs: open
+- model: sonnet
+- tokens: input 96, cache write 72395, cache read 2025009, output 31849
+- runs: 2
 - milestone: M2
-- result: open
+- result: Weapon icons reimported with their aspect ratio (delete and import, UI group re-set, GetWeaponIcon pins re-set); owned slot: name collapsed (fallback only), icon in a max 130 x 56 SizeBox ScaleToFit above the 130 x 14 bar; padlock unchanged; not seen on screen. Commits b90b7d0, fe20a80, d049954.
 
 ## Relations
 - [[task-109-weapon-slot-icons]] — parent global task.
