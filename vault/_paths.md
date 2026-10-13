@@ -172,6 +172,8 @@ perf-stress-opt-m1  reference/tech/performance/perf-stress-opt-m1.md
 perf-stress-test-m1  reference/tech/performance/perf-stress-test-m1.md
 perf-trace-m1  reference/tech/performance/perf-trace-m1.md
 perf-trace-real-game  reference/tech/performance/perf-trace-real-game.md
+perf-xp-pickups-glow  reference/tech/performance/perf-xp-pickups-glow.md
+perf-xp-pickups-glow-table  reference/tech/performance/perf-xp-pickups-glow/perf-xp-pickups-glow-table.md
 performance-index  reference/tech/performance/performance-index.md
 pipelines-index  reference/tech/pipelines/pipelines-index.md
 placeholder-weapon-icons  reference/gdd/art-audio/placeholder-weapon-icons.md

@@ -28,7 +28,7 @@ kind: note
 - Dynamic GEs for upgrades (option B).
 - Slate debug tool (and the `RogueRigsEditor` module it needs).
 - Enemy pooling, unless a measurement shows spawn or GC spikes.
-- Cost check of the XP pickup glow (owner 2026-10-13, later): game-thread and GPU frame time with a burst of nuts and chips, with and without bloom and the emissive pulse; only when the owner asks.
+- Done (task-138-02, 2026-10-13): Cost check of the XP pickup glow (owner 2026-10-13): game-thread and GPU frame time with a burst of nuts and chips, with and without bloom and the emissive pulse; no measurable cost up to 400, see [[perf-xp-pickups-glow]].
 
 ## Agents
 - Adversarial QA agent.
@@ -36,3 +36,4 @@ kind: note
 ## Relations
 - [[production-index]] — parent index.
 - [[milestones]] — the scope these were cut from.
+- [[perf-xp-pickups-glow]] — result of the XP pickup glow cost check.

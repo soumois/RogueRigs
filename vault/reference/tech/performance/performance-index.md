@@ -18,4 +18,5 @@ kind: note
 - [[perf-stress-grid-cells]] — 200 vs 100 vs 67 uu cells: frame times, explosions, dig, flow field, memory, fixes, verdict; real-game stress and robot-count limits (task-067-01).
 - [[perf-trace-real-game]] — packaged real-game trace at 250 robots: game-thread cost ranking, wave spawn and XP burst costs, GC, spike causes.
 - [[perf-projectile-pool-evaluation]] — whether to pool projectiles: spawns per second, spawn and destroy ms, burst frames, recommendation (task-111-02).
+- [[perf-xp-pickups-glow]] — XP nut and chip glow cost: 0–400 pickups, bloom and pulse on/off, cold vs warm, verdict (task-138-02).
 - [[perf-robot-components-audit]] — robot components per class, overlap flags, what needs them, movement cost ranking (task-093-01).
