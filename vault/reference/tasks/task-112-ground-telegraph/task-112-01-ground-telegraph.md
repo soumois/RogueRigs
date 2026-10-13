@@ -3,7 +3,7 @@ id: task-112-01-ground-telegraph
 description: "Ground telegraph component: a zone circle and a growing circle on the floor, ignoring robots, miner and weapons."
 parent: task-112-ground-telegraph
 kind: task
-status: in-progress
+status: done
 ---
 # Ground telegraph component (C++)
 
@@ -15,11 +15,11 @@ status: in-progress
 - done_when: build exits 0 with the editor closed; all RogueRigs.* tests pass headless; docs updated; lint clean; committed.
 - editor_state: closed
 - token_ceiling: 60000
-- model: open
-- tokens: open
-- runs: open
+- model: opus
+- tokens: input 74, cache write 92022, cache read 2199012, output 39402
+- runs: 1
 - milestone: M2
-- result: open
+- result: URRGroundTelegraphComponent (UDecalComponent): SetRadius/SetProgress/SetMode/Show/Hide, DefaultMaterialPath config, material params Radius, Progress, ZoneColor, ProgressColor, Opacity; hides on owner death/pool release/miner death, bReceivesDecals off on miner, robots, weapons; 5 tests, 253/253. Commits 50f77d6, 829401f.
 
 ## Relations
 - [[task-112-ground-telegraph]] — parent global task.

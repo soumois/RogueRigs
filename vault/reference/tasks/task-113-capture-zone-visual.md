@@ -3,7 +3,7 @@ id: task-113-capture-zone-visual
 description: "Global task: The console and chest hack zones show a sharp zone circle and a growing progress circle."
 parent: tasks-to-do-index
 kind: task
-status: todo
+status: in-progress
 ---
 # Capture zone visual (C++ side)
 

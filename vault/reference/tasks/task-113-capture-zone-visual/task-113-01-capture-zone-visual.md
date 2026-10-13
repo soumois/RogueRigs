@@ -3,7 +3,7 @@ id: task-113-01-capture-zone-visual
 description: "Console and chest zones use the ground telegraph: sharp zone circle, growing progress circle, rules unchanged."
 parent: task-113-capture-zone-visual
 kind: task
-status: todo
+status: in-progress
 ---
 # Capture zone visual (C++ side)
 
