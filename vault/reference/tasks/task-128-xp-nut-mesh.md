@@ -1,9 +1,9 @@
 ---
 id: task-128-xp-nut-mesh
 description: "Global task: Build the hex nut mesh for the basic XP pickup from the validated image, Blender route."
-parent: tasks-to-do-index
+parent: tasks-done-index
 kind: task
-status: in-progress
+status: done
 ---
 # XP pickup mesh: hex nut
 
@@ -13,12 +13,12 @@ status: in-progress
 - gdd_check: done by the Orchestrator when the task is planned (2026-10-13).
 - confirmed_by_owner: yes (2026-10-13)
 - milestone: M2
-- next_step: task-128-01-xp-nut-mesh
-- result: open
+- next_step: none
+- result: Done. Superseded by task-130 (first nut too simplified).
 
 ## Subtasks
 1. task-128-01-xp-nut-mesh — 3d
 
 ## Relations
-- [[tasks-to-do-index]] — parent index.
+- [[tasks-done-index]] — parent index.
 - [[task-128-01-xp-nut-mesh]] — step 1, 3d.

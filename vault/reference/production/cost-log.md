@@ -208,6 +208,7 @@ kind: note
 | [[task-125-01-xp-chip-images]] | sonnet | 1 | 0k | 27k | 147k | 1k |
 | [[task-126-01-xp-nut-images]] | sonnet | 1 | 0k | 22k | 87k | 1k |
 | [[task-127-01-xp-chip-magenta]] | sonnet | 1 | 0k | 14k | 94k | 1k |
+| [[task-128-01-xp-nut-mesh]] | sonnet | 1 | 0k | 59k | 486k | 5k |
 
 ## Totals
 | Scope | Input | Cache write | Cache read | Output |

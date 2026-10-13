@@ -138,3 +138,4 @@ Archive: it exceeds the index size limits of [[_authoring]] on purpose (owner, 2
 - [[task-125-xp-chip-images]] — Two candidate images of a data chip as the basic XP pickup, from two different prompts. Status done.
 - [[task-126-xp-nut-images]] — Two candidate images of a hex nut as the basic XP pickup, from two different prompts. Status done.
 - [[task-127-xp-chip-magenta]] — Recolour the retained data chip B image so its glowing core is bright magenta-pink, for the big XP block. Status done.
+- [[task-128-xp-nut-mesh]] — Build the hex nut mesh for the basic XP pickup from the validated image, Blender route. Status done.

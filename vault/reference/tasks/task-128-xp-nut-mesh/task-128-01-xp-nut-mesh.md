@@ -3,7 +3,7 @@ id: task-128-01-xp-nut-mesh
 description: "Build the hex nut mesh for the basic XP pickup from the validated image, Blender route."
 parent: task-128-xp-nut-mesh
 kind: task
-status: in-progress
+status: done
 ---
 # XP pickup mesh: hex nut
 
@@ -15,11 +15,11 @@ status: in-progress
 - done_when: Blender route, no Meshy call; SM_XPNut.fbx and report exist; tris_out at most 300; dimensions_cm match the placeholder cube footprint; flat shading; pivot bottom centre; materials as listed; UV checks pass; preview render produced with the barrel_preview camera for the Orchestrator to send to the owner; nothing imported in Unreal; image read from vault/assets/xp-nut.png
 - editor_state: closed
 - token_ceiling: open
-- model: open
-- tokens: open
-- runs: open
+- model: sonnet
+- tokens: input 26, cache write 58563, cache read 485808, output 5204
+- runs: 1
 - milestone: M2
-- result: open
+- result: Superseded by task-130 (first nut too simplified).
 
 ## Relations
 - [[task-128-xp-nut-mesh]] — parent global task.
