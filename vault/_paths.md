@@ -241,12 +241,15 @@ sys-stress-diagnostics  reference/tech/systems/tools/sys-stress/sys-stress-diagn
 sys-stress-run-modes  reference/tech/systems/tools/sys-stress/sys-stress-run-modes.md
 sys-subtitles  reference/tech/systems/ui/sys-subtitles.md
 sys-tests-classes  reference/tech/systems/tools/sys-automation-tests/sys-tests-classes.md
+sys-tests-console-extraction  reference/tech/systems/tools/sys-automation-tests/sys-tests-console-extraction.md
 sys-tests-dig-ore  reference/tech/systems/tools/sys-automation-tests/sys-tests-dig-ore.md
 sys-tests-enemies  reference/tech/systems/tools/sys-automation-tests/sys-tests-enemies.md
 sys-tests-explosions-barrel  reference/tech/systems/tools/sys-automation-tests/sys-tests-explosions-barrel.md
 sys-tests-flowfield-spawner  reference/tech/systems/tools/sys-automation-tests/sys-tests-flowfield-spawner.md
+sys-tests-heavy  reference/tech/systems/tools/sys-automation-tests/sys-tests-heavy.md
 sys-tests-hud-text  reference/tech/systems/tools/sys-automation-tests/sys-tests-hud-text.md
 sys-tests-juice-damage-numbers  reference/tech/systems/tools/sys-automation-tests/sys-tests-juice-damage-numbers.md
+sys-tests-kamikaze-shooter  reference/tech/systems/tools/sys-automation-tests/sys-tests-kamikaze-shooter.md
 sys-tests-player-cheats  reference/tech/systems/tools/sys-automation-tests/sys-tests-player-cheats.md
 sys-tests-pools-pickups  reference/tech/systems/tools/sys-automation-tests/sys-tests-pools-pickups.md
 sys-tests-progression  reference/tech/systems/tools/sys-automation-tests/sys-tests-progression.md
