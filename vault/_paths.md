@@ -111,6 +111,7 @@ ground-telegraph  reference/gdd/art-audio/ground-telegraph.md
 handover-2026-10-06  reference/production/handover-2026-10-06.md
 handover-2026-10-09  reference/production/handover-2026-10-09.md
 handover-2026-10-12  reference/production/handover-2026-10-12.md
+handover-2026-10-12-gameplay-hud  reference/production/handover-2026-10-12-gameplay-hud.md
 heal-ore  reference/gdd/terrain/heal-ore.md
 hud-refactor-audit  reference/tech/blueprints/hud-refactor-audit.md
 hud-refactor-audit-core  reference/tech/blueprints/hud-refactor-audit-core.md
@@ -138,6 +139,7 @@ objective-console  reference/gdd/run/objective-console.md
 objective-variants  reference/gdd/run/objective-variants.md
 orchestration-protocol  reference/agents/orchestration-protocol.md
 orchestrator-lessons  reference/agents/orchestrator-lessons.md
+orchestrator-lessons-2026-10-12  reference/agents/orchestrator-lessons-2026-10-12.md
 orchestrator-runbook  reference/agents/orchestrator-runbook.md
 orchestrator-script-quirks  reference/agents/orchestrator-script-quirks.md
 ore-blocks  reference/gdd/terrain/ore-blocks.md
@@ -604,6 +606,7 @@ unreal-mcp  reference/tech/pipelines/unreal-mcp.md
 unreal-mcp-epic-plugin  reference/tech/pipelines/unreal-mcp-epic-plugin.md
 unreal-mcp-quirks  reference/tech/pipelines/unreal-mcp-quirks.md
 upgrades  reference/gdd/weapons/upgrades.md
+validation-checklist-2026-10-12  reference/production/validation-checklist-2026-10-12.md
 visual-style  reference/gdd/art-audio/visual-style.md
 wbp-alert-objectives  reference/tech/blueprints/wbp-alert-objectives.md
 wbp-health-status  reference/tech/blueprints/wbp-health-status.md

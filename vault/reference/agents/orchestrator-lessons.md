@@ -41,3 +41,4 @@ kind: note
 - [[orchestrator-runbook]] — the commands.
 - [[agent-bp]] — the Blueprint agent these limits apply to.
 - [[art-3d-lessons]] — preferences and limits learned on art and 3D work.
+- [[orchestrator-lessons-2026-10-12]] — newer owner rules and tool lessons (HUD architecture, events, MCP, scripts).

@@ -20,3 +20,5 @@ Capstone submission: November 9, 2026. Budget: one person, 5 to 6 hours a week.
 - [[handover-2026-10-06]] — state at the pause of 2026-10-06: next subtask, queue, pending owner decisions; open first when resuming.
 - [[cost-log]] — tokens, model and runs per subtask from task 013; open to estimate cost.
 - [[handover-2026-10-12]] — state after the barrel, logo and art charter session: delivered, open, rules; open first when resuming.
+- [[handover-2026-10-12-gameplay-hud]] — state after the gameplay, HUD, pool and ground-circle session: built but unseen, open decisions, resume.
+- [[validation-checklist-2026-10-12]] — what to look at in game to validate the work of 2026-10-07 to 10-12.
