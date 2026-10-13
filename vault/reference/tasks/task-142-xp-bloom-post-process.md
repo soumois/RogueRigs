@@ -3,7 +3,7 @@ id: task-142-xp-bloom-post-process
 description: "Global task: Add a PostProcessVolume with explicit bloom settings to the arena level so the halo effect can be tuned and tested."
 parent: tasks-to-do-index
 kind: task
-status: todo
+status: in-progress
 ---
 # Arena: post process bloom volume
 

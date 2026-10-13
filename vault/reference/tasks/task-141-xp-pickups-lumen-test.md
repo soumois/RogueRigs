@@ -1,9 +1,9 @@
 ---
 id: task-141-xp-pickups-lumen-test
 description: "Global task: Try to make the XP nut and chip emit light on the floor through Lumen: emissive light source flag and mesh cards."
-parent: tasks-to-do-index
+parent: tasks-done-index
 kind: task
-status: in-progress
+status: done
 ---
 # XP pickups: Lumen emissive light test
 
@@ -13,12 +13,12 @@ status: in-progress
 - gdd_check: done by the Orchestrator when the task is planned (2026-10-13).
 - confirmed_by_owner: yes (2026-10-13)
 - milestone: M2
-- next_step: task-141-01-xp-pickups-lumen-test
-- result: open
+- next_step: none
+- result: Done. bEmissiveLightSource true on PickupMesh of both Blueprints; Max Lumen Mesh Cards not exposed through MCP (owner does it in the mesh editor if wanted); meshes have bGenerateMeshDistanceField false; effect to judge in the viewport.
 
 ## Subtasks
 1. task-141-01-xp-pickups-lumen-test — bp
 
 ## Relations
-- [[tasks-to-do-index]] — parent index.
+- [[tasks-done-index]] — parent index.
 - [[task-141-01-xp-pickups-lumen-test]] — step 1, bp.

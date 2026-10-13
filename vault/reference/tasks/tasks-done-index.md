@@ -150,3 +150,4 @@ Archive: it exceeds the index size limits of [[_authoring]] on purpose (owner, 2
 - [[task-137-unreal-reimport-tool]] — Create a headless Python tool that reimports a static mesh from its FBX in place, and document it in the vault. Status done.
 - [[task-138-xp-pickups-perf-test]] — Measure the frame-time cost of a burst of XP nuts and chips, with and without bloom and pulse, and record the results. Status done.
 - [[task-140-xp-chip-glow-violet]] — Give the big XP chip the nut glow level and the lilac-violet colour of the owner sample. Status done.
+- [[task-141-xp-pickups-lumen-test]] — Try to make the XP nut and chip emit light on the floor through Lumen: emissive light source flag and mesh cards. Status done.

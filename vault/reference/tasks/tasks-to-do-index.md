@@ -10,5 +10,4 @@ A global task moves to [[tasks-done-index]] when it is done (`vault/scripts/task
 
 ## Relations
 - [[tasks-index]] — parent index.
-- [[task-141-xp-pickups-lumen-test]] — Try to make the XP nut and chip emit light on the floor through Lumen: emissive light source flag and mesh cards. Status in-progress.
-- [[task-142-xp-bloom-post-process]] — Add a PostProcessVolume with explicit bloom settings to the arena level so the halo effect can be tuned and tested. Status todo.
+- [[task-142-xp-bloom-post-process]] — Add a PostProcessVolume with explicit bloom settings to the arena level so the halo effect can be tuned and tested. Status in-progress.

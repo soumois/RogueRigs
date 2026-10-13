@@ -223,6 +223,7 @@ kind: note
 | [[task-138-01-xp-pickups-perf-test]] | opus | 1 | 0k | 115k | 1964k | 11k |
 | [[task-138-02-xp-pickups-perf-test]] | opus | 1 | 0k | 232k | 4211k | 15k |
 | [[task-140-01-xp-chip-glow-violet]] | sonnet | 1 | 0k | 19k | 97k | 0k |
+| [[task-141-01-xp-pickups-lumen-test]] | sonnet | 1 | 0k | 32k | 521k | 1k |
 
 ## Totals
 | Scope | Input | Cache write | Cache read | Output |
