@@ -146,7 +146,7 @@ for (const [id, n] of Object.entries(notes)) {
 }
 
 // ---------- _paths.md (id -> path map) ----------
-const mapLines = [...ids].filter((id) => !notes[id].meta).sort().map((id) => `${id}  ${notes[id].rel}`);
+const mapLines = [...ids].filter((id) => !notes[id].meta && !notes[id].rel.startsWith('reference/tasks/')).sort().map((id) => `${id}  ${notes[id].rel}`);
 const pathsContent = [
   '---',
   'id: _paths',
@@ -159,6 +159,9 @@ const pathsContent = [
   'One line per node: `id  path`. Use it to resolve a wikilink whose target is not in the',
   'directory you are reading (cross-branch jump). This is resolution, not search: you',
   'must already hold the id from a `## Relations` gloss. Do not read it to find a topic.',
+  'Task nodes are NOT listed (they are reached through tasks-index). Resolve one by its number:',
+  'global `task-NNN-slug` is `reference/tasks/task-NNN-slug.md`; subtask `task-NNN-MM-slug` is',
+  '`reference/tasks/task-NNN-<slug of the global>/task-NNN-MM-slug.md` (list that folder).',
   '',
   '```',
   ...mapLines,

@@ -25,7 +25,7 @@ Read [[_navigation]] before descending. Read [[_authoring]] before creating or m
 ## Relations
 - [[_navigation]] — how to traverse the vault: read FIRST.
 - [[_authoring]] — writing contract: read BEFORE any create/modify.
-- [[_paths]] — generated id -> path map; open once per session to resolve a cross-branch wikilink.
+- [[_paths]] — generated id -> path map; open once per session to resolve a non-task cross-branch wikilink.
 - [[gdd-index]] — the game specification: pillars, glossary, run, player, weapons, enemies, terrain, art and audio.
 - [[agents-index]] — the dev crew: one node per agent with role, inputs, output format and token ceiling.
 - [[tech-index]] — how the game is built: conventions, C++ systems, Blueprint docs, pipelines.
