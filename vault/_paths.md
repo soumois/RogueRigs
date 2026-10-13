@@ -146,6 +146,7 @@ placeholder-weapon-icons  reference/gdd/art-audio/placeholder-weapon-icons.md
 player-index  reference/gdd/player/player-index.md
 player-stats  reference/gdd/player/player-stats.md
 production-index  reference/production/production-index.md
+projectile-pool-evaluation  reference/tech/performance/projectile-pool-evaluation.md
 rarities  reference/gdd/weapons/rarities.md
 readability-rules  reference/gdd/art-audio/readability-rules.md
 robot-components-audit  reference/tech/performance/robot-components-audit.md
