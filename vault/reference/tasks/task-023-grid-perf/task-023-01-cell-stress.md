@@ -10,7 +10,7 @@ status: done
 - goal: cost of smaller cells measured.
 - agent: cpp
 - depends_on: none
-- inputs: [[arena-grid]], [[sys-grid]], [[sys-flow-field]], [[sys-spawner]], [[sys-explosions]], [[sys-stress]], [[stress-opt-m1]], [[perf-trace-m1]], [[cpp-standard]], [[sys-automation-tests]], [[drgs-analysis]]
+- inputs: [[arena-grid]], [[sys-grid]], [[sys-flow-field]], [[sys-spawner]], [[sys-explosions]], [[sys-stress]], [[perf-stress-opt-m1]], [[perf-trace-m1]], [[cpp-standard]], [[sys-automation-tests]], [[drgs-analysis]]
 - expected_output: a test-only way to run the stress map with a cell size parameter (200, 100, 67 uu) keeping the same world size and rock ratio (e.g. scaled copy of the M1 layout, test map or stress command; nothing shipped changes); measurements in -game (and staged build if quick): S0 and S2 at 100 and 400 robots, instance counts and draw/GPU ms, mass destruction (explosion chains breaking many blocks, a dig sweep), flow-field rebuild ms per destroyed block, spawn candidate scan ms, LOS cost, memory; Insights trace on the worst case; new node `stress-grid-cells` with tables, the bottlenecks per size and what would need optimizing (e.g. HISM per chunk, incremental flow field) with hour estimates. No gameplay or default change.
 - done_when: the -game runs completed with real numbers; report node written; lint clean.
 - editor_state: closed

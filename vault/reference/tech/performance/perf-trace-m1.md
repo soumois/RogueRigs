@@ -6,7 +6,7 @@ kind: doc
 ---
 # Insights trace at 400 robots (task-018-01, 2026-10-04)
 
-Same PC and `-game` editor binary as [[stress-final-m1]]. Capture: `Scripts/Run-StressTest.ps1 -Trace cpu,frame,bookmark,region [-ExtraArgs -statnamedevents]` ([[sys-stress]]); window = region `Stress_400_Measure` (20 s). Analysis headless: `UnrealInsights.exe -OpenTraceFile=<utrace> -AutoQuit -NoUI -ExecOnAnalysisCompleteCmd="@=<rsp>"`, rsp lines `TimingInsights.ExportTimerStatistics <csv> -threads=GameThread -region=Stress_400_Measure` and `TimingInsights.ExportTimingEvents ...`. CSV paths must not contain spaces.
+Same PC and `-game` editor binary as [[perf-stress-final-m1]]. Capture: `Scripts/Run-StressTest.ps1 -Trace cpu,frame,bookmark,region [-ExtraArgs -statnamedevents]` ([[sys-stress]]); window = region `Stress_400_Measure` (20 s). Analysis headless: `UnrealInsights.exe -OpenTraceFile=<utrace> -AutoQuit -NoUI -ExecOnAnalysisCompleteCmd="@=<rsp>"`, rsp lines `TimingInsights.ExportTimerStatistics <csv> -threads=GameThread -region=Stress_400_Measure` and `TimingInsights.ExportTimingEvents ...`. CSV paths must not contain spaces.
 
 ## Game thread, ms per frame (plain trace, stepped run 50→400)
 | Timer (inclusive) | S0 | S2 |
@@ -45,5 +45,5 @@ Same S2 trace (`-Trace cpu,frame,region`, counts 100+200+400, 55 s each) on the 
 ## Relations
 - [[performance-index]] — parent index.
 - [[perf-risks]] — leads re-ranked from these numbers.
-- [[stress-final-m1]] — the stat unit tables this trace explains.
+- [[perf-stress-final-m1]] — the stat unit tables this trace explains.
 - [[sys-stress]] — launcher trace options and the measure regions.

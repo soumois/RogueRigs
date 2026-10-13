@@ -13,7 +13,7 @@ kind: doc
 - data: `PickupRadius` from `PlayerBaseStats.csv` ([[sys-gas-core]]); drop tunables on the grid Blueprint.
 - depends_on: [[sys-grid]], [[sys-player]], [[sys-gas-core]].
 - implements: [[ore-blocks]], [[heal-ore]], [[ore-economy]] (drops only), [[player-stats]] (pickup radius).
-- gotchas: one subsystem loop and one 2D distance per resting pickup per frame; pooled since task-092-01 (live counts skip idle pool pickups; numbers in [[stress-grid-cells]]). Stress S7 burst of 400 chasers (1200 cubes, task-027-01): avg 9.19 ms, p99 11.34 ms; the single burst frame (400 deaths + 16 barrels) 109 ms max, the known per-death burst cost. Grid ore and heal chunks use the same 80-220 uu pop: at 67 uu cells a chunk can rest over unbroken rock for its 1 s rest (a Blueprint can lower `PopMaxDistance`). A single hit that both crosses a multiple and destroys the block gives no dig drop for that multiple. Fourth test (task-034-01): heal pickups were collected (magnet, event) but healed nothing, there was no heal code; collection itself works for every type, no overlap is involved. Ore value: 1 per chunk (owner 2026-10-10), carried by `OreValue`. The ore chunk Blueprint should have no trail component ([[ore-in-rock-plan]], task-070-02). Pickups spawn only in a game world.
+- gotchas: one subsystem loop and one 2D distance per resting pickup per frame; pooled since task-092-01 (live counts skip idle pool pickups; numbers in [[perf-stress-grid-cells]]). Stress S7 burst of 400 chasers (1200 cubes, task-027-01): avg 9.19 ms, p99 11.34 ms; the single burst frame (400 deaths + 16 barrels) 109 ms max, the known per-death burst cost. Grid ore and heal chunks use the same 80-220 uu pop: at 67 uu cells a chunk can rest over unbroken rock for its 1 s rest (a Blueprint can lower `PopMaxDistance`). A single hit that both crosses a multiple and destroys the block gives no dig drop for that multiple. Fourth test (task-034-01): heal pickups were collected (magnet, event) but healed nothing, there was no heal code; collection itself works for every type, no overlap is involved. Ore value: 1 per chunk (owner 2026-10-10), carried by `OreValue`. The ore chunk Blueprint should have no trail component ([[ore-in-rock-plan]], task-070-02). Pickups spawn only in a game world.
 
 ## Relations
 - [[sys-pickups-lifecycle]] — Pickup lifecycle (pop, rest, attraction, collection) and its editable properties. Open to change pickup motion or collection.
@@ -25,6 +25,6 @@ kind: doc
 - [[sys-enemies]] — robots dropping XP pickups.
 - [[sys-progression]] — where collected XP goes.
 - [[sys-actor-pool]] — the pool every grid and robot drop comes from.
-- [[stress-grid-cells]] — XP pool before/after numbers (task-092-01).
+- [[perf-stress-grid-cells]] — XP pool before/after numbers (task-092-01).
 - [[xp-level-up]] — the big XP block rule (merge of more than 8 cubes) this system implements.
 - [[color-code]] — colour of the big XP block.

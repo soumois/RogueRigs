@@ -18,10 +18,10 @@ Nobody has looked at the result of most of this work: the owner judges, agents o
 - Cold start: the first mass kill creates cubes for 3 frames (about 60 ms); the prewarm of task-111 covers 30 cubes only ([[sys-spawner]]).
 - Danger circles (barrel, heavy) are dotted like zone circles: confirm the look once seen ([[ground-telegraph]]).
 - Task 069 (minimum specification) is cancelled by the owner: it comes at the end of the project.
-- Projectile pooling: not now ([[projectile-pool-evaluation]]); revisit at 15 projectiles in one frame.
+- Projectile pooling: not now ([[perf-projectile-pool-evaluation]]); revisit at 15 projectiles in one frame.
 
 ## Task numbering collisions
-Two sessions created numbers in parallel: 106 is both `weapons-ui-size` and `wear-mask-texture`, 108 is both `weapon-icons-placeholder` and `barrel-on-floor`. Run `ls vault/reference/tasks` right before creating a task, and renumber one of each pair when convenient.
+Two sessions created numbers in parallel. 106 is still both `weapons-ui-size` and `wear-mask-texture` (the second was in progress during the vault pass, so it was not renamed). The old 108 `barrel-on-floor` is now `task-117-barrel-on-floor`. Run `ls vault/reference/tasks` right before creating a task.
 
 ## Things to know
 - Dates: nodes created after midnight (machine time) read 2026-10-13 (tasks 110 to 115 and later): same session.
@@ -41,6 +41,6 @@ Read [[tasks-to-do-index]] (empty), this node, the checklist, then [[orchestrato
 - [[sys-actor-pool]] — pools, prewarm and the reuse cost.
 - [[sys-spawner]] — the prewarm rule and the wave data it reads.
 - [[placeholder-weapon-icons]] — the temporary icons and how to replace them.
-- [[projectile-pool-evaluation]] — why projectiles are not pooled yet.
+- [[perf-projectile-pool-evaluation]] — why projectiles are not pooled yet.
 - [[assignment-4-content-pipeline]] — Assignment 4 brief and status.
 - [[tasks-index]] — tasks and status.

@@ -1,7 +1,7 @@
 ---
-id: stress-grid-pools-hud
+id: perf-stress-grid-pools-hud
 description: "Robot pool (091-01), XP pickup pool (092-01), passive hit capsule (093-01), HUD after the refactor (105-01). Open for pool and HUD costs."
-parent: stress-grid-cells
+parent: perf-stress-grid-cells
 kind: doc
 ---
 # Grid stress — pools hud
@@ -37,7 +37,7 @@ Same procedure as the robot pool section. Before = 1bc689b (cubes, ore and heal 
 - Longest wait 3 frames in every run. Lead if the first mass kill of a run matters: prewarm XP cubes at level start (the pool supports `Prewarm`; default none), or a longer `SpawnMaxFrames` (owner contract: 3).
 
 ## Passive hit capsule (task-093-01, 2026-10-10)
-Editor `-game`, same commands as task-071-01 (game 250 settle 30 measure 60, `rr.Pacing.RunLookahead 0`; S0 400 settle 5 measure 20). Before = 9ad55cc, after = 1deed6f (`rr.Enemy.PassiveHitCapsule` 1, [[sys-enemies-movement]], audit [[robot-components-audit]]); all runs within 25 min, owner normal profile, nothing closed, no editor running. Game thread avg / p99 / max; movement = `-statnamedevents` trace of a third game 250 run, `URRRobotMovementComponent_Tick` inclusive ms per frame (Insights, trace outside the repo).
+Editor `-game`, same commands as task-071-01 (game 250 settle 30 measure 60, `rr.Pacing.RunLookahead 0`; S0 400 settle 5 measure 20). Before = 9ad55cc, after = 1deed6f (`rr.Enemy.PassiveHitCapsule` 1, [[sys-enemies-movement]], audit [[perf-robot-components-audit]]); all runs within 25 min, owner normal profile, nothing closed, no editor running. Game thread avg / p99 / max; movement = `-statnamedevents` trace of a third game 250 run, `URRRobotMovementComponent_Tick` inclusive ms per frame (Insights, trace outside the repo).
 
 | Run | Before | After |
 |---|---|---|
@@ -66,11 +66,11 @@ Editor `-game`, HEAD 6561e13 (HUD of tasks 094 and 103: seven event-driven panel
 - HUD before/after: [[perf-trace-real-game]] (WBP_HUD Blueprint tick 0.40 ms → 0.11 ms for every panel Blueprint event together).
 
 ## Relations
-- [[stress-grid-cells]] — parent hub: summary and verdict.
+- [[perf-stress-grid-cells]] — parent hub: summary and verdict.
 - [[sys-spawner]] — referenced above.
 - [[sys-actor-pool]] — referenced above.
 - [[sys-pickups]] — referenced above.
 - [[sys-enemies-movement]] — referenced above.
-- [[robot-components-audit]] — referenced above.
+- [[perf-robot-components-audit]] — referenced above.
 - [[sys-hud]] — referenced above.
 - [[perf-trace-real-game]] — referenced above.

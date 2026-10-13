@@ -1,7 +1,7 @@
 ---
-id: stress-grid-packaged-movement
+id: perf-stress-grid-packaged-movement
 description: "Packaged build and spike causes (068-01) and robot light movement (071-01), 2026-10-10. Open for editor versus packaged and movement cost."
-parent: stress-grid-cells
+parent: perf-stress-grid-cells
 kind: doc
 ---
 # Grid stress — packaged movement
@@ -39,7 +39,7 @@ Editor `-game`, same commands as task-067-01 (game 250, settle 30, measure 60, `
 - Kills 860–1064 per run (before 940–1099): robots still reach the miner around rock (also `RogueRigs.Enemies.LightMovementAroundRock`). Miner damage is not logged: the pacing harness keeps the miner invulnerable.
 
 ## Relations
-- [[stress-grid-cells]] — parent hub: summary and verdict.
+- [[perf-stress-grid-cells]] — parent hub: summary and verdict.
 - [[build-toolchain]] — referenced above.
 - [[perf-trace-real-game]] — referenced above.
 - [[sys-enemies-movement]] — referenced above.

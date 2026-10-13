@@ -1,12 +1,12 @@
 ---
-id: stress-grid-cells
+id: perf-stress-grid-cells
 description: "Cell size stress test (80², 160², 240² cells), cause, verdict and index of the later measurement sections. Open for the verdict or a period."
 parent: performance-index
 kind: doc
 ---
 # Grid cell size stress test (2026-10-05, task-023-01)
 
-Same PC and editor `-game` procedure as [[stress-opt-m1]]. `L_ArenaM1` split at runtime by `rr.Stress.Subdivide` ([[sys-stress]]): same world, same rock. 80² / 160² / 240² cells; colliding instances 3 729 / 14 916 / 33 561. Chain: 30 barrel explosions at the same points, 100 robots. Dig: same rock area per second (8 cells of 200 uu/s, i.e. 32 or 72 small cells/s). Budget: 16.7 ms avg, 25 ms p99 ([[stress-test-m1]]). ms, avg / p99.
+Same PC and editor `-game` procedure as [[perf-stress-opt-m1]]. `L_ArenaM1` split at runtime by `rr.Stress.Subdivide` ([[sys-stress]]): same world, same rock. 80² / 160² / 240² cells; colliding instances 3 729 / 14 916 / 33 561. Chain: 30 barrel explosions at the same points, 100 robots. Dig: same rock area per second (8 cells of 200 uu/s, i.e. 32 or 72 small cells/s). Budget: 16.7 ms avg, 25 ms p99 ([[perf-stress-test-m1]]). ms, avg / p99.
 
 ## Steady state (no destruction)
 | Run | 200 uu | 100 uu | 67 uu |
@@ -38,14 +38,14 @@ Insights trace (67 uu chain): 3.0 of 3.1 s explosion time is `UInstancedStaticMe
 - Any smaller size also needs cell-counted tunables rescaled (spawner band, drops per ore cell, dig health): gameplay task, not measured here.
 
 ## Relations
-- [[stress-grid-fine-grid]] — Measurements after the fine grid: task-029-01, 029-02 and the final check at 67 uu (2026-10-05). Open for fine-grid costs and budgets.
-- [[stress-grid-perf-session]] — Perf session 063-01, worker-thread flow field 066-02 and real-game stress limits 067-01 (2026-10-09). Open for the limits found in game.
-- [[stress-grid-packaged-movement]] — Packaged build and spike causes (068-01) and robot light movement (071-01), 2026-10-10. Open for editor versus packaged and movement cost.
-- [[stress-grid-pools-hud]] — Robot pool (091-01), XP pickup pool (092-01), passive hit capsule (093-01), HUD after the refactor (105-01). Open for pool and HUD costs.
+- [[perf-stress-grid-fine-grid]] — Measurements after the fine grid: task-029-01, 029-02 and the final check at 67 uu (2026-10-05). Open for fine-grid costs and budgets.
+- [[perf-stress-grid-perf-session]] — Perf session 063-01, worker-thread flow field 066-02 and real-game stress limits 067-01 (2026-10-09). Open for the limits found in game.
+- [[perf-stress-grid-packaged-movement]] — Packaged build and spike causes (068-01) and robot light movement (071-01), 2026-10-10. Open for editor versus packaged and movement cost.
+- [[perf-stress-grid-pools-hud]] — Robot pool (091-01), XP pickup pool (092-01), passive hit capsule (093-01), HUD after the refactor (105-01). Open for pool and HUD costs.
 - [[sys-pickups]] — the pooled pickups measured in the XP pool section.
 - [[performance-index]] — parent index.
 - [[sys-stress]] — subdivide, bench, chain and dig tools used here.
-- [[stress-opt-m1]] — the 200 uu tables of the same procedure.
+- [[perf-stress-opt-m1]] — the 200 uu tables of the same procedure.
 - [[sys-grid]] — the instanced components whose costs are measured.
 - [[task-023-01-cell-stress]] — the task that produced this report.
 - [[sys-flow-field]] — the incremental field measured in the task-029-02 section.
@@ -59,6 +59,6 @@ Insights trace (67 uu chain): 3.0 of 3.1 s explosion time is `UInstancedStaticMe
 - [[sys-enemies-movement]] — the light movement measured in the task-071-01 section.
 - [[task-091-01-robot-pool]] — the task that produced the robot pool section.
 - [[task-093-01-robot-overlap-cost]] — the task that produced the passive hit capsule section.
-- [[robot-components-audit]] — robot component audit behind the passive hit capsule section.
+- [[perf-robot-components-audit]] — robot component audit behind the passive hit capsule section.
 - [[task-105-01-hud-insights]] — the task that produced the HUD after the refactor section.
 - [[sys-hud]] — the refactored HUD measured in the task-105-01 section.

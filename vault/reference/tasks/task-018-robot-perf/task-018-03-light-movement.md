@@ -12,7 +12,7 @@ status: done
 - depends_on: task-018-02-crowd-collision
 - inputs: task-018-01 and 018-02 results, [[perf-risks]], [[sys-enemies]], [[sys-enemy-ai]], [[sys-automation-tests]], [[cpp-standard]].
 - expected_output: robot CharacterMovement settings for a flat arena (no physics interaction, cheaper floor checks, no unneeded sub-stepping), and tick interval of movement/AI raised for robots far from the miner (distance thresholds documented) without visible stutter near the screen; shotgun knockback still works; stress before/after; tests pass. Docs updated. Revert any setting that does not pay off and report it.
-- done_when: build exits 0; all `RogueRigs.*` tests pass headless; before/after stress numbers (S0 and S2 at 100, 200, 400, same procedure as [[stress-final-m1]]) recorded; docs updated; lint clean.
+- done_when: build exits 0; all `RogueRigs.*` tests pass headless; before/after stress numbers (S0 and S2 at 100, 200, 400, same procedure as [[perf-stress-final-m1]]) recorded; docs updated; lint clean.
 - editor_state: closed
 - token_ceiling: 90000
 - model: opus

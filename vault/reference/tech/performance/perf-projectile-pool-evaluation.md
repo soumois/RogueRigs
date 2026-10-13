@@ -1,5 +1,5 @@
 ---
-id: projectile-pool-evaluation
+id: perf-projectile-pool-evaluation
 description: "Should projectiles be pooled: measured spawns per second, ms per spawn and destroy, burst frames, pool saving estimate, migration risks, recommendation (no) and revisit threshold."
 parent: performance-index
 kind: doc
@@ -21,7 +21,7 @@ Editor `-game`, HEAD 79fbc4a, owner normal profile, nothing closed, no editor ru
 - Burst frames: a shotgun shot puts 7 pellets in one frame, 30 per minute, about 3.8 ms (max 7.6). Of 39 traced frames over 25 ms, two are pushed over by pellets (25.9 ms with 7.6 ms of pellets, 26 ms with 4.0). The untraced run: 8 spikes, all fill, GC or render-bound, none at a shotgun shot (game 14.53 / 21.52 / 52.15).
 
 ## What a pool would save (estimate)
-Assumption: reuse removes construction, component instancing, physics creation and BeginPlay, but keeps transform, collision toggle, visibility and movement restart, about 25–35 % of a spawn (robot reuse frames still cost 25–29 ms for 10–15 robots, [[stress-grid-cells]]; XP burst 204 → 91 ms). Saving: ≈ 0.07 ms per frame traced (≈ 0.05 untraced), a pellet frame 3.8 → ≈ 1.2 ms; destroy replaced by a similar release cost, GC gain negligible at 7 objects per second.
+Assumption: reuse removes construction, component instancing, physics creation and BeginPlay, but keeps transform, collision toggle, visibility and movement restart, about 25–35 % of a spawn (robot reuse frames still cost 25–29 ms for 10–15 robots, [[perf-stress-grid-cells]]; XP burst 204 → 91 ms). Saving: ≈ 0.07 ms per frame traced (≈ 0.05 untraced), a pellet frame 3.8 → ≈ 1.2 ms; destroy replaced by a similar release cost, GC gain negligible at 7 objects per second.
 
 ## Migration cost and risks (≈ 4–6 h with tests)
 - `OnPoolAcquired` must reset `HitActors`, hit count, `MaxHits`, knockback, carried spec, `IgnoreActorWhenMoving` (owner differs: weapon, turret, robot), lifespan (pool clears timers; `InitialLifeSpan` runs once), and restart `ProjectileMovement` (`StopSimulating` clears `UpdatedComponent`).
@@ -37,5 +37,5 @@ Do not migrate. Cheaper lead if wanted: make the rifle mesh native or drop it (�
 - [[sys-projectiles]] — projectile classes and spawn path measured here.
 - [[sys-actor-pool]] — the pool a migration would use.
 - [[perf-trace-real-game]] — trace method and the robot and XP spawn costs used as reference.
-- [[stress-grid-cells]] — robot and XP pool results behind the saving estimate.
+- [[perf-stress-grid-cells]] — robot and XP pool results behind the saving estimate.
 - [[task-111-02-pool-prewarm]] — the task that produced this note.

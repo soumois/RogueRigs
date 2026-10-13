@@ -119,7 +119,7 @@ Archive: it exceeds the index size limits of [[_authoring]] on purpose (owner, 2
 - [[task-106-wear-mask-texture]] — One shared grayscale wear mask texture exists, tileable, ready to be multiplied on flat colours for edge wear, scratches and light grime. Status done.
 - [[task-106-weapons-ui-size]] — The weapon slots are bigger, like the DRGS reference (framed slots at the bottom centre), and the columns really have their set width. Status done.
 - [[task-107-barrel-integration]] — The validated barrel mesh replaces the grid barrel cylinder in the arena: C++ fits it to one cell, then BP_ArenaGrid uses it with its materials. Status done.
-- [[task-108-barrel-on-floor]] — Barrels stand on the floor and keep the floor slab under them: the barrel is no longer sunk into a floorless cell. Status done.
+- [[task-117-barrel-on-floor]] — Barrels stand on the floor and keep the floor slab under them: the barrel is no longer sunk into a floorless cell. Status done.
 - [[task-108-weapon-icons-placeholder]] — Placeholder UI icons (padlock and the three current weapons) exist as source images, validated by the owner, then prepared as transparent 256 x 256 PNGs. Status done.
 - [[task-109-weapon-slot-icons]] — Active weapon slots show the weapon icon large without its name, like the reference game; the icon tool keeps the icon aspect ratio. Status done.
 - [[task-110-xp-big-block]] — When many XP cubes fall in one place they become one bigger block of another colour worth the same total XP. Status done.

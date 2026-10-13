@@ -1,7 +1,7 @@
 ---
-id: stress-grid-fine-grid
+id: perf-stress-grid-fine-grid
 description: "Measurements after the fine grid: task-029-01, 029-02 and the final check at 67 uu (2026-10-05). Open for fine-grid costs and budgets."
-parent: stress-grid-cells
+parent: perf-stress-grid-cells
 kind: doc
 ---
 # Grid stress — fine grid
@@ -46,7 +46,7 @@ Game defaults (67 uu, `arena_m1_fine`, no subdivide), all task-029 work in, edit
 - S2 400 max 59.7 ms is one frame (p99 14.9); its cause was not captured (likely a GC, see [[sys-stress]] gotchas).
 
 ## Relations
-- [[stress-grid-cells]] — parent hub: summary and verdict.
+- [[perf-stress-grid-cells]] — parent hub: summary and verdict.
 - [[sys-grid]] — referenced above.
 - [[sys-flow-field]] — referenced above.
 - [[task-029-fine-grid]] — referenced above.

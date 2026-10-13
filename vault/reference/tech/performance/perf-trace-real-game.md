@@ -31,7 +31,7 @@ Staged Development build ([[build-toolchain]]), HEAD 0525a68, `Run-StressTest.ps
 
 ## Spikes (every frame > 22 ms of the window, 65 frames)
 - Robot wave, 6–17 robots in one frame (harness fill 52, director 4): 0.74 ms per robot in `SpawnActor` (17 robots = 12.5 ms): `PostActorConstruction` 0.30 (BeginPlay 0.21, almost all in the unscoped `ARREnemy`/BP BeginPlay), object construction 0.17, component registration 0.12–0.16, Blueprint component instancing 0.11 (2 per robot), overlap and floor queries ≈ 0.05; plus ≈ 2.7 ms of fill bookkeeping. Frames 22–30 ms.
-- XP burst, 24–195 cubes in one frame (9 frames): robots killed together finish their death shrink on the same frame, and `ARREnemy::UpdateDeath` → `DropXP` spawns all cubes and destroys the robots inside their actor ticks. 43.03 s: 67 robots destroyed (4.3 ms), 195 `BP_PickupXP_C` spawned (`SpawnActor` 9.0 ms + component instancing incl. the `TrailFX` Niagara component 5.1 ms), registration and unregistration ≈ 5 ms: 34.9 ms frame, ≈ 0.37 ms per dying robot with 3 cubes. This is the untagged spike of [[stress-grid-cells]] (robot count dropping).
+- XP burst, 24–195 cubes in one frame (9 frames): robots killed together finish their death shrink on the same frame, and `ARREnemy::UpdateDeath` → `DropXP` spawns all cubes and destroys the robots inside their actor ticks. 43.03 s: 67 robots destroyed (4.3 ms), 195 `BP_PickupXP_C` spawned (`SpawnActor` 9.0 ms + component instancing incl. the `TrailFX` Niagara component 5.1 ms), registration and unregistration ≈ 5 ms: 34.9 ms frame, ≈ 0.37 ms per dying robot with 3 cubes. This is the untagged spike of [[perf-stress-grid-cells]] (robot count dropping).
 - GC: one full GC at 66.2 s, 5.3 ms (reachability 1.0 ms) in a 16.9 ms frame, then 20 frames of incremental purge at 2.1 ms: no spike. Editor `-game` GC frame 49 ms (editor-only cost, [[perf-trace-m1]]).
 - No PSO, shader compile, streaming or async loading event in any spike frame.
 
@@ -42,7 +42,7 @@ Staged Development build ([[build-toolchain]]), HEAD 0525a68, `Run-StressTest.ps
 4. HUD Blueprint tick 0.40 ms (gone since task-105-01, below) and robot BP actor ticks 0.58 ms.
 
 ## After the HUD refactor (task-105-01, 2026-10-11)
-Editor `-game` (not packaged), same command, channels and `-statnamedevents`; 4297 frames, 201 robots avg; run numbers in [[stress-grid-cells]]. Blueprint function scopes are visible by name.
+Editor `-game` (not packaged), same command, channels and `-statnamedevents`; 4297 frames, 201 robots avg; run numbers in [[perf-stress-grid-cells]]. Blueprint function scopes are visible by name.
 
 | Game thread, ms per frame | 068-01 | 105-01 |
 |---|---|---|
@@ -61,7 +61,7 @@ Comparable: the HUD rows (both scoped by name, close robot counts). The HUD Blue
 
 ## Relations
 - [[performance-index]] — parent index.
-- [[stress-grid-cells]] — packaged vs editor tables and the spike lines this trace explains.
+- [[perf-stress-grid-cells]] — packaged vs editor tables and the spike lines this trace explains.
 - [[perf-trace-m1]] — the S0/S2 trace of the same method and the editor GC hitch.
 - [[sys-stress]] — game mode, launcher and spike tags.
 - [[task-068-01-shipping-insights]] — the task that produced this trace.

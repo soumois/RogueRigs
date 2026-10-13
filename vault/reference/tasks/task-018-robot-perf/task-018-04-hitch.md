@@ -12,7 +12,7 @@ status: done
 - depends_on: task-018-03-light-movement
 - inputs: task-018-01 result, [[perf-risks]], [[sys-projectiles]], [[sys-damage]], [[sys-automation-tests]], [[cpp-standard]].
 - expected_output: fix chosen from the trace evidence: e.g. incremental or time-sliced GC settings in config, fewer transient UObjects (projectile and damage-number pools) or another cause; max frame over a 3-minute S2 run before/after; docs ([[perf-risks]], relevant system docs). If the cause cannot be fixed in the budget, report it with evidence and keep the code unchanged.
-- done_when: build exits 0; all `RogueRigs.*` tests pass headless; before/after stress numbers (S0 and S2 at 100, 200, 400, same procedure as [[stress-final-m1]]) recorded; docs updated; lint clean.
+- done_when: build exits 0; all `RogueRigs.*` tests pass headless; before/after stress numbers (S0 and S2 at 100, 200, 400, same procedure as [[perf-stress-final-m1]]) recorded; docs updated; lint clean.
 - editor_state: closed
 - token_ceiling: 90000
 - model: opus

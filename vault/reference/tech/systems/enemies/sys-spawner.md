@@ -17,7 +17,7 @@ kind: doc
 - data: none (tunables on the actor). Threat-driven spawn rate: open ([[difficulty]]).
 - depends_on: [[sys-flow-field]], [[sys-grid]], [[sys-enemies]], [[sys-player]] (camera).
 - implements: [[enemies-index]] M1 spawn rule.
-- gotchas: a queued robot appears up to 20 frames (about 0.25 s at 80 fps) after its cell was chosen off screen; a fast run may bring the nearest band row to the screen edge meanwhile. One full-grid scan (240 × 240, 1.13 ms measured in [[stress-grid-cells]]) per single spawn or per pack. A side with fewer cells than the pack (arena edge) gives a smaller pack; other sides do not fill it. The bounding box of the trapezoid is wider than the near screen edge. Pawn occupancy uses actor locations only. No candidate logs Verbose and skips. Tests: [[sys-automation-tests]].
+- gotchas: a queued robot appears up to 20 frames (about 0.25 s at 80 fps) after its cell was chosen off screen; a fast run may bring the nearest band row to the screen edge meanwhile. One full-grid scan (240 × 240, 1.13 ms measured in [[perf-stress-grid-cells]]) per single spawn or per pack. A side with fewer cells than the pack (arena edge) gives a smaller pack; other sides do not fill it. The bounding box of the trapezoid is wider than the near screen edge. Pawn occupancy uses actor locations only. No candidate logs Verbose and skips. Tests: [[sys-automation-tests]].
 
 ## Relations
 - [[sys-spawner-pool-prewarm]] — Spawner pool use (task-091-01) and staggered prewarm (task-111-01): what is created ahead, over how many frames. Open to change pooling or prewarm.

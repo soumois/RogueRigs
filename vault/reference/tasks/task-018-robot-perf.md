@@ -9,8 +9,8 @@ status: done
 
 - request: "Sinon que proposes tu pour l'optimisation du nombre de robot ?" Then: "oui lance les deux, comme ça je gagne encore de la marge pour le rendu et j'aimerais en effet que les robots se pack plus, donc ça tombe bien" (2026-10-04).
 - goal: more robots per frame and no periodic hitch: 400 robots around 9–10 ms instead of 13.6, no steady-play frame over 25 ms; robots may pack tighter (owner wants it).
-- acceptance: (1) build exits 0; all tests pass; (2) each step records before/after S0 and S2 numbers; (3) final S0/S2/S7 table vs [[stress-final-m1]] with the new ceiling; (4) the 61 s hitch explained and removed or reduced; (5) packs still reach the miner and spread around it (integration tests, PIE look by the owner); (6) docs [[perf-risks]], [[sys-enemies]], [[sys-enemy-ai]], new perf node; lint clean; committed.
-- gdd_check: Read [[perf-risks]], [[stress-final-m1]], [[enemies-index]]. Owner accepts tighter packing (2026-10-04). Gains are estimates until measured; any step that does not pay off is reverted and reported.
+- acceptance: (1) build exits 0; all tests pass; (2) each step records before/after S0 and S2 numbers; (3) final S0/S2/S7 table vs [[perf-stress-final-m1]] with the new ceiling; (4) the 61 s hitch explained and removed or reduced; (5) packs still reach the miner and spread around it (integration tests, PIE look by the owner); (6) docs [[perf-risks]], [[sys-enemies]], [[sys-enemy-ai]], new perf node; lint clean; committed.
+- gdd_check: Read [[perf-risks]], [[perf-stress-final-m1]], [[enemies-index]]. Owner accepts tighter packing (2026-10-04). Gains are estimates until measured; any step that does not pay off is reverted and reported.
 - confirmed_by_owner: yes (2026-10-04, all subtasks pre-approved)
 - milestone: M1
 - next_step: none

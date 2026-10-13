@@ -23,4 +23,4 @@ kind: doc
 - [[sys-damage]] — the per-hit event feeding it.
 - [[task-025-02-bp-numbers]] — the Niagara system built on this contract.
 - [[sys-damage-numbers-niagara]] — child: per-digit Niagara user parameters and emitter recipe (task-025-04); open to build or check NS_DamageNumbers.
-- [[stress-damage-numbers]] — visual check findings and S2 cost of the numbers (task-025-03).
+- [[perf-stress-damage-numbers]] — visual check findings and S2 cost of the numbers (task-025-03).

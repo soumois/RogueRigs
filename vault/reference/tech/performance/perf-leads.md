@@ -6,7 +6,7 @@ kind: doc
 ---
 # Optimization leads (after task-018)
 
-Ranked from [[stress-opt-m1]] and the per-timer trace [[perf-trace-m1]]. Gains are estimates; no optimization is coded without the owner.
+Ranked from [[perf-stress-opt-m1]] and the per-timer trace [[perf-trace-m1]]. Gains are estimates; no optimization is coded without the owner.
 
 ## Done or closed in task-018
 - Enemy-enemy capsule collision: robot-robot sweeps skipped by mask filter, lighter RVO (task-018-02, [[sys-enemies]]); ≈ 0.3–0.5 ms at 200–400, inside the run spread.
@@ -26,6 +26,6 @@ Ranked from [[stress-opt-m1]] and the per-timer trace [[perf-trace-m1]]. Gains a
 ## Relations
 - [[performance-index]] — parent index.
 - [[perf-risks]] — cost centers and fallbacks these leads refer to.
-- [[stress-opt-m1]] — the tables that ranked these leads.
+- [[perf-stress-opt-m1]] — the tables that ranked these leads.
 - [[perf-trace-m1]] — per-timer costs behind the estimates.
-- [[stress-final-m1]] — pre-optimization tables.
+- [[perf-stress-final-m1]] — pre-optimization tables.

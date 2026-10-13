@@ -1,7 +1,7 @@
 ---
-id: stress-grid-perf-session
+id: perf-stress-grid-perf-session
 description: "Perf session 063-01, worker-thread flow field 066-02 and real-game stress limits 067-01 (2026-10-09). Open for the limits found in game."
-parent: stress-grid-cells
+parent: perf-stress-grid-cells
 kind: doc
 ---
 # Grid stress — perf session
@@ -62,6 +62,6 @@ Spike lines (frame, game, draw, GPU ms): GC at t 46 s, 150: 48.1 / 46.8 / 10.3 /
 - The harness fill (a director wave every 0.5 s while under the cap) spawns more often than the director; real games see the same per-wave spike every 5.5–7 s.
 
 ## Relations
-- [[stress-grid-cells]] — parent hub: summary and verdict.
+- [[perf-stress-grid-cells]] — parent hub: summary and verdict.
 - [[sys-flow-field]] — referenced above.
 - [[sys-stress]] — referenced above.

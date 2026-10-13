@@ -1,12 +1,12 @@
 ---
-id: stress-opt-m1
+id: perf-stress-opt-m1
 description: "Stress tables after task-018 optimization: S0, S2, S7 in editor -game vs stress-final-m1, new ceilings, staged Development build S0 and S2 ceilings."
 parent: performance-index
 kind: doc
 ---
 # M1 stress test after optimization (2026-10-04, task-018-05)
 
-Same PC, method and `-game` editor binary as [[stress-final-m1]] (settle 5 s, measure 20 s, step-by-step top-up, [[sys-stress]]); code at fe827fd (task-018-02/03, [[sys-enemies]]). Milliseconds avg / p99 / max. Steps last 25 s, so the editor-only GC frame ([[perf-trace-m1]]) lands in every 2nd or 3rd step: max frames of 35–47 ms are GC, not game cost.
+Same PC, method and `-game` editor binary as [[perf-stress-final-m1]] (settle 5 s, measure 20 s, step-by-step top-up, [[sys-stress]]); code at fe827fd (task-018-02/03, [[sys-enemies]]). Milliseconds avg / p99 / max. Steps last 25 s, so the editor-only GC frame ([[perf-trace-m1]]) lands in every 2nd or 3rd step: max frames of 35–47 ms are GC, not game cost.
 
 ## S0 peace, editor -game
 | Chasers | Frame | Game | Draw / GPU avg | Final-m1 frame / game avg |
@@ -65,7 +65,7 @@ Same PC, method and `-game` editor binary as [[stress-final-m1]] (settle 5 s, me
 
 ## Relations
 - [[performance-index]] — parent index.
-- [[stress-final-m1]] — the pre-optimization tables compared here.
+- [[perf-stress-final-m1]] — the pre-optimization tables compared here.
 - [[perf-leads]] — remaining leads re-ranked from these tables.
 - [[sys-stress]] — run modes, launcher and `-Exe` option used.
 - [[perf-trace-m1]] — trace explaining the editor-only GC frames.

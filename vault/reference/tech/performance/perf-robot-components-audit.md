@@ -1,5 +1,5 @@
 ---
-id: robot-components-audit
+id: perf-robot-components-audit
 description: "Robot component audit (task-093-01): components per robot class, attachment, collision and overlap flags, what needs them, and the movement cost ranking."
 parent: performance-index
 kind: note
@@ -30,11 +30,11 @@ Every class also has: root `CollisionCylinder` (profile Pawn, Projectile ignored
 Robot movement tick 3.64: scoped move end 2.17 (child transforms 1.07 incl. physics body moves 0.64; overlap updates 0.83 of which the hit capsule overlap query 0.61), swept moves 1.52.
 
 ## Removed (task-093-01)
-The hit capsule no longer queries overlaps when the robot moves (passive side; [[sys-enemies-movement]]): movement 3.64 → 3.16 ms per frame, numbers in [[stress-grid-cells]]. Parts already had overlap events off; none is death-only. Remaining child transforms are visible parts: merging each robot's parts into one mesh is a Blueprint/asset lead, not done.
+The hit capsule no longer queries overlaps when the robot moves (passive side; [[sys-enemies-movement]]): movement 3.64 → 3.16 ms per frame, numbers in [[perf-stress-grid-cells]]. Parts already had overlap events off; none is death-only. Remaining child transforms are visible parts: merging each robot's parts into one mesh is a Blueprint/asset lead, not done.
 
 ## Relations
 - [[performance-index]] — parent index.
 - [[sys-enemies-movement]] — light movement and the passive hit capsule.
-- [[stress-grid-cells]] — before/after numbers (task-093-01 section).
+- [[perf-stress-grid-cells]] — before/after numbers (task-093-01 section).
 - [[perf-trace-real-game]] — the capture method and the earlier ranking.
 - [[task-093-01-robot-overlap-cost]] — the task that produced this audit.

@@ -1,5 +1,5 @@
 ---
-id: stress-damage-numbers
+id: perf-stress-damage-numbers
 description: "Niagara damage numbers check (task-025-03): -game screenshot findings, asset defects with fixes for the bp agent, S2 100/400 numbers on vs off."
 parent: performance-index
 kind: doc
@@ -20,17 +20,17 @@ Method: editor `-game` 1920×1080 on L_ArenaM1, `Run-StressTest.ps1 -Mode fire`,
 5. Crit colour: raise saturation (e.g. (1, 0.8, 0.3)) or add a dark outline in M_DamageNumber; normal digits (≈ 25 px tall at 1080p) are small but legible.
 
 ## S2 continuous fire, editor -game, settle 5 s, measure 20 s (ms avg / p99 / max)
-| Robots | Numbers on: frame | game | GPU avg | Numbers off (`NumberSystem=None`): frame | game | GPU avg | [[stress-opt-m1]] game avg |
+| Robots | Numbers on: frame | game | GPU avg | Numbers off (`NumberSystem=None`): frame | game | GPU avg | [[perf-stress-opt-m1]] game avg |
 |---|---|---|---|---|---|---|---|
 | 100 | 18.91 / 39.03 / 47.5 | 8.20 / 12.57 | 15.67 | 15.37 / 21.86 / 25.1 | 8.21 / 13.09 | 12.46 | 5.20 |
 | 400 | 18.58 / 27.75 / 28.6 | 15.49 / 22.88 | 16.02 | 20.06 / 27.52 / 1399 (shot) | 16.09 / 25.37 | 15.54 | 12.30 |
 
-- Game thread: no regression with numbers on (+0.0 ms at 100, −0.6 ms at 400, within run noise); acceptance (3) of [[task-025-damage-numbers]] holds on the game thread. The actor damage text of [[stress-opt-m1]] no longer exists, so the same-build on/off pair is the comparison; the gap to stress-opt-m1 comes from later tasks (weapons, fine grid), not from the numbers.
+- Game thread: no regression with numbers on (+0.0 ms at 100, −0.6 ms at 400, within run noise); acceptance (3) of [[task-025-damage-numbers]] holds on the game thread. The actor damage text of [[perf-stress-opt-m1]] no longer exists, so the same-build on/off pair is the comparison; the gap to stress-opt-m1 comes from later tasks (weapons, fine grid), not from the numbers.
 - Frame is render/GPU bound in this build (GPU 12–16 ms); the 100 robots on/off GPU gap (3 ms) did not repeat at 400 and is treated as noise. Rendering was cheap because of defects 2–3; recheck once the asset is fixed (5 sprites per number at most 64 numbers per tick).
 
 ## Relations
 - [[performance-index]] — parent index.
 - [[bp-damage-numbers]] — the asset the defects apply to.
 - [[sys-damage-numbers]] — the subsystem and contract measured.
-- [[stress-opt-m1]] — earlier S2 reference.
-- [[stress-damage-numbers-recheck]] — child: task-025-06 recheck after the per-digit rebuild (defects 1–4 fixed, crit colour and crowd overlap remain, new S2).
+- [[perf-stress-opt-m1]] — earlier S2 reference.
+- [[perf-stress-damage-numbers-recheck]] — child: task-025-06 recheck after the per-digit rebuild (defects 1–4 fixed, crit colour and crowd overlap remain, new S2).

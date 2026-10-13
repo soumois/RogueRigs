@@ -1,12 +1,12 @@
 ---
-id: stress-final-m1
+id: perf-stress-final-m1
 description: "M1 final stress tables (task-013-02): S0 peace, S2 continuous fire, S7 mass kamikaze and barrel burst; avg, p99, max ms; baseline comparison; 100-cap verdict."
 parent: performance-index
 kind: doc
 ---
 # M1 stress test: final run (2026-10-03)
 
-Same machine, binaries and method as the baseline ([[stress-test-m1]]); after task-016 (rifle + shotgun, packs, alert, console, shuttle). Tool: [[sys-stress]] modes. Milliseconds avg / p99 / max; game = game thread; draw and GPU avg / p99.
+Same machine, binaries and method as the baseline ([[perf-stress-test-m1]]); after task-016 (rifle + shotgun, packs, alert, console, shuttle). Tool: [[sys-stress]] modes. Milliseconds avg / p99 / max; game = game thread; draw and GPU avg / p99.
 
 ## S0: chasers, miner in peace (`-Mode peace`)
 | Chasers | Frame | Game | Draw | GPU | Baseline frame |
@@ -47,7 +47,7 @@ Safe with margin: at 100 robots avg 9–10 ms (≈ 40 % under 16.6) and p99 11�
 
 ## Relations
 - [[performance-index]] — parent index.
-- [[stress-test-m1]] — protocol, thresholds and the baseline these numbers compare with.
+- [[perf-stress-test-m1]] — protocol, thresholds and the baseline these numbers compare with.
 - [[perf-risks]] — ranked optimization leads drawn from these tables.
 - [[sys-stress]] — the run modes and launcher options used.
-- [[stress-opt-m1]] — the same scenarios rerun after task-018 optimization.
+- [[perf-stress-opt-m1]] — the same scenarios rerun after task-018 optimization.

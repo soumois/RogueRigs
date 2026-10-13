@@ -21,7 +21,7 @@ kind: doc
   1. Emitter State: loop Infinite, system never completes.
   2. Emitter Spawn: `Emitter.LastBatchId` (int) = 0.
   3. Emitter Update, one module: spawn `User.DigitCount` particles when `User.DigitBatchId` != `Emitter.LastBatchId`, else 0; then `Emitter.LastBatchId` = `User.DigitBatchId`. The whole batch in one spawn module output, this frame only.
-  4. Particle Spawn: `Index` = `Engine.ExecIndex` (display name "Exec Index"). `Engine.ExecutionIndex` is not an engine variable (`NiagaraModule.cpp` defines `Engine.ExecIndex`; `NiagaraHlslTranslator.cpp` writes `Engine.ExecIndex = ExecIndex()` per stage): reading it gives the default 0, the likely cause of [[stress-damage-numbers]] defect 2. Cross-check: `Particles.UniqueID − Engine.Emitter.TotalSpawnedParticles` is the same value (translator sets UniqueID = TotalSpawnedParticles + ExecIndex(); `NiagaraEmitterInstanceImpl.cpp` sets TotalSpawnedParticles before each spawn call). Read every array at `Index`; no division, no modulo.
+  4. Particle Spawn: `Index` = `Engine.ExecIndex` (display name "Exec Index"). `Engine.ExecutionIndex` is not an engine variable (`NiagaraModule.cpp` defines `Engine.ExecIndex`; `NiagaraHlslTranslator.cpp` writes `Engine.ExecIndex = ExecIndex()` per stage): reading it gives the default 0, the likely cause of [[perf-stress-damage-numbers]] defect 2. Cross-check: `Particles.UniqueID − Engine.Emitter.TotalSpawnedParticles` is the same value (translator sets UniqueID = TotalSpawnedParticles + ExecIndex(); `NiagaraEmitterInstanceImpl.cpp` sets TotalSpawnedParticles before each spawn call). Read every array at `Index`; no division, no modulo.
   5. Check: `fx.DumpParticleData 1` shows indices 0…DigitCount−1 and spawned per batch = `User.DigitCount`.
 - depends_on: [[sys-damage-numbers]].
 - implements: [[damage-numbers]].
@@ -30,4 +30,4 @@ kind: doc
 ## Relations
 - [[sys-damage-numbers]] — parent: the subsystem writing these parameters.
 - [[bp-damage-numbers]] — the asset that must follow this contract.
-- [[stress-damage-numbers]] — the defects this contract answers.
+- [[perf-stress-damage-numbers]] — the defects this contract answers.

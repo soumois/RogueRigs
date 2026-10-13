@@ -18,7 +18,7 @@ kind: doc
 - data: grid layout through [[sys-grid]] (`GetGridSize`, `GetCellType`).
 - depends_on: [[sys-grid]], [[sys-player]] (miner as default goal).
 - implements: [[enemy-chaser]] movement ([[sys-enemies]]), later [[enemy-kamikaze]] and [[enemy-heavy]].
-- gotchas: measured BFS on `arena_m1` 80 × 80: mean 0.22 ms, worst 0.29 ms (20 runs, editor headless). At 67 uu (240 × 240): full rebuild 1.8–2.6 ms; walking miner (600 uu/s) + dig, budget 0.3: per-frame work avg 0.27 ms, p95 0.31 ms, field goal at most 13 frames old (`BudgetAt67uu`); game runs in [[stress-grid-cells]]. Same test on the loaded PC of task-063 (full rebuild 4.7–6.7 ms): time-sliced goal age 33–38 frames; worker thread (task-066-01, frames paced at 60 Hz): full rebuild 4.6–6.3 ms on the worker, game-thread work avg 0.07 ms, p95 0.11 ms, max 0.36 ms, goal age max 1 frame (two headless runs). In `-game` at 400 robots (task-066-02): worker game-thread flow work avg 0.046 ms, max 0.27 ms while digging, frame and game thread level with the time-sliced path ([[stress-grid-cells]]). Paths pass through cell centers and ignore capsule radius; CharacterMovement slides along block corners. A miner over void (falling) seeds the BFS from a non-walkable cell. Tests: [[sys-automation-tests]].
+- gotchas: measured BFS on `arena_m1` 80 × 80: mean 0.22 ms, worst 0.29 ms (20 runs, editor headless). At 67 uu (240 × 240): full rebuild 1.8–2.6 ms; walking miner (600 uu/s) + dig, budget 0.3: per-frame work avg 0.27 ms, p95 0.31 ms, field goal at most 13 frames old (`BudgetAt67uu`); game runs in [[perf-stress-grid-cells]]. Same test on the loaded PC of task-063 (full rebuild 4.7–6.7 ms): time-sliced goal age 33–38 frames; worker thread (task-066-01, frames paced at 60 Hz): full rebuild 4.6–6.3 ms on the worker, game-thread work avg 0.07 ms, p95 0.11 ms, max 0.36 ms, goal age max 1 frame (two headless runs). In `-game` at 400 robots (task-066-02): worker game-thread flow work avg 0.046 ms, max 0.27 ms while digging, frame and game thread level with the time-sliced path ([[perf-stress-grid-cells]]). Paths pass through cell centers and ignore capsule radius; CharacterMovement slides along block corners. A miner over void (falling) seeds the BFS from a non-walkable cell. Tests: [[sys-automation-tests]].
 
 ## Relations
 - [[sys-flow-field-updates]] — Flow field update paths: full rebuild, opened cells, goal change, worker thread, fallback budget. Open to change when the field is rebuilt.
@@ -26,4 +26,4 @@ kind: doc
 - [[sys-enemy-ai]] — the pathfinding decision this implements.
 - [[sys-grid]] — the terrain the field is built on.
 - [[sys-automation-tests]] — `RogueRigs.FlowField.*` tests.
-- [[stress-grid-cells]] — 67 uu dig, chain and walk measurements of the incremental field.
+- [[perf-stress-grid-cells]] — 67 uu dig, chain and walk measurements of the incremental field.

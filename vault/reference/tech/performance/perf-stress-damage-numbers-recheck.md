@@ -1,12 +1,12 @@
 ---
-id: stress-damage-numbers-recheck
+id: perf-stress-damage-numbers-recheck
 description: "Damage numbers recheck after the per-digit rebuild (task-025-06): -game screenshot findings, particle dump, remaining readability issues, S2 100/400 on vs off."
-parent: stress-damage-numbers
+parent: perf-stress-damage-numbers
 kind: doc
 ---
 # Damage numbers recheck (2026-10-05, task-025-06)
 
-Method: as [[stress-damage-numbers]]; 30 robots, `-Mode fire`, `rr.Debug.CritChance 0.5`, `rr.Debug.Shots` at 3–15 s real time (one run at `slomo 0.5` with `fx.DumpParticleData 1`, one at normal speed). Kept: `Saved/Screenshots/WindowsEditor/V6_01.png`, `V6_02.png`, `V6T_03.png` (not committed).
+Method: as [[perf-stress-damage-numbers]]; 30 robots, `-Mode fire`, `rr.Debug.CritChance 0.5`, `rr.Debug.Shots` at 3–15 s real time (one run at `slomo 0.5` with `fx.DumpParticleData 1`, one at normal speed). Kept: `Saved/Screenshots/WindowsEditor/V6_01.png`, `V6_02.png`, `V6T_03.png` (not committed).
 
 ## Confirmed
 - Multi-digit values read left to right from the top-down camera: "10", "20", "40", "25", "35" ([[sys-damage-numbers-niagara]] works as specified).
@@ -25,9 +25,9 @@ Method: as [[stress-damage-numbers]]; 30 robots, `-Mode fire`, `rr.Debug.CritCha
 
 - Game thread: off lies between the two on runs (±1.2 ms noise): no measurable cost. Run 2: 214 numbers, 504 digits in 45 s.
 - GPU bound (22–26 ms, higher than task-025-03 on the same machine): on vs off GPU +0.7–1.4 ms, within noise of one run each.
-- Cause of the 22–26 ms (task-029-01): not the project. A third-party game (`GraveyardKeeper2.exe`) ran in the background from 14:19 (≈ 27 % of the GPU 3D engine, ≈ 2.4 CPU cores, GPU at 82 °C); the task-025-03 and 025-06 runs came after, the [[stress-grid-cells]] runs (11:18–11:28) before. Bisect with the same load: the task-023-01 commit (a416610, built in a worktree) gives S0 / S2 100 15.1 / 14.0 ms (GPU 12.4 / 11.0), HEAD 16.2 / 13.8 ms (GPU 13.4 / 11.1), versus 8.4–9.0 ms when measured at 023-01. No project or asset fix; measure with other games and GPU apps closed. Confirmed once it closed: the same commit gives S0 / S2 100 8.50 / 8.88 ms (GPU 7.5 / 7.7), [[stress-grid-cells]] after section.
+- Cause of the 22–26 ms (task-029-01): not the project. A third-party game (`GraveyardKeeper2.exe`) ran in the background from 14:19 (≈ 27 % of the GPU 3D engine, ≈ 2.4 CPU cores, GPU at 82 °C); the task-025-03 and 025-06 runs came after, the [[perf-stress-grid-cells]] runs (11:18–11:28) before. Bisect with the same load: the task-023-01 commit (a416610, built in a worktree) gives S0 / S2 100 15.1 / 14.0 ms (GPU 12.4 / 11.0), HEAD 16.2 / 13.8 ms (GPU 13.4 / 11.1), versus 8.4–9.0 ms when measured at 023-01. No project or asset fix; measure with other games and GPU apps closed. Confirmed once it closed: the same commit gives S0 / S2 100 8.50 / 8.88 ms (GPU 7.5 / 7.7), [[perf-stress-grid-cells]] after section.
 
 ## Relations
-- [[stress-damage-numbers]] — parent: first check and the defects this recheck closes.
+- [[perf-stress-damage-numbers]] — parent: first check and the defects this recheck closes.
 - [[bp-damage-numbers]] — asset the readability fix applies to.
 - [[sys-damage-numbers]] — `CriticalColor`, `Jitter` and layout tunables.
