@@ -21,7 +21,7 @@ status: approved
 - Reroll: one button per choice screen, usable once, redraws 3 other upgrades at random (owner 2026-10-03).
 - Milestone: M1.
 
-- Big XP block (owner 2026-10-12, provisional): when one drop would create more than 8 cubes, groups of 8 become one bigger block (scale 1.8, bright white with the cyan glow) worth the sum of its cubes, so the total XP is unchanged; same magnet and pickup radius. It also lightens the pool when many robots die at once.
+- Big XP block (owner 2026-10-12, provisional): when one drop would create more than 8 cubes, groups of 8 become one bigger block (scale 1.8, bright magenta-pink with a glow of the same hue, owner 2026-10-13) worth the sum of its cubes, so the total XP is unchanged; same magnet and pickup radius. It also lightens the pool when many robots die at once.
 
 ## Relations
 - [[run-index]] — parent index.

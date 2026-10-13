@@ -19,7 +19,7 @@ status: in-progress
 - tokens: open
 - runs: open
 - milestone: M2
-- result: open
+- result: MI_PickupXPBig Color (1, 0.15, 0.75), GlowColor (1, 0.2, 0.8), GlowAmount 4 (read back). Trail and sparkle were shared with the cyan cube: added magenta copies NS_XPTrailBig (BP_PickupXPBig TrailFX Asset) and NS_PickupSparkleBig (OnCollected spawn), cube untouched. Scale 0.54 and XP unchanged. Colour was in the material instance, no C++ involved. bp-pickup-xp, color-code, xp-level-up updated.
 
 ## Relations
 - [[task-122-xp-big-block-magenta]] — parent global task.

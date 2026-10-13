@@ -13,7 +13,7 @@ status: approved
 | Ore rock (Duskite) | same base + glowing violet crystals (kept, owner 2026-10-10) |
 | Barrel | orange |
 | Heal ore and heal pickups | red |
-| XP and resource pickups | glowing cyan; the big XP block (many cubes merged) is bright white with the cyan glow (owner 2026-10-12); implemented as MI_PickupXPBig: base white (1, 1, 1), emissive (0.75, 1, 1) x 4 |
+| XP and resource pickups | glowing cyan; the big XP block (many cubes merged) is bright magenta-pink with a glow of the same hue (owner 2026-10-13, was white); implemented as MI_PickupXPBig: base (1, 0.15, 0.75), emissive (1, 0.2, 0.8) x 4, with magenta trail NS_XPTrailBig and sparkle NS_PickupSparkleBig |
 | Miner, turrets, drone | white + teal + rust |
 | Player shots, mining laser | white-gold |
 | Command console, shuttle | white + teal (player side) |
