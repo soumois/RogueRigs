@@ -19,7 +19,7 @@ status: in-progress
 - tokens: open
 - runs: open
 - milestone: M2
-- result: open
+- result: explosions call grid `QueueDestroyCellsInRadius`: barrels at once (chain timing kept), other blocks nearest first under `CellDestructionBudgetMs` 2 ms per frame (at least one per frame), dropped on rebuild and `EndPlay`; damage, FX, `OnExplosion` unchanged in the explosion frame. Build 0; Explosions.*, Barrel.*, BarrelFuse.* (BlocksInRadius and Radius700 wait for the queue), new Explosions.BlocksSpreadOverFrames (9 blocks over 9 frames), Ore.Placement, Integration.FineConsoleShuttlePlacement: 16/16 pass headless. No timing measured.
 
 ## Relations
 - [[task-121-barrel-explosion-spread]] — parent global task.
