@@ -207,6 +207,7 @@ kind: note
 | [[task-124-02-remove-shockring-component]] | sonnet | 1 | 0k | 35k | 392k | 7k |
 | [[task-125-01-xp-chip-images]] | sonnet | 1 | 0k | 27k | 147k | 1k |
 | [[task-126-01-xp-nut-images]] | sonnet | 1 | 0k | 22k | 87k | 1k |
+| [[task-127-01-xp-chip-magenta]] | sonnet | 1 | 0k | 14k | 94k | 1k |
 
 ## Totals
 | Scope | Input | Cache write | Cache read | Output |

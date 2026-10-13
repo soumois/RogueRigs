@@ -10,4 +10,3 @@ A global task moves to [[tasks-done-index]] when it is done (`vault/scripts/task
 
 ## Relations
 - [[tasks-index]] — parent index.
-- [[task-127-xp-chip-magenta]] — Recolour the retained data chip B image so its glowing core is bright magenta-pink, for the big XP block. Status todo.

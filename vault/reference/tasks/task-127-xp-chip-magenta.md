@@ -1,9 +1,9 @@
 ---
 id: task-127-xp-chip-magenta
 description: "Global task: Recolour the retained data chip B image so its glowing core is bright magenta-pink, for the big XP block."
-parent: tasks-to-do-index
+parent: tasks-done-index
 kind: task
-status: in-progress
+status: done
 ---
 # Big XP block: data chip B recoloured magenta
 
@@ -13,12 +13,12 @@ status: in-progress
 - gdd_check: done by the Orchestrator when the task is planned (2026-10-13).
 - confirmed_by_owner: yes (2026-10-13)
 - milestone: M2
-- next_step: task-127-01-xp-chip-magenta
-- result: open
+- next_step: none
+- result: Done. Chip B recoloured magenta, 6 credits; owner validated it for the big XP block.
 
 ## Subtasks
 1. task-127-01-xp-chip-magenta — art
 
 ## Relations
-- [[tasks-to-do-index]] — parent index.
+- [[tasks-done-index]] — parent index.
 - [[task-127-01-xp-chip-magenta]] — step 1, art.
