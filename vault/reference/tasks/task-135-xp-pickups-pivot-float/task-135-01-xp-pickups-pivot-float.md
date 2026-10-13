@@ -3,7 +3,7 @@ id: task-135-01-xp-pickups-pivot-float
 description: "Stop the XP nut and chip from floating: put their pivot at their centre like the old cube."
 parent: task-135-xp-pickups-pivot-float
 kind: task
-status: in-progress
+status: done
 ---
 # XP pickups: fix the floating pivot
 
@@ -15,11 +15,11 @@ status: in-progress
 - done_when: Both meshes report centred bounds after reimport; Blueprints compile and save; doc node updated; or a report that the import cannot offset
 - editor_state: open
 - token_ceiling: open
-- model: open
-- tokens: open
-- runs: open
+- model: sonnet
+- tokens: input 14, cache write 26109, cache read 112896, output 425
+- runs: 1
 - milestone: M2
-- result: open
+- result: Stopped as planned: StaticMeshTools.import_file has no offset or pivot option; nothing changed. Fallback: Blender export with a centred pivot (135-02), then reimport (135-03).
 
 ## Relations
 - [[task-135-xp-pickups-pivot-float]] — parent global task.

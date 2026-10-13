@@ -3,7 +3,7 @@ id: task-136-01-xp-pickups-stronger-glow
 description: "Strengthen the emissive and widen the pulse range of the XP nut and chip so the bloom is stronger."
 parent: task-136-xp-pickups-stronger-glow
 kind: task
-status: todo
+status: in-progress
 ---
 # XP pickups: stronger glow and wider pulse
 

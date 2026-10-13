@@ -13,12 +13,16 @@ status: in-progress
 - gdd_check: done by the Orchestrator when the task is planned (2026-10-13).
 - confirmed_by_owner: yes (2026-10-13)
 - milestone: M2
-- next_step: task-135-01-xp-pickups-pivot-float
+- next_step: task-135-02-xp-pickups-pivot-export
 - result: open
 
 ## Subtasks
-1. task-135-01-xp-pickups-pivot-float — bp
+1. task-135-01-xp-pickups-pivot-float — bp (stopped: the import tool cannot offset the pivot)
+2. task-135-02-xp-pickups-pivot-export — 3d (Blender export with a centred pivot)
+3. task-135-03-xp-pickups-pivot-reimport — bp (reimport in place)
 
 ## Relations
 - [[tasks-to-do-index]] — parent index.
 - [[task-135-01-xp-pickups-pivot-float]] — step 1, bp.
+- [[task-135-02-xp-pickups-pivot-export]] — step 2, 3d.
+- [[task-135-03-xp-pickups-pivot-reimport]] — step 3, bp.
