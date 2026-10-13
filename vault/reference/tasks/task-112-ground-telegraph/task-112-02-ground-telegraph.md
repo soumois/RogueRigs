@@ -3,7 +3,7 @@ id: task-112-02-ground-telegraph
 description: "M_GroundTelegraph draws sharp rings: a dotted zone circle and a solid growing circle, driven by the component parameters."
 parent: task-112-ground-telegraph
 kind: task
-status: todo
+status: in-progress
 ---
 # Ground telegraph material
 

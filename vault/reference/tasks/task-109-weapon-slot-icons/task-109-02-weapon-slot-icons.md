@@ -3,7 +3,7 @@ id: task-109-02-weapon-slot-icons
 description: "WBP_Weapons shows the active weapon icon large without the name, the status bar under it."
 parent: task-109-weapon-slot-icons
 kind: task
-status: todo
+status: in-progress
 ---
 # Weapon slots without name, big icon
 
