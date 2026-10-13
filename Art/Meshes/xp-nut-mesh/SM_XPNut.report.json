@@ -12,6 +12,7 @@
   },
   "footprint_reference": "placeholder XP cube /Engine/BasicShapes/Cube (100 cm) x scale 0.3 = 30 cm (BP_PickupXP, bp-pickup-xp); hex 30 cm across corners (X), 25.98 across flats (Y)",
   "pivot": "center",
+  "pivot_computed_on": "body only (disc excluded)",
   "bbox_min": [
     -15.0,
     -12.99,
@@ -22,9 +23,38 @@
     12.99,
     5.85
   ],
+  "total_bbox_min": [
+    -50.0,
+    -50.0,
+    -29.8
+  ],
+  "total_bbox_max": [
+    50.0,
+    50.0,
+    5.85
+  ],
+  "total_tris": 124,
+  "body_tris": 108,
+  "glow_disc": {
+    "radius_cm": 50,
+    "z_cm": -29.8,
+    "tris": 16,
+    "slot_index": 2,
+    "sides": 16,
+    "normals": "+Z",
+    "shading": "flat, one flat material, colour irrelevant (Unreal material set later)",
+    "uv_note": "UV0 radial: u = 0.5 + x / (2 R), v = 0.5 + y / (2 R), distance to (0.5, 0.5) is the radius in 0..0.5. UV1 LightMap: the disc does not use the lightmap (unlit, shadowless), its UV1 is a single point (0, 0); body LightMap islands and uv_checks unchanged.",
+    "placement": "BP_PickupXP root scale 1: world radius 50 cm, 29.8 cm below the actor origin (HoverHeight 30, 0.2 cm above the floor)"
+  },
   "materials": [
     "M_XPNut_body",
-    "M_XPNut_hole"
+    "M_XPNut_hole",
+    "glow_disc"
+  ],
+  "slots": [
+    "M_XPNut_body",
+    "M_XPNut_hole",
+    "glow_disc"
   ],
   "uv_layers": [
     "UVMap",

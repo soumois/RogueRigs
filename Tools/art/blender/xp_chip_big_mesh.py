@@ -349,13 +349,38 @@ if abs((hi.x - lo.x) - FOOT) > 0.01 or abs((hi.y - lo.y) - FOOT) > 0.01:
 if abs(lo.z if PIVOT == "bottom" else (lo.z + hi.z) / 2) > 1e-4 or abs((lo.x + hi.x) / 2) > 1e-3 or abs((lo.y + hi.y) / 2) > 1e-3:
     warnings.append("pivot not " + PIVOT + " centre")
 warnings.append("M_XPChipBig_core_bright and _dark are emissive in Blender (strength 4, #FF26BF and #B0107F): the FBX does not carry emission, the Unreal material sets the glow (MI_PickupXPBig)")
+# ---- glow disc (task-145-01): flat 16-sided disc, LAST slot "glow_disc", added AFTER the pivot centring and the body checks (the pivot and every body check use the body only).
+DISC_R, DISC_Z, DISC_N = 44.44, -16.56, 16
+body_lo, body_hi = lo.copy(), hi.copy()
+dm = bpy.data.materials.new("glow_disc"); dm.diffuse_color = (1.0, 1.0, 1.0, 1.0)
+mesh.materials.append(dm); DISC_SLOT = len(mesh.materials) - 1
+bmd = bmesh.new(); bmd.from_mesh(mesh)
+d0 = bmd.loops.layers.uv["UVMap"]; d1 = bmd.loops.layers.uv["LightMap"]
+dc = bmd.verts.new((0.0, 0.0, DISC_Z))
+dv = [bmd.verts.new((DISC_R * math.cos(2 * math.pi * k / DISC_N), DISC_R * math.sin(2 * math.pi * k / DISC_N), DISC_Z)) for k in range(DISC_N)]
+for k in range(DISC_N):
+    f = bmd.faces.new((dc, dv[k], dv[(k + 1) % DISC_N])); f.material_index = DISC_SLOT; f.smooth = False
+    for l in f.loops:
+        l[d0].uv = (0.5 + l.vert.co.x / (2 * DISC_R), 0.5 + l.vert.co.y / (2 * DISC_R))
+        l[d1].uv = (0.0, 0.0)   # disc is unlit and shadowless: it does not use the lightmap (all UV1 at one point, body islands untouched)
+bmd.to_mesh(mesh); bmd.free()
+for p in mesh.polygons: p.use_smooth = False
+bbt = [Vector(c) for c in obj.bound_box]
+tot_lo = [round(min(v[i] for v in bbt), 3) for i in range(3)]; tot_hi = [round(max(v[i] for v in bbt), 3) for i in range(3)]
+disc_tris = sum(len(p.vertices) - 2 for p in mesh.polygons if p.material_index == DISC_SLOT)
+total_tris = sum(len(p.vertices) - 2 for p in mesh.polygons)
+GLOW = {"radius_cm": DISC_R, "z_cm": DISC_Z, "tris": disc_tris, "slot_index": DISC_SLOT, "sides": DISC_N,
+        "normals": "+Z", "shading": "flat, one flat material, colour irrelevant (Unreal material set later)",
+        "uv_note": "UV0 radial: u = 0.5 + x / (2 R), v = 0.5 + y / (2 R), distance to (0.5, 0.5) is the radius in 0..0.5. UV1 LightMap: the disc does not use the lightmap (unlit, shadowless), its UV1 is a single point (0, 0); body LightMap islands and uv_checks unchanged.",
+        "placement": "BP_PickupXPBig root scale 1.8: world radius 80 cm and z -29.8 become local radius 44.44 and z -16.56 (0.2 cm above the floor at HoverHeight 30)"}
 report = {
     "asset": "SM_XPChipBig", "route": "blender", "script": "Tools/art/blender/xp_chip_big_mesh.py", "source_image": "vault/assets/xp-chip-big.png",
     "tris_out": tris, "budget_tris": BUDGET,
     "dimensions_cm": {"x": round(hi.x - lo.x, 2), "y": round(hi.y - lo.y, 2), "z": round(hi.z - lo.z, 2)},
     "footprint_target_cm": {"x": FOOT, "y": FOOT, "source": "BP_PickupXP PickupMesh /Engine/BasicShapes/Cube (100 cm) x scale 0.3; big block scale 1.8 (root 0.54) applied in game, not baked"},
-    "pivot": PIVOT, "bbox_min": [round(c, 3) for c in lo], "bbox_max": [round(c, 3) for c in hi],
-    "materials": [m.name for m in mesh.materials],
+    "pivot": PIVOT, "pivot_computed_on": "body only (disc excluded)", "bbox_min": [round(c, 3) for c in body_lo], "bbox_max": [round(c, 3) for c in body_hi],
+    "total_bbox_min": tot_lo, "total_bbox_max": tot_hi, "total_tris": total_tris, "body_tris": tris, "glow_disc": GLOW,
+    "materials": [m.name for m in mesh.materials], "slots": [m.name for m in mesh.materials],
     "paint_colours_srgb": {"M_XPChipBig_" + k: v for k, v in HEX.items()}, "emissive_material": ["M_XPChipBig_core_bright", "M_XPChipBig_core_dark"],
     "uv_layers": [u.name for u in mesh.uv_layers],
     "uv_checks": {"UVMap": {"tile_cm": 100.0, "cm_per_uv_unit_min": round(min(dens), 3), "cm_per_uv_unit_max": round(max(dens), 3)},
