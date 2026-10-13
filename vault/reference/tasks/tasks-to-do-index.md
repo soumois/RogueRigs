@@ -11,4 +11,3 @@ A global task moves to [[tasks-done-index]] when it is done (`vault/scripts/task
 ## Relations
 - [[tasks-index]] — parent index.
 - [[task-110-xp-big-block]] — When many XP cubes fall in one place they become one bigger block of another colour worth the same total XP. Status in-progress.
-- [[task-113-capture-zone-visual]] — The console and chest hack zones show a sharp zone circle and a growing progress circle; the old diffuse circle is gone; the rules are unchanged. Status in-progress.

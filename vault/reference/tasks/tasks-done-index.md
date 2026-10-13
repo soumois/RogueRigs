@@ -124,5 +124,6 @@ Archive: it exceeds the index size limits of [[_authoring]] on purpose (owner, 2
 - [[task-109-weapon-slot-icons]] — Active weapon slots show the weapon icon large without its name, like the reference game; the icon tool keeps the icon aspect ratio. Status done.
 - [[task-111-pool-prewarm]] — The pools are prewarmed at level start, spread over frames per class (XP 30 over 20, chasers 30 over 20, other robots 5 or fewer over 60), and projectile pooling is evaluated. Status done.
 - [[task-112-ground-telegraph]] — A generic ground signal component draws a zone circle and a growing circle on the floor, dies with its owner, and ignores robots, the miner and player weapons. Status done.
+- [[task-113-capture-zone-visual]] — The console and chest hack zones show a sharp zone circle and a growing progress circle; the old diffuse circle is gone; the rules are unchanged. Status done.
 - [[task-114-barrel-fuse]] — Barrels have a doubled explosion radius and explode 1.5 s after reaching 0 health, with an orange danger zone and a growing circle. Status done.
 - [[task-115-heavy-slam-telegraph]] — The heavy slam shows its danger zone and a growing circle on the ground during the telegraph, and the signal dies with the robot. Status done.

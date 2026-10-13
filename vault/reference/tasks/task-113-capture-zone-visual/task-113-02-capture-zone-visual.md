@@ -3,7 +3,7 @@ id: task-113-02-capture-zone-visual
 description: "The old diffuse growing circle of the console and chest is removed from their Blueprints."
 parent: task-113-capture-zone-visual
 kind: task
-status: in-progress
+status: done
 ---
 # Remove the old diffuse circle
 
@@ -15,11 +15,11 @@ status: in-progress
 - done_when: old circle removed from both Blueprints, compiled 0 errors, saved, docs updated, lint clean, committed.
 - editor_state: open
 - token_ceiling: 40000
-- model: open
-- tokens: open
-- runs: open
+- model: sonnet
+- tokens: input 60, cache write 44093, cache read 841806, output 14861
+- runs: 1
 - milestone: M2
-- result: open
+- result: HackRing (engine Plane) and its SetRelativeScale3D call removed from BP_ObjectiveConsole and BP_BonusChest; glow calls kept; MI_GroundRingTeal and MI_GroundRingGold have no referencers (left in place); not seen in PIE. Commits 75d1513, 7c24452, f983540.
 
 ## Relations
 - [[task-113-capture-zone-visual]] — parent global task.

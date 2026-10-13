@@ -195,6 +195,7 @@ kind: note
 | [[task-114-01-barrel-fuse]] | opus | 1 | 0k | 161k | 6636k | 66k |
 | [[task-112-02-ground-telegraph]] | sonnet | 1 | 0k | 57k | 1037k | 20k |
 | [[task-109-02-weapon-slot-icons]] | sonnet | 2 | 0k | 72k | 2025k | 32k |
+| [[task-113-02-capture-zone-visual]] | sonnet | 1 | 0k | 44k | 842k | 15k |
 
 ## Totals
 | Scope | Input | Cache write | Cache read | Output |
