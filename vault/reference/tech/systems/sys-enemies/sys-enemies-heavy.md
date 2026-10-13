@@ -1,6 +1,6 @@
 ---
 id: sys-enemies-heavy
-description: "ARRHeavy as built: Chase, Telegraph, Slam, Recover, Dead; slam trigger and cadence, miner-only shockwave, corridor capsule, Blueprint events and getters, tunables."
+description: "ARRHeavy as built: Chase, Telegraph, Slam, Recover, Dead; slam trigger and cadence, miner-only shockwave, corridor capsule, ground telegraph, Blueprint events and getters, tunables."
 parent: sys-enemies
 kind: doc
 ---
@@ -9,6 +9,7 @@ kind: doc
 - responsibility: the heavy's decisions and its ground slam.
 - main_classes: `ARRHeavy` (Blueprintable, `RRHeavy.h/.cpp`), `ERRHeavyState` Chase, Telegraph, Slam, Recover, Dead. Capsule 48 × 124 (2× chaser, radius ≤ 80 so it crosses one-cell corridors); the Blueprint mesh carries the 2× look.
 - behavior: Chase (flow field, arrival = `AttackRange` × `ArrivalRangeRatio` 0.5 = 144.5 uu) → Telegraph when the miner is within `AttackRange` × `SlamTriggerRatio` (0.7 → 202.3 uu, `IsTargetWithin`) and the cadence allows it (previous slam + 1 / `AttackRate` − `WindUp`): stopped, `OnTelegraphStart`, committed for `WindUp` (0.6 s, task-032-01; was 0.8) → Slam (one frame): miner within `AttackRange` (289 uu since task-052-01; 340 after task-039-01, 400 before, 220 before task-028-01; 2D centers) takes `ApplyDamageSpecTo(DamageEffectClass, Damage)` (`URRGE_DamageFlat`, × `AttackPower`); `OnSlam(Location = feet, Radius)` → Recover (stopped) `RecoverDuration` → `OnRecover` → Chase. The shockwave only looks for the miner: no terrain damage ([[destruction-rules]]), no robot damage. Knockback: base `ApplyKnockback` with CSV resistance 0.8 ([[sys-enemies-base]]).
+- ground signal (task-115-01, [[ground-telegraph]]): `GroundTelegraph` (`URRGroundTelegraphComponent`, constructor default subobject under the capsule, offset down by the capsule half height = feet). `EnterState(Telegraph)`: `SetRadius(GetSlamRadius())` (= `Stats.AttackRange`, the radius `PerformSlam` tests), Danger, progress 0, `Show`. Each Telegraph step of `UpdateBehavior`: `SetProgress(GetTelegraphProgress())` (1 on the slam frame), no extra tick. Leaving Telegraph (Slam, Dead via `HandleDeath`) hides it; `ARREnemy::HandleDeath` and `OnPoolReleased` also hide it ([[sys-ground-telegraph]]); `ResetForNewLife` sets progress 0, radius, `Hide`. Slam rules unchanged. Getter `GetGroundTelegraph`.
 - Blueprint-facing: events `OnTelegraphStart`, `OnSlam(Location, Radius)`, `OnRecover` (end of recovery; also on death during Telegraph or Recover, to reset the pose); pure `GetState`, `IsTelegraphing`, `GetTelegraphProgress` (0 → 1 over the telegraph, 0 outside: body tilt and glow), `GetSlamRadius`, `GetTelegraphDuration`, `GetLastSlamTime`, `GetSlamCount`.
 - entry_points: the getters above, `GetSlamHitCount` (tests).
 - data: CSV row `Heavy` ([[sys-enemies]]): AttackRange = slam radius, WindUp = telegraph, AttackRate 0.5 = one slam every 2 s (task-032-01; was 0.4, 2.5 s). `EditDefaultsOnly`: `DamageEffectClass` (`URRGE_DamageFlat`), `SlamTriggerRatio` 0.7, `RecoverDuration` 0.5 s, `TelegraphFlashRate` 0 (no mesh blink: the Blueprint glows); `ArrivalRangeRatio` 0.5. Alive cap 5: spawner entry `MaxAlive` ([[sys-spawner]]).
@@ -20,3 +21,4 @@ kind: doc
 - [[sys-enemies]] — parent index.
 - [[sys-enemies-base]] — the shared helpers it uses.
 - [[sys-spawner]] — the per-class alive cap that limits heavies to 5.
+- [[sys-ground-telegraph]] — the component drawing the slam danger zone.
