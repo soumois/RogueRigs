@@ -1,0 +1,56 @@
+{
+  "asset": "SM_XPNut",
+  "route": "blender",
+  "script": "Tools/art/blender/xp_nut_mesh.py",
+  "source_image": "vault/assets/xp-nut.png",
+  "tris_out": 92,
+  "budget_tris": 300,
+  "dimensions_cm": {
+    "x": 30.0,
+    "y": 25.98,
+    "z": 17.0
+  },
+  "footprint_reference": "placeholder XP cube /Engine/BasicShapes/Cube (100 cm) x scale 0.3 = 30 cm (BP_PickupXP, bp-pickup-xp); hex 30 cm across corners (X), 25.98 across flats (Y)",
+  "pivot": "bottom",
+  "bbox_min": [
+    -15.0,
+    -12.99,
+    0.0
+  ],
+  "bbox_max": [
+    15.0,
+    12.99,
+    17.0
+  ],
+  "materials": [
+    "M_XPNut_body",
+    "M_XPNut_hole"
+  ],
+  "uv_layers": [
+    "UVMap",
+    "LightMap"
+  ],
+  "uv_checks": {
+    "UVMap": {
+      "tile_cm": 100.0
+    },
+    "LightMap": {
+      "faces": 50,
+      "overlapping_face_pairs": 0,
+      "bounds_min": [
+        0.01172
+      ],
+      "bounds_max": [
+        0.98828
+      ],
+      "min_gap_px_at_256": 3.0,
+      "min_border_px_at_256": 3.0,
+      "required_margin_px": 2,
+      "pass": true
+    }
+  },
+  "shading": "flat",
+  "warnings": [
+    "hole emissive is not carried by the FBX: the Unreal material must set the emissive colour (0, 0.9, 1) on M_XPNut_hole"
+  ]
+}
