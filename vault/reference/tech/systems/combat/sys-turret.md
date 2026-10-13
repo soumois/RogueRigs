@@ -1,0 +1,28 @@
+---
+id: sys-turret
+description: "Turret launcher and placed turrets in C++: button placement cell, charges and one-at-a-time recharge, stat copy, nearest-target lock with grid sight, HUD charges."
+parent: systems-combat-index
+kind: doc
+---
+# Turret launcher and turrets
+
+- responsibility: the turret launcher weapon (charges, placement on a player button, recharge) and the turrets it places (stat copy, targeting, fire, lifetime). Never automatic placement ([[turret]]).
+- main_classes (`Source/RogueRigs/Weapons/`, `Projectiles/`):
+  - `ARRTurretLauncher : ARRWeapon` (Blueprintable, usable natively): `StatsRowName` `TurretLauncher`, `bStartFiringOnAcquire` off (its auto-fire never runs), `ProjectileClass` default `ARRTurretBullet` (the turrets' bullet), editable `TurretClass` (default `ARRTurret`), `PlacementDistance` (200 uu, provisional C++ default: aimed point with stick aim), `PlacementMaxDistance` (400 uu), `TurretMinSpacing` (100 uu). Charges = `Ammo`, maximum = `MagazineSize` ([[sys-weapons]]).
+  - `ARRTurret : ARRWeapon` (Blueprintable): not held by a miner, never in `GetWeapons`. `TargetSearchInterval` (0.1 s). BlueprintImplementableEvent `OnTurretFired(Origin, Direction)` for the muzzle flash.
+  - `ARRTurretBullet : ARRProjectile` (concrete, no mesh) ([[sys-projectiles]]).
+- Placement (`FindPlacementLocation`): aimed point = cursor point on the mouse aim plane (`ARRMiner::GetMouseAimPoint`) with mouse aim, else `PlacementDistance` along the aim; clamped to `PlacementMaxDistance`. Its cell is used if it is floor and in grid sight of the miner; else the floor cell in sight sampled every half cell along the aim (0 to max) nearest the aimed point. Spacing (task-051-01, `FindSpacedCell`): if that cell is closer than `TurretMinSpacing` (100 uu, editable, 2D; 0 = off) to a standing turret (any `ARRTurret`, all launchers, `TActorIterator`), the floor cell nearest it that is within `PlacementMaxDistance` of the miner, in grid sight and at least `TurretMinSpacing` from every standing turret is used; none: the cell is kept. Turret at the cell center on the floor top, facing the aim. No grid: the aimed point at the miner's feet, no spacing.
+- `TryPlaceTurret`: needs a charge; spawns `TurretClass` (owner launcher, instigator miner), `InitFromLauncher`, spends one charge (`URRGE_ConsumeAmmo`). No cap on active turrets.
+- Recharge (`Tick` → `AdvanceRecharge`): while charges < max, one charge at a time over `ReloadTime / ReloadSpeed` (12 s base since task-034-01; was 6), leftover time carried; `MagazineSize` upgrades start a recharge; `ReloadSpeed` ≤ 0 never recharges.
+- Stat copy (`ARRTurret::InitFromLauncher`): every `URRWeaponAttributeSet` attribute's current launcher value becomes the turret's base value, owned launcher tags become loose tags, plus projectile and damage effect classes and CSV constants; life span = `TurretLifetime`. Later upgrades reach only later turrets.
+- Targeting and fire: keeps the locked `ARREnemy` while alive, within `Range` (2D, from the shot origin) and in `ARRArenaGrid::HasLineOfSight`; else the nearest valid robot (`TActorIterator`; immediate search when the target is lost, then every `TargetSearchInterval`). Auto-fire without magazine (`URRAutoFireComponent::SetUseMagazine(false)`), started only with a target. Shots: `ARRWeapon::FireOnce` from `ShotHeight` above the turret toward the target, `MaxHits` = pierce, stop on rock, crit per hit, spec instigator = the turret. No actor collision and no health set: invincible, never blocks robots or projectiles.
+- entry_points: `ARRMiner::PlaceTurret()` (input, [[sys-player]]), `ARRMiner::AddWeapon(Class)`, `ARRMiner::FindTurretLauncher()`; launcher `TryPlaceTurret`, `GetCharges`, `GetMaxCharges`, `IsRecharging`, `GetRechargeRemaining`, `GetRechargeDuration`, `GetRechargeProgress`, `GetTurretLifetime`, `GetTurretsPlaced`, events `OnTurretChargesChanged(Charges, MaxCharges, RechargeDuration)`, `OnTurretPlaced(Turret)`; turret `GetTarget`, `IsValidTarget`, `UpdateTarget`, `GetShotCount`, `GetLifetime`. HUD: [[sys-hud]].
+- data: `WeaponStats.csv` row `TurretLauncher`: damage 6, `FireRate` 3.3, `BurstCount` 1, crit 0.05 / 1.5, `MagazineSize` 2, `ReloadTime` 12 (recharge per charge; owner fourth test, task-034-01, was 6), `ReloadSpeed` 1, `Range` 1500, `Pierce` 4, `TurretLifetime` 10 (new column, 0 on other rows); `ProjectileSpeed` 3000 and `SpreadDeg` 0 are not in the gdd (provisional); `DisplayName` `Lance-tourelles` (working name).
+- depends_on: [[sys-weapons]], [[sys-auto-fire]], [[sys-projectiles]], [[sys-grid]], [[sys-world-queries]].
+- implements: [[turret]].
+- gotchas: the miner's start loadout has no launcher until task-024-04; tests add it with `AddWeapon`. Target search iterates all robots; fine at current counts, a spatial query would be needed at very high turret counts.
+
+## Relations
+- [[systems-index]] — parent index.
+- [[sys-weapons]] — the weapon base, ASC and attribute set it builds on.
+- [[turret]] — gameplay spec it implements.

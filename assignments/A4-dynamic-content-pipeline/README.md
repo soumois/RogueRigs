@@ -105,7 +105,7 @@ flowchart LR
 | Alert, `bonus_chest_dropped`, bureaucratic | "Cache contents remain company property. Tampering will be invoiced." |
 | Alert, `extraction_ready`, propaganda | "Kessler-Voss proudly sends reinforcements to protect everyone's bright future." |
 
-**In the game** (C++, no AI at runtime): the loader in [`Source/RogueRigs/Text/`](../../Source/RogueRigs/Text/) ([`sys-text-content`](../../vault/reference/tech/systems/sys-text-content.md)) reads the three files at game start. The upgrade card shows Rook's line under the stat name, confirmed on screen by the owner (tasks 080, 084). The company alert line appears once, for 8 s, under the shuttle countdown (task 085). Barks are loaded but not displayed yet (owner decision). The loader has 6 automation tests (`RogueRigs.Text.*`); the full headless suite passed 201/201 when it was committed.
+**In the game** (C++, no AI at runtime): the loader in [`Source/RogueRigs/Text/`](../../Source/RogueRigs/Text/) ([`sys-text-content`](../../vault/reference/tech/systems/ui/sys-text-content.md)) reads the three files at game start. The upgrade card shows Rook's line under the stat name, confirmed on screen by the owner (tasks 080, 084). The company alert line appears once, for 8 s, under the shuttle countdown (task 085). Barks are loaded but not displayed yet (owner decision). The loader has 6 automation tests (`RogueRigs.Text.*`); the full headless suite passed 201/201 when it was committed.
 
 In the game (owner playtest, 2026-10-10):
 

@@ -1,0 +1,30 @@
+---
+id: sys-pickups
+description: "Pickups as built: ARRPickup (Ore, Heal, XP) arcs out, rests, is magnetized into the miner; URRPickupSubsystem drives motion and pooled drops; events, tunables."
+parent: systems-world-index
+kind: doc
+---
+# Pickups
+
+- responsibility: the pickup actor (pop, attraction, collection) and the drop rule of ore and heal ore blocks. XP pickups add XP on collection; Heal pickups apply a heal effect (task-034-01; amount from the ore table since task-088-02, [[heal-ore]]); Ore pickups only log and broadcast.
+- main_classes: `ARRPickup` (`Source/RogueRigs/Pickups/RRPickup.h/.cpp`, `Abstract`, Blueprintable), `ERRPickupType` (Ore, Heal, XP), `ERRPickupPhase` (Pop, Rest, Magnet, Collected); `URRPickupSubsystem` (`Pickups/RRPickupSubsystem.h/.cpp`, `UTickableWorldSubsystem`, Game and PIE worlds, pauses with the world) moves every pickup in one loop per frame: player 0 pawn and its `PickupRadius` read once, then `ARRPickup::UpdateMotion` per pickup (actor tick off; on only when the subsystem is missing). No physics, no collision: root `PickupMesh` `NoCollision`, no overlap, no navigation; `BeginPlay` also sets `NoCollision` and `CanCharacterStepUpOn` No on every primitive component, Blueprint ones included (task-028-03: the saved `BP_PickupXP` Trail blocked the miner, which climbed onto cubes and rock). Blueprint subclasses set `PickupType` and the mesh.
+- drop rule (in `ARRArenaGrid`, see [[sys-grid]]): `OrePickupClass` for Ore, `HealPickupClass` for HealOre; other types drop nothing. Per cell the grid counts dig drops already spawned (`CellDigDrops`). After each `ApplyTerrainDamage` that leaves the block standing, crossed = floor((max health − health) / `DropInterval`), capped at the number of multiples strictly below max health; the difference with the count is spawned. The destroying hit spawns no dig drop; `DestroyCell` spawns `DestroyDropCount`, whatever the source. Defaults at 67 uu (task-029-04): ore and heal ore health 1.5 = interval 1.5, so no dig drop and 1 pickup at destruction (one per broken block, [[ore-blocks]]); a heal cluster of 3 × 3 gives 9 (one 200 uu heal block gave 5); since task-034-01 the drone mines the whole vein at once ([[sys-drone]]), so all 9 drop together. The former 4.5 health with 3 at destruction gave drops at 1.5 and 3.0, then 3 (5 total).
+- entry_points: `ARRPickup::GetPickupType`, `GetOreValue`, `SetOreValue`, `GetPhase`, `IsMagnetized`, `GetMagnetSpeed`, `GetXPAmount`, `GetHealAmount` (BlueprintPure), `SetXPAmount`, `SetHealAmount`, `SetPopYaw`, `GetPopStart`, `GetPopEnd`; protected `IsRefusedByMiner`, `ReturnToRest`; Blueprint events `OnMagnetStart()` (trail on) and `OnCollected(Location)` (detached sparkle); `ARRPickup::IsLifeStarted`, `OnPoolAcquired`, `OnPoolReleased`; `ARRPickup::GetXPBigPickupClass`; `URRPickupSubsystem::RequestSpawn`, `RequestXPCube`, `FlushXPCubes`, `Get/SetSpawnMaxFrames`, `GetQueuedSpawnCount`, `GetPoolStats`, `GetPickupCount`, `GetMagnetizedCount`, stat `RR Pickups Tick`; `ARRMiner::GetPickupRadius()`, `OnPickupCollected`, `OnPickupCollectedAt` ([[sys-player]]).
+- data: `PickupRadius` from `PlayerBaseStats.csv` ([[sys-gas-core]]); drop tunables on the grid Blueprint.
+- depends_on: [[sys-grid]], [[sys-player]], [[sys-gas-core]].
+- implements: [[ore-blocks]], [[heal-ore]], [[ore-economy]] (drops only), [[player-stats]] (pickup radius).
+- gotchas: one subsystem loop and one 2D distance per resting pickup per frame; pooled since task-092-01 (live counts skip idle pool pickups; numbers in [[stress-grid-cells]]). Stress S7 burst of 400 chasers (1200 cubes, task-027-01): avg 9.19 ms, p99 11.34 ms; the single burst frame (400 deaths + 16 barrels) 109 ms max, the known per-death burst cost. Grid ore and heal chunks use the same 80-220 uu pop: at 67 uu cells a chunk can rest over unbroken rock for its 1 s rest (a Blueprint can lower `PopMaxDistance`). A single hit that both crosses a multiple and destroys the block gives no dig drop for that multiple. Fourth test (task-034-01): heal pickups were collected (magnet, event) but healed nothing, there was no heal code; collection itself works for every type, no overlap is involved. Ore value: 1 per chunk (owner 2026-10-10), carried by `OreValue`. The ore chunk Blueprint should have no trail component ([[ore-in-rock-plan]], task-070-02). Pickups spawn only in a game world.
+
+## Relations
+- [[sys-pickups-lifecycle]] — Pickup lifecycle (pop, rest, attraction, collection) and its editable properties. Open to change pickup motion or collection.
+- [[sys-pickups-xp]] — XP drops: cube bursts, the big XP block merge and the pickup pool that replaced the per-frame queue. Open to change XP drops.
+- [[systems-index]] — parent index.
+- [[sys-grid]] — the drop properties and the damage path that spawns pickups.
+- [[sys-player]] — the miner's pickup radius and collection event.
+- [[sys-automation-tests]] — automation tests of drop counts and collection.
+- [[sys-enemies]] — robots dropping XP pickups.
+- [[sys-progression]] — where collected XP goes.
+- [[sys-actor-pool]] — the pool every grid and robot drop comes from.
+- [[stress-grid-cells]] — XP pool before/after numbers (task-092-01).
+- [[xp-level-up]] — the big XP block rule (merge of more than 8 cubes) this system implements.
+- [[color-code]] — colour of the big XP block.
