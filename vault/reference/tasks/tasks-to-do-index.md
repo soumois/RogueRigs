@@ -10,3 +10,4 @@ A global task moves to [[tasks-done-index]] when it is done (`vault/scripts/task
 
 ## Relations
 - [[tasks-index]] — parent index.
+- [[task-137-unreal-reimport-tool]] — Create a headless Python tool that reimports a static mesh from its FBX in place, and document it in the vault. Status todo.
