@@ -1,0 +1,25 @@
+{
+  "run_id": "20261013-092145-xp-nut",
+  "asset": "xp-nut",
+  "model": "gpt-image-2-text-to-image",
+  "aspect_ratio": "1:1",
+  "resolution": "1K",
+  "variants": 1,
+  "prompt_file": "Art/Source/xp-nut/prompts/02-squat-worn-nut.txt",
+  "prompt": "A single squat hexagonal hex nut, a worn salvage hardware pickup lying flat on the floor, shown in three-quarter top view from a steep top-down camera. Flat-shaded low-poly, visible facets, no textures. Chunky blocky volumes with large flat facets, a short wide hexagonal body in dull grey metal, with rust chips on the edges. A glowing cyan ring sits inside the thread of the central hole and emits a soft cyan glow. Glowing cyan is the main accent colour. Strong directional light with lifted shadows so everything stays readable. Plain light grey background, centred object, no UI, no text, no other objects. No magenta, red, orange, acid green or steel blue.",
+  "refs": [],
+  "tasks": [
+    {
+      "task_id": "8b9a7cc6310ea4f57976731153349ff3",
+      "state": "success",
+      "credits": 6,
+      "error": null,
+      "result_urls": [
+        "https://tempfile.aiquickdraw.com/images/chatgpt/file_000000000de4820c93f77edde54b376b.png"
+      ]
+    }
+  ],
+  "files": [
+    "Art/Source/xp-nut/20261013-092145-xp-nut-1.png"
+  ]
+}

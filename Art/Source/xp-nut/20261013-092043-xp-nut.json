@@ -1,0 +1,25 @@
+{
+  "run_id": "20261013-092043-xp-nut",
+  "asset": "xp-nut",
+  "model": "gpt-image-2-text-to-image",
+  "aspect_ratio": "1:1",
+  "resolution": "1K",
+  "variants": 1,
+  "prompt_file": "Art/Source/xp-nut/prompts/01-thick-clean-nut.txt",
+  "prompt": "A single thick hexagonal hex nut, a salvage hardware pickup lying flat on the floor, shown in three-quarter top view from a steep top-down camera. Flat-shaded low-poly, visible facets, no textures. Chunky blocky volumes with large flat facets, a clean thick hexagonal body in plain mid-grey metal, with a glowing cyan hole at the centre of the nut that emits a soft cyan glow. Glowing cyan is the main accent colour. Strong directional light with lifted shadows so everything stays readable. Plain light grey background, centred object, no UI, no text, no other objects. No magenta, red, orange, acid green or steel blue.",
+  "refs": [],
+  "tasks": [
+    {
+      "task_id": "543314aaf799ae6249dbc3d516b3bfc0",
+      "state": "success",
+      "credits": 6,
+      "error": null,
+      "result_urls": [
+        "https://tempfile.aiquickdraw.com/images/chatgpt/file_00000000503481f4bc8d9ee2f11cd545.png"
+      ]
+    }
+  ],
+  "files": [
+    "Art/Source/xp-nut/20261013-092043-xp-nut-1.png"
+  ]
+}
