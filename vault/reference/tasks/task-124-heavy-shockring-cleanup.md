@@ -13,7 +13,7 @@ status: in-progress
 - gdd_check: done by the Orchestrator when the task is planned (2026-10-13).
 - confirmed_by_owner: yes (2026-10-13, launched by the owner)
 - milestone: M2
-- next_step: task-124-01-heavy-shockring-cleanup
+- next_step: task-124-02-remove-shockring-component
 - result: open
 
 ## Subtasks

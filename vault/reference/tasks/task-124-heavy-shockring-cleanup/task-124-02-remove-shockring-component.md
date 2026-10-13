@@ -3,7 +3,7 @@ id: task-124-02-remove-shockring-component
 description: "Delete the hidden ShockRing component from BP_Heavy after the C++ test no longer looks it up."
 parent: task-124-heavy-shockring-cleanup
 kind: task
-status: todo
+status: in-progress
 ---
 # Remove the ShockRing component from BP_Heavy
 
