@@ -1,6 +1,6 @@
 ---
 id: asset-pipeline
-description: "How 3D assets are made: source images, Meshy generation, hand-modeled terrain pieces, headless Blender cleanup, polygon budgets, height, pivot, rigid-part split."
+description: "How assets are made: source images, Meshy generation, hand-modeled pieces, headless Blender cleanup, polygon budgets, height, pivot, rigid-part split, UI icon cut-out tool."
 parent: pipelines-index
 kind: doc
 ---
@@ -19,6 +19,9 @@ kind: doc
 - Pivot: bottom centre.
 - Texture (owner 2026-10-11, level 1, validated on the barrel): flat colours per material from [[color-code]]; wear is a thin lighter band on some edges (geometry, flat material) plus faint scratches from one shared grayscale mask (`Art/Textures/T_WearMask.png`, UV 0, 100 cm per tile) blended toward a lighter tone, on the lid and cap only; stickers and signs are textured decals (alpha: Masked or Translucent in Unreal); a second UV channel `LightMap` without overlap. No per-asset painted base texture, no normal or roughness map. Meshy base color texture is not used. Blender scripts: `Tools/art/blender/` (barrel, warning_sign, wear_mask, barrel_preview).
 - Git: `Art/Source/` and the cleaned FBX are committed; `Art/Meshes/*/raw/` is ignored.
+
+## UI icons
+`Tools/art/ui_icon_prepare.js --in <png> --name <name>` (Node, no dependency, PNG codec on built-in zlib) cuts a flat-magenta icon into `Art/UI/Icons/T_Icon_<name>.png`: 256 x 256 RGBA, trimmed, centred, 10 % margin. Alpha = min(smoothstep colour-distance key from the corner colour, magenta colour-difference key), then unmix and despill (no pink fringe), premultiplied area resize. `--check <png>...` prints size, corner alpha, bbox, margins and remaining magenta-like pixels.
 
 ## References
 - Miner reference sheet: use front (and back) only; the side view is inconsistent with the T-pose.
