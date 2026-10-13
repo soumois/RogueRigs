@@ -35,3 +35,4 @@ Agents never open a viewport. They check by numbers. The Orchestrator renders `b
 - [[agent-3d]] — the agent that runs this route.
 - [[barrel-asset]] — the first asset built this way.
 - [[art-style-guide]] — A1, the texture charter.
+- [[mesh-fidelity-loop]] — how a mesh is judged against its image; the subtask lists criteria and a max number of returns.

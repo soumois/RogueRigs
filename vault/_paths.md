@@ -140,6 +140,7 @@ lessons-index  reference/course/lessons/lessons-index.md
 level-flow  reference/gdd/run/level-flow.md
 level-layout-schema  reference/tech/pipelines/level-layout-schema.md
 lore  reference/gdd/lore.md
+mesh-fidelity-loop  reference/tech/pipelines/mesh-fidelity-loop.md
 milestones  reference/production/milestones.md
 miner  reference/gdd/player/miner.md
 naming  reference/tech/conventions/naming.md
