@@ -3,7 +3,7 @@ id: task-114-01-barrel-fuse
 description: "Barrels have a doubled explosion radius and explode 1.5 s after reaching 0 health, with an orange danger zone and a growing circle."
 parent: task-114-barrel-fuse
 kind: task
-status: in-progress
+status: done
 ---
 # Barrel fuse and double radius
 
@@ -15,11 +15,11 @@ status: in-progress
 - done_when: build exits 0 with the editor closed; all RogueRigs.* tests pass headless; docs updated; lint clean; committed.
 - editor_state: closed
 - token_ceiling: 60000
-- model: open
-- tokens: open
-- runs: open
+- model: opus
+- tokens: input 120, cache write 161164, cache read 6636074, output 65927
+- runs: 1
 - milestone: M2
-- result: open
+- result: Barrel radius 700 uu, 1.5 s fuse from 0 health (BarrelFuseSeconds), ground telegraph hosted by the arena grid (pooled), damage ignored during the fuse, chains add 1.5 s each; one 700 uu explosion costs about 8 ms (4.6-5.6 ms block destruction): proposal to spread it; 261/261 tests. Commits 459dda6, f044d39.
 
 ## Relations
 - [[task-114-barrel-fuse]] — parent global task.

@@ -122,4 +122,5 @@ Archive: it exceeds the index size limits of [[_authoring]] on purpose (owner, 2
 - [[task-108-barrel-on-floor]] — Barrels stand on the floor and keep the floor slab under them: the barrel is no longer sunk into a floorless cell. Status done.
 - [[task-108-weapon-icons-placeholder]] — Placeholder UI icons (padlock and the three current weapons) exist as source images, validated by the owner, then prepared as transparent 256 x 256 PNGs. Status done.
 - [[task-111-pool-prewarm]] — The pools are prewarmed at level start, spread over frames per class (XP 30 over 20, chasers 30 over 20, other robots 5 or fewer over 60), and projectile pooling is evaluated. Status done.
+- [[task-114-barrel-fuse]] — Barrels have a doubled explosion radius and explode 1.5 s after reaching 0 health, with an orange danger zone and a growing circle. Status done.
 - [[task-115-heavy-slam-telegraph]] — The heavy slam shows its danger zone and a growing circle on the ground during the telegraph, and the signal dies with the robot. Status done.
