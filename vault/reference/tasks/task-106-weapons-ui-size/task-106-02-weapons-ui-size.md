@@ -3,7 +3,7 @@ id: task-106-02-weapons-ui-size
 description: "The weapon slots show the placeholder weapon icons and the padlock instead of the weapon name and the LOCKED text."
 parent: task-106-weapons-ui-size
 kind: task
-status: todo
+status: in-progress
 ---
 # Icons in the weapon slots
 
