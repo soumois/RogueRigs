@@ -3,7 +3,7 @@ id: task-118-01-telegraph-fill
 description: "The ground telegraph draws the growing circle as a transparent filled disc (inside of the zone transparent) for console, chest, barrel and heavy."
 parent: task-118-telegraph-fill
 kind: task
-status: in-progress
+status: done
 ---
 # Ground telegraph fill
 
@@ -15,11 +15,11 @@ status: in-progress
 - done_when: material compiles with no error in the editor log; parameters read back (fill opacity per mode); sys-ground-telegraph and ground-telegraph docs match; lint clean; no C++ change unless a parameter is missing (report it instead)
 - editor_state: editor open (Unreal MCP); material built through MaterialTools; no screenshots by the agent
 - token_ceiling: 40 turns, commit after each group
-- model: open
-- tokens: open
-- runs: open
+- model: sonnet
+- tokens: input 44, cache write 49760, cache read 701643, output 11580
+- runs: 1
 - milestone: M2
-- result: M_GroundTelegraph gains a fill disc (Custom node fill, radius = zone radius x Progress, ZoneColor, FillOpacity 0.25 default); recompiled without error and saved; no C++ change, no instances exist.
+- result: M_GroundTelegraph: filled progress disc, FillOpacity 0.25, shader recompiled with no error, read back; no instances to set; commit 3715add
 
 ## Relations
 - [[task-118-telegraph-fill]] — parent global task.

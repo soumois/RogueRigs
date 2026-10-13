@@ -3,7 +3,7 @@ id: task-122-xp-big-block-magenta
 description: "Global task: The big XP block is bright magenta-pink with a glow of the same hue instead of white."
 parent: tasks-to-do-index
 kind: task
-status: todo
+status: in-progress
 ---
 # Big XP block colour
 

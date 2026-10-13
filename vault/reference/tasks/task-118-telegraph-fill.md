@@ -1,9 +1,9 @@
 ---
 id: task-118-telegraph-fill
 description: "Global task: The ground telegraph draws the growing circle as a transparent filled disc (inside of the zone transparent) for console, chest, barrel and heavy."
-parent: tasks-to-do-index
+parent: tasks-done-index
 kind: task
-status: in-progress
+status: done
 ---
 # Ground telegraph fill
 
@@ -13,12 +13,12 @@ status: in-progress
 - gdd_check: done by the Orchestrator when the task is planned (2026-10-13).
 - confirmed_by_owner: yes (2026-10-13)
 - milestone: M2
-- next_step: task-118-01-telegraph-fill
-- result: open
+- next_step: none
+- result: Done. M_GroundTelegraph: filled progress disc, FillOpacity 0.25, shader recompiled with no error, read back; no instances to set; commit 3715add
 
 ## Subtasks
 1. task-118-01-telegraph-fill — bp
 
 ## Relations
-- [[tasks-to-do-index]] — parent index.
+- [[tasks-done-index]] — parent index.
 - [[task-118-01-telegraph-fill]] — step 1, bp.

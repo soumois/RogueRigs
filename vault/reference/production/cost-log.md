@@ -200,6 +200,7 @@ kind: note
 | [[task-119-01-heavy-telegraph-far-bug]] | opus | 1 | 0k | 71k | 1055k | 13k |
 | [[task-120-01-console-rules]] | opus | 1 | 0k | 104k | 2794k | 31k |
 | [[task-121-01-barrel-explosion-spread]] | opus | 1 | 0k | 157k | 4541k | 38k |
+| [[task-118-01-telegraph-fill]] | sonnet | 1 | 0k | 50k | 702k | 12k |
 
 ## Totals
 | Scope | Input | Cache write | Cache read | Output |

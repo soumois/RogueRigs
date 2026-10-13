@@ -128,6 +128,7 @@ Archive: it exceeds the index size limits of [[_authoring]] on purpose (owner, 2
 - [[task-114-barrel-fuse]] — Barrels have a doubled explosion radius and explode 1.5 s after reaching 0 health, with an orange danger zone and a growing circle. Status done.
 - [[task-115-heavy-slam-telegraph]] — The heavy slam shows its danger zone and a growing circle on the ground during the telegraph, and the signal dies with the robot. Status done.
 - [[task-117-barrel-on-floor]] — Barrels stand on the floor and keep the floor slab under them: the barrel is no longer sunk into a floorless cell. Status done.
+- [[task-118-telegraph-fill]] — The ground telegraph draws the growing circle as a transparent filled disc (inside of the zone transparent) for console, chest, barrel and heavy. Status done.
 - [[task-119-heavy-telegraph-far-bug]] — A heavy robot shows its slam zone only during its telegraph, never while it runs toward the miner from far away. Status done.
 - [[task-120-console-rules]] — The console hack zone radius is 7 cells, every rock in the zone (ore included) must be destroyed before hacking, and the hack lasts 12 s. Status done.
 - [[task-121-barrel-explosion-spread]] — The destruction of the blocks of a barrel explosion (radius 700 uu) is spread over several frames, about 2 ms of game-thread work per frame. Status done.
