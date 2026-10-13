@@ -141,6 +141,7 @@ perf-trace-m1  reference/tech/performance/perf-trace-m1.md
 perf-trace-real-game  reference/tech/performance/perf-trace-real-game.md
 performance-index  reference/tech/performance/performance-index.md
 pipelines-index  reference/tech/pipelines/pipelines-index.md
+placeholder-weapon-icons  reference/gdd/art-audio/placeholder-weapon-icons.md
 player-index  reference/gdd/player/player-index.md
 player-stats  reference/gdd/player/player-stats.md
 production-index  reference/production/production-index.md

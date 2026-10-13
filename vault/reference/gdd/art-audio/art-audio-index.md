@@ -14,4 +14,5 @@ kind: note
 - [[audio-direction]] — sound sourcing and music.
 - [[art-style-guide]] — applicable rules for new assets: shapes, factions, materials, effects, forbidden elements, formats.
 - [[art-prompts]] — verbatim image prompts and the method that produced the key art; open to generate new art.
+- [[placeholder-weapon-icons]] — TEMPORARY HUD icons for the weapon slots (padlock and three weapons), to replace with the final weapons.
 - [[dialogue-tone]] — how the Rigs talk; bark rules and examples.
