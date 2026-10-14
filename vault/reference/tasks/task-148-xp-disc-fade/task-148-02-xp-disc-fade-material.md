@@ -3,7 +3,7 @@ id: task-148-02-xp-disc-fade-material
 description: "Make the glow disc material read the fade value and turn it on in the two pickup Blueprints."
 parent: task-148-xp-disc-fade
 kind: task
-status: in-progress
+status: done
 ---
 # XP glow disc: material reads the fade
 
@@ -15,11 +15,11 @@ status: in-progress
 - done_when: The material compiles; bGlowFade reads true on both Blueprint defaults and the duration 0.2; assets saved (material, the two Blueprints) and modified in git; the strict rules of task-145 apply (no UI automation, no Ctrl+S, only named assets, no screenshots, no performance test); doc updated; lint clean
 - editor_state: open
 - token_ceiling: open
-- model: open
-- tokens: open
-- runs: open
+- model: sonnet
+- tokens: input 36, cache write 38025, cache read 455972, output 915
+- runs: 1
 - milestone: M2
-- result: open
+- result: M_XPGlowDisc: Fade scalar parameter (default 1, Custom Primitive Data index 0) multiplies the emissive; bGlowFade true on BP_PickupXP and BP_PickupXPBig (duration 0.2, index 0); compiles; runtime effect not verified, for the owner.
 
 ## Relations
 - [[task-148-xp-disc-fade]] — parent global task.
