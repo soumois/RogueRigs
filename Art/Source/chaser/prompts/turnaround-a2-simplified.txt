@@ -1,0 +1,9 @@
+Keep this exact image: same robot design, same neutral standing pose with arms forward, same colours (company yellow body, dark gunmetal joints, one red glowing eye in a boxy head, small yellow logo plate on the chest, no hazard stripes), same plain light grey background, no shadow, no text, same layout in a row with all views at the same scale. Image 1 is the sheet to correct. Image 2 is the proportion reference.
+
+Change ONE thing: simplify the robot and its proportions, and show THREE views only: FRONT, SIDE and BACK in a row, same scale, same height, aligned on the same ground line. Remove the top view entirely.
+
+Simplification: every part becomes a chunky low-poly volume with large flat facets, like a few big angular blocks. NO small panel lines, NO bolts, NO cables, NO pistons, NO cylinders, NO small details. Few visible parts: a big boxy head with one red glowing eye, a large boxy head-and-torso block, two blocky arms, a blocky pelvis, two blocky legs, dark gunmetal blocks for the joints. Flat colour per material, facets visible, no smoothing, no wear.
+
+Proportions as in Image 2: a lanky chaser. The head-and-torso block is large and boxy. Arms are slimmer than in Image 1. Legs are clearly thinner and long, much thinner than the torso block.
+
+The same single robot in the three views: identical proportions, parts and colours in front, side and back. Plain light grey background, no shadow, no text, no labels.
