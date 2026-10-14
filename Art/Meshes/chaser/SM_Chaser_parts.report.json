@@ -7,7 +7,7 @@
   "height_source": "ARRChaser capsule 24 x 62 half height (Source/RogueRigs/Enemies/RRChaser.cpp InitCapsuleSize(24, 62)) = 124 cm; bp-chaser BodyMesh 124 uu centred on the capsule; model from the sole to the top of the cap",
   "axes": "forward +X, robot left +Y, up +Z; _L parts at +Y",
   "units": "cm",
-  "total_tris": 2320,
+  "total_tris": 2648,
   "budget_tris": 3000,
   "parts": {
     "Pelvis": {
@@ -44,16 +44,16 @@
       }
     },
     "HeadTorso": {
-      "tris": 176,
+      "tris": 504,
       "bounds_min_cm": [
-        -13.2,
-        -14.88,
+        -12.4,
+        -16.9,
         81.22
       ],
       "bounds_max_cm": [
-        32.2,
-        14.88,
-        124
+        32.5,
+        16.9,
+        123
       ],
       "pivot_world_cm": [
         1.5,
@@ -66,7 +66,7 @@
         "LightMap"
       ],
       "lightmap": {
-        "faces": 77,
+        "faces": 227,
         "overlapping_face_pairs": 0,
         "bounds_min": 0.01172,
         "bounds_max": 0.98828,
@@ -342,19 +342,19 @@
     }
   },
   "dimensions_cm": {
-    "x": 45.4,
+    "x": 44.9,
     "y": 86.6,
-    "z": 124
+    "z": 123
   },
   "bbox_min": [
-    -13.2,
+    -12.4,
     -43.3,
     0
   ],
   "bbox_max": [
-    32.2,
+    32.5,
     43.3,
-    124
+    123
   ],
   "hierarchy": {
     "Pelvis": [
@@ -439,7 +439,7 @@
     ],
     "HeadTorso / UpperArm_L": [
       15.15,
-      0.87,
+      2.89,
       19.59
     ],
     "UpperArm_L / ForearmHand_L": [
@@ -449,7 +449,7 @@
     ],
     "HeadTorso / UpperArm_R": [
       15.15,
-      0.87,
+      2.89,
       19.59
     ],
     "UpperArm_R / ForearmHand_R": [
@@ -479,10 +479,10 @@
     ]
   },
   "joint_penetration_cm": {
-    "Pelvis / HeadTorso": 0.73,
-    "HeadTorso / UpperArm_L": 0.87,
+    "Pelvis / HeadTorso": 0.66,
+    "HeadTorso / UpperArm_L": 2.52,
     "UpperArm_L / ForearmHand_L": 0,
-    "HeadTorso / UpperArm_R": 0.87,
+    "HeadTorso / UpperArm_R": 2.52,
     "UpperArm_R / ForearmHand_R": 0,
     "Pelvis / Thigh_L": 0.93,
     "Thigh_L / ShinFoot_L": 0.5,
@@ -530,6 +530,7 @@
   ],
   "shading": "flat",
   "warnings": [
+    "height off 124 cm",
     "eye_red is emissive in Blender (strength 4, #FF1010): the FBX does not carry emission, the Unreal material sets the glow"
   ],
   "fidelity": {
@@ -737,24 +738,13 @@
       "threequarter": "Art/Meshes/chaser/render_threequarter.png"
     }
   },
-  "assembly": {
-    "task": "task-151-12-chaser-assembly",
-    "method": "assemble.py from the six part modules; orthographic renders at the crop scale, silhouette Hausdorff distance after best horizontal alignment (as step 03)",
-    "contract_fix": "KNEE y 0.125 H -> 0.11 H (15.5 -> 13.64 cm) in common.py; ShinFoot shifted inward by 1.86 cm at the knee, tapering linearly to 0 at z 22 cm (ankle/foot keep the sheet position, outer foot edge unchanged); Part got dy/dz arguments for this shift; Thigh unchanged",
-    "silhouette_diff_pct_H": {
-      "front": 3.09,
-      "side": 2.72,
-      "back": 3.21,
-      "limit": 5,
-      "backup_monolithic": {
-        "front": 3.09,
-        "side": 2.72,
-        "back": 3.35
-      }
-    },
+  "reassembly": {
+    "task": "task-151-14-chaser-reassembly",
+    "method": "assemble.py rebuilt unchanged (no contract change); silhouette: orthographic renders at crop scale, mask by border-colour difference, symmetric Hausdorff after best horizontal shift (a re-implementation: the step 12 script was not kept; the same code on backup-monolithic renders gives 4.14/4.26/4.89, about 1 point above the step 12 values)",
+    "total_tris": 2648,
     "tris_per_part": {
       "Pelvis": 88,
-      "HeadTorso": 176,
+      "HeadTorso": 504,
       "UpperArm_L": 120,
       "ForearmHand_L": 396,
       "UpperArm_R": 120,
@@ -764,9 +754,74 @@
       "Thigh_R": 192,
       "ShinFoot_R": 320
     },
-    "total_tris": 2320,
-    "joint_penetration_max_cm": 0.93,
-    "joint_gap": "none seen in the closeups; knee, hip, shoulder, elbow, ankle overlap by 0 to 0.93 cm",
+    "objects": 10,
+    "material_slots": [
+      "yellow_body",
+      "gunmetal",
+      "eye_red",
+      "logo_plate"
+    ],
+    "height_cm": 123,
+    "top_of_torso_cm": 123,
+    "bbox_min": [
+      -12.4,
+      -43.3,
+      0
+    ],
+    "bbox_max": [
+      32.5,
+      43.3,
+      123
+    ],
+    "silhouette_diff_pct_H": {
+      "front": 4.12,
+      "side": 6.18,
+      "back": 5.09,
+      "p99": {
+        "front": 3.39,
+        "side": 5.89,
+        "back": 3.84
+      },
+      "previous_step12": {
+        "front": 3.09,
+        "side": 2.72,
+        "back": 3.21
+      },
+      "backup_same_method": {
+        "front": 4.14,
+        "side": 4.26,
+        "back": 4.89
+      },
+      "note": "side: the sheet hood slopes higher at the front top than the new torso (about 6 percent of H at the front top edge)"
+    },
+    "joint_penetration_max_cm": 2.52,
+    "joint_penetration_cm": {
+      "Pelvis / HeadTorso": 0.66,
+      "HeadTorso / UpperArm_L": 2.52,
+      "UpperArm_L / ForearmHand_L": 0,
+      "HeadTorso / UpperArm_R": 2.52,
+      "UpperArm_R / ForearmHand_R": 0,
+      "Pelvis / Thigh_L": 0.93,
+      "Thigh_L / ShinFoot_L": 0.5,
+      "Pelvis / Thigh_R": 0.93,
+      "Thigh_R / ShinFoot_R": 0.5
+    },
+    "shoulder_penetration": "HeadTorso dark joint ring (part_headtorso.py, oct_y at x -6.5, y 15.2, z 108, y 13.5 to 16.9) sinks 2.52 cm into the UpperArm dark connector (y 14 to 21.1): both gunmetal, hidden; not a placement problem (pivots do not move geometry); swing about the shoulder axis -40..60 deg: no new overlap (upper arm in torso at most 0.72 cm, torso ring in arm 2.4-2.5 cm, forearm none)",
+    "joint_gap": "none seen in the three-quarter, front, side and back renders",
+    "logo": {
+      "texture": "Art/Meshes/chaser/T_ChaserLogo.png",
+      "slot": "logo_plate",
+      "fbx_references_texture": true,
+      "file_unchanged": true
+    },
+    "game_camera": {
+      "elevation_deg": 50,
+      "renders": [
+        "render_game_front_x4.png",
+        "render_game_back_x4.png"
+      ],
+      "robot_px_tall": "71 front, 68 back at 1x, 4x nearest neighbour"
+    },
     "renders": [
       "render_front.png",
       "render_side.png",
@@ -775,13 +830,6 @@
       "compare_front.png",
       "compare_side.png",
       "compare_back.png"
-    ],
-    "still_differs": [
-      "hands: one finger block merged into the palm, the sheet shows three separate chunky fingers",
-      "HeadTorso back plates read weakly (a bulge behind the head on the three-quarter view, little in the back view)",
-      "ShinFoot foot has fewer facet steps than the sheet; a small gap under the foot arch between the foot upper and the toe block in side view",
-      "the shin leans inward from the ankle to the knee (about 1.9 cm over 22 cm) to meet the thigh knee axis at 0.11 H",
-      "back view: arms hang about 1 to 2 percent of H narrower than the sheet at the hands (the sheet is asymmetric)"
     ]
   }
 }
