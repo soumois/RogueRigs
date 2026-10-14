@@ -282,6 +282,7 @@ kind: note
 | [[task-173-01-debris-count-variety]] | opus | 1 | 0k | 334k | 4096k | 41k |
 | [[task-170-01-debris-sink-3s]] | sonnet | 1 | 0k | 70k | 971k | 13k |
 | [[task-171-01-debris-throw-random]] | sonnet | 1 | 0k | 49k | 821k | 13k |
+| [[task-172-01-debris-start-jitter]] | sonnet | 2 | 0k | 47k | 822k | 11k |
 
 ## Totals
 | Scope | Input | Cache write | Cache read | Output |

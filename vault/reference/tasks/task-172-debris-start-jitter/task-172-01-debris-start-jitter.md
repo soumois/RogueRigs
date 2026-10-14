@@ -3,7 +3,7 @@ id: task-172-01-debris-start-jitter
 description: "Debris pieces start at their place on the robot plus a random offset of up to 10 cm on each axis."
 parent: task-172-debris-start-jitter
 kind: task
-status: in-progress
+status: done
 ---
 # Robot debris: random start position
 
@@ -15,11 +15,11 @@ status: in-progress
 - done_when: The system compiles with no stack issue and stays one-shot (finishes on its own); the changed module inputs read back; saved by explicit asset path; bp-robot-debris doc updated; committed by path; the editor stays open
 - editor_state: open
 - token_ceiling: open
-- model: open
-- tokens: open
-- runs: open
+- model: sonnet
+- tokens: input 54, cache write 46845, cache read 821755, output 11242
+- runs: 2
 - milestone: M3
-- result: open
+- result: Position spawn module: rotated baked offset + per-axis rand ±10 cm, Z clamped at system Z; module order and loop settings (Once, Complete) read back for 170-172; system bDeterminism set false (was true, seed 0); compiles clean; not run in PIE; commits 144c7a3, 86a489b
 
 ## Relations
 - [[task-172-debris-start-jitter]] — parent global task.
