@@ -3,7 +3,7 @@ id: task-173-debris-count-variety
 description: "Global task: throw 2 to 4 debris meshes per death with equal odds and check in a game run that the pieces vary."
 parent: tasks-to-do-index
 kind: task
-status: todo
+status: in-progress
 ---
 # Robot debris: 2 to 4 pieces and variety
 

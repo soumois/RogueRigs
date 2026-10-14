@@ -3,7 +3,7 @@ id: task-173-01-debris-count-variety
 description: "Throw 2 to 4 debris meshes per death with equal odds and check with a game run that the pieces drawn vary, fixing any bias."
 parent: task-173-debris-count-variety
 kind: task
-status: todo
+status: in-progress
 ---
 # Robot debris: 2 to 4 pieces and variety
 
