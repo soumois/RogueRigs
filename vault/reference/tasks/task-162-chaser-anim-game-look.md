@@ -1,9 +1,9 @@
 ---
 id: task-162-chaser-anim-game-look
 description: "Global task: See the animated chaser in the game: spawn chasers near the miner and take screenshots."
-parent: tasks-to-do-index
+parent: tasks-done-index
 kind: task
-status: in-progress
+status: done
 ---
 # Chaser: animation seen in the game
 
@@ -13,12 +13,12 @@ status: in-progress
 - gdd_check: done by the Orchestrator when the task is planned (2026-10-14).
 - confirmed_by_owner: yes (2026-10-14)
 - milestone: M2
-- next_step: task-162-01-chaser-anim-game-look
-- result: open
+- next_step: none
+- result: Done. visual check in game: cause found, generated lightmap UVs overwrite PartId in UV channel 2
 
 ## Subtasks
 1. task-162-01-chaser-anim-game-look — cpp
 
 ## Relations
-- [[tasks-to-do-index]] — parent index.
+- [[tasks-done-index]] — parent index.
 - [[task-162-01-chaser-anim-game-look]] — step 1, cpp.

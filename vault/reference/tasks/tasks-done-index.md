@@ -170,3 +170,4 @@ Archive: it exceeds the index size limits of [[_authoring]] on purpose (owner, 2
 - [[task-159-chaser-anim-part-index]] — Make the chaser animation move each part separately: carry the part index in a UV channel instead of vertex colours. Status done.
 - [[task-160-chaser-no-shadow]] — Stop the chaser from casting a shadow: BodyMesh and the shield shell cast no shadow. Status done.
 - [[task-161-chaser-cut-pose-check]] — Check the part cut of the chaser and render four fixed run poses from the baked animation data. Status done.
+- [[task-162-chaser-anim-game-look]] — See what the animated chaser really looks like in the game: run the game, spawn chasers near the miner and take screenshots over time. Status done.

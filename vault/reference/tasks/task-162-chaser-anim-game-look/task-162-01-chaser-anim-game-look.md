@@ -3,7 +3,7 @@ id: task-162-01-chaser-anim-game-look
 description: "See what the animated chaser really looks like in the game: run the game, spawn chasers near the miner and take screenshots over time."
 parent: task-162-chaser-anim-game-look
 kind: task
-status: in-progress
+status: done
 ---
 # Chaser: animation seen in the game
 
@@ -15,11 +15,11 @@ status: in-progress
 - done_when: The game ran headless-ish with -game (editor closed), shots exist and were opened and described; the report names the symptom precisely (for each part: where it is relative to the body); nothing modified in Content/ or Source/; the report committed by name (a markdown or json note in Saved is not committed: put the note in the final message only), the PNGs left untracked
 - editor_state: closed
 - token_ceiling: open
-- model: open
-- tokens: open
-- runs: open
+- model: opus
+- tokens: input 86, cache write 136878, cache read 3608667, output 12115
+- runs: 1
 - milestone: M2
-- result: open
+- result: visual check in game: cause found, generated lightmap UVs overwrite PartId in UV channel 2
 
 ## Relations
 - [[task-162-chaser-anim-game-look]] — parent global task.

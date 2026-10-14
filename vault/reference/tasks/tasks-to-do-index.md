@@ -11,4 +11,4 @@ A global task moves to [[tasks-done-index]] when it is done (`vault/scripts/task
 ## Relations
 - [[tasks-index]] — parent index.
 - [[task-151-chaser-robot]] — Build the chaser robot: turnaround sheet, parts model, baked run and attack animation, in-game integration and a cost check. Status in-progress.
-- [[task-162-chaser-anim-game-look]] — See what the animated chaser really looks like in the game: run the game, spawn chasers near the miner and take screenshots over time. Status todo.
+- [[task-163-chaser-anim-lightmap-fix]] — Fix the chaser animation: the engine lightmap UVs overwrite the part index in UV channel 2. Status todo.
