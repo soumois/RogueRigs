@@ -3,7 +3,7 @@ id: task-151-08-chaser-part-upperarm
 description: "Rebuild the chaser UpperArm alone against its close-up crops of the validated sheet."
 parent: task-151-chaser-robot
 kind: task
-status: in-progress
+status: done
 ---
 # Chaser part: UpperArm
 
@@ -27,11 +27,11 @@ status: in-progress
   - C4 Budget: at most 200 triangles (72 today per arm), flat shading; mirrored for the other side.
 - editor_state: closed
 - token_ceiling: open
-- model: open
-- tokens: open
-- runs: open
+- model: sonnet
+- tokens: input 22, cache write 24388, cache read 215736, output 1583
+- runs: 1
 - milestone: M2
-- result: open
+- result: UpperArm 6 octagonal sections, 120 tris per arm, passes (0 returns); back view not truly compared.
 
 ## Relations
 - [[task-151-chaser-robot]] — parent global task.
