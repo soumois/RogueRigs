@@ -12,7 +12,8 @@ PREVIEW = {"close": ("front", (25.0, 0.0, h(0.80)), 40.0)}
 LOGO_SRC = "Art/Source/kessler-voss-logo/20261011-201828-kessler-voss-logo-1.png"
 LOGO_BOX = (55, 412, 425, 782)      # emblem crop in source pixels (x0, y0 from the top, x1, y1), square, thin yellow plate border kept
 LOGO_N = 256
-LOGO_W = 17.6                       # decal width (cm), the largest square inside the flat top of the cap plate
+LOGO_W = 17.6                       # decal width (cm, across) and length (cm, along the slope): the decal fills the flat top of the cap plate (17.8 x 21.9 cm)
+LOGO_L = 21.4
 
 
 def bil(a, b, c, d, s, t):
@@ -31,10 +32,29 @@ def paint_logo():
     px = np.array(src.pixels[:], dtype=np.float32).reshape(H_, W_, 4)          # row 0 = bottom
     x0, y0, x1, y1 = LOGO_BOX
     crop = px[H_ - y1:H_ - y0, x0:x1].copy()
-    crop[:, :, 3] = 1.0
-    tmp = bpy.data.images.new("logo_crop_tmp", crop.shape[1], crop.shape[0], alpha=False)
-    tmp.pixels = crop.flatten().tolist()
-    tmp.scale(LOGO_N, LOGO_N)
+    ch_, cw_ = crop.shape[:2]
+    body = np.array([int(C.HEX["yellow_body"][i:i + 2], 16) / 255 for i in (1, 3, 5)])      # encoded values, like the material colour in common.setup
+    dark = np.array([26, 28, 34]) / 255
+    al = np.clip((crop[:, :, 0] - 0.12) / 0.78, 0.0, 1.0)             # yellow-ness from the red channel (yellow 1.0, charcoal 0.1)
+    rr, cc = np.mgrid[0:ch_, 0:cw_]
+    for cy_ in (ch_ - 28, ch_ - 333):                                 # paint out the two left rivets: the plate border is symmetric
+        al[(rr - cy_) ** 2 + (cc - 25) ** 2 < 34 ** 2] = 1.0
+        al[(np.abs(rr - cy_) < 40) & (cc < 30)] = 1.0
+    rgb = dark[None, None, :] * (1 - al[:, :, None]) + body[None, None, :] * al[:, :, None]
+    CWd = 410                                                         # canvas with the decal aspect, body yellow plate, thin charcoal rim
+    CHd = int(round(CWd * LOGO_L / LOGO_W))
+    canvas = np.ones((CHd, CWd, 4))
+    canvas[:, :, :3] = body
+    oy, ox = (CHd - ch_) // 2, (CWd - cw_) // 2
+    canvas[oy:oy + ch_, ox:ox + cw_, :3] = rgb
+    RIM = 8
+    canvas[:RIM, :, :3] = dark
+    canvas[-RIM:, :, :3] = dark
+    canvas[:, :RIM, :3] = dark
+    canvas[:, -RIM:, :3] = dark
+    tmp = bpy.data.images.new("logo_crop_tmp", CWd, CHd, alpha=False)
+    tmp.pixels = canvas.flatten().tolist()
+    tmp.scale(LOGO_N, LOGO_N)                                         # 256 x 256; the UV stretch of the decal restores the aspect
     img.scale(LOGO_N, LOGO_N)
     img.pixels = list(tmp.pixels)
     try:
@@ -75,6 +95,8 @@ def build(side=None):
         for k in range(n):
             if li == CL and k in SPECIAL:
                 continue
+            if li == CL and k == 1:
+                continue            # lower bevel under the recess: built below, dark in the opening
             ht.quad((L[li][k], L[li][(k + 1) % n], L[li + 1][(k + 1) % n], L[li + 1][k]), "yellow_body")
     ht.quad(L[0][::-1], "yellow_body")
     ht.quad(L[-1], "yellow_body")
@@ -86,7 +108,7 @@ def build(side=None):
         nrm = -nrm
     RS = (0.5 - 0.48, 0.5 + 0.48)
     RT = (0.0, 0.90)
-    BACKV = Vector((-4.0, 0.0, 0.0))
+    BACKV = Vector((-5.5, 0.0, 0.0))
     outer = [fa, fd, fc, fb]
 
     def ring(shs, back):
@@ -107,12 +129,24 @@ def build(side=None):
     if ztan.z < 0:
         ztan = -ztan
     EYE_C = FC + nrm * 0.3 + ztan * 1.2
-    EYE_R = 4.5
-    # chin: narrow dark stem below the eye, and a small gunmetal lip jutting forward at the bottom
-    zf = min(fa.co.z, fb.co.z)
-    xf = fa.co.x
-    ht.abox(xf - 3.4, xf + 1.2, -1.6, 1.6, zf - 1.4, zf + 2.4, "gunmetal")
-    ht.abox(xf - 0.5, xf + 2.6, -6.0, 6.0, zf - 1.6, zf + 0.5, "gunmetal")
+    EYE_R = 3.6
+    # bottom: the lower bevel under the opening is gunmetal between the recess edges (reads open), the two shell corners stay yellow
+    A_, B_, C_, D_ = L[CL][1], L[CL][2], L[CL + 1][2], L[CL + 1][1]
+    q0 = ht.bm.verts.new(bil(A_, D_, C_, B_, RS[0], 0.0))
+    q1 = ht.bm.verts.new(bil(A_, D_, C_, B_, RS[1], 0.0))
+    ht.quad((A_, q0, inner[0], B_), "yellow_body")
+    ht.quad((q0, q1, inner[3], inner[0]), "gunmetal")
+    ht.quad((q1, D_, C_, inner[3]), "yellow_body")
+    # Y-shaped dark neck on the recess floor: a narrow vertical stem (3 cm) splitting into two short diagonal arms that end under the eye; raised 1 cm, stops below the eye plane
+    zb = (sum((v.co for v in (floor[0], floor[3])), Vector()) / 2 - EYE_C).dot(ztan)
+    zt, zj = -EYE_R * 0.92 - 0.1, -EYE_R * 0.92 - 2.4
+
+    def yz(y_, z_, off):
+        return ht.bm.verts.new(EYE_C - nrm * 0.3 + ytan * y_ + ztan * z_ + nrm * off)
+    for pts in (((-1.5, zb), (1.5, zb), (1.5, zj), (-1.5, zj)),
+                ((0.0, zj), (1.5, zj), (3.0, zt), (1.4, zt)),
+                ((-1.5, zj), (0.0, zj), (-1.4, zt), (-3.0, zt))):
+        ht.loft([[yz(y_, z_, 0.05) for y_, z_ in pts], [yz(y_, z_, 1.0) for y_, z_ in pts]], "gunmetal")
     # upper part of the front panel: plain yellow quad
     ua, ub, uc, ud = L[CL][3], L[CL + 1][3], L[CL + 1][4], L[CL][4]
     ht.quad((ua, ub, uc, ud), "yellow_body")
@@ -179,14 +213,13 @@ def build(side=None):
                 f.normal_flip()
             f.material_index = C.MI["eye_red"]
         c = cen + dn * 0.25
-        q = LOGO_W / 2
-        vs = [bm.verts.new(c + right * sx * q + up * sy * q) for sx, sy in ((-1, -1), (1, -1), (1, 1), (-1, 1))]
+        vs = [bm.verts.new(c + right * sx * LOGO_W / 2 + up * sy * LOGO_L / 2) for sx, sy in ((-1, -1), (1, -1), (1, 1), (-1, 1))]
         f = bm.faces.new(vs)
         if f.normal.dot(dn) < 0:
             f.normal_flip()
         f.material_index = C.MI["logo_plate"]
         for l in f.loops:
-            l[uv0].uv = (0.5 + (l.vert.co - c).dot(right) / LOGO_W, 0.5 + (l.vert.co - c).dot(up) / LOGO_W)
+            l[uv0].uv = (0.5 + (l.vert.co - c).dot(right) / LOGO_W, 0.5 + (l.vert.co - c).dot(up) / LOGO_L)
         return f
     ht.post = post
     return C.finish(ht)
