@@ -31,6 +31,7 @@
 #include "Pickups/RRPickupSubsystem.h"
 #include "Player/RRMiner.h"
 #include "Pool/RRActorPoolSubsystem.h"
+#include "Pool/RRNiagaraPoolSubsystem.h"
 #include "Projectiles/RRCollisionChannels.h"
 #include "RogueRigs.h"
 #include "Telegraph/RRGroundTelegraphComponent.h"
@@ -179,6 +180,15 @@ void ARREnemy::BeginPlay()
 	if (URRRobotSeparationSubsystem* Separation = GetWorld()->GetSubsystem<URRRobotSeparationSubsystem>())
 	{
 		Separation->RegisterRobot(this);
+	}
+
+	// Puff components are created here (once per pool, up to its cap), never at a death.
+	if (DeathPuffSystem)
+	{
+		if (URRNiagaraPoolSubsystem* FXPool = GetWorld()->GetSubsystem<URRNiagaraPoolSubsystem>())
+		{
+			FXPool->Prewarm(DeathPuffSystem, DeathPuffPoolSize, DeathPuffPoolSize);
+		}
 	}
 }
 
@@ -390,6 +400,15 @@ void ARREnemy::HandleDeath(AActor* DeathInstigator)
 	GetCharacterMovement()->DisableMovement();
 	SetActorEnableCollision(false);
 	SetMeshesVisible(true);
+
+	// Puff of sparks at the robot centre hiding the shrink (pooled; skipped when the pool is full).
+	if (DeathPuffSystem)
+	{
+		if (URRNiagaraPoolSubsystem* FXPool = GetWorld() ? GetWorld()->GetSubsystem<URRNiagaraPoolSubsystem>() : nullptr)
+		{
+			FXPool->Spawn(DeathPuffSystem, GetActorLocation(), FRotator::ZeroRotator, DeathPuffPoolSize);
+		}
+	}
 
 	UE_LOG(LogRogueRigs, Log, TEXT("%s died (instigator: %s)."), *GetName(), *GetNameSafe(DeathInstigator));
 

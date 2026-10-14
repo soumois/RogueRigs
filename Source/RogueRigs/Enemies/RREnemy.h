@@ -1,4 +1,4 @@
-// Rogue Rigs - robot base: own ASC with health, movement and enemy sets, CSV stats, flow-field movement, single death with shrink and XP drop, floating damage numbers.
+// Rogue Rigs - robot base: own ASC with health, movement and enemy sets, CSV stats, flow-field movement, single death with pooled puff, shrink and XP drop, floating damage numbers.
 
 #pragma once
 
@@ -22,6 +22,7 @@ class URRMovementAttributeSet;
 class UGameplayEffect;
 class UMaterialInterface;
 class UMeshComponent;
+class UNiagaraSystem;
 class USceneComponent;
 struct FOnAttributeChangeData;
 
@@ -40,7 +41,8 @@ struct FOnAttributeChangeData;
  * rr.Enemy.LightMovement, cached floor on the engine path); at BeginPlay the attached parts are made cheap to move
  * (bLightAttachedParts) and, with rr.Enemy.LightMovement on, the root capsule stops generating overlap events; a walking robot far from the miner and off screen moves at a slower
  * tick interval (FarMovementDistance, FarMovementTickInterval; UpdateMovementLOD).
- * Death (health set OnDeath, once, State.Dead on the ASC): stops, disables collision, shrinks to 0 over DeathShrinkDuration,
+ * Death (health set OnDeath, once, State.Dead on the ASC): stops, disables collision, plays the pooled DeathPuffSystem at its
+ * centre (URRNiagaraPoolSubsystem, at most DeathPuffPoolSize), shrinks to 0 over DeathShrinkDuration,
  * then bursts XPCubeCount pickups of XPPickupClass at its feet (Stats.XPValue split over them) and goes back to the actor pool
  * (URRActorPoolSubsystem::Release; a robot not created by the pool is destroyed instead).
  * Pool (task-091-01, IRRPoolable): BeginPlay runs once per actor; every later life starts in OnPoolAcquired, which calls
@@ -316,6 +318,20 @@ protected:
 	/** Duration of the death shrink to scale 0, in seconds (enemy-death M1: 0.15 s). */
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Enemy|Death", meta = (ClampMin = 0, Units = "s"))
 	float DeathShrinkDuration = 0.15f;
+
+	/**
+	 * One-shot Niagara puff of sparks played at the robot centre when the death starts, hiding the shrink (enemy-death:
+	 * about 12 sprites, 0.3 s; task-167-01). Played through URRNiagaraPoolSubsystem; null = no puff.
+	 */
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Enemy|Death")
+	TObjectPtr<UNiagaraSystem> DeathPuffSystem;
+
+	/**
+	 * Most puff components alive at once for DeathPuffSystem (enemy-death: 40, provisional); prewarmed at BeginPlay. When all
+	 * are playing, a death plays no puff. Robots sharing the system share the pool (the last cap given wins).
+	 */
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Enemy|Death", meta = (ClampMin = 0))
+	int32 DeathPuffPoolSize = 40;
 
 	/** Robots pass through each other when moving (crowd spacing left to the light separation); applied at BeginPlay. */
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Enemy|Crowd")
