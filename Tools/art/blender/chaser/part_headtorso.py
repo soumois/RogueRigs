@@ -1,5 +1,6 @@
-"""Chaser HeadTorso: tapered block with bevelled corners, raked hood, one front panel with a tall recess + eye, shield logo on a plate, low cap box and two low fins, three flat faceted back slabs, dark shoulder joints in a vertical channel. Pivot at the waist, parent Pelvis. Edit ONLY this file for the head and torso."""
+"""Chaser HeadTorso: tapered block with bevelled corners, raked hood, one front panel with a dark tall recess + one red octagon eye, company logo decal (texture) on the top of the hood, low cap box and two low fins, three flat faceted back slabs, dark shoulder joints in a vertical channel. Pivot at the waist, parent Pelvis. Edit ONLY this file for the head and torso."""
 import math
+import os
 import bpy
 import numpy as np
 import common as C
@@ -8,7 +9,10 @@ from mathutils import Vector
 
 PREVIEW = {"close": ("front", (25.0, 0.0, h(0.80)), 40.0)}
 
-SHIELD = [(0.07, 0.98), (0.93, 0.98), (1.0, 0.62), (0.5, 0.02), (0.0, 0.62)]      # logo shield outline in (s, t) of the decal texture, convex, point down
+LOGO_SRC = "Art/Source/kessler-voss-logo/20261011-201828-kessler-voss-logo-1.png"
+LOGO_BOX = (55, 412, 425, 782)      # emblem crop in source pixels (x0, y0 from the top, x1, y1), square, thin yellow plate border kept
+LOGO_N = 256
+LOGO_W = 17.6                       # decal width (cm), the largest square inside the flat top of the cap plate
 
 
 def bil(a, b, c, d, s, t):
@@ -17,46 +21,28 @@ def bil(a, b, c, d, s, t):
 
 
 def paint_logo():
-    """The torso owns the logo look: overwrite T_ChaserLogo (made by common.setup) with a dark shield (gunmetal rim) and a yellow four-point emblem, plate yellow outside, 256 px."""
+    """Company logo as a texture: crop the emblem (charcoal asteroid with the KV monogram, thin yellow plate border) from the Kessler-Voss source image into a 256 px square and write it over T_ChaserLogo (made by common.setup). No logo geometry."""
     img = next((i for i in bpy.data.images if i.name.startswith("T_ChaserLogo")), None)
     if img is None:
         return
-    N = 256
-    row, col = np.mgrid[0:N, 0:N]
-    s = (col + 0.5) / N
-    t = (row + 0.5) / N          # row 0 = bottom in Blender
-
-    def inside(poly, k):
-        cx = sum(p[0] for p in poly) / len(poly)
-        cy = sum(p[1] for p in poly) / len(poly)
-        pts = [(cx + (x - cx) * k, cy + (y - cy) * k) for x, y in poly]
-        m = np.ones((N, N), bool)
-        for i in range(len(pts)):
-            x0, y0 = pts[i]
-            x1, y1 = pts[(i + 1) % len(pts)]
-            m &= ((x1 - x0) * (t - y0) - (y1 - y0) * (s - x0)) <= 0          # clockwise outline: inside = right of every edge
-        return m
-
-    def raw(hx):
-        return np.array([int(hx[i:i + 2], 16) / 255 for i in (1, 3, 5)])      # encoded values, like common.setup
-    plate = raw(C.HEX["logo_plate"])
-    rim = raw("#5A5A5A")
-    dark = raw("#1A1A1A")
-    out = np.ones((N, N, 4))
-    out[:, :, :3] = plate
-    out[inside(SHIELD, 1.0), :3] = rim
-    inner = inside(SHIELD, 0.84)
-    out[inner, :3] = dark
-    u, v = np.abs(s - 0.5), np.abs(t - 0.58)
-    star = (u ** 0.62 + v ** 0.62) < 0.36 ** 0.62          # large four-point emblem
-    stem = (u < 0.055 * (1.0 + (0.5 - t) * 0.0)) & (t < 0.58) & (t > 0.14)      # stem down to the shield tip
-    out[(star | stem) & inner, :3] = plate
-    img.scale(N, N)
-    img.pixels = out.flatten().tolist()
+    root = os.path.abspath(os.path.join(os.path.dirname(os.path.abspath(__file__)), "..", "..", "..", ".."))
+    src = bpy.data.images.load(os.path.join(root, LOGO_SRC), check_existing=False)
+    W_, H_ = src.size
+    px = np.array(src.pixels[:], dtype=np.float32).reshape(H_, W_, 4)          # row 0 = bottom
+    x0, y0, x1, y1 = LOGO_BOX
+    crop = px[H_ - y1:H_ - y0, x0:x1].copy()
+    crop[:, :, 3] = 1.0
+    tmp = bpy.data.images.new("logo_crop_tmp", crop.shape[1], crop.shape[0], alpha=False)
+    tmp.pixels = crop.flatten().tolist()
+    tmp.scale(LOGO_N, LOGO_N)
+    img.scale(LOGO_N, LOGO_N)
+    img.pixels = list(tmp.pixels)
     try:
         img.save()
     except Exception as ex:
         print("logo save", ex)
+    bpy.data.images.remove(tmp)
+    bpy.data.images.remove(src)
 
 
 def slab(ht, prof, spec):
@@ -93,7 +79,7 @@ def build(side=None):
     ht.quad(L[0][::-1], "yellow_body")
     ht.quad(L[-1], "yellow_body")
 
-    # lower part of the front panel: open at the bottom, tall recess lit red (walls and floor), two corner pieces left and right
+    # lower part of the front panel: open at the bottom, tall dark recess in gunmetal (walls and floor, non-emissive), two corner pieces left and right
     fa, fb, fc, fd = L[CL][2], L[CL + 1][2], L[CL + 1][3], L[CL][3]
     nrm = (fb.co - fa.co).cross(fd.co - fa.co).normalized()
     if nrm.x < 0:
@@ -112,22 +98,22 @@ def build(side=None):
     floor = ring(0.90, 1.0)
     for k in range(3):                 # left, top, right; no sill at the bottom
         ht.quad((outer[k], outer[k + 1], inner[k + 1], inner[k]), "yellow_body")
-        ht.quad((inner[k], inner[k + 1], mid[k + 1], mid[k]), "eye_red")
-        ht.quad((mid[k], mid[k + 1], floor[k + 1], floor[k]), "eye_red")
-    ht.quad(floor[::-1], "eye_red")
+        ht.quad((inner[k], inner[k + 1], mid[k + 1], mid[k]), "gunmetal")
+        ht.quad((mid[k], mid[k + 1], floor[k + 1], floor[k]), "gunmetal")
+    ht.quad(floor[::-1], "gunmetal")
     FC = sum((v.co for v in floor), Vector()) / 4
     ytan = (fb.co - fa.co).normalized()
     ztan = nrm.cross(ytan)
     if ztan.z < 0:
         ztan = -ztan
     EYE_C = FC + nrm * 0.3 + ztan * 1.2
-    EYE_R = 4.0
-    # chin: narrow dark stem below the eye, and a small red-lit lip jutting forward at the bottom
+    EYE_R = 4.5
+    # chin: narrow dark stem below the eye, and a small gunmetal lip jutting forward at the bottom
     zf = min(fa.co.z, fb.co.z)
     xf = fa.co.x
     ht.abox(xf - 3.4, xf + 1.2, -1.6, 1.6, zf - 1.4, zf + 2.4, "gunmetal")
-    ht.abox(xf - 0.5, xf + 2.6, -6.0, 6.0, zf - 1.6, zf + 0.5, "eye_red")
-    # upper part of the front panel: plain yellow quad (plate and shield sit on it)
+    ht.abox(xf - 0.5, xf + 2.6, -6.0, 6.0, zf - 1.6, zf + 0.5, "gunmetal")
+    # upper part of the front panel: plain yellow quad
     ua, ub, uc, ud = L[CL][3], L[CL + 1][3], L[CL + 1][4], L[CL][4]
     ht.quad((ua, ub, uc, ud), "yellow_body")
     unrm = (ub.co - ua.co).cross(ud.co - ua.co).normalized()
@@ -174,26 +160,33 @@ def build(side=None):
         ht.abox(-9.0, -1.0, sg * (W - 0.3), sg * (W + 0.9), h(0.68), h(0.90), "gunmetal")
         ht.oct_y(-6.5, sg * (W - 0.3), h(0.835), 5.4, 3.4, "gunmetal")
 
+    # logo decal on the hood top: one quad 0.25 cm above the flat top of the cap plate, one planar UV, up toward the robot back (-X)
+    pa = Vector((xb - 0.5, 0.0, zd(xb - 0.5) + 0.8))
+    pb = Vector((xa + 0.5, 0.0, zd(xa + 0.5) + 0.8))
+    cen = (pa + pb) / 2
+    up = (pb - pa).normalized()
+    right = Vector((0, 1, 0))
+    dn = right.cross(up).normalized()
+    if dn.z < 0:
+        dn = -dn
+
     def post(bm, uv0):
-        """eye octagon on a dark socket plus a core octagon (emissive) on the recess floor, yellow plate and shield decal (one planar UV); returns the shield face"""
-        for R, off, mat in ((EYE_R + 0.8, 0.12, "gunmetal"), (EYE_R, 0.3, "eye_red"), (EYE_R * 0.5, 0.55, "eye_red")):
-            ev_ = [bm.verts.new(EYE_C + nrm * (off - 0.3) + ytan * R * math.cos(math.radians(22.5 + 45 * k)) + ztan * R * math.sin(math.radians(22.5 + 45 * k))) for k in range(8)]
+        """one solid eye octagon plus a core octagon (both eye_red) on the recess floor; then the logo decal quad (returned)"""
+        for R, off in ((EYE_R, 0.0), (EYE_R * 0.5, 0.25)):
+            ev_ = [bm.verts.new(EYE_C + nrm * off + ytan * R * math.cos(math.radians(22.5 + 45 * k)) + ztan * R * math.sin(math.radians(22.5 + 45 * k))) for k in range(8)]
             f = bm.faces.new(ev_)
             if f.normal.dot(nrm) < 0:
                 f.normal_flip()
-            f.material_index = C.MI[mat]
-
-        def poly(k, off, uvs=False):
-            vs = [bm.verts.new(bil(ua, ub, uc, ud, 0.5 + (s_ - 0.5) * 0.40 * k, 0.5 + (t_ - 0.5) * 0.72 * k) + unrm * off) for s_, t_ in SHIELD]
-            fc_ = bm.faces.new(vs)
-            if fc_.normal.dot(unrm) < 0:
-                fc_.normal_flip()
-            fc_.material_index = C.MI["logo_plate"]
-            if uvs:
-                for l in fc_.loops:
-                    l[uv0].uv = SHIELD[vs.index(l.vert)]
-            return fc_
-        poly(1.10, 0.15)                 # plate under the shield (UV0 left at 0,0: plate yellow)
-        return poly(1.0, 0.32, True)
+            f.material_index = C.MI["eye_red"]
+        c = cen + dn * 0.25
+        q = LOGO_W / 2
+        vs = [bm.verts.new(c + right * sx * q + up * sy * q) for sx, sy in ((-1, -1), (1, -1), (1, 1), (-1, 1))]
+        f = bm.faces.new(vs)
+        if f.normal.dot(dn) < 0:
+            f.normal_flip()
+        f.material_index = C.MI["logo_plate"]
+        for l in f.loops:
+            l[uv0].uv = (0.5 + (l.vert.co - c).dot(right) / LOGO_W, 0.5 + (l.vert.co - c).dot(up) / LOGO_W)
+        return f
     ht.post = post
     return C.finish(ht)

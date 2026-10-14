@@ -11,7 +11,7 @@ if HERE not in sys.path:
 import common as C
 
 argv = sys.argv[sys.argv.index("--") + 1:] if "--" in sys.argv else []
-FLAGS = {f: (f in argv) for f in ("--lit", "--tq", "--backclose")}      # value-less flags
+FLAGS = {f: (f in argv) for f in ("--lit", "--tq", "--backclose", "--top50")}      # value-less flags
 argv = [a for a in argv if a not in FLAGS]
 LIT = FLAGS["--lit"]
 opt = {"--only": "", "--side": "L", "--out-dir": "Art/Meshes/chaser/parts", "--ppc": "11.7", "--margin": "3.0"}
@@ -107,8 +107,8 @@ def shot(view, centre, wcm, hcm, path):
     else:
         loc = (cx, 300.0, cz)
     co.location = loc
-    if view == "tq":      # three-quarter: front left, slightly above
-        d = Vector((0.8, 0.55, 0.28)).normalized()
+    if view in ("tq", "top50"):      # tq: three-quarter front left, slightly above; top50: from the front, 50 degrees above the horizontal (screen up = robot back)
+        d = Vector((0.8, 0.55, 0.28)).normalized() if view == "tq" else Vector((math.cos(math.radians(50)), 0.0, math.sin(math.radians(50))))
         co.location = Vector(centre) + d * 300.0
         co.rotation_euler = (-d).to_track_quat("-Z", "Y").to_euler()
     else:
@@ -134,6 +134,9 @@ for vn in ("front", "side", "back"):
 if FLAGS["--tq"]:
     sz = max(ext.x, ext.y, ext.z)
     shot("tq", tuple(ctr), sz, sz, os.path.join(OUTD, "%s%s_threequarter.png" % (G, TAG)))
+if FLAGS["--top50"]:
+    sz = max(ext.x, ext.y, ext.z)
+    shot("top50", tuple(ctr), sz, sz, os.path.join(OUTD, "%s%s_top50.png" % (G, TAG)))
 if FLAGS["--backclose"]:
     shot("back", tuple(ctr), ext.y, ext.y, os.path.join(OUTD, "%s%s_backclose.png" % (G, TAG)))
 cl = getattr(mod, "PREVIEW", {}).get("close")
