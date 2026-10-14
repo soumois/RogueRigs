@@ -3,7 +3,7 @@ id: task-157-01-chaser-run-attack-animation
 description: "Animate the Meshy chaser in the game with a run loop and an attack clip, using a baked animation texture played by the material."
 parent: task-157-chaser-run-attack-animation
 kind: task
-status: in-progress
+status: done
 ---
 # Chaser: cut into rigid parts
 
@@ -15,11 +15,11 @@ status: in-progress
 - done_when: Ten objects with the contract names and parents; pivots at the joints with the positions in the report; triangles at most 3300 in total (cap faces included; report the number); silhouette difference per view at most 1 percent of the height squared area (front, side, back); the texture unchanged; nothing imported in Unreal; the script and the report committed by name, FBX untracked
 - editor_state: closed
 - token_ceiling: open
-- model: open
-- tokens: open
-- runs: open
+- model: sonnet
+- tokens: input 118, cache write 348719, cache read 7301368, output 25741
+- runs: 2
 - milestone: M2
-- result: open
+- result: Meshy chaser cut into 10 parts, 3263 tris, silhouette diff <0.01%, PartIndex vertex colour; knee cut leaves yellow knee cap on the shin
 
 ## Relations
 - [[task-157-chaser-run-attack-animation]] — parent global task.

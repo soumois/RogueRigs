@@ -3,7 +3,7 @@ id: task-157-02-chaser-clips-bake
 description: "Author the run loop and attack clip on the ten parts and bake one transform per part and frame into a float texture."
 parent: task-157-chaser-run-attack-animation
 kind: task
-status: todo
+status: in-progress
 ---
 # Chaser: run and attack clips baked
 
