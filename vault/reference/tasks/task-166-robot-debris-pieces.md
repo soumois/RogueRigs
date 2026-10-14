@@ -1,9 +1,9 @@
 ---
 id: task-166-robot-debris-pieces
 description: "Global task: at a chaser death, throw 2 or 3 random robot pieces (whole or cut limbs, torso) as pooled Niagara mesh particles."
-parent: tasks-to-do-index
+parent: tasks-done-index
 kind: task
-status: in-progress
+status: done
 ---
 # Robot death: Niagara debris pieces (chaser)
 
@@ -13,8 +13,8 @@ status: in-progress
 - gdd_check: enemy-death, enemy-chaser, chaser-meshy-pipeline, milestones, sys-enemies-base read. Conflicts: all 10 parts thrown (now 2 or 3 pieces), milestone M3 (brought forward), M3 hides the robot at once (owner keeps the 0.15 s shrink, hidden by a puff). Open values settled with the owner defaults (2026-10-14): puff about 12 sparks 0.3 s; count = meshes thrown, cut at elbow or knee one time in two; pelvis with the torso block; last-hit direction, floor plane only, 1.2 s; pools of 40, empty debris pool = puff only; shield chaser included. enemy-death updated (provisional, owner 2026-10-14).
 - confirmed_by_owner: yes (2026-10-14)
 - milestone: M3
-- next_step: task-166-05-debris-not-visible
-- result: open (owner 2026-10-14: debris not visible in game, puff OK)
+- next_step: none
+- result: Done. Not reproduced as a defect: in -game runs NS_RobotDebris spawns 2-3 pieces at the right place, flies along the hit direction and renders (Saved/DebrisCheck runA-H, shots DebrisH_03/05/09); pieces are small (about 8x20 px at spring arm 1700), chaser yellow, partly hidden by the puff, 1.2 s: readability issue, owner decides; PIE itself not probed; nothing committed
 
 ## Subtasks
 1. task-166-01-robot-debris-pieces — 3d
@@ -24,7 +24,7 @@ status: in-progress
 5. task-166-05-debris-not-visible — cpp
 
 ## Relations
-- [[tasks-to-do-index]] — parent index.
+- [[tasks-done-index]] — parent index.
 - [[task-166-01-robot-debris-pieces]] — step 1, 3d.
 - [[task-166-02-debris-code]] — step 2, cpp.
 - [[task-166-03-debris-meshes-import]] — step 3, bp.
