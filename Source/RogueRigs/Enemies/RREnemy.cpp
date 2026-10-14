@@ -15,6 +15,8 @@
 #include "Engine/DataTable.h"
 #include "Engine/LatentActionManager.h"
 #include "Engine/World.h"
+#include "NiagaraComponent.h"
+#include "NiagaraDataInterfaceArrayFunctionLibrary.h"
 #include "EngineUtils.h"
 #include "FlowField/RREnemyMovementComponent.h"
 #include "GameFramework/CharacterMovementComponent.h"
@@ -40,6 +42,9 @@
 #include UE_INLINE_GENERATED_CPP_BY_NAME(RREnemy)
 
 const TCHAR* ARREnemy::EnemyStatsPath = TEXT("RogueRigs/Data/Tables/EnemyStats.csv");
+const FName ARREnemy::DebrisMeshIndexParameter(TEXT("User.PieceMeshIndex"));
+const FName ARREnemy::DebrisOffsetParameter(TEXT("User.PieceOffset"));
+const FName ARREnemy::DebrisHitDirectionParameter(TEXT("User.HitDirection"));
 
 ARREnemy::ARREnemy(const FObjectInitializer& ObjectInitializer)
 	: Super(ObjectInitializer.SetDefaultSubobjectClass<URRRobotMovementComponent>(ACharacter::CharacterMovementComponentName))
@@ -182,12 +187,16 @@ void ARREnemy::BeginPlay()
 		Separation->RegisterRobot(this);
 	}
 
-	// Puff components are created here (once per pool, up to its cap), never at a death.
-	if (DeathPuffSystem)
+	// Puff and debris components are created here (once per pool, up to its cap), never at a death.
+	if (URRNiagaraPoolSubsystem* FXPool = GetWorld()->GetSubsystem<URRNiagaraPoolSubsystem>())
 	{
-		if (URRNiagaraPoolSubsystem* FXPool = GetWorld()->GetSubsystem<URRNiagaraPoolSubsystem>())
+		if (DeathPuffSystem)
 		{
 			FXPool->Prewarm(DeathPuffSystem, DeathPuffPoolSize, DeathPuffPoolSize);
+		}
+		if (DebrisSystem && !DebrisPieces.IsEmpty())
+		{
+			FXPool->Prewarm(DebrisSystem, DebrisPoolSize, DebrisPoolSize);
 		}
 	}
 }
@@ -432,6 +441,8 @@ void ARREnemy::UpdateDeath(float DeltaSeconds)
 			return;
 		}
 		bDeathFinished = true;
+		// The robot disappears now: its pieces fly off, then the XP drops.
+		LaunchDebris();
 		DropXP();
 	}
 	// Pooled robots go back to the pool (a kamikaze waits for its own blast to leave the queue); others are destroyed.
@@ -445,6 +456,64 @@ void ARREnemy::UpdateDeath(float DeltaSeconds)
 		return;
 	}
 	Destroy();
+}
+
+void ARREnemy::RecordHitDirection(const FVector& Direction)
+{
+	const FVector Horizontal = Direction.GetSafeNormal2D();
+	if (Horizontal.IsZero() || IsDead())
+	{
+		return;
+	}
+	LastHitDirection = Horizontal;
+}
+
+void ARREnemy::LaunchDebris()
+{
+	if (!DebrisSystem || DebrisPieces.IsEmpty())
+	{
+		return;
+	}
+	URRNiagaraPoolSubsystem* FXPool = GetWorld() ? GetWorld()->GetSubsystem<URRNiagaraPoolSubsystem>() : nullptr;
+	if (!FXPool)
+	{
+		return;
+	}
+
+	// 2 or 3 meshes, equal odds; a cut limb counts as 2 (enemy-death).
+	TArray<int32> Chosen;
+	FRRDebrisSelection::Choose(DebrisPieces, FMath::RandRange(2, 3), Chosen);
+	if (Chosen.IsEmpty())
+	{
+		return;
+	}
+
+	// Offsets are robot space from the floor under the robot: rotate by the yaw only and start from the feet (DropLocation,
+	// capsule bottom), not from the actor origin (capsule centre). Pieces keep scale 1 whatever the robot scale.
+	const FRotator YawRotation(0.f, GetActorRotation().Yaw, 0.f);
+	TArray<int32> MeshIndices;
+	TArray<FVector> Offsets;
+	MeshIndices.Reserve(Chosen.Num());
+	Offsets.Reserve(Chosen.Num());
+	for (const int32 PieceIndex : Chosen)
+	{
+		MeshIndices.Add(DebrisPieces[PieceIndex].MeshIndex);
+		Offsets.Add(YawRotation.RotateVector(DebrisPieces[PieceIndex].Offset));
+	}
+	FVector HitDirection = LastHitDirection;
+	if (HitDirection.IsZero())
+	{
+		const float Angle = FMath::FRand() * UE_TWO_PI;
+		HitDirection = FVector(FMath::Cos(Angle), FMath::Sin(Angle), 0.f);
+	}
+
+	// Null = pool full: no debris, the puff already played.
+	FXPool->Spawn(DebrisSystem, DropLocation, YawRotation, DebrisPoolSize, [&](UNiagaraComponent& Component)
+	{
+		UNiagaraDataInterfaceArrayFunctionLibrary::SetNiagaraArrayInt32(&Component, DebrisMeshIndexParameter, MeshIndices);
+		UNiagaraDataInterfaceArrayFunctionLibrary::SetNiagaraArrayVector(&Component, DebrisOffsetParameter, Offsets);
+		Component.SetVariableVec3(DebrisHitDirectionParameter, HitDirection);
+	});
 }
 
 void ARREnemy::OnPoolAcquired_Implementation()
@@ -498,6 +567,7 @@ void ARREnemy::ResetForNewLife()
 	DeathElapsed = 0.f;
 	ScaleAtDeath = FVector::OneVector;
 	DropLocation = FVector::ZeroVector;
+	LastHitDirection = FVector::ZeroVector;
 
 	// Movement: the pool already placed the robot (transform, scale 1, collision on); clear the motion of the last life.
 	UCharacterMovementComponent* Movement = GetCharacterMovement();

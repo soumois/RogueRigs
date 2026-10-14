@@ -1,4 +1,4 @@
-// Rogue Rigs - robot base: own ASC with health, movement and enemy sets, CSV stats, flow-field movement, single death with pooled puff, shrink and XP drop, floating damage numbers.
+// Rogue Rigs - robot base: own ASC with health, movement and enemy sets, CSV stats, flow-field movement, single death with pooled puff, shrink, pooled debris and XP drop, floating damage numbers.
 
 #pragma once
 
@@ -6,6 +6,7 @@
 #include "GameFramework/Character.h"
 #include "AbilitySystemInterface.h"
 #include "GameplayEffectTypes.h"
+#include "Enemies/RRDebrisPiece.h"
 #include "Enemies/RREnemyStatsRow.h"
 #include "Pool/RRPoolable.h"
 #include "RREnemy.generated.h"
@@ -42,7 +43,8 @@ struct FOnAttributeChangeData;
  * (bLightAttachedParts) and, with rr.Enemy.LightMovement on, the root capsule stops generating overlap events; a walking robot far from the miner and off screen moves at a slower
  * tick interval (FarMovementDistance, FarMovementTickInterval; UpdateMovementLOD).
  * Death (health set OnDeath, once, State.Dead on the ASC): stops, disables collision, plays the pooled DeathPuffSystem at its
- * centre (URRNiagaraPoolSubsystem, at most DeathPuffPoolSize), shrinks to 0 over DeathShrinkDuration,
+ * centre (URRNiagaraPoolSubsystem, at most DeathPuffPoolSize), shrinks to 0 over DeathShrinkDuration, throws 2 or 3
+ * DebrisPieces from the last hit direction through the pooled DebrisSystem (LaunchDebris, at most DebrisPoolSize),
  * then bursts XPCubeCount pickups of XPPickupClass at its feet (Stats.XPValue split over them) and goes back to the actor pool
  * (URRActorPoolSubsystem::Release; a robot not created by the pool is destroyed instead).
  * Pool (task-091-01, IRRPoolable): BeginPlay runs once per actor; every later life starts in OnPoolAcquired, which calls
@@ -158,6 +160,25 @@ public:
 	 */
 	bool RelocateTo(const FVector& Location);
 
+	/**
+	 * Records the direction of a hit about to be applied (enemy-death debris): projectiles pass their flight velocity,
+	 * explosions the radial direction from their centre. Kept horizontal and normalized; a zero direction, or a dead robot,
+	 * changes nothing. Read when the debris is launched; cleared each life (ResetForNewLife).
+	 */
+	void RecordHitDirection(const FVector& Direction);
+
+	/** Horizontal unit direction of the last recorded hit of this life; zero when none was recorded. */
+	const FVector& GetLastHitDirection() const { return LastHitDirection; }
+
+	/** Niagara user parameter: int array, debris mesh index of each thrown piece (FRRDebrisPiece::MeshIndex). */
+	static const FName DebrisMeshIndexParameter;
+
+	/** Niagara user parameter: vector array, world-space offset of each thrown piece from the system location (robot yaw applied). */
+	static const FName DebrisOffsetParameter;
+
+	/** Niagara user parameter: vector, horizontal unit direction the pieces are thrown toward. */
+	static const FName DebrisHitDirectionParameter;
+
 	/** XP pickup class dropped on death (the spawner prewarms it from the class defaults, task-111-01). */
 	TSubclassOf<ARRPickup> GetXPPickupClass() const { return XPPickupClass; }
 
@@ -210,7 +231,16 @@ protected:
 	/** ASC callback: MoveSpeed changed; pushes it to CharacterMovement->MaxWalkSpeed. */
 	void HandleMoveSpeedChanged(const FOnAttributeChangeData& ChangeData);
 
-	/** Advances the shrink; at its end drops the XP pickups, then releases the robot to the actor pool (destroys it outside the pool). */
+	/**
+	 * End of the death shrink: draws 2 or 3 meshes (equal odds) of DebrisPieces (FRRDebrisSelection::Choose) and plays
+	 * DebrisSystem once through URRNiagaraPoolSubsystem (cap DebrisPoolSize) at the robot feet (DropLocation), rotated by the
+	 * robot yaw, with User.PieceMeshIndex, User.PieceOffset (offsets rotated by the yaw, pieces at scale 1) and
+	 * User.HitDirection (last hit, else a random horizontal direction). Nothing when DebrisSystem is null, DebrisPieces is
+	 * empty, or the pool is full.
+	 */
+	void LaunchDebris();
+
+	/** Advances the shrink; at its end launches the debris, drops the XP pickups, then releases the robot to the actor pool (destroys it outside the pool). */
 	void UpdateDeath(float DeltaSeconds);
 
 	/** Requests XPCubeCount pickups of XPPickupClass at DropLocation (no owner) from URRPickupSubsystem::RequestXPCube (actor pool, created within 3 frames; direct spawn without the subsystem), each worth Stats.XPValue / XPCubeCount, ejected in spread directions. Overridden to suppress the drop (kamikaze fuse). */
@@ -333,6 +363,28 @@ protected:
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Enemy|Death", meta = (ClampMin = 0))
 	int32 DeathPuffPoolSize = 40;
 
+	/**
+	 * One-shot Niagara system throwing the debris meshes when the robot disappears (enemy-death, task-166-02): mesh particles,
+	 * one per entry of User.PieceMeshIndex, placed by User.PieceOffset, thrown toward User.HitDirection, floor plane = system Z.
+	 * Null = M1 death (no debris).
+	 */
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Enemy|Death")
+	TObjectPtr<UNiagaraSystem> DebrisSystem;
+
+	/**
+	 * Most debris components alive at once for DebrisSystem (enemy-death: 40, provisional); prewarmed at BeginPlay. When all
+	 * are playing, a death throws no debris (the puff still plays). Robots sharing the system share the pool.
+	 */
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Enemy|Death", meta = (ClampMin = 0))
+	int32 DebrisPoolSize = 40;
+
+	/**
+	 * Debris meshes this robot can throw, one entry per mesh of the DebrisSystem mesh renderer (chaser: the 13 pieces of
+	 * debris_pieces.json, set on BP_Chaser). Empty = M1 death (no debris).
+	 */
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Enemy|Death")
+	TArray<FRRDebrisPiece> DebrisPieces;
+
 	/** Robots pass through each other when moving (crowd spacing left to the light separation); applied at BeginPlay. */
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Enemy|Crowd")
 	bool bIgnoreOtherRobots = true;
@@ -425,7 +477,10 @@ protected:
 	/** Cached attack target. */
 	TWeakObjectPtr<ARRMiner> CachedTarget;
 
-	/** Feet location at death: the XP pickups spawn there. */
+	/** Horizontal unit direction of the last hit of this life (RecordHitDirection); zero = none. */
+	FVector LastHitDirection = FVector::ZeroVector;
+
+	/** Feet location at death: the XP pickups and the debris system spawn there. */
 	FVector DropLocation = FVector::ZeroVector;
 
 	/** Actor scale at death (the shrink starts from it). */

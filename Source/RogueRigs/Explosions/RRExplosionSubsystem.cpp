@@ -6,6 +6,7 @@
 #include "AbilitySystemGlobals.h"
 #include "Damage/RRGE_DamageExplosion.h"
 #include "Engine/DataTable.h"
+#include "Enemies/RREnemy.h"
 #include "Engine/World.h"
 #include "EngineUtils.h"
 #include "Explosions/RRExplosionFX.h"
@@ -177,6 +178,11 @@ void URRExplosionSubsystem::DamageCharacters(const FPendingExplosion& Explosion)
 		FGameplayEffectSpecHandle Spec = ASC->MakeOutgoingSpec(URRGE_DamageExplosion::StaticClass(), 1.f, Context);
 		if (Spec.IsValid())
 		{
+			// Robots throw their death debris radially from the blast (enemy-death); a robot on the centre keeps its last hit.
+			if (ARREnemy* Robot = Cast<ARREnemy>(Actor))
+			{
+				Robot->RecordHitDirection(Actor->GetActorLocation() - Explosion.Center);
+			}
 			Spec.Data->SetSetByCallerMagnitude(RRGameplayTags::Data_Damage, Damage);
 			ASC->ApplyGameplayEffectSpecToSelf(*Spec.Data);
 		}

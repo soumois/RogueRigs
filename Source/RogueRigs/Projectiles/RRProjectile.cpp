@@ -153,6 +153,11 @@ void ARRProjectile::OnSphereBeginOverlap(UPrimitiveComponent* OverlappedComponen
 	{
 		bSpent = true;
 	}
+	// Robots throw their death debris along the flight of the last shot (enemy-death); recorded before a possibly lethal hit.
+	if (ARREnemy* HitRobot = Cast<ARREnemy>(OtherActor))
+	{
+		HitRobot->RecordHitDirection(ProjectileMovement->Velocity.IsNearlyZero() ? GetActorForwardVector() : ProjectileMovement->Velocity);
+	}
 	if (const FGameplayEffectSpec* Spec = DamageSpec.Data.Get())
 	{
 		TargetASC->ApplyGameplayEffectSpecToSelf(*Spec);
