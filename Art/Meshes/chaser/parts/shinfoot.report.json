@@ -5,21 +5,21 @@
   "units": "cm",
   "objects": {
     "ShinFoot_L": {
-      "tris": 300,
+      "tris": 320,
       "bounds_min_cm": [
         -10.1,
         -5.76,
         -47.49
       ],
       "bounds_max_cm": [
-        20.0,
+        20,
         10.84,
         -3.39
       ],
       "pivot_world_cm": [
-        0.0,
-        0.0,
-        0.0
+        0,
+        0,
+        0
       ],
       "parent": "Thigh_L",
       "uv_layers": [
@@ -27,12 +27,12 @@
         "LightMap"
       ],
       "lightmap": {
-        "faces": 130,
+        "faces": 138,
         "overlapping_face_pairs": 0,
         "bounds_min": 0.01172,
         "bounds_max": 0.98828,
-        "min_gap_px_at_256": 3.0,
-        "min_border_px_at_256": 3.0,
+        "min_gap_px_at_256": 3,
+        "min_border_px_at_256": 3,
         "required_margin_px": 2,
         "pass": true
       },
@@ -45,21 +45,21 @@
       ]
     },
     "ShinFoot_R": {
-      "tris": 300,
+      "tris": 320,
       "bounds_min_cm": [
         -10.1,
         -10.84,
         -47.49
       ],
       "bounds_max_cm": [
-        20.0,
+        20,
         5.76,
         -3.39
       ],
       "pivot_world_cm": [
-        0.0,
-        0.0,
-        0.0
+        0,
+        0,
+        0
       ],
       "parent": "Thigh_R",
       "uv_layers": [
@@ -67,12 +67,12 @@
         "LightMap"
       ],
       "lightmap": {
-        "faces": 130,
+        "faces": 138,
         "overlapping_face_pairs": 0,
         "bounds_min": 0.01172,
         "bounds_max": 0.98828,
-        "min_gap_px_at_256": 3.0,
-        "min_border_px_at_256": 3.0,
+        "min_gap_px_at_256": 3,
+        "min_border_px_at_256": 3,
         "required_margin_px": 2,
         "pass": true
       },
@@ -85,5 +85,36 @@
       ]
     }
   },
-  "tris": 600
+  "tris": 640,
+  "fidelity": {
+    "returns_used": 3,
+    "criteria": {
+      "C1": {
+        "verdict": "pass",
+        "evidence": "tapering faceted shin 12.3 cm deep to 5.4 cm, dark bar in front in front view, unchanged and matches crop"
+      },
+      "C2": {
+        "verdict": "pass",
+        "evidence": "front view: instep shield (z 9 to 22, y +-5.8) now covers the octagon, only cheek plates beside it as in crop; side view octagon visible"
+      },
+      "C3": {
+        "verdict": "partial pass",
+        "evidence": "foot 16.6 cm wide, dark sole, two toe blocks, heel block; side now two-step faceted (wide lower, narrow upper); crop facets are finer"
+      },
+      "C4": {
+        "verdict": "pass",
+        "evidence": "side toe wedge and heel block profile within about 5 % of H of crop; front toe blocks match"
+      },
+      "C5": {
+        "verdict": "pass",
+        "evidence": "320 tris per leg, flat shading"
+      }
+    },
+    "still_differs": [
+      "foot side facets coarser than sheet",
+      "front-view shield top is flat, sheet has a rounded dome",
+      "dark bar sits slightly forward of the sheet in the side view"
+    ]
+  },
+  "tris_total_two_legs": 640
 }
