@@ -3,7 +3,7 @@ id: task-168-05-upgrade-choice-layout
 description: "Rebuild the stat cards of WBP_UpgradeChoice: large cards, icons, effect, target, lore, rarity-tinted accents and inner glow, reroll below."
 parent: task-168-upgrade-card-design
 kind: task
-status: in-progress
+status: done
 ---
 # Upgrade cards: WBP_UpgradeChoice layout
 
@@ -15,11 +15,11 @@ status: in-progress
 - done_when: Compiles with warnings as errors, saved, tree and graphs read back, doc updated; committed. Not seen on screen: say so.
 - editor_state: open
 - token_ceiling: 40 turns
-- model: open
-- tokens: open
-- runs: open
+- model: sonnet
+- tokens: input 132, cache write 163746, cache read 6314526, output 1175
+- runs: 3
 - milestone: M2
-- result: open
+- result: WBP_UpgradeChoice stat cards rebuilt from the epic mockup: 392 x 572 CardSize (380 x 560 card), 40 px gap, reroll centred below; frame = FrameBase + FrameAccents + FrameGlow Box brushes (accents and glow tinted by tier); image area 308 x 252 with weapon icon (keeps aspect) + stat icon for one weapon, stat icon alone otherwise (URRIconLibrary); effect (tier colour value + white stat name), target, lore from LoreText anchored at the bottom. 12 stat icons and 4 frame textures imported. Widget names kept. Compiles with warnings as errors, saved, doc updated. Not seen on screen: Box margins drawn size, hover feedback removed (button states NoDrawType), runtime clicks. Commits de6b06c, 03e47dc, 04a28f5, a5792e8.
 
 ## Relations
 - [[task-168-upgrade-card-design]] — parent global task.

@@ -177,6 +177,7 @@ Archive: it exceeds the index size limits of [[_authoring]] on purpose (owner, 2
 - [[task-165-chaser-run-slower]] — Slow the chaser run animation by 30 percent (playback rate 0.7), as a tunable material parameter. Status done.
 - [[task-166-robot-debris-pieces]] — When a chaser disappears at death, throw 2 or 3 random robot pieces (arm or leg whole or cut at the joint, torso) as pooled Niagara mesh particles. Status done.
 - [[task-167-robot-death-puff]] — At a robot death, play a pooled Niagara puff of sparks that hides the 0.15 s shrink (chaser and shield chaser first). Status done.
+- [[task-168-upgrade-card-design]] — Redesign the stat upgrade cards: large cards with an image (stat icon, weapon icon plus stat icon when targeted), the effect, a pure lore line and a rarity-tinted frame, reroll below. Status done.
 - [[task-170-debris-sink-3s]] — Debris pieces stay 3 s at full size, then sink into the floor in 0.4 s without shrinking (3.4 s in all). Status done.
 - [[task-171-debris-throw-random]] — Debris throw: speed times a random factor 1.3 to 2 drawn once per death, and each piece turned by a random angle within plus or minus 15 degrees around the killing-hit direction. Status done.
 - [[task-172-debris-start-jitter]] — Debris pieces start at their place on the robot plus a random offset of up to 10 cm on each axis. Status done.

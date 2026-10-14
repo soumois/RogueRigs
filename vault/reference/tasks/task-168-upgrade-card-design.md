@@ -1,9 +1,9 @@
 ---
 id: task-168-upgrade-card-design
 description: "Global task: large stat upgrade cards with image, effect, pure lore line and rarity-tinted frame, reroll below."
-parent: tasks-to-do-index
+parent: tasks-done-index
 kind: task
-status: in-progress
+status: done
 ---
 # Upgrade cards: new design
 
@@ -13,8 +13,8 @@ status: in-progress
 - gdd_check: upgrades, rarities, sys-upgrades, wbp-upgrade-choice, readability-rules, sys-text-content read (2026-10-14). No conflict. Notes: flavor lines described the effect (rewritten as pure lore); UI text stays English; 12 offered stats (no magazine size in M1). Owner defaults accepted 2026-10-14; frame style chosen among 3 art proposals (owner).
 - confirmed_by_owner: yes (2026-10-14)
 - milestone: M2
-- next_step: task-168-05-upgrade-choice-layout
-- result: open
+- next_step: none
+- result: Done. WBP_UpgradeChoice stat cards rebuilt from the epic mockup: 392 x 572 CardSize (380 x 560 card), 40 px gap, reroll centred below; frame = FrameBase + FrameAccents + FrameGlow Box brushes (accents and glow tinted by tier); image area 308 x 252 with weapon icon (keeps aspect) + stat icon for one weapon, stat icon alone otherwise (URRIconLibrary); effect (tier colour value + white stat name), target, lore from LoreText anchored at the bottom. 12 stat icons and 4 frame textures imported. Widget names kept. Compiles with warnings as errors, saved, doc updated. Not seen on screen: Box margins drawn size, hover feedback removed (button states NoDrawType), runtime clicks. Commits de6b06c, 03e47dc, 04a28f5, a5792e8.
 
 ## Subtasks
 1. task-168-01-card-lore-lines — text
@@ -24,7 +24,7 @@ status: in-progress
 5. task-168-05-upgrade-choice-layout — bp
 
 ## Relations
-- [[tasks-to-do-index]] — parent index.
+- [[tasks-done-index]] — parent index.
 - [[task-168-01-card-lore-lines]] — step 1, text.
 - [[task-168-02-stat-icons]] — step 2, art.
 - [[task-168-03-card-frames]] — step 3, art.

@@ -3,7 +3,7 @@ id: task-169-04-weapon-card-layout
 description: "New-weapon card layout in WBP_UpgradeChoice: New weapon, icon only, name, explanation, lore, unique frame."
 parent: task-169-weapon-card-design
 kind: task
-status: todo
+status: in-progress
 ---
 # New-weapon cards: WBP_UpgradeChoice variant
 
