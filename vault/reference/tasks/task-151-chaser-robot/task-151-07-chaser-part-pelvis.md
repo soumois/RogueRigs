@@ -3,7 +3,7 @@ id: task-151-07-chaser-part-pelvis
 description: "Rebuild the chaser Pelvis alone against its close-up crops of the validated sheet."
 parent: task-151-chaser-robot
 kind: task
-status: in-progress
+status: done
 ---
 # Chaser part: Pelvis
 
@@ -27,11 +27,11 @@ status: in-progress
   - C4 Budget: at most 150 triangles (88 today), flat shading.
 - editor_state: closed
 - token_ceiling: open
-- model: open
-- tokens: open
-- runs: open
+- model: sonnet
+- tokens: input 16, cache write 14955, cache read 116951, output 919
+- runs: 1
 - milestone: M2
-- result: open
+- result: Pelvis unchanged, all criteria already passing, 88 tris (0 returns).
 
 ## Relations
 - [[task-151-chaser-robot]] — parent global task.
