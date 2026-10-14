@@ -1,9 +1,9 @@
 ---
 id: task-167-robot-death-puff
 description: "Global task: At a robot death, play a pooled Niagara puff of sparks that hides the 0.15 s shrink (chaser and shield chaser first)."
-parent: tasks-to-do-index
+parent: tasks-done-index
 kind: task
-status: in-progress
+status: done
 ---
 # Robot death: puff hiding the shrink
 
@@ -13,14 +13,14 @@ status: in-progress
 - gdd_check: enemy-death, enemy-chaser, chaser-meshy-pipeline, milestones, sys-enemies-base read. Conflicts: all 10 parts thrown (now 2 or 3 pieces), milestone M3 (brought forward), M3 hides the robot at once (owner keeps the 0.15 s shrink, hidden by a puff). Open values settled with the owner defaults (2026-10-14): puff about 12 sparks 0.3 s; count = meshes thrown, cut at elbow or knee one time in two; pelvis with the torso block; last-hit direction, floor plane only, 1.2 s; pools of 40, empty debris pool = puff only; shield chaser included. enemy-death updated (provisional, owner 2026-10-14).
 - confirmed_by_owner: yes (2026-10-14)
 - milestone: M3
-- next_step: task-167-02-death-puff-niagara
-- result: open
+- next_step: none
+- result: Done. NS_RobotDeathPuff (/Game/RogueRigs/FX, CPU, 12 warm sprites 0.2-0.3 s, radius 35 cm, one-shot) set on BP_Chaser and BP_ShieldChaser with pool 40; PIE: 40 components prewarmed, no Niagara errors; active-then-released not readable through MCP (unverified), look and cost unseen; doc bp-robot-death-puff; commits 6758624, acc3954
 
 ## Subtasks
 1. task-167-01-robot-death-puff — cpp
 2. task-167-02-death-puff-niagara — bp
 
 ## Relations
-- [[tasks-to-do-index]] — parent index.
+- [[tasks-done-index]] — parent index.
 - [[task-167-01-robot-death-puff]] — step 1, cpp.
 - [[task-167-02-death-puff-niagara]] — step 2, bp.

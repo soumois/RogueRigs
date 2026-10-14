@@ -3,7 +3,7 @@ id: task-167-02-death-puff-niagara
 description: "Build NS_RobotDeathPuff (about 12 sparks, 0.3 s, covering the robot) and set it as DeathPuffSystem on BP_Chaser and BP_ShieldChaser."
 parent: task-167-robot-death-puff
 kind: task
-status: in-progress
+status: done
 ---
 # Robot death puff: Niagara system and wiring
 
@@ -15,11 +15,11 @@ status: in-progress
 - done_when: The system compiles and finishes on its own (no loop); the defaults on both Blueprints read back; a short PIE probe killing a chaser shows a puff component active then released (values read, no screenshots); saved; docs updated; committed by path; the editor stays open
 - editor_state: open
 - token_ceiling: open
-- model: open
-- tokens: open
-- runs: open
+- model: sonnet
+- tokens: input 108, cache write 127200, cache read 4599038, output 30844
+- runs: 2
 - milestone: M3
-- result: open
+- result: NS_RobotDeathPuff (/Game/RogueRigs/FX, CPU, 12 warm sprites 0.2-0.3 s, radius 35 cm, one-shot) set on BP_Chaser and BP_ShieldChaser with pool 40; PIE: 40 components prewarmed, no Niagara errors; active-then-released not readable through MCP (unverified), look and cost unseen; doc bp-robot-death-puff; commits 6758624, acc3954
 
 ## Relations
 - [[task-167-robot-death-puff]] — parent global task.

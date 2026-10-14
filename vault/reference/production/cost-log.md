@@ -273,6 +273,7 @@ kind: note
 | [[task-167-01-robot-death-puff]] | opus | 1 | 0k | 62k | 897k | 19k |
 | [[task-166-02-debris-code]] | opus | 1 | 0k | 84k | 1475k | 21k |
 | [[task-166-03-debris-meshes-import]] | sonnet | 1 | 0k | 70k | 1458k | 15k |
+| [[task-167-02-death-puff-niagara]] | sonnet | 2 | 0k | 127k | 4599k | 31k |
 
 ## Totals
 | Scope | Input | Cache write | Cache read | Output |
