@@ -3,7 +3,7 @@ id: task-169-03-weapon-card-lore
 description: "Load weapon_texts.json and give new-weapon cards their lore line in LoreText."
 parent: task-169-weapon-card-design
 kind: task
-status: in-progress
+status: done
 ---
 # New-weapon cards: lore loading in C++
 
@@ -15,11 +15,11 @@ status: in-progress
 - done_when: validate_text.js exits 0 on weapon_texts.json; build succeeds; existing RogueRigs.Text.* and RogueRigs.Upgrades.* tests pass; docs updated; committed.
 - editor_state: closed
 - token_ceiling: 60k
-- model: open
-- tokens: open
-- runs: open
+- model: opus
+- tokens: input 62, cache write 67393, cache read 1474238, output 700
+- runs: 1
 - milestone: M2
-- result: open
+- result: validate_text.js accepts weapon_texts.json (exit 0, selftest 3/3); URRTextContentSubsystem::GetWeaponFlavor, closed ids wpn_shotgun / wpn_turret_launcher; MakeWeaponCard fills LoreText. Build OK, Text.* + Upgrades.* 20/20 (RRTextContentTests file-count expectations 3 -> 4 fixed). Schema, files, events, validator, sys-text-content, sys-upgrades docs updated. Found, not caused here: barks.json fails the validator (a dialogue-tone excerpt no longer matches the node). Commit 5d5abbb.
 
 ## Relations
 - [[task-169-weapon-card-design]] — parent global task.
