@@ -3,7 +3,7 @@ id: task-158-01-chaser-glow-mask-fix
 description: "Stop the whole chaser from glowing: only the red parts of the texture may emit light."
 parent: task-158-chaser-glow-mask-fix
 kind: task
-status: in-progress
+status: done
 ---
 # Chaser: glow only on the red parts
 
@@ -15,11 +15,11 @@ status: in-progress
 - done_when: Both materials recompile without error; the mask expression read back; the assets saved and committed by name; the docs updated; the editor stays open; the owner is told to look at the yellow body (no glow) and the red eye (glow)
 - editor_state: open
 - token_ceiling: open
-- model: open
-- tokens: open
-- runs: open
+- model: sonnet
+- tokens: input 50, cache write 59684, cache read 1015486, output 404
+- runs: 1
 - milestone: M2
-- result: open
+- result: emissive mask saturate((R - 2 max(G,B)) x 3) in both chaser materials; Max node blue input read back as G (harmless for yellow/olive/dark/red)
 
 ## Relations
 - [[task-158-chaser-glow-mask-fix]] — parent global task.

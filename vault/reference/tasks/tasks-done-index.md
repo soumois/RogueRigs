@@ -166,3 +166,4 @@ Archive: it exceeds the index size limits of [[_authoring]] on purpose (owner, 2
 - [[task-155-chaser-meshy-texture-fixes]] — Correct the texture of the optimised Meshy chaser: shoulder-to-torso joints fully dark, and the hood logo replaced by the company emblem (yellow on black, smooth). Status done.
 - [[task-156-chaser-meshy-integration]] — Put the corrected Meshy chaser in the game as a static mesh in place of the current chaser model. Status done.
 - [[task-157-chaser-run-attack-animation]] — Animate the Meshy chaser in the game with a run loop and an attack clip, using a baked animation texture played by the material. Status done.
+- [[task-158-chaser-glow-mask-fix]] — Stop the whole chaser from glowing: only the red parts of the texture may emit light. Status done.
