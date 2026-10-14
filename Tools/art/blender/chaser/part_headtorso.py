@@ -1,4 +1,4 @@
-"""Chaser HeadTorso: chunky block with bevelled corners, deep hood, recess + eye, shield logo on a plate, cap box with rounded edges and two antennas, three bulged back plates in a dark backing, dark shoulder pods. Pivot at the waist, parent Pelvis. Edit ONLY this file for the head and torso."""
+"""Chaser HeadTorso: tapered block with bevelled corners, raked hood, one front panel with a tall recess + eye, shield logo on a plate, low cap box and two low fins, three flat faceted back slabs, dark shoulder joints in a vertical channel. Pivot at the waist, parent Pelvis. Edit ONLY this file for the head and torso."""
 import math
 import bpy
 import numpy as np
@@ -17,8 +17,8 @@ def bil(a, b, c, d, s, t):
 
 
 def paint_logo():
-    """The torso owns the logo look: overwrite T_ChaserLogo (made by common.setup) with a gunmetal-edged dark shield and a yellow star on the plate yellow, 256 px."""
-    img = bpy.data.images.get("T_ChaserLogo")
+    """The torso owns the logo look: overwrite T_ChaserLogo (made by common.setup) with a dark shield (gunmetal rim) and a yellow four-point emblem, plate yellow outside, 256 px."""
+    img = next((i for i in bpy.data.images if i.name.startswith("T_ChaserLogo")), None)
     if img is None:
         return
     N = 256
@@ -36,17 +36,20 @@ def paint_logo():
             x1, y1 = pts[(i + 1) % len(pts)]
             m &= ((x1 - x0) * (t - y0) - (y1 - y0) * (s - x0)) <= 0          # clockwise outline: inside = right of every edge
         return m
-    plate = np.array(C.srgb(C.HEX["logo_plate"])[:3])
-    rim = np.array(C.srgb("#555555")[:3])
-    dark = np.array(C.srgb("#1C1C1C")[:3])
+
+    def raw(hx):
+        return np.array([int(hx[i:i + 2], 16) / 255 for i in (1, 3, 5)])      # encoded values, like common.setup
+    plate = raw(C.HEX["logo_plate"])
+    rim = raw("#5A5A5A")
+    dark = raw("#1A1A1A")
     out = np.ones((N, N, 4))
     out[:, :, :3] = plate
-    sh = inside(SHIELD, 1.0)
-    out[sh, :3] = rim
-    out[inside(SHIELD, 0.82), :3] = dark
+    out[inside(SHIELD, 1.0), :3] = rim
+    inner = inside(SHIELD, 0.84)
+    out[inner, :3] = dark
     u, v = np.abs(s - 0.5), np.abs(t - 0.56)
-    star = (u ** 0.62 + v ** 0.62) < 0.27 ** 0.62
-    out[star & inside(SHIELD, 0.82), :3] = plate
+    star = (u ** 0.62 + v ** 0.62) < 0.25 ** 0.62          # four-point emblem
+    out[star & inner, :3] = plate
     img.scale(N, N)
     img.pixels = out.flatten().tolist()
     try:
@@ -55,31 +58,29 @@ def paint_logo():
         print("logo save", ex)
 
 
-def plate_rings(ht, prof, y0, y1, ztop_scale, bev, bulge, extra_in_outer=0.0, outer_at_y1=True):
-    """Bulged back plate: rings across y. Each ring: x shift toward the block (dx) and z scale about the profile centre. Rounded corners come from the end rings."""
+def slab(ht, prof, spec):
+    """Flat faceted back slab: rings across y; spec = (y, dx toward the block, z scale about the profile centre)."""
     zc = sum(p[1] for p in prof) / len(prof)
-    ym = (y0 + y1) / 2
-    spec = [(y0, bev, 0.90), (y0 + bev * 0.8, 0.10, 0.975), (ym, -bulge, 1.0), (y1 - bev * 0.8, 0.10, 0.975), (y1, bev, 0.90)]
-    rg = []
-    for y, dx, zs in spec:
-        out_end = (y == y1) if outer_at_y1 else (y == y0)
-        near_out = (y in (y1, y1 - bev * 0.8)) if outer_at_y1 else (y in (y0, y0 + bev * 0.8))
-        d2 = dx + (extra_in_outer if near_out else 0.0)
-        rg.append([ht.P(x + d2 * (1 if 0 < i < len(prof) - 1 or True else 0), y, zc + (z - zc) * zs) for i, (x, z) in enumerate(prof)])
-    ht.loft(rg, "yellow_body")
+    ht.loft([[ht.P(x + dx, y, zc + (z - zc) * zs) for x, z in prof] for y, dx, zs in spec], "yellow_body")
 
 
 def build(side=None):
     paint_logo()
     ht = C.Part("HeadTorso", C.PIV_WAIST, parent="Pelvis")
     W = h(0.120)            # block half width
-    PROF = [(-8.4, h(0.655)), (19.5, h(0.672)), (24.2, h(0.696)), (33.5, h(0.790)), (26.5, h(0.865)), (9.0, h(0.925)), (-3.5, h(0.925)), (-6.9, h(0.903)), (-8.9, h(0.840))]
-    # 1-2 = bevel of the lower front corner, 2-3 = lower front face (recess), 3-4 = upper front face (logo), 4-5 = long hood slope, 6-7 = bevel of the rear top corner
+    PROF = [(-8.4, h(0.655)), (19.5, h(0.672)), (24.2, h(0.696)), (29.0, h(0.7823)), (33.5, h(0.862)), (9.0, h(0.925)), (-3.5, h(0.925)), (-6.9, h(0.903)), (-8.9, h(0.840))]
+    # 2-3-4 are collinear: one front panel (recess below the split, logo above it); 4 = leading point of the hood; 4-5 = raked hood; 1-2 and 6-7 = bevels
     cxz = (sum(p[0] for p in PROF) / len(PROF), sum(p[1] for p in PROF) / len(PROF))
     LAY = [(-W, 0.80), (-W + 1.8, 0.93), (-W + 4.2, 1.0), (W - 4.2, 1.0), (W - 1.8, 0.93), (W, 0.80)]      # rounded shoulder line: three steps per side
+    zlo, zhi = h(0.655), h(0.925)
     L = []
     for y, sc in LAY:
-        L.append([ht.bm.verts.new((cxz[0] + (x - cxz[0]) * sc, y, cxz[1] + (z - cxz[1]) * sc)) for x, z in PROF])
+        row_ = []
+        for x, z in PROF:
+            zz = cxz[1] + (z - cxz[1]) * sc
+            taper = 0.95 + 0.05 * min(1.0, max(0.0, (zz - zlo) / (zhi - zlo)))      # slightly narrower at the bottom
+            row_.append(ht.bm.verts.new((cxz[0] + (x - cxz[0]) * sc, y * taper, zz)))
+        L.append(row_)
     n = len(PROF)
     SPECIAL = (2, 3)
     for li in range(len(LAY) - 1):
@@ -90,88 +91,90 @@ def build(side=None):
     ht.quad(L[0][::-1], "yellow_body")
     ht.quad(L[-1], "yellow_body")
 
-    # lower front face: frame + tapered recess walls + floor
-    fa, fb, fc, fd = L[2][2], L[3][2], L[3][3], L[2][3]            # bottom-left, bottom-right, top-right, top-left (y -, y +)
+    # lower part of the front panel: frame + tall recess (walls go straight back) + floor
+    fa, fb, fc, fd = L[2][2], L[3][2], L[3][3], L[2][3]
     nrm = (fb.co - fa.co).cross(fd.co - fa.co).normalized()
     if nrm.x < 0:
         nrm = -nrm
-    RS = (0.5 - 0.388, 0.5 + 0.388)    # recess across 0.776 of the centre face width
-    RT = (0.12, 0.70)
-    DEPTH = 3.5
+    RS = (0.5 - 0.47, 0.5 + 0.47)
+    RT = (0.10, 0.88)
+    BACKV = Vector((-4.0, 0.0, 0.0))
     outer = [fa, fd, fc, fb]
 
-    def ring(shrink, depth):
+    def ring(shrink, back):
         sm, tm = (RS[0] + RS[1]) / 2, (RT[0] + RT[1]) / 2
         pts = [(RS[0], RT[0]), (RS[0], RT[1]), (RS[1], RT[1]), (RS[1], RT[0])]
-        return [ht.bm.verts.new(bil(fa, fb, fc, fd, sm + (s_ - sm) * shrink, tm + (t_ - tm) * shrink) - nrm * depth) for s_, t_ in pts]
+        return [ht.bm.verts.new(bil(fa, fb, fc, fd, sm + (s_ - sm) * shrink, tm + (t_ - tm) * shrink) + BACKV * back) for s_, t_ in pts]
     inner = ring(1.0, 0.0)
-    mid = ring(1.03, 1.6)
-    floor = ring(0.84, DEPTH)
+    mid = ring(0.97, 0.45)
+    floor = ring(0.90, 1.0)
     for k in range(4):
         ht.quad((outer[k], outer[(k + 1) % 4], inner[(k + 1) % 4], inner[k]), "yellow_body")
         ht.quad((inner[k], inner[(k + 1) % 4], mid[(k + 1) % 4], mid[k]), "gunmetal")
         ht.quad((mid[k], mid[(k + 1) % 4], floor[(k + 1) % 4], floor[k]), "gunmetal")
     ht.quad(floor[::-1], "gunmetal")
-    EYE_C = sum((v.co for v in floor), Vector()) / 4 + nrm * 0.2
-    EYE_R = 3.2
-    fa_, fb_ = L[2][2].co, L[3][2].co
-    ytan = (fb_ - fa_).normalized()
+    FC = sum((v.co for v in floor), Vector()) / 4
+    EYE_C = FC + nrm * 0.3
+    EYE_R = 4.0
+    ytan = (fb.co - fa.co).normalized()
     ztan = nrm.cross(ytan)
     if ztan.z < 0:
         ztan = -ztan
-    # upper front face: plain yellow quad (the plate and the shield sit on top of it)
+    # chin piece: dark block at the bottom centre of the recess, standing on the floor
+    zb = min(v.co.z for v in floor)
+    xb = min(v.co.x for v in floor)
+    ht.abox(xb - 0.2, xb + 3.2, -4.5, 4.5, zb - 0.3, zb + 2.4, "gunmetal")
+    # upper part of the front panel: plain yellow quad (plate and shield sit on it)
     ua, ub, uc, ud = L[2][3], L[3][3], L[3][4], L[2][4]
     ht.quad((ua, ub, uc, ud), "yellow_body")
     unrm = (ub.co - ua.co).cross(ud.co - ua.co).normalized()
     if unrm.x < 0:
         unrm = -unrm
 
-    # cap: box on the hood, bevelled top edges (rings: z, x back, x front, half width)
-    CAP = [(0.860, -7.5, 24.5, 0.086), (0.930, -6.0, 21.0, 0.086), (0.985, -1.6, 15.6, 0.084), (1.000, 0.2, 13.8, 0.066)]
+    # cap: low box about as wide as the centre back slab, small chamfers (rings: z, x back, x front, half width)
+    CAP = [(0.860, -7.5, 21.5, 0.078), (0.925, -6.5, 19.5, 0.078), (0.965, -3.0, 15.5, 0.076), (0.984, -1.6, 13.4, 0.066)]
     rg = []
     for z, x0, x1, hw in CAP:
         rg.append([ht.bm.verts.new(p) for p in ((x0, -h(hw), h(z)), (x1, -h(hw), h(z)), (x1, h(hw), h(z)), (x0, h(hw), h(z)))])
     ht.loft(rg, "yellow_body")
-    # two small antennas, dark, beside the cap on the rear top corners, leaning outward
+    # two short low fins at the upper back corners
     for sg in (1, -1):
-        for _ in range(1):
-            ht.bm.verts.ensure_lookup_table()
-        base = Vector((-2.5, sg * h(0.093), h(0.912)))
-        tip = Vector((-2.8, sg * h(0.100), h(0.960)))
-        a0 = base
+        a0 = Vector((-2.5, sg * h(0.090), h(0.915)))
+        tip = Vector((-2.8, sg * h(0.096), h(0.945)))
         ax = (tip - a0).normalized()
         lat = Vector((0, 1, 0))
         dep = ax.cross(lat).normalized()
         rings_ = []
-        for c_, w_, d_ in ((a0, 1.9, 1.5), (tip, 0.9, 0.8)):
+        for c_, w_, d_ in ((a0, 2.6, 1.4), (tip, 1.6, 0.8)):
             hw_, hd_ = w_ / 2, d_ / 2
             rings_.append([ht.bm.verts.new(c_ + lat * u_ + dep * v_) for u_, v_ in ((hw_, -hd_), (hw_, hd_), (-hw_, hd_), (-hw_, -hd_))])
         ht.loft(rings_, "gunmetal")
 
-    # back: dark backing slab, then three bulged plates (centre tall, two sides) with rounded corners and 0.4 cm gaps
+    # back: three flat faceted slabs, 0.3 cm seams, side slabs wrap the corners; a dark backing only shows in the seams
     BACK = [(-7.0, h(0.685)), (-9.8, h(0.690)), (-10.2, h(0.760)), (-9.8, h(0.850)), (-7.6, h(0.905)), (-5.0, h(0.905))]
-    ht.profile(BACK, -(h(0.112) + 0.5), h(0.112) + 0.5, "gunmetal")
-    CEN = [(-7.0, h(0.685)), (-10.6, h(0.695)), (-11.6, h(0.760)), (-11.3, h(0.860)), (-9.2, h(0.925)), (-6.0, h(0.975)), (-3.0, h(0.975))]
+    ht.profile(BACK, -14.6, 14.6, "gunmetal")
+    CEN = [(-7.0, h(0.685)), (-10.6, h(0.695)), (-11.6, h(0.760)), (-11.3, h(0.860)), (-9.2, h(0.925)), (-6.0, h(0.960)), (-3.0, h(0.960))]
     SIDE = [(-7.0, h(0.685)), (-11.4, h(0.695)), (-12.4, h(0.760)), (-12.0, h(0.850)), (-9.0, h(0.900)), (-6.0, h(0.915)), (-5.0, h(0.915))]
-    GAP = 0.4
-    cw = h(0.058)
-    plate_rings(ht, CEN, -cw, cw, 1.0, 1.5, 0.7)
-    sw0, sw1 = cw + GAP, h(0.112)
-    plate_rings(ht, SIDE, sw0, sw1, 1.0, 1.4, 0.7, extra_in_outer=1.8, outer_at_y1=True)
-    plate_rings(ht, SIDE, -sw1, -sw0, 1.0, 1.4, 0.7, extra_in_outer=1.8, outer_at_y1=False)
-
-    # dark shoulder pods behind the arms: disc on the side of the block and a vertical band behind it
+    cw = h(0.068)
+    slab(ht, CEN, [(-cw, 0.6, 0.93), (-cw + 0.5, 0.0, 1.0), (cw - 0.5, 0.0, 1.0), (cw, 0.6, 0.93)])
+    y0, y1 = cw + 0.3, 14.9
     for sg in (1, -1):
-        ht.oct_y(-3.0, sg * (W + 0.1), h(0.835), 7.4, 3.2, "gunmetal")
-        ht.abox(-10.0, -2.0, sg * (W - 1.0), sg * (W + 0.9), h(0.69), h(0.895), "gunmetal")
+        slab(ht, SIDE, [(sg * y0, 0.6, 0.93), (sg * (y0 + 0.5), 0.0, 1.0), (sg * (y1 - 3.2), 0.0, 1.0), (sg * y1, 4.5, 0.88)])
+
+    # shoulder joints: thick dark octagonal masses seated in a vertical dark channel
+    for sg in (1, -1):
+        ht.abox(-9.0, -1.0, sg * (W - 0.3), sg * (W + 0.9), h(0.68), h(0.90), "gunmetal")
+        ht.oct_y(-4.5, sg * (W - 0.1), h(0.835), 7.0, 3.6, "gunmetal")
+        ht.oct_y(-4.5, sg * (W + 1.2), h(0.835), 5.2, 1.4, "gunmetal")
 
     def post(bm, uv0):
-        """eye octagon (emissive) on the recess floor, yellow plate and shield decal (one planar UV); returns the shield face"""
-        ev_ = [bm.verts.new(EYE_C + ytan * EYE_R * math.cos(math.radians(22.5 + 45 * k)) + ztan * EYE_R * math.sin(math.radians(22.5 + 45 * k))) for k in range(8)]
-        f = bm.faces.new(ev_)
-        if f.normal.dot(nrm) < 0:
-            f.normal_flip()
-        f.material_index = C.MI["eye_red"]
+        """eye octagon plus a smaller core octagon (emissive) on the recess floor, yellow plate and shield decal (one planar UV); returns the shield face"""
+        for R, off in ((EYE_R, 0.0), (EYE_R * 0.5, 0.25)):
+            ev_ = [bm.verts.new(EYE_C + nrm * off + ytan * R * math.cos(math.radians(22.5 + 45 * k)) + ztan * R * math.sin(math.radians(22.5 + 45 * k))) for k in range(8)]
+            f = bm.faces.new(ev_)
+            if f.normal.dot(nrm) < 0:
+                f.normal_flip()
+            f.material_index = C.MI["eye_red"]
 
         def poly(k, off, uvs=False):
             vs = [bm.verts.new(bil(ua, ub, uc, ud, 0.5 + (s_ - 0.5) * 0.375 * k, 0.5 + (t_ - 0.5) * 0.56 * k) + unrm * off) for s_, t_ in SHIELD]
