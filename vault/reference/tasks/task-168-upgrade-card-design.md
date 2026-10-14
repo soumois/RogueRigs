@@ -13,7 +13,7 @@ status: in-progress
 - gdd_check: upgrades, rarities, sys-upgrades, wbp-upgrade-choice, readability-rules, sys-text-content read (2026-10-14). No conflict. Notes: flavor lines described the effect (rewritten as pure lore); UI text stays English; 12 offered stats (no magazine size in M1). Owner defaults accepted 2026-10-14; frame style chosen among 3 art proposals (owner).
 - confirmed_by_owner: yes (2026-10-14)
 - milestone: M2
-- next_step: task-168-04-card-icon-data
+- next_step: task-168-05-upgrade-choice-layout
 - result: open
 
 ## Subtasks

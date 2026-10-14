@@ -3,7 +3,7 @@ id: task-169-03-weapon-card-lore
 description: "Load weapon_texts.json and give new-weapon cards their lore line in LoreText."
 parent: task-169-weapon-card-design
 kind: task
-status: todo
+status: in-progress
 ---
 # New-weapon cards: lore loading in C++
 

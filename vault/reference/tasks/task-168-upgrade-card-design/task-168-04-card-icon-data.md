@@ -3,7 +3,7 @@ id: task-168-04-card-icon-data
 description: "Give the UI one C++ place that maps a stat and a weapon to their icon textures, and a separate lore text on stat cards."
 parent: task-168-upgrade-card-design
 kind: task
-status: in-progress
+status: done
 ---
 # Upgrade cards: icon mapping and lore field in C++
 
@@ -15,11 +15,11 @@ status: in-progress
 - done_when: Build succeeds; existing RogueRigs.Upgrades.* and RogueRigs.Text.* tests pass; lookup returns the weapon icons for the three weapons; docs updated; committed.
 - editor_state: closed
 - token_ceiling: 60k
-- model: open
-- tokens: open
-- runs: open
+- model: opus
+- tokens: input 50, cache write 61028, cache read 1014557, output 494
+- runs: 1
 - milestone: M2
-- result: open
+- result: FRRUpgradeCard.LoreText (stat cards: flavor line; DescriptionText keeps its old packing for the current widget and tests). URRIconLibrary (BlueprintPure GetStatIcon, GetWeaponIconByName, GetWeaponIconByClass, GetUpgradeCardIcon, GetLockedSlotIcon) backed by URRIconSettings (Config=Game, soft refs, defaults /Game/RogueRigs/UI/Icons/T_Icon_Stat_<Stat> and the weapon placeholders); missing texture returns null. Build OK, Upgrades.* and Text.* 20/20 pass. Open: stat textures not imported yet (bp), WBP_Weapons still has its own mapping, textures referenced only from config may not be cooked in a packaged build. Commit 6b2edf0.
 
 ## Relations
 - [[task-168-upgrade-card-design]] — parent global task.
