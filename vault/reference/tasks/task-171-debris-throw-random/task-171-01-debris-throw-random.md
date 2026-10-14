@@ -3,7 +3,7 @@ id: task-171-01-debris-throw-random
 description: "Debris throw speed times a random 1.3-2 factor per death, each piece turned within ±15° of the killing-hit direction."
 parent: task-171-debris-throw-random
 kind: task
-status: in-progress
+status: done
 ---
 # Robot debris: random force and angle
 
@@ -15,11 +15,11 @@ status: in-progress
 - done_when: The system compiles with no stack issue and stays one-shot (finishes on its own); the changed module inputs read back; saved by explicit asset path; bp-robot-debris doc updated; committed by path; the editor stays open
 - editor_state: open
 - token_ceiling: open
-- model: open
-- tokens: open
-- runs: open
+- model: sonnet
+- tokens: input 50, cache write 48627, cache read 820683, output 12781
+- runs: 1
 - milestone: M3
-- result: open
+- result: Emitter.ThrowScale = 1.3 + 0.7 rand drawn in the emitter spawn script (once per activation, shared); per-particle ThrowAngle ±15° rotates User.HitDirection around Z; whole velocity (dir 250-450, up 300-500, spread 100) times ThrowScale; compiles clean; not run in PIE; commit 4248105
 
 ## Relations
 - [[task-171-debris-throw-random]] — parent global task.

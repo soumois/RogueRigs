@@ -3,7 +3,7 @@ id: task-172-debris-start-jitter
 description: "Global task: Debris pieces start at their place on the robot plus a random offset of up to 10 cm on each axis."
 parent: tasks-to-do-index
 kind: task
-status: todo
+status: in-progress
 ---
 # Robot debris: random start position
 

@@ -1,9 +1,9 @@
 ---
 id: task-171-debris-throw-random
 description: "Global task: debris throw speed times a random 1.3-2 factor per death, each piece turned within ±15° of the killing-hit direction."
-parent: tasks-to-do-index
+parent: tasks-done-index
 kind: task
-status: in-progress
+status: done
 ---
 # Robot debris: random force and angle
 
@@ -13,12 +13,12 @@ status: in-progress
 - gdd_check: enemy-death read and updated with the owner values (2026-10-14): 2 to 4 pieces, throw factor 1.3-2 per death, ±15° per piece, start ±10 cm, 3 s then sink 0.4 s without shrink; colour and size left unchanged (owner did not ask).
 - confirmed_by_owner: yes (2026-10-14)
 - milestone: M3
-- next_step: task-171-01-debris-throw-random
-- result: open
+- next_step: none
+- result: Done. Emitter.ThrowScale = 1.3 + 0.7 rand drawn in the emitter spawn script (once per activation, shared); per-particle ThrowAngle ±15° rotates User.HitDirection around Z; whole velocity (dir 250-450, up 300-500, spread 100) times ThrowScale; compiles clean; not run in PIE; commit 4248105
 
 ## Subtasks
 1. task-171-01-debris-throw-random — bp
 
 ## Relations
-- [[tasks-to-do-index]] — parent index.
+- [[tasks-done-index]] — parent index.
 - [[task-171-01-debris-throw-random]] — step 1, bp.
