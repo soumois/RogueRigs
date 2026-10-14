@@ -5,9 +5,9 @@
   "units": "cm",
   "objects": {
     "HeadTorso": {
-      "tris": 168,
+      "tris": 176,
       "bounds_min_cm": [
-        -14.46,
+        -14.7,
         -14.88,
         0.0
       ],
@@ -27,7 +27,7 @@
         "LightMap"
       ],
       "lightmap": {
-        "faces": 75,
+        "faces": 77,
         "overlapping_face_pairs": 0,
         "bounds_min": 0.01172,
         "bounds_max": 0.98828,
@@ -56,5 +56,31 @@
       ]
     }
   },
-  "tris": 168
+  "tris": 176,
+  "fidelity": {
+    "returns_used": 3,
+    "criteria": {
+      "C1": {
+        "verdict": "pass",
+        "evidence": "front/side render: block, chamfered hood top and cap box unchanged and match crops; hood slightly less deep than crop"
+      },
+      "C2": {
+        "verdict": "pass",
+        "evidence": "recess with red octagon in lower half, logo plate above; logo is a hexagon-ish plate vs crop diamond shield; unchanged"
+      },
+      "C3": {
+        "verdict": "pass",
+        "evidence": "three-step shoulder line visible in front render"
+      },
+      "C4": {
+        "verdict": "fail",
+        "evidence": "back: side plates now protrude 1.6 cm beyond the centre plate with a 30 degree outer tilt and a new lower bend; plates separate but shading contrast stays low in the flat preview light (faces nearly same yellow); top of side plates shows a small tilt artefact; not judged equal to the crop"
+      },
+      "C5": {
+        "verdict": "pass",
+        "evidence": "176 tris, flat shading"
+      }
+    },
+    "still_differs": "back plates read weakly in flat light; side plates should look more bulged and outlined; hood depth; logo shape"
+  }
 }

@@ -66,11 +66,11 @@ def build(side=None):
     ht.loft([cap_b, cap_t], "yellow_body")
     # back: three large raised plates (centre plate and one on each side), profile (x, z) extruded across
     CEN = [(-7.0, h(0.680)), (-11.0, h(0.690)), (-11.3, h(0.790)), (-8.2, h(0.885)), (-6.2, h(0.919)), (-5.0, h(0.919))]      # centre plate
-    SIDE = [(-7.0, h(0.680)), (-12.0, h(0.690)), (-7.4, h(0.900)), (-6.0, h(0.917)), (-5.0, h(0.917))]            # side plates
-    for y0, y1, base, ia, ib in ((-h(0.054), h(0.054), CEN, 1.0, 1.0), (h(0.058), h(0.100), SIDE, 1.0, 0.4), (-h(0.100), -h(0.058), SIDE, 0.4, 1.0)):
+    SIDE = [(-7.0, h(0.680)), (-12.6, h(0.690)), (-13.2, h(0.770)), (-9.4, h(0.880)), (-6.0, h(0.917)), (-5.0, h(0.917))]            # side plates
+    for y0, y1, base, ia, ib in ((-h(0.054), h(0.054), CEN, 1.0, 1.0), (h(0.062), h(0.104), SIDE, 1.0, 0.0), (-h(0.104), -h(0.062), SIDE, 0.0, 1.0)):
         rg = []
         for y, k in ((y0, ia), (y1, ib)):          # side plates tilt outward: the outer edge sits closer to the block
-            rg.append([ht.P(x - (1.0 - k) * 1.6 * (1 if 0 < i < len(base) - 1 else 0), y, z) for i, (x, z) in enumerate(base)])
+            rg.append([ht.P(x + (1.0 - k) * 3.6 * (1 if 0 < i < len(base) - 1 else 0), y, z) for i, (x, z) in enumerate(base)])
         ht.loft(rg, "yellow_body")
 
     def post(bm, uv0):
