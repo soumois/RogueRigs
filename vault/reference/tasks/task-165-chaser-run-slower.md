@@ -1,9 +1,9 @@
 ---
 id: task-165-chaser-run-slower
 description: "Global task: Slow the chaser run animation by 30 percent (playback rate 0.7), as a tunable material parameter."
-parent: tasks-to-do-index
+parent: tasks-done-index
 kind: task
-status: in-progress
+status: done
 ---
 # Chaser: slower run animation
 
@@ -13,12 +13,12 @@ status: in-progress
 - gdd_check: done by the Orchestrator when the task is planned (2026-10-14).
 - confirmed_by_owner: yes (2026-10-14)
 - milestone: M2
-- next_step: task-165-01-chaser-run-slower
-- result: open
+- next_step: none
+- result: RunRate scalar parameter 0.7 scales the run clip only in M_Chaser_Meshy_Anim (run loop 0.762 s); attack unchanged; not seen in game; cost not recorded
 
 ## Subtasks
 1. task-165-01-chaser-run-slower — bp
 
 ## Relations
-- [[tasks-to-do-index]] — parent index.
+- [[tasks-done-index]] — parent index.
 - [[task-165-01-chaser-run-slower]] — step 1, bp.
