@@ -3,7 +3,7 @@ id: task-151-13-chaser-torso-pass
 description: "Second pass on the chaser torso: a modeller who does not judge, and an independent critic who lists the visible differences."
 parent: task-151-chaser-robot
 kind: task
-status: in-progress
+status: done
 ---
 # Chaser torso: pass with an independent critic
 
@@ -18,11 +18,11 @@ status: in-progress
 - rules: BLENDER ROUTE; no Unreal process; no Meshy; no screenshot tool; the modeller edits only part_headtorso.py and part_preview.py (to add a --lit mode with a sun and ambient occlusion, EEVEE, so that the preview looks lit like the sheet); the part keeps its name, pivot, parent and attachment section; the limbs and other parts are not touched.
 - editor_state: closed
 - token_ceiling: open
-- model: open
-- tokens: open
-- runs: open
+- model: opus+sonnet
+- tokens: input 278, cache write 663218, cache read 9327197, output 88193
+- runs: 9
 - milestone: M2
-- result: open
+- result: Torso reworked in 9 rounds with an independent critic (opus, read only) from round 1: eye in a dark recess with one solid octagon, company emblem as a texture on the hood top, back as a tower with stepped side plates; 504 tris; the plate on the hood is flush (measured gap 0.1 cm), the side view shows its edge above the crowned hood bevel.
 
 ## Relations
 - [[task-151-chaser-robot]] — parent global task.

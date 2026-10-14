@@ -248,6 +248,7 @@ kind: note
 | [[task-151-10-chaser-part-thigh]] | sonnet | 1 | 0k | 27k | 256k | 2k |
 | [[task-151-11-chaser-part-shinfoot]] | sonnet | 1 | 0k | 22k | 180k | 3k |
 | [[task-151-12-chaser-assembly]] | sonnet | 1 | 0k | 53k | 570k | 4k |
+| [[task-151-13-chaser-torso-pass]] | opus+sonnet | 9 | 0k | 663k | 9327k | 88k |
 
 ## Totals
 | Scope | Input | Cache write | Cache read | Output |
