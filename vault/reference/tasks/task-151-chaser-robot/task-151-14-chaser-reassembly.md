@@ -3,7 +3,7 @@ id: task-151-14-chaser-reassembly
 description: "Reassemble the chaser with the reworked torso and validate joints and silhouettes."
 parent: task-151-chaser-robot
 kind: task
-status: in-progress
+status: done
 ---
 # Chaser: reassembly with the new torso
 
@@ -16,11 +16,11 @@ status: in-progress
 - rules: BLENDER ROUTE; no Unreal process; max_returns 2; do not rework a part (report a mismatch at a joint and fix it through the contract only if it is a placement issue); commit by name with message `task-151-14-chaser-reassembly: <summary>`.
 - editor_state: closed
 - token_ceiling: open
-- model: open
-- tokens: open
-- runs: open
+- model: sonnet
+- tokens: input 52, cache write 50267, cache read 925648, output 1569
+- runs: 1
 - milestone: M2
-- result: open
+- result: Reassembled with the new torso: 2648 tris, 123.0 cm tall, ten objects, four slots; shoulder ring penetration 2.52 cm (to fix: shorten the torso ring), side silhouette 6.18 percent (above the 5 percent limit), logo texture referenced.
 
 ## Relations
 - [[task-151-chaser-robot]] — parent global task.
