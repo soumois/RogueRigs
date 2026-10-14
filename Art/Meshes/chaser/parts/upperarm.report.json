@@ -1,0 +1,89 @@
+{
+  "part": "upperarm",
+  "route": "blender",
+  "script": "Tools/art/blender/chaser/part_upperarm.py",
+  "units": "cm",
+  "objects": {
+    "UpperArm_L": {
+      "tris": 72,
+      "bounds_min_cm": [
+        -7.8,
+        -8.93,
+        -10.54
+      ],
+      "bounds_max_cm": [
+        7.0,
+        12.29,
+        8.68
+      ],
+      "pivot_world_cm": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "parent": "HeadTorso",
+      "uv_layers": [
+        "UVMap",
+        "LightMap"
+      ],
+      "lightmap": {
+        "faces": 32,
+        "overlapping_face_pairs": 0,
+        "bounds_min": 0.01172,
+        "bounds_max": 0.98828,
+        "min_gap_px_at_256": 3.0,
+        "min_border_px_at_256": 3.0,
+        "required_margin_px": 2,
+        "pass": true
+      },
+      "attachment_section": null,
+      "material_slots": [
+        "yellow_body",
+        "gunmetal",
+        "eye_red",
+        "logo_plate"
+      ]
+    },
+    "UpperArm_R": {
+      "tris": 72,
+      "bounds_min_cm": [
+        -7.8,
+        -12.29,
+        -10.54
+      ],
+      "bounds_max_cm": [
+        7.0,
+        8.93,
+        8.68
+      ],
+      "pivot_world_cm": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "parent": "HeadTorso",
+      "uv_layers": [
+        "UVMap",
+        "LightMap"
+      ],
+      "lightmap": {
+        "faces": 32,
+        "overlapping_face_pairs": 0,
+        "bounds_min": 0.01172,
+        "bounds_max": 0.98828,
+        "min_gap_px_at_256": 3.0,
+        "min_border_px_at_256": 3.0,
+        "required_margin_px": 2,
+        "pass": true
+      },
+      "attachment_section": null,
+      "material_slots": [
+        "yellow_body",
+        "gunmetal",
+        "eye_red",
+        "logo_plate"
+      ]
+    }
+  },
+  "tris": 144
+}

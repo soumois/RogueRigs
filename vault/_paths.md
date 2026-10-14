@@ -79,6 +79,7 @@ bp-shotgun  reference/tech/blueprints/player/bp-shotgun.md
 bp-turret  reference/tech/blueprints/player/bp-turret.md
 build-toolchain  reference/tech/pipelines/build-toolchain.md
 burst-rifle  reference/gdd/weapons/burst-rifle.md
+chaser-model-pipeline  reference/tech/pipelines/chaser-model-pipeline.md
 code-review-m1  reference/tech/conventions/code-review-m1/code-review-m1.md
 code-review-m1-deferred  reference/tech/conventions/code-review-m1/code-review-m1-deferred.md
 code-review-m1-gameplay  reference/tech/conventions/code-review-m1/code-review-m1-gameplay.md

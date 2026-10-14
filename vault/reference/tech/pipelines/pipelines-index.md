@@ -11,6 +11,7 @@ kind: note
 - [[asset-pipeline]] — image, 3D generation, cleanup, rigid-part split.
 - [[blender-asset-route]] — Blender scripts for simple props: headless command, UV channels, mask contract, preview render, FBX quirks.
 - [[mesh-fidelity-loop]] — validation of a Blender-route mesh against its source image: criteria, comparison render, max returns, report fields.
+- [[chaser-model-pipeline]] — chaser Blender model split by part: files, commands, contract per part, part preview, how to edit one part.
 - [[level-layout-schema]] — layout JSON format, brief format, validator. Read before writing or loading a layout.
 - [[layout-generator-recipe]] — algorithm behind arena_m1 (outline, organic paths, hidden pockets, heal ore); read before writing the C++ generator.
 - [[run-log-schema]] — what each run log records, for the balance agent.

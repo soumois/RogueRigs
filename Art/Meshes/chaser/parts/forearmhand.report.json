@@ -1,0 +1,89 @@
+{
+  "part": "forearmhand",
+  "route": "blender",
+  "script": "Tools/art/blender/chaser/part_forearmhand.py",
+  "units": "cm",
+  "objects": {
+    "ForearmHand_L": {
+      "tris": 396,
+      "bounds_min_cm": [
+        -6.5,
+        -5.21,
+        -39.2
+      ],
+      "bounds_max_cm": [
+        15.09,
+        11.35,
+        1.61
+      ],
+      "pivot_world_cm": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "parent": "UpperArm_L",
+      "uv_layers": [
+        "UVMap",
+        "LightMap"
+      ],
+      "lightmap": {
+        "faces": 150,
+        "overlapping_face_pairs": 0,
+        "bounds_min": 0.01172,
+        "bounds_max": 0.98828,
+        "min_gap_px_at_256": 3.0,
+        "min_border_px_at_256": 3.0,
+        "required_margin_px": 2,
+        "pass": true
+      },
+      "attachment_section": null,
+      "material_slots": [
+        "yellow_body",
+        "gunmetal",
+        "eye_red",
+        "logo_plate"
+      ]
+    },
+    "ForearmHand_R": {
+      "tris": 396,
+      "bounds_min_cm": [
+        -6.5,
+        -11.35,
+        -39.2
+      ],
+      "bounds_max_cm": [
+        15.09,
+        5.21,
+        1.61
+      ],
+      "pivot_world_cm": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "parent": "UpperArm_R",
+      "uv_layers": [
+        "UVMap",
+        "LightMap"
+      ],
+      "lightmap": {
+        "faces": 150,
+        "overlapping_face_pairs": 0,
+        "bounds_min": 0.01172,
+        "bounds_max": 0.98828,
+        "min_gap_px_at_256": 3.0,
+        "min_border_px_at_256": 3.0,
+        "required_margin_px": 2,
+        "pass": true
+      },
+      "attachment_section": null,
+      "material_slots": [
+        "yellow_body",
+        "gunmetal",
+        "eye_red",
+        "logo_plate"
+      ]
+    }
+  },
+  "tris": 792
+}

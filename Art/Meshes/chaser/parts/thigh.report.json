@@ -1,0 +1,111 @@
+{
+  "part": "thigh",
+  "route": "blender",
+  "script": "Tools/art/blender/chaser/part_thigh.py",
+  "units": "cm",
+  "objects": {
+    "Thigh_L": {
+      "tris": 132,
+      "bounds_min_cm": [
+        -7.0,
+        -7.32,
+        -34.35
+      ],
+      "bounds_max_cm": [
+        11.0,
+        8.06,
+        6.82
+      ],
+      "pivot_world_cm": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "parent": "Pelvis",
+      "uv_layers": [
+        "UVMap",
+        "LightMap"
+      ],
+      "lightmap": {
+        "faces": 56,
+        "overlapping_face_pairs": 0,
+        "bounds_min": 0.01172,
+        "bounds_max": 0.98828,
+        "min_gap_px_at_256": 3.0,
+        "min_border_px_at_256": 3.0,
+        "required_margin_px": 2,
+        "pass": true
+      },
+      "attachment_section": {
+        "plane_z_cm": 0.0,
+        "slab_cm": 1.0,
+        "min_xy_cm": [
+          -7.0,
+          -5.83
+        ],
+        "max_xy_cm": [
+          9.5,
+          4.09
+        ]
+      },
+      "material_slots": [
+        "yellow_body",
+        "gunmetal",
+        "eye_red",
+        "logo_plate"
+      ]
+    },
+    "Thigh_R": {
+      "tris": 132,
+      "bounds_min_cm": [
+        -7.0,
+        -8.06,
+        -34.35
+      ],
+      "bounds_max_cm": [
+        11.0,
+        7.32,
+        6.82
+      ],
+      "pivot_world_cm": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "parent": "Pelvis",
+      "uv_layers": [
+        "UVMap",
+        "LightMap"
+      ],
+      "lightmap": {
+        "faces": 56,
+        "overlapping_face_pairs": 0,
+        "bounds_min": 0.01172,
+        "bounds_max": 0.98828,
+        "min_gap_px_at_256": 3.0,
+        "min_border_px_at_256": 3.0,
+        "required_margin_px": 2,
+        "pass": true
+      },
+      "attachment_section": {
+        "plane_z_cm": 0.0,
+        "slab_cm": 1.0,
+        "min_xy_cm": [
+          -7.0,
+          -4.09
+        ],
+        "max_xy_cm": [
+          9.5,
+          5.83
+        ]
+      },
+      "material_slots": [
+        "yellow_body",
+        "gunmetal",
+        "eye_red",
+        "logo_plate"
+      ]
+    }
+  },
+  "tris": 264
+}

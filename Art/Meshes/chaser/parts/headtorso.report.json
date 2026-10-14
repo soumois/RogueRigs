@@ -1,0 +1,60 @@
+{
+  "part": "headtorso",
+  "route": "blender",
+  "script": "Tools/art/blender/chaser/part_headtorso.py",
+  "units": "cm",
+  "objects": {
+    "HeadTorso": {
+      "tris": 168,
+      "bounds_min_cm": [
+        -14.46,
+        -14.88,
+        0.0
+      ],
+      "bounds_max_cm": [
+        30.7,
+        14.88,
+        42.78
+      ],
+      "pivot_world_cm": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "parent": "Pelvis",
+      "uv_layers": [
+        "UVMap",
+        "LightMap"
+      ],
+      "lightmap": {
+        "faces": 75,
+        "overlapping_face_pairs": 0,
+        "bounds_min": 0.01172,
+        "bounds_max": 0.98828,
+        "min_gap_px_at_256": 3.0,
+        "min_border_px_at_256": 3.0,
+        "required_margin_px": 2,
+        "pass": true
+      },
+      "attachment_section": {
+        "plane_z_cm": 0.0,
+        "slab_cm": 1.0,
+        "min_xy_cm": [
+          -9.9,
+          -10.68
+        ],
+        "max_xy_cm": [
+          -9.9,
+          10.68
+        ]
+      },
+      "material_slots": [
+        "yellow_body",
+        "gunmetal",
+        "eye_red",
+        "logo_plate"
+      ]
+    }
+  },
+  "tris": 168
+}

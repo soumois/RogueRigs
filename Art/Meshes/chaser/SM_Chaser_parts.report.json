@@ -1,9 +1,9 @@
 {
   "asset": "SM_Chaser_parts",
   "route": "blender",
-  "script": "Tools/art/blender/chaser_model.py",
+  "script": "Tools/art/blender/chaser/assemble.py (wrapper Tools/art/blender/chaser_model.py)",
   "source_image": "vault/assets/chaser-turnaround.png (crops chaser-front, chaser-side, chaser-back)",
-  "height_cm": 124,
+  "height_cm": 124.0,
   "height_source": "ARRChaser capsule 24 x 62 half height (Source/RogueRigs/Enemies/RRChaser.cpp InitCapsuleSize(24, 62)) = 124 cm; bp-chaser BodyMesh 124 uu centred on the capsule; model from the sole to the top of the cap",
   "axes": "forward +X, robot left +Y, up +Z; _L parts at +Y",
   "units": "cm",
@@ -18,13 +18,13 @@
         69.19
       ],
       "bounds_max_cm": [
-        13,
+        13.0,
         8.37,
         82.09
       ],
       "pivot_world_cm": [
         1.5,
-        0,
+        0.0,
         72.54
       ],
       "parent": null,
@@ -37,8 +37,8 @@
         "overlapping_face_pairs": 0,
         "bounds_min": 0.01172,
         "bounds_max": 0.98828,
-        "min_gap_px_at_256": 3,
-        "min_border_px_at_256": 3,
+        "min_gap_px_at_256": 3.0,
+        "min_border_px_at_256": 3.0,
         "required_margin_px": 2,
         "pass": true
       }
@@ -53,11 +53,11 @@
       "bounds_max_cm": [
         32.2,
         14.88,
-        124
+        124.0
       ],
       "pivot_world_cm": [
         1.5,
-        0,
+        0.0,
         81.22
       ],
       "parent": "Pelvis",
@@ -70,8 +70,8 @@
         "overlapping_face_pairs": 0,
         "bounds_min": 0.01172,
         "bounds_max": 0.98828,
-        "min_gap_px_at_256": 3,
-        "min_border_px_at_256": 3,
+        "min_gap_px_at_256": 3.0,
+        "min_border_px_at_256": 3.0,
         "required_margin_px": 2,
         "pass": true
       }
@@ -103,8 +103,8 @@
         "overlapping_face_pairs": 0,
         "bounds_min": 0.01172,
         "bounds_max": 0.98828,
-        "min_gap_px_at_256": 3,
-        "min_border_px_at_256": 3,
+        "min_gap_px_at_256": 3.0,
+        "min_border_px_at_256": 3.0,
         "required_margin_px": 2,
         "pass": true
       }
@@ -122,7 +122,7 @@
         95.23
       ],
       "pivot_world_cm": [
-        -4,
+        -4.0,
         31.25,
         93.62
       ],
@@ -136,8 +136,8 @@
         "overlapping_face_pairs": 0,
         "bounds_min": 0.01172,
         "bounds_max": 0.98828,
-        "min_gap_px_at_256": 3,
-        "min_border_px_at_256": 3,
+        "min_gap_px_at_256": 3.0,
+        "min_border_px_at_256": 3.0,
         "required_margin_px": 2,
         "pass": true
       }
@@ -169,8 +169,8 @@
         "overlapping_face_pairs": 0,
         "bounds_min": 0.01172,
         "bounds_max": 0.98828,
-        "min_gap_px_at_256": 3,
-        "min_border_px_at_256": 3,
+        "min_gap_px_at_256": 3.0,
+        "min_border_px_at_256": 3.0,
         "required_margin_px": 2,
         "pass": true
       }
@@ -188,7 +188,7 @@
         95.23
       ],
       "pivot_world_cm": [
-        -4,
+        -4.0,
         -31.25,
         93.62
       ],
@@ -202,8 +202,8 @@
         "overlapping_face_pairs": 0,
         "bounds_min": 0.01172,
         "bounds_max": 0.98828,
-        "min_gap_px_at_256": 3,
-        "min_border_px_at_256": 3,
+        "min_gap_px_at_256": 3.0,
+        "min_border_px_at_256": 3.0,
         "required_margin_px": 2,
         "pass": true
       }
@@ -235,8 +235,8 @@
         "overlapping_face_pairs": 0,
         "bounds_min": 0.01172,
         "bounds_max": 0.98828,
-        "min_gap_px_at_256": 3,
-        "min_border_px_at_256": 3,
+        "min_gap_px_at_256": 3.0,
+        "min_border_px_at_256": 3.0,
         "required_margin_px": 2,
         "pass": true
       }
@@ -246,7 +246,7 @@
       "bounds_min_cm": [
         -8.6,
         9.74,
-        0
+        0.0
       ],
       "bounds_max_cm": [
         21.5,
@@ -268,8 +268,8 @@
         "overlapping_face_pairs": 0,
         "bounds_min": 0.01172,
         "bounds_max": 0.98828,
-        "min_gap_px_at_256": 3,
-        "min_border_px_at_256": 3,
+        "min_gap_px_at_256": 3.0,
+        "min_border_px_at_256": 3.0,
         "required_margin_px": 2,
         "pass": true
       }
@@ -301,8 +301,8 @@
         "overlapping_face_pairs": 0,
         "bounds_min": 0.01172,
         "bounds_max": 0.98828,
-        "min_gap_px_at_256": 3,
-        "min_border_px_at_256": 3,
+        "min_gap_px_at_256": 3.0,
+        "min_border_px_at_256": 3.0,
         "required_margin_px": 2,
         "pass": true
       }
@@ -312,7 +312,7 @@
       "bounds_min_cm": [
         -8.6,
         -26.34,
-        0
+        0.0
       ],
       "bounds_max_cm": [
         21.5,
@@ -334,8 +334,8 @@
         "overlapping_face_pairs": 0,
         "bounds_min": 0.01172,
         "bounds_max": 0.98828,
-        "min_gap_px_at_256": 3,
-        "min_border_px_at_256": 3,
+        "min_gap_px_at_256": 3.0,
+        "min_border_px_at_256": 3.0,
         "required_margin_px": 2,
         "pass": true
       }
@@ -344,17 +344,17 @@
   "dimensions_cm": {
     "x": 45.16,
     "y": 85.2,
-    "z": 124
+    "z": 124.0
   },
   "bbox_min": [
     -12.96,
     -42.6,
-    0
+    0.0
   ],
   "bbox_max": [
     32.2,
     42.6,
-    124
+    124.0
   ],
   "hierarchy": {
     "Pelvis": [
@@ -382,12 +382,12 @@
   "joints_cm": {
     "Pelvis_root_hip_height": [
       1.5,
-      0,
+      0.0,
       72.54
     ],
     "waist_HeadTorso": [
       1.5,
-      0,
+      0.0,
       81.22
     ],
     "shoulder_L": [
@@ -401,12 +401,12 @@
       106.64
     ],
     "elbow_L": [
-      -4,
+      -4.0,
       31.25,
       93.62
     ],
     "elbow_R": [
-      -4,
+      -4.0,
       -31.25,
       93.62
     ],
@@ -445,7 +445,7 @@
     "UpperArm_L / ForearmHand_L": [
       14.8,
       9.19,
-      0
+      0.0
     ],
     "HeadTorso / UpperArm_R": [
       14.8,
@@ -455,7 +455,7 @@
     "UpperArm_R / ForearmHand_R": [
       14.8,
       9.19,
-      0
+      0.0
     ],
     "Pelvis / Thigh_L": [
       15.5,
@@ -463,7 +463,7 @@
       10.17
     ],
     "Thigh_L / ShinFoot_L": [
-      18,
+      18.0,
       11.34,
       5.91
     ],
@@ -473,7 +473,7 @@
       10.17
     ],
     "Thigh_R / ShinFoot_R": [
-      18,
+      18.0,
       11.34,
       5.91
     ]
@@ -481,13 +481,21 @@
   "joint_penetration_cm": {
     "Pelvis / HeadTorso": 0.73,
     "HeadTorso / UpperArm_L": 0.87,
-    "UpperArm_L / ForearmHand_L": 0,
+    "UpperArm_L / ForearmHand_L": 0.0,
     "HeadTorso / UpperArm_R": 0.87,
-    "UpperArm_R / ForearmHand_R": 0,
+    "UpperArm_R / ForearmHand_R": 0.0,
     "Pelvis / Thigh_L": 0.85,
     "Thigh_L / ShinFoot_L": 0.5,
     "Pelvis / Thigh_R": 0.85,
     "Thigh_R / ShinFoot_R": 0.5
+  },
+  "part_reports": {
+    "headtorso": "Art/Meshes/chaser/parts/headtorso.report.json",
+    "pelvis": "Art/Meshes/chaser/parts/pelvis.report.json",
+    "upperarm": "Art/Meshes/chaser/parts/upperarm.report.json",
+    "forearmhand": "Art/Meshes/chaser/parts/forearmhand.report.json",
+    "thigh": "Art/Meshes/chaser/parts/thigh.report.json",
+    "shinfoot": "Art/Meshes/chaser/parts/shinfoot.report.json"
   },
   "materials": [
     "yellow_body",

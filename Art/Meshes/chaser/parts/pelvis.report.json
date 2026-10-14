@@ -1,0 +1,60 @@
+{
+  "part": "pelvis",
+  "route": "blender",
+  "script": "Tools/art/blender/chaser/part_pelvis.py",
+  "units": "cm",
+  "objects": {
+    "Pelvis": {
+      "tris": 88,
+      "bounds_min_cm": [
+        -10.23,
+        -8.37,
+        -3.35
+      ],
+      "bounds_max_cm": [
+        11.5,
+        8.37,
+        9.55
+      ],
+      "pivot_world_cm": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "parent": null,
+      "uv_layers": [
+        "UVMap",
+        "LightMap"
+      ],
+      "lightmap": {
+        "faces": 36,
+        "overlapping_face_pairs": 0,
+        "bounds_min": 0.01172,
+        "bounds_max": 0.98828,
+        "min_gap_px_at_256": 3.0,
+        "min_border_px_at_256": 3.0,
+        "required_margin_px": 2,
+        "pass": true
+      },
+      "attachment_section": {
+        "plane_z_cm": 0.0,
+        "slab_cm": 1.0,
+        "min_xy_cm": [
+          -9.3,
+          -6.5
+        ],
+        "max_xy_cm": [
+          10.75,
+          6.5
+        ]
+      },
+      "material_slots": [
+        "yellow_body",
+        "gunmetal",
+        "eye_red",
+        "logo_plate"
+      ]
+    }
+  },
+  "tris": 88
+}

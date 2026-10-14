@@ -1,0 +1,89 @@
+{
+  "part": "shinfoot",
+  "route": "blender",
+  "script": "Tools/art/blender/chaser/part_shinfoot.py",
+  "units": "cm",
+  "objects": {
+    "ShinFoot_L": {
+      "tris": 300,
+      "bounds_min_cm": [
+        -10.1,
+        -5.76,
+        -47.49
+      ],
+      "bounds_max_cm": [
+        20.0,
+        10.84,
+        -3.39
+      ],
+      "pivot_world_cm": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "parent": "Thigh_L",
+      "uv_layers": [
+        "UVMap",
+        "LightMap"
+      ],
+      "lightmap": {
+        "faces": 130,
+        "overlapping_face_pairs": 0,
+        "bounds_min": 0.01172,
+        "bounds_max": 0.98828,
+        "min_gap_px_at_256": 3.0,
+        "min_border_px_at_256": 3.0,
+        "required_margin_px": 2,
+        "pass": true
+      },
+      "attachment_section": null,
+      "material_slots": [
+        "yellow_body",
+        "gunmetal",
+        "eye_red",
+        "logo_plate"
+      ]
+    },
+    "ShinFoot_R": {
+      "tris": 300,
+      "bounds_min_cm": [
+        -10.1,
+        -10.84,
+        -47.49
+      ],
+      "bounds_max_cm": [
+        20.0,
+        5.76,
+        -3.39
+      ],
+      "pivot_world_cm": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "parent": "Thigh_R",
+      "uv_layers": [
+        "UVMap",
+        "LightMap"
+      ],
+      "lightmap": {
+        "faces": 130,
+        "overlapping_face_pairs": 0,
+        "bounds_min": 0.01172,
+        "bounds_max": 0.98828,
+        "min_gap_px_at_256": 3.0,
+        "min_border_px_at_256": 3.0,
+        "required_margin_px": 2,
+        "pass": true
+      },
+      "attachment_section": null,
+      "material_slots": [
+        "yellow_body",
+        "gunmetal",
+        "eye_red",
+        "logo_plate"
+      ]
+    }
+  },
+  "tris": 600
+}
