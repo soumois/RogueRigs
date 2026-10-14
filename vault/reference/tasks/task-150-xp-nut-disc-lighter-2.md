@@ -1,9 +1,9 @@
 ---
 id: task-150-xp-nut-disc-lighter-2
 description: "Global task: Lower the glow disc intensity of the XP nut a little more."
-parent: tasks-to-do-index
+parent: tasks-done-index
 kind: task
-status: in-progress
+status: done
 ---
 # XP nut disc: lighter again
 
@@ -13,12 +13,12 @@ status: in-progress
 - gdd_check: done by the Orchestrator when the task is planned (2026-10-14).
 - confirmed_by_owner: yes (2026-10-14)
 - milestone: M2
-- next_step: task-150-01-xp-nut-disc-lighter-2
-- result: open
+- next_step: none
+- result: Done. MI_XPGlowDisc_Nut Intensity 0.12 (was 0.2); other parameters and the chip instance unchanged.
 
 ## Subtasks
 1. task-150-01-xp-nut-disc-lighter-2 — bp
 
 ## Relations
-- [[tasks-to-do-index]] — parent index.
+- [[tasks-done-index]] — parent index.
 - [[task-150-01-xp-nut-disc-lighter-2]] — step 1, bp.

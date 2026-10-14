@@ -10,4 +10,3 @@ A global task moves to [[tasks-done-index]] when it is done (`vault/scripts/task
 
 ## Relations
 - [[tasks-index]] — parent index.
-- [[task-150-xp-nut-disc-lighter-2]] — Lower the glow disc intensity of the XP nut a little more. Status in-progress.
