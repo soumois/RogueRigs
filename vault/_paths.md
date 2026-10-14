@@ -78,6 +78,7 @@ bp-pickup-sparkle  reference/tech/blueprints/fx/bp-pickup-sparkle.md
 bp-pickup-xp  reference/tech/blueprints/fx/bp-pickup-xp.md
 bp-projectile  reference/tech/blueprints/player/bp-projectile.md
 bp-robot-death-puff  reference/tech/blueprints/fx/bp-robot-death-puff.md
+bp-robot-debris  reference/tech/blueprints/fx/bp-robot-debris.md
 bp-rr-game-mode  reference/tech/blueprints/player/bp-rr-game-mode.md
 bp-rr-player-controller  reference/tech/blueprints/player/bp-rr-player-controller.md
 bp-shield-chaser  reference/tech/blueprints/enemies/bp-shield-chaser.md

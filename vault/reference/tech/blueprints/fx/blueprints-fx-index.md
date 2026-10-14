@@ -18,3 +18,4 @@ Pickups, explosion and heal visuals, damage numbers: effects and collectibles.
 - [[bp-heal-ring]] — BP_HealRing, the green ring on heal.
 - [[bp-damage-numbers]] — NS_DamageNumbers, M_DamageNumber and the digit atlas, the floating damage numbers.
 - [[bp-robot-death-puff]] — NS_RobotDeathPuff, the robot death puff.
+- [[bp-robot-debris]] — NS_RobotDebris, the robot debris pieces.
