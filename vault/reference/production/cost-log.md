@@ -232,6 +232,7 @@ kind: note
 | [[task-145-03-disc-material]] | sonnet | 1 | 0k | 56k | 1276k | 1k |
 | [[task-146-01-xp-nut-disc-lighter]] | sonnet | 2 | 0k | 22k | 175k | 0k |
 | [[task-147-01-xp-disc-billboard]] | sonnet | 1 | 0k | 42k | 535k | 1k |
+| [[task-148-01-xp-disc-fade]] | opus | 1 | 0k | 55k | 565k | 9k |
 
 ## Totals
 | Scope | Input | Cache write | Cache read | Output |

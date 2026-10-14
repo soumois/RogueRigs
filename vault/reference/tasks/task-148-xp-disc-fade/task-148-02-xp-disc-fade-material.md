@@ -3,7 +3,7 @@ id: task-148-02-xp-disc-fade-material
 description: "Make the glow disc material read the fade value and turn it on in the two pickup Blueprints."
 parent: task-148-xp-disc-fade
 kind: task
-status: todo
+status: in-progress
 ---
 # XP glow disc: material reads the fade
 

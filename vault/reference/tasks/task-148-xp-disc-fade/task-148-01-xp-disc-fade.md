@@ -3,7 +3,7 @@ id: task-148-01-xp-disc-fade
 description: "Fade the glow disc with the pickup phase: off in the air, on in 0.2 s at landing, off when magnetised."
 parent: task-148-xp-disc-fade
 kind: task
-status: in-progress
+status: done
 ---
 # XP glow disc: fade with the pickup phase
 
@@ -15,11 +15,11 @@ status: in-progress
 - done_when: The project compiles (RogueRigsEditor Win64 Development, editor closed); no existing test broken (only update expectations a requested change breaks, no new test); sys-pickups and sys-pickups-lifecycle updated; lint clean; committed
 - editor_state: closed
 - token_ceiling: open
-- model: open
-- tokens: open
-- runs: open
+- model: opus
+- tokens: input 30, cache write 55028, cache read 564869, output 8641
+- runs: 1
 - milestone: M2
-- result: open
+- result: bGlowFade, GlowFadeDuration 0.2 and GlowFadeDataIndex 0 in ARRPickup; fade target 0 in Pop, 1 at Rest, 0 at Magnet and Collect; updated in UpdateMotion (existing loop) only for pickups with bGlowFade; reset 0 on pool reuse and release; builds; visual result needs 148-02.
 
 ## Relations
 - [[task-148-xp-disc-fade]] — parent global task.
