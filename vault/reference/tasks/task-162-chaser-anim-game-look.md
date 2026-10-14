@@ -1,6 +1,6 @@
 ---
 id: task-162-chaser-anim-game-look
-description: "Global task: See what the animated chaser really looks like in the game: run the game, spawn chasers near the miner and take screenshots over time."
+description: "Global task: See the animated chaser in the game: spawn chasers near the miner and take screenshots."
 parent: tasks-to-do-index
 kind: task
 status: in-progress
