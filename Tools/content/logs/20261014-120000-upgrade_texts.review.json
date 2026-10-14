@@ -1,0 +1,15 @@
+{"run_id":"20261014-120000-upgrade_texts","rounds":[{"loop":0,"reviews":[
+{"item_id":"upg_damage","verdict":"pass","rule":null,"reason":"Pure lore; the joke targets the company's polished robots.","suggestion":null},
+{"item_id":"upg_fire_rate","verdict":"pass","rule":null,"reason":"Rigs jargon and odds-dismissing bravado; no stat description.","suggestion":null},
+{"item_id":"upg_reload_speed","verdict":"pass","rule":null,"reason":"Character habit that evokes the theme without stating the effect.","suggestion":null},
+{"item_id":"upg_crit_chance","verdict":"pass","rule":null,"reason":"Odds-dismissing voice in original wording, not a film catchphrase.","suggestion":null},
+{"item_id":"upg_crit_damage","verdict":"pass","rule":null,"reason":"Jab at corporate billing; not a verbatim vault example.","suggestion":null},
+{"item_id":"upg_magazine_size","verdict":"pass","rule":null,"reason":"Contrast with the company; pure lore.","suggestion":null},
+{"item_id":"upg_max_health","verdict":"pass","rule":null,"reason":"Patched-up Rigs gear and self-mockery; pure lore.","suggestion":null},
+{"item_id":"upg_move_speed","verdict":"fail","rule":"T3","reason":"Wrong place, wrong time is the signature line of the real Die Hard hero John McClane, a well-known film catchphrase.","suggestion":"Robots take the long way round. I take whatever is not burning."},
+{"item_id":"upg_pickup_radius","verdict":"pass","rule":null,"reason":"Rook counting his cut; pure lore.","suggestion":null},
+{"item_id":"upg_xp_gain","verdict":"pass","rule":null,"reason":"Self-mockery drawn from the improvise-first trait.","suggestion":null},
+{"item_id":"upg_mining_speed","verdict":"pass","rule":null,"reason":"Rigs jargon in Rook's blue-collar voice.","suggestion":null},
+{"item_id":"upg_luck","verdict":"pass","rule":null,"reason":"Shaky-plan bravado in original wording.","suggestion":null},
+{"item_id":"upg_piercing","verdict":"pass","rule":null,"reason":"Catalogue film with an original line; no stat description.","suggestion":null}
+]}]}
