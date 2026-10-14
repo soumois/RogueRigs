@@ -1,0 +1,37 @@
+{
+  "run_id": "20261014-141713-card-frames",
+  "asset": "card-frames",
+  "model": "gpt-image-2-image-to-image",
+  "aspect_ratio": "3:4",
+  "resolution": "1K",
+  "variants": 2,
+  "prompt_file": "Art/Source/card-frames/prompts/04-stat-from-weapon.txt",
+  "prompt": "Keep this exact image: same frame, same metal, bolts, corners, patch plates, proportions, flat magenta background (FF00FF inside and outside), same teal accents exactly where they are (corner blocks, hazard stripes, inner inlay line, teal patch plates), same rust and wear. Only change: remove the top header plate (the large dark plate with four bolts at the top centre, including the small wire joints beside it), so the top edge becomes a plain bolted strip identical in design to the bottom edge, with the same hazard-stripe end pieces next to the corner blocks, the same thin teal inlay line along its inner side, and three evenly spaced bolts like the bottom strip. No text, no icons.",
+  "refs": [
+    "Art/Source/weapon-card-frame/20261014-115709-weapon-card-frame-1.png"
+  ],
+  "tasks": [
+    {
+      "task_id": "56a0fb474893590ccf7da4ddf31e886f",
+      "state": "success",
+      "credits": 6,
+      "error": null,
+      "result_urls": [
+        "https://tempfile.aiquickdraw.com/images/chatgpt/file_0000000012d881f9a5598b07ec4b5523.png"
+      ]
+    },
+    {
+      "task_id": "d4c37ca013809ef1527b10f6d66e5aa9",
+      "state": "success",
+      "credits": 6,
+      "error": null,
+      "result_urls": [
+        "https://tempfile.aiquickdraw.com/images/chatgpt/file_000000002fd881f5af18cb7916893242.png"
+      ]
+    }
+  ],
+  "files": [
+    "Art/Source/card-frames/20261014-141713-card-frames-1.png",
+    "Art/Source/card-frames/20261014-141713-card-frames-2.png"
+  ]
+}
