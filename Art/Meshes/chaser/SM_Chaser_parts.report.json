@@ -3,11 +3,11 @@
   "route": "blender",
   "script": "Tools/art/blender/chaser/assemble.py (wrapper Tools/art/blender/chaser_model.py)",
   "source_image": "vault/assets/chaser-turnaround.png (crops chaser-front, chaser-side, chaser-back)",
-  "height_cm": 124.0,
+  "height_cm": 124,
   "height_source": "ARRChaser capsule 24 x 62 half height (Source/RogueRigs/Enemies/RRChaser.cpp InitCapsuleSize(24, 62)) = 124 cm; bp-chaser BodyMesh 124 uu centred on the capsule; model from the sole to the top of the cap",
   "axes": "forward +X, robot left +Y, up +Z; _L parts at +Y",
   "units": "cm",
-  "total_tris": 2056,
+  "total_tris": 2320,
   "budget_tris": 3000,
   "parts": {
     "Pelvis": {
@@ -18,13 +18,13 @@
         69.19
       ],
       "bounds_max_cm": [
-        13.0,
+        13,
         8.37,
         82.09
       ],
       "pivot_world_cm": [
         1.5,
-        0.0,
+        0,
         72.54
       ],
       "parent": null,
@@ -37,27 +37,27 @@
         "overlapping_face_pairs": 0,
         "bounds_min": 0.01172,
         "bounds_max": 0.98828,
-        "min_gap_px_at_256": 3.0,
-        "min_border_px_at_256": 3.0,
+        "min_gap_px_at_256": 3,
+        "min_border_px_at_256": 3,
         "required_margin_px": 2,
         "pass": true
       }
     },
     "HeadTorso": {
-      "tris": 168,
+      "tris": 176,
       "bounds_min_cm": [
-        -12.96,
+        -13.2,
         -14.88,
         81.22
       ],
       "bounds_max_cm": [
         32.2,
         14.88,
-        124.0
+        124
       ],
       "pivot_world_cm": [
         1.5,
-        0.0,
+        0,
         81.22
       ],
       "parent": "Pelvis",
@@ -66,26 +66,26 @@
         "LightMap"
       ],
       "lightmap": {
-        "faces": 75,
+        "faces": 77,
         "overlapping_face_pairs": 0,
         "bounds_min": 0.01172,
         "bounds_max": 0.98828,
-        "min_gap_px_at_256": 3.0,
-        "min_border_px_at_256": 3.0,
+        "min_gap_px_at_256": 3,
+        "min_border_px_at_256": 3,
         "required_margin_px": 2,
         "pass": true
       }
     },
     "UpperArm_L": {
-      "tris": 72,
+      "tris": 120,
       "bounds_min_cm": [
-        -10.3,
+        -10.65,
         14.01,
-        96.1
+        95.73
       ],
       "bounds_max_cm": [
         4.5,
-        35.23,
+        35.33,
         115.32
       ],
       "pivot_world_cm": [
@@ -99,12 +99,12 @@
         "LightMap"
       ],
       "lightmap": {
-        "faces": 32,
+        "faces": 52,
         "overlapping_face_pairs": 0,
         "bounds_min": 0.01172,
         "bounds_max": 0.98828,
-        "min_gap_px_at_256": 3.0,
-        "min_border_px_at_256": 3.0,
+        "min_gap_px_at_256": 3,
+        "min_border_px_at_256": 3,
         "required_margin_px": 2,
         "pass": true
       }
@@ -114,15 +114,15 @@
       "bounds_min_cm": [
         -10.5,
         26.04,
-        54.42
+        55.5
       ],
       "bounds_max_cm": [
-        11.09,
-        42.6,
+        9.72,
+        43.3,
         95.23
       ],
       "pivot_world_cm": [
-        -4.0,
+        -4,
         31.25,
         93.62
       ],
@@ -136,18 +136,18 @@
         "overlapping_face_pairs": 0,
         "bounds_min": 0.01172,
         "bounds_max": 0.98828,
-        "min_gap_px_at_256": 3.0,
-        "min_border_px_at_256": 3.0,
+        "min_gap_px_at_256": 3,
+        "min_border_px_at_256": 3,
         "required_margin_px": 2,
         "pass": true
       }
     },
     "UpperArm_R": {
-      "tris": 72,
+      "tris": 120,
       "bounds_min_cm": [
-        -10.3,
-        -35.23,
-        96.1
+        -10.65,
+        -35.33,
+        95.73
       ],
       "bounds_max_cm": [
         4.5,
@@ -165,12 +165,12 @@
         "LightMap"
       ],
       "lightmap": {
-        "faces": 32,
+        "faces": 52,
         "overlapping_face_pairs": 0,
         "bounds_min": 0.01172,
         "bounds_max": 0.98828,
-        "min_gap_px_at_256": 3.0,
-        "min_border_px_at_256": 3.0,
+        "min_gap_px_at_256": 3,
+        "min_border_px_at_256": 3,
         "required_margin_px": 2,
         "pass": true
       }
@@ -179,16 +179,16 @@
       "tris": 396,
       "bounds_min_cm": [
         -10.5,
-        -42.6,
-        54.42
+        -43.3,
+        55.5
       ],
       "bounds_max_cm": [
-        11.09,
+        9.72,
         -26.04,
         95.23
       ],
       "pivot_world_cm": [
-        -4.0,
+        -4,
         -31.25,
         93.62
       ],
@@ -202,23 +202,23 @@
         "overlapping_face_pairs": 0,
         "bounds_min": 0.01172,
         "bounds_max": 0.98828,
-        "min_gap_px_at_256": 3.0,
-        "min_border_px_at_256": 3.0,
+        "min_gap_px_at_256": 3,
+        "min_border_px_at_256": 3,
         "required_margin_px": 2,
         "pass": true
       }
     },
     "Thigh_L": {
-      "tris": 132,
+      "tris": 192,
       "bounds_min_cm": [
-        -2.5,
-        5.7,
-        38.19
+        -2.6,
+        5.95,
+        37.94
       ],
       "bounds_max_cm": [
-        15.5,
-        21.08,
-        79.36
+        15.2,
+        21.33,
+        79.98
       ],
       "pivot_world_cm": [
         4.5,
@@ -231,22 +231,22 @@
         "LightMap"
       ],
       "lightmap": {
-        "faces": 56,
+        "faces": 74,
         "overlapping_face_pairs": 0,
         "bounds_min": 0.01172,
         "bounds_max": 0.98828,
-        "min_gap_px_at_256": 3.0,
-        "min_border_px_at_256": 3.0,
+        "min_gap_px_at_256": 3,
+        "min_border_px_at_256": 3,
         "required_margin_px": 2,
         "pass": true
       }
     },
     "ShinFoot_L": {
-      "tris": 300,
+      "tris": 320,
       "bounds_min_cm": [
         -8.6,
         9.74,
-        0.0
+        0
       ],
       "bounds_max_cm": [
         21.5,
@@ -255,7 +255,7 @@
       ],
       "pivot_world_cm": [
         1.5,
-        15.5,
+        13.64,
         47.49
       ],
       "parent": "Thigh_L",
@@ -264,27 +264,27 @@
         "LightMap"
       ],
       "lightmap": {
-        "faces": 130,
+        "faces": 138,
         "overlapping_face_pairs": 0,
         "bounds_min": 0.01172,
         "bounds_max": 0.98828,
-        "min_gap_px_at_256": 3.0,
-        "min_border_px_at_256": 3.0,
+        "min_gap_px_at_256": 3,
+        "min_border_px_at_256": 3,
         "required_margin_px": 2,
         "pass": true
       }
     },
     "Thigh_R": {
-      "tris": 132,
+      "tris": 192,
       "bounds_min_cm": [
-        -2.5,
-        -21.08,
-        38.19
+        -2.6,
+        -21.33,
+        37.94
       ],
       "bounds_max_cm": [
-        15.5,
-        -5.7,
-        79.36
+        15.2,
+        -5.95,
+        79.98
       ],
       "pivot_world_cm": [
         4.5,
@@ -297,22 +297,22 @@
         "LightMap"
       ],
       "lightmap": {
-        "faces": 56,
+        "faces": 74,
         "overlapping_face_pairs": 0,
         "bounds_min": 0.01172,
         "bounds_max": 0.98828,
-        "min_gap_px_at_256": 3.0,
-        "min_border_px_at_256": 3.0,
+        "min_gap_px_at_256": 3,
+        "min_border_px_at_256": 3,
         "required_margin_px": 2,
         "pass": true
       }
     },
     "ShinFoot_R": {
-      "tris": 300,
+      "tris": 320,
       "bounds_min_cm": [
         -8.6,
         -26.34,
-        0.0
+        0
       ],
       "bounds_max_cm": [
         21.5,
@@ -321,7 +321,7 @@
       ],
       "pivot_world_cm": [
         1.5,
-        -15.5,
+        -13.64,
         47.49
       ],
       "parent": "Thigh_R",
@@ -330,31 +330,31 @@
         "LightMap"
       ],
       "lightmap": {
-        "faces": 130,
+        "faces": 138,
         "overlapping_face_pairs": 0,
         "bounds_min": 0.01172,
         "bounds_max": 0.98828,
-        "min_gap_px_at_256": 3.0,
-        "min_border_px_at_256": 3.0,
+        "min_gap_px_at_256": 3,
+        "min_border_px_at_256": 3,
         "required_margin_px": 2,
         "pass": true
       }
     }
   },
   "dimensions_cm": {
-    "x": 45.16,
-    "y": 85.2,
-    "z": 124.0
+    "x": 45.4,
+    "y": 86.6,
+    "z": 124
   },
   "bbox_min": [
-    -12.96,
-    -42.6,
-    0.0
+    -13.2,
+    -43.3,
+    0
   ],
   "bbox_max": [
     32.2,
-    42.6,
-    124.0
+    43.3,
+    124
   ],
   "hierarchy": {
     "Pelvis": [
@@ -382,12 +382,12 @@
   "joints_cm": {
     "Pelvis_root_hip_height": [
       1.5,
-      0.0,
+      0,
       72.54
     ],
     "waist_HeadTorso": [
       1.5,
-      0.0,
+      0,
       81.22
     ],
     "shoulder_L": [
@@ -401,12 +401,12 @@
       106.64
     ],
     "elbow_L": [
-      -4.0,
+      -4,
       31.25,
       93.62
     ],
     "elbow_R": [
-      -4.0,
+      -4,
       -31.25,
       93.62
     ],
@@ -422,12 +422,12 @@
     ],
     "knee_L": [
       1.5,
-      15.5,
+      13.64,
       47.49
     ],
     "knee_R": [
       1.5,
-      -15.5,
+      -13.64,
       47.49
     ]
   },
@@ -438,55 +438,55 @@
       0.87
     ],
     "HeadTorso / UpperArm_L": [
-      14.8,
+      15.15,
       0.87,
-      19.22
+      19.59
     ],
     "UpperArm_L / ForearmHand_L": [
-      14.8,
-      9.19,
-      0.0
+      15,
+      9.29,
+      0
     ],
     "HeadTorso / UpperArm_R": [
-      14.8,
+      15.15,
       0.87,
-      19.22
+      19.59
     ],
     "UpperArm_R / ForearmHand_R": [
-      14.8,
-      9.19,
-      0.0
+      15,
+      9.29,
+      0
     ],
     "Pelvis / Thigh_L": [
-      15.5,
-      2.67,
-      10.17
+      15.6,
+      2.42,
+      10.79
     ],
     "Thigh_L / ShinFoot_L": [
-      18.0,
-      11.34,
-      5.91
+      17.8,
+      11.59,
+      6.16
     ],
     "Pelvis / Thigh_R": [
-      15.5,
-      2.67,
-      10.17
+      15.6,
+      2.42,
+      10.79
     ],
     "Thigh_R / ShinFoot_R": [
-      18.0,
-      11.34,
-      5.91
+      17.8,
+      11.59,
+      6.16
     ]
   },
   "joint_penetration_cm": {
     "Pelvis / HeadTorso": 0.73,
     "HeadTorso / UpperArm_L": 0.87,
-    "UpperArm_L / ForearmHand_L": 0.0,
+    "UpperArm_L / ForearmHand_L": 0,
     "HeadTorso / UpperArm_R": 0.87,
-    "UpperArm_R / ForearmHand_R": 0.0,
-    "Pelvis / Thigh_L": 0.85,
+    "UpperArm_R / ForearmHand_R": 0,
+    "Pelvis / Thigh_L": 0.93,
     "Thigh_L / ShinFoot_L": 0.5,
-    "Pelvis / Thigh_R": 0.85,
+    "Pelvis / Thigh_R": 0.93,
     "Thigh_R / ShinFoot_R": 0.5
   },
   "part_reports": {
@@ -736,5 +736,52 @@
       ],
       "threequarter": "Art/Meshes/chaser/render_threequarter.png"
     }
+  },
+  "assembly": {
+    "task": "task-151-12-chaser-assembly",
+    "method": "assemble.py from the six part modules; orthographic renders at the crop scale, silhouette Hausdorff distance after best horizontal alignment (as step 03)",
+    "contract_fix": "KNEE y 0.125 H -> 0.11 H (15.5 -> 13.64 cm) in common.py; ShinFoot shifted inward by 1.86 cm at the knee, tapering linearly to 0 at z 22 cm (ankle/foot keep the sheet position, outer foot edge unchanged); Part got dy/dz arguments for this shift; Thigh unchanged",
+    "silhouette_diff_pct_H": {
+      "front": 3.09,
+      "side": 2.72,
+      "back": 3.21,
+      "limit": 5,
+      "backup_monolithic": {
+        "front": 3.09,
+        "side": 2.72,
+        "back": 3.35
+      }
+    },
+    "tris_per_part": {
+      "Pelvis": 88,
+      "HeadTorso": 176,
+      "UpperArm_L": 120,
+      "ForearmHand_L": 396,
+      "UpperArm_R": 120,
+      "ForearmHand_R": 396,
+      "Thigh_L": 192,
+      "ShinFoot_L": 320,
+      "Thigh_R": 192,
+      "ShinFoot_R": 320
+    },
+    "total_tris": 2320,
+    "joint_penetration_max_cm": 0.93,
+    "joint_gap": "none seen in the closeups; knee, hip, shoulder, elbow, ankle overlap by 0 to 0.93 cm",
+    "renders": [
+      "render_front.png",
+      "render_side.png",
+      "render_back.png",
+      "render_threequarter.png",
+      "compare_front.png",
+      "compare_side.png",
+      "compare_back.png"
+    ],
+    "still_differs": [
+      "hands: one finger block merged into the palm, the sheet shows three separate chunky fingers",
+      "HeadTorso back plates read weakly (a bulge behind the head on the three-quarter view, little in the back view)",
+      "ShinFoot foot has fewer facet steps than the sheet; a small gap under the foot arch between the foot upper and the toe block in side view",
+      "the shin leans inward from the ankle to the knee (about 1.9 cm over 22 cm) to meet the thigh knee axis at 0.11 H",
+      "back view: arms hang about 1 to 2 percent of H narrower than the sheet at the hands (the sheet is asymmetric)"
+    ]
   }
 }

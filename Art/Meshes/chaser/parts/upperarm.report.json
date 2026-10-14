@@ -7,19 +7,19 @@
     "UpperArm_L": {
       "tris": 120,
       "bounds_min_cm": [
-        -8.15,
-        -8.93,
-        -10.91
+        -10.65,
+        14.01,
+        95.73
       ],
       "bounds_max_cm": [
-        7.0,
-        12.39,
-        8.68
+        4.5,
+        35.33,
+        115.32
       ],
       "pivot_world_cm": [
-        0.0,
-        0.0,
-        0.0
+        -2.5,
+        22.94,
+        106.64
       ],
       "parent": "HeadTorso",
       "uv_layers": [
@@ -37,15 +37,15 @@
         "pass": true
       },
       "attachment_section": {
-        "plane_z_cm": 0.0,
+        "plane_z_cm": 106.64,
         "slab_cm": 1.0,
         "min_xy_cm": [
-          -8.15,
-          -3.6
+          -10.65,
+          19.34
         ],
         "max_xy_cm": [
-          6.75,
-          10.8
+          4.25,
+          33.74
         ]
       },
       "material_slots": [
@@ -58,19 +58,19 @@
     "UpperArm_R": {
       "tris": 120,
       "bounds_min_cm": [
-        -8.15,
-        -12.39,
-        -10.91
+        -10.65,
+        -35.33,
+        95.73
       ],
       "bounds_max_cm": [
-        7.0,
-        8.93,
-        8.68
+        4.5,
+        -14.01,
+        115.32
       ],
       "pivot_world_cm": [
-        0.0,
-        0.0,
-        0.0
+        -2.5,
+        -22.94,
+        106.64
       ],
       "parent": "HeadTorso",
       "uv_layers": [
@@ -88,15 +88,15 @@
         "pass": true
       },
       "attachment_section": {
-        "plane_z_cm": 0.0,
+        "plane_z_cm": 106.64,
         "slab_cm": 1.0,
         "min_xy_cm": [
-          -8.15,
-          -10.8
+          -10.65,
+          -33.74
         ],
         "max_xy_cm": [
-          6.75,
-          3.6
+          4.25,
+          -19.34
         ]
       },
       "material_slots": [

@@ -7,8 +7,8 @@ PREVIEW = {"close": ("front", (3.0, 17.0, 24.0), 44.0)}
 
 def build(side="L"):
     sy = C.SIGN[side]
-    sf = C.Part("ShinFoot_" + side, C.pivot_knee(side), parent="Thigh_" + side, sy=sy)
-    FY = h(0.1455)
+    sf = C.Part("ShinFoot_" + side, C.pivot_knee(side), parent="Thigh_" + side, sy=sy, dy=(C.KNEE_Y_OLD - C.KNEE[1]) * C.H, dz=(22.0, 44.0))
+    FY = h(0.1455)      # drawn around the old knee axis; Part dy shifts everything inward
     # one continuous tapering shin guard from the knee to the ankle
     sf.secs([(44.1, -0.2, 16.4, 8.0, 5.6), (40.2, -0.2, 16.6, 10.2, 9.6), (37.4, 0.0, 16.7, 10.6, 12.3), (30.0, -0.7, 17.2, 9.0, 8.8), (23.4, -0.8, 17.6, 7.0, 5.4)], "yellow_body", ch=0.3)
     sf.prism((7.0, h(0.130), h(0.300)), (2.6, h(0.142), 12.5), h(0.05), h(0.05), h(0.045), h(0.045), "gunmetal")     # dark leg bar in front of the shin

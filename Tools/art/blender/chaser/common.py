@@ -28,7 +28,8 @@ PIV_WAIST = (1.5, 0.0, h(0.655))
 SH = (-2.5, 0.185, 0.86)       # shoulder, left side
 EL = (-4.0, 0.252, 0.755)      # elbow
 HIP = (4.5, 0.105, 0.585)
-KNEE = (1.5, 0.125, 0.383)
+KNEE = (1.5, 0.11, 0.383)          # knee axis at 0.11 H (13.64 cm), was 0.125 H (task-151-12: aligned with the thigh knee guard)
+KNEE_Y_OLD = 0.125                 # ShinFoot geometry was drawn around this lateral axis; ShinFoot shifts inward by (KNEE_Y_OLD - KNEE[1]) * H
 SIGN = {"L": 1.0, "R": -1.0, None: 1.0}
 # hierarchy by base name; the parent of a sided part is the part of the same side
 PARENT = {"Pelvis": None, "HeadTorso": "Pelvis", "UpperArm": "HeadTorso", "ForearmHand": "UpperArm", "Thigh": "Pelvis", "ShinFoot": "Thigh"}
@@ -122,13 +123,17 @@ def setup(outdir):
 
 # ---------------------------------------------------------------- part builder
 class Part:
-    def __init__(s, name, pivot, parent=None, sy=1.0):
-        s.name, s.pivot, s.parent, s.sy = name, Vector(pivot), parent, sy
+    def __init__(s, name, pivot, parent=None, sy=1.0, dy=0.0, dz=(0.0, 1.0)):
+        s.name, s.pivot, s.parent, s.sy, s.dy, s.dz = name, Vector(pivot), parent, sy, dy, dz     # dy: lateral shift inward (cm), full above z=dz[1], zero below z=dz[0], linear between
         s.bm = bmesh.new()
         s.post = None        # optional hook post(bm, uv0) run in finish(); returns the decal face or None
 
+    def shift(s, z):
+        z0, z1 = s.dz
+        return s.dy * min(1.0, max(0.0, (z - z0) / (z1 - z0)))
+
     def P(s, x, y, z):                      # y is the lateral distance from the centre line, mirrored by sy
-        return s.bm.verts.new((x, y * s.sy, z))
+        return s.bm.verts.new((x, (y - s.shift(z)) * s.sy, z))
 
     def quad(s, vs, mat):
         f = s.bm.faces.new(vs)
@@ -151,8 +156,8 @@ class Part:
 
     def prism(s, p0, p1, w0, d0, w1, d1, mat, ch=0.28, bulge=0.07, at=0.4, simple=False):
         """Faceted box between two points (x, y, z with y lateral): octagonal sections w x d (full sizes, cm) at p0, near p0 (bulge), p1."""
-        a0 = Vector((p0[0], p0[1] * s.sy, p0[2]))
-        a1 = Vector((p1[0], p1[1] * s.sy, p1[2]))
+        a0 = Vector((p0[0], (p0[1] - s.shift(p0[2])) * s.sy, p0[2]))
+        a1 = Vector((p1[0], (p1[1] - s.shift(p1[2])) * s.sy, p1[2]))
         ax = (a1 - a0).normalized()
         lat = (Vector((0, 1, 0)) - ax * ax.y).normalized()
         dep = ax.cross(lat).normalized()

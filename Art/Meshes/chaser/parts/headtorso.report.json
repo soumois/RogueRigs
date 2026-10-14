@@ -7,19 +7,19 @@
     "HeadTorso": {
       "tris": 176,
       "bounds_min_cm": [
-        -14.7,
+        -13.2,
         -14.88,
-        0.0
+        81.22
       ],
       "bounds_max_cm": [
-        30.7,
+        32.2,
         14.88,
-        42.78
+        124.0
       ],
       "pivot_world_cm": [
+        1.5,
         0.0,
-        0.0,
-        0.0
+        81.22
       ],
       "parent": "Pelvis",
       "uv_layers": [
@@ -37,14 +37,14 @@
         "pass": true
       },
       "attachment_section": {
-        "plane_z_cm": 0.0,
+        "plane_z_cm": 81.22,
         "slab_cm": 1.0,
         "min_xy_cm": [
-          -9.9,
+          -8.4,
           -10.68
         ],
         "max_xy_cm": [
-          -9.9,
+          -8.4,
           10.68
         ]
       },

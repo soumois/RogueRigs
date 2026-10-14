@@ -28,6 +28,8 @@ The chaser ([[enemy-chaser]]) is ten rigid objects built by six part modules, so
 | Thigh_L/R | hip | Pelvis | 132 each |
 | ShinFoot_L/R | knee | Thigh | 300 each |
 
+Knee contract (task-151-12): the knee axis is at y 0.11 H (13.64 cm), matching the thigh knee guard; ShinFoot is built with `Part(dy, dz)` which shifts it inward by 1.86 cm at the knee, tapering to 0 at z 22 cm so the foot keeps its place.
+
 Joint positions, slot order and parents are in `common.py` and in the `joints_cm`, `hierarchy` and `parts` entries of the whole report. The attachment section is the vertex slab within 1 cm of the pivot height, written in each part report. Total budget 3000 tris; units cm, forward +X, left +Y, flat shading, no rig.
 
 ## Part preview
