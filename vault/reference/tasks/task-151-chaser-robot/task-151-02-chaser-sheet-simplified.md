@@ -19,7 +19,7 @@ status: done
 - tokens: input 14, cache write 22012, cache read 91582, output 660
 - runs: 1
 - milestone: M2
-- result: x
+- result: Sheet variant 2 (three views, simplified chunky facets) validated by the owner with the limbs kept as drawn; copied to vault/assets with front, side and back crops; 12 credits.
 
 ## Relations
 - [[task-151-chaser-robot]] — parent global task.
