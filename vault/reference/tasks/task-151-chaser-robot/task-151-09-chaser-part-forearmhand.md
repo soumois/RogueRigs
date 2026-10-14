@@ -3,7 +3,7 @@ id: task-151-09-chaser-part-forearmhand
 description: "Rebuild the chaser ForearmHand alone against its close-up crops of the validated sheet."
 parent: task-151-chaser-robot
 kind: task
-status: in-progress
+status: done
 ---
 # Chaser part: ForearmHand
 
@@ -28,11 +28,11 @@ status: in-progress
   - C5 Budget: at most 450 triangles (396 today per arm), flat shading; mirrored for the other side.
 - editor_state: closed
 - token_ceiling: open
-- model: open
-- tokens: open
-- runs: open
+- model: sonnet
+- tokens: input 20, cache write 25959, cache read 191594, output 2403
+- runs: 1
 - milestone: M2
-- result: open
+- result: ForearmHand: wider palm, thicker shorter fingers, shorter thumb, 396 tris per arm, passes (2 returns).
 
 ## Relations
 - [[task-151-chaser-robot]] — parent global task.
