@@ -13,7 +13,7 @@ status: in-progress
 - gdd_check: done by the Orchestrator when the task is planned (2026-10-14).
 - confirmed_by_owner: yes (2026-10-14)
 - milestone: M2
-- next_step: none (clips, bake and integration subtasks to create after the owner validates the model)
+- next_step: task-151-13-chaser-torso-pass
 - planned (subtasks are created when the previous step is validated): 02 the owner picks a sheet, crops of the four views go to vault/assets; 03 the 3d agent models the 10 parts on the Blender route with the fidelity loop against the four views; 04 the 3d agent authors the run and attack clips and bakes them into a texture (rigid parts: one transform per part and per frame) with the part meshes for the death effect; 05 the bp and cpp agents build the material and the chaser Blueprint (clip and phase as Custom Primitive Data), keeping the shield variant and the death effect; 06 a cost check with rr.Stress.Spawn against the capsule baseline; step 06 runs after the integration (the owner wants the cost of the most numerous robot)
 - result: open
 
@@ -30,6 +30,7 @@ status: in-progress
 10. task-151-10-chaser-part-thigh — 3d (Thigh)
 11. task-151-11-chaser-part-shinfoot — 3d (ShinFoot)
 12. task-151-12-chaser-assembly — 3d (assembly and validation)
+13. task-151-13-chaser-torso-pass — 3d (torso pass with an independent critic)
 
 ## Relations
 - [[tasks-to-do-index]] — parent index.
@@ -45,3 +46,4 @@ status: in-progress
 - [[task-151-10-chaser-part-thigh]] — step 10
 - [[task-151-11-chaser-part-shinfoot]] — step 11
 - [[task-151-12-chaser-assembly]] — step 12
+- [[task-151-13-chaser-torso-pass]] — step 13, 3d and an independent critic.
