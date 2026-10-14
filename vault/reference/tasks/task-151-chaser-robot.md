@@ -13,17 +13,19 @@ status: in-progress
 - gdd_check: done by the Orchestrator when the task is planned (2026-10-14).
 - confirmed_by_owner: yes (2026-10-14)
 - milestone: M2
-- next_step: task-151-03-chaser-model
+- next_step: task-151-04-chaser-refine
 - planned (subtasks are created when the previous step is validated): 02 the owner picks a sheet, crops of the four views go to vault/assets; 03 the 3d agent models the 10 parts on the Blender route with the fidelity loop against the four views; 04 the 3d agent authors the run and attack clips and bakes them into a texture (rigid parts: one transform per part and per frame) with the part meshes for the death effect; 05 the bp and cpp agents build the material and the chaser Blueprint (clip and phase as Custom Primitive Data), keeping the shield variant and the death effect; 06 a cost check with rr.Stress.Spawn against the capsule baseline; step 06 runs after the integration (the owner wants the cost of the most numerous robot)
 - result: open
 
 ## Subtasks
 1. task-151-01-chaser-robot — art (turnaround sheets, done)
 2. task-151-02-chaser-sheet-simplified — art (simplified sheet, done; variant 2 validated)
-3. task-151-03-chaser-model — 3d (the 10 parts in Blender)
+3. task-151-03-chaser-model — 3d (the 10 parts in Blender, done: 1632 tris)
+4. task-151-04-chaser-refine — 3d (refinement pass: calves, hands, block, arms, legs, feet, logo)
 
 ## Relations
 - [[tasks-to-do-index]] — parent index.
 - [[task-151-01-chaser-robot]] — step 1, art.
 - [[task-151-02-chaser-sheet-simplified]] — step 2, art.
 - [[task-151-03-chaser-model]] — step 3, 3d.
+- [[task-151-04-chaser-refine]] — step 4, 3d.

@@ -3,7 +3,7 @@ id: task-151-03-chaser-model
 description: "Model the chaser part by part in Blender from the validated sheet, judged by the fidelity loop."
 parent: task-151-chaser-robot
 kind: task
-status: in-progress
+status: done
 ---
 # Chaser: model the 10 parts
 
@@ -35,11 +35,11 @@ status: in-progress
 - rules: flat shading; UV0 for the logo decal only; a LightMap UV1 without overlap for every part as in blender-asset-route; no Meshy, no Unreal, no screenshot tool.
 - editor_state: closed
 - token_ceiling: open
-- model: open
-- tokens: open
-- runs: open
+- model: sonnet
+- tokens: input 74, cache write 184224, cache read 4233621, output 26025
+- runs: 1
 - milestone: M2
-- result: open
+- result: Ten parts modelled in Blender (1632 tris, 124 cm, silhouette within 3.7 percent of the sheet, 4 returns); a coarser version of the sheet: refinement pass requested by the owner (calves and hands to fix).
 
 ## Relations
 - [[task-151-chaser-robot]] — parent global task.

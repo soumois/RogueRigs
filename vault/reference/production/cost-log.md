@@ -238,6 +238,7 @@ kind: note
 | [[task-150-01-xp-nut-disc-lighter-2]] | sonnet | 1 | 0k | 18k | 124k | 1k |
 | [[task-151-01-chaser-robot]] | sonnet | 1 | 0k | 30k | 145k | 1k |
 | [[task-151-02-chaser-sheet-simplified]] | sonnet | 1 | 0k | 22k | 92k | 1k |
+| [[task-151-03-chaser-model]] | sonnet | 1 | 0k | 184k | 4234k | 26k |
 
 ## Totals
 | Scope | Input | Cache write | Cache read | Output |
