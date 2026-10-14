@@ -3,7 +3,7 @@ id: task-147-01-xp-disc-billboard
 description: "Make the glow disc always face the camera and stay centred on the pickup, in the material."
 parent: task-147-xp-disc-billboard
 kind: task
-status: todo
+status: in-progress
 ---
 # XP glow disc: camera-facing and centred
 

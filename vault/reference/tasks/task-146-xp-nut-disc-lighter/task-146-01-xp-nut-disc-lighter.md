@@ -3,7 +3,7 @@ id: task-146-01-xp-nut-disc-lighter
 description: "Lower the glow disc intensity of the XP nut."
 parent: task-146-xp-nut-disc-lighter
 kind: task
-status: in-progress
+status: done
 ---
 # XP nut disc: lighter
 
@@ -15,11 +15,11 @@ status: in-progress
 - done_when: Intensity reads 0.2 on the nut instance and 0.5 on the chip instance; asset saved and modified in git; doc updated
 - editor_state: open
 - token_ceiling: open
-- model: open
-- tokens: open
-- runs: open
+- model: sonnet
+- tokens: input 24, cache write 21800, cache read 174850, output 183
+- runs: 2
 - milestone: M2
-- result: open
+- result: MI_XPGlowDisc_Nut Intensity 0.2 (was 0.5), chip instance unchanged at 0.5; first attempt failed because the editor was closed.
 
 ## Relations
 - [[task-146-xp-nut-disc-lighter]] — parent global task.

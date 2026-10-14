@@ -155,3 +155,4 @@ Archive: it exceeds the index size limits of [[_authoring]] on purpose (owner, 2
 - [[task-143-xp-pickups-distance-field]] — Turn on the mesh distance field of the XP nut and chip so Lumen can see them and test whether they light the floor. Status done.
 - [[task-144-xp-chip-glow-12-6]] — Set the big XP chip core glow to 12 and 6, a starting point to tune by eye. Status done.
 - [[task-145-xp-glow-disc]] — Add a flat glowing disc under the XP nut and chip: geometry in the FBX, additive material, reimport and Blueprint slots. Status done.
+- [[task-146-xp-nut-disc-lighter]] — Lower the glow disc intensity of the XP nut. Status done.
