@@ -17,9 +17,9 @@
         9.55
       ],
       "pivot_world_cm": [
-        0.0,
-        0.0,
-        0.0
+        0,
+        0,
+        0
       ],
       "parent": null,
       "uv_layers": [
@@ -31,14 +31,14 @@
         "overlapping_face_pairs": 0,
         "bounds_min": 0.01172,
         "bounds_max": 0.98828,
-        "min_gap_px_at_256": 3.0,
-        "min_border_px_at_256": 3.0,
+        "min_gap_px_at_256": 3,
+        "min_border_px_at_256": 3,
         "required_margin_px": 2,
         "pass": true
       },
       "attachment_section": {
-        "plane_z_cm": 0.0,
-        "slab_cm": 1.0,
+        "plane_z_cm": 0,
+        "slab_cm": 1,
         "min_xy_cm": [
           -9.3,
           -6.5
@@ -56,5 +56,30 @@
       ]
     }
   },
-  "tris": 88
+  "tris": 88,
+  "fidelity": {
+    "returns_used": 0,
+    "criteria": {
+      "C1": {
+        "verdict": "pass",
+        "evidence": "front render: block top 16.7 cm (13.5% H) tapering to ~10.5 cm (8.5%), 9.5 cm tall (7.7%), chamfered yellow rim 3.2% H visible below, wider than block bottom as in crop"
+      },
+      "C2": {
+        "verdict": "pass",
+        "evidence": "side render: depth ~21 cm gunmetal block with slightly wider yellow rim projecting forward/back, as the crop; crop is partly hidden by thigh and forearm so lean cannot be measured beyond a few degrees"
+      },
+      "C3": {
+        "verdict": "pass",
+        "evidence": "pelvis y bounds +-8.37 cm and z -3.35..9.55 overlap thigh L bounds y 5.7..21.08, z 38..79 in world (hip joint at y +-13.02): no gap, attachment section unchanged"
+      },
+      "C4": {
+        "verdict": "pass",
+        "evidence": "88 tris, flat shading"
+      }
+    },
+    "still_differs": [
+      "crop pelvis has slightly rounded/bevelled corners and a small underside crotch plate; the module keeps hard-edged prism",
+      "side lean not measurable in crop (occluded)"
+    ]
+  }
 }
