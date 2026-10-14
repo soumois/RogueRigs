@@ -1,13 +1,13 @@
 ---
 id: task-148-01-xp-disc-fade
-description: "Fade the glow disc with the pickup phase: off in the air, on in 0.2 s at landing, off in 0.2 s when magnetised."
+description: "Fade the glow disc with the pickup phase: off in the air, on in 0.2 s at landing, off when magnetised."
 parent: task-148-xp-disc-fade
 kind: task
 status: todo
 ---
 # XP glow disc: fade with the pickup phase
 
-- goal: Fade the glow disc with the pickup phase: off in the air, on in 0.2 s at landing, off in 0.2 s when magnetised.
+- goal: Fade the glow disc with the pickup phase: off in the air, on in 0.2 s at landing, off when magnetised.
 - agent: cpp
 - depends_on: none
 - inputs: sys-pickups (vault/reference/tech/systems/world/sys-pickups.md), sys-pickups-lifecycle (vault/reference/tech/systems/world/sys-pickups/sys-pickups-lifecycle.md), sys-pickups-xp (vault/reference/tech/systems/world/sys-pickups/sys-pickups-xp.md), bp-pickup-xp (vault/reference/tech/blueprints/fx/bp-pickup-xp.md), build-toolchain (vault/reference/tech/pipelines/build-toolchain.md), editor-workflow (vault/reference/tech/conventions/editor-workflow.md)
