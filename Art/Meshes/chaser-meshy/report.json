@@ -1,0 +1,483 @@
+{
+ "inputs": {
+  "fbx": "chaser_meshy_opt.fbx",
+  "texture": "chaser_meshy_opt_basecolor.png",
+  "logo": "T_ChaserLogo.png"
+ },
+ "outputs": {
+  "texture": "chaser_meshy_fixed_basecolor.png",
+  "fbx": "chaser_meshy_fixed.fbx",
+  "logo_source": "logo_source_1024.png",
+  "renders_dir": "renders"
+ },
+ "geometry_check": {
+  "vertices_in": 1534,
+  "vertices_out": 1534,
+  "faces_in": 3115,
+  "faces_out": 3115,
+  "max_abs_vertex_diff": 0.0,
+  "vertex_index_order_equal": true,
+  "max_abs_uv_diff": 0.0,
+  "dimensions_in": null,
+  "embedded_texture_name": "chaser_meshy_fixed_basecolor.png",
+  "embedded_texture_size": [
+   2048,
+   2048
+  ]
+ },
+ "export_settings": {
+  "use_selection": true,
+  "object_types": [
+   "MESH"
+  ],
+  "apply_scale_options": "FBX_SCALE_NONE",
+  "global_scale": 1.0,
+  "axis_forward": "-Z",
+  "axis_up": "Y",
+  "mesh_smooth_type": "OFF",
+  "add_leaf_bones": false,
+  "path_mode": "COPY",
+  "embed_textures": true,
+  "blender": "5.2.2 LTS",
+  "scene_unit_scale_length": 1.0,
+  "fbx_unit_scale_factor_in_file": 1.0,
+  "note": "coordinates identical to the input FBX (UnitScaleFactor 1.0 = cm as written by Meshy: the mesh is 1.9 units tall, so Unreal imports it 1.9 cm tall unless the import uniform scale is 100 or the mesh is scaled to 190 cm); the Blender-side axes are Z up, front toward -Y"
+ },
+ "fix1_joints": {
+  "rule": "zone x 0.185..0.335 (each side), y -0.05..0.27, z 0.5..0.9 m; dark face = more than 90 percent dark texels (neighbour test), pure dark = more than 99.5 percent; selected = faces that are not pure dark and are mixed or yellow with >=2 dark neighbours, or mixed with >=1 dark neighbour, then yellow faces with >=2 neighbours in dark-or-selected (8 passes max)",
+  "dark_rgb": [
+   53,
+   54,
+   54
+  ],
+  "dark_sample_faces": 163,
+  "dark_sample_texels": 76775,
+  "faces_selected": {
+   "L(-x)": 56,
+   "R(+x)": 51
+  },
+  "face_ids": {
+   "L(-x)": [
+    359,
+    360,
+    365,
+    370,
+    382,
+    383,
+    386,
+    389,
+    400,
+    406,
+    411,
+    412,
+    416,
+    443,
+    455,
+    460,
+    463,
+    464,
+    470,
+    473,
+    475,
+    476,
+    477,
+    479,
+    480,
+    481,
+    482,
+    484,
+    485,
+    486,
+    495,
+    523,
+    589,
+    600,
+    614,
+    637,
+    686,
+    698,
+    706,
+    738,
+    740,
+    749,
+    753,
+    755,
+    759,
+    768,
+    773,
+    774,
+    775,
+    777,
+    780,
+    789,
+    810,
+    815,
+    820,
+    826
+   ],
+   "R(+x)": [
+    2256,
+    2258,
+    2261,
+    2280,
+    2287,
+    2293,
+    2305,
+    2309,
+    2317,
+    2318,
+    2321,
+    2322,
+    2323,
+    2327,
+    2332,
+    2333,
+    2337,
+    2343,
+    2378,
+    2397,
+    2407,
+    2422,
+    2424,
+    2441,
+    2446,
+    2453,
+    2480,
+    2500,
+    2505,
+    2550,
+    2573,
+    2589,
+    2600,
+    2638,
+    2642,
+    2653,
+    2663,
+    2676,
+    2677,
+    2689,
+    2691,
+    2711,
+    2716,
+    2727,
+    2735,
+    2743,
+    2748,
+    2749,
+    2750,
+    2753,
+    2757
+   ]
+  },
+  "texels_in_selected_faces": 49998,
+  "texels_added_by_2px_dilation": 18318,
+  "texels_painted_total": 68316,
+  "texels_shared_with_non_selected_faces": 0,
+  "zone_faces_not_selected": {
+   "L(-x)": {
+    "count": 29,
+    "mixed_not_selected": [
+     419,
+     776,
+     784,
+     788,
+     800,
+     831
+    ],
+    "yellow_not_selected": 24
+   },
+   "R(+x)": {
+    "count": 30,
+    "mixed_not_selected": [
+     2276,
+     2299,
+     2304,
+     2310,
+     2682,
+     2740
+    ],
+    "yellow_not_selected": 28
+   }
+  }
+ },
+ "fix2_logo": {
+  "plate_faces": [
+   1462,
+   1467,
+   1528,
+   1575,
+   1580
+  ],
+  "plate_islands_uv_bbox_px": [
+   [
+    906,
+    930,
+    951,
+    960
+   ],
+   [
+    868,
+    930,
+    908,
+    960
+   ],
+   [
+    906,
+    905,
+    951,
+    953
+   ],
+   [
+    342,
+    1441,
+    382,
+    1478
+   ],
+   [
+    342,
+    1408,
+    377,
+    1444
+   ]
+  ],
+  "plate_normal": [
+   0.0178,
+   -0.6534,
+   0.7568
+  ],
+  "plate_up_axis_logo": [
+   0.0154,
+   0.7571,
+   0.6532
+  ],
+  "plate_right_axis_logo": [
+   0.9997,
+   0.0,
+   -0.0236
+  ],
+  "orientation": "logo up = +Y (robot back) projected on the plate plane, logo right = +X; read upright in a top-down view where the robot front (-Y) points to the bottom edge of the view",
+  "plate_pentagon_m": {
+   "width_a": 0.1226,
+   "height_b": 0.1313,
+   "inscribed_circle_radius": 0.0503,
+   "n_boundary_edges": 5
+  },
+  "texel_density_texels_per_m": 591.8,
+  "plate_size_px": {
+   "width": 72.6,
+   "height": 77.7,
+   "inscribed_diameter": 59.5
+  },
+  "emblem_square_px": 59.5,
+  "rock_diameter_px": 54.7,
+  "emblem_downscale": {
+   "source": 1024,
+   "area_filter_to": 119,
+   "then": "4x4 bilinear supersampling per texel"
+  },
+  "under_96px_across": true,
+  "emblem": {
+   "src_rock_bbox_px": [
+    21,
+    42,
+    236,
+    209
+   ],
+   "src_rock_radius_px": 112.0,
+   "letters_components": 7,
+   "letters_areas_px": [
+    1269,
+    944,
+    246,
+    2892,
+    2424,
+    518,
+    835
+   ],
+   "dropped_components": 6,
+   "stroke_px_1024": 51.2
+  },
+  "colours": {
+   "yellow": [
+    253,
+    200,
+    41
+   ],
+   "black": [
+    10,
+    10,
+    10
+   ]
+  },
+  "texels_in_plate_faces": 3525,
+  "texels_added_by_2px_dilation": 542,
+  "texels_shared_with_other_faces": 0,
+  "texels_shared_with_fix1": 0
+ },
+ "texels": {
+  "total": 4194304,
+  "changed_total": 72129,
+  "changed_inside_fix1": 68062,
+  "changed_inside_fix2": 4067,
+  "changed_outside_the_two_fixes": 0,
+  "allowed_mask_texels": 72383
+ },
+ "render_pixel_differences_before_after": {
+  "jointL_front": {
+   "differing_pixels": 40885,
+   "bbox_xyxy": [
+    307,
+    186,
+    895,
+    899
+   ],
+   "size_px": 900
+  },
+  "jointL_threequarter": {
+   "differing_pixels": 58127,
+   "bbox_xyxy": [
+    102,
+    61,
+    874,
+    899
+   ],
+   "size_px": 900
+  },
+  "jointL_back": {
+   "differing_pixels": 43437,
+   "bbox_xyxy": [
+    204,
+    2,
+    730,
+    826
+   ],
+   "size_px": 900
+  },
+  "jointR_front": {
+   "differing_pixels": 39511,
+   "bbox_xyxy": [
+    179,
+    0,
+    623,
+    874
+   ],
+   "size_px": 900
+  },
+  "jointR_threequarter": {
+   "differing_pixels": 78687,
+   "bbox_xyxy": [
+    83,
+    0,
+    555,
+    899
+   ],
+   "size_px": 900
+  },
+  "jointR_back": {
+   "differing_pixels": 46426,
+   "bbox_xyxy": [
+    19,
+    41,
+    699,
+    830
+   ],
+   "size_px": 900
+  },
+  "logo_topdown": {
+   "differing_pixels": 193452,
+   "bbox_xyxy": [
+    136,
+    156,
+    760,
+    664
+   ],
+   "size_px": 900
+  },
+  "logo_threequarter": {
+   "differing_pixels": 213555,
+   "bbox_xyxy": [
+    0,
+    105,
+    742,
+    899
+   ],
+   "size_px": 900
+  },
+  "logo_onplate": {
+   "differing_pixels": 256624,
+   "bbox_xyxy": [
+    136,
+    53,
+    760,
+    723
+   ],
+   "size_px": 900
+  },
+  "robot_front": {
+   "differing_pixels": 4701,
+   "bbox_xyxy": [
+    273,
+    118,
+    717,
+    982
+   ],
+   "size_px": 1100
+  },
+  "robot_side": {
+   "differing_pixels": 2318,
+   "bbox_xyxy": [
+    453,
+    439,
+    674,
+    1016
+   ],
+   "size_px": 1100
+  },
+  "robot_back": {
+   "differing_pixels": 3542,
+   "bbox_xyxy": [
+    322,
+    216,
+    808,
+    1023
+   ],
+   "size_px": 1100
+  },
+  "robot_threequarter": {
+   "differing_pixels": 4808,
+   "bbox_xyxy": [
+    325,
+    176,
+    677,
+    976
+   ],
+   "size_px": 1100
+  }
+ },
+ "render_control_exported_fbx_with_original_texture_vs_input": {
+  "robot_front": {
+   "differing_pixels_gt2": 0,
+   "max_diff_8bit": 1.0
+  },
+  "jointL_front": {
+   "differing_pixels_gt2": 0,
+   "max_diff_8bit": 1.0
+  },
+  "logo_topdown": {
+   "differing_pixels_gt2": 0,
+   "max_diff_8bit": 1.0
+  }
+ },
+ "timings_s": {
+  "load": 1.37,
+  "raster": 0.64,
+  "fix1_select": 0.09,
+  "emblem": 3.14,
+  "fix2_logo": 1.86,
+  "write_png": 2.86,
+  "export": 1.24,
+  "renders": 16.95,
+  "compare": 16.16,
+  "total": 44.34
+ }
+}
