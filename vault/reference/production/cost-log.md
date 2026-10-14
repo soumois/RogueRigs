@@ -265,6 +265,7 @@ kind: note
 | [[task-159-01-chaser-anim-part-index]] | sonnet | 1 | 0k | 40k | 194k | 2k |
 | [[task-159-02-chaser-part-index-unreal]] | sonnet | 1 | 0k | 78k | 1593k | 2k |
 | [[task-160-01-chaser-no-shadow]] | sonnet | 3 | 0k | 128k | 1774k | 1k |
+| [[task-161-01-chaser-cut-pose-check]] | sonnet | 1 | 0k | 102k | 713k | 15k |
 
 ## Totals
 | Scope | Input | Cache write | Cache read | Output |

@@ -3,7 +3,7 @@ id: task-161-01-chaser-cut-pose-check
 description: "Check the part cut of the chaser and render four fixed run poses from the baked animation data."
 parent: task-161-chaser-cut-pose-check
 kind: task
-status: in-progress
+status: done
 ---
 # Chaser: cut check and fixed poses
 
@@ -15,11 +15,11 @@ status: in-progress
 - done_when: The script runs headless; the report states the anomalies with numbers and no verdict; the pose images exist (front and side, 4 poses each) from the EXR path and from the keyed path; the Orchestrator and the owner judge the images; nothing imported in Unreal; the script and the report committed by name, images untracked
 - editor_state: closed
 - token_ceiling: open
-- model: open
-- tokens: open
-- runs: open
+- model: sonnet
+- tokens: input 20, cache write 101615, cache read 712707, output 15313
+- runs: 1
 - milestone: M2
-- result: open
+- result: cut check: 10 parts single component except ShinFoot_L (18 tri sole fragment); EXR path equals keyed path within 0.034 cm; 4 fixed run poses rendered
 
 ## Relations
 - [[task-161-chaser-cut-pose-check]] — parent global task.
