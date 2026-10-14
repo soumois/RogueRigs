@@ -1,0 +1,611 @@
+{
+  "asset": "SM_Chaser_parts",
+  "route": "blender",
+  "script": "Tools/art/blender/chaser_model.py",
+  "source_image": "vault/assets/chaser-turnaround.png (crops chaser-front, chaser-side, chaser-back)",
+  "height_cm": 124,
+  "height_source": "ARRChaser capsule 24 x 62 half height (Source/RogueRigs/Enemies/RRChaser.cpp InitCapsuleSize(24, 62)) = 124 cm; bp-chaser BodyMesh 124 uu centred on the capsule; model from the sole to the top of the cap",
+  "axes": "forward +X, robot left +Y, up +Z; _L parts at +Y",
+  "units": "cm",
+  "total_tris": 1632,
+  "budget_tris": 3000,
+  "parts": {
+    "Pelvis": {
+      "tris": 56,
+      "bounds_min_cm": [
+        -8.73,
+        -8.37,
+        69.19
+      ],
+      "bounds_max_cm": [
+        13,
+        8.37,
+        82.09
+      ],
+      "pivot_world_cm": [
+        1.5,
+        0,
+        72.54
+      ],
+      "parent": null,
+      "uv_layers": [
+        "UVMap",
+        "LightMap"
+      ],
+      "lightmap": {
+        "faces": 24,
+        "overlapping_face_pairs": 0,
+        "bounds_min": 0.01172,
+        "bounds_max": 0.98828,
+        "min_gap_px_at_256": 3,
+        "min_border_px_at_256": 3,
+        "required_margin_px": 2,
+        "pass": true
+      }
+    },
+    "HeadTorso": {
+      "tris": 80,
+      "bounds_min_cm": [
+        -10.5,
+        -14.88,
+        81.22
+      ],
+      "bounds_max_cm": [
+        32.2,
+        14.88,
+        124
+      ],
+      "pivot_world_cm": [
+        1.5,
+        0,
+        81.22
+      ],
+      "parent": "Pelvis",
+      "uv_layers": [
+        "UVMap",
+        "LightMap"
+      ],
+      "lightmap": {
+        "faces": 36,
+        "overlapping_face_pairs": 0,
+        "bounds_min": 0.01172,
+        "bounds_max": 0.98828,
+        "min_gap_px_at_256": 3,
+        "min_border_px_at_256": 3,
+        "required_margin_px": 2,
+        "pass": true
+      }
+    },
+    "UpperArm_L": {
+      "tris": 56,
+      "bounds_min_cm": [
+        -10.92,
+        14.01,
+        94.27
+      ],
+      "bounds_max_cm": [
+        5.02,
+        35,
+        117.59
+      ],
+      "pivot_world_cm": [
+        -2.5,
+        22.94,
+        106.64
+      ],
+      "parent": "HeadTorso",
+      "uv_layers": [
+        "UVMap",
+        "LightMap"
+      ],
+      "lightmap": {
+        "faces": 24,
+        "overlapping_face_pairs": 0,
+        "bounds_min": 0.01172,
+        "bounds_max": 0.98828,
+        "min_gap_px_at_256": 3,
+        "min_border_px_at_256": 3,
+        "required_margin_px": 2,
+        "pass": true
+      }
+    },
+    "ForearmHand_L": {
+      "tris": 364,
+      "bounds_min_cm": [
+        -11,
+        26.04,
+        54.01
+      ],
+      "bounds_max_cm": [
+        10.32,
+        42.33,
+        95.23
+      ],
+      "pivot_world_cm": [
+        -4,
+        31.25,
+        93.62
+      ],
+      "parent": "UpperArm_L",
+      "uv_layers": [
+        "UVMap",
+        "LightMap"
+      ],
+      "lightmap": {
+        "faces": 150,
+        "overlapping_face_pairs": 0,
+        "bounds_min": 0.01172,
+        "bounds_max": 0.98828,
+        "min_gap_px_at_256": 3,
+        "min_border_px_at_256": 3,
+        "required_margin_px": 2,
+        "pass": true
+      }
+    },
+    "UpperArm_R": {
+      "tris": 56,
+      "bounds_min_cm": [
+        -10.92,
+        -35,
+        94.27
+      ],
+      "bounds_max_cm": [
+        5.02,
+        -14.01,
+        117.59
+      ],
+      "pivot_world_cm": [
+        -2.5,
+        -22.94,
+        106.64
+      ],
+      "parent": "HeadTorso",
+      "uv_layers": [
+        "UVMap",
+        "LightMap"
+      ],
+      "lightmap": {
+        "faces": 24,
+        "overlapping_face_pairs": 0,
+        "bounds_min": 0.01172,
+        "bounds_max": 0.98828,
+        "min_gap_px_at_256": 3,
+        "min_border_px_at_256": 3,
+        "required_margin_px": 2,
+        "pass": true
+      }
+    },
+    "ForearmHand_R": {
+      "tris": 364,
+      "bounds_min_cm": [
+        -11,
+        -42.33,
+        54.01
+      ],
+      "bounds_max_cm": [
+        10.32,
+        -26.04,
+        95.23
+      ],
+      "pivot_world_cm": [
+        -4,
+        -31.25,
+        93.62
+      ],
+      "parent": "UpperArm_R",
+      "uv_layers": [
+        "UVMap",
+        "LightMap"
+      ],
+      "lightmap": {
+        "faces": 150,
+        "overlapping_face_pairs": 0,
+        "bounds_min": 0.01172,
+        "bounds_max": 0.98828,
+        "min_gap_px_at_256": 3,
+        "min_border_px_at_256": 3,
+        "required_margin_px": 2,
+        "pass": true
+      }
+    },
+    "Thigh_L": {
+      "tris": 108,
+      "bounds_min_cm": [
+        -2.5,
+        5.7,
+        37.2
+      ],
+      "bounds_max_cm": [
+        15,
+        21.08,
+        79.36
+      ],
+      "pivot_world_cm": [
+        4.5,
+        13.02,
+        72.54
+      ],
+      "parent": "Pelvis",
+      "uv_layers": [
+        "UVMap",
+        "LightMap"
+      ],
+      "lightmap": {
+        "faces": 46,
+        "overlapping_face_pairs": 0,
+        "bounds_min": 0.01172,
+        "bounds_max": 0.98828,
+        "min_gap_px_at_256": 3,
+        "min_border_px_at_256": 3,
+        "required_margin_px": 2,
+        "pass": true
+      }
+    },
+    "ShinFoot_L": {
+      "tris": 220,
+      "bounds_min_cm": [
+        -8.4,
+        10.48,
+        0
+      ],
+      "bounds_max_cm": [
+        20.5,
+        25.48,
+        45.39
+      ],
+      "pivot_world_cm": [
+        1.5,
+        15.5,
+        47.49
+      ],
+      "parent": "Thigh_L",
+      "uv_layers": [
+        "UVMap",
+        "LightMap"
+      ],
+      "lightmap": {
+        "faces": 97,
+        "overlapping_face_pairs": 0,
+        "bounds_min": 0.01172,
+        "bounds_max": 0.98828,
+        "min_gap_px_at_256": 3,
+        "min_border_px_at_256": 3,
+        "required_margin_px": 2,
+        "pass": true
+      }
+    },
+    "Thigh_R": {
+      "tris": 108,
+      "bounds_min_cm": [
+        -2.5,
+        -21.08,
+        37.2
+      ],
+      "bounds_max_cm": [
+        15,
+        -5.7,
+        79.36
+      ],
+      "pivot_world_cm": [
+        4.5,
+        -13.02,
+        72.54
+      ],
+      "parent": "Pelvis",
+      "uv_layers": [
+        "UVMap",
+        "LightMap"
+      ],
+      "lightmap": {
+        "faces": 46,
+        "overlapping_face_pairs": 0,
+        "bounds_min": 0.01172,
+        "bounds_max": 0.98828,
+        "min_gap_px_at_256": 3,
+        "min_border_px_at_256": 3,
+        "required_margin_px": 2,
+        "pass": true
+      }
+    },
+    "ShinFoot_R": {
+      "tris": 220,
+      "bounds_min_cm": [
+        -8.4,
+        -25.48,
+        0
+      ],
+      "bounds_max_cm": [
+        20.5,
+        -10.48,
+        45.39
+      ],
+      "pivot_world_cm": [
+        1.5,
+        -15.5,
+        47.49
+      ],
+      "parent": "Thigh_R",
+      "uv_layers": [
+        "UVMap",
+        "LightMap"
+      ],
+      "lightmap": {
+        "faces": 97,
+        "overlapping_face_pairs": 0,
+        "bounds_min": 0.01172,
+        "bounds_max": 0.98828,
+        "min_gap_px_at_256": 3,
+        "min_border_px_at_256": 3,
+        "required_margin_px": 2,
+        "pass": true
+      }
+    }
+  },
+  "dimensions_cm": {
+    "x": 43.2,
+    "y": 84.66,
+    "z": 124
+  },
+  "bbox_min": [
+    -11,
+    -42.33,
+    0
+  ],
+  "bbox_max": [
+    32.2,
+    42.33,
+    124
+  ],
+  "hierarchy": {
+    "Pelvis": [
+      "HeadTorso",
+      "Thigh_L",
+      "Thigh_R"
+    ],
+    "HeadTorso": [
+      "UpperArm_L",
+      "UpperArm_R"
+    ],
+    "UpperArm_L": [
+      "ForearmHand_L"
+    ],
+    "UpperArm_R": [
+      "ForearmHand_R"
+    ],
+    "Thigh_L": [
+      "ShinFoot_L"
+    ],
+    "Thigh_R": [
+      "ShinFoot_R"
+    ]
+  },
+  "joints_cm": {
+    "Pelvis_root_hip_height": [
+      1.5,
+      0,
+      72.54
+    ],
+    "waist_HeadTorso": [
+      1.5,
+      0,
+      81.22
+    ],
+    "shoulder_L": [
+      -2.5,
+      22.94,
+      106.64
+    ],
+    "shoulder_R": [
+      -2.5,
+      -22.94,
+      106.64
+    ],
+    "elbow_L": [
+      -4,
+      31.25,
+      93.62
+    ],
+    "elbow_R": [
+      -4,
+      -31.25,
+      93.62
+    ],
+    "hip_L": [
+      4.5,
+      13.02,
+      72.54
+    ],
+    "hip_R": [
+      4.5,
+      -13.02,
+      72.54
+    ],
+    "knee_L": [
+      1.5,
+      15.5,
+      47.49
+    ],
+    "knee_R": [
+      1.5,
+      -15.5,
+      47.49
+    ]
+  },
+  "joint_bbox_overlap_cm_xyz": {
+    "Pelvis / HeadTorso": [
+      21.73,
+      16.74,
+      0.87
+    ],
+    "HeadTorso / UpperArm_L": [
+      15.52,
+      0.87,
+      23.32
+    ],
+    "UpperArm_L / ForearmHand_L": [
+      15.94,
+      8.96,
+      0.96
+    ],
+    "HeadTorso / UpperArm_R": [
+      15.52,
+      0.87,
+      23.32
+    ],
+    "UpperArm_R / ForearmHand_R": [
+      15.94,
+      8.96,
+      0.96
+    ],
+    "Pelvis / Thigh_L": [
+      15.5,
+      2.67,
+      10.17
+    ],
+    "Thigh_L / ShinFoot_L": [
+      17.5,
+      10.6,
+      8.19
+    ],
+    "Pelvis / Thigh_R": [
+      15.5,
+      2.67,
+      10.17
+    ],
+    "Thigh_R / ShinFoot_R": [
+      17.5,
+      10.6,
+      8.19
+    ]
+  },
+  "joint_penetration_cm": {
+    "Pelvis / HeadTorso": 0.78,
+    "HeadTorso / UpperArm_L": 0.87,
+    "UpperArm_L / ForearmHand_L": 0.65,
+    "HeadTorso / UpperArm_R": 0.87,
+    "UpperArm_R / ForearmHand_R": 0.65,
+    "Pelvis / Thigh_L": 0.67,
+    "Thigh_L / ShinFoot_L": 0.66,
+    "Pelvis / Thigh_R": 0.67,
+    "Thigh_R / ShinFoot_R": 0.66
+  },
+  "materials": [
+    "yellow_body",
+    "gunmetal",
+    "eye_red",
+    "logo_plate"
+  ],
+  "slots": [
+    "yellow_body",
+    "gunmetal",
+    "eye_red",
+    "logo_plate"
+  ],
+  "paint_colours_srgb": {
+    "yellow_body": "#F5BA20",
+    "gunmetal": "#3A3A3A",
+    "eye_red": "#FF1010",
+    "logo_plate": "#F5BA20"
+  },
+  "emissive_material": [
+    "eye_red"
+  ],
+  "decal": {
+    "texture": "Art/Meshes/chaser/T_ChaserLogo.png",
+    "uv": "UVMap (UV0) 0..1 on the logo quad only, other faces collapsed to (0,0)",
+    "offset_cm": 0.25,
+    "material": "logo_plate (Masked not needed: no alpha)"
+  },
+  "uv_layers": [
+    "UVMap",
+    "LightMap"
+  ],
+  "shading": "flat",
+  "warnings": [
+    "eye_red is emissive in Blender (strength 4, #FF1010): the FBX does not carry emission, the Unreal material sets the glow"
+  ],
+  "fidelity": {
+    "returns_used": 4,
+    "max_returns": 5,
+    "method": "Orthographic renders at the scale of the crops (same sole row, same px per cm), opened together with the matching crop (Read) in side-by-side composites compare_<view>.png; silhouettes: crop mask (yellow or dark pixels, closed) vs render mask (differs from the uniform background); the render is shifted horizontally by the best IoU shift (front +1 px, side 0, back +3 px) and the largest difference is the Chebyshev Hausdorff distance between the two filled silhouettes, in percent of the crop height.",
+    "silhouette_difference_pct_H": {
+      "front": 3.37,
+      "side": 3.12,
+      "back": 3.63,
+      "limit": 5,
+      "iou": {
+        "front": 0.77,
+        "side": 0.87,
+        "back": 0.76
+      },
+      "note": "IoU is lowered by the crop mask holes (bright facets) and the curled hands; the Hausdorff maximum sits at the hands and at the foot toes."
+    },
+    "criteria": {
+      "C1": {
+        "verdict": "pass",
+        "evidence": "Block+cap z 0.655..1.0 H = 34.5 % H tall, 24 % H wide (29.8 cm), depth 34 % H at the hood apex (crop side measures 34 % at the apex, 28 % at z 0.70; the criterion text says about 29 %: judged against the crop), cap box on top (width 17 % H at its base), front leans like a hood (apex z 0.84, upper face leans back to the cap, lower face leans back to the bottom), block extends backwards. Side composite overlays within 2 % H."
+      },
+      "C2": {
+        "verdict": "pass",
+        "evidence": "Dark recess 62 % of the block width (3.5 cm deep) in the lower half (z 0.69..0.78 H) with a red emissive octagon (6.4 cm across, centred); above it the logo decal (yellow plate, dark shield, yellow star glyph; 7.4 cm = 25 % of the block width) centred. The criterion says recess about 45 %: the crop measures 69 % (117 of 170 px) so 62 % follows the crop; if the owner wants the 45 % text, set RS in the script."
+      },
+      "C3": {
+        "verdict": "pass",
+        "evidence": "Gunmetal pelvis 13.5 % H wide at the top narrowing to 8.5 % (narrower than the block, 24 %), 7.7 % H tall plus a yellow lower rim 3.2 % H (total 10.4 % H, crop 9.8 %), the rim visible in front view."
+      },
+      "C4": {
+        "verdict": "pass",
+        "evidence": "Outer-to-outer arm span 68.3 % H (crop 69 %); upper arm 10 % H wide at the top, wider at the top than at the elbow, dark elbow connector, forearm 9 % H, dark hand with palm and three two-segment finger blocks curled forward and inward; elbow bend as drawn (shoulder x 0.196 to elbow 0.243 to wrist 0.293 H); hands end at 55.5 % H below the top (crop 55 %), slightly forward (X +4 to +9 cm) in the side view."
+      },
+      "C5": {
+        "verdict": "pass",
+        "evidence": "Pelvis bottom to sole 55.8 % H (crop 56 %); thigh yellow box 8 to 9 % H wide in front view (crop measures 8 to 9 %; the criterion says about 12 %: judged against the crop), dark octagonal knee prism (r 4.2 cm, axis lateral) visible in side view, shin box 8.5 to 6.5 % H wide, dark leg bars visible between the yellow boxes in front view, legs straight and parallel, outer foot edges 41 % H apart (crop 43 %). The crop legs splay slightly outward; the model keeps them parallel as the criterion asks."
+      },
+      "C6": {
+        "verdict": "pass",
+        "evidence": "Yellow foot (toe wedge, instep guard, heel) on a dark sole with two dark toe blocks (front slanted) and a dark heel block, 23 % H long (crop 23.5 %), 15 % H tall at the heel (crop about 17 %), pointing forward (+X)."
+      },
+      "C7": {
+        "verdict": "pass",
+        "evidence": "Yellow on block, cap, upper arms, forearms, hip guards, thighs, shins, instep and feet; gunmetal on pelvis, shoulder and elbow connectors, hands, upper leg bars, knee prisms, ankle, soles, toe and heel blocks; eye_red only on the eye octagon; logo_plate only on the decal; four slots yellow_body, gunmetal, eye_red, logo_plate on every part; no other colour in the renders."
+      },
+      "C8": {
+        "verdict": "pass",
+        "evidence": "Exactly 10 objects named HeadTorso, Pelvis, UpperArm_L/R, ForearmHand_L/R, Thigh_L/R, ShinFoot_L/R; pivots at the joints (joints_cm in the report); hierarchy Pelvis > HeadTorso > UpperArm > ForearmHand and Pelvis > Thigh > ShinFoot; interpenetration between each parent and child measured with BVH ray parity: at most 0.87 cm (limit 1 cm)."
+      },
+      "C9": {
+        "verdict": "pass",
+        "evidence": "Large flat facets, flat shading, no panel lines, bolts or cables, no cylinder except the two knee prisms (ankle is a box, the crop shows an octagon there), total 1632 tris (ceiling 3000)."
+      },
+      "C10": {
+        "verdict": "pass",
+        "evidence": "Largest silhouette difference: front 3.37 % H, side 3.12 % H, back 3.63 % H (limit 5 %); top and sole rows coincide (0.3 % and 0 %). Row edge tables (outer arm edges, leg edges, foot edges, block edges) agree within about 2 % H except the shoulder connectors in front view (+2 to 4 % H in the crop)."
+      }
+    },
+    "still_differs": [
+      "The crop has more and finer facets than the model (rounded hexagonal upper arms, thigh and shin guards, curled thumbs on the hands): the model is a coarser version of the same shapes.",
+      "The crop legs splay slightly outward (hip 0.09, knee 0.11, foot 0.15 of H from the centre line); the model legs are parallel (C5).",
+      "The foot is a simplified wedge: the crop has an octagonal ankle prism and slanted side plates; the ankle here is a box (C9: no cylinders except the knees).",
+      "Hip guards are plain boxes beside the pelvis; the crop shows rounded plates.",
+      "The back of the block is a plain slab; the crop back has several plates (small panel lines are forbidden by C9).",
+      "The glow and halo of the eye are not rendered in Blender (Unreal glow); the decal on the upper face shows a faint plate outline because plate and face share the same yellow.",
+      "Hands: palm plus three curled finger blocks, no thumb (the crop hand shows a thumb)."
+    ],
+    "criteria_text_vs_crop": {
+      "recess_width": "criterion about 45 % of block width, crop measures 69 %, model 62 %",
+      "block_depth": "criterion about 29 %, crop 34 % at the apex",
+      "thigh_width": "criterion about 12 % H, crop 8 to 9 % H"
+    },
+    "final_render": {
+      "front": "Art/Meshes/chaser/render_front.png",
+      "side": "Art/Meshes/chaser/render_side.png",
+      "back": "Art/Meshes/chaser/render_back.png",
+      "three_quarter": "Art/Meshes/chaser/render_threequarter.png",
+      "comparisons": [
+        "Art/Meshes/chaser/compare_front.png",
+        "Art/Meshes/chaser/compare_side.png",
+        "Art/Meshes/chaser/compare_back.png"
+      ]
+    }
+  }
+}
