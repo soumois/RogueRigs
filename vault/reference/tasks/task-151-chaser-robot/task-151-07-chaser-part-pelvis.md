@@ -3,7 +3,7 @@ id: task-151-07-chaser-part-pelvis
 description: "Rebuild the chaser Pelvis alone against its close-up crops of the validated sheet."
 parent: task-151-chaser-robot
 kind: task
-status: todo
+status: in-progress
 ---
 # Chaser part: Pelvis
 

@@ -3,7 +3,7 @@ id: task-151-11-chaser-part-shinfoot
 description: "Rebuild the chaser ShinFoot alone against its close-up crops of the validated sheet."
 parent: task-151-chaser-robot
 kind: task
-status: todo
+status: in-progress
 ---
 # Chaser part: ShinFoot
 
