@@ -274,6 +274,7 @@ kind: note
 | [[task-166-02-debris-code]] | opus | 1 | 0k | 84k | 1475k | 21k |
 | [[task-166-03-debris-meshes-import]] | sonnet | 1 | 0k | 70k | 1458k | 15k |
 | [[task-167-02-death-puff-niagara]] | sonnet | 2 | 0k | 127k | 4599k | 31k |
+| [[task-166-04-debris-niagara]] | sonnet | 3 | 0k | 165k | 8238k | 60k |
 
 ## Totals
 | Scope | Input | Cache write | Cache read | Output |

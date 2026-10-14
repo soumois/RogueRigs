@@ -3,7 +3,7 @@ id: task-166-04-debris-niagara
 description: "Build NS_RobotDebris to the C++ contract and wire it with the 13 pieces on BP_Chaser and BP_ShieldChaser."
 parent: task-166-robot-debris-pieces
 kind: task
-status: in-progress
+status: done
 ---
 # Robot debris: Niagara system and Blueprint wiring
 
@@ -15,11 +15,11 @@ status: in-progress
 - done_when: The system compiles; its user parameters and renderer meshes read back; the defaults on both Blueprints read back (13 pieces, system set); a short PIE probe killing a chaser shows a debris component active and released after about 1.2 s (values read, no screenshots); saved; docs updated; committed by path; the editor stays open
 - editor_state: open
 - token_ceiling: open
-- model: open
-- tokens: open
-- runs: open
+- model: sonnet
+- tokens: input 164, cache write 165206, cache read 8237555, output 59799
+- runs: 3
 - milestone: M3
-- result: open
+- result: NS_RobotDebris (/Game/RogueRigs/FX): CPU world-space mesh emitter, burst = PieceMeshIndex length, 13 piece meshes by MeshIndex, velocity along HitDirection + up + spread, spin, gravity, analytic floor plane at system Z, shrink over last 0.3 s, 1.2 s, one-shot; offsets baked per MeshIndex in the system (User.PieceOffset declared but unread: no indexed Array Vector read through MCP); no sink (shrink only); BP_Chaser/BP_ShieldChaser DebrisSystem, pool 40, 13 DebrisPieces; PIE 11 kills, no Niagara errors; activation/release, look and cost unverified; commits 71c24af 75f75c5 51f27b5 705e03e
 
 ## Relations
 - [[task-166-robot-debris-pieces]] — parent global task.
