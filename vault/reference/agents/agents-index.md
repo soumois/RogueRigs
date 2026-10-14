@@ -30,3 +30,4 @@ Planned, not written yet: agent-balance, agent-animation, agent-sound, agent-qa 
 - [[art-3d-lessons]] — owner preferences and agent limits from the art and 3D session of 2026-10-11; open before art, 3D or asset integration work.
 - [[orchestrator-script-quirks]] — defects of task-next, record-cost, git and editor close, with workarounds; open before closing a subtask.
 - [[orchestrator-lessons-2026-10-12]] — owner rules and agent, tool and script lessons of the gameplay and HUD session.
+- [[orchestrator-lessons-2026-10-14]] — FBX scale, lightmap UV trap, MCP, permissions, git and visual-check lessons of the Meshy chaser session.

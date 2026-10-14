@@ -6,6 +6,8 @@ kind: doc
 ---
 # Chaser model pipeline
 
+ABANDONED by the owner on 2026-10-14: the chaser now uses a Meshy mesh ([[chaser-meshy-pipeline]]). This route stays as history and its part names, hierarchy and joint contract are reused for the cut.
+
 The chaser ([[enemy-chaser]]) is ten rigid objects built by six part modules, so six agents can work in parallel. Route: [[blender-asset-route]]; validation: [[mesh-fidelity-loop]]. Geometry of the split equals the monolithic model of commit bc01b6b (git tag `backup-chaser-monolithic`).
 
 ## Files (`Tools/art/blender/chaser/`)

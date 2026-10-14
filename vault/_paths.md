@@ -85,6 +85,7 @@ bp-shotgun  reference/tech/blueprints/player/bp-shotgun.md
 bp-turret  reference/tech/blueprints/player/bp-turret.md
 build-toolchain  reference/tech/pipelines/build-toolchain.md
 burst-rifle  reference/gdd/weapons/burst-rifle.md
+chaser-meshy-pipeline  reference/tech/pipelines/chaser-meshy-pipeline.md
 chaser-model-pipeline  reference/tech/pipelines/chaser-model-pipeline.md
 cloud-session-git  reference/agents/cloud-session-git.md
 code-review-m1  reference/tech/conventions/code-review-m1/code-review-m1.md
@@ -129,6 +130,7 @@ handover-2026-10-06  reference/production/handover-2026-10-06.md
 handover-2026-10-09  reference/production/handover-2026-10-09.md
 handover-2026-10-12  reference/production/handover-2026-10-12.md
 handover-2026-10-12-gameplay-hud  reference/production/handover-2026-10-12-gameplay-hud.md
+handover-2026-10-14-chaser-meshy  reference/production/handover-2026-10-14-chaser-meshy.md
 heal-ore  reference/gdd/terrain/heal-ore.md
 hud-refactor-audit  reference/tech/blueprints/ui/hud-refactor-audit.md
 hud-refactor-audit-core  reference/tech/blueprints/ui/hud-refactor-audit-core.md
@@ -160,6 +162,7 @@ objective-variants  reference/gdd/run/objective-variants.md
 orchestration-protocol  reference/agents/orchestration-protocol.md
 orchestrator-lessons  reference/agents/orchestrator-lessons.md
 orchestrator-lessons-2026-10-12  reference/agents/orchestrator-lessons-2026-10-12.md
+orchestrator-lessons-2026-10-14  reference/agents/orchestrator-lessons-2026-10-14.md
 orchestrator-runbook  reference/agents/orchestrator-runbook.md
 orchestrator-script-quirks  reference/agents/orchestrator-script-quirks.md
 ore-blocks  reference/gdd/terrain/ore-blocks.md
