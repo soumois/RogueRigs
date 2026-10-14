@@ -10,9 +10,9 @@ status: approved
 - role: basic horde unit; runs at the miner and attacks in melee.
 - locomotion: biped
 - rig: rigid parts, one bone per part
-- parts: open
+- parts (provisional, owner 2026-10-13): 13 rigid parts: head (with the red eye), torso (with the logo plate), pelvis, 2 upper arms, 2 forearms with hand, 2 thighs, 2 lower legs with foot; the same part meshes feed the death effect ([[enemy-death]])
 - size: small; 0.7 × the miner (provisional, owner 2026-10-02)
-- animations: open
+- animations (provisional, owner 2026-10-13): two clips: run (loop) and attack (0.1 s wind-up, then the strike); death is the Niagara parts effect, hits are a flash. Technique: baked animation texture (one transform per part and per frame, played by the material), no skeletal mesh at run time; look-alike pipeline in [[asset-pipeline]]
 - behavior: moves straight toward the miner; no line-of-sight requirement.
 - telegraph: 0.1 s wind-up (the robot stops and flashes) before each hit (owner 2026-10-02, was 0.25 s)
 - colors: bright company yellow; red eyes, yellow logo plate ([[color-code]])
