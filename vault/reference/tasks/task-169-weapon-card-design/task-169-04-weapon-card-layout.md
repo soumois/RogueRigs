@@ -11,7 +11,7 @@ status: todo
 - agent: bp
 - depends_on: task-168-05-upgrade-choice-layout, task-169-02-weapon-card-frame, task-169-03-weapon-card-lore
 - inputs: wbp-upgrade-choice (vault/reference/tech/blueprints/ui/wbp-upgrade-choice.md), sys-upgrades (vault/reference/tech/systems/core/sys-upgrades.md), unreal-mcp-quirks (vault/reference/tech/pipelines/unreal-mcp-quirks.md), editor-workflow (vault/reference/tech/conventions/editor-workflow.md)
-- expected_output: WBP_UpgradeChoice: for CardType NewWeapon, same card size as stat cards; top "New weapon", image area with the weapon icon only, weapon name (TargetText), explanation (DescriptionText), lore (LoreText, italic), frame T_CardFrame_Weapon untinted; wbp-upgrade-choice doc updated.
+- expected_output: WBP_UpgradeChoice: for CardType NewWeapon, same card size as stat cards; top "New weapon", image area with the weapon icon only, weapon name (TargetText), explanation (DescriptionText), lore (LoreText, italic), frame T_CardFrame_Weapon untinted; wbp-upgrade-choice doc updated. Lore line always anchored at the bottom of the card content box, whatever the text above (owner 2026-10-14, mockup validated otherwise); the free space goes between the target or explanation and the lore.
 - done_when: Compiles with warnings as errors, saved, tree and graphs read back, doc updated; committed. Not seen on screen: say so.
 - editor_state: open
 - token_ceiling: 40 turns
