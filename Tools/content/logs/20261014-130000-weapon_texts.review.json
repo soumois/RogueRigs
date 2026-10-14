@@ -1,0 +1,4 @@
+{"run_id": "20261014-130000-weapon_texts", "rounds": [{"loop": 0, "reviews": [
+  {"item_id": "wpn_shotgun", "verdict": "pass", "rule": null, "reason": "Rook's salvager voice with the joke aimed at the company, no film line, no new past job, no vault example reused.", "suggestion": null},
+  {"item_id": "wpn_turret_launcher", "verdict": "fail", "rule": "L1", "reason": "\"The company's whole security team\" suggests human company staff guarding the claim, but on site the company has only robots.", "suggestion": "Cobbled from spare drill parts; outworks every corporate robot here."}
+]}]}
