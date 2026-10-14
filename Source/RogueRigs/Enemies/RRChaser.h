@@ -127,6 +127,13 @@ protected:
 	static constexpr double AttackClipDuration = AttackClipFrames / AnimFrameRate;
 
 	/**
+	 * Range (s) of the random run phase: PlayRunClip starts the run loop at now - uniform [0, RunPhaseSpread). Longer than
+	 * any run period of the clip (0.533 s at rate 1, 0.762 s at rate 0.7), so the phase covers the whole loop whatever the
+	 * playback rate set in the material.
+	 */
+	static constexpr double RunPhaseSpread = 2.0;
+
+	/**
 	 * Name of the static mesh component that plays the baked clips (BP_Chaser and BP_ShieldChaser: BodyMesh, added by the
 	 * Blueprint). Resolved once at BeginPlay; no component of that name = no animation. None = no animation.
 	 */
@@ -139,7 +146,7 @@ protected:
 	/** Writes the clip id and its start time (world seconds) to the animated mesh's Custom Primitive Data. */
 	void SetAnimClip(float ClipId, double StartTime);
 
-	/** Run loop from a random phase (start = now - [0, RunClipDuration)), so a crowd does not step in sync; stops the attack clip timer. */
+	/** Run loop from a random phase (start = now - [0, RunPhaseSpread)), so a crowd does not step in sync; stops the attack clip timer. */
 	void PlayRunClip();
 
 	/** Attack clip from now; PlayRunClip runs AttackClipDuration later (AttackClipTimer). */

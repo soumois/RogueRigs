@@ -39,7 +39,13 @@ assignment-3-agent-crew  reference/course/assignments/assignment-3-agent-crew.md
 assignment-4-content-pipeline  reference/course/assignments/assignment-4-content-pipeline.md
 assignment-4-open-decisions  reference/course/assignments/assignment-4-open-decisions.md
 assignment-4-plan  reference/course/assignments/assignment-4-plan.md
+assignment-5-agent-design  reference/course/assignments/assignment-5-agent-design.md
+assignment-5-candidate-features  reference/course/assignments/assignment-5-candidate-features.md
 assignment-5-goal-oriented-agent  reference/course/assignments/assignment-5-goal-oriented-agent.md
+assignment-5-open-decisions  reference/course/assignments/assignment-5-open-decisions.md
+assignment-5-plan  reference/course/assignments/assignment-5-plan.md
+assignment-5-review-checks  reference/course/assignments/assignment-5-review-checks.md
+assignment-5-vault-check  reference/course/assignments/assignment-5-vault-check.md
 assignments-index  reference/course/assignments/assignments-index.md
 audio-direction  reference/gdd/art-audio/audio-direction.md
 barrel  reference/gdd/terrain/barrel.md
@@ -80,6 +86,7 @@ bp-turret  reference/tech/blueprints/player/bp-turret.md
 build-toolchain  reference/tech/pipelines/build-toolchain.md
 burst-rifle  reference/gdd/weapons/burst-rifle.md
 chaser-model-pipeline  reference/tech/pipelines/chaser-model-pipeline.md
+cloud-session-git  reference/agents/cloud-session-git.md
 code-review-m1  reference/tech/conventions/code-review-m1/code-review-m1.md
 code-review-m1-deferred  reference/tech/conventions/code-review-m1/code-review-m1-deferred.md
 code-review-m1-gameplay  reference/tech/conventions/code-review-m1/code-review-m1-gameplay.md
@@ -137,6 +144,8 @@ lesson-03-gdd-to-prototype  reference/course/lessons/lesson-03-gdd-to-prototype.
 lesson-04-virtual-studio  reference/course/lessons/lesson-04-virtual-studio.md
 lesson-05-rag-content  reference/course/lessons/lesson-05-rag-content.md
 lesson-06-agent-output-to-game  reference/course/lessons/lesson-06-agent-output-to-game.md
+lesson-07-acting-and-agent-state  reference/course/lessons/lesson-07-acting-and-agent-state.md
+lesson-07-goal-oriented-agents  reference/course/lessons/lesson-07-goal-oriented-agents.md
 lessons-index  reference/course/lessons/lessons-index.md
 level-flow  reference/gdd/run/level-flow.md
 level-layout-schema  reference/tech/pipelines/level-layout-schema.md

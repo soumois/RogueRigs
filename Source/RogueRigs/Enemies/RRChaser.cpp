@@ -92,7 +92,8 @@ void ARRChaser::SetAnimClip(float ClipId, double StartTime)
 void ARRChaser::PlayRunClip()
 {
 	GetWorldTimerManager().ClearTimer(AttackClipTimer);
-	SetAnimClip(RunClipId, GetWorld()->GetTimeSeconds() - FMath::FRand() * RunClipDuration);
+	// Own phase per chaser, drawn at each run start (BeginPlay, pool reuse, end of attack, cancelled wind-up).
+	SetAnimClip(RunClipId, GetWorld()->GetTimeSeconds() - FMath::FRand() * RunPhaseSpread);
 }
 
 void ARRChaser::PlayAttackClip()
