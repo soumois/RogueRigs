@@ -3,7 +3,7 @@ id: task-151-12-chaser-assembly
 description: "Assemble the ten parts and validate the whole chaser against the sheet."
 parent: task-151-chaser-robot
 kind: task
-status: todo
+status: in-progress
 ---
 # Chaser: assembly and validation
 

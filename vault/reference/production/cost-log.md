@@ -246,6 +246,7 @@ kind: note
 | [[task-151-08-chaser-part-upperarm]] | sonnet | 1 | 0k | 24k | 216k | 2k |
 | [[task-151-09-chaser-part-forearmhand]] | sonnet | 1 | 0k | 26k | 192k | 2k |
 | [[task-151-10-chaser-part-thigh]] | sonnet | 1 | 0k | 27k | 256k | 2k |
+| [[task-151-11-chaser-part-shinfoot]] | sonnet | 1 | 0k | 22k | 180k | 3k |
 
 ## Totals
 | Scope | Input | Cache write | Cache read | Output |

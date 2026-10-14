@@ -3,7 +3,7 @@ id: task-151-11-chaser-part-shinfoot
 description: "Rebuild the chaser ShinFoot alone against its close-up crops of the validated sheet."
 parent: task-151-chaser-robot
 kind: task
-status: in-progress
+status: done
 ---
 # Chaser part: ShinFoot
 
@@ -28,11 +28,11 @@ status: in-progress
   - C5 Budget: at most 400 triangles (300 today per leg), flat shading; mirrored for the other side.
 - editor_state: closed
 - token_ceiling: open
-- model: open
-- tokens: open
-- runs: open
+- model: sonnet
+- tokens: input 20, cache write 21998, cache read 180039, output 3150
+- runs: 1
 - milestone: M2
-- result: open
+- result: ShinFoot: instep shield over the ankle octagon, two-step foot side, 320 tris per leg; C3 partial (3 returns).
 
 ## Relations
 - [[task-151-chaser-robot]] — parent global task.
