@@ -1,0 +1,37 @@
+{
+  "run_id": "20261013-183636-chaser",
+  "asset": "chaser",
+  "model": "gpt-image-2-image-to-image",
+  "aspect_ratio": "4:3",
+  "resolution": "1K",
+  "variants": 2,
+  "prompt_file": "Art/Source/chaser/prompts/turnaround-b.txt",
+  "prompt": "Keep this exact robot: same shapes, proportions, parts, colours and style as the reference image. Make a 3D modelling turnaround sheet of this one corporate chaser robot in a neutral standing pose: legs straight and parallel, arms slightly forward and a little away from the body so every arm part is visible, no weapon, no effect, no shadows, even flat light. Plain light grey background. Flat-shaded low-poly with visible facets, company yellow body panels, dark gunmetal joints, ONE red glowing eye in a boxy head, a small yellow corporate logo plate on the torso, no hazard stripes, no text, no labels, rigid mechanical parts only. The four views show the same robot with identical parts and colours, at the same scale, in orthographic view with no perspective. Layout: one sheet with the four views in a 2 x 2 grid: top row FRONT view (left) and SIDE view (right); bottom row BACK view (left) and TOP view seen from directly above (right). Equal cell size.",
+  "refs": [
+    "Art/Source/chaser/ref-chaser.png"
+  ],
+  "tasks": [
+    {
+      "task_id": "b3ffd1fb08a4169237e3f391afc839df",
+      "state": "success",
+      "credits": 6,
+      "error": null,
+      "result_urls": [
+        "https://tempfile.aiquickdraw.com/images/chatgpt/file_000000006ba0820eb2d3f9ac8828a8ba.png"
+      ]
+    },
+    {
+      "task_id": "20710d001620e4a565ed02cf06db99d8",
+      "state": "success",
+      "credits": 6,
+      "error": null,
+      "result_urls": [
+        "https://tempfile.aiquickdraw.com/images/chatgpt/file_00000000d3dc81f8904ebcbcf9c4d4a2.png"
+      ]
+    }
+  ],
+  "files": [
+    "Art/Source/chaser/20261013-183636-chaser-1.png",
+    "Art/Source/chaser/20261013-183636-chaser-2.png"
+  ]
+}
