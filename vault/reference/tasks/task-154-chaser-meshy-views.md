@@ -1,9 +1,9 @@
 ---
 id: task-154-chaser-meshy-views
 description: "Global task: Generate four reference views of the chaser (front, left, back, right) as input images for Meshy multi-view."
-parent: tasks-to-do-index
+parent: tasks-done-index
 kind: task
-status: in-progress
+status: done
 ---
 # Chaser: four views for Meshy
 
@@ -13,12 +13,12 @@ status: in-progress
 - gdd_check: done by the Orchestrator when the task is planned (2026-10-14).
 - confirmed_by_owner: yes (2026-10-14)
 - milestone: M2
-- next_step: task-154-01-chaser-meshy-views
-- result: open
+- next_step: none
+- result: Done. four views generated (6 images, 36 credits: 2 lost to a run id collision in kie_image.js); images untracked in Art/Source/chaser-meshy/
 
 ## Subtasks
 1. task-154-01-chaser-meshy-views — art
 
 ## Relations
-- [[tasks-to-do-index]] — parent index.
+- [[tasks-done-index]] — parent index.
 - [[task-154-01-chaser-meshy-views]] — step 1, art.

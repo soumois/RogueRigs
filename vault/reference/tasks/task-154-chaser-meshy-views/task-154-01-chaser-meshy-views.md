@@ -3,7 +3,7 @@ id: task-154-01-chaser-meshy-views
 description: "Generate four reference views of the chaser (front, left, back, right) as input images for Meshy multi-view."
 parent: task-154-chaser-meshy-views
 kind: task
-status: in-progress
+status: done
 ---
 # Chaser: four views for Meshy
 
@@ -15,11 +15,11 @@ status: in-progress
 - done_when: Four images of the same robot (same parts, proportions and colours as vault/assets/chaser-turnaround.png), each a single full-body view on a plain light grey background, no shadow, no text, neutral pose; at most 6 images generated (36 credits); self-review written; prompts and logs committed by name; images untracked until the owner retains them; nothing in vault/assets/; no 3D, no Unreal
 - editor_state: closed
 - token_ceiling: open
-- model: open
-- tokens: open
-- runs: open
+- model: sonnet
+- tokens: input 24, cache write 27783, cache read 216243, output 1340
+- runs: 1
 - milestone: M2
-- result: open
+- result: four views generated (6 images, 36 credits: 2 lost to a run id collision in kie_image.js); images untracked in Art/Source/chaser-meshy/
 
 ## Relations
 - [[task-154-chaser-meshy-views]] — parent global task.
