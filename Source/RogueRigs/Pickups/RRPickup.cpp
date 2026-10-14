@@ -69,6 +69,8 @@ void ARRPickup::StartLife()
 	MagnetSpeed = 0.f;
 	Phase = ERRPickupPhase::Pop;
 	TargetMiner = nullptr;
+	// Glow off in the air; written explicitly so a fresh mesh never shows the material default.
+	ResetGlowFade();
 
 	URRPickupSubsystem* Pickups = GetWorld() ? GetWorld()->GetSubsystem<URRPickupSubsystem>() : nullptr;
 	if (Pickups)
@@ -117,6 +119,7 @@ void ARRPickup::OnPoolReleased_Implementation()
 	PopElapsed = 0.f;
 	RestElapsed = 0.f;
 	MagnetSpeed = 0.f;
+	ResetGlowFade();
 
 	// Per-drop values back to the class defaults: the next caller sets its own before OnPoolAcquired (a heal request with
 	// HealAmount 0 keeps the class default, as a fresh spawn would).
@@ -148,6 +151,12 @@ void ARRPickup::Tick(float DeltaSeconds)
 
 void ARRPickup::UpdateMotion(float DeltaSeconds, ARRMiner* Miner, float PickupRadiusSquared)
 {
+	// task-148-01: glow fade toward the target set by the last phase change; nothing to do once reached (or bGlowFade off).
+	if (bGlowFade && GlowFade != GlowFadeTarget)
+	{
+		UpdateGlowFade(DeltaSeconds);
+	}
+
 	switch (Phase)
 	{
 	case ERRPickupPhase::Pop:
@@ -156,6 +165,8 @@ void ARRPickup::UpdateMotion(float DeltaSeconds, ARRMiner* Miner, float PickupRa
 			return;
 		}
 		Phase = ERRPickupPhase::Rest;
+		// Landed: the glow disc fades in.
+		SetGlowFadeTarget(1.f);
 		// The rest delay counts from the end of the pop.
 		return;
 
@@ -178,6 +189,7 @@ void ARRPickup::UpdateMotion(float DeltaSeconds, ARRMiner* Miner, float PickupRa
 		}
 		TargetMiner = Miner;
 		Phase = ERRPickupPhase::Magnet;
+		SetGlowFadeTarget(0.f);
 		MagnetSpeed = MagnetStartSpeed;
 		OnMagnetStart();
 		FlyToMiner(Miner, DeltaSeconds);
@@ -245,11 +257,34 @@ bool ARRPickup::IsRefusedByMiner(const ARRMiner* Miner) const
 void ARRPickup::ReturnToRest()
 {
 	Phase = ERRPickupPhase::Rest;
+	SetGlowFadeTarget(1.f);
 	MagnetSpeed = 0.f;
 	// RestElapsed already passed AttractDelay: attracted again on the first frame the miner is damaged and in radius.
 	FVector Location = GetActorLocation();
 	Location.Z = PopEnd.Z;
 	SetActorLocation(Location);
+}
+
+void ARRPickup::UpdateGlowFade(float DeltaSeconds)
+{
+	const float Step = GlowFadeDuration > 0.f ? DeltaSeconds / GlowFadeDuration : 1.f;
+	GlowFade = FMath::Clamp(GlowFade + FMath::Clamp(GlowFadeTarget - GlowFade, -Step, Step), 0.f, 1.f);
+	if (FMath::Abs(GlowFadeTarget - GlowFade) <= UE_KINDA_SMALL_NUMBER)
+	{
+		GlowFade = GlowFadeTarget;
+	}
+	PickupMesh->SetCustomPrimitiveDataFloat(GlowFadeDataIndex, GlowFade);
+}
+
+void ARRPickup::ResetGlowFade()
+{
+	if (!bGlowFade)
+	{
+		return;
+	}
+	GlowFade = 0.f;
+	GlowFadeTarget = 0.f;
+	PickupMesh->SetCustomPrimitiveDataFloat(GlowFadeDataIndex, 0.f);
 }
 
 void ARRPickup::FlyToMiner(ARRMiner* Miner, float DeltaSeconds)
@@ -289,6 +324,7 @@ void ARRPickup::Collect(ARRMiner* Miner)
 		return;
 	}
 	Phase = ERRPickupPhase::Collected;
+	SetGlowFadeTarget(0.f);
 
 	const FVector Location = GetActorLocation();
 	UE_LOG(LogRogueRigs, Verbose, TEXT("ARRPickup: %s collected by %s."), *UEnum::GetValueAsString(PickupType), *GetNameSafe(Miner));

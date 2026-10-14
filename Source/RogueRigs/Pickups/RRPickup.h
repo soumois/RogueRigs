@@ -53,7 +53,9 @@ enum class ERRPickupPhase : uint8
  * resets motion state (phase, magnet latch and speed, pop timers) and per-drop values (XPAmount, OreValue, HealAmount back
  * to the class defaults, pop yaw cleared); OnPoolAcquired starts a new life (pop from the new location, registration) after
  * the caller set the values, and re-activates auto-activate FX components. The pool resets the rotation (BP_PickupXP faces
- * the miner on magnet start). No physics, no collision; movement is driven by URRPickupSubsystem in one loop per frame (actor tick
+ * the miner on magnet start). Glow fade (bGlowFade, task-148-01): a 0..1 value written to PickupMesh Custom Primitive Data
+ * at GlowFadeDataIndex, 0 in the air, fading to 1 over GlowFadeDuration on landing and back to 0 on magnet; advanced in
+ * UpdateMotion only while it moves, reset to 0 at each life start and pool release. No physics, no collision; movement is driven by URRPickupSubsystem in one loop per frame (actor tick
  * only as a fallback when the subsystem is missing). Spawned by ARRArenaGrid at a cell center (floor top), and by ARREnemy
  * at its feet on death (XP, split over several cubes). Subclass in Blueprint: set PickupType and the mesh.
  */
@@ -162,6 +164,15 @@ protected:
 	/** Leaves the Magnet phase when a flying Heal pickup is refused (the miner got back to full health): stops where it is, at its rest height, back in Rest (attracted again as soon as the miner is damaged and in radius). */
 	void ReturnToRest();
 
+	/** Sets the glow fade target (0 or 1) when bGlowFade; no-op otherwise. Called on each phase change. */
+	void SetGlowFadeTarget(float InTarget) { if (bGlowFade) { GlowFadeTarget = InTarget; } }
+
+	/** Moves GlowFade toward GlowFadeTarget at 1 / GlowFadeDuration per second and writes it to PickupMesh. Called by UpdateMotion only while they differ. */
+	void UpdateGlowFade(float DeltaSeconds);
+
+	/** Sets GlowFade and GlowFadeTarget to 0 and writes 0 to PickupMesh (bGlowFade only): start of a life and pool release, so a reused pickup never flashes. */
+	void ResetGlowFade();
+
 	/** Accelerates toward the miner; collects when within CollectDistance or when the step reaches it. A refused Heal pickup (IsRefusedByMiner) returns to Rest instead. */
 	void FlyToMiner(ARRMiner* Miner, float DeltaSeconds);
 
@@ -263,6 +274,22 @@ protected:
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Pickup|Collect", meta = (ClampMin = 0, Units = "cm"))
 	float CollectDistance = 50.f;
 
+	/**
+	 * task-148-01 (owner 2026-10-13, provisional): drives a glow fade value 0..1 written to PickupMesh as Custom Primitive
+	 * Data at GlowFadeDataIndex (the glow disc material of BP_PickupXP and BP_PickupXPBig reads it): 0 during Pop, fades to
+	 * 1 when the pickup lands (start of Rest), back to 0 at the start of Magnet and Collected. False = no fade, no cost (ore, heal).
+	 */
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Pickup|Glow")
+	bool bGlowFade = false;
+
+	/** Seconds the glow fade takes from 0 to 1 or from 1 to 0 (0 = instant). Provisional 0.2 s, owner 2026-10-13. */
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Pickup|Glow", meta = (ClampMin = 0, Units = "s", EditCondition = "bGlowFade"))
+	float GlowFadeDuration = 0.2f;
+
+	/** Custom Primitive Data index of PickupMesh the glow fade is written to (the material scalar parameter uses the same index). */
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Pickup|Glow", meta = (ClampMin = 0, EditCondition = "bGlowFade"))
+	int32 GlowFadeDataIndex = 0;
+
 	/** Miner this pickup flies to (latched with the magnet), or found from the player 0 pawn by the fallback tick. */
 	UPROPERTY(Transient)
 	TObjectPtr<ARRMiner> TargetMiner;
@@ -294,4 +321,11 @@ protected:
 
 	/** True while a life runs (see IsLifeStarted). */
 	bool bLifeStarted = false;
+
+	/** Current glow fade value 0..1, last written to PickupMesh (bGlowFade only). */
+	float GlowFade = 0.f;
+
+	/** Glow fade value GlowFade moves toward: 0 in Pop, Magnet and Collected, 1 in Rest (bGlowFade only). */
+	float GlowFadeTarget = 0.f;
 };
+
