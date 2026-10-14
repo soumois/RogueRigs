@@ -29,6 +29,10 @@ Complements [[orchestrator-lessons]]. Process pitfalls of the scripts: [[orchest
 - Do not specify a position rule from a distant case: "bottom of the block, floorless cells included" sank the barrel 200 uu under the floor (task-108). Read the code constants first.
 - Specify the camera, light and scale of every preview so renders stay comparable.
 
+## Kie.ai runs (2026-10-14)
+- Never run `Tools/art/kie_image.js` in parallel for the same asset: the run id is a timestamp, parallel runs write the same file names and overwrite each other (task-168-02 lost 22 of 24 images, about 144 credits). Run sequentially, one stat or variant set at a time.
+- Show candidates as soon as they exist; the owner may reject every proposal and pick another asset as the base (the stat card frame became the weapon frame without its header plate).
+
 ## Relations
 - [[agents-index]] — parent index.
 - [[orchestrator-lessons]] — the general lessons.

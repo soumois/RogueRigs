@@ -1,6 +1,6 @@
 ---
 id: task-168-05-upgrade-choice-layout
-description: "Rebuild the stat cards of WBP_UpgradeChoice: large cards, icons, effect, target, lore, rarity-tinted frame, reroll below."
+description: "Rebuild the stat cards of WBP_UpgradeChoice: large cards, icons, effect, target, lore, rarity-tinted accents and inner glow, reroll below."
 parent: task-168-upgrade-card-design
 kind: task
 status: todo
@@ -11,7 +11,7 @@ status: todo
 - agent: bp
 - depends_on: task-168-02-stat-icons, task-168-03-card-frames, task-168-04-card-icon-data
 - inputs: wbp-upgrade-choice (vault/reference/tech/blueprints/ui/wbp-upgrade-choice.md), wbp-hud (vault/reference/tech/blueprints/ui/wbp-hud.md), sys-upgrades (vault/reference/tech/systems/core/sys-upgrades.md), rarities (vault/reference/gdd/weapons/rarities.md), readability-rules (vault/reference/gdd/art-audio/readability-rules.md), unreal-mcp-quirks (vault/reference/tech/pipelines/unreal-mcp-quirks.md), editor-workflow (vault/reference/tech/conventions/editor-workflow.md)
-- expected_output: WBP_UpgradeChoice: cards about 380 x 560 at 1080p with 40 px gap, title kept, reroll centred below the row; per card top to bottom: image area (about 45 % of the card), effect line large (ValueText + stat name, e.g. "+15% Reload speed"), target line small ("All weapons", the weapon name, nothing for player stats), lore line in italic; frame T_CardFrame_Stat as a 9-slice brush tinted by the existing tier colours; no rarity label; icons and frame imported with the UI texture group; existing widget names kept where possible; wbp-upgrade-choice doc updated. Weapon cards keep their current look (task-169).
+- expected_output: WBP_UpgradeChoice: cards about 380 x 560 at 1080p with 40 px gap, title kept, reroll centred below the row; per card top to bottom: image area (about 45 % of the card), effect line large (ValueText + stat name, e.g. "+15% Reload speed"), target line small ("All weapons", the weapon name, nothing for player stats), lore line in italic; frame = three overlaid 9-slice brushes of the same margins: T_CardFrame_Stat untinted, T_CardFrame_Stat_Accents and T_CardFrame_Stat_Glow tinted by the existing tier colours (owner A+C mix, 2026-10-14); no rarity label; icons and frame imported with the UI texture group; existing widget names kept where possible; wbp-upgrade-choice doc updated. Weapon cards keep their current look (task-169).
 - done_when: Compiles with warnings as errors, saved, tree and graphs read back, doc updated; committed. Not seen on screen: say so.
 - editor_state: open
 - token_ceiling: 40 turns
