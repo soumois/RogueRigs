@@ -1,9 +1,9 @@
 ---
 id: task-157-chaser-run-attack-animation
 description: "Animate the chaser in the game: run loop and attack clip from a baked texture."
-parent: tasks-to-do-index
+parent: tasks-done-index
 kind: task
-status: in-progress
+status: done
 ---
 # Chaser: cut into rigid parts
 
@@ -13,8 +13,8 @@ status: in-progress
 - gdd_check: done by the Orchestrator when the task is planned (2026-10-14).
 - confirmed_by_owner: yes (2026-10-14)
 - milestone: M2
-- next_step: task-157-04-chaser-anim-unreal
-- result: open
+- next_step: none
+- result: Done. SM_Chaser_Meshy_Anim, T_ChaserAnim, M_Chaser_Meshy_Anim (WPO Custom node, Texture.Load, CPD 0 and 1), both chaser Blueprints swapped; not verified: vertex colours, runtime CPD values, look, perf
 
 ## Subtasks
 1. task-157-01-chaser-run-attack-animation — 3d
@@ -23,7 +23,7 @@ status: in-progress
 4. task-157-04-chaser-anim-unreal — bp (import, material, Blueprints)
 
 ## Relations
-- [[tasks-to-do-index]] — parent index.
+- [[tasks-done-index]] — parent index.
 - [[task-157-01-chaser-run-attack-animation]] — step 1, 3d.
 - [[task-157-02-chaser-clips-bake]] — step 2, 3d.
 - [[task-157-03-chaser-anim-cpp-hook]] — step 3, cpp.

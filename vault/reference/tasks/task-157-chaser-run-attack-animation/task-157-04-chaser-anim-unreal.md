@@ -3,7 +3,7 @@ id: task-157-04-chaser-anim-unreal
 description: "Import the part mesh and the animation texture, build the animation material and swap it into BP_Chaser and BP_ShieldChaser."
 parent: task-157-chaser-run-attack-animation
 kind: task
-status: in-progress
+status: done
 ---
 # Chaser: animated mesh and material in Unreal
 
@@ -16,11 +16,11 @@ status: in-progress
 - rules: save only the named assets; no SlateInspector, no Ctrl+S, no UI automation; never CaptureEditorImage; MCP cannot set console variables; commit by name with message `task-157-04-chaser-anim-unreal: <summary>`
 - editor_state: open
 - token_ceiling: open
-- model: open
-- tokens: open
-- runs: open
+- model: sonnet
+- tokens: input 66, cache write 127647, cache read 2876840, output 762
+- runs: 1
 - milestone: M2
-- result: open
+- result: SM_Chaser_Meshy_Anim, T_ChaserAnim, M_Chaser_Meshy_Anim (WPO Custom node, Texture.Load, CPD 0 and 1), both chaser Blueprints swapped; not verified: vertex colours, runtime CPD values, look, perf
 
 ## Relations
 - [[task-157-chaser-run-attack-animation]] — parent global task.
