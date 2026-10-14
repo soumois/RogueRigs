@@ -3,7 +3,7 @@ id: task-157-01-chaser-run-attack-animation
 description: "Animate the Meshy chaser in the game with a run loop and an attack clip, using a baked animation texture played by the material."
 parent: task-157-chaser-run-attack-animation
 kind: task
-status: todo
+status: in-progress
 ---
 # Chaser: cut into rigid parts
 

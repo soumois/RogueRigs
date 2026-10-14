@@ -3,7 +3,7 @@ id: task-157-chaser-run-attack-animation
 description: "Animate the chaser in the game: run loop and attack clip from a baked texture."
 parent: tasks-to-do-index
 kind: task
-status: todo
+status: in-progress
 ---
 # Chaser: cut into rigid parts
 
