@@ -1,9 +1,9 @@
 ---
 id: task-159-chaser-anim-part-index
 description: "Make each chaser part move separately: part index carried by a UV channel."
-parent: tasks-to-do-index
+parent: tasks-done-index
 kind: task
-status: in-progress
+status: done
 ---
 # Chaser: part index in a UV channel
 
@@ -13,14 +13,14 @@ status: in-progress
 - gdd_check: done by the Orchestrator when the task is planned (2026-10-14).
 - confirmed_by_owner: yes (2026-10-14)
 - milestone: M2
-- next_step: task-159-02-chaser-part-index-unreal
-- result: open
+- next_step: none
+- result: Done. part index read from UV channel 2 PartId (engine reports 3 UV sets, 10 exact bins); material compiled; not seen in game
 
 ## Subtasks
 1. task-159-01-chaser-anim-part-index — 3d
 2. task-159-02-chaser-part-index-unreal — bp (reimport, material)
 
 ## Relations
-- [[tasks-to-do-index]] — parent index.
+- [[tasks-done-index]] — parent index.
 - [[task-159-01-chaser-anim-part-index]] — step 1, 3d.
 - [[task-159-02-chaser-part-index-unreal]] — step 2, bp.

@@ -3,7 +3,7 @@ id: task-159-02-chaser-part-index-unreal
 description: "Reimport the part mesh with the PartId UV channel and read the part index from it in the animation material."
 parent: task-159-chaser-anim-part-index
 kind: task
-status: in-progress
+status: done
 ---
 # Chaser: part index UV in Unreal
 
@@ -16,11 +16,11 @@ status: in-progress
 - rules: save only the named assets; no SlateInspector, no Ctrl+S, no UI automation; never CaptureEditorImage; the existing asset cannot be re-imported through MCP import_file: close the editor ONLY with CloseMainWindow and only because I launched it this session, run the headless tool Tools/unreal/reimport_static_mesh.py (see tool-unreal-reimport), then relaunch the editor and wait for MCP; if the reimport result is 100x too large, stop and report; commit by name with message `task-159-02-chaser-part-index-unreal: <summary>`
 - editor_state: open
 - token_ceiling: open
-- model: open
-- tokens: open
-- runs: open
+- model: sonnet
+- tokens: input 56, cache write 78368, cache read 1593334, output 1662
+- runs: 1
 - milestone: M2
-- result: open
+- result: part index read from UV channel 2 PartId (engine reports 3 UV sets, 10 exact bins); material compiled; not seen in game
 
 ## Relations
 - [[task-159-chaser-anim-part-index]] — parent global task.
