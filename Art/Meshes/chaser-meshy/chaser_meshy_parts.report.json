@@ -740,7 +740,8 @@
    "open_edges": 0,
    "uv_layers": [
     "UVMap",
-    "LightMap"
+    "LightMap",
+    "PartId"
    ],
    "cap_faces": 27
   },
@@ -762,7 +763,8 @@
    "open_edges": 2,
    "uv_layers": [
     "UVMap",
-    "LightMap"
+    "LightMap",
+    "PartId"
    ],
    "cap_faces": 31
   },
@@ -784,7 +786,8 @@
    "open_edges": 0,
    "uv_layers": [
     "UVMap",
-    "LightMap"
+    "LightMap",
+    "PartId"
    ],
    "cap_faces": 22
   },
@@ -806,7 +809,8 @@
    "open_edges": 0,
    "uv_layers": [
     "UVMap",
-    "LightMap"
+    "LightMap",
+    "PartId"
    ],
    "cap_faces": 17
   },
@@ -828,7 +832,8 @@
    "open_edges": 4,
    "uv_layers": [
     "UVMap",
-    "LightMap"
+    "LightMap",
+    "PartId"
    ],
    "cap_faces": 8
   },
@@ -850,7 +855,8 @@
    "open_edges": 3,
    "uv_layers": [
     "UVMap",
-    "LightMap"
+    "LightMap",
+    "PartId"
    ],
    "cap_faces": 7
   },
@@ -872,7 +878,8 @@
    "open_edges": 0,
    "uv_layers": [
     "UVMap",
-    "LightMap"
+    "LightMap",
+    "PartId"
    ],
    "cap_faces": 16
   },
@@ -894,7 +901,8 @@
    "open_edges": 0,
    "uv_layers": [
     "UVMap",
-    "LightMap"
+    "LightMap",
+    "PartId"
    ],
    "cap_faces": 17
   },
@@ -916,7 +924,8 @@
    "open_edges": 3,
    "uv_layers": [
     "UVMap",
-    "LightMap"
+    "LightMap",
+    "PartId"
    ],
    "cap_faces": 6
   },
@@ -938,7 +947,8 @@
    "open_edges": 1,
    "uv_layers": [
     "UVMap",
-    "LightMap"
+    "LightMap",
+    "PartId"
    ],
    "cap_faces": 7
   }
@@ -1119,6 +1129,190 @@
   "scene_unit_scale_length": 1.0,
   "fbx_unit_scale_factor_in_file": 100.0
  },
+ "partid_uv_check": {
+  "layer": "PartId",
+  "rule": "both coordinates of every corner = (index + 0.5) / 10",
+  "order_expected": [
+   "UVMap",
+   "LightMap",
+   "PartId"
+  ],
+  "read_from_exported_fbx": {
+   "Pelvis": {
+    "corners": 729,
+    "expected": 0.05000000074505806,
+    "unique_u": [
+     0.05000000074505806
+    ],
+    "unique_v": [
+     0.05000000074505806
+    ],
+    "max_abs_error": 0.0,
+    "exact_float32": true
+   },
+   "HeadTorso": {
+    "corners": 2115,
+    "expected": 0.15000000596046448,
+    "unique_u": [
+     0.15000000596046448
+    ],
+    "unique_v": [
+     0.15000000596046448
+    ],
+    "max_abs_error": 0.0,
+    "exact_float32": true
+   },
+   "UpperArm_L": {
+    "corners": 480,
+    "expected": 0.25,
+    "unique_u": [
+     0.25
+    ],
+    "unique_v": [
+     0.25
+    ],
+    "max_abs_error": 0.0,
+    "exact_float32": true
+   },
+   "UpperArm_R": {
+    "corners": 384,
+    "expected": 0.3499999940395355,
+    "unique_u": [
+     0.3499999940395355
+    ],
+    "unique_v": [
+     0.3499999940395355
+    ],
+    "max_abs_error": 0.0,
+    "exact_float32": true
+   },
+   "ForearmHand_L": {
+    "corners": 888,
+    "expected": 0.44999998807907104,
+    "unique_u": [
+     0.44999998807907104
+    ],
+    "unique_v": [
+     0.44999998807907104
+    ],
+    "max_abs_error": 0.0,
+    "exact_float32": true
+   },
+   "ForearmHand_R": {
+    "corners": 894,
+    "expected": 0.550000011920929,
+    "unique_u": [
+     0.550000011920929
+    ],
+    "unique_v": [
+     0.550000011920929
+    ],
+    "max_abs_error": 0.0,
+    "exact_float32": true
+   },
+   "Thigh_L": {
+    "corners": 528,
+    "expected": 0.6499999761581421,
+    "unique_u": [
+     0.6499999761581421
+    ],
+    "unique_v": [
+     0.6499999761581421
+    ],
+    "max_abs_error": 0.0,
+    "exact_float32": true
+   },
+   "Thigh_R": {
+    "corners": 522,
+    "expected": 0.75,
+    "unique_u": [
+     0.75
+    ],
+    "unique_v": [
+     0.75
+    ],
+    "max_abs_error": 0.0,
+    "exact_float32": true
+   },
+   "ShinFoot_L": {
+    "corners": 1671,
+    "expected": 0.8500000238418579,
+    "unique_u": [
+     0.8500000238418579
+    ],
+    "unique_v": [
+     0.8500000238418579
+    ],
+    "max_abs_error": 0.0,
+    "exact_float32": true
+   },
+   "ShinFoot_R": {
+    "corners": 1578,
+    "expected": 0.949999988079071,
+    "unique_u": [
+     0.949999988079071
+    ],
+    "unique_v": [
+     0.949999988079071
+    ],
+    "max_abs_error": 0.0,
+    "exact_float32": true
+   }
+  },
+  "all_exact": true,
+  "uv_layer_order_per_part": {
+   "Pelvis": [
+    "UVMap",
+    "LightMap",
+    "PartId"
+   ],
+   "HeadTorso": [
+    "UVMap",
+    "LightMap",
+    "PartId"
+   ],
+   "UpperArm_L": [
+    "UVMap",
+    "LightMap",
+    "PartId"
+   ],
+   "UpperArm_R": [
+    "UVMap",
+    "LightMap",
+    "PartId"
+   ],
+   "ForearmHand_L": [
+    "UVMap",
+    "LightMap",
+    "PartId"
+   ],
+   "ForearmHand_R": [
+    "UVMap",
+    "LightMap",
+    "PartId"
+   ],
+   "Thigh_L": [
+    "UVMap",
+    "LightMap",
+    "PartId"
+   ],
+   "Thigh_R": [
+    "UVMap",
+    "LightMap",
+    "PartId"
+   ],
+   "ShinFoot_L": [
+    "UVMap",
+    "LightMap",
+    "PartId"
+   ],
+   "ShinFoot_R": [
+    "UVMap",
+    "LightMap",
+    "PartId"
+   ]
+  }
+ },
  "readback": {
   "objects": [
    "ForearmHand_L",
@@ -1171,7 +1365,8 @@
     ],
     "uv_layers": [
      "UVMap",
-     "LightMap"
+     "LightMap",
+     "PartId"
     ],
     "colour_attribute": "FLOAT_COLOR",
     "partindex_red_values": [
@@ -1212,7 +1407,8 @@
     ],
     "uv_layers": [
      "UVMap",
-     "LightMap"
+     "LightMap",
+     "PartId"
     ],
     "colour_attribute": "FLOAT_COLOR",
     "partindex_red_values": [
@@ -1253,7 +1449,8 @@
     ],
     "uv_layers": [
      "UVMap",
-     "LightMap"
+     "LightMap",
+     "PartId"
     ],
     "colour_attribute": "FLOAT_COLOR",
     "partindex_red_values": [
@@ -1294,7 +1491,8 @@
     ],
     "uv_layers": [
      "UVMap",
-     "LightMap"
+     "LightMap",
+     "PartId"
     ],
     "colour_attribute": "FLOAT_COLOR",
     "partindex_red_values": [
@@ -1335,7 +1533,8 @@
     ],
     "uv_layers": [
      "UVMap",
-     "LightMap"
+     "LightMap",
+     "PartId"
     ],
     "colour_attribute": "FLOAT_COLOR",
     "partindex_red_values": [
@@ -1376,7 +1575,8 @@
     ],
     "uv_layers": [
      "UVMap",
-     "LightMap"
+     "LightMap",
+     "PartId"
     ],
     "colour_attribute": "FLOAT_COLOR",
     "partindex_red_values": [
@@ -1417,7 +1617,8 @@
     ],
     "uv_layers": [
      "UVMap",
-     "LightMap"
+     "LightMap",
+     "PartId"
     ],
     "colour_attribute": "FLOAT_COLOR",
     "partindex_red_values": [
@@ -1458,7 +1659,8 @@
     ],
     "uv_layers": [
      "UVMap",
-     "LightMap"
+     "LightMap",
+     "PartId"
     ],
     "colour_attribute": "FLOAT_COLOR",
     "partindex_red_values": [
@@ -1499,7 +1701,8 @@
     ],
     "uv_layers": [
      "UVMap",
-     "LightMap"
+     "LightMap",
+     "PartId"
     ],
     "colour_attribute": "FLOAT_COLOR",
     "partindex_red_values": [
@@ -1540,7 +1743,8 @@
     ],
     "uv_layers": [
      "UVMap",
-     "LightMap"
+     "LightMap",
+     "PartId"
     ],
     "colour_attribute": "FLOAT_COLOR",
     "partindex_red_values": [
@@ -1575,17 +1779,17 @@
   "2 small connected fragments assigned to the nearest part"
  ],
  "timings_s": {
-  "load": 0.3,
-  "bisect": 0.3,
-  "caps": 0.02,
-  "components": 0.01,
-  "cap_uv": 0.02,
-  "parts": 0.1,
-  "clearance": 0.01,
-  "export": 0.06,
-  "readback": 0.2,
-  "silhouette": 7.3,
-  "renders": 2.42,
-  "total": 10.8
+  "load": 0.58,
+  "bisect": 0.59,
+  "caps": 0.03,
+  "components": 0.02,
+  "cap_uv": 0.04,
+  "parts": 0.16,
+  "clearance": 0.02,
+  "export": 0.1,
+  "readback": 0.39,
+  "silhouette": 8.7,
+  "renders": 2.37,
+  "total": 13.11
  }
 }

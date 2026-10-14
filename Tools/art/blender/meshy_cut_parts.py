@@ -532,6 +532,8 @@ for pi, name in enumerate(PARTS):
     b.to_mesh(me)
     b.free()
     me.shade_flat()
+    pid = me.uv_layers.new(name="PartId")      # task-159: third UV channel (Unreal UV2), every corner = ((index + 0.5) / 10, same); vertex colours do not survive the Unreal import
+    pid.data.foreach_set("uv", np.full(len(me.loops) * 2, (pi + 0.5) / 10.0, np.float32))
     me.materials.append(SRC_MAT)
     ca = me.color_attributes.new("PartIndex", "FLOAT_COLOR", "CORNER")
     col = np.tile(np.array([pi / 9.0, 0.0, 0.0, 1.0], np.float32), (len(me.loops), 1))
@@ -619,6 +621,7 @@ allv = []
 tot_tris = tot_v = 0
 colour_ok = True
 quant_ok = True
+PARTID_RB = {}
 for pi, name in enumerate(PARTS):
     o = by.get(name)
     if o is None:
@@ -640,6 +643,12 @@ for pi, name in enumerate(PARTS):
     q_ok = int(round(q8 / 255.0 * 9)) == pi
     quant_ok &= q_ok
     colour_ok &= exact
+    pidv = None
+    if "PartId" in me.uv_layers:
+        a_ = np.array([l.uv[:] for l in me.uv_layers["PartId"].data], np.float64)
+        e_ = float(np.float32((pi + 0.5) / 10.0))
+        pidv = dict(corners=len(a_), expected=e_, unique_u=np.unique(a_[:, 0]).tolist(), unique_v=np.unique(a_[:, 1]).tolist(), max_abs_error=float(np.abs(a_ - e_).max()), exact_float32=bool(np.abs(a_ - e_).max() < 1e-7))
+    PARTID_RB[name] = pidv
     RB["per_part"][name] = dict(tris=tr, vertices=len(me.vertices), world_origin_cm=[round(x, 3) for x in o.matrix_world.translation], local_location_cm=[round(x, 3) for x in o.location],
                                 bounds_min=[round(float(x), 2) for x in W.min(0)], bounds_max=[round(float(x), 2) for x in W.max(0)], uv_layers=[u.name for u in me.uv_layers],
                                 colour_attribute=(me.color_attributes["PartIndex"].data_type if cav is not None else None), partindex_red_values=red, partindex_alpha_values=alpha,
@@ -862,6 +871,9 @@ rep = dict(
     vertex_colour_check=dict(attribute="PartIndex", domain="CORNER", type="FLOAT_COLOR written; exported with colors_type LINEAR (no gamma); the FBX exporter stores the values as float32 (error below 1e-7)", expected_red="index / 9", all_parts_read_back_exact_tol_1e5=bool(colour_ok), file_float_values_exact_red_index_over_9=file_exact, file_values_per_part=FILE_COLOURS,
                              int8_roundtrip_all_ok=bool(quant_ok), int8_note="if a reader quantises to 8 bits: round(index/9*255) values " + str([int(round(i / 9 * 255)) for i in range(10)]) + " read back to index via round(v/255*9)"),
     export_settings=dict(**{k: (sorted(v) if isinstance(v, set) else v) for k, v in EXPORT.items()}, blender=bpy.app.version_string, scene_unit_scale_length=1.0, fbx_unit_scale_factor_in_file=usf),
+    partid_uv_check=dict(layer="PartId", rule="both coordinates of every corner = (index + 0.5) / 10", order_expected=["UVMap", "LightMap", "PartId"], read_from_exported_fbx=PARTID_RB,
+                         all_exact=bool(len(PARTID_RB) == 10 and all(v and v["exact_float32"] and len(v["unique_u"]) == 1 and len(v["unique_v"]) == 1 for v in PARTID_RB.values())),
+                         uv_layer_order_per_part={n: v["uv_layers"] for n, v in RB["per_part"].items()}),
     readback=RB, warnings=WARN, timings_s=dict(TIM, total=round(time.time() - T0, 2)),
 )
 with open(os.path.join(WO, OUT_NAME + ".report.json"), "w", encoding="utf-8") as f:
