@@ -189,7 +189,7 @@ def build(side=None):
     xa, xb, hw = 3.0, 22.0, h(0.076)
     rg = []
     for yy, ch in ((-hw, 0.5), (-hw + 0.5, 0.0), (hw - 0.5, 0.0), (hw, 0.5)):
-        pts = [(xb, zd(xb) - 0.8), (xb, zd(xb) + 0.8 - ch), (xb - ch, zd(xb) + 0.8), (xa + ch, zd(xa) + 0.8), (xa, zd(xa) + 0.8 - ch), (xa, zd(xa) - 0.8)]
+        pts = [(xb, zd(xb) - 0.1), (xb, zd(xb) + 0.8 - ch), (xb - ch, zd(xb) + 0.8), (xa + ch, zd(xa) + 0.8), (xa, zd(xa) + 0.8 - ch), (xa, zd(xa) - 0.1)]      # underside 0.1 cm under the hood plane, top 0.8 cm proud
         rg.append([ht.P(x, yy, z) for x, z in pts])
     ht.loft(rg, "yellow_body")
     # back (round 6): a tall centre tower (53 % of the back width) with chamfered top and bottom corners, two barrel-shaped side plates (41 % of the tower) with slanted tops, tapered bottoms, one facet change at 55 % of the height, two small yellow shoulder caps; seams 0.3 cm, dark only in the seams
