@@ -3,7 +3,7 @@ id: task-168-03-card-frames
 description: "Three neutral grey frame styles for stat cards, tinted by rarity in game; owner picks one, made 9-slice ready."
 parent: task-168-upgrade-card-design
 kind: task
-status: in-progress
+status: done
 ---
 # Upgrade cards: three frame styles
 
@@ -15,11 +15,11 @@ status: in-progress
 - done_when: Owner picked the derived frame and the A+C rarity display; three layer PNGs exist with measured margins; retained candidate, prompt, log, sheet and script committed.
 - editor_state: any
 - token_ceiling: open
-- model: open
-- tokens: open
-- runs: open
+- model: sonnet
+- tokens: input 54, cache write 129318, cache read 1126305, output 6970
+- runs: 3
 - milestone: M2
-- result: open
+- result: Phase 1 (3 styles x 2) rejected by the owner as too clean. Stat frame derived image-to-image from the owner-picked weapon frame without its header plate (20261014-141713-card-frames-1). Owner chose an A+C mix: three aligned layers in Art/UI/Cards/ (1086 x 1448): T_CardFrame_Stat (accents neutral, untinted), T_CardFrame_Stat_Accents and T_CardFrame_Stat_Glow (white, tinted by rarity); 9-slice margins left 226, right 230, top 173, bottom 185 px; builder Tools/art/card_frame_layers.js; sheet option-AC-mix.png. 48 credits. Commit 5971604.
 
 ## Relations
 - [[task-168-upgrade-card-design]] — parent global task.

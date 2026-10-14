@@ -278,6 +278,7 @@ kind: note
 | [[task-166-05-debris-not-visible]] | opus | 1 | 0k | 134k | 3816k | 27k |
 | [[task-169-02-weapon-card-frame]] | sonnet | 2 | 0k | 70k | 398k | 2k |
 | [[task-168-02-stat-icons]] | sonnet | 4 | 0k | 329k | 1636k | 5k |
+| [[task-168-03-card-frames]] | sonnet | 3 | 0k | 129k | 1126k | 7k |
 
 ## Totals
 | Scope | Input | Cache write | Cache read | Output |
