@@ -65,6 +65,24 @@ def paint_logo():
     bpy.data.images.remove(src)
 
 
+CAP = [(-9.0, 112.5), (-9.3, 117.0), (-7.0, 119.6), (-3.0, 119.8), (-3.0, 112.5)]          # small yellow shoulder cap behind and above the side plate (profile x, z)
+
+
+def plate2(ht, prof, rings, mat, sg=1.0):
+    """Back plate: rings across y = (y, top drop, bottom lift, barrel factor, rearward pull of the chamfer); the outer edge bows out at the top and curves in toward the bottom."""
+    zmin, zmax = min(p[1] for p in prof), max(p[1] for p in prof)
+    out = []
+    for y, dT, dB, yb, xb in rings:
+        ring = []
+        for x, z in prof:
+            f = (z - zmin) / (zmax - zmin)
+            wT, wB = f ** 4, (1 - f) ** 4
+            bow = yb * (0.5 * f ** 2 - 2.6 * (1 - f) ** 2)
+            ring.append(ht.P(x + xb * (wT + wB), sg * (abs(y) + bow) if y > 0 else y, z - dT * wT + dB * wB))
+        out.append(ring)
+    ht.loft(out, mat)
+
+
 def slab(ht, prof, spec):
     """Flat faceted back slab: rings across y; spec = (y, dx toward the block, z scale about the profile centre)."""
     zc = sum(p[1] for p in prof) / len(prof)
@@ -178,16 +196,18 @@ def build(side=None):
             rings_.append([ht.bm.verts.new(c_ + lat * u_ + dep * v_) for u_, v_ in ((hw_, -hd_), (hw_, hd_), (-hw_, hd_), (-hw_, -hd_))])
         ht.loft(rings_, "gunmetal")
 
-    # back: three flat faceted slabs, 0.3 cm seams, wide side slabs (about 40 % of the centre one), faceted bottoms right above the waist
+    # back (round 6): a tall centre tower (53 % of the back width) with chamfered top and bottom corners, two barrel-shaped side plates (41 % of the tower) with slanted tops, tapered bottoms, one facet change at 55 % of the height, two small yellow shoulder caps; seams 0.3 cm, dark only in the seams
     BACK = [(-7.0, h(0.664)), (-9.8, h(0.668)), (-10.2, h(0.760)), (-9.8, h(0.850)), (-7.6, h(0.905)), (-5.0, h(0.905))]
-    ht.profile(BACK, -14.6, 14.6, "gunmetal")
-    CEN = [(-7.0, h(0.664)), (-10.4, h(0.672)), (-11.6, h(0.740)), (-11.3, h(0.860)), (-9.2, h(0.930)), (-6.0, h(0.975)), (-3.0, h(0.975))]
-    SIDE = [(-7.0, h(0.664)), (-11.2, h(0.672)), (-12.4, h(0.745)), (-12.0, h(0.850)), (-9.0, h(0.900)), (-6.0, h(0.920)), (-5.0, h(0.920))]
-    cw = h(0.060)
-    slab(ht, CEN, [(-cw, 0.6, 0.93), (-cw + 0.5, 0.0, 1.0), (cw - 0.5, 0.0, 1.0), (cw, 0.6, 0.93)])
-    y0, y1 = cw + 0.3, 14.9
+    ht.profile(BACK, -8.6, 8.6, "gunmetal")
+    TW = 7.9                                        # tower half width
+    ZT = 123.0
+    TOWER = [(-7.0, h(0.664)), (-10.4, h(0.672)), (-11.6, 91.8), (-11.9, 104.7), (-10.9, 118.0), (-8.0, ZT), (-1.0, ZT)]       # facet change at 104.7 (55 % of 82.3..123)
+    plate2(ht, TOWER, [(-TW, 2.4, 1.5, 0, 0.7), (-TW + 1.0, 0.0, 0.0, 0, 0.0), (TW - 1.0, 0.0, 0.0, 0, 0.0), (TW, 2.4, 1.5, 0, 0.7)], "yellow_body")
+    SIDE = [(-7.0, h(0.664)), (-11.0, 83.2), (-12.4, 91.0), (-12.2, 100.3), (-11.2, 108.7), (-9.5, 115.0), (-5.0, 115.0)]
+    y0 = TW + 0.3
     for sg in (1, -1):
-        slab(ht, SIDE, [(sg * y0, 0.6, 0.93), (sg * (y0 + 0.5), 0.0, 1.0), (sg * (y1 - 1.0), 0.0, 1.0), (sg * y1, 3.0, 0.88)])
+        plate2(ht, SIDE, [(y0, 0.0, 0.0, 0.0, 0.0), (11.4, 1.0, 0.0, 0.4, 0.0), (13.8, 2.4, 0.5, 1.0, 0.4), (14.6, 3.4, 1.5, 1.0, 0.8)], "yellow_body", sg)
+        plate2(ht, CAP, [(11.4, 0.0, 0.0, 0.0, 0.0), (14.0, 1.6, 0.0, 0.0, 0.4), (14.6, 2.6, 0.0, 0.0, 0.8)], "yellow_body", sg)
 
     # shoulder joints: small dark octagonal masses sunk behind the arm line, in a vertical dark channel
     for sg in (1, -1):
