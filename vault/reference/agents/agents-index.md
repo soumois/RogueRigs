@@ -23,6 +23,7 @@ Planned, not written yet: agent-balance, agent-animation, agent-sound, agent-qa 
 - [[agent-style-guide]] — the critic: verdict and correction per item against numbered rules.
 - [[agent-art]] — image prompts and candidate images with GPT Image 2 through Kie.ai (`Tools/art/kie_image.js`).
 - [[agent-3d]] — validated image to cleaned FBX through Meshy and headless Blender (`Tools/art/`).
+- [[cloud-session-git]] — committing, tagging and pushing from a cloud session linked to the PC: lock files, identity, trailers; open before a commit from the cloud.
 - [[orchestration-protocol]] — the step-by-step procedure the Orchestrator follows for every request, including resume after a limit.
 - [[orchestrator-runbook]] — the commands that work: git, editor start and stop, delegation prompt, closing a subtask, dashboard.
 - [[orchestrator-lessons]] — bp agent and MCP limits, visual checks, measuring, owner preferences.

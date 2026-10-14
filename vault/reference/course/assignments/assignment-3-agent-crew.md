@@ -17,7 +17,7 @@ kind: note
 | Architecture diagram | 1.0 | faithful Mermaid |
 | README | 1.0 | describes the crew, its purpose, its link to the game |
 
-- Submitted: the repo at git tag `a3-submission`; README copy in `assignments/A3-agent-crew/`. Crew: orchestrator, level-design, cpp, bp ([[agents-index]]).
+- Submitted: the repo at commit `b119b86`, git tag `a3-submission`; README copy in `assignments/A3-agent-crew/`. Crew: orchestrator, level-design, cpp, bp ([[agents-index]]).
 
 ## Relations
 - [[assignments-index]] — parent index.

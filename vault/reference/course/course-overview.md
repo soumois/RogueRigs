@@ -22,6 +22,7 @@ Game 50 % · multi-agent AI pipeline 20 % · technical quality 10 % · presentat
 - A private repo must give the instructor access (his GitHub account is on Discord).
 - Each assignment has its own folder and README under `assignments/`; the root README carries the assignment table at the top and no assignment history.
 - Code that does not run scores 0 on every criterion (stated for Assignment 4).
+- A README is never cut down without the owner's agreement: update history, captures and GIFs stay (owner rule, 2026-10-14). The README of an assignment is judged and must be complete on its own.
 
 ## Relations
 - [[course-index]] — parent index.
