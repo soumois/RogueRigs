@@ -1,0 +1,127 @@
+{
+ "inputs": {
+  "fbx": "chaser_meshy_fixed.fbx",
+  "texture": "chaser_meshy_fixed_basecolor.png",
+  "input_height_units": 1.89992,
+  "input_triangles": 3115,
+  "input_vertices": 1534
+ },
+ "outputs": {
+  "fbx": "chaser_meshy_game.fbx",
+  "texture_referenced": "chaser_meshy_fixed_basecolor.png",
+  "embedded": false
+ },
+ "scale_factor": 64.739668,
+ "rotation_about_z_deg": 90,
+ "applied_origin_offset_cm": [
+  0.5463,
+  0.0128,
+  61.507
+ ],
+ "feet_midpoint_before_offset_cm": [
+  -0.5463,
+  -0.0128
+ ],
+ "feet_definition": "vertices within 3 percent of the height above the sole; midpoint = centre of their x/y bounding box",
+ "export_settings": {
+  "use_selection": true,
+  "object_types": [
+   "MESH"
+  ],
+  "apply_scale_options": "FBX_SCALE_NONE",
+  "global_scale": 1.0,
+  "axis_forward": "-Z",
+  "axis_up": "Y",
+  "mesh_smooth_type": "OFF",
+  "add_leaf_bones": false,
+  "path_mode": "RELATIVE",
+  "embed_textures": false,
+  "blender": "5.2.2 LTS",
+  "scene_unit_scale_length": 1.0
+ },
+ "axis_note": "Blender side: X forward (robot front, red eye), Y left, Z up. Exporter axis_forward=-Z, axis_up=Y (Blender default): the file is Y-up and Unreal's importer maps it back to X forward, Z up with the handedness mirror; no extra rotation or scale at import (uniform scale 1). Not verified in Unreal (nothing imported).",
+ "fbx_unit_scale_factor_in_file": 1.0,
+ "readback": {
+  "blender_import": "default settings",
+  "bounds_min_cm": [
+   -17.26,
+   -36.868,
+   -0.0
+  ],
+  "bounds_max_cm": [
+   17.827,
+   36.829,
+   123.0
+  ],
+  "size_cm": [
+   35.087,
+   73.696,
+   123.0
+  ],
+  "height_cm": 123.0,
+  "triangles": 3115,
+  "vertices": 1534,
+  "objects": 1,
+  "object_name": "SM_Chaser_Meshy",
+  "material_slots": [
+   "meshy_chaser"
+  ],
+  "uv_layers": [
+   "UVMap",
+   "LightMap"
+  ],
+  "texture_paths": [
+   "C:\\Users\\soumo\\AppData\\Local\\Temp\\rr-meshy2\\work\\game_out\\chaser_meshy_fixed_basecolor.png"
+  ],
+  "flat_shaded": false
+ },
+ "forward_axis_check": {
+  "red_eye_faces": 118,
+  "red_eye_centroid_cm": [
+   7.5,
+   -0.15,
+   99.15
+  ],
+  "mesh_centroid_cm": [
+   -3.59,
+   0.31,
+   66.07
+  ],
+  "red_eye_on_plus_x": true,
+  "left_plus_y_note": "rotation +90 deg about Z maps the robot left (+X in the input) to +Y"
+ },
+ "feet_midpoint_after_cm": [
+  0.0,
+  0.0
+ ],
+ "geometry_check": {
+  "vertices_equal": true,
+  "triangles_equal": true,
+  "max_vertex_error_cm_vs_expected": 2.21205359896004e-05,
+  "uv0_max_abs_diff_vs_input": 0.0
+ },
+ "lightmap": {
+  "layer": "LightMap",
+  "atlas_px": 2048,
+  "faces": 3115,
+  "island_scale_px_per_cm": 8.32882,
+  "method": "one island per face, shelf packed, bbox test",
+  "overlapping_face_pairs_bbox": 0,
+  "min_gap_px": 2.0,
+  "min_border_px": 2.0,
+  "bounds_min": 0.00098,
+  "bounds_max": 0.99902,
+  "uv_area_fraction": 0.3226,
+  "pass": true
+ },
+ "warnings": [],
+ "timings_s": {
+  "load": 0.29,
+  "transform": 0.01,
+  "lightmap": 0.07,
+  "lightmap_check": 0.05,
+  "export": 0.05,
+  "readback": 0.92,
+  "total": 1.4
+ }
+}
