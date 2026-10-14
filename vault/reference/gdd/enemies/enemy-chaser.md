@@ -13,6 +13,7 @@ status: approved
 - parts (provisional, owner 2026-10-13): 10 rigid parts: head and torso as ONE block (red eye and logo plate on its front, as on the validated sheet vault/assets/chaser-turnaround.png), pelvis, 2 upper arms, 2 forearms with hand, 2 thighs, 2 lower legs with foot (the first list said 13 by a counting error: its items made 11, and the sheet shows head and torso as one block); the same part meshes feed the death effect ([[enemy-death]])
 - size: small; 0.7 × the miner (provisional, owner 2026-10-02)
 - animations (provisional, owner 2026-10-13): two clips: run (loop) and attack (0.1 s wind-up, then the strike); death is the Niagara parts effect, hits are a flash. Technique: baked animation texture (one transform per part and per frame, played by the material), no skeletal mesh at run time; look-alike pipeline in [[asset-pipeline]]
+- animations_interim (provisional, owner 2026-10-13): interim static mesh in the game from 2026-10-13 (the model is imported as one static mesh, SM_Chaser; the parts and the baked texture animation are still to do)
 - behavior: moves straight toward the miner; no line-of-sight requirement.
 - telegraph: 0.1 s wind-up (the robot stops and flashes) before each hit (owner 2026-10-02, was 0.25 s)
 - colors: bright company yellow; red eyes, yellow logo plate ([[color-code]])
