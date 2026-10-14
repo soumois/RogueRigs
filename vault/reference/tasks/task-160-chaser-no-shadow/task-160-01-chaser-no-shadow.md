@@ -3,7 +3,7 @@ id: task-160-01-chaser-no-shadow
 description: "Stop the chaser from casting a shadow: BodyMesh and the shield shell cast no shadow."
 parent: task-160-chaser-no-shadow
 kind: task
-status: in-progress
+status: done
 ---
 # Chaser: no cast shadow
 
@@ -15,11 +15,11 @@ status: in-progress
 - done_when: Both Blueprints compile and save; the values read back; the docs updated; the editor stays open; the owner is told to look at the ground under a chaser in game (no shadow)
 - editor_state: open
 - token_ceiling: open
-- model: open
-- tokens: open
-- runs: open
+- model: sonnet
+- tokens: input 86, cache write 127598, cache read 1773820, output 1232
+- runs: 3
 - milestone: M2
-- result: open
+- result: BodyMesh and ShieldShell cast no shadow (six properties false), BPs saved; editor was closed once, edit redone
 
 ## Relations
 - [[task-160-chaser-no-shadow]] — parent global task.

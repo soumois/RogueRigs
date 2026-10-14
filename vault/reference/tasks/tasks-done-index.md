@@ -168,3 +168,4 @@ Archive: it exceeds the index size limits of [[_authoring]] on purpose (owner, 2
 - [[task-157-chaser-run-attack-animation]] — Animate the Meshy chaser in the game with a run loop and an attack clip, using a baked animation texture played by the material. Status done.
 - [[task-158-chaser-glow-mask-fix]] — Stop the whole chaser from glowing: only the red parts of the texture may emit light. Status done.
 - [[task-159-chaser-anim-part-index]] — Make the chaser animation move each part separately: carry the part index in a UV channel instead of vertex colours. Status done.
+- [[task-160-chaser-no-shadow]] — Stop the chaser from casting a shadow: BodyMesh and the shield shell cast no shadow. Status done.

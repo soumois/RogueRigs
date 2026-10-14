@@ -1,9 +1,9 @@
 ---
 id: task-160-chaser-no-shadow
 description: "Global task: Stop the chaser from casting a shadow: BodyMesh and the shield shell cast no shadow."
-parent: tasks-to-do-index
+parent: tasks-done-index
 kind: task
-status: in-progress
+status: done
 ---
 # Chaser: no cast shadow
 
@@ -13,12 +13,12 @@ status: in-progress
 - gdd_check: done by the Orchestrator when the task is planned (2026-10-14).
 - confirmed_by_owner: yes (2026-10-14)
 - milestone: M2
-- next_step: task-160-01-chaser-no-shadow
-- result: open
+- next_step: none
+- result: Done. BodyMesh and ShieldShell cast no shadow (six properties false), BPs saved; editor was closed once, edit redone
 
 ## Subtasks
 1. task-160-01-chaser-no-shadow — bp
 
 ## Relations
-- [[tasks-to-do-index]] — parent index.
+- [[tasks-done-index]] — parent index.
 - [[task-160-01-chaser-no-shadow]] — step 1, bp.
