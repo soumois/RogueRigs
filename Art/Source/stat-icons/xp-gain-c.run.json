@@ -1,0 +1,35 @@
+{
+  "run_id": "20261014-141710-stat-icons",
+  "asset": "stat-icons",
+  "model": "gpt-image-2-text-to-image",
+  "aspect_ratio": "1:1",
+  "resolution": "1K",
+  "variants": 2,
+  "prompt_file": "Art/Source/stat-icons/prompts/xp-gain-c.txt",
+  "prompt": "A single game UI stat icon: a flat pure white silhouette symbol with a thin dark charcoal outline, chunky blocky shapes with a few large flat facets in the same flat-shaded low-poly, mechanical spirit as chunky generic gun-anatomy weapon icons, bold simple shape that stays readable at 64 px, centred with generous margin, filling about 60 percent of the frame. Solid flat pure magenta (#FF00FF) background, uniform, no gradient, no shadow, no glow. No numbers, no UI frame, no colours other than white, charcoal outline and the magenta background. The only text allowed is the two capital letters X and P.\n\nMotif: the two capital letters \"X\" and \"P\" side by side, as bold chunky faceted low-poly white block letterforms, with one bold up arrow rising to the right of the letters. Exactly two letters, X then P, no other text.",
+  "refs": [],
+  "tasks": [
+    {
+      "task_id": "25a7b27ea40c100e485b93e5d60a80cb",
+      "state": "success",
+      "credits": 6,
+      "error": null,
+      "result_urls": [
+        "https://tempfile.aiquickdraw.com/images/chatgpt/file_0000000037b481f986c7c5740350a22c.png"
+      ]
+    },
+    {
+      "task_id": "7e31980ba1f75b81a3eca4f68fb05283",
+      "state": "success",
+      "credits": 6,
+      "error": null,
+      "result_urls": [
+        "https://tempfile.aiquickdraw.com/images/chatgpt/file_00000000831c822f8caa1a438f9b0f0e.png"
+      ]
+    }
+  ],
+  "files": [
+    "Art/Source/stat-icons/20261014-141710-stat-icons-1.png",
+    "Art/Source/stat-icons/20261014-141710-stat-icons-2.png"
+  ]
+}
