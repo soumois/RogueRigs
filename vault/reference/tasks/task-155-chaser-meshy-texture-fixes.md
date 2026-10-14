@@ -1,6 +1,6 @@
 ---
 id: task-155-chaser-meshy-texture-fixes
-description: "Global task: Correct the texture of the optimised Meshy chaser: shoulder-to-torso joints fully dark, and the hood logo replaced by the company emblem (yellow on black, smooth)."
+description: "Correct the optimised Meshy chaser texture: dark shoulder-to-torso joints, and the company emblem as hood logo."
 parent: tasks-to-do-index
 kind: task
 status: in-progress
