@@ -3,7 +3,7 @@ id: task-168-05-upgrade-choice-layout
 description: "Rebuild the stat cards of WBP_UpgradeChoice: large cards, icons, effect, target, lore, rarity-tinted accents and inner glow, reroll below."
 parent: task-168-upgrade-card-design
 kind: task
-status: todo
+status: in-progress
 ---
 # Upgrade cards: WBP_UpgradeChoice layout
 
