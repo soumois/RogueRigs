@@ -1,0 +1,351 @@
+{
+  "source": "Art/Meshes/chaser-meshy/chaser_meshy_parts.fbx",
+  "texture": "chaser_meshy_fixed_basecolor.png",
+  "offset_convention": "centre_offset_cm_unreal = (x, -y, z) of the piece bounds centre in the rest-pose Blender world (cm, origin at the floor between the feet, front +X, robot left +Y, Z up). The FBX is exported with the Blender default axes (forward -Z, up Y) which Unreal imports with X and Z kept and Y mirrored; the chaser pipeline mirrors Y the same way (ChaserAnimWPO). So the robot's left (+Y Blender) is -Y in Unreal. Mesh pivot = bounds centre, so the piece's Unreal location at rest = this offset.",
+  "units": "cm",
+  "pieces": [
+    {
+      "index": 0,
+      "name": "SM_ChaserDebris_Torso",
+      "file": "SM_ChaserDebris_Torso.fbx",
+      "triangles": 948,
+      "source_parts": [
+        "HeadTorso",
+        "Pelvis"
+      ],
+      "centre_offset_cm_unreal": [
+        0.28,
+        0.06,
+        97.52
+      ],
+      "size_cm": [
+        35.09,
+        36.01,
+        50.95
+      ],
+      "uv_layers": [
+        "UVMap"
+      ],
+      "materials": [
+        "meshy_chaser"
+      ]
+    },
+    {
+      "index": 1,
+      "name": "SM_ChaserDebris_UpperArm_L",
+      "file": "SM_ChaserDebris_UpperArm_L.fbx",
+      "triangles": 160,
+      "source_parts": [
+        "UpperArm_L"
+      ],
+      "centre_offset_cm_unreal": [
+        -8.26,
+        -22.87,
+        102.46
+      ],
+      "size_cm": [
+        13.54,
+        15.59,
+        23.38
+      ],
+      "uv_layers": [
+        "UVMap"
+      ],
+      "materials": [
+        "meshy_chaser"
+      ]
+    },
+    {
+      "index": 2,
+      "name": "SM_ChaserDebris_UpperArm_R",
+      "file": "SM_ChaserDebris_UpperArm_R.fbx",
+      "triangles": 128,
+      "source_parts": [
+        "UpperArm_R"
+      ],
+      "centre_offset_cm_unreal": [
+        -8.46,
+        23.19,
+        103.43
+      ],
+      "size_cm": [
+        13.06,
+        15.48,
+        20.75
+      ],
+      "uv_layers": [
+        "UVMap"
+      ],
+      "materials": [
+        "meshy_chaser"
+      ]
+    },
+    {
+      "index": 3,
+      "name": "SM_ChaserDebris_Forearm_L",
+      "file": "SM_ChaserDebris_Forearm_L.fbx",
+      "triangles": 296,
+      "source_parts": [
+        "ForearmHand_L"
+      ],
+      "centre_offset_cm_unreal": [
+        -4.92,
+        -30.29,
+        77.73
+      ],
+      "size_cm": [
+        19.69,
+        13.07,
+        40.78
+      ],
+      "uv_layers": [
+        "UVMap"
+      ],
+      "materials": [
+        "meshy_chaser"
+      ]
+    },
+    {
+      "index": 4,
+      "name": "SM_ChaserDebris_Forearm_R",
+      "file": "SM_ChaserDebris_Forearm_R.fbx",
+      "triangles": 298,
+      "source_parts": [
+        "ForearmHand_R"
+      ],
+      "centre_offset_cm_unreal": [
+        -4.94,
+        30.32,
+        77.84
+      ],
+      "size_cm": [
+        19.67,
+        13.1,
+        41.07
+      ],
+      "uv_layers": [
+        "UVMap"
+      ],
+      "materials": [
+        "meshy_chaser"
+      ]
+    },
+    {
+      "index": 5,
+      "name": "SM_ChaserDebris_Arm_L",
+      "file": "SM_ChaserDebris_Arm_L.fbx",
+      "triangles": 456,
+      "source_parts": [
+        "UpperArm_L",
+        "ForearmHand_L"
+      ],
+      "centre_offset_cm_unreal": [
+        -5.05,
+        -25.95,
+        85.75
+      ],
+      "size_cm": [
+        19.96,
+        21.75,
+        56.8
+      ],
+      "uv_layers": [
+        "UVMap"
+      ],
+      "materials": [
+        "meshy_chaser"
+      ]
+    },
+    {
+      "index": 6,
+      "name": "SM_ChaserDebris_Arm_R",
+      "file": "SM_ChaserDebris_Arm_R.fbx",
+      "triangles": 426,
+      "source_parts": [
+        "UpperArm_R",
+        "ForearmHand_R"
+      ],
+      "centre_offset_cm_unreal": [
+        -5.04,
+        26.16,
+        85.56
+      ],
+      "size_cm": [
+        19.89,
+        21.42,
+        56.5
+      ],
+      "uv_layers": [
+        "UVMap"
+      ],
+      "materials": [
+        "meshy_chaser"
+      ]
+    },
+    {
+      "index": 7,
+      "name": "SM_ChaserDebris_Thigh_L",
+      "file": "SM_ChaserDebris_Thigh_L.fbx",
+      "triangles": 176,
+      "source_parts": [
+        "Thigh_L"
+      ],
+      "centre_offset_cm_unreal": [
+        -3.93,
+        -10.77,
+        69.05
+      ],
+      "size_cm": [
+        13.22,
+        10.37,
+        29.39
+      ],
+      "uv_layers": [
+        "UVMap"
+      ],
+      "materials": [
+        "meshy_chaser"
+      ]
+    },
+    {
+      "index": 8,
+      "name": "SM_ChaserDebris_Thigh_R",
+      "file": "SM_ChaserDebris_Thigh_R.fbx",
+      "triangles": 174,
+      "source_parts": [
+        "Thigh_R"
+      ],
+      "centre_offset_cm_unreal": [
+        -3.93,
+        10.83,
+        68.76
+      ],
+      "size_cm": [
+        13.18,
+        10.48,
+        29.88
+      ],
+      "uv_layers": [
+        "UVMap"
+      ],
+      "materials": [
+        "meshy_chaser"
+      ]
+    },
+    {
+      "index": 9,
+      "name": "SM_ChaserDebris_LowerLeg_L",
+      "file": "SM_ChaserDebris_LowerLeg_L.fbx",
+      "triangles": 557,
+      "source_parts": [
+        "ShinFoot_L"
+      ],
+      "centre_offset_cm_unreal": [
+        -0.0,
+        -14.15,
+        31.65
+      ],
+      "size_cm": [
+        26.98,
+        15.19,
+        63.29
+      ],
+      "uv_layers": [
+        "UVMap"
+      ],
+      "materials": [
+        "meshy_chaser"
+      ]
+    },
+    {
+      "index": 10,
+      "name": "SM_ChaserDebris_LowerLeg_R",
+      "file": "SM_ChaserDebris_LowerLeg_R.fbx",
+      "triangles": 526,
+      "source_parts": [
+        "ShinFoot_R"
+      ],
+      "centre_offset_cm_unreal": [
+        0.04,
+        14.2,
+        30.09
+      ],
+      "size_cm": [
+        26.9,
+        15.19,
+        60.18
+      ],
+      "uv_layers": [
+        "UVMap"
+      ],
+      "materials": [
+        "meshy_chaser"
+      ]
+    },
+    {
+      "index": 11,
+      "name": "SM_ChaserDebris_Leg_L",
+      "file": "SM_ChaserDebris_Leg_L.fbx",
+      "triangles": 733,
+      "source_parts": [
+        "Thigh_L",
+        "ShinFoot_L"
+      ],
+      "centre_offset_cm_unreal": [
+        -0.0,
+        -13.67,
+        41.87
+      ],
+      "size_cm": [
+        26.98,
+        16.16,
+        83.74
+      ],
+      "uv_layers": [
+        "UVMap"
+      ],
+      "materials": [
+        "meshy_chaser"
+      ]
+    },
+    {
+      "index": 12,
+      "name": "SM_ChaserDebris_Leg_R",
+      "file": "SM_ChaserDebris_Leg_R.fbx",
+      "triangles": 700,
+      "source_parts": [
+        "Thigh_R",
+        "ShinFoot_R"
+      ],
+      "centre_offset_cm_unreal": [
+        0.04,
+        13.69,
+        41.85
+      ],
+      "size_cm": [
+        26.9,
+        16.2,
+        83.71
+      ],
+      "uv_layers": [
+        "UVMap"
+      ],
+      "materials": [
+        "meshy_chaser"
+      ]
+    }
+  ],
+  "part_triangles": {
+    "ForearmHand_L": 296,
+    "ForearmHand_R": 298,
+    "HeadTorso": 705,
+    "Pelvis": 243,
+    "ShinFoot_L": 557,
+    "ShinFoot_R": 526,
+    "Thigh_L": 176,
+    "Thigh_R": 174,
+    "UpperArm_L": 160,
+    "UpperArm_R": 128
+  },
+  "sum_parts_triangles": 3263
+}
