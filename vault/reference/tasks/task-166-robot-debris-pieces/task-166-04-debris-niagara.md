@@ -3,7 +3,7 @@ id: task-166-04-debris-niagara
 description: "Build NS_RobotDebris to the C++ contract and wire it with the 13 pieces on BP_Chaser and BP_ShieldChaser."
 parent: task-166-robot-debris-pieces
 kind: task
-status: todo
+status: in-progress
 ---
 # Robot debris: Niagara system and Blueprint wiring
 

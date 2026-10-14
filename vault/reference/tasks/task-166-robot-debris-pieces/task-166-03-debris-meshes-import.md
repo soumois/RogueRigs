@@ -3,7 +3,7 @@ id: task-166-03-debris-meshes-import
 description: "Import the 13 chaser debris piece meshes into Unreal and make the debris material: chaser base colour, no animation WPO, no glow."
 parent: task-166-robot-debris-pieces
 kind: task
-status: in-progress
+status: done
 ---
 # Robot debris: import meshes and material
 
@@ -15,11 +15,11 @@ status: in-progress
 - done_when: The 13 meshes and the material exist and read back (bounds in cm, material slot, usage flag); saved and committed by path; doc updated; the editor stays open
 - editor_state: open
 - token_ceiling: open
-- model: open
-- tokens: open
-- runs: open
+- model: sonnet
+- tokens: input 62, cache write 70491, cache read 1457931, output 15195
+- runs: 1
 - milestone: M3
-- result: open
+- result: 13 SM_ChaserDebris_* + M_ChaserDebris (opaque, T_Chaser_Meshy_BaseColor, no WPO/emissive, Niagara mesh usage) in /Game/RogueRigs/Art/Chaser/Debris, bounds in cm, Nanite off, collisions removed; lightmap UV generation not verifiable through MCP (harmless); commit 57ab7ef
 
 ## Relations
 - [[task-166-robot-debris-pieces]] — parent global task.
