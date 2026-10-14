@@ -3,7 +3,7 @@ id: task-151-04-chaser-refine
 description: "Refine the chaser model with the spare triangle budget: calves, hands, block, arms, legs, feet, logo contrast."
 parent: task-151-chaser-robot
 kind: task
-status: in-progress
+status: done
 ---
 # Chaser: refinement pass
 
@@ -31,11 +31,11 @@ status: in-progress
 - outputs: the same files updated (Tools/art/blender/chaser_model.py, Art/Meshes/chaser/SM_Chaser_parts.fbx, SM_Chaser_parts.report.json with the refinement object: returns_used, each criterion C1 to C17 verdict and evidence, silhouette differences, tris per part, what changed on the calves and the hands), new renders in Art/Meshes/chaser/ (not committed), including the compare images for front, side and back and a close-up render of one hand and one calf (ortho, two views each) opened and judged.
 - editor_state: closed
 - token_ceiling: open
-- model: open
-- tokens: open
-- runs: open
+- model: sonnet
+- tokens: input 70, cache write 142982, cache read 2886985, output 15966
+- runs: 1
 - milestone: M2
-- result: open
+- result: Refinement of the monolithic model: 2056 tris, calves and hands rebuilt, C13 (back plates) still failing; saved as git tag backup-chaser-monolithic; owner chose the part-by-part rework next.
 
 ## Relations
 - [[task-151-chaser-robot]] — parent global task.
