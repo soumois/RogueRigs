@@ -1,9 +1,9 @@
 ---
 id: task-164-chaser-run-desync
 description: "Global task: Make the chasers run out of step: no two chasers should show the same run pose at the same time."
-parent: tasks-to-do-index
+parent: tasks-done-index
 kind: task
-status: in-progress
+status: done
 ---
 # Chaser: runs not synchronised
 
@@ -13,12 +13,12 @@ status: in-progress
 - gdd_check: done by the Orchestrator when the task is planned (2026-10-14).
 - confirmed_by_owner: yes (2026-10-14)
 - milestone: M2
-- next_step: task-164-01-chaser-run-desync
-- result: open
+- next_step: none
+- result: phase spread 2.0 s (RunPhaseSpread); no desync bug found: each chaser already had its own start value, simultaneous spawns show different poses; cost not recorded (agent resumed)
 
 ## Subtasks
 1. task-164-01-chaser-run-desync — cpp
 
 ## Relations
-- [[tasks-to-do-index]] — parent index.
+- [[tasks-done-index]] — parent index.
 - [[task-164-01-chaser-run-desync]] — step 1, cpp.

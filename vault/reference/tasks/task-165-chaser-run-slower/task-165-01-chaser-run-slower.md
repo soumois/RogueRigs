@@ -3,7 +3,7 @@ id: task-165-01-chaser-run-slower
 description: "Slow the chaser run animation by 30 percent (playback rate 0.7), as a tunable material parameter."
 parent: task-165-chaser-run-slower
 kind: task
-status: todo
+status: in-progress
 ---
 # Chaser: slower run animation
 

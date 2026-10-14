@@ -172,3 +172,4 @@ Archive: it exceeds the index size limits of [[_authoring]] on purpose (owner, 2
 - [[task-161-chaser-cut-pose-check]] — Check the part cut of the chaser and render four fixed run poses from the baked animation data. Status done.
 - [[task-162-chaser-anim-game-look]] — See what the animated chaser really looks like in the game: run the game, spawn chasers near the miner and take screenshots over time. Status done.
 - [[task-163-chaser-anim-lightmap-fix]] — Fix the chaser animation: the engine lightmap UVs overwrite the part index in UV channel 2. Status done.
+- [[task-164-chaser-run-desync]] — Make the chasers run out of step: no two chasers should show the same run pose at the same time. Status done.

@@ -3,7 +3,7 @@ id: task-164-01-chaser-run-desync
 description: "Make the chasers run out of step: no two chasers should show the same run pose at the same time."
 parent: task-164-chaser-run-desync
 kind: task
-status: in-progress
+status: done
 ---
 # Chaser: runs not synchronised
 
@@ -19,7 +19,7 @@ status: in-progress
 - tokens: open
 - runs: open
 - milestone: M2
-- result: open
+- result: phase spread 2.0 s (RunPhaseSpread); no desync bug found: each chaser already had its own start value, simultaneous spawns show different poses; cost not recorded (agent resumed)
 
 ## Relations
 - [[task-164-chaser-run-desync]] — parent global task.
