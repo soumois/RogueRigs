@@ -13,12 +13,14 @@ status: in-progress
 - gdd_check: done by the Orchestrator when the task is planned (2026-10-14).
 - confirmed_by_owner: yes (2026-10-14)
 - milestone: M3
-- next_step: task-174-01-debris-regression
+- next_step: task-174-02-debris-position-fix
 - result: open
 
 ## Subtasks
 1. task-174-01-debris-regression — cpp
+2. task-174-02-debris-position-fix — bp
 
 ## Relations
 - [[tasks-to-do-index]] — parent index.
 - [[task-174-01-debris-regression]] — step 1, cpp.
+- [[task-174-02-debris-position-fix]] — step 2, bp.

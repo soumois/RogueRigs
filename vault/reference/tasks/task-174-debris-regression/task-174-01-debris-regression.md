@@ -3,7 +3,7 @@ id: task-174-01-debris-regression
 description: "Find with a real game run why debris pieces no longer show after tasks 170 to 173, and name the exact fix."
 parent: task-174-debris-regression
 kind: task
-status: in-progress
+status: done
 ---
 # Robot debris: regression, pieces no longer visible
 
@@ -15,11 +15,11 @@ status: in-progress
 - done_when: Cause proven by values from a run; the commit that introduced it named; the fix stated precisely; nothing committed unless a C++ fix without build was possible
 - editor_state: any
 - token_ceiling: open
-- model: open
-- tokens: open
-- runs: open
+- model: opus
+- tokens: input 52, cache write 79202, cache read 1183928, output 15140
+- runs: 1
 - milestone: M3
-- result: open
+- result: Cause proven: task-172 Position expression max(float3,float3) compiles to one scalar, so spawn = (s,s,s) near the world origin (dump Previous.Position (103.6,103.6,103.6) vs robot at (8550,8100,0)); C++ and other modules fine; fix: drop the max, clamp Z in a separate scalar module (bp)
 
 ## Relations
 - [[task-174-debris-regression]] — parent global task.
