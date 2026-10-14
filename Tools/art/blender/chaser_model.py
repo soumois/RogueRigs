@@ -1,4 +1,4 @@
-"""Chaser robot, ten rigid parts (Blender route, task-151-03). Headless:
+"""Chaser robot, ten rigid parts (Blender route, task-151-03, refined in task-151-04). Headless:
   "$BLENDER_EXE" -b --factory-startup -P Tools/art/blender/chaser_model.py -- --out Art/Meshes/chaser/SM_Chaser_parts.fbx [--render-dir Art/Meshes/chaser]
 Units: 1 Blender unit = 1 cm. Height H = 124 cm = 2 x 62 (ARRChaser capsule half height 62, BP_Chaser BodyMesh 124 uu): sole z = 0 to the top of the cap.
 Forward = +X, robot left = +Y. Ten objects, pivots at their joints, hierarchy Pelvis > HeadTorso > UpperArm > ForearmHand, Pelvis > Thigh > ShinFoot.
@@ -28,7 +28,7 @@ def srgb(hx):
     return tuple(((x + 0.055) / 1.055) ** 2.4 if x > 0.04045 else x / 12.92 for x in c) + (1.0,)
 
 
-HEX = {"yellow_body": "#F5BA20", "gunmetal": "#3A3A3A", "eye_red": "#FF1010", "logo_plate": "#F5BA20"}
+HEX = {"yellow_body": "#F5BA20", "gunmetal": "#3A3A3A", "eye_red": "#FF1010", "logo_plate": "#FFD84A"}   # logo plate: a lighter yellow than the body, so the plate reads on the block
 ORDER = ["yellow_body", "gunmetal", "eye_red", "logo_plate"]
 MI = {n: i for i, n in enumerate(ORDER)}
 
@@ -45,9 +45,11 @@ def raw(hx):
 plate = raw(HEX["logo_plate"])
 dark = raw(HEX["gunmetal"])
 img = np.ones((N, N, 3)) * plate
-hexm = (np.abs(py) < 0.92) & (np.abs(px) * 0.866 + np.abs(py) * 0.5 < 0.86)           # dark shield (hexagon)
+border = (np.abs(px) > 0.90) | (np.abs(py) > 0.90)                                    # dark frame around the plate
+img[border] = dark
+hexm = (np.abs(py) < 0.80) & (np.abs(px) * 0.866 + np.abs(py) * 0.5 < 0.76)           # large dark shield (hexagon)
 img[hexm] = dark
-star = (np.abs(px) ** 0.65 + np.abs(py) ** 0.65) < 0.40 ** 0.65                       # four-point star glyph
+star = (np.abs(px) ** 0.65 + np.abs(py) ** 0.65) < 0.46 ** 0.65                       # four-point star glyph, plate yellow
 img[star] = plate
 rgba = np.ones((N, N, 4))
 rgba[:, :, :3] = img
@@ -111,7 +113,7 @@ class Part:
             return [s.P(x0, y0, z), s.P(x1, y0, z), s.P(x1, y1, z), s.P(x0, y1, z)]
         s.loft([ring(z0), ring(z1)], mat)
 
-    def prism(s, p0, p1, w0, d0, w1, d1, mat, ch=0.28, bulge=0.07, at=0.4):
+    def prism(s, p0, p1, w0, d0, w1, d1, mat, ch=0.28, bulge=0.07, at=0.4, simple=False):
         """Faceted box between two points (x, y, z with y lateral): octagonal sections w x d (full sizes, cm) at p0, near p0 (bulge), p1."""
         a0 = Vector((p0[0], p0[1] * s.sy, p0[2]))
         a1 = Vector((p1[0], p1[1] * s.sy, p1[2]))
@@ -120,12 +122,22 @@ class Part:
         dep = ax.cross(lat).normalized()
         wm, dm = max(w0, w1) * (1 + bulge), max(d0, d1) * (1 + bulge)
         rings = []
-        for t, w, d in ((0.0, w0, d0), (at, wm, dm), (1.0, w1, d1)):
+        for t, w, d in (((0.0, w0, d0), (1.0, w1, d1)) if simple else ((0.0, w0, d0), (at, wm, dm), (1.0, w1, d1))):
             c = a0 + (a1 - a0) * t
             hw, hd = w / 2, d / 2
             cc = ch * min(hw, hd)
             pts = [(hw, -hd + cc), (hw, hd - cc), (hw - cc, hd), (-hw + cc, hd), (-hw, hd - cc), (-hw, -hd + cc), (-hw + cc, -hd), (hw - cc, -hd)]
             rings.append([s.bm.verts.new(c + lat * u + dep * v) for u, v in pts])
+        s.loft(rings, mat)
+
+    def secs(s, rows, mat, ch=0.25):
+        """Faceted solid from horizontal octagonal sections (z, x centre, y centre (lateral, outward), width, depth); the shin, the arms, the palm."""
+        rings = []
+        for z, xc, yc, w, d in rows:
+            hw, hd = w / 2, d / 2
+            cc = ch * min(hw, hd)
+            pts = [(hw, -hd + cc), (hw, hd - cc), (hw - cc, hd), (-hw + cc, hd), (-hw, hd - cc), (-hw, -hd + cc), (-hw + cc, -hd), (hw - cc, -hd)]
+            rings.append([s.P(xc + v, yc + u, z) for u, v in pts])
         s.loft(rings, mat)
 
     def oct_y(s, cx, cy, cz, r, length, mat):
@@ -153,28 +165,28 @@ def new_part(name, pivot, parent=None, sy=1.0):
 PIV_PELVIS = (1.5, 0.0, h(0.585))
 pel = new_part("Pelvis", PIV_PELVIS)
 pel.prism((1.5, 0, h(0.662)), (1.5, 0, h(0.585)), h(0.135), h(0.165), h(0.085), h(0.150), "gunmetal", bulge=0.0)
-pel.abox(-8.5, 13.0, -h(0.056), h(0.056), h(0.558), h(0.590), "yellow_body")        # yellow lower rim
+pel.secs([(h(0.558), 2.25, 0.0, 11.5, 18.0), (h(0.572), 2.25, 0.0, 14.0, 21.5), (h(0.590), 2.25, 0.0, 13.0, 20.0)], "yellow_body", ch=0.3)        # yellow lower rim, chamfered
 
 # ---------------------------------------------------------------- HeadTorso: chunky block, hood front, cap, recess + eye, logo decal
 PIV_WAIST = (1.5, 0.0, h(0.655))
 ht = new_part("HeadTorso", PIV_WAIST, parent="Pelvis")
 W = h(0.120)            # block half width
 CH = 3.0                # side chamfer
-PROF = [(-10.0, h(0.655)), (22.5, h(0.672)), (32.2, h(0.840)), (23.2, h(0.925)), (-7.3, h(0.925)), (-10.5, h(0.840))]
+PROF = [(-8.4, h(0.655)), (22.5, h(0.672)), (32.2, h(0.840)), (27.4, h(0.903)), (20.5, h(0.925)), (-5.7, h(0.925)), (-8.9, h(0.840))]      # (27.4, .903) = chamfered top edge of the hood
 cxz = (sum(p[0] for p in PROF) / len(PROF), sum(p[1] for p in PROF) / len(PROF))
-LAY = [(-W, 0.86), (-W + CH, 1.0), (W - CH, 1.0), (W, 0.86)]
+LAY = [(-W, 0.80), (-W + 1.8, 0.93), (-W + 4.2, 1.0), (W - 4.2, 1.0), (W - 1.8, 0.93), (W, 0.80)]      # rounded shoulder line: three steps per side
 L = []
 for y, sc in LAY:
     L.append([ht.bm.verts.new((cxz[0] + (x - cxz[0]) * sc, y, cxz[1] + (z - cxz[1]) * sc)) for x, z in PROF])
 n = len(PROF)
 SPECIAL = (1, 2)        # edge 1 = lower front face (recess), edge 2 = upper front face (logo)
-for li in range(3):
+for li in range(len(LAY) - 1):
     for k in range(n):
-        if li == 1 and k in SPECIAL:
+        if li == 2 and k in SPECIAL:
             continue
         ht.quad((L[li][k], L[li][(k + 1) % n], L[li + 1][(k + 1) % n], L[li + 1][k]), "yellow_body")
 ht.quad(L[0][::-1], "yellow_body")
-ht.quad(L[3], "yellow_body")
+ht.quad(L[-1], "yellow_body")
 
 
 def bil(a, b, c, d, s, t):
@@ -183,7 +195,7 @@ def bil(a, b, c, d, s, t):
 
 
 # lower front face: frame + recess + floor
-fa, fb, fc, fd = L[1][1], L[2][1], L[2][2], L[1][2]            # bottom-left, bottom-right, top-right, top-left (y -, y +)
+fa, fb, fc, fd = L[2][1], L[3][1], L[3][2], L[2][2]            # bottom-left, bottom-right, top-right, top-left (y -, y +)
 nrm = (fb.co - fa.co).cross(fd.co - fa.co).normalized()
 if nrm.x < 0:
     nrm = -nrm
@@ -200,13 +212,13 @@ for k in range(4):
 ht.quad(floor[::-1], "gunmetal")
 EYE_C = sum((v.co for v in floor), Vector()) / 4 + nrm * 0.2
 EYE_R = 3.2
-fa_, fb_ = L[1][1].co, L[2][1].co
+fa_, fb_ = L[2][1].co, L[3][1].co
 ytan = (fb_ - fa_).normalized()
 ztan = nrm.cross(ytan)
 if ztan.z < 0:
     ztan = -ztan
 # upper front face: plain yellow quad (the logo decal sits on top of it)
-ua, ub, uc, ud = L[1][2], L[2][2], L[2][3], L[1][3]
+ua, ub, uc, ud = L[2][2], L[3][2], L[3][3], L[2][3]
 ht.quad((ua, ub, uc, ud), "yellow_body")
 unrm = (ub.co - ua.co).cross(ud.co - ua.co).normalized()
 if unrm.x < 0:
@@ -215,6 +227,14 @@ if unrm.x < 0:
 cap_b = [ht.bm.verts.new(p) for p in ((-6.5, -h(0.086), h(0.925) - 0.2), (22.5, -h(0.086), h(0.925) - 0.2), (22.5, h(0.086), h(0.925) - 0.2), (-6.5, h(0.086), h(0.925) - 0.2))]
 cap_t = [ht.bm.verts.new(p) for p in ((-1.0, -h(0.070), h(1.0)), (15.0, -h(0.070), h(1.0)), (15.0, h(0.070), h(1.0)), (-1.0, h(0.070), h(1.0)))]
 ht.loft([cap_b, cap_t], "yellow_body")
+# back: three large raised plates (centre plate and one on each side), profile (x, z) extruded across
+CEN = [(-7.0, h(0.680)), (-11.0, h(0.690)), (-11.3, h(0.790)), (-8.2, h(0.885)), (-6.2, h(0.919)), (-5.0, h(0.919))]      # centre plate: vertical lower facet, leaning upper facet, chamfered top
+SIDE = [(-7.0, h(0.680)), (-12.0, h(0.690)), (-7.4, h(0.900)), (-6.0, h(0.917)), (-5.0, h(0.917))]            # side plates: one long facet, deeper chamfer
+for y0, y1, base, ia, ib in ((-h(0.054), h(0.054), CEN, 1.0, 1.0), (h(0.058), h(0.100), SIDE, 1.0, 0.4), (-h(0.100), -h(0.058), SIDE, 0.4, 1.0)):
+    rg = []
+    for y, k in ((y0, ia), (y1, ib)):          # side plates tilt outward: the outer edge sits closer to the block
+        rg.append([ht.P(x - (1.0 - k) * 1.6 * (1 if 0 < i < len(base) - 1 else 0), y, z) for i, (x, z) in enumerate(base)])
+    ht.loft(rg, "yellow_body")
 
 # ---------------------------------------------------------------- arms (build left, mirror for right)
 SH = (-2.5, 0.185, 0.86)
@@ -227,15 +247,21 @@ def build_arm(side):
     pv = Vector((SH[0], SH[1] * H * sy, h(SH[2])))
     ua_ = new_part("UpperArm_" + side, pv, parent="HeadTorso", sy=sy)
     ua_.abox(-7.0, 3.0, h(0.113), h(0.170), h(0.815), h(0.905), "gunmetal")                      # dark shoulder connector
-    ua_.prism((-2.5, h(0.196), h(0.930)), (-4.0, h(0.243), h(0.775)), h(0.102), h(0.120), h(0.082), h(0.098), "yellow_body", bulge=0.04)
+    # faceted upper arm: narrow top, wide shoulder cap just below, taper to the elbow
+    ua_.secs([(h(0.930), -2.5, h(0.196), 10.0, 11.0), (h(0.903), -2.8, h(0.202), 14.0, 14.6), (h(0.848), -3.3, h(0.218), 13.4, 14.0), (h(0.775), -4.0, h(0.243), 10.2, 12.2)], "yellow_body", ch=0.3)
     ev = Vector((EL[0], EL[1] * H * sy, h(EL[2])))
     fa_ = new_part("ForearmHand_" + side, ev, parent="UpperArm_" + side, sy=sy)
     fa_.abox(-8.0, 0.0, h(0.210), h(0.294), h(0.728), h(0.768), "gunmetal")                     # dark elbow connector
-    fa_.prism((-4.5, h(0.262), h(0.735)), (0.3, h(0.293), h(0.595)), h(0.090), h(0.105), h(0.072), h(0.090), "yellow_body", bulge=0.04)
-    fa_.prism((3.0, h(0.305), h(0.598)), (3.5, h(0.305), h(0.528)), h(0.068), h(0.072), h(0.062), h(0.066), "gunmetal")            # palm
-    for yc, ln in ((0.283, 0.0), (0.305, 0.012), (0.327, 0.0)):                                   # three chunky finger blocks (two segments each): curl forward and inward
-        fa_.prism((4.0, h(yc), h(0.536)), (8.2, h(yc - 0.004), h(0.492 - ln)), h(0.022), h(0.040), h(0.021), h(0.036), "gunmetal", ch=0.2, bulge=0.0)
-        fa_.prism((8.2, h(yc - 0.004), h(0.495 - ln)), (7.2, h(yc - 0.016), h(0.452 - ln)), h(0.021), h(0.034), h(0.018), h(0.026), "gunmetal", ch=0.2, bulge=0.0)
+    fa_.secs([(h(0.735), -4.5, h(0.264), 11.4, 12.0), (h(0.697), -3.2, h(0.275), 12.9, 13.4), (h(0.637), -1.2, h(0.286), 11.8, 12.2), (h(0.595), 0.3, h(0.294), 9.6, 11.2)], "yellow_body", ch=0.3)
+    fa_.prism((2.0, h(0.272), h(0.715)), (5.4, h(0.290), h(0.623)), 6.8, 2.6, 6.0, 2.4, "yellow_body", ch=0.3, simple=True)    # guard plate on the front face of the forearm
+    # curled claw: wrist ring, narrow palm, three fingers (two segments) side by side in depth hooking inward and forward, thumb on the inner side
+    fa_.secs([(h(0.608), 0.8, 37.3, 6.2, 7.6), (h(0.578), 1.2, 37.8, 6.6, 8.2)], "gunmetal", ch=0.3)
+    fa_.secs([(h(0.578), 1.8, 39.0, 5.8, 10.2), (h(0.563), 2.0, 39.4, 6.4, 11.0), (63.2, 2.4, 39.6, 5.4, 9.6)], "gunmetal", ch=0.3)
+    for xi in (5.6, 2.3, -1.0):
+        fa_.prism((xi, 39.2, 63.8), (xi + 0.9, 38.0, 59.4), 4.4, 3.4, 4.0, 3.2, "gunmetal", ch=0.25, simple=True)
+        fa_.prism((xi + 0.9, 38.0, 59.8), (xi + 3.0, 36.4, 55.4), 4.0, 3.2, 3.4, 2.8, "gunmetal", ch=0.25, simple=True)
+    fa_.prism((6.0, 36.6, 70.0), (8.0, 34.6, 65.6), 4.2, 3.6, 3.8, 3.2, "gunmetal", ch=0.25, simple=True)                  # thumb, two segments
+    fa_.prism((8.0, 34.6, 65.9), (9.6, 32.4, 61.4), 3.8, 3.2, 3.2, 2.8, "gunmetal", ch=0.25, simple=True)
 
 
 build_arm("L")
@@ -250,23 +276,29 @@ def build_leg(side):
     sy = 1.0 if side == "L" else -1.0
     pv = Vector((HIP[0], HIP[1] * H * sy, h(HIP[2])))
     th = new_part("Thigh_" + side, pv, parent="Pelvis", sy=sy)
-    th.abox(-2.5, 9.0, h(0.079), h(0.111), h(0.435), h(0.590), "gunmetal")                         # upper leg bar
-    th.prism((7.5, h(0.104), h(0.435)), (7.5, h(0.104), h(0.300)), h(0.095), h(0.062), h(0.080), h(0.055), "yellow_body")
-    th.abox(4.0, 15.0, h(0.058), h(0.079), h(0.575), h(0.625), "yellow_body")
-    th.abox(4.0, 15.0, h(0.112), h(0.138), h(0.575), h(0.640), "yellow_body")                      # yellow hip guard
+    th.abox(-2.5, 9.0, h(0.074), h(0.115), h(0.435), h(0.590), "gunmetal")                         # upper leg bar
+    th.secs([(h(0.431), 7.3, h(0.104), 9.5, 6.0), (h(0.379), 6.8, h(0.104), 11.8, 9.8), (h(0.335), 7.2, h(0.104), 10.3, 7.0), (h(0.308), 7.8, h(0.104), 8.0, 4.6)], "yellow_body", ch=0.3)   # faceted knee guard
+    for y0, y1 in ((0.058, 0.079), (0.112, 0.138)):                                                # hip guard plates, chamfered
+        th.profile([(4.0, h(0.580)), (14.0, h(0.585)), (15.5, h(0.615)), (12.0, h(0.640)), (4.0, h(0.628))], h(y0), h(y1), "yellow_body")
     th.oct_y(1.5, h(0.108), h(0.383), h(0.034), h(0.124), "gunmetal")                              # knee prism
     kv = Vector((KNEE[0], KNEE[1] * H * sy, h(KNEE[2])))
     sf = new_part("ShinFoot_" + side, kv, parent="Thigh_" + side, sy=sy)
-    sf.prism((0.0, h(0.130), h(0.365)), (-0.5, h(0.130), h(0.190)), h(0.085), h(0.090), h(0.065), h(0.065), "yellow_body")   # shin box
-    sf.prism((7.0, h(0.130), h(0.300)), (1.5, h(0.142), h(0.125)), h(0.050), h(0.050), h(0.045), h(0.045), "gunmetal")     # dark leg bar
-    sf.abox(-2.5, 4.0, h(0.1455 - 0.030), h(0.1455 + 0.030), h(0.082), h(0.134), "gunmetal")                         # ankle block
-    sf.prism((6.5, h(0.1455), h(0.185)), (3.5, h(0.1455), h(0.092)), h(0.056), h(0.050), h(0.056), h(0.060), "yellow_body")                       # instep guard
-    sf.abox(-7.5, -0.5, h(0.1455 - 0.055), h(0.1455 + 0.055), h(0.060), h(0.150), "yellow_body")                     # heel
-    sf.profile([(16.5, h(0.030)), (16.5, h(0.062)), (9.0, h(0.109)), (-0.5, h(0.109)), (-0.5, h(0.030))], h(0.1455 - 0.058), h(0.1455 + 0.058), "yellow_body")
-    sf.abox(-8.4, 20.5, h(0.1455 - 0.060), h(0.1455 + 0.060), 0.0, h(0.030), "gunmetal")             # sole
-    for yc in (0.1455 - 0.036, 0.1455 + 0.036):                                                    # two toe blocks, front face slanted
-        sf.profile([(15.0, 0.0), (20.5, 0.0), (18.0, h(0.060)), (15.0, h(0.060))], h(yc - 0.016), h(yc + 0.016), "gunmetal")
-    sf.abox(-8.4, -2.0, h(0.1455 - 0.050), h(0.1455 + 0.050), 0.0, h(0.060), "gunmetal")             # heel block
+    FY = h(0.1455)
+    # one continuous tapering shin guard from the knee to the ankle
+    sf.secs([(44.1, -0.2, 16.4, 8.0, 5.6), (40.2, -0.2, 16.6, 10.2, 9.6), (37.4, 0.0, 16.7, 10.6, 12.3), (30.0, -0.7, 17.2, 9.0, 8.8), (23.4, -0.8, 17.6, 7.0, 5.4)], "yellow_body", ch=0.3)
+    sf.prism((7.0, h(0.130), h(0.300)), (2.6, h(0.142), 12.5), h(0.05), h(0.05), h(0.045), h(0.045), "gunmetal")     # dark leg bar in front of the shin
+    sf.secs([(24.0, -2.6, 17.9, 5.0, 4.6), (14.0, -3.0, 18.0, 5.0, 5.0)], "gunmetal", ch=0.3)                        # dark neck behind the ankle
+    sf.oct_y(1.3, FY, 13.3, 3.6, 15.6, "gunmetal")                                                                   # dark octagonal ankle joint
+    sf.profile([(2.4, 22.6), (-1.0, 17.5), (3.5, 10.0), (8.3, 13.3)], FY - 3.2, FY + 3.2, "yellow_body")             # slanted instep shield
+    for sgn in (-1, 1):                                                                                             # ankle cheek plates
+        y0, y1 = sorted((FY + sgn * 3.3, FY + sgn * 5.9))
+        sf.profile([(-3.0, 10.0), (-3.0, 19.5), (1.0, 21.0), (4.2, 18.5), (4.2, 10.0)], y0, y1, "yellow_body")
+    sf.profile([(-0.5, 14.5), (-4.0, 18.6), (-6.8, 17.6), (-8.0, 8.0), (-0.5, 8.0)], FY - h(0.058), FY + h(0.058), "yellow_body")      # heel
+    sf.profile([(17.0, h(0.030)), (17.0, 7.4), (8.5, 13.2), (-0.5, 13.2), (-0.5, h(0.030))], FY - 7.4, FY + 7.4, "yellow_body")        # foot upper
+    sf.abox(-8.6, 21.5, FY - 8.3, FY + 8.3, 0.0, h(0.030), "gunmetal")                                              # sole
+    for sgn in (-1, 1):                                                                                             # two angled toe blocks
+        sf.profile([(15.0, 0.0), (21.5, 0.0), (19.8, 7.4), (15.0, 7.4)], FY + sgn * 5.4 - 2.6, FY + sgn * 5.4 + 2.6, "gunmetal")
+    sf.abox(-8.6, -2.7, FY - 7.0, FY + 7.0, 0.0, 7.4, "gunmetal")                                                    # heel block
 
 
 build_leg("L")
@@ -290,7 +322,7 @@ def finish(p):
             f.normal_flip()
         f.material_index = MI["eye_red"]
         # logo decal: copy of the covered region of the upper face, offset 0.25 cm, ONE planar UV
-        s0, s1, t0, t1 = 0.5 - 0.168, 0.5 + 0.168, 0.42 - 0.29, 0.42 + 0.29
+        s0, s1, t0, t1 = 0.5 - 0.17, 0.5 + 0.17, 0.46 - 0.40, 0.46 + 0.40
         cs = [(s0, t0), (s1, t0), (s1, t1), (s0, t1)]
         dv = [bm.verts.new(bil(ua, ub, uc, ud, s_, t_) + unrm * 0.25) for s_, t_ in cs]
         f = bm.faces.new(dv)
@@ -550,6 +582,18 @@ if RD:
         sc.render.resolution_percentage = 100
         sc.render.filepath = os.path.join(RD, "render_%s.png" % vn)
         bpy.ops.render.render(write_still=True)
+    # close-ups, ortho: hand and calf, front and side (right limbs in front view as on the crop; left limbs in side view)
+    CLOSE = {"hand_front": ((528, 528), (300.0, -36.0, 65.0), (90, 0, 90), 22.0), "hand_side": ((528, 528), (3.5, 300.0, 65.0), (90, 0, 180), 22.0),
+             "calf_front": ((528, 528), (300.0, -17.0, 24.0), (90, 0, 90), 44.0), "calf_side": ((528, 528), (0.5, 300.0, 24.0), (90, 0, 180), 44.0)}
+    for vn, (res, loc, rot, osz) in CLOSE.items():
+        co.location = loc
+        co.rotation_euler = tuple(math.radians(a) for a in rot)
+        cam.ortho_scale = osz
+        bpy.context.view_layer.update()
+        light_from(co)
+        sc.render.resolution_x, sc.render.resolution_y = res
+        sc.render.filepath = os.path.join(RD, "closeup_%s.png" % vn)
+        bpy.ops.render.render(write_still=True)
     # three-quarter
     tgt = Vector((0, 0, 62))
     d = Vector((math.cos(math.radians(-35)) * math.cos(math.radians(25)), math.sin(math.radians(-35)) * math.cos(math.radians(25)), math.sin(math.radians(25)))) * 300
@@ -575,8 +619,9 @@ RP = os.path.splitext(OUT)[0] + ".report.json"
 if os.path.exists(RP):
     try:
         old = json.load(open(RP, encoding="utf-8"))
-        if "fidelity" in old:
-            report["fidelity"] = old["fidelity"]
+        for key in ("fidelity", "refinement"):
+            if key in old:
+                report[key] = old[key]
     except Exception:
         pass
 with open(RP, "w", encoding="utf-8") as f:

@@ -7,11 +7,11 @@
   "height_source": "ARRChaser capsule 24 x 62 half height (Source/RogueRigs/Enemies/RRChaser.cpp InitCapsuleSize(24, 62)) = 124 cm; bp-chaser BodyMesh 124 uu centred on the capsule; model from the sole to the top of the cap",
   "axes": "forward +X, robot left +Y, up +Z; _L parts at +Y",
   "units": "cm",
-  "total_tris": 1632,
+  "total_tris": 2056,
   "budget_tris": 3000,
   "parts": {
     "Pelvis": {
-      "tris": 56,
+      "tris": 88,
       "bounds_min_cm": [
         -8.73,
         -8.37,
@@ -33,7 +33,7 @@
         "LightMap"
       ],
       "lightmap": {
-        "faces": 24,
+        "faces": 36,
         "overlapping_face_pairs": 0,
         "bounds_min": 0.01172,
         "bounds_max": 0.98828,
@@ -44,9 +44,9 @@
       }
     },
     "HeadTorso": {
-      "tris": 80,
+      "tris": 168,
       "bounds_min_cm": [
-        -10.5,
+        -12.96,
         -14.88,
         81.22
       ],
@@ -66,7 +66,7 @@
         "LightMap"
       ],
       "lightmap": {
-        "faces": 36,
+        "faces": 75,
         "overlapping_face_pairs": 0,
         "bounds_min": 0.01172,
         "bounds_max": 0.98828,
@@ -77,16 +77,16 @@
       }
     },
     "UpperArm_L": {
-      "tris": 56,
+      "tris": 72,
       "bounds_min_cm": [
-        -10.92,
+        -10.3,
         14.01,
-        94.27
+        96.1
       ],
       "bounds_max_cm": [
-        5.02,
-        35,
-        117.59
+        4.5,
+        35.23,
+        115.32
       ],
       "pivot_world_cm": [
         -2.5,
@@ -99,7 +99,7 @@
         "LightMap"
       ],
       "lightmap": {
-        "faces": 24,
+        "faces": 32,
         "overlapping_face_pairs": 0,
         "bounds_min": 0.01172,
         "bounds_max": 0.98828,
@@ -110,15 +110,15 @@
       }
     },
     "ForearmHand_L": {
-      "tris": 364,
+      "tris": 396,
       "bounds_min_cm": [
-        -11,
+        -10.5,
         26.04,
-        54.01
+        54.42
       ],
       "bounds_max_cm": [
-        10.32,
-        42.33,
+        11.09,
+        42.6,
         95.23
       ],
       "pivot_world_cm": [
@@ -143,16 +143,16 @@
       }
     },
     "UpperArm_R": {
-      "tris": 56,
+      "tris": 72,
       "bounds_min_cm": [
-        -10.92,
-        -35,
-        94.27
+        -10.3,
+        -35.23,
+        96.1
       ],
       "bounds_max_cm": [
-        5.02,
+        4.5,
         -14.01,
-        117.59
+        115.32
       ],
       "pivot_world_cm": [
         -2.5,
@@ -165,7 +165,7 @@
         "LightMap"
       ],
       "lightmap": {
-        "faces": 24,
+        "faces": 32,
         "overlapping_face_pairs": 0,
         "bounds_min": 0.01172,
         "bounds_max": 0.98828,
@@ -176,14 +176,14 @@
       }
     },
     "ForearmHand_R": {
-      "tris": 364,
+      "tris": 396,
       "bounds_min_cm": [
-        -11,
-        -42.33,
-        54.01
+        -10.5,
+        -42.6,
+        54.42
       ],
       "bounds_max_cm": [
-        10.32,
+        11.09,
         -26.04,
         95.23
       ],
@@ -209,14 +209,14 @@
       }
     },
     "Thigh_L": {
-      "tris": 108,
+      "tris": 132,
       "bounds_min_cm": [
         -2.5,
         5.7,
-        37.2
+        38.19
       ],
       "bounds_max_cm": [
-        15,
+        15.5,
         21.08,
         79.36
       ],
@@ -231,7 +231,7 @@
         "LightMap"
       ],
       "lightmap": {
-        "faces": 46,
+        "faces": 56,
         "overlapping_face_pairs": 0,
         "bounds_min": 0.01172,
         "bounds_max": 0.98828,
@@ -242,16 +242,16 @@
       }
     },
     "ShinFoot_L": {
-      "tris": 220,
+      "tris": 300,
       "bounds_min_cm": [
-        -8.4,
-        10.48,
+        -8.6,
+        9.74,
         0
       ],
       "bounds_max_cm": [
-        20.5,
-        25.48,
-        45.39
+        21.5,
+        26.34,
+        44.1
       ],
       "pivot_world_cm": [
         1.5,
@@ -264,7 +264,7 @@
         "LightMap"
       ],
       "lightmap": {
-        "faces": 97,
+        "faces": 130,
         "overlapping_face_pairs": 0,
         "bounds_min": 0.01172,
         "bounds_max": 0.98828,
@@ -275,14 +275,14 @@
       }
     },
     "Thigh_R": {
-      "tris": 108,
+      "tris": 132,
       "bounds_min_cm": [
         -2.5,
         -21.08,
-        37.2
+        38.19
       ],
       "bounds_max_cm": [
-        15,
+        15.5,
         -5.7,
         79.36
       ],
@@ -297,7 +297,7 @@
         "LightMap"
       ],
       "lightmap": {
-        "faces": 46,
+        "faces": 56,
         "overlapping_face_pairs": 0,
         "bounds_min": 0.01172,
         "bounds_max": 0.98828,
@@ -308,16 +308,16 @@
       }
     },
     "ShinFoot_R": {
-      "tris": 220,
+      "tris": 300,
       "bounds_min_cm": [
-        -8.4,
-        -25.48,
+        -8.6,
+        -26.34,
         0
       ],
       "bounds_max_cm": [
-        20.5,
-        -10.48,
-        45.39
+        21.5,
+        -9.74,
+        44.1
       ],
       "pivot_world_cm": [
         1.5,
@@ -330,7 +330,7 @@
         "LightMap"
       ],
       "lightmap": {
-        "faces": 97,
+        "faces": 130,
         "overlapping_face_pairs": 0,
         "bounds_min": 0.01172,
         "bounds_max": 0.98828,
@@ -342,18 +342,18 @@
     }
   },
   "dimensions_cm": {
-    "x": 43.2,
-    "y": 84.66,
+    "x": 45.16,
+    "y": 85.2,
     "z": 124
   },
   "bbox_min": [
-    -11,
-    -42.33,
+    -12.96,
+    -42.6,
     0
   ],
   "bbox_max": [
     32.2,
-    42.33,
+    42.6,
     124
   ],
   "hierarchy": {
@@ -438,24 +438,24 @@
       0.87
     ],
     "HeadTorso / UpperArm_L": [
-      15.52,
+      14.8,
       0.87,
-      23.32
+      19.22
     ],
     "UpperArm_L / ForearmHand_L": [
-      15.94,
-      8.96,
-      0.96
+      14.8,
+      9.19,
+      0
     ],
     "HeadTorso / UpperArm_R": [
-      15.52,
+      14.8,
       0.87,
-      23.32
+      19.22
     ],
     "UpperArm_R / ForearmHand_R": [
-      15.94,
-      8.96,
-      0.96
+      14.8,
+      9.19,
+      0
     ],
     "Pelvis / Thigh_L": [
       15.5,
@@ -463,9 +463,9 @@
       10.17
     ],
     "Thigh_L / ShinFoot_L": [
-      17.5,
-      10.6,
-      8.19
+      18,
+      11.34,
+      5.91
     ],
     "Pelvis / Thigh_R": [
       15.5,
@@ -473,21 +473,21 @@
       10.17
     ],
     "Thigh_R / ShinFoot_R": [
-      17.5,
-      10.6,
-      8.19
+      18,
+      11.34,
+      5.91
     ]
   },
   "joint_penetration_cm": {
-    "Pelvis / HeadTorso": 0.78,
+    "Pelvis / HeadTorso": 0.73,
     "HeadTorso / UpperArm_L": 0.87,
-    "UpperArm_L / ForearmHand_L": 0.65,
+    "UpperArm_L / ForearmHand_L": 0,
     "HeadTorso / UpperArm_R": 0.87,
-    "UpperArm_R / ForearmHand_R": 0.65,
-    "Pelvis / Thigh_L": 0.67,
-    "Thigh_L / ShinFoot_L": 0.66,
-    "Pelvis / Thigh_R": 0.67,
-    "Thigh_R / ShinFoot_R": 0.66
+    "UpperArm_R / ForearmHand_R": 0,
+    "Pelvis / Thigh_L": 0.85,
+    "Thigh_L / ShinFoot_L": 0.5,
+    "Pelvis / Thigh_R": 0.85,
+    "Thigh_R / ShinFoot_R": 0.5
   },
   "materials": [
     "yellow_body",
@@ -505,7 +505,7 @@
     "yellow_body": "#F5BA20",
     "gunmetal": "#3A3A3A",
     "eye_red": "#FF1010",
-    "logo_plate": "#F5BA20"
+    "logo_plate": "#FFD84A"
   },
   "emissive_material": [
     "eye_red"
@@ -606,6 +606,127 @@
         "Art/Meshes/chaser/compare_side.png",
         "Art/Meshes/chaser/compare_back.png"
       ]
+    }
+  },
+  "refinement": {
+    "task": "task-151-04-chaser-refine",
+    "returns_used": 5,
+    "max_returns": 5,
+    "method": "Same as step 03 (orthographic front, side, back renders at the scale of the crops, compare_<view>.png = crop | render | silhouette overlay, Hausdorff distance in percent of crop height), plus four orthographic close-ups (hand front, hand side, calf front, calf side) at 22 cm / 44 cm windows, each composed next to the same window cut from the crop (compare_closeup_*.png) and opened and judged.",
+    "silhouette_difference_pct_H": {
+      "front": 3.09,
+      "side": 2.72,
+      "back": 3.35,
+      "limit": 5,
+      "before": {
+        "front": 3.37,
+        "side": 3.12,
+        "back": 3.63
+      }
+    },
+    "tris": {
+      "total": 2056,
+      "aimed": 2600,
+      "ceiling": 3000,
+      "per_part": {
+        "Pelvis": 88,
+        "HeadTorso": 168,
+        "UpperArm_L": 72,
+        "ForearmHand_L": 396,
+        "UpperArm_R": 72,
+        "ForearmHand_R": 396,
+        "Thigh_L": 132,
+        "ShinFoot_L": 300,
+        "Thigh_R": 132,
+        "ShinFoot_R": 300
+      },
+      "before_total": 1632,
+      "note": "2056 used; the spare 540 below the aimed 2600 is left unused: all criteria except the back plate contrast are met and the triangle budget is a ceiling"
+    },
+    "changed_calves": "ShinFoot rebuilt: the thin shin box, the floating ankle block and the separate instep box are replaced by ONE continuous faceted shin guard of five octagonal sections from the knee (z 44 cm) to the ankle (z 23 cm), 12.3 cm deep at the widest (the sheet: about 12.5 cm), tapering to 5.4 cm; a dark octagonal ankle prism (r 3.6 cm) at z 13.3 cm between shin and foot, a dark neck behind it, the dark leg bar kept in front of the shin and extended to the ankle, a slanted yellow instep shield and two ankle cheek plates, a heel profile with a slanted top; reason: the side crop shows one deep tapering shin guard over a dark octagonal ankle joint, not a thin box with a block floating at the ankle.",
+    "changed_hands": "ForearmHand rebuilt: the rectangular mitt with three straight finger blocks is replaced by a dark wrist ring, a narrower faceted palm (5.8 cm wide, 10 cm deep, 8.6 cm tall), three fingers of two segments each side by side in depth (as the side crop shows them) hooking inward (about 3 cm toward the body) and forward (about 3 cm), and a two-segment thumb on the inner side hooking down and forward; reason: the crops show curled claws, a palm narrower than the old mitt in front view and fingers lined up along the depth axis.",
+    "changed_other": "HeadTorso: chamfered top edge of the hood, three-step rounded shoulder line, three raised back plates (centre plate with two facets, two outward plates), logo plate in a lighter yellow (#FFD84A) with a dark frame and a larger dark shield and star in T_ChaserLogo.png; UpperArm: faceted, narrow top, wide shoulder cap (14 cm), taper to the elbow; ForearmHand: forearm 1 cm wider, a guard plate on the front face; Thigh: faceted knee guard (four sections), chamfered hip guard plates; Pelvis: chamfered yellow rim; ShinFoot: foot 16 cm wide, two angled toe blocks 5.2 cm wide at the outer sides, heel block, foot 30 cm long (24 % H) and 18.6 cm (15 % H) tall at the heel.",
+    "criteria": {
+      "C1": {
+        "verdict": "pass",
+        "evidence": "Block 0.655..1.0 H, 24 % H wide, hood front with chamfered top edge, cap box; side compare within 2.7 % H; the back face moved 1.6 cm forward and the back plates restore the depth."
+      },
+      "C2": {
+        "verdict": "pass",
+        "evidence": "Dark recess with the red octagon unchanged in the lower half; logo plate above it, centred, now a lighter yellow with a dark frame and a large dark shield (compare_front)."
+      },
+      "C3": {
+        "verdict": "pass",
+        "evidence": "Dark pelvis block with a chamfered yellow rim visible in front view, narrower than the block."
+      },
+      "C4": {
+        "verdict": "pass",
+        "evidence": "Shoulder-to-shoulder 85.2 cm = 68.7 % H (crop 69 %); upper arms wider at the cap, dark elbow connector, forearm, dark hand; hands end at z 54.4 cm = 56 % H from the top (target 55 %)."
+      },
+      "C5": {
+        "verdict": "pass",
+        "evidence": "Legs straight with the same stance; feet 43 % H apart outer to outer (crop 45 %), dark bars visible between the yellow parts in front view."
+      },
+      "C6": {
+        "verdict": "pass",
+        "evidence": "Foot 24 % H long, 15 % H tall at the heel, dark sole, two angled dark toe blocks and a dark heel block (compare_side, closeup_calf_side)."
+      },
+      "C7": {
+        "verdict": "pass",
+        "evidence": "Yellow on block, arms, thighs, shins, feet; gunmetal on pelvis, joints, hands, soles, bars; red only on the eye; four slots unchanged."
+      },
+      "C8": {
+        "verdict": "pass",
+        "evidence": "Ten objects, same names, pivots, hierarchy and joints; largest joint penetration 0.87 cm."
+      },
+      "C9": {
+        "verdict": "pass",
+        "evidence": "Large flat facets, flat shading, no bolts or panel lines; only the knee and ankle prisms are octagonal cylinders."
+      },
+      "C10": {
+        "verdict": "pass",
+        "evidence": "Hausdorff 3.09 % H front, 2.72 % side, 3.35 % back (limit 5 %); the largest differences sit at the hand tips, the foot toes and the upper arms in back view."
+      },
+      "C11": {
+        "verdict": "pass",
+        "evidence": "closeup_calf_side and compare_side: one continuous tapering yellow shin guard knee to ankle, 12.3 cm deep (sheet about 12.5), dark octagonal ankle between shin and foot, no floating block; closeup_calf_front: dark leg bar in front of the shin as on the sheet. Differs: the sheet instep shield overlaps the ankle octagon from the front, here the shield and cheek plates sit beside it."
+      },
+      "C12": {
+        "verdict": "pass",
+        "evidence": "closeup_hand_front and closeup_hand_side: narrower palm, three fingers (two segments) and a thumb hooking inward and forward, the claw curls toward the thigh in side view. Differs: the sheet fingers are slightly thicker and shorter, the thumb slightly shorter."
+      },
+      "C13": {
+        "verdict": "fail",
+        "evidence": "Geometry present (hood chamfer, rounded shoulder, three back plates, cap, recess and eye kept) but in compare_back the three plates read only faintly because the plates differ by 10 to 18 degrees in normal and the renderer has no ambient occlusion; the sheet plates are more distinct. Not corrected after 5 returns."
+      },
+      "C14": {
+        "verdict": "pass",
+        "evidence": "Faceted upper arms with a wide cap, forearms with a front guard plate, elbow bend kept (compare_front, compare_side)."
+      },
+      "C15": {
+        "verdict": "pass",
+        "evidence": "Faceted knee guard and shin, chamfered hip guard plates; splay kept: knee 12.5 % H, foot 14.5 % H from the centre line (crop 11 % and 15 %), hip guard plates replace the plain boxes."
+      },
+      "C16": {
+        "verdict": "pass",
+        "evidence": "Feet 16 cm wide (13 % H), two angled toe blocks and a heel block, 24 % H long and 15 % H tall at the heel; logo plate lighter yellow with dark frame, visible contrast with the block in compare_front."
+      },
+      "C17": {
+        "verdict": "pass",
+        "evidence": "2056 triangles (aimed 2600, ceiling 3000), flat shading, cylinders only at the knee and ankle."
+      }
+    },
+    "final_render": {
+      "compare_front": "Art/Meshes/chaser/compare_front.png",
+      "compare_side": "Art/Meshes/chaser/compare_side.png",
+      "compare_back": "Art/Meshes/chaser/compare_back.png",
+      "closeups": [
+        "Art/Meshes/chaser/compare_closeup_hand_front.png",
+        "Art/Meshes/chaser/compare_closeup_hand_side.png",
+        "Art/Meshes/chaser/compare_closeup_calf_front.png",
+        "Art/Meshes/chaser/compare_closeup_calf_side.png"
+      ],
+      "threequarter": "Art/Meshes/chaser/render_threequarter.png"
     }
   }
 }
