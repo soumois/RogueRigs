@@ -93,7 +93,7 @@ enum class ERRUpgradeOperation : uint8
  * units (0.12 = +12 % for a percentage stat, 0.05 = +5 points of CritChance, 20 = +20 MaxHealth), already scaled by the
  * targeted multiplier for a one-weapon card. The texts are ready for the UI (French).
  * A NewWeapon card uses only CardType, WeaponClass, Target (Weapon), TargetWeapon (null in the offer, the acquired weapon
- * once picked), DisplayName ("New weapon"), TargetText (weapon name) and DescriptionText; Stat, Tier, Value, Operation and
+ * once picked), DisplayName ("New weapon"), TargetText (weapon name), DescriptionText and LoreText; Stat, Tier, Value, Operation and
  * ValueText keep their defaults.
  */
 USTRUCT(BlueprintType)
@@ -151,6 +151,13 @@ struct ROGUERIGS_API FRRUpgradeCard
 	 */
 	UPROPERTY(BlueprintReadOnly, Category = "Upgrade|UI")
 	FText DescriptionText;
+
+	/**
+	 * Lore line shown apart from the stat name. Stat card: the Rook flavor line of upgrade_texts.json alone (the second line of
+	 * DescriptionText); empty when the file or the stat line is missing. NewWeapon card: empty for now (filled by task-169-03).
+	 */
+	UPROPERTY(BlueprintReadOnly, Category = "Upgrade|UI")
+	FText LoreText;
 
 	/** True for a "New weapon" card. */
 	bool IsNewWeapon() const { return CardType == ERRUpgradeCardType::NewWeapon; }

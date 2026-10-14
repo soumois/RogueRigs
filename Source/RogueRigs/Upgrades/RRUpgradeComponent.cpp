@@ -244,13 +244,15 @@ bool URRUpgradeComponent::MakeCard(ERRUpgradeStat Stat, ERRUpgradeRarity Tier, E
 	Card.Operation = ByTier[static_cast<int32>(Tier)]->Operation;
 	Card.DisplayName = GetStatDisplayName(Stat);
 	Card.ValueText = FormatValueText(Stat, Value);
-	// Flavor line from upgrade_texts.json under the stat name; no line (file or stat missing) keeps the description empty.
+	// Flavor line from upgrade_texts.json: alone in LoreText, and under the stat name in DescriptionText (kept for the current widget);
+	// no line (file or stat missing) keeps both empty.
 	if (URRTextContentSubsystem* TextContent = URRTextContentSubsystem::Get(this))
 	{
 		FText Flavor;
 		if (TextContent->GetUpgradeFlavor(Card.DisplayName.ToString(), Flavor))
 		{
 			Card.DescriptionText = URRTextContentSubsystem::ComposeUpgradeDescription(Card.DisplayName, Flavor);
+			Card.LoreText = Flavor;
 		}
 	}
 	switch (Target)
