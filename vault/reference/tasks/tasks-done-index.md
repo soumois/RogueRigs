@@ -160,4 +160,3 @@ Archive: it exceeds the index size limits of [[_authoring]] on purpose (owner, 2
 - [[task-148-xp-disc-fade]] — Fade the glow disc with the pickup phase: off in the air, on in 0.2 s when it lands, off in 0.2 s when magnetised. Status done.
 - [[task-149-xp-disc-depth-cut]] — Remove the flat cut at the bottom of the glow disc by pushing the camera-facing disc toward the camera. Status done.
 - [[task-150-xp-nut-disc-lighter-2]] — Lower the glow disc intensity of the XP nut a little more. Status done.
-- [[task-151-chaser-robot]] — Build the chaser robot: turnaround sheet, parts model, baked run and attack animation, in-game integration and a cost check. Status done.
