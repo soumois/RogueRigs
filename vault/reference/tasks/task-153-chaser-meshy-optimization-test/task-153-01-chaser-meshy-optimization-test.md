@@ -3,7 +3,7 @@ id: task-153-01-chaser-meshy-optimization-test
 description: "Test the optimisation of the Meshy chaser mesh (792154 triangles) down to the 3000 triangle budget with a baked texture."
 parent: task-153-chaser-meshy-optimization-test
 kind: task
-status: in-progress
+status: done
 ---
 # Chaser: Meshy optimisation test
 
@@ -15,11 +15,11 @@ status: in-progress
 - done_when: The script runs headless; the 3000 triangle FBX has at most 3000 triangles, one object, one material and a clean UV; the renders and the report exist; the assessment states the numbers and the problems honestly; nothing imported in Unreal; the script and the report committed by name, the FBX, textures and renders left untracked until the owner decides
 - editor_state: closed
 - token_ceiling: open
-- model: open
-- tokens: open
-- runs: open
+- model: sonnet
+- tokens: input 24, cache write 59312, cache read 339820, output 33331
+- runs: 1
 - milestone: M2
-- result: open
+- result: Cancelled by the owner on 2026-10-14 (Meshy offers the optimisation itself; the owner will mix Blender and Meshy). Partial outputs deleted, nothing committed.
 
 ## Relations
 - [[task-153-chaser-meshy-optimization-test]] — parent global task.

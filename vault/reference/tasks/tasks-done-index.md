@@ -161,3 +161,4 @@ Archive: it exceeds the index size limits of [[_authoring]] on purpose (owner, 2
 - [[task-149-xp-disc-depth-cut]] — Remove the flat cut at the bottom of the glow disc by pushing the camera-facing disc toward the camera. Status done.
 - [[task-150-xp-nut-disc-lighter-2]] — Lower the glow disc intensity of the XP nut a little more. Status done.
 - [[task-152-chaser-static-integration]] — Put the modelled chaser in the game as a static mesh (no animation yet) so the owner sees it in play. Status done.
+- [[task-153-chaser-meshy-optimization-test]] — Test the optimisation of the Meshy chaser mesh (792154 triangles) down to the 3000 triangle budget with a baked texture. Status done.

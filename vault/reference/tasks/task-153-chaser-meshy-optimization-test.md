@@ -1,9 +1,9 @@
 ---
 id: task-153-chaser-meshy-optimization-test
 description: "Global task: Test the optimisation of the Meshy chaser mesh (792154 triangles) down to the 3000 triangle budget with a baked texture."
-parent: tasks-to-do-index
+parent: tasks-done-index
 kind: task
-status: in-progress
+status: done
 ---
 # Chaser: Meshy optimisation test
 
@@ -13,12 +13,12 @@ status: in-progress
 - gdd_check: done by the Orchestrator when the task is planned (2026-10-14).
 - confirmed_by_owner: yes (2026-10-14)
 - milestone: M2
-- next_step: task-153-01-chaser-meshy-optimization-test
-- result: open
+- next_step: none
+- result: Cancelled by the owner on 2026-10-14: Meshy optimises itself. The FBX received has 792154 triangles in one fused mesh.
 
 ## Subtasks
 1. task-153-01-chaser-meshy-optimization-test — 3d
 
 ## Relations
-- [[tasks-to-do-index]] — parent index.
+- [[tasks-done-index]] — parent index.
 - [[task-153-01-chaser-meshy-optimization-test]] — step 1, 3d.
