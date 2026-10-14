@@ -3,7 +3,7 @@ id: task-166-01-robot-debris-pieces
 description: "Export the 13 chaser debris piece meshes (torso, arms and legs whole or cut at the joint) with their rest offsets."
 parent: task-166-robot-debris-pieces
 kind: task
-status: in-progress
+status: done
 ---
 # Robot death: Niagara debris pieces (chaser)
 
@@ -15,11 +15,11 @@ status: in-progress
 - done_when: The 13 FBX files and the report exist; triangle counts sum per whole limb equal the sum of its two parts; the offsets of left and right pieces are mirrored in Y; the script reruns cleanly; chaser-meshy-pipeline updated; committed by path
 - editor_state: closed
 - token_ceiling: open
-- model: open
-- tokens: open
-- runs: open
+- model: sonnet
+- tokens: input 26, cache write 36238, cache read 293790, output 11178
+- runs: 1
 - milestone: M3
-- result: open
+- result: 13 debris FBX + debris_pieces.json (index order = Niagara mesh index, offsets cm Unreal axes, Y mirrored) and chaser_debris_pieces.py in Art/Source/chaser-meshy/debris and Tools/art/blender; pipeline step 6; commit b3a5755; offsets not yet confirmed on an Unreal import
 
 ## Relations
 - [[task-166-robot-debris-pieces]] — parent global task.

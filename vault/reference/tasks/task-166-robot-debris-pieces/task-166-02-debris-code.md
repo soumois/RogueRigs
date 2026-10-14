@@ -3,7 +3,7 @@ id: task-166-02-debris-code
 description: "C++ side of the debris: pooled debris Niagara components, random choice of 2 or 3 pieces, last-hit direction, launch when the robot disappears."
 parent: task-166-robot-debris-pieces
 kind: task
-status: todo
+status: in-progress
 ---
 # Robot debris: C++ selection, direction and pool
 
