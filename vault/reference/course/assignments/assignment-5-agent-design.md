@@ -4,7 +4,9 @@ description: "Proposed design of the Assignment 5 agent (Code Architect): inputs
 parent: assignment-5-goal-oriented-agent
 kind: note
 ---
-# Code Architect — proposed design (all choices open, see [[assignment-5-open-decisions]])
+# Code Architect — proposed design
+
+Owner decision 2026-10-14: no `Tools/architect/` tool. The pipeline below runs as the `/architect` command (`.claude/commands/architect.md`) through the existing crew; blackboard and state file are `blackboard.md` and `state.md` in `assignments/A5-goal-oriented-coding-agent/`. Steps 1 to 8 still describe what the command does; the Layout section is superseded. Remaining choices: [[assignment-5-open-decisions]].
 
 ## Layout (proposed)
 `Tools/architect/`: one entry script plus modules for GDD parsing, code scan, scoring, writing and blackboard; `weights.json` for scoring weights (no literals in code); `state.md`; `runs/<run-id>/blackboard.md` and `.json`.
