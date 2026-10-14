@@ -12,6 +12,7 @@ The cloud container reaches the repo through the desktop-app bridge (shell on th
 - Git leaves `.git/HEAD.lock`, `.git/index.lock`, `.git/objects/maintenance.lock` and `tmp_obj_*` files, and prints `unable to unlink`. The next git command would fail with "File exists".
 - Move each lock to a new name directly under `.git/`, for example `mv .git/index.lock .git/stale-index-lock-N`. Never move a lock a running git may hold. The owner deletes `.git/stale-*` from time to time.
 - `rm` works only after the permission tool for deletion is approved; the move needs no approval.
+- A commit refused because another session moved `HEAD` meanwhile ("cannot lock ref 'HEAD'… expected") leaves `.git/refs/heads/master.lock`. If its time is just after your attempt, it is yours: move it to `.git/stale-master-lock-N` (destination directly under `.git/`), then commit again. Check `git log -1` first; the Orchestrator commits in the same checkout.
 
 ## Commit rules
 - No git identity is configured in the cloud: pass `-c user.name=… -c user.email=…` taken from `git log -1 --format=%an` and `%ae`.
