@@ -3,7 +3,7 @@ id: task-151-12-chaser-assembly
 description: "Assemble the ten parts and validate the whole chaser against the sheet."
 parent: task-151-chaser-robot
 kind: task
-status: in-progress
+status: done
 ---
 # Chaser: assembly and validation
 
@@ -20,11 +20,11 @@ status: in-progress
 - rules: BLENDER ROUTE; no Unreal process; max_returns 3; commit by name with message `task-151-12-chaser-assembly: <summary>`.
 - editor_state: closed
 - token_ceiling: open
-- model: open
-- tokens: open
-- runs: open
+- model: sonnet
+- tokens: input 32, cache write 53478, cache read 570049, output 4287
+- runs: 1
 - milestone: M2
-- result: open
+- result: Assembled from the six part modules: 2320 tris, 124 cm, silhouette within 3.2 percent of H, joint overlaps at most 0.93 cm; knee contract moved to 0.11 H; hands, back plates and foot side still coarser than the sheet.
 
 ## Relations
 - [[task-151-chaser-robot]] — parent global task.
