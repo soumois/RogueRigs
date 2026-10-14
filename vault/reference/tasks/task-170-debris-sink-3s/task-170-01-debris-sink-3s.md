@@ -3,7 +3,7 @@ id: task-170-01-debris-sink-3s
 description: "Debris pieces stay 3 s at full size, then sink into the floor in 0.4 s without shrinking (3.4 s in all)."
 parent: task-170-debris-sink-3s
 kind: task
-status: todo
+status: in-progress
 ---
 # Robot debris: 3 s, then sink in 0.4 s
 

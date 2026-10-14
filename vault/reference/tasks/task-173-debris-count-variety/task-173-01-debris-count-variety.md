@@ -3,7 +3,7 @@ id: task-173-01-debris-count-variety
 description: "Throw 2 to 4 debris meshes per death with equal odds and check with a game run that the pieces drawn vary, fixing any bias."
 parent: task-173-debris-count-variety
 kind: task
-status: in-progress
+status: done
 ---
 # Robot debris: 2 to 4 pieces and variety
 
@@ -15,11 +15,11 @@ status: in-progress
 - done_when: Build passes with the editor closed; existing enemy tests still pass except the known EyeMesh one; the frequency table of the 13 meshes and of the counts is reported (values, no screenshots); doc updated; committed by path
 - editor_state: closed
 - token_ceiling: open
-- model: open
-- tokens: open
-- runs: open
+- model: opus
+- tokens: input 116, cache write 333533, cache read 4096459, output 40652
+- runs: 1
 - milestone: M3
-- result: open
+- result: Count RandRange(2,4); Choose redraws when a cut would exceed the count (was: forced whole, cuts 35 %, now 42 %); Verbose log of chosen indices; 732 deaths: torso 44 %, halves 17-21 %, wholes 24-28 %, counts 232/248/252; Niagara MeshIndex matches requests (207 components); torso frequency follows equal group odds (owner call); build OK, 15/16 tests (known EyeMesh); commit d6ce98a
 
 ## Relations
 - [[task-173-debris-count-variety]] — parent global task.

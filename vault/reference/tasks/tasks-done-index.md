@@ -177,3 +177,4 @@ Archive: it exceeds the index size limits of [[_authoring]] on purpose (owner, 2
 - [[task-165-chaser-run-slower]] — Slow the chaser run animation by 30 percent (playback rate 0.7), as a tunable material parameter. Status done.
 - [[task-166-robot-debris-pieces]] — When a chaser disappears at death, throw 2 or 3 random robot pieces (arm or leg whole or cut at the joint, torso) as pooled Niagara mesh particles. Status done.
 - [[task-167-robot-death-puff]] — At a robot death, play a pooled Niagara puff of sparks that hides the 0.15 s shrink (chaser and shield chaser first). Status done.
+- [[task-173-debris-count-variety]] — Throw 2 to 4 debris meshes per death with equal odds and check with a game run that the pieces drawn vary, fixing any bias. Status done.
