@@ -3,7 +3,7 @@ id: task-171-debris-throw-random
 description: "Global task: debris throw speed times a random 1.3-2 factor per death, each piece turned within ±15° of the killing-hit direction."
 parent: tasks-to-do-index
 kind: task
-status: todo
+status: in-progress
 ---
 # Robot debris: random force and angle
 

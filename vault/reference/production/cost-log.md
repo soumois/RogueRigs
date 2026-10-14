@@ -280,6 +280,7 @@ kind: note
 | [[task-168-02-stat-icons]] | sonnet | 4 | 0k | 329k | 1636k | 5k |
 | [[task-168-03-card-frames]] | sonnet | 3 | 0k | 129k | 1126k | 7k |
 | [[task-173-01-debris-count-variety]] | opus | 1 | 0k | 334k | 4096k | 41k |
+| [[task-170-01-debris-sink-3s]] | sonnet | 1 | 0k | 70k | 971k | 13k |
 
 ## Totals
 | Scope | Input | Cache write | Cache read | Output |

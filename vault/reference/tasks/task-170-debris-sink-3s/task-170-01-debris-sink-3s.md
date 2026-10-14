@@ -3,7 +3,7 @@ id: task-170-01-debris-sink-3s
 description: "Debris pieces stay 3 s at full size, then sink into the floor in 0.4 s without shrinking (3.4 s in all)."
 parent: task-170-debris-sink-3s
 kind: task
-status: in-progress
+status: done
 ---
 # Robot debris: 3 s, then sink in 0.4 s
 
@@ -15,11 +15,11 @@ status: in-progress
 - done_when: The system compiles with no stack issue and stays one-shot (finishes on its own); the changed module inputs read back; saved by explicit asset path; bp-robot-debris doc updated; committed by path; the editor stays open
 - editor_state: open
 - token_ceiling: open
-- model: open
-- tokens: open
-- runs: open
+- model: sonnet
+- tokens: input 54, cache write 69960, cache read 971098, output 13168
+- runs: 1
 - milestone: M3
-- result: open
+- result: NS_RobotDebris: lifetime 3.4 s, ScaleMeshSize removed, collision plane dropped 10 m from age 3.0 s, post-solver velocity (0,0,-140) from 3.0 s (about 62-66 cm sink, computed); compiles clean; motion not seen; bp-robot-debris updated (2 to 4 pieces); commit f59f4bc
 
 ## Relations
 - [[task-170-debris-sink-3s]] — parent global task.
