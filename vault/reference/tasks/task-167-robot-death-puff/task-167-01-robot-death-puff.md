@@ -3,7 +3,7 @@ id: task-167-01-robot-death-puff
 description: "At a robot death, play a pooled Niagara puff of sparks that hides the 0.15 s shrink (chaser and shield chaser first)."
 parent: task-167-robot-death-puff
 kind: task
-status: in-progress
+status: done
 ---
 # Robot death: puff hiding the shrink
 
@@ -15,11 +15,11 @@ status: in-progress
 - done_when: Build passes with the editor closed; the existing enemy tests still pass (only update an expectation this change breaks); the pool cap 40 is a tunable default; doc updated; committed by path
 - editor_state: closed
 - token_ceiling: open
-- model: open
-- tokens: open
-- runs: open
+- model: opus
+- tokens: input 44, cache write 61700, cache read 897166, output 19167
+- runs: 1
 - milestone: M3
-- result: open
+- result: URRNiagaraPoolSubsystem (world subsystem, one pool per system asset, cap 40, prewarm, return on finish); ARREnemy DeathPuffSystem + DeathPuffPoolSize 40 played at HandleDeath; build OK; 15/16 enemy tests pass (known EyeMesh failure); pool not exercised (no asset yet); commit fba1715
 
 ## Relations
 - [[task-167-robot-death-puff]] — parent global task.

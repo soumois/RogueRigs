@@ -3,7 +3,7 @@ id: task-167-02-death-puff-niagara
 description: "Build NS_RobotDeathPuff (about 12 sparks, 0.3 s, covering the robot) and set it as DeathPuffSystem on BP_Chaser and BP_ShieldChaser."
 parent: task-167-robot-death-puff
 kind: task
-status: todo
+status: in-progress
 ---
 # Robot death puff: Niagara system and wiring
 

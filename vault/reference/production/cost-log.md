@@ -270,6 +270,7 @@ kind: note
 | [[task-166-01-robot-debris-pieces]] | sonnet | 1 | 0k | 36k | 294k | 11k |
 | [[task-169-01-weapon-lore-lines]] | opus+sonnet | 3 | 0k | 62k | 359k | 4k |
 | [[task-168-01-card-lore-lines]] | opus+sonnet | 2 | 0k | 67k | 378k | 5k |
+| [[task-167-01-robot-death-puff]] | opus | 1 | 0k | 62k | 897k | 19k |
 
 ## Totals
 | Scope | Input | Cache write | Cache read | Output |
