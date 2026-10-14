@@ -3,7 +3,7 @@ id: task-152-01-chaser-static-integration
 description: "Put the modelled chaser in the game as a static mesh (no animation yet) so the owner sees it in play."
 parent: task-152-chaser-static-integration
 kind: task
-status: in-progress
+status: done
 ---
 # Chaser: static in-game integration
 
@@ -15,11 +15,11 @@ status: in-progress
 - done_when: The mesh reads back with bounds x -12.4 to 32.5, y about plus or minus 43.3, z 0 to 123.0 and the four slots in order; the materials exist and read back; the assets saved and committed; nothing in BP_Chaser changed yet
 - editor_state: open
 - token_ceiling: open
-- model: open
-- tokens: open
-- runs: open
+- model: sonnet
+- tokens: input 30, cache write 61417, cache read 629967, output 1579
+- runs: 1
 - milestone: M2
-- result: open
+- result: SM_Chaser (2640 tris, bounds as modelled), T_ChaserLogo, M_Chaser_yellow, M_Chaser_gunmetal, M_Chaser_eye (GlowAmount 25), M_Chaser_logo created and saved in /Game/RogueRigs/Art/Chaser/; BP_Chaser untouched.
 
 ## Relations
 - [[task-152-chaser-static-integration]] — parent global task.

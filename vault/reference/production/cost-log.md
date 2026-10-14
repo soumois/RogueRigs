@@ -250,6 +250,7 @@ kind: note
 | [[task-151-12-chaser-assembly]] | sonnet | 1 | 0k | 53k | 570k | 4k |
 | [[task-151-13-chaser-torso-pass]] | opus+sonnet | 9 | 0k | 663k | 9327k | 88k |
 | [[task-151-14-chaser-reassembly]] | sonnet | 1 | 0k | 50k | 926k | 2k |
+| [[task-152-01-chaser-static-integration]] | sonnet | 1 | 0k | 61k | 630k | 2k |
 
 ## Totals
 | Scope | Input | Cache write | Cache read | Output |

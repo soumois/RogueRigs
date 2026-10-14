@@ -3,7 +3,7 @@ id: task-152-02-chaser-blueprint-swap
 description: "Replace the grey-box body of BP_Chaser (and the shield chaser) with SM_Chaser and its four materials."
 parent: task-152-chaser-static-integration
 kind: task
-status: todo
+status: in-progress
 ---
 # Chaser: Blueprint swap
 
