@@ -171,3 +171,4 @@ Archive: it exceeds the index size limits of [[_authoring]] on purpose (owner, 2
 - [[task-160-chaser-no-shadow]] — Stop the chaser from casting a shadow: BodyMesh and the shield shell cast no shadow. Status done.
 - [[task-161-chaser-cut-pose-check]] — Check the part cut of the chaser and render four fixed run poses from the baked animation data. Status done.
 - [[task-162-chaser-anim-game-look]] — See what the animated chaser really looks like in the game: run the game, spawn chasers near the miner and take screenshots over time. Status done.
+- [[task-163-chaser-anim-lightmap-fix]] — Fix the chaser animation: the engine lightmap UVs overwrite the part index in UV channel 2. Status done.

@@ -1,9 +1,9 @@
 ---
 id: task-163-chaser-anim-lightmap-fix
 description: "Global task: Fix the chaser animation: the engine lightmap UVs overwrite the part index in UV channel 2."
-parent: tasks-to-do-index
+parent: tasks-done-index
 kind: task
-status: in-progress
+status: done
 ---
 # Chaser: keep the part index UV
 
@@ -13,12 +13,12 @@ status: in-progress
 - gdd_check: done by the Orchestrator when the task is planned (2026-10-14).
 - confirmed_by_owner: yes (2026-10-14)
 - milestone: M2
-- next_step: task-163-01-chaser-anim-lightmap-fix
-- result: open
+- next_step: none
+- result: lightmap generation off on SM_Chaser_Meshy_Anim, LightMapCoordinateIndex 1, render data channel 2 exact; game shots show intact parts running and attacking (cost not recorded: the agent was resumed from task-162)
 
 ## Subtasks
 1. task-163-01-chaser-anim-lightmap-fix — cpp
 
 ## Relations
-- [[tasks-to-do-index]] — parent index.
+- [[tasks-done-index]] — parent index.
 - [[task-163-01-chaser-anim-lightmap-fix]] — step 1, cpp.
