@@ -65,7 +65,7 @@ def paint_logo():
     bpy.data.images.remove(src)
 
 
-CAP = [(-9.0, 112.5), (-9.3, 117.0), (-7.0, 119.6), (-3.0, 119.8), (-3.0, 112.5)]          # small yellow shoulder cap behind and above the side plate (profile x, z)
+CAP = [(-9.0, 112.5), (-9.6, 117.0), (-7.4, 120.2), (-3.0, 120.4), (-3.0, 112.5)]          # small yellow shoulder cap behind and above the side plate (profile x, z)
 
 
 def plate2(ht, prof, rings, mat, sg=1.0):
@@ -116,6 +116,14 @@ def build(side=None):
             if li == CL and k == 1:
                 continue            # lower bevel under the recess: built below, dark in the opening
             ht.quad((L[li][k], L[li][(k + 1) % n], L[li + 1][(k + 1) % n], L[li + 1][k]), "yellow_body")
+    # back (round 7): cut the rear top of the block so that, from behind, the outline steps down beside the centre tower (large chamfer in plan and elevation); the front, the brow and the diagonal up to x 3 are not moved
+    for li, (z5, z6, z7, dxr) in {0: (112.0, 112.0, 112.0, 3.0), 1: (113.5, 113.0, 112.5, 2.0), 2: (116.0, 114.5, 113.5, 1.0), 3: (120.5, 117.5, 200.0, 0.0)}.items():
+        for lj in (li, 7 - li):
+            for k, zt in ((5, z5), (6, z6), (7, z7)):
+                v = L[lj][k]
+                v.co.z = min(v.co.z, zt)
+                if k >= 6:
+                    v.co.x += dxr
     ht.quad(L[0][::-1], "yellow_body")
     ht.quad(L[-1], "yellow_body")
 
@@ -197,21 +205,21 @@ def build(side=None):
         ht.loft(rings_, "gunmetal")
 
     # back (round 6): a tall centre tower (53 % of the back width) with chamfered top and bottom corners, two barrel-shaped side plates (41 % of the tower) with slanted tops, tapered bottoms, one facet change at 55 % of the height, two small yellow shoulder caps; seams 0.3 cm, dark only in the seams
-    BACK = [(-7.0, h(0.664)), (-9.8, h(0.668)), (-10.2, h(0.760)), (-9.8, h(0.850)), (-7.6, h(0.905)), (-5.0, h(0.905))]
+    BACK = [(-7.0, 85.0), (-9.8, 85.2), (-10.2, h(0.760)), (-9.8, h(0.850)), (-7.6, h(0.905)), (-5.0, h(0.905))]          # bottom raised to 85: no dark strip under the plates
     ht.profile(BACK, -8.6, 8.6, "gunmetal")
     TW = 7.9                                        # tower half width
     ZT = 123.0
-    TOWER = [(-7.0, h(0.664)), (-10.4, h(0.672)), (-11.6, 91.8), (-11.9, 104.7), (-10.9, 118.0), (-8.0, ZT), (-1.0, ZT)]       # facet change at 104.7 (55 % of 82.3..123)
-    plate2(ht, TOWER, [(-TW, 2.4, 1.5, 0, 0.7), (-TW + 1.0, 0.0, 0.0, 0, 0.0), (TW - 1.0, 0.0, 0.0, 0, 0.0), (TW, 2.4, 1.5, 0, 0.7)], "yellow_body")
-    SIDE = [(-7.0, h(0.664)), (-11.0, 83.2), (-12.4, 91.0), (-12.2, 100.3), (-11.2, 108.7), (-9.5, 115.0), (-5.0, 115.0)]
+    TOWER = [(-7.0, h(0.664)), (-10.6, 83.3), (-12.2, 104.7), (-10.4, 119.0), (-9.4, ZT), (-1.0, ZT)]       # facet change at 104.7 (55 % of 82.3..123)
+    plate2(ht, TOWER, [(-TW, 1.6, 1.0, 0, 0.5), (-TW + 1.6, 0.0, 0.0, 0, 0.0), (TW - 1.6, 0.0, 0.0, 0, 0.0), (TW, 1.6, 1.0, 0, 0.5)], "yellow_body")
+    SIDE = [(-7.0, h(0.664)), (-11.0, 83.2), (-12.4, 100.3), (-10.8, 115.0), (-5.0, 115.0)]
     y0 = TW + 0.3
     for sg in (1, -1):
         plate2(ht, SIDE, [(y0, 0.0, 0.0, 0.0, 0.0), (11.4, 1.0, 0.0, 0.4, 0.0), (13.8, 2.4, 0.5, 1.0, 0.4), (14.6, 3.4, 1.5, 1.0, 0.8)], "yellow_body", sg)
-        plate2(ht, CAP, [(11.4, 0.0, 0.0, 0.0, 0.0), (14.0, 1.6, 0.0, 0.0, 0.4), (14.6, 2.6, 0.0, 0.0, 0.8)], "yellow_body", sg)
+        plate2(ht, CAP, [(12.4, 0.0, 0.0, 0.0, 0.0), (14.0, 1.6, 0.0, 0.0, 0.4), (14.6, 2.6, 0.0, 0.0, 0.8)], "yellow_body", sg)
 
     # shoulder joints: small dark octagonal masses sunk behind the arm line, in a vertical dark channel
     for sg in (1, -1):
-        ht.abox(-9.0, -1.0, sg * (W - 0.3), sg * (W + 0.9), h(0.68), h(0.90), "gunmetal")
+        ht.abox(-9.0, -1.0, sg * (W - 0.3), sg * (W + 0.9), h(0.80), h(0.90), "gunmetal")
         ht.oct_y(-6.5, sg * (W - 0.3), h(0.835), 5.4, 3.4, "gunmetal")
 
     # logo decal on the hood top: one quad 0.25 cm above the flat top of the cap plate, one planar UV, up toward the robot back (-X)

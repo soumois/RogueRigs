@@ -5,7 +5,7 @@
   "units": "cm",
   "objects": {
     "HeadTorso": {
-      "tris": 588,
+      "tris": 548,
       "bounds_min_cm": [
         -12.4,
         -16.28,
@@ -27,7 +27,7 @@
         "LightMap"
       ],
       "lightmap": {
-        "faces": 262,
+        "faces": 247,
         "overlapping_face_pairs": 0,
         "bounds_min": 0.01172,
         "bounds_max": 0.98828,
@@ -56,7 +56,7 @@
       ]
     }
   },
-  "tris": 588,
+  "tris": 548,
   "fidelity": {
     "returns_used": 3,
     "criteria": {
