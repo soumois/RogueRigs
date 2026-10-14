@@ -2,7 +2,7 @@
 
 **ELVTR · Multi-Agent AI for Game Development** · Soumois Pierre-Emmanuel
 
-⬅️ [Assignment 3](../A3-agent-crew/) · [All assignments](../)
+⬅️ [Assignment 3](../A3-agent-crew/) · ➡️ [Assignment 5](../A5-goal-oriented-coding-agent/) · [All assignments](../)
 
 > **Final state of Assignment 4:** commit `0790c65` (tag [`a4-submission`](https://github.com/soumois/RogueRigs/tree/a4-submission)), after task 085. Later commits belong to the rest of the project.
 
