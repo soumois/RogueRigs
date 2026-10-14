@@ -9,17 +9,17 @@
       "bounds_min_cm": [
         -6.5,
         -5.21,
-        -39.2
+        -38.12
       ],
       "bounds_max_cm": [
-        15.09,
-        11.35,
+        13.72,
+        12.05,
         1.61
       ],
       "pivot_world_cm": [
-        0.0,
-        0.0,
-        0.0
+        0,
+        0,
+        0
       ],
       "parent": "UpperArm_L",
       "uv_layers": [
@@ -31,8 +31,8 @@
         "overlapping_face_pairs": 0,
         "bounds_min": 0.01172,
         "bounds_max": 0.98828,
-        "min_gap_px_at_256": 3.0,
-        "min_border_px_at_256": 3.0,
+        "min_gap_px_at_256": 3,
+        "min_border_px_at_256": 3,
         "required_margin_px": 2,
         "pass": true
       },
@@ -48,18 +48,18 @@
       "tris": 396,
       "bounds_min_cm": [
         -6.5,
-        -11.35,
-        -39.2
+        -12.05,
+        -38.12
       ],
       "bounds_max_cm": [
-        15.09,
+        13.72,
         5.21,
         1.61
       ],
       "pivot_world_cm": [
-        0.0,
-        0.0,
-        0.0
+        0,
+        0,
+        0
       ],
       "parent": "UpperArm_R",
       "uv_layers": [
@@ -71,8 +71,8 @@
         "overlapping_face_pairs": 0,
         "bounds_min": 0.01172,
         "bounds_max": 0.98828,
-        "min_gap_px_at_256": 3.0,
-        "min_border_px_at_256": 3.0,
+        "min_gap_px_at_256": 3,
+        "min_border_px_at_256": 3,
         "required_margin_px": 2,
         "pass": true
       },
@@ -85,5 +85,31 @@
       ]
     }
   },
-  "tris": 792
+  "tris": 792,
+  "fidelity": {
+    "returns_used": 2,
+    "criteria": {
+      "C1": {
+        "pass": true,
+        "evidence": "forearm lateral 11.4-13.4 cm = 9.2-10.8 % of H 124; front guard plate kept; slight bend kept (front and back renders vs crops)"
+      },
+      "C2": {
+        "pass": true,
+        "evidence": "palm widened from 5.8 to 8.0-8.8 cm lateral (crop 8.1 cm), palm offset 3.3 -> 1.5 cm outward; fingers 4.6x3.6 cm (thicker), 2 segments 3.8+4.0 cm (shorter, total 8.2); thumb shortened and tucked against the palm (protrudes about 1 cm as in crop)"
+      },
+      "C3": {
+        "pass": true,
+        "evidence": "side render: three fingers side by side hook down and toward -x like the side crop"
+      },
+      "C4": {
+        "pass": true,
+        "evidence": "fingertip bottom at z 56.4 vs palm base 63.2: finger length 8.2 cm = 0.40 of part height matches crop 8-8.5 cm within 5 %"
+      },
+      "C5": {
+        "pass": true,
+        "evidence": "396 tris per arm, flat shading, R mirrors L"
+      }
+    },
+    "still_differs": "fingers in the crop curl slightly more at the second segment and are less parallel; thumb tip in the crop is a bit more rounded-hooked; forearm in the crop is a little longer (rough crop window). Not measured pixel-exact."
+  }
 }
