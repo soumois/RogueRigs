@@ -3,7 +3,7 @@ id: task-159-02-chaser-part-index-unreal
 description: "Reimport the part mesh with the PartId UV channel and read the part index from it in the animation material."
 parent: task-159-chaser-anim-part-index
 kind: task
-status: todo
+status: in-progress
 ---
 # Chaser: part index UV in Unreal
 

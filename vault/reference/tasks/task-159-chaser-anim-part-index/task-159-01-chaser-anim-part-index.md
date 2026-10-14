@@ -3,7 +3,7 @@ id: task-159-01-chaser-anim-part-index
 description: "Make the chaser animation move each part separately: carry the part index in a UV channel instead of vertex colours."
 parent: task-159-chaser-anim-part-index
 kind: task
-status: in-progress
+status: done
 ---
 # Chaser: part index in a UV channel
 
@@ -15,11 +15,11 @@ status: in-progress
 - done_when: The re-imported FBX in Blender shows ten objects with a UV layer PartId whose values per part are exactly (index + 0.5) / 10 to float32 precision, the other layers unchanged, triangles and bounds unchanged (3263, z 0 to 123); the script and the report committed by name, FBX untracked; nothing imported in Unreal
 - editor_state: closed
 - token_ceiling: open
-- model: open
-- tokens: open
-- runs: open
+- model: sonnet
+- tokens: input 14, cache write 39868, cache read 194254, output 1924
+- runs: 1
 - milestone: M2
-- result: open
+- result: PartId UV layer (index+0.5)/10 on all ten parts, layer order UVMap LightMap PartId, geometry identical
 
 ## Relations
 - [[task-159-chaser-anim-part-index]] — parent global task.

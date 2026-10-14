@@ -262,6 +262,7 @@ kind: note
 | [[task-157-03-chaser-anim-cpp-hook]] | opus | 1 | 0k | 100k | 1518k | 10k |
 | [[task-157-04-chaser-anim-unreal]] | sonnet | 1 | 0k | 128k | 2877k | 1k |
 | [[task-158-01-chaser-glow-mask-fix]] | sonnet | 1 | 0k | 60k | 1015k | 0k |
+| [[task-159-01-chaser-anim-part-index]] | sonnet | 1 | 0k | 40k | 194k | 2k |
 
 ## Totals
 | Scope | Input | Cache write | Cache read | Output |
