@@ -3,7 +3,7 @@ id: task-168-04-card-icon-data
 description: "Give the UI one C++ place that maps a stat and a weapon to their icon textures, and a separate lore text on stat cards."
 parent: task-168-upgrade-card-design
 kind: task
-status: todo
+status: in-progress
 ---
 # Upgrade cards: icon mapping and lore field in C++
 
