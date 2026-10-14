@@ -3,7 +3,7 @@ id: task-150-01-xp-nut-disc-lighter-2
 description: "Lower the glow disc intensity of the XP nut a little more."
 parent: task-150-xp-nut-disc-lighter-2
 kind: task
-status: todo
+status: in-progress
 ---
 # XP nut disc: lighter again
 

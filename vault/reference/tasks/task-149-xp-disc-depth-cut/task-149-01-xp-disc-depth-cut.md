@@ -3,7 +3,7 @@ id: task-149-01-xp-disc-depth-cut
 description: "Remove the flat cut at the bottom of the glow disc by pushing the camera-facing disc toward the camera."
 parent: task-149-xp-disc-depth-cut
 kind: task
-status: in-progress
+status: done
 ---
 # XP glow disc: flat bottom cut
 
@@ -15,11 +15,11 @@ status: in-progress
 - done_when: DepthPush reads 60 and 90 on the instances; the material compiles; assets saved and modified in git; doc updated
 - editor_state: open
 - token_ceiling: open
-- model: open
-- tokens: open
-- runs: open
+- model: sonnet
+- tokens: input 44, cache write 39252, cache read 498161, output 610
+- runs: 1
 - milestone: M2
-- result: open
+- result: DepthPush parameter (60 nut, 90 chip) added to M_XPGlowDisc: WPO = billboard + normalised (camera position - object pivot) x DepthPush; compiles (CameraVector node not allowed in the vertex shader); visual result for the owner.
 
 ## Relations
 - [[task-149-xp-disc-depth-cut]] — parent global task.
