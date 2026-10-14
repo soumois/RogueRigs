@@ -3,7 +3,7 @@ id: task-155-01-chaser-meshy-texture-fixes
 description: "Correct the texture of the optimised Meshy chaser: shoulder-to-torso joints fully dark, and the hood logo replaced by the company emblem (yellow on black, smooth)."
 parent: task-155-chaser-meshy-texture-fixes
 kind: task
-status: in-progress
+status: done
 ---
 # Chaser Meshy: texture fixes
 
@@ -15,11 +15,11 @@ status: in-progress
 - done_when: The mesh and its UV are identical to the input (same vertex and face counts); the joint faces between each shoulder and the torso read fully dark with no yellow mix left; the rest of the texture is unchanged (the report gives the number of texels changed outside the two fixes: zero); the hood logo is the company emblem from Art/Meshes/chaser/T_ChaserLogo.png redrawn yellow on a black plate (black background, yellow rock outline and KV letters), with clean smooth edges at 512 px or more of source resolution; the script runs headless; nothing imported in Unreal; the script and the report committed by name, the FBX, textures and renders left untracked until the owner decides
 - editor_state: closed
 - token_ceiling: open
-- model: open
-- tokens: open
-- runs: open
+- model: sonnet
+- tokens: input 102, cache write 164077, cache read 4219971, output 27038
+- runs: 1
 - milestone: M2
-- result: open
+- result: texture fixed (joints dark, emblem logo); logo small and old relief ghost remain; untracked outputs in Art/Meshes/chaser-meshy/
 
 ## Relations
 - [[task-155-chaser-meshy-texture-fixes]] — parent global task.

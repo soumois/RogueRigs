@@ -1,9 +1,9 @@
 ---
 id: task-155-chaser-meshy-texture-fixes
 description: "Correct the optimised Meshy chaser texture: dark shoulder-to-torso joints, and the company emblem as hood logo."
-parent: tasks-to-do-index
+parent: tasks-done-index
 kind: task
-status: in-progress
+status: done
 ---
 # Chaser Meshy: texture fixes
 
@@ -13,12 +13,12 @@ status: in-progress
 - gdd_check: done by the Orchestrator when the task is planned (2026-10-14).
 - confirmed_by_owner: yes (2026-10-14)
 - milestone: M2
-- next_step: task-155-01-chaser-meshy-texture-fixes
-- result: open
+- next_step: none
+- result: Done. texture fixed (joints dark, emblem logo); logo small and old relief ghost remain; untracked outputs in Art/Meshes/chaser-meshy/
 
 ## Subtasks
 1. task-155-01-chaser-meshy-texture-fixes — 3d
 
 ## Relations
-- [[tasks-to-do-index]] — parent index.
+- [[tasks-done-index]] — parent index.
 - [[task-155-01-chaser-meshy-texture-fixes]] — step 1, 3d.

@@ -254,6 +254,7 @@ kind: note
 | [[task-152-02-chaser-blueprint-swap]] | sonnet | 1 | 0k | 47k | 651k | 1k |
 | [[task-153-01-chaser-meshy-optimization-test]] | sonnet | 1 | 0k | 59k | 340k | 33k |
 | [[task-154-01-chaser-meshy-views]] | sonnet | 1 | 0k | 28k | 216k | 1k |
+| [[task-155-01-chaser-meshy-texture-fixes]] | sonnet | 1 | 0k | 164k | 4220k | 27k |
 
 ## Totals
 | Scope | Input | Cache write | Cache read | Output |

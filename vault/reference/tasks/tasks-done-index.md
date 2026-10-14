@@ -163,3 +163,4 @@ Archive: it exceeds the index size limits of [[_authoring]] on purpose (owner, 2
 - [[task-152-chaser-static-integration]] — Put the modelled chaser in the game as a static mesh (no animation yet) so the owner sees it in play. Status done.
 - [[task-153-chaser-meshy-optimization-test]] — Test the optimisation of the Meshy chaser mesh (792154 triangles) down to the 3000 triangle budget with a baked texture. Status done.
 - [[task-154-chaser-meshy-views]] — Generate four reference views of the chaser (front, left, back, right) as input images for Meshy multi-view. Status done.
+- [[task-155-chaser-meshy-texture-fixes]] — Correct the texture of the optimised Meshy chaser: shoulder-to-torso joints fully dark, and the hood logo replaced by the company emblem (yellow on black, smooth). Status done.
