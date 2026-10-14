@@ -3,7 +3,7 @@ id: task-151-06-chaser-part-headtorso
 description: "Rebuild the chaser HeadTorso alone against its close-up crops of the validated sheet."
 parent: task-151-chaser-robot
 kind: task
-status: in-progress
+status: done
 ---
 # Chaser part: HeadTorso
 
@@ -28,11 +28,11 @@ status: in-progress
   - C5 Budget: at most 600 triangles (168 today), flat shading.
 - editor_state: closed
 - token_ceiling: open
-- model: open
-- tokens: open
-- runs: open
+- model: sonnet
+- tokens: input 24, cache write 24778, cache read 255129, output 3127
+- runs: 1
 - milestone: M2
-- result: open
+- result: HeadTorso rebuilt: stepped side back plates (1.9 cm reveal, about 35 degrees), 176 tris; C4 back plates still low contrast in flat light (3 returns).
 
 ## Relations
 - [[task-151-chaser-robot]] — parent global task.
