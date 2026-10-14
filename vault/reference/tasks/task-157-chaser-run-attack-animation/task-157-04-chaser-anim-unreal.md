@@ -3,7 +3,7 @@ id: task-157-04-chaser-anim-unreal
 description: "Import the part mesh and the animation texture, build the animation material and swap it into BP_Chaser and BP_ShieldChaser."
 parent: task-157-chaser-run-attack-animation
 kind: task
-status: todo
+status: in-progress
 ---
 # Chaser: animated mesh and material in Unreal
 

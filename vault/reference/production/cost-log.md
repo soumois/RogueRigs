@@ -259,6 +259,7 @@ kind: note
 | [[task-156-02-chaser-meshy-unreal-import]] | sonnet | 3 | 0k | 109k | 3066k | 3k |
 | [[task-157-01-chaser-run-attack-animation]] | sonnet | 2 | 0k | 349k | 7301k | 26k |
 | [[task-157-02-chaser-clips-bake]] | sonnet | 1 | 0k | 89k | 663k | 19k |
+| [[task-157-03-chaser-anim-cpp-hook]] | opus | 1 | 0k | 100k | 1518k | 10k |
 
 ## Totals
 | Scope | Input | Cache write | Cache read | Output |

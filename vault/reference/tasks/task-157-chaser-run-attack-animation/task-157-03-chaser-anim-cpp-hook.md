@@ -3,7 +3,7 @@ id: task-157-03-chaser-anim-cpp-hook
 description: "Drive the animation from C++ with Custom Primitive Data on the body mesh: clip, start time, no per-frame cost."
 parent: task-157-chaser-run-attack-animation
 kind: task
-status: in-progress
+status: done
 ---
 # Chaser: animation hook in C++
 
@@ -16,11 +16,11 @@ status: in-progress
 - rules: editor closed (build from the command line); do not change gameplay values; commit by name with message `task-157-03-chaser-anim-cpp-hook: <summary>`
 - editor_state: closed
 - token_ceiling: open
-- model: open
-- tokens: open
-- runs: open
+- model: opus
+- tokens: input 44, cache write 99707, cache read 1518231, output 9551
+- runs: 1
 - milestone: M2
-- result: open
+- result: C++ hook: Custom Primitive Data 0 clip id, 1 start time on BodyMesh (found by name), set only on events; build ok; 38/39 enemy tests pass, 1 fails (EyeMesh expected visible in death, hidden since task-156-02)
 
 ## Relations
 - [[task-157-chaser-run-attack-animation]] — parent global task.
