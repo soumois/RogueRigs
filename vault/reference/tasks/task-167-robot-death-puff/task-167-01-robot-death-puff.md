@@ -3,7 +3,7 @@ id: task-167-01-robot-death-puff
 description: "At a robot death, play a pooled Niagara puff of sparks that hides the 0.15 s shrink (chaser and shield chaser first)."
 parent: task-167-robot-death-puff
 kind: task
-status: todo
+status: in-progress
 ---
 # Robot death: puff hiding the shrink
 

@@ -3,7 +3,7 @@ id: task-166-01-robot-debris-pieces
 description: "Export the 13 chaser debris piece meshes (torso, arms and legs whole or cut at the joint) with their rest offsets."
 parent: task-166-robot-debris-pieces
 kind: task
-status: todo
+status: in-progress
 ---
 # Robot death: Niagara debris pieces (chaser)
 

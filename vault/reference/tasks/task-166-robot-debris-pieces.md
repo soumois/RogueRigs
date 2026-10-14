@@ -3,7 +3,7 @@ id: task-166-robot-debris-pieces
 description: "Global task: at a chaser death, throw 2 or 3 random robot pieces (whole or cut limbs, torso) as pooled Niagara mesh particles."
 parent: tasks-to-do-index
 kind: task
-status: todo
+status: in-progress
 ---
 # Robot death: Niagara debris pieces (chaser)
 
