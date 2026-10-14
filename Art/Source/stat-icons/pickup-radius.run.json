@@ -1,0 +1,35 @@
+{
+  "run_id": "20261014-120954-stat-icons",
+  "asset": "stat-icons",
+  "model": "gpt-image-2-text-to-image",
+  "aspect_ratio": "1:1",
+  "resolution": "1K",
+  "variants": 2,
+  "prompt_file": "Art/Source/stat-icons/prompts/pickup-radius.txt",
+  "prompt": "A single game UI stat icon: a flat pure white silhouette symbol with a thin dark charcoal outline, chunky blocky shapes with a few large flat facets in the same flat-shaded low-poly, mechanical spirit as chunky generic gun-anatomy weapon icons, bold simple shape that stays readable at 64 px, centred with generous margin, filling about 60 percent of the frame. Solid flat pure magenta (#FF00FF) background, uniform, no gradient, no shadow, no glow. No text, no letters, no numbers, no UI frame, no colours other than white, charcoal outline and the magenta background.\n\nMotif: a chunky horseshoe magnet pointing down with two short arcs of attraction rings around its open end and a small faceted gem below being pulled in.",
+  "refs": [],
+  "tasks": [
+    {
+      "task_id": "07f9c43bd7acfbb9db2fb2aaac110aff",
+      "state": "success",
+      "credits": 6,
+      "error": null,
+      "result_urls": [
+        "https://tempfile.aiquickdraw.com/images/chatgpt/file_00000000744c81f59500f2c50eabdc77.png"
+      ]
+    },
+    {
+      "task_id": "36cad7ef8e8ecb9266f008dd58b127da",
+      "state": "success",
+      "credits": 6,
+      "error": null,
+      "result_urls": [
+        "https://tempfile.aiquickdraw.com/images/chatgpt/file_000000000be481f8baa6f87187aed855.png"
+      ]
+    }
+  ],
+  "files": [
+    "Art/Source/stat-icons/20261014-120954-stat-icons-1.png",
+    "Art/Source/stat-icons/20261014-120954-stat-icons-2.png"
+  ]
+}

@@ -1,0 +1,3 @@
+A single game UI stat icon: a flat pure white silhouette symbol with a thin dark charcoal outline, chunky blocky shapes with a few large flat facets in the same flat-shaded low-poly, mechanical spirit as chunky generic gun-anatomy weapon icons, bold simple shape that stays readable at 64 px, centred with generous margin, filling about 60 percent of the frame. Solid flat pure magenta (#FF00FF) background, uniform, no gradient, no shadow, no glow. No text, no letters, no numbers, no UI frame, no colours other than white, charcoal outline and the magenta background.
+
+Motif: a chunky pickaxe, head on top, handle diagonal, with two small faceted rock chips flying off its tip.

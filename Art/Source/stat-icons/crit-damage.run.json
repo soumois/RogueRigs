@@ -1,0 +1,35 @@
+{
+  "run_id": "20261014-120459-stat-icons",
+  "asset": "stat-icons",
+  "model": "gpt-image-2-text-to-image",
+  "aspect_ratio": "1:1",
+  "resolution": "1K",
+  "variants": 2,
+  "prompt_file": "Art/Source/stat-icons/prompts/crit-damage.txt",
+  "prompt": "A single game UI stat icon: a flat pure white silhouette symbol with a thin dark charcoal outline, chunky blocky shapes with a few large flat facets in the same flat-shaded low-poly, mechanical spirit as chunky generic gun-anatomy weapon icons, bold simple shape that stays readable at 64 px, centred with generous margin, filling about 60 percent of the frame. Solid flat pure magenta (#FF00FF) background, uniform, no gradient, no shadow, no glow. No text, no letters, no numbers, no UI frame, no colours other than white, charcoal outline and the magenta background.\n\nMotif: a chunky dagger pointing down, driven into the centre of a large sharp-spiked eight-point starburst behind it.",
+  "refs": [],
+  "tasks": [
+    {
+      "task_id": "c714653705dfa0be5d81e7334cb572c1",
+      "state": "success",
+      "credits": 6,
+      "error": null,
+      "result_urls": [
+        "https://tempfile.aiquickdraw.com/images/chatgpt/file_0000000063288206a1152fd5cbfa0ad1.png"
+      ]
+    },
+    {
+      "task_id": "ebc51e318e9dec619e8100d983eb832b",
+      "state": "success",
+      "credits": 6,
+      "error": null,
+      "result_urls": [
+        "https://tempfile.aiquickdraw.com/images/chatgpt/file_00000000e9cc822f941c4a070e5b413c.png"
+      ]
+    }
+  ],
+  "files": [
+    "Art/Source/stat-icons/20261014-120459-stat-icons-1.png",
+    "Art/Source/stat-icons/20261014-120459-stat-icons-2.png"
+  ]
+}

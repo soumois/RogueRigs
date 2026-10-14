@@ -1,0 +1,35 @@
+{
+  "run_id": "20261014-120719-stat-icons",
+  "asset": "stat-icons",
+  "model": "gpt-image-2-text-to-image",
+  "aspect_ratio": "1:1",
+  "resolution": "1K",
+  "variants": 2,
+  "prompt_file": "Art/Source/stat-icons/prompts/max-health.txt",
+  "prompt": "A single game UI stat icon: a flat pure white silhouette symbol with a thin dark charcoal outline, chunky blocky shapes with a few large flat facets in the same flat-shaded low-poly, mechanical spirit as chunky generic gun-anatomy weapon icons, bold simple shape that stays readable at 64 px, centred with generous margin, filling about 60 percent of the frame. Solid flat pure magenta (#FF00FF) background, uniform, no gradient, no shadow, no glow. No text, no letters, no numbers, no UI frame, no colours other than white, charcoal outline and the magenta background.\n\nMotif: a bold chunky plus-shaped medical cross merged with a heart-like faceted shield outline; the cross is large and centred.",
+  "refs": [],
+  "tasks": [
+    {
+      "task_id": "5c98a71a95c93a7322647551b4cdf682",
+      "state": "success",
+      "credits": 6,
+      "error": null,
+      "result_urls": [
+        "https://tempfile.aiquickdraw.com/images/chatgpt/file_00000000195081f5aec2a111ac5875fc.png"
+      ]
+    },
+    {
+      "task_id": "be4c438923396bbb043a3c15bcf6b64d",
+      "state": "success",
+      "credits": 6,
+      "error": null,
+      "result_urls": [
+        "https://tempfile.aiquickdraw.com/images/chatgpt/file_00000000f84c81f8b2d3b3f3b9a7569f.png"
+      ]
+    }
+  ],
+  "files": [
+    "Art/Source/stat-icons/20261014-120719-stat-icons-1.png",
+    "Art/Source/stat-icons/20261014-120719-stat-icons-2.png"
+  ]
+}

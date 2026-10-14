@@ -1,0 +1,35 @@
+{
+  "run_id": "20261014-121214-stat-icons",
+  "asset": "stat-icons",
+  "model": "gpt-image-2-text-to-image",
+  "aspect_ratio": "1:1",
+  "resolution": "1K",
+  "variants": 2,
+  "prompt_file": "Art/Source/stat-icons/prompts/luck.txt",
+  "prompt": "A single game UI stat icon: a flat pure white silhouette symbol with a thin dark charcoal outline, chunky blocky shapes with a few large flat facets in the same flat-shaded low-poly, mechanical spirit as chunky generic gun-anatomy weapon icons, bold simple shape that stays readable at 64 px, centred with generous margin, filling about 60 percent of the frame. Solid flat pure magenta (#FF00FF) background, uniform, no gradient, no shadow, no glow. No text, no letters, no numbers, no UI frame, no colours other than white, charcoal outline and the magenta background.\n\nMotif: a chunky four-leaf clover with four large heart-shaped leaves and a short stem.",
+  "refs": [],
+  "tasks": [
+    {
+      "task_id": "9404648a800a85d2a0abba3916eb0458",
+      "state": "success",
+      "credits": 6,
+      "error": null,
+      "result_urls": [
+        "https://tempfile.aiquickdraw.com/images/chatgpt/file_00000000286881f5ab2268a99e9e85e0.png"
+      ]
+    },
+    {
+      "task_id": "01a8a298abfccac9a71b1dfcf7396fa9",
+      "state": "success",
+      "credits": 6,
+      "error": null,
+      "result_urls": [
+        "https://tempfile.aiquickdraw.com/images/chatgpt/file_00000000bbe481f9861a76042ae725f8.png"
+      ]
+    }
+  ],
+  "files": [
+    "Art/Source/stat-icons/20261014-121214-stat-icons-1.png",
+    "Art/Source/stat-icons/20261014-121214-stat-icons-2.png"
+  ]
+}

@@ -1,0 +1,35 @@
+{
+  "run_id": "20261014-120341-stat-icons",
+  "asset": "stat-icons",
+  "model": "gpt-image-2-text-to-image",
+  "aspect_ratio": "1:1",
+  "resolution": "1K",
+  "variants": 2,
+  "prompt_file": "Art/Source/stat-icons/prompts/crit-chance.txt",
+  "prompt": "A single game UI stat icon: a flat pure white silhouette symbol with a thin dark charcoal outline, chunky blocky shapes with a few large flat facets in the same flat-shaded low-poly, mechanical spirit as chunky generic gun-anatomy weapon icons, bold simple shape that stays readable at 64 px, centred with generous margin, filling about 60 percent of the frame. Solid flat pure magenta (#FF00FF) background, uniform, no gradient, no shadow, no glow. No text, no letters, no numbers, no UI frame, no colours other than white, charcoal outline and the magenta background.\n\nMotif: a bold crosshair target reticle: ring with four ticks, and a small solid centre dot, plus a tiny four-point sparkle at the top right corner.",
+  "refs": [],
+  "tasks": [
+    {
+      "task_id": "021426319dc8a9b1f6b9e5b5af5183cf",
+      "state": "success",
+      "credits": 6,
+      "error": null,
+      "result_urls": [
+        "https://tempfile.aiquickdraw.com/images/chatgpt/file_00000000073481f8bd70532a723f99bd.png"
+      ]
+    },
+    {
+      "task_id": "986219473ae9f553edb105dffa1bb683",
+      "state": "success",
+      "credits": 6,
+      "error": null,
+      "result_urls": [
+        "https://tempfile.aiquickdraw.com/images/chatgpt/file_00000000dbe881f58e70cebf929529ac.png"
+      ]
+    }
+  ],
+  "files": [
+    "Art/Source/stat-icons/20261014-120341-stat-icons-1.png",
+    "Art/Source/stat-icons/20261014-120341-stat-icons-2.png"
+  ]
+}

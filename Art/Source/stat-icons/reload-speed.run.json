@@ -1,0 +1,35 @@
+{
+  "run_id": "20261014-120224-stat-icons",
+  "asset": "stat-icons",
+  "model": "gpt-image-2-text-to-image",
+  "aspect_ratio": "1:1",
+  "resolution": "1K",
+  "variants": 2,
+  "prompt_file": "Art/Source/stat-icons/prompts/reload-speed.txt",
+  "prompt": "A single game UI stat icon: a flat pure white silhouette symbol with a thin dark charcoal outline, chunky blocky shapes with a few large flat facets in the same flat-shaded low-poly, mechanical spirit as chunky generic gun-anatomy weapon icons, bold simple shape that stays readable at 64 px, centred with generous margin, filling about 60 percent of the frame. Solid flat pure magenta (#FF00FF) background, uniform, no gradient, no shadow, no glow. No text, no letters, no numbers, no UI frame, no colours other than white, charcoal outline and the magenta background.\n\nMotif: a single circular arrow (two chunky curved arrowheads chasing each other in a full loop) around a chunky rifle magazine clip silhouette in the middle.",
+  "refs": [],
+  "tasks": [
+    {
+      "task_id": "b32f2b7c86be6e1d3b4da97712f05294",
+      "state": "success",
+      "credits": 6,
+      "error": null,
+      "result_urls": [
+        "https://tempfile.aiquickdraw.com/images/chatgpt/file_0000000095f481f593979863e65ebd47.png"
+      ]
+    },
+    {
+      "task_id": "0625940ab7fe92dcedc21512829aab9c",
+      "state": "success",
+      "credits": 6,
+      "error": null,
+      "result_urls": [
+        "https://tempfile.aiquickdraw.com/images/chatgpt/file_00000000776082468f8634835ae42d0c.png"
+      ]
+    }
+  ],
+  "files": [
+    "Art/Source/stat-icons/20261014-120224-stat-icons-1.png",
+    "Art/Source/stat-icons/20261014-120224-stat-icons-2.png"
+  ]
+}

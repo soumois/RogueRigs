@@ -1,0 +1,35 @@
+{
+  "run_id": "20261014-120036-stat-icons",
+  "asset": "stat-icons",
+  "model": "gpt-image-2-text-to-image",
+  "aspect_ratio": "1:1",
+  "resolution": "1K",
+  "variants": 2,
+  "prompt_file": "Art/Source/stat-icons/prompts/fire-rate.txt",
+  "prompt": "A single game UI stat icon: a flat pure white silhouette symbol with a thin dark charcoal outline, chunky blocky shapes with a few large flat facets in the same flat-shaded low-poly, mechanical spirit as chunky generic gun-anatomy weapon icons, bold simple shape that stays readable at 64 px, centred with generous margin, filling about 60 percent of the frame. Solid flat pure magenta (#FF00FF) background, uniform, no gradient, no shadow, no glow. No text, no letters, no numbers, no UI frame, no colours other than white, charcoal outline and the magenta background.\n\nMotif: three chunky bullets in a row pointing right, stacked closely one behind the other, with three short horizontal speed bars trailing behind them.",
+  "refs": [],
+  "tasks": [
+    {
+      "task_id": "02798a4083d2f585d9b596df3e5bd22a",
+      "state": "success",
+      "credits": 6,
+      "error": null,
+      "result_urls": [
+        "https://tempfile.aiquickdraw.com/images/chatgpt/file_00000000a004820dab2ab1a6755380d0.png"
+      ]
+    },
+    {
+      "task_id": "bf8b3b1012b4533da04cb69bf793fb5f",
+      "state": "success",
+      "credits": 6,
+      "error": null,
+      "result_urls": [
+        "https://tempfile.aiquickdraw.com/images/chatgpt/file_00000000764881f5ba75746741f3536d.png"
+      ]
+    }
+  ],
+  "files": [
+    "Art/Source/stat-icons/20261014-120036-stat-icons-1.png",
+    "Art/Source/stat-icons/20261014-120036-stat-icons-2.png"
+  ]
+}
