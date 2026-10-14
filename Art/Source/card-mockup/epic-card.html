@@ -1,0 +1,59 @@
+<!doctype html>
+<html><head><meta charset="utf-8"><title>Epic stat card mockup</title>
+<style>
+/* Design unit = px at 1080p (card 380 x 560). Screenshot at device scale factor 2 gives 760 x 1120.
+   Fonts: the Roboto files shipped with Unreal (the HUD font), loaded from the engine install for rendering only. */
+@font-face{font-family:RB;font-weight:700;src:url("file:///C:/Program Files/Epic Games/UE_5.8/Engine/Content/Slate/Fonts/Roboto-Bold.ttf")}
+@font-face{font-family:RB;font-style:italic;font-weight:400;src:url("file:///C:/Program Files/Epic Games/UE_5.8/Engine/Content/Slate/Fonts/Roboto-Italic.ttf")}
+html,body{margin:0;background:#0b0c0f;font-family:RB,Roboto,sans-serif}
+#wrap{display:flex;gap:24px;align-items:flex-start}
+#card{position:relative;width:380px;height:560px;background:#15171c;overflow:hidden;flex:none}
+/* 9-slice layers: texture slice in source px (top 173, right 230, bottom 185, left 226 of 1086 x 1448),
+   drawn borders scaled by 0.35 (uniform): top 61, right 80, bottom 65, left 79. Centre stays transparent. */
+.layer{position:absolute;inset:0;box-sizing:border-box;border-style:solid;border-width:61px 80px 65px 79px;
+  border-image-slice:173 230 185 226;border-image-repeat:stretch}
+#base{border-image-source:url("../../UI/Cards/T_CardFrame_Stat.png")}
+#acc{border-image-source:url("../../UI/Cards/T_CardFrame_Stat_Accents.png");filter:url(#purple)}
+#glow{border-image-source:url("../../UI/Cards/T_CardFrame_Stat_Glow.png");filter:url(#purple)}
+#content{position:absolute;left:36px;right:36px;top:36px;bottom:38px;display:flex;flex-direction:column;align-items:center}
+#imgarea{width:100%;height:252px;background:#1c1f26;border-radius:4px;display:flex;align-items:center;justify-content:center;gap:14px;flex:none}
+#wpn{width:168px;height:64px}
+#stat{width:100px;height:100px}
+#effect{margin-top:18px;font-weight:700;font-size:30px;line-height:34px;color:#fff;text-align:center;white-space:nowrap}
+#effect b{color:#a640e6}
+#target{margin-top:8px;font-weight:700;font-size:20px;line-height:24px;color:#c9ccd4}
+#lore{margin-top:14px;font-style:italic;font-weight:400;font-size:16px;line-height:21px;color:#8b909d;text-align:center;padding:0 6px}
+#spec{display:none;color:#d8dbe2;font-size:14px;line-height:19px;width:420px;padding:10px}
+#spec h3{margin:0 0 8px;font-size:16px;color:#fff}
+#spec td{padding:1px 10px 1px 0;vertical-align:top}#spec td:first-child{color:#a640e6;white-space:nowrap}
+body.spec #spec{display:block}
+</style></head>
+<body>
+<svg width="0" height="0" style="position:absolute"><filter id="purple" color-interpolation-filters="sRGB">
+<feColorMatrix type="matrix" values="0.65 0 0 0 0  0 0.25 0 0 0  0 0 0.9 0 0  0 0 0 1 0"/></filter></svg>
+<div id="wrap">
+<div id="card">
+  <div class="layer" id="base"></div>
+  <div id="content">
+    <div id="imgarea"><img id="wpn" src="../../UI/Icons/T_Icon_shotgun.png"><img id="stat" src="../../UI/Icons/T_Icon_Stat_ReloadSpeed.png"></div>
+    <div id="effect"><b>+45%</b> Reload speed</div>
+    <div id="target">Shotgun</div>
+    <div id="lore">Old habit: a spare mag in every pocket, one in the boot.</div>
+  </div>
+  <div class="layer" id="acc"></div>
+  <div class="layer" id="glow"></div>
+</div>
+<div id="spec"><h3>Epic stat card, spec (px at 1080p, card 380 x 560)</h3><table>
+<tr><td>Card</td><td>380 x 560, background #15171c, aspect 0.679</td></tr>
+<tr><td>Frame layers</td><td>3 images 1086 x 1448, same canvas: T_CardFrame_Stat (untinted), _Accents and _Glow (tint = rarity colour, here purple 0.65, 0.25, 0.9). Draw order: base, content, Accents, Glow</td></tr>
+<tr><td>9-slice margins</td><td>texture px L226 T173 R230 B185; drawn at 0.35 scale: L79 T61 R80 B65 (uniform scale, centre transparent, edges stretch)</td></tr>
+<tr><td>Content box</td><td>36 px left/right/top, 38 px bottom (inside the frame strip, about 32 px thick); 308 x 486</td></tr>
+<tr><td>Image area</td><td>308 x 252 (45% of card height), fill #1c1f26, radius 4, contents centred, gap 14</td></tr>
+<tr><td>Icons</td><td>weapon (T_Icon_shotgun) 168 x 64 on the left; stat icon (T_Icon_Stat_ReloadSpeed) 100 x 100 on its right</td></tr>
+<tr><td>Effect line</td><td>top margin 18; Roboto Bold 30 px / line 34, white; the value "+45%" in the rarity colour (#A640E6); centred, one line</td></tr>
+<tr><td>Target line</td><td>top margin 8; Roboto Bold 20 px / line 24, #C9CCD4, centred</td></tr>
+<tr><td>Lore line</td><td>top margin 14; Roboto Italic 16 px / line 21, #8B909D, centred, wraps within 296 px (6 px side padding)</td></tr>
+<tr><td>Value</td><td>45% = global 30% x 1.5 (epic multiplier)</td></tr>
+</table></div>
+</div></body>
+<script>if(location.search.indexOf('spec')>=0)document.body.className='spec'</script></html>
