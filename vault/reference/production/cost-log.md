@@ -255,6 +255,7 @@ kind: note
 | [[task-153-01-chaser-meshy-optimization-test]] | sonnet | 1 | 0k | 59k | 340k | 33k |
 | [[task-154-01-chaser-meshy-views]] | sonnet | 1 | 0k | 28k | 216k | 1k |
 | [[task-155-01-chaser-meshy-texture-fixes]] | sonnet | 1 | 0k | 164k | 4220k | 27k |
+| [[task-156-01-chaser-meshy-integration]] | sonnet | 1 | 0k | 50k | 464k | 0k |
 
 ## Totals
 | Scope | Input | Cache write | Cache read | Output |

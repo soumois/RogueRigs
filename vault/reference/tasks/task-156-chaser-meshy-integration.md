@@ -13,7 +13,7 @@ status: in-progress
 - gdd_check: done by the Orchestrator when the task is planned (2026-10-14).
 - confirmed_by_owner: yes (2026-10-14)
 - milestone: M2
-- next_step: task-156-01-chaser-meshy-integration
+- next_step: task-156-02-chaser-meshy-unreal-import
 - result: open
 
 ## Subtasks

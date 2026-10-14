@@ -3,7 +3,7 @@ id: task-156-02-chaser-meshy-unreal-import
 description: "Import the game-ready Meshy chaser with its texture and material, and swap it into BP_Chaser and BP_ShieldChaser."
 parent: task-156-chaser-meshy-integration
 kind: task
-status: todo
+status: in-progress
 ---
 # Chaser Meshy: Unreal import and Blueprint swap
 
