@@ -265,7 +265,7 @@ bool URRUpgradeComponent::MakeCard(ERRUpgradeStat Stat, ERRUpgradeRarity Tier, E
 	return true;
 }
 
-bool URRUpgradeComponent::MakeWeaponCard(const FRRWeaponCatalogueEntry& Entry, FRRUpgradeCard& OutCard)
+bool URRUpgradeComponent::MakeWeaponCard(const FRRWeaponCatalogueEntry& Entry, FRRUpgradeCard& OutCard, const UObject* WorldContext)
 {
 	if (!Entry.WeaponClass)
 	{
@@ -278,6 +278,15 @@ bool URRUpgradeComponent::MakeWeaponCard(const FRRWeaponCatalogueEntry& Entry, F
 	Card.DisplayName = LOCTEXT("Card_NewWeapon", "New weapon");
 	Card.TargetText = ARRWeapon::GetClassDisplayName(Entry.WeaponClass);
 	Card.DescriptionText = Entry.Description;
+	// Lore line from weapon_texts.json, keyed by the weapon display name; empty when missing (task-169-03).
+	if (URRTextContentSubsystem* TextContent = URRTextContentSubsystem::Get(WorldContext))
+	{
+		FText Flavor;
+		if (TextContent->GetWeaponFlavor(Card.TargetText.ToString(), Flavor))
+		{
+			Card.LoreText = Flavor;
+		}
+	}
 	OutCard = Card;
 	return true;
 }
@@ -425,7 +434,7 @@ TArray<FRRUpgradeCard> URRUpgradeComponent::DrawOffer(int32 CardCount, float Luc
 	{
 		const int32 Index = RandomStream.RandRange(0, Candidates.Num() - 1);
 		FRRUpgradeCard Card;
-		if (MakeWeaponCard(Candidates[Index], Card))
+		if (MakeWeaponCard(Candidates[Index], Card, this))
 		{
 			WeaponSlots.Add(Slot);
 			WeaponCards.Add(Card);

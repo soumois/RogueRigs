@@ -114,7 +114,7 @@ bool FRRTextLoadsRealFilesTest::RunTest(const FString& Parameters)
 	using namespace RRTextContentTests;
 
 	FRRTextContentLibrary Library;
-	TestEqual(TEXT("three files load"), Library.LoadFromDirectory(FRRTextContentLibrary::GetDefaultDirectory()), 3);
+	TestEqual(TEXT("four files load"), Library.LoadFromDirectory(FRRTextContentLibrary::GetDefaultDirectory()), 4);
 	TestEqual(TEXT("no item rejected"), Library.GetRejectedItemCount(), 0);
 	TestEqual(TEXT("one flavor per stat"), Library.GetUpgradeFlavorCount(), static_cast<int32>(UE_ARRAY_COUNT(AllStats)));
 	for (const ERRUpgradeStat Stat : AllStats)
@@ -184,7 +184,7 @@ bool FRRTextFallbackTest::RunTest(const FString& Parameters)
 {
 	using namespace RRTextContentTests;
 
-	// Scratch directory: alerts.json copied, upgrade_texts.json broken, barks.json missing.
+	// Scratch directory: alerts.json copied, upgrade_texts.json broken, barks.json and weapon_texts.json missing.
 	const FString Directory = ScratchDirectory();
 	IFileManager::Get().DeleteDirectory(*Directory, /*RequireExists*/ false, /*Tree*/ true);
 	IFileManager::Get().MakeDirectory(*Directory, /*Tree*/ true);
@@ -195,8 +195,8 @@ bool FRRTextFallbackTest::RunTest(const FString& Parameters)
 
 	// One warning per problem file, none for the good one.
 	AddExpectedMessagePlain(TEXT("JSON parse error"), ELogVerbosity::Warning, EAutomationExpectedMessageFlags::Contains, 1);
-	// Missing file: barks.json here, then the three files of an absent directory below.
-	AddExpectedMessagePlain(TEXT("text file missing or unreadable"), ELogVerbosity::Warning, EAutomationExpectedMessageFlags::Contains, 4);
+	// Missing file: barks.json and weapon_texts.json here, then the four files of an absent directory below.
+	AddExpectedMessagePlain(TEXT("text file missing or unreadable"), ELogVerbosity::Warning, EAutomationExpectedMessageFlags::Contains, 6);
 	FRRTextContentLibrary Library;
 	TestEqual(TEXT("only alerts load"), Library.LoadFromDirectory(Directory), 1);
 	FString Out;
@@ -224,7 +224,7 @@ bool FRRTextFallbackTest::RunTest(const FString& Parameters)
 	{
 		return false;
 	}
-	TestEqual(TEXT("real files load"), TextContent->ReloadFromDirectory(FString()), 3);
+	TestEqual(TEXT("real files load"), TextContent->ReloadFromDirectory(FString()), 4);
 	AddExpectedMessagePlain(TEXT("no flavor line for stat 'Laser focus'"), ELogVerbosity::Warning, EAutomationExpectedMessageFlags::Contains, 1);
 	AddExpectedMessagePlain(TEXT("no alert line for event 'no_such_event'"), ELogVerbosity::Warning, EAutomationExpectedMessageFlags::Contains, 1);
 	FText Text;
@@ -256,7 +256,7 @@ bool FRRTextAlertPickTest::RunTest(const FString& Parameters)
 	TestEqual(TEXT("no line: none"), FRRTextContentLibrary::PickIndexAvoiding(0, INDEX_NONE, Single), static_cast<int32>(INDEX_NONE));
 
 	FRRTextContentLibrary Library;
-	TestEqual(TEXT("three files load"), Library.LoadFromDirectory(FRRTextContentLibrary::GetDefaultDirectory()), 3);
+	TestEqual(TEXT("four files load"), Library.LoadFromDirectory(FRRTextContentLibrary::GetDefaultDirectory()), 4);
 	for (const FName& Event : FRRTextContentLibrary::GetAlertEventIds())
 	{
 		const TArray<FString>* Lines = Library.FindAlertLines(Event);
@@ -335,7 +335,7 @@ bool FRRTextUpgradeCardTest::RunTest(const FString& Parameters)
 	// Fallback: without the files the card is the functional one, numbers unchanged.
 	FRRUpgradeCard WithFlavor;
 	MakeStatCard(*Setup.Upgrades, Rifle, ERRUpgradeStat::Damage, WithFlavor);
-	AddExpectedMessagePlain(TEXT("text file missing or unreadable"), ELogVerbosity::Warning, EAutomationExpectedMessageFlags::Contains, 3);
+	AddExpectedMessagePlain(TEXT("text file missing or unreadable"), ELogVerbosity::Warning, EAutomationExpectedMessageFlags::Contains, 4);
 	Setup.TextContent->ReloadFromDirectory(FPaths::Combine(ScratchDirectory(), TEXT("absent")));
 	FRRUpgradeCard Functional;
 	TestTrue(TEXT("card builds without the files"), MakeStatCard(*Setup.Upgrades, Rifle, ERRUpgradeStat::Damage, Functional));

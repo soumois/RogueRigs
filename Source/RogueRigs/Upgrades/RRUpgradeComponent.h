@@ -138,9 +138,10 @@ public:
 
 	/**
 	 * Builds the "New weapon" card of Entry: CardType NewWeapon, WeaponClass, Target Weapon (no TargetWeapon yet), TargetText
-	 * = the weapon's CSV name (ARRWeapon::GetClassDisplayName), DescriptionText = Entry.Description. False when the class is unset.
+	 * = the weapon's CSV name (ARRWeapon::GetClassDisplayName), DescriptionText = Entry.Description, LoreText = the weapon lore line of weapon_texts.json found through WorldContext's
+	 * URRTextContentSubsystem (empty without a context, a file or a line). False when the class is unset.
 	 */
-	static bool MakeWeaponCard(const FRRWeaponCatalogueEntry& Entry, FRRUpgradeCard& OutCard);
+	static bool MakeWeaponCard(const FRRWeaponCatalogueEntry& Entry, FRRUpgradeCard& OutCard, const UObject* WorldContext = nullptr);
 
 	/** Levels offering new-weapon cards are multiples of this (WeaponCardLevelInterval, 5); 0 = never. */
 	UFUNCTION(BlueprintPure, Category = "Upgrades")

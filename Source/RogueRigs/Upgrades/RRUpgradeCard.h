@@ -154,7 +154,8 @@ struct ROGUERIGS_API FRRUpgradeCard
 
 	/**
 	 * Lore line shown apart from the stat name. Stat card: the Rook flavor line of upgrade_texts.json alone (the second line of
-	 * DescriptionText); empty when the file or the stat line is missing. NewWeapon card: empty for now (filled by task-169-03).
+	 * DescriptionText); empty when the file or the stat line is missing. NewWeapon card: the weapon lore
+	 * line of weapon_texts.json (looked up by TargetText); empty when the file or the weapon line is missing.
 	 */
 	UPROPERTY(BlueprintReadOnly, Category = "Upgrade|UI")
 	FText LoreText;

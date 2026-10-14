@@ -83,6 +83,24 @@ bool URRTextContentSubsystem::GetUpgradeFlavor(const FString& StatNameOrId, FTex
 	return true;
 }
 
+bool URRTextContentSubsystem::GetWeaponFlavor(const FString& WeaponNameOrId, FText& OutText)
+{
+	EnsureLoaded();
+	FString Flavor;
+	if (!Library.FindWeaponFlavor(WeaponNameOrId, Flavor))
+	{
+		OutText = FText::GetEmpty();
+		// A missing file was already reported at load: warn only about weapons absent from a loaded file.
+		if (Library.GetWeaponFlavorCount() > 0)
+		{
+			WarnOnce(TEXT("weapon|") + WeaponNameOrId.ToLower(), FString::Printf(TEXT("no lore line for weapon '%s', card lore left empty."), *WeaponNameOrId));
+		}
+		return false;
+	}
+	OutText = FText::FromString(Flavor);
+	return true;
+}
+
 bool URRTextContentSubsystem::GetAlertLine(FName EventId, FText& OutText)
 {
 	EnsureLoaded();

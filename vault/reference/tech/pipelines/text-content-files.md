@@ -1,6 +1,6 @@
 ---
 id: text-content-files
-description: "Item fields, allowed values, word limits and one example each for upgrade_texts.json, barks.json and alerts.json. Open before writing or validating them."
+description: "Item fields, allowed values, word limits and one example each for upgrade_texts.json, weapon_texts.json, barks.json and alerts.json. Open before writing or validating them."
 parent: text-content-schema
 kind: doc
 ---
@@ -18,6 +18,18 @@ Envelope, text rules and run id: [[text-content-schema]]. Examples below are ref
 ```json
 {"schema_version": 1, "run_id": "20261011-143000-upgrade_texts", "items": [
   {"id": "upg_reload_speed", "stat": "Reload speed", "flavor": "Swap the mag before the robots finish their paperwork."}]}
+```
+
+## weapon_texts.json (one lore line per acquirable weapon, task-169-03)
+| key | type | rule |
+|---|---|---|
+| `id` | string | `wpn_` + `weapon` lowercased, spaces replaced by `_` (`Turret launcher` → `wpn_turret_launcher`); one weapon lore id of [[text-content-events]] |
+| `weapon` | string | exactly one `DisplayName` of `Content/RogueRigs/Data/Tables/WeaponStats.csv`, unchanged, case included; each weapon at most once |
+| `flavor` | string | 3 to 12 words, no digit; the lore line of the new-weapon card (`LoreText`, [[sys-upgrades]]) |
+
+```json
+{"schema_version": 1, "run_id": "20261014-090000-weapon_texts", "items": [
+  {"id": "wpn_shotgun", "weapon": "Shotgun", "flavor": "Welded from a mining charge nobody filed a report for."}]}
 ```
 
 ## barks.json (Rook and Vesna)

@@ -1,4 +1,4 @@
-// Rogue Rigs - text content library: parses upgrade_texts.json, alerts.json and barks.json (text-content-schema) and answers lookups.
+// Rogue Rigs - text content library: parses upgrade_texts.json, weapon_texts.json, alerts.json and barks.json (text-content-schema) and answers lookups.
 
 #pragma once
 
@@ -19,6 +19,7 @@ class ROGUERIGS_API FRRTextContentLibrary
 public:
 	/** File names inside the text directory. */
 	static const TCHAR* UpgradeTextsFileName;
+	static const TCHAR* WeaponTextsFileName;
 	static const TCHAR* AlertsFileName;
 	static const TCHAR* BarksFileName;
 
@@ -41,6 +42,9 @@ public:
 	/** Closed list of bark trigger ids of text-content-events. */
 	static const TArray<FName>& GetBarkTriggerIds();
 
+	/** Closed list of weapon lore item ids (weapon_texts.json `id`, text-content-events): the acquirable weapons. */
+	static const TArray<FName>& GetWeaponTextIds();
+
 	/** Bark speaker ids (rook, vesna). */
 	static const TArray<FName>& GetSpeakerIds();
 
@@ -50,11 +54,14 @@ public:
 	 */
 	static int32 PickIndexAvoiding(int32 Count, int32 PreviousIndex, FRandomStream& Stream);
 
-	/** Clears everything, then loads the three files of Directory. Returns the number of files loaded (0 to 3). */
+	/** Clears everything, then loads the three files of Directory. Returns the number of files loaded (0 to 4). */
 	int32 LoadFromDirectory(const FString& Directory);
 
 	/** Replaces the upgrade flavor lines with FilePath's. False (warning, flavors cleared) when the file is unusable. */
 	bool LoadUpgradeTexts(const FString& FilePath);
+
+	/** Replaces the weapon lore lines with FilePath's. False (warning, lore cleared) when the file is unusable. */
+	bool LoadWeaponTexts(const FString& FilePath);
 
 	/** Replaces the alert lines with FilePath's. False (warning, alerts cleared) when the file is unusable. */
 	bool LoadAlerts(const FString& FilePath);
@@ -67,6 +74,9 @@ public:
 
 	/** Flavor line of a stat, by display name ("Fire rate") or item id ("upg_fire_rate"), case-insensitive. False when unknown. */
 	bool FindUpgradeFlavor(const FString& StatOrId, FString& OutFlavor) const;
+
+	/** Lore line of a weapon, by display name ("Shotgun") or item id ("wpn_shotgun"), case-insensitive. False when unknown. */
+	bool FindWeaponFlavor(const FString& WeaponOrId, FString& OutFlavor) const;
 
 	/** Lines of an alert event in file order; null when the event has none. */
 	const TArray<FString>* FindAlertLines(FName EventId) const;
@@ -85,6 +95,7 @@ public:
 
 	/** Loaded counts (tests, logs). */
 	int32 GetUpgradeFlavorCount() const { return UpgradeFlavorCount; }
+	int32 GetWeaponFlavorCount() const { return WeaponFlavorCount; }
 	int32 GetAlertLineCount() const;
 	int32 GetBarkCount() const { return Barks.Num(); }
 
@@ -117,6 +128,12 @@ protected:
 
 	/** Number of flavor items loaded. */
 	int32 UpgradeFlavorCount = 0;
+
+	/** Weapon lore by lowercased weapon display name and by lowercased item id. */
+	TMap<FString, FString> WeaponFlavorByKey;
+
+	/** Number of weapon lore items loaded. */
+	int32 WeaponFlavorCount = 0;
 
 	/** Alert lines by event id, in file order. */
 	TMap<FName, TArray<FString>> AlertLinesByEvent;

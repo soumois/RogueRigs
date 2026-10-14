@@ -12,7 +12,7 @@
 // gives its expected exit code and error lines.
 //
 // Read at run time from the vault (never duplicated here): bark triggers and alert events
-// (text-content-events), stat display names (sys-upgrades), rule ids L1-L4 (lore) and
+// and weapon lore ids (text-content-events), weapon names (WeaponStats.csv DisplayName), stat display names (sys-upgrades), rule ids L1-L4 (lore) and
 // T1-T9 (dialogue-tone), the id -> path map (_paths.md), and the T8 example corpus
 // (every double-quoted string of 3+ words in EXAMPLE_NODES).
 // Node only, no dependencies, like vault/scripts/lint.js.
@@ -26,17 +26,19 @@ const VAULT = path.join(REPO, 'vault');
 const TESTS = path.join(__dirname, 'tests');
 const LOGS_DIR = path.join(REPO, 'Tools', 'content', 'logs');
 const CONTENT_DIR = path.join(REPO, 'Content');
+const WEAPON_STATS = path.join(CONTENT_DIR, 'RogueRigs', 'Data', 'Tables', 'WeaponStats.csv');
 
 // Values owned by text-content-files (enums and word limits).
 const FILES = {
   upgrade_texts: { keys: ['id', 'stat', 'flavor'], idKey: 'id', textKey: 'flavor', min: 3, max: 12 },
+  weapon_texts: { keys: ['id', 'weapon', 'flavor'], idKey: 'id', textKey: 'flavor', min: 3, max: 12 },
   barks: { keys: ['line_id', 'speaker_id', 'trigger', 'tone', 'text'], idKey: 'line_id', textKey: 'text', min: 3, max: 8 },
   alerts: { keys: ['line_id', 'event', 'register', 'text'], idKey: 'line_id', textKey: 'text', min: 3, max: 12 },
 };
 const SPEAKERS = new Set(['rook', 'vesna']);
 const TONES = new Set(['cocky', 'deadpan', 'technical', 'propaganda', 'bureaucratic']);
 const REGISTERS = new Set(['propaganda', 'bureaucratic']);
-const RUN_ID_RE = /^[0-9]{8}-[0-9]{6}-(upgrade_texts|barks|alerts)(-noretrieval)?$/;
+const RUN_ID_RE = /^[0-9]{8}-[0-9]{6}-(upgrade_texts|weapon_texts|barks|alerts)(-noretrieval)?$/;
 // Nodes whose quoted example lines content must never equal (T8).
 const EXAMPLE_NODES = ['dialogue-tone', 'crew-characters', 'company-voice', 'lore', 'fictional-films',
   'text-content-schema', 'text-content-files', 'text-run-log-schema'];
@@ -69,6 +71,7 @@ function loadVault() {
   const events = need('text-content-events');
   const triggers = tableIds(section(events, 'Bark triggers'));
   const alertEvents = tableIds(section(events, 'Alert events'));
+  const weaponIds = tableIds(section(events, 'Weapon lore ids'));
 
   const sm = need('sys-upgrades').match(/stat names ([^;]+);/);
   if (!sm) throw new Error('sys-upgrades: "stat names ...;" list not found');
@@ -86,7 +89,12 @@ function loadVault() {
       if (s.split(/\s+/).length >= 3) examples.add(s.toLowerCase());
     }
   }
-  return { paths, node, triggers, alertEvents, stats, rules, examples };
+  // Weapon display names: the DisplayName column of WeaponStats.csv (sys-weapons).
+  const csv = fs.readFileSync(WEAPON_STATS, 'utf8').replace(/\r\n/g, '\n').split('\n').filter((l) => l.trim() !== '');
+  const col = csv.length ? csv[0].split(',').indexOf('DisplayName') : -1;
+  if (col < 0) throw new Error('WeaponStats.csv: DisplayName column not found');
+  const weapons = new Set(csv.slice(1).map((l) => (l.split(',')[col] || '').trim()).filter((w) => w !== ''));
+  return { paths, node, triggers, alertEvents, stats, weapons, weaponIds, rules, examples };
 }
 
 // ---------------------------------------------------------------- validation
@@ -150,7 +158,7 @@ function main() {
     if (!Array.isArray(C.items) || C.items.length === 0) err(null, 'envelope', 'items must be a non-empty array');
   }
   const fileStem = path.basename(contentFile).replace(/\.json$/, '');
-  if (!FILES[fileStem]) { err(null, 'file-name', `content file name must be upgrade_texts.json, barks.json or alerts.json, got ${path.basename(contentFile)}`); finish(); }
+  if (!FILES[fileStem]) { err(null, 'file-name', `content file name must be upgrade_texts.json, weapon_texts.json, barks.json or alerts.json, got ${path.basename(contentFile)}`); finish(); }
   if (stem && stem !== fileStem) err(null, 'run-id', `run_id stem "${stem}" differs from the file name "${fileStem}"`);
   if (noRetrieval && (isInside(contentFile, CONTENT_DIR) || !isInside(contentFile, LOGS_DIR)))
     err(null, 'noretrieval-location', `a -noretrieval content file must live under Tools/content/logs/, never under Content/ (${rel(contentFile)})`);
@@ -160,6 +168,7 @@ function main() {
   const texts = {};              // item id -> content text
   const seenTexts = new Map();   // lowercase text -> item id
   const seenStats = new Set();
+  const seenWeapons = new Set();
   items.forEach((it, i) => {
     const id = isObj(it) && typeof it[spec.idKey] === 'string' ? it[spec.idKey] : `#${i}`;
     if (!exactKeys(it, spec.keys, id, `item ${id}`)) return;
@@ -178,6 +187,13 @@ function main() {
       seenStats.add(it.stat);
       if (typeof it.stat === 'string' && it.id !== 'upg_' + it.stat.toLowerCase().replace(/ /g, '_')) err(id, 'id-pattern', `id must be "upg_${it.stat.toLowerCase().replace(/ /g, '_')}"`);
       if (/[0-9]/.test(it.flavor)) err(id, 'number-in-flavor', 'flavor must contain no digit (values live in UpgradeValues.csv)');
+    } else if (fileStem === 'weapon_texts') {
+      if (!V.weapons.has(it.weapon)) err(id, 'weapon', `weapon ${JSON.stringify(it.weapon)} is not a DisplayName of WeaponStats.csv`);
+      else if (seenWeapons.has(it.weapon)) err(id, 'weapon', `weapon "${it.weapon}" appears more than once`);
+      seenWeapons.add(it.weapon);
+      if (typeof it.weapon === 'string' && it.id !== 'wpn_' + it.weapon.toLowerCase().replace(/ /g, '_')) err(id, 'id-pattern', `id must be "wpn_${it.weapon.toLowerCase().replace(/ /g, '_')}"`);
+      else if (!V.weaponIds.has(it.id)) err(id, 'weapon-id', `id ${JSON.stringify(it.id)} is not a weapon lore id of text-content-events`);
+      if (/[0-9]/.test(it.flavor)) err(id, 'number-in-flavor', 'flavor must contain no digit (values live in WeaponStats.csv)');
     } else if (fileStem === 'barks') {
       if (!SPEAKERS.has(it.speaker_id)) err(id, 'speaker', `speaker_id ${JSON.stringify(it.speaker_id)} is not rook or vesna`);
       if (!V.triggers.has(it.trigger)) err(id, 'trigger', `trigger ${JSON.stringify(it.trigger)} is not a bark trigger of text-content-events`);
@@ -231,7 +247,7 @@ function main() {
     if (!byLoop[0]) { err(id, 'log-missing', 'no loop-0 log entry for this item'); continue; }
     const last = byLoop[Math.max(...Object.keys(byLoop).map(Number))];
     if (last.output !== text) err(id, 'log-output', `highest-loop log output differs from the content text (loop ${last.loop})`);
-    if (fileStem !== 'upgrade_texts' && typeof text === 'string') {
+    if (fileStem !== 'upgrade_texts' && fileStem !== 'weapon_texts' && typeof text === 'string') {
       const excerptText = Object.values(byLoop).flatMap((e) => (Array.isArray(e.excerpts) ? e.excerpts : [])).map((x) => (isObj(x) ? String(x.text) : ''));
       const runs = new Set(excerptText.flatMap((t) => t.match(/[0-9]+/g) || []));
       for (const d of text.match(/[0-9]+/g) || []) if (!runs.has(d)) err(id, 'number-not-in-excerpt', `number "${d}" does not appear in an excerpt of this item's log entries`);

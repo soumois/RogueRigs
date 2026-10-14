@@ -1,4 +1,4 @@
-// Rogue Rigs - text content library: parses upgrade_texts.json, alerts.json and barks.json (text-content-schema) and answers lookups.
+// Rogue Rigs - text content library: parses upgrade_texts.json, weapon_texts.json, alerts.json and barks.json (text-content-schema) and answers lookups.
 
 #include "Text/RRTextContentLibrary.h"
 
@@ -11,6 +11,7 @@
 #include "Serialization/JsonSerializer.h"
 
 const TCHAR* FRRTextContentLibrary::UpgradeTextsFileName = TEXT("upgrade_texts.json");
+const TCHAR* FRRTextContentLibrary::WeaponTextsFileName = TEXT("weapon_texts.json");
 const TCHAR* FRRTextContentLibrary::AlertsFileName = TEXT("alerts.json");
 const TCHAR* FRRTextContentLibrary::BarksFileName = TEXT("barks.json");
 const TCHAR* FRRTextContentLibrary::TextDirectory = TEXT("RogueRigs/Data/Text");
@@ -72,6 +73,12 @@ const TArray<FName>& FRRTextContentLibrary::GetBarkTriggerIds()
 	return Ids;
 }
 
+const TArray<FName>& FRRTextContentLibrary::GetWeaponTextIds()
+{
+	static const TArray<FName> Ids = { FName(TEXT("wpn_shotgun")), FName(TEXT("wpn_turret_launcher")) };
+	return Ids;
+}
+
 const TArray<FName>& FRRTextContentLibrary::GetSpeakerIds()
 {
 	static const TArray<FName> Ids = { FName(TEXT("rook")), FName(TEXT("vesna")) };
@@ -102,10 +109,11 @@ int32 FRRTextContentLibrary::LoadFromDirectory(const FString& Directory)
 	Reset();
 	int32 Loaded = 0;
 	Loaded += LoadUpgradeTexts(FPaths::Combine(Directory, UpgradeTextsFileName)) ? 1 : 0;
+	Loaded += LoadWeaponTexts(FPaths::Combine(Directory, WeaponTextsFileName)) ? 1 : 0;
 	Loaded += LoadAlerts(FPaths::Combine(Directory, AlertsFileName)) ? 1 : 0;
 	Loaded += LoadBarks(FPaths::Combine(Directory, BarksFileName)) ? 1 : 0;
-	UE_LOG(LogRogueRigs, Log, TEXT("FRRTextContentLibrary: %d/3 text files loaded from %s (%d flavors, %d alert lines, %d barks, %d items rejected)."),
-		Loaded, *Directory, UpgradeFlavorCount, GetAlertLineCount(), Barks.Num(), RejectedItemCount);
+	UE_LOG(LogRogueRigs, Log, TEXT("FRRTextContentLibrary: %d/4 text files loaded from %s (%d flavors, %d weapon lore lines, %d alert lines, %d barks, %d items rejected)."),
+		Loaded, *Directory, UpgradeFlavorCount, WeaponFlavorCount, GetAlertLineCount(), Barks.Num(), RejectedItemCount);
 	return Loaded;
 }
 
@@ -113,6 +121,8 @@ void FRRTextContentLibrary::Reset()
 {
 	FlavorByKey.Reset();
 	UpgradeFlavorCount = 0;
+	WeaponFlavorByKey.Reset();
+	WeaponFlavorCount = 0;
 	AlertLinesByEvent.Reset();
 	LastAlertIndex.Reset();
 	Barks.Reset();
@@ -215,6 +225,44 @@ bool FRRTextContentLibrary::LoadUpgradeTexts(const FString& FilePath)
 	return true;
 }
 
+bool FRRTextContentLibrary::LoadWeaponTexts(const FString& FilePath)
+{
+	WeaponFlavorByKey.Reset();
+	WeaponFlavorCount = 0;
+	TArray<TSharedPtr<FJsonValue>> Items;
+	if (!ReadEnvelope(FilePath, TEXT("weapon_texts"), Items))
+	{
+		return false;
+	}
+	const TArray<const TCHAR*> Keys = { TEXT("id"), TEXT("weapon"), TEXT("flavor") };
+	for (int32 Index = 0; Index < Items.Num(); ++Index)
+	{
+		TArray<FString> Values;
+		if (!ReadItemStrings(Items[Index], Index, FilePath, Keys, Values))
+		{
+			continue;
+		}
+		if (!GetWeaponTextIds().Contains(FName(*Values[0])))
+		{
+			UE_LOG(LogRogueRigs, Warning, TEXT("FRRTextContentLibrary: weapon id '%s' is not a weapon lore id of text-content-events in %s, items[%d] skipped."), *Values[0], *FilePath, Index);
+			++RejectedItemCount;
+			continue;
+		}
+		const FString WeaponKey = Values[1].ToLower();
+		const FString IdKey = Values[0].ToLower();
+		if (WeaponFlavorByKey.Contains(WeaponKey) || WeaponFlavorByKey.Contains(IdKey))
+		{
+			UE_LOG(LogRogueRigs, Warning, TEXT("FRRTextContentLibrary: weapon '%s' appears twice in %s, items[%d] skipped."), *Values[1], *FilePath, Index);
+			++RejectedItemCount;
+			continue;
+		}
+		WeaponFlavorByKey.Add(WeaponKey, Values[2]);
+		WeaponFlavorByKey.Add(IdKey, Values[2]);
+		++WeaponFlavorCount;
+	}
+	return true;
+}
+
 bool FRRTextContentLibrary::LoadAlerts(const FString& FilePath)
 {
 	AlertLinesByEvent.Reset();
@@ -278,6 +326,16 @@ bool FRRTextContentLibrary::LoadBarks(const FString& FilePath)
 bool FRRTextContentLibrary::FindUpgradeFlavor(const FString& StatOrId, FString& OutFlavor) const
 {
 	if (const FString* Found = FlavorByKey.Find(StatOrId.ToLower()))
+	{
+		OutFlavor = *Found;
+		return true;
+	}
+	return false;
+}
+
+bool FRRTextContentLibrary::FindWeaponFlavor(const FString& WeaponOrId, FString& OutFlavor) const
+{
+	if (const FString* Found = WeaponFlavorByKey.Find(WeaponOrId.TrimStartAndEnd().ToLower()))
 	{
 		OutFlavor = *Found;
 		return true;

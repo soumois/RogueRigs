@@ -1,6 +1,6 @@
 ---
 id: text-content-events
-description: "Closed lists of bark trigger ids and alert event ids, each mapped to its existing C++ source event. Open before writing barks or alerts."
+description: "Closed lists of bark trigger ids, alert event ids and weapon lore ids, each mapped to its C++ source. Open before writing barks or alerts."
 parent: text-content-schema
 kind: doc
 ---
@@ -35,6 +35,13 @@ The alert-bar subjects of [[sys-hud-pressure]] (`ERRAlertBarEventType`) plus the
 | `horde_incoming` | `URRHUDWidget::OnHordeIncoming` (`Horde`) |
 | `extraction_ready` | `URRRunFlowSubsystem::OnExtractionReady` (`Extraction`) |
 | `shuttle_countdown` | `URRRunFlowSubsystem::OnShuttleCountdown` (every countdown frame; the loader picks one line per countdown start, [[sys-text-content]]) |
+
+## Weapon lore ids (`id` in weapon_texts.json)
+The acquirable weapons, offered as new-weapon cards ([[sys-upgrades]]); the starting Burst rifle has none (task-169-03).
+| id | source event |
+|---|---|
+| `wpn_shotgun` | `URRUpgradeComponent::MakeWeaponCard` (Shotgun card `LoreText`) |
+| `wpn_turret_launcher` | `URRUpgradeComponent::MakeWeaponCard` (Turret launcher card `LoreText`) |
 
 ## Relations
 - [[text-content-schema]] — parent: the pipeline contract.

@@ -39,6 +39,10 @@ public:
 	UFUNCTION(BlueprintCallable, Category = "Text")
 	bool GetUpgradeFlavor(const FString& StatNameOrId, FText& OutText);
 
+	/** Lore line of a weapon by display name ("Shotgun") or id ("wpn_shotgun"), weapon_texts.json. False (empty text) when unknown or not loaded. */
+	UFUNCTION(BlueprintCallable, Category = "Text")
+	bool GetWeaponFlavor(const FString& WeaponNameOrId, FText& OutText);
+
 	/**
 	 * Picks a line of alert event EventId (alerts.json), never the previous pick when the event has more than one, and remembers it
 	 * as the current line of that event (GetCurrentAlertLine). False (empty text, current line cleared) when none.
