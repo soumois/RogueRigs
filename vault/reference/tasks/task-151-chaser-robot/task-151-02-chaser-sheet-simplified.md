@@ -3,7 +3,7 @@ id: task-151-02-chaser-sheet-simplified
 description: "Correct sheet A2: three views only, simplified chunky facets, slimmer limbs like the reference crop."
 parent: task-151-chaser-robot
 kind: task
-status: in-progress
+status: done
 ---
 # Chaser: simplified three-view sheet
 
@@ -15,11 +15,11 @@ status: in-progress
 - done_when: exactly one run of 2 variants (12 credits); both sheets show three views of one robot; self-review written; prompt and log committed by name, the sheets untracked; nothing in vault/assets/; no 3D, no Unreal
 - editor_state: closed
 - token_ceiling: open
-- model: open
-- tokens: open
-- runs: open
+- model: sonnet
+- tokens: input 14, cache write 22012, cache read 91582, output 660
+- runs: 1
 - milestone: M2
-- result: open
+- result: Sheet variant 2 (three views, simplified chunky facets) validated by the owner with the limbs kept as drawn; copied to vault/assets with front, side and back crops; 12 credits.
 
 ## Relations
 - [[task-151-chaser-robot]] — parent global task.
