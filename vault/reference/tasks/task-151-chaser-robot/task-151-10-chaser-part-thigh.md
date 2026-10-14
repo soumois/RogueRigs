@@ -3,7 +3,7 @@ id: task-151-10-chaser-part-thigh
 description: "Rebuild the chaser Thigh alone against its close-up crops of the validated sheet."
 parent: task-151-chaser-robot
 kind: task
-status: in-progress
+status: done
 ---
 # Chaser part: Thigh
 
@@ -27,11 +27,11 @@ status: in-progress
   - C4 Budget: at most 200 triangles (132 today per leg), flat shading; mirrored for the other side.
 - editor_state: closed
 - token_ceiling: open
-- model: open
-- tokens: open
-- runs: open
+- model: sonnet
+- tokens: input 24, cache write 26680, cache read 256240, output 1979
+- runs: 1
 - milestone: M2
-- result: open
+- result: Thigh faceted guards, hip plates, leg axis at 11 percent, 192 tris per leg, passes (0 returns); knee of the contract to move from 0.125 to 0.11 H.
 
 ## Relations
 - [[task-151-chaser-robot]] — parent global task.
