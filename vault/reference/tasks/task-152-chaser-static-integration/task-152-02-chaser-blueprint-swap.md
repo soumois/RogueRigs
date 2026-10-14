@@ -3,7 +3,7 @@ id: task-152-02-chaser-blueprint-swap
 description: "Replace the grey-box body of BP_Chaser (and the shield chaser) with SM_Chaser and its four materials."
 parent: task-152-chaser-static-integration
 kind: task
-status: in-progress
+status: done
 ---
 # Chaser: Blueprint swap
 
@@ -15,11 +15,11 @@ status: in-progress
 - done_when: both Blueprints compile and save; values read back; the doc nodes updated; no C++ change; the editor is left open; the owner is told how to see it (open L_ArenaM1 and play, rr.Stress.Spawn 10 to get a crowd)
 - editor_state: open
 - token_ceiling: open
-- model: open
-- tokens: open
-- runs: open
+- model: sonnet
+- tokens: input 40, cache write 46749, cache read 650957, output 775
+- runs: 1
 - milestone: M2
-- result: open
+- result: BP_Chaser and BP_ShieldChaser use SM_Chaser (relative location 0, 0, -62; four materials), EyeMesh hidden, shield shell widened to (1.0, 1.0, 1.34); not checked in PIE.
 
 ## Relations
 - [[task-152-chaser-static-integration]] — parent global task.
