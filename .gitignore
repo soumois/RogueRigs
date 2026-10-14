@@ -55,3 +55,6 @@ desktop.ini
 
 # Reference videos (large, not ours)
 /Reference/
+
+# Python bytecode (Blender scripts)
+__pycache__/
