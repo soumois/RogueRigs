@@ -3,7 +3,7 @@ id: task-168-01-card-lore-lines
 description: "Rewrite the 13 upgrade flavor lines as pure lore lines in Rook's voice, without describing the stat effect, now shown on its own line."
 parent: task-168-upgrade-card-design
 kind: task
-status: in-progress
+status: done
 ---
 # Upgrade cards: pure lore lines
 
@@ -15,11 +15,11 @@ status: in-progress
 - done_when: All 13 items rewritten without describing the stat effect; ids, stats, schema_version and run_id format unchanged; style-guide critic pass on every item (or owner ruling after 2 loops).
 - editor_state: any
 - token_ceiling: 30k
-- model: open
-- tokens: open
-- runs: open
+- model: opus+sonnet
+- tokens: input 38, cache write 67022, cache read 378021, output 5460
+- runs: 2
 - milestone: M2
-- result: open
+- result: upgrade_texts.json: 13 pure lore lines in Rook's voice, validator exit 0; critic loop 0: 12 pass, upg_move_speed T3 fail (Die Hard catchphrase) fixed in loop 1 with the critic's correction. Commits 092ec1a, 77c33af.
 
 ## Relations
 - [[task-168-upgrade-card-design]] — parent global task.
