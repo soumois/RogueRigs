@@ -3,7 +3,7 @@ id: task-174-02-debris-position-fix
 description: "Fix the NS_RobotDebris spawn position (vector max collapsed to one scalar) and check in a game run that pieces start at the robot."
 parent: task-174-debris-regression
 kind: task
-status: in-progress
+status: done
 ---
 # Robot debris: spawn position fix
 
@@ -15,11 +15,11 @@ status: in-progress
 - done_when: The system compiles with no stack issue; expressions read back; a -game dump (fx.Niagara.DumpComponents) shows spawn Previous.Position near the dead robot with three different components; saved by explicit path; docs updated; committed by path
 - editor_state: open
 - token_ceiling: open
-- model: open
-- tokens: open
-- runs: open
+- model: sonnet
+- tokens: input 56, cache write 74162, cache read 1145047, output 11369
+- runs: 2
 - milestone: M3
-- result: open
+- result: Position entry without vector max + new scalar Z-clamp module after it; compiles clean; -game run: pieces at age 0.49 s around X 8786-9285, Y 7965-8065, Z 200-390 near the dead robots (spawn back-computed about 8500, 8060, 55); quirk added to unreal-mcp-quirks; commits 9a2b4e3, be3bbaf
 
 ## Relations
 - [[task-174-debris-regression]] — parent global task.
