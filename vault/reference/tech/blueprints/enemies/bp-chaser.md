@@ -14,6 +14,7 @@ kind: doc
 - events: none
 - logic_in_bp: none
 - assets: /Game/RogueRigs/Materials/GreyBox/MI_GB_Chaser (Color 1, 0.75, 0, 1), MI_GB_Eye (Color 1, 0, 0, 1), instances of M_GreyBox.
+- assets_new (task-152-01, provisional, owner 2026-10-13, static interim, animation baked later; not yet used by BP_Chaser, subtask 02): /Game/RogueRigs/Art/Chaser/ SM_Chaser (ten parts combined, cm, pivot at the floor origin, bounds x -12.4 to 32.5, y +-43.3, z 0 to 123, 2640 tris, slots yellow_body, gunmetal, eye_red, logo_plate with the four materials below as defaults); T_ChaserLogo (256 x 256, sRGB, default compression); M_Chaser_yellow (M_GreyBox instance, Color linear (0.913, 0.491, 0.0144) = #F5BA20); M_Chaser_gunmetal (M_GreyBox instance, Color (0.0423, 0.0423, 0.0423) = #3A3A3A); M_Chaser_eye (M_GreyBoxGlow instance, Color and GlowColor (1, 0.05, 0.05), GlowAmount 25); M_Chaser_logo (lit material, Base Color = T_ChaserLogo, Roughness 1, Metallic 0).
 - owner_agent: agent-bp
 
 ## Relations
