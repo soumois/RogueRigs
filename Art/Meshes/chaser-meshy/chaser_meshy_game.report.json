@@ -28,7 +28,7 @@
   "object_types": [
    "MESH"
   ],
-  "apply_scale_options": "FBX_SCALE_NONE",
+  "apply_scale_options": "FBX_SCALE_UNITS",
   "global_scale": 1.0,
   "axis_forward": "-Z",
   "axis_up": "Y",
@@ -40,7 +40,7 @@
   "scene_unit_scale_length": 1.0
  },
  "axis_note": "Blender side: X forward (robot front, red eye), Y left, Z up. Exporter axis_forward=-Z, axis_up=Y (Blender default): the file is Y-up and Unreal's importer maps it back to X forward, Z up with the handedness mirror; no extra rotation or scale at import (uniform scale 1). Not verified in Unreal (nothing imported).",
- "fbx_unit_scale_factor_in_file": 1.0,
+ "fbx_unit_scale_factor_in_file": 100.0,
  "readback": {
   "blender_import": "default settings",
   "bounds_min_cm": [
@@ -116,12 +116,12 @@
  },
  "warnings": [],
  "timings_s": {
-  "load": 0.29,
+  "load": 0.38,
   "transform": 0.01,
-  "lightmap": 0.07,
-  "lightmap_check": 0.05,
+  "lightmap": 0.08,
+  "lightmap_check": 0.06,
   "export": 0.05,
-  "readback": 0.92,
-  "total": 1.4
+  "readback": 0.98,
+  "total": 1.59
  }
 }

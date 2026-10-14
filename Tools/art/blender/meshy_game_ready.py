@@ -185,7 +185,7 @@ bpy.context.scene.unit_settings.scale_length = 1.0
 bpy.ops.object.select_all(action="DESELECT")
 ob.select_set(True)
 bpy.context.view_layer.objects.active = ob
-EXPORT = dict(use_selection=True, object_types={"MESH"}, apply_scale_options="FBX_SCALE_NONE", global_scale=1.0, axis_forward="-Z", axis_up="Y",
+EXPORT = dict(use_selection=True, object_types={"MESH"}, apply_scale_options="FBX_SCALE_UNITS", global_scale=1.0, axis_forward="-Z", axis_up="Y",
               mesh_smooth_type="OFF", add_leaf_bones=False, path_mode="RELATIVE", embed_textures=False)
 FBX = os.path.join(WO, OUT_NAME + ".fbx")
 bpy.ops.export_scene.fbx(filepath=FBX, **EXPORT)
