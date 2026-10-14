@@ -1,0 +1,29 @@
+{
+  "run_id": "20261014-000841-chaser-meshy",
+  "asset": "chaser-meshy",
+  "model": "gpt-image-2-image-to-image",
+  "aspect_ratio": "3:4",
+  "resolution": "1K",
+  "variants": 1,
+  "prompt_file": "Art/Source/chaser-meshy/prompts/right.txt",
+  "prompt": "Image 1 is the generated FRONT view of the robot (the design to keep). Image 2 is the full turnaround sheet (front, side, back) of the same robot: its middle panel holds the true design of the side. Image 3 is the side view from the sheet MIRRORED horizontally, so the robot faces the RIGHT edge. Draw ONE separate strict RIGHT SIDE PROFILE of the robot (the robot's right side), the robot facing the RIGHT edge of the image, exactly 90 degrees from the front, the exact mirror image of the left view, same scale and proportions as Image 1; the red eye faces the right edge. This image is a reference view for the image-to-3D tool Meshy (multi-view input), so be precise. Strictly orthographic-looking view: no perspective distortion, camera at the middle height of the robot. A SINGLE full-body view of ONE robot, centred in the frame, filling about 85 percent of the image height, the whole robot visible with a margin around it. Neutral standing pose: legs straight and parallel, arms hanging slightly away from the body so no arm hides the torso. Plain uniform light grey background, flat even studio lighting, NO cast shadow, no floor, no reflection, no text, no labels, no UI, no extra props, no effects. Same robot as the reference: identical proportions, parts, facets and colours (company yellow panels, dark gunmetal joints, one red glowing eye in the boxy head, small logo plate on the chest, thin legs, chunky low-poly flat facets).",
+  "refs": [
+    "Art/Source/chaser-meshy/chaser-meshy-front.png",
+    "vault/assets/chaser-turnaround.png",
+    "Art/Source/chaser-meshy/ref-side-mirrored.png"
+  ],
+  "tasks": [
+    {
+      "task_id": "d9d64dd5db075b19b04ea4596802d955",
+      "state": "success",
+      "credits": 6,
+      "error": null,
+      "result_urls": [
+        "https://tempfile.aiquickdraw.com/images/chatgpt/file_00000000ea74820c9325dc66bd3d719e.png"
+      ]
+    }
+  ],
+  "files": [
+    "Art/Source/chaser-meshy/20261014-000841-chaser-meshy-1.png"
+  ]
+}

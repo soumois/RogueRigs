@@ -1,0 +1,28 @@
+{
+  "run_id": "20261014-000709-chaser-meshy",
+  "asset": "chaser-meshy",
+  "model": "gpt-image-2-image-to-image",
+  "aspect_ratio": "3:4",
+  "resolution": "1K",
+  "variants": 1,
+  "prompt_file": "Art/Source/chaser-meshy/prompts/front.txt",
+  "prompt": "Image 1 is the front view of the robot, Image 2 is the full turnaround sheet (front, side, back) of the same robot. Redraw the robot from Image 1 as ONE separate FRONT view, main view, seen exactly from the front. This image is a reference view for the image-to-3D tool Meshy (multi-view input), so be precise. Strictly orthographic-looking view: no perspective distortion, camera at the middle height of the robot. A SINGLE full-body view of ONE robot, centred in the frame, filling about 85 percent of the image height, the whole robot visible with a margin around it. Neutral standing pose: legs straight and parallel, arms hanging slightly away from the body so no arm hides the torso. Plain uniform light grey background, flat even studio lighting, NO cast shadow, no floor, no reflection, no text, no labels, no UI, no extra props, no effects. Same robot as the reference: identical proportions, parts, facets and colours (company yellow panels, dark gunmetal joints, one red glowing eye in the boxy head, small logo plate on the chest, thin legs, chunky low-poly flat facets).",
+  "refs": [
+    "vault/assets/chaser-front.png",
+    "vault/assets/chaser-turnaround.png"
+  ],
+  "tasks": [
+    {
+      "task_id": "ba188c65a03cf52cd064064c07fc18b1",
+      "state": "success",
+      "credits": 6,
+      "error": null,
+      "result_urls": [
+        "https://tempfile.aiquickdraw.com/images/chatgpt/file_00000000f88c81f481076f6752dabde6.png"
+      ]
+    }
+  ],
+  "files": [
+    "Art/Source/chaser-meshy/20261014-000709-chaser-meshy-1.png"
+  ]
+}
