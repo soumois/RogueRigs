@@ -5,15 +5,15 @@
   "units": "cm",
   "objects": {
     "UpperArm_L": {
-      "tris": 72,
+      "tris": 120,
       "bounds_min_cm": [
-        -7.8,
+        -8.15,
         -8.93,
-        -10.54
+        -10.91
       ],
       "bounds_max_cm": [
         7.0,
-        12.29,
+        12.39,
         8.68
       ],
       "pivot_world_cm": [
@@ -27,7 +27,7 @@
         "LightMap"
       ],
       "lightmap": {
-        "faces": 32,
+        "faces": 52,
         "overlapping_face_pairs": 0,
         "bounds_min": 0.01172,
         "bounds_max": 0.98828,
@@ -36,7 +36,18 @@
         "required_margin_px": 2,
         "pass": true
       },
-      "attachment_section": null,
+      "attachment_section": {
+        "plane_z_cm": 0.0,
+        "slab_cm": 1.0,
+        "min_xy_cm": [
+          -8.15,
+          -3.6
+        ],
+        "max_xy_cm": [
+          6.75,
+          10.8
+        ]
+      },
       "material_slots": [
         "yellow_body",
         "gunmetal",
@@ -45,11 +56,11 @@
       ]
     },
     "UpperArm_R": {
-      "tris": 72,
+      "tris": 120,
       "bounds_min_cm": [
-        -7.8,
-        -12.29,
-        -10.54
+        -8.15,
+        -12.39,
+        -10.91
       ],
       "bounds_max_cm": [
         7.0,
@@ -67,7 +78,7 @@
         "LightMap"
       ],
       "lightmap": {
-        "faces": 32,
+        "faces": 52,
         "overlapping_face_pairs": 0,
         "bounds_min": 0.01172,
         "bounds_max": 0.98828,
@@ -76,7 +87,18 @@
         "required_margin_px": 2,
         "pass": true
       },
-      "attachment_section": null,
+      "attachment_section": {
+        "plane_z_cm": 0.0,
+        "slab_cm": 1.0,
+        "min_xy_cm": [
+          -8.15,
+          -10.8
+        ],
+        "max_xy_cm": [
+          6.75,
+          3.6
+        ]
+      },
       "material_slots": [
         "yellow_body",
         "gunmetal",
@@ -85,5 +107,27 @@
       ]
     }
   },
-  "tris": 144
+  "tris": 240,
+  "fidelity": {
+    "returns_used": 0,
+    "criteria": {
+      "C1": {
+        "verdict": "pass",
+        "evidence": "faceted rounded body, 6 sections, top 10 cm, shoulder cap 14 cm, widest 14.4 cm (11.6 % H), tapers to 8.4 cm at the elbow; dark cylinder connector at the shoulder; the elbow connector belongs to ForearmHand"
+      },
+      "C2": {
+        "verdict": "pass",
+        "evidence": "front and back renders are the same silhouette mirrored (same geometry), outline difference 0 % of part height; both match the crop lean and taper"
+      },
+      "C3": {
+        "verdict": "pass",
+        "evidence": "side render: front edge near vertical, back edge slants inward toward the elbow (x -2.5 to -4.0 cm), as in the side crop"
+      },
+      "C4": {
+        "verdict": "pass",
+        "evidence": "120 tris per arm (<=200), flat shading, right arm mirrored through sy"
+      }
+    },
+    "still_differs": "crop shows slightly asymmetric facet planes and a rounder bottom end; the render has regular octagonal sections"
+  }
 }
