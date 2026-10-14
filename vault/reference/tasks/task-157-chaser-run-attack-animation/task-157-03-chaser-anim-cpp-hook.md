@@ -3,7 +3,7 @@ id: task-157-03-chaser-anim-cpp-hook
 description: "Drive the animation from C++ with Custom Primitive Data on the body mesh: clip, start time, no per-frame cost."
 parent: task-157-chaser-run-attack-animation
 kind: task
-status: todo
+status: in-progress
 ---
 # Chaser: animation hook in C++
 

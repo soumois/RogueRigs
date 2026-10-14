@@ -3,7 +3,7 @@ id: task-157-02-chaser-clips-bake
 description: "Author the run loop and attack clip on the ten parts and bake one transform per part and frame into a float texture."
 parent: task-157-chaser-run-attack-animation
 kind: task
-status: in-progress
+status: done
 ---
 # Chaser: run and attack clips baked
 
@@ -16,11 +16,11 @@ status: in-progress
 - rules: BLENDER ROUTE; no Unreal process; commit by name with message `task-157-02-chaser-clips-bake: <summary>`
 - editor_state: closed
 - token_ceiling: open
-- model: open
-- tokens: open
-- runs: open
+- model: sonnet
+- tokens: input 20, cache write 88805, cache read 663005, output 19123
+- runs: 1
 - milestone: M2
-- result: open
+- result: run 16 frames and attack 15 frames baked to T_ChaserAnim.exr 20x31 half float, bake error under 0.05 cm; run stride is long (feet slide up to 33 cm per frame against the floor, thigh swing 35 deg)
 
 ## Relations
 - [[task-157-chaser-run-attack-animation]] — parent global task.
