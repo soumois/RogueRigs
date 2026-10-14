@@ -3,7 +3,7 @@ id: task-166-03-debris-meshes-import
 description: "Import the 13 chaser debris piece meshes into Unreal and make the debris material: chaser base colour, no animation WPO, no glow."
 parent: task-166-robot-debris-pieces
 kind: task
-status: todo
+status: in-progress
 ---
 # Robot debris: import meshes and material
 

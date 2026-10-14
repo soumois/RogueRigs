@@ -3,7 +3,7 @@ id: task-166-02-debris-code
 description: "C++ side of the debris: pooled debris Niagara components, random choice of 2 or 3 pieces, last-hit direction, launch when the robot disappears."
 parent: task-166-robot-debris-pieces
 kind: task
-status: in-progress
+status: done
 ---
 # Robot debris: C++ selection, direction and pool
 
@@ -15,11 +15,11 @@ status: in-progress
 - done_when: Build passes with the editor closed; the existing enemy tests still pass (update only an expectation this change breaks, e.g. ShotHitsMovingRobotAndDeathShowsParts if its parts check changes); the selection rule (2 or 3 meshes, cut limb counts 2) is covered by the code path and stated in the doc; doc updated; committed by path
 - editor_state: closed
 - token_ceiling: open
-- model: open
-- tokens: open
-- runs: open
+- model: opus
+- tokens: input 50, cache write 83779, cache read 1475465, output 20694
+- runs: 1
 - milestone: M3
-- result: open
+- result: FRRDebrisPiece/ERRDebrisGroup/Kind + FRRDebrisSelection::Choose; ARREnemy DebrisSystem, DebrisPoolSize 40, DebrisPieces, RecordHitDirection (projectiles, explosions); LaunchDebris at shrink end from the feet, yaw-rotated offsets, world-space emitters; contract User.PieceMeshIndex/PieceOffset/HitDirection in sys-enemies-base; build OK, 15/16 tests (known EyeMesh); Niagara not exercised; commit ae8d609
 
 ## Relations
 - [[task-166-robot-debris-pieces]] — parent global task.

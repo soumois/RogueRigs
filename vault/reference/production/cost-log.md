@@ -271,6 +271,7 @@ kind: note
 | [[task-169-01-weapon-lore-lines]] | opus+sonnet | 3 | 0k | 62k | 359k | 4k |
 | [[task-168-01-card-lore-lines]] | opus+sonnet | 2 | 0k | 67k | 378k | 5k |
 | [[task-167-01-robot-death-puff]] | opus | 1 | 0k | 62k | 897k | 19k |
+| [[task-166-02-debris-code]] | opus | 1 | 0k | 84k | 1475k | 21k |
 
 ## Totals
 | Scope | Input | Cache write | Cache read | Output |
