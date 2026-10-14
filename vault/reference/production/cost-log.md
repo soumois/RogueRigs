@@ -236,6 +236,7 @@ kind: note
 | [[task-148-02-xp-disc-fade-material]] | sonnet | 1 | 0k | 38k | 456k | 1k |
 | [[task-149-01-xp-disc-depth-cut]] | sonnet | 1 | 0k | 39k | 498k | 1k |
 | [[task-150-01-xp-nut-disc-lighter-2]] | sonnet | 1 | 0k | 18k | 124k | 1k |
+| [[task-151-01-chaser-robot]] | sonnet | 1 | 0k | 30k | 145k | 1k |
 
 ## Totals
 | Scope | Input | Cache write | Cache read | Output |

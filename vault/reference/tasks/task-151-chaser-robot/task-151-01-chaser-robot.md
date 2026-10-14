@@ -3,7 +3,7 @@ id: task-151-01-chaser-robot
 description: "Build the chaser robot: turnaround sheet, parts model, baked run and attack animation, in-game integration and a cost check."
 parent: task-151-chaser-robot
 kind: task
-status: in-progress
+status: done
 ---
 # Chaser: turnaround sheet
 
@@ -15,11 +15,11 @@ status: in-progress
 - done_when: ref-chaser.png exists and shows only the chaser; at most 4 candidate sheets generated (24 credits at most); each has the four views of the same robot; self-review written per sheet; prompts and logs committed; no image in vault/assets/; no 3D, no Blueprint, no Unreal
 - editor_state: closed
 - token_ceiling: open
-- model: open
-- tokens: open
-- runs: open
+- model: sonnet
+- tokens: input 18, cache write 29653, cache read 144575, output 1437
+- runs: 1
 - milestone: M2
-- result: open
+- result: ref-chaser.png and four candidate sheets (24 credits): too detailed and too bulky, top view not a real top view; owner chose a correction pass on A2.
 
 ## Relations
 - [[task-151-chaser-robot]] — parent global task.
