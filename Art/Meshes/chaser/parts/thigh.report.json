@@ -5,21 +5,21 @@
   "units": "cm",
   "objects": {
     "Thigh_L": {
-      "tris": 132,
+      "tris": 192,
       "bounds_min_cm": [
-        -7.0,
-        -7.32,
-        -34.35
+        -7.1,
+        -7.07,
+        -34.6
       ],
       "bounds_max_cm": [
-        11.0,
-        8.06,
-        6.82
+        10.7,
+        8.31,
+        7.44
       ],
       "pivot_world_cm": [
-        0.0,
-        0.0,
-        0.0
+        0,
+        0,
+        0
       ],
       "parent": "Pelvis",
       "uv_layers": [
@@ -27,25 +27,25 @@
         "LightMap"
       ],
       "lightmap": {
-        "faces": 56,
+        "faces": 74,
         "overlapping_face_pairs": 0,
         "bounds_min": 0.01172,
         "bounds_max": 0.98828,
-        "min_gap_px_at_256": 3.0,
-        "min_border_px_at_256": 3.0,
+        "min_gap_px_at_256": 3,
+        "min_border_px_at_256": 3,
         "required_margin_px": 2,
         "pass": true
       },
       "attachment_section": {
-        "plane_z_cm": 0.0,
-        "slab_cm": 1.0,
+        "plane_z_cm": 0,
+        "slab_cm": 1,
         "min_xy_cm": [
-          -7.0,
-          -5.83
+          -7.1,
+          -5.63
         ],
         "max_xy_cm": [
-          9.5,
-          4.09
+          8,
+          3.6
         ]
       },
       "material_slots": [
@@ -56,21 +56,21 @@
       ]
     },
     "Thigh_R": {
-      "tris": 132,
+      "tris": 192,
       "bounds_min_cm": [
-        -7.0,
-        -8.06,
-        -34.35
+        -7.1,
+        -8.31,
+        -34.6
       ],
       "bounds_max_cm": [
-        11.0,
-        7.32,
-        6.82
+        10.7,
+        7.07,
+        7.44
       ],
       "pivot_world_cm": [
-        0.0,
-        0.0,
-        0.0
+        0,
+        0,
+        0
       ],
       "parent": "Pelvis",
       "uv_layers": [
@@ -78,25 +78,25 @@
         "LightMap"
       ],
       "lightmap": {
-        "faces": 56,
+        "faces": 74,
         "overlapping_face_pairs": 0,
         "bounds_min": 0.01172,
         "bounds_max": 0.98828,
-        "min_gap_px_at_256": 3.0,
-        "min_border_px_at_256": 3.0,
+        "min_gap_px_at_256": 3,
+        "min_border_px_at_256": 3,
         "required_margin_px": 2,
         "pass": true
       },
       "attachment_section": {
-        "plane_z_cm": 0.0,
-        "slab_cm": 1.0,
+        "plane_z_cm": 0,
+        "slab_cm": 1,
         "min_xy_cm": [
-          -7.0,
-          -4.09
+          -7.1,
+          -3.6
         ],
         "max_xy_cm": [
-          9.5,
-          5.83
+          8,
+          5.63
         ]
       },
       "material_slots": [
@@ -107,5 +107,32 @@
       ]
     }
   },
-  "tris": 264
+  "tris": 384,
+  "fidelity": {
+    "returns_used": 0,
+    "max_returns": 5,
+    "verdicts": {
+      "C1": {
+        "pass": true,
+        "evidence": "Yellow knee guard 10.6 cm wide at widest = 8.5 % H (crop 8-9 %); dark upper leg block 8.8 cm (7 % H) over a narrower 6 cm link bar as the crop; faceted 4-section octagonal guard; dark octagonal knee prism r 4.2 cm visible in side view."
+      },
+      "C2": {
+        "pass": true,
+        "evidence": "Hip guard plates are 7-point chamfered profiles (side silhouette cut at both corners), no plain boxes; small, on top of the leg like the sheet."
+      },
+      "C3": {
+        "pass": true,
+        "evidence": "Leg axis: bar at hip y 0.095 H, link 0.101-0.108 H, knee guard 0.106-0.112 H, knee prism centre 0.110 H from the centre line (target 9 / 11 %, monolith 12.5 %); the ShinFoot pivot stays at the contract knee y 0.125 H (15.5 cm)."
+      },
+      "C4": {
+        "pass": true,
+        "evidence": "192 tris per leg (limit 200), flat shading, mirrored through sy."
+      }
+    },
+    "still_differs": [
+      "Contract knee joint (y 0.125 H) is 1.4 cm outside the thigh axis 0.110 H: request in common.py KNEE y 0.125 -> 0.11 to match the crop",
+      "Hip plates are simple extrusions, the sheet plates are slightly tapered",
+      "Dark block has no mid bulge (simple loft) to stay under 200 tris"
+    ]
+  }
 }
