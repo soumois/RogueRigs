@@ -11,5 +11,4 @@ A global task moves to [[tasks-done-index]] when it is done (`vault/scripts/task
 ## Relations
 - [[tasks-index]] — parent index.
 - [[task-151-chaser-robot]] — Build the chaser robot: turnaround sheet, parts model, baked run and attack animation, in-game integration and a cost check. Status in-progress.
-- [[task-156-chaser-meshy-integration]] — Put the corrected Meshy chaser in the game as a static mesh in place of the current chaser model. Status todo.
 - [[task-157-chaser-run-attack-animation]] — Animate the Meshy chaser in the game with a run loop and an attack clip, using a baked animation texture played by the material. Status todo.

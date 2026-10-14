@@ -3,7 +3,7 @@ id: task-156-02-chaser-meshy-unreal-import
 description: "Import the game-ready Meshy chaser with its texture and material, and swap it into BP_Chaser and BP_ShieldChaser."
 parent: task-156-chaser-meshy-integration
 kind: task
-status: in-progress
+status: done
 ---
 # Chaser Meshy: Unreal import and Blueprint swap
 
@@ -16,11 +16,11 @@ status: in-progress
 - rules: save only the named assets; no SlateInspector, no Ctrl+S, no UI automation; never CaptureEditorImage; commit by name with message `task-156-02-chaser-meshy-unreal-import: <summary>`
 - editor_state: open
 - token_ceiling: open
-- model: open
-- tokens: open
-- runs: open
+- model: sonnet
+- tokens: input 86, cache write 109221, cache read 3065968, output 3011
+- runs: 3
 - milestone: M2
-- result: open
+- result: SM_Chaser_Meshy imported at 123 cm (after FBX_SCALE_UNITS fix), M_Chaser_Meshy, both chaser Blueprints swapped, shield shell 0.9x0.9x1.34; front +X not verified in editor
 
 ## Relations
 - [[task-156-chaser-meshy-integration]] — parent global task.

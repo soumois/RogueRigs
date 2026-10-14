@@ -1,9 +1,9 @@
 ---
 id: task-156-chaser-meshy-integration
 description: "Put the corrected Meshy chaser in the game as a static mesh, replacing the current chaser model."
-parent: tasks-to-do-index
+parent: tasks-done-index
 kind: task
-status: in-progress
+status: done
 ---
 # Chaser Meshy: game-ready mesh
 
@@ -13,14 +13,14 @@ status: in-progress
 - gdd_check: done by the Orchestrator when the task is planned (2026-10-14).
 - confirmed_by_owner: yes (2026-10-14)
 - milestone: M2
-- next_step: task-156-02-chaser-meshy-unreal-import
-- result: open
+- next_step: none
+- result: Done. SM_Chaser_Meshy imported at 123 cm (after FBX_SCALE_UNITS fix), M_Chaser_Meshy, both chaser Blueprints swapped, shield shell 0.9x0.9x1.34; front +X not verified in editor
 
 ## Subtasks
 1. task-156-01-chaser-meshy-integration — 3d
 2. task-156-02-chaser-meshy-unreal-import — bp (import, material, Blueprint swap)
 
 ## Relations
-- [[tasks-to-do-index]] — parent index.
+- [[tasks-done-index]] — parent index.
 - [[task-156-01-chaser-meshy-integration]] — step 1, 3d.
 - [[task-156-02-chaser-meshy-unreal-import]] — step 2, bp.
