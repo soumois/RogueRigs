@@ -3,7 +3,7 @@ id: task-147-01-xp-disc-billboard
 description: "Make the glow disc always face the camera and stay centred on the pickup, in the material."
 parent: task-147-xp-disc-billboard
 kind: task
-status: in-progress
+status: done
 ---
 # XP glow disc: camera-facing and centred
 
@@ -15,11 +15,11 @@ status: in-progress
 - done_when: The material compiles (recompile returns without error), Radius reads 50 and 80 on the two instances, the old values (Color, Intensity, Falloff) unchanged; assets saved; doc updated
 - editor_state: open
 - token_ceiling: open
-- model: open
-- tokens: open
-- runs: open
+- model: sonnet
+- tokens: input 36, cache write 41607, cache read 535374, output 613
+- runs: 1
 - milestone: M2
-- result: open
+- result: M_XPGlowDisc gets a World Position Offset making the disc a camera-facing billboard centred on the pickup (Radius parameter 50 nut, 80 chip); compiles; visual centring untested, for the owner to judge.
 
 ## Relations
 - [[task-147-xp-disc-billboard]] — parent global task.

@@ -231,6 +231,7 @@ kind: note
 | [[task-145-02-disc-reimport]] | sonnet | 1 | 0k | 14k | 70k | 0k |
 | [[task-145-03-disc-material]] | sonnet | 1 | 0k | 56k | 1276k | 1k |
 | [[task-146-01-xp-nut-disc-lighter]] | sonnet | 2 | 0k | 22k | 175k | 0k |
+| [[task-147-01-xp-disc-billboard]] | sonnet | 1 | 0k | 42k | 535k | 1k |
 
 ## Totals
 | Scope | Input | Cache write | Cache read | Output |

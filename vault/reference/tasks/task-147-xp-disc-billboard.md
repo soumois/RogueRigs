@@ -1,9 +1,9 @@
 ---
 id: task-147-xp-disc-billboard
 description: "Global task: Make the glow disc always face the camera and stay centred on the pickup, in the material."
-parent: tasks-to-do-index
+parent: tasks-done-index
 kind: task
-status: in-progress
+status: done
 ---
 # XP glow disc: camera-facing and centred
 
@@ -13,12 +13,12 @@ status: in-progress
 - gdd_check: done by the Orchestrator when the task is planned (2026-10-14).
 - confirmed_by_owner: yes (2026-10-14)
 - milestone: M2
-- next_step: task-147-01-xp-disc-billboard
-- result: open
+- next_step: none
+- result: Done. M_XPGlowDisc gets a World Position Offset making the disc a camera-facing billboard centred on the pickup (Radius parameter 50 nut, 80 chip); compiles; visual centring untested, for the owner to judge.
 
 ## Subtasks
 1. task-147-01-xp-disc-billboard — bp
 
 ## Relations
-- [[tasks-to-do-index]] — parent index.
+- [[tasks-done-index]] — parent index.
 - [[task-147-01-xp-disc-billboard]] — step 1, bp.

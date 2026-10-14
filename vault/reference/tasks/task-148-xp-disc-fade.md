@@ -3,7 +3,7 @@ id: task-148-xp-disc-fade
 description: "Global task: Fade the glow disc with the pickup phase: off in the air, on in 0.2 s at landing, off when magnetised."
 parent: tasks-to-do-index
 kind: task
-status: todo
+status: in-progress
 ---
 # XP glow disc: fade with the pickup phase
 
