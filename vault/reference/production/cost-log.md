@@ -268,6 +268,7 @@ kind: note
 | [[task-161-01-chaser-cut-pose-check]] | sonnet | 1 | 0k | 102k | 713k | 15k |
 | [[task-162-01-chaser-anim-game-look]] | opus | 1 | 0k | 137k | 3609k | 12k |
 | [[task-166-01-robot-debris-pieces]] | sonnet | 1 | 0k | 36k | 294k | 11k |
+| [[task-169-01-weapon-lore-lines]] | opus+sonnet | 3 | 0k | 62k | 359k | 4k |
 
 ## Totals
 | Scope | Input | Cache write | Cache read | Output |

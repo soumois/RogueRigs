@@ -3,7 +3,7 @@ id: task-169-01-weapon-lore-lines
 description: "Write one lore line for each offerable weapon (shotgun, turret launcher) for the new-weapon cards."
 parent: task-169-weapon-card-design
 kind: task
-status: in-progress
+status: done
 ---
 # New-weapon cards: lore lines
 
@@ -15,11 +15,11 @@ status: in-progress
 - done_when: Two lore lines, English, at most 90 characters each, no mechanic or number changed; style-guide critic pass on both (or owner ruling after 2 loops).
 - editor_state: any
 - token_ceiling: 30k
-- model: open
-- tokens: open
-- runs: open
+- model: opus+sonnet
+- tokens: input 40, cache write 61534, cache read 358656, output 3866
+- runs: 3
 - milestone: M2
-- result: open
+- result: weapon_texts.json: shotgun 'Cut from a dead security bay; corporate can't have it back.', turret launcher 'Cobbled from spare drill parts; outworks every corporate robot here.' (critic loop 0: shotgun pass, turret L1 fail fixed with the critic's correction in loop 1). Validator does not accept weapon_texts yet: extension in task-169-03. Commits d054024, 67eebf7, 2300e8e.
 
 ## Relations
 - [[task-169-weapon-card-design]] — parent global task.
