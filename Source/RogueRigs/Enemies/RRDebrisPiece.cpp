@@ -1,4 +1,4 @@
-// Rogue Rigs - robot death debris data (enemy-death, task-166-02): the 2-or-3 piece draw.
+// Rogue Rigs - robot death debris data (enemy-death, task-166-02, task-173-01): the 2-to-4 piece draw.
 
 #include "Enemies/RRDebrisPiece.h"
 
@@ -33,46 +33,69 @@ void FRRDebrisSelection::Choose(const TArray<FRRDebrisPiece>& Pieces, int32 Mesh
 		}
 	}
 
-	// Groups present, in random order (Fisher-Yates).
-	TArray<int32, TInlineAllocator<GroupCount>> Groups;
-	for (int32 Group = 0; Group < GroupCount; ++Group)
-	{
-		if (Slots[Group][0] != INDEX_NONE || (Slots[Group][1] != INDEX_NONE && Slots[Group][2] != INDEX_NONE))
-		{
-			Groups.Add(Group);
-		}
-	}
-	for (int32 Last = Groups.Num() - 1; Last > 0; --Last)
-	{
-		Groups.Swap(Last, FMath::RandRange(0, Last));
-	}
-
 	const int32 WholeSlot = static_cast<int32>(ERRDebrisKind::Whole);
 	const int32 UpperSlot = static_cast<int32>(ERRDebrisKind::Upper);
 	const int32 LowerSlot = static_cast<int32>(ERRDebrisKind::Lower);
-	for (const int32 Group : Groups)
+
+	// Each attempt is the plain draw: groups in random order (Fisher-Yates), a fair coin per limb, stop at MeshCount. A cut
+	// that would exceed MeshCount voids the attempt and the whole draw is redrawn (task-173-01): forcing that limb whole, as
+	// before, turned every last-slot cut into a whole limb and threw limbs cut about one time in three instead of two. The
+	// last attempt keeps the old fallback (limb whole) so the draw always ends; with the chaser data an attempt succeeds more
+	// than two times in three.
+	constexpr int32 MaxAttempts = 16;
+	TArray<int32, TInlineAllocator<GroupCount>> Groups;
+	for (int32 Attempt = 0; Attempt < MaxAttempts; ++Attempt)
 	{
-		const int32 Remaining = MeshCount - OutPieceIndices.Num();
-		if (Remaining <= 0)
+		const bool bLastAttempt = Attempt == MaxAttempts - 1;
+		OutPieceIndices.Reset();
+
+		Groups.Reset();
+		for (int32 Group = 0; Group < GroupCount; ++Group)
 		{
-			break;
+			if (Slots[Group][WholeSlot] != INDEX_NONE || (Slots[Group][UpperSlot] != INDEX_NONE && Slots[Group][LowerSlot] != INDEX_NONE))
+			{
+				Groups.Add(Group);
+			}
 		}
-		const bool bHasWhole = Slots[Group][WholeSlot] != INDEX_NONE;
-		const bool bHasHalves = Slots[Group][UpperSlot] != INDEX_NONE && Slots[Group][LowerSlot] != INDEX_NONE;
-		// One time in two when both are possible; a cut counts as 2 meshes and never exceeds MeshCount.
-		bool bCut = bHasHalves && (!bHasWhole || FMath::RandBool());
-		if (bCut && Remaining < 2)
+		for (int32 Last = Groups.Num() - 1; Last > 0; --Last)
 		{
-			bCut = false;
+			Groups.Swap(Last, FMath::RandRange(0, Last));
 		}
-		if (bCut)
+
+		bool bOvershot = false;
+		for (const int32 Group : Groups)
 		{
-			OutPieceIndices.Add(Slots[Group][UpperSlot]);
-			OutPieceIndices.Add(Slots[Group][LowerSlot]);
+			const int32 Remaining = MeshCount - OutPieceIndices.Num();
+			if (Remaining <= 0)
+			{
+				break;
+			}
+			const bool bHasWhole = Slots[Group][WholeSlot] != INDEX_NONE;
+			const bool bHasHalves = Slots[Group][UpperSlot] != INDEX_NONE && Slots[Group][LowerSlot] != INDEX_NONE;
+			// One time in two when both are possible; a cut counts as 2 meshes and never exceeds MeshCount.
+			bool bCut = bHasHalves && (!bHasWhole || FMath::RandBool());
+			if (bCut && Remaining < 2)
+			{
+				if (!bLastAttempt)
+				{
+					bOvershot = true;
+					break;
+				}
+				bCut = false;
+			}
+			if (bCut)
+			{
+				OutPieceIndices.Add(Slots[Group][UpperSlot]);
+				OutPieceIndices.Add(Slots[Group][LowerSlot]);
+			}
+			else if (bHasWhole)
+			{
+				OutPieceIndices.Add(Slots[Group][WholeSlot]);
+			}
 		}
-		else if (bHasWhole)
+		if (!bOvershot)
 		{
-			OutPieceIndices.Add(Slots[Group][WholeSlot]);
+			return;
 		}
 	}
 }

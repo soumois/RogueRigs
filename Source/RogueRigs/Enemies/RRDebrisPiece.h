@@ -1,4 +1,4 @@
-// Rogue Rigs - robot death debris data (enemy-death, task-166-02): one entry per debris mesh of a robot and the 2-or-3 piece draw.
+// Rogue Rigs - robot death debris data (enemy-death, task-166-02, task-173-01): one entry per debris mesh of a robot and the 2-to-4 piece draw.
 
 #pragma once
 
@@ -67,10 +67,11 @@ struct ROGUERIGS_API FRRDebrisSelection
 {
 	/**
 	 * Draws the meshes thrown by one death into OutPieceIndices (indices into Pieces): MeshCount meshes at most (the caller draws
-	 * 2 or 3). Groups are taken in random order, each at most once; a group with a Whole mesh and both halves is cut one time in
+	 * 2 to 4). Groups are taken in random order, each at most once; a group with a Whole mesh and both halves is cut one time in
 	 * two (2 meshes: Upper then Lower), otherwise thrown as it can be (whole, or cut when it only has halves). A cut that would
-	 * exceed MeshCount throws that limb whole instead (or skips it when it has no whole mesh). Fewer meshes when the data runs
-	 * out. The first mesh of each group / kind in Pieces is used.
+	 * exceed MeshCount voids the draw, which is redrawn from scratch (at most 16 attempts; the last one throws that limb whole,
+	 * or skips it when it has no whole mesh). Fewer meshes when the data runs out. The first mesh of each group / kind in Pieces
+	 * is used.
 	 */
 	static void Choose(const TArray<FRRDebrisPiece>& Pieces, int32 MeshCount, TArray<int32>& OutPieceIndices);
 };

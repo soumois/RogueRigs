@@ -43,7 +43,7 @@ struct FOnAttributeChangeData;
  * (bLightAttachedParts) and, with rr.Enemy.LightMovement on, the root capsule stops generating overlap events; a walking robot far from the miner and off screen moves at a slower
  * tick interval (FarMovementDistance, FarMovementTickInterval; UpdateMovementLOD).
  * Death (health set OnDeath, once, State.Dead on the ASC): stops, disables collision, plays the pooled DeathPuffSystem at its
- * centre (URRNiagaraPoolSubsystem, at most DeathPuffPoolSize), shrinks to 0 over DeathShrinkDuration, throws 2 or 3
+ * centre (URRNiagaraPoolSubsystem, at most DeathPuffPoolSize), shrinks to 0 over DeathShrinkDuration, throws 2 to 4
  * DebrisPieces from the last hit direction through the pooled DebrisSystem (LaunchDebris, at most DebrisPoolSize),
  * then bursts XPCubeCount pickups of XPPickupClass at its feet (Stats.XPValue split over them) and goes back to the actor pool
  * (URRActorPoolSubsystem::Release; a robot not created by the pool is destroyed instead).
@@ -232,7 +232,7 @@ protected:
 	void HandleMoveSpeedChanged(const FOnAttributeChangeData& ChangeData);
 
 	/**
-	 * End of the death shrink: draws 2 or 3 meshes (equal odds) of DebrisPieces (FRRDebrisSelection::Choose) and plays
+	 * End of the death shrink: draws 2 to 4 meshes (equal odds) of DebrisPieces (FRRDebrisSelection::Choose) and plays
 	 * DebrisSystem once through URRNiagaraPoolSubsystem (cap DebrisPoolSize) at the robot feet (DropLocation), rotated by the
 	 * robot yaw, with User.PieceMeshIndex, User.PieceOffset (offsets rotated by the yaw, pieces at scale 1) and
 	 * User.HitDirection (last hit, else a random horizontal direction). Nothing when DebrisSystem is null, DebrisPieces is

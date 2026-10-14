@@ -480,9 +480,10 @@ void ARREnemy::LaunchDebris()
 		return;
 	}
 
-	// 2 or 3 meshes, equal odds; a cut limb counts as 2 (enemy-death).
+	// 2, 3 or 4 meshes, equal odds; a cut limb counts as 2 (enemy-death).
 	TArray<int32> Chosen;
-	FRRDebrisSelection::Choose(DebrisPieces, FMath::RandRange(2, 3), Chosen);
+	const int32 MeshCount = FMath::RandRange(2, 4);
+	FRRDebrisSelection::Choose(DebrisPieces, MeshCount, Chosen);
 	if (Chosen.IsEmpty())
 	{
 		return;
@@ -500,6 +501,8 @@ void ARREnemy::LaunchDebris()
 		MeshIndices.Add(DebrisPieces[PieceIndex].MeshIndex);
 		Offsets.Add(YawRotation.RotateVector(DebrisPieces[PieceIndex].Offset));
 	}
+	UE_LOG(LogRogueRigs, Verbose, TEXT("%s debris: count %d, mesh indices [%s]."), *GetName(), MeshCount,
+		*FString::JoinBy(MeshIndices, TEXT(","), [](const int32 MeshIndex) { return FString::FromInt(MeshIndex); }));
 	FVector HitDirection = LastHitDirection;
 	if (HitDirection.IsZero())
 	{
