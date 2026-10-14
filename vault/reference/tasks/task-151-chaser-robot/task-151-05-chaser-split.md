@@ -3,7 +3,7 @@ id: task-151-05-chaser-split
 description: "Split the chaser Blender script into one module per part with a part preview mode, geometry unchanged."
 parent: task-151-chaser-robot
 kind: task
-status: in-progress
+status: done
 ---
 # Chaser: split the model by part
 
@@ -17,11 +17,11 @@ status: in-progress
 - rules: no geometry change; BLENDER ROUTE; no Unreal process, no Meshy, no screenshot tool; the part functions must not depend on each other except through common.py and the joint positions of the contract; keep the logo texture generation in common.py; document the layout in a vault doc node (vault/reference/tech/pipelines/chaser-model-pipeline.md: kind doc, parent pipelines-index, English, the files, the commands, the contract per part, the part preview, how an agent edits one part; listed in pipelines-index) and lint it.
 - editor_state: closed
 - token_ceiling: open
-- model: open
-- tokens: open
-- runs: open
+- model: sonnet
+- tokens: input 38, cache write 86668, cache read 1197508, output 16121
+- runs: 1
 - milestone: M2
-- result: open
+- result: Script split into Tools/art/blender/chaser/ (common.py, six part modules, assemble.py, part_preview.py); same 2056 triangles, bounds and joints as the backup tag; doc chaser-model-pipeline.
 
 ## Relations
 - [[task-151-chaser-robot]] — parent global task.

@@ -3,7 +3,7 @@ id: task-151-06-chaser-part-headtorso
 description: "Rebuild the chaser HeadTorso alone against its close-up crops of the validated sheet."
 parent: task-151-chaser-robot
 kind: task
-status: todo
+status: in-progress
 ---
 # Chaser part: HeadTorso
 
