@@ -13,13 +13,15 @@ status: done
 - gdd_check: done by the Orchestrator when the task is planned (2026-10-14).
 - confirmed_by_owner: yes (2026-10-14)
 - milestone: M2
-- next_step: none
+- next_step: task-151-02-chaser-sheet-simplified
 - planned (subtasks are created when the previous step is validated): 02 the owner picks a sheet, crops of the four views go to vault/assets; 03 the 3d agent models the 13 parts on the Blender route with the fidelity loop against the four views; 04 the 3d agent authors the run and attack clips and bakes them into a texture (rigid parts: one transform per part and per frame) with the part meshes for the death effect; 05 the bp and cpp agents build the material and the chaser Blueprint (clip and phase as Custom Primitive Data), keeping the shield variant and the death effect; 06 a cost check with rr.Stress.Spawn against the capsule baseline; step 06 runs after the integration (the owner wants the cost of the most numerous robot)
 - result: Done. ref-chaser.png and four candidate sheets (24 credits): too detailed and too bulky, top view not a real top view; owner chose a correction pass on A2.
 
 ## Subtasks
-1. task-151-01-chaser-robot — art
+1. task-151-01-chaser-robot — art (turnaround sheets, done)
+2. task-151-02-chaser-sheet-simplified — art (simplified three-view correction of A2)
 
 ## Relations
 - [[tasks-done-index]] — parent index.
 - [[task-151-01-chaser-robot]] — step 1, art.
+- [[task-151-02-chaser-sheet-simplified]] — step 2, art.
