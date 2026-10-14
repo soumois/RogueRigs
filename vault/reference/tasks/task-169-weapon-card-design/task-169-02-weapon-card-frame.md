@@ -3,7 +3,7 @@ id: task-169-02-weapon-card-frame
 description: "Unique frame for new-weapon cards, distinct from rarity frames; owner picks one, made 9-slice ready."
 parent: task-169-weapon-card-design
 kind: task
-status: in-progress
+status: done
 ---
 # New-weapon cards: unique frame
 
@@ -15,11 +15,11 @@ status: in-progress
 - done_when: Candidates generated and self-reviewed; owner picked one; transparent frame PNG exists with its margins; retained images, prompts and logs committed.
 - editor_state: any
 - token_ceiling: open
-- model: open
-- tokens: open
-- runs: open
+- model: sonnet
+- tokens: input 32, cache write 69993, cache read 398304, output 1599
+- runs: 2
 - milestone: M2
-- result: open
+- result: Owner picked candidate 1 (20261014-115709-weapon-card-frame-1.png). Keyed to Art/UI/Cards/T_CardFrame_Weapon.png, 1086 x 1448 RGBA, colour key with despill, no pink fringe. 9-slice margins left 140, top 180, right 140, bottom 190 px; side patch plates fall in the vertical stretch zone (fine up to about 1.3x). 18 credits. Commit 67fe903.
 
 ## Relations
 - [[task-169-weapon-card-design]] — parent global task.

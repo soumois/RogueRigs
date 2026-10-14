@@ -276,6 +276,7 @@ kind: note
 | [[task-167-02-death-puff-niagara]] | sonnet | 2 | 0k | 127k | 4599k | 31k |
 | [[task-166-04-debris-niagara]] | sonnet | 3 | 0k | 165k | 8238k | 60k |
 | [[task-166-05-debris-not-visible]] | opus | 1 | 0k | 134k | 3816k | 27k |
+| [[task-169-02-weapon-card-frame]] | sonnet | 2 | 0k | 70k | 398k | 2k |
 
 ## Totals
 | Scope | Input | Cache write | Cache read | Output |
