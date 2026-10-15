@@ -13,7 +13,7 @@ status: in-progress
 - gdd_check: xp-level-up and ore-blocks read 2026-10-15. Conflicts decided by the owner: short arcs and the 1 s rest before the magnet replaced by a long floaty arc and a mid-air magnet after 1.2 s from spawn (xp-level-up updated); ore and heal chunks may now land on unbroken rock, accepted for now (ore-blocks updated). The big XP chip keeps today's pop. Values provisional (owner defaults accepted).
 - confirmed_by_owner: yes (2026-10-15: "ok pour les deux tâches avec ces valeurs", scope "tous sauf la puce")
 - milestone: M1
-- next_step: task-195-01-floaty-pop-midair-magnet
+- next_step: task-195-02-floaty-pop-values
 - result: open
 
 ## Subtasks

@@ -327,6 +327,7 @@ kind: note
 | [[task-192-01-pickup-spawn-orientation-variants]] | opus | 1 | 0k | 77k | 952k | 0k |
 | [[task-192-02-pickup-orientation-defaults]] | sonnet | 1 | 0k | 36k | 432k | 1k |
 | [[task-189-05-ore-chunk-blueprint]] | sonnet | 1 | 0k | 64k | 1084k | 0k |
+| [[task-195-01-floaty-pop-midair-magnet]] | opus | 1 | 0k | 89k | 1505k | 1k |
 
 ## Totals
 | Scope | Input | Cache write | Cache read | Output |

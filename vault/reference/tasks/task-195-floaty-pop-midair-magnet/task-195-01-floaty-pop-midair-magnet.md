@@ -3,7 +3,7 @@ id: task-195-01-floaty-pop-midair-magnet
 description: "C++: pop fall-to-rise time ratio and optional mid-air magnet after a delay from spawn on ARRPickup, defaults unchanged."
 parent: task-195-floaty-pop-midair-magnet
 kind: task
-status: in-progress
+status: done
 ---
 # Floaty pop and mid-air magnet
 
@@ -15,11 +15,11 @@ status: in-progress
 - done_when: editor build succeeds with no new warning; existing pickup and pool automation tests pass (only expectations a change breaks are updated, no new test); defaults leave every Blueprint unchanged; docs updated; lint clean; committed by path.
 - editor_state: closed
 - token_ceiling: open
-- model: open
-- tokens: open
-- runs: open
+- model: opus
+- tokens: input 56, cache write 89087, cache read 1504761, output 931
+- runs: 1
 - milestone: M1
-- result: open
+- result: ARRPickup PopFallTimeRatio (1 = unchanged; apex at 1/(1+ratio) of the arc, same path, slower fall), bAttractDuringPop and PopAttractDelay (1.2 s from life start) via shared TryLatchMagnet; no tick; build clean; 34/35 tests pass, ReusedPickupEqualsFresh fails on rotation because of task-192 random RestOrientation (not this change); ratio and mid-air latch not exercised; commits 2bbfea1e, cfb07351
 
 ## Relations
 - [[task-195-floaty-pop-midair-magnet]] — parent global task.

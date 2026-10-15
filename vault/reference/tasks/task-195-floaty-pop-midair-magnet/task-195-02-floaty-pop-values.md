@@ -3,7 +3,7 @@ id: task-195-02-floaty-pop-values
 description: "BP: floaty pop values on BP_PickupXP, BP_PickupOre and BP_PickupHeal (not the chip), docs updated."
 parent: task-195-floaty-pop-midair-magnet
 kind: task
-status: todo
+status: in-progress
 ---
 # Floaty pop values on Blueprints
 
