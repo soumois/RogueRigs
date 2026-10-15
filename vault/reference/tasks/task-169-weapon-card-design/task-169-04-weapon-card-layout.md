@@ -3,7 +3,7 @@ id: task-169-04-weapon-card-layout
 description: "New-weapon card layout in WBP_UpgradeChoice: New weapon, icon only, name, explanation, lore, unique frame."
 parent: task-169-weapon-card-design
 kind: task
-status: in-progress
+status: done
 ---
 # New-weapon cards: WBP_UpgradeChoice variant
 
@@ -15,11 +15,11 @@ status: in-progress
 - done_when: Compiles with warnings as errors, saved, tree and graphs read back, doc updated; committed. Not seen on screen: say so.
 - editor_state: open
 - token_ceiling: 40 turns
-- model: open
-- tokens: open
-- runs: open
+- model: sonnet
+- tokens: input 100, cache write 126109, cache read 4091805, output 1078
+- runs: 2
 - milestone: M2
-- result: open
+- result: NewWeapon variant in WBP_UpgradeChoice: WeaponGroup<i> overlay with FrameWeapon (T_CardFrame_Weapon Box brush, untinted), WeaponHeader 'New weapon' on the plate (Bold 24), weapon icon only (308 x 230, aspect kept), WeaponName (Bold 30), WeaponDesc (DescriptionText, 17 #C9CCD4); lore in CardDesc (LoreText) bottom-anchored; teal border removed. Stat cards unchanged. Compiles with warnings as errors, saved, doc updated. Breaks RRWeaponsIntegrationTests (CardDesc now holds the lore on weapon cards): fixed in task-169-05. Not seen on screen. Commits 0c0c9fe, 1875355.
 
 ## Relations
 - [[task-169-weapon-card-design]] — parent global task.

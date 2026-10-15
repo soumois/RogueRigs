@@ -13,7 +13,7 @@ status: in-progress
 - gdd_check: upgrades, sys-upgrades, wbp-upgrade-choice, sys-text-content read (2026-10-14). No conflict. Only the shotgun and the turret launcher are offered (burst rifle is the start weapon). A cpp subtask is needed to load the weapon lore (consequence of the plan, reported to the owner). Owner defaults accepted 2026-10-14.
 - confirmed_by_owner: yes (2026-10-14)
 - milestone: M2
-- next_step: task-169-04-weapon-card-layout
+- next_step: task-169-05-weapon-card-test-fix
 - result: open
 
 ## Subtasks
@@ -21,6 +21,7 @@ status: in-progress
 2. task-169-02-weapon-card-frame — art
 3. task-169-03-weapon-card-lore — cpp
 4. task-169-04-weapon-card-layout — bp
+5. task-169-05-weapon-card-test-fix — cpp
 
 ## Relations
 - [[tasks-to-do-index]] — parent index.
@@ -28,3 +29,4 @@ status: in-progress
 - [[task-169-02-weapon-card-frame]] — step 2, art.
 - [[task-169-03-weapon-card-lore]] — step 3, cpp.
 - [[task-169-04-weapon-card-layout]] — step 4, bp.
+- [[task-169-05-weapon-card-test-fix]] — step 5, cpp (existing test broken by the new layout).

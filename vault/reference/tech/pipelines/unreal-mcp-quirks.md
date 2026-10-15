@@ -38,6 +38,14 @@ kind: doc
 - `LogsToolset.GetLogEntries` needs a valid category (LogBlueprint, LogScript, LogNiagara, LogRogueRigs).
 - From Git Bash, set `MSYS_NO_PATHCONV=1` so `/Script/...` paths are not rewritten.
 
+## Graph DSL (task-169-04, 2026-10-14)
+- A multi-output `bind` on a Break node is positional: list all its output pin names.
+- A positional `CallFunction` shifts its first argument into `self`: use named arguments.
+- The `(|GetX)` form printed by read_graph_dsl cannot be written back: write `Variables|<Blueprint>|GetX`.
+- A function parameter named like an input pin of a called node (WeaponName vs GetWeaponIconByName.WeaponName) collides: rename the parameter.
+- `Appearance|SetBrushfromTexture` resolves to the Border variant: use `Appearance|SetBrushResourceObject`, then `SetDesiredSizeOverride` with the texture size to keep the aspect.
+- Failed DSL writes leave unreachable node chains: find and delete orphans, then read the graph back before the final compile.
+
 ## Relations
 - [[unreal-mcp]] — parent: the MCP setup and its general limits.
 - [[tool-unreal-reimport]] — headless in-place reimport that MCP lacks.
