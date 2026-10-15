@@ -3,7 +3,7 @@ id: task-186-debris-throw-speed-range
 description: "Global task: Debris throw: final speed 325-600 cm/s along the hit direction and 350-550 cm/s upward, per-death factor 1.3-2 kept, angle and spread unchanged."
 parent: tasks-to-do-index
 kind: task
-status: todo
+status: in-progress
 ---
 # Robot debris: throw speed ranges
 
