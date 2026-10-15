@@ -6,7 +6,7 @@ kind: note
 ---
 # Handover — Meshy chaser session (2026-10-14)
 
-Scope: tasks 125 to 165 (XP nut and chip meshes and glow, then the chaser). All tasks are `done` ([[tasks-index]]); task 151 was closed as abandoned. Nothing runs; the editor may still be open (launched by the session, no PIE). Pipeline: [[chaser-meshy-pipeline]]; lessons: [[orchestrator-lessons-2026-10-14]].
+Scope: tasks 125 to 165 (XP nut and chip meshes and glow, then the chaser). All tasks are `done` ([[tasks-index]]); task 151 was closed as abandoned. Nothing runs; the editor may still be open (launched by the session, no PIE). Pipeline: [[chaser-meshy-pipeline]]; lessons: [[art-3d-lessons]].
 
 ## Built
 - XP pickups: nut (basic XP) and lilac/magenta chip (big block), floor glow disc with fade, Lumen: see [[perf-xp-pickups-glow]] and [[ppv-xp-glow]].
@@ -28,11 +28,11 @@ Scope: tasks 125 to 165 (XP nut and chip meshes and glow, then the chaser). All 
 - Commits are local: the branch is ahead of `origin/master`, push is the owner's call.
 
 ## Resume (new account or session)
-Read `CLAUDE.md`, then [[orchestration-protocol]], [[orchestrator-lessons]] and the two lessons notes. The owner's standing rules also live there: one owner point per global task, a "non" to every option means do nothing more, report an unrelated in-progress task once, French answers, no unrequested tests, bots or screenshot runs. "Lance les tâches jusqu'au bout" authorises running a plan without asking again.
+Read `CLAUDE.md`, then [[orchestration-protocol]], [[orchestrator-lessons]] and the lessons nodes it links. The owner's standing rules also live there: one owner point per global task, a "non" to every option means do nothing more, report an unrelated in-progress task once, French answers, no unrequested tests, bots or screenshot runs. "Lance les tâches jusqu'au bout" authorises running a plan without asking again.
 
 ## Relations
 - [[production-index]] — parent index.
 - [[chaser-meshy-pipeline]] — how the chaser is built.
-- [[orchestrator-lessons-2026-10-14]] — pitfalls and tools.
+- [[art-3d-lessons]] — pitfalls and tools.
 - [[handover-2026-10-12-gameplay-hud]] — the previous handover.
 - [[wishlist]] — deferred ideas.

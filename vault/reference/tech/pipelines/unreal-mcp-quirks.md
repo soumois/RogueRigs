@@ -47,6 +47,12 @@ kind: doc
 - `Appearance|SetBrushfromTexture` resolves to the Border variant: use `Appearance|SetBrushResourceObject`, then `SetDesiredSizeOverride` with the texture size to keep the aspect.
 - Failed DSL writes leave unreachable node chains: find and delete orphans, then read the graph back before the final compile.
 
+## Properties, textures and materials (2026-10-12 to 14)
+- `set_properties` takes `values` as a JSON string; SizeBox overrides also need their `bOverride_*` flag.
+- Pure nodes are re-evaluated at each consumer: a time delta computed after its setter reads zero.
+- `TextureTools.import_file` refuses to overwrite: delete, import, then set the UI texture group again.
+- Material graphs: `editor_toolset.toolsets.material.MaterialTools`, short tool names. A new Custom node input needs one `set_properties` call with all existing entries plus an empty `{}`, then a second call to name it; `get_expression_inputs` may misreport an input.
+
 ## Relations
 - [[unreal-mcp]] — parent: the MCP setup and its general limits.
 - [[tool-unreal-reimport]] — headless in-place reimport that MCP lacks.

@@ -29,4 +29,4 @@ All FBX exports use `FBX_SCALE_UNITS` (UnitScaleFactor 100): `FBX_SCALE_NONE` im
 - [[enemy-chaser]] — design and clips.
 - [[chaser-model-pipeline]] — the abandoned Blender route.
 - [[asset-pipeline]] — general rules.
-- [[orchestrator-lessons-2026-10-14]] — pitfalls met on the way.
+- [[art-3d-lessons]] — pitfalls met on the way.

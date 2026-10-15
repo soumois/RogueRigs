@@ -48,7 +48,7 @@ Run the global acceptance checks, fill `result`, set `done`, `next_step: none`, 
 
 ## Relations
 - [[orchestrator-runbook]] — the commands that apply this protocol.
-- [[orchestrator-lessons]] — agent limits and owner preferences: read before every plan.
+- [[orchestrator-lessons]] — owner rules and planning lessons: read before every plan; agent limits are in [[bp-mcp-lessons]] and [[art-3d-lessons]].
 - [[agents-index]] — parent index.
 - [[agent-orchestrator]] — the agent bound by this protocol.
 - [[cost-log]] — where step 5 records tokens per subtask.

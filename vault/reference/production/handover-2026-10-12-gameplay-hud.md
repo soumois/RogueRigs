@@ -29,13 +29,13 @@ Two sessions created numbers in parallel. 106 is still both `weapons-ui-size` an
 - The HUD z-order: cards 10, alerts 8, minimap 6, the other panels 0 ([[wbp-hud]]).
 
 ## How to resume
-Read [[tasks-to-do-index]] (empty), this node, the checklist, then [[orchestrator-lessons-2026-10-12]]. Assignment 4 is described in [[assignment-4-content-pipeline]]; its README is submitted-ready.
+Read [[tasks-to-do-index]] (empty), this node, the checklist, then [[orchestrator-lessons]]. Assignment 4 is described in [[assignment-4-content-pipeline]]; its README is submitted-ready.
 
 ## Relations
 - [[production-index]] — parent index.
 - [[handover-2026-10-12]] — the art and barrel session of the same day.
 - [[validation-checklist-2026-10-12]] — what to look at on screen, per area.
-- [[orchestrator-lessons-2026-10-12]] — owner rules and agent lessons of this session.
+- [[orchestrator-lessons]] — owner rules and agent lessons of this session.
 - [[hud-refactor-audit]] — the HUD split, its structure and events.
 - [[ground-telegraph]] — the ground circles used by zones, barrel and heavy.
 - [[sys-actor-pool]] — pools, prewarm and the reuse cost.

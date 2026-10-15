@@ -1,16 +1,16 @@
 ---
 id: agent-style-guide
-description: "Critic agent: checks generated text (later art) against numbered rules L*, T*, A* and returns a verdict and correction per item. Invoke after every generation."
+description: "Critic agent: checks generated player-facing text against numbered rules L* and T*, returns a verdict and correction per item. Invoke after every text generation."
 parent: agents-index
 kind: spec
 status: provisional
 ---
 # Style-guide agent (critic)
 
-- role: review generated content against numbered rules; text first, art later.
+- role: review generated text against numbered rules. Images are judged by the art agent's self-review and the owner's validation, not by this critic (owner 2026-10-14).
 - invoked_by: orchestrator, after each generation.
-- trigger: a text or art output ready for review.
-- reads: the output only (never the generator's prompt or reasoning), [[lore]], [[dialogue-tone]], [[crew-characters]], [[fictional-films]], [[company-voice]]. For art: [[art-style-guide]], [[color-code]], [[readability-rules]].
+- trigger: a text output ready for review.
+- reads: the output only (never the generator's prompt or reasoning), [[lore]], [[dialogue-tone]], [[crew-characters]], [[fictional-films]], [[company-voice]].
 - definition_file: `.claude/agents/style-guide.md`.
 - produces: a review file next to the run log: `Tools/content/logs/<run-id>.review.json`.
 - output_format: per item: `pass` or `fail`, the violated rule id, the reason in one sentence, a corrected version.
@@ -22,5 +22,4 @@ status: provisional
 ## Relations
 - [[agents-index]] — parent index.
 - [[agent-text]] — the generator it reviews.
-- [[agent-art]] — the art generator it will review later.
 - [[dialogue-tone]] — the T rules it cites.
