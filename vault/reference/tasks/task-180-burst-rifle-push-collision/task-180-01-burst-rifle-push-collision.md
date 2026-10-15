@@ -3,7 +3,7 @@ id: task-180-01-burst-rifle-push-collision
 description: "Stop burst rifle shots from pushing robots through collision: the burst rifle has no knockback, so a hit must not move a robot."
 parent: task-180-burst-rifle-push-collision
 kind: task
-status: in-progress
+status: done
 ---
 # Burst rifle: shots push robots by collision
 
@@ -15,11 +15,11 @@ status: in-progress
 - done_when: Cause proven by values from a run; after the fix a rerun shows no robot displacement from burst rifle hits and the shotgun still pushes; build passes with the editor closed; existing weapon and enemy tests still pass except the known EyeMesh one; docs updated; committed by path
 - editor_state: closed
 - token_ceiling: open
-- model: open
-- tokens: open
-- runs: open
+- model: opus
+- tokens: input 110, cache write 113996, cache read 4120582, output 35428
+- runs: 1
 - milestone: M2
-- result: open
+- result: Cause: BP_Projectile ShotMesh had QueryAndPhysics collision blocking Pawn, carried into the robot root capsule, depenetration pushed robots (peak 1714 uu/s, 25-66 uu); fix ARRProjectile::DisableVisualCollision at spawn (all components but the sphere); burst after: no push in 24 hits; shotgun still 499 uu/s; build OK, tests 27/28 + shotgun 10/10 (known EyeMesh); commit a99e7d9
 
 ## Relations
 - [[task-180-burst-rifle-push-collision]] — parent global task.

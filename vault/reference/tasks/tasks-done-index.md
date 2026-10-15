@@ -189,3 +189,4 @@ Archive: it exceeds the index size limits of [[_authoring]] on purpose (owner, 2
 - [[task-177-wider-upgrade-cards]] — Make the upgrade cards wider: 500 x 720 instead of 440 x 720, frames re-baked at the new size, same frame thickness. Status done.
 - [[task-178-card-glow-hover]] — Stronger inner rarity glow on the upgrade cards (about 2x), and stronger still on hover (about 3x), driven by the button hover events. Status done.
 - [[task-179-debris-debug-plane-off]] — Remove the red debug square drawn on the floor under each active debris system (NS_RobotDebris collision plane debug draw). Status done.
+- [[task-180-burst-rifle-push-collision]] — Stop burst rifle shots from pushing robots through collision: the burst rifle has no knockback, so a hit must not move a robot. Status done.

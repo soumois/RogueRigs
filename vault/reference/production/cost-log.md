@@ -301,6 +301,7 @@ kind: note
 | [[task-178-02-glow-hover-layout]] | sonnet | 1 | 0k | 103k | 1893k | 0k |
 | [[task-175-01-alert-objectives-node-cleanup]] | sonnet | 1 | 0k | 43k | 277k | 0k |
 | [[task-179-01-debris-debug-plane-off]] | sonnet | 1 | 0k | 105k | 1316k | 8k |
+| [[task-180-01-burst-rifle-push-collision]] | opus | 1 | 0k | 114k | 4121k | 35k |
 
 ## Totals
 | Scope | Input | Cache write | Cache read | Output |
