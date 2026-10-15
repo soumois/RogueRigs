@@ -336,3 +336,7 @@ Notes:
 | ore-economy: share of secured ore lost on a failed run | M2 | missing | still `open` |
 
 Final agent commit (the "agent output" the owner's review is compared against): `17083710`.
+
+### 8. Close
+- task-183 closed per protocol (`status: done`, `next_step: none`, moved to tasks-done-index). state.md updated. Editor left open for the owner's test.
+- Owner review edits go in a separate commit `owner review: ...`; this run stops here.
