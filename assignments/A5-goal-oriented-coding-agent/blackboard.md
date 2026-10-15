@@ -13,3 +13,12 @@ Sections of a run:
 8. **Owner review:** what the owner changed, in a separate commit.
 
 <!-- Runs are appended below by the agent. -->
+
+## Run 1 — 2026-10-14
+
+### 1. Base
+- Base commit: `468e91a2` (`task-182: debris 4.5 s full size + 0.4 s sink (owner)`).
+- Owner constraint for this run: none.
+- Resume (orchestration-protocol step 0): no global task `in-progress`. One open task in tasks-to-do-index: `task-182-debris-pool-80-test` (status `todo`, prepared, not started). Not touched by this run.
+- Working tree not clean at start (owner's uncommitted vault, art and `WBP_UpgradeChoice.uasset` edits): this run commits only the files it writes, by name.
+- state.md: first run (nothing built, failed or decided).

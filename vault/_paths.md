@@ -70,6 +70,7 @@ bp-extraction-shuttle  reference/tech/blueprints/world/bp-extraction-shuttle.md
 bp-heal-ring  reference/tech/blueprints/fx/bp-heal-ring.md
 bp-heavy  reference/tech/blueprints/enemies/bp-heavy.md
 bp-kamikaze  reference/tech/blueprints/enemies/bp-kamikaze.md
+bp-mcp-lessons  reference/agents/bp-mcp-lessons.md
 bp-miner  reference/tech/blueprints/player/bp-miner.md
 bp-objective-console  reference/tech/blueprints/world/bp-objective-console.md
 bp-pickup-heal  reference/tech/blueprints/fx/bp-pickup-heal.md
@@ -163,8 +164,6 @@ objective-console  reference/gdd/run/objective-console.md
 objective-variants  reference/gdd/run/objective-variants.md
 orchestration-protocol  reference/agents/orchestration-protocol.md
 orchestrator-lessons  reference/agents/orchestrator-lessons.md
-orchestrator-lessons-2026-10-12  reference/agents/orchestrator-lessons-2026-10-12.md
-orchestrator-lessons-2026-10-14  reference/agents/orchestrator-lessons-2026-10-14.md
 orchestrator-runbook  reference/agents/orchestrator-runbook.md
 orchestrator-script-quirks  reference/agents/orchestrator-script-quirks.md
 ore-blocks  reference/gdd/terrain/ore-blocks.md
