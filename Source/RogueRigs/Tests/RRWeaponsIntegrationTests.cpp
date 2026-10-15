@@ -356,7 +356,14 @@ bool FRRIntegrationWeaponCardEquipsShotgunTest::RunTest(const FString& Parameter
 		const bool bDescShown = DescVisibility == ESlateVisibility::Visible || DescVisibility == ESlateVisibility::SelfHitTestInvisible || DescVisibility == ESlateVisibility::HitTestInvisible;
 		if (bWeapon)
 		{
-			TestTrue(FString::Printf(TEXT("CardDesc%d visible on the weapon card"), Index), bDescShown);
+			// New-weapon card (task-169-04, wbp-upgrade-choice): CardDesc holds the lore, visible only when LoreText is not empty.
+			const FString Lore = Offer[Index].LoreText.ToString();
+			TestEqual(FString::Printf(TEXT("CardDesc%d %s"), Index, Lore.IsEmpty() ? TEXT("collapsed on a weapon card without lore") : TEXT("visible on a weapon card with lore")),
+				bDescShown, !Lore.IsEmpty());
+			if (bDescShown)
+			{
+				TestEqual(FString::Printf(TEXT("CardDesc%d shows the weapon lore"), Index), GetWidgetText(*this, HUD, DescName), Lore);
+			}
 		}
 		else
 		{
@@ -376,7 +383,10 @@ bool FRRIntegrationWeaponCardEquipsShotgunTest::RunTest(const FString& Parameter
 			ValueVisibility == ESlateVisibility::Collapsed || ValueVisibility == ESlateVisibility::Hidden, bWeapon);
 		if (bWeapon)
 		{
-			TestEqual(TEXT("CardDesc shows the description"), GetWidgetText(*this, HUD, FString::Printf(TEXT("CardDesc%d"), Index)), Offer[Index].DescriptionText.ToString());
+			// The weapon variant (WeaponGroup) shows the header, the weapon name and the explanation.
+			TestEqual(FString::Printf(TEXT("WeaponHeader%d shows the card name"), Index), GetWidgetText(*this, HUD, FString::Printf(TEXT("WeaponHeader%d"), Index)), Offer[Index].DisplayName.ToString());
+			TestEqual(FString::Printf(TEXT("WeaponName%d shows the weapon name"), Index), GetWidgetText(*this, HUD, FString::Printf(TEXT("WeaponName%d"), Index)), Offer[Index].TargetText.ToString());
+			TestEqual(FString::Printf(TEXT("WeaponDesc%d shows the description"), Index), GetWidgetText(*this, HUD, FString::Printf(TEXT("WeaponDesc%d"), Index)), Offer[Index].DescriptionText.ToString());
 		}
 	}
 
