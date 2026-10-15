@@ -198,3 +198,4 @@ Archive: it exceeds the index size limits of [[_authoring]] on purpose (owner, 2
 - [[task-186-debris-throw-speed-range]] — Debris throw: final speed 325-600 cm/s along the hit direction and 350-550 cm/s upward, per-death factor 1.3-2 kept, angle and spread unchanged. Status done.
 - [[task-187-deposit-whole-on-explosion]] — When an explosion destroys any block of an ore deposit, the whole deposit is destroyed and pops all its chunks: no partly destroyed deposit. Status done.
 - [[task-190-debris-spin-damping]] — Debris spin slower and damped: 0.3-0.8 rev/s per piece, half-life 1 s in the air, halved at each bounce, stopped once at rest on the floor. Status done.
+- [[task-191-debris-wall-collision]] — Debris pieces bounce off walls through distance field collision on a GPU emitter; cost measured. Status done.
