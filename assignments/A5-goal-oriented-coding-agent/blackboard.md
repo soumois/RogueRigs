@@ -166,3 +166,12 @@ Factors: **MS** milestone (M1 = 3, M2 = 2, M3 = 1; a sub-feature whose content i
   3. HUD: one new widget for the carried count (owner rule: one widget per logic in `WBP_HUD`): default = yes, placement next to the XP bar, violet Duskite colour.
 - **One-click test (sys-cheats):** new cheat `rr.Cheat.GrantOre <N>` (CVar and CDO property route, like `GrantXP`): adds N carried ore; then `rr.Cheat.SkipToExtraction 1` and board the shuttle → success screen shows N secured; or with `ShuttleCountdownOverride` let it expire → carried ore drops to 0.
 - **Status:** stopped, waiting for the owner's answer.
+
+#### Owner answer (verbatim)
+> Ok, juste pour l'info, tu peux la mettre à coté du radar. Pour cela, il te faudra aussi l'icone et demande au passage un rendu visuel proposé par l'agent Art in game ( il en aura besoin pour créer l'icone HUD )
+>
+> Dans Blackboard, traduit chaque fois en anglais
+
+English translation: "Ok. Just so you know, you can put it next to the radar. For that you will also need the icon, and while you are at it ask the Art agent for a proposed in-game visual render (it will need it to create the HUD icon). In the blackboard, translate into English every time."
+
+Decision: **approved**: ore counter. "Ok" accepts every default: (1) secured ore kept in the game instance for the session and shown on the success screen; (2) death also loses carried ore; (3) one dedicated widget, placed **next to the radar (minimap)** instead of the XP bar. Added by the owner: an ore icon for the HUD, preceded by an in-game visual render proposed by the Art agent. Rule for the blackboard: owner quotes are kept verbatim and followed by an English translation.
