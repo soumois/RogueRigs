@@ -9,7 +9,7 @@ status: approved
 
 - Look (owner 2026-10-13, provisional until the 3D models exist): the basic XP piece is a thick hex nut with a glowing cyan hole (salvage hardware the Rigs use to patch their gear); the big XP block is a data chip, the memory of a destroyed robot, with a glowing magenta core. "Cube" below means the basic piece; the shapes replace the placeholder cubes once modelled. Chosen images: `Art/Source/xp-nut/20261013-092043-xp-nut-1.png` and `Art/Source/xp-chip/20261013-092707-xp-chip-1.png`, not yet in `vault/assets/`.
 - Killed robots drop XP cubes (glowing cyan, see [[color-code]]). Like DRGS (provisional, owner 2026-10-05): a kill bursts several small cubes in short arcs around the body; they rest on the floor; inside the pickup radius they accelerate toward the miner and form a stream; each collect sparkles. Broken ore and heal blocks pop chunks the same way. Healing shows a green ring on the miner.
-- A kill bursts its XP split over cubes whose values add up to the robot XP: chaser 3, kamikaze 4, shooter 6, heavy 12 cubes (provisional, task-027-01, owner to judge). A cube rests 1 s before the magnet can take it.
+- A kill bursts its XP split over cubes whose values add up to the robot XP: chaser 3, kamikaze 4, shooter 6, heavy 12 cubes (provisional, task-027-01, owner to judge). A cube rests 1 s before the magnet can take it; since 2026-10-15 (owner, provisional, task-195) the XP nut, ore and heal chunks fly a long floaty arc (about 1.6 s, 250 uu high, slower fall than rise, up to 300 uu away, like DRGS) and the magnet may take them mid-air 1.2 s after spawn; the big XP chip keeps the short pop.
 - Pacing target (provisional, owner 2026-10-06 after the second test: the first levels were far too long; was 0:30 / 1:40 / 3:10): level 2 at about 0:15, level 5 at about 1:10, level 10 at about 3:00 of a 4-minute level, measured on a player who collects his XP (bot Collect profile). A player who runs without collecting levels up much slower on purpose: he must go back into the hordes or plan a walking loop (owner 2026-10-06; the Run profile is reported, not tuned); a fast early rhythm matters (owner).
 - Collecting XP fills a level-up bar. The player's `XPGain` stat scales XP gained; `PickupRadius` sets the collection radius ([[player-stats]]).
 - Bonus chests also give XP and an upgrade choice ([[objective-bonus-chest]]).
@@ -22,7 +22,7 @@ status: approved
 - Reroll: one button per choice screen, usable once, redraws 3 other upgrades at random (owner 2026-10-03).
 - Milestone: M1.
 
-- Big XP block (owner 2026-10-12, provisional): when one drop would create more than 8 cubes, groups of 8 become one bigger block, a data chip (scale 1.8, bright magenta-pink with a glow of the same hue, owner 2026-10-13) worth the sum of its cubes, so the total XP is unchanged; same magnet and pickup radius. It also lightens the pool when many robots die at once.
+- Big XP block (owner 2026-10-12, provisional): when one drop would create more than 8 cubes, groups of 8 become one bigger block, a data chip (scale 1.53, 15 % smaller than the first 1.8, owner 2026-10-15, bright magenta-pink with a glow of the same hue, owner 2026-10-13) worth the sum of its cubes, so the total XP is unchanged; same magnet and pickup radius. It also lightens the pool when many robots die at once.
 
 ## Relations
 - [[run-index]] — parent index.
