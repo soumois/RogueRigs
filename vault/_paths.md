@@ -170,7 +170,10 @@ ore-blocks  reference/gdd/terrain/ore-blocks.md
 ore-economy  reference/gdd/run/ore-economy.md
 ore-in-rock-plan  reference/production/ore-in-rock-plan.md
 ore-in-rock-proposal  reference/production/ore-in-rock-proposal.md
-perf-leads  reference/tech/performance/perf-leads.md
+perf-lead-debris-gpu  reference/tech/performance/perf-leads/perf-lead-debris-gpu.md
+perf-lead-lumen-robots  reference/tech/performance/perf-leads/perf-lead-lumen-robots.md
+perf-leads  reference/tech/performance/perf-leads/perf-leads.md
+perf-leads-m1  reference/tech/performance/perf-leads/perf-leads-m1.md
 perf-projectile-pool-evaluation  reference/tech/performance/perf-projectile-pool-evaluation.md
 perf-risks  reference/tech/performance/perf-risks.md
 perf-robot-components-audit  reference/tech/performance/perf-robot-components-audit.md

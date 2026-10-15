@@ -1,7 +1,7 @@
 ---
-id: perf-leads
+id: perf-leads-m1
 description: "Optimization leads ranked by expected gain after task-018 (stress-opt-m1), with what task-018 already did and closed; open before any perf work."
-parent: performance-index
+parent: perf-leads
 kind: doc
 ---
 # Optimization leads (after task-018)
@@ -24,7 +24,7 @@ Ranked from [[perf-stress-opt-m1]] and the per-timer trace [[perf-trace-m1]]. Ga
 8. RVO: 0.33 ms at 400. Drop unless the crowd grows.
 
 ## Relations
-- [[performance-index]] — parent index.
+- [[perf-leads]] — parent index: all performance leads.
 - [[perf-risks]] — cost centers and fallbacks these leads refer to.
 - [[perf-stress-opt-m1]] — the tables that ranked these leads.
 - [[perf-trace-m1]] — per-timer costs behind the estimates.

@@ -9,7 +9,7 @@ kind: note
 ## Relations
 - [[tech-index]] — parent index.
 - [[perf-risks]] — likely cost centers outside GAS, with measures and fallbacks.
-- [[perf-leads]] — optimization leads ranked after task-018, with what is done or closed.
+- [[perf-leads]] — branch of performance improvement leads kept for later (M1 leads, robot rendering, death debris). Open before any perf work.
 - [[perf-stress-test-m1]] — scenarios, thresholds, target machine, stress procedure, baseline table and ceiling.
 - [[perf-stress-final-m1]] — final run after task-016: S0, S2 fire, S7 burst tables, baseline comparison, 100-cap verdict.
 - [[perf-trace-m1]] — Insights trace at 400 robots: game-thread ms per timer, CharacterMovement breakdown, 61 s GC hitch, capture commands.
