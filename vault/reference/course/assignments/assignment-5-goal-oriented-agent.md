@@ -29,7 +29,7 @@ Provided: a ~30-line LLM call loop; a file scanner stub (`list_files`, `read_fil
 Every decision is visible to the owner: what it scored (each missing feature ranked, score and reason), what it emitted (exact prompts, context, instructions) and what it generated (code, file, decision), logged before it touches the codebase. The README must explain the agent's decisions: if the owner cannot, he was not in control.
 
 ## Deadline and status
-October 19, 2026, 23:59. The main slide says BST (15:59 Pacific), the summary table says GMT (16:59 Pacific): aim 15:59 Pacific. Status: planning (2026-10-14), nothing built. Repo folder `assignments/A5-goal-oriented-coding-agent/`, README skeleton and README links created 2026-10-14 (owner request).
+October 19, 2026, 23:59. The main slide says BST (15:59 Pacific), the summary table says GMT (16:59 Pacific): aim 15:59 Pacific. Status (2026-10-15): `/architect` run 1 built the ore counter (task-183, final agent commit `17083710`); README drafted from the blackboard; left: owner play-test and review commit, judgment part, captures, tag `a5-submission`, submission. Repo folder `assignments/A5-goal-oriented-coding-agent/`, README skeleton and README links created 2026-10-14 (owner request).
 
 ## Relations
 - [[assignments-index]] — parent index.
