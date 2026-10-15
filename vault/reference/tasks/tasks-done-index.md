@@ -191,6 +191,7 @@ Archive: it exceeds the index size limits of [[_authoring]] on purpose (owner, 2
 - [[task-179-debris-debug-plane-off]] — Remove the red debug square drawn on the floor under each active debris system (NS_RobotDebris collision plane debug draw). Status done.
 - [[task-180-burst-rifle-push-collision]] — Stop burst rifle shots from pushing robots through collision: the burst rifle has no knockback, so a hit must not move a robot. Status done.
 - [[task-181-perf-chaser-meshy-death]] — Measure the frame cost of the Meshy chaser (animated material) and its death effects (puff, debris) with the stress tool, compared with the M1 tables. Status done.
+- [[task-182-debris-pool-80-test]] — Test 80 debris systems with debris living 4.5 s plus a 0.4 s sink, and measure what raising the cap costs. Status done.
 - [[task-183-ore-counter]] — Count carried ore, secure it on extraction, lose it on a miss or death, show it with an icon next to the radar. Status done.
 - [[task-184-minimap-opaque]] — Make the minimap disc fully opaque: no part of the game shows through it, unseen cells included. Status done.
 - [[task-185-alert-label-remove]] — Remove the ALERT text next to the alert bar, and the one test check that reads it. Status done.

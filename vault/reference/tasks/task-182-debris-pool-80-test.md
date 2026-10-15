@@ -1,9 +1,9 @@
 ---
 id: task-182-debris-pool-80-test
 description: "Global task: test 80 debris systems with debris living 4.5 s plus a 0.4 s sink, and measure what raising the cap costs."
-parent: tasks-to-do-index
+parent: tasks-done-index
 kind: task
-status: in-progress
+status: done
 ---
 # Debris pool 80 and 4.5 s life: test and cost
 
@@ -13,8 +13,8 @@ status: in-progress
 - gdd_check: enemy-death (pools of 40, debris 3 s + 0.4 s) and perf-stress-chaser-meshy read (2026-10-14); the change is a test the owner asked for; enemy-death to be updated (provisional) when it lands.
 - confirmed_by_owner: yes (2026-10-15); measure last
 - milestone: M3
-- next_step: task-182-03-debris-pool-cost
-- result: open
+- next_step: none
+- result: Done. 80 x 4.9 s vs 40 x 3.4 s: all within the 2 ms spread (game 200 frame 10.75 -> 11.08, game 300 12.28 -> 12.96, S7 200 unchanged); debris skips 30 -> 11 % at 200, 45 -> 28 % at 300; cost per extra active debris system <= 25 us render, <= 10 us GPU, <= 15 us game, memory 3.6 KB idle + 5.5 KB active; rule: cap = deaths/s x 4.9 x 1.5 (about 130 for 300 alive); section in perf-stress-chaser-meshy; commit 8fe8b795
 
 ## Subtasks
 1. task-182-01-debris-lifetime-4-5s — bp
@@ -22,7 +22,7 @@ status: in-progress
 3. task-182-03-debris-pool-cost — cpp
 
 ## Relations
-- [[tasks-to-do-index]] — parent index.
+- [[tasks-done-index]] — parent index.
 - [[task-182-01-debris-lifetime-4-5s]] — step 1, bp.
 - [[task-182-02-debris-pool-80]] — step 2, bp.
 - [[task-182-03-debris-pool-cost]] — step 3, cpp.

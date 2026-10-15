@@ -314,6 +314,7 @@ kind: note
 | [[task-182-02-debris-pool-80]] | sonnet | 1 | 0k | 34k | 223k | 5k |
 | [[task-186-01-debris-throw-speed-range]] | sonnet | 1 | 0k | 44k | 375k | 6k |
 | [[task-185-02-alert-label-test]] | opus | 1 | 0k | 19k | 181k | 4k |
+| [[task-182-03-debris-pool-cost]] | opus | 1 | 0k | 74k | 1485k | 21k |
 
 ## Totals
 | Scope | Input | Cache write | Cache read | Output |

@@ -3,7 +3,7 @@ id: task-182-03-debris-pool-cost
 description: "Measure 80 debris systems of 4.9 s against task-181 (40 of 3.4 s) and record the cost per extra debris system."
 parent: task-182-debris-pool-80-test
 kind: task
-status: in-progress
+status: done
 ---
 # Debris pool 80: cost measure
 
@@ -15,11 +15,11 @@ status: in-progress
 - done_when: Runs done, logs and CSV under Saved/Stress; section written with the comparison and the cost per extra system; report sent to the owner first; committed by path
 - editor_state: closed
 - token_ceiling: open
-- model: open
-- tokens: open
-- runs: open
+- model: opus
+- tokens: input 64, cache write 73704, cache read 1485491, output 21373
+- runs: 1
 - milestone: M3
-- result: open
+- result: 80 x 4.9 s vs 40 x 3.4 s: all within the 2 ms spread (game 200 frame 10.75 -> 11.08, game 300 12.28 -> 12.96, S7 200 unchanged); debris skips 30 -> 11 % at 200, 45 -> 28 % at 300; cost per extra active debris system <= 25 us render, <= 10 us GPU, <= 15 us game, memory 3.6 KB idle + 5.5 KB active; rule: cap = deaths/s x 4.9 x 1.5 (about 130 for 300 alive); section in perf-stress-chaser-meshy; commit 8fe8b795
 
 ## Relations
 - [[task-182-debris-pool-80-test]] — parent global task.
