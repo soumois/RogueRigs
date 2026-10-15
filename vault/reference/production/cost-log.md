@@ -303,6 +303,7 @@ kind: note
 | [[task-179-01-debris-debug-plane-off]] | sonnet | 1 | 0k | 105k | 1316k | 8k |
 | [[task-180-01-burst-rifle-push-collision]] | opus | 1 | 0k | 114k | 4121k | 35k |
 | [[task-181-01-perf-chaser-meshy-death]] | opus | 1 | 0k | 234k | 4241k | 37k |
+| [[task-183-01-ore-counter-logic]] | opus | 1 | 0k | 126k | 3634k | 4k |
 
 ## Totals
 | Scope | Input | Cache write | Cache read | Output |

@@ -3,7 +3,7 @@ id: task-183-01-ore-counter-logic
 description: "C++ ore counter: carried count from ore pickups, secured on extraction in the game instance, emptied on a miss or death, HUD event, GrantOre cheat."
 parent: task-183-ore-counter
 kind: task
-status: in-progress
+status: done
 ---
 # Ore counter logic (C++)
 
@@ -15,11 +15,11 @@ status: in-progress
 - done_when: editor build succeeds with no new warning; existing automation tests in the touched areas (Cheats, Extraction, Pickups, HUD) pass, and only expectations a change breaks are updated, no new test; a `-game` or headless run log shows `rr.Cheat.GrantOre 10` raising carried to 10; docs updated; lint clean; committed by path.
 - editor_state: closed
 - token_ceiling: open
-- model: open
-- tokens: open
-- runs: open
+- model: opus
+- tokens: input 84, cache write 125974, cache read 3634013, output 4030
+- runs: 1
 - milestone: M1
-- result: open
+- result: Carried ore in URRRunFlowSubsystem (AddCarriedOre, OnOreChanged(Carried, Secured), getters), secured ore in new URROreBankSubsystem (game instance), emptied on missed shuttle or miner death, GrantOre cheat both routes; build exit 0, 38/38 tests pass, -game log shows GrantOre 10 -> carried 10; commits 7a452036, cb0916e5
 
 ## Relations
 - [[task-183-ore-counter]] — parent global task.

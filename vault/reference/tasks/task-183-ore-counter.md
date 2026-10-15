@@ -13,7 +13,7 @@ status: in-progress
 - gdd_check: [[ore-economy]] and [[extraction]] (approved, M1) read 2026-10-14. No conflict. `open` and not built: share of secured ore lost on a failed run. Owner defaults accepted with "ok": secured ore in the game instance, death loses carried ore, one dedicated widget (placed next to the radar). Colour: Duskite violet ([[color-code]]).
 - confirmed_by_owner: yes (2026-10-14: "Oui tu peux lancer toutes les tâches")
 - milestone: M1
-- next_step: task-183-01-ore-counter-logic
+- next_step: task-183-02-ore-hud-render
 - result: open
 
 ## Subtasks
