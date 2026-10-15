@@ -3,7 +3,7 @@ id: task-168-09-plain-frame-images
 description: "Use the baked frame textures as plain stretched images in WBP_UpgradeChoice, panel inside the frame only, content in the opening."
 parent: task-168-upgrade-card-design
 kind: task
-status: todo
+status: in-progress
 ---
 # Upgrade cards: plain frame images
 

@@ -292,6 +292,7 @@ kind: note
 | [[task-169-05-weapon-card-test-fix]] | opus | 1 | 0k | 51k | 504k | 3k |
 | [[task-168-06-card-layout-fix]] | sonnet | 1 | 0k | 52k | 624k | 1k |
 | [[task-168-07-hide-alert-bar]] | sonnet | 2 | 0k | 138k | 3163k | 2k |
+| [[task-168-08-baked-card-frames]] | sonnet | 1 | 0k | 32k | 220k | 5k |
 
 ## Totals
 | Scope | Input | Cache write | Cache read | Output |

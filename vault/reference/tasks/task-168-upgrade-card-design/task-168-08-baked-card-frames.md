@@ -3,7 +3,7 @@ id: task-168-08-baked-card-frames
 description: "Bake the card frame layers at the exact card size (2x), so Unreal draws them as plain images without 9-slice."
 parent: task-168-upgrade-card-design
 kind: task
-status: in-progress
+status: done
 ---
 # Upgrade cards: frame layers baked at card size
 
@@ -15,11 +15,11 @@ status: in-progress
 - done_when: Four baked PNGs 880 x 1440 exist; control sheet shown to the owner; opening insets measured by script; script and outputs committed. No Kie credits.
 - editor_state: any
 - token_ceiling: open
-- model: open
-- tokens: open
-- runs: open
+- model: sonnet
+- tokens: input 18, cache write 31542, cache read 219765, output 4948
+- runs: 1
 - milestone: M2
-- result: open
+- result: Tools/art/card_frame_bake.js bakes the 9-slice offline (corners x0.5, bands stretched along their length, tent/area resampling, alpha kept): Art/UI/Cards/T_CardFrame_Stat_Baked, _Stat_Accents_Baked, _Stat_Glow_Baked, T_CardFrame_Weapon_Baked, 880 x 1440 (card 440 x 720 at 2x). Side band about 24 px at 1x, opening edge about 28 px. Opening safe rect at 1x: stat 28/48/28/50, weapon 28/45.5/28 and bottom 144.5 (a faint horizontal line stops the measurement; to check in 168-09). Control sheet baked-control.png shown to the owner. 0 credits. Commit a69f08f.
 
 ## Relations
 - [[task-168-upgrade-card-design]] — parent global task.
