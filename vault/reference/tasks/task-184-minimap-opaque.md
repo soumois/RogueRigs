@@ -3,7 +3,7 @@ id: task-184-minimap-opaque
 description: "Global task: Make the minimap disc fully opaque: no part of the game shows through it, unseen cells included."
 parent: tasks-to-do-index
 kind: task
-status: todo
+status: in-progress
 ---
 # Minimap: fully opaque
 

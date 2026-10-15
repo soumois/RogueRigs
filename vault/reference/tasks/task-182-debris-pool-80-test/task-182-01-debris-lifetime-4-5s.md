@@ -3,7 +3,7 @@ id: task-182-01-debris-lifetime-4-5s
 description: "Debris stay 4.5 s at full size, then sink in 0.4 s: lifetime 4.9 s, sink start moved from 3.0 s to 4.5 s."
 parent: task-182-debris-pool-80-test
 kind: task
-status: todo
+status: in-progress
 ---
 # Debris lifetime 4.5 s
 

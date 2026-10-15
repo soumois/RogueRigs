@@ -3,7 +3,7 @@ id: task-185-alert-label-remove
 description: "Global task: remove the ALERT text next to the alert bar, and the one test check that reads it."
 parent: tasks-to-do-index
 kind: task
-status: todo
+status: in-progress
 ---
 # Alert bar: remove the ALERT text
 

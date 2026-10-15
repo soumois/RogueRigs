@@ -3,7 +3,7 @@ id: task-185-01-alert-label-widget
 description: "Remove the ALERT text (AlertLabel) next to the alert bar in WBP_AlertObjectives and every graph use of it."
 parent: task-185-alert-label-remove
 kind: task
-status: todo
+status: in-progress
 ---
 # Alert bar: remove the ALERT label
 

@@ -3,7 +3,7 @@ id: task-182-debris-pool-80-test
 description: "Global task: test 80 debris systems with debris living 4.5 s plus a 0.4 s sink, and measure what raising the cap costs."
 parent: tasks-to-do-index
 kind: task
-status: todo
+status: in-progress
 ---
 # Debris pool 80 and 4.5 s life: test and cost
 
