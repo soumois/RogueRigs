@@ -70,6 +70,9 @@ DECLARE_DYNAMIC_MULTICAST_DELEGATE_TwoParams(FRROnLocatorTargetChangedSignature,
 /** Fired when a miner registered at its BeginPlay (late HUD binding). */
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FRROnMinerRegisteredSignature, ARRMiner*, Miner);
 
+/** Fired when the carried or the secured ore count changed (ore-economy): both current counts. */
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_TwoParams(FRROnOreChangedSignature, int32, CarriedOre, int32, SecuredOre);
+
 /** Fired when an enemy spawner registered at its BeginPlay and became the run's spawner. */
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FRROnSpawnerRegisteredSignature, ARREnemySpawner*, Spawner);
 
@@ -98,6 +101,11 @@ DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FRROnSpawnerRegisteredSignature, ARR
  * cheat ShuttleCountdownOverride replaces it when > 0). Robots keep coming. The shuttle finishing ends the run (EndRun): the
  * miner's level-up offer is cancelled, player 0's controller pauses the game with UI input and the cursor shown, OnRunEnded
  * fires once (phase Ended). RestartLevel reopens the map. Display data: OnAlertChanged, OnObjectiveChanged, OnObjectiveProgressChanged (URRHUDWidget binds).
+ * Ore counter (ore-economy): an Ore pickup collected adds its OreValue to the carried count (AddCarriedOre, from
+ * ARRPickup::Collect; the GrantOre cheat too). EndRun(true) adds the carried count to the secured total of URROreBankSubsystem
+ * (game instance: survives RestartLevel) and sets carried to 0; EndRun(false) (shuttle missed) and the death of a registered
+ * miner set carried to 0, secured unchanged. After either, carried stays 0 for this world. OnOreChanged sends both counts on
+ * every change; a HUD panel binds it in BindToRunFlow and reads GetCarriedOre / GetSecuredOre there.
  */
 UCLASS()
 class ROGUERIGS_API URRRunFlowSubsystem : public UTickableWorldSubsystem
@@ -281,6 +289,24 @@ public:
 	UPROPERTY(BlueprintAssignable, Category = "RunFlow")
 	FRROnSpawnerRegisteredSignature OnSpawnerRegistered;
 
+	/** Broadcast when the carried or secured ore count changed (both counts); never when nothing changed. */
+	UPROPERTY(BlueprintAssignable, Category = "RunFlow|Ore")
+	FRROnOreChangedSignature OnOreChanged;
+
+	/** Ore carried by the miner in this level: lost on a missed shuttle or death, secured on extraction. */
+	UFUNCTION(BlueprintPure, Category = "RunFlow|Ore")
+	int32 GetCarriedOre() const { return CarriedOre; }
+
+	/** Ore secured this session (URROreBankSubsystem; a world-local total when the world has no initialized game instance). */
+	UFUNCTION(BlueprintPure, Category = "RunFlow|Ore")
+	int32 GetSecuredOre() const;
+
+	/**
+	 * Adds Amount (> 0) to the carried ore and broadcasts OnOreChanged. Refused (false) once the run ended or the miner died.
+	 * Called by ARRPickup::Collect for Ore pickups (their OreValue) and by the GrantOre cheat.
+	 */
+	bool AddCarriedOre(int32 Amount);
+
 	/** Called by ARRMiner at the end of its BeginPlay: becomes the run's miner when none is valid, then OnMinerRegistered. */
 	void RegisterMiner(ARRMiner* InMiner);
 
@@ -325,6 +351,25 @@ public:
 	static float EstimateBarPosition(float Alert, float SecondsUntil, float AlertFillSeconds);
 
 protected:
+	/** Extraction success: adds the carried ore to the secured total, sets carried to 0, closes the counter, broadcasts on change. */
+	void SecureCarriedOre();
+
+	/** Missed shuttle or death: sets carried to 0 (secured unchanged), closes the counter, broadcasts on change. Reason is logged. */
+	void LoseCarriedOre(const TCHAR* Reason);
+
+	/** Registered miner OnDeath callback: the carried ore is lost. */
+	UFUNCTION()
+	void HandleMinerDeath(AActor* DeathInstigator);
+
+	/** Ore carried in this level. */
+	int32 CarriedOre = 0;
+
+	/** Secured total used when the world has no ore bank (bare test worlds without an initialized game instance). */
+	int32 LocalSecuredOre = 0;
+
+	/** True once the run ended or the miner died: the carried count no longer grows. */
+	bool bCarriedOreClosed = false;
+
 	/** Run flow work of a tick (alert fill, drops, extraction); Tick then refreshes the alert-bar icons. */
 	void TickRunFlow(float DeltaTime);
 

@@ -9,7 +9,7 @@
 /**
  * Cheat switches read from the class default object (/Script/RogueRigs.Default__RRCheatSettings) by URRCheatSubsystem every
  * frame, paused or not, in each game and PIE world. Set them with ObjectTools.set_properties on that path during PIE.
- * One-shot fields (GrantXP, ChooseUpgrade, bReroll, bSkipToConsole, bCompleteConsoleHack, bSkipToExtraction) are applied once
+ * One-shot fields (GrantXP, GrantOre, ChooseUpgrade, bReroll, bSkipToConsole, bCompleteConsoleHack, bSkipToExtraction) are applied once
  * by the next world tick and reset to their neutral value; read them back to see they were consumed. bInvulnerable,
  * AlertSpeedMultiplier, ShuttleCountdownOverride and the LightHalo fields are persistent. The CDO lives as long as the editor process: reset persistent values after a check.
  * Debug tooling only; nothing reads it in shipping builds except AlertSpeedMultiplier (stays 1) and ShuttleCountdownOverride (stays 0).
@@ -25,6 +25,10 @@ public:
 	/** One-shot: N > 0 adds N raw XP (XPGain applies) to the player miner; reset to 0. */
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Cheats")
 	float GrantXP = 0.f;
+
+	/** One-shot: N > 0 adds N carried ore (run flow ore counter); reset to 0. */
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Cheats")
+	int32 GrantOre = 0;
 
 	/** Persistent: true keeps every miner of the world invulnerable (loose State.Invulnerable, re-applied to new worlds); false removes it. */
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Cheats")

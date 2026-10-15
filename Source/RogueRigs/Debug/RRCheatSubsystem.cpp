@@ -48,6 +48,13 @@ void URRCheatSubsystem::Tick(float DeltaTime)
 		RRCheats::GrantXP(World, Amount, Source);
 	}
 
+	if (Settings->GrantOre > 0)
+	{
+		const int32 Amount = Settings->GrantOre;
+		Settings->GrantOre = 0;
+		RRCheats::GrantOre(World, Amount, Source);
+	}
+
 	if (Settings->bInvulnerable != bAppliedInvulnerable)
 	{
 		const int32 Count = RRCheats::SetInvulnerable(World, Settings->bInvulnerable, Source);

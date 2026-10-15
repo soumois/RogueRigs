@@ -10,6 +10,7 @@
 #include "GAS/RRGameplayTags.h"
 #include "GAS/RRHealthAttributeSet.h"
 #include "Kismet/GameplayStatics.h"
+#include "Objectives/RRRunFlowSubsystem.h"
 #include "Particles/ParticleSystemComponent.h"
 #include "Pickups/RRPickupSubsystem.h"
 #include "Player/RRMiner.h"
@@ -338,6 +339,14 @@ void ARRPickup::Collect(ARRMiner* Miner)
 		if (PickupType == ERRPickupType::Heal)
 		{
 			ApplyHeal(Miner);
+		}
+		if (PickupType == ERRPickupType::Ore && OreValue > 0)
+		{
+			// Ore counter (ore-economy): the run flow owns the carried count.
+			if (URRRunFlowSubsystem* RunFlow = GetWorld() ? GetWorld()->GetSubsystem<URRRunFlowSubsystem>() : nullptr)
+			{
+				RunFlow->AddCarriedOre(OreValue);
+			}
 		}
 		Miner->NotifyPickupCollected(PickupType, Location);
 	}

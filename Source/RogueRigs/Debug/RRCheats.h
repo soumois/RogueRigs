@@ -43,4 +43,7 @@ namespace RRCheats
 
 	/** URRRunFlowSubsystem::SkipToExtraction of World. False when extraction is not ready afterwards. */
 	ROGUERIGS_API bool SkipToExtraction(UWorld* World, const TCHAR* Source);
+
+	/** Adds Amount carried ore through URRRunFlowSubsystem::AddCarriedOre of World. False when refused (no run flow, run ended, miner dead). */
+	ROGUERIGS_API bool GrantOre(UWorld* World, int32 Amount, const TCHAR* Source);
 }

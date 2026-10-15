@@ -15,6 +15,7 @@
 #include "Progression/RRLevelUpComponent.h"
 #include "Progression/RRProgressionComponent.h"
 #include "RogueRigs.h"
+#include "Weapons/RRWeapon.h"
 #include "World/RRWorld.h"
 
 namespace RRCheats
@@ -156,6 +157,21 @@ namespace RRCheats
 		return bReady;
 	}
 
+	bool GrantOre(UWorld* World, int32 Amount, const TCHAR* Source)
+	{
+		URRRunFlowSubsystem* RunFlow = World ? World->GetSubsystem<URRRunFlowSubsystem>() : nullptr;
+		const bool bAdded = RunFlow && RunFlow->AddCarriedOre(Amount);
+		if (bAdded)
+		{
+			UE_LOG(LogRogueRigs, Log, TEXT("rr.Cheat.GrantOre (%s): +%d ore, carried %d, secured %d."), Source, Amount, RunFlow->GetCarriedOre(), RunFlow->GetSecuredOre());
+		}
+		else
+		{
+			UE_LOG(LogRogueRigs, Warning, TEXT("rr.Cheat.GrantOre (%s): %d ore refused (no run flow, run ended or miner dead)."), Source, Amount);
+		}
+		return bAdded;
+	}
+
 	/** Sets Variable back to Value with the priority of its last setter (a lower priority would be refused); runs the sink once more. */
 	void ResetVariable(IConsoleVariable* Variable, const TCHAR* Value)
 	{
@@ -171,6 +187,18 @@ namespace RRCheats
 			return;
 		}
 		GrantXP(FindCheatWorld(), Amount, TEXT("rr.Cheat"));
+		ResetVariable(Variable, TEXT("0"));
+	}
+
+	/** rr.Cheat.GrantOre sink: a value > 0 adds that carried ore, then the variable returns to 0. */
+	void HandleGrantOre(IConsoleVariable* Variable)
+	{
+		const int32 Amount = Variable->GetInt();
+		if (Amount <= 0)
+		{
+			return;
+		}
+		GrantOre(FindCheatWorld(), Amount, TEXT("rr.Cheat"));
 		ResetVariable(Variable, TEXT("0"));
 	}
 
@@ -253,6 +281,10 @@ namespace RRCheats
 	TAutoConsoleVariable<float> CVarGrantXP(TEXT("rr.Cheat.GrantXP"), 0.f,
 		TEXT("Set to N > 0: adds N raw XP (XPGain applies) to the player miner, then resets to 0."),
 		FConsoleVariableDelegate::CreateStatic(&HandleGrantXP), ECVF_Cheat);
+
+	TAutoConsoleVariable<int32> CVarGrantOre(TEXT("rr.Cheat.GrantOre"), 0,
+		TEXT("Set to N > 0: adds N carried ore (as N ore pickups worth 1), then resets to 0."),
+		FConsoleVariableDelegate::CreateStatic(&HandleGrantOre), ECVF_Cheat);
 
 	TAutoConsoleVariable<int32> CVarInvulnerable(TEXT("rr.Cheat.Invulnerable"), 0,
 		TEXT("1: every miner gets the loose State.Invulnerable tag (no damage); 0: removed. Weapons keep firing. Set again after a restart."),

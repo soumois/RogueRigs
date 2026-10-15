@@ -12,6 +12,7 @@
 #include "GameFramework/PlayerController.h"
 #include "Objectives/RRBonusChest.h"
 #include "Objectives/RRLandingFootprint.h"
+#include "Objectives/RROreBankSubsystem.h"
 #include "Objectives/RRShuttle.h"
 #include "Player/RRGameMode.h"
 #include "Player/RRMiner.h"
@@ -19,6 +20,7 @@
 #include "RogueRigs.h"
 #include "Text/RRSubtitleSubsystem.h"
 #include "Text/RRTextContentSubsystem.h"
+#include "Weapons/RRWeapon.h"
 #include "World/RRWorld.h"
 
 void URRRunFlowSubsystem::Initialize(FSubsystemCollectionBase& Collection)
@@ -554,6 +556,15 @@ bool URRRunFlowSubsystem::EndRun(bool bSuccess)
 	}
 	bRunEnded = true;
 	bRunSucceeded = bSuccess;
+	// Ore before the end event, so an end screen bound to OnRunEnded reads the final counts.
+	if (bSuccess)
+	{
+		SecureCarriedOre();
+	}
+	else
+	{
+		LoseCarriedOre(TEXT("shuttle missed"));
+	}
 
 	// The end screen wins over a pending or open level-up offer: close it (it unpauses) before pausing for the end.
 	if (URRLevelUpComponent* LevelUp = Miner ? Miner->FindComponentByClass<URRLevelUpComponent>() : nullptr)
@@ -690,7 +701,68 @@ void URRRunFlowSubsystem::RegisterMiner(ARRMiner* InMiner)
 	{
 		Miner = InMiner;
 	}
+	InMiner->OnDeath.AddUniqueDynamic(this, &URRRunFlowSubsystem::HandleMinerDeath);
 	OnMinerRegistered.Broadcast(InMiner);
+}
+
+int32 URRRunFlowSubsystem::GetSecuredOre() const
+{
+	const URROreBankSubsystem* Bank = URROreBankSubsystem::Get(this);
+	return Bank ? Bank->GetSecuredOre() : LocalSecuredOre;
+}
+
+bool URRRunFlowSubsystem::AddCarriedOre(int32 Amount)
+{
+	if (Amount <= 0 || bCarriedOreClosed)
+	{
+		UE_LOG(LogRogueRigs, Verbose, TEXT("URRRunFlowSubsystem: %d ore refused (%s)."), Amount, bCarriedOreClosed ? TEXT("run ended or miner dead") : TEXT("not positive"));
+		return false;
+	}
+	CarriedOre += Amount;
+	UE_LOG(LogRogueRigs, Verbose, TEXT("URRRunFlowSubsystem: +%d ore, carried %d."), Amount, CarriedOre);
+	OnOreChanged.Broadcast(CarriedOre, GetSecuredOre());
+	return true;
+}
+
+void URRRunFlowSubsystem::SecureCarriedOre()
+{
+	bCarriedOreClosed = true;
+	const int32 Amount = CarriedOre;
+	if (Amount <= 0)
+	{
+		return;
+	}
+	CarriedOre = 0;
+	int32 Secured = 0;
+	if (URROreBankSubsystem* Bank = URROreBankSubsystem::Get(this))
+	{
+		Secured = Bank->AddSecuredOre(Amount);
+	}
+	else
+	{
+		LocalSecuredOre += Amount;
+		Secured = LocalSecuredOre;
+	}
+	UE_LOG(LogRogueRigs, Log, TEXT("URRRunFlowSubsystem: extraction secured %d ore, secured %d."), Amount, Secured);
+	OnOreChanged.Broadcast(CarriedOre, Secured);
+}
+
+void URRRunFlowSubsystem::LoseCarriedOre(const TCHAR* Reason)
+{
+	bCarriedOreClosed = true;
+	const int32 Lost = CarriedOre;
+	if (Lost <= 0)
+	{
+		return;
+	}
+	CarriedOre = 0;
+	UE_LOG(LogRogueRigs, Log, TEXT("URRRunFlowSubsystem: %s, %d carried ore lost."), Reason, Lost);
+	OnOreChanged.Broadcast(CarriedOre, GetSecuredOre());
+}
+
+void URRRunFlowSubsystem::HandleMinerDeath(AActor* DeathInstigator)
+{
+	LoseCarriedOre(TEXT("miner died"));
 }
 
 void URRRunFlowSubsystem::RegisterSpawner(ARREnemySpawner* InSpawner)

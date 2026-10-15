@@ -46,7 +46,7 @@ enum class ERRPickupPhase : uint8
  * MagnetStartSpeed and accelerating by MagnetAcceleration up to MagnetMaxSpeed (nearby cubes form a stream), even if the
  * miner moves away. A Heal pickup is ignored while the miner is at full health (IsRefusedByMiner): it stays where it is
  * and is attracted once the miner is damaged and within its radius. Within CollectDistance it is collected: logs its type (Verbose), an XP pickup adds XPAmount to the
- * miner progression (scaled by XPGain there), ARRMiner::NotifyPickupCollected broadcasts the type and the location, then
+ * miner progression (scaled by XPGain there), an Ore pickup adds OreValue to URRRunFlowSubsystem::AddCarriedOre, ARRMiner::NotifyPickupCollected broadcasts the type and the location, then
  * it returns to URRActorPoolSubsystem when the pool created it (task-092-01: URRPickupSubsystem::RequestSpawn and
  * RequestXPCube acquire every grid and robot drop from the pool), else it destroys itself. Pool reset (IRRPoolable):
  * OnPoolReleased unregisters from the pickup subsystem, deactivates every FX component (BP_PickupXP TrailFX) at once and
@@ -179,7 +179,7 @@ protected:
 	/** Heal pickup: applies HealEffectClass with SetByCaller Data.Heal = HealAmount to Miner (skipped when 0, dead or no ASC). */
 	void ApplyHeal(ARRMiner* Miner) const;
 
-	/** Logs the type, adds XPAmount XP to the miner for an XP pickup, notifies the miner (type, location), then releases this pickup to the pool (destroys it outside the pool). */
+	/** Logs the type, adds XPAmount XP to the miner for an XP pickup (OreValue carried ore to the run flow for an Ore pickup), notifies the miner (type, location), then releases this pickup to the pool (destroys it outside the pool). */
 	void Collect(ARRMiner* Miner);
 
 	/** Called once when the magnet latches (start the trail). */
