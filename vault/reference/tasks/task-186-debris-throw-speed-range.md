@@ -14,7 +14,7 @@ status: done
 - confirmed_by_owner: yes (2026-10-15); final speeds after F, F kept 1.3-2
 - milestone: M3
 - next_step: none
-- result: Done. Velocity base direction 250-300, up 269.2-275 (x F 1.3-2 = 325-600 / 350-550); angle, spread, lifetime unchanged; compiles clean; GDD throw line updated; not run in PIE; commit 85b803e2
+- result: Done. Velocity base direction 250-300, up 269.2-275 (x F 1.3-2 = 325-600 / 350-550); angle, spread, lifetime unchanged; compiles clean; GDD throw line updated; not run in PIE; commit 85b803e2; validated on screen by the owner (2026-10-15)
 
 ## Subtasks
 1. task-186-01-debris-throw-speed-range — bp

@@ -14,7 +14,7 @@ status: done
 - confirmed_by_owner: yes (2026-10-15); measure last
 - milestone: M3
 - next_step: none
-- result: Done. 80 x 4.9 s vs 40 x 3.4 s: all within the 2 ms spread (game 200 frame 10.75 -> 11.08, game 300 12.28 -> 12.96, S7 200 unchanged); debris skips 30 -> 11 % at 200, 45 -> 28 % at 300; cost per extra active debris system <= 25 us render, <= 10 us GPU, <= 15 us game, memory 3.6 KB idle + 5.5 KB active; rule: cap = deaths/s x 4.9 x 1.5 (about 130 for 300 alive); section in perf-stress-chaser-meshy; commit 8fe8b795
+- result: Done. 80 x 4.9 s vs 40 x 3.4 s: all within the 2 ms spread (game 200 frame 10.75 -> 11.08, game 300 12.28 -> 12.96, S7 200 unchanged); debris skips 30 -> 11 % at 200, 45 -> 28 % at 300; cost per extra active debris system <= 25 us render, <= 10 us GPU, <= 15 us game, memory 3.6 KB idle + 5.5 KB active; rule: cap = deaths/s x 4.9 x 1.5 (about 130 for 300 alive); section in perf-stress-chaser-meshy; commit 8fe8b795; validated on screen by the owner (2026-10-15)
 
 ## Subtasks
 1. task-182-01-debris-lifetime-4-5s — bp

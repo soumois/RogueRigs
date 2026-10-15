@@ -14,7 +14,7 @@ status: done
 - confirmed_by_owner: yes (2026-10-15); unseen cells black (0, 0, 0)
 - milestone: M2
 - next_step: none
-- result: Done. M_Minimap opacity = circle mask only (1 inside whatever texel alpha); colour black where the sample UV leaves the texture (added so the edge texel does not smear on an opaque disc); WBP_HUD MinimapConfig.UnseenColor (0,0,0,1); MinimapImage already opaque; compiled, read back; not seen on screen; commit c7d22556
+- result: Done. M_Minimap opacity = circle mask only (1 inside whatever texel alpha); colour black where the sample UV leaves the texture (added so the edge texel does not smear on an opaque disc); WBP_HUD MinimapConfig.UnseenColor (0,0,0,1); MinimapImage already opaque; compiled, read back; not seen on screen; commit c7d22556; validated on screen by the owner (2026-10-15)
 
 ## Subtasks
 1. task-184-01-minimap-opaque — bp

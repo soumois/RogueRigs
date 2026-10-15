@@ -14,7 +14,7 @@ status: done
 - confirmed_by_owner: yes (2026-10-15); no pause indicator
 - milestone: M2
 - next_step: none
-- result: Done. AlertLabel pause check removed from Integration.ConsoleExtractionWin (no public paused getter; pause still covered by the alert-hold checks); build OK; 34/34 Integration tests; commits 2a47ee9d, a6bb2414
+- result: Done. AlertLabel pause check removed from Integration.ConsoleExtractionWin (no public paused getter; pause still covered by the alert-hold checks); build OK; 34/34 Integration tests; commits 2a47ee9d, a6bb2414; validated on screen by the owner (2026-10-15)
 
 ## Subtasks
 1. task-185-01-alert-label-widget — bp
