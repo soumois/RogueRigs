@@ -4,7 +4,7 @@
 
 ⬅️ [Assignment 4](../A4-dynamic-content-pipeline/) · [All assignments](../)
 
-> **Final state of Assignment 5:** *to fill — commit and tag `a5-submission`.*
+> **Final state of Assignment 5:** tag [`a5-submission`](https://github.com/soumois/RogueRigs/tree/a5-submission), after `/architect` run 1 (task 183, the ore counter). Later commits belong to the rest of the project.
 
 ## In short
 
