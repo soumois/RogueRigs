@@ -1,6 +1,6 @@
 ---
 id: perf-stress-chaser-meshy
-description: "Meshy chaser and death effects stress: S0, S2, S7, game 100-300, debris skips (task-181-01); debris pool 80 cost (task-182-03); GPU debris with walls (task-191-02)."
+description: "Meshy chaser death-effects stress: S0, S2, S7, game 100-300 (task-181-01); debris pool 80 (182-03); GPU debris with walls (191-02); PC control failed (193-01)."
 parent: performance-index
 kind: doc
 ---
@@ -94,6 +94,13 @@ Same launcher, map, resolution and command lines as task-182-03 (S7 `-Counts 200
 ### Verdict
 Not comparable as measured: the PC ran 1.8 × slower on the GPU and paced at 60 Hz, a no-debris control included. The trace isolates the GPU debris with walls at ≈ 1.3 ms GPU per frame in this state (≈ 0.7 ms at 182-03 speed), within the ≈ 2 ms spread but not free: the global distance field update is the main price of wall collision. New in this build: a 0.2–0.4 s hitch at the first debris (runtime system compile and PSO wait, editor `-game`), and S7 debris counters that overstate plays. A repeat on the 182-03 PC state (unpaced, full GPU speed) is needed for a frame-level comparison.
 
+## PC state control before the remeasure (2026-10-15, task-193-01)
+Control S0 peace 200 (`-Counts 200 -Settle 5 -Measure 20 -Mode peace`, task-181 options, editor closed, HEAD 7a5a19bb, binary of 2026-10-15 00:45) failed twice: frame **16.67 / 17.38 / 17.56** and 16.67 / 17.34 / 17.53 (1200 frames in 20 s), game 5.98 / 8.36, draw 16.65, **GPU 13.80 / 14.14** (task-181: 8.98 frame, 8.01 GPU). No debris step was measured. Logs `Saved/Stress/task193_control_s0_200.log`, `task193_control2_s0_200.log`, GPU samples `task193_nvsmi_control2.csv` (not committed).
+- GPU under load (nvidia-smi every second during the second control): P3, **780 MHz** graphics (max 1785), 52 W of a 130 W limit, 58–61 °C, 88 % utilization, clock event reason `0x20` = **SW Thermal Slowdown active** at 60 °C; idle P8 has no event. Cumulative SW thermal slowdown counter since boot: 8508 s. The GPU is clocked down by software, not by heat or power.
+- ASUS Armoury Crate (running): registry `HKLM\SOFTWARE\ASUS\ARMOURY CRATE Service\ThrottlePlugin\ROG ATKStatus` `ThrottleModeOnAC = 2`, `ThrottleModeOnDC = 2`; on ASUS ATK 2 is the Silent operating mode (0 Performance, 1 Turbo; reading of the value from the asus-wmi convention, not confirmed in the Armoury Crate UI). Silent mode lowers GPU clocks through a software thermal limit and is the likely source of the 60 fps pacing too (unverified: no frame limiter setting found in the logs or `GameUserSettings.ini`, `FrameRateLimit 0`, `bUseVSync False`).
+- Displays: primary internal panel `DISPLAY1` (BOE, Intel Iris Xe output, 1920 × 1080 at 360 Hz) and `DISPLAY5` (HP, NVIDIA output, 60 Hz); same two-monitor layout in every task-181 and task-182 log, so the layout alone does not explain the change. Windows power plan Performance, AC power (battery 100 %, charging).
+- To restore the reference state: Armoury Crate operating mode Performance (or Turbo) on AC, then rerun the control; pass = frame ≈ 9 ms, GPU ≈ 8 ms.
+
 ## Relations
 - [[performance-index]] — parent index.
 - [[perf-stress-final-m1]] — the M1 S0, S2, S7 tables compared here.
@@ -104,3 +111,4 @@ Not comparable as measured: the PC ran 1.8 × slower on the GPU and paced at 60 
 - [[task-181-01-perf-chaser-meshy-death]] — the task that produced this report.
 - [[task-182-03-debris-pool-cost]] — the debris pool 80 × 4.9 s comparison.
 - [[task-191-02-debris-gpu-cost]] — the GPU debris with walls comparison.
+- [[task-193-01-debris-gpu-cost-remeasure]] — the PC state control before the remeasure.
