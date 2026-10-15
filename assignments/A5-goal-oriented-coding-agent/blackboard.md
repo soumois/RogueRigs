@@ -198,3 +198,41 @@ Decision: **approved**: ore counter. "Ok" accepts every default: (1) secured ore
 English translation: "Yes, you can launch all the tasks."
 
 Decision: plan confirmed; task-183 set `in-progress`. The whole plan runs without asking again, except the two image choices that only the owner can make (render, then icon: art definition of done).
+
+### 6. Build
+
+#### task-183-01-ore-counter-logic (cpp) — prompt sent
+Reading list: the subtask node, then its `inputs` (ore-economy, extraction, sys-pickups, sys-objectives, sys-hud-events, sys-hud-bindings, sys-cheats, sys-player, sys-automation-tests, agent-cpp, build-toolchain), resolved paths in the node.
+```text
+Subtask task-183-01-ore-counter-logic (Rogue Rigs, repo C:\Users\soumo\Documents\Unreal Projects\RogueRigs).
+
+Read your subtask node first: vault/reference/tasks/task-183-ore-counter/task-183-01-ore-counter-logic.md. Its `inputs` line lists the resolved paths of every node you need: read those directly, do not descend from root again, never search the vault. Resolve any other [[wikilink]] through vault/_paths.md.
+
+Notes:
+- Editor state: closed (checked: no UnrealEditor process). Build from the command line per build-toolchain. If an editor appears and Live Coding blocks the build, stop and report; never kill it.
+- Git: prefix every git command with `git -c "safe.directory=C:/Users/soumo/Documents/Unreal Projects/RogueRigs"`. The working tree holds the owner's unrelated uncommitted changes (vault, Art, WBP_UpgradeChoice.uasset): commit only your files, by explicit path (`git commit -m "..." -- <paths>`), never `git add -A` or `-- vault`.
+- Scope: exactly the subtask goal. No new automation test (owner rule); only update expectations of existing tests that your change breaks. Do not build the `open` ore-loss share.
+- Design constraints: events over polling; follow the existing HUD panel event pattern (sys-hud-events, URRHUDPanelWidget) so a Blueprint panel can bind it in task-183-04; the cheat follows sys-cheats (both routes, shared RRCheats action, compiled out of shipping like the others).
+- Do not modify the task node fields status, model, tokens, runs, result.
+- Commit message: `task-183-01-ore-counter-logic: <summary>`, ending with the line `Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>`.
+- Report: files changed, classes and public API added (exact names of the HUD event/delegate and its payload, getters, the cheat property and CVar), build result, test results (names, pass/fail), the run log line proving `rr.Cheat.GrantOre 10` raises carried ore to 10, docs updated, commit hash(es), what is unverified.
+```
+
+#### task-183-02-ore-hud-render (art) — prompt sent
+Reading list: the subtask node, then its `inputs` (agent-art, art-3d-lessons, art-style-guide, color-code, readability-rules, kie-image-workflow, ore-blocks, wbp-hud, wbp-minimap-locator), plus `Art/Source/stat-icons/` and a screenshot under `Saved/Screenshots/` if any.
+```text
+Subtask task-183-02-ore-hud-render (Rogue Rigs, repo C:\Users\soumo\Documents\Unreal Projects\RogueRigs).
+
+Read your subtask node first: vault/reference/tasks/task-183-ore-counter/task-183-02-ore-hud-render.md. Its `inputs` line lists the resolved paths of every node you need: read those directly, do not descend from root again, never search the vault. Resolve any other [[wikilink]] through vault/_paths.md.
+
+Notes:
+- The owner asked (2026-10-14, translated): "put the ore counter next to the radar; you will need the icon too, and ask the Art agent for a proposed in-game visual render — it will need it to create the HUD icon." This subtask is the render only; the icon is the next subtask.
+- What to show: a gameplay frame of Rogue Rigs (top-down, grey-box arena per visual-style and color-code) with the HUD top-left: round radar disc, health bar under it, and the new ore counter to the right of the disc: a small Duskite ore icon (violet crystal, color-code) and a carried count such as "27". Keep other HUD elements as wbp-hud describes them. Use image-to-image with the stat icons (Art/Source/stat-icons/) and, if one exists, an in-game screenshot (Saved/Screenshots/) as references.
+- Limits: at most 2 candidates; one kie_image.js run at a time, never in parallel; never write the API key anywhere; never put an image in vault/assets/.
+- Editor: not needed.
+- Git: prefix every git command with `git -c "safe.directory=C:/Users/soumo/Documents/Unreal Projects/RogueRigs"`. Do not commit the candidate images (only the retained one is committed after the owner's choice); you may commit the prompt file and run log by explicit path with message `task-183-02-ore-hud-render: <summary>` ending with `Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>`. Never `git add -A`.
+- Do not modify the task node fields status, model, tokens, runs, result.
+- Report: the paths of the candidate PNGs, one line per candidate describing the icon and the counter, your self-review per image against the art-style-guide A rules, credits used.
+```
+
+Both delegated in parallel (no shared files: C++ with the editor closed; art needs no editor).
