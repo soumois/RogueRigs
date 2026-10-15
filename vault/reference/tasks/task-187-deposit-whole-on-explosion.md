@@ -1,6 +1,6 @@
 ---
 id: task-187-deposit-whole-on-explosion
-description: "Global task: When an explosion destroys any block of an ore deposit, the whole deposit is destroyed and pops all its chunks: no partly destroyed deposit."
+description: "Global task: an explosion that destroys any block of an ore deposit destroys the whole deposit and pops all its chunks."
 parent: tasks-to-do-index
 kind: task
 status: todo
