@@ -3,7 +3,7 @@ id: task-191-02-debris-gpu-cost
 description: "Measure the cost of the GPU debris with wall collision against task-182-03 (CPU, floor only), same method."
 parent: task-191-debris-wall-collision
 kind: task
-status: todo
+status: in-progress
 ---
 # Robot debris GPU and walls: cost measure
 

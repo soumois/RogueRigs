@@ -316,6 +316,7 @@ kind: note
 | [[task-185-02-alert-label-test]] | opus | 1 | 0k | 19k | 181k | 4k |
 | [[task-182-03-debris-pool-cost]] | opus | 1 | 0k | 74k | 1485k | 21k |
 | [[task-190-01-debris-spin-damping]] | sonnet | 1 | 0k | 88k | 1059k | 13k |
+| [[task-191-01-debris-gpu-df-collision]] | sonnet | 2 | 0k | 161k | 5238k | 39k |
 
 ## Totals
 | Scope | Input | Cache write | Cache read | Output |

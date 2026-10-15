@@ -3,7 +3,7 @@ id: task-191-01-debris-gpu-df-collision
 description: "Switch the NS_RobotDebris emitter to GPU simulation and make the pieces bounce off walls with distance field collision, all current behaviour kept."
 parent: task-191-debris-wall-collision
 kind: task
-status: in-progress
+status: done
 ---
 # Robot debris: GPU sim and wall collision
 
@@ -15,11 +15,11 @@ status: in-progress
 - done_when: Compiles on GPU with no stack issue; saved by explicit path; a -game run (fx.Niagara.DumpComponents values, plus 1 or 2 rr.Debug.Shots near a wall, described) shows pieces spawning at the robot, thrown, stopping or bouncing at a wall instead of entering it, resting on the floor and sinking at 4.5 s; docs updated; committed by path; editor stays open
 - editor_state: open
 - token_ceiling: open
-- model: open
-- tokens: open
-- runs: open
+- model: sonnet
+- tokens: input 124, cache write 160531, cache read 5238111, output 39372
+- runs: 2
 - milestone: M3
-- result: open
+- result: GPU compute sim, fixed bounds ±2000/-200..1500, Collision GPU distance fields (walls and floor; analytic plane impossible on GPU, one mode), collision off from age 4.5 s; compiles clean; clean -game check (1 chaser, slomo 0.25, timed shots): pieces spawn at the robot, stop at the wall foot (none inside), rest on the floor 1.3-4.5 s, sink 4.5-5 s; wall bounce vs stop not distinguished; commits bda304fb, 68da4286, cf37ff06
 
 ## Relations
 - [[task-191-debris-wall-collision]] — parent global task.

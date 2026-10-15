@@ -13,7 +13,7 @@ status: in-progress
 - gdd_check: enemy-death says pieces collide with the floor only, no interaction with blocks: changed by the owner (2026-10-15) to floor and walls (blocks), still no miner or robots.
 - confirmed_by_owner: yes (2026-10-15)
 - milestone: M3
-- next_step: task-191-01-debris-gpu-df-collision
+- next_step: task-191-02-debris-gpu-cost
 - result: open
 
 ## Subtasks
