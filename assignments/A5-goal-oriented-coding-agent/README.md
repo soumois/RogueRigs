@@ -82,7 +82,9 @@ Docs written by the agents: [`sys-objectives-ore-counter`](../../vault/reference
 
 ![Ore counter right of the minimap](images/hud-ore-counter.png)
 
-**Extraction:** *GIF to come: ore picked up, then the success screen with the secured ore.*
+**Picking up ore:** the drone cuts an ore block, the chunks stream to the miner, and the counter goes from 0 to 4 as each one is collected.
+
+![Ore pickups raising the counter](images/ore-pickup.gif)
 
 ## What the owner changed before accepting it
 
@@ -114,6 +116,7 @@ My main correction was **where the counter sits on screen**. I wanted it exactly
 
 **How it was checked:**
 - **In the editor (PIE), read back by the agent:** the counter shows 10 after `rr.Cheat.GrantOre 10`; extraction shows "Ore secured: 10"; a death empties the carried ore.
+- **My play-test:** the counter updates on every real ore pickup (GIF above).
 - **Code review:** securing resets the carried count to 0 and fires `OnOreChanged`, so the HUD returns to 0. A missed shuttle goes through `EndRun(false)` and runs the same lose path as a death, `LoseCarriedOre`.
 - **Not checked:** the counter rebinding after a level restart.
 
