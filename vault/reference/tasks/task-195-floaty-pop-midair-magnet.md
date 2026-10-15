@@ -1,6 +1,6 @@
 ---
 id: task-195-floaty-pop-midair-magnet
-description: "Global task: Pickup pop: long floaty arc (slower fall than rise) and magnet allowed mid-air after a delay from spawn, for XP nut, ore and heal pickups, not the chip."
+description: "Global task: long floaty pop arc and mid-air magnet after a delay for XP nut, ore and heal pickups, not the big chip."
 parent: tasks-to-do-index
 kind: task
 status: todo
