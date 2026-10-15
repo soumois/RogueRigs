@@ -3,7 +3,7 @@ id: task-185-01-alert-label-widget
 description: "Remove the ALERT text (AlertLabel) next to the alert bar in WBP_AlertObjectives and every graph use of it."
 parent: task-185-alert-label-remove
 kind: task
-status: in-progress
+status: done
 ---
 # Alert bar: remove the ALERT label
 
@@ -15,11 +15,11 @@ status: in-progress
 - done_when: AlertLabel no longer in the widget tree (read back); the graphs compile with warnings as errors; saved by explicit path; doc updated; committed by path; the editor stays open
 - editor_state: open
 - token_ceiling: open
-- model: open
-- tokens: open
-- runs: open
+- model: sonnet
+- tokens: input 42, cache write 59987, cache read 820949, output 12806
+- runs: 1
 - milestone: M2
-- result: open
+- result: AlertLabel widget and its uses in ShowAlertBar, HideForOffer, RestoreAfterOffer removed (exec chains reconnected); no label in tree, graphs or asset; compiled with warnings as errors; not seen in PIE; commit 82b0fa5e
 
 ## Relations
 - [[task-185-alert-label-remove]] — parent global task.

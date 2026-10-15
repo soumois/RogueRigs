@@ -13,7 +13,7 @@ status: in-progress
 - gdd_check: readability-rules (alert bar line) and wbp-alert-objectives read (2026-10-14): the GDD does not ask for the label, no conflict; the label also showed the pause ("ALERT (paused)"): default, no replacement indicator, to confirm with the owner.
 - confirmed_by_owner: yes (2026-10-15); no pause indicator
 - milestone: M2
-- next_step: task-185-01-alert-label-widget
+- next_step: task-185-02-alert-label-test
 - result: open
 
 ## Subtasks

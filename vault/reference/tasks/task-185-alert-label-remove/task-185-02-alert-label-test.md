@@ -3,7 +3,7 @@ id: task-185-02-alert-label-test
 description: "Update the integration test that reads AlertLabel (RRIntegrationTests.cpp, pause check) now that the label is gone."
 parent: task-185-alert-label-remove
 kind: task
-status: todo
+status: in-progress
 ---
 # Alert label removed: test expectation
 
