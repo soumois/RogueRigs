@@ -7,7 +7,7 @@ status: todo
 ---
 # Ore chunk: Blueprint wiring
 
-- goal: BP_PickupOre: PickupMesh = SM_OreChunk at scale 1 with its material overrides, no shadow (as the XP nut), a TrailFX Niagara component (NS_OreTrail, auto activate off, relative scale so its effective size matches the XP nut trail) activated in OnMagnetStart with the same look-at as BP_PickupXP; pop distances and C++ defaults unchanged; sys-pickups gotcha on the ore trail updated; bp-pickup-ore rewritten.
+- goal: BP_PickupOre: one of the three meshes SM_OreChunk_01..03 per dropped chunk (how the variant is picked on a pooled pickup: open, decided with the owner before this subtask), PickupMesh at scale 1 with its material overrides, no shadow (as the XP nut), a TrailFX Niagara component (NS_OreTrail, auto activate off, relative scale so its effective size matches the XP nut trail) activated in OnMagnetStart with the same look-at as BP_PickupXP; pop distances and C++ defaults unchanged; sys-pickups gotcha on the ore trail updated; bp-pickup-ore rewritten.
 - agent: bp
 - depends_on: task-189-03-ore-chunk-materials, task-189-04-ore-chunk-trail
 - inputs: agent-bp (vault/reference/agents/agent-bp.md), bp-mcp-lessons (vault/reference/agents/bp-mcp-lessons.md), bp-pickup-ore (vault/reference/tech/blueprints/fx/bp-pickup-ore.md), bp-pickup-xp (vault/reference/tech/blueprints/fx/bp-pickup-xp.md), sys-pickups (vault/reference/tech/systems/world/sys-pickups.md), bp-arena-grid (vault/reference/tech/blueprints/world/bp-arena-grid.md)
