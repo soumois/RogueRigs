@@ -14,7 +14,7 @@ status: done
 - confirmed_by_owner: yes (2026-10-14)
 - milestone: M2
 - next_step: none
-- result: Done. WBP_AlertObjectives binds OnUpgradeOfferShown/Closed in BindToMiner (UnbindOffer on the previous miner): HideForOffer collapses AlertBar, AlertLabel and the 7 alert icons; RestoreAfterOffer shows them again (Visible, their only designed state); OnAlertBarEventsChanged skips the icons while bOfferShown. No tick. Compiled with warnings as errors, saved, graph read back, doc updated. Left: about 45 empty unconnected custom event nodes from failed DSL writes (delete_node refused by the permission classifier; harmless, compile clean). Not seen on screen. Commits 89895fb, d5418fd.
+- result: Done (reopened once). Stat cards redesigned: 13 pure lore lines, 12 owner-picked stat icons, stat frame from the weapon frame with A+C rarity layers, URRIconLibrary and LoreText in C++, WBP_UpgradeChoice from the epic mockup; owner test fixes (168-06): panel behind the frame, content inside the opening, frame at 0.25, cards 440 x 720, lone stat icon 125 px; alert bar hidden during the choice (168-07). Not seen on screen by the crew.
 
 ## Subtasks
 1. task-168-01-card-lore-lines — text
