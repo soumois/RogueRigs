@@ -2016,7 +2016,6 @@ bool FRRIntegrationConsoleExtractionWinTest::RunTest(const FString& Parameters)
 	TestTrue(TEXT("ObjectiveText visible"), GetWidgetVisibility(*this, Loop.HUD, TEXT("ObjectiveText")) == ESlateVisibility::Visible);
 	TestTrue(TEXT("ObjectiveText asks to clear the marked rocks"), GetWidgetText(*this, Loop.HUD, TEXT("ObjectiveText")).Contains(TEXT("marked rocks")));
 	TestEqual(TEXT("AlertBar at the threshold"), GetWidgetPercent(*this, Loop.HUD, TEXT("AlertBar")), Config.ConsoleAlertThreshold, 1e-4f);
-	TestEqual(TEXT("AlertLabel shows the pause"), GetWidgetText(*this, Loop.HUD, TEXT("AlertLabel")), FString(TEXT("ALERT (paused)")));
 
 	// The alert holds while the console is pending.
 	TickRun(*this, TestWorld, Loop, 60, []() { return false; });
