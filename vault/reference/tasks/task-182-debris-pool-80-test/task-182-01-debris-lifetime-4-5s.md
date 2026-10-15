@@ -1,0 +1,25 @@
+---
+id: task-182-01-debris-lifetime-4-5s
+description: "Debris lifetime 4.5 s in all: full size until 4.1 s, then the 0.4 s sink (sink start moved from 3.0 s to 4.1 s)."
+parent: task-182-debris-pool-80-test
+kind: task
+status: todo
+---
+# Debris lifetime 4.5 s
+
+- goal: Debris lifetime 4.5 s in all: full size until 4.1 s, then the 0.4 s sink (sink start moved from 3.0 s to 4.1 s).
+- agent: bp
+- depends_on: none
+- inputs: bp-robot-debris (vault/reference/tech/blueprints/fx/bp-robot-debris.md), enemy-death (vault/reference/gdd/enemies/enemy-death.md), unreal-mcp (vault/reference/tech/pipelines/unreal-mcp.md), unreal-mcp-quirks (vault/reference/tech/pipelines/unreal-mcp-quirks.md)
+- expected_output: NS_RobotDebris: InitializeParticle lifetime 4.5; the age threshold 3.0 of the collision plane gate and of the sink velocity module moved to 4.1 (both expressions); still one-shot; bp-robot-debris updated
+- done_when: Lifetime and both thresholds read back; compiles with no stack issue; saved by explicit path; doc updated; committed by path; editor stays open
+- editor_state: open
+- token_ceiling: open
+- model: open
+- tokens: open
+- runs: open
+- milestone: M3
+- result: open
+
+## Relations
+- [[task-182-debris-pool-80-test]] — parent global task.
