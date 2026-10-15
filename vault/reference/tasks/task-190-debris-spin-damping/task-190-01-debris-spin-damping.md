@@ -3,7 +3,7 @@ id: task-190-01-debris-spin-damping
 description: "Debris spin 0.3-0.8 rev/s, half-life 1 s in the air, halved on bounces, stopped at rest on the floor."
 parent: task-190-debris-spin-damping
 kind: task
-status: in-progress
+status: done
 ---
 # Robot debris: slower, damped spin
 
@@ -15,11 +15,11 @@ status: in-progress
 - done_when: The new modules and expressions read back; compiles with no stack issue; saved by explicit path; docs updated; committed by path; a -game dump (fx.Niagara.DumpComponents) shows the spin speed decreasing over age and 0 for pieces at rest (values, no screenshots)
 - editor_state: open
 - token_ceiling: open
-- model: open
-- tokens: open
-- runs: open
+- model: sonnet
+- tokens: input 42, cache write 87846, cache read 1059449, output 13216
+- runs: 1
 - milestone: M3
-- result: open
+- result: SpinSpeed 0.3-0.8 rev/s per piece drives UpdateMeshOrientation; update: x exp2(-dt/1) and x0.5 on a bounce (PrevVelZ < 0 -> Vz > 0 within 15 cm of the plane), 0 at rest (within 12 cm, speed < 20); -game dump: 0.57 -> 0.41 over 0.5 s (half-life 1 s), 0 at rest from about 1.8 s; bounce halving not isolated, feel unseen; commits a9c56d3c, 481ba8bd
 
 ## Relations
 - [[task-190-debris-spin-damping]] — parent global task.

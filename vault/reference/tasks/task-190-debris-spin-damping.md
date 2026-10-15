@@ -1,9 +1,9 @@
 ---
 id: task-190-debris-spin-damping
 description: "Global task: debris spin slower and damped in the air, halved on bounces, stopped at rest."
-parent: tasks-to-do-index
+parent: tasks-done-index
 kind: task
-status: in-progress
+status: done
 ---
 # Robot debris: slower, damped spin
 
@@ -13,12 +13,12 @@ status: in-progress
 - gdd_check: enemy-death read (2026-10-15): no spin value in the GDD, no conflict; owner accepted the proposal.
 - confirmed_by_owner: yes (2026-10-15)
 - milestone: M3
-- next_step: task-190-01-debris-spin-damping
-- result: open
+- next_step: none
+- result: Done. SpinSpeed 0.3-0.8 rev/s per piece drives UpdateMeshOrientation; update: x exp2(-dt/1) and x0.5 on a bounce (PrevVelZ < 0 -> Vz > 0 within 15 cm of the plane), 0 at rest (within 12 cm, speed < 20); -game dump: 0.57 -> 0.41 over 0.5 s (half-life 1 s), 0 at rest from about 1.8 s; bounce halving not isolated, feel unseen; commits a9c56d3c, 481ba8bd
 
 ## Subtasks
 1. task-190-01-debris-spin-damping — bp
 
 ## Relations
-- [[tasks-to-do-index]] — parent index.
+- [[tasks-done-index]] — parent index.
 - [[task-190-01-debris-spin-damping]] — step 1, bp.
