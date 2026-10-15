@@ -321,6 +321,7 @@ kind: note
 | [[task-194-01-debris-pool-counter]] | opus | 1 | 0k | 111k | 3011k | 26k |
 | [[task-189-01-ore-chunk-look]] | sonnet | 4 | 0k | 139k | 1288k | 2k |
 | [[task-193-01-debris-gpu-cost-remeasure]] | opus | 2 | 0k | 213k | 4612k | 48k |
+| [[task-189-02-ore-chunk-mesh]] | sonnet | 2 | 0k | 71k | 577k | 2k |
 
 ## Totals
 | Scope | Input | Cache write | Cache read | Output |

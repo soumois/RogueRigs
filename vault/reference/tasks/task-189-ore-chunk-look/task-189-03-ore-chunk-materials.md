@@ -3,7 +3,7 @@ id: task-189-03-ore-chunk-materials
 description: "BP: import SM_OreChunk and create its violet glowing materials (pulse like the XP nut), Duskite colour."
 parent: task-189-ore-chunk-look
 kind: task
-status: todo
+status: in-progress
 ---
 # Ore chunk: import and materials
 

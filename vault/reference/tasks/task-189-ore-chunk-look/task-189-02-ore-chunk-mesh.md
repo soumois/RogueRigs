@@ -3,7 +3,7 @@ id: task-189-02-ore-chunk-mesh
 description: "3D: Meshy mesh of the ore chunk from the owner-chosen image, cleaned in Blender, 30 cm, centred pivot, FBX and report."
 parent: task-189-ore-chunk-look
 kind: task
-status: in-progress
+status: done
 ---
 # Ore chunk: Meshy mesh
 
@@ -15,11 +15,11 @@ status: in-progress
 - done_when: FBX and report exist; three FBX each within 500 tris, dimensions about 30 cm, pivot centred, slots listed; the Orchestrator renders a preview and sends it to the owner; the owner accepts the mesh (one return to the agent at most before asking him); committed by path.
 - editor_state: closed
 - token_ceiling: open
-- model: open
-- tokens: open
-- runs: open
+- model: sonnet
+- tokens: input 48, cache write 71404, cache read 577082, output 1837
+- runs: 2
 - milestone: M1
-- result: open
+- result: Owner made the 3 Meshy meshes on the web app (no API key here); cleaned by Tools/art/blender/ore_chunk.py, no decimation: SM_OreChunk_01 (c1) 396 tris, _02 (c2) 398, _03 (c3) 496, largest side 30 cm, centred pivot, flat shading, slots crystal_bright/crystal_dark by base-colour luminance median, LightMap UV1; c2 not watertight (34 non-manifold edges), kept as is by the owner; preview checked by the owner; commits dbb9e81b, 53539bcb
 
 ## Relations
 - [[task-189-ore-chunk-look]] — parent global task.
