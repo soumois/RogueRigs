@@ -1,6 +1,6 @@
 ---
 id: task-183-ore-counter
-description: "Global task: count carried ore, secure it on extraction, lose it on a missed shuttle or death, and show it with an icon next to the radar."
+description: "Global task: carried ore counted, secured on extraction, lost on a miss or death, shown with an icon next to the radar."
 parent: tasks-to-do-index
 kind: task
 status: todo
