@@ -3,7 +3,7 @@ id: task-194-01-debris-pool-counter
 description: "Find why debris pool plays exceed the cap of 80 since the GPU emitter, and fix the counter or recycling."
 parent: task-194-debris-pool-counter
 kind: task
-status: todo
+status: in-progress
 ---
 # Robot debris: pool plays above the cap
 

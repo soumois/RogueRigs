@@ -3,7 +3,7 @@ id: task-193-01-debris-gpu-cost-remeasure
 description: "Remeasure the GPU debris with wall collision with the PC in its usual state, against task-182-03, frame for frame."
 parent: task-193-debris-gpu-cost-remeasure
 kind: task
-status: in-progress
+status: blocked
 ---
 # Robot debris GPU and walls: remeasure
 
@@ -19,7 +19,7 @@ status: in-progress
 - tokens: open
 - runs: open
 - milestone: M3
-- result: open
+- result: Control S0 200 failed twice (16.67 ms, 60 fps cap, GPU 13.8 vs 8.0 ms): GPU at 780 MHz with SW thermal slowdown at 60 C; Armoury Crate ThrottleMode 2 (likely Silent) on AC; waiting for the owner to set Performance/Turbo; no debris step measured; commit 65a1e7aa
 
 ## Relations
 - [[task-193-debris-gpu-cost-remeasure]] — parent global task.
