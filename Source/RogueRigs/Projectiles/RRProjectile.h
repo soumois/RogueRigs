@@ -26,7 +26,7 @@ struct FHitResult;
  * SpawnProjectile (deferred spawn + InitProjectile + FinishSpawning; Owner = the firing actor, Instigator = its pawn).
  * Sphere radius 14 uu (miner shots: rifle, pellet, turret bullet); robot shots 10 uu. Robot shots: HitActorClass = the miner
  * class (robots are passed through) and bDamagesTerrain off. Subclass in Blueprint
- * for the mesh and the sphere radius.
+ * for the mesh (its collision is turned off at spawn: only the sphere collides) and the sphere radius.
  */
 UCLASS(Abstract)
 class ROGUERIGS_API ARRProjectile : public AActor
@@ -78,8 +78,15 @@ public:
 	UProjectileMovementComponent* GetProjectileMovement() const { return ProjectileMovement; }
 
 protected:
-	/** Binds the overlap and stop events and ignores the owner weapon and the instigator while moving. */
+	/** Turns off the collision of the visual components (DisableVisualCollision), binds the overlap and stop events and ignores the owner weapon and the instigator while moving. */
 	virtual void PostInitializeComponents() override;
+
+	/**
+	 * Sets every primitive component other than CollisionSphere (the Blueprint shot mesh) to NoCollision without overlap
+	 * events: only the sphere collides. A shot mesh left with a blocking collision moved with the bullet into robot capsules,
+	 * whose next move resolved the penetration by pushing the robot (task-180-01), and stopped other bullets.
+	 */
+	void DisableVisualCollision();
 
 	/**
 	 * Pawn overlap: applies the spec once to a hittable actor with an ASC (ignored actors, CanHit false and actors already hit

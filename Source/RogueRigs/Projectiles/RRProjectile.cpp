@@ -47,6 +47,7 @@ ARRProjectile::ARRProjectile(const FObjectInitializer& ObjectInitializer)
 void ARRProjectile::PostInitializeComponents()
 {
 	Super::PostInitializeComponents();
+	DisableVisualCollision();
 
 	// The miner's capsule and mesh, and the weapon's mesh, never stop or receive this projectile.
 	if (AActor* OwnerActor = GetOwner())
@@ -64,6 +65,20 @@ void ARRProjectile::PostInitializeComponents()
 
 	CollisionSphere->OnComponentBeginOverlap.AddDynamic(this, &ARRProjectile::OnSphereBeginOverlap);
 	ProjectileMovement->OnProjectileStop.AddDynamic(this, &ARRProjectile::OnProjectileStop);
+}
+
+void ARRProjectile::DisableVisualCollision()
+{
+	// The sphere is the only collision of a projectile: the Blueprint shot mesh is visual (it pushed robots and stopped bullets when it blocked, task-180-01).
+	TInlineComponentArray<UPrimitiveComponent*> Primitives(this);
+	for (UPrimitiveComponent* Primitive : Primitives)
+	{
+		if (Primitive != CollisionSphere)
+		{
+			Primitive->SetCollisionEnabled(ECollisionEnabled::NoCollision);
+			Primitive->SetGenerateOverlapEvents(false);
+		}
+	}
 }
 
 void ARRProjectile::InitProjectile(const FGameplayEffectSpecHandle& InDamageSpec, float Speed, float Lifetime, int32 InMaxHits, float InKnockbackSpeed)
