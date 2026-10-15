@@ -3,7 +3,7 @@ id: task-181-perf-chaser-meshy-death
 description: "Global task: stress-test the Meshy chaser animation and its death puff and debris against the M1 tables."
 parent: tasks-to-do-index
 kind: task
-status: todo
+status: in-progress
 ---
 # Performance test: Meshy chaser, animation and death effects
 

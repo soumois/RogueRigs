@@ -3,7 +3,7 @@ id: task-181-01-perf-chaser-meshy-death
 description: "Measure the frame cost of the Meshy chaser (animated material) and its death effects (puff, debris) with the stress tool, compared with the M1 tables."
 parent: task-181-perf-chaser-meshy-death
 kind: task
-status: todo
+status: in-progress
 ---
 # Performance test: Meshy chaser, animation and death effects
 
