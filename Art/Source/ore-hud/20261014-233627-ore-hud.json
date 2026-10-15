@@ -1,0 +1,38 @@
+{
+  "run_id": "20261014-233627-ore-hud",
+  "asset": "ore-hud",
+  "model": "gpt-image-2-image-to-image",
+  "aspect_ratio": "1:1",
+  "resolution": "1K",
+  "variants": 2,
+  "prompt_file": "Art/Source/ore-hud/prompts/03-hud-icon.txt",
+  "prompt": "Image 1 is an in-game screenshot: look only at the glowing violet crystal cluster in the top-left counter, left of the number 27. Image 2 is a style reference for a game UI icon: a thin dark charcoal outline around a bold simple shape. Draw a single game HUD icon of the crystal cluster from Image 1: keep exactly its design, a tight cluster of tall, sharp faceted violet Duskite crystal shards, one tall central shard with smaller shards leaning out left and right, saturated violet and magenta-violet facets with lighter violet highlights on the facet tops and a soft light-violet inner glow. Add a thin dark charcoal outline around the whole cluster silhouette so it reads on dark and on light grey backgrounds, readable at 48 px. Do not draw the screenshot, the number, the pill plate, the minimap or the health bar. The crystal is alone, centred with generous margin, filling about 65 percent of the frame. Solid flat pure green (#00FF00) background, uniform, no gradient, no shadow, no outer glow beyond the crystal itself. No text, no letters, no numbers, no UI frame, no plate.",
+  "refs": [
+    "vault/assets/ore-hud-render.png",
+    "Art/Source/stat-icons/mining-speed-2.png"
+  ],
+  "tasks": [
+    {
+      "task_id": "266fdd417a3f6bd0d438a1cc951de710",
+      "state": "success",
+      "credits": 6,
+      "error": null,
+      "result_urls": [
+        "https://tempfile.aiquickdraw.com/images/chatgpt/file_00000000e29481f680b2ff9d532b4966.png"
+      ]
+    },
+    {
+      "task_id": "3b0e168013d4e45d1b1cfc4bd297454c",
+      "state": "success",
+      "credits": 6,
+      "error": null,
+      "result_urls": [
+        "https://tempfile.aiquickdraw.com/images/chatgpt/file_0000000046848210ab28ef021db0131f.png"
+      ]
+    }
+  ],
+  "files": [
+    "Art/Source/ore-hud/20261014-233627-ore-hud-1.png",
+    "Art/Source/ore-hud/20261014-233627-ore-hud-2.png"
+  ]
+}
