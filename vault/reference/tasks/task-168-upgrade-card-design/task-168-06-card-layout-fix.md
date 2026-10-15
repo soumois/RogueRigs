@@ -3,7 +3,7 @@ id: task-168-06-card-layout-fix
 description: "Fix the card layout seen in game: backgrounds behind the frame, content inside the frame opening, thinner frame, larger cards and icons."
 parent: task-168-upgrade-card-design
 kind: task
-status: in-progress
+status: done
 ---
 # Upgrade cards: layout fix after the owner test
 
@@ -15,11 +15,11 @@ status: in-progress
 - done_when: Compiles with warnings as errors, saved, tree and brush values read back (drawn frame band and opening sizes reported in px), doc updated, committed; existing integration tests not run here (editor open). Owner checks on screen.
 - editor_state: open
 - token_ceiling: 40 turns
-- model: open
-- tokens: open
-- runs: open
+- model: sonnet
+- tokens: input 36, cache write 51662, cache read 624360, output 552
+- runs: 1
 - milestone: M2
-- result: open
+- result: Causes: frame and panel overlay slots Left/Top aligned (not stretched), CardPanel an empty NoImage Image (transparent centre; the 32 x 32 default size is the likely dark square), brush ImageSize 380 x 507 (79 px margins). Fixed: CardPanel RoundedBox #15171c Fill under the frames; four frame brushes ImageSize 271.5 x 362 (scale 0.25), Fill slots; CardSize 452 x 732 (440 x 720 stack); CardBox padding 45/49/46/51 (opening inset x 0.25 + 10), WeaponBody 45/56/46/115; ImageArea 348 x 320, WeaponBox 190 x 80, stat icon 125 x 125; lore bottom-anchored. Computed: side band about 35 px, top 39 (weapon 46), bottom 41, opening about 369 x 640. Widget names kept. CompileWidgetBlueprint true, saved, doc updated. Not seen on screen. Commit 73c31e5.
 
 ## Relations
 - [[task-168-upgrade-card-design]] — parent global task.

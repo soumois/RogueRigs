@@ -290,6 +290,7 @@ kind: note
 | [[task-168-05-upgrade-choice-layout]] | sonnet | 3 | 0k | 164k | 6315k | 1k |
 | [[task-169-04-weapon-card-layout]] | sonnet | 2 | 0k | 126k | 4092k | 1k |
 | [[task-169-05-weapon-card-test-fix]] | opus | 1 | 0k | 51k | 504k | 3k |
+| [[task-168-06-card-layout-fix]] | sonnet | 1 | 0k | 52k | 624k | 1k |
 
 ## Totals
 | Scope | Input | Cache write | Cache read | Output |
