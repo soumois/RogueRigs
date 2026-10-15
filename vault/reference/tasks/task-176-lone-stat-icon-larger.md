@@ -1,9 +1,9 @@
 ---
 id: task-176-lone-stat-icon-larger
 description: "Global task: stat icon 25 % larger (156 px) when shown alone on a card; unchanged next to a weapon icon."
-parent: tasks-to-do-index
+parent: tasks-done-index
 kind: task
-status: in-progress
+status: done
 ---
 # Upgrade cards: lone stat icon larger
 
@@ -13,12 +13,12 @@ status: in-progress
 - gdd_check: done by the Orchestrator when the task is planned (2026-10-15).
 - confirmed_by_owner: yes (2026-10-15)
 - milestone: M2
-- next_step: task-176-01-lone-stat-icon-larger
-- result: open
+- next_step: none
+- result: Done. StyleCard sets StatIcon desired size 156 x 156 when shown alone (Player, All weapons) and 100 x 100 next to a weapon icon; StatIconBox overrides off. Compiled with warnings as errors, saved, read back, doc updated. Not seen on screen. Commit 4d4c472.
 
 ## Subtasks
 1. task-176-01-lone-stat-icon-larger — bp
 
 ## Relations
-- [[tasks-to-do-index]] — parent index.
+- [[tasks-done-index]] — parent index.
 - [[task-176-01-lone-stat-icon-larger]] — step 1, bp.

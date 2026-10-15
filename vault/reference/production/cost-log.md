@@ -295,6 +295,7 @@ kind: note
 | [[task-168-08-baked-card-frames]] | sonnet | 1 | 0k | 32k | 220k | 5k |
 | [[task-168-09-plain-frame-images]] | sonnet | 1 | 0k | 67k | 1038k | 1k |
 | [[task-177-01-wider-upgrade-cards]] | sonnet | 1 | 0k | 21k | 64k | 1k |
+| [[task-176-01-lone-stat-icon-larger]] | sonnet | 1 | 0k | 85k | 1406k | 1k |
 
 ## Totals
 | Scope | Input | Cache write | Cache read | Output |
