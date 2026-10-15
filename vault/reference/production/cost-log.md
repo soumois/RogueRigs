@@ -326,6 +326,7 @@ kind: note
 | [[task-189-04-ore-chunk-trail]] | sonnet | 1 | 0k | 44k | 680k | 1k |
 | [[task-192-01-pickup-spawn-orientation-variants]] | opus | 1 | 0k | 77k | 952k | 0k |
 | [[task-192-02-pickup-orientation-defaults]] | sonnet | 1 | 0k | 36k | 432k | 1k |
+| [[task-189-05-ore-chunk-blueprint]] | sonnet | 1 | 0k | 64k | 1084k | 0k |
 
 ## Totals
 | Scope | Input | Cache write | Cache read | Output |

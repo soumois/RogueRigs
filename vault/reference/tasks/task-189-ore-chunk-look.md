@@ -1,9 +1,9 @@
 ---
 id: task-189-ore-chunk-look
 description: "Global task: ore chunk pickup in game as a glowing Duskite crystal cluster (image proposals, Meshy mesh, violet materials and trail)."
-parent: tasks-to-do-index
+parent: tasks-done-index
 kind: task
-status: in-progress
+status: done
 ---
 # Ore chunk in-game look
 
@@ -13,8 +13,8 @@ status: in-progress
 - gdd_check: ore-blocks, ore-economy, color-code read 2026-10-15. Conflict: color-code gave resource pickups the cyan nut look; owner decided the ore chunk is Duskite violet (color-code updated 2026-10-15) and judges it distinct from the lilac big XP chip. Ore blocks keep their look. Size kept at 30 cm, glow pulse like the XP nut (defaults accepted). Route: art image proposals, then Meshy (owner).
 - confirmed_by_owner: yes (2026-10-15: answers to the plan, expects image proposals)
 - milestone: M1
-- next_step: task-189-05-ore-chunk-blueprint
-- result: open
+- next_step: none
+- result: Done. BP_PickupOre: SM_OreChunk_01 at scale 1, OverrideMaterials cleared (slot defaults MI_OreChunk_Bright/Dark), RestOrientation Full, MeshVariants 01-03, CastShadow false, TrailFX NS_OreTrail (scale 0.3, auto activate off) activated on OnMagnetStart, no look-at (Orchestrator choice, keeps the random orientation); BP_ArenaGrid OrePickupClass unchanged; compiled and saved; docs updated; look, trail and runtime draw not seen in PIE; commit 8cf8486b
 
 ## Subtasks
 1. task-189-01-ore-chunk-look — art
@@ -24,7 +24,7 @@ status: in-progress
 5. task-189-05-ore-chunk-blueprint — bp
 
 ## Relations
-- [[tasks-to-do-index]] — parent index.
+- [[tasks-done-index]] — parent index.
 - [[task-189-01-ore-chunk-look]] — step 1, art.
 - [[task-189-02-ore-chunk-mesh]] — step 2, 3d.
 - [[task-189-03-ore-chunk-materials]] — step 3, bp.

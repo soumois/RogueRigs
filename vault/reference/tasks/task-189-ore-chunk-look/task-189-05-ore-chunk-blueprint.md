@@ -3,7 +3,7 @@ id: task-189-05-ore-chunk-blueprint
 description: "BP: BP_PickupOre uses SM_OreChunk, its materials and the NS_OreTrail trail activated on magnet; doc bp-pickup-ore rewritten."
 parent: task-189-ore-chunk-look
 kind: task
-status: in-progress
+status: done
 ---
 # Ore chunk: Blueprint wiring
 
@@ -15,11 +15,11 @@ status: in-progress
 - done_when: Blueprint compiles with warnings as errors; defaults read back (mesh, materials, TrailFX asset, CastShadow false); BP_ArenaGrid still references it as OrePickupClass; docs updated; lint clean; committed by path. On-screen look is the owner's to judge (no screenshot run).
 - editor_state: open
 - token_ceiling: open
-- model: open
-- tokens: open
-- runs: open
+- model: sonnet
+- tokens: input 50, cache write 64028, cache read 1083720, output 400
+- runs: 1
 - milestone: M1
-- result: open
+- result: BP_PickupOre: SM_OreChunk_01 at scale 1, OverrideMaterials cleared (slot defaults MI_OreChunk_Bright/Dark), RestOrientation Full, MeshVariants 01-03, CastShadow false, TrailFX NS_OreTrail (scale 0.3, auto activate off) activated on OnMagnetStart, no look-at (Orchestrator choice, keeps the random orientation); BP_ArenaGrid OrePickupClass unchanged; compiled and saved; docs updated; look, trail and runtime draw not seen in PIE; commit 8cf8486b
 
 ## Relations
 - [[task-189-ore-chunk-look]] — parent global task.
