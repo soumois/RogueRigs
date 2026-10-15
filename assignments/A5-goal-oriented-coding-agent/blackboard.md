@@ -118,3 +118,40 @@ Method: 38 `kind: spec` nodes under `gdd-index` (all `approved` or `provisional`
 | kessler-voss-logo; lore | — | built; n/a | logo on the barrel sticker; lore is a reference node |
 
 Summary: the M1 core loop is built. Logic gaps: ore counter, threat, 4-level run, tier pool, effect cards, stat sheet, damage-number toggle, drone dialogue channel, logging. The rest is art or audio.
+
+### 3. Scoring
+Factors: **MS** milestone (M1 = 3, M2 = 2, M3 = 1; a sub-feature whose content is listed in a later milestone in `milestones` takes that one); **P** pillar fit (0–2, P1 gamefeel, P2 manual aim, P3 arena as weapon; 0 = passes no veto test); **Dep** dependencies ready (no = total 0, "blocked by X"); **U** number of other gaps it closes or unblocks; **C** cost (+1 `partial`, 0 `missing`); **Open** a needed value is `open` or not given = not buildable, reported. Total = MS + P + U + C.
+
+#### Buildable
+| Feature (spec) | MS | P | Dep | U | C | Total | Reason |
+|---|---|---|---|---|---|---|---|
+| Ore counter: carried ore counted, secured by extraction, lost on a miss (ore-economy, extraction) | 3 | 1 | yes | 2 | 0 | **6** | Approved M1 rule in two specs and the stake of the risk window (extraction: "This gives the risk window its stake"). Pickups (`ARRPickup::OreValue`), `ARRShuttle::OnExtracted` / `OnMissed` and the HUD event pattern exist. Closes the extraction ore rule and the bonus-chest ore reward; prerequisite for the open ore-loss share and run carry-over. P1: a count the player watches grow and can lose. |
+| Locator distance in metres (objective-console) | 3 | 1 | yes | 0 | 1 | 5 | Small; `FRRObjectiveLocator` lacks a distance field, Blueprint may already compute it (unverified). |
+| Barrel particle burst on destruction (barrel) | 3 | 2 | yes | 0 | 0 | 5 | P1 + P3, but mostly a Niagara asset (bp), not a code gap. |
+| Deterministic C++ arena generator (arena-grid) | 2 | 2 | yes | 1 | 0 | 5 | Unblocks the 4-level run, but by far the largest item (port of `Tools/layout_gen`), several sessions. |
+| Drone as the dialogue channel, barks shown (drone, crew-characters, fictional-films) | 1 | 1 | yes | 2 | 0 | 4 | Drone spec says M1 but barks are M3 in `milestones`; 15 triggers to wire to game events. |
+| Stat sheet UI (player-stats) | 3 | 0 | yes | 0 | 0 | 3 | Passes no pillar test (pure information); widget-heavy. |
+| Damage-number on/off (damage-numbers) | 2 | 0 | yes | 0 | 1 | 3 | Setter exists; no options menu to host it. |
+| Destroyed-block run log (destruction-rules) | 2 | 0 | yes | 0 | 1 | 3 | Delegate exists; sys-logging not designed yet. |
+| Shooter hold tolerance ±1 cell (enemy-shooter) | 2 | 0 | yes | 0 | 1 | 3 | One CSV value; tuning, owner's feel. |
+
+#### Excluded
+| Feature | Reason |
+|---|---|
+| Threat counter (difficulty) | `open`: threat gain per second and per kill. |
+| Threat scales health, attack and spawn rate (difficulty) | blocked by the threat counter; bonus per step `open`. Doc drift reported: sys-difficulty names `URRGE_EnemyDifficulty`, which does not exist. |
+| Harder levels, level carry-over, win at level 4 (difficulty, run-structure, xp-level-up) | blocked by the 4-level run, itself blocked by the C++ generator or extra maps; objective per level and the ramp are `open`. |
+| Alert tier event pool (level-flow) | `open`: tier count, draw weights and conditions, swarm size. |
+| Special ore objective (objective-variants) | `open`: X, vein look, fit with tiers. |
+| Effect cards / 4-direction fire (upgrades, burst-rifle) | value not given: strength of the weaker shots. |
+| Magazine-size upgrade (upgrades) | values not given in the spec. |
+| EMP (upgrades) | M3 "if time"; blocked by status effects (not built). |
+| Ore lost on a failed run (ore-economy) | `open`: loss share. |
+| Audio and music per tier (audio-direction, level-flow) | blocked by sound assets; palette and mix rules `open`. |
+| Robot parts for heavy, kamikaze, shooter; chaser Meshy items (enemy-*) | parts `open`; chaser items wait on the owner (handover-2026-10-14). |
+| Miner mesh, space backdrop, autotiling, logo plates, weapon names and sounds | art assets, or names `open`: not code. |
+| Camera near-vertical; ore chunk within one cell | no numeric target ("owner to judge"): `open`. |
+| Critical number colour | conflict, not a gap: spec says white-gold, code comment says orange-gold was owner-confirmed. Reported. |
+| Heavy cap 3 vs 5 | doc drift (`RREnemySpawner.h:606`, sys-spawner), not a feature. Reported. |
+| Company tier texts, announcements, tips | unscheduled in `milestones`. |
+| Boss, meta shop, elements, armor | wishlist / deferred. |
