@@ -3,7 +3,7 @@ id: task-182-02-debris-pool-80
 description: "Raise the debris pool from 40 to 80 systems on BP_Chaser and BP_ShieldChaser (DebrisPoolSize), puff pool unchanged."
 parent: task-182-debris-pool-80-test
 kind: task
-status: todo
+status: in-progress
 ---
 # Debris pool 80
 
