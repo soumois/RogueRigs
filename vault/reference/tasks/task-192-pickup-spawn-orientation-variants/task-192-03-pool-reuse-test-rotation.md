@@ -3,7 +3,7 @@ id: task-192-03-pool-reuse-test-rotation
 description: "C++ test fix: ReusedPickupEqualsFresh ignores rotation for pickups with a random rest orientation (broken by task-192-02 and task-189-05)."
 parent: task-192-pickup-spawn-orientation-variants
 kind: task
-status: in-progress
+status: done
 ---
 # Pool reuse test: random rest orientation
 
@@ -15,11 +15,11 @@ status: in-progress
 - done_when: build clean; RogueRigs.Pickup, RogueRigs.PickupPool and RogueRigs.ActorPool tests all pass; docs updated; lint clean; committed by path.
 - editor_state: closed
 - token_ceiling: open
-- model: open
-- tokens: open
-- runs: open
+- model: opus
+- tokens: input 20, cache write 36202, cache read 283012, output 246
+- runs: 1
 - milestone: M1
-- result: open
+- result: ReusedPickupEqualsFresh checks rotation per RestOrientation (None exact, YawOnly pitch/roll 0, Full not checked) via FPickupAccess::RestOrientationOf; build clean; Pickup, PickupPool and ActorPool tests 20/20 pass; commits 3226f030, bf74fe21
 
 ## Relations
 - [[task-192-pickup-spawn-orientation-variants]] — parent global task.

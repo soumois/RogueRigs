@@ -200,5 +200,6 @@ Archive: it exceeds the index size limits of [[_authoring]] on purpose (owner, 2
 - [[task-189-ore-chunk-look]] — In-game look of the ore chunk pickup: a glowing Duskite violet crystal cluster like the HUD ore icon, Meshy mesh, violet trail, replacing the cyan cube. Status done.
 - [[task-190-debris-spin-damping]] — Debris spin slower and damped: 0.3-0.8 rev/s per piece, half-life 1 s in the air, halved at each bounce, stopped once at rest on the floor. Status done.
 - [[task-191-debris-wall-collision]] — Debris pieces bounce off walls through distance field collision on a GPU emitter; cost measured. Status done.
+- [[task-192-pickup-spawn-orientation-variants]] — Pickup spawn: random rest orientation per Blueprint (none, yaw only, full) and a random mesh variant picked per drop, pool-safe. Status done.
 - [[task-193-debris-gpu-cost-remeasure]] — Remeasure the GPU debris with wall collision with the PC in its usual state, against task-182-03, frame for frame. Status done.
 - [[task-194-debris-pool-counter]] — Find why debris pool plays exceed the cap of 80 (S7: 200 plays, 0 skips) since the GPU emitter, and fix the counter or the recycling. Status done.
