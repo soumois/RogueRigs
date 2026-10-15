@@ -3,7 +3,7 @@ id: task-185-02-alert-label-test
 description: "Update the integration test that reads AlertLabel (RRIntegrationTests.cpp, pause check) now that the label is gone."
 parent: task-185-alert-label-remove
 kind: task
-status: in-progress
+status: done
 ---
 # Alert label removed: test expectation
 
@@ -15,11 +15,11 @@ status: in-progress
 - done_when: Build passes with the editor closed; the run integration tests pass except known failures; committed by path
 - editor_state: closed
 - token_ceiling: open
-- model: open
-- tokens: open
-- runs: open
+- model: opus
+- tokens: input 22, cache write 18996, cache read 181039, output 3558
+- runs: 1
 - milestone: M2
-- result: open
+- result: AlertLabel pause check removed from Integration.ConsoleExtractionWin (no public paused getter; pause still covered by the alert-hold checks); build OK; 34/34 Integration tests; commits 2a47ee9d, a6bb2414
 
 ## Relations
 - [[task-185-alert-label-remove]] — parent global task.
