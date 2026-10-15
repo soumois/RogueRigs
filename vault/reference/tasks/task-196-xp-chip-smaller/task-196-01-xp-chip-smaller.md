@@ -3,7 +3,7 @@ id: task-196-01-xp-chip-smaller
 description: "Big XP chip 15 percent smaller: BP_PickupXPBig template scale 1.8 to 1.53 and its glow disc radius 80 to 68."
 parent: task-196-xp-chip-smaller
 kind: task
-status: in-progress
+status: done
 ---
 # Smaller big XP chip
 
@@ -15,11 +15,11 @@ status: in-progress
 - done_when: Blueprint compiles; scale and Radius read back; docs updated; lint clean; committed by path.
 - editor_state: open
 - token_ceiling: open
-- model: open
-- tokens: open
-- runs: open
+- model: sonnet
+- tokens: input 34, cache write 39159, cache read 443243, output 462
+- runs: 1
 - milestone: M1
-- result: open
+- result: BP_PickupXPBig root template scale 1.53 (was 1.8) and MI_XPGlowDisc_Chip Radius 68 (was 80), read back and saved; TrailFX relative 0.3 unchanged (effective 0.459); docs updated; not seen in PIE; commit e73816a3
 
 ## Relations
 - [[task-196-xp-chip-smaller]] — parent global task.
