@@ -166,10 +166,11 @@ namespace RRTestAccess
 		static FWorldContext*& WorldContextOf(UGameInstance* GameInstance) { return GameInstance->*(&FGameInstanceAccess::WorldContext); }
 	};
 
-	/** ARRPickup: the pop start location. */
+	/** ARRPickup: the pop start location and the rest orientation drawn each life (task-192-03). */
 	struct FPickupAccess : public ARRPickup
 	{
 		static const FVector& PopStartOf(const ARRPickup* Pickup) { return Pickup->*(&FPickupAccess::PopStart); }
+		static ERRPickupRestOrientation RestOrientationOf(const ARRPickup* Pickup) { return Pickup->*(&FPickupAccess::RestOrientation); }
 	};
 
 	/** ARRGameMode: the restart delay. */

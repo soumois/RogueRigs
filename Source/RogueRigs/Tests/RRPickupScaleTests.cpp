@@ -1,4 +1,5 @@
 // Rogue Rigs - automation tests of the pooled pickup scale (RogueRigs.PickupPool.*, task-095-01): a reused pickup equals a fresh one, robot drops keep the Blueprint scale.
+// task-192-03: rotations are compared only for RestOrientation None (YawOnly: pitch and roll zero; Full: not checked), since a random rest orientation is drawn each life.
 
 #include "CoreMinimal.h"
 #include "Misc/AutomationTest.h"
@@ -31,12 +32,34 @@ namespace RRPickupScaleTests
 		return Root ? Root->GetRelativeScale3D() : FVector::OneVector;
 	}
 
-	/** Compares Actual with Fresh: actor scale and rotation, visibility, and every component's relative scale, rotation, visibility and FX state. */
-	void ExpectSameAsFresh(FAutomationTestBase& Test, const FString& Name, const AActor* Actual, const AActor* Fresh)
+	/**
+	 * Checks the rotation of a reused pickup (actor, or its root PickupMesh relative rotation) against the fresh one. The
+	 * rotation is drawn each life from RestOrientation (task-192-01): None = equals fresh; YawOnly = pitch and roll stay 0;
+	 * Full = any rotation, nothing to check.
+	 */
+	void ExpectRestRotation(FAutomationTestBase& Test, const FString& What, ERRPickupRestOrientation Orientation, const FRotator& Actual, const FRotator& Fresh)
 	{
+		if (Orientation == ERRPickupRestOrientation::None)
+		{
+			Test.TestTrue(FString::Printf(TEXT("%s rotation equals fresh"), *What), Actual.Equals(Fresh, 0.01f));
+		}
+		else if (Orientation == ERRPickupRestOrientation::YawOnly)
+		{
+			Test.TestTrue(FString::Printf(TEXT("%s rotation %s keeps pitch and roll 0 (YawOnly)"), *What, *Actual.ToString()),
+				FMath::IsNearlyZero(Actual.Pitch, 0.01) && FMath::IsNearlyZero(Actual.Roll, 0.01));
+		}
+	}
+
+	/**
+	 * Compares Actual with Fresh: actor scale and rotation, visibility, and every component's relative scale, rotation,
+	 * visibility and FX state. The actor and root component rotations follow ExpectRestRotation (task-192-03).
+	 */
+	void ExpectSameAsFresh(FAutomationTestBase& Test, const FString& Name, const ARRPickup* Actual, const ARRPickup* Fresh)
+	{
+		const ERRPickupRestOrientation Orientation = RRTestAccess::FPickupAccess::RestOrientationOf(Actual);
 		Test.TestTrue(FString::Printf(TEXT("%s actor scale %s equals fresh %s"), *Name, *Actual->GetActorScale3D().ToString(),
 			*Fresh->GetActorScale3D().ToString()), Actual->GetActorScale3D().Equals(Fresh->GetActorScale3D(), 1e-4f));
-		Test.TestTrue(FString::Printf(TEXT("%s actor rotation equals fresh"), *Name), Actual->GetActorRotation().Equals(Fresh->GetActorRotation(), 0.01f));
+		ExpectRestRotation(Test, FString::Printf(TEXT("%s actor"), *Name), Orientation, Actual->GetActorRotation(), Fresh->GetActorRotation());
 		Test.TestEqual(FString::Printf(TEXT("%s hidden state equals fresh"), *Name), Actual->IsHidden(), Fresh->IsHidden());
 		TInlineComponentArray<USceneComponent*> FreshComponents(Fresh);
 		TInlineComponentArray<USceneComponent*> ActualComponents(Actual);
@@ -57,8 +80,16 @@ namespace RRPickupScaleTests
 				*FreshComponent->GetRelativeScale3D().ToString()), Component->GetRelativeScale3D().Equals(FreshComponent->GetRelativeScale3D(), 1e-4f));
 			Test.TestTrue(FString::Printf(TEXT("%s world scale equals fresh"), *Label),
 				Component->GetComponentScale().Equals(FreshComponent->GetComponentScale(), 1e-4f));
-			Test.TestTrue(FString::Printf(TEXT("%s relative rotation equals fresh"), *Label),
-				Component->GetRelativeRotation().Equals(FreshComponent->GetRelativeRotation(), 0.01f));
+			if (Component == Actual->GetRootComponent())
+			{
+				// The root (PickupMesh) carries the actor rotation drawn for this life.
+				ExpectRestRotation(Test, FString::Printf(TEXT("%s relative"), *Label), Orientation, Component->GetRelativeRotation(), FreshComponent->GetRelativeRotation());
+			}
+			else
+			{
+				Test.TestTrue(FString::Printf(TEXT("%s relative rotation equals fresh"), *Label),
+					Component->GetRelativeRotation().Equals(FreshComponent->GetRelativeRotation(), 0.01f));
+			}
 			Test.TestEqual(FString::Printf(TEXT("%s visibility equals fresh"), *Label), Component->IsVisible(), FreshComponent->IsVisible());
 			if (Cast<UFXSystemComponent>(Component))
 			{
