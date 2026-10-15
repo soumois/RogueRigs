@@ -13,7 +13,7 @@ status: approved
   - the pieces are drawn at random among: torso block (head, torso and pelvis as one piece), each arm, each leg;
   - an arm is thrown whole or cut at the elbow, a leg whole or cut at the knee, one time in two; a cut limb counts as 2 pieces;
   - the count is the number of meshes thrown (2, 3 or 4, equal odds); the other parts vanish with the robot;
-  - throw (provisional, owner 2026-10-14): each piece leaves along the direction of the killing hit (radial from an explosion) turned by a random angle within ±15°; speed = the first tuning (task-166) × a random factor of 1.3 to 2 drawn once per death, plus a small per-piece spread; start position = the piece place on the robot ± 10 cm on each axis.
+  - throw (provisional, owner 2026-10-14): each piece leaves along the direction of the killing hit (radial from an explosion) turned by a random angle within ±15°; final speed (provisional, owner 2026-10-15) 325-600 along the direction and 350-550 upward, i.e. a base of 250-300 and 269.2-275 × a random factor F of 1.3 to 2 drawn once per death, plus a small per-piece spread (±100 × F); start position = the piece place on the robot ± 10 cm on each axis.
 - The pieces have no glow: the red eye is off.
 - Pieces collide with the floor only (an analytic floor plane). No interaction with the miner, robots or blocks.
 - Pieces stay 4.5 s at full size, then sink into the floor in 0.4 s without shrinking: 4.9 s in all; no debris stays in the arena (provisional, owner 2026-10-15; was 1.2 s with a shrink, then 3.4 s).
