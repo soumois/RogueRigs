@@ -8,7 +8,7 @@
 | 2 | GDD Final Draft | [A2-gdd-final-draft](assignments/A2-gdd-final-draft/) | Submitted |
 | 3 | Building an Agent Crew | [A3-agent-crew](assignments/A3-agent-crew/) | Submitted (commit `b119b86`, tag [`a3-submission`](https://github.com/soumois/RogueRigs/tree/a3-submission)) |
 | 4 | Dynamic Content Pipeline | [A4-dynamic-content-pipeline](assignments/A4-dynamic-content-pipeline/) | Submitted (commit `0790c65`, tag [`a4-submission`](https://github.com/soumois/RogueRigs/tree/a4-submission)) |
-| 5 | Goal-Oriented Coding Agent | [A5-goal-oriented-coding-agent](assignments/A5-goal-oriented-coding-agent/) | Submitted (tag [`a5-submission`](https://github.com/soumois/RogueRigs/tree/a5-submission)) |
+| 5 | Goal-Oriented Coding Agent | [A5-goal-oriented-coding-agent](assignments/A5-goal-oriented-coding-agent/) | Submitted (commit `c9f7810`, tag [`a5-submission`](https://github.com/soumois/RogueRigs/tree/a5-submission)) |
 
 All assignments: [assignments/](assignments/).
 
