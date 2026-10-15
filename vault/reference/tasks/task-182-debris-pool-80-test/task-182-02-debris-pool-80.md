@@ -3,7 +3,7 @@ id: task-182-02-debris-pool-80
 description: "Raise the debris pool from 40 to 80 systems on BP_Chaser and BP_ShieldChaser (DebrisPoolSize), puff pool unchanged."
 parent: task-182-debris-pool-80-test
 kind: task
-status: in-progress
+status: done
 ---
 # Debris pool 80
 
@@ -15,11 +15,11 @@ status: in-progress
 - done_when: Both defaults read back 80; both Blueprints compiled and saved by explicit path; docs updated; committed by path; editor stays open
 - editor_state: open
 - token_ceiling: open
-- model: open
-- tokens: open
-- runs: open
+- model: sonnet
+- tokens: input 18, cache write 33596, cache read 223494, output 4624
+- runs: 1
 - milestone: M3
-- result: open
+- result: DebrisPoolSize 80 on BP_Chaser and BP_ShieldChaser (puff 40), read back, compiled, saved; GDD pools line updated; not run in PIE; commit 64e41746
 
 ## Relations
 - [[task-182-debris-pool-80-test]] — parent global task.

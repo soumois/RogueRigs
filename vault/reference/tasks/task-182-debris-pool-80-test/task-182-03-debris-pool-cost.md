@@ -3,7 +3,7 @@ id: task-182-03-debris-pool-cost
 description: "Measure 80 debris systems of 4.9 s against task-181 (40 of 3.4 s) and record the cost per extra debris system."
 parent: task-182-debris-pool-80-test
 kind: task
-status: todo
+status: in-progress
 ---
 # Debris pool 80: cost measure
 

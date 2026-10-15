@@ -13,7 +13,7 @@ status: in-progress
 - gdd_check: enemy-death (pools of 40, debris 3 s + 0.4 s) and perf-stress-chaser-meshy read (2026-10-14); the change is a test the owner asked for; enemy-death to be updated (provisional) when it lands.
 - confirmed_by_owner: yes (2026-10-15); measure last
 - milestone: M3
-- next_step: task-182-02-debris-pool-80
+- next_step: task-182-03-debris-pool-cost
 - result: open
 
 ## Subtasks

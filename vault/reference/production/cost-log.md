@@ -311,6 +311,7 @@ kind: note
 | [[task-184-01-minimap-opaque]] | sonnet | 1 | 0k | 62k | 820k | 8k |
 | [[task-182-01-debris-lifetime-4-5s]] | sonnet | 1 | 0k | 39k | 481k | 7k |
 | [[task-185-01-alert-label-widget]] | sonnet | 1 | 0k | 60k | 821k | 13k |
+| [[task-182-02-debris-pool-80]] | sonnet | 1 | 0k | 34k | 223k | 5k |
 
 ## Totals
 | Scope | Input | Cache write | Cache read | Output |
