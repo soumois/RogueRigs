@@ -32,6 +32,8 @@ Create the global task node. Add subtasks (task-NNN-SS) only when that one reque
 Plan only what the owner asked: no new tests, bot runs, screenshot sessions or features he did not request; only update existing tests that a requested change breaks. The plan shown to the owner lists exactly the tasks and subtasks that will run.
 Order subtasks so that every dependency comes first.
 
+bp split (owner 2026-10-14): when one owner point needs several editor assets, one bp subtask = one main asset (a Niagara system, a widget, a material with its instances, or a Blueprint), with its doc node and its own commit. Order: materials, then Niagara and widgets, then the Blueprint that wires them, then map placement. Independent bp subtasks on different assets may run in parallel, 3 at most on one editor.
+
 ## 4. Confirm
 Show the plan once. A "no" to every proposed option means no task: ask or wait, never relaunch work on a reinterpreted target. The owner confirms the global task; subtasks then run without further confirmation. A second global task requested meanwhile waits for its own confirmation.
 

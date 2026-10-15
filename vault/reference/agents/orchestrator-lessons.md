@@ -11,6 +11,7 @@ Agent limits live with each agent: [[bp-mcp-lessons]], [[art-3d-lessons]], [[age
 ## Splitting (owner 2026-10-06, mandatory)
 - One logical owner point = one global task (task-NNN); subtasks only when that point needs several systems or agents (the 67 uu grid: render, flow field, layout, switch). Never bundle points to save editor switches or re-reading: task-034-01 bundled 10 points across 9 systems and hit the turn limit before point 2.
 - The subtasks shown in a plan match the points the owner sees.
+- Editor work is split one main asset per bp subtask ([[orchestration-protocol]] step 3, owner 2026-10-14): the bp subtasks that bundled many assets needed 4 to 6 runs (task-014-04, 016-03, 022-02, 024-05).
 - "Prépare la tâche, ne lance rien": create the nodes and show the plan, launch nothing. "Lance les tâches jusqu'au bout": run the whole plan without asking again.
 
 ## Owner (Pierre)

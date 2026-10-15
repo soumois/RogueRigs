@@ -9,6 +9,7 @@ kind: note
 Learned on tasks 014 to 182. MCP tool facts (DSL, widgets, Niagara, import): [[unreal-mcp-quirks]].
 
 ## Turns and commits
+- One main asset per subtask ([[orchestration-protocol]] step 3): subtasks that bundled many assets (task-024-05: 6 Blueprints, a material instance and HUD cards) took 4 to 6 runs. A single heavy asset (a Niagara or widget rebuild) can still need 2 or 3 runs: work in groups inside it.
 - About 45% of bp subtasks needed 2 to 6 runs, most because of the turn limit. Work in groups, save and commit after each group, and always end with a report, even partial.
 - Resumed with `SendMessage`, the agent checks `git log` and `git status` first: unsaved work may live only in the open editor.
 - Commit by explicit path (`git commit -- <paths>`), never `git add vault`: another session may have staged files.
