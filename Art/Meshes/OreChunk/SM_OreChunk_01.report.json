@@ -1,0 +1,42 @@
+{
+  "input": "Art/Source/ore-chunk/meshy-web/1015220914/Meshy_AI_Amethyst_Cluster_1015220914_texture_fbx/Meshy_AI_Amethyst_Cluster_1015220914_texture.fbx",
+  "output": "Art/Meshes/OreChunk/SM_OreChunk_01.fbx",
+  "warnings": [],
+  "tris_in": 396,
+  "verts_in": 200,
+  "edge_face_counts": {
+    "2": 594
+  },
+  "lightmap_bounds": [
+    0.0046,
+    0.9956
+  ],
+  "tris_out": 396,
+  "verts_out": 200,
+  "dimensions_cm": [
+    30.0,
+    12.23,
+    29.93
+  ],
+  "bbox_centre_cm": [
+    0.0,
+    0.0,
+    0.0
+  ],
+  "pivot": "bounding-box centre",
+  "materials": {
+    "crystal_bright": {
+      "tris": 198
+    },
+    "crystal_dark": {
+      "tris": 198
+    }
+  },
+  "slot_rule": "base colour luminance at face UV centroid, median 0.2281: above = crystal_bright",
+  "uv_layers": [
+    "UVMap",
+    "LightMap"
+  ],
+  "shading": "flat",
+  "texture": "not exported (Meshy base colour used only to choose slots)"
+}
