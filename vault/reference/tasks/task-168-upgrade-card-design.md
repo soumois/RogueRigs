@@ -1,9 +1,9 @@
 ---
 id: task-168-upgrade-card-design
 description: "Global task: large stat upgrade cards with image, effect, pure lore line and rarity-tinted frame, reroll below."
-parent: tasks-to-do-index
+parent: tasks-done-index
 kind: task
-status: in-progress
+status: done
 ---
 # Upgrade cards: new design
 
@@ -13,8 +13,8 @@ status: in-progress
 - gdd_check: upgrades, rarities, sys-upgrades, wbp-upgrade-choice, readability-rules, sys-text-content read (2026-10-14). No conflict. Notes: flavor lines described the effect (rewritten as pure lore); UI text stays English; 12 offered stats (no magazine size in M1). Owner defaults accepted 2026-10-14; frame style chosen among 3 art proposals (owner).
 - confirmed_by_owner: yes (2026-10-14)
 - milestone: M2
-- next_step: task-168-09-plain-frame-images
-- result: Done (reopened once). Stat cards redesigned: 13 pure lore lines, 12 owner-picked stat icons, stat frame from the weapon frame with A+C rarity layers, URRIconLibrary and LoreText in C++, WBP_UpgradeChoice from the epic mockup; owner test fixes (168-06): panel behind the frame, content inside the opening, frame at 0.25, cards 440 x 720, lone stat icon 125 px; alert bar hidden during the choice (168-07). Not seen on screen by the crew.
+- next_step: none
+- result: Done (reopened twice after owner tests). Stat cards: 13 pure lore lines, 12 owner-picked icons, stat frame from the weapon frame with A+C rarity layers, URRIconLibrary and LoreText, WBP_UpgradeChoice from the epic mockup; fixes: panel and content inside the frame opening, cards 440 x 720, lone icon 125 px, alert bar hidden during the choice; frames now baked at card size (Tools/art/card_frame_bake.js) and drawn as plain images, no Unreal 9-slice. Not seen on screen by the crew.
 
 ## Subtasks
 1. task-168-01-card-lore-lines — text
@@ -28,7 +28,7 @@ status: in-progress
 9. task-168-09-plain-frame-images — bp
 
 ## Relations
-- [[tasks-to-do-index]] — parent index.
+- [[tasks-done-index]] — parent index.
 - [[task-168-01-card-lore-lines]] — step 1, text.
 - [[task-168-02-stat-icons]] — step 2, art.
 - [[task-168-03-card-frames]] — step 3, art.

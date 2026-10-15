@@ -3,7 +3,7 @@ id: task-168-09-plain-frame-images
 description: "Use the baked frame textures as plain stretched images in WBP_UpgradeChoice, panel inside the frame only, content in the opening."
 parent: task-168-upgrade-card-design
 kind: task
-status: in-progress
+status: done
 ---
 # Upgrade cards: plain frame images
 
@@ -15,11 +15,11 @@ status: in-progress
 - done_when: Compiles with warnings as errors, saved, brush draw type and sizes read back at runtime path (the functions that set the frames), doc updated, committed. Owner checks on screen.
 - editor_state: open
 - token_ceiling: 40 turns
-- model: open
-- tokens: open
-- runs: open
+- model: sonnet
+- tokens: input 48, cache write 67323, cache read 1037744, output 1088
+- runs: 1
 - milestone: M2
-- result: open
+- result: Baked frame textures imported (UI group, no mips) and used by FrameBase/Accents/Glow/Weapon with Draw As Image, ImageSize 440 x 720, Fill slots; runtime path read back: nothing touches the frame brushes (only tints), so the oversize came from the Box draw itself (not confirmed). CardPanel padded to the opening (14/24/14/25), CardBox 38/58/38/60, WeaponBody 38/56/38/60, WeaponHeader top 5; weapon bottom inset 50 (no divider found). Old 9-slice textures left unused. Compiled, saved, read back, doc updated. Not seen on screen. Commit 3e4538d.
 
 ## Relations
 - [[task-168-upgrade-card-design]] — parent global task.
