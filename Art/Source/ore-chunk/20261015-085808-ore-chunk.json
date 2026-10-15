@@ -1,0 +1,27 @@
+{
+  "run_id": "20261015-085808-ore-chunk",
+  "asset": "ore-chunk",
+  "model": "gpt-image-2-image-to-image",
+  "aspect_ratio": "1:1",
+  "resolution": "1K",
+  "variants": 1,
+  "prompt_file": "Art/Source/ore-chunk/prompts/11-chunk-c3b-isolated.txt",
+  "prompt": "Keep this exact style: same blunt Duskite crystal knot family as Image 1 (stubby fat hexagonal prisms fused together, every end cut blunt with a wide flat facet, no needle tips, no base, no up direction), same saturated violet, same large flat facets, flat-shaded low-poly, same plain light grey background, single object centred with a wide margin, same three-quarter camera angle and framing, no glow halo, no cast shadow, no floor, no outline, no text. Closed into one solid piece, compact. But the shape must be clearly different from Image 1: four short blunt prisms of clearly unequal thickness fused in an asymmetric cluster, one prism noticeably thicker and bigger than the other three, the three others smaller and pointing in different directions, no long arms, no two prisms parallel, prisms tightly fused with no narrow gaps between them, a dense compact lump.",
+  "refs": [
+    "vault/assets/ore-chunk-c1.png"
+  ],
+  "tasks": [
+    {
+      "task_id": "32a03bd5935ccefc862ad69760edbe35",
+      "state": "success",
+      "credits": 6,
+      "error": null,
+      "result_urls": [
+        "https://tempfile.aiquickdraw.com/images/chatgpt/file_0000000027a481f599adbf5922e31efa.png"
+      ]
+    }
+  ],
+  "files": [
+    "Art/Source/ore-chunk/20261015-085808-ore-chunk-1.png"
+  ]
+}
