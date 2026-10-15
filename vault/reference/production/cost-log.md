@@ -324,6 +324,7 @@ kind: note
 | [[task-189-02-ore-chunk-mesh]] | sonnet | 2 | 0k | 71k | 577k | 2k |
 | [[task-189-03-ore-chunk-materials]] | sonnet | 1 | 0k | 70k | 1512k | 1k |
 | [[task-189-04-ore-chunk-trail]] | sonnet | 1 | 0k | 44k | 680k | 1k |
+| [[task-192-01-pickup-spawn-orientation-variants]] | opus | 1 | 0k | 77k | 952k | 0k |
 
 ## Totals
 | Scope | Input | Cache write | Cache read | Output |

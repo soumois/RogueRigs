@@ -3,7 +3,7 @@ id: task-192-01-pickup-spawn-orientation-variants
 description: "C++: ARRPickup rest orientation mode (None, YawOnly, Full) and random mesh variant drawn once per life, pool-safe, defaults unchanged."
 parent: task-192-pickup-spawn-orientation-variants
 kind: task
-status: in-progress
+status: done
 ---
 # Pickup spawn orientation and mesh variants
 
@@ -15,11 +15,11 @@ status: in-progress
 - done_when: editor build succeeds with no new warning; existing pickup and pool automation tests pass (only expectations a change breaks are updated, no new test); docs updated; lint clean; committed by path.
 - editor_state: closed
 - token_ceiling: open
-- model: open
-- tokens: open
-- runs: open
+- model: opus
+- tokens: input 40, cache write 77454, cache read 952308, output 448
+- runs: 1
 - milestone: M1
-- result: open
+- result: ARRPickup RestOrientation (ERRPickupRestOrientation None/YawOnly/Full, uniform quaternion for Full) and MeshVariants (random non-null pick, SetStaticMesh keeps OverrideMaterials) drawn in ApplyLifeLook at StartLife (spawn and every pool reuse), no tick; defaults None and empty; build succeeded, 25 pickup and pool tests pass unchanged; new modes not exercised; commits 31287a9b, 311581a5
 
 ## Relations
 - [[task-192-pickup-spawn-orientation-variants]] — parent global task.

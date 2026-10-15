@@ -3,7 +3,7 @@ id: task-192-02-pickup-orientation-defaults
 description: "BP: set the rest orientation mode on the XP nut, big XP chip and heal pickup Blueprints, docs updated."
 parent: task-192-pickup-spawn-orientation-variants
 kind: task
-status: todo
+status: in-progress
 ---
 # Pickup orientation defaults on Blueprints
 

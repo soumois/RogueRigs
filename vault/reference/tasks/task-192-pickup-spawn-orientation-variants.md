@@ -13,7 +13,7 @@ status: in-progress
 - gdd_check: ore-blocks, color-code and sys-pickups read 2026-10-15. Today every pickup spawns with zero rotation (RRArenaGrid SpawnActor, pool restores the template); PopYaw is only the ejection direction. No GDD rule on pickup orientation: the per-Blueprint values are provisional defaults to confirm at launch (ore Full with 3 variants via task-189-05, chip YawOnly per owner, nut and heal Full). Not decided: whether orientation is drawn at ejection or at landing (default: at ejection, no tumble in flight).
 - confirmed_by_owner: yes (2026-10-15: "Lance la tâche 192 avec les réglages par défaut, puis termine la 189 jusqu'au bout")
 - milestone: M1
-- next_step: task-192-01-pickup-spawn-orientation-variants
+- next_step: task-192-02-pickup-orientation-defaults
 - result: open
 
 ## Subtasks
