@@ -1,6 +1,6 @@
 ---
 id: task-190-debris-spin-damping
-description: "Global task: Debris spin slower and damped: 0.3-0.8 rev/s per piece, half-life 1 s in the air, halved at each bounce, stopped once at rest on the floor."
+description: "Global task: debris spin slower and damped in the air, halved on bounces, stopped at rest."
 parent: tasks-to-do-index
 kind: task
 status: in-progress
