@@ -15,7 +15,7 @@ status: approved
   - the count is the number of meshes thrown (2, 3 or 4, equal odds); the other parts vanish with the robot;
   - throw (provisional, owner 2026-10-14): each piece leaves along the direction of the killing hit (radial from an explosion) turned by a random angle within ±15°; final speed (provisional, owner 2026-10-15) 325-600 along the direction and 350-550 upward, i.e. a base of 250-300 and 269.2-275 × a random factor F of 1.3 to 2 drawn once per death, plus a small per-piece spread (±100 × F); start position = the piece place on the robot ± 10 cm on each axis.
 - The pieces have no glow: the red eye is off.
-- Pieces collide with the floor only (an analytic floor plane). No interaction with the miner, robots or blocks.
+- Pieces collide with the floor (an analytic floor plane) and bounce off walls (rock blocks, distance field collision on a GPU emitter) (owner 2026-10-15, was floor only). No interaction with the miner or robots.
 - Pieces stay 4.5 s at full size, then sink into the floor in 0.4 s without shrinking: 4.9 s in all; no debris stays in the arena (provisional, owner 2026-10-15; was 1.2 s with a shrink, then 3.4 s).
 - Each piece spins about a random axis at 0.3 to 0.8 rev/s at the throw; in the air the spin halves every 1 s, each floor bounce halves it, and it stops once the piece rests on the floor (provisional, owner 2026-10-15; was a fixed 1.5 rev/s that never slowed down).
 - Debris and puff systems are pooled, debris 80 and puff 40 at most; when the debris pool is empty, only the puff plays (provisional, owner 2026-10-15, test).

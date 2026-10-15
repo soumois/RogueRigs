@@ -3,7 +3,7 @@ id: task-191-01-debris-gpu-df-collision
 description: "Switch the NS_RobotDebris emitter to GPU simulation and make the pieces bounce off walls with distance field collision, all current behaviour kept."
 parent: task-191-debris-wall-collision
 kind: task
-status: todo
+status: in-progress
 ---
 # Robot debris: GPU sim and wall collision
 
