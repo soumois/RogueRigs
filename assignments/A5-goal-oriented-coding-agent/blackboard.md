@@ -175,3 +175,19 @@ Factors: **MS** milestone (M1 = 3, M2 = 2, M3 = 1; a sub-feature whose content i
 English translation: "Ok. Just so you know, you can put it next to the radar. For that you will also need the icon, and while you are at it ask the Art agent for a proposed in-game visual render (it will need it to create the HUD icon). In the blackboard, translate into English every time."
 
 Decision: **approved**: ore counter. "Ok" accepts every default: (1) secured ore kept in the game instance for the session and shown on the success screen; (2) death also loses carried ore; (3) one dedicated widget, placed **next to the radar (minimap)** instead of the XP bar. Added by the owner: an ore icon for the HUD, preceded by an in-game visual render proposed by the Art agent. Rule for the blackboard: owner quotes are kept verbatim and followed by an English translation.
+
+### 5. Plan
+- GDD check (orchestration-protocol step 2): `ore-economy` and `extraction` (approved, M1). No conflict with the GDD. `open` and not built: share of secured ore lost on a failed run. Milestone M1. Placement: `WBP_HUD` puts the minimap disc at x 20–220, y 20–220 and the health bar at y 232; the space right of the disc is free up to the alert bar (x 660).
+- Correction to the scan: `wbp-minimap-locator` shows the locator already displays the distance in metres (Blueprint `UpdateLocatorView`), so that row is `built`, not `partial`. The ranking does not change.
+- Global task: [`task-183-ore-counter`](../../vault/reference/tasks/task-183-ore-counter.md), milestone M1, one owner point, four subtasks because it spans C++, art and Blueprint:
+
+| # | Subtask | Agent | Depends on | Output |
+|---|---|---|---|---|
+| 1 | [`task-183-01-ore-counter-logic`](../../vault/reference/tasks/task-183-ore-counter/task-183-01-ore-counter-logic.md) | cpp | — | carried and secured counts, HUD event, `rr.Cheat.GrantOre`, docs |
+| 2 | [`task-183-02-ore-hud-render`](../../vault/reference/tasks/task-183-ore-counter/task-183-02-ore-hud-render.md) | art | — | ≤ 2 in-game renders of the counter next to the radar; owner picks |
+| 3 | [`task-183-03-ore-hud-icon`](../../vault/reference/tasks/task-183-ore-counter/task-183-03-ore-hud-icon.md) | art | 2 + owner choice | ≤ 2 HUD ore icons; owner picks |
+| 4 | [`task-183-04-ore-counter-widget`](../../vault/reference/tasks/task-183-ore-counter/task-183-04-ore-counter-widget.md) | bp | 1, 3 | `WBP_OreCounter` next to the radar, secured ore on the success screen, docs |
+
+- Order: 1 and 2 can run in parallel (C++ with the editor closed; art needs no editor). 3 waits for the owner's pick of a render, 4 for the owner's pick of an icon.
+- Not planned (owner rules): no new automation test, no bot run; ore loss on failed run (`open`).
+- Status: plan shown to the owner, waiting for confirmation (protocol step 4).
