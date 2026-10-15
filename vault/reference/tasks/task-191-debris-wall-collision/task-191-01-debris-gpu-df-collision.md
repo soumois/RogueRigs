@@ -19,7 +19,7 @@ status: done
 - tokens: input 124, cache write 160531, cache read 5238111, output 39372
 - runs: 2
 - milestone: M3
-- result: GPU compute sim, fixed bounds ±2000/-200..1500, Collision GPU distance fields (walls and floor; analytic plane impossible on GPU, one mode), collision off from age 4.5 s; compiles clean; clean -game check (1 chaser, slomo 0.25, timed shots): pieces spawn at the robot, stop at the wall foot (none inside), rest on the floor 1.3-4.5 s, sink 4.5-5 s; wall bounce vs stop not distinguished; commits bda304fb, 68da4286, cf37ff06
+- result: GPU compute sim, fixed bounds ±2000/-200..1500, Collision GPU distance fields (walls and floor; analytic plane impossible on GPU, one mode), collision off from age 4.5 s; compiles clean; clean -game check (1 chaser, slomo 0.25, timed shots): pieces spawn at the robot, stop at the wall foot (none inside), rest on the floor 1.3-4.5 s, sink 4.5-5 s; wall bounce vs stop not distinguished; commits bda304fb, 68da4286, cf37ff06; validated on screen by the owner: pieces stop at the walls (2026-10-15)
 
 ## Relations
 - [[task-191-debris-wall-collision]] — parent global task.
