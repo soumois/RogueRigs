@@ -236,3 +236,12 @@ Notes:
 ```
 
 Both delegated in parallel (no shared files: C++ with the editor closed; art needs no editor).
+
+#### task-183-01-ore-counter-logic (cpp) — result
+- Files: `Source/RogueRigs/Objectives/RROreBankSubsystem.h/.cpp` (new), `Objectives/RRRunFlowSubsystem.h/.cpp`, `Pickups/RRPickup.h/.cpp`, `Debug/RRCheats.h/.cpp`, `Debug/RRCheatSettings.h`, `Debug/RRCheatSubsystem.cpp`; docs: new `sys-objectives-ore-counter`, updated `sys-objectives`, `sys-pickups`, `sys-hud-events`, `sys-hud-bindings`, `sys-cheats`.
+- Design: carried ore in `URRRunFlowSubsystem` (`AddCarriedOre`, `GetCarriedOre`, `GetSecuredOre`, delegate `OnOreChanged(CarriedOre, SecuredOre)`); secured ore in the new game-instance subsystem `URROreBankSubsystem` (survives `RestartLevel`, not saved to disk). `EndRun(true)` secures, `EndRun(false)` and the miner's `OnDeath` empty the carried count. Cheat `RRCheats::GrantOre`, CVar `rr.Cheat.GrantOre <N>`, CDO property `URRCheatSettings::GrantOre`.
+- Build: exit 0 (editor closed). First build failed: a missing `#include "Weapons/RRWeapon.h"` hidden by the unity build surfaced once the files left it; fixed in the two .cpp files (root cause in `Upgrades/RRUpgradeCard.h`, reported, not changed).
+- Tests: 38/38 pass (Cheats, Extraction, Pickups, PickupPool, HUD, RunFlow); no new test, no expectation changed.
+- Run: `-game -nullrhi` log `rr.Cheat.GrantOre (rr.Cheat): +10 ore, carried 10, secured 0.`
+- Unverified at runtime: real pickups, securing on extraction, loss on miss or death, survival across restart, the property route.
+- Commits: `7a452036` (code), `cb0916e5` (docs), `4734f2bb` (task closed). Retry: none.
