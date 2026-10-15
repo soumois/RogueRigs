@@ -3,7 +3,7 @@ id: task-177-02-wider-cards-layout
 description: "Use the re-baked 500 x 720 frames in WBP_UpgradeChoice and widen the cards and their content."
 parent: task-177-wider-upgrade-cards
 kind: task
-status: todo
+status: in-progress
 ---
 # Upgrade cards: wider layout
 
