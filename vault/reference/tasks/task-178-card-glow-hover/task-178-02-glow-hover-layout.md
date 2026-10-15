@@ -3,7 +3,7 @@ id: task-178-02-glow-hover-layout
 description: "Show the new glow at about 2x at rest and about 3x on hover of a card, through the card button hover events, no tick."
 parent: task-178-card-glow-hover
 kind: task
-status: todo
+status: in-progress
 ---
 # Upgrade cards: glow strength and hover
 

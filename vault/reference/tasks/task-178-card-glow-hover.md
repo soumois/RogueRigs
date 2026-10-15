@@ -13,7 +13,7 @@ status: in-progress
 - gdd_check: done by the Orchestrator when the task is planned (2026-10-15).
 - confirmed_by_owner: yes (2026-10-15)
 - milestone: M2
-- next_step: task-178-01-card-glow-hover
+- next_step: task-178-02-glow-hover-layout
 - result: open
 
 ## Subtasks

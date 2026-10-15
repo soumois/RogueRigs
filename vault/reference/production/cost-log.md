@@ -297,6 +297,7 @@ kind: note
 | [[task-177-01-wider-upgrade-cards]] | sonnet | 1 | 0k | 21k | 64k | 1k |
 | [[task-176-01-lone-stat-icon-larger]] | sonnet | 1 | 0k | 85k | 1406k | 1k |
 | [[task-177-02-wider-cards-layout]] | sonnet | 1 | 0k | 56k | 994k | 1k |
+| [[task-178-01-card-glow-hover]] | sonnet | 1 | 0k | 27k | 142k | 0k |
 
 ## Totals
 | Scope | Input | Cache write | Cache read | Output |
