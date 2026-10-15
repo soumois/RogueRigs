@@ -14,7 +14,7 @@ status: done
 - confirmed_by_owner: yes (2026-10-14)
 - milestone: M2
 - next_step: none
-- result: Done. RRWeaponsIntegrationTests: weapon card expectations moved to WeaponHeader/WeaponName/WeaponDesc and CardDesc = LoreText when non-empty. Build OK; WeaponCardEquipsShotgun, LevelUpUpgradeLoop, ConsoleExtractionWin, ShuttleTimeoutLoss pass (4/4). Commit 9e401a6.
+- result: Done. New-weapon cards: 2 lore lines (critic pass after one L1 fix), owner-picked weapon frame 1, weapon_texts.json loaded in C++ with validator support, WeaponGroup variant in WBP_UpgradeChoice (New weapon on the header plate, icon only, name, explanation, lore at the bottom), existing integration test expectations updated (4/4 pass). Not seen on screen. 18 Kie credits.
 
 ## Subtasks
 1. task-169-01-weapon-lore-lines — text

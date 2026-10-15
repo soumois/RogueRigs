@@ -14,7 +14,7 @@ status: done
 - confirmed_by_owner: yes (2026-10-14)
 - milestone: M2
 - next_step: none
-- result: Done. WBP_UpgradeChoice stat cards rebuilt from the epic mockup: 392 x 572 CardSize (380 x 560 card), 40 px gap, reroll centred below; frame = FrameBase + FrameAccents + FrameGlow Box brushes (accents and glow tinted by tier); image area 308 x 252 with weapon icon (keeps aspect) + stat icon for one weapon, stat icon alone otherwise (URRIconLibrary); effect (tier colour value + white stat name), target, lore from LoreText anchored at the bottom. 12 stat icons and 4 frame textures imported. Widget names kept. Compiles with warnings as errors, saved, doc updated. Not seen on screen: Box margins drawn size, hover feedback removed (button states NoDrawType), runtime clicks. Commits de6b06c, 03e47dc, 04a28f5, a5792e8.
+- result: Done. Stat cards redesigned: 13 pure lore lines (critic pass), 12 owner-picked stat icons, stat frame derived from the weapon frame with rarity shown by tinted accents plus inner glow (owner A+C), URRIconLibrary and LoreText in C++, WBP_UpgradeChoice rebuilt from the validated epic mockup (lore at the bottom). Not seen on screen: frame corner size, hover feedback removed, runtime clicks. About 360 Kie credits (144 lost to parallel runs).
 
 ## Subtasks
 1. task-168-01-card-lore-lines — text
