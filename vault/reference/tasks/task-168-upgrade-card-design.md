@@ -1,9 +1,9 @@
 ---
 id: task-168-upgrade-card-design
 description: "Global task: large stat upgrade cards with image, effect, pure lore line and rarity-tinted frame, reroll below."
-parent: tasks-done-index
+parent: tasks-to-do-index
 kind: task
-status: done
+status: in-progress
 ---
 # Upgrade cards: new design
 
@@ -13,8 +13,8 @@ status: done
 - gdd_check: upgrades, rarities, sys-upgrades, wbp-upgrade-choice, readability-rules, sys-text-content read (2026-10-14). No conflict. Notes: flavor lines described the effect (rewritten as pure lore); UI text stays English; 12 offered stats (no magazine size in M1). Owner defaults accepted 2026-10-14; frame style chosen among 3 art proposals (owner).
 - confirmed_by_owner: yes (2026-10-14)
 - milestone: M2
-- next_step: none
-- result: Done. Stat cards redesigned: 13 pure lore lines (critic pass), 12 owner-picked stat icons, stat frame derived from the weapon frame with rarity shown by tinted accents plus inner glow (owner A+C), URRIconLibrary and LoreText in C++, WBP_UpgradeChoice rebuilt from the validated epic mockup (lore at the bottom). Not seen on screen: frame corner size, hover feedback removed, runtime clicks. About 360 Kie credits (144 lost to parallel runs).
+- next_step: task-168-06-card-layout-fix
+- result: Reopened 2026-10-14: owner test shows the image background in front of the frame, content laid out in the outer card rect instead of the frame opening, frame borders far too thick; alert bar to hide during the choice (168-06, 168-07). Earlier: stat cards redesigned (lore, icons, A+C frame, C++, WBP).
 
 ## Subtasks
 1. task-168-01-card-lore-lines — text
@@ -22,11 +22,15 @@ status: done
 3. task-168-03-card-frames — art
 4. task-168-04-card-icon-data — cpp
 5. task-168-05-upgrade-choice-layout — bp
+6. task-168-06-card-layout-fix — bp
+7. task-168-07-hide-alert-bar — bp
 
 ## Relations
-- [[tasks-done-index]] — parent index.
+- [[tasks-to-do-index]] — parent index.
 - [[task-168-01-card-lore-lines]] — step 1, text.
 - [[task-168-02-stat-icons]] — step 2, art.
 - [[task-168-03-card-frames]] — step 3, art.
 - [[task-168-04-card-icon-data]] — step 4, cpp.
 - [[task-168-05-upgrade-choice-layout]] — step 5, bp.
+- [[task-168-06-card-layout-fix]] — step 6, bp (owner test fixes).
+- [[task-168-07-hide-alert-bar]] — step 7, bp.
