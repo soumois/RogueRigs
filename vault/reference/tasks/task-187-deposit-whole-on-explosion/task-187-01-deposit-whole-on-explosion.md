@@ -3,7 +3,7 @@ id: task-187-01-deposit-whole-on-explosion
 description: "When an explosion destroys any block of an ore deposit, the whole deposit is destroyed and pops all its chunks: no partly destroyed deposit."
 parent: task-187-deposit-whole-on-explosion
 kind: task
-status: in-progress
+status: done
 ---
 # Ore deposits: destroyed whole by explosions
 
@@ -15,11 +15,11 @@ status: in-progress
 - done_when: Build passes with the editor closed; existing grid, explosion, dig and ore tests pass (update only an expectation this change breaks, e.g. a test that expects a partial deposit); a -game run with an explosion over part of a deposit logs the whole deposit destroyed and its 4 chunks (values, no screenshots; no new test); docs updated; committed by path
 - editor_state: closed
 - token_ceiling: open
-- model: open
-- tokens: open
-- runs: open
+- model: opus
+- tokens: input 92, cache write 92220, cache read 2788805, output 27422
+- runs: 1
 - milestone: M2
-- result: open
+- result: DestroyCell with Barrel/Kamikaze source on a deposit block destroys the deposit's other standing blocks (DestroySingleCell, no recursion, queued/destroyed skipped, drops and console counts per block); DestroyCellsInRadius returns real count; run: deposit 161 with 2 of 4 cells in radius broke whole, 4 chunks; 97/97 tests after 2 expectations updated; start capsule path and heal veins not exercised; commits 1531c7fd, 60b94290, 0f49dcae
 
 ## Relations
 - [[task-187-deposit-whole-on-explosion]] — parent global task.

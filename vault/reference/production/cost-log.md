@@ -307,6 +307,7 @@ kind: note
 | [[task-183-02-ore-hud-render]] | opus+sonnet | 1 | 0k | 93k | 239k | 6k |
 | [[task-183-03-ore-hud-icon]] | opus+sonnet | 1 | 0k | 53k | 199k | 3k |
 | [[task-183-04-ore-counter-widget]] | sonnet | 1 | 0k | 165k | 7246k | 1k |
+| [[task-187-01-deposit-whole-on-explosion]] | opus | 1 | 0k | 92k | 2789k | 27k |
 
 ## Totals
 | Scope | Input | Cache write | Cache read | Output |

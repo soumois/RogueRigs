@@ -1,9 +1,9 @@
 ---
 id: task-187-deposit-whole-on-explosion
 description: "Global task: an explosion that destroys any block of an ore deposit destroys the whole deposit and pops all its chunks."
-parent: tasks-to-do-index
+parent: tasks-done-index
 kind: task
-status: in-progress
+status: done
 ---
 # Ore deposits: destroyed whole by explosions
 
@@ -13,12 +13,12 @@ status: in-progress
 - gdd_check: ore-blocks, explosions read (2026-10-15): explosions destroy every block in the radius and drone mining breaks a 2 x 2 deposit whole, but nothing says a deposit cut by an explosion breaks whole: new rule, ore-blocks to update; open: heal veins included (default yes).
 - confirmed_by_owner: yes (2026-10-15); heal veins included
 - milestone: M2
-- next_step: task-187-01-deposit-whole-on-explosion
-- result: open
+- next_step: none
+- result: Done. DestroyCell with Barrel/Kamikaze source on a deposit block destroys the deposit's other standing blocks (DestroySingleCell, no recursion, queued/destroyed skipped, drops and console counts per block); DestroyCellsInRadius returns real count; run: deposit 161 with 2 of 4 cells in radius broke whole, 4 chunks; 97/97 tests after 2 expectations updated; start capsule path and heal veins not exercised; commits 1531c7fd, 60b94290, 0f49dcae
 
 ## Subtasks
 1. task-187-01-deposit-whole-on-explosion — cpp
 
 ## Relations
-- [[tasks-to-do-index]] — parent index.
+- [[tasks-done-index]] — parent index.
 - [[task-187-01-deposit-whole-on-explosion]] — step 1, cpp.
