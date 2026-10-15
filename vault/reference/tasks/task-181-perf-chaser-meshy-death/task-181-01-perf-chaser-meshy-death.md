@@ -3,7 +3,7 @@ id: task-181-01-perf-chaser-meshy-death
 description: "Measure the frame cost of the Meshy chaser (animated material) and its death effects (puff, debris) with the stress tool, compared with the M1 tables."
 parent: task-181-perf-chaser-meshy-death
 kind: task
-status: in-progress
+status: done
 ---
 # Performance test: Meshy chaser, animation and death effects
 
@@ -15,11 +15,11 @@ status: in-progress
 - done_when: All scenario steps ran and their CSV/log are under Saved/Stress; tables and comparison written in the new perf node; build passes with the editor closed; existing stress tests still pass; report sent to the owner first; committed by path
 - editor_state: closed
 - token_ceiling: open
-- model: open
-- tokens: open
-- runs: open
+- model: opus
+- tokens: input 108, cache write 233519, cache read 4240670, output 36800
+- runs: 1
 - milestone: M3
-- result: open
+- result: Pool play/skip counters in Stress step and CSV; S0 50-600 avg 7.99-11.13 ms, S2 50-400 8.32-10.55 (faster than M1, game thread -32 to -51 %); new draw/GPU +5.6 us per robot (trace S0 600: Lumen card captures likely); S7 chasers 50-200 max 27-28 ms (M1 49.6), cap 40 holds; game caps 100/200/300 avg 9.73/10.75/12.28, p99 12.3/15.4/18.2; debris skipped 1/30/45 % of deaths; GC spikes 39-47 ms as in M1; report perf-stress-chaser-meshy; commits c719274c, bc42ec48
 
 ## Relations
 - [[task-181-perf-chaser-meshy-death]] — parent global task.
