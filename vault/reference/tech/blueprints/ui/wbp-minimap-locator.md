@@ -16,6 +16,7 @@ kind: doc
 - tick: nothing runs while the miner is idle and no target is shown. The only per-frame work is the looping 0.016 s timer PulseLocatorArrow, started when the arrow is shown off screen and cleared on HideLocator or Destruct. The pulse stays a timer because it is a render-transform scale, not a material parameter, so M_LocatorArrow Time cannot do it.
 - logic_in_bp: display only.
 - assets: M_Minimap, M_LocatorArrow.
+- opacity: M_Minimap (task-184-01) outputs opacity = circle mask only (saturate((0.5 - length(UV - 0.5)) x 100)): 1 inside the circle whatever the texel alpha, 0 outside; colour is black outside the texture bounds and where the texel alpha is 0. Unseen cells are opaque black (MinimapConfig.UnseenColor 0,0,0,255 on WBP_HUD). MinimapImage tint, renderOpacity and WBP_MinimapLocator colorAndOpacity read back 1. Compiled and saved; not seen on screen.
 - owner_agent: agent-bp
 - verified: compiled with warnings as errors, saved (task-103-02). Not seen in PIE: delegate assignment, the first-call texture hookup, the markers and the arrow pulse are unverified. Binding uses Assign nodes (AssignOn...), whose event signatures come from the delegates; the unused Bind Event / Create Event route failed on const-ref struct payloads.
 
