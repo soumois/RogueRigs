@@ -3,7 +3,7 @@ id: task-183-03-ore-hud-icon
 description: "Art: the HUD ore icon, a Duskite crystal drawn from the owner-validated in-game render, same style as the stat icons."
 parent: task-183-ore-counter
 kind: task
-status: todo
+status: in-progress
 ---
 # Ore counter: HUD icon
 
