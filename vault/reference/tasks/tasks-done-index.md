@@ -186,3 +186,4 @@ Archive: it exceeds the index size limits of [[_authoring]] on purpose (owner, 2
 - [[task-174-debris-regression]] — Find with a real game run why debris pieces no longer show after tasks 170 to 173, and name the exact fix. Status done.
 - [[task-176-lone-stat-icon-larger]] — Make the stat icon 25 % larger (125 to 156 px) on cards where it is shown alone (All weapons or player stat); unchanged next to a weapon icon. Status done.
 - [[task-177-wider-upgrade-cards]] — Make the upgrade cards wider: 500 x 720 instead of 440 x 720, frames re-baked at the new size, same frame thickness. Status done.
+- [[task-178-card-glow-hover]] — Stronger inner rarity glow on the upgrade cards (about 2x), and stronger still on hover (about 3x), driven by the button hover events. Status done.
