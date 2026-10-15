@@ -1,0 +1,38 @@
+{
+  "run_id": "20261014-231429-ore-hud",
+  "asset": "ore-hud",
+  "model": "gpt-image-2-image-to-image",
+  "aspect_ratio": "16:9",
+  "resolution": "1K",
+  "variants": 2,
+  "prompt_file": "Art/Source/ore-hud/prompts/01-hud-render.txt",
+  "prompt": "Image 1 is an in-game gameplay screenshot of Rogue Rigs: steep top-down camera (almost vertical, slight perspective), clean flat dark grey floor with subtle large facets, light grey blocky rock walls with a faint violet tint, a small miner in the centre. Image 2 is a style reference for the chunky, faceted, flat-shaded low-poly icon look with a thin dark charcoal outline.\n\nDraw one 16:9 in-game render of the same kind of scene as Image 1 (flat-shaded low-poly, visible facets, no textures, strong directional light with lifted shadows so everything stays readable), with a game HUD drawn on top, top-left corner only:\n- a round radar disc about 200 px across on a 1920 x 1080 frame, 20 px from the left and top edges, a dark translucent circle showing a faint map of light grey rock cells and a tiny teal dot at its centre, thin dark rim;\n- directly under the disc, a flat horizontal health bar about 280 px wide and 28 px tall, filled red, dark frame, no text;\n- to the RIGHT of the disc, vertically centred on it, a compact ore counter: a small dark translucent rounded plate holding, on the left, a chunky faceted Duskite ore crystal icon (a cluster of glowing violet crystals, large flat facets, thin dark charcoal outline, bright violet glow, about 56 px tall) and, to its right, the white number \"27\" in a bold blocky pixel-style font, readable at a glance. The counter is about 150 px wide and stays well clear of the screen centre.\nEverything else in the frame stays as in Image 1: no other HUD elements, no weapon bar, no experience bar, no extra text. The only text anywhere is the number \"27\". No logos, no captions, no letters.",
+  "refs": [
+    "Saved/Screenshots/WindowsEditor/Still_04.png",
+    "Art/Source/stat-icons/damage-1.png"
+  ],
+  "tasks": [
+    {
+      "task_id": "635fd46659f2c437ab204b5d9eab0028",
+      "state": "success",
+      "credits": 6,
+      "error": null,
+      "result_urls": [
+        "https://tempfile.aiquickdraw.com/a2/635fd46659f2c437ab204b5d9eab0028_1792045283335.png"
+      ]
+    },
+    {
+      "task_id": "8a148a475246423e7d1a3f6fc3a3d0ad",
+      "state": "success",
+      "credits": 6,
+      "error": null,
+      "result_urls": [
+        "https://tempfile.aiquickdraw.com/images/chatgpt/file_00000000afc0822f8722c565f3498e7b.png"
+      ]
+    }
+  ],
+  "files": [
+    "Art/Source/ore-hud/20261014-231429-ore-hud-1.png",
+    "Art/Source/ore-hud/20261014-231429-ore-hud-2.png"
+  ]
+}
