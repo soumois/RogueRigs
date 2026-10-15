@@ -1,6 +1,6 @@
 ---
 id: perf-stress-chaser-meshy
-description: "Meshy chaser and death effects stress (task-181-01): S0, S2, S7 chaser burst, game 100-300; puff and debris plays and skips; M1 comparison; verdict."
+description: "Meshy chaser and death effects stress: S0, S2, S7 burst, game 100-300, puff and debris skips, M1 comparison (task-181-01); debris pool 80 cost (task-182-03)."
 parent: performance-index
 kind: doc
 ---
@@ -44,6 +44,33 @@ Editor `-game` 1920 × 1080 through `Scripts/Run-StressTest.ps1` ([[sys-stress]]
 ## Verdict
 The Meshy chaser and its death effects fit the budget: averages ≤ 12.3 ms and p99 ≤ 18.2 ms everywhere, burst frames ≤ 28.4 ms (M1: 49.6). The pool caps bound the death-effect cost; their price is visual (debris missing on 30–45 % of deaths above 200 alive). Lead: robot parts in the Lumen surface cache (render thread grows with the count).
 
+## Debris pool 80 × 4.9 s against 40 × 3.4 s (2026-10-15, task-182-03)
+Same launcher, map, resolution and options as above, HEAD 303fd1a (debris pool 80 on `BP_Chaser` and `BP_ShieldChaser`, puff pool 40, debris life 4.9 s = 4.5 s + 0.4 s sink, throw 325–600 / 350–550 uu/s, task-187 deposits). Owner profile: Discord, Epic launcher, Zoom, Parsec, NVIDIA container (Brave closed), no game, no editor. Not paced at 60 Hz (3039 frames in 25 s, 4630–5417 in 60 s). CSV `Saved/Stress/Stress_20261015_004941` (S7), `_005131` (game 200), `_005320` (game 300), `_005410` (memory run); logs `task182_*.log` (not committed).
+
+| Step | Pool | Frame | Game | Draw avg / p99 | GPU avg / p99 | Alive avg | Puff plays / skips | Debris plays / skips |
+|---|---|---|---|---|---|---|---|---|
+| S7 200 | 40 × 3.4 | 8.19 / 11.21 / 27.9 | 3.41 / 8.74 / 24.3 | 8.17 / 11.21 | 7.21 / 7.84 | — | 40 / 160 | 40 / 160 |
+| S7 200 | 80 × 4.9 | 8.23 / 11.56 / 25.9 | 3.67 / 9.00 / 23.2 | 8.21 / 11.43 | 7.12 / 8.26 | — | 40 / 160 | 80 / 120 |
+| game 200 | 40 × 3.4 | 10.75 / 15.43 / 44.3 | 9.51 / 15.26 / 45.2 | 10.24 / 12.93 | 8.74 / 9.50 | 165.6 | 633 / 36 | 465 / 204 |
+| game 200 | 80 × 4.9 | 11.08 / 15.85 / 46.7 | 9.88 / 15.77 / 47.6 | 10.59 / 13.34 | 8.46 / 9.54 | 158.1 | 640 / 49 | 587 / 73 |
+| game 300 | 40 × 3.4 | 12.28 / 18.18 / 46.6 | 11.96 / 18.05 / 47.3 | 9.79 / 12.52 | 8.75 / 9.51 | 232.3 | 975 / 11 | 531 / 441 |
+| game 300 | 80 × 4.9 | 12.96 / 19.36 / 51.5 | 12.52 / 19.34 / 51.4 | 10.63 / 13.44 | 8.61 / 9.52 | 245.6 | 933 / 130 | 760 / 300 |
+
+- Every difference is inside the ≈ 2 ms PC spread: no Insights trace. Max frames are the GC frame (t 31 s, game mode) and the S7 death frame (25.9 ms, game 23.2, `xp drop 600`). Game 300 has 3 spikes (fill 1, gc 1, pause 1) against 1.
+- Debris skips: game 200 30 % → 11 % of deaths, game 300 45 % → 28 %, S7 200 80 % → 60 % (80 per frame at most). Puff skips 36 → 49 and 11 → 130 (puff cap 40 unchanged; at 300 more deaths came in bursts).
+- Task-187 (deposits break whole under explosions): S7 200 destroyed 1787 blocks against 1762 (+25), 21 event frames against 19, event max 21.5 ms (27.9 before). The burst comparison therefore includes slightly more block destructions; game-mode blocks depend on where the bot drives (12 / 48 here, 73 / 101 in task-181).
+
+### Cost per extra active debris system
+- Average active debris systems in game mode = plays × life / 60 s: 200 cap 26.4 → 47.9 (+21.5), 300 cap 30.1 → 62.1 (+32.0).
+- Draw (render thread): +0.35 ms at 200, +0.84 ms at 300 (−0.07 ms for the 13 extra robots alive, 5.6 µs per robot from S0) → **16–24 µs per active system**; S7 draw p99 +0.22 ms for +40 systems → 6 µs. Upper bound 25 µs: all inside the spread.
+- GPU: avg −0.28 / −0.14 ms, p99 +0.04 / +0.01 ms in game mode, S7 p99 +0.42 ms → **not measurable (≤ 10 µs per system)**.
+- Game thread: +0.37 / +0.56 ms in game mode, mixed with alive count, explosions (41 / 80 against 36 / 73) and run variation; S7 avg +0.26 ms → **≤ 15 µs per system, not separable**.
+- Memory (memory run: same S7 launch with `obj list class=NiagaraComponent` at start, 3.1 s after the spawn and 1.5 s after the burst, plus `fx.Niagara.DumpComponents filter=NS_RobotDebris`; frame numbers of that launch not used, the dumps cost up to 54 ms): pool components on the world settings 1 → 121 after the prewarm (1 damage numbers, 40 puff, 80 debris). An idle debris component is **3.58 KB** (NumKB; puff 3.28 KB); an active debris system adds **5.52 KB** of CPU particle data (ResExcDedSys, 2–4 particles: 34 × 2, 29 × 3, 17 × 4), video memory 0. So 40 extra components cost 143 KB idle and 364 KB all active (≈ 9.1 KB per active system). Process memory (`mem`: 3533 MB before, 3771 MB after the spawn and prewarm) mixes 200 robot spawns and is not usable. Mesh-renderer GPU buffers are not counted by `obj list` (unverified, render-thread dynamic data).
+
+### Rule of thumb for raising the cap
+- Debris systems needed ≈ deaths per second × 4.9 s, ×1.5 for bursts. Deaths per second (plays + skips over 60 s): 11 at 200 alive (needs ≈ 54 on average, 80 leaves 11 % skips), 18 at 300 alive (needs ≈ 87, 80 leaves 28 %); ≈ 130 would cover 300 alive.
+- Each +40 of cap costs at most ≈ 1 ms render thread when all are active (25 µs each, game mode gives 0.64–0.96 ms per 40), no measurable GPU or game thread, and ≈ 0.36 MB. Raising 80 → 120 or 130 stays within the ≈ 2 ms spread; check with game 300 (render thread already at 10.6 ms avg).
+
 ## Relations
 - [[performance-index]] — parent index.
 - [[perf-stress-final-m1]] — the M1 S0, S2, S7 tables compared here.
@@ -52,3 +79,4 @@ The Meshy chaser and its death effects fit the budget: averages ≤ 12.3 ms and 
 - [[sys-actor-pool]] — the Niagara pool and caps measured.
 - [[enemy-death]] — the death effects measured.
 - [[task-181-01-perf-chaser-meshy-death]] — the task that produced this report.
+- [[task-182-03-debris-pool-cost]] — the debris pool 80 × 4.9 s comparison.
