@@ -315,3 +315,24 @@ Notes:
 - Do not modify the task node fields status, model, tokens, runs, result.
 - Report: asset paths, how the green was removed, placement values read back, the PIE read-backs, tools that failed, commit hashes, what is unverified.
 ```
+
+#### task-183-04-ore-counter-widget (bp) — result
+- Files: `Art/UI/Icons/T_Icon_Ore.png` (green keyed to alpha, 256 px, 4 % margin; a scratch copy of `Tools/art/ui_icon_prepare.js` with green instead of magenta keys, not committed; `--check`: 0 green pixels left), `Content/RogueRigs/UI/Icons/T_Icon_Ore.uasset`, `Content/RogueRigs/UI/WBP_OreCounter.uasset` (new, parent `URRHUDPanelWidget`), `WBP_HUD.uasset` (8th child, z 6), `WBP_AlertObjectives.uasset` (end-screen row "Ore secured: N"); docs: new `wbp-ore-counter`, updated `wbp-hud`, `wbp-alert-objectives`, `blueprints-ui-index`.
+- Layout: icon 56 × 56 at x 236, y 30; count Roboto Bold 32 white with black outline from x 300; no overlap with the minimap, health bar or alert bar (read back).
+- Binding: `OnOreChanged` assigned in `BindToRunFlow`, one `ShowOre(GetCarriedOre)` at bind, unbound on rebind and Destruct; no tick, no timer.
+- PIE read-backs (Slate text, no screenshots): counter "10" after `GrantOre 10`; after `bSkipToExtraction` and boarding: "EXTRACTION SUCCESSFUL" and "Ore secured: 10"; log "extraction secured 10 ore, secured 10". An earlier PIE run where the miner died emptied the 10 carried ore.
+- Failures and retries inside the agent: several Blueprint DSL writes redone (positional argument shifted to `self`, IsValid ending the flow, custom event created without delegate parameters). No second agent run.
+- Unverified: on-screen look (edge fringe, crispness, end-row layout), counter back to 0 after securing, rebind after restart. Doc leftover: `wbp-alert-objectives` purpose line still says z 20.
+- Commits: `8a3a1f80` (assets and docs), `51a61480` (subtask closed), `17083710` (global result). Note: a commit of the Architect (183-03 choice) had silently failed during a parallel owner session's commit; redone after the check.
+
+### 7. Rescan
+| Spec / sub-feature | MS | Class | Evidence |
+|---|---|---|---|
+| ore-economy: carried ore counted, secured on extraction, lost on a miss | M1 | **built** | `Pickups/RRPickup.cpp:348` `RunFlow->AddCarriedOre(OreValue)`; `Objectives/RRRunFlowSubsystem.cpp:562` `SecureCarriedOre()`, `:566` `LoseCarriedOre("shuttle missed")`, `:765` `LoseCarriedOre("miner died")`; `Objectives/RROreBankSubsystem.h` `GetSecuredOre`, `AddSecuredOre` |
+| extraction: ore secured on success, lost on a miss | M1 | **built** | same; success screen `Content/RogueRigs/UI/WBP_AlertObjectives.uasset` ("Ore secured: N") |
+| objective-bonus-chest: 5 ore chunks reward | M2 | **built** | chest chunks are ore pickups, now counted by `ARRPickup::Collect` → `AddCarriedOre` |
+| HUD ore display (owner addition) | M1 | **built** | `Content/RogueRigs/UI/WBP_OreCounter.uasset`, `Content/RogueRigs/UI/Icons/T_Icon_Ore.uasset`, `vault/reference/tech/blueprints/ui/wbp-ore-counter.md` |
+| cheat | — | **built** | `Debug/RRCheats.cpp:163` `GrantOre`; CVar `rr.Cheat.GrantOre` |
+| ore-economy: share of secured ore lost on a failed run | M2 | missing | still `open` |
+
+Final agent commit (the "agent output" the owner's review is compared against): `17083710`.
