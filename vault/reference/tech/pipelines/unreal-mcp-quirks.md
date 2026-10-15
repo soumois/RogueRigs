@@ -33,6 +33,7 @@ kind: doc
 - An emitter without a spawn module spawns nothing while its component reports active (task-058).
 - Headless tests run with `-nullrhi`: Niagara never activates there (`FApp::CanEverRender()` is false); guard Niagara checks or run with `-RenderOffScreen`.
 - A vector `max()` or `min()` in an HLSL SetParameters input compiled to ONE scalar used for all three axes (task-174: pieces spawned at (s,s,s) near the world origin). Split per component: `float3(v.x, v.y, max(v.z, limit))`, in a second SetParameters module if needed (AddSetParametersModule rejects an HLSL default: add with a plain default, then SetStackInputData).
+- The engine Collision module (CPU Analytical Planes) from a template ships with `Analytical Plane Debug Mode` = 1: it draws a red plane (about 2 m) at the plane position in -game too. Set it to 0 (`SetStackInputData`, scriptName `ParticleUpdateScript`, moduleName `Collision`, NiagaraInt32) after adding a Collision module or cloning a template (task-179).
 
 ## Logs and shell
 - `LogsToolset.GetLogEntries` needs a valid category (LogBlueprint, LogScript, LogNiagara, LogRogueRigs).
