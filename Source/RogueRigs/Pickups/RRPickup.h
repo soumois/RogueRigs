@@ -28,9 +28,9 @@ enum class ERRPickupType : uint8
 UENUM(BlueprintType)
 enum class ERRPickupPhase : uint8
 {
-	/** Ejection arc with a small bounce (PopDuration). */
+	/** Ejection arc with a small bounce (PopDuration); with bAttractDuringPop the magnet may latch mid-air once PopAttractDelay has elapsed since spawn. */
 	Pop,
-	/** Lying at its rest point; attraction allowed once AttractDelay has elapsed. */
+	/** Lying at its rest point; attraction allowed once AttractDelay has elapsed (or, with bAttractDuringPop, PopAttractDelay since spawn). */
 	Rest,
 	/** Accelerating toward the miner until collected. */
 	Magnet,
@@ -57,6 +57,9 @@ enum class ERRPickupRestOrientation : uint8
  * A pickup lying on the arena floor (xp-level-up: DRGS-like ejection then suction). On spawn it is ejected along a random
  * horizontal direction (or the one given by SetPopYaw) to a distance in [PopMinDistance, PopMaxDistance]: an arc of
  * PopArcHeight then a small bounce of PopBounceHeight, over PopDuration in total, ending HoverHeight above the spawn Z.
+ * PopFallTimeRatio (task-195-01) makes the main arc fall slower than it rises (floaty DRGS-like pop; 1 = symmetric arc).
+ * With bAttractDuringPop the magnet may latch mid-air once PopAttractDelay has elapsed since spawn (same radius, heal
+ * refusal and latch rules as from the rest; the rest of the pop is dropped and the pickup flies straight to the miner).
  * It then rests; once AttractDelay has elapsed after the pop, as soon as its horizontal distance to the player miner is
  * within the miner's PickupRadius attribute it latches the magnet: it flies straight at the miner, starting at
  * MagnetStartSpeed and accelerating by MagnetAcceleration up to MagnetMaxSpeed (nearby cubes form a stream), even if the
@@ -198,6 +201,16 @@ protected:
 	/** Sets GlowFade and GlowFadeTarget to 0 and writes 0 to PickupMesh (bGlowFade only): start of a life and pool release, so a reused pickup never flashes. */
 	void ResetGlowFade();
 
+	/**
+	 * Latches the magnet when Miner is within PickupRadiusSquared (2D) and does not refuse this pickup: Magnet phase,
+	 * glow target 0, MagnetStartSpeed, OnMagnetStart, then a first FlyToMiner step. Returns true when latched. Used from
+	 * Rest and, with bAttractDuringPop, from Pop.
+	 */
+	bool TryLatchMagnet(ARRMiner* Miner, float PickupRadiusSquared, float DeltaSeconds);
+
+	/** Life time in seconds (since StartLife) for the spawn-based delay: PopElapsed + RestElapsed (magnet flight not counted). */
+	float GetLifeElapsed() const { return PopElapsed + RestElapsed; }
+
 	/** Accelerates toward the miner; collects when within CollectDistance or when the step reaches it. A refused Heal pickup (IsRefusedByMiner) returns to Rest instead. */
 	void FlyToMiner(ARRMiner* Miner, float DeltaSeconds);
 
@@ -275,13 +288,36 @@ protected:
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Pickup|Pop", meta = (ClampMin = 0, ClampMax = 0.9))
 	float PopBounceFraction = 0.25f;
 
+	/**
+	 * task-195-01 (owner 2026-10-15, provisional): fall time / rise time of the main arc. 1 (default) = today's symmetric arc,
+	 * exactly unchanged; 2 = the apex comes at one third of the arc and the descent lasts twice the ascent (fall gravity 1 / 4
+	 * of the rise one). The arc keeps its duration ((1 - PopBounceFraction) x PopDuration), height and spatial path: only the
+	 * timing along it changes (horizontal motion follows the same remapped time, so the pickup also drifts slower on the way down).
+	 */
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Pickup|Pop", meta = (ClampMin = 0.1, UIMin = 0.25, UIMax = 4))
+	float PopFallTimeRatio = 1.f;
+
 	/** Rest height above the spawn point (the floor top when spawned by the grid, the robot feet for XP). */
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Pickup|Pop", meta = (Units = "cm"))
 	float HoverHeight = 30.f;
 
-	/** Seconds the pickup rests after the pop ends before it may be attracted to the miner. */
+	/** Seconds the pickup rests after the pop ends before it may be attracted to the miner (with bAttractDuringPop, PopAttractDelay since spawn may end the wait earlier). */
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Pickup|Collect", meta = (ClampMin = 0, Units = "s"))
 	float AttractDelay = 1.f;
+
+	/**
+	 * task-195-01 (owner 2026-10-15, provisional): lets the magnet latch during the pop (mid-air) once PopAttractDelay has
+	 * elapsed since spawn (life start), with the same radius test, heal refusal, latch, OnMagnetStart and glow rules as from
+	 * the rest. A latched pickup drops the rest of its pop and flies straight to the miner. On the ground the wait ends at
+	 * AttractDelay after landing or PopAttractDelay after spawn, whichever comes first. False (default) = today: attraction
+	 * only after AttractDelay from the end of the pop.
+	 */
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Pickup|Collect")
+	bool bAttractDuringPop = false;
+
+	/** Seconds from spawn (life start: fresh spawn or pool reuse) before the magnet may latch, in the air or on the ground (bAttractDuringPop only). */
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Pickup|Collect", meta = (ClampMin = 0, Units = "s", EditCondition = "bAttractDuringPop"))
+	float PopAttractDelay = 1.2f;
 
 	/** Speed toward the miner when the magnet latches (task-027-01: 400 uu/s). */
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Pickup|Collect", meta = (ClampMin = 1, Units = "CentimetersPerSecond"))
@@ -344,7 +380,7 @@ protected:
 	/** World rest location at the end of the pop. */
 	FVector PopEnd = FVector::ZeroVector;
 
-	/** Seconds elapsed in the pop. */
+	/** Seconds elapsed in the pop (since the life started, while in Pop; reset per life in StartLife and OnPoolReleased). */
 	float PopElapsed = 0.f;
 
 	/** Seconds elapsed since the pop finished; attraction is allowed once it reaches AttractDelay. */

@@ -207,6 +207,12 @@ void ARRPickup::UpdateMotion(float DeltaSeconds, ARRMiner* Miner, float PickupRa
 	switch (Phase)
 	{
 	case ERRPickupPhase::Pop:
+		// task-195-01: mid-air magnet once PopAttractDelay has elapsed since spawn (PopElapsed is the life time in Pop). A latched
+		// pickup drops the rest of its pop and flies straight to the miner; a refused heal keeps popping, then rests.
+		if (bAttractDuringPop && PopElapsed >= PopAttractDelay && TryLatchMagnet(Miner, PickupRadiusSquared, DeltaSeconds))
+		{
+			return;
+		}
 		if (!UpdatePop(DeltaSeconds))
 		{
 			return;
@@ -218,28 +224,14 @@ void ARRPickup::UpdateMotion(float DeltaSeconds, ARRMiner* Miner, float PickupRa
 		return;
 
 	case ERRPickupPhase::Rest:
-		// Rest on the floor for AttractDelay after the pop so the drop reads before it flies away.
-		if (RestElapsed < AttractDelay)
+		// Rest on the floor for AttractDelay after the pop so the drop reads before it flies away; with bAttractDuringPop the
+		// wait also ends once PopAttractDelay has elapsed since spawn (task-195-01).
+		if (RestElapsed < AttractDelay && !(bAttractDuringPop && GetLifeElapsed() >= PopAttractDelay))
 		{
 			RestElapsed += DeltaSeconds;
 			return;
 		}
-		if (!Miner || FVector::DistSquared2D(GetActorLocation(), Miner->GetActorLocation()) > PickupRadiusSquared)
-		{
-			return;
-		}
-		// heal-ore: a heal pickup waits on the floor while the miner is at full health; re-checked every frame, so it latches
-		// on the first frame the miner is both damaged and within radius (no event binding, nothing to reset).
-		if (IsRefusedByMiner(Miner))
-		{
-			return;
-		}
-		TargetMiner = Miner;
-		Phase = ERRPickupPhase::Magnet;
-		SetGlowFadeTarget(0.f);
-		MagnetSpeed = MagnetStartSpeed;
-		OnMagnetStart();
-		FlyToMiner(Miner, DeltaSeconds);
+		TryLatchMagnet(Miner, PickupRadiusSquared, DeltaSeconds);
 		return;
 
 	case ERRPickupPhase::Magnet:
@@ -255,28 +247,65 @@ void ARRPickup::UpdateMotion(float DeltaSeconds, ARRMiner* Miner, float PickupRa
 	}
 }
 
+bool ARRPickup::TryLatchMagnet(ARRMiner* Miner, float PickupRadiusSquared, float DeltaSeconds)
+{
+	if (!Miner || FVector::DistSquared2D(GetActorLocation(), Miner->GetActorLocation()) > PickupRadiusSquared)
+	{
+		return false;
+	}
+	// heal-ore: a heal pickup is left alone while the miner is at full health; re-checked every frame, so it latches on the
+	// first frame the miner is both damaged and within radius (no event binding, nothing to reset).
+	if (IsRefusedByMiner(Miner))
+	{
+		return false;
+	}
+	TargetMiner = Miner;
+	Phase = ERRPickupPhase::Magnet;
+	SetGlowFadeTarget(0.f);
+	MagnetSpeed = MagnetStartSpeed;
+	OnMagnetStart();
+	FlyToMiner(Miner, DeltaSeconds);
+	return true;
+}
+
 bool ARRPickup::UpdatePop(float DeltaSeconds)
 {
 	PopElapsed += DeltaSeconds;
 	const float Alpha = PopDuration > 0.f ? FMath::Clamp(PopElapsed / PopDuration, 0.f, 1.f) : 1.f;
 
-	// Horizontal: ease-out over the whole pop (fast ejection, slows through the bounce).
-	const float Horizontal = 1.f - FMath::Square(1.f - Alpha);
-	FVector Location = PopStart + (PopEnd - PopStart) * FVector(Horizontal, Horizontal, 0.f);
-
-	// Vertical: main arc from the spawn Z to the rest Z, then a small bounce on the rest Z.
 	const float BounceFraction = FMath::Clamp(PopBounceFraction, 0.f, 0.9f);
 	const float ArcEnd = 1.f - BounceFraction;
+
+	// Vertical: main arc from the spawn Z to the rest Z, then a small bounce on the rest Z. The arc is the symmetric parabola
+	// of parameter S in [0, 1]; task-195-01: PopFallTimeRatio remaps the arc time T to S piecewise linearly so that S = 0.5
+	// (the apex) is reached at T = 1 / (1 + ratio): rise over that part, fall over the rest (ratio 1 = S equals T, unchanged).
+	// The horizontal ease-out runs on the same remapped time, so the spatial path is the symmetric one and only the speed
+	// along it changes (fast rise, slow floaty descent).
+	float HorizontalAlpha = Alpha;
+	float Z = PopEnd.Z;
 	if (Alpha < ArcEnd)
 	{
 		const float T = Alpha / ArcEnd;
-		Location.Z = FMath::Lerp(PopStart.Z, PopEnd.Z, T) + PopArcHeight * 4.f * T * (1.f - T);
+		float S = T;
+		const float Ratio = FMath::Max(PopFallTimeRatio, 0.1f);
+		if (Ratio != 1.f)
+		{
+			const float ApexTime = 1.f / (1.f + Ratio);
+			S = T < ApexTime ? 0.5f * T / ApexTime : 0.5f + 0.5f * (T - ApexTime) / (1.f - ApexTime);
+			HorizontalAlpha = S * ArcEnd;
+		}
+		Z = FMath::Lerp(PopStart.Z, PopEnd.Z, S) + PopArcHeight * 4.f * S * (1.f - S);
 	}
 	else
 	{
 		const float T = BounceFraction > 0.f ? (Alpha - ArcEnd) / BounceFraction : 1.f;
-		Location.Z = PopEnd.Z + PopBounceHeight * 4.f * T * (1.f - T);
+		Z = PopEnd.Z + PopBounceHeight * 4.f * T * (1.f - T);
 	}
+
+	// Horizontal: ease-out over the whole pop (fast ejection, slows through the bounce).
+	const float Horizontal = 1.f - FMath::Square(1.f - HorizontalAlpha);
+	FVector Location = PopStart + (PopEnd - PopStart) * FVector(Horizontal, Horizontal, 0.f);
+	Location.Z = Z;
 	SetActorLocation(Location);
 
 	return Alpha >= 1.f;
@@ -306,7 +335,7 @@ void ARRPickup::ReturnToRest()
 	Phase = ERRPickupPhase::Rest;
 	SetGlowFadeTarget(1.f);
 	MagnetSpeed = 0.f;
-	// RestElapsed already passed AttractDelay: attracted again on the first frame the miner is damaged and in radius.
+	// RestElapsed already passed AttractDelay (or the life time passed PopAttractDelay for a mid-air latch): attracted again on the first frame the miner is damaged and in radius.
 	FVector Location = GetActorLocation();
 	Location.Z = PopEnd.Z;
 	SetActorLocation(Location);
