@@ -3,7 +3,7 @@ id: task-175-01-alert-objectives-node-cleanup
 description: "Delete the about 45 empty, unconnected custom event nodes left in the WBP_AlertObjectives event graph by failed graph writes of task-168-07."
 parent: task-175-alert-objectives-node-cleanup
 kind: task
-status: todo
+status: in-progress
 ---
 # WBP_AlertObjectives: unused node cleanup
 
