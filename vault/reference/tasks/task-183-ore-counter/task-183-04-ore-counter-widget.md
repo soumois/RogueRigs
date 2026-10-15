@@ -3,7 +3,7 @@ id: task-183-04-ore-counter-widget
 description: "BP: import the ore icon, new WBP_OreCounter panel next to the radar bound to the C++ ore event, secured ore on the success screen, docs."
 parent: task-183-ore-counter
 kind: task
-status: todo
+status: in-progress
 ---
 # Ore counter widget
 

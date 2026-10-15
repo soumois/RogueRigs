@@ -3,7 +3,7 @@ id: task-183-03-ore-hud-icon
 description: "Art: the HUD ore icon, a Duskite crystal drawn from the owner-validated in-game render, same style as the stat icons."
 parent: task-183-ore-counter
 kind: task
-status: in-progress
+status: done
 ---
 # Ore counter: HUD icon
 
@@ -15,11 +15,11 @@ status: in-progress
 - done_when: images sent to the owner; style-guide review done; the owner picks one; it is copied to `vault/assets/` only on his word.
 - editor_state: any
 - token_ceiling: open
-- model: open
-- tokens: open
-- runs: open
+- model: opus+sonnet
+- tokens: input 24, cache write 53375, cache read 198731, output 3459
+- runs: 1
 - milestone: M1
-- result: open
+- result: 2 icons (12 credits, run 20261014-233627-ore-hud, green key background); owner chose candidate 2, copied to vault/assets/ore-hud-icon.png; style-guide fails (A1 gloss, magenta lean, no glow) kept by owner; commits 951a9bf4 and this one
 
 ## Relations
 - [[task-183-ore-counter]] — parent global task.

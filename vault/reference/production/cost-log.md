@@ -305,6 +305,7 @@ kind: note
 | [[task-181-01-perf-chaser-meshy-death]] | opus | 1 | 0k | 234k | 4241k | 37k |
 | [[task-183-01-ore-counter-logic]] | opus | 1 | 0k | 126k | 3634k | 4k |
 | [[task-183-02-ore-hud-render]] | opus+sonnet | 1 | 0k | 93k | 239k | 6k |
+| [[task-183-03-ore-hud-icon]] | opus+sonnet | 1 | 0k | 53k | 199k | 3k |
 
 ## Totals
 | Scope | Input | Cache write | Cache read | Output |
