@@ -22,3 +22,99 @@ Sections of a run:
 - Resume (orchestration-protocol step 0): no global task `in-progress`. One open task in tasks-to-do-index: `task-182-debris-pool-80-test` (status `todo`, prepared, not started). Not touched by this run.
 - Working tree not clean at start (owner's uncommitted vault, art and `WBP_UpgradeChoice.uasset` edits): this run commits only the files it writes, by name.
 - state.md: first run (nothing built, failed or decided).
+
+### 2. Scan
+Method: 38 `kind: spec` nodes under `gdd-index` (all `approved` or `provisional`; none `deferred` at node level). Four read-only scan agents (run; player and weapons; enemies and terrain; art, audio and lore), one per branch, each told to verify every evidence path. The Architect re-checked the deciding gaps itself (`grep` in `Source/RogueRigs`: no ore counter symbol, no `Threat` symbol, no `URRGE_EnemyDifficulty`, `ERRUpgradeCardType` = `StatUpgrade`, `NewWeapon` only). Paths are relative to `Source/RogueRigs/` unless they start with `Content/`, `Tools/` or `vault/`. D = `Content/RogueRigs/Data/Tables/`.
+
+#### Run
+| Spec / sub-feature | MS | Class | Evidence |
+|---|---|---|---|
+| difficulty: alert grows with time and kills, pauses on objective | M1 | built | `Objectives/RRRunFlowSubsystem.h` `GetAlert`, `NotifyEnemyKilled`, `HasPendingObjective` |
+| difficulty: hidden threat counter | M1/M2 | missing | no `Threat` symbol; `vault/reference/tech/systems/core/sys-difficulty.md` "not built" |
+| difficulty: threat scales robot health and attack at spawn | M2 | missing | `URRGE_EnemyDifficulty` named in sys-difficulty but absent from Source (doc drift) |
+| difficulty: threat raises spawn rate | M2 | missing | `Enemies/RRWaveDirector.cpp` `MakeDefault` ramps on time only |
+| difficulty: denser and harder between levels | M2 | partial | `FRRWaveDirectorConfig::MakeLastLevel` exists, never called |
+| difficulty: overtime from 3:30 | M1 | built | `Enemies/RRWaveDirector.h` `FRRDirectorOvertime` |
+| level-flow: M1 fixed sequence (240 s, console at 40 %, extraction when full) | M1 | built | `Objectives/RRRunFlowConfig.h` `ConsoleAlertThreshold`; `URRRunFlowSubsystem::CheckExtraction` |
+| level-flow: 4–7 tiers drawn from an event pool | M2 | missing | only the fixed sequence (sys-objectives "no tier pool") |
+| level-flow: horde banner and alert-bar icons | M1 | built | `URRRunFlowSubsystem::OnHordeIncoming`, `ComputeAlertBarEvents` |
+| level-flow: music per tier | M3 | missing | no audio code |
+| objective-console: drop, footprint, marked rocks, hack, pause | M1 | built | `Objectives/RRConsole.h` `MarkedCellTypes`, `HackDuration`; `URRRunFlowSubsystem::DropConsole` |
+| objective-console: locator arrow with distance in metres | M1 | partial | `UI/RRHUDWidget.h` `GetObjectiveLocator`; `FRRObjectiveLocator` (`UI/RRHUDTypes.h`) has no distance field |
+| objective-bonus-chest: drop, hack, XP and luck-card reward | M2 | built | `Objectives/RRBonusChest.h` `GetXPNeedFraction`, `GetBonusLuck` |
+| objective-bonus-chest: 5 ore chunks reward | M2 | partial | `GetOreChunkCount` drops chunks; no ore counter credits them |
+| objective-variants: special ore objective | M2 | partial (stub) | `Grid/RRArenaGrid.h` `ERRCellType::SpecialOre` only |
+| ore-economy: ore chunks drop, worth 1, use PickupRadius | M1 | built | `Pickups/RRPickup.h` `OreValue`; D`OreTypes.csv` `ChunkValue` |
+| ore-economy: carried ore counted, secured on extraction, lost on a miss | M1 | missing | `Pickups/RRPickup.cpp:342` only calls `ARRMiner::NotifyPickupCollected` (a broadcast); no ore total anywhere in Source |
+| ore-economy: share of secured ore lost on a failed run | M2 | missing | value `open` |
+| extraction: shuttle landing, 45 s countdown, win or lose, screens | M1 | built | `Objectives/RRShuttle.h` `OnExtracted`, `OnMissed`; `URRRunFlowSubsystem::LandShuttle`, `EndRun` |
+| extraction: ore secured on success, lost on a miss | M1 | missing | same gap as ore-economy |
+| run-structure: 4 levels back to back, carry-over, win at level 4 | M2 | missing | `RestartLevel` reopens the same map; no level index or persistence |
+| run-structure: lose on death or missed shuttle | M1 | built (one level) | `Player/RRGameMode.h` `OnGameOver` |
+| xp-level-up: drops, cubes, big chip, curve, level-up sequence, HUD bar | M1 | built | D`XPCurve.csv`; `Progression/RRLevelUpComponent.h`; `Pickups/RRPickupSubsystem.h` `FlushXPCubes` |
+| xp-level-up: level kept across the 4 levels | M2 | missing | no persistence |
+
+#### Player and weapons
+| Spec / sub-feature | MS | Class | Evidence |
+|---|---|---|---|
+| drone: orbit, arc dig, fallback, dig times, shake, hack | M1 | built | `Drone/RRDrone.cpp` `TickOrbit`, `SelectArcCells`, `RefreshDigShake`, `StartHack` |
+| drone: dialogue goes through the drone | M1 | missing | `Text/RRSubtitleSubsystem.h` has no drone link; barks never shown |
+| drone: laser colour, final look | M1 | partial | grey box; laser colour `open` |
+| miner: move, aim, auto-fire, turret button, no shot through rock, i-frames, heal rules, death | M1 | built | `Player/RRPlayerController.cpp`, `Weapons/RRAutoFireComponent.cpp`, `Player/RRMiner.h` `IFramesDuration`, `Player/RRGameMode.h` |
+| miner: plate-armour mesh | M1 | missing | BP_Miner uses SKM_Quinn_Simple |
+| player-stats: six stats, base values and effects | M1 | built | D`PlayerBaseStats.csv`; `GAS/RRPlayerAttributeSet.h` |
+| player-stats: stat sheet UI (own stats + summed global bonuses) | M1 | missing | only a comment at `Upgrades/RRUpgradeComponent.h:110` |
+| burst-rifle: burst fire, stats, crit, pierce, projectile sizes | M1 | built | D`WeaponStats.csv` `BurstRifle`; `Damage/RRDamageExecution.cpp` |
+| rifle, shotgun, turret: magazine upgrade | after M1 | missing | `Upgrades/RRUpgradeCard.h:35` "Not offered in M1: no row"; no values in the spec |
+| burst-rifle: 4-direction fire effect | M2 | missing | `ERRUpgradeCardType` has no effect type |
+| rifle, shotgun, turret: name, muzzle, impact, sound | M1/M2 | partial | grey box; values `open` |
+| damage-numbers: one per hit, crit, stacking, Niagara atlas | M2 | built | `Damage/RRDamageNumberSubsystem.h` `AddHit`, `CriticalScale`, `StackDirection` |
+| damage-numbers: player can turn them off | M2 | partial | `Settings/RRGameUserSettings.h` `SetShowDamageNumbers`, no caller |
+| rarities: five tiers, luck draw, UI colours, chest luck | M1 | built | `Upgrades/RRUpgradeCard.h` `ERRUpgradeRarity`; `Upgrades/RRUpgradeComponent.cpp` `GetTierWeights` |
+| shotgun: fan, pellets, knockback, magazine, weapon card | M1 | built | `Weapons/RRShotgun.cpp` `GetPelletYawOffset`; `URRUpgradeComponent::MakeWeaponCard` |
+| turret: placement, charges, spacing, lifetime, lock, stats, size | M2 | built | `Weapons/RRTurretLauncher.cpp` `TryPlaceTurret`; `Weapons/RRTurret.cpp` `InitFromLauncher` |
+| upgrades: 3 cards, reroll, targeted vs global, stats, pierce, weights, weapon cards, stacking | M1/M2 | built | `URRUpgradeComponent::BuildOfferWithOwnerLuck`, `ReplayGlobalUpgrades`; D`UpgradeValues.csv` |
+| upgrades: effect cards (4-direction fire) | M2 | missing | no effect card type |
+| upgrades: EMP | M3 if time | missing | no status effects |
+
+#### Enemies and terrain
+| Spec / sub-feature | MS | Class | Evidence |
+|---|---|---|---|
+| enemy-chaser: state machine, stats, size, shield variant, shield mix | M1 | built | `Enemies/RRChaser.cpp` `UpdateBehavior`; `Enemies/RRShieldChaser.cpp`; D`EnemyStats.csv` |
+| enemy-chaser: Meshy rigid parts and baked clips | M1 | partial | `ARRChaser::PlayRunClip`; triangle budget, foot slide and perf still open (handover-2026-10-14) |
+| enemy-death: shrink, puff, debris draw, throw, pool caps | M1/M3 | built | `Enemies/RREnemy.cpp` `HandleDeath`, `LaunchDebris`; `Enemies/RRDebrisPiece.cpp` |
+| enemy-death: parts for heavy, kamikaze, shooter | M3 | missing | parts `open` |
+| enemy-heavy: state machine, slam, stats, capsule, ground signal | M3 | built | `Enemies/RRHeavy.cpp` `PerformSlam`, `GroundTelegraph` |
+| enemy-heavy: at most 3 alive | M3 | partial | Blueprint only; `Enemies/RREnemySpawner.h:606` and sys-spawner still say 5 (doc drift) |
+| enemy-kamikaze: chase, arm, flare, explode, kill rules, stats, spawn share | M1 | built | `Enemies/RRKamikaze.cpp` `Detonate`, `HandleDeath` |
+| enemy-shooter: hold, line of sight, reposition, laser, on-screen fire, shots | M2 | built | `Enemies/RRShooter.cpp` `UpdateLaserBeam`, `IsOnScreen` |
+| enemy-shooter: hold tolerance ±1 cell | M2 | partial | CSV tolerance 200 uu (about 3 cells, predates the 67 uu grid) |
+| arena-grid: grid, JSON layout, 240 × 240 × 67 uu, passages, flow field | M1 | built | `Grid/RRArenaGrid.h` `CellSize`, `LoadLayout`; `FlowField/RRFlowFieldSubsystem.h` |
+| arena-grid: autotiling and top-face variants | M1/M3 | partial | sys-grid "not implemented"; HISM instancing built |
+| arena-grid: stars and planet backdrop | M1 | missing | no sky assets |
+| arena-grid: deterministic C++ generator at runtime | M2 | missing | only offline `Tools/layout_gen/arena_fine.js` |
+| barrel: health, fuse, chains, ground zone, mesh | M1 | built | `Grid/RRArenaGrid.h` `BarrelFuseSeconds`, `GetBarrelTelegraph` |
+| barrel: particle burst on destruction | M1 | missing | nothing in `Grid/RRArenaGrid.cpp`; sys-grid "not implemented" |
+| destruction-rules: shots never break blocks, 3 breakers | M1 | built | `Grid/RRArenaGrid.h` `ERRTerrainDamageSource` |
+| destruction-rules: destroyed blocks logged by source and type | M2 | partial | `OnCellDestroyed(Cell, Type, Source)` delegate; sys-logging not written |
+| explosions: terrain, no one-shot, chain delay, grey-box sphere | M1 | built | `Explosions/RRExplosionSubsystem.cpp` `QueueExplosion`, `MinerHealthLeftAtFullHealth` |
+| heal-ore: block, pickups, refusal at full health, vein dig | M1/M2 | built | `Pickups/RRPickup.cpp` `IsRefusedByMiner`; D`OreTypes.csv` `Heal` |
+| ore-blocks: dig time, deposits, 8 % Duskite, explosions, marking | M1 | built | `Grid/RRArenaGrid.h` `BuildDeposits`, `PlaceOreDeposits` |
+| ore-blocks: chunk lands within one cell, never on rock | M1 | partial | `Pickups/RRPickup.cpp` `StartLife` pop 80–220 uu, no rock check |
+
+#### Art, audio, voice
+| Spec / sub-feature | MS | Class | Evidence |
+|---|---|---|---|
+| color-code: blocks, player side, marked rocks, barrel sign | M1 | built | `Content/RogueRigs/Materials/GreyBox/MI_GB_*` |
+| color-code: big XP chip colours, robot logo plates, crit number white-gold | M1/M2 | partial | `CriticalColor` (1, 0.55, 0.08) is orange-gold; chip core lilac vs magenta trail |
+| ground-telegraph: decal, modes, uses, hide rules | M1 | built | `Telegraph/RRGroundTelegraphComponent.h` |
+| ground-telegraph: fill opacity per mode | M2 | partial | material default only |
+| visual-style: grey box per block type | M1 | built | `M_GreyBox` + `MI_GB_*` |
+| visual-style: near-vertical camera | M1 | partial | `Player/RRMiner.h` `CameraPitch` = -50 |
+| audio-direction: SFX and music | M3 | missing | no sound code or assets |
+| company-voice: Kessler-Voss alert subtitles | M2/M3 | built | `Text/RRSubtitleSubsystem.h` `ShowAlertLine`; `Content/RogueRigs/Data/Text/alerts.json` |
+| company-voice: tier texts, announcements, loading tips | — | missing | unscheduled |
+| crew-characters, fictional-films: barks shown through the drone | M3 | partial | `Content/RogueRigs/Data/Text/barks.json`; `URRTextContentSubsystem::GetBark` has no caller |
+| kessler-voss-logo; lore | — | built; n/a | logo on the barrel sticker; lore is a reference node |
+
+Summary: the M1 core loop is built. Logic gaps: ore counter, threat, 4-level run, tier pool, effect cards, stat sheet, damage-number toggle, drone dialogue channel, logging. The rest is art or audio.
