@@ -75,16 +75,26 @@ UNiagaraComponent* URRNiagaraPoolSubsystem::Spawn(UNiagaraSystem* System, const 
 	if (!Component)
 	{
 		++Pool.SkippedCount;
+		UE_LOG(LogRogueRigs, Verbose, TEXT("Niagara pool %s full (%d in use, cap %d): effect skipped."), *System->GetName(),
+			Pool.InUse.Num(), Pool.Cap);
 		return nullptr;
 	}
 
 	Pool.InUse.Add(Component);
-	++Pool.PlayedCount;
 	Component->SetWorldLocationAndRotation(Location, Rotation);
 	BeforeActivate(*Component);
-	// A system that cannot run completes inside Activate: the finish callback has already put the component back.
+	// A system that cannot run completes inside Activate: the finish callback has already put the component back, and it
+	// does not count as a play. A system not ready yet (compiling, PSOs) stays in use, waiting to start (task-194-01).
 	Component->Activate(/*bReset*/ true);
-	return Pool.InUse.Contains(Component) ? Component : nullptr;
+	const bool bPlaying = Pool.InUse.Contains(Component);
+	if (bPlaying)
+	{
+		++Pool.PlayedCount;
+	}
+	UE_LOG(LogRogueRigs, Verbose, TEXT("Niagara pool %s: %s %s (active %d, waiting %d), %d in use, %d free."), *System->GetName(),
+		*Component->GetName(), bPlaying ? TEXT("played") : TEXT("completed at once"), Component->IsActive(),
+		IsWaitingToStart(*Component), Pool.InUse.Num(), Pool.Free.Num());
+	return bPlaying ? Component : nullptr;
 }
 
 void URRNiagaraPoolSubsystem::Prewarm(UNiagaraSystem* System, int32 Count, int32 Cap)
@@ -95,6 +105,15 @@ void URRNiagaraPoolSubsystem::Prewarm(UNiagaraSystem* System, int32 Count, int32
 	}
 	FRRNiagaraSystemPool& Pool = Pools.FindOrAdd(System);
 	Pool.Cap = Cap;
+#if WITH_EDITORONLY_DATA
+	// Editor builds compile a loaded system on its first activation, and a component activated before that compile ends
+	// waits (inactive) instead of playing: in an S7 burst every debris of the first deaths waited (task-194-01). Start the
+	// deferred compile now, in the background, so the first death finds the system ready. Cooked builds have nothing to do.
+	if (System->HasOutstandingCompilationRequests())
+	{
+		System->PollForCompilationComplete(/*bFlushRequestCompile*/ true);
+	}
+#endif
 	const int32 Target = FMath::Min(Count, Cap);
 	while (Pool.Free.Num() + Pool.InUse.Num() < Target)
 	{
@@ -179,12 +198,22 @@ void URRNiagaraPoolSubsystem::ReclaimInactive(FRRNiagaraSystemPool& Pool)
 		{
 			Pool.InUse.RemoveAtSwap(Index, EAllowShrinking::No);
 		}
-		else if (!Component->IsActive())
+		else if (!Component->IsActive() && !IsWaitingToStart(*Component))
 		{
+			UE_LOG(LogRogueRigs, Verbose, TEXT("Niagara pool %s: reclaimed %s (inactive, not waiting to start)."),
+				*GetNameSafe(Component->GetAsset()), *Component->GetName());
 			Pool.InUse.RemoveAtSwap(Index, EAllowShrinking::No);
 			Pool.Free.Add(Component);
 		}
 	}
+}
+
+bool URRNiagaraPoolSubsystem::IsWaitingToStart(const UNiagaraComponent& Component)
+{
+	// UNiagaraComponent::ActivateInternal leaves a component that is not ready to run (system compiling, PSOs precaching)
+	// inactive with its tick enabled, and the tick activates it once ready; every other path out of Activate that leaves it
+	// inactive (cannot render, not allowed, completed) disables the tick. Read in engine 5.8 source (task-194-01).
+	return !Component.IsActive() && Component.IsComponentTickEnabled();
 }
 
 void URRNiagaraPoolSubsystem::HandleSystemFinished(UNiagaraComponent* Component)

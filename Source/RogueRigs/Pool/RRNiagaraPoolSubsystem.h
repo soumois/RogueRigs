@@ -32,7 +32,8 @@ struct FRRNiagaraSystemPool
 	/** Spawn calls refused because the pool was full (tests, debug). */
 	int32 SkippedCount = 0;
 
-	/** Spawn calls that activated a component (effects played) since the world began (stress logs, task-181-01). */
+	/** Spawn calls whose component is playing or waiting to start after Activate (effects played; one that completed inside
+	 *  Activate is not counted) since the world began (stress logs, task-181-01, task-194-01). */
 	int32 PlayedCount = 0;
 };
 
@@ -42,8 +43,10 @@ struct FRRNiagaraSystemPool
  * the given world transform, lets the caller set user parameters, then activates it with a reset; when the pool is full and
  * nothing is free it returns null and the effect is skipped. A component goes back to the free list when its system
  * finishes (OnSystemFinished); components are never destroyed per effect. Components that never started or got stuck
- * (headless runs without rendering, scalability) are reclaimed when the pool is full: any in-use component that is not
- * active is free again. No tick: all work happens in Spawn and in the finish callback.
+ * (headless runs without rendering, scalability) are reclaimed when the pool is full: an in-use component that is not
+ * active and not waiting to start (IsWaitingToStart: system still compiling or precaching PSOs) is free again.
+ * Prewarm also starts the deferred editor compile of the system so the first effect does not wait. No tick: all work
+ * happens in Spawn, Prewarm and the finish callback.
  * Components are owned by the world settings, absolute, auto-destroy off, not attached (same set-up as
  * URRDamageNumberSubsystem). The Niagara systems used must be one-shot (non-looping), otherwise they never return.
  * Game thread only; game and PIE worlds.
@@ -70,7 +73,11 @@ public:
 	UNiagaraComponent* Spawn(UNiagaraSystem* System, const FVector& Location, const FRotator& Rotation = FRotator::ZeroRotator,
 		int32 Cap = DefaultCap, TFunctionRef<void(UNiagaraComponent&)> BeforeActivate = [](UNiagaraComponent&) {});
 
-	/** Creates free components of System until its pool owns Count of them (at most Cap); call at load so deaths create none. */
+	/**
+	 * Creates free components of System until its pool owns Count of them (at most Cap); call at load so deaths create none.
+	 * Editor builds: also starts the deferred compile of System in the background (non-blocking), so the first Spawn finds
+	 * it ready instead of waiting.
+	 */
 	void Prewarm(UNiagaraSystem* System, int32 Count, int32 Cap = DefaultCap);
 
 	/** Components of System currently playing (handed out, not finished). */
@@ -95,8 +102,17 @@ protected:
 	/** Creates one registered, inactive component of System owned by the world settings; null on failure. */
 	UNiagaraComponent* CreateComponent(UNiagaraSystem* System);
 
-	/** Moves every in-use component of Pool that is not active (finished without callback, never started) back to Free. */
+	/**
+	 * Moves every in-use component of Pool that is not active and not waiting to start (finished without callback, never
+	 * started) back to Free. A component waiting to start keeps its slot: it plays as soon as its system is ready.
+	 */
 	void ReclaimInactive(FRRNiagaraSystemPool& Pool);
+
+	/**
+	 * True when Component was activated but waits for its system to be ready (compile, PSO precache): inactive with its tick
+	 * enabled, the engine tick activates it later. Such a component is playing as far as the pool is concerned.
+	 */
+	static bool IsWaitingToStart(const UNiagaraComponent& Component);
 
 	/** OnSystemFinished of a pooled component: back to the free list of its system. */
 	UFUNCTION()
