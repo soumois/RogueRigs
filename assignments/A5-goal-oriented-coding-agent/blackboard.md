@@ -155,3 +155,14 @@ Factors: **MS** milestone (M1 = 3, M2 = 2, M3 = 1; a sub-feature whose content i
 | Heavy cap 3 vs 5 | doc drift (`RREnemySpawner.h:606`, sys-spawner), not a feature. Reported. |
 | Company tier texts, announcements, tips | unscheduled in `milestones`. |
 | Boss, meta shop, elements, armor | wishlist / deferred. |
+
+### 4. Recommendation
+- **Feature:** ore counter — carried ore counted during the level, secured by a successful extraction, lost on a missed shuttle (and on death).
+- **Why:** highest score (6). Approved M1 rule stated in two specs; without it the extraction risk window has no stake and the bonus chest's 5 ore chunks count for nothing. Every dependency exists (ore pickups with `OreValue`, shuttle `OnExtracted` / `OnMissed`, HUD event widgets). Small: one C++ component or subsystem, one HUD event, one cheat, one small widget.
+- **GDD nodes:** `ore-economy` (vault/reference/gdd/run/ore-economy.md), `extraction` (vault/reference/gdd/run/extraction.md).
+- **`open` values:** the share of secured ore lost on a failed run stays `open` and is NOT built. Questions put to the owner, each with a default:
+  1. Where secured ore lives in M1 (single level, `RestartLevel` reloads the map): default = kept in the game instance for the session, shown on the success screen.
+  2. Death also loses carried ore (the spec only says "missing the shuttle"): default = yes.
+  3. HUD: one new widget for the carried count (owner rule: one widget per logic in `WBP_HUD`): default = yes, placement next to the XP bar, violet Duskite colour.
+- **One-click test (sys-cheats):** new cheat `rr.Cheat.GrantOre <N>` (CVar and CDO property route, like `GrantXP`): adds N carried ore; then `rr.Cheat.SkipToExtraction 1` and board the shuttle → success screen shows N secured; or with `ShuttleCountdownOverride` let it expire → carried ore drops to 0.
+- **Status:** stopped, waiting for the owner's answer.
