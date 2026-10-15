@@ -3,7 +3,7 @@ id: task-192-02-pickup-orientation-defaults
 description: "BP: set the rest orientation mode on the XP nut, big XP chip and heal pickup Blueprints, docs updated."
 parent: task-192-pickup-spawn-orientation-variants
 kind: task
-status: in-progress
+status: done
 ---
 # Pickup orientation defaults on Blueprints
 
@@ -15,11 +15,11 @@ status: in-progress
 - done_when: Blueprints compile with warnings as errors; modes read back on each class default object; docs updated; lint clean; committed by path.
 - editor_state: open
 - token_ceiling: open
-- model: open
-- tokens: open
-- runs: open
+- model: sonnet
+- tokens: input 36, cache write 36428, cache read 432221, output 685
+- runs: 1
 - milestone: M1
-- result: open
+- result: RestOrientation set and read back: BP_PickupXP Full, BP_PickupXPBig YawOnly, BP_PickupHeal Full, MeshVariants empty; compiled (no error returned, warning count not exposed) and saved; docs updated; not seen in PIE; commit 2deb17ef
 
 ## Relations
 - [[task-192-pickup-spawn-orientation-variants]] — parent global task.
