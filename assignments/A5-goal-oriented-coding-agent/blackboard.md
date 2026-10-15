@@ -288,3 +288,30 @@ Notes:
 - Candidate 1: one tall central shard, two leaning side shards, two low front shards, thick charcoal outline, cooler violet with lilac highlights; shards stay separate at 48 px. Candidate 2: same design, more saturated magenta-violet, heavier outline, shards merge slightly more at 48 px.
 - Sent to the owner; style-guide review running; waiting for the owner's choice.
 - Style-guide review (`Art/Source/ore-hud/20261014-233627-ore-hud.review.json`, not committed): both fail. Both: A1 gloss (owner-kept deviation, reminder) and no inner glow ("glowing violet crystals" in color-code). Candidate 2 also leans magenta, the colour reserved for the big XP block. Recommends candidate 1. Reported to the owner.
+
+#### Owner answer on the icon (verbatim)
+> Icône 2, copie-la dans vault/assets et lance le widget.
+
+English translation: "Icon 2, copy it to vault/assets and launch the widget."
+
+Decision: candidate 2 validated, copied to `vault/assets/ore-hud-icon.png`; its style-guide fails (A1 gloss, magenta lean, no glow) are kept by the owner's choice. Editor launched for task-183-04.
+
+#### task-183-04-ore-counter-widget (bp) — prompt sent
+Reading list: the subtask node and its `inputs` (agent-bp, bp-mcp-lessons, wbp-hud, wbp-minimap-locator, wbp-alert-objectives, sys-hud-events, color-code, readability-rules), plus `sys-objectives-ore-counter` and `sys-hud-bindings` (the C++ side), `vault/assets/ore-hud-icon.png`.
+```text
+Subtask task-183-04-ore-counter-widget (Rogue Rigs, repo C:\Users\soumo\Documents\Unreal Projects\RogueRigs).
+
+Read your subtask node first: vault/reference/tasks/task-183-ore-counter/task-183-04-ore-counter-widget.md. Its `inputs` line lists the resolved paths of every node you need: read those directly, do not descend from root again, never search the vault. Resolve any other [[wikilink]] through vault/_paths.md. Also read vault/reference/tech/systems/world/sys-objectives/sys-objectives-ore-counter.md and vault/reference/tech/systems/ui/sys-hud/sys-hud-bindings.md (the C++ side built in task-183-01).
+
+Notes:
+- C++ API (task-183-01): `URRRunFlowSubsystem::OnOreChanged` (BlueprintAssignable delegate, params `int32 CarriedOre, int32 SecuredOre`), pure getters `GetCarriedOre()` and `GetSecuredOre()`. Bind it in the panel's `BindToRunFlow` hook (URRHUDPanelWidget) and read both getters once there; unbind on rebind and Destruct, like wbp-minimap-locator does with its delegates (Assign nodes). No tick, no polling.
+- Icon: the owner chose vault/assets/ore-hud-icon.png (1:1, 1254 px class, crystal on a pure green #00FF00 key background, no alpha). Import it as a UI texture (TC_UserInterface2D / no mips) under /Game/RogueRigs/UI/Icons/ (or the folder the existing UI icons use); remove the green either in the texture through a masked UI material, or by keying it into an alpha channel before import (a Node script with an image library already in the repo is fine; no new dependency without saying so). The crystal edges must not keep a green fringe.
+- Placement (owner 2026-10-14): top of the HUD, right of the round minimap (disc at x 20..220, y 20..220 on 1920 x 1080), an inline counter "icon then number" with no plate, like a gold counter at the top left of other games, but larger than that reference: suggested icon 56 x 56 and number about 32 bold white with a dark outline, at about x 236, y 30. It must not overlap the minimap, the health bar (y 232..260) or the alert bar (x 660..1260, y 48..84).
+- Success screen in WBP_AlertObjectives: show the secured ore (e.g. icon + "Ore secured: N") using `GetSecuredOre()` when `OnRunEnded(true)` shows the success screen.
+- Editor state: open (launched by the Orchestrator). Check the MCP server answers and no PIE runs first.
+- Verification: compile with warnings as errors; read back the slot placement; in PIE run `rr.Cheat.GrantOre 10` (CVar; or the CDO property `GrantOre` on /Script/RogueRigs.Default__RRCheatSettings) and read back the counter text; then `bSkipToExtraction`, board the shuttle if you can (else report), and read the success screen text. No screenshots (your rules); say what is unverified.
+- Git: prefix every git command with `git -c "safe.directory=C:/Users/soumo/Documents/Unreal Projects/RogueRigs"`. The owner has an unrelated uncommitted change to WBP_UpgradeChoice.uasset and others: never touch, save or commit them; commit only your files by explicit path. If `.git/index.lock` exists, wait and retry once; never delete it. Commit message `task-183-04-ore-counter-widget: <summary>` ending with `Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>`.
+- Docs: create the doc node `wbp-ore-counter` (template vault/templates/blueprint.md, parent blueprints-ui-index, next to wbp-minimap-locator), update `wbp-hud` (placement table, now 8 children) and `wbp-alert-objectives`; lint; commit.
+- Do not modify the task node fields status, model, tokens, runs, result.
+- Report: asset paths, how the green was removed, placement values read back, the PIE read-backs, tools that failed, commit hashes, what is unverified.
+```
