@@ -14,12 +14,14 @@ kind: doc
 - events: OnCollected(Location) spawns BP_HealRing at Location, the miner position ([[bp-heal-ring]]).
 - logic_in_bp: display only (one event).
 - assets: /Game/RogueRigs/Materials/GreyBox/MI_GB_PickupHeal (instance of M_GreyBox, vector `Color` linear (1, 0.05, 0.05, 1) (red), after [[color-code]]).
+- rest_orientation: `RestOrientation` = Full (task-192-02, owner 2026-10-15; [[sys-pickups-lifecycle]]); `MeshVariants` left empty. Read back on the class default object after compile and save.
 - owner_agent: agent-bp
 - verified: defaults read back through ObjectTools on the class default object; referenced by BP_ArenaGrid ([[bp-arena-grid]]) as `HealPickupClass`. PIE collection not driven through MCP (see [[task-006-04-bp-dig]]).
 
 ## Relations
 - [[blueprints-index]] — parent index.
 - [[sys-pickups]] — the C++ class it derives from.
+- [[sys-pickups-lifecycle]] — the rest orientation rule.
 - [[bp-arena-grid]] — the grid Blueprint that spawns it.
 - [[color-code]] — colour convention.
 - [[bp-heal-ring]] — the ring it spawns on collection.
