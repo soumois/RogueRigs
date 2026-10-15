@@ -318,6 +318,7 @@ kind: note
 | [[task-190-01-debris-spin-damping]] | sonnet | 1 | 0k | 88k | 1059k | 13k |
 | [[task-191-01-debris-gpu-df-collision]] | sonnet | 2 | 0k | 161k | 5238k | 39k |
 | [[task-191-02-debris-gpu-cost]] | opus | 1 | 0k | 137k | 2361k | 30k |
+| [[task-194-01-debris-pool-counter]] | opus | 1 | 0k | 111k | 3011k | 26k |
 
 ## Totals
 | Scope | Input | Cache write | Cache read | Output |
