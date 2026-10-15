@@ -3,7 +3,7 @@ id: task-180-burst-rifle-push-collision
 description: "Global task: Stop burst rifle shots from pushing robots through collision: the burst rifle has no knockback, so a hit must not move a robot."
 parent: tasks-to-do-index
 kind: task
-status: todo
+status: in-progress
 ---
 # Burst rifle: shots push robots by collision
 

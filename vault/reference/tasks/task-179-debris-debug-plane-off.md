@@ -1,9 +1,9 @@
 ---
 id: task-179-debris-debug-plane-off
 description: "Global task: Remove the red debug square drawn on the floor under each active debris system (NS_RobotDebris collision plane debug draw)."
-parent: tasks-to-do-index
+parent: tasks-done-index
 kind: task
-status: in-progress
+status: done
 ---
 # Robot debris: hide the red debug plane
 
@@ -13,12 +13,12 @@ status: in-progress
 - gdd_check: enemy-death and burst-rifle checked (2026-10-14): no conflict; the burst rifle has no knockback, only the shotgun does.
 - confirmed_by_owner: yes (2026-10-15)
 - milestone: M3
-- next_step: task-179-01-debris-debug-plane-off
-- result: open
+- next_step: none
+- result: Done. Collision module Analytical Plane Debug Mode 1 -> 0 (template default drew a red 100x100 plane at each system); NS_RobotDeathPuff has no debug draw; compiles clean; -game shots Saved/Debris179: debris visible, no red square; quirk noted; commit d3928f5
 
 ## Subtasks
 1. task-179-01-debris-debug-plane-off — bp
 
 ## Relations
-- [[tasks-to-do-index]] — parent index.
+- [[tasks-done-index]] — parent index.
 - [[task-179-01-debris-debug-plane-off]] — step 1, bp.
