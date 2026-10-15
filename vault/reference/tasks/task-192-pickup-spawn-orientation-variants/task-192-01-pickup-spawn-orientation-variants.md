@@ -3,7 +3,7 @@ id: task-192-01-pickup-spawn-orientation-variants
 description: "C++: ARRPickup rest orientation mode (None, YawOnly, Full) and random mesh variant drawn once per life, pool-safe, defaults unchanged."
 parent: task-192-pickup-spawn-orientation-variants
 kind: task
-status: todo
+status: in-progress
 ---
 # Pickup spawn orientation and mesh variants
 
