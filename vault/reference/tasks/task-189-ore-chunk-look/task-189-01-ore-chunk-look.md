@@ -3,7 +3,7 @@ id: task-189-01-ore-chunk-look
 description: "Art: in-game image proposals of the ore chunk pickup, a glowing Duskite crystal cluster drawn from the HUD ore icon, plus Meshy input views."
 parent: task-189-ore-chunk-look
 kind: task
-status: in-progress
+status: done
 ---
 # Ore chunk: in-game image proposals
 
@@ -15,11 +15,11 @@ status: in-progress
 - done_when: images sent to the owner; style-guide review done; the owner picks one (or rejects all); the chosen image is copied to vault/assets/ only on his word.
 - editor_state: any
 - token_ceiling: open
-- model: open
-- tokens: open
-- runs: open
+- model: sonnet
+- tokens: input 64, cache write 138874, cache read 1287829, output 2383
+- runs: 4
 - milestone: M1
-- result: open
+- result: 11 images over 4 runs (66 credits): owner rejected A, B (flat base, too pointy) and D, picked C, then variations c2 and a redone c3; copied to vault/assets/ore-chunk-c1, c2, c3 and ore-chunk-c-ingame; prompts and run logs committed (ab3b3560, 6270d93d, 9b75f812, 19d37be9)
 
 ## Relations
 - [[task-189-ore-chunk-look]] — parent global task.

@@ -3,7 +3,7 @@ id: task-189-02-ore-chunk-mesh
 description: "3D: Meshy mesh of the ore chunk from the owner-chosen image, cleaned in Blender, 30 cm, centred pivot, FBX and report."
 parent: task-189-ore-chunk-look
 kind: task
-status: todo
+status: in-progress
 ---
 # Ore chunk: Meshy mesh
 
