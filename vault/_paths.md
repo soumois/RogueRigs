@@ -241,6 +241,7 @@ sys-level-up  reference/tech/systems/core/sys-level-up.md
 sys-objectives  reference/tech/systems/world/sys-objectives.md
 sys-objectives-console-chest  reference/tech/systems/world/sys-objectives/sys-objectives-console-chest.md
 sys-objectives-events  reference/tech/systems/world/sys-objectives/sys-objectives-events.md
+sys-objectives-ore-counter  reference/tech/systems/world/sys-objectives/sys-objectives-ore-counter.md
 sys-objectives-run-flow  reference/tech/systems/world/sys-objectives/sys-objectives-run-flow.md
 sys-objectives-shuttle  reference/tech/systems/world/sys-objectives/sys-objectives-shuttle.md
 sys-pickups  reference/tech/systems/world/sys-pickups.md

@@ -11,6 +11,7 @@ kind: doc
   - `BindToRunFlow(URRRunFlowSubsystem*)`: called by `ARRPlayerController::BeginPlay`; binds the six run-flow delegates and pushes the current alert, objective (and progress), shuttle countdown and run end once; null unbinds.
   - `BindToSpawner(ARREnemySpawner*)`: called by `ARRPlayerController::BeginPlay` with the first spawner of the world; horde banner and alert-bar icons ([[sys-hud-pressure]]); null unbinds.
   - Panels and late binding (task-094-02, [[sys-hud-events]]): every Bind call also hands its object once to each `URRHUDPanelWidget` of the HUD tree (`GetPanels`); a miner or spawner registering with the run flow after the HUD is bound when none is.
+  - Ore counter panel (task-183-01, wired in task-183-04): override `BindToRunFlow`, bind `URRRunFlowSubsystem::OnOreChanged(CarriedOre, SecuredOre)` and show `GetCarriedOre` / `GetSecuredOre` once there (bind-time value); unbind `PreviousRunFlow`. A level restart is a new run flow (carried 0, secured kept by the game instance) ([[sys-objectives-ore-counter]]).
   - `BindToGameMode(ARRGameMode*)`: binds `ARRGameMode::OnGameOver` to `OnGameOver` ([[sys-player]] game over); null unbinds. `NativeDestruct` removes every binding.
 
 ## Relations
@@ -18,3 +19,4 @@ kind: doc
 - [[sys-hud-pressure]] — referenced above.
 - [[sys-hud-events]] — referenced above.
 - [[sys-player]] — referenced above.
+- [[sys-objectives-ore-counter]] — the ore event a panel binds in BindToRunFlow.
