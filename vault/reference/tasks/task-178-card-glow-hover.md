@@ -3,7 +3,7 @@ id: task-178-card-glow-hover
 description: "Global task: Stronger inner rarity glow on the upgrade cards (about 2x), and stronger still on hover (about 3x), driven by the button hover events."
 parent: tasks-to-do-index
 kind: task
-status: todo
+status: in-progress
 ---
 # Upgrade cards: stronger glow and hover
 
