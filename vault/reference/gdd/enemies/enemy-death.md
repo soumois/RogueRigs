@@ -1,6 +1,6 @@
 ---
 id: enemy-death
-description: "How robots die: shrink hidden by a puff, then 2 to 4 random pieces thrown as pooled Niagara mesh particles, sinking after 3 s."
+description: "How robots die: shrink hidden by a puff, then 2 to 4 random pieces thrown as pooled Niagara mesh particles, sinking after 4.5 s."
 parent: enemies-index
 kind: spec
 status: approved
@@ -16,7 +16,7 @@ status: approved
   - throw (provisional, owner 2026-10-14): each piece leaves along the direction of the killing hit (radial from an explosion) turned by a random angle within ±15°; speed = the first tuning (task-166) × a random factor of 1.3 to 2 drawn once per death, plus a small per-piece spread; start position = the piece place on the robot ± 10 cm on each axis.
 - The pieces have no glow: the red eye is off.
 - Pieces collide with the floor only (an analytic floor plane). No interaction with the miner, robots or blocks.
-- Pieces stay 3 s at full size, then sink into the floor in 0.4 s without shrinking: 3.4 s in all; no debris stays in the arena (provisional, owner 2026-10-14; was 1.2 s with a shrink).
+- Pieces stay 4.5 s at full size, then sink into the floor in 0.4 s without shrinking: 4.9 s in all; no debris stays in the arena (provisional, owner 2026-10-15; was 1.2 s with a shrink, then 3.4 s).
 - Debris and puff systems are pooled, 40 each at most; when the debris pool is empty, only the puff plays (provisional, owner 2026-10-14).
 - First robots: the chaser and the shield chaser (same mesh); other robots keep the M1 death until their parts exist.
 - A robot dies exactly once ([[sys-damage]]).
