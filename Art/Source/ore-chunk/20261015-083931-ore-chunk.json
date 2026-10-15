@@ -1,0 +1,27 @@
+{
+  "run_id": "20261015-083931-ore-chunk",
+  "asset": "ore-chunk",
+  "model": "gpt-image-2-image-to-image",
+  "aspect_ratio": "1:1",
+  "resolution": "1K",
+  "variants": 1,
+  "prompt_file": "Art/Source/ore-chunk/prompts/06-chunk-c-isolated.txt",
+  "prompt": "Image 1 is the Duskite ore icon: use it only for the colour (saturated violet, purple-magenta) and the flat faceted low-poly style, not for its upright shape. Draw one loose ore chunk: a short, fat, double-terminated crystal knot, three or four stubby crystal prisms fused together crossing at different angles, every end cut blunt with a wide flat facet, no needle tips, no base, no up direction, a compact solid lump about as wide as it is tall, closed into one solid piece. Clean 3D model view for image-to-3D: single object centred with a wide margin on every side, three-quarter view (camera about 35 degrees above, turned 45 degrees), plain light grey background, even neutral lighting, no cast shadow, no glow halo, no floor. Flat-shaded low-poly, large flat visible facets, no smoothing, no textures, no outline, no UI, no text. Lighter violet on top facets, deeper violet on side facets, all facets clearly readable.",
+  "refs": [
+    "vault/assets/ore-hud-icon.png"
+  ],
+  "tasks": [
+    {
+      "task_id": "8bec874f47ffc48f57303e795227182d",
+      "state": "success",
+      "credits": 6,
+      "error": null,
+      "result_urls": [
+        "https://tempfile.aiquickdraw.com/images/chatgpt/file_000000004d408211ad4143b95a696d42.png"
+      ]
+    }
+  ],
+  "files": [
+    "Art/Source/ore-chunk/20261015-083931-ore-chunk-1.png"
+  ]
+}
