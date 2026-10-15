@@ -1,6 +1,6 @@
 ---
 id: task-188-01-editor-lock
-description: "Editor lock shared by sessions: a lock file, a node script to take, release and read it, and the runbook and protocol rules to use it."
+description: "Editor lock shared by sessions: lock file, take and release script, runbook and protocol rules."
 parent: task-188-editor-lock
 kind: task
 status: todo
