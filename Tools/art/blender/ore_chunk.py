@@ -3,6 +3,7 @@
   blender -b --factory-startup -P Tools/art/blender/ore_chunk.py -- \
       --in <meshy.fbx> --tex <meshy base colour png> --out Art/Meshes/OreChunk/SM_OreChunk_01.fbx [--size-cm 30]
 
+Units: 1 Blender unit = 1 cm (the XP meshes do the same; metres made Unreal import it 100 times too small, task-189-03).
 Steps: import, apply transforms, join, merge vertices closer than 0.01 mm (positions only,
 UV and look unchanged) -> flat shading -> uniform scale so the LARGEST dimension is --size-cm
 -> pivot at the bounding-box centre -> two slots by base-colour luminance: the luminance of the
@@ -85,7 +86,7 @@ def main():
     # scale + pivot (bounding-box centre)
     co = np.array([v.co[:] for v in mesh.vertices])
     lo, hi = co.min(0), co.max(0)
-    s = (float(o["size-cm"]) / 100.0) / float((hi - lo).max())
+    s = float(o["size-cm"]) / float((hi - lo).max())
     co = (co - (lo + hi) / 2) * s
     for v, c in zip(mesh.vertices, co):
         v.co = c
@@ -125,8 +126,8 @@ def main():
     co = np.array([v.co[:] for v in mesh.vertices])
     rep["tris_out"] = tris(mesh)
     rep["verts_out"] = len(mesh.vertices)
-    rep["dimensions_cm"] = [round(float(x) * 100, 2) for x in (co.max(0) - co.min(0))]
-    rep["bbox_centre_cm"] = [round(float(x) * 100, 3) for x in (co.max(0) + co.min(0)) / 2]
+    rep["dimensions_cm"] = [round(float(x), 2) for x in (co.max(0) - co.min(0))]
+    rep["bbox_centre_cm"] = [round(float(x), 3) for x in (co.max(0) + co.min(0)) / 2]
     rep["pivot"] = "bounding-box centre"
     rep["materials"] = {"crystal_bright": {"tris": split[0]}, "crystal_dark": {"tris": split[1]}}
     rep["slot_rule"] = f"base colour luminance at face UV centroid, median {thr:.4f}: above = crystal_bright"
