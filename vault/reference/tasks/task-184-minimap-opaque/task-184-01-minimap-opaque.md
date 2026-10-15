@@ -3,7 +3,7 @@ id: task-184-01-minimap-opaque
 description: "Make the minimap disc fully opaque: no part of the game shows through it, unseen cells included."
 parent: task-184-minimap-opaque
 kind: task
-status: in-progress
+status: done
 ---
 # Minimap: fully opaque
 
@@ -15,11 +15,11 @@ status: in-progress
 - done_when: M_Minimap compiles and its opacity path reads back 1 inside the circle; UnseenColor and the MinimapImage opacity read back; the HUD Blueprints compile and are saved by explicit path; docs updated; committed by path; the editor stays open; not seen on screen unless the owner checks
 - editor_state: open
 - token_ceiling: open
-- model: open
-- tokens: open
-- runs: open
+- model: sonnet
+- tokens: input 40, cache write 61795, cache read 819868, output 7914
+- runs: 1
 - milestone: M2
-- result: open
+- result: M_Minimap opacity = circle mask only (1 inside whatever texel alpha); colour black where the sample UV leaves the texture (added so the edge texel does not smear on an opaque disc); WBP_HUD MinimapConfig.UnseenColor (0,0,0,1); MinimapImage already opaque; compiled, read back; not seen on screen; commit c7d22556
 
 ## Relations
 - [[task-184-minimap-opaque]] — parent global task.

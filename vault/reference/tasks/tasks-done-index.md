@@ -192,4 +192,5 @@ Archive: it exceeds the index size limits of [[_authoring]] on purpose (owner, 2
 - [[task-180-burst-rifle-push-collision]] — Stop burst rifle shots from pushing robots through collision: the burst rifle has no knockback, so a hit must not move a robot. Status done.
 - [[task-181-perf-chaser-meshy-death]] — Measure the frame cost of the Meshy chaser (animated material) and its death effects (puff, debris) with the stress tool, compared with the M1 tables. Status done.
 - [[task-183-ore-counter]] — Count carried ore, secure it on extraction, lose it on a miss or death, show it with an icon next to the radar. Status done.
+- [[task-184-minimap-opaque]] — Make the minimap disc fully opaque: no part of the game shows through it, unseen cells included. Status done.
 - [[task-187-deposit-whole-on-explosion]] — When an explosion destroys any block of an ore deposit, the whole deposit is destroyed and pops all its chunks: no partly destroyed deposit. Status done.
