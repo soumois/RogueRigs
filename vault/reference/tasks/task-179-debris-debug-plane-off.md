@@ -3,7 +3,7 @@ id: task-179-debris-debug-plane-off
 description: "Global task: Remove the red debug square drawn on the floor under each active debris system (NS_RobotDebris collision plane debug draw)."
 parent: tasks-to-do-index
 kind: task
-status: todo
+status: in-progress
 ---
 # Robot debris: hide the red debug plane
 
