@@ -3,7 +3,7 @@ id: task-169-05-weapon-card-test-fix
 description: "Fix the existing weapon-card integration test broken by the new layout: explanation now in WeaponDesc, lore in CardDesc."
 parent: task-169-weapon-card-design
 kind: task
-status: in-progress
+status: done
 ---
 # New-weapon cards: fix the broken integration test
 
@@ -15,11 +15,11 @@ status: in-progress
 - done_when: Build succeeds; Integration.WeaponCardEquipsShotgun and the other existing integration tests touching the upgrade cards pass headless; committed.
 - editor_state: closed
 - token_ceiling: 60k
-- model: open
-- tokens: open
-- runs: open
+- model: opus
+- tokens: input 30, cache write 51193, cache read 504226, output 2927
+- runs: 1
 - milestone: M2
-- result: open
+- result: RRWeaponsIntegrationTests: weapon card expectations moved to WeaponHeader/WeaponName/WeaponDesc and CardDesc = LoreText when non-empty. Build OK; WeaponCardEquipsShotgun, LevelUpUpgradeLoop, ConsoleExtractionWin, ShuttleTimeoutLoss pass (4/4). Commit 9e401a6.
 
 ## Relations
 - [[task-169-weapon-card-design]] — parent global task.

@@ -1,9 +1,9 @@
 ---
 id: task-169-weapon-card-design
 description: "Global task: new-weapon cards with their own layout (New weapon, icon, name, explanation, lore) and a unique frame."
-parent: tasks-to-do-index
+parent: tasks-done-index
 kind: task
-status: in-progress
+status: done
 ---
 # New-weapon cards: own design
 
@@ -13,8 +13,8 @@ status: in-progress
 - gdd_check: upgrades, sys-upgrades, wbp-upgrade-choice, sys-text-content read (2026-10-14). No conflict. Only the shotgun and the turret launcher are offered (burst rifle is the start weapon). A cpp subtask is needed to load the weapon lore (consequence of the plan, reported to the owner). Owner defaults accepted 2026-10-14.
 - confirmed_by_owner: yes (2026-10-14)
 - milestone: M2
-- next_step: task-169-05-weapon-card-test-fix
-- result: open
+- next_step: none
+- result: Done. RRWeaponsIntegrationTests: weapon card expectations moved to WeaponHeader/WeaponName/WeaponDesc and CardDesc = LoreText when non-empty. Build OK; WeaponCardEquipsShotgun, LevelUpUpgradeLoop, ConsoleExtractionWin, ShuttleTimeoutLoss pass (4/4). Commit 9e401a6.
 
 ## Subtasks
 1. task-169-01-weapon-lore-lines — text
@@ -24,7 +24,7 @@ status: in-progress
 5. task-169-05-weapon-card-test-fix — cpp
 
 ## Relations
-- [[tasks-to-do-index]] — parent index.
+- [[tasks-done-index]] — parent index.
 - [[task-169-01-weapon-lore-lines]] — step 1, text.
 - [[task-169-02-weapon-card-frame]] — step 2, art.
 - [[task-169-03-weapon-card-lore]] — step 3, cpp.
