@@ -38,6 +38,25 @@ enum class ERRStressMode : uint8
 	Game
 };
 
+/** Plays and skips of one pooled Niagara system (URRNiagaraPoolSubsystem) during a stress measure window (task-181-01). */
+USTRUCT()
+struct FRRStressNiagaraCount
+{
+	GENERATED_BODY()
+
+	/** Asset name of the Niagara system (e.g. NS_RobotDeathPuff). */
+	UPROPERTY()
+	FName System;
+
+	/** Effects played (components activated) during the measure window. */
+	UPROPERTY()
+	int32 Plays = 0;
+
+	/** Effects skipped because the pool was full during the measure window. */
+	UPROPERTY()
+	int32 Skips = 0;
+};
+
 /** Frame-time averages of one stress step, in milliseconds (same sources as stat unit). */
 USTRUCT()
 struct FRRStressStepResult
@@ -139,6 +158,10 @@ struct FRRStressStepResult
 	/** Game mode: miner level at the end of the step. */
 	UPROPERTY()
 	int32 MinerLevel = 0;
+
+	/** Plays and skips of every pooled Niagara system during the measure window, sorted by system name (task-181-01). */
+	UPROPERTY()
+	TArray<FRRStressNiagaraCount> NiagaraCounts;
 };
 
 /**
@@ -306,6 +329,9 @@ protected:
 	/** Robots alive in the world now (game mode: the spawner count; else the stress robots). */
 	int32 GetWorldAliveCount();
 
+	/** Total plays and skips of every pooled Niagara system now (URRNiagaraPoolSubsystem), sorted by system name. */
+	TArray<FRRStressNiagaraCount> ReadNiagaraCounts() const;
+
 	/** Robots spawned by the tool. */
 	TArray<TWeakObjectPtr<ARREnemy>> StressEnemies;
 
@@ -408,6 +434,9 @@ protected:
 	int32 LastXPRequestedTotal = -1;
 	int32 XPRequestedPrevious = 0;
 	int32 XPRequestedLatest = 0;
+
+	/** Plays and skips of every pooled Niagara system at the start of the current measure window (task-181-01). */
+	TArray<FRRStressNiagaraCount> NiagaraCountsAtMeasure;
 
 	/** Post garbage collection hook (tags spike frames). */
 	FDelegateHandle PostGarbageCollectHandle;

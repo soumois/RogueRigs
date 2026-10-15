@@ -31,6 +31,9 @@ struct FRRNiagaraSystemPool
 
 	/** Spawn calls refused because the pool was full (tests, debug). */
 	int32 SkippedCount = 0;
+
+	/** Spawn calls that activated a component (effects played) since the world began (stress logs, task-181-01). */
+	int32 PlayedCount = 0;
 };
 
 /**
@@ -81,6 +84,12 @@ public:
 
 	/** Spawn calls for System refused because its pool was full. */
 	int32 GetSkippedCount(const UNiagaraSystem* System) const;
+
+	/** Spawn calls for System that activated a component (effects played) since the world began. */
+	int32 GetPlayedCount(const UNiagaraSystem* System) const;
+
+	/** Appends the Niagara systems that have a pool (stress logs iterate them with the counters above). */
+	void GetPooledSystems(TArray<UNiagaraSystem*>& OutSystems) const;
 
 protected:
 	/** Creates one registered, inactive component of System owned by the world settings; null on failure. */

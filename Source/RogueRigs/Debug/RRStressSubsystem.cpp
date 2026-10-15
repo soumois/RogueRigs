@@ -33,6 +33,8 @@
 #include "Pickups/RRPickup.h"
 #include "Pickups/RRPickupSubsystem.h"
 #include "Pool/RRActorPoolSubsystem.h"
+#include "Pool/RRNiagaraPoolSubsystem.h"
+#include "NiagaraSystem.h"
 #include "RogueRigs.h"
 #include "Progression/RRProgressionComponent.h"
 #include "UI/RRHUDWidget.h"
@@ -1023,6 +1025,8 @@ void URRStressSubsystem::Tick(float DeltaTime)
 		{
 			LastFlowCount = Flow->GetWorkFrameCount();
 		}
+		// Before the burst: its deaths play the puff and debris inside this window.
+		NiagaraCountsAtMeasure = ReadNiagaraCounts();
 		if (RunMode == ERRStressMode::Burst)
 		{
 			TriggerBurst();
@@ -1172,6 +1176,19 @@ void URRStressSubsystem::FinishStep()
 			RunCounts[StepIndex], PickupStats.TotalCreated, PickupStats.TotalReused, PickupStats.LongestWaitFrames, PickupStats.PoolSize,
 			PickupStats.Idle, PickupStats.Acquired, PickupStats.Pending, StepSpikesXP);
 	}
+	// Puff / debris plays and skips of the measure window (task-181-01): totals now minus totals at the window start.
+	FString NiagaraText;
+	for (FRRStressNiagaraCount Count : ReadNiagaraCounts())
+	{
+		if (const FRRStressNiagaraCount* Start = NiagaraCountsAtMeasure.FindByPredicate(
+				[&Count](const FRRStressNiagaraCount& Item) { return Item.System == Count.System; }))
+		{
+			Count.Plays -= Start->Plays;
+			Count.Skips -= Start->Skips;
+		}
+		NiagaraText += FString::Printf(TEXT(", %s plays %d skips %d"), *Count.System.ToString(), Count.Plays, Count.Skips);
+		Result.NiagaraCounts.Add(Count);
+	}
 	float UnusedP99 = 0.f;
 	RRStress::Summarize(EventSamples, Result.EventFrameAvg, UnusedP99);
 	RRStress::Summarize(FlowSamples, Result.FlowAvg, UnusedP99);
@@ -1182,22 +1199,65 @@ void URRStressSubsystem::FinishStep()
 	Results.Add(Result);
 	TRACE_END_REGION(*FString::Printf(TEXT("Stress_%d_Measure"), RunCounts[StepIndex]));
 	UE_LOG(LogRogueRigs, Display,
-		TEXT("Stress step: enemies %d, frames %d, frame avg %.2f p99 %.2f max %.2f, game avg %.2f p99 %.2f max %.2f, draw avg %.2f p99 %.2f, gpu avg %.2f p99 %.2f ms, burst kills %d barrels %d, explosions %d, blocks %d, event frames %d avg %.2f max %.2f, flow computes %d avg %.3f max %.3f ms, alive avg %.1f min %d max %d, spikes %d (fill %d, gc %d, after pause %d), horde %d, level %d"),
+		TEXT("Stress step: enemies %d, frames %d, frame avg %.2f p99 %.2f max %.2f, game avg %.2f p99 %.2f max %.2f, draw avg %.2f p99 %.2f, gpu avg %.2f p99 %.2f ms, burst kills %d barrels %d, explosions %d, blocks %d, event frames %d avg %.2f max %.2f, flow computes %d avg %.3f max %.3f ms, alive avg %.1f min %d max %d, spikes %d (fill %d, gc %d, after pause %d), horde %d, level %d, niagara pools%s"),
 		Result.EnemyCount, Result.FrameCount, Result.FrameAvg, Result.FrameP99, Result.FrameMax, Result.GameAvg, Result.GameP99,
 		Result.GameMax, Result.DrawAvg, Result.DrawP99, Result.GpuAvg, Result.GpuP99, Result.BurstKills, Result.BurstBarrels, Result.Explosions,
 		Result.BlocksDestroyed, Result.EventFrames, Result.EventFrameAvg, Result.EventFrameMax, Result.FlowComputes, Result.FlowAvg, Result.FlowMax, Result.AliveAvg, Result.AliveMin, Result.AliveMax,
-		Result.Spikes, Result.SpikesFill, Result.SpikesGarbageCollect, Result.SpikesPause, Result.HordeSpawned, Result.MinerLevel);
+		Result.Spikes, Result.SpikesFill, Result.SpikesGarbageCollect, Result.SpikesPause, Result.HordeSpawned, Result.MinerLevel,
+		NiagaraText.IsEmpty() ? TEXT(" none") : *NiagaraText);
+}
+
+TArray<FRRStressNiagaraCount> URRStressSubsystem::ReadNiagaraCounts() const
+{
+	TArray<FRRStressNiagaraCount> Counts;
+	const URRNiagaraPoolSubsystem* NiagaraPool = GetWorld() ? GetWorld()->GetSubsystem<URRNiagaraPoolSubsystem>() : nullptr;
+	if (!NiagaraPool)
+	{
+		return Counts;
+	}
+	TArray<UNiagaraSystem*> Systems;
+	NiagaraPool->GetPooledSystems(Systems);
+	for (const UNiagaraSystem* System : Systems)
+	{
+		FRRStressNiagaraCount& Count = Counts.AddDefaulted_GetRef();
+		Count.System = System->GetFName();
+		Count.Plays = NiagaraPool->GetPlayedCount(System);
+		Count.Skips = NiagaraPool->GetSkippedCount(System);
+	}
+	Counts.Sort([](const FRRStressNiagaraCount& A, const FRRStressNiagaraCount& B) { return A.System.LexicalLess(B.System); });
+	return Counts;
 }
 
 void URRStressSubsystem::WriteResults() const
 {
-	FString Csv = TEXT("Enemies,Frames,FrameAvg,FrameP99,FrameMax,GameAvg,GameP99,GameMax,DrawAvg,DrawP99,GpuAvg,GpuP99,Kills,Barrels,Explosions,Blocks,EventFrames,EventAvg,EventMax,FlowComputes,FlowAvg,FlowMax,AliveAvg,AliveMin,AliveMax,Spikes,SpikesFill,SpikesGC,SpikesPause,Horde,Level\n");
+	// task-181-01: one <System>Plays,<System>Skips column pair per pooled Niagara system seen in any step (e.g. NS_RobotDeathPuffPlays).
+	TArray<FName> NiagaraSystems;
 	for (const FRRStressStepResult& R : Results)
 	{
-		Csv += FString::Printf(TEXT("%d,%d,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%d,%d,%d,%d,%d,%.3f,%.3f,%d,%.3f,%.3f,%.1f,%d,%d,%d,%d,%d,%d,%d,%d\n"), R.EnemyCount,
+		for (const FRRStressNiagaraCount& Count : R.NiagaraCounts)
+		{
+			NiagaraSystems.AddUnique(Count.System);
+		}
+	}
+	NiagaraSystems.Sort([](const FName& A, const FName& B) { return A.LexicalLess(B); });
+	FString Csv = TEXT("Enemies,Frames,FrameAvg,FrameP99,FrameMax,GameAvg,GameP99,GameMax,DrawAvg,DrawP99,GpuAvg,GpuP99,Kills,Barrels,Explosions,Blocks,EventFrames,EventAvg,EventMax,FlowComputes,FlowAvg,FlowMax,AliveAvg,AliveMin,AliveMax,Spikes,SpikesFill,SpikesGC,SpikesPause,Horde,Level");
+	for (const FName& System : NiagaraSystems)
+	{
+		Csv += FString::Printf(TEXT(",%sPlays,%sSkips"), *System.ToString(), *System.ToString());
+	}
+	Csv += TEXT("\n");
+	for (const FRRStressStepResult& R : Results)
+	{
+		Csv += FString::Printf(TEXT("%d,%d,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%d,%d,%d,%d,%d,%.3f,%.3f,%d,%.3f,%.3f,%.1f,%d,%d,%d,%d,%d,%d,%d,%d"), R.EnemyCount,
 			R.FrameCount, R.FrameAvg, R.FrameP99, R.FrameMax, R.GameAvg, R.GameP99, R.GameMax, R.DrawAvg, R.DrawP99, R.GpuAvg, R.GpuP99,
 			R.BurstKills, R.BurstBarrels, R.Explosions, R.BlocksDestroyed, R.EventFrames, R.EventFrameAvg, R.EventFrameMax, R.FlowComputes,
 			R.FlowAvg, R.FlowMax, R.AliveAvg, R.AliveMin, R.AliveMax, R.Spikes, R.SpikesFill, R.SpikesGarbageCollect, R.SpikesPause, R.HordeSpawned, R.MinerLevel);
+		for (const FName& System : NiagaraSystems)
+		{
+			const FRRStressNiagaraCount* Count = R.NiagaraCounts.FindByPredicate([&System](const FRRStressNiagaraCount& Item) { return Item.System == System; });
+			Csv += FString::Printf(TEXT(",%d,%d"), Count ? Count->Plays : 0, Count ? Count->Skips : 0);
+		}
+		Csv += TEXT("\n");
 	}
 	const FString Path = FPaths::ProjectSavedDir() / TEXT("Stress") /
 		FString::Printf(TEXT("Stress_%s.csv"), *FDateTime::Now().ToString(TEXT("%Y%m%d_%H%M%S")));

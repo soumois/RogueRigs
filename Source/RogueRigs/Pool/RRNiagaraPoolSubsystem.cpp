@@ -79,6 +79,7 @@ UNiagaraComponent* URRNiagaraPoolSubsystem::Spawn(UNiagaraSystem* System, const 
 	}
 
 	Pool.InUse.Add(Component);
+	++Pool.PlayedCount;
 	Component->SetWorldLocationAndRotation(Location, Rotation);
 	BeforeActivate(*Component);
 	// A system that cannot run completes inside Activate: the finish callback has already put the component back.
@@ -129,6 +130,23 @@ int32 URRNiagaraPoolSubsystem::GetSkippedCount(const UNiagaraSystem* System) con
 {
 	const FRRNiagaraSystemPool* Pool = Pools.Find(System);
 	return Pool ? Pool->SkippedCount : 0;
+}
+
+int32 URRNiagaraPoolSubsystem::GetPlayedCount(const UNiagaraSystem* System) const
+{
+	const FRRNiagaraSystemPool* Pool = Pools.Find(System);
+	return Pool ? Pool->PlayedCount : 0;
+}
+
+void URRNiagaraPoolSubsystem::GetPooledSystems(TArray<UNiagaraSystem*>& OutSystems) const
+{
+	for (const TPair<TObjectPtr<UNiagaraSystem>, FRRNiagaraSystemPool>& Pair : Pools)
+	{
+		if (Pair.Key)
+		{
+			OutSystems.Add(Pair.Key);
+		}
+	}
 }
 
 UNiagaraComponent* URRNiagaraPoolSubsystem::CreateComponent(UNiagaraSystem* System)
