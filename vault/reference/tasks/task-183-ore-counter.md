@@ -14,7 +14,7 @@ status: done
 - confirmed_by_owner: yes (2026-10-14: "Oui tu peux lancer toutes les tâches")
 - milestone: M1
 - next_step: none
-- result: Done. T_Icon_Ore (green keyed to alpha, 256 px), WBP_OreCounter (icon 56 px at 236,30 + count, bound to OnOreChanged in BindToRunFlow, no tick) in WBP_HUD, success-screen row 'Ore secured: N' in WBP_AlertObjectives; PIE read-backs: counter '10' after GrantOre 10, 'Ore secured: 10' after extraction; commit 8a3a1f80
+- result: Done. Carried ore counted (URRRunFlowSubsystem::AddCarriedOre, OnOreChanged), secured on extraction in URROreBankSubsystem (game instance), emptied on a missed shuttle or death; cheat rr.Cheat.GrantOre; HUD ore icon (owner-picked render and icon in vault/assets) in WBP_OreCounter right of the minimap; secured ore on the success screen. Acceptance: build exit 0, 38/38 tests, PIE read-backs '10' and 'Ore secured: 10', death emptied carried ore (seen in a PIE run); missed-shuttle loss and on-screen look not verified. Commits 7a452036, cb0916e5, 8a3a1f80.
 
 ## Subtasks
 1. task-183-01-ore-counter-logic — cpp
