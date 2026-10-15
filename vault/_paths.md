@@ -175,6 +175,7 @@ perf-leads  reference/tech/performance/perf-leads.md
 perf-projectile-pool-evaluation  reference/tech/performance/perf-projectile-pool-evaluation.md
 perf-risks  reference/tech/performance/perf-risks.md
 perf-robot-components-audit  reference/tech/performance/perf-robot-components-audit.md
+perf-stress-chaser-meshy  reference/tech/performance/perf-stress-chaser-meshy.md
 perf-stress-damage-numbers  reference/tech/performance/perf-stress-damage-numbers.md
 perf-stress-damage-numbers-recheck  reference/tech/performance/perf-stress-damage-numbers-recheck.md
 perf-stress-final-m1  reference/tech/performance/perf-stress-final-m1.md
