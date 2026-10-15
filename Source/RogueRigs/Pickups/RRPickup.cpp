@@ -3,6 +3,7 @@
 #include "Pickups/RRPickup.h"
 
 #include "Components/StaticMeshComponent.h"
+#include "Engine/StaticMesh.h"
 #include "Engine/CollisionProfile.h"
 #include "Engine/World.h"
 #include "GAS/RRAbilitySystemComponent.h"
@@ -60,6 +61,9 @@ void ARRPickup::StartLife()
 	}
 	bLifeStarted = true;
 
+	// task-192-01: mesh variant and rest orientation of this life, before the pop moves the actor.
+	ApplyLifeLook();
+
 	PopStart = GetActorLocation();
 	const float Yaw = bHasPopYaw ? FMath::DegreesToRadians(PopYawDegrees) : FMath::FRandRange(0.f, UE_TWO_PI);
 	const float MinDistance = FMath::Min(PopMinDistance, PopMaxDistance);
@@ -81,6 +85,48 @@ void ARRPickup::StartLife()
 	else
 	{
 		SetActorTickEnabled(true);
+	}
+}
+
+void ARRPickup::ApplyLifeLook()
+{
+	if (MeshVariants.Num() > 0)
+	{
+		TArray<UStaticMesh*, TInlineAllocator<8>> ValidMeshes;
+		for (UStaticMesh* Mesh : MeshVariants)
+		{
+			if (Mesh)
+			{
+				ValidMeshes.Add(Mesh);
+			}
+		}
+		if (ValidMeshes.Num() > 0)
+		{
+			// SetStaticMesh keeps OverrideMaterials and is a no-op when the same mesh is drawn again.
+			PickupMesh->SetStaticMesh(ValidMeshes[FMath::RandRange(0, ValidMeshes.Num() - 1)]);
+		}
+	}
+
+	switch (RestOrientation)
+	{
+	case ERRPickupRestOrientation::None:
+		return;
+
+	case ERRPickupRestOrientation::YawOnly:
+		SetActorRotation(FRotator(0.f, FMath::FRandRange(-180.f, 180.f), 0.f));
+		return;
+
+	case ERRPickupRestOrientation::Full:
+	{
+		// Uniform random rotation (Shoemake): no bias toward any pole, unlike three independent uniform angles.
+		const float U1 = FMath::FRand();
+		const float U2 = FMath::FRandRange(0.f, UE_TWO_PI);
+		const float U3 = FMath::FRandRange(0.f, UE_TWO_PI);
+		const float A = FMath::Sqrt(1.f - U1);
+		const float B = FMath::Sqrt(U1);
+		SetActorRotation(FQuat(A * FMath::Sin(U2), A * FMath::Cos(U2), B * FMath::Sin(U3), B * FMath::Cos(U3)).GetNormalized());
+		return;
+	}
 	}
 }
 

@@ -9,6 +9,7 @@
 
 class ARRMiner;
 class UGameplayEffect;
+class UStaticMesh;
 class UStaticMeshComponent;
 
 /** Kind of a pickup; tells the miner what was collected. */
@@ -38,6 +39,21 @@ enum class ERRPickupPhase : uint8
 };
 
 /**
+ * Rest orientation of a pickup, drawn once per life when it is ejected (task-192-01). The actor keeps it through the pop
+ * and the rest (no tumble in flight); BP_PickupXP and BP_PickupXPBig still turn to face the miner on magnet start.
+ */
+UENUM(BlueprintType)
+enum class ERRPickupRestOrientation : uint8
+{
+	/** Rotation left as spawned (zero for grid and robot drops, restored to zero by the pool): today's look. */
+	None,
+	/** Random yaw only, pitch and roll zero: the pickup keeps its upward face (XP chip, one interesting face). */
+	YawOnly,
+	/** Random pitch, roll and yaw (uniform over every orientation): chunks that land in any position (ore). */
+	Full
+};
+
+/**
  * A pickup lying on the arena floor (xp-level-up: DRGS-like ejection then suction). On spawn it is ejected along a random
  * horizontal direction (or the one given by SetPopYaw) to a distance in [PopMinDistance, PopMaxDistance]: an arc of
  * PopArcHeight then a small bounce of PopBounceHeight, over PopDuration in total, ending HoverHeight above the spawn Z.
@@ -55,7 +71,9 @@ enum class ERRPickupPhase : uint8
  * the caller set the values, and re-activates auto-activate FX components. The pool resets the rotation (BP_PickupXP faces
  * the miner on magnet start). Glow fade (bGlowFade, task-148-01): a 0..1 value written to PickupMesh Custom Primitive Data
  * at GlowFadeDataIndex, 0 in the air, fading to 1 over GlowFadeDuration on landing and back to 0 on magnet; advanced in
- * UpdateMotion only while it moves, reset to 0 at each life start and pool release. No physics, no collision; movement is driven by URRPickupSubsystem in one loop per frame (actor tick
+ * UpdateMotion only while it moves, reset to 0 at each life start and pool release. Look per life (task-192-01): StartLife
+ * picks one mesh of MeshVariants for PickupMesh (empty = keep the Blueprint mesh) and sets the actor rotation from
+ * RestOrientation (None = unchanged); the PickupMesh override materials are kept across a mesh swap. No physics, no collision; movement is driven by URRPickupSubsystem in one loop per frame (actor tick
  * only as a fallback when the subsystem is missing). Spawned by ARRArenaGrid at a cell center (floor top), and by ARREnemy
  * at its feet on death (XP, split over several cubes). Subclass in Blueprint: set PickupType and the mesh.
  */
@@ -144,6 +162,13 @@ protected:
 	 * state and registers with URRPickupSubsystem (else enables the actor tick). Called by BeginPlay and OnPoolAcquired.
 	 */
 	void StartLife();
+
+	/**
+	 * Draws the look of a new life (task-192-01), called by StartLife before the pop starts: a random entry of MeshVariants
+	 * on PickupMesh (null entries skipped; nothing when the list is empty or holds no valid mesh) and the actor rotation from
+	 * RestOrientation (None leaves it untouched). Override materials of PickupMesh are not touched, so they apply to every variant.
+	 */
+	void ApplyLifeLook();
 
 	/** Unregisters from URRPickupSubsystem. */
 	virtual void EndPlay(const EEndPlayReason::Type EndPlayReason) override;
@@ -289,6 +314,21 @@ protected:
 	/** Custom Primitive Data index of PickupMesh the glow fade is written to (the material scalar parameter uses the same index). */
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Pickup|Glow", meta = (ClampMin = 0, EditCondition = "bGlowFade"))
 	int32 GlowFadeDataIndex = 0;
+
+	/**
+	 * task-192-01 (owner 2026-10-15, provisional per Blueprint): rotation drawn once per life when the pickup is ejected
+	 * (fresh spawn and every pool reuse); kept through the pop and the rest, no tumble, no tick. None (default) = today's look.
+	 */
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Pickup|Look")
+	ERRPickupRestOrientation RestOrientation = ERRPickupRestOrientation::None;
+
+	/**
+	 * task-192-01: meshes one of which is put on PickupMesh at random each life (fresh spawn and every pool reuse). Empty
+	 * (default) = keep the Blueprint mesh. The PickupMesh override materials are kept, so every variant must share the slot
+	 * layout they target (ore chunks: crystal_bright, crystal_dark); leave the overrides empty to use each mesh's own slot defaults.
+	 */
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Pickup|Look")
+	TArray<TObjectPtr<UStaticMesh>> MeshVariants;
 
 	/** Miner this pickup flies to (latched with the magnet), or found from the player 0 pawn by the fallback tick. */
 	UPROPERTY(Transient)
