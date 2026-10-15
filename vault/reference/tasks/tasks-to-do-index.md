@@ -14,3 +14,5 @@ A global task moves to [[tasks-done-index]] when it is done (`vault/scripts/task
 - [[task-176-lone-stat-icon-larger]] — Make the stat icon 25 % larger (125 to 156 px) on cards where it is shown alone (All weapons or player stat); unchanged next to a weapon icon. Status in-progress.
 - [[task-177-wider-upgrade-cards]] — Make the upgrade cards wider: 500 x 720 instead of 440 x 720, frames re-baked at the new size, same frame thickness. Status in-progress.
 - [[task-178-card-glow-hover]] — Stronger inner rarity glow on the upgrade cards (about 2x), and stronger still on hover (about 3x), driven by the button hover events. Status todo.
+- [[task-179-debris-debug-plane-off]] — Remove the red debug square drawn on the floor under each active debris system (NS_RobotDebris collision plane debug draw). Status todo.
+- [[task-180-burst-rifle-push-collision]] — Stop burst rifle shots from pushing robots through collision: the burst rifle has no knockback, so a hit must not move a robot. Status todo.
