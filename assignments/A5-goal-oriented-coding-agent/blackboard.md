@@ -252,3 +252,33 @@ Both delegated in parallel (no shared files: C++ with the editor closed; art nee
 - Git: the agent's commit hit a transient `.git/index.lock` (the Architect's concurrent commit); the Architect committed the prompt and run log: `f5698be8`. Retry: none.
 - Sent to the owner; style-guide review running; waiting for the owner's choice.
 - Style-guide review (`Art/Source/ore-hud/20261014-231429-ore-hud.review.json`, not committed): both fail. Shared: A14 (UI in reference art, owner-requested deviation), A6 (grey mannequin miner), colour-code (unexplained yellow and cyan spheres), readability (rocks without cracks). Image 2 also fails A1 (glossy, thin-shard crystal). Image 1's icon passes A1. Architect's note: the miner, the spheres and the uncracked rock come from the real grey-box screenshot used as reference (current in-game placeholders), not from the counter; the icon itself is what task-183-03 takes. Reported to the owner, who keeps or rejects each fail.
+
+#### Owner answer on the render (verbatim)
+> rendu 2, c'est très bien pour l'icone.
+>
+> Mais pour sa position sur l'écran, ça doit plus être comme l'or en haut à gauche, mais tu peux le faire plus grand que sur l'image
+
+(The owner attached a screenshot of another top-down shooter as a placement reference: round minimap top-left; to its right, under a mission-title strip, a row of small resource counters, each an icon followed by a number, with no plate behind them.)
+
+English translation: "Render 2, that's very good for the icon. But for its position on screen, it should be more like the gold at the top left, though you can make it bigger than in the image."
+
+Decision: candidate 2 validated as the icon base, copied to `vault/assets/ore-hud-render.png`; its style-guide fails (A1 glossy crystal, A14 UI in art, and the scene fails) are kept by the owner's choice. Placement changed: an inline counter (icon then number, no plate) at the top, right of the minimap, larger than the reference; written into task-183-04. The icon brief now asks for a crystal that reads without a plate.
+
+#### task-183-03-ore-hud-icon (art) — prompt sent
+Reading list: the subtask node, then its `inputs` (agent-art, art-3d-lessons, art-style-guide, color-code, readability-rules, kie-image-workflow), `vault/assets/ore-hud-render.png`, one stat icon from `Art/Source/stat-icons/`.
+```text
+Subtask task-183-03-ore-hud-icon (Rogue Rigs, repo C:\Users\soumo\Documents\Unreal Projects\RogueRigs).
+
+Read your subtask node first: vault/reference/tasks/task-183-ore-counter/task-183-03-ore-hud-icon.md. Its `inputs` line lists the resolved paths of every node you need: read those directly, do not descend from root again, never search the vault. Resolve any other [[wikilink]] through vault/_paths.md.
+
+Notes:
+- The owner chose candidate 2 of task-183-02 (2026-10-14, translated): "render 2, that's very good for the icon." It is now vault/assets/ore-hud-render.png. Draw the icon from the violet crystal cluster in its top-left counter (tall, sharp faceted shards, light violet glow): keep that crystal design. The style-guide critic flagged it A1 (glossy gradients, thin shards); the owner kept it on purpose: do not "fix" it toward flat chunky facets.
+- Use: the icon sits directly on the game view at the top of the HUD, right of the round minimap, followed by the carried count, with no plate behind it (owner: like a gold counter at the top left, but larger). So it needs a silhouette and outline that read on dark and on light-grey backgrounds, at 48 to 64 px.
+- Output: square (1:1), the crystal alone, centred with margin, on a plain flat background the bp agent can key out (or transparent if the model gives alpha). No text, no plate, no number.
+- Use image-to-image with vault/assets/ore-hud-render.png (crop or describe the counter area) and one stat icon from Art/Source/stat-icons/ as references.
+- Limits: at most 2 candidates; one kie_image.js run at a time, never in parallel; never write the API key anywhere; never put an image in vault/assets/.
+- Self-review per image includes a 48 px downscale check (describe what still reads).
+- Git: prefix every git command with `git -c "safe.directory=C:/Users/soumo/Documents/Unreal Projects/RogueRigs"`. Do not commit candidate images; commit only the prompt file and run log by explicit path, message `task-183-03-ore-hud-icon: <summary>` ending with `Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>`. Never `git add -A`. If `.git/index.lock` exists, wait a few seconds and retry once; never delete it.
+- Do not modify the task node fields status, model, tokens, runs, result.
+- Report: candidate PNG paths, one line per candidate, self-review with the 48 px check, credits used, commit hash.
+```
