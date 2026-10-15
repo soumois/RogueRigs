@@ -89,7 +89,8 @@ function boxBlur(a, r) {
   }
   return cur;
 }
-const glowField = boxBlur(Float32Array.from(inside, (v) => 1 - v), 22);
+const glowField = boxBlur(Float32Array.from(inside, (v) => 1 - v), 33)   // radius 22 -> 33: soft part reaches 1.5x further;
+const GLOW_GAIN = 3.4;
 const nearLine = boxBlur(Float32Array.from(inside), 3);
 // ---- layers
 const base = new Uint8Array(N * 4), acc = new Uint8Array(N * 4), glow = new Uint8Array(N * 4);
@@ -101,7 +102,7 @@ for (let i = 0; i < N; i++) {
   const sh = Math.min(255, Math.round(lum * 1.7));          // shading kept, near white for bright accents
   acc[i * 4] = acc[i * 4 + 1] = acc[i * 4 + 2] = sh; acc[i * 4 + 3] = Math.round(w * a * 255);
   let ga = 0;
-  if (inside[i]) ga = Math.pow(Math.min(1, Math.max(0, glowField[i])), 1.3) * 0.9;
+  if (inside[i]) ga = 1 - Math.exp(-GLOW_GAIN * Math.pow(Math.min(1, Math.max(0, glowField[i])), 1.15));   // about 3x the former intensity (was pow 1.3 * 0.9), saturating
   else if (a > 0.5 && nearLine[i] > 0.02) ga = Math.min(1, Math.max(0, nearLine[i]) * 2.5) * 0.95;
   glow[i * 4] = glow[i * 4 + 1] = glow[i * 4 + 2] = 255; glow[i * 4 + 3] = Math.round(Math.min(1, ga) * 255);
 }
