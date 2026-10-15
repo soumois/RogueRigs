@@ -17,7 +17,7 @@ status: approved
 - The pieces have no glow: the red eye is off.
 - Pieces collide with the floor only (an analytic floor plane). No interaction with the miner, robots or blocks.
 - Pieces stay 4.5 s at full size, then sink into the floor in 0.4 s without shrinking: 4.9 s in all; no debris stays in the arena (provisional, owner 2026-10-15; was 1.2 s with a shrink, then 3.4 s).
-- Debris and puff systems are pooled, 40 each at most; when the debris pool is empty, only the puff plays (provisional, owner 2026-10-14).
+- Debris and puff systems are pooled, debris 80 and puff 40 at most; when the debris pool is empty, only the puff plays (provisional, owner 2026-10-15, test).
 - First robots: the chaser and the shield chaser (same mesh); other robots keep the M1 death until their parts exist.
 - A robot dies exactly once ([[sys-damage]]).
 - Chaos Destruction is not used, for robots or terrain.
