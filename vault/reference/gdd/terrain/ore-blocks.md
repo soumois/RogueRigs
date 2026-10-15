@@ -11,7 +11,7 @@ status: approved
 - Each broken ore block pops one ore chunk (DRGS-like arc then suction, [[xp-level-up]]); ore value per chunk: 1 (owner 2026-10-10, provisional).
 - The chunk drops whatever destroyed the block, drone or explosion; no extra bundle ([[ore-economy]]; owner, after handover-2026-10-06).
 - The chunk lands within about one cell of the broken block, so it never rests over unbroken rock (provisional, task-027-01, owner to judge).
-- Any explosion destroys every block in its radius ([[explosions]]): luring a kamikaze onto a vein is a valid tactic.
+- Any explosion destroys every block in its radius ([[explosions]]): luring a kamikaze onto a vein is a valid tactic. A deposit is never left partly destroyed: when an explosion (any source) destroys one of its blocks, the whole deposit breaks and pops all its chunks; heal veins too (owner 2026-10-15, provisional).
 - Look (owner 2026-10-10, validated): same base as breakable rock, with glowing violet crystals, kept as built. The ore is called Duskite (provisional name, replaces "gold"; the owner wanted a name apart from the gold colour); Duskite is the only ore for now ([[color-code]]).
 - Values above are provisional, set by the owner on 2026-10-01; ore value per pickup: 1 (owner 2026-10-10).
 - Milestone: M1.

@@ -11,7 +11,7 @@ status: todo
 - goal: Debris stay 4.5 s at full size then sink in 0.4 s (4.9 s), the debris pool holds 80 systems, and the cost of the larger cap is measured and recorded.
 - acceptance: lifetime 4.9 s and sink from 4.5 s read back; DebrisPoolSize 80 on both chaser Blueprints; game-mode 200/300 and S7 200 measured against task-181; cost per extra debris system recorded in perf-stress-chaser-meshy; enemy-death updated; committed.
 - gdd_check: enemy-death (pools of 40, debris 3 s + 0.4 s) and perf-stress-chaser-meshy read (2026-10-14); the change is a test the owner asked for; enemy-death to be updated (provisional) when it lands.
-- confirmed_by_owner: no (prepared, not started, owner 2026-10-14)
+- confirmed_by_owner: yes (2026-10-15); measure last
 - milestone: M3
 - next_step: task-182-01-debris-lifetime-4-5s
 - result: open

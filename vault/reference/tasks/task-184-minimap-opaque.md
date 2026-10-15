@@ -11,7 +11,7 @@ status: todo
 - goal: Make the minimap disc fully opaque: no part of the game shows through it, unseen cells included.
 - acceptance: M_Minimap compiles and its opacity path reads back 1 inside the circle; UnseenColor and the MinimapImage opacity read back; the HUD Blueprints compile and are saved by explicit path; docs updated; committed by path; the editor stays open; not seen on screen unless the owner checks; committed.
 - gdd_check: readability-rules Minimap line read (2026-10-14): no opacity value, no conflict; open: colour of unseen cells once opaque (default black).
-- confirmed_by_owner: no (prepared, not started, owner 2026-10-14)
+- confirmed_by_owner: yes (2026-10-15); unseen cells black (0, 0, 0)
 - milestone: M2
 - next_step: task-184-01-minimap-opaque
 - result: open

@@ -25,6 +25,8 @@ applies_to: art, vfx, level-design, image prompts
 - Alert bar (owner 2026-10-08): twice as wide and twice as tall as before, its event icons scaled with it.
 
 - Minimap reveal (owner 2026-10-09, provisional radius): cells are revealed in a circle of 18 cells around the miner (about the short half of the screen), the same in every direction, not the camera trapezoid.
+- Minimap opacity (owner 2026-10-15, provisional): the disc is fully opaque; cells not seen yet are drawn black (0, 0, 0), so nothing of the game shows through it.
+- Alert bar label (owner 2026-10-15): no ALERT text next to the bar, no pause indicator.
 
 - Ground circles (owner 2026-10-12): zones the player must stay in are dotted circles on the ground (gold while a condition is missing, white-blue when active) with a sharp solid white circle growing to the edge for progress; danger zones (barrel, heavy slam) are orange, the colour of "explodes"; red stays reserved for enemy fire and healing ([[ground-telegraph]]).
 - Weapon slots (owner 2026-10-12): an owned slot shows the weapon icon large without the name, the ammo or reload bar under it; a locked slot shows the padlock.

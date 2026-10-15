@@ -11,7 +11,7 @@ status: todo
 - goal: The alert bar shows without the ALERT / ALERT (paused) text; nothing else of the alert bar changes.
 - acceptance: AlertLabel gone from WBP_AlertObjectives and its graphs; the integration test no longer reads it; build and run integration tests pass except known failures; docs updated; committed.
 - gdd_check: readability-rules (alert bar line) and wbp-alert-objectives read (2026-10-14): the GDD does not ask for the label, no conflict; the label also showed the pause ("ALERT (paused)"): default, no replacement indicator, to confirm with the owner.
-- confirmed_by_owner: no (prepared, not started, owner 2026-10-14)
+- confirmed_by_owner: yes (2026-10-15); no pause indicator
 - milestone: M2
 - next_step: task-185-01-alert-label-widget
 - result: open

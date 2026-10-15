@@ -3,7 +3,7 @@ id: task-187-01-deposit-whole-on-explosion
 description: "When an explosion destroys any block of an ore deposit, the whole deposit is destroyed and pops all its chunks: no partly destroyed deposit."
 parent: task-187-deposit-whole-on-explosion
 kind: task
-status: todo
+status: in-progress
 ---
 # Ore deposits: destroyed whole by explosions
 
