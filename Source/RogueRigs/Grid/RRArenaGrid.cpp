@@ -1228,6 +1228,7 @@ bool ARRArenaGrid::DestroySingleCell(FIntPoint Cell, ERRTerrainDamageSource Sour
 		else if (BarrelFuseSeconds > 0.f && GetWorld() && GetWorld()->IsGameWorld())
 		{
 			StartBarrelFuse(Cell);
+			++DestroyedBlockCount;
 			UE_LOG(LogRogueRigs, Verbose, TEXT("ARRArenaGrid: barrel (%d, %d) fuse lit (%.2f s), source %s."), Cell.X, Cell.Y,
 				BarrelFuseSeconds, *UEnum::GetValueAsString(Source));
 			return true;
@@ -1284,6 +1285,7 @@ bool ARRArenaGrid::DestroySingleCell(FIntPoint Cell, ERRTerrainDamageSource Sour
 	{
 		OnCellMarkedChanged(Cell, false, GetCellCenter(Cell.X, Cell.Y));
 	}
+	++DestroyedBlockCount;
 	OnCellDestroyed.Broadcast(Cell, Type, Source);
 	return true;
 }
@@ -1650,12 +1652,13 @@ int32 ARRArenaGrid::DestroyCellsInRadius(FVector Center, float Radius, ERRTerrai
 	TArray<FIntPoint> Targets;
 	CollectBlocksInRadius(Center, Radius, Targets);
 
-	int32 Destroyed = 0;
+	// Counted by DestroySingleCell: a deposit broken whole adds its blocks outside the radius, its later targets add nothing.
+	const int32 CountBefore = DestroyedBlockCount;
 	for (const FIntPoint& Cell : Targets)
 	{
-		Destroyed += DestroyCell(Cell, Source) ? 1 : 0;
+		DestroyCell(Cell, Source);
 	}
-	return Destroyed;
+	return DestroyedBlockCount - CountBefore;
 }
 
 int32 ARRArenaGrid::QueueDestroyCellsInRadius(FVector Center, float Radius, ERRTerrainDamageSource Source)

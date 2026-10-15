@@ -1056,7 +1056,22 @@ bool FRRDigFineGridDefaultsTest::RunTest(const FString& Parameters)
 	}
 	AddInfo(FString::Printf(TEXT("%d blocks within 700 uu of (129, 115)"), Inside.Num()));
 	TestTrue(TEXT("several blocks in the radius"), Inside.Num() > 10);
-	TestEqual(TEXT("every block in the 700 uu radius destroyed"), Grid->DestroyCellsInRadius(Center, Barrel.Radius, ERRTerrainDamageSource::Barrel), Inside.Num());
+	// Task-187-01: a deposit touched by the radius breaks whole, its blocks outside the radius included.
+	TSet<FIntPoint> Expected(Inside);
+	for (const FIntPoint& Cell : Inside)
+	{
+		TArray<FIntPoint> DepositCells;
+		Grid->GetDepositCells(Cell, DepositCells);
+		Expected.Append(DepositCells);
+	}
+	AddInfo(FString::Printf(TEXT("%d blocks with the whole deposits"), Expected.Num()));
+	TestEqual(TEXT("every block in the 700 uu radius destroyed, touched deposits whole"), Grid->DestroyCellsInRadius(Center, Barrel.Radius, ERRTerrainDamageSource::Barrel), Expected.Num());
+	int32 Standing = 0;
+	for (const FIntPoint& Cell : Expected)
+	{
+		Standing += Grid->IsBlockCell(Cell) ? 1 : 0;
+	}
+	TestEqual(TEXT("none of them left standing"), Standing, 0);
 	TestTrue(TEXT("instance maps consistent"), CheckInstanceMaps(*this, Grid));
 	return true;
 }

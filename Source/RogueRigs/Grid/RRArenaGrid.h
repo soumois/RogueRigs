@@ -292,7 +292,8 @@ public:
 
 	/**
 	 * Destroys every block whose cell center lies within Radius (horizontal distance) of Center, whatever its type
-	 * or health (explosions rule). Returns the number of blocks destroyed (barrels whose fuse it lit included).
+	 * or health (explosions rule). Returns the number of blocks destroyed (barrels whose fuse it lit included, and the
+	 * blocks outside the radius of the deposits it breaks whole, task-187-01).
 	 */
 	UFUNCTION(BlueprintCallable, Category = "Grid|Destruction")
 	int32 DestroyCellsInRadius(FVector Center, float Radius, ERRTerrainDamageSource Source);
@@ -592,6 +593,9 @@ protected:
 	 * unmark, OnCellDestroyed. Returns false when the cell has no block or a fusing barrel ignores it.
 	 */
 	bool DestroySingleCell(FIntPoint Cell, ERRTerrainDamageSource Source);
+
+	/** Blocks destroyed (or barrel fuses lit) by DestroySingleCell since the grid was spawned; DestroyCellsInRadius counts with it. */
+	int32 DestroyedBlockCount = 0;
 
 	// --- Layout and dimensions ---
 

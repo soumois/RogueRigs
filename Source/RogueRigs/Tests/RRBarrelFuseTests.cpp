@@ -246,6 +246,20 @@ bool FRRBarrelFuseRadiusFineTest::RunTest(const FString& Parameters)
 	TArray<FIntPoint> Inside;
 	TArray<FIntPoint> Outside;
 	CollectBlocks(Grid, Center, Stats.Radius, Inside, Outside);
+	// Task-187-01: ring blocks of a deposit touched by the radius break with it (whole deposit); the rest of the ring stays.
+	TSet<FIntPoint> TouchedDepositCells;
+	for (const FIntPoint& Cell : Inside)
+	{
+		TArray<FIntPoint> DepositCells;
+		Grid->GetDepositCells(Cell, DepositCells);
+		TouchedDepositCells.Append(DepositCells);
+	}
+	int32 RingDepositCells = 0;
+	for (const FIntPoint& Cell : Outside)
+	{
+		RingDepositCells += TouchedDepositCells.Contains(Cell) ? 1 : 0;
+	}
+	AddInfo(FString::Printf(TEXT("%d ring blocks belong to deposits touched by the radius"), RingDepositCells));
 
 	// Warm-up explosion far from the centre (first FX class load and first spawn are one-off costs), then a baseline frame,
 	// then the frame that resolves the measured explosion (queue idle: resolves on the next tick).
@@ -285,7 +299,7 @@ bool FRRBarrelFuseRadiusFineTest::RunTest(const FString& Parameters)
 	{
 		Lost += Grid->IsBlockCell(Cell) ? 0 : 1;
 	}
-	TestEqual(TEXT("blocks of the next ring kept"), Lost, 0);
+	TestEqual(TEXT("blocks of the next ring kept, except those of touched deposits"), Lost, RingDepositCells);
 	TestTrue(TEXT("blocks next to the radius exist"), Outside.Num() > 0);
 
 	// Grid batch alone on a second dense centre (same rule, direct call), for the destruction share of the frame.
