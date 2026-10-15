@@ -3,7 +3,7 @@ id: task-195-floaty-pop-midair-magnet
 description: "Global task: long floaty pop arc and mid-air magnet after a delay for XP nut, ore and heal pickups, not the big chip."
 parent: tasks-to-do-index
 kind: task
-status: todo
+status: in-progress
 ---
 # Floaty pop and mid-air magnet
 

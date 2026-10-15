@@ -3,7 +3,7 @@ id: task-195-01-floaty-pop-midair-magnet
 description: "C++: pop fall-to-rise time ratio and optional mid-air magnet after a delay from spawn on ARRPickup, defaults unchanged."
 parent: task-195-floaty-pop-midair-magnet
 kind: task
-status: todo
+status: in-progress
 ---
 # Floaty pop and mid-air magnet
 
