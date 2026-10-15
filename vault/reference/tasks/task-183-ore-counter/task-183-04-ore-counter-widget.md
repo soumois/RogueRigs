@@ -3,7 +3,7 @@ id: task-183-04-ore-counter-widget
 description: "BP: import the ore icon, new WBP_OreCounter panel next to the radar bound to the C++ ore event, secured ore on the success screen, docs."
 parent: task-183-ore-counter
 kind: task
-status: in-progress
+status: done
 ---
 # Ore counter widget
 
@@ -15,11 +15,11 @@ status: in-progress
 - done_when: widgets compile with warnings as errors; placement read back (no overlap with the minimap or health bar); in PIE `rr.Cheat.GrantOre 10` then extraction shows 10 next to the radar and 10 secured on the success screen (screenshot through the cpp agent if the editor cannot capture); docs updated; lint clean; committed by path.
 - editor_state: open
 - token_ceiling: open
-- model: open
-- tokens: open
-- runs: open
+- model: sonnet
+- tokens: input 160, cache write 165119, cache read 7246427, output 1499
+- runs: 1
 - milestone: M1
-- result: open
+- result: T_Icon_Ore (green keyed to alpha, 256 px), WBP_OreCounter (icon 56 px at 236,30 + count, bound to OnOreChanged in BindToRunFlow, no tick) in WBP_HUD, success-screen row 'Ore secured: N' in WBP_AlertObjectives; PIE read-backs: counter '10' after GrantOre 10, 'Ore secured: 10' after extraction; commit 8a3a1f80
 
 ## Relations
 - [[task-183-ore-counter]] — parent global task.

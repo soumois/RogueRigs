@@ -1,9 +1,9 @@
 ---
 id: task-183-ore-counter
 description: "Global task: carried ore counted, secured on extraction, lost on a miss or death, shown with an icon next to the radar."
-parent: tasks-to-do-index
+parent: tasks-done-index
 kind: task
-status: in-progress
+status: done
 ---
 # Ore counter
 
@@ -13,8 +13,8 @@ status: in-progress
 - gdd_check: [[ore-economy]] and [[extraction]] (approved, M1) read 2026-10-14. No conflict. `open` and not built: share of secured ore lost on a failed run. Owner defaults accepted with "ok": secured ore in the game instance, death loses carried ore, one dedicated widget (placed next to the radar). Colour: Duskite violet ([[color-code]]).
 - confirmed_by_owner: yes (2026-10-14: "Oui tu peux lancer toutes les tâches")
 - milestone: M1
-- next_step: task-183-04-ore-counter-widget
-- result: open
+- next_step: none
+- result: Done. T_Icon_Ore (green keyed to alpha, 256 px), WBP_OreCounter (icon 56 px at 236,30 + count, bound to OnOreChanged in BindToRunFlow, no tick) in WBP_HUD, success-screen row 'Ore secured: N' in WBP_AlertObjectives; PIE read-backs: counter '10' after GrantOre 10, 'Ore secured: 10' after extraction; commit 8a3a1f80
 
 ## Subtasks
 1. task-183-01-ore-counter-logic — cpp
@@ -23,7 +23,7 @@ status: in-progress
 4. task-183-04-ore-counter-widget — bp
 
 ## Relations
-- [[tasks-to-do-index]] — parent index.
+- [[tasks-done-index]] — parent index.
 - [[task-183-01-ore-counter-logic]] — step 1, cpp.
 - [[task-183-02-ore-hud-render]] — step 2, art.
 - [[task-183-03-ore-hud-icon]] — step 3, art.

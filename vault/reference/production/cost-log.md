@@ -306,6 +306,7 @@ kind: note
 | [[task-183-01-ore-counter-logic]] | opus | 1 | 0k | 126k | 3634k | 4k |
 | [[task-183-02-ore-hud-render]] | opus+sonnet | 1 | 0k | 93k | 239k | 6k |
 | [[task-183-03-ore-hud-icon]] | opus+sonnet | 1 | 0k | 53k | 199k | 3k |
+| [[task-183-04-ore-counter-widget]] | sonnet | 1 | 0k | 165k | 7246k | 1k |
 
 ## Totals
 | Scope | Input | Cache write | Cache read | Output |
