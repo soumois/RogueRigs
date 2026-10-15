@@ -3,7 +3,7 @@ id: task-183-01-ore-counter-logic
 description: "C++ ore counter: carried count from ore pickups, secured on extraction in the game instance, emptied on a miss or death, HUD event, GrantOre cheat."
 parent: task-183-ore-counter
 kind: task
-status: todo
+status: in-progress
 ---
 # Ore counter logic (C++)
 

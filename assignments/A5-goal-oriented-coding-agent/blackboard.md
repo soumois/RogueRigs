@@ -191,3 +191,10 @@ Decision: **approved**: ore counter. "Ok" accepts every default: (1) secured ore
 - Order: 1 and 2 can run in parallel (C++ with the editor closed; art needs no editor). 3 waits for the owner's pick of a render, 4 for the owner's pick of an icon.
 - Not planned (owner rules): no new automation test, no bot run; ore loss on failed run (`open`).
 - Status: plan shown to the owner, waiting for confirmation (protocol step 4).
+
+#### Owner confirmation (verbatim)
+> Oui tu peux lancer toutes les tâches
+
+English translation: "Yes, you can launch all the tasks."
+
+Decision: plan confirmed; task-183 set `in-progress`. The whole plan runs without asking again, except the two image choices that only the owner can make (render, then icon: art definition of done).

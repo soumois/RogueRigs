@@ -3,7 +3,7 @@ id: task-183-02-ore-hud-render
 description: "Art: proposed in-game render of the HUD top-left corner with the ore counter (Duskite icon and count) next to the round radar."
 parent: task-183-ore-counter
 kind: task
-status: todo
+status: in-progress
 ---
 # Ore counter: in-game HUD render
 
