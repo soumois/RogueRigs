@@ -82,9 +82,36 @@ Docs written by the agents: [`sys-objectives-ore-counter`](../../vault/reference
 
 ## What the owner changed before accepting it
 
-*To fill after the play-test: the review edits (separate commit `owner review: ...`, [diff against the agent's output](https://github.com/soumois/RogueRigs/compare/17083710...master)), what was wrong and why, and what the agent got right without help.*
+My main correction was **where the counter sits on screen**. I wanted it exactly where my reference game puts its gold counter. I made the change while the agent was working, at its two stops, not after the fact. The agent's final commit `17083710` is therefore accepted as it is: no code was rewritten by hand after it.
 
-Points the agent itself left unverified, to check in the play-test: the on-screen look of the counter (icon edges, crispness, end-screen row), the counter returning to 0 after securing, ore lost when the shuttle is missed at runtime, and the counter rebinding after a restart.
+**1. Position on the HUD.**
+- **Agent's proposal:** a widget next to the XP bar.
+- **My first correction**, at the recommendation: next to the radar (minimap), top-left.
+- **My second correction**, at the render: the render showed the count inside a dark plate, half over the radar rim. I sent a screenshot of my reference game: a round minimap top-left, and to its right a row of resource counters, each just an icon then a number, with no plate. I asked for the same layout, but larger.
+- **Why:** *to fill.*
+- **Result:** the `bp` agent placed a 56 × 56 icon at x 236, y 30, with a 32 pt bold white number and a dark outline. It checks that the counter overlaps neither the minimap, nor the health bar, nor the alert bar.
+
+**2. Scope I added.** The agent planned only code and a widget. I asked for an in-game render by the Art agent first, so that the icon would be drawn from how the counter actually looks in the game. That added two art subtasks.
+
+**3. Image choices against the critic.** For the render and for the icon, I picked candidate 2. The agent and the `style-guide` critic both preferred candidate 1 (the critic flagged glossy shards and a magenta lean). I kept candidate 2 on purpose. The critic's fails stay on record on the blackboard.
+
+**4. Defaults accepted.** I accepted as they were the three answers the agent proposed for questions the GDD leaves open:
+- secured ore is kept for the session;
+- death also loses the carried ore;
+- the counter is one dedicated widget.
+
+**What the agent got right without help:**
+- It picked a gap that blocks the game's own risk loop, with evidence for every claim.
+- It corrected its own scan when the plan revealed that the locator distance was already built.
+- It left the `open` ore-loss share unbuilt instead of inventing a value.
+- It reported five doc and code mismatches without silently "fixing" them.
+- It bound the widget to an event rather than polling every frame.
+- It ran the 38 related automation tests (all pass).
+
+**How it was checked:**
+- **In the editor (PIE), read back by the agent:** the counter shows 10 after `rr.Cheat.GrantOre 10`; extraction shows "Ore secured: 10"; a death empties the carried ore.
+- **Code review:** securing resets the carried count to 0 and fires `OnOreChanged`, so the HUD returns to 0. A missed shuttle goes through `EndRun(false)` and runs the same lose path as a death, `LoseCarriedOre`.
+- **Not checked:** the counter rebinding after a level restart.
 
 ## How to run it
 
