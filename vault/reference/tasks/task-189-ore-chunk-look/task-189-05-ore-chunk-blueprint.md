@@ -3,7 +3,7 @@ id: task-189-05-ore-chunk-blueprint
 description: "BP: BP_PickupOre uses SM_OreChunk, its materials and the NS_OreTrail trail activated on magnet; doc bp-pickup-ore rewritten."
 parent: task-189-ore-chunk-look
 kind: task
-status: todo
+status: in-progress
 ---
 # Ore chunk: Blueprint wiring
 

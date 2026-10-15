@@ -323,6 +323,7 @@ kind: note
 | [[task-193-01-debris-gpu-cost-remeasure]] | opus | 2 | 0k | 213k | 4612k | 48k |
 | [[task-189-02-ore-chunk-mesh]] | sonnet | 2 | 0k | 71k | 577k | 2k |
 | [[task-189-03-ore-chunk-materials]] | sonnet | 1 | 0k | 70k | 1512k | 1k |
+| [[task-189-04-ore-chunk-trail]] | sonnet | 1 | 0k | 44k | 680k | 1k |
 
 ## Totals
 | Scope | Input | Cache write | Cache read | Output |

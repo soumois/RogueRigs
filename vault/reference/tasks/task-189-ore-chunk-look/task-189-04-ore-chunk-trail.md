@@ -3,7 +3,7 @@ id: task-189-04-ore-chunk-trail
 description: "BP: NS_OreTrail, violet Duskite copy of the XP trail Niagara system for the ore chunk pickup."
 parent: task-189-ore-chunk-look
 kind: task
-status: in-progress
+status: done
 ---
 # Ore chunk: violet trail
 
@@ -15,11 +15,11 @@ status: in-progress
 - done_when: system compiles; colour read back; doc updated; lint clean; committed by path.
 - editor_state: open
 - token_ceiling: open
-- model: open
-- tokens: open
-- runs: open
+- model: sonnet
+- tokens: input 46, cache write 43606, cache read 680361, output 892
+- runs: 1
 - milestone: M1
-- result: open
+- result: NS_OreTrail duplicated from NS_XPTrail, particle Color (0.55, 0.1, 1.0) read back, SpawnRate 60, compile UpToDate; NS_XPTrail untouched; not seen on screen; commit 82b26eee
 
 ## Relations
 - [[task-189-ore-chunk-look]] — parent global task.
