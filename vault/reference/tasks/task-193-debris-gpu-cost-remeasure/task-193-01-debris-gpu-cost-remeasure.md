@@ -3,7 +3,7 @@ id: task-193-01-debris-gpu-cost-remeasure
 description: "Remeasure the GPU debris with wall collision with the PC in its usual state, against task-182-03, frame for frame."
 parent: task-193-debris-gpu-cost-remeasure
 kind: task
-status: blocked
+status: in-progress
 ---
 # Robot debris GPU and walls: remeasure
 
