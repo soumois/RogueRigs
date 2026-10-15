@@ -1,6 +1,6 @@
 ---
 id: perf-stress-chaser-meshy
-description: "Meshy chaser death-effects stress: S0, S2, S7, game 100-300 (task-181-01); debris pool 80 (182-03); GPU debris with walls (191-02); PC control failed (193-01)."
+description: "Meshy chaser death-effects stress: S0, S2, S7, game 100-300 (task-181-01); debris pool 80 (182-03); GPU debris with walls, valid comparison (193-01)."
 parent: performance-index
 kind: doc
 ---
@@ -71,35 +71,55 @@ Same launcher, map, resolution and options as above, HEAD 303fd1a (debris pool 8
 - Debris systems needed ≈ deaths per second × 4.9 s, ×1.5 for bursts. Deaths per second (plays + skips over 60 s): 11 at 200 alive (needs ≈ 54 on average, 80 leaves 11 % skips), 18 at 300 alive (needs ≈ 87, 80 leaves 28 %); ≈ 130 would cover 300 alive.
 - Each +40 of cap costs at most ≈ 1 ms render thread when all are active (25 µs each, game mode gives 0.64–0.96 ms per 40), no measurable GPU or game thread, and ≈ 0.36 MB. Raising 80 → 120 or 130 stays within the ≈ 2 ms spread; check with game 300 (render thread already at 10.6 ms avg).
 
-## GPU debris with wall collision against CPU floor only (2026-10-15, task-191-02)
-Same launcher, map, resolution and command lines as task-182-03 (S7 `-Counts 200 -Settle 5 -Measure 25 -Mode burst -Class Chaser -PreExec "rr.Stress.MinCells 8"`; game `-Settle 30 -Measure 60 -Mode game -PreExec "rr.Pacing.RunLookahead 0"`, one launch each), HEAD 2c9c5d42, same C++ binary as 182-03 (no source change since). Changes mixed in since 182-03: task-190 spin damping (extra update modules) and task-191-01 (GPU compute sim, fixed bounds, distance field collision on walls and floor, collision off from 4.5 s). Task-186 throw speeds were already in 182-03 (commit 85b803e2 precedes 303fd1a). Owner profile: Brave (open, unlike 182-03), Discord, Epic launcher, Zoom, OBS (open, idle), Loom, Steam, WhatsApp, ShareX, uTorrent, NVIDIA Share; no game, no editor; AC power, Performance plan. CSV `Saved/Stress/Stress_20261015_102249` (S7), `_102508` (game 200), `_102728` (game 300), `_102945` (control), `_102223` (trace launch); logs `task191_*.log` (not committed). GPU max: the tool records no GPU max; the max of the spike lines is given.
+## GPU debris with wall collision: trace findings (2026-10-15, task-191-02)
+Its frame comparison ran on a slowed PC (GPU in software thermal slowdown, 60 fps pacing, a no-debris control S0 200 at 16.67 ms frame and 14.61 ms GPU) and is superseded by the task-193-01 section below. CSV `Saved/Stress/Stress_20261015_102223` to `_102945`, logs `task191_*.log` (not committed). Kept findings:
+- Trace (one launch, game 200, `-Trace cpu,frame,gpu,bookmark,region`, `Saved/Profiling/Saved/Traces/task191_game200.utrace`, region `Stress_200_Measure`), GPU ms per frame against the task-181 trace S0 600 (no debris active), both halved because Insights records each GPU scope on two timelines (GPU1, GPU2; check: task-181 Frame scope halved = 10.13 against stat GPU 10.15): `GlobalDistanceFieldUpdate` **0.85** (absent in task-181), `DistanceFields` 0.91 against 0.06, `FXSystemPreRender` 0.35 against 0.11, `PostRenderOpsFX` 0.13 against 0.004, `NiagaraGpuComputeDispatch` 0.07 (absent). Two thirds of the GPU price of the debris is the global distance field the DF collision turns on (Lumen here does not build it otherwise). Not an A/B in one session (S0 600 against game 200).
+- First-use hitch (before task-194): every launch logged `LogNiagara: Compiling System NS_RobotDebris took 0.12–0.21 s` at the first debris; in S7 it landed on the burst frame with `Waited for PSO creation for 200 ms` (frame 395.6 ms). Editor `-game` only.
+- Debris counters (before task-194): S7 showed 200 plays and 0 skips with a cap of 80, because components waiting for the system compile were reclaimed and counted again. Fixed by task-194 ([[sys-actor-pool]]).
+
+## GPU debris with walls against task-182-03, valid PC state (2026-10-15, task-193-01)
+Same launcher, map, resolution and command lines as task-182-03 (S7 `-Counts 200 -Settle 5 -Measure 25 -Mode burst -Class Chaser -PreExec "rr.Stress.MinCells 8"`; game `-Settle 30 -Measure 60 -Mode game -PreExec "rr.Pacing.RunLookahead 0"`, one launch each), HEAD 70b18ef4, binary built after task-194 (the pool keeps compiling components, plays count only active effects, editor prewarm compiles `NS_RobotDebris`). Debris changes since 182-03: task-190 spin damping, task-191-01 GPU compute sim with distance field collision on walls and floor. Owner profile: Brave, Discord, Steam, Epic launcher, Zoom, Loom, ShareX, WhatsApp, uTorrent, NVIDIA Share; no game, no editor; AC power, Windows plan Performance, Armoury Crate set to Performance by the owner. CSV `Saved/Stress/Stress_20261015_151352` (control), `_151526` (S7), `_151728` (game 200), `_151919` (game 300), `_152128` (trace launch); logs `task193_*.log`, GPU samples `task193_nvsmi_control*.csv` (not committed). GPU max: the tool records none; the max of the spike lines is given.
+
+### PC state control
+- Before the owner's change: two controls S0 peace 200 gave frame 16.67 / 17.38 (60 fps pacing) and GPU 13.80 ms. During the second control the GPU ran at P3 780 MHz of 1785 and 52 W of 130 W at 60 °C, with clock event `0x20` (SW Thermal Slowdown) active. The Armoury Crate registry value `ROG ATKStatus` `ThrottleModeOnAC` read 2 (Silent in the asus-wmi convention). It still read 2 after the owner switched to Performance, so it does not reflect the mode.
+- After the owner's change: S0 200 frame **8.65 / 10.84 / 15.47** (2311 frames in 20 s, not paced), game 4.43 / 6.16, draw 8.64 / 10.77, **GPU 7.63 / 7.98** (task-181: 8.98 / 10.80, GPU 8.01). Under load the GPU ran at P0–P3, 1530–1620 MHz, 118–129 W, 70–82 °C, clock event `0x4` (SW power cap), no thermal slowdown. Control passed.
 
 | Step | Build | Frame | Game | Draw avg / p99 | GPU avg / p99 (spike max) | Alive avg | Puff plays / skips | Debris plays / skips |
 |---|---|---|---|---|---|---|---|---|
+| S0 200 control | 181 | 8.98 / 10.80 / 39.0 | 4.81 / 6.80 | 8.96 / 10.74 | 8.01 / 8.36 | 200 | — | — |
+| S0 200 control | 193 | 8.65 / 10.84 / 15.5 | 4.43 / 6.16 | 8.64 / 10.77 | 7.63 / 7.98 | 200 | — | — |
 | S7 200 | 182-03 | 8.23 / 11.56 / 25.9 | 3.67 / 9.00 / 23.2 | 8.21 / 11.43 | 7.12 / 8.26 | — | 40 / 160 | 80 / 120 |
-| S7 200 | 191 | 18.87 / 39.55 / 395.6 | 6.74 / 21.95 / 181.6 | 18.68 / 38.43 | 15.06 / 21.71 (34.5) | — | 40 / 160 | 200 / 0 |
+| S7 200 | 193 | 8.90 / 16.55 / 54.1 | 3.67 / 9.24 / 27.3 | 8.86 / 16.25 | 7.38 / 10.15 (12.6) | — | 40 / 160 | 80 / 120 |
 | game 200 | 182-03 | 11.08 / 15.85 / 46.7 | 9.88 / 15.77 / 47.6 | 10.59 / 13.34 | 8.46 / 9.54 | 158.1 | 640 / 49 | 587 / 73 |
-| game 200 | 191 | 31.39 / 47.53 / 119.5 | 24.03 / 41.74 / 121.0 | 30.96 / 43.65 | 21.65 / 30.95 (62.0) | 167.4 | 718 / 8 | 679 / 45 |
-| game 200 (trace launch) | 191 | 18.62 / 22.72 / 57.6 | 12.19 / 19.59 / 57.6 | 18.52 / 22.23 | 16.46 / 18.42 (17.8) | 160.1 | 736 / 8 | 696 / 48 |
+| game 200 | 193 | 14.15 / 18.34 / 53.2 | 10.73 / 16.45 / 53.9 | 14.04 / 17.97 | 9.72 / 11.07 (9.4) | 163.9 | 646 / 23 | 627 / 44 |
+| game 200 (trace launch) | 193 | 14.24 / 18.90 / 49.1 | 10.84 / 16.61 / 49.4 | 14.15 / 18.54 | 9.75 / 11.02 | 166.5 | 659 / 32 | 615 / 65 |
 | game 300 | 182-03 | 12.96 / 19.36 / 51.5 | 12.52 / 19.34 / 51.4 | 10.63 / 13.44 | 8.61 / 9.52 | 245.6 | 933 / 130 | 760 / 300 |
-| game 300 | 191 | 28.83 / 41.68 / 96.7 | 25.12 / 40.56 / 99.0 | 27.16 / 37.31 | 18.09 / 21.54 (36.2) | 226.9 | 857 / 30 | 615 / 272 |
-| control S0 200 (no death, no debris) | 181 | 8.98 / 10.80 / 39.0 | 4.81 / 6.80 | 8.96 / 10.74 | 8.01 / 8.36 | 200 | — | — |
-| control S0 200 (no death, no debris) | 191 | 16.67 / 17.07 / 19.9 | 6.61 / 9.51 / 13.4 | 16.65 / 18.94 | 14.61 / 15.44 | 200 | — | — |
+| game 300 | 193 | 15.74 / 21.41 / 51.2 | 13.53 / 20.95 / 51.7 | 15.11 / 19.21 | 10.10 / 11.34 (11.0) | 235.7 | 987 / 90 | 804 / 273 |
 
-- The PC state is not the 182-03 one: the control run without any debris is paced at 60 Hz (1200 frames in 20 s, frame 16.67 although t.MaxFPS 0 and r.VSync 0), its GPU is 1.8 × slower (14.61 against 8.01 ms) and its game thread 1.8 ms higher. Two identical game 200 launches 5 min apart gave 31.4 and 18.6 ms frame. Every step is 2–3 × worse than 182-03, including the no-debris control, so the absolute comparison measures the machine, not the debris. Cause not found: GPU idle at P8 after the runs, no app using CPU; GPU clocks during the runs were not read (unverified).
-- Trace (one launch, game 200, `-Trace cpu,frame,gpu,bookmark,region`, `Saved/Profiling/Saved/Traces/task191_game200.utrace`, region `Stress_200_Measure`), GPU ms per frame against the task-181 trace S0 600 (no debris active), both halved because Insights records each GPU scope on two timelines (GPU1, GPU2; check: task-181 Frame scope halved = 10.13 against stat GPU 10.15): `GlobalDistanceFieldUpdate` **0.85** (absent in task-181), `DistanceFields` 0.91 against 0.06, `FXSystemPreRender` 0.35 against 0.11, `PostRenderOpsFX` 0.13 against 0.004, `NiagaraGpuComputeDispatch` 0.07 (absent). GPU debris with walls ≈ **1.3 ms GPU per frame** in this state (7 % of 18.6 ms), ≈ 0.7 ms scaled to the 182-03 GPU speed; two thirds of it is the global distance field the DF collision turns on (Lumen here does not build it otherwise). Not an A/B in one session (different scene: S0 600 against game 200).
-- First-use hitch: every launch logs `LogNiagara: Compiling System NS_RobotDebris took 0.12–0.21 s` at the first debris (absent from the task-182 logs); in S7 it lands on the burst frame with `Waited for PSO creation for 200 ms`: frame 395.6 ms, then draw 379 ms on the next frame. In game mode it happens during the settle time. Editor `-game` only, cooked build not checked (unverified).
-- Debris counters: S7 shows 200 plays and 0 skips with a cap of 80 (182-03: 80 / 120). More activations than components in one frame means activated components returned to the pool the same frame (finished inside `Activate`, or reclaimed as inactive while the system was compiling), so plays no longer equal visible debris for this system. Game-mode skips 73 → 45 (200) and 300 → 272 (300) are therefore not a real gain. Not verified on screen.
+- Game mode is worse than 182-03 by more than the ≈ 2 ms spread, and the extra time is on the render thread: frame +3.1 ms at 200 and +2.8 ms at 300; draw +3.5 / +4.5; GPU +1.3 / +1.5; game thread +0.9 / +1.0. Game mode is now bound by the draw thread (draw ≈ frame), where 182-03 was bound by the game thread. Active debris systems (plays × 4.9 s / 60 s): 51 at 200, 66 at 300, so the draw thread pays ≈ **68 µs per active GPU debris system** (182-03 CPU sim: 16–24 µs). Max frames are the GC frame (t 31 s), as in 182-03.
+- S7 200: average +0.7 ms, but p99 +5.0 ms and max 54.1 ms (25.9). The worst frames come right after the 200 deaths (t 0.24–0.34 s: draw 18–54 ms, GPU up to 12.6 ms), when 80 GPU systems start within a few frames. No compile and no PSO wait on the burst: the system compiles at prewarm (frame 2, 0.53 s, before the measure), so the 395.6 ms task-191-02 hitch is gone (editor `-game`; cooked build not checked).
+- Counters (real since task-194): S7 80 plays / 120 skips, which matches the cap. Debris skips: game 200 7 % of deaths (182-03: 11 %), game 300 25 % (28 %).
+- Insights trace (one launch, game 200, `Saved/Profiling/Saved/Profiling/Saved/Traces/task193_game200.utrace`, region `Stress_200_Measure`, timing events per thread), ms per frame, against the task-181 S0 600 trace (no death, no debris active):
+
+| Scope | Thread | 193 | 181 |
+|---|---|---|---|
+| `FGPUScene_UploadDynamicPrimitiveShaderDataForView` (incl.; nested `GPU` 1.94) | RenderThread | **2.04** | 0.01 |
+| `FinishDynamicMeshElements` | RenderThread | **1.04** | 0.03 |
+| `NiagaraGpuComputeDispatch` / `PostRenderOpsFX` | RenderThread | 0.53 / 0.32 | — / 0.06 |
+| `UpdateGlobalDistanceField` | GPU graphics | 0.89 | — |
+| `FXSystemPreRender` (Niagara GPU sim) | GPU async compute | 0.81 | — |
+| `GPUScene.UploadDynamicPrimitiveShaderDataForView` | GPU graphics | 0.71 | — |
+
+- Reading of the trace: about 3.6 ms of render-thread time per frame goes to Niagara GPU mesh-renderer work that is absent without debris. The largest part, the dynamic primitive upload, is where the engine runs GPU-scene writer delegates. In the engine source, a GPU-sim Niagara mesh renderer registers one writer delegate per renderer and view (`NiagaraRendererMeshes.cpp` `SetupElementForGPUScene`, `DataWriterGPU` → `AddUpdateMeshParticleInstancesPass`), so each active system adds a render-graph pass. Two points were not checked: whether the nested `GPU` scope is those passes, and how much comes from damage numbers rather than debris. The 181 trace is a different scene without deaths, so this is not an A/B. GPU side: global distance field 0.89 ms, the sim on async compute, and the instance writes on graphics.
 
 ### Verdict
-Not comparable as measured: the PC ran 1.8 × slower on the GPU and paced at 60 Hz, a no-debris control included. The trace isolates the GPU debris with walls at ≈ 1.3 ms GPU per frame in this state (≈ 0.7 ms at 182-03 speed), within the ≈ 2 ms spread but not free: the global distance field update is the main price of wall collision. New in this build: a 0.2–0.4 s hitch at the first debris (runtime system compile and PSO wait, editor `-game`), and S7 debris counters that overstate plays. A repeat on the 182-03 PC state (unpaced, full GPU speed) is needed for a frame-level comparison.
+With the PC at its reference speed (control passed), the GPU debris with walls costs more than the 80 CPU debris of 182-03:
+- Game mode: average frame +2.8 to +3.1 ms and p99 +2.0 to +2.5 ms. Game 300 reaches 15.7 / 21.4 ms, above the task-181 verdict (averages ≤ 12.3 ms, p99 ≤ 18.2 ms).
+- S7 death burst: worst frame 54 ms (182-03: 25.9 ms).
+- Where the time goes: render-thread work per active GPU mesh system (≈ 68 µs each, ≈ 3–4 ms at 50–66 active), plus 1.3–1.5 ms GPU, of which the global distance field takes 0.9 ms.
+- Fixed since task-191-02: the first-use compile hitch is gone, and plays/skips are now real.
 
-## PC state control before the remeasure (2026-10-15, task-193-01)
-Control S0 peace 200 (`-Counts 200 -Settle 5 -Measure 20 -Mode peace`, task-181 options, editor closed, HEAD 7a5a19bb, binary of 2026-10-15 00:45) failed twice: frame **16.67 / 17.38 / 17.56** and 16.67 / 17.34 / 17.53 (1200 frames in 20 s), game 5.98 / 8.36, draw 16.65, **GPU 13.80 / 14.14** (task-181: 8.98 frame, 8.01 GPU). No debris step was measured. Logs `Saved/Stress/task193_control_s0_200.log`, `task193_control2_s0_200.log`, GPU samples `task193_nvsmi_control2.csv` (not committed).
-- GPU under load (nvidia-smi every second during the second control): P3, **780 MHz** graphics (max 1785), 52 W of a 130 W limit, 58–61 °C, 88 % utilization, clock event reason `0x20` = **SW Thermal Slowdown active** at 60 °C; idle P8 has no event. Cumulative SW thermal slowdown counter since boot: 8508 s. The GPU is clocked down by software, not by heat or power.
-- ASUS Armoury Crate (running): registry `HKLM\SOFTWARE\ASUS\ARMOURY CRATE Service\ThrottlePlugin\ROG ATKStatus` `ThrottleModeOnAC = 2`, `ThrottleModeOnDC = 2`; on ASUS ATK 2 is the Silent operating mode (0 Performance, 1 Turbo; reading of the value from the asus-wmi convention, not confirmed in the Armoury Crate UI). Silent mode lowers GPU clocks through a software thermal limit and is the likely source of the 60 fps pacing too (unverified: no frame limiter setting found in the logs or `GameUserSettings.ini`, `FrameRateLimit 0`, `bUseVSync False`).
-- Displays: primary internal panel `DISPLAY1` (BOE, Intel Iris Xe output, 1920 × 1080 at 360 Hz) and `DISPLAY5` (HP, NVIDIA output, 60 Hz); same two-monitor layout in every task-181 and task-182 log, so the layout alone does not explain the change. Windows power plan Performance, AC power (battery 100 %, charging).
-- To restore the reference state: Armoury Crate operating mode Performance (or Turbo) on AC, then rerun the control; pass = frame ≈ 9 ms, GPU ≈ 8 ms.
+Options for the owner, not decided or tested here: fewer active GPU systems (lower cap or shorter life), one shared system for many deaths instead of one component per death, or a CPU sim with a cheaper wall test.
 
 ## Relations
 - [[performance-index]] — parent index.
@@ -110,5 +130,5 @@ Control S0 peace 200 (`-Counts 200 -Settle 5 -Measure 20 -Mode peace`, task-181 
 - [[enemy-death]] — the death effects measured.
 - [[task-181-01-perf-chaser-meshy-death]] — the task that produced this report.
 - [[task-182-03-debris-pool-cost]] — the debris pool 80 × 4.9 s comparison.
-- [[task-191-02-debris-gpu-cost]] — the GPU debris with walls comparison.
-- [[task-193-01-debris-gpu-cost-remeasure]] — the PC state control before the remeasure.
+- [[task-191-02-debris-gpu-cost]] — the GPU debris with walls trace findings (its comparison is superseded).
+- [[task-193-01-debris-gpu-cost-remeasure]] — the valid GPU debris with walls comparison and the PC state control.
