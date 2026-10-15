@@ -1168,7 +1168,40 @@ bool ARRArenaGrid::ApplyTerrainDamage(FIntPoint Cell, float Amount, ERRTerrainDa
 	return false;
 }
 
+bool ARRArenaGrid::IsExplosionSource(ERRTerrainDamageSource Source)
+{
+	return Source == ERRTerrainDamageSource::Barrel || Source == ERRTerrainDamageSource::Kamikaze;
+}
+
 bool ARRArenaGrid::DestroyCell(FIntPoint Cell, ERRTerrainDamageSource Source)
+{
+	// Whole deposit (task-187-01, ore-blocks): an explosion never leaves a deposit partly destroyed. The other standing
+	// blocks are read by id before Cell leaves the deposit; each goes through DestroySingleCell (no re-expansion), and a
+	// block already broken meanwhile (a listener, the explosion queue) is skipped there.
+	TArray<FIntPoint> DepositCells;
+	if (IsExplosionSource(Source) && GetDepositId(Cell) != INDEX_NONE)
+	{
+		GetDepositCells(Cell, DepositCells);
+	}
+
+	if (!DestroySingleCell(Cell, Source))
+	{
+		return false;
+	}
+	if (DepositCells.Num() > 1)
+	{
+		int32 Broken = 1;
+		for (int32 Member = 1; Member < DepositCells.Num(); ++Member)
+		{
+			Broken += DestroySingleCell(DepositCells[Member], Source) ? 1 : 0;
+		}
+		UE_LOG(LogRogueRigs, Verbose, TEXT("ARRArenaGrid: deposit broken whole from (%d, %d), %d block(s), source %s."), Cell.X, Cell.Y,
+			Broken, *UEnum::GetValueAsString(Source));
+	}
+	return true;
+}
+
+bool ARRArenaGrid::DestroySingleCell(FIntPoint Cell, ERRTerrainDamageSource Source)
 {
 	if (!IsBlockCell(Cell))
 	{

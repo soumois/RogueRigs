@@ -283,6 +283,9 @@ public:
 	 * explosion radius, further calls return false (ignored) until the fuse ends; then the explosion is queued and the cell
 	 * is destroyed when that explosion resolves (it is inside its own radius). BarrelFuseSeconds 0, or outside a game world:
 	 * destroyed at once and queued as before.
+	 * Whole deposits (task-187-01, ore-blocks): when an explosion source (Barrel, Kamikaze) destroys a block of a deposit,
+	 * the deposit's other standing blocks are destroyed in the same call, each with its own drops and OnCellDestroyed;
+	 * Drone and Shot destroy the single block (the drone mines whole deposits itself).
 	 */
 	UFUNCTION(BlueprintCallable, Category = "Grid|Destruction")
 	bool DestroyCell(FIntPoint Cell, ERRTerrainDamageSource Source);
@@ -580,6 +583,15 @@ protected:
 	 * MaxSpawnsPerFrame per frame, the rest queued).
 	 */
 	void SpawnPickups(FIntPoint Cell, ERRCellType Type, int32 Count, int32 OreValue = 1, float HealValue = 0.f);
+
+	/** True for the explosion terrain sources (Barrel, Kamikaze): they break a touched deposit whole (DestroyCell). */
+	static bool IsExplosionSource(ERRTerrainDamageSource Source);
+
+	/**
+	 * Destroys the single block in Cell (DestroyCell without the whole-deposit rule): barrel fuse, instances, floor, drops,
+	 * unmark, OnCellDestroyed. Returns false when the cell has no block or a fusing barrel ignores it.
+	 */
+	bool DestroySingleCell(FIntPoint Cell, ERRTerrainDamageSource Source);
 
 	// --- Layout and dimensions ---
 
