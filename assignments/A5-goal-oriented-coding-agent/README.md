@@ -94,7 +94,7 @@ My main correction was **where the counter sits on screen**. I wanted it exactly
 - **Agent's proposal:** a widget next to the XP bar.
 - **My first correction**, at the recommendation: next to the radar (minimap), top-left.
 - **My second correction**, at the render: the render showed the count inside a dark plate, half over the radar rim. I sent a screenshot of my reference game: a round minimap top-left, and to its right a row of resource counters, each just an icon then a number, with no plate. I asked for the same layout, but larger.
-- **Why:** *to fill.*
+- **Why:** I based the HUD on my reference game, which puts its resources in that exact place.
 - **Result:** the `bp` agent placed a 56 × 56 icon at x 236, y 30, with a 32 pt bold white number and a dark outline. It checks that the counter overlaps neither the minimap, nor the health bar, nor the alert bar. In the game, the counter sits where I asked, at the larger size I asked for after seeing the agent's render ([capture](#the-feature-the-ore-counter)).
 
 **2. Scope I added.** The agent planned only code and a widget. I asked for an in-game render by the Art agent first, so that the icon would be drawn from how the counter actually looks in the game. That added two art subtasks.
