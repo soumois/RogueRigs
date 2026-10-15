@@ -1,0 +1,27 @@
+{
+  "run_id": "20261015-082918-ore-chunk",
+  "asset": "ore-chunk",
+  "model": "gpt-image-2-image-to-image",
+  "aspect_ratio": "1:1",
+  "resolution": "1K",
+  "variants": 1,
+  "prompt_file": "Art/Source/ore-chunk/prompts/02-chunk-a-isolated.txt",
+  "prompt": "Image 1 is the validated icon of the Duskite ore: a cluster of faceted violet crystals, one tall central crystal and four smaller crystals leaning around it. Draw that same crystal cluster as a clean 3D model view for image-to-3D: one single object centred in the frame with a wide margin on every side, three-quarter top view, plain light grey background, even neutral lighting, no cast shadow, no glow halo, no floor, no rock. Flat-shaded low-poly, large flat visible facets on every crystal, no smoothing, no textures, no outline, no UI, no text. Saturated Duskite violet crystals (purple-magenta), lighter on the top facets and deeper violet on the side facets, all facets clearly readable. The crystals are joined at a small flat base so the cluster stands as one solid piece.",
+  "refs": [
+    "vault/assets/ore-hud-icon.png"
+  ],
+  "tasks": [
+    {
+      "task_id": "e2cd7308e84b4b46017cb782e7b521c9",
+      "state": "success",
+      "credits": 6,
+      "error": null,
+      "result_urls": [
+        "https://tempfile.aiquickdraw.com/images/chatgpt/file_000000002c5881f5a5ab08440cfedf83.png"
+      ]
+    }
+  ],
+  "files": [
+    "Art/Source/ore-chunk/20261015-082918-ore-chunk-1.png"
+  ]
+}

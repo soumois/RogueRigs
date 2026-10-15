@@ -1,0 +1,27 @@
+{
+  "run_id": "20261015-082754-ore-chunk",
+  "asset": "ore-chunk",
+  "model": "gpt-image-2-image-to-image",
+  "aspect_ratio": "16:9",
+  "resolution": "1K",
+  "variants": 1,
+  "prompt_file": "Art/Source/ore-chunk/prompts/01-chunk-a-ingame.txt",
+  "prompt": "Image 1 is the validated icon of the Duskite ore: a cluster of faceted violet crystals, one tall central crystal and four smaller crystals leaning around it. Draw that same crystal cluster as a small 3D game pickup resting on the floor of a sci-fi arena, seen from a steep top-down camera (almost vertical, slight perspective), 16:9. Flat-shaded low-poly, visible facets, no textures, no UI, no text. The cluster is glowing Duskite violet (saturated purple-magenta crystals, bright inner glow, a soft violet light on the floor right around it), placed slightly right of centre, small in the frame (about one tenth of the image height). Next to it, a few large chunky pieces of freshly broken rock: light grey tinted violet, visible cracks, flat facets, clean broken edges, three or four big pieces only, no small pebbles or dust. Floor: clean, flat, slightly dark warm grey, subtle large facets. Strong directional light with lifted shadows so everything stays readable; the cluster casts a short soft shadow. No cyan, no hex nut, no robots, no characters.",
+  "refs": [
+    "vault/assets/ore-hud-icon.png"
+  ],
+  "tasks": [
+    {
+      "task_id": "4a984b6c4d6a2ca4f2dd17573760353c",
+      "state": "success",
+      "credits": 6,
+      "error": null,
+      "result_urls": [
+        "https://tempfile.aiquickdraw.com/images/chatgpt/file_0000000006808243b740985ade393c43.png"
+      ]
+    }
+  ],
+  "files": [
+    "Art/Source/ore-chunk/20261015-082754-ore-chunk-1.png"
+  ]
+}
