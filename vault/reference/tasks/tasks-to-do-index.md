@@ -10,3 +10,4 @@ A global task moves to [[tasks-done-index]] when it is done (`vault/scripts/task
 
 ## Relations
 - [[tasks-index]] — parent index.
+- [[task-181-perf-chaser-meshy-death]] — Measure the frame cost of the Meshy chaser (animated material) and its death effects (puff, debris) with the stress tool, compared with the M1 tables. Status todo.
