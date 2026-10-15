@@ -12,6 +12,7 @@
 #include "Objectives/RRShuttle.h"
 #include "Damage/RRDamageNumberSubsystem.h"
 #include "Debug/RRCheats.h"
+#include "Enemies/RREnemy.h"
 #include "Engine/Engine.h"
 #include "Engine/LocalPlayer.h"
 #include "GameFramework/PlayerController.h"
