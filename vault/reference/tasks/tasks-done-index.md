@@ -193,4 +193,5 @@ Archive: it exceeds the index size limits of [[_authoring]] on purpose (owner, 2
 - [[task-181-perf-chaser-meshy-death]] — Measure the frame cost of the Meshy chaser (animated material) and its death effects (puff, debris) with the stress tool, compared with the M1 tables. Status done.
 - [[task-183-ore-counter]] — Count carried ore, secure it on extraction, lose it on a miss or death, show it with an icon next to the radar. Status done.
 - [[task-184-minimap-opaque]] — Make the minimap disc fully opaque: no part of the game shows through it, unseen cells included. Status done.
+- [[task-186-debris-throw-speed-range]] — Debris throw: final speed 325-600 cm/s along the hit direction and 350-550 cm/s upward, per-death factor 1.3-2 kept, angle and spread unchanged. Status done.
 - [[task-187-deposit-whole-on-explosion]] — When an explosion destroys any block of an ore deposit, the whole deposit is destroyed and pops all its chunks: no partly destroyed deposit. Status done.

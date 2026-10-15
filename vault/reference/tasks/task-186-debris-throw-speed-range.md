@@ -1,9 +1,9 @@
 ---
 id: task-186-debris-throw-speed-range
 description: "Global task: Debris throw: final speed 325-600 cm/s along the hit direction and 350-550 cm/s upward, per-death factor 1.3-2 kept, angle and spread unchanged."
-parent: tasks-to-do-index
+parent: tasks-done-index
 kind: task
-status: in-progress
+status: done
 ---
 # Robot debris: throw speed ranges
 
@@ -13,12 +13,12 @@ status: in-progress
 - gdd_check: enemy-death throw line read (2026-10-15): changes provisional values, no conflict; reading to confirm: the ranges are final speeds after F (F kept 1.3-2), so per-piece base becomes 250-300 and 269-275.
 - confirmed_by_owner: yes (2026-10-15); final speeds after F, F kept 1.3-2
 - milestone: M3
-- next_step: task-186-01-debris-throw-speed-range
-- result: open
+- next_step: none
+- result: Done. Velocity base direction 250-300, up 269.2-275 (x F 1.3-2 = 325-600 / 350-550); angle, spread, lifetime unchanged; compiles clean; GDD throw line updated; not run in PIE; commit 85b803e2
 
 ## Subtasks
 1. task-186-01-debris-throw-speed-range — bp
 
 ## Relations
-- [[tasks-to-do-index]] — parent index.
+- [[tasks-done-index]] — parent index.
 - [[task-186-01-debris-throw-speed-range]] — step 1, bp.
