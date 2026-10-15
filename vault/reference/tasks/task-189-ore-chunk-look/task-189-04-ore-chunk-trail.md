@@ -3,7 +3,7 @@ id: task-189-04-ore-chunk-trail
 description: "BP: NS_OreTrail, violet Duskite copy of the XP trail Niagara system for the ore chunk pickup."
 parent: task-189-ore-chunk-look
 kind: task
-status: todo
+status: in-progress
 ---
 # Ore chunk: violet trail
 

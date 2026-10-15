@@ -13,7 +13,7 @@ status: in-progress
 - gdd_check: ore-blocks, ore-economy, color-code read 2026-10-15. Conflict: color-code gave resource pickups the cyan nut look; owner decided the ore chunk is Duskite violet (color-code updated 2026-10-15) and judges it distinct from the lilac big XP chip. Ore blocks keep their look. Size kept at 30 cm, glow pulse like the XP nut (defaults accepted). Route: art image proposals, then Meshy (owner).
 - confirmed_by_owner: yes (2026-10-15: answers to the plan, expects image proposals)
 - milestone: M1
-- next_step: task-189-03-ore-chunk-materials
+- next_step: task-189-04-ore-chunk-trail
 - result: open
 
 ## Subtasks
