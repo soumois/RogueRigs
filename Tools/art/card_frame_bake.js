@@ -2,7 +2,7 @@
 // Node 18+, no dependencies (PNG codec from ui_icon_prepare.js).
 //
 // Usage:
-//   node Tools/art/card_frame_bake.js [--scale 0.5] [--width 880] [--height 1440]
+//   node Tools/art/card_frame_bake.js [--scale 0.5] [--width 1000] [--height 1440]
 // Bakes Art/UI/Cards/T_CardFrame_{Stat,Stat_Accents,Stat_Glow,Weapon}.png (1086 x 1448) to
 // T_CardFrame_*_Baked.png: 9-slice compose with the corners scaled uniformly by s, edge bands stretched
 // along their length only, centre stretched. Resampling is a premultiplied tent/area filter (no nearest).
@@ -143,7 +143,7 @@ function outline(canvas, ox, oy, o) {
 }
 
 function main() {
-  const s = arg('scale', 0.5), W = arg('width', 880), H = arg('height', 1440);
+  const s = arg('scale', 0.5), W = arg('width', 1000), H = arg('height', 1440);
   const baked = {}, ops = {}, report = { scale: s, size: `${W}x${H}`, frames: {} };
   for (const [name, m] of LAYERS) {
     const src = decodePng(path.join(DIR, name + '.png'));
