@@ -1,9 +1,9 @@
 ---
 id: task-168-upgrade-card-design
 description: "Global task: large stat upgrade cards with image, effect, pure lore line and rarity-tinted frame, reroll below."
-parent: tasks-to-do-index
+parent: tasks-done-index
 kind: task
-status: in-progress
+status: done
 ---
 # Upgrade cards: new design
 
@@ -13,8 +13,8 @@ status: in-progress
 - gdd_check: upgrades, rarities, sys-upgrades, wbp-upgrade-choice, readability-rules, sys-text-content read (2026-10-14). No conflict. Notes: flavor lines described the effect (rewritten as pure lore); UI text stays English; 12 offered stats (no magazine size in M1). Owner defaults accepted 2026-10-14; frame style chosen among 3 art proposals (owner).
 - confirmed_by_owner: yes (2026-10-14)
 - milestone: M2
-- next_step: task-168-06-card-layout-fix
-- result: Reopened 2026-10-14: owner test shows the image background in front of the frame, content laid out in the outer card rect instead of the frame opening, frame borders far too thick; alert bar to hide during the choice (168-06, 168-07). Earlier: stat cards redesigned (lore, icons, A+C frame, C++, WBP).
+- next_step: none
+- result: Done. WBP_AlertObjectives binds OnUpgradeOfferShown/Closed in BindToMiner (UnbindOffer on the previous miner): HideForOffer collapses AlertBar, AlertLabel and the 7 alert icons; RestoreAfterOffer shows them again (Visible, their only designed state); OnAlertBarEventsChanged skips the icons while bOfferShown. No tick. Compiled with warnings as errors, saved, graph read back, doc updated. Left: about 45 empty unconnected custom event nodes from failed DSL writes (delete_node refused by the permission classifier; harmless, compile clean). Not seen on screen. Commits 89895fb, d5418fd.
 
 ## Subtasks
 1. task-168-01-card-lore-lines — text
@@ -26,7 +26,7 @@ status: in-progress
 7. task-168-07-hide-alert-bar — bp
 
 ## Relations
-- [[tasks-to-do-index]] — parent index.
+- [[tasks-done-index]] — parent index.
 - [[task-168-01-card-lore-lines]] — step 1, text.
 - [[task-168-02-stat-icons]] — step 2, art.
 - [[task-168-03-card-frames]] — step 3, art.

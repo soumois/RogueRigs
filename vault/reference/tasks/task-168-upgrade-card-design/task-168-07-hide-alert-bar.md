@@ -3,7 +3,7 @@ id: task-168-07-hide-alert-bar
 description: "Hide the alert bar while the upgrade cards are shown, to free the top of the screen; show it again when the offer closes."
 parent: task-168-upgrade-card-design
 kind: task
-status: in-progress
+status: done
 ---
 # Upgrade cards: hide the alert bar during the choice
 
@@ -15,11 +15,11 @@ status: in-progress
 - done_when: Compiles with warnings as errors, saved, graphs read back, doc updated, committed. Owner checks on screen.
 - editor_state: open
 - token_ceiling: 40 turns
-- model: open
-- tokens: open
-- runs: open
+- model: sonnet
+- tokens: input 92, cache write 137736, cache read 3162806, output 1956
+- runs: 2
 - milestone: M2
-- result: open
+- result: WBP_AlertObjectives binds OnUpgradeOfferShown/Closed in BindToMiner (UnbindOffer on the previous miner): HideForOffer collapses AlertBar, AlertLabel and the 7 alert icons; RestoreAfterOffer shows them again (Visible, their only designed state); OnAlertBarEventsChanged skips the icons while bOfferShown. No tick. Compiled with warnings as errors, saved, graph read back, doc updated. Left: about 45 empty unconnected custom event nodes from failed DSL writes (delete_node refused by the permission classifier; harmless, compile clean). Not seen on screen. Commits 89895fb, d5418fd.
 
 ## Relations
 - [[task-168-upgrade-card-design]] — parent global task.
