@@ -282,3 +282,8 @@ Notes:
 - Do not modify the task node fields status, model, tokens, runs, result.
 - Report: candidate PNG paths, one line per candidate, self-review with the 48 px check, credits used, commit hash.
 ```
+
+#### task-183-03-ore-hud-icon (art) — result
+- Files: `Art/Source/ore-hud/20261014-233627-ore-hud-1.png`, `-2.png` (untracked candidates, 1:1, pure green #00FF00 key background, no alpha), prompt `Art/Source/ore-hud/prompts/03-hud-icon.txt`, run log `20261014-233627-ore-hud.json`. References: `vault/assets/ore-hud-render.png`, `Art/Source/stat-icons/mining-speed-2.png`. 12 credits. Commit `951a9bf4` (prompt and log). Retry: none.
+- Candidate 1: one tall central shard, two leaning side shards, two low front shards, thick charcoal outline, cooler violet with lilac highlights; shards stay separate at 48 px. Candidate 2: same design, more saturated magenta-violet, heavier outline, shards merge slightly more at 48 px.
+- Sent to the owner; style-guide review running; waiting for the owner's choice.
