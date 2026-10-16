@@ -14,7 +14,7 @@ status: done
 - confirmed_by_owner: yes (2026-10-16: "Ok" to the proposals)
 - milestone: M1
 - next_step: none
-- result: Done. M_ExplosionShockwave RingWidth scalar parameter, default 60 uu, inner-aligned; MI inherits; doc updated; commit 1edbf66e
+- result: Done. Ring on its own timeline (grow 0.6 s, fade 0.2 s, outlives the 0.6 s sphere) and 60 uu wide (RingWidth parameter); build ok, explosion tests pass; look checked in task-200 frames. Commits c532ff13, d09f80d0, 1edbf66e.
 
 ## Subtasks
 1. task-198-01-shockwave-ring-timing — cpp
