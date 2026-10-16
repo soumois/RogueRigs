@@ -14,7 +14,7 @@ status: done
 - confirmed_by_owner: yes (2026-10-16: "Pas besoin de l'instruction test en un clic. Mais tu peux au moins vérifier visuellement si les effets se lance bien in game. Tu peux lancer.")
 - milestone: M1
 - next_step: none
-- result: Done. Barrel chain test expects BP_ExplosionFX_Barrel (0.6 s visual, 1.5 s actor), 15/15 tests; -game frames: blink and danger circle during the fuse, sphere, burst and faint ring at the explosion; green decal square on first decal frame (probable shader compile), ring hidden by the sphere, burst small; commits 62c44756, 14e493f3
+- result: Done. Fusing barrel shakes (2 to 12 cm, render only) and blinks orange to white-hot 2 to 12 Hz (custom data 4, M_BarrelPaint); ARRExplosionFX optional BurstSystem and ShockwaveMaterial; NS_BarrelExplosion (45 particles), M_ExplosionShockwave ring; BP_ExplosionFX_Barrel on the Barrel row, kamikaze unchanged. Build exit 0; 15/15 explosion tests; -game frames show blink, danger circle, sphere and burst; ring hardly visible under the sphere, burst small, green decal square on first decal frame (probable shader compile): reported to the owner. Commits 297aeafe, 09946e84, 4f491333, 50fdc0d8, 8433d794, 7003f613, 62c44756.
 
 ## Subtasks
 1. task-197-01-barrel-fuse-instability — cpp
