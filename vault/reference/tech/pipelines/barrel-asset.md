@@ -21,6 +21,7 @@ Uniform grey rim; geometric light-metal chips; tileable blob mask (cow spots); v
 - Assets in `/Game/RogueRigs/Art/Barrel/`: `SM_Barrel`, three textures, `M_BarrelPaint` with instances `MI_Barrel_*`, sticker and warning materials (warning Masked).
 - No barrel Blueprint exists: barrels are a grid cell type drawn by `BP_ArenaGrid` (`BarrelMesh` = SM_Barrel, `BarrelMaterial` = `MI_Barrel_body`) ([[bp-arena-grid]]).
 - C++ ([[sys-grid]]): barrels render with a uniform scale from the mesh bounds (fits one cell and `BlockHeight`), bottom at z 0; `BarrelCollisionMesh` keeps the collision on the cylinder; barrel cells keep a floor slab (`HasFloorSlab`), so a destroyed barrel adds no second floor.
+- Fuse blink (task-197-03, provisional, owner 2026-10-16): `M_BarrelPaint` reads PerInstanceCustomData index 4 (`dataIndex` 4, default 0; the fuse progress 0..1 written by the grid, see [[sys-grid-barrels]]) and drives MP_EmissiveColor = lerp(BlinkColorOrange (1, 0.4, 0.05), BlinkColorWhite (1, 0.95, 0.85), blink) x blink x BlinkIntensity (3). blink = saturate(0.5 + 0.5 sin(2 pi phase)) x saturate(1000 x progress); phase = FuseDuration x (BlinkRateStart x p + (BlinkRateEnd - BlinkRateStart) x p^2 / 2), the integral of a rate rising linearly from BlinkRateStart 2 Hz to BlinkRateEnd 12 Hz over FuseDuration 1.5 s (keep equal to `BarrelFuseSeconds`), about 10.5 blinks per fuse. Parameters group FuseBlink, all on the master so every MI_Barrel_* inherits them; at progress 0 the emissive is exactly 0 (gate), and non-instanced meshes read the default 0, so ring, lid, cap and band instances keep their look without a switch. Orange follows [[color-code]] (red stays enemy fire). `bUsedWithInstancedStaticMeshes` set on the master. Compiles; not viewed in game (no capture) and the PIE fuse read-back is unverified: MCP cannot call `DestroyCell`.
 
 ## Open
 An unused third UV channel from the importer; two MapCheck usage-flag warnings on the sticker and warning materials, not re-run. `vault/assets/barrel.png` is the validated source image but no longer matches the mesh.
@@ -32,6 +33,7 @@ An unused third UV channel from the importer; two MapCheck usage-flag warnings o
 - [[kessler-voss-logo]] — the sticker.
 - [[bp-arena-grid]] — where the mesh is assigned.
 - [[sys-grid]] — the render transform and floor slab rules.
+- [[sys-grid-barrels]] — the fuse progress custom data the body blink reads.
 - [[barrel-asset-history]] — task map, what was superseded, Kie credits spent.
 - [[art-style-guide]] — the texture charter A1 and the text rule A14.
 - [[color-code]] — barrel orange and the warning-sign exception.
