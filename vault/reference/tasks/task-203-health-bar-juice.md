@@ -1,9 +1,9 @@
 ---
 id: task-203-health-bar-juice
 description: "Global task: make the HUD health bar juicy with smooth drain, damage chunk, flash, shake, punch and colour by health."
-parent: tasks-done-index
+parent: tasks-to-do-index
 kind: task
-status: done
+status: in-progress
 ---
 # Juicy health bar
 
@@ -13,8 +13,8 @@ status: done
 - gdd_check: [[color-code]] read 2026-10-16: it does not list the HUD health bar, so the colours of 03, 04 and 06 are new values, written provisional for the owner to confirm; the current bar is red. No game rule changes (display only). Open points asked to the owner (colours and stops of 06, spring of 05, shake decay of 04, chunk delay restart): he answered "ok" (2026-10-16), all defaults accepted as provisional.
 - confirmed_by_owner: yes (2026-10-16: "ok lance toutes les taches")
 - milestone: M1
-- next_step: none
-- result: Done 2026-10-16. URRHealthStatusWidget (C++) drives the bar: smooth drain 10/s, off-white damage chunk (hold 0.4 s, rate 7), white hit flash (decay 9/s), 4 px shake over 0.15 s, 1.3 scale-Y punch spring, green-yellow-red gradient on the real fraction; WBP_HealthStatus reparented with HealthBarRoot and DamageChunkBar (task-203-01 to 07). Build 0; RogueRigs.HUD 13/13 and Integration.PressureVignetteOnHit pass. Not seen on screen: feel, colours (linear-space blend) and timings remain for the owner to judge in game.
+- next_step: task-203-08-health-bar-size
+- result: open (reopened 2026-10-16: owner screenshot shows the bar tiny after task-203-07; previous result: subtasks 01 to 07 done, HUD tests pass)
 
 ## Subtasks
 1. task-203-01-drain — cpp, health bar class and smooth drain
@@ -24,9 +24,11 @@ status: done
 5. task-203-05-punch — cpp, hit punch
 6. task-203-06-color-states — cpp, colour by health
 7. task-203-07-wbp-health-status — bp, wbp_healthstatus layout for the juicy bar
+8. task-203-08-health-bar-size — bp, health bar size back to 280 x 28 (owner report 2026-10-16)
+9. task-203-09-health-bar-visual-check — cpp, -game captures of the bar
 
 ## Relations
-- [[tasks-done-index]] — parent index.
+- [[tasks-to-do-index]] — parent index.
 - [[wbp-health-status]] — the panel this task changes.
 - [[task-203-01-drain]] — step 1, cpp.
 - [[task-203-02-damage-chunk]] — step 2, cpp.
@@ -35,3 +37,5 @@ status: done
 - [[task-203-05-punch]] — step 5, cpp.
 - [[task-203-06-color-states]] — step 6, cpp.
 - [[task-203-07-wbp-health-status]] — step 7, bp.
+- [[task-203-08-health-bar-size]] — step 8, bp.
+- [[task-203-09-health-bar-visual-check]] — step 9, cpp.

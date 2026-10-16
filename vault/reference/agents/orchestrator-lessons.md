@@ -29,6 +29,7 @@ Agent limits live with each agent: [[bp-mcp-lessons]], [[art-3d-lessons]], [[age
 
 ## Showing and verifying
 - Nobody sees the screen; say plainly what is unverified. Visual checks go to the cpp agent (`-game` run, `rr.Debug.Shots`, see [[agent-cpp]]).
+- A task that changes what the player sees (widget layout, HUD, asset on screen) ends with a `-game` capture by cpp, compared with the look before, and sent to the owner; this check is part of the task, not unrequested work (owner 2026-10-16: task-203-07 shrank the health bar and was closed unseen).
 
 ## Measuring
 - His everyday profile (browser, Discord, Steam open) is the reference: do not ask him to close apps; only a running game is worth noting. At 60 Hz pacing only game-thread time is usable.
