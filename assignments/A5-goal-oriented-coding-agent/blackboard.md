@@ -571,3 +571,30 @@ Subtasks 03, 04 and 05 delegated in parallel (three different assets on one edit
 - MCP failures inside the agent: wrong property names on PerInstanceCustomData, unnamed inputs ("None"), a git index.lock from a parallel agent; all retried in the same run.
 - Commits `4f491333` (asset), `8fbdc832` (docs). No second run.
 - Unverified: the PIE read-back of the custom data (the agent found no MCP route to call `DestroyCell`); the look. Both are covered by the `-game` visual check (task-197-07). Accepted on that basis.
+
+#### task-197-04-barrel-explosion-niagara (bp) — result
+- Assets: `/Game/RogueRigs/FX/NS_BarrelExplosion` (`User.Radius` float, default 735) and `/Game/RogueRigs/FX/M_BarrelExplosionSprite` (added by the agent: the engine default sprite material is additive and square, so dark smoke would be invisible; translucent, unlit, soft round blob). Accepted: a support asset of the same system, not a new feature.
+- Emitters (CPU sprites, no shadow, sizes and speeds × `User.Radius`, provisional): Flash 1, Fireball 10, Sparks 28 (gravity), Smoke 6 at 0.1 s; 45 particles; last particle ends about 1.4 s (inside `BurstSeconds` 1.5); no red.
+- Doc: new `bp-barrel-explosion`, `blueprints-fx-index` updated. MCP through JSON-RPC; no tool failure.
+- Commits `50fdc0d8` (assets), `d7550dce` (docs). No retry.
+- Unverified: look and density at 735 uu, cost in chains, component release (task-197-07 covers the look).
+
+#### task-197-06-barrel-explosion-fx-blueprint (bp) — prompt sent
+Reading list: the subtask node, then its `inputs` (barrel, explosions, sys-explosions, bp-explosion-fx, blueprints-fx-index, agent-bp, bp-mcp-lessons, unreal-mcp-quirks), plus `bp-barrel-explosion` and `bp-explosion-shockwave`.
+```text
+Subtask task-197-06-barrel-explosion-fx-blueprint (Rogue Rigs, repo C:\Users\soumo\Documents\Unreal Projects\RogueRigs).
+
+Read your subtask node first: vault/reference/tasks/task-197-barrel-explosion-feedback/task-197-06-barrel-explosion-fx-blueprint.md. Its `inputs` line lists the resolved paths of every node you need: read those directly, do not descend from root again, never search the vault. Resolve any other [[wikilink]] through vault/_paths.md. Also read the doc nodes written by the previous subtasks: vault/reference/tech/blueprints/fx/bp-barrel-explosion.md and vault/reference/tech/blueprints/fx/bp-explosion-shockwave.md.
+
+Notes:
+- Owner request (2026-10-16, translated): an explosion particle part and an explosion circle for the barrel, reusable later by the kamikaze. This subtask assembles them: new `/Game/RogueRigs/Blueprints/FX/BP_ExplosionFX_Barrel`, child of `BP_ExplosionFX` (sphere mesh and MI_GB_Explosion kept), with class defaults `BurstSystem` = `/Game/RogueRigs/FX/NS_BarrelExplosion` and `ShockwaveMaterial` = `/Game/RogueRigs/FX/MI_ExplosionShockwave` (property names per sys-explosions, task-197-02). No graph logic.
+- Data: in `Content/RogueRigs/Data/Tables/ExplosionStats.csv` set row `Barrel` `FXClass` to `/Game/RogueRigs/Blueprints/FX/BP_ExplosionFX_Barrel.BP_ExplosionFX_Barrel_C`; row `Kamikaze` unchanged. Check whether the CSV is imported into a DataTable asset that must be reimported, or read directly at runtime (sys-explosions: `FRRBaseStatsLoader::FindRow`), and do what the pipeline needs. Check no automation test hard-codes the Barrel FXClass path; if one does, report it (do not edit C++ tests yourself).
+- Read back: the Blueprint's class defaults (both properties), the CSV rows. PIE: the bp agent of task-197-03 found no MCP route to call `ARRArenaGrid::DestroyCell`; try once to read, in PIE, that the explosion subsystem resolves the class of the Barrel row to the new Blueprint (for example `GetExplosionStats` if callable); if no route exists, say so and stop there: the in-game check is task-197-07 (a `-game` run with screenshots by the cpp agent). Do not loop on PIE.
+- Editor state: open (launched by the Orchestrator; MCP at http://127.0.0.1:8000/mcp). No other agent is working now. Check `IsPIERunning` before saving; save by explicit asset path; never save all.
+- Never call a viewport or editor capture tool (bp-mcp-lessons).
+- Scope: exactly the subtask goal. No cheat, no debug command, no new test (owner 2026-10-16).
+- Docs: new `bp-explosion-fx-barrel` node in vault/reference/tech/blueprints/fx/ (template vault/templates/blueprint.md); update `bp-explosion-fx` (child exists), `sys-explosions` (data line: Barrel FXClass), `blueprints-fx-index`. Run `node vault/scripts/lint.js --write` and fix what it reports.
+- Git: commit only your files, by explicit path (`git commit -m "..." -- <paths>`), never `git add -A` or `-- vault`; `git add` new files by name first. Commit message `task-197-06-barrel-explosion-fx-blueprint: <summary>`, ending with the line `Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>`.
+- Do not modify the task node fields status, model, tokens, runs, result.
+- Report: assets created or changed (paths), values read back, CSV change and how it is loaded, any test referencing the path, PIE result or why none, docs updated, commit hash(es), what is unverified. Always end with a report, even partial; commit what works first.
+```
