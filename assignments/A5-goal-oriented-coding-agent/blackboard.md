@@ -687,3 +687,47 @@ Notes:
 - Do not modify the task node fields status, model, tokens, runs, result.
 - Report: files changed, property names and values, lifetime rule, build result, test results (and any expectation changed), docs, commit hash(es), what is unverified.
 ```
+
+#### task-198-01-shockwave-ring-timing (cpp) — result
+- `ARRExplosionFX`: `ShockwaveGrowSeconds` 0.6 (`Progress` 0→1), `ShockwaveFadeSeconds` 0.2 (`Opacity` 1→0), `GetShockwaveLifetime` 0.8 s; sphere timeline unchanged (hidden at 0.6 s), ring hidden at 0.8 s; lifetime = max(sphere, ring if set, burst if set): barrel 1.5 s, kamikaze unchanged. Provisional, owner 2026-10-16.
+- Build succeeded. Explosions ×8, BarrelFuse ×3, `ShotBarrelChainOpensWall` pass; `Integration.JuiceHealRing` fails (pre-existing). Test file: comments only.
+- Docs `sys-explosions`, `bp-explosion-shockwave` (timing line). Commits `c532ff13`, `d09f80d0`. No retry.
+- Editor launched by the Architect for 198-02 and 199-01.
+
+#### task-198-02-shockwave-ring-width (bp) — prompt sent
+Reading list: the subtask node and its `inputs`.
+```text
+Subtask task-198-02-shockwave-ring-width (Rogue Rigs, repo C:\Users\soumo\Documents\Unreal Projects\RogueRigs).
+
+Read your subtask node first: vault/reference/tasks/task-198-shockwave-ring-readable/task-198-02-shockwave-ring-width.md. Its `inputs` line lists the resolved paths of every node you need: read those directly, do not descend from root again, never search the vault. Resolve any other [[wikilink]] through vault/_paths.md.
+
+Notes:
+- Why: in the task-197-07 `-game` frames the orange shockwave ring (24 uu) was hardly visible. Owner (2026-10-16) accepted: about 60 uu wide. The C++ timing change is done (task-198-01: grow 0.6 s, fade 0.2 s, outlives the sphere; see sys-explosions).
+- What: in `/Game/RogueRigs/FX/M_ExplosionShockwave`, the width hard-coded at 24 in the progress-ring Custom node becomes a scalar parameter `RingWidth` (default 60 uu, provisional, owner 2026-10-16) wired into that node; keep the ring inner-aligned (Radius x Progress - RingWidth to Radius x Progress) so it is not cut at the decal box edge. `MI_ExplosionShockwave` keeps the default (read it back). Update the `look` and `parameters` lines of `bp-explosion-shockwave` (the cpp agent added a timing line: keep it).
+- Editor state: open (launched by the Orchestrator; MCP at http://127.0.0.1:8000/mcp; if the MCP tools are not exposed to you, JSON-RPC over HTTP works). One other bp agent works in parallel on another asset (task-198-02 M_ExplosionShockwave, task-199-01 NS_BarrelExplosion): touch only your own asset; never save all; save by explicit asset path; check `IsPIERunning` before saving.
+- Never call a viewport or editor capture tool (bp-mcp-lessons). No PIE needed.
+- Scope: exactly this. No cheat, no debug command, no new test.
+- Git: commit only your files, by explicit path (`git commit -m "..." -- <paths>`), never `git add -A` or `-- vault`; on an index.lock from the other agent, wait and retry. Run `node vault/scripts/lint.js --write` after editing the vault. Messages end with the line `Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>`.
+- Do not modify the task node fields status, model, tokens, runs, result.
+- Report: assets changed (paths), values read back, MCP tools that failed, docs, commit hash(es), what is unverified. Always end with a report, even partial; commit what works first.
+- Commit message prefix: `task-198-02-shockwave-ring-width: `.
+```
+
+#### task-199-01-barrel-burst-bigger (bp) — prompt sent
+Reading list: the subtask node and its `inputs`.
+```text
+Subtask task-199-01-barrel-burst-bigger (Rogue Rigs, repo C:\Users\soumo\Documents\Unreal Projects\RogueRigs).
+
+Read your subtask node first: vault/reference/tasks/task-199-barrel-burst-bigger/task-199-01-barrel-burst-bigger.md. Its `inputs` line lists the resolved paths of every node you need: read those directly, do not descend from root again, never search the vault. Resolve any other [[wikilink]] through vault/_paths.md.
+
+Notes:
+- Why: in the task-197-07 `-game` frames the burst of `NS_BarrelExplosion` was small next to the 735 uu sphere: one orange glow, few visible sparks, smoke barely visible. Owner (2026-10-16) accepted: wider fireball, about twice the sparks, more visible smoke.
+- What: edit `/Game/RogueRigs/FX/NS_BarrelExplosion` (and `M_BarrelExplosionSprite` only if smoke needs it): fireball sizes and spawn spread larger (fill more of the visual radius, still from `User.Radius`), sparks about 2× (about 56) and a little larger or brighter so they read from the top-down camera, smoke more opaque or larger or more puffs so it is visible on light grey rock and dark floor; everything ends before 1.5 s (`BurstSeconds`); colours per color-code (no red). All values provisional, owner 2026-10-16. Update `bp-barrel-explosion` with the new values and the reason.
+- Editor state: open (launched by the Orchestrator; MCP at http://127.0.0.1:8000/mcp; if the MCP tools are not exposed to you, JSON-RPC over HTTP works). One other bp agent works in parallel on another asset (task-198-02 M_ExplosionShockwave, task-199-01 NS_BarrelExplosion): touch only your own asset; never save all; save by explicit asset path; check `IsPIERunning` before saving.
+- Never call a viewport or editor capture tool (bp-mcp-lessons). No PIE needed.
+- Scope: exactly this. No cheat, no debug command, no new test.
+- Git: commit only your files, by explicit path (`git commit -m "..." -- <paths>`), never `git add -A` or `-- vault`; on an index.lock from the other agent, wait and retry. Run `node vault/scripts/lint.js --write` after editing the vault. Messages end with the line `Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>`.
+- Do not modify the task node fields status, model, tokens, runs, result.
+- Report: assets changed (paths), values read back, MCP tools that failed, docs, commit hash(es), what is unverified. Always end with a report, even partial; commit what works first.
+- Commit message prefix: `task-199-01-barrel-burst-bigger: `.
+```
