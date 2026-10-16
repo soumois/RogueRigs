@@ -830,3 +830,15 @@ Notes:
 - Do not modify the task node fields status, model, tokens, runs, result.
 - Report: the cause with evidence, files changed, the fix, build and test results, the explosion frames and what each shows, commit hash(es), what is unverified.
 ```
+
+#### task-202-01-crater-first-frame-black (cpp) — result
+- Cause: the floor slab added under a broken block (`AddCellInstance` → floor HISM `AddInstance`) is not drawn until the HISM render proxy is recreated after its async tree rebuild, a frame or more later; the proxy keeps the old instance count (`HierarchicalInstancedStaticMesh.cpp`). Removing an instance already recreates the proxy, so blocks vanished on time while the floor did not: the void showed through (dark slab sides visible at the crater edge in `barrelfx4_11`).
+- Fix: `MarkRenderStateDirty()` on the floor HISM right after `AddInstance` in `AddCellInstance` (`Grid/RRArenaGrid.cpp`), only on frames that break blocks, at most once per chunk per frame. Rules, 2 ms budget and order unchanged.
+- Build exit 0; 46 tests pass (Dig, Explosions, Barrel, BarrelFuse, Ore, FlowField, GroundTelegraph, 3 integration); `Ore.HealVein` failed once and passed alone (known flaky). Docs `sys-grid`, `sys-grid-barrels`. Commits `c6e77104`, `be077028`.
+- Architect checked `barrelfx5_11`: explosion frame, crater floor grey, ring visible around the centre, no black, no green. Faint darker cell patches remain in the crater floor (mid-grey, probably lighting catching up), reported, not acted on.
+- Unverified: cost of the proxy rebuild in long chains (not profiled).
+
+### 9. Close (follow-ups)
+- Tasks 198, 199, 200, 201, 202 done (owner follow-ups of task-197). Final agent commit of the run: `be077028`.
+- Barrel feature rescan: fuse shake and blink, burst, ring (60 uu, 0.8 s) all **built** and seen in `-game` frames; the green first-frame decal and the black crater fixed.
+- state.md updated.
