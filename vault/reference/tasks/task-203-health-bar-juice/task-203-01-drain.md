@@ -3,7 +3,7 @@ id: task-203-01-drain
 description: "A C++ health status panel class drives the health bar: the shown fill glides to the real health instead of jumping."
 parent: task-203-health-bar-juice
 kind: task
-status: todo
+status: in-progress
 ---
 # Health bar class and smooth drain
 
