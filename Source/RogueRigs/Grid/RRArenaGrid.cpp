@@ -763,6 +763,16 @@ void ARRArenaGrid::BuildInstances()
 				{
 					Template->SetNumCustomDataFloats(OreColorCustomDataIndex + 3);
 				}
+				// Room for the fuse progress on barrels (task-197-01, material blink).
+				if (Asset.MapKey == ERRCellType::Barrel && (BarrelFuseCustomDataIndex == MarkedCustomDataIndex
+					|| (ColoredTypes.Contains(Asset.MapKey) && BarrelFuseCustomDataIndex >= OreColorCustomDataIndex && BarrelFuseCustomDataIndex < OreColorCustomDataIndex + 3)))
+				{
+					UE_LOG(LogRogueRigs, Warning, TEXT("ARRArenaGrid: BarrelFuseCustomDataIndex %d overlaps the marked or ore colour floats."), BarrelFuseCustomDataIndex);
+				}
+				if (Asset.MapKey == ERRCellType::Barrel && Template->NumCustomDataFloats <= BarrelFuseCustomDataIndex)
+				{
+					Template->SetNumCustomDataFloats(BarrelFuseCustomDataIndex + 1);
+				}
 			}
 		}
 		if (UInstancedStaticMeshComponent* CollisionTemplate = GetTemplateCollisionComponent(Asset.MapKey))
@@ -1315,17 +1325,22 @@ bool ARRArenaGrid::SetCellMarked(FIntPoint Cell, bool bMarked)
 
 void ARRArenaGrid::WriteMarkedCustomData(FIntPoint Cell, float Value)
 {
-	if (!IsBlockCell(Cell))
+	WriteCellCustomData(Cell, MarkedCustomDataIndex, Value);
+}
+
+void ARRArenaGrid::WriteCellCustomData(FIntPoint Cell, int32 DataIndex, float Value)
+{
+	if (!IsBlockCell(Cell) || DataIndex < 0)
 	{
 		return;
 	}
 	const int32 Index = GetCellIndex(Cell);
 	UHierarchicalInstancedStaticMeshComponent* Component = GetCellRenderComponent(Cell);
-	if (!Component || !CellInstanceIndex.IsValidIndex(Index) || CellInstanceIndex[Index] == INDEX_NONE || Component->NumCustomDataFloats <= MarkedCustomDataIndex)
+	if (!Component || !CellInstanceIndex.IsValidIndex(Index) || CellInstanceIndex[Index] == INDEX_NONE || Component->NumCustomDataFloats <= DataIndex)
 	{
 		return;
 	}
-	Component->SetCustomDataValue(CellInstanceIndex[Index], MarkedCustomDataIndex, Value, /*bMarkRenderStateDirty*/ true);
+	Component->SetCustomDataValue(CellInstanceIndex[Index], DataIndex, Value, /*bMarkRenderStateDirty*/ true);
 }
 
 float ARRArenaGrid::GetCellShotHealth(FIntPoint Cell) const
@@ -1434,7 +1449,6 @@ URRGroundTelegraphComponent* ARRArenaGrid::GetBarrelTelegraph(FIntPoint Cell) co
 
 void ARRArenaGrid::StartBarrelFuse(FIntPoint Cell)
 {
-	StopShaking(Cell);
 	const int32 Index = GetCellIndex(Cell);
 	CellHealth[Index] = 0.f;
 	if (CellShotHealth.IsValidIndex(Index))
@@ -1467,6 +1481,13 @@ void ARRArenaGrid::StartBarrelFuse(FIntPoint Cell)
 	Telegraph->SetProgress(0.f);
 	Telegraph->Show();
 
+	// Render-only instability (task-197-01): the cell keeps (or starts) shaking; Tick scales it with the fuse progress.
+	if (!ShakingCells.Contains(Cell))
+	{
+		ShakingCells.Add(Cell, GetShakePhase(Cell));
+	}
+	WriteCellCustomData(Cell, BarrelFuseCustomDataIndex, 0.f);
+
 	UpdateTickEnabled();
 }
 
@@ -1477,6 +1498,8 @@ void ARRArenaGrid::EndBarrelFuse(FIntPoint Cell)
 	{
 		return;
 	}
+	StopShaking(Cell);
+	WriteCellCustomData(Cell, BarrelFuseCustomDataIndex, 0.f);
 	if (Fuse.Telegraph)
 	{
 		Fuse.Telegraph->Hide();
@@ -1520,6 +1543,7 @@ void ARRArenaGrid::TickBarrelFuses()
 		{
 			Fuse.Telegraph->SetProgress(Progress);
 		}
+		WriteCellCustomData(Pair.Key, BarrelFuseCustomDataIndex, Elapsed >= BarrelFuseSeconds - UE_KINDA_SMALL_NUMBER ? 1.f : Progress);
 		if (Elapsed >= BarrelFuseSeconds - UE_KINDA_SMALL_NUMBER)
 		{
 			Ended.Add(Pair.Key);
@@ -1762,7 +1786,11 @@ void ARRArenaGrid::SetCellShaking(FIntPoint Cell, bool bShaking)
 {
 	if (!bShaking)
 	{
-		StopShaking(Cell);
+		// A fusing barrel keeps its fuse shake (task-197-01) until its fuse ends, whatever the drone does.
+		if (!BarrelFuses.Contains(Cell))
+		{
+			StopShaking(Cell);
+		}
 		return;
 	}
 
@@ -1771,10 +1799,14 @@ void ARRArenaGrid::SetCellShaking(FIntPoint Cell, bool bShaking)
 		return;
 	}
 
-	// Deterministic per-cell phase so adjacent shaking blocks do not move in lockstep.
-	const float Phase = static_cast<float>(GetTypeHash(Cell) % 1024u) / 1024.f * UE_TWO_PI;
-	ShakingCells.Add(Cell, Phase);
+	ShakingCells.Add(Cell, GetShakePhase(Cell));
 	SetActorTickEnabled(true);
+}
+
+float ARRArenaGrid::GetShakePhase(FIntPoint Cell)
+{
+	// Deterministic per-cell phase so adjacent shaking blocks do not move in lockstep.
+	return static_cast<float>(GetTypeHash(Cell) % 1024u) / 1024.f * UE_TWO_PI;
 }
 
 void ARRArenaGrid::StopShaking(FIntPoint Cell)
@@ -1832,12 +1864,22 @@ void ARRArenaGrid::Tick(float DeltaSeconds)
 			continue;
 		}
 
-		// Only the rendering instance moves; the collision instance stays at rest. Incommensurate sines per axis: a horizontal jitter bounded by ShakeAmplitude plus a vertical bob
-		// bounded by ShakeVerticalAmplitude.
+		// A fusing barrel shakes more and more (task-197-01): amplitudes from the fuse start to end values along the progress curve.
+		float Horizontal = ShakeAmplitude;
+		float Vertical = ShakeVerticalAmplitude;
+		if (BarrelFuses.Contains(Cell))
+		{
+			const float Alpha = FMath::Pow(GetBarrelFuseProgress(Cell), BarrelFuseShakeExponent);
+			Horizontal = FMath::Lerp(BarrelFuseShakeStartAmplitude, BarrelFuseShakeEndAmplitude, Alpha);
+			Vertical = FMath::Lerp(BarrelFuseShakeVerticalStartAmplitude, BarrelFuseShakeVerticalEndAmplitude, Alpha);
+		}
+
+		// Only the rendering instance moves; the collision instance stays at rest. Incommensurate sines per axis: a horizontal jitter bounded by the horizontal amplitude plus
+		// a vertical bob bounded by the vertical amplitude.
 		const FVector Offset(
-			ShakeAmplitude * FMath::Sin(Angle + Pair.Value),
-			ShakeAmplitude * FMath::Sin(1.37f * Angle + 2.f * Pair.Value),
-			ShakeVerticalAmplitude * FMath::Sin(1.71f * Angle + 3.f * Pair.Value));
+			Horizontal * FMath::Sin(Angle + Pair.Value),
+			Horizontal * FMath::Sin(1.37f * Angle + 2.f * Pair.Value),
+			Vertical * FMath::Sin(1.71f * Angle + 3.f * Pair.Value));
 		FTransform Transform = GetBlockRenderTransform(Cell);
 		Transform.AddToTranslation(Offset);
 		Component->UpdateInstanceTransform(CellInstanceIndex[Index], Transform, /*bWorldSpace*/ false,

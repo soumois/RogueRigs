@@ -358,6 +358,13 @@ public:
 	/** Number of barrels currently fusing. */
 	int32 GetFusingBarrelCount() const { return BarrelFuses.Num(); }
 
+	/**
+	 * Index of the per-instance custom data float of the barrel HISMs that holds the fuse progress (0..1, 0 when not fusing),
+	 * written each grid tick so the barrel body material can blink (task-197-01). After the marked flag and the ore colour floats.
+	 */
+	UFUNCTION(BlueprintPure, Category = "Grid|Destruction")
+	int32 GetBarrelFuseCustomDataIndex() const { return BarrelFuseCustomDataIndex; }
+
 	/** Ground telegraph drawn for the fusing barrel in Cell; nullptr when it is not fusing. Pooled: do not keep it. */
 	URRGroundTelegraphComponent* GetBarrelTelegraph(FIntPoint Cell) const;
 
@@ -367,7 +374,7 @@ public:
 	/**
 	 * Starts or stops the jitter of the block in Cell (dig feedback). Only the rendering instance moves: the collision
 	 * instance stays at the cell, so a shaking block never pushes a character. Stopping restores the rest transform.
-	 * Ignored on cells without a block.
+	 * Ignored on cells without a block. A fusing barrel keeps its fuse shake until it is destroyed: stopping it is ignored.
 	 */
 	UFUNCTION(BlueprintCallable, Category = "Grid|Destruction")
 	void SetCellShaking(FIntPoint Cell, bool bShaking);
@@ -434,6 +441,9 @@ protected:
 
 	/** Writes Value into the marked custom data float of the rendering instance of the block in Cell (no-op without one). */
 	void WriteMarkedCustomData(FIntPoint Cell, float Value);
+
+	/** Writes Value into custom data float DataIndex of the rendering instance of the block in Cell (no-op without one or without that float). */
+	void WriteCellCustomData(FIntPoint Cell, int32 DataIndex, float Value);
 
 	/** Loads the layout and builds instances, or clears everything when loading fails. */
 	void RebuildFromLayout();
@@ -537,6 +547,9 @@ protected:
 	/** Stops shaking Cell, restoring its rest transform if it still has a block. */
 	void StopShaking(FIntPoint Cell);
 
+	/** Deterministic shake phase of Cell (0..2 pi), so adjacent shaking blocks do not move in lockstep. */
+	static float GetShakePhase(FIntPoint Cell);
+
 	/** Pickup class dropped by a block type: OrePickupClass for Ore, HealPickupClass for HealOre, none otherwise. */
 	TSubclassOf<ARRPickup> GetPickupClass(ERRCellType Type) const;
 
@@ -560,16 +573,16 @@ protected:
 		URRGroundTelegraphComponent* Telegraph = nullptr;
 	};
 
-	/** Lights the fuse of the barrel in Cell: stops its shake, zeroes its healths, records the start time and shows a pooled Danger telegraph at the explosion radius. */
+	/** Lights the fuse of the barrel in Cell: starts its fuse shake, zeroes its healths, records the start time, writes fuse progress 0 and shows a pooled Danger telegraph at the explosion radius. */
 	void StartBarrelFuse(FIntPoint Cell);
 
-	/** Ends the fuse of Cell (if any): hides its telegraph and returns it to the pool. */
+	/** Ends the fuse of Cell (if any): stops its shake, writes fuse progress 0, hides its telegraph and returns it to the pool. */
 	void EndBarrelFuse(FIntPoint Cell);
 
 	/** Ends every fuse (rebuild). */
 	void ClearBarrelFuses();
 
-	/** Advances every fuse: telegraph progress = elapsed / BarrelFuseSeconds; at the end queues the explosion (destroys the cell at once if it cannot be queued). */
+	/** Advances every fuse: telegraph progress and fuse custom data = elapsed / BarrelFuseSeconds; at the end queues the explosion (destroys the cell at once if it cannot be queued). */
 	void TickBarrelFuses();
 
 	/** Enables the actor tick while a block shakes, a barrel fuses or explosion blocks are queued; disables it otherwise. */
@@ -690,6 +703,32 @@ protected:
 	/** Oscillation frequency of a shaking block. */
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Grid|Destruction", meta = (ClampMin = "0.0", Units = "Hz"))
 	float ShakeFrequency = 8.f;
+
+	// --- Barrel fuse feedback (render only, task-197-01; provisional, owner 2026-10-16) ---
+
+	/** Horizontal shake amplitude of a fusing barrel when its fuse is lit (progress 0). Replaces the dig shake during the fuse. */
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Grid|Destruction", meta = (ClampMin = "0.0", Units = "cm"))
+	float BarrelFuseShakeStartAmplitude = 2.f;
+
+	/** Horizontal shake amplitude of a fusing barrel at the explosion (progress 1). */
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Grid|Destruction", meta = (ClampMin = "0.0", Units = "cm"))
+	float BarrelFuseShakeEndAmplitude = 12.f;
+
+	/** Vertical shake amplitude (bob) of a fusing barrel when its fuse is lit (progress 0). */
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Grid|Destruction", meta = (ClampMin = "0.0", Units = "cm"))
+	float BarrelFuseShakeVerticalStartAmplitude = 1.f;
+
+	/** Vertical shake amplitude (bob) of a fusing barrel at the explosion (progress 1). */
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Grid|Destruction", meta = (ClampMin = "0.0", Units = "cm"))
+	float BarrelFuseShakeVerticalEndAmplitude = 5.f;
+
+	/** Growth curve of the fuse shake: amplitude = lerp(start, end, progress ^ exponent); 1 = linear, above 1 = grows faster near the end. */
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Grid|Destruction", meta = (ClampMin = "0.1"))
+	float BarrelFuseShakeExponent = 2.f;
+
+	/** Per-instance custom data float of the barrel HISMs that receives the fuse progress (after marked flag 0 and ore colour 1..3); the barrel HISM gets index + 1 floats. */
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Grid|Destruction", meta = (ClampMin = "0", ClampMax = "7"))
+	int32 BarrelFuseCustomDataIndex = 4;
 
 	// --- Drops (ore and heal ore) ---
 
