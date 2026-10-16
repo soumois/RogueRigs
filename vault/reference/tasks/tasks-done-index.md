@@ -208,3 +208,4 @@ Archive: it exceeds the index size limits of [[_authoring]] on purpose (owner, 2
 - [[task-197-barrel-explosion-feedback]] — Barrel looks unstable during its fuse; its explosion plays a particle burst and an orange shockwave ring on the ground. Status done.
 - [[task-198-shockwave-ring-readable]] — Explosion shockwave ring readable: grows over about 0.6 s, independent of the sphere, then fades; 60 uu wide. Status done.
 - [[task-199-barrel-burst-bigger]] — NS_BarrelExplosion bigger: wider fireball, about twice the sparks, more visible smoke, still within 1.5 s. Status done.
+- [[task-200-decal-green-square-check]] — Second -game run of the barrel fuse and explosion: does the green square return on the first decal frame once shaders are cached? Report only. Status done.

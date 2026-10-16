@@ -342,6 +342,7 @@ kind: note
 | [[task-198-01-shockwave-ring-timing]] | opus | 1 | 0k | 66k | 1180k | 20k |
 | [[task-198-02-shockwave-ring-width]] | sonnet | 1 | 0k | 42k | 538k | 10k |
 | [[task-199-01-barrel-burst-bigger]] | sonnet | 1 | 0k | 55k | 651k | 11k |
+| [[task-200-01-decal-green-square-check]] | opus | 1 | 0k | 73k | 861k | 13k |
 
 ## Totals
 | Scope | Input | Cache write | Cache read | Output |
