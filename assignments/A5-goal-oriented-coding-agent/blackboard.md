@@ -668,3 +668,22 @@ Decision: three owner points = three global tasks (split rule), confirmed by thi
 | `task-200-decal-green-square-check` | 01 rerun of the task-197-07 `-game` command (shaders now cached), frames at fuse start and explosion; report whether the green square returns; no fix | cpp | report only |
 
 Order: 198-01 (editor closed); editor launched; 198-02 and 199-01 in parallel (different assets); editor closed; 200-01 last, so its frames also show the new ring and burst. Values provisional (owner 2026-10-16).
+
+#### task-198-01-shockwave-ring-timing (cpp) — prompt sent
+Reading list: the subtask node, then its `inputs` (barrel, explosions, sys-explosions, bp-explosion-fx, bp-explosion-fx-barrel, bp-explosion-shockwave, sys-automation-tests, agent-cpp, build-toolchain).
+```text
+Subtask task-198-01-shockwave-ring-timing (Rogue Rigs, repo C:\Users\soumo\Documents\Unreal Projects\RogueRigs).
+
+Read your subtask node first: vault/reference/tasks/task-198-shockwave-ring-readable/task-198-01-shockwave-ring-timing.md. Its `inputs` line lists the resolved paths of every node you need: read those directly, do not descend from root again, never search the vault. Resolve any other [[wikilink]] through vault/_paths.md.
+
+Notes:
+- Why: in the task-197-07 `-game` frames the orange shockwave ring was hardly visible: it grows in 0.25 s under the translucent sphere, which hides it, and disappears with the sphere. Owner (2026-10-16) accepted: the ring lasts after the sphere, growth from 0.25 s to about 0.6 s. A bp subtask (task-198-02) widens the ring in the material at the same time; do not touch assets.
+- What: give the shockwave its own timeline in `ARRExplosionFX` (Source/RogueRigs/Explosions/RRExplosionFX.*): `ShockwaveGrowSeconds` (0.6) for `Progress` 0 to 1, then `ShockwaveFadeSeconds` (0.2) for `Opacity` 1 to 0; both `EditDefaultsOnly`, provisional, owner 2026-10-16. The sphere keeps its own timeline (0.25 grow, 0.1 hold, 0.25 fade). The ring stays drawn after the sphere is hidden. Lifetime: with a burst it is already 1.5 s (enough); without a burst and with a shockwave, the lifetime is the longer of the sphere and the ring; with neither, unchanged (BP_ExplosionFX, kamikaze).
+- Tests: run the Explosions, BarrelFuse and integration explosion tests (`ShotBarrelChainOpensWall` checks the barrel FX lifetimes); update only expectations this change breaks; no new test. Known unrelated failures: `Ore.HealVein` (flaky), `Enemies.ShotHitsMovingRobotAndDeathShowsParts`, `Integration.JuiceHealRing`: do not fix.
+- Docs: `sys-explosions` (timing names and values), `bp-explosion-shockwave` (timing line only; the bp agent edits its width line in parallel: change only your line, commit by path).
+- Editor state: closed (checked: no UnrealEditor process). Build from the command line per build-toolchain. If an editor appears and Live Coding blocks the build, stop and report; never kill it.
+- Scope: exactly this. No cheat, no debug command.
+- Git: commit only your files, by explicit path (`git commit -m "..." -- <paths>`), never `git add -A` or `-- vault`. Commit message `task-198-01-shockwave-ring-timing: <summary>`, ending with the line `Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>`.
+- Do not modify the task node fields status, model, tokens, runs, result.
+- Report: files changed, property names and values, lifetime rule, build result, test results (and any expectation changed), docs, commit hash(es), what is unverified.
+```
