@@ -3,7 +3,7 @@ id: task-203-04-shake
 description: "On damage the health bar shakes a few pixels for 0.15 s."
 parent: task-203-health-bar-juice
 kind: task
-status: todo
+status: in-progress
 ---
 # Hit shake
 
