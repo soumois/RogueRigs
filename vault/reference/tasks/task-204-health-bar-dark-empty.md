@@ -14,7 +14,7 @@ status: done
 - confirmed_by_owner: yes (2026-10-16, his request)
 - milestone: M1
 - next_step: none
-- result: Done. -game 1920 x 1080 L_ArenaM1, hit 54: bar 280 x 28 at 20,232; 1.5 s after the hit yellow fill to x 148, chunk settled, empty part measured #05060B (target #0B0C14: the tint multiplies the grey image, half as bright; doubling the tint to linear 0.0068/0.0075/0.0143 would match). Captures t204_02_full_00.png, t204_02_settled_00.png sent to the owner. Commit b7bab3dc.
+- result: Done 2026-10-16. DamageChunkBar background tinted (84c6d4e2); in game the empty part is near-black navy #05060B (target #0B0C14 from the video, half as bright because the tint multiplies the grey engine image); bar 280 x 28 at 20,232; captures sent to the owner, who decides whether to match the exact value (tint x2).
 
 ## Subtasks
 1. task-204-01-empty-bar-color — bp, DamageChunkBar background tint #0B0C14
