@@ -1,4 +1,4 @@
-// Rogue Rigs - health status HUD panel (future parent of WBP_HealthStatus): drives the health bar and text from the miner health events, with a smooth drain of the shown fill, a damage chunk behind it, a hit flash of the fill and a hit shake of the bar root.
+// Rogue Rigs - health status HUD panel (future parent of WBP_HealthStatus): drives the health bar and text from the miner health events, with a smooth drain of the shown fill, a damage chunk behind it, a hit flash of the fill, a hit shake and a hit punch of the bar root.
 
 #pragma once
 
@@ -23,7 +23,10 @@ class UWidget;
  * Hit flash: on each hit the fill colour jumps to FlashColor and fades back to GetBaseFillColor (Flash decays at FlashDecay per second).
  * Hit shake: on each hit HealthBarRoot is translated by a random X and Y offset within ShakeAmplitude, re-rolled each frame, for
  * ShakeDuration; the amplitude decays linearly to 0. Its render transform is composed in one place (GetBarRootTransform) so later
- * effects (punch scale) combine with the shake; it is identity once settled.
+ * effects combine with the shake; it is identity once settled.
+ * Hit punch: on each hit the render scale Y of HealthBarRoot jumps to PunchScale and a damped spring (PunchStiffness, PunchDamping)
+ * brings it back to 1, substepped so a large frame time stays stable, snapped to exactly 1 once near rest. Scale X stays 1. The pivot
+ * of HealthBarRoot is set from C++ (BarRootPivot, centre) when the widget is initialised.
  * Extension point for later bar effects (damage chunk, flash, shake, punch, colour): add state here, start it in the event
  * handlers, advance it in AdvanceBarEffects, report it in AreBarEffectsSettled, draw it in ApplyBarVisuals.
  */
@@ -57,7 +60,11 @@ public:
 	UFUNCTION(BlueprintPure, Category = "HUD|Health")
 	FVector2D GetShakeOffset() const { return ShakeOffset; }
 
-	/** Render transform written on HealthBarRoot: translation = shake offset (identity once every effect settled). */
+	/** Current punch render scale Y of HealthBarRoot (1 when no punch runs). */
+	UFUNCTION(BlueprintPure, Category = "HUD|Health")
+	float GetPunchScaleY() const { return PunchScaleY; }
+
+	/** Render transform written on HealthBarRoot: translation = shake offset, scale = (1, punch scale Y); identity once every effect settled. */
 	UFUNCTION(BlueprintPure, Category = "HUD|Health")
 	FWidgetTransform GetBarRootTransform() const;
 
@@ -125,6 +132,38 @@ protected:
 	UPROPERTY(EditDefaultsOnly, Category = "HUD|Health", meta = (ClampMin = "0"))
 	float ShakeDuration = 0.15f;
 
+	/** Render scale Y of HealthBarRoot set by each hit; the spring brings it back to 1. Provisional, owner 2026-10-16 (reference video). */
+	UPROPERTY(EditDefaultsOnly, Category = "HUD|Health", meta = (ClampMin = "0"))
+	float PunchScale = 1.3f;
+
+	/** Spring stiffness of the punch, per second squared: acceleration = -PunchStiffness * (ScaleY - 1) - PunchDamping * velocity. Provisional, owner "ok" 2026-10-16. */
+	UPROPERTY(EditDefaultsOnly, Category = "HUD|Health", meta = (ClampMin = "0"))
+	float PunchStiffness = 400.f;
+
+	/** Spring damping of the punch, per second (25 with stiffness 400: a small overshoot, settled in about 0.25 s). Provisional, owner "ok" 2026-10-16. */
+	UPROPERTY(EditDefaultsOnly, Category = "HUD|Health", meta = (ClampMin = "0"))
+	float PunchDamping = 25.f;
+
+	/** Longest integration substep of the punch spring, in seconds: a frame is split into substeps no longer than this (stable with a large dt). */
+	UPROPERTY(EditDefaultsOnly, Category = "HUD|Health", meta = (ClampMin = "0.0001"))
+	float PunchMaxSubstep = 1.f / 120.f;
+
+	/** Most punch spring substeps in one frame; a longer frame integrates only PunchMaxSubsteps * PunchMaxSubstep seconds (bounded cost). */
+	UPROPERTY(EditDefaultsOnly, Category = "HUD|Health", meta = (ClampMin = "1"))
+	int32 PunchMaxSubsteps = 60;
+
+	/** Distance of the punch scale Y to 1 under which (velocity also under PunchVelocitySnapThreshold) it snaps to exactly 1 and settles. */
+	UPROPERTY(EditDefaultsOnly, Category = "HUD|Health", meta = (ClampMin = "0"))
+	float PunchSnapThreshold = 0.001f;
+
+	/** Punch scale Y speed, per second, under which (distance also under PunchSnapThreshold) the spring snaps to rest. */
+	UPROPERTY(EditDefaultsOnly, Category = "HUD|Health", meta = (ClampMin = "0"))
+	float PunchVelocitySnapThreshold = 0.01f;
+
+	/** Render transform pivot set on HealthBarRoot when the widget is initialised (centre: the punch grows up and down). */
+	UPROPERTY(EditDefaultsOnly, Category = "HUD|Health")
+	FVector2D BarRootPivot = FVector2D(0.5f, 0.5f);
+
 	/** Shown fraction of the bar. */
 	float ShownFraction = 0.f;
 
@@ -146,11 +185,20 @@ protected:
 	/** Current shake translation of HealthBarRoot, re-rolled each frame while the shake runs. */
 	FVector2D ShakeOffset = FVector2D::ZeroVector;
 
+	/** Current punch render scale Y of HealthBarRoot (1 = rest). */
+	float PunchScaleY = 1.f;
+
+	/** Current punch scale Y velocity, per second (0 = rest). */
+	float PunchVelocity = 0.f;
+
 	/** True while the next-tick timer of UpdateBarEffects is armed. */
 	bool bBarUpdateRunning = false;
 
 	/** Handle of the next-tick timer that runs UpdateBarEffects. */
 	FTimerHandle BarUpdateTimer;
+
+	/** Sets the render transform pivot of HealthBarRoot (BarRootPivot) once the bound widgets exist. */
+	virtual void NativeOnInitialized() override;
 
 	/** Applies the fill colour and the current values once the widget tree exists; rebinds the miner if Destruct unbound it. */
 	virtual void NativeConstruct() override;
@@ -165,12 +213,15 @@ protected:
 	UFUNCTION()
 	void HandleHealthChanged(float Current, float Max);
 
-	/** OnDamaged handler: restarts the chunk delay, the hit flash and the shake; start point of the hit effects of later subtasks (punch); arms the update. */
+	/** OnDamaged handler: restarts the chunk delay, the hit flash, the shake and the punch; start point of the hit effects; arms the update. */
 	UFUNCTION()
 	void HandleDamaged(float Amount, float HealthFraction);
 
 	/** Writes the text and the target fraction; snaps the shown and chunk fractions when bSnap. */
 	void ShowHealth(float Current, float Max, bool bSnap);
+
+	/** Puts every bar effect at its end state (shown = target, chunk = shown, no flash, shake or punch); does not draw. */
+	void SnapBarEffects();
 
 	/** Arms the per-frame update if it is not running. */
 	void StartBarUpdate();
@@ -181,7 +232,7 @@ protected:
 	/** One frame of the bar effects: advance, draw, re-arm for the next frame unless everything settled. */
 	void UpdateBarEffects();
 
-	/** Advances every bar effect by DeltaSeconds (drain, damage chunk, hit flash, shake; later effects add their step here). */
+	/** Advances every bar effect by DeltaSeconds (drain, damage chunk, hit flash, shake, punch; later effects add their step here). */
 	virtual void AdvanceBarEffects(float DeltaSeconds);
 
 	/** True when no bar effect needs another frame. */
@@ -192,6 +243,9 @@ protected:
 
 	/** Rolls a new shake offset within the amplitude left (ShakeAmplitude * remaining / duration); zero once the shake ended. */
 	void RollShakeOffset();
+
+	/** Integrates the punch spring by DeltaSeconds in substeps of at most PunchMaxSubstep, then snaps it to rest near 1. */
+	void AdvancePunch(float DeltaSeconds);
 
 	/** Base fill colour of the bar (FillColor; the colour-by-health subtask replaces it). */
 	virtual FLinearColor GetBaseFillColor() const { return FillColor; }

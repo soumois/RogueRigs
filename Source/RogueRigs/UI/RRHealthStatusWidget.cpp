@@ -1,4 +1,4 @@
-// Rogue Rigs - health status HUD panel (future parent of WBP_HealthStatus): drives the health bar and text from the miner health events, with a smooth drain of the shown fill, a damage chunk behind it, a hit flash of the fill and a hit shake of the bar root.
+// Rogue Rigs - health status HUD panel (future parent of WBP_HealthStatus): drives the health bar and text from the miner health events, with a smooth drain of the shown fill, a damage chunk behind it, a hit flash of the fill, a hit shake and a hit punch of the bar root.
 
 #include "UI/RRHealthStatusWidget.h"
 
@@ -7,6 +7,17 @@
 #include "Components/Widget.h"
 #include "Engine/World.h"
 #include "Player/RRMiner.h"
+
+void URRHealthStatusWidget::NativeOnInitialized()
+{
+	Super::NativeOnInitialized();
+
+	// The pivot belongs to the class, not to the Blueprint: the punch scales the bar root around its centre.
+	if (HealthBarRoot)
+	{
+		HealthBarRoot->SetRenderTransformPivot(BarRootPivot);
+	}
+}
 
 void URRHealthStatusWidget::NativeConstruct()
 {
@@ -60,7 +71,9 @@ void URRHealthStatusWidget::HandleDamaged(float Amount, float HealthFraction)
 	FlashAlpha = FlashStrength;
 	ShakeTimeRemaining = ShakeDuration;
 	RollShakeOffset();
-	// Draw the full flash and the first shake offset this frame; the fade starts on the next one.
+	PunchScaleY = PunchScale;
+	PunchVelocity = 0.f;
+	// Draw the full flash, the first shake offset and the full punch this frame; the fade and the spring start on the next one.
 	ApplyBarVisuals();
 	StartBarUpdate();
 }
@@ -74,18 +87,25 @@ void URRHealthStatusWidget::ShowHealth(float Current, float Max, bool bSnap)
 	TargetFraction = Max > 0.f ? FMath::Clamp(Current / Max, 0.f, 1.f) : 0.f;
 	if (bSnap)
 	{
-		ShownFraction = TargetFraction;
-		ChunkFraction = ShownFraction;
-		ChunkDelayRemaining = 0.f;
-		FlashAlpha = 0.f;
-		ShakeTimeRemaining = 0.f;
-		ShakeOffset = FVector2D::ZeroVector;
+		SnapBarEffects();
 		ApplyBarVisuals();
 	}
 	else if (!FMath::IsNearlyEqual(ShownFraction, TargetFraction))
 	{
 		StartBarUpdate();
 	}
+}
+
+void URRHealthStatusWidget::SnapBarEffects()
+{
+	ShownFraction = TargetFraction;
+	ChunkFraction = ShownFraction;
+	ChunkDelayRemaining = 0.f;
+	FlashAlpha = 0.f;
+	ShakeTimeRemaining = 0.f;
+	ShakeOffset = FVector2D::ZeroVector;
+	PunchScaleY = 1.f;
+	PunchVelocity = 0.f;
 }
 
 void URRHealthStatusWidget::StartBarUpdate()
@@ -98,12 +118,7 @@ void URRHealthStatusWidget::StartBarUpdate()
 	if (!World)
 	{
 		// No world to tick in: show the end state at once.
-		ShownFraction = TargetFraction;
-		ChunkFraction = ShownFraction;
-		ChunkDelayRemaining = 0.f;
-		FlashAlpha = 0.f;
-		ShakeTimeRemaining = 0.f;
-		ShakeOffset = FVector2D::ZeroVector;
+		SnapBarEffects();
 		ApplyBarVisuals();
 		return;
 	}
@@ -166,6 +181,33 @@ void URRHealthStatusWidget::AdvanceBarEffects(float DeltaSeconds)
 	// Hit shake: new random offset each frame, amplitude decaying linearly to 0; zero (identity) at the end.
 	ShakeTimeRemaining = FMath::Max(0.f, ShakeTimeRemaining - DeltaSeconds);
 	RollShakeOffset();
+
+	// Hit punch: damped spring of the scale Y back to 1.
+	AdvancePunch(DeltaSeconds);
+}
+
+void URRHealthStatusWidget::AdvancePunch(float DeltaSeconds)
+{
+	if (PunchScaleY == 1.f && PunchVelocity == 0.f)
+	{
+		return;
+	}
+	// Semi-implicit Euler in substeps no longer than PunchMaxSubstep: stable whatever the frame time; the substep count is capped.
+	const float MaxSubstep = FMath::Max(PunchMaxSubstep, UE_KINDA_SMALL_NUMBER);
+	const int32 SubstepCount = FMath::Clamp(FMath::CeilToInt(FMath::Max(0.f, DeltaSeconds) / MaxSubstep), 1, FMath::Max(1, PunchMaxSubsteps));
+	const float Substep = FMath::Min(FMath::Max(0.f, DeltaSeconds) / SubstepCount, MaxSubstep);
+	for (int32 Index = 0; Index < SubstepCount; ++Index)
+	{
+		const float Acceleration = -PunchStiffness * (PunchScaleY - 1.f) - PunchDamping * PunchVelocity;
+		PunchVelocity += Acceleration * Substep;
+		PunchScaleY += PunchVelocity * Substep;
+	}
+	// Settle to exactly 1 once both the distance and the speed are tiny.
+	if (FMath::Abs(PunchScaleY - 1.f) < PunchSnapThreshold && FMath::Abs(PunchVelocity) < PunchVelocitySnapThreshold)
+	{
+		PunchScaleY = 1.f;
+		PunchVelocity = 0.f;
+	}
 }
 
 void URRHealthStatusWidget::RollShakeOffset()
@@ -183,7 +225,7 @@ void URRHealthStatusWidget::RollShakeOffset()
 bool URRHealthStatusWidget::AreBarEffectsSettled() const
 {
 	return ShownFraction == TargetFraction && ChunkFraction == ShownFraction && ChunkDelayRemaining <= 0.f && FlashAlpha <= 0.f
-		&& ShakeTimeRemaining <= 0.f;
+		&& ShakeTimeRemaining <= 0.f && PunchScaleY == 1.f && PunchVelocity == 0.f;
 }
 
 FLinearColor URRHealthStatusWidget::GetCurrentFillColor() const
@@ -193,9 +235,10 @@ FLinearColor URRHealthStatusWidget::GetCurrentFillColor() const
 
 FWidgetTransform URRHealthStatusWidget::GetBarRootTransform() const
 {
-	// Single place that composes the bar root transform: later effects (punch scale) set their component here.
+	// Single place that composes the bar root transform: shake translation and punch scale Y (scale X stays 1).
 	FWidgetTransform Transform;
 	Transform.Translation = ShakeOffset;
+	Transform.Scale = FVector2D(1.f, PunchScaleY);
 	return Transform;
 }
 
