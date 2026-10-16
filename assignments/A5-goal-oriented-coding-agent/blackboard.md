@@ -340,3 +340,60 @@ Final agent commit (the "agent output" the owner's review is compared against): 
 ### 8. Close
 - task-183 closed per protocol (`status: done`, `next_step: none`, moved to tasks-done-index). state.md updated. Editor left open for the owner's test.
 - Owner review edits go in a separate commit `owner review: ...`; this run stops here.
+
+## Run 2 — 2026-10-16
+
+### 1. Base
+- Base commit: `d5b24055` (`task-195-03-dig-pickup-collect-test: done; next none`).
+- Owner constraint for this run: none. Steps 1 to 3 ran first as `/architect-score` (read-only, answered in the chat); this run takes them over and records them here.
+- Resume (orchestration-protocol step 0): no global task `in-progress`. One open task in tasks-to-do-index: `task-188-editor-lock` (status `todo`), not a GDD gap, not touched.
+- Working tree clean at start.
+- Unreal MCP server not reachable at start (editor closed): the editor is launched before the bp subtasks (runbook).
+
+### 2. Scan
+Method: same as run 1. Four read-only scan agents (run; player and weapons; enemies and terrain; art, audio and lore) over every `kind: spec` node (approved or provisional), evidence paths checked. Only the rows that changed since run 1, or that decide the ranking, are listed; the rest of the run 1 table holds.
+
+| Spec / sub-feature | MS | Class | Evidence / gap |
+|---|---|---|---|
+| barrel: particle burst on destruction | M1 | missing | no Niagara reference in `Grid/RRArenaGrid.cpp`; only `ARRExplosionFX` (orange sphere, `BP_ExplosionFX`) plays |
+| enemy-chaser: shield packs 2–4 among 8–16 from 1:00 | M1 | partial | `Enemies/RRWaveDirector.cpp:86-92`: wide pack matches, `ShieldChasers` pack is 1–2 among 4–5 |
+| enemy-shooter: preferred distance 800 ± 1 cell (67) | M2 | partial | `Content/RogueRigs/Data/Tables/EnemyStats.csv` `PreferredDistanceTolerance` = 200 |
+| objective-bonus-chest: gold icon on the alert bar | M2 | partial | `AlertIconChest` shows the letter "B" (`vault/reference/tech/blueprints/ui/wbp-alert-objectives.md`) |
+| color-code: yellow logo plate on every robot | M1 | partial | heavy and shooter have one (`bp-heavy.md`, `bp-shooter.md`); kamikaze has none (`bp-kamikaze.md`) |
+| visual-style: void with stars and planet | — | partial | `bp-arena-grid.md`: no sky; no star or planet asset |
+| drone / crew-characters: barks shown through the drone | M3 | partial | `Content/RogueRigs/Data/Text/barks.json`, `Text/RRSubtitleSubsystem.cpp`; nothing displays barks |
+| enemy-death: robot debris for heavy, kamikaze, shooter | M3 | missing | `DebrisPieces` set on chaser and shield chaser only; parts `open` |
+| run-structure: 4 levels | M2 | missing | correction to run 1: blocked by the missing run controller (`RestartLevel` reloads the same map) and `open` values, not by the generator |
+| ore-economy, extraction, xp-level-up, explosions, heal-ore, ore-blocks, turret, upgrades (stat cards), rarities | M1–M2 | built | unchanged since run 1; ore blocks, deposits and pickups refined by tasks 186–196 (polish, no gap closed) |
+
+Colour conflicts found (not gaps): mining laser red `MI_GB_Laser` vs white-gold in `color-code`; critical number orange-gold `(1, 0.55, 0.08)` vs white-gold; big XP chip lilac core vs magenta trail. Doc drift: `sys-difficulty` names a missing `URRGE_EnemyDifficulty`; `bp-arena-grid` says CellSize 200 / `arena_m1`; `RREnemy` `DebrisPoolSize` default 40 vs 80 in the Blueprint.
+
+### 3. Scoring
+Factors as in run 1 (MS + P + U + C; dependencies not ready = 0; `open` = not buildable).
+
+| # | Feature (spec) | MS | P | U | C | Total | Reason |
+|---|---|---|---|---|---|---|---|
+| 1 | Barrel particle burst (barrel) | 3 | 2 | 0 | 0 | **5** | approved M1 juice, fully specified, nothing blocks it; one main asset |
+| 2 | Drone shows the barks (drone, crew-characters, lore L2) | 1 | 1 | 2 | 1 | 5 | data and subtitle subsystem exist; several subtasks |
+| 3 | Shield-chaser pack makeup (enemy-chaser) | 3 | 1 | 0 | 1 | 5 | possible owner tuning: check before changing |
+| 4 | C++ arena generator (arena-grid) | 2 | 2 | 1 | 0 | 5 | very large; only partly unblocks the 4-level run |
+| 5 | Shooter tolerance (enemy-shooter) | 2 | 1 | 0 | 1 | 4 | one CSV value, owner's feel |
+| 6 | Bonus chest gold icon (objective-bonus-chest) | 2 | 1 | 0 | 1 | 4 | one widget asset |
+| 7 | Kamikaze logo plate (color-code) | 3 | 0 | 0 | 1 | 4 | passes no pillar |
+| 8 | Void stars and planet (visual-style) | 1 | 1 | 0 | 1 | 3 | art assets needed |
+| 9 | Stat sheet UI (player-stats) | 3 | 0 | 0 | 0 | 3 | passes no pillar |
+
+Tie at 5 broken by size and readiness: the barrel is the smallest, fully specified, approved M1 item.
+Excluded: threat, tier pool, special ore, ore-loss share, run-structure objective and ramp, magazine and turret-charge upgrades, effect cards (`open` values); 4-level run and carry-over (no run controller, `open`); damage-number toggle (no options menu); run log (`sys-logging` not designed); EMP (no stun); audio (no assets); miner look (Tripo asset not imported); robot parts (`open`); colour conflicts (owner decision).
+
+### 4. Recommendation
+- **Feature:** barrel particle burst on destruction ([barrel](../../vault/reference/gdd/terrain/barrel.md): "On destruction it plays a particle burst and explodes").
+- **Why:** highest score, approved M1, P1 juice on the P3 arena-as-weapon object; the fuse, the telegraph and the explosion queue exist (`sys-grid-barrels`, `sys-explosions`).
+- **`open` values:** none in the spec; particle values to be set provisional.
+
+#### Owner answer (verbatim)
+> 1. Va pour le baril. Il faudrait que pendant que la zone grandit, on voit qu'il est instable. Ensuite il faudrait une partie d'explosion et aussi le cercle d'explosion. ( On pourra re utiliser pour le kamikaze)
+
+English translation: "1. Go for the barrel. While the zone grows, we should see that it is unstable. Then there should be an explosion part and also the explosion circle. (We can reuse it for the kamikaze.)"
+
+Decision: **approved**: barrel. The owner widens it to three parts: (a) the barrel looks unstable during the 1.5 s fuse while the ground circle grows; (b) an explosion particle part; (c) an "explosion circle"; built so the kamikaze can reuse it. Before planning, questions put to the owner (each with a default): what "unstable" shows; whether the particle burst is added on top of the orange sphere; which circle (c) means (default: a shockwave ring on the ground growing to the explosion radius); kamikaze now or later (default: later, one table line); provisional values set by the agents.
