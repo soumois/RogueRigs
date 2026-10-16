@@ -486,3 +486,75 @@ Notes:
 - Do not modify the task node fields status, model, tokens, runs, result.
 - Report: files changed, the exact property names, user parameter name, material parameter names and decal settings (size, sort order, rotation), the lifetime rule, build result, test results, docs updated, commit hash(es), what is unverified.
 ```
+
+#### task-197-02-explosion-fx-burst-shockwave (cpp) — result
+- Files: `Source/RogueRigs/Explosions/RRExplosionFX.h`, `RRExplosionFX.cpp`; docs `sys-explosions`, `bp-explosion-fx`.
+- Contract for the bp subtasks: `BurstSystem` (one-shot Niagara, played once at BeginPlay at the centre, float user parameter `User.Radius` = visual radius via `BurstRadiusParameterName`, `BurstSeconds` 1.5); `ShockwaveMaterial` (deferred decal, pitch −90, box half size (256, Radius, Radius), sort order 1; scalars `Radius`, `Progress` 0→1 over `Duration` 0.25 s, `Opacity` following the sphere fade). Lifetime: unchanged (0.6 s) without a burst, 1.5 s with one. Unset = old behaviour (kamikaze unchanged).
+- Build exit 0. Full suite headless: 260 pass, 2 fail (`Enemies.ShotHitsMovingRobotAndDeathShowsParts`, `Integration.JuiceHealRing`), both failing on the previous `RRExplosionFX` too: pre-existing, reported, not fixed. `Ore.HealVein` passed this time (flaky).
+- Commits `09946e84` (code), `d1ce7a58` (docs). No retry.
+- Unverified: nothing uses the properties yet; Niagara never runs headless.
+
+Editor launched by the Architect for the bp subtasks.
+
+#### task-197-03-barrel-fuse-blink-material (bp) — prompt sent
+Reading list: the subtask node, then its `inputs` (barrel, barrel-asset, bp-arena-grid, sys-grid-barrels, color-code, readability-rules, agent-bp, bp-mcp-lessons, unreal-mcp-quirks), resolved paths in the node.
+```text
+Subtask task-197-03-barrel-fuse-blink-material (Rogue Rigs, repo C:\Users\soumo\Documents\Unreal Projects\RogueRigs).
+
+Read your subtask node first: vault/reference/tasks/task-197-barrel-explosion-feedback/task-197-03-barrel-fuse-blink-material.md. Its `inputs` line lists the resolved paths of every node you need: read those directly, do not descend from root again, never search the vault. Resolve any other [[wikilink]] through vault/_paths.md.
+
+Notes:
+- Owner request (2026-10-16, translated): "While the zone grows, we should see that the barrel is unstable." Default accepted: its body blinks orange-white faster and faster until the explosion (the C++ shake is already done).
+- Contract from task-197-01 (see sys-grid-barrels): the grid writes the fuse progress 0..1 into per-instance custom data float index 4 (`ARRArenaGrid::GetBarrelFuseCustomDataIndex`, `BarrelFuseCustomDataIndex`) of the barrel HISM instance; 0 when not fusing. The grid sizes the barrel HISM custom data to index + 1 floats.
+- The barrel body is `/Game/RogueRigs/Art/Barrel/M_BarrelPaint` through `MI_Barrel_body` (slot 0, overridden by the grid's `BarrelMaterial`); other `MI_Barrel_*` instances share the parent: they must keep their look (gate the effect with a static switch or a parameter only the body instance enables, or with the custom data value which is 0 on non-instanced meshes). Read the value with a PerInstanceCustomData node (index 4, default 0). Blink: emissive orange-white pulse whose frequency rises from slow to fast with progress (for example about 2 Hz at 0 to about 12 Hz at 1, provisional), off at progress 0 so a resting barrel looks exactly as before.
+- PIE read-back, if the editor allows it: in PIE call the BlueprintCallable `ARRArenaGrid::DestroyCell` on a barrel cell (source any) and read the custom data back rising 0 to 1; stop PIE before saving. If PIE probing fails, report it as unverified rather than looping.
+- Values are provisional: write them in the doc as "provisional, owner 2026-10-16". Colours follow color-code and readability-rules (orange = explodes; red is reserved for enemy fire).
+- Editor state: open (launched by the Orchestrator; MCP at http://127.0.0.1:8000/mcp). Two other bp agents work in parallel on the same editor on other assets (task-197-03 barrel body material, task-197-04 NS_BarrelExplosion, task-197-05 shockwave decal material): touch only your own asset(s); never save all; save by explicit asset path. Check `IsPIERunning` before saving; if you need PIE, coordinate by keeping it short and stopping it before you save.
+- Never call a viewport or editor capture tool (bp-mcp-lessons).
+- Scope: exactly the subtask goal. No cheat, no debug command, no new test (owner 2026-10-16).
+- Git: commit only your files, by explicit path (`git commit -m "..." -- <paths>`), never `git add -A` or `-- vault`; `git add` new files by name first. Commit message `task-197-03-barrel-fuse-blink-material: <summary>`, ending with the line `Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>`. Run `node vault/scripts/lint.js --write` after editing the vault and fix what it reports.
+- Do not modify the task node fields status, model, tokens, runs, result.
+- Report: assets created or changed (paths), parameters and values read back, MCP tools that failed, docs updated, commit hash(es), what is unverified. Always end with a report, even partial; commit what works first.
+```
+
+#### task-197-04-barrel-explosion-niagara (bp) — prompt sent
+Reading list: the subtask node, then its `inputs` (barrel, explosions, sys-explosions, bp-explosion-fx, bp-robot-death-puff, blueprints-fx-index, color-code, readability-rules, agent-bp, bp-mcp-lessons, unreal-mcp-quirks), resolved paths in the node.
+```text
+Subtask task-197-04-barrel-explosion-niagara (Rogue Rigs, repo C:\Users\soumo\Documents\Unreal Projects\RogueRigs).
+
+Read your subtask node first: vault/reference/tasks/task-197-barrel-explosion-feedback/task-197-04-barrel-explosion-niagara.md. Its `inputs` line lists the resolved paths of every node you need: read those directly, do not descend from root again, never search the vault. Resolve any other [[wikilink]] through vault/_paths.md.
+
+Notes:
+- Owner request (2026-10-16, translated): "Then there should be an explosion part (we can reuse it for the kamikaze)." Default accepted: a Niagara burst at the explosion (short bright flash, orange fireball, sparks thrown outward, a little dark smoke), scaled to the radius, playing on top of the existing orange sphere.
+- Contract from task-197-02 (see sys-explosions): `ARRExplosionFX::BurstSystem` plays the system once at the explosion centre at BeginPlay, sets the float user parameter `User.Radius` (a float named `Radius` in the User namespace) to the visual radius (735 uu for the barrel, 327.6 uu for the kamikaze if reused later); the actor keeps it alive for `BurstSeconds` = 1.5 s. Declare `User.Radius` with a sensible default (735) and size every emitter from it so the effect fills about the visual radius for both sizes.
+- One-shot, finished within about 1.5 s, no collision, the cheapest of CPU or GPU sim; keep particle counts modest (barrel chains can trigger several in a row). Look at NS_RobotDeathPuff (bp-robot-death-puff) for how an existing burst was built through MCP. Save as `/Game/RogueRigs/FX/NS_BarrelExplosion`; new doc node in vault/reference/tech/blueprints/fx/ (template vault/templates/blueprint.md adapted as the other fx docs do) and blueprints-fx-index updated.
+- Values are provisional: write them in the doc as "provisional, owner 2026-10-16". Colours follow color-code and readability-rules (orange = explodes; red is reserved for enemy fire).
+- Editor state: open (launched by the Orchestrator; MCP at http://127.0.0.1:8000/mcp). Two other bp agents work in parallel on the same editor on other assets (task-197-03 barrel body material, task-197-04 NS_BarrelExplosion, task-197-05 shockwave decal material): touch only your own asset(s); never save all; save by explicit asset path. Check `IsPIERunning` before saving; if you need PIE, coordinate by keeping it short and stopping it before you save.
+- Never call a viewport or editor capture tool (bp-mcp-lessons).
+- Scope: exactly the subtask goal. No cheat, no debug command, no new test (owner 2026-10-16).
+- Git: commit only your files, by explicit path (`git commit -m "..." -- <paths>`), never `git add -A` or `-- vault`; `git add` new files by name first. Commit message `task-197-04-barrel-explosion-niagara: <summary>`, ending with the line `Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>`. Run `node vault/scripts/lint.js --write` after editing the vault and fix what it reports.
+- Do not modify the task node fields status, model, tokens, runs, result.
+- Report: assets created or changed (paths), parameters and values read back, MCP tools that failed, docs updated, commit hash(es), what is unverified. Always end with a report, even partial; commit what works first.
+```
+
+#### task-197-05-shockwave-decal-material (bp) — prompt sent
+Reading list: the subtask node, then its `inputs` (ground-telegraph, sys-ground-telegraph, sys-explosions, explosions, color-code, readability-rules, blueprints-fx-index, agent-bp, bp-mcp-lessons, unreal-mcp-quirks), resolved paths in the node.
+```text
+Subtask task-197-05-shockwave-decal-material (Rogue Rigs, repo C:\Users\soumo\Documents\Unreal Projects\RogueRigs).
+
+Read your subtask node first: vault/reference/tasks/task-197-barrel-explosion-feedback/task-197-05-shockwave-decal-material.md. Its `inputs` line lists the resolved paths of every node you need: read those directly, do not descend from root again, never search the vault. Resolve any other [[wikilink]] through vault/_paths.md.
+
+Notes:
+- Owner request (2026-10-16, translated): "and also the explosion circle (we can reuse it for the kamikaze)." Default accepted: an orange shockwave ring on the ground growing from the centre to the explosion radius at the explosion, lasting about as long as the sphere.
+- Contract from task-197-02 (see sys-explosions): `ARRExplosionFX::ShockwaveMaterial` is used on a decal component projected straight down (pitch -90), box half size (256, Radius, Radius), sort order 1; the C++ sets scalar parameters `Radius` (visual radius, uu, set once), `Progress` (0 to 1 over 0.25 s, then 1) and `Opacity` (1 during growth and hold, then 1 to 0 over the fade). Same names as `/Game/RogueRigs/FX/M_GroundTelegraph`: look at it (sys-ground-telegraph) and reuse its approach for a sharp ring of constant world width at radius x progress.
+- Build `/Game/RogueRigs/FX/M_ExplosionShockwave` (deferred decal, translucent, unlit emissive) and an orange instance `MI_ExplosionShockwave` (provisional ring width in uu, orange per color-code); invisible at progress 0, no disc fill. New doc node in vault/reference/tech/blueprints/fx/ and blueprints-fx-index updated.
+- Values are provisional: write them in the doc as "provisional, owner 2026-10-16". Colours follow color-code and readability-rules (orange = explodes; red is reserved for enemy fire).
+- Editor state: open (launched by the Orchestrator; MCP at http://127.0.0.1:8000/mcp). Two other bp agents work in parallel on the same editor on other assets (task-197-03 barrel body material, task-197-04 NS_BarrelExplosion, task-197-05 shockwave decal material): touch only your own asset(s); never save all; save by explicit asset path. Check `IsPIERunning` before saving; if you need PIE, coordinate by keeping it short and stopping it before you save.
+- Never call a viewport or editor capture tool (bp-mcp-lessons).
+- Scope: exactly the subtask goal. No cheat, no debug command, no new test (owner 2026-10-16).
+- Git: commit only your files, by explicit path (`git commit -m "..." -- <paths>`), never `git add -A` or `-- vault`; `git add` new files by name first. Commit message `task-197-05-shockwave-decal-material: <summary>`, ending with the line `Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>`. Run `node vault/scripts/lint.js --write` after editing the vault and fix what it reports.
+- Do not modify the task node fields status, model, tokens, runs, result.
+- Report: assets created or changed (paths), parameters and values read back, MCP tools that failed, docs updated, commit hash(es), what is unverified. Always end with a report, even partial; commit what works first.
+```
+
+Subtasks 03, 04 and 05 delegated in parallel (three different assets on one editor, the bp limit).
