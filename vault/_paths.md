@@ -59,6 +59,7 @@ blueprints-player-index  reference/tech/blueprints/player/blueprints-player-inde
 blueprints-ui-index  reference/tech/blueprints/ui/blueprints-ui-index.md
 blueprints-world-index  reference/tech/blueprints/world/blueprints-world-index.md
 bp-arena-grid  reference/tech/blueprints/world/bp-arena-grid.md
+bp-barrel-explosion  reference/tech/blueprints/fx/bp-barrel-explosion.md
 bp-bonus-chest  reference/tech/blueprints/world/bp-bonus-chest.md
 bp-burst-rifle  reference/tech/blueprints/player/bp-burst-rifle.md
 bp-chaser  reference/tech/blueprints/enemies/bp-chaser.md

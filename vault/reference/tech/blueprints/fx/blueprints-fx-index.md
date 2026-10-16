@@ -20,3 +20,4 @@ Pickups, explosion and heal visuals, damage numbers: effects and collectibles.
 - [[bp-damage-numbers]] — NS_DamageNumbers, M_DamageNumber and the digit atlas, the floating damage numbers.
 - [[bp-robot-death-puff]] — NS_RobotDeathPuff, the robot death puff.
 - [[bp-robot-debris]] — NS_RobotDebris, the robot debris pieces.
+- [[bp-barrel-explosion]] — NS_BarrelExplosion and M_BarrelExplosionSprite, the explosion Niagara burst.
