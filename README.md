@@ -12,6 +12,8 @@
 
 All assignments: [assignments/](assignments/).
 
+Weekly progress of the game, apart from the assignments: [devlog/](devlog/).
+
 ## Project vault
 
 [`vault/`](vault/) is the single source of truth of the project: the game design, technical docs, agent specs and every task the crew has run (482 nodes). Start at [`vault/root.md`](vault/root.md).
