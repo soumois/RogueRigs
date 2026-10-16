@@ -337,6 +337,7 @@ kind: note
 | [[task-197-05-shockwave-decal-material]] | sonnet | 1 | 0k | 42k | 428k | 9k |
 | [[task-197-03-barrel-fuse-blink-material]] | sonnet | 1 | 0k | 55k | 643k | 15k |
 | [[task-197-04-barrel-explosion-niagara]] | sonnet | 1 | 0k | 99k | 3034k | 34k |
+| [[task-197-06-barrel-explosion-fx-blueprint]] | sonnet | 1 | 0k | 47k | 908k | 13k |
 
 ## Totals
 | Scope | Input | Cache write | Cache read | Output |

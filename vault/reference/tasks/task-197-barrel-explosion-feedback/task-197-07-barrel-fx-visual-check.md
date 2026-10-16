@@ -3,7 +3,7 @@ id: task-197-07-barrel-fx-visual-check
 description: "Visual check in a -game run: screenshots of one barrel fuse and explosion showing the shake, blink, burst and shockwave ring."
 parent: task-197-barrel-explosion-feedback
 kind: task
-status: todo
+status: in-progress
 ---
 # Barrel FX visual check
 

@@ -3,7 +3,7 @@ id: task-197-06-barrel-explosion-fx-blueprint
 description: "BP: BP_ExplosionFX_Barrel with the burst and shockwave set, ExplosionStats Barrel row pointed to it, PIE read-back; doc."
 parent: task-197-barrel-explosion-feedback
 kind: task
-status: in-progress
+status: done
 ---
 # Barrel explosion FX Blueprint
 
@@ -15,11 +15,11 @@ status: in-progress
 - done_when: Blueprint compiles; CSV row read back; PIE read-backs pass (barrel FX spawned with burst and ring; a kamikaze explosion still spawns `BP_ExplosionFX`); docs updated; committed by path.
 - editor_state: open
 - token_ceiling: open
-- model: open
-- tokens: open
-- runs: open
+- model: sonnet
+- tokens: input 52, cache write 46641, cache read 908052, output 13161
+- runs: 1
 - milestone: M1
-- result: open
+- result: BP_ExplosionFX_Barrel (child of BP_ExplosionFX; BurstSystem NS_BarrelExplosion, ShockwaveMaterial MI_ExplosionShockwave); ExplosionStats Barrel FXClass switched, Kamikaze unchanged; integration test expectation on the FX class handed to task-197-07; PIE route unavailable; commit 7003f613
 
 ## Relations
 - [[task-197-barrel-explosion-feedback]] — parent global task.
