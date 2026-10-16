@@ -1,4 +1,4 @@
-// Rogue Rigs - health status HUD panel (future parent of WBP_HealthStatus): drives the health bar and text from the miner health events, with a smooth drain of the shown fill and a damage chunk behind it.
+// Rogue Rigs - health status HUD panel (future parent of WBP_HealthStatus): drives the health bar and text from the miner health events, with a smooth drain of the shown fill, a damage chunk behind it and a hit flash of the fill.
 
 #include "UI/RRHealthStatusWidget.h"
 
@@ -56,6 +56,9 @@ void URRHealthStatusWidget::HandleDamaged(float Amount, float HealthFraction)
 	// Hit effects of the later subtasks start here; the drain itself follows HandleHealthChanged.
 	ChunkFraction = FMath::Max(ChunkFraction, ShownFraction);
 	ChunkDelayRemaining = ChunkDelay;
+	FlashAlpha = FlashStrength;
+	// Draw the full flash this frame; the fade starts on the next one.
+	ApplyBarVisuals();
 	StartBarUpdate();
 }
 
@@ -71,6 +74,7 @@ void URRHealthStatusWidget::ShowHealth(float Current, float Max, bool bSnap)
 		ShownFraction = TargetFraction;
 		ChunkFraction = ShownFraction;
 		ChunkDelayRemaining = 0.f;
+		FlashAlpha = 0.f;
 		ApplyBarVisuals();
 	}
 	else if (!FMath::IsNearlyEqual(ShownFraction, TargetFraction))
@@ -92,6 +96,7 @@ void URRHealthStatusWidget::StartBarUpdate()
 		ShownFraction = TargetFraction;
 		ChunkFraction = ShownFraction;
 		ChunkDelayRemaining = 0.f;
+		FlashAlpha = 0.f;
 		ApplyBarVisuals();
 		return;
 	}
@@ -147,11 +152,19 @@ void URRHealthStatusWidget::AdvanceBarEffects(float DeltaSeconds)
 		}
 	}
 	ChunkFraction = FMath::Max(ChunkFraction, ShownFraction);
+
+	// Hit flash: linear fade back to the base fill colour.
+	FlashAlpha = FMath::Max(0.f, FlashAlpha - FlashDecay * DeltaSeconds);
 }
 
 bool URRHealthStatusWidget::AreBarEffectsSettled() const
 {
-	return ShownFraction == TargetFraction && ChunkFraction == ShownFraction && ChunkDelayRemaining <= 0.f;
+	return ShownFraction == TargetFraction && ChunkFraction == ShownFraction && ChunkDelayRemaining <= 0.f && FlashAlpha <= 0.f;
+}
+
+FLinearColor URRHealthStatusWidget::GetCurrentFillColor() const
+{
+	return FMath::Lerp(GetBaseFillColor(), FlashColor, FlashAlpha);
 }
 
 void URRHealthStatusWidget::ApplyBarVisuals()
@@ -159,7 +172,7 @@ void URRHealthStatusWidget::ApplyBarVisuals()
 	if (HealthBar)
 	{
 		HealthBar->SetPercent(ShownFraction);
-		HealthBar->SetFillColorAndOpacity(GetBaseFillColor());
+		HealthBar->SetFillColorAndOpacity(GetCurrentFillColor());
 	}
 	if (DamageChunkBar)
 	{

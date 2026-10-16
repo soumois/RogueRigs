@@ -1,4 +1,4 @@
-// Rogue Rigs - health status HUD panel (future parent of WBP_HealthStatus): drives the health bar and text from the miner health events, with a smooth drain of the shown fill and a damage chunk behind it.
+// Rogue Rigs - health status HUD panel (future parent of WBP_HealthStatus): drives the health bar and text from the miner health events, with a smooth drain of the shown fill, a damage chunk behind it and a hit flash of the fill.
 
 #pragma once
 
@@ -18,6 +18,7 @@ class UTextBlock;
  * armed by a health event through a next-tick timer and stopped once every effect has settled: no permanent tick.
  * Damage chunk: DamageChunkBar, drawn behind HealthBar, keeps the lost health visible for ChunkDelay after each hit, then shrinks
  * to the shown fraction; it is never below the shown fraction.
+ * Hit flash: on each hit the fill colour jumps to FlashColor and fades back to GetBaseFillColor (Flash decays at FlashDecay per second).
  * Extension point for later bar effects (damage chunk, flash, shake, punch, colour): add state here, start it in the event
  * handlers, advance it in AdvanceBarEffects, report it in AreBarEffectsSettled, draw it in ApplyBarVisuals.
  */
@@ -39,11 +40,19 @@ public:
 	UFUNCTION(BlueprintPure, Category = "HUD|Health")
 	float GetChunkFraction() const { return ChunkFraction; }
 
+	/** Hit flash strength (0..1): 0 = base fill colour, 1 = FlashColor. */
+	UFUNCTION(BlueprintPure, Category = "HUD|Health")
+	float GetFlashAlpha() const { return FlashAlpha; }
+
+	/** Fill colour of HealthBar now: lerp(GetBaseFillColor, FlashColor, flash strength). */
+	UFUNCTION(BlueprintPure, Category = "HUD|Health")
+	FLinearColor GetCurrentFillColor() const;
+
 	/** True while the per-frame bar update is armed (tests: no per-frame work once settled). */
 	bool IsBarUpdateRunning() const { return bBarUpdateRunning; }
 
 protected:
-	/** Bar fill (optional: the class works on a Blueprint without it). Percent = shown fraction, fill colour = FillColor. */
+	/** Bar fill (optional: the class works on a Blueprint without it). Percent = shown fraction, fill colour = GetCurrentFillColor (base colour, flashed on hit). */
 	UPROPERTY(BlueprintReadOnly, Category = "HUD|Health", meta = (BindWidgetOptional))
 	TObjectPtr<UProgressBar> HealthBar;
 
@@ -79,6 +88,18 @@ protected:
 	UPROPERTY(EditDefaultsOnly, Category = "HUD|Health")
 	FLinearColor ChunkColor = FLinearColor(FColor(0xFF, 0xF0, 0xE0, 0xFF));
 
+	/** Colour the fill flashes towards on a hit (white). Provisional, owner 2026-10-16. */
+	UPROPERTY(EditDefaultsOnly, Category = "HUD|Health")
+	FLinearColor FlashColor = FLinearColor::White;
+
+	/** Flash strength set by each hit (1 = full FlashColor); lerp alpha between base fill colour and FlashColor. Provisional, owner 2026-10-16. */
+	UPROPERTY(EditDefaultsOnly, Category = "HUD|Health", meta = (ClampMin = "0", ClampMax = "1"))
+	float FlashStrength = 1.f;
+
+	/** Fade speed of the hit flash, per second: Flash -= FlashDecay * dt, floor 0 (about 0.11 s from 1). Provisional, owner 2026-10-16. */
+	UPROPERTY(EditDefaultsOnly, Category = "HUD|Health", meta = (ClampMin = "0"))
+	float FlashDecay = 9.f;
+
 	/** Shown fraction of the bar. */
 	float ShownFraction = 0.f;
 
@@ -90,6 +111,9 @@ protected:
 
 	/** Seconds left before the damage chunk starts to shrink (0 = shrinking or settled). */
 	float ChunkDelayRemaining = 0.f;
+
+	/** Current hit flash strength (0 = no flash). */
+	float FlashAlpha = 0.f;
 
 	/** True while the next-tick timer of UpdateBarEffects is armed. */
 	bool bBarUpdateRunning = false;
@@ -110,7 +134,7 @@ protected:
 	UFUNCTION()
 	void HandleHealthChanged(float Current, float Max);
 
-	/** OnDamaged handler: restarts the chunk delay; start point of the hit effects of later subtasks (flash, shake, punch); arms the update. */
+	/** OnDamaged handler: restarts the chunk delay, starts the hit flash; start point of the hit effects of later subtasks (shake, punch); arms the update. */
 	UFUNCTION()
 	void HandleDamaged(float Amount, float HealthFraction);
 
@@ -126,13 +150,13 @@ protected:
 	/** One frame of the bar effects: advance, draw, re-arm for the next frame unless everything settled. */
 	void UpdateBarEffects();
 
-	/** Advances every bar effect by DeltaSeconds (drain, then damage chunk; later effects add their step here). */
+	/** Advances every bar effect by DeltaSeconds (drain, damage chunk, hit flash; later effects add their step here). */
 	virtual void AdvanceBarEffects(float DeltaSeconds);
 
 	/** True when no bar effect needs another frame. */
 	virtual bool AreBarEffectsSettled() const;
 
-	/** Draws the current effect state on the widgets (bar and chunk percent and fill colour). */
+	/** Draws the current effect state on the widgets (bar and chunk percent, bar fill colour with the flash, chunk colour). */
 	virtual void ApplyBarVisuals();
 
 	/** Base fill colour of the bar (FillColor; the colour-by-health subtask replaces it). */
