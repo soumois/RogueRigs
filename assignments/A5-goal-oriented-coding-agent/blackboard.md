@@ -735,3 +735,28 @@ Notes:
 #### task-198-02-shockwave-ring-width (bp) — result
 - `M_ExplosionShockwave`: scalar parameter `RingWidth` (default 60 uu, provisional) wired into the progress-ring Custom node (input `W`), ring still inner-aligned; `MI_ExplosionShockwave` inherits 60. Doc `bp-explosion-shockwave` (look, parameters, derivation). One MCP call retried with the documented workaround (Custom node inputs). Commit `1edbf66e`. No second run.
 - Unverified: look on screen (task-200 frames).
+
+#### task-199-01-barrel-burst-bigger (bp) — result
+- `NS_BarrelExplosion`: flash 1.2–1.6 R; fireball 16 (spawn 0.4 R, size 0.5–0.85 R); sparks 56 (0.03–0.06 R, colour 6, 3, 0.6); smoke 12 (spawn 0.4 R, 0.5–0.8 R, colour 0.15, 0.14, 0.13, alpha 0.85); 95 particles; ends about 1.4 s; no red. Provisional. Doc `bp-barrel-explosion`. Commit `f995b7b2`. No retry.
+- Unverified: look and cost (task-200 frames for the look).
+
+Editor closed by the Architect for task-200 (no tracked file modified).
+
+#### task-200-01-decal-green-square-check (cpp) — prompt sent
+Reading list: the subtask node and its `inputs`.
+```text
+Subtask task-200-01-decal-green-square-check (Rogue Rigs, repo C:\Users\soumo\Documents\Unreal Projects\RogueRigs).
+
+Read your subtask node first: vault/reference/tasks/task-200-decal-green-square-check/task-200-01-decal-green-square-check.md. Its `inputs` line lists the resolved paths of every node you need: read those directly, do not descend from root again, never search the vault. Resolve any other [[wikilink]] through vault/_paths.md.
+
+Notes:
+- Why: in the task-197-07 `-game` run, the first frame of each ground decal (the barrel danger zone at fuse start, the explosion shockwave ring) showed a large pale green concrete-like square over the area; from the next frame the decal rendered normally. Likely the engine default decal material while decal shaders compile on first use. Owner (2026-10-16) accepted: a second run to confirm; nothing fixed if it is the shader compile.
+- What: rerun the same check with existing routes only (no new or temporary command): the task-197-07 command line was
+  UnrealEditor.exe "<uproject>" /Game/RogueRigs/Maps/L_ArenaM1 -game -windowed -ResX=1280 -ResY=720 -nosplash -log -ExecCmds="rr.Stress.Peace 1, rr.Debug.Delayed 6 ke BP_Miner_C K2_AddActorWorldOffset '(X=1608,Y=469,Z=0)' false () true, rr.Debug.Shots 8 1 1 barrelfx_pre, rr.Debug.Delayed 9.9 ke BP_ArenaGrid_C ApplyShotDamage '(X=145,Y=124)' 100, rr.Debug.Shots 9.8 18 0.15 barrelfx, rr.Debug.Delayed 14 quit"
+  Use a new prefix (for example `barrelfx2`) so the old frames stay. Run it once; if the green square appears again, run it a second time to see whether it persists once shaders are cached (two runs at most). Search the log for shader compile lines around those moments (for example `ShaderCompil`, `Compiling`, `DefaultDeferredDecalMaterial`).
+- The same frames also show what changed since task-197-07 (no extra work): the shockwave ring now grows over 0.6 s after the sphere and is 60 uu wide (task-198); the Niagara burst is bigger (task-199, 95 particles). Describe them as seen.
+- Look at the frames yourself (Read the PNGs) and describe each relevant one: fuse start, fuse, explosion, after the sphere (ring visible?), burst size, smoke.
+- Editor state: closed (the Orchestrator closed it). If an editor appears, stop and report; never kill it. No build needed unless the binaries are out of date (C++ changed in task-198-01: if `-game` refuses or is stale, build first per build-toolchain).
+- Git: commit nothing (screenshots stay local). Do not modify the task node fields status, model, tokens, runs, result.
+- Report: command line(s), frame paths with one line each of what is visible, whether the green square appeared (run 1, run 2), log lines about shader compilation, anything that looks wrong.
+```
