@@ -3,7 +3,7 @@ id: task-198-01-shockwave-ring-timing
 description: "C++: the explosion shockwave ring grows over about 0.6 s on its own timeline, after the 0.25 s sphere growth, then fades shortly."
 parent: task-198-shockwave-ring-readable
 kind: task
-status: in-progress
+status: done
 ---
 # Shockwave ring timing
 
@@ -15,11 +15,11 @@ status: in-progress
 - done_when: build exit 0; explosion tests pass (only expectations broken by this change updated, no new test); ring growth and fade seconds named in sys-explosions; ring still hidden at the end of the actor life; committed by path.
 - editor_state: closed
 - token_ceiling: open
-- model: open
-- tokens: open
-- runs: open
+- model: opus
+- tokens: input 50, cache write 66251, cache read 1180420, output 20256
+- runs: 1
 - milestone: M1
-- result: open
+- result: Shockwave ring own timeline: ShockwaveGrowSeconds 0.6, ShockwaveFadeSeconds 0.2, hidden at 0.8 s after the sphere (0.6 s); lifetime max of sphere, ring, burst; build ok, explosion tests pass; commits c532ff13, d09f80d0
 
 ## Relations
 - [[task-198-shockwave-ring-readable]] — parent global task.

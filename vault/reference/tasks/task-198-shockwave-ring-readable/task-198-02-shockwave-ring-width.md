@@ -3,7 +3,7 @@ id: task-198-02-shockwave-ring-width
 description: "BP: the shockwave ring width becomes a material scalar parameter RingWidth, default 60 uu; doc updated."
 parent: task-198-shockwave-ring-readable
 kind: task
-status: todo
+status: in-progress
 ---
 # Shockwave ring width
 

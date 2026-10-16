@@ -13,7 +13,7 @@ status: in-progress
 - gdd_check: [[barrel]] owner rule 2026-10-16 (ring and burst provisional), [[explosions]] read 2026-10-16; no conflict, no `open` value.
 - confirmed_by_owner: yes (2026-10-16: "Ok" to the proposals)
 - milestone: M1
-- next_step: task-198-01-shockwave-ring-timing
+- next_step: task-198-02-shockwave-ring-width
 - result: open
 
 ## Subtasks
