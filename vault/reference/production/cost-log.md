@@ -349,6 +349,7 @@ kind: note
 | [[task-203-02-damage-chunk]] | opus | 1 | 0k | 31k | 253k | 0k |
 | [[task-203-03-hit-flash]] | opus | 1 | 0k | 35k | 350k | 1k |
 | [[task-203-04-shake]] | opus | 1 | 0k | 37k | 493k | 1k |
+| [[task-203-05-punch]] | opus | 1 | 0k | 47k | 520k | 7k |
 
 ## Totals
 | Scope | Input | Cache write | Cache read | Output |

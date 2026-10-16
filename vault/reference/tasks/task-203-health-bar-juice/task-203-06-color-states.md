@@ -3,7 +3,7 @@ id: task-203-06-color-states
 description: "The health fill colour follows the health left: green when full, yellow at half, red when low."
 parent: task-203-health-bar-juice
 kind: task
-status: todo
+status: in-progress
 ---
 # Colour by health
 

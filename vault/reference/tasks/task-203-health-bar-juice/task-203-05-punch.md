@@ -3,7 +3,7 @@ id: task-203-05-punch
 description: "On damage the health bar grows in height then springs back to its normal size."
 parent: task-203-health-bar-juice
 kind: task
-status: in-progress
+status: done
 ---
 # Hit punch
 
@@ -16,11 +16,11 @@ status: in-progress
 - done_when: build exit 0 with the editor closed; RogueRigs.HUD tests pass (only expectations this change breaks updated, no new test); every value of this node is an EditDefaultsOnly UPROPERTY default, none hard-coded; per-frame work runs only while an effect is running (no permanent tick); sys-hud-health-bar doc matches the code; committed by path.
 - editor_state: closed
 - token_ceiling: open
-- model: open
-- tokens: open
-- runs: open
+- model: opus
+- tokens: input 28, cache write 46962, cache read 520211, output 7154
+- runs: 1
 - milestone: M1
-- result: open
+- result: PunchScale 1.3, PunchStiffness 400, PunchDamping 25, substeps of 1/120 s (max 60), snap thresholds 0.001 and 0.01/s, pivot (0.5, 0.5) set from C++ in NativeOnInitialized; SnapBarEffects shared reset. Node simulation: min 0.981, within 0.008 at 0.25 s, exact snap at about 0.48 s. Build 0, RogueRigs.HUD 13/13. Commit ee56a080. Unverified on screen.
 
 ## Relations
 - [[task-203-health-bar-juice]] — parent global task.
