@@ -3,7 +3,7 @@ id: task-203-07-wbp-health-status
 description: "WBP_HealthStatus uses the new C++ class and holds the widgets it drives; its doc node matches."
 parent: task-203-health-bar-juice
 kind: task
-status: todo
+status: in-progress
 ---
 # WBP_HealthStatus layout for the juicy bar
 

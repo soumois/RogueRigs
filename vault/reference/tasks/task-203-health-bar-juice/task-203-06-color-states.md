@@ -3,7 +3,7 @@ id: task-203-06-color-states
 description: "The health fill colour follows the health left: green when full, yellow at half, red when low."
 parent: task-203-health-bar-juice
 kind: task
-status: in-progress
+status: done
 ---
 # Colour by health
 
@@ -16,11 +16,11 @@ status: in-progress
 - done_when: build exit 0 with the editor closed; RogueRigs.HUD tests pass (only expectations this change breaks updated, no new test); every value of this node is an EditDefaultsOnly UPROPERTY default, none hard-coded; per-frame work runs only while an effect is running (no permanent tick); sys-hud-health-bar doc matches the code; committed by path.
 - editor_state: closed
 - token_ceiling: open
-- model: open
-- tokens: open
-- runs: open
+- model: opus
+- tokens: input 16, cache write 38029, cache read 238638, output 473
+- runs: 1
 - milestone: M1
-- result: open
+- result: FRRHealthColorStop struct, FillColorStops default 1.0 #66d26f, 0.5 #e8c547, 0.2 #e5544b (sRGB to linear), blend in linear space on the real fraction; FillColor removed; ShowHealth redraws on every OnHealthChanged. Build 0, RogueRigs.HUD 13/13. Commit 8c050a80. Unverified on screen; linear-space blend tones to judge by the owner.
 
 ## Relations
 - [[task-203-health-bar-juice]] — parent global task.
