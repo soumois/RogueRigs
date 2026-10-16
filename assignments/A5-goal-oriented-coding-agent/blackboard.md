@@ -650,3 +650,21 @@ Final agent commit (the "agent output" the owner's review is compared against): 
 - task-197 closed per protocol (`status: done`, `next_step: none`). state.md updated. Editor closed (the run left it closed for the C++ check).
 - Reported to the owner: green decal square on first use (probable shader compile), ring hidden by the sphere, small burst; flaky or failing tests found on the way (`Ore.HealVein`, `Enemies.ShotHitsMovingRobotAndDeathShowsParts`, `Integration.JuiceHealRing`), all pre-existing.
 - Owner review edits go in a separate commit `owner review: ...`.
+
+#### Owner answer to the follow-up proposals (verbatim)
+> Ok
+
+English translation: "Ok."
+
+Proposals accepted (defaults): (1) ring wider, about 60 uu, and lasting after the sphere: growth from 0.25 s to about 0.6 s; (2) bigger burst: wider fireball, about twice the sparks, more visible smoke; (3) a second `-game` run to confirm the green decal square is the shader compile on first use, nothing fixed if it is.
+
+Decision: three owner points = three global tasks (split rule), confirmed by this "Ok" (the proposals were the plan); they run without asking again:
+
+| Task | Subtasks | Agent | Output |
+|---|---|---|---|
+| `task-198-shockwave-ring-readable` | 01 ring timing in `ARRExplosionFX` (grow about 0.6 s, then a short fade, independent of the sphere, still inside the 1.5 s actor life) | cpp | C++, docs, test expectations only if broken |
+| | 02 ring width 60 uu as a material scalar parameter `RingWidth` | bp | `M_ExplosionShockwave`, doc |
+| `task-199-barrel-burst-bigger` | 01 `NS_BarrelExplosion`: wider fireball, about 2× sparks, more visible smoke, still within 1.5 s | bp | Niagara asset, doc |
+| `task-200-decal-green-square-check` | 01 rerun of the task-197-07 `-game` command (shaders now cached), frames at fuse start and explosion; report whether the green square returns; no fix | cpp | report only |
+
+Order: 198-01 (editor closed); editor launched; 198-02 and 199-01 in parallel (different assets); editor closed; 200-01 last, so its frames also show the new ring and burst. Values provisional (owner 2026-10-16).
