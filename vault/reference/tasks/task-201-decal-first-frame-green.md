@@ -1,9 +1,9 @@
 ---
 id: task-201-decal-first-frame-green
 description: "Global task: No green default-material frame when a ground telegraph or explosion shockwave decal appears: decal materials ready before first use, verified in -game frames."
-parent: tasks-to-do-index
+parent: tasks-done-index
 kind: task
-status: in-progress
+status: done
 ---
 # Decal first frame green
 
@@ -13,13 +13,13 @@ status: in-progress
 - gdd_check: [[ground-telegraph]], [[explosions]], [[barrel]] read 2026-10-16; a render defect, no rule change, no `open` value.
 - confirmed_by_owner: yes (2026-10-16: "Oui corriger les points")
 - milestone: M1
-- next_step: task-201-01-decal-first-frame-green
-- result: open
+- next_step: none
+- result: Done. Green default-decal frame removed by warming decal materials at level start (ARRDecalWarmUp); verified in -game frames at fuse start and explosion; cooked build and cold cache unverified. Commits 38fcc48e, 57d10dc1.
 
 ## Subtasks
 1. task-201-01-decal-first-frame-green — cpp
 
 ## Relations
-- [[tasks-to-do-index]] — parent index.
+- [[tasks-done-index]] — parent index.
 - [[task-197-barrel-explosion-feedback]] — the feature whose frames showed the defect.
 - [[task-201-01-decal-first-frame-green]] — step 1, cpp.

@@ -3,7 +3,7 @@ id: task-201-01-decal-first-frame-green
 description: "No green default-material frame when a ground telegraph or explosion shockwave decal appears: decal materials ready before first use, verified in -game frames."
 parent: task-201-decal-first-frame-green
 kind: task
-status: in-progress
+status: done
 ---
 # Decal first frame green
 
@@ -15,11 +15,11 @@ status: in-progress
 - done_when: build exit 0; explosion, barrel and telegraph tests pass (only broken expectations updated, no new test); the task-200 `-game` command (new prefix) shows no green square at fuse start and at the explosion; the cause found is written in the docs; game rules unchanged; committed by path.
 - editor_state: closed
 - token_ceiling: open
-- model: open
-- tokens: open
-- runs: open
+- model: opus
+- tokens: input 140, cache write 183464, cache read 7931768, output 51040
+- runs: 2
 - milestone: M1
-- result: open
+- result: Cause: uncooked material shader map incomplete on first decal draw, renderer falls back to the default decal material (green box). Fix: ARRDecalWarmUp draws each decal material once at level start (2 s, invisible), telegraph and shockwave materials warmed, one barrel telegraph created at start; 21/21 tests; -game frames barrelfx4_01 and _11 show no green; commits 38fcc48e, 57d10dc1
 
 ## Relations
 - [[task-201-decal-first-frame-green]] — parent global task.

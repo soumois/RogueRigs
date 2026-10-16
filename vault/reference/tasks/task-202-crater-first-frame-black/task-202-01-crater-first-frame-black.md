@@ -3,7 +3,7 @@ id: task-202-01-crater-first-frame-black
 description: "No black crater on the frame an explosion opens it: newly exposed floor renders correctly from its first frame, verified in -game frames."
 parent: task-202-crater-first-frame-black
 kind: task
-status: todo
+status: in-progress
 ---
 # Crater first frame black
 
