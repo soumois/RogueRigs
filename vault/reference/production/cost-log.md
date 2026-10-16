@@ -330,6 +330,7 @@ kind: note
 | [[task-195-01-floaty-pop-midair-magnet]] | opus | 1 | 0k | 89k | 1505k | 1k |
 | [[task-192-03-pool-reuse-test-rotation]] | opus | 1 | 0k | 36k | 283k | 0k |
 | [[task-196-01-xp-chip-smaller]] | sonnet | 1 | 0k | 39k | 443k | 0k |
+| [[task-195-02-floaty-pop-values]] | sonnet | 1 | 0k | 40k | 546k | 1k |
 
 ## Totals
 | Scope | Input | Cache write | Cache read | Output |

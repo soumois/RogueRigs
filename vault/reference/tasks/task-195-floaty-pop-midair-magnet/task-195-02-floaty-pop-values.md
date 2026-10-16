@@ -3,7 +3,7 @@ id: task-195-02-floaty-pop-values
 description: "BP: floaty pop values on BP_PickupXP, BP_PickupOre and BP_PickupHeal (not the chip), docs updated."
 parent: task-195-floaty-pop-midair-magnet
 kind: task
-status: in-progress
+status: done
 ---
 # Floaty pop values on Blueprints
 
@@ -15,11 +15,11 @@ status: in-progress
 - done_when: Blueprints compile; values read back on each class default object; BP_PickupXPBig unchanged; docs updated; lint clean; committed by path.
 - editor_state: open
 - token_ceiling: open
-- model: open
-- tokens: open
-- runs: open
+- model: sonnet
+- tokens: input 40, cache write 39680, cache read 546205, output 629
+- runs: 1
 - milestone: M1
-- result: open
+- result: BP_PickupXP, BP_PickupOre, BP_PickupHeal: PopFallTimeRatio 2, bAttractDuringPop true, PopAttractDelay 1.2, PopDuration 1.6, PopArcHeight 250, PopMin/MaxDistance 80/300, read back and saved; BP_PickupXPBig untouched; pickup tests not rerun after this Blueprint change; not seen in PIE; commit 3746cbc2
 
 ## Relations
 - [[task-195-floaty-pop-midair-magnet]] — parent global task.
