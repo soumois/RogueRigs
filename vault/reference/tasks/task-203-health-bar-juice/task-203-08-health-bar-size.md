@@ -3,7 +3,7 @@ id: task-203-08-health-bar-size
 description: "Fix the tiny health bar after task-203-07: HealthBarRoot and its two bars fill 280 x 28 again, as before the reparent."
 parent: task-203-health-bar-juice
 kind: task
-status: in-progress
+status: done
 ---
 # Health bar size back to 280 x 28
 
@@ -16,11 +16,11 @@ status: in-progress
 - done_when: Blueprint compiles with warnings as errors and is saved; slot values read back match the spec; wbp-health-status updated; lint clean; committed by path. The on-screen check is task-203-09.
 - editor_state: open
 - token_ceiling: open
-- model: open
-- tokens: open
-- runs: open
+- model: sonnet
+- tokens: input 42, cache write 39214, cache read 543804, output 863
+- runs: 1
 - milestone: M1
-- result: open
+- result: Cause: the Overlay slots of HealthBar and DamageChunkBar stayed at their default Left / Top alignment, so both bars took their small desired size; set to Fill / Fill. Canvas slot was right (20,232, 280 x 28, anchors 0,0, no auto size). Compiled, saved, read back. Commit f459b620. On-screen check is task-203-09.
 
 ## Relations
 - [[task-203-health-bar-juice]] — parent global task.

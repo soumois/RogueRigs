@@ -3,7 +3,7 @@ id: task-203-09-health-bar-visual-check
 description: "-game captures of the juicy health bar at full health and during a hit, compared with the 280 x 28 bar from before task-203."
 parent: task-203-health-bar-juice
 kind: task
-status: todo
+status: in-progress
 ---
 # Health bar visual check in game
 

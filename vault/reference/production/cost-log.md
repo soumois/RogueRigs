@@ -352,6 +352,7 @@ kind: note
 | [[task-203-05-punch]] | opus | 1 | 0k | 47k | 520k | 7k |
 | [[task-203-06-color-states]] | opus | 1 | 0k | 38k | 239k | 0k |
 | [[task-203-07-wbp-health-status]] | sonnet | 1 | 0k | 64k | 1111k | 1k |
+| [[task-203-08-health-bar-size]] | sonnet | 1 | 0k | 39k | 544k | 1k |
 
 ## Totals
 | Scope | Input | Cache write | Cache read | Output |
