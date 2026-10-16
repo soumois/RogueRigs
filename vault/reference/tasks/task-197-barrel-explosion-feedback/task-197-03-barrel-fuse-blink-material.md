@@ -12,7 +12,7 @@ status: todo
 - depends_on: task-197-01-barrel-fuse-instability
 - inputs: barrel (vault/reference/gdd/terrain/barrel.md), barrel-asset (vault/reference/tech/pipelines/barrel-asset.md), bp-arena-grid (vault/reference/tech/blueprints/world/bp-arena-grid.md), sys-grid-barrels (vault/reference/tech/systems/world/sys-grid/sys-grid-barrels.md), color-code (vault/reference/gdd/art-audio/color-code.md), readability-rules (vault/reference/gdd/art-audio/readability-rules.md), agent-bp (vault/reference/agents/agent-bp.md), bp-mcp-lessons (vault/reference/agents/bp-mcp-lessons.md), unreal-mcp-quirks (vault/reference/tech/pipelines/unreal-mcp-quirks.md)
 - expected_output: material asset changes saved by explicit path; doc node; one commit.
-- done_when: material compiles; custom data index matches `sys-grid-barrels`; in PIE `rr.Cheat.FuseBarrel` via the property route lights a fuse and the custom data value read back rises 0 to 1; look at progress 0 unchanged (parameters read back); doc updated; committed by path.
+- done_when: material compiles; custom data index matches `sys-grid-barrels`; in PIE a fuse lit through the BlueprintCallable `ARRArenaGrid::DestroyCell` on a barrel cell and the custom data value read back rises 0 to 1; look at progress 0 unchanged (parameters read back); doc updated; committed by path.
 - editor_state: open
 - token_ceiling: open
 - model: open
