@@ -3,7 +3,7 @@ id: task-203-01-drain
 description: "A C++ health status panel class drives the health bar: the shown fill glides to the real health instead of jumping."
 parent: task-203-health-bar-juice
 kind: task
-status: in-progress
+status: done
 ---
 # Health bar class and smooth drain
 
@@ -16,11 +16,11 @@ status: in-progress
 - done_when: build exit 0 with the editor closed; RogueRigs.HUD tests pass (only expectations this change breaks updated, no new test); every value of this node is an EditDefaultsOnly UPROPERTY default, none hard-coded; per-frame work runs only while an effect is running (no permanent tick); sys-hud-health-bar doc matches the code; committed by path.
 - editor_state: closed
 - token_ceiling: open
-- model: open
-- tokens: open
-- runs: open
+- model: opus
+- tokens: input 38, cache write 59497, cache read 805335, output 6287
+- runs: 1
 - milestone: M1
-- result: open
+- result: URRHealthStatusWidget (UI/RRHealthStatusWidget.h/.cpp) with BindWidgetOptional HealthBar and HealthText, smooth drain DrainRate 10, snap 0.001, FillColor red; bind in new virtual URRHUDPanelWidget::NativeBindToMiner (the Blueprint BindToMiner override would replace a _Implementation), rebind in NativeConstruct; per-frame update by SetTimerForNextTick while effects run; extension points AdvanceBarEffects, AreBarEffectsSettled, ApplyBarVisuals, GetBaseFillColor; sys-hud-health-bar doc. Build 0, RogueRigs.HUD 13/13. Commit fc36c0b1. Unverified on screen; Blueprint ShowHealth writes stay until task-203-07; timers pause while the game is paused.
 
 ## Relations
 - [[task-203-health-bar-juice]] — parent global task.

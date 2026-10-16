@@ -3,7 +3,7 @@ id: task-203-02-damage-chunk
 description: "On damage, an off-white chunk keeps the lost health visible for a moment, then shrinks to the shown fill."
 parent: task-203-health-bar-juice
 kind: task
-status: todo
+status: in-progress
 ---
 # Damage chunk
 
