@@ -3,7 +3,7 @@ id: task-199-barrel-burst-bigger
 description: "Global task: NS_BarrelExplosion bigger: wider fireball, about twice the sparks, more visible smoke, still within 1.5 s."
 parent: tasks-to-do-index
 kind: task
-status: todo
+status: in-progress
 ---
 # Barrel burst bigger
 
