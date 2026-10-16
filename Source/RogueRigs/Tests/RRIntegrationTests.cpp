@@ -1,4 +1,4 @@
-// Rogue Rigs - integration tests with the final Blueprints (RogueRigs.Integration.*): BP_Chaser reaching and hitting BP_Miner around rocks, the starting rifle killing a chaser, five rifle kills whose XP cubes are collected up to level 2, miner death and game over, a 50-chaser headless timing run, crowd packing with and without robot-robot collision, and the explosion loop (barrel chain from a rifle shot with BP_ExplosionFX, BP_Kamikaze reaching the miner, point-blank barrel, rifle-killed kamikaze after 10 non-critical hits), and the level-up upgrade loop (real game mode pause, BP_RRPlayerController, BP_EnemySpawner, WBP_HUD cards, reroll, damage card, resume).
+// Rogue Rigs - integration tests with the final Blueprints (RogueRigs.Integration.*): BP_Chaser reaching and hitting BP_Miner around rocks, the starting rifle killing a chaser, five rifle kills whose XP cubes are collected up to level 2, miner death and game over, a 50-chaser headless timing run, crowd packing with and without robot-robot collision, and the explosion loop (barrel chain from a rifle shot with BP_ExplosionFX_Barrel, BP_Kamikaze reaching the miner, point-blank barrel, rifle-killed kamikaze after 10 non-critical hits), and the level-up upgrade loop (real game mode pause, BP_RRPlayerController, BP_EnemySpawner, WBP_HUD cards, reroll, damage card, resume).
 
 #include "CoreMinimal.h"
 #include "Misc/AutomationTest.h"
@@ -883,7 +883,12 @@ namespace RRIntegrationExplosionTests
 
 	/** Final Blueprints of the explosion loop. */
 	const TCHAR* const KamikazeClassPath = TEXT("/Game/RogueRigs/Blueprints/Enemies/BP_Kamikaze.BP_Kamikaze_C");
-	const TCHAR* const ExplosionFXClassPath = TEXT("/Game/RogueRigs/Blueprints/FX/BP_ExplosionFX.BP_ExplosionFX_C");
+	/** Barrel explosion visual (task-197-06): BP_ExplosionFX child with the Niagara burst and the shockwave ring. */
+	const TCHAR* const BarrelExplosionFXClassPath = TEXT("/Game/RogueRigs/Blueprints/FX/BP_ExplosionFX_Barrel.BP_ExplosionFX_Barrel_C");
+
+	/** Barrel visual timeline: sphere and ring 0.6 s (grow 0.25, hold 0.1, fade 0.25); the actor lives BurstSeconds 1.5 s for the burst. */
+	constexpr float BarrelFXVisualLifetime = 0.6f;
+	constexpr float BarrelFXLifetime = 1.5f;
 
 	/** arena_m1 barrel pair 200 uu apart, the shot one with two floor cells to its west; the miner shoots from ChainShooterCell (400 uu away: outside both radii). */
 	const FIntPoint ChainShotBarrelCell(24, 49);
@@ -964,6 +969,7 @@ namespace RRIntegrationExplosionTests
 		UClass* Class = nullptr;
 		float Radius = 0.f;
 		float Duration = 0.f;
+		float VisualDuration = 0.f;
 		double SeenTime = 0.0;
 		double GoneTime = -1.0;
 	};
@@ -984,7 +990,7 @@ namespace RRIntegrationExplosionTests
 			ARRExplosionFX* FX = *It;
 			if (IsValid(FX) && !FX->IsActorBeingDestroyed() && !Records.ContainsByPredicate([FX](const FFXRecord& Record) { return Record.FX.Get() == FX; }))
 			{
-				Records.Add({ FX, FX->GetClass(), FX->GetRadius(), FX->GetLifetime(), Now, -1.0 });
+				Records.Add({ FX, FX->GetClass(), FX->GetRadius(), FX->GetLifetime(), FX->GetVisualLifetime(), Now, -1.0 });
 			}
 		}
 	}
@@ -1008,7 +1014,7 @@ bool FRRIntegrationBarrelChainTest::RunTest(const FString& Parameters)
 
 	FTestWorld TestWorld(TEXT("RRIntegrationBarrelChain"));
 	TStrongObjectPtr<URRTestEventRecorder> Recorder(NewObject<URRTestEventRecorder>());
-	UClass* FXClass = LoadTestClass<ARRExplosionFX>(*this, ExplosionFXClassPath);
+	UClass* FXClass = LoadTestClass<ARRExplosionFX>(*this, BarrelExplosionFXClassPath);
 	FLoopSetup Setup;
 	if (!FXClass || !SetUp(*this, TestWorld, ChainShooterCell, /*bArmed*/ true, Setup))
 	{
@@ -1080,7 +1086,8 @@ bool FRRIntegrationBarrelChainTest::RunTest(const FString& Parameters)
 	TestEqual(TEXT("every block in both radii destroyed"), BlocksLeft, 0);
 	TestEqual(TEXT("miner hit by both explosions (1.5 s apart, past the i-frames)"), GetHealth(Miner), StartHealth - 2.f * Stats.Damage);
 
-	// One BP_ExplosionFX per explosion, at the visual radius (collision radius x VisualRadiusScale), gone after its lifetime (grow, hold, fade).
+	// One BP_ExplosionFX_Barrel per explosion, at the visual radius (collision radius x VisualRadiusScale), gone after its lifetime
+	// (sphere and ring: grow, hold, fade = 0.6 s; actor kept for the 1.5 s burst).
 	if (TestEqual(TEXT("one explosion visual per explosion"), FXRecords.Num(), 2))
 	{
 		for (int32 Index = 0; Index < FXRecords.Num(); ++Index)
@@ -1088,13 +1095,15 @@ bool FRRIntegrationBarrelChainTest::RunTest(const FString& Parameters)
 			const FFXRecord& Record = FXRecords[Index];
 			const double Seen = Record.SeenTime - Start;
 			const double Life = Record.GoneTime - Record.SeenTime;
-			AddInfo(FString::Printf(TEXT("FX %d (%s): seen at %.4f s, radius %.0f, destroyed %.4f s later (lifetime %.2f)"),
-				Index, Record.Class ? *Record.Class->GetName() : TEXT("none"), Seen, Record.Radius, Life, Record.Duration));
-			TestTrue(TEXT("FX is BP_ExplosionFX"), Record.Class == FXClass);
+			AddInfo(FString::Printf(TEXT("FX %d (%s): seen at %.4f s, radius %.0f, destroyed %.4f s later (lifetime %.2f, visual %.2f)"),
+				Index, Record.Class ? *Record.Class->GetName() : TEXT("none"), Seen, Record.Radius, Life, Record.Duration, Record.VisualDuration));
+			TestTrue(TEXT("FX is BP_ExplosionFX_Barrel"), Record.Class == FXClass);
+			TestNearlyEqual(TEXT("FX visual lifetime 0.6 s (grow, hold, fade)"), Record.VisualDuration, BarrelFXVisualLifetime, 1e-4f);
+			TestNearlyEqual(TEXT("FX lifetime 1.5 s (burst)"), Record.Duration, BarrelFXLifetime, 1e-4f);
 			TestNearlyEqual(TEXT("FX radius = Barrel radius x VisualRadiusScale"), Record.Radius, Explosions->GetVisualRadius(Stats.Radius));
 			TestNearlyEqual(TEXT("FX spawned with its explosion"), Seen, Times[Index], 1e-4);
 			TestTrue(TEXT("FX destroyed itself"), Record.GoneTime >= 0.0);
-			TestTrue(TEXT("FX lifetime = Duration + hold + fade, within one frame"), Life >= Record.Duration - FrameSeconds - 1e-4 && Life <= Record.Duration + FrameSeconds + 1e-4);
+			TestTrue(TEXT("FX destroyed at its lifetime, within one frame"), Life >= Record.Duration - FrameSeconds - 1e-4 && Life <= Record.Duration + FrameSeconds + 1e-4);
 		}
 	}
 	return true;
