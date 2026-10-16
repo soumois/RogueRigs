@@ -1,9 +1,9 @@
 ---
 id: task-204-health-bar-dark-empty
 description: "Global task: the empty part of the HUD health bar is dark grey #0B0C14 like the reference video, checked with an in-game capture."
-parent: tasks-to-do-index
+parent: tasks-done-index
 kind: task
-status: in-progress
+status: done
 ---
 # Health bar dark empty part
 
@@ -13,15 +13,15 @@ status: in-progress
 - gdd_check: [[color-code]] has no HUD bar entry; the colour is the owner's choice from the video ("comme dans la vidéo"), provisional, owner 2026-10-16. Border unchanged (the video bar has a light grey #97969B border; not requested).
 - confirmed_by_owner: yes (2026-10-16, his request)
 - milestone: M1
-- next_step: task-204-02-empty-bar-capture
-- result: open
+- next_step: none
+- result: Done. -game 1920 x 1080 L_ArenaM1, hit 54: bar 280 x 28 at 20,232; 1.5 s after the hit yellow fill to x 148, chunk settled, empty part measured #05060B (target #0B0C14: the tint multiplies the grey image, half as bright; doubling the tint to linear 0.0068/0.0075/0.0143 would match). Captures t204_02_full_00.png, t204_02_settled_00.png sent to the owner. Commit b7bab3dc.
 
 ## Subtasks
 1. task-204-01-empty-bar-color — bp, DamageChunkBar background tint #0B0C14
 2. task-204-02-empty-bar-capture — cpp, in-game capture after a hit
 
 ## Relations
-- [[tasks-to-do-index]] — parent index.
+- [[tasks-done-index]] — parent index.
 - [[task-203-health-bar-juice]] — the juicy bar this restyles.
 - [[task-204-01-empty-bar-color]] — step 1, bp.
 - [[task-204-02-empty-bar-capture]] — step 2, cpp.
