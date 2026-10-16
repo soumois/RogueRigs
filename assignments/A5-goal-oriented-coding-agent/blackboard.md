@@ -766,3 +766,17 @@ Notes:
 - The green square returns in both runs, on the first frame of each new decal (fuse start, explosion), with a warm shader cache and no shader compile line in the logs: **not** the shader compile. Agent's best candidate (unverified): the renderer draws the engine default decal material (a green concrete texture) while a just-created dynamic material instance is not ready on its first rendered frame (`DecalRenderingShared.cpp` `GetIncompleteMaterialWithFallback`); the green rectangle matches the decal box (700–735 uu). On the explosion frame the newly opened crater is also drawn black for one frame and the sphere is not drawn yet.
 - What the Architect saw (frames `barrelfx2_09` to `_12`): 09 green box and black crater; 10 orange sphere with a clear yellow 60 uu ring inside, many sparks, two fireball glows; 11 sphere gone, the orange-brown ring still visible near full radius, grey smoke haze; 12 ring gone, haze and glows fading. The ring and the bigger burst now read well.
 - Decision: subtask done (report only, `done_when` met). The condition the owner set ("nothing fixed if it is the shader compile") does not hold: the next step is the owner's decision, asked with a default.
+
+#### Owner answer on the green square (verbatim)
+> Oui corriger les points
+
+English translation: "Yes, fix the points."
+
+Decision: both points fixed, the proposal (warm the decal materials at level load, treat the black crater, verify with the same `-game` run) is the plan, confirmed by this answer. Two owner points = two global tasks (split rule), run one after the other (both cpp, one build at a time, editor closed):
+
+| Task | Agent | Goal |
+|---|---|---|
+| `task-201-decal-first-frame-green` | cpp | no default-material (green) frame when a ground telegraph or an explosion shockwave decal appears: materials ready before first use (warm-up at level load, or pooled decal components created early); game rules unchanged; verified with the task-200 `-game` command, frames at fuse start and explosion |
+| `task-202-crater-first-frame-black` | cpp | no black crater on the frame an explosion opens it: find why newly exposed floor renders black for one frame and fix it; game rules unchanged; verified the same way |
+
+No new test, no cheat; frames are not committed.
