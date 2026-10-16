@@ -332,6 +332,7 @@ kind: note
 | [[task-196-01-xp-chip-smaller]] | sonnet | 1 | 0k | 39k | 443k | 0k |
 | [[task-195-02-floaty-pop-values]] | sonnet | 1 | 0k | 40k | 546k | 1k |
 | [[task-195-03-dig-pickup-collect-test]] | opus | 1 | 0k | 36k | 237k | 0k |
+| [[task-197-01-barrel-fuse-instability]] | opus | 1 | 0k | 82k | 1627k | 22k |
 
 ## Totals
 | Scope | Input | Cache write | Cache read | Output |

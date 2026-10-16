@@ -3,7 +3,7 @@ id: task-197-02-explosion-fx-burst-shockwave
 description: "C++: ARRExplosionFX gains an optional Niagara burst and an optional ground shockwave decal, both off when unset, so only a barrel FX class shows them."
 parent: task-197-barrel-explosion-feedback
 kind: task
-status: todo
+status: in-progress
 ---
 # Explosion FX burst and shockwave hooks
 

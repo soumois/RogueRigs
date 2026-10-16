@@ -13,7 +13,7 @@ status: in-progress
 - gdd_check: [[barrel]] (approved, M1), [[explosions]], [[ground-telegraph]], [[readability-rules]], [[enemy-kamikaze]] read 2026-10-16. No conflict; no `open` value needed; owner rule added to [[barrel]] (provisional, 2026-10-16).
 - confirmed_by_owner: yes (2026-10-16: "Pas besoin de l'instruction test en un clic. Mais tu peux au moins vérifier visuellement si les effets se lance bien in game. Tu peux lancer.")
 - milestone: M1
-- next_step: task-197-01-barrel-fuse-instability
+- next_step: task-197-02-explosion-fx-burst-shockwave
 - result: open
 
 ## Subtasks

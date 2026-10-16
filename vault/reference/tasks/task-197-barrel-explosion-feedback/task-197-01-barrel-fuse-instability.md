@@ -3,7 +3,7 @@ id: task-197-01-barrel-fuse-instability
 description: "C++: during the barrel fuse the cell shakes more and more (render only) and its fuse progress feeds a per-instance custom data float."
 parent: task-197-barrel-explosion-feedback
 kind: task
-status: in-progress
+status: done
 ---
 # Barrel fuse instability
 
@@ -15,11 +15,11 @@ status: in-progress
 - done_when: build exit 0; existing tests pass (only expectations broken by this change updated, no new test); the custom data index and the shake values are named in the docs; committed by path.
 - editor_state: closed
 - token_ceiling: open
-- model: open
-- tokens: open
-- runs: open
+- model: opus
+- tokens: input 60, cache write 82425, cache read 1627373, output 21981
+- runs: 1
 - milestone: M1
-- result: open
+- result: Fusing barrel shakes in render only, 2 to 12 cm horizontal and 1 to 5 cm vertical (progress^2, provisional); fuse progress 0..1 in per-instance custom data float 4 (GetBarrelFuseCustomDataIndex); build exit 0; 29/30 tests pass, Ore.HealVein flaky before the change too; commits 297aeafe, e5af6cb0
 
 ## Relations
 - [[task-197-barrel-explosion-feedback]] — parent global task.
