@@ -3,7 +3,7 @@ id: task-203-02-damage-chunk
 description: "On damage, an off-white chunk keeps the lost health visible for a moment, then shrinks to the shown fill."
 parent: task-203-health-bar-juice
 kind: task
-status: in-progress
+status: done
 ---
 # Damage chunk
 
@@ -16,11 +16,11 @@ status: in-progress
 - done_when: build exit 0 with the editor closed; RogueRigs.HUD tests pass (only expectations this change breaks updated, no new test); every value of this node is an EditDefaultsOnly UPROPERTY default, none hard-coded; per-frame work runs only while an effect is running (no permanent tick); sys-hud-health-bar doc matches the code; committed by path.
 - editor_state: closed
 - token_ceiling: open
-- model: open
-- tokens: open
-- runs: open
+- model: opus
+- tokens: input 20, cache write 31207, cache read 252692, output 477
+- runs: 1
 - milestone: M1
-- result: open
+- result: DamageChunkBar (BindWidgetOptional), ChunkDelay 0.4 s restarted per hit, ChunkRate 7, ChunkColor #fff0e0 (sRGB), chunk never below shown, getter GetChunkFraction; settle waits for the hold. Build 0, RogueRigs.HUD 13/13. Commit 2b3e800d. Unverified on screen; HealthBar background must be transparent (task-203-07).
 
 ## Relations
 - [[task-203-health-bar-juice]] — parent global task.

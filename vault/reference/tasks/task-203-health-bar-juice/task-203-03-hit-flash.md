@@ -3,7 +3,7 @@ id: task-203-03-hit-flash
 description: "On damage the health fill flashes towards white and fades back within about 0.1 s."
 parent: task-203-health-bar-juice
 kind: task
-status: todo
+status: in-progress
 ---
 # Hit flash
 

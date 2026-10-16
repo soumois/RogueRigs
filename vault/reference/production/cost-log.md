@@ -346,6 +346,7 @@ kind: note
 | [[task-201-01-decal-first-frame-green]] | opus | 2 | 0k | 183k | 7932k | 51k |
 | [[task-202-01-crater-first-frame-black]] | opus | 1 | 0k | 83k | 1710k | 17k |
 | [[task-203-01-drain]] | opus | 1 | 0k | 59k | 805k | 6k |
+| [[task-203-02-damage-chunk]] | opus | 1 | 0k | 31k | 253k | 0k |
 
 ## Totals
 | Scope | Input | Cache write | Cache read | Output |
