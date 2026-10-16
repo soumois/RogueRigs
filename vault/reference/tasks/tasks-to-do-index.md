@@ -11,3 +11,5 @@ A global task moves to [[tasks-done-index]] when it is done (`vault/scripts/task
 ## Relations
 - [[tasks-index]] — parent index.
 - [[task-188-editor-lock]] — Editor lock shared by sessions: a lock file, a node script to take, release and read it, and the runbook and protocol rules to use it. Status todo.
+- [[task-201-decal-first-frame-green]] — No green default-material frame when a ground telegraph or explosion shockwave decal appears: decal materials ready before first use, verified in -game frames. Status in-progress.
+- [[task-202-crater-first-frame-black]] — No black crater on the frame an explosion opens it: newly exposed floor renders correctly from its first frame, verified in -game frames. Status todo.
