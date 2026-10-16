@@ -1,4 +1,4 @@
-// Rogue Rigs - health status HUD panel (future parent of WBP_HealthStatus): drives the health bar and text from the miner health events, with a smooth drain of the shown fill.
+// Rogue Rigs - health status HUD panel (future parent of WBP_HealthStatus): drives the health bar and text from the miner health events, with a smooth drain of the shown fill and a damage chunk behind it.
 
 #include "UI/RRHealthStatusWidget.h"
 
@@ -52,7 +52,10 @@ void URRHealthStatusWidget::HandleHealthChanged(float Current, float Max)
 
 void URRHealthStatusWidget::HandleDamaged(float Amount, float HealthFraction)
 {
+	// OnHealthChanged runs first, so the chunk still holds the fraction shown before the hit. Each hit restarts its hold.
 	// Hit effects of the later subtasks start here; the drain itself follows HandleHealthChanged.
+	ChunkFraction = FMath::Max(ChunkFraction, ShownFraction);
+	ChunkDelayRemaining = ChunkDelay;
 	StartBarUpdate();
 }
 
@@ -66,6 +69,8 @@ void URRHealthStatusWidget::ShowHealth(float Current, float Max, bool bSnap)
 	if (bSnap)
 	{
 		ShownFraction = TargetFraction;
+		ChunkFraction = ShownFraction;
+		ChunkDelayRemaining = 0.f;
 		ApplyBarVisuals();
 	}
 	else if (!FMath::IsNearlyEqual(ShownFraction, TargetFraction))
@@ -85,6 +90,8 @@ void URRHealthStatusWidget::StartBarUpdate()
 	{
 		// No world to tick in: show the end state at once.
 		ShownFraction = TargetFraction;
+		ChunkFraction = ShownFraction;
+		ChunkDelayRemaining = 0.f;
 		ApplyBarVisuals();
 		return;
 	}
@@ -125,11 +132,26 @@ void URRHealthStatusWidget::AdvanceBarEffects(float DeltaSeconds)
 	{
 		ShownFraction = TargetFraction;
 	}
+
+	// Damage chunk: holds during its delay, then shrinks to the shown fraction; a heal past it pulls it up.
+	if (ChunkDelayRemaining > 0.f)
+	{
+		ChunkDelayRemaining = FMath::Max(0.f, ChunkDelayRemaining - DeltaSeconds);
+	}
+	else
+	{
+		ChunkFraction += (ShownFraction - ChunkFraction) * FMath::Min(1.f, ChunkRate * DeltaSeconds);
+		if (FMath::Abs(ShownFraction - ChunkFraction) < DrainSnapThreshold)
+		{
+			ChunkFraction = ShownFraction;
+		}
+	}
+	ChunkFraction = FMath::Max(ChunkFraction, ShownFraction);
 }
 
 bool URRHealthStatusWidget::AreBarEffectsSettled() const
 {
-	return ShownFraction == TargetFraction;
+	return ShownFraction == TargetFraction && ChunkFraction == ShownFraction && ChunkDelayRemaining <= 0.f;
 }
 
 void URRHealthStatusWidget::ApplyBarVisuals()
@@ -138,5 +160,10 @@ void URRHealthStatusWidget::ApplyBarVisuals()
 	{
 		HealthBar->SetPercent(ShownFraction);
 		HealthBar->SetFillColorAndOpacity(GetBaseFillColor());
+	}
+	if (DamageChunkBar)
+	{
+		DamageChunkBar->SetPercent(ChunkFraction);
+		DamageChunkBar->SetFillColorAndOpacity(ChunkColor);
 	}
 }
