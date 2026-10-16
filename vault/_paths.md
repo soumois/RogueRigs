@@ -240,6 +240,7 @@ sys-ground-telegraph  reference/tech/systems/combat/sys-ground-telegraph.md
 sys-hud  reference/tech/systems/ui/sys-hud.md
 sys-hud-bindings  reference/tech/systems/ui/sys-hud/sys-hud-bindings.md
 sys-hud-events  reference/tech/systems/ui/sys-hud-events.md
+sys-hud-health-bar  reference/tech/systems/ui/sys-hud-health-bar.md
 sys-hud-locator  reference/tech/systems/ui/sys-hud/sys-hud-locator.md
 sys-hud-minimap  reference/tech/systems/ui/sys-hud-minimap.md
 sys-hud-pressure  reference/tech/systems/ui/sys-hud-pressure.md

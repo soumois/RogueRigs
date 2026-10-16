@@ -7,6 +7,7 @@
 #include "Player/RRGameMode.h"
 #include "Player/RRMiner.h"
 #include "UI/RRHUDWidget.h"
+#include "Weapons/RRWeapon.h"
 
 void URRHUDPanelWidget::SetMiner(ARRMiner* Miner)
 {
@@ -17,6 +18,7 @@ void URRHUDPanelWidget::SetMiner(ARRMiner* Miner)
 	}
 	bMinerSet = true;
 	BoundMiner = Miner;
+	NativeBindToMiner(Miner, Previous);
 	BindToMiner(Miner, Previous);
 }
 

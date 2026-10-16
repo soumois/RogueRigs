@@ -97,6 +97,13 @@ protected:
 	/** Native default: counts the call. Overrides call Super. */
 	virtual void BindToMiner_Implementation(ARRMiner* Miner, ARRMiner* PreviousMiner);
 
+	/**
+	 * Native bind step, run by SetMiner just before the BindToMiner hook: a C++ panel binds its own miner events here. Kept apart
+	 * from BindToMiner_Implementation because a Blueprint override of BindToMiner replaces the native implementation (it would run
+	 * only if the graph called its parent). Same arguments as BindToMiner. Default: nothing.
+	 */
+	virtual void NativeBindToMiner(ARRMiner* Miner, ARRMiner* PreviousMiner) {}
+
 	/** Native default: counts the call. Overrides call Super. */
 	virtual void BindToRunFlow_Implementation(URRRunFlowSubsystem* RunFlow, URRRunFlowSubsystem* PreviousRunFlow);
 

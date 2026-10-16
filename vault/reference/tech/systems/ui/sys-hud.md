@@ -32,4 +32,5 @@ kind: doc
 - [[sys-hud-pressure]] — child: damage vignette, horde banner and alert-bar icon events.
 - [[sys-hud-minimap]] — child: minimap texture of seen cells, marker state and UV mapping (task-061-01).
 - [[sys-hud-events]] — child: gameplay events for the HUD panels and the URRHUDPanelWidget base (task-094-02).
+- [[sys-hud-health-bar]] — child: URRHealthStatusWidget, health bar and text with smooth drain (task-203-01). Open to change the health bar.
 - [[perf-trace-real-game]] — measured HUD cost per frame before/after the panel refactor (task-105-01).
