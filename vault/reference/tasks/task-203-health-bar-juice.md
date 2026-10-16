@@ -1,9 +1,9 @@
 ---
 id: task-203-health-bar-juice
 description: "Global task: make the HUD health bar juicy with smooth drain, damage chunk, flash, shake, punch and colour by health."
-parent: tasks-to-do-index
+parent: tasks-done-index
 kind: task
-status: in-progress
+status: done
 ---
 # Juicy health bar
 
@@ -13,8 +13,8 @@ status: in-progress
 - gdd_check: [[color-code]] read 2026-10-16: it does not list the HUD health bar, so the colours of 03, 04 and 06 are new values, written provisional for the owner to confirm; the current bar is red. No game rule changes (display only). Open points asked to the owner (colours and stops of 06, spring of 05, shake decay of 04, chunk delay restart): he answered "ok" (2026-10-16), all defaults accepted as provisional.
 - confirmed_by_owner: yes (2026-10-16: "ok lance toutes les taches")
 - milestone: M1
-- next_step: task-203-07-wbp-health-status
-- result: open
+- next_step: none
+- result: Done. WBP_HealthStatus reparented to URRHealthStatusWidget; HealthBarRoot overlay (20,232, 280 x 28) holds DamageChunkBar (behind) and HealthBar (transparent background); ShowHealth keeps only LowHealthAlpha and ApplyVignette (orphan duplicate chain removed); compiled with warnings as errors, saved; wbp-health-status and sys-hud-health-bar updated. Commit 8547f539. Orchestrator after the editor closed: RogueRigs.HUD 13/13 and RogueRigs.Integration.PressureVignetteOnHit pass. Nothing seen on screen or in PIE.
 
 ## Subtasks
 1. task-203-01-drain — cpp, health bar class and smooth drain
@@ -26,7 +26,7 @@ status: in-progress
 7. task-203-07-wbp-health-status — bp, wbp_healthstatus layout for the juicy bar
 
 ## Relations
-- [[tasks-to-do-index]] — parent index.
+- [[tasks-done-index]] — parent index.
 - [[wbp-health-status]] — the panel this task changes.
 - [[task-203-01-drain]] — step 1, cpp.
 - [[task-203-02-damage-chunk]] — step 2, cpp.

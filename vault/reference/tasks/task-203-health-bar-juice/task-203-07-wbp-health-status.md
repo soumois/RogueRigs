@@ -3,7 +3,7 @@ id: task-203-07-wbp-health-status
 description: "WBP_HealthStatus uses the new C++ class and holds the widgets it drives; its doc node matches."
 parent: task-203-health-bar-juice
 kind: task
-status: in-progress
+status: done
 ---
 # WBP_HealthStatus layout for the juicy bar
 
@@ -16,11 +16,11 @@ status: in-progress
 - done_when: Blueprint compiles with warnings as errors and is saved; tree and graphs read back match the spec; wbp-health-status updated; lint clean; committed by path.
 - editor_state: open
 - token_ceiling: open
-- model: open
-- tokens: open
-- runs: open
+- model: sonnet
+- tokens: input 58, cache write 63698, cache read 1111023, output 934
+- runs: 1
 - milestone: M1
-- result: open
+- result: WBP_HealthStatus reparented to URRHealthStatusWidget; HealthBarRoot overlay (20,232, 280 x 28) holds DamageChunkBar (behind) and HealthBar (transparent background); ShowHealth keeps only LowHealthAlpha and ApplyVignette (orphan duplicate chain removed); compiled with warnings as errors, saved; wbp-health-status and sys-hud-health-bar updated. Commit 8547f539. Orchestrator after the editor closed: RogueRigs.HUD 13/13 and RogueRigs.Integration.PressureVignetteOnHit pass. Nothing seen on screen or in PIE.
 
 ## Relations
 - [[task-203-health-bar-juice]] — parent global task.
