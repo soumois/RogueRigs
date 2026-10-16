@@ -14,7 +14,7 @@ status: done
 - confirmed_by_owner: yes (2026-10-16: "ok lance toutes les taches")
 - milestone: M1
 - next_step: none
-- result: Done. -game 1920 x 1080, L_ArenaM1, hit of 54 (max health 100): full health bar 280 x 28 at 20,232, green #56B35E, text below; 2 frames after the hit: height 35 (punch), fill flashed near-white, off-white chunk; 0.34 s: height 28, yellow fill to 46 percent, chunk held; 0.8 s: chunk shrinking, empty part light grey #BABABA. 0.1 s capture lost (screenshot freeze). Not seen: horizontal shake, red below 20 percent. PNGs Saved/Screenshots/WindowsEditor/t203_09_*. Commit 34e89ebe.
+- result: Done 2026-10-16. URRHealthStatusWidget (C++) drives the bar: smooth drain, off-white damage chunk (hold 0.4 s), white hit flash, shake, 1.3 punch, green-yellow-red gradient; WBP_HealthStatus reparented (01 to 07). Owner saw the bar tiny: Overlay slots were Left/Top, fixed to Fill (08). Seen in -game captures (09): 280 x 28 at 20,232, flash, punch, chunk and yellow colour visible. Not seen: horizontal shake, red below 20 percent. Empty part is light grey (default ProgressBar background), close to the chunk colour: reported to the owner.
 
 ## Subtasks
 1. task-203-01-drain — cpp, health bar class and smooth drain
