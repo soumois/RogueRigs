@@ -335,6 +335,7 @@ kind: note
 | [[task-197-01-barrel-fuse-instability]] | opus | 1 | 0k | 82k | 1627k | 22k |
 | [[task-197-02-explosion-fx-burst-shockwave]] | opus | 1 | 0k | 79k | 1676k | 26k |
 | [[task-197-05-shockwave-decal-material]] | sonnet | 1 | 0k | 42k | 428k | 9k |
+| [[task-197-03-barrel-fuse-blink-material]] | sonnet | 1 | 0k | 55k | 643k | 15k |
 
 ## Totals
 | Scope | Input | Cache write | Cache read | Output |

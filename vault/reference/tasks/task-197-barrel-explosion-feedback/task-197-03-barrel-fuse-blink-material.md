@@ -3,7 +3,7 @@ id: task-197-03-barrel-fuse-blink-material
 description: "BP: the barrel body material blinks orange-white faster and faster from the fuse progress custom data float; barrel-asset doc updated."
 parent: task-197-barrel-explosion-feedback
 kind: task
-status: in-progress
+status: done
 ---
 # Barrel fuse blink material
 
@@ -15,11 +15,11 @@ status: in-progress
 - done_when: material compiles; custom data index matches `sys-grid-barrels`; in PIE a fuse lit through the BlueprintCallable `ARRArenaGrid::DestroyCell` on a barrel cell and the custom data value read back rises 0 to 1; look at progress 0 unchanged (parameters read back); doc updated; committed by path.
 - editor_state: open
 - token_ceiling: open
-- model: open
-- tokens: open
-- runs: open
+- model: sonnet
+- tokens: input 40, cache write 54510, cache read 643051, output 14544
+- runs: 1
 - milestone: M1
-- result: open
+- result: M_BarrelPaint reads custom data 4: orange to white-hot emissive blink 2 to 12 Hz over 1.5 s (provisional), 0 at rest; docs barrel-asset, bp-arena-grid; PIE read-back not possible through MCP, covered by task-197-07; commits 4f491333, 8fbdc832
 
 ## Relations
 - [[task-197-barrel-explosion-feedback]] — parent global task.
