@@ -731,3 +731,7 @@ Notes:
 - Report: assets changed (paths), values read back, MCP tools that failed, docs, commit hash(es), what is unverified. Always end with a report, even partial; commit what works first.
 - Commit message prefix: `task-199-01-barrel-burst-bigger: `.
 ```
+
+#### task-198-02-shockwave-ring-width (bp) — result
+- `M_ExplosionShockwave`: scalar parameter `RingWidth` (default 60 uu, provisional) wired into the progress-ring Custom node (input `W`), ring still inner-aligned; `MI_ExplosionShockwave` inherits 60. Doc `bp-explosion-shockwave` (look, parameters, derivation). One MCP call retried with the documented workaround (Custom node inputs). Commit `1edbf66e`. No second run.
+- Unverified: look on screen (task-200 frames).
