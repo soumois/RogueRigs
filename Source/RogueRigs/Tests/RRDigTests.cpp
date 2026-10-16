@@ -773,10 +773,18 @@ bool FRRDigPickupCollectTest::RunTest(const FString& Parameters)
 	TStrongObjectPtr<URRTestEventRecorder> Recorder(NewObject<URRTestEventRecorder>());
 	Miner->OnPickupCollected.AddDynamic(Recorder.Get(), &URRTestEventRecorder::HandlePickupCollected);
 
-	// The pop ejects a pickup 80-220 uu (task-027-01): spawned under the miner it stays inside the radius, radius + 300 stays outside.
+	// The pop ejects a pickup PopMinDistance-PopMaxDistance uu (read from the class default, task-195-02: up to 300): spawned under
+	// the miner it lands inside the radius; spawned at radius + PopMaxDistance + 100 it lands outside it whatever the pop direction.
+	const FFloatProperty* PopMaxDistanceProperty = FindFProperty<FFloatProperty>(ARRPickup::StaticClass(), TEXT("PopMaxDistance"));
+	if (!TestNotNull(TEXT("PopMaxDistance property"), PopMaxDistanceProperty))
+	{
+		return false;
+	}
+	const float PopMaxDistance = PopMaxDistanceProperty->GetPropertyValue_InContainer(HealClass->GetDefaultObject());
+	AddInfo(FString::Printf(TEXT("PopMaxDistance %.1f uu"), PopMaxDistance));
 	const FVector MinerFloor = Grid->GetCellCenter(RockWestFloorCell.X, RockWestFloorCell.Y);
 	ARRPickup* Near = TestWorld.Spawn<ARRPickup>(HealClass, MinerFloor);
-	ARRPickup* Far = TestWorld.Spawn<ARRPickup>(HealClass, MinerFloor + FVector(0.f, -(Radius + 300.f), 0.f));
+	ARRPickup* Far = TestWorld.Spawn<ARRPickup>(HealClass, MinerFloor + FVector(0.f, -(Radius + PopMaxDistance + 100.f), 0.f));
 	if (!TestNotNull(TEXT("near pickup"), Near) || !TestNotNull(TEXT("far pickup"), Far))
 	{
 		return false;
@@ -793,12 +801,25 @@ bool FRRDigPickupCollectTest::RunTest(const FString& Parameters)
 	}
 	const float PopDuration = PopDurationProperty->GetPropertyValue_InContainer(Near);
 	const float AttractDelay = AttractDelayProperty->GetPropertyValue_InContainer(Near);
-	AddInfo(FString::Printf(TEXT("PopDuration %.2f s, AttractDelay %.2f s"), PopDuration, AttractDelay));
+	const FBoolProperty* AttractDuringPopProperty = FindFProperty<FBoolProperty>(ARRPickup::StaticClass(), TEXT("bAttractDuringPop"));
+	const FFloatProperty* PopAttractDelayProperty = FindFProperty<FFloatProperty>(ARRPickup::StaticClass(), TEXT("PopAttractDelay"));
+	if (!TestNotNull(TEXT("bAttractDuringPop property"), AttractDuringPopProperty) || !TestNotNull(TEXT("PopAttractDelay property"), PopAttractDelayProperty))
+	{
+		return false;
+	}
+	const bool bAttractDuringPop = AttractDuringPopProperty->GetPropertyValue_InContainer(Near);
+	const float PopAttractDelay = PopAttractDelayProperty->GetPropertyValue_InContainer(Near);
+	AddInfo(FString::Printf(TEXT("PopDuration %.2f s, AttractDelay %.2f s, bAttractDuringPop %d, PopAttractDelay %.2f s"), PopDuration, AttractDelay,
+		bAttractDuringPop ? 1 : 0, PopAttractDelay));
 	TestTrue(TEXT("AttractDelay is at least 1 s"), AttractDelay >= 1.f);
-	const float EarliestCollect = PopDuration + AttractDelay;
+	// task-195-01: with bAttractDuringPop the wait ends at PopAttractDelay after spawn or AttractDelay after landing, whichever comes first.
+	const float EarliestCollect = bAttractDuringPop ? FMath::Min(PopAttractDelay, PopDuration + AttractDelay) : PopDuration + AttractDelay;
+	TestTrue(TEXT("earliest collect is at least 1 s"), EarliestCollect >= 1.f);
+	// The whole pop and rest plus 2 s for the magnet flight.
+	const int32 FrameCount = FMath::Max(240, FMath::CeilToInt32((PopDuration + AttractDelay + 2.f) / FrameSeconds));
 
 	int32 CollectFrame = INDEX_NONE;
-	for (int32 Frame = 1; Frame <= 240; ++Frame)
+	for (int32 Frame = 1; Frame <= FrameCount; ++Frame)
 	{
 		TestWorld.Tick();
 		if (CollectFrame == INDEX_NONE && Recorder->GetCollectedPickups().Num() > 0)
@@ -811,7 +832,7 @@ bool FRRDigPickupCollectTest::RunTest(const FString& Parameters)
 		Recorder->GetCollectedPickups().Num()));
 	TestEqual(TEXT("OnPickupCollected fired once"), Recorder->GetCollectedPickups().Num(), 1);
 	// Frame N ends at N * FrameSeconds; allow one frame of accumulation rounding.
-	TestTrue(TEXT("near pickup not collected before pop + AttractDelay"), CollectFrame != INDEX_NONE && CollectFrame * FrameSeconds >= EarliestCollect - FrameSeconds);
+	TestTrue(TEXT("near pickup not collected before the attraction delay"), CollectFrame != INDEX_NONE && CollectFrame * FrameSeconds >= EarliestCollect - FrameSeconds);
 	if (Recorder->GetCollectedPickups().Num() > 0)
 	{
 		TestEqual(TEXT("collected type Heal"), Recorder->GetCollectedPickups()[0], ERRPickupType::Heal);
