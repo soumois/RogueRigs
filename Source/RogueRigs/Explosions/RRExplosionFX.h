@@ -1,4 +1,4 @@
-// Rogue Rigs - grey-box explosion visual: a mesh growing from 0 to its radius while fading (or growing, holding, then fading), then destroyed.
+// Rogue Rigs - grey-box explosion visual: a mesh growing from 0 to its radius while fading (or growing, holding, then fading), with an optional Niagara burst and ground shockwave decal, then destroyed.
 
 #pragma once
 
@@ -6,7 +6,11 @@
 #include "GameFramework/Actor.h"
 #include "RRExplosionFX.generated.h"
 
+class UDecalComponent;
 class UMaterialInstanceDynamic;
+class UMaterialInterface;
+class UNiagaraComponent;
+class UNiagaraSystem;
 class UStaticMeshComponent;
 
 /**
@@ -14,8 +18,12 @@ class UStaticMeshComponent;
  * sets the mesh (a sphere) and a translucent material with the scalar parameter FadeParameterName. Over Duration the mesh
  * scale goes linearly from 0 to Radius / MeshRadius. With HoldSeconds = 0 (default, e.g. BP_HealRing) the parameter goes from
  * 1 to 0 over the same Duration. With HoldSeconds > 0 (explosions, set by the spawner) the mesh grows at full opacity, holds
- * its final state (full size, opacity 1) for HoldSeconds, then fades from 1 to 0 over FadeSeconds at full size. The actor
- * destroys itself at GetLifetime(). No collision, no gameplay effect.
+ * its final state (full size, opacity 1) for HoldSeconds, then fades from 1 to 0 over FadeSeconds at full size.
+ * Optional, both off when unset (BP_ExplosionFX, kamikaze): BurstSystem, a one-shot Niagara system played once at BeginPlay at
+ * the center with the float user parameter BurstRadiusParameterName = Radius; ShockwaveMaterial, a deferred decal projected
+ * straight down (floor and rock tops) whose box covers Radius, with the scalars Radius, Progress (= growth 0..1 over Duration)
+ * and Opacity (= the sphere opacity). The mesh and the decal are hidden at the end of the visual (GetVisualLifetime); the actor
+ * destroys itself at GetLifetime(), which also covers BurstSeconds when a burst is set. No collision, no gameplay effect.
  */
 UCLASS(Abstract, Blueprintable)
 class ROGUERIGS_API ARRExplosionFX : public AActor
@@ -23,6 +31,11 @@ class ROGUERIGS_API ARRExplosionFX : public AActor
 	GENERATED_BODY()
 
 public:
+	/** Shockwave material parameter names (same names as the ground telegraph material, sys-ground-telegraph). */
+	static const FName ShockwaveRadiusParameterName;
+	static const FName ShockwaveProgressParameterName;
+	static const FName ShockwaveOpacityParameterName;
+
 	/** Creates the mesh (root, no collision, no shadow) and enables the tick. */
 	ARRExplosionFX();
 
@@ -45,22 +58,38 @@ public:
 	UFUNCTION(BlueprintPure, Category = "Explosion")
 	float GetHoldSeconds() const { return HoldSeconds; }
 
-	/** Seconds from BeginPlay to the self-destruction: Duration, plus HoldSeconds + FadeSeconds when HoldSeconds > 0. */
+	/** Seconds of the sphere (and shockwave) visual: Duration, plus HoldSeconds + FadeSeconds when HoldSeconds > 0. */
+	UFUNCTION(BlueprintPure, Category = "Explosion")
+	float GetVisualLifetime() const;
+
+	/** Seconds from BeginPlay to the self-destruction: GetVisualLifetime(), or at least BurstSeconds when BurstSystem is set. */
 	UFUNCTION(BlueprintPure, Category = "Explosion")
 	float GetLifetime() const;
 
-	/** Creates the dynamic material on slot 0 and shows the start state (scale 0, opacity 1). */
+	/** The playing burst component (null when BurstSystem is unset). */
+	UNiagaraComponent* GetBurstComponent() const { return BurstComponent; }
+
+	/** The shockwave decal (null when ShockwaveMaterial is unset). */
+	UDecalComponent* GetShockwaveDecal() const { return ShockwaveDecal; }
+
+	/** Creates the dynamic material on slot 0, the optional burst and shockwave, and shows the start state (scale 0, opacity 1). */
 	virtual void BeginPlay() override;
 
-	/** Advances the growth and the fade; destroys the actor at Duration. */
+	/** Advances the growth and the fade; hides the visual at GetVisualLifetime and destroys the actor at GetLifetime. */
 	virtual void Tick(float DeltaSeconds) override;
 
 protected:
-	/** Sets the mesh scale (GrowAlpha 0 = nothing, 1 = full radius) and the fade parameter to Opacity. */
+	/** Sets the mesh scale (GrowAlpha 0 = nothing, 1 = full radius), the fade parameter to Opacity and the shockwave state. */
 	void ApplyState(float GrowAlpha, float Opacity);
 
 	/** Applies the state of the timeline at Age (growth, hold, fade; see the class comment). */
 	void ApplyAge();
+
+	/** Plays BurstSystem once at the actor location with the radius user parameter; no-op when unset. */
+	void StartBurst();
+
+	/** Creates the shockwave decal with a dynamic instance of ShockwaveMaterial; no-op when unset. */
+	void CreateShockwave();
 
 	/** The growing mesh (set the sphere and the material in the Blueprint). */
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Explosion")
@@ -86,13 +115,52 @@ protected:
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Explosion")
 	FName FadeParameterName = TEXT("Opacity");
 
+	/** Optional one-shot (non-looping) Niagara system played once at the center at BeginPlay; unset = no burst. */
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Explosion|Burst")
+	TObjectPtr<UNiagaraSystem> BurstSystem;
+
+	/** Float user parameter of BurstSystem receiving the visual radius in uu (Radius); ignored if the system does not declare it. */
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Explosion|Burst")
+	FName BurstRadiusParameterName = TEXT("User.Radius");
+
+	/** Seconds the actor stays alive for the burst to finish when BurstSystem is set (provisional, owner 2026-10-16). */
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Explosion|Burst", meta = (ClampMin = "0"))
+	float BurstSeconds = 1.5f;
+
+	/** Optional deferred decal material of the ground shockwave ring (scalars Radius, Progress, Opacity); unset = no ring. */
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Explosion|Shockwave")
+	TObjectPtr<UMaterialInterface> ShockwaveMaterial;
+
+	/** Half height of the shockwave projection box in uu (above and below the center): reaches the floor and rock tops. */
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Explosion|Shockwave", meta = (ClampMin = "1"))
+	float ShockwaveHalfDepth = 256.f;
+
+	/** Decal sort order of the shockwave: drawn above the ground telegraphs (sort order 0) it overlaps. */
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Explosion|Shockwave")
+	int32 ShockwaveSortOrder = 1;
+
 	/** Dynamic instance of the mesh's slot 0 material; null when the mesh has no material. */
 	UPROPERTY(Transient)
 	TObjectPtr<UMaterialInstanceDynamic> FadeMaterial;
+
+	/** Burst component created at BeginPlay when BurstSystem is set (destroyed with the actor). */
+	UPROPERTY(Transient)
+	TObjectPtr<UNiagaraComponent> BurstComponent;
+
+	/** Shockwave decal created at BeginPlay when ShockwaveMaterial is set (destroyed with the actor). */
+	UPROPERTY(Transient)
+	TObjectPtr<UDecalComponent> ShockwaveDecal;
+
+	/** Dynamic instance of ShockwaveMaterial on the decal. */
+	UPROPERTY(Transient)
+	TObjectPtr<UMaterialInstanceDynamic> ShockwaveMaterialInstance;
 
 	/** Radius the mesh grows to, set by the spawner. */
 	float Radius = 0.f;
 
 	/** Seconds since BeginPlay. */
 	float Age = 0.f;
+
+	/** True once the mesh and the shockwave are hidden (visual over, burst still playing). */
+	bool bVisualHidden = false;
 };
