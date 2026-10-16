@@ -438,3 +438,23 @@ English translation: "No need for the one-click test instruction. But you can at
 Decision: plan confirmed and launched without asking again; task-197 set `in-progress`. Changes from the shown plan:
 - No cheat: `rr.Cheat.FuseBarrel` removed from subtask 1; no new cheat or debug command is committed. PIE read-backs in subtasks 3 and 6 trigger a fuse through the existing BlueprintCallable `ARRArenaGrid::DestroyCell` (or `ApplyShotDamage`) on a barrel cell.
 - Added subtask 7 (owner request): `task-197-07-barrel-fx-visual-check` (cpp agent, editor closed, `-game` run with `rr.Debug.Shots`): screenshots of one barrel fuse and explosion with the existing debug commands; the Architect looks at the frames and reports what is seen. If no existing route can light a barrel in a `-game` run, the agent stops and reports instead of adding a command.
+
+### 6. Build
+
+#### task-197-01-barrel-fuse-instability (cpp) — prompt sent
+Reading list: the subtask node, then its `inputs` (barrel, ground-telegraph, sys-grid, sys-grid-barrels, sys-grid-api, sys-automation-tests, barrel-asset, bp-arena-grid, agent-cpp, build-toolchain), resolved paths in the node.
+```text
+Subtask task-197-01-barrel-fuse-instability (Rogue Rigs, repo C:\Users\soumo\Documents\Unreal Projects\RogueRigs).
+
+Read your subtask node first: vault/reference/tasks/task-197-barrel-explosion-feedback/task-197-01-barrel-fuse-instability.md. Its `inputs` line lists the resolved paths of every node you need: read those directly, do not descend from root again, never search the vault. Resolve any other [[wikilink]] through vault/_paths.md.
+
+Notes:
+- Owner request (2026-10-16, translated): "While the zone grows, we should see that the barrel is unstable." This subtask is the C++ side only: a render-only shake that grows with fuse progress, and the fuse progress written into a per-instance custom data float of the barrel HISM instance for the material blink built in task-197-03 (bp). Pick the custom data index so it does not collide with the marked float or the ore colour floats, expose it with a getter, and write it in sys-grid-barrels.
+- Keep the game rules unchanged: fuse duration, damage immunity during the fuse, explosion timing and the ground telegraph stay as they are. Only render.
+- Values (amplitudes, any growth curve) are provisional: `EditAnywhere`, written in the doc as "provisional, owner 2026-10-16".
+- Editor state: closed (checked: no UnrealEditor process). Build from the command line per build-toolchain. If an editor appears and Live Coding blocks the build, stop and report; never kill it.
+- Scope: exactly the subtask goal. No cheat, no debug command (owner 2026-10-16), no new automation test; only update expectations of existing tests your change breaks (for example a test that expects the shake to stop at fuse start).
+- Git: commit only your files, by explicit path (`git commit -m "..." -- <paths>`), never `git add -A` or `-- vault`. Commit message `task-197-01-barrel-fuse-instability: <summary>`, ending with the line `Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>`.
+- Do not modify the task node fields status, model, tokens, runs, result.
+- Report: files changed, the custom data index and its getter, the shake properties with their values, build result, test results (names, pass/fail, any expectation changed and why), docs updated, commit hash(es), what is unverified.
+```
