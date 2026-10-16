@@ -800,3 +800,33 @@ Notes:
 - Do not modify the task node fields status, model, tokens, runs, result.
 - Report: the cause with evidence (engine file and line, log or frame), files changed, the fix, build and test results, the frame paths and what each fuse-start and explosion frame shows, commit hash(es), what is unverified.
 ```
+
+#### task-201-01-decal-first-frame-green (cpp) — result
+- Run 1 stopped at the 60-turn limit with uncommitted work; resumed once with `SendMessage` (continue, commit what works first).
+- Cause (engine source + temporary log, removed): in uncooked runs a material starts with an incomplete shader map; the first draw of a decal requests the missing shader, `FMaterial::TryGetShaders` (`MaterialShared.cpp`) fails that frame and `TryGetDeferredDecalMaterial` (`DecalRenderingShared.cpp`) falls back to the engine default decal material (the green concrete box). Hidden decals are not sent to the renderer, so hidden warm-up components would not help; PSO precache ruled out (it gives no proxy, not green).
+- Fix: new `ARRDecalWarmUp` (`Source/RogueRigs/Telegraph/`) draws each decal material once at level start in a tiny box in front of the camera touching no surface, for 2 s, then stops (no steady-state cost; skipped under `-nullrhi`); telegraph components warm their material; the grid creates one hidden barrel telegraph at level start (`CreateBarrelTelegraph`); the explosion subsystem preloads explosion FX classes and warms their shockwave material (`OnWorldBeginPlay`, `PreloadedFXClasses`). Game rules and look unchanged.
+- Build exit 0; 21/21 tests (Explosions, BarrelFuse, GroundTelegraph, 5 integration explosion). Docs `sys-ground-telegraph`, `sys-explosions`, `sys-grid-barrels`. Commits `38fcc48e`, `57d10dc1`.
+- Architect checked `barrelfx4_01` (fuse start: dashed danger circle on its first frame, no green) and `barrelfx4_11` (explosion: ring starting, no green; black crater still there, task-202).
+- Unverified: cooked builds, a cold shader cache longer than 2 s, heavy and console telegraphs on screen.
+
+#### task-202-01-crater-first-frame-black (cpp) — prompt sent
+Reading list: the subtask node and its `inputs`.
+```text
+Subtask task-202-01-crater-first-frame-black (Rogue Rigs, repo C:\Users\soumo\Documents\Unreal Projects\RogueRigs).
+
+Read your subtask node first: vault/reference/tasks/task-202-crater-first-frame-black/task-202-01-crater-first-frame-black.md. Its `inputs` line lists the resolved paths of every node you need: read those directly, do not descend from root again, never search the vault. Resolve any other [[wikilink]] through vault/_paths.md.
+
+Notes:
+- The defect: on the frame an explosion opens a crater, the newly exposed floor area is drawn pure black (frames `Saved/Screenshots/WindowsEditor/barrelfx2_09.png`, `barrelfx3_09.png`, `barrelfx4_11.png`); from the next captured frame the floor is grey again. The blocks in the radius are removed nearest first under a 2 ms per-frame budget (`QueueDestroyCellsInRadius`, sys-grid-barrels); barrels at once. Not known whether the black is missing floor (void seen through), a floor instance added that frame without its render state, a lighting or shadow artefact, or the screenshot hitch. Find the real cause first (frames, code, engine source under the UE_5.8 install), then fix it in our code.
+- Owner (2026-10-16): "fix the points". Constraints: game rules unchanged; the 2 ms per-frame destruction budget and the nearest-first order unchanged; no added cost per frame in steady state.
+- task-201 just added `ARRDecalWarmUp` and touched `RRArenaGrid.*` (barrel telegraph warm-up, `CreateBarrelTelegraph`): keep that work.
+- Verify with the same `-game` command and a new prefix (for example `barrelfx5`): UnrealEditor.exe "<uproject>" /Game/RogueRigs/Maps/L_ArenaM1 -game -windowed -ResX=1280 -ResY=720 -nosplash -log -ExecCmds="rr.Stress.Peace 1, rr.Debug.Delayed 6 ke BP_Miner_C K2_AddActorWorldOffset '(X=1608,Y=469,Z=0)' false () true, rr.Debug.Shots 8 1 1 barrelfx5_pre, rr.Debug.Delayed 9.9 ke BP_ArenaGrid_C ApplyShotDamage '(X=145,Y=124)' 100, rr.Debug.Shots 9.8 18 0.15 barrelfx5, rr.Debug.Delayed 14 quit". Look at the explosion frames yourself (Read the PNGs). Temporary diagnostic logging is fine but must be removed before the commit.
+- Tests: grid, dig, explosion, barrel fuse and integration explosion tests headless; update only expectations your change breaks; no new test. Known unrelated failures: `Ore.HealVein` (flaky), `Enemies.ShotHitsMovingRobotAndDeathShowsParts`, `Integration.JuiceHealRing`.
+- Docs: cause and fix in `sys-grid-barrels` (or `sys-grid` / `sys-grid-api` where it belongs).
+- Editor state: closed. Build from the command line per build-toolchain. If an editor appears and Live Coding blocks the build, stop and report; never kill it.
+- Turn budget: you have 60 turns; batch commands, commit working code early.
+- Scope: exactly this. No cheat, no debug command committed, no new test. Screenshots not committed. Another session works on task-203 (vault only): do not touch its files.
+- Git: commit only your files, by explicit path (`git commit -m "..." -- <paths>`), never `git add -A` or `-- vault`. Messages `task-202-01-crater-first-frame-black: <summary>`, ending with the line `Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>`.
+- Do not modify the task node fields status, model, tokens, runs, result.
+- Report: the cause with evidence, files changed, the fix, build and test results, the explosion frames and what each shows, commit hash(es), what is unverified.
+```
