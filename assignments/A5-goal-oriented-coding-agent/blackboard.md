@@ -558,3 +558,9 @@ Notes:
 ```
 
 Subtasks 03, 04 and 05 delegated in parallel (three different assets on one editor, the bp limit).
+
+#### task-197-05-shockwave-decal-material (bp) — result
+- Assets: `/Game/RogueRigs/FX/M_ExplosionShockwave` (copy of `M_GroundTelegraph`, ring rewritten; Deferred Decal, Translucent, Unlit), `/Game/RogueRigs/FX/MI_ExplosionShockwave` (orange 1, 0.45, 0.05). Parameters `Radius` (700), `Progress` (0), `Opacity` (1); one solid ring 24 uu wide (provisional) just inside radius × progress, invisible at 0; dashes and fill return 0.
+- Doc: new `bp-explosion-shockwave`, `blueprints-fx-index` updated. MCP through JSON-RPC (tools not exposed to the agent); one unreadable property, no failure.
+- Commit `8433d794`. No retry.
+- Unverified: look on screen; the C++ decal driving the parameters in game (task-197-06, task-197-07).
