@@ -3,7 +3,7 @@ id: task-197-03-barrel-fuse-blink-material
 description: "BP: the barrel body material blinks orange-white faster and faster from the fuse progress custom data float; barrel-asset doc updated."
 parent: task-197-barrel-explosion-feedback
 kind: task
-status: todo
+status: in-progress
 ---
 # Barrel fuse blink material
 

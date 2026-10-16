@@ -3,7 +3,7 @@ id: task-197-02-explosion-fx-burst-shockwave
 description: "C++: ARRExplosionFX gains an optional Niagara burst and an optional ground shockwave decal, both off when unset, so only a barrel FX class shows them."
 parent: task-197-barrel-explosion-feedback
 kind: task
-status: in-progress
+status: done
 ---
 # Explosion FX burst and shockwave hooks
 
@@ -15,11 +15,11 @@ status: in-progress
 - done_when: build exit 0; existing tests pass (only broken expectations updated, no new test); with both properties unset an explosion behaves as before; property and parameter names listed in `sys-explosions`; committed by path.
 - editor_state: closed
 - token_ceiling: open
-- model: open
-- tokens: open
-- runs: open
+- model: opus
+- tokens: input 62, cache write 78627, cache read 1675592, output 26215
+- runs: 1
 - milestone: M1
-- result: open
+- result: ARRExplosionFX: optional BurstSystem (User.Radius = visual radius, BurstSeconds 1.5) and ShockwaveMaterial decal (Radius, Progress, Opacity; pitch -90, sort 1); unset = old behaviour; build exit 0; 260/262 tests, 2 failures pre-existing; commits 09946e84, d1ce7a58
 
 ## Relations
 - [[task-197-barrel-explosion-feedback]] — parent global task.

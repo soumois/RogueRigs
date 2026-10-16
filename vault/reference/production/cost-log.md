@@ -333,6 +333,7 @@ kind: note
 | [[task-195-02-floaty-pop-values]] | sonnet | 1 | 0k | 40k | 546k | 1k |
 | [[task-195-03-dig-pickup-collect-test]] | opus | 1 | 0k | 36k | 237k | 0k |
 | [[task-197-01-barrel-fuse-instability]] | opus | 1 | 0k | 82k | 1627k | 22k |
+| [[task-197-02-explosion-fx-burst-shockwave]] | opus | 1 | 0k | 79k | 1676k | 26k |
 
 ## Totals
 | Scope | Input | Cache write | Cache read | Output |
