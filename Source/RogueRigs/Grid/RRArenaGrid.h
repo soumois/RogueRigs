@@ -532,7 +532,7 @@ protected:
 	 */
 	FTransform GetBlockRenderTransform(FIntPoint Cell) const;
 
-	/** Adds an instance for Cell to the rendering component of MapKey in Cell's chunk (and to its collision ISM for a block) and records it in the chunk map. Returns the instance index, or INDEX_NONE. */
+	/** Adds an instance for Cell to the rendering component of MapKey in Cell's chunk (and to its collision ISM for a block) and records it in the chunk map; marks the rendering component's render state dirty so the new instance is drawn on this frame (task-202-01). Returns the instance index, or INDEX_NONE. */
 	int32 AddCellInstance(ERRCellType MapKey, FIntPoint Cell, const FTransform& LocalTransform);
 
 	/** Removes Cell's instance InstanceIndex from the rendering component of MapKey in Cell's chunk (and its collision ISM) and patches both maps for the instance moved into the freed slot. */

@@ -915,6 +915,12 @@ int32 ARRArenaGrid::AddCellInstance(ERRCellType MapKey, FIntPoint Cell, const FT
 	{
 		return INDEX_NONE;
 	}
+	// task-202-01: the HISM scene proxy snapshots its instance count (InstanceCountToRender) when it is created, and AddInstance only
+	// sends the new instance data to the existing proxy, so the proxy keeps drawing the old count until the async cluster tree build
+	// recreates it, one or more frames later: a floor slab added under a broken block was missing on that frame (the void below drawn
+	// black). Recreating the proxy at the end of this frame draws the new instance as an unbuilt one at once, as RemoveInstance already
+	// does. The flag is per component and per frame, so a frame breaking many cells of one chunk recreates its proxy once.
+	Visual->Render->MarkRenderStateDirty();
 	if (Visual->Collision)
 	{
 		Visual->Collision->AddInstance(LocalTransform, /*bWorldSpace*/ false);
