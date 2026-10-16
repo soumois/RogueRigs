@@ -780,3 +780,23 @@ Decision: both points fixed, the proposal (warm the decal materials at level loa
 | `task-202-crater-first-frame-black` | cpp | no black crater on the frame an explosion opens it: find why newly exposed floor renders black for one frame and fix it; game rules unchanged; verified the same way |
 
 No new test, no cheat; frames are not committed.
+
+#### task-201-01-decal-first-frame-green (cpp) — prompt sent
+Reading list: the subtask node and its `inputs`.
+```text
+Subtask task-201-01-decal-first-frame-green (Rogue Rigs, repo C:\Users\soumo\Documents\Unreal Projects\RogueRigs).
+
+Read your subtask node first: vault/reference/tasks/task-201-decal-first-frame-green/task-201-01-decal-first-frame-green.md. Its `inputs` line lists the resolved paths of every node you need: read those directly, do not descend from root again, never search the vault. Resolve any other [[wikilink]] through vault/_paths.md.
+
+Notes:
+- The defect (task-200 report, two `-game` runs, warm shader cache, no shader compile in the logs): on the first rendered frame of each new decal, a large pale green concrete-textured rectangle the size of the decal box is drawn: at the barrel fuse start (ground telegraph, `URRGroundTelegraphComponent`, created on demand by the grid) and at the explosion (shockwave decal created by `ARRExplosionFX::CreateShockwave`). From the next frame the decal renders normally. Frames: `Saved/Screenshots/WindowsEditor/barrelfx2_01.png`, `barrelfx2_09.png` (and `barrelfx3_*`). Previous agent's best candidate (unverified): the renderer's fallback to the engine default decal material while the material (a dynamic instance created that frame) is not ready on its first frame (`Renderer/Private/DecalRenderingShared.cpp` `GetIncompleteMaterialWithFallback`); PSO precache (`r.PSOPrecache.ProxyCreationStrategy`, `DecalComponent.cpp`) was judged less likely. Both components assign the material before `RegisterComponent`.
+- Owner (2026-10-16): "fix the points". Find the real cause first (engine source is available under the UE_5.8 install; read it), then fix it in our code: for example make the decal materials ready before first use (warm-up or precache at level load, components or material instances created early and kept hidden, pooled shockwave decals), whatever the cause calls for. Game rules unchanged; telegraph and shockwave look unchanged once shown; no cost added per frame in steady state.
+- Verify with the task-200 `-game` command and a new prefix (for example `barrelfx4`): UnrealEditor.exe "<uproject>" /Game/RogueRigs/Maps/L_ArenaM1 -game -windowed -ResX=1280 -ResY=720 -nosplash -log -ExecCmds="rr.Stress.Peace 1, rr.Debug.Delayed 6 ke BP_Miner_C K2_AddActorWorldOffset '(X=1608,Y=469,Z=0)' false () true, rr.Debug.Shots 8 1 1 barrelfx4_pre, rr.Debug.Delayed 9.9 ke BP_ArenaGrid_C ApplyShotDamage '(X=145,Y=124)' 100, rr.Debug.Shots 9.8 18 0.15 barrelfx4, rr.Debug.Delayed 14 quit". Look at the fuse-start and explosion frames yourself (Read the PNGs). A black crater on the explosion frame is a separate task (task-202): note it, do not fix it.
+- Tests: run the explosion, barrel fuse, ground telegraph and integration explosion tests headless; update only expectations your change breaks; no new test. Known unrelated failures: `Ore.HealVein` (flaky), `Enemies.ShotHitsMovingRobotAndDeathShowsParts`, `Integration.JuiceHealRing`.
+- Docs: write the cause and the fix in `sys-ground-telegraph` and `sys-explosions` (and `sys-grid-barrels` if the grid changes).
+- Editor state: closed. Build from the command line per build-toolchain. If an editor appears and Live Coding blocks the build, stop and report; never kill it.
+- Scope: exactly this. No cheat, no debug command committed, no new test. Screenshots not committed.
+- Git: commit only your files, by explicit path (`git commit -m "..." -- <paths>`), never `git add -A` or `-- vault`. Messages `task-201-01-decal-first-frame-green: <summary>`, ending with the line `Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>`.
+- Do not modify the task node fields status, model, tokens, runs, result.
+- Report: the cause with evidence (engine file and line, log or frame), files changed, the fix, build and test results, the frame paths and what each fuse-start and explosion frame shows, commit hash(es), what is unverified.
+```
