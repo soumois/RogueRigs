@@ -626,3 +626,27 @@ Notes:
 - Do not modify the task node fields status, model, tokens, runs, result.
 - Report: test change and results, commit hash; the exact command line of the -game run; the frame paths with one line each of what is visible (shake, blink colour, danger circle, burst, ring, sphere) and what is not; the log lines of the fuse and the explosion (FX class spawned); anything that looks wrong (too big, too dark, red, invisible ring, ...).
 ```
+
+#### task-197-07-barrel-fx-visual-check (cpp) — result
+- Step 1 (expectation broken by task-197-06): `Tests/RRIntegrationTests.cpp` barrel chain test now expects `BP_ExplosionFX_Barrel_C`, sphere-and-ring lifetime 0.6 s and actor lifetime 1.5 s; the unused `ExplosionFXClassPath` removed (no kamikaze test checked the FX class); doc `sys-tests-run-integration` updated. Build exit 0; 15/15 pass (Explosions ×8, BarrelFuse ×3, 4 integration explosion tests). Log: `FX 0 (BP_ExplosionFX_Barrel_C): seen at 1.6333 s, radius 735, destroyed 1.5000 s later (lifetime 1.50, visual 0.60)`. Commits `62c44756`, `14e493f3`.
+- Step 2: one `-game` run, `L_ArenaM1`, 1280 × 720; existing routes only: `ke BP_Miner_C K2_AddActorWorldOffset` to stand next to the barrel at cell (145, 124), `ke BP_ArenaGrid_C ApplyShotDamage (X=145,Y=124) 100`, `rr.Debug.Shots 9.8 18 0.15 barrelfx`. Frames in `Saved/Screenshots/WindowsEditor/barrelfx_*.png` (not committed).
+- What the Architect saw in the frames (01, 05, 11, 12, 13 opened):
+  - fuse: the barrel alternates orange and white-cream (blink seen); the dashed danger circle and its growing fill are drawn; the shake cannot be judged from stills.
+  - explosion: frame 12 shows the large orange-yellow sphere with a faint thin arc inside it (probably the ring) and small bright particles; frame 13 shows the fireball glow and orange sparks at the centre, sphere gone; smoke barely visible.
+  - wrong: (a) the first frame of each decal (fuse start 01, explosion 11) shows a large pale green concrete square over the area; most likely the engine's default decal material while the decal shaders compile on first use in this run (the danger circle renders normally from the next frame), not verified by a second run; (b) the shockwave ring is hardly readable: 24 uu wide and it grows in 0.25 s under the translucent sphere, so the sphere hides it; (c) the burst is small next to the 735 uu sphere.
+- Decision: subtask done (its `done_when` is met: frames cover the fuse and the explosion and were looked at). Points (a) to (c) are reported to the owner with proposals; nothing is changed without his answer (owner rule: no unrequested work).
+
+### 7. Rescan
+| Spec / sub-feature | MS | Class | Evidence |
+|---|---|---|---|
+| barrel: particle burst on destruction | M1 | **built** | `Content/RogueRigs/Data/Tables/ExplosionStats.csv` Barrel `FXClass` = `BP_ExplosionFX_Barrel_C`; `Content/RogueRigs/Blueprints/FX/BP_ExplosionFX_Barrel.uasset`; `Content/RogueRigs/FX/NS_BarrelExplosion.uasset`; `Source/RogueRigs/Explosions/RRExplosionFX.h` `BurstSystem`; test log line above; seen in frames 12–13 |
+| barrel (owner rule 2026-10-16): unstable during the fuse | M1 | **built** (blink seen, shake not judged) | `Source/RogueRigs/Grid/RRArenaGrid.h` `BarrelFuseShake*`, `BarrelFuseCustomDataIndex` 4; `Content/RogueRigs/Art/Barrel/M_BarrelPaint.uasset` |
+| barrel (owner rule 2026-10-16): shockwave ring on the ground | M1 | **partial** | `RRExplosionFX.h` `ShockwaveMaterial`; `Content/RogueRigs/FX/M_ExplosionShockwave.uasset`, `MI_ExplosionShockwave.uasset`; drawn but hardly visible under the sphere |
+| kamikaze explosion | M1 | unchanged | `ExplosionStats.csv` Kamikaze `FXClass` = `BP_ExplosionFX_C` |
+
+Final agent commit (the "agent output" the owner's review is compared against): `14e493f3`.
+
+### 8. Close
+- task-197 closed per protocol (`status: done`, `next_step: none`). state.md updated. Editor closed (the run left it closed for the C++ check).
+- Reported to the owner: green decal square on first use (probable shader compile), ring hidden by the sphere, small burst; flaky or failing tests found on the way (`Ore.HealVein`, `Enemies.ShotHitsMovingRobotAndDeathShowsParts`, `Integration.JuiceHealRing`), all pre-existing.
+- Owner review edits go in a separate commit `owner review: ...`.
