@@ -39,7 +39,8 @@ void ARRExplosionFX::BeginPlay()
 	CreateShockwave();
 	StartBurst();
 	Age = 0.f;
-	bVisualHidden = false;
+	bSphereHidden = false;
+	bShockwaveHidden = false;
 	ApplyAge();
 }
 
@@ -96,10 +97,23 @@ float ARRExplosionFX::GetVisualLifetime() const
 	return HoldSeconds > 0.f ? GrowSeconds + HoldSeconds + FMath::Max(FadeSeconds, KINDA_SMALL_NUMBER) : GrowSeconds;
 }
 
+float ARRExplosionFX::GetShockwaveLifetime() const
+{
+	return FMath::Max(ShockwaveGrowSeconds, KINDA_SMALL_NUMBER) + FMath::Max(ShockwaveFadeSeconds, KINDA_SMALL_NUMBER);
+}
+
 float ARRExplosionFX::GetLifetime() const
 {
-	const float VisualLifetime = GetVisualLifetime();
-	return BurstSystem ? FMath::Max(VisualLifetime, BurstSeconds) : VisualLifetime;
+	float Lifetime = GetVisualLifetime();
+	if (ShockwaveMaterial)
+	{
+		Lifetime = FMath::Max(Lifetime, GetShockwaveLifetime());
+	}
+	if (BurstSystem)
+	{
+		Lifetime = FMath::Max(Lifetime, BurstSeconds);
+	}
+	return Lifetime;
 }
 
 void ARRExplosionFX::Tick(float DeltaSeconds)
@@ -113,40 +127,50 @@ void ARRExplosionFX::Tick(float DeltaSeconds)
 		Destroy();
 		return;
 	}
-	if (bVisualHidden)
-	{
-		return;
-	}
 	ApplyAge();
-	if (Age >= GetVisualLifetime())
+	// Each part is hidden once faded; the other parts (ring, sphere, burst) keep playing until the destruction.
+	if (!bSphereHidden && Age >= GetVisualLifetime())
 	{
-		// Visual over, the burst still plays: hide the faded sphere and ring until the destruction.
-		bVisualHidden = true;
+		bSphereHidden = true;
 		Mesh->SetVisibility(false);
-		if (ShockwaveDecal)
-		{
-			ShockwaveDecal->SetVisibility(false);
-		}
+	}
+	if (ShockwaveDecal && !bShockwaveHidden && Age >= GetShockwaveLifetime())
+	{
+		bShockwaveHidden = true;
+		ShockwaveDecal->SetVisibility(false);
 	}
 }
 
 void ARRExplosionFX::ApplyAge()
 {
-	const float GrowSeconds = FMath::Max(Duration, KINDA_SMALL_NUMBER);
-	const float GrowAlpha = FMath::Clamp(Age / GrowSeconds, 0.f, 1.f);
-	if (HoldSeconds <= 0.f)
+	if (!bSphereHidden)
 	{
-		// Legacy: grow and fade together.
-		ApplyState(GrowAlpha, 1.f - GrowAlpha);
-		return;
+		const float GrowSeconds = FMath::Max(Duration, KINDA_SMALL_NUMBER);
+		const float GrowAlpha = FMath::Clamp(Age / GrowSeconds, 0.f, 1.f);
+		if (HoldSeconds <= 0.f)
+		{
+			// Legacy: grow and fade together.
+			ApplySphereState(GrowAlpha, 1.f - GrowAlpha);
+		}
+		else
+		{
+			// Grow at full opacity, hold the final state, then fade at full size.
+			const float FadeAge = Age - GrowSeconds - HoldSeconds;
+			const float FadeAlpha = FMath::Clamp(FadeAge / FMath::Max(FadeSeconds, KINDA_SMALL_NUMBER), 0.f, 1.f);
+			ApplySphereState(GrowAlpha, 1.f - FadeAlpha);
+		}
 	}
-	// Grow at full opacity, hold the final state, then fade at full size.
-	const float FadeAge = Age - GrowSeconds - HoldSeconds;
-	const float FadeAlpha = FMath::Clamp(FadeAge / FMath::Max(FadeSeconds, KINDA_SMALL_NUMBER), 0.f, 1.f);
-	ApplyState(GrowAlpha, 1.f - FadeAlpha);
+	if (!bShockwaveHidden)
+	{
+		// The ring's own timeline: grow at full opacity, then fade at full size.
+		const float RingGrowSeconds = FMath::Max(ShockwaveGrowSeconds, KINDA_SMALL_NUMBER);
+		const float RingProgress = FMath::Clamp(Age / RingGrowSeconds, 0.f, 1.f);
+		const float RingFadeAlpha = FMath::Clamp((Age - RingGrowSeconds) / FMath::Max(ShockwaveFadeSeconds, KINDA_SMALL_NUMBER), 0.f, 1.f);
+		ApplyShockwaveState(RingProgress, 1.f - RingFadeAlpha);
+	}
 }
 
-void ARRExplosionFX::ApplyState(float GrowAlpha, float Opacity)
+void ARRExplosionFX::ApplySphereState(float GrowAlpha, float Opacity)
 {
 	const float Scale = GrowAlpha * Radius / FMath::Max(MeshRadius, KINDA_SMALL_NUMBER);
 	Mesh->SetRelativeScale3D(FVector(Scale));
@@ -154,9 +178,13 @@ void ARRExplosionFX::ApplyState(float GrowAlpha, float Opacity)
 	{
 		FadeMaterial->SetScalarParameterValue(FadeParameterName, Opacity);
 	}
+}
+
+void ARRExplosionFX::ApplyShockwaveState(float Progress, float Opacity)
+{
 	if (ShockwaveMaterialInstance)
 	{
-		ShockwaveMaterialInstance->SetScalarParameterValue(ShockwaveProgressParameterName, GrowAlpha);
+		ShockwaveMaterialInstance->SetScalarParameterValue(ShockwaveProgressParameterName, Progress);
 		ShockwaveMaterialInstance->SetScalarParameterValue(ShockwaveOpacityParameterName, Opacity);
 	}
 }

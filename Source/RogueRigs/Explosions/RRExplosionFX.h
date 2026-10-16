@@ -21,9 +21,11 @@ class UStaticMeshComponent;
  * its final state (full size, opacity 1) for HoldSeconds, then fades from 1 to 0 over FadeSeconds at full size.
  * Optional, both off when unset (BP_ExplosionFX, kamikaze): BurstSystem, a one-shot Niagara system played once at BeginPlay at
  * the center with the float user parameter BurstRadiusParameterName = Radius; ShockwaveMaterial, a deferred decal projected
- * straight down (floor and rock tops) whose box covers Radius, with the scalars Radius, Progress (= growth 0..1 over Duration)
- * and Opacity (= the sphere opacity). The mesh and the decal are hidden at the end of the visual (GetVisualLifetime); the actor
- * destroys itself at GetLifetime(), which also covers BurstSeconds when a burst is set. No collision, no gameplay effect.
+ * straight down (floor and rock tops) whose box covers Radius, with the scalars Radius, Progress and Opacity on the ring's own
+ * timeline: Progress 0 to 1 over ShockwaveGrowSeconds at Opacity 1, then Opacity 1 to 0 over ShockwaveFadeSeconds, so the ring
+ * outlives the sphere. The mesh is hidden at GetVisualLifetime, the decal at GetShockwaveLifetime; the actor destroys itself at
+ * GetLifetime(), which covers the ring when a shockwave is set and BurstSeconds when a burst is set. No collision, no gameplay
+ * effect.
  */
 UCLASS(Abstract, Blueprintable)
 class ROGUERIGS_API ARRExplosionFX : public AActor
@@ -58,11 +60,18 @@ public:
 	UFUNCTION(BlueprintPure, Category = "Explosion")
 	float GetHoldSeconds() const { return HoldSeconds; }
 
-	/** Seconds of the sphere (and shockwave) visual: Duration, plus HoldSeconds + FadeSeconds when HoldSeconds > 0. */
+	/** Seconds of the sphere visual: Duration, plus HoldSeconds + FadeSeconds when HoldSeconds > 0. */
 	UFUNCTION(BlueprintPure, Category = "Explosion")
 	float GetVisualLifetime() const;
 
-	/** Seconds from BeginPlay to the self-destruction: GetVisualLifetime(), or at least BurstSeconds when BurstSystem is set. */
+	/** Seconds of the shockwave ring: ShockwaveGrowSeconds + ShockwaveFadeSeconds (counts only when ShockwaveMaterial is set). */
+	UFUNCTION(BlueprintPure, Category = "Explosion|Shockwave")
+	float GetShockwaveLifetime() const;
+
+	/**
+	 * Seconds from BeginPlay to the self-destruction: the longest of GetVisualLifetime(), GetShockwaveLifetime() when
+	 * ShockwaveMaterial is set, and BurstSeconds when BurstSystem is set.
+	 */
 	UFUNCTION(BlueprintPure, Category = "Explosion")
 	float GetLifetime() const;
 
@@ -79,10 +88,13 @@ public:
 	virtual void Tick(float DeltaSeconds) override;
 
 protected:
-	/** Sets the mesh scale (GrowAlpha 0 = nothing, 1 = full radius), the fade parameter to Opacity and the shockwave state. */
-	void ApplyState(float GrowAlpha, float Opacity);
+	/** Sets the mesh scale (GrowAlpha 0 = nothing, 1 = full radius) and the fade parameter to Opacity. */
+	void ApplySphereState(float GrowAlpha, float Opacity);
 
-	/** Applies the state of the timeline at Age (growth, hold, fade; see the class comment). */
+	/** Sets the shockwave Progress and Opacity scalars; no-op without a shockwave. */
+	void ApplyShockwaveState(float Progress, float Opacity);
+
+	/** Applies the sphere and the shockwave timelines at Age, each until its part is hidden (see the class comment). */
 	void ApplyAge();
 
 	/** Plays BurstSystem once at the actor location with the radius user parameter; no-op when unset. */
@@ -135,6 +147,14 @@ protected:
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Explosion|Shockwave", meta = (ClampMin = "1"))
 	float ShockwaveHalfDepth = 256.f;
 
+	/** Seconds for the ring to grow from the center to Radius (Progress 0 to 1) at opacity 1 (provisional, owner 2026-10-16). */
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Explosion|Shockwave", meta = (ClampMin = "0.01"))
+	float ShockwaveGrowSeconds = 0.6f;
+
+	/** Seconds for the ring to fade (Opacity 1 to 0) at full size after its growth (provisional, owner 2026-10-16). */
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Explosion|Shockwave", meta = (ClampMin = "0.01"))
+	float ShockwaveFadeSeconds = 0.2f;
+
 	/** Decal sort order of the shockwave: drawn above the ground telegraphs (sort order 0) it overlaps. */
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Explosion|Shockwave")
 	int32 ShockwaveSortOrder = 1;
@@ -161,6 +181,9 @@ protected:
 	/** Seconds since BeginPlay. */
 	float Age = 0.f;
 
-	/** True once the mesh and the shockwave are hidden (visual over, burst still playing). */
-	bool bVisualHidden = false;
+	/** True once the faded mesh is hidden (sphere over; the ring or the burst may still play). */
+	bool bSphereHidden = false;
+
+	/** True once the faded shockwave decal is hidden (ring over; the sphere or the burst may still play). */
+	bool bShockwaveHidden = false;
 };

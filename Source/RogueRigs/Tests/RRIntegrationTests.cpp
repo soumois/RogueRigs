@@ -886,7 +886,7 @@ namespace RRIntegrationExplosionTests
 	/** Barrel explosion visual (task-197-06): BP_ExplosionFX child with the Niagara burst and the shockwave ring. */
 	const TCHAR* const BarrelExplosionFXClassPath = TEXT("/Game/RogueRigs/Blueprints/FX/BP_ExplosionFX_Barrel.BP_ExplosionFX_Barrel_C");
 
-	/** Barrel visual timeline: sphere and ring 0.6 s (grow 0.25, hold 0.1, fade 0.25); the actor lives BurstSeconds 1.5 s for the burst. */
+	/** Barrel visual timeline: sphere 0.6 s (grow 0.25, hold 0.1, fade 0.25), ring 0.8 s (grow 0.6, fade 0.2); the actor lives BurstSeconds 1.5 s for the burst. */
 	constexpr float BarrelFXVisualLifetime = 0.6f;
 	constexpr float BarrelFXLifetime = 1.5f;
 
@@ -1087,7 +1087,7 @@ bool FRRIntegrationBarrelChainTest::RunTest(const FString& Parameters)
 	TestEqual(TEXT("miner hit by both explosions (1.5 s apart, past the i-frames)"), GetHealth(Miner), StartHealth - 2.f * Stats.Damage);
 
 	// One BP_ExplosionFX_Barrel per explosion, at the visual radius (collision radius x VisualRadiusScale), gone after its lifetime
-	// (sphere and ring: grow, hold, fade = 0.6 s; actor kept for the 1.5 s burst).
+	// (sphere: grow, hold, fade = 0.6 s; ring 0.8 s; actor kept for the 1.5 s burst).
 	if (TestEqual(TEXT("one explosion visual per explosion"), FXRecords.Num(), 2))
 	{
 		for (int32 Index = 0; Index < FXRecords.Num(); ++Index)
