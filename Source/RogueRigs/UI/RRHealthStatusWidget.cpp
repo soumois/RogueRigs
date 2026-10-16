@@ -1,9 +1,10 @@
-// Rogue Rigs - health status HUD panel (future parent of WBP_HealthStatus): drives the health bar and text from the miner health events, with a smooth drain of the shown fill, a damage chunk behind it and a hit flash of the fill.
+// Rogue Rigs - health status HUD panel (future parent of WBP_HealthStatus): drives the health bar and text from the miner health events, with a smooth drain of the shown fill, a damage chunk behind it, a hit flash of the fill and a hit shake of the bar root.
 
 #include "UI/RRHealthStatusWidget.h"
 
 #include "Components/ProgressBar.h"
 #include "Components/TextBlock.h"
+#include "Components/Widget.h"
 #include "Engine/World.h"
 #include "Player/RRMiner.h"
 
@@ -57,7 +58,9 @@ void URRHealthStatusWidget::HandleDamaged(float Amount, float HealthFraction)
 	ChunkFraction = FMath::Max(ChunkFraction, ShownFraction);
 	ChunkDelayRemaining = ChunkDelay;
 	FlashAlpha = FlashStrength;
-	// Draw the full flash this frame; the fade starts on the next one.
+	ShakeTimeRemaining = ShakeDuration;
+	RollShakeOffset();
+	// Draw the full flash and the first shake offset this frame; the fade starts on the next one.
 	ApplyBarVisuals();
 	StartBarUpdate();
 }
@@ -75,6 +78,8 @@ void URRHealthStatusWidget::ShowHealth(float Current, float Max, bool bSnap)
 		ChunkFraction = ShownFraction;
 		ChunkDelayRemaining = 0.f;
 		FlashAlpha = 0.f;
+		ShakeTimeRemaining = 0.f;
+		ShakeOffset = FVector2D::ZeroVector;
 		ApplyBarVisuals();
 	}
 	else if (!FMath::IsNearlyEqual(ShownFraction, TargetFraction))
@@ -97,6 +102,8 @@ void URRHealthStatusWidget::StartBarUpdate()
 		ChunkFraction = ShownFraction;
 		ChunkDelayRemaining = 0.f;
 		FlashAlpha = 0.f;
+		ShakeTimeRemaining = 0.f;
+		ShakeOffset = FVector2D::ZeroVector;
 		ApplyBarVisuals();
 		return;
 	}
@@ -155,16 +162,41 @@ void URRHealthStatusWidget::AdvanceBarEffects(float DeltaSeconds)
 
 	// Hit flash: linear fade back to the base fill colour.
 	FlashAlpha = FMath::Max(0.f, FlashAlpha - FlashDecay * DeltaSeconds);
+
+	// Hit shake: new random offset each frame, amplitude decaying linearly to 0; zero (identity) at the end.
+	ShakeTimeRemaining = FMath::Max(0.f, ShakeTimeRemaining - DeltaSeconds);
+	RollShakeOffset();
+}
+
+void URRHealthStatusWidget::RollShakeOffset()
+{
+	if (ShakeTimeRemaining <= 0.f || ShakeDuration <= 0.f)
+	{
+		ShakeTimeRemaining = 0.f;
+		ShakeOffset = FVector2D::ZeroVector;
+		return;
+	}
+	const float Amplitude = ShakeAmplitude * (ShakeTimeRemaining / ShakeDuration);
+	ShakeOffset = FVector2D(FMath::FRandRange(-Amplitude, Amplitude), FMath::FRandRange(-Amplitude, Amplitude));
 }
 
 bool URRHealthStatusWidget::AreBarEffectsSettled() const
 {
-	return ShownFraction == TargetFraction && ChunkFraction == ShownFraction && ChunkDelayRemaining <= 0.f && FlashAlpha <= 0.f;
+	return ShownFraction == TargetFraction && ChunkFraction == ShownFraction && ChunkDelayRemaining <= 0.f && FlashAlpha <= 0.f
+		&& ShakeTimeRemaining <= 0.f;
 }
 
 FLinearColor URRHealthStatusWidget::GetCurrentFillColor() const
 {
 	return FMath::Lerp(GetBaseFillColor(), FlashColor, FlashAlpha);
+}
+
+FWidgetTransform URRHealthStatusWidget::GetBarRootTransform() const
+{
+	// Single place that composes the bar root transform: later effects (punch scale) set their component here.
+	FWidgetTransform Transform;
+	Transform.Translation = ShakeOffset;
+	return Transform;
 }
 
 void URRHealthStatusWidget::ApplyBarVisuals()
@@ -178,5 +210,9 @@ void URRHealthStatusWidget::ApplyBarVisuals()
 	{
 		DamageChunkBar->SetPercent(ChunkFraction);
 		DamageChunkBar->SetFillColorAndOpacity(ChunkColor);
+	}
+	if (HealthBarRoot)
+	{
+		HealthBarRoot->SetRenderTransform(GetBarRootTransform());
 	}
 }

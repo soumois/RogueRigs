@@ -1,15 +1,17 @@
-// Rogue Rigs - health status HUD panel (future parent of WBP_HealthStatus): drives the health bar and text from the miner health events, with a smooth drain of the shown fill, a damage chunk behind it and a hit flash of the fill.
+// Rogue Rigs - health status HUD panel (future parent of WBP_HealthStatus): drives the health bar and text from the miner health events, with a smooth drain of the shown fill, a damage chunk behind it, a hit flash of the fill and a hit shake of the bar root.
 
 #pragma once
 
 #include "CoreMinimal.h"
 #include "TimerManager.h"
+#include "Slate/WidgetTransform.h"
 #include "UI/RRHUDPanelWidget.h"
 #include "RRHealthStatusWidget.generated.h"
 
 class ARRMiner;
 class UProgressBar;
 class UTextBlock;
+class UWidget;
 
 /**
  * Health status panel. Binds ARRMiner::OnHealthChanged and OnDamaged natively (NativeBindToMiner, so a Blueprint override of
@@ -19,6 +21,9 @@ class UTextBlock;
  * Damage chunk: DamageChunkBar, drawn behind HealthBar, keeps the lost health visible for ChunkDelay after each hit, then shrinks
  * to the shown fraction; it is never below the shown fraction.
  * Hit flash: on each hit the fill colour jumps to FlashColor and fades back to GetBaseFillColor (Flash decays at FlashDecay per second).
+ * Hit shake: on each hit HealthBarRoot is translated by a random X and Y offset within ShakeAmplitude, re-rolled each frame, for
+ * ShakeDuration; the amplitude decays linearly to 0. Its render transform is composed in one place (GetBarRootTransform) so later
+ * effects (punch scale) combine with the shake; it is identity once settled.
  * Extension point for later bar effects (damage chunk, flash, shake, punch, colour): add state here, start it in the event
  * handlers, advance it in AdvanceBarEffects, report it in AreBarEffectsSettled, draw it in ApplyBarVisuals.
  */
@@ -48,6 +53,14 @@ public:
 	UFUNCTION(BlueprintPure, Category = "HUD|Health")
 	FLinearColor GetCurrentFillColor() const;
 
+	/** Current shake translation of HealthBarRoot, in slate units (zero when no shake runs). */
+	UFUNCTION(BlueprintPure, Category = "HUD|Health")
+	FVector2D GetShakeOffset() const { return ShakeOffset; }
+
+	/** Render transform written on HealthBarRoot: translation = shake offset (identity once every effect settled). */
+	UFUNCTION(BlueprintPure, Category = "HUD|Health")
+	FWidgetTransform GetBarRootTransform() const;
+
 	/** True while the per-frame bar update is armed (tests: no per-frame work once settled). */
 	bool IsBarUpdateRunning() const { return bBarUpdateRunning; }
 
@@ -59,6 +72,10 @@ protected:
 	/** Damage chunk bar (optional), drawn behind HealthBar. Percent = chunk fraction, fill colour = ChunkColor. */
 	UPROPERTY(BlueprintReadOnly, Category = "HUD|Health", meta = (BindWidgetOptional))
 	TObjectPtr<UProgressBar> DamageChunkBar;
+
+	/** Root of the bar (optional; holds DamageChunkBar and HealthBar; added to WBP_HealthStatus by task-203-07). Its render transform is owned by this class (GetBarRootTransform). */
+	UPROPERTY(BlueprintReadOnly, Category = "HUD|Health", meta = (BindWidgetOptional))
+	TObjectPtr<UWidget> HealthBarRoot;
 
 	/** Health text (optional): "round(Current) / round(Max)", updated at once on every change. */
 	UPROPERTY(BlueprintReadOnly, Category = "HUD|Health", meta = (BindWidgetOptional))
@@ -100,6 +117,14 @@ protected:
 	UPROPERTY(EditDefaultsOnly, Category = "HUD|Health", meta = (ClampMin = "0"))
 	float FlashDecay = 9.f;
 
+	/** Maximum shake offset on each axis right after a hit, in slate units (px at DPI scale 1); decays linearly to 0 over ShakeDuration. Provisional, owner 2026-10-16. */
+	UPROPERTY(EditDefaultsOnly, Category = "HUD|Health", meta = (ClampMin = "0"))
+	float ShakeAmplitude = 4.f;
+
+	/** Seconds the bar shakes after a hit; each new hit restarts it (0 = no shake). Provisional, owner 2026-10-16. */
+	UPROPERTY(EditDefaultsOnly, Category = "HUD|Health", meta = (ClampMin = "0"))
+	float ShakeDuration = 0.15f;
+
 	/** Shown fraction of the bar. */
 	float ShownFraction = 0.f;
 
@@ -114,6 +139,12 @@ protected:
 
 	/** Current hit flash strength (0 = no flash). */
 	float FlashAlpha = 0.f;
+
+	/** Seconds of shake left (0 = no shake). */
+	float ShakeTimeRemaining = 0.f;
+
+	/** Current shake translation of HealthBarRoot, re-rolled each frame while the shake runs. */
+	FVector2D ShakeOffset = FVector2D::ZeroVector;
 
 	/** True while the next-tick timer of UpdateBarEffects is armed. */
 	bool bBarUpdateRunning = false;
@@ -134,7 +165,7 @@ protected:
 	UFUNCTION()
 	void HandleHealthChanged(float Current, float Max);
 
-	/** OnDamaged handler: restarts the chunk delay, starts the hit flash; start point of the hit effects of later subtasks (shake, punch); arms the update. */
+	/** OnDamaged handler: restarts the chunk delay, the hit flash and the shake; start point of the hit effects of later subtasks (punch); arms the update. */
 	UFUNCTION()
 	void HandleDamaged(float Amount, float HealthFraction);
 
@@ -150,14 +181,17 @@ protected:
 	/** One frame of the bar effects: advance, draw, re-arm for the next frame unless everything settled. */
 	void UpdateBarEffects();
 
-	/** Advances every bar effect by DeltaSeconds (drain, damage chunk, hit flash; later effects add their step here). */
+	/** Advances every bar effect by DeltaSeconds (drain, damage chunk, hit flash, shake; later effects add their step here). */
 	virtual void AdvanceBarEffects(float DeltaSeconds);
 
 	/** True when no bar effect needs another frame. */
 	virtual bool AreBarEffectsSettled() const;
 
-	/** Draws the current effect state on the widgets (bar and chunk percent, bar fill colour with the flash, chunk colour). */
+	/** Draws the current effect state on the widgets (bar and chunk percent, bar fill colour with the flash, chunk colour, HealthBarRoot render transform). */
 	virtual void ApplyBarVisuals();
+
+	/** Rolls a new shake offset within the amplitude left (ShakeAmplitude * remaining / duration); zero once the shake ended. */
+	void RollShakeOffset();
 
 	/** Base fill colour of the bar (FillColor; the colour-by-health subtask replaces it). */
 	virtual FLinearColor GetBaseFillColor() const { return FillColor; }
