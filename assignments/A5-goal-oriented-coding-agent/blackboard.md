@@ -760,3 +760,9 @@ Notes:
 - Git: commit nothing (screenshots stay local). Do not modify the task node fields status, model, tokens, runs, result.
 - Report: command line(s), frame paths with one line each of what is visible, whether the green square appeared (run 1, run 2), log lines about shader compilation, anything that looks wrong.
 ```
+
+#### task-200-01-decal-green-square-check (cpp) — result
+- Two `-game` runs (prefixes `barrelfx2`, `barrelfx3`), same command as task-197-07; binaries up to date; nothing built or committed.
+- The green square returns in both runs, on the first frame of each new decal (fuse start, explosion), with a warm shader cache and no shader compile line in the logs: **not** the shader compile. Agent's best candidate (unverified): the renderer draws the engine default decal material (a green concrete texture) while a just-created dynamic material instance is not ready on its first rendered frame (`DecalRenderingShared.cpp` `GetIncompleteMaterialWithFallback`); the green rectangle matches the decal box (700–735 uu). On the explosion frame the newly opened crater is also drawn black for one frame and the sphere is not drawn yet.
+- What the Architect saw (frames `barrelfx2_09` to `_12`): 09 green box and black crater; 10 orange sphere with a clear yellow 60 uu ring inside, many sparks, two fireball glows; 11 sphere gone, the orange-brown ring still visible near full radius, grey smoke haze; 12 ring gone, haze and glows fading. The ring and the bigger burst now read well.
+- Decision: subtask done (report only, `done_when` met). The condition the owner set ("nothing fixed if it is the shader compile") does not hold: the next step is the owner's decision, asked with a default.
