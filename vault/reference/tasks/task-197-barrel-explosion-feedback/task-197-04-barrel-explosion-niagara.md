@@ -3,7 +3,7 @@ id: task-197-04-barrel-explosion-niagara
 description: "BP: NS_BarrelExplosion, a one-shot burst (flash, orange fireball, sparks, a little smoke) scaled by the radius user parameter; doc node."
 parent: task-197-barrel-explosion-feedback
 kind: task
-status: todo
+status: in-progress
 ---
 # Barrel explosion Niagara burst
 

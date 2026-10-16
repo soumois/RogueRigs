@@ -3,7 +3,7 @@ id: task-197-05-shockwave-decal-material
 description: "BP: decal material for the orange explosion shockwave ring on the ground, driven by radius, progress and opacity; doc."
 parent: task-197-barrel-explosion-feedback
 kind: task
-status: todo
+status: in-progress
 ---
 # Explosion shockwave ring material
 
