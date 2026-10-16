@@ -428,3 +428,13 @@ Decision: every default accepted.
 - Order: 1 then 2 (editor closed, one build at a time); editor launched; 3, 4, 5 in parallel (three different assets, the limit on one editor); then 6.
 - Not planned (owner rules): no new automation test, no bot run, no screenshot session; kamikaze FX unchanged; spark or smoke jet during the fuse not built.
 - Status: plan shown to the owner, waiting for confirmation (protocol step 4).
+
+#### Owner confirmation (verbatim)
+> Pas besoin de l'instruction test en un clic. Mais tu peux au moins vérifier visuellement si les effets se lance bien in game.
+> Tu peux lancer.
+
+English translation: "No need for the one-click test instruction. But you can at least check visually that the effects start properly in game. You can launch."
+
+Decision: plan confirmed and launched without asking again; task-197 set `in-progress`. Changes from the shown plan:
+- No cheat: `rr.Cheat.FuseBarrel` removed from subtask 1; no new cheat or debug command is committed. PIE read-backs in subtasks 3 and 6 trigger a fuse through the existing BlueprintCallable `ARRArenaGrid::DestroyCell` (or `ApplyShotDamage`) on a barrel cell.
+- Added subtask 7 (owner request): `task-197-07-barrel-fx-visual-check` (cpp agent, editor closed, `-game` run with `rr.Debug.Shots`): screenshots of one barrel fuse and explosion with the existing debug commands; the Architect looks at the frames and reports what is seen. If no existing route can light a barrel in a `-game` run, the agent stops and reports instead of adding a command.
