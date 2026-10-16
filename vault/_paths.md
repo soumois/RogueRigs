@@ -66,6 +66,7 @@ bp-damage-numbers  reference/tech/blueprints/fx/bp-damage-numbers.md
 bp-drone  reference/tech/blueprints/player/bp-drone.md
 bp-enemy-spawner  reference/tech/blueprints/world/bp-enemy-spawner.md
 bp-explosion-fx  reference/tech/blueprints/fx/bp-explosion-fx.md
+bp-explosion-shockwave  reference/tech/blueprints/fx/bp-explosion-shockwave.md
 bp-extraction-shuttle  reference/tech/blueprints/world/bp-extraction-shuttle.md
 bp-heal-ring  reference/tech/blueprints/fx/bp-heal-ring.md
 bp-heavy  reference/tech/blueprints/enemies/bp-heavy.md
