@@ -3,7 +3,7 @@ id: task-197-04-barrel-explosion-niagara
 description: "BP: NS_BarrelExplosion, a one-shot burst (flash, orange fireball, sparks, a little smoke) scaled by the radius user parameter; doc node."
 parent: task-197-barrel-explosion-feedback
 kind: task
-status: in-progress
+status: done
 ---
 # Barrel explosion Niagara burst
 
@@ -15,11 +15,11 @@ status: in-progress
 - done_when: system compiles; user parameter name matches `sys-explosions`; emitters, counts and lifetime read back; doc and index updated; committed by path.
 - editor_state: open
 - token_ceiling: open
-- model: open
-- tokens: open
-- runs: open
+- model: sonnet
+- tokens: input 100, cache write 98982, cache read 3034290, output 34332
+- runs: 1
 - milestone: M1
-- result: open
+- result: NS_BarrelExplosion (User.Radius 735; flash 1, fireball 10, sparks 28, smoke 6; ends about 1.4 s; provisional) and support material M_BarrelExplosionSprite; doc bp-barrel-explosion; commits 50fdc0d8, d7550dce
 
 ## Relations
 - [[task-197-barrel-explosion-feedback]] — parent global task.

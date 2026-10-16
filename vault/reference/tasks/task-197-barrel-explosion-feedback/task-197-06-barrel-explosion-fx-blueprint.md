@@ -3,7 +3,7 @@ id: task-197-06-barrel-explosion-fx-blueprint
 description: "BP: BP_ExplosionFX_Barrel with the burst and shockwave set, ExplosionStats Barrel row pointed to it, PIE read-back; doc."
 parent: task-197-barrel-explosion-feedback
 kind: task
-status: todo
+status: in-progress
 ---
 # Barrel explosion FX Blueprint
 
