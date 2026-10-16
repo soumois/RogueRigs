@@ -205,3 +205,4 @@ Archive: it exceeds the index size limits of [[_authoring]] on purpose (owner, 2
 - [[task-194-debris-pool-counter]] — Find why debris pool plays exceed the cap of 80 (S7: 200 plays, 0 skips) since the GPU emitter, and fix the counter or the recycling. Status done.
 - [[task-195-floaty-pop-midair-magnet]] — Pickup pop: long floaty arc (slower fall than rise) and magnet allowed mid-air after a delay from spawn, for XP nut, ore and heal pickups, not the chip. Status done.
 - [[task-196-xp-chip-smaller]] — Big XP chip 15 percent smaller: BP_PickupXPBig template scale 1.8 to 1.53 and its glow disc radius 80 to 68. Status done.
+- [[task-197-barrel-explosion-feedback]] — Barrel looks unstable during its fuse; its explosion plays a particle burst and an orange shockwave ring on the ground. Status done.

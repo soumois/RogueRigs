@@ -1,9 +1,9 @@
 ---
 id: task-197-barrel-explosion-feedback
 description: "Global task: barrel looks unstable during its fuse, and its explosion plays a particle burst and an orange shockwave ring on the ground."
-parent: tasks-to-do-index
+parent: tasks-done-index
 kind: task
-status: in-progress
+status: done
 ---
 # Barrel explosion feedback
 
@@ -13,8 +13,8 @@ status: in-progress
 - gdd_check: [[barrel]] (approved, M1), [[explosions]], [[ground-telegraph]], [[readability-rules]], [[enemy-kamikaze]] read 2026-10-16. No conflict; no `open` value needed; owner rule added to [[barrel]] (provisional, 2026-10-16).
 - confirmed_by_owner: yes (2026-10-16: "Pas besoin de l'instruction test en un clic. Mais tu peux au moins vérifier visuellement si les effets se lance bien in game. Tu peux lancer.")
 - milestone: M1
-- next_step: task-197-07-barrel-fx-visual-check
-- result: open
+- next_step: none
+- result: Done. Barrel chain test expects BP_ExplosionFX_Barrel (0.6 s visual, 1.5 s actor), 15/15 tests; -game frames: blink and danger circle during the fuse, sphere, burst and faint ring at the explosion; green decal square on first decal frame (probable shader compile), ring hidden by the sphere, burst small; commits 62c44756, 14e493f3
 
 ## Subtasks
 1. task-197-01-barrel-fuse-instability — cpp
@@ -26,7 +26,7 @@ status: in-progress
 7. task-197-07-barrel-fx-visual-check — cpp
 
 ## Relations
-- [[tasks-to-do-index]] — parent index.
+- [[tasks-done-index]] — parent index.
 - [[task-197-01-barrel-fuse-instability]] — step 1, cpp.
 - [[task-197-02-explosion-fx-burst-shockwave]] — step 2, cpp.
 - [[task-197-03-barrel-fuse-blink-material]] — step 3, bp.
