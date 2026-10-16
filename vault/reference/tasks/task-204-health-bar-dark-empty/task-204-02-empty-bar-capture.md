@@ -3,7 +3,7 @@ id: task-204-02-empty-bar-capture
 description: "In-game capture after a hit showing the health bar's dark empty part, measured and sent to the owner."
 parent: task-204-health-bar-dark-empty
 kind: task
-status: todo
+status: in-progress
 ---
 # Empty bar capture in game
 

@@ -354,6 +354,7 @@ kind: note
 | [[task-203-07-wbp-health-status]] | sonnet | 1 | 0k | 64k | 1111k | 1k |
 | [[task-203-08-health-bar-size]] | sonnet | 1 | 0k | 39k | 544k | 1k |
 | [[task-203-09-health-bar-visual-check]] | opus | 1 | 0k | 53k | 395k | 2k |
+| [[task-204-01-empty-bar-color]] | sonnet | 1 | 0k | 40k | 403k | 1k |
 
 ## Totals
 | Scope | Input | Cache write | Cache read | Output |

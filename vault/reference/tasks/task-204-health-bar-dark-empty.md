@@ -13,7 +13,7 @@ status: in-progress
 - gdd_check: [[color-code]] has no HUD bar entry; the colour is the owner's choice from the video ("comme dans la vidéo"), provisional, owner 2026-10-16. Border unchanged (the video bar has a light grey #97969B border; not requested).
 - confirmed_by_owner: yes (2026-10-16, his request)
 - milestone: M1
-- next_step: task-204-01-empty-bar-color
+- next_step: task-204-02-empty-bar-capture
 - result: open
 
 ## Subtasks

@@ -3,7 +3,7 @@ id: task-204-01-empty-bar-color
 description: "Set the empty part of the health bar to dark grey #0B0C14 in WBP_HealthStatus, through DamageChunkBar's background tint."
 parent: task-204-health-bar-dark-empty
 kind: task
-status: in-progress
+status: done
 ---
 # Empty bar colour
 
@@ -16,11 +16,11 @@ status: in-progress
 - done_when: Blueprint compiles with warnings as errors and is saved; tint read back; doc updated; lint clean; committed by path. Screen check is task-204-02.
 - editor_state: open
 - token_ceiling: open
-- model: open
-- tokens: open
-- runs: open
+- model: sonnet
+- tokens: input 32, cache write 39794, cache read 403076, output 657
+- runs: 1
 - milestone: M1
-- result: open
+- result: DamageChunkBar background tint white -> linear (0.0033, 0.0037, 0.0070, 1) = #0B0C14 sRGB; image ProgressBar_Background (Box 0.4167) unchanged; compiled, saved, read back. Risk: tint multiplies the grey image (~0.49 linear), so the screen may be darker than #0B0C14; checked in task-204-02. Commit 84c6d4e2.
 
 ## Relations
 - [[task-204-health-bar-dark-empty]] — parent global task.
