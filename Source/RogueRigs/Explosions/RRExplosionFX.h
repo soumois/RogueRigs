@@ -78,6 +78,9 @@ public:
 	/** The playing burst component (null when BurstSystem is unset). */
 	UNiagaraComponent* GetBurstComponent() const { return BurstComponent; }
 
+	/** The shockwave ring material of this class (null = no ring); read on the class default to warm it up at level start. */
+	UMaterialInterface* GetShockwaveMaterial() const { return ShockwaveMaterial; }
+
 	/** The shockwave decal (null when ShockwaveMaterial is unset). */
 	UDecalComponent* GetShockwaveDecal() const { return ShockwaveDecal; }
 

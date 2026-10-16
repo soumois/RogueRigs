@@ -10,6 +10,7 @@
 #include "Player/RRMiner.h"
 #include "Pool/RRActorPoolSubsystem.h"
 #include "RogueRigs.h"
+#include "Telegraph/RRDecalWarmUp.h"
 
 const FName URRGroundTelegraphComponent::RadiusParameterName(TEXT("Radius"));
 const FName URRGroundTelegraphComponent::ProgressParameterName(TEXT("Progress"));
@@ -50,7 +51,10 @@ void URRGroundTelegraphComponent::BeginPlay()
 	{
 		Material = Cast<UMaterialInstanceDynamic>(Material)->Parent;
 	}
-	SetTelegraphMaterial(Material ? Material : ResolveDefaultMaterial());
+	UMaterialInterface* const TelegraphMaterial = Material ? Material : ResolveDefaultMaterial();
+	SetTelegraphMaterial(TelegraphMaterial);
+	// Draw the material once out of sight (once per world): its first shown frame is not the engine default decal (task-201-01).
+	ARRDecalWarmUp::WarmUp(GetWorld(), TelegraphMaterial);
 }
 
 UMaterialInterface* URRGroundTelegraphComponent::ResolveDefaultMaterial() const

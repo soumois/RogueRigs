@@ -106,7 +106,7 @@ public:
 	/** Turns bReceivesDecals off on every primitive of Actor, so ground decals never tint it (miner, robots, carried weapons). */
 	static void DisableDecalsOn(const AActor* Actor);
 
-	/** Resolves the material (DecalMaterial or DefaultMaterialPath) and creates the dynamic instance. */
+	/** Resolves the material (DecalMaterial or DefaultMaterialPath), creates the dynamic instance and warms the material up (ARRDecalWarmUp). */
 	virtual void BeginPlay() override;
 	/** Runs only while shown: hides as soon as IsOwnerGone. */
 	virtual void TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction) override;

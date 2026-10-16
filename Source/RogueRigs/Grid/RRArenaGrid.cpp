@@ -19,6 +19,7 @@
 #include "Grid/RRBarrelSource.h"
 #include "Grid/RROreTypeRow.h"
 #include "Materials/MaterialInterface.h"
+#include "Misc/App.h"
 #include "Misc/Crc.h"
 #include "Misc/FileHelper.h"
 #include "Misc/Paths.h"
@@ -117,6 +118,13 @@ void ARRArenaGrid::BeginPlay()
 	RebuildFromLayout();
 
 	Super::BeginPlay();
+
+	// One barrel telegraph created at level start, hidden (task-201-01): its BeginPlay loads the telegraph material and draws
+	// it once out of sight (ARRDecalWarmUp), so the first fuse is not drawn with the engine default decal. Rendering runs only.
+	if (BarrelTelegraphs.IsEmpty() && FApp::CanEverRender() && GetWorld() && GetWorld()->IsGameWorld())
+	{
+		FreeBarrelTelegraphs.Add(CreateBarrelTelegraph());
+	}
 }
 
 void ARRArenaGrid::RebuildFromLayout()
@@ -1441,6 +1449,15 @@ float ARRArenaGrid::GetBarrelFuseProgress(FIntPoint Cell) const
 	return FMath::Clamp(static_cast<float>(Elapsed / BarrelFuseSeconds), 0.f, 1.f);
 }
 
+URRGroundTelegraphComponent* ARRArenaGrid::CreateBarrelTelegraph()
+{
+	URRGroundTelegraphComponent* Telegraph = NewObject<URRGroundTelegraphComponent>(this, NAME_None, RF_Transient);
+	Telegraph->SetupAttachment(GetRootComponent());
+	Telegraph->RegisterComponent();
+	BarrelTelegraphs.Add(Telegraph);
+	return Telegraph;
+}
+
 URRGroundTelegraphComponent* ARRArenaGrid::GetBarrelTelegraph(FIntPoint Cell) const
 {
 	const FBarrelFuse* Fuse = BarrelFuses.Find(Cell);
@@ -1468,10 +1485,7 @@ void ARRArenaGrid::StartBarrelFuse(FIntPoint Cell)
 	}
 	if (!Telegraph)
 	{
-		Telegraph = NewObject<URRGroundTelegraphComponent>(this, NAME_None, RF_Transient);
-		Telegraph->SetupAttachment(GetRootComponent());
-		Telegraph->RegisterComponent();
-		BarrelTelegraphs.Add(Telegraph);
+		Telegraph = CreateBarrelTelegraph();
 	}
 	Fuse.Telegraph = Telegraph;
 	// Cell centre on the floor top (the decal projects ProjectionHalfDepth above and below).

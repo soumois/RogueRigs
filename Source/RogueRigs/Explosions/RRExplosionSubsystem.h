@@ -48,6 +48,12 @@ public:
 	virtual TStatId GetStatId() const override;
 
 	/**
+	 * Rendering game worlds only: loads the FX class of every ExplosionStats.csv row (kept in PreloadedFXClasses) and warms its
+	 * shockwave material up (ARRDecalWarmUp), so the first explosion does not draw the engine default decal (task-201-01).
+	 */
+	virtual void OnWorldBeginPlay(UWorld& InWorld) override;
+
+	/**
 	 * Queues an explosion of row RowName (ExplosionStats.csv) at Center. Instigator gets the kill credit (may be null);
 	 * SourceObject is what explodes (barrel cell owner, kamikaze; may be null = never deduplicated). Returns false, without
 	 * queuing, when the row is missing or SourceObject has already been queued or exploded.
@@ -165,6 +171,10 @@ protected:
 
 	/** Every source object ever queued in this world. */
 	TSet<FObjectKey> SpentSources;
+
+	/** FX classes loaded at OnWorldBeginPlay, referenced for the world's life (their shockwave materials stay loaded). */
+	UPROPERTY(Transient)
+	TArray<TObjectPtr<UClass>> PreloadedFXClasses;
 
 	/** FX soft paths already reported as unusable (logged once). */
 	TSet<FSoftObjectPath> UnusableFXPaths;

@@ -14,10 +14,12 @@
 #include "GAS/RRGameplayTags.h"
 #include "GAS/RRHealthAttributeSet.h"
 #include "Grid/RRArenaGrid.h"
+#include "Misc/App.h"
 #include "Misc/PackageName.h"
 #include "Player/RRMiner.h"
 #include "Pool/RRActorPoolSubsystem.h"
 #include "RogueRigs.h"
+#include "Telegraph/RRDecalWarmUp.h"
 #include "World/RRWorld.h"
 
 #include UE_INLINE_GENERATED_CPP_BY_NAME(RRExplosionSubsystem)
@@ -48,6 +50,31 @@ void URRExplosionSubsystem::Tick(float DeltaTime)
 TStatId URRExplosionSubsystem::GetStatId() const
 {
 	RETURN_QUICK_DECLARE_CYCLE_STAT(URRExplosionSubsystem, STATGROUP_Tickables);
+}
+
+void URRExplosionSubsystem::OnWorldBeginPlay(UWorld& InWorld)
+{
+	Super::OnWorldBeginPlay(InWorld);
+
+	if (!InWorld.IsGameWorld() || !FApp::CanEverRender())
+	{
+		return;
+	}
+	const UDataTable* Table = FRRBaseStatsLoader::GetCachedTable(ExplosionStatsPath, FRRExplosionStatsRow::StaticStruct());
+	if (!Table)
+	{
+		return;
+	}
+	Table->ForeachRow<FRRExplosionStatsRow>(TEXT("URRExplosionSubsystem::OnWorldBeginPlay"), [this, &InWorld](const FName& RowName, const FRRExplosionStatsRow& Row)
+	{
+		UClass* FXClass = ResolveFXClass(Row.FXClass);
+		if (!FXClass)
+		{
+			return;
+		}
+		PreloadedFXClasses.AddUnique(FXClass);
+		ARRDecalWarmUp::WarmUp(&InWorld, FXClass->GetDefaultObject<ARRExplosionFX>()->GetShockwaveMaterial());
+	});
 }
 
 bool URRExplosionSubsystem::QueueExplosion(FVector Center, FName RowName, AActor* Instigator, UObject* SourceObject)

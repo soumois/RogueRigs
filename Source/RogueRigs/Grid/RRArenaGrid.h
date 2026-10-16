@@ -413,7 +413,7 @@ public:
 	FRROnCellDestroyedSignature OnCellDestroyed;
 
 protected:
-	/** Rebuilds the grid from the layout so play starts from a fresh, fully indexed state (placed actors do not rerun construction in PIE or cooked builds). */
+	/** Rebuilds the grid from the layout so play starts from a fresh, fully indexed state (placed actors do not rerun construction in PIE or cooked builds); in a rendering game world, creates one hidden barrel telegraph so its material is warmed up before the first fuse. */
 	virtual void BeginPlay() override;
 
 	/** Drops the queued explosion blocks (level end, grid destroyed): nothing is destroyed after the grid leaves play. */
@@ -578,6 +578,9 @@ protected:
 
 	/** Ends the fuse of Cell (if any): stops its shake, writes fuse progress 0, hides its telegraph and returns it to the pool. */
 	void EndBarrelFuse(FIntPoint Cell);
+
+	/** Creates a hidden barrel telegraph registered on this actor and adds it to BarrelTelegraphs (the caller puts it in use or in FreeBarrelTelegraphs). */
+	URRGroundTelegraphComponent* CreateBarrelTelegraph();
 
 	/** Ends every fuse (rebuild). */
 	void ClearBarrelFuses();
@@ -945,7 +948,7 @@ protected:
 	/** Fusing barrels by cell (task-114-01): lit at 0 health, removed when the cell is destroyed or on rebuild. */
 	TMap<FIntPoint, FBarrelFuse> BarrelFuses;
 
-	/** Every ground telegraph created for barrel fuses (created on demand, registered on this actor, reused). */
+	/** Every ground telegraph created for barrel fuses (one at BeginPlay in a rendering game world, then on demand; registered on this actor, reused). */
 	UPROPERTY(Transient)
 	TArray<TObjectPtr<URRGroundTelegraphComponent>> BarrelTelegraphs;
 
