@@ -3,7 +3,7 @@ id: task-198-02-shockwave-ring-width
 description: "BP: the shockwave ring width becomes a material scalar parameter RingWidth, default 60 uu; doc updated."
 parent: task-198-shockwave-ring-readable
 kind: task
-status: in-progress
+status: done
 ---
 # Shockwave ring width
 
@@ -15,11 +15,11 @@ status: in-progress
 - done_when: material compiles; `RingWidth` read back 60 on the material and the instance; doc updated; committed by path.
 - editor_state: open
 - token_ceiling: open
-- model: open
-- tokens: open
-- runs: open
+- model: sonnet
+- tokens: input 40, cache write 41654, cache read 537504, output 9564
+- runs: 1
 - milestone: M1
-- result: open
+- result: M_ExplosionShockwave RingWidth scalar parameter, default 60 uu, inner-aligned; MI inherits; doc updated; commit 1edbf66e
 
 ## Relations
 - [[task-198-shockwave-ring-readable]] — parent global task.

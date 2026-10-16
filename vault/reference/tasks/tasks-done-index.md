@@ -206,3 +206,4 @@ Archive: it exceeds the index size limits of [[_authoring]] on purpose (owner, 2
 - [[task-195-floaty-pop-midair-magnet]] — Pickup pop: long floaty arc (slower fall than rise) and magnet allowed mid-air after a delay from spawn, for XP nut, ore and heal pickups, not the chip. Status done.
 - [[task-196-xp-chip-smaller]] — Big XP chip 15 percent smaller: BP_PickupXPBig template scale 1.8 to 1.53 and its glow disc radius 80 to 68. Status done.
 - [[task-197-barrel-explosion-feedback]] — Barrel looks unstable during its fuse; its explosion plays a particle burst and an orange shockwave ring on the ground. Status done.
+- [[task-198-shockwave-ring-readable]] — Explosion shockwave ring readable: grows over about 0.6 s, independent of the sphere, then fades; 60 uu wide. Status done.

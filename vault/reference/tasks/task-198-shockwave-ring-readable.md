@@ -1,9 +1,9 @@
 ---
 id: task-198-shockwave-ring-readable
 description: "Global task: Explosion shockwave ring readable: grows over about 0.6 s, independent of the sphere, then fades; 60 uu wide."
-parent: tasks-to-do-index
+parent: tasks-done-index
 kind: task
-status: in-progress
+status: done
 ---
 # Shockwave ring readable
 
@@ -13,15 +13,15 @@ status: in-progress
 - gdd_check: [[barrel]] owner rule 2026-10-16 (ring and burst provisional), [[explosions]] read 2026-10-16; no conflict, no `open` value.
 - confirmed_by_owner: yes (2026-10-16: "Ok" to the proposals)
 - milestone: M1
-- next_step: task-198-02-shockwave-ring-width
-- result: open
+- next_step: none
+- result: Done. M_ExplosionShockwave RingWidth scalar parameter, default 60 uu, inner-aligned; MI inherits; doc updated; commit 1edbf66e
 
 ## Subtasks
 1. task-198-01-shockwave-ring-timing — cpp
 2. task-198-02-shockwave-ring-width — bp
 
 ## Relations
-- [[tasks-to-do-index]] — parent index.
+- [[tasks-done-index]] — parent index.
 - [[task-198-01-shockwave-ring-timing]] — step 1, cpp.
 - [[task-198-02-shockwave-ring-width]] — step 2, bp.
 - [[barrel]] — the owner rule it refines.
