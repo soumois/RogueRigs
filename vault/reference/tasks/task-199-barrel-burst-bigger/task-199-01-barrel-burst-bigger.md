@@ -3,7 +3,7 @@ id: task-199-01-barrel-burst-bigger
 description: "NS_BarrelExplosion bigger: wider fireball, about twice the sparks, more visible smoke, still within 1.5 s."
 parent: task-199-barrel-burst-bigger
 kind: task
-status: in-progress
+status: done
 ---
 # Barrel burst bigger
 
@@ -15,11 +15,11 @@ status: in-progress
 - done_when: system compiles; new counts, sizes and colours read back and written in the doc (provisional, owner 2026-10-16); last particle ends before 1.5 s; committed by path.
 - editor_state: open
 - token_ceiling: open
-- model: open
-- tokens: open
-- runs: open
+- model: sonnet
+- tokens: input 40, cache write 55056, cache read 651210, output 11058
+- runs: 1
 - milestone: M1
-- result: open
+- result: Done. NS_BarrelExplosion bigger: fireball 16 wider, sparks 56 brighter, smoke 12 lighter and more opaque, 95 particles, ends about 1.4 s (provisional); doc bp-barrel-explosion; commit f995b7b2
 
 ## Relations
 - [[task-199-barrel-burst-bigger]] — parent global task.

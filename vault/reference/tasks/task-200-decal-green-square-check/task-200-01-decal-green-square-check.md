@@ -3,7 +3,7 @@ id: task-200-01-decal-green-square-check
 description: "Second -game run of the barrel fuse and explosion: does the green square return on the first decal frame once shaders are cached? Report only."
 parent: task-200-decal-green-square-check
 kind: task
-status: todo
+status: in-progress
 ---
 # Decal green square check
 

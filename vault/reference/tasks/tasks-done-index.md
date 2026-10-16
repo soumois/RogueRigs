@@ -207,3 +207,4 @@ Archive: it exceeds the index size limits of [[_authoring]] on purpose (owner, 2
 - [[task-196-xp-chip-smaller]] — Big XP chip 15 percent smaller: BP_PickupXPBig template scale 1.8 to 1.53 and its glow disc radius 80 to 68. Status done.
 - [[task-197-barrel-explosion-feedback]] — Barrel looks unstable during its fuse; its explosion plays a particle burst and an orange shockwave ring on the ground. Status done.
 - [[task-198-shockwave-ring-readable]] — Explosion shockwave ring readable: grows over about 0.6 s, independent of the sphere, then fades; 60 uu wide. Status done.
+- [[task-199-barrel-burst-bigger]] — NS_BarrelExplosion bigger: wider fireball, about twice the sparks, more visible smoke, still within 1.5 s. Status done.

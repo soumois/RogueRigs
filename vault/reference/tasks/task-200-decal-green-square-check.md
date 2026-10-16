@@ -3,7 +3,7 @@ id: task-200-decal-green-square-check
 description: "Global task: second -game run of a barrel fuse and explosion to see whether the green decal square returns once shaders are cached."
 parent: tasks-to-do-index
 kind: task
-status: todo
+status: in-progress
 ---
 # Decal green square check
 

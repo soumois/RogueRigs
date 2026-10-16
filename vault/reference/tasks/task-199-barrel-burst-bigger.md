@@ -1,9 +1,9 @@
 ---
 id: task-199-barrel-burst-bigger
 description: "Global task: NS_BarrelExplosion bigger: wider fireball, about twice the sparks, more visible smoke, still within 1.5 s."
-parent: tasks-to-do-index
+parent: tasks-done-index
 kind: task
-status: in-progress
+status: done
 ---
 # Barrel burst bigger
 
@@ -13,13 +13,13 @@ status: in-progress
 - gdd_check: [[barrel]] owner rule 2026-10-16 (ring and burst provisional), [[explosions]] read 2026-10-16; no conflict, no `open` value.
 - confirmed_by_owner: yes (2026-10-16: "Ok" to the proposals)
 - milestone: M1
-- next_step: task-199-01-barrel-burst-bigger
-- result: open
+- next_step: none
+- result: Done. Done. NS_BarrelExplosion bigger: fireball 16 wider, sparks 56 brighter, smoke 12 lighter and more opaque, 95 particles, ends about 1.4 s (provisional); doc bp-barrel-explosion; commit f995b7b2
 
 ## Subtasks
 1. task-199-01-barrel-burst-bigger — bp
 
 ## Relations
-- [[tasks-to-do-index]] — parent index.
+- [[tasks-done-index]] — parent index.
 - [[barrel]] — the owner rule it refines.
 - [[task-199-01-barrel-burst-bigger]] — step 1, bp.
