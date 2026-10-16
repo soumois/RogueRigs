@@ -1,4 +1,4 @@
-// Rogue Rigs - health status HUD panel (future parent of WBP_HealthStatus): drives the health bar and text from the miner health events, with a smooth drain of the shown fill, a damage chunk behind it, a hit flash of the fill, a hit shake and a hit punch of the bar root.
+// Rogue Rigs - health status HUD panel (future parent of WBP_HealthStatus): drives the health bar and text from the miner health events, with a smooth drain of the shown fill, a damage chunk behind it, a hit flash of the fill, a hit shake and a hit punch of the bar root, and a fill colour that follows the health left.
 
 #include "UI/RRHealthStatusWidget.h"
 
@@ -88,9 +88,10 @@ void URRHealthStatusWidget::ShowHealth(float Current, float Max, bool bSnap)
 	if (bSnap)
 	{
 		SnapBarEffects();
-		ApplyBarVisuals();
 	}
-	else if (!FMath::IsNearlyEqual(ShownFraction, TargetFraction))
+	// The fill colour follows the real fraction: draw it at once, the shown fraction glides in the per-frame update.
+	ApplyBarVisuals();
+	if (!bSnap && !FMath::IsNearlyEqual(ShownFraction, TargetFraction))
 	{
 		StartBarUpdate();
 	}
@@ -226,6 +227,44 @@ bool URRHealthStatusWidget::AreBarEffectsSettled() const
 {
 	return ShownFraction == TargetFraction && ChunkFraction == ShownFraction && ChunkDelayRemaining <= 0.f && FlashAlpha <= 0.f
 		&& ShakeTimeRemaining <= 0.f && PunchScaleY == 1.f && PunchVelocity == 0.f;
+}
+
+FLinearColor URRHealthStatusWidget::GetBaseFillColor() const
+{
+	return EvaluateFillColorStops(TargetFraction);
+}
+
+FLinearColor URRHealthStatusWidget::EvaluateFillColorStops(float Fraction) const
+{
+	// Nearest stop at or below the fraction and nearest stop at or above it; the stops may be in any order.
+	const FRRHealthColorStop* Lower = nullptr;
+	const FRRHealthColorStop* Upper = nullptr;
+	for (const FRRHealthColorStop& Stop : FillColorStops)
+	{
+		if (Stop.Fraction <= Fraction && (!Lower || Stop.Fraction > Lower->Fraction))
+		{
+			Lower = &Stop;
+		}
+		if (Stop.Fraction >= Fraction && (!Upper || Stop.Fraction < Upper->Fraction))
+		{
+			Upper = &Stop;
+		}
+	}
+	if (!Lower && !Upper)
+	{
+		return FLinearColor::White;
+	}
+	if (!Lower || !Upper)
+	{
+		// Beyond the end stops: hold the colour of the nearest one (red at 20 % and below with the defaults).
+		return Lower ? Lower->Color : Upper->Color;
+	}
+	const float Span = Upper->Fraction - Lower->Fraction;
+	if (Span <= UE_KINDA_SMALL_NUMBER)
+	{
+		return Lower->Color;
+	}
+	return FMath::Lerp(Lower->Color, Upper->Color, (Fraction - Lower->Fraction) / Span);
 }
 
 FLinearColor URRHealthStatusWidget::GetCurrentFillColor() const

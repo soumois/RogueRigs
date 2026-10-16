@@ -1,4 +1,4 @@
-// Rogue Rigs - health status HUD panel (future parent of WBP_HealthStatus): drives the health bar and text from the miner health events, with a smooth drain of the shown fill, a damage chunk behind it, a hit flash of the fill, a hit shake and a hit punch of the bar root.
+// Rogue Rigs - health status HUD panel (future parent of WBP_HealthStatus): drives the health bar and text from the miner health events, with a smooth drain of the shown fill, a damage chunk behind it, a hit flash of the fill, a hit shake and a hit punch of the bar root, and a fill colour that follows the health left.
 
 #pragma once
 
@@ -12,6 +12,27 @@ class ARRMiner;
 class UProgressBar;
 class UTextBlock;
 class UWidget;
+
+/** One stop of the health fill colour gradient: the fill colour when the real health fraction equals Fraction. */
+USTRUCT(BlueprintType)
+struct ROGUERIGS_API FRRHealthColorStop
+{
+	GENERATED_BODY()
+
+	/** Real health fraction (0..1) at which the fill has exactly Color. */
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "HUD|Health", meta = (ClampMin = "0", ClampMax = "1"))
+	float Fraction = 1.f;
+
+	/** Fill colour at Fraction (linear; hex defaults are sRGB converted with FLinearColor(FColor)). */
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "HUD|Health")
+	FLinearColor Color = FLinearColor::White;
+
+	/** Default stop (fraction 1, white). */
+	FRRHealthColorStop() = default;
+
+	/** Stop with the given fraction and colour (class defaults). */
+	FRRHealthColorStop(float InFraction, const FLinearColor& InColor) : Fraction(InFraction), Color(InColor) {}
+};
 
 /**
  * Health status panel. Binds ARRMiner::OnHealthChanged and OnDamaged natively (NativeBindToMiner, so a Blueprint override of
@@ -27,6 +48,8 @@ class UWidget;
  * Hit punch: on each hit the render scale Y of HealthBarRoot jumps to PunchScale and a damped spring (PunchStiffness, PunchDamping)
  * brings it back to 1, substepped so a large frame time stays stable, snapped to exactly 1 once near rest. Scale X stays 1. The pivot
  * of HealthBarRoot is set from C++ (BarRootPivot, centre) when the widget is initialised.
+ * Colour by health: the base fill colour is a gradient of the real health fraction (FillColorStops: green at 1, yellow at 0.5, red at
+ * 0.2 and below), linear between stops, held at the end stops; the hit flash lerps from it.
  * Extension point for later bar effects (damage chunk, flash, shake, punch, colour): add state here, start it in the event
  * handlers, advance it in AdvanceBarEffects, report it in AreBarEffectsSettled, draw it in ApplyBarVisuals.
  */
@@ -96,9 +119,17 @@ protected:
 	UPROPERTY(EditDefaultsOnly, Category = "HUD|Health", meta = (ClampMin = "0"))
 	float DrainSnapThreshold = 0.001f;
 
-	/** Bar fill colour (the former WBP_HealthStatus red). Provisional, owner 2026-10-16. */
+	/**
+	 * Fill colour gradient over the real health fraction (replaces the former single FillColor): any order; linear (in linear colour
+	 * space) between the two stops around the fraction, colour of the nearest end stop beyond them. Defaults sRGB #66d26f at 1,
+	 * #e8c547 at 0.5, #e5544b at 0.2 (red at 20 % and below). Provisional, owner "ok" 2026-10-16.
+	 */
 	UPROPERTY(EditDefaultsOnly, Category = "HUD|Health")
-	FLinearColor FillColor = FLinearColor(0.9f, 0.05f, 0.05f, 1.f);
+	TArray<FRRHealthColorStop> FillColorStops = {
+		FRRHealthColorStop(1.f, FLinearColor(FColor(0x66, 0xD2, 0x6F, 0xFF))),
+		FRRHealthColorStop(0.5f, FLinearColor(FColor(0xE8, 0xC5, 0x47, 0xFF))),
+		FRRHealthColorStop(0.2f, FLinearColor(FColor(0xE5, 0x54, 0x4B, 0xFF)))
+	};
 
 	/** Seconds the damage chunk holds its value after a hit before it shrinks; each new hit restarts it. Provisional, owner 2026-10-16. */
 	UPROPERTY(EditDefaultsOnly, Category = "HUD|Health", meta = (ClampMin = "0"))
@@ -209,7 +240,7 @@ protected:
 	/** Unbinds PreviousMiner's health events, binds Miner's, shows its current values at once (no glide at bind; null = 0 / 0). */
 	virtual void NativeBindToMiner(ARRMiner* Miner, ARRMiner* PreviousMiner) override;
 
-	/** OnHealthChanged handler: text at once, new target fraction, starts the drain. */
+	/** OnHealthChanged handler: text and fill colour at once, new target fraction, starts the drain. */
 	UFUNCTION()
 	void HandleHealthChanged(float Current, float Max);
 
@@ -217,7 +248,7 @@ protected:
 	UFUNCTION()
 	void HandleDamaged(float Amount, float HealthFraction);
 
-	/** Writes the text and the target fraction; snaps the shown and chunk fractions when bSnap. */
+	/** Writes the text and the target fraction, redraws (fill colour follows the target at once); snaps the shown and chunk fractions when bSnap. */
 	void ShowHealth(float Current, float Max, bool bSnap);
 
 	/** Puts every bar effect at its end state (shown = target, chunk = shown, no flash, shake or punch); does not draw. */
@@ -247,6 +278,9 @@ protected:
 	/** Integrates the punch spring by DeltaSeconds in substeps of at most PunchMaxSubstep, then snaps it to rest near 1. */
 	void AdvancePunch(float DeltaSeconds);
 
-	/** Base fill colour of the bar (FillColor; the colour-by-health subtask replaces it). */
-	virtual FLinearColor GetBaseFillColor() const { return FillColor; }
+	/** Base fill colour of the bar: the FillColorStops gradient at the real health fraction (GetTargetFraction). */
+	virtual FLinearColor GetBaseFillColor() const;
+
+	/** FillColorStops gradient at Fraction: lerp between the stops around it, nearest end stop beyond them (white if there is no stop). */
+	FLinearColor EvaluateFillColorStops(float Fraction) const;
 };
