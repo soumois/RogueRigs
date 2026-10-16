@@ -397,3 +397,34 @@ Excluded: threat, tier pool, special ore, ore-loss share, run-structure objectiv
 English translation: "1. Go for the barrel. While the zone grows, we should see that it is unstable. Then there should be an explosion part and also the explosion circle. (We can reuse it for the kamikaze.)"
 
 Decision: **approved**: barrel. The owner widens it to three parts: (a) the barrel looks unstable during the 1.5 s fuse while the ground circle grows; (b) an explosion particle part; (c) an "explosion circle"; built so the kamikaze can reuse it. Before planning, questions put to the owner (each with a default): what "unstable" shows; whether the particle burst is added on top of the orange sphere; which circle (c) means (default: a shockwave ring on the ground growing to the explosion radius); kamikaze now or later (default: later, one table line); provisional values set by the agents.
+
+#### Owner answer to the questions (verbatim)
+> Ok
+
+English translation: "Ok."
+
+Decision: every default accepted.
+1. Unstable during the 1.5 s fuse: the barrel shakes more and more (render only, like the dig shake but growing), and its body blinks orange-white faster and faster until the explosion. No spark or smoke jet.
+2. Explosion part: a Niagara burst at the explosion (flash, orange fireball, sparks, a little smoke), scaled to the radius, on top of the orange sphere, which stays (it shows the real reach).
+3. Explosion circle: reading (a), a shockwave ring on the ground, orange, growing from the centre to the explosion radius (700) at the explosion, lasting about as long as the sphere (0.6 s).
+4. Kamikaze unchanged now: the burst and the ring are built in a separate barrel explosion FX, so the kamikaze takes them later by changing one `ExplosionStats` line.
+5. Fine values (shake amplitude, blink rate, particle counts) set by the agents as provisional.
+
+### 5. Plan
+- GDD check (orchestration-protocol step 2): [barrel](../../vault/reference/gdd/terrain/barrel.md) (approved, M1), [explosions](../../vault/reference/gdd/terrain/explosions.md), [ground-telegraph](../../vault/reference/gdd/art-audio/ground-telegraph.md), [readability-rules](../../vault/reference/gdd/art-audio/readability-rules.md) (orange = explodes), [enemy-kamikaze](../../vault/reference/gdd/enemies/enemy-kamikaze.md). No conflict: the grey-box sphere of `explosions` stays; the ring is orange (danger colour), not red. No `open` value needed. Milestone M1. The owner's three parts are written into `barrel` as an owner rule (provisional, 2026-10-16).
+- Facts that shape the split: barrels are grid cells drawn by a HISM, not actors (`barrel-asset`, `sys-grid-barrels`); the grid already shakes dig cells in render only (`SetCellShaking`, `ShakeAmplitude`) and writes per-instance custom data (marks, ore colour), so the blink is a custom data float read by the barrel body material `M_BarrelPaint` / `MI_Barrel_body`; every explosion spawns its row's `FXClass` (`ARRExplosionFX`, `BP_ExplosionFX`) with the visual radius, so a barrel-only FX class keeps the kamikaze unchanged.
+- One-click test (architect step 3): new cheat `rr.Cheat.FuseBarrel 1` with a property route (MCP cannot set CVars): lights the fuse of the barrel nearest to the miner.
+- Global task: `task-197-barrel-explosion-feedback`, milestone M1, one owner point, six subtasks because it spans two C++ systems and four editor assets (bp split rule: one main asset per subtask):
+
+| # | Subtask | Agent | Depends on | Output |
+|---|---|---|---|---|
+| 1 | `task-197-01-barrel-fuse-instability` | cpp | — | growing render-only shake during the fuse, fuse progress in a per-instance custom data float, cheat `rr.Cheat.FuseBarrel`, docs |
+| 2 | `task-197-02-explosion-fx-burst-shockwave` | cpp | 1 (same build) | `ARRExplosionFX`: optional Niagara burst (radius user parameter) and optional ground shockwave decal (radius, progress, opacity), both off when unset; docs |
+| 3 | `task-197-03-barrel-fuse-blink-material` | bp | 1 | barrel body material blinks orange-white faster and faster from the custom data; `barrel-asset` doc |
+| 4 | `task-197-04-barrel-explosion-niagara` | bp | 2 | `NS_BarrelExplosion` (flash, fireball, sparks, smoke) scaled by radius; doc |
+| 5 | `task-197-05-shockwave-decal-material` | bp | 2 | orange ring decal material and instance; doc |
+| 6 | `task-197-06-barrel-explosion-fx-blueprint` | bp | 3, 4, 5 | `BP_ExplosionFX_Barrel` (child of `BP_ExplosionFX`) with burst and ring; `ExplosionStats` Barrel row points to it; PIE read-back through the cheat; doc |
+
+- Order: 1 then 2 (editor closed, one build at a time); editor launched; 3, 4, 5 in parallel (three different assets, the limit on one editor); then 6.
+- Not planned (owner rules): no new automation test, no bot run, no screenshot session; kamikaze FX unchanged; spark or smoke jet during the fuse not built.
+- Status: plan shown to the owner, waiting for confirmation (protocol step 4).
