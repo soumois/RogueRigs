@@ -14,7 +14,7 @@ status: done
 - confirmed_by_owner: yes (2026-10-16, his request)
 - milestone: M1
 - next_step: none
-- result: Done 2026-10-16. DamageChunkBar background tinted (84c6d4e2); in game the empty part is near-black navy #05060B (target #0B0C14 from the video, half as bright because the tint multiplies the grey engine image); bar 280 x 28 at 20,232; captures sent to the owner, who decides whether to match the exact value (tint x2).
+- result: Done 2026-10-16. DamageChunkBar background tinted (84c6d4e2); in game the empty part is near-black navy #05060B (target #0B0C14 from the video, half as bright because the tint multiplies the grey engine image); bar 280 x 28 at 20,232; captures sent to the owner, who kept it as is ("Garde la partie vide comme elle est", 2026-10-16).
 
 ## Subtasks
 1. task-204-01-empty-bar-color — bp, DamageChunkBar background tint #0B0C14
