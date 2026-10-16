@@ -564,3 +564,10 @@ Subtasks 03, 04 and 05 delegated in parallel (three different assets on one edit
 - Doc: new `bp-explosion-shockwave`, `blueprints-fx-index` updated. MCP through JSON-RPC (tools not exposed to the agent); one unreadable property, no failure.
 - Commit `8433d794`. No retry.
 - Unverified: look on screen; the C++ decal driving the parameters in game (task-197-06, task-197-07).
+
+#### task-197-03-barrel-fuse-blink-material (bp) — result
+- Asset: `/Game/RogueRigs/Art/Barrel/M_BarrelPaint` (master): PerInstanceCustomData index 4 (default 0) → emissive lerp orange (1, 0.4, 0.05) to white-hot (1, 0.95, 0.85) × blink × 3; blink rate 2 → 12 Hz integrated into a phase over `FuseDuration` 1.5 s (must follow the grid's `BarrelFuseSeconds`); group `FuseBlink`, all provisional. Exactly 0 at progress 0; non-instanced meshes read 0, so other `MI_Barrel_*` keep their look. `bUsedWithInstancedStaticMeshes` set.
+- Docs: `barrel-asset` (fuse blink section), `bp-arena-grid` (note).
+- MCP failures inside the agent: wrong property names on PerInstanceCustomData, unnamed inputs ("None"), a git index.lock from a parallel agent; all retried in the same run.
+- Commits `4f491333` (asset), `8fbdc832` (docs). No second run.
+- Unverified: the PIE read-back of the custom data (the agent found no MCP route to call `DestroyCell`); the look. Both are covered by the `-game` visual check (task-197-07). Accepted on that basis.
