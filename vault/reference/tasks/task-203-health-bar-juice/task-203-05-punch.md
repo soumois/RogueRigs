@@ -3,7 +3,7 @@ id: task-203-05-punch
 description: "On damage the health bar grows in height then springs back to its normal size."
 parent: task-203-health-bar-juice
 kind: task
-status: todo
+status: in-progress
 ---
 # Hit punch
 
