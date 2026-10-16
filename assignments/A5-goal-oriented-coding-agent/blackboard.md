@@ -458,3 +458,31 @@ Notes:
 - Do not modify the task node fields status, model, tokens, runs, result.
 - Report: files changed, the custom data index and its getter, the shake properties with their values, build result, test results (names, pass/fail, any expectation changed and why), docs updated, commit hash(es), what is unverified.
 ```
+
+#### task-197-01-barrel-fuse-instability (cpp) — result
+- Files: `Source/RogueRigs/Grid/RRArenaGrid.h`, `RRArenaGrid.cpp`; docs `sys-grid-barrels`, `sys-grid-api`.
+- Fuse progress (0..1) written each grid tick into per-instance custom data float `BarrelFuseCustomDataIndex` = 4 (getter `GetBarrelFuseCustomDataIndex`, BlueprintPure; 0 = marked, 1–3 = ore colour); reset at fuse start and end, rebuild starts at 0. Helper `WriteCellCustomData`.
+- Shake (render only, provisional): horizontal 2 → 12 cm, vertical 1 → 5 cm, `lerp(start, end, progress^2)`, `ShakeFrequency` 8 Hz reused; the drone cannot stop a fusing barrel's shake. Game rules unchanged.
+- Build exit 0. Tests: 29/30 pass (Barrel, BarrelFuse, Dig, Explosions, Ore). `RogueRigs.Ore.HealVein` fails, also on the code before the change (2 of 4 runs pass before, 1 of 4 after): flaky, unrelated, reported to the owner, not fixed (no unrequested work).
+- Commits `297aeafe` (code), `e5af6cb0` (docs). No retry.
+- Unverified: the look of the shake; no material reads index 4 yet (task-197-03).
+
+#### task-197-02-explosion-fx-burst-shockwave (cpp) — prompt sent
+Reading list: the subtask node, then its `inputs` (explosions, barrel, enemy-kamikaze, sys-explosions, bp-explosion-fx, sys-ground-telegraph, ground-telegraph, readability-rules, sys-automation-tests, agent-cpp, build-toolchain), resolved paths in the node.
+```text
+Subtask task-197-02-explosion-fx-burst-shockwave (Rogue Rigs, repo C:\Users\soumo\Documents\Unreal Projects\RogueRigs).
+
+Read your subtask node first: vault/reference/tasks/task-197-barrel-explosion-feedback/task-197-02-explosion-fx-burst-shockwave.md. Its `inputs` line lists the resolved paths of every node you need: read those directly, do not descend from root again, never search the vault. Resolve any other [[wikilink]] through vault/_paths.md.
+
+Notes:
+- Owner request (2026-10-16, translated): "Then there should be an explosion part and also the explosion circle (we can reuse it for the kamikaze)." Defaults accepted: a Niagara burst on top of the orange sphere, and an orange shockwave ring on the ground growing from the centre to the explosion radius, about as long as the sphere. This subtask is the C++ side only, in `ARRExplosionFX`: the bp agent then builds `NS_BarrelExplosion` (task-197-04), the ring decal material (task-197-05) and `BP_ExplosionFX_Barrel` (task-197-06) that sets them. So: generic, optional, unset = exactly today's behaviour (`BP_ExplosionFX`, used by the kamikaze, must not change).
+- Names you choose (Niagara property, its float user parameter for the visual radius, decal material property or component, material parameter names for radius, progress and opacity) are the contract for the bp subtasks: list them all in sys-explosions. Prefer the ground telegraph's existing parameter naming (sys-ground-telegraph) where it fits.
+- The ring is a projected decal like the ground telegraph (floor and rock tops). Its decal box must cover the visual radius; progress grows over the sphere growth (`Duration`), opacity follows the sphere fade. The actor must live long enough for the Niagara burst to finish (about 1.5 s) when a burst is set, without changing the lifetime when it is not.
+- Values are provisional: written in the doc as "provisional, owner 2026-10-16".
+- Editor state: closed (checked: no UnrealEditor process). Build from the command line per build-toolchain. If an editor appears and Live Coding blocks the build, stop and report; never kill it.
+- Scope: exactly the subtask goal. No cheat, no debug command (owner 2026-10-16), no new automation test; only update expectations of existing tests your change breaks. Known unrelated flaky test: `RogueRigs.Ore.HealVein` (fails before this task too): report it, do not fix it.
+- The previous subtask (task-197-01) changed `Source/RogueRigs/Grid/RRArenaGrid.*`; do not touch the grid.
+- Git: commit only your files, by explicit path (`git commit -m "..." -- <paths>`), never `git add -A` or `-- vault`. Commit message `task-197-02-explosion-fx-burst-shockwave: <summary>`, ending with the line `Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>`.
+- Do not modify the task node fields status, model, tokens, runs, result.
+- Report: files changed, the exact property names, user parameter name, material parameter names and decal settings (size, sort order, rotation), the lifetime rule, build result, test results, docs updated, commit hash(es), what is unverified.
+```
