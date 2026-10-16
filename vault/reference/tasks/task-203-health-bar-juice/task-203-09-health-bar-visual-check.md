@@ -3,7 +3,7 @@ id: task-203-09-health-bar-visual-check
 description: "-game captures of the juicy health bar at full health and during a hit, compared with the 280 x 28 bar from before task-203."
 parent: task-203-health-bar-juice
 kind: task
-status: in-progress
+status: done
 ---
 # Health bar visual check in game
 
@@ -16,11 +16,11 @@ status: in-progress
 - done_when: the full-health capture shows the bar at about 280 x 28 at 20,232 (at 1920 x 1080); the hit captures are described; paths reported for the Orchestrator to send to the owner; doc committed by path.
 - editor_state: closed
 - token_ceiling: open
-- model: open
-- tokens: open
-- runs: open
+- model: opus
+- tokens: input 26, cache write 53386, cache read 394659, output 1759
+- runs: 1
 - milestone: M1
-- result: open
+- result: -game 1920 x 1080, L_ArenaM1, hit of 54 (max health 100): full health bar 280 x 28 at 20,232, green #56B35E, text below; 2 frames after the hit: height 35 (punch), fill flashed near-white, off-white chunk; 0.34 s: height 28, yellow fill to 46 percent, chunk held; 0.8 s: chunk shrinking, empty part light grey #BABABA. 0.1 s capture lost (screenshot freeze). Not seen: horizontal shake, red below 20 percent. PNGs Saved/Screenshots/WindowsEditor/t203_09_*. Commit 34e89ebe.
 
 ## Relations
 - [[task-203-health-bar-juice]] — parent global task.

@@ -1,9 +1,9 @@
 ---
 id: task-203-health-bar-juice
 description: "Global task: make the HUD health bar juicy with smooth drain, damage chunk, flash, shake, punch and colour by health."
-parent: tasks-to-do-index
+parent: tasks-done-index
 kind: task
-status: in-progress
+status: done
 ---
 # Juicy health bar
 
@@ -13,8 +13,8 @@ status: in-progress
 - gdd_check: [[color-code]] read 2026-10-16: it does not list the HUD health bar, so the colours of 03, 04 and 06 are new values, written provisional for the owner to confirm; the current bar is red. No game rule changes (display only). Open points asked to the owner (colours and stops of 06, spring of 05, shake decay of 04, chunk delay restart): he answered "ok" (2026-10-16), all defaults accepted as provisional.
 - confirmed_by_owner: yes (2026-10-16: "ok lance toutes les taches")
 - milestone: M1
-- next_step: task-203-09-health-bar-visual-check
-- result: open (reopened 2026-10-16: owner screenshot shows the bar tiny after task-203-07; previous result: subtasks 01 to 07 done, HUD tests pass)
+- next_step: none
+- result: Done. -game 1920 x 1080, L_ArenaM1, hit of 54 (max health 100): full health bar 280 x 28 at 20,232, green #56B35E, text below; 2 frames after the hit: height 35 (punch), fill flashed near-white, off-white chunk; 0.34 s: height 28, yellow fill to 46 percent, chunk held; 0.8 s: chunk shrinking, empty part light grey #BABABA. 0.1 s capture lost (screenshot freeze). Not seen: horizontal shake, red below 20 percent. PNGs Saved/Screenshots/WindowsEditor/t203_09_*. Commit 34e89ebe.
 
 ## Subtasks
 1. task-203-01-drain — cpp, health bar class and smooth drain
@@ -28,7 +28,7 @@ status: in-progress
 9. task-203-09-health-bar-visual-check — cpp, -game captures of the bar
 
 ## Relations
-- [[tasks-to-do-index]] — parent index.
+- [[tasks-done-index]] — parent index.
 - [[wbp-health-status]] — the panel this task changes.
 - [[task-203-01-drain]] — step 1, cpp.
 - [[task-203-02-damage-chunk]] — step 2, cpp.
