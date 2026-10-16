@@ -1,9 +1,9 @@
 ---
 id: task-202-crater-first-frame-black
 description: "Global task: No black crater on the frame an explosion opens it: newly exposed floor renders correctly from its first frame, verified in -game frames."
-parent: tasks-to-do-index
+parent: tasks-done-index
 kind: task
-status: in-progress
+status: done
 ---
 # Crater first frame black
 
@@ -13,13 +13,13 @@ status: in-progress
 - gdd_check: [[ground-telegraph]], [[explosions]], [[barrel]] read 2026-10-16; a render defect, no rule change, no `open` value.
 - confirmed_by_owner: yes (2026-10-16: "Oui corriger les points")
 - milestone: M1
-- next_step: task-202-01-crater-first-frame-black
-- result: open
+- next_step: none
+- result: Done. Black crater frame fixed (floor HISM render state marked dirty when a floor slab is added); verified in -game frame barrelfx5_11; faint darker patches remain (reported); proxy rebuild cost in long chains not profiled. Commits c6e77104, be077028.
 
 ## Subtasks
 1. task-202-01-crater-first-frame-black — cpp
 
 ## Relations
-- [[tasks-to-do-index]] — parent index.
+- [[tasks-done-index]] — parent index.
 - [[task-197-barrel-explosion-feedback]] — the feature whose frames showed the defect.
 - [[task-202-01-crater-first-frame-black]] — step 1, cpp.

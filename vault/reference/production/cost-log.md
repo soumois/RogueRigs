@@ -344,6 +344,7 @@ kind: note
 | [[task-199-01-barrel-burst-bigger]] | sonnet | 1 | 0k | 55k | 651k | 11k |
 | [[task-200-01-decal-green-square-check]] | opus | 1 | 0k | 73k | 861k | 13k |
 | [[task-201-01-decal-first-frame-green]] | opus | 2 | 0k | 183k | 7932k | 51k |
+| [[task-202-01-crater-first-frame-black]] | opus | 1 | 0k | 83k | 1710k | 17k |
 
 ## Totals
 | Scope | Input | Cache write | Cache read | Output |

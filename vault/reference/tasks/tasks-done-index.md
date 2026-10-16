@@ -210,3 +210,4 @@ Archive: it exceeds the index size limits of [[_authoring]] on purpose (owner, 2
 - [[task-199-barrel-burst-bigger]] — NS_BarrelExplosion bigger: wider fireball, about twice the sparks, more visible smoke, still within 1.5 s. Status done.
 - [[task-200-decal-green-square-check]] — Second -game run of the barrel fuse and explosion: does the green square return on the first decal frame once shaders are cached? Report only. Status done.
 - [[task-201-decal-first-frame-green]] — No green default-material frame when a ground telegraph or explosion shockwave decal appears: decal materials ready before first use, verified in -game frames. Status done.
+- [[task-202-crater-first-frame-black]] — No black crater on the frame an explosion opens it: newly exposed floor renders correctly from its first frame, verified in -game frames. Status done.

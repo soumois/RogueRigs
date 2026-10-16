@@ -3,7 +3,7 @@ id: task-202-01-crater-first-frame-black
 description: "No black crater on the frame an explosion opens it: newly exposed floor renders correctly from its first frame, verified in -game frames."
 parent: task-202-crater-first-frame-black
 kind: task
-status: in-progress
+status: done
 ---
 # Crater first frame black
 
@@ -15,11 +15,11 @@ status: in-progress
 - done_when: build exit 0; grid, explosion and barrel tests pass (only broken expectations updated, no new test); the task-200 `-game` command (new prefix) shows no black crater on the explosion frame; the cause found is written in the docs; game rules and the 2 ms per-frame destruction budget unchanged; committed by path.
 - editor_state: closed
 - token_ceiling: open
-- model: open
-- tokens: open
-- runs: open
+- model: opus
+- tokens: input 58, cache write 83008, cache read 1709545, output 17493
+- runs: 1
 - milestone: M1
-- result: open
+- result: Cause: floor slab added by AddInstance not drawn until the HISM proxy is recreated after the async tree rebuild; fix MarkRenderStateDirty after AddInstance in AddCellInstance; 46 tests pass; barrelfx5_11 shows a grey crater on the explosion frame; commits c6e77104, be077028
 
 ## Relations
 - [[task-202-crater-first-frame-black]] — parent global task.
