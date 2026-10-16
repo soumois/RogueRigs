@@ -14,7 +14,7 @@ status: done
 - confirmed_by_owner: yes (2026-10-16: "ok lance toutes les taches")
 - milestone: M1
 - next_step: none
-- result: Done. WBP_HealthStatus reparented to URRHealthStatusWidget; HealthBarRoot overlay (20,232, 280 x 28) holds DamageChunkBar (behind) and HealthBar (transparent background); ShowHealth keeps only LowHealthAlpha and ApplyVignette (orphan duplicate chain removed); compiled with warnings as errors, saved; wbp-health-status and sys-hud-health-bar updated. Commit 8547f539. Orchestrator after the editor closed: RogueRigs.HUD 13/13 and RogueRigs.Integration.PressureVignetteOnHit pass. Nothing seen on screen or in PIE.
+- result: Done 2026-10-16. URRHealthStatusWidget (C++) drives the bar: smooth drain 10/s, off-white damage chunk (hold 0.4 s, rate 7), white hit flash (decay 9/s), 4 px shake over 0.15 s, 1.3 scale-Y punch spring, green-yellow-red gradient on the real fraction; WBP_HealthStatus reparented with HealthBarRoot and DamageChunkBar (task-203-01 to 07). Build 0; RogueRigs.HUD 13/13 and Integration.PressureVignetteOnHit pass. Not seen on screen: feel, colours (linear-space blend) and timings remain for the owner to judge in game.
 
 ## Subtasks
 1. task-203-01-drain — cpp, health bar class and smooth drain
