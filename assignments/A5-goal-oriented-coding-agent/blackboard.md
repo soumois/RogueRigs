@@ -598,3 +598,31 @@ Notes:
 - Do not modify the task node fields status, model, tokens, runs, result.
 - Report: assets created or changed (paths), values read back, CSV change and how it is loaded, any test referencing the path, PIE result or why none, docs updated, commit hash(es), what is unverified. Always end with a report, even partial; commit what works first.
 ```
+
+#### task-197-06-barrel-explosion-fx-blueprint (bp) — result
+- Asset: `/Game/RogueRigs/Blueprints/FX/BP_ExplosionFX_Barrel` (parent `BP_ExplosionFX_C`), class defaults read back: `BurstSystem` = `NS_BarrelExplosion`, `ShockwaveMaterial` = `MI_ExplosionShockwave`; no graph logic.
+- Data: `ExplosionStats.csv` Barrel `FXClass` → `BP_ExplosionFX_Barrel_C`; Kamikaze unchanged; CSV read at runtime (no DataTable reimport).
+- Test broken by the requested change: `Tests/RRIntegrationTests.cpp` (`ExplosionFXClassPath`, line ~886; `Record.Class == FXClass`, line ~1093). Not edited by bp (no C++); handed to the cpp agent as step 1 of task-197-07 (owner rule: update only broken expectations).
+- PIE: no MCP route to call a UFunction or read the resolved class; not started.
+- Docs: new `bp-explosion-fx-barrel`; `bp-explosion-fx`, `sys-explosions`, `blueprints-fx-index` updated. Commit `7003f613`. No retry.
+- Editor closed by the Architect for task-197-07 (git status clean of tracked assets before closing).
+
+#### task-197-07-barrel-fx-visual-check (cpp) — prompt sent
+Reading list: the subtask node, then its `inputs` (barrel, sys-grid-barrels, sys-explosions, sys-cheats, agent-cpp, build-toolchain), plus `bp-explosion-fx-barrel`, `bp-barrel-explosion`, `bp-explosion-shockwave`, `barrel-asset`.
+```text
+Subtask task-197-07-barrel-fx-visual-check (Rogue Rigs, repo C:\Users\soumo\Documents\Unreal Projects\RogueRigs).
+
+Read your subtask node first: vault/reference/tasks/task-197-barrel-explosion-feedback/task-197-07-barrel-fx-visual-check.md. Its `inputs` line lists the resolved paths of every node you need: read those directly, do not descend from root again, never search the vault. Resolve any other [[wikilink]] through vault/_paths.md. Also read the docs of what you are checking: vault/reference/tech/blueprints/fx/bp-explosion-fx-barrel.md, bp-barrel-explosion.md, bp-explosion-shockwave.md, and the fuse blink section of vault/reference/tech/pipelines/barrel-asset.md.
+
+Two steps, in this order:
+
+1. Test expectation broken by task-197-06 (owner rule: update only the expectations a requested change breaks). `Source/RogueRigs/Tests/RRIntegrationTests.cpp` hard-codes `ExplosionFXClassPath` = `BP_ExplosionFX_C` (line ~886) and the barrel chain test asserts `Record.Class == FXClass` (line ~1093). The Barrel row now spawns `BP_ExplosionFX_Barrel_C` (child of `BP_ExplosionFX`, with a Niagara burst, so its actor lifetime is 1.5 s instead of 0.6 s: check lifetime expectations too). Make the barrel test expect the barrel class (and its lifetime) while kamikaze expectations keep `BP_ExplosionFX_C`. Build, run the Explosions, BarrelFuse and Integration explosion tests headless, commit (`task-197-07-barrel-fx-visual-check: <summary>`). Pre-existing unrelated failures: `Enemies.ShotHitsMovingRobotAndDeathShowsParts`, `Integration.JuiceHealRing`, flaky `Ore.HealVein`: report, do not fix.
+
+2. Visual check (owner 2026-10-16, translated: "check visually that the effects start properly in game"). One `-game` run (not `-nullrhi`, Niagara must render) with `rr.Debug.Shots` (and `rr.Debug.Delayed` to chain steps): light one barrel fuse in view of the camera using existing routes only (for example `rr.Debug.SpawnNear` of a kamikaze next to a barrel at a place where the miner stands near a barrel, or `rr.Debug.Objective`, or the engine `ke` command), and capture frames during the fuse (shake, orange-white blink, growing danger circle) and during the explosion (Niagara burst, orange shockwave ring on the ground, orange sphere): for example a frame every 0.1–0.2 s from fuse start to 0.6 s after the explosion. No new cheat or debug command committed (owner 2026-10-16); a temporary uncommitted helper is also not allowed. If no existing route can put a fusing barrel in view, stop and report the options instead. Look at the frames yourself (Read the PNGs, downscale first if they are large) and describe what each shows.
+
+Notes:
+- Editor state: closed (the Orchestrator closed it). If an editor appears and Live Coding blocks the build, stop and report; never kill it.
+- Git: commit only your files, by explicit path, never `git add -A` or `-- vault`. Do not commit the screenshots. Messages end with the line `Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>`.
+- Do not modify the task node fields status, model, tokens, runs, result.
+- Report: test change and results, commit hash; the exact command line of the -game run; the frame paths with one line each of what is visible (shake, blink colour, danger circle, burst, ring, sphere) and what is not; the log lines of the fuse and the explosion (FX class spawned); anything that looks wrong (too big, too dark, red, invisible ring, ...).
+```
