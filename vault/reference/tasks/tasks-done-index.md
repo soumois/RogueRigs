@@ -203,4 +203,5 @@ Archive: it exceeds the index size limits of [[_authoring]] on purpose (owner, 2
 - [[task-192-pickup-spawn-orientation-variants]] — Pickup spawn: random rest orientation per Blueprint (none, yaw only, full) and a random mesh variant picked per drop, pool-safe. Status done.
 - [[task-193-debris-gpu-cost-remeasure]] — Remeasure the GPU debris with wall collision with the PC in its usual state, against task-182-03, frame for frame. Status done.
 - [[task-194-debris-pool-counter]] — Find why debris pool plays exceed the cap of 80 (S7: 200 plays, 0 skips) since the GPU emitter, and fix the counter or the recycling. Status done.
+- [[task-195-floaty-pop-midair-magnet]] — Pickup pop: long floaty arc (slower fall than rise) and magnet allowed mid-air after a delay from spawn, for XP nut, ore and heal pickups, not the chip. Status done.
 - [[task-196-xp-chip-smaller]] — Big XP chip 15 percent smaller: BP_PickupXPBig template scale 1.8 to 1.53 and its glow disc radius 80 to 68. Status done.

@@ -1,9 +1,9 @@
 ---
 id: task-195-floaty-pop-midair-magnet
 description: "Global task: long floaty pop arc and mid-air magnet after a delay for XP nut, ore and heal pickups, not the big chip."
-parent: tasks-to-do-index
+parent: tasks-done-index
 kind: task
-status: in-progress
+status: done
 ---
 # Floaty pop and mid-air magnet
 
@@ -13,8 +13,8 @@ status: in-progress
 - gdd_check: xp-level-up and ore-blocks read 2026-10-15. Conflicts decided by the owner: short arcs and the 1 s rest before the magnet replaced by a long floaty arc and a mid-air magnet after 1.2 s from spawn (xp-level-up updated); ore and heal chunks may now land on unbroken rock, accepted for now (ore-blocks updated). The big XP chip keeps today's pop. Values provisional (owner defaults accepted).
 - confirmed_by_owner: yes (2026-10-15: "ok pour les deux tâches avec ces valeurs", scope "tous sauf la puce")
 - milestone: M1
-- next_step: task-195-03-dig-pickup-collect-test
-- result: Done. BP_PickupXP, BP_PickupOre, BP_PickupHeal: PopFallTimeRatio 2, bAttractDuringPop true, PopAttractDelay 1.2, PopDuration 1.6, PopArcHeight 250, PopMin/MaxDistance 80/300, read back and saved; BP_PickupXPBig untouched; pickup tests not rerun after this Blueprint change; not seen in PIE; commit 3746cbc2
+- next_step: none
+- result: Done. RogueRigs.Dig.PickupCollect expectations follow the mid-air magnet (earliest collect min(PopAttractDelay, PopDuration + AttractDelay)), far pickup at radius + PopMaxDistance + 100, frames from the pop timing; Pickup, ActorPool and Dig tests 31/31 pass; commits 8bfff950, 49975428
 
 ## Subtasks
 1. task-195-01-floaty-pop-midair-magnet — cpp
@@ -22,7 +22,7 @@ status: in-progress
 3. task-195-03-dig-pickup-collect-test — cpp
 
 ## Relations
-- [[tasks-to-do-index]] — parent index.
+- [[tasks-done-index]] — parent index.
 - [[task-195-01-floaty-pop-midair-magnet]] — step 1, cpp.
 - [[task-195-02-floaty-pop-values]] — step 2, bp.
 - [[task-195-03-dig-pickup-collect-test]] — step 3, cpp (test broken by the new pop).

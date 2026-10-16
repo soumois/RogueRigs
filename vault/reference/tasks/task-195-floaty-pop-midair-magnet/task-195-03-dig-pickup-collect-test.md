@@ -3,7 +3,7 @@ id: task-195-03-dig-pickup-collect-test
 description: "C++ test fix: RogueRigs.Dig.PickupCollect expectations follow the mid-air magnet and the 300 uu pop of task-195."
 parent: task-195-floaty-pop-midair-magnet
 kind: task
-status: in-progress
+status: done
 ---
 # Dig pickup collect test: floaty pop
 
@@ -15,11 +15,11 @@ status: in-progress
 - done_when: build clean; RogueRigs.Pickup, RogueRigs.ActorPool and RogueRigs.Dig tests all pass; docs updated; lint clean; committed by path.
 - editor_state: closed
 - token_ceiling: open
-- model: open
-- tokens: open
-- runs: open
+- model: opus
+- tokens: input 20, cache write 35580, cache read 237317, output 270
+- runs: 1
 - milestone: M1
-- result: open
+- result: RogueRigs.Dig.PickupCollect expectations follow the mid-air magnet (earliest collect min(PopAttractDelay, PopDuration + AttractDelay)), far pickup at radius + PopMaxDistance + 100, frames from the pop timing; Pickup, ActorPool and Dig tests 31/31 pass; commits 8bfff950, 49975428
 
 ## Relations
 - [[task-195-floaty-pop-midair-magnet]] — parent global task.
