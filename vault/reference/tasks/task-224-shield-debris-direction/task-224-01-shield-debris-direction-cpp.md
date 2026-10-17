@@ -3,7 +3,7 @@ id: task-224-01-shield-debris-direction-cpp
 description: "cpp: ARRShieldChaser GetShieldDebrisDirection (breaking hit turned 20 degrees toward the shield side unless from behind); debug break records a miner hit."
 parent: task-224-shield-debris-direction
 kind: task
-status: in-progress
+status: done
 ---
 # Shield debris direction (C++)
 
@@ -19,11 +19,11 @@ status: in-progress
 - done_when: build succeeds; doc nodes updated; commit by path.
 - editor_state: closed
 - token_ceiling: open
-- model: open
-- tokens: open
-- runs: open
+- model: opus
+- tokens: input 30, cache write 42541, cache read 396785, output 2475
+- runs: 1
 - milestone: M1
-- result: open
+- result: Commit dd939326: the breaking hit direction is already recorded before the effect (projectile and explosion paths); HandleShieldBroken now freezes it in ShieldBreakDirection (cleared on reuse); BlueprintPure GetShieldDebrisDirection: base = ShieldBreakDirection else robot backward; from behind (dot > 0) unchanged; else yaw = -ShieldSide x ShieldDebrisSideAngleDeg (20, ShieldSide -1 = left): hit from the front of a +X robot gives (-0.94, -0.34, 0); rr.Debug.BreakShields records a miner-to-chaser hit before draining. Build exit 0; docs sys-enemies-shield-chaser and sys-cheats.
 
 ## Relations
 - [[task-224-shield-debris-direction]] — parent global task.

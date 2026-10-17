@@ -3,7 +3,7 @@ id: task-224-02-ns-shield-debris-hitdir
 description: "bp: NS_ShieldDebris gets User.HitDirection back and throws its pieces along it with the NS_RobotDebris velocity setup."
 parent: task-224-shield-debris-direction
 kind: task
-status: todo
+status: in-progress
 ---
 # NS_ShieldDebris: throw along User.HitDirection
 
