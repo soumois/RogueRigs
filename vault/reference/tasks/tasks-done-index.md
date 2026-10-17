@@ -225,3 +225,4 @@ Archive: it exceeds the index size limits of [[_authoring]] on purpose (owner, 2
 - [[task-214-barks-log-excerpt]] — Barks retrieval log excerpt matches T2. Status done.
 - [[task-215-company-no-prefix]] — Company subtitles without speaker prefix. Status done.
 - [[task-216-shield-texture]] — Shield chaser riot shield textured in Blender from the Meshy mesh. Status done.
+- [[task-217-xp-cube-simplify]] — Big XP data cube from Meshy simplified to the chip cost. Status done.

@@ -1,0 +1,140 @@
+{
+  "asset": "SM_XPCubeBig",
+  "route": "blender",
+  "script": "Tools/art/blender/xp_cube_big_mesh.py",
+  "source": "Art/Source/xp-core/meshy/Meshy_AI_Neon_Power_Cube_1017063448_texture_fbx (owner's Meshy cube, 5044 tris, 0.95 x 0.95 x 0.87; no Meshy call, no credit)",
+  "tris_out": 748,
+  "budget_tris": 844,
+  "dimensions_cm": {
+    "x": 30,
+    "y": 30,
+    "z": 27.5
+  },
+  "footprint_target_cm": {
+    "x": 30,
+    "y": 30,
+    "z": 27.5
+  },
+  "pivot": "center",
+  "pivot_computed_on": "body only (disc excluded)",
+  "bbox_min": [
+    -15,
+    -15,
+    -13.75
+  ],
+  "bbox_max": [
+    15,
+    15,
+    13.75
+  ],
+  "total_bbox_min": [
+    -44.44,
+    -44.44,
+    -16.56
+  ],
+  "total_bbox_max": [
+    44.44,
+    44.44,
+    13.75
+  ],
+  "total_tris": 764,
+  "body_tris": 748,
+  "glow_disc": {
+    "radius_cm": 44.44,
+    "z_cm": -16.56,
+    "tris": 16,
+    "slot_index": 4,
+    "sides": 16,
+    "normals": "+Z",
+    "shading": "flat, one flat material, colour irrelevant (Unreal material set later)",
+    "uv_note": "UV0 radial: u = 0.5 + x / (2 R), v = 0.5 + y / (2 R), distance to (0.5, 0.5) is the radius in 0..0.5. UV1 LightMap: the disc does not use the lightmap (unlit, shadowless), its UV1 is a single point (0, 0); body LightMap islands and uv_checks unchanged.",
+    "placement": "same numbers as the chip (centred pivot): BP_PickupXPBig root scale 1.8: world radius 80 cm and z -29.8 become local radius 44.44 and z -16.56"
+  },
+  "materials": [
+    "M_XPCubeBig_body",
+    "M_XPCubeBig_caps",
+    "M_XPCubeBig_core_dark",
+    "M_XPCubeBig_core_bright",
+    "glow_disc"
+  ],
+  "slots": [
+    "M_XPCubeBig_body",
+    "M_XPCubeBig_caps",
+    "M_XPCubeBig_core_dark",
+    "M_XPCubeBig_core_bright",
+    "glow_disc"
+  ],
+  "paint_colours_srgb": {
+    "M_XPCubeBig_body": "#2D2C30",
+    "M_XPCubeBig_caps": "#868687",
+    "M_XPCubeBig_core_dark": "#FA11F8",
+    "M_XPCubeBig_core_bright": "#FB81FD"
+  },
+  "emissive_material": [
+    "M_XPCubeBig_core_bright",
+    "M_XPCubeBig_core_dark"
+  ],
+  "uv_layers": [
+    "UVMap",
+    "LightMap"
+  ],
+  "uv_checks": {
+    "UVMap": {
+      "tile_cm": 100,
+      "cm_per_uv_unit_min": 100,
+      "cm_per_uv_unit_max": 100.662
+    },
+    "LightMap": {
+      "faces": 418,
+      "triangles": 748,
+      "overlapping_face_pairs": 0,
+      "bounds_min": 0.01172,
+      "bounds_max": 0.98828,
+      "min_gap_px_at_256": 3,
+      "min_border_px_at_256": 3,
+      "required_margin_px": 2,
+      "pass": true
+    }
+  },
+  "shading": "flat",
+  "warnings": [
+    "M_XPCubeBig_core_bright and _dark are emissive in Blender (strength 4, #FB81FD and #FA11F8): the FBX does not carry emission, the Unreal material sets the glow"
+  ],
+  "fidelity": {
+    "run": 1,
+    "returns_used": 2,
+    "max_returns": 5,
+    "final_render": "Art/Meshes/xp-cube-big-mesh/preview/cube_tq.png",
+    "criteria": {
+      "C1": {
+        "verdict": "pass",
+        "evidence": "body 748 tris (max 844; 764 with the 16-tri disc); above the 600 aim, within the cap"
+      },
+      "C2": {
+        "verdict": "pass",
+        "evidence": "front, tq and top renders: same recessed window on all visible faces (top, front, right), 10.8 cm dark-magenta frame, lighter pink bevelled centre; geometry is generated once and rotated to six faces. Differs: ref frame slightly wider, flat frame without a dark recess halo"
+      },
+      "C3": {
+        "verdict": "pass",
+        "evidence": "4 bolts per face visible on every face in the renders, 8 corner caps (all 8 visible in tq: 4 top, 4 bottom). Differs: bolts are hexagons (16 tris) not octagons (budget), caps boxier than the ref chamfered caps"
+      },
+      "C4": {
+        "verdict": "pass",
+        "evidence": "30 x 30 x 27.5 cm, ratio 1.09; front silhouette square with cap blocks at the corners and bolt tabs poking out on the sides as in cube_front.png; tq silhouette matches cube_tq.png"
+      },
+      "C5": {
+        "verdict": "pass",
+        "evidence": "flat colours from the texture clusters: body #2D2C30, caps/bolts #868687, frame #FA11F8, centre #FB81FD; no texture. Differs: the frame is the saturated texture magenta, brighter than the ref render which shows it dimmer (#C030C8) with glow"
+      },
+      "C6": {
+        "verdict": "pass",
+        "evidence": "glow_disc is the last slot (index 4), 16-sided, 16 tris, radius 44.44, z -16.56, UV0 radial, UV1 single point, code block identical to the chip"
+      },
+      "C7": {
+        "verdict": "pass",
+        "evidence": "bbox +-15 x +-15 x +-13.75, centred, 30 cm across"
+      }
+    },
+    "open_failures": []
+  }
+}
