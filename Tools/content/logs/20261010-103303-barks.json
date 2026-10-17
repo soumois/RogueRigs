@@ -103,7 +103,7 @@
    "excerpts": [
     {
      "node_id": "dialogue-tone",
-     "text": "Jokes target the company."
+     "text": "Jokes target the company"
     }
    ],
    "output": "Dent! Barely counts. Bill corporate."
@@ -238,7 +238,7 @@
    "excerpts": [
     {
      "node_id": "dialogue-tone",
-     "text": "Jokes target the company."
+     "text": "Jokes target the company"
     }
    ],
    "output": "Network cracked. Corporate password was probably admin."
