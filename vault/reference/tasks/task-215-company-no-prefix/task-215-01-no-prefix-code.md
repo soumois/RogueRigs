@@ -3,7 +3,7 @@ id: task-215-01-no-prefix-code
 description: "cpp: The subtitle system shows kessler_voss lines without a speaker prefix"
 parent: task-215-company-no-prefix
 kind: task
-status: todo
+status: in-progress
 ---
 # no-prefix-code
 

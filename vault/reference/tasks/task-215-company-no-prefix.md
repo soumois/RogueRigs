@@ -3,7 +3,7 @@ id: task-215-company-no-prefix
 description: "Global task: Company subtitles without speaker prefix."
 parent: tasks-to-do-index
 kind: task
-status: todo
+status: in-progress
 ---
 # Company subtitles without speaker prefix
 

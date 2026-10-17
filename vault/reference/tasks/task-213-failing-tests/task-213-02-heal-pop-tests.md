@@ -3,7 +3,7 @@ id: task-213-02-heal-pop-tests
 description: "cpp: Fix RogueRigs.Integration.JuiceHealRing"
 parent: task-213-failing-tests
 kind: task
-status: in-progress
+status: done
 ---
 # heal-pop-tests
 
@@ -15,11 +15,11 @@ status: in-progress
 - done_when: JuiceHealRing passes; HealVein passes 10 runs out of 10; the full suite passes; docs updated; committed.
 - editor_state: closed
 - token_ceiling: 50000
-- model: open
-- tokens: open
-- runs: open
+- model: opus
+- tokens: input 52, cache write 55758, cache read 1046749, output 2757
+- runs: 1
 - milestone: M2
-- result: open
+- result: JuiceHealRing pop bound read from the BP_PickupHeal class default (80-300 uu, task-195-02 owner decision); flakiness: random pop beyond the 300 uu pickup radius, HealVein, JuiceHealRing and JuiceKillDropsStreamingCubes seeded with FMath::RandInit(5) in the tests; gameplay unchanged (07dd7817, 9f015d76, 767bccf9). HealVein 10/10 alone; full RogueRigs suite exit 0, 262 success.
 
 ## Relations
 - [[task-213-failing-tests]] — parent global task.
