@@ -3,7 +3,7 @@ id: task-221-01-xp-cube-import
 description: "bp: import SM_XPCubeBig into Unreal and give it its own material instances matching the chip's look and glow."
 parent: task-221-xp-cube-integration
 kind: task
-status: todo
+status: in-progress
 ---
 # XP cube: import and materials
 
