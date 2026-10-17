@@ -59,16 +59,20 @@ HEIGHT = 123.0
 # ---------------------------------------------------------------- parameters
 A_THIGH, A_KNEE, A_ARM_R, A_ELBOW_R, A_LEAN, A_TWIST = 35.0, 55.0, 20.0, 40.0, 8.0, 3.0      # chaser run values except the right arm swing (30 -> 20) and twist (5 -> 3)
 BOB_DEG = 1.5
-SHIELD_TILT_DEG = 8.0              # plate tilted back at clip 0 frame 0: normal pitched up by this angle
-SHIELD_GRIP_CM = (-2.01, 4.6, 39.53)    # centre of the middle grip block, from the shield pivot (SM_ChaserShield.report.json grip_offset_cm, Unreal axes x, -y, z -> y mirrored back to Blender)
+SH_THIGH = float(os.environ.get("SC_THIGH", "12.0"))     # thigh swing of the shield run (clip 0 only); reduced when the low shield cannot clear the front leg
+SHIELD_TILT_DEG = 3.0              # plate tilted back by this angle (pavise carry)
+SHIELD_SCALE = 1.2                 # task-220-05: 20 percent larger
+GRIP_Z_SHIFT_CM = float(os.environ.get("SC_GRIPZ", "16.0"))     # hand holds the upper block of the handle (lets the shield hang lower than the arm reaches)
+SHIELD_GRIP_CM = tuple(SHIELD_SCALE * x for x in (-2.01, 4.6, 39.53)); SHIELD_GRIP_CM = (SHIELD_GRIP_CM[0], SHIELD_GRIP_CM[1], SHIELD_GRIP_CM[2] + GRIP_Z_SHIFT_CM)    # centre of the middle grip block, from the shield pivot (SM_ChaserShield.report.json grip_offset_cm, Unreal axes x, -y, z -> y mirrored back to Blender)
+FOREARM_DZ = float(os.environ.get("SC_FDZ", "-0.85"))     # frame 0 forearm elevation (z of its unit direction): nearly vertical, arm hangs
 HAND_Z_MAX = 68.0                       # rest vertices of ForearmHand_L below this z are the hand
 for k_, v_ in zip(argv[::2], argv[1::2]):
     pass
 KEYS = dict(
-    guard_run=dict(target=(27.0, 9.0, 92.0), tilt=None),
-    guard_stand=dict(target=(27.0, 9.0, 92.0), tilt=SHIELD_TILT_DEG),
-    wind=dict(target=(19.0, 5.0, 92.0), tilt=10.0),
-    strike=dict(target=(46.0, 9.0, 94.0), tilt=3.0),
+    guard_run=dict(target=(36.0, 9.0, 54.0), tilt=None),
+    guard_stand=dict(target=(36.0, 9.0, 54.0), tilt=SHIELD_TILT_DEG),
+    wind=dict(target=(28.0, 5.0, 56.0), tilt=6.0),
+    strike=dict(target=(58.0, 9.0, 58.0), tilt=3.0),
 )
 ENV = os.environ.get("SC_KEYS")
 if ENV:
@@ -115,7 +119,7 @@ SHIELD.name = "Shield"
 SHIELD.data.name = "Shield"
 bpy.context.view_layer.update()
 assert max(abs(SHIELD.matrix_world[i][j] - (1.0 if i == j else 0.0)) for i in range(4) for j in range(4)) < 1e-5
-SHIELD_V0 = np.array([v.co[:] for v in SHIELD.data.vertices], float)      # shield space (pivot bottom centre, plate faces +X)
+SHIELD_V0 = SHIELD_SCALE * np.array([v.co[:] for v in SHIELD.data.vertices], float)      # shield space (scaled) (pivot bottom centre, plate faces +X)
 SHIELD_TRIS = sum(len(p.vertices) - 2 for p in SHIELD.data.polygons)
 SHIELD_MATS = [m.name for m in SHIELD.data.materials]
 SHIELD_UV_IN = [u.name for u in SHIELD.data.uv_layers]
@@ -243,7 +247,7 @@ def solve_arm(pose_base, key, R0=None, Rs=None, u0=(-8.0, -20.0, 0.0, -70.0, 0.0
         else:
             d = R @ (HAND_REST - REST_P[SHIELD_PART])
             d = d / np.linalg.norm(d)
-            r.append(30.0 * d[2])
+            r.append(30.0 * (d[2] - FOREARM_DZ))
             r.append(0.0)
         r += list(0.05 * np.radians(np.array(u) - prior) * 30.0)
         return np.array(r)
@@ -273,7 +277,8 @@ def solve_arm(pose_base, key, R0=None, Rs=None, u0=(-8.0, -20.0, 0.0, -70.0, 0.0
 
 
 # ---------------------------------------------------------------- base poses
-def run_base(phase):
+def run_base(phase, A_THIGH=None):
+    A_THIGH = SH_THIGH if A_THIGH is None else A_THIGH
     th = 2 * math.pi * phase
     s = math.sin(th)
     pose = {}
