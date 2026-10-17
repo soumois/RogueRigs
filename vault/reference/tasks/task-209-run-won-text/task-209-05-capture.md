@@ -3,7 +3,7 @@ id: task-209-05-capture
 description: "cpp: In-game capture"
 parent: task-209-run-won-text
 kind: task
-status: todo
+status: in-progress
 ---
 # capture
 
