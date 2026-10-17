@@ -3,7 +3,7 @@ id: task-224-04-shield-debris-direction-capture
 description: "cpp: one -game run, a shield chaser broken by rr.Debug.BreakShields from the front; capture the fragments leaning to the shield side."
 parent: task-224-shield-debris-direction
 kind: task
-status: todo
+status: in-progress
 ---
 # Shield debris direction: capture
 

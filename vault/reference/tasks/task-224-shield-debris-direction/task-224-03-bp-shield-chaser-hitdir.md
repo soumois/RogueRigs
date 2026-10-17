@@ -3,7 +3,7 @@ id: task-224-03-bp-shield-chaser-hitdir
 description: "bp: BP_ShieldChaser OnShieldBroken spawns NS_ShieldDebris inactive, sets User.HitDirection from GetShieldDebrisDirection, then activates it."
 parent: task-224-shield-debris-direction
 kind: task
-status: in-progress
+status: done
 ---
 # BP_ShieldChaser: pass the throw direction
 
@@ -15,11 +15,11 @@ status: in-progress
 - done_when: compile and save without error; graph read back.
 - editor_state: open (launched by the Orchestrator)
 - token_ceiling: open
-- model: open
-- tokens: open
-- runs: open
+- model: sonnet
+- tokens: input 38, cache write 53259, cache read 667754, output 493
+- runs: 1
 - milestone: M1
-- result: open
+- result: Commit bd5fe0bc: OnShieldBroken keeps the three SetMaterial, then SpawnSystemAtLocation NS_ShieldDebris (location, rotation, auto destroy, auto activate off), SetNiagaraVariable(Vector3) User.HitDirection = GetShieldDebrisDirection, Activate; compile and save ok; doc node updated. Not run in PIE.
 
 ## Relations
 - [[task-224-shield-debris-direction]] — parent global task.
