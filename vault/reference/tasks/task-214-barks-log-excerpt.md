@@ -1,9 +1,9 @@
 ---
 id: task-214-barks-log-excerpt
 description: "Global task: Barks retrieval log excerpt matches T2."
-parent: tasks-to-do-index
+parent: tasks-done-index
 kind: task
-status: in-progress
+status: done
 ---
 # Barks retrieval log excerpt matches T2
 
@@ -13,12 +13,12 @@ status: in-progress
 - gdd_check: [[dialogue-tone]] T2 now reads "Jokes target the company or the robots (owner 2026-10-13)". Owner 2026-10-17 default accepted: the two excerpts "Jokes target the company." in log 20261010-103303-barks.json become "Jokes target the company" (still a verbatim substring).
 - confirmed_by_owner: yes (2026-10-17)
 - milestone: M2
-- next_step: task-214-01-excerpt-fix
-- result: open
+- next_step: none
+- result: Done. Log 20261010-103303-barks.json: the two excerpts now read Jokes target the company (lines 106 and 241, 2a200272); validator exits 0 on barks.json with its log and review; no bark text changed.
 
 ## Subtasks
 1. task-214-01-excerpt-fix — text
 
 ## Relations
-- [[tasks-to-do-index]] — parent index.
+- [[tasks-done-index]] — parent index.
 - [[task-214-01-excerpt-fix]] — step 1, text.

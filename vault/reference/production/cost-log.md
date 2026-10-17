@@ -379,6 +379,7 @@ kind: note
 | [[task-210-04-loading-bp]] | sonnet | 1 | 0k | 69k | 1492k | 1k |
 | [[task-208-02-capture]] | opus | 1 | 0k | 75k | 839k | 4k |
 | [[task-209-05-capture]] | opus | 1 | 0k | 56k | 452k | 1k |
+| [[task-214-01-excerpt-fix]] | sonnet | 1 | 0k | 12k | 31k | 0k |
 
 ## Totals
 | Scope | Input | Cache write | Cache read | Output |

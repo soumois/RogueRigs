@@ -219,3 +219,4 @@ Archive: it exceeds the index size limits of [[_authoring]] on purpose (owner, 2
 - [[task-208-loading-drawn-before-travel]] — Loading screen drawn before the map travel. Status done.
 - [[task-209-run-won-text]] — Run won text at level 4. Status done.
 - [[task-210-transition-screens-english]] — Intermission and loading screens in English (T7). Status done.
+- [[task-214-barks-log-excerpt]] — Barks retrieval log excerpt matches T2. Status done.
