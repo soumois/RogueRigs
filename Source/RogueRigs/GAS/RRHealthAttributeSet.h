@@ -24,6 +24,41 @@ DECLARE_MULTICAST_DELEGATE_OneParam(FRROnDeath, AActor* /*Instigator*/);
 DECLARE_MULTICAST_DELEGATE(FRROnShieldBroken);
 
 /**
+ * One consumed damage hit, as seen by URRHealthAttributeSet::OnAnyDamageReceived (every health set of every world).
+ * Read the source from the effect context: weapon shots carry the weapon as instigator, robot hits the robot, explosions the
+ * explosion instigator with EffectClass URRGE_DamageExplosion.
+ */
+struct FRRDamageEventInfo
+{
+	/** Avatar actor of the damaged ASC (miner, robot); never null when broadcast. */
+	AActor* Target = nullptr;
+
+	/** Original instigator of the effect context (weapon, robot, kamikaze, grid); may be null. */
+	AActor* Instigator = nullptr;
+
+	/** Effect causer of the context (projectile owner weapon, explosion source actor); may be null. */
+	AActor* EffectCauser = nullptr;
+
+	/** Source object of the context (explosion source such as URRBarrelSource); may be null. */
+	const UObject* SourceObject = nullptr;
+
+	/** Class of the executed effect (URRGE_Damage, URRGE_DamageFlat, URRGE_DamageExplosion...); may be null. */
+	const UClass* EffectClass = nullptr;
+
+	/** Raw damage of the hit (IncomingDamage, before the Shield and Health clamp), same value as OnDamageReceived. */
+	float Damage = 0.f;
+
+	/** True when the spec carries Effect.Damage.Critical. */
+	bool bIsCritical = false;
+
+	/** True when this hit killed the target (the hit that broadcast OnDeath). */
+	bool bKilled = false;
+};
+
+/** Fired by every URRHealthAttributeSet after its own per-hit events (OnDamageReceived, OnShieldBroken, OnDeath). */
+DECLARE_MULTICAST_DELEGATE_OneParam(FRROnAnyDamageReceived, const FRRDamageEventInfo& /*Info*/);
+
+/**
  * Health of a combat actor (player, enemies). Health is kept in [0, MaxHealth]: base values are
  * clamped in PreAttributeBaseChange, current values in PreAttributeChange, and Health is brought
  * back under MaxHealth in PostAttributeChange when MaxHealth drops. Damage goes through the
@@ -82,6 +117,13 @@ public:
 	 * kills), when a hit takes Shield from above 0 to 0. Same safety rules as OnDamageReceived.
 	 */
 	FRROnShieldBroken OnShieldBroken;
+
+	/**
+	 * Global per-hit event of every health set (all worlds), broadcast last from PostGameplayEffectExecute with the effect context
+	 * read out (FRRDamageEventInfo). For observers that cannot bind each actor (run log, URRRunLogSubsystem); filter by world.
+	 * Same safety rules as OnDamageReceived.
+	 */
+	static FRROnAnyDamageReceived OnAnyDamageReceived;
 
 	/** Enables or disables the death detection (State.Dead + OnDeath). Enabled by default; call from the owner constructor. */
 	void SetDeathEnabled(bool bEnabled) { bDeathEnabled = bEnabled; }

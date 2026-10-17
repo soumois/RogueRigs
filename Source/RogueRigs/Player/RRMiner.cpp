@@ -28,6 +28,7 @@
 #include "RogueRigs.h"
 #include "Telegraph/RRGroundTelegraphComponent.h"
 #include "Run/RRRunSubsystem.h"
+#include "RunLog/RRRunLogSubsystem.h"
 #include "Weapons/RRAutoFireComponent.h"
 #include "Weapons/RRShotgun.h"
 #include "Weapons/RRTurretLauncher.h"
@@ -161,6 +162,12 @@ void ARRMiner::BeginPlay()
 	if (URRRunSubsystem* Run = URRRunSubsystem::Get(this))
 	{
 		Run->HandleMinerBeginPlay(this);
+	}
+
+	// Run log (sys-run-log): per-level counters reset and bound after the snapshot replay, so replayed cards are not counted.
+	if (URRRunLogSubsystem* RunLog = URRRunLogSubsystem::Get(this))
+	{
+		RunLog->HandleMinerBeginPlay(this);
 	}
 }
 

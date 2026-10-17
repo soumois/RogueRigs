@@ -7,6 +7,8 @@
 
 #include UE_INLINE_GENERATED_CPP_BY_NAME(RRHealthAttributeSet)
 
+FRROnAnyDamageReceived URRHealthAttributeSet::OnAnyDamageReceived;
+
 URRHealthAttributeSet::URRHealthAttributeSet(const FObjectInitializer& ObjectInitializer)
 	: Super(ObjectInitializer)
 {
@@ -98,6 +100,24 @@ void URRHealthAttributeSet::PostGameplayEffectExecute(const FGameplayEffectModCa
 			{
 				LethalEffectClass = Data.EffectSpec.Def ? Data.EffectSpec.Def->GetClass() : nullptr;
 				OnDeath.Broadcast(Data.EffectSpec.GetEffectContext().GetOriginalInstigator());
+			}
+
+			if (OnAnyDamageReceived.IsBound())
+			{
+				const FGameplayEffectContextHandle& Context = Data.EffectSpec.GetEffectContext();
+				FRRDamageEventInfo Info;
+				Info.Target = OwnerASC ? OwnerASC->GetAvatarActor() : GetOwningActor();
+				Info.Instigator = Context.GetOriginalInstigator();
+				Info.EffectCauser = Context.GetEffectCauser();
+				Info.SourceObject = Context.GetSourceObject();
+				Info.EffectClass = Data.EffectSpec.Def ? Data.EffectSpec.Def->GetClass() : nullptr;
+				Info.Damage = Damage;
+				Info.bIsCritical = bIsCritical;
+				Info.bKilled = bDied;
+				if (Info.Target)
+				{
+					OnAnyDamageReceived.Broadcast(Info);
+				}
 			}
 		}
 	}

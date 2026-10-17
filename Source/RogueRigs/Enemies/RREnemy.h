@@ -93,6 +93,9 @@ public:
 	/** Stats read from the CSV at BeginPlay (zeros before, or when the row is missing). */
 	const FRREnemyStatsRow& GetStats() const { return Stats; }
 
+	/** Row of EnemyStats.csv this robot reads (Chaser, Kamikaze...): the robot type name of the run log. */
+	FName GetStatsRowName() const { return StatsRowName; }
+
 	/** The robot health set (Health, MaxHealth, IncomingDamage; OnDamageReceived and OnDeath native events). */
 	URRHealthAttributeSet* GetHealthSet() const { return HealthSet; }
 
