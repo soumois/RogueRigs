@@ -316,14 +316,28 @@ d_edge = np.minimum(np.minimum(abs(u_), abs(u_ - 0.5)), abs(u_ - 1.0)) * STRIPE_
 a_dark = np.clip(0.5 + np.where(u_ < 0.5, 1.0, -1.0) * d_edge / PX_CM, 0.0, 1.0)
 sd_zone = np.maximum(np.maximum(Z_ - 75.75, (Y_ + Z_ - 83.56) / math.sqrt(2)), (-0.3 - (Y_ + Z_)) / math.sqrt(2))
 a_zone = np.where(is_face_fb, np.clip(0.5 + sd_zone / PX_CM, 0.0, 1.0), np.where(is_top | is_cut, 1.0, 0.0))
-alpha = (a_zone * a_dark)[..., None].astype(np.float32)
+# task-226-01: variant A. The plate is charcoal #33363B; the yellow and black stripe zone (bands along the top and the corner cuts, a_zone) keeps
+# the hazard yellow and black stripes. Same formula as shield_colour_test.py variant A: plate*(1-a_zone) + a_zone*(yellow*(1-a_dark) + black*a_dark).
+PLATE_BASE = np.array([0x33, 0x36, 0x3B], dtype=np.float32) / 255.0
+az_ = a_zone[..., None].astype(np.float32); ad_ = a_dark[..., None].astype(np.float32)
 px_new = px.copy()
-slab_yellow = np.broadcast_to(np.asarray(YELLOW, dtype=np.float32), px.shape)
-px_new[slab] = (slab_yellow * (1 - alpha) + np.asarray(BLACK, dtype=np.float32) * alpha)[slab]   # plate, back plate under the removed bracket, groove, sides: flat yellow plus stripes
+slab_col = PLATE_BASE * (1 - az_) + az_ * np.asarray(YELLOW, dtype=np.float32) * (1 - ad_) + az_ * ad_ * np.asarray(BLACK, dtype=np.float32)
+px_new[slab] = slab_col[slab]
 # grip and bolt texels that picked up the plate yellow in the bake (rays grazing the plate) go back to the gunmetal / bolt colour
-yel_like = cov & ~slab & ((px_new[..., 0] - px_new[..., 2]) > 0.25)
+yel_like = cov & ~slab & ((px_new[..., 0] - px_new[..., 2]) > 0.12)
 px_new[yel_like] = GUNMETAL
-px = px_new
+def dilate(img, known, iters=12):
+    """uncovered texels next to a covered one take the mean of the covered neighbours (no stale baked yellow on island borders)"""
+    img = img.copy(); kn = known.copy()
+    for _ in range(iters):
+        acc = np.zeros_like(img); cnt = np.zeros(kn.shape, np.float32)
+        for dy, dx in ((1, 0), (-1, 0), (0, 1), (0, -1), (1, 1), (1, -1), (-1, 1), (-1, -1)):
+            k2 = np.roll(kn, (dy, dx), (0, 1)); i2 = np.roll(img, (dy, dx), (0, 1))
+            acc += i2 * k2[..., None]; cnt += k2
+        upd = ~kn & (cnt > 0)
+        img[upd] = acc[upd] / cnt[upd][:, None]; kn = kn | upd
+    return img
+px = dilate(px_new, cov)
 img.pixels = np.concatenate([px, np.ones((H, W, 1), dtype=np.float32)], axis=-1).reshape(-1).tolist()
 img.filepath_raw = TEX_PATH; img.file_format = "PNG"; img.save()
 img.pack() if False else None
@@ -410,7 +424,15 @@ sl = (slice(ey0, ey0 + eh_px), slice(ex0, ex0 + ew_px))
 ea = emb_a[..., 0]
 layer[sl][..., :3] = emb_rgb * ea[..., None] + layer[sl][..., :3] * (1 - ea[..., None])
 layer[..., 3] = plate_a                                            # emblem lies fully inside the plate
-save_rgba(EMB_TEX, layer.astype(np.float32), "T_ChaserShield_Emblem")
+# task-226-01: yellow parts only (KV and facets) on transparent: no rounded plate, no charcoal rock (same extraction as shield_colour_test.py)
+em_ = layer.astype(np.float32)
+rb_ = em_[..., 0] - em_[..., 2]
+solid_ = (rb_ > 0.9) & (em_[..., 3] > 0.99)
+EY_ = np.median(em_[..., :3][solid_], axis=0); ry_ = float(np.median(rb_[solid_]))
+ea_ = np.clip(rb_ / ry_, 0, 1) * em_[..., 3]
+ea_ = np.where(ea_ < 0.04, 0.0, ea_)
+em_out = np.zeros_like(em_); em_out[..., :3] = EY_; em_out[..., 3] = ea_
+save_rgba(EMB_TEX, em_out, "T_ChaserShield_Emblem")
 print("emblem texture", N, "emblem px", ew_px, eh_px)
 
 # 3) decal quad: parallel to the front plate, DECAL_OFF in front, centred on y = 0 and z = DECAL_Z, planar UV 0..1, last slot
@@ -521,12 +543,12 @@ report = {
     "height_to_width_ratio": round(ratio, 3), "pivot": "bottom-centre", "front_axis": "+X",
     "bbox_min": [round(c, 3) for c in lo], "bbox_max": [round(c, 3) for c in hi],
     "materials": [m.name for m in mesh.materials], "textures": ["T_ChaserShield_BaseColor.png", "T_ChaserShield_Emblem.png"], "texture_px": [TEX_PX, TEX_PX],
-    "texture_note": "diffuse colour baked from the Meshy mesh (selected to active); plate faces repainted flat yellow, stripes painted by one function (60 degree lines, period 8.5 cm) over the front and back top bands, corner bands and the whole top face",
+    "texture_note": "diffuse colour baked from the Meshy mesh (selected to active); plate faces repainted charcoal #33363B (task-226-01, variant A), stripes painted by one function (60 degree lines, period 8.5 cm) over the front and back top bands, corner bands and the whole top face",
     "colours_srgb": {"yellow": [round(float(c), 3) for c in YELLOW], "black": [round(float(c), 3) for c in BLACK], "gunmetal": [round(float(c), 3) for c in GUNMETAL]},
     "uv_layers": [u.name for u in mesh.uv_layers], "uv_checks": {"UVMap": chk_uv, "LightMap": chk_lm, "decal": chk_decal},
     "decal": {"material": "M_ChaserShield_Emblem (last slot, alpha blended / Masked in Unreal)", "texture": "T_ChaserShield_Emblem.png", "texture_px": [EMB_TEX_PX, EMB_TEX_PX],
               "size_cm": {"y_width": DECAL_W, "z_height": DECAL_H}, "corner_radius_cm": DECAL_R, "offset_in_front_of_plate_cm": DECAL_OFF, "emblem_height_fraction": EMB_FILL,
-              "plate_colour_srgb_hex": "#1A1F25", "centre_cm_from_pivot": [round(X_FRONT + DECAL_OFF + SHIFT.x, 3), 0.0, DECAL_Z], "front_face_x_cm_from_pivot": round(X_FRONT + SHIFT.x, 3),
+              "plate_colour_srgb_hex": "none (yellow parts only on transparent, task-226-01)", "centre_cm_from_pivot": [round(X_FRONT + DECAL_OFF + SHIFT.x, 3), 0.0, DECAL_Z], "front_face_x_cm_from_pivot": round(X_FRONT + SHIFT.x, 3),
               "cutout_png": "Art/Source/kessler-voss-logo/20261017-kessler-voss-emblem-4-cutout.png", "lightmap_note": "body LightMap scaled by 0.95 to free a strip for the decal"},
     "grip_offset_cm": grip_offset,
     "grip_offset_note": "centre of the bounding box of the middle grip block, from the pivot, Unreal axes (x, -y, z) in cm; front is +X so x is negative (behind the plate)",
