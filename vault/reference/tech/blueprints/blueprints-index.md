@@ -14,4 +14,4 @@ One node per Blueprint, template `blueprint.md`.
 - [[blueprints-player-index]] — Miner, drone, controller, game mode and the weapon Blueprints: the player side.
 - [[blueprints-enemies-index]] — The robot Blueprints: chaser, shield chaser, kamikaze, shooter, heavy.
 - [[blueprints-fx-index]] — Pickups, explosion and heal visuals, damage numbers: effects and collectibles.
-- [[blueprints-ui-index]] — WBP_HUD and its seven panels plus the HUD refactor audit.
+- [[blueprints-ui-index]] — WBP_HUD, its panels, WBP_Intermission plus the HUD refactor audit.
