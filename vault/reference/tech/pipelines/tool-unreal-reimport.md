@@ -22,6 +22,12 @@ MSYS_NO_PATHCONV=1 timeout 600 powershell.exe -NoProfile -Command "& 'C:\Program
 - One line per asset: `REIMPORT <path> ok method=... source=... bounds_min=... bounds_max=... slots=[...] unchanged`, or `CHANGED (before: ...)`, or `REIMPORT <path> error <reason>`. A new asset in the folder counts as an error.
 - Exit code: 0 if every asset succeeded; otherwise the script raises, the commandlet logs `Python script executed with errors` and the process returns -1 (Git Bash through PowerShell shows 127). Other assets in the list are still processed.
 
+## Companion scripts (task-220-06, same folder, editor closed)
+- `reimport_texture.py <paths>` (`-run=pythonscript`): Interchange reimport from the stored source, writes back compression, mips, filter, sRGB, streaming, address and LOD group, saves; line `TEXREIMPORT <path> ok ... size=WxH ...`.
+- `static_mesh_build_settings.py <paths>` (`-ExecutePythonScript`: editor subsystems are None in the commandlet): Generate Lightmap UVs off, full precision UVs, LightMapCoordinateIndex 1, rebuild, save; line `BUILDSETTINGS` with slot materials.
+- `check_uv_channel.py <paths>` (`-ExecutePythonScript`, read-only): RENDER_DATA UV channel 2 per material ID, bins (i + 0.5) / 10, V flipped by the import (1 - centre); lines `UVCHECK`, off_bin and mixed must be 0.
+- A mesh first imported by FbxImportUI keeps `FbxStaticMeshImportData` (no `get_translator_settings`): this tool falls back to `import_task`, which resets Generate Lightmap UVs on; run `static_mesh_build_settings.py` after it.
+
 ## Limits
 - Editor closed, one Unreal process at a time; the Python Editor Script plugin must stay enabled.
 - Static meshes only; materials are never created; the asset is saved even when nothing changed (binary diff): check `git status` and restore unchanged `.uasset` files.
