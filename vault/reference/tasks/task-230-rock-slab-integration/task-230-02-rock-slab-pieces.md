@@ -3,7 +3,7 @@ id: task-230-02-rock-slab-pieces
 description: "Dual-grid slab piece meshes: full, edge, outer corner, inner corner, diagonal; Blender script."
 parent: task-230-rock-slab-integration
 kind: task
-status: in-progress
+status: done
 ---
 # Dual-grid slab piece meshes: full, edge, outer corner, inner corner, diagonal; Blender script
 
@@ -15,11 +15,11 @@ status: in-progress
 - done_when: all 5 FBX and previews exist; seams match when pieces are tiled (preview of a test layout); budget met; previews sent to the owner; committed.
 - editor_state: any
 - token_ceiling: 60000
-- model: open
-- tokens: open
-- runs: open
+- model: sonnet
+- tokens: input 44, cache write 94867, cache read 1326699, output 22597
+- runs: 1
 - milestone: M2
-- result: open
+- result: 5 FBX SM_RockSlab_{Full,Edge,Outer,Inner,Diagonal}_01 + rock_slab_pieces.py + report + 12 previews (commit aa575a87); tris 2/43/42/58/86 within budget; seams fixed at border midpoints, 0 mismatch on 114 pairs of an 8 x 8 layout; vertex colour R rim, G sides; diagonal as a joined saddle; validated by the owner 2026-10-17; open: subtle side facets, per-cell outline rhythm, Unreal Y flip to check in 11
 
 ## Relations
 - [[task-230-rock-slab-integration]] — parent global task.

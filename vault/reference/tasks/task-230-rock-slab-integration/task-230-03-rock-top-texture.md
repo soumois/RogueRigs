@@ -3,7 +3,7 @@ id: task-230-03-rock-top-texture
 description: "Tileable painted rock top texture for the world-UV slab material."
 parent: task-230-rock-slab-integration
 kind: task
-status: todo
+status: in-progress
 ---
 # Tileable painted rock top texture for the world-UV slab material
 
