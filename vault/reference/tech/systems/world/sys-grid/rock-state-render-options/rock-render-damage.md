@@ -7,7 +7,7 @@ kind: doc
 # Rock render: damage, ore, weak rock
 
 ## Cracks (recommended)
-Damage d = 1 - remaining health / max health per cell. A dual-grid piece spans quadrants of 4 cells, so it carries 4 custom data floats (one d per quadrant); the material picks the quadrant from the piece-local position and shows the world-space crack mask where mask > 1 - d. Same world UV in every piece, so cracks run across piece seams ([[rock-render-top-texture]]). Cost: 4 floats per piece written on each damage tick of a dug cell (4 pieces, `bMarkRenderStateDirty` per touched HISM per frame); no geometry. Thresholds (proposed, owner to confirm): cracks fade in from d 0.2, full at 0.6.
+Damage d = 1 - remaining health / max health per cell. A dual-grid piece spans quadrants of 4 cells, so it carries 4 custom data floats (one d per quadrant); the material picks the quadrant from the piece-local position and shows the world-space crack mask where mask > 1 - d. Same world UV in every piece, so cracks run across piece seams ([[rock-render-top-texture]]). Cost: 4 floats per piece written on each damage tick of a dug cell (4 pieces, `bMarkRenderStateDirty` per touched HISM per frame); no geometry. Thresholds: cracks appear as soon as d > 0 (any block below 100 %, owner 2026-10-17), growing to full at 0.6 (proposed).
 
 ## Tilted plates
 Options:

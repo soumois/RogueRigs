@@ -19,7 +19,8 @@ Target: owner image C (`Art/Source/rock-look/20261017-131704-rock-look-2.png`): 
 - Nanite: assumed for the grid pieces (owner); contra-indications to check at integration: WPO cost (outline warp, shake), dynamic instance add/remove, very low-poly pieces.
 - Variants: one per piece shape for now; the system must already support several (variant index per instance, chosen by cell hash).
 - A1: relaxed to level 3 (painted colour, normal and roughness maps allowed; [[art-style-guide]]).
-- Still open: dual grid replacing the per-cell rule, triangle budget, rim as vertex colour or slot, crack thresholds, weak rock.
+- Cracks: shown as soon as a block is below 100 % health (owner).
+- Still open: dual grid replacing the per-cell rule, triangle budget, rim as vertex colour or slot, weak rock.
 
 ## Risks
 - Render and collision indices stop being in lockstep: render pieces are per corner, collision stays per cell. The index maps and the `RogueRigs.Dig.*` instance-map tests must be rewritten (estimate 2-3 days for the whole change, not measured).
