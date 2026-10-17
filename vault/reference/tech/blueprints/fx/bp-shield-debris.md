@@ -27,7 +27,7 @@ kind: doc
 - deviations: (1) no user parameters, count and mesh index are fixed; (2) forward direction from the owner rotation, not a passed hit direction; (3) the owner must be placed at the shield chaser's actor origin with its yaw, because the offsets include the guard-pose tilt but not the actor yaw.
 - events: none
 - logic_in_bp: none
-- assets: not yet assigned to a Blueprint (later task-222 subtasks).
+- assets: spawned by BP_ShieldChaser OnShieldBroken at the actor location and rotation, bAutoDestroy true ([[bp-shield-chaser]], task-222-04).
 - tools_that_worked: NiagaraToolset_System CreateNiagaraSystem (template NS_RobotDebris), SetRendererData (Meshes array replace, only `mesh` per entry), SetStackInputData (HlslExpression, NiagaraInt32 constant; the SpawnBurst module is in `EmitterUpdateScript`, not the spawn script), RemoveUserVariables, GetEmitterInputValues, GetStackIssues, GetSystemCompileState, AssetTools save_assets. Tools reach through `call_tool` with `toolset_name`.
 - tools_that_failed: none new. `SetStackInputData` with scriptName `EmitterSpawnScript` for SpawnBurst_Instantaneous: module not found (wrong script).
 - verified: compiles UpToDate (system spawn/update, particle spawn/update, GPU compute scripts all UpToDate), no stack error or warning (2 version-upgrade info notes), renderer meshes read back (5 in order), Mesh Index expression read back, user variables empty, saved (not dirty). NOT verified: `ExecIndex()` giving index 0 to 4 in the GPU spawn script (compiled, but particle values on GPU are not readable), the throw feel, the pieces' look and collision; not run in PIE or in game.
@@ -36,4 +36,5 @@ kind: doc
 ## Relations
 - [[blueprints-fx-index]] — parent index.
 - [[bp-robot-debris]] — the system it was duplicated from.
+- [[bp-shield-chaser]] — the Blueprint that spawns it.
 - [[enemy-death]] — design of the death debris.
