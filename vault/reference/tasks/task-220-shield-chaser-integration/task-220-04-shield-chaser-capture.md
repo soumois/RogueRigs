@@ -19,7 +19,7 @@ status: review
 - tokens: open
 - runs: 1
 - milestone: M1
-- result: Commit c4b1e8ef (one agent for 220-04, 221-04, 222-05; 3 launches, 2 played): shield-chaser-ingame-run.png (shield chaser running with the pavise in front, small at the game camera) and shield-chaser-ingame-bash.png (contact with the miner, bash pose not confirmed); broken frame missing: 30 health and 30 shield, the breaking hit also kills it, no debug command drains the shield only; in some frames a chaser next to the miner disappears or blurs during the attack (cause unknown: attack clip in the material?); camera zoom not available. No translucent cylinder seen.
+- result: Commit c4b1e8ef (one agent for 220-04, 221-04, 222-05; 3 launches, 2 played): shield-chaser-ingame-run.png (shield chaser running with the pavise in front, small at the game camera) and shield-chaser-ingame-bash.png (contact with the miner, bash pose not confirmed); broken frame missing: 30 health and 30 shield, the breaking hit also kills it, no debug command drains the shield only; in some frames a chaser next to the miner disappears or blurs: explained 2026-10-17, not a bug: the 0.1 s wind-up telegraph blink (ARREnemy::UpdateTelegraphBlink, WindUpFlashRate 12, meshes hidden half of each cycle, the same on the plain chaser), and the screenshot drop to about 7 fps stretched it over several shots; T_ShieldChaserAnim rows all valid unit quaternions with no sign flip, the M_ShieldChaser_Anim WPO code matches the chaser one; camera zoom not available. No translucent cylinder seen.
 
 ## Relations
 - [[task-220-shield-chaser-integration]] — parent global task.
