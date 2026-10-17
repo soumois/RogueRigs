@@ -3,7 +3,7 @@ id: task-210-transition-screens-english
 description: "Global task: Intermission and loading screens in English (T7)."
 parent: tasks-to-do-index
 kind: task
-status: todo
+status: in-progress
 ---
 # Intermission and loading screens in English (T7)
 

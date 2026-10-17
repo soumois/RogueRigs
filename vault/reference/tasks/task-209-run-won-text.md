@@ -13,7 +13,7 @@ status: in-progress
 - gdd_check: [[run-structure]] (win at level 4), [[extraction]], [[dialogue-tone]] T7 (English on screen). Owner 2026-10-17: the text agent proposes, style-guide reviews, the owner sees it before integration. Owner chose CLAIM STRIPPED with its subtitle and option A: validator and loader accept a screen texts file, widgets read it through the text content subsystem.
 - confirmed_by_owner: yes (2026-10-17)
 - milestone: M2
-- next_step: task-209-03-screen-texts-code
+- next_step: task-209-04-run-won-bp
 - result: open
 
 ## Subtasks

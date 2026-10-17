@@ -3,7 +3,7 @@ id: task-207-02-capture
 description: "cpp: In-game capture"
 parent: task-207-intermission-hide-hud
 kind: task
-status: todo
+status: in-progress
 ---
 # capture
 

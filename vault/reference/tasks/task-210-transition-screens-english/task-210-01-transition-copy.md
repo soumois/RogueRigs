@@ -3,7 +3,7 @@ id: task-210-01-transition-copy
 description: "text: Write the English texts of the intermission"
 parent: task-210-transition-screens-english
 kind: task
-status: todo
+status: in-progress
 ---
 # transition-copy
 

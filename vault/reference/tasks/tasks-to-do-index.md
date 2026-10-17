@@ -14,4 +14,4 @@ A global task moves to [[tasks-done-index]] when it is done (`vault/scripts/task
 - [[task-207-intermission-hide-hud]] — HUD and subtitles hidden during intermission and loading. Status in-progress.
 - [[task-208-loading-drawn-before-travel]] — Loading screen drawn before the map travel. Status in-progress.
 - [[task-209-run-won-text]] — Run won text at level 4. Status in-progress.
-- [[task-210-transition-screens-english]] — Intermission and loading screens in English (T7). Status todo.
+- [[task-210-transition-screens-english]] — Intermission and loading screens in English (T7). Status in-progress.
