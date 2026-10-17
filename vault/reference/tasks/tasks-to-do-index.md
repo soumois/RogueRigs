@@ -11,3 +11,5 @@ A global task moves to [[tasks-done-index]] when it is done (`vault/scripts/task
 ## Relations
 - [[tasks-index]] — parent index.
 - [[task-188-editor-lock]] — Editor lock shared by sessions: a lock file, a node script to take, release and read it, and the runbook and protocol rules to use it. Status todo.
+- [[task-205-level-layouts-240]] — the Level-Design agent writes the layouts of levels 2 to 4 directly at 240 x 240, refining its rules so a good terrain is not luck. Status todo.
+- [[task-206-level-to-level]] — a run chains 4 levels: after each extraction an intermission recap screen, the next layout prepared in the background, a loading screen if not ready; PIE still starts directly. Status todo.
