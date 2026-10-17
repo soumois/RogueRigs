@@ -9,7 +9,7 @@ status: approved
 
 | Element | Color |
 |---|---|
-| Breakable rock | light grey tinted violet, visible cracks |
+| Breakable rock | light grey tinted violet; intact rock has a smooth top with no cracks; cracks, then tilted plates, show damage (owner 2026-10-17, task-219, [[rock-look-reference]]) |
 | Ore rock (Duskite) | same base + glowing violet crystals (kept, owner 2026-10-10) |
 | Barrel | orange |
 | Heal ore and heal pickups | red |

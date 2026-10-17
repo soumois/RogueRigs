@@ -1,6 +1,6 @@
 ---
 id: readability-rules
-description: "Rules that keep the arena readable in every biome: brightness tiers, cracks mean breakable, enemy-only colors, UI-only rarity colors."
+description: "Rules that keep the arena readable in every biome: brightness tiers, cracks mean damaged rock, enemy-only colors, UI-only rarity colors."
 parent: art-audio-index
 kind: rule
 applies_to: art, vfx, level-design, image prompts
@@ -8,7 +8,7 @@ applies_to: art, vfx, level-design, image prompts
 # Readability rules
 
 - Terrain separates by brightness: breakable rock is lighter; ore glows.
-- Cracks always mean "breakable".
+- Cracks always mean "damaged, digs faster" (owner 2026-10-17, was "breakable"): intact breakable rock is smooth, cracks then tilted plates show lost health or weaker rock.
 - Acid green and steel blue are reserved for enemies in every biome; terrain never uses enemy colors.
 - Red means enemy fire (shots, targeting lasers: moving lines) or healing (heal ore and pickups: static on the floor).
 - Orange means "explodes": barrels and the kamikaze's core.
