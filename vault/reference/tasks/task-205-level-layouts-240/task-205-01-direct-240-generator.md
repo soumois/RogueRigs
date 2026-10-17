@@ -3,7 +3,7 @@ id: task-205-01-direct-240-generator
 description: "cpp: Write Tools/layout_gen/arena_gen_fine.js."
 parent: task-205-level-layouts-240
 kind: task
-status: in-progress
+status: done
 ---
 # direct-240-generator
 
@@ -15,11 +15,11 @@ status: in-progress
 - done_when: running it with the default parameters and two different seeds writes two layouts to a scratch folder that pass node Tools/validate_layout.js with arena_m1_fine.brief.json; same seed twice gives byte-identical output; the existing scripts and Content/RogueRigs/Data/Levels/ are unchanged; recipe doc updated; committed.
 - editor_state: any
 - token_ceiling: 60000
-- model: open
-- tokens: open
-- runs: open
+- model: opus
+- tokens: input 52, cache write 87969, cache read 1490989, output 15325
+- runs: 1
 - milestone: M2
-- result: open
+- result: Tools/layout_gen/arena_gen_fine.js + params/fine_default.json (3b396e76): recipe native at 240 x 240, lengths x3, areas x9, CLI --params --seed --name --out --brief with seed search; seeds 3 and 100 pass the validator with the arena_m1_fine brief, deterministic. Rule changes: barrels on reachable floor against a wall, heal veins placed directly 2 x 2, looped passage repair, rock islands <= 9 cells to floor, outline jitter per seed; shortest-corridor ranking not ported. Not loaded in Unreal.
 
 ## Relations
 - [[task-205-level-layouts-240]] — parent global task.

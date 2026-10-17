@@ -356,6 +356,7 @@ kind: note
 | [[task-203-09-health-bar-visual-check]] | opus | 1 | 0k | 53k | 395k | 2k |
 | [[task-204-01-empty-bar-color]] | sonnet | 1 | 0k | 40k | 403k | 1k |
 | [[task-204-02-empty-bar-capture]] | opus | 1 | 0k | 27k | 145k | 1k |
+| [[task-205-01-direct-240-generator]] | opus | 1 | 0k | 88k | 1491k | 15k |
 
 ## Totals
 | Scope | Input | Cache write | Cache read | Output |

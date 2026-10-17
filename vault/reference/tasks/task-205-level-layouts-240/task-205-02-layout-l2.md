@@ -3,7 +3,7 @@ id: task-205-02-layout-l2
 description: "level-design: Write arena_l2."
 parent: task-205-level-layouts-240
 kind: task
-status: todo
+status: in-progress
 ---
 # layout-l2
 
