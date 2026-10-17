@@ -3,7 +3,7 @@ id: task-229-01-pickup-simple-collisions
 description: "cpp headless: simple collision primitives on SM_XPNut (box), SM_XPCubeBig (box), the ore chunk variants and the heal pickup mesh, glow disc excluded."
 parent: task-229-pickup-physics
 kind: task
-status: todo
+status: in-progress
 ---
 # Pickup simple collisions
 
