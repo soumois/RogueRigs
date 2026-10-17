@@ -1,0 +1,33 @@
+{
+  "run_id": "20261017-153218",
+  "items": [
+    {
+      "file": "Art/Textures/T_RockTop.png",
+      "verdict": "fail",
+      "rule": "color-code",
+      "reason": "The texture reads as saturated lavender (violet with a little grey) rather than light grey tinted violet, and drifts toward the Duskite ore violet.",
+      "correction": "Desaturate the base colour in the material by about 50-60% and raise value slightly, tint kept as a material parameter."
+    },
+    {
+      "file": "Art/Textures/T_RockTop.png",
+      "verdict": "pass",
+      "rule": "A1",
+      "reason": "Low-contrast painted tiling texture that will not hide facets or silhouette.",
+      "correction": ""
+    },
+    {
+      "file": "Art/Textures/T_RockTop.png",
+      "verdict": "pass",
+      "rule": "readability-rules",
+      "reason": "No cracks, no glow-like highlights, no enemy colours; rock-vs-floor brightness not judgeable from the images.",
+      "correction": ""
+    },
+    {
+      "file": "Art/Source/rock-top-texture/20261017-153218-rock-top-texture-2-tiled3x3.png",
+      "verdict": "pass",
+      "rule": "A13",
+      "reason": "No visible seams, no rubble; faint periodic blotch repetition only, to be broken by the macro sample.",
+      "correction": ""
+    }
+  ]
+}
