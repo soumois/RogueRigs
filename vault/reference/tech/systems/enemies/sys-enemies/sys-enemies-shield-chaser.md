@@ -14,9 +14,10 @@ kind: doc
 - spawning ([[sys-spawner-director]]): pack type `ShieldChasers` = chaser 6–12 + shield chaser 2–4 + kamikaze 2–3 (mean 3 of 12 chasers = 25 %), drawn by the phase `FlowShields` (60 s, the Flow weights with `ShieldChasers` in place of `Chasers`). Lone robots, the Heavies escort and hordes stay plain chasers (choice of task-028-01). The spawner resolves `ARRShieldChaser` to the `WeightedEnemyClasses` entry whose nearest native class is `ARRShieldChaser`, so its Blueprint must derive from `ARRShieldChaser` directly (a child of `BP_Chaser` would resolve as a chaser); without that entry the native class spawns (no mesh).
 - depends_on: [[sys-enemies-chaser]], [[sys-damage]], [[sys-gas-core]].
 - implements: [[enemy-chaser]] (shield variant).
-- gotchas: the shield works on any robot whose row has Shield > 0, but only `ARRShieldChaser` forwards the break to a Blueprint. Explosions also hit the shield first. Tests: `RogueRigs.ShieldChaser.*` ([[sys-automation-tests]]).
+- gotchas: the shield works on any robot whose row has Shield > 0, but only `ARRShieldChaser` forwards the break to a Blueprint. Explosions also hit the shield first. Tests: `RogueRigs.ShieldChaser.*` ([[sys-automation-tests]]). Debug: `rr.Debug.BreakShields [RadiusUU]` breaks the shield of living shield chasers, health kept, through the normal OnShieldBroken path ([[sys-cheats]]).
 
 ## Relations
 - [[sys-enemies]] — parent index.
 - [[sys-enemies-chaser]] — the chaser it extends.
 - [[sys-spawner-director]] — the pack type and phase that spawn it.
+- [[sys-cheats]] — rr.Debug.BreakShields, the debug command that breaks the shield.

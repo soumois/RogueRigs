@@ -1,4 +1,4 @@
-// Rogue Rigs - visual check console commands for unattended -game checks (debug only, compiled out of shipping): rr.Debug.Shots (timed screenshots + damage number state), rr.Debug.CritChance (weapon crit chance override), rr.Debug.Delayed (runs a command later), rr.Debug.DamageMiner (direct hit on the player miner, logs the vignette state for 6 frames), rr.Debug.SpawnNear (actors around the miner), rr.Debug.Objective (miner moved to the console or shuttle), rr.Debug.ScreenText (logs a screen text item through the text subsystem).
+// Rogue Rigs - visual check console commands for unattended -game checks (debug only, compiled out of shipping): rr.Debug.Shots (timed screenshots + damage number state), rr.Debug.CritChance (weapon crit chance override), rr.Debug.Delayed (runs a command later), rr.Debug.DamageMiner (direct hit on the player miner, logs the vignette state for 6 frames), rr.Debug.SpawnNear (actors around the miner), rr.Debug.Objective (miner moved to the console or shuttle), rr.Debug.ScreenText (logs a screen text item through the text subsystem), rr.Debug.BreakShields (drains the shield of living shield chasers, health kept).
 
 #include "CoreMinimal.h"
 #include "AbilitySystemComponent.h"
@@ -11,11 +11,14 @@
 #include "Objectives/RRRunFlowSubsystem.h"
 #include "Objectives/RRShuttle.h"
 #include "Damage/RRDamageNumberSubsystem.h"
+#include "Damage/RRGE_DamageExplosion.h"
 #include "Debug/RRCheats.h"
 #include "Enemies/RREnemy.h"
+#include "Enemies/RRShieldChaser.h"
 #include "Engine/Engine.h"
 #include "Engine/LocalPlayer.h"
 #include "GameFramework/PlayerController.h"
+#include "GAS/RRGameplayTags.h"
 #include "GAS/RRHealthAttributeSet.h"
 #include "Player/RRMiner.h"
 #include "Engine/World.h"
@@ -31,6 +34,7 @@
 #include "UObject/UObjectIterator.h"
 #include "Weapons/RRWeapon.h"
 #include "Weapons/RRWeaponAttributeSet.h"
+#include "World/RRWorld.h"
 
 #if !UE_BUILD_SHIPPING
 
@@ -381,6 +385,62 @@ namespace RRScreenshotCommands
 			UE_LOG(LogRogueRigs, Log, TEXT("rr.Debug.ScreenText: %s found=%d title='%s' subtitle='%s' lines='%s' labels='%s' (GetScreenTitle='%s', GetScreenSubtitle='%s')"),
 				*Args[0], bFound ? 1 : 0, *Screen.Title.ToString(), *Screen.Subtitle.ToString(), *Join(Screen.Lines), *Join(Screen.Labels),
 				*TextContent->GetScreenTitle(Id).ToString(), *TextContent->GetScreenSubtitle(Id).ToString());
+		}),
+		ECVF_Cheat);
+
+	/**
+	 * rr.Debug.BreakShields [RadiusUU]: breaks the shield of every living ARRShieldChaser (within RadiusUU, 2D, of the first living
+	 * miner when given), health kept. Each one gets a URRGE_DamageExplosion of exactly its Shield value, applied to itself: the health
+	 * set takes it all from Shield (nothing left for Health) and broadcasts OnShieldBroken the normal way, so the Blueprint swaps its
+	 * materials and plays the burst as on a hit. Side effects of a hit: one damage number, one run log damage line.
+	 */
+	FAutoConsoleCommandWithWorldAndArgs BreakShieldsCommand(
+		TEXT("rr.Debug.BreakShields"),
+		TEXT("rr.Debug.BreakShields [RadiusUU]: drains the shield of every living shield chaser (within RadiusUU of the first living miner when given), health kept; fires OnShieldBroken."),
+		FConsoleCommandWithWorldAndArgsDelegate::CreateLambda([](const TArray<FString>& Args, UWorld* World)
+		{
+			World = World ? World : RRCheats::FindCheatWorld();
+			if (!World)
+			{
+				UE_LOG(LogRogueRigs, Warning, TEXT("rr.Debug.BreakShields: no game world."));
+				return;
+			}
+			const bool bUseRadius = Args.Num() > 0;
+			const float Radius = bUseRadius ? FMath::Max(0.f, FCString::Atof(*Args[0])) : 0.f;
+			const ARRMiner* Miner = bUseRadius ? RRWorld::FindMiner(World, /*bLivingOnly*/ true) : nullptr;
+			if (bUseRadius && !Miner)
+			{
+				UE_LOG(LogRogueRigs, Warning, TEXT("rr.Debug.BreakShields: a radius needs a living miner."));
+				return;
+			}
+			int32 Broken = 0;
+			int32 Living = 0;
+			for (TActorIterator<ARRShieldChaser> It(World); It; ++It)
+			{
+				ARRShieldChaser* Chaser = *It;
+				UAbilitySystemComponent* ASC = !Chaser->IsDead() ? Chaser->GetAbilitySystemComponent() : nullptr;
+				if (!ASC || (Miner && FVector::Dist2D(Chaser->GetActorLocation(), Miner->GetActorLocation()) > Radius))
+				{
+					continue;
+				}
+				++Living;
+				const float Shield = Chaser->GetShield();
+				if (Shield <= 0.f)
+				{
+					continue;
+				}
+				// Same path as an explosion hit (URRStressSubsystem::KillEnemy): damage equal to the shield, all absorbed by it.
+				FGameplayEffectSpecHandle Spec = ASC->MakeOutgoingSpec(URRGE_DamageExplosion::StaticClass(), 1.f, ASC->MakeEffectContext());
+				if (!Spec.IsValid())
+				{
+					continue;
+				}
+				Spec.Data->SetSetByCallerMagnitude(RRGameplayTags::Data_Damage, Shield);
+				ASC->ApplyGameplayEffectSpecToSelf(*Spec.Data);
+				Broken += Chaser->HasShield() ? 0 : 1;
+			}
+			UE_LOG(LogRogueRigs, Log, TEXT("rr.Debug.BreakShields: %d shields broken of %d living shield chasers%s."), Broken, Living,
+				Miner ? *FString::Printf(TEXT(" within %.0f uu of %s"), Radius, *Miner->GetName()) : TEXT(""));
 		}),
 		ECVF_Cheat);
 }
