@@ -3,7 +3,7 @@ id: task-220-04-shield-chaser-capture
 description: "cpp: -game capture of a shield chaser running with its shield, bashing, and after the shield breaks; frames for the owner."
 parent: task-220-shield-chaser-integration
 kind: task
-status: todo
+status: review
 ---
 # Shield chaser: in-game capture
 
@@ -17,9 +17,9 @@ status: todo
 - token_ceiling: open
 - model: open
 - tokens: open
-- runs: open
+- runs: 1
 - milestone: M1
-- result: Paused by the owner (2026-10-17: he needs the editor for a demo); the first capture run was stopped before any image, nothing committed. Resume: relaunch this subtask with the editor closed.
+- result: Commit c4b1e8ef (one agent for 220-04, 221-04, 222-05; 3 launches, 2 played): shield-chaser-ingame-run.png (shield chaser running with the pavise in front, small at the game camera) and shield-chaser-ingame-bash.png (contact with the miner, bash pose not confirmed); broken frame missing: 30 health and 30 shield, the breaking hit also kills it, no debug command drains the shield only; in some frames a chaser next to the miner disappears or blurs during the attack (cause unknown: attack clip in the material?); camera zoom not available. No translucent cylinder seen.
 
 ## Relations
 - [[task-220-shield-chaser-integration]] — parent global task.
