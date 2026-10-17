@@ -2,6 +2,9 @@
 
 #include "Objectives/RRRunFlowSubsystem.h"
 
+#include "Run/RRRunSubsystem.h"
+#include "Run/RRRunTransitionSubsystem.h"
+
 #include "Debug/RRCheatSettings.h"
 #include "Engine/World.h"
 #include "EngineUtils.h"
@@ -573,7 +576,17 @@ bool URRRunFlowSubsystem::EndRun(bool bSuccess)
 	}
 	EnterEndPause();
 
-	UE_LOG(LogRogueRigs, Log, TEXT("URRRunFlowSubsystem: run ended, %s."), bSuccess ? TEXT("miner extracted") : TEXT("shuttle missed, run lost"));
+	// Levels 1 to N-1 of a run (task-206-03): a success opens the intermission instead of the success end screen.
+	URRRunTransitionSubsystem* Transition = bSuccess ? URRRunTransitionSubsystem::Get(this) : nullptr;
+	if (Transition && Transition->HandleLevelExtracted(Miner))
+	{
+		UE_LOG(LogRogueRigs, Log, TEXT("URRRunFlowSubsystem: level ended, miner extracted: intermission (no end screen)."));
+		UpdateLocatorTarget();
+		return true;
+	}
+
+	UE_LOG(LogRogueRigs, Log, TEXT("URRRunFlowSubsystem: run ended, %s."), bSuccess ? (Transition && Transition->IsRunWon() ? TEXT("miner extracted, run won") : TEXT("miner extracted"))
+		: TEXT("shuttle missed, run lost"));
 	OnRunEnded.Broadcast(bSuccess);
 	UpdateLocatorTarget();
 	return true;
@@ -585,6 +598,11 @@ void URRRunFlowSubsystem::RestartLevel()
 	if (!World)
 	{
 		return;
+	}
+	// Run lost or won (task-206-03): the restart begins a new run at level 1.
+	if (URRRunSubsystem* Run = URRRunSubsystem::Get(this))
+	{
+		Run->ResetRun();
 	}
 	const FString LevelName = UGameplayStatics::GetCurrentLevelName(World, true);
 	UE_LOG(LogRogueRigs, Log, TEXT("URRRunFlowSubsystem: restarting level %s."), *LevelName);

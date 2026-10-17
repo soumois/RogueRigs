@@ -134,6 +134,9 @@ public:
 	 */
 	void Prewarm(TSubclassOf<AActor> Class, int32 Count, int32 MaxFrames);
 
+	/** Prewarm creations still queued (all classes); 0 once every Prewarm batch is served. */
+	int32 GetPendingPrewarmCount() const;
+
 	/** Drops a pending request (its callbacks never run) and resets Handle. False when it was not pending. */
 	bool CancelRequest(FRRPoolRequestHandle& Handle);
 

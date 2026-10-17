@@ -78,6 +78,18 @@ void ARREnemySpawner::Tick(float DeltaSeconds)
 	{
 		QueuePoolPrewarm();
 	}
+	if (bPoolPrewarmQueued && !bPoolPrewarmFinished)
+	{
+		++PoolPrewarmTicks;
+		const URRActorPoolSubsystem* Pool = GetWorld() ? GetWorld()->GetSubsystem<URRActorPoolSubsystem>() : nullptr;
+		if (!Pool || Pool->GetPendingPrewarmCount() == 0)
+		{
+			bPoolPrewarmFinished = true;
+			UE_LOG(LogRogueRigs, Log, TEXT("Spawner %s: pool prewarm done (%d spawner ticks after it was queued)%s."), *GetName(), PoolPrewarmTicks,
+				Pool ? TEXT("") : TEXT(", no pool"));
+			OnPoolPrewarmFinished.Broadcast(this);
+		}
+	}
 	RecordHeadingSample();
 	RecycleFarEnemies(DeltaSeconds);
 	if (!IsSpawningEnabled())
@@ -134,7 +146,16 @@ void ARREnemySpawner::Tick(float DeltaSeconds)
 
 bool ARREnemySpawner::IsSpawningEnabled() const
 {
-	return bEnabled && RRSpawner::CVarEnabled.GetValueOnGameThread() != 0;
+	return bEnabled && !bSpawningHeld && RRSpawner::CVarEnabled.GetValueOnGameThread() != 0;
+}
+
+bool ARREnemySpawner::IsPoolPrewarmComplete() const
+{
+	if (!bPrewarmPools || RRSpawner::CVarPoolPrewarm.GetValueOnGameThread() == 0)
+	{
+		return !bPoolPrewarmQueued || bPoolPrewarmFinished;
+	}
+	return bPoolPrewarmQueued && bPoolPrewarmFinished;
 }
 
 void ARREnemySpawner::SetViewRectangleOverride(FBox2D Rectangle)

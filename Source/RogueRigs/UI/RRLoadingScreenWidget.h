@@ -1,0 +1,51 @@
+// Rogue Rigs - C++ base of the loading screen between two run levels (WBP_Loading, task-206-05).
+
+#pragma once
+
+#include "CoreMinimal.h"
+#include "Blueprint/UserWidget.h"
+#include "Run/RRRunTransitionSubsystem.h"
+#include "RRLoadingScreenWidget.generated.h"
+
+/**
+ * Loading screen of a level transition (intermission gdd: covers the layout, the map load and the pool prewarm). A widget
+ * does not survive OpenLevel, so ARRPlayerController (LoadingScreenWidgetClass) creates one instance on
+ * URRRunTransitionSubsystem::OnLoadingStarted in the old world and another at its BeginPlay in the new world while
+ * IsLevelLoading; each is removed on OnLevelReady. Layout lives in the Blueprint subclass: implement OnLoadingShown and
+ * OnLoadingStageChanged. No gameplay logic here.
+ */
+UCLASS(Abstract)
+class ROGUERIGS_API URRLoadingScreenWidget : public UUserWidget
+{
+	GENERATED_BODY()
+
+public:
+	/** Calls OnLoadingShown with the level and layout being loaded (the controller calls it right after AddToViewport). */
+	void ShowLoading(int32 LevelIndex, const FString& LayoutName);
+
+	/** Current loading step (None when not loading). */
+	UFUNCTION(BlueprintPure, Category = "Run|Transition")
+	ERRRunLoadingStage GetLoadingStage() const;
+
+protected:
+	/** Binds URRRunTransitionSubsystem::OnLoadingStageChanged. */
+	virtual void NativeConstruct() override;
+
+	/** Unbinds it. */
+	virtual void NativeDestruct() override;
+
+	/** Subsystem OnLoadingStageChanged callback: forwards to OnLoadingStageChanged. */
+	UFUNCTION()
+	void HandleLoadingStageChanged(ERRRunLoadingStage Stage);
+
+	/** Show the loading screen for level LevelIndex (layout LayoutName). Implement in Blueprint. */
+	UFUNCTION(BlueprintImplementableEvent, Category = "Run|Transition")
+	void OnLoadingShown(int32 LevelIndex, const FString& LayoutName);
+
+	/** Loading step changed (waiting for the layout, opening the map, preparing the level); also once at ShowLoading. Implement in Blueprint. */
+	UFUNCTION(BlueprintImplementableEvent, Category = "Run|Transition")
+	void OnLoadingStageChanged(ERRRunLoadingStage Stage);
+
+	/** Subsystem bound at NativeConstruct. */
+	TWeakObjectPtr<URRRunTransitionSubsystem> BoundTransition;
+};

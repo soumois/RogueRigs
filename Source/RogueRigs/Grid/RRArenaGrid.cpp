@@ -418,7 +418,8 @@ TSharedPtr<const FRRLayoutData> ARRArenaGrid::FindRunPreparedLayout() const
 			return Prepared;
 		}
 	}
-	UE_LOG(LogRogueRigs, Warning, TEXT("ARRArenaGrid %s: no prepared layout for run level %d, falling back to %s."), *GetName(), Level, *LayoutName);
+	// Provisional decision (task-206-03): a layout that failed to load falls back to the grid's own LayoutName, logged as an error.
+	UE_LOG(LogRogueRigs, Error, TEXT("ARRArenaGrid %s: no prepared layout for run level %d, falling back to %s."), *GetName(), Level, *LayoutName);
 	return nullptr;
 }
 

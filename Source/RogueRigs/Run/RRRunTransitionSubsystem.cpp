@@ -1,0 +1,322 @@
+// Rogue Rigs - level-to-level transition of a run: intermission after an extraction, Continue, map travel and the loading hold
+// until the next level is ready (task-206-03).
+
+#include "Run/RRRunTransitionSubsystem.h"
+
+#include "Enemies/RREnemySpawner.h"
+#include "Engine/Engine.h"
+#include "Engine/GameInstance.h"
+#include "Engine/World.h"
+#include "Grid/RRArenaGrid.h"
+#include "HAL/PlatformTime.h"
+#include "Kismet/GameplayStatics.h"
+#include "Objectives/RRRunFlowSubsystem.h"
+#include "Player/RRMiner.h"
+#include "RogueRigs.h"
+#include "Run/RRRunSettings.h"
+#include "Run/RRRunSubsystem.h"
+#include "UObject/UObjectGlobals.h"
+#include "World/RRWorld.h"
+
+URRRunTransitionSubsystem* URRRunTransitionSubsystem::Get(const UObject* WorldContext)
+{
+	const UWorld* World = WorldContext && GEngine ? GEngine->GetWorldFromContextObject(WorldContext, EGetWorldErrorMode::ReturnNull) : nullptr;
+	const UGameInstance* GameInstance = World ? World->GetGameInstance() : nullptr;
+	return GameInstance ? GameInstance->GetSubsystem<URRRunTransitionSubsystem>() : nullptr;
+}
+
+void URRRunTransitionSubsystem::Initialize(FSubsystemCollectionBase& Collection)
+{
+	Collection.InitializeDependency<URRRunSubsystem>();
+	Super::Initialize(Collection);
+	PostLoadMapHandle = FCoreUObjectDelegates::PostLoadMapWithWorld.AddUObject(this, &URRRunTransitionSubsystem::HandlePostLoadMap);
+	if (URRRunSubsystem* Run = GetRun())
+	{
+		Run->OnRunReset.AddUniqueDynamic(this, &URRRunTransitionSubsystem::HandleRunReset);
+	}
+}
+
+void URRRunTransitionSubsystem::Deinitialize()
+{
+	FCoreUObjectDelegates::PostLoadMapWithWorld.Remove(PostLoadMapHandle);
+	if (URRRunSubsystem* Run = GetRun())
+	{
+		Run->OnRunReset.RemoveDynamic(this, &URRRunTransitionSubsystem::HandleRunReset);
+	}
+	ClearTransition();
+	Super::Deinitialize();
+}
+
+URRRunSubsystem* URRRunTransitionSubsystem::GetRun() const
+{
+	const UGameInstance* GameInstance = GetGameInstance();
+	return GameInstance ? GameInstance->GetSubsystem<URRRunSubsystem>() : nullptr;
+}
+
+bool URRRunTransitionSubsystem::HandleLevelExtracted(ARRMiner* Miner)
+{
+	URRRunSubsystem* Run = GetRun();
+	if (!Run || !Run->IsRunInProgress() || Phase != ERRRunTransitionPhase::None)
+	{
+		return false;
+	}
+	if (Run->IsLastLevel())
+	{
+		bRunWon = true;
+		UE_LOG(LogRogueRigs, Log, TEXT("URRRunTransitionSubsystem: level %d/%d extracted, run won (end screen)."), Run->GetLevelIndex(), Run->GetLevelCount());
+		return false;
+	}
+	if (!Run->CaptureLevelEndSnapshot(Miner))
+	{
+		return false;
+	}
+	const int32 FinishedLevel = Run->GetLevelIndex();
+	if (!Run->AdvanceToNextLevel())
+	{
+		return false;
+	}
+
+	const FRRRunMinerSnapshot& Snapshot = Run->GetLastSnapshot();
+	Recap = FRRIntermissionRecap();
+	Recap.FinishedLevelIndex = FinishedLevel;
+	Recap.NextLevelIndex = Run->GetLevelIndex();
+	Recap.LevelCount = Run->GetLevelCount();
+	Recap.OreSecuredThisLevel = Snapshot.OreSecuredThisLevel;
+	Recap.RunSecuredOre = Snapshot.RunSecuredOre;
+	Recap.NextLayoutName = Run->GetCurrentLayoutName();
+
+	UWorld* World = Miner ? Miner->GetWorld() : nullptr;
+	IntermissionWorld = World;
+	const FString& ConfiguredMap = GetDefault<URRRunSettings>()->ArenaMapName;
+	MapToOpen = !ConfiguredMap.IsEmpty() ? ConfiguredMap : (World ? UGameplayStatics::GetCurrentLevelName(World, true) : FString());
+	Phase = ERRRunTransitionPhase::Intermission;
+	UE_LOG(LogRogueRigs, Log, TEXT("URRRunTransitionSubsystem: intermission started after level %d/%d: ore secured this level %d, run %d; next level %d on %s (layout %s), map %s."),
+		Recap.FinishedLevelIndex, Recap.LevelCount, Recap.OreSecuredThisLevel, Recap.RunSecuredOre, Recap.NextLevelIndex, *Recap.NextLayoutName,
+		Run->IsLayoutReady(Recap.NextLevelIndex) ? TEXT("ready") : (Run->IsLayoutPending(Recap.NextLevelIndex) ? TEXT("pending") : TEXT("failed")), *MapToOpen);
+	OnIntermissionStarted.Broadcast(Recap);
+	return true;
+}
+
+bool URRRunTransitionSubsystem::Continue()
+{
+	URRRunSubsystem* Run = GetRun();
+	if (Phase != ERRRunTransitionPhase::Intermission || !Run)
+	{
+		UE_LOG(LogRogueRigs, Warning, TEXT("URRRunTransitionSubsystem: Continue refused (not in the intermission)."));
+		return false;
+	}
+	Phase = ERRRunTransitionPhase::Loading;
+	LoadingLevelIndex = Run->GetLevelIndex();
+	LoadingLayoutName = Run->GetCurrentLayoutName();
+	LoadingStartSeconds = FPlatformTime::Seconds();
+	UE_LOG(LogRogueRigs, Log, TEXT("URRRunTransitionSubsystem: Continue: loading started for level %d (layout %s)."), LoadingLevelIndex, *LoadingLayoutName);
+	OnLoadingStarted.Broadcast(LoadingLevelIndex, LoadingLayoutName);
+
+	if (Run->IsLayoutPending(LoadingLevelIndex))
+	{
+		SetLoadingStage(ERRRunLoadingStage::WaitingForLayout);
+		UE_LOG(LogRogueRigs, Log, TEXT("URRRunTransitionSubsystem: layout %s still being prepared, waiting for OnLayoutReady."), *LoadingLayoutName);
+		Run->OnLayoutReady.AddUniqueDynamic(this, &URRRunTransitionSubsystem::HandleLayoutReady);
+		return true;
+	}
+	OpenArenaMap();
+	return true;
+}
+
+void URRRunTransitionSubsystem::HandleLayoutReady(int32 LevelIndex, const FString& LayoutName, bool bSuccess)
+{
+	if (URRRunSubsystem* Run = GetRun())
+	{
+		Run->OnLayoutReady.RemoveDynamic(this, &URRRunTransitionSubsystem::HandleLayoutReady);
+	}
+	if (Phase != ERRRunTransitionPhase::Loading || LoadingStage != ERRRunLoadingStage::WaitingForLayout)
+	{
+		return;
+	}
+	OpenArenaMap();
+}
+
+void URRRunTransitionSubsystem::OpenArenaMap()
+{
+	UWorld* World = IntermissionWorld.Get();
+	URRRunSubsystem* Run = GetRun();
+	if (Run && !Run->IsLayoutReady(LoadingLevelIndex))
+	{
+		// Provisional decision (task-206-03): the travel goes on, the grid falls back to its own LayoutName with an error.
+		UE_LOG(LogRogueRigs, Error, TEXT("URRRunTransitionSubsystem: layout %s of level %d failed to load; the grid will fall back to its own layout."),
+			*LoadingLayoutName, LoadingLevelIndex);
+	}
+	if (!World || MapToOpen.IsEmpty())
+	{
+		UE_LOG(LogRogueRigs, Error, TEXT("URRRunTransitionSubsystem: no world or map to open for level %d; loading dropped."), LoadingLevelIndex);
+		ClearTransition();
+		return;
+	}
+	SetLoadingStage(ERRRunLoadingStage::OpeningMap);
+	UE_LOG(LogRogueRigs, Log, TEXT("URRRunTransitionSubsystem: opening %s for level %d (%.1f ms after Continue)."), *MapToOpen, LoadingLevelIndex,
+		(FPlatformTime::Seconds() - LoadingStartSeconds) * 1000.0);
+	// OpenLevel only requests the travel: the engine loads the map at the start of a later frame, so the loading widget shown on
+	// OnLoadingStarted is drawn at least once before the blocking load.
+	UGameplayStatics::OpenLevel(World, FName(*MapToOpen));
+}
+
+void URRRunTransitionSubsystem::HandlePostLoadMap(UWorld* LoadedWorld)
+{
+	if (Phase != ERRRunTransitionPhase::Loading || !LoadedWorld || !LoadedWorld->IsGameWorld() || LoadedWorld->GetGameInstance() != GetGameInstance()
+		|| LoadedWorld == IntermissionWorld.Get())
+	{
+		return;
+	}
+	MapLoadedSeconds = FPlatformTime::Seconds();
+	HeldWorld = LoadedWorld;
+	SetLoadingStage(ERRRunLoadingStage::PreparingLevel);
+
+	const URRRunSubsystem* Run = GetRun();
+	const ARRArenaGrid* Grid = RRWorld::FindArenaGrid(LoadedWorld);
+	const FString GridLayout = Grid ? Grid->GetLayoutName() : FString();
+	const bool bLayoutUsed = Grid && GridLayout == LoadingLayoutName;
+	const FIntPoint GridSize = Grid ? Grid->GetGridSize() : FIntPoint::ZeroValue;
+	if (bLayoutUsed)
+	{
+		UE_LOG(LogRogueRigs, Log, TEXT("URRRunTransitionSubsystem: map loaded for level %d (%.1f ms after Continue): grid built %d x %d on layout %s, snapshot %s."),
+			LoadingLevelIndex, (MapLoadedSeconds - LoadingStartSeconds) * 1000.0, GridSize.X, GridSize.Y, *GridLayout,
+			Run && Run->HasPendingSnapshot() ? TEXT("still pending") : TEXT("applied"));
+	}
+	else
+	{
+		UE_LOG(LogRogueRigs, Error, TEXT("URRRunTransitionSubsystem: map loaded for level %d but the grid uses %s instead of %s (fallback or no grid)."),
+			LoadingLevelIndex, Grid ? *GridLayout : TEXT("no grid"), *LoadingLayoutName);
+	}
+
+	// Hold the gameplay until the pool is warm: no alert, no console, no timed spawn. The miner input is held by the controller.
+	URRRunFlowSubsystem* RunFlow = LoadedWorld->GetSubsystem<URRRunFlowSubsystem>();
+	HeldRunFlow = RunFlow;
+	if (RunFlow)
+	{
+		bHeldRunFlowWasEnabled = RunFlow->IsRunFlowEnabled();
+		RunFlow->SetRunFlowEnabled(false);
+	}
+	ARREnemySpawner* Spawner = RunFlow ? RunFlow->GetSpawner() : nullptr;
+	HeldSpawner = Spawner;
+	if (!Spawner)
+	{
+		FinishLoading(TEXT("no spawner, nothing to prewarm"));
+		return;
+	}
+	Spawner->SetSpawningHeld(true);
+	if (Spawner->IsPoolPrewarmComplete())
+	{
+		FinishLoading(TEXT("no pool prewarm in this play"));
+		return;
+	}
+	Spawner->OnPoolPrewarmFinished.AddUniqueDynamic(this, &URRRunTransitionSubsystem::HandlePoolPrewarmFinished);
+	UE_LOG(LogRogueRigs, Log, TEXT("URRRunTransitionSubsystem: level %d held (run flow off, spawning held) until the pool prewarm is done."), LoadingLevelIndex);
+
+	const float Timeout = GetDefault<URRRunSettings>()->LoadingHoldTimeoutSeconds;
+	if (Timeout > 0.f)
+	{
+		TWeakObjectPtr<URRRunTransitionSubsystem> WeakThis(this);
+		HoldTimeoutHandle = FTSTicker::GetCoreTicker().AddTicker(FTickerDelegate::CreateLambda([WeakThis](float)
+		{
+			if (URRRunTransitionSubsystem* This = WeakThis.Get())
+			{
+				This->HoldTimeoutHandle.Reset();
+				if (This->IsLevelLoading() && This->LoadingStage == ERRRunLoadingStage::PreparingLevel)
+				{
+					UE_LOG(LogRogueRigs, Warning, TEXT("URRRunTransitionSubsystem: pool prewarm not reported within the hold limit, level released anyway."));
+					This->FinishLoading(TEXT("hold timeout"));
+				}
+			}
+			return false;
+		}), Timeout);
+	}
+}
+
+void URRRunTransitionSubsystem::HandlePoolPrewarmFinished(ARREnemySpawner* Spawner)
+{
+	if (Spawner != HeldSpawner.Get() || !IsLevelLoading())
+	{
+		return;
+	}
+	FinishLoading(TEXT("pool prewarm done"));
+}
+
+void URRRunTransitionSubsystem::FinishLoading(const TCHAR* Reason)
+{
+	if (ARREnemySpawner* Spawner = HeldSpawner.Get())
+	{
+		Spawner->OnPoolPrewarmFinished.RemoveDynamic(this, &URRRunTransitionSubsystem::HandlePoolPrewarmFinished);
+		Spawner->SetSpawningHeld(false);
+	}
+	if (URRRunFlowSubsystem* RunFlow = HeldRunFlow.Get())
+	{
+		RunFlow->SetRunFlowEnabled(bHeldRunFlowWasEnabled);
+	}
+	if (HoldTimeoutHandle.IsValid())
+	{
+		FTSTicker::GetCoreTicker().RemoveTicker(HoldTimeoutHandle);
+		HoldTimeoutHandle.Reset();
+	}
+	const int32 Level = LoadingLevelIndex;
+	const FString Layout = LoadingLayoutName;
+	const double Now = FPlatformTime::Seconds();
+	UE_LOG(LogRogueRigs, Log, TEXT("URRRunTransitionSubsystem: level %d ready on layout %s (%s; %.1f ms after the map load, %.1f ms after Continue): run flow starts."),
+		Level, *Layout, Reason, (Now - MapLoadedSeconds) * 1000.0, (Now - LoadingStartSeconds) * 1000.0);
+	HeldRunFlow.Reset();
+	HeldSpawner.Reset();
+	HeldWorld.Reset();
+	IntermissionWorld.Reset();
+	Phase = ERRRunTransitionPhase::None;
+	SetLoadingStage(ERRRunLoadingStage::None);
+	LoadingLevelIndex = 0;
+	OnLevelReady.Broadcast(Level, Layout);
+}
+
+void URRRunTransitionSubsystem::SetLoadingStage(ERRRunLoadingStage NewStage)
+{
+	if (LoadingStage == NewStage)
+	{
+		return;
+	}
+	LoadingStage = NewStage;
+	OnLoadingStageChanged.Broadcast(NewStage);
+}
+
+void URRRunTransitionSubsystem::HandleRunReset()
+{
+	bRunWon = false;
+	if (Phase != ERRRunTransitionPhase::None)
+	{
+		UE_LOG(LogRogueRigs, Log, TEXT("URRRunTransitionSubsystem: run reset during a transition, transition dropped."));
+	}
+	ClearTransition();
+}
+
+void URRRunTransitionSubsystem::ClearTransition()
+{
+	if (URRRunSubsystem* Run = GetRun())
+	{
+		Run->OnLayoutReady.RemoveDynamic(this, &URRRunTransitionSubsystem::HandleLayoutReady);
+	}
+	if (ARREnemySpawner* Spawner = HeldSpawner.Get())
+	{
+		Spawner->OnPoolPrewarmFinished.RemoveDynamic(this, &URRRunTransitionSubsystem::HandlePoolPrewarmFinished);
+		Spawner->SetSpawningHeld(false);
+	}
+	if (URRRunFlowSubsystem* RunFlow = HeldRunFlow.Get())
+	{
+		RunFlow->SetRunFlowEnabled(bHeldRunFlowWasEnabled);
+	}
+	if (HoldTimeoutHandle.IsValid())
+	{
+		FTSTicker::GetCoreTicker().RemoveTicker(HoldTimeoutHandle);
+		HoldTimeoutHandle.Reset();
+	}
+	HeldRunFlow.Reset();
+	HeldSpawner.Reset();
+	HeldWorld.Reset();
+	IntermissionWorld.Reset();
+	Phase = ERRRunTransitionPhase::None;
+	LoadingStage = ERRRunLoadingStage::None;
+	LoadingLevelIndex = 0;
+}

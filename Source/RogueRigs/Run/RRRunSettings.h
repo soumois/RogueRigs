@@ -26,4 +26,18 @@ public:
 	 */
 	UPROPERTY(Config, EditAnywhere, Category = "Run")
 	TArray<FString> LevelLayouts;
+
+	/**
+	 * Map opened by the intermission Continue for levels 2+ (package name or short name, e.g. L_ArenaM1); empty = the map the
+	 * intermission was shown on (the arena grid then builds from the prepared layout).
+	 */
+	UPROPERTY(Config, EditAnywhere, Category = "Run|Transition")
+	FString ArenaMapName;
+
+	/**
+	 * Safety limit of the loading hold after the map travel (task-206-03): when the pool prewarm has not reported its end
+	 * within this many seconds of real time, the level is released anyway, with a warning. 0 = no limit. Provisional value.
+	 */
+	UPROPERTY(Config, EditAnywhere, Category = "Run|Transition")
+	float LoadingHoldTimeoutSeconds = 10.f;
 };

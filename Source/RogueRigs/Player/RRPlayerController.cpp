@@ -15,6 +15,9 @@
 #include "Player/RRMiner.h"
 #include "RogueRigs.h"
 #include "UI/RRHUDWidget.h"
+#include "UI/RRIntermissionWidget.h"
+#include "UI/RRLoadingScreenWidget.h"
+#include "Weapons/RRWeapon.h"
 
 ARRPlayerController::ARRPlayerController(const FObjectInitializer& ObjectInitializer)
 	: Super(ObjectInitializer)
@@ -27,6 +30,24 @@ ARRPlayerController::ARRPlayerController(const FObjectInitializer& ObjectInitial
 void ARRPlayerController::BeginPlay()
 {
 	Super::BeginPlay();
+
+	// Level transition screens (task-206-03): bound for a local player even without a HUD class (headless runs create no widget).
+	if (IsLocalPlayerController() && GetLocalPlayer())
+	{
+		if (URRRunTransitionSubsystem* Transition = URRRunTransitionSubsystem::Get(this))
+		{
+			BoundTransition = Transition;
+			Transition->OnIntermissionStarted.AddUniqueDynamic(this, &ARRPlayerController::HandleIntermissionStarted);
+			Transition->OnLoadingStarted.AddUniqueDynamic(this, &ARRPlayerController::HandleLoadingStarted);
+			Transition->OnLevelReady.AddUniqueDynamic(this, &ARRPlayerController::HandleLevelReady);
+			// A widget does not survive OpenLevel: the world opened by a transition shows the loading screen again until OnLevelReady
+			// (higher Z-order than the HUD created below).
+			if (Transition->IsLevelLoading())
+			{
+				ShowLoadingScreen(Transition->GetLoadingLevelIndex(), Transition->GetIntermissionRecap().NextLayoutName);
+			}
+		}
+	}
 
 	// Headless runs and non-local controllers have no viewport: no HUD.
 	if (!HUDWidgetClass || !IsLocalPlayerController() || !GetLocalPlayer())
@@ -47,6 +68,94 @@ void ARRPlayerController::BeginPlay()
 	// Horde banner and alert-bar horde icons: the level's spawner (one per level).
 	TActorIterator<ARREnemySpawner> SpawnerIt(GetWorld());
 	HUDWidget->BindToSpawner(SpawnerIt ? *SpawnerIt : nullptr);
+}
+
+void ARRPlayerController::EndPlay(const EEndPlayReason::Type EndPlayReason)
+{
+	if (URRRunTransitionSubsystem* Transition = BoundTransition.Get())
+	{
+		Transition->OnIntermissionStarted.RemoveDynamic(this, &ARRPlayerController::HandleIntermissionStarted);
+		Transition->OnLoadingStarted.RemoveDynamic(this, &ARRPlayerController::HandleLoadingStarted);
+		Transition->OnLevelReady.RemoveDynamic(this, &ARRPlayerController::HandleLevelReady);
+	}
+	BoundTransition.Reset();
+	Super::EndPlay(EndPlayReason);
+}
+
+bool ARRPlayerController::IsGameplayInputHeld() const
+{
+	const URRRunTransitionSubsystem* Transition = BoundTransition.Get();
+	return Transition && Transition->IsLevelLoading();
+}
+
+void ARRPlayerController::HandleIntermissionStarted(const FRRIntermissionRecap& Recap)
+{
+	if (!IntermissionWidgetClass)
+	{
+		UE_LOG(LogRogueRigs, Warning, TEXT("%s: intermission after level %d but IntermissionWidgetClass is not set; run rr.Run.Continue to go on."),
+			*GetName(), Recap.FinishedLevelIndex);
+		return;
+	}
+	RemoveIntermissionWidget();
+	IntermissionWidget = CreateWidget<URRIntermissionWidget>(this, IntermissionWidgetClass);
+	if (!IntermissionWidget)
+	{
+		UE_LOG(LogRogueRigs, Error, TEXT("%s: could not create the intermission widget %s."), *GetName(), *GetNameSafe(IntermissionWidgetClass));
+		return;
+	}
+	IntermissionWidget->AddToViewport(TransitionWidgetZOrder);
+	IntermissionWidget->ShowRecap(Recap);
+}
+
+void ARRPlayerController::HandleLoadingStarted(int32 LevelIndex, const FString& LayoutName)
+{
+	RemoveIntermissionWidget();
+	ShowLoadingScreen(LevelIndex, LayoutName);
+}
+
+void ARRPlayerController::HandleLevelReady(int32 LevelIndex, const FString& LayoutName)
+{
+	RemoveLoadingScreenWidget();
+}
+
+void ARRPlayerController::ShowLoadingScreen(int32 LevelIndex, const FString& LayoutName)
+{
+	if (!LoadingScreenWidgetClass)
+	{
+		UE_LOG(LogRogueRigs, Log, TEXT("%s: loading level %d without a loading screen (LoadingScreenWidgetClass not set)."), *GetName(), LevelIndex);
+		return;
+	}
+	if (!LoadingScreenWidget)
+	{
+		LoadingScreenWidget = CreateWidget<URRLoadingScreenWidget>(this, LoadingScreenWidgetClass);
+		if (!LoadingScreenWidget)
+		{
+			UE_LOG(LogRogueRigs, Error, TEXT("%s: could not create the loading screen widget %s."), *GetName(), *GetNameSafe(LoadingScreenWidgetClass));
+			return;
+		}
+		LoadingScreenWidget->AddToViewport(TransitionWidgetZOrder + 1);
+	}
+	LoadingScreenWidget->ShowLoading(LevelIndex, LayoutName);
+	UE_LOG(LogRogueRigs, Log, TEXT("%s: loading screen shown for level %d."), *GetName(), LevelIndex);
+}
+
+void ARRPlayerController::RemoveIntermissionWidget()
+{
+	if (IntermissionWidget)
+	{
+		IntermissionWidget->RemoveFromParent();
+		IntermissionWidget = nullptr;
+	}
+}
+
+void ARRPlayerController::RemoveLoadingScreenWidget()
+{
+	if (LoadingScreenWidget)
+	{
+		LoadingScreenWidget->RemoveFromParent();
+		LoadingScreenWidget = nullptr;
+		UE_LOG(LogRogueRigs, Log, TEXT("%s: loading screen hidden."), *GetName());
+	}
 }
 
 void ARRPlayerController::OnPossess(APawn* InPawn)
@@ -116,6 +225,10 @@ ARRMiner* ARRPlayerController::GetMiner() const
 
 void ARRPlayerController::HandleMove(const FInputActionValue& Value)
 {
+	if (IsGameplayInputHeld())
+	{
+		return;
+	}
 	if (ARRMiner* Miner = GetMiner())
 	{
 		Miner->ApplyMoveInput(Value.Get<FVector2D>());
@@ -124,6 +237,10 @@ void ARRPlayerController::HandleMove(const FInputActionValue& Value)
 
 void ARRPlayerController::HandleStickAim(const FInputActionValue& Value)
 {
+	if (IsGameplayInputHeld())
+	{
+		return;
+	}
 	ARRMiner* Miner = GetMiner();
 	if (!Miner)
 	{
@@ -140,6 +257,10 @@ void ARRPlayerController::HandleStickAim(const FInputActionValue& Value)
 
 void ARRPlayerController::HandleMouseAim(const FInputActionValue& Value)
 {
+	if (IsGameplayInputHeld())
+	{
+		return;
+	}
 	if (ARRMiner* Miner = GetMiner())
 	{
 		Miner->UseMouseAim();
@@ -150,6 +271,10 @@ void ARRPlayerController::HandleMouseAim(const FInputActionValue& Value)
 
 void ARRPlayerController::HandlePlaceTurret(const FInputActionValue& Value)
 {
+	if (IsGameplayInputHeld())
+	{
+		return;
+	}
 	if (ARRMiner* Miner = GetMiner())
 	{
 		Miner->PlaceTurret();

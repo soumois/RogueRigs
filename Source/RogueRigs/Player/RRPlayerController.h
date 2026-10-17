@@ -5,6 +5,7 @@
 #include "CoreMinimal.h"
 #include "GameFramework/PlayerController.h"
 #include "InputCoreTypes.h"
+#include "Run/RRRunTransitionSubsystem.h"
 #include "RRPlayerController.generated.h"
 
 class ARRMiner;
@@ -12,6 +13,8 @@ class UEnhancedInputLocalPlayerSubsystem;
 class UInputAction;
 class UInputMappingContext;
 class URRHUDWidget;
+class URRIntermissionWidget;
+class URRLoadingScreenWidget;
 struct FInputActionValue;
 
 /**
@@ -33,9 +36,46 @@ public:
 	/** The HUD widget created at BeginPlay; null without a local player or without HUDWidgetClass. */
 	URRHUDWidget* GetHUDWidget() const { return HUDWidget; }
 
+	/** The intermission widget on screen; null outside the intermission or without IntermissionWidgetClass. */
+	URRIntermissionWidget* GetIntermissionWidget() const { return IntermissionWidget; }
+
+	/** The loading screen widget on screen; null outside the loading or without LoadingScreenWidgetClass. */
+	URRLoadingScreenWidget* GetLoadingScreenWidget() const { return LoadingScreenWidget; }
+
+	/** True while a level transition is loading (URRRunTransitionSubsystem::IsLevelLoading): move, aim and turret input ignored. */
+	bool IsGameplayInputHeld() const;
+
 protected:
-	/** Local player only: creates HUDWidgetClass, adds it to the viewport and binds it to the game mode, the possessed miner and the run flow. */
+	/**
+	 * Local player only: creates HUDWidgetClass, adds it to the viewport and binds it to the game mode, the possessed miner and
+	 * the run flow. Binds the run transition events (intermission and loading widgets) and shows the loading screen at once
+	 * when this world was opened by a transition still loading.
+	 */
 	virtual void BeginPlay() override;
+
+	/** Unbinds the run transition events. */
+	virtual void EndPlay(const EEndPlayReason::Type EndPlayReason) override;
+
+	/** Transition OnIntermissionStarted callback: creates IntermissionWidgetClass and shows the recap (warning when unset: rr.Run.Continue). */
+	UFUNCTION()
+	void HandleIntermissionStarted(const FRRIntermissionRecap& Recap);
+
+	/** Transition OnLoadingStarted callback: removes the intermission widget, shows the loading screen. */
+	UFUNCTION()
+	void HandleLoadingStarted(int32 LevelIndex, const FString& LayoutName);
+
+	/** Transition OnLevelReady callback: removes the loading screen. */
+	UFUNCTION()
+	void HandleLevelReady(int32 LevelIndex, const FString& LayoutName);
+
+	/** Creates LoadingScreenWidgetClass (once) and shows it for LevelIndex / LayoutName. */
+	void ShowLoadingScreen(int32 LevelIndex, const FString& LayoutName);
+
+	/** Removes the intermission widget from the viewport. */
+	void RemoveIntermissionWidget();
+
+	/** Removes the loading screen widget from the viewport. */
+	void RemoveLoadingScreenWidget();
 
 	/** Rebinds the HUD widget to the newly possessed miner. */
 	virtual void OnPossess(APawn* InPawn) override;
@@ -111,4 +151,27 @@ protected:
 	/** The HUD widget created from HUDWidgetClass. */
 	UPROPERTY(Transient)
 	TObjectPtr<URRHUDWidget> HUDWidget;
+
+	/** Intermission screen class (a Blueprint subclass of URRIntermissionWidget, task-206-04). None = no screen; rr.Run.Continue continues. */
+	UPROPERTY(EditDefaultsOnly, Category = "HUD|Run Transition")
+	TSubclassOf<URRIntermissionWidget> IntermissionWidgetClass;
+
+	/** Loading screen class (a Blueprint subclass of URRLoadingScreenWidget, task-206-05). None = no screen (the hold still runs). */
+	UPROPERTY(EditDefaultsOnly, Category = "HUD|Run Transition")
+	TSubclassOf<URRLoadingScreenWidget> LoadingScreenWidgetClass;
+
+	/** Viewport Z-order of the intermission and loading widgets (above the HUD, which is added at 0). */
+	UPROPERTY(EditDefaultsOnly, Category = "HUD|Run Transition")
+	int32 TransitionWidgetZOrder = 50;
+
+	/** The intermission widget on screen. */
+	UPROPERTY(Transient)
+	TObjectPtr<URRIntermissionWidget> IntermissionWidget;
+
+	/** The loading screen widget on screen. */
+	UPROPERTY(Transient)
+	TObjectPtr<URRLoadingScreenWidget> LoadingScreenWidget;
+
+	/** Transition subsystem bound at BeginPlay. */
+	TWeakObjectPtr<URRRunTransitionSubsystem> BoundTransition;
 };

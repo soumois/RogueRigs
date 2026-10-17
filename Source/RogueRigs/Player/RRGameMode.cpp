@@ -7,6 +7,7 @@
 #include "Kismet/GameplayStatics.h"
 #include "Player/RRMiner.h"
 #include "RogueRigs.h"
+#include "Run/RRRunSubsystem.h"
 #include "TimerManager.h"
 
 void ARRGameMode::RegisterMiner(ARRMiner* Miner)
@@ -53,6 +54,11 @@ void ARRGameMode::HandleMinerDeath(AActor* DeathInstigator)
 
 void ARRGameMode::RestartLevel()
 {
+	// Death = run lost (task-206-03): the restart begins a new run at level 1.
+	if (URRRunSubsystem* Run = URRRunSubsystem::Get(this))
+	{
+		Run->ResetRun();
+	}
 	const FString LevelName = UGameplayStatics::GetCurrentLevelName(this, true);
 	UE_LOG(LogRogueRigs, Log, TEXT("%s: restarting level %s."), *GetName(), *LevelName);
 	UGameplayStatics::OpenLevel(this, FName(*LevelName));

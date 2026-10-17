@@ -65,6 +65,11 @@ DECLARE_DYNAMIC_MULTICAST_DELEGATE(FRROnOvertimeStartedSignature);
 /** Enemy was recycled: moved from far off screen back into the spawn band (same robot, class and health); called just after the move. */
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FRROnEnemyRecycledSignature, ARREnemy*, Enemy);
 
+class ARREnemySpawner;
+
+/** Fired once per play when the level-start pool prewarm is complete (every prewarm creation served); the loading hold waits for it. */
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FRROnPoolPrewarmFinishedSignature, ARREnemySpawner*, Spawner);
+
 /** One pack spawned by the wave director: its type, side and robots (front robots first). */
 struct FRRSpawnedPack
 {
@@ -285,7 +290,29 @@ public:
 	/** True once QueuePoolPrewarm sent its orders. */
 	bool HasQueuedPoolPrewarm() const { return bPoolPrewarmQueued; }
 
-	/** True when the spawner runs on its own: bEnabled and rr.Spawner.Enabled != 0. */
+	/**
+	 * True once the level-start prewarm is over: queued and the pool holds no pending prewarm creation any more, or no prewarm
+	 * will run in this play (bPrewarmPools off or rr.Pool.Prewarm 0). The level transition waits for it (task-206-03).
+	 */
+	UFUNCTION(BlueprintPure, Category = "Spawner|Pool")
+	bool IsPoolPrewarmComplete() const;
+
+	/** Broadcast once when the queued prewarm completes (see IsPoolPrewarmComplete); not broadcast when no prewarm runs. */
+	UPROPERTY(BlueprintAssignable, Category = "Spawner|Pool")
+	FRROnPoolPrewarmFinishedSignature OnPoolPrewarmFinished;
+
+	/**
+	 * Holds the timed spawning (true) without touching bEnabled: the level transition holds it while the loading screen is up
+	 * (task-206-03) and releases it when the level is ready. The prewarm and recycling keep running.
+	 */
+	UFUNCTION(BlueprintCallable, Category = "Spawner")
+	void SetSpawningHeld(bool bInHeld) { bSpawningHeld = bInHeld; }
+
+	/** True while SetSpawningHeld(true) holds the timed spawning. */
+	UFUNCTION(BlueprintPure, Category = "Spawner")
+	bool IsSpawningHeld() const { return bSpawningHeld; }
+
+	/** True when the spawner runs on its own: bEnabled, not held (SetSpawningHeld) and rr.Spawner.Enabled != 0. */
 	UFUNCTION(BlueprintPure, Category = "Spawner")
 	bool IsSpawningEnabled() const;
 
@@ -771,6 +798,15 @@ protected:
 
 	/** True once QueuePoolPrewarm sent its orders. */
 	bool bPoolPrewarmQueued = false;
+
+	/** True once the queued prewarm completed and OnPoolPrewarmFinished was broadcast. */
+	bool bPoolPrewarmFinished = false;
+
+	/** Spawner ticks since the prewarm was queued (logged at completion). */
+	int32 PoolPrewarmTicks = 0;
+
+	/** True while the level transition holds the timed spawning (SetSpawningHeld). */
+	bool bSpawningHeld = false;
 
 	/** Robots spawned and still alive (pruned on query). */
 	TArray<TWeakObjectPtr<ARREnemy>> AliveEnemies;

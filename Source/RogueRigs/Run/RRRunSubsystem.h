@@ -36,7 +36,7 @@ DECLARE_DYNAMIC_MULTICAST_DELEGATE(FRROnRunResetSignature);
 /**
  * State of the current run (run-structure, intermission): level index 1..N (N = URRRunSettings::LevelLayouts, 4), the layout of
  * each level, and the miner snapshot carried from one level to the next. Lives on the game instance, so it survives the
- * OpenLevel between two levels. No travel happens here: the transition flow (task-206-03) calls the entry points.
+ * OpenLevel between two levels. No travel happens here: URRRunTransitionSubsystem (task-206-03) calls the entry points.
  *
  * Sequence: the miner calls HandleMinerBeginPlay at the end of its BeginPlay. No run in progress (PIE or -game started on a
  * map): BeginRun with the grid's LayoutName, level 1, nothing applied. Extraction success: the flow calls

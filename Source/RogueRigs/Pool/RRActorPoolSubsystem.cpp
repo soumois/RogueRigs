@@ -114,6 +114,16 @@ void URRActorPoolSubsystem::Prewarm(TSubclassOf<AActor> Class, int32 Count, int3
 	}
 }
 
+int32 URRActorPoolSubsystem::GetPendingPrewarmCount() const
+{
+	int32 Count = 0;
+	for (const FPendingRequest& Request : Pending)
+	{
+		Count += Request.bPrewarm ? 1 : 0;
+	}
+	return Count;
+}
+
 int32 URRActorPoolSubsystem::FindPending(uint32 Id) const
 {
 	return Pending.IndexOfByPredicate([Id](const FPendingRequest& Request) { return Request.Id == Id; });
