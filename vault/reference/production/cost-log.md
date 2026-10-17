@@ -420,6 +420,7 @@ kind: note
 | [[task-229-03-pickup-physics-capture]] | opus | 1 | 0k | 73k | 1372k | 8k |
 | [[task-230-01-rock-baseline-capture]] | opus | 1 | 0k | 136k | 3692k | 4k |
 | [[task-230-02-rock-slab-pieces]] | sonnet | 1 | 0k | 95k | 1327k | 23k |
+| [[task-230-03-rock-top-texture]] | sonnet | 1 | 0k | 48k | 325k | 1k |
 
 ## Totals
 | Scope | Input | Cache write | Cache read | Output |
