@@ -21,7 +21,7 @@ Recommendation given to the owner: a data cube.
 ## Chosen: data cube
 - Owner image to 3D in Meshy (the owner ran it): `Art/Source/xp-core/meshy/` (FBX 5044 tris and base colour; raw renders in `inspect/`).
 - Game mesh, validated by the owner 2026-10-17 (task-217): `Art/Meshes/xp-cube-big-mesh/SM_XPCubeBig.fbx`, body 748 tris (the chip it replaces is 844), 30 x 30 x 27.5 cm, centred pivot, slots body, caps, core_dark, core_bright (emissive set in Unreal) and glow_disc as the chip; built by `Tools/art/blender/xp_cube_big_mesh.py`, previews by `xp_cube_big_preview.py`.
-- Not done yet: Unreal import, swap of `SM_XPChipBig` in BP_PickupXPBig, rest orientation Full, materials and glow hue.
+- Done (task-221-01 to 03, 2026-10-17): Unreal import, swap of the chip for the cube in BP_PickupXPBig, rest orientation Full, materials; the chip assets, FBX, Blender scripts and `Art/Source/xp-chip/` were deleted. Glow hue still to check by the owner.
 
 ## Prompt use
 Attach `vault/assets/xp-nut.png` (Image 1) and `vault/assets/xp-chip-big.png` (Image 2). Each prompt asks for four orientations plus the nut for scale. The prompts ask for one magenta-pink hue for core and glow, proposed to close the lilac versus magenta mismatch in [[color-code]] (owner decision open).

@@ -34,7 +34,7 @@ MSYS_NO_PATHCONV=1 timeout 600 powershell.exe -NoProfile -Command "& 'C:\Program
 
 ## Test (task-137-01, unchanged FBX)
 - SM_XPNut: z -5.85 to 5.85, slots M_XPNut_body, M_XPNut_hole, unchanged.
-- SM_XPChipBig: z -5.3 to 5.3, seven M_XPChipBig_* slots, unchanged.
+- SM_XPChipBig (deleted in task-221-03, 2026-10-17, replaced by SM_XPCubeBig): z -5.3 to 5.3, seven M_XPChipBig_* slots, unchanged.
 - No new asset; BP_PickupXP and BP_PickupXPBig keep their PickupMesh mesh and every OverrideMaterials entry (read from the CDO after the run).
 - Bad path: `error asset not found`, exit -1. The two rewritten `.uasset` files were restored with git.
 
