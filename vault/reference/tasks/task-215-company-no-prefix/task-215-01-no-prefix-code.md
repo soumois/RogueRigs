@@ -3,7 +3,7 @@ id: task-215-01-no-prefix-code
 description: "cpp: The subtitle system shows kessler_voss lines without a speaker prefix"
 parent: task-215-company-no-prefix
 kind: task
-status: in-progress
+status: done
 ---
 # no-prefix-code
 
@@ -15,11 +15,11 @@ status: in-progress
 - done_when: build succeeds; tests pass except the known failures (subtitle expectations updated); a -game log shows a company line without prefix; doc updated; committed.
 - editor_state: closed
 - token_ceiling: 30000
-- model: open
-- tokens: open
-- runs: open
+- model: opus
+- tokens: input 38, cache write 42379, cache read 596539, output 487
+- runs: 1
 - milestone: M2
-- result: open
+- result: FRRSubtitleSpeaker bShowPrefix (false for kessler_voss only, C++ default table), ShowsSpeakerPrefix getter; OnSubtitleShown Speaker argument unchanged, Subtitle without prefix; subtitle and text tests updated (dc03725e, d1a6cdfd, bcf2db7c). Full suite exit 0. -game log: 'Kessler-Voss keeps every connection safe for your future.' without prefix.
 
 ## Relations
 - [[task-215-company-no-prefix]] — parent global task.

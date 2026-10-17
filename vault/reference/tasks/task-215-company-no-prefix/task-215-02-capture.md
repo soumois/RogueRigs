@@ -3,7 +3,7 @@ id: task-215-02-capture
 description: "cpp: In-game capture of a Kessler-Voss alert subtitle without prefix, compared with the task-209-05 capture, sent to the owner."
 parent: task-215-company-no-prefix
 kind: task
-status: todo
+status: in-progress
 ---
 # capture
 

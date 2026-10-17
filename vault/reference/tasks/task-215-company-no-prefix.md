@@ -13,7 +13,7 @@ status: in-progress
 - gdd_check: [[company-voice]], [[sys-subtitles]] (speaker prefix "<Speaker>: <line>"). 4 of the 15 alerts name the company. Owner 2026-10-17: remove the prefix for the company; alert texts unchanged, so no text agent and no style-guide review.
 - confirmed_by_owner: yes (2026-10-17)
 - milestone: M2
-- next_step: task-215-01-no-prefix-code
+- next_step: task-215-02-capture
 - result: open
 
 ## Subtasks
