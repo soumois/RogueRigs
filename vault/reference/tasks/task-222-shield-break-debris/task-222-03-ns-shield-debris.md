@@ -3,7 +3,7 @@ id: task-222-03-ns-shield-debris
 description: "bp: NS_ShieldDebris, a one-shot GPU mesh burst of the five shield pieces built like NS_RobotDebris; doc node."
 parent: task-222-shield-break-debris
 kind: task
-status: todo
+status: in-progress
 ---
 # NS_ShieldDebris
 

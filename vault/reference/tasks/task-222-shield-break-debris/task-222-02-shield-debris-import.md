@@ -3,7 +3,7 @@ id: task-222-02-shield-debris-import
 description: "bp: import the five shield debris meshes and give them a static debris material from the shield textures."
 parent: task-222-shield-break-debris
 kind: task
-status: in-progress
+status: done
 ---
 # Shield debris: import and material
 
@@ -15,11 +15,11 @@ status: in-progress
 - done_when: assets saved; slots and flags read back.
 - editor_state: open (launched by the Orchestrator)
 - token_ceiling: open
-- model: open
-- tokens: open
-- runs: open
+- model: sonnet
+- tokens: input 30, cache write 42716, cache read 456795, output 585
+- runs: 1
 - milestone: M1
-- result: open
+- result: Commit 40270015: /Game/RogueRigs/Art/ShieldChaser/Debris/ SM_ShieldDebris_Shard_A..D and _Grip (Nanite off, LightMapCoordinateIndex 1), M_ShieldDebris (opaque, T_ChaserShield_BaseColor, Niagara mesh flag) and M_ShieldDebris_Emblem (Masked, emblem alpha, Niagara mesh flag) on the slots. Not read back: collision, LOD count, material graph links.
 
 ## Relations
 - [[task-222-shield-break-debris]] — parent global task.

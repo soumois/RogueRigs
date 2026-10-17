@@ -398,6 +398,7 @@ kind: note
 | [[task-221-02-bp-pickup-xp-big-cube]] | sonnet | 1 | 0k | 32k | 363k | 1k |
 | [[task-221-03-xp-chip-cleanup]] | sonnet | 1 | 0k | 34k | 428k | 1k |
 | [[task-222-01-shield-debris-pieces]] | sonnet | 1 | 0k | 106k | 2120k | 11k |
+| [[task-222-02-shield-debris-import]] | sonnet | 1 | 0k | 43k | 457k | 1k |
 
 ## Totals
 | Scope | Input | Cache write | Cache read | Output |
