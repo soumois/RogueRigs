@@ -1,0 +1,81 @@
+{
+  "task": "task-230-06-rock-plate-overlay",
+  "script": "Tools/art/blender/rock_plates.py",
+  "seed": 230,
+  "units": "cm (1 uu = 1 cm)",
+  "file": "Art/Meshes/rock-slab/SM_RockPlates_01.fbx",
+  "tris": 199,
+  "budget": [
+    150,
+    250
+  ],
+  "within_budget": true,
+  "pivot": "cell centre, z = 0 floor top",
+  "footprint_uu": [
+    67,
+    67
+  ],
+  "max_overshoot_allowed_uu": 5.0,
+  "overshoot_uu": 4.5,
+  "bounds_min": [
+    -38.0,
+    -37.05,
+    40.6
+  ],
+  "bounds_max": [
+    37.29,
+    38.0,
+    111.0
+  ],
+  "dimensions_cm": [
+    75.29,
+    75.05,
+    70.4
+  ],
+  "materials": [
+    "M_RockSlab"
+  ],
+  "uv_layers": [
+    "UVMap",
+    "LightMap"
+  ],
+  "uv_checks": {
+    "UVMap_planar_top_down_xy_over_100": true,
+    "LightMap": {
+      "triangles": 199,
+      "overlapping_pairs": 0,
+      "bounds": [
+        0.0098,
+        0.9761
+      ],
+      "min_gap_px_at_256": 5.024,
+      "pass": true
+    }
+  },
+  "vertex_colour": {
+    "attribute": "Color (corner, float)",
+    "export": "colors_type=LINEAR",
+    "top_tris_R1": 36,
+    "side_tris_G1": 163,
+    "inconsistent_faces": 0,
+    "pass": true,
+    "rule": "R=1 on plate top faces (normal.z >= 0.3), G=1 on broken sides and upright shards"
+  },
+  "all_flat_shaded": true,
+  "fbx_export": {
+    "apply_scale_options": "FBX_SCALE_UNITS",
+    "global_scale": 1.0,
+    "axes": "Blender default",
+    "colors_type": "LINEAR",
+    "mesh_smooth_type": "FACE"
+  },
+  "warnings": [],
+  "preview": {
+    "three_quarter": "C:\\Users\\soumo\\Documents\\Unreal Projects\\RogueRigs\\Art\\Meshes\\rock-slab\\preview\\rockplates_three_quarter.png",
+    "game_cam": "C:\\Users\\soumo\\Documents\\Unreal Projects\\RogueRigs\\Art\\Meshes\\rock-slab\\preview\\rockplates_game_cam.png",
+    "layout_game_cam": "C:\\Users\\soumo\\Documents\\Unreal Projects\\RogueRigs\\Art\\Meshes\\rock-slab\\preview\\rockplates_layout_game_cam.png",
+    "layout_three_quarter": "C:\\Users\\soumo\\Documents\\Unreal Projects\\RogueRigs\\Art\\Meshes\\rock-slab\\preview\\rockplates_layout_three_quarter.png",
+    "layout_note": "cluster cells (col,row,rot deg) [((1, 1), 0), ((5, 1), 90), ((1, 5), 180)]; slab triangles whose centroid lies in those cells are removed (the material sinks the quadrants in the engine)",
+    "camera": "same as rockslab previews: layout hfov 90 pitch 60 azim 0 dist 640 / hfov 50 pitch 38 azim 28 dist 1050; cluster alone hfov 40, target (0,0,40), dist 330, pitch 35 azim 32 or pitch 60 azim 0"
+  }
+}
