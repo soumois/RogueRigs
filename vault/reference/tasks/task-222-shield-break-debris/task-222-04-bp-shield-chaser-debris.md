@@ -3,7 +3,7 @@ id: task-222-04-bp-shield-chaser-debris
 description: "bp: BP_ShieldChaser OnShieldBroken also spawns NS_ShieldDebris at the actor transform; doc node updated."
 parent: task-222-shield-break-debris
 kind: task
-status: todo
+status: in-progress
 ---
 # BP_ShieldChaser: spawn the shield debris
 
