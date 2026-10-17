@@ -3,7 +3,7 @@ id: task-219-01-rock-ore-look
 description: "Image proposals for the look of rock blocks in their damage states and of unmined ore blocks, seen from the game camera"
 parent: task-219-rock-ore-look
 kind: task
-status: in-progress
+status: done
 ---
 # Rock and ore look: proposals
 
@@ -19,7 +19,7 @@ status: in-progress
 - tokens: open
 - runs: open
 - milestone: M2
-- result: open
+- result: 4 images text-to-image (track A per-cell blocks x2, track B continuous slab x2) in Art/Source/rock-look/, prompt node art-prompts-rock, 24 credits, commit 84092d70; self-review gaps: camera about 45 deg not steep, soft painterly shading (A1 partial), track A no wall depth, track B small mass and one cluster per deposit; sent to the owner
 
 ## Relations
 - [[task-219-rock-ore-look]] — parent global task.

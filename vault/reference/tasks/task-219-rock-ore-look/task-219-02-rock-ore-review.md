@@ -3,7 +3,7 @@ id: task-219-02-rock-ore-review
 description: "Style-guide review of the rock and ore look images against the A rules, colour code and readability rules."
 parent: task-219-rock-ore-look
 kind: task
-status: todo
+status: in-progress
 ---
 # Rock and ore look: review
 
