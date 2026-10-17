@@ -3,7 +3,7 @@ id: task-213-01-death-parts-test
 description: "cpp: Find why RogueRigs.Enemies.ShotHitsMovingRobotAndDeathShowsParts fails on 'EyeMesh visible during the death'"
 parent: task-213-failing-tests
 kind: task
-status: in-progress
+status: done
 ---
 # death-parts-test
 
@@ -15,11 +15,11 @@ status: in-progress
 - done_when: the test passes; the full suite has no new failure; doc updated; committed.
 - editor_state: closed
 - token_ceiling: 50000
-- model: open
-- tokens: open
-- runs: open
+- model: opus
+- tokens: input 34, cache write 29546, cache read 407296, output 433
+- runs: 1
 - milestone: M2
-- result: open
+- result: Cause: task-152-02 (674bce5f, owner 2026-10-13) hid EyeMesh in BP_Chaser (eye now in the model); the test from task-093-01 required every part visible during death. Test updated per the owner rule: each part keeps its rest visibility during the death (b1346ce2, doc 9c0f5dd9). Death code unchanged. Suite: only JuiceHealRing fails.
 
 ## Relations
 - [[task-213-failing-tests]] — parent global task.

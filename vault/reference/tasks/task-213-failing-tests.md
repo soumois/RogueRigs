@@ -13,7 +13,7 @@ status: in-progress
 - gdd_check: Owner 2026-10-17 defaults accepted: when a test contradicts a later owner decision (e.g. heal pop distance 80 to 300 from task-195-02) the test is updated, otherwise the code is fixed; HealVein becomes deterministic by seeding the random stream in the test, gameplay unchanged.
 - confirmed_by_owner: yes (2026-10-17)
 - milestone: M2
-- next_step: task-213-01-death-parts-test
+- next_step: task-213-02-heal-pop-tests
 - result: open
 
 ## Subtasks

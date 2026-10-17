@@ -3,7 +3,7 @@ id: task-213-02-heal-pop-tests
 description: "cpp: Fix RogueRigs.Integration.JuiceHealRing"
 parent: task-213-failing-tests
 kind: task
-status: todo
+status: in-progress
 ---
 # heal-pop-tests
 
