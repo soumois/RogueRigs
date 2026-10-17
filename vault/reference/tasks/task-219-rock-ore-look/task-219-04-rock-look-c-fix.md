@@ -3,7 +3,7 @@ id: task-219-04-rock-look-c-fix
 description: "Art correction of image C (slab track): steep camera, flat facets, seamless irregular cracks, tilted plates, 2 x 2 ore as four clusters."
 parent: task-219-rock-ore-look
 kind: task
-status: in-progress
+status: done
 ---
 # Rock and ore look: correction of image C
 
@@ -16,11 +16,11 @@ status: in-progress
 - done_when: 2 images exist and are sent to the owner; self-review against the corrections done.
 - editor_state: any
 - token_ceiling: 50000
-- model: open
-- tokens: open
-- runs: open
+- model: sonnet
+- tokens: input 18, cache write 20399, cache read 129303, output 580
+- runs: 1
 - milestone: M2
-- result: open
+- result: 2 images 20261017-131704-rock-look-1/-2 (image-to-image from C), 12 credits, commit 629deabd; fixed: 2 x 2 ore as four clusters, no orange, cracks blend into tilted plates (image 2), several masses; gaps: camera still about 50-60 deg, faint grain, cracks partly cell-like, image 1 one slab per state; sent to the owner
 
 ## Relations
 - [[task-219-rock-ore-look]] — parent global task.

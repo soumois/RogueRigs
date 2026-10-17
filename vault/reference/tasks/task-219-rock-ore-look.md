@@ -13,7 +13,7 @@ status: in-progress
 - gdd_check: [[color-code]] (rock light grey tinted violet with cracks, Duskite same base + glowing violet crystals, heal ore red), [[visual-style]] (low-poly, steep camera, low blocks, M1 grey box), [[ore-blocks]], [[heal-ore]], [[arena-grid]] (240 x 240 cells of 67 uu), [[sys-grid]] (autotiling 6 shapes and top variants approved, not built; per-cell health exists). Owner answers 2026-10-17: states = intact plus damage states by remaining health, cracked = already damaged (DRGS video, [[rock-look-reference]]); defaults accepted: Duskite and heal ore only (special_ore undefined, open), exploration only, block triangle budget open (proposed by 03). Not in this task: weaker rock placed by Perlin noise (owner decision, separate task, its "protection" meaning open). Task number: the owner said 218, taken by task-218-shield-emblem in another session.
 - confirmed_by_owner: yes (2026-10-17)
 - milestone: M2
-- next_step: task-219-04-rock-look-c-fix
+- next_step: task-219-05-rock-look-c-review
 - result: open
 
 ## Subtasks

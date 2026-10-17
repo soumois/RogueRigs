@@ -3,7 +3,7 @@ id: task-219-05-rock-look-c-review
 description: "Style-guide review of the 2 corrected image C boards against A rules, colour code, readability and the correction list."
 parent: task-219-rock-ore-look
 kind: task
-status: todo
+status: in-progress
 ---
 # Rock and ore look: review of the correction
 
