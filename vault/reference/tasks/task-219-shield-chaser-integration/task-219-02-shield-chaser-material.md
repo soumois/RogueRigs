@@ -3,7 +3,7 @@ id: task-219-02-shield-chaser-material
 description: "bp: import the combined shield chaser mesh and textures, build M_ShieldChaser_Anim with the 4-clip layout and its five instances."
 parent: task-219-shield-chaser-integration
 kind: task
-status: todo
+status: in-progress
 ---
 # Shield chaser: import and material
 
