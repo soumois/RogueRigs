@@ -3,7 +3,7 @@ id: task-230-05-rock-crack-mask
 description: "Procedural tileable crack mask (grayscale) whose value orders crack growth from 0 to 1."
 parent: task-230-rock-slab-integration
 kind: task
-status: todo
+status: in-progress
 ---
 # Procedural tileable crack mask (grayscale) whose value orders crack growth from 0 to 1
 
