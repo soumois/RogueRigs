@@ -3,7 +3,7 @@ id: task-222-02-shield-debris-import
 description: "bp: import the five shield debris meshes and give them a static debris material from the shield textures."
 parent: task-222-shield-break-debris
 kind: task
-status: todo
+status: in-progress
 ---
 # Shield debris: import and material
 

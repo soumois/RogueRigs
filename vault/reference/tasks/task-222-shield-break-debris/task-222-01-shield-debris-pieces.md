@@ -3,7 +3,7 @@ id: task-222-01-shield-debris-pieces
 description: "3D agent: cut the 1.2-scaled shield into five debris meshes (four plate shards, grip) with centred pivots and an offsets json."
 parent: task-222-shield-break-debris
 kind: task
-status: in-progress
+status: done
 ---
 # Shield debris pieces
 
@@ -15,11 +15,11 @@ status: in-progress
 - done_when: 5 FBX + json (triangle count per piece, offsets); a render of the five pieces exploded slightly apart and one of them reassembled, three-quarter front view; the Orchestrator opens them.
 - editor_state: any (no Unreal)
 - token_ceiling: open
-- model: open
-- tokens: open
-- runs: open
+- model: sonnet
+- tokens: input 64, cache write 106380, cache read 2120199, output 10733
+- runs: 1
 - milestone: M1
-- result: open
+- result: Commit 5c2f3c01: Tools/art/blender/shield_debris_pieces.py; Art/Source/shield-chaser/debris/: SM_ShieldDebris_Shard_A (240 tris, KV emblem, slots M_ChaserShield + M_ChaserShield_Emblem), Shard_B 116, Shard_C 132, Shard_D 46, Grip 721 (1255 tris with cut caps); shield_debris_pieces.json with centre_offset_cm_unreal from the actor origin in the guard pose (no spawn rotation needed); exploded and reassembled renders. Grip keeps 9 open edges from the Meshy grip.
 
 ## Relations
 - [[task-222-shield-break-debris]] — parent global task.
