@@ -144,7 +144,9 @@ bool FRRPickupHealFullHealthTest::RunTest(const FString& Parameters)
 	}
 	TestFalse(TEXT("heal pickup never attracted at full health"), bHealEverMagnetized);
 	TestEqual(TEXT("heal pickup resting"), HealWeak->GetPhase(), ERRPickupPhase::Rest);
-	TestTrue(TEXT("heal pickup kept its rest point"), FVector::Dist(HealWeak->GetActorLocation(), HealWeak->GetPopEnd()) < 0.5f);
+	// task-229-02: the landed heal settles under physics near its rest point, on the floor (no longer exactly at the kinematic rest point).
+	TestTrue(TEXT("heal pickup settled near its rest point"), FVector::Dist2D(HealWeak->GetActorLocation(), HealWeak->GetPopEnd()) < 100.f);
+	TestTrue(TEXT("heal pickup on the floor (not above the rest height, not fallen through)"), HealWeak->GetActorLocation().Z <= HealWeak->GetPopEnd().Z + 0.5 && HealWeak->GetActorLocation().Z > HealWeak->GetPopEnd().Z - 50.0);
 	TestNearlyEqual(TEXT("health still 100"), HealthOf(Miner), 100.f, 0.01f);
 
 	// The miner takes damage: the waiting pickup is attracted and collected, healing 15.
@@ -210,7 +212,8 @@ bool FRRPickupHealPartialTest::RunTest(const FString& Parameters)
 	}
 	TestEqual(TEXT("the refused one rests"), Left->GetPhase(), ERRPickupPhase::Rest);
 	TestFalse(TEXT("the refused one is not magnetized"), Left->IsMagnetized());
-	TestNearlyEqual(TEXT("the refused one lies at its rest height"), static_cast<float>(Left->GetActorLocation().Z), static_cast<float>(Left->GetPopEnd().Z), 0.5f);
+	// task-229-02: a heal refused in flight falls under physics and lies on the floor (below the kinematic rest height, not fallen through).
+	TestTrue(TEXT("the refused one lies on the floor"), Left->GetActorLocation().Z <= Left->GetPopEnd().Z + 0.5 && Left->GetActorLocation().Z > Left->GetPopEnd().Z - 50.0);
 	return true;
 }
 

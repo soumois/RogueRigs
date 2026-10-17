@@ -9,6 +9,7 @@
 
 class ARRMiner;
 class UGameplayEffect;
+class UPhysicalMaterial;
 class UStaticMesh;
 class UStaticMeshComponent;
 
@@ -28,9 +29,9 @@ enum class ERRPickupType : uint8
 UENUM(BlueprintType)
 enum class ERRPickupPhase : uint8
 {
-	/** Ejection arc with a small bounce (PopDuration); with bAttractDuringPop the magnet may latch mid-air once PopAttractDelay has elapsed since spawn. */
+	/** Kinematic ejection arc with a light spin (task-229-02); without physics it ends with a small kinematic bounce (PopDuration). With bAttractDuringPop the magnet may latch mid-air once PopAttractDelay has elapsed since spawn. */
 	Pop,
-	/** Lying at its rest point; attraction allowed once AttractDelay has elapsed (or, with bAttractDuringPop, PopAttractDelay since spawn). */
+	/** Landed: a Chaos rigid body rolling then sleeping on the floor (task-229-02), or lying at its rest point without physics; attraction allowed once AttractDelay has elapsed (or, with bAttractDuringPop, PopAttractDelay since spawn). */
 	Rest,
 	/** Accelerating toward the miner until collected. */
 	Magnet,
@@ -39,8 +40,9 @@ enum class ERRPickupPhase : uint8
 };
 
 /**
- * Rest orientation of a pickup, drawn once per life when it is ejected (task-192-01). The actor keeps it through the pop
- * and the rest (no tumble in flight); BP_PickupXP and BP_PickupXPBig still turn to face the miner on magnet start.
+ * Start orientation of a pickup, drawn once per life when it is ejected (task-192-01). Since task-229-02 it is the orientation
+ * the flight spin starts from; the landed orientation is decided by physics (a pickup without a physics body keeps the spun
+ * orientation). BP_PickupXP and BP_PickupXPBig still turn to face the miner on magnet start.
  */
 UENUM(BlueprintType)
 enum class ERRPickupRestOrientation : uint8
@@ -76,7 +78,15 @@ enum class ERRPickupRestOrientation : uint8
  * at GlowFadeDataIndex, 0 in the air, fading to 1 over GlowFadeDuration on landing and back to 0 on magnet; advanced in
  * UpdateMotion only while it moves, reset to 0 at each life start and pool release. Look per life (task-192-01): StartLife
  * picks one mesh of MeshVariants for PickupMesh (empty = keep the Blueprint mesh) and sets the actor rotation from
- * RestOrientation (None = unchanged); the PickupMesh override materials are kept across a mesh swap. No physics, no collision; movement is driven by URRPickupSubsystem in one loop per frame (actor tick
+ * RestOrientation (None = unchanged); the PickupMesh override materials are kept across a mesh swap. Physics (task-229-02):
+ * PickupMesh uses the "Pickup" collision profile (physics only, blocks WorldStatic = the grid floor and rock collision,
+ * ignores pawns, robots, projectiles, other pickups; no query, no overlap, no hit event). The pop stays kinematic and spins
+ * at PopSpinDegPerSec about a random axis; with bPhysicsOnLanding (and rr.Pickup.Physics 1, and a physics body) the pop ends
+ * at the touch-down of the main arc: PickupMesh simulates Chaos physics from the arc's landing velocity (scaled by
+ * LandingHorizontalSpeedScale / LandingVerticalSpeedScale) and the spin as angular velocity, with the Physics* damping,
+ * friction, restitution and sleep tunables, and the Rest phase starts there. The magnet latch, pool release and the fall
+ * guard (PhysicsFallLimit) turn physics off; a refused heal in flight falls back under physics. Without physics the kinematic
+ * bounce and the rest point apply as before. Movement is driven by URRPickupSubsystem in one loop per frame (actor tick
  * only as a fallback when the subsystem is missing). Spawned by ARRArenaGrid at a cell center (floor top), and by ARREnemy
  * at its feet on death (XP, split over several cubes). Subclass in Blueprint: set PickupType and the mesh.
  */
@@ -153,12 +163,42 @@ public:
 	/** World location where the pop started (spawn point). */
 	const FVector& GetPopStart() const { return PopStart; }
 
-	/** World rest location at the end of the pop. */
+	/** World rest location at the end of the pop (without physics; with physics the pickup settles wherever it rolls). */
 	const FVector& GetPopEnd() const { return PopEnd; }
 
+	/** True while PickupMesh simulates physics (landed and not yet asleep, latched or released; task-229-02). */
+	bool IsSimulatingPhysics() const;
+
+	/**
+	 * Builds the physical material of this pickup class from PhysicsFriction, PhysicsRestitution and the sleep thresholds
+	 * (task-229-02), outered to Outer. Called on the class default object by URRPickupSubsystem, which shares one per class.
+	 */
+	UPhysicalMaterial* MakePhysicalMaterial(UObject* Outer) const;
+
 protected:
-	/** Turns collision off on every primitive component (Blueprint ones included), then StartLife. */
+	/** Turns collision off on every primitive component (Blueprint ones included) except PickupMesh, which gets the physics setup (ConfigurePhysicsBody); then StartLife. */
 	virtual void BeginPlay() override;
+
+	/**
+	 * task-229-02: collision profile PhysicsCollisionProfile (NoCollision when bPhysicsOnLanding is false), no overlap, no hit
+	 * event, damping, depenetration cap and the physical material of the class (shared by URRPickupSubsystem). Once per actor, in BeginPlay; the body stays kinematic until landing.
+	 */
+	void ConfigurePhysicsBody();
+
+	/** True when the landing hands the pickup to physics: bPhysicsOnLanding, rr.Pickup.Physics 1 and a valid physics body on PickupMesh. */
+	bool CanSimulateOnLanding() const;
+
+	/** Enables physics on PickupMesh with LinearVelocity (uu/s) and, when bWithSpin, the flight spin as angular velocity. */
+	void StartPhysics(const FVector& LinearVelocity, bool bWithSpin);
+
+	/** Zeroes the velocities and turns physics off on PickupMesh (kinematic again, where it is); no-op when not simulating. */
+	void StopPhysics();
+
+	/** Location on the pop path Elapsed seconds after the life started (no side effect; Elapsed clamped to [0, PopDuration]). */
+	FVector EvaluatePop(float Elapsed) const;
+
+	/** Moves the actor to Location along the pop and turns it by the flight spin for DeltaSeconds (teleport, no sweep). */
+	void ApplyPopStep(const FVector& Location, float DeltaSeconds);
 
 	/**
 	 * Starts a life once (no-op while one is running): picks the pop target from the current location, resets the motion
@@ -176,7 +216,10 @@ protected:
 	/** Unregisters from URRPickupSubsystem. */
 	virtual void EndPlay(const EEndPlayReason::Type EndPlayReason) override;
 
-	/** Advances the pop arc and bounce; returns true once the pop is finished. */
+	/**
+	 * Advances the pop arc with the flight spin; returns true once the pop is finished: at the touch-down of the main arc when
+	 * CanSimulateOnLanding (physics started there with the arc's landing velocity), else after the kinematic bounce.
+	 */
 	bool UpdatePop(float DeltaSeconds);
 
 	/** Returns the player miner (player 0 pawn), cached once found; null when the player pawn is not a miner. Fallback tick only. */
@@ -189,7 +232,7 @@ protected:
 	 */
 	bool IsRefusedByMiner(const ARRMiner* Miner) const;
 
-	/** Leaves the Magnet phase when a flying Heal pickup is refused (the miner got back to full health): stops where it is, at its rest height, back in Rest (attracted again as soon as the miner is damaged and in radius). */
+	/** Leaves the Magnet phase when a flying Heal pickup is refused (the miner got back to full health): back in Rest where it is, falling under physics from zero velocity when CanSimulateOnLanding, else snapped to its rest height (attracted again as soon as the miner is damaged and in radius). */
 	void ReturnToRest();
 
 	/** Sets the glow fade target (0 or 1) when bGlowFade; no-op otherwise. Called on each phase change. */
@@ -228,7 +271,7 @@ protected:
 	UFUNCTION(BlueprintImplementableEvent, Category = "Pickup")
 	void OnCollected(FVector Location);
 
-	/** Visual root. Collision disabled: pickups find the miner by distance. Assign the mesh in the Blueprint. */
+	/** Visual root and physics body (task-229-02: "Pickup" profile, physics only, floor and walls only; the miner is still found by distance, no query). Assign the mesh in the Blueprint; its simple collision is the body. */
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Components")
 	TObjectPtr<UStaticMeshComponent> PickupMesh;
 
@@ -353,7 +396,8 @@ protected:
 
 	/**
 	 * task-192-01 (owner 2026-10-15, provisional per Blueprint): rotation drawn once per life when the pickup is ejected
-	 * (fresh spawn and every pool reuse); kept through the pop and the rest, no tumble, no tick. None (default) = today's look.
+	 * (fresh spawn and every pool reuse). Since task-229-02 it is only the start of the flight spin; physics decides the landed
+	 * orientation (never forced at landing). None (default) = rotation as spawned.
 	 */
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Pickup|Look")
 	ERRPickupRestOrientation RestOrientation = ERRPickupRestOrientation::None;
@@ -365,6 +409,72 @@ protected:
 	 */
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Pickup|Look")
 	TArray<TObjectPtr<UStaticMesh>> MeshVariants;
+
+	/**
+	 * task-229-02 (owner 2026-10-17 "très légère rotation", provisional): spin speed in flight about a random axis drawn each
+	 * life; also the angular velocity given to physics at landing. 0 = no spin.
+	 */
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Pickup|Pop", meta = (ClampMin = 0, Units = "DegreesPerSecond"))
+	float PopSpinDegPerSec = 90.f;
+
+	/**
+	 * task-229-02 (owner 2026-10-17 "vraie physique Chaos"): at the touch-down of the main arc PickupMesh becomes a Chaos rigid
+	 * body that rolls and settles (the kinematic bounce is skipped). False = no physics body at all (NoCollision), kinematic
+	 * bounce and rest point as before task-229. The console variable rr.Pickup.Physics 0 turns the hand-off off at runtime.
+	 */
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Pickup|Physics")
+	bool bPhysicsOnLanding = true;
+
+	/** Collision profile of PickupMesh (Config/DefaultEngine.ini "Pickup": physics only, blocks WorldStatic only). */
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Pickup|Physics", meta = (EditCondition = "bPhysicsOnLanding"))
+	FName PhysicsCollisionProfile = TEXT("Pickup");
+
+	/** Scale of the horizontal velocity of the arc at touch-down given to physics (1 = the arc's own speed, provisional). */
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Pickup|Physics", meta = (ClampMin = 0, EditCondition = "bPhysicsOnLanding"))
+	float LandingHorizontalSpeedScale = 1.f;
+
+	/** Scale of the vertical (falling) velocity of the arc at touch-down given to physics (0 = horizontal part only, provisional). */
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Pickup|Physics", meta = (ClampMin = 0, EditCondition = "bPhysicsOnLanding"))
+	float LandingVerticalSpeedScale = 0.f;
+
+	/** Linear damping of the landed body (provisional). */
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Pickup|Physics", meta = (ClampMin = 0, EditCondition = "bPhysicsOnLanding"))
+	float PhysicsLinearDamping = 0.1f;
+
+	/** Angular damping of the landed body (provisional). */
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Pickup|Physics", meta = (ClampMin = 0, EditCondition = "bPhysicsOnLanding"))
+	float PhysicsAngularDamping = 0.5f;
+
+	/** Friction of the pickup physical material (combined with the floor's by the project combine mode, average by default; provisional). */
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Pickup|Physics", meta = (ClampMin = 0, EditCondition = "bPhysicsOnLanding"))
+	float PhysicsFriction = 0.7f;
+
+	/** Restitution of the pickup physical material (combined like the friction; provisional). */
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Pickup|Physics", meta = (ClampMin = 0, ClampMax = 1, EditCondition = "bPhysicsOnLanding"))
+	float PhysicsRestitution = 0.2f;
+
+	/** Linear speed in uu/s under which the body counts toward sleep (engine material default 1; higher sleeps sooner; provisional). */
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Pickup|Physics", meta = (ClampMin = 0, EditCondition = "bPhysicsOnLanding"))
+	float PhysicsSleepLinearThreshold = 5.f;
+
+	/** Angular speed in rad/s under which the body counts toward sleep (engine material default 0.05; provisional). */
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Pickup|Physics", meta = (ClampMin = 0, EditCondition = "bPhysicsOnLanding"))
+	float PhysicsSleepAngularThreshold = 0.2f;
+
+	/** Physics frames under both thresholds before the body sleeps (engine material default 4). */
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Pickup|Physics", meta = (ClampMin = 0, EditCondition = "bPhysicsOnLanding"))
+	int32 PhysicsSleepCounterThreshold = 4;
+
+	/** Cap in uu/s of the push out of an initial overlap (a pickup landing inside a rock block; provisional). */
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Pickup|Physics", meta = (ClampMin = 0, Units = "CentimetersPerSecond", EditCondition = "bPhysicsOnLanding"))
+	float PhysicsMaxDepenetrationVelocity = 200.f;
+
+	/**
+	 * Fall guard: a landed pickup more than this far below its rest point (fell through a hole or the floor) stops physics and is
+	 * put back at the rest point, kinematic. 0 = no guard (provisional 500 uu).
+	 */
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Pickup|Physics", meta = (ClampMin = 0, Units = "cm", EditCondition = "bPhysicsOnLanding"))
+	float PhysicsFallLimit = 500.f;
 
 	/** Miner this pickup flies to (latched with the magnet), or found from the player 0 pawn by the fallback tick. */
 	UPROPERTY(Transient)
@@ -403,5 +513,8 @@ protected:
 
 	/** Glow fade value GlowFade moves toward: 0 in Pop, Magnet and Collected, 1 in Rest (bGlowFade only). */
 	float GlowFadeTarget = 0.f;
+
+	/** Unit axis of the flight spin, drawn each life in StartLife (task-229-02). */
+	FVector SpinAxis = FVector::UpVector;
 };
 

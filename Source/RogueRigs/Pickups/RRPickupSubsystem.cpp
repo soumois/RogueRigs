@@ -1,9 +1,10 @@
-// Rogue Rigs - pickup world subsystem: moves every live pickup in one loop per frame (no actor tick per pickup, no physics) and acquires grid and robot drops from the actor pool.
+// Rogue Rigs - pickup world subsystem: moves every live pickup in one loop per frame (no actor tick per pickup; landed pickups simulate Chaos physics, task-229-02) and acquires grid and robot drops from the actor pool.
 
 #include "Pickups/RRPickupSubsystem.h"
 
 #include "Engine/World.h"
 #include "Kismet/GameplayStatics.h"
+#include "PhysicalMaterials/PhysicalMaterial.h"
 #include "Pickups/RRPickup.h"
 #include "Player/RRMiner.h"
 
@@ -20,6 +21,7 @@ void URRPickupSubsystem::Deinitialize()
 {
 	Pickups.Reset();
 	PendingXPCubes.Reset();
+	PhysicalMaterials.Reset();
 	Super::Deinitialize();
 }
 
@@ -163,6 +165,21 @@ ARRPickup* URRPickupSubsystem::AcquirePickup(TSubclassOf<ARRPickup> PickupClass,
 	Params.OnReady = [Delivered](AActor* Actor) { *Delivered = Cast<ARRPickup>(Actor); };
 	const FRRPoolRequestHandle Handle = Pool->Acquire(PickupClass, SpawnTransform, MoveTemp(Params));
 	return Handle.IsValid() ? nullptr : Delivered->Get();
+}
+
+UPhysicalMaterial* URRPickupSubsystem::FindOrAddPhysicalMaterial(TSubclassOf<ARRPickup> PickupClass)
+{
+	if (!PickupClass)
+	{
+		return nullptr;
+	}
+	if (const TObjectPtr<UObject>* Found = PhysicalMaterials.Find(PickupClass.Get()))
+	{
+		return static_cast<UPhysicalMaterial*>(Found->Get());
+	}
+	UPhysicalMaterial* Material = GetDefault<ARRPickup>(PickupClass)->MakePhysicalMaterial(this);
+	PhysicalMaterials.Add(PickupClass.Get(), Material);
+	return Material;
 }
 
 int32 URRPickupSubsystem::GetQueuedSpawnCount() const

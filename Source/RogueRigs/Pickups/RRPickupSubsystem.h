@@ -1,4 +1,4 @@
-// Rogue Rigs - pickup world subsystem: moves every live pickup in one loop per frame (no actor tick per pickup, no physics) and acquires grid and robot drops from the actor pool.
+// Rogue Rigs - pickup world subsystem: moves every live pickup in one loop per frame (no actor tick per pickup; landed pickups simulate Chaos physics, task-229-02) and acquires grid and robot drops from the actor pool.
 
 #pragma once
 
@@ -10,6 +10,7 @@
 class AActor;
 class ARRPickup;
 class ARRMiner;
+class UPhysicalMaterial;
 
 /** One collected XP cube request (task-110-01), resolved by URRPickupSubsystem::FlushXPCubes. */
 struct FRRPendingXPCube
@@ -35,6 +36,7 @@ struct FRRPendingXPCube
  * pickups in one frame. The requester is this subsystem (a drop outlives the robot or grid that asked for it). SpawnMaxFrames
  * 0 = AcquireImmediate (tests that read drops in the same frame). Without a pool the pickup is spawned at once. Pooled idle
  * pickups are unregistered, so GetPickupCount never counts them; actor iterators skip them with IsPooledIdle.
+ * Physics (task-229-02): FindOrAddPhysicalMaterial shares one physical material per pickup class among its pickups.
  */
 UCLASS(Config = Game)
 class ROGUERIGS_API URRPickupSubsystem : public UTickableWorldSubsystem
@@ -98,6 +100,12 @@ public:
 	/** Overrides SpawnMaxFrames for this world (tests that read drops in the same frame use 0). */
 	void SetSpawnMaxFrames(int32 InMaxFrames) { SpawnMaxFrames = FMath::Max(InMaxFrames, 0); }
 
+	/**
+	 * Physical material of PickupClass (task-229-02), built once from its class default (ARRPickup::MakePhysicalMaterial) and
+	 * shared by every pickup of that class. Null for a null class.
+	 */
+	UPhysicalMaterial* FindOrAddPhysicalMaterial(TSubclassOf<ARRPickup> PickupClass);
+
 	/** Moves every pickup. */
 	virtual void Tick(float DeltaTime) override;
 
@@ -132,6 +140,10 @@ protected:
 	/** Cubes per big block (task-110-01, provisional 8); below 2 nothing merges. Config (Game). */
 	UPROPERTY(Config, EditAnywhere, Category = "Pickups|XP Big Block", meta = (ClampMin = "2"))
 	int32 XPMergeGroupSize = 8;
+
+	/** Physical material per pickup class (FindOrAddPhysicalMaterial); held as UObject because the module does not link PhysicsCore. */
+	UPROPERTY(Transient)
+	TMap<TObjectPtr<UClass>, TObjectPtr<UObject>> PhysicalMaterials;
 
 	/** XP cube requests collected since the last FlushXPCubes. */
 	TArray<FRRPendingXPCube> PendingXPCubes;

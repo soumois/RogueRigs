@@ -13,13 +13,28 @@
 #include "Kismet/GameplayStatics.h"
 #include "Objectives/RRRunFlowSubsystem.h"
 #include "Particles/ParticleSystemComponent.h"
+#include "PhysicalMaterials/PhysicalMaterial.h"
 #include "Pickups/RRPickupSubsystem.h"
 #include "Player/RRMiner.h"
 #include "Pool/RRActorPoolSubsystem.h"
 #include "Progression/RRProgressionComponent.h"
+#include "Projectiles/RRCollisionChannels.h"
 #include "RogueRigs.h"
 
 #include UE_INLINE_GENERATED_CPP_BY_NAME(RRPickup)
+
+namespace RRPickupPhysics
+{
+	/** task-229-02: runtime switch of the landing hand-off (stress comparisons); read at each landing. */
+	static TAutoConsoleVariable<int32> CVarPickupPhysics(
+		TEXT("rr.Pickup.Physics"),
+		1,
+		TEXT("1: pickups with bPhysicsOnLanding become Chaos rigid bodies when they land. 0: kinematic bounce and rest point (pre task-229 motion; the body stays kinematic)."),
+		ECVF_Default);
+
+	/** Time step of the finite difference that gives the arc's velocity at touch-down (one 60 Hz frame). */
+	constexpr float LandingVelocityStep = 1.f / 60.f;
+}
 
 ARRPickup::ARRPickup()
 {
@@ -28,8 +43,11 @@ ARRPickup::ARRPickup()
 	PrimaryActorTick.bStartWithTickEnabled = false;
 
 	PickupMesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("PickupMesh"));
-	PickupMesh->SetCollisionProfileName(UCollisionProfile::NoCollision_ProfileName);
+	// task-229-02: physics-only body against the floor and walls (kinematic until landing); Blueprints keep this profile.
+	PickupMesh->SetMobility(EComponentMobility::Movable);
+	PickupMesh->SetCollisionProfileName(RRCollisionChannels::PickupProfile);
 	PickupMesh->SetGenerateOverlapEvents(false);
+	PickupMesh->SetNotifyRigidBodyCollision(false);
 	PickupMesh->SetCanEverAffectNavigation(false);
 	PickupMesh->CanCharacterStepUpOn = ECB_No;
 	SetRootComponent(PickupMesh);
@@ -41,16 +59,89 @@ void ARRPickup::BeginPlay()
 {
 	Super::BeginPlay();
 
-	// Motion and collection are computed, never physical: no component of a pickup may block or carry a character
-	// (a Blueprint mesh such as the hidden XP trail would otherwise stop the miner or let it climb onto the rock).
+	// No component of a pickup may block or carry a character (a Blueprint mesh such as the hidden XP trail would otherwise
+	// stop the miner or let it climb onto the rock). PickupMesh is the only body: physics only, floor and walls (task-229-02).
 	TInlineComponentArray<UPrimitiveComponent*> Primitives(this);
 	for (UPrimitiveComponent* Primitive : Primitives)
 	{
-		Primitive->SetCollisionEnabled(ECollisionEnabled::NoCollision);
 		Primitive->CanCharacterStepUpOn = ECB_No;
+		if (Primitive != PickupMesh)
+		{
+			Primitive->SetCollisionEnabled(ECollisionEnabled::NoCollision);
+		}
 	}
+	ConfigurePhysicsBody();
 
 	StartLife();
+}
+
+void ARRPickup::ConfigurePhysicsBody()
+{
+	if (!bPhysicsOnLanding || PhysicsCollisionProfile.IsNone())
+	{
+		PickupMesh->SetCollisionProfileName(UCollisionProfile::NoCollision_ProfileName);
+		return;
+	}
+	PickupMesh->SetCollisionProfileName(PhysicsCollisionProfile);
+	PickupMesh->SetGenerateOverlapEvents(false);
+	PickupMesh->SetNotifyRigidBodyCollision(false);
+	PickupMesh->SetLinearDamping(PhysicsLinearDamping);
+	PickupMesh->SetAngularDamping(PhysicsAngularDamping);
+	PickupMesh->BodyInstance.SetMaxDepenetrationVelocity(PhysicsMaxDepenetrationVelocity);
+
+	URRPickupSubsystem* Pickups = GetWorld() ? GetWorld()->GetSubsystem<URRPickupSubsystem>() : nullptr;
+	UPhysicalMaterial* Material = Pickups ? Pickups->FindOrAddPhysicalMaterial(GetClass()) : MakePhysicalMaterial(this);
+	PickupMesh->SetPhysMaterialOverride(Material);
+}
+
+UPhysicalMaterial* ARRPickup::MakePhysicalMaterial(UObject* Outer) const
+{
+	// The class is found by path: UPhysicalMaterial::StaticClass would need a link dependency on PhysicsCore (not in RogueRigs.Build.cs).
+	UClass* MaterialClass = FindObject<UClass>(nullptr, TEXT("/Script/PhysicsCore.PhysicalMaterial"));
+	UPhysicalMaterial* Material = MaterialClass ? static_cast<UPhysicalMaterial*>(NewObject<UObject>(Outer, MaterialClass, NAME_None, RF_Transient)) : nullptr;
+	if (!Material)
+	{
+		return nullptr;
+	}
+	Material->Friction = PhysicsFriction;
+	Material->Restitution = PhysicsRestitution;
+	Material->SleepLinearVelocityThreshold = PhysicsSleepLinearThreshold;
+	Material->SleepAngularVelocityThreshold = PhysicsSleepAngularThreshold;
+	Material->SleepCounterThreshold = PhysicsSleepCounterThreshold;
+	return Material;
+}
+
+bool ARRPickup::IsSimulatingPhysics() const
+{
+	return PickupMesh && PickupMesh->IsSimulatingPhysics();
+}
+
+bool ARRPickup::CanSimulateOnLanding() const
+{
+	if (!bPhysicsOnLanding || RRPickupPhysics::CVarPickupPhysics.GetValueOnGameThread() == 0 || !PickupMesh)
+	{
+		return false;
+	}
+	const FBodyInstance* Body = PickupMesh->GetBodyInstance();
+	return Body && Body->IsValidBodyInstance() && PickupMesh->IsPhysicsCollisionEnabled();
+}
+
+void ARRPickup::StartPhysics(const FVector& LinearVelocity, bool bWithSpin)
+{
+	PickupMesh->SetSimulatePhysics(true);
+	PickupMesh->SetPhysicsLinearVelocity(LinearVelocity);
+	PickupMesh->SetPhysicsAngularVelocityInRadians(bWithSpin ? SpinAxis * FMath::DegreesToRadians(PopSpinDegPerSec) : FVector::ZeroVector);
+}
+
+void ARRPickup::StopPhysics()
+{
+	if (!IsSimulatingPhysics())
+	{
+		return;
+	}
+	PickupMesh->SetPhysicsLinearVelocity(FVector::ZeroVector);
+	PickupMesh->SetPhysicsAngularVelocityInRadians(FVector::ZeroVector);
+	PickupMesh->SetSimulatePhysics(false);
 }
 
 void ARRPickup::StartLife()
@@ -74,6 +165,8 @@ void ARRPickup::StartLife()
 	MagnetSpeed = 0.f;
 	Phase = ERRPickupPhase::Pop;
 	TargetMiner = nullptr;
+	// task-229-02: flight spin axis of this life (kinematic until landing; the pool released the body kinematic).
+	SpinAxis = FMath::VRand();
 	// Glow off in the air; written explicitly so a fresh mesh never shows the material default.
 	ResetGlowFade();
 
@@ -152,6 +245,8 @@ void ARRPickup::OnPoolReleased_Implementation()
 	}
 	SetActorTickEnabled(false);
 	bLifeStarted = false;
+	// task-229-02: a landed body goes back kinematic, velocities zeroed; the pool resets the transform on the next acquire.
+	StopPhysics();
 
 	// Trail (BP_PickupXP TrailFX, activated by OnMagnetStart): particles killed now so a reused cube never shows an old ribbon.
 	TInlineComponentArray<UFXSystemComponent*> Effects(this);
@@ -224,6 +319,12 @@ void ARRPickup::UpdateMotion(float DeltaSeconds, ARRMiner* Miner, float PickupRa
 		return;
 
 	case ERRPickupPhase::Rest:
+		// task-229-02 fall guard: a body that fell through a hole or the floor goes back to its rest point, kinematic.
+		if (PhysicsFallLimit > 0.f && GetActorLocation().Z < PopEnd.Z - PhysicsFallLimit && IsSimulatingPhysics())
+		{
+			StopPhysics();
+			SetActorLocation(PopEnd, false, nullptr, ETeleportType::TeleportPhysics);
+		}
 		// Rest on the floor for AttractDelay after the pop so the drop reads before it flies away; with bAttractDuringPop the
 		// wait also ends once PopAttractDelay has elapsed since spawn (task-195-01).
 		if (RestElapsed < AttractDelay && !(bAttractDuringPop && GetLifeElapsed() >= PopAttractDelay))
@@ -259,6 +360,8 @@ bool ARRPickup::TryLatchMagnet(ARRMiner* Miner, float PickupRadiusSquared, float
 	{
 		return false;
 	}
+	// task-229-02: the kinematic fly-in takes over from physics.
+	StopPhysics();
 	TargetMiner = Miner;
 	Phase = ERRPickupPhase::Magnet;
 	SetGlowFadeTarget(0.f);
@@ -271,7 +374,30 @@ bool ARRPickup::TryLatchMagnet(ARRMiner* Miner, float PickupRadiusSquared, float
 bool ARRPickup::UpdatePop(float DeltaSeconds)
 {
 	PopElapsed += DeltaSeconds;
-	const float Alpha = PopDuration > 0.f ? FMath::Clamp(PopElapsed / PopDuration, 0.f, 1.f) : 1.f;
+
+	// task-229-02: with physics the pop ends at the touch-down of the main arc (the kinematic bounce is left to physics): the
+	// body starts from the arc's velocity there (finite difference over one 60 Hz frame), scaled per axis, plus the spin.
+	const float ArcEndTime = (1.f - FMath::Clamp(PopBounceFraction, 0.f, 0.9f)) * FMath::Max(PopDuration, 0.f);
+	if (PopElapsed >= ArcEndTime && CanSimulateOnLanding())
+	{
+		const FVector Landing = EvaluatePop(ArcEndTime);
+		const float Step = FMath::Min(RRPickupPhysics::LandingVelocityStep, ArcEndTime);
+		FVector Velocity = Step > 0.f ? (Landing - EvaluatePop(ArcEndTime - Step)) / Step : FVector::ZeroVector;
+		Velocity.X *= LandingHorizontalSpeedScale;
+		Velocity.Y *= LandingHorizontalSpeedScale;
+		Velocity.Z *= LandingVerticalSpeedScale;
+		ApplyPopStep(Landing, DeltaSeconds);
+		StartPhysics(Velocity, /*bWithSpin*/ true);
+		return true;
+	}
+
+	ApplyPopStep(EvaluatePop(PopElapsed), DeltaSeconds);
+	return PopDuration <= 0.f || PopElapsed >= PopDuration;
+}
+
+FVector ARRPickup::EvaluatePop(float Elapsed) const
+{
+	const float Alpha = PopDuration > 0.f ? FMath::Clamp(Elapsed / PopDuration, 0.f, 1.f) : 1.f;
 
 	const float BounceFraction = FMath::Clamp(PopBounceFraction, 0.f, 0.9f);
 	const float ArcEnd = 1.f - BounceFraction;
@@ -306,9 +432,19 @@ bool ARRPickup::UpdatePop(float DeltaSeconds)
 	const float Horizontal = 1.f - FMath::Square(1.f - HorizontalAlpha);
 	FVector Location = PopStart + (PopEnd - PopStart) * FVector(Horizontal, Horizontal, 0.f);
 	Location.Z = Z;
-	SetActorLocation(Location);
+	return Location;
+}
 
-	return Alpha >= 1.f;
+void ARRPickup::ApplyPopStep(const FVector& Location, float DeltaSeconds)
+{
+	// Teleport: the kinematic body follows without sweep nor kinematic target (it touches nothing in flight).
+	if (PopSpinDegPerSec > 0.f)
+	{
+		const FQuat Spin(SpinAxis, FMath::DegreesToRadians(PopSpinDegPerSec) * DeltaSeconds);
+		SetActorLocationAndRotation(Location, Spin * GetActorQuat(), false, nullptr, ETeleportType::TeleportPhysics);
+		return;
+	}
+	SetActorLocation(Location, false, nullptr, ETeleportType::TeleportPhysics);
 }
 
 ARRMiner* ARRPickup::FindMiner()
@@ -336,6 +472,12 @@ void ARRPickup::ReturnToRest()
 	SetGlowFadeTarget(1.f);
 	MagnetSpeed = 0.f;
 	// RestElapsed already passed AttractDelay (or the life time passed PopAttractDelay for a mid-air latch): attracted again on the first frame the miner is damaged and in radius.
+	// task-229-02: with physics it falls where it is and settles; without, it snaps to its rest height.
+	if (CanSimulateOnLanding())
+	{
+		StartPhysics(FVector::ZeroVector, /*bWithSpin*/ false);
+		return;
+	}
 	FVector Location = GetActorLocation();
 	Location.Z = PopEnd.Z;
 	SetActorLocation(Location);
@@ -381,12 +523,12 @@ void ARRPickup::FlyToMiner(ARRMiner* Miner, float DeltaSeconds)
 
 	if (Distance <= CollectDistance || Distance <= Step)
 	{
-		SetActorLocation(Target);
+		SetActorLocation(Target, false, nullptr, ETeleportType::TeleportPhysics);
 		Collect(Miner);
 		return;
 	}
 
-	SetActorLocation(GetActorLocation() + ToTarget / Distance * Step);
+	SetActorLocation(GetActorLocation() + ToTarget / Distance * Step, false, nullptr, ETeleportType::TeleportPhysics);
 	if (Distance - Step <= CollectDistance)
 	{
 		Collect(Miner);
