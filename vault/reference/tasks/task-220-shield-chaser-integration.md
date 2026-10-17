@@ -19,6 +19,7 @@ status: in-progress
 ## Subtasks
 - [[task-220-01-shield-clips-bake]] — 3D agent: shield poses, 4-clip bake, combined mesh with the shield on part 4, previews.
 - [[task-220-02-shield-chaser-material]] — bp: import, material with the 4-clip layout and its instances.
+- [[task-220-05-shield-pavise-pose]] — 3D agent: shield 20 % larger carried low like a pavise, head above it (owner feedback); runs after 220-02, before 220-03.
 - [[task-220-03-bp-shield-chaser-wiring]] — bp: BP_ShieldChaser mesh, materials, break event, doc node.
 - [[task-220-04-shield-chaser-capture]] — cpp: `-game` capture of run, bash and break.
 
