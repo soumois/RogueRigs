@@ -3,7 +3,7 @@ id: task-205-04-layout-l4
 description: "level-design: Write arena_l4 the same way, starting from the rules refined in task-205-03, with a different seed, and report the rules it had to refine.."
 parent: task-205-level-layouts-240
 kind: task
-status: in-progress
+status: done
 ---
 # layout-l4
 
@@ -15,11 +15,11 @@ status: in-progress
 - done_when: validator exits 0 on arena_l4 with its brief; brief bounds equal arena_m1_fine.brief.json; refined rules recorded; committed.
 - editor_state: any
 - token_ceiling: 30000
-- model: open
-- tokens: open
-- runs: open
+- model: sonnet
+- tokens: input 20, cache write 18595, cache read 154291, output 383
+- runs: 1
 - milestone: M2
-- result: open
+- result: arena_l4 (0f6e6663): seed 10090, noise_seed 9100 and new outline harmonic phases for a different shape; coverage 56.5 %, reach 84.2 %, passage 3, heal 48, barrels 17, 7 pockets, 24 x 24 open 0.12 to 0.93; only 1 of 30 passing seeds passed the window review; straight left lane of about 44 cells accepted (flagged). Rules recorded in layout-review-rules.
 
 ## Relations
 - [[task-205-level-layouts-240]] — parent global task.

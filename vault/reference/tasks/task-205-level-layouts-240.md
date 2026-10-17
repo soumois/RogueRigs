@@ -1,9 +1,9 @@
 ---
 id: task-205-level-layouts-240
 description: "Global task: Level-Design writes the level 2 to 4 layouts directly at 240 x 240 and refines its rules."
-parent: tasks-to-do-index
+parent: tasks-done-index
 kind: task
-status: in-progress
+status: done
 ---
 # Level layouts 2 to 4 at 240 x 240
 
@@ -13,8 +13,8 @@ status: in-progress
 - gdd_check: [[arena-grid]] (approved; updated 2026-10-17: Level-Design writes each run level at 240 x 240 beforehand until the C++ generator exists), [[layout-generator-recipe]], [[level-layout-schema]]. Owner 2026-10-17: generate directly at 240 x 240 (more organic than 80 x 80 upscaled), same brief as arena_m1_fine, level 1 stays arena_m1_fine.
 - confirmed_by_owner: yes (2026-10-17)
 - milestone: M2
-- next_step: task-205-04-layout-l4
-- result: open
+- next_step: none
+- result: Done. arena_l4 (0f6e6663): seed 10090, noise_seed 9100 and new outline harmonic phases for a different shape; coverage 56.5 %, reach 84.2 %, passage 3, heal 48, barrels 17, 7 pockets, 24 x 24 open 0.12 to 0.93; only 1 of 30 passing seeds passed the window review; straight left lane of about 44 cells accepted (flagged). Rules recorded in layout-review-rules.
 
 ## Subtasks
 1. task-205-01-direct-240-generator — cpp
@@ -23,7 +23,7 @@ status: in-progress
 4. task-205-04-layout-l4 — level-design
 
 ## Relations
-- [[tasks-to-do-index]] — parent index.
+- [[tasks-done-index]] — parent index.
 - [[task-205-01-direct-240-generator]] — step 1, cpp.
 - [[task-205-02-layout-l2]] — step 2, level-design.
 - [[task-205-03-layout-l3]] — step 3, level-design.

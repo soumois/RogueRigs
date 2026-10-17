@@ -213,3 +213,4 @@ Archive: it exceeds the index size limits of [[_authoring]] on purpose (owner, 2
 - [[task-202-crater-first-frame-black]] — No black crater on the frame an explosion opens it: newly exposed floor renders correctly from its first frame, verified in -game frames. Status done.
 - [[task-203-health-bar-juice]] — Juicy HUD health bar (drain, damage chunk, flash, shake, punch, colour by health). Status done.
 - [[task-204-health-bar-dark-empty]] — Health bar empty part dark grey #0B0C14 like the reference video, checked in game. Status done.
+- [[task-205-level-layouts-240]] — the Level-Design agent writes the layouts of levels 2 to 4 directly at 240 x 240, refining its rules so a good terrain is not luck. Status done.
