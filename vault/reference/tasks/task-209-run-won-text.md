@@ -1,9 +1,9 @@
 ---
 id: task-209-run-won-text
 description: "Global task: Run won text at level 4."
-parent: tasks-to-do-index
+parent: tasks-done-index
 kind: task
-status: in-progress
+status: done
 ---
 # Run won text at level 4
 
@@ -13,8 +13,8 @@ status: in-progress
 - gdd_check: [[run-structure]] (win at level 4), [[extraction]], [[dialogue-tone]] T7 (English on screen). Owner 2026-10-17: the text agent proposes, style-guide reviews, the owner sees it before integration. Owner chose CLAIM STRIPPED with its subtitle and option A: validator and loader accept a screen texts file, widgets read it through the text content subsystem.
 - confirmed_by_owner: yes (2026-10-17)
 - milestone: M2
-- next_step: task-209-05-capture
-- result: open
+- next_step: none
+- result: Done. Rendered -game capture after a full 4-level run (levels 1-3 through the intermission, level 4 real extraction): end screen CLAIM STRIPPED / Gone before the paperwork landed. / Ore secured: 120 / Play again; missed-shuttle loss still RUN LOST with no subtitle; sent to the owner. Observed: a Kessler-Voss subtitle draws over the end screens (207 only silences intermission and loading), dimmed stale HUD behind the end screen.
 
 ## Subtasks
 1. task-209-01-run-won-copy — text
@@ -24,7 +24,7 @@ status: in-progress
 5. task-209-05-capture — cpp
 
 ## Relations
-- [[tasks-to-do-index]] — parent index.
+- [[tasks-done-index]] — parent index.
 - [[task-206-level-to-level]] — the transition this fixes.
 - [[task-209-01-run-won-copy]] — step 1, text.
 - [[task-209-02-run-won-review]] — step 2, style-guide.
