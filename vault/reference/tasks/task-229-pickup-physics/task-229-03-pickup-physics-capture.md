@@ -3,7 +3,7 @@ id: task-229-03-pickup-physics-capture
 description: "cpp: one -game run with pickups thrown and landed; capture their flight spin and that they rest on faces, not corners."
 parent: task-229-pickup-physics
 kind: task
-status: in-progress
+status: done
 ---
 # Pickup physics: capture
 
@@ -15,11 +15,11 @@ status: in-progress
 - done_when: images saved and opened by the Orchestrator; no error in the log; commit by path.
 - editor_state: closed
 - token_ceiling: open
-- model: open
-- tokens: open
-- runs: open
+- model: opus
+- tokens: input 60, cache write 73041, cache read 1371811, output 8465
+- runs: 1
 - milestone: M1
-- result: open
+- result: Commit 57311527: vault/assets/pickups-physics-flight.png (a cube changing tilt between shots: light spin visible, random axis per pickup) and pickups-physics-rest.png (cubes on a face, none clearly on a corner; nuts flat or on one of their six flats; glow discs not cut). Roll after landing small (5-25 px, under one cube width), a lower bound: each screenshot froze the game 0.27 s and physics is capped at 1/30 s per frame, so physics ran about 8x slower during the shots. Knob if more roll is wanted: LandingHorizontalSpeedScale (landing horizontal speed about 70 uu/s). No error in the log.
 
 ## Relations
 - [[task-229-pickup-physics]] — parent global task.

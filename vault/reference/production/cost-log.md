@@ -417,6 +417,7 @@ kind: note
 | [[task-228-01-bp-pickup-xp-big-pop]] | sonnet | 1 | 0k | 32k | 289k | 0k |
 | [[task-229-01-pickup-simple-collisions]] | opus | 1 | 0k | 103k | 2098k | 6k |
 | [[task-229-02-pickup-physics-cpp]] | opus | 2 | 0k | 215k | 10323k | 12k |
+| [[task-229-03-pickup-physics-capture]] | opus | 1 | 0k | 73k | 1372k | 8k |
 
 ## Totals
 | Scope | Input | Cache write | Cache read | Output |

@@ -1,9 +1,9 @@
 ---
 id: task-229-pickup-physics
 description: "Pickups land into Chaos physics (simple box collisions, floor and walls only) so they roll and tumble; a very light spin while they fly."
-parent: tasks-to-do-index
+parent: tasks-done-index
 kind: task
-status: in-progress
+status: done
 ---
 # Pickups: real physics on landing
 
@@ -13,8 +13,8 @@ status: in-progress
 - gdd_check: [[sys-pickups-lifecycle]] (pop arc, floaty pop, rest orientation, magnet, pool), [[sys-pickups]], [[bp-pickup-xp]]. Defaults (Orchestrator): the pop arc stays kinematic (its floaty tuning is kept) and adds a light spin; at landing the pickup switches to physics with the arc's landing velocity plus the spin; on magnet latch physics stops and the kinematic fly-in takes over; the pool turns physics off on release; RestOrientation no longer forces the landed orientation (physics decides); collision boxes exclude the glow disc slot; ore chunk collision chosen by the agent (box per variant expected).
 - confirmed_by_owner: yes
 - milestone: M1
-- next_step: task-229-03-pickup-physics-capture
-- result: open
+- next_step: none
+- result: Done. Commit 57311527: vault/assets/pickups-physics-flight.png (a cube changing tilt between shots: light spin visible, random axis per pickup) and pickups-physics-rest.png (cubes on a face, none clearly on a corner; nuts flat or on one of their six flats; glow discs not cut). Roll after landing small (5-25 px, under one cube width), a lower bound: each screenshot froze the game 0.27 s and physics is capped at 1/30 s per frame, so physics ran about 8x slower during the shots. Knob if more roll is wanted: LandingHorizontalSpeedScale (landing horizontal speed about 70 uu/s). No error in the log.
 
 ## Subtasks
 - [[task-229-01-pickup-simple-collisions]] — cpp (headless): simple collisions on the pickup meshes.
@@ -22,6 +22,6 @@ status: in-progress
 - [[task-229-03-pickup-physics-capture]] — cpp: one `-game` run, capture of landed pickups.
 
 ## Relations
-- [[tasks-to-do-index]] — parent index.
+- [[tasks-done-index]] — parent index.
 - [[sys-pickups-lifecycle]] — the lifecycle changed.
 - [[perf-lead-pickup-simulated-roll]] — the fallback if physics costs too much.
