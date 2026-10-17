@@ -1,6 +1,6 @@
 ---
 id: wbp-loading
-description: "WBP_Loading, full-screen opaque loading screen shown between levels (Chargement, Niveau N, stage line), bound to the C++ loading events; open for its tree and graph."
+description: "WBP_Loading, opaque loading screen between levels (DROPPING IN, Level N, stage line) from English screen texts, bound to the C++ loading events."
 parent: blueprints-ui-index
 kind: doc
 ---
@@ -8,17 +8,18 @@ kind: doc
 
 - asset_path: /Game/RogueRigs/UI/WBP_Loading
 - parent_class: URRLoadingScreenWidget (/Script/RogueRigs.RRLoadingScreenWidget, [[sys-run-transition]])
-- purpose: hides the map being built during a level change: opaque dark screen, "Chargement", "Niveau N" and a stage line. Created by the controller (class in LoadingScreenWidgetClass of [[bp-rr-player-controller]]) when loading starts, again on the new world's BeginPlay, removed on OnLevelReady.
-- components: Border Backdrop (root, brush colour 0.02/0.025/0.035 alpha 1, fills the screen) > VerticalBox Column (centred both ways) > TitleText "Chargement" (Roboto Bold 64, white, outline 2), LevelText "Niveau 1" (Bold 36, orange 1/0.35/0.1, outline 2, top padding 16), StageText (Bold 22, grey 0.7, outline 2, top padding 16, initial "Préparation du terrain"). All three texts are variables, centre-justified and aligned. Same font and colour language as [[wbp-alert-objectives]]. No animation.
+- purpose: hides the map being built during a level change: opaque dark screen, "DROPPING IN", "Level N" and a stage line, read from the validated English texts (screen_texts.json item `loading_level`) through [[sys-text-content]]. Created by the controller (class in LoadingScreenWidgetClass of [[bp-rr-player-controller]]) when loading starts, again on the new world's BeginPlay, removed on OnLevelReady.
+- components: Border Backdrop (root, brush colour 0.02/0.025/0.035 alpha 1, fills the screen) > VerticalBox Column (centred both ways) > TitleText "DROPPING IN" (Roboto Bold 64, white, outline 2), LevelText "Level 1" (Bold 36, orange 1/0.35/0.1, outline 2, top padding 16), StageText (Bold 22, grey 0.7, outline 2, top padding 16, initial "Surveying the terrain"). All three texts are variables, centre-justified and aligned. Same font and colour language as [[wbp-alert-objectives]]. No animation.
 - exposed_defaults: none.
-- events: OnLoadingShown(LevelIndex, LayoutName): LevelText = "Niveau " + LevelIndex (LayoutName unused). OnLoadingStageChanged(Stage): switch on ERRRunLoadingStage: WaitingForLayout "Préparation du terrain", OpeningMap "Chargement de la carte", PreparingLevel "Préparation du niveau"; None leaves the text unchanged.
+- events: both events first call the function LoadScreenTexts (gets `URRTextContentSubsystem` from the widget world, `GetScreenText("loading_level")`, stores the struct in variable ScreenTexts and the result in bHasTexts). OnLoadingShown(LevelIndex, LayoutName): if bHasTexts, TitleText = Title and LevelText = Labels[0] with "{N}" replaced by LevelIndex (literal string Replace on the converted text); otherwise TitleText keeps its default and LevelText = "Level " + LevelIndex. OnLoadingStageChanged(Stage): if bHasTexts, switch on ERRRunLoadingStage: WaitingForLayout Lines[0], OpeningMap Lines[1], PreparingLevel Lines[2]; None leaves the text unchanged; without texts the tree default stays.
 - logic_in_bp: display only.
 - assets: none.
 - owner_agent: agent-bp
-- verified: task-206-05: tree read back, graph read back, compiled with warnings as errors, saved; LoadingScreenWidgetClass read back on the controller default. Not seen on screen or in PIE; not checked that the Backdrop covers the viewport when added to the viewport.
+- verified: task-206-05: tree read back, graph read back, compiled with warnings as errors, saved. task-210-04: tree defaults read back (DROPPING IN, Level 1, Surveying the terrain), graph wiring read back, compiled with warnings as errors, saved. Not run in PIE, not seen on screen; the runtime text lookup was not exercised.
 
 ## Relations
 - [[blueprints-ui-index]] — parent index.
+- [[sys-text-content]] — the screen text source.
 - [[sys-run-transition]] — the C++ base class, loading events and stages.
 - [[bp-rr-player-controller]] — creates it through LoadingScreenWidgetClass.
 - [[wbp-alert-objectives]] — font and colour reference.
