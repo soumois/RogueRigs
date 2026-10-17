@@ -17,7 +17,7 @@ Third-party captures from the owner (2026-10-17), a visual reference only: never
 - Rock is not cubes: one continuous violet slab per mass, flat smooth top following a rounded outline with a lighter rim, dark crystalline columns on the sides, crystals at the foot.
 - Mining fractures the top into tilted plates around the drill, then dust and shards, then floor.
 - Some areas are cracked before any mining (owner, 00:34): patches inside masses and bands along corridor edges; not every edge. The owner felt them weaker: cracked reads as "already damaged, digs faster". Not measured.
-- Owner decision (2026-10-17): Rogue Rigs will place weaker rock with a Perlin-type noise ("méthode 2"), with a damaged-wall protection whose meaning is open; values open; separate from the look task.
+- Owner decision (2026-10-17): Rogue Rigs will place weaker rock with a Perlin-type noise ("méthode 2"), capped by a maximum share of the rock (the owner's "protection de mur abîmé", clarified 2026-10-17; share value open); other values open; separate from the look task.
 
 ## Relations
 - [[art-audio-index]] — parent index.

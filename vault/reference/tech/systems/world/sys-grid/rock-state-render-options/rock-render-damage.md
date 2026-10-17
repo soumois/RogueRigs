@@ -20,7 +20,7 @@ Rock dies at 0.5 dig-seconds, so plates last a few frames on rock; worth it on o
 One cluster mesh per ore cell (2 x 2 deposit = 4 clusters, image C) in a per-chunk crystal HISM per ore type, emissive, colour from the existing `OreColorCustomDataIndex` floats; random yaw. Slab under ore is ordinary rock pieces ([[color-code]]: same base). Removed with the cell.
 
 ## Future weak_rock
-A Perlin-noise layer of the generator ([[rock-look-reference]], values open) marks cells `weak_rock` (new `ERRCellType`, or a per-cell flag on rock; open). Render: solid in the dual-grid mask like rock; its quadrant d starts at a floor value (for example 0.3, open) so it is cracked while intact, matching "cracks mean damaged" ([[readability-rules]]); lower `CellHealth`. The damaged-wall protection meaning is open. No new mesh.
+A Perlin-noise layer of the generator ([[rock-look-reference]], values open) marks cells `weak_rock` (new `ERRCellType`, or a per-cell flag on rock; open). Render: solid in the dual-grid mask like rock; its quadrant d starts at a floor value (for example 0.3, open) so it is cracked while intact, matching "cracks mean damaged" ([[readability-rules]]); lower `CellHealth`. Its total is capped by a maximum share of the rock (owner 2026-10-17, value open). No new mesh.
 
 ## Relations
 - [[rock-state-render-options]] — parent note.
