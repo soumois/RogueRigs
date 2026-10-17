@@ -1,0 +1,11 @@
+{
+  "run_id": "20261016-231225-rock-look",
+  "items": [
+    { "file": "20261016-231225-rock-look-1.png", "verdict": "fail", "rule": "A1", "reason": "Cube edges are rounded and bevelled and the tops carry a soft painted grain and gradient.", "correction": "flat-shaded low-poly, every facet one flat colour, hard sharp edges with no bevel or rounding, no painted texture, no surface grain, no gradient on top faces" },
+    { "file": "20261016-231225-rock-look-1.png", "verdict": "fail", "rule": "A12", "reason": "Camera is about 45 degrees, side faces as visible as the tops.", "correction": "camera looking almost straight down, about 75 to 80 degrees from horizontal; top faces fill the view, side faces only a thin strip" },
+    { "file": "20261016-231225-rock-look-1.png", "verdict": "fail", "rule": "color-code", "reason": "A column of three cells is a darker neutral grey with no violet tint, a block type absent from the colour code.", "correction": "every plain rock cell is the same light grey tinted violet; no darker, neutral grey or empty cells inside the mass" },
+    { "file": "20261016-231225-rock-look-2.png", "verdict": "fail", "rule": "A1", "reason": "Rounded bevelled cube edges, soft painted shading and notched chips on the tops.", "correction": "flat-shaded low-poly, every facet one flat colour, hard sharp edges with no bevel or rounding, no painted texture, no surface grain, no gradient on top faces" },
+    { "file": "20261016-231225-rock-look-2.png", "verdict": "fail", "rule": "A12", "reason": "Camera about 40 to 45 degrees with large side faces.", "correction": "camera looking almost straight down, about 75 to 80 degrees from horizontal; top faces fill the view, side faces only a thin strip" },
+    { "file": "20261016-231225-rock-look-2.png", "verdict": "fail", "rule": "readability-rules", "reason": "Light cracks are hair-thin and low-contrast, so light damage will merge with intact rock at game camera distance (brief: three states).", "correction": "light damage: three to five thick, dark crack lines per cell, clearly visible from far away" }
+  ]
+}

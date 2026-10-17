@@ -1,0 +1,12 @@
+{
+  "run_id": "20261016-231332-rock-look",
+  "items": [
+    { "file": "20261016-231332-rock-look-1.png", "verdict": "fail", "rule": "A1", "reason": "Faceted sides pass but the top is a smooth painted surface with mottled grain and soft gradients.", "correction": "the top face is flat-shaded low-poly too: large flat facets, one flat colour each, no painted texture or grain" },
+    { "file": "20261016-231332-rock-look-1.png", "verdict": "fail", "rule": "A12", "reason": "Camera about 45 degrees with a thick side band all around.", "correction": "camera looking almost straight down, about 75 to 80 degrees from horizontal; top face fills the view, sides only a thin strip" },
+    { "file": "20261016-231332-rock-look-1.png", "verdict": "fail", "rule": "readability-rules", "reason": "Light and heavy damage are regular honeycomb tilings, heavy plates are flat not tilted, and seams fence each zone (brief: three states).", "correction": "irregular uneven crack lines, no hexagons or honeycomb; heavy damage: irregular plates each visibly tilted and raised at one edge; one continuous top with no seams between zones" },
+    { "file": "20261016-231332-rock-look-1.png", "verdict": "fail", "rule": "readability-rules", "reason": "One round cluster per deposit, the 2 x 2 footprint of the deposit and vein does not read (brief).", "correction": "the Duskite deposit covers a square patch of 2 by 2 cells: four crystal clusters in a square with rock between them; the heal vein the same in red" },
+    { "file": "20261016-231332-rock-look-2.png", "verdict": "fail", "rule": "A1", "reason": "Faceted sides pass but the top is smooth with soft gradients and painted shading.", "correction": "the top face is flat-shaded low-poly too: large flat facets, one flat colour each, no painted texture or grain" },
+    { "file": "20261016-231332-rock-look-2.png", "verdict": "fail", "rule": "A12", "reason": "Camera about 45 degrees.", "correction": "camera looking almost straight down, about 75 to 80 degrees from horizontal; top face fills the view, sides only a thin strip" },
+    { "file": "20261016-231332-rock-look-2.png", "verdict": "fail", "rule": "readability-rules", "reason": "One cluster per deposit, the 2 x 2 footprint does not read (brief).", "correction": "the Duskite deposit covers a square patch of 2 by 2 cells: four crystal clusters in a square with rock between them; the heal vein the same in red; light cracks thicker and darker; no seams between zones" }
+  ]
+}
