@@ -10,7 +10,8 @@
  * Chaser variant (enemy-chaser, shield variant): same melee state machine, speed and damage as ARRChaser, stats row ShieldChaser
  * (XP 2, Shield 30). The shield is the Shield attribute of the health set: each hit is taken from it first, the rest of the same
  * hit from Health (URRHealthAttributeSet). No tick cost: the robot only listens to the set's OnShieldBroken and forwards it to
- * the Blueprint (OnShieldBroken: hide the shell, play the burst). Its own native class so the spawner resolves it to its own
+ * the Blueprint (OnShieldBroken: hide the shell, play the burst), keeping the breaking hit direction for the shield debris
+ * (GetShieldDebrisDirection). Its own native class so the spawner resolves it to its own
  * Blueprint (WeightedEnemyClasses entry with the same nearest native class); a Blueprint of it must derive from this class.
  */
 UCLASS(Blueprintable)
@@ -41,6 +42,18 @@ public:
 	/** Times the shield broke (0 or 1), for tests and debug. */
 	int32 GetShieldBreakCount() const { return ShieldBreakCount; }
 
+	/**
+	 * Horizontal unit direction to throw the shield fragments toward (NS_ShieldDebris User.HitDirection, task-224-01). Base =
+	 * the travel direction of the hit that broke the shield (ShieldBreakDirection), else the robot backward. A hit from behind
+	 * (base along the robot forward, dot > 0) returns the base as is; any other base is turned ShieldDebrisSideAngleDeg about
+	 * Z toward the shield side (ShieldSide). Valid any time; meant to be read in OnShieldBroken.
+	 */
+	UFUNCTION(BlueprintPure, Category = "Shield Chaser")
+	FVector GetShieldDebrisDirection() const;
+
+	/** Horizontal unit travel direction of the hit that broke the shield this life; zero when none was recorded. */
+	const FVector& GetShieldBreakDirection() const { return ShieldBreakDirection; }
+
 protected:
 	/** Binds the health set's OnShieldBroken (after the base applied the CSV shield). */
 	virtual void BeginPlay() override;
@@ -63,4 +76,18 @@ protected:
 
 	/** Times the shield broke. */
 	int32 ShieldBreakCount = 0;
+
+	/** Degrees the shield debris direction is turned toward the shield side, unless the breaking hit came from behind. */
+	UPROPERTY(EditDefaultsOnly, Category = "Shield Chaser|Debris", meta = (ClampMin = "0", ClampMax = "90", Units = "Degrees"))
+	float ShieldDebrisSideAngleDeg = 20.f;
+
+	/**
+	 * Side the shield is held on, robot space: -1 = robot left, 1 = robot right, 0 = no turn. Default -1: the shield fragment
+	 * offsets of shield_debris_pieces.json have a negative Unreal Y (left of the +X front).
+	 */
+	UPROPERTY(EditDefaultsOnly, Category = "Shield Chaser|Debris", meta = (ClampMin = "-1", ClampMax = "1"))
+	int32 ShieldSide = -1;
+
+	/** Last recorded hit direction (ARREnemy::GetLastHitDirection) copied when the shield broke; zero = none. Cleared each life. */
+	FVector ShieldBreakDirection = FVector::ZeroVector;
 };
