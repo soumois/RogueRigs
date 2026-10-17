@@ -21,6 +21,13 @@ Refined by the Level-Design agent while writing the run levels ([[task-205-level
 - Yield: only 3 to 4 of 28 passing seeds keep every 24 × 24 window between 0.05 and 0.95; review 20 or more passing seeds, not 6 to 10. Most rejects are a fully open window (0.97 to 1.00) or a solid one (0 to 0.03).
 - Scan: stride 2, floor, barrel and spawn count as open; results differ by about 0.01 from the first arena_l2 scan.
 - Straight lane: an exact repeated interval is too strict on jagged walls; check with a tolerance of ±1 cell, or visually on the downscaled preview.
+## Refinements from arena_l4 (task-205-04)
+- Yield with default walk params: 1 of 30 passing seeds kept every window in 0.05 to 0.95 (arena_l3: 3 to 4 of 28); 20 seeds is a minimum, not a guarantee of a choice.
+- Outline variety: arena_l2 and arena_l3 share the outline harmonics; a different `noise_seed` and harmonic phases give a different shape (arena_l4).
+- Straight lane over about 30 cells: flagged, not rejecting (arena_l2 36 cells and arena_l4 44 cells accepted); whether it becomes a hard rule is the owner's call.
+- Layout JSON omits floor cells: a scan defaults missing cells to floor.
+
+## Automation
 - Doing the scan by hand per seed is the main cost; candidate for automation in the generator acceptance (not done).
 
 ## Relations
