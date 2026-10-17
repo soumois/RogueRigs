@@ -3,7 +3,7 @@ id: task-212-run-logs
 description: "Global task: Run logs."
 parent: tasks-to-do-index
 kind: task
-status: todo
+status: in-progress
 ---
 # Run logs
 

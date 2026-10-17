@@ -3,7 +3,7 @@ id: task-212-01-collector
 description: "cpp: URRRunLogSubsystem"
 parent: task-212-run-logs
 kind: task
-status: todo
+status: in-progress
 ---
 # collector
 

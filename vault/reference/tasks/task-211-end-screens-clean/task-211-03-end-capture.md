@@ -3,7 +3,7 @@ id: task-211-03-end-capture
 description: "cpp: In-game capture of the run-won, shuttle-missed and death end screens with no HUD and no subtitle, compared with the task-209-05 captures, se"
 parent: task-211-end-screens-clean
 kind: task
-status: in-progress
+status: done
 ---
 # end-capture
 
@@ -15,11 +15,11 @@ status: in-progress
 - done_when: captures show each end screen alone; the orchestrator sends them to the owner.
 - editor_state: closed
 - token_ceiling: 40000
-- model: open
-- tokens: open
-- runs: open
+- model: opus
+- tokens: input 42, cache write 83662, cache read 792206, output 1428
+- runs: 1
 - milestone: M2
-- result: open
+- result: Rendered -game captures sent to the owner: run won (CLAIM STRIPPED, subtitle, Ore secured: 120, Play again), shuttle missed (RUN LOST, Play again) and death (GAME OVER) each alone, no HUD and no subtitle; HUD back on level 1 after restart. Observed: on game over the world keeps running behind the text with no dimming.
 
 ## Relations
 - [[task-211-end-screens-clean]] — parent global task.

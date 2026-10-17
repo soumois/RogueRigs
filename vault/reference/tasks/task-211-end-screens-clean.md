@@ -1,9 +1,9 @@
 ---
 id: task-211-end-screens-clean
 description: "Global task: end screens (run won, run lost, death) show alone, with no HUD and no subtitle."
-parent: tasks-to-do-index
+parent: tasks-done-index
 kind: task
-status: in-progress
+status: done
 ---
 # End screens clean
 
@@ -13,8 +13,8 @@ status: in-progress
 - gdd_check: [[extraction]] (M1 end screens with restart button), [[run-structure]]. No conflict. The end screen is drawn inside WBP_AlertObjectives, a child of WBP_HUD, so the task-207 whole-HUD hide cannot be reused. Owner 2026-10-17: same rule for the death screen; the repeated speaker name in the Kessler-Voss line is a separate point.
 - confirmed_by_owner: yes (2026-10-17)
 - milestone: M2
-- next_step: task-211-03-end-capture
-- result: open
+- next_step: none
+- result: Done. Rendered -game captures sent to the owner: run won (CLAIM STRIPPED, subtitle, Ore secured: 120, Play again), shuttle missed (RUN LOST, Play again) and death (GAME OVER) each alone, no HUD and no subtitle; HUD back on level 1 after restart. Observed: on game over the world keeps running behind the text with no dimming.
 
 ## Subtasks
 1. task-211-01-end-silence-code — cpp
@@ -22,7 +22,7 @@ status: in-progress
 3. task-211-03-end-capture — cpp
 
 ## Relations
-- [[tasks-to-do-index]] — parent index.
+- [[tasks-done-index]] — parent index.
 - [[task-207-intermission-hide-hud]] — the same fix for the intermission.
 - [[task-211-01-end-silence-code]] — step 1, cpp.
 - [[task-211-02-end-hud-bp]] — step 2, bp.
