@@ -214,3 +214,4 @@ Archive: it exceeds the index size limits of [[_authoring]] on purpose (owner, 2
 - [[task-203-health-bar-juice]] — Juicy HUD health bar (drain, damage chunk, flash, shake, punch, colour by health). Status done.
 - [[task-204-health-bar-dark-empty]] — Health bar empty part dark grey #0B0C14 like the reference video, checked in game. Status done.
 - [[task-205-level-layouts-240]] — the Level-Design agent writes the layouts of levels 2 to 4 directly at 240 x 240, refining its rules so a good terrain is not luck. Status done.
+- [[task-206-level-to-level]] — a run chains 4 levels: after each extraction an intermission recap screen, the next layout prepared in the background, a loading screen if not ready; PIE still starts directly. Status done.

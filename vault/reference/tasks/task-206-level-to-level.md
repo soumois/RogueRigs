@@ -1,9 +1,9 @@
 ---
 id: task-206-level-to-level
 description: "Global task: a run chains 4 levels with an intermission recap, background layout loading, a loading screen; PIE starts directly."
-parent: tasks-to-do-index
+parent: tasks-done-index
 kind: task
-status: in-progress
+status: done
 ---
 # Level to level: intermission and loading
 
@@ -13,8 +13,8 @@ status: in-progress
 - gdd_check: [[run-structure]], [[intermission]], [[run-shop]], [[ore-economy]], [[extraction]], [[level-flow]]. Conflicts resolved by the owner 2026-10-17: run-structure had "nothing in between" (now intermission); background generation means the future C++ generator (no runtime AI), until then a pre-written layout loaded asynchronously; in-run shop paid in collected ore (also rerolls later), content open, not built; recap later shows DPS per weapon and robots killed once run logs exist; carried: cards, weapons, level, XP, health, ore; console on every level; no difficulty ramp yet (future balance task); loss restarts at level 1; level 1 stays arena_m1_fine.
 - confirmed_by_owner: yes (2026-10-17)
 - milestone: M2
-- next_step: task-206-06-transition-capture
-- result: open
+- next_step: none
+- result: Done. Rendered -game 1920 x 1080 captures sent to the owner: intermission (Niveau 1 terminé, 2 / 4, ore 30 / 30, shop placeholder, Continuer), loading screen on the new world (Chargement, Niveau 2, Préparation du niveau), level 2 on arena_l2 with HUD. Defects: Kessler-Voss subtitle drawn over the Continuer button and HUD objective texts faint behind the title; the old-world loading widget is never drawn (shown the frame of the travel); engine Preparing Shaders messages on the first loading frame. Map load 3.3 s, hold 2.0 s.
 
 ## Subtasks
 1. task-206-01-run-state — cpp
@@ -25,7 +25,7 @@ status: in-progress
 6. task-206-06-transition-capture — cpp
 
 ## Relations
-- [[tasks-to-do-index]] — parent index.
+- [[tasks-done-index]] — parent index.
 - [[task-206-01-run-state]] — step 1, cpp.
 - [[task-206-02-async-layout]] — step 2, cpp.
 - [[task-206-03-transition-flow]] — step 3, cpp.

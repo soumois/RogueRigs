@@ -3,7 +3,7 @@ id: task-206-06-transition-capture
 description: "cpp: In-game captures of the intermission screen, the loading screen and the start of level 2, sent to the owner.."
 parent: task-206-level-to-level
 kind: task
-status: in-progress
+status: done
 ---
 # transition-capture
 
@@ -15,11 +15,11 @@ status: in-progress
 - done_when: three captures exist and show the intermission recap, the loading screen and level 2 on arena_l2; the orchestrator sends them to the owner; committed if a doc changed.
 - editor_state: closed
 - token_ceiling: 40000
-- model: open
-- tokens: open
-- runs: open
+- model: opus
+- tokens: input 32, cache write 60371, cache read 468668, output 936
+- runs: 1
 - milestone: M2
-- result: open
+- result: Rendered -game 1920 x 1080 captures sent to the owner: intermission (Niveau 1 terminé, 2 / 4, ore 30 / 30, shop placeholder, Continuer), loading screen on the new world (Chargement, Niveau 2, Préparation du niveau), level 2 on arena_l2 with HUD. Defects: Kessler-Voss subtitle drawn over the Continuer button and HUD objective texts faint behind the title; the old-world loading widget is never drawn (shown the frame of the travel); engine Preparing Shaders messages on the first loading frame. Map load 3.3 s, hold 2.0 s.
 
 ## Relations
 - [[task-206-level-to-level]] — parent global task.
