@@ -13,6 +13,7 @@ kind: doc
 - Critical flag: on a crit the ExecCalc adds the dynamic asset tag `Effect.Damage.Critical` to the executed spec through `GetOwningSpecForPreExecuteMod()`; listeners read `Data.EffectSpec.GetDynamicAssetTags()` in `PostGameplayEffectExecute` ([[gas-api-notes]]). The executed spec is the target ASC's copy, so the carried handle never keeps the tag; the effect context is shared between copies, hence not used.
 - Death event: on the hit taking `Health` from above 0 to 0, `URRHealthAttributeSet` adds the loose tag `State.Dead` to its ASC (only if absent) and, after `OnDamageReceived`, broadcasts the native multicast `OnDeath(AActor* Instigator)` (original instigator of the effect context). Just before `OnDeath` it records the class of the killing effect, read by `GetLethalEffectClass` (task-096-01: the kamikaze tells explosion kills from player kills). Opt-out: `SetDeathEnabled(false)` (no caller since the target dummy was removed in task-031-01). Only `IncomingDamage` hits are watched.
 - Per-hit event: after consuming a positive `IncomingDamage`, `URRHealthAttributeSet` broadcasts the native multicast `OnDamageReceived(Damage, bIsCritical, HealthLeft)` — raw damage before the `Health` clamp, crit read from the spec's dynamic asset tags, `Health` after the hit. Feedback listeners bind to it instead of parsing specs; main user: robots ([[sys-enemies-base]], damage numbers). Handlers run inside the GE execution (same safety rules as post-execute).
+- Global hit event (task-212-01): after its own events every health set broadcasts the static native `URRHealthAttributeSet::OnAnyDamageReceived(FRRDamageEventInfo)` (target avatar, original instigator, effect causer, source object, effect class, raw damage, crit, killed), for observers that cannot bind each actor; listeners filter by world. User: [[sys-run-log]].
 
 ## Chain
 1. On fire, the weapon's ASC creates the spec. Instigator and causer = the weapon (approved). Kill credit and XP go up through `Weapon->GetOwner()`.
@@ -36,3 +37,4 @@ kind: doc
 - [[systems-index]] — parent index.
 - [[sys-explosions]] — explosions entering this chain.
 - [[sys-damage-numbers]] — where hit values become floating numbers.
+- [[sys-run-log]] — listens to the global hit event.
