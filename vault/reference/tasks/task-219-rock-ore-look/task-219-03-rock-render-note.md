@@ -3,7 +3,7 @@ id: task-219-03-rock-render-note
 description: "Tech note comparing ways to render rock damage states and ore blocks on the chunked grid HISMs, with costs and a triangle budget; no code."
 parent: task-219-rock-ore-look
 kind: task
-status: todo
+status: in-progress
 ---
 # Rock and ore look: rendering note
 

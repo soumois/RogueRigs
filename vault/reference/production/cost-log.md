@@ -409,6 +409,7 @@ kind: note
 | [[task-224-03-bp-shield-chaser-hitdir]] | sonnet | 1 | 0k | 53k | 668k | 0k |
 | [[task-225-01-shield-colour-renders]] | sonnet | 1 | 0k | 105k | 1369k | 18k |
 | [[task-224-04-shield-debris-direction-capture]] | opus | 1 | 0k | 58k | 542k | 6k |
+| [[task-219-05-rock-look-c-review]] | opus | 1 | 0k | 28k | 43k | 8k |
 
 ## Totals
 | Scope | Input | Cache write | Cache read | Output |
