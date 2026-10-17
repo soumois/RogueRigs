@@ -386,7 +386,7 @@ bool FRRTextAlertEventsTest::RunTest(const FString& Parameters)
 		const FString Line = TextContent->GetCurrentAlertLine(Event).ToString();
 		const TArray<FString>* Lines = Library.FindAlertLines(Event);
 		TestTrue(FString::Printf(TEXT("'%s' raised with one of its lines ('%s')"), Event, *Line), Lines != nullptr && Lines->Contains(Line));
-		const FString Expected = FString::Printf(TEXT("Shown:kessler_voss:Kessler-Voss: %s"), *Line);
+		const FString Expected = FString::Printf(TEXT("Shown:kessler_voss:%s"), *Line);
 		TestTrue(FString::Printf(TEXT("'%s' shown as a Kessler-Voss subtitle"), Event),
 			Recorder->SubtitleEvents.IsValidIndex(ShownIndex) && Recorder->SubtitleEvents[ShownIndex] == Expected);
 		return Line;

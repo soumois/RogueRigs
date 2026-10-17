@@ -29,13 +29,16 @@ bool FRRSubtitleReplaceTest::RunTest(const FString& Parameters)
 	TestFalse(TEXT("empty line refused"), Subtitles->Show(URRSubtitleSubsystem::SpeakerKesslerVoss, FText::GetEmpty(), FText::GetEmpty()));
 	TestEqual(TEXT("empty line: no broadcast"), Recorder->SubtitleEvents.Num(), 0);
 
-	// Speaker prefix from the table.
+	// Kessler-Voss lines show without a prefix (table bShowPrefix false); the speaker name is still reported.
 	TestTrue(TEXT("first line shown"), Subtitles->Show(URRSubtitleSubsystem::SpeakerKesslerVoss, FText::GetEmpty(), FText::FromString(TEXT("First line."))));
-	TestEqual(TEXT("Kessler-Voss prefix"), Subtitles->GetCurrentSubtitle().ToString(), FString(TEXT("Kessler-Voss: First line.")));
+	TestEqual(TEXT("Kessler-Voss: no prefix"), Subtitles->GetCurrentSubtitle().ToString(), FString(TEXT("First line.")));
 	TestEqual(TEXT("speaker name"), Subtitles->GetCurrentSpeaker().ToString(), FString(TEXT("Kessler-Voss")));
 	TestEqual(TEXT("speaker id"), Subtitles->GetCurrentSpeakerId(), URRSubtitleSubsystem::SpeakerKesslerVoss);
 	TestEqual(TEXT("line without speaker"), Subtitles->GetCurrentText().ToString(), FString(TEXT("First line.")));
 	TestEqual(TEXT("Rook name"), Subtitles->GetSpeakerDisplayName(URRSubtitleSubsystem::SpeakerRook).ToString(), FString(TEXT("Rook")));
+	TestFalse(TEXT("Kessler-Voss: prefix off"), Subtitles->ShowsSpeakerPrefix(URRSubtitleSubsystem::SpeakerKesslerVoss));
+	TestTrue(TEXT("Rook: prefix on"), Subtitles->ShowsSpeakerPrefix(URRSubtitleSubsystem::SpeakerRook));
+	TestTrue(TEXT("Vesna: prefix on"), Subtitles->ShowsSpeakerPrefix(URRSubtitleSubsystem::SpeakerVesna));
 	TestEqual(TEXT("Vesna name"), Subtitles->GetSpeakerDisplayName(URRSubtitleSubsystem::SpeakerVesna).ToString(), FString(TEXT("Vesna")));
 
 	// A new line replaces the current one, without a clear in between.
@@ -50,7 +53,7 @@ bool FRRSubtitleReplaceTest::RunTest(const FString& Parameters)
 	Subtitles->Show(TEXT("someone"), FText::GetEmpty(), FText::FromString(TEXT("Halt.")));
 	TestEqual(TEXT("unknown speaker: no prefix"), Subtitles->GetCurrentSubtitle().ToString(), FString(TEXT("Halt.")));
 
-	const TArray<FString> Expected = { TEXT("Shown:kessler_voss:Kessler-Voss: First line."), TEXT("Shown:rook:Rook: Second line."),
+	const TArray<FString> Expected = { TEXT("Shown:kessler_voss:First line."), TEXT("Shown:rook:Rook: Second line."),
 		TEXT("Shown:someone:Guard: Halt."), TEXT("Shown:someone:Halt.") };
 	TestEqual(TEXT("one shown per line, no clear on replace"), FString::Join(Recorder->SubtitleEvents, TEXT("|")), FString::Join(Expected, TEXT("|")));
 	return true;
@@ -97,7 +100,7 @@ bool FRRSubtitleDurationTest::RunTest(const FString& Parameters)
 	Subtitles->Clear();
 
 	const FString Shown = FString::Printf(TEXT(": %s"), *Line.ToString());
-	const TArray<FString> Expected = { TEXT("Shown:kessler_voss:Kessler-Voss") + Shown, TEXT("Cleared"), TEXT("Shown:vesna:Vesna") + Shown, TEXT("Cleared") };
+	const TArray<FString> Expected = { TEXT("Shown:kessler_voss:") + Line.ToString(), TEXT("Cleared"), TEXT("Shown:vesna:Vesna") + Shown, TEXT("Cleared") };
 	TestEqual(TEXT("delegate order: shown, cleared once per line, nothing when idle"), FString::Join(Recorder->SubtitleEvents, TEXT("|")), FString::Join(Expected, TEXT("|")));
 	return true;
 }

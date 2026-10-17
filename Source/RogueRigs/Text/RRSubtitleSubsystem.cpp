@@ -20,7 +20,7 @@ const FName URRSubtitleSubsystem::SpeakerVesna(TEXT("vesna"));
 URRSubtitleSubsystem::URRSubtitleSubsystem()
 {
 	Speakers = {
-		{ SpeakerKesslerVoss, LOCTEXT("SpeakerKesslerVoss", "Kessler-Voss") },
+		{ SpeakerKesslerVoss, LOCTEXT("SpeakerKesslerVoss", "Kessler-Voss"), false },
 		{ SpeakerRook, LOCTEXT("SpeakerRook", "Rook") },
 		{ SpeakerVesna, LOCTEXT("SpeakerVesna", "Vesna") }
 	};
@@ -162,10 +162,10 @@ bool URRSubtitleSubsystem::Show(FName SpeakerId, FText DisplayName, FText Text, 
 	CurrentSpeakerId = SpeakerId;
 	CurrentSpeaker = DisplayName.IsEmpty() ? GetSpeakerDisplayName(SpeakerId) : DisplayName;
 	CurrentText = Text;
-	CurrentSubtitle = ComposeSubtitle(CurrentSpeaker, CurrentText);
+	CurrentSubtitle = ShowsSpeakerPrefix(SpeakerId) ? ComposeSubtitle(CurrentSpeaker, CurrentText) : CurrentText;
 	CurrentDuration = DurationOverride > 0.f ? DurationOverride : GetDurationForText(Text);
 	RemainingSeconds = CurrentDuration;
-	UE_LOG(LogRogueRigs, Verbose, TEXT("URRSubtitleSubsystem: '%s' for %.2f s."), *CurrentSubtitle.ToString(), CurrentDuration);
+	UE_LOG(LogRogueRigs, Log, TEXT("URRSubtitleSubsystem: '%s' for %.2f s."), *CurrentSubtitle.ToString(), CurrentDuration);
 	OnSubtitleShown.Broadcast(CurrentSpeakerId, CurrentSpeaker, CurrentText, CurrentSubtitle, CurrentDuration);
 	return true;
 }
@@ -196,6 +196,12 @@ FText URRSubtitleSubsystem::GetSpeakerDisplayName(FName SpeakerId) const
 {
 	const FRRSubtitleSpeaker* Speaker = Speakers.FindByPredicate([SpeakerId](const FRRSubtitleSpeaker& Entry) { return Entry.Id == SpeakerId; });
 	return Speaker ? Speaker->DisplayName : FText::GetEmpty();
+}
+
+bool URRSubtitleSubsystem::ShowsSpeakerPrefix(FName SpeakerId) const
+{
+	const FRRSubtitleSpeaker* Speaker = Speakers.FindByPredicate([SpeakerId](const FRRSubtitleSpeaker& Entry) { return Entry.Id == SpeakerId; });
+	return !Speaker || Speaker->bShowPrefix;
 }
 
 float URRSubtitleSubsystem::GetDurationForText(const FText& Text) const

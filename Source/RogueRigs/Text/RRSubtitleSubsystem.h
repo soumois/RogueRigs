@@ -29,6 +29,10 @@ struct FRRSubtitleSpeaker
 	/** Name shown before the line ("Kessler-Voss"). */
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Subtitles")
 	FText DisplayName;
+
+	/** True: the line shows as "<DisplayName>: <line>"; false: the line alone (kessler_voss, owner decision task-215). */
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Subtitles")
+	bool bShowPrefix = true;
 };
 
 /**
@@ -138,6 +142,10 @@ public:
 	/** Display name of SpeakerId in the speaker table; empty when unknown. */
 	UFUNCTION(BlueprintPure, Category = "Subtitles")
 	FText GetSpeakerDisplayName(FName SpeakerId) const;
+
+	/** True when SpeakerId lines show the "<Speaker>: " prefix (table bShowPrefix); true for a speaker missing from the table. */
+	UFUNCTION(BlueprintPure, Category = "Subtitles")
+	bool ShowsSpeakerPrefix(FName SpeakerId) const;
 
 	/** On-screen seconds of a line: BaseSeconds + SecondsPerCharacter x its character count. */
 	UFUNCTION(BlueprintPure, Category = "Subtitles")
