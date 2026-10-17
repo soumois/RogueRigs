@@ -1,0 +1,25 @@
+---
+id: task-215-02-capture
+description: "cpp: In-game capture of a Kessler-Voss alert subtitle without prefix, compared with the task-209-05 capture, sent to the owner."
+parent: task-215-company-no-prefix
+kind: task
+status: todo
+---
+# capture
+
+- goal: In-game capture of a Kessler-Voss alert subtitle without prefix, compared with the task-209-05 capture, sent to the owner.
+- agent: cpp
+- depends_on: task-215-01-no-prefix-code
+- inputs: sys-subtitles (vault/reference/tech/systems/ui/sys-subtitles.md), wbp-subtitles (vault/reference/tech/blueprints/ui/wbp-subtitles.md), agent-cpp (vault/reference/agents/agent-cpp.md), build-toolchain (vault/reference/tech/pipelines/build-toolchain.md)
+- expected_output: PNG capture in Saved/Captures/ listed in the report.
+- done_when: the capture shows a company line with no "Kessler-Voss:" prefix; the orchestrator sends it to the owner.
+- editor_state: closed
+- token_ceiling: 30000
+- model: open
+- tokens: open
+- runs: open
+- milestone: M2
+- result: open
+
+## Relations
+- [[task-215-company-no-prefix]] — parent global task.
