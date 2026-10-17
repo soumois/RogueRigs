@@ -11,7 +11,7 @@ Owner decisions (2026-10-17): the shield chaser carries a physical riot shield, 
 ## Files
 - Validated sheet (front, side, back): `vault/assets/shield-turnaround.webp`, generated in ChatGPT by the owner from the prompt below.
 - Meshy view prompts (front, back, left, right; front asked without emblem): `Art/Source/shield-meshy/prompts/`.
-- The four generated views: not in the repo (open: to save as `vault/assets/shield-meshy-{front,left,back,right}.png`).
+- The four generated views, Meshy input (front without emblem): `vault/assets/shield-meshy-{front,left,back,right}.webp` (left = front face to the left of the image).
 - Raw Meshy mesh, untextured: `Art/Source/shield-meshy/meshy-raw/Meshy_AI__1017052835_model-edit.fbx` (copied from the owner's Downloads).
 
 ## Sheet prompt (verbatim, attachments: `chaser-turnaround.png` and the emblem)
