@@ -1,9 +1,9 @@
 ---
 id: task-222-shield-break-debris
 description: "When the shield chaser's shield breaks, throw shield fragments as debris, like the robot parts on death."
-parent: tasks-to-do-index
+parent: tasks-done-index
 kind: task
-status: in-progress
+status: done
 ---
 # Shield chaser: shield break debris
 
@@ -13,8 +13,8 @@ status: in-progress
 - gdd_check: [[enemy-death]] (robot debris look: 2 to 4 pieces, gravity, bounce, sink after 4.5 s), [[enemy-chaser]] (shield variant), [[art-prompts-shield]]. Defaults (Orchestrator): 5 fragments of the scaled shield (98 cm): four plate shards (the emblem shard among them) and the grip; all thrown each time; same life, gravity, bounce, collision and sink as NS_RobotDebris; thrown away from the robot front with a random spread (C++ hit direction is not reachable from Blueprint, no C++ change); spawned without pool (once per shield chaser).
 - confirmed_by_owner: yes
 - milestone: M1
-- next_step: task-222-05-shield-debris-capture
-- result: open
+- next_step: none
+- result: Shield break throws 5 shield fragments (NS_ShieldDebris spawned by BP_ShieldChaser OnShieldBroken), seen in game on the floor (task-222-01 to 05). Open: first-use compile hitch 0.83 s.
 
 ## Subtasks
 - [[task-222-01-shield-debris-pieces]] — 3D agent: cut the shield into 5 debris meshes with offsets.
@@ -24,6 +24,6 @@ status: in-progress
 - [[task-222-05-shield-debris-capture]] — cpp: `-game` capture of a shield break.
 
 ## Relations
-- [[tasks-to-do-index]] — parent index.
+- [[tasks-done-index]] — parent index.
 - [[bp-robot-debris]] — the debris system copied.
 - [[art-prompts-shield]] — the shield.

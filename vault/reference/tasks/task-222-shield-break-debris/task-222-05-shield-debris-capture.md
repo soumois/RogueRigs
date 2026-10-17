@@ -3,7 +3,7 @@ id: task-222-05-shield-debris-capture
 description: "cpp: -game capture of a shield chaser's shield breaking into fragments, frames for the owner."
 parent: task-222-shield-break-debris
 kind: task
-status: in-progress
+status: done
 ---
 # Shield debris: in-game capture
 
@@ -16,10 +16,10 @@ status: in-progress
 - editor_state: closed
 - token_ceiling: open
 - model: open
-- tokens: open
-- runs: open
+- tokens: cost counted under task-220-04 (one agent for the three captures)
+- runs: 1
 - milestone: M1
-- result: open
+- result: Commit c4b1e8ef: shield-chaser-debris-burst.png (0.05 s after the break; ambiguous with the robot death debris, the same hit broke the shield and killed the robot) and shield-chaser-debris-floor.png (yellow shield pieces of several shapes on the floor, about 7.7 s after); no Niagara error; NS_ShieldDebris compiles on first use (0.83 s hitch at the first break).
 
 ## Relations
 - [[task-222-shield-break-debris]] — parent global task.

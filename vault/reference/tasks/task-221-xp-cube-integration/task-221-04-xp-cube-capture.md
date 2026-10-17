@@ -3,7 +3,7 @@ id: task-221-04-xp-cube-capture
 description: "cpp: -game capture of big XP data cubes on the floor (any orientation, glow), image for the owner."
 parent: task-221-xp-cube-integration
 kind: task
-status: in-progress
+status: done
 ---
 # XP cube: in-game capture
 
@@ -16,10 +16,10 @@ status: in-progress
 - editor_state: closed
 - token_ceiling: open
 - model: open
-- tokens: open
-- runs: open
+- tokens: cost counted under task-220-04 (one agent for the three captures)
+- runs: 1
 - milestone: M1
-- result: open
+- result: Commit c4b1e8ef: vault/assets/xp-cube-big-ingame.png, 5-6 glowing lilac cubes on the floor, cubes not chips; no Blueprint or material error.
 
 ## Relations
 - [[task-221-xp-cube-integration]] — parent global task.

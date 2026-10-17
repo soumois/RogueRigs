@@ -1,9 +1,9 @@
 ---
 id: task-221-xp-cube-integration
 description: "Replace the big XP chip by the validated data cube in game (BP_PickupXPBig), any-angle rest, then delete the chip assets and sources."
-parent: tasks-to-do-index
+parent: tasks-done-index
 kind: task
-status: in-progress
+status: done
 ---
 # Big XP: data cube replaces the chip
 
@@ -13,8 +13,8 @@ status: in-progress
 - gdd_check: [[art-prompts-xp-core]] (cube validated, task-217), [[bp-pickup-xp]] (chip slots, glow disc, scale 1.53, RestOrientation YawOnly), [[color-code]] (big XP core lilac versus magenta mismatch still open: the cube keeps the chip's current core and disc instances, so the in-game hue does not change). Defaults (Orchestrator): scale 1.53 kept (the cube is 30 cm across like the chip); RestOrientation Full (the reason for the cube).
 - confirmed_by_owner: yes
 - milestone: M1
-- next_step: task-221-04-xp-cube-capture
-- result: open
+- next_step: none
+- result: Big XP is the data cube in game (BP_PickupXPBig, RestOrientation Full); chip mesh, materials, FBX, scripts and sources deleted (task-221-01 to 04); in-game shot vault/assets/xp-cube-big-ingame.png.
 
 ## Subtasks
 - [[task-221-01-xp-cube-import]] — bp: import SM_XPCubeBig and its material instances.
@@ -23,6 +23,6 @@ status: in-progress
 - [[task-221-04-xp-cube-capture]] — cpp: `-game` capture of big XP cubes.
 
 ## Relations
-- [[tasks-to-do-index]] — parent index.
+- [[tasks-done-index]] — parent index.
 - [[art-prompts-xp-core]] — the cube.
 - [[bp-pickup-xp]] — the Blueprint changed.
