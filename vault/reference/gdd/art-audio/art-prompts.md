@@ -38,6 +38,7 @@ Reference images are generated in ChatGPT image generation. The prompts are stor
 - [[art-prompts-rigs]] — miner, drone, turret sheet, drone fix, T-pose.
 - [[art-prompts-shield]] — shield chaser riot shield: sheet, Meshy views, raw mesh, open texture steps.
 - [[art-prompts-xp-core]] — four any-angle proposals to replace the big XP chip; choice open.
+- [[art-prompts-rock]] — rock and ore look proposals: per-cell blocks versus continuous slab; choice open.
 - [[art-style-guide]] — the general style rules derived from these prompts.
 - [[visual-style]] — the style these prompts produce.
 - [[asset-pipeline]] — where the images go next (Meshy, Tripo).

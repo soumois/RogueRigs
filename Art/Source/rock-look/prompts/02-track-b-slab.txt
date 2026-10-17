@@ -1,0 +1,9 @@
+Flat-shaded low-poly 3D game screenshot, steep top-down camera (almost vertical, slight perspective), 16:9. Visible facets, no textures, no UI, no text. Look-development board: a clean arena floor with one big mass of destructible rock seen from above, no characters, no robots.
+Floor: clean, flat, slightly dark, subtle large facets, no pebbles, no rubble, nothing scattered.
+The rock mass is one continuous low slab, not separate cubes: a single flat top surface following a rounded, irregular, organic outline with soft bays and lobes, a lighter rim running along the outline of the top face, and darker faceted crystalline sides dropping to the floor (short, the top face is the most visible part). Colour: light grey tinted violet, lighter than the floor so the rock separates from the floor by brightness.
+Three states of plain rock, in three separate patches on the top of the same slab:
+1. Intact: smooth flat clean top.
+2. Lightly damaged: thin dark cracks across the flat top, the slab still whole.
+3. Heavily damaged: the top broken into several tilted flat plates with dark gaps between them, still standing at the same height.
+Ore: on the same slab, one Duskite deposit covering about 2 x 2 cells: bright glowing violet crystal clusters growing out of the grey-violet rock top, soft violet glow. Also one heal vein of about 2 x 2 cells: bright glowing red crystal clusters growing out of the grey rock top, soft red glow. Both clearly brighter than the plain rock.
+Strong directional light with lifted shadows so everything stays readable. No UI, no text.

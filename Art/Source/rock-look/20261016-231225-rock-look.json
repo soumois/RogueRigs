@@ -1,0 +1,35 @@
+{
+  "run_id": "20261016-231225-rock-look",
+  "asset": "rock-look",
+  "model": "gpt-image-2-text-to-image",
+  "aspect_ratio": "16:9",
+  "resolution": "1K",
+  "variants": 2,
+  "prompt_file": "Art/Source/rock-look/prompts/01-track-a-cells.txt",
+  "prompt": "Flat-shaded low-poly 3D game screenshot, steep top-down camera (almost vertical, slight perspective), 16:9. Visible facets, no textures, no UI, no text. Look-development board: a clean arena floor with one big mass of destructible rock seen from above, no characters, no robots.\nFloor: clean, flat, slightly dark, subtle large facets, no pebbles, no rubble, nothing scattered.\nThe rock mass is built of a regular grid of low chunky cubes (knee-high, same size), each cube a separate block with a thin visible gap line between blocks. The top face of each cube is the most visible part, the sides are short and darker. Colour: light grey tinted violet, lighter than the floor so the rock separates from the floor by brightness.\nThree states of plain rock, in three clearly separate patches of the mass:\n1. Intact: smooth flat top faces, clean and uncracked.\n2. Lightly damaged: the same cubes with a few thin dark cracks running across the top faces, the cubes still whole and flat.\n3. Heavily damaged: the top face of each cube broken into several tilted flat plates, like a shattered slab, still standing at the same height, with dark gaps between plates.\nBlocks along the open outer edge of the mass look slightly chipped, with a few corner chips, but no loose debris on the floor.\nOre: inside the mass, one Duskite deposit of 2 x 2 cubes: the same grey-violet rock cubes with clusters of bright glowing violet crystals growing out of the top faces, a soft violet glow. Also one heal vein of 2 x 2 cubes: the same grey rock cubes with clusters of bright glowing red crystals on top, a soft red glow. Both deposits clearly brighter than the plain rock.\nStrong directional light with lifted shadows so everything stays readable. No UI, no text.",
+  "refs": [],
+  "tasks": [
+    {
+      "task_id": "cfced382a40f3a1dd37578bf89d416fd",
+      "state": "success",
+      "credits": 6,
+      "error": null,
+      "result_urls": [
+        "https://tempfile.aiquickdraw.com/images/chatgpt/file_000000002ca882309e63e5458eb7fa4b.png"
+      ]
+    },
+    {
+      "task_id": "0a47ecbd22f69378986231a2e0f20bd3",
+      "state": "success",
+      "credits": 6,
+      "error": null,
+      "result_urls": [
+        "https://tempfile.aiquickdraw.com/images/chatgpt/file_0000000096f481f6996eb82777f9a85c.png"
+      ]
+    }
+  ],
+  "files": [
+    "Art/Source/rock-look/20261016-231225-rock-look-1.png",
+    "Art/Source/rock-look/20261016-231225-rock-look-2.png"
+  ]
+}
