@@ -368,6 +368,10 @@ bool FRRJuiceKillStreamTest::RunTest(const FString& Parameters)
 		PickupSystem->SetSpawnMaxFrames(0); // task-092-01: drops delivered at once (these checks read them in the same frame); spread covered by RogueRigs.PickupPool.
 	}
 	const float XPBefore = JuiceTotalXP();
+	// task-213-02: the cubes pop at a random start yaw and 80-300 uu (task-195-02) from the global FMath stream, clock-seeded;
+	// dropped 60 uu from the miner, a cube popping away could land beyond the pickup radius (flaky "3 cubes collected").
+	// Seeded here so the run is deterministic; gameplay unchanged.
+	FMath::RandInit(20261017);
 	TestTrue(TEXT("chaser killed"), URRStressSubsystem::KillEnemy(Chaser));
 
 	// The cubes drop at the end of the death shrink.
@@ -591,13 +595,30 @@ bool FRRJuiceHealRingTest::RunTest(const FString& Parameters)
 	Miner->OnPickupCollectedAt.AddDynamic(Recorder.Get(), &URRTestEventRecorder::HandlePickupCollectedAt);
 	const TArray<FVector>& HealCollects = Recorder->GetCollectedPickupLocations();
 
+	// The pop distance is read from the BP_PickupHeal class default (task-195-02, owner: 80-300 uu; the former 67 uu bound
+	// predated it, task-213-02).
+	const FFloatProperty* PopMinDistanceProperty = FindFProperty<FFloatProperty>(ARRPickup::StaticClass(), TEXT("PopMinDistance"));
+	const FFloatProperty* PopMaxDistanceProperty = FindFProperty<FFloatProperty>(ARRPickup::StaticClass(), TEXT("PopMaxDistance"));
+	if (!TestNotNull(TEXT("PopMinDistance property"), PopMinDistanceProperty) || !TestNotNull(TEXT("PopMaxDistance property"), PopMaxDistanceProperty))
+	{
+		return false;
+	}
+	const float PopMinDistance = PopMinDistanceProperty->GetPropertyValue_InContainer(HealClass->GetDefaultObject());
+	const float PopMaxDistance = PopMaxDistanceProperty->GetPropertyValue_InContainer(HealClass->GetDefaultObject());
+
 	// A heal chunk dropped 120 uu away (inside the 300 uu pickup radius) pops, rests, streams in, is collected.
+	// task-213-02: the pop yaw and distance come from the global FMath stream (clock-seeded): a chunk popping away from the
+	// miner can land beyond the pickup radius and is then never collected. Seeded here so the run is deterministic; gameplay unchanged.
+	FMath::RandInit(20261017);
 	ARRPickup* Heal = TestWorld.Spawn<ARRPickup>(HealClass, MinerFloor + FVector(120.f, 0.f, 0.f));
 	if (!TestNotNull(TEXT("BP_PickupHeal spawned"), Heal))
 	{
 		return false;
 	}
-	TestTrue(TEXT("heal chunk lands within one 67 uu cell (PopMaxDistance)"), FVector::Dist2D(Heal->GetPopEnd(), Heal->GetPopStart()) <= 67.f + 0.5f);
+	const float PopDistance = FVector::Dist2D(Heal->GetPopEnd(), Heal->GetPopStart());
+	AddInfo(FString::Printf(TEXT("JUICE heal pop %.1f uu (class default %.1f-%.1f)"), PopDistance, PopMinDistance, PopMaxDistance));
+	TestTrue(TEXT("heal chunk pops PopMinDistance-PopMaxDistance from its drop point (task-195-02: 80-300 uu)"),
+		PopDistance >= PopMinDistance - 0.5f && PopDistance <= PopMaxDistance + 0.5f);
 	int32 Frame = 0;
 	for (; Frame < 300 && HealCollects.IsEmpty(); ++Frame)
 	{

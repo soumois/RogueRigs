@@ -580,6 +580,10 @@ bool FRROreHealVeinTest::RunTest(const FString& Parameters)
 	Miner->OnPickupCollected.AddDynamic(Recorder.Get(), &URRTestEventRecorder::HandlePickupCollected);
 
 	// Dig: the 4 blocks shake together and break on the same frame, about 1.5 s in; each drops one heal pickup worth 15.
+	// task-213-02: each pickup pops at a random yaw and 80-300 uu (task-195-02) from the global FMath stream, clock-seeded; a
+	// pickup popping away from the miner could land beyond the pickup radius and stay there (flaky "4 collected").
+	// Seeded here so the run is deterministic; gameplay unchanged.
+	FMath::RandInit(20261017);
 	TArray<int32> BreakFrames;
 	BreakFrames.Init(INDEX_NONE, VeinCellsOfTarget.Num());
 	int32 MaxVeinBlocksInArc = 0;
