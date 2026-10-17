@@ -3,7 +3,7 @@ id: task-206-05-wbp-loading
 description: "bp: WBP_Loading."
 parent: task-206-level-to-level
 kind: task
-status: in-progress
+status: done
 ---
 # wbp-loading
 
@@ -15,11 +15,11 @@ status: in-progress
 - done_when: widget compiles and saves; bound to the C++ events; doc node written; committed.
 - editor_state: open
 - token_ceiling: 30000
-- model: open
-- tokens: open
-- runs: open
+- model: sonnet
+- tokens: input 64, cache write 61211, cache read 1314435, output 1060
+- runs: 1
 - milestone: M2
-- result: open
+- result: WBP_Loading (7976bfa6): opaque dark backdrop, Chargement, Niveau N from OnLoadingShown, stage line from OnLoadingStageChanged (Préparation du terrain, Chargement de la carte, Préparation du niveau); LoadingScreenWidgetClass set on BP_RRPlayerController; doc wbp-loading under blueprints-ui-index. Unseen on screen.
 
 ## Relations
 - [[task-206-level-to-level]] — parent global task.
