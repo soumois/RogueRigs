@@ -3,7 +3,7 @@ id: task-206-03-transition-flow
 description: "cpp: Level transition."
 parent: task-206-level-to-level
 kind: task
-status: in-progress
+status: done
 ---
 # transition-flow
 
@@ -15,11 +15,11 @@ status: in-progress
 - done_when: build succeeds; existing tests pass; a -game log (with cheat SkipToExtraction) shows level 1 success, intermission, Continue, loading, level 2 on arena_l2 with the carried state, and level 4 success ending the run; docs updated; committed.
 - editor_state: closed
 - token_ceiling: 80000
-- model: open
-- tokens: open
-- runs: open
+- model: opus
+- tokens: input 136, cache write 198534, cache read 8673433, output 23267
+- runs: 2
 - milestone: M2
-- result: open
+- result: URRRunTransitionSubsystem (e4057513, docs 89149b56, sys-run-transition): extraction on levels 1-3 -> Intermission (snapshot, next layout requested, OnIntermissionStarted recap, no end screen); Continue() -> Loading (waits OnLayoutReady) -> OpenLevel; on the new map run flow, spawning and input held until the new OnPoolPrewarmFinished (timeout 10 s provisional) -> OnLevelReady; level 4 -> run won (OnRunEnded true, IsRunWon); restart and death call ResetRun. Widget bases URRIntermissionWidget, URRLoadingScreenWidget, classes on BP_RRPlayerController. -game -nullrhi: levels 1 to 4 chained on arena_m1_fine, l2, l3, l4, map load about 2.3 s, prewarm hold about 0.45 s; restart and deaths back to level 1. Tests 260 pass, 2 known failures. Unseen on screen; end screen still reads EXTRACTION SUCCESSFUL at level 4 (text in WBP_AlertObjectives).
 
 ## Relations
 - [[task-206-level-to-level]] — parent global task.

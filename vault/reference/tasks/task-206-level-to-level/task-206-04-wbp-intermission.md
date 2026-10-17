@@ -3,7 +3,7 @@ id: task-206-04-wbp-intermission
 description: "bp: WBP_Intermission."
 parent: task-206-level-to-level
 kind: task
-status: todo
+status: in-progress
 ---
 # wbp-intermission
 
