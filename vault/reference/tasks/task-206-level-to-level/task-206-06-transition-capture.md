@@ -3,7 +3,7 @@ id: task-206-06-transition-capture
 description: "cpp: In-game captures of the intermission screen, the loading screen and the start of level 2, sent to the owner.."
 parent: task-206-level-to-level
 kind: task
-status: todo
+status: in-progress
 ---
 # transition-capture
 

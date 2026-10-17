@@ -3,7 +3,7 @@ id: task-206-04-wbp-intermission
 description: "bp: WBP_Intermission."
 parent: task-206-level-to-level
 kind: task
-status: in-progress
+status: done
 ---
 # wbp-intermission
 
@@ -15,11 +15,11 @@ status: in-progress
 - done_when: widget compiles and saves; bound to the C++ events listed in sys-run; doc node written; committed.
 - editor_state: open
 - token_ceiling: 40000
-- model: open
-- tokens: open
-- runs: open
+- model: sonnet
+- tokens: input 82, cache write 89606, cache read 2266400, output 771
+- runs: 1
 - milestone: M2
-- result: open
+- result: WBP_Intermission (bd92a934): backdrop 0.85, title Niveau N terminé, subtitle Niveau suivant N+1 / LevelCount, recap ore this level and run, reserved empty block for later DPS and kills, shop panel Boutique — bientôt, Continuer button calling Continue(); IntermissionWidgetClass set on BP_RRPlayerController (both widget classes present in the asset); doc wbp-intermission. Unseen on screen.
 
 ## Relations
 - [[task-206-level-to-level]] — parent global task.

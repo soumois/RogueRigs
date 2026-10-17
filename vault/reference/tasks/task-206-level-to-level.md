@@ -13,7 +13,7 @@ status: in-progress
 - gdd_check: [[run-structure]], [[intermission]], [[run-shop]], [[ore-economy]], [[extraction]], [[level-flow]]. Conflicts resolved by the owner 2026-10-17: run-structure had "nothing in between" (now intermission); background generation means the future C++ generator (no runtime AI), until then a pre-written layout loaded asynchronously; in-run shop paid in collected ore (also rerolls later), content open, not built; recap later shows DPS per weapon and robots killed once run logs exist; carried: cards, weapons, level, XP, health, ore; console on every level; no difficulty ramp yet (future balance task); loss restarts at level 1; level 1 stays arena_m1_fine.
 - confirmed_by_owner: yes (2026-10-17)
 - milestone: M2
-- next_step: task-206-04-wbp-intermission
+- next_step: task-206-06-transition-capture
 - result: open
 
 ## Subtasks

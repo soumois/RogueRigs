@@ -364,6 +364,7 @@ kind: note
 | [[task-206-02-async-layout]] | opus | 1 | 0k | 99k | 2773k | 2k |
 | [[task-206-03-transition-flow]] | opus | 2 | 0k | 199k | 8673k | 23k |
 | [[task-206-05-wbp-loading]] | sonnet | 1 | 0k | 61k | 1314k | 1k |
+| [[task-206-04-wbp-intermission]] | sonnet | 1 | 0k | 90k | 2266k | 1k |
 
 ## Totals
 | Scope | Input | Cache write | Cache read | Output |
