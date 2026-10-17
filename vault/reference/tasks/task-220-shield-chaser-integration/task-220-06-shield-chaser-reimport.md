@@ -3,7 +3,7 @@ id: task-220-06-shield-chaser-reimport
 description: "cpp: headless reimport of the rebaked shield chaser mesh and anim texture, mesh build settings, UV channel 2 RENDER_DATA check."
 parent: task-220-shield-chaser-integration
 kind: task
-status: in-progress
+status: done
 ---
 # Shield chaser: headless reimport and channel 2 check
 
@@ -15,11 +15,11 @@ status: in-progress
 - done_when: log lines of each step; channel 2 check passes; `git status` shows only the intended assets changed; commit by path `task-220-06-shield-chaser-reimport: <summary>`.
 - editor_state: closed
 - token_ceiling: open
-- model: open
-- tokens: open
-- runs: open
+- model: opus
+- tokens: input 82, cache write 71346, cache read 1769089, output 9225
+- runs: 1
 - milestone: M1
-- result: open
+- result: Commit dedac236: mesh reimported from the 220-05 bake (import_task fallback), T_ShieldChaserAnim reimported 20 x 62 with its settings, Generate Lightmap UVs off, full precision UVs on, LightMapCoordinateIndex 1, slots still the instances; RENDER_DATA channel 2: 2937/2937 shield corners at 0.45, chaser corners all on their bins. New tools Tools/unreal/reimport_texture.py, static_mesh_build_settings.py (run after every chaser mesh reimport: the fallback turns lightmap generation back on), check_uv_channel.py. Known: chaser part 3263 tris vs 3273 in SM_Chaser_Meshy_Anim (already in the 2026-10-14 handover).
 
 ## Relations
 - [[task-220-shield-chaser-integration]] — parent global task.

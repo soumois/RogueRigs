@@ -3,7 +3,7 @@ id: task-220-03-bp-shield-chaser-wiring
 description: "bp: BP_ShieldChaser shows the combined mesh, swaps to plain clips and hides the shield on OnShieldBroken; shell removed; doc node rewritten."
 parent: task-220-shield-chaser-integration
 kind: task
-status: todo
+status: in-progress
 ---
 # BP_ShieldChaser: shield wiring
 
