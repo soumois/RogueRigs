@@ -3,7 +3,7 @@ id: task-210-04-loading-bp
 description: "bp: WBP_Loading uses the validated English texts."
 parent: task-210-transition-screens-english
 kind: task
-status: todo
+status: in-progress
 ---
 # loading-bp
 

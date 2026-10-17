@@ -3,7 +3,7 @@ id: task-210-03-intermission-bp
 description: "bp: WBP_Intermission uses the validated English texts."
 parent: task-210-transition-screens-english
 kind: task
-status: todo
+status: in-progress
 ---
 # intermission-bp
 
