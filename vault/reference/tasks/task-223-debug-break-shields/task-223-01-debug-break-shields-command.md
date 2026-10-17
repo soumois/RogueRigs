@@ -3,7 +3,7 @@ id: task-223-01-debug-break-shields-command
 description: "cpp: rr.Debug.BreakShields console command next to rr.Debug.SpawnNear; drains the Shield attribute so OnShieldBroken fires, health kept."
 parent: task-223-debug-break-shields
 kind: task
-status: in-progress
+status: done
 ---
 # rr.Debug.BreakShields
 
@@ -15,11 +15,11 @@ status: in-progress
 - done_when: build succeeds with the editor closed; the existing tests that touch the shield chaser still pass if they are run as part of the usual build check; doc updated; commit by path.
 - editor_state: closed
 - token_ceiling: open
-- model: open
-- tokens: open
-- runs: open
+- model: opus
+- tokens: input 40, cache write 61275, cache read 817121, output 408
+- runs: 1
 - milestone: M1
-- result: open
+- result: Commit e8b4ee0e: rr.Debug.BreakShields [RadiusUU] in RRVisualCheckCommands.cpp (non-shipping, ECVF_Cheat): for each living ARRShieldChaser (within radius of the first living miner when given) applies URRGE_DamageExplosion with SetByCaller Data.Damage = current Shield, so the health set takes it all from Shield and broadcasts OnShieldBroken, Health unchanged; logs one line. Side effect: a damage number 30 per chaser. Build Succeeded; docs sys-cheats and sys-enemies-shield-chaser. Not yet run in game.
 
 ## Relations
 - [[task-223-debug-break-shields]] — parent global task.
