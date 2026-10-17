@@ -13,7 +13,7 @@ status: in-progress
 - gdd_check: [[art-prompts-xp-core]] (cube validated, task-217), [[bp-pickup-xp]] (chip slots, glow disc, scale 1.53, RestOrientation YawOnly), [[color-code]] (big XP core lilac versus magenta mismatch still open: the cube keeps the chip's current core and disc instances, so the in-game hue does not change). Defaults (Orchestrator): scale 1.53 kept (the cube is 30 cm across like the chip); RestOrientation Full (the reason for the cube).
 - confirmed_by_owner: yes
 - milestone: M1
-- next_step: task-221-02-bp-pickup-xp-big-cube
+- next_step: task-221-03-xp-chip-cleanup
 - result: open
 
 ## Subtasks

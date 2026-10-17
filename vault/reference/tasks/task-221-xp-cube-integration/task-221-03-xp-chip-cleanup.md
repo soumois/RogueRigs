@@ -3,7 +3,7 @@ id: task-221-03-xp-chip-cleanup
 description: "bp: delete SM_XPChipBig and the M_XPChip_* materials once nothing references them, delete the chip FBX and Blender scripts, fix docs."
 parent: task-221-xp-cube-integration
 kind: task
-status: todo
+status: in-progress
 ---
 # XP chip cleanup
 
