@@ -39,6 +39,7 @@ Result: 8 floor components as before, reachable floor 85.5 %, minimum passage 3.
 - Validation rules: [[level-layout-schema]].
 
 ## Relations
+- [[layout-review-rules]] — review rules the Level-Design agent applies on top of the acceptance.
 - [[pipelines-index]] — parent index.
 - [[level-layout-schema]] — output format and validator.
 - [[sys-grid]] — the grid that will run the C++ port.

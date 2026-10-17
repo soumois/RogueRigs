@@ -15,6 +15,7 @@ kind: note
 - [[chaser-meshy-pipeline]] — the animated chaser from the Meshy mesh: Blender scripts, bake format, Unreal assets and parameters.
 - [[level-layout-schema]] — layout JSON format, brief format, validator. Read before writing or loading a layout.
 - [[layout-generator-recipe]] — algorithm behind arena_m1 (outline, organic paths, hidden pockets, heal ore); read before writing the C++ generator.
+- [[layout-review-rules]] — review rules for generated 240 layouts: seed pick, dead zones, straight lanes, pocket distance. Open before writing a layout.
 - [[run-log-schema]] — what each run log records, for the balance agent.
 - [[text-content-schema]] — player-facing text JSON files, retrieval log and critic review; read before writing, validating or loading game text.
 - [[unreal-mcp]] — Epic's MCP plugin: start, connection, toolsets, limits.

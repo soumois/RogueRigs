@@ -147,6 +147,7 @@ intermission  reference/gdd/run/intermission.md
 kessler-voss-logo  reference/gdd/art-audio/kessler-voss-logo.md
 kie-image-workflow  reference/tech/pipelines/kie-image-workflow.md
 layout-generator-recipe  reference/tech/pipelines/layout-generator-recipe.md
+layout-review-rules  reference/tech/pipelines/layout-review-rules.md
 lesson-00-01-foundations  reference/course/lessons/lesson-00-01-foundations.md
 lesson-02-gdd-anatomy  reference/course/lessons/lesson-02-gdd-anatomy.md
 lesson-03-gdd-to-prototype  reference/course/lessons/lesson-03-gdd-to-prototype.md
