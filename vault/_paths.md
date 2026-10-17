@@ -181,6 +181,7 @@ ore-in-rock-plan  reference/production/ore-in-rock-plan.md
 ore-in-rock-proposal  reference/production/ore-in-rock-proposal.md
 perf-lead-debris-gpu  reference/tech/performance/perf-leads/perf-lead-debris-gpu.md
 perf-lead-lumen-robots  reference/tech/performance/perf-leads/perf-lead-lumen-robots.md
+perf-lead-pickup-simulated-roll  reference/tech/performance/perf-leads/perf-lead-pickup-simulated-roll.md
 perf-leads  reference/tech/performance/perf-leads/perf-leads.md
 perf-leads-m1  reference/tech/performance/perf-leads/perf-leads-m1.md
 perf-projectile-pool-evaluation  reference/tech/performance/perf-projectile-pool-evaluation.md

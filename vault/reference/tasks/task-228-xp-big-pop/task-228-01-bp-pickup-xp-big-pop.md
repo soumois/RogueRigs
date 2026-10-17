@@ -1,0 +1,25 @@
+---
+id: task-228-01-bp-pickup-xp-big-pop
+description: "bp: read the pop values of BP_PickupXP and set the same on BP_PickupXPBig class defaults; doc node."
+parent: task-228-xp-big-pop
+kind: task
+status: in-progress
+---
+# BP_PickupXPBig pop values
+
+- goal: the big XP cube flies like the nut.
+- agent: agent-bp
+- depends_on: none
+- inputs: `vault/reference/tech/blueprints/fx/bp-pickup-xp.md` (floaty_pop line), `vault/reference/agents/bp-mcp-lessons.md`.
+- method: read on the class default of BP_PickupXP: PopDuration, PopArcHeight, PopMinDistance, PopMaxDistance, PopFallTimeRatio, PopBounceFraction, PopBounceHeight, HoverHeight, bAttractDuringPop, PopAttractDelay; set the same on BP_PickupXPBig; compile, save, read back. Nothing else changed. Update the doc node (floaty_pop line: now on both).
+- done_when: values read back equal; doc updated; commit by path.
+- editor_state: open (launched by the Orchestrator)
+- token_ceiling: open
+- model: open
+- tokens: open
+- runs: open
+- milestone: M1
+- result: open
+
+## Relations
+- [[task-228-xp-big-pop]] — parent global task.
