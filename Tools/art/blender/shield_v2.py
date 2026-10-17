@@ -328,6 +328,126 @@ img.pixels = np.concatenate([px, np.ones((H, W, 1), dtype=np.float32)], axis=-1)
 img.filepath_raw = TEX_PATH; img.file_format = "PNG"; img.save()
 img.pack() if False else None
 
+# ================================================================ emblem decal (task-218-01): cut-out, plate texture, quad in front of the plate
+EMB_SRC = os.path.join(ROOT, "Art", "Source", "kessler-voss-logo", "20261017-kessler-voss-emblem-4.webp")
+EMB_CUT = os.path.join(ROOT, "Art", "Source", "kessler-voss-logo", "20261017-kessler-voss-emblem-4-cutout.png")
+EMB_TEX = os.path.join(OUTDIR, "T_ChaserShield_Emblem.png")
+EMB_TEX_PX = 512
+DECAL_W, DECAL_H, DECAL_R = 22.0, 20.0, 3.0      # cm, provisional (plate 42.8 cm wide)
+DECAL_OFF = 0.25                                  # cm in front of the plate
+DECAL_Z = HEIGHT_CM / 2                           # plate centre (plate spans z 0..82)
+EMB_FILL = 0.80                                   # emblem height / plate height
+PLATE_RGB = np.array([0x1A, 0x1F, 0x25], dtype=np.float32) / 255.0
+
+def load_rgba(path):
+    im = bpy.data.images.load(path)
+    w_, h_ = im.size
+    a_ = np.array(im.pixels[:], dtype=np.float32).reshape(h_, w_, 4)
+    bpy.data.images.remove(im)
+    return a_
+
+def save_rgba(path, a_, name):
+    h_, w_ = a_.shape[:2]
+    im = bpy.data.images.new(name, w_, h_, alpha=True, float_buffer=False)
+    im.colorspace_settings.name = "sRGB"; im.alpha_mode = "STRAIGHT"
+    im.pixels = np.clip(a_, 0, 1).astype(np.float32).reshape(-1).tolist()
+    im.filepath_raw = path; im.file_format = "PNG"; im.save()
+    bpy.data.images.remove(im)
+
+def resize_area(a_, nh, nw):
+    """exact box filter (area average) along both axes, a_ is (h, w, c) premultiplied"""
+    def ax(x, n_new, axis):
+        n = x.shape[axis]
+        x = np.moveaxis(x, axis, 0)
+        cum = np.concatenate([np.zeros((1,) + x.shape[1:], dtype=np.float64), np.cumsum(x, axis=0, dtype=np.float64)], axis=0)
+        edges = np.linspace(0, n, n_new + 1)
+        flat = cum.reshape(n + 1, -1)
+        samp = np.stack([np.interp(edges, np.arange(n + 1), flat[:, k]) for k in range(flat.shape[1])], axis=1)
+        out = (samp[1:] - samp[:-1]) / (n / n_new)
+        return np.moveaxis(out.reshape((n_new,) + x.shape[1:]), 0, axis)
+    return ax(ax(a_.astype(np.float64), nh, 0), nw, 1)
+
+# 1) cut-out: alpha from the unmix of white and the rock colour, yellow pixels (far from that line) are opaque
+src_e = load_rgba(EMB_SRC)[..., :3]          # rows bottom to top, sRGB as stored
+Wt = np.ones(3, dtype=np.float32)
+dist_w = np.linalg.norm(src_e - Wt, axis=-1)
+rock_mask = (dist_w > 1.3) & (src_e.sum(-1) < 0.9)
+ROCK = np.median(src_e[rock_mask], axis=0)
+WR = Wt - ROCK
+a_proj = ((Wt - src_e) @ WR) / float(WR @ WR)
+resid = np.linalg.norm((Wt - src_e) - a_proj[..., None] * WR, axis=-1)
+a_cut = np.clip(a_proj, 0.0, 1.0)
+a_cut = np.where(a_cut < 0.04, 0.0, a_cut)                     # webp noise on the white
+a_cut = np.where(resid > 0.15, 1.0, a_cut)                      # yellow (not a white to rock mix) is opaque
+a_cut = np.clip((a_cut - 0.02) / 0.96, 0.0, 1.0)
+col_cut = np.where(((a_cut < 0.995) & (resid <= 0.15))[..., None], ROCK[None, None, :], src_e)   # edge pixels: pure rock colour, no white
+ys_, xs_ = np.nonzero(a_cut > 0.01)
+y0_, y1_, x0_, x1_ = ys_.min(), ys_.max() + 1, xs_.min(), xs_.max() + 1
+side = max(y1_ - y0_, x1_ - x0_)
+cut = np.zeros((side, side, 4), dtype=np.float32); cut[..., :3] = ROCK
+oy, ox = (side - (y1_ - y0_)) // 2, (side - (x1_ - x0_)) // 2
+cut[oy:oy + (y1_ - y0_), ox:ox + (x1_ - x0_), :3] = col_cut[y0_:y1_, x0_:x1_]
+cut[oy:oy + (y1_ - y0_), ox:ox + (x1_ - x0_), 3] = a_cut[y0_:y1_, x0_:x1_]
+save_rgba(EMB_CUT, cut, "emblem_cutout")
+print("cutout", cut.shape, "rock", ROCK)
+
+# 2) plate texture 512 x 512: rounded rectangle (corner radius DECAL_R cm), emblem EMB_FILL of the plate height, centred
+N = EMB_TEX_PX
+cy_, cx_ = np.meshgrid((np.arange(N) + 0.5) / N * DECAL_H, (np.arange(N) + 0.5) / N * DECAL_W, indexing="ij")   # cm, rows bottom to top
+hx, hy = DECAL_W / 2 - DECAL_R, DECAL_H / 2 - DECAL_R
+qx_ = np.maximum(abs(cx_ - DECAL_W / 2) - hx, 0); qy_ = np.maximum(abs(cy_ - DECAL_H / 2) - hy, 0)
+sdf = np.sqrt(qx_ ** 2 + qy_ ** 2) - DECAL_R                       # cm, negative inside
+px_cm = DECAL_W / N
+plate_a = np.clip(0.5 - sdf / px_cm, 0.0, 1.0)
+emb_h_cm = EMB_FILL * DECAL_H
+eh_px, ew_px = int(round(emb_h_cm / DECAL_H * N)), int(round(emb_h_cm / DECAL_W * N))      # square emblem on the quad -> non-uniform in texels
+pm = cut.copy(); pm[..., :3] *= pm[..., 3:4]
+rs = resize_area(pm, eh_px, ew_px)
+emb_a = np.clip(rs[..., 3:4], 0, 1); emb_rgb = np.where(emb_a > 1e-6, rs[..., :3] / np.maximum(emb_a, 1e-6), 0.0)
+layer = np.zeros((N, N, 4), dtype=np.float64); layer[..., :3] = PLATE_RGB; layer[..., 3] = plate_a
+ey0, ex0 = (N - eh_px) // 2, (N - ew_px) // 2
+sl = (slice(ey0, ey0 + eh_px), slice(ex0, ex0 + ew_px))
+ea = emb_a[..., 0]
+layer[sl][..., :3] = emb_rgb * ea[..., None] + layer[sl][..., :3] * (1 - ea[..., None])
+layer[..., 3] = plate_a                                            # emblem lies fully inside the plate
+save_rgba(EMB_TEX, layer.astype(np.float32), "T_ChaserShield_Emblem")
+print("emblem texture", N, "emblem px", ew_px, eh_px)
+
+# 3) decal quad: parallel to the front plate, DECAL_OFF in front, centred on y = 0 and z = DECAL_Z, planar UV 0..1, last slot
+mat_e = bpy.data.materials.new("M_ChaserShield_Emblem"); mat_e.use_nodes = True
+nte = mat_e.node_tree; bse = nte.nodes["Principled BSDF"]; bse.inputs["Roughness"].default_value = 0.8
+tex_e = bpy.data.images.load(EMB_TEX); tex_e.colorspace_settings.name = "sRGB"; tex_e.alpha_mode = "STRAIGHT"
+txe = nte.nodes.new("ShaderNodeTexImage"); txe.image = tex_e; txe.interpolation = "Linear"; txe.extension = "CLIP"
+uve = nte.nodes.new("ShaderNodeUVMap"); uve.uv_map = "UVMap"
+nte.links.new(uve.outputs["UV"], txe.inputs["Vector"]); nte.links.new(txe.outputs["Color"], bse.inputs["Base Color"]); nte.links.new(txe.outputs["Alpha"], bse.inputs["Alpha"])
+for attr, val in (("surface_render_method", "BLENDED"), ("blend_method", "BLEND")):
+    try: setattr(mat_e, attr, val)
+    except (TypeError, AttributeError): pass
+mesh.materials.append(mat_e)
+BODY_N = len(mesh.polygons)
+bmd = bmesh.new(); bmd.from_mesh(mesh)
+uv0l, uv1l = bmd.loops.layers.uv["UVMap"], bmd.loops.layers.uv["LightMap"]
+LM_SCALE = 0.95                                                    # body LightMap shrunk to free a strip for the decal
+for f_ in bmd.faces:
+    for l_ in f_.loops: l_[uv1l].uv = (l_[uv1l].uv[0] * LM_SCALE, l_[uv1l].uv[1] * LM_SCALE)
+xd = X_FRONT + DECAL_OFF
+dv = [bmd.verts.new((xd, -DECAL_W / 2, DECAL_Z - DECAL_H / 2)), bmd.verts.new((xd, DECAL_W / 2, DECAL_Z - DECAL_H / 2)),
+      bmd.verts.new((xd, DECAL_W / 2, DECAL_Z + DECAL_H / 2)), bmd.verts.new((xd, -DECAL_W / 2, DECAL_Z + DECAL_H / 2))]
+qf = bmd.faces.new(dv)
+LM_U0, LM_U1, LM_V0 = 0.96, 0.985, 0.5
+LM_V1 = LM_V0 + (LM_U1 - LM_U0) * DECAL_H / DECAL_W
+for l_, (u_a, v_a), (u_b, v_b) in zip(qf.loops, ((0, 0), (1, 0), (1, 1), (0, 1)), ((LM_U0, LM_V0), (LM_U1, LM_V0), (LM_U1, LM_V1), (LM_U0, LM_V1))):
+    l_[uv0l].uv = (u_a, v_a); l_[uv1l].uv = (u_b, v_b)
+dres = bmesh.ops.triangulate(bmd, faces=[qf])
+bmd.faces.ensure_lookup_table()
+for f_ in bmd.faces[BODY_N:]:
+    f_.material_index = 1; f_.smooth = False
+bmd.to_mesh(mesh); bmd.free()
+mesh.update()
+assert len(mesh.polygons) == BODY_N + 2, len(mesh.polygons)
+DECAL_NORMALS = [[round(c, 3) for c in p.normal] for p in mesh.polygons[BODY_N:]]
+print("decal added, tris", len(mesh.polygons), "normals", DECAL_NORMALS)
+
 # ================================================================ pivot: bottom centre of the new mesh, remove the source, export
 bpy.data.objects.remove(src, do_unlink=True)
 # middle grip block (raw frame): vertices behind the plate, z 34..45, on the kept side of the cut
@@ -344,8 +464,8 @@ hi = Vector((max(v.co.x for v in mesh.vertices), max(v.co.y for v in mesh.vertic
 tris = len(mesh.polygons)
 
 # ---------------------------------------------------------------- uv checks
-def tri_uvs(layer):
-    return [[np.array(layer.data[li].uv[:], dtype=np.float64) for li in p.loop_indices] for p in mesh.polygons]
+def tri_uvs(layer, n):
+    return [[np.array(layer.data[li].uv[:], dtype=np.float64) for li in p.loop_indices] for p in mesh.polygons[:n]]
 def tri_overlap(A, B, eps=1e-9):
     for T in (A, B):
         for k in range(3):
@@ -353,8 +473,8 @@ def tri_overlap(A, B, eps=1e-9):
             pa = [x.dot(ax) for x in A]; pb = [x.dot(ax) for x in B]
             if max(pa) <= min(pb) + eps or max(pb) <= min(pa) + eps: return False
     return True
-def uv_check(name, res):
-    t_ = tri_uvs(mesh.uv_layers[name])
+def uv_check(name, res, n):
+    t_ = tri_uvs(mesh.uv_layers[name], n)
     bbs = np.array([[min(x[0] for x in t), min(x[1] for x in t), max(x[0] for x in t), max(x[1] for x in t)] for t in t_])
     ov = 0; za = 0
     for t in t_:
@@ -365,13 +485,18 @@ def uv_check(name, res):
             if tri_overlap(t_[a], t_[a + 1 + j]):
                 ov += 1
                 if name == 'UVMap': print('OVL', a, a + 1 + j, [round(c, 1) for c in mesh.polygons[a].center], [round(c, 1) for c in mesh.polygons[a + 1 + j].center], [[round(float(q), 4) for q in u] for u in t_[a]], [[round(float(q), 4) for q in u] for u in t_[a + 1 + j]], [round(c, 2) for c in mesh.polygons[a].normal], [round(c, 2) for c in mesh.polygons[a+1+j].normal])
-    allu = np.array([u.uv[:] for u in mesh.uv_layers[name].data])
+    allu = np.array([u for t in t_ for u in t])
     border = float(min(allu.min(0).min(), (1 - allu.max(0)).min()) * res)
     ok = ov == 0 and za == 0 and allu.min() >= 0 and allu.max() <= 1 and border >= 2.0
-    return {"triangles": tris, "overlapping_triangle_pairs": ov, "zero_area_triangles": za, "bounds_min": [round(float(allu[:, 0].min()), 5), round(float(allu[:, 1].min()), 5)],
+    return {"triangles": n, "overlapping_triangle_pairs": ov, "zero_area_triangles": za, "bounds_min": [round(float(allu[:, 0].min()), 5), round(float(allu[:, 1].min()), 5)],
             "bounds_max": [round(float(allu[:, 0].max()), 5), round(float(allu[:, 1].max()), 5)], "min_border_px_at_%d" % res: round(border, 3), "required_border_px": 2, "pass": bool(ok)}
-chk_lm = uv_check("LightMap", 256)
-chk_uv = uv_check("UVMap", TEX_PX)
+chk_lm = uv_check("LightMap", 256, tris)          # body and decal: no overlap, margin, bounds
+chk_uv = uv_check("UVMap", TEX_PX, BODY_N)        # body only: the decal is a 0..1 decal on purpose
+_du = np.array([mesh.uv_layers["UVMap"].data[li].uv[:] for p in mesh.polygons[BODY_N:] for li in p.loop_indices])
+chk_decal = {"triangles": tris - BODY_N, "uv0_min": [float(_du[:, 0].min()), float(_du[:, 1].min())], "uv0_max": [float(_du[:, 0].max()), float(_du[:, 1].max())],
+             "planar_uv_matches_size": True, "normals": DECAL_NORMALS,
+             "material_index": sorted({p.material_index for p in mesh.polygons[BODY_N:]}),
+             "pass": bool(_du.min() == 0.0 and _du.max() == 1.0 and tris - BODY_N == 2 and all(abs(n_[0] - 1) < 1e-3 for n_ in DECAL_NORMALS))}
 
 
 bc = bcen_raw + SHIFT
@@ -385,19 +510,24 @@ ratio = (hi.z - lo.z) / (hi.y - lo.y)
 if abs(ratio - 1.91) > 0.1: warnings.append("height to width ratio off 1.91")
 if not chk_lm["pass"]: warnings.append("LightMap check FAILED")
 if not chk_uv["pass"]: warnings.append("UVMap check FAILED")
+if not chk_decal["pass"]: warnings.append("decal check FAILED")
 warnings.append("grip is the decimated Meshy grip (not planar); plate, slab sides, groove and bolts are exactly planar prisms")
-warnings.append("T_ChaserShield_BaseColor.png on UVMap: import the texture separately in Unreal")
+warnings.append("T_ChaserShield_BaseColor.png and T_ChaserShield_Emblem.png on UVMap: import the textures separately in Unreal; the emblem material needs alpha (Masked or Translucent)")
 report = {
     "asset": "SM_ChaserShield", "route": "blender (second Meshy mesh, no Meshy call, no credit)", "script": "Tools/art/blender/shield_v2.py",
     "source_mesh": opt["--in"].replace("\\", "/"), "tris_in": tris_in, "tris_out": tris,
-    "tris_breakdown": {"plate_and_bolts": tris_plate, "grip": grip_tris, "grip_before_decimation": grip_tris_before},
+    "tris_breakdown": {"plate_and_bolts": tris_plate, "grip": grip_tris, "grip_before_decimation": grip_tris_before, "emblem_decal": tris - BODY_N, "body_without_decal": BODY_N},
     "dimensions_cm": {"x": round(hi.x - lo.x, 2), "y": round(hi.y - lo.y, 2), "z": round(hi.z - lo.z, 2)},
     "height_to_width_ratio": round(ratio, 3), "pivot": "bottom-centre", "front_axis": "+X",
     "bbox_min": [round(c, 3) for c in lo], "bbox_max": [round(c, 3) for c in hi],
-    "materials": [m.name for m in mesh.materials], "textures": ["T_ChaserShield_BaseColor.png"], "texture_px": [TEX_PX, TEX_PX],
+    "materials": [m.name for m in mesh.materials], "textures": ["T_ChaserShield_BaseColor.png", "T_ChaserShield_Emblem.png"], "texture_px": [TEX_PX, TEX_PX],
     "texture_note": "diffuse colour baked from the Meshy mesh (selected to active); plate faces repainted flat yellow, stripes painted by one function (60 degree lines, period 8.5 cm) over the front and back top bands, corner bands and the whole top face",
     "colours_srgb": {"yellow": [round(float(c), 3) for c in YELLOW], "black": [round(float(c), 3) for c in BLACK], "gunmetal": [round(float(c), 3) for c in GUNMETAL]},
-    "uv_layers": [u.name for u in mesh.uv_layers], "uv_checks": {"UVMap": chk_uv, "LightMap": chk_lm},
+    "uv_layers": [u.name for u in mesh.uv_layers], "uv_checks": {"UVMap": chk_uv, "LightMap": chk_lm, "decal": chk_decal},
+    "decal": {"material": "M_ChaserShield_Emblem (last slot, alpha blended / Masked in Unreal)", "texture": "T_ChaserShield_Emblem.png", "texture_px": [EMB_TEX_PX, EMB_TEX_PX],
+              "size_cm": {"y_width": DECAL_W, "z_height": DECAL_H}, "corner_radius_cm": DECAL_R, "offset_in_front_of_plate_cm": DECAL_OFF, "emblem_height_fraction": EMB_FILL,
+              "plate_colour_srgb_hex": "#1A1F25", "centre_cm_from_pivot": [round(X_FRONT + DECAL_OFF + SHIFT.x, 3), 0.0, DECAL_Z], "front_face_x_cm_from_pivot": round(X_FRONT + SHIFT.x, 3),
+              "cutout_png": "Art/Source/kessler-voss-logo/20261017-kessler-voss-emblem-4-cutout.png", "lightmap_note": "body LightMap scaled by 0.95 to free a strip for the decal"},
     "grip_offset_cm": grip_offset,
     "grip_offset_note": "centre of the bounding box of the middle grip block, from the pivot, Unreal axes (x, -y, z) in cm; front is +X so x is negative (behind the plate)",
     "shading": "flat", "warnings": warnings,
@@ -432,7 +562,8 @@ def render_views(outdir):
     # (name, azimuth deg from +X toward +Y, elevation, target, ortho scale)
     views = [("front", 0, 0, (0, 0, 41), 100), ("back", 180, 0, (0, 0, 41), 100), ("left", 90, 0, (0, 0, 41), 100), ("right", -90, 0, (0, 0, 41), 100),
              ("tq_front", -40, 35, (0, 0, 41), 100), ("tq_back", 140, 35, (0, 0, 41), 100),
-             ("top_close", -40, 55, (0, 0, 76), 36), ("top_close_back", 140, 55, (0, 0, 76), 36), ("top_plan", 0, 89, (0, 0, 82), 60), ("grip_close", 150, 25, (0, 8, 55), 25)]
+             ("top_close", -40, 55, (0, 0, 76), 36), ("top_close_back", 140, 55, (0, 0, 76), 36), ("top_plan", 0, 89, (0, 0, 82), 60), ("grip_close", 150, 25, (0, 8, 55), 25),
+             ("emblem_close", 0, 0, (0, 0, 41), 28), ("emblem_close_tq", -40, 35, (0, 0, 41), 28)]
     for name, az, el, tgt, osc in views:
         d = dirv(az, el); target = Vector(tgt)
         cam_d.ortho_scale = osc
@@ -454,4 +585,4 @@ def render_views(outdir):
 if "--no-render" not in opt:
     render_views(PREV)
 print(json.dumps({k: report[k] for k in ("tris_out", "tris_breakdown", "dimensions_cm", "height_to_width_ratio", "grip_offset_cm", "warnings")}))
-print("lightmap", chk_lm); print("uvmap", chk_uv)
+print("lightmap", chk_lm); print("uvmap", chk_uv); print("decal", chk_decal)

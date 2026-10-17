@@ -226,3 +226,4 @@ Archive: it exceeds the index size limits of [[_authoring]] on purpose (owner, 2
 - [[task-215-company-no-prefix]] — Company subtitles without speaker prefix. Status done.
 - [[task-216-shield-texture]] — Shield chaser riot shield textured in Blender from the Meshy mesh. Status done.
 - [[task-217-xp-cube-simplify]] — Big XP data cube from Meshy simplified to the chip cost. Status done.
+- [[task-218-shield-emblem]] — Kessler-Voss emblem on a dark rounded plate, decal on the shield front. Status done.

@@ -28,7 +28,7 @@ Keep this exact shield and the attached robot unchanged. Character sheet on a pl
 ```
 
 ## Next steps (open)
-- Emblem decal on the front centre, from the emblem-only logo (not generated yet).
+- Emblem: decal on the front centre, the KV emblem on a #1A1F25 rounded plate 22 x 20 cm, texture `T_ChaserShield_Emblem.png` (task-218, done; owner look pending).
 - Unreal import, attachment to the shield chaser (grip offset in the report), run and bash clips.
 - Readability: the camera sees mostly the top edge (A12), hence the stripes over the top.
 - Gameplay: whether the shield blocks only from the front is open; today it is a 30-point pool ([[enemy-chaser]]).

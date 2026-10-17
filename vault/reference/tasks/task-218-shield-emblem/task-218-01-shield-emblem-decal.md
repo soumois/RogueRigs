@@ -3,7 +3,7 @@ id: task-218-01-shield-emblem-decal
 description: "3D agent: cut out the emblem, composite it on a dark rounded plate, add it as a decal slot on the shield front, export, render."
 parent: task-218-shield-emblem
 kind: task
-status: in-progress
+status: done
 ---
 # Shield emblem decal
 
@@ -19,11 +19,11 @@ status: in-progress
 - done_when: every criterion passes from the renders (or open failures after 5 returns); the Orchestrator opens the renders.
 - editor_state: any (no Unreal import)
 - token_ceiling: open
-- model: open
-- tokens: open
-- runs: open
+- model: sonnet (agent-3d)
+- tokens: 76.5k subagent tokens in total as reported by the harness
+- runs: 1
 - milestone: M1
-- result: open
+- result: `T_ChaserShield_Emblem.png` 512 RGBA (emblem cut out, 80 % of a 22 x 20 cm plate #1A1F25, radius 3 cm), decal quad 0.25 cm in front of the plate at z 41 cm, last slot `M_ChaserShield_Emblem` (needs Masked in Unreal); shield 979 tris; cut-out `Art/Source/kessler-voss-logo/20261017-kessler-voss-emblem-4-cutout.png`; built by `shield_v2.py`; 0 returns, C1-C6 pass. Committed before the owner's look (owner away, 2026-10-17: validates tomorrow).
 
 ## Relations
 - [[task-218-shield-emblem]] — parent global task.

@@ -4,11 +4,13 @@
   "script": "Tools/art/blender/shield_v2.py",
   "source_mesh": "Art/Source/shield-meshy/meshy-v2/Meshy_AI_Hazard_Panel_1017060515_texture_fbx/Meshy_AI_Hazard_Panel_1017060515_texture.fbx",
   "tris_in": 2804,
-  "tris_out": 977,
+  "tris_out": 979,
   "tris_breakdown": {
     "plate_and_bolts": 256,
     "grip": 723,
-    "grip_before_decimation": 1451
+    "grip_before_decimation": 1451,
+    "emblem_decal": 2,
+    "body_without_decal": 977
   },
   "dimensions_cm": {
     "x": 9.95,
@@ -29,10 +31,12 @@
     82.0
   ],
   "materials": [
-    "M_ChaserShield"
+    "M_ChaserShield",
+    "M_ChaserShield_Emblem"
   ],
   "textures": [
-    "T_ChaserShield_BaseColor.png"
+    "T_ChaserShield_BaseColor.png",
+    "T_ChaserShield_Emblem.png"
   ],
   "texture_px": [
     1024,
@@ -78,21 +82,73 @@
       "pass": true
     },
     "LightMap": {
-      "triangles": 977,
+      "triangles": 979,
       "overlapping_triangle_pairs": 0,
       "zero_area_triangles": 0,
       "bounds_min": [
-        0.01081,
-        0.0109
+        0.01027,
+        0.01035
       ],
       "bounds_max": [
-        0.98797,
-        0.98925
+        0.985,
+        0.93979
       ],
-      "min_border_px_at_256": 2.751,
+      "min_border_px_at_256": 2.628,
       "required_border_px": 2,
       "pass": true
+    },
+    "decal": {
+      "triangles": 2,
+      "uv0_min": [
+        0.0,
+        0.0
+      ],
+      "uv0_max": [
+        1.0,
+        1.0
+      ],
+      "planar_uv_matches_size": true,
+      "normals": [
+        [
+          1.0,
+          -0.0,
+          0.0
+        ],
+        [
+          1.0,
+          -0.0,
+          0.0
+        ]
+      ],
+      "material_index": [
+        1
+      ],
+      "pass": true
     }
+  },
+  "decal": {
+    "material": "M_ChaserShield_Emblem (last slot, alpha blended / Masked in Unreal)",
+    "texture": "T_ChaserShield_Emblem.png",
+    "texture_px": [
+      512,
+      512
+    ],
+    "size_cm": {
+      "y_width": 22.0,
+      "z_height": 20.0
+    },
+    "corner_radius_cm": 3.0,
+    "offset_in_front_of_plate_cm": 0.25,
+    "emblem_height_fraction": 0.8,
+    "plate_colour_srgb_hex": "#1A1F25",
+    "centre_cm_from_pivot": [
+      4.627,
+      0.0,
+      41.0
+    ],
+    "front_face_x_cm_from_pivot": 4.377,
+    "cutout_png": "Art/Source/kessler-voss-logo/20261017-kessler-voss-emblem-4-cutout.png",
+    "lightmap_note": "body LightMap scaled by 0.95 to free a strip for the decal"
   },
   "grip_offset_cm": [
     -2.01,
@@ -103,50 +159,38 @@
   "shading": "flat",
   "warnings": [
     "grip is the decimated Meshy grip (not planar); plate, slab sides, groove and bolts are exactly planar prisms",
-    "T_ChaserShield_BaseColor.png on UVMap: import the texture separately in Unreal"
+    "T_ChaserShield_BaseColor.png and T_ChaserShield_Emblem.png on UVMap: import the textures separately in Unreal; the emblem material needs alpha (Masked or Translucent)"
   ],
   "fidelity": {
-    "returns_used": 4,
-    "returns_log": [
-      "1 UV overlap (twisted groove ring corner) fixed, unwrap angle 10 deg",
-      "2 stripe edges anti-aliased, preview framing portrait",
-      "3 groove walls kept yellow, BL band widened to match the TR band, ring offsets aligned",
-      "4 one-sided Meshy fin under the upper mount removed, yellow bake bleed on the grip recoloured"
-    ],
+    "task": "task-218-01-shield-emblem-decal",
+    "returns_used": 0,
     "criteria": {
       "C1": {
         "verdict": "pass",
-        "evidence": "977 tris (plate and bolts 256, grip 723), report tris_out."
+        "evidence": "emblem_close render (28 cm field): rounded-rectangle edge and every yellow facet edge are clean rock-colour or yellow, no white halo; cut-out PNG checked at 8x on magenta and on white (inspect crops): edge pixels carry the rock colour only, alpha 0 outside, corner of the trimmed square is fully transparent."
       },
       "C2": {
         "verdict": "pass",
-        "evidence": "front, back and top faces are exact planar prisms (rebuilt from the measured silhouette); front, back, tq_front and top_close renders show no wobble or fold, unlike the Meshy inspect renders."
+        "evidence": "front render: dark rounded rectangle centred at the plate centre (px 317..583 of 900 wide, centre 450; rows centred at z 41), 22 x 20 cm, corners visibly rounded (3 cm); bolts are at z 16.5 and 67.3, so the plate sits between the upper and lower bolt rows and touches none of the four bolts."
       },
       "C3": {
         "verdict": "pass",
-        "evidence": "back and tq_back renders: only the vertical bar, the middle block with two screws and the two end mounts remain; plate is flat yellow where the bracket and its octagonal flange were (compare owner-remove-bracket.png); no seam, one-sided fin removed; texel size about 0.14 cm, edges anti-aliased."
+        "evidence": "front, emblem_close and emblem_close_tq renders: K and v letters, the five yellow facets around them and the rock outline are all readable and sharp; same layout as the emblem image, not mirrored."
       },
       "C4": {
         "verdict": "pass",
-        "evidence": "back, tq_back, grip_close and right renders: vertical bar with the three dark mounts (top, middle block, bottom) as in v2_back; C-shaped side profile kept as in v2_right. The grip is the decimated Meshy mesh, so its faces are not planar."
+        "evidence": "tq_front and emblem_close_tq renders: decal edge and surface show no flicker, no stripe pattern, no gap against the yellow plate at the 0.25 cm offset."
       },
       "C5": {
         "verdict": "pass",
-        "evidence": "front render: top band, top-right and bottom-left corner bands; back render: top band, top-left and bottom-right bands, 4 stripes on the top band, as in v2_front and v2_back and owner-back-top-stripes.png. Stripes follow ONE function fitted on the Meshy texture (60 degree lines, period 8.5 cm; fit correlation 0.79 to 0.95), so phase and width differ slightly from the Meshy picture (the BL band was widened to the TR band width, 6.4 cm). A small mitre notch shows where the top band meets the TR band, front and back."
+        "evidence": "back, left, right, tq_back, top_close_back and grip_close previews are byte-identical to the validated v2 (git shows them unmodified); T_ChaserShield_BaseColor.png is byte-identical; pixel diff of front, tq_front, top_close and top_plan against v2 is confined to the decal footprint (front rows 478..720, cols 317..583; top_plan a 9 px band; top_close the bottom-right corner)."
       },
       "C6": {
         "verdict": "pass",
-        "evidence": "top_plan and top_close renders: the stripes cross the top face as straight bands that continue the front and back band stripes edge to edge; no break in top_close and top_close_back (three-quarter top views)."
-      },
-      "C7": {
-        "verdict": "pass",
-        "evidence": "front render: centre plain flat yellow, only the four octagonal dark bolts."
-      },
-      "C8": {
-        "verdict": "pass",
-        "evidence": "dimensions 9.95 x 42.8 x 82.0 cm, ratio 1.916."
+        "evidence": "report tris_out 979 = 977 + 2 (body_without_decal 977, emblem_decal 2)."
       }
     },
-    "final_render": "Art/Meshes/ChaserShield/preview/ChaserShield_tq_back.png"
+    "final_render": "Art/Meshes/ChaserShield/preview/ChaserShield_emblem_close.png",
+    "previous_v2": "the v2 fidelity object (task-216-02, 4 returns, C1..C8 pass) was replaced by this one when the script re-wrote the report"
   }
 }
