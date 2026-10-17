@@ -3,7 +3,7 @@ id: task-224-02-ns-shield-debris-hitdir
 description: "bp: NS_ShieldDebris gets User.HitDirection back and throws its pieces along it with the NS_RobotDebris velocity setup."
 parent: task-224-shield-debris-direction
 kind: task
-status: in-progress
+status: done
 ---
 # NS_ShieldDebris: throw along User.HitDirection
 
@@ -15,11 +15,11 @@ status: in-progress
 - done_when: compiles UpToDate, no stack error; user parameter read back; saved; doc updated.
 - editor_state: open (launched by the Orchestrator)
 - token_ceiling: open
-- model: open
-- tokens: open
-- runs: open
+- model: sonnet
+- tokens: input 54, cache write 49173, cache read 918894, output 829
+- runs: 1
 - milestone: M1
-- result: open
+- result: Commit 88841d1c: NS_ShieldDebris user parameter User.HitDirection (Vector, default (1, 0, 0)); particle velocity expression now identical to NS_RobotDebris (HitDirection rotated by ThrowAngle, 250-300 speed, upward 269-275, spread 100, ThrowScale); offsets, ExecIndex, collision, sink unchanged; compiles UpToDate, 0 stack errors. The spawner must set User.HitDirection (default is world +X).
 
 ## Relations
 - [[task-224-shield-debris-direction]] — parent global task.

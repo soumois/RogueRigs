@@ -13,7 +13,7 @@ status: in-progress
 - gdd_check: [[enemy-death]] (robot pieces thrown along the last hit), [[bp-robot-debris]] (velocity from User.HitDirection), [[bp-shield-debris]] (current: owner forward, no user parameter). Definitions (Orchestrator): hit direction = horizontal travel direction of the breaking hit (RecordHitDirection); "from behind" = that direction points along the robot forward (dot > 0); shield side = the side of the shield fragments' offsets (negative Unreal Y in shield_debris_pieces.json = robot left); fallback without a recorded hit = the robot backward direction, then the same rule.
 - confirmed_by_owner: yes
 - milestone: M1
-- next_step: task-224-02-ns-shield-debris-hitdir
+- next_step: task-224-03-bp-shield-chaser-hitdir
 - result: open
 
 ## Subtasks

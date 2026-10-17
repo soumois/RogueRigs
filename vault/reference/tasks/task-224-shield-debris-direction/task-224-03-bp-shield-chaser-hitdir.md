@@ -3,7 +3,7 @@ id: task-224-03-bp-shield-chaser-hitdir
 description: "bp: BP_ShieldChaser OnShieldBroken spawns NS_ShieldDebris inactive, sets User.HitDirection from GetShieldDebrisDirection, then activates it."
 parent: task-224-shield-debris-direction
 kind: task
-status: todo
+status: in-progress
 ---
 # BP_ShieldChaser: pass the throw direction
 

@@ -404,6 +404,7 @@ kind: note
 | [[task-223-01-debug-break-shields-command]] | opus | 1 | 0k | 61k | 817k | 0k |
 | [[task-224-01-shield-debris-direction-cpp]] | opus | 1 | 0k | 43k | 397k | 2k |
 | [[task-219-02-rock-ore-review]] | opus | 1 | 0k | 32k | 48k | 9k |
+| [[task-224-02-ns-shield-debris-hitdir]] | sonnet | 1 | 0k | 49k | 919k | 1k |
 
 ## Totals
 | Scope | Input | Cache write | Cache read | Output |
