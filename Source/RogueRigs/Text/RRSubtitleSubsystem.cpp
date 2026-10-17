@@ -29,6 +29,66 @@ bool URRSubtitleSubsystem::DoesSupportWorldType(const EWorldType::Type WorldType
 	return WorldType == EWorldType::Game || WorldType == EWorldType::PIE;
 }
 
+void URRSubtitleSubsystem::Initialize(FSubsystemCollectionBase& Collection)
+{
+	Super::Initialize(Collection);
+	// The game instance is set on the world before InitWorld (UEngine::LoadMap), so the transition is reachable here.
+	if (URRRunTransitionSubsystem* Transition = URRRunTransitionSubsystem::Get(this))
+	{
+		BoundTransition = Transition;
+		Transition->OnIntermissionStarted.AddUniqueDynamic(this, &URRSubtitleSubsystem::HandleIntermissionStarted);
+		Transition->OnLoadingStarted.AddUniqueDynamic(this, &URRSubtitleSubsystem::HandleLoadingStarted);
+		Transition->OnLevelReady.AddUniqueDynamic(this, &URRSubtitleSubsystem::HandleLevelReady);
+		if (Transition->GetPhase() != ERRRunTransitionPhase::None)
+		{
+			SetSilenced(true, Transition->IsLevelLoading() ? TEXT("loading") : TEXT("intermission"));
+		}
+	}
+}
+
+void URRSubtitleSubsystem::Deinitialize()
+{
+	if (URRRunTransitionSubsystem* Transition = BoundTransition.Get())
+	{
+		Transition->OnIntermissionStarted.RemoveDynamic(this, &URRSubtitleSubsystem::HandleIntermissionStarted);
+		Transition->OnLoadingStarted.RemoveDynamic(this, &URRSubtitleSubsystem::HandleLoadingStarted);
+		Transition->OnLevelReady.RemoveDynamic(this, &URRSubtitleSubsystem::HandleLevelReady);
+	}
+	BoundTransition.Reset();
+	Super::Deinitialize();
+}
+
+void URRSubtitleSubsystem::HandleIntermissionStarted(const FRRIntermissionRecap& Recap)
+{
+	SetSilenced(true, TEXT("intermission"));
+}
+
+void URRSubtitleSubsystem::HandleLoadingStarted(int32 LevelIndex, const FString& LayoutName)
+{
+	SetSilenced(true, TEXT("loading"));
+}
+
+void URRSubtitleSubsystem::HandleLevelReady(int32 LevelIndex, const FString& LayoutName)
+{
+	SetSilenced(false, TEXT("level ready"));
+}
+
+void URRSubtitleSubsystem::SetSilenced(bool bInSilenced, const TCHAR* Reason)
+{
+	const bool bHadSubtitle = bActive;
+	if (bInSilenced)
+	{
+		Clear();
+	}
+	if (bSilenced == bInSilenced)
+	{
+		return;
+	}
+	bSilenced = bInSilenced;
+	UE_LOG(LogRogueRigs, Log, TEXT("URRSubtitleSubsystem: subtitles %s (%s)%s."), bSilenced ? TEXT("silenced") : TEXT("allowed again"), Reason,
+		bHadSubtitle ? TEXT(", current line cleared") : TEXT(""));
+}
+
 URRSubtitleSubsystem* URRSubtitleSubsystem::Get(const UObject* WorldContext)
 {
 	const UWorld* World = WorldContext ? GEngine->GetWorldFromContextObject(WorldContext, EGetWorldErrorMode::ReturnNull) : nullptr;
@@ -44,6 +104,11 @@ bool URRSubtitleSubsystem::Show(FName SpeakerId, FText DisplayName, FText Text, 
 {
 	if (Text.IsEmpty())
 	{
+		return false;
+	}
+	if (bSilenced)
+	{
+		UE_LOG(LogRogueRigs, Log, TEXT("URRSubtitleSubsystem: '%s' dropped (run transition, subtitles silenced)."), *Text.ToString());
 		return false;
 	}
 	bActive = true;

@@ -4,6 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/PlayerController.h"
+#include "Components/SlateWrapperTypes.h"
 #include "InputCoreTypes.h"
 #include "Run/RRRunTransitionSubsystem.h"
 #include "RRPlayerController.generated.h"
@@ -45,26 +46,29 @@ public:
 	/** True while a level transition is loading (URRRunTransitionSubsystem::IsLevelLoading): move, aim and turret input ignored. */
 	bool IsGameplayInputHeld() const;
 
+	/** True while the HUD widget is hidden by a run transition (intermission or loading, task-207-01). */
+	bool IsHUDHiddenForTransition() const { return bHUDHiddenForTransition; }
+
 protected:
 	/**
 	 * Local player only: creates HUDWidgetClass, adds it to the viewport and binds it to the game mode, the possessed miner and
 	 * the run flow. Binds the run transition events (intermission and loading widgets) and shows the loading screen at once
-	 * when this world was opened by a transition still loading.
+	 * when this world was opened by a transition still loading, with the HUD hidden until OnLevelReady.
 	 */
 	virtual void BeginPlay() override;
 
 	/** Unbinds the run transition events. */
 	virtual void EndPlay(const EEndPlayReason::Type EndPlayReason) override;
 
-	/** Transition OnIntermissionStarted callback: creates IntermissionWidgetClass and shows the recap (warning when unset: rr.Run.Continue). */
+	/** Transition OnIntermissionStarted callback: hides the HUD, creates IntermissionWidgetClass and shows the recap (warning when unset: rr.Run.Continue). */
 	UFUNCTION()
 	void HandleIntermissionStarted(const FRRIntermissionRecap& Recap);
 
-	/** Transition OnLoadingStarted callback: removes the intermission widget, shows the loading screen. */
+	/** Transition OnLoadingStarted callback: keeps the HUD hidden, removes the intermission widget, shows the loading screen. */
 	UFUNCTION()
 	void HandleLoadingStarted(int32 LevelIndex, const FString& LayoutName);
 
-	/** Transition OnLevelReady callback: removes the loading screen. */
+	/** Transition OnLevelReady callback: removes the loading screen and shows the HUD again. */
 	UFUNCTION()
 	void HandleLevelReady(int32 LevelIndex, const FString& LayoutName);
 
@@ -76,6 +80,13 @@ protected:
 
 	/** Removes the loading screen widget from the viewport. */
 	void RemoveLoadingScreenWidget();
+
+	/**
+	 * Hides (bHideHUD true) or restores the HUD widget (minimap, bars, weapons, objectives, subtitle line) around a run
+	 * transition: collapses it and keeps its previous visibility for the restore. Reason is logged. No-op without a HUD or when
+	 * already in the requested state.
+	 */
+	void SetHUDHiddenForTransition(bool bHideHUD, const TCHAR* Reason);
 
 	/** Rebinds the HUD widget to the newly possessed miner. */
 	virtual void OnPossess(APawn* InPawn) override;
@@ -174,4 +185,10 @@ protected:
 
 	/** Transition subsystem bound at BeginPlay. */
 	TWeakObjectPtr<URRRunTransitionSubsystem> BoundTransition;
+
+	/** True while SetHUDHiddenForTransition(true) keeps the HUD widget collapsed. */
+	bool bHUDHiddenForTransition = false;
+
+	/** Visibility of the HUD widget before the transition hid it, restored on OnLevelReady. */
+	ESlateVisibility HUDVisibilityBeforeTransition = ESlateVisibility::SelfHitTestInvisible;
 };

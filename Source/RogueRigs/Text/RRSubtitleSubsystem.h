@@ -3,6 +3,7 @@
 #pragma once
 
 #include "CoreMinimal.h"
+#include "Run/RRRunTransitionSubsystem.h"
 #include "Subsystems/WorldSubsystem.h"
 #include "RRSubtitleSubsystem.generated.h"
 
@@ -33,7 +34,9 @@ struct FRRSubtitleSpeaker
  * is ticked here (world time, frozen while the game is paused), so the widget never polls: it binds OnSubtitleShown and
  * OnSubtitleCleared. Callers: URRRunFlowSubsystem (console_dropped, bonus_chest_dropped, extraction_ready, shuttle_countdown once
  * per countdown start) and URRHUDWidget (horde_incoming) through ShowAlertLine, which picks the Kessler-Voss line with
- * URRTextContentSubsystem::GetAlertLine. Barks (rook, vesna) can use Show later; nothing shows them yet. Game and PIE worlds.
+ * URRTextContentSubsystem::GetAlertLine. Barks (rook, vesna) can use Show later; nothing shows them yet. Silent during a run
+ * transition (task-207-01): the intermission or the loading clears the current line and Show refuses lines until OnLevelReady.
+ * Game and PIE worlds.
  */
 UCLASS(Config = Game)
 class ROGUERIGS_API URRSubtitleSubsystem : public UTickableWorldSubsystem
@@ -54,6 +57,15 @@ public:
 	/** Game and PIE worlds only. */
 	virtual bool DoesSupportWorldType(const EWorldType::Type WorldType) const override;
 
+	/**
+	 * Binds the run transition events (URRRunTransitionSubsystem, task-207-01): silent from OnIntermissionStarted and
+	 * OnLoadingStarted to OnLevelReady. A world opened by a transition still loading starts silent.
+	 */
+	virtual void Initialize(FSubsystemCollectionBase& Collection) override;
+
+	/** Unbinds the run transition events. */
+	virtual void Deinitialize() override;
+
 	/** The subsystem of WorldContext's world; null without a world or in an unsupported world type. */
 	static URRSubtitleSubsystem* Get(const UObject* WorldContext);
 
@@ -63,7 +75,8 @@ public:
 	/**
 	 * Shows Text spoken by SpeakerId, replacing the current subtitle (no OnSubtitleCleared in between), then broadcasts
 	 * OnSubtitleShown. DisplayName empty = the speaker table name (no prefix for an unknown speaker). DurationOverride <= 0 =
-	 * GetDurationForText(Text). Returns false (nothing changes) when Text is empty.
+	 * GetDurationForText(Text). Returns false (nothing changes) when Text is empty or while silenced (IsSilenced: the line is
+	 * dropped, not queued).
 	 */
 	UFUNCTION(BlueprintCallable, Category = "Subtitles")
 	bool Show(FName SpeakerId, FText DisplayName, FText Text, float DurationOverride = -1.f);
@@ -82,6 +95,10 @@ public:
 	/** True while a subtitle is shown. */
 	UFUNCTION(BlueprintPure, Category = "Subtitles")
 	bool HasSubtitle() const { return bActive; }
+
+	/** True while a run transition (intermission or loading) silences the subtitles: Show refuses every line. */
+	UFUNCTION(BlueprintPure, Category = "Subtitles")
+	bool IsSilenced() const { return bSilenced; }
 
 	/** Speaker id of the current subtitle; None when none. */
 	UFUNCTION(BlueprintPure, Category = "Subtitles")
@@ -130,6 +147,21 @@ public:
 	virtual TStatId GetStatId() const override;
 
 protected:
+	/** Transition OnIntermissionStarted callback: clears the current line and silences. */
+	UFUNCTION()
+	void HandleIntermissionStarted(const FRRIntermissionRecap& Recap);
+
+	/** Transition OnLoadingStarted callback: clears the current line and silences. */
+	UFUNCTION()
+	void HandleLoadingStarted(int32 LevelIndex, const FString& LayoutName);
+
+	/** Transition OnLevelReady callback: subtitles allowed again. */
+	UFUNCTION()
+	void HandleLevelReady(int32 LevelIndex, const FString& LayoutName);
+
+	/** true: clears the current subtitle (OnSubtitleCleared) and refuses new lines; false: lines allowed again. Reason is logged. */
+	void SetSilenced(bool bInSilenced, const TCHAR* Reason);
+
 	/** Speakers and their English display names (kessler_voss, rook, vesna). */
 	UPROPERTY(Config, EditAnywhere, Category = "Subtitles")
 	TArray<FRRSubtitleSpeaker> Speakers;
@@ -144,6 +176,12 @@ protected:
 
 	/** True while a subtitle is shown. */
 	bool bActive = false;
+
+	/** True between a transition's OnIntermissionStarted / OnLoadingStarted and its OnLevelReady: Show refuses every line. */
+	bool bSilenced = false;
+
+	/** Transition subsystem bound at Initialize (null in bare test worlds without a game instance). */
+	TWeakObjectPtr<URRRunTransitionSubsystem> BoundTransition;
 
 	/** Speaker id of the current subtitle. */
 	FName CurrentSpeakerId;

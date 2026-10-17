@@ -68,6 +68,13 @@ void ARRPlayerController::BeginPlay()
 	// Horde banner and alert-bar horde icons: the level's spawner (one per level).
 	TActorIterator<ARREnemySpawner> SpawnerIt(GetWorld());
 	HUDWidget->BindToSpawner(SpawnerIt ? *SpawnerIt : nullptr);
+
+	// The world opened by a transition starts behind the loading screen: no HUD until OnLevelReady (task-207-01).
+	const URRRunTransitionSubsystem* Transition = BoundTransition.Get();
+	if (Transition && Transition->GetPhase() != ERRRunTransitionPhase::None)
+	{
+		SetHUDHiddenForTransition(true, Transition->IsLevelLoading() ? TEXT("loading") : TEXT("intermission"));
+	}
 }
 
 void ARRPlayerController::EndPlay(const EEndPlayReason::Type EndPlayReason)
@@ -90,6 +97,7 @@ bool ARRPlayerController::IsGameplayInputHeld() const
 
 void ARRPlayerController::HandleIntermissionStarted(const FRRIntermissionRecap& Recap)
 {
+	SetHUDHiddenForTransition(true, TEXT("intermission"));
 	if (!IntermissionWidgetClass)
 	{
 		UE_LOG(LogRogueRigs, Warning, TEXT("%s: intermission after level %d but IntermissionWidgetClass is not set; run rr.Run.Continue to go on."),
@@ -109,6 +117,7 @@ void ARRPlayerController::HandleIntermissionStarted(const FRRIntermissionRecap& 
 
 void ARRPlayerController::HandleLoadingStarted(int32 LevelIndex, const FString& LayoutName)
 {
+	SetHUDHiddenForTransition(true, TEXT("loading"));
 	RemoveIntermissionWidget();
 	ShowLoadingScreen(LevelIndex, LayoutName);
 }
@@ -116,6 +125,26 @@ void ARRPlayerController::HandleLoadingStarted(int32 LevelIndex, const FString& 
 void ARRPlayerController::HandleLevelReady(int32 LevelIndex, const FString& LayoutName)
 {
 	RemoveLoadingScreenWidget();
+	SetHUDHiddenForTransition(false, TEXT("level ready"));
+}
+
+void ARRPlayerController::SetHUDHiddenForTransition(bool bHideHUD, const TCHAR* Reason)
+{
+	if (!HUDWidget || bHUDHiddenForTransition == bHideHUD)
+	{
+		return;
+	}
+	bHUDHiddenForTransition = bHideHUD;
+	if (bHideHUD)
+	{
+		HUDVisibilityBeforeTransition = HUDWidget->GetVisibility();
+		HUDWidget->SetVisibility(ESlateVisibility::Collapsed);
+	}
+	else
+	{
+		HUDWidget->SetVisibility(HUDVisibilityBeforeTransition);
+	}
+	UE_LOG(LogRogueRigs, Log, TEXT("%s: HUD %s (%s)."), *GetName(), bHideHUD ? TEXT("hidden") : TEXT("restored"), Reason);
 }
 
 void ARRPlayerController::ShowLoadingScreen(int32 LevelIndex, const FString& LayoutName)
