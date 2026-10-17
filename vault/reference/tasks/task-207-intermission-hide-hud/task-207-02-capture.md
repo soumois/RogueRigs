@@ -3,7 +3,7 @@ id: task-207-02-capture
 description: "cpp: In-game capture"
 parent: task-207-intermission-hide-hud
 kind: task
-status: in-progress
+status: done
 ---
 # capture
 
@@ -15,11 +15,11 @@ status: in-progress
 - done_when: the capture shows the intermission screen with the fix; the orchestrator sends it to the owner.
 - editor_state: closed
 - token_ceiling: 40000
-- model: open
-- tokens: open
-- runs: open
+- model: opus
+- tokens: input 30, cache write 47447, cache read 364395, output 1010
+- runs: 1
 - milestone: M2
-- result: open
+- result: Rendered -game 1920 x 1080 captures sent to the owner: intermission shows only the widget (no minimap, bars, objectives, weapons, XP, no subtitle; a Kessler-Voss line active at extraction was cleared), level 2 shows the full HUD back (health 80/100 carried). Saved/Captures/task207_*.png.
 
 ## Relations
 - [[task-207-intermission-hide-hud]] — parent global task.

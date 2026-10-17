@@ -1,9 +1,9 @@
 ---
 id: task-207-intermission-hide-hud
 description: "Global task: HUD and subtitles hidden during intermission and loading."
-parent: tasks-to-do-index
+parent: tasks-done-index
 kind: task
-status: in-progress
+status: done
 ---
 # HUD and subtitles hidden during intermission and loading
 
@@ -13,15 +13,15 @@ status: in-progress
 - gdd_check: [[intermission]] (gameplay paused). Owner 2026-10-17: hide the whole HUD (minimap, bars, weapons, objectives) and the current subtitle during intermission and loading, restore at level start.
 - confirmed_by_owner: yes (2026-10-17)
 - milestone: M2
-- next_step: task-207-02-capture
-- result: open
+- next_step: none
+- result: Done. Rendered -game 1920 x 1080 captures sent to the owner: intermission shows only the widget (no minimap, bars, objectives, weapons, XP, no subtitle; a Kessler-Voss line active at extraction was cleared), level 2 shows the full HUD back (health 80/100 carried). Saved/Captures/task207_*.png.
 
 ## Subtasks
 1. task-207-01-hide-hud-code — cpp
 2. task-207-02-capture — cpp
 
 ## Relations
-- [[tasks-to-do-index]] — parent index.
+- [[tasks-done-index]] — parent index.
 - [[task-206-level-to-level]] — the transition this fixes.
 - [[task-207-01-hide-hud-code]] — step 1, cpp.
 - [[task-207-02-capture]] — step 2, cpp.
