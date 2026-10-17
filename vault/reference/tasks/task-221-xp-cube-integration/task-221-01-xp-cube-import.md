@@ -3,7 +3,7 @@ id: task-221-01-xp-cube-import
 description: "bp: import SM_XPCubeBig into Unreal and give it its own material instances matching the chip's look and glow."
 parent: task-221-xp-cube-integration
 kind: task
-status: in-progress
+status: done
 ---
 # XP cube: import and materials
 
@@ -15,11 +15,11 @@ status: in-progress
 - done_when: assets saved; slot materials and flags read back.
 - editor_state: open (launched by the Orchestrator)
 - token_ceiling: open
-- model: open
-- tokens: open
-- runs: open
+- model: sonnet
+- tokens: input 36, cache write 48224, cache read 585730, output 394
+- runs: 1
 - milestone: M1
-- result: open
+- result: Commit 070aa778: /Game/RogueRigs/Art/XPCube/SM_XPCubeBig (764 tris, Nanite off, distance field flag on) with slots M_XPCube_body (#2D2C30), M_XPCube_caps (#868687), M_XPCube_core_dark and M_XPCube_core_bright (parent M_XPNutGlow, same values as the chip cores), glow_disc = MI_XPGlowDisc_Chip; no dependency on M_XPChip_*; collision not read back.
 
 ## Relations
 - [[task-221-xp-cube-integration]] — parent global task.

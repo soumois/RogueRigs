@@ -3,7 +3,7 @@ id: task-221-02-bp-pickup-xp-big-cube
 description: "bp: BP_PickupXPBig PickupMesh becomes SM_XPCubeBig with its materials, RestOrientation Full; doc node bp-pickup-xp updated."
 parent: task-221-xp-cube-integration
 kind: task
-status: todo
+status: in-progress
 ---
 # BP_PickupXPBig: cube
 

@@ -394,6 +394,7 @@ kind: note
 | [[task-220-05-shield-pavise-pose]] | sonnet | 1 | 0k | 86k | 1568k | 1k |
 | [[task-220-06-shield-chaser-reimport]] | opus | 1 | 0k | 71k | 1769k | 9k |
 | [[task-220-03-bp-shield-chaser-wiring]] | sonnet | 1 | 0k | 130k | 1335k | 1k |
+| [[task-221-01-xp-cube-import]] | sonnet | 1 | 0k | 48k | 586k | 0k |
 
 ## Totals
 | Scope | Input | Cache write | Cache read | Output |
