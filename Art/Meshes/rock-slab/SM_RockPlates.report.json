@@ -4,7 +4,7 @@
   "seed": 230,
   "units": "cm (1 uu = 1 cm)",
   "file": "Art/Meshes/rock-slab/SM_RockPlates_01.fbx",
-  "tris": 199,
+  "tris": 218,
   "budget": [
     150,
     250
@@ -15,22 +15,22 @@
     67,
     67
   ],
-  "max_overshoot_allowed_uu": 5.0,
-  "overshoot_uu": 4.5,
+  "max_overshoot_allowed_uu": 15.0,
+  "overshoot_uu": 14.0,
   "bounds_min": [
-    -38.0,
-    -37.05,
-    40.6
+    -47.5,
+    -47.5,
+    38.48
   ],
   "bounds_max": [
-    37.29,
-    38.0,
-    111.0
+    47.5,
+    47.5,
+    132.0
   ],
   "dimensions_cm": [
-    75.29,
-    75.05,
-    70.4
+    95.0,
+    95.0,
+    93.52
   ],
   "materials": [
     "M_RockSlab"
@@ -42,11 +42,11 @@
   "uv_checks": {
     "UVMap_planar_top_down_xy_over_100": true,
     "LightMap": {
-      "triangles": 199,
+      "triangles": 218,
       "overlapping_pairs": 0,
       "bounds": [
         0.0098,
-        0.9761
+        0.9851
       ],
       "min_gap_px_at_256": 5.024,
       "pass": true
@@ -55,8 +55,8 @@
   "vertex_colour": {
     "attribute": "Color (corner, float)",
     "export": "colors_type=LINEAR",
-    "top_tris_R1": 36,
-    "side_tris_G1": 163,
+    "top_tris_R1": 42,
+    "side_tris_G1": 176,
     "inconsistent_faces": 0,
     "pass": true,
     "rule": "R=1 on plate top faces (normal.z >= 0.3), G=1 on broken sides and upright shards"

@@ -8,7 +8,7 @@ import bpy, bmesh, math, os, sys, json, random
 from mathutils import Vector, Matrix
 
 H = 33.5
-MAX_OUT = 5.0          # allowed overshoot beyond the footprint
+MAX_OUT = 15.0         # allowed overshoot beyond the footprint
 TOPSLAB = 100.0
 argv = sys.argv[sys.argv.index("--") + 1:] if "--" in sys.argv else []
 ROOT = os.path.abspath(os.path.join(os.path.dirname(os.path.abspath(__file__)), "..", "..", ".."))
@@ -69,51 +69,46 @@ def plate(b, rng, c, r, t, n, az, deg, bottom_shrink=0.8, spin=None):
         b.tri(top[i], bot[j], bot[i], ctr, False)
 
 
-def shard(b, rng, c, r, h, n, lean_az, lean_deg):
-    """upright broken shard: n-gon base (z = c.z), apex offset by lean; no base face. n tris."""
-    ang = [2 * math.pi * (i + rng.uniform(-0.2, 0.2)) / n + rng.uniform(0, 0.3) for i in range(n)]
-    base = [Vector((c[0] + r * rng.uniform(0.7, 1.15) * math.cos(a), c[1] + r * rng.uniform(0.7, 1.15) * math.sin(a), c[2])) for a in ang]
-    lean = h * math.tan(math.radians(lean_deg))
-    apex = Vector((c[0] + lean * math.cos(lean_az), c[1] + lean * math.sin(lean_az), c[2] + h))
-    ctr = Vector((c[0], c[1], c[2] - 5.0))
-    for i in range(n):
-        b.tri(base[i], base[(i + 1) % n], apex, ctr, False)
+def wedge(b, rng, c, w, d, h, az, ridge=0.7):
+    """chunky broken wedge: rectangular base (z = c.z) w x d, ridge edge at height h, ends cut flat. no base face. 6 tris."""
+    def L(x, y, z):
+        x += rng.uniform(-1.2, 1.2); y += rng.uniform(-1.2, 1.2)
+        ca, sa = math.cos(az), math.sin(az)
+        return Vector((c[0] + x * ca - y * sa, c[1] + x * sa + y * ca, c[2] + z))
+    p0, p1, p2, p3 = L(-w / 2, -d / 2, 0), L(w / 2, -d / 2, 0), L(w / 2, d / 2, 0), L(-w / 2, d / 2, 0)
+    r0, r1 = L(-w * ridge / 2, -d * 0.12, h), L(w * ridge / 2, d * 0.12, h)
+    ctr = Vector((c[0], c[1], c[2] - 8.0))
+    b.tri(p0, p1, r1, ctr, False); b.tri(p0, r1, r0, ctr, False)      # front slope
+    b.tri(p2, p3, r0, ctr, False); b.tri(p2, r0, r1, ctr, False)      # back slope
+    b.tri(p1, p2, r1, ctr, False); b.tri(p3, p0, r0, ctr, False)      # flat ends
 
 
 def build():
     rng = random.Random(SEED)
     b = Builder()
-    # chunky base block: fills the cell volume, tops out ~z 82
-    plate(b, rng, (0, 0, 62), 31, 40, 8, 0.0, 3, bottom_shrink=0.92)
-    # tilted broken plates, varied heights and tilts
+    # heaving slab: wide base block reaching the slab top, tilted a little
+    plate(b, rng, (0, 0, 70), 34, 60, 8, 0.0, 3, bottom_shrink=0.92)
     P = [  # centre, radius, thickness, sides, tilt azimuth deg, tilt deg
-        ((-11, 9, 90), 21, 14, 6, 40, 17),
-        ((13, -12, 94), 19, 13, 5, 210, 22),
-        ((12, 15, 88), 16, 12, 5, 100, 27),
-        ((-18, -14, 87), 16, 12, 5, 300, 15),
-        ((1, -1, 98), 14, 10, 5, 160, 11),
-        ((-14, -27, 84), 10, 9, 4, 240, 22),
-        ((26, -14, 85), 10, 9, 4, 330, 25),
-        ((15, 26, 86), 10, 9, 4, 50, 20),
-        ((-24, 6, 79), 12, 11, 4, 180, 24),
-        ((22, 2, 80), 12, 11, 4, 20, 30),
-        ((-2, 24, 82), 12, 10, 4, 270, 20),
-        ((2, -25, 81), 12, 10, 4, 90, 26),
+        # corner plates spilling over the neighbours' tops
+        ((-36, -35, 104), 15, 10, 5, 225, 14), ((37, -34, 105), 16, 10, 5, 315, 17),
+        ((35, 37, 103), 14, 10, 5, 45, 12), ((-37, 34, 105), 15, 10, 5, 135, 16),
+        # edge plates
+        ((1, -41, 103), 13, 10, 4, 270, 15), ((42, 2, 104), 12, 10, 4, 0, 18),
+        ((-3, 42, 103), 13, 10, 4, 90, 14), ((-42, -3, 104), 12, 10, 4, 180, 17),
+        # heaved plates in the middle, up to about 125
+        ((-9, 8, 108), 20, 12, 6, 40, 20), ((12, -10, 114), 17, 12, 5, 210, 24),
+        ((10, 14, 110), 14, 11, 5, 100, 27), ((-15, -14, 109), 15, 11, 5, 300, 18),
+        ((-1, 0, 120), 13, 10, 5, 160, 14),
     ]
     for c, r, t, n, az, d in P:
         plate(b, rng, c, r, t, n, math.radians(az), d, bottom_shrink=0.78)
-    # rim of upright shards
-    SH = [  # centre xy, base z, radius, height, sides, lean azimuth deg, lean deg
-        (-29, -27, 74, 8, 24, 4, 60, 12), (-3, -31, 72, 8, 22, 4, 250, 10), (27, -28, 75, 8, 24, 4, 120, 14),
-        (31, 3, 76, 7, 20, 4, 10, 10), (28, 28, 74, 8, 24, 4, 200, 12), (3, 31, 75, 7, 20, 4, 300, 10),
-        (-28, 29, 73, 8, 22, 4, 330, 12), (-31, -4, 74, 7, 20, 4, 80, 10),
-        (-9, -12, 100, 7, 11, 4, 20, 8), (15, 6, 96, 6, 12, 3, 200, 8),
+    W = [  # centre xy, base z, width, depth, height, azimuth deg
+        (-25, -22, 100, 18, 12, 18, 30), (24, -24, 101, 16, 12, 16, 120), (26, 22, 100, 18, 12, 20, 200),
+        (-24, 25, 101, 16, 11, 16, 300), (-3, -5, 118, 14, 10, 14, 60), (8, 5, 114, 12, 9, 12, 250),
     ]
-    global lean_az
-    for x, y, z, r, h, n, laz, ld in SH:
-        lean_az = math.radians(laz)
-        shard(b, rng, (x, y, z), r, h, n, lean_az, ld)
-    lim = H + MAX_OUT - 0.5   # safety clamp: no vertex beyond 4.5 uu outside the footprint
+    for x, y, z, w, dd, h, az in W:
+        wedge(b, rng, (x, y, z), w, dd, h, math.radians(az))
+    lim = H + MAX_OUT - 1.0   # safety clamp: no vertex beyond 14 uu outside the footprint
     for v in b.bm.verts:
         v.co.x = max(-lim, min(lim, v.co.x)); v.co.y = max(-lim, min(lim, v.co.y))
     for l in (l for f in b.bm.faces for l in f.loops):
