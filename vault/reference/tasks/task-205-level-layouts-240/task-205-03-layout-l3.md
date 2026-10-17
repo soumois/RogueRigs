@@ -3,7 +3,7 @@ id: task-205-03-layout-l3
 description: "level-design: Write arena_l3 the same way, starting from the rules refined in task-205-02, with a different seed, and report the rules it had to refine.."
 parent: task-205-level-layouts-240
 kind: task
-status: in-progress
+status: done
 ---
 # layout-l3
 
@@ -15,11 +15,11 @@ status: in-progress
 - done_when: validator exits 0 on arena_l3 with its brief; brief bounds equal arena_m1_fine.brief.json; refined rules recorded; committed.
 - editor_state: any
 - token_ceiling: 30000
-- model: open
-- tokens: open
-- runs: open
+- model: sonnet
+- tokens: input 24, cache write 21087, cache read 201050, output 477
+- runs: 1
 - milestone: M2
-- result: open
+- result: arena_l3 (f8ccf4a9): seed 8300, params unchanged from arena_l2, picked among 28 batches; coverage 57.6 %, reach 85.6 %, passage 3, heal 48, barrels 17, 7 pockets, 24 x 24 open 0.07 to 0.94, no dead zone. Rules refined: review 20+ seeds, scan stride, straight-lane tolerance +-1 (layout-review-rules).
 
 ## Relations
 - [[task-205-level-layouts-240]] — parent global task.
