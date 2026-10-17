@@ -3,7 +3,7 @@ id: task-206-05-wbp-loading
 description: "bp: WBP_Loading."
 parent: task-206-level-to-level
 kind: task
-status: todo
+status: in-progress
 ---
 # wbp-loading
 
