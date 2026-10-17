@@ -15,6 +15,12 @@ Target: owner image C (`Art/Source/rock-look/20261017-131704-rock-look-2.png`): 
 4. Tilted plates as a small overlay HISM present only on cells below the plate threshold; shake moved into the material (WPO) for slabs.
 5. Ore crystals as one instanced cluster per ore cell in their own chunk HISM.
 
+## Owner decisions (2026-10-17)
+- Nanite: assumed for the grid pieces (owner); contra-indications to check at integration: WPO cost (outline warp, shake), dynamic instance add/remove, very low-poly pieces.
+- Variants: one per piece shape for now; the system must already support several (variant index per instance, chosen by cell hash).
+- A1: the owner will relax it (too restrictive, it was meant as an AI generation limit); level open.
+- Still open: dual grid replacing the per-cell rule, triangle budget, rim as vertex colour or slot, crack thresholds, weak rock.
+
 ## Risks
 - Render and collision indices stop being in lockstep: render pieces are per corner, collision stays per cell. The index maps and the `RogueRigs.Dig.*` instance-map tests must be rewritten (estimate 2-3 days for the whole change, not measured).
 - Up to 4 chunks dirtied per broken cell at chunk borders; proxy recreation per touched chunk per frame ([[rock-render-rebuild]]).
