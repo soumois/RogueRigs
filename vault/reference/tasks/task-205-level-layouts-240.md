@@ -14,7 +14,7 @@ status: done
 - confirmed_by_owner: yes (2026-10-17)
 - milestone: M2
 - next_step: none
-- result: Done. arena_l4 (0f6e6663): seed 10090, noise_seed 9100 and new outline harmonic phases for a different shape; coverage 56.5 %, reach 84.2 %, passage 3, heal 48, barrels 17, 7 pockets, 24 x 24 open 0.12 to 0.93; only 1 of 30 passing seeds passed the window review; straight left lane of about 44 cells accepted (flagged). Rules recorded in layout-review-rules.
+- result: Done 2026-10-17. Tools/layout_gen/arena_gen_fine.js generates natively at 240 x 240 (3b396e76); arena_l2 seed 2300 (43cd430e), arena_l3 seed 8300 (f8ccf4a9), arena_l4 seed 10090 with its own outline (0f6e6663), all pass the validator with the arena_m1_fine brief; review rules refined over the three layouts in layout-review-rules (seed pick on a 24 x 24 open-fraction scan, low yield 1-4 of ~30, straight lanes flagged not rejected, pocket distance). ASCII previews shown to the owner. Not loaded in Unreal yet (task-206).
 
 ## Subtasks
 1. task-205-01-direct-240-generator — cpp
