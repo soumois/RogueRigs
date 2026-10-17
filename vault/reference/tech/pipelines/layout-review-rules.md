@@ -17,6 +17,12 @@ Refined by the Level-Design agent while writing the run levels ([[task-205-level
 - Reach window 0.65 to 0.86 is narrow: seeds fail at 0.868 to 0.874; widen to about 0.88 only if passing seeds are scarce.
 - Barrel count is drawn per seed (14 to 18), not set by the params.
 
+## Refinements from arena_l3 (task-205-03)
+- Yield: only 3 to 4 of 28 passing seeds keep every 24 × 24 window between 0.05 and 0.95; review 20 or more passing seeds, not 6 to 10. Most rejects are a fully open window (0.97 to 1.00) or a solid one (0 to 0.03).
+- Scan: stride 2, floor, barrel and spawn count as open; results differ by about 0.01 from the first arena_l2 scan.
+- Straight lane: an exact repeated interval is too strict on jagged walls; check with a tolerance of ±1 cell, or visually on the downscaled preview.
+- Doing the scan by hand per seed is the main cost; candidate for automation in the generator acceptance (not done).
+
 ## Relations
 - [[pipelines-index]] — parent index.
 - [[layout-generator-recipe]] — the generator these rules review.
