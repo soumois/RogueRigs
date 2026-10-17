@@ -3,7 +3,7 @@ id: task-209-01-run-won-copy
 description: "text: Write the run-won end screen title"
 parent: task-209-run-won-text
 kind: task
-status: in-progress
+status: done
 ---
 # run-won-copy
 
@@ -15,11 +15,11 @@ status: in-progress
 - done_when: text validator exits 0 if one exists; style-guide review follows; committed.
 - editor_state: any
 - token_ceiling: 30000
-- model: open
-- tokens: open
-- runs: open
+- model: sonnet
+- tokens: input 16, cache write 36123, cache read 165919, output 276
+- runs: 1
 - milestone: M2
-- result: open
+- result: end_screens.json item end_run_won CLAIM STRIPPED / Gone before the paperwork landed. (52f53490), alternatives FIRST HERE, FIRST OUT and ROCK EMPTIED, RIGS GONE; validator exit 1 only because the file name is not one of the four accepted (fixed in task-209-03).
 
 ## Relations
 - [[task-209-run-won-text]] — parent global task.
