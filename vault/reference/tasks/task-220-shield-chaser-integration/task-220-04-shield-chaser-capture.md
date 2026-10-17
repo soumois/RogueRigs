@@ -3,7 +3,7 @@ id: task-220-04-shield-chaser-capture
 description: "cpp: -game capture of a shield chaser running with its shield, bashing, and after the shield breaks; frames for the owner."
 parent: task-220-shield-chaser-integration
 kind: task
-status: review
+status: in-progress
 ---
 # Shield chaser: in-game capture
 
