@@ -23,6 +23,7 @@ kind: doc
 - [[sys-grid-deposits]] — Ore deposit generation (OreTypes.csv, groups, seed) and the pickup drop rule of ore and heal ore. Open to change deposits or drops.
 - [[sys-grid-barrels]] — Barrel cells: dig and shot health, fuse, explosion queue and the hosted ground telegraph. Open to change barrel behaviour in the grid.
 - [[sys-run-layout]] — the prepared layout the grid builds from on levels 2+.
+- [[rock-state-render-options]] — Design note (no code) for the slab rock look: dual-grid pieces, damage display, ore crystals, counts, budget. Open before rock look work.
 - [[sys-grid-api]] — Public functions of the arena grid: cell centers, face centers, world lookups, damage and destruction entry points. Open to call the grid from C++.
 - [[systems-index]] — parent index.
 - [[level-layout-schema]] — file format the grid loads.

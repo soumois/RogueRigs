@@ -23,3 +23,4 @@ status: in-progress
 
 ## Relations
 - [[task-219-rock-ore-look]] — parent global task.
+- [[rock-state-render-options]] — the note this task produced.
