@@ -3,7 +3,7 @@ id: task-225-01-shield-colour-renders
 description: "3D agent: recolour the shield texture in charcoal and light steel grey (stripes kept, yellow logo, no plate) and render both, preview only."
 parent: task-225-shield-colour-test
 kind: task
-status: in-progress
+status: done
 ---
 # Shield colour renders
 
@@ -15,11 +15,11 @@ status: in-progress
 - done_when: the textures and renders exist in that folder, the sheet is opened by the Orchestrator; commit by path.
 - editor_state: any (no Unreal)
 - token_ceiling: open
-- model: open
-- tokens: open
-- runs: open
+- model: sonnet
+- tokens: input 36, cache write 104578, cache read 1368571, output 17543
+- runs: 1
 - milestone: M1
-- result: open
+- result: Commit bd0837c4: Art/Source/shield-colour-test/ (sheet_shield_colours.png: columns current yellow, A charcoal #33363B, B light steel grey #A9AFB5; close-ups, robot mid and game-scale views; textures T_ChaserShield_BaseColor_A/_B and T_ChaserShield_Emblem_YellowOnly), script Tools/art/blender/shield_colour_test.py; stripes, grip and bolts unchanged, logo yellow without plate. A stands out clearly from robot and floor; B is close to the floor brightness, its logo faint; on A the bolts barely show. Game files untouched. Owner choice pending.
 
 ## Relations
 - [[task-225-shield-colour-test]] — parent global task.

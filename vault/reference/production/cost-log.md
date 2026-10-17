@@ -407,6 +407,7 @@ kind: note
 | [[task-224-02-ns-shield-debris-hitdir]] | sonnet | 1 | 0k | 49k | 919k | 1k |
 | [[task-219-04-rock-look-c-fix]] | sonnet | 1 | 0k | 20k | 129k | 1k |
 | [[task-224-03-bp-shield-chaser-hitdir]] | sonnet | 1 | 0k | 53k | 668k | 0k |
+| [[task-225-01-shield-colour-renders]] | sonnet | 1 | 0k | 105k | 1369k | 18k |
 
 ## Totals
 | Scope | Input | Cache write | Cache read | Output |

@@ -231,3 +231,4 @@ Archive: it exceeds the index size limits of [[_authoring]] on purpose (owner, 2
 - [[task-221-xp-cube-integration]] — Big XP data cube replaces the chip in game, then the chip is deleted. Status done.
 - [[task-222-shield-break-debris]] — Shield fragments thrown as debris when the shield chaser shield breaks. Status done.
 - [[task-223-debug-break-shields]] — Debug command that breaks shield chasers shields only, for captures. Status done.
+- [[task-225-shield-colour-test]] — Shield colour test renders: charcoal and light steel grey, stripes and yellow logo kept. Status done.
