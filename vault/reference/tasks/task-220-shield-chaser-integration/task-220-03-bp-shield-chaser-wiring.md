@@ -3,7 +3,7 @@ id: task-220-03-bp-shield-chaser-wiring
 description: "bp: BP_ShieldChaser shows the combined mesh, swaps to plain clips and hides the shield on OnShieldBroken; shell removed; doc node rewritten."
 parent: task-220-shield-chaser-integration
 kind: task
-status: blocked
+status: done
 ---
 # BP_ShieldChaser: shield wiring
 
@@ -15,11 +15,11 @@ status: blocked
 - done_when: compile and save without error; BodyMesh mesh and materials read back; a PIE spawn of one BP_ShieldChaser without runtime error if the tools allow it.
 - editor_state: open (launched by the Orchestrator)
 - token_ceiling: open
-- model: open
-- tokens: open
+- model: sonnet
+- tokens: input 68, cache write 129952, cache read 1334705, output 597
 - runs: 1
 - milestone: M1
-- result: Commit e9396119: BodyMesh = SM_ShieldChaser_Meshy_Anim with MI_ShieldChaser_Body, _Shield, _Emblem, no shadow; OnShieldBroken sets material 0 to MI_ShieldChaser_BodyPlain and 1, 2 to MI_ShieldChaser_Hidden (old pop graph deleted); body and shield textures have no alpha (nothing cut out); doc node rewritten from the template. Blocked: removing the ShieldShell component was denied by the permission classifier (irreversible); the cylinder still shows. Owner decision needed: delete it in the editor, authorise the removal, or hide it (reversible). No PIE run.
+- result: Commits e9396119 and ed303022: BodyMesh = SM_ShieldChaser_Meshy_Anim with MI_ShieldChaser_Body, _Shield, _Emblem, no shadow; OnShieldBroken sets material 0 to MI_ShieldChaser_BodyPlain and 1, 2 to MI_ShieldChaser_Hidden; ShieldShell kept but hidden (bVisible false, bHiddenInGame true; removal was denied, owner chose hiding 2026-10-17); body and shield textures opaque; doc node rewritten from the template. No PIE run.
 
 ## Relations
 - [[task-220-shield-chaser-integration]] — parent global task.
