@@ -12,3 +12,4 @@ A global task moves to [[tasks-done-index]] when it is done (`vault/scripts/task
 - [[tasks-index]] — parent index.
 - [[task-188-editor-lock]] — Editor lock shared by sessions: a lock file, a node script to take, release and read it, and the runbook and protocol rules to use it. Status todo.
 - [[task-229-pickup-physics]] — Pickups land into Chaos physics (box collisions, floor and walls only) and spin lightly in flight. Status in-progress.
+- [[task-230-rock-slab-integration]] — Dual-grid slab rock look in the grid: pieces, world-UV top texture, cracks, plates, crystals. Status todo.

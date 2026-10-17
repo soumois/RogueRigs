@@ -12,7 +12,7 @@ Counted by a scratch node script on `Content/RogueRigs/Data/Levels/arena_m1_fine
 Cells: void 39 571, rock 17 964, heal_ore 48, barrel 16, spawn 1 (non-void 18 029). Duskite deposits are placed at build from rock: 359 x 4 = 1 436 cells ([[sys-grid-deposits]]). Per-cell shapes (approved rule): interior 13 507, edge 3 267, corner 1 058, end 151, corridor 17, isolated 12.
 
 ## Dual-grid pieces (corners with at least one solid cell)
-| Shape | Instances | Triangles each (proposed, owner to confirm) | Triangles |
+| Shape | Instances | Triangles each (provisional, owner 2026-10-17, to measure at integration) | Triangles |
 |---|---|---|---|
 | full | 15 085 | 2 | 30 170 |
 | edge | 3 230 | 48 | 155 040 |
