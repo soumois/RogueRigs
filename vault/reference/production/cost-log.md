@@ -390,6 +390,7 @@ kind: note
 | [[task-215-01-no-prefix-code]] | opus | 1 | 0k | 42k | 597k | 0k |
 | [[task-215-02-capture]] | opus | 1 | 0k | 25k | 148k | 1k |
 | [[task-220-01-shield-clips-bake]] | sonnet | 1 | 0k | 201k | 2476k | 37k |
+| [[task-220-02-shield-chaser-material]] | sonnet | 1 | 0k | 92k | 2499k | 2k |
 
 ## Totals
 | Scope | Input | Cache write | Cache read | Output |

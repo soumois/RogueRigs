@@ -3,7 +3,7 @@ id: task-220-02-shield-chaser-material
 description: "bp: import the combined shield chaser mesh and textures, build M_ShieldChaser_Anim with the 4-clip layout and its five instances."
 parent: task-220-shield-chaser-integration
 kind: task
-status: in-progress
+status: done
 ---
 # Shield chaser: import and material
 
@@ -20,11 +20,11 @@ status: in-progress
 - done_when: assets saved, material compiles, channel 2 check passes.
 - editor_state: open (launched by the Orchestrator)
 - token_ceiling: open
-- model: open
-- tokens: open
-- runs: open
+- model: sonnet
+- tokens: input 84, cache write 92267, cache read 2499049, output 2496
+- runs: 1
 - milestone: M1
-- result: open
+- result: Assets in /Game/RogueRigs/Art/ShieldChaser/ (commit fb7139bc): SM_ShieldChaser_Meshy_Anim (4242 tris, LightMapCoordinateIndex 1, bounds extension 60 cm, no collision, Nanite off, slots set to the instances), T_ShieldChaserAnim (as T_ChaserAnim), shield base colour and emblem textures, M_ShieldChaser_Anim (copy of the chaser material: ChaserAnimWPO with ClipOffset, 4 clips at rows 0/16/31/47, Masked, OpacityMask = alpha x Visible, BaseColorTex parameter), instances Body, BodyPlain (ClipOffset 2), Shield, Emblem, Hidden (Visible 0). Not done (MCP cannot): UV channel 2 RENDER_DATA check, Generate Lightmap UVs off and full precision UVs: to do with the editor closed at the reimport of task-220-03; emblem and body texture alpha unchecked.
 
 ## Relations
 - [[task-220-shield-chaser-integration]] — parent global task.

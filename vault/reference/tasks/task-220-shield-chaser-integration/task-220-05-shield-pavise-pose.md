@@ -1,9 +1,9 @@
 ---
 id: task-220-05-shield-pavise-pose
-description: "3D agent: shield 20 percent larger, carried low like a pavise near the ground with the head above it; rebake clips 0 and 1 and the combined mesh."
+description: "3D agent: shield 20 percent larger, carried low like a pavise with the head above it; rebake clips 0 and 1 and the combined mesh."
 parent: task-220-shield-chaser-integration
 kind: task
-status: todo
+status: in-progress
 ---
 # Shield chaser: pavise carry
 
