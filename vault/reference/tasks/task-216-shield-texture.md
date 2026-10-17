@@ -13,7 +13,7 @@ status: in-progress
 - gdd_check: [[art-prompts-shield]], [[color-code]], [[art-style-guide]] A1, A5, [[enemy-chaser]]. Conflicts: stripes are reserved for the heavy, accepted as a detail on the shield (owner 2026-10-17). Open: triangle budget of the shield (raw Meshy mesh 932 tris; chaser 3115 + shield is above the 3000 chaser budget), front-only blocking; emblem file not yet generated. Height 82 cm = two thirds of the chaser height, as in the validated sheet prompt (provisional).
 - confirmed_by_owner: yes
 - milestone: M1
-- next_step: task-216-01-shield-blender-texture
+- next_step: owner decision on task-216-01 (keep the Meshy mesh, or remodel the shield in a Blender script)
 - result: open
 
 ## Subtasks

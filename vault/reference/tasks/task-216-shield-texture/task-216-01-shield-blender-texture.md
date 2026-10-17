@@ -3,7 +3,7 @@ id: task-216-01-shield-blender-texture
 description: "3D agent: give the raw Meshy shield flat materials and a stripe texture in headless Blender, scale it, export FBX, report and fidelity renders."
 parent: task-216-shield-texture
 kind: task
-status: in-progress
+status: review
 ---
 # Shield: Blender materials, stripes and export
 
@@ -20,11 +20,11 @@ status: in-progress
 - done_when: report tris 932 +/- 2, height 82 +/- 1 cm, three materials, UV0 and UV1 checks pass, every criterion pass (or open failures reported after 5 returns); the Orchestrator opens the renders.
 - editor_state: any (no Unreal import in this subtask)
 - token_ceiling: open
-- model: open
-- tokens: open
-- runs: open
+- model: sonnet (agent-3d)
+- tokens: 134.7k subagent tokens in total as reported by the harness; not split by agent-usage.js (the run was not labelled with the task id)
+- runs: 1
 - milestone: M1
-- result: open
+- result: script `Tools/art/blender/shield_texture.py`, `Art/Meshes/ChaserShield/SM_ChaserShield.fbx` (932 tris, 21.2 x 44.1 x 82 cm, materials yellow #F5BC1E, gunmetal #494949, stripes texture 256 px, UV0 and UV1 checks pass, grip_offset_cm (-7.4, -7.9, 42.6)), previews in `preview/` and `preview/neutral/`; 2 returns of 5. C1-C4, C6, C7 pass; C5 fails: the Meshy mesh has no horizontal side bracket on the back (geometry, out of scope). Also seen: crack under the inner panel, a diagonal fold in the front panel, a mushy back, stripes stretched on edge-on faces. Renders sent to the owner; files not committed until the owner decides (keep, or remodel in Blender).
 
 ## Relations
 - [[task-216-shield-texture]] — parent global task.
