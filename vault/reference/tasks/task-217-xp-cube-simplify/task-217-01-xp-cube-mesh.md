@@ -3,7 +3,7 @@ id: task-217-01-xp-cube-mesh
 description: "3D agent: Meshy data cube to about 600 tris, flat materials, emissive window slots and glow disc as the chip; FBX, report, renders."
 parent: task-217-xp-cube-simplify
 kind: task
-status: in-progress
+status: review
 ---
 # XP data cube: simplified game mesh
 
@@ -19,11 +19,11 @@ status: in-progress
 - done_when: every criterion passes from the renders (or open failures reported after 5 returns); the Orchestrator opens the renders.
 - editor_state: any (no Unreal import)
 - token_ceiling: open
-- model: open
-- tokens: open
-- runs: open
+- model: sonnet (agent-3d)
+- tokens: 103.2k subagent tokens in total as reported by the harness
+- runs: 1
 - milestone: M1
-- result: open
+- result: scripts `Tools/art/blender/xp_cube_big_mesh.py` and `xp_cube_big_preview.py`; `Art/Meshes/xp-cube-big-mesh/SM_XPCubeBig.fbx` body 748 tris (total 764 with the 16-tri glow disc), 30 x 30 x 27.5 cm, centred pivot, slots body #2D2C30, caps #868687, core_dark #FA11F8, core_bright #FB81FD, glow_disc; UV0 and UV1 checks pass; 2 returns, C1-C7 pass. Differences: hexagonal bolts (octagons would exceed 844), boxier caps, frame brighter than the shaded Meshy render. Renders sent; files not committed until the owner validates.
 
 ## Relations
 - [[task-217-xp-cube-simplify]] — parent global task.
