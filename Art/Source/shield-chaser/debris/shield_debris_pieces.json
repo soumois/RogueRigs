@@ -1,0 +1,217 @@
+{
+  "source": "Art/Meshes/ChaserShield/SM_ChaserShield.fbx",
+  "textures": [
+    "T_ChaserShield_BaseColor.png",
+    "T_ChaserShield_Emblem.png"
+  ],
+  "script": "Tools/art/blender/shield_debris_pieces.py",
+  "units": "cm",
+  "shield_scale": 1.2,
+  "guard_pose": {
+    "tilt_deg": -3.0,
+    "origin_cm_blender": [
+      30.649999618530273,
+      5.630000114440918,
+      4.340000152587891
+    ],
+    "note": "same placement as shield_chaser_bake.py (clip 0 frame 0), actor origin on the floor between the feet"
+  },
+  "offset_convention": "centre_offset_cm_unreal = (x, -y, z) of the piece bounds centre in the guard-pose Blender world (cm, actor origin on the floor, front +X, Z up), the shield as placed on the shield chaser at clip 0 frame 0. The FBX uses the Blender default axes (forward -Z, up Y), which Unreal imports keeping X and Z and mirroring Y, so Y is negated. The mesh pivot is the bounds centre and the vertices are already in the guard orientation (3 degrees back tilt): a piece spawned at actor origin + offset, no rotation, sits exactly where it was.",
+  "source_triangles": 979,
+  "pieces": [
+    {
+      "index": 0,
+      "name": "SM_ShieldDebris_Shard_A",
+      "file": "SM_ShieldDebris_Shard_A.fbx",
+      "triangles": 240,
+      "centre_offset_cm_unreal": [
+        32.42,
+        -5.63,
+        42.89
+      ],
+      "size_cm": [
+        6.96,
+        51.36,
+        76.85
+      ],
+      "bounds_guard_pose_blender_cm": {
+        "min": [
+          28.94,
+          -20.05,
+          4.46
+        ],
+        "max": [
+          35.9,
+          31.31,
+          81.31
+        ]
+      },
+      "uv_layers": [
+        "UVMap"
+      ],
+      "slots": [
+        "M_ChaserShield",
+        "M_ChaserShield_Emblem"
+      ],
+      "open_edges": 4,
+      "non_manifold_edges": 0
+    },
+    {
+      "index": 1,
+      "name": "SM_ShieldDebris_Shard_B",
+      "file": "SM_ShieldDebris_Shard_B.fbx",
+      "triangles": 116,
+      "centre_offset_cm_unreal": [
+        30.15,
+        6.01,
+        87.22
+      ],
+      "size_cm": [
+        4.67,
+        28.08,
+        31.31
+      ],
+      "bounds_guard_pose_blender_cm": {
+        "min": [
+          27.81,
+          -20.05,
+          71.57
+        ],
+        "max": [
+          32.48,
+          8.03,
+          102.88
+        ]
+      },
+      "uv_layers": [
+        "UVMap"
+      ],
+      "slots": [
+        "M_ChaserShield"
+      ],
+      "open_edges": 0,
+      "non_manifold_edges": 0
+    },
+    {
+      "index": 2,
+      "name": "SM_ShieldDebris_Shard_C",
+      "file": "SM_ShieldDebris_Shard_C.fbx",
+      "triangles": 132,
+      "centre_offset_cm_unreal": [
+        30.15,
+        -17.27,
+        90.82
+      ],
+      "size_cm": [
+        4.67,
+        28.08,
+        24.12
+      ],
+      "bounds_guard_pose_blender_cm": {
+        "min": [
+          27.81,
+          3.23,
+          78.76
+        ],
+        "max": [
+          32.48,
+          31.31,
+          102.88
+        ]
+      },
+      "uv_layers": [
+        "UVMap"
+      ],
+      "slots": [
+        "M_ChaserShield"
+      ],
+      "open_edges": 0,
+      "non_manifold_edges": 0
+    },
+    {
+      "index": 3,
+      "name": "SM_ShieldDebris_Shard_D",
+      "file": "SM_ShieldDebris_Shard_D.fbx",
+      "triangles": 46,
+      "centre_offset_cm_unreal": [
+        33.17,
+        -25.97,
+        28.51
+      ],
+      "size_cm": [
+        5.45,
+        10.68,
+        48.09
+      ],
+      "bounds_guard_pose_blender_cm": {
+        "min": [
+          30.45,
+          20.63,
+          4.46
+        ],
+        "max": [
+          35.9,
+          31.31,
+          52.55
+        ]
+      },
+      "uv_layers": [
+        "UVMap"
+      ],
+      "slots": [
+        "M_ChaserShield"
+      ],
+      "open_edges": 0,
+      "non_manifold_edges": 0
+    },
+    {
+      "index": 4,
+      "name": "SM_ShieldDebris_Grip",
+      "file": "SM_ShieldDebris_Grip.fbx",
+      "triangles": 721,
+      "centre_offset_cm_unreal": [
+        26.75,
+        -13.55,
+        51.5
+      ],
+      "size_cm": [
+        10.76,
+        16.35,
+        61.51
+      ],
+      "bounds_guard_pose_blender_cm": {
+        "min": [
+          21.37,
+          5.38,
+          20.74
+        ],
+        "max": [
+          32.13,
+          21.73,
+          82.25
+        ]
+      },
+      "uv_layers": [
+        "UVMap"
+      ],
+      "slots": [
+        "M_ChaserShield"
+      ],
+      "open_edges": 9,
+      "non_manifold_edges": 4
+    }
+  ],
+  "sum_triangles": 1255,
+  "union_bounds_guard_pose_blender_cm": {
+    "min": [
+      21.37,
+      -20.05,
+      4.46
+    ],
+    "max": [
+      35.9,
+      31.31,
+      102.88
+    ]
+  }
+}
