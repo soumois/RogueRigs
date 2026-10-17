@@ -15,3 +15,4 @@ Grid, flow field, pickups, objectives, pools: the terrain and what lives on it.
 - [[sys-pickups]] — ore, heal and XP pickups: drop rule, pop, attraction within PickupRadius, collection event, XP grant.
 - [[sys-objectives]] — run flow (alert bar, console drop and pause, extraction-ready event) and the console objective with its Blueprint events.
 - [[sys-actor-pool]] — generic actor pool subsystem: reuse, creation spread over MaxFrames, IRRPoolable reset hooks, IsPooledIdle filter.
+- [[sys-run]] — run state: level index, layout list, miner snapshot carried between levels.

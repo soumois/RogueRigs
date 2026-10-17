@@ -262,6 +262,7 @@ sys-player-classes  reference/tech/systems/core/sys-player/sys-player-classes.md
 sys-player-input-aim  reference/tech/systems/core/sys-player/sys-player-input-aim.md
 sys-progression  reference/tech/systems/core/sys-progression.md
 sys-projectiles  reference/tech/systems/combat/sys-projectiles.md
+sys-run  reference/tech/systems/world/sys-run.md
 sys-spawner  reference/tech/systems/enemies/sys-spawner.md
 sys-spawner-cells-heading  reference/tech/systems/enemies/sys-spawner/sys-spawner-cells-heading.md
 sys-spawner-director  reference/tech/systems/enemies/sys-spawner-director.md
