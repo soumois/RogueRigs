@@ -31,6 +31,7 @@ Keep this exact shield and the attached robot unchanged. Character sheet on a pl
 - Emblem: decal on the front centre, the KV emblem on a #1A1F25 rounded plate 22 x 20 cm, texture `T_ChaserShield_Emblem.png` (task-218, done; owner look pending).
 - Unreal import, attachment to the shield chaser (grip offset in the report), run and bash clips.
 - Readability: the camera sees mostly the top edge (A12), hence the stripes over the top.
+- Run stride (owner 2026-10-17): the short stride of the shield run is kept (thigh swing 12 degrees instead of the chaser's 35, so the foot never hits the low pavise); the robot does not visibly slide.
 - Gameplay: whether the shield blocks only from the front is open; today it is a 30-point pool ([[enemy-chaser]]).
 
 ## Relations
