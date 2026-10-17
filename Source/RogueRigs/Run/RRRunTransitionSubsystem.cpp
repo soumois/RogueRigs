@@ -109,7 +109,11 @@ bool URRRunTransitionSubsystem::Continue()
 	LoadingLevelIndex = Run->GetLevelIndex();
 	LoadingLayoutName = Run->GetCurrentLayoutName();
 	LoadingStartSeconds = FPlatformTime::Seconds();
-	UE_LOG(LogRogueRigs, Log, TEXT("URRRunTransitionSubsystem: Continue: loading started for level %d (layout %s)."), LoadingLevelIndex, *LoadingLayoutName);
+	LoadingStartFrame = GFrameCounter;
+	LoadingFirstPaintFrame = 0;
+	bTravelRequested = false;
+	UE_LOG(LogRogueRigs, Log, TEXT("URRRunTransitionSubsystem: Continue: loading started for level %d (layout %s), frame %llu."), LoadingLevelIndex,
+		*LoadingLayoutName, LoadingStartFrame);
 	OnLoadingStarted.Broadcast(LoadingLevelIndex, LoadingLayoutName);
 
 	if (Run->IsLayoutPending(LoadingLevelIndex))
@@ -153,11 +157,82 @@ void URRRunTransitionSubsystem::OpenArenaMap()
 		return;
 	}
 	SetLoadingStage(ERRRunLoadingStage::OpeningMap);
-	UE_LOG(LogRogueRigs, Log, TEXT("URRRunTransitionSubsystem: opening %s for level %d (%.1f ms after Continue)."), *MapToOpen, LoadingLevelIndex,
-		(FPlatformTime::Seconds() - LoadingStartSeconds) * 1000.0);
-	// OpenLevel only requests the travel: the engine loads the map at the start of a later frame, so the loading widget shown on
-	// OnLoadingStarted is drawn at least once before the blocking load.
+	TravelWaitStartFrame = GFrameCounter;
+	if (IsTravelWaitOver())
+	{
+		RequestArenaMapTravel();
+		return;
+	}
+	// The old-world loading widget added on OnLoadingStarted is drawn by Slate later in a frame; a travel requested before that
+	// frame has been painted shows the frozen game during the blocking load (task-206-06). The core ticker also runs while paused.
+	UE_LOG(LogRogueRigs, Log, TEXT("URRRunTransitionSubsystem: travel to %s waits for the loading screen paint (frame %llu)."), *MapToOpen, GFrameCounter);
+	TWeakObjectPtr<URRRunTransitionSubsystem> WeakThis(this);
+	TravelWaitHandle = FTSTicker::GetCoreTicker().AddTicker(FTickerDelegate::CreateLambda([WeakThis](float DeltaTime)
+	{
+		URRRunTransitionSubsystem* Self = WeakThis.Get();
+		return Self ? Self->TickTravelWait(DeltaTime) : false;
+	}));
+}
+
+bool URRRunTransitionSubsystem::TickTravelWait(float DeltaTime)
+{
+	if (Phase != ERRRunTransitionPhase::Loading || LoadingStage != ERRRunLoadingStage::OpeningMap || bTravelRequested)
+	{
+		TravelWaitHandle.Reset();
+		return false;
+	}
+	if (!IsTravelWaitOver())
+	{
+		return true;
+	}
+	TravelWaitHandle.Reset();
+	RequestArenaMapTravel();
+	return false;
+}
+
+bool URRRunTransitionSubsystem::IsTravelWaitOver() const
+{
+	if (LoadingFirstPaintFrame != 0 && GFrameCounter > LoadingFirstPaintFrame)
+	{
+		return true;
+	}
+	const int32 MaxFrames = FMath::Max(0, GetDefault<URRRunSettings>()->LoadingPaintWaitMaxFrames);
+	return GFrameCounter - TravelWaitStartFrame >= static_cast<uint64>(MaxFrames);
+}
+
+void URRRunTransitionSubsystem::RequestArenaMapTravel()
+{
+	UWorld* World = IntermissionWorld.Get();
+	if (!World)
+	{
+		UE_LOG(LogRogueRigs, Error, TEXT("URRRunTransitionSubsystem: intermission world gone before the travel of level %d; loading dropped."), LoadingLevelIndex);
+		ClearTransition();
+		return;
+	}
+	bTravelRequested = true;
+	if (LoadingFirstPaintFrame != 0)
+	{
+		UE_LOG(LogRogueRigs, Log, TEXT("URRRunTransitionSubsystem: opening %s for level %d in frame %llu (loading started frame %llu, first loading paint frame %llu; %.1f ms after Continue)."),
+			*MapToOpen, LoadingLevelIndex, GFrameCounter, LoadingStartFrame, LoadingFirstPaintFrame, (FPlatformTime::Seconds() - LoadingStartSeconds) * 1000.0);
+	}
+	else
+	{
+		UE_LOG(LogRogueRigs, Log, TEXT("URRRunTransitionSubsystem: opening %s for level %d in frame %llu (loading started frame %llu, no loading paint after %llu frames; %.1f ms after Continue)."),
+			*MapToOpen, LoadingLevelIndex, GFrameCounter, LoadingStartFrame, GFrameCounter - TravelWaitStartFrame, (FPlatformTime::Seconds() - LoadingStartSeconds) * 1000.0);
+	}
+	// OpenLevel only requests the travel: the engine loads the map at the start of a later frame.
 	UGameplayStatics::OpenLevel(World, FName(*MapToOpen));
+}
+
+void URRRunTransitionSubsystem::NotifyLoadingScreenPainted(const UObject* Painter)
+{
+	if (Phase != ERRRunTransitionPhase::Loading || bTravelRequested || LoadingFirstPaintFrame != 0)
+	{
+		return;
+	}
+	LoadingFirstPaintFrame = GFrameCounter;
+	UE_LOG(LogRogueRigs, Log, TEXT("URRRunTransitionSubsystem: first loading paint in frame %llu by %s (loading started frame %llu)."),
+		LoadingFirstPaintFrame, *GetNameSafe(Painter), LoadingStartFrame);
 }
 
 void URRRunTransitionSubsystem::HandlePostLoadMap(UWorld* LoadedWorld)
@@ -312,6 +387,13 @@ void URRRunTransitionSubsystem::ClearTransition()
 		FTSTicker::GetCoreTicker().RemoveTicker(HoldTimeoutHandle);
 		HoldTimeoutHandle.Reset();
 	}
+	if (TravelWaitHandle.IsValid())
+	{
+		FTSTicker::GetCoreTicker().RemoveTicker(TravelWaitHandle);
+		TravelWaitHandle.Reset();
+	}
+	bTravelRequested = false;
+	LoadingFirstPaintFrame = 0;
 	HeldRunFlow.Reset();
 	HeldSpawner.Reset();
 	HeldWorld.Reset();

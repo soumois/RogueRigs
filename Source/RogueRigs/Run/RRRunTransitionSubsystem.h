@@ -154,6 +154,12 @@ public:
 	UFUNCTION(BlueprintPure, Category = "Run|Transition")
 	int32 GetLoadingLevelIndex() const { return IsLevelLoading() ? LoadingLevelIndex : 0; }
 
+	/**
+	 * Called by URRLoadingScreenWidget on its first paint. While the travel waits (stage WaitingForLayout or OpeningMap, map not
+	 * requested yet), records the frame (GFrameCounter) of the first loading screen paint; ignored otherwise (new-world widget).
+	 */
+	void NotifyLoadingScreenPainted(const UObject* Painter);
+
 	/** True once the last level of the run was extracted, until the run is reset (end screen wording). */
 	UFUNCTION(BlueprintPure, Category = "Run|Transition")
 	bool IsRunWon() const { return bRunWon; }
@@ -186,8 +192,21 @@ protected:
 	UFUNCTION()
 	void HandleRunReset();
 
-	/** Requests the travel to the arena map (stage OpeningMap). */
+	/**
+	 * Stage OpeningMap, then requests the travel once the old-world loading screen has been painted in an earlier frame
+	 * (task-208-01), or after URRRunSettings::LoadingPaintWaitMaxFrames frames without a paint (no widget class, -nullrhi).
+	 * Waits on the core ticker, which also runs while the game is paused.
+	 */
 	void OpenArenaMap();
+
+	/** Core ticker callback of the paint wait: travels when ready; returns false once the travel is requested. */
+	bool TickTravelWait(float DeltaTime);
+
+	/** True when the wait is over: painted in a frame before the current one, or the frame limit reached. */
+	bool IsTravelWaitOver() const;
+
+	/** Requests the travel (UGameplayStatics::OpenLevel) and logs the loading start, first paint and travel frames. */
+	void RequestArenaMapTravel();
 
 	/** PostLoadMapWithWorld callback: holds the new world during the loading phase and waits for the prewarm. */
 	void HandlePostLoadMap(UWorld* LoadedWorld);
@@ -246,6 +265,17 @@ protected:
 
 	/** PostLoadMapWithWorld registration. */
 	FDelegateHandle PostLoadMapHandle;
+
+	/** GFrameCounter at Continue, at the first old-world loading screen paint (0 = none yet) and when the paint wait began. */
+	uint64 LoadingStartFrame = 0;
+	uint64 LoadingFirstPaintFrame = 0;
+	uint64 TravelWaitStartFrame = 0;
+
+	/** True once OpenLevel was requested for the current loading (later paints belong to the new world). */
+	bool bTravelRequested = false;
+
+	/** Core ticker of the paint wait before the travel (valid while waiting). */
+	FTSTicker::FDelegateHandle TravelWaitHandle;
 
 	/** Core ticker of the hold timeout (valid while held). */
 	FTSTicker::FDelegateHandle HoldTimeoutHandle;

@@ -40,4 +40,11 @@ public:
 	 */
 	UPROPERTY(Config, EditAnywhere, Category = "Run|Transition")
 	float LoadingHoldTimeoutSeconds = 10.f;
+
+	/**
+	 * Most frames the travel waits for the first paint of the old-world loading screen (task-208-01) before opening the map
+	 * anyway (no LoadingScreenWidgetClass, -nullrhi, widget never painted). Provisional value.
+	 */
+	UPROPERTY(Config, EditAnywhere, Category = "Run|Transition", meta = (ClampMin = "0"))
+	int32 LoadingPaintWaitMaxFrames = 5;
 };

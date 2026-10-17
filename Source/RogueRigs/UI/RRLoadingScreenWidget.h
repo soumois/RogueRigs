@@ -34,6 +34,13 @@ protected:
 	/** Unbinds it. */
 	virtual void NativeDestruct() override;
 
+	/**
+	 * Reports the first paint of this widget to URRRunTransitionSubsystem::NotifyLoadingScreenPainted (task-208-01: the
+	 * travel waits until the old-world loading screen has been drawn). Later paints are not reported.
+	 */
+	virtual int32 NativePaint(const FPaintArgs& Args, const FGeometry& AllottedGeometry, const FSlateRect& MyCullingRect,
+		FSlateWindowElementList& OutDrawElements, int32 LayerId, const FWidgetStyle& InWidgetStyle, bool bParentEnabled) const override;
+
 	/** Subsystem OnLoadingStageChanged callback: forwards to OnLoadingStageChanged. */
 	UFUNCTION()
 	void HandleLoadingStageChanged(ERRRunLoadingStage Stage);
@@ -48,4 +55,7 @@ protected:
 
 	/** Subsystem bound at NativeConstruct. */
 	TWeakObjectPtr<URRRunTransitionSubsystem> BoundTransition;
+
+	/** True once the first paint was reported (mutable: NativePaint is const). */
+	mutable bool bFirstPaintReported = false;
 };

@@ -38,3 +38,18 @@ void URRLoadingScreenWidget::HandleLoadingStageChanged(ERRRunLoadingStage Stage)
 {
 	OnLoadingStageChanged(Stage);
 }
+
+int32 URRLoadingScreenWidget::NativePaint(const FPaintArgs& Args, const FGeometry& AllottedGeometry, const FSlateRect& MyCullingRect,
+	FSlateWindowElementList& OutDrawElements, int32 LayerId, const FWidgetStyle& InWidgetStyle, bool bParentEnabled) const
+{
+	const int32 MaxLayerId = Super::NativePaint(Args, AllottedGeometry, MyCullingRect, OutDrawElements, LayerId, InWidgetStyle, bParentEnabled);
+	if (!bFirstPaintReported)
+	{
+		bFirstPaintReported = true;
+		if (URRRunTransitionSubsystem* Transition = BoundTransition.Get())
+		{
+			Transition->NotifyLoadingScreenPainted(this);
+		}
+	}
+	return MaxLayerId;
+}
