@@ -211,6 +211,12 @@ production-index  reference/production/production-index.md
 rarities  reference/gdd/weapons/rarities.md
 readability-rules  reference/gdd/art-audio/readability-rules.md
 rock-look-reference  reference/gdd/art-audio/rock-look-reference.md
+rock-render-counts  reference/tech/systems/world/sys-grid/rock-state-render-options/rock-render-counts.md
+rock-render-damage  reference/tech/systems/world/sys-grid/rock-state-render-options/rock-render-damage.md
+rock-render-piece-set  reference/tech/systems/world/sys-grid/rock-state-render-options/rock-render-piece-set.md
+rock-render-rebuild  reference/tech/systems/world/sys-grid/rock-state-render-options/rock-render-rebuild.md
+rock-render-top-texture  reference/tech/systems/world/sys-grid/rock-state-render-options/rock-render-top-texture.md
+rock-state-render-options  reference/tech/systems/world/sys-grid/rock-state-render-options.md
 root  root.md
 run-index  reference/gdd/run/run-index.md
 run-log-schema  reference/tech/pipelines/run-log-schema.md
