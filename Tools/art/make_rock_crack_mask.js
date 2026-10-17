@@ -7,7 +7,7 @@
 const fs = require('fs');
 const path = require('path');
 const { decodePng, encodePng } = require('./ui_icon_prepare');
-const SEED = 230051, N = 1024, G = 0.0026, MAXD = 0.85;
+const SEED = 230052, N = 1024, G = 0.0026, MAXD = 0.85;
 let st = SEED >>> 0;
 const rnd = () => { st = (st + 0x6D2B79F5) >>> 0; let t = st; t = Math.imul(t ^ (t >>> 15), t | 1); t ^= t + Math.imul(t ^ (t >>> 7), t | 61); return ((t ^ (t >>> 14)) >>> 0) / 4294967296; };
 const rr = (a, b) => a + (b - a) * rnd();
@@ -24,33 +24,39 @@ function stamp(x, y, r, v) {
     if (val > mask[i]) mask[i] = val;
   }
 }
+// Straight segments joined by sharp angular kinks (split stone). A crack stops when it runs into an
+// existing crack (after a short free run), so branches meet and outline irregular plates.
 function grow(x, y, ang, d0, depth, hw) {
-  let s = 0, wander = 0;
-  const maxLen = rr(120, 240) * (depth ? 0.6 : 1);
+  let s = 0;
+  const maxLen = rr(170, 300) * (depth ? 0.7 : 1);
   while (s < maxLen) {
-    const d = d0 + G * s;
-    if (d > MAXD) break;
-    stamp(x, y, hw * (depth ? 0.8 : 1) * (1 - 0.25 * s / maxLen), 1 - d);
-    wander = wander * 0.7 + rr(-0.02, 0.02);
-    if (rnd() < 0.025) ang += rr(-0.4, 0.4); // sharp kinks
-    ang += wander; x += Math.cos(ang); y += Math.sin(ang); s++;
-    if (depth < 2 && s > 14 && rnd() < (depth ? 0.003 : 0.005)) {
-      const side = rnd() < 0.5 ? -1 : 1;
-      grow(x, y, ang + side * rr(0.45, 1.1), d + rr(0.03, 0.12), depth + 1, hw);
+    const segLen = Math.floor(rr(22, 70));
+    const dx = Math.cos(ang), dy = Math.sin(ang);
+    for (let k = 0; k < segLen && s < maxLen; k++, s++) {
+      const d = d0 + G * s;
+      if (d > MAXD) return;
+      if (s > 10 && mask[wrap(Math.round(y + dy * 4)) * N + wrap(Math.round(x + dx * 4))] > 0) return; // joined
+      stamp(x, y, hw, 1 - d);
+      x += dx; y += dy;
     }
+    if (depth < 2 && rnd() < 0.35) { // branch at the kink
+      const side = rnd() < 0.5 ? -1 : 1;
+      grow(x, y, ang + side * rr(0.6, 1.4), d0 + G * s + rr(0.02, 0.1), depth + 1, hw);
+    }
+    ang += (rnd() < 0.5 ? -1 : 1) * rr(0.3, 1.0); // sharp kink
   }
 }
 // early starts: jittered 12 x 12 grid, d0 in [0, 0.05] so even d = 0.05 shows small cracks everywhere
 const roots = [];
-const K = 12, cs = N / K;
+const K = 13, cs = N / K;
 for (let j = 0; j < K; j++) for (let i = 0; i < K; i++)
   roots.push([(i + rnd()) * cs, (j + rnd()) * cs, rr(0, 0.05)]);
 // later starts: 120 more, d0 in [0.05, 0.4]
-for (let k = 0; k < 25; k++) roots.push([rr(0, N), rr(0, N), rr(0.05, 0.4)]);
+for (let k = 0; k < 90; k++) roots.push([rr(0, N), rr(0, N), rr(0.05, 0.4)]);
 for (const [x, y, d0] of roots) {
   // a crack grows both ways from its start point
   const a = rr(0, Math.PI * 2);
-  grow(x, y, a, d0, 0, 2.4); grow(x, y, a + Math.PI, d0, 0, 2.4);
+  grow(x, y, a, d0, 0, 1.6); grow(x, y, a + Math.PI, d0, 0, 1.6);
 }
 const out = path.join(__dirname, '..', '..', 'Art', 'Textures', 'T_RockCrackMask.png');
 const pdir = path.join(__dirname, '..', '..', 'Art', 'Source', 'rock-crack-mask');
@@ -66,8 +72,8 @@ const render = (d, W, H, ox, oy) => {
   for (let y = 0; y < H; y++) for (let x = 0; x < W; x++) {
     const sx = (x + ox) % N, sy = (y + oy) % N, m = mask[sy * N + sx], o = (y * W + x) * 4;
     const ti = ((sy % top.height) * top.width + (sx % top.width)) * tch;
-    const k = m > 1 - d ? 0.12 : 1;
-    for (let c = 0; c < 3; c++) b[o + c] = Math.round(top.data[ti + c] * k);
+    const k = m > 1 - d ? 0.6 : 0; // pale crack over the top
+    for (let c = 0; c < 3; c++) b[o + c] = Math.round(top.data[ti + c] * (1 - k) + 235 * k);
     b[o + 3] = 255;
   }
   return b;
