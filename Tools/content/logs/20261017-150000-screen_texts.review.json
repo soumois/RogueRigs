@@ -1,0 +1,4 @@
+{"run_id": "20261017-150000-screen_texts", "rounds": [{"loop": 0, "reviews": [
+  {"item_id": "end_run_won", "verdict": "pass", "rule": null, "reason": "Out of scope for this review (reviewed earlier per the Orchestrator); a quick read shows no L or T breach, and the joke targets company paperwork (T2).", "suggestion": null},
+  {"item_id": "intermission_recap", "verdict": "pass", "rule": null, "reason": "All six slots are neutral English UI copy: no character voice, no company voice, no film line, no vault example, no on-site human, and nothing presents the claim as the Rigs' by right.", "suggestion": null},
+  {"item_id": "loading_level", "verdict": "pass", "rule": null, "reason": "All five slots are neutral English UI copy; DROPPING IN fits Rook landing alone (L1, L2) and is a plain phrase, not a film catchphrase (T3).", "suggestion": null}]}]}
