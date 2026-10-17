@@ -3,7 +3,7 @@ id: task-220-03-bp-shield-chaser-wiring
 description: "bp: BP_ShieldChaser shows the combined mesh, swaps to plain clips and hides the shield on OnShieldBroken; shell removed; doc node rewritten."
 parent: task-220-shield-chaser-integration
 kind: task
-status: in-progress
+status: blocked
 ---
 # BP_ShieldChaser: shield wiring
 
@@ -17,9 +17,9 @@ status: in-progress
 - token_ceiling: open
 - model: open
 - tokens: open
-- runs: open
+- runs: 1
 - milestone: M1
-- result: open
+- result: Commit e9396119: BodyMesh = SM_ShieldChaser_Meshy_Anim with MI_ShieldChaser_Body, _Shield, _Emblem, no shadow; OnShieldBroken sets material 0 to MI_ShieldChaser_BodyPlain and 1, 2 to MI_ShieldChaser_Hidden (old pop graph deleted); body and shield textures have no alpha (nothing cut out); doc node rewritten from the template. Blocked: removing the ShieldShell component was denied by the permission classifier (irreversible); the cylinder still shows. Owner decision needed: delete it in the editor, authorise the removal, or hide it (reversible). No PIE run.
 
 ## Relations
 - [[task-220-shield-chaser-integration]] — parent global task.
