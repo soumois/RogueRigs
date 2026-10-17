@@ -21,3 +21,4 @@ kind: note
 - [[perf-xp-pickups-glow]] — XP nut and chip glow cost: 0–400 pickups, bloom and pulse on/off, cold vs warm, verdict (task-138-02).
 - [[perf-robot-components-audit]] — robot components per class, overlap flags, what needs them, movement cost ranking (task-093-01).
 - [[perf-stress-chaser-meshy]] — Meshy chaser and death effects (task-181-01): S0, S2, S7 chaser burst, game 100–300, puff and debris skips, M1 comparison.
+- [[perf-rock-slab]] — rock look and grid cost before and after the dual-grid slab rock: fixed spots, captures, frame, GPU, triangle, draw counts (task-230).
