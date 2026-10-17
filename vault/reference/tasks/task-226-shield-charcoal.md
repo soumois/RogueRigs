@@ -1,9 +1,9 @@
 ---
 id: task-226-shield-charcoal
 description: "Apply the charcoal shield (variant A of task-225) in game: charcoal plate, stripes kept, yellow company logo without its plate; shield and debris."
-parent: tasks-to-do-index
+parent: tasks-done-index
 kind: task
-status: in-progress
+status: done
 ---
 # Shield in charcoal
 
@@ -13,14 +13,14 @@ status: in-progress
 - gdd_check: [[task-225-shield-colour-test]] (variant A textures and renders), [[color-code]] (shield row to update), [[art-prompts-shield]], [[kessler-voss-logo]] (the logo on the shield is now yellow only, no plate). The debris material reads the same Unreal textures, so the fragments follow.
 - confirmed_by_owner: yes
 - milestone: M1
-- next_step: task-226-02-shield-charcoal-reimport
-- result: open
+- next_step: none
+- result: Done. Commit d0abb60d: T_ChaserShield_BaseColor (1024, sRGB) and T_ChaserShield_Emblem (512, RGBA source, alpha kept) reimported in place, settings unchanged; one -game run: vault/assets/shield-chaser-charcoal-ingame.png shows the charcoal shield with the stripe band on top and a yellow mark at the centre, standing out from the yellow robot; shield-chaser-charcoal-debris.png only shows fragments in flight as motion-blur streaks, so their charcoal colour is not seen (same texture as the shield, so expected charcoal). No RogueRigs error in the log.
 
 ## Subtasks
 - [[task-226-01-shield-charcoal-textures]] — 3D agent: shield script produces the charcoal textures; regenerate them.
 - [[task-226-02-shield-charcoal-reimport]] — cpp: headless reimport of the two textures, then one capture.
 
 ## Relations
-- [[tasks-to-do-index]] — parent index.
+- [[tasks-done-index]] — parent index.
 - [[task-225-shield-colour-test]] — the test it applies.
 - [[art-prompts-shield]] — the shield.

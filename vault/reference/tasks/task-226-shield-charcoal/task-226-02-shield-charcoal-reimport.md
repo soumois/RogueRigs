@@ -3,7 +3,7 @@ id: task-226-02-shield-charcoal-reimport
 description: "cpp: headless reimport of T_ChaserShield_BaseColor and T_ChaserShield_Emblem, settings kept; then one -game capture of the charcoal shield."
 parent: task-226-shield-charcoal
 kind: task
-status: in-progress
+status: done
 ---
 # Charcoal shield: reimport and capture
 
@@ -15,11 +15,11 @@ status: in-progress
 - done_when: read-back lines; images show a charcoal shield with yellow stripes and the yellow KV, and charcoal fragments; no error in the log; commit by path.
 - editor_state: closed
 - token_ceiling: open
-- model: open
-- tokens: open
-- runs: open
+- model: opus
+- tokens: input 40, cache write 47845, cache read 607153, output 3105
+- runs: 1
 - milestone: M1
-- result: open
+- result: Commit d0abb60d: T_ChaserShield_BaseColor (1024, sRGB) and T_ChaserShield_Emblem (512, RGBA source, alpha kept) reimported in place, settings unchanged; one -game run: vault/assets/shield-chaser-charcoal-ingame.png shows the charcoal shield with the stripe band on top and a yellow mark at the centre, standing out from the yellow robot; shield-chaser-charcoal-debris.png only shows fragments in flight as motion-blur streaks, so their charcoal colour is not seen (same texture as the shield, so expected charcoal). No RogueRigs error in the log.
 
 ## Relations
 - [[task-226-shield-charcoal]] — parent global task.
