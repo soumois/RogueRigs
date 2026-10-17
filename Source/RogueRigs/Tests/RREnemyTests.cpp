@@ -645,7 +645,7 @@ bool FRREnemyPassiveHitCapsuleTest::RunTest(const FString& Parameters)
 	using namespace RREnemyTests;
 
 	// task-093-01: the hit capsule runs no overlap query when the robot moves; shots still hit a walking BP_Chaser, and the death
-	// shrink still shows and shrinks its Blueprint parts.
+	// shrink keeps its Blueprint parts' rest visibility and shrinks them.
 	FTestWorld TestWorld(TEXT("RREnemyPassiveHitCapsule"));
 	ARRArenaGrid* Grid = SpawnGrid(*this, TestWorld);
 	UClass* ChaserClass = Grid ? LoadTestClass<ARREnemy>(*this, ChaserClassPath) : nullptr;
@@ -690,14 +690,18 @@ bool FRREnemyPassiveHitCapsuleTest::RunTest(const FString& Parameters)
 		TestEqual(TEXT("no hit capsule overlap query while walking"), HitCapsule->GetOverlapQueryCount(), 0);
 	}
 
-	// Visual parts (BodyMesh, EyeMesh) and their world scale at full size.
+	// Visual parts (BodyMesh, EyeMesh), their world scale at full size and their visibility at rest. EyeMesh is hidden in
+	// BP_Chaser since task-152-02 (owner 2026-10-13: the eye is in the model), so the death must keep each part's rest visibility.
 	TInlineComponentArray<UStaticMeshComponent*> Parts(Chaser);
 	TestTrue(TEXT("BP_Chaser has at least 2 mesh parts"), Parts.Num() >= 2);
 	TArray<float> FullScale;
+	TArray<bool> VisibleAtRest;
 	for (const UStaticMeshComponent* Part : Parts)
 	{
 		FullScale.Add(Part->GetComponentScale().X);
+		VisibleAtRest.Add(Part->IsVisible());
 	}
+	TestTrue(TEXT("BP_Chaser shows at least one mesh part at rest"), VisibleAtRest.Contains(true));
 
 	// Three shots of 10 into the walking chaser (30 health), fired 300 uu in front of it along +X while it walks west.
 	const FVector MuzzleOffset = FWeaponAccess::MuzzleOf(Rifle)->GetComponentLocation() - Rifle->GetActorLocation();
@@ -717,7 +721,7 @@ bool FRREnemyPassiveHitCapsuleTest::RunTest(const FString& Parameters)
 		return false;
 	}
 
-	// Death shrink: every part shown, still attached to the robot and shrinking with it.
+	// Death shrink: every part keeps its rest visibility (no hidden part lit, task-119-01), still attached to the robot and shrinking with it.
 	TWeakObjectPtr<ARREnemy> WeakChaser(Chaser);
 	for (int32 Frame = 0; Frame < 4; ++Frame)
 	{
@@ -728,7 +732,7 @@ bool FRREnemyPassiveHitCapsuleTest::RunTest(const FString& Parameters)
 		for (int32 Index = 0; Index < Parts.Num(); ++Index)
 		{
 			const UStaticMeshComponent* Part = Parts[Index];
-			TestTrue(FString::Printf(TEXT("%s visible during the death"), *Part->GetName()), Part->IsVisible());
+			TestEqual(FString::Printf(TEXT("%s keeps its rest visibility during the death"), *Part->GetName()), Part->IsVisible(), VisibleAtRest[Index]);
 			TestTrue(FString::Printf(TEXT("%s attached to the robot"), *Part->GetName()), Part->GetAttachmentRootActor() == Chaser);
 			TestTrue(FString::Printf(TEXT("%s shrinks"), *Part->GetName()), Part->GetComponentScale().X < 0.9f * FullScale[Index]);
 		}
