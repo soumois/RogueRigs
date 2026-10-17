@@ -3,7 +3,7 @@ id: task-219-03-rock-render-note
 description: "Tech note comparing ways to render rock damage states and ore blocks on the chunked grid HISMs, with costs and a triangle budget; no code."
 parent: task-219-rock-ore-look
 kind: task
-status: in-progress
+status: done
 ---
 # Rock and ore look: rendering note
 
@@ -15,11 +15,11 @@ status: in-progress
 - done_when: node present, lint clean, committed; no change under `Source/`, `Content/` or `Config/` (git diff empty there); nothing in the engine is touched (owner condition).
 - editor_state: any (editor not needed, no build)
 - token_ceiling: 40000
-- model: open
-- tokens: open
-- runs: open
+- model: opus
+- tokens: input 32, cache write 48996, cache read 541586, output 276
+- runs: 1
 - milestone: M2
-- result: open
+- result: design note rock-state-render-options + 5 children under sys-grid (commit 1a360d64), no engine change: dual-grid pieces (20987), floor under all non-void cells, shared world-UV top material (tone mask + crack mask), per-quadrant damage custom data, tilted-plate overlay HISM, crystal clusters; proposed budget about 335k tris pieces, about 850k arena total; open questions listed for the owner
 
 ## Relations
 - [[task-219-rock-ore-look]] — parent global task.

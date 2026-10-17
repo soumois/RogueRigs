@@ -227,6 +227,7 @@ Archive: it exceeds the index size limits of [[_authoring]] on purpose (owner, 2
 - [[task-216-shield-texture]] — Shield chaser riot shield textured in Blender from the Meshy mesh. Status done.
 - [[task-217-xp-cube-simplify]] — Big XP data cube from Meshy simplified to the chip cost. Status done.
 - [[task-218-shield-emblem]] — Kessler-Voss emblem on a dark rounded plate, decal on the shield front. Status done.
+- [[task-219-rock-ore-look]] — Image proposals for the look of rock blocks in their damage states and of unmined ore blocks, seen from the game camera. Status done.
 - [[task-220-shield-chaser-integration]] — Shield on the shield chaser in game: shield run, bash, shield vanishing on break. Status done.
 - [[task-221-xp-cube-integration]] — Big XP data cube replaces the chip in game, then the chip is deleted. Status done.
 - [[task-222-shield-break-debris]] — Shield fragments thrown as debris when the shield chaser shield breaks. Status done.
