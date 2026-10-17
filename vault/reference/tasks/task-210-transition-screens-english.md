@@ -1,9 +1,9 @@
 ---
 id: task-210-transition-screens-english
 description: "Global task: Intermission and loading screens in English (T7)."
-parent: tasks-to-do-index
+parent: tasks-done-index
 kind: task
-status: in-progress
+status: done
 ---
 # Intermission and loading screens in English (T7)
 
@@ -13,8 +13,8 @@ status: in-progress
 - gdd_check: [[dialogue-tone]] T7 (every on-screen text in English), [[intermission]]. Conflict with task-206-04 and 206-05 (French), owner 2026-10-17: translate to English.
 - confirmed_by_owner: yes (2026-10-17)
 - milestone: M2
-- next_step: task-210-05-capture
-- result: open
+- next_step: none
+- result: Done 2026-10-17. Intermission and loading screens read English texts from screen_texts.json (intermission_recap, loading_level) written by text, passed by style-guide (11/11), wired by bp (8a5dda44, e102048a); rendered captures in English sent to the owner.
 
 ## Subtasks
 1. task-210-01-transition-copy — text
@@ -24,7 +24,7 @@ status: in-progress
 5. task-210-05-capture — cpp
 
 ## Relations
-- [[tasks-to-do-index]] — parent index.
+- [[tasks-done-index]] — parent index.
 - [[task-206-level-to-level]] — the transition this fixes.
 - [[task-210-01-transition-copy]] — step 1, text.
 - [[task-210-02-transition-review]] — step 2, style-guide.

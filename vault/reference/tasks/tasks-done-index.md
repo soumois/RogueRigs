@@ -217,3 +217,4 @@ Archive: it exceeds the index size limits of [[_authoring]] on purpose (owner, 2
 - [[task-206-level-to-level]] — a run chains 4 levels: after each extraction an intermission recap screen, the next layout prepared in the background, a loading screen if not ready; PIE still starts directly. Status done.
 - [[task-207-intermission-hide-hud]] — HUD and subtitles hidden during intermission and loading. Status done.
 - [[task-208-loading-drawn-before-travel]] — Loading screen drawn before the map travel. Status done.
+- [[task-210-transition-screens-english]] — Intermission and loading screens in English (T7). Status done.

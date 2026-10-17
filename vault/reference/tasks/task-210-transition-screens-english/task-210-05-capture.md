@@ -3,7 +3,7 @@ id: task-210-05-capture
 description: "cpp: In-game capture"
 parent: task-210-transition-screens-english
 kind: task
-status: todo
+status: done
 ---
 # capture
 
@@ -15,11 +15,11 @@ status: todo
 - done_when: the capture shows the intermission and loading screens in English with the fix; the orchestrator sends it to the owner.
 - editor_state: closed
 - token_ceiling: 40000
-- model: open
-- tokens: open
-- runs: open
+- model: none
+- tokens: none
+- runs: 0
 - milestone: M2
-- result: open
+- result: No separate run: the task-208-02 rendered captures (after 210-03 and 210-04) show the intermission (LEVEL 1 CLEARED, Next claim: level 2 of 4, Ore secured this level: 30, Ore secured this run: 30, Shop opens later, Continue) and the loading screen (DROPPING IN, Level 2, Loading the map / Prepping the level) in English; sent to the owner. Saved/Captures/task208_intermission_00.png, task208_oldworld_01.png, task208_newworld_01.png.
 
 ## Relations
 - [[task-210-transition-screens-english]] — parent global task.
