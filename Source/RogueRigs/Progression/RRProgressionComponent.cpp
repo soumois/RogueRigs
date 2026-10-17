@@ -88,6 +88,18 @@ float URRProgressionComponent::GetXPGain() const
 	return ASC->GetNumericAttribute(URRPlayerAttributeSet::GetXPGainAttribute());
 }
 
+void URRProgressionComponent::RestoreProgress(int32 InLevel, float InXP)
+{
+	Level = FMath::Max(1, InLevel);
+	const float Needed = GetXPToNextLevel();
+	XP = FMath::Max(0.f, InXP);
+	if (Needed > 0.f)
+	{
+		XP = FMath::Min(XP, Needed);
+	}
+	OnXPChanged.Broadcast(XP, Needed, Level);
+}
+
 void URRProgressionComponent::AddXP(float Raw)
 {
 	if (Raw <= 0.f)

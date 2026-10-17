@@ -27,6 +27,7 @@
 #include "Upgrades/RRUpgradeComponent.h"
 #include "RogueRigs.h"
 #include "Telegraph/RRGroundTelegraphComponent.h"
+#include "Run/RRRunSubsystem.h"
 #include "Weapons/RRAutoFireComponent.h"
 #include "Weapons/RRShotgun.h"
 #include "Weapons/RRTurretLauncher.h"
@@ -154,6 +155,12 @@ void ARRMiner::BeginPlay()
 	if (URRRunFlowSubsystem* RunFlow = GetWorld()->GetSubsystem<URRRunFlowSubsystem>())
 	{
 		RunFlow->RegisterMiner(this);
+	}
+
+	// Run carry-over (sys-run): begins level 1 on a directly played map, or re-applies the previous level snapshot.
+	if (URRRunSubsystem* Run = URRRunSubsystem::Get(this))
+	{
+		Run->HandleMinerBeginPlay(this);
 	}
 }
 

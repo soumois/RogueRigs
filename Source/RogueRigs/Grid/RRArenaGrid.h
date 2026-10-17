@@ -188,6 +188,9 @@ public:
 	UFUNCTION(BlueprintPure, Category = "Grid")
 	float GetCellSize() const { return CellSize; }
 
+	/** Layout file name without extension (Content/RogueRigs/Data/Levels/<LayoutName>.json); the run uses it for level 1 of a run started on this map. */
+	const FString& GetLayoutName() const { return LayoutName; }
+
 	/** Layout dimensions in cells (width, height); (0, 0) when no layout is loaded. */
 	UFUNCTION(BlueprintPure, Category = "Grid")
 	FIntPoint GetGridSize() const { return FIntPoint(GridWidth, GridHeight); }

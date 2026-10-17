@@ -42,6 +42,12 @@ public:
 	UFUNCTION(BlueprintCallable, Category = "Progression")
 	void AddXP(float Raw);
 
+	/**
+	 * Sets level and XP directly (run carry-over between levels, URRRunSubsystem): InLevel at least 1, InXP clamped to
+	 * [0, need of InLevel]. No OnLevelUp (no heal, no choice screen); broadcasts OnXPChanged once.
+	 */
+	void RestoreProgress(int32 InLevel, float InXP);
+
 	/** Current level (starts at 1). */
 	UFUNCTION(BlueprintPure, Category = "Progression")
 	int32 GetLevel() const { return Level; }
