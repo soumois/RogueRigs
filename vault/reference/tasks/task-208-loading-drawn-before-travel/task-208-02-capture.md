@@ -3,7 +3,7 @@ id: task-208-02-capture
 description: "cpp: In-game capture"
 parent: task-208-loading-drawn-before-travel
 kind: task
-status: todo
+status: in-progress
 ---
 # capture
 
