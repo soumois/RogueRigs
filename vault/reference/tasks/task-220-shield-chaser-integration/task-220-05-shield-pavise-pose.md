@@ -3,7 +3,7 @@ id: task-220-05-shield-pavise-pose
 description: "3D agent: shield 20 percent larger, carried low like a pavise with the head above it; rebake clips 0 and 1 and the combined mesh."
 parent: task-220-shield-chaser-integration
 kind: task
-status: in-progress
+status: done
 ---
 # Shield chaser: pavise carry
 
@@ -16,11 +16,11 @@ status: in-progress
 - done_when: the checks of task-220-01 pass again; head gap reported; the same previews and contact sheets regenerated (front three-quarter and side); the Orchestrator opens them.
 - editor_state: any (no Unreal)
 - token_ceiling: open
-- model: open
-- tokens: open
-- runs: open
+- model: sonnet
+- tokens: input 54, cache write 85759, cache read 1567911, output 1056
+- runs: 1
 - milestone: M1
-- result: open
+- result: Commit d028e953: shield scale 1.2 (98.4 x 51.4 cm), bottom 4.4-6.3 cm in the run and 4.8-10.6 cm in the bash, head gap 20.1 cm, tilt back 2-4 degrees; the hand grips the upper handle (16 cm above the middle block: the arm cannot reach lower); clip 0 thigh swing cut to 12 degrees (above about 14 the front foot hits the shield): shuffle stride, owner decision open; no overlap, bake error 0.045 cm, UV2 0.45 on every shield corner; sheets sent to the owner.
 
 ## Relations
 - [[task-220-shield-chaser-integration]] — parent global task.
