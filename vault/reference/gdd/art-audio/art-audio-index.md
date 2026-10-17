@@ -18,3 +18,4 @@ kind: note
 - [[ground-telegraph]] — ground circles for capture zones and danger zones (barrel, heavy slam): growing circle to the edge.
 - [[dialogue-tone]] — how the Rigs talk; bark rules and examples.
 - [[kessler-voss-logo]] — the retained company logo: look, file, legibility, usage rules.
+- [[rock-look-reference]] — owner DRG Survivor captures of wall tops (cracked = weaker rock, slab look); open for rock or ore look work.
