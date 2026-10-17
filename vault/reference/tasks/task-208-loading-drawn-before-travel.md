@@ -13,7 +13,7 @@ status: in-progress
 - gdd_check: [[intermission]] (loading screen covers the map load). Owner 2026-10-17: delay the travel until the loading widget has been drawn at least once (1 to 2 frames).
 - confirmed_by_owner: yes (2026-10-17)
 - milestone: M2
-- next_step: task-208-01-delay-travel-code
+- next_step: task-208-02-capture
 - result: open
 
 ## Subtasks

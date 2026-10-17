@@ -369,6 +369,7 @@ kind: note
 | [[task-209-01-run-won-copy]] | sonnet | 1 | 0k | 36k | 166k | 0k |
 | [[task-209-02-run-won-review]] | opus | 1 | 0k | 28k | 54k | 1k |
 | [[task-207-01-hide-hud-code]] | opus | 1 | 0k | 98k | 3176k | 5k |
+| [[task-208-01-delay-travel-code]] | opus | 1 | 0k | 48k | 800k | 0k |
 
 ## Totals
 | Scope | Input | Cache write | Cache read | Output |

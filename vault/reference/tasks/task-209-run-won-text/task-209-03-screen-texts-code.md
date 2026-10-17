@@ -3,7 +3,7 @@ id: task-209-03-screen-texts-code
 description: "cpp: text validator and text content loader accept a screen texts file; Blueprint getter for screen titles and lines."
 parent: task-209-run-won-text
 kind: task
-status: todo
+status: in-progress
 ---
 # screen-texts-code
 

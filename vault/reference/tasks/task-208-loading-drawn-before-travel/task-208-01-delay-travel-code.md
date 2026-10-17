@@ -3,7 +3,7 @@ id: task-208-01-delay-travel-code
 description: "cpp: Continue waits until the old-world loading widget has been rendered at least once"
 parent: task-208-loading-drawn-before-travel
 kind: task
-status: in-progress
+status: done
 ---
 # delay-travel-code
 
@@ -15,11 +15,11 @@ status: in-progress
 - done_when: build succeeds; tests pass except the 2 known failures; a rendered -game log shows the frame numbers of loading started, first loading paint and travel; doc updated; committed.
 - editor_state: closed
 - token_ceiling: 40000
-- model: open
-- tokens: open
-- runs: open
+- model: opus
+- tokens: input 44, cache write 48433, cache read 799626, output 405
+- runs: 1
 - milestone: M2
-- result: open
+- result: URRLoadingScreenWidget NativePaint notifies the transition; OpenLevel waits for a paint in an earlier frame, core ticker (runs while paused), fallback after LoadingPaintWaitMaxFrames 5 (provisional) (e6f3135b, doc c7e14cef). Rendered -game: Continue frame 2210, first paint 2211, travel 2212, 2 frames drawn before the load, about 14 ms cost. Tests 260 pass, 2 known failures.
 
 ## Relations
 - [[task-208-loading-drawn-before-travel]] — parent global task.
