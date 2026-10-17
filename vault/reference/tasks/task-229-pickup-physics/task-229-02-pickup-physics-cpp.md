@@ -3,7 +3,7 @@ id: task-229-02-pickup-physics-cpp
 description: "cpp: Pickup collision profile (floor and walls only), landing hand-off to Chaos physics with spin, magnet and pool handling, build, S7 physics cost."
 parent: task-229-pickup-physics
 kind: task
-status: in-progress
+status: done
 ---
 # Pickup physics (C++)
 
@@ -21,11 +21,11 @@ status: in-progress
 - done_when: build succeeds; touched tests pass; S7 cost written; docs updated; commit by path.
 - editor_state: closed
 - token_ceiling: open
-- model: open
-- tokens: open
-- runs: open
+- model: opus
+- tokens: input 148, cache write 215148, cache read 10323400, output 12202
+- runs: 2
 - milestone: M1
-- result: open
+- result: Commits 8a1f4ab6 (code) and 1f7bec8f (docs): channel and profile Pickup (blocks WorldStatic only: grid floor and blocks are BlockAll; ignores pawns, projectiles, other pickups; no queries); kinematic floaty arc kept with PopSpinDegPerSec 90; at the main arc touch-down SimulatePhysics with the arc velocity (horizontal x LandingHorizontalSpeedScale 1, vertical x LandingVerticalSpeedScale 0) and the spin; damping 0.1 / 0.5, friction 0.7, restitution 0.2, sleep thresholds, fall guard; rr.Pickup.Physics 0 restores the old rest; magnet and pool turn physics off. Tests: two heal tests updated, 25 passed. S7: simulation +0.3 ms game avg, +1.4 ms p99 vs physics off; before vs off gap unexplained (control step and Insights trace to redo), in the perf lead. Risk: landing horizontal speed about 70 uu/s, pickups may barely roll.
 
 ## Relations
 - [[task-229-pickup-physics]] — parent global task.

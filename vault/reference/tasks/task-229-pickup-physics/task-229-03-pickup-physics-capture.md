@@ -3,7 +3,7 @@ id: task-229-03-pickup-physics-capture
 description: "cpp: one -game run with pickups thrown and landed; capture their flight spin and that they rest on faces, not corners."
 parent: task-229-pickup-physics
 kind: task
-status: todo
+status: in-progress
 ---
 # Pickup physics: capture
 
