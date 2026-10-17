@@ -14,7 +14,7 @@ status: done
 - confirmed_by_owner: yes (2026-10-17)
 - milestone: M2
 - next_step: none
-- result: Done. Rendered -game 1920 x 1080 captures sent to the owner: intermission (Niveau 1 terminé, 2 / 4, ore 30 / 30, shop placeholder, Continuer), loading screen on the new world (Chargement, Niveau 2, Préparation du niveau), level 2 on arena_l2 with HUD. Defects: Kessler-Voss subtitle drawn over the Continuer button and HUD objective texts faint behind the title; the old-world loading widget is never drawn (shown the frame of the travel); engine Preparing Shaders messages on the first loading frame. Map load 3.3 s, hold 2.0 s.
+- result: Done 2026-10-17. Run of 4 levels: URRRunSubsystem state and carry-over (206-01), async layout provider (206-02), intermission, Continue, loading hold until grid and pool prewarm, run won at level 4, reset to level 1 on loss (206-03), WBP_Intermission (206-04), WBP_Loading (206-05); rendered captures sent to the owner (206-06). Levels chain on arena_m1_fine, l2, l3, l4. Open defects reported to the owner: subtitles over the intermission, old-world loading widget never drawn, level 4 end screen still reads EXTRACTION SUCCESSFUL. Unverified: editor PIE (only -game), carry-over of picked cards through the real transition (shown with rr.Run.NextLevel in 206-01). Tests: 260 pass, 2 pre-existing failures.
 
 ## Subtasks
 1. task-206-01-run-state — cpp
