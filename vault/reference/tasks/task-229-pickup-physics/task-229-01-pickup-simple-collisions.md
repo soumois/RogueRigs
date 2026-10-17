@@ -3,7 +3,7 @@ id: task-229-01-pickup-simple-collisions
 description: "cpp headless: simple collision primitives on SM_XPNut (box), SM_XPCubeBig (box), the ore chunk variants and the heal pickup mesh, glow disc excluded."
 parent: task-229-pickup-physics
 kind: task
-status: in-progress
+status: done
 ---
 # Pickup simple collisions
 
@@ -15,11 +15,11 @@ status: in-progress
 - done_when: one primitive per mesh read back, sizes matching the body; commit by path.
 - editor_state: closed
 - token_ceiling: open
-- model: open
-- tokens: open
-- runs: open
+- model: opus
+- tokens: input 66, cache write 103391, cache read 2097760, output 5976
+- runs: 1
 - milestone: M1
-- result: open
+- result: Commit 5c4805c3: one simple primitive per mesh, glow disc excluded, read back: SM_XPNut box 30 x 25.98 x 11.7; SM_XPCubeBig box 30 x 30 x 27.5 (was 89 x 89 x 30.5 with the disc); SM_OreChunk_01 oriented box 27.1 x 12.2 x 25.8 (tilted 24 degrees); _02 convex hull 48 tris (boxes over 2x its volume); _03 box 28.3 x 14.5 x 30; heal = engine cube box (shared, unchanged). Script Tools/unreal/pickup_simple_collision.py; docs bp-pickup-xp, -ore, -heal, tool-unreal-reimport.
 
 ## Relations
 - [[task-229-pickup-physics]] — parent global task.

@@ -13,7 +13,7 @@ status: in-progress
 - gdd_check: [[sys-pickups-lifecycle]] (pop arc, floaty pop, rest orientation, magnet, pool), [[sys-pickups]], [[bp-pickup-xp]]. Defaults (Orchestrator): the pop arc stays kinematic (its floaty tuning is kept) and adds a light spin; at landing the pickup switches to physics with the arc's landing velocity plus the spin; on magnet latch physics stops and the kinematic fly-in takes over; the pool turns physics off on release; RestOrientation no longer forces the landed orientation (physics decides); collision boxes exclude the glow disc slot; ore chunk collision chosen by the agent (box per variant expected).
 - confirmed_by_owner: yes
 - milestone: M1
-- next_step: task-229-01-pickup-simple-collisions
+- next_step: task-229-02-pickup-physics-cpp
 - result: open
 
 ## Subtasks

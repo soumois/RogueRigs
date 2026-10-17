@@ -415,6 +415,7 @@ kind: note
 | [[task-226-02-shield-charcoal-reimport]] | opus | 1 | 0k | 48k | 607k | 3k |
 | [[task-227-01-shield-debris-script-fix]] | sonnet | 1 | 0k | 32k | 215k | 2k |
 | [[task-228-01-bp-pickup-xp-big-pop]] | sonnet | 1 | 0k | 32k | 289k | 0k |
+| [[task-229-01-pickup-simple-collisions]] | opus | 1 | 0k | 103k | 2098k | 6k |
 
 ## Totals
 | Scope | Input | Cache write | Cache read | Output |

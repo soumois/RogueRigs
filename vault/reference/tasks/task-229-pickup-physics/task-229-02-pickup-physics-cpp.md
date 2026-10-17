@@ -3,7 +3,7 @@ id: task-229-02-pickup-physics-cpp
 description: "cpp: Pickup collision profile (floor and walls only), landing hand-off to Chaos physics with spin, magnet and pool handling, build, S7 physics cost."
 parent: task-229-pickup-physics
 kind: task
-status: todo
+status: in-progress
 ---
 # Pickup physics (C++)
 
