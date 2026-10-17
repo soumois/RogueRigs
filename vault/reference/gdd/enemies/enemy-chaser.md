@@ -24,10 +24,11 @@ status: approved
 - references: `vault/assets/enemies-lineup.jpg`; design sheet `chaser-turnaround.png` (crops chaser-front, chaser-side, chaser-back); Meshy input views `chaser-meshy-front.png`, `-left`, `-back`, `-right`; in game `chaser-ingame-run.png`, `chaser-ingame-attack.png`
 
 ## Shield variant (provisional, owner 2026-10-05)
-- A chaser with a 30-point shield that absorbs damage before health; translucent pale blue-white shell that breaks; xp 2; mixed into chaser packs (25 %) after 1:00. Inspired by the DRGS red swarmers.
+- A chaser with a 30-point shield that absorbs damage before health; translucent pale blue-white shell that breaks; xp 2; the look changes to a physical riot shield carried on the left forearm, with a run clip holding it in front and a shield bash clip (owner 2026-10-17, provisional; not built, the game still shows the shell, [[art-prompts-shield]]); mixed into chaser packs (25 %) after 1:00. Inspired by the DRGS red swarmers.
 - Same hp, speed and damage as the chaser; the shield never regenerates; a hit larger than the remaining shield carries the rest into health. From 1:00, chaser packs hold 2–4 shield chasers among 8–16 chasers (25 % on average); lone chasers, the heavy escort and hordes stay plain chasers (provisional, task-028-01).
 
 ## Relations
 - [[enemies-index]] — parent index.
 - [[enemy-death]] — death effect.
 - [[chaser-meshy-pipeline]] — how the chaser mesh and its animation are built.
+- [[art-prompts-shield]] — the riot shield of the shield variant: images, prompts, raw mesh.

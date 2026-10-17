@@ -23,7 +23,7 @@ status: approved
 | All robots | red eyes + yellow logo plate |
 | Chaser | company yellow |
 | Kamikaze | dark gunmetal + pulsing orange core |
-| Chaser shield | translucent pale blue-white (provisional) |
+| Chaser shield | physical riot shield: company yellow front, yellow and black diagonal stripes on the two cut corners and the top edge, dark gunmetal back, charcoal Kessler-Voss emblem (owner 2026-10-17, provisional; was a translucent pale blue-white shell, still the one in game, [[art-prompts-shield]]) |
 | Shooter | acid green |
 | Heavy | steel blue + yellow/black hazard stripes |
 | Normal / critical damage number | white / larger white-gold |

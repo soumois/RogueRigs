@@ -28,6 +28,7 @@ Reference images are generated in ChatGPT image generation. The prompts are stor
 - `enemies-lineup.jpg` — the four corporate robots ([[art-prompts-robots]]).
 - `rigs-lineup.jpg` — miner, drone, turret ([[art-prompts-rigs]]).
 - `miner-turnaround.jpg` — front, side, back T-pose sheet for 3D ([[art-prompts-rigs]]).
+- `shield-turnaround.webp` — the shield chaser riot shield, front, side, back ([[art-prompts-shield]]).
 
 ## Relations
 - [[art-audio-index]] — parent index.
@@ -35,6 +36,8 @@ Reference images are generated in ChatGPT image generation. The prompts are stor
 - [[art-prompts-arena-final]] — final arena prompt and the miner pose fix.
 - [[art-prompts-robots]] — corporate robot sheet and its four corrections.
 - [[art-prompts-rigs]] — miner, drone, turret sheet, drone fix, T-pose.
+- [[art-prompts-shield]] — shield chaser riot shield: sheet, Meshy views, raw mesh, open texture steps.
+- [[art-prompts-xp-core]] — four any-angle proposals to replace the big XP chip; choice open.
 - [[art-style-guide]] — the general style rules derived from these prompts.
 - [[visual-style]] — the style these prompts produce.
 - [[asset-pipeline]] — where the images go next (Meshy, Tripo).
