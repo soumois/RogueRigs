@@ -3,7 +3,7 @@ id: task-220-04-shield-chaser-capture
 description: "cpp: -game capture of a shield chaser running with its shield, bashing, and after the shield breaks; frames for the owner."
 parent: task-220-shield-chaser-integration
 kind: task
-status: in-progress
+status: done
 ---
 # Shield chaser: in-game capture
 
@@ -17,9 +17,9 @@ status: in-progress
 - token_ceiling: open
 - model: open
 - tokens: open
-- runs: 1
+- runs: 3
 - milestone: M1
-- result: Commit c4b1e8ef (one agent for 220-04, 221-04, 222-05; 3 launches, 2 played): shield-chaser-ingame-run.png (shield chaser running with the pavise in front, small at the game camera) and shield-chaser-ingame-bash.png (contact with the miner, bash pose not confirmed); broken frame missing: 30 health and 30 shield, the breaking hit also kills it, no debug command drains the shield only; in some frames a chaser next to the miner disappears or blurs: explained 2026-10-17, not a bug: the 0.1 s wind-up telegraph blink (ARREnemy::UpdateTelegraphBlink, WindUpFlashRate 12, meshes hidden half of each cycle, the same on the plain chaser), and the screenshot drop to about 7 fps stretched it over several shots; T_ShieldChaserAnim rows all valid unit quaternions with no sign flip, the M_ShieldChaser_Anim WPO code matches the chaser one; camera zoom not available. No translucent cylinder seen.
+- result: Commits c4b1e8ef and c203b1cb: shield-chaser-ingame-run.png and -run-close.png (pavise with KV emblem in front, in game), -bash.png (contact; the attack frames also catch the wind-up telegraph blink, not a bug), -broken.png and -broken-close.png (after rr.Debug.BreakShields: the robot keeps walking without its shield, fragments on the floor, looking blurred or smeared at this camera). No Blueprint, material or Niagara error. Noted: rr.Debug.BreakShields counted 6 living shield chasers for 1 spawned (pooled actors not marked dead?); NS_ShieldDebris compiles on first use.
 
 ## Relations
 - [[task-220-shield-chaser-integration]] — parent global task.

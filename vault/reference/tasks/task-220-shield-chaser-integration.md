@@ -1,9 +1,9 @@
 ---
 id: task-220-shield-chaser-integration
 description: "Put the validated riot shield on the shield chaser in game, with a shield-held run, a shield bash and the shield vanishing when it breaks."
-parent: tasks-to-do-index
+parent: tasks-done-index
 kind: task
-status: in-progress
+status: done
 ---
 # Shield chaser: shield integration and animation
 
@@ -13,8 +13,8 @@ status: in-progress
 - gdd_check: [[enemy-chaser]] (shield variant: 30-point pool from any direction, unchanged: a look change only), [[art-prompts-shield]], [[chaser-meshy-pipeline]]. Orchestrator defaults (owner away, to correct tomorrow): no C++ change (a Blueprint material swap keeps the chaser code untouched); the shield is bound to part 4 (ForearmHand_L) of one combined animated mesh; one 4-clip texture (shield run, shield bash, plain run, plain attack, same frame counts as the chaser so the 0.1 s wind-up and 0.5 s attack stay true); on break the Blueprint swaps materials (body to the plain clips, shield and emblem slots to an invisible instance), restored on pool reuse by RestoreVisualParts; the translucent shell is removed; no shield debris yet.
 - confirmed_by_owner: yes (defaults delegated, 2026-10-17)
 - milestone: M1
-- next_step: task-220-04-shield-chaser-capture
-- result: open
+- next_step: none
+- result: Shield chaser in game: chaser body plus the pavise (98 cm, KV emblem) on the left forearm in one animated mesh, 4-clip material (shield run, shield bash, plain run, plain attack), on break the Blueprint swaps to the plain clips and hides the shield (debris added by task-222); seen in game (task-220-01 to 06). Open for the owner: short stride of the shield run (the foot would hit the pavise at the chaser stride) or shield to the side; 220 chaser part triangle count 3263 vs 3273.
 
 ## Subtasks
 - [[task-220-01-shield-clips-bake]] — 3D agent: shield poses, 4-clip bake, combined mesh with the shield on part 4, previews.
@@ -25,6 +25,6 @@ status: in-progress
 - [[task-220-04-shield-chaser-capture]] — cpp: `-game` capture of run, bash and break.
 
 ## Relations
-- [[tasks-to-do-index]] — parent index.
+- [[tasks-done-index]] — parent index.
 - [[art-prompts-shield]] — the shield.
 - [[enemy-chaser]] — the shield variant.
