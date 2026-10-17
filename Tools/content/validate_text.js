@@ -4,6 +4,7 @@
 //
 //   node Tools/content/validate_text.js <content file> --log <log file> [--review <review file>]
 //   node Tools/content/validate_text.js --selftest
+// Content files: upgrade_texts, weapon_texts, barks, alerts, screen_texts (.json), item fields in text-content-files.
 //
 // Without --review, <log dir>/<run-id>.review.json is used when it exists.
 // Exit 0 = everything valid. Otherwise exit 1 and one JSON line per problem on stdout:
@@ -34,11 +35,16 @@ const FILES = {
   weapon_texts: { keys: ['id', 'weapon', 'flavor'], idKey: 'id', textKey: 'flavor', min: 3, max: 12 },
   barks: { keys: ['line_id', 'speaker_id', 'trigger', 'tone', 'text'], idKey: 'line_id', textKey: 'text', min: 3, max: 8 },
   alerts: { keys: ['line_id', 'event', 'register', 'text'], idKey: 'line_id', textKey: 'text', min: 3, max: 12 },
+  // Screen texts (end, intermission, loading screens): one item per screen, several text slots. textKey is the slot the log
+  // output traces; min/max bound a review suggestion (any slot); fields hold the per-slot limits.
+  screen_texts: { keys: ['id', 'title'], optional: ['subtitle', 'lines', 'labels'], idKey: 'id', textKey: 'title', min: 1, max: 12,
+    fields: { title: { min: 1, max: 4 }, subtitle: { min: 3, max: 12 }, lines: { min: 3, max: 12, array: true }, labels: { min: 1, max: 4, array: true } } },
 };
+const SCREEN_ID_RE = /^[a-z][a-z0-9]*(_[a-z0-9]+)+$/;
 const SPEAKERS = new Set(['rook', 'vesna']);
 const TONES = new Set(['cocky', 'deadpan', 'technical', 'propaganda', 'bureaucratic']);
 const REGISTERS = new Set(['propaganda', 'bureaucratic']);
-const RUN_ID_RE = /^[0-9]{8}-[0-9]{6}-(upgrade_texts|weapon_texts|barks|alerts)(-noretrieval)?$/;
+const RUN_ID_RE = /^[0-9]{8}-[0-9]{6}-(upgrade_texts|weapon_texts|barks|alerts|screen_texts)(-noretrieval)?$/;
 // Nodes whose quoted example lines content must never equal (T8).
 const EXAMPLE_NODES = ['dialogue-tone', 'crew-characters', 'company-voice', 'lore', 'fictional-films',
   'text-content-schema', 'text-content-files', 'text-run-log-schema'];
@@ -123,10 +129,10 @@ function main() {
     if (raw.charCodeAt(0) === 0xfeff) { err(null, 'json', `${what} ${rel(file)}: starts with a BOM; write UTF-8 without BOM`); return undefined; }
     try { return JSON.parse(raw); } catch (e) { err(null, 'json', `${what} ${rel(file)}: ${e.message}`); return undefined; }
   };
-  const exactKeys = (obj, keys, item_id, where) => {
+  const exactKeys = (obj, keys, item_id, where, optional = []) => {
     if (!isObj(obj)) { err(item_id, 'keys', `${where} must be an object`); return false; }
     for (const k of keys) if (!(k in obj)) err(item_id, 'keys', `${where}: missing key "${k}"`);
-    for (const k of Object.keys(obj)) if (!keys.includes(k)) err(item_id, 'keys', `${where}: extra key "${k}"`);
+    for (const k of Object.keys(obj)) if (!keys.includes(k) && !optional.includes(k)) err(item_id, 'keys', `${where}: extra key "${k}"`);
     return true;
   };
 
@@ -158,7 +164,7 @@ function main() {
     if (!Array.isArray(C.items) || C.items.length === 0) err(null, 'envelope', 'items must be a non-empty array');
   }
   const fileStem = path.basename(contentFile).replace(/\.json$/, '');
-  if (!FILES[fileStem]) { err(null, 'file-name', `content file name must be upgrade_texts.json, weapon_texts.json, barks.json or alerts.json, got ${path.basename(contentFile)}`); finish(); }
+  if (!FILES[fileStem]) { err(null, 'file-name', `content file name must be upgrade_texts.json, weapon_texts.json, barks.json, alerts.json or screen_texts.json, got ${path.basename(contentFile)}`); finish(); }
   if (stem && stem !== fileStem) err(null, 'run-id', `run_id stem "${stem}" differs from the file name "${fileStem}"`);
   if (noRetrieval && (isInside(contentFile, CONTENT_DIR) || !isInside(contentFile, LOGS_DIR)))
     err(null, 'noretrieval-location', `a -noretrieval content file must live under Tools/content/logs/, never under Content/ (${rel(contentFile)})`);
@@ -169,19 +175,35 @@ function main() {
   const seenTexts = new Map();   // lowercase text -> item id
   const seenStats = new Set();
   const seenWeapons = new Set();
+  const screenSlots = {};        // screen_texts item id -> every slot text (number check)
   items.forEach((it, i) => {
     const id = isObj(it) && typeof it[spec.idKey] === 'string' ? it[spec.idKey] : `#${i}`;
-    if (!exactKeys(it, spec.keys, id, `item ${id}`)) return;
+    if (!exactKeys(it, spec.keys, id, `item ${id}`, spec.optional || [])) return;
     for (const k of spec.keys) if (typeof it[k] !== 'string') err(id, 'type', `${k} must be a string, got ${typeOf(it[k])}`);
     if (id in texts) err(id, 'unique-id', `duplicate ${spec.idKey}`);
     texts[id] = it[spec.textKey];
-    checkText(id, spec.textKey, it[spec.textKey], spec);
-    if (typeof it[spec.textKey] === 'string') {
-      const low = it[spec.textKey].toLowerCase();
-      if (seenTexts.has(low)) err(id, 'unique-text', `same text as ${seenTexts.get(low)}`);
-      else seenTexts.set(low, id);
+    // Every text of the item: [field label, value, limits]; one field for the four line files, every slot for screen texts.
+    const itemTexts = [];
+    if (spec.fields) {
+      for (const [k, lim] of Object.entries(spec.fields)) {
+        if (!(k in it)) continue;
+        if (!lim.array) { itemTexts.push([k, it[k], lim]); continue; }
+        if (!Array.isArray(it[k]) || it[k].length === 0) { err(id, 'type', `${k} must be a non-empty array of strings, got ${typeOf(it[k])}`); continue; }
+        it[k].forEach((v, j) => itemTexts.push([`${k}[${j}]`, v, lim]));
+      }
+    } else itemTexts.push([spec.textKey, it[spec.textKey], spec]);
+    for (const [field, value, lim] of itemTexts) {
+      checkText(id, field, value, lim);
+      if (typeof value === 'string') {
+        const low = value.toLowerCase();
+        if (seenTexts.has(low)) err(id, 'unique-text', `same text as ${seenTexts.get(low)}`);
+        else seenTexts.set(low, id);
+      }
     }
-    if (fileStem === 'upgrade_texts') {
+    if (fileStem === 'screen_texts') {
+      screenSlots[id] = itemTexts.map((t) => t[1]);
+      if (typeof it.id === 'string' && !SCREEN_ID_RE.test(it.id)) err(id, 'id-pattern', 'id must be lowercase snake_case <screen>_<name> (e.g. end_run_won)');
+    } else if (fileStem === 'upgrade_texts') {
       if (!V.stats.has(it.stat)) err(id, 'stat', `stat ${JSON.stringify(it.stat)} is not a display stat name of sys-upgrades`);
       else if (seenStats.has(it.stat)) err(id, 'stat', `stat "${it.stat}" appears more than once`);
       seenStats.add(it.stat);
@@ -250,7 +272,9 @@ function main() {
     if (fileStem !== 'upgrade_texts' && fileStem !== 'weapon_texts' && typeof text === 'string') {
       const excerptText = Object.values(byLoop).flatMap((e) => (Array.isArray(e.excerpts) ? e.excerpts : [])).map((x) => (isObj(x) ? String(x.text) : ''));
       const runs = new Set(excerptText.flatMap((t) => t.match(/[0-9]+/g) || []));
-      for (const d of text.match(/[0-9]+/g) || []) if (!runs.has(d)) err(id, 'number-not-in-excerpt', `number "${d}" does not appear in an excerpt of this item's log entries`);
+      // Screen texts: every slot of the item, not only the traced title.
+      const all = (screenSlots[id] || [text]).filter((t) => typeof t === 'string');
+      for (const t of all) for (const d of t.match(/[0-9]+/g) || []) if (!runs.has(d)) err(id, 'number-not-in-excerpt', `number "${d}" does not appear in an excerpt of this item's log entries`);
     }
   }
 

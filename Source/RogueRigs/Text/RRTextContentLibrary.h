@@ -1,9 +1,10 @@
-// Rogue Rigs - text content library: parses upgrade_texts.json, weapon_texts.json, alerts.json and barks.json (text-content-schema) and answers lookups.
+// Rogue Rigs - text content library: parses upgrade_texts.json, weapon_texts.json, alerts.json, barks.json and screen_texts.json (text-content-schema) and answers lookups.
 
 #pragma once
 
 #include "CoreMinimal.h"
 #include "Math/RandomStream.h"
+#include "Text/RRScreenText.h"
 
 class FJsonValue;
 
@@ -22,6 +23,7 @@ public:
 	static const TCHAR* WeaponTextsFileName;
 	static const TCHAR* AlertsFileName;
 	static const TCHAR* BarksFileName;
+	static const TCHAR* ScreenTextsFileName;
 
 	/** Text directory relative to FPaths::ProjectContentDir() (staged as non-UFS through RogueRigs/Data, DefaultGame.ini). */
 	static const TCHAR* TextDirectory;
@@ -54,7 +56,7 @@ public:
 	 */
 	static int32 PickIndexAvoiding(int32 Count, int32 PreviousIndex, FRandomStream& Stream);
 
-	/** Clears everything, then loads the three files of Directory. Returns the number of files loaded (0 to 4). */
+	/** Clears everything, then loads the five files of Directory. Returns the number of files loaded (0 to 5). */
 	int32 LoadFromDirectory(const FString& Directory);
 
 	/** Replaces the upgrade flavor lines with FilePath's. False (warning, flavors cleared) when the file is unusable. */
@@ -69,6 +71,12 @@ public:
 	/** Replaces the barks with FilePath's. False (warning, barks cleared) when the file is unusable. */
 	bool LoadBarks(const FString& FilePath);
 
+	/**
+	 * Replaces the screen texts with FilePath's (id, title, optional subtitle, lines, labels). False (warning, screen texts
+	 * cleared) when the file is unusable; an item with a missing id or title, a wrong slot type or a duplicate id is skipped.
+	 */
+	bool LoadScreenTexts(const FString& FilePath);
+
 	/** Forgets every line, pick history and rejected count. */
 	void Reset();
 
@@ -77,6 +85,9 @@ public:
 
 	/** Lore line of a weapon, by display name ("Shotgun") or item id ("wpn_shotgun"), case-insensitive. False when unknown. */
 	bool FindWeaponFlavor(const FString& WeaponOrId, FString& OutFlavor) const;
+
+	/** Texts of screen item Id (FName compare, case-insensitive); null when unknown or not loaded. */
+	const FRRScreenText* FindScreenText(FName Id) const { return ScreenTexts.Find(Id); }
 
 	/** Lines of an alert event in file order; null when the event has none. */
 	const TArray<FString>* FindAlertLines(FName EventId) const;
@@ -98,6 +109,7 @@ public:
 	int32 GetWeaponFlavorCount() const { return WeaponFlavorCount; }
 	int32 GetAlertLineCount() const;
 	int32 GetBarkCount() const { return Barks.Num(); }
+	int32 GetScreenTextCount() const { return ScreenTexts.Num(); }
 
 	/** Items skipped since the last Reset (malformed, or id outside the closed lists). */
 	int32 GetRejectedItemCount() const { return RejectedItemCount; }
@@ -146,6 +158,9 @@ protected:
 
 	/** Last picked index (within the matching barks) per "trigger|speaker" key. */
 	TMap<FString, int32> LastBarkIndex;
+
+	/** Screen texts by item id. */
+	TMap<FName, FRRScreenText> ScreenTexts;
 
 	/** Items skipped since the last Reset. */
 	int32 RejectedItemCount = 0;

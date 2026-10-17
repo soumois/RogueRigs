@@ -1,4 +1,4 @@
-// Rogue Rigs - text content library: parses upgrade_texts.json, weapon_texts.json, alerts.json and barks.json (text-content-schema) and answers lookups.
+// Rogue Rigs - text content library: parses upgrade_texts.json, weapon_texts.json, alerts.json, barks.json and screen_texts.json (text-content-schema) and answers lookups.
 
 #include "Text/RRTextContentLibrary.h"
 
@@ -14,6 +14,7 @@ const TCHAR* FRRTextContentLibrary::UpgradeTextsFileName = TEXT("upgrade_texts.j
 const TCHAR* FRRTextContentLibrary::WeaponTextsFileName = TEXT("weapon_texts.json");
 const TCHAR* FRRTextContentLibrary::AlertsFileName = TEXT("alerts.json");
 const TCHAR* FRRTextContentLibrary::BarksFileName = TEXT("barks.json");
+const TCHAR* FRRTextContentLibrary::ScreenTextsFileName = TEXT("screen_texts.json");
 const TCHAR* FRRTextContentLibrary::TextDirectory = TEXT("RogueRigs/Data/Text");
 
 const TCHAR* FRRTextContentLibrary::AlertConsoleDropped = TEXT("console_dropped");
@@ -112,8 +113,9 @@ int32 FRRTextContentLibrary::LoadFromDirectory(const FString& Directory)
 	Loaded += LoadWeaponTexts(FPaths::Combine(Directory, WeaponTextsFileName)) ? 1 : 0;
 	Loaded += LoadAlerts(FPaths::Combine(Directory, AlertsFileName)) ? 1 : 0;
 	Loaded += LoadBarks(FPaths::Combine(Directory, BarksFileName)) ? 1 : 0;
-	UE_LOG(LogRogueRigs, Log, TEXT("FRRTextContentLibrary: %d/4 text files loaded from %s (%d flavors, %d weapon lore lines, %d alert lines, %d barks, %d items rejected)."),
-		Loaded, *Directory, UpgradeFlavorCount, WeaponFlavorCount, GetAlertLineCount(), Barks.Num(), RejectedItemCount);
+	Loaded += LoadScreenTexts(FPaths::Combine(Directory, ScreenTextsFileName)) ? 1 : 0;
+	UE_LOG(LogRogueRigs, Log, TEXT("FRRTextContentLibrary: %d/5 text files loaded from %s (%d flavors, %d weapon lore lines, %d alert lines, %d barks, %d screen texts, %d items rejected)."),
+		Loaded, *Directory, UpgradeFlavorCount, WeaponFlavorCount, GetAlertLineCount(), Barks.Num(), ScreenTexts.Num(), RejectedItemCount);
 	return Loaded;
 }
 
@@ -127,6 +129,7 @@ void FRRTextContentLibrary::Reset()
 	LastAlertIndex.Reset();
 	Barks.Reset();
 	LastBarkIndex.Reset();
+	ScreenTexts.Reset();
 	RejectedItemCount = 0;
 }
 
@@ -319,6 +322,78 @@ bool FRRTextContentLibrary::LoadBarks(const FString& FilePath)
 			continue;
 		}
 		Barks.Add({ Speaker, Trigger, Values[3] });
+	}
+	return true;
+}
+
+bool FRRTextContentLibrary::LoadScreenTexts(const FString& FilePath)
+{
+	ScreenTexts.Reset();
+	TArray<TSharedPtr<FJsonValue>> Items;
+	if (!ReadEnvelope(FilePath, TEXT("screen_texts"), Items))
+	{
+		return false;
+	}
+	const TArray<const TCHAR*> Keys = { TEXT("id"), TEXT("title") };
+	for (int32 Index = 0; Index < Items.Num(); ++Index)
+	{
+		TArray<FString> Values;
+		if (!ReadItemStrings(Items[Index], Index, FilePath, Keys, Values))
+		{
+			continue;
+		}
+		const TSharedPtr<FJsonObject> Object = Items[Index]->AsObject();
+		FRRScreenText Screen;
+		Screen.Id = FName(*Values[0]);
+		Screen.Title = FText::FromString(Values[1]);
+		bool bValid = true;
+
+		// Optional slots: absent is fine, present with a wrong type rejects the item.
+		if (Object->HasField(TEXT("subtitle")))
+		{
+			FString Subtitle;
+			bValid &= Object->TryGetStringField(TEXT("subtitle"), Subtitle) && !Subtitle.TrimStartAndEnd().IsEmpty();
+			Screen.Subtitle = FText::FromString(Subtitle);
+		}
+		const auto ReadArray = [&Object, &bValid](const TCHAR* Key, TArray<FText>& OutTexts)
+		{
+			if (!Object->HasField(Key))
+			{
+				return;
+			}
+			const TArray<TSharedPtr<FJsonValue>>* Array = nullptr;
+			if (!Object->TryGetArrayField(Key, Array) || Array == nullptr || Array->Num() == 0)
+			{
+				bValid = false;
+				return;
+			}
+			for (const TSharedPtr<FJsonValue>& Value : *Array)
+			{
+				FString Text;
+				if (!Value.IsValid() || !Value->TryGetString(Text) || Text.TrimStartAndEnd().IsEmpty())
+				{
+					bValid = false;
+					return;
+				}
+				OutTexts.Add(FText::FromString(Text));
+			}
+		};
+		ReadArray(TEXT("lines"), Screen.Lines);
+		ReadArray(TEXT("labels"), Screen.Labels);
+
+		if (!bValid)
+		{
+			UE_LOG(LogRogueRigs, Warning, TEXT("FRRTextContentLibrary: screen '%s' has a malformed subtitle, lines or labels in %s, items[%d] skipped."), *Values[0], *FilePath, Index);
+			++RejectedItemCount;
+			continue;
+		}
+		if (ScreenTexts.Contains(Screen.Id))
+		{
+			UE_LOG(LogRogueRigs, Warning, TEXT("FRRTextContentLibrary: screen '%s' appears twice in %s, items[%d] skipped."), *Values[0], *FilePath, Index);
+			++RejectedItemCount;
+			continue;
+		}
+		ScreenTexts.Add(Screen.Id, MoveTemp(Screen));
 	}
 	return true;
 }

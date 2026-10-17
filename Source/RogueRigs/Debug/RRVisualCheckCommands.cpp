@@ -1,4 +1,4 @@
-// Rogue Rigs - visual check console commands for unattended -game checks (debug only, compiled out of shipping): rr.Debug.Shots (timed screenshots + damage number state), rr.Debug.CritChance (weapon crit chance override), rr.Debug.Delayed (runs a command later), rr.Debug.DamageMiner (direct hit on the player miner, logs the vignette state for 6 frames), rr.Debug.SpawnNear (actors around the miner), rr.Debug.Objective (miner moved to the console or shuttle).
+// Rogue Rigs - visual check console commands for unattended -game checks (debug only, compiled out of shipping): rr.Debug.Shots (timed screenshots + damage number state), rr.Debug.CritChance (weapon crit chance override), rr.Debug.Delayed (runs a command later), rr.Debug.DamageMiner (direct hit on the player miner, logs the vignette state for 6 frames), rr.Debug.SpawnNear (actors around the miner), rr.Debug.Objective (miner moved to the console or shuttle), rr.Debug.ScreenText (logs a screen text item through the text subsystem).
 
 #include "CoreMinimal.h"
 #include "AbilitySystemComponent.h"
@@ -22,6 +22,7 @@
 #include "HAL/IConsoleManager.h"
 #include "Misc/Paths.h"
 #include "RogueRigs.h"
+#include "Text/RRTextContentSubsystem.h"
 #include "EngineUtils.h"
 #include "UnrealClient.h"
 #include "Misc/App.h"
@@ -349,6 +350,37 @@ namespace RRScreenshotCommands
 			const FVector ToTarget = TargetLocation - Destination;
 			UE_LOG(LogRogueRigs, Log, TEXT("rr.Debug.Objective: miner moved to %s, %s at %s, %.0f uu away, bearing yaw %.0f (screen: +X up, +Y right)."),
 				*Destination.ToCompactString(), *Target->GetName(), *TargetLocation.ToCompactString(), ToTarget.Size2D(), ToTarget.Rotation().Yaw);
+		}),
+		ECVF_Cheat);
+
+	/** rr.Debug.ScreenText <Id>: logs the title, subtitle, lines and labels URRTextContentSubsystem::GetScreenText returns for Id. */
+	FAutoConsoleCommandWithWorldAndArgs ScreenTextCommand(
+		TEXT("rr.Debug.ScreenText"),
+		TEXT("rr.Debug.ScreenText <Id>: logs the screen texts (screen_texts.json) of item Id as the widgets get them."),
+		FConsoleCommandWithWorldAndArgsDelegate::CreateLambda([](const TArray<FString>& Args, UWorld* World)
+		{
+			World = World ? World : RRCheats::FindCheatWorld();
+			URRTextContentSubsystem* TextContent = URRTextContentSubsystem::Get(World);
+			if (!TextContent || Args.Num() < 1)
+			{
+				UE_LOG(LogRogueRigs, Warning, TEXT("rr.Debug.ScreenText <Id>: needs a game world with the text subsystem."));
+				return;
+			}
+			const FName Id(*Args[0]);
+			FRRScreenText Screen;
+			const bool bFound = TextContent->GetScreenText(Id, Screen);
+			const auto Join = [](const TArray<FText>& Texts)
+			{
+				TArray<FString> Strings;
+				for (const FText& Text : Texts)
+				{
+					Strings.Add(Text.ToString());
+				}
+				return FString::Join(Strings, TEXT(" | "));
+			};
+			UE_LOG(LogRogueRigs, Log, TEXT("rr.Debug.ScreenText: %s found=%d title='%s' subtitle='%s' lines='%s' labels='%s' (GetScreenTitle='%s', GetScreenSubtitle='%s')"),
+				*Args[0], bFound ? 1 : 0, *Screen.Title.ToString(), *Screen.Subtitle.ToString(), *Join(Screen.Lines), *Join(Screen.Labels),
+				*TextContent->GetScreenTitle(Id).ToString(), *TextContent->GetScreenSubtitle(Id).ToString());
 		}),
 		ECVF_Cheat);
 }

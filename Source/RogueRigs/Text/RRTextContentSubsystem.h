@@ -1,4 +1,4 @@
-// Rogue Rigs - text content subsystem: loads the validated text files once per game world and serves flavor, alert and bark lines with fallback.
+// Rogue Rigs - text content subsystem: loads the validated text files once per game world and serves flavor, alert, bark and screen texts with fallback.
 
 #pragma once
 
@@ -16,6 +16,7 @@
  * Hooks: URRUpgradeComponent::MakeCard (upgrade flavor), URRRunFlowSubsystem (console_dropped, bonus_chest_dropped,
  * extraction_ready, shuttle_countdown once per countdown start) and URRHUDWidget (horde_incoming) pick an alert line just before
  * raising their event, through URRSubtitleSubsystem::ShowAlertLine (shown as a subtitle); GetCurrentAlertLine still returns it. Barks are loaded but nothing displays them yet.
+ * Screen texts (screen_texts.json): the end, intermission and loading screen widgets read them by item id (GetScreenText).
  */
 UCLASS()
 class ROGUERIGS_API URRTextContentSubsystem : public UWorldSubsystem
@@ -58,11 +59,26 @@ public:
 	UFUNCTION(BlueprintCallable, Category = "Text")
 	bool GetBark(FName TriggerId, FName SpeakerId, FText& OutText);
 
+	/**
+	 * Texts of screen item ScreenId of screen_texts.json (e.g. end_run_won): title, subtitle, lines, labels. False (empty struct,
+	 * one warning per unknown id when the file is loaded) when unknown or not loaded: the widget keeps its own text.
+	 */
+	UFUNCTION(BlueprintCallable, Category = "Text")
+	bool GetScreenText(FName ScreenId, FRRScreenText& OutScreenText);
+
+	/** Title of screen item ScreenId; empty when unknown or not loaded (same warning as GetScreenText). */
+	UFUNCTION(BlueprintPure, Category = "Text")
+	FText GetScreenTitle(FName ScreenId);
+
+	/** Subtitle of screen item ScreenId; empty when unknown, not loaded or the item has none. */
+	UFUNCTION(BlueprintPure, Category = "Text")
+	FText GetScreenSubtitle(FName ScreenId);
+
 	/** Reseeds the pick stream (deterministic picks in tests). */
 	UFUNCTION(BlueprintCallable, Category = "Text")
 	void SetRandomSeed(int32 Seed) { RandomStream.Initialize(Seed); }
 
-	/** Reloads every file from Directory (empty = the shipped directory) and forgets current lines and warnings. Returns files loaded (0 to 3). */
+	/** Reloads every file from Directory (empty = the shipped directory) and forgets current lines and warnings. Returns files loaded (0 to 5). */
 	int32 ReloadFromDirectory(const FString& Directory);
 
 	/** The loaded library (loads it first when needed). */

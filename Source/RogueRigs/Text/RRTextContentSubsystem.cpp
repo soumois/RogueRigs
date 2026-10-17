@@ -1,4 +1,4 @@
-// Rogue Rigs - text content subsystem: loads the validated text files once per game world and serves flavor, alert and bark lines with fallback.
+// Rogue Rigs - text content subsystem: loads the validated text files once per game world and serves flavor, alert, bark and screen texts with fallback.
 
 #include "Text/RRTextContentSubsystem.h"
 
@@ -142,6 +142,35 @@ bool URRTextContentSubsystem::GetBark(FName TriggerId, FName SpeakerId, FText& O
 	}
 	OutText = FText::FromString(Text);
 	return true;
+}
+
+bool URRTextContentSubsystem::GetScreenText(FName ScreenId, FRRScreenText& OutScreenText)
+{
+	EnsureLoaded();
+	if (const FRRScreenText* Found = Library.FindScreenText(ScreenId))
+	{
+		OutScreenText = *Found;
+		return true;
+	}
+	OutScreenText = FRRScreenText();
+	// A missing file was already reported at load: warn only about ids absent from a loaded file.
+	if (Library.GetScreenTextCount() > 0)
+	{
+		WarnOnce(TEXT("screen|") + ScreenId.ToString().ToLower(), FString::Printf(TEXT("no screen text '%s', widget text kept."), *ScreenId.ToString()));
+	}
+	return false;
+}
+
+FText URRTextContentSubsystem::GetScreenTitle(FName ScreenId)
+{
+	FRRScreenText Screen;
+	return GetScreenText(ScreenId, Screen) ? Screen.Title : FText::GetEmpty();
+}
+
+FText URRTextContentSubsystem::GetScreenSubtitle(FName ScreenId)
+{
+	FRRScreenText Screen;
+	return GetScreenText(ScreenId, Screen) ? Screen.Subtitle : FText::GetEmpty();
 }
 
 #undef LOCTEXT_NAMESPACE
