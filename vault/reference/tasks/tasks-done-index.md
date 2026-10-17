@@ -236,3 +236,4 @@ Archive: it exceeds the index size limits of [[_authoring]] on purpose (owner, 2
 - [[task-225-shield-colour-test]] — Shield colour test renders: charcoal and light steel grey, stripes and yellow logo kept. Status done.
 - [[task-226-shield-charcoal]] — Charcoal shield with the yellow logo without plate, in game. Status done.
 - [[task-227-shield-debris-script-fix]] — Shield debris cut script works on the charcoal texture. Status done.
+- [[task-228-xp-big-pop]] — Big XP cube gets the floaty pop of the XP nut. Status done.

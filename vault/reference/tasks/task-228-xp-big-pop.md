@@ -1,9 +1,9 @@
 ---
 id: task-228-xp-big-pop
 description: "Give the big XP cube the same floaty pop (projection) as the XP nut: BP_PickupXPBig pop values copied from BP_PickupXP."
-parent: tasks-to-do-index
+parent: tasks-done-index
 kind: task
-status: in-progress
+status: done
 ---
 # Big XP: floaty pop like the nut
 
@@ -13,12 +13,12 @@ status: in-progress
 - gdd_check: [[bp-pickup-xp]] (floaty_pop: PopDuration 1.6 s, PopArcHeight 250, PopMinDistance 80, PopMaxDistance 300, PopFallTimeRatio 2, bAttractDuringPop true, PopAttractDelay 1.2 s, PopBounceFraction 0.25), [[sys-pickups-lifecycle]]. The flight spin and physics landing come with [[task-229-pickup-physics]] for every pickup.
 - confirmed_by_owner: yes
 - milestone: M1
-- next_step: task-228-01-bp-pickup-xp-big-pop
-- result: open
+- next_step: none
+- result: Done. BP_PickupXPBig pop values now equal BP_PickupXP (PopDuration 1.6, PopArcHeight 250, PopMinDistance 80, PopMaxDistance 300, PopFallTimeRatio 2, PopBounceFraction 0.25, PopBounceHeight 15, HoverHeight 30, bAttractDuringPop true, PopAttractDelay 1.2), read back after compile and save; doc floaty_pop line updated.
 
 ## Subtasks
 - [[task-228-01-bp-pickup-xp-big-pop]] — bp: copy the pop values to BP_PickupXPBig.
 
 ## Relations
-- [[tasks-to-do-index]] — parent index.
+- [[tasks-done-index]] — parent index.
 - [[bp-pickup-xp]] — the Blueprints.
