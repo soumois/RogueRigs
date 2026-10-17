@@ -13,7 +13,7 @@ status: in-progress
 - gdd_check: [[dialogue-tone]] T7 (every on-screen text in English), [[intermission]]. Conflict with task-206-04 and 206-05 (French), owner 2026-10-17: translate to English.
 - confirmed_by_owner: yes (2026-10-17)
 - milestone: M2
-- next_step: task-210-03-intermission-bp
+- next_step: task-210-05-capture
 - result: open
 
 ## Subtasks

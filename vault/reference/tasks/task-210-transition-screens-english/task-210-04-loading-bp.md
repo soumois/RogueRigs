@@ -3,7 +3,7 @@ id: task-210-04-loading-bp
 description: "bp: WBP_Loading uses the validated English texts."
 parent: task-210-transition-screens-english
 kind: task
-status: in-progress
+status: done
 ---
 # loading-bp
 
@@ -15,11 +15,11 @@ status: in-progress
 - done_when: widget compiles and saves; doc updated; committed.
 - editor_state: open
 - token_ceiling: 30000
-- model: open
-- tokens: open
-- runs: open
+- model: sonnet
+- tokens: input 70, cache write 69491, cache read 1491941, output 974
+- runs: 1
 - milestone: M2
-- result: open
+- result: WBP_Loading LoadScreenTexts reads loading_level via GetScreenText from its world; OnLoadingShown sets DROPPING IN and Level {N}; OnLoadingStageChanged sets Lines[0..2]; English tree defaults kept when the text is missing (e102048a). Unseen on screen.
 
 ## Relations
 - [[task-210-transition-screens-english]] — parent global task.
