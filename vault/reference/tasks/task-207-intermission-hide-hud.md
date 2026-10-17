@@ -13,7 +13,7 @@ status: in-progress
 - gdd_check: [[intermission]] (gameplay paused). Owner 2026-10-17: hide the whole HUD (minimap, bars, weapons, objectives) and the current subtitle during intermission and loading, restore at level start.
 - confirmed_by_owner: yes (2026-10-17)
 - milestone: M2
-- next_step: task-207-01-hide-hud-code
+- next_step: task-207-02-capture
 - result: open
 
 ## Subtasks

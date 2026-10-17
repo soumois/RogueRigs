@@ -3,7 +3,7 @@ id: task-208-loading-drawn-before-travel
 description: "Global task: Loading screen drawn before the map travel."
 parent: tasks-to-do-index
 kind: task
-status: todo
+status: in-progress
 ---
 # Loading screen drawn before the map travel
 

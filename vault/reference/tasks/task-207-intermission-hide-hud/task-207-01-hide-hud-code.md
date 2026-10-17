@@ -3,7 +3,7 @@ id: task-207-01-hide-hud-code
 description: "cpp: While the run transition phase is Intermission or Loading, the player controller hides the HUD widget and the subtitle system clears the cur"
 parent: task-207-intermission-hide-hud
 kind: task
-status: in-progress
+status: done
 ---
 # hide-hud-code
 
@@ -15,11 +15,11 @@ status: in-progress
 - done_when: build succeeds; existing tests pass except the 2 known failures; a -game log shows HUD hidden and subtitle cleared at intermission, restored at level ready; docs updated; committed.
 - editor_state: closed
 - token_ceiling: 50000
-- model: open
-- tokens: open
-- runs: open
+- model: opus
+- tokens: input 100, cache write 98317, cache read 3175596, output 4768
+- runs: 1
 - milestone: M2
-- result: open
+- result: HUD collapsed and subtitles silenced (current line cleared, new lines dropped) on OnIntermissionStarted and OnLoadingStarted, restored on OnLevelReady; a world opened by a transition starts hidden and silenced (1c9fd70a, docs e5e52b73). Rendered -game log confirms. Tests 259 pass; failures: the 2 known plus RogueRigs.Ore.HealVein, flaky (random pop, passed 2 of 6 alone), not run by the new code.
 
 ## Relations
 - [[task-207-intermission-hide-hud]] — parent global task.

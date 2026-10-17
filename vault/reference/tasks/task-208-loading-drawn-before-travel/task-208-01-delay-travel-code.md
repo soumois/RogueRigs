@@ -3,7 +3,7 @@ id: task-208-01-delay-travel-code
 description: "cpp: Continue waits until the old-world loading widget has been rendered at least once"
 parent: task-208-loading-drawn-before-travel
 kind: task
-status: todo
+status: in-progress
 ---
 # delay-travel-code
 
