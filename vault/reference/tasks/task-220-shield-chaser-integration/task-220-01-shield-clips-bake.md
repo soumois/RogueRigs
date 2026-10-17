@@ -1,7 +1,7 @@
 ---
-id: task-219-01-shield-clips-bake
+id: task-220-01-shield-clips-bake
 description: "3D agent: shield-held run and shield bash poses, 4-clip bake texture, combined chaser plus shield animated mesh, posed previews."
-parent: task-219-shield-chaser-integration
+parent: task-220-shield-chaser-integration
 kind: task
 status: done
 ---
@@ -30,4 +30,4 @@ status: done
 - result: `Tools/art/blender/shield_chaser_bake.py`; `Art/Meshes/shield-chaser/`: T_ShieldChaserAnim.exr 20 x 62 (rows 0-15 shield run, 16-30 shield bash, 31-61 exact copies of T_ChaserAnim), SM_ShieldChaser_Meshy_Anim.fbx 4242 tris (3263 chaser parts unchanged + 979 shield on ForearmHand_L, PartId 0.45), slots meshy_chaser, M_ChaserShield, M_ChaserShield_Emblem; bake error at most 0.045 cm, no shield-body overlap (min 2.3 cm torso); shield bottom 48-54 cm, top about 130 cm; contact sheet sent to the owner.
 
 ## Relations
-- [[task-219-shield-chaser-integration]] — parent global task.
+- [[task-220-shield-chaser-integration]] — parent global task.

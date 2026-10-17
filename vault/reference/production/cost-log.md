@@ -389,7 +389,7 @@ kind: note
 | [[task-213-02-heal-pop-tests]] | opus | 1 | 0k | 56k | 1047k | 3k |
 | [[task-215-01-no-prefix-code]] | opus | 1 | 0k | 42k | 597k | 0k |
 | [[task-215-02-capture]] | opus | 1 | 0k | 25k | 148k | 1k |
-| [[task-219-01-shield-clips-bake]] | sonnet | 1 | 0k | 201k | 2476k | 37k |
+| [[task-220-01-shield-clips-bake]] | sonnet | 1 | 0k | 201k | 2476k | 37k |
 
 ## Totals
 | Scope | Input | Cache write | Cache read | Output |

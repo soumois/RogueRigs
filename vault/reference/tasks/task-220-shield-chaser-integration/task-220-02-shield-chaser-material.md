@@ -1,7 +1,7 @@
 ---
-id: task-219-02-shield-chaser-material
+id: task-220-02-shield-chaser-material
 description: "bp: import the combined shield chaser mesh and textures, build M_ShieldChaser_Anim with the 4-clip layout and its five instances."
-parent: task-219-shield-chaser-integration
+parent: task-220-shield-chaser-integration
 kind: task
 status: in-progress
 ---
@@ -9,8 +9,8 @@ status: in-progress
 
 - goal: the combined mesh, its textures and one parent material with its instances, ready for BP_ShieldChaser.
 - agent: agent-bp
-- depends_on: task-219-01-shield-clips-bake
-- inputs: outputs of task-219-01 in `Art/Meshes/shield-chaser/` and its report; `Art/Meshes/ChaserShield/T_ChaserShield_BaseColor.png` and `T_ChaserShield_Emblem.png`; `vault/reference/tech/pipelines/chaser-meshy-pipeline.md` (Unreal section: build settings, UV channel 2 check, texture settings), `vault/reference/tech/blueprints/enemies/bp-chaser.md`, `vault/reference/tech/pipelines/tool-unreal-reimport.md`, `vault/reference/agents/bp-mcp-lessons.md`.
+- depends_on: task-220-01-shield-clips-bake
+- inputs: outputs of task-220-01 in `Art/Meshes/shield-chaser/` and its report; `Art/Meshes/ChaserShield/T_ChaserShield_BaseColor.png` and `T_ChaserShield_Emblem.png`; `vault/reference/tech/pipelines/chaser-meshy-pipeline.md` (Unreal section: build settings, UV channel 2 check, texture settings), `vault/reference/tech/blueprints/enemies/bp-chaser.md`, `vault/reference/tech/pipelines/tool-unreal-reimport.md`, `vault/reference/agents/bp-mcp-lessons.md`.
 - method: folder `/Game/RogueRigs/Art/ShieldChaser/`.
   - Import `SM_ShieldChaser_Meshy_Anim` with the settings of SM_Chaser_Meshy_Anim (Generate Lightmap UVs off, LightMapCoordinateIndex 1, full precision UVs, extended bounds large enough for the bash reach, no collision, Nanite off); check channel 2 on RENDER_DATA (shield corners 0.45).
   - `T_ShieldChaserAnim` with the settings of T_ChaserAnim (TC_HDR, no mips, Nearest, sRGB off). Shield base colour sRGB; emblem texture with alpha.
@@ -27,4 +27,4 @@ status: in-progress
 - result: open
 
 ## Relations
-- [[task-219-shield-chaser-integration]] — parent global task.
+- [[task-220-shield-chaser-integration]] — parent global task.

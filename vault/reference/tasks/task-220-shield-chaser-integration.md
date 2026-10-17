@@ -1,5 +1,5 @@
 ---
-id: task-219-shield-chaser-integration
+id: task-220-shield-chaser-integration
 description: "Put the validated riot shield on the shield chaser in game, with a shield-held run, a shield bash and the shield vanishing when it breaks."
 parent: tasks-to-do-index
 kind: task
@@ -13,14 +13,14 @@ status: in-progress
 - gdd_check: [[enemy-chaser]] (shield variant: 30-point pool from any direction, unchanged: a look change only), [[art-prompts-shield]], [[chaser-meshy-pipeline]]. Orchestrator defaults (owner away, to correct tomorrow): no C++ change (a Blueprint material swap keeps the chaser code untouched); the shield is bound to part 4 (ForearmHand_L) of one combined animated mesh; one 4-clip texture (shield run, shield bash, plain run, plain attack, same frame counts as the chaser so the 0.1 s wind-up and 0.5 s attack stay true); on break the Blueprint swaps materials (body to the plain clips, shield and emblem slots to an invisible instance), restored on pool reuse by RestoreVisualParts; the translucent shell is removed; no shield debris yet.
 - confirmed_by_owner: yes (defaults delegated, 2026-10-17)
 - milestone: M1
-- next_step: task-219-02-shield-chaser-material
+- next_step: task-220-02-shield-chaser-material
 - result: open
 
 ## Subtasks
-- [[task-219-01-shield-clips-bake]] — 3D agent: shield poses, 4-clip bake, combined mesh with the shield on part 4, previews.
-- [[task-219-02-shield-chaser-material]] — bp: import, material with the 4-clip layout and its instances.
-- [[task-219-03-bp-shield-chaser-wiring]] — bp: BP_ShieldChaser mesh, materials, break event, doc node.
-- [[task-219-04-shield-chaser-capture]] — cpp: `-game` capture of run, bash and break.
+- [[task-220-01-shield-clips-bake]] — 3D agent: shield poses, 4-clip bake, combined mesh with the shield on part 4, previews.
+- [[task-220-02-shield-chaser-material]] — bp: import, material with the 4-clip layout and its instances.
+- [[task-220-03-bp-shield-chaser-wiring]] — bp: BP_ShieldChaser mesh, materials, break event, doc node.
+- [[task-220-04-shield-chaser-capture]] — cpp: `-game` capture of run, bash and break.
 
 ## Relations
 - [[tasks-to-do-index]] — parent index.
