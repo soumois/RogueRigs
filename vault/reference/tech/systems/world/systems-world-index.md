@@ -16,4 +16,4 @@ Grid, flow field, pickups, objectives, pools: the terrain and what lives on it.
 - [[sys-objectives]] — run flow (alert bar, console drop and pause, extraction-ready event) and the console objective with its Blueprint events.
 - [[sys-actor-pool]] — generic actor pool subsystem: reuse, creation spread over MaxFrames, IRRPoolable reset hooks, IsPooledIdle filter.
 - [[sys-run]] — run state: level index, layout list, miner snapshot carried between levels.
-- [[sys-run-log]] — run log collector: per-level counters of terrain, damage, kills, upgrades and XP.
+- [[sys-run-log]] — run log: per-level counters of terrain, damage, kills, upgrades and XP; the writer of the run JSON file below it.
