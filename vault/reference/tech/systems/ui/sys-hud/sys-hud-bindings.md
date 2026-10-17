@@ -12,6 +12,7 @@ kind: doc
   - `BindToSpawner(ARREnemySpawner*)`: called by `ARRPlayerController::BeginPlay` with the first spawner of the world; horde banner and alert-bar icons ([[sys-hud-pressure]]); null unbinds.
   - Panels and late binding (task-094-02, [[sys-hud-events]]): every Bind call also hands its object once to each `URRHUDPanelWidget` of the HUD tree (`GetPanels`); a miner or spawner registering with the run flow after the HUD is bound when none is.
   - Ore counter panel (task-183-01, wired in task-183-04): override `BindToRunFlow`, bind `URRRunFlowSubsystem::OnOreChanged(CarriedOre, SecuredOre)` and show `GetCarriedOre` / `GetSecuredOre` once there (bind-time value); unbind `PreviousRunFlow`. A level restart is a new run flow (carried 0, secured kept by the game instance) ([[sys-objectives-ore-counter]]).
+  - Transition widgets (task-206-03, [[sys-run-transition]]): `ARRPlayerController::BeginPlay` (local player, also without a HUD class) binds `URRRunTransitionSubsystem` `OnIntermissionStarted` (creates `IntermissionWidgetClass`, `ShowRecap`; unset = warning, `rr.Run.Continue`), `OnLoadingStarted` (removes it, creates `LoadingScreenWidgetClass`, `ShowLoading`) and `OnLevelReady` (removes the loading screen); while `IsLevelLoading` it shows the loading screen at once (new world after the travel) and ignores move, aim and turret input. Separate viewport widgets at `TransitionWidgetZOrder` 50 / 51, not panels of WBP_HUD. `EndPlay` unbinds.
   - `BindToGameMode(ARRGameMode*)`: binds `ARRGameMode::OnGameOver` to `OnGameOver` ([[sys-player]] game over); null unbinds. `NativeDestruct` removes every binding.
 
 ## Relations
@@ -20,3 +21,4 @@ kind: doc
 - [[sys-hud-events]] — referenced above.
 - [[sys-player]] — referenced above.
 - [[sys-objectives-ore-counter]] — the ore event a panel binds in BindToRunFlow.
+- [[sys-run-transition]] — the intermission and loading events the controller binds.
