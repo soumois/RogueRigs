@@ -3,7 +3,7 @@ id: task-206-level-to-level
 description: "Global task: a run chains 4 levels with an intermission recap, background layout loading, a loading screen; PIE starts directly."
 parent: tasks-to-do-index
 kind: task
-status: todo
+status: in-progress
 ---
 # Level to level: intermission and loading
 

@@ -3,7 +3,7 @@ id: task-205-level-layouts-240
 description: "Global task: Level-Design writes the level 2 to 4 layouts directly at 240 x 240 and refines its rules."
 parent: tasks-to-do-index
 kind: task
-status: todo
+status: in-progress
 ---
 # Level layouts 2 to 4 at 240 x 240
 
