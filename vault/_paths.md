@@ -323,6 +323,7 @@ visual-style  reference/gdd/art-audio/visual-style.md
 wbp-alert-objectives  reference/tech/blueprints/ui/wbp-alert-objectives.md
 wbp-health-status  reference/tech/blueprints/ui/wbp-health-status.md
 wbp-hud  reference/tech/blueprints/ui/wbp-hud.md
+wbp-loading  reference/tech/blueprints/ui/wbp-loading.md
 wbp-minimap-locator  reference/tech/blueprints/ui/wbp-minimap-locator.md
 wbp-ore-counter  reference/tech/blueprints/ui/wbp-ore-counter.md
 wbp-subtitles  reference/tech/blueprints/ui/wbp-subtitles.md
