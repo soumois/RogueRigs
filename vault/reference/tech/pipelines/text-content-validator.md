@@ -19,7 +19,7 @@ Implements every rule of [[text-content-schema]], [[text-content-files]], [[text
 
 ## Checks
 - Envelope, exact keys and types, run id pattern and stem, unique ids and texts, `-noretrieval` content only under `Tools/content/logs/`.
-- Text rules, word limits (`T1-word-count` for barks), enums, id patterns, stat names, weapon names (`weapon`) and weapon lore ids (`weapon-id`), trigger and event ids, digits (`number-in-flavor`, `number-not-in-excerpt`), `T8-example-reuse`.
+- Text rules, word limits (`T1-word-count` for barks), enums, id patterns, stat names, weapon names (`weapon`) and weapon lore ids (`weapon-id`), trigger and event ids, digits (`number-in-flavor`, `number-not-in-excerpt`), `T8-example-reuse`. screen_texts.json: optional keys `subtitle`, `lines`, `labels`, per-slot word limits (array elements reported as `lines[0]`), `id-pattern` snake case, unique texts across slots (task-209-03).
 - Log: keys, `retrieval` vs run id, node ids in `vault/_paths.md`, `excerpt-verbatim` (CRLF → LF only), loop-0 entry per item, highest-loop `output` equals the content text.
 - Review: rounds 0–2 in order, one review per item per round, pass/fail fields, rule ids, suggestion text rules; every correction answers a fail of the previous round; a fail without the next-loop correction (or a fail in round 2) is `failing-item`.
 
