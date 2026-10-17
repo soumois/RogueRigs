@@ -14,7 +14,7 @@ Used when a 3D subtask says "Blender route" ([[agent-3d]]): no Meshy call, no cr
 - Output: `Art/Meshes/<asset>/SM_<Name>.fbx` in centimetres, bottom-centre pivot, plus `SM_<Name>.report.json` (`tris_out`, `dimensions_cm`, `materials`, `uv_layers`, `uv_checks`, `mask_contract`, `warnings`).
 
 ## Conventions (art charter level 1, [[art-style-guide]] A1)
-- Flat shading, flat colour per material ([[color-code]]); no per-asset painted texture.
+- Flat shading, flat colour per material ([[color-code]]) by default; painted, normal and roughness textures are allowed since 2026-10-17 ([[art-style-guide]] A1 level 3).
 - Wear: thin lighter bands on edges (geometry with their own flat materials) and faint scratch lines from the shared mask `Art/Textures/T_WearMask.png` (grayscale, tileable, white = clean).
 - Stickers and signs: decals as copies of the covered faces offset 0.25 cm, with ONE planar UV projection so a decal can wrap over facets; textures with alpha need Masked in Unreal.
 - UV channels: `UVMap` (UV0: decals 0 to 1, body 100 cm per UV unit for the mask) and `LightMap` (UV1: every triangle, no overlap, margin at least 2 px at 256, bounds inside 0 to 1). The report checks both numerically.

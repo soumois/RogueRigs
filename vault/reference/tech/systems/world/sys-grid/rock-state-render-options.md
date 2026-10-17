@@ -18,7 +18,7 @@ Target: owner image C (`Art/Source/rock-look/20261017-131704-rock-look-2.png`): 
 ## Owner decisions (2026-10-17)
 - Nanite: assumed for the grid pieces (owner); contra-indications to check at integration: WPO cost (outline warp, shake), dynamic instance add/remove, very low-poly pieces.
 - Variants: one per piece shape for now; the system must already support several (variant index per instance, chosen by cell hash).
-- A1: the owner will relax it (too restrictive, it was meant as an AI generation limit); level open.
+- A1: relaxed to level 3 (painted colour, normal and roughness maps allowed; [[art-style-guide]]).
 - Still open: dual grid replacing the per-cell rule, triangle budget, rim as vertex colour or slot, crack thresholds, weak rock.
 
 ## Risks
@@ -26,7 +26,7 @@ Target: owner image C (`Art/Source/rock-look/20261017-131704-rock-look-2.png`): 
 - Up to 4 chunks dirtied per broken cell at chunk borders; proxy recreation per touched chunk per frame ([[rock-render-rebuild]]).
 - Visual outline differs from collision by the warp amplitude (up to about 15 uu, estimate); bullets or units may seem to touch rock that is not drawn there.
 - More HISMs per chunk (one per piece mesh and variant): draw calls rise; Nanite use is open.
-- A large world-UV top texture needs an A1 amendment ([[rock-render-top-texture]]).
+- A large world-UV top texture: allowed since the A1 amendment ([[rock-render-top-texture]]).
 
 ## Children
 - [[rock-render-piece-set]] — dual grid versus per-cell shapes, outline warp, rim, sides, floor.

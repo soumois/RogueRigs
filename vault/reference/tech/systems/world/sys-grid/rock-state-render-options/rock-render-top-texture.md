@@ -26,8 +26,8 @@ Shake moves the render instance (25 uu, 8 Hz) while world UV stays fixed: the te
 ## Style constraint (A1)
 [[art-style-guide]] A1 allows flat colour per material, a thin lighter band, and faint scratch lines from one small shared grayscale mask; it forbids a per-asset painted base texture. Levels:
 1. Grayscale tone mask (subtle value variation, toward a lighter tone, flat-looking) plus crack mask: closest to A1; needs a small amendment (a large world-space shared mask used for tone, not only scratches). Recommended, lightest.
-2. Painted colour texture: violates A1 (painted base texture); a full amendment.
-Normal or roughness maps stay forbidden in both.
+2. Painted colour texture: was a full amendment.
+Owner decision 2026-10-17: A1 level 3 (painted colour, normal and roughness maps allowed): the top texture may be a painted colour texture with a normal map; the crack mask stays a separate channel driven by damage.
 
 ## Relations
 - [[rock-state-render-options]] — parent note.
