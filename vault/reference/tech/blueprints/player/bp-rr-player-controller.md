@@ -22,4 +22,5 @@ kind: doc
 - [[bp-rr-game-mode]] — default controller of this game mode.
 - [[wbp-hud]] — the HUD widget it creates.
 - [[wbp-intermission]] — the intermission recap widget it creates between run levels.
+- [[wbp-intermission]] — the intermission recap widget it creates between run levels.
 - [[wbp-loading]] — the loading screen widget set in LoadingScreenWidgetClass.

@@ -21,4 +21,5 @@ WBP_HUD and its eight panels plus the HUD refactor audit.
 - [[wbp-ore-counter]] — WBP_OreCounter, carried ore icon and number right of the minimap, a sub-widget of WBP_HUD.
 - [[wbp-loading]] — WBP_Loading, full-screen loading screen between levels, not a sub-widget of WBP_HUD.
 - [[wbp-intermission]] — WBP_Intermission, recap screen between run levels with a reserved shop area and the Continue button.
+- [[wbp-intermission]] — WBP_Intermission, recap screen between run levels with a reserved shop area and the Continue button.
 - [[hud-refactor-audit]] — audit of WBP_HUD: tick cost, per-feature tables, sub-widget plan, missing C++ events.
