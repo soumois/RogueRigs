@@ -388,6 +388,7 @@ kind: note
 | [[task-213-01-death-parts-test]] | opus | 1 | 0k | 30k | 407k | 0k |
 | [[task-213-02-heal-pop-tests]] | opus | 1 | 0k | 56k | 1047k | 3k |
 | [[task-215-01-no-prefix-code]] | opus | 1 | 0k | 42k | 597k | 0k |
+| [[task-215-02-capture]] | opus | 1 | 0k | 25k | 148k | 1k |
 
 ## Totals
 | Scope | Input | Cache write | Cache read | Output |

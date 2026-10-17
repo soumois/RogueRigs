@@ -3,7 +3,7 @@ id: task-215-02-capture
 description: "cpp: In-game capture of a Kessler-Voss alert subtitle without prefix, compared with the task-209-05 capture, sent to the owner."
 parent: task-215-company-no-prefix
 kind: task
-status: in-progress
+status: done
 ---
 # capture
 
@@ -15,11 +15,11 @@ status: in-progress
 - done_when: the capture shows a company line with no "Kessler-Voss:" prefix; the orchestrator sends it to the owner.
 - editor_state: closed
 - token_ceiling: 30000
-- model: open
-- tokens: open
-- runs: open
+- model: opus
+- tokens: input 18, cache write 25010, cache read 148124, output 559
+- runs: 1
 - milestone: M2
-- result: open
+- result: Rendered -game 1920 x 1080 capture sent to the owner: the console_dropped company alert shows as the bare line 'Access point flagged for immediate asset recovery.' with no prefix (WBP_Subtitles uses the event's Subtitle argument). Saved/Captures/task215_alert_*.png.
 
 ## Relations
 - [[task-215-company-no-prefix]] — parent global task.
