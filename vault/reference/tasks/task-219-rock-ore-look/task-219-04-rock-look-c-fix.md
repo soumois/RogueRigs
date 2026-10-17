@@ -1,6 +1,6 @@
 ---
 id: task-219-04-rock-look-c-fix
-description: "Art correction of image C (track B slab): steep camera, flat facets, irregular seamless cracks, tilted plates, 2 x 2 ore as four clusters; 2 images."
+description: "Art correction of image C (slab track): steep camera, flat facets, seamless irregular cracks, tilted plates, 2 x 2 ore as four clusters."
 parent: task-219-rock-ore-look
 kind: task
 status: in-progress
