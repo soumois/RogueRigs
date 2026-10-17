@@ -3,8 +3,11 @@
 #pragma once
 
 #include "CoreMinimal.h"
+#include "Grid/RRLayoutData.h"
 #include "Run/RRRunSnapshot.h"
+#include "Run/RRLayoutProvider.h"
 #include "Subsystems/GameInstanceSubsystem.h"
+#include "Tasks/Task.h"
 #include "RRRunSubsystem.generated.h"
 
 class ARRMiner;
@@ -21,6 +24,12 @@ DECLARE_DYNAMIC_MULTICAST_DELEGATE_TwoParams(FRROnLevelAdvancedSignature, int32,
 /** Broadcast after the pending snapshot was re-applied to the miner of the new level. */
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_TwoParams(FRROnSnapshotAppliedSignature, ARRMiner*, Miner, int32, LevelIndex);
 
+/**
+ * Broadcast on the game thread when a requested layout is prepared (RequestLayout): its level, its name and whether it is
+ * valid (false: file missing or parse error, the grid falls back to its own LayoutName).
+ */
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_ThreeParams(FRROnLayoutReadySignature, int32, LevelIndex, const FString&, LayoutName, bool, bSuccess);
+
 /** Broadcast by ResetRun (run lost or won, restart): no run in progress any more. */
 DECLARE_DYNAMIC_MULTICAST_DELEGATE(FRROnRunResetSignature);
 
@@ -35,6 +44,11 @@ DECLARE_DYNAMIC_MULTICAST_DELEGATE(FRROnRunResetSignature);
  * opens the map; the new miner's HandleMinerBeginPlay replays the snapshot once (ApplySnapshotToMiner). Loss or run won:
  * ResetRun, so the next map starts a new run at level 1.
  *
+ * Layouts (task-206-02): AdvanceToNextLevel requests the layout of the new level at once (RequestLayout). The layout provider
+ * (IRRLayoutProvider, JSON files today, the C++ generator later) builds it on a worker thread; OnLayoutReady fires on the game
+ * thread and GetPreparedLayout returns it until the next request. It lives here, so it survives the map travel, and
+ * ARRArenaGrid builds from it on levels 2+. Level 1 is never requested: the grid reads its own LayoutName.
+ *
  * Ore: carried as secured ore. The extraction moves the carried ore into URROreBankSubsystem (game instance), which keeps it
  * across the travel; every level starts with 0 carried ore. The snapshot only records the recap figures.
  */
@@ -44,6 +58,12 @@ class ROGUERIGS_API URRRunSubsystem : public UGameInstanceSubsystem
 	GENERATED_BODY()
 
 public:
+	/** Installs the JSON layout provider. */
+	virtual void Initialize(FSubsystemCollectionBase& Collection) override;
+
+	/** Waits for a layout request still in flight (its worker only holds the provider and the request). */
+	virtual void Deinitialize() override;
+
 	/** The run subsystem of WorldContext's game instance; null without an initialized game instance (bare test worlds). */
 	static URRRunSubsystem* Get(const UObject* WorldContext);
 
@@ -67,6 +87,38 @@ public:
 	 */
 	UFUNCTION(BlueprintCallable, Category = "Run")
 	bool AdvanceToNextLevel();
+
+	/**
+	 * Starts preparing the layout of run level InLevelIndex (its GetLayoutNameForLevel name) off the game thread; replaces any
+	 * earlier request (an in-flight result is discarded). OnLayoutReady fires on the game thread when done. False when the
+	 * level has no layout name.
+	 */
+	UFUNCTION(BlueprintCallable, Category = "Run|Layout")
+	bool RequestLayout(int32 InLevelIndex);
+
+	/** RequestLayout with an explicit layout name for InLevelIndex (debug, or a layout outside the settings list). False for an empty name. */
+	UFUNCTION(BlueprintCallable, Category = "Run|Layout")
+	bool RequestLayoutByName(int32 InLevelIndex, const FString& InLayoutName);
+
+	/** True when the last request was for InLevelIndex and its layout is prepared and valid. */
+	UFUNCTION(BlueprintPure, Category = "Run|Layout")
+	bool IsLayoutReady(int32 InLevelIndex) const;
+
+	/** True while the request for InLevelIndex is still being built. */
+	UFUNCTION(BlueprintPure, Category = "Run|Layout")
+	bool IsLayoutPending(int32 InLevelIndex) const;
+
+	/** Prepared valid layout of InLevelIndex; null when not requested, still pending or failed. */
+	TSharedPtr<const FRRLayoutData> GetPreparedLayout(int32 InLevelIndex) const;
+
+	/**
+	 * GetPreparedLayout, but a request for InLevelIndex still in flight is first waited for on the calling (game) thread and
+	 * delivered at once (OnLayoutReady fires). For a build that cannot wait for OnLayoutReady (the grid at BeginPlay).
+	 */
+	TSharedPtr<const FRRLayoutData> WaitForPreparedLayout(int32 InLevelIndex);
+
+	/** Replaces the layout provider (the future generator); null restores the JSON provider. Takes effect at the next request. */
+	void SetLayoutProvider(TSharedPtr<IRRLayoutProvider> InProvider);
 
 	/** Ends the run state (run lost, run won, restart): no run in progress, snapshot cleared; the next map begins level 1. */
 	UFUNCTION(BlueprintCallable, Category = "Run")
@@ -137,11 +189,21 @@ public:
 	UPROPERTY(BlueprintAssignable, Category = "Run")
 	FRROnSnapshotAppliedSignature OnSnapshotApplied;
 
+	/** See FRROnLayoutReadySignature. */
+	UPROPERTY(BlueprintAssignable, Category = "Run|Layout")
+	FRROnLayoutReadySignature OnLayoutReady;
+
 	/** See FRROnRunResetSignature. */
 	UPROPERTY(BlueprintAssignable, Category = "Run")
 	FRROnRunResetSignature OnRunReset;
 
 protected:
+	/** Game-thread end of request Serial: takes the task result, stores it, logs and broadcasts OnLayoutReady. Ignored for a stale or delivered serial. */
+	void CompleteLayoutRequest(uint32 Serial);
+
+	/** Forgets the current request and its layout (an in-flight result is discarded). */
+	void ClearLayoutRequest();
+
 	/** Secured ore total of the session bank (0 without a bank). */
 	int32 GetBankSecuredOre() const;
 
@@ -175,4 +237,28 @@ protected:
 
 	/** Bank total at the start of the current level. */
 	int32 SecuredOreAtLevelStart = 0;
+
+	/** Builds the requested layouts on a worker thread; FRRJsonLayoutProvider unless SetLayoutProvider replaced it. */
+	TSharedPtr<IRRLayoutProvider> LayoutProvider;
+
+	/** Level of the last request (0: none). */
+	int32 RequestedLevelIndex = 0;
+
+	/** Layout name of the last request. */
+	FString RequestedLayoutName;
+
+	/** Id of the last request; a worker result with another serial is stale and dropped. */
+	uint32 RequestSerial = 0;
+
+	/** True from the request until its result is delivered on the game thread. */
+	bool bLayoutPending = false;
+
+	/** Worker task of the last request (valid while pending). */
+	UE::Tasks::TTask<TSharedPtr<FRRLayoutData>> LayoutTask;
+
+	/** Result of the last delivered request (may be invalid: Error set). */
+	TSharedPtr<const FRRLayoutData> PreparedLayout;
+
+	/** FPlatformTime::Seconds at the last request, for the ready log. */
+	double RequestStartSeconds = 0.0;
 };

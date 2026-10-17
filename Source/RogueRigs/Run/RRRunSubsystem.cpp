@@ -6,6 +6,8 @@
 #include "Engine/Engine.h"
 #include "Engine/GameInstance.h"
 #include "Engine/World.h"
+#include "Async/Async.h"
+#include "HAL/PlatformTime.h"
 #include "GAS/RRHealthAttributeSet.h"
 #include "Grid/RRArenaGrid.h"
 #include "Objectives/RROreBankSubsystem.h"
@@ -13,6 +15,7 @@
 #include "Player/RRMiner.h"
 #include "Progression/RRProgressionComponent.h"
 #include "RogueRigs.h"
+#include "Run/RRLayoutProvider.h"
 #include "Run/RRRunSettings.h"
 #include "Upgrades/RRUpgradeComponent.h"
 #include "Weapons/RRWeapon.h"
@@ -85,6 +88,148 @@ URRRunSubsystem* URRRunSubsystem::Get(const UObject* WorldContext)
 	return GameInstance ? GameInstance->GetSubsystem<URRRunSubsystem>() : nullptr;
 }
 
+void URRRunSubsystem::Initialize(FSubsystemCollectionBase& Collection)
+{
+	Super::Initialize(Collection);
+	LayoutProvider = MakeShared<FRRJsonLayoutProvider>();
+}
+
+void URRRunSubsystem::Deinitialize()
+{
+	if (bLayoutPending && LayoutTask.IsValid())
+	{
+		LayoutTask.Wait();
+	}
+	ClearLayoutRequest();
+	Super::Deinitialize();
+}
+
+bool URRRunSubsystem::RequestLayout(int32 InLevelIndex)
+{
+	const FString Name = GetLayoutNameForLevel(InLevelIndex);
+	if (Name.IsEmpty())
+	{
+		UE_LOG(LogRogueRigs, Warning, TEXT("URRRunSubsystem: no layout name for level %d, nothing requested."), InLevelIndex);
+		return false;
+	}
+	return RequestLayoutByName(InLevelIndex, Name);
+}
+
+bool URRRunSubsystem::RequestLayoutByName(int32 InLevelIndex, const FString& InLayoutName)
+{
+	if (InLayoutName.IsEmpty())
+	{
+		return false;
+	}
+	ClearLayoutRequest();
+	if (!LayoutProvider)
+	{
+		LayoutProvider = MakeShared<FRRJsonLayoutProvider>();
+	}
+
+	const uint32 Serial = ++RequestSerial;
+	RequestedLevelIndex = InLevelIndex;
+	RequestedLayoutName = InLayoutName;
+	bLayoutPending = true;
+	RequestStartSeconds = FPlatformTime::Seconds();
+
+	FRRLayoutRequest Request;
+	Request.LevelIndex = InLevelIndex;
+	Request.LayoutName = InLayoutName;
+	const TSharedRef<IRRLayoutProvider> Provider = LayoutProvider.ToSharedRef();
+	UE_LOG(LogRogueRigs, Log, TEXT("URRRunSubsystem: layout requested for level %d: %s (provider %s, worker thread)."),
+		InLevelIndex, *InLayoutName, *Provider->GetProviderName());
+
+	// The worker only touches the provider and the request copy; the result is handed to the game thread by serial, so a
+	// request replaced or cleared meanwhile is simply dropped there.
+	TWeakObjectPtr<URRRunSubsystem> WeakThis(this);
+	LayoutTask = UE::Tasks::Launch(UE_SOURCE_LOCATION, [Provider, Request, WeakThis, Serial]() -> TSharedPtr<FRRLayoutData>
+	{
+		TSharedPtr<FRRLayoutData> Layout = Provider->BuildLayout(Request);
+		AsyncTask(ENamedThreads::GameThread, [WeakThis, Serial]()
+		{
+			if (URRRunSubsystem* Run = WeakThis.Get())
+			{
+				Run->CompleteLayoutRequest(Serial);
+			}
+		});
+		return Layout;
+	});
+	return true;
+}
+
+void URRRunSubsystem::CompleteLayoutRequest(uint32 Serial)
+{
+	check(IsInGameThread());
+	if (Serial != RequestSerial || !bLayoutPending || !LayoutTask.IsValid())
+	{
+		return;
+	}
+	// The game-thread callback is queued from inside the task body: wait for the body's return (immediate in practice).
+	LayoutTask.Wait();
+	TSharedPtr<FRRLayoutData> Layout = LayoutTask.GetResult();
+	LayoutTask = {};
+	bLayoutPending = false;
+	PreparedLayout = Layout;
+
+	const double Milliseconds = (FPlatformTime::Seconds() - RequestStartSeconds) * 1000.0;
+	const bool bSuccess = Layout.IsValid() && Layout->IsValid();
+	if (bSuccess)
+	{
+		UE_LOG(LogRogueRigs, Log, TEXT("URRRunSubsystem: layout ready for level %d: %s, %d x %d, spawn (%d, %d), %.1f ms after the request."),
+			RequestedLevelIndex, *RequestedLayoutName, Layout->Width, Layout->Height, Layout->SpawnCell.X, Layout->SpawnCell.Y, Milliseconds);
+	}
+	else
+	{
+		UE_LOG(LogRogueRigs, Error, TEXT("URRRunSubsystem: layout for level %d (%s) failed: %s"),
+			RequestedLevelIndex, *RequestedLayoutName, Layout.IsValid() ? *Layout->Error : TEXT("no result"));
+	}
+	OnLayoutReady.Broadcast(RequestedLevelIndex, RequestedLayoutName, bSuccess);
+}
+
+void URRRunSubsystem::ClearLayoutRequest()
+{
+	++RequestSerial;
+	RequestedLevelIndex = 0;
+	RequestedLayoutName.Reset();
+	bLayoutPending = false;
+	LayoutTask = {};
+	PreparedLayout.Reset();
+}
+
+bool URRRunSubsystem::IsLayoutReady(int32 InLevelIndex) const
+{
+	return GetPreparedLayout(InLevelIndex).IsValid();
+}
+
+bool URRRunSubsystem::IsLayoutPending(int32 InLevelIndex) const
+{
+	return bLayoutPending && InLevelIndex > 0 && RequestedLevelIndex == InLevelIndex;
+}
+
+TSharedPtr<const FRRLayoutData> URRRunSubsystem::GetPreparedLayout(int32 InLevelIndex) const
+{
+	if (bLayoutPending || InLevelIndex <= 0 || RequestedLevelIndex != InLevelIndex || !PreparedLayout.IsValid() || !PreparedLayout->IsValid())
+	{
+		return nullptr;
+	}
+	return PreparedLayout;
+}
+
+TSharedPtr<const FRRLayoutData> URRRunSubsystem::WaitForPreparedLayout(int32 InLevelIndex)
+{
+	if (IsLayoutPending(InLevelIndex))
+	{
+		CompleteLayoutRequest(RequestSerial);
+	}
+	return GetPreparedLayout(InLevelIndex);
+}
+
+void URRRunSubsystem::SetLayoutProvider(TSharedPtr<IRRLayoutProvider> InProvider)
+{
+	LayoutProvider = InProvider ? InProvider : MakeShared<FRRJsonLayoutProvider>();
+}
+
 void URRRunSubsystem::BeginRun(const FString& Level1LayoutName)
 {
 	bRunInProgress = true;
@@ -95,6 +240,7 @@ void URRRunSubsystem::BeginRun(const FString& Level1LayoutName)
 	CaptureWorld.Reset();
 	SecuredOreAtRunStart = GetBankSecuredOre();
 	SecuredOreAtLevelStart = SecuredOreAtRunStart;
+	ClearLayoutRequest();
 	const FString Layout = GetCurrentLayoutName();
 	UE_LOG(LogRogueRigs, Log, TEXT("URRRunSubsystem: run started, level 1/%d on layout %s."), GetLevelCount(), *Layout);
 	OnRunStarted.Broadcast(LevelIndex, Layout);
@@ -166,6 +312,8 @@ bool URRRunSubsystem::AdvanceToNextLevel()
 	const FString Layout = GetCurrentLayoutName();
 	UE_LOG(LogRogueRigs, Log, TEXT("URRRunSubsystem: advanced to level %d/%d, layout %s, snapshot %s."),
 		LevelIndex, GetLevelCount(), *Layout, bSnapshotPending ? TEXT("pending") : TEXT("none"));
+	// The next terrain is prepared at once, while the intermission shows (intermission, task-206-02).
+	RequestLayout(LevelIndex);
 	OnLevelAdvanced.Broadcast(LevelIndex, Layout);
 	return true;
 }
@@ -178,6 +326,7 @@ void URRRunSubsystem::ResetRun()
 	LastSnapshot = FRRRunMinerSnapshot();
 	bSnapshotPending = false;
 	CaptureWorld.Reset();
+	ClearLayoutRequest();
 	UE_LOG(LogRogueRigs, Log, TEXT("URRRunSubsystem: run reset; the next map begins level 1."));
 	OnRunReset.Broadcast();
 }

@@ -4,6 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/Actor.h"
+#include "Grid/RRCellType.h"
 #include "RRArenaGrid.generated.h"
 
 class ARRPickup;
@@ -17,28 +18,7 @@ class USceneComponent;
 class UStaticMesh;
 struct FHitResult;
 struct FRROreTypeRow;
-
-/** Content of one grid cell, as read from the layout file. Unlisted cells are Floor. */
-UENUM(BlueprintType)
-enum class ERRCellType : uint8
-{
-	/** Open floor: floor instance, no block. */
-	Floor,
-	/** Outside the asteroid: no floor, no block. */
-	Void,
-	/** Rock block standing on floor. */
-	Rock,
-	/** Ore block standing on floor. */
-	Ore,
-	/** Healing ore block standing on floor. */
-	HealOre,
-	/** Special ore block standing on floor. */
-	SpecialOre,
-	/** Barrel block standing on floor. */
-	Barrel,
-	/** The miner's start cell: open floor. */
-	Spawn
-};
+struct FRRLayoutData;
 
 /** What damaged or destroyed a block: the three terrain-breaking sources (destruction-rules), plus shots, which only break barrels. */
 UENUM(BlueprintType)
@@ -134,7 +114,8 @@ DECLARE_DYNAMIC_MULTICAST_DELEGATE_FourParams(FRROnCellDamagedSignature, FIntPoi
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_ThreeParams(FRROnCellDestroyedSignature, FIntPoint, Cell, ERRCellType, Type, ERRTerrainDamageSource, Source);
 
 /**
- * Arena terrain built from a layout JSON (Content/RogueRigs/Data/Levels/<LayoutName>.json).
+ * Arena terrain built from a layout JSON (Content/RogueRigs/Data/Levels/<LayoutName>.json), or, on levels 2+ of a run, from
+ * the layout the run subsystem prepared off the game thread (URRRunSubsystem::GetPreparedLayout, see LoadLayout).
  * Rebuilds in OnConstruction so the arena shows in the editor viewport, and again in BeginPlay so runtime
  * state (health, instance maps) always exists; OnConstruction is ignored once play has begun, so runtime
  * destruction is never wiped. Instances are split in chunks of ChunkCells x ChunkCells cells: one HISM per visual type
@@ -465,17 +446,27 @@ protected:
 	/** Writes the ore colour of every deposit with a row into the custom data of its rendering instances (OreColorCustomDataIndex). */
 	void WriteDepositColors();
 
-	/** Reads and parses the layout file into Cells, GridWidth, GridHeight and SpawnCell. Returns false on any error (logged). */
+	/**
+	 * Fills Cells, GridWidth, GridHeight and SpawnCell. In a game world with a run past level 1, from the layout the run
+	 * subsystem prepared for the current level (FindRunPreparedLayout; LayoutName then takes its name); otherwise, or when
+	 * none is prepared, by reading LayoutName's file synchronously. Returns false on any error (logged).
+	 */
 	bool LoadLayout();
+
+	/**
+	 * Prepared layout of the current run level from URRRunSubsystem (task-206-02): null outside a game world, without a run,
+	 * on level 1 or when nothing was requested for the level; a request still in flight is waited for (logged warning).
+	 */
+	TSharedPtr<const FRRLayoutData> FindRunPreparedLayout() const;
+
+	/** Copies a valid Layout into Cells, GridWidth, GridHeight and SpawnCell. */
+	void ApplyLayoutData(const FRRLayoutData& Layout);
 
 	/** Destroys the chunk components, applies meshes and materials to the templates, creates the chunk components and adds floor and block instances from Cells, and resets health, maps and shaking. */
 	void BuildInstances();
 
 	/** Destroys every chunk component, empties the template components and resets the instance maps. */
 	void ClearAllInstances();
-
-	/** Converts a layout type string ("rock", "heal_ore"...) to a cell type. Returns false for an unknown string. */
-	static bool ParseCellType(const FString& TypeName, ERRCellType& OutType);
 
 	/** True for the block types (Rock, Ore, HealOre, SpecialOre, Barrel). */
 	static bool IsBlockType(ERRCellType Type);

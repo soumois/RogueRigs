@@ -1,10 +1,12 @@
 // Rogue Rigs - run debug console commands (compiled out of shipping): rr.Run.Status (logs the run state), rr.Run.NextLevel
-// (successful extraction, snapshot, next level, then the current map reopened: proves the carry-over before the transition flow exists).
+// (successful extraction, snapshot, next level, then the current map reopened once the next layout is prepared: proves the
+// carry-over and the async layout before the transition flow exists).
 
 #include "CoreMinimal.h"
 
 #if !UE_BUILD_SHIPPING
 
+#include "Containers/Ticker.h"
 #include "Debug/RRCheats.h"
 #include "Engine/World.h"
 #include "HAL/IConsoleManager.h"
@@ -36,7 +38,8 @@ namespace RRRunDebug
 
 	/**
 	 * rr.Run.NextLevel: EndRun(true) when the level is still running (carried ore secured), CaptureLevelEndSnapshot,
-	 * AdvanceToNextLevel, then OpenLevel on the current map (the grid keeps its own layout until task-206-03 feeds it).
+	 * AdvanceToNextLevel (which requests the next layout), then, once IsLayoutReady (polled on the core ticker, as the
+	 * intermission Continue will), OpenLevel on the current map; its grid builds from the prepared layout.
 	 */
 	FAutoConsoleCommand NextLevelCommand(
 		TEXT("rr.Run.NextLevel"),
@@ -60,8 +63,26 @@ namespace RRRunDebug
 				return;
 			}
 			const FString LevelName = UGameplayStatics::GetCurrentLevelName(World, true);
-			UE_LOG(LogRogueRigs, Log, TEXT("rr.Run.NextLevel: reopening %s for level %d."), *LevelName, Run->GetLevelIndex());
-			UGameplayStatics::OpenLevel(World, FName(*LevelName));
+			const int32 Level = Run->GetLevelIndex();
+			TWeakObjectPtr<UWorld> WeakWorld(World);
+			TWeakObjectPtr<URRRunSubsystem> WeakRun(Run);
+			FTSTicker::GetCoreTicker().AddTicker(FTickerDelegate::CreateLambda([WeakWorld, WeakRun, LevelName, Level](float)
+			{
+				UWorld* TickWorld = WeakWorld.Get();
+				URRRunSubsystem* TickRun = WeakRun.Get();
+				if (!TickWorld || !TickRun || TickRun->GetLevelIndex() != Level)
+				{
+					return false;
+				}
+				if (TickRun->IsLayoutPending(Level))
+				{
+					return true;
+				}
+				UE_LOG(LogRogueRigs, Log, TEXT("rr.Run.NextLevel: layout of level %d %s, reopening %s."), Level,
+					TickRun->IsLayoutReady(Level) ? TEXT("ready") : TEXT("failed (the grid falls back to its own layout)"), *LevelName);
+				UGameplayStatics::OpenLevel(TickWorld, FName(*LevelName));
+				return false;
+			}));
 		}),
 		ECVF_Cheat);
 }

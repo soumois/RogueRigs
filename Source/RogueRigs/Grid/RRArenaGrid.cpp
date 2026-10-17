@@ -7,8 +7,6 @@
 #include "Components/InstancedStaticMeshComponent.h"
 #include "Components/SceneComponent.h"
 #include "Algo/StableSort.h"
-#include "Dom/JsonObject.h"
-#include "Dom/JsonValue.h"
 #include "Engine/CollisionProfile.h"
 #include "Engine/StaticMesh.h"
 #include "Engine/World.h"
@@ -17,16 +15,15 @@
 #include "GAS/RRBaseStatsLoader.h"
 #include "HAL/PlatformTime.h"
 #include "Grid/RRBarrelSource.h"
+#include "Grid/RRLayoutData.h"
 #include "Grid/RROreTypeRow.h"
 #include "Materials/MaterialInterface.h"
 #include "Misc/App.h"
 #include "Misc/Crc.h"
-#include "Misc/FileHelper.h"
 #include "Misc/Paths.h"
 #include "Pickups/RRPickup.h"
 #include "Pickups/RRPickupSubsystem.h"
-#include "Serialization/JsonReader.h"
-#include "Serialization/JsonSerializer.h"
+#include "Run/RRRunSubsystem.h"
 #include "Telegraph/RRGroundTelegraphComponent.h"
 #include "UObject/ConstructorHelpers.h"
 
@@ -367,124 +364,70 @@ void ARRArenaGrid::WriteDepositColors()
 
 FString ARRArenaGrid::GetLayoutFilePath() const
 {
-	return FPaths::Combine(FPaths::ProjectContentDir(), TEXT("RogueRigs/Data/Levels"), LayoutName + TEXT(".json"));
+	return RRLayout::GetLayoutFilePath(LayoutName);
 }
 
 bool ARRArenaGrid::LoadLayout()
 {
+	if (const TSharedPtr<const FRRLayoutData> Prepared = FindRunPreparedLayout())
+	{
+		LayoutName = Prepared->Name;
+		ApplyLayoutData(*Prepared);
+		UE_LOG(LogRogueRigs, Log, TEXT("ARRArenaGrid %s: built from the prepared layout %s (%d x %d)."), *GetName(), *LayoutName, GridWidth, GridHeight);
+		return true;
+	}
+
 	if (LayoutName.IsEmpty())
 	{
 		UE_LOG(LogRogueRigs, Warning, TEXT("ARRArenaGrid %s: LayoutName is empty, nothing to build."), *GetName());
 		return false;
 	}
 
-	const FString FilePath = GetLayoutFilePath();
-	FString FileText;
-	if (!FFileHelper::LoadFileToString(FileText, *FilePath))
+	FRRLayoutData Layout;
+	if (!RRLayout::LoadLayoutFile(LayoutName, GetLayoutFilePath(), Layout))
 	{
-		UE_LOG(LogRogueRigs, Error, TEXT("ARRArenaGrid: layout file not found or unreadable: %s"), *FilePath);
+		UE_LOG(LogRogueRigs, Error, TEXT("ARRArenaGrid: %s"), *Layout.Error);
 		return false;
 	}
-
-	TSharedPtr<FJsonObject> Root;
-	const TSharedRef<TJsonReader<>> Reader = TJsonReaderFactory<>::Create(FileText);
-	if (!FJsonSerializer::Deserialize(Reader, Root) || !Root.IsValid())
+	ApplyLayoutData(Layout);
+	if (GetWorld() && GetWorld()->IsGameWorld())
 	{
-		UE_LOG(LogRogueRigs, Error, TEXT("ARRArenaGrid: JSON parse error in %s: %s"), *FilePath, *Reader->GetErrorMessage());
-		return false;
+		UE_LOG(LogRogueRigs, Log, TEXT("ARRArenaGrid %s: built from its own layout %s (%d x %d), read synchronously."), *GetName(), *LayoutName, GridWidth, GridHeight);
 	}
-
-	int32 Version = 0;
-	int32 Width = 0;
-	int32 Height = 0;
-	const TArray<TSharedPtr<FJsonValue>>* CellValues = nullptr;
-	if (!Root->TryGetNumberField(TEXT("version"), Version) || Version != 1)
-	{
-		UE_LOG(LogRogueRigs, Error, TEXT("ARRArenaGrid: missing or unsupported 'version' (expected 1) in %s"), *FilePath);
-		return false;
-	}
-	if (!Root->TryGetNumberField(TEXT("width"), Width) || !Root->TryGetNumberField(TEXT("height"), Height) || Width <= 0 || Height <= 0)
-	{
-		UE_LOG(LogRogueRigs, Error, TEXT("ARRArenaGrid: missing or invalid 'width'/'height' in %s"), *FilePath);
-		return false;
-	}
-	if (!Root->TryGetArrayField(TEXT("cells"), CellValues) || CellValues == nullptr)
-	{
-		UE_LOG(LogRogueRigs, Error, TEXT("ARRArenaGrid: missing 'cells' array in %s"), *FilePath);
-		return false;
-	}
-
-	TArray<ERRCellType> NewCells;
-	NewCells.Init(ERRCellType::Floor, Width * Height);
-	FIntPoint NewSpawn(-1, -1);
-
-	for (int32 Index = 0; Index < CellValues->Num(); ++Index)
-	{
-		const TSharedPtr<FJsonObject>* CellObject = nullptr;
-		if (!(*CellValues)[Index].IsValid() || !(*CellValues)[Index]->TryGetObject(CellObject) || CellObject == nullptr)
-		{
-			UE_LOG(LogRogueRigs, Error, TEXT("ARRArenaGrid: cells[%d] is not an object in %s"), Index, *FilePath);
-			return false;
-		}
-
-		int32 X = 0;
-		int32 Y = 0;
-		FString TypeName;
-		ERRCellType Type = ERRCellType::Floor;
-		if (!(*CellObject)->TryGetNumberField(TEXT("x"), X) || !(*CellObject)->TryGetNumberField(TEXT("y"), Y)
-			|| !(*CellObject)->TryGetStringField(TEXT("type"), TypeName))
-		{
-			UE_LOG(LogRogueRigs, Error, TEXT("ARRArenaGrid: cells[%d] lacks x, y or type in %s"), Index, *FilePath);
-			return false;
-		}
-		if (X < 0 || X >= Width || Y < 0 || Y >= Height)
-		{
-			UE_LOG(LogRogueRigs, Error, TEXT("ARRArenaGrid: cells[%d] (%d, %d) is out of bounds in %s"), Index, X, Y, *FilePath);
-			return false;
-		}
-		if (!ParseCellType(TypeName, Type))
-		{
-			UE_LOG(LogRogueRigs, Error, TEXT("ARRArenaGrid: cells[%d] has unknown type '%s' in %s"), Index, *TypeName, *FilePath);
-			return false;
-		}
-
-		NewCells[Y * Width + X] = Type;
-		if (Type == ERRCellType::Spawn)
-		{
-			NewSpawn = FIntPoint(X, Y);
-		}
-	}
-
-	if (NewSpawn.X < 0)
-	{
-		UE_LOG(LogRogueRigs, Warning, TEXT("ARRArenaGrid: no spawn cell in %s"), *FilePath);
-	}
-
-	Cells = MoveTemp(NewCells);
-	GridWidth = Width;
-	GridHeight = Height;
-	SpawnCell = NewSpawn;
 	return true;
 }
 
-bool ARRArenaGrid::ParseCellType(const FString& TypeName, ERRCellType& OutType)
+TSharedPtr<const FRRLayoutData> ARRArenaGrid::FindRunPreparedLayout() const
 {
-	static const TMap<FString, ERRCellType> TypeByName = {
-		{ TEXT("void"), ERRCellType::Void },
-		{ TEXT("rock"), ERRCellType::Rock },
-		{ TEXT("ore"), ERRCellType::Ore },
-		{ TEXT("heal_ore"), ERRCellType::HealOre },
-		{ TEXT("special_ore"), ERRCellType::SpecialOre },
-		{ TEXT("barrel"), ERRCellType::Barrel },
-		{ TEXT("spawn"), ERRCellType::Spawn },
-	};
-
-	if (const ERRCellType* Found = TypeByName.Find(TypeName))
+	const UWorld* World = GetWorld();
+	URRRunSubsystem* Run = World && World->IsGameWorld() ? URRRunSubsystem::Get(this) : nullptr;
+	if (!Run || !Run->IsRunInProgress() || Run->GetLevelIndex() <= 1)
 	{
-		OutType = *Found;
-		return true;
+		return nullptr;
 	}
-	return false;
+	const int32 Level = Run->GetLevelIndex();
+	if (TSharedPtr<const FRRLayoutData> Prepared = Run->GetPreparedLayout(Level))
+	{
+		return Prepared;
+	}
+	if (Run->IsLayoutPending(Level))
+	{
+		UE_LOG(LogRogueRigs, Warning, TEXT("ARRArenaGrid %s: layout of level %d still in preparation at build, waiting for it."), *GetName(), Level);
+		if (TSharedPtr<const FRRLayoutData> Prepared = Run->WaitForPreparedLayout(Level))
+		{
+			return Prepared;
+		}
+	}
+	UE_LOG(LogRogueRigs, Warning, TEXT("ARRArenaGrid %s: no prepared layout for run level %d, falling back to %s."), *GetName(), Level, *LayoutName);
+	return nullptr;
+}
+
+void ARRArenaGrid::ApplyLayoutData(const FRRLayoutData& Layout)
+{
+	Cells = Layout.Cells;
+	GridWidth = Layout.Width;
+	GridHeight = Layout.Height;
+	SpawnCell = Layout.SpawnCell;
 }
 
 bool ARRArenaGrid::IsBlockType(ERRCellType Type)
