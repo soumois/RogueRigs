@@ -3,7 +3,7 @@ id: task-211-03-end-capture
 description: "cpp: In-game capture of the run-won, shuttle-missed and death end screens with no HUD and no subtitle, compared with the task-209-05 captures, se"
 parent: task-211-end-screens-clean
 kind: task
-status: todo
+status: in-progress
 ---
 # end-capture
 

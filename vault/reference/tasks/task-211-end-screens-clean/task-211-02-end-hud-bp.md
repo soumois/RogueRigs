@@ -3,7 +3,7 @@ id: task-211-02-end-hud-bp
 description: "bp: On the end-of-run event of task-211-01, WBP_HUD and WBP_AlertObjectives hide every element except the end screen"
 parent: task-211-end-screens-clean
 kind: task
-status: in-progress
+status: done
 ---
 # end-hud-bp
 
@@ -15,11 +15,11 @@ status: in-progress
 - done_when: widgets compile and save; docs updated; committed.
 - editor_state: open
 - token_ceiling: 40000
-- model: open
-- tokens: open
-- runs: open
+- model: sonnet
+- tokens: input 112, cache write 94526, cache read 3471023, output 848
+- runs: 1
 - milestone: M2
-- result: open
+- result: WBP_HUD OnEndScreenShown collapses MinimapLocator, OreCounter, Weapons, XPStatus, Subtitles, UpgradeChoice and HealthStatus (except on death); WBP_AlertObjectives HideForEnd keeps only EndScreen; WBP_HealthStatus keeps GAME OVER and hides its bar, text and vignette on death (29162564). Unseen on screen.
 
 ## Relations
 - [[task-211-end-screens-clean]] — parent global task.

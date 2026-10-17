@@ -13,7 +13,7 @@ status: in-progress
 - gdd_check: [[extraction]] (M1 end screens with restart button), [[run-structure]]. No conflict. The end screen is drawn inside WBP_AlertObjectives, a child of WBP_HUD, so the task-207 whole-HUD hide cannot be reused. Owner 2026-10-17: same rule for the death screen; the repeated speaker name in the Kessler-Voss line is a separate point.
 - confirmed_by_owner: yes (2026-10-17)
 - milestone: M2
-- next_step: task-211-02-end-hud-bp
+- next_step: task-211-03-end-capture
 - result: open
 
 ## Subtasks
