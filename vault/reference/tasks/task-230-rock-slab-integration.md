@@ -3,7 +3,7 @@ id: task-230-rock-slab-integration
 description: "Integrate the dual-grid slab rock look (pieces, world-UV top texture, cracks, plates, crystals) in the grid; prepared, not launched."
 parent: tasks-to-do-index
 kind: task
-status: todo
+status: in-progress
 ---
 # Rock slab look: integration
 
@@ -11,7 +11,7 @@ status: todo
 - goal: the arena rock is drawn as continuous slabs with a rounded organic outline (dual grid), a world-UV top texture, cracks as soon as a block is below 100 %, tilted plates on heavy damage and crystal clusters on ore and heal cells; gameplay unchanged.
 - acceptance: every subtask done; RogueRigs.* tests pass; after captures compared with before and sent to the owner; perf measured against the baseline and the provisional budget; docs updated; lint clean; committed.
 - gdd_check: [[rock-state-render-options]] and children (owner decisions 2026-10-17: dual grid for display only, provisional triangle budget, rim as vertex colour in one material, cracks from any damage, one variant per shape with variant support, Nanite assumed), [[art-style-guide]] A1 level 3, [[color-code]], [[readability-rules]], [[sys-grid]]. Open: weak rock (separate task, maximum share open), number of variants later. Not in this task: weak rock, collision rounding of corners.
-- confirmed_by_owner: no (prepared on request, launch waits for the owner)
+- confirmed_by_owner: yes (2026-10-17). Launch rules (owner): 01 then 02 run one after the other (not in parallel); 03 to 06 each wait for the owner validation of the previous one; 07 to 12 run together as one sequence without asking again.
 - milestone: M2
 - next_step: task-230-01-rock-baseline-capture
 - result: open

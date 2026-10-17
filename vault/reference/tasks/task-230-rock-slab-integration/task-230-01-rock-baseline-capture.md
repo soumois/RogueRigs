@@ -3,7 +3,7 @@ id: task-230-01-rock-baseline-capture
 description: "Baseline before the change: -game captures of rock areas and a grid perf measure."
 parent: task-230-rock-slab-integration
 kind: task
-status: todo
+status: in-progress
 ---
 # Baseline before the change: -game captures of rock areas and a grid perf measure
 
