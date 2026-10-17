@@ -1,0 +1,37 @@
+{
+  "run_id": "20261017-131704-rock-look",
+  "asset": "rock-look",
+  "model": "gpt-image-2-image-to-image",
+  "aspect_ratio": "16:9",
+  "resolution": "1K",
+  "variants": 2,
+  "prompt_file": "Art/Source/rock-look/prompts/04-c-fix.txt",
+  "prompt": "Keep this exact image's direction: same flat-shaded low-poly style, same rounded organic slab outline with a lighter rim along the top edge, same dark faceted crystalline sides, same grey-violet rock lighter than the floor, same clean dark floor. Redraw it with these changes.\nCamera: almost straight down, about 75 to 80 degrees from horizontal, slight perspective, 16:9. The top faces fill the view; the dark side faces are only a thin strip along the outline.\nShading: every facet is ONE flat colour, hard edges between facets, no gradient, no grain, no painted texture, no noise on the top.\nLayout: several separate rock masses (4 to 6) of different sizes, each a low slab with a rounded irregular outline cut by bays and lobes, separated by clean floor corridors about 3 cells wide. One cell is a small square; a corridor is three of them wide, and each mass is many cells across and tall relative to a cell (rock height about 1.5 cells). Floor: clean, flat, slightly dark, subtle large facets, no pebbles, no rubble, nothing scattered.\nDamage states blend into each other on the same masses, with no seam, border or outline around any zone: intact flat clean top fades into lightly cracked top, which fades into heavily damaged top. Light cracks: thick dark irregular jagged cracks that wander and branch, not a honeycomb or grid, wide enough to read from far away. Heavy damage: the top broken into flat plates tilted up at different angles, with dark gaps between them, same height as the rest.\nOre: one Duskite deposit made of four bright glowing violet crystal clusters placed in a 2 x 2 square, with plain grey rock between the clusters. One heal vein made of four bright glowing red crystal clusters in a 2 x 2 square with rock between, pure red, no orange. Both clearly brighter than the rock, soft glow.\nStrong directional light with lifted shadows so everything stays readable. No UI, no text, no characters.",
+  "refs": [
+    "Art/Source/rock-look/20261016-231332-rock-look-1.png"
+  ],
+  "tasks": [
+    {
+      "task_id": "9bdcdce41750bfafed84365ef6e3df14",
+      "state": "success",
+      "credits": 6,
+      "error": null,
+      "result_urls": [
+        "https://tempfile.aiquickdraw.com/images/chatgpt/file_000000008ca081f59daf03cfb24f43b5.png"
+      ]
+    },
+    {
+      "task_id": "abc36125e1c521e117b46ee97e8e56a3",
+      "state": "success",
+      "credits": 6,
+      "error": null,
+      "result_urls": [
+        "https://tempfile.aiquickdraw.com/images/chatgpt/file_00000000cfa481f9a9197b517842bd3b.png"
+      ]
+    }
+  ],
+  "files": [
+    "Art/Source/rock-look/20261017-131704-rock-look-1.png",
+    "Art/Source/rock-look/20261017-131704-rock-look-2.png"
+  ]
+}
