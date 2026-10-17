@@ -3,7 +3,7 @@ id: task-213-failing-tests
 description: "Global task: Failing and flaky automation tests."
 parent: tasks-to-do-index
 kind: task
-status: todo
+status: in-progress
 ---
 # Failing and flaky automation tests
 

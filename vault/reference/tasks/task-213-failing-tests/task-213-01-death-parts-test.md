@@ -3,7 +3,7 @@ id: task-213-01-death-parts-test
 description: "cpp: Find why RogueRigs.Enemies.ShotHitsMovingRobotAndDeathShowsParts fails on 'EyeMesh visible during the death'"
 parent: task-213-failing-tests
 kind: task
-status: todo
+status: in-progress
 ---
 # death-parts-test
 
