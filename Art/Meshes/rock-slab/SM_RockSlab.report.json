@@ -1,0 +1,787 @@
+{
+  "task": "task-230-02-rock-slab-pieces",
+  "script": "Tools/art/blender/rock_slab_pieces.py",
+  "units": "cm (1 uu = 1 cm)",
+  "piece": {
+    "size_uu": [
+      67,
+      67
+    ],
+    "top_z_uu": 100.0,
+    "pivot": "piece centre (a cell corner), z = 0 floor top, nothing below",
+    "half": 33.5
+  },
+  "canonical_orientation": {
+    "corners_blender_xy": {
+      "A": [
+        -33.5,
+        -33.5
+      ],
+      "B": [
+        33.5,
+        -33.5
+      ],
+      "C": [
+        33.5,
+        33.5
+      ],
+      "D": [
+        -33.5,
+        33.5
+      ]
+    },
+    "rock_corners": {
+      "full": "A B C D",
+      "edge": "B C (rock on +X)",
+      "outer": "C",
+      "inner": "B C D (notch at A)",
+      "diagonal": "A C (joined saddle)"
+    },
+    "rotation": "k x 90 deg about Z, (x,y)->(-y,x): corner A->B->C->D->A; Unreal import flips Y, verify the first placement"
+  },
+  "shapes": {
+    "full": {
+      "file": "Art/Meshes/rock-slab/SM_RockSlab_Full_01.fbx",
+      "tris": 2,
+      "budget": 2,
+      "within_budget": true,
+      "dimensions_cm": [
+        67.0,
+        67.0,
+        0.0
+      ],
+      "bounds_min": [
+        -33.5,
+        -33.5,
+        100.0
+      ],
+      "bounds_max": [
+        33.5,
+        33.5,
+        100.0
+      ],
+      "materials": [
+        "M_RockSlab"
+      ],
+      "uv_layers": [
+        "UVMap",
+        "LightMap"
+      ],
+      "uv_checks": {
+        "UVMap": "planar top-down projection, x and y / 100 (world position drives the top in the material)",
+        "LightMap": {
+          "triangles": 2,
+          "overlapping_pairs": 0,
+          "bounds": [
+            0.0098,
+            0.8495
+          ],
+          "min_gap_px_at_256": 5.024,
+          "min_border_px_at_256": 2.512,
+          "pass": true
+        }
+      },
+      "vertex_colour": {
+        "attribute": "Color (corner, float)",
+        "export": "colors_type=LINEAR",
+        "rim_tris_R1": 0,
+        "side_tris_G1": 0,
+        "top_tris_0": 2,
+        "inconsistent_faces": 0,
+        "pass": true,
+        "rule": "R=1 only on the flat rim band along the outline; G=1 only on side faces; top body 0,0"
+      },
+      "all_flat_shaded": true,
+      "top_flat_z": [
+        100.0
+      ],
+      "downward_facing_tris": 0
+    },
+    "edge": {
+      "file": "Art/Meshes/rock-slab/SM_RockSlab_Edge_01.fbx",
+      "tris": 43,
+      "budget": 48,
+      "within_budget": true,
+      "dimensions_cm": [
+        47.13,
+        67.0,
+        100.0
+      ],
+      "bounds_min": [
+        -13.63,
+        -33.5,
+        0.0
+      ],
+      "bounds_max": [
+        33.5,
+        33.5,
+        100.0
+      ],
+      "materials": [
+        "M_RockSlab"
+      ],
+      "uv_layers": [
+        "UVMap",
+        "LightMap"
+      ],
+      "uv_checks": {
+        "UVMap": "planar top-down projection, x and y / 100 (world position drives the top in the material)",
+        "LightMap": {
+          "triangles": 43,
+          "overlapping_pairs": 0,
+          "bounds": [
+            0.0098,
+            0.9547
+          ],
+          "min_gap_px_at_256": 5.024,
+          "min_border_px_at_256": 2.512,
+          "pass": true
+        }
+      },
+      "vertex_colour": {
+        "attribute": "Color (corner, float)",
+        "export": "colors_type=LINEAR",
+        "rim_tris_R1": 12,
+        "side_tris_G1": 24,
+        "top_tris_0": 7,
+        "inconsistent_faces": 0,
+        "pass": true,
+        "rule": "R=1 only on the flat rim band along the outline; G=1 only on side faces; top body 0,0"
+      },
+      "all_flat_shaded": true,
+      "top_flat_z": [
+        100.0
+      ],
+      "downward_facing_tris": 0
+    },
+    "outer": {
+      "file": "Art/Meshes/rock-slab/SM_RockSlab_Outer_01.fbx",
+      "tris": 42,
+      "budget": 48,
+      "within_budget": true,
+      "dimensions_cm": [
+        42.5,
+        42.5,
+        100.0
+      ],
+      "bounds_min": [
+        -9.0,
+        -9.0,
+        0.0
+      ],
+      "bounds_max": [
+        33.5,
+        33.5,
+        100.0
+      ],
+      "materials": [
+        "M_RockSlab"
+      ],
+      "uv_layers": [
+        "UVMap",
+        "LightMap"
+      ],
+      "uv_checks": {
+        "UVMap": "planar top-down projection, x and y / 100 (world position drives the top in the material)",
+        "LightMap": {
+          "triangles": 42,
+          "overlapping_pairs": 0,
+          "bounds": [
+            0.0098,
+            0.9875
+          ],
+          "min_gap_px_at_256": 5.024,
+          "min_border_px_at_256": 2.512,
+          "pass": true
+        }
+      },
+      "vertex_colour": {
+        "attribute": "Color (corner, float)",
+        "export": "colors_type=LINEAR",
+        "rim_tris_R1": 12,
+        "side_tris_G1": 24,
+        "top_tris_0": 6,
+        "inconsistent_faces": 0,
+        "pass": true,
+        "rule": "R=1 only on the flat rim band along the outline; G=1 only on side faces; top body 0,0"
+      },
+      "all_flat_shaded": true,
+      "top_flat_z": [
+        100.0
+      ],
+      "downward_facing_tris": 1
+    },
+    "inner": {
+      "file": "Art/Meshes/rock-slab/SM_RockSlab_Inner_01.fbx",
+      "tris": 58,
+      "budget": 64,
+      "within_budget": true,
+      "dimensions_cm": [
+        67.0,
+        67.0,
+        100.0
+      ],
+      "bounds_min": [
+        -33.5,
+        -33.5,
+        0.0
+      ],
+      "bounds_max": [
+        33.5,
+        33.5,
+        100.0
+      ],
+      "materials": [
+        "M_RockSlab"
+      ],
+      "uv_layers": [
+        "UVMap",
+        "LightMap"
+      ],
+      "uv_checks": {
+        "UVMap": "planar top-down projection, x and y / 100 (world position drives the top in the material)",
+        "LightMap": {
+          "triangles": 58,
+          "overlapping_pairs": 0,
+          "bounds": [
+            0.0098,
+            0.9757
+          ],
+          "min_gap_px_at_256": 5.024,
+          "min_border_px_at_256": 2.512,
+          "pass": true
+        }
+      },
+      "vertex_colour": {
+        "attribute": "Color (corner, float)",
+        "export": "colors_type=LINEAR",
+        "rim_tris_R1": 16,
+        "side_tris_G1": 32,
+        "top_tris_0": 10,
+        "inconsistent_faces": 0,
+        "pass": true,
+        "rule": "R=1 only on the flat rim band along the outline; G=1 only on side faces; top body 0,0"
+      },
+      "all_flat_shaded": true,
+      "top_flat_z": [
+        100.0
+      ],
+      "downward_facing_tris": 1
+    },
+    "diagonal": {
+      "file": "Art/Meshes/rock-slab/SM_RockSlab_Diagonal_01.fbx",
+      "tris": 86,
+      "budget": 96,
+      "within_budget": true,
+      "dimensions_cm": [
+        67.0,
+        67.0,
+        100.0
+      ],
+      "bounds_min": [
+        -33.5,
+        -33.5,
+        0.0
+      ],
+      "bounds_max": [
+        33.5,
+        33.5,
+        100.0
+      ],
+      "materials": [
+        "M_RockSlab"
+      ],
+      "uv_layers": [
+        "UVMap",
+        "LightMap"
+      ],
+      "uv_checks": {
+        "UVMap": "planar top-down projection, x and y / 100 (world position drives the top in the material)",
+        "LightMap": {
+          "triangles": 86,
+          "overlapping_pairs": 0,
+          "bounds": [
+            0.0098,
+            0.9902
+          ],
+          "min_gap_px_at_256": 5.529,
+          "min_border_px_at_256": 2.512,
+          "pass": true
+        }
+      },
+      "vertex_colour": {
+        "attribute": "Color (corner, float)",
+        "export": "colors_type=LINEAR",
+        "rim_tris_R1": 24,
+        "side_tris_G1": 48,
+        "top_tris_0": 14,
+        "inconsistent_faces": 0,
+        "pass": true,
+        "rule": "R=1 only on the flat rim band along the outline; G=1 only on side faces; top body 0,0"
+      },
+      "all_flat_shaded": true,
+      "top_flat_z": [
+        100.0
+      ],
+      "downward_facing_tris": 0
+    }
+  },
+  "warnings": [],
+  "seam_check": {
+    "method": "test layout 8 x 8 cells (###..### / ###..### / ##.#.... / ##..##.. / .....##. / ###.#### / ###..#.. / ###...#.), pieces placed with rotation k x 90 deg from the marching-squares case; for every pair of adjacent placed pieces the rim and side-row vertices lying on the shared border are compared as sets (3 mm rounding, exact in practice)",
+    "pieces_placed": 70,
+    "shape_counts": {
+      "outer": 25,
+      "edge": 24,
+      "full": 11,
+      "diagonal": 3,
+      "inner": 7
+    },
+    "adjacent_pairs_checked": 114,
+    "border_vertices_compared": 248,
+    "mismatching_pairs": 0,
+    "all_5_shapes_used": true,
+    "pass": true,
+    "guarantee": "the outline crosses a border only at its middle (0,+-33.5 / +-33.5,0), perpendicular to it; the rim inner point and the 3 side rows (z 100, 48, 0; flare 0, 4, 9 uu) at that point are fixed offsets along the border with no jitter, independent of shape and rotation"
+  },
+  "fbx_roundtrip_blender_import": {
+    "full": {
+      "tris": 2,
+      "colour_attributes": [
+        "Color"
+      ],
+      "uv_layers": [
+        "UVMap",
+        "LightMap"
+      ],
+      "height_after_import": 0.0,
+      "object_scale": [
+        1.0,
+        1.0,
+        1.0
+      ]
+    },
+    "edge": {
+      "tris": 43,
+      "colour_attributes": [
+        "Color"
+      ],
+      "uv_layers": [
+        "UVMap",
+        "LightMap"
+      ],
+      "height_after_import": 100.0,
+      "object_scale": [
+        1.0,
+        1.0,
+        1.0
+      ]
+    },
+    "outer": {
+      "tris": 42,
+      "colour_attributes": [
+        "Color"
+      ],
+      "uv_layers": [
+        "UVMap",
+        "LightMap"
+      ],
+      "height_after_import": 100.0,
+      "object_scale": [
+        1.0,
+        1.0,
+        1.0
+      ]
+    },
+    "inner": {
+      "tris": 58,
+      "colour_attributes": [
+        "Color"
+      ],
+      "uv_layers": [
+        "UVMap",
+        "LightMap"
+      ],
+      "height_after_import": 100.0,
+      "object_scale": [
+        1.0,
+        1.0,
+        1.0
+      ]
+    },
+    "diagonal": {
+      "tris": 86,
+      "colour_attributes": [
+        "Color"
+      ],
+      "uv_layers": [
+        "UVMap",
+        "LightMap"
+      ],
+      "height_after_import": 100.0,
+      "object_scale": [
+        1.0,
+        1.0,
+        1.0
+      ]
+    }
+  },
+  "fbx_export": {
+    "apply_scale_options": "FBX_SCALE_UNITS",
+    "global_scale": 1.0,
+    "axes": "Blender default",
+    "colors_type": "LINEAR",
+    "mesh_smooth_type": "FACE"
+  },
+  "variant": "_01 only; the system may add _02 ... later",
+  "layout": {
+    "rows_top_to_bottom": [
+      "###..###",
+      "###..###",
+      "##.#....",
+      "##..##..",
+      ".....##.",
+      "###.####",
+      "###..#..",
+      "###...#."
+    ],
+    "placed": {
+      "0,0": [
+        "outer",
+        0
+      ],
+      "1,0": [
+        "edge",
+        90
+      ],
+      "2,0": [
+        "edge",
+        90
+      ],
+      "3,0": [
+        "outer",
+        90
+      ],
+      "6,0": [
+        "outer",
+        0
+      ],
+      "7,0": [
+        "outer",
+        90
+      ],
+      "0,1": [
+        "edge",
+        0
+      ],
+      "1,1": [
+        "full",
+        0
+      ],
+      "2,1": [
+        "full",
+        0
+      ],
+      "3,1": [
+        "edge",
+        180
+      ],
+      "5,1": [
+        "outer",
+        0
+      ],
+      "6,1": [
+        "diagonal",
+        90
+      ],
+      "7,1": [
+        "outer",
+        180
+      ],
+      "0,2": [
+        "edge",
+        0
+      ],
+      "1,2": [
+        "full",
+        0
+      ],
+      "2,2": [
+        "full",
+        0
+      ],
+      "3,2": [
+        "edge",
+        180
+      ],
+      "4,2": [
+        "outer",
+        0
+      ],
+      "5,2": [
+        "inner",
+        0
+      ],
+      "6,2": [
+        "inner",
+        90
+      ],
+      "7,2": [
+        "edge",
+        90
+      ],
+      "8,2": [
+        "outer",
+        90
+      ],
+      "0,3": [
+        "outer",
+        270
+      ],
+      "1,3": [
+        "edge",
+        270
+      ],
+      "2,3": [
+        "edge",
+        270
+      ],
+      "3,3": [
+        "outer",
+        180
+      ],
+      "4,3": [
+        "outer",
+        270
+      ],
+      "5,3": [
+        "inner",
+        270
+      ],
+      "6,3": [
+        "full",
+        0
+      ],
+      "7,3": [
+        "inner",
+        180
+      ],
+      "8,3": [
+        "outer",
+        180
+      ],
+      "0,4": [
+        "outer",
+        0
+      ],
+      "1,4": [
+        "edge",
+        90
+      ],
+      "2,4": [
+        "outer",
+        90
+      ],
+      "4,4": [
+        "outer",
+        0
+      ],
+      "5,4": [
+        "inner",
+        0
+      ],
+      "6,4": [
+        "inner",
+        180
+      ],
+      "7,4": [
+        "outer",
+        180
+      ],
+      "0,5": [
+        "edge",
+        0
+      ],
+      "1,5": [
+        "full",
+        0
+      ],
+      "2,5": [
+        "edge",
+        180
+      ],
+      "3,5": [
+        "outer",
+        0
+      ],
+      "4,5": [
+        "diagonal",
+        90
+      ],
+      "5,5": [
+        "edge",
+        270
+      ],
+      "6,5": [
+        "outer",
+        180
+      ],
+      "0,6": [
+        "edge",
+        0
+      ],
+      "1,6": [
+        "full",
+        0
+      ],
+      "2,6": [
+        "inner",
+        90
+      ],
+      "3,6": [
+        "diagonal",
+        90
+      ],
+      "4,6": [
+        "outer",
+        180
+      ],
+      "5,6": [
+        "outer",
+        0
+      ],
+      "6,6": [
+        "edge",
+        90
+      ],
+      "7,6": [
+        "edge",
+        90
+      ],
+      "8,6": [
+        "outer",
+        90
+      ],
+      "0,7": [
+        "edge",
+        0
+      ],
+      "1,7": [
+        "full",
+        0
+      ],
+      "2,7": [
+        "full",
+        0
+      ],
+      "3,7": [
+        "edge",
+        180
+      ],
+      "5,7": [
+        "edge",
+        0
+      ],
+      "6,7": [
+        "full",
+        0
+      ],
+      "7,7": [
+        "full",
+        0
+      ],
+      "8,7": [
+        "edge",
+        180
+      ],
+      "0,8": [
+        "outer",
+        270
+      ],
+      "1,8": [
+        "edge",
+        270
+      ],
+      "2,8": [
+        "edge",
+        270
+      ],
+      "3,8": [
+        "outer",
+        180
+      ],
+      "5,8": [
+        "outer",
+        270
+      ],
+      "6,8": [
+        "edge",
+        270
+      ],
+      "7,8": [
+        "edge",
+        270
+      ],
+      "8,8": [
+        "outer",
+        180
+      ]
+    }
+  },
+  "preview": {
+    "layout_game_cam": "C:\\Users\\soumo\\Documents\\Unreal Projects\\RogueRigs\\Art\\Meshes\\rock-slab\\preview\\rockslab_layout_game_cam.png",
+    "layout_three_quarter": "C:\\Users\\soumo\\Documents\\Unreal Projects\\RogueRigs\\Art\\Meshes\\rock-slab\\preview\\rockslab_layout_three_quarter.png",
+    "full_three_quarter": "C:\\Users\\soumo\\Documents\\Unreal Projects\\RogueRigs\\Art\\Meshes\\rock-slab\\preview\\rockslab_full_three_quarter.png",
+    "full_game_cam": "C:\\Users\\soumo\\Documents\\Unreal Projects\\RogueRigs\\Art\\Meshes\\rock-slab\\preview\\rockslab_full_game_cam.png",
+    "edge_three_quarter": "C:\\Users\\soumo\\Documents\\Unreal Projects\\RogueRigs\\Art\\Meshes\\rock-slab\\preview\\rockslab_edge_three_quarter.png",
+    "edge_game_cam": "C:\\Users\\soumo\\Documents\\Unreal Projects\\RogueRigs\\Art\\Meshes\\rock-slab\\preview\\rockslab_edge_game_cam.png",
+    "outer_three_quarter": "C:\\Users\\soumo\\Documents\\Unreal Projects\\RogueRigs\\Art\\Meshes\\rock-slab\\preview\\rockslab_outer_three_quarter.png",
+    "outer_game_cam": "C:\\Users\\soumo\\Documents\\Unreal Projects\\RogueRigs\\Art\\Meshes\\rock-slab\\preview\\rockslab_outer_game_cam.png",
+    "inner_three_quarter": "C:\\Users\\soumo\\Documents\\Unreal Projects\\RogueRigs\\Art\\Meshes\\rock-slab\\preview\\rockslab_inner_three_quarter.png",
+    "inner_game_cam": "C:\\Users\\soumo\\Documents\\Unreal Projects\\RogueRigs\\Art\\Meshes\\rock-slab\\preview\\rockslab_inner_game_cam.png",
+    "diagonal_three_quarter": "C:\\Users\\soumo\\Documents\\Unreal Projects\\RogueRigs\\Art\\Meshes\\rock-slab\\preview\\rockslab_diagonal_three_quarter.png",
+    "diagonal_game_cam": "C:\\Users\\soumo\\Documents\\Unreal Projects\\RogueRigs\\Art\\Meshes\\rock-slab\\preview\\rockslab_diagonal_game_cam.png",
+    "camera": {
+      "layout_game_cam": {
+        "hfov": 90.0,
+        "pitch": 60.0,
+        "azim": 0.0,
+        "target": [
+          268.0,
+          268.0,
+          0.0
+        ],
+        "dist": 640.0
+      },
+      "layout_three_quarter": {
+        "hfov": 50.0,
+        "pitch": 38.0,
+        "azim": 28.0,
+        "target": [
+          268.0,
+          268.0,
+          0.0
+        ],
+        "dist": 1050.0
+      },
+      "pieces": "hfov 40, pitch 35 azim 32 (three-quarter) or pitch 60 azim 0 (steep), target (0,0,40), distance 330",
+      "pitch_meaning": "degrees below the horizon, azim 0 = looking toward +Y, perspective, horizontal FOV, sensor fit horizontal",
+      "layout_resolution": [
+        1920,
+        1080
+      ],
+      "piece_resolution": [
+        1000,
+        1000
+      ]
+    },
+    "light": {
+      "type": "sun, energy 1.0, same rotation as the camera (camera-following)",
+      "world": "colour #C8C8CC strength 0.35 (also the background colour of the sky)",
+      "floor": "plane z = 0, #B9B9BE, roughness 1",
+      "view_transform": "Standard",
+      "engine": "EEVEE",
+      "colours": "top #8E89A8, rim #C4BFDB (R), side #55516F (G); preview tones only"
+    }
+  }
+}
