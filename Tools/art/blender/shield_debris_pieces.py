@@ -1,7 +1,7 @@
 """task-222-01: cut the 1.2-scaled shield (guard pose of the shield chaser, clip 0 frame 0) into five debris pieces for the Niagara shield-break burst. Headless:
   "$BLENDER_EXE" -b --factory-startup -P Tools/art/blender/shield_debris_pieces.py -- [--in-fbx Art/Meshes/ChaserShield/SM_ChaserShield.fbx] [--in-dir Art/Meshes/ChaserShield] [--out-dir Art/Source/shield-chaser/debris] [--work <short dir>] [--no-render]
 Pieces (fixed order = Niagara mesh index): Shard_A (centre plate with the KV emblem decal), Shard_B (top left), Shard_C (top right), Shard_D (bottom right corner), Grip (dark handle and mounts).
-The four shards are the plate and its bolts cut by straight planes (perpendicular to the plate, convex regions in the plate plane, see SHARDS) and capped with a flat yellow texel of the base colour UV (material M_ChaserShield).
+The four shards are the plate and its bolts cut by straight planes (perpendicular to the plate, convex regions in the plate plane, see SHARDS) and capped with a flat texel of the plate colour (PLATE_BASE read from shield_v2.py) in the base colour UV (material M_ChaserShield).
 Shard_A has two slots (M_ChaserShield, M_ChaserShield_Emblem), the other pieces one. UV0 only (LightMap dropped). Flat shading, caps kept.
 Guard pose = the placement of shield_chaser_bake.py: v_actor = Rs (1.2 v) + origin, Rs = rotation about Y of -3 degrees, origin = (30.65, 5.63, 4.34) cm (Blender axes, actor origin on the floor between the feet; printed by the bake as origin).
 Each piece is baked into that frame, then its vertices are moved so the pivot is the bounds centre. centre_offset_cm_unreal = (x, -y_blender, z) of the bounds centre, as in chaser_debris_pieces.py.
@@ -98,7 +98,15 @@ def sub_bm(idx):
     return bm
 
 
-# ---- a flat yellow texel of the base colour UV: centroid of a +X face of the plate whose 5x5 neighbourhood is uniform and yellow
+# ---- a flat texel of the plate colour in the base colour UV: centroid of a +X face of the plate whose 5x5 neighbourhood is uniform and equal to the plate colour.
+# The plate colour is read from shield_v2.py (PLATE_BASE = np.array([0xRR, 0xGG, 0xBB]) / 255), the single source: a recolour needs no edit here.
+import re
+_here = os.path.dirname(os.path.abspath(__file__)) if "__file__" in globals() else os.path.abspath("Tools/art/blender")
+_m = re.search(r"^PLATE_BASE\s*=\s*np\.array\(\[\s*(0x[0-9A-Fa-f]{2})\s*,\s*(0x[0-9A-Fa-f]{2})\s*,\s*(0x[0-9A-Fa-f]{2})\s*\]",
+               open(os.path.join(_here, "shield_v2.py"), encoding="utf-8").read(), re.M)
+assert _m, "PLATE_BASE not found in shield_v2.py"
+PLATE = tuple(int(g, 16) / 255.0 for g in _m.groups())
+TOL = 1.5 / 255.0
 img = bpy.data.images.load(os.path.join(OUT, TEXS[0]), check_existing=False)
 img.colorspace_settings.name = "sRGB"
 W, H = img.size
@@ -113,18 +121,18 @@ def texel(u, v):
 
 bmp = sub_bm(plate_idx)
 uvl = bmp.loops.layers.uv[uv_name]
-YEL = None
+CAP = None
 for f in sorted(bmp.faces, key=lambda f: -f.calc_area()):
     if f.normal.x < 0.99:
         continue
     cu = sum((l[uvl].uv for l in f.loops), Vector((0, 0))) / len(f.loops)
     blk = [texel(cu.x + dx / W, cu.y + dy / H) for dx in range(-2, 3) for dy in range(-2, 3)]
     c = blk[0]
-    if all(max(abs(a - b) for a, b in zip(c, t)) < 1e-4 for t in blk) and c[0] > 0.5 and c[1] > 0.3 and c[2] < 0.25:
-        YEL = (cu.x, cu.y, c)
+    if all(max(abs(a - b) for a, b in zip(c, t)) < 1e-4 for t in blk) and max(abs(a - b) for a, b in zip(c, PLATE)) < TOL:
+        CAP = (cu.x, cu.y, c)
         break
-assert YEL, "no flat yellow texel"
-print("cap texel uv", YEL[:2], "colour", YEL[2])
+assert CAP, "no flat texel of the plate colour %s" % (PLATE,)
+print("cap texel uv", CAP[:2], "colour", CAP[2], "plate", PLATE)
 bmp.free()
 
 
@@ -150,7 +158,7 @@ def cut_shard(region):
         f.material_index = 0
         f.smooth = False
         for l in f.loops:
-            l[uvl].uv = Vector(YEL[:2])
+            l[uvl].uv = Vector(CAP[:2])
     bmesh.ops.recalc_face_normals(bm, faces=list(bm.faces))
     return bm
 
