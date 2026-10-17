@@ -3,7 +3,7 @@ id: task-220-04-shield-chaser-capture
 description: "cpp: -game capture of a shield chaser running with its shield, bashing, and after the shield breaks; frames for the owner."
 parent: task-220-shield-chaser-integration
 kind: task
-status: in-progress
+status: todo
 ---
 # Shield chaser: in-game capture
 
@@ -19,7 +19,7 @@ status: in-progress
 - tokens: open
 - runs: open
 - milestone: M1
-- result: open
+- result: Paused by the owner (2026-10-17: he needs the editor for a demo); the first capture run was stopped before any image, nothing committed. Resume: relaunch this subtask with the editor closed.
 
 ## Relations
 - [[task-220-shield-chaser-integration]] — parent global task.
