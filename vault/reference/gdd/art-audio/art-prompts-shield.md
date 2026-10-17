@@ -28,7 +28,7 @@ Keep this exact shield and the attached robot unchanged. Character sheet on a pl
 ```
 
 ## Next steps (open)
-- Emblem: decal on the front centre, the KV emblem on a #1A1F25 rounded plate 22 x 20 cm, texture `T_ChaserShield_Emblem.png` (task-218, done; owner look pending).
+- Emblem and colour (owner 2026-10-17, task-226): charcoal plate #33363B with the stripes kept; the emblem decal on the front centre is the yellow logo only (KV and facets, no rounded plate, no charcoal rock), texture `T_ChaserShield_Emblem.png`; the yellow version with a #1A1F25 plate (task-218) is replaced. Colour test renders: `Art/Source/shield-colour-test/sheet_shield_colours.png` (task-225).
 - Unreal import, attachment to the shield chaser (grip offset in the report), run and bash clips.
 - Readability: the camera sees mostly the top edge (A12), hence the stripes over the top.
 - Run stride (owner 2026-10-17): the short stride of the shield run is kept (thigh swing 12 degrees instead of the chaser's 35, so the foot never hits the low pavise); the robot does not visibly slide.
