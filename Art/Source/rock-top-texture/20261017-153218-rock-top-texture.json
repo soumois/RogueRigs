@@ -1,0 +1,37 @@
+{
+  "run_id": "20261017-153218-rock-top-texture",
+  "asset": "rock-top-texture",
+  "model": "gpt-image-2-image-to-image",
+  "aspect_ratio": "1:1",
+  "resolution": "1K",
+  "variants": 2,
+  "prompt_file": "Art/Source/rock-top-texture/prompts/01-rock-top-texture.txt",
+  "prompt": "Use the grey-violet rock tone of this image as the colour reference only (Image 1). Make a flat square texture swatch seen from straight above: the top surface of a stone slab filling the whole frame, edge to edge, nothing else.\nColour: light grey tinted violet, same tone as the rock tops in the reference, low contrast.\nSurface: perfectly smooth intact rock, no cracks, no fractures, no seams, no pebbles, no chips. Subtle painted stone tone variation: large soft patches of slightly lighter and slightly darker grey-violet, plus a very faint fine grain. Even, uniform, flat lighting with no shadows, no highlights, no directional relief, no vignette, no gradient across the frame. No border, no outline, no objects, no crystals, no floor, no text, no UI.",
+  "refs": [
+    "Art/Source/rock-look/20261017-131704-rock-look-2.png"
+  ],
+  "tasks": [
+    {
+      "task_id": "31833dd44bf6ae2bf164b8a3f8bbd58e",
+      "state": "success",
+      "credits": 6,
+      "error": null,
+      "result_urls": [
+        "https://tempfile.aiquickdraw.com/images/chatgpt/file_00000000c3c081f9a395e5097592bce3.png"
+      ]
+    },
+    {
+      "task_id": "2211c25ce8fdec7d2843531a6c93e0bf",
+      "state": "success",
+      "credits": 6,
+      "error": null,
+      "result_urls": [
+        "https://tempfile.aiquickdraw.com/images/chatgpt/file_000000009c8881f58316c6eed8490b9c.png"
+      ]
+    }
+  ],
+  "files": [
+    "Art/Source/rock-top-texture/20261017-153218-rock-top-texture-1.png",
+    "Art/Source/rock-top-texture/20261017-153218-rock-top-texture-2.png"
+  ]
+}

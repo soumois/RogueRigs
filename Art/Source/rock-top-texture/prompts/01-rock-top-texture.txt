@@ -1,0 +1,3 @@
+Use the grey-violet rock tone of this image as the colour reference only (Image 1). Make a flat square texture swatch seen from straight above: the top surface of a stone slab filling the whole frame, edge to edge, nothing else.
+Colour: light grey tinted violet, same tone as the rock tops in the reference, low contrast.
+Surface: perfectly smooth intact rock, no cracks, no fractures, no seams, no pebbles, no chips. Subtle painted stone tone variation: large soft patches of slightly lighter and slightly darker grey-violet, plus a very faint fine grain. Even, uniform, flat lighting with no shadows, no highlights, no directional relief, no vignette, no gradient across the frame. No border, no outline, no objects, no crystals, no floor, no text, no UI.

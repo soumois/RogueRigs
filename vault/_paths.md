@@ -32,6 +32,7 @@ art-prompts-arena-final  reference/gdd/art-audio/art-prompts-arena-final.md
 art-prompts-rigs  reference/gdd/art-audio/art-prompts-rigs.md
 art-prompts-robots  reference/gdd/art-audio/art-prompts-robots.md
 art-prompts-rock  reference/gdd/art-audio/art-prompts-rock.md
+art-prompts-rock-top-texture  reference/gdd/art-audio/art-prompts-rock-top-texture.md
 art-prompts-shield  reference/gdd/art-audio/art-prompts-shield.md
 art-prompts-xp-core  reference/gdd/art-audio/art-prompts-xp-core.md
 art-style-guide  reference/gdd/art-audio/art-style-guide.md
