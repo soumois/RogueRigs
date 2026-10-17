@@ -154,7 +154,11 @@ protected:
 	/** Level-1 layout of this run (grid LayoutName of the map the run started on); empty = settings entry. */
 	FString Level1LayoutOverride;
 
-	/** Last captured snapshot. */
+	/**
+	 * Last captured snapshot. A UPROPERTY so its Blueprint weapon classes stay referenced: without it the map travel lets the
+	 * garbage collector unload them and the classes read as None in the next level. It holds no actor pointer.
+	 */
+	UPROPERTY()
 	FRRRunMinerSnapshot LastSnapshot;
 
 	/** True from CaptureLevelEndSnapshot until a miner of a later world received the snapshot. */
