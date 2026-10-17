@@ -1,74 +1,21 @@
-// Rogue Rigs - run log collector: per-level counters (terrain, damage, kills, upgrades, XP) fed by game events, read by the
-// run log writer at level end (run-log-schema).
+// Rogue Rigs - run log: per-level counters (terrain, damage, kills, upgrades, XP) fed by game events, a level entry appended at
+// each level end and the run JSON file in Saved/RunLogs/ (run-log-schema).
 
 #pragma once
 
 #include "CoreMinimal.h"
+#include "RunLog/RRRunLogTypes.h"
 #include "Subsystems/GameInstanceSubsystem.h"
 #include "RRRunLogSubsystem.generated.h"
 
 class ARRArenaGrid;
 class ARRMiner;
+class ARRShuttle;
+class URRRunFlowSubsystem;
 enum class ERRCellType : uint8;
 enum class ERRTerrainDamageSource : uint8;
 struct FRRDamageEventInfo;
 struct FRRUpgradeCard;
-
-/**
- * Counters of one level of a run (run-log-schema), as collected so far. Keys are run-log values: terrain sources
- * barrel / kamikaze / drone / shot, terrain types rock / ore / heal_ore / special_ore / barrel, weapon class names, robot types
- * (EnemyStats.csv row: Chaser, Kamikaze...), kill sources weapon / explosion / other, damage-taken sources robot type /
- * explosion / other. Copy taken by URRRunLogSubsystem::GetCurrentLevelStats; the writer serializes it.
- */
-USTRUCT(BlueprintType)
-struct ROGUERIGS_API FRRRunLevelStats
-{
-	GENERATED_BODY()
-
-	/** Run level index (1..N) of these counters; 0 when no run was in progress at level start. */
-	UPROPERTY(BlueprintReadOnly, Category = "Run Log")
-	int32 LevelIndex = 0;
-
-	/** Layout name of the level (URRRunSubsystem::GetCurrentLayoutName at level start). */
-	UPROPERTY(BlueprintReadOnly, Category = "Run Log")
-	FString LayoutName;
-
-	/** World time (seconds, pauses excluded) at which the level started: first miner BeginPlay, then OnLevelReady after a travel. */
-	UPROPERTY(BlueprintReadOnly, Category = "Run Log")
-	double LevelStartWorldSeconds = 0.0;
-
-	/** Destroyed blocks per destruction source (barrel, kamikaze, drone, shot). */
-	UPROPERTY(BlueprintReadOnly, Category = "Run Log")
-	TMap<FString, int32> TerrainDestroyedBySource;
-
-	/** Destroyed blocks per block type (rock, ore, heal_ore, special_ore, barrel). */
-	UPROPERTY(BlueprintReadOnly, Category = "Run Log")
-	TMap<FString, int32> TerrainDestroyedByType;
-
-	/** Raw damage dealt to robots per weapon class name (turret shots count for their launcher). */
-	UPROPERTY(BlueprintReadOnly, Category = "Run Log")
-	TMap<FString, float> DamageDealtByWeapon;
-
-	/** Robots killed per robot type (EnemyStats.csv row name, class name when the row is empty). */
-	UPROPERTY(BlueprintReadOnly, Category = "Run Log")
-	TMap<FString, int32> KillsByRobotType;
-
-	/** Robots killed per kill source (weapon, explosion, other). */
-	UPROPERTY(BlueprintReadOnly, Category = "Run Log")
-	TMap<FString, int32> KillsBySource;
-
-	/** Upgrade cards picked during the level, in pick order (card ids, see URRRunLogSubsystem::MakeCardId). */
-	UPROPERTY(BlueprintReadOnly, Category = "Run Log")
-	TArray<FString> UpgradesPicked;
-
-	/** Raw damage taken by the miner per source (robot type, explosion, other). */
-	UPROPERTY(BlueprintReadOnly, Category = "Run Log")
-	TMap<FString, float> DamageTakenBySource;
-
-	/** XP gained by the miner during the level (after the XPGain multiplier; cheat grants included). */
-	UPROPERTY(BlueprintReadOnly, Category = "Run Log")
-	float XPCollected = 0.f;
-};
 
 /**
  * Run log collector (sys-run-log). Lives on the game instance, so it survives the map travel between levels; its counters
@@ -77,7 +24,11 @@ struct ROGUERIGS_API FRRRunLevelStats
  * bound. URRRunTransitionSubsystem::OnLevelReady (after a travel) restamps the start time to the end of the loading hold.
  * Sources (events only, no polling): ARRArenaGrid::OnCellDestroyed (terrain), URRHealthAttributeSet::OnAnyDamageReceived
  * (damage dealt, kills, damage taken), URRUpgradeComponent::OnUpgradeApplied (cards), URRProgressionComponent::OnXPGained (XP).
- * The writer (task-212-02) snapshots GetCurrentLevelStats at level end. Debug: rr.RunLog.Dump (not in shipping).
+ * Writer (task-212-02): a run record opens at the start of a run's level 1 (Saved/RunLogs/<yyyyMMdd-HHmmss>.json created at once);
+ * at each level end (HandleLevelEnded from URRRunFlowSubsystem::EndRun, or the miner's OnDeath) the counters are snapshotted
+ * with the outcome, the level time, the shuttle time left, the risk-window ore and the alert events met, appended and the file
+ * rewritten. The run ends on a death, a missed shuttle or the last level's extraction; URRRunSubsystem::OnRunReset closes an
+ * unfinished run as abandoned. No file is written during automation tests. Debug: rr.RunLog.Dump (not in shipping).
  */
 UCLASS()
 class ROGUERIGS_API URRRunLogSubsystem : public UGameInstanceSubsystem
@@ -104,6 +55,19 @@ public:
 	UFUNCTION(BlueprintPure, Category = "Run Log")
 	FRRRunLevelStats GetCurrentLevelStats() const;
 
+	/**
+	 * Level end (extracted, death or missed shuttle) of World: appends the level entry to the run record and rewrites the run
+	 * file; a death, a missed shuttle or the last level's extraction (or no run in progress) also ends the run. Called by
+	 * URRRunFlowSubsystem::EndRun before the intermission, and by the miner's OnDeath. Once per level; other worlds ignored.
+	 */
+	void HandleLevelEnded(UWorld* World, ERRRunLevelOutcome Outcome);
+
+	/** The current (or last) run record. */
+	const FRRRunLogRecord& GetRunRecord() const { return Run; }
+
+	/** Run-log name of a level outcome (extracted, death, missed_shuttle). */
+	static FString GetLevelOutcomeName(ERRRunLevelOutcome Outcome);
+
 	/** Logs every counter of the current level on LogRogueRigs (rr.RunLog.Dump); Context prefixes each line. */
 	void LogCurrentLevelStats(const FString& Context) const;
 
@@ -117,6 +81,34 @@ public:
 	static FString GetCellTypeName(ERRCellType Type);
 
 protected:
+	/** Opens a new run record (id and file name from the local time) and writes its file; closes an open one as abandoned first. */
+	void BeginRunRecord();
+
+	/** Ends the run record with RunOutcome (won, death, missed_shuttle, abandoned) and stamps the end time; the caller writes. */
+	void EndRunRecord(const FString& RunOutcome);
+
+	/** Writes the run file (skipped during automation tests). */
+	void WriteRunFile() const;
+
+	/** Alert events of the level that happened (console, bonus chest, hordes) with their outcome now. */
+	void CollectEventsMet(const URRRunFlowSubsystem* RunFlow, TArray<FRRRunLogEvent>& OutEvents) const;
+
+	/** Miner OnDeath: the level ends with a death. */
+	UFUNCTION()
+	void HandleMinerDeath(AActor* DeathInstigator);
+
+	/** Run flow OnShuttleLanded: the risk window opens. */
+	UFUNCTION()
+	void HandleShuttleLanded(ARRShuttle* Shuttle);
+
+	/** Run flow OnOreChanged: carried ore gained during the risk window is counted. */
+	UFUNCTION()
+	void HandleOreChanged(int32 CarriedOre, int32 SecuredOre);
+
+	/** URRRunSubsystem::OnRunReset: an unfinished run record ends as abandoned (a restart starts a new file). */
+	UFUNCTION()
+	void HandleRunReset();
+
 	/** Clears the counters and stamps the level start (index, layout, world time) for World. */
 	void ResetForLevel(UWorld* World);
 
@@ -162,4 +154,25 @@ protected:
 
 	/** Damage taken per source (internal, FName keys). */
 	TMap<FName, float> DamageTakenBySource;
+
+	/** Run record being written (or the last one once ended). */
+	FRRRunLogRecord Run;
+
+	/** True while Run is open (started, not ended). */
+	bool bRunOpen = false;
+
+	/** True once the tracked level ended (its entry is in Run); later ends of the same world are ignored. */
+	bool bLevelEnded = false;
+
+	/** True once the shuttle of the tracked level landed (risk window open). */
+	bool bShuttleLanded = false;
+
+	/** Carried ore at the last OnOreChanged (deltas above it count in the risk window). */
+	int32 LastCarriedOre = 0;
+
+	/** Carried ore gained since the shuttle landed. */
+	int32 OreInRiskWindow = 0;
+
+	/** Run flow bound for the tracked level (shuttle landing, ore). */
+	TWeakObjectPtr<URRRunFlowSubsystem> BoundRunFlow;
 };

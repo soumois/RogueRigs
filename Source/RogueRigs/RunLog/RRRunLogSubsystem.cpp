@@ -1,19 +1,27 @@
-// Rogue Rigs - run log collector: per-level counters (terrain, damage, kills, upgrades, XP) fed by game events.
+// Rogue Rigs - run log: per-level counters fed by game events, level entries at level end and the run JSON file (run-log-schema).
 
 #include "RunLog/RRRunLogSubsystem.h"
 
 #include "Damage/RRGE_DamageExplosion.h"
 #include "Enemies/RREnemy.h"
+#include "Enemies/RREnemySpawner.h"
 #include "Engine/GameInstance.h"
 #include "Engine/World.h"
 #include "GAS/RRHealthAttributeSet.h"
 #include "Grid/RRArenaGrid.h"
 #include "Grid/RRCellType.h"
+#include "Misc/App.h"
+#include "Misc/Paths.h"
+#include "Objectives/RRBonusChest.h"
+#include "Objectives/RRConsole.h"
+#include "Objectives/RRRunFlowSubsystem.h"
+#include "Objectives/RRShuttle.h"
 #include "Player/RRMiner.h"
 #include "Progression/RRProgressionComponent.h"
 #include "RogueRigs.h"
 #include "Run/RRRunSubsystem.h"
 #include "Run/RRRunTransitionSubsystem.h"
+#include "RunLog/RRRunLogWriter.h"
 #include "Upgrades/RRUpgradeCard.h"
 #include "Upgrades/RRUpgradeComponent.h"
 #include "Weapons/RRWeapon.h"
@@ -82,6 +90,10 @@ void URRRunLogSubsystem::Initialize(FSubsystemCollectionBase& Collection)
 	{
 		Transition->OnLevelReady.AddUniqueDynamic(this, &URRRunLogSubsystem::HandleLevelReady);
 	}
+	if (URRRunSubsystem* RunSubsystem = Collection.InitializeDependency<URRRunSubsystem>())
+	{
+		RunSubsystem->OnRunReset.AddUniqueDynamic(this, &URRRunLogSubsystem::HandleRunReset);
+	}
 }
 
 void URRRunLogSubsystem::Deinitialize()
@@ -114,6 +126,21 @@ void URRRunLogSubsystem::HandleMinerBeginPlay(ARRMiner* Miner)
 	{
 		Progression->OnXPGained.AddUniqueDynamic(this, &URRRunLogSubsystem::HandleXPGained);
 	}
+	Miner->OnDeath.AddUniqueDynamic(this, &URRRunLogSubsystem::HandleMinerDeath);
+	if (URRRunFlowSubsystem* RunFlow = World->GetSubsystem<URRRunFlowSubsystem>())
+	{
+		RunFlow->OnShuttleLanded.AddUniqueDynamic(this, &URRRunLogSubsystem::HandleShuttleLanded);
+		RunFlow->OnOreChanged.AddUniqueDynamic(this, &URRRunLogSubsystem::HandleOreChanged);
+		LastCarriedOre = RunFlow->GetCarriedOre();
+		BoundRunFlow = RunFlow;
+	}
+
+	// A run's level 1 (or a level seen without an open run) starts a new run record and file.
+	if (!bRunOpen || Stats.LevelIndex <= 1)
+	{
+		BeginRunRecord();
+	}
+	Run.Layouts.Add(Stats.LayoutName);
 
 	UE_LOG(LogRogueRigs, Log, TEXT("RunLog: level %d (%s) started, counters reset (grid %s)."),
 		Stats.LevelIndex, *Stats.LayoutName, BoundGrid.IsValid() ? TEXT("bound") : TEXT("missing"));
@@ -126,17 +153,27 @@ void URRRunLogSubsystem::ResetForLevel(UWorld* World)
 		OldGrid->OnCellDestroyed.RemoveDynamic(this, &URRRunLogSubsystem::HandleCellDestroyed);
 	}
 	BoundGrid.Reset();
+	if (URRRunFlowSubsystem* OldRunFlow = BoundRunFlow.Get())
+	{
+		OldRunFlow->OnShuttleLanded.RemoveDynamic(this, &URRRunLogSubsystem::HandleShuttleLanded);
+		OldRunFlow->OnOreChanged.RemoveDynamic(this, &URRRunLogSubsystem::HandleOreChanged);
+	}
+	BoundRunFlow.Reset();
 	TrackedWorld = World;
+	bLevelEnded = false;
+	bShuttleLanded = false;
+	LastCarriedOre = 0;
+	OreInRiskWindow = 0;
 
 	Stats = FRRRunLevelStats();
 	DamageDealtByWeapon.Reset();
 	KillsByRobotType.Reset();
 	DamageTakenBySource.Reset();
 
-	if (const URRRunSubsystem* Run = URRRunSubsystem::Get(World))
+	if (const URRRunSubsystem* RunSubsystem = URRRunSubsystem::Get(World))
 	{
-		Stats.LevelIndex = Run->GetLevelIndex();
-		Stats.LayoutName = Run->GetCurrentLayoutName();
+		Stats.LevelIndex = RunSubsystem->GetLevelIndex();
+		Stats.LayoutName = RunSubsystem->GetCurrentLayoutName();
 	}
 	Stats.LevelStartWorldSeconds = World ? World->GetTimeSeconds() : 0.0;
 }
@@ -285,5 +322,167 @@ void URRRunLogSubsystem::HandleAnyDamage(const FRRDamageEventInfo& Info)
 			Source = RRRunLog::GetRobotType(*Attacker);
 		}
 		DamageTakenBySource.FindOrAdd(Source) += Info.Damage;
+	}
+}
+
+FString URRRunLogSubsystem::GetLevelOutcomeName(ERRRunLevelOutcome Outcome)
+{
+	switch (Outcome)
+	{
+	case ERRRunLevelOutcome::Extracted: return TEXT("extracted");
+	case ERRRunLevelOutcome::Death: return TEXT("death");
+	case ERRRunLevelOutcome::MissedShuttle: return TEXT("missed_shuttle");
+	default: return TEXT("unknown");
+	}
+}
+
+void URRRunLogSubsystem::HandleLevelEnded(UWorld* World, ERRRunLevelOutcome Outcome)
+{
+	if (!World || World != TrackedWorld.Get() || bLevelEnded)
+	{
+		return;
+	}
+	bLevelEnded = true;
+
+	FRRRunLogLevelEntry Entry;
+	Entry.Stats = GetCurrentLevelStats();
+	Entry.LevelOutcome = GetLevelOutcomeName(Outcome);
+	Entry.TimePerLevelSeconds = static_cast<float>(World->GetTimeSeconds() - Entry.Stats.LevelStartWorldSeconds);
+	Entry.OreCollectedInRiskWindow = OreInRiskWindow;
+
+	const URRRunFlowSubsystem* RunFlow = World->GetSubsystem<URRRunFlowSubsystem>();
+	const ARRShuttle* Shuttle = RunFlow ? RunFlow->GetShuttle() : nullptr;
+	if (Outcome == ERRRunLevelOutcome::Extracted && Shuttle && Shuttle->IsFinished() && Shuttle->WasExtracted())
+	{
+		Entry.bReachedShuttle = true;
+		Entry.TimeLeftAtShuttleSeconds = Shuttle->GetRemainingSeconds();
+	}
+	CollectEventsMet(RunFlow, Entry.EventsMet);
+
+	if (!bRunOpen)
+	{
+		BeginRunRecord();
+		Run.Layouts.Add(Entry.Stats.LayoutName);
+	}
+	Run.Levels.Add(Entry);
+
+	// The run goes on only after an extraction from a level that is not the run's last (the intermission follows).
+	const URRRunSubsystem* RunSubsystem = URRRunSubsystem::Get(World);
+	const bool bRunEnds = Outcome != ERRRunLevelOutcome::Extracted || !RunSubsystem || !RunSubsystem->IsRunInProgress() || RunSubsystem->IsLastLevel();
+	if (bRunEnds)
+	{
+		EndRunRecord(Outcome == ERRRunLevelOutcome::Extracted ? FString(TEXT("won")) : Entry.LevelOutcome);
+	}
+	UE_LOG(LogRogueRigs, Log, TEXT("RunLog: level %d (%s) ended: %s after %.1f s, shuttle time left %s, risk-window ore %d, %d event(s) met; run %s."),
+		Entry.Stats.LevelIndex, *Entry.Stats.LayoutName, *Entry.LevelOutcome, Entry.TimePerLevelSeconds,
+		Entry.bReachedShuttle ? *FString::Printf(TEXT("%.1f s"), Entry.TimeLeftAtShuttleSeconds) : TEXT("null"),
+		Entry.OreCollectedInRiskWindow, Entry.EventsMet.Num(), *Run.Outcome);
+	WriteRunFile();
+}
+
+void URRRunLogSubsystem::BeginRunRecord()
+{
+	if (bRunOpen)
+	{
+		EndRunRecord(TEXT("abandoned"));
+		WriteRunFile();
+	}
+
+	Run = FRRRunLogRecord();
+	Run.RunId = FDateTime::Now().ToString(TEXT("%Y%m%d-%H%M%S"));
+	const FString Directory = FRRRunLogWriter::GetRunLogDirectory();
+	Run.FilePath = FPaths::Combine(Directory, Run.RunId + TEXT(".json"));
+	for (int32 Suffix = 2; FPaths::FileExists(Run.FilePath); ++Suffix)
+	{
+		Run.FilePath = FPaths::Combine(Directory, FString::Printf(TEXT("%s_%d.json"), *Run.RunId, Suffix));
+	}
+	Run.StartTimeUtc = FDateTime::UtcNow();
+	Run.BuildVersion = FApp::GetBuildVersion();
+	Run.BuildConfiguration = LexToString(FApp::GetBuildConfiguration());
+	Run.Outcome = TEXT("in_progress");
+	bRunOpen = true;
+	UE_LOG(LogRogueRigs, Log, TEXT("RunLog: run %s started (file %s)."), *Run.RunId, *Run.FilePath);
+	WriteRunFile();
+}
+
+void URRRunLogSubsystem::EndRunRecord(const FString& RunOutcome)
+{
+	if (!bRunOpen)
+	{
+		return;
+	}
+	bRunOpen = false;
+	Run.bEnded = true;
+	Run.EndTimeUtc = FDateTime::UtcNow();
+	Run.Outcome = RunOutcome;
+}
+
+void URRRunLogSubsystem::WriteRunFile() const
+{
+	// Automation tests end levels in throwaway worlds: no file.
+	if (GIsAutomationTesting)
+	{
+		return;
+	}
+	FRRRunLogWriter::WriteFile(Run);
+}
+
+void URRRunLogSubsystem::CollectEventsMet(const URRRunFlowSubsystem* RunFlow, TArray<FRRRunLogEvent>& OutEvents) const
+{
+	OutEvents.Reset();
+	if (!RunFlow)
+	{
+		return;
+	}
+	if (const ARRConsole* Console = RunFlow->GetConsole())
+	{
+		OutEvents.Add({ TEXT("console"), INDEX_NONE, Console->IsComplete() ? TEXT("hacked") : TEXT("not_hacked") });
+	}
+	if (const ARRBonusChest* Chest = RunFlow->GetBonusChest())
+	{
+		OutEvents.Add({ TEXT("bonus_chest"), INDEX_NONE, Chest->IsComplete() ? TEXT("opened") : TEXT("not_opened") });
+	}
+	if (const ARREnemySpawner* Spawner = RunFlow->GetSpawner())
+	{
+		for (int32 Index = 0; Index < Spawner->GetHordeCount(); ++Index)
+		{
+			const ERRHordeState State = Spawner->GetHordeState(Index);
+			if (State != ERRHordeState::Pending)
+			{
+				OutEvents.Add({ TEXT("horde"), Index, StaticEnum<ERRHordeState>()->GetNameStringByValue(static_cast<int64>(State)).ToLower() });
+			}
+		}
+	}
+}
+
+void URRRunLogSubsystem::HandleMinerDeath(AActor* DeathInstigator)
+{
+	HandleLevelEnded(TrackedWorld.Get(), ERRRunLevelOutcome::Death);
+}
+
+void URRRunLogSubsystem::HandleShuttleLanded(ARRShuttle* Shuttle)
+{
+	bShuttleLanded = true;
+	if (const URRRunFlowSubsystem* RunFlow = BoundRunFlow.Get())
+	{
+		LastCarriedOre = RunFlow->GetCarriedOre();
+	}
+}
+
+void URRRunLogSubsystem::HandleOreChanged(int32 CarriedOre, int32 SecuredOre)
+{
+	if (bShuttleLanded && !bLevelEnded && CarriedOre > LastCarriedOre)
+	{
+		OreInRiskWindow += CarriedOre - LastCarriedOre;
+	}
+	LastCarriedOre = CarriedOre;
+}
+
+void URRRunLogSubsystem::HandleRunReset()
+{
+	if (bRunOpen)
+	{
+		EndRunRecord(TEXT("abandoned"));
+		WriteRunFile();
 	}
 }

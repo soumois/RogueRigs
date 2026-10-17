@@ -4,6 +4,7 @@
 
 #include "Run/RRRunSubsystem.h"
 #include "Run/RRRunTransitionSubsystem.h"
+#include "RunLog/RRRunLogSubsystem.h"
 
 #include "Debug/RRCheatSettings.h"
 #include "Engine/World.h"
@@ -559,6 +560,11 @@ bool URRRunFlowSubsystem::EndRun(bool bSuccess)
 	}
 	bRunEnded = true;
 	bRunSucceeded = bSuccess;
+	// Run log (sys-run-log): the level entry is captured before the ore moves and before the intermission advances the run level.
+	if (URRRunLogSubsystem* RunLog = URRRunLogSubsystem::Get(this))
+	{
+		RunLog->HandleLevelEnded(GetWorld(), bSuccess ? ERRRunLevelOutcome::Extracted : ERRRunLevelOutcome::MissedShuttle);
+	}
 	// Ore before the end event, so an end screen bound to OnRunEnded reads the final counts.
 	if (bSuccess)
 	{
