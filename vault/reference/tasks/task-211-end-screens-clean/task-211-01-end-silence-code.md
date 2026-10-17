@@ -3,7 +3,7 @@ id: task-211-01-end-silence-code
 description: "cpp: When the run ends"
 parent: task-211-end-screens-clean
 kind: task
-status: in-progress
+status: done
 ---
 # end-silence-code
 
@@ -15,11 +15,11 @@ status: in-progress
 - done_when: build succeeds; existing tests pass except the known failures; a -game log shows subtitles silenced at run won, shuttle missed and death; docs updated; committed.
 - editor_state: closed
 - token_ceiling: 50000
-- model: open
-- tokens: open
-- runs: open
+- model: opus
+- tokens: input 100, cache write 101232, cache read 3111678, output 8623
+- runs: 1
 - milestone: M2
-- result: open
+- result: Subtitles silenced for the rest of the world on OnRunEnded (run won, shuttle missed) and OnGameOver (death), allowed again in the new world after restart; URRHUDWidget OnEndScreenShownDelegate(bRunWon, bGameOver) + BlueprintImplementableEvent OnEndScreenShown + IsEndScreenShown getters (d5862e0e, docs e553915c). Rendered -game logs for the three cases. Tests: known failures plus JuiceKillDropsStreamingCubes once (passed on rerun, flaky).
 
 ## Relations
 - [[task-211-end-screens-clean]] — parent global task.

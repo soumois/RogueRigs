@@ -3,7 +3,7 @@ id: task-211-02-end-hud-bp
 description: "bp: On the end-of-run event of task-211-01, WBP_HUD and WBP_AlertObjectives hide every element except the end screen"
 parent: task-211-end-screens-clean
 kind: task
-status: todo
+status: in-progress
 ---
 # end-hud-bp
 
