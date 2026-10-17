@@ -3,7 +3,7 @@ id: task-210-02-transition-review
 description: "style-guide: Review the texts of task-210-01 against L1, L2, L4 and T1 to T9."
 parent: task-210-transition-screens-english
 kind: task
-status: todo
+status: in-progress
 ---
 # transition-review
 

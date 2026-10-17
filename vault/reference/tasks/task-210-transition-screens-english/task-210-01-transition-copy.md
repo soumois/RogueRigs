@@ -3,7 +3,7 @@ id: task-210-01-transition-copy
 description: "text: Write the English texts of the intermission"
 parent: task-210-transition-screens-english
 kind: task
-status: in-progress
+status: done
 ---
 # transition-copy
 
@@ -15,11 +15,11 @@ status: in-progress
 - done_when: text validator exits 0 if one exists; style-guide review follows; committed.
 - editor_state: any
 - token_ceiling: 30000
-- model: open
-- tokens: open
-- runs: open
+- model: sonnet
+- tokens: input 12, cache write 31234, cache read 108920, output 456
+- runs: 1
 - milestone: M2
-- result: open
+- result: screen_texts.json items intermission_recap (LEVEL {N} CLEARED; Next claim: level {NEXT} of {TOTAL}; Ore secured this level: {ORE}; Ore secured this run: {ORE}; labels Shop opens later, Continue) and loading_level (DROPPING IN; Surveying the terrain, Loading the map, Prepping the level; label Level {N}) (8a4076e0); placeholders replaced by the widget; validator exit 0.
 
 ## Relations
 - [[task-210-transition-screens-english]] — parent global task.

@@ -371,6 +371,7 @@ kind: note
 | [[task-207-01-hide-hud-code]] | opus | 1 | 0k | 98k | 3176k | 5k |
 | [[task-208-01-delay-travel-code]] | opus | 1 | 0k | 48k | 800k | 0k |
 | [[task-209-03-screen-texts-code]] | opus | 1 | 0k | 104k | 2610k | 2k |
+| [[task-210-01-transition-copy]] | sonnet | 1 | 0k | 31k | 109k | 0k |
 
 ## Totals
 | Scope | Input | Cache write | Cache read | Output |
