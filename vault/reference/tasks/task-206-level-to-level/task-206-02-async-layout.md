@@ -3,7 +3,7 @@ id: task-206-02-async-layout
 description: "cpp: Asynchronous layout provider."
 parent: task-206-level-to-level
 kind: task
-status: in-progress
+status: done
 ---
 # async-layout
 
@@ -15,11 +15,11 @@ status: in-progress
 - done_when: build succeeds; existing tests pass; a -game log shows a layout requested and ready before use, and direct PIE on L_ArenaM1 still builds arena_m1_fine; docs updated; committed.
 - editor_state: closed
 - token_ceiling: 60000
-- model: open
-- tokens: open
-- runs: open
+- model: opus
+- tokens: input 78, cache write 99219, cache read 2773011, output 2166
+- runs: 1
 - milestone: M2
-- result: open
+- result: IRRLayoutProvider + FRRJsonLayoutProvider on UE::Tasks (2c1e7e94, docs ddda9d67, new sys-run-layout): RequestLayout / IsLayoutReady / OnLayoutReady on URRRunSubsystem, requested at AdvanceToNextLevel; ARRArenaGrid builds from the prepared layout on level 2+ in a run, else its own LayoutName. -game: arena_l2 ready 110 ms after the request off the game thread, level 2 built on arena_l2; direct start builds arena_m1_fine. Tests 260 pass, 2 known pre-existing failures. Unexercised: failed-layout fallback, wait-at-build path.
 
 ## Relations
 - [[task-206-level-to-level]] — parent global task.
