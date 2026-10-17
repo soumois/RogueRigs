@@ -3,7 +3,7 @@ id: task-226-02-shield-charcoal-reimport
 description: "cpp: headless reimport of T_ChaserShield_BaseColor and T_ChaserShield_Emblem, settings kept; then one -game capture of the charcoal shield."
 parent: task-226-shield-charcoal
 kind: task
-status: todo
+status: in-progress
 ---
 # Charcoal shield: reimport and capture
 

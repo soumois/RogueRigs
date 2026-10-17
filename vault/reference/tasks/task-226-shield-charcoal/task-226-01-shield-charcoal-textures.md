@@ -3,7 +3,7 @@ id: task-226-01-shield-charcoal-textures
 description: "3D agent: shield_v2.py produces the charcoal base colour and the yellow-only emblem of variant A; regenerate the shield textures in place."
 parent: task-226-shield-charcoal
 kind: task
-status: in-progress
+status: done
 ---
 # Charcoal shield textures
 
@@ -15,11 +15,11 @@ status: in-progress
 - done_when: textures regenerated and matching variant A; previews opened by the Orchestrator; commit by path.
 - editor_state: any (no Unreal)
 - token_ceiling: open
-- model: open
-- tokens: open
-- runs: open
+- model: sonnet
+- tokens: input 34, cache write 70206, cache read 823291, output 784
+- runs: 1
 - milestone: M1
-- result: open
+- result: Commit 89f28130: shield_v2.py now outputs variant A (plate #33363B, stripes kept, grip and bolts gunmetal with a stricter yellow clean-up, emblem yellow parts only on transparent); textures regenerated (vs task-225 A: 26 base colour texels differ by more than 1/255), 12 previews re-rendered, debris texture copies updated; FBX and report restored unchanged (re-export is byte-different only in ids); debris cut-cap texel now charcoal. Open: shield_debris_pieces.py asserts a yellow cap texel and would fail if re-run; SM_ChaserShield.report.json texture notes still describe the yellow plate.
 
 ## Relations
 - [[task-226-shield-charcoal]] — parent global task.

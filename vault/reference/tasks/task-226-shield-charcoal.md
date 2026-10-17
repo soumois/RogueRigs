@@ -13,7 +13,7 @@ status: in-progress
 - gdd_check: [[task-225-shield-colour-test]] (variant A textures and renders), [[color-code]] (shield row to update), [[art-prompts-shield]], [[kessler-voss-logo]] (the logo on the shield is now yellow only, no plate). The debris material reads the same Unreal textures, so the fragments follow.
 - confirmed_by_owner: yes
 - milestone: M1
-- next_step: task-226-01-shield-charcoal-textures
+- next_step: task-226-02-shield-charcoal-reimport
 - result: open
 
 ## Subtasks

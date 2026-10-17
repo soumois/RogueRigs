@@ -411,6 +411,7 @@ kind: note
 | [[task-224-04-shield-debris-direction-capture]] | opus | 1 | 0k | 58k | 542k | 6k |
 | [[task-219-05-rock-look-c-review]] | opus | 1 | 0k | 28k | 43k | 8k |
 | [[task-219-03-rock-render-note]] | opus | 1 | 0k | 49k | 542k | 0k |
+| [[task-226-01-shield-charcoal-textures]] | sonnet | 1 | 0k | 70k | 823k | 1k |
 
 ## Totals
 | Scope | Input | Cache write | Cache read | Output |
