@@ -3,7 +3,7 @@ id: task-205-03-layout-l3
 description: "level-design: Write arena_l3 the same way, starting from the rules refined in task-205-02, with a different seed, and report the rules it had to refine.."
 parent: task-205-level-layouts-240
 kind: task
-status: todo
+status: in-progress
 ---
 # layout-l3
 

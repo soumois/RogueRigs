@@ -3,7 +3,7 @@ id: task-205-02-layout-l2
 description: "level-design: Write arena_l2."
 parent: task-205-level-layouts-240
 kind: task
-status: in-progress
+status: done
 ---
 # layout-l2
 
@@ -15,11 +15,11 @@ status: in-progress
 - done_when: node Tools/validate_layout.js Content/RogueRigs/Data/Levels/arena_l2.json --brief Content/RogueRigs/Data/Levels/arena_l2.brief.json exits 0; brief bounds equal arena_m1_fine.brief.json; the orchestrator records the refined rules in layout-generator-recipe or agent-level-design; committed.
 - editor_state: any
 - token_ceiling: 30000
-- model: open
-- tokens: open
-- runs: open
+- model: sonnet
+- tokens: input 16, cache write 20866, cache read 103534, output 309
+- runs: 1
 - milestone: M2
-- result: open
+- result: arena_l2 (43cd430e): seed 2300, default params, chosen among 9 passing seeds by a 24 x 24 open-fraction scan; coverage 56.0 %, reach 85.5 %, passage 3, heal 48, barrels 15, 7 pockets. Weak: one straight lane of about 36 cells on the left, a thick upper-left rock mass (0.10 open). Refined rules recorded in layout-review-rules.
 
 ## Relations
 - [[task-205-level-layouts-240]] — parent global task.

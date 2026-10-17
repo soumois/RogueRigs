@@ -357,6 +357,7 @@ kind: note
 | [[task-204-01-empty-bar-color]] | sonnet | 1 | 0k | 40k | 403k | 1k |
 | [[task-204-02-empty-bar-capture]] | opus | 1 | 0k | 27k | 145k | 1k |
 | [[task-205-01-direct-240-generator]] | opus | 1 | 0k | 88k | 1491k | 15k |
+| [[task-205-02-layout-l2]] | sonnet | 1 | 0k | 21k | 104k | 0k |
 
 ## Totals
 | Scope | Input | Cache write | Cache read | Output |

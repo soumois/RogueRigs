@@ -13,7 +13,7 @@ status: in-progress
 - gdd_check: [[arena-grid]] (approved; updated 2026-10-17: Level-Design writes each run level at 240 x 240 beforehand until the C++ generator exists), [[layout-generator-recipe]], [[level-layout-schema]]. Owner 2026-10-17: generate directly at 240 x 240 (more organic than 80 x 80 upscaled), same brief as arena_m1_fine, level 1 stays arena_m1_fine.
 - confirmed_by_owner: yes (2026-10-17)
 - milestone: M2
-- next_step: task-205-02-layout-l2
+- next_step: task-205-03-layout-l3
 - result: open
 
 ## Subtasks
