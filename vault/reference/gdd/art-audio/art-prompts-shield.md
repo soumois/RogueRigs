@@ -12,7 +12,9 @@ Owner decisions (2026-10-17): the shield chaser carries a physical riot shield, 
 - Validated sheet (front, side, back): `vault/assets/shield-turnaround.webp`, generated in ChatGPT by the owner from the prompt below.
 - Meshy view prompts (front, back, left, right; front asked without emblem): `Art/Source/shield-meshy/prompts/`.
 - The four generated views, Meshy input (front without emblem): `vault/assets/shield-meshy-{front,left,back,right}.webp` (left = front face to the left of the image).
-- Raw Meshy mesh, untextured: `Art/Source/shield-meshy/meshy-raw/Meshy_AI__1017052835_model-edit.fbx` (copied from the owner's Downloads).
+- Raw Meshy mesh, untextured: `Art/Source/shield-meshy/meshy-raw/Meshy_AI__1017052835_model-edit.fbx` (copied from the owner's Downloads). Superseded.
+- Second Meshy mesh by the owner (2804 tris, textured; only the base colour is kept): `Art/Source/shield-meshy/meshy-v2/`, with the owner crops (`owner-remove-bracket.png`, `owner-back-top-stripes.png`) and raw renders (`inspect/`).
+- Game mesh, validated by the owner 2026-10-17: `Art/Meshes/ChaserShield/SM_ChaserShield.fbx` (977 tris, 82 cm, front +X, bottom-centre pivot), `T_ChaserShield_BaseColor.png` 1024, report and previews; built by `Tools/art/blender/shield_v2.py` (task-216). Back: flat yellow plate, dark grip bar with three mounts, no side bracket; stripes run from the front top band over the top face to the back top band.
 
 ## Sheet prompt (verbatim, attachments: `chaser-turnaround.png` and the emblem)
 ```
@@ -26,8 +28,9 @@ Keep this exact shield and the attached robot unchanged. Character sheet on a pl
 ```
 
 ## Next steps (open)
-- Texture in Blender from the views: flat yellow front, stripes, gunmetal back; emblem as a decal from the emblem-only logo.
-- Readability: the camera sees mostly the top edge (A12), hence the stripes on the top edge.
+- Emblem decal on the front centre, from the emblem-only logo (not generated yet).
+- Unreal import, attachment to the shield chaser (grip offset in the report), run and bash clips.
+- Readability: the camera sees mostly the top edge (A12), hence the stripes over the top.
 - Gameplay: whether the shield blocks only from the front is open; today it is a 30-point pool ([[enemy-chaser]]).
 
 ## Relations

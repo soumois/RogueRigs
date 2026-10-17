@@ -1,0 +1,152 @@
+{
+  "asset": "SM_ChaserShield",
+  "route": "blender (second Meshy mesh, no Meshy call, no credit)",
+  "script": "Tools/art/blender/shield_v2.py",
+  "source_mesh": "Art/Source/shield-meshy/meshy-v2/Meshy_AI_Hazard_Panel_1017060515_texture_fbx/Meshy_AI_Hazard_Panel_1017060515_texture.fbx",
+  "tris_in": 2804,
+  "tris_out": 977,
+  "tris_breakdown": {
+    "plate_and_bolts": 256,
+    "grip": 723,
+    "grip_before_decimation": 1451
+  },
+  "dimensions_cm": {
+    "x": 9.95,
+    "y": 42.8,
+    "z": 82.0
+  },
+  "height_to_width_ratio": 1.916,
+  "pivot": "bottom-centre",
+  "front_axis": "+X",
+  "bbox_min": [
+    -4.977,
+    -21.4,
+    0.0
+  ],
+  "bbox_max": [
+    4.977,
+    21.4,
+    82.0
+  ],
+  "materials": [
+    "M_ChaserShield"
+  ],
+  "textures": [
+    "T_ChaserShield_BaseColor.png"
+  ],
+  "texture_px": [
+    1024,
+    1024
+  ],
+  "texture_note": "diffuse colour baked from the Meshy mesh (selected to active); plate faces repainted flat yellow, stripes painted by one function (60 degree lines, period 8.5 cm) over the front and back top bands, corner bands and the whole top face",
+  "colours_srgb": {
+    "yellow": [
+      0.988,
+      0.78,
+      0.047
+    ],
+    "black": [
+      0.267,
+      0.267,
+      0.267
+    ],
+    "gunmetal": [
+      0.31,
+      0.314,
+      0.318
+    ]
+  },
+  "uv_layers": [
+    "UVMap",
+    "LightMap"
+  ],
+  "uv_checks": {
+    "UVMap": {
+      "triangles": 977,
+      "overlapping_triangle_pairs": 0,
+      "zero_area_triangles": 0,
+      "bounds_min": [
+        0.00302,
+        0.00302
+      ],
+      "bounds_max": [
+        0.93215,
+        0.99698
+      ],
+      "min_border_px_at_1024": 3.091,
+      "required_border_px": 2,
+      "pass": true
+    },
+    "LightMap": {
+      "triangles": 977,
+      "overlapping_triangle_pairs": 0,
+      "zero_area_triangles": 0,
+      "bounds_min": [
+        0.01081,
+        0.0109
+      ],
+      "bounds_max": [
+        0.98797,
+        0.98925
+      ],
+      "min_border_px_at_256": 2.751,
+      "required_border_px": 2,
+      "pass": true
+    }
+  },
+  "grip_offset_cm": [
+    -2.01,
+    -4.6,
+    39.53
+  ],
+  "grip_offset_note": "centre of the bounding box of the middle grip block, from the pivot, Unreal axes (x, -y, z) in cm; front is +X so x is negative (behind the plate)",
+  "shading": "flat",
+  "warnings": [
+    "grip is the decimated Meshy grip (not planar); plate, slab sides, groove and bolts are exactly planar prisms",
+    "T_ChaserShield_BaseColor.png on UVMap: import the texture separately in Unreal"
+  ],
+  "fidelity": {
+    "returns_used": 4,
+    "returns_log": [
+      "1 UV overlap (twisted groove ring corner) fixed, unwrap angle 10 deg",
+      "2 stripe edges anti-aliased, preview framing portrait",
+      "3 groove walls kept yellow, BL band widened to match the TR band, ring offsets aligned",
+      "4 one-sided Meshy fin under the upper mount removed, yellow bake bleed on the grip recoloured"
+    ],
+    "criteria": {
+      "C1": {
+        "verdict": "pass",
+        "evidence": "977 tris (plate and bolts 256, grip 723), report tris_out."
+      },
+      "C2": {
+        "verdict": "pass",
+        "evidence": "front, back and top faces are exact planar prisms (rebuilt from the measured silhouette); front, back, tq_front and top_close renders show no wobble or fold, unlike the Meshy inspect renders."
+      },
+      "C3": {
+        "verdict": "pass",
+        "evidence": "back and tq_back renders: only the vertical bar, the middle block with two screws and the two end mounts remain; plate is flat yellow where the bracket and its octagonal flange were (compare owner-remove-bracket.png); no seam, one-sided fin removed; texel size about 0.14 cm, edges anti-aliased."
+      },
+      "C4": {
+        "verdict": "pass",
+        "evidence": "back, tq_back, grip_close and right renders: vertical bar with the three dark mounts (top, middle block, bottom) as in v2_back; C-shaped side profile kept as in v2_right. The grip is the decimated Meshy mesh, so its faces are not planar."
+      },
+      "C5": {
+        "verdict": "pass",
+        "evidence": "front render: top band, top-right and bottom-left corner bands; back render: top band, top-left and bottom-right bands, 4 stripes on the top band, as in v2_front and v2_back and owner-back-top-stripes.png. Stripes follow ONE function fitted on the Meshy texture (60 degree lines, period 8.5 cm; fit correlation 0.79 to 0.95), so phase and width differ slightly from the Meshy picture (the BL band was widened to the TR band width, 6.4 cm). A small mitre notch shows where the top band meets the TR band, front and back."
+      },
+      "C6": {
+        "verdict": "pass",
+        "evidence": "top_plan and top_close renders: the stripes cross the top face as straight bands that continue the front and back band stripes edge to edge; no break in top_close and top_close_back (three-quarter top views)."
+      },
+      "C7": {
+        "verdict": "pass",
+        "evidence": "front render: centre plain flat yellow, only the four octagonal dark bolts."
+      },
+      "C8": {
+        "verdict": "pass",
+        "evidence": "dimensions 9.95 x 42.8 x 82.0 cm, ratio 1.916."
+      }
+    },
+    "final_render": "Art/Meshes/ChaserShield/preview/ChaserShield_tq_back.png"
+  }
+}
