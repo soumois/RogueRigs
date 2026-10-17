@@ -11,7 +11,7 @@ status: approved
 - Blocks are always low, so nothing hides a unit from the near-vertical camera.
 - Floor is clean: no scattered pebbles.
 - Arena edge: a cliff into open space (stars, planet). No indestructible rock in the rock biome.
-- Layouts: M1 uses one fixed layout written as grid JSON by the Level-Design agent; M2 uses a deterministic C++ generator (no runtime AI).
+- Layouts: M1 uses one fixed layout written as grid JSON by the Level-Design agent; M2 uses a deterministic C++ generator (no runtime AI); until it exists, the Level-Design agent writes each level layout of the run beforehand, at 240 × 240 directly (owner 2026-10-17).
 - Arena shape: an irregular asteroid inside the grid, never a rectangle. Cells outside it are void: no floor, no block; the floor edge is the cliff.
 - Cell types in the layout: void, rock, ore, heal_ore, special_ore, barrel, spawn (the miner's start). Robots, consoles, bonus chests and the shuttle are placed during play, not in the layout ([[level-flow]]). Format: [[level-layout-schema]].
 - M1 arena: 240 × 240 cells of 67 uu, the same world size as the former 80 × 80 cells of 200 uu (owner 2026-10-06: finer, more organic destruction like DRGS slabs).

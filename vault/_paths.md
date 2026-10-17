@@ -143,6 +143,7 @@ hud-refactor-audit-core  reference/tech/blueprints/ui/hud-refactor-audit-core.md
 hud-refactor-audit-run  reference/tech/blueprints/ui/hud-refactor-audit-run.md
 hud-refactor-missing-events  reference/tech/blueprints/ui/hud-refactor-missing-events.md
 instructor-feedback  reference/course/instructor-feedback.md
+intermission  reference/gdd/run/intermission.md
 kessler-voss-logo  reference/gdd/art-audio/kessler-voss-logo.md
 kie-image-workflow  reference/tech/pipelines/kie-image-workflow.md
 layout-generator-recipe  reference/tech/pipelines/layout-generator-recipe.md
@@ -207,6 +208,7 @@ readability-rules  reference/gdd/art-audio/readability-rules.md
 root  root.md
 run-index  reference/gdd/run/run-index.md
 run-log-schema  reference/tech/pipelines/run-log-schema.md
+run-shop  reference/gdd/run/run-shop.md
 run-structure  reference/gdd/run/run-structure.md
 shotgun  reference/gdd/weapons/shotgun.md
 sys-actor-pool  reference/tech/systems/world/sys-actor-pool.md

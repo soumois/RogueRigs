@@ -17,3 +17,5 @@ kind: note
 - [[extraction]] — shuttle landing, countdown, risk window, missed shuttle.
 - [[xp-level-up]] — XP drops, level-up bar, the 3-card upgrade choice.
 - [[ore-economy]] — when ore is secured or lost, meta-progression.
+- [[intermission]] — screen between two levels: recap, shop slot, next terrain prepared, loading screen.
+- [[run-shop]] — run-only purchases between levels, paid in ore; content open.
