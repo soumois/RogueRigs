@@ -1,9 +1,9 @@
 ---
 id: task-216-02-shield-v2-simplify
-description: "3D agent: simplify the owner's second Meshy shield to about 1k flat tris, remove the back side bracket, rebake and fix the texture, stripes over the top."
+description: "3D agent: second Meshy shield simplified to about 1k flat tris, back bracket removed, texture rebaked, stripes running over the top."
 parent: task-216-shield-texture
 kind: task
-status: in-progress
+status: review
 ---
 # Shield v2: simplify, remove bracket, retexture back
 
@@ -21,11 +21,11 @@ status: in-progress
 - done_when: every criterion passes from the renders (or open failures reported after 5 returns); the Orchestrator opens the renders.
 - editor_state: any (no Unreal import)
 - token_ceiling: open
-- model: open
-- tokens: open
-- runs: open
+- model: sonnet (agent-3d)
+- tokens: 182.3k subagent tokens in total as reported by the harness
+- runs: 1
 - milestone: M1
-- result: open
+- result: script `Tools/art/blender/shield_v2.py`; `Art/Meshes/ChaserShield/SM_ChaserShield.fbx` 977 tris (plate and bolts 256, grip 723), 9.95 x 42.8 x 82 cm, one material, `T_ChaserShield_BaseColor.png` 1024, UV0 and UV1 checks pass, grip_offset_cm (-2.0, -4.6, 39.5); 4 returns, C1-C8 pass. Deviation: the plate was rebuilt from planar faces measured on the Meshy mesh (too wobbly to flatten); the grip is the decimated Meshy grip. Open: the inner border groove (0.7 cm) is almost invisible, the grip keeps some bake noise, the back corner stripes read as diamonds. Renders sent to the owner; files not committed until the owner validates.
 
 ## Relations
 - [[task-216-shield-texture]] — parent global task.
