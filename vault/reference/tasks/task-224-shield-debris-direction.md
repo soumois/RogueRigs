@@ -1,9 +1,9 @@
 ---
 id: task-224-shield-debris-direction
 description: "Throw the shield fragments along the breaking hit like the robot pieces, turned 20 degrees toward the shield side unless the hit came from behind."
-parent: tasks-to-do-index
+parent: tasks-done-index
 kind: task
-status: in-progress
+status: done
 ---
 # Shield debris: hit-driven throw with a shield-side bias
 
@@ -13,8 +13,8 @@ status: in-progress
 - gdd_check: [[enemy-death]] (robot pieces thrown along the last hit), [[bp-robot-debris]] (velocity from User.HitDirection), [[bp-shield-debris]] (current: owner forward, no user parameter). Definitions (Orchestrator): hit direction = horizontal travel direction of the breaking hit (RecordHitDirection); "from behind" = that direction points along the robot forward (dot > 0); shield side = the side of the shield fragments' offsets (negative Unreal Y in shield_debris_pieces.json = robot left); fallback without a recorded hit = the robot backward direction, then the same rule.
 - confirmed_by_owner: yes
 - milestone: M1
-- next_step: task-224-04-shield-debris-direction-capture
-- result: open
+- next_step: none
+- result: Done. Commit c7611a63: vault/assets/shield-chaser-debris-direction.png; one -game run; robot facing the miner, rr.Debug.BreakShields (miner hit from the front): fragments travel back and toward the robot left (shield side), about +163 px back and +58 px left from the break point, about 20 degrees; no Blueprint or Niagara error. Fragments look like long motion-blur streaks (game at 4-6 fps during shots); BreakShields counts 6 living shield chasers for 1 spawned.
 
 ## Subtasks
 - [[task-224-01-shield-debris-direction-cpp]] — cpp: direction function, debug break records a miner hit.
@@ -23,6 +23,6 @@ status: in-progress
 - [[task-224-04-shield-debris-direction-capture]] — cpp: one `-game` run, capture.
 
 ## Relations
-- [[tasks-to-do-index]] — parent index.
+- [[tasks-done-index]] — parent index.
 - [[bp-shield-debris]] — the system changed.
 - [[task-222-shield-break-debris]] — the debris it refines.
