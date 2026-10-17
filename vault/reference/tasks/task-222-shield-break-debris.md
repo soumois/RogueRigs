@@ -13,7 +13,7 @@ status: in-progress
 - gdd_check: [[enemy-death]] (robot debris look: 2 to 4 pieces, gravity, bounce, sink after 4.5 s), [[enemy-chaser]] (shield variant), [[art-prompts-shield]]. Defaults (Orchestrator): 5 fragments of the scaled shield (98 cm): four plate shards (the emblem shard among them) and the grip; all thrown each time; same life, gravity, bounce, collision and sink as NS_RobotDebris; thrown away from the robot front with a random spread (C++ hit direction is not reachable from Blueprint, no C++ change); spawned without pool (once per shield chaser).
 - confirmed_by_owner: yes
 - milestone: M1
-- next_step: task-222-04-bp-shield-chaser-debris
+- next_step: task-222-05-shield-debris-capture
 - result: open
 
 ## Subtasks

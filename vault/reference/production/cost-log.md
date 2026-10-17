@@ -400,6 +400,7 @@ kind: note
 | [[task-222-01-shield-debris-pieces]] | sonnet | 1 | 0k | 106k | 2120k | 11k |
 | [[task-222-02-shield-debris-import]] | sonnet | 1 | 0k | 43k | 457k | 1k |
 | [[task-222-03-ns-shield-debris]] | sonnet | 1 | 0k | 68k | 1344k | 1k |
+| [[task-222-04-bp-shield-chaser-debris]] | sonnet | 1 | 0k | 38k | 596k | 1k |
 
 ## Totals
 | Scope | Input | Cache write | Cache read | Output |

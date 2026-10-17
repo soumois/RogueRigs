@@ -3,7 +3,7 @@ id: task-222-05-shield-debris-capture
 description: "cpp: -game capture of a shield chaser's shield breaking into fragments, frames for the owner."
 parent: task-222-shield-break-debris
 kind: task
-status: todo
+status: in-progress
 ---
 # Shield debris: in-game capture
 
