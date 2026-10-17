@@ -3,7 +3,7 @@ id: task-210-03-intermission-bp
 description: "bp: WBP_Intermission uses the validated English texts."
 parent: task-210-transition-screens-english
 kind: task
-status: in-progress
+status: done
 ---
 # intermission-bp
 
@@ -15,11 +15,11 @@ status: in-progress
 - done_when: widget compiles and saves; doc updated; committed.
 - editor_state: open
 - token_ceiling: 30000
-- model: open
-- tokens: open
-- runs: open
+- model: sonnet
+- tokens: input 74, cache write 65652, cache read 1375149, output 1035
+- runs: 1
 - milestone: M2
-- result: open
+- result: WBP_Intermission OnRecapShown reads intermission_recap via GetScreenText, literal replaces of {N}, {NEXT}, {TOTAL}, {ORE}; English tree defaults kept when the text is missing; ShopLabel and ContinueText made variables (8a5dda44). Unseen on screen.
 
 ## Relations
 - [[task-210-transition-screens-english]] — parent global task.

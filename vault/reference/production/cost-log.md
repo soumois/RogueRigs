@@ -375,6 +375,7 @@ kind: note
 | [[task-210-02-transition-review]] | opus | 1 | 0k | 19k | 81k | 3k |
 | [[task-207-02-capture]] | opus | 1 | 0k | 47k | 364k | 1k |
 | [[task-209-04-run-won-bp]] | sonnet | 1 | 0k | 52k | 747k | 1k |
+| [[task-210-03-intermission-bp]] | sonnet | 1 | 0k | 66k | 1375k | 1k |
 
 ## Totals
 | Scope | Input | Cache write | Cache read | Output |
