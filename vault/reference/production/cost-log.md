@@ -383,6 +383,7 @@ kind: note
 | [[task-211-01-end-silence-code]] | opus | 1 | 0k | 101k | 3112k | 9k |
 | [[task-211-02-end-hud-bp]] | sonnet | 1 | 0k | 95k | 3471k | 1k |
 | [[task-211-03-end-capture]] | opus | 1 | 0k | 84k | 792k | 1k |
+| [[task-212-01-collector]] | opus | 1 | 0k | 260k | 4605k | 11k |
 
 ## Totals
 | Scope | Input | Cache write | Cache read | Output |

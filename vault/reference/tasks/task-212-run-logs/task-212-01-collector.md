@@ -3,7 +3,7 @@ id: task-212-01-collector
 description: "cpp: URRRunLogSubsystem"
 parent: task-212-run-logs
 kind: task
-status: in-progress
+status: done
 ---
 # collector
 
@@ -15,11 +15,11 @@ status: in-progress
 - done_when: build succeeds; tests pass except the known failures; a -game log dump of the counters after some fighting and digging; doc written; committed.
 - editor_state: closed
 - token_ceiling: 80000
-- model: open
-- tokens: open
-- runs: open
+- model: opus
+- tokens: input 104, cache write 260148, cache read 4604536, output 11185
+- runs: 1
 - milestone: M2
-- result: open
+- result: URRRunLogSubsystem (game instance) per-level FRRRunLevelStats: terrain by source and type, damage dealt per weapon (raw, turret credited to its launcher), kills by robot type and source, upgrades picked (card ids), damage taken by source, XP collected; hooks OnCellDestroyed, new static URRHealthAttributeSet::OnAnyDamageReceived, OnUpgradeApplied, OnXPGained; reset at the first miner BeginPlay of each world; rr.RunLog.Dump (6ce92f72, docs 1f1ae354, new sys-run-log). -nullrhi dumps plausible. Unexercised: barrel and shot terrain, ore types, turret credit, travel; kamikaze self-detonations are not kills.
 
 ## Relations
 - [[task-212-run-logs]] — parent global task.

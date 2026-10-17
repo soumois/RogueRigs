@@ -13,7 +13,7 @@ status: in-progress
 - gdd_check: [[run-log-schema]] (format and field names open), [[intermission]] (recap will later show DPS per weapon and robots killed), [[level-flow]], [[extraction]]. Owner 2026-10-17 defaults accepted: JSON, one file per run in Saved/RunLogs/<date-time>.json, one entry per level written at level end (extracted, death, missed shuttle), snake_case field names from the schema list, all 11 fields; no intermission recap change now.
 - confirmed_by_owner: yes (2026-10-17)
 - milestone: M2
-- next_step: task-212-01-collector
+- next_step: task-212-02-writer
 - result: open
 
 ## Subtasks

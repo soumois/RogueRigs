@@ -3,7 +3,7 @@ id: task-212-02-writer
 description: "cpp: At each level end"
 parent: task-212-run-logs
 kind: task
-status: todo
+status: in-progress
 ---
 # writer
 
