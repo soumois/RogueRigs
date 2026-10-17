@@ -3,7 +3,7 @@ id: task-221-03-xp-chip-cleanup
 description: "bp: delete SM_XPChipBig and the M_XPChip_* materials once nothing references them, delete the chip FBX and Blender scripts, fix docs."
 parent: task-221-xp-cube-integration
 kind: task
-status: in-progress
+status: done
 ---
 # XP chip cleanup
 
@@ -16,11 +16,11 @@ status: in-progress
 - done_when: referencer lists empty before each delete; folder gone; git shows the removals; lint clean.
 - editor_state: open (launched by the Orchestrator)
 - token_ceiling: open
-- model: open
-- tokens: open
-- runs: open
+- model: sonnet
+- tokens: input 36, cache write 34329, cache read 427657, output 978
+- runs: 1
 - milestone: M1
-- result: open
+- result: Commit 60766d74: referencers checked empty, then deleted SM_XPChipBig, the seven M_XPChip_* and the folder; git rm Art/Meshes/xp-chip-big-mesh/, xp_chip_big_mesh.py, xp_chip_big_preview.py, Art/Source/xp-chip/; docs bp-pickup-xp, tool-unreal-reimport, art-prompts-xp-core updated. Kept: vault/assets/xp-chip-big.png (prompt input image); two stale comments in xp_cube_big_mesh.py.
 
 ## Relations
 - [[task-221-xp-cube-integration]] — parent global task.

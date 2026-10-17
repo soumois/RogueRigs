@@ -3,7 +3,7 @@ id: task-221-04-xp-cube-capture
 description: "cpp: -game capture of big XP data cubes on the floor (any orientation, glow), image for the owner."
 parent: task-221-xp-cube-integration
 kind: task
-status: todo
+status: in-progress
 ---
 # XP cube: in-game capture
 
