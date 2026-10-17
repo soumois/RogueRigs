@@ -34,6 +34,9 @@ DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FRROnMinimapTextureReadySignature, U
 /** URRHUDWidget::OnMinimapViewChanged: the minimap content or view changed; State = GetMinimapState now. */
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FRROnMinimapViewChangedSignature, const FRRMinimapState&, State);
 
+/** URRHUDWidget::OnEndScreenShownDelegate: an end screen shows; bRunWon = run won screen, bGameOver = miner death, both false = run lost (shuttle missed). */
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_TwoParams(FRROnEndScreenShownSignature, bool, bRunWon, bool, bGameOver);
+
 /** URRHUDWidget::OnLocatorViewChanged: the locator arrow inputs changed; Locator = GetObjectiveLocator now (bHasLocator its result). */
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_TwoParams(FRROnLocatorViewChangedSignature, bool, bHasLocator, const FRRObjectiveLocator&, Locator);
 
@@ -133,6 +136,26 @@ public:
 
 	/** Minimap data object (null until a built grid was found); tests read its seen-pass and update counters. */
 	const URRMinimap* GetMinimap() const { return Minimap; }
+
+	/**
+	 * Fired once per world when an end screen shows (task-211-01): bRunWon = success screen of the last level (run won), else
+	 * the run-lost screen (shuttle missed) or, bGameOver, the miner's death. Panels (URRHUDPanelWidget, BindToHUD) bind it to hide
+	 * themselves; the panel that draws the end screen (WBP_AlertObjectives) keeps it. Same moment as the OnEndScreenShown event.
+	 */
+	UPROPERTY(BlueprintAssignable, Category = "HUD|Run")
+	FRROnEndScreenShownSignature OnEndScreenShownDelegate;
+
+	/** True once an end screen is shown in this world (run won, shuttle missed, game over); false again only in a new world (restart). */
+	UFUNCTION(BlueprintPure, Category = "HUD|Run")
+	bool IsEndScreenShown() const { return bEndScreenShown; }
+
+	/** True when the shown end screen is the run won screen; false when none or a loss. */
+	UFUNCTION(BlueprintPure, Category = "HUD|Run")
+	bool IsEndScreenRunWon() const { return bEndScreenShown && bEndScreenRunWon; }
+
+	/** True when the shown end screen is the miner's death (game over); false when none or a shuttle end. */
+	UFUNCTION(BlueprintPure, Category = "HUD|Run")
+	bool IsEndScreenGameOver() const { return bEndScreenShown && bEndScreenGameOver; }
 
 	/** Fired once when the minimap texture exists (set it on the minimap material). Read GetMinimapTexture at bind time too. */
 	UPROPERTY(BlueprintAssignable, Category = "HUD|Minimap")
@@ -547,6 +570,17 @@ protected:
 	UFUNCTION(BlueprintImplementableEvent, Category = "HUD|Run")
 	void OnRunEnded(bool bSuccess);
 
+	/**
+	 * Display event (task-211-01): an end screen shows, once per world, right after OnRunEnded or OnGameOver (and on binding
+	 * after the end). bRunWon = run won screen; bGameOver = miner death; both false = run lost (shuttle missed). Hide every HUD
+	 * element except the end screen here; the restart opens a new world with a fresh HUD. Implement in Blueprint.
+	 */
+	UFUNCTION(BlueprintImplementableEvent, Category = "HUD|Run")
+	void OnEndScreenShown(bool bRunWon, bool bGameOver);
+
+	/** Sets the end screen state once (later calls ignored), then calls OnEndScreenShown and OnEndScreenShownDelegate. */
+	void ShowEndScreen(bool bRunWon, bool bGameOver);
+
 	/** Run flow OnShuttleCountdown callback. */
 	UFUNCTION()
 	void HandleShuttleCountdown(float RemainingSeconds, FVector ShuttleLocation);
@@ -628,6 +662,15 @@ protected:
 
 	/** Game mode whose OnGameOver is bound. */
 	TWeakObjectPtr<ARRGameMode> BoundGameMode;
+
+	/** True once an end screen is shown (ShowEndScreen). */
+	bool bEndScreenShown = false;
+
+	/** The shown end screen is the run won screen. */
+	bool bEndScreenRunWon = false;
+
+	/** The shown end screen is the miner's death. */
+	bool bEndScreenGameOver = false;
 
 	/** Run flow whose events are bound. */
 	TWeakObjectPtr<URRRunFlowSubsystem> BoundRunFlow;

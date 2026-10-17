@@ -22,6 +22,8 @@
 #include "Player/RRMiner.h"
 #include "Progression/RRLevelUpComponent.h"
 #include "Progression/RRProgressionComponent.h"
+#include "RogueRigs.h"
+#include "Run/RRRunTransitionSubsystem.h"
 #include "Text/RRSubtitleSubsystem.h"
 #include "Text/RRTextContentSubsystem.h"
 #include "UI/RRHUDPanelWidget.h"
@@ -300,6 +302,10 @@ void URRHUDWidget::BindToGameMode(ARRGameMode* GameMode)
 	if (GameMode)
 	{
 		GameMode->OnGameOver.AddUniqueDynamic(this, &URRHUDWidget::HandleGameOver);
+		if (GameMode->IsGameOver())
+		{
+			ShowEndScreen(false, true);
+		}
 	}
 }
 
@@ -368,6 +374,12 @@ void URRHUDWidget::BindToRunFlow(URRRunFlowSubsystem* RunFlow)
 	if (RunFlow->IsRunEnded())
 	{
 		OnRunEnded(RunFlow->WasRunSuccessful());
+		// A level 1-3 success ends the flow without an end screen (intermission, task-206-03).
+		const URRRunTransitionSubsystem* Transition = URRRunTransitionSubsystem::Get(this);
+		if (!RunFlow->WasRunSuccessful() || !Transition || Transition->IsRunWon())
+		{
+			ShowEndScreen(RunFlow->WasRunSuccessful(), false);
+		}
 	}
 	OnAlertEventsChanged(RunFlow->GetAlertBarEvents());
 }
@@ -813,6 +825,23 @@ void URRHUDWidget::HandleShuttleCountdown(float RemainingSeconds, FVector Shuttl
 void URRHUDWidget::HandleRunEnded(bool bSuccess)
 {
 	OnRunEnded(bSuccess);
+	// OnRunEnded fires only for an end screen: success = last level, run won (levels 1-3 open the intermission instead).
+	ShowEndScreen(bSuccess, false);
+}
+
+void URRHUDWidget::ShowEndScreen(bool bRunWon, bool bGameOver)
+{
+	if (bEndScreenShown)
+	{
+		return;
+	}
+	bEndScreenShown = true;
+	bEndScreenRunWon = bRunWon;
+	bEndScreenGameOver = bGameOver;
+	UE_LOG(LogRogueRigs, Log, TEXT("URRHUDWidget: end screen shown (%s), HUD elements hide except the end screen."),
+		bGameOver ? TEXT("game over") : (bRunWon ? TEXT("run won") : TEXT("shuttle missed")));
+	OnEndScreenShown(bRunWon, bGameOver);
+	OnEndScreenShownDelegate.Broadcast(bRunWon, bGameOver);
 }
 
 void URRHUDWidget::HandleAlertChanged(float Alert, bool bPaused)
@@ -880,6 +909,7 @@ void URRHUDWidget::HandleHealthAttributeChanged(const FOnAttributeChangeData& Ch
 void URRHUDWidget::HandleGameOver()
 {
 	OnGameOver();
+	ShowEndScreen(false, true);
 }
 
 void URRHUDWidget::HandleXPChanged(float Current, float Needed, int32 Level)

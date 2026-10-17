@@ -4,6 +4,8 @@
 
 #include "Engine/Engine.h"
 #include "Engine/World.h"
+#include "Objectives/RRRunFlowSubsystem.h"
+#include "Player/RRGameMode.h"
 #include "RogueRigs.h"
 #include "Text/RRTextContentSubsystem.h"
 
@@ -54,6 +56,16 @@ void URRSubtitleSubsystem::Deinitialize()
 		Transition->OnLoadingStarted.RemoveDynamic(this, &URRSubtitleSubsystem::HandleLoadingStarted);
 		Transition->OnLevelReady.RemoveDynamic(this, &URRSubtitleSubsystem::HandleLevelReady);
 	}
+	if (URRRunFlowSubsystem* RunFlow = BoundRunFlow.Get())
+	{
+		RunFlow->OnRunEnded.RemoveDynamic(this, &URRSubtitleSubsystem::HandleRunEnded);
+	}
+	if (ARRGameMode* GameMode = BoundGameMode.Get())
+	{
+		GameMode->OnGameOver.RemoveDynamic(this, &URRSubtitleSubsystem::HandleGameOver);
+	}
+	BoundRunFlow.Reset();
+	BoundGameMode.Reset();
 	BoundTransition.Reset();
 	Super::Deinitialize();
 }
@@ -70,7 +82,42 @@ void URRSubtitleSubsystem::HandleLoadingStarted(int32 LevelIndex, const FString&
 
 void URRSubtitleSubsystem::HandleLevelReady(int32 LevelIndex, const FString& LayoutName)
 {
-	SetSilenced(false, TEXT("level ready"));
+	// The run end keeps the silence for the rest of this world (task-211-01).
+	if (!bRunEndSilenced)
+	{
+		SetSilenced(false, TEXT("level ready"));
+	}
+}
+
+void URRSubtitleSubsystem::OnWorldBeginPlay(UWorld& InWorld)
+{
+	Super::OnWorldBeginPlay(InWorld);
+
+	if (URRRunFlowSubsystem* RunFlow = InWorld.GetSubsystem<URRRunFlowSubsystem>())
+	{
+		BoundRunFlow = RunFlow;
+		RunFlow->OnRunEnded.AddUniqueDynamic(this, &URRSubtitleSubsystem::HandleRunEnded);
+	}
+	if (ARRGameMode* GameMode = InWorld.GetAuthGameMode<ARRGameMode>())
+	{
+		BoundGameMode = GameMode;
+		GameMode->OnGameOver.AddUniqueDynamic(this, &URRSubtitleSubsystem::HandleGameOver);
+	}
+	UE_LOG(LogRogueRigs, Log, TEXT("URRSubtitleSubsystem: world begin play, subtitles %s (run end %s, game over %s)."),
+		bSilenced ? TEXT("silenced") : TEXT("allowed"), BoundRunFlow.IsValid() ? TEXT("bound") : TEXT("unbound"),
+		BoundGameMode.IsValid() ? TEXT("bound") : TEXT("unbound"));
+}
+
+void URRSubtitleSubsystem::HandleRunEnded(bool bSuccess)
+{
+	bRunEndSilenced = true;
+	SetSilenced(true, bSuccess ? TEXT("run ended, run won") : TEXT("run ended, shuttle missed"));
+}
+
+void URRSubtitleSubsystem::HandleGameOver()
+{
+	bRunEndSilenced = true;
+	SetSilenced(true, TEXT("game over, miner dead"));
 }
 
 void URRSubtitleSubsystem::SetSilenced(bool bInSilenced, const TCHAR* Reason)

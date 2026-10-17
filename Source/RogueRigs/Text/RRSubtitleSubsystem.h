@@ -7,6 +7,9 @@
 #include "Subsystems/WorldSubsystem.h"
 #include "RRSubtitleSubsystem.generated.h"
 
+class ARRGameMode;
+class URRRunFlowSubsystem;
+
 /** Broadcast when a subtitle starts (also when it replaces the current one): speaker id, speaker display name, line, ready-to-show text ("Speaker: line"), seconds on screen. */
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_FiveParams(FRROnSubtitleShownSignature, FName, SpeakerId, const FText&, Speaker, const FText&, Text, const FText&, Subtitle, float, Duration);
 
@@ -36,7 +39,8 @@ struct FRRSubtitleSpeaker
  * per countdown start) and URRHUDWidget (horde_incoming) through ShowAlertLine, which picks the Kessler-Voss line with
  * URRTextContentSubsystem::GetAlertLine. Barks (rook, vesna) can use Show later; nothing shows them yet. Silent during a run
  * transition (task-207-01): the intermission or the loading clears the current line and Show refuses lines until OnLevelReady.
- * Game and PIE worlds.
+ * Silent after the run end (task-211-01): OnRunEnded (end screen) or OnGameOver (death) clears the line and silences until
+ * the world ends (restart = new world, allowed again). Game and PIE worlds.
  */
 UCLASS(Config = Game)
 class ROGUERIGS_API URRSubtitleSubsystem : public UTickableWorldSubsystem
@@ -63,7 +67,14 @@ public:
 	 */
 	virtual void Initialize(FSubsystemCollectionBase& Collection) override;
 
-	/** Unbinds the run transition events. */
+	/**
+	 * Binds the run end (task-211-01): URRRunFlowSubsystem::OnRunEnded (end screen: run won at the last level, shuttle missed)
+	 * and the auth ARRGameMode::OnGameOver (miner death) clear the current line and silence the subtitles for the rest of this
+	 * world. OnLevelReady does not lift it: the restart opens a new world, whose subsystem starts allowed (logged here).
+	 */
+	virtual void OnWorldBeginPlay(UWorld& InWorld) override;
+
+	/** Unbinds the run transition, run end and game over events. */
 	virtual void Deinitialize() override;
 
 	/** The subsystem of WorldContext's world; null without a world or in an unsupported world type. */
@@ -96,7 +107,7 @@ public:
 	UFUNCTION(BlueprintPure, Category = "Subtitles")
 	bool HasSubtitle() const { return bActive; }
 
-	/** True while a run transition (intermission or loading) silences the subtitles: Show refuses every line. */
+	/** True while a run transition (intermission or loading) or the run end (end screen, game over) silences the subtitles: Show refuses every line. */
 	UFUNCTION(BlueprintPure, Category = "Subtitles")
 	bool IsSilenced() const { return bSilenced; }
 
@@ -159,6 +170,14 @@ protected:
 	UFUNCTION()
 	void HandleLevelReady(int32 LevelIndex, const FString& LayoutName);
 
+	/** Run flow OnRunEnded callback (end screen shown): clears the current line and silences until the world ends. */
+	UFUNCTION()
+	void HandleRunEnded(bool bSuccess);
+
+	/** Game mode OnGameOver callback (miner death): clears the current line and silences until the world ends. */
+	UFUNCTION()
+	void HandleGameOver();
+
 	/** true: clears the current subtitle (OnSubtitleCleared) and refuses new lines; false: lines allowed again. Reason is logged. */
 	void SetSilenced(bool bInSilenced, const TCHAR* Reason);
 
@@ -182,6 +201,15 @@ protected:
 
 	/** Transition subsystem bound at Initialize (null in bare test worlds without a game instance). */
 	TWeakObjectPtr<URRRunTransitionSubsystem> BoundTransition;
+
+	/** True once the run ended in this world (end screen or game over): the silence is kept, OnLevelReady does not lift it. */
+	bool bRunEndSilenced = false;
+
+	/** Run flow whose OnRunEnded is bound (OnWorldBeginPlay). */
+	TWeakObjectPtr<URRRunFlowSubsystem> BoundRunFlow;
+
+	/** Game mode whose OnGameOver is bound (OnWorldBeginPlay; null in worlds without an ARRGameMode). */
+	TWeakObjectPtr<ARRGameMode> BoundGameMode;
 
 	/** Speaker id of the current subtitle. */
 	FName CurrentSpeakerId;
