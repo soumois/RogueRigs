@@ -27,6 +27,13 @@ Reference implementation (Node, seeded LCG, deterministic): `Tools/layout_gen/ar
 Result: 8 floor components as before, reachable floor 85.5 %, minimum passage 3.
 4. **Heal vein shrink (owner decision 2026-10-10, [[task-088-01-heal-veins-2x2]]).** `arena_fine.js` runs it as its last step since [[task-088-02-heal-veins-2x2]] (`HEAL_VEIN` 2, after roughening and repair, which still read the 3 × 3 clusters; regenerated output byte-identical to the committed `arena_m1_fine.json`), deterministic (no RNG, no seed), turning each cluster into a 2 × 2 vein. Each connected heal cluster (12, 9 cells each) keeps the 2 × 2 block at its minimum x and minimum y (top-left corner of the former 3 × 3, same footprint corner for all veins); the 5 freed cells (row and column at max x or max y) become `rock` (every vein was embedded in rock, so no passage changes). Counts before/after: rock 17904 to 17964 (+60), heal_ore 108 to 48; void, barrel (16), spawn unchanged; reachable floor 85.5 %, minimum passage 3. Brief bound `heal_ore` is [48, 48]. Barrels are never touched; console marks are placed at runtime, not in the layout.
 
+## Direct 240 generation
+`Tools/layout_gen/arena_gen_fine.js` runs the steps above natively on 240 × 240 (67 uu) for more organic paths than the 3 × 3 upscale ([[task-205-01-direct-240-generator]]). Every value is in `Tools/layout_gen/params/fine_default.json`. CLI: `node Tools/layout_gen/arena_gen_fine.js --params <file> --seed <n> --name <name> --out <dir> [--brief <brief.json>]`; with `--brief` it tries seeds upward from `--seed` (`search.max_seeds`) until the recipe checks and the brief pass, prints the chosen seed and writes `<name>.brief.json`. Same params + seed give byte-identical output.
+- Mapping from the 80 recipe: lengths × 3 (outline base 103.5 and harmonics, edge margin 6, notch run 18 / length 6–9 / depth 3, spawn disc 10.8, brush radius 2.4–4.8, walk steps 90–240, void margin 3, pocket guard 3, pocket distance 4–10, `maxd` 15, cleanup gap 9, barrel spawn exclusion 18, heal exclusion square 51 × 51); areas × 9 (pocket 162+ cells, unreachable region 135, asteroid 32400–41400). Step length is one fine cell, so heading noise is divided by √3 (`turn` 0.162) and the sharp-turn chance by 3 (2 %). Spawn zone 17 × 17 is kept open.
+- Additions: value-noise jitter on the outline (±2 cells) and on the brush edge (±0.9 cell); rock islands of 9 cells or fewer become floor; the 3-cell passage repair of the fine conversion (narrow floor turns to rock), looped with region refill and filler until stable, always ending on a repair; thin outline peninsulas inside the void margin and beyond `maxd` become void.
+- Changed rules: heal veins are 2 × 2 blocks (4 in pocket floor with 4+ rock neighbours and no passage break, 8 in walls touching the main network); barrels sit on reachable floor against a wall instead of in rock (a barrel in a straight wall breaks the 3-cell rule), 3–4 pairs 2–3.2 cells apart; the seed search keeps the first passing seed (no shortest-corridor ranking).
+- Test seeds with the default params and `arena_m1_fine.brief.json`: 3 (coverage 57.6 %, reachable 77.7 %, 7 pockets, 18 barrels) and 100 (52.8 %, 78.2 %, 9 pockets, 14 barrels), validator OK, minimum passage 3.
+
 ## For the C++ port
 - Replace the LCG with `FRandomStream`; keep every parameter as data.
 - Validation rules: [[level-layout-schema]].
@@ -37,3 +44,4 @@ Result: 8 floor components as before, reachable floor 85.5 %, minimum passage 3.
 - [[sys-grid]] — the grid that will run the C++ port.
 - [[task-029-03-layout-67]] — the fine-grid conversion task.
 - [[task-088-01-heal-veins-2x2]] — heal veins shrunk to 2 × 2.
+- [[task-205-01-direct-240-generator]] — the direct 240 generator task.

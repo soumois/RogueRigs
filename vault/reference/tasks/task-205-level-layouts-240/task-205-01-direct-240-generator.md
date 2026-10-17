@@ -23,3 +23,4 @@ status: in-progress
 
 ## Relations
 - [[task-205-level-layouts-240]] — parent global task.
+- [[layout-generator-recipe]] — its "Direct 240 generation" section documents the generator.
