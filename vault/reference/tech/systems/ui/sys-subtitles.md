@@ -10,6 +10,7 @@ kind: doc
 - main_classes (`Source/RogueRigs/Text/`): `URRSubtitleSubsystem` (`UTickableWorldSubsystem`, Game and PIE worlds, `Config = Game`), `FRRSubtitleSpeaker` {`Id`, `DisplayName`}.
 - entry_points: `Show(SpeakerId, DisplayName, Text, DurationOverride = -1)` (empty name = table name, no prefix for an unknown speaker; duration <= 0 = formula; empty text refused); `ShowAlertLine(EventId)` (picks with `URRTextContentSubsystem::GetAlertLine`, speaker `kessler_voss`); `Clear()`; pure getters `HasSubtitle`, `GetCurrentSpeakerId`, `GetCurrentSpeaker`, `GetCurrentText`, `GetCurrentSubtitle`, `GetCurrentDuration`, `GetRemainingSeconds`, `GetSpeakerDisplayName`, `GetDurationForText`; static `Get(WorldContext)`, `ComposeSubtitle`.
 - events (BlueprintAssignable): `OnSubtitleShown(SpeakerId, Speaker, Text, Subtitle, Duration)` on every show, replace included; `OnSubtitleCleared()` when the time runs out or on `Clear`, never between a replace.
+- run transition (task-207-01): `Initialize` binds `URRRunTransitionSubsystem` ([[sys-run-transition]]); `OnIntermissionStarted` / `OnLoadingStarted` clear the current line (`OnSubtitleCleared`) and silence; `Show` then returns false and drops the line (no queue, nothing pops up later) until `OnLevelReady`; a world created while the phase is not None starts silenced. Pure `IsSilenced()`. Bare test worlds without a game instance never silence.
 - hooks: `URRRunFlowSubsystem::PickAlertLine` (console_dropped, bonus_chest_dropped, extraction_ready, shuttle_countdown once per `LandShuttle`) and `URRHUDWidget::HandleHordeIncoming` (horde_incoming) call `ShowAlertLine` ([[sys-text-content]], [[sys-hud-pressure]]). The display widget is a WBP_HUD sub-widget (task-099-02, [[wbp-hud]]).
 - data: `Speakers` (kessler_voss "Kessler-Voss", rook "Rook", vesna "Vesna"), `BaseSeconds` 4, `SecondsPerCharacter` 0.06 (characters of the line, prefix excluded); config properties, owner decision 2026-10-10.
 - depends_on: [[sys-text-content]].
@@ -22,3 +23,4 @@ kind: doc
 - [[sys-hud-pressure]] — horde banner hook.
 - [[wbp-hud]] — hosts the subtitle widget.
 - [[sys-automation-tests]] — its tests.
+- [[sys-run-transition]] — silences it during the intermission and the loading.
