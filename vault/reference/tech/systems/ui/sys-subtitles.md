@@ -1,6 +1,6 @@
 ---
 id: sys-subtitles
-description: "Subtitle subsystem as built: one voice line at a time, per-speaker prefix (none for the company), C++ timer, company alert hooks, delegates the HUD subtitle widget binds."
+description: "Subtitle subsystem as built: one voice line at a time, per-speaker prefix, C++ timer, company alert hooks, delegates the HUD subtitle widget binds."
 parent: systems-ui-index
 kind: doc
 ---
