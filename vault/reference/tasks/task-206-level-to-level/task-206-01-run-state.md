@@ -3,7 +3,7 @@ id: task-206-01-run-state
 description: "cpp: URRRunSubsystem."
 parent: task-206-level-to-level
 kind: task
-status: in-progress
+status: done
 ---
 # run-state
 
@@ -15,11 +15,11 @@ status: in-progress
 - done_when: build succeeds; existing automation tests pass (only expectations broken by this change updated); snapshot then re-apply restores the listed state (shown in the agent report from a -game log); sys-run doc written; committed.
 - editor_state: closed
 - token_ceiling: 80000
-- model: open
-- tokens: open
-- runs: open
+- model: opus
+- tokens: input 100, cache write 119104, cache read 4054284, output 16616
+- runs: 1
 - milestone: M2
-- result: open
+- result: URRRunSubsystem (c84abebb, 17431cb2, 5b25b562): level 1-4, layout list in URRRunSettings (C++ defaults), snapshot (cards in order, weapon classes, level, XP, health, recap ore) re-applied by replaying cards through ApplyUpgrade after RestoreProgress; ore carried as secured ore in URROreBankSubsystem; direct PIE/-game starts level 1 with the grid LayoutName; debug rr.Run.Status, rr.Run.NextLevel. -game log: snapshot applied on levels 2 and 3 (level 5, 75/100 HP, 2 weapons, 4/4 cards). Tests 260 pass, 2 fail also alone and unrelated to run code (Enemies.ShotHitsMovingRobotAndDeathShowsParts EyeMesh, Integration.JuiceHealRing pop distance since task-195-02); left unchanged. Open for 206-03: ResetRun on loss or won run; grid still loads its own LayoutName.
 
 ## Relations
 - [[task-206-level-to-level]] — parent global task.

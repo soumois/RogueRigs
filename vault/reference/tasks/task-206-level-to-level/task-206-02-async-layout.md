@@ -3,7 +3,7 @@ id: task-206-02-async-layout
 description: "cpp: Asynchronous layout provider."
 parent: task-206-level-to-level
 kind: task
-status: todo
+status: in-progress
 ---
 # async-layout
 

@@ -359,6 +359,7 @@ kind: note
 | [[task-205-01-direct-240-generator]] | opus | 1 | 0k | 88k | 1491k | 15k |
 | [[task-205-02-layout-l2]] | sonnet | 1 | 0k | 21k | 104k | 0k |
 | [[task-205-03-layout-l3]] | sonnet | 1 | 0k | 21k | 201k | 0k |
+| [[task-206-01-run-state]] | opus | 1 | 0k | 119k | 4054k | 17k |
 
 ## Totals
 | Scope | Input | Cache write | Cache read | Output |
