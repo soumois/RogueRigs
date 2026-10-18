@@ -10,7 +10,7 @@ kind: note
 
 One global task per owner request (template `task-global.md`, id `task-<number>-<slug>`), with its subtasks in a folder of the same name (template `task.md`, id `task-<number>-<step>-<slug>`). Status lives in the nodes, so any session or account can resume from `next_step`. Done tasks stay until the milestone retrospective.
 
-Resuming: read [[handover-2026-10-12]] first (previous: [[handover-2026-10-09]]).
+Resuming: read [[handover-2026-10-12]] first (previous: [[handover-2026-10-09]]); rock slab work (task-230): [[handover-2026-10-18-rock-slab]].
 
 ## Relations
 - [[root]] — the vault map.

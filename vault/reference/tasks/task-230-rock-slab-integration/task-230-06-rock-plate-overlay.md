@@ -20,7 +20,7 @@ status: in-progress
 - tokens: open
 - runs: open
 - milestone: M2
-- result: open
+- result: open. State 2026-10-18: version 3 committed 5ed04bf2 (10 FBX, rigid per-plate tilt, channel layout in SM_RockSlabBroken.report.json), previews sent; waiting for the owner: fix thin spiky plates near the void (minimum plate size) or accept. Superseded: SM_RockPlates_01 (bc679aa9, 41e0f547) and the bent-sheet version 410e09a6.
 
 ## Relations
 - [[task-230-rock-slab-integration]] — parent global task.

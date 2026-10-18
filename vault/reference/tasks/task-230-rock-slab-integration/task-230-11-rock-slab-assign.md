@@ -19,6 +19,7 @@ status: todo
 - tokens: open
 - runs: open
 - milestone: M2
+- notes (2026-10-18): import the broken pieces with full-precision UVs and 4 UV channels (UV2 and UV3 carry plate data); check the first placed piece against the canonical orientation table of SM_RockSlab.report.json (Unreal flips Y).
 - result: open
 
 ## Relations
