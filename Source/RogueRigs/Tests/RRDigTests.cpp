@@ -1,4 +1,4 @@
-// Rogue Rigs - automation tests of the dig rules (RogueRigs.Dig.*): grid damage and destruction, ore drops, radius destruction, drone arc dig (contact, arc limits, speeds, persistence and release), pickup collection, render-only shake, dual-grid rock pieces (task-230-07).
+// Rogue Rigs - automation tests of the dig rules (RogueRigs.Dig.*): grid damage and destruction, ore drops, radius destruction, drone arc dig (contact, arc limits, speeds, persistence and release), pickup collection, render-only shake, dual-grid rock pieces (task-230-07), rock damage display data and ore crystals (task-230-08).
 
 #include "CoreMinimal.h"
 #include "Misc/AutomationTest.h"
@@ -120,11 +120,12 @@ namespace RRDigTests
 	/**
 	 * Checks the grid's instance maps against its components (task-230-07 dual grid):
 	 * - cell visuals: each map has one entry per instance; every instance maps back to a cell whose index points at it, of the
-	 *   map's type, on that cell's center; rock piece types have no rendering HISM, only their collision ISM; barrels have both,
-	 *   instance for instance; every block cell has exactly one block instance and every non-void cell exactly one floor slab;
+	 *   map's type, on that cell's center; rock and special ore have no rendering HISM, only their collision ISM; barrels, ore and
+	 *   heal ore (crystal clusters, task-230-08) have both, instance for instance; every block cell has exactly one block instance and every non-void cell exactly one floor slab;
 	 * - rock pieces: one piece per corner with at least one solid cell around it, none elsewhere; each piece maps back to its
 	 *   corner, sits on it, lies in the chunk of the corner, has the shape of its mask and an orientation covering exactly the
-	 *   solid quadrants; piece HISMs never collide, never affect navigation and allow Nanite.
+	 *   solid quadrants; piece HISMs never collide, never affect navigation and allow Nanite; each piece holds the
+	 *   PieceCustomDataCount floats with the solid mask of its corner and the display damage of each quadrant (task-230-08).
 	 * Returns true when consistent.
 	 */
 	bool CheckInstanceMaps(FAutomationTestBase& Test, const ARRArenaGrid* Grid)
@@ -148,7 +149,9 @@ namespace RRDigTests
 		const int32 ChunkSide = FGridAccess::ChunkSide(Grid);
 		for (const FRRGridChunkVisual& Visual : FGridAccess::Visuals(Grid))
 		{
-			const bool bPieceType = Visual.MapKey != ERRCellType::Floor && Visual.MapKey != ERRCellType::Barrel;
+			// Rock and special ore are drawn by the pieces only; ore and heal ore also draw one crystal per cell (task-230-08).
+			const bool bPieceType = Visual.MapKey == ERRCellType::Rock || Visual.MapKey == ERRCellType::SpecialOre;
+			const bool bNeedsRender = !bPieceType && Visual.MapKey != ERRCellType::Floor && Visual.InstanceCells.Num() > 0;
 			const UInstancedStaticMeshComponent* Component = Visual.Render ? static_cast<const UInstancedStaticMeshComponent*>(Visual.Render.Get()) : Visual.Collision.Get();
 			const TArray<FIntPoint>& InstanceCells = Visual.InstanceCells;
 			if (!Component)
@@ -163,6 +166,11 @@ namespace RRDigTests
 			if (bPieceType && Visual.Render)
 			{
 				Error(FString::Printf(TEXT("chunk (%d, %d) %s has a per-cell rendering HISM (rock pieces draw it)"), Visual.Chunk.X, Visual.Chunk.Y,
+					*UEnum::GetValueAsString(Visual.MapKey)));
+			}
+			if (bNeedsRender && !Visual.Render)
+			{
+				Error(FString::Printf(TEXT("chunk (%d, %d) %s has no rendering HISM (barrel mesh or ore crystal)"), Visual.Chunk.X, Visual.Chunk.Y,
 					*UEnum::GetValueAsString(Visual.MapKey)));
 			}
 			if (Component->GetInstanceCount() != InstanceCells.Num())
@@ -275,11 +283,25 @@ namespace RRDigTests
 				const bool bMapped = CornerVisuals.IsValidIndex(CornerIndex) && CornerVisuals[CornerIndex] == VisualIndex && CornerInstances[CornerIndex] == Instance;
 				const bool bShape = Mask != 0 && Visual.Shape == ExpectedShape(Mask);
 				const bool bOriented = bShape && PlacedPieceMask(Visual.Shape, InstanceTransform, bFlipY) == Mask;
-				if (!bOnCorner || !bChunk || !bMapped || !bShape || !bOriented)
+				// Custom data (task-230-08): the solid mask and the display damage of each quadrant follow the cells, across swaps.
+				bool bData = Visual.Render->NumCustomDataFloats == ARRArenaGrid::PieceCustomDataCount;
+				const int32 DataStart = Instance * Visual.Render->NumCustomDataFloats;
+				bData = bData && Visual.Render->PerInstanceSMCustomData.IsValidIndex(DataStart + ARRArenaGrid::PieceCustomDataCount - 1);
+				if (bData)
 				{
-					Error(FString::Printf(TEXT("piece %d of visual %d -> corner (%d, %d) mask %d shape %s: on corner %d, chunk %d, mapped %d, shape %d, oriented %d"),
+					const float* Data = &Visual.Render->PerInstanceSMCustomData[DataStart];
+					bData = Data[ARRArenaGrid::PieceSolidMaskCustomDataIndex] == static_cast<float>(Mask);
+					for (int32 Quadrant = 0; Quadrant < 4 && bData; ++Quadrant)
+					{
+						const FIntPoint Cell(Corner.X - ((Quadrant & 1) ? 0 : 1), Corner.Y - ((Quadrant & 2) ? 0 : 1));
+						bData = FMath::IsNearlyEqual(Data[ARRArenaGrid::PieceDamageCustomDataIndex + Quadrant], Grid->GetCellDisplayDamage(Cell), 1e-5f);
+					}
+				}
+				if (!bOnCorner || !bChunk || !bMapped || !bShape || !bOriented || !bData)
+				{
+					Error(FString::Printf(TEXT("piece %d of visual %d -> corner (%d, %d) mask %d shape %s: on corner %d, chunk %d, mapped %d, shape %d, oriented %d, data %d"),
 						Instance, VisualIndex, Corner.X, Corner.Y, Mask, *UEnum::GetValueAsString(Visual.Shape), bOnCorner ? 1 : 0, bChunk ? 1 : 0,
-						bMapped ? 1 : 0, bShape ? 1 : 0, bOriented ? 1 : 0));
+						bMapped ? 1 : 0, bShape ? 1 : 0, bOriented ? 1 : 0, bData ? 1 : 0));
 				}
 			}
 		}
@@ -1372,6 +1394,157 @@ bool FRRDigFineGridDefaultsTest::RunTest(const FString& Parameters)
 	}
 	TestEqual(TEXT("none of them left standing"), Standing, 0);
 	TestTrue(TEXT("instance maps consistent"), CheckInstanceMaps(*this, Grid));
+	return true;
+}
+
+IMPLEMENT_SIMPLE_AUTOMATION_TEST(FRRDigRockDamageDataTest, "RogueRigs.Dig.RockDamageData",
+	EAutomationTestFlags::EditorContext | EAutomationTestFlags::EngineFilter)
+
+bool FRRDigRockDamageDataTest::RunTest(const FString& Parameters)
+{
+	// Task-230-08 (rock-render-damage): per-quadrant piece custom data, broken set swap, shake and outline as data, ore crystals.
+	FTestWorld TestWorld;
+	ARRArenaGrid* Grid = SpawnFineGrid(*this, TestWorld);
+	UStaticMesh* Cube = LoadObject<UStaticMesh>(nullptr, TEXT("/Engine/BasicShapes/Cube.Cube"));
+	UStaticMesh* Cylinder = LoadObject<UStaticMesh>(nullptr, TEXT("/Engine/BasicShapes/Cylinder.Cylinder"));
+	if (!Grid || !TestNotNull(TEXT("engine cube"), Cube) || !TestNotNull(TEXT("engine cylinder"), Cylinder))
+	{
+		return false;
+	}
+	// Distinct meshes per set so the swap shows in the HISM mesh: intact cube, broken cylinder (real meshes: task-230-11).
+	FRRRockPieceMeshes& IntactMeshes = FGridAccess::RockPieceMeshesOf(Grid);
+	FRRRockPieceMeshes& BrokenMeshes = FGridAccess::RockPieceBrokenMeshesOf(Grid);
+	for (TArray<TObjectPtr<UStaticMesh>>* List : { &IntactMeshes.Full, &IntactMeshes.Edge, &IntactMeshes.Outer, &IntactMeshes.Inner, &IntactMeshes.Diagonal })
+	{
+		*List = { Cube };
+	}
+	for (TArray<TObjectPtr<UStaticMesh>>* List : { &BrokenMeshes.Full, &BrokenMeshes.Edge, &BrokenMeshes.Outer, &BrokenMeshes.Inner, &BrokenMeshes.Diagonal })
+	{
+		*List = { Cylinder };
+	}
+	FGridAccess::Rebuild(Grid);
+	const int32 Pieces = FGridAccess::PieceInstanceCount(Grid);
+	TestTrue(TEXT("instance maps and piece data consistent at build"), CheckInstanceMaps(*this, Grid));
+
+	auto CountBroken = [Grid]()
+	{
+		int32 Count = 0;
+		for (const FRRGridPieceVisual& Visual : FGridAccess::PieceVisualsOf(Grid))
+		{
+			Count += Visual.Render && Visual.Set == ERRRockPieceSet::Broken ? Visual.Render->GetInstanceCount() : 0;
+		}
+		return Count;
+	};
+	TestEqual(TEXT("no broken piece at build"), CountBroken(), 0);
+
+	const FIntPoint Cell = FineRockCell;
+	const FIntPoint Corners[] = { Cell, Cell + FIntPoint(1, 0), Cell + FIntPoint(0, 1), Cell + FIntPoint(1, 1) };
+	TestEqual(TEXT("(129, 115) is rock"), Grid->GetCellType(Cell), ERRCellType::Rock);
+
+	// First damage: 0.1 of 0.5 dig-seconds, d = 0.2; the 4 corner pieces switch to the broken set at once.
+	Grid->ApplyTerrainDamage(Cell, 0.1f, ERRTerrainDamageSource::Drone);
+	TestNearlyEqual(TEXT("display damage 0.2 after 0.1 of 0.5 dig-seconds"), Grid->GetCellDisplayDamage(Cell), 0.2f, 1e-4f);
+	TestNearlyEqual(TEXT("empty west neighbour derives the largest solid neighbour damage (provisional)"), Grid->GetCellDisplayDamage(FineRockWestFloorCell), 0.2f, 1e-4f);
+	for (const FIntPoint& Corner : Corners)
+	{
+		const FRRGridPieceVisual* Visual = FGridAccess::CornerPiece(Grid, Corner);
+		if (!TestNotNull(*FString::Printf(TEXT("corner (%d, %d) has a piece"), Corner.X, Corner.Y), Visual))
+		{
+			continue;
+		}
+		TestEqual(*FString::Printf(TEXT("corner (%d, %d) broken"), Corner.X, Corner.Y), Visual->Set, ERRRockPieceSet::Broken);
+		TestTrue(*FString::Printf(TEXT("corner (%d, %d) uses the broken mesh"), Corner.X, Corner.Y), Visual->Render && Visual->Render->GetStaticMesh() == Cylinder);
+		TestNearlyEqual(*FString::Printf(TEXT("corner (%d, %d) damage of the dug quadrant"), Corner.X, Corner.Y),
+			FGridAccess::PieceData(Grid, Corner, ARRArenaGrid::PieceDamageCustomDataIndex + FGridAccess::QuadrantOf(Corner, Cell)), 0.2f, 1e-4f);
+	}
+	TestEqual(TEXT("only the 4 corner pieces broke"), CountBroken(), 4);
+	TestEqual(TEXT("swap one for one: same piece count"), FGridAccess::PieceInstanceCount(Grid), Pieces);
+	TestTrue(TEXT("instance maps and piece data consistent after the swap"), CheckInstanceMaps(*this, Grid));
+
+	// More damage: the floats follow, no further swap.
+	Grid->ApplyTerrainDamage(Cell, 0.1f, ERRTerrainDamageSource::Drone);
+	TestNearlyEqual(TEXT("damage float 0.4"), FGridAccess::PieceData(Grid, Cell, ARRArenaGrid::PieceDamageCustomDataIndex + 3), 0.4f, 1e-4f);
+	TestEqual(TEXT("still 4 broken pieces"), CountBroken(), 4);
+
+	// Shake as custom data (rock-render-top-texture option C): the quadrant float is set, the piece instances never move.
+	const FRRGridPieceVisual* CellPiece = FGridAccess::CornerPiece(Grid, Cell);
+	const int32 CellPieceInstance = FGridAccess::CornerInstances(Grid)[Cell.Y * (FGridAccess::Width(Grid) + 1) + Cell.X];
+	FTransform RestTransform;
+	if (CellPiece && CellPiece->Render)
+	{
+		CellPiece->Render->GetInstanceTransform(CellPieceInstance, RestTransform, /*bWorldSpace*/ false);
+	}
+	Grid->SetCellShaking(Cell, true);
+	for (const FIntPoint& Corner : Corners)
+	{
+		const float Shake = FGridAccess::PieceData(Grid, Corner, ARRArenaGrid::PieceShakeCustomDataIndex + FGridAccess::QuadrantOf(Corner, Cell));
+		TestTrue(*FString::Printf(TEXT("corner (%d, %d) shake float in [1, 2) (%.4f)"), Corner.X, Corner.Y, Shake), Shake >= 1.f && Shake < 2.f);
+	}
+	TestEqual(TEXT("a still neighbour quadrant has no shake"), FGridAccess::PieceData(Grid, Cell + FIntPoint(1, 0), ARRArenaGrid::PieceShakeCustomDataIndex + 1), 0.f);
+	float MaxMove = 0.f;
+	for (int32 Frame = 0; Frame < 10; ++Frame)
+	{
+		TestWorld.Tick();
+		FTransform Now;
+		if (CellPiece && CellPiece->Render)
+		{
+			CellPiece->Render->GetInstanceTransform(CellPieceInstance, Now, /*bWorldSpace*/ false);
+			MaxMove = FMath::Max(MaxMove, static_cast<float>(FVector::Dist(Now.GetLocation(), RestTransform.GetLocation())));
+		}
+	}
+	TestTrue(TEXT("the shaking cell's piece instance never moves"), MaxMove < 1e-3f);
+	Grid->SetCellShaking(Cell, false);
+	TestEqual(TEXT("shake float back to 0"), FGridAccess::PieceData(Grid, Cell, ARRArenaGrid::PieceShakeCustomDataIndex + 3), 0.f);
+
+	// Outline as custom data on the marked quadrant of the 4 corner pieces.
+	TestTrue(TEXT("marked"), Grid->SetCellMarked(Cell, true));
+	TestEqual(TEXT("piece outline data on the 4 corners"), FGridAccess::GetPieceMarkedData(Grid, Cell), FGridAccess::MarkedValueOf(Grid));
+	TestTrue(TEXT("unmarked"), Grid->SetCellMarked(Cell, false));
+	TestEqual(TEXT("piece outline data cleared"), FGridAccess::GetPieceMarkedData(Grid, Cell), 0.f);
+
+	// Destruction: the remaining corner pieces stay broken (never back); the empty cell derives from undamaged neighbours.
+	TestTrue(TEXT("rock destroyed"), Grid->DestroyCell(Cell, ERRTerrainDamageSource::Drone));
+	int32 IntactCorners = 0;
+	for (const FIntPoint& Corner : Corners)
+	{
+		const FRRGridPieceVisual* Visual = FGridAccess::CornerPiece(Grid, Corner);
+		IntactCorners += Visual && Visual->Set != ERRRockPieceSet::Broken ? 1 : 0;
+	}
+	TestEqual(TEXT("no corner piece of the destroyed cell went back to intact"), IntactCorners, 0);
+	TestTrue(TEXT("broken pieces only at those corners"), CountBroken() <= 4);
+	TestNearlyEqual(TEXT("destroyed cell display damage from its undamaged neighbours"), Grid->GetCellDisplayDamage(Cell), 0.f, 1e-6f);
+	TestTrue(TEXT("instance maps and piece data consistent after destruction"), CheckInstanceMaps(*this, Grid));
+
+	// Ore crystals: one cluster per ore and heal ore cell in their chunk HISMs, SM_OreChunk_01 by default, on the block top.
+	int32 OreCells = 0;
+	int32 HealCells = 0;
+	for (int32 Y = 0; Y < Grid->GetGridSize().Y; ++Y)
+	{
+		for (int32 X = 0; X < Grid->GetGridSize().X; ++X)
+		{
+			OreCells += Grid->GetCellType(FIntPoint(X, Y)) == ERRCellType::Ore ? 1 : 0;
+			HealCells += Grid->GetCellType(FIntPoint(X, Y)) == ERRCellType::HealOre ? 1 : 0;
+		}
+	}
+	AddInfo(FString::Printf(TEXT("%d ore and %d heal ore cells"), OreCells, HealCells));
+	TestTrue(TEXT("ore cells present"), OreCells > 0);
+	TestEqual(TEXT("one crystal per ore cell"), FGridAccess::InstanceCount(Grid, ERRCellType::Ore), OreCells);
+	TestEqual(TEXT("one crystal per heal ore cell"), FGridAccess::InstanceCount(Grid, ERRCellType::HealOre), HealCells);
+	UStaticMesh* CrystalMesh = FGridAccess::OreCrystalMeshOf(Grid);
+	TestTrue(TEXT("crystal mesh is SM_OreChunk_01"), CrystalMesh && CrystalMesh->GetName() == TEXT("SM_OreChunk_01"));
+	UHierarchicalInstancedStaticMeshComponent* HealCrystals = FGridAccess::CellComponent(Grid, FineHealOreCell);
+	const int32 HealIndex = FGridAccess::InstanceIndices(Grid)[FineHealOreCell.Y * FGridAccess::Width(Grid) + FineHealOreCell.X];
+	if (TestNotNull(TEXT("heal ore crystal HISM"), HealCrystals) && TestTrue(TEXT("heal crystal mapped"), HealIndex != INDEX_NONE))
+	{
+		TestTrue(TEXT("heal crystal uses the crystal mesh"), HealCrystals->GetStaticMesh() == CrystalMesh);
+		TestEqual(TEXT("crystal HISM never collides"), HealCrystals->GetCollisionEnabled(), ECollisionEnabled::NoCollision);
+		FTransform CrystalTransform;
+		HealCrystals->GetInstanceTransform(HealIndex, CrystalTransform, /*bWorldSpace*/ false);
+		TestTrue(TEXT("crystal stands on the block top"), CrystalTransform.GetLocation().Z >= Grid->GetBlockHeight() - 1.0);
+	}
+	TestTrue(TEXT("heal ore destroyed"), Grid->DestroyCell(FineHealOreCell, ERRTerrainDamageSource::Drone));
+	TestEqual(TEXT("its crystal removed"), FGridAccess::InstanceCount(Grid, ERRCellType::HealOre), HealCells - 1);
+	TestTrue(TEXT("instance maps consistent after the crystal removal"), CheckInstanceMaps(*this, Grid));
 	return true;
 }
 

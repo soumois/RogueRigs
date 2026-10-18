@@ -35,10 +35,10 @@ enum class ERRTerrainDamageSource : uint8
 };
 
 /**
- * One visual type in one chunk of ChunkCells x ChunkCells cells: its rendering HISM (floor and barrels only), its hidden
- * collision ISM (block types only) and the instance index -> cell map shared by both. Rock, ore, heal ore and special ore
- * cells have no per-cell rendering instance since task-230-07 (dual-grid rock pieces draw them, FRRGridPieceVisual): their
- * visual holds the collision ISM alone. Components are created when the chunk first holds an instance.
+ * One visual type in one chunk of ChunkCells x ChunkCells cells: its rendering HISM (floor slabs, barrels, and the crystal
+ * clusters of ore and heal ore since task-230-08), its hidden collision ISM (block types only) and the instance index -> cell
+ * map shared by both. Rock and special ore cells have no per-cell rendering instance since task-230-07 (dual-grid rock pieces
+ * draw them, FRRGridPieceVisual): their visual holds the collision ISM alone. Components are created when the chunk first holds an instance.
  */
 USTRUCT()
 struct FRRGridChunkVisual
@@ -53,7 +53,7 @@ struct FRRGridChunkVisual
 	UPROPERTY()
 	FIntPoint Chunk = FIntPoint::ZeroValue;
 
-	/** Rendering HISM of this type in this chunk; null until the chunk holds one instance, and always null for the piece-drawn block types (ARRArenaGrid::IsRockPieceType). */
+	/** Rendering HISM of this type in this chunk; null until the chunk holds one instance, and always null for rock and special ore (ARRArenaGrid::HasCellRenderInstance). */
 	UPROPERTY()
 	TObjectPtr<UHierarchicalInstancedStaticMeshComponent> Render;
 
@@ -85,13 +85,13 @@ enum class ERRRockPieceShape : uint8
 	Diagonal
 };
 
-/** Piece sets of the dual grid: intact pieces now; the broken set (damaged cells, task-230-08) gets its own HISMs. */
+/** Piece sets of the dual grid: intact pieces, and broken pieces (own HISMs) around damaged cells (task-230-08). */
 UENUM(BlueprintType)
 enum class ERRRockPieceSet : uint8
 {
 	/** Intact pieces (RockPieceMeshes). */
 	Intact,
-	/** Broken pieces swapped in around damaged cells (meshes and swap rule: task-230-08; no mesh property yet). */
+	/** Broken pieces (RockPieceBrokenMeshes, fractured prisms): a corner switches to it as soon as one of its 4 cells has display damage above 0, and never switches back. */
 	Broken
 };
 
@@ -149,7 +149,7 @@ struct FRRGridPieceVisual
 {
 	GENERATED_BODY()
 
-	/** Piece set of every instance (Intact only until task-230-08). */
+	/** Piece set of every instance (intact or broken). */
 	UPROPERTY()
 	ERRRockPieceSet Set = ERRRockPieceSet::Intact;
 
@@ -239,6 +239,9 @@ DECLARE_DYNAMIC_MULTICAST_DELEGATE_ThreeParams(FRROnCellDestroyedSignature, FInt
  * ore, heal ore and special ore cells have no per-cell rendering instance; one rock piece per cell corner (corner (x, y) at
  * (x * CellSize, y * CellSize)), chosen by its 4 surrounding cells, is drawn by per-chunk piece HISMs (one per piece set,
  * shape and variant, FRRGridPieceVisual); a destroyed cell rebuilds its 4 corner pieces. Collision stays one cube per cell.
+ * Damage display (task-230-08): each piece carries per-quadrant custom data (damage, shake, marked, solid mask; layout at
+ * PieceDamageCustomDataIndex) read by the piece material; a corner switches to the broken piece set at the first damage of
+ * one of its cells; ore and heal ore cells also draw one crystal cluster each (OreCrystalMesh) in their own chunk HISMs.
  * Terrain damage (dig) and destruction (explosions) go through ApplyTerrainDamage / DestroyCell / DestroyCellsInRadius.
  * Drops: ore and heal ore blocks spawn one pickup (OrePickupClass / HealPickupClass) each time their accumulated damage
  * crosses a multiple of DropInterval, except on the hit that destroys them, and DestroyDropCount pickups when destroyed,
@@ -498,6 +501,34 @@ public:
 	UFUNCTION(BlueprintPure, Category = "Grid|Objectives")
 	int32 GetMarkedCustomDataIndex() const { return MarkedCustomDataIndex; }
 
+	// --- Rock piece custom data (task-230-08, read by the rock piece material, task-230-09) ---
+	// Every piece instance carries PieceCustomDataCount floats. Quadrant q of a piece at corner (x, y) is the cell
+	// (x - 1 + (q & 1), y - 1 + (q >> 1)): q = (+X side) + 2 * (+Y side) in grid actor axes (not the piece's rotated local axes).
+
+	/** First of 4 floats: display damage d per quadrant (GetCellDisplayDamage). */
+	static constexpr int32 PieceDamageCustomDataIndex = 0;
+
+	/** First of 4 floats: shake per quadrant, 0 when still, 1 + phase / (2 pi) in [1, 2) while the cell shakes. */
+	static constexpr int32 PieceShakeCustomDataIndex = 4;
+
+	/** First of 4 floats: marked outline per quadrant, MarkedCustomDataValue when the cell is marked, else 0. */
+	static constexpr int32 PieceMarkedCustomDataIndex = 8;
+
+	/** One float: solid mask of the 4 quadrants (bit q set when quadrant q is a rock piece cell), 0..15 as a float. */
+	static constexpr int32 PieceSolidMaskCustomDataIndex = 12;
+
+	/** Number of custom data floats per rock piece instance. */
+	static constexpr int32 PieceCustomDataCount = 13;
+
+	/**
+	 * Display damage d of Cell for the rock pieces, 0..1. A rock piece cell (rock, ore, heal ore, special ore): 1 - health / max
+	 * health (above 0 as soon as the block is below 100 %). Any other cell (open floor, barrel, void, outside the grid): the
+	 * largest d of its rock piece 4-neighbours, 0 without one (provisional choice, as in the task-230-06 previews: the slumping
+	 * wall next to a dug cell keeps the damage of its side).
+	 */
+	UFUNCTION(BlueprintPure, Category = "Grid|Destruction")
+	float GetCellDisplayDamage(FIntPoint Cell) const;
+
 	/** Pickup class this grid drops for a block type (OrePickupClass for Ore, HealPickupClass for HealOre, none otherwise); used by ARRBonusChest for its ore reward. */
 	TSubclassOf<ARRPickup> GetDropPickupClass(ERRCellType Type) const { return GetPickupClass(Type); }
 
@@ -536,7 +567,7 @@ protected:
 	UFUNCTION(BlueprintImplementableEvent, Category = "Grid|Objectives")
 	void OnCellMarkedChanged(FIntPoint Cell, bool bMarked, FVector CellCenter);
 
-	/** Writes Value into the marked custom data float of the rendering instance of the block in Cell (no-op without one). */
+	/** Writes Value into the marked custom data float of the rendering instance of the block in Cell (ore and heal crystals, barrels; no-op without one), and refreshes the custom data of its 4 corner pieces (rock piece cells). */
 	void WriteMarkedCustomData(FIntPoint Cell, float Value);
 
 	/** Writes Value into custom data float DataIndex of the rendering instance of the block in Cell (no-op without one or without that float). */
@@ -680,8 +711,11 @@ protected:
 	/** Fills PieceShapeByMask and PieceTurnsByMask from the canonical rock corners of each shape (Y mirrored when bRockPieceImportFlipsY), by trying the 4 yaw quarter turns. */
 	void BuildPieceTable();
 
-	/** Variant of the piece of Shape at Corner: a hash of the corner and RockPieceSeed modulo the variant count of the shape (at least 1). */
-	int32 GetPieceVariant(FIntPoint Corner, ERRRockPieceShape Shape) const;
+	/** Variant of the piece of Set and Shape at Corner: a hash of the corner and RockPieceSeed modulo the variant count of that set and shape (at least 1). */
+	int32 GetPieceVariant(FIntPoint Corner, ERRRockPieceShape Shape, ERRRockPieceSet Set = ERRRockPieceSet::Intact) const;
+
+	/** Mesh lists of a piece set: RockPieceMeshes or RockPieceBrokenMeshes. */
+	const FRRRockPieceMeshes& GetPieceMeshSet(ERRRockPieceSet Set) const { return Set == ERRRockPieceSet::Broken ? RockPieceBrokenMeshes : RockPieceMeshes; }
 
 	/** Yaw quarter turns of the piece at Corner for Mask: the table value, or a hash-chosen turn for the full piece (random rotation only on full). */
 	int32 GetPieceTurns(FIntPoint Corner, uint8 Mask) const;
@@ -698,10 +732,10 @@ protected:
 	/** Index in PieceVisuals of a piece set, shape and variant in the chunk of Corner; INDEX_NONE when invalid. */
 	int32 GetPieceVisualIndex(ERRRockPieceSet Set, ERRRockPieceShape Shape, int32 Variant, FIntPoint Corner) const;
 
-	/** Piece visual at VisualIndex with its HISM created on first use (settings of the RockInstances template, piece mesh, RockPieceMaterial, no collision, Nanite allowed when bRockPiecesUseNanite). */
+	/** Piece visual at VisualIndex with its HISM created on first use (settings of the RockInstances template, piece mesh, RockPieceMaterial or RockPieceBrokenMaterial, PieceCustomDataCount custom data floats, no collision, Nanite allowed when bRockPiecesUseNanite). */
 	FRRGridPieceVisual* GetOrCreatePieceVisual(int32 VisualIndex);
 
-	/** Sets the piece of Corner from the current cells: removes its old instance and adds the new shape (nothing when the mask is empty); a same-visual change only updates the transform. */
+	/** Sets the piece of Corner from the current cells and its broken flag: removes its old instance and adds the new set and shape (nothing when the mask is empty); a same-visual change only updates the transform; then writes its custom data. */
 	void RefreshCornerPiece(FIntPoint Corner);
 
 	/** Removes the piece instance of a corner index and patches the corner maps for the instance moved into the freed slot (remove at swap). */
@@ -709,6 +743,32 @@ protected:
 
 	/** Refreshes the 4 corner pieces of Cell (called when the cell stops being solid). */
 	void UpdateCellCornerPieces(FIntPoint Cell);
+
+	// --- Rock piece damage display (task-230-08, rock-render-damage) ---
+
+	/** Display damage of a rock piece cell, 1 - health / max health clamped to 0..1; 0 for any other cell. */
+	float GetSolidCellDamage(FIntPoint Cell) const;
+
+	/** Fills the PieceCustomDataCount floats of the piece at Corner from the current cells (damage, shake, marked, solid mask). */
+	void ComputeCornerPieceData(FIntPoint Corner, float (&OutData)[PieceCustomDataCount]) const;
+
+	/** Writes the custom data of the piece of a corner index (no-op for an empty corner or a HISM without the floats); only writes when a value changed, and then marks the HISM render state dirty. */
+	void WriteCornerPieceData(int32 CornerIndex);
+
+	/** Rewrites the custom data of the 4 corner pieces of Cell (shake or mark change of that cell). */
+	void RefreshCellCornerPieceData(FIntPoint Cell);
+
+	/** Rewrites the custom data of every piece whose quadrants include Cell or one of its 4-neighbours (corners x - 1 .. x + 2, y - 1 .. y + 2): the damage or solidity of Cell changed, which also changes the derived damage of its empty neighbours. */
+	void RefreshPieceDataAround(FIntPoint Cell);
+
+	/** Switches the 4 corner pieces of Cell to the broken set once Cell has display damage above 0 (sticky, CornerBroken). */
+	void BreakCellCornerPieces(FIntPoint Cell);
+
+	/** True for the block types with a per-cell rendering instance: barrels (their mesh), ore and heal ore (crystal clusters, task-230-08). Rock and special ore have only their collision instance. */
+	static bool HasCellRenderInstance(ERRCellType Type);
+
+	/** Actor-space transform of the crystal cluster of an ore or heal ore cell: cell centre, bottom of the mesh bounds on the block top, uniform OreCrystalScale, yaw hashed from the cell and RockPieceSeed. */
+	FTransform GetCrystalTransform(FIntPoint Cell) const;
 
 	/** Stops shaking Cell, restoring its rest transform if it still has a block. */
 	void StopShaking(FIntPoint Cell);
@@ -957,11 +1017,11 @@ protected:
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Grid|Visuals")
 	TObjectPtr<UMaterialInterface> RockMaterial;
 
-	/** Collision shape of ore blocks. Since task-230-07 ore cells are drawn as rock pieces (crystals: task-230-08). */
+	/** Collision shape of ore blocks. Since task-230-07 ore cells are drawn as rock pieces plus a crystal cluster (OreCrystalMesh, task-230-08). */
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Grid|Visuals")
 	TObjectPtr<UStaticMesh> OreMesh;
 
-	/** Material of the OreInstances template (no per-cell ore drawing since task-230-07). */
+	/** Unused since task-230-08: the OreInstances template draws the crystal clusters with OreCrystalMaterial. */
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Grid|Visuals")
 	TObjectPtr<UMaterialInterface> OreMaterial;
 
@@ -969,7 +1029,7 @@ protected:
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Grid|Visuals")
 	TObjectPtr<UStaticMesh> HealOreMesh;
 
-	/** Material of the HealOreInstances template (no per-cell heal ore drawing since task-230-07). */
+	/** Unused since task-230-08: the HealOreInstances template draws the crystal clusters with HealOreCrystalMaterial. */
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Grid|Visuals")
 	TObjectPtr<UMaterialInterface> HealOreMaterial;
 
@@ -1005,6 +1065,30 @@ protected:
 	 */
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Grid|Rock Pieces")
 	bool bRockPieceImportFlipsY = true;
+
+	/** Broken rock piece meshes per shape (SM_RockSlabBroken_<Shape>_01 and _02, task-230-11), same canonical orientation as the intact pieces; swapped in around damaged cells. Unset meshes are tolerated (pieces tracked, not drawn). */
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Grid|Rock Pieces")
+	FRRRockPieceMeshes RockPieceBrokenMeshes;
+
+	/** Material of the broken piece HISMs (sag by world position offset, task-230-09); null falls back to RockPieceMaterial, then to the mesh material. */
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Grid|Rock Pieces")
+	TObjectPtr<UMaterialInterface> RockPieceBrokenMaterial;
+
+	/** Crystal cluster drawn on each ore and heal ore cell (rock-render-damage; Duskite: SM_OreChunk_01), one instance per cell in the ore and heal ore chunk HISMs. Null tolerated (instances tracked, not drawn). */
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Grid|Ore Crystals")
+	TObjectPtr<UStaticMesh> OreCrystalMesh;
+
+	/** Material of the ore crystal clusters, applied to every slot; null keeps the mesh materials. */
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Grid|Ore Crystals")
+	TObjectPtr<UMaterialInterface> OreCrystalMaterial;
+
+	/** Material of the heal ore crystal clusters (same mesh as ore), applied to every slot; null keeps the mesh materials. */
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Grid|Ore Crystals")
+	TObjectPtr<UMaterialInterface> HealOreCrystalMaterial;
+
+	/** Uniform scale of the crystal clusters (provisional: SM_OreChunk_01 is about 30 uu wide, 1.5 gives about 45 uu on a 67 uu cell). */
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Grid|Ore Crystals", meta = (ClampMin = "0.01"))
+	float OreCrystalScale = 1.5f;
 
 	/** Seed of the per-corner variant and full-piece rotation hash: same layout and seed give the same pieces. */
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Grid|Rock Pieces")
@@ -1142,6 +1226,9 @@ protected:
 
 	/** Corner -> instance index of its piece in CornerPieceVisual's HISM; INDEX_NONE for an empty corner. */
 	TArray<int32> CornerPieceInstance;
+
+	/** Corner -> broken flag: set when one of its 4 cells first has display damage above 0, never cleared until the next build (damage only rises); the corner's piece uses the broken set. */
+	TBitArray<> CornerBroken;
 
 	/** Piece shape per corner mask (0..15), from BuildPieceTable; meaningless for mask 0 (empty corner). */
 	ERRRockPieceShape PieceShapeByMask[16] = {};

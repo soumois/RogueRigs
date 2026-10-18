@@ -59,11 +59,66 @@ namespace RRTestAccess
 		static const TArray<int32>& CornerVisuals(const ARRArenaGrid* Grid) { return Grid->*(&FGridAccess::CornerPieceVisual); }
 		static const TArray<int32>& CornerInstances(const ARRArenaGrid* Grid) { return Grid->*(&FGridAccess::CornerPieceInstance); }
 		static FRRRockPieceMeshes& RockPieceMeshesOf(ARRArenaGrid* Grid) { return Grid->*(&FGridAccess::RockPieceMeshes); }
+		static FRRRockPieceMeshes& RockPieceBrokenMeshesOf(ARRArenaGrid* Grid) { return Grid->*(&FGridAccess::RockPieceBrokenMeshes); }
+		static UStaticMesh* OreCrystalMeshOf(const ARRArenaGrid* Grid) { return Grid->*(&FGridAccess::OreCrystalMesh); }
+		static float MarkedValueOf(const ARRArenaGrid* Grid) { return Grid->*(&FGridAccess::MarkedCustomDataValue); }
+
+		/** Piece visual of Corner (nullptr for an empty corner or one outside the grid). */
+		static const FRRGridPieceVisual* CornerPiece(const ARRArenaGrid* Grid, FIntPoint Corner)
+		{
+			if (Corner.X < 0 || Corner.Y < 0 || Corner.X > Width(Grid) || Corner.Y > Height(Grid))
+			{
+				return nullptr;
+			}
+			const int32 CornerIndex = Corner.Y * (Width(Grid) + 1) + Corner.X;
+			const int32 VisualIndex = CornerVisuals(Grid).IsValidIndex(CornerIndex) ? CornerVisuals(Grid)[CornerIndex] : INDEX_NONE;
+			return VisualIndex != INDEX_NONE ? &PieceVisualsOf(Grid)[VisualIndex] : nullptr;
+		}
+
+		/** Custom data float DataIndex of the piece at Corner (task-230-08 layout, ARRArenaGrid::Piece*CustomDataIndex); -1 when unreadable. */
+		static float PieceData(const ARRArenaGrid* Grid, FIntPoint Corner, int32 DataIndex)
+		{
+			const FRRGridPieceVisual* Visual = CornerPiece(Grid, Corner);
+			if (!Visual || !Visual->Render)
+			{
+				return -1.f;
+			}
+			const int32 Instance = CornerInstances(Grid)[Corner.Y * (Width(Grid) + 1) + Corner.X];
+			const int32 Index = Instance * Visual->Render->NumCustomDataFloats + DataIndex;
+			return DataIndex < Visual->Render->NumCustomDataFloats && Visual->Render->PerInstanceSMCustomData.IsValidIndex(Index) ? Visual->Render->PerInstanceSMCustomData[Index] : -1.f;
+		}
+
+		/** Quadrant of Cell around Corner (q = (+X side) + 2 * (+Y side)); INDEX_NONE when Cell is not one of the 4 cells of Corner. */
+		static int32 QuadrantOf(FIntPoint Corner, FIntPoint Cell)
+		{
+			const int32 DX = Cell.X - Corner.X;
+			const int32 DY = Cell.Y - Corner.Y;
+			if (DX < -1 || DX > 0 || DY < -1 || DY > 0)
+			{
+				return INDEX_NONE;
+			}
+			return (DX == 0 ? 1 : 0) + (DY == 0 ? 2 : 0);
+		}
+
+		/** Smallest marked quadrant float of Cell over the pieces of its 4 corners (rock piece outline, task-230-08); -1 when a corner has no readable piece. */
+		static float GetPieceMarkedData(const ARRArenaGrid* Grid, FIntPoint Cell)
+		{
+			float Smallest = TNumericLimits<float>::Max();
+			for (int32 DY = 0; DY <= 1; ++DY)
+			{
+				for (int32 DX = 0; DX <= 1; ++DX)
+				{
+					const FIntPoint Corner(Cell.X + DX, Cell.Y + DY);
+					Smallest = FMath::Min(Smallest, PieceData(Grid, Corner, ARRArenaGrid::PieceMarkedCustomDataIndex + QuadrantOf(Corner, Cell)));
+				}
+			}
+			return Smallest;
+		}
 		static bool BlocksFillFloorSlabOf(const ARRArenaGrid* Grid) { return Grid->*(&FGridAccess::bBlocksFillFloorSlab); }
 		static bool PieceImportFlipsYOf(const ARRArenaGrid* Grid) { return Grid->*(&FGridAccess::bRockPieceImportFlipsY); }
 		static void Rebuild(ARRArenaGrid* Grid) { (Grid->*(&FGridAccess::RebuildFromLayout))(); }
 
-		/** Block instances of a visual type, summed over its chunk components: the rendering HISM, or the collision ISM for rock piece types (no per-cell rendering since task-230-07). */
+		/** Block instances of a visual type, summed over its chunk components: the rendering HISM (crystals for ore and heal ore), or the collision ISM for rock and special ore (no per-cell rendering since task-230-07). */
 		static int32 InstanceCount(const ARRArenaGrid* Grid, ERRCellType Key)
 		{
 			int32 Count = 0;
