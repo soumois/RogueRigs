@@ -940,7 +940,7 @@ void ARRArenaGrid::BuildCornerPieces()
 	CornerBroken.Init(false, CornerTotal);
 	PieceVisuals.SetNum(RockPieceSetCount * RockPieceShapeCount * PieceVariantSlots * ChunkCount.X * ChunkCount.Y);
 
-	// Gather per piece visual, then add in one batch per HISM (AddInstances appends: instance i of a batch gets count + i).
+	// Gather per piece visual, then add in one batch per ISM (AddInstances appends: instance i of a batch gets count + i).
 	TArray<TArray<FTransform>> Transforms;
 	TArray<TArray<int32>> BatchCorners;
 	Transforms.SetNum(PieceVisuals.Num());
@@ -998,7 +998,7 @@ void ARRArenaGrid::BuildCornerPieces()
 			PieceCount += Visual.InstanceCorners.Num();
 			PieceComponents += Visual.Render ? 1 : 0;
 		}
-		UE_LOG(LogRogueRigs, Log, TEXT("ARRArenaGrid %s: %d rock pieces in %d piece HISMs (%d variant slot(s) per shape)."), *GetName(), PieceCount, PieceComponents, PieceVariantSlots);
+		UE_LOG(LogRogueRigs, Log, TEXT("ARRArenaGrid %s: %d rock pieces in %d piece ISMs (%d variant slot(s) per shape)."), *GetName(), PieceCount, PieceComponents, PieceVariantSlots);
 	}
 }
 
@@ -1157,8 +1157,12 @@ FRRGridPieceVisual* ARRArenaGrid::GetOrCreatePieceVisual(int32 VisualIndex)
 	Visual.Chunk = FIntPoint(ChunkIndex % ChunkCount.X, ChunkIndex / ChunkCount.X);
 
 	// RockInstances is the template (shadow, distance field, visibility); mesh and material are the piece's own.
-	UHierarchicalInstancedStaticMeshComponent* Component = CastChecked<UHierarchicalInstancedStaticMeshComponent>(
-		CreateChunkComponent(UHierarchicalInstancedStaticMeshComponent::StaticClass(), RockInstances, Visual.Chunk, /*bRegister*/ false));
+	// Plain ISM, not a HISM (task-230-14): pieces are removed and added every dig, and a HISM removal leaves an unmapped render slot
+	// with uninitialized instance data until its async tree rebuild; the distance field and Lumen card scenes read every slot
+	// (precision ensure in UpdateDistanceFieldObjectBuffers, LumenMeshCards.cpp assert). The ISM tracks instances by id, no slot gap.
+	UInstancedStaticMeshComponent* Component = CreateChunkComponent(UInstancedStaticMeshComponent::StaticClass(), RockInstances, Visual.Chunk, /*bRegister*/ false);
+	// The corner maps assume remove at swap (the last instance takes the removed index).
+	Component->SetRemoveSwap();
 	Component->EmptyOverrideMaterials();
 	Component->SetStaticMesh(GetPieceMesh(Visual.Set, Visual.Shape, Visual.Variant));
 	UMaterialInterface* Material = Visual.Set == ERRRockPieceSet::Broken && RockPieceBrokenMaterial ? RockPieceBrokenMaterial.Get() : RockPieceMaterial.Get();
@@ -1255,7 +1259,7 @@ void ARRArenaGrid::RefreshCornerPiece(FIntPoint Corner)
 	{
 		return;
 	}
-	// task-202-01: recreate the proxy at the end of the frame so the new piece is drawn at once (one recreation per HISM per frame).
+	// Recreate the proxy at the end of the frame (one recreation per ISM per frame; the custom data write below dirties it anyway).
 	Visual->Render->MarkRenderStateDirty();
 	if (Visual->InstanceCorners.Num() <= InstanceIndex)
 	{
@@ -1344,7 +1348,7 @@ void ARRArenaGrid::WriteCornerPieceData(int32 CornerIndex)
 	{
 		return;
 	}
-	UHierarchicalInstancedStaticMeshComponent* Component = PieceVisuals[CornerPieceVisual[CornerIndex]].Render;
+	UInstancedStaticMeshComponent* Component = PieceVisuals[CornerPieceVisual[CornerIndex]].Render;
 	const int32 Instance = CornerPieceInstance[CornerIndex];
 	if (!Component || Component->NumCustomDataFloats < PieceCustomDataCount || Instance == INDEX_NONE)
 	{

@@ -85,7 +85,7 @@ enum class ERRRockPieceShape : uint8
 	Diagonal
 };
 
-/** Piece sets of the dual grid: intact pieces, and broken pieces (own HISMs) around damaged cells (task-230-08). */
+/** Piece sets of the dual grid: intact pieces, and broken pieces (own ISMs) around damaged cells (task-230-08). */
 UENUM(BlueprintType)
 enum class ERRRockPieceSet : uint8
 {
@@ -141,7 +141,7 @@ struct FRRRockPieceMeshes
 };
 
 /**
- * One rock piece HISM: one piece set, one shape, one variant, one chunk (rendering only, no collision). Holds the corner index
+ * One rock piece ISM: one piece set, one shape, one variant, one chunk (rendering only, no collision). Holds the corner index
  * of each instance in instance order, kept in sync with remove-at-swap.
  */
 USTRUCT()
@@ -165,9 +165,13 @@ struct FRRGridPieceVisual
 	UPROPERTY()
 	FIntPoint Chunk = FIntPoint::ZeroValue;
 
-	/** Rendering HISM; null until the chunk holds one instance of this shape and variant. */
+	/**
+	 * Rendering ISM (remove at swap); null until the chunk holds one instance of this shape and variant. A plain ISM, not a HISM
+	 * (task-230-14): a HISM removal leaves its render slot unmapped until the async tree rebuild, and that slot holds uninitialized
+	 * instance data that the distance field and Lumen card scenes read (precision ensure, LumenMeshCards assert).
+	 */
 	UPROPERTY()
-	TObjectPtr<UHierarchicalInstancedStaticMeshComponent> Render;
+	TObjectPtr<UInstancedStaticMeshComponent> Render;
 
 	/** Corner index (ARRArenaGrid::GetCornerIndex) of each instance, in instance order. */
 	UPROPERTY()
@@ -237,7 +241,7 @@ DECLARE_DYNAMIC_MULTICAST_DELEGATE_ThreeParams(FRROnCellDestroyedSignature, FInt
  * the actor; the floor top is at the actor's Z; cell (x, y) center is at ((x + 0.5) * CellSize, (y + 0.5) * CellSize)
  * in actor space. A floor slab lies under every non-void cell (task-230-07). Rock display (dual grid, task-230-07): rock,
  * ore, heal ore and special ore cells have no per-cell rendering instance; one rock piece per cell corner (corner (x, y) at
- * (x * CellSize, y * CellSize)), chosen by its 4 surrounding cells, is drawn by per-chunk piece HISMs (one per piece set,
+ * (x * CellSize, y * CellSize)), chosen by its 4 surrounding cells, is drawn by per-chunk piece ISMs (one per piece set,
  * shape and variant, FRRGridPieceVisual); a destroyed cell rebuilds its 4 corner pieces. Collision stays one cube per cell.
  * Damage display (task-230-08): each piece carries per-quadrant custom data (damage, shake, marked, solid mask; layout at
  * PieceDamageCustomDataIndex) read by the piece material; a corner switches to the broken piece set at the first damage of
@@ -691,7 +695,7 @@ protected:
 	/** Number of ERRRockPieceShape values (full, edge, outer, inner, diagonal). */
 	static constexpr int32 RockPieceShapeCount = 5;
 
-	/** Builds the piece table, sizes the corner maps and PieceVisuals, and adds one intact piece per non-empty corner in one batch per HISM. Called by BuildInstances after the cell instances. */
+	/** Builds the piece table, sizes the corner maps and PieceVisuals, and adds one intact piece per non-empty corner in one batch per ISM. Called by BuildInstances after the cell instances. */
 	void BuildCornerPieces();
 
 	/** True for the cell types drawn by the dual-grid rock pieces (solid for the corner masks): Rock, Ore, HealOre, SpecialOre. Barrels are not: they keep their own mesh on a floor slab. */
@@ -733,7 +737,7 @@ protected:
 	/** Index in PieceVisuals of a piece set, shape and variant in the chunk of Corner; INDEX_NONE when invalid. */
 	int32 GetPieceVisualIndex(ERRRockPieceSet Set, ERRRockPieceShape Shape, int32 Variant, FIntPoint Corner) const;
 
-	/** Piece visual at VisualIndex with its HISM created on first use (settings of the RockInstances template, piece mesh, RockPieceMaterial or RockPieceBrokenMaterial, PieceCustomDataCount custom data floats, no collision, Nanite allowed when bRockPiecesUseNanite). */
+	/** Piece visual at VisualIndex with its ISM created on first use (settings of the RockInstances template, piece mesh, RockPieceMaterial or RockPieceBrokenMaterial, PieceCustomDataCount custom data floats, no collision, Nanite allowed when bRockPiecesUseNanite). */
 	FRRGridPieceVisual* GetOrCreatePieceVisual(int32 VisualIndex);
 
 	/** Sets the piece of Corner from the current cells and its broken flag: removes its old instance and adds the new set and shape (nothing when the mask is empty); a same-visual change only updates the transform; then writes its custom data. */
@@ -753,7 +757,7 @@ protected:
 	/** Fills the PieceCustomDataCount floats of the piece at Corner from the current cells (damage, shake, marked, solid mask). */
 	void ComputeCornerPieceData(FIntPoint Corner, float (&OutData)[PieceCustomDataCount]) const;
 
-	/** Writes the custom data of the piece of a corner index (no-op for an empty corner or a HISM without the floats); only writes when a value changed, and then marks the HISM render state dirty. */
+	/** Writes the custom data of the piece of a corner index (no-op for an empty corner or an ISM without the floats); only writes when a value changed, and then marks the ISM render state dirty. */
 	void WriteCornerPieceData(int32 CornerIndex);
 
 	/** Rewrites the custom data of the 4 corner pieces of Cell (shake or mark change of that cell). */
@@ -1048,7 +1052,7 @@ protected:
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Grid|Rock Pieces")
 	FRRRockPieceMeshes RockPieceMeshes;
 
-	/** Material of every rock piece HISM (M_RockSlab instance, task-230-09); null keeps the material of each piece mesh. */
+	/** Material of every rock piece ISM (M_RockSlab instance, task-230-09); null keeps the material of each piece mesh. */
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Grid|Rock Pieces")
 	TObjectPtr<UMaterialInterface> RockPieceMaterial;
 
@@ -1071,7 +1075,7 @@ protected:
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Grid|Rock Pieces")
 	FRRRockPieceMeshes RockPieceBrokenMeshes;
 
-	/** Material of the broken piece HISMs (sag by world position offset, task-230-09); null falls back to RockPieceMaterial, then to the mesh material. */
+	/** Material of the broken piece ISMs (sag by world position offset, task-230-09); null falls back to RockPieceMaterial, then to the mesh material. */
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Grid|Rock Pieces")
 	TObjectPtr<UMaterialInterface> RockPieceBrokenMaterial;
 
@@ -1095,7 +1099,7 @@ protected:
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Grid|Rock Pieces")
 	int32 RockPieceSeed = 1;
 
-	/** Allow Nanite on the rock piece HISMs (owner 2026-10-17: Nanite assumed; the meshes need Nanite enabled at import). False forces the fallback mesh. */
+	/** Allow Nanite on the rock piece ISMs (owner 2026-10-17: Nanite assumed; the meshes need Nanite enabled at import). False forces the fallback mesh. */
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Grid|Rock Pieces")
 	bool bRockPiecesUseNanite = true;
 
@@ -1121,7 +1125,7 @@ protected:
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Grid|Components")
 	TObjectPtr<UHierarchicalInstancedStaticMeshComponent> FloorInstances;
 
-	/** Template of the rock piece HISMs (rendering only: shadow, distance field and visibility settings; mesh and material are replaced per piece); empty. */
+	/** Template of the rock piece ISMs (rendering only: shadow, distance field and visibility settings; mesh and material are replaced per piece); empty. */
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Grid|Components")
 	TObjectPtr<UHierarchicalInstancedStaticMeshComponent> RockInstances;
 
@@ -1215,7 +1219,7 @@ protected:
 	UPROPERTY(Transient)
 	TArray<int32> CellFloorInstanceIndex;
 
-	/** Every rock piece visual, index = ((set * piece shape count + shape) * PieceVariantSlots + variant) * chunk count + chunk Y * ChunkCount.X + chunk X (GetPieceVisualIndex); owns the piece HISMs. */
+	/** Every rock piece visual, index = ((set * piece shape count + shape) * PieceVariantSlots + variant) * chunk count + chunk Y * ChunkCount.X + chunk X (GetPieceVisualIndex); owns the piece ISMs. */
 	UPROPERTY(Transient)
 	TArray<FRRGridPieceVisual> PieceVisuals;
 
@@ -1225,7 +1229,7 @@ protected:
 	/** Corner -> index in PieceVisuals of its piece, row-major over (GridWidth + 1) x (GridHeight + 1); INDEX_NONE for an empty corner. */
 	TArray<int32> CornerPieceVisual;
 
-	/** Corner -> instance index of its piece in CornerPieceVisual's HISM; INDEX_NONE for an empty corner. */
+	/** Corner -> instance index of its piece in CornerPieceVisual's ISM; INDEX_NONE for an empty corner. */
 	TArray<int32> CornerPieceInstance;
 
 	/** Corner -> broken flag: set when one of its 4 cells first has display damage above 0, never cleared until the next build (damage only rises); the corner's piece uses the broken set. */

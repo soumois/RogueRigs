@@ -132,7 +132,7 @@ namespace RRTestAccess
 			return Count;
 		}
 
-		/** Rock piece instances over every piece HISM. */
+		/** Rock piece instances over every piece ISM. */
 		static int32 PieceInstanceCount(const ARRArenaGrid* Grid)
 		{
 			int32 Count = 0;

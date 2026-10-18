@@ -124,7 +124,7 @@ namespace RRDigTests
 	 *   heal ore (crystal clusters, task-230-08) have both, instance for instance; every block cell has exactly one block instance and every non-void cell exactly one floor slab;
 	 * - rock pieces: one piece per corner with at least one solid cell around it, none elsewhere; each piece maps back to its
 	 *   corner, sits on it, lies in the chunk of the corner, has the shape of its mask and an orientation covering exactly the
-	 *   solid quadrants; piece HISMs never collide, never affect navigation and allow Nanite; each piece holds the
+	 *   solid quadrants; piece ISMs never collide, never affect navigation and allow Nanite; each piece holds the
 	 *   PieceCustomDataCount floats with the solid mask of its corner and the display damage of each quadrant (task-230-08).
 	 * Returns true when consistent.
 	 */
@@ -1195,10 +1195,10 @@ bool FRRDigChunkedInstancesTest::RunTest(const FString& Parameters)
 		if (Delta != 0)
 		{
 			++ChangedPieces;
-			TestTrue(TEXT("only piece HISMs of the corner chunks changed"), CornerChunks.Contains(Visual.Chunk));
+			TestTrue(TEXT("only piece ISMs of the corner chunks changed"), CornerChunks.Contains(Visual.Chunk));
 		}
 	}
-	AddInfo(FString::Printf(TEXT("%d piece HISM(s) changed in %d corner chunk(s)"), ChangedPieces, CornerChunks.Num()));
+	AddInfo(FString::Printf(TEXT("%d piece ISM(s) changed in %d corner chunk(s)"), ChangedPieces, CornerChunks.Num()));
 	TestTrue(TEXT("the corner pieces changed"), ChangedPieces > 0);
 	TestTrue(TEXT("instance maps consistent"), CheckInstanceMaps(*this, Grid));
 	return true;
@@ -1272,7 +1272,7 @@ bool FRRDigRockPiecesTest::RunTest(const FString& Parameters)
 		}
 	}
 	AddInfo(FString::Printf(TEXT("full pieces: %d variant 0, %d variant 1"), FullVariants[0], FullVariants[1]));
-	TestEqual(TEXT("each piece HISM uses the mesh of its variant"), MeshErrors, 0);
+	TestEqual(TEXT("each piece ISM uses the mesh of its variant"), MeshErrors, 0);
 	TestTrue(TEXT("both variants used"), FullVariants[0] > 0 && FullVariants[1] > 0);
 	TestTrue(TEXT("instance maps consistent with variants"), CheckInstanceMaps(*this, Grid));
 	TArray<ERRRockPieceShape> ShapesBefore;

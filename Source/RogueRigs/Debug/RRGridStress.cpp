@@ -55,7 +55,7 @@ namespace RRGridStress
 					Result.Emplace(TypeName + TEXT("Collision"), Visual.Collision.Get());
 				}
 			}
-			// Dual-grid rock piece HISMs (task-230-07) as "Piece<Shape>".
+			// Dual-grid rock piece ISMs (task-230-07) as "Piece<Shape>".
 			for (const FRRGridPieceVisual& Visual : PieceVisualsOf(Grid))
 			{
 				if (Visual.Render)
@@ -298,7 +298,7 @@ namespace RRGridStress
 			UInstancedStaticMeshComponent* RockCollision = nullptr;
 			UInstancedStaticMeshComponent* Floor = nullptr;
 			FIntPoint RockChunk(-1, -1);
-			// Task-230-07: rock renders through the dual-grid piece HISMs; the fullest rock collision chunk and the fullest piece HISM.
+			// Task-230-07: rock renders through the dual-grid piece ISMs; the fullest rock collision chunk and the fullest piece ISM.
 			for (const FRRGridChunkVisual& Visual : FGridAccess::Visuals(Grid))
 			{
 				if (Visual.MapKey == ERRCellType::Rock && Visual.Collision && (!RockCollision || Visual.Collision->GetInstanceCount() > RockCollision->GetInstanceCount()))
@@ -345,7 +345,7 @@ namespace RRGridStress
 			MeanMax(CollisionMs, CollisionMean, CollisionMax);
 			MeanMax(FloorMs, FloorMean, FloorMax);
 			UE_LOG(LogRogueRigs, Display,
-				TEXT("GridBench: destroy breakdown, rock piece HISM RemoveInstance mean %.3f max %.3f ms, rock collision ISM RemoveInstance mean %.3f max %.3f ms, floor HISM AddInstance mean %.3f max %.3f ms (%d runs)"),
+				TEXT("GridBench: destroy breakdown, rock piece ISM RemoveInstance mean %.3f max %.3f ms, rock collision ISM RemoveInstance mean %.3f max %.3f ms, floor HISM AddInstance mean %.3f max %.3f ms (%d runs)"),
 				RenderMean, RenderMax, CollisionMean, CollisionMax, FloorMean, FloorMax, RenderMs.Num());
 			FGridAccess::Rebuild(Grid);
 			ForceFlowFieldCompute(World);
