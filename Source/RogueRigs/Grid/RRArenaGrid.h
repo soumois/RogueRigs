@@ -472,8 +472,9 @@ public:
 	int32 GetBarrelTelegraphPoolSize() const { return BarrelTelegraphs.Num(); }
 
 	/**
-	 * Starts or stops the jitter of the block in Cell (dig feedback). Only the rendering instance moves: the collision
-	 * instance stays at the cell, so a shaking block never pushes a character. Stopping restores the rest transform.
+	 * Starts or stops the jitter of the block in Cell (dig feedback). Only the rendering instance moves (barrels, ore crystals);
+	 * rock piece cells write the shake float of their quadrant in the 4 corner pieces instead (the material shakes, task-230-08).
+	 * The collision instance stays at the cell, so a shaking block never pushes a character. Stopping restores the rest transform.
 	 * Ignored on cells without a block. A fusing barrel keeps its fuse shake until it is destroyed: stopping it is ignored.
 	 */
 	UFUNCTION(BlueprintCallable, Category = "Grid|Destruction")
