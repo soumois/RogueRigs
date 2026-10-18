@@ -266,9 +266,11 @@ namespace RRDigTests
 				Error(FString::Printf(TEXT("piece visual %d: %d corners, HISM has %d instances"), VisualIndex, Visual.InstanceCorners.Num(), Visual.Render->GetInstanceCount()));
 				continue;
 			}
-			if (Visual.Render->GetCollisionEnabled() != ECollisionEnabled::NoCollision || Visual.Render->CanEverAffectNavigation() || Visual.Render->bDisallowNanite)
+			// Grid defaults: intact pieces on Nanite, broken pieces off Nanite (bBrokenRockPiecesUseNanite false, task-230-17: WPO sag).
+			const bool bExpectDisallowNanite = Visual.Set == ERRRockPieceSet::Broken;
+			if (Visual.Render->GetCollisionEnabled() != ECollisionEnabled::NoCollision || Visual.Render->CanEverAffectNavigation() || Visual.Render->bDisallowNanite != bExpectDisallowNanite)
 			{
-				Error(FString::Printf(TEXT("piece visual %d collides, affects navigation or disallows Nanite"), VisualIndex));
+				Error(FString::Printf(TEXT("piece visual %d collides, affects navigation or has the wrong Nanite setting"), VisualIndex));
 			}
 			for (int32 Instance = 0; Instance < Visual.InstanceCorners.Num(); ++Instance)
 			{
