@@ -3,6 +3,8 @@
 #include "CoreMinimal.h"
 #include "AbilitySystemComponent.h"
 #include "Components/CapsuleComponent.h"
+#include "Components/InstancedStaticMeshComponent.h"
+#include "Engine/StaticMesh.h"
 #include "Containers/Ticker.h"
 #include "Debug/RRStressSubsystem.h"
 #include "GameFramework/Character.h"
@@ -486,6 +488,36 @@ namespace RRScreenshotCommands
 			}
 			UE_LOG(LogRogueRigs, Log, TEXT("rr.Debug.DamageCell: (%d, %d) health %.3f -> %.3f of max %.3f, display damage %.2f -> %.2f."),
 				Cell.X, Cell.Y, Health, Grid->GetCellHealth(Cell), MaxHealth, Damage, Grid->GetCellDisplayDamage(Cell));
+
+			// The 4 corner pieces of the cell as the renderer gets them: mesh and custom data floats (piece data check).
+			const FVector Center = Grid->GetCellCenter(Cell.X, Cell.Y);
+			const float HalfCell = Grid->GetCellSize() * 0.5f;
+			TInlineComponentArray<UInstancedStaticMeshComponent*> Components(Grid);
+			for (const UInstancedStaticMeshComponent* Component : Components)
+			{
+				const int32 NumFloats = Component->NumCustomDataFloats;
+				if (NumFloats != ARRArenaGrid::PieceCustomDataCount || !Component->GetStaticMesh())
+				{
+					continue;
+				}
+				for (int32 Instance = 0; Instance < Component->GetInstanceCount(); ++Instance)
+				{
+					FTransform Transform;
+					Component->GetInstanceTransform(Instance, Transform, /*bWorldSpace*/ true);
+					const FVector Offset = Transform.GetLocation() - Center;
+					if (FMath::Abs(FMath::Abs(Offset.X) - HalfCell) > 1.f || FMath::Abs(FMath::Abs(Offset.Y) - HalfCell) > 1.f)
+					{
+						continue;
+					}
+					FString Floats;
+					for (int32 Float = 0; Float < NumFloats; ++Float)
+					{
+						Floats += FString::Printf(TEXT(" %.2f"), Component->PerInstanceSMCustomData[Instance * NumFloats + Float]);
+					}
+					UE_LOG(LogRogueRigs, Log, TEXT("rr.Debug.DamageCell:   piece %s at (%.0f, %.0f, %.0f) data%s"), *Component->GetStaticMesh()->GetName(),
+						Transform.GetLocation().X, Transform.GetLocation().Y, Transform.GetLocation().Z, *Floats);
+				}
+			}
 		}),
 		ECVF_Cheat);
 

@@ -737,7 +737,7 @@ protected:
 	/** Index in PieceVisuals of a piece set, shape and variant in the chunk of Corner; INDEX_NONE when invalid. */
 	int32 GetPieceVisualIndex(ERRRockPieceSet Set, ERRRockPieceShape Shape, int32 Variant, FIntPoint Corner) const;
 
-	/** Piece visual at VisualIndex with its ISM created on first use (settings of the RockInstances template, piece mesh, RockPieceMaterial or RockPieceBrokenMaterial, PieceCustomDataCount custom data floats, no collision, Nanite allowed when bRockPiecesUseNanite). */
+	/** Piece visual at VisualIndex with its ISM created on first use (settings of the RockInstances template, piece mesh, RockPieceMaterial or RockPieceBrokenMaterial, PieceCustomDataCount custom data floats, no collision, Nanite allowed when bRockPiecesUseNanite, and for the broken set only when bBrokenRockPiecesUseNanite). */
 	FRRGridPieceVisual* GetOrCreatePieceVisual(int32 VisualIndex);
 
 	/** Sets the piece of Corner from the current cells and its broken flag: removes its old instance and adds the new set and shape (nothing when the mask is empty); a same-visual change only updates the transform; then writes its custom data. */
@@ -1102,6 +1102,10 @@ protected:
 	/** Allow Nanite on the rock piece ISMs (owner 2026-10-17: Nanite assumed; the meshes need Nanite enabled at import). False forces the fallback mesh. */
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Grid|Rock Pieces")
 	bool bRockPiecesUseNanite = true;
+
+	/** Allow Nanite on the broken piece ISMs too (task-230-17: false). Under Nanite the M_RockSlab world position offset (broken block sag, shake) does not show in game: with r.Nanite 0 the same damaged wall sags. Broken pieces exist only around damaged cells, so their non-Nanite fallback costs little. Ignored when bRockPiecesUseNanite is false. */
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Grid|Rock Pieces")
+	bool bBrokenRockPiecesUseNanite = false;
 
 	/** Mesh of barrel blocks (render only). Fitted to one cell from its bounds (GetBlockRenderTransform); its collision is never used. */
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Grid|Visuals")

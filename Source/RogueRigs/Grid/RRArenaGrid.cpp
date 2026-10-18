@@ -1176,7 +1176,8 @@ FRRGridPieceVisual* ARRArenaGrid::GetOrCreatePieceVisual(int32 VisualIndex)
 	Component->SetCollisionEnabled(ECollisionEnabled::NoCollision);
 	Component->SetCollisionProfileName(UCollisionProfile::NoCollision_ProfileName);
 	// Nanite (owner 2026-10-17): drawn through Nanite when the mesh has Nanite data; never forced to the fallback mesh here.
-	Component->bDisallowNanite = !bRockPiecesUseNanite;
+	// Broken pieces off Nanite by default (task-230-17): their sag is world position offset, not drawn under Nanite in game.
+	Component->bDisallowNanite = !bRockPiecesUseNanite || (Visual.Set == ERRRockPieceSet::Broken && !bBrokenRockPiecesUseNanite);
 	Component->SetForceDisableNanite(false);
 	if (GetWorld())
 	{
