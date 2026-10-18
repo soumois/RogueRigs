@@ -3,7 +3,7 @@ id: task-230-10-heal-crystal-material
 description: "Red heal crystal material instance for the crystal clusters on heal veins."
 parent: task-230-rock-slab-integration
 kind: task
-status: todo
+status: in-progress
 ---
 # Red heal crystal material instance for the crystal clusters on heal veins
 

@@ -13,7 +13,7 @@ status: in-progress
 - gdd_check: [[rock-state-render-options]] and children (owner decisions 2026-10-17: dual grid for display only, provisional triangle budget, rim as vertex colour in one material, cracks from any damage, one variant per shape with variant support, Nanite assumed), [[art-style-guide]] A1 level 3, [[color-code]], [[readability-rules]], [[sys-grid]]. Open: weak rock (separate task, maximum share open), number of variants later. Not in this task: weak rock, collision rounding of corners.
 - confirmed_by_owner: yes (2026-10-17). Launch rules (owner): 01 then 02 run one after the other (not in parallel); 03 to 06 each wait for the owner validation of the previous one; 07 to 12 run together as one sequence without asking again.
 - milestone: M2
-- next_step: task-230-09-rock-slab-material
+- next_step: task-230-10-heal-crystal-material
 - result: open
 
 ## Subtasks

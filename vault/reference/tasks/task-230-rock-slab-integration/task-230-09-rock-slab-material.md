@@ -3,7 +3,7 @@ id: task-230-09-rock-slab-material
 description: "Material M_RockSlab and its instance: world-UV top, sides, rim, cracks, shake."
 parent: task-230-rock-slab-integration
 kind: task
-status: in-progress
+status: done
 ---
 # Material M_RockSlab and its instance: world-UV top, sides, rim, cracks, shake
 
@@ -15,12 +15,12 @@ status: in-progress
 - done_when: material compiles; doc node written; committed.
 - editor_state: open
 - token_ceiling: 60000
-- model: open
-- tokens: open
-- runs: open
+- model: sonnet
+- tokens: input 86, cache write 123225, cache read 3105116, output 714
+- runs: 1
 - milestone: M2
 - notes (2026-10-18, updated for 06 version 4 c0ac9903): the broken variants are closed prisms (blocks); move each block rigidly exactly as documented under `channels` and `material_rigid_tilt` in Art/Meshes/rock-slab/SM_RockSlabBroken.report.json (UV2 block centre = pivot, UV3 seed and radius, UV4 rim flag and block index; vertex colour R 1 block top / 0.5 rim, G sides, B bottoms): sink toward the empty side, small tilt, random offset, top never below 60 uu; take the per-block random value from a world-position hash of the block centre combined with the stored seed, so instances do not repeat the same pattern (Orchestrator).
-- result: open
+- result: Commits 2a0729f2, 9ee32e18, f3b76900. M_RockSlab + MI_RockSlab in /Game/RogueRigs/Environment/Rock/ (ISM and Nanite usage), T_RockTop and T_RockCrackMask imported. World-UV top at two scales, desaturated 55 %, tint and saturation parameters; sides and rim from vertex colour; cracks by quadrant damage (full at 0.6); quadrant shake blended bilinearly; broken block rigid sag (UV2 pivot, UV3 seed, world hash), drop capped at 40 uu (top >= 60); marked pulse from custom data 8-11 identical to M_GreyBoxMarked (0.8 Hz). Compiles; look unverified until 12. Provisional: interior sag distance 50 uu, side and crack colours. UV4 unused (Nanite 4-UV limit).
 
 ## Relations
 - [[task-230-rock-slab-integration]] — parent global task.
