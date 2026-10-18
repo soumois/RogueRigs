@@ -423,6 +423,7 @@ kind: note
 | [[task-230-03-rock-top-texture]] | sonnet | 1 | 0k | 48k | 325k | 1k |
 | [[task-230-04-rock-top-texture-review]] | opus | 1 | 0k | 24k | 40k | 4k |
 | [[task-230-05-rock-crack-mask]] | sonnet | 2 | 0k | 47k | 338k | 1k |
+| [[task-230-06-rock-plate-overlay]] | sonnet | 4 | 0k | 574k | 6149k | 88k |
 
 ## Totals
 | Scope | Input | Cache write | Cache read | Output |

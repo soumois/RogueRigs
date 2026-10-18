@@ -3,7 +3,7 @@ id: task-230-06-rock-plate-overlay
 description: "Broken variants of the 5 slab pieces as a fractured volume: solid full-height prisms, faceted sides, same borders as the intact pieces."
 parent: task-230-rock-slab-integration
 kind: task
-status: in-progress
+status: done
 ---
 # Broken variants of the slab pieces
 
@@ -17,11 +17,11 @@ status: in-progress
 - done_when: 10 FBX exist; every block is a closed prism reaching the ground; borders match the intact pieces and each other (seam check); no block thinner than the minimum size; no visible hole at full sag (block tops >= 60 uu); previews rendered; committed.
 - editor_state: any
 - token_ceiling: 40000
-- model: open
-- tokens: open
-- runs: open
+- model: sonnet
+- tokens: input 138, cache write 573581, cache read 6148632, output 88416
+- runs: 4
 - milestone: M2
-- result: open. Version 4 (fractured volume) in progress 2026-10-18. Superseded: version 3 surface plates 5ed04bf2 (holes), SM_RockPlates_01 (bc679aa9, 41e0f547) and the bent-sheet version 410e09a6.
+- result: Version 4 c0ac9903 validated by owner 2026-10-18: 10 FBX SM_RockSlabBroken_<Shape>_{01,02}, volume fractured into closed prisms to z=0 (3 to 11 blocks per piece, min width 12 uu), faceted void sides, 120-420 tris, seams 0 mismatch, full-sag check no hole and tops >= 60 uu; UV2 block centre, UV3 seed and radius, UV4 rim flag and index (5 UV channels at import); layout in SM_RockSlabBroken.report.json.
 
 ## Relations
 - [[task-230-rock-slab-integration]] — parent global task.

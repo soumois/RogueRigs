@@ -3,7 +3,7 @@ id: task-230-07-dual-grid-placement
 description: "ARRArenaGrid draws rock with dual-grid pieces at cell corners and rebuilds them on destruction."
 parent: task-230-rock-slab-integration
 kind: task
-status: todo
+status: in-progress
 ---
 # ARRArenaGrid draws rock with dual-grid pieces at cell corners and rebuilds them on destruction
 
