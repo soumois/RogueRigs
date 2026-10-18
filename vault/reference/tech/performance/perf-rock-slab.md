@@ -35,9 +35,29 @@ Perf: [[perf-stress-grid-cells]] procedure, `rr.Stress.Run 100 5 20 0 <peace|cha
 - Render thread ≈ frame: the frame is render-thread bound. Shadow depth draws ≈ 650 of the draws (frames reporting per-pass counts).
 - Grid-only triangles barely change between spots A and C (107 k; cause not checked); compare the slab change on these rows.
 
+## After the slab change (task-230-12, 2026-10-18, HEAD 76edbf29)
+Captures in `Saved/RockSlab/after/` (not committed): spots A-F under the same names, `rs_f_digearly_00` (+0.2 s, cells mid-dig), `rs_g_far_00` (`fov 130` after the dig), `rs_h_crystals_00` (spot D, `fov 50`); side-by-side `sbs_rs_<spot>.png` (before left). `rs_d_heal_00` is from a second launch: in the first, a 3 s hitch left the camera blurred mid-move. 20 987 pieces in 633 piece HISMs (log).
+
+Look: continuous slab outlines with a light rim band, striated wall faces, no seams or misaligned outlines at any spot (the `bRockPieceImportFlipsY` true setting looks right); no holes or missing rock seen. Heal crystals red and glowing; Duskite crystals are grey clusters without violet (default mesh material). Mid-dig the dug cells show a darker, rough patch; after the dig the notch edges look like intact edges (no visible sag at this camera). Far view: no visible artefact. Marked-cell pulse not seen: the console fell outside the view in both tries.
+
+Perf: same procedure; times from the `Saved/Stress` summary, draws and triangles from the CSV (measure event to `csvprofile stop`). `RHI/PrimitivesDrawn` does not count Nanite triangles, so the triangle column no longer measures the rock.
+
+| Run | Frame | Game | Render | GPU | Draws avg (max) | Triangles avg (non-Nanite) |
+|---|---|---|---|---|---|---|
+| Steady, 100 robots | 9.92 / 11.60 (13.2) | 4.72 / 6.70 | 9.90 / 11.52 | 8.58 / 8.84 | 887 (954) | 722 k |
+| Chain 30, 100 robots (event frames 42, avg 151.9, max 5 701) | 14.14 / 15.02 (5 701) | 6.41 / 14.99 | 13.97 / 11.96 | 8.72 / 9.76 | 856 (1 131) | 742 k |
+| No robots, spot A | 9.55 / 10.97 | 3.82 / 5.57 | 9.52 / 10.90 | 8.28 / 8.69 | 769 | 33 k |
+| No robots, spot C | 9.62 / 11.31 | 3.77 / 5.35 | 9.60 / 11.24 | 8.35 / 8.78 | 735 | 32 k |
+
+- Versus baseline: GPU +1.2 to +1.4 ms on every row, frame +1.0 to +1.3 ms (render-thread bound as before), draws −3 to −4 %. Game thread unchanged.
+- Chain: first launch crashed (Lumen `LumenMeshCards.cpp:1332` assertion, after ensures `DoubleFloat.cpp:19` "precision loss converting matrix" and `Matrix.h:468` in `UpdateDistanceFieldObjectBuffers`, 0.4 s after the chain started); second launch hit the same ensures without crashing, and the ensure stack walks made the 5.7 s frame. An instance transform sent to the distance field scene is invalid during explosion destruction (cause not traced).
+- Triangle budget ([[rock-render-counts]]): intact meshes are within it (full 2, edge 43 of 48, outer 42 of 48, inner 58 of 64, diagonal 86 of 96, from `SM_RockSlab.report.json`): about 302 k arena-wide against 335 k. Broken meshes run 120-420 triangles (inner 372-420, diagonal 360-408, edge 204-228) against the 80-150 estimate. Verdict: steady state holds the 16.7 / 25 ms budget with margin (+1.3 ms GPU); the chain crash blocks a verdict on destruction.
+
 ## Relations
 - [[performance-index]] — parent index.
 - [[rock-state-render-options]] — the slab rock design measured here.
 - [[perf-stress-grid-cells]] — the stress procedure and earlier grid costs.
 - [[sys-stress]] — run modes and samples used.
 - [[task-230-01-rock-baseline-capture]] — the task that produced the baseline.
+- [[task-230-12-rock-slab-check]] — the task that produced the after section.
+- [[rock-render-counts]] — the provisional triangle budget compared in the after section.
