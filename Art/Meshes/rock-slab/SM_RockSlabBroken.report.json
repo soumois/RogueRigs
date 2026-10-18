@@ -1,10 +1,10 @@
 {
-  "task": "task-230-06-rock-plate-overlay (broken pieces)",
+  "task": "task-230-06-rock-plate-overlay (broken pieces, rigid plates)",
   "script": "Tools/art/blender/rock_slab_broken.py",
   "units": "cm (1 uu = 1 cm)",
   "constants": {
     "plate_thickness": 12.0,
-    "plate_gap": 1.6,
+    "plate_gap": 1.8,
     "cap_z": 58.0,
     "min_top": 60.0,
     "border_vertices_per_side": [
@@ -13,19 +13,29 @@
       0.0,
       12.0,
       33.5
-    ]
+    ],
+    "cuts_per_piece": 9
+  },
+  "channels": {
+    "UV0 'UVMap'": "planar top-down, (x/100, y/100) in piece-local XY",
+    "UV1 'LightMap'": "per-triangle packing, no overlap, 2 px border at 256",
+    "UV2 'PlateA'": "(plate centre X / 100, plate centre Y / 100) in piece-local XY (before the instance rotation), identical on every vertex of a plate (top and sides); (0, 0) on rim, walls and cap",
+    "UV3 'PlateB'": "(plate seed 0..1, plate radius / 100) with radius = largest distance centre -> plate vertex; (-1, 0) on rim, walls and cap: UV3.x < 0 means 'not a plate'",
+    "vertex colour 'Color'": "R = 1 plate tops, R = 0.5 rim band, G = 1 plate edges and side walls, B = 1 base cap (all others 0); read R with thresholds 0.25 / 0.75 (export quantises to 8 bit)",
+    "import": "enable full precision UVs in the Unreal static mesh import (UV2 holds values in [-0.5, 0.5], half precision would give ~0.05 uu error); keep 4 UV channels"
   },
   "shapes": {
-    "full": {
+    "full_01": {
       "file": "Art/Meshes/rock-slab/SM_RockSlabBroken_Full_01.fbx",
-      "tris": 72,
+      "tris": 73,
       "budget": [
-        80,
-        150
+        70,
+        230
       ],
-      "within_budget": false,
+      "within_budget": true,
       "intact_tris": 2,
-      "plates": 9,
+      "plates": 10,
+      "plate_data_distinct": 10,
       "dimensions_cm": [
         67.0,
         67.0,
@@ -46,44 +56,112 @@
       ],
       "uv_layers": [
         "UVMap",
-        "LightMap"
+        "LightMap",
+        "PlateA",
+        "PlateB"
       ],
       "uv_checks": {
         "UVMap_planar_xy_over_100": true,
         "LightMap": {
-          "triangles": 72,
+          "triangles": 73,
           "overlapping_pairs": 0,
           "bounds": [
             0.0098,
-            0.9258
+            0.9298
           ],
           "min_gap_px_at_256": 5.024,
           "pass": true
-        }
+        },
+        "plate_data_one_per_plate": true,
+        "nonplate_marker_ok": true
       },
       "vertex_colour": {
         "attribute": "Color (corner, float)",
         "export": "colors_type=LINEAR",
-        "R1_plate_tops_and_rim": 22,
-        "G1_edges_and_walls": 48,
+        "R1_plate_tops": 21,
+        "R0.5_rim": 0,
+        "G1_edges_and_walls": 50,
         "B1_base_cap": 2,
         "inconsistent_faces": 0,
         "pass": true
       },
-      "intact_border_vertices_missing_in_broken": [],
       "intact_border_vertices_kept": true,
       "all_flat_shaded": true
     },
-    "edge": {
-      "file": "Art/Meshes/rock-slab/SM_RockSlabBroken_Edge_01.fbx",
-      "tris": 121,
+    "full_02": {
+      "file": "Art/Meshes/rock-slab/SM_RockSlabBroken_Full_02.fbx",
+      "tris": 76,
       "budget": [
-        80,
-        150
+        70,
+        230
+      ],
+      "within_budget": true,
+      "intact_tris": 2,
+      "plates": 10,
+      "plate_data_distinct": 10,
+      "dimensions_cm": [
+        67.0,
+        67.0,
+        42.0
+      ],
+      "bounds_min": [
+        -33.5,
+        -33.5,
+        58.0
+      ],
+      "bounds_max": [
+        33.5,
+        33.5,
+        100.0
+      ],
+      "materials": [
+        "M_RockSlab"
+      ],
+      "uv_layers": [
+        "UVMap",
+        "LightMap",
+        "PlateA",
+        "PlateB"
+      ],
+      "uv_checks": {
+        "UVMap_planar_xy_over_100": true,
+        "LightMap": {
+          "triangles": 76,
+          "overlapping_pairs": 0,
+          "bounds": [
+            0.0098,
+            0.9499
+          ],
+          "min_gap_px_at_256": 5.024,
+          "pass": true
+        },
+        "plate_data_one_per_plate": true,
+        "nonplate_marker_ok": true
+      },
+      "vertex_colour": {
+        "attribute": "Color (corner, float)",
+        "export": "colors_type=LINEAR",
+        "R1_plate_tops": 22,
+        "R0.5_rim": 0,
+        "G1_edges_and_walls": 52,
+        "B1_base_cap": 2,
+        "inconsistent_faces": 0,
+        "pass": true
+      },
+      "intact_border_vertices_kept": true,
+      "all_flat_shaded": true
+    },
+    "edge_01": {
+      "file": "Art/Meshes/rock-slab/SM_RockSlabBroken_Edge_01.fbx",
+      "tris": 148,
+      "budget": [
+        70,
+        230
       ],
       "within_budget": true,
       "intact_tris": 43,
-      "plates": 8,
+      "plates": 10,
+      "plate_data_distinct": 10,
       "dimensions_cm": [
         47.13,
         67.0,
@@ -104,52 +182,57 @@
       ],
       "uv_layers": [
         "UVMap",
-        "LightMap"
+        "LightMap",
+        "PlateA",
+        "PlateB"
       ],
       "uv_checks": {
         "UVMap_planar_xy_over_100": true,
         "LightMap": {
-          "triangles": 121,
+          "triangles": 148,
           "overlapping_pairs": 0,
           "bounds": [
             0.0098,
-            0.9902
+            0.975
           ],
-          "min_gap_px_at_256": 6.571,
+          "min_gap_px_at_256": 5.024,
           "pass": true
-        }
+        },
+        "plate_data_one_per_plate": true,
+        "nonplate_marker_ok": true
       },
       "vertex_colour": {
         "attribute": "Color (corner, float)",
         "export": "colors_type=LINEAR",
-        "R1_plate_tops_and_rim": 30,
-        "G1_edges_and_walls": 72,
+        "R1_plate_tops": 23,
+        "R0.5_rim": 12,
+        "G1_edges_and_walls": 94,
         "B1_base_cap": 19,
         "inconsistent_faces": 0,
         "pass": true
       },
-      "intact_border_vertices_missing_in_broken": [],
       "intact_border_vertices_kept": true,
       "all_flat_shaded": true
     },
-    "outer": {
-      "file": "Art/Meshes/rock-slab/SM_RockSlabBroken_Outer_01.fbx",
-      "tris": 76,
+    "edge_02": {
+      "file": "Art/Meshes/rock-slab/SM_RockSlabBroken_Edge_02.fbx",
+      "tris": 135,
       "budget": [
-        80,
-        150
+        70,
+        230
       ],
-      "within_budget": false,
-      "intact_tris": 42,
-      "plates": 3,
+      "within_budget": true,
+      "intact_tris": 43,
+      "plates": 9,
+      "plate_data_distinct": 9,
       "dimensions_cm": [
-        42.5,
-        42.5,
+        47.13,
+        67.0,
         100.0
       ],
       "bounds_min": [
-        -9.0,
-        -9.0,
+        -13.63,
+        -33.5,
         0.0
       ],
       "bounds_max": [
@@ -162,44 +245,175 @@
       ],
       "uv_layers": [
         "UVMap",
-        "LightMap"
+        "LightMap",
+        "PlateA",
+        "PlateB"
       ],
       "uv_checks": {
         "UVMap_planar_xy_over_100": true,
         "LightMap": {
-          "triangles": 76,
+          "triangles": 135,
           "overlapping_pairs": 0,
           "bounds": [
             0.0098,
-            0.9902
+            0.9775
           ],
-          "min_gap_px_at_256": 5.359,
+          "min_gap_px_at_256": 5.024,
           "pass": true
-        }
+        },
+        "plate_data_one_per_plate": true,
+        "nonplate_marker_ok": true
       },
       "vertex_colour": {
         "attribute": "Color (corner, float)",
         "export": "colors_type=LINEAR",
-        "R1_plate_tops_and_rim": 22,
-        "G1_edges_and_walls": 36,
+        "R1_plate_tops": 20,
+        "R0.5_rim": 12,
+        "G1_edges_and_walls": 84,
+        "B1_base_cap": 19,
+        "inconsistent_faces": 0,
+        "pass": true
+      },
+      "intact_border_vertices_kept": true,
+      "all_flat_shaded": true
+    },
+    "outer_01": {
+      "file": "Art/Meshes/rock-slab/SM_RockSlabBroken_Outer_01.fbx",
+      "tris": 84,
+      "budget": [
+        70,
+        230
+      ],
+      "within_budget": true,
+      "intact_tris": 42,
+      "plates": 2,
+      "plate_data_distinct": 2,
+      "dimensions_cm": [
+        42.5,
+        42.5,
+        100.0
+      ],
+      "bounds_min": [
+        -9.0,
+        -9.0,
+        0.0
+      ],
+      "bounds_max": [
+        33.5,
+        33.5,
+        100.0
+      ],
+      "materials": [
+        "M_RockSlab"
+      ],
+      "uv_layers": [
+        "UVMap",
+        "LightMap",
+        "PlateA",
+        "PlateB"
+      ],
+      "uv_checks": {
+        "UVMap_planar_xy_over_100": true,
+        "LightMap": {
+          "triangles": 84,
+          "overlapping_pairs": 0,
+          "bounds": [
+            0.0098,
+            0.977
+          ],
+          "min_gap_px_at_256": 5.024,
+          "pass": true
+        },
+        "plate_data_one_per_plate": true,
+        "nonplate_marker_ok": true
+      },
+      "vertex_colour": {
+        "attribute": "Color (corner, float)",
+        "export": "colors_type=LINEAR",
+        "R1_plate_tops": 10,
+        "R0.5_rim": 12,
+        "G1_edges_and_walls": 44,
         "B1_base_cap": 18,
         "inconsistent_faces": 0,
         "pass": true
       },
-      "intact_border_vertices_missing_in_broken": [],
       "intact_border_vertices_kept": true,
       "all_flat_shaded": true
     },
-    "inner": {
-      "file": "Art/Meshes/rock-slab/SM_RockSlabBroken_Inner_01.fbx",
-      "tris": 153,
+    "outer_02": {
+      "file": "Art/Meshes/rock-slab/SM_RockSlabBroken_Outer_02.fbx",
+      "tris": 104,
       "budget": [
-        80,
-        150
+        70,
+        230
       ],
-      "within_budget": false,
+      "within_budget": true,
+      "intact_tris": 42,
+      "plates": 4,
+      "plate_data_distinct": 4,
+      "dimensions_cm": [
+        42.5,
+        42.5,
+        100.0
+      ],
+      "bounds_min": [
+        -9.0,
+        -9.0,
+        0.0
+      ],
+      "bounds_max": [
+        33.5,
+        33.5,
+        100.0
+      ],
+      "materials": [
+        "M_RockSlab"
+      ],
+      "uv_layers": [
+        "UVMap",
+        "LightMap",
+        "PlateA",
+        "PlateB"
+      ],
+      "uv_checks": {
+        "UVMap_planar_xy_over_100": true,
+        "LightMap": {
+          "triangles": 104,
+          "overlapping_pairs": 0,
+          "bounds": [
+            0.0098,
+            0.9886
+          ],
+          "min_gap_px_at_256": 5.024,
+          "pass": true
+        },
+        "plate_data_one_per_plate": true,
+        "nonplate_marker_ok": true
+      },
+      "vertex_colour": {
+        "attribute": "Color (corner, float)",
+        "export": "colors_type=LINEAR",
+        "R1_plate_tops": 14,
+        "R0.5_rim": 12,
+        "G1_edges_and_walls": 60,
+        "B1_base_cap": 18,
+        "inconsistent_faces": 0,
+        "pass": true
+      },
+      "intact_border_vertices_kept": true,
+      "all_flat_shaded": true
+    },
+    "inner_01": {
+      "file": "Art/Meshes/rock-slab/SM_RockSlabBroken_Inner_01.fbx",
+      "tris": 163,
+      "budget": [
+        70,
+        230
+      ],
+      "within_budget": true,
       "intact_tris": 58,
       "plates": 8,
+      "plate_data_distinct": 8,
       "dimensions_cm": [
         67.0,
         67.0,
@@ -220,12 +434,14 @@
       ],
       "uv_layers": [
         "UVMap",
-        "LightMap"
+        "LightMap",
+        "PlateA",
+        "PlateB"
       ],
       "uv_checks": {
         "UVMap_planar_xy_over_100": true,
         "LightMap": {
-          "triangles": 153,
+          "triangles": 163,
           "overlapping_pairs": 0,
           "bounds": [
             0.0098,
@@ -233,31 +449,34 @@
           ],
           "min_gap_px_at_256": 5.024,
           "pass": true
-        }
+        },
+        "plate_data_one_per_plate": true,
+        "nonplate_marker_ok": true
       },
       "vertex_colour": {
         "attribute": "Color (corner, float)",
         "export": "colors_type=LINEAR",
-        "R1_plate_tops_and_rim": 45,
-        "G1_edges_and_walls": 82,
+        "R1_plate_tops": 27,
+        "R0.5_rim": 16,
+        "G1_edges_and_walls": 94,
         "B1_base_cap": 26,
         "inconsistent_faces": 0,
         "pass": true
       },
-      "intact_border_vertices_missing_in_broken": [],
       "intact_border_vertices_kept": true,
       "all_flat_shaded": true
     },
-    "diagonal": {
-      "file": "Art/Meshes/rock-slab/SM_RockSlabBroken_Diagonal_01.fbx",
-      "tris": 191,
+    "inner_02": {
+      "file": "Art/Meshes/rock-slab/SM_RockSlabBroken_Inner_02.fbx",
+      "tris": 165,
       "budget": [
-        80,
-        150
+        70,
+        230
       ],
-      "within_budget": false,
-      "intact_tris": 86,
+      "within_budget": true,
+      "intact_tris": 58,
       "plates": 8,
+      "plate_data_distinct": 8,
       "dimensions_cm": [
         67.0,
         67.0,
@@ -278,48 +497,173 @@
       ],
       "uv_layers": [
         "UVMap",
-        "LightMap"
+        "LightMap",
+        "PlateA",
+        "PlateB"
       ],
       "uv_checks": {
         "UVMap_planar_xy_over_100": true,
         "LightMap": {
-          "triangles": 191,
+          "triangles": 165,
           "overlapping_pairs": 0,
           "bounds": [
             0.0098,
-            0.9586
+            0.9848
           ],
           "min_gap_px_at_256": 5.024,
           "pass": true
-        }
+        },
+        "plate_data_one_per_plate": true,
+        "nonplate_marker_ok": true
       },
       "vertex_colour": {
         "attribute": "Color (corner, float)",
         "export": "colors_type=LINEAR",
-        "R1_plate_tops_and_rim": 55,
-        "G1_edges_and_walls": 98,
+        "R1_plate_tops": 27,
+        "R0.5_rim": 16,
+        "G1_edges_and_walls": 96,
+        "B1_base_cap": 26,
+        "inconsistent_faces": 0,
+        "pass": true
+      },
+      "intact_border_vertices_kept": true,
+      "all_flat_shaded": true
+    },
+    "diagonal_01": {
+      "file": "Art/Meshes/rock-slab/SM_RockSlabBroken_Diagonal_01.fbx",
+      "tris": 226,
+      "budget": [
+        70,
+        230
+      ],
+      "within_budget": true,
+      "intact_tris": 86,
+      "plates": 9,
+      "plate_data_distinct": 9,
+      "dimensions_cm": [
+        67.0,
+        67.0,
+        100.0
+      ],
+      "bounds_min": [
+        -33.5,
+        -33.5,
+        0.0
+      ],
+      "bounds_max": [
+        33.5,
+        33.5,
+        100.0
+      ],
+      "materials": [
+        "M_RockSlab"
+      ],
+      "uv_layers": [
+        "UVMap",
+        "LightMap",
+        "PlateA",
+        "PlateB"
+      ],
+      "uv_checks": {
+        "UVMap_planar_xy_over_100": true,
+        "LightMap": {
+          "triangles": 226,
+          "overlapping_pairs": 0,
+          "bounds": [
+            0.0098,
+            0.9688
+          ],
+          "min_gap_px_at_256": 5.024,
+          "pass": true
+        },
+        "plate_data_one_per_plate": true,
+        "nonplate_marker_ok": true
+      },
+      "vertex_colour": {
+        "attribute": "Color (corner, float)",
+        "export": "colors_type=LINEAR",
+        "R1_plate_tops": 32,
+        "R0.5_rim": 24,
+        "G1_edges_and_walls": 132,
         "B1_base_cap": 38,
         "inconsistent_faces": 0,
         "pass": true
       },
-      "intact_border_vertices_missing_in_broken": [],
+      "intact_border_vertices_kept": true,
+      "all_flat_shaded": true
+    },
+    "diagonal_02": {
+      "file": "Art/Meshes/rock-slab/SM_RockSlabBroken_Diagonal_02.fbx",
+      "tris": 214,
+      "budget": [
+        70,
+        230
+      ],
+      "within_budget": true,
+      "intact_tris": 86,
+      "plates": 9,
+      "plate_data_distinct": 9,
+      "dimensions_cm": [
+        67.0,
+        67.0,
+        100.0
+      ],
+      "bounds_min": [
+        -33.5,
+        -33.5,
+        0.0
+      ],
+      "bounds_max": [
+        33.5,
+        33.5,
+        100.0
+      ],
+      "materials": [
+        "M_RockSlab"
+      ],
+      "uv_layers": [
+        "UVMap",
+        "LightMap",
+        "PlateA",
+        "PlateB"
+      ],
+      "uv_checks": {
+        "UVMap_planar_xy_over_100": true,
+        "LightMap": {
+          "triangles": 214,
+          "overlapping_pairs": 0,
+          "bounds": [
+            0.0098,
+            0.9733
+          ],
+          "min_gap_px_at_256": 5.024,
+          "pass": true
+        },
+        "plate_data_one_per_plate": true,
+        "nonplate_marker_ok": true
+      },
+      "vertex_colour": {
+        "attribute": "Color (corner, float)",
+        "export": "colors_type=LINEAR",
+        "R1_plate_tops": 28,
+        "R0.5_rim": 24,
+        "G1_edges_and_walls": 124,
+        "B1_base_cap": 38,
+        "inconsistent_faces": 0,
+        "pass": true
+      },
       "intact_border_vertices_kept": true,
       "all_flat_shaded": true
     }
   },
-  "warnings": [
-    "full tris 72 outside [80, 150]",
-    "outer tris 76 outside [80, 150]",
-    "inner tris 153 outside [80, 150]",
-    "diagonal tris 191 outside [80, 150]"
-  ],
+  "warnings": [],
   "seam_check": {
-    "method": "all 5 broken shapes placed with the marching-squares rotation over the 8 x 8 layout of rock_slab_pieces.py (70 pieces); for each adjacent pair the vertices on the shared border line at z = 100 (plate tops, rim) and at the cap height are compared as sets (1 mm rounding)",
+    "method": "all 5 broken shapes, variants 01/02 alternating ((i+j) parity), placed with the marching-squares rotation over the 8 x 8 layout of rock_slab_pieces.py (70 pieces); for each adjacent pair the vertices on the shared border line at z = 100 (plate tops, rim) and at the cap height are compared as sets (1 mm rounding)",
     "adjacent_pairs": 114,
     "border_vertices_compared": 721,
     "mismatching_pairs": 0,
     "pass": true,
-    "guarantee": "fixed grid border vertices (-33.5, -12, 0, 12, 33.5 on every side, no jitter) + intact outline crossing at the border middle; plate vertices on a border are never inset"
+    "guarantee": "the only vertices on a piece border are -33.5, -12, 0, 12, 33.5 (cut chords end there, missing ones are inserted), never inset; the outline crosses the border at the middle as in the intact pieces"
   },
   "fbx_export": {
     "apply_scale_options": "FBX_SCALE_UNITS",
@@ -328,9 +672,13 @@
     "colors_type": "LINEAR",
     "mesh_smooth_type": "FACE"
   },
-  "sag_preview": {
-    "note": "simulation only (the material does the real sag by WPO)",
-    "rule": "sag = SAG_MAX x D x f; D = bilinear damage of the 4 corner cells at the vertex (empty corner cells take the max damage of their solid 4-neighbours), f = (1 - min(dE/100, 1))^2 with dE = distance to the nearest empty cell; applied to vertices whose original z >= 80 (plates, rim, top row of the walls), shifted down by min(sag, 40) so the top stays >= 60",
+  "material_rigid_tilt": {
+    "note": "simulated in the previews exactly like this; the material (WPO) must do the same, per vertex of a plate (UV3.x >= 0), from UV2/UV3 and world data",
+    "inputs": "plate centre C = rot(UV2 * 100) + instance position (world XY); seed s = UV3.x; radius R = UV3.y * 100; g = D(C) * f(C) in 0..1 (D bilinear corner damage, f = (1 - min(dE/100,1))^2, dE distance to the nearest empty cell)",
+    "hinge": "dir = unit vector from C toward the nearest intact solid cell centre; hinge point = C + dir * R, hinge axis = perpendicular to dir",
+    "per_plate": "s2 = frac(sin(s*127.1 + 311.7) * 43758.5453); k = min(1, 2g); slope = max(min(SAG_MAX*g*(0.7+0.6*s2)/(2R), 0.75) + (s - 0.5)*0.45*k, 0.02*g); hoff = s2*9*k",
+    "per_vertex": "u = dot(hinge - v_xy, dir) (distance behind the hinge, >= 0); drop = min(hoff + u*slope, TOP - 60); z = z - drop (same drop for top and bottom vertices of the plate: rigid tilt around the hinge)",
+    "non_plate": "rim and the top row of the walls (UV3.x < 0, original z >= 80): per-vertex sag = SAG_MAX * D * f at the vertex, capped so z >= 60; cap and lower walls fixed",
     "SAG_MAX": 45.0,
     "layout_rows_top_to_bottom": [
       "########",
@@ -356,17 +704,10 @@
     "intact_pieces_in_layout": 58,
     "rockbroken_layout_game_cam": "C:\\Users\\soumo\\Documents\\Unreal Projects\\RogueRigs\\Art\\Meshes\\rock-slab\\preview\\rockbroken_layout_game_cam.png",
     "rockbroken_layout_three_quarter": "C:\\Users\\soumo\\Documents\\Unreal Projects\\RogueRigs\\Art\\Meshes\\rock-slab\\preview\\rockbroken_layout_three_quarter.png",
-    "row_closeup": "C:\\Users\\soumo\\Documents\\Unreal Projects\\RogueRigs\\Art\\Meshes\\rock-slab\\preview\\rockbroken_row_closeup.png",
-    "full_nosag": "C:\\Users\\soumo\\Documents\\Unreal Projects\\RogueRigs\\Art\\Meshes\\rock-slab\\preview\\rockbroken_full_nosag.png",
-    "full_fullsag": "C:\\Users\\soumo\\Documents\\Unreal Projects\\RogueRigs\\Art\\Meshes\\rock-slab\\preview\\rockbroken_full_fullsag.png",
-    "edge_nosag": "C:\\Users\\soumo\\Documents\\Unreal Projects\\RogueRigs\\Art\\Meshes\\rock-slab\\preview\\rockbroken_edge_nosag.png",
-    "edge_fullsag": "C:\\Users\\soumo\\Documents\\Unreal Projects\\RogueRigs\\Art\\Meshes\\rock-slab\\preview\\rockbroken_edge_fullsag.png",
-    "outer_nosag": "C:\\Users\\soumo\\Documents\\Unreal Projects\\RogueRigs\\Art\\Meshes\\rock-slab\\preview\\rockbroken_outer_nosag.png",
-    "outer_fullsag": "C:\\Users\\soumo\\Documents\\Unreal Projects\\RogueRigs\\Art\\Meshes\\rock-slab\\preview\\rockbroken_outer_fullsag.png",
-    "inner_nosag": "C:\\Users\\soumo\\Documents\\Unreal Projects\\RogueRigs\\Art\\Meshes\\rock-slab\\preview\\rockbroken_inner_nosag.png",
-    "inner_fullsag": "C:\\Users\\soumo\\Documents\\Unreal Projects\\RogueRigs\\Art\\Meshes\\rock-slab\\preview\\rockbroken_inner_fullsag.png",
-    "diagonal_nosag": "C:\\Users\\soumo\\Documents\\Unreal Projects\\RogueRigs\\Art\\Meshes\\rock-slab\\preview\\rockbroken_diagonal_nosag.png",
-    "diagonal_fullsag": "C:\\Users\\soumo\\Documents\\Unreal Projects\\RogueRigs\\Art\\Meshes\\rock-slab\\preview\\rockbroken_diagonal_fullsag.png",
+    "rockbroken_row_closeup": "C:\\Users\\soumo\\Documents\\Unreal Projects\\RogueRigs\\Art\\Meshes\\rock-slab\\preview\\rockbroken_row_closeup.png",
+    "rockbroken_row_closeup_game_cam": "C:\\Users\\soumo\\Documents\\Unreal Projects\\RogueRigs\\Art\\Meshes\\rock-slab\\preview\\rockbroken_row_closeup_game_cam.png",
+    "rockbroken_pair_closeup": "C:\\Users\\soumo\\Documents\\Unreal Projects\\RogueRigs\\Art\\Meshes\\rock-slab\\preview\\rockbroken_pair_closeup.png",
+    "cuts_nosag": "C:\\Users\\soumo\\Documents\\Unreal Projects\\RogueRigs\\Art\\Meshes\\rock-slab\\preview\\rockbroken_cuts_nosag.png",
     "camera": "layout hfov 90 pitch 60 azim 0 dist 640 (game) and hfov 50 pitch 38 azim 28 dist 1050 (three-quarter), target (268,268,0); same camera-following sun and world as the slab previews"
   }
 }
