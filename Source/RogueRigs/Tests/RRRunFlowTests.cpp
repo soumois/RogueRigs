@@ -322,7 +322,8 @@ bool FRRConsoleDropTest::RunTest(const FString& Parameters)
 				DepositMarked += bShouldMark && Grid->IsTableDepositCell(Near) ? 1 : 0;
 				Expected += bShouldMark ? 1 : 0;
 				TestEqual(*FString::Printf(TEXT("seed %d: (%d, %d) marked"), Seed, Near.X, Near.Y), Grid->IsCellMarked(Near), bShouldMark);
-				if (bShouldMark)
+				// Outline data lives on per-cell rendering instances; rock piece cells have none since task-230-07 (dual-grid pieces).
+				if (bShouldMark && RRRunFlowTests::FGridAccess::CellComponent(Grid, Near))
 				{
 					TestEqual(*FString::Printf(TEXT("seed %d: (%d, %d) outline data"), Seed, Near.X, Near.Y), RRRunFlowTests::FGridAccess::GetMarkedData(Grid, Near), 1.f);
 				}

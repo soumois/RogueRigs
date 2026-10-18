@@ -55,13 +55,35 @@ namespace RRTestAccess
 		static bool& PlaceOreDepositsOf(ARRArenaGrid* Grid) { return Grid->*(&FGridAccess::bPlaceOreDeposits); }
 		static int32& OreSeedOf(ARRArenaGrid* Grid) { return Grid->*(&FGridAccess::OreSeed); }
 
-		/** Rendering instances of a visual type, summed over its chunk HISMs. */
+		static const TArray<FRRGridPieceVisual>& PieceVisualsOf(const ARRArenaGrid* Grid) { return Grid->*(&FGridAccess::PieceVisuals); }
+		static const TArray<int32>& CornerVisuals(const ARRArenaGrid* Grid) { return Grid->*(&FGridAccess::CornerPieceVisual); }
+		static const TArray<int32>& CornerInstances(const ARRArenaGrid* Grid) { return Grid->*(&FGridAccess::CornerPieceInstance); }
+		static FRRRockPieceMeshes& RockPieceMeshesOf(ARRArenaGrid* Grid) { return Grid->*(&FGridAccess::RockPieceMeshes); }
+		static bool BlocksFillFloorSlabOf(const ARRArenaGrid* Grid) { return Grid->*(&FGridAccess::bBlocksFillFloorSlab); }
+		static bool PieceImportFlipsYOf(const ARRArenaGrid* Grid) { return Grid->*(&FGridAccess::bRockPieceImportFlipsY); }
+		static void Rebuild(ARRArenaGrid* Grid) { (Grid->*(&FGridAccess::RebuildFromLayout))(); }
+
+		/** Block instances of a visual type, summed over its chunk components: the rendering HISM, or the collision ISM for rock piece types (no per-cell rendering since task-230-07). */
 		static int32 InstanceCount(const ARRArenaGrid* Grid, ERRCellType Key)
 		{
 			int32 Count = 0;
 			for (const FRRGridChunkVisual& Visual : Visuals(Grid))
 			{
-				Count += Visual.MapKey == Key && Visual.Render ? Visual.Render->GetInstanceCount() : 0;
+				if (Visual.MapKey == Key)
+				{
+					Count += Visual.Render ? Visual.Render->GetInstanceCount() : (Visual.Collision ? Visual.Collision->GetInstanceCount() : 0);
+				}
+			}
+			return Count;
+		}
+
+		/** Rock piece instances over every piece HISM. */
+		static int32 PieceInstanceCount(const ARRArenaGrid* Grid)
+		{
+			int32 Count = 0;
+			for (const FRRGridPieceVisual& Visual : PieceVisualsOf(Grid))
+			{
+				Count += Visual.Render ? Visual.Render->GetInstanceCount() : 0;
 			}
 			return Count;
 		}

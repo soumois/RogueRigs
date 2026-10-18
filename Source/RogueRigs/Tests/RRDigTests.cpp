@@ -1,4 +1,4 @@
-// Rogue Rigs - automation tests of the dig rules (RogueRigs.Dig.*): grid damage and destruction, ore drops, radius destruction, drone arc dig (contact, arc limits, speeds, persistence and release), pickup collection, render-only shake.
+// Rogue Rigs - automation tests of the dig rules (RogueRigs.Dig.*): grid damage and destruction, ore drops, radius destruction, drone arc dig (contact, arc limits, speeds, persistence and release), pickup collection, render-only shake, dual-grid rock pieces (task-230-07).
 
 #include "CoreMinimal.h"
 #include "Misc/AutomationTest.h"
@@ -67,11 +67,65 @@ namespace RRDigTests
 		return Count;
 	}
 
+	/** True when Cell holds a type drawn by the dual-grid rock pieces (rock, ore, heal ore, special ore; not barrels). */
+	bool IsPieceSolid(const ARRArenaGrid* Grid, FIntPoint Cell)
+	{
+		const ERRCellType Type = Grid->GetCellType(Cell);
+		return Type == ERRCellType::Rock || Type == ERRCellType::Ore || Type == ERRCellType::HealOre || Type == ERRCellType::SpecialOre;
+	}
+
+	/** Solid mask of the 4 cells around Corner, computed independently of the grid: bit = (+X side) | (+Y side) << 1. */
+	uint8 CornerMask(const ARRArenaGrid* Grid, FIntPoint Corner)
+	{
+		uint8 Mask = 0;
+		Mask |= IsPieceSolid(Grid, FIntPoint(Corner.X - 1, Corner.Y - 1)) ? 1 : 0;
+		Mask |= IsPieceSolid(Grid, FIntPoint(Corner.X, Corner.Y - 1)) ? 2 : 0;
+		Mask |= IsPieceSolid(Grid, FIntPoint(Corner.X - 1, Corner.Y)) ? 4 : 0;
+		Mask |= IsPieceSolid(Grid, FIntPoint(Corner.X, Corner.Y)) ? 8 : 0;
+		return Mask;
+	}
+
+	/** Shape expected for a non-empty mask (rock-render-piece-set): 4 solids full, 1 outer, 3 inner, 2 opposite diagonal, 2 on one side edge. */
+	ERRRockPieceShape ExpectedShape(uint8 Mask)
+	{
+		const int32 Count = FMath::CountBits(Mask);
+		if (Count == 4) { return ERRRockPieceShape::Full; }
+		if (Count == 1) { return ERRRockPieceShape::Outer; }
+		if (Count == 3) { return ERRRockPieceShape::Inner; }
+		return Mask == 0b1001 || Mask == 0b0110 ? ERRRockPieceShape::Diagonal : ERRRockPieceShape::Edge;
+	}
+
+	/** Mask covered by a piece of Shape placed with InstanceTransform: canonical Blender rock corners (SM_RockSlab.report.json), Y mirrored by the import when bFlipY, turned by the instance rotation. */
+	uint8 PlacedPieceMask(ERRRockPieceShape Shape, const FTransform& InstanceTransform, bool bFlipY)
+	{
+		const FIntPoint A(-1, -1), B(1, -1), C(1, 1), D(-1, 1);
+		TArray<FIntPoint> Quadrants;
+		switch (Shape)
+		{
+		case ERRRockPieceShape::Full:     Quadrants = { A, B, C, D }; break;
+		case ERRRockPieceShape::Edge:     Quadrants = { B, C }; break;
+		case ERRRockPieceShape::Outer:    Quadrants = { C }; break;
+		case ERRRockPieceShape::Inner:    Quadrants = { B, C, D }; break;
+		case ERRRockPieceShape::Diagonal: Quadrants = { A, C }; break;
+		}
+		uint8 Mask = 0;
+		for (const FIntPoint& Quadrant : Quadrants)
+		{
+			const FVector Rotated = InstanceTransform.TransformVectorNoScale(FVector(Quadrant.X, bFlipY ? -Quadrant.Y : Quadrant.Y, 0.f));
+			Mask |= static_cast<uint8>(1u << ((Rotated.X > 0.0 ? 1 : 0) | (Rotated.Y > 0.0 ? 2 : 0)));
+		}
+		return Mask;
+	}
+
 	/**
-	 * Checks the grid's instance maps against its HISMs: each map has one entry per instance, every instance maps back
-	 * to a cell whose index points at it, of the map's type, and the instance sits on that cell's center; each block type's
-	 * collision ISM has the same instances in the same order, at rest; every block cell has exactly one block instance and every
-	 * open or barrel cell exactly one floor instance (a barrel stands on its slab, task-108-01). Returns true when consistent.
+	 * Checks the grid's instance maps against its components (task-230-07 dual grid):
+	 * - cell visuals: each map has one entry per instance; every instance maps back to a cell whose index points at it, of the
+	 *   map's type, on that cell's center; rock piece types have no rendering HISM, only their collision ISM; barrels have both,
+	 *   instance for instance; every block cell has exactly one block instance and every non-void cell exactly one floor slab;
+	 * - rock pieces: one piece per corner with at least one solid cell around it, none elsewhere; each piece maps back to its
+	 *   corner, sits on it, lies in the chunk of the corner, has the shape of its mask and an orientation covering exactly the
+	 *   solid quadrants; piece HISMs never collide, never affect navigation and allow Nanite.
+	 * Returns true when consistent.
 	 */
 	bool CheckInstanceMaps(FAutomationTestBase& Test, const ARRArenaGrid* Grid)
 	{
@@ -82,42 +136,52 @@ namespace RRDigTests
 		const TArray<int32>& FloorIndices = FGridAccess::FloorInstanceIndices(Grid);
 		int32 Errors = 0;
 		int32 MappedInstances = 0;
+		auto Error = [&Test, &Errors](const FString& Message)
+		{
+			if (Errors < 10)
+			{
+				Test.AddError(Message);
+			}
+			++Errors;
+		};
 
 		const int32 ChunkSide = FGridAccess::ChunkSide(Grid);
 		for (const FRRGridChunkVisual& Visual : FGridAccess::Visuals(Grid))
 		{
-			const UHierarchicalInstancedStaticMeshComponent* Component = Visual.Render;
+			const bool bPieceType = Visual.MapKey != ERRCellType::Floor && Visual.MapKey != ERRCellType::Barrel;
+			const UInstancedStaticMeshComponent* Component = Visual.Render ? static_cast<const UInstancedStaticMeshComponent*>(Visual.Render.Get()) : Visual.Collision.Get();
 			const TArray<FIntPoint>& InstanceCells = Visual.InstanceCells;
 			if (!Component)
 			{
 				if (InstanceCells.Num() > 0)
 				{
-					Test.AddError(FString::Printf(TEXT("chunk (%d, %d) %s has %d entries and no HISM"), Visual.Chunk.X, Visual.Chunk.Y,
+					Error(FString::Printf(TEXT("chunk (%d, %d) %s has %d entries and no component"), Visual.Chunk.X, Visual.Chunk.Y,
 						*UEnum::GetValueAsString(Visual.MapKey), InstanceCells.Num()));
-					++Errors;
 				}
 				continue;
 			}
+			if (bPieceType && Visual.Render)
+			{
+				Error(FString::Printf(TEXT("chunk (%d, %d) %s has a per-cell rendering HISM (rock pieces draw it)"), Visual.Chunk.X, Visual.Chunk.Y,
+					*UEnum::GetValueAsString(Visual.MapKey)));
+			}
 			if (Component->GetInstanceCount() != InstanceCells.Num())
 			{
-				Test.AddError(FString::Printf(TEXT("chunk (%d, %d) map %s has %d entries, HISM has %d instances"), Visual.Chunk.X, Visual.Chunk.Y,
+				Error(FString::Printf(TEXT("chunk (%d, %d) map %s has %d entries, component has %d instances"), Visual.Chunk.X, Visual.Chunk.Y,
 					*UEnum::GetValueAsString(Visual.MapKey), InstanceCells.Num(), Component->GetInstanceCount()));
-				++Errors;
 				continue;
 			}
 			const UInstancedStaticMeshComponent* Collision = Visual.Collision;
 			if (Visual.MapKey != ERRCellType::Floor && (!Collision || Collision->GetInstanceCount() != InstanceCells.Num()))
 			{
-				Test.AddError(FString::Printf(TEXT("chunk (%d, %d) map %s has %d entries, collision ISM has %d instances"), Visual.Chunk.X, Visual.Chunk.Y,
+				Error(FString::Printf(TEXT("chunk (%d, %d) map %s has %d entries, collision ISM has %d instances"), Visual.Chunk.X, Visual.Chunk.Y,
 					*UEnum::GetValueAsString(Visual.MapKey), InstanceCells.Num(), Collision ? Collision->GetInstanceCount() : -1));
-				++Errors;
 				continue;
 			}
 			// No grid component affects navigation (no per-instance navigation bounds update on add or remove).
 			if (Component->CanEverAffectNavigation() || (Collision && Collision->CanEverAffectNavigation()))
 			{
-				Test.AddError(FString::Printf(TEXT("chunk (%d, %d) %s is navigation relevant"), Visual.Chunk.X, Visual.Chunk.Y, *UEnum::GetValueAsString(Visual.MapKey)));
-				++Errors;
+				Error(FString::Printf(TEXT("chunk (%d, %d) %s is navigation relevant"), Visual.Chunk.X, Visual.Chunk.Y, *UEnum::GetValueAsString(Visual.MapKey)));
 			}
 			const ERRCellType MapKey = Visual.MapKey;
 			const TArray<int32>& Indices = MapKey == ERRCellType::Floor ? FloorIndices : BlockIndices;
@@ -126,7 +190,7 @@ namespace RRDigTests
 			{
 				const FIntPoint Cell = InstanceCells[Instance];
 				const ERRCellType Type = Grid->GetCellType(Cell);
-				const bool bTypeMatches = (MapKey == ERRCellType::Floor ? (Type == ERRCellType::Floor || Type == ERRCellType::Spawn || Type == ERRCellType::Barrel) : Type == MapKey)
+				const bool bTypeMatches = (MapKey == ERRCellType::Floor ? Type != ERRCellType::Void : Type == MapKey)
 					&& Cell.X / ChunkSide == Visual.Chunk.X && Cell.Y / ChunkSide == Visual.Chunk.Y;
 				const int32 CellIndex = Cell.Y * Width + Cell.X;
 				FTransform InstanceTransform;
@@ -141,19 +205,15 @@ namespace RRDigTests
 				}
 				if (!bTypeMatches || !Indices.IsValidIndex(CellIndex) || Indices[CellIndex] != Instance || !bOnCell)
 				{
-					if (Errors < 10)
-					{
-						Test.AddError(FString::Printf(TEXT("%s instance %d -> cell (%d, %d): type %s, cell index %d, on cell %d"),
-							*UEnum::GetValueAsString(MapKey), Instance, Cell.X, Cell.Y, *UEnum::GetValueAsString(Type),
-							Indices.IsValidIndex(CellIndex) ? Indices[CellIndex] : -2, bOnCell ? 1 : 0));
-					}
-					++Errors;
+					Error(FString::Printf(TEXT("%s instance %d -> cell (%d, %d): type %s, cell index %d, on cell %d"),
+						*UEnum::GetValueAsString(MapKey), Instance, Cell.X, Cell.Y, *UEnum::GetValueAsString(Type),
+						Indices.IsValidIndex(CellIndex) ? Indices[CellIndex] : -2, bOnCell ? 1 : 0));
 				}
 				++MappedInstances;
 			}
 		}
 
-		// Expected instances: one per block cell (block HISM) plus one per open or barrel cell (floor HISM).
+		// Expected cell instances: one per block cell (block collision ISM, barrel HISM) plus one floor slab per non-void cell.
 		int32 ExpectedInstances = 0;
 		for (int32 Y = 0; Y < Height; ++Y)
 		{
@@ -165,17 +225,81 @@ namespace RRDigTests
 					continue;
 				}
 				const bool bBlock = Grid->IsBlockCell(FIntPoint(X, Y));
-				const bool bSlab = !bBlock || Type == ERRCellType::Barrel;
-				ExpectedInstances += (bBlock ? 1 : 0) + (bSlab ? 1 : 0);
-				if ((bBlock && BlockIndices[Y * Width + X] == INDEX_NONE) || (bSlab && FloorIndices[Y * Width + X] == INDEX_NONE))
+				ExpectedInstances += (bBlock ? 1 : 0) + 1;
+				if ((bBlock && BlockIndices[Y * Width + X] == INDEX_NONE) || FloorIndices[Y * Width + X] == INDEX_NONE)
 				{
-					Test.AddError(FString::Printf(TEXT("cell (%d, %d) misses its block or floor instance"), X, Y));
-					++Errors;
+					Error(FString::Printf(TEXT("cell (%d, %d) misses its block or floor instance"), X, Y));
 				}
 			}
 		}
-		Test.TestEqual(TEXT("one block instance per block cell, one floor instance per open or barrel cell"), MappedInstances, ExpectedInstances);
-		return Errors == 0 && MappedInstances == ExpectedInstances;
+		Test.TestEqual(TEXT("one block instance per block cell, one floor slab per non-void cell"), MappedInstances, ExpectedInstances);
+
+		// Rock pieces at corners.
+		const TArray<FRRGridPieceVisual>& Pieces = FGridAccess::PieceVisualsOf(Grid);
+		const TArray<int32>& CornerVisuals = FGridAccess::CornerVisuals(Grid);
+		const TArray<int32>& CornerInstances = FGridAccess::CornerInstances(Grid);
+		const bool bFlipY = FGridAccess::PieceImportFlipsYOf(Grid);
+		const int32 CornerWidth = Width + 1;
+		const FIntPoint ChunkCount(FMath::DivideAndRoundUp(Width, ChunkSide), FMath::DivideAndRoundUp(Height, ChunkSide));
+		int32 PieceInstances = 0;
+		for (int32 VisualIndex = 0; VisualIndex < Pieces.Num(); ++VisualIndex)
+		{
+			const FRRGridPieceVisual& Visual = Pieces[VisualIndex];
+			if (!Visual.Render)
+			{
+				if (Visual.InstanceCorners.Num() > 0)
+				{
+					Error(FString::Printf(TEXT("piece visual %d has %d corners and no HISM"), VisualIndex, Visual.InstanceCorners.Num()));
+				}
+				continue;
+			}
+			if (Visual.Render->GetInstanceCount() != Visual.InstanceCorners.Num())
+			{
+				Error(FString::Printf(TEXT("piece visual %d: %d corners, HISM has %d instances"), VisualIndex, Visual.InstanceCorners.Num(), Visual.Render->GetInstanceCount()));
+				continue;
+			}
+			if (Visual.Render->GetCollisionEnabled() != ECollisionEnabled::NoCollision || Visual.Render->CanEverAffectNavigation() || Visual.Render->bDisallowNanite)
+			{
+				Error(FString::Printf(TEXT("piece visual %d collides, affects navigation or disallows Nanite"), VisualIndex));
+			}
+			for (int32 Instance = 0; Instance < Visual.InstanceCorners.Num(); ++Instance)
+			{
+				++PieceInstances;
+				const int32 CornerIndex = Visual.InstanceCorners[Instance];
+				const FIntPoint Corner(CornerIndex % CornerWidth, CornerIndex / CornerWidth);
+				const uint8 Mask = CornerMask(Grid, Corner);
+				FTransform InstanceTransform;
+				Visual.Render->GetInstanceTransform(Instance, InstanceTransform, /*bWorldSpace*/ false);
+				const bool bOnCorner = InstanceTransform.GetLocation().Equals(FVector(Corner.X * CellSize, Corner.Y * CellSize, 0.f), 1.f);
+				const bool bChunk = Visual.Chunk == FIntPoint(FMath::Min(Corner.X / ChunkSide, ChunkCount.X - 1), FMath::Min(Corner.Y / ChunkSide, ChunkCount.Y - 1));
+				const bool bMapped = CornerVisuals.IsValidIndex(CornerIndex) && CornerVisuals[CornerIndex] == VisualIndex && CornerInstances[CornerIndex] == Instance;
+				const bool bShape = Mask != 0 && Visual.Shape == ExpectedShape(Mask);
+				const bool bOriented = bShape && PlacedPieceMask(Visual.Shape, InstanceTransform, bFlipY) == Mask;
+				if (!bOnCorner || !bChunk || !bMapped || !bShape || !bOriented)
+				{
+					Error(FString::Printf(TEXT("piece %d of visual %d -> corner (%d, %d) mask %d shape %s: on corner %d, chunk %d, mapped %d, shape %d, oriented %d"),
+						Instance, VisualIndex, Corner.X, Corner.Y, Mask, *UEnum::GetValueAsString(Visual.Shape), bOnCorner ? 1 : 0, bChunk ? 1 : 0,
+						bMapped ? 1 : 0, bShape ? 1 : 0, bOriented ? 1 : 0));
+				}
+			}
+		}
+		int32 ExpectedPieces = 0;
+		for (int32 Y = 0; Y <= Height; ++Y)
+		{
+			for (int32 X = 0; X <= Width; ++X)
+			{
+				const bool bSolid = CornerMask(Grid, FIntPoint(X, Y)) != 0;
+				ExpectedPieces += bSolid ? 1 : 0;
+				const int32 CornerIndex = Y * CornerWidth + X;
+				if (!CornerVisuals.IsValidIndex(CornerIndex) || (CornerVisuals[CornerIndex] != INDEX_NONE) != bSolid)
+				{
+					Error(FString::Printf(TEXT("corner (%d, %d): piece %s, expected %s"), X, Y,
+						CornerVisuals.IsValidIndex(CornerIndex) && CornerVisuals[CornerIndex] != INDEX_NONE ? TEXT("present") : TEXT("absent"), bSolid ? TEXT("one") : TEXT("none")));
+				}
+			}
+		}
+		Test.TestEqual(TEXT("one rock piece per corner touching a rock, ore or heal cell"), PieceInstances, ExpectedPieces);
+		return Errors == 0 && MappedInstances == ExpectedInstances && PieceInstances == ExpectedPieces;
 	}
 }
 
@@ -221,8 +345,8 @@ bool FRRDigRockDestroyTest::RunTest(const FString& Parameters)
 	TestTrue(TEXT("rock destroyed within 0.5 s +- 1 frame"), DestroyFrame >= 29 && DestroyFrame <= 31);
 	TestEqual(TEXT("cell is floor after destruction"), Grid->GetCellType(FineRockCell), ERRCellType::Floor);
 	TestFalse(TEXT("cell is no longer a block"), Grid->IsBlockCell(FineRockCell));
-	TestEqual(TEXT("rock HISM lost one instance"), FGridAccess::InstanceCount(Grid, ERRCellType::Rock), RockBefore - 1);
-	TestEqual(TEXT("floor HISM gained one instance"), FGridAccess::InstanceCount(Grid, ERRCellType::Floor), FloorBefore + 1);
+	TestEqual(TEXT("rock collision lost one instance"), FGridAccess::InstanceCount(Grid, ERRCellType::Rock), RockBefore - 1);
+	TestEqual(TEXT("floor unchanged (a slab already lay under the rock, task-230-07)"), FGridAccess::InstanceCount(Grid, ERRCellType::Floor), FloorBefore);
 	TestTrue(TEXT("instance maps consistent after destruction"), CheckInstanceMaps(*this, Grid));
 	TestEqual(TEXT("OnCellDestroyed fired once"), Recorder->GetDestroyedCells().Num(), 1);
 	TestEqual(TEXT("rock drops nothing"), CountPickups(TestWorld.Get()), 0);
@@ -867,17 +991,18 @@ bool FRRDigShakeKeepsCollisionTest::RunTest(const FString& Parameters)
 		}
 	}
 
-	const UHierarchicalInstancedStaticMeshComponent* RockRender = FGridAccess::CellComponent(Grid, RockCell);
+	// Task-230-07: rock is drawn by the dual-grid corner pieces (no per-cell rendering instance, shake moves to the material in
+	// task-230-08); the per-cell collision cube must still never move while the cell shakes.
 	const UInstancedStaticMeshComponent* RockCollisionComponent = FGridAccess::CellCollisionComponent(Grid, RockCell);
 	const int32 RockIndex = FGridAccess::InstanceIndices(Grid)[RockCell.Y * FGridAccess::Width(Grid) + RockCell.X];
 	if (!TestNotNull(TEXT("rock collision ISM"), RockCollisionComponent) || !TestTrue(TEXT("rock instance mapped"), RockIndex != INDEX_NONE))
 	{
 		return false;
 	}
-	TestEqual(TEXT("rock HISM renders without collision"), RockRender->GetCollisionEnabled(), ECollisionEnabled::NoCollision);
+	TestNull(TEXT("rock has no per-cell rendering HISM (dual-grid pieces)"), FGridAccess::CellComponent(Grid, RockCell));
 	TestFalse(TEXT("collision ISM is not drawn"), RockCollisionComponent->IsVisible());
 	FTransform RestTransform;
-	RockRender->GetInstanceTransform(RockIndex, RestTransform, /*bWorldSpace*/ false);
+	RockCollisionComponent->GetInstanceTransform(RockIndex, RestTransform, /*bWorldSpace*/ false);
 
 	// Part 1: a miner-sized capsule swept east from the floor cell at the rock's west face hits at the same place every frame.
 	const UCapsuleComponent* Capsule = Miner->GetCapsuleComponent();
@@ -897,17 +1022,13 @@ bool FRRDigShakeKeepsCollisionTest::RunTest(const FString& Parameters)
 	int32 HitFrames = 0;
 	int32 MovedHits = 0;
 	int32 WrongCellHits = 0;
-	float MaxRenderOffset = 0.f;
 	float MaxCollisionOffset = 0.f;
 	constexpr int32 SweepFrames = 30;
 	for (int32 Frame = 0; Frame < SweepFrames; ++Frame)
 	{
 		TestWorld.Tick();
-		FTransform RenderTransform;
 		FTransform CollisionTransform;
-		RockRender->GetInstanceTransform(RockIndex, RenderTransform, /*bWorldSpace*/ false);
 		RockCollisionComponent->GetInstanceTransform(RockIndex, CollisionTransform, /*bWorldSpace*/ false);
-		MaxRenderOffset = FMath::Max(MaxRenderOffset, static_cast<float>(FVector::Dist(RenderTransform.GetLocation(), RestTransform.GetLocation())));
 		MaxCollisionOffset = FMath::Max(MaxCollisionOffset, static_cast<float>(FVector::Dist(CollisionTransform.GetLocation(), RestTransform.GetLocation())));
 
 		FHitResult Hit;
@@ -923,9 +1044,8 @@ bool FRRDigShakeKeepsCollisionTest::RunTest(const FString& Parameters)
 		}
 		MovedHits += FMath::Abs(Hit.Location.X - FirstHitX) <= 0.01 ? 0 : 1;
 	}
-	AddInfo(FString::Printf(TEXT("sweep: %d / %d frames hit, first hit at x %.3f (face x %.1f, radius %.1f), %d moved; render offset max %.2f uu, collision offset max %.4f uu"),
-		HitFrames, SweepFrames, FirstHitX, FaceCenter.X, Radius, MovedHits, MaxRenderOffset, MaxCollisionOffset));
-	TestTrue(TEXT("the rendering shakes"), MaxRenderOffset > 1.f);
+	AddInfo(FString::Printf(TEXT("sweep: %d / %d frames hit, first hit at x %.3f (face x %.1f, radius %.1f), %d moved; collision offset max %.4f uu"),
+		HitFrames, SweepFrames, FirstHitX, FaceCenter.X, Radius, MovedHits, MaxCollisionOffset));
 	TestTrue(TEXT("the collision never moves"), MaxCollisionOffset < 1e-3f);
 	TestEqual(TEXT("the sweep hits the shaking rock every frame"), HitFrames, SweepFrames);
 	TestEqual(TEXT("each hit is the rock's collision instance"), WrongCellHits, 0);
@@ -981,46 +1101,204 @@ bool FRRDigChunkedInstancesTest::RunTest(const FString& Parameters)
 		return false;
 	}
 
-	// The 80 x 80 arena splits in several rock chunks; a destruction only changes the chunk of its cell.
-	TMap<const UHierarchicalInstancedStaticMeshComponent*, int32> CountsBefore;
-	int32 RockChunks = 0;
+	// The 80 x 80 arena splits in several chunks; a destruction only changes the collision chunk of its cell and the piece
+	// HISMs of the chunks of its 4 corners (task-230-07); the floor slab is already there.
+	TMap<const UInstancedStaticMeshComponent*, int32> CountsBefore;
+	int32 RockCollisionChunks = 0;
 	for (const FRRGridChunkVisual& Visual : FGridAccess::Visuals(Grid))
 	{
 		if (Visual.Render)
 		{
 			CountsBefore.Add(Visual.Render, Visual.Render->GetInstanceCount());
-			RockChunks += Visual.MapKey == ERRCellType::Rock ? 1 : 0;
+		}
+		if (Visual.Collision)
+		{
+			CountsBefore.Add(Visual.Collision, Visual.Collision->GetInstanceCount());
+			RockCollisionChunks += Visual.MapKey == ERRCellType::Rock ? 1 : 0;
 		}
 	}
-	TestTrue(TEXT("rock split over several chunk HISMs"), RockChunks > 1);
+	TSet<FIntPoint> PieceChunks;
+	for (const FRRGridPieceVisual& Visual : FGridAccess::PieceVisualsOf(Grid))
+	{
+		if (Visual.Render)
+		{
+			CountsBefore.Add(Visual.Render, Visual.Render->GetInstanceCount());
+			PieceChunks.Add(Visual.Chunk);
+		}
+	}
+	TestTrue(TEXT("rock collision split over several chunk ISMs"), RockCollisionChunks > 1);
+	TestTrue(TEXT("rock pieces split over several chunks"), PieceChunks.Num() > 1);
 
-	UHierarchicalInstancedStaticMeshComponent* RockChunk = FGridAccess::CellComponent(Grid, RockCell);
-	if (!TestNotNull(TEXT("rock cell chunk HISM"), RockChunk) || !TestTrue(TEXT("destroyed"), Grid->DestroyCell(RockCell, ERRTerrainDamageSource::Drone)))
+	const UInstancedStaticMeshComponent* RockCollisionChunk = FGridAccess::CellCollisionComponent(Grid, RockCell);
+	if (!TestNotNull(TEXT("rock cell collision chunk ISM"), RockCollisionChunk) || !TestTrue(TEXT("destroyed"), Grid->DestroyCell(RockCell, ERRTerrainDamageSource::Drone)))
 	{
 		return false;
 	}
-	UHierarchicalInstancedStaticMeshComponent* FloorChunk = FGridAccess::CellComponent(Grid, RockCell);
-	TestNotNull(TEXT("floor chunk HISM of the destroyed cell"), FloorChunk);
+	TestNotNull(TEXT("floor chunk HISM of the destroyed cell"), FGridAccess::CellComponent(Grid, RockCell));
 
-	int32 Changed = 0;
+	const int32 Side = FGridAccess::ChunkSide(Grid);
+	TSet<FIntPoint> CornerChunks;
+	for (int32 DY = 0; DY <= 1; ++DY)
+	{
+		for (int32 DX = 0; DX <= 1; ++DX)
+		{
+			CornerChunks.Add(FIntPoint((RockCell.X + DX) / Side, (RockCell.Y + DY) / Side));
+		}
+	}
+	int32 ChangedCells = 0;
 	for (const FRRGridChunkVisual& Visual : FGridAccess::Visuals(Grid))
+	{
+		const UInstancedStaticMeshComponent* const Components[] = { Visual.Render.Get(), Visual.Collision.Get() };
+		for (const UInstancedStaticMeshComponent* Component : Components)
+		{
+			if (!Component)
+			{
+				continue;
+			}
+			const int32* Before = CountsBefore.Find(Component);
+			const int32 Delta = Component->GetInstanceCount() - (Before ? *Before : 0);
+			if (Delta != 0)
+			{
+				++ChangedCells;
+				TestTrue(TEXT("only the rock collision chunk of the cell changed"), Component == RockCollisionChunk && Delta == -1);
+			}
+		}
+	}
+	TestEqual(TEXT("one cell component changed (rock collision -1; no floor added)"), ChangedCells, 1);
+	int32 ChangedPieces = 0;
+	for (const FRRGridPieceVisual& Visual : FGridAccess::PieceVisualsOf(Grid))
+	{
+		const int32* Before = Visual.Render ? CountsBefore.Find(Visual.Render) : nullptr;
+		const int32 Delta = Visual.Render ? Visual.Render->GetInstanceCount() - (Before ? *Before : 0) : 0;
+		if (Delta != 0)
+		{
+			++ChangedPieces;
+			TestTrue(TEXT("only piece HISMs of the corner chunks changed"), CornerChunks.Contains(Visual.Chunk));
+		}
+	}
+	AddInfo(FString::Printf(TEXT("%d piece HISM(s) changed in %d corner chunk(s)"), ChangedPieces, CornerChunks.Num()));
+	TestTrue(TEXT("the corner pieces changed"), ChangedPieces > 0);
+	TestTrue(TEXT("instance maps consistent"), CheckInstanceMaps(*this, Grid));
+	return true;
+}
+
+IMPLEMENT_SIMPLE_AUTOMATION_TEST(FRRDigRockPiecesTest, "RogueRigs.Dig.RockPieces",
+	EAutomationTestFlags::EditorContext | EAutomationTestFlags::EngineFilter)
+
+bool FRRDigRockPiecesTest::RunTest(const FString& Parameters)
+{
+	// Game grid with the BP_ArenaGrid defaults: no piece mesh assigned yet (task-230-11), pieces placed and tracked anyway.
+	FTestWorld TestWorld;
+	ARRArenaGrid* Grid = SpawnFineGrid(*this, TestWorld);
+	if (!Grid)
+	{
+		return false;
+	}
+	TestFalse(TEXT("blocks stand on the floor top (bBlocksFillFloorSlab false)"), FGridAccess::BlocksFillFloorSlabOf(Grid));
+	int32 NonVoid = 0;
+	for (int32 Y = 0; Y < Grid->GetGridSize().Y; ++Y)
+	{
+		for (int32 X = 0; X < Grid->GetGridSize().X; ++X)
+		{
+			NonVoid += Grid->GetCellType(FIntPoint(X, Y)) != ERRCellType::Void ? 1 : 0;
+		}
+	}
+	TestEqual(TEXT("one floor slab per non-void cell"), FGridAccess::InstanceCount(Grid, ERRCellType::Floor), NonVoid);
+	const int32 Pieces = FGridAccess::PieceInstanceCount(Grid);
+	AddInfo(FString::Printf(TEXT("%d non-void cells, %d rock pieces"), NonVoid, Pieces));
+	TestTrue(TEXT("rock pieces placed without meshes"), Pieces > 0);
+	TestTrue(TEXT("instance maps consistent at build"), CheckInstanceMaps(*this, Grid));
+
+	// Ore and heal cells render as rock pieces: every corner of a heal ore cell has a piece.
+	const int32 CornerWidth = Grid->GetGridSize().X + 1;
+	TestEqual(TEXT("heal ore cell"), Grid->GetCellType(FineHealOreCell), ERRCellType::HealOre);
+	for (int32 DY = 0; DY <= 1; ++DY)
+	{
+		for (int32 DX = 0; DX <= 1; ++DX)
+		{
+			const int32 CornerIndex = (FineHealOreCell.Y + DY) * CornerWidth + FineHealOreCell.X + DX;
+			TestTrue(TEXT("heal ore corner has a rock piece"), FGridAccess::CornerVisuals(Grid)[CornerIndex] != INDEX_NONE);
+		}
+	}
+
+	// Several variants: two meshes per shape, variant chosen per corner by hash, the same on every rebuild.
+	UStaticMesh* Cube = LoadObject<UStaticMesh>(nullptr, TEXT("/Engine/BasicShapes/Cube.Cube"));
+	UStaticMesh* Cylinder = LoadObject<UStaticMesh>(nullptr, TEXT("/Engine/BasicShapes/Cylinder.Cylinder"));
+	if (!TestNotNull(TEXT("engine cube"), Cube) || !TestNotNull(TEXT("engine cylinder"), Cylinder))
+	{
+		return false;
+	}
+	FRRRockPieceMeshes& Meshes = FGridAccess::RockPieceMeshesOf(Grid);
+	for (TArray<TObjectPtr<UStaticMesh>>* List : { &Meshes.Full, &Meshes.Edge, &Meshes.Outer, &Meshes.Inner, &Meshes.Diagonal })
+	{
+		*List = { Cube, Cylinder };
+	}
+	FGridAccess::Rebuild(Grid);
+	TestEqual(TEXT("same piece count with two variants"), FGridAccess::PieceInstanceCount(Grid), Pieces);
+	int32 FullVariants[2] = { 0, 0 };
+	int32 MeshErrors = 0;
+	for (const FRRGridPieceVisual& Visual : FGridAccess::PieceVisualsOf(Grid))
 	{
 		if (!Visual.Render)
 		{
 			continue;
 		}
-		const int32* Before = CountsBefore.Find(Visual.Render);
-		const int32 Delta = Visual.Render->GetInstanceCount() - (Before ? *Before : 0);
-		if (Delta != 0)
+		MeshErrors += Visual.Render->GetStaticMesh() == (Visual.Variant == 0 ? Cube : Cylinder) ? 0 : 1;
+		if (Visual.Shape == ERRRockPieceShape::Full && Visual.Variant >= 0 && Visual.Variant < 2)
 		{
-			++Changed;
-			TestTrue(TEXT("only the destroyed cell's chunk changed"), Visual.Chunk.X == RockCell.X / FGridAccess::ChunkSide(Grid)
-				&& Visual.Chunk.Y == RockCell.Y / FGridAccess::ChunkSide(Grid));
-			TestEqual(TEXT("rock chunk -1, floor chunk +1"), Delta, Visual.Render == RockChunk ? -1 : 1);
+			FullVariants[Visual.Variant] += Visual.Render->GetInstanceCount();
 		}
 	}
-	TestEqual(TEXT("two chunk HISMs changed (rock and floor)"), Changed, 2);
-	TestTrue(TEXT("instance maps consistent"), CheckInstanceMaps(*this, Grid));
+	AddInfo(FString::Printf(TEXT("full pieces: %d variant 0, %d variant 1"), FullVariants[0], FullVariants[1]));
+	TestEqual(TEXT("each piece HISM uses the mesh of its variant"), MeshErrors, 0);
+	TestTrue(TEXT("both variants used"), FullVariants[0] > 0 && FullVariants[1] > 0);
+	TestTrue(TEXT("instance maps consistent with variants"), CheckInstanceMaps(*this, Grid));
+	TArray<ERRRockPieceShape> ShapesBefore;
+	TArray<int32> VariantsBefore;
+	for (const int32 VisualIndex : FGridAccess::CornerVisuals(Grid))
+	{
+		const FRRGridPieceVisual* Visual = VisualIndex != INDEX_NONE ? &FGridAccess::PieceVisualsOf(Grid)[VisualIndex] : nullptr;
+		ShapesBefore.Add(Visual ? Visual->Shape : ERRRockPieceShape::Full);
+		VariantsBefore.Add(Visual ? Visual->Variant : -1);
+	}
+	FGridAccess::Rebuild(Grid);
+	int32 Differences = 0;
+	for (int32 CornerIndex = 0; CornerIndex < FGridAccess::CornerVisuals(Grid).Num(); ++CornerIndex)
+	{
+		const int32 VisualIndex = FGridAccess::CornerVisuals(Grid)[CornerIndex];
+		const FRRGridPieceVisual* Visual = VisualIndex != INDEX_NONE ? &FGridAccess::PieceVisualsOf(Grid)[VisualIndex] : nullptr;
+		Differences += (Visual ? Visual->Variant : -1) != VariantsBefore[CornerIndex] || (Visual && Visual->Shape != ShapesBefore[CornerIndex]) ? 1 : 0;
+	}
+	TestEqual(TEXT("deterministic variants on rebuild"), Differences, 0);
+
+	// A broken cell changes its 4 corner pieces only.
+	TArray<ERRRockPieceShape> Shapes;
+	TArray<int32> Present;
+	for (const int32 VisualIndex : FGridAccess::CornerVisuals(Grid))
+	{
+		Shapes.Add(VisualIndex != INDEX_NONE ? FGridAccess::PieceVisualsOf(Grid)[VisualIndex].Shape : ERRRockPieceShape::Full);
+		Present.Add(VisualIndex != INDEX_NONE ? 1 : 0);
+	}
+	if (!TestTrue(TEXT("rock destroyed"), Grid->DestroyCell(FineRockCell, ERRTerrainDamageSource::Drone)))
+	{
+		return false;
+	}
+	int32 ChangedCorners = 0;
+	int32 ChangedElsewhere = 0;
+	for (int32 CornerIndex = 0; CornerIndex < FGridAccess::CornerVisuals(Grid).Num(); ++CornerIndex)
+	{
+		const int32 VisualIndex = FGridAccess::CornerVisuals(Grid)[CornerIndex];
+		const bool bChanged = (VisualIndex != INDEX_NONE ? 1 : 0) != Present[CornerIndex]
+			|| (VisualIndex != INDEX_NONE && FGridAccess::PieceVisualsOf(Grid)[VisualIndex].Shape != Shapes[CornerIndex]);
+		const FIntPoint Corner(CornerIndex % CornerWidth, CornerIndex / CornerWidth);
+		const bool bCellCorner = (Corner.X == FineRockCell.X || Corner.X == FineRockCell.X + 1) && (Corner.Y == FineRockCell.Y || Corner.Y == FineRockCell.Y + 1);
+		ChangedCorners += bChanged && bCellCorner ? 1 : 0;
+		ChangedElsewhere += bChanged && !bCellCorner ? 1 : 0;
+	}
+	AddInfo(FString::Printf(TEXT("%d corner piece(s) of (129, 115) changed"), ChangedCorners));
+	TestEqual(TEXT("the 4 corner pieces of the broken cell changed"), ChangedCorners, 4);
+	TestEqual(TEXT("no other corner changed"), ChangedElsewhere, 0);
+	TestTrue(TEXT("instance maps consistent after destruction"), CheckInstanceMaps(*this, Grid));
 	return true;
 }
 

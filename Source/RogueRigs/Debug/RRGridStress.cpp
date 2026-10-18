@@ -55,8 +55,19 @@ namespace RRGridStress
 					Result.Emplace(TypeName + TEXT("Collision"), Visual.Collision.Get());
 				}
 			}
+			// Dual-grid rock piece HISMs (task-230-07) as "Piece<Shape>".
+			for (const FRRGridPieceVisual& Visual : PieceVisualsOf(Grid))
+			{
+				if (Visual.Render)
+				{
+					Result.Emplace(TEXT("Piece") + StaticEnum<ERRRockPieceShape>()->GetNameStringByValue(static_cast<int64>(Visual.Shape)), Visual.Render.Get());
+				}
+			}
 			return Result;
 		}
+
+		/** Rock piece visuals of the grid (one per piece set, shape, variant and chunk; HISM null where none). */
+		static TArray<FRRGridPieceVisual>& PieceVisualsOf(ARRArenaGrid* Grid) { return Grid->*(&FGridAccess::PieceVisuals); }
 	};
 
 	/** Flow-field access: lifts the once-per-frame guard so a computation can be forced and timed. Never instantiated. */
@@ -287,13 +298,20 @@ namespace RRGridStress
 			UInstancedStaticMeshComponent* RockCollision = nullptr;
 			UInstancedStaticMeshComponent* Floor = nullptr;
 			FIntPoint RockChunk(-1, -1);
+			// Task-230-07: rock renders through the dual-grid piece HISMs; the fullest rock collision chunk and the fullest piece HISM.
 			for (const FRRGridChunkVisual& Visual : FGridAccess::Visuals(Grid))
 			{
-				if (Visual.MapKey == ERRCellType::Rock && Visual.Render && (!RockRender || Visual.Render->GetInstanceCount() > RockRender->GetInstanceCount()))
+				if (Visual.MapKey == ERRCellType::Rock && Visual.Collision && (!RockCollision || Visual.Collision->GetInstanceCount() > RockCollision->GetInstanceCount()))
 				{
-					RockRender = Visual.Render;
 					RockCollision = Visual.Collision;
 					RockChunk = Visual.Chunk;
+				}
+			}
+			for (const FRRGridPieceVisual& Visual : FGridAccess::PieceVisualsOf(Grid))
+			{
+				if (Visual.Render && (!RockRender || Visual.Render->GetInstanceCount() > RockRender->GetInstanceCount()))
+				{
+					RockRender = Visual.Render;
 				}
 			}
 			for (const FRRGridChunkVisual& Visual : FGridAccess::Visuals(Grid))
@@ -308,7 +326,7 @@ namespace RRGridStress
 			TArray<double> FloorMs;
 			const FTransform FloorTransform(FRotator::ZeroRotator, FVector(Grid->GetCellSize() * 0.5f, Grid->GetCellSize() * 0.5f, -100.f),
 				FVector(Grid->GetCellSize() / 100.f, Grid->GetCellSize() / 100.f, 2.f));
-			for (int32 Index = 0; Index < Iterations && RockRender && RockCollision && Floor && RockRender->GetInstanceCount() > Index; ++Index)
+			for (int32 Index = 0; Index < Iterations && RockRender && RockCollision && Floor && RockRender->GetInstanceCount() > 0 && RockCollision->GetInstanceCount() > 0; ++Index)
 			{
 				// A middle index: remove-at-swap moves the last instance, like a real destruction.
 				const int32 Target = RockRender->GetInstanceCount() / 2;
@@ -316,7 +334,7 @@ namespace RRGridStress
 				RockRender->RemoveInstance(Target);
 				RenderMs.Add((FPlatformTime::Seconds() - Start) * 1000.0);
 				Start = FPlatformTime::Seconds();
-				RockCollision->RemoveInstance(Target);
+				RockCollision->RemoveInstance(RockCollision->GetInstanceCount() / 2);
 				CollisionMs.Add((FPlatformTime::Seconds() - Start) * 1000.0);
 				Start = FPlatformTime::Seconds();
 				Floor->AddInstance(FloorTransform, /*bWorldSpace*/ false);
@@ -327,7 +345,7 @@ namespace RRGridStress
 			MeanMax(CollisionMs, CollisionMean, CollisionMax);
 			MeanMax(FloorMs, FloorMean, FloorMax);
 			UE_LOG(LogRogueRigs, Display,
-				TEXT("GridBench: destroy breakdown, rock HISM RemoveInstance mean %.3f max %.3f ms, rock collision ISM RemoveInstance mean %.3f max %.3f ms, floor HISM AddInstance mean %.3f max %.3f ms (%d runs)"),
+				TEXT("GridBench: destroy breakdown, rock piece HISM RemoveInstance mean %.3f max %.3f ms, rock collision ISM RemoveInstance mean %.3f max %.3f ms, floor HISM AddInstance mean %.3f max %.3f ms (%d runs)"),
 				RenderMean, RenderMax, CollisionMean, CollisionMax, FloorMean, FloorMax, RenderMs.Num());
 			FGridAccess::Rebuild(Grid);
 			ForceFlowFieldCompute(World);

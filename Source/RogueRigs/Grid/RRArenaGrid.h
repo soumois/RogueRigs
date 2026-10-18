@@ -35,15 +35,17 @@ enum class ERRTerrainDamageSource : uint8
 };
 
 /**
- * One visual type in one chunk of ChunkCells x ChunkCells cells: its rendering HISM, its hidden collision ISM (block types
- * only) and the instance index -> cell map shared by both. Components are created when the chunk first holds an instance.
+ * One visual type in one chunk of ChunkCells x ChunkCells cells: its rendering HISM (floor and barrels only), its hidden
+ * collision ISM (block types only) and the instance index -> cell map shared by both. Rock, ore, heal ore and special ore
+ * cells have no per-cell rendering instance since task-230-07 (dual-grid rock pieces draw them, FRRGridPieceVisual): their
+ * visual holds the collision ISM alone. Components are created when the chunk first holds an instance.
  */
 USTRUCT()
 struct FRRGridChunkVisual
 {
 	GENERATED_BODY()
 
-	/** Visual type: Floor (floor slabs, spawn included) or a block type. */
+	/** Visual type: Floor (floor slabs, every non-void cell) or a block type. */
 	UPROPERTY()
 	ERRCellType MapKey = ERRCellType::Floor;
 
@@ -51,17 +53,125 @@ struct FRRGridChunkVisual
 	UPROPERTY()
 	FIntPoint Chunk = FIntPoint::ZeroValue;
 
-	/** Rendering HISM of this type in this chunk; null until the chunk holds one instance of the type. */
+	/** Rendering HISM of this type in this chunk; null until the chunk holds one instance, and always null for the piece-drawn block types (ARRArenaGrid::IsRockPieceType). */
 	UPROPERTY()
 	TObjectPtr<UHierarchicalInstancedStaticMeshComponent> Render;
 
-	/** Hidden collision ISM of this block type in this chunk, instance for instance with Render; null for Floor (the floor HISM collides). */
+	/** Hidden collision ISM of this block type in this chunk, instance for instance with Render when both exist; null for Floor (the floor HISM collides). */
 	UPROPERTY()
 	TObjectPtr<UInstancedStaticMeshComponent> Collision;
 
-	/** Cell rendered by each instance, in instance order. Kept in sync with remove-at-swap of both components. */
+	/** Cell of each instance, in instance order (Render and Collision share it). Kept in sync with remove-at-swap of both components. */
 	UPROPERTY()
 	TArray<FIntPoint> InstanceCells;
+};
+
+/**
+ * Dual-grid rock piece shapes (rock-render-piece-set): one piece per cell corner, chosen by which of the 4 cells around the
+ * corner are solid (rock, ore, heal ore, special ore). Rotations by 90 degree steps cover the 15 non-empty cases.
+ */
+UENUM(BlueprintType)
+enum class ERRRockPieceShape : uint8
+{
+	/** 4 solid cells: flat top, no outline. */
+	Full,
+	/** 2 solid cells on one side. */
+	Edge,
+	/** 1 solid cell (convex corner). */
+	Outer,
+	/** 3 solid cells (concave corner). */
+	Inner,
+	/** 2 opposite solid cells (joined saddle). */
+	Diagonal
+};
+
+/** Piece sets of the dual grid: intact pieces now; the broken set (damaged cells, task-230-08) gets its own HISMs. */
+UENUM(BlueprintType)
+enum class ERRRockPieceSet : uint8
+{
+	/** Intact pieces (RockPieceMeshes). */
+	Intact,
+	/** Broken pieces swapped in around damaged cells (meshes and swap rule: task-230-08; no mesh property yet). */
+	Broken
+};
+
+/**
+ * Meshes of the dual-grid rock pieces, one list per shape; each entry is one variant (several supported, the variant of a
+ * corner is chosen by a hash of the corner). Canonical orientation of the source meshes (SM_RockSlab.report.json): pivot at
+ * the piece centre (a cell corner) on the floor top, RockPieceMeshSize wide, top at RockPieceMeshHeight. Null or empty
+ * entries are tolerated: the instances are still placed and tracked, nothing is drawn.
+ */
+USTRUCT(BlueprintType)
+struct FRRRockPieceMeshes
+{
+	GENERATED_BODY()
+
+	/** Variants of the full piece (4 solid cells; Blender canonical rock corners A B C D). */
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Rock Pieces")
+	TArray<TObjectPtr<UStaticMesh>> Full;
+
+	/** Variants of the edge piece (canonical rock corners B C, rock on +X). */
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Rock Pieces")
+	TArray<TObjectPtr<UStaticMesh>> Edge;
+
+	/** Variants of the outer corner piece (canonical rock corner C). */
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Rock Pieces")
+	TArray<TObjectPtr<UStaticMesh>> Outer;
+
+	/** Variants of the inner corner piece (canonical rock corners B C D, notch at A). */
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Rock Pieces")
+	TArray<TObjectPtr<UStaticMesh>> Inner;
+
+	/** Variants of the diagonal piece (canonical rock corners A C). */
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Rock Pieces")
+	TArray<TObjectPtr<UStaticMesh>> Diagonal;
+
+	/** Variant list of Shape. */
+	const TArray<TObjectPtr<UStaticMesh>>& GetMeshes(ERRRockPieceShape Shape) const
+	{
+		switch (Shape)
+		{
+		case ERRRockPieceShape::Edge:     return Edge;
+		case ERRRockPieceShape::Outer:    return Outer;
+		case ERRRockPieceShape::Inner:    return Inner;
+		case ERRRockPieceShape::Diagonal: return Diagonal;
+		default:                          return Full;
+		}
+	}
+};
+
+/**
+ * One rock piece HISM: one piece set, one shape, one variant, one chunk (rendering only, no collision). Holds the corner index
+ * of each instance in instance order, kept in sync with remove-at-swap.
+ */
+USTRUCT()
+struct FRRGridPieceVisual
+{
+	GENERATED_BODY()
+
+	/** Piece set of every instance (Intact only until task-230-08). */
+	UPROPERTY()
+	ERRRockPieceSet Set = ERRRockPieceSet::Intact;
+
+	/** Shape of every instance. */
+	UPROPERTY()
+	ERRRockPieceShape Shape = ERRRockPieceShape::Full;
+
+	/** Variant index of every instance (index in the shape's mesh list). */
+	UPROPERTY()
+	int32 Variant = 0;
+
+	/** Chunk coordinates (corner / ChunkCells, clamped to the last chunk: a corner on a chunk line belongs to the higher chunk). */
+	UPROPERTY()
+	FIntPoint Chunk = FIntPoint::ZeroValue;
+
+	/** Rendering HISM; null until the chunk holds one instance of this shape and variant. */
+	UPROPERTY()
+	TObjectPtr<UHierarchicalInstancedStaticMeshComponent> Render;
+
+	/** Corner index (ARRArenaGrid::GetCornerIndex) of each instance, in instance order. */
+	UPROPERTY()
+	TArray<int32> InstanceCorners;
 };
 
 /**
@@ -125,7 +235,10 @@ DECLARE_DYNAMIC_MULTICAST_DELEGATE_ThreeParams(FRROnCellDestroyedSignature, FInt
  * the dig shake moves the rendering only (see SetCellShaking). Floor HISMs render and collide. No grid component affects
  * navigation (robots use the flow field, the map has no navmesh). Grid origin is
  * the actor; the floor top is at the actor's Z; cell (x, y) center is at ((x + 0.5) * CellSize, (y + 0.5) * CellSize)
- * in actor space. Floor instances exist only on cells without a block; destroying a block adds one.
+ * in actor space. A floor slab lies under every non-void cell (task-230-07). Rock display (dual grid, task-230-07): rock,
+ * ore, heal ore and special ore cells have no per-cell rendering instance; one rock piece per cell corner (corner (x, y) at
+ * (x * CellSize, y * CellSize)), chosen by its 4 surrounding cells, is drawn by per-chunk piece HISMs (one per piece set,
+ * shape and variant, FRRGridPieceVisual); a destroyed cell rebuilds its 4 corner pieces. Collision stays one cube per cell.
  * Terrain damage (dig) and destruction (explosions) go through ApplyTerrainDamage / DestroyCell / DestroyCellsInRadius.
  * Drops: ore and heal ore blocks spawn one pickup (OrePickupClass / HealPickupClass) each time their accumulated damage
  * crosses a multiple of DropInterval, except on the hit that destroys them, and DestroyDropCount pickups when destroyed,
@@ -259,8 +372,8 @@ public:
 	bool ApplyTerrainDamage(FIntPoint Cell, float Amount, ERRTerrainDamageSource Source);
 
 	/**
-	 * Destroys the block in Cell outright, whatever its health: removes its instance, adds a floor instance,
-	 * sets the cell to Floor, spawns DestroyDropCount pickups for ore and heal ore, and broadcasts OnCellDestroyed.
+	 * Destroys the block in Cell outright, whatever its health: removes its collision (and barrel) instance, keeps the floor
+	 * slab already under it, sets the cell to Floor, rebuilds its 4 corner rock pieces (rock piece types), spawns DestroyDropCount pickups for ore and heal ore, and broadcasts OnCellDestroyed.
 	 * Returns false when the cell has no block.
 	 * Barrels (task-114-01, barrel gdd): during play a barrel brought to 0 is not destroyed at once: it lights its fuse
 	 * (BarrelFuseSeconds) and returns true; the cell, mesh and collision stay, a Danger ground telegraph is drawn at the
@@ -492,8 +605,8 @@ protected:
 	/** Chunk visual of type MapKey for the chunk holding Cell, its components created on first use; nullptr for an invalid type or cell. */
 	FRRGridChunkVisual* GetOrCreateVisual(ERRCellType MapKey, FIntPoint Cell);
 
-	/** Creates and registers one chunk component of Class, copying the settings of Template, attached to the root (not navigation relevant). */
-	UInstancedStaticMeshComponent* CreateChunkComponent(TSubclassOf<UInstancedStaticMeshComponent> Class, const UInstancedStaticMeshComponent* Template, FIntPoint Chunk);
+	/** Creates one chunk component of Class, copying the settings of Template, attached to the root (not navigation relevant); registers it when bRegister (callers that change settings first register it themselves). */
+	UInstancedStaticMeshComponent* CreateChunkComponent(TSubclassOf<UInstancedStaticMeshComponent> Class, const UInstancedStaticMeshComponent* Template, FIntPoint Chunk, bool bRegister = true);
 
 	/** Starting health of a block type in dig-seconds; 0 for non-block types. */
 	float GetBlockMaxHealth(ERRCellType Type) const;
@@ -535,8 +648,67 @@ protected:
 	/** Cell -> instance index map of a visual type: CellFloorInstanceIndex for Floor, CellInstanceIndex for a block type. */
 	TArray<int32>& GetInstanceIndexMap(ERRCellType MapKey);
 
-	/** True when a cell of this type has a floor slab instance: open cells (floor, spawn) and barrels (they stand on the floor). */
+	/** True when a cell of this type has a floor slab instance: every non-void cell since task-230-07 (rock pieces stand on the floor top, rock-render-piece-set). */
 	static bool HasFloorSlab(ERRCellType Type);
+
+	// --- Dual-grid rock pieces (task-230-07, rock-render-piece-set) ---
+
+	/** Number of ERRRockPieceSet values (intact, broken). */
+	static constexpr int32 RockPieceSetCount = 2;
+
+	/** Number of ERRRockPieceShape values (full, edge, outer, inner, diagonal). */
+	static constexpr int32 RockPieceShapeCount = 5;
+
+	/** Builds the piece table, sizes the corner maps and PieceVisuals, and adds one intact piece per non-empty corner in one batch per HISM. Called by BuildInstances after the cell instances. */
+	void BuildCornerPieces();
+
+	/** True for the cell types drawn by the dual-grid rock pieces (solid for the corner masks): Rock, Ore, HealOre, SpecialOre. Barrels are not: they keep their own mesh on a floor slab. */
+	static bool IsRockPieceType(ERRCellType Type);
+
+	/** True when Cell is inside the grid and currently holds a rock piece type. */
+	bool IsRockPieceCell(FIntPoint Cell) const;
+
+	/** Corner index of Corner (row-major over (GridWidth + 1) x (GridHeight + 1) corners); INDEX_NONE outside. */
+	int32 GetCornerIndex(FIntPoint Corner) const;
+
+	/** Corner of a valid corner index. */
+	FIntPoint GetCornerFromIndex(int32 CornerIndex) const { return FIntPoint(CornerIndex % (GridWidth + 1), CornerIndex / (GridWidth + 1)); }
+
+	/** 4-bit solid mask of the cells around Corner: bit 0 cell (x-1, y-1), bit 1 (x, y-1), bit 2 (x-1, y), bit 3 (x, y), i.e. bit = (+X side) | (+Y side) << 1. */
+	uint8 GetCornerMask(FIntPoint Corner) const;
+
+	/** Fills PieceShapeByMask and PieceTurnsByMask from the canonical rock corners of each shape (Y mirrored when bRockPieceImportFlipsY), by trying the 4 yaw quarter turns. */
+	void BuildPieceTable();
+
+	/** Variant of the piece of Shape at Corner: a hash of the corner and RockPieceSeed modulo the variant count of the shape (at least 1). */
+	int32 GetPieceVariant(FIntPoint Corner, ERRRockPieceShape Shape) const;
+
+	/** Yaw quarter turns of the piece at Corner for Mask: the table value, or a hash-chosen turn for the full piece (random rotation only on full). */
+	int32 GetPieceTurns(FIntPoint Corner, uint8 Mask) const;
+
+	/** Mesh of a piece set, shape and variant; nullptr when unset (tolerated: instances are kept, nothing is drawn). */
+	UStaticMesh* GetPieceMesh(ERRRockPieceSet Set, ERRRockPieceShape Shape, int32 Variant) const;
+
+	/** Number of variants of a piece set and shape (mesh list length, at least 1). */
+	int32 GetPieceVariantCount(ERRRockPieceSet Set, ERRRockPieceShape Shape) const;
+
+	/** Actor-space transform of a piece at Corner: corner position on the floor top, Turns x 90 degrees of yaw, scaled from RockPieceMeshSize and RockPieceMeshHeight to CellSize and BlockHeight. */
+	FTransform GetCornerPieceTransform(FIntPoint Corner, int32 Turns) const;
+
+	/** Index in PieceVisuals of a piece set, shape and variant in the chunk of Corner; INDEX_NONE when invalid. */
+	int32 GetPieceVisualIndex(ERRRockPieceSet Set, ERRRockPieceShape Shape, int32 Variant, FIntPoint Corner) const;
+
+	/** Piece visual at VisualIndex with its HISM created on first use (settings of the RockInstances template, piece mesh, RockPieceMaterial, no collision, Nanite allowed when bRockPiecesUseNanite). */
+	FRRGridPieceVisual* GetOrCreatePieceVisual(int32 VisualIndex);
+
+	/** Sets the piece of Corner from the current cells: removes its old instance and adds the new shape (nothing when the mask is empty); a same-visual change only updates the transform. */
+	void RefreshCornerPiece(FIntPoint Corner);
+
+	/** Removes the piece instance of a corner index and patches the corner maps for the instance moved into the freed slot (remove at swap). */
+	void RemoveCornerPiece(int32 CornerIndex);
+
+	/** Refreshes the 4 corner pieces of Cell (called when the cell stops being solid). */
+	void UpdateCellCornerPieces(FIntPoint Cell);
 
 	/** Stops shaking Cell, restoring its rest transform if it still has a block. */
 	void StopShaking(FIntPoint Cell);
@@ -626,12 +798,12 @@ protected:
 	float FloorThickness = 200.f;
 
 	/**
-	 * When true, a block instance extends down through the floor slab (bottom at -FloorThickness) so the cliff has no
-	 * notch under edge blocks, since there is no floor instance under a block. When false, the block stands on the
-	 * floor top (bottom at the actor's Z) and its cell has a hole in the slab.
+	 * When true, a block collision instance (and a barrel without BarrelMesh) extends down through the floor slab (bottom at
+	 * -FloorThickness). False (default since task-230-07): blocks stand on the floor top (bottom at the actor's Z), on the
+	 * floor slab every non-void cell has, so the rounded rock outline never shows the void (rock-render-piece-set).
 	 */
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Grid")
-	bool bBlocksFillFloorSlab = true;
+	bool bBlocksFillFloorSlab = false;
 
 	/** Edge length of the source meshes (the engine cube is 100 uu, pivot at its center). Used to scale instances. */
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Grid", meta = (ClampMin = "1.0", Units = "cm"))
@@ -777,37 +949,70 @@ protected:
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Grid|Visuals")
 	TObjectPtr<UMaterialInterface> FloorMaterial;
 
-	/** Mesh of rock blocks. */
+	/** Collision shape of rock blocks (the hidden collision ISM, scaled like a MeshBaseSize cube). Since task-230-07 rock is drawn by the rock pieces, not by this mesh. */
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Grid|Visuals")
 	TObjectPtr<UStaticMesh> RockMesh;
 
-	/** Material of rock blocks. */
+	/** Material of the RockInstances template (unused for drawing since task-230-07: the rock pieces clear it and use RockPieceMaterial). */
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Grid|Visuals")
 	TObjectPtr<UMaterialInterface> RockMaterial;
 
-	/** Mesh of ore blocks. */
+	/** Collision shape of ore blocks. Since task-230-07 ore cells are drawn as rock pieces (crystals: task-230-08). */
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Grid|Visuals")
 	TObjectPtr<UStaticMesh> OreMesh;
 
-	/** Material of ore blocks. */
+	/** Material of the OreInstances template (no per-cell ore drawing since task-230-07). */
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Grid|Visuals")
 	TObjectPtr<UMaterialInterface> OreMaterial;
 
-	/** Mesh of healing ore blocks. */
+	/** Collision shape of healing ore blocks. Since task-230-07 heal ore cells are drawn as rock pieces. */
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Grid|Visuals")
 	TObjectPtr<UStaticMesh> HealOreMesh;
 
-	/** Material of healing ore blocks. */
+	/** Material of the HealOreInstances template (no per-cell heal ore drawing since task-230-07). */
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Grid|Visuals")
 	TObjectPtr<UMaterialInterface> HealOreMaterial;
 
-	/** Mesh of special ore blocks. */
+	/** Collision shape of special ore blocks. Since task-230-07 special ore cells are drawn as rock pieces. */
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Grid|Visuals")
 	TObjectPtr<UStaticMesh> SpecialOreMesh;
 
-	/** Material of special ore blocks. */
+	/** Material of the SpecialOreInstances template (no per-cell special ore drawing since task-230-07). */
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Grid|Visuals")
 	TObjectPtr<UMaterialInterface> SpecialOreMaterial;
+
+	// --- Dual-grid rock pieces (task-230-07; meshes assigned in the Blueprint, task-230-11) ---
+
+	/** Intact rock piece meshes per shape, one entry per variant (variant chosen per corner by hash). Unset meshes are tolerated (pieces tracked, not drawn). */
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Grid|Rock Pieces")
+	FRRRockPieceMeshes RockPieceMeshes;
+
+	/** Material of every rock piece HISM (M_RockSlab instance, task-230-09); null keeps the material of each piece mesh. */
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Grid|Rock Pieces")
+	TObjectPtr<UMaterialInterface> RockPieceMaterial;
+
+	/** Horizontal size of the source piece meshes (SM_RockSlab.report.json: 67 uu); pieces are scaled by CellSize / this. */
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Grid|Rock Pieces", meta = (ClampMin = "1.0", Units = "cm"))
+	float RockPieceMeshSize = 67.f;
+
+	/** Top height of the source piece meshes above their pivot (SM_RockSlab.report.json: 100 uu); pieces are scaled by BlockHeight / this. */
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Grid|Rock Pieces", meta = (ClampMin = "1.0", Units = "cm"))
+	float RockPieceMeshHeight = 100.f;
+
+	/**
+	 * True when the imported piece meshes are the Blender canonical pieces mirrored on Y (the FBX import flips Y; provisional:
+	 * SM_RockSlab.report.json asks to verify the first placement, task-230-12). Read at build to orient the pieces.
+	 */
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Grid|Rock Pieces")
+	bool bRockPieceImportFlipsY = true;
+
+	/** Seed of the per-corner variant and full-piece rotation hash: same layout and seed give the same pieces. */
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Grid|Rock Pieces")
+	int32 RockPieceSeed = 1;
+
+	/** Allow Nanite on the rock piece HISMs (owner 2026-10-17: Nanite assumed; the meshes need Nanite enabled at import). False forces the fallback mesh. */
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Grid|Rock Pieces")
+	bool bRockPiecesUseNanite = true;
 
 	/** Mesh of barrel blocks (render only). Fitted to one cell from its bounds (GetBlockRenderTransform); its collision is never used. */
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Grid|Visuals")
@@ -831,7 +1036,7 @@ protected:
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Grid|Components")
 	TObjectPtr<UHierarchicalInstancedStaticMeshComponent> FloorInstances;
 
-	/** Template of the rock chunk HISMs (rendering only); empty. */
+	/** Template of the rock piece HISMs (rendering only: shadow, distance field and visibility settings; mesh and material are replaced per piece); empty. */
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Grid|Components")
 	TObjectPtr<UHierarchicalInstancedStaticMeshComponent> RockInstances;
 
@@ -917,13 +1122,32 @@ protected:
 	UPROPERTY(Transient)
 	TArray<int32> CellDigDrops;
 
-	/** Cell -> instance index of the cell's block in its chunk block HISM, row-major; INDEX_NONE on non-block cells. A block's collision ISM uses the same index. */
+	/** Cell -> instance index of the cell's block in its chunk block collision ISM (and barrel HISM, same index), row-major; INDEX_NONE on non-block cells. Rock piece types have no per-cell rendering instance. */
 	UPROPERTY(Transient)
 	TArray<int32> CellInstanceIndex;
 
-	/** Cell -> instance index of the cell's floor slab in its chunk floor HISM, row-major; INDEX_NONE without a slab (void, blocks other than barrels). */
+	/** Cell -> instance index of the cell's floor slab in its chunk floor HISM, row-major; INDEX_NONE on void cells. */
 	UPROPERTY(Transient)
 	TArray<int32> CellFloorInstanceIndex;
+
+	/** Every rock piece visual, index = ((set * piece shape count + shape) * PieceVariantSlots + variant) * chunk count + chunk Y * ChunkCount.X + chunk X (GetPieceVisualIndex); owns the piece HISMs. */
+	UPROPERTY(Transient)
+	TArray<FRRGridPieceVisual> PieceVisuals;
+
+	/** Variant slots per piece set and shape in PieceVisuals: the longest mesh list at the last build (at least 1). */
+	int32 PieceVariantSlots = 1;
+
+	/** Corner -> index in PieceVisuals of its piece, row-major over (GridWidth + 1) x (GridHeight + 1); INDEX_NONE for an empty corner. */
+	TArray<int32> CornerPieceVisual;
+
+	/** Corner -> instance index of its piece in CornerPieceVisual's HISM; INDEX_NONE for an empty corner. */
+	TArray<int32> CornerPieceInstance;
+
+	/** Piece shape per corner mask (0..15), from BuildPieceTable; meaningless for mask 0 (empty corner). */
+	ERRRockPieceShape PieceShapeByMask[16] = {};
+
+	/** Yaw quarter turns per corner mask (0..15), from BuildPieceTable. */
+	uint8 PieceTurnsByMask[16] = {};
 
 	/** Chunk counts along X and Y at the last build (grid size / ChunkCells, rounded up). */
 	UPROPERTY(Transient)

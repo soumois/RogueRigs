@@ -515,7 +515,7 @@ UHierarchicalInstancedStaticMeshComponent* ARRArenaGrid::GetCellRenderComponent(
 	return VisualIndex != INDEX_NONE ? ChunkVisuals[VisualIndex].Render.Get() : nullptr;
 }
 
-UInstancedStaticMeshComponent* ARRArenaGrid::CreateChunkComponent(TSubclassOf<UInstancedStaticMeshComponent> Class, const UInstancedStaticMeshComponent* Template, FIntPoint Chunk)
+UInstancedStaticMeshComponent* ARRArenaGrid::CreateChunkComponent(TSubclassOf<UInstancedStaticMeshComponent> Class, const UInstancedStaticMeshComponent* Template, FIntPoint Chunk, bool bRegister)
 {
 	const FName BaseName(*FString::Printf(TEXT("%s_%d_%d"), *Template->GetName(), Chunk.X, Chunk.Y));
 	UInstancedStaticMeshComponent* Component = NewObject<UInstancedStaticMeshComponent>(this, Class, MakeUniqueObjectName(this, Class, BaseName), RF_Transient);
@@ -540,7 +540,7 @@ UInstancedStaticMeshComponent* ARRArenaGrid::CreateChunkComponent(TSubclassOf<UI
 		Component->SetRemoveSwap();
 	}
 	Component->SetupAttachment(GridRoot);
-	if (GetWorld())
+	if (bRegister && GetWorld())
 	{
 		Component->RegisterComponent();
 	}
@@ -557,13 +557,17 @@ FRRGridChunkVisual* ARRArenaGrid::GetOrCreateVisual(ERRCellType MapKey, FIntPoin
 	}
 
 	FRRGridChunkVisual& Visual = ChunkVisuals[VisualIndex];
-	if (!Visual.Render)
+	if (!Visual.Render && !Visual.Collision)
 	{
 		Visual.MapKey = MapKey;
 		Visual.Chunk = FIntPoint(Cell.X / ChunkCells, Cell.Y / ChunkCells);
-		Visual.Render = CastChecked<UHierarchicalInstancedStaticMeshComponent>(
-			CreateChunkComponent(UHierarchicalInstancedStaticMeshComponent::StaticClass(), Template, Visual.Chunk));
-		VisualByComponent.Add(Visual.Render, VisualIndex);
+		// Rock piece types (task-230-07) have no per-cell rendering instance: the dual-grid pieces draw them; collision only.
+		if (!IsRockPieceType(MapKey))
+		{
+			Visual.Render = CastChecked<UHierarchicalInstancedStaticMeshComponent>(
+				CreateChunkComponent(UHierarchicalInstancedStaticMeshComponent::StaticClass(), Template, Visual.Chunk));
+			VisualByComponent.Add(Visual.Render, VisualIndex);
+		}
 		if (const UInstancedStaticMeshComponent* CollisionTemplate = GetTemplateCollisionComponent(MapKey))
 		{
 			Visual.Collision = CreateChunkComponent(UInstancedStaticMeshComponent::StaticClass(), CollisionTemplate, Visual.Chunk);
@@ -601,6 +605,16 @@ void ARRArenaGrid::ClearAllInstances()
 	}
 	ChunkVisuals.Reset();
 	VisualByComponent.Reset();
+	for (FRRGridPieceVisual& Visual : PieceVisuals)
+	{
+		if (IsValid(Visual.Render))
+		{
+			Visual.Render->DestroyComponent();
+		}
+	}
+	PieceVisuals.Reset();
+	CornerPieceVisual.Reset();
+	CornerPieceInstance.Reset();
 	ChunkCount = FIntPoint::ZeroValue;
 
 	// Templates hold no instances (a level saved before chunking may still carry some).
@@ -775,10 +789,10 @@ void ARRArenaGrid::BuildInstances()
 				continue;
 			}
 
-			// A block cell has no floor instance (a floor top coplanar with the block bottom is what we avoid), except a barrel:
-			// it stands on its floor slab, so its cell gets both a floor instance and a barrel instance.
+			// Floor slab under every non-void cell (task-230-07): rock pieces and barrels stand on the floor top, so a rounded
+			// rock outline never shows the void and a destruction adds no floor.
 			const bool bIsBlock = IsBlockType(Type) && GetTemplateComponent(Type) != nullptr;
-			if (!bIsBlock || HasFloorSlab(Type))
+			if (HasFloorSlab(Type))
 			{
 				const int32 FloorVisualIndex = GetVisualIndex(ERRCellType::Floor, Cell);
 				if (FloorVisualIndex != INDEX_NONE)
@@ -820,13 +834,17 @@ void ARRArenaGrid::BuildInstances()
 			continue;
 		}
 		FRRGridChunkVisual* Visual = GetOrCreateVisual(Batch.MapKey, Batch.BatchCells[0]);
-		if (!Visual || !Visual->Render)
+		if (!Visual || (!Visual->Render && !Visual->Collision))
 		{
 			continue;
 		}
 
-		const int32 FirstIndex = Visual->Render->GetInstanceCount();
-		Visual->Render->AddInstances(Batch.Transforms, /*bShouldReturnIndices*/ false, /*bWorldSpace*/ false);
+		// Rock piece types have the collision ISM only; Render and Collision, when both exist, hold the same instances.
+		const int32 FirstIndex = Visual->InstanceCells.Num();
+		if (Visual->Render)
+		{
+			Visual->Render->AddInstances(Batch.Transforms, /*bShouldReturnIndices*/ false, /*bWorldSpace*/ false);
+		}
 		if (Visual->Collision)
 		{
 			Visual->Collision->AddInstances(Batch.CollisionTransforms, /*bShouldReturnIndices*/ false, /*bWorldSpace*/ false);
@@ -842,7 +860,372 @@ void ARRArenaGrid::BuildInstances()
 		}
 	}
 
+	BuildCornerPieces();
 	WriteDepositColors();
+}
+
+void ARRArenaGrid::BuildCornerPieces()
+{
+	BuildPieceTable();
+
+	PieceVariantSlots = 1;
+	bool bAnyMeshMissing = false;
+	for (int32 SetIndex = 0; SetIndex < RockPieceSetCount; ++SetIndex)
+	{
+		for (int32 ShapeIndex = 0; ShapeIndex < RockPieceShapeCount; ++ShapeIndex)
+		{
+			const ERRRockPieceSet Set = static_cast<ERRRockPieceSet>(SetIndex);
+			const ERRRockPieceShape Shape = static_cast<ERRRockPieceShape>(ShapeIndex);
+			const int32 Count = GetPieceVariantCount(Set, Shape);
+			PieceVariantSlots = FMath::Max(PieceVariantSlots, Count);
+			for (int32 Variant = 0; Set == ERRRockPieceSet::Intact && Variant < Count; ++Variant)
+			{
+				bAnyMeshMissing |= GetPieceMesh(Set, Shape, Variant) == nullptr;
+			}
+		}
+	}
+	// Log, not warning: until the meshes are assigned (task-230-11) every build would warn, in each test too.
+	if (bAnyMeshMissing && GridWidth > 0 && GetWorld() && GetWorld()->IsGameWorld())
+	{
+		UE_LOG(LogRogueRigs, Log, TEXT("ARRArenaGrid %s: some rock piece meshes are not set (RockPieceMeshes): those pieces are placed but not drawn."), *GetName());
+	}
+
+	const FIntPoint Corners(GridWidth + 1, GridHeight + 1);
+	const int32 CornerTotal = GridWidth > 0 && GridHeight > 0 ? Corners.X * Corners.Y : 0;
+	CornerPieceVisual.Init(INDEX_NONE, CornerTotal);
+	CornerPieceInstance.Init(INDEX_NONE, CornerTotal);
+	PieceVisuals.SetNum(RockPieceSetCount * RockPieceShapeCount * PieceVariantSlots * ChunkCount.X * ChunkCount.Y);
+
+	// Gather per piece visual, then add in one batch per HISM (AddInstances appends: instance i of a batch gets count + i).
+	TArray<TArray<FTransform>> Transforms;
+	TArray<TArray<int32>> BatchCorners;
+	Transforms.SetNum(PieceVisuals.Num());
+	BatchCorners.SetNum(PieceVisuals.Num());
+	for (int32 CornerIndex = 0; CornerIndex < CornerTotal; ++CornerIndex)
+	{
+		const FIntPoint Corner = GetCornerFromIndex(CornerIndex);
+		const uint8 Mask = GetCornerMask(Corner);
+		if (Mask == 0)
+		{
+			continue;
+		}
+		const ERRRockPieceShape Shape = PieceShapeByMask[Mask];
+		const int32 VisualIndex = GetPieceVisualIndex(ERRRockPieceSet::Intact, Shape, GetPieceVariant(Corner, Shape), Corner);
+		if (VisualIndex == INDEX_NONE)
+		{
+			continue;
+		}
+		Transforms[VisualIndex].Add(GetCornerPieceTransform(Corner, GetPieceTurns(Corner, Mask)));
+		BatchCorners[VisualIndex].Add(CornerIndex);
+	}
+	for (int32 VisualIndex = 0; VisualIndex < PieceVisuals.Num(); ++VisualIndex)
+	{
+		if (Transforms[VisualIndex].Num() == 0)
+		{
+			continue;
+		}
+		FRRGridPieceVisual* Visual = GetOrCreatePieceVisual(VisualIndex);
+		if (!Visual || !Visual->Render)
+		{
+			continue;
+		}
+		const int32 FirstIndex = Visual->InstanceCorners.Num();
+		Visual->Render->AddInstances(Transforms[VisualIndex], /*bShouldReturnIndices*/ false, /*bWorldSpace*/ false);
+		for (int32 Offset = 0; Offset < BatchCorners[VisualIndex].Num(); ++Offset)
+		{
+			const int32 CornerIndex = BatchCorners[VisualIndex][Offset];
+			Visual->InstanceCorners.Add(CornerIndex);
+			CornerPieceVisual[CornerIndex] = VisualIndex;
+			CornerPieceInstance[CornerIndex] = FirstIndex + Offset;
+		}
+	}
+
+	if (GetWorld() && GetWorld()->IsGameWorld())
+	{
+		int32 PieceCount = 0;
+		int32 PieceComponents = 0;
+		for (const FRRGridPieceVisual& Visual : PieceVisuals)
+		{
+			PieceCount += Visual.InstanceCorners.Num();
+			PieceComponents += Visual.Render ? 1 : 0;
+		}
+		UE_LOG(LogRogueRigs, Log, TEXT("ARRArenaGrid %s: %d rock pieces in %d piece HISMs (%d variant slot(s) per shape)."), *GetName(), PieceCount, PieceComponents, PieceVariantSlots);
+	}
+}
+
+bool ARRArenaGrid::IsRockPieceType(ERRCellType Type)
+{
+	return Type == ERRCellType::Rock || Type == ERRCellType::Ore || Type == ERRCellType::HealOre || Type == ERRCellType::SpecialOre;
+}
+
+bool ARRArenaGrid::IsRockPieceCell(FIntPoint Cell) const
+{
+	return IsValidCell(Cell) && IsRockPieceType(Cells[GetCellIndex(Cell)]);
+}
+
+int32 ARRArenaGrid::GetCornerIndex(FIntPoint Corner) const
+{
+	if (Corner.X < 0 || Corner.Y < 0 || Corner.X > GridWidth || Corner.Y > GridHeight)
+	{
+		return INDEX_NONE;
+	}
+	const int32 Index = Corner.Y * (GridWidth + 1) + Corner.X;
+	return CornerPieceVisual.IsValidIndex(Index) ? Index : INDEX_NONE;
+}
+
+uint8 ARRArenaGrid::GetCornerMask(FIntPoint Corner) const
+{
+	// Bit = (+X side) | (+Y side) << 1: the cell on the +X side of the corner is (x, .), on the -X side (x - 1, .).
+	uint8 Mask = 0;
+	for (int32 Bit = 0; Bit < 4; ++Bit)
+	{
+		const FIntPoint Cell(Corner.X - ((Bit & 1) ? 0 : 1), Corner.Y - ((Bit & 2) ? 0 : 1));
+		Mask |= IsRockPieceCell(Cell) ? static_cast<uint8>(1u << Bit) : 0;
+	}
+	return Mask;
+}
+
+void ARRArenaGrid::BuildPieceTable()
+{
+	// Canonical rock corners per shape in Blender space (SM_RockSlab.report.json): A (-,-), B (+,-), C (+,+), D (-,+).
+	struct FCanonical
+	{
+		ERRRockPieceShape Shape;
+		TArray<FIntPoint> Quadrants;
+	};
+	const FIntPoint A(-1, -1), B(1, -1), C(1, 1), D(-1, 1);
+	const FCanonical Canonicals[] = {
+		{ ERRRockPieceShape::Full, { A, B, C, D } },
+		{ ERRRockPieceShape::Edge, { B, C } },
+		{ ERRRockPieceShape::Outer, { C } },
+		{ ERRRockPieceShape::Inner, { B, C, D } },
+		{ ERRRockPieceShape::Diagonal, { A, C } },
+	};
+	bool bFilled[16] = {};
+	for (const FCanonical& Canonical : Canonicals)
+	{
+		for (int32 Turns = 0; Turns < 4; ++Turns)
+		{
+			// Unreal yaw rotates +X toward +Y; the FBX import mirrors Blender Y (bRockPieceImportFlipsY).
+			const FRotator Rotation(0.f, 90.f * Turns, 0.f);
+			uint8 Mask = 0;
+			for (const FIntPoint& Quadrant : Canonical.Quadrants)
+			{
+				const FVector Local(Quadrant.X, bRockPieceImportFlipsY ? -Quadrant.Y : Quadrant.Y, 0.f);
+				const FVector Rotated = Rotation.RotateVector(Local);
+				const int32 Bit = (Rotated.X > 0.0 ? 1 : 0) | (Rotated.Y > 0.0 ? 2 : 0);
+				Mask |= static_cast<uint8>(1u << Bit);
+			}
+			if (!bFilled[Mask])
+			{
+				bFilled[Mask] = true;
+				PieceShapeByMask[Mask] = Canonical.Shape;
+				PieceTurnsByMask[Mask] = static_cast<uint8>(Turns);
+			}
+		}
+	}
+	for (int32 Mask = 1; Mask < 16; ++Mask)
+	{
+		ensureMsgf(bFilled[Mask], TEXT("ARRArenaGrid: rock piece mask %d has no shape."), Mask);
+	}
+}
+
+int32 ARRArenaGrid::GetPieceVariantCount(ERRRockPieceSet Set, ERRRockPieceShape Shape) const
+{
+	// The broken set has no mesh property yet (task-230-08): one slot, no mesh.
+	return Set == ERRRockPieceSet::Intact ? FMath::Max(1, RockPieceMeshes.GetMeshes(Shape).Num()) : 1;
+}
+
+UStaticMesh* ARRArenaGrid::GetPieceMesh(ERRRockPieceSet Set, ERRRockPieceShape Shape, int32 Variant) const
+{
+	if (Set != ERRRockPieceSet::Intact)
+	{
+		return nullptr;
+	}
+	const TArray<TObjectPtr<UStaticMesh>>& Meshes = RockPieceMeshes.GetMeshes(Shape);
+	return Meshes.IsValidIndex(Variant) ? Meshes[Variant].Get() : nullptr;
+}
+
+int32 ARRArenaGrid::GetPieceVariant(FIntPoint Corner, ERRRockPieceShape Shape) const
+{
+	const int32 Count = GetPieceVariantCount(ERRRockPieceSet::Intact, Shape);
+	if (Count <= 1)
+	{
+		return 0;
+	}
+	const uint32 Hash = RRArenaGridPrivate::MixHash(RRArenaGridPrivate::MixHash(static_cast<uint32>(RockPieceSeed) + static_cast<uint32>(Corner.X)) + static_cast<uint32>(Corner.Y));
+	return static_cast<int32>(Hash % static_cast<uint32>(Count));
+}
+
+int32 ARRArenaGrid::GetPieceTurns(FIntPoint Corner, uint8 Mask) const
+{
+	if (PieceShapeByMask[Mask & 15] != ERRRockPieceShape::Full)
+	{
+		return PieceTurnsByMask[Mask & 15];
+	}
+	// Random rotation only on the full piece (its top has no outline): a second hash of the corner, independent of the variant.
+	const uint32 Hash = RRArenaGridPrivate::MixHash(RRArenaGridPrivate::MixHash(static_cast<uint32>(Corner.Y) * 0x9e3779b9u + static_cast<uint32>(RockPieceSeed)) ^ static_cast<uint32>(Corner.X));
+	return static_cast<int32>(Hash & 3u);
+}
+
+FTransform ARRArenaGrid::GetCornerPieceTransform(FIntPoint Corner, int32 Turns) const
+{
+	// Piece pivot = cell corner on the floor top; footprint one cell, top at BlockHeight.
+	const float HorizontalScale = CellSize / RockPieceMeshSize;
+	const FVector Location(Corner.X * CellSize, Corner.Y * CellSize, 0.f);
+	return FTransform(FRotator(0.f, 90.f * (Turns & 3), 0.f), Location, FVector(HorizontalScale, HorizontalScale, BlockHeight / RockPieceMeshHeight));
+}
+
+int32 ARRArenaGrid::GetPieceVisualIndex(ERRRockPieceSet Set, ERRRockPieceShape Shape, int32 Variant, FIntPoint Corner) const
+{
+	const int32 SetIndex = static_cast<int32>(Set);
+	const int32 ShapeIndex = static_cast<int32>(Shape);
+	if (ChunkCells <= 0 || ChunkCount.X <= 0 || ChunkCount.Y <= 0 || Variant < 0 || Variant >= PieceVariantSlots
+		|| SetIndex >= RockPieceSetCount || ShapeIndex >= RockPieceShapeCount || GetCornerIndex(Corner) == INDEX_NONE)
+	{
+		return INDEX_NONE;
+	}
+	// A corner on a chunk line belongs to the higher chunk; the last corner line belongs to the last chunk.
+	const int32 ChunkX = FMath::Min(Corner.X / ChunkCells, ChunkCount.X - 1);
+	const int32 ChunkY = FMath::Min(Corner.Y / ChunkCells, ChunkCount.Y - 1);
+	const int32 Slot = (SetIndex * RockPieceShapeCount + ShapeIndex) * PieceVariantSlots + Variant;
+	const int32 Index = Slot * ChunkCount.X * ChunkCount.Y + ChunkY * ChunkCount.X + ChunkX;
+	return PieceVisuals.IsValidIndex(Index) ? Index : INDEX_NONE;
+}
+
+FRRGridPieceVisual* ARRArenaGrid::GetOrCreatePieceVisual(int32 VisualIndex)
+{
+	if (!PieceVisuals.IsValidIndex(VisualIndex) || !RockInstances)
+	{
+		return nullptr;
+	}
+	FRRGridPieceVisual& Visual = PieceVisuals[VisualIndex];
+	if (Visual.Render)
+	{
+		return &Visual;
+	}
+	const int32 ChunksPerSlot = ChunkCount.X * ChunkCount.Y;
+	const int32 Slot = VisualIndex / ChunksPerSlot;
+	const int32 ChunkIndex = VisualIndex % ChunksPerSlot;
+	Visual.Variant = Slot % PieceVariantSlots;
+	Visual.Shape = static_cast<ERRRockPieceShape>((Slot / PieceVariantSlots) % RockPieceShapeCount);
+	Visual.Set = static_cast<ERRRockPieceSet>(Slot / (PieceVariantSlots * RockPieceShapeCount));
+	Visual.Chunk = FIntPoint(ChunkIndex % ChunkCount.X, ChunkIndex / ChunkCount.X);
+
+	// RockInstances is the template (shadow, distance field, visibility); mesh and material are the piece's own.
+	UHierarchicalInstancedStaticMeshComponent* Component = CastChecked<UHierarchicalInstancedStaticMeshComponent>(
+		CreateChunkComponent(UHierarchicalInstancedStaticMeshComponent::StaticClass(), RockInstances, Visual.Chunk, /*bRegister*/ false));
+	Component->EmptyOverrideMaterials();
+	Component->SetStaticMesh(GetPieceMesh(Visual.Set, Visual.Shape, Visual.Variant));
+	if (RockPieceMaterial)
+	{
+		Component->SetMaterial(0, RockPieceMaterial);
+	}
+	// Rendering only: collision stays one cube per cell in the collision ISMs.
+	Component->SetCollisionEnabled(ECollisionEnabled::NoCollision);
+	Component->SetCollisionProfileName(UCollisionProfile::NoCollision_ProfileName);
+	// Nanite (owner 2026-10-17): drawn through Nanite when the mesh has Nanite data; never forced to the fallback mesh here.
+	Component->bDisallowNanite = !bRockPiecesUseNanite;
+	Component->SetForceDisableNanite(false);
+	if (GetWorld())
+	{
+		Component->RegisterComponent();
+	}
+	Visual.Render = Component;
+	return &Visual;
+}
+
+void ARRArenaGrid::RemoveCornerPiece(int32 CornerIndex)
+{
+	if (!CornerPieceVisual.IsValidIndex(CornerIndex) || CornerPieceVisual[CornerIndex] == INDEX_NONE)
+	{
+		return;
+	}
+	FRRGridPieceVisual& Visual = PieceVisuals[CornerPieceVisual[CornerIndex]];
+	const int32 InstanceIndex = CornerPieceInstance[CornerIndex];
+	CornerPieceVisual[CornerIndex] = INDEX_NONE;
+	CornerPieceInstance[CornerIndex] = INDEX_NONE;
+	if (!Visual.Render || !Visual.InstanceCorners.IsValidIndex(InstanceIndex))
+	{
+		return;
+	}
+	const int32 LastIndex = Visual.InstanceCorners.Num() - 1;
+	if (!Visual.Render->RemoveInstance(InstanceIndex))
+	{
+		UE_LOG(LogRogueRigs, Error, TEXT("ARRArenaGrid: failed to remove rock piece instance %d of corner %d."), InstanceIndex, CornerIndex);
+		return;
+	}
+	// HISM removes at swap: the last instance now occupies InstanceIndex.
+	Visual.InstanceCorners.RemoveAtSwap(InstanceIndex, EAllowShrinking::No);
+	if (InstanceIndex != LastIndex)
+	{
+		CornerPieceInstance[Visual.InstanceCorners[InstanceIndex]] = InstanceIndex;
+	}
+}
+
+void ARRArenaGrid::RefreshCornerPiece(FIntPoint Corner)
+{
+	const int32 CornerIndex = GetCornerIndex(Corner);
+	if (CornerIndex == INDEX_NONE)
+	{
+		return;
+	}
+	const uint8 Mask = GetCornerMask(Corner);
+	int32 NewVisualIndex = INDEX_NONE;
+	if (Mask != 0)
+	{
+		const ERRRockPieceShape Shape = PieceShapeByMask[Mask];
+		NewVisualIndex = GetPieceVisualIndex(ERRRockPieceSet::Intact, Shape, GetPieceVariant(Corner, Shape), Corner);
+	}
+	const int32 OldVisualIndex = CornerPieceVisual[CornerIndex];
+
+	// Same HISM (same shape and variant, another rotation): a transform update is enough.
+	if (OldVisualIndex != INDEX_NONE && OldVisualIndex == NewVisualIndex)
+	{
+		FRRGridPieceVisual& Visual = PieceVisuals[OldVisualIndex];
+		if (Visual.Render)
+		{
+			Visual.Render->UpdateInstanceTransform(CornerPieceInstance[CornerIndex], GetCornerPieceTransform(Corner, GetPieceTurns(Corner, Mask)),
+				/*bWorldSpace*/ false, /*bMarkRenderStateDirty*/ true, /*bTeleport*/ true);
+		}
+		return;
+	}
+	RemoveCornerPiece(CornerIndex);
+	if (NewVisualIndex == INDEX_NONE)
+	{
+		return;
+	}
+	FRRGridPieceVisual* Visual = GetOrCreatePieceVisual(NewVisualIndex);
+	if (!Visual || !Visual->Render)
+	{
+		return;
+	}
+	const int32 InstanceIndex = Visual->Render->AddInstance(GetCornerPieceTransform(Corner, GetPieceTurns(Corner, Mask)), /*bWorldSpace*/ false);
+	if (InstanceIndex == INDEX_NONE)
+	{
+		return;
+	}
+	// task-202-01: recreate the proxy at the end of the frame so the new piece is drawn at once (one recreation per HISM per frame).
+	Visual->Render->MarkRenderStateDirty();
+	if (Visual->InstanceCorners.Num() <= InstanceIndex)
+	{
+		Visual->InstanceCorners.SetNum(InstanceIndex + 1);
+	}
+	Visual->InstanceCorners[InstanceIndex] = CornerIndex;
+	CornerPieceVisual[CornerIndex] = NewVisualIndex;
+	CornerPieceInstance[CornerIndex] = InstanceIndex;
+}
+
+void ARRArenaGrid::UpdateCellCornerPieces(FIntPoint Cell)
+{
+	// The 4 corners of a cell: (x, y), (x + 1, y), (x, y + 1), (x + 1, y + 1).
+	for (int32 DY = 0; DY <= 1; ++DY)
+	{
+		for (int32 DX = 0; DX <= 1; ++DX)
+		{
+			RefreshCornerPiece(FIntPoint(Cell.X + DX, Cell.Y + DY));
+		}
+	}
 }
 
 int32 ARRArenaGrid::AddCellInstance(ERRCellType MapKey, FIntPoint Cell, const FTransform& LocalTransform)
@@ -850,6 +1233,7 @@ int32 ARRArenaGrid::AddCellInstance(ERRCellType MapKey, FIntPoint Cell, const FT
 	FRRGridChunkVisual* Visual = GetOrCreateVisual(MapKey, Cell);
 	if (!Visual || !Visual->Render)
 	{
+		// Only floor slabs are added at runtime (rock piece types never get a per-cell rendering instance).
 		return INDEX_NONE;
 	}
 
@@ -886,21 +1270,21 @@ TArray<int32>& ARRArenaGrid::GetInstanceIndexMap(ERRCellType MapKey)
 
 bool ARRArenaGrid::HasFloorSlab(ERRCellType Type)
 {
-	return Type == ERRCellType::Floor || Type == ERRCellType::Spawn || Type == ERRCellType::Barrel;
+	return Type != ERRCellType::Void;
 }
 
 void ARRArenaGrid::RemoveCellInstance(ERRCellType MapKey, FIntPoint Cell, int32 InstanceIndex)
 {
 	const int32 VisualIndex = GetVisualIndex(MapKey, Cell);
 	FRRGridChunkVisual* Visual = VisualIndex != INDEX_NONE ? &ChunkVisuals[VisualIndex] : nullptr;
-	if (!Visual || !Visual->Render || !Visual->InstanceCells.IsValidIndex(InstanceIndex))
+	if (!Visual || (!Visual->Render && !Visual->Collision) || !Visual->InstanceCells.IsValidIndex(InstanceIndex))
 	{
 		return;
 	}
 
 	const FIntPoint RemovedCell = Visual->InstanceCells[InstanceIndex];
 	const int32 LastIndex = Visual->InstanceCells.Num() - 1;
-	if (!Visual->Render->RemoveInstance(InstanceIndex))
+	if (Visual->Render && !Visual->Render->RemoveInstance(InstanceIndex))
 	{
 		UE_LOG(LogRogueRigs, Error, TEXT("ARRArenaGrid: failed to remove instance %d of cell (%d, %d)."), InstanceIndex, RemovedCell.X, RemovedCell.Y);
 		return;
@@ -1231,10 +1615,16 @@ bool ARRArenaGrid::DestroySingleCell(FIntPoint Cell, ERRTerrainDamageSource Sour
 	{
 		CellDigDrops[Index] = 0;
 	}
-	// A barrel cell already has its floor slab (BuildInstances): keep it, never add a second one (no duplicate, no z-fighting).
+	// Every non-void cell already has its floor slab (BuildInstances, task-230-07): never add a second one (no duplicate, no
+	// z-fighting). The add stays as a guard for a grid whose cells were replaced without a slab.
 	if (!CellFloorInstanceIndex.IsValidIndex(Index) || CellFloorInstanceIndex[Index] == INDEX_NONE)
 	{
 		AddCellInstance(ERRCellType::Floor, Cell, GetFloorInstanceTransform(Cell));
+	}
+	// Dual grid (task-230-07, rock-render-rebuild): the 4 corner pieces of a rock piece cell change their mask.
+	if (IsRockPieceType(Type))
+	{
+		UpdateCellCornerPieces(Cell);
 	}
 
 	UE_LOG(LogRogueRigs, Verbose, TEXT("ARRArenaGrid: block destroyed at (%d, %d), type %s, source %s."), Cell.X, Cell.Y,
