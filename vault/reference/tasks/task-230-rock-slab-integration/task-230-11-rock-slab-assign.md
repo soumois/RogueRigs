@@ -3,7 +3,7 @@ id: task-230-11-rock-slab-assign
 description: "Import pieces, plates and textures; assign meshes and materials in BP_ArenaGrid."
 parent: task-230-rock-slab-integration
 kind: task
-status: todo
+status: in-progress
 ---
 # Import pieces, plates and textures; assign meshes and materials in BP_ArenaGrid
 
