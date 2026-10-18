@@ -19,7 +19,7 @@ status: todo
 - tokens: open
 - runs: open
 - milestone: M2
-- notes (2026-10-18): implement the rigid plate tilt exactly as documented under `channels` and `material_rigid_tilt` in Art/Meshes/rock-slab/SM_RockSlabBroken.report.json (UV2 plate centre, UV3 seed and radius, vertex colour R 1 plate top / 0.5 rim, G edges and walls, B base cap), but take the per-plate random value from a world-position hash of the plate centre combined with the stored seed, so instances do not repeat the same tilt (Orchestrator, to remove the repeated pattern seen in the previews).
+- notes (2026-10-18, updated for 06 version 4 c0ac9903): the broken variants are closed prisms (blocks); move each block rigidly exactly as documented under `channels` and `material_rigid_tilt` in Art/Meshes/rock-slab/SM_RockSlabBroken.report.json (UV2 block centre = pivot, UV3 seed and radius, UV4 rim flag and block index; vertex colour R 1 block top / 0.5 rim, G sides, B bottoms): sink toward the empty side, small tilt, random offset, top never below 60 uu; take the per-block random value from a world-position hash of the block centre combined with the stored seed, so instances do not repeat the same pattern (Orchestrator).
 - result: open
 
 ## Relations
