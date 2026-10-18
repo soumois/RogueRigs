@@ -3,7 +3,7 @@ id: task-230-08-rock-damage-data
 description: "Damage display data: per-quadrant custom data, shake in the material, plate overlay and ore crystal HISMs."
 parent: task-230-rock-slab-integration
 kind: task
-status: in-progress
+status: done
 ---
 # Damage display data: per-quadrant custom data, shake in the material, plate overlay and ore crystal HISMs
 
@@ -15,11 +15,11 @@ status: in-progress
 - done_when: build exits 0; all RogueRigs.* tests pass headless; docs updated; committed.
 - editor_state: closed
 - token_ceiling: 100000
-- model: open
-- tokens: open
-- runs: open
+- model: opus
+- tokens: input 138, cache write 232682, cache read 10961709, output 31765
+- runs: 2
 - milestone: M2
-- result: open
+- result: Commits 4294ed2f (code, tests), 1f79d576 (docs: sys-grid-rock-damage, sys-grid-rock-piece-data), 977b899d. 13 custom data floats per piece (d, shake, marked per quadrant, solid mask); broken variant swap at first damage, never back; shake as data; outline restored; ore and heal crystal cluster per cell (OreCrystalMesh SM_OreChunk_01, scale 1.5 provisional). Empty quadrant d = max of solid 4-neighbours (provisional). Build 0; tests 262/264, the 2 known pre-existing failures. Open: sag inputs beyond the 4 quadrants approximated in 09; crystals do not follow the sag.
 
 ## Relations
 - [[task-230-rock-slab-integration]] — parent global task.
