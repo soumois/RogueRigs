@@ -3,7 +3,7 @@ id: task-230-13-rock-collision-fix
 description: "Fix the regression reported by the owner after 230-11: the player walks through rock walls without digging; restore block collision."
 parent: task-230-rock-slab-integration
 kind: task
-status: todo
+status: done
 ---
 # Rock wall collision regression
 
@@ -15,11 +15,11 @@ status: todo
 - done_when: build exits 0 editor closed; -game check shows the player blocked by rock; all RogueRigs.* tests pass except the 2 known pre-existing failures; committed.
 - editor_state: closed
 - token_ceiling: 80000
-- model: open
-- tokens: open
-- runs: open
+- model: opus
+- tokens: input 84, cache write 101798, cache read 2666627, output 1993
+- runs: 1
 - milestone: M2
-- result: open
+- result: No regression: commit 205a3acb (doc). The walk-through came from BugItGo in the 230-12 capture run, which turns on Ghost mode; Walk restores collision. Real runs on L_ArenaM1 show the miner stopped at rock faces (face + capsule radius) and entering a cell only after digging; collision ISMs (Cube, BlockAll) and BP_ArenaGrid unchanged. No code change, so no build or test run. Seen: GPU matrix precision ensure on every dig (distance field update), linked to the 230-12 chain crash.
 
 ## Relations
 - [[task-230-rock-slab-integration]] — parent global task.
