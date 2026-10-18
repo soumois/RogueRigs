@@ -3,7 +3,7 @@ id: task-230-12-rock-slab-check
 description: "After the change: -game captures at the baseline spots and the grid perf measure, compared with step 01."
 parent: task-230-rock-slab-integration
 kind: task
-status: todo
+status: in-progress
 ---
 # After the change: -game captures at the baseline spots and the grid perf measure, compared with step 01
 

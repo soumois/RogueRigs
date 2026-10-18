@@ -428,6 +428,7 @@ kind: note
 | [[task-230-08-rock-damage-data]] | opus | 2 | 0k | 233k | 10962k | 32k |
 | [[task-230-09-rock-slab-material]] | sonnet | 1 | 0k | 123k | 3105k | 1k |
 | [[task-230-10-heal-crystal-material]] | sonnet | 1 | 0k | 27k | 279k | 0k |
+| [[task-230-11-rock-slab-assign]] | sonnet | 1 | 0k | 97k | 2571k | 1k |
 
 ## Totals
 | Scope | Input | Cache write | Cache read | Output |
