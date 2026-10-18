@@ -1,6 +1,6 @@
 ---
 id: rock-render-damage
-description: "Rock damage display (crack mask per quadrant, tilted plate overlay, health thresholds), ore crystal clusters and how a future weak_rock cell plugs in."
+description: "Rock damage display (crack mask, sagging broken pieces, thresholds), ore crystal clusters and how a future weak_rock cell plugs in."
 parent: rock-state-render-options
 kind: doc
 ---
@@ -9,11 +9,8 @@ kind: doc
 ## Cracks (recommended)
 Damage d = 1 - remaining health / max health per cell. A dual-grid piece spans quadrants of 4 cells, so it carries 4 custom data floats (one d per quadrant); the material picks the quadrant from the piece-local position and shows the world-space crack mask where mask > 1 - d. Same world UV in every piece, so cracks run across piece seams ([[rock-render-top-texture]]). Cost: 4 floats per piece written on each damage tick of a dug cell (4 pieces, `bMarkRenderStateDirty` per touched HISM per frame); no geometry. Thresholds: cracks appear as soon as d > 0 (any block below 100 %, owner 2026-10-17), growing to full at 0.6 (proposed).
 
-## Tilted plates
-Options:
-- A. Overlay HISM of a broken-top mesh (cell-sized, plates tilted, 60 triangles proposed), one instance per cell with d >= 0.6; the 4 quadrants under it are sunk below the floor top by WPO (quadrant flag). Few live instances. Recommended.
-- B. Masked material discarding the quadrant: masked pixels cost early depth; rejected.
-- C. Per-shape broken variants: 16 masks x 4 quadrants of combinations; rejected.
+## Broken pieces (owner 2026-10-18, replaces the overlay and the shard cluster)
+No added matter: a damaged wall breaks and sags in place ([[rock-look-reference]], `drgs_damaged_row_junction.png`). Each of the 5 dual-grid shapes has a broken variant: same outline and border crossing points as the intact piece, top pre-cut into thick angular plates (edges visible when tilted), a dark solid base up to the minimum height. A piece uses its broken variant as soon as one of its 4 corner cells has d > 0. The material sags the plate vertices (WPO, broken variants only): sag = bilinear damage of the 4 corners at the vertex x a factor growing toward the empty side (distance to the outline), capped so the top never goes below 60 uu (minimum height, owner); plates tilt because their vertices sag by different amounts. Next to an intact cell the sag is 0 (smooth junction); between two damaged cells the values match (no junction); toward the void the wall slumps. Computed from world position and corner data, so shared borders move together (no seams). Cost: 80-150 tris per broken piece (estimate), only around damaged cells.
 Rock dies at 0.5 dig-seconds, so plates last a few frames on rock; worth it on ore (1.5 s) and weak rock.
 
 ## Ore crystals

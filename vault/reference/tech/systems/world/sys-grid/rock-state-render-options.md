@@ -12,7 +12,7 @@ Target: owner image C (`Art/Source/rock-look/20261017-131704-rock-look-2.png`): 
 1. Dual-grid (marching squares) slab pieces at cell corners replace the approved per-cell 6 shapes by open sides ([[rock-render-piece-set]]); this is a change to an approved [[sys-grid]] rule, owner to confirm.
 2. Floor slab under every non-void cell, rock pieces only above the floor top, so outline warp and rounding never reveal the void.
 3. One shared top material: grayscale tone mask and crack mask in one world-UV texture, damage per quadrant in custom data ([[rock-render-top-texture]], [[rock-render-damage]]).
-4. Tilted plates as a small overlay HISM present only on cells below the plate threshold; shake moved into the material (WPO) for slabs.
+4. Broken variants of the 5 pieces, swapped in around damaged cells and sagged by the material toward the empty side, minimum height 60 uu (owner 2026-10-18, [[rock-render-damage]]); shake moved into the material (WPO) for slabs.
 5. Ore crystals as one instanced cluster per ore cell in their own chunk HISM.
 
 ## Owner decisions (2026-10-17)

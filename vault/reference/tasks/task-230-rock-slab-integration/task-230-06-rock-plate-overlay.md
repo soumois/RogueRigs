@@ -1,19 +1,18 @@
 ---
 id: task-230-06-rock-plate-overlay
-description: "Broken-top overlay mesh: cell-sized plates tilted up, shown on heavily damaged cells."
+description: "Broken variants of the 5 slab pieces: thick angular plates, dark base to 60 uu, same borders as the intact pieces."
 parent: task-230-rock-slab-integration
 kind: task
 status: in-progress
 ---
-# Broken-top overlay mesh: cell-sized plates tilted up, shown on heavily damaged cells
+# Broken variants of the slab pieces
 
-- goal: Shard cluster overlay mesh (owner 2026-10-17, one stage): per heavily damaged cell, many angular 3D shards at varied heights and tilts with a rim of upright shards, as in Art/Source/rock-look/reference/drgs_damage_shards.webp; 150-250 tris.
+- goal: Broken variants of the 5 dual-grid slab pieces (owner 2026-10-18, replaces the shard cluster of bc679aa9 and 41e0f547, rejected: added matter looks wrong): same outline and border crossing points as SM_RockSlab_<Shape>_01, top pre-cut into thick angular plates, a dark solid base up to 60 uu, the material sags the plates toward the empty side.
 - agent: 3d
 - depends_on: none
 - inputs: vault/reference/tech/systems/world/sys-grid/rock-state-render-options/rock-render-damage.md, vault/reference/tech/systems/world/sys-grid/rock-state-render-options/rock-render-counts.md, vault/reference/tech/pipelines/blender-asset-route.md, vault/reference/gdd/art-audio/art-style-guide.md; look target Art/Source/rock-look/20261017-131704-rock-look-2.png
-- owner_correction (2026-10-17, after bc679aa9): plates rise higher, top up to about 120-130 uu; shards overflow the cell by 10-15 uu to break the square outline; chunky wedges instead of thin pyramids; 150-250 tris.
-- expected_output: `Art/Meshes/rock-slab/SM_RockPlates_01.fbx` (67 x 67 uu footprint, 150-250 tris, owner 2026-10-17), script, report, previews.
-- done_when: FBX and previews exist, budget met, previews sent; committed.
+- expected_output: `Art/Meshes/rock-slab/SM_RockSlabBroken_<Shape>_01.fbx` for Full, Edge, Outer, Inner, Diagonal, script `Tools/art/blender/rock_slab_broken.py`, report, previews with a simulated sag; 80-150 tris each (estimate).
+- done_when: 5 FBX exist; borders match the intact pieces and each other (seam check); no hole down to 60 uu under the plates at full sag; previews sent; committed.
 - editor_state: any
 - token_ceiling: 40000
 - model: open

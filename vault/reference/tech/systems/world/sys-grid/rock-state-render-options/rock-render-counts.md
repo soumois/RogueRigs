@@ -26,7 +26,7 @@ Cells: void 39 571, rock 17 964, heal_ore 48, barrel 16, spawn 1 (non-void 18 02
 ## Other instances
 - Floor everywhere: 18 029 cubes, 216 348 triangles, mostly hidden under rock (today 17 at start, growing with digging).
 - Ore crystal clusters, one per ore cell: 1 484 (1 436 Duskite + 48 heal) x 200 = 296 800 triangles (budget 200, max 300, proposed, owner to confirm; same scale as the ore pickup 300 target, [[asset-pipeline]]).
-- Shard cluster overlay (replaces the tilted plate): 150-250 triangles per cell (owner 2026-10-17); live only on damaged cells, a few dozen at once (estimate).
+- Broken piece variants (replace the overlay, owner 2026-10-18): 80-150 triangles each (estimate); live only on damaged cells, a few dozen at once (estimate).
 - Total about 850 000 triangles in the arena; the camera sees a fraction (about 10 to 15 percent, estimate, not measured).
 
 ## Components and draws (estimates)
