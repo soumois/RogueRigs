@@ -53,6 +53,15 @@ Perf: same procedure; times from the `Saved/Stress` summary, draws and triangles
 - Chain: first launch crashed (Lumen `LumenMeshCards.cpp:1332` assertion, after ensures `DoubleFloat.cpp:19` "precision loss converting matrix" and `Matrix.h:468` in `UpdateDistanceFieldObjectBuffers`, 0.4 s after the chain started); second launch hit the same ensures without crashing, and the ensure stack walks made the 5.7 s frame. An instance transform sent to the distance field scene is invalid during explosion destruction (cause not traced).
 - Triangle budget ([[rock-render-counts]]): intact meshes are within it (full 2, edge 43 of 48, outer 42 of 48, inner 58 of 64, diagonal 86 of 96, from `SM_RockSlab.report.json`): about 302 k arena-wide against 335 k. Broken meshes run 120-420 triangles (inner 372-420, diagonal 360-408, edge 204-228) against the 80-150 estimate. Verdict: steady state holds the 16.7 / 25 ms budget with margin (+1.3 ms GPU); the chain crash blocks a verdict on destruction.
 
+## After the ISM fix (task-230-14, 2026-10-18, HEAD 6838e0c5)
+Rock pieces on plain ISMs instead of HISMs ([[sys-grid-rock-pieces]], cause of the 230-12 chain crash there). Same procedure through `Scripts/Run-StressTest.ps1 -Counts 100 -Settle 5 -Measure 20 -Mode chain -PreExec "csvprofile start"` (quit at the end, one launch): no crash, no ensure in the log. Draws and triangles from the CSV, which the quit left unfinished: 1 892 of the 2 081 measured frames.
+
+| Run | Frame | Game | Render | GPU | Draws avg (max) | Triangles avg (non-Nanite) |
+|---|---|---|---|---|---|---|
+| Chain 30, 100 robots (32 explosions, 4 759 blocks; event frames 37, avg 11.61, max 17.79) | 9.61 / 11.94 (17.8) | 5.81 / 11.22 | 9.56 / 11.49 | 8.47 / 9.23 | 859 (973) | 738 k |
+
+- Versus the 230-12 chain row: the 5.7 s ensure frame is gone (max 17.8 ms, as the baseline 17.9); frame and GPU close to the baseline chain (9.70 / 7.30) with GPU +1.2 ms, the steady-state slab cost. Steady rows not re-measured.
+
 ## Relations
 - [[performance-index]] — parent index.
 - [[rock-state-render-options]] — the slab rock design measured here.
@@ -60,4 +69,5 @@ Perf: same procedure; times from the `Saved/Stress` summary, draws and triangles
 - [[sys-stress]] — run modes and samples used.
 - [[task-230-01-rock-baseline-capture]] — the task that produced the baseline.
 - [[task-230-12-rock-slab-check]] — the task that produced the after section.
+- [[task-230-14-barrel-chain-crash]] — the task that produced the ISM-fix chain row.
 - [[rock-render-counts]] — the provisional triangle budget compared in the after section.
