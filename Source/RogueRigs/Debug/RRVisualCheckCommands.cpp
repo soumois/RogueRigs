@@ -1,4 +1,4 @@
-// Rogue Rigs - visual check console commands for unattended -game checks (debug only, compiled out of shipping): rr.Debug.Shots (timed screenshots + damage number state), rr.Debug.CritChance (weapon crit chance override), rr.Debug.Delayed (runs a command later), rr.Debug.DamageMiner (direct hit on the player miner, logs the vignette state for 6 frames), rr.Debug.SpawnNear (actors around the miner), rr.Debug.Objective (miner moved to the console or shuttle), rr.Debug.ScreenText (logs a screen text item through the text subsystem), rr.Debug.BreakShields (drains the shield of living shield chasers, health kept).
+// Rogue Rigs - visual check console commands for unattended -game checks (debug only, compiled out of shipping): rr.Debug.Shots (timed screenshots + damage number state), rr.Debug.CritChance (weapon crit chance override), rr.Debug.Delayed (runs a command later), rr.Debug.DamageMiner (direct hit on the player miner, logs the vignette state for 6 frames), rr.Debug.SpawnNear (actors around the miner), rr.Debug.Objective (miner moved to the console or shuttle), rr.Debug.ScreenText (logs a screen text item through the text subsystem), rr.Debug.BreakShields (drains the shield of living shield chasers, health kept), rr.Debug.DamageCell (block brought to a display damage), rr.Debug.Camera (camera boom pitch, length, yaw).
 
 #include "CoreMinimal.h"
 #include "AbilitySystemComponent.h"
@@ -18,6 +18,7 @@
 #include "Engine/Engine.h"
 #include "Engine/LocalPlayer.h"
 #include "GameFramework/PlayerController.h"
+#include "GameFramework/SpringArmComponent.h"
 #include "GAS/RRGameplayTags.h"
 #include "GAS/RRHealthAttributeSet.h"
 #include "Player/RRMiner.h"
@@ -448,6 +449,66 @@ namespace RRScreenshotCommands
 			}
 			UE_LOG(LogRogueRigs, Log, TEXT("rr.Debug.BreakShields: %d shields broken of %d living shield chasers%s."), Broken, Living,
 				bUseRadius ? *FString::Printf(TEXT(" within %.0f uu of %s"), Radius, *Miner->GetName()) : TEXT(""));
+		}),
+		ECVF_Cheat);
+
+	/**
+	 * rr.Debug.DamageCell <X> <Y> <Fraction>: brings the block in cell (X, Y) to Fraction display damage (0..1, below 1 so the
+	 * block stays) through ARRArenaGrid::ApplyTerrainDamage (drone source), so the broken piece swap and the piece data follow
+	 * as on a dig. Max health is read back from the display damage (d = 1 - health / max). Never heals.
+	 */
+	FAutoConsoleCommandWithWorldAndArgs DamageCellCommand(
+		TEXT("rr.Debug.DamageCell"),
+		TEXT("rr.Debug.DamageCell <X> <Y> <Fraction>: damages the block in cell (X, Y) up to Fraction of its max health (0..1, not destroyed), as a dig hit (visual checks of rock damage)."),
+		FConsoleCommandWithWorldAndArgsDelegate::CreateLambda([](const TArray<FString>& Args, UWorld* World)
+		{
+			World = World ? World : RRCheats::FindCheatWorld();
+			ARRArenaGrid* Grid = World ? FindGrid(World) : nullptr;
+			if (!Grid || Args.Num() < 3)
+			{
+				UE_LOG(LogRogueRigs, Warning, TEXT("rr.Debug.DamageCell <X> <Y> <Fraction>: needs a grid and 3 arguments."));
+				return;
+			}
+			const FIntPoint Cell(FCString::Atoi(*Args[0]), FCString::Atoi(*Args[1]));
+			const float Target = FMath::Clamp(FCString::Atof(*Args[2]), 0.f, 0.99f);
+			const float Health = Grid->GetCellHealth(Cell);
+			const float Damage = Grid->GetCellDisplayDamage(Cell);
+			if (Health <= 0.f || Damage >= 1.f)
+			{
+				UE_LOG(LogRogueRigs, Warning, TEXT("rr.Debug.DamageCell: no block in (%d, %d)."), Cell.X, Cell.Y);
+				return;
+			}
+			const float MaxHealth = Health / (1.f - Damage);
+			const float Amount = Health - (1.f - Target) * MaxHealth;
+			if (Amount > 0.f)
+			{
+				Grid->ApplyTerrainDamage(Cell, Amount, ERRTerrainDamageSource::Drone);
+			}
+			UE_LOG(LogRogueRigs, Log, TEXT("rr.Debug.DamageCell: (%d, %d) health %.3f -> %.3f of max %.3f, display damage %.2f -> %.2f."),
+				Cell.X, Cell.Y, Health, Grid->GetCellHealth(Cell), MaxHealth, Damage, Grid->GetCellDisplayDamage(Cell));
+		}),
+		ECVF_Cheat);
+
+	/**
+	 * rr.Debug.Camera <Pitch> <ArmLength> [Yaw]: sets the player miner's camera boom pitch, length and yaw (world degrees,
+	 * absolute rotation), for close or three-quarter visual check views. Yaw also turns the screen axes of move and aim.
+	 */
+	FAutoConsoleCommand CameraCommand(
+		TEXT("rr.Debug.Camera"),
+		TEXT("rr.Debug.Camera <Pitch> <ArmLength> [Yaw]: sets the player miner's camera boom pitch (negative looks down), length (uu) and yaw (visual checks)."),
+		FConsoleCommandWithArgsDelegate::CreateLambda([](const TArray<FString>& Args)
+		{
+			ARRMiner* Miner = RRCheats::FindPlayerMiner(RRCheats::FindCheatWorld());
+			USpringArmComponent* Arm = Miner ? Miner->FindComponentByClass<USpringArmComponent>() : nullptr;
+			if (!Arm || Args.Num() < 2)
+			{
+				UE_LOG(LogRogueRigs, Warning, TEXT("rr.Debug.Camera <Pitch> <ArmLength> [Yaw]: needs a player miner and 2 arguments."));
+				return;
+			}
+			const float Yaw = Args.Num() >= 3 ? FCString::Atof(*Args[2]) : Arm->GetRelativeRotation().Yaw;
+			Arm->SetRelativeRotation(FRotator(FCString::Atof(*Args[0]), Yaw, 0.f));
+			Arm->TargetArmLength = FMath::Max(0.f, FCString::Atof(*Args[1]));
+			UE_LOG(LogRogueRigs, Log, TEXT("rr.Debug.Camera: pitch %s, arm %.0f, yaw %.0f."), *Args[0], Arm->TargetArmLength, Yaw);
 		}),
 		ECVF_Cheat);
 }
