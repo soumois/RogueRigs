@@ -13,7 +13,7 @@ status: in-progress
 - gdd_check: [[rock-state-render-options]] and children (owner decisions 2026-10-17: dual grid for display only, provisional triangle budget, rim as vertex colour in one material, cracks from any damage, one variant per shape with variant support, Nanite assumed), [[art-style-guide]] A1 level 3, [[color-code]], [[readability-rules]], [[sys-grid]]. Open: weak rock (separate task, maximum share open), number of variants later. Not in this task: weak rock, collision rounding of corners.
 - confirmed_by_owner: yes (2026-10-17). Launch rules (owner): 01 then 02 run one after the other (not in parallel); 03 to 06 each wait for the owner validation of the previous one; 07 to 12 run together as one sequence without asking again.
 - milestone: M2
-- next_step: task-230-13-rock-collision-fix
+- next_step: task-230-14-barrel-chain-crash
 - result: open
 
 ## Subtasks
@@ -30,6 +30,10 @@ status: in-progress
 11. task-230-11-rock-slab-assign — bp: Import pieces, plates and textures; assign meshes and materials in BP_ArenaGrid.
 12. task-230-12-rock-slab-check — cpp: After the change: -game captures at the baseline spots and the grid perf measure, compared with step 01.
 13. task-230-13-rock-collision-fix — cpp: Owner report after 11: rock walls lost their collision; find the cause and restore it.
+14. task-230-14-barrel-chain-crash — cpp: Fix the barrel chain crash and the GPU precision ensure on dig.
+15. task-230-15-duskite-crystal-colour — bp: Duskite crystals violet again.
+16. task-230-16-rock-top-texture-shade — bp: Top texture visible, no tint rectangle between full and edge pieces.
+17. task-230-17-rock-sag-visible-check — cpp: Visible sag on a damaged wall and captures of 15 and 16.
 
 ## Relations
 - [[tasks-to-do-index]] — parent index.
@@ -46,5 +50,9 @@ status: in-progress
 - [[task-230-11-rock-slab-assign]] — step 11, bp.
 - [[task-230-12-rock-slab-check]] — step 12, cpp.
 - [[task-230-13-rock-collision-fix]] — step 13, cpp, collision regression.
+- [[task-230-14-barrel-chain-crash]] — step 14, cpp.
+- [[task-230-15-duskite-crystal-colour]] — step 15, bp.
+- [[task-230-16-rock-top-texture-shade]] — step 16, bp.
+- [[task-230-17-rock-sag-visible-check]] — step 17, cpp.
 - [[rock-state-render-options]] — the design this task implements.
 - [[task-219-rock-ore-look]] — the look exploration behind it.
