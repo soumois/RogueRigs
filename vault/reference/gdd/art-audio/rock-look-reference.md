@@ -11,6 +11,7 @@ Third-party captures from the owner (2026-10-17), a visual reference only: never
 ## Files (`Art/Source/rock-look/reference/`)
 - `drgs_wall_top_cracked.png`: owner screenshot, a cracked patch inside an unmined wall top.
 - `drgs_dig_intact_0005-0011.png`: video `2026-10-16 23-58-30.mkv` 00:05–00:11, one frame per second, mining a smooth wall.
+- `drgs_damaged_row_junction.png`: owner crop (2026-10-18), a row of damaged wall between an intact wall (behind) and open floor: the broken plates stay level at the junction with the intact wall and sag toward the empty side; no added debris.
 - `drgs_damage_shards.webp`: owner screenshot (2026-10-17), a heavily mined zone: the top breaks into many angular 3D shards at different heights and tilts (geometry, not a texture); faint thin angular light crack lines on the intact slab nearby.
 - `drgs_dig_cracked_edge_0034-0037.png` and `drgs_cracked_edge_0034.png`: 00:34–00:37, mining a wall edge that was cracked before any mining.
 
