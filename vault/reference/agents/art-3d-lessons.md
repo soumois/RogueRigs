@@ -20,6 +20,7 @@ From the barrel (2026-10-11), XP meshes, chaser and card sessions (to 2026-10-14
 - The agents check by numbers and file contents; the Orchestrator renders and shows ([[blender-asset-route]]).
 - A third-party image from the owner is a visual reference only: draw an own version and check it does not resemble it too closely.
 - `Tools/art/kie_image.js` names a run by its timestamp to the second: never run it in parallel, even for different assets (task-168-02 lost 22 of 24 images, about 144 credits).
+- A headless Blender run can outlive the agent (task-230-06 left `blender -b ... rock_slab_broken.py` at 13 GB for hours): the 3d agent stops its Blender processes before reporting; the Orchestrator checks `Get-Process blender` when closing a 3d subtask.
 - A resumed agent keeps its first label: later subtasks are costed under it. One agent per subtask when cost matters.
 
 ## Engine and import traps
