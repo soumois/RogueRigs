@@ -1,0 +1,30 @@
+---
+id: bp-rock-slab-material
+description: "M_RockSlab and MI_RockSlab, the rock piece material: top texture, cracks, shake, broken sag. Open to tune it."
+parent: blueprints-world-index
+kind: doc
+---
+# M_RockSlab and MI_RockSlab
+
+- asset_path: /Game/RogueRigs/Environment/Rock/M_RockSlab (material), /Game/RogueRigs/Environment/Rock/MI_RockSlab (instance with defaults). Textures: /Game/RogueRigs/Environment/Rock/T_RockTop (sRGB, colour) and T_RockCrackMask (sRGB off, TC_Masks, grayscale; brighter line = crack that appears first). Source PNGs in Art/Textures/.
+- parent_class: Material (not a Blueprint). Opaque, default lit, flags `bUsedWithInstancedStaticMeshes` and `bUsedWithNanite`. Compiles with no error (task-230-09, recompile OK incl. ray tracing and Nanite permutations).
+- purpose: one material for every rock piece, intact and broken ([[task-230-09-rock-slab-material]]). Reads the 13 per-instance custom data floats of [[sys-grid-rock-piece-data]] (indices 0 to 3 damage, 4 to 7 shake, 12 solid mask; 8 to 11 marked are not read, no outline yet).
+- components: two Custom HLSL nodes (WPO and base colour), no texture-sample nodes (samples inside the HLSL, `Texture2DSample`). Gameplay logic: none, display only.
+- inputs read: custom data (3Vector idx 0 and 4, scalar idx 3, 7, 12); Absolute World Position (WPO node: default; colour node: excluding all offsets, so the texture does not slide on a shaking piece); Object Position (instance origin); UV2 transformed local to world by a Transform node (block centre offset, rotation of the instance); UV3 (seed x, radius/100 y; `y > 0.0005` = broken variant, intact meshes have no UV3 so 0); vertex colour. UV4 (rim flag, block index) is NOT read: the rim comes from vertex colour R, so only UV0 to UV3 are used (Nanite limit of 4 UVs respected).
+- faces: side = vertex colour G or B above 0.5 (SideColor, darker toward the foot by `TopParams.a`, darker with damage by `CrackParams.a`). Rim: intact R above 0.75, broken R between 0.25 and 0.75 (top colour times `TopParams.b`). Everything else is top.
+- top colour: T_RockTop sampled by absolute world XY / `TileParams.r` (2000 uu), times a macro sample at `TileParams.g` (7000 uu, rotated `TileParams.a` degrees) of its mean luminance divided by `TopParams.g`, mixed by `TopParams.r`; then desaturated by `TopDesaturate` (0.55), `TopSaturation` (1.0, extra multiplier), `TopBrightness` (1.12), times `TopTint`. Desaturation 0.55 and brightness 1.12 answer the owner review of 230-04 (2026-10-17).
+- cracks: quadrant of the pixel q = (world x >= instance x) + 2 (world y >= instance y), d = damage[q]; cd = saturate(d / `CrackParams.r`) (full at 0.6); crack where mask (world XY / `TileParams.b`, 1000 uu) is above 1 - cd, edge softness `CrackParams.g`, strength `CrackParams.b`, colour `CrackColor`; none at d = 0, any d above 0.0005 shows the brightest lines.
+- shake (all pieces): per quadrant value s >= 1 is active, phase = (s - 1) 2 pi, a = 2 pi f t, offset = (H sin(a + p), H sin(1.37 a + 2 p), V sin(1.71 a + 3 p)) with H, V, f = `ShakeParams` r, g, b (25, 8, 8 Hz, as `ARRArenaGrid`). The 4 quadrant offsets are blended bilinearly over the piece (cell centres at its 4 corners, cell size `SagParams.b` = 67), so neighbours match on shared borders. A broken block uses the blend at its centre (rigid).
+- sag (broken variants only, formula of `material_rigid_tilt` in SM_RockSlabBroken.report.json): block centre C = instance xy + rotated UV2 x 100, R = UV3.y x 100. g = D(C) x f(C): D = bilinear of the 4 quadrant damages at C; f = (1 - min(dE / 100, 1))^2 where dE = distance from C to the nearest EMPTY quadrant (bit of the solid mask at 0), measured to the quadrant's cell square (0 if C lies in it); when the piece has no empty quadrant dE = `ShakeParams.a` (50, provisional: interior damage still sags a little, f = 0.25). Hinge direction = unit vector from C toward the nearest intact solid quadrant (solid and d < 0.002); without one, away from the nearest empty quadrant; without either, a seed-random direction. Sag is 0 next to an intact quadrant because D tends to 0 there. Per block random: s = frac(UV3.x + hash(C xy)) (world-position hash combined with the stored seed, so instances differ), s2 = frac(sin(127.1 s + 311.7) 43758.5453); k = min(1, 2g); slope = max(min(`SagParams.r` g (0.7 + 0.6 s2) / (2R), 0.75) + (s - 0.5) 0.45 k, 0.02 g); hoff = 9 s2 k; per vertex u = max(dot(C + dir R - v xy, dir), 0); drop = min(hoff + u slope, `SagParams.a` - `SagParams.g`) = 100 - 60 = 40 so a block top never falls below 60 uu; z -= drop (same for the whole prism). Approximation: C++ gives only the 4 quadrant damages and the solid mask, not the distance to any empty cell or the nearest intact cell of the report.
+- exposed parameters (MI_RockSlab): scalars TopDesaturate 0.55, TopBrightness 1.12, TopSaturation 1, Roughness 0.85; vectors (RGBA used as 4 numbers) ShakeParams (25, 8, 8, 50), SagParams (45, 60, 67, 100), TileParams (2000, 7000, 1000, 33), TopParams (0.5, 0.4, 1.3, 0.55), CrackParams (0.6, 0.08, 0.9, 0.3); colours TopTint (1, 1, 1), CrackColor (0.04, 0.03, 0.07), SideColor (0.16, 0.15, 0.22); textures TopTexture, CrackMaskTexture. All colour values are provisional.
+- assets: M_RockSlab, MI_RockSlab, T_RockTop, T_RockCrackMask. Assigned to the meshes and the grid in [[task-230-11-rock-slab-assign]] (grid `RockPieceMaterial`).
+- owner_agent: agent-bp
+- verified: compile only (shader permutations incl. Nanite and ray tracing). Not verified: look in game, instance rotation of the Transform node, Object Position per instance on the HISM, sag values on real data (no capture allowed). Open: marked outline (custom data 8 to 11) not drawn; crystals do not follow the sag.
+
+## Relations
+- [[blueprints-world-index]] — parent index.
+- [[sys-grid-rock-piece-data]] — the custom data layout this material reads.
+- [[sys-grid-rock-damage]] — broken variant swap and data writes.
+- [[rock-render-damage]] — the design (cracks, sag, 60 uu rule).
+- [[rock-render-top-texture]] — the world-position top texture design.
+- [[task-230-09-rock-slab-material]] — the task that built it.

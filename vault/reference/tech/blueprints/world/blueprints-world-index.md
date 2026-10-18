@@ -15,5 +15,6 @@ Arena grid, objective console, bonus chest, shuttle, spawner and barrel asset: t
 - [[bp-bonus-chest]] — BP_BonusChest, the optional gold bonus chest.
 - [[bp-extraction-shuttle]] — BP_ExtractionShuttle, the extraction shuttle.
 - [[bp-enemy-spawner]] — BP_EnemySpawner, the enemy spawner placed in the arena.
+- [[bp-rock-slab-material]] — M_RockSlab and MI_RockSlab, the rock piece material (top texture, cracks, shake, broken sag).
 - [[barrel-asset]] — there is NO barrel Blueprint: barrels are a grid cell type drawn by BP_ArenaGrid; open this for the barrel mesh, materials and integration.
 - [[ppv-xp-glow]] — PPV_XPGlow, the PostProcessVolume of L_ArenaM1 that sets the bloom (halo) of emissive elements; open to tune it.
