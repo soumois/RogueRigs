@@ -3,7 +3,7 @@ id: task-230-14-barrel-chain-crash
 description: "Fix the 30-barrel chain crash (Lumen assert) and the GPU matrix precision ensure fired on every dig since task-230."
 parent: task-230-rock-slab-integration
 kind: task
-status: in-progress
+status: done
 ---
 # Fix the 30-barrel chain crash (Lumen assert) and the GPU matrix precision ensure fired on every dig since task-230
 
@@ -15,11 +15,11 @@ status: in-progress
 - done_when: build exits 0 editor closed; RogueRigs.* tests pass except the 2 known pre-existing failures; a -game dig run logs no precision ensure; the 30-barrel chain run of perf-rock-slab completes without crash, its numbers appended to perf-rock-slab; committed.
 - editor_state: closed
 - token_ceiling: 100000
-- model: open
-- tokens: open
-- runs: open
+- model: opus
+- tokens: input 148, cache write 267977, cache read 6937961, output 1571
+- runs: 2
 - milestone: M2
-- result: open
+- result: Commits 6838e0c5 (code), d6aa3b38, 97139f9d (docs, perf). Cause: HISM RemoveInstance leaves an unmapped render slot with an uninitialized transform until the async rebuild; distance field and Lumen read it (ensure, then Lumen assert). Fix: piece visuals are plain ISMs with remove-at-swap. Build 0; tests 262/264 (2 known pre-existing). Dig run 0 ensures; 30-barrel chain run completed, event frames avg 11.6 ms max 17.8, GPU 8.47 ms. Open: cell HISMs (barrels, crystals, floor) still remove the HISM way, no ensure seen.
 
 ## Relations
 - [[task-230-rock-slab-integration]] — parent global task.
