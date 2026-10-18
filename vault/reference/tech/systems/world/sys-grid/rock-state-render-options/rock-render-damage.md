@@ -21,5 +21,6 @@ A Perlin-noise layer of the generator ([[rock-look-reference]], values open) mar
 
 ## Relations
 - [[rock-state-render-options]] — parent note.
+- [[sys-grid-rock-damage]] — the data layout, swap and crystals as built (task-230-08).
 - [[sys-grid-deposits]] — deposits and ore colour custom data.
 - [[ore-blocks]] — ore rules.
