@@ -3,7 +3,7 @@ id: task-230-08-rock-damage-data
 description: "Damage display data: per-quadrant custom data, shake in the material, plate overlay and ore crystal HISMs."
 parent: task-230-rock-slab-integration
 kind: task
-status: todo
+status: in-progress
 ---
 # Damage display data: per-quadrant custom data, shake in the material, plate overlay and ore crystal HISMs
 

@@ -3,7 +3,7 @@ id: task-230-07-dual-grid-placement
 description: "ARRArenaGrid draws rock with dual-grid pieces at cell corners and rebuilds them on destruction."
 parent: task-230-rock-slab-integration
 kind: task
-status: in-progress
+status: done
 ---
 # ARRArenaGrid draws rock with dual-grid pieces at cell corners and rebuilds them on destruction
 
@@ -15,11 +15,11 @@ status: in-progress
 - done_when: build exits 0 editor closed; all RogueRigs.* tests pass headless; docs updated; committed.
 - editor_state: closed
 - token_ceiling: 120000
-- model: open
-- tokens: open
-- runs: open
+- model: opus
+- tokens: input 146, cache write 509528, cache read 13281405, output 43460
+- runs: 2
 - milestone: M2
-- result: open
+- result: Commits 5cbbbfd2 (code) and 1883db05 (docs, new sys-grid-rock-pieces). Piece HISM per shape and variant per chunk, corner index maps, floor under every non-void cell, collision ISM per cell, Nanite allowed. Build 0; tests 261/263: Integration.JuiceKillDropsStreamingCubes and Ore.HealVein fail identically on 01c224dd (pre-existing, not caused here). Rock invisible until 11 (no meshes); shake, marked outline and ore colour data on rock lost until 08. Provisional: RockPieceMeshSize 67, height 100, bRockPieceImportFlipsY true (check at 12), RockPieceSeed 1.
 
 ## Relations
 - [[task-230-rock-slab-integration]] — parent global task.
