@@ -21,7 +21,7 @@ kind: doc
 
 ## Relations
 - [[sys-grid-deposits]] — Ore deposit generation (OreTypes.csv, groups, seed) and the pickup drop rule of ore and heal ore. Open to change deposits or drops.
-- [[sys-grid-rock-pieces]] — Dual-grid rock display as built: corner piece HISMs, mask table, variants, rebuild on destruction, floor under every cell. Open to change rock rendering.
+- [[sys-grid-rock-pieces]] — Dual-grid rock display as built: corner piece ISMs, mask table, variants, rebuild on destruction, floor under every cell. Open to change rock rendering.
 - [[sys-grid-rock-damage]] — Rock damage display as built: piece custom data layout, broken swap, shake and outline as data, ore crystals. Open before rock material work.
 - [[sys-grid-barrels]] — Barrel cells: dig and shot health, fuse, explosion queue and the hosted ground telegraph. Open to change barrel behaviour in the grid.
 - [[sys-run-layout]] — the prepared layout the grid builds from on levels 2+.

@@ -8,7 +8,7 @@ kind: doc
 
 - responsibility: the contract between `ARRArenaGrid` and the rock piece material ([[task-230-09-rock-slab-material]]).
 - main_classes: `ARRArenaGrid::PieceDamageCustomDataIndex`, `PieceShakeCustomDataIndex`, `PieceMarkedCustomDataIndex`, `PieceSolidMaskCustomDataIndex`, `PieceCustomDataCount`, `GetCellDisplayDamage` (`Grid/RRArenaGrid.h`).
-- custom data layout (every piece HISM, intact and broken, 13 floats; constants `Piece*CustomDataIndex`, `PieceCustomDataCount`): quadrant q of the piece at corner (x, y) is cell (x − 1 + (q & 1), y − 1 + (q >> 1)), i.e. q = (+X side) + 2 · (+Y side) in grid actor axes, not the piece's rotated local axes (material: sign of world position − instance position, grid actor unrotated).
+- custom data layout (every piece ISM, intact and broken, 13 floats; constants `Piece*CustomDataIndex`, `PieceCustomDataCount`): quadrant q of the piece at corner (x, y) is cell (x − 1 + (q & 1), y − 1 + (q >> 1)), i.e. q = (+X side) + 2 · (+Y side) in grid actor axes, not the piece's rotated local axes (material: sign of world position − instance position, grid actor unrotated).
   - 0–3: display damage d of quadrant q, 0..1.
   - 4–7: shake of quadrant q: 0 still, else 1 + phase / 2π in [1, 2) (same per-cell phase as the old jitter; amplitudes and frequency are `ShakeAmplitude` 25, `ShakeVerticalAmplitude` 8, `ShakeFrequency` 8 Hz, to mirror as material parameters; offset = (H sin(a + p), H sin(1.37a + 2p), V sin(1.71a + 3p)), a = 2π f t).
   - 8–11: marked outline of quadrant q: `MarkedCustomDataValue` (1) or 0.
