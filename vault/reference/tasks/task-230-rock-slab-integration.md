@@ -29,6 +29,7 @@ status: in-progress
 10. task-230-10-heal-crystal-material — bp: Red heal crystal material instance for the crystal clusters on heal veins.
 11. task-230-11-rock-slab-assign — bp: Import pieces, plates and textures; assign meshes and materials in BP_ArenaGrid.
 12. task-230-12-rock-slab-check — cpp: After the change: -game captures at the baseline spots and the grid perf measure, compared with step 01.
+13. task-230-13-rock-collision-fix — cpp: Owner report after 11: rock walls lost their collision; find the cause and restore it.
 
 ## Relations
 - [[tasks-to-do-index]] — parent index.
@@ -44,5 +45,6 @@ status: in-progress
 - [[task-230-10-heal-crystal-material]] — step 10, bp.
 - [[task-230-11-rock-slab-assign]] — step 11, bp.
 - [[task-230-12-rock-slab-check]] — step 12, cpp.
+- [[task-230-13-rock-collision-fix]] — step 13, cpp, collision regression.
 - [[rock-state-render-options]] — the design this task implements.
 - [[task-219-rock-ore-look]] — the look exploration behind it.
