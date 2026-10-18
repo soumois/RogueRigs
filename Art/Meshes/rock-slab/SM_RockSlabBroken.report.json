@@ -1,11 +1,9 @@
 {
-  "task": "task-230-06-rock-plate-overlay (broken pieces, rigid plates)",
+  "task": "task-230-06-rock-plate-overlay (version 4: broken pieces as a fractured volume of closed prisms)",
   "script": "Tools/art/blender/rock_slab_broken.py",
   "units": "cm (1 uu = 1 cm)",
   "constants": {
-    "plate_thickness": 12.0,
-    "plate_gap": 1.8,
-    "cap_z": 58.0,
+    "foot_flare_uu": 9.0,
     "min_top": 60.0,
     "border_vertices_per_side": [
       -33.5,
@@ -14,37 +12,48 @@
       12.0,
       33.5
     ],
-    "cuts_per_piece": 9
+    "blocks_per_cell_target": 11.0,
+    "min_block_radius_accept": 6.0,
+    "min_block_radius_hard": 4.5
   },
   "channels": {
     "UV0 'UVMap'": "planar top-down, (x/100, y/100) in piece-local XY",
     "UV1 'LightMap'": "per-triangle packing, no overlap, 2 px border at 256",
-    "UV2 'PlateA'": "(plate centre X / 100, plate centre Y / 100) in piece-local XY (before the instance rotation), identical on every vertex of a plate (top and sides); (0, 0) on rim, walls and cap",
-    "UV3 'PlateB'": "(plate seed 0..1, plate radius / 100) with radius = largest distance centre -> plate vertex; (-1, 0) on rim, walls and cap: UV3.x < 0 means 'not a plate'",
-    "vertex colour 'Color'": "R = 1 plate tops, R = 0.5 rim band, G = 1 plate edges and side walls, B = 1 base cap (all others 0); read R with thresholds 0.25 / 0.75 (export quantises to 8 bit)",
-    "import": "enable full precision UVs in the Unreal static mesh import (UV2 holds values in [-0.5, 0.5], half precision would give ~0.05 uu error); keep 4 UV channels"
+    "UV2 'BlockA'": "(block centre X / 100, block centre Y / 100) in piece-local XY (before the instance rotation) = the block pivot position; identical on every vertex of a block (top, sides, bottom)",
+    "UV3 'BlockB'": "(block seed 0..1, block radius / 100) with radius = largest distance centre -> block top vertex; identical on every vertex of a block; every face belongs to a block (UV3.x >= 0 everywhere)",
+    "UV4 'BlockC'": "(rim flag, block index / 16): rim flag 1 = the block touches the void outline (its wall faces the void and slumps), 0 = inner block; index = order of the block in the piece",
+    "vertex colour 'Color'": "R = 1 block tops, R = 0.5 rim band (part of the block top), G = 1 side faces, B = 1 bottoms (all others 0); read R with thresholds 0.25 / 0.75 (export quantises to 8 bit)",
+    "import": "enable full precision UVs in the Unreal static mesh import (UV2 holds values in [-0.5, 0.5], half precision would give ~0.05 uu error); keep 5 UV channels (UV0..UV4); the importer's auto lightmap channel must not overwrite UV4"
   },
   "shapes": {
     "full_01": {
       "file": "Art/Meshes/rock-slab/SM_RockSlabBroken_Full_01.fbx",
-      "tris": 73,
+      "tris": 208,
       "budget": [
-        70,
-        230
+        300,
+        450
       ],
-      "within_budget": true,
+      "within_budget": false,
       "intact_tris": 2,
-      "plates": 10,
-      "plate_data_distinct": 10,
+      "blocks": 11,
+      "block_seed_search": {
+        "sites_requested": 11,
+        "attempts": 3
+      },
+      "face_split": {
+        "top": 41,
+        "sides": 126,
+        "bottoms": 41
+      },
       "dimensions_cm": [
         67.0,
         67.0,
-        42.0
+        100.0
       ],
       "bounds_min": [
         -33.5,
         -33.5,
-        58.0
+        0.0
       ],
       "bounds_max": [
         33.5,
@@ -57,57 +66,228 @@
       "uv_layers": [
         "UVMap",
         "LightMap",
-        "PlateA",
-        "PlateB"
+        "BlockA",
+        "BlockB",
+        "BlockC"
       ],
       "uv_checks": {
         "UVMap_planar_xy_over_100": true,
         "LightMap": {
-          "triangles": 73,
+          "triangles": 208,
           "overlapping_pairs": 0,
           "bounds": [
             0.0098,
-            0.9298
+            0.9609
           ],
           "min_gap_px_at_256": 5.024,
           "pass": true
         },
-        "plate_data_one_per_plate": true,
-        "nonplate_marker_ok": true
+        "every_face_has_block_data": true
       },
       "vertex_colour": {
         "attribute": "Color (corner, float)",
         "export": "colors_type=LINEAR",
-        "R1_plate_tops": 21,
+        "R1_block_tops": 41,
         "R0.5_rim": 0,
-        "G1_edges_and_walls": 50,
-        "B1_base_cap": 2,
+        "G1_sides": 126,
+        "B1_bottoms": 41,
         "inconsistent_faces": 0,
         "pass": true
       },
+      "closed_prisms": {
+        "blocks": 11,
+        "all_closed": true,
+        "all_reach_z0": true,
+        "all_top_at_100": true
+      },
+      "min_block_width_uu": 12.5,
+      "block_list": [
+        {
+          "id": 0,
+          "centre_cm": [
+            -25.91,
+            25.43
+          ],
+          "radius_cm": 16.08,
+          "seed": 0.1532,
+          "top_area_uu2": 273.9,
+          "min_width_uu": 13.0,
+          "touches_void_outline": false,
+          "top_tris": 2,
+          "boundary_edges": 4
+        },
+        {
+          "id": 1,
+          "centre_cm": [
+            17.97,
+            -10.61
+          ],
+          "radius_cm": 19.74,
+          "seed": 0.0393,
+          "top_area_uu2": 589.5,
+          "min_width_uu": 19.2,
+          "touches_void_outline": false,
+          "top_tris": 4,
+          "boundary_edges": 6
+        },
+        {
+          "id": 2,
+          "centre_cm": [
+            -27.5,
+            -19.31
+          ],
+          "radius_cm": 15.41,
+          "seed": 0.1026,
+          "top_area_uu2": 223.2,
+          "min_width_uu": 12.5,
+          "touches_void_outline": false,
+          "top_tris": 3,
+          "boundary_edges": 5
+        },
+        {
+          "id": 3,
+          "centre_cm": [
+            23.79,
+            18.58
+          ],
+          "radius_cm": 20.97,
+          "seed": 0.0557,
+          "top_area_uu2": 613.0,
+          "min_width_uu": 20.3,
+          "touches_void_outline": false,
+          "top_tris": 4,
+          "boundary_edges": 6
+        },
+        {
+          "id": 4,
+          "centre_cm": [
+            3.72,
+            4.32
+          ],
+          "radius_cm": 15.99,
+          "seed": 0.4332,
+          "top_area_uu2": 432.1,
+          "min_width_uu": 19.4,
+          "touches_void_outline": false,
+          "top_tris": 5,
+          "boundary_edges": 7
+        },
+        {
+          "id": 5,
+          "centre_cm": [
+            -9.27,
+            -26.81
+          ],
+          "radius_cm": 25.13,
+          "seed": 0.3614,
+          "top_area_uu2": 499.2,
+          "min_width_uu": 14.0,
+          "touches_void_outline": false,
+          "top_tris": 5,
+          "boundary_edges": 7
+        },
+        {
+          "id": 6,
+          "centre_cm": [
+            -26.16,
+            1.96
+          ],
+          "radius_cm": 15.77,
+          "seed": 0.1544,
+          "top_area_uu2": 351.8,
+          "min_width_uu": 14.8,
+          "touches_void_outline": false,
+          "top_tris": 4,
+          "boundary_edges": 6
+        },
+        {
+          "id": 7,
+          "centre_cm": [
+            23.55,
+            -25.68
+          ],
+          "radius_cm": 16.92,
+          "seed": 0.2557,
+          "top_area_uu2": 341.8,
+          "min_width_uu": 14.0,
+          "touches_void_outline": false,
+          "top_tris": 2,
+          "boundary_edges": 4
+        },
+        {
+          "id": 8,
+          "centre_cm": [
+            3.24,
+            24.45
+          ],
+          "radius_cm": 17.72,
+          "seed": 0.4436,
+          "top_area_uu2": 373.7,
+          "min_width_uu": 16.6,
+          "touches_void_outline": false,
+          "top_tris": 5,
+          "boundary_edges": 7
+        },
+        {
+          "id": 9,
+          "centre_cm": [
+            -9.63,
+            -9.55
+          ],
+          "radius_cm": 14.53,
+          "seed": 0.1918,
+          "top_area_uu2": 405.1,
+          "min_width_uu": 17.0,
+          "touches_void_outline": false,
+          "top_tris": 4,
+          "boundary_edges": 6
+        },
+        {
+          "id": 10,
+          "centre_cm": [
+            -13.15,
+            16.95
+          ],
+          "radius_cm": 16.59,
+          "seed": 0.8337,
+          "top_area_uu2": 386.0,
+          "min_width_uu": 17.0,
+          "touches_void_outline": false,
+          "top_tris": 3,
+          "boundary_edges": 5
+        }
+      ],
       "intact_border_vertices_kept": true,
       "all_flat_shaded": true
     },
     "full_02": {
       "file": "Art/Meshes/rock-slab/SM_RockSlabBroken_Full_02.fbx",
-      "tris": 76,
+      "tris": 200,
       "budget": [
-        70,
-        230
+        300,
+        450
       ],
-      "within_budget": true,
+      "within_budget": false,
       "intact_tris": 2,
-      "plates": 10,
-      "plate_data_distinct": 10,
+      "blocks": 11,
+      "block_seed_search": {
+        "sites_requested": 11,
+        "attempts": 2
+      },
+      "face_split": {
+        "top": 39,
+        "sides": 122,
+        "bottoms": 39
+      },
       "dimensions_cm": [
         67.0,
         67.0,
-        42.0
+        100.0
       ],
       "bounds_min": [
         -33.5,
         -33.5,
-        58.0
+        0.0
       ],
       "bounds_max": [
         33.5,
@@ -120,55 +300,226 @@
       "uv_layers": [
         "UVMap",
         "LightMap",
-        "PlateA",
-        "PlateB"
+        "BlockA",
+        "BlockB",
+        "BlockC"
       ],
       "uv_checks": {
         "UVMap_planar_xy_over_100": true,
         "LightMap": {
-          "triangles": 76,
+          "triangles": 200,
           "overlapping_pairs": 0,
           "bounds": [
             0.0098,
-            0.9499
+            0.9902
           ],
           "min_gap_px_at_256": 5.024,
           "pass": true
         },
-        "plate_data_one_per_plate": true,
-        "nonplate_marker_ok": true
+        "every_face_has_block_data": true
       },
       "vertex_colour": {
         "attribute": "Color (corner, float)",
         "export": "colors_type=LINEAR",
-        "R1_plate_tops": 22,
+        "R1_block_tops": 39,
         "R0.5_rim": 0,
-        "G1_edges_and_walls": 52,
-        "B1_base_cap": 2,
+        "G1_sides": 122,
+        "B1_bottoms": 39,
         "inconsistent_faces": 0,
         "pass": true
       },
+      "closed_prisms": {
+        "blocks": 11,
+        "all_closed": true,
+        "all_reach_z0": true,
+        "all_top_at_100": true
+      },
+      "min_block_width_uu": 12.8,
+      "block_list": [
+        {
+          "id": 0,
+          "centre_cm": [
+            5.23,
+            -6.7
+          ],
+          "radius_cm": 16.15,
+          "seed": 0.6971,
+          "top_area_uu2": 505.0,
+          "min_width_uu": 21.3,
+          "touches_void_outline": false,
+          "top_tris": 4,
+          "boundary_edges": 6
+        },
+        {
+          "id": 1,
+          "centre_cm": [
+            -25.72,
+            -26.06
+          ],
+          "radius_cm": 16.07,
+          "seed": 0.7752,
+          "top_area_uu2": 259.9,
+          "min_width_uu": 13.2,
+          "touches_void_outline": false,
+          "top_tris": 3,
+          "boundary_edges": 5
+        },
+        {
+          "id": 2,
+          "centre_cm": [
+            23.52,
+            21.97
+          ],
+          "radius_cm": 16.3,
+          "seed": 0.4709,
+          "top_area_uu2": 462.4,
+          "min_width_uu": 18.3,
+          "touches_void_outline": false,
+          "top_tris": 2,
+          "boundary_edges": 4
+        },
+        {
+          "id": 3,
+          "centre_cm": [
+            23.63,
+            -24.32
+          ],
+          "radius_cm": 15.79,
+          "seed": 0.4158,
+          "top_area_uu2": 384.2,
+          "min_width_uu": 18.0,
+          "touches_void_outline": false,
+          "top_tris": 3,
+          "boundary_edges": 5
+        },
+        {
+          "id": 4,
+          "centre_cm": [
+            -25.21,
+            16.4
+          ],
+          "radius_cm": 19.01,
+          "seed": 0.7447,
+          "top_area_uu2": 420.5,
+          "min_width_uu": 16.7,
+          "touches_void_outline": false,
+          "top_tris": 3,
+          "boundary_edges": 5
+        },
+        {
+          "id": 5,
+          "centre_cm": [
+            24.59,
+            -2.48
+          ],
+          "radius_cm": 17.01,
+          "seed": 0.5435,
+          "top_area_uu2": 429.7,
+          "min_width_uu": 17.6,
+          "touches_void_outline": false,
+          "top_tris": 4,
+          "boundary_edges": 6
+        },
+        {
+          "id": 6,
+          "centre_cm": [
+            3.6,
+            18.09
+          ],
+          "radius_cm": 17.55,
+          "seed": 0.0164,
+          "top_area_uu2": 600.0,
+          "min_width_uu": 21.8,
+          "touches_void_outline": false,
+          "top_tris": 7,
+          "boundary_edges": 9
+        },
+        {
+          "id": 7,
+          "centre_cm": [
+            -1.15,
+            -25.61
+          ],
+          "radius_cm": 15.66,
+          "seed": 0.2534,
+          "top_area_uu2": 412.5,
+          "min_width_uu": 16.5,
+          "touches_void_outline": false,
+          "top_tris": 4,
+          "boundary_edges": 6
+        },
+        {
+          "id": 8,
+          "centre_cm": [
+            -20.04,
+            -11.65
+          ],
+          "radius_cm": 17.8,
+          "seed": 0.7584,
+          "top_area_uu2": 449.9,
+          "min_width_uu": 17.7,
+          "touches_void_outline": false,
+          "top_tris": 5,
+          "boundary_edges": 7
+        },
+        {
+          "id": 9,
+          "centre_cm": [
+            -14.78,
+            28.19
+          ],
+          "radius_cm": 19.46,
+          "seed": 0.456,
+          "top_area_uu2": 266.6,
+          "min_width_uu": 12.8,
+          "touches_void_outline": false,
+          "top_tris": 2,
+          "boundary_edges": 4
+        },
+        {
+          "id": 10,
+          "centre_cm": [
+            -15.47,
+            3.18
+          ],
+          "radius_cm": 18.31,
+          "seed": 0.7886,
+          "top_area_uu2": 298.2,
+          "min_width_uu": 15.4,
+          "touches_void_outline": false,
+          "top_tris": 2,
+          "boundary_edges": 4
+        }
+      ],
       "intact_border_vertices_kept": true,
       "all_flat_shaded": true
     },
     "edge_01": {
       "file": "Art/Meshes/rock-slab/SM_RockSlabBroken_Edge_01.fbx",
-      "tris": 148,
+      "tris": 204,
       "budget": [
-        70,
-        230
+        300,
+        450
       ],
-      "within_budget": true,
+      "within_budget": false,
       "intact_tris": 43,
-      "plates": 10,
-      "plate_data_distinct": 10,
+      "blocks": 6,
+      "block_seed_search": {
+        "sites_requested": 6,
+        "attempts": 1
+      },
+      "face_split": {
+        "top": 50,
+        "sides": 104,
+        "bottoms": 50
+      },
       "dimensions_cm": [
-        47.13,
+        47.5,
         67.0,
         100.0
       ],
       "bounds_min": [
-        -13.63,
+        -14.0,
         -33.5,
         0.0
       ],
@@ -183,55 +534,156 @@
       "uv_layers": [
         "UVMap",
         "LightMap",
-        "PlateA",
-        "PlateB"
+        "BlockA",
+        "BlockB",
+        "BlockC"
       ],
       "uv_checks": {
         "UVMap_planar_xy_over_100": true,
         "LightMap": {
-          "triangles": 148,
+          "triangles": 204,
           "overlapping_pairs": 0,
           "bounds": [
             0.0098,
-            0.975
+            0.9898
           ],
           "min_gap_px_at_256": 5.024,
           "pass": true
         },
-        "plate_data_one_per_plate": true,
-        "nonplate_marker_ok": true
+        "every_face_has_block_data": true
       },
       "vertex_colour": {
         "attribute": "Color (corner, float)",
         "export": "colors_type=LINEAR",
-        "R1_plate_tops": 23,
-        "R0.5_rim": 12,
-        "G1_edges_and_walls": 94,
-        "B1_base_cap": 19,
+        "R1_block_tops": 32,
+        "R0.5_rim": 18,
+        "G1_sides": 104,
+        "B1_bottoms": 50,
         "inconsistent_faces": 0,
         "pass": true
       },
+      "closed_prisms": {
+        "blocks": 6,
+        "all_closed": true,
+        "all_reach_z0": true,
+        "all_top_at_100": true
+      },
+      "min_block_width_uu": 13.4,
+      "block_list": [
+        {
+          "id": 0,
+          "centre_cm": [
+            8.27,
+            -1.72
+          ],
+          "radius_cm": 18.45,
+          "seed": 0.5134,
+          "top_area_uu2": 572.9,
+          "min_width_uu": 22.6,
+          "touches_void_outline": true,
+          "top_tris": 16,
+          "boundary_edges": 14
+        },
+        {
+          "id": 1,
+          "centre_cm": [
+            25.1,
+            24.68
+          ],
+          "radius_cm": 15.79,
+          "seed": 0.9316,
+          "top_area_uu2": 324.2,
+          "min_width_uu": 15.7,
+          "touches_void_outline": false,
+          "top_tris": 3,
+          "boundary_edges": 5
+        },
+        {
+          "id": 2,
+          "centre_cm": [
+            24.83,
+            -24.28
+          ],
+          "radius_cm": 15.8,
+          "seed": 0.5138,
+          "top_area_uu2": 345.8,
+          "min_width_uu": 16.9,
+          "touches_void_outline": false,
+          "top_tris": 2,
+          "boundary_edges": 4
+        },
+        {
+          "id": 3,
+          "centre_cm": [
+            7.85,
+            -22.91
+          ],
+          "radius_cm": 14.48,
+          "seed": 0.0154,
+          "top_area_uu2": 317.5,
+          "min_width_uu": 14.3,
+          "touches_void_outline": true,
+          "top_tris": 10,
+          "boundary_edges": 10
+        },
+        {
+          "id": 4,
+          "centre_cm": [
+            7.76,
+            20.88
+          ],
+          "radius_cm": 17.14,
+          "seed": 0.3658,
+          "top_area_uu2": 403.0,
+          "min_width_uu": 15.8,
+          "touches_void_outline": true,
+          "top_tris": 14,
+          "boundary_edges": 12
+        },
+        {
+          "id": 5,
+          "centre_cm": [
+            26.06,
+            0.57
+          ],
+          "radius_cm": 16.66,
+          "seed": 0.6933,
+          "top_area_uu2": 396.2,
+          "min_width_uu": 13.4,
+          "touches_void_outline": false,
+          "top_tris": 5,
+          "boundary_edges": 7
+        }
+      ],
       "intact_border_vertices_kept": true,
       "all_flat_shaded": true
     },
     "edge_02": {
       "file": "Art/Meshes/rock-slab/SM_RockSlabBroken_Edge_02.fbx",
-      "tris": 135,
+      "tris": 228,
       "budget": [
-        70,
-        230
+        300,
+        450
       ],
-      "within_budget": true,
+      "within_budget": false,
       "intact_tris": 43,
-      "plates": 9,
-      "plate_data_distinct": 9,
+      "blocks": 6,
+      "block_seed_search": {
+        "sites_requested": 6,
+        "attempts": 2
+      },
+      "face_split": {
+        "top": 56,
+        "sides": 116,
+        "bottoms": 56
+      },
       "dimensions_cm": [
-        47.13,
+        47.5,
         67.0,
         100.0
       ],
       "bounds_min": [
-        -13.63,
+        -14.0,
         -33.5,
         0.0
       ],
@@ -246,48 +698,149 @@
       "uv_layers": [
         "UVMap",
         "LightMap",
-        "PlateA",
-        "PlateB"
+        "BlockA",
+        "BlockB",
+        "BlockC"
       ],
       "uv_checks": {
         "UVMap_planar_xy_over_100": true,
         "LightMap": {
-          "triangles": 135,
+          "triangles": 228,
           "overlapping_pairs": 0,
           "bounds": [
             0.0098,
-            0.9775
+            0.9899
           ],
           "min_gap_px_at_256": 5.024,
           "pass": true
         },
-        "plate_data_one_per_plate": true,
-        "nonplate_marker_ok": true
+        "every_face_has_block_data": true
       },
       "vertex_colour": {
         "attribute": "Color (corner, float)",
         "export": "colors_type=LINEAR",
-        "R1_plate_tops": 20,
-        "R0.5_rim": 12,
-        "G1_edges_and_walls": 84,
-        "B1_base_cap": 19,
+        "R1_block_tops": 36,
+        "R0.5_rim": 20,
+        "G1_sides": 116,
+        "B1_bottoms": 56,
         "inconsistent_faces": 0,
         "pass": true
       },
+      "closed_prisms": {
+        "blocks": 6,
+        "all_closed": true,
+        "all_reach_z0": true,
+        "all_top_at_100": true
+      },
+      "min_block_width_uu": 14.9,
+      "block_list": [
+        {
+          "id": 0,
+          "centre_cm": [
+            15.48,
+            -26.63
+          ],
+          "radius_cm": 19.28,
+          "seed": 0.6476,
+          "top_area_uu2": 393.8,
+          "min_width_uu": 15.3,
+          "touches_void_outline": true,
+          "top_tris": 6,
+          "boundary_edges": 8
+        },
+        {
+          "id": 1,
+          "centre_cm": [
+            24.5,
+            24.59
+          ],
+          "radius_cm": 15.47,
+          "seed": 0.5677,
+          "top_area_uu2": 346.0,
+          "min_width_uu": 17.0,
+          "touches_void_outline": false,
+          "top_tris": 6,
+          "boundary_edges": 6
+        },
+        {
+          "id": 2,
+          "centre_cm": [
+            11.32,
+            6.05
+          ],
+          "radius_cm": 16.96,
+          "seed": 0.8032,
+          "top_area_uu2": 414.0,
+          "min_width_uu": 16.1,
+          "touches_void_outline": true,
+          "top_tris": 9,
+          "boundary_edges": 11
+        },
+        {
+          "id": 3,
+          "centre_cm": [
+            27.03,
+            -6.9
+          ],
+          "radius_cm": 27.38,
+          "seed": 0.6119,
+          "top_area_uu2": 515.5,
+          "min_width_uu": 16.3,
+          "touches_void_outline": false,
+          "top_tris": 5,
+          "boundary_edges": 7
+        },
+        {
+          "id": 4,
+          "centre_cm": [
+            5.72,
+            -11.25
+          ],
+          "radius_cm": 16.85,
+          "seed": 0.2709,
+          "top_area_uu2": 367.6,
+          "min_width_uu": 16.3,
+          "touches_void_outline": true,
+          "top_tris": 18,
+          "boundary_edges": 14
+        },
+        {
+          "id": 5,
+          "centre_cm": [
+            6.52,
+            22.14
+          ],
+          "radius_cm": 16.91,
+          "seed": 0.0839,
+          "top_area_uu2": 322.6,
+          "min_width_uu": 14.9,
+          "touches_void_outline": true,
+          "top_tris": 12,
+          "boundary_edges": 12
+        }
+      ],
       "intact_border_vertices_kept": true,
       "all_flat_shaded": true
     },
     "outer_01": {
       "file": "Art/Meshes/rock-slab/SM_RockSlabBroken_Outer_01.fbx",
-      "tris": 84,
+      "tris": 120,
       "budget": [
-        70,
-        230
+        300,
+        450
       ],
-      "within_budget": true,
+      "within_budget": false,
       "intact_tris": 42,
-      "plates": 2,
-      "plate_data_distinct": 2,
+      "blocks": 3,
+      "block_seed_search": {
+        "sites_requested": 3,
+        "attempts": 1
+      },
+      "face_split": {
+        "top": 32,
+        "sides": 56,
+        "bottoms": 32
+      },
       "dimensions_cm": [
         42.5,
         42.5,
@@ -309,48 +862,107 @@
       "uv_layers": [
         "UVMap",
         "LightMap",
-        "PlateA",
-        "PlateB"
+        "BlockA",
+        "BlockB",
+        "BlockC"
       ],
       "uv_checks": {
         "UVMap_planar_xy_over_100": true,
         "LightMap": {
-          "triangles": 84,
+          "triangles": 120,
           "overlapping_pairs": 0,
           "bounds": [
             0.0098,
-            0.977
+            0.9896
           ],
           "min_gap_px_at_256": 5.024,
           "pass": true
         },
-        "plate_data_one_per_plate": true,
-        "nonplate_marker_ok": true
+        "every_face_has_block_data": true
       },
       "vertex_colour": {
         "attribute": "Color (corner, float)",
         "export": "colors_type=LINEAR",
-        "R1_plate_tops": 10,
-        "R0.5_rim": 12,
-        "G1_edges_and_walls": 44,
-        "B1_base_cap": 18,
+        "R1_block_tops": 17,
+        "R0.5_rim": 15,
+        "G1_sides": 56,
+        "B1_bottoms": 32,
         "inconsistent_faces": 0,
         "pass": true
       },
+      "closed_prisms": {
+        "blocks": 3,
+        "all_closed": true,
+        "all_reach_z0": true,
+        "all_top_at_100": true
+      },
+      "min_block_width_uu": 12.5,
+      "block_list": [
+        {
+          "id": 0,
+          "centre_cm": [
+            11.02,
+            23.75
+          ],
+          "radius_cm": 14.72,
+          "seed": 0.6803,
+          "top_area_uu2": 313.8,
+          "min_width_uu": 14.9,
+          "touches_void_outline": true,
+          "top_tris": 16,
+          "boundary_edges": 12
+        },
+        {
+          "id": 1,
+          "centre_cm": [
+            25.95,
+            9.78
+          ],
+          "radius_cm": 12.36,
+          "seed": 0.4492,
+          "top_area_uu2": 225.3,
+          "min_width_uu": 12.5,
+          "touches_void_outline": true,
+          "top_tris": 11,
+          "boundary_edges": 9
+        },
+        {
+          "id": 2,
+          "centre_cm": [
+            26.18,
+            26.15
+          ],
+          "radius_cm": 15.97,
+          "seed": 0.5445,
+          "top_area_uu2": 241.9,
+          "min_width_uu": 13.0,
+          "touches_void_outline": false,
+          "top_tris": 5,
+          "boundary_edges": 7
+        }
+      ],
       "intact_border_vertices_kept": true,
       "all_flat_shaded": true
     },
     "outer_02": {
       "file": "Art/Meshes/rock-slab/SM_RockSlabBroken_Outer_02.fbx",
-      "tris": 104,
+      "tris": 120,
       "budget": [
-        70,
-        230
+        300,
+        450
       ],
-      "within_budget": true,
+      "within_budget": false,
       "intact_tris": 42,
-      "plates": 4,
-      "plate_data_distinct": 4,
+      "blocks": 3,
+      "block_seed_search": {
+        "sites_requested": 3,
+        "attempts": 1
+      },
+      "face_split": {
+        "top": 32,
+        "sides": 56,
+        "bottoms": 32
+      },
       "dimensions_cm": [
         42.5,
         42.5,
@@ -372,48 +984,107 @@
       "uv_layers": [
         "UVMap",
         "LightMap",
-        "PlateA",
-        "PlateB"
+        "BlockA",
+        "BlockB",
+        "BlockC"
       ],
       "uv_checks": {
         "UVMap_planar_xy_over_100": true,
         "LightMap": {
-          "triangles": 104,
+          "triangles": 120,
           "overlapping_pairs": 0,
           "bounds": [
             0.0098,
-            0.9886
+            0.9896
           ],
           "min_gap_px_at_256": 5.024,
           "pass": true
         },
-        "plate_data_one_per_plate": true,
-        "nonplate_marker_ok": true
+        "every_face_has_block_data": true
       },
       "vertex_colour": {
         "attribute": "Color (corner, float)",
         "export": "colors_type=LINEAR",
-        "R1_plate_tops": 14,
-        "R0.5_rim": 12,
-        "G1_edges_and_walls": 60,
-        "B1_base_cap": 18,
+        "R1_block_tops": 17,
+        "R0.5_rim": 15,
+        "G1_sides": 56,
+        "B1_bottoms": 32,
         "inconsistent_faces": 0,
         "pass": true
       },
+      "closed_prisms": {
+        "blocks": 3,
+        "all_closed": true,
+        "all_reach_z0": true,
+        "all_top_at_100": true
+      },
+      "min_block_width_uu": 12.4,
+      "block_list": [
+        {
+          "id": 0,
+          "centre_cm": [
+            11.86,
+            22.85
+          ],
+          "radius_cm": 15.95,
+          "seed": 0.6951,
+          "top_area_uu2": 340.6,
+          "min_width_uu": 13.5,
+          "touches_void_outline": true,
+          "top_tris": 18,
+          "boundary_edges": 14
+        },
+        {
+          "id": 1,
+          "centre_cm": [
+            26.81,
+            8.16
+          ],
+          "radius_cm": 10.55,
+          "seed": 0.0479,
+          "top_area_uu2": 177.0,
+          "min_width_uu": 12.4,
+          "touches_void_outline": true,
+          "top_tris": 10,
+          "boundary_edges": 8
+        },
+        {
+          "id": 2,
+          "centre_cm": [
+            26.02,
+            25.65
+          ],
+          "radius_cm": 16.06,
+          "seed": 0.1276,
+          "top_area_uu2": 263.2,
+          "min_width_uu": 13.0,
+          "touches_void_outline": false,
+          "top_tris": 4,
+          "boundary_edges": 6
+        }
+      ],
       "intact_border_vertices_kept": true,
       "all_flat_shaded": true
     },
     "inner_01": {
       "file": "Art/Meshes/rock-slab/SM_RockSlabBroken_Inner_01.fbx",
-      "tris": 163,
+      "tris": 372,
       "budget": [
-        70,
-        230
+        300,
+        450
       ],
       "within_budget": true,
       "intact_tris": 58,
-      "plates": 8,
-      "plate_data_distinct": 8,
+      "blocks": 9,
+      "block_seed_search": {
+        "sites_requested": 9,
+        "attempts": 1
+      },
+      "face_split": {
+        "top": 91,
+        "sides": 190,
+        "bottoms": 91
+      },
       "dimensions_cm": [
         67.0,
         67.0,
@@ -435,48 +1106,191 @@
       "uv_layers": [
         "UVMap",
         "LightMap",
-        "PlateA",
-        "PlateB"
+        "BlockA",
+        "BlockB",
+        "BlockC"
       ],
       "uv_checks": {
         "UVMap_planar_xy_over_100": true,
         "LightMap": {
-          "triangles": 163,
+          "triangles": 372,
           "overlapping_pairs": 0,
           "bounds": [
             0.0098,
-            0.9848
+            0.9901
           ],
           "min_gap_px_at_256": 5.024,
           "pass": true
         },
-        "plate_data_one_per_plate": true,
-        "nonplate_marker_ok": true
+        "every_face_has_block_data": true
       },
       "vertex_colour": {
         "attribute": "Color (corner, float)",
         "export": "colors_type=LINEAR",
-        "R1_plate_tops": 27,
-        "R0.5_rim": 16,
-        "G1_edges_and_walls": 94,
-        "B1_base_cap": 26,
+        "R1_block_tops": 70,
+        "R0.5_rim": 21,
+        "G1_sides": 190,
+        "B1_bottoms": 91,
         "inconsistent_faces": 0,
         "pass": true
       },
+      "closed_prisms": {
+        "blocks": 9,
+        "all_closed": true,
+        "all_reach_z0": true,
+        "all_top_at_100": true
+      },
+      "min_block_width_uu": 12.0,
+      "block_list": [
+        {
+          "id": 0,
+          "centre_cm": [
+            -23.7,
+            19.0
+          ],
+          "radius_cm": 21.38,
+          "seed": 0.2111,
+          "top_area_uu2": 601.1,
+          "min_width_uu": 19.7,
+          "touches_void_outline": false,
+          "top_tris": 10,
+          "boundary_edges": 10
+        },
+        {
+          "id": 1,
+          "centre_cm": [
+            25.09,
+            -24.91
+          ],
+          "radius_cm": 15.66,
+          "seed": 0.0674,
+          "top_area_uu2": 321.0,
+          "min_width_uu": 14.0,
+          "touches_void_outline": false,
+          "top_tris": 3,
+          "boundary_edges": 5
+        },
+        {
+          "id": 2,
+          "centre_cm": [
+            23.76,
+            24.05
+          ],
+          "radius_cm": 15.49,
+          "seed": 0.4804,
+          "top_area_uu2": 388.4,
+          "min_width_uu": 17.0,
+          "touches_void_outline": false,
+          "top_tris": 7,
+          "boundary_edges": 9
+        },
+        {
+          "id": 3,
+          "centre_cm": [
+            2.26,
+            6.97
+          ],
+          "radius_cm": 17.77,
+          "seed": 0.4688,
+          "top_area_uu2": 541.2,
+          "min_width_uu": 19.7,
+          "touches_void_outline": false,
+          "top_tris": 10,
+          "boundary_edges": 12
+        },
+        {
+          "id": 4,
+          "centre_cm": [
+            -0.43,
+            24.49
+          ],
+          "radius_cm": 16.98,
+          "seed": 0.9861,
+          "top_area_uu2": 448.4,
+          "min_width_uu": 17.3,
+          "touches_void_outline": false,
+          "top_tris": 7,
+          "boundary_edges": 9
+        },
+        {
+          "id": 5,
+          "centre_cm": [
+            4.11,
+            -25.21
+          ],
+          "radius_cm": 12.88,
+          "seed": 0.0866,
+          "top_area_uu2": 233.1,
+          "min_width_uu": 12.0,
+          "touches_void_outline": true,
+          "top_tris": 14,
+          "boundary_edges": 12
+        },
+        {
+          "id": 6,
+          "centre_cm": [
+            26.14,
+            3.06
+          ],
+          "radius_cm": 16.76,
+          "seed": 0.2695,
+          "top_area_uu2": 338.4,
+          "min_width_uu": 15.3,
+          "touches_void_outline": false,
+          "top_tris": 10,
+          "boundary_edges": 12
+        },
+        {
+          "id": 7,
+          "centre_cm": [
+            13.94,
+            -11.07
+          ],
+          "radius_cm": 15.5,
+          "seed": 0.8075,
+          "top_area_uu2": 471.3,
+          "min_width_uu": 19.8,
+          "touches_void_outline": false,
+          "top_tris": 7,
+          "boundary_edges": 9
+        },
+        {
+          "id": 8,
+          "centre_cm": [
+            -11.67,
+            -5.07
+          ],
+          "radius_cm": 22.41,
+          "seed": 0.0001,
+          "top_area_uu2": 340.7,
+          "min_width_uu": 12.3,
+          "touches_void_outline": true,
+          "top_tris": 23,
+          "boundary_edges": 17
+        }
+      ],
       "intact_border_vertices_kept": true,
       "all_flat_shaded": true
     },
     "inner_02": {
       "file": "Art/Meshes/rock-slab/SM_RockSlabBroken_Inner_02.fbx",
-      "tris": 165,
+      "tris": 420,
       "budget": [
-        70,
-        230
+        300,
+        450
       ],
       "within_budget": true,
       "intact_tris": 58,
-      "plates": 8,
-      "plate_data_distinct": 8,
+      "blocks": 9,
+      "block_seed_search": {
+        "sites_requested": 9,
+        "attempts": 1
+      },
+      "face_split": {
+        "top": 116,
+        "sides": 188,
+        "bottoms": 116
+      },
       "dimensions_cm": [
         67.0,
         67.0,
@@ -498,48 +1312,191 @@
       "uv_layers": [
         "UVMap",
         "LightMap",
-        "PlateA",
-        "PlateB"
+        "BlockA",
+        "BlockB",
+        "BlockC"
       ],
       "uv_checks": {
         "UVMap_planar_xy_over_100": true,
         "LightMap": {
-          "triangles": 165,
+          "triangles": 420,
           "overlapping_pairs": 0,
           "bounds": [
             0.0098,
-            0.9848
+            0.99
           ],
           "min_gap_px_at_256": 5.024,
           "pass": true
         },
-        "plate_data_one_per_plate": true,
-        "nonplate_marker_ok": true
+        "every_face_has_block_data": true
       },
       "vertex_colour": {
         "attribute": "Color (corner, float)",
         "export": "colors_type=LINEAR",
-        "R1_plate_tops": 27,
-        "R0.5_rim": 16,
-        "G1_edges_and_walls": 96,
-        "B1_base_cap": 26,
+        "R1_block_tops": 78,
+        "R0.5_rim": 38,
+        "G1_sides": 188,
+        "B1_bottoms": 116,
         "inconsistent_faces": 0,
         "pass": true
       },
+      "closed_prisms": {
+        "blocks": 9,
+        "all_closed": true,
+        "all_reach_z0": true,
+        "all_top_at_100": true
+      },
+      "min_block_width_uu": 12.2,
+      "block_list": [
+        {
+          "id": 0,
+          "centre_cm": [
+            -9.85,
+            14.03
+          ],
+          "radius_cm": 19.58,
+          "seed": 0.621,
+          "top_area_uu2": 517.9,
+          "min_width_uu": 19.3,
+          "touches_void_outline": false,
+          "top_tris": 13,
+          "boundary_edges": 15
+        },
+        {
+          "id": 1,
+          "centre_cm": [
+            24.68,
+            -26.24
+          ],
+          "radius_cm": 17.54,
+          "seed": 0.4799,
+          "top_area_uu2": 287.3,
+          "min_width_uu": 12.7,
+          "touches_void_outline": false,
+          "top_tris": 2,
+          "boundary_edges": 4
+        },
+        {
+          "id": 2,
+          "centre_cm": [
+            27.79,
+            14.67
+          ],
+          "radius_cm": 19.68,
+          "seed": 0.5942,
+          "top_area_uu2": 325.9,
+          "min_width_uu": 13.7,
+          "touches_void_outline": false,
+          "top_tris": 5,
+          "boundary_edges": 7
+        },
+        {
+          "id": 3,
+          "centre_cm": [
+            -1.38,
+            -14.58
+          ],
+          "radius_cm": 23.17,
+          "seed": 0.7093,
+          "top_area_uu2": 542.7,
+          "min_width_uu": 17.2,
+          "touches_void_outline": true,
+          "top_tris": 58,
+          "boundary_edges": 24
+        },
+        {
+          "id": 4,
+          "centre_cm": [
+            11.98,
+            3.28
+          ],
+          "radius_cm": 16.19,
+          "seed": 0.8549,
+          "top_area_uu2": 484.5,
+          "min_width_uu": 21.3,
+          "touches_void_outline": false,
+          "top_tris": 11,
+          "boundary_edges": 13
+        },
+        {
+          "id": 5,
+          "centre_cm": [
+            -26.18,
+            26.24
+          ],
+          "radius_cm": 16.01,
+          "seed": 0.4481,
+          "top_area_uu2": 239.0,
+          "min_width_uu": 12.2,
+          "touches_void_outline": false,
+          "top_tris": 2,
+          "boundary_edges": 4
+        },
+        {
+          "id": 6,
+          "centre_cm": [
+            9.86,
+            25.67
+          ],
+          "radius_cm": 24.91,
+          "seed": 0.4193,
+          "top_area_uu2": 562.1,
+          "min_width_uu": 18.9,
+          "touches_void_outline": false,
+          "top_tris": 5,
+          "boundary_edges": 7
+        },
+        {
+          "id": 7,
+          "centre_cm": [
+            20.29,
+            -13.84
+          ],
+          "radius_cm": 21.95,
+          "seed": 0.0478,
+          "top_area_uu2": 422.4,
+          "min_width_uu": 15.3,
+          "touches_void_outline": false,
+          "top_tris": 7,
+          "boundary_edges": 9
+        },
+        {
+          "id": 8,
+          "centre_cm": [
+            -24.83,
+            8.95
+          ],
+          "radius_cm": 16.89,
+          "seed": 0.5059,
+          "top_area_uu2": 301.9,
+          "min_width_uu": 14.0,
+          "touches_void_outline": true,
+          "top_tris": 13,
+          "boundary_edges": 11
+        }
+      ],
       "intact_border_vertices_kept": true,
       "all_flat_shaded": true
     },
     "diagonal_01": {
       "file": "Art/Meshes/rock-slab/SM_RockSlabBroken_Diagonal_01.fbx",
-      "tris": 226,
+      "tris": 408,
       "budget": [
-        70,
-        230
+        300,
+        450
       ],
       "within_budget": true,
       "intact_tris": 86,
-      "plates": 9,
-      "plate_data_distinct": 9,
+      "blocks": 7,
+      "block_seed_search": {
+        "sites_requested": 7,
+        "attempts": 1
+      },
+      "face_split": {
+        "top": 105,
+        "sides": 198,
+        "bottoms": 105
+      },
       "dimensions_cm": [
         67.0,
         67.0,
@@ -561,48 +1518,163 @@
       "uv_layers": [
         "UVMap",
         "LightMap",
-        "PlateA",
-        "PlateB"
+        "BlockA",
+        "BlockB",
+        "BlockC"
       ],
       "uv_checks": {
         "UVMap_planar_xy_over_100": true,
         "LightMap": {
-          "triangles": 226,
+          "triangles": 408,
           "overlapping_pairs": 0,
           "bounds": [
             0.0098,
-            0.9688
+            0.9901
           ],
           "min_gap_px_at_256": 5.024,
           "pass": true
         },
-        "plate_data_one_per_plate": true,
-        "nonplate_marker_ok": true
+        "every_face_has_block_data": true
       },
       "vertex_colour": {
         "attribute": "Color (corner, float)",
         "export": "colors_type=LINEAR",
-        "R1_plate_tops": 32,
-        "R0.5_rim": 24,
-        "G1_edges_and_walls": 132,
-        "B1_base_cap": 38,
+        "R1_block_tops": 69,
+        "R0.5_rim": 36,
+        "G1_sides": 198,
+        "B1_bottoms": 105,
         "inconsistent_faces": 0,
         "pass": true
       },
+      "closed_prisms": {
+        "blocks": 7,
+        "all_closed": true,
+        "all_reach_z0": true,
+        "all_top_at_100": true
+      },
+      "min_block_width_uu": 13.2,
+      "block_list": [
+        {
+          "id": 0,
+          "centre_cm": [
+            12.88,
+            2.48
+          ],
+          "radius_cm": 20.77,
+          "seed": 0.1279,
+          "top_area_uu2": 666.6,
+          "min_width_uu": 22.7,
+          "touches_void_outline": true,
+          "top_tris": 23,
+          "boundary_edges": 19
+        },
+        {
+          "id": 1,
+          "centre_cm": [
+            -24.42,
+            -24.11
+          ],
+          "radius_cm": 15.58,
+          "seed": 0.9484,
+          "top_area_uu2": 364.5,
+          "min_width_uu": 18.0,
+          "touches_void_outline": false,
+          "top_tris": 5,
+          "boundary_edges": 7
+        },
+        {
+          "id": 2,
+          "centre_cm": [
+            -23.38,
+            -5.62
+          ],
+          "radius_cm": 12.56,
+          "seed": 0.2336,
+          "top_area_uu2": 306.7,
+          "min_width_uu": 15.7,
+          "touches_void_outline": true,
+          "top_tris": 16,
+          "boundary_edges": 16
+        },
+        {
+          "id": 3,
+          "centre_cm": [
+            25.2,
+            21.37
+          ],
+          "radius_cm": 22.92,
+          "seed": 0.451,
+          "top_area_uu2": 448.0,
+          "min_width_uu": 17.0,
+          "touches_void_outline": false,
+          "top_tris": 6,
+          "boundary_edges": 8
+        },
+        {
+          "id": 4,
+          "centre_cm": [
+            -6.05,
+            5.43
+          ],
+          "radius_cm": 18.47,
+          "seed": 0.7172,
+          "top_area_uu2": 368.4,
+          "min_width_uu": 14.9,
+          "touches_void_outline": true,
+          "top_tris": 20,
+          "boundary_edges": 16
+        },
+        {
+          "id": 5,
+          "centre_cm": [
+            7.37,
+            25.76
+          ],
+          "radius_cm": 11.31,
+          "seed": 0.4998,
+          "top_area_uu2": 206.7,
+          "min_width_uu": 13.2,
+          "touches_void_outline": true,
+          "top_tris": 12,
+          "boundary_edges": 12
+        },
+        {
+          "id": 6,
+          "centre_cm": [
+            -5.49,
+            -19.38
+          ],
+          "radius_cm": 16.09,
+          "seed": 0.0957,
+          "top_area_uu2": 486.9,
+          "min_width_uu": 19.5,
+          "touches_void_outline": true,
+          "top_tris": 23,
+          "boundary_edges": 21
+        }
+      ],
       "intact_border_vertices_kept": true,
       "all_flat_shaded": true
     },
     "diagonal_02": {
       "file": "Art/Meshes/rock-slab/SM_RockSlabBroken_Diagonal_02.fbx",
-      "tris": 214,
+      "tris": 360,
       "budget": [
-        70,
-        230
+        300,
+        450
       ],
       "within_budget": true,
       "intact_tris": 86,
-      "plates": 9,
-      "plate_data_distinct": 9,
+      "blocks": 7,
+      "block_seed_search": {
+        "sites_requested": 7,
+        "attempts": 1
+      },
+      "face_split": {
+        "top": 93,
+        "sides": 174,
+        "bottoms": 93
+      },
       "dimensions_cm": [
         67.0,
         67.0,
@@ -624,46 +1696,161 @@
       "uv_layers": [
         "UVMap",
         "LightMap",
-        "PlateA",
-        "PlateB"
+        "BlockA",
+        "BlockB",
+        "BlockC"
       ],
       "uv_checks": {
         "UVMap_planar_xy_over_100": true,
         "LightMap": {
-          "triangles": 214,
+          "triangles": 360,
           "overlapping_pairs": 0,
           "bounds": [
             0.0098,
-            0.9733
+            0.9901
           ],
           "min_gap_px_at_256": 5.024,
           "pass": true
         },
-        "plate_data_one_per_plate": true,
-        "nonplate_marker_ok": true
+        "every_face_has_block_data": true
       },
       "vertex_colour": {
         "attribute": "Color (corner, float)",
         "export": "colors_type=LINEAR",
-        "R1_plate_tops": 28,
-        "R0.5_rim": 24,
-        "G1_edges_and_walls": 124,
-        "B1_base_cap": 38,
+        "R1_block_tops": 58,
+        "R0.5_rim": 35,
+        "G1_sides": 174,
+        "B1_bottoms": 93,
         "inconsistent_faces": 0,
         "pass": true
       },
+      "closed_prisms": {
+        "blocks": 7,
+        "all_closed": true,
+        "all_reach_z0": true,
+        "all_top_at_100": true
+      },
+      "min_block_width_uu": 12.1,
+      "block_list": [
+        {
+          "id": 0,
+          "centre_cm": [
+            24.11,
+            14.08
+          ],
+          "radius_cm": 21.57,
+          "seed": 0.2511,
+          "top_area_uu2": 491.6,
+          "min_width_uu": 18.9,
+          "touches_void_outline": false,
+          "top_tris": 6,
+          "boundary_edges": 8
+        },
+        {
+          "id": 1,
+          "centre_cm": [
+            -24.52,
+            -24.55
+          ],
+          "radius_cm": 15.43,
+          "seed": 0.4867,
+          "top_area_uu2": 347.1,
+          "min_width_uu": 17.9,
+          "touches_void_outline": false,
+          "top_tris": 5,
+          "boundary_edges": 7
+        },
+        {
+          "id": 2,
+          "centre_cm": [
+            -4.21,
+            2.25
+          ],
+          "radius_cm": 20.19,
+          "seed": 0.4828,
+          "top_area_uu2": 654.3,
+          "min_width_uu": 22.2,
+          "touches_void_outline": true,
+          "top_tris": 20,
+          "boundary_edges": 16
+        },
+        {
+          "id": 3,
+          "centre_cm": [
+            -24.06,
+            -7.05
+          ],
+          "radius_cm": 12.64,
+          "seed": 0.6353,
+          "top_area_uu2": 290.9,
+          "min_width_uu": 15.1,
+          "touches_void_outline": true,
+          "top_tris": 15,
+          "boundary_edges": 15
+        },
+        {
+          "id": 4,
+          "centre_cm": [
+            11.95,
+            -6.2
+          ],
+          "radius_cm": 22.43,
+          "seed": 0.2439,
+          "top_area_uu2": 339.3,
+          "min_width_uu": 12.1,
+          "touches_void_outline": true,
+          "top_tris": 19,
+          "boundary_edges": 13
+        },
+        {
+          "id": 5,
+          "centre_cm": [
+            -6.66,
+            -22.84
+          ],
+          "radius_cm": 12.57,
+          "seed": 0.118,
+          "top_area_uu2": 327.5,
+          "min_width_uu": 15.6,
+          "touches_void_outline": true,
+          "top_tris": 19,
+          "boundary_edges": 19
+        },
+        {
+          "id": 6,
+          "centre_cm": [
+            12.52,
+            26.11
+          ],
+          "radius_cm": 22.24,
+          "seed": 0.132,
+          "top_area_uu2": 396.9,
+          "min_width_uu": 15.3,
+          "touches_void_outline": true,
+          "top_tris": 9,
+          "boundary_edges": 9
+        }
+      ],
       "intact_border_vertices_kept": true,
       "all_flat_shaded": true
     }
   },
-  "warnings": [],
+  "warnings": [
+    "full_01 tris 208 outside the provisional budget [300, 450]",
+    "full_02 tris 200 outside the provisional budget [300, 450]",
+    "edge_01 tris 204 outside the provisional budget [300, 450]",
+    "edge_02 tris 228 outside the provisional budget [300, 450]",
+    "outer_01 tris 120 outside the provisional budget [300, 450]",
+    "outer_02 tris 120 outside the provisional budget [300, 450]"
+  ],
   "seam_check": {
-    "method": "all 5 broken shapes, variants 01/02 alternating ((i+j) parity), placed with the marching-squares rotation over the 8 x 8 layout of rock_slab_pieces.py (70 pieces); for each adjacent pair the vertices on the shared border line at z = 100 (plate tops, rim) and at the cap height are compared as sets (1 mm rounding)",
+    "method": "all 5 broken shapes, variants 01/02 alternating ((i+j) parity), placed with the marching-squares rotation over the 8 x 8 layout of rock_slab_pieces.py (70 pieces, shapes present: ['diagonal', 'edge', 'full', 'inner', 'outer']); for each adjacent pair the vertices on the shared border line at z = 100 (block tops, rim) and at z = 0 (feet) are compared as sets (1 mm rounding)",
     "adjacent_pairs": 114,
-    "border_vertices_compared": 721,
+    "border_vertices_compared": 906,
     "mismatching_pairs": 0,
     "pass": true,
-    "guarantee": "the only vertices on a piece border are -33.5, -12, 0, 12, 33.5 (cut chords end there, missing ones are inserted), never inset; the outline crosses the border at the middle as in the intact pieces"
+    "guarantee": "the only vertices on a piece border are -33.5, -12, 0, 12, 33.5 plus the rim ends of the intact piece (4 uu from the outline crossing); the outline crosses the border at the middle as in the intact pieces",
+    "intact_vs_broken": "z = 100 and z = 0 border vertices of every intact piece are contained in its broken variants (see intact_border_vertices_kept per piece). The intact wall has a middle row at z = 48 at the border end (0.7 uu off the straight foot line); broken walls are straight there, so against an intact neighbour a wall differs by at most 0.7 uu"
   },
   "fbx_export": {
     "apply_scale_options": "FBX_SCALE_UNITS",
@@ -673,12 +1860,11 @@
     "mesh_smooth_type": "FACE"
   },
   "material_rigid_tilt": {
-    "note": "simulated in the previews exactly like this; the material (WPO) must do the same, per vertex of a plate (UV3.x >= 0), from UV2/UV3 and world data",
-    "inputs": "plate centre C = rot(UV2 * 100) + instance position (world XY); seed s = UV3.x; radius R = UV3.y * 100; g = D(C) * f(C) in 0..1 (D bilinear corner damage, f = (1 - min(dE/100,1))^2, dE distance to the nearest empty cell)",
+    "note": "simulated in the previews exactly like this; the material (WPO) must do the same, per vertex of a block, from UV2/UV3 and world data",
+    "inputs": "block centre C = rot(UV2 * 100) + instance position (world XY); seed s = UV3.x; radius R = UV3.y * 100; rim flag = UV4.x; g = D(C) * f(C) in 0..1 (D bilinear corner damage, f = (1 - min(dE/100,1))^2, dE distance to the nearest empty cell)",
     "hinge": "dir = unit vector from C toward the nearest intact solid cell centre; hinge point = C + dir * R, hinge axis = perpendicular to dir",
-    "per_plate": "s2 = frac(sin(s*127.1 + 311.7) * 43758.5453); k = min(1, 2g); slope = max(min(SAG_MAX*g*(0.7+0.6*s2)/(2R), 0.75) + (s - 0.5)*0.45*k, 0.02*g); hoff = s2*9*k",
-    "per_vertex": "u = dot(hinge - v_xy, dir) (distance behind the hinge, >= 0); drop = min(hoff + u*slope, TOP - 60); z = z - drop (same drop for top and bottom vertices of the plate: rigid tilt around the hinge)",
-    "non_plate": "rim and the top row of the walls (UV3.x < 0, original z >= 80): per-vertex sag = SAG_MAX * D * f at the vertex, capped so z >= 60; cap and lower walls fixed",
+    "per_block": "s2 = frac(sin(s*127.1 + 311.7) * 43758.5453); k = min(1, 2g); slope = max(min(SAG_MAX*g*(0.7+0.6*s2)/(2R), 0.75) + (s - 0.5)*0.45*k, 0.02*g); hoff = s2*9*k",
+    "per_vertex": "u = dot(hinge - v_xy, dir) (distance behind the hinge, >= 0); drop = min(hoff + u*slope, TOP - 60); z = z - drop (same drop for top and bottom vertices of the block: the prism keeps its shape, only z moves, so a block never opens a hole and its neighbour side shows in the gap; the feet sink below the floor)",
     "SAG_MAX": 45.0,
     "layout_rows_top_to_bottom": [
       "########",
@@ -699,6 +1885,16 @@
       "6,1": 1.0
     }
   },
+  "sag_check": {
+    "method": "all 70 pieces of the 8 x 8 seam layout broken, every block forced to g = 1 (full sag), vertical rays on a 3 uu grid",
+    "rays_over_rock": 17768,
+    "holes": 0,
+    "hits_below_60": 0,
+    "min_top_z": 60.0,
+    "max_drop_uu": 39.13,
+    "mean_drop_uu": 17.24,
+    "pass": true
+  },
   "preview": {
     "broken_pieces_in_layout": 16,
     "intact_pieces_in_layout": 58,
@@ -707,7 +1903,8 @@
     "rockbroken_row_closeup": "C:\\Users\\soumo\\Documents\\Unreal Projects\\RogueRigs\\Art\\Meshes\\rock-slab\\preview\\rockbroken_row_closeup.png",
     "rockbroken_row_closeup_game_cam": "C:\\Users\\soumo\\Documents\\Unreal Projects\\RogueRigs\\Art\\Meshes\\rock-slab\\preview\\rockbroken_row_closeup_game_cam.png",
     "rockbroken_pair_closeup": "C:\\Users\\soumo\\Documents\\Unreal Projects\\RogueRigs\\Art\\Meshes\\rock-slab\\preview\\rockbroken_pair_closeup.png",
+    "rockbroken_side_columns": "C:\\Users\\soumo\\Documents\\Unreal Projects\\RogueRigs\\Art\\Meshes\\rock-slab\\preview\\rockbroken_side_columns.png",
     "cuts_nosag": "C:\\Users\\soumo\\Documents\\Unreal Projects\\RogueRigs\\Art\\Meshes\\rock-slab\\preview\\rockbroken_cuts_nosag.png",
-    "camera": "layout hfov 90 pitch 60 azim 0 dist 640 (game) and hfov 50 pitch 38 azim 28 dist 1050 (three-quarter), target (268,268,0); same camera-following sun and world as the slab previews"
+    "camera": "layout hfov 90 pitch 60 azim 0 dist 640 (game) and hfov 50 pitch 38 azim 28 dist 1050 (three-quarter), target (268,268,0); side columns hfov 50 pitch 16 azim 14 dist 330 target (168,262,55); same camera-following sun and world as the slab previews"
   }
 }
