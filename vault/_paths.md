@@ -254,6 +254,7 @@ sys-grid  reference/tech/systems/world/sys-grid.md
 sys-grid-api  reference/tech/systems/world/sys-grid/sys-grid-api.md
 sys-grid-barrels  reference/tech/systems/world/sys-grid/sys-grid-barrels.md
 sys-grid-deposits  reference/tech/systems/world/sys-grid/sys-grid-deposits.md
+sys-grid-rock-pieces  reference/tech/systems/world/sys-grid/sys-grid-rock-pieces.md
 sys-ground-telegraph  reference/tech/systems/combat/sys-ground-telegraph.md
 sys-hud  reference/tech/systems/ui/sys-hud.md
 sys-hud-bindings  reference/tech/systems/ui/sys-hud/sys-hud-bindings.md

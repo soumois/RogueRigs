@@ -23,6 +23,7 @@ Outline vertices (vertex colour tag) are pushed horizontally in the material (wo
 Today a rock block spans the floor slab and a floor instance is added on destruction ([[sys-grid]]). Rounded and warped outlines would show the void inside a block cell, so: floor slab on every non-void cell, rock pieces from floor top to `BlockHeight`, `bBlocksFillFloorSlab` false. The destroy path no longer adds floor.
 
 ## Relations
+- [[sys-grid-rock-pieces]] — the placement as built (task-230-07).
 - [[rock-state-render-options]] — parent note.
 - [[rock-render-counts]] — piece counts and triangle budget.
 - [[art-style-guide]] — A1 rim rule.

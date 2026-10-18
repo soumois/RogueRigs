@@ -23,6 +23,7 @@ kind: doc
 - Proxy recreation cost grows with the HISMs touched: up to about 12 piece HISMs per chunk may be recreated in one explosion frame (estimate). Batching all removes then all adds per frame (a pending list flushed once) bounds it.
 
 ## Relations
+- [[sys-grid-rock-pieces]] — the rebuild as built (task-230-07, not batched per frame).
 - [[rock-state-render-options]] — parent note.
 - [[sys-grid-api]] — destruction entry points that would call the rebuild.
 - [[sys-automation-tests]] — instance-map tests to rewrite.
