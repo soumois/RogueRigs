@@ -3,7 +3,7 @@ id: task-230-16-rock-top-texture-shade
 description: "Rock top shows its painted texture and one even tint: no rectangle where full pieces meet edge pieces."
 parent: task-230-rock-slab-integration
 kind: task
-status: todo
+status: in-progress
 ---
 # Rock top shows its painted texture and one even tint: no rectangle where full pieces meet edge pieces
 
