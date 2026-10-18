@@ -3,7 +3,7 @@ id: task-230-14-barrel-chain-crash
 description: "Fix the 30-barrel chain crash (Lumen assert) and the GPU matrix precision ensure fired on every dig since task-230."
 parent: task-230-rock-slab-integration
 kind: task
-status: todo
+status: in-progress
 ---
 # Fix the 30-barrel chain crash (Lumen assert) and the GPU matrix precision ensure fired on every dig since task-230
 
