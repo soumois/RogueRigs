@@ -3,7 +3,7 @@ id: task-230-17-rock-sag-visible-check
 description: "Show broken pieces sagging on a partly damaged wall and recapture the 15 and 16 fixes in game."
 parent: task-230-rock-slab-integration
 kind: task
-status: todo
+status: in-progress
 ---
 # Show broken pieces sagging on a partly damaged wall and recapture the 15 and 16 fixes in game
 

@@ -3,7 +3,7 @@ id: task-230-16-rock-top-texture-shade
 description: "Rock top shows its painted texture and one even tint: no rectangle where full pieces meet edge pieces."
 parent: task-230-rock-slab-integration
 kind: task
-status: in-progress
+status: done
 ---
 # Rock top shows its painted texture and one even tint: no rectangle where full pieces meet edge pieces
 
@@ -15,11 +15,11 @@ status: in-progress
 - done_when: material compiles; doc updated; committed; the look is checked in task-230-17.
 - editor_state: open
 - token_ceiling: 50000
-- model: open
-- tokens: open
-- runs: open
+- model: sonnet
+- tokens: input 50, cache write 48411, cache read 916168, output 670
+- runs: 1
 - milestone: M2
-- result: open
+- result: Commit 43825440. Rectangle: rim tone multiplier TopParams.b 1.3 applied to R>0.75 tris (rim pieces) and not to Full pieces; set to 1.0 (rim band no longer lighter: to confirm with owner). Flat top: T_RockTop has about +/-7 % luminance contrast; new TopContrast parameter (2.5 in MI_RockSlab) before desaturation. Compiles; look checked in 230-17.
 
 ## Relations
 - [[task-230-rock-slab-integration]] — parent global task.

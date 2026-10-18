@@ -433,6 +433,7 @@ kind: note
 | [[task-230-13-rock-collision-fix]] | opus | 1 | 0k | 102k | 2667k | 2k |
 | [[task-230-14-barrel-chain-crash]] | opus | 2 | 0k | 268k | 6938k | 2k |
 | [[task-230-15-duskite-crystal-colour]] | sonnet | 1 | 0k | 80k | 2047k | 1k |
+| [[task-230-16-rock-top-texture-shade]] | sonnet | 1 | 0k | 48k | 916k | 1k |
 
 ## Totals
 | Scope | Input | Cache write | Cache read | Output |
