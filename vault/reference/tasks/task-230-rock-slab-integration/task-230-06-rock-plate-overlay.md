@@ -11,6 +11,7 @@ status: in-progress
 - agent: 3d
 - depends_on: none
 - inputs: vault/reference/tech/systems/world/sys-grid/rock-state-render-options/rock-render-damage.md, vault/reference/tech/systems/world/sys-grid/rock-state-render-options/rock-render-counts.md, vault/reference/tech/pipelines/blender-asset-route.md, vault/reference/gdd/art-audio/art-style-guide.md; look target Art/Source/rock-look/20261017-131704-rock-look-2.png
+- owner_correction (2026-10-18, after 410e09a6): each plate tilts rigidly around its pivot (edge nearest an intact cell), pivot stored in the mesh for the material, random per-plate angle and height offset so plate edges show; more irregular plate cut with a second cut variant; rim band coded apart from plate tops so it stays visible.
 - expected_output: `Art/Meshes/rock-slab/SM_RockSlabBroken_<Shape>_01.fbx` for Full, Edge, Outer, Inner, Diagonal, script `Tools/art/blender/rock_slab_broken.py`, report, previews with a simulated sag; 80-150 tris each (estimate).
 - done_when: 5 FBX exist; borders match the intact pieces and each other (seam check); no hole down to 60 uu under the plates at full sag; previews sent; committed.
 - editor_state: any
