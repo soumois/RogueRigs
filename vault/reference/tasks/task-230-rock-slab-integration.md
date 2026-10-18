@@ -22,7 +22,7 @@ status: in-progress
 3. task-230-03-rock-top-texture — art: Tileable painted rock top texture for the world-UV slab material.
 4. task-230-04-rock-top-texture-review — style-guide: Review of the rock top texture candidates.
 5. task-230-05-rock-crack-mask — 3d: Procedural tileable crack mask (grayscale) whose value orders crack growth from 0 to 1.
-6. task-230-06-rock-plate-overlay — 3d: Broken-top overlay mesh: cell-sized plates tilted up, shown on heavily damaged cells.
+6. task-230-06-rock-plate-overlay — 3d: Broken variants of the 5 pieces: volume fractured into solid prisms, faceted sides.
 7. task-230-07-dual-grid-placement — cpp: ARRArenaGrid draws rock with dual-grid pieces at cell corners and rebuilds them on destruction.
 8. task-230-08-rock-damage-data — cpp: Damage display data: per-quadrant custom data, shake in the material, plate overlay and ore crystal HISMs.
 9. task-230-09-rock-slab-material — bp: Material M_RockSlab and its instance: world-UV top, sides, rim, cracks, shake.
