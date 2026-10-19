@@ -445,6 +445,7 @@ kind: note
 | [[task-230-24-rock-rim-visible]] | sonnet | 1 | 0k | 27k | 240k | 0k |
 | [[task-230-26-rock-control-capture-2]] | opus | 1 | 0k | 46k | 618k | 4k |
 | [[task-234-01-ore-deposit-look]] | sonnet | 1 | 0k | 33k | 198k | 1k |
+| [[task-231-01-dig-shake-reduced]] | opus | 1 | 0k | 114k | 4018k | 10k |
 
 ## Totals
 | Scope | Input | Cache write | Cache read | Output |

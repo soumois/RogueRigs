@@ -3,7 +3,7 @@ id: task-232-drone-single-beam
 description: "Global task: The drone shows one laser beam aimed at the middle of the dug blocks, whatever their number."
 parent: tasks-to-do-index
 kind: task
-status: todo
+status: in-progress
 ---
 # One drone beam
 

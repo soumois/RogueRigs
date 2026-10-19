@@ -238,3 +238,4 @@ Archive: it exceeds the index size limits of [[_authoring]] on purpose (owner, 2
 - [[task-227-shield-debris-script-fix]] — Shield debris cut script works on the charcoal texture. Status done.
 - [[task-228-xp-big-pop]] — Big XP cube gets the floaty pop of the XP nut. Status done.
 - [[task-229-pickup-physics]] — Pickups land into Chaos physics (box collisions, floor and walls only) and spin lightly in flight. Status done.
+- [[task-231-dig-shake-reduced]] — The dug block shake is smaller now that the rock look is final: 8 uu horizontal, 3 uu vertical, and it draws on every piece. Status done.

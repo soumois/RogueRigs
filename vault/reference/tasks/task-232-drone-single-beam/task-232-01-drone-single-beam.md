@@ -3,7 +3,7 @@ id: task-232-01-drone-single-beam
 description: "The drone shows one laser beam aimed at the middle of the dug blocks, whatever their number."
 parent: task-232-drone-single-beam
 kind: task
-status: todo
+status: in-progress
 ---
 # One drone beam
 
