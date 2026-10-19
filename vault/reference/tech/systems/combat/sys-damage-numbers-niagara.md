@@ -15,7 +15,7 @@ kind: doc
   - `User.DigitColors` Color Array.
   - `User.DigitCriticals` Int32 Array: 1 critical (pop), 0 normal.
   - `User.DigitSpawnTimes` Float Array: world time of the push.
-  - `User.DigitVelocities` Niagara Vector Array: world rise velocity (uu/s) of the digit, drawn once per number in C++ (all digits of a number hold the same value): `RiseVelocity` turned by ±`RiseAngleMax` 35 degrees in the screen plane around screen up, × [`RiseSpeedMin` 0.7, `RiseSpeedMax` 1.3] (task-240-01). The emitter should use it as the particle velocity instead of a fixed rise; NS_DamageNumbers does not expose it yet (task-240-02), so it is skipped with the BeginPlay warning until then.
+  - `User.DigitVelocities` Niagara Vector Array: world rise velocity (uu/s) of the digit, drawn once per number in C++ (all digits of a number hold the same value): `RiseVelocity` turned by ±`RiseAngleMax` 35 degrees in the screen plane around screen up, × [`RiseSpeedMin` 0.7, `RiseSpeedMax` 1.3] (task-240-01). NS_DamageNumbers reads it in Particle Spawn (`SelectVectorFromArray`, Direct Set, index `Particles.DNIdx`) as `Particles.Velocity` (task-240-02).
   - `User.DigitCount` int32: array length of the last batch; kept until the next batch.
   - `User.DigitBatchId` int32: +1 per push, never reset; 0 = nothing pushed. Written last.
 - data: emitter recipe (CPU sim, world space, fixed bounds):
