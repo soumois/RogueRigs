@@ -1703,6 +1703,32 @@ bool FRRDigRockDamageDataTest::RunTest(const FString& Parameters)
 		TestEqual(TEXT("remaining crystals still on their deposits"), CheckDepositCrystals(TEXT("after breaks")), FGridAccess::DepositCrystalCount(Grid, ERRCellType::Ore));
 		TestTrue(TEXT("instance maps consistent after deposit breaks"), CheckInstanceMaps(*this, Grid));
 	}
+
+	// Materials: by default the deposit ISMs keep the mesh slot materials; a set per-type material overrides only the slot named
+	// DepositCrystalSlotName (SM_OreChunk_01 slots crystal_bright and crystal_dark: name the first).
+	for (const FRRGridDepositVisual& Visual : FGridAccess::DepositVisualsOf(Grid))
+	{
+		TestTrue(TEXT("deposit ISM keeps the mesh materials by default"), !Visual.Render || Visual.Render->OverrideMaterials.FindByPredicate(
+			[](const TObjectPtr<UMaterialInterface>& Material) { return Material != nullptr; }) == nullptr);
+	}
+	UMaterialInterface* OverrideMaterial = LoadObject<UMaterialInterface>(nullptr, TEXT("/Game/RogueRigs/Art/OreChunk/MI_HealCrystal_Bright.MI_HealCrystal_Bright"));
+	FGridAccess::OreDepositMaterialOf(Grid) = OverrideMaterial;
+	FGridAccess::DepositCrystalSlotNameOf(Grid) = TEXT("crystal_bright");
+	FGridAccess::Rebuild(Grid);
+	for (const FRRGridDepositVisual& Visual : FGridAccess::DepositVisualsOf(Grid))
+	{
+		if (!Visual.Render || Visual.Render->GetStaticMesh()->GetName() != TEXT("SM_OreChunk_01"))
+		{
+			continue;
+		}
+		const TArray<FStaticMaterial>& Slots = Visual.Render->GetStaticMesh()->GetStaticMaterials();
+		for (int32 Slot = 0; Slot < Slots.Num(); ++Slot)
+		{
+			const bool bNamed = Slots[Slot].MaterialSlotName == FName(TEXT("crystal_bright"));
+			TestEqual(*FString::Printf(TEXT("slot %s overridden only when named"), *Slots[Slot].MaterialSlotName.ToString()),
+				Visual.Render->GetMaterial(Slot) == OverrideMaterial, bNamed);
+		}
+	}
 	return true;
 }
 

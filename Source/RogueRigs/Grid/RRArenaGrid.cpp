@@ -73,12 +73,6 @@ ARRArenaGrid::ARRArenaGrid()
 	// Ore crystal clusters (task-230-08, rock-render-damage): Duskite and heal ore use SM_OreChunk_01 by default.
 	static ConstructorHelpers::FObjectFinder<UStaticMesh> DefaultOreCrystalMesh(TEXT("/Game/RogueRigs/Art/OreChunk/SM_OreChunk_01.SM_OreChunk_01"));
 	OreCrystalMesh = DefaultOreCrystalMesh.Object;
-
-	// Deposit crystal materials (task-234-03): the crystal materials BP_ArenaGrid uses for the per-cell clusters.
-	static ConstructorHelpers::FObjectFinder<UMaterialInterface> DefaultOreDepositMaterial(TEXT("/Game/RogueRigs/Art/OreChunk/MI_OreChunk_Bright.MI_OreChunk_Bright"));
-	OreDepositMaterial = DefaultOreDepositMaterial.Object;
-	static ConstructorHelpers::FObjectFinder<UMaterialInterface> DefaultHealDepositMaterial(TEXT("/Game/RogueRigs/Art/OreChunk/MI_HealCrystal_Bright.MI_HealCrystal_Bright"));
-	HealDepositMaterial = DefaultHealDepositMaterial.Object;
 }
 
 UHierarchicalInstancedStaticMeshComponent* ARRArenaGrid::CreateGridComponent(FName Name, bool bWithCollision)
@@ -1538,10 +1532,16 @@ void ARRArenaGrid::BuildDepositCrystals()
 			UInstancedStaticMeshComponent* Component = CreateChunkComponent(UInstancedStaticMeshComponent::StaticClass(), Template, FIntPoint(Variant, 0), /*bRegister*/ false);
 			Component->SetRemoveSwap();
 			Component->SetStaticMesh(Meshes[Variant]);
+			// The mesh keeps its own slot materials (set at import: one `crystal` slot for Duskite, `rock` and `crystal` for heal);
+			// a set per-type material overrides the slot named DepositCrystalSlotName only.
 			Component->EmptyOverrideMaterials();
-			for (int32 Slot = 0; Material && Slot < Meshes[Variant]->GetStaticMaterials().Num(); ++Slot)
+			const TArray<FStaticMaterial>& Slots = Meshes[Variant]->GetStaticMaterials();
+			for (int32 Slot = 0; Material && Slot < Slots.Num(); ++Slot)
 			{
-				Component->SetMaterial(Slot, Material);
+				if (Slots[Slot].MaterialSlotName == DepositCrystalSlotName)
+				{
+					Component->SetMaterial(Slot, Material);
+				}
 			}
 			Component->SetNumCustomDataFloats(FMath::Max(Template->NumCustomDataFloats, MarkedCustomDataIndex + 1));
 			// Rendering only: collision stays one cube per cell in the collision ISMs.

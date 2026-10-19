@@ -828,7 +828,7 @@ protected:
 	/** Non-null meshes of the deposit mesh list of Type (OreDepositMeshes for Ore, HealDepositMeshes for HealOre), in list order; empty for other types. */
 	void GetDepositMeshes(ERRCellType Type, TArray<UStaticMesh*>& OutMeshes) const;
 
-	/** Material of the deposit crystals of Type (OreDepositMaterial or HealDepositMaterial), applied to every slot; null keeps the mesh materials. */
+	/** Override material of the deposit crystals of Type (OreDepositMaterial or HealDepositMaterial), applied to the DepositCrystalSlotName slot only; null keeps the mesh materials. */
 	UMaterialInterface* GetDepositMaterial(ERRCellType Type) const;
 
 	/** Hash of a deposit id and DepositCrystalSeed: the mesh variant is Hash % mesh count, the yaw quarter turns a second mix of it. */
@@ -1194,13 +1194,17 @@ protected:
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Grid|Ore Deposits")
 	TArray<TObjectPtr<UStaticMesh>> HealDepositMeshes;
 
-	/** Material of the Duskite deposit crystals, applied to every slot (default MI_OreChunk_Bright, as OreCrystalMaterial); null keeps the mesh materials. */
+	/** Optional override of the Duskite deposit crystals: applied only to the mesh slot named DepositCrystalSlotName. Null (default) keeps every slot material of the mesh (set at import). */
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Grid|Ore Deposits")
 	TObjectPtr<UMaterialInterface> OreDepositMaterial;
 
-	/** Material of the heal deposit crystals, applied to every slot (default MI_HealCrystal_Bright, as HealOreCrystalMaterial); null keeps the mesh materials. */
+	/** Optional override of the heal deposit crystals (meshes with `rock` and `crystal` slots): applied only to the slot named DepositCrystalSlotName; null (default) keeps the mesh materials. */
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Grid|Ore Deposits")
 	TObjectPtr<UMaterialInterface> HealDepositMaterial;
+
+	/** Material slot name the per-type deposit material overrides (FName compare, case-insensitive); a mesh without such a slot keeps all its materials. */
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Grid|Ore Deposits")
+	FName DepositCrystalSlotName = TEXT("crystal");
 
 	/** Uniform scale of the deposit crystals (1: a 134 uu footprint covers a 2 x 2 deposit of 67 uu cells; provisional). */
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Grid|Ore Deposits", meta = (ClampMin = "0.01"))

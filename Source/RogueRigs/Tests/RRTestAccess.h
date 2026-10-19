@@ -64,6 +64,8 @@ namespace RRTestAccess
 		static float MarkedValueOf(const ARRArenaGrid* Grid) { return Grid->*(&FGridAccess::MarkedCustomDataValue); }
 		static TArray<TObjectPtr<UStaticMesh>>& OreDepositMeshesOf(ARRArenaGrid* Grid) { return Grid->*(&FGridAccess::OreDepositMeshes); }
 		static TArray<TObjectPtr<UStaticMesh>>& HealDepositMeshesOf(ARRArenaGrid* Grid) { return Grid->*(&FGridAccess::HealDepositMeshes); }
+		static TObjectPtr<UMaterialInterface>& OreDepositMaterialOf(ARRArenaGrid* Grid) { return Grid->*(&FGridAccess::OreDepositMaterial); }
+		static FName& DepositCrystalSlotNameOf(ARRArenaGrid* Grid) { return Grid->*(&FGridAccess::DepositCrystalSlotName); }
 		static const TArray<FRRGridDepositVisual>& DepositVisualsOf(const ARRArenaGrid* Grid) { return Grid->*(&FGridAccess::DepositVisuals); }
 		static bool UsesDepositCrystalsOf(const ARRArenaGrid* Grid, ERRCellType Type) { return (Grid->*(&FGridAccess::UsesDepositCrystals))(Type); }
 		static FTransform DepositCrystalRestOf(const ARRArenaGrid* Grid, int32 DepositId) { return (Grid->*(&FGridAccess::GetDepositCrystalTransform))(DepositId); }
