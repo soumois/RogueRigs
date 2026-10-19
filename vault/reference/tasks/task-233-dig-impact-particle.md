@@ -1,9 +1,9 @@
 ---
 id: task-233-dig-impact-particle
 description: "Global task: particle at the drone laser impact: white-gold sparks, chips of the block colour, a little dust."
-parent: tasks-to-do-index
+parent: tasks-done-index
 kind: task
-status: in-progress
+status: done
 ---
 # Dig impact particle
 
@@ -13,14 +13,14 @@ status: in-progress
 - gdd_check: done by the Orchestrator when the task is planned (2026-10-19).
 - confirmed_by_owner: yes (2026-10-19)
 - milestone: M2
-- next_step: task-233-02-dig-impact-wiring
-- result: open
+- next_step: none
+- result: Done. Commits ea4de5ee (code), ad42a976 (docs). ARRDrone DigImpactSystem (constructor ref to NS_DigImpact) and one DigImpactComponent placed at the impact point each Dig tick, WallNormal from the face, ChipColor by majority dug type (rock, ore, heal, barrel colours provisional), fade 0.15 s, off in Hack. Build 0, tests 262/264 (2 known). Captures Saved/DigImpact/: sparks and lavender/violet chips visible, impact partly hidden by the miner, dust faint.
 
 ## Subtasks
 1. task-233-01-dig-impact-particle — bp
 2. task-233-02-dig-impact-wiring — cpp, after task-232
 
 ## Relations
-- [[tasks-to-do-index]] — parent index.
+- [[tasks-done-index]] — parent index.
 - [[task-233-01-dig-impact-particle]] — step 1, bp.
 - [[task-233-02-dig-impact-wiring]] — step 2, cpp.

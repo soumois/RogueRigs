@@ -449,6 +449,7 @@ kind: note
 | [[task-232-01-drone-single-beam]] | opus | 1 | 0k | 103k | 2310k | 2k |
 | [[task-235-01-ore-loot-over-dig]] | opus | 1 | 0k | 127k | 4381k | 2k |
 | [[task-233-01-dig-impact-particle]] | sonnet | 1 | 0k | 98k | 2563k | 1k |
+| [[task-233-02-dig-impact-wiring]] | opus | 2 | 0k | 190k | 8014k | 10k |
 
 ## Totals
 | Scope | Input | Cache write | Cache read | Output |

@@ -3,7 +3,7 @@ id: task-233-02-dig-impact-wiring
 description: "The drone spawns NS_DigImpact at the laser impact point while it digs, chip colour from the dug block type."
 parent: task-233-dig-impact-particle
 kind: task
-status: in-progress
+status: done
 ---
 # Dig impact particle wiring
 
@@ -15,11 +15,11 @@ status: in-progress
 - done_when: build exits 0 editor closed; RogueRigs.* tests pass except the 2 known pre-existing failures; capture sent to the owner; committed.
 - editor_state: closed
 - token_ceiling: 50000
-- model: open
-- tokens: open
-- runs: open
+- model: opus
+- tokens: input 144, cache write 189767, cache read 8013928, output 9903
+- runs: 2
 - milestone: M2
-- result: open
+- result: Commits ea4de5ee (code), ad42a976 (docs). ARRDrone DigImpactSystem (constructor ref to NS_DigImpact) and one DigImpactComponent placed at the impact point each Dig tick, WallNormal from the face, ChipColor by majority dug type (rock, ore, heal, barrel colours provisional), fade 0.15 s, off in Hack. Build 0, tests 262/264 (2 known). Captures Saved/DigImpact/: sparks and lavender/violet chips visible, impact partly hidden by the miner, dust faint.
 
 ## Relations
 - [[task-233-dig-impact-particle]] — parent global task.
