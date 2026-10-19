@@ -3,7 +3,7 @@ id: task-234-08-duskite-rest-pulse
 description: "Duskite crystals: darker mauve at rest, the pulse peak equal to the current look; no capture, the owner checks."
 parent: task-234-ore-deposit-look
 kind: task
-status: in-progress
+status: done
 ---
 # Duskite rest colour and pulse
 
@@ -15,11 +15,11 @@ status: in-progress
 - done_when: values read back; saved; doc updated; committed.
 - editor_state: open
 - token_ceiling: 20000
-- model: open
-- tokens: open
-- runs: open
+- model: sonnet
+- tokens: input 34, cache write 47538, cache read 466275, output 430
+- runs: 1
 - milestone: M2
-- result: open
+- result: Commit 6602bc3c. New MI_DuskiteDeposit_Crystal (pickups keep MI_OreChunk_Bright) on the crystal slot of SM_DuskiteDeposit_01..03: Color (0.25, 0.04, 0.55), GlowColor (0.55, 0.1, 1), GlowAmount 6.86, PulseAmount 0.75: rest emissive (0.94, 0.17, 1.71), peak (6.6, 1.2, 12) = former mean look; brighter peak via GlowAmount. Owner checks the look himself.
 
 ## Relations
 - [[task-234-ore-deposit-look]] — parent global task.
