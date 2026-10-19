@@ -62,6 +62,20 @@ Rock pieces on plain ISMs instead of HISMs ([[sys-grid-rock-pieces]], cause of t
 
 - Versus the 230-12 chain row: the 5.7 s ensure frame is gone (max 17.8 ms, as the baseline 17.9); frame and GPU close to the baseline chain (9.70 / 7.30) with GPU +1.2 ms, the steady-state slab cost. Steady rows not re-measured.
 
+## Control captures (task-230-26, 2026-10-19, HEAD 348629dc)
+Captures in `Saved/RockSlab/after4/` (not committed): `rs_a_spawn_00`, `rs_e_duskite_00`, `rs_h_crystals_00`, `rs_s_sag_game_00`, `rs_s_sag_close_00`, `rs_s_sag_low_00`; side-by-side `sbs_<name>.png` (`Saved/RockSlab/after3/` left, after4 right, `ffmpeg -i after3/<n> -i after4/<n> -filter_complex hstack`). Files land in `Saved/Screenshots/WindowsEditor/` and are moved by hand. The 230-19 command lines were not recorded; these are the ones to repeat from now on.
+
+Launch, one per spot (editor closed): `UnrealEditor.exe "<path>/RogueRigs.uproject" L_ArenaM1 -game -windowed -ResX=1920 -ResY=1080 -log -ExecCmds="t.MaxFPS 0, r.VSync 0, rr.Spawner.Enabled 0, rr.Stress.Peace 1, <spot commands>"`
+
+| Spot | `<spot commands>` |
+|---|---|
+| A spawn | `rr.Debug.Delayed 5 rr.Debug.Shots 3 1 1 rs_a_spawn 0, rr.Debug.Delayed 12 quit` |
+| E Duskite | `rr.Debug.Delayed 5 BugItGo 8341.5 7604.5 90.15 0 0 0, rr.Debug.Delayed 5.3 Walk, rr.Debug.Delayed 5.5 rr.Debug.Shots 3 1 1 rs_e_duskite 0, rr.Debug.Delayed 12 quit` |
+| H crystals (spot D) | `rr.Debug.Delayed 5 BugItGo 10083.5 2043.5 90.15 0 0 0, rr.Debug.Delayed 5.3 Walk, rr.Debug.Delayed 5.4 fov 50, rr.Debug.Delayed 5.5 rr.Debug.Shots 3 1 1 rs_h_crystals 0, rr.Debug.Delayed 12 quit` |
+| S sag | `rr.Debug.Delayed 5 BugItGo 8140.5 8911 90.15 0 0 0, rr.Debug.Delayed 5.3 Walk, rr.Debug.Delayed 5.5 rr.Debug.DamageCell 119 136 0.3, rr.Debug.Delayed 5.5 rr.Debug.DamageCell 120 136 0.7, rr.Debug.Delayed 5.5 rr.Debug.DamageCell 121 136 0.3, rr.Debug.Delayed 5.5 rr.Debug.DamageCell 122 136 0.7, rr.Debug.Delayed 5.5 rr.Debug.DamageCell 123 136 0.7, rr.Debug.Delayed 5.5 rr.Debug.DamageCell 123 137 0.3, rr.Debug.Delayed 5.6 rr.Debug.Shots 3 1 1 rs_s_sag_game 0, rr.Debug.Delayed 9.5 rr.Debug.Camera -35 900 90, rr.Debug.Delayed 9.6 rr.Debug.Shots 3 1 1 rs_s_sag_close 0, rr.Debug.Delayed 13.5 rr.Debug.Camera -10 1000 90, rr.Debug.Delayed 13.6 rr.Debug.Shots 3 1 1 rs_s_sag_low 0, rr.Debug.Delayed 18 quit` |
+
+Look versus after3: heal crystals pink-red instead of orange. Broken-piece tops near the spot D notch carry the grain, but one flat lavender square remains there and the 0.7 sag cells still show flat lavender tops; thin piece outlines are more visible on the broken area. Tops barely darker (mean RGB of a top patch at spot D 189 182 197 to 185 177 195): still near white. No rim band on the top outline; a thin light line appears along the foot of wall faces at spot A.
+
 ## Relations
 - [[performance-index]] — parent index.
 - [[rock-state-render-options]] — the slab rock design measured here.
@@ -70,4 +84,5 @@ Rock pieces on plain ISMs instead of HISMs ([[sys-grid-rock-pieces]], cause of t
 - [[task-230-01-rock-baseline-capture]] — the task that produced the baseline.
 - [[task-230-12-rock-slab-check]] — the task that produced the after section.
 - [[task-230-14-barrel-chain-crash]] — the task that produced the ISM-fix chain row.
+- [[task-230-26-rock-control-capture-2]] — the task that produced the control captures and command lines.
 - [[rock-render-counts]] — the provisional triangle budget compared in the after section.
