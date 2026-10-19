@@ -28,7 +28,7 @@ struct ROGUERIGS_API FRRDamageNumber
 	UPROPERTY(BlueprintReadOnly, Category = "Damage Numbers")
 	bool bCritical = false;
 
-	/** World size of the glyphs (NumberSize, x CriticalScale on a crit). */
+	/** World size of the glyphs (NumberSize x the damage factor SizeMin..SizeMax, x CriticalScale on a crit; URRDamageNumberSubsystem::GetHitSize). */
 	UPROPERTY(BlueprintReadOnly, Category = "Damage Numbers")
 	float Size = 0.f;
 
@@ -101,7 +101,7 @@ public:
 	static const FName DigitPositionsParameter;
 	/** Niagara user parameter (Niagara Int32 Array): value 0-9 of each digit (atlas cell). */
 	static const FName DigitIndicesParameter;
-	/** Niagara user parameter (Niagara Float Array): glyph world size of each digit (crit = NumberSize x CriticalScale). */
+	/** Niagara user parameter (Niagara Float Array): glyph world size of each digit (its number's GetHitSize). */
 	static const FName DigitSizesParameter;
 	/** Niagara user parameter (Niagara Color Array): color of each digit. */
 	static const FName DigitColorsParameter;
@@ -155,6 +155,13 @@ public:
 	 * significant digit first, placed left to right along DigitDirection, DigitAdvance x Size apart, centred on Location.
 	 */
 	void AppendDigits(const FRRDamageNumber& Number, TArray<FRRDamageDigit>& OutDigits) const;
+
+	/**
+	 * Glyph world size of a number of Value (damage-numbers, provisional, owner 2026-10-19): NumberSize x
+	 * lerp(SizeMin, SizeMax, clamp(Value / DamageForMaxSize, 0, 1)), x CriticalScale when bCritical. Used for the pushed
+	 * size and the stacking footprint.
+	 */
+	float GetHitSize(float Value, bool bCritical) const;
 
 	/** Seconds a pushed number stays on screen (particle lifetime of NumberSystem when it could be read, else the config value). */
 	float GetDisplayLifetime() const { return DisplayLifetime; }
@@ -248,11 +255,26 @@ protected:
 	UPROPERTY(Config)
 	TSoftObjectPtr<UNiagaraSystem> NumberSystem;
 
-	/** Glyph world size of a normal number (uu). */
+	/** Reference glyph world size (uu), scaled by the damage factor SizeMin..SizeMax (GetHitSize). */
 	UPROPERTY(Config)
 	float NumberSize = 60.f;
 
-	/** Size multiplier of a critical number (damage-numbers: 1.6). */
+	/** Size factor of the smallest hit (damage 0 and up; damage-numbers: 0.8, provisional, owner 2026-10-19). */
+	UPROPERTY(Config)
+	float SizeMin = 0.8f;
+
+	/** Size factor reached at DamageForMaxSize and above (damage-numbers: 1.4, provisional, owner 2026-10-19). */
+	UPROPERTY(Config)
+	float SizeMax = 1.4f;
+
+	/**
+	 * Hit damage at which the size factor reaches SizeMax (damage-numbers: twice the base Damage of the starting weapon,
+	 * BurstRifle 10 in WeaponStats.csv, so 20; provisional, owner 2026-10-19). 0 or less = every hit at SizeMax.
+	 */
+	UPROPERTY(Config)
+	float DamageForMaxSize = 20.f;
+
+	/** Size multiplier of a critical number, on top of the damage factor (damage-numbers: 1.6). */
 	UPROPERTY(Config)
 	float CriticalScale = 1.6f;
 

@@ -169,7 +169,7 @@ void URRDamageNumberSubsystem::Tick(float DeltaTime)
 		Number.Location = Entry.HitLocation + Entry.SpawnOffset + Entry.Stack;
 		Number.Value = Entry.Value;
 		Number.bCritical = Entry.bCritical;
-		Number.Size = Entry.bCritical ? NumberSize * CriticalScale : NumberSize;
+		Number.Size = GetHitSize(Entry.Value, Entry.bCritical);
 		Number.Color = Entry.bCritical ? CriticalColor : NormalColor;
 		Number.SpawnTime = static_cast<float>(Now);
 		if (MaxStackSteps > 0)
@@ -201,9 +201,17 @@ void URRDamageNumberSubsystem::Tick(float DeltaTime)
 	OnNumbersPushed.Broadcast(Numbers);
 }
 
+float URRDamageNumberSubsystem::GetHitSize(float Value, bool bCritical) const
+{
+	// Continuous growth with the hit damage, full size from DamageForMaxSize on; the crit scale applies on top.
+	const float Alpha = DamageForMaxSize > 0.f ? FMath::Clamp(Value / DamageForMaxSize, 0.f, 1.f) : 1.f;
+	const float Size = NumberSize * FMath::Lerp(SizeMin, SizeMax, Alpha);
+	return bCritical ? Size * CriticalScale : Size;
+}
+
 FVector2D URRDamageNumberSubsystem::GetFootprint(float Value, bool bCritical) const
 {
-	const float Size = bCritical ? NumberSize * CriticalScale : NumberSize;
+	const float Size = GetHitSize(Value, bCritical);
 	const int32 DigitLimit = FMath::Clamp(MaxDigits, 1, 9);
 	int32 Digits = 1;
 	for (int32 Rest = FMath::Max(FMath::RoundToInt(Value), 1) / 10; Rest > 0 && Digits < DigitLimit; Rest /= 10)
