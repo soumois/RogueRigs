@@ -69,6 +69,7 @@ bp-bonus-chest  reference/tech/blueprints/world/bp-bonus-chest.md
 bp-burst-rifle  reference/tech/blueprints/player/bp-burst-rifle.md
 bp-chaser  reference/tech/blueprints/enemies/bp-chaser.md
 bp-damage-numbers  reference/tech/blueprints/fx/bp-damage-numbers.md
+bp-dig-impact  reference/tech/blueprints/fx/bp-dig-impact.md
 bp-drone  reference/tech/blueprints/player/bp-drone.md
 bp-enemy-spawner  reference/tech/blueprints/world/bp-enemy-spawner.md
 bp-explosion-fx  reference/tech/blueprints/fx/bp-explosion-fx.md
