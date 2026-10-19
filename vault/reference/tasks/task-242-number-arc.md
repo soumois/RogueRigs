@@ -3,7 +3,7 @@ id: task-242-number-arc
 description: "Global task: Damage numbers are thrown in an arc (gravity) instead of rising in a straight line; peak about 60 uu, lifetime unchanged at 0.7 s."
 parent: tasks-to-do-index
 kind: task
-status: todo
+status: in-progress
 ---
 # Damage number arc
 

@@ -3,7 +3,7 @@ id: task-241-01-number-pop-duration
 description: "The pop of the damage numbers lasts 0.25 s instead of 0.1 s."
 parent: task-241-number-pop-duration
 kind: task
-status: in-progress
+status: done
 ---
 # Damage number pop 0.25 s
 
@@ -17,9 +17,9 @@ status: in-progress
 - token_ceiling: 80000
 - model: open
 - tokens: open
-- runs: open
+- runs: 1
 - milestone: M2
-- result: open
+- result: Pop 0.1 s to 0.25 s in the Particle Update Color and SpriteSize expressions, compile clean, commit a53f6348; not seen in game
 
 ## Relations
 - [[task-241-number-pop-duration]] — parent global task.
