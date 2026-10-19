@@ -57,7 +57,7 @@ E-sheet: "A 3 x 1 sheet: three separate isolated stylised low-poly heal ore form
 
 ## Owner images
 - Duskite (owner 2026-10-19, from the D-sheet prompt in ChatGPT): `vault/assets/duskite-deposit-sheet.png` (source `Art/Source/ore-deposit/duskite-deposit-sheet-owner-20261019.webp`): left spire, middle leaning ridge, right crown; validated as the model for the 3 Duskite variants. Owner: deposits may also vary by rotation.
-- Heal: open (waiting for the owner images); version 2 prompts written.
+- Heal (owner 2026-10-19, from the version 2 sheet prompt): `vault/assets/heal-deposit-sheet.png` (source `Art/Source/ore-deposit/heal-deposit-sheet-owner-20261019.webp`): left cracked mound of large grey rocks with red crystals breaking out, middle flat slab with red glowing veins and crystal-filled pockets, right half-buried cluster under a big boulder; validated as the model for the 3 heal variants.
 
 ## Relations
 - [[art-prompts-rock]] — parent: rock and ore look; image C is the look reference.
