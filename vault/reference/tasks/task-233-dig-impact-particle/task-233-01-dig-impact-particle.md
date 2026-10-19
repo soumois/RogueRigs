@@ -3,7 +3,7 @@ id: task-233-01-dig-impact-particle
 description: "A particle effect where the drone laser hits the wall: white-gold sparks, chips of the block colour and a little dust while it cuts."
 parent: task-233-dig-impact-particle
 kind: task
-status: todo
+status: in-progress
 ---
 # Dig impact particle
 

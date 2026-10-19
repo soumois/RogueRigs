@@ -1,9 +1,9 @@
 ---
 id: task-235-ore-loot-over-dig
 description: "Global task: deposits release their loot one by one, evenly spread over the dig time, not all at destruction."
-parent: tasks-to-do-index
+parent: tasks-done-index
 kind: task
-status: in-progress
+status: done
 ---
 # Loot spread over the dig
 
@@ -13,12 +13,12 @@ status: in-progress
 - gdd_check: done by the Orchestrator when the task is planned (2026-10-19).
 - confirmed_by_owner: yes (2026-10-19)
 - milestone: M2
-- next_step: task-235-01-ore-loot-over-dig
-- result: open
+- next_step: none
+- result: Done. Commits 336ed33c (code, tests), 3479ac88 (docs). Deposit pickup k pops at dig progress k/N (N = blocks x DestroyDropCount = 4), from its own block; explosion pops the rest at once; progress kept. -game: heal vein pops at 0.38 s intervals, Duskite at 0.375 s (1.5 s dig, mining speed 1). Build 0, tests 262/264 (2 known; Ore.HealVein timing checks pass, still 3 of 4 collected as before).
 
 ## Subtasks
 1. task-235-01-ore-loot-over-dig — cpp
 
 ## Relations
-- [[tasks-to-do-index]] — parent index.
+- [[tasks-done-index]] — parent index.
 - [[task-235-01-ore-loot-over-dig]] — step 1, cpp.

@@ -447,6 +447,7 @@ kind: note
 | [[task-234-01-ore-deposit-look]] | sonnet | 1 | 0k | 33k | 198k | 1k |
 | [[task-231-01-dig-shake-reduced]] | opus | 1 | 0k | 114k | 4018k | 10k |
 | [[task-232-01-drone-single-beam]] | opus | 1 | 0k | 103k | 2310k | 2k |
+| [[task-235-01-ore-loot-over-dig]] | opus | 1 | 0k | 127k | 4381k | 2k |
 
 ## Totals
 | Scope | Input | Cache write | Cache read | Output |

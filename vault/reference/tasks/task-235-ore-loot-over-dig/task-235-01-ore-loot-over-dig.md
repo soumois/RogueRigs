@@ -3,7 +3,7 @@ id: task-235-01-ore-loot-over-dig
 description: "Ore and heal deposits release their loot one by one during the dig, evenly spread over the dig time, instead of all at destruction."
 parent: task-235-ore-loot-over-dig
 kind: task
-status: in-progress
+status: done
 ---
 # Loot spread over the dig
 
@@ -15,11 +15,11 @@ status: in-progress
 - done_when: build exits 0 editor closed; RogueRigs.* tests pass except the 2 known pre-existing failures; a -game run logs the pickup times during a deposit dig; docs updated.
 - editor_state: closed
 - token_ceiling: 80000
-- model: open
-- tokens: open
-- runs: open
+- model: opus
+- tokens: input 100, cache write 126961, cache read 4381094, output 1809
+- runs: 1
 - milestone: M2
-- result: open
+- result: Commits 336ed33c (code, tests), 3479ac88 (docs). Deposit pickup k pops at dig progress k/N (N = blocks x DestroyDropCount = 4), from its own block; explosion pops the rest at once; progress kept. -game: heal vein pops at 0.38 s intervals, Duskite at 0.375 s (1.5 s dig, mining speed 1). Build 0, tests 262/264 (2 known; Ore.HealVein timing checks pass, still 3 of 4 collected as before).
 
 ## Relations
 - [[task-235-ore-loot-over-dig]] — parent global task.

@@ -3,7 +3,7 @@ id: task-233-dig-impact-particle
 description: "Global task: particle at the drone laser impact: white-gold sparks, chips of the block colour, a little dust."
 parent: tasks-to-do-index
 kind: task
-status: todo
+status: in-progress
 ---
 # Dig impact particle
 
