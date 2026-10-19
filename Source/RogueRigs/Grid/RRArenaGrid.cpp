@@ -530,6 +530,17 @@ UInstancedStaticMeshComponent* ARRArenaGrid::CreateChunkComponent(TSubclassOf<UI
 	Component->SetVisibility(Template->GetVisibleFlag());
 	Component->SetHiddenInGame(Template->bHiddenInGame);
 	Component->SetCastShadow(Template->CastShadow);
+	Component->bCastDynamicShadow = Template->bCastDynamicShadow;
+	Component->bCastContactShadow = Template->bCastContactShadow;
+	// Ore and heal ore crystals (per-cell cluster chunks and deposit formation ISMs, both built from these templates) cast no
+	// shadow at all unless bDepositCrystalsCastShadow (task-237-01). Rock pieces, barrels and collision ISMs are untouched.
+	if (!bDepositCrystalsCastShadow && (Template == GetTemplateComponent(ERRCellType::Ore) || Template == GetTemplateComponent(ERRCellType::HealOre)))
+	{
+		Component->SetCastShadow(false);
+		Component->bCastDynamicShadow = false;
+		Component->bCastStaticShadow = false;
+		Component->bCastContactShadow = false;
+	}
 	Component->SetStaticMesh(Template->GetStaticMesh());
 	for (int32 MaterialIndex = 0; MaterialIndex < Template->GetNumOverrideMaterials(); ++MaterialIndex)
 	{

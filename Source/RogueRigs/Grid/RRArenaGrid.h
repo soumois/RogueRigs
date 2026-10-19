@@ -1214,6 +1214,10 @@ protected:
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Grid|Ore Deposits")
 	int32 DepositCrystalSeed = 1;
 
+	/** When false (default, owner 2026-10-19, task-237-01) the ore and heal ore crystals cast no shadow at all (CastShadow, dynamic, static and contact shadow off): deposit formation ISMs and the per-cell cluster fallback chunks. When true they keep the Ore / HealOre template shadow settings. Read when the components are created (BuildInstances). */
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Grid|Ore Deposits")
+	bool bDepositCrystalsCastShadow = false;
+
 	/** Seed of the per-corner variant and full-piece rotation hash: same layout and seed give the same pieces. */
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Grid|Rock Pieces")
 	int32 RockPieceSeed = 1;
