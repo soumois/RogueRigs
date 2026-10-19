@@ -3,7 +3,7 @@ id: task-234-02-duskite-deposit-meshes
 description: "Three Duskite crystal formation meshes (spire, ridge, crown) from the owner sheet, Blender route."
 parent: task-234-ore-deposit-look
 kind: task
-status: in-progress
+status: done
 ---
 # Three Duskite crystal formation meshes (spire, ridge, crown) from the owner sheet, Blender route
 
@@ -15,11 +15,11 @@ status: in-progress
 - done_when: 3 FBX exist inside the footprint; previews rendered and sent to the owner; no Blender process left; committed.
 - editor_state: any
 - token_ceiling: 40000
-- model: open
-- tokens: open
-- runs: open
+- model: sonnet
+- tokens: input 34, cache write 43263, cache read 453939, output 2046
+- runs: 1
 - milestone: M2
-- result: open
+- result: Commit 086e7ea8, validated by the owner 2026-10-19 as is. SM_DuskiteDeposit_01 spire (192 tris), _02 ridge (144), _03 crown (192) in Art/Meshes/ore-deposit/, inside the 134 uu footprint, base -5, tallest 110-112 uu above z 0, one slot crystal, UVMap only; scripts ore_deposit.py and ore_deposit_preview.py; previews sent.
 
 ## Relations
 - [[task-234-ore-deposit-look]] — parent global task.

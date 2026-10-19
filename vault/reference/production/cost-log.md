@@ -451,6 +451,7 @@ kind: note
 | [[task-233-01-dig-impact-particle]] | sonnet | 1 | 0k | 98k | 2563k | 1k |
 | [[task-233-02-dig-impact-wiring]] | opus | 2 | 0k | 190k | 8014k | 10k |
 | [[task-234-06-heal-deposit-prompts]] | sonnet | 1 | 0k | 18k | 70k | 0k |
+| [[task-234-02-duskite-deposit-meshes]] | sonnet | 1 | 0k | 43k | 454k | 2k |
 
 ## Totals
 | Scope | Input | Cache write | Cache read | Output |
