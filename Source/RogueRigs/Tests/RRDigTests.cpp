@@ -1561,22 +1561,48 @@ bool FRRDigRockDamageDataTest::RunTest(const FString& Parameters)
 	AddInfo(FString::Printf(TEXT("%d ore and %d heal ore cells"), OreCells, HealCells));
 	TestTrue(TEXT("ore cells present"), OreCells > 0);
 	TestEqual(TEXT("one crystal per ore cell"), FGridAccess::InstanceCount(Grid, ERRCellType::Ore), OreCells);
-	TestEqual(TEXT("one crystal per heal ore cell"), FGridAccess::InstanceCount(Grid, ERRCellType::HealOre), HealCells);
+	TestEqual(TEXT("one collision or crystal instance per heal ore cell"), FGridAccess::InstanceCount(Grid, ERRCellType::HealOre), HealCells);
 	UStaticMesh* CrystalMesh = FGridAccess::OreCrystalMeshOf(Grid);
 	TestTrue(TEXT("crystal mesh is SM_OreChunk_01"), CrystalMesh && CrystalMesh->GetName() == TEXT("SM_OreChunk_01"));
-	UHierarchicalInstancedStaticMeshComponent* HealCrystals = FGridAccess::CellComponent(Grid, FineHealOreCell);
-	const int32 HealIndex = FGridAccess::InstanceIndices(Grid)[FineHealOreCell.Y * FGridAccess::Width(Grid) + FineHealOreCell.X];
-	if (TestNotNull(TEXT("heal ore crystal HISM"), HealCrystals) && TestTrue(TEXT("heal crystal mapped"), HealIndex != INDEX_NONE))
+	// Heal ore with deposit meshes (BP_ArenaGrid since task-234-04): one formation per heal deposit in the deposit ISMs instead
+	// of per-cell clusters (task-237-01). Empty list: one cluster per cell in the heal chunk HISMs.
+	if (FGridAccess::UsesDepositCrystalsOf(Grid, ERRCellType::HealOre))
 	{
-		TestTrue(TEXT("heal crystal uses the crystal mesh"), HealCrystals->GetStaticMesh() == CrystalMesh);
-		TestEqual(TEXT("crystal HISM never collides"), HealCrystals->GetCollisionEnabled(), ECollisionEnabled::NoCollision);
-		FTransform CrystalTransform;
-		HealCrystals->GetInstanceTransform(HealIndex, CrystalTransform, /*bWorldSpace*/ false);
-		TestTrue(TEXT("crystal stands on the block top"), CrystalTransform.GetLocation().Z >= Grid->GetBlockHeight() - 1.0);
+		int32 HealDeposits = 0;
+		for (int32 DepositId = 0; DepositId < Grid->GetDepositCount(); ++DepositId)
+		{
+			HealDeposits += Grid->GetDeposit(DepositId)->CellType == ERRCellType::HealOre ? 1 : 0;
+		}
+		AddInfo(FString::Printf(TEXT("heal ore on deposit formations: %d heal deposits"), HealDeposits));
+		TestEqual(TEXT("one formation per heal deposit"), FGridAccess::DepositCrystalCount(Grid, ERRCellType::HealOre), HealDeposits);
+		const int32 HealDepositId = Grid->GetDepositId(FineHealOreCell);
+		int32 HealFormation = INDEX_NONE;
+		UInstancedStaticMeshComponent* HealFormations = HealDepositId != INDEX_NONE ? FGridAccess::DepositCrystalOf(Grid, HealDepositId, HealFormation) : nullptr;
+		if (TestNotNull(TEXT("heal deposit formation ISM"), HealFormations))
+		{
+			TestEqual(TEXT("heal formation ISM never collides"), HealFormations->GetCollisionEnabled(), ECollisionEnabled::NoCollision);
+			TestFalse(TEXT("heal formation casts no shadow (bDepositCrystalsCastShadow false)"), HealFormations->CastShadow);
+		}
+		TestTrue(TEXT("heal ore destroyed"), Grid->DestroyCell(FineHealOreCell, ERRTerrainDamageSource::Drone));
+		TestEqual(TEXT("its formation removed"), FGridAccess::DepositCrystalCount(Grid, ERRCellType::HealOre), HealDeposits - 1);
+		TestTrue(TEXT("instance maps consistent after the formation removal"), CheckInstanceMaps(*this, Grid));
 	}
-	TestTrue(TEXT("heal ore destroyed"), Grid->DestroyCell(FineHealOreCell, ERRTerrainDamageSource::Drone));
-	TestEqual(TEXT("its crystal removed"), FGridAccess::InstanceCount(Grid, ERRCellType::HealOre), HealCells - 1);
-	TestTrue(TEXT("instance maps consistent after the crystal removal"), CheckInstanceMaps(*this, Grid));
+	else
+	{
+		UHierarchicalInstancedStaticMeshComponent* HealCrystals = FGridAccess::CellComponent(Grid, FineHealOreCell);
+		const int32 HealIndex = FGridAccess::InstanceIndices(Grid)[FineHealOreCell.Y * FGridAccess::Width(Grid) + FineHealOreCell.X];
+		if (TestNotNull(TEXT("heal ore crystal HISM"), HealCrystals) && TestTrue(TEXT("heal crystal mapped"), HealIndex != INDEX_NONE))
+		{
+			TestTrue(TEXT("heal crystal uses the crystal mesh"), HealCrystals->GetStaticMesh() == CrystalMesh);
+			TestEqual(TEXT("crystal HISM never collides"), HealCrystals->GetCollisionEnabled(), ECollisionEnabled::NoCollision);
+			FTransform CrystalTransform;
+			HealCrystals->GetInstanceTransform(HealIndex, CrystalTransform, /*bWorldSpace*/ false);
+			TestTrue(TEXT("crystal stands on the block top"), CrystalTransform.GetLocation().Z >= Grid->GetBlockHeight() - 1.0);
+		}
+		TestTrue(TEXT("heal ore destroyed"), Grid->DestroyCell(FineHealOreCell, ERRTerrainDamageSource::Drone));
+		TestEqual(TEXT("its crystal removed"), FGridAccess::InstanceCount(Grid, ERRCellType::HealOre), HealCells - 1);
+		TestTrue(TEXT("instance maps consistent after the crystal removal"), CheckInstanceMaps(*this, Grid));
+	}
 
 	// Deposit crystals (task-234-03): with Duskite deposit meshes, one crystal per ore deposit replaces the per-cell clusters
 	// (null list entries skipped); heal ore, whose list stays empty, keeps one cluster per cell. Stand-in meshes: SM_OreChunk_01..03.
@@ -1613,6 +1639,7 @@ bool FRRDigRockDamageDataTest::RunTest(const FString& Parameters)
 			UsedMeshes.Add(Visual.Render->GetStaticMesh());
 			TestEqual(TEXT("deposit crystal ISM never collides"), Visual.Render->GetCollisionEnabled(), ECollisionEnabled::NoCollision);
 			TestFalse(TEXT("deposit crystal component is a plain ISM"), Visual.Render->IsA<UHierarchicalInstancedStaticMeshComponent>());
+			TestFalse(TEXT("deposit crystal ISM casts no shadow (bDepositCrystalsCastShadow false)"), Visual.Render->CastShadow);
 		}
 	}
 	TestEqual(TEXT("the 3 non-null meshes are used"), UsedMeshes.Num(), 3);
