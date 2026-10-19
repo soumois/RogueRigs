@@ -435,6 +435,7 @@ kind: note
 | [[task-230-15-duskite-crystal-colour]] | sonnet | 1 | 0k | 80k | 2047k | 1k |
 | [[task-230-16-rock-top-texture-shade]] | sonnet | 1 | 0k | 48k | 916k | 1k |
 | [[task-230-17-rock-sag-visible-check]] | opus | 2 | 0k | 153k | 6797k | 5k |
+| [[task-230-18-rock-material-diagnosis]] | sonnet | 1 | 0k | 114k | 3291k | 3k |
 
 ## Totals
 | Scope | Input | Cache write | Cache read | Output |

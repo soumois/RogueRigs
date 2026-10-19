@@ -3,7 +3,7 @@ id: task-230-18-rock-material-diagnosis
 description: "Find why M_RockSlab and the Duskite crystal material changes do not show in game, and fix them."
 parent: task-230-rock-slab-integration
 kind: task
-status: in-progress
+status: done
 ---
 # Find why M_RockSlab and the Duskite crystal material changes do not show in game, and fix them
 
@@ -15,11 +15,11 @@ status: in-progress
 - done_when: assets compile and are saved; each symptom has a cause and a fix or a precise report; committed; the look is checked in task-230-19.
 - editor_state: open
 - token_ceiling: 60000
-- model: open
-- tokens: open
-- runs: open
+- model: sonnet
+- tokens: input 98, cache write 114461, cache read 3291220, output 3264
+- runs: 1
 - milestone: M2
-- result: open
+- result: Commits 22c2f1e4, decf917f. Duskite grey: M_XPNutGlow lacked bUsedWithInstancedStaticMeshes on disk (editor sets it on demand, -game does not), default material drawn; flag saved. Flat top, no cracks, no rim: the rock meshes were imported with VertexColorImportOption Ignore, white vertex colour sent every face to the side branch; M_RockSlab now detects sides from the vertex normal and only brightens the rim when real colours exist. Rim band restore needs a reimport with vertex colours (task-230-20). Look unverified until 230-19.
 
 ## Relations
 - [[task-230-rock-slab-integration]] — parent global task.
