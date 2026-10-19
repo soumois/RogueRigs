@@ -150,7 +150,9 @@ namespace RRDigTests
 		for (const FRRGridChunkVisual& Visual : FGridAccess::Visuals(Grid))
 		{
 			// Rock and special ore are drawn by the pieces only; ore and heal ore also draw one crystal per cell (task-230-08).
-			const bool bPieceType = Visual.MapKey == ERRCellType::Rock || Visual.MapKey == ERRCellType::SpecialOre;
+			// Task-234-03: ore or heal ore with deposit meshes draw one crystal per deposit, so their chunk visuals hold collision only.
+			const bool bPieceType = Visual.MapKey == ERRCellType::Rock || Visual.MapKey == ERRCellType::SpecialOre
+				|| ((Visual.MapKey == ERRCellType::Ore || Visual.MapKey == ERRCellType::HealOre) && FGridAccess::UsesDepositCrystalsOf(Grid, Visual.MapKey));
 			const bool bNeedsRender = !bPieceType && Visual.MapKey != ERRCellType::Floor && Visual.InstanceCells.Num() > 0;
 			const UInstancedStaticMeshComponent* Component = Visual.Render ? static_cast<const UInstancedStaticMeshComponent*>(Visual.Render.Get()) : Visual.Collision.Get();
 			const TArray<FIntPoint>& InstanceCells = Visual.InstanceCells;
@@ -1575,6 +1577,132 @@ bool FRRDigRockDamageDataTest::RunTest(const FString& Parameters)
 	TestTrue(TEXT("heal ore destroyed"), Grid->DestroyCell(FineHealOreCell, ERRTerrainDamageSource::Drone));
 	TestEqual(TEXT("its crystal removed"), FGridAccess::InstanceCount(Grid, ERRCellType::HealOre), HealCells - 1);
 	TestTrue(TEXT("instance maps consistent after the crystal removal"), CheckInstanceMaps(*this, Grid));
+
+	// Deposit crystals (task-234-03): with Duskite deposit meshes, one crystal per ore deposit replaces the per-cell clusters
+	// (null list entries skipped); heal ore, whose list stays empty, keeps one cluster per cell. Stand-in meshes: SM_OreChunk_01..03.
+	TArray<TObjectPtr<UStaticMesh>>& DepositMeshes = FGridAccess::OreDepositMeshesOf(Grid);
+	DepositMeshes.Reset();
+	for (const TCHAR* Path : { TEXT("/Game/RogueRigs/Art/OreChunk/SM_OreChunk_01.SM_OreChunk_01"), TEXT(""),
+		TEXT("/Game/RogueRigs/Art/OreChunk/SM_OreChunk_02.SM_OreChunk_02"), TEXT("/Game/RogueRigs/Art/OreChunk/SM_OreChunk_03.SM_OreChunk_03") })
+	{
+		DepositMeshes.Add(*Path ? LoadObject<UStaticMesh>(nullptr, Path) : nullptr);
+	}
+	FGridAccess::HealDepositMeshesOf(Grid).Reset();
+	FGridAccess::Rebuild(Grid);
+	TestTrue(TEXT("ore uses deposit crystals"), FGridAccess::UsesDepositCrystalsOf(Grid, ERRCellType::Ore));
+	TestFalse(TEXT("heal ore keeps per-cell clusters (empty list)"), FGridAccess::UsesDepositCrystalsOf(Grid, ERRCellType::HealOre));
+	TArray<int32> OreDeposits;
+	for (int32 DepositId = 0; DepositId < Grid->GetDepositCount(); ++DepositId)
+	{
+		if (Grid->GetDeposit(DepositId)->CellType == ERRCellType::Ore)
+		{
+			OreDeposits.Add(DepositId);
+		}
+	}
+	AddInfo(FString::Printf(TEXT("%d ore deposits, %d deposit crystal ISMs"), OreDeposits.Num(), FGridAccess::DepositVisualsOf(Grid).Num()));
+	TestTrue(TEXT("ore deposits present"), OreDeposits.Num() > 0);
+	TestEqual(TEXT("one crystal per ore deposit"), FGridAccess::DepositCrystalCount(Grid, ERRCellType::Ore), OreDeposits.Num());
+	TestEqual(TEXT("ore collision still one per cell"), FGridAccess::InstanceCount(Grid, ERRCellType::Ore), OreCells);
+	TestEqual(TEXT("heal ore still one crystal per cell"), FGridAccess::InstanceCount(Grid, ERRCellType::HealOre), HealCells);
+	TestTrue(TEXT("instance maps consistent with deposit crystals"), CheckInstanceMaps(*this, Grid));
+	TSet<UStaticMesh*> UsedMeshes;
+	for (const FRRGridDepositVisual& Visual : FGridAccess::DepositVisualsOf(Grid))
+	{
+		if (Visual.Render)
+		{
+			UsedMeshes.Add(Visual.Render->GetStaticMesh());
+			TestEqual(TEXT("deposit crystal ISM never collides"), Visual.Render->GetCollisionEnabled(), ECollisionEnabled::NoCollision);
+			TestFalse(TEXT("deposit crystal component is a plain ISM"), Visual.Render->IsA<UHierarchicalInstancedStaticMeshComponent>());
+		}
+	}
+	TestEqual(TEXT("the 3 non-null meshes are used"), UsedMeshes.Num(), 3);
+	TestFalse(TEXT("no null mesh drawn"), UsedMeshes.Contains(nullptr));
+
+	// Every crystal on its deposit: bounding-box centre of its cells, block top, quarter-turn yaw.
+	auto CheckDepositCrystals = [this, Grid, &OreDeposits](const TCHAR* When)
+	{
+		int32 Errors = 0;
+		int32 Count = 0;
+		for (const int32 DepositId : OreDeposits)
+		{
+			int32 Instance = INDEX_NONE;
+			UInstancedStaticMeshComponent* Crystals = FGridAccess::DepositCrystalOf(Grid, DepositId, Instance);
+			if (!Crystals)
+			{
+				continue;
+			}
+			++Count;
+			FTransform Placed;
+			Crystals->GetInstanceTransform(Instance, Placed, /*bWorldSpace*/ false);
+			FVector2D Centre = FVector2D::ZeroVector;
+			for (const FIntPoint& DepositCell : Grid->GetDeposit(DepositId)->Cells)
+			{
+				Centre += FVector2D((DepositCell.X + 0.5f) * Grid->GetCellSize(), (DepositCell.Y + 0.5f) * Grid->GetCellSize());
+			}
+			Centre /= Grid->GetDeposit(DepositId)->Cells.Num();
+			const double Yaw = Placed.Rotator().Yaw;
+			const bool bQuarter = FMath::IsNearlyZero(FMath::Fmod(FMath::Abs(Yaw) + 0.01, 90.0), 0.05);
+			if (!FVector2D(Placed.GetLocation()).Equals(Centre, 1.f) || !FMath::IsNearlyEqual(Placed.GetLocation().Z, Grid->GetBlockHeight(), 0.01) || !bQuarter)
+			{
+				if (Errors++ < 5)
+				{
+					AddError(FString::Printf(TEXT("%s: deposit %d crystal at %s yaw %.2f, expected (%.1f, %.1f, %.1f)"), When, DepositId,
+						*Placed.GetLocation().ToString(), Yaw, Centre.X, Centre.Y, Grid->GetBlockHeight()));
+				}
+			}
+		}
+		return Count;
+	};
+	TestEqual(TEXT("every ore deposit crystal checked"), CheckDepositCrystals(TEXT("build")), OreDeposits.Num());
+
+	// Shake: the crystal moves while a block of its deposit shakes, back at rest when it stops.
+	const int32 ShakenDeposit = OreDeposits[0];
+	const FRRGridDeposit* Shaken = Grid->GetDeposit(ShakenDeposit);
+	int32 ShakenInstance = INDEX_NONE;
+	UInstancedStaticMeshComponent* ShakenCrystals = FGridAccess::DepositCrystalOf(Grid, ShakenDeposit, ShakenInstance);
+	if (TestNotNull(TEXT("first ore deposit has a crystal"), ShakenCrystals) && TestTrue(TEXT("its deposit has 4 cells"), Shaken->Cells.Num() == 4))
+	{
+		const FVector Rest = FGridAccess::DepositCrystalRestOf(Grid, ShakenDeposit).GetLocation();
+		Grid->SetCellShaking(Shaken->Cells[0], true);
+		Grid->SetCellShaking(Shaken->Cells[1], true);
+		float MaxCrystalMove = 0.f;
+		for (int32 Frame = 0; Frame < 10; ++Frame)
+		{
+			TestWorld.Tick();
+			FTransform Now;
+			ShakenCrystals->GetInstanceTransform(ShakenInstance, Now, /*bWorldSpace*/ false);
+			MaxCrystalMove = FMath::Max(MaxCrystalMove, static_cast<float>(FVector::Dist(Now.GetLocation(), Rest)));
+		}
+		AddInfo(FString::Printf(TEXT("deposit crystal shake: max offset %.2f uu"), MaxCrystalMove));
+		TestTrue(TEXT("the deposit crystal moves while dug"), MaxCrystalMove > 0.1f && MaxCrystalMove < 20.f);
+		Grid->SetCellShaking(Shaken->Cells[0], false);
+		FTransform Still;
+		ShakenCrystals->GetInstanceTransform(ShakenInstance, Still, /*bWorldSpace*/ false);
+		TestTrue(TEXT("still shaking while another block of the deposit shakes"), FGridAccess::Shaking(Grid).Contains(Shaken->Cells[1]));
+		Grid->SetCellShaking(Shaken->Cells[1], false);
+		ShakenCrystals->GetInstanceTransform(ShakenInstance, Still, /*bWorldSpace*/ false);
+		TestTrue(TEXT("deposit crystal back at rest"), Still.GetLocation().Equals(Rest, 1e-3));
+
+		// Outline: the crystal's marked float follows its blocks.
+		const int32 MarkedFloat = ShakenInstance * ShakenCrystals->NumCustomDataFloats + Grid->GetMarkedCustomDataIndex();
+		TestTrue(TEXT("deposit block marked"), Grid->SetCellMarked(Shaken->Cells[2], true));
+		TestEqual(TEXT("deposit crystal marked"), ShakenCrystals->PerInstanceSMCustomData.IsValidIndex(MarkedFloat) ? ShakenCrystals->PerInstanceSMCustomData[MarkedFloat] : -1.f, FGridAccess::MarkedValueOf(Grid));
+		TestTrue(TEXT("deposit block unmarked"), Grid->SetCellMarked(Shaken->Cells[2], false));
+		TestEqual(TEXT("deposit crystal unmarked"), ShakenCrystals->PerInstanceSMCustomData.IsValidIndex(MarkedFloat) ? ShakenCrystals->PerInstanceSMCustomData[MarkedFloat] : -1.f, 0.f);
+
+		// Break: the drone breaking one block removes the crystal; an explosion on another deposit too. The swapped instances stay mapped.
+		TestTrue(TEXT("deposit block destroyed"), Grid->DestroyCell(Shaken->Cells[0], ERRTerrainDamageSource::Drone));
+		int32 RemovedInstance = INDEX_NONE;
+		TestNull(TEXT("its crystal removed"), FGridAccess::DepositCrystalOf(Grid, ShakenDeposit, RemovedInstance));
+		TestEqual(TEXT("one crystal less"), FGridAccess::DepositCrystalCount(Grid, ERRCellType::Ore), OreDeposits.Num() - 1);
+		if (OreDeposits.Num() > 1)
+		{
+			TestTrue(TEXT("other deposit blown up"), Grid->DestroyCell(Grid->GetDeposit(OreDeposits.Last())->Cells[0], ERRTerrainDamageSource::Barrel));
+			TestEqual(TEXT("two crystals less"), FGridAccess::DepositCrystalCount(Grid, ERRCellType::Ore), OreDeposits.Num() - 2);
+		}
+		TestEqual(TEXT("remaining crystals still on their deposits"), CheckDepositCrystals(TEXT("after breaks")), FGridAccess::DepositCrystalCount(Grid, ERRCellType::Ore));
+		TestTrue(TEXT("instance maps consistent after deposit breaks"), CheckInstanceMaps(*this, Grid));
+	}
 	return true;
 }
 

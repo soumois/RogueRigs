@@ -73,6 +73,12 @@ ARRArenaGrid::ARRArenaGrid()
 	// Ore crystal clusters (task-230-08, rock-render-damage): Duskite and heal ore use SM_OreChunk_01 by default.
 	static ConstructorHelpers::FObjectFinder<UStaticMesh> DefaultOreCrystalMesh(TEXT("/Game/RogueRigs/Art/OreChunk/SM_OreChunk_01.SM_OreChunk_01"));
 	OreCrystalMesh = DefaultOreCrystalMesh.Object;
+
+	// Deposit crystal materials (task-234-03): the crystal materials BP_ArenaGrid uses for the per-cell clusters.
+	static ConstructorHelpers::FObjectFinder<UMaterialInterface> DefaultOreDepositMaterial(TEXT("/Game/RogueRigs/Art/OreChunk/MI_OreChunk_Bright.MI_OreChunk_Bright"));
+	OreDepositMaterial = DefaultOreDepositMaterial.Object;
+	static ConstructorHelpers::FObjectFinder<UMaterialInterface> DefaultHealDepositMaterial(TEXT("/Game/RogueRigs/Art/OreChunk/MI_HealCrystal_Bright.MI_HealCrystal_Bright"));
+	HealDepositMaterial = DefaultHealDepositMaterial.Object;
 }
 
 UHierarchicalInstancedStaticMeshComponent* ARRArenaGrid::CreateGridComponent(FName Name, bool bWithCollision)
@@ -618,6 +624,16 @@ void ARRArenaGrid::ClearAllInstances()
 		}
 	}
 	PieceVisuals.Reset();
+	for (FRRGridDepositVisual& Visual : DepositVisuals)
+	{
+		if (IsValid(Visual.Render))
+		{
+			Visual.Render->DestroyComponent();
+		}
+	}
+	DepositVisuals.Reset();
+	DepositCrystalVisual.Reset();
+	DepositCrystalInstance.Reset();
 	CornerPieceVisual.Reset();
 	CornerPieceInstance.Reset();
 	CornerBroken.Reset();
@@ -905,6 +921,7 @@ void ARRArenaGrid::BuildInstances()
 
 	BuildCornerPieces();
 	WriteDepositColors();
+	BuildDepositCrystals();
 }
 
 void ARRArenaGrid::BuildCornerPieces()
@@ -1416,9 +1433,234 @@ void ARRArenaGrid::BreakCellCornerPieces(FIntPoint Cell)
 	}
 }
 
-bool ARRArenaGrid::HasCellRenderInstance(ERRCellType Type)
+bool ARRArenaGrid::HasCellRenderInstance(ERRCellType Type) const
 {
-	return !IsRockPieceType(Type) || Type == ERRCellType::Ore || Type == ERRCellType::HealOre;
+	if (Type == ERRCellType::Ore || Type == ERRCellType::HealOre)
+	{
+		// Per-cell crystal clusters only while the type has no deposit meshes (task-234-03).
+		return !UsesDepositCrystals(Type);
+	}
+	return !IsRockPieceType(Type);
+}
+
+void ARRArenaGrid::GetDepositMeshes(ERRCellType Type, TArray<UStaticMesh*>& OutMeshes) const
+{
+	OutMeshes.Reset();
+	const TArray<TObjectPtr<UStaticMesh>>* List = Type == ERRCellType::Ore ? &OreDepositMeshes
+		: (Type == ERRCellType::HealOre ? &HealDepositMeshes : nullptr);
+	if (!List)
+	{
+		return;
+	}
+	for (UStaticMesh* Mesh : *List)
+	{
+		if (Mesh)
+		{
+			OutMeshes.Add(Mesh);
+		}
+	}
+}
+
+bool ARRArenaGrid::UsesDepositCrystals(ERRCellType Type) const
+{
+	const TArray<TObjectPtr<UStaticMesh>>* List = Type == ERRCellType::Ore ? &OreDepositMeshes
+		: (Type == ERRCellType::HealOre ? &HealDepositMeshes : nullptr);
+	return List && List->ContainsByPredicate([](const TObjectPtr<UStaticMesh>& Mesh) { return Mesh != nullptr; });
+}
+
+UMaterialInterface* ARRArenaGrid::GetDepositMaterial(ERRCellType Type) const
+{
+	return Type == ERRCellType::HealOre ? HealDepositMaterial.Get() : OreDepositMaterial.Get();
+}
+
+uint32 ARRArenaGrid::GetDepositCrystalHash(int32 DepositId) const
+{
+	return RRArenaGridPrivate::MixHash(static_cast<uint32>(DepositId) * 0x9e3779b9u ^ (static_cast<uint32>(DepositCrystalSeed) * 0x85ebca6bu));
+}
+
+FTransform ARRArenaGrid::GetDepositCrystalTransform(int32 DepositId) const
+{
+	if (!Deposits.IsValidIndex(DepositId) || Deposits[DepositId].Cells.IsEmpty())
+	{
+		return FTransform::Identity;
+	}
+	// Centre of the cells' bounding box (a 2 x 2 deposit: its shared corner), on the block top: the mesh pivot is its footprint centre, base at z 0.
+	FIntPoint Min = Deposits[DepositId].Cells[0];
+	FIntPoint Max = Min;
+	for (const FIntPoint& Cell : Deposits[DepositId].Cells)
+	{
+		Min = Min.ComponentMin(Cell);
+		Max = Max.ComponentMax(Cell);
+	}
+	const FVector Location(0.5f * (Min.X + Max.X + 1) * CellSize, 0.5f * (Min.Y + Max.Y + 1) * CellSize, BlockHeight);
+	// Yaw: a quarter turn hashed from the deposit (owner 2026-10-19: play with rotation), independent of the variant bits.
+	const int32 Turns = static_cast<int32>(RRArenaGridPrivate::MixHash(GetDepositCrystalHash(DepositId) ^ 0x68e31da4u) % 4u);
+	return FTransform(FRotator(0.f, 90.f * Turns, 0.f), Location, FVector(FMath::Max(0.01f, DepositCrystalScale)));
+}
+
+void ARRArenaGrid::BuildDepositCrystals()
+{
+	DepositCrystalVisual.Init(INDEX_NONE, Deposits.Num());
+	DepositCrystalInstance.Init(INDEX_NONE, Deposits.Num());
+
+	for (const ERRCellType Type : { ERRCellType::Ore, ERRCellType::HealOre })
+	{
+		TArray<UStaticMesh*> Meshes;
+		GetDepositMeshes(Type, Meshes);
+		UHierarchicalInstancedStaticMeshComponent* Template = GetTemplateComponent(Type);
+		if (Meshes.IsEmpty() || !Template)
+		{
+			continue;
+		}
+
+		// Gather per variant, then add each batch at once: instance i of a batch gets index i (fresh ISM).
+		TArray<TArray<int32>> BatchDeposits;
+		BatchDeposits.SetNum(Meshes.Num());
+		for (int32 DepositId = 0; DepositId < Deposits.Num(); ++DepositId)
+		{
+			const FRRGridDeposit& Deposit = Deposits[DepositId];
+			if (Deposit.CellType != Type || Deposit.Cells.IsEmpty())
+			{
+				continue;
+			}
+			BatchDeposits[GetDepositCrystalHash(DepositId) % static_cast<uint32>(Meshes.Num())].Add(DepositId);
+		}
+
+		UMaterialInterface* Material = GetDepositMaterial(Type);
+		for (int32 Variant = 0; Variant < Meshes.Num(); ++Variant)
+		{
+			if (BatchDeposits[Variant].IsEmpty())
+			{
+				continue;
+			}
+			// Template settings (shadow, visibility, distance fields, custom data floats sized for marked and ore colour), own mesh
+			// and material. Plain ISM, remove at swap (task-230-14 lesson: no HISM render slot gap after a removal).
+			UInstancedStaticMeshComponent* Component = CreateChunkComponent(UInstancedStaticMeshComponent::StaticClass(), Template, FIntPoint(Variant, 0), /*bRegister*/ false);
+			Component->SetRemoveSwap();
+			Component->SetStaticMesh(Meshes[Variant]);
+			Component->EmptyOverrideMaterials();
+			for (int32 Slot = 0; Material && Slot < Meshes[Variant]->GetStaticMaterials().Num(); ++Slot)
+			{
+				Component->SetMaterial(Slot, Material);
+			}
+			Component->SetNumCustomDataFloats(FMath::Max(Template->NumCustomDataFloats, MarkedCustomDataIndex + 1));
+			// Rendering only: collision stays one cube per cell in the collision ISMs.
+			Component->SetCollisionEnabled(ECollisionEnabled::NoCollision);
+			Component->SetCollisionProfileName(UCollisionProfile::NoCollision_ProfileName);
+			if (GetWorld())
+			{
+				Component->RegisterComponent();
+			}
+
+			TArray<FTransform> Transforms;
+			Transforms.Reserve(BatchDeposits[Variant].Num());
+			for (const int32 DepositId : BatchDeposits[Variant])
+			{
+				Transforms.Add(GetDepositCrystalTransform(DepositId));
+			}
+			Component->AddInstances(Transforms, /*bShouldReturnIndices*/ false, /*bWorldSpace*/ false);
+
+			const int32 VisualIndex = DepositVisuals.AddDefaulted();
+			FRRGridDepositVisual& Visual = DepositVisuals[VisualIndex];
+			Visual.CellType = Type;
+			Visual.Variant = Variant;
+			Visual.Render = Component;
+			Visual.InstanceDeposits = BatchDeposits[Variant];
+			for (int32 Instance = 0; Instance < Visual.InstanceDeposits.Num(); ++Instance)
+			{
+				DepositCrystalVisual[Visual.InstanceDeposits[Instance]] = VisualIndex;
+				DepositCrystalInstance[Visual.InstanceDeposits[Instance]] = Instance;
+				WriteDepositCrystalData(Visual.InstanceDeposits[Instance], /*bMarkDirty*/ false);
+			}
+			Component->MarkRenderStateDirty();
+		}
+	}
+}
+
+UInstancedStaticMeshComponent* ARRArenaGrid::GetDepositCrystalComponent(int32 DepositId, int32& OutInstance) const
+{
+	OutInstance = INDEX_NONE;
+	if (!DepositCrystalVisual.IsValidIndex(DepositId) || DepositCrystalVisual[DepositId] == INDEX_NONE)
+	{
+		return nullptr;
+	}
+	UInstancedStaticMeshComponent* Component = DepositVisuals[DepositCrystalVisual[DepositId]].Render;
+	OutInstance = Component ? DepositCrystalInstance[DepositId] : INDEX_NONE;
+	return Component;
+}
+
+void ARRArenaGrid::RemoveDepositCrystal(int32 DepositId)
+{
+	if (!DepositCrystalVisual.IsValidIndex(DepositId) || DepositCrystalVisual[DepositId] == INDEX_NONE)
+	{
+		return;
+	}
+	FRRGridDepositVisual& Visual = DepositVisuals[DepositCrystalVisual[DepositId]];
+	const int32 InstanceIndex = DepositCrystalInstance[DepositId];
+	DepositCrystalVisual[DepositId] = INDEX_NONE;
+	DepositCrystalInstance[DepositId] = INDEX_NONE;
+	if (!Visual.Render || !Visual.InstanceDeposits.IsValidIndex(InstanceIndex))
+	{
+		return;
+	}
+	const int32 LastIndex = Visual.InstanceDeposits.Num() - 1;
+	if (!Visual.Render->RemoveInstance(InstanceIndex))
+	{
+		UE_LOG(LogRogueRigs, Error, TEXT("ARRArenaGrid: failed to remove the crystal instance %d of deposit %d."), InstanceIndex, DepositId);
+		return;
+	}
+	// Remove at swap: the last instance now occupies InstanceIndex.
+	Visual.InstanceDeposits.RemoveAtSwap(InstanceIndex, EAllowShrinking::No);
+	if (InstanceIndex != LastIndex)
+	{
+		DepositCrystalInstance[Visual.InstanceDeposits[InstanceIndex]] = InstanceIndex;
+	}
+}
+
+void ARRArenaGrid::WriteDepositCrystalData(int32 DepositId, bool bMarkDirty)
+{
+	int32 Instance = INDEX_NONE;
+	UInstancedStaticMeshComponent* Component = GetDepositCrystalComponent(DepositId, Instance);
+	if (!Component || Instance == INDEX_NONE)
+	{
+		return;
+	}
+	const FRRGridDeposit& Deposit = Deposits[DepositId];
+	bool bMarked = false;
+	for (const FIntPoint& Cell : Deposit.Cells)
+	{
+		bMarked |= GetDepositId(Cell) == DepositId && MarkedCells.Contains(Cell);
+	}
+	if (MarkedCustomDataIndex >= 0 && Component->NumCustomDataFloats > MarkedCustomDataIndex)
+	{
+		Component->SetCustomDataValue(Instance, MarkedCustomDataIndex, bMarked ? MarkedCustomDataValue : 0.f, /*bMarkRenderStateDirty*/ false);
+	}
+	if (Deposit.bHasColor && Component->NumCustomDataFloats >= OreColorCustomDataIndex + 3)
+	{
+		Component->SetCustomDataValue(Instance, OreColorCustomDataIndex, Deposit.Color.R, /*bMarkRenderStateDirty*/ false);
+		Component->SetCustomDataValue(Instance, OreColorCustomDataIndex + 1, Deposit.Color.G, /*bMarkRenderStateDirty*/ false);
+		Component->SetCustomDataValue(Instance, OreColorCustomDataIndex + 2, Deposit.Color.B, /*bMarkRenderStateDirty*/ false);
+	}
+	if (bMarkDirty)
+	{
+		Component->MarkRenderStateDirty();
+	}
+}
+
+bool ARRArenaGrid::IsDepositShaking(int32 DepositId) const
+{
+	if (!Deposits.IsValidIndex(DepositId))
+	{
+		return false;
+	}
+	for (const FIntPoint& Cell : Deposits[DepositId].Cells)
+	{
+		if (GetDepositId(Cell) == DepositId && ShakingCells.Contains(Cell))
+		{
+			return true;
+		}
+	}
+	return false;
 }
 
 int32 ARRArenaGrid::AddCellInstance(ERRCellType MapKey, FIntPoint Cell, const FTransform& LocalTransform)
@@ -1817,6 +2059,11 @@ bool ARRArenaGrid::DestroySingleCell(FIntPoint Cell, ERRTerrainDamageSource Sour
 	{
 		RemoveCellInstance(Type, Cell, CellInstanceIndex[Index]);
 	}
+	// Deposit crystal (task-234-03): the formation goes with the first broken block of its deposit, whatever the source.
+	if (DepositId != INDEX_NONE)
+	{
+		RemoveDepositCrystal(DepositId);
+	}
 
 	Cells[Index] = ERRCellType::Floor;
 	CellHealth[Index] = 0.f;
@@ -1901,6 +2148,8 @@ bool ARRArenaGrid::SetCellMarked(FIntPoint Cell, bool bMarked)
 void ARRArenaGrid::WriteMarkedCustomData(FIntPoint Cell, float Value)
 {
 	WriteCellCustomData(Cell, MarkedCustomDataIndex, Value);
+	// Deposit crystal (task-234-03): marked while one standing block of its deposit is (read from MarkedCells).
+	WriteDepositCrystalData(GetDepositId(Cell), /*bMarkDirty*/ true);
 	// Rock piece cells: the outline lives in the marked quadrant floats of the 4 corner pieces (task-230-08; read from MarkedCells).
 	if (IsRockPieceCell(Cell))
 	{
@@ -2457,6 +2706,15 @@ void ARRArenaGrid::StopShaking(FIntPoint Cell)
 		{
 			RefreshCellCornerPieceData(Cell);
 		}
+		// Deposit crystal (task-234-03): back to rest once no block of its deposit shakes.
+		const int32 DepositId = GetDepositId(Cell);
+		int32 CrystalInstance = INDEX_NONE;
+		UInstancedStaticMeshComponent* Crystals = GetDepositCrystalComponent(DepositId, CrystalInstance);
+		if (Crystals && !IsDepositShaking(DepositId))
+		{
+			Crystals->UpdateInstanceTransform(CrystalInstance, GetDepositCrystalTransform(DepositId), /*bWorldSpace*/ false,
+				/*bMarkRenderStateDirty*/ true, /*bTeleport*/ true);
+		}
 	}
 
 	UpdateTickEnabled();
@@ -2481,12 +2739,20 @@ void ARRArenaGrid::Tick(float DeltaSeconds)
 	const float Time = World ? World->GetTimeSeconds() : 0.f;
 	const float Angle = UE_TWO_PI * ShakeFrequency * Time;
 
+	// Deposit crystals (task-234-03) shake once per deposit while any of its blocks shakes; the drone shakes every block it digs.
+	TSet<int32> ShakingDeposits;
 	for (const TPair<FIntPoint, float>& Pair : ShakingCells)
 	{
 		const FIntPoint Cell = Pair.Key;
 		if (!IsBlockCell(Cell))
 		{
 			continue;
+		}
+
+		const int32 DepositId = GetDepositId(Cell);
+		if (DepositCrystalVisual.IsValidIndex(DepositId) && DepositCrystalVisual[DepositId] != INDEX_NONE)
+		{
+			ShakingDeposits.Add(DepositId);
 		}
 
 		const int32 Index = GetCellIndex(Cell);
@@ -2516,5 +2782,24 @@ void ARRArenaGrid::Tick(float DeltaSeconds)
 		Transform.AddToTranslation(Offset);
 		Component->UpdateInstanceTransform(CellInstanceIndex[Index], Transform, /*bWorldSpace*/ false,
 			/*bMarkRenderStateDirty*/ true, /*bTeleport*/ true);
+	}
+
+	for (const int32 DepositId : ShakingDeposits)
+	{
+		int32 Instance = INDEX_NONE;
+		UInstancedStaticMeshComponent* Component = GetDepositCrystalComponent(DepositId, Instance);
+		if (!Component || Instance == INDEX_NONE)
+		{
+			continue;
+		}
+		// Same jitter as a block (ShakeAmplitude, ShakeVerticalAmplitude), one phase per deposit (from its first cell).
+		const float Phase = GetShakePhase(Deposits[DepositId].Cells[0]);
+		const FVector Offset(
+			ShakeAmplitude * FMath::Sin(Angle + Phase),
+			ShakeAmplitude * FMath::Sin(1.37f * Angle + 2.f * Phase),
+			ShakeVerticalAmplitude * FMath::Sin(1.71f * Angle + 3.f * Phase));
+		FTransform Transform = GetDepositCrystalTransform(DepositId);
+		Transform.AddToTranslation(Offset);
+		Component->UpdateInstanceTransform(Instance, Transform, /*bWorldSpace*/ false, /*bMarkRenderStateDirty*/ true, /*bTeleport*/ true);
 	}
 }

@@ -62,6 +62,28 @@ namespace RRTestAccess
 		static FRRRockPieceMeshes& RockPieceBrokenMeshesOf(ARRArenaGrid* Grid) { return Grid->*(&FGridAccess::RockPieceBrokenMeshes); }
 		static UStaticMesh* OreCrystalMeshOf(const ARRArenaGrid* Grid) { return Grid->*(&FGridAccess::OreCrystalMesh); }
 		static float MarkedValueOf(const ARRArenaGrid* Grid) { return Grid->*(&FGridAccess::MarkedCustomDataValue); }
+		static TArray<TObjectPtr<UStaticMesh>>& OreDepositMeshesOf(ARRArenaGrid* Grid) { return Grid->*(&FGridAccess::OreDepositMeshes); }
+		static TArray<TObjectPtr<UStaticMesh>>& HealDepositMeshesOf(ARRArenaGrid* Grid) { return Grid->*(&FGridAccess::HealDepositMeshes); }
+		static const TArray<FRRGridDepositVisual>& DepositVisualsOf(const ARRArenaGrid* Grid) { return Grid->*(&FGridAccess::DepositVisuals); }
+		static bool UsesDepositCrystalsOf(const ARRArenaGrid* Grid, ERRCellType Type) { return (Grid->*(&FGridAccess::UsesDepositCrystals))(Type); }
+		static FTransform DepositCrystalRestOf(const ARRArenaGrid* Grid, int32 DepositId) { return (Grid->*(&FGridAccess::GetDepositCrystalTransform))(DepositId); }
+
+		/** Deposit crystal ISM of DepositId and its instance (task-234-03); nullptr when the deposit has no crystal. */
+		static UInstancedStaticMeshComponent* DepositCrystalOf(const ARRArenaGrid* Grid, int32 DepositId, int32& OutInstance)
+		{
+			return (Grid->*(&FGridAccess::GetDepositCrystalComponent))(DepositId, OutInstance);
+		}
+
+		/** Deposit crystal instances over every deposit crystal ISM of Type. */
+		static int32 DepositCrystalCount(const ARRArenaGrid* Grid, ERRCellType Type)
+		{
+			int32 Count = 0;
+			for (const FRRGridDepositVisual& Visual : DepositVisualsOf(Grid))
+			{
+				Count += Visual.CellType == Type && Visual.Render ? Visual.Render->GetInstanceCount() : 0;
+			}
+			return Count;
+		}
 
 		/** Piece visual of Corner (nullptr for an empty corner or one outside the grid). */
 		static const FRRGridPieceVisual* CornerPiece(const ARRArenaGrid* Grid, FIntPoint Corner)

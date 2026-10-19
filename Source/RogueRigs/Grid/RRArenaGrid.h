@@ -179,6 +179,34 @@ struct FRRGridPieceVisual
 };
 
 /**
+ * One deposit crystal ISM (task-234-03): one block type (ore or heal ore), one mesh variant of its deposit mesh list, over the
+ * whole grid (rendering only, no collision). One instance per standing deposit of that type and variant, at the deposit centre
+ * on the block top. A plain ISM with remove-at-swap, as the rock pieces (task-230-14: a HISM removal leaves an uninitialized
+ * render slot read by the distance field and Lumen card scenes).
+ */
+USTRUCT()
+struct FRRGridDepositVisual
+{
+	GENERATED_BODY()
+
+	/** Block type of every deposit drawn here (Ore or HealOre). */
+	UPROPERTY()
+	ERRCellType CellType = ERRCellType::Ore;
+
+	/** Index of the mesh in the type's deposit mesh list (non-null entries only). */
+	UPROPERTY()
+	int32 Variant = 0;
+
+	/** Rendering ISM (remove at swap); null when the build placed no deposit of this type and variant. */
+	UPROPERTY()
+	TObjectPtr<UInstancedStaticMeshComponent> Render;
+
+	/** Deposit id (index in ARRArenaGrid::Deposits) of each instance, in instance order. */
+	UPROPERTY()
+	TArray<int32> InstanceDeposits;
+};
+
+/**
  * One deposit: blocks of one type mined as one (ore-blocks, heal-ore). Ore table deposits are GroupSize x GroupSize squares
  * placed at build (OreTypes.csv); layout veins (ore or heal ore cells written in the layout) are their 4-connected groups.
  * A deposit is identified by its id (index in ARRArenaGrid::Deposits), never by neighbouring blocks: deposits may touch.
@@ -256,7 +284,8 @@ DECLARE_DYNAMIC_MULTICAST_DELEGATE_ThreeParams(FRROnCellDestroyedSignature, FInt
  * shape and variant, FRRGridPieceVisual); a destroyed cell rebuilds its 4 corner pieces. Collision stays one cube per cell.
  * Damage display (task-230-08): each piece carries per-quadrant custom data (damage, shake, marked, solid mask; layout at
  * PieceDamageCustomDataIndex) read by the piece material; a corner switches to the broken piece set at the first damage of
- * one of its cells; ore and heal ore cells also draw one crystal cluster each (OreCrystalMesh) in their own chunk HISMs.
+ * one of its cells; ore and heal ore cells also draw one crystal cluster each (OreCrystalMesh) in their own chunk HISMs, or,
+ * when their type has deposit meshes (task-234-03), one crystal formation per deposit in the deposit crystal ISMs.
  * Terrain damage (dig) and destruction (explosions) go through ApplyTerrainDamage / DestroyCell / DestroyCellsInRadius.
  * Drops (task-235-01, loot over the dig): a deposit holds N = blocks x DestroyDropCount pickups (4 for a 2 x 2); while dug,
  * pickup k pops when the dig progress of the damaged block (all deposit blocks take the same drone damage) reaches k / N,
@@ -788,8 +817,40 @@ protected:
 	/** Switches the 4 corner pieces of Cell to the broken set once Cell has display damage above 0 (sticky, CornerBroken). */
 	void BreakCellCornerPieces(FIntPoint Cell);
 
-	/** True for the block types with a per-cell rendering instance: barrels (their mesh), ore and heal ore (crystal clusters, task-230-08). Rock and special ore have only their collision instance. */
-	static bool HasCellRenderInstance(ERRCellType Type);
+	/** True for the block types with a per-cell rendering instance: barrels (their mesh), ore and heal ore (crystal clusters, task-230-08) unless their deposits draw one crystal each (UsesDepositCrystals, task-234-03). Rock and special ore have only their collision instance. */
+	bool HasCellRenderInstance(ERRCellType Type) const;
+
+	// --- Deposit crystals (task-234-03, ore-blocks: a 2 x 2 deposit is one entity, also in its look) ---
+
+	/** True when the deposits of block type Type draw one crystal formation each: Ore or HealOre with at least one non-null mesh in OreDepositMeshes / HealDepositMeshes. Otherwise the type keeps one crystal cluster per cell. */
+	bool UsesDepositCrystals(ERRCellType Type) const;
+
+	/** Non-null meshes of the deposit mesh list of Type (OreDepositMeshes for Ore, HealDepositMeshes for HealOre), in list order; empty for other types. */
+	void GetDepositMeshes(ERRCellType Type, TArray<UStaticMesh*>& OutMeshes) const;
+
+	/** Material of the deposit crystals of Type (OreDepositMaterial or HealDepositMaterial), applied to every slot; null keeps the mesh materials. */
+	UMaterialInterface* GetDepositMaterial(ERRCellType Type) const;
+
+	/** Hash of a deposit id and DepositCrystalSeed: the mesh variant is Hash % mesh count, the yaw quarter turns a second mix of it. */
+	uint32 GetDepositCrystalHash(int32 DepositId) const;
+
+	/** Actor-space transform of the crystal of a deposit: centre of its cells' bounding box on the block top (the mesh pivot is its footprint centre, base at z 0), hashed yaw quarter turn, uniform DepositCrystalScale. */
+	FTransform GetDepositCrystalTransform(int32 DepositId) const;
+
+	/** Adds one crystal instance per deposit of a type that UsesDepositCrystals, batched per type and variant, with its marked and ore colour data. Called by BuildInstances. */
+	void BuildDepositCrystals();
+
+	/** Removes the crystal of DepositId (no-op without one) and patches the maps for the instance moved into the freed slot (remove at swap). */
+	void RemoveDepositCrystal(int32 DepositId);
+
+	/** Deposit crystal ISM of DepositId and its instance in OutInstance; nullptr when the deposit has no crystal. */
+	UInstancedStaticMeshComponent* GetDepositCrystalComponent(int32 DepositId, int32& OutInstance) const;
+
+	/** Writes the marked float (MarkedCustomDataValue when one standing block of the deposit is marked, else 0) and the ore colour (when the deposit has one) into the crystal of DepositId; marks the ISM render state dirty when bMarkDirty. */
+	void WriteDepositCrystalData(int32 DepositId, bool bMarkDirty);
+
+	/** True when a standing block of DepositId is in ShakingCells. */
+	bool IsDepositShaking(int32 DepositId) const;
 
 	/** Actor-space transform of the crystal cluster of an ore or heal ore cell: cell centre, bottom of the mesh bounds on the block top, uniform OreCrystalScale, yaw hashed from the cell and RockPieceSeed. */
 	FTransform GetCrystalTransform(FIntPoint Cell) const;
@@ -1121,6 +1182,34 @@ protected:
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Grid|Ore Crystals", meta = (ClampMin = "0.01"))
 	float OreCrystalScale = 1.5f;
 
+	/**
+	 * Crystal formations of the Duskite (Ore) deposits (task-234-03; SM_DuskiteDeposit_01..03 from task-234-02): one instance per
+	 * deposit, mesh = entry hash(deposit id, DepositCrystalSeed) % count. Source meshes: pivot at the footprint centre, base at
+	 * z 0, footprint 134 x 134 uu (2 x 2 cells of 67). Null entries are skipped; empty (or only null): ore keeps one OreCrystalMesh cluster per cell.
+	 */
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Grid|Ore Deposits")
+	TArray<TObjectPtr<UStaticMesh>> OreDepositMeshes;
+
+	/** Crystal formations of the heal ore deposits (heal veins), same rules as OreDepositMeshes; empty for now: heal ore keeps one cluster per cell. */
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Grid|Ore Deposits")
+	TArray<TObjectPtr<UStaticMesh>> HealDepositMeshes;
+
+	/** Material of the Duskite deposit crystals, applied to every slot (default MI_OreChunk_Bright, as OreCrystalMaterial); null keeps the mesh materials. */
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Grid|Ore Deposits")
+	TObjectPtr<UMaterialInterface> OreDepositMaterial;
+
+	/** Material of the heal deposit crystals, applied to every slot (default MI_HealCrystal_Bright, as HealOreCrystalMaterial); null keeps the mesh materials. */
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Grid|Ore Deposits")
+	TObjectPtr<UMaterialInterface> HealDepositMaterial;
+
+	/** Uniform scale of the deposit crystals (1: a 134 uu footprint covers a 2 x 2 deposit of 67 uu cells; provisional). */
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Grid|Ore Deposits", meta = (ClampMin = "0.01"))
+	float DepositCrystalScale = 1.f;
+
+	/** Seed of the per-deposit mesh variant and quarter-turn hash: same layout, deposits and seed give the same formations. */
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Grid|Ore Deposits")
+	int32 DepositCrystalSeed = 1;
+
 	/** Seed of the per-corner variant and full-piece rotation hash: same layout and seed give the same pieces. */
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Grid|Rock Pieces")
 	int32 RockPieceSeed = 1;
@@ -1252,6 +1341,16 @@ protected:
 	/** Every rock piece visual, index = ((set * piece shape count + shape) * PieceVariantSlots + variant) * chunk count + chunk Y * ChunkCount.X + chunk X (GetPieceVisualIndex); owns the piece ISMs. */
 	UPROPERTY(Transient)
 	TArray<FRRGridPieceVisual> PieceVisuals;
+
+	/** Deposit crystal ISMs (task-234-03), one per block type and mesh variant, created at build for the types that UsesDepositCrystals. */
+	UPROPERTY(Transient)
+	TArray<FRRGridDepositVisual> DepositVisuals;
+
+	/** Deposit id -> index in DepositVisuals of its crystal; INDEX_NONE without one (type on per-cell clusters, or crystal removed at the first broken block). */
+	TArray<int32> DepositCrystalVisual;
+
+	/** Deposit id -> instance index of its crystal in its DepositVisuals ISM; INDEX_NONE without one. */
+	TArray<int32> DepositCrystalInstance;
 
 	/** Variant slots per piece set and shape in PieceVisuals: the longest mesh list at the last build (at least 1). */
 	int32 PieceVariantSlots = 1;
