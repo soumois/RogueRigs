@@ -3,7 +3,7 @@ id: task-230-24-rock-rim-visible
 description: "The lighter rim band along the rock outline is visible at the game camera."
 parent: task-230-rock-slab-integration
 kind: task
-status: todo
+status: in-progress
 ---
 # The lighter rim band along the rock outline is visible at the game camera
 
