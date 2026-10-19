@@ -13,7 +13,7 @@ A global task moves to [[tasks-done-index]] when it is done (`vault/scripts/task
 - [[task-188-editor-lock]] — Editor lock shared by sessions: a lock file, a node script to take, release and read it, and the runbook and protocol rules to use it. Status todo.
 - [[task-230-rock-slab-integration]] — Dual-grid slab rock look in the grid: pieces, world-UV top texture, cracks, plates, crystals. Status in-progress.
 - [[task-234-ore-deposit-look]] — Each 2 x 2 ore or heal deposit is drawn as one crystal formation, at least 3 variants per type, from images the owner generates with prompts we write. Status in-progress.
-- [[task-238-crit-number-colour]] — The critical damage number is a lighter orange, linear colour (1, 0.7, 0.35), instead of the current gold (1, 0.55, 0.08). Status todo.
+- [[task-238-crit-number-colour]] — The critical damage number is a lighter orange, linear colour (1, 0.7, 0.35), instead of the current gold (1, 0.55, 0.08). Status in-progress.
 - [[task-239-number-size-by-damage]] — The size of a damage number grows with the damage of the hit, continuous from x0.8 to x1.4; a crit keeps its x1.6 on top. Status todo.
 - [[task-240-number-rise-variation]] — Each damage number rises with its own random speed (x0.7 to x1.3) and angle (up to 35 degrees left or right of screen up), so consecutive numbers no longer travel in parallel. Status todo.
 - [[task-241-number-pop-duration]] — The pop of the damage numbers lasts 0.25 s instead of 0.1 s. Status todo.

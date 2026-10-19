@@ -3,7 +3,7 @@ id: task-238-crit-number-colour
 description: "Global task: The critical damage number is a lighter orange, linear colour (1, 0.7, 0.35), instead of the current gold (1, 0.55, 0.08)."
 parent: tasks-to-do-index
 kind: task
-status: todo
+status: in-progress
 ---
 # Critical damage number colour
 

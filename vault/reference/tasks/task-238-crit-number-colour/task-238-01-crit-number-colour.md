@@ -3,7 +3,7 @@ id: task-238-01-crit-number-colour
 description: "The critical damage number is a lighter orange, linear colour (1, 0.7, 0.35), instead of the current gold (1, 0.55, 0.08)."
 parent: task-238-crit-number-colour
 kind: task
-status: todo
+status: in-progress
 ---
 # Critical damage number colour
 
