@@ -13,7 +13,7 @@ status: in-progress
 - gdd_check: [[rock-state-render-options]] and children (owner decisions 2026-10-17: dual grid for display only, provisional triangle budget, rim as vertex colour in one material, cracks from any damage, one variant per shape with variant support, Nanite assumed), [[art-style-guide]] A1 level 3, [[color-code]], [[readability-rules]], [[sys-grid]]. Open: weak rock (separate task, maximum share open), number of variants later. Not in this task: weak rock, collision rounding of corners.
 - confirmed_by_owner: yes (2026-10-17). Launch rules (owner): 01 then 02 run one after the other (not in parallel); 03 to 06 each wait for the owner validation of the previous one; 07 to 12 run together as one sequence without asking again.
 - milestone: M2
-- next_step: task-230-17-rock-sag-visible-check
+- next_step: task-230-18-rock-material-diagnosis
 - result: open
 
 ## Subtasks
@@ -34,6 +34,8 @@ status: in-progress
 15. task-230-15-duskite-crystal-colour — bp: Duskite crystals violet again.
 16. task-230-16-rock-top-texture-shade — bp: Top texture visible, no tint rectangle between full and edge pieces.
 17. task-230-17-rock-sag-visible-check — cpp: Visible sag on a damaged wall and captures of 15 and 16.
+18. task-230-18-rock-material-diagnosis — bp: Why material changes and Duskite colour do not show in game; fix.
+19. task-230-19-rock-control-capture — cpp: Control captures after 18.
 
 ## Relations
 - [[tasks-to-do-index]] — parent index.
@@ -54,5 +56,7 @@ status: in-progress
 - [[task-230-15-duskite-crystal-colour]] — step 15, bp.
 - [[task-230-16-rock-top-texture-shade]] — step 16, bp.
 - [[task-230-17-rock-sag-visible-check]] — step 17, cpp.
+- [[task-230-18-rock-material-diagnosis]] — step 18, bp.
+- [[task-230-19-rock-control-capture]] — step 19, cpp.
 - [[rock-state-render-options]] — the design this task implements.
 - [[task-219-rock-ore-look]] — the look exploration behind it.
