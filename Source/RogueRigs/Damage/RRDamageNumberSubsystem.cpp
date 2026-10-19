@@ -27,6 +27,7 @@ const FName URRDamageNumberSubsystem::DigitSizesParameter(TEXT("User.DigitSizes"
 const FName URRDamageNumberSubsystem::DigitColorsParameter(TEXT("User.DigitColors"));
 const FName URRDamageNumberSubsystem::DigitCriticalsParameter(TEXT("User.DigitCriticals"));
 const FName URRDamageNumberSubsystem::DigitSpawnTimesParameter(TEXT("User.DigitSpawnTimes"));
+const FName URRDamageNumberSubsystem::DigitVelocitiesParameter(TEXT("User.DigitVelocities"));
 const FName URRDamageNumberSubsystem::DigitCountParameter(TEXT("User.DigitCount"));
 const FName URRDamageNumberSubsystem::DigitBatchIdParameter(TEXT("User.DigitBatchId"));
 
@@ -172,6 +173,8 @@ void URRDamageNumberSubsystem::Tick(float DeltaTime)
 		Number.Size = GetHitSize(Entry.Value, Entry.bCritical);
 		Number.Color = Entry.bCritical ? CriticalColor : NormalColor;
 		Number.SpawnTime = static_cast<float>(Now);
+		// One draw per number: its digits share it (AppendDigits). The stacking keeps the mean RiseVelocity.
+		Number.Velocity = DrawRiseVelocity();
 		if (MaxStackSteps > 0)
 		{
 			FDisplayedNumber& Shown = Displayed.AddDefaulted_GetRef();
@@ -207,6 +210,20 @@ float URRDamageNumberSubsystem::GetHitSize(float Value, bool bCritical) const
 	const float Alpha = DamageForMaxSize > 0.f ? FMath::Clamp(Value / DamageForMaxSize, 0.f, 1.f) : 1.f;
 	const float Size = NumberSize * FMath::Lerp(SizeMin, SizeMax, Alpha);
 	return bCritical ? Size * CriticalScale : Size;
+}
+
+FVector URRDamageNumberSubsystem::DrawRiseVelocity() const
+{
+	const float SpeedFactor = FMath::FRandRange(RiseSpeedMin, RiseSpeedMax);
+	const float AngleLimit = FMath::Abs(RiseAngleMax);
+	const float AngleDegrees = AngleLimit > 0.f ? FMath::FRandRange(-AngleLimit, AngleLimit) : 0.f;
+	// The view axis (normal of the screen plane spanned by screen right and screen up): rotating around it turns the
+	// on-screen rise direction by the angle, left or right of screen up.
+	const FVector Right = DigitDirection.GetSafeNormal(UE_SMALL_NUMBER, FVector::YAxisVector);
+	const FVector Up = StackDirection.GetSafeNormal(UE_SMALL_NUMBER, FVector::ZAxisVector);
+	const FVector ViewAxis = FVector::CrossProduct(Right, Up).GetSafeNormal();
+	const FVector Direction = ViewAxis.IsZero() || AngleDegrees == 0.f ? RiseVelocity : RiseVelocity.RotateAngleAxis(AngleDegrees, ViewAxis);
+	return Direction * SpeedFactor;
 }
 
 FVector2D URRDamageNumberSubsystem::GetFootprint(float Value, bool bCritical) const
@@ -353,6 +370,7 @@ void URRDamageNumberSubsystem::AppendDigits(const FRRDamageNumber& Number, TArra
 		Digit.Color = Number.Color;
 		Digit.bCritical = Number.bCritical;
 		Digit.SpawnTime = Number.SpawnTime;
+		Digit.Velocity = Number.Velocity;
 	}
 }
 
@@ -377,12 +395,14 @@ void URRDamageNumberSubsystem::PushToNiagara()
 	TArray<FLinearColor> Colors;
 	TArray<int32> Criticals;
 	TArray<float> SpawnTimes;
+	TArray<FVector> Velocities;
 	Positions.Reserve(Count);
 	Indices.Reserve(Count);
 	Sizes.Reserve(Count);
 	Colors.Reserve(Count);
 	Criticals.Reserve(Count);
 	SpawnTimes.Reserve(Count);
+	Velocities.Reserve(Count);
 	for (const FRRDamageDigit& Digit : LastDigits)
 	{
 		Positions.Add(Digit.Location);
@@ -391,6 +411,7 @@ void URRDamageNumberSubsystem::PushToNiagara()
 		Colors.Add(Digit.Color);
 		Criticals.Add(Digit.bCritical ? 1 : 0);
 		SpawnTimes.Add(Digit.SpawnTime);
+		Velocities.Add(Digit.Velocity);
 	}
 	// Arrays first, then the count, the batch id last: the emitter spawns on a batch id change only.
 	if (HasParameter(DigitPositionsParameter))
@@ -417,6 +438,10 @@ void URRDamageNumberSubsystem::PushToNiagara()
 	{
 		UNiagaraDataInterfaceArrayFunctionLibrary::SetNiagaraArrayFloat(NiagaraComponent, DigitSpawnTimesParameter, SpawnTimes);
 	}
+	if (HasParameter(DigitVelocitiesParameter))
+	{
+		UNiagaraDataInterfaceArrayFunctionLibrary::SetNiagaraArrayVector(NiagaraComponent, DigitVelocitiesParameter, Velocities);
+	}
 	if (HasParameter(DigitCountParameter))
 	{
 		NiagaraComponent->SetVariableInt(DigitCountParameter, Count);
@@ -432,7 +457,7 @@ void URRDamageNumberSubsystem::CheckUserParameters(const UNiagaraSystem& System)
 {
 	MissingParameters.Reset();
 	const FName Parameters[] = { DigitPositionsParameter, DigitIndicesParameter, DigitSizesParameter, DigitColorsParameter,
-		DigitCriticalsParameter, DigitSpawnTimesParameter, DigitCountParameter, DigitBatchIdParameter };
+		DigitCriticalsParameter, DigitSpawnTimesParameter, DigitVelocitiesParameter, DigitCountParameter, DigitBatchIdParameter };
 	const TArrayView<const FNiagaraVariableWithOffset> Exposed = System.GetExposedParameters().ReadParameterVariables();
 	FString MissingList;
 	for (const FName Parameter : Parameters)

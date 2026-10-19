@@ -39,6 +39,10 @@ struct ROGUERIGS_API FRRDamageNumber
 	/** World time (seconds, pauses with the game) at which the number was pushed. */
 	UPROPERTY(BlueprintReadOnly, Category = "Damage Numbers")
 	float SpawnTime = 0.f;
+
+	/** World rise velocity (uu/s) of the number, drawn once per number at the push (URRDamageNumberSubsystem::DrawRiseVelocity). */
+	UPROPERTY(BlueprintReadOnly, Category = "Damage Numbers")
+	FVector Velocity = FVector::ZeroVector;
 };
 
 /** One digit sprite of a damage number, laid out by URRDamageNumberSubsystem: what the Niagara emitter draws per particle. */
@@ -70,6 +74,10 @@ struct ROGUERIGS_API FRRDamageDigit
 	/** World time of the push (the number's spawn time). */
 	UPROPERTY(BlueprintReadOnly, Category = "Damage Numbers")
 	float SpawnTime = 0.f;
+
+	/** World rise velocity (uu/s): the number's velocity, shared by all its digits so the number stays readable. */
+	UPROPERTY(BlueprintReadOnly, Category = "Damage Numbers")
+	FVector Velocity = FVector::ZeroVector;
 };
 
 /** Native event of URRDamageNumberSubsystem: the batch of numbers pushed this tick (never broadcast empty). */
@@ -109,6 +117,8 @@ public:
 	static const FName DigitCriticalsParameter;
 	/** Niagara user parameter (Niagara Float Array): world time of the push, same for the whole batch. */
 	static const FName DigitSpawnTimesParameter;
+	/** Niagara user parameter (Niagara Vector Array): world rise velocity (uu/s) of each digit, one draw per number (DrawRiseVelocity). */
+	static const FName DigitVelocitiesParameter;
 	/** Niagara user parameter (int32): number of digits of the last batch (array length); kept until the next batch. */
 	static const FName DigitCountParameter;
 	/** Niagara user parameter (int32): id of the last batch, +1 per push, never reset (0 = nothing pushed yet). */
@@ -162,6 +172,13 @@ public:
 	 * size and the stacking footprint.
 	 */
 	float GetHitSize(float Value, bool bCritical) const;
+
+	/**
+	 * Random rise velocity of one number (damage-numbers, provisional, owner 2026-10-19): RiseVelocity rotated in the screen
+	 * plane (around the view axis DigitDirection x StackDirection) by a uniform angle in [-RiseAngleMax, RiseAngleMax] degrees,
+	 * scaled by a uniform factor in [RiseSpeedMin, RiseSpeedMax]. Drawn once per number at the push; all its digits share it.
+	 */
+	FVector DrawRiseVelocity() const;
 
 	/** Seconds a pushed number stays on screen (particle lifetime of NumberSystem when it could be read, else the config value). */
 	float GetDisplayLifetime() const { return DisplayLifetime; }
@@ -310,9 +327,27 @@ protected:
 	UPROPERTY(Config)
 	float DisplayLifetime = 0.7f;
 
-	/** World velocity (uu/s) of a displayed number (NS_DamageNumbers particle velocity); replaced by the asset value at BeginPlay when readable. */
+	/**
+	 * Mean world velocity (uu/s) of a displayed number (NS_DamageNumbers particle velocity); replaced by the asset value at
+	 * BeginPlay when readable. Each number varies it (DrawRiseVelocity); the stacking keeps this mean as approximation.
+	 */
 	UPROPERTY(Config)
 	FVector RiseVelocity = FVector(0.f, 0.f, 85.7f);
+
+	/** Smallest rise speed factor of a number, applied to RiseVelocity (damage-numbers: 0.7, provisional, owner 2026-10-19). */
+	UPROPERTY(Config)
+	float RiseSpeedMin = 0.7f;
+
+	/** Largest rise speed factor of a number, applied to RiseVelocity (damage-numbers: 1.3, provisional, owner 2026-10-19). */
+	UPROPERTY(Config)
+	float RiseSpeedMax = 1.3f;
+
+	/**
+	 * Largest rise angle (degrees) of a number, left or right of screen up (StackDirection), in the screen plane
+	 * (damage-numbers: 35, provisional, owner 2026-10-19). 0 = every number rises straight up.
+	 */
+	UPROPERTY(Config)
+	float RiseAngleMax = 35.f;
 
 	/** Gap (uu) left between a stacked number and the one it was stacked above. */
 	UPROPERTY(Config)
