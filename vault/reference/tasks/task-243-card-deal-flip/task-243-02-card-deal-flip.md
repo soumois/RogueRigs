@@ -3,7 +3,7 @@ id: task-243-02-card-deal-flip
 description: "Review the card back candidate against the art rules and the colour code."
 parent: task-243-card-deal-flip
 kind: task
-status: todo
+status: done
 ---
 # 243-02 style-guide
 
@@ -17,9 +17,9 @@ status: todo
 - token_ceiling: 15000 (provisional)
 - model: open
 - tokens: open
-- runs: open
+- runs: 2
 - milestone: M2
-- result: open
+- result: style-guide: first round 3 fails A6, owner chose variant 2 with the A6 correction; second round A6 fixed, 1 fail color-code (dark gunmetal and navy field dominant, teal minor); owner keeps it on purpose (deviation voluntary, 2026-10-19).
 
 ## Relations
 - [[task-243-card-deal-flip]] — parent global task.

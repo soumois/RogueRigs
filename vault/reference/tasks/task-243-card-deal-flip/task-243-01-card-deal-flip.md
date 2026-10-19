@@ -3,7 +3,7 @@ id: task-243-01-card-deal-flip
 description: "Design one card back (star emblem, same style as the card frames) as a 1000 x 1440 candidate, prompt saved in the vault."
 parent: task-243-card-deal-flip
 kind: task
-status: in-progress
+status: done
 ---
 # 243-01 art
 
@@ -17,9 +17,9 @@ status: in-progress
 - token_ceiling: 30000 (provisional)
 - model: open
 - tokens: open
-- runs: open
+- runs: 2
 - milestone: M2
-- result: open
+- result: Back design: 3 grey candidates (run 20261019-135524), variant 2 chosen by the owner, A6 correction run 20261019-150141 (off-white plates, 2 teal plates); 24 credits; prompt node art-prompts-card-back; costs counted under the resumed agent a0876ffa3d1b26ad6 (2 runs).
 
 ## Relations
 - [[task-243-card-deal-flip]] — parent global task.

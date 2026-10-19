@@ -3,7 +3,7 @@ id: task-243-03-card-deal-flip
 description: "From the validated back design make five versions, grey, green, blue, purple, yellow (tier colours of wbp-upgrade-choice SetCard), 1000 x 1440 each; Kie runs sequential."
 parent: task-243-card-deal-flip
 kind: task
-status: todo
+status: in-progress
 ---
 # 243-03 art
 
