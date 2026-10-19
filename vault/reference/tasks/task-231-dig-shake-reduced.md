@@ -3,7 +3,7 @@ id: task-231-dig-shake-reduced
 description: "Global task: smaller dug block shake (8 uu horizontal, 3 uu vertical), drawn on every rock piece."
 parent: tasks-to-do-index
 kind: task
-status: todo
+status: in-progress
 ---
 # Dig shake reduced
 

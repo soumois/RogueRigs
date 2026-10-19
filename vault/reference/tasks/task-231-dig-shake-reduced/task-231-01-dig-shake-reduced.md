@@ -3,7 +3,7 @@ id: task-231-01-dig-shake-reduced
 description: "The dug block shake is smaller now that the rock look is final: 8 uu horizontal, 3 uu vertical, and it draws on every piece."
 parent: task-231-dig-shake-reduced
 kind: task
-status: todo
+status: in-progress
 ---
 # Dig shake reduced
 
