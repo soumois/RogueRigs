@@ -38,3 +38,4 @@ Board on a clean dark floor, no characters, no text; verbatim prompts are the fi
 - [[art-prompts]] — parent: method and locked phrases.
 - [[rock-look-reference]] — the owner reference these proposals answer.
 - [[ore-blocks]] — the deposit rules the ore blocks follow.
+- [[art-prompts-ore-deposit]] — owner prompts for one crystal formation per 2 x 2 deposit, 3 variants each for Duskite and heal ore (task-234).
