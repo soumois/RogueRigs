@@ -3,7 +3,7 @@ id: task-234-06-heal-deposit-prompts
 description: "New ChatGPT prompts for 3 heal deposit variants that read apart from Duskite: red crystals embedded in rock."
 parent: task-234-ore-deposit-look
 kind: task
-status: in-progress
+status: done
 ---
 # Heal deposit prompts, version 2
 
@@ -15,11 +15,11 @@ status: in-progress
 - done_when: node updated and linted; prompts sent to the owner; committed.
 - editor_state: any
 - token_ceiling: 25000
-- model: open
-- tokens: open
-- runs: open
+- model: sonnet
+- tokens: input 10, cache write 17934, cache read 70401, output 348
+- runs: 1
 - milestone: M2
-- result: open
+- result: Commit f23d7070: heal prompts version 2 (cracked mound, inlaid slab, half-buried cluster, 3 x 1 sheet), version 1 marked rejected; distinctness check against the Duskite sheet; sent to the owner.
 
 ## Relations
 - [[task-234-ore-deposit-look]] — parent global task.
