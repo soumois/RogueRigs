@@ -3,7 +3,7 @@ id: task-244-card-rarity-suspense
 description: "Global task: From purple up, the card flips last: its back glows, the other cards darken, then punch, flash and rays in the tier colour."
 parent: tasks-to-do-index
 kind: task
-status: todo
+status: in-progress
 ---
 # Rarity suspense reveal
 

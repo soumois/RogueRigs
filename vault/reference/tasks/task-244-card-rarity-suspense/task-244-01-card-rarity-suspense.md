@@ -3,7 +3,7 @@ id: task-244-01-card-rarity-suspense
 description: "In WBP_UpgradeChoice, flip purple and yellow cards last, glow their back while waiting, darken the other cards, then on reveal a scale punch, a flash and rays in the tier colour built from T_CardFr..."
 parent: task-244-card-rarity-suspense
 kind: task
-status: todo
+status: in-progress
 ---
 # 244-01 bp
 
