@@ -1,9 +1,9 @@
 ---
 id: task-243-card-deal-flip
 description: "Global task: Level-up cards arrive face down in a fan (ease-out-back from below), then flip one by one; a card back exists in one version per rarity."
-parent: tasks-to-do-index
+parent: tasks-done-index
 kind: task
-status: in-progress
+status: done
 ---
 # Card arrival and flip
 
@@ -13,8 +13,8 @@ status: in-progress
 - gdd_check: xp-level-up, upgrades, rarities, readability-rules read (2026-10-19); no conflict, no open value; the GDD section on the card animation is added after the last card task (owner default, provisional).
 - confirmed_by_owner: yes (2026-10-19)
 - milestone: M2
-- next_step: task-243-06-card-deal-flip
-- result: open
+- next_step: none
+- result: Cards arrive face down in a fan, flip one by one over 0.8 s, five backs by rarity (A6 and color-code deviations kept by the owner); animation driven by a gated widget tick because the pause freezes world timers; unseen items listed in 243-06.
 
 ## Subtasks
 1. task-243-01-card-deal-flip — art
@@ -25,7 +25,7 @@ status: in-progress
 6. task-243-06-card-deal-flip — cpp
 
 ## Relations
-- [[tasks-to-do-index]] — parent index.
+- [[tasks-done-index]] — parent index.
 - [[task-243-01-card-deal-flip]] — step 1, art.
 - [[task-243-02-card-deal-flip]] — step 2, style-guide.
 - [[task-243-03-card-deal-flip]] — step 3, art.
