@@ -3,7 +3,7 @@ id: task-230-25-heal-crystal-red
 description: "Heal crystals read red, not orange-red, per color-code."
 parent: task-230-rock-slab-integration
 kind: task
-status: in-progress
+status: done
 ---
 # Heal crystals read red, not orange-red, per color-code
 
@@ -15,11 +15,11 @@ status: in-progress
 - done_when: saved; doc updated; committed; look checked in task-230-26.
 - editor_state: open
 - token_ceiling: 20000
-- model: open
-- tokens: open
-- runs: open
+- model: sonnet
+- tokens: input 42, cache write 42333, cache read 547284, output 583
+- runs: 1
 - milestone: M2
-- result: open
+- result: Commit b1d190ae. Orange from a very bright red emissive (12x) through bloom and the filmic tonemapper. MI_HealCrystal_Bright (1.0, 0.0, 0.05) glow 8, _Dark (0.5, 0.0, 0.025) glow 4; parent unchanged, Duskite untouched. Look checked in 230-26.
 
 ## Relations
 - [[task-230-rock-slab-integration]] — parent global task.
