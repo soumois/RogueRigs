@@ -13,7 +13,7 @@ status: in-progress
 - gdd_check: done by the Orchestrator when the task is planned (2026-10-19).
 - confirmed_by_owner: yes (2026-10-19)
 - milestone: M2
-- next_step: task-234-01-ore-deposit-look
+- next_step: owner images (then 3d, import, capture subtasks)
 - result: open
 
 ## Subtasks

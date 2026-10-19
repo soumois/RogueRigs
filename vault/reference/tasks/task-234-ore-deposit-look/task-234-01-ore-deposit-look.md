@@ -3,7 +3,7 @@ id: task-234-01-ore-deposit-look
 description: "Image prompts for the owner: 3 Duskite and 3 heal 2 x 2 crystal formations in the image C style."
 parent: task-234-ore-deposit-look
 kind: task
-status: in-progress
+status: done
 ---
 # Ore deposit look
 
@@ -15,11 +15,11 @@ status: in-progress
 - done_when: prompt node written and linted; prompts sent to the owner; committed.
 - editor_state: any
 - token_ceiling: 30000
-- model: open
-- tokens: open
-- runs: open
+- model: sonnet
+- tokens: input 18, cache write 32736, cache read 198105, output 1107
+- runs: 1
 - milestone: M2
-- result: open
+- result: Commit f4189843: node art-prompts-ore-deposit (3 Duskite and 3 heal ChatGPT prompts: spire, ridge, crown; two 3 x 1 sheets), self-reviewed; sent to the owner; waiting for his images.
 
 ## Relations
 - [[task-234-ore-deposit-look]] — parent global task.
