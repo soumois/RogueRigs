@@ -383,7 +383,8 @@ IMPLEMENT_SIMPLE_AUTOMATION_TEST(FRRDigHealOreDropsTest, "RogueRigs.Dig.HealOreD
 
 bool FRRDigHealOreDropsTest::RunTest(const FString& Parameters)
 {
-	// Game grid (67 uu): heal ore takes 1.5 s per block and drops one pickup when broken (ore-blocks, drone gdd).
+	// Game grid (67 uu): heal ore takes 1.5 s per block; its 2 x 2 vein holds 4 pickups, popped one by one over the dig at
+	// progress k / 4, i.e. every 0.375 s, the last one on the destroying hit (task-235-01, heal-ore, owner 2026-10-19).
 	FTestWorld TestWorld;
 	ARRArenaGrid* Grid = SpawnFineGrid(*this, TestWorld);
 	UClass* HealClass = LoadTestClass<ARRPickup>(*this, HealPickupClassPath);
@@ -400,12 +401,17 @@ bool FRRDigHealOreDropsTest::RunTest(const FString& Parameters)
 
 	TestEqual(TEXT("(148, 136) is heal ore"), Grid->GetCellType(FineHealOreCell), ERRCellType::HealOre);
 	TestNearlyEqual(TEXT("heal ore health 1.5"), Grid->GetCellHealth(FineHealOreCell), 1.5f);
-	TestNearlyEqual(TEXT("drop interval 1.5 s: no multiple strictly below the health, so no dig drop"), FGridAccess::DropIntervalOf(Grid), 1.5f);
-	TestEqual(TEXT("one pickup per broken block"), FGridAccess::DropsOnDestroy(Grid), 1);
+	TestEqual(TEXT("one pickup per block"), FGridAccess::DropsOnDestroy(Grid), 1);
+	const int32 DepositId = Grid->GetDepositId(FineHealOreCell);
+	if (!TestTrue(TEXT("(148, 136) is in a heal vein"), DepositId != INDEX_NONE))
+	{
+		return false;
+	}
+	const int32 Expected = Grid->GetDepositPickupCount(DepositId);
+	TestEqual(TEXT("a 2 x 2 vein holds 4 pickups"), Expected, 4);
 	TestEqual(TEXT("no pickup at start"), CountPickups(TestWorld.Get()), 0);
 
-	int32 FirstDropFrame = INDEX_NONE;
-	int32 SecondDropFrame = INDEX_NONE;
+	TArray<int32> PopFrames;
 	int32 DestroyFrame = INDEX_NONE;
 	int32 PickupsAtDestroy = 0;
 	if (URRPickupSubsystem* PickupSystem = TestWorld.Get()->GetSubsystem<URRPickupSubsystem>())
@@ -415,30 +421,53 @@ bool FRRDigHealOreDropsTest::RunTest(const FString& Parameters)
 	for (int32 Frame = 1; Frame <= 300 && DestroyFrame == INDEX_NONE; ++Frame)
 	{
 		const int32 Before = CountPickups(TestWorld.Get());
-		if (Grid->ApplyTerrainDamage(FineHealOreCell, FrameSeconds, ERRTerrainDamageSource::Drone))
+		const bool bDestroyed = Grid->ApplyTerrainDamage(FineHealOreCell, FrameSeconds, ERRTerrainDamageSource::Drone);
+		const int32 After = CountPickups(TestWorld.Get());
+		TestTrue(FString::Printf(TEXT("at most one pickup at frame %d"), Frame), After - Before <= 1);
+		if (After > Before)
+		{
+			PopFrames.Add(Frame);
+		}
+		if (bDestroyed)
 		{
 			DestroyFrame = Frame;
-			PickupsAtDestroy = CountPickups(TestWorld.Get()) - Before;
-		}
-		const int32 After = CountPickups(TestWorld.Get());
-		if (DestroyFrame == INDEX_NONE && After > Before)
-		{
-			TestEqual(FString::Printf(TEXT("one dig drop at frame %d"), Frame), After - Before, 1);
-			(FirstDropFrame == INDEX_NONE ? FirstDropFrame : SecondDropFrame) = Frame;
+			PickupsAtDestroy = After - Before;
 		}
 		TestWorld.Tick();
 	}
 
-	AddInfo(FString::Printf(TEXT("drops at frames %d and %d (%.4f s, %.4f s); destroyed at frame %d (%.4f s); %d pickups on destruction"),
-		FirstDropFrame, SecondDropFrame, FirstDropFrame * FrameSeconds, SecondDropFrame * FrameSeconds, DestroyFrame, DestroyFrame * FrameSeconds,
-		PickupsAtDestroy));
-	TestEqual(TEXT("no dig drop before the destruction"), FirstDropFrame, static_cast<int32>(INDEX_NONE));
+	FString Frames;
+	for (const int32 Frame : PopFrames)
+	{
+		Frames += FString::Printf(TEXT(" %d (%.4f s)"), Frame, Frame * FrameSeconds);
+	}
+	AddInfo(FString::Printf(TEXT("pops at frames%s; destroyed at frame %d (%.4f s)"), *Frames, DestroyFrame, DestroyFrame * FrameSeconds));
 	TestTrue(TEXT("destroyed at 1.5 s +- 1 frame"), DestroyFrame >= 89 && DestroyFrame <= 91);
-	TestEqual(TEXT("destruction drops DestroyDropCount"), PickupsAtDestroy, FGridAccess::DropsOnDestroy(Grid));
+	if (TestEqual(TEXT("4 pops during the dig"), PopFrames.Num(), Expected))
+	{
+		// Pickup k at progress k / 4: 0.375 s = 22.5 frames, so frames 22.5 k rounded up (+- 1).
+		for (int32 Pop = 0; Pop < PopFrames.Num(); ++Pop)
+		{
+			const float ExpectedFrame = (Pop + 1) * 1.5f / Expected / FrameSeconds;
+			TestTrue(FString::Printf(TEXT("pickup %d pops at progress %d / 4 (frame %d, expected %.1f +- 1)"), Pop + 1, Pop + 1, PopFrames[Pop], ExpectedFrame),
+				FMath::Abs(PopFrames[Pop] - ExpectedFrame) <= 1.f);
+		}
+		TestEqual(TEXT("the last pickup pops on the destroying hit"), PopFrames.Last(), DestroyFrame);
+	}
+	TestEqual(TEXT("the destroying hit pops only the last pickup"), PickupsAtDestroy, 1);
+	TestEqual(TEXT("deposit counts 4 popped"), Grid->GetDeposit(DepositId)->PoppedPickups, Expected);
 
+	// The other 3 blocks of the vein owe nothing more: destroying them pops no pickup.
+	TArray<FIntPoint> Rest;
+	Grid->GetDepositCells(Grid->GetDeposit(DepositId)->Cells[0] == FineHealOreCell ? Grid->GetDeposit(DepositId)->Cells[1] : Grid->GetDeposit(DepositId)->Cells[0], Rest);
+	TestEqual(TEXT("3 vein blocks still standing"), Rest.Num(), 3);
+	for (const FIntPoint& Cell : Rest)
+	{
+		Grid->DestroyCell(Cell, ERRTerrainDamageSource::Barrel);
+	}
 	const int32 Total = CountPickups(TestWorld.Get());
 	AddInfo(FString::Printf(TEXT("total pickups: %d"), Total));
-	TestEqual(TEXT("1 pickup in total"), Total, 1);
+	TestEqual(TEXT("4 pickups in total"), Total, Expected);
 	for (TActorIterator<ARRPickup> It(TestWorld.Get()); It; ++It)
 	{
 		// task-092-01: idle pool pickups are not live pickups.

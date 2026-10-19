@@ -219,6 +219,17 @@ struct FRRGridDeposit
 	/** True when the deposit came from the ore table placement (not from the layout file). */
 	UPROPERTY(VisibleInstanceOnly, BlueprintReadOnly, Category = "Deposit")
 	bool bPlacedFromTable = false;
+
+	/**
+	 * Pickups already popped from the deposit (task-235-01, loot over the dig): out of ARRArenaGrid::GetDepositPickupCount;
+	 * kept when the dig stops, so digging again resumes. Runtime state, 0 at build.
+	 */
+	UPROPERTY(VisibleInstanceOnly, BlueprintReadOnly, Category = "Deposit")
+	int32 PoppedPickups = 0;
+
+	/** Blocks of the deposit destroyed so far (runtime state, 0 at build): a block broken outright owes its own pickups. */
+	UPROPERTY(VisibleInstanceOnly, BlueprintReadOnly, Category = "Deposit")
+	int32 BrokenBlocks = 0;
 };
 
 /** Fired when a block takes terrain damage without necessarily being destroyed: cell, block type, damage applied (dig-seconds), source. */
@@ -247,9 +258,12 @@ DECLARE_DYNAMIC_MULTICAST_DELEGATE_ThreeParams(FRROnCellDestroyedSignature, FInt
  * PieceDamageCustomDataIndex) read by the piece material; a corner switches to the broken piece set at the first damage of
  * one of its cells; ore and heal ore cells also draw one crystal cluster each (OreCrystalMesh) in their own chunk HISMs.
  * Terrain damage (dig) and destruction (explosions) go through ApplyTerrainDamage / DestroyCell / DestroyCellsInRadius.
- * Drops: ore and heal ore blocks spawn one pickup (OrePickupClass / HealPickupClass) each time their accumulated damage
- * crosses a multiple of DropInterval, except on the hit that destroys them, and DestroyDropCount pickups when destroyed,
- * whatever the source, each worth its deposit's ChunkValue, spawned through URRPickupSubsystem (per-frame cap, queue).
+ * Drops (task-235-01, loot over the dig): a deposit holds N = blocks x DestroyDropCount pickups (4 for a 2 x 2); while dug,
+ * pickup k pops when the dig progress of the damaged block (all deposit blocks take the same drone damage) reaches k / N,
+ * from the block it belongs to (Cells[k / DestroyDropCount]); a block destroyed outright owes its own share, and an explosion
+ * pops all the remaining ones at once. Ore and heal ore blocks outside any deposit keep the former rule: one pickup per
+ * multiple of DropInterval crossed while standing, DestroyDropCount when destroyed. Each pickup is worth its deposit's
+ * ChunkValue / HealValue, spawned through URRPickupSubsystem (per-frame cap, queue).
  * Deposits (ore-blocks, owner 2026-10-10): the layout's ore and heal veins plus the OreTypes.csv deposits placed at build on
  * rock (BuildDeposits); every deposit has an id and is mined as one (GetDepositCells). Derive a Blueprint to assign meshes,
  * materials and pickup classes.
@@ -331,6 +345,9 @@ public:
 	UFUNCTION(BlueprintPure, Category = "Grid|Deposits")
 	bool IsTableDepositCell(FIntPoint Cell) const;
 
+	/** Pickups a deposit holds in all (task-235-01): its block count x DestroyDropCount; 0 for an invalid id. */
+	int32 GetDepositPickupCount(int32 DepositId) const;
+
 	/** Deposit DepositId as built, or nullptr for an invalid id. */
 	const FRRGridDeposit* GetDeposit(int32 DepositId) const { return Deposits.IsValidIndex(DepositId) ? &Deposits[DepositId] : nullptr; }
 
@@ -390,6 +407,8 @@ public:
 	 * Whole deposits (task-187-01, ore-blocks): when an explosion source (Barrel, Kamikaze) destroys a block of a deposit,
 	 * the deposit's other standing blocks are destroyed in the same call, each with its own drops and OnCellDestroyed;
 	 * Drone and Shot destroy the single block (the drone mines whole deposits itself).
+	 * Deposit pickups (task-235-01): a destroyed deposit block pops what the deposit still owes for its broken blocks; an
+	 * explosion source pops every remaining pickup of the deposit at once.
 	 */
 	UFUNCTION(BlueprintCallable, Category = "Grid|Destruction")
 	bool DestroyCell(FIntPoint Cell, ERRTerrainDamageSource Source);
@@ -789,6 +808,13 @@ protected:
 	 * accumulated damage, capped so the multiple equal to its max health (the destroying hit) never drops.
 	 */
 	void SpawnDigDrops(FIntPoint Cell, ERRCellType Type);
+
+	/**
+	 * Pops the pickups of deposit DepositId until PoppedPickups reaches Target (clamped to GetDepositPickupCount), pickup k
+	 * from the centre of its block Cells[k / DestroyDropCount]; Progress and Cause are only logged (Log for a dig, Verbose
+	 * otherwise, with the world time).
+	 */
+	void PopDepositPickups(int32 DepositId, int32 Target, float Progress, const TCHAR* Cause);
 
 	/** Queues the explosion of the barrel in Cell (row BarrelExplosionRow, at the cell center, source GetBarrelSource) in the world's URRExplosionSubsystem, during play only. Returns true when queued. */
 	bool QueueBarrelExplosion(FIntPoint Cell);

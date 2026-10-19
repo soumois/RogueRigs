@@ -1705,8 +1705,20 @@ bool ARRArenaGrid::ApplyTerrainDamage(FIntPoint Cell, float Amount, ERRTerrainDa
 		RefreshPieceDataAround(Cell);
 	}
 
-	// The destroying hit never drops a dig pickup: DestroyCell drops the destruction bundle instead.
-	if (CellHealth[Index] > UE_KINDA_SMALL_NUMBER)
+	// Loot over the dig (task-235-01, ore-blocks / heal-ore, owner 2026-10-19): pickup k of a deposit of N pops when the dig
+	// progress reaches k / N, the destroying hit included (progress 1 pops the last ones, so nothing is left for DestroyCell).
+	// The drone damages every block of the deposit by the same amount, so any of them gives the deposit progress.
+	const int32 DepositId = GetDepositId(Cell);
+	if (DepositId != INDEX_NONE)
+	{
+		const float MaxHealth = GetBlockMaxHealth(Type);
+		const float Progress = MaxHealth > 0.f ? FMath::Clamp(1.f - CellHealth[Index] / MaxHealth, 0.f, 1.f) : 1.f;
+		// Tolerance: frame sums of dig-seconds land a few 1e-7 short of k / N.
+		const int32 Owed = FMath::FloorToInt32(Progress * GetDepositPickupCount(DepositId) + 1.0e-3f);
+		PopDepositPickups(DepositId, Owed, Progress, TEXT("dig"));
+	}
+	// Outside a deposit, the destroying hit never drops a dig pickup: DestroyCell drops the destruction bundle instead.
+	else if (CellHealth[Index] > UE_KINDA_SMALL_NUMBER)
 	{
 		SpawnDigDrops(Cell, Type);
 	}
@@ -1833,8 +1845,20 @@ bool ARRArenaGrid::DestroySingleCell(FIntPoint Cell, ERRTerrainDamageSource Sour
 	UE_LOG(LogRogueRigs, Verbose, TEXT("ARRArenaGrid: block destroyed at (%d, %d), type %s, source %s."), Cell.X, Cell.Y,
 		*UEnum::GetValueAsString(Type), *UEnum::GetValueAsString(Source));
 
-	// One chunk per broken block whatever the source (drone or explosion, start zone included: no protection, ore-blocks).
-	SpawnPickups(Cell, Type, DestroyDropCount, ChunkValue, HealValue);
+	// Deposit block (task-235-01): the deposit owes at least the share of its broken blocks (a dig already popped everything at
+	// progress 1); an explosion pops every remaining pickup at once (it breaks the whole deposit anyway, ore-blocks).
+	if (DepositId != INDEX_NONE)
+	{
+		FRRGridDeposit& Deposit = Deposits[DepositId];
+		++Deposit.BrokenBlocks;
+		const int32 Owed = IsExplosionSource(Source) ? GetDepositPickupCount(DepositId) : Deposit.BrokenBlocks * FMath::Max(DestroyDropCount, 0);
+		PopDepositPickups(DepositId, Owed, 1.f, IsExplosionSource(Source) ? TEXT("explosion") : TEXT("break"));
+	}
+	else
+	{
+		// Outside a deposit: one bundle per broken block whatever the source (start zone included: no protection, ore-blocks).
+		SpawnPickups(Cell, Type, DestroyDropCount, ChunkValue, HealValue);
+	}
 
 	// Every destroyed barrel explodes, whatever destroyed it (shots, dig, another explosion); queued, never synchronous.
 	if (Type == ERRCellType::Barrel && !bExplosionAlreadyQueued)
@@ -2162,6 +2186,43 @@ void ARRArenaGrid::SpawnDigDrops(FIntPoint Cell, ERRCellType Type)
 		const int32 DepositId = GetDepositId(Cell);
 		SpawnPickups(Cell, Type, NewDrops, DepositId != INDEX_NONE ? Deposits[DepositId].ChunkValue : 1,
 			DepositId != INDEX_NONE ? Deposits[DepositId].HealValue : 0.f);
+	}
+}
+
+int32 ARRArenaGrid::GetDepositPickupCount(int32 DepositId) const
+{
+	return Deposits.IsValidIndex(DepositId) ? Deposits[DepositId].Cells.Num() * FMath::Max(DestroyDropCount, 0) : 0;
+}
+
+void ARRArenaGrid::PopDepositPickups(int32 DepositId, int32 Target, float Progress, const TCHAR* Cause)
+{
+	if (!Deposits.IsValidIndex(DepositId))
+	{
+		return;
+	}
+	const int32 Total = GetDepositPickupCount(DepositId);
+	const int32 PerBlock = FMath::Max(DestroyDropCount, 1);
+	const UWorld* World = GetWorld();
+	const double Now = World ? World->GetTimeSeconds() : 0.0;
+	const bool bDig = FCString::Strcmp(Cause, TEXT("dig")) == 0;
+	FRRGridDeposit& Deposit = Deposits[DepositId];
+	const int32 Clamped = FMath::Min(Target, Total);
+	while (Deposit.PoppedPickups < Clamped)
+	{
+		// Pickup k belongs to block k / PerBlock and pops from its centre (destroyed or not: the centre stays valid).
+		const int32 Pickup = Deposit.PoppedPickups++;
+		const FIntPoint FromCell = Deposit.Cells[Pickup / PerBlock];
+		SpawnPickups(FromCell, Deposit.CellType, 1, Deposit.ChunkValue, Deposit.HealValue);
+		if (bDig)
+		{
+			UE_LOG(LogRogueRigs, Log, TEXT("ARRArenaGrid: deposit %d (%s) pickup %d/%d popped at %.3f s, progress %.3f (%s) from (%d, %d)."), DepositId,
+				*Deposit.OreId.ToString(), Pickup + 1, Total, Now, Progress, Cause, FromCell.X, FromCell.Y);
+		}
+		else
+		{
+			UE_LOG(LogRogueRigs, Verbose, TEXT("ARRArenaGrid: deposit %d (%s) pickup %d/%d popped at %.3f s, progress %.3f (%s) from (%d, %d)."), DepositId,
+				*Deposit.OreId.ToString(), Pickup + 1, Total, Now, Progress, Cause, FromCell.X, FromCell.Y);
+		}
 	}
 }
 
