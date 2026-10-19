@@ -4,10 +4,13 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/Actor.h"
+#include "Grid/RRCellType.h"
 #include "RRDrone.generated.h"
 
 class ARRArenaGrid;
 class ARRMiner;
+class UNiagaraComponent;
+class UNiagaraSystem;
 class UStaticMeshComponent;
 
 /** What the drone is doing. */
@@ -41,7 +44,9 @@ DECLARE_DYNAMIC_MULTICAST_DELEGATE_TwoParams(FRROnDigBlockStoppedSignature, FInt
  * returns to Orbit. The drone hovers over the arc centre (mean of the dug cell centers, HoverHeight above the miner's
  * floor) and shows one laser beam (LaserMesh), from itself to GetDigImpactPoint (the middle of the dug blocks' faces, on the
  * wall face), whatever the number of blocks (drone gdd, owner 2026-10-19); OnDigBlockStarted / OnDigBlockStopped fire per
- * block for Blueprint effects.
+ * block for Blueprint effects. While it cuts, DigImpactComponent plays DigImpactSystem (NS_DigImpact, task-233-02) at
+ * GetDigImpactPoint: User.WallNormal = outward normal of the impact face, User.ChipColor = colour of the majority type of
+ * the dug blocks, User.Intensity 1; when the dig stops it fades to 0 over DigImpactFadeTime, then deactivates. Never in Hack.
  * Hack (StartHack, called every tick by the objective while the miner is in its zone): the drone stops any dig, hovers
  * HackHoverDistance from the target toward the miner (same HoverHeight) and shows LaserMesh from itself to the target's
  * location + HackLinkOffset. One target at a time; RequestArcDig is refused while hacking. StopHack (or the target or miner
@@ -233,6 +238,32 @@ protected:
 	/** Dig laser: LaserMesh from the drone to GetDigImpactPoint; hidden when the arc is empty. */
 	void UpdateDigLaser();
 
+	/**
+	 * Computes the impact point (see GetDigImpactPoint) and the grid side of the face it lies on (the face of the dug cell
+	 * whose target point is nearest the miner). Returns false (outputs zero) outside Dig, with an empty arc, or without a dig
+	 * grid or miner.
+	 */
+	bool ComputeDigImpact(FVector& OutPoint, FIntPoint& OutFaceSide) const;
+
+	/**
+	 * Dig impact effect, called in the Dig tick after the laser (before the damage, so the dug cells still hold their type):
+	 * places DigImpactComponent at the impact point, sets User.WallNormal, User.ChipColor and User.Intensity 1, activates it.
+	 * With an empty arc it fades instead (FadeDigImpact).
+	 */
+	void UpdateDigImpact(float DeltaSeconds);
+
+	/** Lowers User.Intensity toward 0 over DigImpactFadeTime; at 0 deactivates the component (live particles finish). No effect when inactive. */
+	void FadeDigImpact(float DeltaSeconds);
+
+	/** Stops the dig impact effect at once (Hack, EndPlay): intensity 0 and deactivate, no fade. */
+	void StopDigImpact();
+
+	/** Chip colour of the dug arc: the colour of the cell type held by most dug cells (ties: the type met first, nearest the miner's front). */
+	FLinearColor GetDigChipColor() const;
+
+	/** Chip colour of one block type: rock, Duskite (Ore and SpecialOre), heal ore, barrel; any other type gives RockChipColor. */
+	FLinearColor GetChipColorForType(ERRCellType Type) const;
+
 	/** Root visual. Collision disabled, so it never blocks or overlaps pawns. Mesh set in Blueprint. */
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Components")
 	TObjectPtr<UStaticMeshComponent> Mesh;
@@ -244,6 +275,40 @@ protected:
 	 */
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Components")
 	TObjectPtr<UStaticMeshComponent> LaserMesh;
+
+	/**
+	 * Dig impact effect (NS_DigImpact, bp-dig-impact): created in the constructor, never spawned per frame. Absolute transform,
+	 * moved every Dig tick to GetDigImpactPoint. Not auto-activated; uses DigImpactSystem.
+	 */
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Components")
+	TObjectPtr<UNiagaraComponent> DigImpactComponent;
+
+	/** Niagara system played at the dig impact point. Default /Game/RogueRigs/FX/Dig/NS_DigImpact (constructor reference). None = no effect. */
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Drone|Dig Impact")
+	TObjectPtr<UNiagaraSystem> DigImpactSystem;
+
+	/** Time for User.Intensity to fall from 1 to 0 after the dig stops, before the effect deactivates, in seconds (provisional). 0 = stop at once. */
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Drone|Dig Impact", meta = (ClampMin = 0, Units = "s"))
+	float DigImpactFadeTime = 0.15f;
+
+	/** Chip colour for rock blocks: light grey tinted violet (color-code), the NS_DigImpact default lavender. */
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Drone|Dig Impact")
+	FLinearColor RockChipColor = FLinearColor(0.35f, 0.28f, 0.5f, 1.f);
+
+	/** Chip colour for Duskite ore blocks (Ore and SpecialOre): glowing violet (color-code; value provisional). */
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Drone|Dig Impact")
+	FLinearColor OreChipColor = FLinearColor(0.6f, 0.15f, 1.f, 1.f);
+
+	/** Chip colour for heal ore blocks: red (color-code; value provisional). */
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Drone|Dig Impact")
+	FLinearColor HealOreChipColor = FLinearColor(0.9f, 0.06f, 0.05f, 1.f);
+
+	/** Chip colour for barrel blocks: orange (color-code; value provisional). */
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Drone|Dig Impact")
+	FLinearColor BarrelChipColor = FLinearColor(1.f, 0.35f, 0.05f, 1.f);
+
+	/** Current User.Intensity of the dig impact effect: 1 while cutting, falls to 0 during the fade. */
+	float DigImpactIntensity = 0.f;
 
 	/** Horizontal distance from the miner's location to the orbit point, in uu. */
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Drone|Orbit", meta = (ClampMin = 0, Units = "cm"))

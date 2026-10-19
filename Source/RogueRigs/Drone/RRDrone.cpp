@@ -5,10 +5,14 @@
 #include "Components/CapsuleComponent.h"
 #include "Components/StaticMeshComponent.h"
 #include "Engine/CollisionProfile.h"
+#include "Grid/RRCellType.h"
 #include "GAS/RRAbilitySystemComponent.h"
 #include "GAS/RRPlayerAttributeSet.h"
 #include "Grid/RRArenaGrid.h"
 #include "Player/RRMiner.h"
+#include "NiagaraComponent.h"
+#include "NiagaraSystem.h"
+#include "UObject/ConstructorHelpers.h"
 #include "RogueRigs.h"
 
 ARRDrone::ARRDrone()
@@ -32,6 +36,23 @@ ARRDrone::ARRDrone()
 	LaserMesh->SetCanEverAffectNavigation(false);
 	LaserMesh->SetCastShadow(false);
 	LaserMesh->SetVisibility(false);
+
+	// One owned impact effect, moved every Dig tick (never spawned per frame); world-space placement like the laser.
+	DigImpactComponent = CreateDefaultSubobject<UNiagaraComponent>(TEXT("DigImpactComponent"));
+	DigImpactComponent->SetupAttachment(Mesh);
+	DigImpactComponent->SetUsingAbsoluteLocation(true);
+	DigImpactComponent->SetUsingAbsoluteRotation(true);
+	DigImpactComponent->SetUsingAbsoluteScale(true);
+	DigImpactComponent->bAutoActivate = false;
+	DigImpactComponent->SetAutoDestroy(false);
+	DigImpactComponent->SetCanEverAffectNavigation(false);
+
+	// Constructor reference, so BP_Drone needs no edit; a Blueprint may override DigImpactSystem.
+	static ConstructorHelpers::FObjectFinder<UNiagaraSystem> DigImpactFinder(TEXT("/Game/RogueRigs/FX/Dig/NS_DigImpact.NS_DigImpact"));
+	if (DigImpactFinder.Succeeded())
+	{
+		DigImpactSystem = DigImpactFinder.Object;
+	}
 }
 
 void ARRDrone::SetOwnerMiner(ARRMiner* NewOwnerMiner)
@@ -350,9 +371,19 @@ FIntPoint ARRDrone::GetDigFaceSide(FIntPoint Cell) const
 
 FVector ARRDrone::GetDigImpactPoint() const
 {
+	FVector Point;
+	FIntPoint FaceSide;
+	ComputeDigImpact(Point, FaceSide);
+	return Point;
+}
+
+bool ARRDrone::ComputeDigImpact(FVector& OutPoint, FIntPoint& OutFaceSide) const
+{
+	OutPoint = FVector::ZeroVector;
+	OutFaceSide = FIntPoint(0, 0);
 	if (State != ERRDroneState::Dig || DigCells.Num() == 0 || !IsValid(DigGrid) || !IsValid(OwnerMiner))
 	{
-		return FVector::ZeroVector;
+		return false;
 	}
 
 	// Mean of the per-block target points, and the target point nearest the miner (the wall face in front of it).
@@ -384,7 +415,9 @@ FVector ARRDrone::GetDigImpactPoint() const
 	{
 		Mean.Y = Nearest.Y;
 	}
-	return Mean;
+	OutPoint = Mean;
+	OutFaceSide = NearestSide;
+	return true;
 }
 
 float ARRDrone::GetMiningSpeed() const
@@ -414,10 +447,21 @@ void ARRDrone::Tick(float DeltaSeconds)
 		TickHack(DeltaSeconds);
 		break;
 	}
+
+	// The impact effect plays only in Dig (UpdateDigImpact): it fades after a dig and never shows in Hack.
+	if (State == ERRDroneState::Orbit)
+	{
+		FadeDigImpact(DeltaSeconds);
+	}
+	else if (State == ERRDroneState::Hack)
+	{
+		StopDigImpact();
+	}
 }
 
 void ARRDrone::EndPlay(const EEndPlayReason::Type EndPlayReason)
 {
+	StopDigImpact();
 	if (State == ERRDroneState::Dig)
 	{
 		StopDig();
@@ -470,6 +514,7 @@ void ARRDrone::TickDig(float DeltaSeconds)
 
 	// Laser first: the face centers are still valid before the hit that may destroy the blocks.
 	UpdateDigLaser();
+	UpdateDigImpact(DeltaSeconds);
 
 	// Every block of the arc is cut in parallel at the full rate. A block of a deposit (Duskite 2 x 2, heal vein) makes the whole
 	// deposit one target (ore-blocks, owner 2026-10-06 fourth test and 2026-10-10): each deposit block takes the damage once
@@ -662,4 +707,116 @@ void ARRDrone::UpdateDigLaser()
 		return;
 	}
 	UpdateLaser(LaserMesh, GetActorLocation(), GetDigImpactPoint());
+}
+
+void ARRDrone::UpdateDigImpact(float DeltaSeconds)
+{
+	FVector ImpactPoint;
+	FIntPoint FaceSide;
+	if (!ComputeDigImpact(ImpactPoint, FaceSide))
+	{
+		FadeDigImpact(DeltaSeconds);
+		return;
+	}
+	if (!DigImpactSystem)
+	{
+		return;
+	}
+
+	if (DigImpactComponent->GetAsset() != DigImpactSystem)
+	{
+		DigImpactComponent->SetAsset(DigImpactSystem);
+	}
+	DigImpactComponent->SetWorldLocation(ImpactPoint);
+
+	// Outward normal of the impact face: the grid step from the block toward the miner (unrotated grid, world X / Y = grid X / Y).
+	static const FName WallNormalParameter(TEXT("User.WallNormal"));
+	static const FName ChipColorParameter(TEXT("User.ChipColor"));
+	static const FName IntensityParameter(TEXT("User.Intensity"));
+	DigImpactIntensity = 1.f;
+	DigImpactComponent->SetVariableVec3(WallNormalParameter, FVector(FaceSide.X, FaceSide.Y, 0.0));
+	DigImpactComponent->SetVariableLinearColor(ChipColorParameter, GetDigChipColor());
+	DigImpactComponent->SetVariableFloat(IntensityParameter, DigImpactIntensity);
+	if (!DigImpactComponent->IsActive())
+	{
+		DigImpactComponent->Activate(/*bReset*/ true);
+	}
+}
+
+void ARRDrone::FadeDigImpact(float DeltaSeconds)
+{
+	if (!DigImpactComponent->IsActive())
+	{
+		DigImpactIntensity = 0.f;
+		return;
+	}
+
+	static const FName IntensityParameter(TEXT("User.Intensity"));
+	DigImpactIntensity = DigImpactFadeTime > UE_KINDA_SMALL_NUMBER
+		? FMath::Max(0.f, DigImpactIntensity - DeltaSeconds / DigImpactFadeTime)
+		: 0.f;
+	DigImpactComponent->SetVariableFloat(IntensityParameter, DigImpactIntensity);
+	if (DigImpactIntensity <= 0.f)
+	{
+		// Spawning stops; particles already alive finish their short lifetime.
+		DigImpactComponent->Deactivate();
+	}
+}
+
+void ARRDrone::StopDigImpact()
+{
+	DigImpactIntensity = 0.f;
+	if (IsValid(DigImpactComponent) && DigImpactComponent->IsActive())
+	{
+		static const FName IntensityParameter(TEXT("User.Intensity"));
+		DigImpactComponent->SetVariableFloat(IntensityParameter, 0.f);
+		DigImpactComponent->Deactivate();
+	}
+}
+
+FLinearColor ARRDrone::GetDigChipColor() const
+{
+	// Majority type of the dug cells; ties keep the type met first (DigCells is sorted nearest the miner's front first).
+	TArray<TPair<ERRCellType, int32>, TInlineAllocator<4>> Counts;
+	for (const FIntPoint& Cell : DigCells)
+	{
+		const ERRCellType Type = DigGrid->GetCellType(Cell);
+		TPair<ERRCellType, int32>* Entry = Counts.FindByPredicate([Type](const TPair<ERRCellType, int32>& Pair) { return Pair.Key == Type; });
+		if (Entry)
+		{
+			++Entry->Value;
+		}
+		else
+		{
+			Counts.Add({ Type, 1 });
+		}
+	}
+
+	ERRCellType BestType = ERRCellType::Rock;
+	int32 BestCount = 0;
+	for (const TPair<ERRCellType, int32>& Pair : Counts)
+	{
+		if (Pair.Value > BestCount)
+		{
+			BestType = Pair.Key;
+			BestCount = Pair.Value;
+		}
+	}
+	return GetChipColorForType(BestType);
+}
+
+FLinearColor ARRDrone::GetChipColorForType(ERRCellType Type) const
+{
+	switch (Type)
+	{
+	case ERRCellType::Ore:
+	case ERRCellType::SpecialOre:
+		return OreChipColor;
+	case ERRCellType::HealOre:
+		return HealOreChipColor;
+	case ERRCellType::Barrel:
+		return BarrelChipColor;
+	default:
+		return RockChipColor;
+	}
 }
