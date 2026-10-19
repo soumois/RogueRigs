@@ -3,7 +3,7 @@ id: task-242-01-number-arc
 description: "Damage numbers are thrown in an arc (gravity) instead of rising in a straight line; peak about 60 uu, lifetime unchanged at 0.7 s."
 parent: task-242-number-arc
 kind: task
-status: in-progress
+status: done
 ---
 # Damage number arc
 
@@ -17,9 +17,9 @@ status: in-progress
 - token_ceiling: 80000
 - model: open
 - tokens: open
-- runs: open
+- runs: 1
 - milestone: M2
-- result: open
+- result: Arc: asset velocity x4 + Gravity Force (0,0,-980), peak 60 uu at 0.35 s, commit ee72094b; not seen in game, owner checks it himself (risk: gravity on world Z vs screen-up rise direction)
 
 ## Relations
 - [[task-242-number-arc]] — parent global task.
