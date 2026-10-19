@@ -3,7 +3,7 @@ id: task-240-02-number-rise-variation-asset
 description: "NS_DamageNumbers moves each digit with the per-number velocity written by C++ in User.DigitVelocities."
 parent: task-240-number-rise-variation
 kind: task
-status: todo
+status: in-progress
 ---
 # Damage number rise variation (Niagara asset)
 

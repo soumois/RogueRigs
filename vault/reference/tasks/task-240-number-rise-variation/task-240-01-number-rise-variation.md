@@ -3,7 +3,7 @@ id: task-240-01-number-rise-variation
 description: "Each damage number rises with its own random speed (x0.7 to x1.3) and angle (up to 35 degrees left or right of screen up), so consecutive numbers no longer travel in parallel."
 parent: task-240-number-rise-variation
 kind: task
-status: in-progress
+status: done
 ---
 # Damage number rise variation (C++ draw)
 
@@ -17,9 +17,9 @@ status: in-progress
 - token_ceiling: 90000
 - model: open
 - tokens: open
-- runs: open
+- runs: 1
 - milestone: M2
-- result: open
+- result: Per-number velocity drawn in C++ (speed x0.7-1.3, angle +-35 deg), written to User.DigitVelocities, build exit 0, commits 95b4bf44 9e17dff2; not run, asset not reading it yet
 
 ## Relations
 - [[task-240-number-rise-variation]] — parent global task.
