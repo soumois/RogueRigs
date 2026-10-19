@@ -244,3 +244,4 @@ Archive: it exceeds the index size limits of [[_authoring]] on purpose (owner, 2
 - [[task-235-ore-loot-over-dig]] — Ore and heal deposits release their loot one by one during the dig, evenly spread over the dig time, instead of all at destruction. Status done.
 - [[task-236-bloom-intensity]] — The arena post-process bloom intensity goes back to 1.3 (now 1.8). Status done.
 - [[task-237-deposit-no-shadow]] — Ore and heal deposit formations cast no shadow. Status done.
+- [[task-238-crit-number-colour]] — The critical damage number is a lighter orange, linear colour (1, 0.7, 0.35), instead of the current gold (1, 0.55, 0.08). Status done.

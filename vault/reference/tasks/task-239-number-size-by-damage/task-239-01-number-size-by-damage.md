@@ -3,7 +3,7 @@ id: task-239-01-number-size-by-damage
 description: "The size of a damage number grows with the damage of the hit, continuous from x0.8 to x1.4; a crit keeps its x1.6 on top."
 parent: task-239-number-size-by-damage
 kind: task
-status: todo
+status: in-progress
 ---
 # Damage number size by damage
 

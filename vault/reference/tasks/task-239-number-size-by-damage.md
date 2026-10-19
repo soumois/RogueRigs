@@ -3,7 +3,7 @@ id: task-239-number-size-by-damage
 description: "Global task: The size of a damage number grows with the damage of the hit, continuous from x0.8 to x1.4; a crit keeps its x1.6 on top."
 parent: tasks-to-do-index
 kind: task
-status: todo
+status: in-progress
 ---
 # Damage number size by damage
 

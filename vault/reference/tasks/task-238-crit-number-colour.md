@@ -1,9 +1,9 @@
 ---
 id: task-238-crit-number-colour
 description: "Global task: The critical damage number is a lighter orange, linear colour (1, 0.7, 0.35), instead of the current gold (1, 0.55, 0.08)."
-parent: tasks-to-do-index
+parent: tasks-done-index
 kind: task
-status: in-progress
+status: done
 ---
 # Critical damage number colour
 
@@ -13,12 +13,12 @@ status: in-progress
 - gdd_check: done by the Orchestrator when the task is planned (2026-10-19).
 - confirmed_by_owner: yes (2026-10-19)
 - milestone: M2
-- next_step: task-238-01-crit-number-colour
-- result: open
+- next_step: none
+- result: Done. CriticalColor default (1, 0.7, 0.35) in RRDamageNumberSubsystem.h, tests and 2 vault nodes updated, build exit 0, commit 1efa9a70; not seen in game
 
 ## Subtasks
 1. task-238-01-crit-number-colour — cpp
 
 ## Relations
-- [[tasks-to-do-index]] — parent index.
+- [[tasks-done-index]] — parent index.
 - [[task-238-01-crit-number-colour]] — step 1, cpp.
