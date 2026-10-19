@@ -24,6 +24,11 @@ Kie has no 25:36 (nearest 3:4 = 0.75). Never stretch. Crop the picture to the fr
 - A1 faceted metal, bolts, rust: pass on all three. A2 rigid parts only: pass. A14 no text, no UI, no weapon: pass. Neutral: teal replaced by grey steel on corners, hazard stripes, inlay and patches: pass. Emblem a centred four-point star: pass.
 - Gap: the grey star on dark panel is plain (no pattern); the inner panel colour is the card panel #15171c family, not a magenta key, so the opening is not transparent as the frame source.
 
+## Step 2 — A6 correction (owner: variant 2 validated with this change)
+- Ref: `Art/Source/card-back/20261019-135524-card-back-2.png`; prompt file `prompts/02-back-grey-a6.txt`; run `20261019-150141-card-back`, 1 variant, 3:4, 6 credits; image `Art/Source/card-back/20261019-150141-card-back-1.png`.
+- Prompt (verbatim): Keep this exact image: same frame geometry, same dark gunmetal rails with rust chips and rivets, same bolts, same hazard-stripe end pieces, same dark panel and recessed inner line, same centred faceted four-point star with its pale glow, same proportions, same flat magenta FF00FF background inside the margin. Only change: the four corner blocks and the patch plates (and the hazard-stripe light bands) become off-white painted metal (patched white plates with rust chips, like the player-side Rigs), and one or two of the patch plates on the side rails become teal instead of off-white. Everything else stays identical. No text, no icons.
+- Review: pass. Corner blocks, hazard bands and patch plates off-white with rust chips; two teal patch plates (right rail upper, left rail lower); rails, rivets, star, geometry and magenta background unchanged (A6 player-side white and teal). Delivery to 1000 x 1440 as above. Tier colours: next subtask.
+
 ## Relations
 - [[art-prompts]] — parent: method and locked phrases.
 - [[wbp-upgrade-choice]] — card size 1000 x 1440 textures and frame family.
