@@ -210,7 +210,7 @@ bool FRRDamageNumberCriticalTest::RunTest(const FString& Parameters)
 	TestTrue(TEXT("normal size positive"), Normal.Size > 0.f);
 	TestEqual(TEXT("critical 1.6 x larger"), Critical.Size / Normal.Size, 1.6f, 1e-4f);
 	TestTrue(TEXT("normal number white"), Normal.Color.Equals(FLinearColor::White));
-	TestTrue(TEXT("critical number gold (1, 0.55, 0.08)"), Critical.Color.Equals(FLinearColor(1.f, 0.55f, 0.08f)));
+	TestTrue(TEXT("critical number lighter orange (1, 0.7, 0.35)"), Critical.Color.Equals(FLinearColor(1.f, 0.7f, 0.35f)));
 	TestEqual(TEXT("spawn time = push world time"), Critical.SpawnTime, Normal.SpawnTime);
 	return true;
 }

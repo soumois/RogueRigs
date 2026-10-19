@@ -570,7 +570,7 @@ bool FRRDamageNumberStackingTest::RunTest(const FString& Parameters)
 	const int32 FarIndex = Pushed.IndexOfByPredicate([](const FRRDamageNumber& Number) { return FMath::IsNearlyEqual(Number.Value, 10.f); });
 	TestTrue(TEXT("far number not stacked (at its hit height)"), FarIndex != INDEX_NONE && FMath::IsNearlyEqual(Pushed[FarIndex].Location.Z, FarLocation.Z, 0.01));
 	const int32 CritIndex = Pushed.IndexOfByPredicate([](const FRRDamageNumber& Number) { return Number.bCritical; });
-	TestTrue(TEXT("crit gold (1, 0.55, 0.08)"), CritIndex != INDEX_NONE && Pushed[CritIndex].Color.Equals(FLinearColor(1.f, 0.55f, 0.08f)));
+	TestTrue(TEXT("crit lighter orange (1, 0.7, 0.35)"), CritIndex != INDEX_NONE && Pushed[CritIndex].Color.Equals(FLinearColor(1.f, 0.7f, 0.35f)));
 	TestTrue(TEXT("first number (opened first) not stacked"), FMath::IsNearlyEqual(Pushed[0].Location.Z, Crowd.Z, 0.01));
 	return true;
 }

@@ -260,9 +260,9 @@ protected:
 	UPROPERTY(Config)
 	FLinearColor NormalColor = FLinearColor::White;
 
-	/** Color of a critical number (damage-numbers: gold, linear (1, 0.55, 0.08), owner-confirmed after handover-2026-10-06). */
+	/** Color of a critical number (damage-numbers: lighter orange, linear (1, 0.7, 0.35), provisional, owner 2026-10-19; was gold (1, 0.55, 0.08)). */
 	UPROPERTY(Config)
-	FLinearColor CriticalColor = FLinearColor(1.f, 0.55f, 0.08f);
+	FLinearColor CriticalColor = FLinearColor(1.f, 0.7f, 0.35f);
 
 	/** Distance between two digit centres, as a fraction of the glyph size (matches the atlas glyph width). */
 	UPROPERTY(Config)

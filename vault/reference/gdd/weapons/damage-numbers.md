@@ -7,7 +7,7 @@ status: provisional
 ---
 # Damage numbers
 
-- Normal hits: white. Critical hits: 1.6 × larger, gold, linear colour (1, 0.55, 0.08), with a short pop, like DRGS (owner 2026-10-05; colour confirmed by the owner after handover-2026-10-06).
+- Normal hits: white. Critical hits: 1.6 × larger, lighter orange, linear colour (1, 0.7, 0.35), with a short pop, like DRGS (owner 2026-10-05; colour provisional, owner 2026-10-19, task-238; formerly gold (1, 0.55, 0.08), confirmed by the owner after handover-2026-10-06).
 - In a crowd, a new number stacks vertically above an open number whose footprint it would overlap (confirmed by the owner after handover-2026-10-06).
 - One number per hit, never merged (since 2026-10-08, see the last line); the earlier merge rule below is history.
 - The player can turn them off.
