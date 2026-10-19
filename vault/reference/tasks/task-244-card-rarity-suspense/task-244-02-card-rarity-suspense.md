@@ -3,7 +3,7 @@ id: task-244-02-card-rarity-suspense
 description: "Capture the reveal of a purple and a yellow card in the game and send the frames."
 parent: task-244-card-rarity-suspense
 kind: task
-status: todo
+status: in-progress
 ---
 # 244-02 cpp
 
