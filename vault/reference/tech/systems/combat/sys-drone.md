@@ -1,6 +1,6 @@
 ---
 id: sys-drone
-description: "Drone C++ actor: orbit, arc dig (2.5-cell reach, up to 8 blocks), whole deposits mined as one, per-block events, hack, laser fan, MiningSpeed."
+description: "Drone C++ actor: orbit, arc dig (2.5-cell reach, up to 8 blocks), whole deposits mined as one, per-block events, hack, single dig beam, MiningSpeed."
 parent: systems-combat-index
 kind: doc
 ---
@@ -9,7 +9,7 @@ kind: doc
 - responsibility: the helper drone actor and its state behaviours: Orbit, Dig (arc mining, task-029-05), Hack. No dialogue yet.
 - main_classes (in `Source/RogueRigs/Drone/`):
   - `ARRDrone : AActor` (`RRDrone.h`, `Abstract`, subclassed in Blueprint): root `UStaticMeshComponent` `Mesh` with profile `NoCollision` (no overlap events, does not affect navigation); child `UStaticMeshComponent` `LaserMesh` (absolute transform, `NoCollision`, no shadow, hidden outside Dig and Hack). Both meshes, and the laser's red material, are set in Blueprint; `LaserMesh` expects a cylinder along local Z with a centered pivot (the engine cylinder).
-  - Laser fan (task-029-08): `LaserBeams` (transient pool, `VisibleInstanceOnly`), beam 0 = `LaserMesh`; `BeginPlay` fills it to `MaxArcBlocks` with runtime copies of `LaserMesh` (same mesh and materials, same world-space, no-collision, no-shadow setup), and it grows if an arc is larger. No Blueprint property to set.
+  - Single dig beam (task-232-01, owner 2026-10-19; replaces the task-029-08 laser fan): Dig draws only `LaserMesh`, from the drone to `GetDigImpactPoint()` ([[sys-drone-dig]]). The `LaserBeams` pool, `EnsureLaserBeams`, `HideLaserBeams` and the `BeginPlay` override are removed (the pool was transient and no Blueprint graph read it).
   - Editable, orbit: `OrbitRadius` (150 uu), `OrbitPeriod` (2 s), `HoverHeight` (150 uu, also the dig and hack height), `FollowInterpSpeed` (10, provisional; 0 = snap; also used in Dig and Hack).
   - Editable, dig ([[drone]], provisional): `ArcReachCells` (2.5), `ArcAngleDegrees` (120, full cone), `MaxArcBlocks` (8); raised from 1.5 and 4 in task-060-01 (the GDD depth rule, about two rows). BP_Drone overrides neither. `DigHoverDistance` and `DigCancelDistanceCells` were removed in task-029-05.
   - Editable, hack: `HackHoverDistance` (100 uu, provisional), `HackLinkOffset` ((0, 0, 50), provisional).
@@ -17,11 +17,11 @@ kind: doc
   - `ERRDroneState` (`uint8`, BlueprintType): `Orbit`, `Dig`, `Hack`.
 - entry_points:
   - Spawned by `ARRMiner::BeginPlay` from the miner's `DroneClass`, destroyed in `ARRMiner::EndPlay` ([[sys-player]]). `SetOwnerMiner(ARRMiner*)`: stops any dig or hack, sets the followed miner (tick prerequisite), orbit angle 0, snaps to the orbit point.
-  - Getters: `GetOwnerMiner()`, `GetState()`, `GetMiningSpeed()` (miner ASC `MiningSpeed`; 1 if missing), `GetDigCells()` (dug cells, nearest first), `GetDigGrid()`, `GetDigArcDirection()`, `GetDigTargetPoint(Cell)` (center of the cell's face toward the miner, dominant axis, half block height; for per-block lasers), `GetHackTarget()`.
+  - Getters: `GetOwnerMiner()`, `GetState()`, `GetMiningSpeed()` (miner ASC `MiningSpeed`; 1 if missing), `GetDigCells()` (dug cells, nearest first), `GetDigGrid()`, `GetDigArcDirection()`, `GetDigTargetPoint(Cell)` (center of the cell's face toward the miner, dominant axis, half block height), `GetDigImpactPoint()` (end of the single dig beam: mean of the target points on the nearest wall face; zero outside Dig), `GetHackTarget()`.
   - `SetState`: `Orbit` always accepted (stops dig or hack); `Dig` only with a miner and a block in the arc; `Hack` refused (use `StartHack`).
   - `ReleaseDig()`: leaves Dig (no effect otherwise).
   - `StartHack(Target)` / `StopHack(Target)`: driven by the objective every tick ([[sys-objectives]]); one target at a time; a dig in progress is stopped.
-- events (BlueprintAssignable, for the laser and dig effects): `OnDigBlockStarted(FIntPoint Cell)`, `OnDigBlockStopped(FIntPoint Cell, bool bDestroyed)`. The render shake is done by the grid in C++.
+- events (BlueprintAssignable, for dig effects): `OnDigBlockStarted(FIntPoint Cell)`, `OnDigBlockStopped(FIntPoint Cell, bool bDestroyed)`. The render shake is done by the grid in C++.
 - data: no table; tunables are `EditDefaultsOnly` defaults on the Blueprint subclass. Values from [[drone]].
 - depends_on: [[sys-player]] (miner, capsule, dig trigger), [[sys-gas-core]] (`URRPlayerAttributeSet::MiningSpeed`; the drone has no ASC), [[sys-grid]] (block queries, damage, shake, face center).
 - implements: [[drone]].
