@@ -8,7 +8,7 @@ kind: doc
 
 - asset_path: /Game/RogueRigs/FX/Dig/NS_DigImpact (Niagara system, no Blueprint); material /Game/RogueRigs/FX/Dig/M_DigChip
 - parent_class: UNiagaraSystem
-- purpose: effect where the drone laser cuts a wall: white-gold sparks, chips of the block colour, a little dust ([[drone]], [[color-code]]). Played by task-233-02 on one pooled component at `ARRDrone::GetDigImpactPoint()` ([[bp-drone]]), which sets the User parameters below.
+- purpose: effect where the drone laser cuts a wall: white-gold sparks, chips of the block colour, a little dust ([[drone]], [[color-code]]). Played by task-233-02 on one owned component (`ARRDrone::DigImpactComponent`, constructor reference to this asset in `DigImpactSystem`) at `ARRDrone::GetDigImpactPoint()` ([[bp-drone]], [[sys-drone-dig]]), which sets the three User parameters below every Dig tick and fades Intensity to 0 when the dig stops.
 - user_params (exact names; set from C++ with the matching setter):
   - `User.Intensity`: float, default 1.0, range 0..1. Multiplies the spawn rate of the three emitters (HLSL `User.Intensity * rate`); 0 spawns nothing, so C++ can fade by lowering it.
   - `User.ChipColor`: LinearColor (`SetVariableLinearColor`), default (0.35, 0.28, 0.5, 1) lavender rock. Read by emitter Chips as the particle colour (Color Direct Link); C++ sets lavender rock, violet Duskite, red heal per [[color-code]].
@@ -32,3 +32,4 @@ kind: doc
 - [[color-code]] — chip colours.
 - [[readability-rules]] — no red in the sparks.
 - [[bp-drone]] — the drone that owns the impact point.
+- [[sys-drone-dig]] — the C++ that places the component and sets the parameters.

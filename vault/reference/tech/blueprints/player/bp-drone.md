@@ -9,7 +9,7 @@ kind: doc
 - asset_path: /Game/RogueRigs/Blueprints/Player/BP_Drone
 - parent_class: ARRDrone (/Script/RogueRigs.RRDrone)
 - purpose: the visible helper drone, spawned by the miner from its `DroneClass`; visuals only, all logic in C++ ([[sys-drone]]).
-- components: inherited `Mesh` (root static mesh) and `LaserMesh` (cutting laser, hidden outside Dig); none added.
+- components: inherited `Mesh` (root static mesh), `LaserMesh` (cutting laser, hidden outside Dig) and `DigImpactComponent` (Niagara, NS_DigImpact through the C++ constructor default, task-233-02; no Blueprint edit); none added.
 - exposed_defaults: Mesh StaticMesh = /Engine/BasicShapes/Sphere, RelativeScale3D (0.4, 0.4, 0.4) = 40 uu, OverrideMaterials[0] = MI_GB_Drone; C++ defaults kept (OrbitRadius 150, OrbitPeriod 2, HoverHeight 150, FollowInterpSpeed 10). LaserMesh StaticMesh = /Engine/BasicShapes/Cylinder, OverrideMaterials[0] = MI_GB_Laser.
 - events: none.
 - logic_in_bp: none
