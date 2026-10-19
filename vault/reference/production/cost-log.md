@@ -452,6 +452,7 @@ kind: note
 | [[task-233-02-dig-impact-wiring]] | opus | 2 | 0k | 190k | 8014k | 10k |
 | [[task-234-06-heal-deposit-prompts]] | sonnet | 1 | 0k | 18k | 70k | 0k |
 | [[task-234-02-duskite-deposit-meshes]] | sonnet | 1 | 0k | 43k | 454k | 2k |
+| [[task-234-07-heal-deposit-meshes]] | sonnet | 1 | 0k | 52k | 657k | 8k |
 
 ## Totals
 | Scope | Input | Cache write | Cache read | Output |

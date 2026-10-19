@@ -3,7 +3,7 @@ id: task-234-07-heal-deposit-meshes
 description: "Three heal deposit meshes (cracked mound, inlaid slab, half-buried cluster) from the owner sheet, Blender route."
 parent: task-234-ore-deposit-look
 kind: task
-status: in-progress
+status: done
 ---
 # Heal deposit meshes
 
@@ -15,11 +15,11 @@ status: in-progress
 - done_when: 3 FBX inside the footprint; previews sent to the owner; no Blender process left; committed.
 - editor_state: any
 - token_ceiling: 40000
-- model: open
-- tokens: open
-- runs: open
+- model: sonnet
+- tokens: input 36, cache write 51552, cache read 657179, output 8242
+- runs: 1
 - milestone: M2
-- result: open
+- result: Commit 81d6b267, validated by the owner 2026-10-19 as is. SM_HealDeposit_01 mound (1016 tris, max 69.6 uu), _02 flat (1336, 28.8), _03 half-buried (1028, 68.6), slots rock and crystal, inside the 134 uu footprint, base -5; scripts heal_deposit.py and heal_deposit_preview.py; previews sent.
 
 ## Relations
 - [[task-234-ore-deposit-look]] — parent global task.
