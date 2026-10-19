@@ -39,8 +39,9 @@ DECLARE_DYNAMIC_MULTICAST_DELEGATE_TwoParams(FRROnDigBlockStoppedSignature, FInt
  * parallel, each taking DeltaSeconds * MiningSpeed dig-seconds of terrain damage per tick. A block keeps being cut while
  * it stays in the arc; one that leaves it stops shaking and keeps its damage. ReleaseDig (miner no longer touching rock)
  * returns to Orbit. The drone hovers over the arc centre (mean of the dug cell centers, HoverHeight above the miner's
- * floor) and shows one laser beam per dug block, from itself to the block's face (LaserBeams pool); OnDigBlockStarted / OnDigBlockStopped fire per
- * block for Blueprint lasers and effects.
+ * floor) and shows one laser beam (LaserMesh), from itself to GetDigImpactPoint (the middle of the dug blocks' faces, on the
+ * wall face), whatever the number of blocks (drone gdd, owner 2026-10-19); OnDigBlockStarted / OnDigBlockStopped fire per
+ * block for Blueprint effects.
  * Hack (StartHack, called every tick by the objective while the miner is in its zone): the drone stops any dig, hovers
  * HackHoverDistance from the target toward the miner (same HoverHeight) and shows LaserMesh from itself to the target's
  * location + HackLinkOffset. One target at a time; RequestArcDig is refused while hacking. StopHack (or the target or miner
@@ -151,10 +152,19 @@ public:
 
 	/**
 	 * Point a laser aims at to cut Cell: the center of its face toward the owner miner (dominant axis of the miner's
-	 * offset), at half block height. Use it every frame for a per-block Blueprint laser. Zero without a dig grid or miner.
+	 * offset), at half block height. Zero without a dig grid or miner.
 	 */
 	UFUNCTION(BlueprintPure, Category = "Drone|Dig")
 	FVector GetDigTargetPoint(FIntPoint Cell) const;
+
+	/**
+	 * Where the single dig beam ends (task-232-01): the mean of GetDigTargetPoint over the dug cells, projected on the plane of
+	 * the wall face nearest the miner (the face of the dug cell whose target point is closest to the miner, along that face's
+	 * axis), so the beam hits the middle of the dug blocks on the wall face. Changes every tick with the arc. Zero outside Dig,
+	 * with an empty arc, or without a dig grid or miner. Use it for an impact effect at the beam's end.
+	 */
+	UFUNCTION(BlueprintPure, Category = "Drone|Dig")
+	FVector GetDigImpactPoint() const;
 
 	/** MiningSpeed attribute of the owner miner's ASC; 1 if there is no miner, no ASC or no MiningSpeed attribute. */
 	UFUNCTION(BlueprintPure, Category = "Drone")
@@ -172,9 +182,6 @@ public:
 	FRROnDigBlockStoppedSignature OnDigBlockStopped;
 
 protected:
-	/** Fills the laser beam pool up to MaxArcBlocks beams, so the fan does not create components mid-dig. */
-	virtual void BeginPlay() override;
-
 	/** Stops a dig in progress so the target blocks do not keep shaking after the drone is gone. */
 	virtual void EndPlay(const EEndPlayReason::Type EndPlayReason) override;
 
@@ -220,33 +227,23 @@ protected:
 	/** Places Beam as a cylinder from Start to End with LaserDiameter, and shows it (hidden when Start and End coincide). */
 	void UpdateLaser(UStaticMeshComponent* Beam, const FVector& Start, const FVector& End);
 
-	/** Grows LaserBeams to at least Count beams; each new beam copies LaserMesh's mesh and materials, absolute transform, no collision, hidden. */
-	void EnsureLaserBeams(int32 Count);
+	/** Side of Cell's face toward the owner miner: unit step on the dominant axis of the miner's offset from the cell center. Requires a valid miner and dig grid. */
+	FIntPoint GetDigFaceSide(FIntPoint Cell) const;
 
-	/** Aims beam i at GetDigTargetPoint(DigCells[i]) and hides the beams past the arc. Grows the pool when the arc is larger. */
-	void UpdateDigLasers();
-
-	/** Hides every beam of LaserBeams (LaserMesh included). */
-	void HideLaserBeams();
+	/** Dig laser: LaserMesh from the drone to GetDigImpactPoint; hidden when the arc is empty. */
+	void UpdateDigLaser();
 
 	/** Root visual. Collision disabled, so it never blocks or overlaps pawns. Mesh set in Blueprint. */
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Components")
 	TObjectPtr<UStaticMeshComponent> Mesh;
 
 	/**
-	 * Cutting laser: beam 0 of LaserBeams in Dig (toward the first dug block) and the link beam in Hack; the other beams copy its mesh and materials. Expected mesh: a cylinder along local Z with its
+	 * Cutting laser: the single dig beam in Dig (toward GetDigImpactPoint) and the link beam in Hack. Expected mesh: a cylinder along local Z with its
 	 * pivot at the center (the engine cylinder); size given by LaserMeshBaseHeight and LaserMeshBaseDiameter. Mesh and
 	 * material set in Blueprint. Uses an absolute transform, set every tick. No collision, no shadow.
 	 */
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Components")
 	TObjectPtr<UStaticMeshComponent> LaserMesh;
-
-	/**
-	 * Laser fan: one beam per dug block, DigCells[i] cut by LaserBeams[i]. LaserBeams[0] is LaserMesh; the others are
-	 * created at runtime (BeginPlay, or when the arc outgrows the pool) as copies of LaserMesh. Unused beams are hidden.
-	 */
-	UPROPERTY(Transient, VisibleInstanceOnly, BlueprintReadOnly, Category = "Drone|Laser")
-	TArray<TObjectPtr<UStaticMeshComponent>> LaserBeams;
 
 	/** Horizontal distance from the miner's location to the orbit point, in uu. */
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Drone|Orbit", meta = (ClampMin = 0, Units = "cm"))

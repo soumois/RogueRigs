@@ -329,6 +329,11 @@ FVector ARRDrone::GetDigTargetPoint(FIntPoint Cell) const
 		return FVector::ZeroVector;
 	}
 
+	return DigGrid->GetCellFaceCenter(Cell, GetDigFaceSide(Cell));
+}
+
+FIntPoint ARRDrone::GetDigFaceSide(FIntPoint Cell) const
+{
 	// Face toward the miner, on the dominant axis of the miner's offset from the block center.
 	const FVector ToMiner = OwnerMiner->GetActorLocation() - DigGrid->GetCellCenter(Cell.X, Cell.Y);
 	FIntPoint Side(0, 0);
@@ -340,7 +345,46 @@ FVector ARRDrone::GetDigTargetPoint(FIntPoint Cell) const
 	{
 		Side.Y = ToMiner.Y >= 0.0 ? 1 : -1;
 	}
-	return DigGrid->GetCellFaceCenter(Cell, Side);
+	return Side;
+}
+
+FVector ARRDrone::GetDigImpactPoint() const
+{
+	if (State != ERRDroneState::Dig || DigCells.Num() == 0 || !IsValid(DigGrid) || !IsValid(OwnerMiner))
+	{
+		return FVector::ZeroVector;
+	}
+
+	// Mean of the per-block target points, and the target point nearest the miner (the wall face in front of it).
+	const FVector MinerLocation = OwnerMiner->GetActorLocation();
+	FVector Mean = FVector::ZeroVector;
+	FVector Nearest = FVector::ZeroVector;
+	FIntPoint NearestSide(0, 0);
+	double NearestDistanceSquared = TNumericLimits<double>::Max();
+	for (const FIntPoint& Cell : DigCells)
+	{
+		const FVector Target = GetDigTargetPoint(Cell);
+		Mean += Target;
+		const double DistanceSquared = FVector::DistSquared2D(Target, MinerLocation);
+		if (DistanceSquared < NearestDistanceSquared)
+		{
+			NearestDistanceSquared = DistanceSquared;
+			Nearest = Target;
+			NearestSide = GetDigFaceSide(Cell);
+		}
+	}
+	Mean /= DigCells.Num();
+
+	// Project on the plane of that face: second-row target points sit one cell deeper, the beam must stop on the wall face.
+	if (NearestSide.X != 0)
+	{
+		Mean.X = Nearest.X;
+	}
+	else
+	{
+		Mean.Y = Nearest.Y;
+	}
+	return Mean;
 }
 
 float ARRDrone::GetMiningSpeed() const
@@ -370,12 +414,6 @@ void ARRDrone::Tick(float DeltaSeconds)
 		TickHack(DeltaSeconds);
 		break;
 	}
-}
-
-void ARRDrone::BeginPlay()
-{
-	Super::BeginPlay();
-	EnsureLaserBeams(MaxArcBlocks);
 }
 
 void ARRDrone::EndPlay(const EEndPlayReason::Type EndPlayReason)
@@ -430,8 +468,8 @@ void ARRDrone::TickDig(float DeltaSeconds)
 
 	SetActorLocation(FMath::VInterpTo(GetActorLocation(), ComputeDigHoverPoint(), DeltaSeconds, FollowInterpSpeed));
 
-	// Lasers first: the face centers are still valid before the hit that may destroy the blocks.
-	UpdateDigLasers();
+	// Laser first: the face centers are still valid before the hit that may destroy the blocks.
+	UpdateDigLaser();
 
 	// Every block of the arc is cut in parallel at the full rate. A block of a deposit (Duskite 2 x 2, heal vein) makes the whole
 	// deposit one target (ore-blocks, owner 2026-10-06 fourth test and 2026-10-10): each deposit block takes the damage once
@@ -551,7 +589,7 @@ void ARRDrone::StopDig()
 		StopDigBlock(Cell);
 	}
 
-	HideLaserBeams();
+	LaserMesh->SetVisibility(false);
 	DigGrid = nullptr;
 
 	ResumeOrbitFromCurrentAngle();
@@ -578,7 +616,7 @@ void ARRDrone::TickHack(float DeltaSeconds)
 
 void ARRDrone::EndHack()
 {
-	HideLaserBeams();
+	LaserMesh->SetVisibility(false);
 	HackTarget = nullptr;
 	ResumeOrbitFromCurrentAngle();
 }
@@ -615,61 +653,13 @@ void ARRDrone::UpdateLaser(UStaticMeshComponent* Beam, const FVector& Start, con
 	Beam->SetVisibility(true);
 }
 
-void ARRDrone::EnsureLaserBeams(int32 Count)
+void ARRDrone::UpdateDigLaser()
 {
-	if (LaserBeams.Num() == 0)
+	// One beam whatever the number of dug blocks (drone gdd, owner 2026-10-19), aimed at the middle of their faces.
+	if (DigCells.Num() == 0)
 	{
-		LaserBeams.Add(LaserMesh);
+		LaserMesh->SetVisibility(false);
+		return;
 	}
-
-	while (LaserBeams.Num() < Count)
-	{
-		// Copy of LaserMesh: same mesh and materials (set on LaserMesh in Blueprint), same world-space setup.
-		UStaticMeshComponent* Beam = NewObject<UStaticMeshComponent>(this, MakeUniqueObjectName(this, UStaticMeshComponent::StaticClass(), TEXT("LaserBeam")));
-		Beam->SetupAttachment(Mesh);
-		Beam->SetUsingAbsoluteLocation(true);
-		Beam->SetUsingAbsoluteRotation(true);
-		Beam->SetUsingAbsoluteScale(true);
-		Beam->SetCollisionProfileName(UCollisionProfile::NoCollision_ProfileName);
-		Beam->SetGenerateOverlapEvents(false);
-		Beam->SetCanEverAffectNavigation(false);
-		Beam->SetCastShadow(false);
-		Beam->SetVisibility(false);
-		Beam->SetStaticMesh(LaserMesh->GetStaticMesh());
-		for (int32 MaterialIndex = 0; MaterialIndex < LaserMesh->GetNumMaterials(); ++MaterialIndex)
-		{
-			Beam->SetMaterial(MaterialIndex, LaserMesh->GetMaterial(MaterialIndex));
-		}
-		Beam->RegisterComponent();
-		LaserBeams.Add(Beam);
-	}
-}
-
-void ARRDrone::UpdateDigLasers()
-{
-	EnsureLaserBeams(DigCells.Num());
-	const FVector Start = GetActorLocation();
-	for (int32 Index = 0; Index < LaserBeams.Num(); ++Index)
-	{
-		if (Index < DigCells.Num())
-		{
-			UpdateLaser(LaserBeams[Index], Start, GetDigTargetPoint(DigCells[Index]));
-		}
-		else
-		{
-			LaserBeams[Index]->SetVisibility(false);
-		}
-	}
-}
-
-void ARRDrone::HideLaserBeams()
-{
-	LaserMesh->SetVisibility(false);
-	for (UStaticMeshComponent* Beam : LaserBeams)
-	{
-		if (Beam)
-		{
-			Beam->SetVisibility(false);
-		}
-	}
+	UpdateLaser(LaserMesh, GetActorLocation(), GetDigImpactPoint());
 }

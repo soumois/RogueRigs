@@ -176,7 +176,6 @@ namespace RRTestAccess
 	{
 		static const UStaticMeshComponent* Laser(const ARRDrone* Drone) { return Drone->*(&FDroneAccess::LaserMesh); }
 		static int32& MaxArcBlocksOf(ARRDrone* Drone) { return Drone->*(&FDroneAccess::MaxArcBlocks); }
-		static const TArray<TObjectPtr<UStaticMeshComponent>>& Beams(const ARRDrone* Drone) { return Drone->*(&FDroneAccess::LaserBeams); }
 		static float BeamBaseHeight(const ARRDrone* Drone) { return Drone->*(&FDroneAccess::LaserMeshBaseHeight); }
 	};
 
