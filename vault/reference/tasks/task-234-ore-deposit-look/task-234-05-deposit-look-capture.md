@@ -3,7 +3,7 @@ id: task-234-05-deposit-look-capture
 description: "-game captures of Duskite deposits after 234-04, compared with the current clusters."
 parent: task-234-ore-deposit-look
 kind: task
-status: todo
+status: in-progress
 ---
 # -game captures of Duskite deposits after 234-04, compared with the current clusters
 

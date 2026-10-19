@@ -3,7 +3,7 @@ id: task-234-04-deposit-mesh-assign
 description: "Import the Duskite deposit meshes and assign them with the violet material in BP_ArenaGrid."
 parent: task-234-ore-deposit-look
 kind: task
-status: in-progress
+status: done
 ---
 # Import the Duskite deposit meshes and assign them with the violet material in BP_ArenaGrid
 
@@ -15,11 +15,11 @@ status: in-progress
 - done_when: bounds read back match the report; BP compiled; committed.
 - editor_state: open
 - token_ceiling: 40000
-- model: open
-- tokens: open
-- runs: open
+- model: sonnet
+- tokens: input 50, cache write 52018, cache read 793639, output 865
+- runs: 2
 - milestone: M2
-- result: open
+- result: Commits 62deed9f, 7ab08c1c. 6 meshes in /Game/RogueRigs/Art/OreDeposit/ (bounds match the reports, Y mirrored by import, tris match), Nanite off (M_XPNutGlow has no Nanite usage); slots: Duskite crystal MI_OreChunk_Bright, heal crystal MI_HealCrystal_Bright, heal rock MI_RockSlab. BP_ArenaGrid OreDepositMeshes and HealDepositMeshes set, compiled, saved; L_ArenaM1 inherits.
 
 ## Relations
 - [[task-234-ore-deposit-look]] — parent global task.

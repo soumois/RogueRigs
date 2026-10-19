@@ -454,6 +454,7 @@ kind: note
 | [[task-234-02-duskite-deposit-meshes]] | sonnet | 1 | 0k | 43k | 454k | 2k |
 | [[task-234-07-heal-deposit-meshes]] | sonnet | 1 | 0k | 52k | 657k | 8k |
 | [[task-234-03-deposit-crystal-visual]] | opus | 2 | 0k | 696k | 5574k | 29k |
+| [[task-234-04-deposit-mesh-assign]] | sonnet | 2 | 0k | 52k | 794k | 1k |
 
 ## Totals
 | Scope | Input | Cache write | Cache read | Output |
