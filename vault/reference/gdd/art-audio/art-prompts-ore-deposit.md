@@ -38,6 +38,10 @@ H-sheet (optional): "A 3 x 1 sheet: three separate isolated stylised low-poly fo
 - [[readability-rules]] pass: crystals brighter than the stone; red static heal, no cracks on the pad.
 - Variants differ by structure (spire, ridge, crown). Gap to check on return: ChatGPT may add shadows or a floor; the 2 x 2 square footprint is only implied by the pad.
 
+## Owner images
+- Duskite (owner 2026-10-19, from the D-sheet prompt in ChatGPT): `vault/assets/duskite-deposit-sheet.png` (source `Art/Source/ore-deposit/duskite-deposit-sheet-owner-20261019.webp`): left spire, middle leaning ridge, right crown; validated as the model for the 3 Duskite variants. Owner: deposits may also vary by rotation.
+- Heal: open (waiting for the owner images).
+
 ## Relations
 - [[art-prompts-rock]] — parent: rock and ore look; image C is the look reference.
 - [[task-234-01-ore-deposit-look]] — the subtask that wrote these prompts.
