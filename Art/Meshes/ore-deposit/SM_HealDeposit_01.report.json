@@ -1,0 +1,33 @@
+{
+  "mesh": "SM_HealDeposit_01",
+  "variant": "mound",
+  "tris": 1016,
+  "tris_per_slot": {
+    "rock": 740,
+    "crystal": 276
+  },
+  "bounds_min_cm": [
+    -61.54,
+    -57.14,
+    -5.0
+  ],
+  "bounds_max_cm": [
+    60.28,
+    56.67,
+    69.6
+  ],
+  "dimensions_cm": [
+    121.82,
+    113.81,
+    74.6
+  ],
+  "materials": [
+    "rock",
+    "crystal"
+  ],
+  "uv_layers": [
+    "UVMap"
+  ],
+  "warnings": [],
+  "inside_footprint": true
+}
