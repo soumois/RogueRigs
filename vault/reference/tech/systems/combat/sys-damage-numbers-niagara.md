@@ -15,7 +15,7 @@ kind: doc
   - `User.DigitColors` Color Array.
   - `User.DigitCriticals` Int32 Array: 1 critical (pop), 0 normal.
   - `User.DigitSpawnTimes` Float Array: world time of the push.
-  - `User.DigitVelocities` Niagara Vector Array: world rise velocity (uu/s) of the digit, drawn once per number in C++ (all digits of a number hold the same value): `RiseVelocity` turned by ±`RiseAngleMax` 35 degrees in the screen plane around screen up, × [`RiseSpeedMin` 0.7, `RiseSpeedMax` 1.3] (task-240-01). NS_DamageNumbers reads it in Particle Spawn (`SelectVectorFromArray`, Direct Set, index `Particles.DNIdx`) as `Particles.Velocity` (task-240-02).
+  - `User.DigitVelocities` Niagara Vector Array: world rise velocity (uu/s) of the digit, drawn once per number in C++ (all digits of a number hold the same value): `RiseVelocity` turned by ±`RiseAngleMax` 35 degrees in the screen plane around screen up, × [`RiseSpeedMin` 0.7, `RiseSpeedMax` 1.3] (task-240-01). NS_DamageNumbers reads it in Particle Spawn (`SelectVectorFromArray`, Direct Set, index `Particles.DNIdx`) as `Particles.Velocity` (task-240-02), then multiplies it by 4 and applies a Gravity Force (0,0,-980) so the number is thrown in an arc: C++ still sends the nominal rise velocity (about 85.7 uu/s), the asset scales it (task-242-01).
   - `User.DigitCount` int32: array length of the last batch; kept until the next batch.
   - `User.DigitBatchId` int32: +1 per push, never reset; 0 = nothing pushed. Written last.
 - data: emitter recipe (CPU sim, world space, fixed bounds):
