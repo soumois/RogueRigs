@@ -3,7 +3,7 @@ id: task-237-01-deposit-no-shadow
 description: "Ore and heal deposit formations cast no shadow."
 parent: task-237-deposit-no-shadow
 kind: task
-status: in-progress
+status: done
 ---
 # Deposit formations without shadows
 
@@ -15,11 +15,11 @@ status: in-progress
 - done_when: build exits 0 editor closed; RogueRigs.* tests pass except the 2 known pre-existing failures; committed.
 - editor_state: closed
 - token_ceiling: 30000
-- model: open
-- tokens: open
-- runs: open
+- model: opus
+- tokens: input 86, cache write 211650, cache read 1440594, output 747
+- runs: 3
 - milestone: M2
-- result: open
+- result: Commits 1513608e, 60a571ca, 5d8e7471, 297de7ee. bDepositCrystalsCastShadow (default false) turns off cast, dynamic, static and contact shadows on deposit formation ISMs and the cluster fallback. RockDamageData made aware of heal deposit formations (broken by 234-04) and checks CastShadow false. Build 0; Dig 13/13; full run 262/264 (2 known). Look checked by the owner.
 
 ## Relations
 - [[task-237-deposit-no-shadow]] — parent global task.

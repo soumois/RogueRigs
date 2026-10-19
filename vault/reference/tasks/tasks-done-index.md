@@ -243,3 +243,4 @@ Archive: it exceeds the index size limits of [[_authoring]] on purpose (owner, 2
 - [[task-233-dig-impact-particle]] — A particle effect where the drone laser hits the wall: white-gold sparks, chips of the block colour and a little dust while it cuts. Status done.
 - [[task-235-ore-loot-over-dig]] — Ore and heal deposits release their loot one by one during the dig, evenly spread over the dig time, instead of all at destruction. Status done.
 - [[task-236-bloom-intensity]] — The arena post-process bloom intensity goes back to 1.3 (now 1.8). Status done.
+- [[task-237-deposit-no-shadow]] — Ore and heal deposit formations cast no shadow. Status done.
