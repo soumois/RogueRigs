@@ -3,7 +3,7 @@ id: task-237-01-deposit-no-shadow
 description: "Ore and heal deposit formations cast no shadow."
 parent: task-237-deposit-no-shadow
 kind: task
-status: todo
+status: in-progress
 ---
 # Deposit formations without shadows
 
