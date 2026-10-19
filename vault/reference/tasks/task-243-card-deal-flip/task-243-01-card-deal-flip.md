@@ -3,7 +3,7 @@ id: task-243-01-card-deal-flip
 description: "Design one card back (star emblem, same style as the card frames) as a 1000 x 1440 candidate, prompt saved in the vault."
 parent: task-243-card-deal-flip
 kind: task
-status: todo
+status: in-progress
 ---
 # 243-01 art
 

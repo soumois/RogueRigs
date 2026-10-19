@@ -3,7 +3,7 @@ id: task-243-card-deal-flip
 description: "Global task: Level-up cards arrive face down in a fan (ease-out-back from below), then flip one by one; a card back exists in one version per rarity."
 parent: tasks-to-do-index
 kind: task
-status: todo
+status: in-progress
 ---
 # Card arrival and flip
 
