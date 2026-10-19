@@ -440,6 +440,7 @@ kind: note
 | [[task-230-21-rock-rim-tone-restore]] | sonnet | 1 | 0k | 36k | 466k | 1k |
 | [[task-230-19-rock-control-capture]] | opus | 1 | 0k | 70k | 1226k | 5k |
 | [[task-230-25-heal-crystal-red]] | sonnet | 1 | 0k | 42k | 547k | 1k |
+| [[task-230-22-broken-top-texture]] | sonnet | 1 | 0k | 64k | 999k | 2k |
 
 ## Totals
 | Scope | Input | Cache write | Cache read | Output |

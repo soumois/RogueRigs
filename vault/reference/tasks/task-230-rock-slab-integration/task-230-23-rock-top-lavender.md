@@ -3,7 +3,7 @@ id: task-230-23-rock-top-lavender
 description: "Rock top reads lavender, not near white: top desaturation reduced to about 25 %."
 parent: task-230-rock-slab-integration
 kind: task
-status: todo
+status: in-progress
 ---
 # Rock top reads lavender, not near white: top desaturation reduced to about 25 %
 

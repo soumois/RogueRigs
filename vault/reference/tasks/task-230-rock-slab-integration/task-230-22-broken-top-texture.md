@@ -3,7 +3,7 @@ id: task-230-22-broken-top-texture
 description: "Broken rock pieces show the same textured top as intact pieces instead of flat lavender squares."
 parent: task-230-rock-slab-integration
 kind: task
-status: in-progress
+status: done
 ---
 # Broken rock pieces show the same textured top as intact pieces instead of flat lavender squares
 
@@ -15,11 +15,11 @@ status: in-progress
 - done_when: material compiles; saved; doc updated; committed; look checked in task-230-26.
 - editor_state: open
 - token_ceiling: 50000
-- model: open
-- tokens: open
-- runs: open
+- model: sonnet
+- tokens: input 54, cache write 63721, cache read 999401, output 1505
+- runs: 1
 - milestone: M2
-- result: open
+- result: Commit 1f323202 (likely cause, not proven). Flat broken tops have the SideColor hue: the side test abs(VertexNormalWS.z) fails on some broken blocks drawn off Nanite (fallback mesh normal suspected). Broken pieces now take the side test from screen-space derivatives of the unoffset world position; intact unchanged. Next suspect if still flat: the broken meshes' Nanite fallback mesh (fallback relative error simplifying the blocks).
 
 ## Relations
 - [[task-230-rock-slab-integration]] — parent global task.
