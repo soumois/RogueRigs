@@ -17,6 +17,12 @@ unreal.EditorReimportHandler does not exist in the UE 5.8 Python API; Interchang
 translator is pinned to convert_scene_unit False (see _ensure_translator_settings), otherwise
 Blender FBX come back 100 times larger.
 
+Option --vertex-colors=replace (task-230-20): skip Interchange and use the AssetImportTask
+directly with VertexColorImportOption Replace (the FBX vertex colours are written into the mesh),
+Generate Lightmap UVs off and Nanite kept as the asset had it. Without it, the legacy FbxImportUI
+path keeps the importer default (Ignore for the project rock meshes, so the colours read white).
+Rerun static_mesh_build_settings.py after any import_task reimport.
+
 Any failure raises at the end, so the commandlet logs "Python script executed with errors" and
 the process exits non-zero.
 """
@@ -27,6 +33,7 @@ import sys
 import unreal
 
 LINE_TAG = "REIMPORT"
+VERTEX_COLOR_OPTIONS = {"replace": "REPLACE", "ignore": "IGNORE", "override": "OVERRIDE"}
 
 
 def _fmt_vec(v):
@@ -86,8 +93,12 @@ def _reimport_interchange(mesh):
     return ok
 
 
-def _reimport_task(mesh, package_path, source):
-    """Fallback: import the source file over the existing asset."""
+def _reimport_task(mesh, package_path, source, vertex_colors=None):
+    """Fallback: import the source file over the existing asset.
+
+    vertex_colors: None keeps the importer default, otherwise a VERTEX_COLOR_OPTIONS key; it also
+    turns Generate Lightmap UVs off and keeps the Nanite flag of the existing asset.
+    """
     folder, name = package_path.rsplit("/", 1)
     options = unreal.FbxImportUI()
     options.set_editor_property("import_mesh", True)
@@ -95,6 +106,13 @@ def _reimport_task(mesh, package_path, source):
     options.set_editor_property("import_textures", False)
     options.set_editor_property("import_as_skeletal", False)
     options.static_mesh_import_data.set_editor_property("combine_meshes", True)
+    if vertex_colors:
+        smid = options.static_mesh_import_data
+        smid.set_editor_property("vertex_color_import_option",
+                                 getattr(unreal.VertexColorImportOption, VERTEX_COLOR_OPTIONS[vertex_colors]))
+        smid.set_editor_property("generate_lightmap_u_vs", False)
+        nanite = mesh.get_editor_property("nanite_settings").get_editor_property("enabled")
+        smid.set_editor_property("build_nanite", bool(nanite))
 
     task = unreal.AssetImportTask()
     task.set_editor_property("filename", source)
@@ -108,7 +126,7 @@ def _reimport_task(mesh, package_path, source):
     return len(task.get_editor_property("imported_object_paths")) > 0
 
 
-def reimport_one(package_path):
+def reimport_one(package_path, vertex_colors=None):
     """Reimport one asset; return (ok, message)."""
     if not unreal.EditorAssetLibrary.does_asset_exist(package_path):
         return False, "asset not found"
@@ -122,15 +140,17 @@ def reimport_one(package_path):
     before = _folder_assets(package_path)
     before_desc = _describe(mesh)
     method = "interchange"
-    try:
-        method = "interchange({})".format(_ensure_translator_settings(mesh))
-        ok = _reimport_interchange(mesh)
-    except Exception as exc:  # binding or Interchange failure: use the fallback
-        unreal.log_warning("{} {} interchange reimport raised: {}".format(LINE_TAG, package_path, exc))
-        ok = False
+    ok = False
+    if not vertex_colors:
+        try:
+            method = "interchange({})".format(_ensure_translator_settings(mesh))
+            ok = _reimport_interchange(mesh)
+        except Exception as exc:  # binding or Interchange failure: use the fallback
+            unreal.log_warning("{} {} interchange reimport raised: {}".format(LINE_TAG, package_path, exc))
+            ok = False
     if not ok:
-        method = "import_task"
-        if not _reimport_task(mesh, package_path, source):
+        method = "import_task" + ("(vertex_colors={})".format(vertex_colors) if vertex_colors else "")
+        if not _reimport_task(mesh, package_path, source, vertex_colors):
             return False, "both interchange reimport and import task failed (source {})".format(source)
 
     mesh = unreal.EditorAssetLibrary.load_asset(package_path)
@@ -148,12 +168,19 @@ def reimport_one(package_path):
 
 def main(argv):
     paths = [a for a in argv if a.startswith("/")]
+    vertex_colors = None
+    for a in argv:
+        if a.startswith("--vertex-colors="):
+            vertex_colors = a.split("=", 1)[1].lower()
+            if vertex_colors not in VERTEX_COLOR_OPTIONS:
+                raise RuntimeError("{}: --vertex-colors must be one of {}".format(
+                    LINE_TAG, ", ".join(sorted(VERTEX_COLOR_OPTIONS))))
     if not paths:
         raise RuntimeError("{}: no asset path given (expected /Game/... arguments)".format(LINE_TAG))
     failures = 0
     for path in paths:
         try:
-            ok, message = reimport_one(path)
+            ok, message = reimport_one(path, vertex_colors)
         except Exception as exc:
             ok, message = False, "exception: {}".format(exc)
         line = "{} {} {} {}".format(LINE_TAG, path, "ok" if ok else "error", message)
