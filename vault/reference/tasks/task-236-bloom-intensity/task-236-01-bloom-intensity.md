@@ -3,7 +3,7 @@ id: task-236-01-bloom-intensity
 description: "The arena post-process bloom intensity goes back to 1.3 (now 1.8)."
 parent: task-236-bloom-intensity
 kind: task
-status: in-progress
+status: done
 ---
 # Bloom intensity 1.3
 
@@ -17,9 +17,9 @@ status: in-progress
 - token_ceiling: 15000
 - model: open
 - tokens: open
-- runs: open
+- runs: 1
 - milestone: M2
-- result: open
+- result: The owner sets PPV_XPGlow (L_ArenaM1) BloomIntensity to 1.3 himself (was 1.8); agent stopped before any change; value recorded in ppv-xp-glow.
 
 ## Relations
 - [[task-236-bloom-intensity]] — parent global task.
