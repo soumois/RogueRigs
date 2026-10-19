@@ -13,7 +13,7 @@ status: in-progress
 - gdd_check: [[rock-state-render-options]] and children (owner decisions 2026-10-17: dual grid for display only, provisional triangle budget, rim as vertex colour in one material, cracks from any damage, one variant per shape with variant support, Nanite assumed), [[art-style-guide]] A1 level 3, [[color-code]], [[readability-rules]], [[sys-grid]]. Open: weak rock (separate task, maximum share open), number of variants later. Not in this task: weak rock, collision rounding of corners.
 - confirmed_by_owner: yes (2026-10-17). Launch rules (owner): 01 then 02 run one after the other (not in parallel); 03 to 06 each wait for the owner validation of the previous one; 07 to 12 run together as one sequence without asking again.
 - milestone: M2
-- next_step: task-230-19-rock-control-capture
+- next_step: task-230-22-broken-top-texture
 - result: open
 
 ## Subtasks
@@ -38,6 +38,11 @@ status: in-progress
 19. task-230-19-rock-control-capture — cpp: Control captures after 18 and 20.
 20. task-230-20-rock-vertex-colour-reimport — cpp: Reimport the rock meshes with vertex colours (runs before 19).
 21. task-230-21-rock-rim-tone-restore — bp: Rim tone back to 1.3 in MI_RockSlab (runs before 19).
+22. task-230-22-broken-top-texture — bp: Broken piece tops textured like intact tops.
+23. task-230-23-rock-top-lavender — bp: Top lavender, desaturation about 25 %.
+24. task-230-24-rock-rim-visible — bp: Rim band visible.
+25. task-230-25-heal-crystal-red — bp: Heal crystals red, not orange.
+26. task-230-26-rock-control-capture-2 — cpp: Control capture after 22 to 25.
 
 ## Relations
 - [[tasks-to-do-index]] — parent index.
@@ -62,5 +67,10 @@ status: in-progress
 - [[task-230-19-rock-control-capture]] — step 19, cpp.
 - [[task-230-20-rock-vertex-colour-reimport]] — step 20, cpp, runs before 19.
 - [[task-230-21-rock-rim-tone-restore]] — step 21, bp, runs before 19.
+- [[task-230-22-broken-top-texture]] — step 22.
+- [[task-230-23-rock-top-lavender]] — step 23.
+- [[task-230-24-rock-rim-visible]] — step 24.
+- [[task-230-25-heal-crystal-red]] — step 25.
+- [[task-230-26-rock-control-capture-2]] — step 26.
 - [[rock-state-render-options]] — the design this task implements.
 - [[task-219-rock-ore-look]] — the look exploration behind it.
