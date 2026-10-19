@@ -3,7 +3,7 @@ id: task-243-04-card-deal-flip
 description: "Review the five rarity backs."
 parent: task-243-card-deal-flip
 kind: task
-status: todo
+status: done
 ---
 # 243-04 style-guide
 
@@ -17,9 +17,9 @@ status: todo
 - token_ceiling: 15000 (provisional)
 - model: open
 - tokens: open
-- runs: open
+- runs: 1
 - milestone: M2
-- result: open
+- result: style-guide: grey pass, green/blue/purple/yellow fail A6 (teal plates took the tier colour). Owner keeps the five backs as they are, A6 deviation voluntary (2026-10-19).
 
 ## Relations
 - [[task-243-card-deal-flip]] — parent global task.

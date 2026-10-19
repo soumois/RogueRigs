@@ -3,7 +3,7 @@ id: task-243-05-card-deal-flip
 description: "Import the five back textures and, in WBP_UpgradeChoice, add a back layer per card, the arrival in a fan (ease-out-back, about 0.15 s apart) and the flip one by one (width scaled by |cos|, swap at ..."
 parent: task-243-card-deal-flip
 kind: task
-status: todo
+status: in-progress
 ---
 # 243-05 bp
 

@@ -3,7 +3,7 @@ id: task-243-03-card-deal-flip
 description: "From the validated back design make five versions, grey, green, blue, purple, yellow (tier colours of wbp-upgrade-choice SetCard), 1000 x 1440 each; Kie runs sequential."
 parent: task-243-card-deal-flip
 kind: task
-status: in-progress
+status: done
 ---
 # 243-03 art
 
@@ -17,9 +17,9 @@ status: in-progress
 - token_ceiling: 40000 (provisional)
 - model: open
 - tokens: open
-- runs: open
+- runs: 1
 - milestone: M2
-- result: open
+- result: Five rarity backs (grey = validated base; green, blue, purple, yellow by one correction run each, 24 credits), final PNG 1000 x 1440 transparent in Art/Source/card-back/final/. Prompts in art-prompts-card-back. Cost counted under agent a554d694e71a91c8d (1 run).
 
 ## Relations
 - [[task-243-card-deal-flip]] — parent global task.
