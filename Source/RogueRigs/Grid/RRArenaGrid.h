@@ -926,13 +926,13 @@ protected:
 
 	// --- Shake (dig feedback) ---
 
-	/** Maximum horizontal offset of a shaking block from its rest position. */
+	/** Maximum horizontal offset of a shaking block from its rest position (8, owner 2026-10-19, task-231; was 25). Mirrored by MI_RockSlab ShakeParams r for rock pieces; ore and heal crystals move their instance by it. */
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Grid|Destruction", meta = (ClampMin = "0.0", Units = "cm"))
-	float ShakeAmplitude = 25.f;
+	float ShakeAmplitude = 8.f;
 
-	/** Maximum vertical offset (bob) of a shaking block from its rest position, in the same jitter. */
+	/** Maximum vertical offset (bob) of a shaking block from its rest position, in the same jitter (3, owner 2026-10-19, task-231; was 8). Mirrored by MI_RockSlab ShakeParams g. */
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Grid|Destruction", meta = (ClampMin = "0.0", Units = "cm"))
-	float ShakeVerticalAmplitude = 8.f;
+	float ShakeVerticalAmplitude = 3.f;
 
 	/** Oscillation frequency of a shaking block. */
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Grid|Destruction", meta = (ClampMin = "0.0", Units = "Hz"))

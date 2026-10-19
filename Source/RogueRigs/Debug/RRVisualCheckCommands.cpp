@@ -522,6 +522,44 @@ namespace RRScreenshotCommands
 		ECVF_Cheat);
 
 	/**
+	 * rr.Debug.ShakeCell <X0> <Y0> [X1 Y1] [0|1]: starts (1, default) or stops (0) the dig shake of every block in the cell
+	 * rectangle (X0, Y0)..(X1, Y1) through ARRArenaGrid::SetCellShaking, without damage, so intact pieces shake on their own
+	 * (task-231-01: checks the shake on intact Nanite pieces). Empty cells are skipped.
+	 */
+	FAutoConsoleCommandWithWorldAndArgs ShakeCellCommand(
+		TEXT("rr.Debug.ShakeCell"),
+		TEXT("rr.Debug.ShakeCell <X0> <Y0> [X1 Y1] [0|1]: starts (1, default) or stops (0) the dig shake of the blocks in the cell rectangle, no damage (visual checks of the shake)."),
+		FConsoleCommandWithWorldAndArgsDelegate::CreateLambda([](const TArray<FString>& Args, UWorld* World)
+		{
+			World = World ? World : RRCheats::FindCheatWorld();
+			ARRArenaGrid* Grid = World ? FindGrid(World) : nullptr;
+			if (!Grid || Args.Num() < 2)
+			{
+				UE_LOG(LogRogueRigs, Warning, TEXT("rr.Debug.ShakeCell <X0> <Y0> [X1 Y1] [0|1]: needs a grid and 2 arguments."));
+				return;
+			}
+			const FIntPoint First(FCString::Atoi(*Args[0]), FCString::Atoi(*Args[1]));
+			const FIntPoint Last = Args.Num() >= 4 ? FIntPoint(FCString::Atoi(*Args[2]), FCString::Atoi(*Args[3])) : First;
+			const int32 FlagIndex = Args.Num() >= 4 ? 4 : 2;
+			const bool bShaking = !Args.IsValidIndex(FlagIndex) || FCString::Atoi(*Args[FlagIndex]) != 0;
+			int32 Count = 0;
+			for (int32 Y = FMath::Min(First.Y, Last.Y); Y <= FMath::Max(First.Y, Last.Y); ++Y)
+			{
+				for (int32 X = FMath::Min(First.X, Last.X); X <= FMath::Max(First.X, Last.X); ++X)
+				{
+					if (Grid->GetCellHealth(FIntPoint(X, Y)) > 0.f)
+					{
+						Grid->SetCellShaking(FIntPoint(X, Y), bShaking);
+						++Count;
+					}
+				}
+			}
+			UE_LOG(LogRogueRigs, Log, TEXT("rr.Debug.ShakeCell: %s %d blocks in (%d, %d)..(%d, %d)."), bShaking ? TEXT("shaking") : TEXT("stopped"),
+				Count, First.X, First.Y, Last.X, Last.Y);
+		}),
+		ECVF_Cheat);
+
+	/**
 	 * rr.Debug.Camera <Pitch> <ArmLength> [Yaw]: sets the player miner's camera boom pitch, length and yaw (world degrees,
 	 * absolute rotation), for close or three-quarter visual check views. Yaw also turns the screen axes of move and aim.
 	 */
