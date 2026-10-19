@@ -13,7 +13,7 @@ status: in-progress
 - gdd_check: done by the Orchestrator when the task is planned (2026-10-19).
 - confirmed_by_owner: yes (2026-10-19)
 - milestone: M2
-- next_step: task-234-05-deposit-look-capture
+- next_step: task-234-08-duskite-rest-pulse
 - result: open
 
 ## Subtasks
@@ -23,6 +23,7 @@ status: in-progress
 4. task-234-04-deposit-mesh-assign — bp
 5. task-234-05-deposit-look-capture — cpp
 6. task-234-06-heal-deposit-prompts — art: heal prompts v2, crystals embedded in rock (owner: too close to Duskite)
+8. task-234-08-duskite-rest-pulse — bp: darker mauve at rest, pulse peak = current look (owner checks, no capture)
 7. task-234-07-heal-deposit-meshes — 3d: heal meshes from the owner sheet (before 04, which imports both types)
 
 ## Relations
@@ -34,3 +35,4 @@ status: in-progress
 - [[task-234-05-deposit-look-capture]] — step 5.
 - [[task-234-06-heal-deposit-prompts]] — step 6.
 - [[task-234-07-heal-deposit-meshes]] — step 7.
+- [[task-234-08-duskite-rest-pulse]] — step 8.
