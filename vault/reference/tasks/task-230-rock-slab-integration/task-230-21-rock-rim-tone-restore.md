@@ -3,7 +3,7 @@ id: task-230-21-rock-rim-tone-restore
 description: "Restore the lighter rim tone in MI_RockSlab (TopParams.b back to 1.3) now that the meshes carry vertex colours."
 parent: task-230-rock-slab-integration
 kind: task
-status: in-progress
+status: done
 ---
 # Rim tone restored in MI_RockSlab
 
@@ -15,11 +15,11 @@ status: in-progress
 - done_when: value read back; asset saved; doc updated; committed.
 - editor_state: open
 - token_ceiling: 15000
-- model: open
-- tokens: open
-- runs: open
+- model: sonnet
+- tokens: input 40, cache write 35783, cache read 465630, output 723
+- runs: 1
 - milestone: M2
-- result: open
+- result: Commit 8bb3d3de. MI_RockSlab TopParams = (0.5, 0.4, 1.3, 0.55) read back; rim multiplier applies only to intact R > 0.75 / broken 0.25 < R < 0.75 with G, B < 0.5; sides from the geometric normal.
 
 ## Relations
 - [[task-230-rock-slab-integration]] — parent global task.

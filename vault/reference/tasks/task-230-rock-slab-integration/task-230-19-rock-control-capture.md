@@ -3,7 +3,7 @@ id: task-230-19-rock-control-capture
 description: "Control capture after 230-18: Duskite, rock top texture, rim, cracks and sag in game, side by side with 230-17."
 parent: task-230-rock-slab-integration
 kind: task
-status: todo
+status: in-progress
 ---
 # Control capture after 230-18: Duskite, rock top texture, rim, cracks and sag in game, side by side with 230-17
 

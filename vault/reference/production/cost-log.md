@@ -437,6 +437,7 @@ kind: note
 | [[task-230-17-rock-sag-visible-check]] | opus | 2 | 0k | 153k | 6797k | 5k |
 | [[task-230-18-rock-material-diagnosis]] | sonnet | 1 | 0k | 114k | 3291k | 3k |
 | [[task-230-20-rock-vertex-colour-reimport]] | opus | 1 | 0k | 100k | 1927k | 4k |
+| [[task-230-21-rock-rim-tone-restore]] | sonnet | 1 | 0k | 36k | 466k | 1k |
 
 ## Totals
 | Scope | Input | Cache write | Cache read | Output |
