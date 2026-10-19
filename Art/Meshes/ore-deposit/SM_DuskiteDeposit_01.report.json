@@ -1,0 +1,29 @@
+{
+  "mesh": "SM_DuskiteDeposit_01",
+  "variant": "spire",
+  "crystals": 8,
+  "tris": 192,
+  "bounds_min_cm": [
+    -64.4,
+    -57.94,
+    -5.0
+  ],
+  "bounds_max_cm": [
+    64.15,
+    36.0,
+    110.51
+  ],
+  "dimensions_cm": [
+    128.55,
+    93.94,
+    115.51
+  ],
+  "materials": [
+    "crystal"
+  ],
+  "uv_layers": [
+    "UVMap"
+  ],
+  "warnings": [],
+  "inside_footprint": true
+}

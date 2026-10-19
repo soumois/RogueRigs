@@ -1,0 +1,29 @@
+{
+  "mesh": "SM_DuskiteDeposit_02",
+  "variant": "ridge",
+  "crystals": 6,
+  "tris": 144,
+  "bounds_min_cm": [
+    -56.92,
+    -41.89,
+    -5.0
+  ],
+  "bounds_max_cm": [
+    56.26,
+    31.5,
+    112.42
+  ],
+  "dimensions_cm": [
+    113.18,
+    73.39,
+    117.42
+  ],
+  "materials": [
+    "crystal"
+  ],
+  "uv_layers": [
+    "UVMap"
+  ],
+  "warnings": [],
+  "inside_footprint": true
+}
