@@ -3,7 +3,7 @@ id: task-234-04-deposit-mesh-assign
 description: "Import the Duskite deposit meshes and assign them with the violet material in BP_ArenaGrid."
 parent: task-234-ore-deposit-look
 kind: task
-status: todo
+status: in-progress
 ---
 # Import the Duskite deposit meshes and assign them with the violet material in BP_ArenaGrid
 

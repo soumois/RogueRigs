@@ -3,7 +3,7 @@ id: task-234-03-deposit-crystal-visual
 description: "The grid draws one crystal formation per deposit (variant and quarter-turn rotation hashed from the deposit), not one cluster per cell."
 parent: task-234-ore-deposit-look
 kind: task
-status: in-progress
+status: done
 ---
 # The grid draws one crystal formation per deposit (variant and quarter-turn rotation hashed from the deposit), not one cluster per cell
 
@@ -15,11 +15,11 @@ status: in-progress
 - done_when: build exits 0 editor closed; RogueRigs.* tests pass except the 2 known pre-existing failures; committed.
 - editor_state: closed
 - token_ceiling: 70000
-- model: open
-- tokens: open
-- runs: open
+- model: opus
+- tokens: input 96, cache write 695955, cache read 5574385, output 28598
+- runs: 2
 - milestone: M2
-- result: open
+- result: Commits 524c9b0a, 1e5e53f7, 8923838c. One instance per deposit at its centre on the block top, mesh hash(deposit id, DepositCrystalSeed) % n, hashed quarter-turn yaw; plain ISM per type and mesh; removed at the first broken block; shake per deposit; marked and colour data kept; per-cell clusters kept while a list is empty. Properties OreDepositMeshes, HealDepositMeshes, OreDepositMaterial, HealDepositMaterial (override only the slot named DepositCrystalSlotName crystal), DepositCrystalScale 1, DepositCrystalSeed 1. Build 0, tests 262/264 (2 known).
 
 ## Relations
 - [[task-234-ore-deposit-look]] — parent global task.
