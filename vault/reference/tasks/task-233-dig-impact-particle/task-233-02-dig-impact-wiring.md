@@ -3,7 +3,7 @@ id: task-233-02-dig-impact-wiring
 description: "The drone spawns NS_DigImpact at the laser impact point while it digs, chip colour from the dug block type."
 parent: task-233-dig-impact-particle
 kind: task
-status: todo
+status: in-progress
 ---
 # Dig impact particle wiring
 

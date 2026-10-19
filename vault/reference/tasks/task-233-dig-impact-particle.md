@@ -13,7 +13,7 @@ status: in-progress
 - gdd_check: done by the Orchestrator when the task is planned (2026-10-19).
 - confirmed_by_owner: yes (2026-10-19)
 - milestone: M2
-- next_step: task-233-01-dig-impact-particle
+- next_step: task-233-02-dig-impact-wiring
 - result: open
 
 ## Subtasks
