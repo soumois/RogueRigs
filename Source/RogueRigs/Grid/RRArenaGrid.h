@@ -1103,7 +1103,7 @@ protected:
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Grid|Rock Pieces")
 	bool bRockPiecesUseNanite = true;
 
-	/** Allow Nanite on the broken piece ISMs too (task-230-17: false). Under Nanite the M_RockSlab world position offset (broken block sag, shake) does not show in game: with r.Nanite 0 the same damaged wall sags. Broken pieces exist only around damaged cells, so their non-Nanite fallback costs little. Ignored when bRockPiecesUseNanite is false. */
+	/** Allow Nanite on the broken piece ISMs too (task-230-17: false). Under Nanite the M_RockSlab broken block sag did not show in game: with r.Nanite 0 the same damaged wall sags. The shake offset does draw on intact Nanite pieces (task-231-01, rr.Debug.ShakeCell captures). Broken pieces exist only around damaged cells, so their non-Nanite fallback costs little. Ignored when bRockPiecesUseNanite is false. */
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Grid|Rock Pieces")
 	bool bBrokenRockPiecesUseNanite = false;
 
