@@ -3,7 +3,7 @@ id: task-230-26-rock-control-capture-2
 description: "Control capture after 22 to 25: broken tops, lavender top, rim band, red heal crystals."
 parent: task-230-rock-slab-integration
 kind: task
-status: todo
+status: in-progress
 ---
 # Control capture after 22 to 25: broken tops, lavender top, rim band, red heal crystals
 

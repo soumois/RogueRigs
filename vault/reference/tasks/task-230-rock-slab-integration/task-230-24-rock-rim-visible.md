@@ -3,7 +3,7 @@ id: task-230-24-rock-rim-visible
 description: "The lighter rim band along the rock outline is visible at the game camera."
 parent: task-230-rock-slab-integration
 kind: task
-status: in-progress
+status: done
 ---
 # The lighter rim band along the rock outline is visible at the game camera
 
@@ -15,11 +15,11 @@ status: in-progress
 - done_when: saved; doc updated; committed; look checked in task-230-26.
 - editor_state: open
 - token_ceiling: 30000
-- model: open
-- tokens: open
-- runs: open
+- model: sonnet
+- tokens: input 24, cache write 27093, cache read 240488, output 394
+- runs: 1
 - milestone: M2
-- result: open
+- result: Commit 7f3723d3. MI_RockSlab TopParams.b 1.3 -> 2.0 (rim about 2x the top mean, estimate); no HLSL change. Look checked in 230-26.
 
 ## Relations
 - [[task-230-rock-slab-integration]] — parent global task.

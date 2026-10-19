@@ -442,6 +442,7 @@ kind: note
 | [[task-230-25-heal-crystal-red]] | sonnet | 1 | 0k | 42k | 547k | 1k |
 | [[task-230-22-broken-top-texture]] | sonnet | 1 | 0k | 64k | 999k | 2k |
 | [[task-230-23-rock-top-lavender]] | sonnet | 1 | 0k | 34k | 513k | 1k |
+| [[task-230-24-rock-rim-visible]] | sonnet | 1 | 0k | 27k | 240k | 0k |
 
 ## Totals
 | Scope | Input | Cache write | Cache read | Output |
