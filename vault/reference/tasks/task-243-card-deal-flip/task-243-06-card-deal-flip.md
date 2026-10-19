@@ -3,7 +3,7 @@ id: task-243-06-card-deal-flip
 description: "Run the game with a level-up (rr.Cheat.GrantXP) and capture a frame series of the arrival and the flip with rr.Debug.Shots; compare with the look before; send the frames."
 parent: task-243-card-deal-flip
 kind: task
-status: todo
+status: in-progress
 ---
 # 243-06 cpp
 
