@@ -446,6 +446,7 @@ kind: note
 | [[task-230-26-rock-control-capture-2]] | opus | 1 | 0k | 46k | 618k | 4k |
 | [[task-234-01-ore-deposit-look]] | sonnet | 1 | 0k | 33k | 198k | 1k |
 | [[task-231-01-dig-shake-reduced]] | opus | 1 | 0k | 114k | 4018k | 10k |
+| [[task-232-01-drone-single-beam]] | opus | 1 | 0k | 103k | 2310k | 2k |
 
 ## Totals
 | Scope | Input | Cache write | Cache read | Output |

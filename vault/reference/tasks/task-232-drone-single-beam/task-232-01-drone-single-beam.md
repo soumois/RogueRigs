@@ -3,7 +3,7 @@ id: task-232-01-drone-single-beam
 description: "The drone shows one laser beam aimed at the middle of the dug blocks, whatever their number."
 parent: task-232-drone-single-beam
 kind: task
-status: in-progress
+status: done
 ---
 # One drone beam
 
@@ -15,11 +15,11 @@ status: in-progress
 - done_when: build exits 0 editor closed; RogueRigs.* tests pass except the 2 known pre-existing failures (tests expecting one beam per block updated); capture sent to the owner; docs updated.
 - editor_state: closed
 - token_ceiling: 60000
-- model: open
-- tokens: open
-- runs: open
+- model: opus
+- tokens: input 72, cache write 103023, cache read 2309924, output 2100
+- runs: 1
 - milestone: M2
-- result: open
+- result: Commits 17210e62 (code, tests), 02a18448 (docs). Dig draws one beam (LaserMesh) to GetDigImpactPoint (mean of the dig target points projected on the nearest face; BlueprintPure for 233-02); fan pool removed; hack beam unchanged. Build 0, tests 262/264 (2 known). Captures Saved/DroneBeam/ show one beam, end point hidden by the miner; corner arcs not checked.
 
 ## Relations
 - [[task-232-drone-single-beam]] — parent global task.

@@ -1,9 +1,9 @@
 ---
 id: task-232-drone-single-beam
 description: "Global task: The drone shows one laser beam aimed at the middle of the dug blocks, whatever their number."
-parent: tasks-to-do-index
+parent: tasks-done-index
 kind: task
-status: in-progress
+status: done
 ---
 # One drone beam
 
@@ -13,12 +13,12 @@ status: in-progress
 - gdd_check: done by the Orchestrator when the task is planned (2026-10-19).
 - confirmed_by_owner: yes (2026-10-19)
 - milestone: M2
-- next_step: task-232-01-drone-single-beam
-- result: open
+- next_step: none
+- result: Done. Commits 17210e62 (code, tests), 02a18448 (docs). Dig draws one beam (LaserMesh) to GetDigImpactPoint (mean of the dig target points projected on the nearest face; BlueprintPure for 233-02); fan pool removed; hack beam unchanged. Build 0, tests 262/264 (2 known). Captures Saved/DroneBeam/ show one beam, end point hidden by the miner; corner arcs not checked.
 
 ## Subtasks
 1. task-232-01-drone-single-beam — cpp
 
 ## Relations
-- [[tasks-to-do-index]] — parent index.
+- [[tasks-done-index]] — parent index.
 - [[task-232-01-drone-single-beam]] — step 1, cpp.

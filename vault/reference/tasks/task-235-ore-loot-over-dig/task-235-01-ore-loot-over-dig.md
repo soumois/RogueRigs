@@ -3,7 +3,7 @@ id: task-235-01-ore-loot-over-dig
 description: "Ore and heal deposits release their loot one by one during the dig, evenly spread over the dig time, instead of all at destruction."
 parent: task-235-ore-loot-over-dig
 kind: task
-status: todo
+status: in-progress
 ---
 # Loot spread over the dig
 

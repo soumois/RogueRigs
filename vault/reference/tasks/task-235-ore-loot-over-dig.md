@@ -3,7 +3,7 @@ id: task-235-ore-loot-over-dig
 description: "Global task: deposits release their loot one by one, evenly spread over the dig time, not all at destruction."
 parent: tasks-to-do-index
 kind: task
-status: todo
+status: in-progress
 ---
 # Loot spread over the dig
 
