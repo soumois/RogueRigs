@@ -438,6 +438,7 @@ kind: note
 | [[task-230-18-rock-material-diagnosis]] | sonnet | 1 | 0k | 114k | 3291k | 3k |
 | [[task-230-20-rock-vertex-colour-reimport]] | opus | 1 | 0k | 100k | 1927k | 4k |
 | [[task-230-21-rock-rim-tone-restore]] | sonnet | 1 | 0k | 36k | 466k | 1k |
+| [[task-230-19-rock-control-capture]] | opus | 1 | 0k | 70k | 1226k | 5k |
 
 ## Totals
 | Scope | Input | Cache write | Cache read | Output |

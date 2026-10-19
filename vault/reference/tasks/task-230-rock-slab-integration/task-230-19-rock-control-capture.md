@@ -3,7 +3,7 @@ id: task-230-19-rock-control-capture
 description: "Control capture after 230-18: Duskite, rock top texture, rim, cracks and sag in game, side by side with 230-17."
 parent: task-230-rock-slab-integration
 kind: task
-status: in-progress
+status: done
 ---
 # Control capture after 230-18: Duskite, rock top texture, rim, cracks and sag in game, side by side with 230-17
 
@@ -15,11 +15,11 @@ status: in-progress
 - done_when: captures sent to the owner; no game process left; committed if docs change.
 - editor_state: closed
 - token_ceiling: 40000
-- model: open
-- tokens: open
-- runs: open
+- model: opus
+- tokens: input 58, cache write 69709, cache read 1226233, output 4846
+- runs: 1
 - milestone: M2
-- result: open
+- result: Captures Saved/RockSlab/after3/ (sbs_* against after2). Fixed in game: Duskite glows violet; tops show the T_RockTop grain; no lighter rectangle; crack lines on 0.3 cells; sag visible. Remaining: broken-piece tops flat lavender, untextured (square patches); tops near white instead of lavender; rim band not visible; heal crystals read orange-red; Duskite bloom strong at distance. No code or asset change.
 
 ## Relations
 - [[task-230-rock-slab-integration]] — parent global task.
