@@ -3,7 +3,7 @@ id: task-241-01-number-pop-duration
 description: "The pop of the damage numbers lasts 0.25 s instead of 0.1 s."
 parent: task-241-number-pop-duration
 kind: task
-status: todo
+status: in-progress
 ---
 # Damage number pop 0.25 s
 

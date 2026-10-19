@@ -3,7 +3,7 @@ id: task-240-02-number-rise-variation-asset
 description: "NS_DamageNumbers moves each digit with the per-number velocity written by C++ in User.DigitVelocities."
 parent: task-240-number-rise-variation
 kind: task
-status: in-progress
+status: done
 ---
 # Damage number rise variation (Niagara asset)
 
@@ -17,9 +17,9 @@ status: in-progress
 - token_ceiling: 80000
 - model: open
 - tokens: open
-- runs: open
+- runs: 1
 - milestone: M2
-- result: open
+- result: NS_DamageNumbers Particle Spawn reads User.DigitVelocities (SelectVectorFromArray, index DNIdx), compile clean, commit 580beca4; not run in PIE, LogNiagara data-interface message at add time untraced
 
 ## Relations
 - [[task-240-number-rise-variation]] — parent global task.

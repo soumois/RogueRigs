@@ -246,3 +246,4 @@ Archive: it exceeds the index size limits of [[_authoring]] on purpose (owner, 2
 - [[task-237-deposit-no-shadow]] — Ore and heal deposit formations cast no shadow. Status done.
 - [[task-238-crit-number-colour]] — The critical damage number is a lighter orange, linear colour (1, 0.7, 0.35), instead of the current gold (1, 0.55, 0.08). Status done.
 - [[task-239-number-size-by-damage]] — The size of a damage number grows with the damage of the hit, continuous from x0.8 to x1.4; a crit keeps its x1.6 on top. Status done.
+- [[task-240-number-rise-variation]] — Each damage number rises with its own random speed (x0.7 to x1.3) and angle (up to 35 degrees left or right of screen up), so consecutive numbers no longer travel in parallel. Status done.

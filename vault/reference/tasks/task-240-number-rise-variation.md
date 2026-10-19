@@ -1,9 +1,9 @@
 ---
 id: task-240-number-rise-variation
 description: "Global task: Each damage number rises with its own random speed (x0.7 to x1.3) and angle (up to 35 degrees left or right of screen up), so consecutive numbers no longer travel in parallel."
-parent: tasks-to-do-index
+parent: tasks-done-index
 kind: task
-status: in-progress
+status: done
 ---
 # Damage number rise variation (C++ draw)
 
@@ -13,14 +13,14 @@ status: in-progress
 - gdd_check: done by the Orchestrator when the task is planned (2026-10-19).
 - confirmed_by_owner: yes (2026-10-19)
 - milestone: M2
-- next_step: task-240-02-number-rise-variation-asset
-- result: open
+- next_step: none
+- result: Per-number random rise speed x0.7-1.3 and angle +-35 deg: C++ draw (95b4bf44) and asset (580beca4); not seen in game
 
 ## Subtasks
 1. task-240-01-number-rise-variation — cpp
 2. task-240-02-number-rise-variation-asset — bp
 
 ## Relations
-- [[tasks-to-do-index]] — parent index.
+- [[tasks-done-index]] — parent index.
 - [[task-240-01-number-rise-variation]] — step 1, cpp.
 - [[task-240-02-number-rise-variation-asset]] — step 2, bp.
