@@ -245,3 +245,4 @@ Archive: it exceeds the index size limits of [[_authoring]] on purpose (owner, 2
 - [[task-236-bloom-intensity]] — The arena post-process bloom intensity goes back to 1.3 (now 1.8). Status done.
 - [[task-237-deposit-no-shadow]] — Ore and heal deposit formations cast no shadow. Status done.
 - [[task-238-crit-number-colour]] — The critical damage number is a lighter orange, linear colour (1, 0.7, 0.35), instead of the current gold (1, 0.55, 0.08). Status done.
+- [[task-239-number-size-by-damage]] — The size of a damage number grows with the damage of the hit, continuous from x0.8 to x1.4; a crit keeps its x1.6 on top. Status done.

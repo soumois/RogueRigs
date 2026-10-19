@@ -3,7 +3,7 @@ id: task-240-01-number-rise-variation
 description: "Each damage number rises with its own random speed (x0.7 to x1.3) and angle (up to 35 degrees left or right of screen up), so consecutive numbers no longer travel in parallel."
 parent: task-240-number-rise-variation
 kind: task
-status: todo
+status: in-progress
 ---
 # Damage number rise variation (C++ draw)
 
