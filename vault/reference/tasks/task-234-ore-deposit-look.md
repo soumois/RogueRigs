@@ -22,6 +22,7 @@ status: in-progress
 3. task-234-03-deposit-crystal-visual — cpp (parallel with 02)
 4. task-234-04-deposit-mesh-assign — bp
 5. task-234-05-deposit-look-capture — cpp
+6. task-234-06-heal-deposit-prompts — art: heal prompts v2, crystals embedded in rock (owner: too close to Duskite)
 Heal deposit meshes: planned when the owner sends the heal images.
 
 ## Relations
@@ -31,3 +32,4 @@ Heal deposit meshes: planned when the owner sends the heal images.
 - [[task-234-03-deposit-crystal-visual]] — step 3.
 - [[task-234-04-deposit-mesh-assign]] — step 4.
 - [[task-234-05-deposit-look-capture]] — step 5.
+- [[task-234-06-heal-deposit-prompts]] — step 6.
