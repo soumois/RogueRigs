@@ -382,7 +382,7 @@ protected:
 
 	/** Camera arm length in uu. */
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Miner|Camera", meta = (ClampMin = 0, Units = "cm"))
-	float CameraArmLength = 1700.f;
+	float CameraArmLength = 1400.f;
 
 	/** Spring arm camera lag. Off by default so the miner stays centered on screen. */
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Miner|Camera")
