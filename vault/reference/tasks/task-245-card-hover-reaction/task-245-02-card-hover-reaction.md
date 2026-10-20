@@ -3,7 +3,7 @@ id: task-245-02-card-hover-reaction
 description: "Capture a hovered card in the game and send the frame."
 parent: task-245-card-hover-reaction
 kind: task
-status: todo
+status: in-progress
 ---
 # 245-02 cpp
 
