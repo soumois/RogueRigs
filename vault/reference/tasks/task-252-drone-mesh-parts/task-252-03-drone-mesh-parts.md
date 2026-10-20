@@ -3,7 +3,7 @@ id: task-252-03-drone-mesh-parts
 description: "Material and instance for the drone from the Meshy textures."
 parent: task-252-drone-mesh-parts
 kind: task
-status: todo
+status: in-progress
 ---
 # Drone material
 
