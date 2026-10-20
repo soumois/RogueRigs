@@ -3,7 +3,7 @@ id: task-254-02-drone-thruster-particles
 description: "Two Niagara components on the drone fed with its speed."
 parent: task-254-drone-thruster-particles
 kind: task
-status: in-progress
+status: done
 ---
 # Drone thruster wiring
 
@@ -15,11 +15,11 @@ status: in-progress
 - done_when: Build passes; existing drone tests pass (HealVein excluded); no new test; docs updated; lint clean.
 - editor_state: closed (C++ build)
 - token_ceiling: 150k
-- model: open
-- tokens: open
-- runs: open
+- model: opus
+- tokens: input 56, cache write 78706, cache read 1453587, output 13810
+- runs: 1
 - milestone: M1
-- result: open
+- result: ThrusterLeft and ThrusterRight (UNiagaraComponent) on ARRDrone, attached to the base, NS_DroneThruster by constructor reference, User.Speed written each tick from the actor's own speed (smoothed 0.1 s), active in every state except under -nullrhi; offsets (0, +-27, -17) provisional. Build OK, 25 tests pass (HealVein known). Look and runtime drive unverified.
 
 ## Relations
 - [[task-254-drone-thruster-particles]] — parent global task.

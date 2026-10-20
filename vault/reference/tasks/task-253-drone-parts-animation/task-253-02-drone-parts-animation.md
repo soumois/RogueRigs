@@ -3,7 +3,7 @@ id: task-253-02-drone-parts-animation
 description: "Assign the three meshes to BP_Drone and remove the grey sphere."
 parent: task-253-drone-parts-animation
 kind: task
-status: todo
+status: in-progress
 ---
 # BP_Drone parts
 
