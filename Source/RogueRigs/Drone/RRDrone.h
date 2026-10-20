@@ -25,6 +25,19 @@ enum class ERRDroneState : uint8
 	Hack
 };
 
+/** Idle gestures of the drone at rest in Orbit (task-249-01). Internal to ARRDrone, not exposed to Blueprint. */
+enum class ERRDroneIdleGesture : uint8
+{
+	/** No gesture playing. */
+	None,
+	/** Yaw swings to one side then the other. */
+	ScanSweep,
+	/** Faces the miner and dips its nose. */
+	Nod,
+	/** Short drop in height. */
+	Dip
+};
+
 /** Fired when a block enters the dug arc (it starts shaking and taking damage): its cell. */
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FRROnDigBlockStartedSignature, FIntPoint, Cell);
 
@@ -37,8 +50,8 @@ DECLARE_DYNAMIC_MULTICAST_DELEGATE_TwoParams(FRROnDigBlockStoppedSignature, FInt
  * velocity direction (EscortHeadingTurnRate, only above EscortHeadingMinSpeed; kept at rest). The slot sits EscortDistance
  * from the miner at EscortRestAngleDegrees from the heading on the escort side at rest (the shoulder), EscortMoveAngleDegrees
  * when moving (behind and to the side), blended smoothly by the miner's speed fraction. At rest a slow horizontal
- * figure-eight (EscortFigureEightPeriod, long axis tangential) is added around the slot; height HoverHeight above the
- * miner's floor (capsule bottom) plus a light bob. The drone follows the slot with a damped spring (EscortSpringFrequency,
+ * figure-eight (EscortFigureEightPeriod, long axis tangential) is added around the slot; height above the
+ * miner's floor (capsule bottom) from GetEscortHeight (task-249-01, see Alive). The drone follows the slot with a damped spring (EscortSpringFrequency,
  * EscortDampingRatio, part of the miner velocity fed forward), so it lags a little and overshoots on stop.
  * Walls (task-248-01, owner 2026-10-20): the drone never hovers over a block. The escort tries candidate slots in order (the
  * ideal slot, +-EscortAlternateAngleDegrees, +-EscortWideAngleDegrees from it, then straight behind the miner); a candidate is
@@ -46,6 +59,14 @@ DECLARE_DYNAMIC_MULTICAST_DELEGATE_TwoParams(FRROnDigBlockStoppedSignature, FInt
  * cell (ARRArenaGrid::HasLineOfSight). The first clear one is used; none = just above the miner, EscortFallbackExtraHeight
  * higher. A clear slot is held at least EscortSlotChangeDelay; a slot that becomes blocked is left at once. As a last guard, a
  * move that would put the drone in a block cell is cut on the blocked axis (Orbit, Dig and Hack).
+ * Alive (task-249-01, owner 2026-10-20, visual only): the Orbit height is EscortCalmHeight, blended toward EscortAlertHeight
+ * while an enemy is within EscortAlertRadius of the miner, plus two bobs of different periods, clamped to [EscortMinHeight,
+ * EscortMaxHeight]. The actor yaw turns with delay toward a point of interest: the dig impact point (Dig) or hack target (Hack),
+ * else the nearest living enemy near the miner, else the nearest deposit block or objective near the miner, else the miner
+ * (enemy, deposit and objective lookups refreshed every InterestRefreshInterval only). Pitch and roll follow the miner's
+ * acceleration in the drone's frame (nose down when it speeds forward, banked into turns), damped, clamped to MaxTiltDegrees.
+ * While the miner rests in Orbit, an idle gesture plays every 4 to 8 s at random: scan sweep (yaw), nod toward the miner
+ * (pitch) or short dip (height).
  * Dig (arc mining, drone gdd): while the miner touches rock it calls RequestArcDig every tick with the arc direction;
  * the drone selects up to MaxArcBlocks block cells in front of the miner (SelectArcCells: center within ArcReachCells
  * cells of the miner's front point, inside an ArcAngleDegrees cone around the direction) and cuts all of them in
@@ -220,7 +241,7 @@ protected:
 	/**
 	 * World position of the escort slot for the current heading, move blend, phases and EscortSlotIndex (task-247-01,
 	 * task-248-01): EscortDistance from the miner at the candidate yaw (GetEscortCandidateYaw), plus the rest figure-eight
-	 * scaled by (1 - move blend), at HoverHeight above the miner's floor plus the bob. The fallback slot is the miner's XY,
+	 * scaled by (1 - move blend), at GetEscortHeight above the miner's floor (task-249-01). The fallback slot is the miner's XY,
 	 * EscortFallbackExtraHeight higher, without figure-eight. Requires a valid miner.
 	 */
 	FVector ComputeOrbitPoint() const;
@@ -429,17 +450,113 @@ protected:
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Drone|Orbit", meta = (ClampMin = 0, Units = "cm"))
 	float EscortSnapDistance = 2000.f;
 
-	/** Height of the drone above the miner's floor (capsule bottom), in uu. Used in Orbit (plus the bob), Dig and Hack. */
+	/** Height of the drone above the miner's floor (capsule bottom) while hacking, in uu. Orbit uses EscortCalmHeight / EscortAlertHeight (task-249-01), Dig uses DigHoverHeight. */
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Drone|Orbit", meta = (Units = "cm"))
 	float HoverHeight = 150.f;
 
-	/** Amplitude of the light vertical bob in Orbit, in uu (provisional; the wider height variation is task-249). */
+	/** Amplitude of the slow vertical bob in Orbit (first of the two bob frequencies), in uu (task-249-01; provisional). */
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Drone|Orbit", meta = (ClampMin = 0, Units = "cm"))
-	float EscortBobAmplitude = 6.f;
+	float EscortBobAmplitude = 9.f;
 
-	/** Period of the vertical bob in Orbit, in seconds (provisional). */
+	/** Period of the slow vertical bob in Orbit, in seconds (provisional). */
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Drone|Orbit", meta = (ClampMin = 0.1, Units = "s"))
 	float EscortBobPeriod = 2.4f;
+
+	/** Amplitude of the fast vertical bob in Orbit (second bob frequency, added to the slow one), in uu (task-249-01; provisional). */
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Drone|Alive", meta = (ClampMin = 0, Units = "cm"))
+	float EscortBobSecondAmplitude = 4.f;
+
+	/** Period of the fast vertical bob in Orbit, in seconds; not a divisor of EscortBobPeriod, so the sum never repeats exactly (task-249-01; provisional). */
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Drone|Alive", meta = (ClampMin = 0.1, Units = "s"))
+	float EscortBobSecondPeriod = 0.9f;
+
+	/** Orbit centre height above the miner's floor when no enemy is near the miner, in uu (task-249-01; provisional). */
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Drone|Alive", meta = (Units = "cm"))
+	float EscortCalmHeight = 158.f;
+
+	/** Orbit centre height above the miner's floor when an enemy is within EscortAlertRadius of the miner, in uu (task-249-01; provisional). */
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Drone|Alive", meta = (Units = "cm"))
+	float EscortAlertHeight = 174.f;
+
+	/** Lowest Orbit slot height above the miner's floor (bob and dip included), in uu (drone gdd band 130-190, task-249-01; provisional). Not applied to the fallback slot. */
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Drone|Alive", meta = (Units = "cm"))
+	float EscortMinHeight = 130.f;
+
+	/** Highest Orbit slot height above the miner's floor (bob included), in uu (drone gdd band 130-190, task-249-01; provisional). The fallback slot adds EscortFallbackExtraHeight on top. */
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Drone|Alive", meta = (Units = "cm"))
+	float EscortMaxHeight = 190.f;
+
+	/** A living enemy within this 2D distance of the miner raises the Orbit height toward EscortAlertHeight, in uu (task-249-01; provisional). */
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Drone|Alive", meta = (ClampMin = 0, Units = "cm"))
+	float EscortAlertRadius = 700.f;
+
+	/** Speed of the calm-to-alert height blend (FMath::FInterpTo speed; task-249-01; provisional). */
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Drone|Alive", meta = (ClampMin = 0))
+	float EscortAlertBlendSpeed = 1.5f;
+
+	/** Time between two refreshes of the point of interest (enemy, deposit and objective lookups), in seconds: 0.25 = 4 Hz (task-249-01; provisional). */
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Drone|Alive", meta = (ClampMin = 0.02, Units = "s"))
+	float InterestRefreshInterval = 0.25f;
+
+	/** The nearest living enemy within this 2D distance of the miner becomes the point of interest, in uu (task-249-01; provisional). */
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Drone|Alive", meta = (ClampMin = 0, Units = "cm"))
+	float InterestEnemyRadius = 900.f;
+
+	/** Without an enemy, the nearest standing deposit block or objective (console, shuttle) within this 2D distance of the miner is the point of interest, in uu (task-249-01; provisional). */
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Drone|Alive", meta = (ClampMin = 0, Units = "cm"))
+	float InterestSiteRadius = 500.f;
+
+	/** Speed at which the drone's yaw turns toward the point of interest (FMath::FInterpTo speed on the yaw delta): the delay of the look (task-249-01; provisional). */
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Drone|Alive", meta = (ClampMin = 0))
+	float LookYawInterpSpeed = 6.f;
+
+	/** Tilt per unit of miner acceleration (pitch from its forward part, roll from its side part in the drone's frame), in degrees per uu/s^2 (task-249-01; provisional: 15 deg at the miner's 1000 uu/s^2). */
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Drone|Alive", meta = (ClampMin = 0))
+	float TiltDegreesPerAcceleration = 0.015f;
+
+	/** Largest pitch or roll of the drone, gestures included, in degrees (task-249-01; provisional). */
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Drone|Alive", meta = (ClampMin = 0, ClampMax = 90, Units = "deg"))
+	float MaxTiltDegrees = 15.f;
+
+	/** Damping of the tilt toward its target (FMath::FInterpTo speed; task-249-01; provisional). */
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Drone|Alive", meta = (ClampMin = 0))
+	float TiltInterpSpeed = 6.f;
+
+	/** Smoothing of the measured miner acceleration (FMath::VInterpTo speed), so one-frame spikes do not jerk the tilt (task-249-01; provisional). */
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Drone|Alive", meta = (ClampMin = 0))
+	float AccelerationSmoothingSpeed = 10.f;
+
+	/** Shortest time between two idle gestures while the miner rests in Orbit, in seconds (drone gdd: 4 to 8 s at random; provisional). */
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Drone|Alive", meta = (ClampMin = 0.1, Units = "s"))
+	float IdleGestureMinInterval = 4.f;
+
+	/** Longest time between two idle gestures while the miner rests in Orbit, in seconds (provisional). */
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Drone|Alive", meta = (ClampMin = 0.1, Units = "s"))
+	float IdleGestureMaxInterval = 8.f;
+
+	/** Half width of the scan sweep gesture: the yaw swings this far to one side then the other, in degrees (provisional). */
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Drone|Alive", meta = (ClampMin = 0, Units = "deg"))
+	float ScanSweepDegrees = 35.f;
+
+	/** Duration of the scan sweep gesture, in seconds (provisional). */
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Drone|Alive", meta = (ClampMin = 0.1, Units = "s"))
+	float ScanSweepDuration = 1.6f;
+
+	/** Nose-down pitch at the middle of the nod gesture (the drone faces the miner during it), in degrees (provisional). */
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Drone|Alive", meta = (ClampMin = 0, Units = "deg"))
+	float NodPitchDegrees = 12.f;
+
+	/** Duration of the nod gesture, in seconds (provisional). */
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Drone|Alive", meta = (ClampMin = 0.1, Units = "s"))
+	float NodDuration = 1.2f;
+
+	/** Depth of the short dip gesture at its middle, in uu (provisional). */
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Drone|Alive", meta = (ClampMin = 0, Units = "cm"))
+	float DipDepth = 12.f;
+
+	/** Duration of the short dip gesture, in seconds (provisional). */
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Drone|Alive", meta = (ClampMin = 0.1, Units = "s"))
+	float DipDuration = 0.9f;
 
 	/** Angle of the first alternate escort slots, either side of the ideal slot, in degrees (task-248-01; provisional). */
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Drone|Walls", meta = (ClampMin = 0, ClampMax = 180, Units = "deg"))
@@ -556,4 +673,73 @@ protected:
 
 	/** Time the current escort slot has been held, in seconds (reset on every slot change). */
 	float EscortSlotHoldTime = 0.f;
+
+	/** Phase of the fast vertical bob in radians, in [0, 2*pi). */
+	float EscortBobSecondPhase = 0.f;
+
+	/** Calm-to-alert height blend in [0, 1], smoothed toward 1 while an enemy is within EscortAlertRadius of the miner. */
+	float EscortAlert = 0.f;
+
+	/** True when the last interest refresh found a living enemy within EscortAlertRadius of the miner. */
+	bool bEnemyNearMiner = false;
+
+	/** Time left before the next point-of-interest refresh, in seconds. */
+	float InterestRefreshTimer = 0.f;
+
+	/** Moving point of interest (enemy, console, shuttle) found by the last refresh; null when none or when it is a deposit. */
+	TWeakObjectPtr<AActor> InterestActor;
+
+	/** Fixed point of interest (deposit block centre) found by the last refresh; used when bHasInterestLocation. */
+	FVector InterestLocation = FVector::ZeroVector;
+
+	/** True when the last refresh found a deposit block as the point of interest. */
+	bool bHasInterestLocation = false;
+
+	/** Yaw of the drone in degrees, turned toward the point of interest with delay (LookYawInterpSpeed). */
+	float LookYaw = 0.f;
+
+	/** Current pitch from the miner's acceleration, damped (degrees; negative = nose down). */
+	float TiltPitch = 0.f;
+
+	/** Current roll from the miner's acceleration, damped (degrees; positive = right side down). */
+	float TiltRoll = 0.f;
+
+	/** Miner velocity of the previous tick, for the acceleration estimate. */
+	FVector PreviousMinerVelocity = FVector::ZeroVector;
+
+	/** Smoothed miner acceleration on XY, in uu/s^2. */
+	FVector SmoothedMinerAcceleration = FVector::ZeroVector;
+
+	/** Gesture being played; None between gestures. */
+	ERRDroneIdleGesture IdleGesture = ERRDroneIdleGesture::None;
+
+	/** Time since the current gesture started, in seconds. */
+	float IdleGestureTime = 0.f;
+
+	/** Time left before the next gesture while the miner rests, in seconds; drawn again in [IdleGestureMinInterval, IdleGestureMaxInterval] whenever the miner moves or a gesture starts. */
+	float IdleGestureCountdown = 0.f;
+
+	/** Own random stream for the gestures (seeded in SetOwnerMiner), so they never consume the global FMath stream other systems and tests seed. */
+	FRandomStream GestureRandom;
+
+	/** Interest lookups, every InterestRefreshInterval: nearest living enemy within InterestEnemyRadius of the miner, else the nearest standing deposit block or objective within InterestSiteRadius; also sets bEnemyNearMiner. Requires a valid miner. */
+	void RefreshInterest();
+
+	/** Before the state tick: refresh timer, alert blend, fast bob phase and idle gesture timing (gestures only in Orbit with the miner at rest). Requires a valid miner. */
+	void UpdateLiveliness(float DeltaSeconds);
+
+	/** Draws the time to the next idle gesture in [IdleGestureMinInterval, IdleGestureMaxInterval]. */
+	void ResetIdleGestureCountdown();
+
+	/** Orbit slot height above the miner's floor: calm-to-alert height, both bobs and the dip gesture, clamped to [EscortMinHeight, EscortMaxHeight]. */
+	float GetEscortHeight() const;
+
+	/** Envelope of the current gesture: sin(pi * progress) in [0, 1], 0 without a gesture. */
+	float GetIdleGestureEnvelope() const;
+
+	/** World point the drone looks at now: dig impact point in Dig, hack target in Hack, the miner during a nod, else the point of interest or the miner. Requires a valid miner. */
+	FVector GetLookTarget() const;
+
+	/** After the state tick: turns the yaw toward GetLookTarget (plus the scan sweep), tilts from the miner's acceleration (plus the nod), damped and clamped, and sets the actor rotation. Requires a valid miner. */
+	void UpdateAttitude(float DeltaSeconds);
 };

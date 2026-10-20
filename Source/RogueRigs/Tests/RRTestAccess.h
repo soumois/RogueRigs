@@ -204,6 +204,7 @@ namespace RRTestAccess
 		static float DigHoverFaceDistanceOf(const ARRDrone* Drone) { return Drone->*(&FDroneAccess::DigHoverFaceDistance); }
 		static float DigHoverHeightOf(const ARRDrone* Drone) { return Drone->*(&FDroneAccess::DigHoverHeight); }
 		static int32 EscortSlotIndexOf(const ARRDrone* Drone) { return Drone->*(&FDroneAccess::EscortSlotIndex); }
+		static ERRDroneIdleGesture IdleGestureOf(const ARRDrone* Drone) { return Drone->*(&FDroneAccess::IdleGesture); }
 	};
 
 	/** ARREnemy: XP pickup class (tests drop ARRTestPickupXP) and the CSV stats copy. */

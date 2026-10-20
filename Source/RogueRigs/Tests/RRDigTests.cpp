@@ -1120,6 +1120,113 @@ bool FRRDroneAvoidsWallsTest::RunTest(const FString& Parameters)
 	return true;
 }
 
+IMPLEMENT_SIMPLE_AUTOMATION_TEST(FRRDroneAliveTest, "RogueRigs.Dig.DroneAlive",
+	EAutomationTestFlags::EditorContext | EAutomationTestFlags::EngineFilter)
+
+bool FRRDroneAliveTest::RunTest(const FString& Parameters)
+{
+	using namespace RRDigTests;
+
+	// task-249-01, headless position check only (no capture): in Orbit the drone height stays inside the 130-190 uu band above the
+	// floor (walks, stops and a 10 s rest with idle gestures, sampled every frame), and during Dig its yaw faces the dig target.
+	constexpr double MinBand = 130.0;
+	constexpr double MaxBand = 190.0;
+	constexpr double YawTolerance = 20.0;
+	{
+		const FIntPoint StartCell(84, 129);
+		FTestWorld TestWorld;
+		ARRArenaGrid* Grid = nullptr;
+		ARRMiner* Miner = nullptr;
+		ARRDrone* Drone = SpawnArcDigScene(*this, TestWorld, StartCell, Grid, Miner);
+		if (!Drone)
+		{
+			return false;
+		}
+		UCharacterMovementComponent* MinerMovement = Miner->GetCharacterMovement();
+		MinerMovement->bRunPhysicsWithNoController = true;
+		MinerMovement->SetDefaultMovementMode();
+		const double FloorZ = Miner->GetActorLocation().Z - Miner->GetCapsuleComponent()->GetScaledCapsuleHalfHeight();
+
+		int32 OrbitFrames = 0;
+		int32 OutOfBand = 0;
+		int32 Gestures = 0;
+		double MinHeight = TNumericLimits<double>::Max();
+		double MaxHeight = TNumericLimits<double>::Lowest();
+		double MaxTilt = 0.0;
+		ERRDroneIdleGesture LastGesture = ERRDroneIdleGesture::None;
+		auto Run = [&](const FVector& Direction, int32 Frames)
+		{
+			for (int32 Frame = 0; Frame < Frames; ++Frame)
+			{
+				if (!Direction.IsZero())
+				{
+					FMinerAccess::PendingMoveInputOf(Miner) = Direction;
+					Miner->AddMovementInput(Direction, 1.f);
+				}
+				TestWorld.Tick();
+				if (Drone->GetState() != ERRDroneState::Orbit)
+				{
+					continue;
+				}
+				++OrbitFrames;
+				const double Height = Drone->GetActorLocation().Z - FloorZ;
+				MinHeight = FMath::Min(MinHeight, Height);
+				MaxHeight = FMath::Max(MaxHeight, Height);
+				OutOfBand += Height < MinBand || Height > MaxBand ? 1 : 0;
+				const FRotator Rotation = Drone->GetActorRotation();
+				MaxTilt = FMath::Max(MaxTilt, static_cast<double>(FMath::Max(FMath::Abs(Rotation.Pitch), FMath::Abs(Rotation.Roll))));
+				const ERRDroneIdleGesture Gesture = FDroneAccess::IdleGestureOf(Drone);
+				Gestures += Gesture != ERRDroneIdleGesture::None && Gesture != LastGesture ? 1 : 0;
+				LastGesture = Gesture;
+			}
+		};
+		Run(FVector::ForwardVector, 120);
+		Run(FVector::ZeroVector, 600);
+		Run(-FVector::ForwardVector, 60);
+		Run(FVector::ForwardVector, 30);
+		Run(FVector::ZeroVector, 60);
+		AddInfo(FString::Printf(TEXT("Orbit: %d frames, height %.1f..%.1f uu above the floor, %d out of %.0f-%.0f, max pitch or roll %.1f deg, %d idle gestures"),
+			OrbitFrames, MinHeight, MaxHeight, OutOfBand, MinBand, MaxBand, MaxTilt, Gestures));
+		TestEqual(TEXT("Orbit sampled every frame"), OrbitFrames, 870);
+		TestEqual(TEXT("Orbit height inside 130-190 uu"), OutOfBand, 0);
+	}
+	{
+		FTestWorld TestWorld;
+		ARRArenaGrid* Grid = nullptr;
+		ARRMiner* Miner = nullptr;
+		ARRDrone* Drone = SpawnArcDigScene(*this, TestWorld, FineRockWestFloorCell, Grid, Miner);
+		if (!Drone)
+		{
+			return false;
+		}
+		// Rock wall x = 129: the 6 blocks break at frame 29-31; from frame 20 the yaw must face the dig impact point.
+		double MaxError = 0.0;
+		double FirstError = 0.0;
+		int32 DigFrames = 0;
+		for (int32 Frame = 1; Frame <= 28; ++Frame)
+		{
+			TestWorld.Tick();
+			if (Drone->GetState() != ERRDroneState::Dig)
+			{
+				continue;
+			}
+			const FVector ToTarget = Drone->GetDigImpactPoint() - Drone->GetActorLocation();
+			const double TargetYaw = FMath::RadiansToDegrees(FMath::Atan2(ToTarget.Y, ToTarget.X));
+			const double Error = FMath::Abs(FMath::FindDeltaAngleDegrees(Drone->GetActorRotation().Yaw, TargetYaw));
+			FirstError = Frame == 1 ? Error : FirstError;
+			if (Frame >= 20)
+			{
+				++DigFrames;
+				MaxError = FMath::Max(MaxError, Error);
+			}
+		}
+		AddInfo(FString::Printf(TEXT("Dig: yaw error %.1f deg on frame 1, at most %.1f deg on frames 20-28 (%d frames in Dig)"), FirstError, MaxError, DigFrames));
+		TestEqual(TEXT("Dig sampled on frames 20-28"), DigFrames, 9);
+		TestTrue(TEXT("Dig: yaw faces the dig target within 20 deg"), MaxError <= YawTolerance);
+	}
+	return true;
+}
+
 IMPLEMENT_SIMPLE_AUTOMATION_TEST(FRRDigPickupCollectTest, "RogueRigs.Dig.PickupCollect",
 	EAutomationTestFlags::EditorContext | EAutomationTestFlags::EngineFilter)
 

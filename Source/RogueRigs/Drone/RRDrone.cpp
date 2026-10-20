@@ -5,7 +5,12 @@
 #include "Components/CapsuleComponent.h"
 #include "Components/StaticMeshComponent.h"
 #include "Engine/CollisionProfile.h"
+#include "Enemies/RREnemy.h"
+#include "EngineUtils.h"
 #include "GameFramework/CharacterMovementComponent.h"
+#include "Objectives/RRConsole.h"
+#include "Objectives/RRRunFlowSubsystem.h"
+#include "Objectives/RRShuttle.h"
 #include "Grid/RRCellType.h"
 #include "GAS/RRAbilitySystemComponent.h"
 #include "GAS/RRPlayerAttributeSet.h"
@@ -77,7 +82,21 @@ void ARRDrone::SetOwnerMiner(ARRMiner* NewOwnerMiner)
 	EscortMoveBlend = 0.f;
 	EscortFigureEightPhase = 0.f;
 	EscortBobPhase = 0.f;
+	EscortBobSecondPhase = 0.f;
 	EscortVelocity = FVector::ZeroVector;
+	EscortAlert = 0.f;
+	bEnemyNearMiner = false;
+	InterestActor.Reset();
+	bHasInterestLocation = false;
+	InterestRefreshTimer = 0.f;
+	TiltPitch = 0.f;
+	TiltRoll = 0.f;
+	SmoothedMinerAcceleration = FVector::ZeroVector;
+	IdleGesture = ERRDroneIdleGesture::None;
+	IdleGestureTime = 0.f;
+	// Own stream: the gestures never draw from the global FMath stream that tests seed (Ore.HealVein).
+	GestureRandom.Initialize(static_cast<int32>(GetUniqueID()));
+	ResetIdleGestureCountdown();
 
 	if (OwnerMiner)
 	{
@@ -87,7 +106,9 @@ void ARRDrone::SetOwnerMiner(ARRMiner* NewOwnerMiner)
 		EscortHeadingYaw = OwnerMiner->GetActorRotation().Yaw;
 		EscortSlotIndex = SelectEscortSlot();
 		EscortSlotHoldTime = 0.f;
-		SetActorLocation(ComputeOrbitPoint());
+		PreviousMinerVelocity = OwnerMiner->GetVelocity();
+		LookYaw = EscortHeadingYaw;
+		SetActorLocationAndRotation(ComputeOrbitPoint(), FRotator(0.f, LookYaw, 0.f));
 	}
 }
 
@@ -443,6 +464,13 @@ void ARRDrone::Tick(float DeltaSeconds)
 {
 	Super::Tick(DeltaSeconds);
 
+	// Alive (task-249-01): interest, alert and gesture timing first, so the Orbit slot height uses them this frame.
+	const bool bHasMiner = IsValid(OwnerMiner) && DeltaSeconds > 0.f;
+	if (bHasMiner)
+	{
+		UpdateLiveliness(DeltaSeconds);
+	}
+
 	switch (State)
 	{
 	case ERRDroneState::Orbit:
@@ -465,6 +493,232 @@ void ARRDrone::Tick(float DeltaSeconds)
 	{
 		StopDigImpact();
 	}
+
+	// Rotation last: the look direction uses this frame's drone location (visual only, the meshes never collide).
+	if (bHasMiner && IsValid(OwnerMiner))
+	{
+		UpdateAttitude(DeltaSeconds);
+	}
+}
+
+void ARRDrone::ResetIdleGestureCountdown()
+{
+	const float MinInterval = FMath::Max(0.1f, IdleGestureMinInterval);
+	IdleGestureCountdown = GestureRandom.FRandRange(MinInterval, FMath::Max(MinInterval, IdleGestureMaxInterval));
+}
+
+void ARRDrone::UpdateLiveliness(float DeltaSeconds)
+{
+	// Lookups at a low rate only (TActorIterator on enemies, a few hundred grid cells): never a scan per tick.
+	InterestRefreshTimer -= DeltaSeconds;
+	if (InterestRefreshTimer <= 0.f)
+	{
+		InterestRefreshTimer = FMath::Max(0.02f, InterestRefreshInterval);
+		RefreshInterest();
+	}
+
+	// Slightly higher with an enemy near the miner, lower when calm; smoothed so the height never jumps.
+	EscortAlert = FMath::FInterpTo(EscortAlert, bEnemyNearMiner ? 1.f : 0.f, DeltaSeconds, EscortAlertBlendSpeed);
+
+	// Idle gestures: only in Orbit with the miner at rest; any movement cancels the gesture and restarts the countdown.
+	const bool bMinerAtRest = OwnerMiner->GetVelocity().Size2D() <= EscortHeadingMinSpeed;
+	if (State != ERRDroneState::Orbit || !bMinerAtRest)
+	{
+		IdleGesture = ERRDroneIdleGesture::None;
+		IdleGestureTime = 0.f;
+		ResetIdleGestureCountdown();
+		return;
+	}
+	if (IdleGesture != ERRDroneIdleGesture::None)
+	{
+		IdleGestureTime += DeltaSeconds;
+		const float Duration = IdleGesture == ERRDroneIdleGesture::ScanSweep ? ScanSweepDuration
+			: IdleGesture == ERRDroneIdleGesture::Nod ? NodDuration : DipDuration;
+		if (IdleGestureTime >= Duration)
+		{
+			IdleGesture = ERRDroneIdleGesture::None;
+			IdleGestureTime = 0.f;
+		}
+		return;
+	}
+	IdleGestureCountdown -= DeltaSeconds;
+	if (IdleGestureCountdown <= 0.f)
+	{
+		IdleGesture = static_cast<ERRDroneIdleGesture>(GestureRandom.RandRange(1, 3));
+		IdleGestureTime = 0.f;
+		// The next interval counts from the start of this gesture.
+		ResetIdleGestureCountdown();
+	}
+}
+
+void ARRDrone::RefreshInterest()
+{
+	const FVector MinerLocation = OwnerMiner->GetActorLocation();
+	InterestActor.Reset();
+	bHasInterestLocation = false;
+	bEnemyNearMiner = false;
+
+	// Nearest living enemy (pooled idle robots keep State.Dead, so IsDead skips them).
+	const UWorld* World = GetWorld();
+	if (World)
+	{
+		double BestDistanceSquared = FMath::Square(static_cast<double>(InterestEnemyRadius));
+		for (TActorIterator<ARREnemy> It(World); It; ++It)
+		{
+			ARREnemy* Enemy = *It;
+			if (!IsValid(Enemy) || Enemy->IsActorBeingDestroyed() || Enemy->IsDead())
+			{
+				continue;
+			}
+			const double DistanceSquared = FVector::DistSquared2D(Enemy->GetActorLocation(), MinerLocation);
+			if (DistanceSquared <= BestDistanceSquared)
+			{
+				BestDistanceSquared = DistanceSquared;
+				InterestActor = Enemy;
+			}
+		}
+		if (InterestActor.IsValid())
+		{
+			bEnemyNearMiner = BestDistanceSquared <= FMath::Square(static_cast<double>(EscortAlertRadius));
+			return;
+		}
+	}
+
+	// No enemy: nearest standing deposit block or objective within InterestSiteRadius.
+	double BestSiteDistanceSquared = FMath::Square(static_cast<double>(InterestSiteRadius));
+	if (const ARRArenaGrid* Grid = OwnerMiner->GetArenaGrid())
+	{
+		const double CellSize = FMath::Max(Grid->GetCellSize(), 1.0);
+		const FIntPoint MinerCell = Grid->GetCellAtWorld(MinerLocation);
+		const int32 Span = FMath::CeilToInt32(InterestSiteRadius / CellSize);
+		for (int32 Y = MinerCell.Y - Span; Y <= MinerCell.Y + Span; ++Y)
+		{
+			for (int32 X = MinerCell.X - Span; X <= MinerCell.X + Span; ++X)
+			{
+				if (Grid->GetDepositId(FIntPoint(X, Y)) == INDEX_NONE)
+				{
+					continue;
+				}
+				const FVector Center = Grid->GetCellCenter(X, Y);
+				const double DistanceSquared = FVector::DistSquared2D(Center, MinerLocation);
+				if (DistanceSquared <= BestSiteDistanceSquared)
+				{
+					BestSiteDistanceSquared = DistanceSquared;
+					InterestLocation = Center;
+					bHasInterestLocation = true;
+				}
+			}
+		}
+	}
+	const URRRunFlowSubsystem* RunFlow = World ? World->GetSubsystem<URRRunFlowSubsystem>() : nullptr;
+	if (RunFlow)
+	{
+		AActor* Objective = nullptr;
+		if (IsValid(RunFlow->GetConsole()) && RunFlow->GetConsole()->GetConsoleState() != ERRConsoleState::Complete)
+		{
+			Objective = RunFlow->GetConsole();
+		}
+		else if (IsValid(RunFlow->GetShuttle()))
+		{
+			Objective = RunFlow->GetShuttle();
+		}
+		if (Objective && FVector::DistSquared2D(Objective->GetActorLocation(), MinerLocation) <= BestSiteDistanceSquared)
+		{
+			InterestActor = Objective;
+			bHasInterestLocation = false;
+		}
+	}
+}
+
+float ARRDrone::GetIdleGestureEnvelope() const
+{
+	if (IdleGesture == ERRDroneIdleGesture::None)
+	{
+		return 0.f;
+	}
+	const float Duration = IdleGesture == ERRDroneIdleGesture::ScanSweep ? ScanSweepDuration
+		: IdleGesture == ERRDroneIdleGesture::Nod ? NodDuration : DipDuration;
+	const float Progress = FMath::Clamp(IdleGestureTime / FMath::Max(Duration, 0.1f), 0.f, 1.f);
+	return FMath::Sin(UE_PI * Progress);
+}
+
+float ARRDrone::GetEscortHeight() const
+{
+	const float Centre = FMath::Lerp(EscortCalmHeight, EscortAlertHeight, EscortAlert);
+	const float Bob = EscortBobAmplitude * FMath::Sin(EscortBobPhase) + EscortBobSecondAmplitude * FMath::Sin(EscortBobSecondPhase);
+	const float Dip = IdleGesture == ERRDroneIdleGesture::Dip ? DipDepth * GetIdleGestureEnvelope() : 0.f;
+	return FMath::Clamp(Centre + Bob - Dip, EscortMinHeight, FMath::Max(EscortMinHeight, EscortMaxHeight));
+}
+
+FVector ARRDrone::GetLookTarget() const
+{
+	if (State == ERRDroneState::Dig)
+	{
+		const FVector Impact = GetDigImpactPoint();
+		if (!Impact.IsZero())
+		{
+			return Impact;
+		}
+	}
+	else if (State == ERRDroneState::Hack && IsValid(HackTarget))
+	{
+		return HackTarget->GetActorLocation();
+	}
+	else if (IdleGesture != ERRDroneIdleGesture::Nod)
+	{
+		if (const AActor* Interest = InterestActor.Get())
+		{
+			return Interest->GetActorLocation();
+		}
+		if (bHasInterestLocation)
+		{
+			return InterestLocation;
+		}
+	}
+	return OwnerMiner->GetActorLocation();
+}
+
+void ARRDrone::UpdateAttitude(float DeltaSeconds)
+{
+	// Yaw: toward the point of interest with delay; the scan sweep swings around it.
+	const FVector ToTarget = GetLookTarget() - GetActorLocation();
+	float TargetYaw = LookYaw;
+	if (ToTarget.SizeSquared2D() > 1.0)
+	{
+		TargetYaw = FMath::RadiansToDegrees(FMath::Atan2(ToTarget.Y, ToTarget.X));
+	}
+	if (IdleGesture == ERRDroneIdleGesture::ScanSweep)
+	{
+		const float Progress = FMath::Clamp(IdleGestureTime / FMath::Max(ScanSweepDuration, 0.1f), 0.f, 1.f);
+		TargetYaw += ScanSweepDegrees * FMath::Sin(UE_TWO_PI * Progress);
+	}
+	const float YawDelta = FMath::FindDeltaAngleDegrees(LookYaw, TargetYaw);
+	LookYaw = FRotator::NormalizeAxis(LookYaw + FMath::FInterpTo(0.f, YawDelta, DeltaSeconds, LookYawInterpSpeed));
+
+	// Miner acceleration on XY, smoothed; a teleport spike is clamped first.
+	const FVector MinerVelocity = OwnerMiner->GetVelocity();
+	constexpr double MaxMeasuredAcceleration = 5000.0;
+	const FVector RawAcceleration = ((MinerVelocity - PreviousMinerVelocity) / DeltaSeconds).GetClampedToMaxSize2D(MaxMeasuredAcceleration);
+	PreviousMinerVelocity = MinerVelocity;
+	SmoothedMinerAcceleration = FMath::VInterpTo(SmoothedMinerAcceleration, FVector(RawAcceleration.X, RawAcceleration.Y, 0.0), DeltaSeconds, AccelerationSmoothingSpeed);
+
+	// In the drone's frame: forward acceleration dips the nose (negative pitch), side acceleration banks toward it (into the turn).
+	float Sin = 0.f;
+	float Cos = 0.f;
+	FMath::SinCos(&Sin, &Cos, FMath::DegreesToRadians(LookYaw));
+	const double Forward = SmoothedMinerAcceleration.X * Cos + SmoothedMinerAcceleration.Y * Sin;
+	const double Right = -SmoothedMinerAcceleration.X * Sin + SmoothedMinerAcceleration.Y * Cos;
+	const float MaxTilt = FMath::Max(0.f, MaxTiltDegrees);
+	float TargetPitch = FMath::Clamp(static_cast<float>(-Forward * TiltDegreesPerAcceleration), -MaxTilt, MaxTilt);
+	const float TargetRoll = FMath::Clamp(static_cast<float>(Right * TiltDegreesPerAcceleration), -MaxTilt, MaxTilt);
+	if (IdleGesture == ERRDroneIdleGesture::Nod)
+	{
+		TargetPitch = FMath::Clamp(TargetPitch - NodPitchDegrees * GetIdleGestureEnvelope(), -MaxTilt, MaxTilt);
+	}
+	TiltPitch = FMath::FInterpTo(TiltPitch, TargetPitch, DeltaSeconds, TiltInterpSpeed);
+	TiltRoll = FMath::FInterpTo(TiltRoll, TargetRoll, DeltaSeconds, TiltInterpSpeed);
+
+	SetActorRotation(FRotator(TiltPitch, LookYaw, TiltRoll));
 }
 
 void ARRDrone::EndPlay(const EEndPlayReason::Type EndPlayReason)
@@ -514,6 +768,7 @@ void ARRDrone::TickOrbit(float DeltaSeconds)
 
 	EscortFigureEightPhase = FMath::Fmod(EscortFigureEightPhase + UE_TWO_PI * DeltaSeconds / FMath::Max(EscortFigureEightPeriod, 0.1f), UE_TWO_PI);
 	EscortBobPhase = FMath::Fmod(EscortBobPhase + UE_TWO_PI * DeltaSeconds / FMath::Max(EscortBobPeriod, 0.1f), UE_TWO_PI);
+	EscortBobSecondPhase = FMath::Fmod(EscortBobSecondPhase + UE_TWO_PI * DeltaSeconds / FMath::Max(EscortBobSecondPeriod, 0.1f), UE_TWO_PI);
 
 	// Walls (task-248-01): the slot is the first clear candidate, held a minimum time.
 	UpdateEscortSlot(DeltaSeconds);
@@ -794,7 +1049,7 @@ FVector ARRDrone::ComputeOrbitPoint() const
 	// No clear candidate (task-248-01): just above the miner, a bit higher, without figure-eight.
 	if (EscortSlotIndex == EscortFallbackSlotIndex)
 	{
-		return FVector(MinerLocation.X, MinerLocation.Y, FloorZ + HoverHeight + EscortFallbackExtraHeight + EscortBobAmplitude * FMath::Sin(EscortBobPhase));
+		return FVector(MinerLocation.X, MinerLocation.Y, FloorZ + GetEscortHeight() + EscortFallbackExtraHeight);
 	}
 
 	// Slot direction: the current candidate (0 = ideal: from the heading, toward the escort side, at the angle blended from the
@@ -812,7 +1067,8 @@ FVector ARRDrone::ComputeOrbitPoint() const
 		+ Radial * (EscortFigureEightRadial * FMath::Sin(2.f * EscortFigureEightPhase))) * RestWeight;
 
 	const FVector Horizontal = Radial * EscortDistance + FigureEight;
-	return FVector(MinerLocation.X + Horizontal.X, MinerLocation.Y + Horizontal.Y, FloorZ + HoverHeight + EscortBobAmplitude * FMath::Sin(EscortBobPhase));
+	// Height (task-249-01): calm-to-alert centre, two bobs and the dip gesture, inside the 130-190 band.
+	return FVector(MinerLocation.X + Horizontal.X, MinerLocation.Y + Horizontal.Y, FloorZ + GetEscortHeight());
 }
 
 FVector ARRDrone::ComputeDigHoverPoint() const
