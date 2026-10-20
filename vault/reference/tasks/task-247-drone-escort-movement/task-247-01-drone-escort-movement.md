@@ -3,7 +3,7 @@ id: task-247-01-drone-escort-movement
 description: "The drone no longer circles the miner: it holds an escort slot beside and behind the miner that follows the miner velocity, with a damped spring and a slow figure-eight at rest."
 parent: task-247-drone-escort-movement
 kind: task
-status: todo
+status: in-progress
 ---
 # Drone escort movement
 
