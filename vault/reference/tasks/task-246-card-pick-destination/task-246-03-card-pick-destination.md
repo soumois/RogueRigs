@@ -3,7 +3,7 @@ id: task-246-03-card-pick-destination
 description: "Capture the pick of a targeted, an all-weapons and a player-stat card in the game and send the frames."
 parent: task-246-card-pick-destination
 kind: task
-status: todo
+status: in-progress
 ---
 # 246-03 cpp
 

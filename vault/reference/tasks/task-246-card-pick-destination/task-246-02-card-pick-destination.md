@@ -3,7 +3,7 @@ id: task-246-02-card-pick-destination
 description: "Create the flight overlay widget that outlives the card screen and wire WBP_UpgradeChoice: on pick, fly the icon from the card to the destination (targeted weapon slot, each owned slot for all weap..."
 parent: task-246-card-pick-destination
 kind: task
-status: in-progress
+status: done
 ---
 # 246-02 bp
 
@@ -17,9 +17,9 @@ status: in-progress
 - token_ceiling: 70000 (provisional)
 - model: open
 - tokens: open
-- runs: open
+- runs: 2
 - milestone: M2
-- result: open
+- result: WBP_UpgradeChoice: StartPick/PickStep/FlyStep/PickReset: click blocks buttons (HitTestInvisible), 0.55 s pick in the paused game then ChooseCard and CloseCards; icon copies FlyIcon0..3 fly 0.5 s (arc 140 px, shrink 0.55) to the weapon slot (targeted), each owned slot (all weapons), XPBar (player stat), first free slot (new weapon); BurnOverlay0..2 with MI_CardBurn on the discarded cards, chosen card fades; destinations found by GetAllWidgetsOfClass on WBP_Weapons and WBP_XPStatus (Frame0..3 made variables in WBP_Weapons, metadata only); commits dc74f0be, ab0fb86e; compiled warnings as errors, saved; nothing seen (capture in 246-03). 2 runs.
 
 ## Relations
 - [[task-246-card-pick-destination]] — parent global task.
