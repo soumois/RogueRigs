@@ -1,6 +1,6 @@
 ---
 id: art-prompts-drone
-description: "Drone turnaround sheet prompt as the owner used it, its Meshy mesh (files and where they are stored) and the game meshes built from it. Open for drone art."
+description: "Drone turnaround prompt as the owner used it, its Meshy mesh files and the game meshes built from it. Open for drone art."
 parent: art-prompts
 kind: note
 ---
