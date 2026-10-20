@@ -1,0 +1,24 @@
+{
+ "round": 2,
+ "threshold": 8,
+ "total": 28,
+ "passed": 27,
+ "failed": 1,
+ "action": "escalate",
+ "fails": [
+  {
+   "file": "barks",
+   "item_id": "vesna_upgrade_offer_01",
+   "text": "Pick one. Try not to overthink.",
+   "scores": {
+    "voice": 7,
+    "lore": 9,
+    "reference": 9,
+    "format": 10
+   },
+   "rule": "T2",
+   "reason": "Dry and short, but 'Try not to overthink' jabs at the upgrade choice the player is making, i.e. the player's decision-making, not Rook's plans or bravado.",
+   "suggestion": "Pick one. Payload first, fireworks later."
+  }
+ ]
+}

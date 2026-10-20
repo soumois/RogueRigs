@@ -1,0 +1,364 @@
+{
+ "round": 0,
+ "items": [
+  {
+   "file": "barks",
+   "item_id": "rook_level_up_01",
+   "scores": {
+    "voice": 8,
+    "lore": 8,
+    "reference": 8
+   },
+   "rules": [],
+   "reason": "Echoes 'Better, stronger, faster' (Six Million Dollar Man, TV): kept the three-adjective run, reordered it and swapped 'better' for 'better looking'; a clear twist, cocky but with no Rigs flavor.",
+   "suggestion": null
+  },
+  {
+   "file": "barks",
+   "item_id": "rook_player_damaged_01",
+   "scores": {
+    "voice": 8,
+    "lore": 8,
+    "reference": 9
+   },
+   "rules": [],
+   "reason": "Self-mockery that fits Rook complaining and fighting on; light nod to the 'this time it's personal' tagline, fully reworded; flat.",
+   "suggestion": null
+  },
+  {
+   "file": "barks",
+   "item_id": "rook_horde_incoming_01",
+   "scores": {
+    "voice": 8,
+    "lore": 8,
+    "reference": 8
+   },
+   "rules": [],
+   "reason": "Keeps 'Come get some' (a stock action taunt, mostly known from Duke Nukem, not a famous film line) and changes the target to 'tin cans', aiming the jab at the robots; acceptable but generic.",
+   "suggestion": null
+  },
+  {
+   "file": "barks",
+   "item_id": "rook_console_hack_started_01",
+   "scores": {
+    "voice": 8,
+    "lore": 9,
+    "reference": 9
+   },
+   "rules": [],
+   "reason": "Cocky and territorial about his gear; the console is the Rigs' own drop, so the lore holds; no film echo.",
+   "suggestion": null
+  },
+  {
+   "file": "barks",
+   "item_id": "rook_run_won_01",
+   "scores": {
+    "voice": 9,
+    "lore": 9,
+    "reference": 9
+   },
+   "rules": [],
+   "reason": "Die Hard echo: keeps 'Yippee-ki-yay', swaps the insult for 'Kessler-Voss' and adds 'Thanks for the ore', a clear twist that mocks the company and admits the ore is theirs (L4).",
+   "suggestion": null
+  },
+  {
+   "file": "barks",
+   "item_id": "rook_bonus_chest_opened_01",
+   "scores": {
+    "voice": 9,
+    "lore": 8,
+    "reference": 9
+   },
+   "rules": [],
+   "reason": "Twists the gambler's 'Mama needs a new pair of shoes': keeps 'Mama needs a new', changes 'pair of shoes' to 'gun', the owner's model of a wanted twist; fits Rook counting his cut.",
+   "suggestion": null
+  },
+  {
+   "file": "barks",
+   "item_id": "vesna_upgrade_offer_01",
+   "scores": {
+    "voice": 8,
+    "lore": 8,
+    "reference": 9
+   },
+   "rules": [],
+   "reason": "Short, dry and deadpan; 'try not to overthink' jabs Rook rather than the player's skill, but it is flat and shares 'Try not to' with the console line.",
+   "suggestion": null
+  },
+  {
+   "file": "barks",
+   "item_id": "vesna_console_dropped_01",
+   "scores": {
+    "voice": 8,
+    "lore": 9,
+    "reference": 9
+   },
+   "rules": [],
+   "reason": "Technical confirmation with a dry tail that matches the label; flat and repeats the 'Try not to' pattern of the upgrade-offer line.",
+   "suggestion": null
+  },
+  {
+   "file": "barks",
+   "item_id": "vesna_extraction_ready_01",
+   "scores": {
+    "voice": 9,
+    "lore": 9,
+    "reference": 9
+   },
+   "rules": [],
+   "reason": "Deadpan and mission-first; deflates Rook's greed, not the player; no film echo.",
+   "suggestion": null
+  },
+  {
+   "file": "barks",
+   "item_id": "vesna_shuttle_landed_01",
+   "scores": {
+    "voice": 8,
+    "lore": 9,
+    "reference": 9
+   },
+   "rules": [],
+   "reason": "Precise and short, matches the technical label; correct use of the Rigs' shuttle; flat.",
+   "suggestion": null
+  },
+  {
+   "file": "barks",
+   "item_id": "vesna_run_lost_01",
+   "scores": {
+    "voice": 7,
+    "lore": 8,
+    "reference": 9
+   },
+   "rules": [
+    "T2"
+   ],
+   "reason": "On a lost run, 'a very expensive nap' mocks the failure itself, i.e. the player's performance, rather than one of Rook's plans; the 'Well.' opener also softens Vesna's clipped style.",
+   "suggestion": "That plan just joined the Ceres job."
+  },
+  {
+   "file": "barks",
+   "item_id": "vesna_game_over_01",
+   "scores": {
+    "voice": 8,
+    "lore": 8,
+    "reference": 9
+   },
+   "rules": [],
+   "reason": "Dry, calm, hides that she cares behind a joke at her own expense; flat.",
+   "suggestion": null
+  },
+  {
+   "file": "alerts",
+   "item_id": "kv_console_dropped_01",
+   "scores": {
+    "voice": 3,
+    "lore": 6,
+    "reference": 9
+   },
+   "rules": [
+    "T6"
+   ],
+   "reason": "Console drop is a Rigs action, so the line is aimed at intruders and must be bureaucratic, not propaganda (label and text both wrong); it also presents the Rigs' console as a Kessler-Voss product, against the lore mechanic table. Change both the label (to bureaucratic) and the text.",
+   "suggestion": "Unauthorized network access point detected. Incident logged for review."
+  },
+  {
+   "file": "alerts",
+   "item_id": "kv_console_dropped_02",
+   "scores": {
+    "voice": 9,
+    "lore": 8,
+    "reference": 8
+   },
+   "rules": [],
+   "reason": "Cold procedural register that matches the label; 'Form 27-B' winks at Brazil's 'Form 27B stroke 6' and at the vault's 'Notice 7-B' without copying either; 'retrieval' slightly implies the console belongs to the company.",
+   "suggestion": null
+  },
+  {
+   "file": "alerts",
+   "item_id": "kv_bonus_chest_dropped_01",
+   "scores": {
+    "voice": 3,
+    "lore": 7,
+    "reference": 9
+   },
+   "rules": [
+    "T6"
+   ],
+   "reason": "The chest is for the intruders, so propaganda to them breaks the bureaucratic-toward-threats register, and 'valued guests' welcomes trespassers instead of treating them as unauthorized personnel. Change both the label (to bureaucratic) and the text.",
+   "suggestion": "Unclaimed cargo detected. Removal by unauthorized personnel constitutes theft."
+  },
+  {
+   "file": "alerts",
+   "item_id": "kv_bonus_chest_dropped_02",
+   "scores": {
+    "voice": 9,
+    "lore": 9,
+    "reference": 9
+   },
+   "rules": [],
+   "reason": "Cold asset language that matches the label; the humor comes from the gap with the situation; no jargon.",
+   "suggestion": null
+  },
+  {
+   "file": "alerts",
+   "item_id": "kv_horde_incoming_01",
+   "scores": {
+    "voice": 8,
+    "lore": 6,
+    "reference": 9
+   },
+   "rules": [
+    "T9"
+   ],
+   "reason": "Bureaucratic register matches the label, but 'Compliance is mandatory' demands the player comply, i.e. stop, instead of stating what the company does.",
+   "suggestion": "Security response dispatched. Unauthorized personnel will be processed."
+  },
+  {
+   "file": "alerts",
+   "item_id": "kv_horde_incoming_02",
+   "scores": {
+    "voice": 3,
+    "lore": 6,
+    "reference": 9
+   },
+   "rules": [
+    "T6",
+    "L1"
+   ],
+   "reason": "Propaganda aimed at intruders during a robot attack breaks T6 (label and text both wrong), and a 'Safety Team coming to meet you' reads as company humans on site. Change both the label (to bureaucratic) and the text.",
+   "suggestion": "Security units deployed. Unauthorized personnel flagged for removal."
+  },
+  {
+   "file": "alerts",
+   "item_id": "kv_extraction_ready_01",
+   "scores": {
+    "voice": 3,
+    "lore": 6,
+    "reference": 9
+   },
+   "rules": [
+    "T6"
+   ],
+   "reason": "The shuttle is the Rigs' extraction craft, so this is aimed at intruders and must be bureaucratic, not propaganda (label and text both wrong); 'premium departure experience' also presents the shuttle as a company service. Change both the label (to bureaucratic) and the text.",
+   "suggestion": "Unregistered craft detected on claim. Departure will be billed."
+  },
+  {
+   "file": "alerts",
+   "item_id": "kv_shuttle_countdown_01",
+   "scores": {
+    "voice": 9,
+    "lore": 8,
+    "reference": 9
+   },
+   "rules": [],
+   "reason": "Cold and procedural, matching the label; states a consequence rather than ordering a stop (T9 safe); 'processed as trespass' is a dry gap joke without any jargon.",
+   "suggestion": null
+  },
+  {
+   "file": "upgrade_texts",
+   "item_id": "upg_damage",
+   "scores": {
+    "voice": 8,
+    "lore": 8,
+    "reference": 5
+   },
+   "rules": [
+    "T3"
+   ],
+   "reason": "Keeps Scarface's 'Say hello to my little friend' word for word and only tacks on 'but louder'; barely changed, so it is still the same line.",
+   "suggestion": "Say hello to my little payload."
+  },
+  {
+   "file": "upgrade_texts",
+   "item_id": "upg_fire_rate",
+   "scores": {
+    "voice": 8,
+    "lore": 8,
+    "reference": 5
+   },
+   "rules": [
+    "T3"
+   ],
+   "reason": "Keeps Dirty Harry's 'Go ahead, make my day' word for word and only adds 'Repeatedly.'; barely changed.",
+   "suggestion": "Go ahead, make my barrel's day."
+  },
+  {
+   "file": "upgrade_texts",
+   "item_id": "upg_reload_speed",
+   "scores": {
+    "voice": 8,
+    "lore": 8,
+    "reference": 8
+   },
+   "rules": [],
+   "reason": "Terminator 2 echo: keeps 'Hasta la vista', swaps 'baby' for 'empty magazine', which ties it to the stat; a clear twist, but with no Rigs flavor.",
+   "suggestion": null
+  },
+  {
+   "file": "upgrade_texts",
+   "item_id": "upg_crit_chance",
+   "scores": {
+    "voice": 8,
+    "lore": 8,
+    "reference": 6
+   },
+   "rules": [
+    "T3"
+   ],
+   "reason": "Keeps Dirty Harry's 'Feeling lucky, punk?' (the common misquote) nearly intact and adds 'Because I do', which is also ungrammatical; barely changed.",
+   "suggestion": "Feeling lucky, scrap pile? I am."
+  },
+  {
+   "file": "upgrade_texts",
+   "item_id": "upg_crit_damage",
+   "scores": {
+    "voice": 8,
+    "lore": 8,
+    "reference": 8
+   },
+   "rules": [],
+   "reason": "Keeps the stock 'That's gonna leave a mark' idiom, reworded and with 'buddy' added; not a signature film line; acceptable but flat.",
+   "suggestion": null
+  },
+  {
+   "file": "upgrade_texts",
+   "item_id": "upg_max_health",
+   "scores": {
+    "voice": 8,
+    "lore": 8,
+    "reference": 5
+   },
+   "rules": [
+    "T3"
+   ],
+   "reason": "Keeps Terminator's 'I'll be back' word for word and only adds two afterthoughts; barely changed.",
+   "suggestion": "I'll be bolted back together."
+  },
+  {
+   "file": "upgrade_texts",
+   "item_id": "upg_move_speed",
+   "scores": {
+    "voice": 8,
+    "lore": 7,
+    "reference": 5
+   },
+   "rules": [
+    "T3"
+   ],
+   "reason": "Keeps Predator's 'Get to the choppa' word for word and adds a tail; barely changed, and a chopper has no place in the asteroid setting.",
+   "suggestion": "Get to the shuttla! Beat you there."
+  },
+  {
+   "file": "upgrade_texts",
+   "item_id": "upg_pickup_radius",
+   "scores": {
+    "voice": 9,
+    "lore": 8,
+    "reference": 9
+   },
+   "rules": [],
+   "reason": "Rook's greed and swagger in four words; no film echo.",
+   "suggestion": null
+  }
+ ]
+}

@@ -1,0 +1,137 @@
+{
+ "run_id": "20261020-170002-alerts",
+ "content_file": "alerts.json",
+ "retrieval": true,
+ "entries": [
+  {
+   "item_id": "kv_console_dropped_01",
+   "loop": 0,
+   "query": "bureaucratic notice toward threats for a console drop",
+   "node_ids": [
+    "company-voice",
+    "lore"
+   ],
+   "excerpts": [
+    {
+     "node_id": "company-voice",
+     "text": "Cold, impersonal, procedural: notice numbers, asset language, invoices; no emotion, no insult."
+    },
+    {
+     "node_id": "lore",
+     "text": "| Command console hack | The Rigs' ship detects an entry point into the claim's network and drops a console there as an access point (provisional) |"
+    }
+   ],
+   "output": "Foreign device registered on claim network. Entry logged for review."
+  },
+  {
+   "item_id": "kv_console_dropped_02",
+   "loop": 0,
+   "query": "bureaucratic notice for the Rigs network entry, no numbers",
+   "node_ids": [
+    "company-voice",
+    "lore"
+   ],
+   "excerpts": [
+    {
+     "node_id": "company-voice",
+     "text": "Cold, impersonal, procedural: notice numbers, asset language, invoices; no emotion, no insult."
+    },
+    {
+     "node_id": "lore",
+     "text": "| Command console hack | The Rigs' ship detects an entry point into the claim's network and drops a console there as an access point (provisional) |"
+    }
+   ],
+   "output": "Network breach recorded. Responsible parties will be invoiced."
+  },
+  {
+   "item_id": "kv_bonus_chest_dropped_01",
+   "loop": 0,
+   "query": "cold company notice about unattended cargo",
+   "node_ids": [
+    "company-voice",
+    "dialogue-tone"
+   ],
+   "excerpts": [
+    {
+     "node_id": "company-voice",
+     "text": "Cold, impersonal, procedural: notice numbers, asset language, invoices; no emotion, no insult."
+    },
+    {
+     "node_id": "dialogue-tone",
+     "text": "it states what the company does"
+    }
+   ],
+   "output": "Unattended cargo flagged. Removal will be recorded as theft."
+  },
+  {
+   "item_id": "kv_horde_incoming_01",
+   "loop": 0,
+   "query": "bureaucratic horde notice stating what the company does",
+   "node_ids": [
+    "company-voice",
+    "lore",
+    "dialogue-tone"
+   ],
+   "excerpts": [
+    {
+     "node_id": "company-voice",
+     "text": "Cold, impersonal, procedural: notice numbers, asset language, invoices; no emotion, no insult."
+    },
+    {
+     "node_id": "lore",
+     "text": "| Enemy waves | Claim security robots |"
+    },
+    {
+     "node_id": "dialogue-tone",
+     "text": "it states what the company does"
+    }
+   ],
+   "output": "Security units released across the claim. Unauthorized personnel will be processed."
+  },
+  {
+   "item_id": "kv_horde_incoming_02",
+   "loop": 0,
+   "query": "robot announcement toward threats, no company humans on site",
+   "node_ids": [
+    "company-voice",
+    "lore"
+   ],
+   "excerpts": [
+    {
+     "node_id": "company-voice",
+     "text": "Cold, impersonal, procedural: notice numbers, asset language, invoices; no emotion, no insult."
+    },
+    {
+     "node_id": "lore",
+     "text": "| Enemy waves | Claim security robots |"
+    }
+   ],
+   "output": "Additional security units assigned to the affected sector. Removal pending."
+  },
+  {
+   "item_id": "kv_extraction_ready_01",
+   "loop": 0,
+   "query": "bureaucratic notice for the Rigs shuttle, stating what the company does",
+   "node_ids": [
+    "company-voice",
+    "lore",
+    "dialogue-tone"
+   ],
+   "excerpts": [
+    {
+     "node_id": "company-voice",
+     "text": "Cold, impersonal, procedural: notice numbers, asset language, invoices; no emotion, no insult."
+    },
+    {
+     "node_id": "lore",
+     "text": "| Shuttle | The Rigs' extraction craft |"
+    },
+    {
+     "node_id": "dialogue-tone",
+     "text": "it states what the company does"
+    }
+   ],
+   "output": "Unregistered craft detected on claim. Departure fees will be invoiced."
+  }
+ ]
+}

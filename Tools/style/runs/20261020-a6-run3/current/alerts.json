@@ -1,0 +1,54 @@
+{
+ "schema_version": 1,
+ "run_id": "20261020-153601-alerts-noretrieval",
+ "items": [
+  {
+   "line_id": "kv_console_dropped_01",
+   "event": "console_dropped",
+   "register": "bureaucratic",
+   "text": "Foreign device registered on claim network. Entry logged for review."
+  },
+  {
+   "line_id": "kv_console_dropped_02",
+   "event": "console_dropped",
+   "register": "bureaucratic",
+   "text": "Network breach recorded. Responsible parties will be invoiced."
+  },
+  {
+   "line_id": "kv_bonus_chest_dropped_01",
+   "event": "bonus_chest_dropped",
+   "register": "bureaucratic",
+   "text": "Unattended cargo flagged. Removal will be recorded as theft."
+  },
+  {
+   "line_id": "kv_bonus_chest_dropped_02",
+   "event": "bonus_chest_dropped",
+   "register": "bureaucratic",
+   "text": "Cargo crate unclaimed. Contents remain company property pending review."
+  },
+  {
+   "line_id": "kv_horde_incoming_01",
+   "event": "horde_incoming",
+   "register": "bureaucratic",
+   "text": "Security units released across the claim. Unauthorized personnel will be processed."
+  },
+  {
+   "line_id": "kv_horde_incoming_02",
+   "event": "horde_incoming",
+   "register": "bureaucratic",
+   "text": "Additional security units assigned to the affected sector. Removal pending."
+  },
+  {
+   "line_id": "kv_extraction_ready_01",
+   "event": "extraction_ready",
+   "register": "bureaucratic",
+   "text": "Unregistered craft detected on claim. Departure fees will be invoiced."
+  },
+  {
+   "line_id": "kv_shuttle_countdown_01",
+   "event": "shuttle_countdown",
+   "register": "bureaucratic",
+   "text": "Departure window closing. Late exits will be processed as trespass."
+  }
+ ]
+}

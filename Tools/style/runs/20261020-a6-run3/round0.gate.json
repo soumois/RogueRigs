@@ -1,0 +1,178 @@
+{
+ "round": 0,
+ "threshold": 8,
+ "total": 28,
+ "passed": 16,
+ "failed": 12,
+ "action": "refine",
+ "fails": [
+  {
+   "file": "barks",
+   "item_id": "vesna_run_lost_01",
+   "text": "Well. That was a very expensive nap.",
+   "scores": {
+    "voice": 7,
+    "lore": 8,
+    "reference": 9,
+    "format": 10
+   },
+   "rule": "T2",
+   "reason": "On a lost run, 'a very expensive nap' mocks the failure itself, i.e. the player's performance, rather than one of Rook's plans; the 'Well.' opener also softens Vesna's clipped style.",
+   "suggestion": "That plan just joined the Ceres job."
+  },
+  {
+   "file": "alerts",
+   "item_id": "kv_console_dropped_01",
+   "text": "Kessler-Voss Smart Consoles: innovation, delivered straight to your doorstep!",
+   "scores": {
+    "voice": 3,
+    "lore": 6,
+    "reference": 9,
+    "format": 10
+   },
+   "rule": "T6",
+   "reason": "Console drop is a Rigs action, so the line is aimed at intruders and must be bureaucratic, not propaganda (label and text both wrong); it also presents the Rigs' console as a Kessler-Voss product, against the lore mechanic table. Change both the label (to bureaucratic) and the text.",
+   "suggestion": "Unauthorized network access point detected. Incident logged for review."
+  },
+  {
+   "file": "alerts",
+   "item_id": "kv_console_dropped_02",
+   "text": "Unauthorized console retrieval will be logged under Form 27-B.",
+   "scores": {
+    "voice": 9,
+    "lore": 8,
+    "reference": 8,
+    "format": 0
+   },
+   "rule": "F3",
+   "reason": "number-not-in-excerpt: number \"27\" does not appear in an excerpt of this item's log entries",
+   "suggestion": null
+  },
+  {
+   "file": "alerts",
+   "item_id": "kv_bonus_chest_dropped_01",
+   "text": "Surprise! A Kessler-Voss Rewards Crate has arrived for valued guests!",
+   "scores": {
+    "voice": 3,
+    "lore": 7,
+    "reference": 9,
+    "format": 10
+   },
+   "rule": "T6",
+   "reason": "The chest is for the intruders, so propaganda to them breaks the bureaucratic-toward-threats register, and 'valued guests' welcomes trespassers instead of treating them as unauthorized personnel. Change both the label (to bureaucratic) and the text.",
+   "suggestion": "Unclaimed cargo detected. Removal by unauthorized personnel constitutes theft."
+  },
+  {
+   "file": "alerts",
+   "item_id": "kv_horde_incoming_01",
+   "text": "Security response dispatched. Compliance is mandatory and appreciated.",
+   "scores": {
+    "voice": 8,
+    "lore": 6,
+    "reference": 9,
+    "format": 10
+   },
+   "rule": "T9",
+   "reason": "Bureaucratic register matches the label, but 'Compliance is mandatory' demands the player comply, i.e. stop, instead of stating what the company does.",
+   "suggestion": "Security response dispatched. Unauthorized personnel will be processed."
+  },
+  {
+   "file": "alerts",
+   "item_id": "kv_horde_incoming_02",
+   "text": "Kessler-Voss Safety Team is coming to meet you!",
+   "scores": {
+    "voice": 3,
+    "lore": 6,
+    "reference": 9,
+    "format": 10
+   },
+   "rule": "T6",
+   "reason": "Propaganda aimed at intruders during a robot attack breaks T6 (label and text both wrong), and a 'Safety Team coming to meet you' reads as company humans on site. Change both the label (to bureaucratic) and the text.",
+   "suggestion": "Security units deployed. Unauthorized personnel flagged for removal."
+  },
+  {
+   "file": "alerts",
+   "item_id": "kv_extraction_ready_01",
+   "text": "Your premium departure experience awaits. Thank you for visiting!",
+   "scores": {
+    "voice": 3,
+    "lore": 6,
+    "reference": 9,
+    "format": 10
+   },
+   "rule": "T6",
+   "reason": "The shuttle is the Rigs' extraction craft, so this is aimed at intruders and must be bureaucratic, not propaganda (label and text both wrong); 'premium departure experience' also presents the shuttle as a company service. Change both the label (to bureaucratic) and the text.",
+   "suggestion": "Unregistered craft detected on claim. Departure will be billed."
+  },
+  {
+   "file": "upgrade_texts",
+   "item_id": "upg_damage",
+   "text": "Say hello to my little friend, but louder.",
+   "scores": {
+    "voice": 8,
+    "lore": 8,
+    "reference": 5,
+    "format": 10
+   },
+   "rule": "T3",
+   "reason": "Keeps Scarface's 'Say hello to my little friend' word for word and only tacks on 'but louder'; barely changed, so it is still the same line.",
+   "suggestion": "Say hello to my little payload."
+  },
+  {
+   "file": "upgrade_texts",
+   "item_id": "upg_fire_rate",
+   "text": "Go ahead, make my day. Repeatedly.",
+   "scores": {
+    "voice": 8,
+    "lore": 8,
+    "reference": 5,
+    "format": 10
+   },
+   "rule": "T3",
+   "reason": "Keeps Dirty Harry's 'Go ahead, make my day' word for word and only adds 'Repeatedly.'; barely changed.",
+   "suggestion": "Go ahead, make my barrel's day."
+  },
+  {
+   "file": "upgrade_texts",
+   "item_id": "upg_crit_chance",
+   "text": "Feeling lucky, punk? Because I do.",
+   "scores": {
+    "voice": 8,
+    "lore": 8,
+    "reference": 6,
+    "format": 10
+   },
+   "rule": "T3",
+   "reason": "Keeps Dirty Harry's 'Feeling lucky, punk?' (the common misquote) nearly intact and adds 'Because I do', which is also ungrammatical; barely changed.",
+   "suggestion": "Feeling lucky, scrap pile? I am."
+  },
+  {
+   "file": "upgrade_texts",
+   "item_id": "upg_max_health",
+   "text": "I'll be back. Eventually. Sturdier, too.",
+   "scores": {
+    "voice": 8,
+    "lore": 8,
+    "reference": 5,
+    "format": 10
+   },
+   "rule": "T3",
+   "reason": "Keeps Terminator's 'I'll be back' word for word and only adds two afterthoughts; barely changed.",
+   "suggestion": "I'll be bolted back together."
+  },
+  {
+   "file": "upgrade_texts",
+   "item_id": "upg_move_speed",
+   "text": "Get to the choppa, but I'm already there.",
+   "scores": {
+    "voice": 8,
+    "lore": 7,
+    "reference": 5,
+    "format": 10
+   },
+   "rule": "T3",
+   "reason": "Keeps Predator's 'Get to the choppa' word for word and adds a tail; barely changed, and a chopper has no place in the asteroid setting.",
+   "suggestion": "Get to the shuttla! Beat you there."
+  }
+ ]
+}

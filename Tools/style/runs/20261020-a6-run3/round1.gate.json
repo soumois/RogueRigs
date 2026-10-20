@@ -1,0 +1,38 @@
+{
+ "round": 1,
+ "threshold": 8,
+ "total": 28,
+ "passed": 26,
+ "failed": 2,
+ "action": "refine",
+ "fails": [
+  {
+   "file": "barks",
+   "item_id": "rook_horde_incoming_01",
+   "text": "Come get some, tin cans!",
+   "scores": {
+    "voice": 9,
+    "lore": 9,
+    "reference": 6,
+    "format": 10
+   },
+   "rule": "T3",
+   "reason": "Kept 'Come get some' word for word from the well-known action-film catchphrase and only appended the address 'tin cans', so it is barely changed rather than twisted into the Rigs' world.",
+   "suggestion": "Come get scrapped, tin cans!"
+  },
+  {
+   "file": "upgrade_texts",
+   "item_id": "upg_crit_damage",
+   "text": "That one is gonna leave a mark, buddy.",
+   "scores": {
+    "voice": 7,
+    "lore": 8,
+    "reference": 6,
+    "format": 10
+   },
+   "rule": "T3",
+   "reason": "Kept Tommy Boy's 'That's gonna leave a mark' almost word for word, only expanding 'That's' and appending 'buddy', so it is barely changed and has no Rigs flavor.",
+   "suggestion": "That's gonna leave a crater, tin can."
+  }
+ ]
+}

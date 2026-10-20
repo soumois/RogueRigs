@@ -1,0 +1,31 @@
+{
+ "run_id": "20261020-171001-barks",
+ "content_file": "barks.json",
+ "retrieval": true,
+ "entries": [
+  {
+   "item_id": "rook_horde_incoming_01",
+   "loop": 0,
+   "query": "Rook voice for an incoming horde; how far a famous film line may be twisted; bark length",
+   "node_ids": [
+    "dialogue-tone",
+    "crew-characters"
+   ],
+   "excerpts": [
+    {
+     "node_id": "dialogue-tone",
+     "text": "A real line twisted into the Rigs' world is allowed when clearly modified: the wink is the joke"
+    },
+    {
+     "node_id": "dialogue-tone",
+     "text": "a cocky, odds-dismissing smuggler crossed with a tired, sarcastic blue-collar worker"
+    },
+    {
+     "node_id": "crew-characters",
+     "text": "Cocky; waves the odds away; improvises first, thinks later, and defends a shaky plan with total confidence."
+    }
+   ],
+   "output": "Houston, we've got scrap incoming."
+  }
+ ]
+}

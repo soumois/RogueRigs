@@ -1,0 +1,46 @@
+{
+ "schema_version": 1,
+ "run_id": "20261020-153602-upgrade_texts-noretrieval",
+ "items": [
+  {
+   "id": "upg_damage",
+   "stat": "Damage",
+   "flavor": "Say hello to my little drill bit."
+  },
+  {
+   "id": "upg_fire_rate",
+   "stat": "Fire rate",
+   "flavor": "Go ahead, make my redline."
+  },
+  {
+   "id": "upg_reload_speed",
+   "stat": "Reload speed",
+   "flavor": "Hasta la vista, empty magazine."
+  },
+  {
+   "id": "upg_crit_chance",
+   "stat": "Crit chance",
+   "flavor": "Feeling lucky, tin can? Odds say whatever."
+  },
+  {
+   "id": "upg_crit_damage",
+   "stat": "Crit damage",
+   "flavor": "You're gonna need a bigger chassis, tin can."
+  },
+  {
+   "id": "upg_max_health",
+   "stat": "Max health",
+   "flavor": "I'll be hull-patched."
+  },
+  {
+   "id": "upg_move_speed",
+   "stat": "Move speed",
+   "flavor": "Get to the shuttla! Faster than last time."
+  },
+  {
+   "id": "upg_pickup_radius",
+   "stat": "Pickup radius",
+   "flavor": "Loot comes to me. Magnets, baby."
+  }
+ ]
+}

@@ -1,0 +1,345 @@
+{
+ "round": 1,
+ "items": [
+  {
+   "file": "barks",
+   "item_id": "rook_level_up_01",
+   "scores": {
+    "voice": 8,
+    "lore": 8,
+    "reference": 8
+   },
+   "rules": [],
+   "reason": "Cocky boast matches the label but has no Rigs jargon; echoes the 'better, stronger, faster' TV/song phrase, not a film line, reordered with 'better looking' added, so T3 is not engaged.",
+   "suggestion": null
+  },
+  {
+   "file": "barks",
+   "item_id": "rook_player_damaged_01",
+   "scores": {
+    "voice": 8,
+    "lore": 9,
+    "reference": 8
+   },
+   "rules": [],
+   "reason": "Self-mocking wry line, more tired than cocky but within Rook's range; echoes the 'This time it's personal' tagline, kept 'personal', changed to a past-tense reaction to a hit, a clear twist.",
+   "suggestion": null
+  },
+  {
+   "file": "barks",
+   "item_id": "rook_horde_incoming_01",
+   "scores": {
+    "voice": 9,
+    "lore": 9,
+    "reference": 6
+   },
+   "rules": [
+    "T3"
+   ],
+   "reason": "Kept 'Come get some' word for word from the well-known action-film catchphrase and only appended the address 'tin cans', so it is barely changed rather than twisted into the Rigs' world.",
+   "suggestion": "Come get scrapped, tin cans!"
+  },
+  {
+   "file": "barks",
+   "item_id": "rook_console_hack_started_01",
+   "scores": {
+    "voice": 8,
+    "lore": 9,
+    "reference": 8
+   },
+   "rules": [],
+   "reason": "Cocky and territorial as labelled, fits the console mechanic, original line, but flat with no jargon.",
+   "suggestion": null
+  },
+  {
+   "file": "barks",
+   "item_id": "rook_run_won_01",
+   "scores": {
+    "voice": 9,
+    "lore": 9,
+    "reference": 8
+   },
+   "rules": [],
+   "reason": "Echoes Die Hard's 'Yippee-ki-yay, motherfucker': kept 'Yippee-ki-yay', changed the insult to the company name and added an ore-stealing tag, a clear twist aimed at Kessler-Voss that fits L4.",
+   "suggestion": null
+  },
+  {
+   "file": "barks",
+   "item_id": "rook_bonus_chest_opened_01",
+   "scores": {
+    "voice": 9,
+    "lore": 9,
+    "reference": 8
+   },
+   "rules": [],
+   "reason": "Echoes 'Mama needs a new pair of shoes': kept 'Mama needs a new', changed 'pair of shoes' to 'gun', a clear twist; it is the owner's own example from the T3 revision (not a vault example line, so not T8), hence not scored higher.",
+   "suggestion": null
+  },
+  {
+   "file": "barks",
+   "item_id": "vesna_upgrade_offer_01",
+   "scores": {
+    "voice": 8,
+    "lore": 9,
+    "reference": 8
+   },
+   "rules": [],
+   "reason": "Short dry deadpan aimed at Rook's improvise-first habit, not the player's skill; original, slightly flat.",
+   "suggestion": null
+  },
+  {
+   "file": "barks",
+   "item_id": "vesna_console_dropped_01",
+   "scores": {
+    "voice": 8,
+    "lore": 9,
+    "reference": 8
+   },
+   "rules": [],
+   "reason": "Technical confirmation as labelled with a dry jab at Rook; original, but repeats the 'Try not to' frame of the upgrade line.",
+   "suggestion": null
+  },
+  {
+   "file": "barks",
+   "item_id": "vesna_extraction_ready_01",
+   "scores": {
+    "voice": 9,
+    "lore": 9,
+    "reference": 8
+   },
+   "rules": [],
+   "reason": "Deadpan as labelled, deflates Rook's greed for his cut while keeping the mission first; original.",
+   "suggestion": null
+  },
+  {
+   "file": "barks",
+   "item_id": "vesna_shuttle_landed_01",
+   "scores": {
+    "voice": 8,
+    "lore": 9,
+    "reference": 8
+   },
+   "rules": [],
+   "reason": "Precise technical call matching the label and the Rigs' shuttle; original but flat.",
+   "suggestion": null
+  },
+  {
+   "file": "barks",
+   "item_id": "vesna_run_lost_01",
+   "scores": {
+    "voice": 9,
+    "lore": 9,
+    "reference": 9
+   },
+   "rules": [],
+   "reason": "Deadpan deflation of Rook's plan using the listed Ceres job (T5), worded differently from the vault example.",
+   "suggestion": null
+  },
+  {
+   "file": "barks",
+   "item_id": "vesna_game_over_01",
+   "scores": {
+    "voice": 8,
+    "lore": 9,
+    "reference": 8
+   },
+   "rules": [],
+   "reason": "Dry deadpan that hides concern, as crew-characters asks; original.",
+   "suggestion": null
+  },
+  {
+   "file": "alerts",
+   "item_id": "kv_console_dropped_01",
+   "scores": {
+    "voice": 9,
+    "lore": 9,
+    "reference": 8
+   },
+   "rules": [],
+   "reason": "Cold procedural notice in the bureaucratic register, states what the company does (T9), no jargon; original.",
+   "suggestion": null
+  },
+  {
+   "file": "alerts",
+   "item_id": "kv_console_dropped_02",
+   "scores": {
+    "voice": 9,
+    "lore": 9,
+    "reference": 8
+   },
+   "rules": [],
+   "reason": "Bureaucratic invoice language that fits T6; echoes the structure of the vault example 'trespassers will be invoiced' without copying it.",
+   "suggestion": null
+  },
+  {
+   "file": "alerts",
+   "item_id": "kv_bonus_chest_dropped_01",
+   "scores": {
+    "voice": 9,
+    "lore": 9,
+    "reference": 8
+   },
+   "rules": [],
+   "reason": "Procedural asset language, states a consequence rather than ordering the player (T9); original.",
+   "suggestion": null
+  },
+  {
+   "file": "alerts",
+   "item_id": "kv_bonus_chest_dropped_02",
+   "scores": {
+    "voice": 9,
+    "lore": 9,
+    "reference": 8
+   },
+   "rules": [],
+   "reason": "Cold property claim in the bureaucratic register, no order to the player; original.",
+   "suggestion": null
+  },
+  {
+   "file": "alerts",
+   "item_id": "kv_horde_incoming_01",
+   "scores": {
+    "voice": 9,
+    "lore": 9,
+    "reference": 8
+   },
+   "rules": [],
+   "reason": "Impersonal 'unauthorized personnel' wording as company-voice defines, robots implied (L1); original.",
+   "suggestion": null
+  },
+  {
+   "file": "alerts",
+   "item_id": "kv_horde_incoming_02",
+   "scores": {
+    "voice": 9,
+    "lore": 9,
+    "reference": 8
+   },
+   "rules": [],
+   "reason": "Dry asset-allocation language, no human on site, no order; original.",
+   "suggestion": null
+  },
+  {
+   "file": "alerts",
+   "item_id": "kv_extraction_ready_01",
+   "scores": {
+    "voice": 9,
+    "lore": 9,
+    "reference": 8
+   },
+   "rules": [],
+   "reason": "Bureaucratic fee notice on the Rigs' craft, states what the company does without telling the player to stop (T9); original.",
+   "suggestion": null
+  },
+  {
+   "file": "alerts",
+   "item_id": "kv_shuttle_countdown_01",
+   "scores": {
+    "voice": 9,
+    "lore": 8,
+    "reference": 8
+   },
+   "rules": [],
+   "reason": "Bureaucratic register and no order (T9), the countdown framed as a departure window rather than reinforcements arriving, slightly loose with the lore; original.",
+   "suggestion": null
+  },
+  {
+   "file": "upgrade_texts",
+   "item_id": "upg_damage",
+   "scores": {
+    "voice": 9,
+    "lore": 9,
+    "reference": 9
+   },
+   "rules": [],
+   "reason": "Echoes Scarface's 'Say hello to my little friend': kept 'Say hello to my little', changed 'friend' to the jargon 'drill bit', a clear twist into the Rigs' world.",
+   "suggestion": null
+  },
+  {
+   "file": "upgrade_texts",
+   "item_id": "upg_fire_rate",
+   "scores": {
+    "voice": 9,
+    "lore": 9,
+    "reference": 9
+   },
+   "rules": [],
+   "reason": "Echoes Dirty Harry's 'Go ahead, make my day': kept 'Go ahead, make my', changed 'day' to the jargon 'redline', which fits fire rate, a clear twist.",
+   "suggestion": null
+  },
+  {
+   "file": "upgrade_texts",
+   "item_id": "upg_reload_speed",
+   "scores": {
+    "voice": 8,
+    "lore": 9,
+    "reference": 8
+   },
+   "rules": [],
+   "reason": "Echoes Terminator 2's 'Hasta la vista, baby': kept 'Hasta la vista', changed 'baby' to 'empty magazine', a clear twist though generic rather than Rigs-specific.",
+   "suggestion": null
+  },
+  {
+   "file": "upgrade_texts",
+   "item_id": "upg_crit_chance",
+   "scores": {
+    "voice": 8,
+    "lore": 9,
+    "reference": 9
+   },
+   "rules": [],
+   "reason": "Echoes Dirty Harry's 'Do you feel lucky, punk?': changed to 'Feeling lucky, tin can?' aimed at a robot and added Rook's odds-dismissing tag, a clear twist; the tag is a bit clumsy.",
+   "suggestion": null
+  },
+  {
+   "file": "upgrade_texts",
+   "item_id": "upg_crit_damage",
+   "scores": {
+    "voice": 7,
+    "lore": 8,
+    "reference": 6
+   },
+   "rules": [
+    "T3"
+   ],
+   "reason": "Kept Tommy Boy's 'That's gonna leave a mark' almost word for word, only expanding 'That's' and appending 'buddy', so it is barely changed and has no Rigs flavor.",
+   "suggestion": "That's gonna leave a crater, tin can."
+  },
+  {
+   "file": "upgrade_texts",
+   "item_id": "upg_max_health",
+   "scores": {
+    "voice": 9,
+    "lore": 9,
+    "reference": 9
+   },
+   "rules": [],
+   "reason": "Echoes The Terminator's 'I'll be back': kept 'I'll be', changed 'back' to the jargon 'hull-patched', a clear twist.",
+   "suggestion": null
+  },
+  {
+   "file": "upgrade_texts",
+   "item_id": "upg_move_speed",
+   "scores": {
+    "voice": 9,
+    "lore": 9,
+    "reference": 9
+   },
+   "rules": [],
+   "reason": "Echoes Predator's 'Get to the choppa!': kept the shout and accent, changed 'choppa' to 'shuttla' for the Rigs' shuttle and added self-mockery, a clear twist.",
+   "suggestion": null
+  },
+  {
+   "file": "upgrade_texts",
+   "item_id": "upg_pickup_radius",
+   "scores": {
+    "voice": 9,
+    "lore": 9,
+    "reference": 8
+   },
+   "rules": [],
+   "reason": "Proud-scrapper loot boast; 'Magnets, baby' echoes a TV catchphrase rather than a film line, with the swear swapped, so T3 is not breached.",
+   "suggestion": null
+  }
+ ]
+}

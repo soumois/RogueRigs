@@ -1,0 +1,11 @@
+{
+ "schema_version": 1,
+ "run_id": "20261020-171002-upgrade_texts",
+ "items": [
+  {
+   "id": "upg_crit_damage",
+   "stat": "Crit damage",
+   "flavor": "You're gonna need a bigger chassis, tin can."
+  }
+ ]
+}

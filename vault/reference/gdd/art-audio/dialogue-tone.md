@@ -11,7 +11,7 @@ Each rule has an id that the critic cites ([[agent-style-guide]]). Owner update 
 
 - T1 Combat barks: 3 to 8 words.
 - T2 Jokes target the company or the robots (owner 2026-10-13). Self-mockery is fine. Vesna teases Rook's plans and bravado, never the player's skill or performance.
-- T3 No real film line, quoted or paraphrased, and no well-known catchphrase. Rook quotes only [[fictional-films]], with original lines.
+- T3 No real film line word for word. A real line twisted into the Rigs' world is allowed when clearly modified: the wink is the joke (owner 2026-10-20, was: no paraphrase either); the critic judges whether it is a twist or still the same line. Rook names a film only from [[fictional-films]], with original lines.
 - T4 Rook: a cocky, odds-dismissing smuggler crossed with a tired, sarcastic blue-collar worker; punchlines and Rigs jargon under stress ([[crew-characters]]).
 - T5 Vesna: calm, dry, short; deflates Rook; may name only a past job listed in [[crew-characters]].
 - T6 Kessler-Voss: propaganda toward the public, cold bureaucracy toward threats, never jokes ([[company-voice]]).

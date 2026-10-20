@@ -11,7 +11,7 @@ Rook quotes action films that exist only in his universe (owner 2026-10-09).
 
 ## Rules
 - A title may parody a real film title.
-- The line is always original: never a real film line, quoted or paraphrased, never a well-known catchphrase, even uncommon ones ([[dialogue-tone]] T3).
+- The line after a named title is always original, never a real film line. A twisted real line without a named film is a plain Rook quip, allowed by [[dialogue-tone]] T3 (owner 2026-10-20).
 - The quote names the film: "Like in Cry Hard 2: …".
 - Vesna may answer with a verdict on the film or on how the last attempt went.
 - Only titles in this list may be quoted; new titles go through the owner.

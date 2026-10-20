@@ -1,0 +1,284 @@
+{
+ "run_id": "20261020-a6-run3",
+ "threshold": 8,
+ "max_refinements": 2,
+ "refinements_done": 2,
+ "round": 3,
+ "status": "escalated",
+ "sources": [
+  {
+   "stem": "barks",
+   "content": "Tools/content/logs/a6-baseline/barks.json",
+   "log": "Tools/content/logs/a6-baseline/20261020-153600-barks-noretrieval.json"
+  },
+  {
+   "stem": "alerts",
+   "content": "Tools/content/logs/a6-baseline/alerts.json",
+   "log": "Tools/content/logs/a6-baseline/20261020-153601-alerts-noretrieval.json"
+  },
+  {
+   "stem": "upgrade_texts",
+   "content": "Tools/content/logs/a6-baseline/upgrade_texts.json",
+   "log": "Tools/content/logs/a6-baseline/20261020-153602-upgrade_texts-noretrieval.json"
+  }
+ ],
+ "pending_stems": [],
+ "applied": {
+  "0": [
+   "barks",
+   "alerts",
+   "upgrade_texts"
+  ],
+  "1": [
+   "barks",
+   "upgrade_texts"
+  ],
+  "2": []
+ },
+ "lineage": [
+  {
+   "round": 0,
+   "file": "barks",
+   "item_id": "vesna_run_lost_01",
+   "run_id": "20261020-170001-barks",
+   "rule": "T2",
+   "reason": "On a lost run, 'a very expensive nap' mocks the failure itself, i.e. the player's performance, rather than one of Rook's plans; the 'Well.' opener also softens Vesna's clipped style.",
+   "scores": {
+    "voice": 7,
+    "lore": 8,
+    "reference": 9,
+    "format": 10
+   },
+   "before": "Well. That was a very expensive nap.",
+   "after": "Another plan joins the Ceres job."
+  },
+  {
+   "round": 0,
+   "file": "alerts",
+   "item_id": "kv_console_dropped_01",
+   "run_id": "20261020-170002-alerts",
+   "rule": "T6",
+   "reason": "Console drop is a Rigs action, so the line is aimed at intruders and must be bureaucratic, not propaganda (label and text both wrong); it also presents the Rigs' console as a Kessler-Voss product, against the lore mechanic table. Change both the label (to bureaucratic) and the text.",
+   "scores": {
+    "voice": 3,
+    "lore": 6,
+    "reference": 9,
+    "format": 10
+   },
+   "before": "Kessler-Voss Smart Consoles: innovation, delivered straight to your doorstep!",
+   "after": "Foreign device registered on claim network. Entry logged for review."
+  },
+  {
+   "round": 0,
+   "file": "alerts",
+   "item_id": "kv_console_dropped_02",
+   "run_id": "20261020-170002-alerts",
+   "rule": "F3",
+   "reason": "number-not-in-excerpt: number \"27\" does not appear in an excerpt of this item's log entries",
+   "scores": {
+    "voice": 9,
+    "lore": 8,
+    "reference": 8,
+    "format": 0
+   },
+   "before": "Unauthorized console retrieval will be logged under Form 27-B.",
+   "after": "Network breach recorded. Responsible parties will be invoiced."
+  },
+  {
+   "round": 0,
+   "file": "alerts",
+   "item_id": "kv_bonus_chest_dropped_01",
+   "run_id": "20261020-170002-alerts",
+   "rule": "T6",
+   "reason": "The chest is for the intruders, so propaganda to them breaks the bureaucratic-toward-threats register, and 'valued guests' welcomes trespassers instead of treating them as unauthorized personnel. Change both the label (to bureaucratic) and the text.",
+   "scores": {
+    "voice": 3,
+    "lore": 7,
+    "reference": 9,
+    "format": 10
+   },
+   "before": "Surprise! A Kessler-Voss Rewards Crate has arrived for valued guests!",
+   "after": "Unattended cargo flagged. Removal will be recorded as theft."
+  },
+  {
+   "round": 0,
+   "file": "alerts",
+   "item_id": "kv_horde_incoming_01",
+   "run_id": "20261020-170002-alerts",
+   "rule": "T9",
+   "reason": "Bureaucratic register matches the label, but 'Compliance is mandatory' demands the player comply, i.e. stop, instead of stating what the company does.",
+   "scores": {
+    "voice": 8,
+    "lore": 6,
+    "reference": 9,
+    "format": 10
+   },
+   "before": "Security response dispatched. Compliance is mandatory and appreciated.",
+   "after": "Security units released across the claim. Unauthorized personnel will be processed."
+  },
+  {
+   "round": 0,
+   "file": "alerts",
+   "item_id": "kv_horde_incoming_02",
+   "run_id": "20261020-170002-alerts",
+   "rule": "T6",
+   "reason": "Propaganda aimed at intruders during a robot attack breaks T6 (label and text both wrong), and a 'Safety Team coming to meet you' reads as company humans on site. Change both the label (to bureaucratic) and the text.",
+   "scores": {
+    "voice": 3,
+    "lore": 6,
+    "reference": 9,
+    "format": 10
+   },
+   "before": "Kessler-Voss Safety Team is coming to meet you!",
+   "after": "Additional security units assigned to the affected sector. Removal pending."
+  },
+  {
+   "round": 0,
+   "file": "alerts",
+   "item_id": "kv_extraction_ready_01",
+   "run_id": "20261020-170002-alerts",
+   "rule": "T6",
+   "reason": "The shuttle is the Rigs' extraction craft, so this is aimed at intruders and must be bureaucratic, not propaganda (label and text both wrong); 'premium departure experience' also presents the shuttle as a company service. Change both the label (to bureaucratic) and the text.",
+   "scores": {
+    "voice": 3,
+    "lore": 6,
+    "reference": 9,
+    "format": 10
+   },
+   "before": "Your premium departure experience awaits. Thank you for visiting!",
+   "after": "Unregistered craft detected on claim. Departure fees will be invoiced."
+  },
+  {
+   "round": 0,
+   "file": "upgrade_texts",
+   "item_id": "upg_damage",
+   "run_id": "20261020-170003-upgrade_texts",
+   "rule": "T3",
+   "reason": "Keeps Scarface's 'Say hello to my little friend' word for word and only tacks on 'but louder'; barely changed, so it is still the same line.",
+   "scores": {
+    "voice": 8,
+    "lore": 8,
+    "reference": 5,
+    "format": 10
+   },
+   "before": "Say hello to my little friend, but louder.",
+   "after": "Say hello to my little drill bit."
+  },
+  {
+   "round": 0,
+   "file": "upgrade_texts",
+   "item_id": "upg_fire_rate",
+   "run_id": "20261020-170003-upgrade_texts",
+   "rule": "T3",
+   "reason": "Keeps Dirty Harry's 'Go ahead, make my day' word for word and only adds 'Repeatedly.'; barely changed.",
+   "scores": {
+    "voice": 8,
+    "lore": 8,
+    "reference": 5,
+    "format": 10
+   },
+   "before": "Go ahead, make my day. Repeatedly.",
+   "after": "Go ahead, make my redline."
+  },
+  {
+   "round": 0,
+   "file": "upgrade_texts",
+   "item_id": "upg_crit_chance",
+   "run_id": "20261020-170003-upgrade_texts",
+   "rule": "T3",
+   "reason": "Keeps Dirty Harry's 'Feeling lucky, punk?' (the common misquote) nearly intact and adds 'Because I do', which is also ungrammatical; barely changed.",
+   "scores": {
+    "voice": 8,
+    "lore": 8,
+    "reference": 6,
+    "format": 10
+   },
+   "before": "Feeling lucky, punk? Because I do.",
+   "after": "Feeling lucky, tin can? Odds say whatever."
+  },
+  {
+   "round": 0,
+   "file": "upgrade_texts",
+   "item_id": "upg_max_health",
+   "run_id": "20261020-170003-upgrade_texts",
+   "rule": "T3",
+   "reason": "Keeps Terminator's 'I'll be back' word for word and only adds two afterthoughts; barely changed.",
+   "scores": {
+    "voice": 8,
+    "lore": 8,
+    "reference": 5,
+    "format": 10
+   },
+   "before": "I'll be back. Eventually. Sturdier, too.",
+   "after": "I'll be hull-patched."
+  },
+  {
+   "round": 0,
+   "file": "upgrade_texts",
+   "item_id": "upg_move_speed",
+   "run_id": "20261020-170003-upgrade_texts",
+   "rule": "T3",
+   "reason": "Keeps Predator's 'Get to the choppa' word for word and adds a tail; barely changed, and a chopper has no place in the asteroid setting.",
+   "scores": {
+    "voice": 8,
+    "lore": 7,
+    "reference": 5,
+    "format": 10
+   },
+   "before": "Get to the choppa, but I'm already there.",
+   "after": "Get to the shuttla! Faster than last time."
+  },
+  {
+   "round": 1,
+   "file": "barks",
+   "item_id": "rook_horde_incoming_01",
+   "run_id": "20261020-171001-barks",
+   "rule": "T3",
+   "reason": "Kept 'Come get some' word for word from the well-known action-film catchphrase and only appended the address 'tin cans', so it is barely changed rather than twisted into the Rigs' world.",
+   "scores": {
+    "voice": 9,
+    "lore": 9,
+    "reference": 6,
+    "format": 10
+   },
+   "before": "Come get some, tin cans!",
+   "after": "Houston, we've got scrap incoming."
+  },
+  {
+   "round": 1,
+   "file": "upgrade_texts",
+   "item_id": "upg_crit_damage",
+   "run_id": "20261020-171002-upgrade_texts",
+   "rule": "T3",
+   "reason": "Kept Tommy Boy's 'That's gonna leave a mark' almost word for word, only expanding 'That's' and appending 'buddy', so it is barely changed and has no Rigs flavor.",
+   "scores": {
+    "voice": 7,
+    "lore": 8,
+    "reference": 6,
+    "format": 10
+   },
+   "before": "That one is gonna leave a mark, buddy.",
+   "after": "You're gonna need a bigger chassis, tin can."
+  }
+ ],
+ "rounds": [
+  {
+   "round": 0,
+   "total": 28,
+   "failed": 12,
+   "action": "refine"
+  },
+  {
+   "round": 1,
+   "total": 28,
+   "failed": 2,
+   "action": "refine"
+  },
+  {
+   "round": 2,
+   "total": 28,
+   "failed": 1,
+   "action": "escalate"
+  }
+ ]
+}
