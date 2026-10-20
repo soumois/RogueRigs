@@ -10,6 +10,7 @@ status: approved
 - A grid block type (`heal_ore`), the only source of healing in a level.
 - Each broken heal-ore block (67 uu) drops one heal pickup, whatever destroyed it (drone or explosion). Loot over the dig (owner 2026-10-19, replaces "nothing drops during the dig"): a vein being dug pops its pickups one by one, evenly spread over its dig time (pickup k at progress k / N); an explosion pops the remaining ones at once ([[task-235-ore-loot-over-dig]]). Dig time 1.5 s at mining speed 1, like ore ([[drone]]; owner, after handover-2026-10-06). An explosion never destroys the heal; luring a kamikaze next to it is a valid way to get it.
 - Pickups are collected within the miner's pickup radius ([[player-stats]]).
+- Heal pickups pop within 80-150 uu of their block, so a vein dug from where the miner stands stays within the pickup radius (owner 2026-10-20, provisional, task-256).
 - Look: red heal crystals and red pickups; static on the floor, unlike moving red enemy shots ([[color-code]]).
 - Heal ore blocks are spread across the map; their density is a balance value.
 - Veins are 2 × 2 (owner 2026-10-10, was 3 × 3): each pickup heals 15 HP, so a whole vein restores 60 HP as before. Density: 12 veins of 2 × 2 (48 cells) on the 240 × 240 M1 arena, the 12 veins of the former 3 × 3 layout.
