@@ -3,7 +3,7 @@ id: task-244-02-card-rarity-suspense
 description: "Capture the reveal of a purple and a yellow card in the game and send the frames."
 parent: task-244-card-rarity-suspense
 kind: task
-status: in-progress
+status: done
 ---
 # 244-02 cpp
 
@@ -17,9 +17,9 @@ status: in-progress
 - token_ceiling: 40000 (provisional)
 - model: open
 - tokens: open
-- runs: open
+- runs: 1
 - milestone: M2
-- result: open
+- result: Capture -game, luck 15 via the engine set command on RRPlayerAttributeSet: yellow and purple reveal seen (order, dim, glow, punch, flash, end state clean); rays look like rotated card outlines of the glow texture, glow on the back reads as a tinted rectangle; owner validated the rays as they are (2026-10-20); the full-screen flash includes the HUD, as built. Unseen: flash peak, two rare cards, reroll and close mid-sequence, button clicks. 1 run.
 
 ## Relations
 - [[task-244-card-rarity-suspense]] — parent global task.

@@ -250,3 +250,4 @@ Archive: it exceeds the index size limits of [[_authoring]] on purpose (owner, 2
 - [[task-241-number-pop-duration]] — The pop of the damage numbers lasts 0.25 s instead of 0.1 s. Status done.
 - [[task-242-number-arc]] — Damage numbers are thrown in an arc (gravity) instead of rising in a straight line; peak about 60 uu, lifetime unchanged at 0.7 s. Status done.
 - [[task-243-card-deal-flip]] — Level-up cards arrive face down in a fan (ease-out-back from below), then flip one by one; a card back exists in one version per rarity. Status done.
+- [[task-244-card-rarity-suspense]] — From purple up, the card flips last: its back glows, the other cards darken, then punch, flash and rays in the tier colour. Status done.

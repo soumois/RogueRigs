@@ -1,9 +1,9 @@
 ---
 id: task-244-card-rarity-suspense
 description: "Global task: From purple up, the card flips last: its back glows, the other cards darken, then punch, flash and rays in the tier colour."
-parent: tasks-to-do-index
+parent: tasks-done-index
 kind: task
-status: in-progress
+status: done
 ---
 # Rarity suspense reveal
 
@@ -13,14 +13,14 @@ status: in-progress
 - gdd_check: xp-level-up, upgrades, rarities, readability-rules read (2026-10-19); no conflict, no open value; the GDD section on the card animation is added after the last card task (owner default, provisional).
 - confirmed_by_owner: yes (2026-10-19)
 - milestone: M2
-- next_step: task-244-02-card-rarity-suspense
-- result: open
+- next_step: none
+- result: Purple and yellow cards flip last with glow, dimming, punch, flash and rays; owner validated the rays as built (2026-10-20); unseen items listed in 244-02.
 
 ## Subtasks
 1. task-244-01-card-rarity-suspense — bp
 2. task-244-02-card-rarity-suspense — cpp
 
 ## Relations
-- [[tasks-to-do-index]] — parent index.
+- [[tasks-done-index]] — parent index.
 - [[task-244-01-card-rarity-suspense]] — step 1, bp.
 - [[task-244-02-card-rarity-suspense]] — step 2, cpp.
