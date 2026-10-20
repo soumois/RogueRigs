@@ -12,6 +12,8 @@ kind: doc
 
 - look (task-234-03): a deposit of a type with deposit meshes is drawn as one crystal formation (variant and quarter turn hashed from its id), removed at its first broken block; rule and properties in [[sys-grid-rock-damage]].
 
+- pulse data (task-257-01): the crystal material M_XPNutGlow reads per-instance custom data index 4 = pulse phase (turns, 0..1, neutral 0) and 5 = pulse rate (scale of PulseFrequency, neutral 1) on the deposit crystal ISMs; indices 0 (console mark) and 1-3 (ore colour) are unchanged, so those components need NumCustomDataFloats of at least 6 ([[bp-pickup-xp]]).
+
 ## Relations
 - [[sys-grid]] — parent hub: summary and verdict.
 - [[sys-grid-rock-damage]] — deposit crystal formations (meshes, hash, shake, removal).
