@@ -1,6 +1,6 @@
 ---
 id: lesson-08-constraints-and-demo
-description: "Lesson 08 (Oct 13), part 2: constraints turn randomness into a game, evaluator rules, GER mapping per game type, Dungeon Builder demo, No Man's Sky, meaningful variety."
+description: "Lesson 08 (Oct 13), part 2: constraints as evaluator rules, GER mapping per game type, Dungeon Builder demo, No Man's Sky, meaningful variety."
 parent: lessons-index
 kind: note
 ---
