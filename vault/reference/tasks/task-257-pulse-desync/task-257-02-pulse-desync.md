@@ -3,7 +3,7 @@ id: task-257-02-pulse-desync
 description: "C++ writes a seeded pulse phase and rate to ore and heal pickups and to the ore and heal deposit crystal instances."
 parent: task-257-pulse-desync
 kind: task
-status: in-progress
+status: done
 ---
 # Pulse desync values (C++)
 
@@ -15,11 +15,11 @@ status: in-progress
 - done_when: Build passes; existing RogueRigs.Dig, RogueRigs.Ore, RogueRigs.Integration.FineContactDigOpensPassage and RogueRigs.RunFlow tests pass; ONE headless check (no capture): the same seed gives the same phases, two neighbouring crystals of one deposit and two pickups get different phases, XP pickups keep the neutral values; docs updated; lint clean.
 - editor_state: closed (C++ build)
 - token_ceiling: 150k
-- model: open
-- tokens: open
-- runs: open
+- model: opus
+- tokens: input 98, cache write 167875, cache read 5862616, output 35281
+- runs: 1
 - milestone: M1
-- result: open
+- result: Seeded pulse desync: FRRPulseDesync hash (PulseSeed 1, phase 0-1 turns, rate 0.8-1.2) written at pickup life start for Ore and Heal (CPD 1 and 2, reset to neutral at pool release, XP untouched) and for every deposit crystal instance (per-instance data 4 and 5, 6 floats, deposit id); build OK, 27 of 27 tests pass incl. HealVein and the new PulseDesync check; docs and GDD lines updated. Look and runtime read of the material unverified.
 
 ## Relations
 - [[task-257-pulse-desync]] — parent global task.
