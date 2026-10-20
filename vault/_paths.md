@@ -252,6 +252,7 @@ sys-damage-numbers-niagara  reference/tech/systems/combat/sys-damage-numbers-nia
 sys-difficulty  reference/tech/systems/core/sys-difficulty.md
 sys-drone  reference/tech/systems/combat/sys-drone.md
 sys-drone-dig  reference/tech/systems/combat/sys-drone/sys-drone-dig.md
+sys-drone-parts  reference/tech/systems/combat/sys-drone/sys-drone-parts.md
 sys-enemies  reference/tech/systems/enemies/sys-enemies/sys-enemies.md
 sys-enemies-base  reference/tech/systems/enemies/sys-enemies/sys-enemies-base.md
 sys-enemies-chaser  reference/tech/systems/enemies/sys-enemies/sys-enemies-chaser.md
