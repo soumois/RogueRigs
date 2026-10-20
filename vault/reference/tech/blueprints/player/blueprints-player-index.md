@@ -12,6 +12,7 @@ Miner, drone, controller, game mode and the weapon Blueprints: the player side.
 - [[blueprints-index]] — parent index.
 - [[bp-miner]] — BP_Miner, the playable miner pawn.
 - [[bp-drone]] — BP_Drone, the orbiting helper drone.
+- [[bp-drone-materials]] — M_Drone, M_DroneAntenna and their instances (Meshy textures).
 - [[bp-rr-player-controller]] — BP_RRPlayerController, input wiring.
 - [[bp-rr-game-mode]] — BP_RRGameMode, default pawn and controller.
 - [[bp-burst-rifle]] — BP_BurstRifle, the burst rifle weapon.

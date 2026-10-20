@@ -24,3 +24,4 @@ kind: doc
 - [[sys-drone]] — the C++ class it derives from.
 - [[bp-miner]] — the Blueprint that spawns it through `DroneClass`.
 - [[color-code]] — colour convention for the teal tint.
+- [[bp-drone-materials]] — the Meshy drone materials (task-252-03).
