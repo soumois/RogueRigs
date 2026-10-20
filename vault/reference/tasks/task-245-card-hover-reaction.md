@@ -3,7 +3,7 @@ id: task-245-card-hover-reaction
 description: "Global task: Hovering a card tilts it toward the pointer (about 4 degrees), scales it to 1.06 and sweeps a sheen across the higher tiers."
 parent: tasks-to-do-index
 kind: task
-status: todo
+status: in-progress
 ---
 # Card hover reaction
 

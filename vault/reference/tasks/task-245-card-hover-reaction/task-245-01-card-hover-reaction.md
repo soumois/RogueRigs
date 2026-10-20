@@ -3,7 +3,7 @@ id: task-245-01-card-hover-reaction
 description: "In WBP_UpgradeChoice, replace the instant glow change by a hover animation: tilt following the pointer x (about 4 degrees), scale 1.06, eased return, sheen sweep on blue and above using the existin..."
 parent: task-245-card-hover-reaction
 kind: task
-status: todo
+status: in-progress
 ---
 # 245-01 bp
 
