@@ -3,7 +3,7 @@ id: task-246-02-card-pick-destination
 description: "Create the flight overlay widget that outlives the card screen and wire WBP_UpgradeChoice: on pick, fly the icon from the card to the destination (targeted weapon slot, each owned slot for all weap..."
 parent: task-246-card-pick-destination
 kind: task
-status: todo
+status: in-progress
 ---
 # 246-02 bp
 

@@ -13,7 +13,7 @@ status: in-progress
 - gdd_check: xp-level-up, upgrades, rarities, readability-rules read (2026-10-19); no conflict, no open value; the GDD section on the card animation is added after the last card task (owner default, provisional).
 - confirmed_by_owner: yes (2026-10-19)
 - milestone: M2
-- next_step: task-246-01-card-pick-destination
+- next_step: task-246-02-card-pick-destination
 - result: open
 
 ## Subtasks

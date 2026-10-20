@@ -3,7 +3,7 @@ id: task-246-01-card-pick-destination
 description: "Create the dissolve (burn) material and instance for the discarded cards in /Game/RogueRigs/UI, with its doc node."
 parent: task-246-card-pick-destination
 kind: task
-status: in-progress
+status: done
 ---
 # 246-01 bp
 
@@ -17,9 +17,9 @@ status: in-progress
 - token_ceiling: 40000 (provisional)
 - model: open
 - tokens: open
-- runs: open
+- runs: 1
 - milestone: M2
-- result: open
+- result: M_CardBurn (UI domain, translucent) and MI_CardBurn in /Game/RogueRigs/UI/Cards: Burn 0..1 dissolve bottom to top with noise and an orange fire edge (EdgeWidth 0.08, FireIntensity 4); doc node m-card-burn; commit 5b0d60e6; compiled, saved; look not seen, noise range assumption unverified. 1 run.
 
 ## Relations
 - [[task-246-card-pick-destination]] — parent global task.
