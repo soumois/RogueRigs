@@ -24,3 +24,4 @@ Pickups, explosion and heal visuals, damage numbers: effects and collectibles.
 - [[bp-shield-debris]] — NS_ShieldDebris, the five shield pieces thrown when the shield breaks.
 - [[bp-barrel-explosion]] — NS_BarrelExplosion and M_BarrelExplosionSprite, the explosion Niagara burst.
 - [[bp-dig-impact]] — NS_DigImpact and M_DigChip, the drone laser impact sparks, chips and dust.
+- [[bp-drone-thruster]] — NS_DroneThruster and M_DroneThruster, the drone engine exhaust driven by User.Speed.

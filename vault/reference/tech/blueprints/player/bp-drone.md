@@ -25,3 +25,4 @@ kind: doc
 - [[bp-miner]] — the Blueprint that spawns it through `DroneClass`.
 - [[color-code]] — colour convention for the teal tint.
 - [[bp-drone-materials]] — the Meshy drone materials (task-252-03).
+- [[bp-drone-thruster]] — NS_DroneThruster, the engine exhaust of each side pod.
