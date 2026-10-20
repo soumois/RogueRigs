@@ -3,7 +3,7 @@ id: task-250-fix-heal-vein-test
 description: "Global task: RogueRigs.Ore.HealVein passes again: find why only 3 of 4 heal pickups are collected (health 55 instead of 70) and fix the cause, in the game if it breaks the heal ore rule, in the test if only its expectation is outdated."
 parent: tasks-to-do-index
 kind: task
-status: todo
+status: in-progress
 ---
 # Fix RogueRigs.Ore.HealVein
 

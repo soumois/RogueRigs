@@ -472,6 +472,7 @@ kind: note
 | [[task-253-01-drone-parts-animation]] | opus | 1 | 0k | 175k | 6081k | 27k |
 | [[task-254-02-drone-thruster-particles]] | opus | 1 | 0k | 79k | 1454k | 14k |
 | [[task-253-02-drone-parts-animation]] | sonnet | 1 | 0k | 45k | 498k | 1k |
+| [[task-254-03-drone-thruster-particles]] | sonnet | 1 | 0k | 35k | 519k | 0k |
 
 ## Totals
 | Scope | Input | Cache write | Cache read | Output |
