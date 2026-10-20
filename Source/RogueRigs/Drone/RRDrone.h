@@ -84,9 +84,15 @@ DECLARE_DYNAMIC_MULTICAST_DELEGATE_TwoParams(FRROnDigBlockStoppedSignature, FInt
  * not clear, task-248-01) and shows LaserMesh from itself to the target's
  * location + HackLinkOffset. One target at a time; RequestArcDig is refused while hacking. StopHack (or the target or miner
  * gone) returns it to Orbit. The objective owns the hack progress.
+ * Parts (task-253-01, owner 2026-10-20, provisional, visual only): the root Mesh is the base (body); its yaw is the actor yaw,
+ * which turns toward the dig or hack target at BaseYawTurnRate at most (never instantly). LaserPivot (the laser arm, hanging
+ * under the base) pitches about its local Y axis so its emitter tip (LaserEmitterLocal) aims at the dig impact point or the hack
+ * link point, within [LaserPitchMinDegrees, LaserPitchMaxDegrees] (0 = straight down) at LaserPitchTurnRate at most, and rests
+ * straight down in Orbit; the beam (LaserMesh) starts at that emitter tip. AntennaMesh spins about its Z axis at
+ * AntennaSpinSpeed, always.
  * The drone has no ASC: it reads MiningSpeed on the miner's ASC. Its meshes never collide. The grid is assumed unrotated
  * and unscaled (world X / Y = grid X / Y).
- * Subclass in Blueprint for the drone mesh and the laser mesh and material.
+ * Subclass in Blueprint for the base, laser arm and antenna meshes and the beam mesh and material.
  */
 UCLASS(Abstract)
 class ROGUERIGS_API ARRDrone : public AActor
@@ -94,7 +100,7 @@ class ROGUERIGS_API ARRDrone : public AActor
 	GENERATED_BODY()
 
 public:
-	/** Creates the root mesh and the hidden laser mesh (no collision) and enables ticking. */
+	/** Creates the root base mesh, the laser arm (LaserPivot) and antenna children, the hidden beam mesh (all no collision) and the impact effect, and enables ticking. */
 	ARRDrone();
 
 	/**
@@ -204,6 +210,13 @@ public:
 	 */
 	UFUNCTION(BlueprintPure, Category = "Drone|Dig")
 	FVector GetDigImpactPoint() const;
+
+	/**
+	 * World location of the laser emitter tip, where the beam starts (task-253-01): LaserEmitterLocal transformed by LaserPivot's
+	 * world transform (pitch, base yaw and tilt included). Valid with or without a mesh on LaserPivot.
+	 */
+	UFUNCTION(BlueprintPure, Category = "Drone|Laser")
+	FVector GetLaserEmitterLocation() const;
 
 	/** MiningSpeed attribute of the owner miner's ASC; 1 if there is no miner, no ASC or no MiningSpeed attribute. */
 	UFUNCTION(BlueprintPure, Category = "Drone")
@@ -321,8 +334,27 @@ protected:
 	/** Side of Cell's face toward the owner miner: unit step on the dominant axis of the miner's offset from the cell center. Requires a valid miner and dig grid. */
 	FIntPoint GetDigFaceSide(FIntPoint Cell) const;
 
-	/** Dig laser: LaserMesh from the drone to GetDigImpactPoint; hidden when the arc is empty. */
+	/** Dig laser: LaserMesh from the emitter tip (GetLaserEmitterLocation) to GetDigImpactPoint; hidden when the arc is empty. */
 	void UpdateDigLaser();
+
+	/**
+	 * Point the laser arm aims at (task-253-01): GetDigImpactPoint in Dig (false with an empty arc), the hack target's location +
+	 * HackLinkOffset in Hack; false in Orbit (the arm rests straight down).
+	 */
+	bool GetLaserAimPoint(FVector& OutPoint) const;
+
+	/**
+	 * Pitch of LaserPivot, in degrees (0 = straight down, positive = toward the base's forward +X), that puts the line from the pivot
+	 * through the emitter tip on Point, in the base's XZ plane (the out-of-plane part is left to the base yaw). Not clamped.
+	 */
+	float ComputeLaserPitchToward(const FVector& Point) const;
+
+	/**
+	 * After the attitude (task-253-01): spins AntennaMesh by AntennaSpinSpeed, turns LaserPivot's pitch toward the aim point (or 0 in
+	 * Orbit) at LaserPitchTurnRate at most, clamped to [LaserPitchMinDegrees, LaserPitchMaxDegrees], then re-places a visible beam
+	 * from the new emitter location to LaserBeamEnd. Runs with or without a miner.
+	 */
+	void UpdateParts(float DeltaSeconds);
 
 	/**
 	 * Computes the impact point (see GetDigImpactPoint) and the grid side of the face it lies on (the face of the dug cell
@@ -350,12 +382,64 @@ protected:
 	/** Chip colour of one block type: rock, Duskite (Ore and SpecialOre), heal ore, barrel; any other type gives RockChipColor. */
 	FLinearColor GetChipColorForType(ERRCellType Type) const;
 
-	/** Root visual. Collision disabled, so it never blocks or overlaps pawns. Mesh set in Blueprint. */
+	/** Root visual, the drone base (body, SM_DroneBase, task-253-01): turned in yaw by the actor rotation. Collision disabled, so it never blocks or overlaps pawns. Mesh set in Blueprint. */
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Components")
 	TObjectPtr<UStaticMeshComponent> Mesh;
 
 	/**
-	 * Cutting laser: the single dig beam in Dig (toward GetDigImpactPoint) and the link beam in Hack. Expected mesh: a cylinder along local Z with its
+	 * Laser arm (SM_DroneLaser, task-253-01) hanging under the base: attached to Mesh at (1.606, 0, -17.248) (bp-drone-materials),
+	 * pitched about its local Y axis by UpdateParts (pitch 0 = hanging straight down). No collision, no shadow. Mesh set in
+	 * Blueprint; works with none (its transform still places the beam start).
+	 */
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Components")
+	TObjectPtr<UStaticMeshComponent> LaserPivot;
+
+	/**
+	 * Antenna (SM_DroneAntenna, task-253-01, origin at the flange foot on its spin axis): attached to Mesh at (-4.257, -0.837, 28.752)
+	 * (bp-drone-materials), spun about its local Z by UpdateParts. No collision, no shadow. Mesh set in Blueprint.
+	 */
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Components")
+	TObjectPtr<UStaticMeshComponent> AntennaMesh;
+
+	/** Beam origin, local to LaserPivot: the emitter tip of SM_DroneLaser, in uu (bp-drone-materials, Y mirrored from Blender; task-253-01, provisional). */
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Drone|Parts")
+	FVector LaserEmitterLocal = FVector(-0.054f, 0.143f, -19.f);
+
+	/** Spin speed of AntennaMesh about its Z axis, in degrees per second, always on (Orbit, Dig, Hack; task-253-01, provisional). */
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Drone|Parts", meta = (Units = "deg/s"))
+	float AntennaSpinSpeed = 90.f;
+
+	/**
+	 * Largest turn rate of the base yaw (the actor yaw), in degrees per second (task-253-01, provisional): in Dig and Hack the yaw
+	 * turns toward the target at this constant rate (no instant turn); for the other points of interest the task-249-01 delay
+	 * (LookYawInterpSpeed) is kept and capped by this same rate.
+	 */
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Drone|Parts", meta = (ClampMin = 0, Units = "deg/s"))
+	float BaseYawTurnRate = 120.f;
+
+	/** Largest turn rate of LaserPivot's pitch, in degrees per second (task-253-01, provisional). */
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Drone|Parts", meta = (ClampMin = 0, Units = "deg/s"))
+	float LaserPitchTurnRate = 240.f;
+
+	/** Lowest LaserPivot pitch (negative = toward the base's back), in degrees from straight down (task-253-01, provisional). */
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Drone|Parts", meta = (ClampMin = -180, ClampMax = 180, Units = "deg"))
+	float LaserPitchMinDegrees = -20.f;
+
+	/** Highest LaserPivot pitch (positive = toward the base's front, where the dig face is), in degrees from straight down (task-253-01, provisional; the dig aim is about 50-60 deg). */
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Drone|Parts", meta = (ClampMin = -180, ClampMax = 180, Units = "deg"))
+	float LaserPitchMaxDegrees = 80.f;
+
+	/** Current LaserPivot pitch, in degrees (0 = straight down). */
+	float LaserPitch = 0.f;
+
+	/** Current AntennaMesh yaw relative to the base, in degrees, in [0, 360). */
+	float AntennaYaw = 0.f;
+
+	/** End of the beam last placed by UpdateLaser; UpdateParts re-places a visible beam from the moved emitter to it. */
+	FVector LaserBeamEnd = FVector::ZeroVector;
+
+	/**
+	 * Cutting laser: the single dig beam in Dig (from the emitter tip, GetLaserEmitterLocation, toward GetDigImpactPoint) and the link beam in Hack. Expected mesh: a cylinder along local Z with its
 	 * pivot at the center (the engine cylinder); size given by LaserMeshBaseHeight and LaserMeshBaseDiameter. Mesh and
 	 * material set in Blueprint. Uses an absolute transform, set every tick. No collision, no shadow.
 	 */
@@ -512,7 +596,7 @@ protected:
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Drone|Alive", meta = (ClampMin = 0, Units = "cm"))
 	float InterestSiteRadius = 500.f;
 
-	/** Speed at which the drone's yaw turns toward the point of interest (FMath::FInterpTo speed on the yaw delta): the delay of the look (task-249-01; provisional). */
+	/** Speed at which the drone's yaw turns toward the point of interest (FMath::FInterpTo speed on the yaw delta): the delay of the look (task-249-01; provisional). Outside Dig and Hack only, capped by BaseYawTurnRate (task-253-01). */
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Drone|Alive", meta = (ClampMin = 0))
 	float LookYawInterpSpeed = 6.f;
 
@@ -732,6 +816,6 @@ protected:
 	/** World point the drone looks at now: dig impact point in Dig, hack target in Hack, the miner during a nod, else the point of interest or the miner. Requires a valid miner. */
 	FVector GetLookTarget() const;
 
-	/** After the state tick: turns the yaw toward GetLookTarget (plus the scan sweep), tilts from the miner's acceleration (plus the nod), damped and clamped, and sets the actor rotation. Requires a valid miner. */
+	/** After the state tick: turns the yaw toward GetLookTarget (plus the scan sweep; Dig and Hack at BaseYawTurnRate, else the LookYawInterpSpeed delay capped by it), tilts from the miner's acceleration (plus the nod), damped and clamped, and sets the actor rotation. Requires a valid miner. */
 	void UpdateAttitude(float DeltaSeconds);
 };

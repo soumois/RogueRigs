@@ -217,6 +217,12 @@ namespace RRTestAccess
 			(Drone->*(&FDroneAccess::RestartPatrol))();
 		}
 		static ERRDroneIdleGesture IdleGestureOf(const ARRDrone* Drone) { return Drone->*(&FDroneAccess::IdleGesture); }
+		static const UStaticMeshComponent* LaserPivotOf(const ARRDrone* Drone) { return Drone->*(&FDroneAccess::LaserPivot); }
+		static const UStaticMeshComponent* AntennaOf(const ARRDrone* Drone) { return Drone->*(&FDroneAccess::AntennaMesh); }
+		static float BaseYawTurnRateOf(const ARRDrone* Drone) { return Drone->*(&FDroneAccess::BaseYawTurnRate); }
+		static float AntennaSpinSpeedOf(const ARRDrone* Drone) { return Drone->*(&FDroneAccess::AntennaSpinSpeed); }
+		static float LaserPitchMinOf(const ARRDrone* Drone) { return Drone->*(&FDroneAccess::LaserPitchMinDegrees); }
+		static float LaserPitchMaxOf(const ARRDrone* Drone) { return Drone->*(&FDroneAccess::LaserPitchMaxDegrees); }
 	};
 
 	/** ARREnemy: XP pickup class (tests drop ARRTestPickupXP) and the CSV stats copy. */

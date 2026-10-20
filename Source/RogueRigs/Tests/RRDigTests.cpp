@@ -601,7 +601,7 @@ namespace RRDigTests
 	}
 
 	/**
-	 * Single dig beam check (task-232-01): LaserMesh visible, from the drone to GetDigImpactPoint (within 0.5 uu); the impact point
+	 * Single dig beam check (task-232-01): LaserMesh visible, from the laser emitter (GetLaserEmitterLocation, task-253-01) to GetDigImpactPoint (within 0.5 uu); the impact point
 	 * is the mean of the dug cells' target points projected on the face of the nearest one (Y mean and X of that face for a wall
 	 * facing -X, as in these scenes).
 	 */
@@ -628,7 +628,8 @@ namespace RRDigTests
 		}
 		Test.AddInfo(FString::Printf(TEXT("%s: %d cells, one beam ending at %s (%.2f uu from the impact point)"), When, Cells.Num(), *End.ToCompactString(), FVector::Dist(End, Impact)));
 		Test.TestTrue(FString::Printf(TEXT("%s: beam visible"), When), Beam->IsVisible());
-		Test.TestTrue(FString::Printf(TEXT("%s: beam starts at the drone"), When), Start.Equals(Drone->GetActorLocation(), 0.5));
+		// task-253-01: the beam starts at the laser arm's emitter tip, no longer at the drone's centre.
+		Test.TestTrue(FString::Printf(TEXT("%s: beam starts at the laser emitter"), When), Start.Equals(Drone->GetLaserEmitterLocation(), 0.5));
 		Test.TestTrue(FString::Printf(TEXT("%s: beam ends at the impact point"), When), End.Equals(Impact, 0.5));
 		Test.TestTrue(FString::Printf(TEXT("%s: impact point = middle of the target points, on the wall face"), When),
 			Impact.Equals(FVector(FaceX, Mean.Y, Mean.Z), 0.01));
@@ -1286,11 +1287,13 @@ bool FRRDroneAliveTest::RunTest(const FString& Parameters)
 		{
 			return false;
 		}
-		// Rock wall x = 129: the 6 blocks break at frame 29-31; from frame 20 the yaw must face the dig impact point.
+		// Rock wall x = 129. task-253-01: the base turns at BaseYawTurnRate (120 deg/s) at most, so it needs up to 1.5 s to face the
+		// target; MiningSpeed 0.25 makes the 6 blocks last 2 s (frame about 120), and from frame 100 the yaw must face the impact point.
+		Miner->GetRRAbilitySystemComponent()->SetNumericAttributeBase(URRPlayerAttributeSet::GetMiningSpeedAttribute(), 0.25f);
 		double MaxError = 0.0;
 		double FirstError = 0.0;
 		int32 DigFrames = 0;
-		for (int32 Frame = 1; Frame <= 28; ++Frame)
+		for (int32 Frame = 1; Frame <= 115; ++Frame)
 		{
 			TestWorld.Tick();
 			if (Drone->GetState() != ERRDroneState::Dig)
@@ -1301,16 +1304,154 @@ bool FRRDroneAliveTest::RunTest(const FString& Parameters)
 			const double TargetYaw = FMath::RadiansToDegrees(FMath::Atan2(ToTarget.Y, ToTarget.X));
 			const double Error = FMath::Abs(FMath::FindDeltaAngleDegrees(Drone->GetActorRotation().Yaw, TargetYaw));
 			FirstError = Frame == 1 ? Error : FirstError;
-			if (Frame >= 20)
+			if (Frame >= 100)
 			{
 				++DigFrames;
 				MaxError = FMath::Max(MaxError, Error);
 			}
 		}
-		AddInfo(FString::Printf(TEXT("Dig: yaw error %.1f deg on frame 1, at most %.1f deg on frames 20-28 (%d frames in Dig)"), FirstError, MaxError, DigFrames));
-		TestEqual(TEXT("Dig sampled on frames 20-28"), DigFrames, 9);
+		AddInfo(FString::Printf(TEXT("Dig: yaw error %.1f deg on frame 1, at most %.1f deg on frames 100-115 (%d frames in Dig)"), FirstError, MaxError, DigFrames));
+		TestEqual(TEXT("Dig sampled on frames 100-115"), DigFrames, 16);
 		TestTrue(TEXT("Dig: yaw faces the dig target within 20 deg"), MaxError <= YawTolerance);
 	}
+	return true;
+}
+
+IMPLEMENT_SIMPLE_AUTOMATION_TEST(FRRDronePartsTest, "RogueRigs.Dig.DroneParts",
+	EAutomationTestFlags::EditorContext | EAutomationTestFlags::EngineFilter)
+
+bool FRRDronePartsTest::RunTest(const FString& Parameters)
+{
+	using namespace RRDigTests;
+
+	// task-253-01, headless check only (no capture, no mesh needed): the ArcContactDig scene (miner on (128, 115) against the wall
+	// x = 129) with MiningSpeed 0.25, so the 6 blocks last 2 s. During Dig the base yaw error to the impact point shrinks without a
+	// jump (never more than BaseYawTurnRate per second), the laser arm pitch points its emitter at the impact point within
+	// PitchTolerance once the yaw faces it, the antenna turns at AntennaSpinSpeed; back in Orbit the arm rests straight down.
+	constexpr double PitchTolerance = 10.0;
+	constexpr double ConvergedYawError = 2.0;
+	FTestWorld TestWorld;
+	ARRArenaGrid* Grid = nullptr;
+	ARRMiner* Miner = nullptr;
+	ARRDrone* Drone = SpawnArcDigScene(*this, TestWorld, FineRockWestFloorCell, Grid, Miner);
+	if (!Drone)
+	{
+		return false;
+	}
+	Miner->GetRRAbilitySystemComponent()->SetNumericAttributeBase(URRPlayerAttributeSet::GetMiningSpeedAttribute(), 0.25f);
+	const double MaxYawStep = FDroneAccess::BaseYawTurnRateOf(Drone) * FrameSeconds + 0.01;
+	const UStaticMeshComponent* Pivot = FDroneAccess::LaserPivotOf(Drone);
+	const UStaticMeshComponent* Antenna = FDroneAccess::AntennaOf(Drone);
+
+	auto YawError = [Drone]()
+	{
+		const FVector ToTarget = Drone->GetDigImpactPoint() - Drone->GetActorLocation();
+		const double TargetYaw = FMath::RadiansToDegrees(FMath::Atan2(ToTarget.Y, ToTarget.X));
+		return FMath::Abs(FMath::FindDeltaAngleDegrees(Drone->GetActorRotation().Yaw, TargetYaw));
+	};
+
+	int32 DigFrames = 0;
+	int32 JumpFrames = 0;
+	int32 GrowFrames = 0;
+	int32 ConvergedFrame = INDEX_NONE;
+	int32 PitchFrames = 0;
+	double FirstError = 0.0;
+	double MaxYawStepSeen = 0.0;
+	double MaxGrowth = 0.0;
+	double MaxErrorAfter = 0.0;
+	double MaxPitchError = 0.0;
+	double MinPitch = TNumericLimits<double>::Max();
+	double MaxPitch = TNumericLimits<double>::Lowest();
+	double AntennaTurn = 0.0;
+	double PreviousError = -1.0;
+	double PreviousYaw = Drone->GetActorRotation().Yaw;
+	double PreviousAntennaYaw = Antenna->GetRelativeRotation().Yaw;
+	constexpr int32 LastFrame = 115;
+	constexpr int32 AntennaFirstFrame = 40;
+	constexpr int32 AntennaLastFrame = 100;
+	for (int32 Frame = 1; Frame <= LastFrame; ++Frame)
+	{
+		TestWorld.Tick();
+		const double Yaw = Drone->GetActorRotation().Yaw;
+		const double AntennaYaw = Antenna->GetRelativeRotation().Yaw;
+		if (Frame > AntennaFirstFrame && Frame <= AntennaLastFrame)
+		{
+			AntennaTurn += FMath::FindDeltaAngleDegrees(PreviousAntennaYaw, AntennaYaw);
+		}
+		PreviousAntennaYaw = AntennaYaw;
+		const double YawStep = FMath::Abs(FMath::FindDeltaAngleDegrees(PreviousYaw, Yaw));
+		PreviousYaw = Yaw;
+		if (Drone->GetState() != ERRDroneState::Dig)
+		{
+			PreviousError = -1.0;
+			continue;
+		}
+		++DigFrames;
+		MaxYawStepSeen = FMath::Max(MaxYawStepSeen, YawStep);
+		JumpFrames += YawStep > MaxYawStep ? 1 : 0;
+		const double Error = YawError();
+		FirstError = DigFrames == 1 ? Error : FirstError;
+		if (ConvergedFrame == INDEX_NONE)
+		{
+			// Until it faces the target, the error may only shrink (the drone's own move shifts the target direction a little).
+			if (PreviousError >= 0.0 && Error > PreviousError + 0.25)
+			{
+				++GrowFrames;
+			}
+			MaxGrowth = PreviousError >= 0.0 ? FMath::Max(MaxGrowth, Error - PreviousError) : MaxGrowth;
+			ConvergedFrame = Error <= ConvergedYawError ? Frame : INDEX_NONE;
+		}
+		else
+		{
+			MaxErrorAfter = FMath::Max(MaxErrorAfter, Error);
+		}
+		PreviousError = Error;
+
+		// Laser arm: from 20 frames after the yaw faces the target (the pitch turns at 240 deg/s), the pivot-to-emitter axis
+		// must point along the emitter-to-impact direction.
+		if (ConvergedFrame != INDEX_NONE && Frame >= ConvergedFrame + 20)
+		{
+			++PitchFrames;
+			const FVector Emitter = Drone->GetLaserEmitterLocation();
+			const FVector ArmAxis = (Emitter - Pivot->GetComponentLocation()).GetSafeNormal();
+			const FVector ToImpact = (Drone->GetDigImpactPoint() - Emitter).GetSafeNormal();
+			const double PitchError = FMath::RadiansToDegrees(FMath::Acos(FMath::Clamp(FVector::DotProduct(ArmAxis, ToImpact), -1.0, 1.0)));
+			MaxPitchError = FMath::Max(MaxPitchError, PitchError);
+			const double Pitch = Pivot->GetRelativeRotation().Pitch;
+			MinPitch = FMath::Min(MinPitch, Pitch);
+			MaxPitch = FMath::Max(MaxPitch, Pitch);
+		}
+	}
+	CheckDigBeam(*this, Drone, TEXT("frame 115"));
+	AddInfo(FString::Printf(TEXT("Dig: %d frames; yaw error %.1f deg on the first, within %.0f deg on frame %d (%.2f s), at most %.1f deg after; largest yaw step %.2f deg (cap %.2f), %d jumps, %d growing frames (largest growth %.2f deg)"),
+		DigFrames, FirstError, ConvergedYawError, ConvergedFrame, ConvergedFrame * FrameSeconds, MaxErrorAfter, MaxYawStepSeen, MaxYawStep, JumpFrames, GrowFrames, MaxGrowth));
+	AddInfo(FString::Printf(TEXT("Laser arm: %d frames checked, pitch %.1f..%.1f deg from straight down, emitter axis at most %.2f deg off the impact direction"),
+		PitchFrames, MinPitch, MaxPitch, MaxPitchError));
+	const double ExpectedAntennaTurn = FDroneAccess::AntennaSpinSpeedOf(Drone) * (AntennaLastFrame - AntennaFirstFrame) * FrameSeconds;
+	AddInfo(FString::Printf(TEXT("Antenna: turned %.2f deg in %.2f s (expected %.2f)"), AntennaTurn, (AntennaLastFrame - AntennaFirstFrame) * FrameSeconds, ExpectedAntennaTurn));
+
+	TestEqual(TEXT("Dig on every frame"), DigFrames, LastFrame);
+	TestEqual(TEXT("base yaw never jumps (at most BaseYawTurnRate per second)"), JumpFrames, 0);
+	TestEqual(TEXT("base yaw error never grows before it faces the target"), GrowFrames, 0);
+	TestTrue(TEXT("base yaw faces the target before the blocks break"), ConvergedFrame != INDEX_NONE && ConvergedFrame <= 95);
+	TestTrue(TEXT("base yaw keeps facing the target"), MaxErrorAfter <= 5.0);
+	TestTrue(TEXT("laser arm checked on at least 10 frames"), PitchFrames >= 10);
+	TestTrue(TEXT("laser arm aims its emitter at the impact point within 10 deg"), MaxPitchError <= PitchTolerance);
+	TestTrue(TEXT("laser arm pitch inside its range"), MinPitch >= FDroneAccess::LaserPitchMinOf(Drone) - 0.01 && MaxPitch <= FDroneAccess::LaserPitchMaxOf(Drone) + 0.01);
+	TestTrue(TEXT("antenna turns at AntennaSpinSpeed (within 1 deg)"), FMath::Abs(AntennaTurn - ExpectedAntennaTurn) <= 1.0);
+
+	// Blocks break around frame 120; back in Orbit the arm returns straight down within 0.5 s.
+	TArray<int32> DestroyFrames;
+	const TArray<FIntPoint> Remaining = Drone->GetDigCells();
+	TickUntilDestroyed(TestWorld, Grid, Remaining, 60, DestroyFrames);
+	for (int32 Frame = 0; Frame < 30; ++Frame)
+	{
+		TestWorld.Tick();
+	}
+	AddInfo(FString::Printf(TEXT("Orbit: laser arm pitch %.2f deg, beam visible %d"), Pivot->GetRelativeRotation().Pitch, FDroneAccess::Laser(Drone)->IsVisible() ? 1 : 0));
+	TestEqual(TEXT("back to Orbit"), Drone->GetState(), ERRDroneState::Orbit);
+	TestTrue(TEXT("Orbit: laser arm straight down"), FMath::Abs(Pivot->GetRelativeRotation().Pitch) <= 0.01);
+	TestFalse(TEXT("Orbit: beam hidden"), FDroneAccess::Laser(Drone)->IsVisible());
 	return true;
 }
 

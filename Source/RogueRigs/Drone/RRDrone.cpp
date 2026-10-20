@@ -31,6 +31,23 @@ ARRDrone::ARRDrone()
 	Mesh->SetCanEverAffectNavigation(false);
 	RootComponent = Mesh;
 
+	// Animated parts (task-253-01): relative to the base, offsets read from the mesh bounds in Unreal axes (bp-drone-materials).
+	LaserPivot = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("LaserPivot"));
+	LaserPivot->SetupAttachment(Mesh);
+	LaserPivot->SetRelativeLocation(FVector(1.606, 0.0, -17.248));
+	LaserPivot->SetCollisionProfileName(UCollisionProfile::NoCollision_ProfileName);
+	LaserPivot->SetGenerateOverlapEvents(false);
+	LaserPivot->SetCanEverAffectNavigation(false);
+	LaserPivot->SetCastShadow(false);
+
+	AntennaMesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("AntennaMesh"));
+	AntennaMesh->SetupAttachment(Mesh);
+	AntennaMesh->SetRelativeLocation(FVector(-4.257, -0.837, 28.752));
+	AntennaMesh->SetCollisionProfileName(UCollisionProfile::NoCollision_ProfileName);
+	AntennaMesh->SetGenerateOverlapEvents(false);
+	AntennaMesh->SetCanEverAffectNavigation(false);
+	AntennaMesh->SetCastShadow(false);
+
 	// The laser is placed in world space every Dig tick, so it ignores the drone's transform.
 	LaserMesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("LaserMesh"));
 	LaserMesh->SetupAttachment(Mesh);
@@ -506,6 +523,69 @@ void ARRDrone::Tick(float DeltaSeconds)
 	{
 		UpdateAttitude(DeltaSeconds);
 	}
+
+	// Parts after the base rotation (task-253-01), so the laser pitch and the beam start use this frame's attitude.
+	if (DeltaSeconds > 0.f)
+	{
+		UpdateParts(DeltaSeconds);
+	}
+}
+
+FVector ARRDrone::GetLaserEmitterLocation() const
+{
+	return LaserPivot->GetComponentTransform().TransformPosition(LaserEmitterLocal);
+}
+
+bool ARRDrone::GetLaserAimPoint(FVector& OutPoint) const
+{
+	OutPoint = FVector::ZeroVector;
+	if (State == ERRDroneState::Dig)
+	{
+		OutPoint = GetDigImpactPoint();
+		return !OutPoint.IsZero();
+	}
+	if (State == ERRDroneState::Hack && IsValid(HackTarget))
+	{
+		OutPoint = HackTarget->GetActorLocation() + HackLinkOffset;
+		return true;
+	}
+	return false;
+}
+
+float ARRDrone::ComputeLaserPitchToward(const FVector& Point) const
+{
+	// In the base frame (yaw and tilt removed), from the pivot: pitch P turns the arm's down axis to (sin P, 0, -cos P).
+	const FVector Local = GetActorTransform().InverseTransformPosition(Point) - LaserPivot->GetRelativeLocation();
+	const double AimDegrees = FMath::RadiansToDegrees(FMath::Atan2(Local.X, -Local.Z));
+	// The emitter tip sits slightly off the arm's axis: aim the pivot-to-emitter line, not the axis.
+	const double EmitterDegrees = FMath::RadiansToDegrees(FMath::Atan2(LaserEmitterLocal.X, -LaserEmitterLocal.Z));
+	return static_cast<float>(AimDegrees - EmitterDegrees);
+}
+
+void ARRDrone::UpdateParts(float DeltaSeconds)
+{
+	// Antenna: continuous spin, whatever the state (visual only).
+	AntennaYaw = FMath::Fmod(AntennaYaw + AntennaSpinSpeed * DeltaSeconds, 360.f);
+	AntennaYaw = AntennaYaw < 0.f ? AntennaYaw + 360.f : AntennaYaw;
+	AntennaMesh->SetRelativeRotation(FRotator(0.f, AntennaYaw, 0.f));
+
+	// Laser arm: toward the aim point in Dig and Hack, straight down in Orbit; clamped, at a limited rate.
+	FVector AimPoint;
+	float TargetPitch = 0.f;
+	if (GetLaserAimPoint(AimPoint))
+	{
+		TargetPitch = ComputeLaserPitchToward(AimPoint);
+	}
+	TargetPitch = FMath::Clamp(TargetPitch, LaserPitchMinDegrees, FMath::Max(LaserPitchMinDegrees, LaserPitchMaxDegrees));
+	const float MaxStep = FMath::Max(0.f, LaserPitchTurnRate) * DeltaSeconds;
+	LaserPitch += FMath::Clamp(TargetPitch - LaserPitch, -MaxStep, MaxStep);
+	LaserPivot->SetRelativeRotation(FRotator(LaserPitch, 0.f, 0.f));
+
+	// The beam was placed in the state tick from the emitter of the previous attitude: start it at the moved emitter.
+	if (State != ERRDroneState::Orbit && LaserMesh->IsVisible())
+	{
+		UpdateLaser(LaserMesh, GetLaserEmitterLocation(), LaserBeamEnd);
+	}
 }
 
 void ARRDrone::ResetIdleGestureCountdown()
@@ -699,8 +779,13 @@ void ARRDrone::UpdateAttitude(float DeltaSeconds)
 		const float Progress = FMath::Clamp(IdleGestureTime / FMath::Max(ScanSweepDuration, 0.1f), 0.f, 1.f);
 		TargetYaw += ScanSweepDegrees * FMath::Sin(UE_TWO_PI * Progress);
 	}
+	// task-253-01: the base never turns instantly. Dig and Hack turn at the constant BaseYawTurnRate; the other interests keep the
+	// task-249-01 delay, capped by the same rate (a switch of interest no longer whips the base around).
 	const float YawDelta = FMath::FindDeltaAngleDegrees(LookYaw, TargetYaw);
-	LookYaw = FRotator::NormalizeAxis(LookYaw + FMath::FInterpTo(0.f, YawDelta, DeltaSeconds, LookYawInterpSpeed));
+	const float MaxYawStep = FMath::Max(0.f, BaseYawTurnRate) * DeltaSeconds;
+	const bool bWorkTarget = State == ERRDroneState::Dig || State == ERRDroneState::Hack;
+	const float YawStep = bWorkTarget ? YawDelta : FMath::FInterpTo(0.f, YawDelta, DeltaSeconds, LookYawInterpSpeed);
+	LookYaw = FRotator::NormalizeAxis(LookYaw + FMath::Clamp(YawStep, -MaxYawStep, MaxYawStep));
 
 	// Miner acceleration on XY, smoothed; a teleport spike is clamped first.
 	const FVector MinerVelocity = OwnerMiner->GetVelocity();
@@ -1141,7 +1226,7 @@ void ARRDrone::TickHack(float DeltaSeconds)
 	const FVector ClearHover = ResolveClearHoverPoint(Grid, FVector(HoverPoint.X, HoverPoint.Y, FloorZ + HoverHeight));
 	const FVector From = GetActorLocation();
 	SetActorLocation(ConstrainToClearCells(Grid, From, FMath::VInterpTo(From, ClearHover, DeltaSeconds, FollowInterpSpeed)));
-	UpdateLaser(LaserMesh, GetActorLocation(), TargetLocation + HackLinkOffset);
+	UpdateLaser(LaserMesh, GetLaserEmitterLocation(), TargetLocation + HackLinkOffset);
 }
 
 void ARRDrone::EndHack()
@@ -1164,6 +1249,7 @@ void ARRDrone::ResumeOrbit()
 
 void ARRDrone::UpdateLaser(UStaticMeshComponent* Beam, const FVector& Start, const FVector& End)
 {
+	LaserBeamEnd = End;
 	const FVector Delta = End - Start;
 	const double Length = Delta.Size();
 	if (Length <= UE_KINDA_SMALL_NUMBER)
@@ -1189,7 +1275,7 @@ void ARRDrone::UpdateDigLaser()
 		LaserMesh->SetVisibility(false);
 		return;
 	}
-	UpdateLaser(LaserMesh, GetActorLocation(), GetDigImpactPoint());
+	UpdateLaser(LaserMesh, GetLaserEmitterLocation(), GetDigImpactPoint());
 }
 
 void ARRDrone::UpdateDigImpact(float DeltaSeconds)
