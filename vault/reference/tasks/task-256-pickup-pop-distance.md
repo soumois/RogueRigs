@@ -3,7 +3,7 @@ id: task-256-pickup-pop-distance
 description: "Global task: Ore and heal pickups land close enough to be collected without moving: PopMaxDistance lowered."
 parent: tasks-to-do-index
 kind: task
-status: todo
+status: in-progress
 ---
 # Ore pickup pop distance
 
