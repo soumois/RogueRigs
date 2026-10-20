@@ -251,3 +251,4 @@ Archive: it exceeds the index size limits of [[_authoring]] on purpose (owner, 2
 - [[task-242-number-arc]] — Damage numbers are thrown in an arc (gravity) instead of rising in a straight line; peak about 60 uu, lifetime unchanged at 0.7 s. Status done.
 - [[task-243-card-deal-flip]] — Level-up cards arrive face down in a fan (ease-out-back from below), then flip one by one; a card back exists in one version per rarity. Status done.
 - [[task-244-card-rarity-suspense]] — From purple up, the card flips last: its back glows, the other cards darken, then punch, flash and rays in the tier colour. Status done.
+- [[task-245-card-hover-reaction]] — Hovering a card tilts it toward the pointer (about 4 degrees), scales it to 1.06 and sweeps a sheen across the higher tiers. Status done.

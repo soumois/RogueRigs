@@ -3,7 +3,7 @@ id: task-246-01-card-pick-destination
 description: "Create the dissolve (burn) material and instance for the discarded cards in /Game/RogueRigs/UI, with its doc node."
 parent: task-246-card-pick-destination
 kind: task
-status: todo
+status: in-progress
 ---
 # 246-01 bp
 

@@ -3,7 +3,7 @@ id: task-246-card-pick-destination
 description: "Global task: The chosen card icon flies to the HUD slot of its weapon, splits to every owned slot for an all-weapons upgrade, flies to the XP bar for a player stat; the other cards dissolve."
 parent: tasks-to-do-index
 kind: task
-status: todo
+status: in-progress
 ---
 # Card pick destination
 
