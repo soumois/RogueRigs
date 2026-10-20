@@ -12,7 +12,7 @@ status: approved
 
 ## States
 - **Orbit:** escorts the miner by default (owner 2026-10-20, replaces the circle; the state keeps its name): it holds a slot near the miner's shoulder; when the miner moves the slot slides behind and to the side of the movement direction; at rest the drone traces a slow horizontal figure-eight around the slot. It follows with a light spring: a little lag, a small overshoot when the miner stops.
-- **Dig:** when the miner stands against rock (contact is enough, no need to push), the drone cuts an arc of blocks in front of the miner, several at once like DRGS (owner 2026-10-06). It stays right next to the miner.
+- **Dig:** when the miner stands against rock (contact is enough, no need to push), the drone cuts an arc of blocks in front of the miner, several at once like DRGS (owner 2026-10-06). It stays right next to the miner, on the free side of the wall (see Walls).
 - **Hack:** inside an objective zone, it links to the command console ([[objective-console]]) or a bonus chest ([[objective-bonus-chest]]). It hacks one target at a time.
 - It cannot dig and hack at the same time.
 
@@ -23,6 +23,7 @@ status: approved
 - Dig trigger and cancel (provisional, 2026-10-06): the miner touching rock starts the dig of the blocks in the arc; a block keeps being cut while it stays in the arc and stops when the miner moves away; damage done stays on the block, so digging it again resumes. Pushing is only needed to walk to the next wall.
 - Laser color: red (owner decision, 2026-10-01; the built laser and the Look line below use white-gold: open, to confirm in play), against [[color-code]] (white-gold) and [[readability-rules]] (red = enemy fire or healing); check readability once the shooter's red targeting laser exists.
 - Orbit escort (provisional, owner 2026-10-20, [[task-247-drone-escort-movement]]): slot 110-140 uu from the miner (125 uu), at the shoulder at rest, behind and to the side when moving; rest figure-eight period about 6 s; height 150 uu above the floor with a light bob (wider height variety: task-249). Grey box: a 40 uu sphere.
+- Walls (provisional, owner 2026-10-20, [[task-248-drone-no-flight-over-walls]]): the drone never hovers over a block. In Orbit it takes the nearest free slot to the ideal one (also 45° or 90° either side, or straight behind the miner) with a clear line from the miner, else it hovers just above the miner, a little higher; it changes slot at most every 0.3 s so it does not hesitate on a corner. While digging it hovers on the free side of the wall, about 90 uu from the face and 130 uu above the floor; while hacking its hover point must be free too, else it comes back toward the miner.
 - Can it be hit or destroyed: open.
 - Look: small, white + teal + rust; white-gold laser ([[color-code]]).
 - Milestone: M1.
