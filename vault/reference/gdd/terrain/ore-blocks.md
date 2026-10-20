@@ -21,6 +21,9 @@ status: approved
 
 - Vein shake (owner 2026-10-07 fifth test): all blocks of a vein being mined shake together.
 
+- Pulse desync (owner 2026-10-20, provisional): Duskite crystals and pickups do not pulse together: each gets a seeded random phase and a pulse rate within +-20 percent ([[sys-grid-deposits]]).
+
 ## Relations
 - [[terrain-index]] — parent index.
 - [[explosions]] — destroy every block in the radius, ore included.
+- [[sys-grid-deposits]] — crystal pulse data (seeded phase and rate).

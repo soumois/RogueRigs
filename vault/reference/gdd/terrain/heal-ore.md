@@ -21,6 +21,9 @@ status: approved
 
 - Vein shake (owner 2026-10-07 fifth test): while a vein is mined, all its blocks shake together, not only those in the drone arc.
 
+- Pulse desync (owner 2026-10-20, provisional): heal crystals and heal pickups do not pulse together: each gets a seeded random phase and a pulse rate within +-20 percent ([[sys-grid-deposits]]).
+
 ## Relations
 - [[terrain-index]] — parent index.
 - [[destruction-rules]] — what can break it.
+- [[sys-grid-deposits]] — crystal pulse data (seeded phase and rate).

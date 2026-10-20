@@ -13,6 +13,7 @@ kind: doc
 - look (task-234-03): a deposit of a type with deposit meshes is drawn as one crystal formation (variant and quarter turn hashed from its id), removed at its first broken block; rule and properties in [[sys-grid-rock-damage]].
 
 - pulse data (task-257-01): the crystal material M_XPNutGlow reads per-instance custom data index 4 = pulse phase (turns, 0..1, neutral 0) and 5 = pulse rate (scale of PulseFrequency, neutral 1) on the deposit crystal ISMs; indices 0 (console mark) and 1-3 (ore colour) are unchanged, so those components need NumCustomDataFloats of at least 6 ([[bp-pickup-xp]]).
+- pulse desync (task-257-02, owner 2026-10-20, provisional): `ARRArenaGrid` properties (`EditDefaultsOnly`, category `Grid|Ore Deposits`) `PulseSeed` 1, `PulseRateMin` 0.8, `PulseRateMax` 1.2, `PulsePhaseCustomDataIndex` 4, `PulseRateCustomDataIndex` 5. The Ore and HealOre templates are sized to at least max(4, 5) + 1 = 6 floats (`GetCrystalPulseFloatCount`), so the per-cell cluster chunks and the deposit formation ISMs (`BuildDepositCrystals`, now max of template, marked + 1 and 6) have 6 floats; indices 0 (mark) and 1-3 (colour) unchanged. Each formation instance gets phase = `FRRPulseDesync::Phase(PulseSeed, DepositDomain, deposit id)` (uniform in [0, 1) turns) and rate = `FRRPulseDesync::Rate(..., 0.8, 1.2)` (uniform), written once at build (`WriteCrystalPulseData`; the data follows the instance through remove-at-swap); per-cell clusters (a type with an empty deposit mesh list) use the cell index in `CellDomain` (`WriteCellCrystalPulseData`). `FRRPulseDesync` (`Pickups/RRPulseDesync.h`) is a pure integer hash (lowbias32), never the global FMath stream: same layout and seed, same pulses on every run. The pickups use the same helper ([[sys-pickups-lifecycle]]). Check: `RogueRigs.PulseDesync.SeededValues` ([[sys-tests-pools-pickups]]). Unverified: the look on screen (no capture).
 
 ## Relations
 - [[sys-grid]] — parent hub: summary and verdict.
@@ -21,4 +22,7 @@ kind: doc
 - [[heal-ore]] — referenced above.
 - [[sys-objectives]] — referenced above.
 - [[sys-pickups]] — referenced above.
+- [[sys-pickups-lifecycle]] — the pickup side of the pulse desync.
+- [[sys-tests-pools-pickups]] — the pulse desync check.
+- [[bp-pickup-xp]] — the M_XPNutGlow inputs the pulse data feeds.
 - [[sys-tests-dig-ore]] — `Ore.HealVein` and the pickup left beyond the radius (task-250-01).
