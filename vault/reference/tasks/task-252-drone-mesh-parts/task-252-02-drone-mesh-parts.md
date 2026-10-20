@@ -3,7 +3,7 @@ id: task-252-02-drone-mesh-parts
 description: "Model the parabolic dish with its stem as a separate part, in the look of the validated image."
 parent: task-252-drone-mesh-parts
 kind: task
-status: todo
+status: in-progress
 ---
 # Drone parabolic dish
 

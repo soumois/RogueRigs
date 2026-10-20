@@ -3,7 +3,7 @@ id: task-252-01-drone-mesh-parts
 description: "The Meshy drone is cleaned, split into base, laser and a modelled parabolic dish, and imported in Unreal with its material."
 parent: task-252-drone-mesh-parts
 kind: task
-status: in-progress
+status: done
 ---
 # Drone mesh in parts
 
@@ -15,11 +15,11 @@ status: in-progress
 - done_when: DroneBase and DroneLaser FBX exist with pivots (laser: pitch pivot at its top), at most 6 000 triangles together, FBX_SCALE_UNITS, cut check by numbers, Blender processes stopped; image and zip stored; art-prompts-drone node written; renders sent to the owner.
 - editor_state: not needed (Blender headless)
 - token_ceiling: 150k
-- model: open
-- tokens: open
-- runs: open
+- model: sonnet
+- tokens: input 88, cache write 175041, cache read 4993093, output 32115
+- runs: 1
 - milestone: M1
-- result: open
+- result: Meshy drone stored (vault/assets/drone-turnaround.webp, Art/Source/drone-meshy/), node art-prompts-drone; game-ready (cm, 70 cm wide, front +X, flat shading) and cut into SM_DroneBase (4556 tris) and SM_DroneLaser (754 tris), 5310 total; cut checked by numbers (0 holes added, reassembly within 8e-6 cm, UV error 0). Laser pivot (1.606, 0, -17.248) on the neck, pitch about Y; stem top (-4.257, 0.837, 28.752). Renders sent to the owner. Not tried in Unreal.
 
 ## Relations
 - [[task-252-drone-mesh-parts]] — parent global task.
