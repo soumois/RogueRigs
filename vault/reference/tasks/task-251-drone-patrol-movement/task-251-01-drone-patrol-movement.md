@@ -3,7 +3,7 @@ id: task-251-01-drone-patrol-movement
 description: "The drone patrols a point inside the miner zone and follows it with a spring (faster when far, slower when near); the point changes when reached or every 3.5-5 s; wall rules are kept."
 parent: task-251-drone-patrol-movement
 kind: task
-status: todo
+status: in-progress
 ---
 # Drone patrol movement
 

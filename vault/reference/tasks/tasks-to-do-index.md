@@ -14,7 +14,7 @@ A global task moves to [[tasks-done-index]] when it is done (`vault/scripts/task
 - [[task-230-rock-slab-integration]] — Dual-grid slab rock look in the grid: pieces, world-UV top texture, cracks, plates, crystals. Status in-progress.
 - [[task-234-ore-deposit-look]] — Each 2 x 2 ore or heal deposit is drawn as one crystal formation, at least 3 variants per type, from images the owner generates with prompts we write. Status in-progress.
 - [[task-250-fix-heal-vein-test]] — RogueRigs.Ore.HealVein passes again: find why only 3 of 4 heal pickups are collected (health 55 instead of 70) and fix the cause, in the game if it breaks the heal ore rule, in the test if only its expectation is outdated. Status todo.
-- [[task-251-drone-patrol-movement]] — The drone patrols a point inside the miner zone and follows it with a spring (faster when far, slower when near); the point changes when reached or every 3.5-5 s; wall rules are kept. Status todo.
+- [[task-251-drone-patrol-movement]] — The drone patrols a point inside the miner zone and follows it with a spring (faster when far, slower when near); the point changes when reached or every 3.5-5 s; wall rules are kept. Status in-progress.
 - [[task-252-drone-mesh-parts]] — The Meshy drone is cleaned, split into base, laser and a modelled parabolic dish, and imported in Unreal with its material. Status todo.
 - [[task-253-drone-parts-animation]] — The drone has three animated parts: the antenna spins, the base turns slowly toward the mining spot and the laser pivots in height. Status todo.
 - [[task-254-drone-thruster-particles]] — Two engine particles, one per side pod, driven by the drone speed. Status todo.
