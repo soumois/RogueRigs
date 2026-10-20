@@ -23,6 +23,7 @@
 #include "Misc/Paths.h"
 #include "Pickups/RRPickup.h"
 #include "Pickups/RRPickupSubsystem.h"
+#include "Pickups/RRPulseDesync.h"
 #include "Run/RRRunSubsystem.h"
 #include "Telegraph/RRGroundTelegraphComponent.h"
 #include "UObject/ConstructorHelpers.h"
@@ -803,6 +804,11 @@ void ARRArenaGrid::BuildInstances()
 				{
 					Template->SetNumCustomDataFloats(BarrelFuseCustomDataIndex + 1);
 				}
+				// Room for the crystal pulse phase and rate (task-257-02) on ore and heal ore: per-cell clusters and deposit formations copy it.
+				if ((Asset.MapKey == ERRCellType::Ore || Asset.MapKey == ERRCellType::HealOre) && Template->NumCustomDataFloats < GetCrystalPulseFloatCount())
+				{
+					Template->SetNumCustomDataFloats(GetCrystalPulseFloatCount());
+				}
 			}
 		}
 		if (UInstancedStaticMeshComponent* CollisionTemplate = GetTemplateCollisionComponent(Asset.MapKey))
@@ -926,6 +932,7 @@ void ARRArenaGrid::BuildInstances()
 
 	BuildCornerPieces();
 	WriteDepositColors();
+	WriteCellCrystalPulseData();
 	BuildDepositCrystals();
 }
 
@@ -1554,7 +1561,8 @@ void ARRArenaGrid::BuildDepositCrystals()
 					Component->SetMaterial(Slot, Material);
 				}
 			}
-			Component->SetNumCustomDataFloats(FMath::Max(Template->NumCustomDataFloats, MarkedCustomDataIndex + 1));
+			// Marked 0, ore colour 1-3 and the pulse phase and rate 4-5 (task-257-02): at least 6 floats.
+			Component->SetNumCustomDataFloats(FMath::Max3(Template->NumCustomDataFloats, MarkedCustomDataIndex + 1, GetCrystalPulseFloatCount()));
 			// Rendering only: collision stays one cube per cell in the collision ISMs.
 			Component->SetCollisionEnabled(ECollisionEnabled::NoCollision);
 			Component->SetCollisionProfileName(UCollisionProfile::NoCollision_ProfileName);
@@ -1582,6 +1590,8 @@ void ARRArenaGrid::BuildDepositCrystals()
 				DepositCrystalVisual[Visual.InstanceDeposits[Instance]] = VisualIndex;
 				DepositCrystalInstance[Visual.InstanceDeposits[Instance]] = Instance;
 				WriteDepositCrystalData(Visual.InstanceDeposits[Instance], /*bMarkDirty*/ false);
+				// Pulse data written once: it follows the instance through remove-at-swap (the ISM swaps whole custom data blocks).
+				WriteCrystalPulseData(Component, Instance, FRRPulseDesync::DepositDomain, static_cast<uint32>(Visual.InstanceDeposits[Instance]));
 			}
 			Component->MarkRenderStateDirty();
 		}
@@ -1653,6 +1663,42 @@ void ARRArenaGrid::WriteDepositCrystalData(int32 DepositId, bool bMarkDirty)
 		Component->SetCustomDataValue(Instance, OreColorCustomDataIndex + 2, Deposit.Color.B, /*bMarkRenderStateDirty*/ false);
 	}
 	if (bMarkDirty)
+	{
+		Component->MarkRenderStateDirty();
+	}
+}
+
+void ARRArenaGrid::WriteCrystalPulseData(UInstancedStaticMeshComponent* Component, int32 Instance, uint32 Domain, uint32 Id)
+{
+	if (!Component || Instance == INDEX_NONE || Component->NumCustomDataFloats < GetCrystalPulseFloatCount())
+	{
+		return;
+	}
+	Component->SetCustomDataValue(Instance, PulsePhaseCustomDataIndex, FRRPulseDesync::Phase(PulseSeed, Domain, Id), /*bMarkRenderStateDirty*/ false);
+	Component->SetCustomDataValue(Instance, PulseRateCustomDataIndex, FRRPulseDesync::Rate(PulseSeed, Domain, Id, PulseRateMin, PulseRateMax), /*bMarkRenderStateDirty*/ false);
+}
+
+void ARRArenaGrid::WriteCellCrystalPulseData()
+{
+	TSet<UHierarchicalInstancedStaticMeshComponent*> Dirty;
+	for (int32 Index = 0; Index < Cells.Num(); ++Index)
+	{
+		const ERRCellType Type = Cells[Index];
+		if ((Type != ERRCellType::Ore && Type != ERRCellType::HealOre) || CellInstanceIndex[Index] == INDEX_NONE)
+		{
+			continue;
+		}
+		const FIntPoint Cell(Index % GridWidth, Index / GridWidth);
+		// Only per-cell clusters have a render HISM (types with deposit meshes have collision only: GetCellRenderComponent is null).
+		UHierarchicalInstancedStaticMeshComponent* Component = GetCellRenderComponent(Cell);
+		if (!Component)
+		{
+			continue;
+		}
+		WriteCrystalPulseData(Component, CellInstanceIndex[Index], FRRPulseDesync::CellDomain, static_cast<uint32>(Index));
+		Dirty.Add(Component);
+	}
+	for (UHierarchicalInstancedStaticMeshComponent* Component : Dirty)
 	{
 		Component->MarkRenderStateDirty();
 	}

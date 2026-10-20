@@ -67,6 +67,10 @@ namespace RRTestAccess
 		static TObjectPtr<UMaterialInterface>& OreDepositMaterialOf(ARRArenaGrid* Grid) { return Grid->*(&FGridAccess::OreDepositMaterial); }
 		static FName& DepositCrystalSlotNameOf(ARRArenaGrid* Grid) { return Grid->*(&FGridAccess::DepositCrystalSlotName); }
 		static const TArray<FRRGridDepositVisual>& DepositVisualsOf(const ARRArenaGrid* Grid) { return Grid->*(&FGridAccess::DepositVisuals); }
+		static int32 PulseSeedOf(const ARRArenaGrid* Grid) { return Grid->*(&FGridAccess::PulseSeed); }
+		static FVector2f PulseRateRangeOf(const ARRArenaGrid* Grid) { return FVector2f(Grid->*(&FGridAccess::PulseRateMin), Grid->*(&FGridAccess::PulseRateMax)); }
+		static int32 PulsePhaseIndexOf(const ARRArenaGrid* Grid) { return Grid->*(&FGridAccess::PulsePhaseCustomDataIndex); }
+		static int32 PulseRateIndexOf(const ARRArenaGrid* Grid) { return Grid->*(&FGridAccess::PulseRateCustomDataIndex); }
 		static bool UsesDepositCrystalsOf(const ARRArenaGrid* Grid, ERRCellType Type) { return (Grid->*(&FGridAccess::UsesDepositCrystals))(Type); }
 		static FTransform DepositCrystalRestOf(const ARRArenaGrid* Grid, int32 DepositId) { return (Grid->*(&FGridAccess::GetDepositCrystalTransform))(DepositId); }
 
@@ -293,6 +297,10 @@ namespace RRTestAccess
 	{
 		static const FVector& PopStartOf(const ARRPickup* Pickup) { return Pickup->*(&FPickupAccess::PopStart); }
 		static ERRPickupRestOrientation RestOrientationOf(const ARRPickup* Pickup) { return Pickup->*(&FPickupAccess::RestOrientation); }
+		static int32 PulseSeedOf(const ARRPickup* Pickup) { return Pickup->*(&FPickupAccess::PulseSeed); }
+		static FVector2f PulseRateRangeOf(const ARRPickup* Pickup) { return FVector2f(Pickup->*(&FPickupAccess::PulseRateMin), Pickup->*(&FPickupAccess::PulseRateMax)); }
+		static int32 PulsePhaseIndexOf(const ARRPickup* Pickup) { return Pickup->*(&FPickupAccess::PulsePhaseDataIndex); }
+		static int32 PulseRateIndexOf(const ARRPickup* Pickup) { return Pickup->*(&FPickupAccess::PulseRateDataIndex); }
 	};
 
 	/** ARRGameMode: the restart delay. */

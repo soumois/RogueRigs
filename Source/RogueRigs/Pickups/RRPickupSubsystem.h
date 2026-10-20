@@ -106,6 +106,12 @@ public:
 	 */
 	UPhysicalMaterial* FindOrAddPhysicalMaterial(TSubclassOf<ARRPickup> PickupClass);
 
+	/**
+	 * Next pulse spawn id of this world (task-257-02): 0, 1, 2... in the order Ore and Heal pickup lives start (fresh spawn or
+	 * pool reuse), so the same seed and the same spawn order give the same pulse values. Called by ARRPickup::StartLife.
+	 */
+	int32 DrawPulseSpawnId() { return PulseSpawnCounter++; }
+
 	/** Moves every pickup. */
 	virtual void Tick(float DeltaTime) override;
 
@@ -156,6 +162,9 @@ protected:
 
 	/** See GetTotalXPCubesRequested. */
 	int32 TotalXPCubesRequested = 0;
+
+	/** Next value returned by DrawPulseSpawnId (starts at 0 with the world). */
+	int32 PulseSpawnCounter = 0;
 
 	/** Registered pickups; entries nulled during the loop are compacted after it. */
 	UPROPERTY(Transient)

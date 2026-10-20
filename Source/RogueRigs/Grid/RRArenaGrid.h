@@ -849,6 +849,18 @@ protected:
 	/** Writes the marked float (MarkedCustomDataValue when one standing block of the deposit is marked, else 0) and the ore colour (when the deposit has one) into the crystal of DepositId; marks the ISM render state dirty when bMarkDirty. */
 	void WriteDepositCrystalData(int32 DepositId, bool bMarkDirty);
 
+	/** Custom data floats a crystal ISM needs for the pulse data: max(PulsePhaseCustomDataIndex, PulseRateCustomDataIndex) + 1 (6 by default). */
+	int32 GetCrystalPulseFloatCount() const { return FMath::Max(PulsePhaseCustomDataIndex, PulseRateCustomDataIndex) + 1; }
+
+	/**
+	 * task-257-02: writes FRRPulseDesync phase and rate of (PulseSeed, Domain, Id) to Instance of Component at
+	 * PulsePhaseCustomDataIndex / PulseRateCustomDataIndex (no render state dirty; skipped when the component has too few floats).
+	 */
+	void WriteCrystalPulseData(UInstancedStaticMeshComponent* Component, int32 Instance, uint32 Domain, uint32 Id);
+
+	/** task-257-02: pulse data of every per-cell ore and heal ore crystal cluster (types without deposit meshes), id = cell index. Called by BuildInstances. */
+	void WriteCellCrystalPulseData();
+
 	/** True when a standing block of DepositId is in ShakingCells. */
 	bool IsDepositShaking(int32 DepositId) const;
 
@@ -1213,6 +1225,30 @@ protected:
 	/** Seed of the per-deposit mesh variant and quarter-turn hash: same layout, deposits and seed give the same formations. */
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Grid|Ore Deposits")
 	int32 DepositCrystalSeed = 1;
+
+	/**
+	 * task-257-02 (owner 2026-10-20, provisional): seed of the crystal pulse desync. Every ore and heal ore crystal instance
+	 * (deposit formation: id = deposit id; per-cell cluster: id = cell index) gets FRRPulseDesync phase and rate of (PulseSeed,
+	 * id) in its per-instance custom data PulsePhaseCustomDataIndex / PulseRateCustomDataIndex: same layout and seed, same pulses.
+	 */
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Grid|Ore Deposits")
+	int32 PulseSeed = 1;
+
+	/** Lowest crystal pulse rate (scale of the material PulseFrequency; owner 2026-10-20: -20 percent, provisional). */
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Grid|Ore Deposits", meta = (ClampMin = "0.01"))
+	float PulseRateMin = 0.8f;
+
+	/** Highest crystal pulse rate (owner 2026-10-20: +20 percent, provisional). */
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Grid|Ore Deposits", meta = (ClampMin = "0.01"))
+	float PulseRateMax = 1.2f;
+
+	/** Per-instance custom data float of the crystal ISMs receiving the pulse phase in turns (M_XPNutGlow, task-257-01: 4, after marked 0 and ore colour 1-3). */
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Grid|Ore Deposits", meta = (ClampMin = "0", ClampMax = "15"))
+	int32 PulsePhaseCustomDataIndex = 4;
+
+	/** Per-instance custom data float of the crystal ISMs receiving the pulse rate (M_XPNutGlow, task-257-01: 5). */
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Grid|Ore Deposits", meta = (ClampMin = "0", ClampMax = "15"))
+	int32 PulseRateCustomDataIndex = 5;
 
 	/** When false (default, owner 2026-10-19, task-237-01) the ore and heal ore crystals cast no shadow at all (CastShadow, dynamic, static and contact shadow off): deposit formation ISMs and the per-cell cluster fallback chunks. When true they keep the Ore / HealOre template shadow settings. Read when the components are created (BuildInstances). */
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Grid|Ore Deposits")

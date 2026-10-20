@@ -15,6 +15,7 @@
 #include "Particles/ParticleSystemComponent.h"
 #include "PhysicalMaterials/PhysicalMaterial.h"
 #include "Pickups/RRPickupSubsystem.h"
+#include "Pickups/RRPulseDesync.h"
 #include "Player/RRMiner.h"
 #include "Pool/RRActorPoolSubsystem.h"
 #include "Progression/RRProgressionComponent.h"
@@ -169,6 +170,8 @@ void ARRPickup::StartLife()
 	SpinAxis = FMath::VRand();
 	// Glow off in the air; written explicitly so a fresh mesh never shows the material default.
 	ResetGlowFade();
+	// task-257-02: seeded pulse phase and rate of this life (Ore and Heal only).
+	ApplyPulseDesync();
 
 	URRPickupSubsystem* Pickups = GetWorld() ? GetWorld()->GetSubsystem<URRPickupSubsystem>() : nullptr;
 	if (Pickups)
@@ -262,6 +265,7 @@ void ARRPickup::OnPoolReleased_Implementation()
 	RestElapsed = 0.f;
 	MagnetSpeed = 0.f;
 	ResetGlowFade();
+	ResetPulseDesync();
 
 	// Per-drop values back to the class defaults: the next caller sets its own before OnPoolAcquired (a heal request with
 	// HealAmount 0 keeps the class default, as a fresh spawn would).
@@ -503,6 +507,33 @@ void ARRPickup::ResetGlowFade()
 	GlowFade = 0.f;
 	GlowFadeTarget = 0.f;
 	PickupMesh->SetCustomPrimitiveDataFloat(GlowFadeDataIndex, 0.f);
+}
+
+void ARRPickup::ApplyPulseDesync()
+{
+	if (!UsesPulseDesync() || !PickupMesh)
+	{
+		PulseSpawnId = INDEX_NONE;
+		return;
+	}
+	// Stable id of this life: the world's spawn order of Ore and Heal lives (fresh spawns and pool reuses alike).
+	URRPickupSubsystem* Pickups = GetWorld() ? GetWorld()->GetSubsystem<URRPickupSubsystem>() : nullptr;
+	PulseSpawnId = Pickups ? Pickups->DrawPulseSpawnId() : LocalLifeCount;
+	++LocalLifeCount;
+	const uint32 Id = static_cast<uint32>(PulseSpawnId);
+	PickupMesh->SetCustomPrimitiveDataFloat(PulsePhaseDataIndex, FRRPulseDesync::Phase(PulseSeed, FRRPulseDesync::PickupDomain, Id));
+	PickupMesh->SetCustomPrimitiveDataFloat(PulseRateDataIndex, FRRPulseDesync::Rate(PulseSeed, FRRPulseDesync::PickupDomain, Id, PulseRateMin, PulseRateMax));
+}
+
+void ARRPickup::ResetPulseDesync()
+{
+	PulseSpawnId = INDEX_NONE;
+	if (!UsesPulseDesync() || !PickupMesh)
+	{
+		return;
+	}
+	PickupMesh->SetCustomPrimitiveDataFloat(PulsePhaseDataIndex, FRRPulseDesync::NeutralPhase);
+	PickupMesh->SetCustomPrimitiveDataFloat(PulseRateDataIndex, FRRPulseDesync::NeutralRate);
 }
 
 void ARRPickup::FlyToMiner(ARRMiner* Miner, float DeltaSeconds)

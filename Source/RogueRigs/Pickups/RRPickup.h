@@ -78,7 +78,10 @@ enum class ERRPickupRestOrientation : uint8
  * at GlowFadeDataIndex, 0 in the air, fading to 1 over GlowFadeDuration on landing and back to 0 on magnet; advanced in
  * UpdateMotion only while it moves, reset to 0 at each life start and pool release. Look per life (task-192-01): StartLife
  * picks one mesh of MeshVariants for PickupMesh (empty = keep the Blueprint mesh) and sets the actor rotation from
- * RestOrientation (None = unchanged); the PickupMesh override materials are kept across a mesh swap. Physics (task-229-02):
+ * RestOrientation (None = unchanged); the PickupMesh override materials are kept across a mesh swap. Pulse desync
+ * (task-257-02): Ore and Heal pickups write a seeded pulse phase and rate (FRRPulseDesync of PulseSeed and the world's pulse
+ * spawn id) to PickupMesh Custom Primitive Data PulsePhaseDataIndex / PulseRateDataIndex each life, neutral 0 / 1 written back
+ * at pool release; XP pickups never write them (material defaults). Physics (task-229-02):
  * PickupMesh uses the "Pickup" collision profile (physics only, blocks WorldStatic = the grid floor and rock collision,
  * ignores pawns, robots, projectiles, other pickups; no query, no overlap, no hit event). The pop stays kinematic and spins
  * at PopSpinDegPerSec about a random axis; with bPhysicsOnLanding (and rr.Pickup.Physics 1, and a physics body) the pop ends
@@ -153,6 +156,12 @@ public:
 
 	/** True between the start of a life (BeginPlay or OnPoolAcquired) and its end (OnPoolReleased). */
 	bool IsLifeStarted() const { return bLifeStarted; }
+
+	/** Pulse spawn id of the current life (task-257-02; Ore and Heal pickups only), INDEX_NONE for XP pickups and between lives. */
+	int32 GetPulseSpawnId() const { return PulseSpawnId; }
+
+	/** True for the pickup types whose glow pulse is desynchronised (Ore and Heal; XP keeps the neutral material values). */
+	bool UsesPulseDesync() const { return PickupType == ERRPickupType::Ore || PickupType == ERRPickupType::Heal; }
 
 	/** IRRPoolable: starts a new life at the current location (values already set by the caller) and re-activates auto-activate FX. */
 	virtual void OnPoolAcquired_Implementation() override;
@@ -243,6 +252,16 @@ protected:
 
 	/** Sets GlowFade and GlowFadeTarget to 0 and writes 0 to PickupMesh (bGlowFade only): start of a life and pool release, so a reused pickup never flashes. */
 	void ResetGlowFade();
+
+	/**
+	 * task-257-02: for Ore and Heal pickups (UsesPulseDesync), draws the pulse spawn id of this life (URRPickupSubsystem::
+	 * DrawPulseSpawnId, or a per-actor life count without the subsystem) and writes FRRPulseDesync phase and rate of
+	 * (PulseSeed, id) to PickupMesh Custom Primitive Data PulsePhaseDataIndex and PulseRateDataIndex. XP: nothing written. Called by StartLife.
+	 */
+	void ApplyPulseDesync();
+
+	/** task-257-02: Ore and Heal pickups write the neutral phase 0 and rate 1 back and clear the spawn id (pool release); XP: nothing written. */
+	void ResetPulseDesync();
 
 	/**
 	 * Latches the magnet when Miner is within PickupRadiusSquared (2D) and does not refuse this pickup: Magnet phase,
@@ -395,6 +414,29 @@ protected:
 	int32 GlowFadeDataIndex = 0;
 
 	/**
+	 * task-257-02 (owner 2026-10-20, provisional): seed of the pulse desync of Ore and Heal pickups. Combined with the pulse
+	 * spawn id of each life by FRRPulseDesync: the same seed and spawn order give the same phases and rates.
+	 */
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Pickup|Glow")
+	int32 PulseSeed = 1;
+
+	/** Lowest pulse rate drawn per life (scale of the material PulseFrequency; owner 2026-10-20: -20 percent, provisional). */
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Pickup|Glow", meta = (ClampMin = 0.01))
+	float PulseRateMin = 0.8f;
+
+	/** Highest pulse rate drawn per life (owner 2026-10-20: +20 percent, provisional). */
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Pickup|Glow", meta = (ClampMin = 0.01))
+	float PulseRateMax = 1.2f;
+
+	/** Custom Primitive Data index of PickupMesh receiving the pulse phase in turns (M_XPNutGlow PulsePhase, task-257-01). */
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Pickup|Glow", meta = (ClampMin = 0))
+	int32 PulsePhaseDataIndex = 1;
+
+	/** Custom Primitive Data index of PickupMesh receiving the pulse rate (M_XPNutGlow PulseRate, task-257-01). */
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Pickup|Glow", meta = (ClampMin = 0))
+	int32 PulseRateDataIndex = 2;
+
+	/**
 	 * task-192-01 (owner 2026-10-15, provisional per Blueprint): rotation drawn once per life when the pickup is ejected
 	 * (fresh spawn and every pool reuse). Since task-229-02 it is only the start of the flight spin; physics decides the landed
 	 * orientation (never forced at landing). None (default) = rotation as spawned.
@@ -516,5 +558,11 @@ protected:
 
 	/** Unit axis of the flight spin, drawn each life in StartLife (task-229-02). */
 	FVector SpinAxis = FVector::UpVector;
+
+	/** Pulse spawn id of the current life (ApplyPulseDesync), INDEX_NONE for XP and between lives. */
+	int32 PulseSpawnId = INDEX_NONE;
+
+	/** Lives started by this actor: the pulse spawn id when no URRPickupSubsystem exists. */
+	int32 LocalLifeCount = 0;
 };
 
