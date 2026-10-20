@@ -3,7 +3,7 @@ id: task-255-01-camera-arm-1400
 description: "The miner camera arm is 1400 uu instead of 1700, to test the closer view."
 parent: task-255-camera-arm-1400
 kind: task
-status: todo
+status: in-progress
 ---
 # Camera distance 1400
 
