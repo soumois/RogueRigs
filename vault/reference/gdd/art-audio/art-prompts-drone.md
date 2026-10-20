@@ -20,6 +20,7 @@ Background and light: plain white background, even neutral lighting, no shadows,
 ## Files
 - Meshy download (owner, untouched): `Art/Source/drone-meshy/meshy/Meshy_AI_Rusty_Satellite_Drone_1020195641_texture.fbx` (22 MB, 5138 tris, no dish) with `..._texture.png` (base colour), `_normal.png`, `_metallic.png`, `_roughness.png`, `_metallic_roughness.png`.
 - Game meshes (task-252-01): `Art/Meshes/drone/` (`SM_DroneBase.fbx`, `SM_DroneLaser.fbx`, `SM_Drone_assembled.fbx`, `drone_parts.report.json`, base colour, normal and metallic-roughness maps); scripts `Tools/art/blender/drone_game_ready.py`, `drone_cut_parts.py`, `drone_preview.py`.
+- Dish (task-252-02, the Meshy mesh has none): `Art/Meshes/drone/SM_DroneAntenna.fbx` (392 tris, 13.9 x 18.8 x 22.0 cm, origin at the foot of the mount on the Z spin axis, dish 20 cm wide, 5 cm deep, axis tilted 30 degrees up, facing +X, one flat-colour material `meshy_drone_antenna`), `drone_antenna.report.json`, `SM_Drone_all.fbx` (base, laser, dish for viewing), script `Tools/art/blender/drone_antenna.py`. Attachment point in the base frame: (-4.257, 0.837, 28.752) cm (stem head top); the Meshy nub ends inside the dish mount.
 
 ## Relations
 - [[art-prompts]] — parent: method and locked phrases.

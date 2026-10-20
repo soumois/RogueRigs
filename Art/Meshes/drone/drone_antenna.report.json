@@ -1,0 +1,164 @@
+{
+ "task": "task-252-02-drone-mesh-parts",
+ "part": "SM_DroneAntenna",
+ "frame": "cm, front +X, Z up, FBX_SCALE_UNITS (UnitScaleFactor 100.0), object at identity",
+ "tris": 392,
+ "vertices": 214,
+ "limit": 500,
+ "bounds_min_cm": [
+  -2.033,
+  -9.749,
+  -0.0
+ ],
+ "bounds_max_cm": [
+  11.83,
+  9.067,
+  21.96
+ ],
+ "size_cm": [
+  13.863,
+  18.816,
+  21.96
+ ],
+ "pivot": "object origin = foot of the mount: centre of the flange bottom disc (z = 0) on the vertical Z spin axis; flange radius 2.2 cm sits on the stem top; spin = rotation about the object Z through the origin",
+ "foot_centre_cm": [
+  0.0,
+  0.0,
+  0.0
+ ],
+ "foot_radius_cm": 2.2,
+ "spin_radius_cm": 12.652,
+ "dish": {
+  "diameter_cm": 20.0,
+  "depth_cm": 5.0,
+  "wall_cm": 0.6,
+  "axis_tilt_above_horizontal_deg": 30.0,
+  "face_direction": "+X and up (rotates with the spin)",
+  "apex_cm": [
+   2.5,
+   0.0,
+   10.8
+  ],
+  "segments": 14,
+  "dents": "segments 3, 4, 9, 10 of the rim pushed in or out"
+ },
+ "attach_point_base_frame_cm": [
+  -4.256999969482422,
+  0.8370000123977661,
+  28.75200080871582
+ ],
+ "materials": [
+  "meshy_drone_antenna"
+ ],
+ "uv_layers": [
+  "UVMap",
+  "LightMap"
+ ],
+ "colours": {
+  "note": "flat colours as vertex colour attribute Col (linear RGB stored in the FBX), material meshy_drone_antenna; per face palette",
+  "linear_rgb": {
+   "dish": [
+    0.6038,
+    0.5542,
+    0.448
+   ],
+   "mount": [
+    0.022,
+    0.0245,
+    0.0301
+   ],
+   "rust": [
+    0.1473,
+    0.0331,
+    0.0072
+   ]
+  },
+  "srgb": {
+   "dish": [
+    0.8,
+    0.77,
+    0.7
+   ],
+   "mount": [
+    0.16,
+    0.17,
+    0.19
+   ],
+   "rust": [
+    0.42,
+    0.2,
+    0.08
+   ]
+  },
+  "use": {
+   "dish": "bowl inner and outer faces (off-white, as the base white)",
+   "mount": "flange, post, elbow, arm, collar, feed rod (dark gunmetal)",
+   "rust": "rim band, every third outer rim facet, feed tip"
+  },
+  "readback_distinct_corner_colours": [
+   [
+    0.022,
+    0.024,
+    0.03
+   ],
+   [
+    0.147,
+    0.033,
+    0.007
+   ],
+   [
+    0.604,
+    0.552,
+    0.451
+   ]
+  ]
+ },
+ "checks": {
+  "open_edges": 0,
+  "nonmanifold_edges": 0,
+  "signed_volume_cm3": 228.63,
+  "uv0_range": {
+   "u": [
+    0.0,
+    1.0
+   ],
+   "v": [
+    0.0,
+    1.0
+   ]
+  },
+  "uv1_lightmap": {
+   "overlapping_pairs_bbox": 0,
+   "min_gap_px": 2.0,
+   "in_range": true,
+   "lightmap_res": 256,
+   "passed": true
+  },
+  "flat_min_dot": 0.99998
+ },
+ "warnings": [],
+ "assembly": {
+  "file": "SM_Drone_all.fbx",
+  "antenna_location_cm": [
+   -4.256999969482422,
+   0.8370000123977661,
+   28.75200080871582
+  ],
+  "antenna_foot_z": 28.752,
+  "base_head_top_z_near_foot": 28.8188,
+  "foot_to_stem_top_gap_cm": 0.0668,
+  "stem_part_above_foot_max_radius_from_axis_cm": 1.035,
+  "flange_radius_cm": 2.2,
+  "bounds_min_cm": [
+   -14.828,
+   -35.0,
+   -36.248
+  ],
+  "bounds_max_cm": [
+   14.828,
+   35.0,
+   50.712
+  ],
+  "note": "the Meshy nub (tip z 30.17) ends inside the flange and post; base and laser files unchanged"
+ }
+}
