@@ -918,6 +918,111 @@ bool FRRDigArcReleaseTest::RunTest(const FString& Parameters)
 	return true;
 }
 
+IMPLEMENT_SIMPLE_AUTOMATION_TEST(FRRDroneEscortTest, "RogueRigs.Dig.DroneEscort",
+	EAutomationTestFlags::EditorContext | EAutomationTestFlags::EngineFilter)
+
+bool FRRDroneEscortTest::RunTest(const FString& Parameters)
+{
+	using namespace RRDigTests;
+
+	// Escort movement (task-247-01), headless position check only: on the open floor row y = 129 of arena_m1_fine (x 80..151
+	// floor with two clear rows on each side), the miner walks +X at its max speed for 3 s, then rests 8 s. Moving at constant
+	// velocity, the drone settles behind the miner on the escort side; at rest it stays in the 110-140 uu escort band.
+	const FIntPoint StartCell(84, 129);
+	FTestWorld TestWorld;
+	ARRArenaGrid* Grid = nullptr;
+	ARRMiner* Miner = nullptr;
+	ARRDrone* Drone = SpawnArcDigScene(*this, TestWorld, StartCell, Grid, Miner);
+	if (!Drone)
+	{
+		return false;
+	}
+	int32 PathBlocks = 0;
+	for (int32 Y = StartCell.Y - 2; Y <= StartCell.Y + 2; ++Y)
+	{
+		for (int32 X = StartCell.X - 2; X <= StartCell.X + 34; ++X)
+		{
+			PathBlocks += Grid->IsBlockCell(FIntPoint(X, Y)) ? 1 : 0;
+		}
+	}
+	TestEqual(TEXT("walk path is open floor"), PathBlocks, 0);
+	UCharacterMovementComponent* MinerMovement = Miner->GetCharacterMovement();
+	MinerMovement->bRunPhysicsWithNoController = true;
+	MinerMovement->SetDefaultMovementMode();
+
+	// Moving: 180 frames of +X input; the last 30 frames are the settled phase.
+	const FVector Direction = FVector::ForwardVector;
+	const FVector EscortSide(-Direction.Y, Direction.X, 0.0);
+	constexpr int32 MoveFrames = 180;
+	constexpr int32 SettledFrames = 30;
+	double MinBehind = TNumericLimits<double>::Max();
+	double MaxBehind = TNumericLimits<double>::Lowest();
+	double MinSide = TNumericLimits<double>::Max();
+	double MaxSide = TNumericLimits<double>::Lowest();
+	double MinSpeed = TNumericLimits<double>::Max();
+	bool bAlwaysOrbit = true;
+	for (int32 Frame = 1; Frame <= MoveFrames; ++Frame)
+	{
+		FMinerAccess::PendingMoveInputOf(Miner) = Direction;
+		Miner->AddMovementInput(Direction, 1.f);
+		TestWorld.Tick();
+		bAlwaysOrbit &= Drone->GetState() == ERRDroneState::Orbit;
+		if (Frame > MoveFrames - SettledFrames)
+		{
+			const FVector Offset = Drone->GetActorLocation() - Miner->GetActorLocation();
+			const double Behind = -FVector::DotProduct(Offset, Direction);
+			const double Side = FVector::DotProduct(Offset, EscortSide);
+			MinBehind = FMath::Min(MinBehind, Behind);
+			MaxBehind = FMath::Max(MaxBehind, Behind);
+			MinSide = FMath::Min(MinSide, Side);
+			MaxSide = FMath::Max(MaxSide, Side);
+			MinSpeed = FMath::Min(MinSpeed, Miner->GetVelocity().Size2D());
+		}
+	}
+	AddInfo(FString::Printf(TEXT("moving at %.0f uu/s (min, last %d frames): drone %.1f..%.1f uu behind, %.1f..%.1f uu on the escort side"),
+		MinSpeed, SettledFrames, MinBehind, MaxBehind, MinSide, MaxSide));
+	TestTrue(TEXT("drone stays in Orbit"), bAlwaysOrbit);
+	TestTrue(TEXT("miner moves at constant speed"), MinSpeed > 0.9 * MinerMovement->GetMaxSpeed());
+	TestTrue(TEXT("drone behind the miner"), MinBehind > 30.0);
+	TestTrue(TEXT("drone on the escort side"), MinSide > 30.0);
+	TestTrue(TEXT("drone settled (offset spread within 5 uu)"), MaxBehind - MinBehind <= 5.0 && MaxSide - MinSide <= 5.0);
+
+	// Rest: 2 s to settle (overshoot logged), then one full 6 s figure-eight period, sampled every frame.
+	double MaxStopOvershoot = 0.0;
+	const FVector StopLocation = Miner->GetActorLocation();
+	for (int32 Frame = 0; Frame < 120; ++Frame)
+	{
+		TestWorld.Tick();
+		MaxStopOvershoot = FMath::Max(MaxStopOvershoot, FVector::DotProduct(Drone->GetActorLocation() - StopLocation, Direction));
+	}
+	const double FloorZ = Miner->GetActorLocation().Z - Miner->GetCapsuleComponent()->GetScaledCapsuleHalfHeight();
+	double MinDistance = TNumericLimits<double>::Max();
+	double MaxDistance = 0.0;
+	double MinHeight = TNumericLimits<double>::Max();
+	double MaxHeight = 0.0;
+	double Travel = 0.0;
+	FVector Previous = Drone->GetActorLocation();
+	for (int32 Frame = 0; Frame < 360; ++Frame)
+	{
+		TestWorld.Tick();
+		bAlwaysOrbit &= Drone->GetState() == ERRDroneState::Orbit;
+		const FVector Location = Drone->GetActorLocation();
+		const double Distance = FVector::Dist2D(Location, Miner->GetActorLocation());
+		MinDistance = FMath::Min(MinDistance, Distance);
+		MaxDistance = FMath::Max(MaxDistance, Distance);
+		MinHeight = FMath::Min(MinHeight, Location.Z - FloorZ);
+		MaxHeight = FMath::Max(MaxHeight, Location.Z - FloorZ);
+		Travel += FVector::Dist2D(Location, Previous);
+		Previous = Location;
+	}
+	AddInfo(FString::Printf(TEXT("stop: drone up to %.1f uu ahead of the stop point; rest: %.1f..%.1f uu from the miner, height %.1f..%.1f uu, %.0f uu travelled in 6 s"),
+		MaxStopOvershoot, MinDistance, MaxDistance, MinHeight, MaxHeight, Travel));
+	TestTrue(TEXT("drone stays in Orbit at rest"), bAlwaysOrbit);
+	TestTrue(TEXT("at rest within the escort distance (110-140 uu)"), MinDistance >= 110.0 && MaxDistance <= 140.0);
+	TestTrue(TEXT("at rest the drone keeps moving (figure-eight)"), Travel > 50.0);
+	return true;
+}
+
 IMPLEMENT_SIMPLE_AUTOMATION_TEST(FRRDigPickupCollectTest, "RogueRigs.Dig.PickupCollect",
 	EAutomationTestFlags::EditorContext | EAutomationTestFlags::EngineFilter)
 

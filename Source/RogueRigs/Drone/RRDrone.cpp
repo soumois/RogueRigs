@@ -1,10 +1,11 @@
-// Rogue Rigs - the helper drone: separate actor spawned by the miner; orbits it, cuts an arc of blocks with a laser (dig) and links to an objective (hack).
+// Rogue Rigs - the helper drone: separate actor spawned by the miner; escorts it (Orbit state), cuts an arc of blocks with a laser (dig) and links to an objective (hack).
 
 #include "Drone/RRDrone.h"
 
 #include "Components/CapsuleComponent.h"
 #include "Components/StaticMeshComponent.h"
 #include "Engine/CollisionProfile.h"
+#include "GameFramework/CharacterMovementComponent.h"
 #include "Grid/RRCellType.h"
 #include "GAS/RRAbilitySystemComponent.h"
 #include "GAS/RRPlayerAttributeSet.h"
@@ -73,12 +74,17 @@ void ARRDrone::SetOwnerMiner(ARRMiner* NewOwnerMiner)
 	}
 
 	OwnerMiner = NewOwnerMiner;
-	OrbitAngle = 0.f;
+	EscortMoveBlend = 0.f;
+	EscortFigureEightPhase = 0.f;
+	EscortBobPhase = 0.f;
+	EscortVelocity = FVector::ZeroVector;
 
 	if (OwnerMiner)
 	{
 		// Follow the miner's position of this frame, not the previous one.
 		AddTickPrerequisiteActor(OwnerMiner);
+		// Until the miner first moves, the escort heading is its facing: the drone starts at its shoulder.
+		EscortHeadingYaw = OwnerMiner->GetActorRotation().Yaw;
 		SetActorLocation(ComputeOrbitPoint());
 	}
 }
@@ -483,11 +489,55 @@ void ARRDrone::TickOrbit(float DeltaSeconds)
 		return;
 	}
 
-	const float SafePeriod = FMath::Max(OrbitPeriod, UE_KINDA_SMALL_NUMBER);
-	OrbitAngle = FMath::Fmod(OrbitAngle + UE_TWO_PI * DeltaSeconds / SafePeriod, UE_TWO_PI);
+	if (DeltaSeconds <= 0.f)
+	{
+		return;
+	}
 
-	// VInterpTo snaps to the target when the speed is 0.
-	SetActorLocation(FMath::VInterpTo(GetActorLocation(), ComputeOrbitPoint(), DeltaSeconds, FollowInterpSpeed));
+	// Heading: turns toward the miner's horizontal velocity at a limited rate (the slot swings around the miner, never
+	// across it); kept while the miner is at rest.
+	const FVector MinerVelocity = OwnerMiner->GetVelocity();
+	const double MinerSpeed = MinerVelocity.Size2D();
+	if (MinerSpeed > EscortHeadingMinSpeed)
+	{
+		const float TargetYaw = FMath::RadiansToDegrees(FMath::Atan2(MinerVelocity.Y, MinerVelocity.X));
+		EscortHeadingYaw = FRotator::NormalizeAxis(FMath::FixedTurn(EscortHeadingYaw, TargetYaw, EscortHeadingTurnRate * DeltaSeconds));
+	}
+
+	// Move blend: the miner's speed fraction of its max speed, smoothed, so the slot slides from the shoulder to behind.
+	const UCharacterMovementComponent* MinerMovement = OwnerMiner->GetCharacterMovement();
+	const double MaxSpeed = MinerMovement ? MinerMovement->GetMaxSpeed() : 0.0;
+	const float SpeedFraction = MaxSpeed > UE_KINDA_SMALL_NUMBER ? static_cast<float>(FMath::Clamp(MinerSpeed / MaxSpeed, 0.0, 1.0)) : 0.f;
+	EscortMoveBlend = FMath::FInterpTo(EscortMoveBlend, SpeedFraction, DeltaSeconds, EscortBlendSpeed);
+
+	EscortFigureEightPhase = FMath::Fmod(EscortFigureEightPhase + UE_TWO_PI * DeltaSeconds / FMath::Max(EscortFigureEightPeriod, 0.1f), UE_TWO_PI);
+	EscortBobPhase = FMath::Fmod(EscortBobPhase + UE_TWO_PI * DeltaSeconds / FMath::Max(EscortBobPeriod, 0.1f), UE_TWO_PI);
+
+	const FVector Slot = ComputeOrbitPoint();
+	FVector Location = GetActorLocation();
+	if (FVector::DistSquared(Location, Slot) > FMath::Square(EscortSnapDistance))
+	{
+		// Miner teleported (cheat, run transition): no spring flight across the arena.
+		EscortVelocity = FVector::ZeroVector;
+		SetActorLocation(Slot);
+		return;
+	}
+
+	// Damped spring toward the slot; damping acts on the velocity relative to part of the miner's velocity (feed-forward),
+	// so the drone lags a little behind a moving slot and overshoots a little when the miner stops. Semi-implicit Euler,
+	// sub-stepped for stability at low frame rates.
+	const double Omega = UE_TWO_PI * FMath::Max(EscortSpringFrequency, 0.01f);
+	const FVector TargetVelocity = MinerVelocity * FMath::Clamp(EscortVelocityFeedForward, 0.f, 1.f);
+	constexpr double MaxSubstepSeconds = 1.0 / 120.0;
+	const int32 Substeps = FMath::Max(1, FMath::CeilToInt32(DeltaSeconds / MaxSubstepSeconds));
+	const double Step = DeltaSeconds / Substeps;
+	for (int32 Index = 0; Index < Substeps; ++Index)
+	{
+		const FVector Acceleration = (Slot - Location) * (Omega * Omega) + (TargetVelocity - EscortVelocity) * (2.0 * EscortDampingRatio * Omega);
+		EscortVelocity += Acceleration * Step;
+		Location += EscortVelocity * Step;
+	}
+	SetActorLocation(Location);
 }
 
 void ARRDrone::TickDig(float DeltaSeconds)
@@ -592,11 +642,22 @@ FVector ARRDrone::ComputeOrbitPoint() const
 	const FVector MinerLocation = OwnerMiner->GetActorLocation();
 	const double FloorZ = MinerLocation.Z - OwnerMiner->GetCapsuleComponent()->GetScaledCapsuleHalfHeight();
 
+	// Slot direction: from the heading, toward the escort side, at the angle blended from the shoulder (rest) to behind (move).
+	const float SideSign = bEscortOnRightSide ? 1.f : -1.f;
+	const float SlotYaw = EscortHeadingYaw + SideSign * FMath::Lerp(EscortRestAngleDegrees, EscortMoveAngleDegrees, EscortMoveBlend);
 	float Sin = 0.f;
 	float Cos = 0.f;
-	FMath::SinCos(&Sin, &Cos, OrbitAngle);
+	FMath::SinCos(&Sin, &Cos, FMath::DegreesToRadians(SlotYaw));
+	const FVector Radial(Cos, Sin, 0.f);
+	const FVector Tangential(-Sin, Cos, 0.f);
 
-	return FVector(MinerLocation.X + Cos * OrbitRadius, MinerLocation.Y + Sin * OrbitRadius, FloorZ + HoverHeight);
+	// Rest figure-eight (Lissajous 1:2): long axis tangential, short axis radial, so the distance to the miner varies little.
+	const float RestWeight = 1.f - EscortMoveBlend;
+	const FVector FigureEight = (Tangential * (EscortFigureEightTangential * FMath::Sin(EscortFigureEightPhase))
+		+ Radial * (EscortFigureEightRadial * FMath::Sin(2.f * EscortFigureEightPhase))) * RestWeight;
+
+	const FVector Horizontal = Radial * EscortDistance + FigureEight;
+	return FVector(MinerLocation.X + Horizontal.X, MinerLocation.Y + Horizontal.Y, FloorZ + HoverHeight + EscortBobAmplitude * FMath::Sin(EscortBobPhase));
 }
 
 FVector ARRDrone::ComputeDigHoverPoint() const
@@ -637,7 +698,7 @@ void ARRDrone::StopDig()
 	LaserMesh->SetVisibility(false);
 	DigGrid = nullptr;
 
-	ResumeOrbitFromCurrentAngle();
+	ResumeOrbit();
 }
 
 void ARRDrone::TickHack(float DeltaSeconds)
@@ -663,20 +724,13 @@ void ARRDrone::EndHack()
 {
 	LaserMesh->SetVisibility(false);
 	HackTarget = nullptr;
-	ResumeOrbitFromCurrentAngle();
+	ResumeOrbit();
 }
 
-void ARRDrone::ResumeOrbitFromCurrentAngle()
+void ARRDrone::ResumeOrbit()
 {
-	// Resume the orbit from where the drone is, so it does not cut across the miner.
-	if (IsValid(OwnerMiner))
-	{
-		const FVector FromMiner = GetActorLocation() - OwnerMiner->GetActorLocation();
-		if (FromMiner.SizeSquared2D() > UE_KINDA_SMALL_NUMBER)
-		{
-			OrbitAngle = FMath::Fmod(FMath::Atan2(FromMiner.Y, FromMiner.X) + UE_TWO_PI, UE_TWO_PI);
-		}
-	}
+	// The spring starts from where the drone is, at rest: it flies back to the slot smoothly.
+	EscortVelocity = FVector::ZeroVector;
 }
 
 void ARRDrone::UpdateLaser(UStaticMeshComponent* Beam, const FVector& Start, const FVector& End)

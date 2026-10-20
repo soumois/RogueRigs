@@ -1,4 +1,4 @@
-// Rogue Rigs - the helper drone: separate actor spawned by the miner; orbits it, cuts an arc of blocks with a laser (dig) and links to an objective (hack).
+// Rogue Rigs - the helper drone: separate actor spawned by the miner; escorts it (Orbit state), cuts an arc of blocks with a laser (dig) and links to an objective (hack).
 
 #pragma once
 
@@ -17,7 +17,7 @@ class UStaticMeshComponent;
 UENUM(BlueprintType)
 enum class ERRDroneState : uint8
 {
-	/** Circles the miner in the floor plane (default). */
+	/** Escorts the miner (default): holds a slot beside and behind it on a damped spring, slow figure-eight at rest (task-247-01). */
 	Orbit,
 	/** Hovers over the arc of blocks in front of the miner and cuts them with the laser. */
 	Dig,
@@ -33,9 +33,13 @@ DECLARE_DYNAMIC_MULTICAST_DELEGATE_TwoParams(FRROnDigBlockStoppedSignature, FInt
 
 /**
  * The miner's helper drone. Spawned and destroyed by ARRMiner (DroneClass), which calls SetOwnerMiner.
- * Orbit: each tick the orbit angle advances by 2*pi / OrbitPeriod per second around the miner's location,
- * the orbit point is OrbitRadius away in the floor plane at HoverHeight above the miner's floor (capsule
- * bottom), and the drone interpolates toward it with FollowInterpSpeed.
+ * Orbit (escort movement, task-247-01, the state keeps its name): the escort heading turns toward the miner's horizontal
+ * velocity direction (EscortHeadingTurnRate, only above EscortHeadingMinSpeed; kept at rest). The slot sits EscortDistance
+ * from the miner at EscortRestAngleDegrees from the heading on the escort side at rest (the shoulder), EscortMoveAngleDegrees
+ * when moving (behind and to the side), blended smoothly by the miner's speed fraction. At rest a slow horizontal
+ * figure-eight (EscortFigureEightPeriod, long axis tangential) is added around the slot; height HoverHeight above the
+ * miner's floor (capsule bottom) plus a light bob. The drone follows the slot with a damped spring (EscortSpringFrequency,
+ * EscortDampingRatio, part of the miner velocity fed forward), so it lags a little and overshoots on stop.
  * Dig (arc mining, drone gdd): while the miner touches rock it calls RequestArcDig every tick with the arc direction;
  * the drone selects up to MaxArcBlocks block cells in front of the miner (SelectArcCells: center within ArcReachCells
  * cells of the miner's front point, inside an ArcAngleDegrees cone around the direction) and cuts all of them in
@@ -65,8 +69,8 @@ public:
 	ARRDrone();
 
 	/**
-	 * Sets the miner the drone follows, makes the drone tick after it and snaps the drone to the start of
-	 * its orbit (angle 0). Called by ARRMiner right after spawning the drone. Null stops all movement.
+	 * Sets the miner the drone follows, makes the drone tick after it and snaps the drone to its rest escort slot (heading =
+	 * the miner's facing, spring at rest). Called by ARRMiner right after spawning the drone. Null stops all movement.
 	 */
 	UFUNCTION(BlueprintCallable, Category = "Drone")
 	void SetOwnerMiner(ARRMiner* NewOwnerMiner);
@@ -175,7 +179,7 @@ public:
 	UFUNCTION(BlueprintPure, Category = "Drone")
 	float GetMiningSpeed() const;
 
-	/** Runs the behaviour of the current state (Orbit: moves along the orbit; Dig: hovers, cuts, draws the laser; Hack: hovers, draws the link). */
+	/** Runs the behaviour of the current state (Orbit: escorts the miner; Dig: hovers, cuts, draws the laser; Hack: hovers, draws the link). */
 	virtual void Tick(float DeltaSeconds) override;
 
 	/** Broadcast when a block enters the dug arc (also when the drone enters Dig). Blueprint: start a laser beam or effect on Cell. */
@@ -190,7 +194,7 @@ protected:
 	/** Stops a dig in progress so the target blocks do not keep shaking after the drone is gone. */
 	virtual void EndPlay(const EEndPlayReason::Type EndPlayReason) override;
 
-	/** Orbit tick: advances the orbit angle and moves toward the orbit point. */
+	/** Orbit tick (escort): updates the heading, the move blend and the figure-eight and bob phases, then moves the drone toward the escort slot on the damped spring. */
 	void TickOrbit(float DeltaSeconds);
 
 	/** Dig tick: checks the cancel rules, drops destroyed blocks, moves to the arc centre, updates the laser and damages every dug block. */
@@ -199,13 +203,17 @@ protected:
 	/** Hack tick: back to Orbit when the target or miner is gone, else moves to the hack hover point and draws the link. */
 	void TickHack(float DeltaSeconds);
 
-	/** Leaves Hack: hides the laser, clears the target and resumes the orbit from the drone's current angle. */
+	/** Leaves Hack: hides the laser, clears the target and resumes the escort from where the drone is. */
 	void EndHack();
 
-	/** Sets the orbit angle to the drone's current angle around the miner, so the orbit resumes where the drone is. */
-	void ResumeOrbitFromCurrentAngle();
+	/** Resumes the escort from the drone's current location: the spring starts at rest (zero velocity) and pulls the drone to the slot, so it never snaps. */
+	void ResumeOrbit();
 
-	/** World position of the orbit point for the current angle around the owner miner. Requires a valid miner. */
+	/**
+	 * World position of the escort slot for the current heading, move blend and phases (task-247-01): EscortDistance from the
+	 * miner at the blended slot angle on the escort side, plus the rest figure-eight scaled by (1 - move blend), at HoverHeight
+	 * above the miner's floor plus the bob. Requires a valid miner.
+	 */
 	FVector ComputeOrbitPoint() const;
 
 	/** World position the drone hovers at while digging: the arc centre (mean of the dug cell centers, or the drone's XY when none) at HoverHeight above the miner's floor. Requires a valid miner and dig grid. */
@@ -226,7 +234,7 @@ protected:
 	 */
 	void RefreshDigShake();
 
-	/** Leaves Dig: stops the whole-vein shake, stops every dug block, hides the laser, clears the arc and resumes the orbit from the drone's current angle. */
+	/** Leaves Dig: stops the whole-vein shake, stops every dug block, hides the laser, clears the arc and resumes the escort from where the drone is. */
 	void StopDig();
 
 	/** Places Beam as a cylinder from Start to End with LaserDiameter, and shows it (hidden when Start and End coincide). */
@@ -310,19 +318,75 @@ protected:
 	/** Current User.Intensity of the dig impact effect: 1 while cutting, falls to 0 during the fade. */
 	float DigImpactIntensity = 0.f;
 
-	/** Horizontal distance from the miner's location to the orbit point, in uu. */
+	/** Horizontal distance from the miner's location to the escort slot, in uu (drone gdd: 110-140 band; provisional, 2026-10-20). */
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Drone|Orbit", meta = (ClampMin = 0, Units = "cm"))
-	float OrbitRadius = 150.f;
+	float EscortDistance = 125.f;
 
-	/** Time for one full turn around the miner, in seconds. */
-	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Drone|Orbit", meta = (ClampMin = 0.01, Units = "s"))
-	float OrbitPeriod = 2.f;
+	/** Slot angle from the escort heading at rest, toward the escort side, in degrees: 90 = beside the miner, 100 = the shoulder, a little behind (provisional). */
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Drone|Orbit", meta = (ClampMin = 0, ClampMax = 180, Units = "deg"))
+	float EscortRestAngleDegrees = 100.f;
 
-	/** Height of the drone above the miner's floor (capsule bottom), in uu. Used in Orbit, Dig and Hack. */
+	/** Slot angle from the escort heading at full speed, toward the escort side, in degrees: 145 = behind and to the side (provisional). */
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Drone|Orbit", meta = (ClampMin = 0, ClampMax = 180, Units = "deg"))
+	float EscortMoveAngleDegrees = 145.f;
+
+	/** Escort side: true = the miner's right of its movement heading (+90 degrees of yaw), false = its left (provisional). */
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Drone|Orbit")
+	bool bEscortOnRightSide = true;
+
+	/** Turn rate of the escort heading toward the miner's velocity direction, in degrees per second, so the slot swings around the miner instead of snapping (provisional). */
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Drone|Orbit", meta = (ClampMin = 0, Units = "deg/s"))
+	float EscortHeadingTurnRate = 360.f;
+
+	/** Horizontal miner speed below which the escort heading is kept (the miner is at rest), in uu/s (provisional). */
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Drone|Orbit", meta = (ClampMin = 0, Units = "cm/s"))
+	float EscortHeadingMinSpeed = 50.f;
+
+	/** Speed of the move blend (rest slot to move slot, figure-eight fading) toward the miner's speed fraction of its max speed (FMath::FInterpTo speed; provisional). */
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Drone|Orbit", meta = (ClampMin = 0))
+	float EscortBlendSpeed = 4.f;
+
+	/** Period of the rest figure-eight around the slot, in seconds (drone gdd: about 6 s; provisional). */
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Drone|Orbit", meta = (ClampMin = 0.1, Units = "s"))
+	float EscortFigureEightPeriod = 6.f;
+
+	/** Half width of the figure-eight along its long axis, tangential to the miner (perpendicular to the miner-to-slot line), in uu (provisional). */
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Drone|Orbit", meta = (ClampMin = 0, Units = "cm"))
+	float EscortFigureEightTangential = 30.f;
+
+	/** Half width of the figure-eight along its short axis, radial (toward or away from the miner), in uu; keeps the rest distance near 115-137 uu (provisional). */
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Drone|Orbit", meta = (ClampMin = 0, Units = "cm"))
+	float EscortFigureEightRadial = 10.f;
+
+	/** Natural frequency of the follow spring, in Hz: higher follows tighter (provisional). */
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Drone|Orbit", meta = (ClampMin = 0.01, Units = "Hz"))
+	float EscortSpringFrequency = 1.5f;
+
+	/** Damping ratio of the follow spring: 1 = critically damped, below 1 overshoots a little on stop (provisional: 0.75, slightly under-damped). */
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Drone|Orbit", meta = (ClampMin = 0))
+	float EscortDampingRatio = 0.75f;
+
+	/** Share of the miner's velocity the spring damps toward (feed-forward): 1 = no steady lag behind the slot, 0 = full spring lag (provisional). */
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Drone|Orbit", meta = (ClampMin = 0, ClampMax = 1))
+	float EscortVelocityFeedForward = 0.8f;
+
+	/** Distance from the slot beyond which the drone snaps to it and the spring stops (miner teleported), in uu (provisional). */
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Drone|Orbit", meta = (ClampMin = 0, Units = "cm"))
+	float EscortSnapDistance = 2000.f;
+
+	/** Height of the drone above the miner's floor (capsule bottom), in uu. Used in Orbit (plus the bob), Dig and Hack. */
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Drone|Orbit", meta = (Units = "cm"))
 	float HoverHeight = 150.f;
 
-	/** Speed at which the drone moves toward its orbit, dig or hack hover point (FMath::VInterpTo speed). 0 = snap to it. */
+	/** Amplitude of the light vertical bob in Orbit, in uu (provisional; the wider height variation is task-249). */
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Drone|Orbit", meta = (ClampMin = 0, Units = "cm"))
+	float EscortBobAmplitude = 6.f;
+
+	/** Period of the vertical bob in Orbit, in seconds (provisional). */
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Drone|Orbit", meta = (ClampMin = 0.1, Units = "s"))
+	float EscortBobPeriod = 2.4f;
+
+	/** Speed at which the drone moves toward its dig or hack hover point (FMath::VInterpTo speed). 0 = snap to it. Orbit uses the escort spring instead. */
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Drone|Orbit", meta = (ClampMin = 0))
 	float FollowInterpSpeed = 10.f;
 
@@ -386,6 +450,18 @@ protected:
 	UPROPERTY(VisibleInstanceOnly, BlueprintReadOnly, Category = "Drone|Hack")
 	TObjectPtr<AActor> HackTarget;
 
-	/** Current orbit angle in radians, in [0, 2*pi). */
-	float OrbitAngle = 0.f;
+	/** Escort heading yaw in degrees: the miner's last movement direction (its facing until it first moves). */
+	float EscortHeadingYaw = 0.f;
+
+	/** Move blend in [0, 1]: 0 = rest slot with the full figure-eight, 1 = move slot behind and to the side, no figure-eight. */
+	float EscortMoveBlend = 0.f;
+
+	/** Phase of the rest figure-eight in radians, in [0, 2*pi). */
+	float EscortFigureEightPhase = 0.f;
+
+	/** Phase of the vertical bob in radians, in [0, 2*pi). */
+	float EscortBobPhase = 0.f;
+
+	/** Velocity of the drone on the escort spring, in uu/s; reset to zero when the escort resumes. */
+	FVector EscortVelocity = FVector::ZeroVector;
 };
