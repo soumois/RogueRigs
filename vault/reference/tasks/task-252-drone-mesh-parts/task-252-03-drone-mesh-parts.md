@@ -3,7 +3,7 @@ id: task-252-03-drone-mesh-parts
 description: "Material and instance for the drone from the Meshy textures."
 parent: task-252-drone-mesh-parts
 kind: task
-status: in-progress
+status: done
 ---
 # Drone material
 
@@ -15,11 +15,11 @@ status: in-progress
 - done_when: Material compiles, textures imported with right compression (normal map, linear for masks), MI_Drone exists, doc node written, lint clean.
 - editor_state: open (editor + MCP)
 - token_ceiling: 150k
-- model: open
-- tokens: open
-- runs: open
+- model: sonnet
+- tokens: input 38, cache write 69497, cache read 873730, output 728
+- runs: 1
 - milestone: M1
-- result: open
+- result: Materials under /Game/RogueRigs/Art/Drone/: T_Drone_BaseColor, T_Drone_Normal, T_Drone_MetalRough (4096 px, to cap), M_Drone and MI_Drone (base colour, normal, roughness G, metallic B), M_DroneAntenna and MI_DroneAntenna (vertex colour, Roughness 0.7); both compile; node bp-drone-materials. Look unverified, antenna vertex colours to check once the mesh is imported.
 
 ## Relations
 - [[task-252-drone-mesh-parts]] — parent global task.

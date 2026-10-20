@@ -3,7 +3,7 @@ id: task-252-04-drone-mesh-parts
 description: "Import the three drone parts and assign the material."
 parent: task-252-drone-mesh-parts
 kind: task
-status: todo
+status: in-progress
 ---
 # Drone meshes import
 

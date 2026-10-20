@@ -13,7 +13,7 @@ status: in-progress
 - gdd_check: done by the Orchestrator when the task is planned (2026-10-20).
 - confirmed_by_owner: yes (2026-10-20)
 - milestone: M1
-- next_step: task-252-03-drone-mesh-parts
+- next_step: task-252-04-drone-mesh-parts
 - result: open
 
 ## Subtasks

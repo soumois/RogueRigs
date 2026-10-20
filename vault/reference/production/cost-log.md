@@ -466,6 +466,7 @@ kind: note
 | [[task-251-01-drone-patrol-movement]] | opus | 1 | 0k | 196k | 7637k | 39k |
 | [[task-252-01-drone-mesh-parts]] | sonnet | 1 | 0k | 175k | 4993k | 32k |
 | [[task-252-02-drone-mesh-parts]] | sonnet | 1 | 0k | 58k | 381k | 16k |
+| [[task-252-03-drone-mesh-parts]] | sonnet | 1 | 0k | 69k | 874k | 1k |
 
 ## Totals
 | Scope | Input | Cache write | Cache read | Output |
