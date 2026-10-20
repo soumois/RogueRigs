@@ -3,7 +3,7 @@ id: task-253-01-drone-parts-animation
 description: "The drone has three animated parts: the antenna spins, the base turns slowly toward the mining spot and the laser pivots in height."
 parent: task-253-drone-parts-animation
 kind: task
-status: in-progress
+status: done
 ---
 # Drone parts animation
 
@@ -15,11 +15,11 @@ status: in-progress
 - done_when: Build passes; existing drone tests pass (HealVein excluded); ONE headless check (no capture): during Dig the base yaw error to the target shrinks over time without jumping and the laser pivot pitch points at the impact point within a stated tolerance; antenna rotates; docs updated; lint clean.
 - editor_state: closed (C++ build)
 - token_ceiling: 150k
-- model: open
-- tokens: open
-- runs: open
+- model: opus
+- tokens: input 100, cache write 174743, cache read 6080715, output 26587
+- runs: 1
 - milestone: M1
-- result: open
+- result: Components LaserPivot and AntennaMesh on ARRDrone (root Mesh = base); antenna spins 90 deg/s; base yaw turns toward the dig/hack target at 120 deg/s max; laser pitch aims the emitter at the impact point (240 deg/s, -20..+80, 0 = down); beam starts at the emitter tip (GetLaserEmitterLocation). Build OK, 25 tests pass (HealVein known), DroneParts: yaw error 104 to under 2 deg by frame 12 with no jump, arm axis within 0.46 deg of the beam, antenna 90.00 deg in 1 s. Mesh checks: antenna vertex colours had been lost at import, reimported with replace (3 colour classes read back); engine lightmap UVs removed on the three meshes. Not seen in play, hack not measured.
 
 ## Relations
 - [[task-253-drone-parts-animation]] — parent global task.

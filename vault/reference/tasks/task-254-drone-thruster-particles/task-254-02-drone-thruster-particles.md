@@ -3,7 +3,7 @@ id: task-254-02-drone-thruster-particles
 description: "Two Niagara components on the drone fed with its speed."
 parent: task-254-drone-thruster-particles
 kind: task
-status: todo
+status: in-progress
 ---
 # Drone thruster wiring
 
