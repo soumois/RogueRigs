@@ -467,6 +467,7 @@ kind: note
 | [[task-252-01-drone-mesh-parts]] | sonnet | 1 | 0k | 175k | 4993k | 32k |
 | [[task-252-02-drone-mesh-parts]] | sonnet | 1 | 0k | 58k | 381k | 16k |
 | [[task-252-03-drone-mesh-parts]] | sonnet | 1 | 0k | 69k | 874k | 1k |
+| [[task-252-04-drone-mesh-parts]] | sonnet | 1 | 0k | 70k | 811k | 1k |
 
 ## Totals
 | Scope | Input | Cache write | Cache read | Output |

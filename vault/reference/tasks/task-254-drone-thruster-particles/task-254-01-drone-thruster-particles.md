@@ -3,7 +3,7 @@ id: task-254-01-drone-thruster-particles
 description: "Two engine particles, one per side pod, driven by the drone speed."
 parent: task-254-drone-thruster-particles
 kind: task
-status: todo
+status: in-progress
 ---
 # Drone thruster particles
 
