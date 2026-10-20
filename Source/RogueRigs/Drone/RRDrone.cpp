@@ -79,11 +79,9 @@ void ARRDrone::SetOwnerMiner(ARRMiner* NewOwnerMiner)
 	}
 
 	OwnerMiner = NewOwnerMiner;
-	EscortMoveBlend = 0.f;
-	EscortFigureEightPhase = 0.f;
 	EscortBobPhase = 0.f;
 	EscortBobSecondPhase = 0.f;
-	EscortVelocity = FVector::ZeroVector;
+	PatrolVelocity = FVector::ZeroVector;
 	EscortAlert = 0.f;
 	bEnemyNearMiner = false;
 	InterestActor.Reset();
@@ -96,20 +94,29 @@ void ARRDrone::SetOwnerMiner(ARRMiner* NewOwnerMiner)
 	IdleGestureTime = 0.f;
 	// Own stream: the gestures never draw from the global FMath stream that tests seed (Ore.HealVein).
 	GestureRandom.Initialize(static_cast<int32>(GetUniqueID()));
+	// Patrol picks use their own stream too (another sequence than the gestures), so they never depend on the gestures.
+	PatrolRandom.Initialize(static_cast<int32>(GetUniqueID()) * 7919 + 1);
 	ResetIdleGestureCountdown();
 
 	if (OwnerMiner)
 	{
 		// Follow the miner's position of this frame, not the previous one.
 		AddTickPrerequisiteActor(OwnerMiner);
-		// Until the miner first moves, the escort heading is its facing: the drone starts at its shoulder.
-		EscortHeadingYaw = OwnerMiner->GetActorRotation().Yaw;
-		EscortSlotIndex = SelectEscortSlot();
-		EscortSlotHoldTime = 0.f;
 		PreviousMinerVelocity = OwnerMiner->GetVelocity();
-		LookYaw = EscortHeadingYaw;
-		SetActorLocationAndRotation(ComputeOrbitPoint(), FRotator(0.f, LookYaw, 0.f));
+		// The look starts along the miner's facing; the position never depends on it (task-251-01).
+		LookYaw = OwnerMiner->GetActorRotation().Yaw;
+		SetActorRotation(FRotator(0.f, LookYaw, 0.f));
+		RestartPatrol();
 	}
+}
+
+void ARRDrone::RestartPatrol()
+{
+	PatrolVelocity = FVector::ZeroVector;
+	// Picked from the miner's own location: the drone is snapped onto the point right after.
+	SetActorLocation(FVector(OwnerMiner->GetActorLocation().X, OwnerMiner->GetActorLocation().Y, GetActorLocation().Z));
+	PickPatrolPoint();
+	SetActorLocation(ComputeOrbitPoint());
 }
 
 bool ARRDrone::SetState(ERRDroneState NewState)
@@ -521,7 +528,7 @@ void ARRDrone::UpdateLiveliness(float DeltaSeconds)
 	EscortAlert = FMath::FInterpTo(EscortAlert, bEnemyNearMiner ? 1.f : 0.f, DeltaSeconds, EscortAlertBlendSpeed);
 
 	// Idle gestures: only in Orbit with the miner at rest; any movement cancels the gesture and restarts the countdown.
-	const bool bMinerAtRest = OwnerMiner->GetVelocity().Size2D() <= EscortHeadingMinSpeed;
+	const bool bMinerAtRest = OwnerMiner->GetVelocity().Size2D() <= MinerRestSpeed;
 	if (State != ERRDroneState::Orbit || !bMinerAtRest)
 	{
 		IdleGesture = ERRDroneIdleGesture::None;
@@ -750,56 +757,64 @@ void ARRDrone::TickOrbit(float DeltaSeconds)
 		return;
 	}
 
-	// Heading: turns toward the miner's horizontal velocity at a limited rate (the slot swings around the miner, never
-	// across it); kept while the miner is at rest.
-	const FVector MinerVelocity = OwnerMiner->GetVelocity();
-	const double MinerSpeed = MinerVelocity.Size2D();
-	if (MinerSpeed > EscortHeadingMinSpeed)
-	{
-		const float TargetYaw = FMath::RadiansToDegrees(FMath::Atan2(MinerVelocity.Y, MinerVelocity.X));
-		EscortHeadingYaw = FRotator::NormalizeAxis(FMath::FixedTurn(EscortHeadingYaw, TargetYaw, EscortHeadingTurnRate * DeltaSeconds));
-	}
-
-	// Move blend: the miner's speed fraction of its max speed, smoothed, so the slot slides from the shoulder to behind.
-	const UCharacterMovementComponent* MinerMovement = OwnerMiner->GetCharacterMovement();
-	const double MaxSpeed = MinerMovement ? MinerMovement->GetMaxSpeed() : 0.0;
-	const float SpeedFraction = MaxSpeed > UE_KINDA_SMALL_NUMBER ? static_cast<float>(FMath::Clamp(MinerSpeed / MaxSpeed, 0.0, 1.0)) : 0.f;
-	EscortMoveBlend = FMath::FInterpTo(EscortMoveBlend, SpeedFraction, DeltaSeconds, EscortBlendSpeed);
-
-	EscortFigureEightPhase = FMath::Fmod(EscortFigureEightPhase + UE_TWO_PI * DeltaSeconds / FMath::Max(EscortFigureEightPeriod, 0.1f), UE_TWO_PI);
 	EscortBobPhase = FMath::Fmod(EscortBobPhase + UE_TWO_PI * DeltaSeconds / FMath::Max(EscortBobPeriod, 0.1f), UE_TWO_PI);
 	EscortBobSecondPhase = FMath::Fmod(EscortBobSecondPhase + UE_TWO_PI * DeltaSeconds / FMath::Max(EscortBobSecondPeriod, 0.1f), UE_TWO_PI);
 
-	// Walls (task-248-01): the slot is the first clear candidate, held a minimum time.
-	UpdateEscortSlot(DeltaSeconds);
+	// Patrol point (task-251-01): reached, timed out or no longer valid = a new one. Never from the miner's facing or movement.
+	UpdatePatrolPoint(DeltaSeconds);
 
-	const FVector Slot = ComputeOrbitPoint();
-	FVector Location = GetActorLocation();
-	if (FVector::DistSquared(Location, Slot) > FMath::Square(EscortSnapDistance))
+	const FVector Point = ComputeOrbitPoint();
+	const FVector Start = GetActorLocation();
+	if (FVector::DistSquared2D(Start, Point) > FMath::Square(EscortSnapDistance))
 	{
-		// Miner teleported (cheat, run transition): no spring flight across the arena.
-		EscortVelocity = FVector::ZeroVector;
-		SetActorLocation(Slot);
+		// Miner teleported (cheat, run transition): no flight across the arena.
+		PatrolVelocity = FVector::ZeroVector;
+		SetActorLocation(Point);
 		return;
 	}
 
-	// Damped spring toward the slot; damping acts on the velocity relative to part of the miner's velocity (feed-forward),
-	// so the drone lags a little behind a moving slot and overshoots a little when the miner stops. Semi-implicit Euler,
-	// sub-stepped for stability at low frame rates.
-	const double Omega = UE_TWO_PI * FMath::Max(EscortSpringFrequency, 0.01f);
-	const FVector TargetVelocity = MinerVelocity * FMath::Clamp(EscortVelocityFeedForward, 0.f, 1.f);
-	constexpr double MaxSubstepSeconds = 1.0 / 120.0;
-	const int32 Substeps = FMath::Max(1, FMath::CeilToInt32(DeltaSeconds / MaxSubstepSeconds));
-	const double Step = DeltaSeconds / Substeps;
-	const FVector Start = Location;
-	for (int32 Index = 0; Index < Substeps; ++Index)
+	// No clear line from the drone to its point (the miner turned a corner): head back toward the miner first.
+	const ARRArenaGrid* Grid = GetTerrainGrid();
+	FVector Target = Point;
+	const FVector MinerLocation = OwnerMiner->GetActorLocation();
+	if (Grid && !Grid->HasLineOfSight(Start, Point) && Grid->HasLineOfSight(Start, MinerLocation))
 	{
-		const FVector Acceleration = (Slot - Location) * (Omega * Omega) + (TargetVelocity - EscortVelocity) * (2.0 * EscortDampingRatio * Omega);
-		EscortVelocity += Acceleration * Step;
-		Location += EscortVelocity * Step;
+		Target = FVector(MinerLocation.X, MinerLocation.Y, Point.Z);
 	}
-	// Overshoot or a slot change across a corner: never into a block cell.
-	SetActorLocation(ConstrainToClearCells(GetTerrainGrid(), Start, Location, &EscortVelocity));
+
+	// Lag follow: the desired speed grows with the distance (slow near the point, fast far from it); the velocity reaches it
+	// exponentially, so a moving miner leaves the drone behind until it catches up. Frame-rate independent.
+	const FVector2D ToTarget(Target.X - Start.X, Target.Y - Start.Y);
+	const double Distance = ToTarget.Size();
+	const FVector2D Direction = Distance > UE_KINDA_SMALL_NUMBER ? ToTarget / Distance : FVector2D::ZeroVector;
+	const FVector2D Desired = Direction * GetPatrolSpeed(Distance);
+	const double Alpha = 1.0 - FMath::Exp(-FMath::Max(PatrolVelocityResponse, 0.01f) * DeltaSeconds);
+	PatrolVelocity.X += (Desired.X - PatrolVelocity.X) * Alpha;
+	PatrolVelocity.Y += (Desired.Y - PatrolVelocity.Y) * Alpha;
+	PatrolVelocity.Z = 0.0;
+
+	FVector End = Start + PatrolVelocity * DeltaSeconds;
+	// Never past the point: a step that would cross it lands on it (no jitter around the point).
+	const double Along = Direction.X * (End.X - Start.X) + Direction.Y * (End.Y - Start.Y);
+	if (Distance > UE_KINDA_SMALL_NUMBER && Along >= Distance)
+	{
+		End.X = Target.X;
+		End.Y = Target.Y;
+		PatrolVelocity = FVector::ZeroVector;
+	}
+	End.Z = FMath::FInterpTo(Start.Z, Target.Z, DeltaSeconds, PatrolHeightInterpSpeed);
+
+	// Last guard (task-248-01): never into a block cell.
+	SetActorLocation(ConstrainToClearCells(Grid, Start, End, &PatrolVelocity));
+}
+
+float ARRDrone::GetPatrolSpeed(double Distance) const
+{
+	const double Ramp = FMath::Max(1.0, static_cast<double>(PatrolSpeedRampDistance));
+	const double Blend = FMath::SmoothStep(0.0, Ramp, Distance);
+	const double Speed = FMath::Lerp(static_cast<double>(PatrolNearSpeed), static_cast<double>(PatrolFarSpeed), Blend);
+	// Arrival: below Speed / PatrolArrivalRate uu the drone settles exponentially instead of arriving at full near speed.
+	return static_cast<float>(PatrolArrivalRate > 0.f ? FMath::Min(Speed, Distance * PatrolArrivalRate) : Speed);
 }
 
 const ARRArenaGrid* ARRDrone::GetTerrainGrid() const
@@ -811,78 +826,88 @@ const ARRArenaGrid* ARRDrone::GetTerrainGrid() const
 	return IsValid(OwnerMiner) ? OwnerMiner->GetArenaGrid() : nullptr;
 }
 
-float ARRDrone::GetEscortCandidateYaw(int32 SlotIndex) const
+bool ARRDrone::IsPatrolOffsetClear(const ARRArenaGrid* Grid, const FVector2D& Offset) const
 {
-	const float SideSign = bEscortOnRightSide ? 1.f : -1.f;
-	const float IdealYaw = EscortHeadingYaw + SideSign * FMath::Lerp(EscortRestAngleDegrees, EscortMoveAngleDegrees, EscortMoveBlend);
-	switch (SlotIndex)
-	{
-	case 1:
-		return IdealYaw + SideSign * EscortAlternateAngleDegrees;
-	case 2:
-		return IdealYaw - SideSign * EscortAlternateAngleDegrees;
-	case 3:
-		return IdealYaw + SideSign * EscortWideAngleDegrees;
-	case 4:
-		return IdealYaw - SideSign * EscortWideAngleDegrees;
-	case 5:
-		return EscortHeadingYaw + 180.f;
-	default:
-		return IdealYaw;
-	}
-}
-
-bool ARRDrone::IsEscortSlotClear(const ARRArenaGrid* Grid, int32 SlotIndex) const
-{
-	if (!Grid || SlotIndex == EscortFallbackSlotIndex)
+	if (!Grid)
 	{
 		return true;
 	}
-
-	float Sin = 0.f;
-	float Cos = 0.f;
-	FMath::SinCos(&Sin, &Cos, FMath::DegreesToRadians(GetEscortCandidateYaw(SlotIndex)));
-	const FVector Radial(Cos, Sin, 0.f);
-	const FVector Tangential(-Sin, Cos, 0.f);
-	const FVector MinerLocation = OwnerMiner->GetActorLocation();
-	const FVector Slot = MinerLocation + Radial * EscortDistance;
-
-	// The miner-to-slot segment, a margin past the slot, then the figure-eight span across it (it fades out while moving).
-	if (!Grid->HasLineOfSight(MinerLocation, Slot + Radial * DroneWallClearance))
+	const double Length = Offset.Size();
+	if (Length <= UE_KINDA_SMALL_NUMBER)
 	{
-		return false;
+		return !Grid->IsBlockCell(Grid->GetCellAtWorld(OwnerMiner->GetActorLocation()));
 	}
-	const float TangentialReach = EscortFigureEightTangential * (1.f - EscortMoveBlend) + DroneWallClearance;
-	return Grid->HasLineOfSight(Slot, Slot + Tangential * TangentialReach) && Grid->HasLineOfSight(Slot, Slot - Tangential * TangentialReach);
+	// The miner-to-point segment and a margin past the point (task-248-01 rule): no block on the way, none at the point.
+	const FVector MinerLocation = OwnerMiner->GetActorLocation();
+	const FVector2D Reach = Offset * ((Length + DroneWallClearance) / Length);
+	return Grid->HasLineOfSight(MinerLocation, MinerLocation + FVector(Reach.X, Reach.Y, 0.0));
 }
 
-int32 ARRDrone::SelectEscortSlot() const
+void ARRDrone::PickPatrolPoint()
 {
 	const ARRArenaGrid* Grid = GetTerrainGrid();
-	for (int32 SlotIndex = 0; SlotIndex < EscortFallbackSlotIndex; ++SlotIndex)
+	const FVector MinerLocation = OwnerMiner->GetActorLocation();
+	const FVector2D DroneOffset(GetActorLocation().X - MinerLocation.X, GetActorLocation().Y - MinerLocation.Y);
+	const double MinRadius = FMath::Max(0.f, FMath::Min(PatrolMinRadius, PatrolMaxRadius));
+	const double MaxRadius = FMath::Max(PatrolMinRadius, PatrolMaxRadius);
+
+	// Random candidates in the zone; the miner's facing, aim and movement play no part (task-251-01).
+	bool bFound = false;
+	FVector2D Best = FVector2D::ZeroVector;
+	double BestScore = TNumericLimits<double>::Lowest();
+	for (int32 Attempt = 0; Attempt < FMath::Max(1, PatrolPickAttempts); ++Attempt)
 	{
-		if (IsEscortSlotClear(Grid, SlotIndex))
+		const double Angle = PatrolRandom.FRandRange(0.f, UE_TWO_PI);
+		const double Radius = PatrolRandom.FRandRange(static_cast<float>(MinRadius), static_cast<float>(MaxRadius));
+		const FVector2D Candidate(FMath::Cos(Angle) * Radius, FMath::Sin(Angle) * Radius);
+		if (!IsPatrolOffsetClear(Grid, Candidate))
 		{
-			return SlotIndex;
+			continue;
+		}
+		// The straight flight to the candidate should stay in the zone (never across the miner), and be a real hop.
+		const double PathDistance = FMath::ClosestPointOnSegment2D(FVector2D::ZeroVector, DroneOffset, Candidate).Size();
+		const bool bHop = FVector2D::Distance(DroneOffset, Candidate) >= PatrolMinHopDistance;
+		if (bHop && PathDistance >= MinRadius - UE_KINDA_SMALL_NUMBER)
+		{
+			Best = Candidate;
+			bFound = true;
+			break;
+		}
+		const double Score = PathDistance - (bHop ? 0.0 : 1.0e6);
+		if (!bFound || Score > BestScore)
+		{
+			Best = Candidate;
+			BestScore = Score;
+			bFound = true;
 		}
 	}
-	return EscortFallbackSlotIndex;
+
+	bPatrolFallback = !bFound;
+	PatrolOffset = bFound ? Best : FVector2D::ZeroVector;
+	if (bPatrolFallback)
+	{
+		PatrolTimer = FMath::Max(0.02f, PatrolFallbackRetryInterval);
+	}
+	else
+	{
+		const float MinInterval = FMath::Max(0.1f, PatrolMinInterval);
+		PatrolTimer = static_cast<float>(PatrolRandom.FRandRange(MinInterval, FMath::Max(MinInterval, PatrolMaxInterval)));
+	}
 }
 
-void ARRDrone::UpdateEscortSlot(float DeltaSeconds)
+void ARRDrone::UpdatePatrolPoint(float DeltaSeconds)
 {
-	EscortSlotHoldTime += DeltaSeconds;
-	const int32 BestSlot = SelectEscortSlot();
-	if (BestSlot == EscortSlotIndex)
+	PatrolTimer -= DeltaSeconds;
+	bool bRepick = PatrolTimer <= 0.f;
+	if (!bRepick && !bPatrolFallback)
 	{
-		return;
+		const FVector Point = ComputeOrbitPoint();
+		bRepick = FVector::DistSquared2D(GetActorLocation(), Point) <= FMath::Square(PatrolReachDistance)
+			|| !IsPatrolOffsetClear(GetTerrainGrid(), PatrolOffset);
 	}
-	// A blocked slot is left at once; a better one waits for the minimum hold, so a corner does not make the drone hesitate.
-	const bool bCurrentBlocked = !IsEscortSlotClear(GetTerrainGrid(), EscortSlotIndex);
-	if (bCurrentBlocked || EscortSlotHoldTime >= EscortSlotChangeDelay)
+	if (bRepick)
 	{
-		EscortSlotIndex = BestSlot;
-		EscortSlotHoldTime = 0.f;
+		PickPatrolPoint();
 	}
 }
 
@@ -1046,29 +1071,15 @@ FVector ARRDrone::ComputeOrbitPoint() const
 	const FVector MinerLocation = OwnerMiner->GetActorLocation();
 	const double FloorZ = MinerLocation.Z - OwnerMiner->GetCapsuleComponent()->GetScaledCapsuleHalfHeight();
 
-	// No clear candidate (task-248-01): just above the miner, a bit higher, without figure-eight.
-	if (EscortSlotIndex == EscortFallbackSlotIndex)
+	// No valid patrol candidate (task-248-01): just above the miner, a bit higher.
+	if (bPatrolFallback)
 	{
 		return FVector(MinerLocation.X, MinerLocation.Y, FloorZ + GetEscortHeight() + EscortFallbackExtraHeight);
 	}
 
-	// Slot direction: the current candidate (0 = ideal: from the heading, toward the escort side, at the angle blended from the
-	// shoulder at rest to behind when moving).
-	const float SlotYaw = GetEscortCandidateYaw(EscortSlotIndex);
-	float Sin = 0.f;
-	float Cos = 0.f;
-	FMath::SinCos(&Sin, &Cos, FMath::DegreesToRadians(SlotYaw));
-	const FVector Radial(Cos, Sin, 0.f);
-	const FVector Tangential(-Sin, Cos, 0.f);
-
-	// Rest figure-eight (Lissajous 1:2): long axis tangential, short axis radial, so the distance to the miner varies little.
-	const float RestWeight = 1.f - EscortMoveBlend;
-	const FVector FigureEight = (Tangential * (EscortFigureEightTangential * FMath::Sin(EscortFigureEightPhase))
-		+ Radial * (EscortFigureEightRadial * FMath::Sin(2.f * EscortFigureEightPhase))) * RestWeight;
-
-	const FVector Horizontal = Radial * EscortDistance + FigureEight;
-	// Height (task-249-01): calm-to-alert centre, two bobs and the dip gesture, inside the 130-190 band.
-	return FVector(MinerLocation.X + Horizontal.X, MinerLocation.Y + Horizontal.Y, FloorZ + GetEscortHeight());
+	// The point moves with the miner (task-251-01). Height (task-249-01): calm-to-alert centre, two bobs and the dip gesture,
+	// inside the 130-190 band.
+	return FVector(MinerLocation.X + PatrolOffset.X, MinerLocation.Y + PatrolOffset.Y, FloorZ + GetEscortHeight());
 }
 
 FVector ARRDrone::ComputeDigHoverPoint() const
@@ -1142,13 +1153,12 @@ void ARRDrone::EndHack()
 
 void ARRDrone::ResumeOrbit()
 {
-	// The spring starts from where the drone is, at rest: it flies back to the slot smoothly.
-	EscortVelocity = FVector::ZeroVector;
-	// The slot is chosen afresh after a dig or hack (task-248-01).
+	// The follow starts from where the drone is, at rest: it flies back to the zone smoothly.
+	PatrolVelocity = FVector::ZeroVector;
+	// A fresh patrol point after a dig or hack (task-251-01), valid on the current terrain (task-248-01).
 	if (IsValid(OwnerMiner))
 	{
-		EscortSlotIndex = SelectEscortSlot();
-		EscortSlotHoldTime = 0.f;
+		PickPatrolPoint();
 	}
 }
 

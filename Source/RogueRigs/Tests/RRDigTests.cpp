@@ -920,16 +920,18 @@ bool FRRDigArcReleaseTest::RunTest(const FString& Parameters)
 	return true;
 }
 
-IMPLEMENT_SIMPLE_AUTOMATION_TEST(FRRDroneEscortTest, "RogueRigs.Dig.DroneEscort",
+IMPLEMENT_SIMPLE_AUTOMATION_TEST(FRRDronePatrolTest, "RogueRigs.Dig.DronePatrol",
 	EAutomationTestFlags::EditorContext | EAutomationTestFlags::EngineFilter)
 
-bool FRRDroneEscortTest::RunTest(const FString& Parameters)
+bool FRRDronePatrolTest::RunTest(const FString& Parameters)
 {
 	using namespace RRDigTests;
 
-	// Escort movement (task-247-01), headless position check only: on the open floor row y = 129 of arena_m1_fine (x 80..151
-	// floor with two clear rows on each side), the miner walks +X at its max speed for 3 s, then rests 8 s. Moving at constant
-	// velocity, the drone settles behind the miner on the escort side; at rest it stays in the 110-140 uu escort band.
+	// Patrol movement (task-251-01, replaces the task-247-01 escort check), headless position check only: on the open floor row
+	// y = 129 of arena_m1_fine (x 80..151 floor with two clear rows on each side). Rest: the same patrol seed run twice with the
+	// miner facing +Y then -Y gives the same drone offsets (no dependence on the facing), the drone stays in the 60-160 uu zone and
+	// its patrol point changes at least every 5 s. Walk: the miner walks +X at its max speed for 3 s (the drone lags behind),
+	// then rests (the drone catches up into the zone). Every frame: the drone never in a block cell, the patrol point valid.
 	const FIntPoint StartCell(84, 129);
 	FTestWorld TestWorld;
 	ARRArenaGrid* Grid = nullptr;
@@ -952,76 +954,144 @@ bool FRRDroneEscortTest::RunTest(const FString& Parameters)
 	MinerMovement->bRunPhysicsWithNoController = true;
 	MinerMovement->SetDefaultMovementMode();
 
-	// Moving: 180 frames of +X input; the last 30 frames are the settled phase.
+	const double ZoneMin = FDroneAccess::PatrolMinRadiusOf(Drone);
+	const double ZoneMax = FDroneAccess::PatrolMaxRadiusOf(Drone);
+	constexpr double ZoneTolerance = 10.0;
+	const int32 MaxPointFrames = FMath::CeilToInt32(FDroneAccess::PatrolMaxIntervalOf(Drone) / FrameSeconds) + 1;
+	int32 InBlockFrames = 0;
+	int32 InvalidPointFrames = 0;
+	int32 SampledFrames = 0;
+	bool bAlwaysOrbit = true;
+	auto Step = [&](const FVector& Direction)
+	{
+		if (!Direction.IsZero())
+		{
+			FMinerAccess::PendingMoveInputOf(Miner) = Direction;
+			Miner->AddMovementInput(Direction, 1.f);
+		}
+		TestWorld.Tick();
+		++SampledFrames;
+		bAlwaysOrbit &= Drone->GetState() == ERRDroneState::Orbit;
+		InBlockFrames += Grid->IsBlockCell(Grid->GetCellAtWorld(Drone->GetActorLocation())) ? 1 : 0;
+		InvalidPointFrames += !FDroneAccess::PatrolFallbackOf(Drone) && !FDroneAccess::IsPatrolOffsetClearOf(Drone, Grid, FDroneAccess::PatrolOffsetOf(Drone)) ? 1 : 0;
+	};
+	auto Offset2D = [&]()
+	{
+		const FVector Offset = Drone->GetActorLocation() - Miner->GetActorLocation();
+		return FVector2D(Offset.X, Offset.Y);
+	};
+	for (int32 Frame = 0; Frame < 30; ++Frame)
+	{
+		Step(FVector::ZeroVector);
+	}
+
+	// Rest, twice with the same seed and opposite facings: 10 s each, sampled every frame.
+	constexpr int32 PatrolSeed = 251;
+	constexpr int32 RestFrames = 600;
+	struct FRestRun
+	{
+		TArray<FVector2D> Offsets;
+		int32 PointChanges = 0;
+		int32 LongestPointFrames = 0;
+		int32 OutOfZone = 0;
+		double MinDistance = TNumericLimits<double>::Max();
+		double MaxDistance = 0.0;
+	};
+	auto RunRest = [&](float FacingYaw, FRestRun& Run)
+	{
+		Miner->SetActorRotation(FRotator(0.f, FacingYaw, 0.f));
+		FDroneAccess::RestartPatrolOf(Drone, PatrolSeed);
+		FVector2D LastPoint = FDroneAccess::PatrolOffsetOf(Drone);
+		int32 LastChange = 0;
+		for (int32 Frame = 1; Frame <= RestFrames; ++Frame)
+		{
+			Step(FVector::ZeroVector);
+			const FVector2D Offset = Offset2D();
+			Run.Offsets.Add(Offset);
+			const double Distance = Offset.Size();
+			Run.MinDistance = FMath::Min(Run.MinDistance, Distance);
+			Run.MaxDistance = FMath::Max(Run.MaxDistance, Distance);
+			Run.OutOfZone += Distance < ZoneMin - ZoneTolerance || Distance > ZoneMax + ZoneTolerance ? 1 : 0;
+			const FVector2D Point = FDroneAccess::PatrolOffsetOf(Drone);
+			if (!Point.Equals(LastPoint, 0.01))
+			{
+				++Run.PointChanges;
+				Run.LongestPointFrames = FMath::Max(Run.LongestPointFrames, Frame - LastChange);
+				LastChange = Frame;
+				LastPoint = Point;
+			}
+		}
+		Run.LongestPointFrames = FMath::Max(Run.LongestPointFrames, RestFrames - LastChange);
+	};
+	FRestRun FacingNorth;
+	FRestRun FacingSouth;
+	RunRest(90.f, FacingNorth);
+	RunRest(-90.f, FacingSouth);
+	double MaxFacingDifference = 0.0;
+	for (int32 Index = 0; Index < RestFrames; ++Index)
+	{
+		MaxFacingDifference = FMath::Max(MaxFacingDifference, FVector2D::Distance(FacingNorth.Offsets[Index], FacingSouth.Offsets[Index]));
+	}
+	AddInfo(FString::Printf(TEXT("rest facing +Y: %.1f..%.1f uu from the miner, %d frames out of %.0f-%.0f (+-%.0f), %d point changes, longest point %.2f s"),
+		FacingNorth.MinDistance, FacingNorth.MaxDistance, FacingNorth.OutOfZone, ZoneMin, ZoneMax, ZoneTolerance, FacingNorth.PointChanges, FacingNorth.LongestPointFrames * FrameSeconds));
+	AddInfo(FString::Printf(TEXT("rest facing -Y: %.1f..%.1f uu, %d out of the zone, %d point changes; largest offset difference between the two facings %.3f uu"),
+		FacingSouth.MinDistance, FacingSouth.MaxDistance, FacingSouth.OutOfZone, FacingSouth.PointChanges, MaxFacingDifference));
+	TestTrue(TEXT("rest: the drone offset does not depend on the miner facing (same seed, within 0.5 uu)"), MaxFacingDifference <= 0.5);
+	TestEqual(TEXT("rest: the drone stays in the patrol zone"), FacingNorth.OutOfZone + FacingSouth.OutOfZone, 0);
+	TestTrue(TEXT("rest: the patrol point changes"), FacingNorth.PointChanges >= 2);
+	TestTrue(TEXT("rest: the patrol point changes within 5 s"), FacingNorth.LongestPointFrames <= MaxPointFrames);
+
+	// Walk away: 180 frames of +X input; over the last 30 frames the drone must be behind the miner (lag) and keep pace.
+	FDroneAccess::RestartPatrolOf(Drone, PatrolSeed);
 	const FVector Direction = FVector::ForwardVector;
-	const FVector EscortSide(-Direction.Y, Direction.X, 0.0);
 	constexpr int32 MoveFrames = 180;
 	constexpr int32 SettledFrames = 30;
 	double MinBehind = TNumericLimits<double>::Max();
 	double MaxBehind = TNumericLimits<double>::Lowest();
-	double MinSide = TNumericLimits<double>::Max();
-	double MaxSide = TNumericLimits<double>::Lowest();
+	double MaxWalkDistance = 0.0;
 	double MinSpeed = TNumericLimits<double>::Max();
-	bool bAlwaysOrbit = true;
 	for (int32 Frame = 1; Frame <= MoveFrames; ++Frame)
 	{
-		FMinerAccess::PendingMoveInputOf(Miner) = Direction;
-		Miner->AddMovementInput(Direction, 1.f);
-		TestWorld.Tick();
-		bAlwaysOrbit &= Drone->GetState() == ERRDroneState::Orbit;
+		Step(Direction);
+		MaxWalkDistance = FMath::Max(MaxWalkDistance, Offset2D().Size());
 		if (Frame > MoveFrames - SettledFrames)
 		{
-			const FVector Offset = Drone->GetActorLocation() - Miner->GetActorLocation();
-			const double Behind = -FVector::DotProduct(Offset, Direction);
-			const double Side = FVector::DotProduct(Offset, EscortSide);
+			const double Behind = -FVector2D::DotProduct(Offset2D(), FVector2D(Direction.X, Direction.Y));
 			MinBehind = FMath::Min(MinBehind, Behind);
 			MaxBehind = FMath::Max(MaxBehind, Behind);
-			MinSide = FMath::Min(MinSide, Side);
-			MaxSide = FMath::Max(MaxSide, Side);
 			MinSpeed = FMath::Min(MinSpeed, Miner->GetVelocity().Size2D());
 		}
 	}
-	AddInfo(FString::Printf(TEXT("moving at %.0f uu/s (min, last %d frames): drone %.1f..%.1f uu behind, %.1f..%.1f uu on the escort side"),
-		MinSpeed, SettledFrames, MinBehind, MaxBehind, MinSide, MaxSide));
-	TestTrue(TEXT("drone stays in Orbit"), bAlwaysOrbit);
 	TestTrue(TEXT("miner moves at constant speed"), MinSpeed > 0.9 * MinerMovement->GetMaxSpeed());
-	TestTrue(TEXT("drone behind the miner"), MinBehind > 30.0);
-	TestTrue(TEXT("drone on the escort side"), MinSide > 30.0);
-	TestTrue(TEXT("drone settled (offset spread within 5 uu)"), MaxBehind - MinBehind <= 5.0 && MaxSide - MinSide <= 5.0);
+	TestTrue(TEXT("walk: the drone lags behind the miner"), MinBehind > 20.0);
+	TestTrue(TEXT("walk: the drone keeps pace (within 500 uu)"), MaxWalkDistance <= 500.0);
 
-	// Rest: 2 s to settle (overshoot logged), then one full 6 s figure-eight period, sampled every frame.
-	double MaxStopOvershoot = 0.0;
-	const FVector StopLocation = Miner->GetActorLocation();
-	for (int32 Frame = 0; Frame < 120; ++Frame)
+	// Stop: the drone catches up into the zone, then stays in it.
+	constexpr int32 StopFrames = 300;
+	int32 CatchFrame = INDEX_NONE;
+	int32 OutAfterCatch = 0;
+	for (int32 Frame = 1; Frame <= StopFrames; ++Frame)
 	{
-		TestWorld.Tick();
-		MaxStopOvershoot = FMath::Max(MaxStopOvershoot, FVector::DotProduct(Drone->GetActorLocation() - StopLocation, Direction));
+		Step(FVector::ZeroVector);
+		const double Distance = Offset2D().Size();
+		if (CatchFrame == INDEX_NONE && Distance <= ZoneMax + ZoneTolerance)
+		{
+			CatchFrame = Frame;
+		}
+		if (CatchFrame != INDEX_NONE && Frame > CatchFrame + 60)
+		{
+			OutAfterCatch += Distance < ZoneMin - ZoneTolerance || Distance > ZoneMax + ZoneTolerance ? 1 : 0;
+		}
 	}
-	const double FloorZ = Miner->GetActorLocation().Z - Miner->GetCapsuleComponent()->GetScaledCapsuleHalfHeight();
-	double MinDistance = TNumericLimits<double>::Max();
-	double MaxDistance = 0.0;
-	double MinHeight = TNumericLimits<double>::Max();
-	double MaxHeight = 0.0;
-	double Travel = 0.0;
-	FVector Previous = Drone->GetActorLocation();
-	for (int32 Frame = 0; Frame < 360; ++Frame)
-	{
-		TestWorld.Tick();
-		bAlwaysOrbit &= Drone->GetState() == ERRDroneState::Orbit;
-		const FVector Location = Drone->GetActorLocation();
-		const double Distance = FVector::Dist2D(Location, Miner->GetActorLocation());
-		MinDistance = FMath::Min(MinDistance, Distance);
-		MaxDistance = FMath::Max(MaxDistance, Distance);
-		MinHeight = FMath::Min(MinHeight, Location.Z - FloorZ);
-		MaxHeight = FMath::Max(MaxHeight, Location.Z - FloorZ);
-		Travel += FVector::Dist2D(Location, Previous);
-		Previous = Location;
-	}
-	AddInfo(FString::Printf(TEXT("stop: drone up to %.1f uu ahead of the stop point; rest: %.1f..%.1f uu from the miner, height %.1f..%.1f uu, %.0f uu travelled in 6 s"),
-		MaxStopOvershoot, MinDistance, MaxDistance, MinHeight, MaxHeight, Travel));
-	TestTrue(TEXT("drone stays in Orbit at rest"), bAlwaysOrbit);
-	TestTrue(TEXT("at rest within the escort distance (110-140 uu)"), MinDistance >= 110.0 && MaxDistance <= 140.0);
-	TestTrue(TEXT("at rest the drone keeps moving (figure-eight)"), Travel > 50.0);
+	AddInfo(FString::Printf(TEXT("walk at %.0f uu/s (min, last %d frames): drone %.1f..%.1f uu behind the miner, at most %.1f uu from it; caught up into the zone %.2f s after the stop, %d frames out of it afterwards"),
+		MinSpeed, SettledFrames, MinBehind, MaxBehind, MaxWalkDistance, CatchFrame * FrameSeconds, OutAfterCatch));
+	TestTrue(TEXT("stop: the drone catches up within 2.5 s"), CatchFrame != INDEX_NONE && CatchFrame <= 150);
+	TestEqual(TEXT("stop: the drone stays in the zone after catching up"), OutAfterCatch, 0);
+
+	AddInfo(FString::Printf(TEXT("%d frames sampled: %d with the drone in a block cell, %d with an invalid patrol point"), SampledFrames, InBlockFrames, InvalidPointFrames));
+	TestTrue(TEXT("drone stays in Orbit"), bAlwaysOrbit);
+	TestEqual(TEXT("drone never in a block cell"), InBlockFrames, 0);
+	TestEqual(TEXT("patrol point always valid"), InvalidPointFrames, 0);
 	return true;
 }
 
@@ -1033,7 +1103,8 @@ bool FRRDroneAvoidsWallsTest::RunTest(const FString& Parameters)
 	using namespace RRDigTests;
 
 	// task-248-01, headless position check only: with the miner next to a wall of arena_m1_fine, the drone's cell is never a block
-	// cell, sampled every frame, in Orbit (rest with the ideal slot inside the rock pillar x 129-130, walks along it), Dig (against
+	// cell, sampled every frame, in Orbit (rest with the rock pillar x 129-130 inside the patrol zone, walks along it; the patrol
+	// point always valid, task-251-01), Dig (against
 	// the pillar) and Hack (target inside the rock mass y <= 110, the plain hover point would be in the rock).
 	const FIntPoint OrbitCell(127, 112);
 	FTestWorld TestWorld;
@@ -1057,11 +1128,20 @@ bool FRRDroneAvoidsWallsTest::RunTest(const FString& Parameters)
 		int32 InBlock = 0;
 	};
 	FPhaseCount Counts[3];
+	int32 InvalidPatrolFrames = 0;
+	int32 FallbackFrames = 0;
 	auto Sample = [&]()
 	{
 		FPhaseCount& Count = Counts[static_cast<int32>(Drone->GetState())];
 		++Count.Frames;
 		Count.InBlock += Grid->IsBlockCell(Grid->GetCellAtWorld(Drone->GetActorLocation())) ? 1 : 0;
+		if (Drone->GetState() == ERRDroneState::Orbit)
+		{
+			// task-251-01: the patrol point is always a valid point (clear line from the miner), or the fallback above the miner.
+			const bool bFallback = FDroneAccess::PatrolFallbackOf(Drone);
+			FallbackFrames += bFallback ? 1 : 0;
+			InvalidPatrolFrames += !bFallback && !FDroneAccess::IsPatrolOffsetClearOf(Drone, Grid, FDroneAccess::PatrolOffsetOf(Drone)) ? 1 : 0;
+		}
 	};
 	auto Walk = [&](const FVector& Direction, int32 Frames)
 	{
@@ -1077,13 +1157,9 @@ bool FRRDroneAvoidsWallsTest::RunTest(const FString& Parameters)
 		}
 	};
 
-	// Orbit: facing -Y, the ideal rest slot (heading + 100 degrees, +X) lies in the pillar.
-	Miner->SetActorRotation(FRotator(0.f, -90.f, 0.f));
+	// Orbit: the pillar lies 2 cells east, inside the 160 uu patrol zone; patrol points toward it must be rejected.
 	Drone->SetOwnerMiner(Miner);
 	Sample();
-	const int32 RestSlot = FDroneAccess::EscortSlotIndexOf(Drone);
-	AddInfo(FString::Printf(TEXT("rest slot facing the pillar: candidate %d"), RestSlot));
-	TestNotEqual(TEXT("ideal rest slot rejected (in the pillar)"), RestSlot, 0);
 	Walk(FVector::ZeroVector, 60);
 	Walk(FVector::RightVector, 40);
 	Walk(-FVector::RightVector, 30);
@@ -1117,6 +1193,8 @@ bool FRRDroneAvoidsWallsTest::RunTest(const FString& Parameters)
 		TestTrue(FString::Printf(TEXT("%s sampled"), Names[Index]), Counts[Index].Frames > 0);
 		TestEqual(FString::Printf(TEXT("%s: drone never in a block cell"), Names[Index]), Counts[Index].InBlock, 0);
 	}
+	AddInfo(FString::Printf(TEXT("Orbit: %d frames with an invalid patrol point, %d on the fallback above the miner"), InvalidPatrolFrames, FallbackFrames));
+	TestEqual(TEXT("Orbit: patrol point always valid"), InvalidPatrolFrames, 0);
 	return true;
 }
 

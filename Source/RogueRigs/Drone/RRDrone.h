@@ -1,4 +1,4 @@
-// Rogue Rigs - the helper drone: separate actor spawned by the miner; escorts it (Orbit state), cuts an arc of blocks with a laser (dig) and links to an objective (hack).
+// Rogue Rigs - the helper drone: separate actor spawned by the miner; patrols around it (Orbit state), cuts an arc of blocks with a laser (dig) and links to an objective (hack).
 
 #pragma once
 
@@ -17,7 +17,7 @@ class UStaticMeshComponent;
 UENUM(BlueprintType)
 enum class ERRDroneState : uint8
 {
-	/** Escorts the miner (default): holds a slot beside and behind it on a damped spring, slow figure-eight at rest (task-247-01). */
+	/** Patrols around the miner (default): flies to random patrol points 60-160 uu from it, with a lag that grows with the distance (task-251-01). */
 	Orbit,
 	/** Hovers over the arc of blocks in front of the miner and cuts them with the laser. */
 	Dig,
@@ -46,18 +46,18 @@ DECLARE_DYNAMIC_MULTICAST_DELEGATE_TwoParams(FRROnDigBlockStoppedSignature, FInt
 
 /**
  * The miner's helper drone. Spawned and destroyed by ARRMiner (DroneClass), which calls SetOwnerMiner.
- * Orbit (escort movement, task-247-01, the state keeps its name): the escort heading turns toward the miner's horizontal
- * velocity direction (EscortHeadingTurnRate, only above EscortHeadingMinSpeed; kept at rest). The slot sits EscortDistance
- * from the miner at EscortRestAngleDegrees from the heading on the escort side at rest (the shoulder), EscortMoveAngleDegrees
- * when moving (behind and to the side), blended smoothly by the miner's speed fraction. At rest a slow horizontal
- * figure-eight (EscortFigureEightPeriod, long axis tangential) is added around the slot; height above the
- * miner's floor (capsule bottom) from GetEscortHeight (task-249-01, see Alive). The drone follows the slot with a damped spring (EscortSpringFrequency,
- * EscortDampingRatio, part of the miner velocity fed forward), so it lags a little and overshoots on stop.
- * Walls (task-248-01, owner 2026-10-20): the drone never hovers over a block. The escort tries candidate slots in order (the
- * ideal slot, +-EscortAlternateAngleDegrees, +-EscortWideAngleDegrees from it, then straight behind the miner); a candidate is
- * clear when the 2D segment from the miner to DroneWallClearance past it, and the figure-eight span across it, cross no block
- * cell (ARRArenaGrid::HasLineOfSight). The first clear one is used; none = just above the miner, EscortFallbackExtraHeight
- * higher. A clear slot is held at least EscortSlotChangeDelay; a slot that becomes blocked is left at once. As a last guard, a
+ * Orbit (patrol movement, task-251-01, owner 2026-10-20, replaces the task-247-01 escort; the state keeps its name): the drone
+ * flies to a patrol point picked at random in the zone PatrolMinRadius-PatrolMaxRadius around the miner. The point is an offset
+ * from the miner, so the miner moving only drags the zone; it never depends on the miner's facing, aim or movement direction.
+ * A new point is picked when the drone comes within PatrolReachDistance of it, after a random PatrolMinInterval-PatrolMaxInterval
+ * time, or when it becomes invalid. Follow (horizontal): the desired speed toward the point grows with the distance on a
+ * smoothstep from PatrolNearSpeed to PatrolFarSpeed (reached at PatrolSpeedRampDistance), slowed further at arrival; the drone's
+ * velocity approaches it at PatrolVelocityResponse (the lag), and never passes the point. Height: toward GetEscortHeight above
+ * the miner's floor (capsule bottom, task-249-01, see Alive) at PatrolHeightInterpSpeed.
+ * Walls (task-248-01, owner 2026-10-20): the drone never hovers over a block. A patrol point is valid when the 2D segment from
+ * the miner to DroneWallClearance past it crosses no block cell (ARRArenaGrid::HasLineOfSight); invalid candidates are rejected
+ * and drawn again. No valid candidate = just above the miner, EscortFallbackExtraHeight higher, retried every
+ * PatrolFallbackRetryInterval. When the drone has no clear line to its point it heads for the miner instead. As a last guard, a
  * move that would put the drone in a block cell is cut on the blocked axis (Orbit, Dig and Hack).
  * Alive (task-249-01, owner 2026-10-20, visual only): the Orbit height is EscortCalmHeight, blended toward EscortAlertHeight
  * while an enemy is within EscortAlertRadius of the miner, plus two bobs of different periods, clamped to [EscortMinHeight,
@@ -98,8 +98,9 @@ public:
 	ARRDrone();
 
 	/**
-	 * Sets the miner the drone follows, makes the drone tick after it and snaps the drone to its rest escort slot (heading =
-	 * the miner's facing, spring at rest). Called by ARRMiner right after spawning the drone. Null stops all movement.
+	 * Sets the miner the drone follows, makes the drone tick after it, seeds the patrol stream from the drone's unique id, picks
+	 * a patrol point and snaps the drone to it (velocity zero). Called by ARRMiner right after spawning the drone. Null stops all
+	 * movement.
 	 */
 	UFUNCTION(BlueprintCallable, Category = "Drone")
 	void SetOwnerMiner(ARRMiner* NewOwnerMiner);
@@ -208,7 +209,7 @@ public:
 	UFUNCTION(BlueprintPure, Category = "Drone")
 	float GetMiningSpeed() const;
 
-	/** Runs the behaviour of the current state (Orbit: escorts the miner; Dig: hovers, cuts, draws the laser; Hack: hovers, draws the link). */
+	/** Runs the behaviour of the current state (Orbit: patrols around the miner; Dig: hovers, cuts, draws the laser; Hack: hovers, draws the link). */
 	virtual void Tick(float DeltaSeconds) override;
 
 	/** Broadcast when a block enters the dug arc (also when the drone enters Dig). Blueprint: start a laser beam or effect on Cell. */
@@ -223,7 +224,7 @@ protected:
 	/** Stops a dig in progress so the target blocks do not keep shaking after the drone is gone. */
 	virtual void EndPlay(const EEndPlayReason::Type EndPlayReason) override;
 
-	/** Orbit tick (escort): updates the heading, the move blend and the figure-eight and bob phases, then moves the drone toward the escort slot on the damped spring. */
+	/** Orbit tick (patrol): advances the bob phases, re-picks the patrol point when reached, timed out or invalid, then moves the drone toward it (UpdatePatrolPoint, ComputeOrbitPoint, distance-scaled lag follow). */
 	void TickOrbit(float DeltaSeconds);
 
 	/** Dig tick: checks the cancel rules, drops destroyed blocks, moves to the arc centre, updates the laser and damages every dug block. */
@@ -235,16 +236,41 @@ protected:
 	/** Leaves Hack: hides the laser, clears the target and resumes the escort from where the drone is. */
 	void EndHack();
 
-	/** Resumes the escort from the drone's current location: the spring starts at rest (zero velocity) and pulls the drone to the slot, so it never snaps; the escort slot is chosen afresh. */
+	/** Resumes the patrol from the drone's current location: velocity zero and a fresh patrol point (PickPatrolPoint), so the drone flies back smoothly, never snaps. */
 	void ResumeOrbit();
 
 	/**
-	 * World position of the escort slot for the current heading, move blend, phases and EscortSlotIndex (task-247-01,
-	 * task-248-01): EscortDistance from the miner at the candidate yaw (GetEscortCandidateYaw), plus the rest figure-eight
-	 * scaled by (1 - move blend), at GetEscortHeight above the miner's floor (task-249-01). The fallback slot is the miner's XY,
-	 * EscortFallbackExtraHeight higher, without figure-eight. Requires a valid miner.
+	 * Restarts the patrol around the miner (SetOwnerMiner, tests): velocity zero, a fresh patrol point, and the drone snapped to
+	 * it (ComputeOrbitPoint). Does not reseed PatrolRandom. Requires a valid miner.
+	 */
+	void RestartPatrol();
+
+	/**
+	 * World position of the current patrol point (task-251-01): miner XY + PatrolOffset at GetEscortHeight above the miner's floor
+	 * (task-249-01). The fallback point (bPatrolFallback) is the miner's XY, EscortFallbackExtraHeight higher. Requires a valid miner.
 	 */
 	FVector ComputeOrbitPoint() const;
+
+	/**
+	 * True when the patrol offset Offset (from the miner, XY) is valid on Grid (task-248-01 rule): the 2D segment from the miner to
+	 * DroneWallClearance past the point crosses no block cell. Always true without a grid. Requires a valid miner.
+	 */
+	bool IsPatrolOffsetClear(const ARRArenaGrid* Grid, const FVector2D& Offset) const;
+
+	/**
+	 * Picks a new patrol point (task-251-01): up to PatrolPickAttempts random candidates (angle uniform, radius uniform in
+	 * [PatrolMinRadius, PatrolMaxRadius]) from PatrolRandom; invalid ones (IsPatrolOffsetClear) are rejected. Among the valid ones
+	 * the first whose straight path from the drone stays at least PatrolMinRadius from the miner and that lies at least
+	 * PatrolMinHopDistance from the drone wins, else the valid one whose path passes farthest from the miner. None valid =
+	 * fallback above the miner. Draws the next timeout in [PatrolMinInterval, PatrolMaxInterval]. Requires a valid miner.
+	 */
+	void PickPatrolPoint();
+
+	/** Re-picks the patrol point when the drone is within PatrolReachDistance of it, when its timeout ran out, when it became invalid, or (fallback) every PatrolFallbackRetryInterval. Requires a valid miner. */
+	void UpdatePatrolPoint(float DeltaSeconds);
+
+	/** Desired horizontal speed toward a target Distance uu away: smoothstep from PatrolNearSpeed to PatrolFarSpeed over [0, PatrolSpeedRampDistance], then at most Distance * PatrolArrivalRate. */
+	float GetPatrolSpeed(double Distance) const;
 
 	/**
 	 * World position the drone hovers at while digging (task-248-01): GetDigImpactPoint moved DigHoverFaceDistance along the
@@ -256,30 +282,6 @@ protected:
 
 	/** Grid the drone avoids: the dig grid in Dig, else the owner miner's arena grid. Null when there is none. */
 	const ARRArenaGrid* GetTerrainGrid() const;
-
-	/**
-	 * Yaw in degrees of escort candidate SlotIndex for the current heading and move blend: 0 the ideal slot, 1 and 2 the ideal
-	 * +- EscortAlternateAngleDegrees (toward behind first), 3 and 4 the ideal +- EscortWideAngleDegrees (same order), 5 straight
-	 * behind the miner (heading + 180). Not used for EscortFallbackSlotIndex.
-	 */
-	float GetEscortCandidateYaw(int32 SlotIndex) const;
-
-	/**
-	 * True when escort candidate SlotIndex is clear on Grid: the 2D segment from the miner to DroneWallClearance past the slot,
-	 * and the segments from the slot across the rest figure-eight span (tangential half width scaled by 1 - move blend, plus
-	 * DroneWallClearance) on both sides, cross no block cell. The fallback slot (above the miner) is always clear; so is every
-	 * slot without a grid. Requires a valid miner.
-	 */
-	bool IsEscortSlotClear(const ARRArenaGrid* Grid, int32 SlotIndex) const;
-
-	/** First clear escort candidate (0..5, see GetEscortCandidateYaw); EscortFallbackSlotIndex when none is clear. Requires a valid miner. */
-	int32 SelectEscortSlot() const;
-
-	/**
-	 * Escort slot choice, every Orbit tick: switches to the best clear candidate when the current slot is blocked (at once) or
-	 * when it has been held for at least EscortSlotChangeDelay (so the drone does not hesitate on a corner). Requires a valid miner.
-	 */
-	void UpdateEscortSlot(float DeltaSeconds);
 
 	/**
 	 * Desired hover point made clear (Dig and Hack, task-248-01): unchanged when the 2D segment from the miner to
@@ -394,59 +396,63 @@ protected:
 	/** Current User.Intensity of the dig impact effect: 1 while cutting, falls to 0 during the fade. */
 	float DigImpactIntensity = 0.f;
 
-	/** Horizontal distance from the miner's location to the escort slot, in uu (drone gdd: 110-140 band; provisional, 2026-10-20). */
+	/** Inner radius of the patrol zone around the miner: a patrol point is at least this far from it (2D), in uu (task-251-01; provisional, owner 2026-10-20). */
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Drone|Orbit", meta = (ClampMin = 0, Units = "cm"))
-	float EscortDistance = 125.f;
+	float PatrolMinRadius = 60.f;
 
-	/** Slot angle from the escort heading at rest, toward the escort side, in degrees: 90 = beside the miner, 100 = the shoulder, a little behind (provisional). */
-	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Drone|Orbit", meta = (ClampMin = 0, ClampMax = 180, Units = "deg"))
-	float EscortRestAngleDegrees = 100.f;
+	/** Outer radius of the patrol zone around the miner: a patrol point is at most this far from it (2D), in uu (task-251-01; provisional). */
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Drone|Orbit", meta = (ClampMin = 0, Units = "cm"))
+	float PatrolMaxRadius = 160.f;
 
-	/** Slot angle from the escort heading at full speed, toward the escort side, in degrees: 145 = behind and to the side (provisional). */
-	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Drone|Orbit", meta = (ClampMin = 0, ClampMax = 180, Units = "deg"))
-	float EscortMoveAngleDegrees = 145.f;
+	/** The patrol point counts as reached (a new one is picked) when the drone is within this 2D distance of it, in uu (task-251-01; provisional). */
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Drone|Orbit", meta = (ClampMin = 0, Units = "cm"))
+	float PatrolReachDistance = 25.f;
 
-	/** Escort side: true = the miner's right of its movement heading (+90 degrees of yaw), false = its left (provisional). */
-	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Drone|Orbit")
-	bool bEscortOnRightSide = true;
-
-	/** Turn rate of the escort heading toward the miner's velocity direction, in degrees per second, so the slot swings around the miner instead of snapping (provisional). */
-	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Drone|Orbit", meta = (ClampMin = 0, Units = "deg/s"))
-	float EscortHeadingTurnRate = 360.f;
-
-	/** Horizontal miner speed below which the escort heading is kept (the miner is at rest), in uu/s (provisional). */
-	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Drone|Orbit", meta = (ClampMin = 0, Units = "cm/s"))
-	float EscortHeadingMinSpeed = 50.f;
-
-	/** Speed of the move blend (rest slot to move slot, figure-eight fading) toward the miner's speed fraction of its max speed (FMath::FInterpTo speed; provisional). */
-	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Drone|Orbit", meta = (ClampMin = 0))
-	float EscortBlendSpeed = 4.f;
-
-	/** Period of the rest figure-eight around the slot, in seconds (drone gdd: about 6 s; provisional). */
+	/** Shortest random lifetime of a patrol point before a new one is picked, in seconds (task-251-01: 3.5-5 s; provisional). */
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Drone|Orbit", meta = (ClampMin = 0.1, Units = "s"))
-	float EscortFigureEightPeriod = 6.f;
+	float PatrolMinInterval = 3.5f;
 
-	/** Half width of the figure-eight along its long axis, tangential to the miner (perpendicular to the miner-to-slot line), in uu (provisional). */
+	/** Longest random lifetime of a patrol point before a new one is picked, in seconds (task-251-01; provisional). */
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Drone|Orbit", meta = (ClampMin = 0.1, Units = "s"))
+	float PatrolMaxInterval = 5.f;
+
+	/** A new patrol point should lie at least this far from the drone (2D), so reaching one does not pick one right beside it, in uu (provisional). */
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Drone|Orbit", meta = (ClampMin = 0, Units = "cm"))
-	float EscortFigureEightTangential = 30.f;
+	float PatrolMinHopDistance = 60.f;
 
-	/** Half width of the figure-eight along its short axis, radial (toward or away from the miner), in uu; keeps the rest distance near 115-137 uu (provisional). */
-	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Drone|Orbit", meta = (ClampMin = 0, Units = "cm"))
-	float EscortFigureEightRadial = 10.f;
+	/** Random candidates drawn per patrol pick before falling back above the miner (provisional). */
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Drone|Orbit", meta = (ClampMin = 1))
+	int32 PatrolPickAttempts = 12;
 
-	/** Natural frequency of the follow spring, in Hz: higher follows tighter (provisional). */
-	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Drone|Orbit", meta = (ClampMin = 0.01, Units = "Hz"))
-	float EscortSpringFrequency = 1.5f;
+	/** Desired follow speed right at the patrol point (before the arrival slowdown), in uu/s (task-251-01: about 40; provisional). */
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Drone|Orbit", meta = (ClampMin = 0, Units = "cm/s"))
+	float PatrolNearSpeed = 40.f;
 
-	/** Damping ratio of the follow spring: 1 = critically damped, below 1 overshoots a little on stop (provisional: 0.75, slightly under-damped). */
+	/** Desired follow speed far from the patrol point (the clamp), in uu/s (task-251-01: about 700, above the miner's 600; provisional). */
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Drone|Orbit", meta = (ClampMin = 0, Units = "cm/s"))
+	float PatrolFarSpeed = 700.f;
+
+	/** Distance to the patrol point at which the follow speed reaches PatrolFarSpeed (smoothstep from PatrolNearSpeed below), in uu; sets the lag behind a running miner (about 225 uu at 600 uu/s; provisional). */
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Drone|Orbit", meta = (ClampMin = 1, Units = "cm"))
+	float PatrolSpeedRampDistance = 300.f;
+
+	/** Arrival slowdown: the desired speed is at most the distance times this rate, so the drone settles on a point without overshoot (1/s; provisional). */
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Drone|Orbit", meta = (ClampMin = 0))
-	float EscortDampingRatio = 0.75f;
+	float PatrolArrivalRate = 4.f;
 
-	/** Share of the miner's velocity the spring damps toward (feed-forward): 1 = no steady lag behind the slot, 0 = full spring lag (provisional). */
-	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Drone|Orbit", meta = (ClampMin = 0, ClampMax = 1))
-	float EscortVelocityFeedForward = 0.8f;
+	/** Rate at which the drone's velocity approaches the desired one (1/s, exponential): the inertia of the lag; lower = softer (provisional). */
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Drone|Orbit", meta = (ClampMin = 0.01))
+	float PatrolVelocityResponse = 5.f;
 
-	/** Distance from the slot beyond which the drone snaps to it and the spring stops (miner teleported), in uu (provisional). */
+	/** Speed at which the drone's height follows the Orbit height (FMath::FInterpTo speed; provisional). */
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Drone|Orbit", meta = (ClampMin = 0))
+	float PatrolHeightInterpSpeed = 6.f;
+
+	/** Horizontal miner speed at or below which the miner counts as resting (idle gestures), in uu/s (provisional; was EscortHeadingMinSpeed). */
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Drone|Orbit", meta = (ClampMin = 0, Units = "cm/s"))
+	float MinerRestSpeed = 50.f;
+
+	/** Distance from the patrol point beyond which the drone snaps to it and stops (miner teleported), in uu (provisional). */
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Drone|Orbit", meta = (ClampMin = 0, Units = "cm"))
 	float EscortSnapDistance = 2000.f;
 
@@ -558,23 +564,15 @@ protected:
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Drone|Alive", meta = (ClampMin = 0.1, Units = "s"))
 	float DipDuration = 0.9f;
 
-	/** Angle of the first alternate escort slots, either side of the ideal slot, in degrees (task-248-01; provisional). */
-	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Drone|Walls", meta = (ClampMin = 0, ClampMax = 180, Units = "deg"))
-	float EscortAlternateAngleDegrees = 45.f;
+	/** While on the fallback point above the miner (no valid patrol candidate), a new pick is tried this often, in seconds (task-251-01; provisional). */
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Drone|Walls", meta = (ClampMin = 0.02, Units = "s"))
+	float PatrolFallbackRetryInterval = 0.3f;
 
-	/** Angle of the second alternate escort slots, either side of the ideal slot, in degrees (task-248-01; provisional). */
-	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Drone|Walls", meta = (ClampMin = 0, ClampMax = 180, Units = "deg"))
-	float EscortWideAngleDegrees = 90.f;
-
-	/** Minimum time a clear escort slot is held before the drone switches to a better one, in seconds (task-248-01; provisional). A blocked slot is left at once. */
-	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Drone|Walls", meta = (ClampMin = 0, Units = "s"))
-	float EscortSlotChangeDelay = 0.3f;
-
-	/** Extra height of the fallback slot just above the miner (no clear candidate), added to HoverHeight, in uu (task-248-01; provisional). */
+	/** Extra height of the fallback point just above the miner (no valid patrol candidate), added to the Orbit height, in uu (task-248-01; provisional). */
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Drone|Walls", meta = (ClampMin = 0, Units = "cm"))
 	float EscortFallbackExtraHeight = 40.f;
 
-	/** Margin kept between a slot or hover point and the nearest block along the checked segments, in uu (task-248-01; provisional; the grey box drone is a 40 uu sphere). */
+	/** Margin kept between a patrol or hover point and the nearest block along the checked segments, in uu (task-248-01; provisional; the grey box drone is a 40 uu sphere). */
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Drone|Walls", meta = (ClampMin = 0, Units = "cm"))
 	float DroneWallClearance = 20.f;
 
@@ -586,7 +584,7 @@ protected:
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Drone|Dig", meta = (Units = "cm"))
 	float DigHoverHeight = 130.f;
 
-	/** Speed at which the drone moves toward its dig or hack hover point (FMath::VInterpTo speed). 0 = snap to it. Orbit uses the escort spring instead. */
+	/** Speed at which the drone moves toward its dig or hack hover point (FMath::VInterpTo speed). 0 = snap to it. Orbit uses the patrol follow instead. */
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Drone|Orbit", meta = (ClampMin = 0))
 	float FollowInterpSpeed = 10.f;
 
@@ -650,29 +648,23 @@ protected:
 	UPROPERTY(VisibleInstanceOnly, BlueprintReadOnly, Category = "Drone|Hack")
 	TObjectPtr<AActor> HackTarget;
 
-	/** Escort heading yaw in degrees: the miner's last movement direction (its facing until it first moves). */
-	float EscortHeadingYaw = 0.f;
-
-	/** Move blend in [0, 1]: 0 = rest slot with the full figure-eight, 1 = move slot behind and to the side, no figure-eight. */
-	float EscortMoveBlend = 0.f;
-
-	/** Phase of the rest figure-eight in radians, in [0, 2*pi). */
-	float EscortFigureEightPhase = 0.f;
-
 	/** Phase of the vertical bob in radians, in [0, 2*pi). */
 	float EscortBobPhase = 0.f;
 
-	/** Velocity of the drone on the escort spring, in uu/s; reset to zero when the escort resumes. */
-	FVector EscortVelocity = FVector::ZeroVector;
+	/** Horizontal velocity of the drone in Orbit, in uu/s (Z = 0); reset to zero when the patrol resumes or restarts. */
+	FVector PatrolVelocity = FVector::ZeroVector;
 
-	/** Escort slot index meaning "just above the miner" (no clear candidate). */
-	static constexpr int32 EscortFallbackSlotIndex = 6;
+	/** Current patrol point as a 2D offset from the miner's location (moves with the miner); zero on the fallback. */
+	FVector2D PatrolOffset = FVector2D::ZeroVector;
 
-	/** Current escort slot: a candidate of GetEscortCandidateYaw (0 = ideal) or EscortFallbackSlotIndex. */
-	int32 EscortSlotIndex = 0;
+	/** True when no valid patrol candidate was found: the point is just above the miner, EscortFallbackExtraHeight higher. */
+	bool bPatrolFallback = false;
 
-	/** Time the current escort slot has been held, in seconds (reset on every slot change). */
-	float EscortSlotHoldTime = 0.f;
+	/** Time left before the patrol point is re-picked (random lifetime, or the fallback retry), in seconds. */
+	float PatrolTimer = 0.f;
+
+	/** Own random stream for the patrol picks (seeded in SetOwnerMiner), so they never consume the global FMath stream other systems and tests seed. */
+	FRandomStream PatrolRandom;
 
 	/** Phase of the fast vertical bob in radians, in [0, 2*pi). */
 	float EscortBobSecondPhase = 0.f;

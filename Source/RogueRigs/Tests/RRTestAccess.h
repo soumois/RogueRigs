@@ -195,7 +195,7 @@ namespace RRTestAccess
 		}
 	};
 
-	/** ARRDrone: the laser mesh and the arc block cap. */
+	/** ARRDrone: the laser mesh, the arc block cap, dig hover values, the idle gesture and the patrol state (task-251-01). */
 	struct FDroneAccess : public ARRDrone
 	{
 		static const UStaticMeshComponent* Laser(const ARRDrone* Drone) { return Drone->*(&FDroneAccess::LaserMesh); }
@@ -203,7 +203,19 @@ namespace RRTestAccess
 		static float BeamBaseHeight(const ARRDrone* Drone) { return Drone->*(&FDroneAccess::LaserMeshBaseHeight); }
 		static float DigHoverFaceDistanceOf(const ARRDrone* Drone) { return Drone->*(&FDroneAccess::DigHoverFaceDistance); }
 		static float DigHoverHeightOf(const ARRDrone* Drone) { return Drone->*(&FDroneAccess::DigHoverHeight); }
-		static int32 EscortSlotIndexOf(const ARRDrone* Drone) { return Drone->*(&FDroneAccess::EscortSlotIndex); }
+		static FVector2D PatrolOffsetOf(const ARRDrone* Drone) { return Drone->*(&FDroneAccess::PatrolOffset); }
+		static bool PatrolFallbackOf(const ARRDrone* Drone) { return Drone->*(&FDroneAccess::bPatrolFallback); }
+		static float PatrolMinRadiusOf(const ARRDrone* Drone) { return Drone->*(&FDroneAccess::PatrolMinRadius); }
+		static float PatrolMaxRadiusOf(const ARRDrone* Drone) { return Drone->*(&FDroneAccess::PatrolMaxRadius); }
+		static float PatrolMaxIntervalOf(const ARRDrone* Drone) { return Drone->*(&FDroneAccess::PatrolMaxInterval); }
+		static bool IsPatrolOffsetClearOf(const ARRDrone* Drone, const ARRArenaGrid* Grid, const FVector2D& Offset) { return (Drone->*(&FDroneAccess::IsPatrolOffsetClear))(Grid, Offset); }
+
+		/** Reseeds the patrol stream with Seed and restarts the patrol (new point, drone snapped to it), so a test gets the same picks twice. */
+		static void RestartPatrolOf(ARRDrone* Drone, int32 Seed)
+		{
+			(Drone->*(&FDroneAccess::PatrolRandom)).Initialize(Seed);
+			(Drone->*(&FDroneAccess::RestartPatrol))();
+		}
 		static ERRDroneIdleGesture IdleGestureOf(const ARRDrone* Drone) { return Drone->*(&FDroneAccess::IdleGesture); }
 	};
 
