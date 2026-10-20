@@ -1,0 +1,343 @@
+{
+ "round": 3,
+ "items": [
+  {
+   "file": "barks",
+   "item_id": "rook_level_up_01",
+   "scores": {
+    "voice": 8,
+    "lore": 8,
+    "reference": 8
+   },
+   "rules": [],
+   "reason": "Cocky self-praise fits Rook and the label, but it is generic with no Rigs flavor; it loosely echoes 'better, stronger, faster' (a TV line, reordered and given 'better looking'), not a film line kept intact.",
+   "suggestion": null
+  },
+  {
+   "file": "barks",
+   "item_id": "rook_player_damaged_01",
+   "scores": {
+    "voice": 8,
+    "lore": 9,
+    "reference": 9
+   },
+   "rules": [],
+   "reason": "Wry self-mockery under fire fits Rook and T2; 'cocky' is a loose but acceptable label for the bravado of 'that one was personal'.",
+   "suggestion": null
+  },
+  {
+   "file": "barks",
+   "item_id": "rook_horde_incoming_01",
+   "scores": {
+    "voice": 8,
+    "lore": 9,
+    "reference": 8
+   },
+   "rules": [],
+   "reason": "Echoes Apollo 13 'Houston, we have a problem': keeps 'Houston, we', swaps the problem for 'scrap incoming', a clear twist that mocks the robots as scrap.",
+   "suggestion": null
+  },
+  {
+   "file": "barks",
+   "item_id": "rook_console_hack_started_01",
+   "scores": {
+    "voice": 8,
+    "lore": 9,
+    "reference": 8
+   },
+   "rules": [],
+   "reason": "Possessive cocky line fits Rook and the console lore; no film line copied, but flat and without jargon.",
+   "suggestion": null
+  },
+  {
+   "file": "barks",
+   "item_id": "rook_run_won_01",
+   "scores": {
+    "voice": 9,
+    "lore": 9,
+    "reference": 8
+   },
+   "rules": [],
+   "reason": "Echoes Die Hard 'Yippee-ki-yay, motherfucker': keeps the catchphrase, replaces the insult with the company name and adds 'Thanks for the ore', a clear twist aimed at Kessler-Voss that fits L4.",
+   "suggestion": null
+  },
+  {
+   "file": "barks",
+   "item_id": "rook_bonus_chest_opened_01",
+   "scores": {
+    "voice": 9,
+    "lore": 9,
+    "reference": 8
+   },
+   "rules": [],
+   "reason": "Twists 'Mama needs a new pair of shoes' by swapping shoes for gun, a clear twist allowed by revised T3; note it reuses the owner's own brief example verbatim (not a vault line, so no T8 fail, but it is not original writing).",
+   "suggestion": null
+  },
+  {
+   "file": "barks",
+   "item_id": "vesna_upgrade_offer_01",
+   "scores": {
+    "voice": 9,
+    "lore": 9,
+    "reference": 9
+   },
+   "rules": [],
+   "reason": "Short dry jab at Rook's plans, exactly Vesna's voice under T2 and T5; label deadpan matches.",
+   "suggestion": null
+  },
+  {
+   "file": "barks",
+   "item_id": "vesna_console_dropped_01",
+   "scores": {
+    "voice": 8,
+    "lore": 9,
+    "reference": 9
+   },
+   "rules": [],
+   "reason": "Technical confirmation with a small dry jab; label technical fits, mission-first Vesna.",
+   "suggestion": null
+  },
+  {
+   "file": "barks",
+   "item_id": "vesna_extraction_ready_01",
+   "scores": {
+    "voice": 9,
+    "lore": 9,
+    "reference": 9
+   },
+   "rules": [],
+   "reason": "Deadpan deflation of Rook's looting greed; Vesna's own line, so T9 does not apply, and it pushes toward extraction.",
+   "suggestion": null
+  },
+  {
+   "file": "barks",
+   "item_id": "vesna_shuttle_landed_01",
+   "scores": {
+    "voice": 8,
+    "lore": 9,
+    "reference": 9
+   },
+   "rules": [],
+   "reason": "Precise, mission-first technical line; on-label but flat.",
+   "suggestion": null
+  },
+  {
+   "file": "barks",
+   "item_id": "vesna_run_lost_01",
+   "scores": {
+    "voice": 9,
+    "lore": 9,
+    "reference": 9
+   },
+   "rules": [],
+   "reason": "Names the Ceres job, a listed past job (T5), to deflate Rook's plan; dry and on-brand.",
+   "suggestion": null
+  },
+  {
+   "file": "barks",
+   "item_id": "vesna_game_over_01",
+   "scores": {
+    "voice": 8,
+    "lore": 9,
+    "reference": 9
+   },
+   "rules": [],
+   "reason": "Deadpan and short; caring hidden behind a dry joke fits Vesna, though the complaint gag is slightly flat.",
+   "suggestion": null
+  },
+  {
+   "file": "alerts",
+   "item_id": "kv_console_dropped_01",
+   "scores": {
+    "voice": 9,
+    "lore": 9,
+    "reference": 9
+   },
+   "rules": [],
+   "reason": "Cold procedural notice about the Rigs' device, no jargon or jokes, states what the company does (T6, T9).",
+   "suggestion": null
+  },
+  {
+   "file": "alerts",
+   "item_id": "kv_console_dropped_02",
+   "scores": {
+    "voice": 9,
+    "lore": 9,
+    "reference": 8
+   },
+   "rules": [],
+   "reason": "Bureaucratic and correct; 'will be invoiced' echoes the vault example 'trespassers will be invoiced' without copying the line, so T8 holds but it leans on it.",
+   "suggestion": null
+  },
+  {
+   "file": "alerts",
+   "item_id": "kv_bonus_chest_dropped_01",
+   "scores": {
+    "voice": 9,
+    "lore": 9,
+    "reference": 9
+   },
+   "rules": [],
+   "reason": "Asset language and procedure, frames the Rigs' looting as theft (fits L4), no order to the player.",
+   "suggestion": null
+  },
+  {
+   "file": "alerts",
+   "item_id": "kv_bonus_chest_dropped_02",
+   "scores": {
+    "voice": 9,
+    "lore": 9,
+    "reference": 9
+   },
+   "rules": [],
+   "reason": "Cold property-claim notice; register label bureaucratic matches.",
+   "suggestion": null
+  },
+  {
+   "file": "alerts",
+   "item_id": "kv_horde_incoming_01",
+   "scores": {
+    "voice": 9,
+    "lore": 9,
+    "reference": 9
+   },
+   "rules": [],
+   "reason": "Uses 'unauthorized personnel' and 'processed', robots only (L1), cold bureaucracy toward threats.",
+   "suggestion": null
+  },
+  {
+   "file": "alerts",
+   "item_id": "kv_horde_incoming_02",
+   "scores": {
+    "voice": 8,
+    "lore": 9,
+    "reference": 9
+   },
+   "rules": [],
+   "reason": "Correct bureaucratic register and robot-only security, but flat.",
+   "suggestion": null
+  },
+  {
+   "file": "alerts",
+   "item_id": "kv_extraction_ready_01",
+   "scores": {
+    "voice": 9,
+    "lore": 9,
+    "reference": 9
+   },
+   "rules": [],
+   "reason": "Invoicing the departure of an unregistered craft is the company's cold humor-by-gap; states, never orders.",
+   "suggestion": null
+  },
+  {
+   "file": "alerts",
+   "item_id": "kv_shuttle_countdown_01",
+   "scores": {
+    "voice": 8,
+    "lore": 8,
+    "reference": 9
+   },
+   "rules": [],
+   "reason": "Bureaucratic and no order (T9 holds), but the lore maps the countdown to company reinforcements, which this line does not mention, and 'late exits as trespass' oddly implies an on-time exit is not trespass.",
+   "suggestion": null
+  },
+  {
+   "file": "upgrade_texts",
+   "item_id": "upg_damage",
+   "scores": {
+    "voice": 9,
+    "lore": 9,
+    "reference": 8
+   },
+   "rules": [],
+   "reason": "Echoes Scarface 'Say hello to my little friend': keeps the frame, swaps friend for 'drill bit' (Rigs jargon), a clear twist.",
+   "suggestion": null
+  },
+  {
+   "file": "upgrade_texts",
+   "item_id": "upg_fire_rate",
+   "scores": {
+    "voice": 8,
+    "lore": 9,
+    "reference": 8
+   },
+   "rules": [],
+   "reason": "Echoes Dirty Harry 'Go ahead, make my day': one-word swap to 'redline' (jargon), a clear twist like the owner's example, though the meaning is muddy.",
+   "suggestion": null
+  },
+  {
+   "file": "upgrade_texts",
+   "item_id": "upg_reload_speed",
+   "scores": {
+    "voice": 8,
+    "lore": 9,
+    "reference": 8
+   },
+   "rules": [],
+   "reason": "Echoes Terminator 2 'Hasta la vista, baby': keeps the farewell, swaps baby for 'empty magazine', a clear twist tied to the stat.",
+   "suggestion": null
+  },
+  {
+   "file": "upgrade_texts",
+   "item_id": "upg_crit_chance",
+   "scores": {
+    "voice": 9,
+    "lore": 9,
+    "reference": 9
+   },
+   "rules": [],
+   "reason": "Echoes Dirty Harry 'Do you feel lucky, punk?': rephrased to 'Feeling lucky, tin can?' aimed at the robots, plus an odds-dismissing tag that is pure Rook.",
+   "suggestion": null
+  },
+  {
+   "file": "upgrade_texts",
+   "item_id": "upg_crit_damage",
+   "scores": {
+    "voice": 8,
+    "lore": 8,
+    "reference": 8
+   },
+   "rules": [],
+   "reason": "Common idiom 'that's gonna leave a mark', not a specific film line; on-voice but flat and generic.",
+   "suggestion": null
+  },
+  {
+   "file": "upgrade_texts",
+   "item_id": "upg_max_health",
+   "scores": {
+    "voice": 8,
+    "lore": 9,
+    "reference": 6
+   },
+   "rules": [
+    "T3"
+   ],
+   "reason": "Keeps Terminator 'I'll be back.' word for word as its own sentence and only appends 'Eventually. Sturdier, too.', so the film line itself is unchanged and nothing twists it into the Rigs' world.",
+   "suggestion": "I'll be patched back. Sturdier, too."
+  },
+  {
+   "file": "upgrade_texts",
+   "item_id": "upg_move_speed",
+   "scores": {
+    "voice": 8,
+    "lore": 9,
+    "reference": 9
+   },
+   "rules": [],
+   "reason": "Echoes Predator 'Get to the choppa!': swaps choppa for 'shuttla', keeping the accent gag on the Rigs' extraction craft, a clear twist; the tag is a light self-jab.",
+   "suggestion": null
+  },
+  {
+   "file": "upgrade_texts",
+   "item_id": "upg_pickup_radius",
+   "scores": {
+    "voice": 8,
+    "lore": 9,
+    "reference": 9
+   },
+   "rules": [],
+   "reason": "Cocky loot-loving Rook, no film line copied; on-voice but flat.",
+   "suggestion": null
+  }
+ ]
+}

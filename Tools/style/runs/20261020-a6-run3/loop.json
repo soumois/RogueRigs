@@ -1,10 +1,10 @@
 {
  "run_id": "20261020-a6-run3",
  "threshold": 8,
- "max_refinements": 2,
- "refinements_done": 2,
- "round": 3,
- "status": "escalated",
+ "max_refinements": 3,
+ "refinements_done": 3,
+ "round": 4,
+ "status": "done",
  "sources": [
   {
    "stem": "barks",
@@ -33,7 +33,10 @@
    "barks",
    "upgrade_texts"
   ],
-  "2": []
+  "2": [
+   "barks"
+  ],
+  "3": []
  },
  "lineage": [
   {
@@ -259,6 +262,22 @@
    },
    "before": "That one is gonna leave a mark, buddy.",
    "after": "You're gonna need a bigger chassis, tin can."
+  },
+  {
+   "round": 2,
+   "file": "barks",
+   "item_id": "vesna_upgrade_offer_01",
+   "run_id": "20261020-172001-barks",
+   "rule": "T2",
+   "reason": "Dry and short, but 'Try not to overthink' jabs at the upgrade choice the player is making, i.e. the player's decision-making, not Rook's plans or bravado.",
+   "scores": {
+    "voice": 7,
+    "lore": 9,
+    "reference": 9,
+    "format": 10
+   },
+   "before": "Pick one. Try not to overthink.",
+   "after": "Pick something sturdy. Your plans aren't."
   }
  ],
  "rounds": [
@@ -279,6 +298,12 @@
    "total": 28,
    "failed": 1,
    "action": "escalate"
+  },
+  {
+   "round": 3,
+   "total": 28,
+   "failed": 0,
+   "action": "done"
   }
  ],
  "owner_overrides": [
@@ -296,6 +321,13 @@
    "evaluator_version": "I'll be hull-patched.",
    "kept": "I'll be back. Eventually. Sturdier, too.",
    "date": "2026-10-20",
+   "by": "owner"
+  }
+ ],
+ "extensions": [
+  {
+   "after_round": 2,
+   "reason": "The owner asked for one more pass on barks/vesna_upgrade_offer_01 (2026-10-20).",
    "by": "owner"
   }
  ]

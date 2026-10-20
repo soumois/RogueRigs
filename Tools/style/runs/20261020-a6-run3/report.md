@@ -1,12 +1,13 @@
 # Style loop report — 20261020-a6-run3
 
-Threshold 8/10 on every dimension (voice, lore, reference, format). Pass limit: 2 refinement(s). Final status: **escalated**.
+Threshold 8/10 on every dimension (voice, lore, reference, format). Pass limit: 3 refinement(s). Final status: **done**.
 
 | Round | Items | Below threshold | Action |
 |---|---|---|---|
 | 0 | 28 | 12 | refine |
 | 1 | 28 | 2 | refine |
 | 2 | 28 | 1 | escalate |
+| 3 | 28 | 0 | done |
 
 ## Corrections
 
@@ -26,6 +27,9 @@ Threshold 8/10 on every dimension (voice, lore, reference, format). Pass limit: 
 | upgrade_texts/upg_move_speed | 0 | T3 | voice 8, lore 7, reference 5, format 10 | Keeps Predator's 'Get to the choppa' word for word and adds a tail; barely changed, and a chopper has no place in the asteroid setting. | Get to the choppa, but I'm already there. | Get to the shuttla! Faster than last time. |
 | barks/rook_horde_incoming_01 | 1 | T3 | voice 9, lore 9, reference 6, format 10 | Kept 'Come get some' word for word from the well-known action-film catchphrase and only appended the address 'tin cans', so it is barely changed rather than twisted into the Rigs' world. | Come get some, tin cans! | Houston, we've got scrap incoming. |
 | upgrade_texts/upg_crit_damage | 1 | T3 | voice 7, lore 8, reference 6, format 10 | Kept Tommy Boy's 'That's gonna leave a mark' almost word for word, only expanding 'That's' and appending 'buddy', so it is barely changed and has no Rigs flavor. | That one is gonna leave a mark, buddy. | You're gonna need a bigger chassis, tin can. |
+| barks/vesna_upgrade_offer_01 | 2 | T2 | voice 7, lore 9, reference 9, format 10 | Dry and short, but 'Try not to overthink' jabs at the upgrade choice the player is making, i.e. the player's decision-making, not Rook's plans or bravado. | Pick one. Try not to overthink. | Pick something sturdy. Your plans aren't. |
+
+**Owner extension** after round 2: The owner asked for one more pass on barks/vesna_upgrade_offer_01 (2026-10-20). The pass limit was raised to 3.
 
 ## Owner overrides
 

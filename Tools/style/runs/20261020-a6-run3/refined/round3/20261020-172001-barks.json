@@ -1,0 +1,31 @@
+{
+ "run_id": "20261020-172001-barks",
+ "content_file": "barks.json",
+ "retrieval": true,
+ "entries": [
+  {
+   "item_id": "vesna_upgrade_offer_01",
+   "loop": 0,
+   "query": "Vesna voice for an upgrade offer; who she may tease; bark length",
+   "node_ids": [
+    "crew-characters",
+    "dialogue-tone"
+   ],
+   "excerpts": [
+    {
+     "node_id": "crew-characters",
+     "text": "Calm, precise, mission first; short dry sentences."
+    },
+    {
+     "node_id": "crew-characters",
+     "text": "Vesna teases Rook's plans and bravado, never the player's skill"
+    },
+    {
+     "node_id": "dialogue-tone",
+     "text": "Combat barks: 3 to 8 words."
+    }
+   ],
+   "output": "Pick something sturdy. Your plans aren't."
+  }
+ ]
+}

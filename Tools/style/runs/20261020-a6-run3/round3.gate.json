@@ -1,0 +1,12 @@
+{
+ "round": 3,
+ "threshold": 8,
+ "total": 28,
+ "passed": 27,
+ "overridden": [
+  "upgrade_texts/upg_max_health"
+ ],
+ "failed": 0,
+ "action": "done",
+ "fails": []
+}

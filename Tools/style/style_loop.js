@@ -168,6 +168,7 @@ function gate(runDir, scoresFile) {
     byKey.set(k, s);
   }
   const fails = [];
+  const overridden = [];
   let total = 0;
   for (const [stem, env] of Object.entries(current)) {
     for (const item of env.items) {
@@ -188,6 +189,7 @@ function gate(runDir, scoresFile) {
       const scores = { ...s.scores, format: fmt ? 0 : 10 };
       const low = Math.min(...Object.values(scores));
       if (low >= loop.threshold) continue;
+      if ((loop.owner_overrides || []).some((o) => o.file === stem && o.item_id === id && o.kept === item[FILES[stem].text])) { overridden.push(k); continue; } // the owner kept this text on purpose
       const rule = (fmt && !s.rules.length) ? fmt.rule : s.rules[0];
       if (!rule) fail(`${k}: scores below ${loop.threshold} but no rule cited`);
       if (!fmt && (typeof s.suggestion !== 'string' || !s.suggestion.trim())) fail(`${k}: a failing item needs a suggestion`);
@@ -199,7 +201,7 @@ function gate(runDir, scoresFile) {
 
   let action = 'done';
   if (fails.length) action = loop.refinements_done < loop.max_refinements ? 'refine' : 'escalate';
-  writeJson(gateFile, { round, threshold: loop.threshold, total, passed: total - fails.length, failed: fails.length, action, fails });
+  writeJson(gateFile, { round, threshold: loop.threshold, total, passed: total - fails.length - overridden.length, overridden, failed: fails.length, action, fails });
   loop.rounds.push({ round, total, failed: fails.length, action });
   loop.round = round + 1;
   if (action === 'done') loop.status = 'done';
@@ -252,6 +254,19 @@ function apply(runDir, stem, refinedFile, logFile) {
   saveLoop(runDir, loop);
 }
 
+// Owner decision: one more refinement pass after an escalation. Recorded in loop.json and in the report.
+function reopen(runDir, reason) {
+  const loop = loadLoop(runDir);
+  if (loop.status !== 'escalated') fail(`only an escalated loop can be reopened (status is ${loop.status})`);
+  if (!reason) fail('reopen needs --reason (the owner decision)');
+  const gated = readJson(path.join(runDir, `round${loop.round - 1}.gate.json`));
+  loop.pending_stems = [...new Set(gated.fails.map((f) => f.file))];
+  loop.max_refinements++;
+  loop.status = 'open';
+  loop.extensions = [...(loop.extensions || []), { after_round: loop.round - 1, reason, by: 'owner' }];
+  saveLoop(runDir, loop);
+}
+
 function report(runDir) {
   const loop = loadLoop(runDir);
   const md = [`# Style loop report — ${loop.run_id}`, '',
@@ -262,6 +277,7 @@ function report(runDir) {
   for (const l of loop.lineage) {
     md.push(`| ${l.file}/${l.item_id} | ${l.round} | ${l.rule} | ${Object.entries(l.scores).map(([k, v]) => `${k} ${v}`).join(', ')} | ${l.reason} | ${l.before} | ${l.after} |`);
   }
+  for (const e of loop.extensions || []) md.push('', `**Owner extension** after round ${e.after_round}: ${e.reason} The pass limit was raised to ${loop.max_refinements}.`);
   if ((loop.owner_overrides || []).length) {
     md.push('', '## Owner overrides', '', 'The owner kept the original line, knowing the evaluator rated it below the threshold; the deviation is deliberate, not an oversight.', '',
       '| Item | Kept (owner) | Evaluator-approved rewrite replaced |', '|---|---|---|');
@@ -326,6 +342,7 @@ function parse(argv) {
     else if (a === '--source') o.sources.push(argv[++i]);
     else if (a === '--threshold') o.threshold = Number(argv[++i]);
     else if (a === '--max-refinements') o.maxRefinements = Number(argv[++i]);
+    else if (a === '--reason') o.reason = argv[++i];
     else if (a === '--scores') o.scores = argv[++i];
     else if (a === '--stem') o.stem = argv[++i];
     else if (a === '--refined') o.refined = argv[++i];
@@ -347,6 +364,7 @@ function main() {
   else if (cmd === 'check') { const f = check(runDir); console.log(JSON.stringify({ format_findings: f.length })); }
   else if (cmd === 'gate') { if (!o.scores) usage('gate needs --scores'); console.log(JSON.stringify(gate(runDir, o.scores))); }
   else if (cmd === 'apply') { if (!o.stem || !o.refined || !o.log) usage('apply needs --stem --refined --log'); apply(runDir, o.stem, o.refined, o.log); }
+  else if (cmd === 'reopen') reopen(runDir, o.reason);
   else if (cmd === 'report') report(runDir);
   else usage(`unknown command ${cmd}`);
 }
