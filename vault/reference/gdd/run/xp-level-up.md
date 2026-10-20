@@ -19,6 +19,7 @@ status: approved
 - HUD (owner 2026-10-02): cyan XP bar across the bottom, level number on its left.
 - Level-up sequence (owner 2026-10-03; values provisional): a pulsing cyan ring around the miner and "LEVEL UP"; heal 20 % of max health; sound later (open); about 0.8 s later the game pauses and shows 3 upgrade cards; picking one resumes the game. Several levels gained at once chain their choice screens.
 - Level-up disc on the miner: 5-step animation, 0.5 s in total, ends hidden (confirmed by the owner after handover-2026-10-06).
+- Card animation (owner 2026-10-19, values provisional, tasks 243 to 246; implementation in [[wbp-upgrade-choice]]): the 3 cards arrive face down in a fan from the bottom and flip one by one, about 0.8 s in total; the back has one version per rarity. From purple up the card flips last (extra wait about 1.4 s after the others): its back glows, the other cards darken, then a punch, a tier-coloured flash and rays. Hovering a card scales it to 1.06, tilts it up to about 4 degrees toward the pointer, and sweeps a sheen across blue, purple and yellow cards. Picking plays a 0.55 s animation while the game is still paused: the icon flies to its destination (the slot of the targeted weapon; one copy per owned slot for an all-weapons upgrade; the XP bar for a player stat; the first free slot for a new weapon) and the two other cards dissolve; then the pick is applied and the game resumes. No count-up of values (owner 2026-10-19).
 - Reroll: one button per choice screen, usable once, redraws 3 other upgrades at random (owner 2026-10-03).
 - Milestone: M1.
 
@@ -28,3 +29,4 @@ status: approved
 - [[run-index]] — parent index.
 - [[upgrades]] — what the player picks.
 - [[rarities]] — rarity of the offered cards.
+- [[wbp-upgrade-choice]] — the card widget that implements the card animation.
