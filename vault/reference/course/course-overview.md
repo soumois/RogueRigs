@@ -15,7 +15,7 @@ kind: note
 Game 50 % · multi-agent AI pipeline 20 % · technical quality 10 % · presentation and demo 10 % · documentation and architecture 5 % · peer feedback 5 %. A sophisticated pipeline without a shipped game scores 20/100.
 
 ## Assignments
-#1–2 GDD draft then final · #3 agent crew · #4 RAG content pipeline · #5 goal-oriented coding agent · #6–7 generate-evaluate-refine pipeline, style guide agent · #8–9 narrative engine, adversarial QA (optional) · #10 full AI pipeline. Details: [[assignments-index]].
+#1–2 GDD draft then final · #3 agent crew · #4 RAG content pipeline · #5 goal-oriented coding agent · #6 style guide agent (lesson 09 slides; the program lists a GER pipeline as 6 and the style guide as 7: verify on the portal) · #8–9 narrative engine, adversarial QA (optional) · #10 full AI pipeline. Details: [[assignments-index]].
 
 ## Submission rules
 - Every assignment is a GitHub link. The repo is `soumois/RogueRigs`.

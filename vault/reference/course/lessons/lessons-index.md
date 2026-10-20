@@ -6,7 +6,7 @@ kind: note
 ---
 # Lessons
 
-Summaries written from the slides and transcripts. Lesson 08 onward: not summarized yet.
+Summaries written from the slides and transcripts. Lesson 10 onward: not summarized yet.
 
 ## Relations
 - [[course-index]] — parent index.
@@ -18,3 +18,6 @@ Summaries written from the slides and transcripts. Lesson 08 onward: not summari
 - [[lesson-06-agent-output-to-game]] — integration plan, structured outputs, validation, Generate → Validate → Review → Import.
 - [[lesson-07-goal-oriented-agents]] — goal vs task agents, codebase perception, utility scoring, priority advice.
 - [[lesson-07-acting-and-agent-state]] — review and pull requests, approval gates, markdown agent state, frameworks, Code Architect demo.
+- [[lesson-08-ger-loop]] — Generate, Evaluate, Refine, deterministic checks first, targeted refining, 3-pass circuit breaker, human placement.
+- [[lesson-08-constraints-and-demo]] — constraints, evaluator rules, GER per game type, Dungeon Builder demo, No Man's Sky.
+- [[lesson-09-human-touch-style-guide]] — aesthetic divide, safe vs human assets, AI librarian, ethics, player value, Style Guide Agent.

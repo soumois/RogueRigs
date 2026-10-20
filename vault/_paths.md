@@ -52,6 +52,8 @@ assignment-5-open-decisions  reference/course/assignments/assignment-5-open-deci
 assignment-5-plan  reference/course/assignments/assignment-5-plan.md
 assignment-5-review-checks  reference/course/assignments/assignment-5-review-checks.md
 assignment-5-vault-check  reference/course/assignments/assignment-5-vault-check.md
+assignment-6-plan  reference/course/assignments/assignment-6-plan.md
+assignment-6-style-guide-agent  reference/course/assignments/assignment-6-style-guide-agent.md
 assignments-index  reference/course/assignments/assignments-index.md
 audio-direction  reference/gdd/art-audio/audio-direction.md
 barrel  reference/gdd/terrain/barrel.md
@@ -166,6 +168,9 @@ lesson-05-rag-content  reference/course/lessons/lesson-05-rag-content.md
 lesson-06-agent-output-to-game  reference/course/lessons/lesson-06-agent-output-to-game.md
 lesson-07-acting-and-agent-state  reference/course/lessons/lesson-07-acting-and-agent-state.md
 lesson-07-goal-oriented-agents  reference/course/lessons/lesson-07-goal-oriented-agents.md
+lesson-08-constraints-and-demo  reference/course/lessons/lesson-08-constraints-and-demo.md
+lesson-08-ger-loop  reference/course/lessons/lesson-08-ger-loop.md
+lesson-09-human-touch-style-guide  reference/course/lessons/lesson-09-human-touch-style-guide.md
 lessons-index  reference/course/lessons/lessons-index.md
 level-flow  reference/gdd/run/level-flow.md
 level-layout-schema  reference/tech/pipelines/level-layout-schema.md
