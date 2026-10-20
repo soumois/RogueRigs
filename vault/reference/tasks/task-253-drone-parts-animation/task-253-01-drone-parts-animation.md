@@ -3,7 +3,7 @@ id: task-253-01-drone-parts-animation
 description: "The drone has three animated parts: the antenna spins, the base turns slowly toward the mining spot and the laser pivots in height."
 parent: task-253-drone-parts-animation
 kind: task
-status: todo
+status: in-progress
 ---
 # Drone parts animation
 

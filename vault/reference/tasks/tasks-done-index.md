@@ -258,3 +258,4 @@ Archive: it exceeds the index size limits of [[_authoring]] on purpose (owner, 2
 - [[task-249-drone-alive-orientation-height]] — The drone looks alive: height varies, it turns toward a point of interest, tilts with acceleration and makes small idle gestures. Status done.
 - [[task-251-drone-patrol-movement]] — The drone patrols a point inside the miner zone and follows it with a spring (faster when far, slower when near); the point changes when reached or every 3.5-5 s; wall rules are kept. Status done.
 - [[task-252-drone-mesh-parts]] — The Meshy drone is cleaned, split into base, laser and a modelled parabolic dish, and imported in Unreal with its material. Status done.
+- [[task-254-drone-thruster-particles]] — Two engine particles, one per side pod, driven by the drone speed. Status done.
