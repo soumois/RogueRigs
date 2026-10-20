@@ -3,7 +3,7 @@ id: task-257-01-pulse-desync
 description: "Ore and heal crystals and pickups no longer pulse in sync: each object gets a seeded random pulse phase and a +-20 percent rate."
 parent: task-257-pulse-desync
 kind: task
-status: in-progress
+status: done
 ---
 # Pulse desync material inputs
 
@@ -15,11 +15,11 @@ status: in-progress
 - done_when: M_XPNutGlow compiles; neutral inputs give the same emissive as before (formula read back); the data indices (not clashing with GlowFadeDataIndex, console mark 0 and ore colour 1-3) documented in bp-pickup-xp and bp-pickup-ore; lint clean.
 - editor_state: open (editor + MCP)
 - token_ceiling: 100k
-- model: open
-- tokens: open
-- runs: open
+- model: sonnet
+- tokens: input 40, cache write 77400, cache read 1180393, output 2356
+- runs: 1
 - milestone: M1
-- result: open
+- result: M_XPNutGlow gets PulsePhase (turns, added inside the sine) and PulseRate (scales PulseFrequency): pickups via Custom Primitive Data index 1 (phase, neutral 0) and 2 (rate, neutral 1), deposit crystal instances via per-instance data index 4 (phase) and 5 (rate), NumCustomDataFloats must be at least 6; neutral inputs give the old expression exactly; one material, no switch; compiles. Look and runtime read unverified.
 
 ## Relations
 - [[task-257-pulse-desync]] — parent global task.
