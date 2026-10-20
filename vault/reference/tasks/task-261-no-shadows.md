@@ -3,7 +3,7 @@ id: task-261-no-shadows
 description: "Global task: No object casts a shadow for now: shadow casting is switched off on the lights of the arena level."
 parent: tasks-to-do-index
 kind: task
-status: todo
+status: in-progress
 ---
 # No shadows
 

@@ -16,5 +16,5 @@ A global task moves to [[tasks-done-index]] when it is done (`vault/scripts/task
 - [[task-258-heal-deposit-vibration]] — The heal deposit no longer vibrates by itself: only its upper part moves without contact, even in the editor; find the cause and fix it. Status todo.
 - [[task-259-ore-dig-time-2s]] — Ore blocks (ore, special ore and heal ore) take 2 s instead of 1.5 s to dig at mining speed 1. Status todo.
 - [[task-260-rock-dig-time-065]] — Rock blocks take 0.65 s instead of 0.5 s to dig at mining speed 1. Status todo.
-- [[task-261-no-shadows]] — No object casts a shadow for now: shadow casting is switched off on the lights of the arena level. Status todo.
+- [[task-261-no-shadows]] — No object casts a shadow for now: shadow casting is switched off on the lights of the arena level. Status in-progress.
 - [[task-262-deposit-crystal-volume]] — The Duskite and heal deposit crystals read as volumes: capped emission peak, height gradient and rim light, textures allowed if needed. Status todo.
