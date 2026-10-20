@@ -255,3 +255,4 @@ Archive: it exceeds the index size limits of [[_authoring]] on purpose (owner, 2
 - [[task-246-card-pick-destination]] — The chosen card icon flies to the HUD slot of its weapon, splits to every owned slot for an all-weapons upgrade, flies to the XP bar for a player stat; the other cards dissolve. Status done.
 - [[task-247-drone-escort-movement]] — The drone no longer circles the miner: it holds an escort slot beside and behind the miner that follows the miner velocity, with a damped spring and a slow figure-eight at rest. Status done.
 - [[task-248-drone-no-flight-over-walls]] — The drone never hovers over a block: escort, dig and hack positions are chosen in free cells with a clear line from the miner. Status done.
+- [[task-249-drone-alive-orientation-height]] — The drone looks alive: height varies, it turns toward a point of interest, tilts with acceleration and makes small idle gestures. Status done.

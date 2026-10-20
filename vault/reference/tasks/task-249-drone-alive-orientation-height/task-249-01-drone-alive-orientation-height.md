@@ -3,7 +3,7 @@ id: task-249-01-drone-alive-orientation-height
 description: "The drone looks alive: height varies, it turns toward a point of interest, tilts with acceleration and makes small idle gestures."
 parent: task-249-drone-alive-orientation-height
 kind: task
-status: in-progress
+status: done
 ---
 # Drone orientation and height variation
 
@@ -15,11 +15,11 @@ status: in-progress
 - done_when: Build passes; existing drone tests pass; one position check (headless, no capture): drone height stays inside 130-190 uu above the floor and its yaw faces the dig target during Dig; docs updated; lint clean.
 - editor_state: closed (C++ build)
 - token_ceiling: 150k
-- model: open
-- tokens: open
-- runs: open
+- model: opus
+- tokens: input 94, cache write 160974, cache read 5566616, output 17790
+- runs: 1
 - milestone: M1
-- result: open
+- result: Height 130-190 uu (two-frequency bob, higher when an enemy is within 700 uu), yaw toward point of interest (dig/hack target, enemy, deposit/objective, miner) refreshed at 4 Hz, roll/pitch from acceleration (max 15 deg), idle gestures every 4-8 s. Build OK; DroneAlive check: 870 Orbit frames, height 146.0-170.1 uu, 0 outside 130-190; Dig yaw error at most 8.9 deg after settling (tolerance 20). HealVein still fails (known). Alert rise, look priorities and gesture types untested; not seen in play.
 
 ## Relations
 - [[task-249-drone-alive-orientation-height]] — parent global task.
