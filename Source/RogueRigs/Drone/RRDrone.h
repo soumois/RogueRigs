@@ -40,19 +40,27 @@ DECLARE_DYNAMIC_MULTICAST_DELEGATE_TwoParams(FRROnDigBlockStoppedSignature, FInt
  * figure-eight (EscortFigureEightPeriod, long axis tangential) is added around the slot; height HoverHeight above the
  * miner's floor (capsule bottom) plus a light bob. The drone follows the slot with a damped spring (EscortSpringFrequency,
  * EscortDampingRatio, part of the miner velocity fed forward), so it lags a little and overshoots on stop.
+ * Walls (task-248-01, owner 2026-10-20): the drone never hovers over a block. The escort tries candidate slots in order (the
+ * ideal slot, +-EscortAlternateAngleDegrees, +-EscortWideAngleDegrees from it, then straight behind the miner); a candidate is
+ * clear when the 2D segment from the miner to DroneWallClearance past it, and the figure-eight span across it, cross no block
+ * cell (ARRArenaGrid::HasLineOfSight). The first clear one is used; none = just above the miner, EscortFallbackExtraHeight
+ * higher. A clear slot is held at least EscortSlotChangeDelay; a slot that becomes blocked is left at once. As a last guard, a
+ * move that would put the drone in a block cell is cut on the blocked axis (Orbit, Dig and Hack).
  * Dig (arc mining, drone gdd): while the miner touches rock it calls RequestArcDig every tick with the arc direction;
  * the drone selects up to MaxArcBlocks block cells in front of the miner (SelectArcCells: center within ArcReachCells
  * cells of the miner's front point, inside an ArcAngleDegrees cone around the direction) and cuts all of them in
  * parallel, each taking DeltaSeconds * MiningSpeed dig-seconds of terrain damage per tick. A block keeps being cut while
  * it stays in the arc; one that leaves it stops shaking and keeps its damage. ReleaseDig (miner no longer touching rock)
- * returns to Orbit. The drone hovers over the arc centre (mean of the dug cell centers, HoverHeight above the miner's
- * floor) and shows one laser beam (LaserMesh), from itself to GetDigImpactPoint (the middle of the dug blocks' faces, on the
+ * returns to Orbit. The drone hovers on the free side of the wall face, DigHoverFaceDistance from GetDigImpactPoint along
+ * the face normal, DigHoverHeight above the miner's floor (task-248-01; pulled back toward the miner when that point is not
+ * clear), and shows one laser beam (LaserMesh), from itself to GetDigImpactPoint (the middle of the dug blocks' faces, on the
  * wall face), whatever the number of blocks (drone gdd, owner 2026-10-19); OnDigBlockStarted / OnDigBlockStopped fire per
  * block for Blueprint effects. While it cuts, DigImpactComponent plays DigImpactSystem (NS_DigImpact, task-233-02) at
  * GetDigImpactPoint: User.WallNormal = outward normal of the impact face, User.ChipColor = colour of the majority type of
  * the dug blocks, User.Intensity 1; when the dig stops it fades to 0 over DigImpactFadeTime, then deactivates. Never in Hack.
  * Hack (StartHack, called every tick by the objective while the miner is in its zone): the drone stops any dig, hovers
- * HackHoverDistance from the target toward the miner (same HoverHeight) and shows LaserMesh from itself to the target's
+ * HackHoverDistance from the target toward the miner (same HoverHeight; pulled back toward the miner when that point is
+ * not clear, task-248-01) and shows LaserMesh from itself to the target's
  * location + HackLinkOffset. One target at a time; RequestArcDig is refused while hacking. StopHack (or the target or miner
  * gone) returns it to Orbit. The objective owns the hack progress.
  * The drone has no ASC: it reads MiningSpeed on the miner's ASC. Its meshes never collide. The grid is assumed unrotated
@@ -206,18 +214,65 @@ protected:
 	/** Leaves Hack: hides the laser, clears the target and resumes the escort from where the drone is. */
 	void EndHack();
 
-	/** Resumes the escort from the drone's current location: the spring starts at rest (zero velocity) and pulls the drone to the slot, so it never snaps. */
+	/** Resumes the escort from the drone's current location: the spring starts at rest (zero velocity) and pulls the drone to the slot, so it never snaps; the escort slot is chosen afresh. */
 	void ResumeOrbit();
 
 	/**
-	 * World position of the escort slot for the current heading, move blend and phases (task-247-01): EscortDistance from the
-	 * miner at the blended slot angle on the escort side, plus the rest figure-eight scaled by (1 - move blend), at HoverHeight
-	 * above the miner's floor plus the bob. Requires a valid miner.
+	 * World position of the escort slot for the current heading, move blend, phases and EscortSlotIndex (task-247-01,
+	 * task-248-01): EscortDistance from the miner at the candidate yaw (GetEscortCandidateYaw), plus the rest figure-eight
+	 * scaled by (1 - move blend), at HoverHeight above the miner's floor plus the bob. The fallback slot is the miner's XY,
+	 * EscortFallbackExtraHeight higher, without figure-eight. Requires a valid miner.
 	 */
 	FVector ComputeOrbitPoint() const;
 
-	/** World position the drone hovers at while digging: the arc centre (mean of the dug cell centers, or the drone's XY when none) at HoverHeight above the miner's floor. Requires a valid miner and dig grid. */
+	/**
+	 * World position the drone hovers at while digging (task-248-01): GetDigImpactPoint moved DigHoverFaceDistance along the
+	 * outward normal of the impact face (the free side, toward the miner), at DigHoverHeight above the miner's floor; the
+	 * drone's XY when the arc is empty. Pulled back toward the miner when not clear (ResolveClearHoverPoint). Requires a valid
+	 * miner and dig grid, in Dig.
+	 */
 	FVector ComputeDigHoverPoint() const;
+
+	/** Grid the drone avoids: the dig grid in Dig, else the owner miner's arena grid. Null when there is none. */
+	const ARRArenaGrid* GetTerrainGrid() const;
+
+	/**
+	 * Yaw in degrees of escort candidate SlotIndex for the current heading and move blend: 0 the ideal slot, 1 and 2 the ideal
+	 * +- EscortAlternateAngleDegrees (toward behind first), 3 and 4 the ideal +- EscortWideAngleDegrees (same order), 5 straight
+	 * behind the miner (heading + 180). Not used for EscortFallbackSlotIndex.
+	 */
+	float GetEscortCandidateYaw(int32 SlotIndex) const;
+
+	/**
+	 * True when escort candidate SlotIndex is clear on Grid: the 2D segment from the miner to DroneWallClearance past the slot,
+	 * and the segments from the slot across the rest figure-eight span (tangential half width scaled by 1 - move blend, plus
+	 * DroneWallClearance) on both sides, cross no block cell. The fallback slot (above the miner) is always clear; so is every
+	 * slot without a grid. Requires a valid miner.
+	 */
+	bool IsEscortSlotClear(const ARRArenaGrid* Grid, int32 SlotIndex) const;
+
+	/** First clear escort candidate (0..5, see GetEscortCandidateYaw); EscortFallbackSlotIndex when none is clear. Requires a valid miner. */
+	int32 SelectEscortSlot() const;
+
+	/**
+	 * Escort slot choice, every Orbit tick: switches to the best clear candidate when the current slot is blocked (at once) or
+	 * when it has been held for at least EscortSlotChangeDelay (so the drone does not hesitate on a corner). Requires a valid miner.
+	 */
+	void UpdateEscortSlot(float DeltaSeconds);
+
+	/**
+	 * Desired hover point made clear (Dig and Hack, task-248-01): unchanged when the 2D segment from the miner to
+	 * DroneWallClearance past it crosses no block cell, else moved back along that segment to DroneWallClearance before the
+	 * first block (toward the miner, at most onto it). Z kept. Without a grid, Desired. Requires a valid miner.
+	 */
+	FVector ResolveClearHoverPoint(const ARRArenaGrid* Grid, const FVector& Desired) const;
+
+	/**
+	 * Last guard against hovering over rock (visual only, no collision): To when its cell is not a block on Grid (or when From
+	 * is already in one, so the drone never gets stuck); else the move is cut on the blocked axis (X only, then Y only, else no
+	 * horizontal move; Z kept from To). When InOutVelocity is set, the cut components are zeroed. Without a grid, To.
+	 */
+	FVector ConstrainToClearCells(const ARRArenaGrid* Grid, const FVector& From, const FVector& To, FVector* InOutVelocity = nullptr) const;
 
 	/** Stops one dug block: broadcasts OnDigBlockStopped (bDestroyed = the cell no longer holds a block). Touches neither DigCells nor the shake (RefreshDigShake). */
 	void StopDigBlock(FIntPoint Cell);
@@ -386,6 +441,34 @@ protected:
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Drone|Orbit", meta = (ClampMin = 0.1, Units = "s"))
 	float EscortBobPeriod = 2.4f;
 
+	/** Angle of the first alternate escort slots, either side of the ideal slot, in degrees (task-248-01; provisional). */
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Drone|Walls", meta = (ClampMin = 0, ClampMax = 180, Units = "deg"))
+	float EscortAlternateAngleDegrees = 45.f;
+
+	/** Angle of the second alternate escort slots, either side of the ideal slot, in degrees (task-248-01; provisional). */
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Drone|Walls", meta = (ClampMin = 0, ClampMax = 180, Units = "deg"))
+	float EscortWideAngleDegrees = 90.f;
+
+	/** Minimum time a clear escort slot is held before the drone switches to a better one, in seconds (task-248-01; provisional). A blocked slot is left at once. */
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Drone|Walls", meta = (ClampMin = 0, Units = "s"))
+	float EscortSlotChangeDelay = 0.3f;
+
+	/** Extra height of the fallback slot just above the miner (no clear candidate), added to HoverHeight, in uu (task-248-01; provisional). */
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Drone|Walls", meta = (ClampMin = 0, Units = "cm"))
+	float EscortFallbackExtraHeight = 40.f;
+
+	/** Margin kept between a slot or hover point and the nearest block along the checked segments, in uu (task-248-01; provisional; the grey box drone is a 40 uu sphere). */
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Drone|Walls", meta = (ClampMin = 0, Units = "cm"))
+	float DroneWallClearance = 20.f;
+
+	/** Distance of the dig hover point from the wall face, along its outward normal (free side), in uu (task-248-01; provisional). */
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Drone|Dig", meta = (ClampMin = 0, Units = "cm"))
+	float DigHoverFaceDistance = 90.f;
+
+	/** Height of the dig hover point above the miner's floor (capsule bottom), in uu (task-248-01; provisional). */
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Drone|Dig", meta = (Units = "cm"))
+	float DigHoverHeight = 130.f;
+
 	/** Speed at which the drone moves toward its dig or hack hover point (FMath::VInterpTo speed). 0 = snap to it. Orbit uses the escort spring instead. */
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Drone|Orbit", meta = (ClampMin = 0))
 	float FollowInterpSpeed = 10.f;
@@ -464,4 +547,13 @@ protected:
 
 	/** Velocity of the drone on the escort spring, in uu/s; reset to zero when the escort resumes. */
 	FVector EscortVelocity = FVector::ZeroVector;
+
+	/** Escort slot index meaning "just above the miner" (no clear candidate). */
+	static constexpr int32 EscortFallbackSlotIndex = 6;
+
+	/** Current escort slot: a candidate of GetEscortCandidateYaw (0 = ideal) or EscortFallbackSlotIndex. */
+	int32 EscortSlotIndex = 0;
+
+	/** Time the current escort slot has been held, in seconds (reset on every slot change). */
+	float EscortSlotHoldTime = 0.f;
 };

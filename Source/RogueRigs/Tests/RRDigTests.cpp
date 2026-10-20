@@ -11,6 +11,7 @@
 #include "Components/StaticMeshComponent.h"
 #include "Drone/RRDrone.h"
 #include "Engine/Engine.h"
+#include "Engine/TargetPoint.h"
 #include "Engine/World.h"
 #include "EngineUtils.h"
 #include "Explosions/RRExplosionStatsRow.h"
@@ -694,14 +695,15 @@ bool FRRDigArcContactTest::RunTest(const FString& Parameters)
 	{
 		TestWorld.Tick();
 	}
-	FVector ArcCentre = FVector::ZeroVector;
-	for (const FIntPoint& Cell : Arc)
-	{
-		ArcCentre += Grid->GetCellCenter(Cell.X, Cell.Y) / Arc.Num();
-	}
-	const double HoverError = FVector::Dist2D(Drone->GetActorLocation(), ArcCentre);
-	AddInfo(FString::Printf(TEXT("frame 25: drone %.1f uu from the arc centre %s"), HoverError, *ArcCentre.ToCompactString()));
-	TestTrue(TEXT("drone hovers over the arc centre"), HoverError <= 10.0);
+	// task-248-01: the drone hovers on the free side of the wall face (facing -X here), DigHoverFaceDistance from the impact point,
+	// DigHoverHeight above the floor, never over the rock.
+	const FVector DigHover = Drone->GetDigImpactPoint() - FVector::ForwardVector * FDroneAccess::DigHoverFaceDistanceOf(Drone);
+	const double HoverError = FVector::Dist2D(Drone->GetActorLocation(), DigHover);
+	const double HoverHeight = Drone->GetActorLocation().Z - (Miner->GetActorLocation().Z - Miner->GetCapsuleComponent()->GetScaledCapsuleHalfHeight());
+	AddInfo(FString::Printf(TEXT("frame 25: drone %.1f uu from the dig hover point %s, %.1f uu above the floor"), HoverError, *DigHover.ToCompactString(), HoverHeight));
+	TestTrue(TEXT("drone hovers on the free side of the face"), HoverError <= 10.0);
+	TestTrue(TEXT("drone at the dig hover height"), FMath::Abs(HoverHeight - FDroneAccess::DigHoverHeightOf(Drone)) <= 10.0);
+	TestFalse(TEXT("drone not over a block"), Grid->IsBlockCell(Grid->GetCellAtWorld(Drone->GetActorLocation())));
 	CheckDigBeam(*this, Drone, TEXT("frame 25"));
 
 	// Frames counted from the first tick: continue to the destruction.
@@ -1020,6 +1022,101 @@ bool FRRDroneEscortTest::RunTest(const FString& Parameters)
 	TestTrue(TEXT("drone stays in Orbit at rest"), bAlwaysOrbit);
 	TestTrue(TEXT("at rest within the escort distance (110-140 uu)"), MinDistance >= 110.0 && MaxDistance <= 140.0);
 	TestTrue(TEXT("at rest the drone keeps moving (figure-eight)"), Travel > 50.0);
+	return true;
+}
+
+IMPLEMENT_SIMPLE_AUTOMATION_TEST(FRRDroneAvoidsWallsTest, "RogueRigs.Dig.DroneAvoidsWalls",
+	EAutomationTestFlags::EditorContext | EAutomationTestFlags::EngineFilter)
+
+bool FRRDroneAvoidsWallsTest::RunTest(const FString& Parameters)
+{
+	using namespace RRDigTests;
+
+	// task-248-01, headless position check only: with the miner next to a wall of arena_m1_fine, the drone's cell is never a block
+	// cell, sampled every frame, in Orbit (rest with the ideal slot inside the rock pillar x 129-130, walks along it), Dig (against
+	// the pillar) and Hack (target inside the rock mass y <= 110, the plain hover point would be in the rock).
+	const FIntPoint OrbitCell(127, 112);
+	FTestWorld TestWorld;
+	ARRArenaGrid* Grid = nullptr;
+	ARRMiner* Miner = nullptr;
+	ARRDrone* Drone = SpawnArcDigScene(*this, TestWorld, OrbitCell, Grid, Miner);
+	if (!Drone)
+	{
+		return false;
+	}
+	TestTrue(TEXT("scene: pillar (129, 113) and mass (125, 110) are rock, (127, 111..117) and (125, 111..112) floor"),
+		Grid->IsBlockCell(FIntPoint(129, 113)) && Grid->IsBlockCell(FIntPoint(125, 110)) && !Grid->IsBlockCell(FIntPoint(125, 111))
+		&& !Grid->IsBlockCell(FIntPoint(125, 112)) && !Grid->IsBlockCell(FIntPoint(127, 111)) && !Grid->IsBlockCell(FIntPoint(127, 117)));
+	UCharacterMovementComponent* MinerMovement = Miner->GetCharacterMovement();
+	MinerMovement->bRunPhysicsWithNoController = true;
+	MinerMovement->SetDefaultMovementMode();
+
+	struct FPhaseCount
+	{
+		int32 Frames = 0;
+		int32 InBlock = 0;
+	};
+	FPhaseCount Counts[3];
+	auto Sample = [&]()
+	{
+		FPhaseCount& Count = Counts[static_cast<int32>(Drone->GetState())];
+		++Count.Frames;
+		Count.InBlock += Grid->IsBlockCell(Grid->GetCellAtWorld(Drone->GetActorLocation())) ? 1 : 0;
+	};
+	auto Walk = [&](const FVector& Direction, int32 Frames)
+	{
+		for (int32 Frame = 0; Frame < Frames; ++Frame)
+		{
+			if (!Direction.IsZero())
+			{
+				FMinerAccess::PendingMoveInputOf(Miner) = Direction;
+				Miner->AddMovementInput(Direction, 1.f);
+			}
+			TestWorld.Tick();
+			Sample();
+		}
+	};
+
+	// Orbit: facing -Y, the ideal rest slot (heading + 100 degrees, +X) lies in the pillar.
+	Miner->SetActorRotation(FRotator(0.f, -90.f, 0.f));
+	Drone->SetOwnerMiner(Miner);
+	Sample();
+	const int32 RestSlot = FDroneAccess::EscortSlotIndexOf(Drone);
+	AddInfo(FString::Printf(TEXT("rest slot facing the pillar: candidate %d"), RestSlot));
+	TestNotEqual(TEXT("ideal rest slot rejected (in the pillar)"), RestSlot, 0);
+	Walk(FVector::ZeroVector, 60);
+	Walk(FVector::RightVector, 40);
+	Walk(-FVector::RightVector, 30);
+	Walk(FVector::ZeroVector, 90);
+
+	// Dig: against the pillar (the arc-dig scene cell).
+	Miner->SetActorLocation(Grid->GetCellCenter(FineRockWestFloorCell.X, FineRockWestFloorCell.Y) + FVector(0.0, 0.0, Miner->GetCapsuleComponent()->GetScaledCapsuleHalfHeight() + 2.0),
+		/*bSweep*/ false, nullptr, ETeleportType::TeleportPhysics);
+	Walk(FVector::ZeroVector, 90);
+
+	// Hack: miner on (125, 112), target in the rock (125, 109); HackHoverDistance toward the miner would end in (125, 110).
+	Miner->SetActorLocation(Grid->GetCellCenter(125, 112) + FVector(0.0, 0.0, Miner->GetCapsuleComponent()->GetScaledCapsuleHalfHeight() + 2.0),
+		/*bSweep*/ false, nullptr, ETeleportType::TeleportPhysics);
+	Walk(FVector::ZeroVector, 30);
+	AActor* Target = TestWorld.Spawn<ATargetPoint>(ATargetPoint::StaticClass(), Grid->GetCellCenter(125, 109));
+	if (!TestNotNull(TEXT("hack target spawned"), Target))
+	{
+		return false;
+	}
+	TestTrue(TEXT("hack started"), Drone->StartHack(Target));
+	Walk(FVector::ZeroVector, 90);
+	const FIntPoint HackCell = Grid->GetCellAtWorld(Drone->GetActorLocation());
+	AddInfo(FString::Printf(TEXT("hack hover cell %s, %.1f uu from the target"), *HackCell.ToString(), FVector::Dist2D(Drone->GetActorLocation(), Target->GetActorLocation())));
+	Drone->StopHack(Target);
+	Walk(FVector::ZeroVector, 60);
+
+	const TCHAR* Names[3] = { TEXT("Orbit"), TEXT("Dig"), TEXT("Hack") };
+	for (int32 Index = 0; Index < 3; ++Index)
+	{
+		AddInfo(FString::Printf(TEXT("%s: %d frames sampled, %d with the drone in a block cell"), Names[Index], Counts[Index].Frames, Counts[Index].InBlock));
+		TestTrue(FString::Printf(TEXT("%s sampled"), Names[Index]), Counts[Index].Frames > 0);
+		TestEqual(FString::Printf(TEXT("%s: drone never in a block cell"), Names[Index]), Counts[Index].InBlock, 0);
+	}
 	return true;
 }
 

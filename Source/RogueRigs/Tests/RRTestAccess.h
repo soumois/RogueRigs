@@ -201,6 +201,9 @@ namespace RRTestAccess
 		static const UStaticMeshComponent* Laser(const ARRDrone* Drone) { return Drone->*(&FDroneAccess::LaserMesh); }
 		static int32& MaxArcBlocksOf(ARRDrone* Drone) { return Drone->*(&FDroneAccess::MaxArcBlocks); }
 		static float BeamBaseHeight(const ARRDrone* Drone) { return Drone->*(&FDroneAccess::LaserMeshBaseHeight); }
+		static float DigHoverFaceDistanceOf(const ARRDrone* Drone) { return Drone->*(&FDroneAccess::DigHoverFaceDistance); }
+		static float DigHoverHeightOf(const ARRDrone* Drone) { return Drone->*(&FDroneAccess::DigHoverHeight); }
+		static int32 EscortSlotIndexOf(const ARRDrone* Drone) { return Drone->*(&FDroneAccess::EscortSlotIndex); }
 	};
 
 	/** ARREnemy: XP pickup class (tests drop ARRTestPickupXP) and the CSV stats copy. */

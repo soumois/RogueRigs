@@ -85,6 +85,8 @@ void ARRDrone::SetOwnerMiner(ARRMiner* NewOwnerMiner)
 		AddTickPrerequisiteActor(OwnerMiner);
 		// Until the miner first moves, the escort heading is its facing: the drone starts at its shoulder.
 		EscortHeadingYaw = OwnerMiner->GetActorRotation().Yaw;
+		EscortSlotIndex = SelectEscortSlot();
+		EscortSlotHoldTime = 0.f;
 		SetActorLocation(ComputeOrbitPoint());
 	}
 }
@@ -513,6 +515,9 @@ void ARRDrone::TickOrbit(float DeltaSeconds)
 	EscortFigureEightPhase = FMath::Fmod(EscortFigureEightPhase + UE_TWO_PI * DeltaSeconds / FMath::Max(EscortFigureEightPeriod, 0.1f), UE_TWO_PI);
 	EscortBobPhase = FMath::Fmod(EscortBobPhase + UE_TWO_PI * DeltaSeconds / FMath::Max(EscortBobPeriod, 0.1f), UE_TWO_PI);
 
+	// Walls (task-248-01): the slot is the first clear candidate, held a minimum time.
+	UpdateEscortSlot(DeltaSeconds);
+
 	const FVector Slot = ComputeOrbitPoint();
 	FVector Location = GetActorLocation();
 	if (FVector::DistSquared(Location, Slot) > FMath::Square(EscortSnapDistance))
@@ -531,13 +536,156 @@ void ARRDrone::TickOrbit(float DeltaSeconds)
 	constexpr double MaxSubstepSeconds = 1.0 / 120.0;
 	const int32 Substeps = FMath::Max(1, FMath::CeilToInt32(DeltaSeconds / MaxSubstepSeconds));
 	const double Step = DeltaSeconds / Substeps;
+	const FVector Start = Location;
 	for (int32 Index = 0; Index < Substeps; ++Index)
 	{
 		const FVector Acceleration = (Slot - Location) * (Omega * Omega) + (TargetVelocity - EscortVelocity) * (2.0 * EscortDampingRatio * Omega);
 		EscortVelocity += Acceleration * Step;
 		Location += EscortVelocity * Step;
 	}
-	SetActorLocation(Location);
+	// Overshoot or a slot change across a corner: never into a block cell.
+	SetActorLocation(ConstrainToClearCells(GetTerrainGrid(), Start, Location, &EscortVelocity));
+}
+
+const ARRArenaGrid* ARRDrone::GetTerrainGrid() const
+{
+	if (IsValid(DigGrid))
+	{
+		return DigGrid;
+	}
+	return IsValid(OwnerMiner) ? OwnerMiner->GetArenaGrid() : nullptr;
+}
+
+float ARRDrone::GetEscortCandidateYaw(int32 SlotIndex) const
+{
+	const float SideSign = bEscortOnRightSide ? 1.f : -1.f;
+	const float IdealYaw = EscortHeadingYaw + SideSign * FMath::Lerp(EscortRestAngleDegrees, EscortMoveAngleDegrees, EscortMoveBlend);
+	switch (SlotIndex)
+	{
+	case 1:
+		return IdealYaw + SideSign * EscortAlternateAngleDegrees;
+	case 2:
+		return IdealYaw - SideSign * EscortAlternateAngleDegrees;
+	case 3:
+		return IdealYaw + SideSign * EscortWideAngleDegrees;
+	case 4:
+		return IdealYaw - SideSign * EscortWideAngleDegrees;
+	case 5:
+		return EscortHeadingYaw + 180.f;
+	default:
+		return IdealYaw;
+	}
+}
+
+bool ARRDrone::IsEscortSlotClear(const ARRArenaGrid* Grid, int32 SlotIndex) const
+{
+	if (!Grid || SlotIndex == EscortFallbackSlotIndex)
+	{
+		return true;
+	}
+
+	float Sin = 0.f;
+	float Cos = 0.f;
+	FMath::SinCos(&Sin, &Cos, FMath::DegreesToRadians(GetEscortCandidateYaw(SlotIndex)));
+	const FVector Radial(Cos, Sin, 0.f);
+	const FVector Tangential(-Sin, Cos, 0.f);
+	const FVector MinerLocation = OwnerMiner->GetActorLocation();
+	const FVector Slot = MinerLocation + Radial * EscortDistance;
+
+	// The miner-to-slot segment, a margin past the slot, then the figure-eight span across it (it fades out while moving).
+	if (!Grid->HasLineOfSight(MinerLocation, Slot + Radial * DroneWallClearance))
+	{
+		return false;
+	}
+	const float TangentialReach = EscortFigureEightTangential * (1.f - EscortMoveBlend) + DroneWallClearance;
+	return Grid->HasLineOfSight(Slot, Slot + Tangential * TangentialReach) && Grid->HasLineOfSight(Slot, Slot - Tangential * TangentialReach);
+}
+
+int32 ARRDrone::SelectEscortSlot() const
+{
+	const ARRArenaGrid* Grid = GetTerrainGrid();
+	for (int32 SlotIndex = 0; SlotIndex < EscortFallbackSlotIndex; ++SlotIndex)
+	{
+		if (IsEscortSlotClear(Grid, SlotIndex))
+		{
+			return SlotIndex;
+		}
+	}
+	return EscortFallbackSlotIndex;
+}
+
+void ARRDrone::UpdateEscortSlot(float DeltaSeconds)
+{
+	EscortSlotHoldTime += DeltaSeconds;
+	const int32 BestSlot = SelectEscortSlot();
+	if (BestSlot == EscortSlotIndex)
+	{
+		return;
+	}
+	// A blocked slot is left at once; a better one waits for the minimum hold, so a corner does not make the drone hesitate.
+	const bool bCurrentBlocked = !IsEscortSlotClear(GetTerrainGrid(), EscortSlotIndex);
+	if (bCurrentBlocked || EscortSlotHoldTime >= EscortSlotChangeDelay)
+	{
+		EscortSlotIndex = BestSlot;
+		EscortSlotHoldTime = 0.f;
+	}
+}
+
+FVector ARRDrone::ResolveClearHoverPoint(const ARRArenaGrid* Grid, const FVector& Desired) const
+{
+	if (!Grid)
+	{
+		return Desired;
+	}
+	const FVector MinerLocation = OwnerMiner->GetActorLocation();
+	const FVector Offset(Desired.X - MinerLocation.X, Desired.Y - MinerLocation.Y, 0.0);
+	const double Distance = Offset.Size();
+	if (Distance <= UE_KINDA_SMALL_NUMBER)
+	{
+		return Desired;
+	}
+	const FVector Direction = Offset / Distance;
+	const double CheckedDistance = Distance + DroneWallClearance;
+	const double Clear = Grid->GetClearDistance(MinerLocation, Direction, static_cast<float>(CheckedDistance));
+	if (Clear >= CheckedDistance - UE_KINDA_SMALL_NUMBER)
+	{
+		return Desired;
+	}
+	// Back toward the miner, a margin before the first block.
+	const double Kept = FMath::Clamp(Clear - DroneWallClearance, 0.0, Distance);
+	return FVector(MinerLocation.X + Direction.X * Kept, MinerLocation.Y + Direction.Y * Kept, Desired.Z);
+}
+
+FVector ARRDrone::ConstrainToClearCells(const ARRArenaGrid* Grid, const FVector& From, const FVector& To, FVector* InOutVelocity) const
+{
+	if (!Grid || !Grid->IsBlockCell(Grid->GetCellAtWorld(To)) || Grid->IsBlockCell(Grid->GetCellAtWorld(From)))
+	{
+		return To;
+	}
+	const FVector AlongX(To.X, From.Y, To.Z);
+	if (!Grid->IsBlockCell(Grid->GetCellAtWorld(AlongX)))
+	{
+		if (InOutVelocity)
+		{
+			InOutVelocity->Y = 0.0;
+		}
+		return AlongX;
+	}
+	const FVector AlongY(From.X, To.Y, To.Z);
+	if (!Grid->IsBlockCell(Grid->GetCellAtWorld(AlongY)))
+	{
+		if (InOutVelocity)
+		{
+			InOutVelocity->X = 0.0;
+		}
+		return AlongY;
+	}
+	if (InOutVelocity)
+	{
+		InOutVelocity->X = 0.0;
+		InOutVelocity->Y = 0.0;
+	}
+	return FVector(From.X, From.Y, To.Z);
 }
 
 void ARRDrone::TickDig(float DeltaSeconds)
@@ -560,7 +708,8 @@ void ARRDrone::TickDig(float DeltaSeconds)
 		}
 	}
 
-	SetActorLocation(FMath::VInterpTo(GetActorLocation(), ComputeDigHoverPoint(), DeltaSeconds, FollowInterpSpeed));
+	const FVector From = GetActorLocation();
+	SetActorLocation(ConstrainToClearCells(DigGrid, From, FMath::VInterpTo(From, ComputeDigHoverPoint(), DeltaSeconds, FollowInterpSpeed)));
 
 	// Laser first: the face centers are still valid before the hit that may destroy the blocks.
 	UpdateDigLaser();
@@ -642,9 +791,15 @@ FVector ARRDrone::ComputeOrbitPoint() const
 	const FVector MinerLocation = OwnerMiner->GetActorLocation();
 	const double FloorZ = MinerLocation.Z - OwnerMiner->GetCapsuleComponent()->GetScaledCapsuleHalfHeight();
 
-	// Slot direction: from the heading, toward the escort side, at the angle blended from the shoulder (rest) to behind (move).
-	const float SideSign = bEscortOnRightSide ? 1.f : -1.f;
-	const float SlotYaw = EscortHeadingYaw + SideSign * FMath::Lerp(EscortRestAngleDegrees, EscortMoveAngleDegrees, EscortMoveBlend);
+	// No clear candidate (task-248-01): just above the miner, a bit higher, without figure-eight.
+	if (EscortSlotIndex == EscortFallbackSlotIndex)
+	{
+		return FVector(MinerLocation.X, MinerLocation.Y, FloorZ + HoverHeight + EscortFallbackExtraHeight + EscortBobAmplitude * FMath::Sin(EscortBobPhase));
+	}
+
+	// Slot direction: the current candidate (0 = ideal: from the heading, toward the escort side, at the angle blended from the
+	// shoulder at rest to behind when moving).
+	const float SlotYaw = GetEscortCandidateYaw(EscortSlotIndex);
 	float Sin = 0.f;
 	float Cos = 0.f;
 	FMath::SinCos(&Sin, &Cos, FMath::DegreesToRadians(SlotYaw));
@@ -665,18 +820,16 @@ FVector ARRDrone::ComputeDigHoverPoint() const
 	const FVector MinerLocation = OwnerMiner->GetActorLocation();
 	const double FloorZ = MinerLocation.Z - OwnerMiner->GetCapsuleComponent()->GetScaledCapsuleHalfHeight();
 
-	// Arc centre: mean of the dug cell centers; keep the current XY while the arc is empty.
-	FVector Centre = GetActorLocation();
-	if (DigCells.Num() > 0)
+	// Free side of the wall face (task-248-01): from the impact point along the face's outward normal; keep the current XY
+	// while the arc is empty.
+	FVector Hover = GetActorLocation();
+	FVector ImpactPoint;
+	FIntPoint FaceSide;
+	if (ComputeDigImpact(ImpactPoint, FaceSide))
 	{
-		Centre = FVector::ZeroVector;
-		for (const FIntPoint& Cell : DigCells)
-		{
-			Centre += DigGrid->GetCellCenter(Cell.X, Cell.Y);
-		}
-		Centre /= DigCells.Num();
+		Hover = ImpactPoint + FVector(FaceSide.X, FaceSide.Y, 0.0) * DigHoverFaceDistance;
 	}
-	return FVector(Centre.X, Centre.Y, FloorZ + HoverHeight);
+	return ResolveClearHoverPoint(DigGrid, FVector(Hover.X, Hover.Y, FloorZ + DigHoverHeight));
 }
 
 void ARRDrone::StopDigBlock(FIntPoint Cell)
@@ -716,7 +869,11 @@ void ARRDrone::TickHack(float DeltaSeconds)
 	const FVector TowardMiner = (MinerLocation - TargetLocation).GetSafeNormal2D();
 	const FVector HoverPoint = TargetLocation + TowardMiner * HackHoverDistance;
 
-	SetActorLocation(FMath::VInterpTo(GetActorLocation(), FVector(HoverPoint.X, HoverPoint.Y, FloorZ + HoverHeight), DeltaSeconds, FollowInterpSpeed));
+	// The hover point must be clear of rock (task-248-01), else it is pulled back toward the miner.
+	const ARRArenaGrid* Grid = GetTerrainGrid();
+	const FVector ClearHover = ResolveClearHoverPoint(Grid, FVector(HoverPoint.X, HoverPoint.Y, FloorZ + HoverHeight));
+	const FVector From = GetActorLocation();
+	SetActorLocation(ConstrainToClearCells(Grid, From, FMath::VInterpTo(From, ClearHover, DeltaSeconds, FollowInterpSpeed)));
 	UpdateLaser(LaserMesh, GetActorLocation(), TargetLocation + HackLinkOffset);
 }
 
@@ -731,6 +888,12 @@ void ARRDrone::ResumeOrbit()
 {
 	// The spring starts from where the drone is, at rest: it flies back to the slot smoothly.
 	EscortVelocity = FVector::ZeroVector;
+	// The slot is chosen afresh after a dig or hack (task-248-01).
+	if (IsValid(OwnerMiner))
+	{
+		EscortSlotIndex = SelectEscortSlot();
+		EscortSlotHoldTime = 0.f;
+	}
 }
 
 void ARRDrone::UpdateLaser(UStaticMeshComponent* Beam, const FVector& Start, const FVector& End)
