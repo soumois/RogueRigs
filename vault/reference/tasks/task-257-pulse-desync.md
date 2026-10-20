@@ -3,7 +3,7 @@ id: task-257-pulse-desync
 description: "Global task: Ore and heal crystals and pickups no longer pulse in sync: each object gets a seeded random pulse phase and a +-20 percent rate."
 parent: tasks-to-do-index
 kind: task
-status: todo
+status: in-progress
 ---
 # Pulse desync material inputs
 
