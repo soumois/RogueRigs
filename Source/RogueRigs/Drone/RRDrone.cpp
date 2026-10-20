@@ -18,6 +18,7 @@
 #include "Player/RRMiner.h"
 #include "NiagaraComponent.h"
 #include "NiagaraSystem.h"
+#include "Misc/App.h"
 #include "UObject/ConstructorHelpers.h"
 #include "RogueRigs.h"
 
@@ -76,6 +77,35 @@ ARRDrone::ARRDrone()
 	{
 		DigImpactSystem = DigImpactFinder.Object;
 	}
+
+	// Thrusters (task-254-02): one owned component per side pod, relative to the base so they follow its yaw and tilt.
+	ThrusterLeft = CreateDefaultSubobject<UNiagaraComponent>(TEXT("ThrusterLeft"));
+	ThrusterRight = CreateDefaultSubobject<UNiagaraComponent>(TEXT("ThrusterRight"));
+	for (UNiagaraComponent* Thruster : { ThrusterLeft.Get(), ThrusterRight.Get() })
+	{
+		Thruster->SetupAttachment(Mesh);
+		Thruster->bAutoActivate = false;
+		Thruster->SetAutoDestroy(false);
+		Thruster->SetCollisionProfileName(UCollisionProfile::NoCollision_ProfileName);
+		Thruster->SetGenerateOverlapEvents(false);
+		Thruster->SetCanEverAffectNavigation(false);
+	}
+	ThrusterLeft->SetRelativeTransform(ThrusterLeftOffset);
+	ThrusterRight->SetRelativeTransform(ThrusterRightOffset);
+
+	static ConstructorHelpers::FObjectFinder<UNiagaraSystem> ThrusterFinder(TEXT("/Game/RogueRigs/FX/Drone/NS_DroneThruster.NS_DroneThruster"));
+	if (ThrusterFinder.Succeeded())
+	{
+		ThrusterSystem = ThrusterFinder.Object;
+	}
+}
+
+void ARRDrone::OnConstruction(const FTransform& Transform)
+{
+	Super::OnConstruction(Transform);
+
+	ThrusterLeft->SetRelativeTransform(ThrusterLeftOffset);
+	ThrusterRight->SetRelativeTransform(ThrusterRightOffset);
 }
 
 void ARRDrone::SetOwnerMiner(ARRMiner* NewOwnerMiner)
@@ -114,6 +144,9 @@ void ARRDrone::SetOwnerMiner(ARRMiner* NewOwnerMiner)
 	// Patrol picks use their own stream too (another sequence than the gestures), so they never depend on the gestures.
 	PatrolRandom.Initialize(static_cast<int32>(GetUniqueID()) * 7919 + 1);
 	ResetIdleGestureCountdown();
+	// The snap onto the patrol point below is not movement: the thrusters measure from the next tick.
+	bHasThrusterLocation = false;
+	ThrusterSpeed = 0.f;
 
 	if (OwnerMiner)
 	{
@@ -528,6 +561,53 @@ void ARRDrone::Tick(float DeltaSeconds)
 	if (DeltaSeconds > 0.f)
 	{
 		UpdateParts(DeltaSeconds);
+	}
+
+	// Thrusters last (task-254-02): the speed uses this frame's final location, in every state.
+	UpdateThrusters(DeltaSeconds);
+}
+
+void ARRDrone::UpdateThrusters(float DeltaSeconds)
+{
+	const FVector Location = GetActorLocation();
+	if (!bHasThrusterLocation)
+	{
+		ThrusterPreviousLocation = Location;
+		bHasThrusterLocation = true;
+		ThrusterSpeed = 0.f;
+	}
+	else if (DeltaSeconds > 0.f)
+	{
+		const float RawSpeed = static_cast<float>(FVector::Dist(Location, ThrusterPreviousLocation) / DeltaSeconds);
+		const float Alpha = ThrusterSpeedSmoothing > UE_KINDA_SMALL_NUMBER
+			? 1.f - FMath::Exp(-DeltaSeconds / ThrusterSpeedSmoothing)
+			: 1.f;
+		ThrusterSpeed += (RawSpeed - ThrusterSpeed) * Alpha;
+		ThrusterPreviousLocation = Location;
+	}
+
+	// Niagara never runs without rendering (-nullrhi, commandlets): skip the activation attempts there.
+	if (!ThrusterSystem || !FApp::CanEverRender())
+	{
+		return;
+	}
+
+	static const FName SpeedParameter(TEXT("User.Speed"));
+	for (UNiagaraComponent* Thruster : { ThrusterLeft.Get(), ThrusterRight.Get() })
+	{
+		if (!IsValid(Thruster))
+		{
+			continue;
+		}
+		if (Thruster->GetAsset() != ThrusterSystem)
+		{
+			Thruster->SetAsset(ThrusterSystem);
+		}
+		Thruster->SetVariableFloat(SpeedParameter, ThrusterSpeed);
+		if (!Thruster->IsActive())
+		{
+			Thruster->Activate(/*bReset*/ true);
+		}
 	}
 }
 

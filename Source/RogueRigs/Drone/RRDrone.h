@@ -90,6 +90,9 @@ DECLARE_DYNAMIC_MULTICAST_DELEGATE_TwoParams(FRROnDigBlockStoppedSignature, FInt
  * link point, within [LaserPitchMinDegrees, LaserPitchMaxDegrees] (0 = straight down) at LaserPitchTurnRate at most, and rests
  * straight down in Orbit; the beam (LaserMesh) starts at that emitter tip. AntennaMesh spins about its Z axis at
  * AntennaSpinSpeed, always.
+ * Thrusters (task-254-02, owner 2026-10-20, provisional, visual only): ThrusterLeft and ThrusterRight play ThrusterSystem
+ * (NS_DroneThruster) under the two side pods, always active (Orbit, Dig, Hack; idle glow at rest); every tick User.Speed =
+ * the actor's own world speed (location delta / DeltaSeconds, smoothed over ThrusterSpeedSmoothing). Never active under -nullrhi.
  * The drone has no ASC: it reads MiningSpeed on the miner's ASC. Its meshes never collide. The grid is assumed unrotated
  * and unscaled (world X / Y = grid X / Y).
  * Subclass in Blueprint for the base, laser arm and antenna meshes and the beam mesh and material.
@@ -100,8 +103,15 @@ class ROGUERIGS_API ARRDrone : public AActor
 	GENERATED_BODY()
 
 public:
-	/** Creates the root base mesh, the laser arm (LaserPivot) and antenna children, the hidden beam mesh (all no collision) and the impact effect, and enables ticking. */
+	/** Creates the root base mesh, the laser arm (LaserPivot) and antenna children, the hidden beam mesh (all no collision), the impact effect and the two thrusters, and enables ticking. */
 	ARRDrone();
+
+	/** Places the two thrusters at ThrusterLeftOffset and ThrusterRightOffset (so a Blueprint override of the offsets applies). */
+	virtual void OnConstruction(const FTransform& Transform) override;
+
+	/** Smoothed world speed of the drone written to the thrusters' User.Speed, in uu/s (0 at rest). */
+	UFUNCTION(BlueprintPure, Category = "Drone|Thrusters")
+	float GetThrusterSpeed() const { return ThrusterSpeed; }
 
 	/**
 	 * Sets the miner the drone follows, makes the drone tick after it, seeds the patrol stream from the drone's unique id, picks
@@ -376,6 +386,13 @@ protected:
 	/** Stops the dig impact effect at once (Hack, EndPlay): intensity 0 and deactivate, no fade. */
 	void StopDigImpact();
 
+	/**
+	 * Thrusters (task-254-02), every tick in every state: measures the actor's world speed from its location delta over
+	 * DeltaSeconds, smooths it (exponential, ThrusterSpeedSmoothing), writes it to User.Speed of both thrusters and activates
+	 * an inactive thruster. No activation when the process can never render (-nullrhi) or without ThrusterSystem.
+	 */
+	void UpdateThrusters(float DeltaSeconds);
+
 	/** Chip colour of the dug arc: the colour of the cell type held by most dug cells (ties: the type met first, nearest the miner's front). */
 	FLinearColor GetDigChipColor() const;
 
@@ -479,6 +496,49 @@ protected:
 
 	/** Current User.Intensity of the dig impact effect: 1 while cutting, falls to 0 during the fade. */
 	float DigImpactIntensity = 0.f;
+
+	/**
+	 * Left pod thruster (NS_DroneThruster, bp-drone-thruster, task-254-02): attached to Mesh (the base) at ThrusterLeftOffset,
+	 * exhaust along the component's -Z. Created in the constructor, never spawned per frame; not auto-activated (UpdateThrusters
+	 * activates it); no collision.
+	 */
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Components")
+	TObjectPtr<UNiagaraComponent> ThrusterLeft;
+
+	/** Right pod thruster: same as ThrusterLeft, at ThrusterRightOffset. */
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Components")
+	TObjectPtr<UNiagaraComponent> ThrusterRight;
+
+	/**
+	 * Niagara system both thrusters play. Default /Game/RogueRigs/FX/Drone/NS_DroneThruster (constructor reference). None = no
+	 * effect. The system reads User.Speed in uu/s (700 = top speed).
+	 */
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Drone|Thrusters")
+	TObjectPtr<UNiagaraSystem> ThrusterSystem;
+
+	/**
+	 * Relative transform of ThrusterLeft in the base frame, in uu: the bottom of the left pod nozzle, identity rotation (exhaust
+	 * -Z). Provisional (task-254-02), to fine-tune on the real meshes; the pods are mirror-symmetric in Y, so the sign only picks the side.
+	 */
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Drone|Thrusters")
+	FTransform ThrusterLeftOffset = FTransform(FVector(0.0, -27.0, -17.0));
+
+	/** Relative transform of ThrusterRight in the base frame, in uu: the bottom of the right pod nozzle (provisional, see ThrusterLeftOffset). */
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Drone|Thrusters")
+	FTransform ThrusterRightOffset = FTransform(FVector(0.0, 27.0, -17.0));
+
+	/** Time constant of the exponential smoothing of the measured speed, in seconds (provisional). 0 = raw speed. */
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Drone|Thrusters", meta = (ClampMin = 0, Units = "s"))
+	float ThrusterSpeedSmoothing = 0.1f;
+
+	/** Smoothed world speed written to User.Speed, in uu/s. */
+	float ThrusterSpeed = 0.f;
+
+	/** Actor location at the previous thruster update; valid when bHasThrusterLocation. */
+	FVector ThrusterPreviousLocation = FVector::ZeroVector;
+
+	/** False until the first thruster update, and after SetOwnerMiner's snap, so a teleport never reads as speed. */
+	bool bHasThrusterLocation = false;
 
 	/** Inner radius of the patrol zone around the miner: a patrol point is at least this far from it (2D), in uu (task-251-01; provisional, owner 2026-10-20). */
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Drone|Orbit", meta = (ClampMin = 0, Units = "cm"))
