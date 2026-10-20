@@ -3,7 +3,7 @@ id: task-248-01-drone-no-flight-over-walls
 description: "The drone never hovers over a block: escort, dig and hack positions are chosen in free cells with a clear line from the miner."
 parent: task-248-drone-no-flight-over-walls
 kind: task
-status: in-progress
+status: done
 ---
 # Drone avoids walls
 
@@ -15,11 +15,11 @@ status: in-progress
 - done_when: Build passes; existing drone tests pass; one position check (headless, no capture): with the miner next to a wall, the drone cell is never a block cell in Orbit, Dig and Hack; docs updated; lint clean.
 - editor_state: closed (C++ build)
 - token_ceiling: 150k
-- model: open
-- tokens: open
-- runs: open
+- model: opus
+- tokens: input 86, cache write 143311, cache read 4130729, output 16020
+- runs: 1
 - milestone: M1
-- result: open
+- result: Escort slot candidates (ideal, +-45, +-90, behind) filtered by line of sight on the grid; fallback above the miner; 0.3 s hold before switching to a better slot (a blocked slot is left at once); dig hover on the free side of the face (90 uu from it, 130 uu high); hack hover kept clear; last guard cuts moves into blocks. Build OK; position check DroneAvoidsWalls: 0 frames in a block in Orbit (371), Dig (30), Hack (90). HealVein still fails as before (known). Not seen in play.
 
 ## Relations
 - [[task-248-drone-no-flight-over-walls]] — parent global task.

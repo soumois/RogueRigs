@@ -3,7 +3,7 @@ id: task-249-drone-alive-orientation-height
 description: "Global task: The drone looks alive: height varies, it turns toward a point of interest, tilts with acceleration and makes small idle gestures."
 parent: tasks-to-do-index
 kind: task
-status: todo
+status: in-progress
 ---
 # Drone orientation and height variation
 

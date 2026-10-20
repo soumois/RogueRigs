@@ -461,6 +461,7 @@ kind: note
 | [[task-238-01-crit-number-colour]] | opus | 1 | 0k | 28k | 180k | 3k |
 | [[task-239-01-number-size-by-damage]] | opus | 1 | 0k | 63k | 1177k | 10k |
 | [[task-247-01-drone-escort-movement]] | opus | 1 | 0k | 172k | 5906k | 27k |
+| [[task-248-01-drone-no-flight-over-walls]] | opus | 1 | 0k | 143k | 4131k | 16k |
 
 ## Totals
 | Scope | Input | Cache write | Cache read | Output |
