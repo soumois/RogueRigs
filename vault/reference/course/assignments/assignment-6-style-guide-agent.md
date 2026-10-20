@@ -27,7 +27,7 @@ Outputs must cite concrete game elements (characters, factions, art style, setti
 List three assets of the game where AI generation is safe, and one where it would break the experience, with the reason. It is the base of the style guide.
 
 ## Deadline and numbering caveat
-October 26, 2026, 23:59 GMT = 16:59 Pacific. The lesson 09 slides number this assignment 6 and call it mandatory. The course program lists "Build a GER pipeline" as 6 and the style guide as 7; lesson 08 slides gave no assignment. Verify on the course portal whether a separate GER deliverable exists. The lesson 09 summary has no transcript, only slides.
+October 26, 2026, 23:59 GMT = 16:59 Pacific. The lesson 09 slides number this assignment 6 and call it mandatory. The course program lists "Build a GER pipeline" as 6 and the style guide as 7; lesson 08 slides gave no assignment. Owner 2026-10-20: Assignment 7 does not exist yet on the portal, so the lesson 09 numbering stands (style guide = 6). Whether a separate GER deliverable exists stays unverified. The lesson 09 summary has no transcript, only slides.
 
 ## Status
 In progress (2026-10-20). Folder: `assignments/A6-style-guide-agent/` (README skeleton).
