@@ -3,7 +3,7 @@ id: task-247-01-drone-escort-movement
 description: "The drone no longer circles the miner: it holds an escort slot beside and behind the miner that follows the miner velocity, with a damped spring and a slow figure-eight at rest."
 parent: task-247-drone-escort-movement
 kind: task
-status: in-progress
+status: done
 ---
 # Drone escort movement
 
@@ -15,11 +15,11 @@ status: in-progress
 - done_when: Build passes; existing drone tests pass; one position check (headless, no capture): with the miner moving at constant velocity the drone settles behind it on the movement side, and at rest it stays within the escort distance; docs updated; lint clean.
 - editor_state: closed (C++ build)
 - token_ceiling: 150k
-- model: open
-- tokens: open
-- runs: open
+- model: opus
+- tokens: input 98, cache write 171698, cache read 5906146, output 26515
+- runs: 1
 - milestone: M1
-- result: open
+- result: Escort movement built (damped spring, rest figure-eight, bob; heading follows miner velocity). Build OK; DroneEscort position check passes (moving at 600 uu/s: 114.8 uu behind, 71.7 uu to the side; at rest 116.8-136.7 uu from the miner). Docs updated. RogueRigs.Ore.HealVein fails with and without this change (seed), not fixed, needs its own task. Not seen in play.
 
 ## Relations
 - [[task-247-drone-escort-movement]] — parent global task.

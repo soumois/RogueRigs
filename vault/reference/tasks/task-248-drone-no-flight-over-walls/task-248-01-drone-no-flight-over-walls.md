@@ -3,7 +3,7 @@ id: task-248-01-drone-no-flight-over-walls
 description: "The drone never hovers over a block: escort, dig and hack positions are chosen in free cells with a clear line from the miner."
 parent: task-248-drone-no-flight-over-walls
 kind: task
-status: todo
+status: in-progress
 ---
 # Drone avoids walls
 
