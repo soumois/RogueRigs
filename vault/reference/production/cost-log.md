@@ -463,6 +463,7 @@ kind: note
 | [[task-247-01-drone-escort-movement]] | opus | 1 | 0k | 172k | 5906k | 27k |
 | [[task-248-01-drone-no-flight-over-walls]] | opus | 1 | 0k | 143k | 4131k | 16k |
 | [[task-249-01-drone-alive-orientation-height]] | opus | 1 | 0k | 161k | 5567k | 18k |
+| [[task-251-01-drone-patrol-movement]] | opus | 1 | 0k | 196k | 7637k | 39k |
 
 ## Totals
 | Scope | Input | Cache write | Cache read | Output |

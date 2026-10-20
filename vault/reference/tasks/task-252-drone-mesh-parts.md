@@ -3,7 +3,7 @@ id: task-252-drone-mesh-parts
 description: "Global task: The Meshy drone is cleaned, split into base, laser and a modelled parabolic dish, and imported in Unreal with its material."
 parent: tasks-to-do-index
 kind: task
-status: todo
+status: in-progress
 ---
 # Drone mesh in parts
 
