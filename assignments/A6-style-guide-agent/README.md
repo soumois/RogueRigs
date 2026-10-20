@@ -4,7 +4,7 @@
 
 ⬅️ [Assignment 5](../A5-goal-oriented-coding-agent/) · [All assignments](../)
 
-> **Status: ready to submit.** Due October 26, 2026, 16:59 Pacific (23:59 GMT). Every number below comes from the run logs in [`Tools/style/runs/20261020-a6-run3/`](../../Tools/style/runs/20261020-a6-run3/).
+> **Status: submitted** (commit `54f9d1e`, tag `a6-submission`). Due October 26, 2026, 16:59 Pacific (23:59 GMT). Every number below comes from the run logs in [`Tools/style/runs/20261020-a6-run3/`](../../Tools/style/runs/20261020-a6-run3/).
 
 ## The assignment
 
