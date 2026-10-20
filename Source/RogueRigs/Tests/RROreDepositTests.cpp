@@ -617,9 +617,9 @@ bool FRROreHealVeinTest::RunTest(const FString& Parameters)
 	// Dig: the 4 blocks shake together and break on the same frame, about 1.5 s in; the 4 heal pickups worth 15 pop one by one
 	// during the dig, every 0.375 s, the last on the break frame (task-235-01).
 	// task-213-02: each pickup pops at a random yaw and 80-300 uu (task-195-02) from the global FMath stream, clock-seeded; a
-	// pickup popping away from the miner could land beyond the pickup radius and stay there (flaky "4 collected").
-	// Seeded here so the run is deterministic; gameplay unchanged.
-	FMath::RandInit(5); // seed checked to pass (task-213-02); a change in the number of FMath draws may need a new one
+	// pickup popping away from the miner can land beyond the pickup radius and stay there. Seeded only so the logged numbers
+	// repeat; since task-250-01 the result no longer depends on the seed (the miner walks to a pickup left beyond the radius).
+	FMath::RandInit(5);
 	TArray<int32> BreakFrames;
 	BreakFrames.Init(INDEX_NONE, VeinCellsOfTarget.Num());
 	int32 MaxVeinBlocksInArc = 0;
@@ -688,11 +688,70 @@ bool FRROreHealVeinTest::RunTest(const FString& Parameters)
 	CheckPopTiming(*this, PopFrames, BreakFrames[0]);
 	TestEqual(TEXT("4 heal pickups"), HealPickupsSeen, 4);
 
-	// Every heal pickup is collected (they pop next to the miner, inside the pickup radius): +60 HP.
+	// Miner standing still: every heal pickup that settles inside the pickup radius is collected (task-250-01).
 	for (int32 Frame = 0; Frame < 600 && Recorder->GetCollectedPickups().Num() < 4; ++Frame)
 	{
 		TestWorld.Tick();
 	}
+	const int32 CollectedInPlace = Recorder->GetCollectedPickups().Num();
+
+	// task-250-01: a pickup pops 80-300 uu (task-195-02) from its own block (task-235-01), up to 2 cells from the miner, so it
+	// can settle beyond the 300 uu pickup radius (heal-ore: collected within the radius only). Such a pickup must stay on the
+	// floor, at rest, never consumed, and be collected once the miner walks near it (miner teleported to the nearest floor cell).
+	TArray<TWeakObjectPtr<ARRPickup>> LeftPickups;
+	for (TActorIterator<ARRPickup> It(TestWorld.Get()); It; ++It)
+	{
+		if (!URRActorPoolSubsystem::IsPooledIdle(*It) && It->GetPickupType() == ERRPickupType::Heal)
+		{
+			const float LeftDistance = FVector::Dist2D(It->GetActorLocation(), Miner->GetActorLocation());
+			AddInfo(FString::Printf(TEXT("heal pickup left by the still miner %.1f uu away (pickup radius %.1f), phase %d"),
+				LeftDistance, Miner->GetPickupRadius(), static_cast<int32>(It->GetPhase())));
+			TestTrue(TEXT("a pickup left by the still miner rests beyond the pickup radius"),
+				It->GetPhase() == ERRPickupPhase::Rest && LeftDistance > Miner->GetPickupRadius());
+			LeftPickups.Add(*It);
+		}
+	}
+	TestEqual(TEXT("every heal pickup is collected or still in the world (none lost)"), CollectedInPlace + LeftPickups.Num(), 4);
+	int32 Walks = 0;
+	for (const TWeakObjectPtr<ARRPickup>& LeftPtr : LeftPickups)
+	{
+		ARRPickup* Left = LeftPtr.Get();
+		if (!Left || URRActorPoolSubsystem::IsPooledIdle(Left))
+		{
+			continue; // collected meanwhile (pulled in on the way to another one)
+		}
+		const FIntPoint LeftCell = Grid->GetCellAtWorld(Left->GetActorLocation());
+		FIntPoint WalkCell(INDEX_NONE, INDEX_NONE);
+		float BestDistance = TNumericLimits<float>::Max();
+		for (int32 DY = -3; DY <= 3; ++DY)
+		{
+			for (int32 DX = -3; DX <= 3; ++DX)
+			{
+				const FIntPoint Cell = LeftCell + FIntPoint(DX, DY);
+				const float Distance = FVector::Dist2D(Grid->GetCellCenter(Cell.X, Cell.Y), Left->GetActorLocation());
+				if (Grid->GetCellType(Cell) == ERRCellType::Floor && Distance < BestDistance)
+				{
+					BestDistance = Distance;
+					WalkCell = Cell;
+				}
+			}
+		}
+		if (!TestTrue(TEXT("a floor cell next to the left pickup"), WalkCell.X != INDEX_NONE))
+		{
+			break;
+		}
+		const FVector WalkCenter = Grid->GetCellCenter(WalkCell.X, WalkCell.Y);
+		Miner->SetActorLocation(FVector(WalkCenter.X, WalkCenter.Y, Miner->GetActorLocation().Z), false, nullptr, ETeleportType::TeleportPhysics);
+		++Walks;
+		auto IsGone = [&LeftPtr]() { return !LeftPtr.IsValid() || URRActorPoolSubsystem::IsPooledIdle(LeftPtr.Get()); };
+		for (int32 Frame = 0; Frame < 300 && !IsGone(); ++Frame)
+		{
+			TestWorld.Tick();
+		}
+		TestTrue(TEXT("a pickup left beyond the radius is collected once the miner is near it"), IsGone());
+	}
+	AddInfo(FString::Printf(TEXT("heal pickups collected in place %d, after walking to the rest %d (walks %d)"), CollectedInPlace,
+		Recorder->GetCollectedPickups().Num() - CollectedInPlace, Walks));
 	int32 HealCollected = 0;
 	for (const ERRPickupType Type : Recorder->GetCollectedPickups())
 	{
