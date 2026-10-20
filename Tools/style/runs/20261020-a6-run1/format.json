@@ -1,0 +1,11 @@
+{
+ "findings": [
+  {
+   "file": "alerts",
+   "item_id": "kv_console_dropped_02",
+   "rule": "F3",
+   "message": "number-not-in-excerpt: number \"27\" does not appear in an excerpt of this item's log entries",
+   "text": "Unregistered console connection recorded. Network access will be invoiced."
+  }
+ ]
+}

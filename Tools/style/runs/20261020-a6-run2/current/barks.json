@@ -1,0 +1,90 @@
+{
+ "schema_version": 1,
+ "run_id": "20261020-153600-barks-noretrieval",
+ "items": [
+  {
+   "line_id": "rook_level_up_01",
+   "speaker_id": "rook",
+   "trigger": "level_up",
+   "tone": "cocky",
+   "text": "Fresh torque. Same genius. Still modest."
+  },
+  {
+   "line_id": "rook_player_damaged_01",
+   "speaker_id": "rook",
+   "trigger": "player_damaged",
+   "tone": "cocky",
+   "text": "Hull's cracked. Still prettier than their robots."
+  },
+  {
+   "line_id": "rook_horde_incoming_01",
+   "speaker_id": "rook",
+   "trigger": "horde_incoming",
+   "tone": "cocky",
+   "text": "Tin cans incoming. More scrap for me."
+  },
+  {
+   "line_id": "rook_console_hack_started_01",
+   "speaker_id": "rook",
+   "trigger": "console_hack_started",
+   "tone": "cocky",
+   "text": "Console's live. Their firewall is already nervous."
+  },
+  {
+   "line_id": "rook_run_won_01",
+   "speaker_id": "rook",
+   "trigger": "run_won",
+   "tone": "cocky",
+   "text": "Full payload, full cut. Cheers, Kessler-Voss."
+  },
+  {
+   "line_id": "rook_bonus_chest_opened_01",
+   "speaker_id": "rook",
+   "trigger": "bonus_chest_opened",
+   "tone": "cocky",
+   "text": "Jackpot! My cut just got bigger."
+  },
+  {
+   "line_id": "vesna_upgrade_offer_01",
+   "speaker_id": "vesna",
+   "trigger": "upgrade_offer",
+   "tone": "deadpan",
+   "text": "Pick one. Think first, unlike Ceres."
+  },
+  {
+   "line_id": "vesna_console_dropped_01",
+   "speaker_id": "vesna",
+   "trigger": "console_dropped",
+   "tone": "technical",
+   "text": "Console drop confirmed. Try not to lose it."
+  },
+  {
+   "line_id": "vesna_extraction_ready_01",
+   "speaker_id": "vesna",
+   "trigger": "extraction_ready",
+   "tone": "deadpan",
+   "text": "Shuttle's ready. Please stop looting."
+  },
+  {
+   "line_id": "vesna_shuttle_landed_01",
+   "speaker_id": "vesna",
+   "trigger": "shuttle_landed",
+   "tone": "technical",
+   "text": "Shuttle down. Boarding window is short."
+  },
+  {
+   "line_id": "vesna_run_lost_01",
+   "speaker_id": "vesna",
+   "trigger": "run_lost",
+   "tone": "deadpan",
+   "text": "Well. Still not as bad as Ceres."
+  },
+  {
+   "line_id": "vesna_game_over_01",
+   "speaker_id": "vesna",
+   "trigger": "game_over",
+   "tone": "deadpan",
+   "text": "Signal lost. I will file a complaint."
+  }
+ ]
+}

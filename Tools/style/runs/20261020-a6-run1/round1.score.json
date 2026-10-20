@@ -1,0 +1,361 @@
+{
+ "round": 1,
+ "items": [
+  {
+   "file": "barks",
+   "item_id": "rook_level_up_01",
+   "scores": {
+    "voice": 9,
+    "lore": 9,
+    "reference": 9
+   },
+   "rules": [],
+   "reason": "Cocky Rook with Rigs jargon (torque, yield) and self-praise; original.",
+   "suggestion": null
+  },
+  {
+   "file": "barks",
+   "item_id": "rook_player_damaged_01",
+   "scores": {
+    "voice": 9,
+    "lore": 9,
+    "reference": 8
+   },
+   "rules": [],
+   "reason": "Rook billing corporate fits T2/T4, but it leans on the vault example 'Send the invoice to corporate.'",
+   "suggestion": null
+  },
+  {
+   "file": "barks",
+   "item_id": "rook_horde_incoming_01",
+   "scores": {
+    "voice": 9,
+    "lore": 9,
+    "reference": 9
+   },
+   "rules": [],
+   "reason": "Dismissive of the robots with jargon (drill bit); on-brand.",
+   "suggestion": null
+  },
+  {
+   "file": "barks",
+   "item_id": "rook_console_hack_started_01",
+   "scores": {
+    "voice": 7,
+    "lore": 9,
+    "reference": 7
+   },
+   "rules": [
+    "T4",
+    "T3"
+   ],
+   "reason": "Generic line with no Rigs jargon or punchline, and 'Hacking time' echoes the well-known 'It's hacking time' meme catchphrase.",
+   "suggestion": "Console's live. Corporate firewall, meet my drill bit."
+  },
+  {
+   "file": "barks",
+   "item_id": "rook_run_won_01",
+   "scores": {
+    "voice": 9,
+    "lore": 9,
+    "reference": 9
+   },
+   "rules": [],
+   "reason": "Payload jargon and a jab at the company on extraction; on-brand.",
+   "suggestion": null
+  },
+  {
+   "file": "barks",
+   "item_id": "rook_bonus_chest_opened_01",
+   "scores": {
+    "voice": 8,
+    "lore": 9,
+    "reference": 9
+   },
+   "rules": [],
+   "reason": "Rook counting his cut is in character, but the line is flat.",
+   "suggestion": null
+  },
+  {
+   "file": "barks",
+   "item_id": "vesna_upgrade_offer_01",
+   "scores": {
+    "voice": 7,
+    "lore": 9,
+    "reference": 9
+   },
+   "rules": [
+    "T2",
+    "T5"
+   ],
+   "reason": "'Try not to overthink' teases the player's upgrade decision rather than Rook's plans, and contradicts Rook who improvises first.",
+   "suggestion": "Pick one. Unlike your plans, these work."
+  },
+  {
+   "file": "barks",
+   "item_id": "vesna_console_dropped_01",
+   "scores": {
+    "voice": 8,
+    "lore": 9,
+    "reference": 9
+   },
+   "rules": [],
+   "reason": "Calm technical Vesna with a dry jab at Rook's carelessness; acceptable but flat.",
+   "suggestion": null
+  },
+  {
+   "file": "barks",
+   "item_id": "vesna_extraction_ready_01",
+   "scores": {
+    "voice": 8,
+    "lore": 9,
+    "reference": 9
+   },
+   "rules": [],
+   "reason": "Dry, short, teases Rook's greed while pushing the objective; flat.",
+   "suggestion": null
+  },
+  {
+   "file": "barks",
+   "item_id": "vesna_shuttle_landed_01",
+   "scores": {
+    "voice": 8,
+    "lore": 9,
+    "reference": 9
+   },
+   "rules": [],
+   "reason": "Precise mission-first Vesna; correct but flat.",
+   "suggestion": null
+  },
+  {
+   "file": "barks",
+   "item_id": "vesna_run_lost_01",
+   "scores": {
+    "voice": 9,
+    "lore": 9,
+    "reference": 9
+   },
+   "rules": [],
+   "reason": "Dry deflation using a listed past job (the Pallas run).",
+   "suggestion": null
+  },
+  {
+   "file": "barks",
+   "item_id": "vesna_game_over_01",
+   "scores": {
+    "voice": 8,
+    "lore": 9,
+    "reference": 9
+   },
+   "rules": [],
+   "reason": "Dry understatement that hides concern; acceptable but flat.",
+   "suggestion": null
+  },
+  {
+   "file": "alerts",
+   "item_id": "kv_console_dropped_01",
+   "scores": {
+    "voice": 5,
+    "lore": 9,
+    "reference": 9
+   },
+   "rules": [
+    "T6"
+   ],
+   "reason": "Labelled propaganda but the text is a cold bureaucratic notice; the register field contradicts the line.",
+   "suggestion": "Kessler-Voss networks: connecting your future, securely."
+  },
+  {
+   "file": "alerts",
+   "item_id": "kv_console_dropped_02",
+   "scores": {
+    "voice": 9,
+    "lore": 9,
+    "reference": 8
+   },
+   "rules": [],
+   "reason": "Cold procedural notice with invoicing; on-register, though 'will be invoiced' tracks the vault example closely.",
+   "suggestion": null
+  },
+  {
+   "file": "alerts",
+   "item_id": "kv_bonus_chest_dropped_01",
+   "scores": {
+    "voice": 5,
+    "lore": 9,
+    "reference": 9
+   },
+   "rules": [
+    "T6"
+   ],
+   "reason": "Labelled propaganda but the text is a bureaucratic warning; the register field contradicts the line.",
+   "suggestion": "Kessler-Voss supplies, delivered wherever your future needs them."
+  },
+  {
+   "file": "alerts",
+   "item_id": "kv_bonus_chest_dropped_02",
+   "scores": {
+    "voice": 9,
+    "lore": 9,
+    "reference": 9
+   },
+   "rules": [],
+   "reason": "Cold asset language claiming the crate as company property; on-register.",
+   "suggestion": null
+  },
+  {
+   "file": "alerts",
+   "item_id": "kv_horde_incoming_01",
+   "scores": {
+    "voice": 9,
+    "lore": 9,
+    "reference": 7
+   },
+   "rules": [
+    "T8"
+   ],
+   "reason": "Right register, but 'Asset recovery in progress' is a near-copy of the vault example 'Asset recovery initiated.'",
+   "suggestion": "Security response dispatched. Irregularity containment in progress."
+  },
+  {
+   "file": "alerts",
+   "item_id": "kv_horde_incoming_02",
+   "scores": {
+    "voice": 5,
+    "lore": 9,
+    "reference": 9
+   },
+   "rules": [
+    "T6"
+   ],
+   "reason": "Labelled propaganda but the text is bureaucratic threat language ('extraction irregularity'); the register field contradicts the line.",
+   "suggestion": "Kessler-Voss security: protecting your future, claim by claim."
+  },
+  {
+   "file": "alerts",
+   "item_id": "kv_extraction_ready_01",
+   "scores": {
+    "voice": 5,
+    "lore": 9,
+    "reference": 9
+   },
+   "rules": [
+    "T6"
+   ],
+   "reason": "Labelled propaganda but the text is a cold invoicing notice; the register field contradicts the line.",
+   "suggestion": "Kessler-Voss skies stay safe, so your future can rise."
+  },
+  {
+   "file": "alerts",
+   "item_id": "kv_shuttle_countdown_01",
+   "scores": {
+    "voice": 9,
+    "lore": 8,
+    "reference": 9
+   },
+   "rules": [],
+   "reason": "Cold procedural notice that states a company action without ordering a stop; 'late exits' slightly implies an on-time exit is lawful.",
+   "suggestion": null
+  },
+  {
+   "file": "upgrade_texts",
+   "item_id": "upg_damage",
+   "scores": {
+    "voice": 9,
+    "lore": 9,
+    "reference": 9
+   },
+   "rules": [],
+   "reason": "Listed film (Lethal Weaponize) with an original, cocky line.",
+   "suggestion": null
+  },
+  {
+   "file": "upgrade_texts",
+   "item_id": "upg_fire_rate",
+   "scores": {
+    "voice": 9,
+    "lore": 9,
+    "reference": 4
+   },
+   "rules": [
+    "T3"
+   ],
+   "reason": "Listed film, but 'trigger first, questions later' paraphrases the well-known catchphrase 'shoot first, ask questions later'.",
+   "suggestion": "Like in Speedbump: the trigger's faster than the paperwork."
+  },
+  {
+   "file": "upgrade_texts",
+   "item_id": "upg_reload_speed",
+   "scores": {
+    "voice": 8,
+    "lore": 9,
+    "reference": 9
+   },
+   "rules": [],
+   "reason": "Listed film (Point Brake) with an original but flat line.",
+   "suggestion": null
+  },
+  {
+   "file": "upgrade_texts",
+   "item_id": "upg_crit_chance",
+   "scores": {
+    "voice": 8,
+    "lore": 9,
+    "reference": 9
+   },
+   "rules": [],
+   "reason": "Listed film (Dirty Hairy) with an original but generic line.",
+   "suggestion": null
+  },
+  {
+   "file": "upgrade_texts",
+   "item_id": "upg_crit_damage",
+   "scores": {
+    "voice": 9,
+    "lore": 9,
+    "reference": 8
+   },
+   "rules": [],
+   "reason": "Joke at the robots, original; 'Robots hate that' leans on the 'X hate this' meme.",
+   "suggestion": null
+  },
+  {
+   "file": "upgrade_texts",
+   "item_id": "upg_max_health",
+   "scores": {
+    "voice": 9,
+    "lore": 9,
+    "reference": 9
+   },
+   "rules": [],
+   "reason": "Self-mockery with Rigs jargon (hull patch); on-brand.",
+   "suggestion": null
+  },
+  {
+   "file": "upgrade_texts",
+   "item_id": "upg_move_speed",
+   "scores": {
+    "voice": 9,
+    "lore": 9,
+    "reference": 9
+   },
+   "rules": [],
+   "reason": "Listed film (Running Late Man) and plays on Rook's wrong-place trait; original.",
+   "suggestion": null
+  },
+  {
+   "file": "upgrade_texts",
+   "item_id": "upg_pickup_radius",
+   "scores": {
+    "voice": 9,
+    "lore": 9,
+    "reference": 5
+   },
+   "rules": [
+    "T3"
+   ],
+   "reason": "'Magnets, baby' paraphrases the well-known Breaking Bad 'Yeah, magnets!' catchphrase.",
+   "suggestion": "Loot comes to me. Payload never looked so clingy."
+  }
+ ]
+}

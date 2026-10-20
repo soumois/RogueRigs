@@ -1,0 +1,159 @@
+{
+ "run_id": "20261020-162003-upgrade_texts",
+ "content_file": "upgrade_texts.json",
+ "retrieval": true,
+ "entries": [
+  {
+   "item_id": "upg_damage",
+   "loop": 0,
+   "query": "Rook upgrade flavor for Damage without a real film line",
+   "node_ids": [
+    "fictional-films",
+    "dialogue-tone"
+   ],
+   "excerpts": [
+    {
+     "node_id": "fictional-films",
+     "text": "The quote names the film: \"Like in Cry Hard 2: \u2026\"."
+    },
+    {
+     "node_id": "fictional-films",
+     "text": "- Lethal Weaponize (provisional)"
+    },
+    {
+     "node_id": "dialogue-tone",
+     "text": "No real film line, quoted or paraphrased, and no well-known catchphrase. Rook quotes only [[fictional-films]], with original lines."
+    }
+   ],
+   "output": "Like in Lethal Weaponize: the payload is the personality."
+  },
+  {
+   "item_id": "upg_fire_rate",
+   "loop": 0,
+   "query": "Rook upgrade flavor for Fire rate without a real film line",
+   "node_ids": [
+    "crew-characters",
+    "dialogue-tone"
+   ],
+   "excerpts": [
+    {
+     "node_id": "crew-characters",
+     "text": "Shop talk between people who have worked together for years: coolant, torque, drill bit, payload, burn window, hull patch, yield, redline."
+    },
+    {
+     "node_id": "dialogue-tone",
+     "text": "No real film line, quoted or paraphrased, and no well-known catchphrase. Rook quotes only [[fictional-films]], with original lines."
+    }
+   ],
+   "output": "Trigger's on redline. Robots can file complaints later."
+  },
+  {
+   "item_id": "upg_reload_speed",
+   "loop": 0,
+   "query": "Rook upgrade flavor for Reload speed without a real film line",
+   "node_ids": [
+    "fictional-films",
+    "dialogue-tone"
+   ],
+   "excerpts": [
+    {
+     "node_id": "fictional-films",
+     "text": "The quote names the film: \"Like in Cry Hard 2: \u2026\"."
+    },
+    {
+     "node_id": "fictional-films",
+     "text": "- Speedbump (provisional)"
+    },
+    {
+     "node_id": "dialogue-tone",
+     "text": "No real film line, quoted or paraphrased, and no well-known catchphrase. Rook quotes only [[fictional-films]], with original lines."
+    }
+   ],
+   "output": "Like in Speedbump: reload first, panic never."
+  },
+  {
+   "item_id": "upg_crit_chance",
+   "loop": 0,
+   "query": "Rook upgrade flavor for Crit chance without a real film line",
+   "node_ids": [
+    "crew-characters",
+    "dialogue-tone"
+   ],
+   "excerpts": [
+    {
+     "node_id": "crew-characters",
+     "text": "Cocky; waves the odds away; improvises first, thinks later, and defends a shaky plan with total confidence."
+    },
+    {
+     "node_id": "dialogue-tone",
+     "text": "No real film line, quoted or paraphrased, and no well-known catchphrase. Rook quotes only [[fictional-films]], with original lines."
+    }
+   ],
+   "output": "Every shot finds the soft spot. Call it talent."
+  },
+  {
+   "item_id": "upg_crit_damage",
+   "loop": 0,
+   "query": "Rook upgrade flavor for Crit damage without a real film line",
+   "node_ids": [
+    "crew-characters",
+    "dialogue-tone"
+   ],
+   "excerpts": [
+    {
+     "node_id": "crew-characters",
+     "text": "Proud scrapper: loves his gear, loves it when things blow up, always counting his cut."
+    },
+    {
+     "node_id": "dialogue-tone",
+     "text": "No real film line, quoted or paraphrased, and no well-known catchphrase. Rook quotes only [[fictional-films]], with original lines."
+    }
+   ],
+   "output": "Found the weak spot. Scrap goes airborne, cut goes up."
+  },
+  {
+   "item_id": "upg_max_health",
+   "loop": 0,
+   "query": "Rook upgrade flavor for Max health without a real film line",
+   "node_ids": [
+    "crew-characters",
+    "dialogue-tone"
+   ],
+   "excerpts": [
+    {
+     "node_id": "crew-characters",
+     "text": "Always in the wrong place at the wrong time; complains about it and keeps fighting."
+    },
+    {
+     "node_id": "dialogue-tone",
+     "text": "No real film line, quoted or paraphrased, and no well-known catchphrase. Rook quotes only [[fictional-films]], with original lines."
+    }
+   ],
+   "output": "Extra hull patch. Still in one piece, mostly."
+  },
+  {
+   "item_id": "upg_move_speed",
+   "loop": 0,
+   "query": "Rook upgrade flavor for Move speed without a real film line",
+   "node_ids": [
+    "fictional-films",
+    "dialogue-tone"
+   ],
+   "excerpts": [
+    {
+     "node_id": "fictional-films",
+     "text": "The quote names the film: \"Like in Cry Hard 2: \u2026\"."
+    },
+    {
+     "node_id": "fictional-films",
+     "text": "- Running Late Man (provisional)"
+    },
+    {
+     "node_id": "dialogue-tone",
+     "text": "No real film line, quoted or paraphrased, and no well-known catchphrase. Rook quotes only [[fictional-films]], with original lines."
+    }
+   ],
+   "output": "Like in Running Late Man: arrive first, complain after."
+  }
+ ]
+}

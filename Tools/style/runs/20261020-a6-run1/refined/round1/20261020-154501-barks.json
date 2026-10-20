@@ -1,0 +1,149 @@
+{
+ "run_id": "20261020-154501-barks",
+ "content_file": "barks.json",
+ "retrieval": true,
+ "entries": [
+  {
+   "item_id": "rook_level_up_01",
+   "loop": 0,
+   "query": "Rook cocky level-up boast with Rigs jargon, no film catchphrase",
+   "node_ids": [
+    "crew-characters",
+    "dialogue-tone"
+   ],
+   "excerpts": [
+    {
+     "node_id": "crew-characters",
+     "text": "Proud scrapper: loves his gear, loves it when things blow up, always counting his cut."
+    },
+    {
+     "node_id": "crew-characters",
+     "text": "coolant, torque, drill bit, payload, burn window, hull patch, yield, redline."
+    },
+    {
+     "node_id": "dialogue-tone",
+     "text": "No real film line, quoted or paraphrased, and no well-known catchphrase."
+    }
+   ],
+   "output": "More torque, more yield, same handsome miner."
+  },
+  {
+   "item_id": "rook_player_damaged_01",
+   "loop": 0,
+   "query": "Rook reaction to damage, self-mockery or company joke, no catchphrase",
+   "node_ids": [
+    "crew-characters",
+    "dialogue-tone"
+   ],
+   "excerpts": [
+    {
+     "node_id": "crew-characters",
+     "text": "Proud scrapper: loves his gear, loves it when things blow up, always counting his cut."
+    },
+    {
+     "node_id": "dialogue-tone",
+     "text": "Jokes target the company or the robots (owner 2026-10-13). Self-mockery is fine."
+    },
+    {
+     "node_id": "dialogue-tone",
+     "text": "No real film line, quoted or paraphrased, and no well-known catchphrase."
+    }
+   ],
+   "output": "Ow. Putting that dent on corporate's tab."
+  },
+  {
+   "item_id": "rook_horde_incoming_01",
+   "loop": 0,
+   "query": "Rook defiance toward incoming robot horde, original line",
+   "node_ids": [
+    "crew-characters",
+    "lore",
+    "dialogue-tone"
+   ],
+   "excerpts": [
+    {
+     "node_id": "crew-characters",
+     "text": "coolant, torque, drill bit, payload, burn window, hull patch, yield, redline."
+    },
+    {
+     "node_id": "lore",
+     "text": "Claim security robots"
+    },
+    {
+     "node_id": "dialogue-tone",
+     "text": "No real film line, quoted or paraphrased, and no well-known catchphrase."
+    }
+   ],
+   "output": "More tin cans? Fine. Drill bit's warm."
+  },
+  {
+   "item_id": "rook_run_won_01",
+   "loop": 0,
+   "query": "Rook victory line mocking Kessler-Voss, original, Rigs jargon",
+   "node_ids": [
+    "crew-characters",
+    "lore",
+    "dialogue-tone"
+   ],
+   "excerpts": [
+    {
+     "node_id": "crew-characters",
+     "text": "coolant, torque, drill bit, payload, burn window, hull patch, yield, redline."
+    },
+    {
+     "node_id": "lore",
+     "text": "The Rigs know the claim is not theirs yet: they are here first, not in the right."
+    },
+    {
+     "node_id": "dialogue-tone",
+     "text": "No real film line, quoted or paraphrased, and no well-known catchphrase."
+    }
+   ],
+   "output": "Payload's aboard. Kessler-Voss can bill the wind."
+  },
+  {
+   "item_id": "rook_bonus_chest_opened_01",
+   "loop": 0,
+   "query": "Rook loot joy, counting his cut, no catchphrase",
+   "node_ids": [
+    "crew-characters",
+    "dialogue-tone"
+   ],
+   "excerpts": [
+    {
+     "node_id": "crew-characters",
+     "text": "Proud scrapper: loves his gear, loves it when things blow up, always counting his cut."
+    },
+    {
+     "node_id": "dialogue-tone",
+     "text": "No real film line, quoted or paraphrased, and no well-known catchphrase."
+    }
+   ],
+   "output": "Jackpot! My cut just got bigger."
+  },
+  {
+   "item_id": "vesna_run_lost_01",
+   "loop": 0,
+   "query": "Vesna dry tease of Rook's plan on a lost run, listed past job only",
+   "node_ids": [
+    "crew-characters",
+    "dialogue-tone"
+   ],
+   "excerpts": [
+    {
+     "node_id": "crew-characters",
+     "text": "Calm, precise, mission first; short dry sentences."
+    },
+    {
+     "node_id": "crew-characters",
+     "text": "The Pallas run: Rook cut through a debris field \"for the shortcut\"."
+    },
+    {
+     "node_id": "dialogue-tone",
+     "text": "Vesna teases Rook's plans and bravado, never the player's skill or performance."
+    }
+   ],
+   "output": "Well. Worse than the Pallas run. Barely."
+  }
+ ]
+}

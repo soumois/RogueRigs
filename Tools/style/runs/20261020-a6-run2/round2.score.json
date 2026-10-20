@@ -1,0 +1,345 @@
+{
+ "round": 2,
+ "items": [
+  {
+   "file": "barks",
+   "item_id": "rook_level_up_01",
+   "scores": {
+    "voice": 9,
+    "lore": 9,
+    "reference": 9
+   },
+   "rules": [],
+   "reason": "Cocky self-mockery with Rigs jargon; label matches.",
+   "suggestion": null
+  },
+  {
+   "file": "barks",
+   "item_id": "rook_player_damaged_01",
+   "scores": {
+    "voice": 9,
+    "lore": 9,
+    "reference": 9
+   },
+   "rules": [],
+   "reason": "Takes a hit and jokes at the robots, on-brand cocky Rook.",
+   "suggestion": null
+  },
+  {
+   "file": "barks",
+   "item_id": "rook_horde_incoming_01",
+   "scores": {
+    "voice": 8,
+    "lore": 9,
+    "reference": 9
+   },
+   "rules": [],
+   "reason": "Dismisses the odds and counts scrap; acceptable but generic.",
+   "suggestion": null
+  },
+  {
+   "file": "barks",
+   "item_id": "rook_console_hack_started_01",
+   "scores": {
+    "voice": 9,
+    "lore": 9,
+    "reference": 9
+   },
+   "rules": [],
+   "reason": "Cocky jab at the company network, fits the hack mechanic.",
+   "suggestion": null
+  },
+  {
+   "file": "barks",
+   "item_id": "rook_run_won_01",
+   "scores": {
+    "voice": 9,
+    "lore": 9,
+    "reference": 9
+   },
+   "rules": [],
+   "reason": "Counts his cut and needles the company; jargon and tone right.",
+   "suggestion": null
+  },
+  {
+   "file": "barks",
+   "item_id": "rook_bonus_chest_opened_01",
+   "scores": {
+    "voice": 8,
+    "lore": 9,
+    "reference": 9
+   },
+   "rules": [],
+   "reason": "In character but flat; no jargon or punchline beyond the cut.",
+   "suggestion": null
+  },
+  {
+   "file": "barks",
+   "item_id": "vesna_upgrade_offer_01",
+   "scores": {
+    "voice": 8,
+    "lore": 9,
+    "reference": 9
+   },
+   "rules": [],
+   "reason": "Dry jab at Rook's Ceres plan, a listed job; close to nudging the player's choice but stays on Rook.",
+   "suggestion": null
+  },
+  {
+   "file": "barks",
+   "item_id": "vesna_console_dropped_01",
+   "scores": {
+    "voice": 7,
+    "lore": 9,
+    "reference": 9
+   },
+   "rules": [
+    "T2"
+   ],
+   "reason": "'Try not to lose it' doubts the player's competence rather than a Rook plan, and the tease mismatches the 'technical' label; change the text.",
+   "suggestion": "Console drop confirmed. Uplink holding steady."
+  },
+  {
+   "file": "barks",
+   "item_id": "vesna_extraction_ready_01",
+   "scores": {
+    "voice": 9,
+    "lore": 9,
+    "reference": 9
+   },
+   "rules": [],
+   "reason": "Calm, short deflation of Rook's looting; deadpan label matches.",
+   "suggestion": null
+  },
+  {
+   "file": "barks",
+   "item_id": "vesna_shuttle_landed_01",
+   "scores": {
+    "voice": 8,
+    "lore": 9,
+    "reference": 9
+   },
+   "rules": [],
+   "reason": "Precise technical callout, mission first; flat.",
+   "suggestion": null
+  },
+  {
+   "file": "barks",
+   "item_id": "vesna_run_lost_01",
+   "scores": {
+    "voice": 9,
+    "lore": 9,
+    "reference": 9
+   },
+   "rules": [],
+   "reason": "Dry comparison to Rook's Ceres plan, a listed job, with hidden care.",
+   "suggestion": null
+  },
+  {
+   "file": "barks",
+   "item_id": "vesna_game_over_01",
+   "scores": {
+    "voice": 8,
+    "lore": 9,
+    "reference": 9
+   },
+   "rules": [],
+   "reason": "Dry and short through the drone signal; acceptable, borrows a company-style joke.",
+   "suggestion": null
+  },
+  {
+   "file": "alerts",
+   "item_id": "kv_console_dropped_01",
+   "scores": {
+    "voice": 9,
+    "lore": 9,
+    "reference": 9
+   },
+   "rules": [],
+   "reason": "Cold procedural notice that states what the company records.",
+   "suggestion": null
+  },
+  {
+   "file": "alerts",
+   "item_id": "kv_console_dropped_02",
+   "scores": {
+    "voice": 9,
+    "lore": 9,
+    "reference": 9
+   },
+   "rules": [],
+   "reason": "Bureaucratic, uses 'unauthorized personnel', no order to the player.",
+   "suggestion": null
+  },
+  {
+   "file": "alerts",
+   "item_id": "kv_bonus_chest_dropped_01",
+   "scores": {
+    "voice": 8,
+    "lore": 8,
+    "reference": 8
+   },
+   "rules": [],
+   "reason": "Invoice threat in register, but echoes the 'will be invoiced' vault example and 'deployed' blurs who placed the crate.",
+   "suggestion": null
+  },
+  {
+   "file": "alerts",
+   "item_id": "kv_bonus_chest_dropped_02",
+   "scores": {
+    "voice": 9,
+    "lore": 9,
+    "reference": 9
+   },
+   "rules": [],
+   "reason": "Asset language, cold, states company position without ordering.",
+   "suggestion": null
+  },
+  {
+   "file": "alerts",
+   "item_id": "kv_horde_incoming_01",
+   "scores": {
+    "voice": 9,
+    "lore": 9,
+    "reference": 9
+   },
+   "rules": [],
+   "reason": "'Extraction irregularity' and removal scheduling, ideal threat register.",
+   "suggestion": null
+  },
+  {
+   "file": "alerts",
+   "item_id": "kv_horde_incoming_02",
+   "scores": {
+    "voice": 9,
+    "lore": 9,
+    "reference": 9
+   },
+   "rules": [],
+   "reason": "Procedural dispatch notice with robot units only.",
+   "suggestion": null
+  },
+  {
+   "file": "alerts",
+   "item_id": "kv_extraction_ready_01",
+   "scores": {
+    "voice": 9,
+    "lore": 8,
+    "reference": 9
+   },
+   "rules": [],
+   "reason": "Bureaucratic detection notice; recovery crew is notified off site, so L1 holds.",
+   "suggestion": null
+  },
+  {
+   "file": "alerts",
+   "item_id": "kv_shuttle_countdown_01",
+   "scores": {
+    "voice": 8,
+    "lore": 7,
+    "reference": 9
+   },
+   "rules": [
+    "L1"
+   ],
+   "reason": "'Personnel on site' without 'unauthorized' reads as company personnel on the asteroid; keep the threat register explicit.",
+   "suggestion": "Extraction crews en route. Trespass filings prepared for unauthorized personnel."
+  },
+  {
+   "file": "upgrade_texts",
+   "item_id": "upg_damage",
+   "scores": {
+    "voice": 9,
+    "lore": 9,
+    "reference": 9
+   },
+   "rules": [],
+   "reason": "Catalogue title Lethal Weaponize with an original line and payload jargon.",
+   "suggestion": null
+  },
+  {
+   "file": "upgrade_texts",
+   "item_id": "upg_fire_rate",
+   "scores": {
+    "voice": 9,
+    "lore": 9,
+    "reference": 9
+   },
+   "rules": [],
+   "reason": "Redline jargon and a jab at the robots.",
+   "suggestion": null
+  },
+  {
+   "file": "upgrade_texts",
+   "item_id": "upg_reload_speed",
+   "scores": {
+    "voice": 9,
+    "lore": 9,
+    "reference": 9
+   },
+   "rules": [],
+   "reason": "Catalogue title Speedbump, original odds-dismissing line.",
+   "suggestion": null
+  },
+  {
+   "file": "upgrade_texts",
+   "item_id": "upg_crit_chance",
+   "scores": {
+    "voice": 8,
+    "lore": 9,
+    "reference": 9
+   },
+   "rules": [],
+   "reason": "Cocky bravado, acceptable but flat.",
+   "suggestion": null
+  },
+  {
+   "file": "upgrade_texts",
+   "item_id": "upg_crit_damage",
+   "scores": {
+    "voice": 9,
+    "lore": 9,
+    "reference": 9
+   },
+   "rules": [],
+   "reason": "Loves things blowing up and counts the cut; on-brand.",
+   "suggestion": null
+  },
+  {
+   "file": "upgrade_texts",
+   "item_id": "upg_max_health",
+   "scores": {
+    "voice": 9,
+    "lore": 9,
+    "reference": 9
+   },
+   "rules": [],
+   "reason": "Hull patch jargon with tired self-mockery.",
+   "suggestion": null
+  },
+  {
+   "file": "upgrade_texts",
+   "item_id": "upg_move_speed",
+   "scores": {
+    "voice": 9,
+    "lore": 9,
+    "reference": 9
+   },
+   "rules": [],
+   "reason": "Catalogue title Running Late Man, original line echoing 'here first'.",
+   "suggestion": null
+  },
+  {
+   "file": "upgrade_texts",
+   "item_id": "upg_pickup_radius",
+   "scores": {
+    "voice": 8,
+    "lore": 9,
+    "reference": 8
+   },
+   "rules": [],
+   "reason": "Self-mocking scrap line; 'magnetic personality' is a stock idiom (not a film catchphrase) and repeats 'personality'.",
+   "suggestion": null
+  }
+ ]
+}

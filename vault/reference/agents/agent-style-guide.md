@@ -16,6 +16,7 @@ status: provisional
 - output_format: per item (text line or image file): `pass` or `fail`, the violated rule id, the reason in one sentence, a correction (a corrected line; for an image, the one change to ask in the next prompt).
 - definition_of_done: every item has a verdict; every fail cites an existing rule id.
 - must_not: cite a rule that does not exist; rewrite an item that passes; edit the content file or an image; judge numbers or schema (the validator does); drop a fail because the owner overruled the same rule before (it reports, he decides).
+- scored_mode: for the style loop it returns a 0-10 score per dimension (voice, lore, reference) with rules, reason and suggestion instead of pass/fail, in `roundN.score.json` ([[style-guide-text]], [[style-loop]]); the verdict mode above is unchanged.
 - model: opus (a different model from the generators, so the work is not graded by its author)
 - token_ceiling: 20k per review (provisional)
 
@@ -25,3 +26,5 @@ status: provisional
 - [[agent-art]] — the image generator it reviews.
 - [[dialogue-tone]] — the T rules it cites.
 - [[art-style-guide]] — the A rules it cites.
+- [[style-guide-text]] — the scale and dimensions of scored mode.
+- [[style-loop]] — the loop that drives scored mode.

@@ -1,0 +1,150 @@
+{
+ "round": 1,
+ "threshold": 8,
+ "total": 28,
+ "passed": 18,
+ "failed": 10,
+ "action": "refine",
+ "fails": [
+  {
+   "file": "barks",
+   "item_id": "rook_console_hack_started_01",
+   "text": "Hacking time. Nobody touch my console.",
+   "scores": {
+    "voice": 7,
+    "lore": 9,
+    "reference": 7,
+    "format": 10
+   },
+   "rule": "T4",
+   "reason": "Generic line with no Rigs jargon or punchline, and 'Hacking time' echoes the well-known 'It's hacking time' meme catchphrase.",
+   "suggestion": "Console's live. Corporate firewall, meet my drill bit."
+  },
+  {
+   "file": "barks",
+   "item_id": "vesna_upgrade_offer_01",
+   "text": "Pick one. Try not to overthink.",
+   "scores": {
+    "voice": 7,
+    "lore": 9,
+    "reference": 9,
+    "format": 10
+   },
+   "rule": "T2",
+   "reason": "'Try not to overthink' teases the player's upgrade decision rather than Rook's plans, and contradicts Rook who improvises first.",
+   "suggestion": "Pick one. Unlike your plans, these work."
+  },
+  {
+   "file": "alerts",
+   "item_id": "kv_console_dropped_01",
+   "text": "Foreign device detected on claim network. Session logged for review.",
+   "scores": {
+    "voice": 5,
+    "lore": 9,
+    "reference": 9,
+    "format": 10
+   },
+   "rule": "T6",
+   "reason": "Labelled propaganda but the text is a cold bureaucratic notice; the register field contradicts the line.",
+   "suggestion": "Kessler-Voss networks: connecting your future, securely."
+  },
+  {
+   "file": "alerts",
+   "item_id": "kv_console_dropped_02",
+   "text": "Unregistered console connection recorded. Network access will be invoiced.",
+   "scores": {
+    "voice": 9,
+    "lore": 9,
+    "reference": 8,
+    "format": 0
+   },
+   "rule": "F3",
+   "reason": "number-not-in-excerpt: number \"27\" does not appear in an excerpt of this item's log entries",
+   "suggestion": null
+  },
+  {
+   "file": "alerts",
+   "item_id": "kv_bonus_chest_dropped_01",
+   "text": "Supply crate released in restricted sector. Unauthorized retrieval will be recorded.",
+   "scores": {
+    "voice": 5,
+    "lore": 9,
+    "reference": 9,
+    "format": 10
+   },
+   "rule": "T6",
+   "reason": "Labelled propaganda but the text is a bureaucratic warning; the register field contradicts the line.",
+   "suggestion": "Kessler-Voss supplies, delivered wherever your future needs them."
+  },
+  {
+   "file": "alerts",
+   "item_id": "kv_horde_incoming_01",
+   "text": "Security response dispatched. Asset recovery in progress.",
+   "scores": {
+    "voice": 9,
+    "lore": 9,
+    "reference": 7,
+    "format": 10
+   },
+   "rule": "T8",
+   "reason": "Right register, but 'Asset recovery in progress' is a near-copy of the vault example 'Asset recovery initiated.'",
+   "suggestion": "Security response dispatched. Irregularity containment in progress."
+  },
+  {
+   "file": "alerts",
+   "item_id": "kv_horde_incoming_02",
+   "text": "Claim security units routed to extraction irregularity.",
+   "scores": {
+    "voice": 5,
+    "lore": 9,
+    "reference": 9,
+    "format": 10
+   },
+   "rule": "T6",
+   "reason": "Labelled propaganda but the text is bureaucratic threat language ('extraction irregularity'); the register field contradicts the line.",
+   "suggestion": "Kessler-Voss security: protecting your future, claim by claim."
+  },
+  {
+   "file": "alerts",
+   "item_id": "kv_extraction_ready_01",
+   "text": "Unregistered craft detected in claim airspace. Departure will be invoiced.",
+   "scores": {
+    "voice": 5,
+    "lore": 9,
+    "reference": 9,
+    "format": 10
+   },
+   "rule": "T6",
+   "reason": "Labelled propaganda but the text is a cold invoicing notice; the register field contradicts the line.",
+   "suggestion": "Kessler-Voss skies stay safe, so your future can rise."
+  },
+  {
+   "file": "upgrade_texts",
+   "item_id": "upg_fire_rate",
+   "text": "Like in Speedbump: trigger first, questions later.",
+   "scores": {
+    "voice": 9,
+    "lore": 9,
+    "reference": 4,
+    "format": 10
+   },
+   "rule": "T3",
+   "reason": "Listed film, but 'trigger first, questions later' paraphrases the well-known catchphrase 'shoot first, ask questions later'.",
+   "suggestion": "Like in Speedbump: the trigger's faster than the paperwork."
+  },
+  {
+   "file": "upgrade_texts",
+   "item_id": "upg_pickup_radius",
+   "text": "Loot comes to me. Magnets, baby.",
+   "scores": {
+    "voice": 9,
+    "lore": 9,
+    "reference": 5,
+    "format": 10
+   },
+   "rule": "T3",
+   "reason": "'Magnets, baby' paraphrases the well-known Breaking Bad 'Yeah, magnets!' catchphrase.",
+   "suggestion": "Loot comes to me. Payload never looked so clingy."
+  }
+ ]
+}

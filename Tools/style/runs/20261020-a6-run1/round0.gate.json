@@ -1,0 +1,276 @@
+{
+ "round": 0,
+ "threshold": 8,
+ "total": 28,
+ "passed": 9,
+ "failed": 19,
+ "action": "refine",
+ "fails": [
+  {
+   "file": "barks",
+   "item_id": "rook_level_up_01",
+   "text": "Stronger, faster, better looking. Obviously.",
+   "scores": {
+    "voice": 8,
+    "lore": 9,
+    "reference": 5,
+    "format": 10
+   },
+   "rule": "T3",
+   "reason": "Paraphrases the well-known 'better, stronger, faster' catchphrase (The Six Million Dollar Man).",
+   "suggestion": "More torque, more yield, same handsome miner."
+  },
+  {
+   "file": "barks",
+   "item_id": "rook_player_damaged_01",
+   "text": "Ow. Okay, that one was personal.",
+   "scores": {
+    "voice": 8,
+    "lore": 9,
+    "reference": 7,
+    "format": 10
+   },
+   "rule": "T3",
+   "reason": "Echoes the famous tagline 'this time it's personal'; otherwise a fine cocky self-mocking line.",
+   "suggestion": "Ow. Okay, that dent comes out of my cut."
+  },
+  {
+   "file": "barks",
+   "item_id": "rook_horde_incoming_01",
+   "text": "Come get some, tin cans!",
+   "scores": {
+    "voice": 8,
+    "lore": 9,
+    "reference": 4,
+    "format": 10
+   },
+   "rule": "T3",
+   "reason": "'Come get some' is a well-known action catchphrase (Duke Nukem, Army of Darkness).",
+   "suggestion": "More tin cans? Fine. Drill bit's warm."
+  },
+  {
+   "file": "barks",
+   "item_id": "rook_run_won_01",
+   "text": "Yippee-ki-yay, Kessler-Voss. Thanks for the ore.",
+   "scores": {
+    "voice": 8,
+    "lore": 8,
+    "reference": 0,
+    "format": 10
+   },
+   "rule": "T3",
+   "reason": "'Yippee-ki-yay' is the Die Hard catchphrase, a real film line.",
+   "suggestion": "Payload's aboard. Kessler-Voss can bill the wind."
+  },
+  {
+   "file": "barks",
+   "item_id": "rook_bonus_chest_opened_01",
+   "text": "Jackpot! Mama needs a new gun.",
+   "scores": {
+    "voice": 8,
+    "lore": 9,
+    "reference": 5,
+    "format": 10
+   },
+   "rule": "T3",
+   "reason": "Paraphrases the catchphrase 'Mama needs a new pair of shoes'.",
+   "suggestion": "Jackpot! That's my cut, and some of hers."
+  },
+  {
+   "file": "barks",
+   "item_id": "vesna_run_lost_01",
+   "text": "Well. That was a very expensive nap.",
+   "scores": {
+    "voice": 6,
+    "lore": 9,
+    "reference": 9,
+    "format": 10
+   },
+   "rule": "T2",
+   "reason": "On a lost run it mocks the outcome of the player's performance rather than one of Rook's plans.",
+   "suggestion": "Well. Worse than the Pallas run. Barely."
+  },
+  {
+   "file": "alerts",
+   "item_id": "kv_console_dropped_01",
+   "text": "Kessler-Voss Smart Consoles: innovation, delivered straight to your doorstep!",
+   "scores": {
+    "voice": 5,
+    "lore": 8,
+    "reference": 9,
+    "format": 10
+   },
+   "rule": "T6",
+   "reason": "Glossy propaganda with a jokey 'doorstep' aimed at intruders on site, where the threat register must be cold bureaucracy; it also claims the Rigs' own console as a company product.",
+   "suggestion": "Unregistered device detected on claim network. Logging initiated."
+  },
+  {
+   "file": "alerts",
+   "item_id": "kv_console_dropped_02",
+   "text": "Unauthorized console retrieval will be logged under Form 27-B.",
+   "scores": {
+    "voice": 9,
+    "lore": 9,
+    "reference": 6,
+    "format": 0
+   },
+   "rule": "T3",
+   "reason": "Cold bureaucratic register is right, but 'Form 27-B' echoes the famous Form 27B/6 from the film Brazil and is close to the vault example 'Notice 7-B'.",
+   "suggestion": "Unregistered console detected. Network access recorded for invoicing."
+  },
+  {
+   "file": "alerts",
+   "item_id": "kv_bonus_chest_dropped_01",
+   "text": "Surprise! A Kessler-Voss Rewards Crate has arrived for valued guests!",
+   "scores": {
+    "voice": 4,
+    "lore": 8,
+    "reference": 9,
+    "format": 10
+   },
+   "rule": "T6",
+   "reason": "Calls intruders 'valued guests' with a cheerful 'Surprise!', a sarcastic joke toward threats.",
+   "suggestion": "Supply crate breach detected. Contents remain company property."
+  },
+  {
+   "file": "alerts",
+   "item_id": "kv_horde_incoming_01",
+   "text": "Security response dispatched. Compliance is mandatory and appreciated.",
+   "scores": {
+    "voice": 8,
+    "lore": 6,
+    "reference": 9,
+    "format": 10
+   },
+   "rule": "T9",
+   "reason": "'Compliance is mandatory' implicitly orders the player to stop, contradicting the objective.",
+   "suggestion": "Security response dispatched. Asset recovery in progress."
+  },
+  {
+   "file": "alerts",
+   "item_id": "kv_horde_incoming_02",
+   "text": "Kessler-Voss Safety Team is coming to meet you!",
+   "scores": {
+    "voice": 5,
+    "lore": 8,
+    "reference": 9,
+    "format": 10
+   },
+   "rule": "T6",
+   "reason": "Cheerful euphemism 'coming to meet you!' toward threats is a joke, not cold bureaucracy.",
+   "suggestion": "Claim security units dispatched to irregularity location."
+  },
+  {
+   "file": "alerts",
+   "item_id": "kv_extraction_ready_01",
+   "text": "Your premium departure experience awaits. Thank you for visiting!",
+   "scores": {
+    "voice": 4,
+    "lore": 8,
+    "reference": 9,
+    "format": 10
+   },
+   "rule": "T6",
+   "reason": "Sarcastic hospitality toward intruders is a joke; the company also frames the Rigs' shuttle as its own service.",
+   "suggestion": "Unregistered craft detected. Departure will be invoiced."
+  },
+  {
+   "file": "upgrade_texts",
+   "item_id": "upg_damage",
+   "text": "Say hello to my little friend, but louder.",
+   "scores": {
+    "voice": 8,
+    "lore": 8,
+    "reference": 0,
+    "format": 10
+   },
+   "rule": "T3",
+   "reason": "Real Scarface line 'Say hello to my little friend', paraphrased, with no catalogue film named.",
+   "suggestion": "Like in Lethal Weaponize: bigger bang, smaller invoice."
+  },
+  {
+   "file": "upgrade_texts",
+   "item_id": "upg_fire_rate",
+   "text": "Go ahead, make my day. Repeatedly.",
+   "scores": {
+    "voice": 8,
+    "lore": 8,
+    "reference": 0,
+    "format": 10
+   },
+   "rule": "T3",
+   "reason": "Real Dirty Harry line 'Go ahead, make my day', no catalogue film named.",
+   "suggestion": "Like in Speedbump: pull faster, think later."
+  },
+  {
+   "file": "upgrade_texts",
+   "item_id": "upg_reload_speed",
+   "text": "Hasta la vista, empty magazine.",
+   "scores": {
+    "voice": 8,
+    "lore": 8,
+    "reference": 0,
+    "format": 10
+   },
+   "rule": "T3",
+   "reason": "Paraphrases the Terminator 2 catchphrase 'Hasta la vista, baby'.",
+   "suggestion": "Like in Point Brake: empty mag, full mag, no pause."
+  },
+  {
+   "file": "upgrade_texts",
+   "item_id": "upg_crit_chance",
+   "text": "Feeling lucky, punk? Because I do.",
+   "scores": {
+    "voice": 8,
+    "lore": 8,
+    "reference": 0,
+    "format": 10
+   },
+   "rule": "T3",
+   "reason": "Real Dirty Harry line 'Do you feel lucky, punk?', paraphrased.",
+   "suggestion": "Like in Dirty Hairy: aim for the bolts, every time."
+  },
+  {
+   "file": "upgrade_texts",
+   "item_id": "upg_crit_damage",
+   "text": "That one is gonna leave a mark, buddy.",
+   "scores": {
+    "voice": 8,
+    "lore": 8,
+    "reference": 5,
+    "format": 10
+   },
+   "rule": "T3",
+   "reason": "'That's gonna leave a mark' is a well-known catchphrase.",
+   "suggestion": "Hit the weld seam. Robots hate the weld seam."
+  },
+  {
+   "file": "upgrade_texts",
+   "item_id": "upg_max_health",
+   "text": "I'll be back. Eventually. Sturdier, too.",
+   "scores": {
+    "voice": 8,
+    "lore": 8,
+    "reference": 0,
+    "format": 10
+   },
+   "rule": "T3",
+   "reason": "Paraphrases the Terminator catchphrase 'I'll be back'.",
+   "suggestion": "Like in Hard Vacuum 2: more hull patch, less me leaking."
+  },
+  {
+   "file": "upgrade_texts",
+   "item_id": "upg_move_speed",
+   "text": "Get to the choppa, but I'm already there.",
+   "scores": {
+    "voice": 8,
+    "lore": 8,
+    "reference": 0,
+    "format": 10
+   },
+   "rule": "T3",
+   "reason": "Paraphrases the Predator line 'Get to the choppa'.",
+   "suggestion": "Like in Running Late Man: wrong place, but faster."
+  }
+ ]
+}

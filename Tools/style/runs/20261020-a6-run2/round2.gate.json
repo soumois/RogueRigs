@@ -1,0 +1,38 @@
+{
+ "round": 2,
+ "threshold": 8,
+ "total": 28,
+ "passed": 26,
+ "failed": 2,
+ "action": "escalate",
+ "fails": [
+  {
+   "file": "barks",
+   "item_id": "vesna_console_dropped_01",
+   "text": "Console drop confirmed. Try not to lose it.",
+   "scores": {
+    "voice": 7,
+    "lore": 9,
+    "reference": 9,
+    "format": 10
+   },
+   "rule": "T2",
+   "reason": "'Try not to lose it' doubts the player's competence rather than a Rook plan, and the tease mismatches the 'technical' label; change the text.",
+   "suggestion": "Console drop confirmed. Uplink holding steady."
+  },
+  {
+   "file": "alerts",
+   "item_id": "kv_shuttle_countdown_01",
+   "text": "Extraction crews en route. Trespass filings prepared for personnel on site.",
+   "scores": {
+    "voice": 8,
+    "lore": 7,
+    "reference": 9,
+    "format": 10
+   },
+   "rule": "L1",
+   "reason": "'Personnel on site' without 'unauthorized' reads as company personnel on the asteroid; keep the threat register explicit.",
+   "suggestion": "Extraction crews en route. Trespass filings prepared for unauthorized personnel."
+  }
+ ]
+}

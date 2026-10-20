@@ -1,0 +1,147 @@
+{
+ "run_id": "20261020-154503-upgrade_texts",
+ "content_file": "upgrade_texts.json",
+ "retrieval": true,
+ "entries": [
+  {
+   "item_id": "upg_damage",
+   "loop": 0,
+   "query": "Rook upgrade flavor line with a catalogue film or plain quip, original, no catchphrase",
+   "node_ids": [
+    "fictional-films",
+    "dialogue-tone"
+   ],
+   "excerpts": [
+    {
+     "node_id": "fictional-films",
+     "text": "Lethal Weaponize (provisional)"
+    },
+    {
+     "node_id": "dialogue-tone",
+     "text": "Rook quotes only [[fictional-films]], with original lines."
+    }
+   ],
+   "output": "Like in Lethal Weaponize: bigger bang, fewer witnesses."
+  },
+  {
+   "item_id": "upg_fire_rate",
+   "loop": 0,
+   "query": "Rook upgrade flavor line with a catalogue film or plain quip, original, no catchphrase",
+   "node_ids": [
+    "fictional-films",
+    "dialogue-tone"
+   ],
+   "excerpts": [
+    {
+     "node_id": "fictional-films",
+     "text": "Only titles in this list may be quoted"
+    },
+    {
+     "node_id": "dialogue-tone",
+     "text": "Rook quotes only [[fictional-films]], with original lines."
+    }
+   ],
+   "output": "Like in Speedbump: trigger first, questions later."
+  },
+  {
+   "item_id": "upg_reload_speed",
+   "loop": 0,
+   "query": "Rook upgrade flavor line with a catalogue film or plain quip, original, no catchphrase",
+   "node_ids": [
+    "fictional-films",
+    "dialogue-tone"
+   ],
+   "excerpts": [
+    {
+     "node_id": "fictional-films",
+     "text": "Point Brake (provisional)"
+    },
+    {
+     "node_id": "dialogue-tone",
+     "text": "Rook quotes only [[fictional-films]], with original lines."
+    }
+   ],
+   "output": "Like in Point Brake: fresh mag, zero pause."
+  },
+  {
+   "item_id": "upg_crit_chance",
+   "loop": 0,
+   "query": "Rook upgrade flavor line with a catalogue film or plain quip, original, no catchphrase",
+   "node_ids": [
+    "fictional-films",
+    "dialogue-tone"
+   ],
+   "excerpts": [
+    {
+     "node_id": "fictional-films",
+     "text": "Dirty Hairy (provisional)"
+    },
+    {
+     "node_id": "dialogue-tone",
+     "text": "Rook quotes only [[fictional-films]], with original lines."
+    }
+   ],
+   "output": "Like in Dirty Hairy: aim for the soft spot."
+  },
+  {
+   "item_id": "upg_crit_damage",
+   "loop": 0,
+   "query": "Rook upgrade flavor line with a catalogue film or plain quip, original, no catchphrase",
+   "node_ids": [
+    "crew-characters",
+    "dialogue-tone"
+   ],
+   "excerpts": [
+    {
+     "node_id": "crew-characters",
+     "text": "Proud scrapper: loves his gear, loves it when things blow up, always counting his cut."
+    },
+    {
+     "node_id": "dialogue-tone",
+     "text": "Rook quotes only [[fictional-films]], with original lines."
+    }
+   ],
+   "output": "Hit the weld seam. Robots hate that."
+  },
+  {
+   "item_id": "upg_max_health",
+   "loop": 0,
+   "query": "Rook upgrade flavor line with a catalogue film or plain quip, original, no catchphrase",
+   "node_ids": [
+    "crew-characters",
+    "dialogue-tone"
+   ],
+   "excerpts": [
+    {
+     "node_id": "crew-characters",
+     "text": "coolant, torque, drill bit, payload, burn window, hull patch, yield, redline."
+    },
+    {
+     "node_id": "dialogue-tone",
+     "text": "Rook quotes only [[fictional-films]], with original lines."
+    }
+   ],
+   "output": "More hull patch, less me leaking."
+  },
+  {
+   "item_id": "upg_move_speed",
+   "loop": 0,
+   "query": "Rook upgrade flavor line with a catalogue film or plain quip, original, no catchphrase",
+   "node_ids": [
+    "fictional-films",
+    "dialogue-tone"
+   ],
+   "excerpts": [
+    {
+     "node_id": "fictional-films",
+     "text": "Running Late Man (provisional)"
+    },
+    {
+     "node_id": "dialogue-tone",
+     "text": "Rook quotes only [[fictional-films]], with original lines."
+    }
+   ],
+   "output": "Like in Running Late Man: wrong place, but faster."
+  }
+ ]
+}

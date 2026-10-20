@@ -1,0 +1,46 @@
+{
+ "schema_version": 1,
+ "run_id": "20261020-153602-upgrade_texts-noretrieval",
+ "items": [
+  {
+   "id": "upg_damage",
+   "stat": "Damage",
+   "flavor": "Like in Lethal Weaponize: the payload is the personality."
+  },
+  {
+   "id": "upg_fire_rate",
+   "stat": "Fire rate",
+   "flavor": "Trigger's on redline. Robots can file complaints later."
+  },
+  {
+   "id": "upg_reload_speed",
+   "stat": "Reload speed",
+   "flavor": "Like in Speedbump: reload first, panic never."
+  },
+  {
+   "id": "upg_crit_chance",
+   "stat": "Crit chance",
+   "flavor": "Every shot finds the soft spot. Call it talent."
+  },
+  {
+   "id": "upg_crit_damage",
+   "stat": "Crit damage",
+   "flavor": "Found the weak spot. Scrap goes airborne, cut goes up."
+  },
+  {
+   "id": "upg_max_health",
+   "stat": "Max health",
+   "flavor": "Extra hull patch. Still in one piece, mostly."
+  },
+  {
+   "id": "upg_move_speed",
+   "stat": "Move speed",
+   "flavor": "Like in Running Late Man: arrive first, complain after."
+  },
+  {
+   "id": "upg_pickup_radius",
+   "stat": "Pickup radius",
+   "flavor": "Scrap rolls to my boots now. Magnetic personality."
+  }
+ ]
+}

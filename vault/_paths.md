@@ -237,6 +237,8 @@ run-log-schema  reference/tech/pipelines/run-log-schema.md
 run-shop  reference/gdd/run/run-shop.md
 run-structure  reference/gdd/run/run-structure.md
 shotgun  reference/gdd/weapons/shotgun.md
+style-guide-text  reference/gdd/art-audio/style-guide-text.md
+style-loop  reference/tech/pipelines/style-loop.md
 sys-actor-pool  reference/tech/systems/world/sys-actor-pool.md
 sys-auto-fire  reference/tech/systems/combat/sys-auto-fire.md
 sys-automation-tests  reference/tech/systems/tools/sys-automation-tests.md

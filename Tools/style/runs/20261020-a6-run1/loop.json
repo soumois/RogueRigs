@@ -1,0 +1,358 @@
+{
+ "run_id": "20261020-a6-run1",
+ "threshold": 8,
+ "max_refinements": 2,
+ "refinements_done": 1,
+ "round": 2,
+ "status": "open",
+ "sources": [
+  {
+   "stem": "barks",
+   "content": "Tools/content/logs/a6-baseline/barks.json",
+   "log": "Tools/content/logs/a6-baseline/20261020-153600-barks-noretrieval.json"
+  },
+  {
+   "stem": "alerts",
+   "content": "Tools/content/logs/a6-baseline/alerts.json",
+   "log": "Tools/content/logs/a6-baseline/20261020-153601-alerts-noretrieval.json"
+  },
+  {
+   "stem": "upgrade_texts",
+   "content": "Tools/content/logs/a6-baseline/upgrade_texts.json",
+   "log": "Tools/content/logs/a6-baseline/20261020-153602-upgrade_texts-noretrieval.json"
+  }
+ ],
+ "pending_stems": [
+  "barks",
+  "alerts",
+  "upgrade_texts"
+ ],
+ "applied": {
+  "0": [
+   "barks",
+   "alerts",
+   "upgrade_texts"
+  ],
+  "1": []
+ },
+ "lineage": [
+  {
+   "round": 0,
+   "file": "barks",
+   "item_id": "rook_level_up_01",
+   "run_id": "20261020-154501-barks",
+   "rule": "T3",
+   "reason": "Paraphrases the well-known 'better, stronger, faster' catchphrase (The Six Million Dollar Man).",
+   "scores": {
+    "voice": 8,
+    "lore": 9,
+    "reference": 5,
+    "format": 10
+   },
+   "before": "Stronger, faster, better looking. Obviously.",
+   "after": "More torque, more yield, same handsome miner."
+  },
+  {
+   "round": 0,
+   "file": "barks",
+   "item_id": "rook_player_damaged_01",
+   "run_id": "20261020-154501-barks",
+   "rule": "T3",
+   "reason": "Echoes the famous tagline 'this time it's personal'; otherwise a fine cocky self-mocking line.",
+   "scores": {
+    "voice": 8,
+    "lore": 9,
+    "reference": 7,
+    "format": 10
+   },
+   "before": "Ow. Okay, that one was personal.",
+   "after": "Ow. Putting that dent on corporate's tab."
+  },
+  {
+   "round": 0,
+   "file": "barks",
+   "item_id": "rook_horde_incoming_01",
+   "run_id": "20261020-154501-barks",
+   "rule": "T3",
+   "reason": "'Come get some' is a well-known action catchphrase (Duke Nukem, Army of Darkness).",
+   "scores": {
+    "voice": 8,
+    "lore": 9,
+    "reference": 4,
+    "format": 10
+   },
+   "before": "Come get some, tin cans!",
+   "after": "More tin cans? Fine. Drill bit's warm."
+  },
+  {
+   "round": 0,
+   "file": "barks",
+   "item_id": "rook_run_won_01",
+   "run_id": "20261020-154501-barks",
+   "rule": "T3",
+   "reason": "'Yippee-ki-yay' is the Die Hard catchphrase, a real film line.",
+   "scores": {
+    "voice": 8,
+    "lore": 8,
+    "reference": 0,
+    "format": 10
+   },
+   "before": "Yippee-ki-yay, Kessler-Voss. Thanks for the ore.",
+   "after": "Payload's aboard. Kessler-Voss can bill the wind."
+  },
+  {
+   "round": 0,
+   "file": "barks",
+   "item_id": "rook_bonus_chest_opened_01",
+   "run_id": "20261020-154501-barks",
+   "rule": "T3",
+   "reason": "Paraphrases the catchphrase 'Mama needs a new pair of shoes'.",
+   "scores": {
+    "voice": 8,
+    "lore": 9,
+    "reference": 5,
+    "format": 10
+   },
+   "before": "Jackpot! Mama needs a new gun.",
+   "after": "Jackpot! My cut just got bigger."
+  },
+  {
+   "round": 0,
+   "file": "barks",
+   "item_id": "vesna_run_lost_01",
+   "run_id": "20261020-154501-barks",
+   "rule": "T2",
+   "reason": "On a lost run it mocks the outcome of the player's performance rather than one of Rook's plans.",
+   "scores": {
+    "voice": 6,
+    "lore": 9,
+    "reference": 9,
+    "format": 10
+   },
+   "before": "Well. That was a very expensive nap.",
+   "after": "Well. Worse than the Pallas run. Barely."
+  },
+  {
+   "round": 0,
+   "file": "alerts",
+   "item_id": "kv_console_dropped_01",
+   "run_id": "20261020-154502-alerts",
+   "rule": "T6",
+   "reason": "Glossy propaganda with a jokey 'doorstep' aimed at intruders on site, where the threat register must be cold bureaucracy; it also claims the Rigs' own console as a company product.",
+   "scores": {
+    "voice": 5,
+    "lore": 8,
+    "reference": 9,
+    "format": 10
+   },
+   "before": "Kessler-Voss Smart Consoles: innovation, delivered straight to your doorstep!",
+   "after": "Foreign device detected on claim network. Session logged for review."
+  },
+  {
+   "round": 0,
+   "file": "alerts",
+   "item_id": "kv_console_dropped_02",
+   "run_id": "20261020-154502-alerts",
+   "rule": "T3",
+   "reason": "Cold bureaucratic register is right, but 'Form 27-B' echoes the famous Form 27B/6 from the film Brazil and is close to the vault example 'Notice 7-B'.",
+   "scores": {
+    "voice": 9,
+    "lore": 9,
+    "reference": 6,
+    "format": 0
+   },
+   "before": "Unauthorized console retrieval will be logged under Form 27-B.",
+   "after": "Unregistered console connection recorded. Network access will be invoiced."
+  },
+  {
+   "round": 0,
+   "file": "alerts",
+   "item_id": "kv_bonus_chest_dropped_01",
+   "run_id": "20261020-154502-alerts",
+   "rule": "T6",
+   "reason": "Calls intruders 'valued guests' with a cheerful 'Surprise!', a sarcastic joke toward threats.",
+   "scores": {
+    "voice": 4,
+    "lore": 8,
+    "reference": 9,
+    "format": 10
+   },
+   "before": "Surprise! A Kessler-Voss Rewards Crate has arrived for valued guests!",
+   "after": "Supply crate released in restricted sector. Unauthorized retrieval will be recorded."
+  },
+  {
+   "round": 0,
+   "file": "alerts",
+   "item_id": "kv_horde_incoming_01",
+   "run_id": "20261020-154502-alerts",
+   "rule": "T9",
+   "reason": "'Compliance is mandatory' implicitly orders the player to stop, contradicting the objective.",
+   "scores": {
+    "voice": 8,
+    "lore": 6,
+    "reference": 9,
+    "format": 10
+   },
+   "before": "Security response dispatched. Compliance is mandatory and appreciated.",
+   "after": "Security response dispatched. Asset recovery in progress."
+  },
+  {
+   "round": 0,
+   "file": "alerts",
+   "item_id": "kv_horde_incoming_02",
+   "run_id": "20261020-154502-alerts",
+   "rule": "T6",
+   "reason": "Cheerful euphemism 'coming to meet you!' toward threats is a joke, not cold bureaucracy.",
+   "scores": {
+    "voice": 5,
+    "lore": 8,
+    "reference": 9,
+    "format": 10
+   },
+   "before": "Kessler-Voss Safety Team is coming to meet you!",
+   "after": "Claim security units routed to extraction irregularity."
+  },
+  {
+   "round": 0,
+   "file": "alerts",
+   "item_id": "kv_extraction_ready_01",
+   "run_id": "20261020-154502-alerts",
+   "rule": "T6",
+   "reason": "Sarcastic hospitality toward intruders is a joke; the company also frames the Rigs' shuttle as its own service.",
+   "scores": {
+    "voice": 4,
+    "lore": 8,
+    "reference": 9,
+    "format": 10
+   },
+   "before": "Your premium departure experience awaits. Thank you for visiting!",
+   "after": "Unregistered craft detected in claim airspace. Departure will be invoiced."
+  },
+  {
+   "round": 0,
+   "file": "upgrade_texts",
+   "item_id": "upg_damage",
+   "run_id": "20261020-154503-upgrade_texts",
+   "rule": "T3",
+   "reason": "Real Scarface line 'Say hello to my little friend', paraphrased, with no catalogue film named.",
+   "scores": {
+    "voice": 8,
+    "lore": 8,
+    "reference": 0,
+    "format": 10
+   },
+   "before": "Say hello to my little friend, but louder.",
+   "after": "Like in Lethal Weaponize: bigger bang, fewer witnesses."
+  },
+  {
+   "round": 0,
+   "file": "upgrade_texts",
+   "item_id": "upg_fire_rate",
+   "run_id": "20261020-154503-upgrade_texts",
+   "rule": "T3",
+   "reason": "Real Dirty Harry line 'Go ahead, make my day', no catalogue film named.",
+   "scores": {
+    "voice": 8,
+    "lore": 8,
+    "reference": 0,
+    "format": 10
+   },
+   "before": "Go ahead, make my day. Repeatedly.",
+   "after": "Like in Speedbump: trigger first, questions later."
+  },
+  {
+   "round": 0,
+   "file": "upgrade_texts",
+   "item_id": "upg_reload_speed",
+   "run_id": "20261020-154503-upgrade_texts",
+   "rule": "T3",
+   "reason": "Paraphrases the Terminator 2 catchphrase 'Hasta la vista, baby'.",
+   "scores": {
+    "voice": 8,
+    "lore": 8,
+    "reference": 0,
+    "format": 10
+   },
+   "before": "Hasta la vista, empty magazine.",
+   "after": "Like in Point Brake: fresh mag, zero pause."
+  },
+  {
+   "round": 0,
+   "file": "upgrade_texts",
+   "item_id": "upg_crit_chance",
+   "run_id": "20261020-154503-upgrade_texts",
+   "rule": "T3",
+   "reason": "Real Dirty Harry line 'Do you feel lucky, punk?', paraphrased.",
+   "scores": {
+    "voice": 8,
+    "lore": 8,
+    "reference": 0,
+    "format": 10
+   },
+   "before": "Feeling lucky, punk? Because I do.",
+   "after": "Like in Dirty Hairy: aim for the soft spot."
+  },
+  {
+   "round": 0,
+   "file": "upgrade_texts",
+   "item_id": "upg_crit_damage",
+   "run_id": "20261020-154503-upgrade_texts",
+   "rule": "T3",
+   "reason": "'That's gonna leave a mark' is a well-known catchphrase.",
+   "scores": {
+    "voice": 8,
+    "lore": 8,
+    "reference": 5,
+    "format": 10
+   },
+   "before": "That one is gonna leave a mark, buddy.",
+   "after": "Hit the weld seam. Robots hate that."
+  },
+  {
+   "round": 0,
+   "file": "upgrade_texts",
+   "item_id": "upg_max_health",
+   "run_id": "20261020-154503-upgrade_texts",
+   "rule": "T3",
+   "reason": "Paraphrases the Terminator catchphrase 'I'll be back'.",
+   "scores": {
+    "voice": 8,
+    "lore": 8,
+    "reference": 0,
+    "format": 10
+   },
+   "before": "I'll be back. Eventually. Sturdier, too.",
+   "after": "More hull patch, less me leaking."
+  },
+  {
+   "round": 0,
+   "file": "upgrade_texts",
+   "item_id": "upg_move_speed",
+   "run_id": "20261020-154503-upgrade_texts",
+   "rule": "T3",
+   "reason": "Paraphrases the Predator line 'Get to the choppa'.",
+   "scores": {
+    "voice": 8,
+    "lore": 8,
+    "reference": 0,
+    "format": 10
+   },
+   "before": "Get to the choppa, but I'm already there.",
+   "after": "Like in Running Late Man: wrong place, but faster."
+  }
+ ],
+ "rounds": [
+  {
+   "round": 0,
+   "total": 28,
+   "failed": 19,
+   "action": "refine"
+  },
+  {
+   "round": 1,
+   "total": 28,
+   "failed": 10,
+   "action": "refine"
+  }
+ ]
+}

@@ -1,0 +1,175 @@
+{
+ "run_id": "20261020-162001-barks",
+ "content_file": "barks.json",
+ "retrieval": true,
+ "entries": [
+  {
+   "item_id": "rook_level_up_01",
+   "loop": 0,
+   "query": "Rook original cocky line without catchphrase, Rigs jargon",
+   "node_ids": [
+    "crew-characters",
+    "dialogue-tone"
+   ],
+   "excerpts": [
+    {
+     "node_id": "crew-characters",
+     "text": "Cocky; waves the odds away; improvises first, thinks later, and defends a shaky plan with total confidence."
+    },
+    {
+     "node_id": "crew-characters",
+     "text": "Shop talk between people who have worked together for years: coolant, torque, drill bit, payload, burn window, hull patch, yield, redline."
+    },
+    {
+     "node_id": "dialogue-tone",
+     "text": "T3 No real film line, quoted or paraphrased, and no well-known catchphrase."
+    }
+   ],
+   "output": "Fresh torque. Same genius. Still modest."
+  },
+  {
+   "item_id": "rook_player_damaged_01",
+   "loop": 0,
+   "query": "Rook original cocky line without catchphrase, Rigs jargon",
+   "node_ids": [
+    "crew-characters",
+    "dialogue-tone"
+   ],
+   "excerpts": [
+    {
+     "node_id": "crew-characters",
+     "text": "Cocky; waves the odds away; improvises first, thinks later, and defends a shaky plan with total confidence."
+    },
+    {
+     "node_id": "crew-characters",
+     "text": "Shop talk between people who have worked together for years: coolant, torque, drill bit, payload, burn window, hull patch, yield, redline."
+    },
+    {
+     "node_id": "dialogue-tone",
+     "text": "T3 No real film line, quoted or paraphrased, and no well-known catchphrase."
+    }
+   ],
+   "output": "Ow. Hull's cracked. Send patches, plural."
+  },
+  {
+   "item_id": "rook_horde_incoming_01",
+   "loop": 0,
+   "query": "Rook original cocky line without catchphrase, Rigs jargon",
+   "node_ids": [
+    "crew-characters",
+    "dialogue-tone"
+   ],
+   "excerpts": [
+    {
+     "node_id": "crew-characters",
+     "text": "Cocky; waves the odds away; improvises first, thinks later, and defends a shaky plan with total confidence."
+    },
+    {
+     "node_id": "crew-characters",
+     "text": "Shop talk between people who have worked together for years: coolant, torque, drill bit, payload, burn window, hull patch, yield, redline."
+    },
+    {
+     "node_id": "dialogue-tone",
+     "text": "T3 No real film line, quoted or paraphrased, and no well-known catchphrase."
+    }
+   ],
+   "output": "Tin cans incoming. More scrap for me."
+  },
+  {
+   "item_id": "rook_run_won_01",
+   "loop": 0,
+   "query": "Rook original cocky line without catchphrase, Rigs jargon",
+   "node_ids": [
+    "crew-characters",
+    "dialogue-tone"
+   ],
+   "excerpts": [
+    {
+     "node_id": "crew-characters",
+     "text": "Cocky; waves the odds away; improvises first, thinks later, and defends a shaky plan with total confidence."
+    },
+    {
+     "node_id": "crew-characters",
+     "text": "Shop talk between people who have worked together for years: coolant, torque, drill bit, payload, burn window, hull patch, yield, redline."
+    },
+    {
+     "node_id": "dialogue-tone",
+     "text": "T3 No real film line, quoted or paraphrased, and no well-known catchphrase."
+    }
+   ],
+   "output": "Full payload, full cut. Cheers, Kessler-Voss."
+  },
+  {
+   "item_id": "rook_bonus_chest_opened_01",
+   "loop": 0,
+   "query": "Rook original cocky line without catchphrase, Rigs jargon",
+   "node_ids": [
+    "crew-characters",
+    "dialogue-tone"
+   ],
+   "excerpts": [
+    {
+     "node_id": "crew-characters",
+     "text": "Cocky; waves the odds away; improvises first, thinks later, and defends a shaky plan with total confidence."
+    },
+    {
+     "node_id": "crew-characters",
+     "text": "Shop talk between people who have worked together for years: coolant, torque, drill bit, payload, burn window, hull patch, yield, redline."
+    },
+    {
+     "node_id": "dialogue-tone",
+     "text": "T3 No real film line, quoted or paraphrased, and no well-known catchphrase."
+    }
+   ],
+   "output": "Jackpot! My cut just got bigger."
+  },
+  {
+   "item_id": "vesna_upgrade_offer_01",
+   "loop": 0,
+   "query": "Vesna dry line teasing Rook's plan via a listed past job",
+   "node_ids": [
+    "crew-characters",
+    "dialogue-tone"
+   ],
+   "excerpts": [
+    {
+     "node_id": "dialogue-tone",
+     "text": "Vesna teases Rook's plans and bravado, never the player's skill or performance."
+    },
+    {
+     "node_id": "crew-characters",
+     "text": "The Ceres job: Rook's plan; they lost the ship."
+    },
+    {
+     "node_id": "crew-characters",
+     "text": "Calm, precise, mission first; short dry sentences."
+    }
+   ],
+   "output": "Pick one. Think first, unlike Ceres."
+  },
+  {
+   "item_id": "vesna_run_lost_01",
+   "loop": 0,
+   "query": "Vesna dry line teasing Rook's plan via a listed past job",
+   "node_ids": [
+    "crew-characters",
+    "dialogue-tone"
+   ],
+   "excerpts": [
+    {
+     "node_id": "dialogue-tone",
+     "text": "Vesna teases Rook's plans and bravado, never the player's skill or performance."
+    },
+    {
+     "node_id": "crew-characters",
+     "text": "The Ceres job: Rook's plan; they lost the ship."
+    },
+    {
+     "node_id": "crew-characters",
+     "text": "Calm, precise, mission first; short dry sentences."
+    }
+   ],
+   "output": "Well. Still not as bad as Ceres."
+  }
+ ]
+}

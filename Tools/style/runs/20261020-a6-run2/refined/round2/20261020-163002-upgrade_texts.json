@@ -1,0 +1,27 @@
+{
+ "run_id": "20261020-163002-upgrade_texts",
+ "content_file": "upgrade_texts.json",
+ "retrieval": true,
+ "entries": [
+  {
+   "item_id": "upg_pickup_radius",
+   "loop": 0,
+   "query": "Rook upgrade flavor for Pickup radius, cocky scrapper, no catchphrase",
+   "node_ids": [
+    "crew-characters",
+    "dialogue-tone"
+   ],
+   "excerpts": [
+    {
+     "node_id": "crew-characters",
+     "text": "Proud scrapper: loves his gear, loves it when things blow up, always counting his cut."
+    },
+    {
+     "node_id": "dialogue-tone",
+     "text": "No real film line, quoted or paraphrased, and no well-known catchphrase. Rook quotes only [[fictional-films]], with original lines."
+    }
+   ],
+   "output": "Scrap rolls to my boots now. Magnetic personality."
+  }
+ ]
+}

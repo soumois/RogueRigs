@@ -1,0 +1,46 @@
+{
+ "schema_version": 1,
+ "run_id": "20261020-153602-upgrade_texts-noretrieval",
+ "items": [
+  {
+   "id": "upg_damage",
+   "stat": "Damage",
+   "flavor": "Like in Lethal Weaponize: bigger bang, fewer witnesses."
+  },
+  {
+   "id": "upg_fire_rate",
+   "stat": "Fire rate",
+   "flavor": "Like in Speedbump: trigger first, questions later."
+  },
+  {
+   "id": "upg_reload_speed",
+   "stat": "Reload speed",
+   "flavor": "Like in Point Brake: fresh mag, zero pause."
+  },
+  {
+   "id": "upg_crit_chance",
+   "stat": "Crit chance",
+   "flavor": "Like in Dirty Hairy: aim for the soft spot."
+  },
+  {
+   "id": "upg_crit_damage",
+   "stat": "Crit damage",
+   "flavor": "Hit the weld seam. Robots hate that."
+  },
+  {
+   "id": "upg_max_health",
+   "stat": "Max health",
+   "flavor": "More hull patch, less me leaking."
+  },
+  {
+   "id": "upg_move_speed",
+   "stat": "Move speed",
+   "flavor": "Like in Running Late Man: wrong place, but faster."
+  },
+  {
+   "id": "upg_pickup_radius",
+   "stat": "Pickup radius",
+   "flavor": "Loot comes to me. Magnets, baby."
+  }
+ ]
+}

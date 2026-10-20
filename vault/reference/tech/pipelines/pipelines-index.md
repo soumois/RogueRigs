@@ -18,6 +18,7 @@ kind: note
 - [[layout-review-rules]] — review rules for generated 240 layouts: seed pick, dead zones, straight lanes, pocket distance. Open before writing a layout.
 - [[run-log-schema]] — what each run log records, for the balance agent.
 - [[text-content-schema]] — player-facing text JSON files, retrieval log and critic review; read before writing, validating or loading game text.
+- [[style-loop]] — evaluate-and-refine loop on generated text: command, script, run layout, score file, gate; open to run it.
 - [[unreal-mcp]] — Epic's MCP plugin: start, connection, toolsets, limits.
 - [[build-toolchain]] — engine, compiler, plugins, regenerating project files.
 - [[tool-unreal-reimport]] — headless reimport of static meshes in place from their FBX; use after a Blender re-export.

@@ -1,0 +1,11 @@
+{
+ "schema_version": 1,
+ "run_id": "20261020-163002-upgrade_texts",
+ "items": [
+  {
+   "id": "upg_pickup_radius",
+   "stat": "Pickup radius",
+   "flavor": "Scrap rolls to my boots now. Magnetic personality."
+  }
+ ]
+}

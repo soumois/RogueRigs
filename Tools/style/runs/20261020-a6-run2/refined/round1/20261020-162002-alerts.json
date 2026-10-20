@@ -1,0 +1,144 @@
+{
+ "run_id": "20261020-162002-alerts",
+ "content_file": "alerts.json",
+ "retrieval": true,
+ "entries": [
+  {
+   "item_id": "kv_console_dropped_01",
+   "loop": 0,
+   "query": "company bureaucratic notice for a console dropped on the claim network",
+   "node_ids": [
+    "company-voice",
+    "lore"
+   ],
+   "excerpts": [
+    {
+     "node_id": "company-voice",
+     "text": "Cold, impersonal, procedural: notice numbers, asset language, invoices; no emotion, no insult."
+    },
+    {
+     "node_id": "lore",
+     "text": "drops a console there as an access point"
+    }
+   ],
+   "output": "Foreign device connected to claim network. Entry point recorded."
+  },
+  {
+   "item_id": "kv_console_dropped_02",
+   "loop": 0,
+   "query": "bureaucratic notice for an intercepted console access attempt",
+   "node_ids": [
+    "company-voice"
+   ],
+   "excerpts": [
+    {
+     "node_id": "company-voice",
+     "text": "Cold, impersonal, procedural: notice numbers, asset language, invoices; no emotion, no insult."
+    },
+    {
+     "node_id": "company-voice",
+     "text": "Rook and Vesna are \"unauthorized personnel\" or \"an extraction irregularity\", never named."
+    }
+   ],
+   "output": "Network intrusion at claim perimeter. Incident filed against unauthorized personnel."
+  },
+  {
+   "item_id": "kv_bonus_chest_dropped_01",
+   "loop": 0,
+   "query": "bureaucratic notice for a bonus crate dropping, stating what the company does",
+   "node_ids": [
+    "company-voice"
+   ],
+   "excerpts": [
+    {
+     "node_id": "company-voice",
+     "text": "Cold, impersonal, procedural: notice numbers, asset language, invoices; no emotion, no insult."
+    },
+    {
+     "node_id": "company-voice",
+     "text": "The company never jokes; the humor comes from the gap between its tone and the situation."
+    }
+   ],
+   "output": "Cargo crate deployed on claim. Removal of contents will be invoiced."
+  },
+  {
+   "item_id": "kv_horde_incoming_01",
+   "loop": 0,
+   "query": "bureaucratic security response notice that states the company action",
+   "node_ids": [
+    "company-voice",
+    "dialogue-tone"
+   ],
+   "excerpts": [
+    {
+     "node_id": "company-voice",
+     "text": "Rook and Vesna are \"unauthorized personnel\" or \"an extraction irregularity\", never named."
+    },
+    {
+     "node_id": "dialogue-tone",
+     "text": "it states what the company does"
+    }
+   ],
+   "output": "Security units dispatched to claim. Extraction irregularity scheduled for removal."
+  },
+  {
+   "item_id": "kv_horde_incoming_02",
+   "loop": 0,
+   "query": "bureaucratic robot announcement for incoming enemy wave without banter",
+   "node_ids": [
+    "company-voice"
+   ],
+   "excerpts": [
+    {
+     "node_id": "company-voice",
+     "text": "Robots carry the company voice; they never banter."
+    },
+    {
+     "node_id": "company-voice",
+     "text": "Company text never uses Rigs jargon or Rigs slang."
+    }
+   ],
+   "output": "Claim defense units activated. Unauthorized personnel located and logged."
+  },
+  {
+   "item_id": "kv_extraction_ready_01",
+   "loop": 0,
+   "query": "bureaucratic notice toward an intruder craft, no hosting voice",
+   "node_ids": [
+    "company-voice",
+    "lore"
+   ],
+   "excerpts": [
+    {
+     "node_id": "company-voice",
+     "text": "Cold, impersonal, procedural: notice numbers, asset language, invoices; no emotion, no insult."
+    },
+    {
+     "node_id": "lore",
+     "text": "The Rigs' extraction craft"
+    }
+   ],
+   "output": "Unregistered craft detected at landing site. Recovery crew notified."
+  },
+  {
+   "item_id": "kv_shuttle_countdown_01",
+   "loop": 0,
+   "query": "bureaucratic notice for reinforcements arriving, stating company action",
+   "node_ids": [
+    "lore",
+    "dialogue-tone"
+   ],
+   "excerpts": [
+    {
+     "node_id": "lore",
+     "text": "Company reinforcements arriving"
+    },
+    {
+     "node_id": "dialogue-tone",
+     "text": "it states what the company does"
+    }
+   ],
+   "output": "Extraction crews en route. Trespass filings prepared for personnel on site."
+  }
+ ]
+}

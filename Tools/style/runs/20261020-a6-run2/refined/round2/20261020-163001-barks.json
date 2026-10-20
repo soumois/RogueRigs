@@ -1,0 +1,55 @@
+{
+ "run_id": "20261020-163001-barks",
+ "content_file": "barks.json",
+ "retrieval": true,
+ "entries": [
+  {
+   "item_id": "rook_player_damaged_01",
+   "loop": 0,
+   "query": "Rook cocky voice and joke targets for a damage bark",
+   "node_ids": [
+    "dialogue-tone",
+    "lore"
+   ],
+   "excerpts": [
+    {
+     "node_id": "dialogue-tone",
+     "text": "T4 Rook: a cocky, odds-dismissing smuggler crossed with a tired, sarcastic blue-collar worker; punchlines and Rigs jargon under stress"
+    },
+    {
+     "node_id": "dialogue-tone",
+     "text": "T2 Jokes target the company or the robots (owner 2026-10-13). Self-mockery is fine."
+    },
+    {
+     "node_id": "lore",
+     "text": "Everything on the Rigs' side is repaired, patched and bolted together, in contrast with the clean corporate robots."
+    }
+   ],
+   "output": "Hull's cracked. Still prettier than their robots."
+  },
+  {
+   "item_id": "rook_console_hack_started_01",
+   "loop": 0,
+   "query": "Rook cocky voice, hack lore, no catchphrase for a console hack bark",
+   "node_ids": [
+    "crew-characters",
+    "dialogue-tone"
+   ],
+   "excerpts": [
+    {
+     "node_id": "crew-characters",
+     "text": "Cocky; waves the odds away; improvises first, thinks later, and defends a shaky plan with total confidence."
+    },
+    {
+     "node_id": "dialogue-tone",
+     "text": "T2 Jokes target the company or the robots (owner 2026-10-13). Self-mockery is fine."
+    },
+    {
+     "node_id": "dialogue-tone",
+     "text": "T4 Rook: a cocky, odds-dismissing smuggler crossed with a tired, sarcastic blue-collar worker; punchlines and Rigs jargon under stress"
+    }
+   ],
+   "output": "Console's live. Their firewall is already nervous."
+  }
+ ]
+}

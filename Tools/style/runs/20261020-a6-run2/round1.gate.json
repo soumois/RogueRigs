@@ -1,0 +1,52 @@
+{
+ "round": 1,
+ "threshold": 8,
+ "total": 28,
+ "passed": 25,
+ "failed": 3,
+ "action": "refine",
+ "fails": [
+  {
+   "file": "barks",
+   "item_id": "rook_player_damaged_01",
+   "text": "Ow. Hull's cracked. Send patches, plural.",
+   "scores": {
+    "voice": 7,
+    "lore": 9,
+    "reference": 9,
+    "format": 10
+   },
+   "rule": "T4",
+   "reason": "Label is cocky but the text is a sarcastic complaint asking for help, a label/text mismatch; change the text to keep the cocky label.",
+   "suggestion": "Hull's cracked. Still the prettiest wreck here."
+  },
+  {
+   "file": "barks",
+   "item_id": "rook_console_hack_started_01",
+   "text": "Hacking time. Nobody touch my console.",
+   "scores": {
+    "voice": 8,
+    "lore": 9,
+    "reference": 6,
+    "format": 10
+   },
+   "rule": "T3",
+   "reason": "\"Hacking time\" echoes the well-known \"It's ___ time\" catchphrase pattern (Hammer time, It's morphin' time, \"it's hacking time\" meme); change the text.",
+   "suggestion": "Console's live. Their firewall can start sweating."
+  },
+  {
+   "file": "upgrade_texts",
+   "item_id": "upg_pickup_radius",
+   "text": "Loot comes to me. Magnets, baby.",
+   "scores": {
+    "voice": 8,
+    "lore": 9,
+    "reference": 5,
+    "format": 10
+   },
+   "rule": "T3",
+   "reason": "\"Magnets, baby\" paraphrases the well-known \"Yeah, bitch! Magnets!\" catchphrase.",
+   "suggestion": "Loot comes to me. Scrap finally learned manners."
+  }
+ ]
+}

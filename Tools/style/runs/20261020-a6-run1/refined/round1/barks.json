@@ -1,0 +1,48 @@
+{
+ "schema_version": 1,
+ "run_id": "20261020-154501-barks",
+ "items": [
+  {
+   "line_id": "rook_level_up_01",
+   "speaker_id": "rook",
+   "trigger": "level_up",
+   "tone": "cocky",
+   "text": "More torque, more yield, same handsome miner."
+  },
+  {
+   "line_id": "rook_player_damaged_01",
+   "speaker_id": "rook",
+   "trigger": "player_damaged",
+   "tone": "cocky",
+   "text": "Ow. Putting that dent on corporate's tab."
+  },
+  {
+   "line_id": "rook_horde_incoming_01",
+   "speaker_id": "rook",
+   "trigger": "horde_incoming",
+   "tone": "cocky",
+   "text": "More tin cans? Fine. Drill bit's warm."
+  },
+  {
+   "line_id": "rook_run_won_01",
+   "speaker_id": "rook",
+   "trigger": "run_won",
+   "tone": "cocky",
+   "text": "Payload's aboard. Kessler-Voss can bill the wind."
+  },
+  {
+   "line_id": "rook_bonus_chest_opened_01",
+   "speaker_id": "rook",
+   "trigger": "bonus_chest_opened",
+   "tone": "cocky",
+   "text": "Jackpot! My cut just got bigger."
+  },
+  {
+   "line_id": "vesna_run_lost_01",
+   "speaker_id": "vesna",
+   "trigger": "run_lost",
+   "tone": "deadpan",
+   "text": "Well. Worse than the Pallas run. Barely."
+  }
+ ]
+}

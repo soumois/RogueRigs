@@ -1,0 +1,379 @@
+{
+  "round": 0,
+  "items": [
+    {
+      "file": "barks",
+      "item_id": "rook_level_up_01",
+      "scores": {
+        "voice": 8,
+        "lore": 9,
+        "reference": 5
+      },
+      "rules": [
+        "T3"
+      ],
+      "reason": "Paraphrases the well-known 'better, stronger, faster' catchphrase (The Six Million Dollar Man).",
+      "suggestion": "More torque, more yield, same handsome miner."
+    },
+    {
+      "file": "barks",
+      "item_id": "rook_player_damaged_01",
+      "scores": {
+        "voice": 8,
+        "lore": 9,
+        "reference": 7
+      },
+      "rules": [
+        "T3"
+      ],
+      "reason": "Echoes the famous tagline 'this time it's personal'; otherwise a fine cocky self-mocking line.",
+      "suggestion": "Ow. Okay, that dent comes out of my cut."
+    },
+    {
+      "file": "barks",
+      "item_id": "rook_horde_incoming_01",
+      "scores": {
+        "voice": 8,
+        "lore": 9,
+        "reference": 4
+      },
+      "rules": [
+        "T3"
+      ],
+      "reason": "'Come get some' is a well-known action catchphrase (Duke Nukem, Army of Darkness).",
+      "suggestion": "More tin cans? Fine. Drill bit's warm."
+    },
+    {
+      "file": "barks",
+      "item_id": "rook_console_hack_started_01",
+      "scores": {
+        "voice": 8,
+        "lore": 9,
+        "reference": 9
+      },
+      "rules": [],
+      "reason": "Cocky and on-brand but flat, no jargon or punchline.",
+      "suggestion": null
+    },
+    {
+      "file": "barks",
+      "item_id": "rook_run_won_01",
+      "scores": {
+        "voice": 8,
+        "lore": 8,
+        "reference": 0
+      },
+      "rules": [
+        "T3"
+      ],
+      "reason": "'Yippee-ki-yay' is the Die Hard catchphrase, a real film line.",
+      "suggestion": "Payload's aboard. Kessler-Voss can bill the wind."
+    },
+    {
+      "file": "barks",
+      "item_id": "rook_bonus_chest_opened_01",
+      "scores": {
+        "voice": 8,
+        "lore": 9,
+        "reference": 5
+      },
+      "rules": [
+        "T3"
+      ],
+      "reason": "Paraphrases the catchphrase 'Mama needs a new pair of shoes'.",
+      "suggestion": "Jackpot! That's my cut, and some of hers."
+    },
+    {
+      "file": "barks",
+      "item_id": "vesna_upgrade_offer_01",
+      "scores": {
+        "voice": 8,
+        "lore": 9,
+        "reference": 9
+      },
+      "rules": [],
+      "reason": "Dry and short; mild tease of Rook, acceptable but flat.",
+      "suggestion": null
+    },
+    {
+      "file": "barks",
+      "item_id": "vesna_console_dropped_01",
+      "scores": {
+        "voice": 8,
+        "lore": 9,
+        "reference": 9
+      },
+      "rules": [],
+      "reason": "Calm, technical Vesna; flat.",
+      "suggestion": null
+    },
+    {
+      "file": "barks",
+      "item_id": "vesna_extraction_ready_01",
+      "scores": {
+        "voice": 9,
+        "lore": 9,
+        "reference": 9
+      },
+      "rules": [],
+      "reason": "Dry deflation of Rook's greed, on-brand.",
+      "suggestion": null
+    },
+    {
+      "file": "barks",
+      "item_id": "vesna_shuttle_landed_01",
+      "scores": {
+        "voice": 8,
+        "lore": 9,
+        "reference": 9
+      },
+      "rules": [],
+      "reason": "Precise and mission-first; flat, could use burn-window jargon.",
+      "suggestion": null
+    },
+    {
+      "file": "barks",
+      "item_id": "vesna_run_lost_01",
+      "scores": {
+        "voice": 6,
+        "lore": 9,
+        "reference": 9
+      },
+      "rules": [
+        "T2"
+      ],
+      "reason": "On a lost run it mocks the outcome of the player's performance rather than one of Rook's plans.",
+      "suggestion": "Well. Worse than the Pallas run. Barely."
+    },
+    {
+      "file": "barks",
+      "item_id": "vesna_game_over_01",
+      "scores": {
+        "voice": 8,
+        "lore": 9,
+        "reference": 9
+      },
+      "rules": [],
+      "reason": "Dry, hides concern; acceptable.",
+      "suggestion": null
+    },
+    {
+      "file": "alerts",
+      "item_id": "kv_console_dropped_01",
+      "scores": {
+        "voice": 5,
+        "lore": 8,
+        "reference": 9
+      },
+      "rules": [
+        "T6"
+      ],
+      "reason": "Glossy propaganda with a jokey 'doorstep' aimed at intruders on site, where the threat register must be cold bureaucracy; it also claims the Rigs' own console as a company product.",
+      "suggestion": "Unregistered device detected on claim network. Logging initiated."
+    },
+    {
+      "file": "alerts",
+      "item_id": "kv_console_dropped_02",
+      "scores": {
+        "voice": 9,
+        "lore": 9,
+        "reference": 6
+      },
+      "rules": [
+        "T3"
+      ],
+      "reason": "Cold bureaucratic register is right, but 'Form 27-B' echoes the famous Form 27B/6 from the film Brazil and is close to the vault example 'Notice 7-B'.",
+      "suggestion": "Unregistered console detected. Network access recorded for invoicing."
+    },
+    {
+      "file": "alerts",
+      "item_id": "kv_bonus_chest_dropped_01",
+      "scores": {
+        "voice": 4,
+        "lore": 8,
+        "reference": 9
+      },
+      "rules": [
+        "T6"
+      ],
+      "reason": "Calls intruders 'valued guests' with a cheerful 'Surprise!', a sarcastic joke toward threats.",
+      "suggestion": "Supply crate breach detected. Contents remain company property."
+    },
+    {
+      "file": "alerts",
+      "item_id": "kv_bonus_chest_dropped_02",
+      "scores": {
+        "voice": 9,
+        "lore": 9,
+        "reference": 9
+      },
+      "rules": [],
+      "reason": "Cold asset language; humour comes from the gap, on-brand.",
+      "suggestion": null
+    },
+    {
+      "file": "alerts",
+      "item_id": "kv_horde_incoming_01",
+      "scores": {
+        "voice": 8,
+        "lore": 6,
+        "reference": 9
+      },
+      "rules": [
+        "T9"
+      ],
+      "reason": "'Compliance is mandatory' implicitly orders the player to stop, contradicting the objective.",
+      "suggestion": "Security response dispatched. Asset recovery in progress."
+    },
+    {
+      "file": "alerts",
+      "item_id": "kv_horde_incoming_02",
+      "scores": {
+        "voice": 5,
+        "lore": 8,
+        "reference": 9
+      },
+      "rules": [
+        "T6"
+      ],
+      "reason": "Cheerful euphemism 'coming to meet you!' toward threats is a joke, not cold bureaucracy.",
+      "suggestion": "Claim security units dispatched to irregularity location."
+    },
+    {
+      "file": "alerts",
+      "item_id": "kv_extraction_ready_01",
+      "scores": {
+        "voice": 4,
+        "lore": 8,
+        "reference": 9
+      },
+      "rules": [
+        "T6"
+      ],
+      "reason": "Sarcastic hospitality toward intruders is a joke; the company also frames the Rigs' shuttle as its own service.",
+      "suggestion": "Unregistered craft detected. Departure will be invoiced."
+    },
+    {
+      "file": "alerts",
+      "item_id": "kv_shuttle_countdown_01",
+      "scores": {
+        "voice": 9,
+        "lore": 8,
+        "reference": 9
+      },
+      "rules": [],
+      "reason": "Procedural, states what the company does; acceptable.",
+      "suggestion": null
+    },
+    {
+      "file": "upgrade_texts",
+      "item_id": "upg_damage",
+      "scores": {
+        "voice": 8,
+        "lore": 8,
+        "reference": 0
+      },
+      "rules": [
+        "T3"
+      ],
+      "reason": "Real Scarface line 'Say hello to my little friend', paraphrased, with no catalogue film named.",
+      "suggestion": "Like in Lethal Weaponize: bigger bang, smaller invoice."
+    },
+    {
+      "file": "upgrade_texts",
+      "item_id": "upg_fire_rate",
+      "scores": {
+        "voice": 8,
+        "lore": 8,
+        "reference": 0
+      },
+      "rules": [
+        "T3"
+      ],
+      "reason": "Real Dirty Harry line 'Go ahead, make my day', no catalogue film named.",
+      "suggestion": "Like in Speedbump: pull faster, think later."
+    },
+    {
+      "file": "upgrade_texts",
+      "item_id": "upg_reload_speed",
+      "scores": {
+        "voice": 8,
+        "lore": 8,
+        "reference": 0
+      },
+      "rules": [
+        "T3"
+      ],
+      "reason": "Paraphrases the Terminator 2 catchphrase 'Hasta la vista, baby'.",
+      "suggestion": "Like in Point Brake: empty mag, full mag, no pause."
+    },
+    {
+      "file": "upgrade_texts",
+      "item_id": "upg_crit_chance",
+      "scores": {
+        "voice": 8,
+        "lore": 8,
+        "reference": 0
+      },
+      "rules": [
+        "T3"
+      ],
+      "reason": "Real Dirty Harry line 'Do you feel lucky, punk?', paraphrased.",
+      "suggestion": "Like in Dirty Hairy: aim for the bolts, every time."
+    },
+    {
+      "file": "upgrade_texts",
+      "item_id": "upg_crit_damage",
+      "scores": {
+        "voice": 8,
+        "lore": 8,
+        "reference": 5
+      },
+      "rules": [
+        "T3"
+      ],
+      "reason": "'That's gonna leave a mark' is a well-known catchphrase.",
+      "suggestion": "Hit the weld seam. Robots hate the weld seam."
+    },
+    {
+      "file": "upgrade_texts",
+      "item_id": "upg_max_health",
+      "scores": {
+        "voice": 8,
+        "lore": 8,
+        "reference": 0
+      },
+      "rules": [
+        "T3"
+      ],
+      "reason": "Paraphrases the Terminator catchphrase 'I'll be back'.",
+      "suggestion": "Like in Hard Vacuum 2: more hull patch, less me leaking."
+    },
+    {
+      "file": "upgrade_texts",
+      "item_id": "upg_move_speed",
+      "scores": {
+        "voice": 8,
+        "lore": 8,
+        "reference": 0
+      },
+      "rules": [
+        "T3"
+      ],
+      "reason": "Paraphrases the Predator line 'Get to the choppa'.",
+      "suggestion": "Like in Running Late Man: wrong place, but faster."
+    },
+    {
+      "file": "upgrade_texts",
+      "item_id": "upg_pickup_radius",
+      "scores": {
+        "voice": 8,
+        "lore": 9,
+        "reference": 9
+      },
+      "rules": [],
+      "reason": "Greedy scrapper Rook, original; acceptable.",
+      "suggestion": null
+    }
+  ]
+}
