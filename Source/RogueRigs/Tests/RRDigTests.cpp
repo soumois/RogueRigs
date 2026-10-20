@@ -1062,30 +1062,39 @@ bool FRRDronePatrolTest::RunTest(const FString& Parameters)
 			MinSpeed = FMath::Min(MinSpeed, Miner->GetVelocity().Size2D());
 		}
 	}
+	// Lag: how far the drone trails its own patrol point (which moves with the miner) when the miner stops.
+	auto DistanceToPoint = [&]()
+	{
+		return FVector2D::Distance(Offset2D(), FDroneAccess::PatrolOffsetOf(Drone));
+	};
+	const double LagAtStop = DistanceToPoint();
 	TestTrue(TEXT("miner moves at constant speed"), MinSpeed > 0.9 * MinerMovement->GetMaxSpeed());
 	TestTrue(TEXT("walk: the drone lags behind the miner"), MinBehind > 20.0);
+	TestTrue(TEXT("walk: the drone lags behind its patrol point (over 100 uu)"), LagAtStop > 100.0);
 	TestTrue(TEXT("walk: the drone keeps pace (within 500 uu)"), MaxWalkDistance <= 500.0);
 
-	// Stop: the drone catches up into the zone, then stays in it.
+	// Stop: the drone catches up with its point (within 30 uu of it), in the zone, then stays in the zone.
 	constexpr int32 StopFrames = 300;
+	constexpr double CatchDistance = 30.0;
 	int32 CatchFrame = INDEX_NONE;
 	int32 OutAfterCatch = 0;
 	for (int32 Frame = 1; Frame <= StopFrames; ++Frame)
 	{
 		Step(FVector::ZeroVector);
 		const double Distance = Offset2D().Size();
-		if (CatchFrame == INDEX_NONE && Distance <= ZoneMax + ZoneTolerance)
+		if (CatchFrame == INDEX_NONE && DistanceToPoint() <= CatchDistance)
 		{
 			CatchFrame = Frame;
 		}
-		if (CatchFrame != INDEX_NONE && Frame > CatchFrame + 60)
+		// Half a second to settle on the point first (it may still be just outside the zone edge when within 30 uu of it).
+		if (CatchFrame != INDEX_NONE && Frame > CatchFrame + 30)
 		{
 			OutAfterCatch += Distance < ZoneMin - ZoneTolerance || Distance > ZoneMax + ZoneTolerance ? 1 : 0;
 		}
 	}
-	AddInfo(FString::Printf(TEXT("walk at %.0f uu/s (min, last %d frames): drone %.1f..%.1f uu behind the miner, at most %.1f uu from it; caught up into the zone %.2f s after the stop, %d frames out of it afterwards"),
-		MinSpeed, SettledFrames, MinBehind, MaxBehind, MaxWalkDistance, CatchFrame * FrameSeconds, OutAfterCatch));
-	TestTrue(TEXT("stop: the drone catches up within 2.5 s"), CatchFrame != INDEX_NONE && CatchFrame <= 150);
+	AddInfo(FString::Printf(TEXT("walk at %.0f uu/s (min, last %d frames): drone %.1f..%.1f uu behind the miner, at most %.1f uu from it, %.1f uu from its patrol point at the stop; within %.0f uu of its point %.2f s after the stop, %d frames out of the zone afterwards"),
+		MinSpeed, SettledFrames, MinBehind, MaxBehind, MaxWalkDistance, LagAtStop, CatchDistance, CatchFrame * FrameSeconds, OutAfterCatch));
+	TestTrue(TEXT("stop: the drone catches up with its point within 2.5 s"), CatchFrame != INDEX_NONE && CatchFrame <= 150);
 	TestEqual(TEXT("stop: the drone stays in the zone after catching up"), OutAfterCatch, 0);
 
 	AddInfo(FString::Printf(TEXT("%d frames sampled: %d with the drone in a block cell, %d with an invalid patrol point"), SampledFrames, InBlockFrames, InvalidPointFrames));
