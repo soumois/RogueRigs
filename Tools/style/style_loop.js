@@ -262,6 +262,11 @@ function report(runDir) {
   for (const l of loop.lineage) {
     md.push(`| ${l.file}/${l.item_id} | ${l.round} | ${l.rule} | ${Object.entries(l.scores).map(([k, v]) => `${k} ${v}`).join(', ')} | ${l.reason} | ${l.before} | ${l.after} |`);
   }
+  if ((loop.owner_overrides || []).length) {
+    md.push('', '## Owner overrides', '', 'The owner kept the original line, knowing the evaluator rated it below the threshold; the deviation is deliberate, not an oversight.', '',
+      '| Item | Kept (owner) | Evaluator-approved rewrite replaced |', '|---|---|---|');
+    for (const o of loop.owner_overrides) md.push(`| ${o.file}/${o.item_id} | ${o.kept} | ${o.evaluator_version} |`);
+  }
   fs.writeFileSync(path.join(runDir, 'report.md'), md.join('\n') + '\n');
 }
 

@@ -280,5 +280,23 @@
    "failed": 1,
    "action": "escalate"
   }
+ ],
+ "owner_overrides": [
+  {
+   "file": "upgrade_texts",
+   "item_id": "upg_crit_damage",
+   "evaluator_version": "You're gonna need a bigger chassis, tin can.",
+   "kept": "That one is gonna leave a mark, buddy.",
+   "date": "2026-10-20",
+   "by": "owner"
+  },
+  {
+   "file": "upgrade_texts",
+   "item_id": "upg_max_health",
+   "evaluator_version": "I'll be hull-patched.",
+   "kept": "I'll be back. Eventually. Sturdier, too.",
+   "date": "2026-10-20",
+   "by": "owner"
+  }
  ]
 }
