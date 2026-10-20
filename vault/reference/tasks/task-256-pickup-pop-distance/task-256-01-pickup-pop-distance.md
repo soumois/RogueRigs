@@ -3,7 +3,7 @@ id: task-256-01-pickup-pop-distance
 description: "Ore and heal pickups land close enough to be collected without moving: PopMaxDistance lowered."
 parent: task-256-pickup-pop-distance
 kind: task
-status: in-progress
+status: done
 ---
 # Ore pickup pop distance
 
@@ -15,11 +15,11 @@ status: in-progress
 - done_when: PopMaxDistance reads 150 on the class default object after compile and save; other defaults unchanged; doc updated; lint clean.
 - editor_state: open (editor + MCP)
 - token_ceiling: 60k
-- model: open
-- tokens: open
-- runs: open
+- model: sonnet
+- tokens: input 22, cache write 42420, cache read 327226, output 548
+- runs: 1
 - milestone: M1
-- result: open
+- result: BP_PickupOre PopMaxDistance 300 -> 150 (PopMinDistance 80 kept), compiled, saved, read back; bp-pickup-ore updated. Landing in play unverified.
 
 ## Relations
 - [[task-256-pickup-pop-distance]] — parent global task.

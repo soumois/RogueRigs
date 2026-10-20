@@ -3,7 +3,7 @@ id: task-256-02-pickup-pop-distance
 description: "Heal pickup pop distance lowered like the ore pickup."
 parent: task-256-pickup-pop-distance
 kind: task
-status: todo
+status: in-progress
 ---
 # Heal pickup pop distance
 

@@ -474,6 +474,7 @@ kind: note
 | [[task-253-02-drone-parts-animation]] | sonnet | 1 | 0k | 45k | 498k | 1k |
 | [[task-254-03-drone-thruster-particles]] | sonnet | 1 | 0k | 35k | 519k | 0k |
 | [[task-250-01-fix-heal-vein-test]] | opus | 1 | 0k | 101k | 2006k | 13k |
+| [[task-256-01-pickup-pop-distance]] | sonnet | 1 | 0k | 42k | 327k | 1k |
 
 ## Totals
 | Scope | Input | Cache write | Cache read | Output |
