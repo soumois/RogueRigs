@@ -30,6 +30,7 @@ art-prompts  reference/gdd/art-audio/art-prompts.md
 art-prompts-arena-draft  reference/gdd/art-audio/art-prompts-arena-draft.md
 art-prompts-arena-final  reference/gdd/art-audio/art-prompts-arena-final.md
 art-prompts-card-back  reference/gdd/art-audio/art-prompts-card-back.md
+art-prompts-drone  reference/gdd/art-audio/art-prompts-drone.md
 art-prompts-ore-deposit  reference/gdd/art-audio/art-prompts-ore-deposit.md
 art-prompts-rigs  reference/gdd/art-audio/art-prompts-rigs.md
 art-prompts-robots  reference/gdd/art-audio/art-prompts-robots.md

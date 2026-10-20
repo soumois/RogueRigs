@@ -1,0 +1,112 @@
+{
+ "inputs": {
+  "fbx": "Meshy_AI_Rusty_Satellite_Drone_1020195641_texture.fbx",
+  "triangles": 5138,
+  "vertices": 2531,
+  "raw_size_units": [
+   1.8971,
+   0.8037,
+   1.8001
+  ],
+  "note": "Meshy FBX imports with a -90 deg X object rotation (Y-up file); world axes: pods along X, camera eye on -Y, Z up"
+ },
+ "scale_factor": 36.898152,
+ "rotation_about_z_deg": 90,
+ "applied_origin_offset_cm": [
+  0.066,
+  0.0079,
+  33.8237
+ ],
+ "origin": "x and y: middle of the bounding box, z = 0 at the lowest point (laser emitter tip)",
+ "decimation": "not needed (input at or below the budget)",
+ "max_tris": 5800,
+ "flat_shaded": true,
+ "corner_normal_vs_face_normal_min_dot": 0.999894,
+ "flat_shading_note": "Meshy input was smooth shaded; set flat (art guide A1); pass --keep-smooth to keep it",
+ "export_settings": {
+  "use_selection": true,
+  "object_types": [
+   "MESH"
+  ],
+  "apply_scale_options": "FBX_SCALE_UNITS",
+  "global_scale": 1.0,
+  "axis_forward": "-Z",
+  "axis_up": "Y",
+  "mesh_smooth_type": "OFF",
+  "add_leaf_bones": false,
+  "path_mode": "RELATIVE",
+  "embed_textures": false,
+  "blender": "5.2.2 LTS",
+  "fbx_unit_scale_factor_in_file": 100.0
+ },
+ "readback": {
+  "triangles": 5138,
+  "vertices": 2531,
+  "bounds_min_cm": [
+   -14.828,
+   -35.0,
+   -0.0
+  ],
+  "bounds_max_cm": [
+   14.828,
+   35.0,
+   66.421
+  ],
+  "size_cm": [
+   29.656,
+   70.0,
+   66.421
+  ],
+  "uv_layers": [
+   "UVMap",
+   "LightMap"
+  ],
+  "materials": [
+   "meshy_drone"
+  ],
+  "objects": 1
+ },
+ "uv0_check": {
+  "range_u": [
+   0.0,
+   0.99993
+  ],
+  "range_v": [
+   2e-05,
+   0.99744
+  ],
+  "corners_not_matching_nearest_meshy_vertex_uv": 0,
+  "max_distance_to_meshy_vertex_cm": 8e-06
+ },
+ "forward_axis_check": {
+  "amber_eye_faces": 17,
+  "amber_eye_centroid_cm": [
+   11.5,
+   0.3,
+   35.07
+  ],
+  "mesh_centroid_cm": [
+   0.6,
+   -0.06,
+   34.11
+  ],
+  "amber_eye_on_plus_x": true
+ },
+ "lightmap": {
+  "layer": "LightMap",
+  "atlas_px": 2048,
+  "faces": 5138,
+  "overlapping_face_pairs_bbox": 0,
+  "min_gap_px": 2.0,
+  "bounds_min": 0.00098,
+  "bounds_max": 0.99902,
+  "passed": true
+ },
+ "textures": [
+  "drone_basecolor.png",
+  "drone_metallic_roughness.png",
+  "drone_normal.png"
+ ],
+ "warnings": [],
+ "seconds": 2.1
+}
