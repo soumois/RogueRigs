@@ -3,7 +3,7 @@ id: task-257-02-pulse-desync
 description: "C++ writes a seeded pulse phase and rate to ore and heal pickups and to the ore and heal deposit crystal instances."
 parent: task-257-pulse-desync
 kind: task
-status: todo
+status: in-progress
 ---
 # Pulse desync values (C++)
 
