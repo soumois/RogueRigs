@@ -3,7 +3,7 @@ id: task-253-02-drone-parts-animation
 description: "Assign the three meshes to BP_Drone and remove the grey sphere."
 parent: task-253-drone-parts-animation
 kind: task
-status: in-progress
+status: done
 ---
 # BP_Drone parts
 
@@ -15,11 +15,11 @@ status: in-progress
 - done_when: BP_Drone compiles, three parts visible with the right offsets (read back by MCP), bp-drone updated, lint clean.
 - editor_state: open (editor + MCP)
 - token_ceiling: 150k
-- model: open
-- tokens: open
-- runs: open
+- model: sonnet
+- tokens: input 32, cache write 44928, cache read 497625, output 759
+- runs: 1
 - milestone: M1
-- result: open
+- result: BP_Drone: Mesh = SM_DroneBase at scale 1 (grey override removed, MI_Drone effective), LaserPivot = SM_DroneLaser, AntennaMesh = SM_DroneAntenna, C++ offsets kept; Blueprint compiles without error against the new C++, saved. Look and PIE motion unverified.
 
 ## Relations
 - [[task-253-drone-parts-animation]] — parent global task.

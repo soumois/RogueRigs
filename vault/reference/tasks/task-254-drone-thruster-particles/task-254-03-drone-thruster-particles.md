@@ -3,7 +3,7 @@ id: task-254-03-drone-thruster-particles
 description: "Place the two thruster effects on the pods in BP_Drone."
 parent: task-254-drone-thruster-particles
 kind: task
-status: todo
+status: in-progress
 ---
 # Drone thruster placement
 
