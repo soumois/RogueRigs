@@ -21,7 +21,7 @@ Assets: `/Game/RogueRigs/Art/Chaser/M_Chaser_Meshy_Anim` (BP_Chaser), `/Game/Rog
 `git checkout 9be640ba -- <the five .uasset files>` restores the readability version, or re-enter the values listed under Before.
 
 ## Unverified
-Editor read-back pending task-275-04. The restore is file-level: `git diff 75610b21 HEAD` on the five files is empty, but no value was read in the editor.
+Editor read-back (task-275-04): M_Chaser_Meshy_Anim has scalars GlowAmount, ClipId, AnimStart, RunRate; M_ShieldChaser_Anim has GlowAmount, ClipId, AnimStart, RunRate, ClipOffset, Visible and texture BaseColorTex; no BodyBrightness, BodySaturation, BodyRoughness or Rim* parameter on either. MI_GB_Shooter Color (0.45, 1, 0.05), MI_GB_Heavy Color (0.15, 0.35, 0.7). The restore is also file-level: `git diff 75610b21 HEAD` on the five files is empty.
 
 ## Relations
 - [[blueprints-enemies-index]] — parent index.

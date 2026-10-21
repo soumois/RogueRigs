@@ -6,7 +6,7 @@ kind: doc
 ---
 # Lights without shadows (L_ArenaM1)
 
-Lifted by task-275-01 (owner 2026-10-21): the sun and sky light cast shadows again, as on Monday (packages restored from 75610b21, read-back pending task-275-04, values in [[lights-dark-ambient]]). The per-actor flags of task-263-01 are NOT reverted (pending owner question, since the blob shadows of task-264 stay): with the sun shadows back, rocks and barrels cast, robots, miner and drone do not (blob discs only). The text below is history.
+Lifted by task-275-01 (owner 2026-10-21): the sun and sky light cast shadows again, as on Monday (packages restored from 75610b21, read back in the editor by task-275-04, values in [[lights-dark-ambient]]). The per-actor flags of task-263-01 are NOT reverted (pending owner question, since the blob shadows of task-264 stay): with the sun shadows back, rocks and barrels cast, robots, miner and drone do not (blob discs only). The text below is history.
 
 Provisional, temporary (owner 2026-10-20, task-261: "aucun objet ne doit avoir une ombre pour l'instant"). Method: shadow casting is off on the lights, never on the objects, so the per-object CastShadow flags are untouched and the change reverts from the lights alone.
 

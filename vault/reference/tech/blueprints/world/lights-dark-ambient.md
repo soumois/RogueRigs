@@ -6,7 +6,7 @@ kind: doc
 ---
 # Dark violet ambient (L_ArenaM1)
 
-Current look (task-275-01, owner 2026-10-21: back to Monday lighting, shader kept): sun 6 white with shadows, sky 0.3 white with shadows; exposure being re-measured in task-275-03/04; the darkening mask is kept, see [[mpp-player-light-mask]]. The history below is kept.
+Current look (task-275-01, owner 2026-10-21: back to Monday lighting, shader kept): sun 6 white with shadows, sky 0.3 white with shadows; exposure frozen at -0.94 EV100 (task-275-04); the darkening mask is kept, see [[mpp-player-light-mask]]. The history below is kept.
 
 Provisional (owner 2026-10-20, task-265-01; owner tunes by eye). Reason: reference game look, a dark violet ambient with a warm pool of light around the player (the player light comes from task-263-02). The strong sun (intensity 6) burnt the yellow chasers white-yellow.
 
@@ -53,7 +53,7 @@ Values picked from real -game captures (Saved/LookTune/r1, variant close to v6),
 - task-274-05 (owner 2026-10-21, provisional): PPV_XPGlow `AutoExposureMinBrightness` = `AutoExposureMaxBrightness` -2.9 -> -3.4 EV100 (read back -3.4; overrides on, bloom 1.3 / -1, blendable weight 1 unchanged). Reason: round-10 sweep variant Q4 (best match to the DRGS ring profile, A score 0.230), with the mask defaults of [[mpp-player-light-mask]]. Revert: -2.9, then 1.8.
 
 ## task-275-01
-- task-275-01 (owner 2026-10-21): external packages of DirectionalLight_0 and SkyLight_0 restored from commit 75610b21 (Monday 2026-10-19). DirectionalLight_0: `intensity` 4.0 -> 6, `lightColor` (0.75, 0.62, 1.0) -> (1, 1, 1), `castShadows` false -> true. SkyLight_0: `intensity` 0.08 -> 0.3, `lightColor` (0.35, 0.25, 0.6) -> (1, 1, 1), `castShadows` false -> true. Editor read-back pending task-275-04. Revert = task-272-18 state: sun 4.0 (0.75, 0.62, 1.0) no shadows, sky 0.08 (0.35, 0.25, 0.6) no shadows (git: checkout 1958a46f for the two packages).
+- task-275-01 (owner 2026-10-21): external packages of DirectionalLight_0 and SkyLight_0 restored from commit 75610b21 (Monday 2026-10-19). DirectionalLight_0: `intensity` 4.0 -> 6, `lightColor` (0.75, 0.62, 1.0) -> (1, 1, 1), `castShadows` false -> true. SkyLight_0: `intensity` 0.08 -> 0.3, `lightColor` (0.35, 0.25, 0.6) -> (1, 1, 1), `castShadows` false -> true. Editor read-back (task-275-04): DirectionalLight_0 intensity 6, lightColor (1, 1, 1), castShadows true; SkyLight_0 intensity 0.3, lightColor (1, 1, 1), castShadows true. Revert = task-272-18 state: sun 4.0 (0.75, 0.62, 1.0) no shadows, sky 0.08 (0.35, 0.25, 0.6) no shadows (git: checkout 1958a46f for the two packages).
 
 ## Notes and risks
 - The sun has `bAtmosphereSunLight` true, but the level has no SkyAtmosphere actor, so the flag has no visible effect.
@@ -67,6 +67,9 @@ task-265 values:
 Set DirectionalLight_0 intensity 6 and lightColor (1, 1, 1); SkyLight_0 intensity 0.3 and lightColor (1, 1, 1), by Details or `ObjectTools.set_properties` on `...L_ArenaM1:PersistentLevel.DirectionalLight_0.LightComponent0` and `...SkyLight_0.SkyLightComponent0`. Save as in the MCP save note of [[lights-no-shadows]].
 
 - owner_agent: agent-bp
+
+## task-275-04
+- task-275-04 (owner 2026-10-21: fixed exposure at the Monday auto exposure): PPV_XPGlow `autoExposureMinBrightness` = `autoExposureMaxBrightness` -3.4 -> -0.94 EV100 (overrides on, AEM_Histogram, bias 1, bloom 1.3 / -1 and the mask blendable weight 1 unchanged). Measured in task-275-03: Monday PPV without mask, Monday lights, ShowFlag.VisualizeHDR in one -game run, settled Average Scene EV100 -0.945 / -0.943 / -0.943, smoothed pre-bias marker -0.93 / -0.94 / -0.94 (with-bias marker -1.94); bias multiplies after the min/max clamp, so min = max = -0.94 with bias 1 reproduces the adapted exposure. MPC_PlayerLight read back Enable 1, FarBrightness 0.03, Radius 250, Exponent 4 (no change). Revert: -3.4 in both fields (task-274-05 state).
 
 ## Relations
 - [[blueprints-world-index]] — parent index.
