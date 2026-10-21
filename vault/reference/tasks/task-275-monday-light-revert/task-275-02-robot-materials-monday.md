@@ -3,7 +3,7 @@ id: task-275-02-robot-materials-monday
 description: "Chaser masters, MI_ShieldChaser_Emblem, MI_GB_Shooter and MI_GB_Heavy restored from Monday commit 75610b21 (readability nodes and colour changes gone); doc updated."
 parent: task-275-monday-light-revert
 kind: task
-status: todo
+status: in-progress
 ---
 # Robot materials back to Monday
 
