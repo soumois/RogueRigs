@@ -16,6 +16,7 @@ Measure in S0 ([[perf-stress-test-m1]]) before changing any architecture.
 | Pathfinding | `RuntimeGeneration=Dynamic`, 1000 uu tiles: each destroyed block rebuilds tiles, then 200 agents re-path | Flow field: BFS from the miner on the grid, no navmesh | 2 |
 | Animation | 150+ animated skeletal meshes (rigid parts on bones) | Animation Budget Allocator plugin, or lower animation rate at distance | 1 |
 | Rendering | `DefaultEngine.ini` enables Lumen GI and reflections, virtual shadows, hardware ray tracing, Substrate | Test without Lumen and ray tracing for flat low-poly with one main light; 5.8 also offers Lumen Lite | 0.5 |
+| Player light shadows | task-263: one movable point light on the miner is the only shadow caster; grid rock pieces and barrels cast ([[sys-grid]] `bBlocksCastShadows`), nothing else does. A moving local light renders its virtual shadow pages uncached each frame it moves | Measure with the light's shadows on and off, then with `bBlocksCastShadows` off; fallback: smaller attenuation radius or no shadow on broken pieces | 0.5 |
 | Line of sight | Shooters and turrets test line of sight; blocks are the only obstacles | Grid cell walk instead of physics traces, throttled | 1 |
 | Explosion chains | Barrel → kamikaze → barrel, synchronous in damage callbacks: recursion, double hits | Queue on next tick, "already exploded" flag ([[sys-explosions]]) | 0.5 |
 | Projectiles | Template projectile spawned and destroyed each shot, `bForceSubStepping = true` | Projectile pool; sub-stepping off unless needed | 1 |

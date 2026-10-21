@@ -21,8 +21,15 @@ Provisional, temporary (owner 2026-10-20, task-261: "aucun objet ne doit avoir u
 ## Not changed (separate sources of dark shapes, reported only)
 - Lumen global illumination and reflections (project setting `r.DynamicGlobalIlluminationMethod=1`) and Virtual Shadow Maps (`r.Shadow.Virtual.Enable=1`): kept as they are. Lumen indirect occlusion can still darken contact areas.
 - Capsule shadows: BP_Miner mesh `bCastCapsuleDirectShadow` false and `bCastCapsuleIndirectShadow` false, BP_Chaser same: no capsule shadow.
-- Per-object CastShadow flags (meshes, ArenaGrid components) are on or off as before and are not part of this change.
+- Per-object CastShadow flags (meshes, ArenaGrid components) are on or off as before and are not part of this change (task-263-01 sets them since, section below).
 - Decals: only the ground telegraph and explosion decals, which are gameplay marks, not shadows. No ShadowProxy mesh, no blob shadow actor found.
+
+## Player light, the only shadow caster (task-263)
+Owner 2026-10-20 (reference game video): the only cast shadows are those of the player's light on the rock walls; rocks cast, nothing else. The sun and sky light above stay without shadows. Per-object flags set in C++ (task-263-01):
+- Cast: grid rock piece ISMs, barrel HISMs and special ore (`ARRArenaGrid::bBlocksCastShadows`, default true, [[sys-grid]]). Ore and heal ore crystals stay off (`bDepositCrystalsCastShadow` false, task-237-01).
+- Never cast: grid floor chunks; every primitive of robots (`ARREnemy`), pickups (`ARRPickup`), the drone (`ARRDrone`), the miner (`ARRMiner`), weapons and turrets (`ARRWeapon`) and projectiles (`ARRProjectile`), through `RRShadows::DisableCastShadows` in their `PostInitializeComponents` (C++ and Blueprint components, kept across pool reuse). Robots get a fake blob shadow instead (task-264).
+- Not covered (no C++ rule, flags as authored): objectives (console, shuttle, bonus chest), Niagara debris and effects, explosion FX (already off in C++).
+- The light itself (movable warm point light on BP_Miner, cast shadows on) is added by task-263-02 ([[bp-miner]]).
 
 ## Revert (bring the shadows back)
 1. Open L_ArenaM1, select DirectionalLight_0, Details, Light, Cast Shadows: tick it.
@@ -39,3 +46,5 @@ Provisional, temporary (owner 2026-10-20, task-261: "aucun objet ne doit avoir u
 - [[visual-style]] — the look statement that mentions the shadows.
 - [[ppv-xp-glow]] — the other lighting actor of the level, untouched.
 - [[sys-cheats]] — the runtime halo light.
+- [[sys-grid]] — `bBlocksCastShadows`: the rock and barrel shadow casters of the player light.
+- [[bp-miner]] — carries the player light (task-263-02).
