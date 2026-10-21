@@ -3,7 +3,7 @@ id: task-278-07-bp-chaser-eye
 description: "BP_Chaser BodyMesh uses MI_RobotEye_Chaser on the eye slot."
 parent: task-278-chaser-eye-glow
 kind: task
-status: todo
+status: in-progress
 ---
 # BP_Chaser BodyMesh uses MI_RobotEye_Chaser on the eye slot
 
