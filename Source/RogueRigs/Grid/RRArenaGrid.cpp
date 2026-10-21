@@ -1574,13 +1574,13 @@ void ARRArenaGrid::BuildDepositCrystals()
 					Component->SetMaterial(Slot, Material);
 				}
 			}
-			// Marked 0, ore colour 1-3 and the pulse phase and rate 4-5 (task-257-02): at least 6 floats.
-			// task-258-01: a mesh with a rock slot (heal deposit, MI_RockSlab) shares the data with M_RockSlab, which reads 4-7 as
-			// its quadrant shake (1 or more = shaking): the pulse rate at 5 shook the rock by itself. Such an ISM keeps marked and
-			// colour only (4 floats), so the rock reads its defaults (still) and the crystal its neutral pulse (phase 0, rate 1).
+			// Marked 0, ore colour 1-3 and the pulse phase and rate at DepositPulsePhase/RateCustomDataIndex (13, 14; task-267-01):
+			// 15 floats. task-258-01: a mesh with a rock slot (heal deposit, MI_RockSlab) shares the data with M_RockSlab, which reads
+			// 0-12 with the rock piece layout (4-7 = quadrant shake, 1 or more = shaking). 4-12 are never written here, so they stay 0
+			// (rock still); the pulse sits beyond them. With indices below 13 such an ISM keeps marked and colour only (4 floats).
 			const bool bPulseData = CanWriteDepositPulseData(Meshes[Variant]);
 			const int32 BaseFloats = FMath::Max(MarkedCustomDataIndex + 1, OreColorCustomDataIndex + 3);
-			Component->SetNumCustomDataFloats(bPulseData ? FMath::Max3(Template->NumCustomDataFloats, BaseFloats, GetCrystalPulseFloatCount()) : BaseFloats);
+			Component->SetNumCustomDataFloats(bPulseData ? FMath::Max3(Template->NumCustomDataFloats, BaseFloats, GetDepositPulseFloatCount()) : BaseFloats);
 			// Rendering only: collision stays one cube per cell in the collision ISMs.
 			Component->SetCollisionEnabled(ECollisionEnabled::NoCollision);
 			Component->SetCollisionProfileName(UCollisionProfile::NoCollision_ProfileName);
@@ -1612,7 +1612,8 @@ void ARRArenaGrid::BuildDepositCrystals()
 				// Pulse data written once: it follows the instance through remove-at-swap (the ISM swaps whole custom data blocks).
 				if (bPulseData)
 				{
-					WriteCrystalPulseData(Component, Instance, FRRPulseDesync::DepositDomain, static_cast<uint32>(Visual.InstanceDeposits[Instance]));
+					WriteCrystalPulseData(Component, Instance, FRRPulseDesync::DepositDomain, static_cast<uint32>(Visual.InstanceDeposits[Instance]),
+						DepositPulsePhaseCustomDataIndex, DepositPulseRateCustomDataIndex);
 				}
 			}
 			Component->MarkRenderStateDirty();
@@ -1708,17 +1709,17 @@ bool ARRArenaGrid::DepositMeshHasRockSlot(const UStaticMesh* Mesh) const
 
 bool ARRArenaGrid::CanWriteDepositPulseData(const UStaticMesh* Mesh) const
 {
-	return !DepositMeshHasRockSlot(Mesh) || FMath::Min(PulsePhaseCustomDataIndex, PulseRateCustomDataIndex) >= PieceCustomDataCount;
+	return !DepositMeshHasRockSlot(Mesh) || FMath::Min(DepositPulsePhaseCustomDataIndex, DepositPulseRateCustomDataIndex) >= PieceCustomDataCount;
 }
 
-void ARRArenaGrid::WriteCrystalPulseData(UInstancedStaticMeshComponent* Component, int32 Instance, uint32 Domain, uint32 Id)
+void ARRArenaGrid::WriteCrystalPulseData(UInstancedStaticMeshComponent* Component, int32 Instance, uint32 Domain, uint32 Id, int32 PhaseIndex, int32 RateIndex)
 {
-	if (!Component || Instance == INDEX_NONE || Component->NumCustomDataFloats < GetCrystalPulseFloatCount())
+	if (!Component || Instance == INDEX_NONE || PhaseIndex < 0 || RateIndex < 0 || Component->NumCustomDataFloats <= FMath::Max(PhaseIndex, RateIndex))
 	{
 		return;
 	}
-	Component->SetCustomDataValue(Instance, PulsePhaseCustomDataIndex, FRRPulseDesync::Phase(PulseSeed, Domain, Id), /*bMarkRenderStateDirty*/ false);
-	Component->SetCustomDataValue(Instance, PulseRateCustomDataIndex, FRRPulseDesync::Rate(PulseSeed, Domain, Id, PulseRateMin, PulseRateMax), /*bMarkRenderStateDirty*/ false);
+	Component->SetCustomDataValue(Instance, PhaseIndex, FRRPulseDesync::Phase(PulseSeed, Domain, Id), /*bMarkRenderStateDirty*/ false);
+	Component->SetCustomDataValue(Instance, RateIndex, FRRPulseDesync::Rate(PulseSeed, Domain, Id, PulseRateMin, PulseRateMax), /*bMarkRenderStateDirty*/ false);
 }
 
 void ARRArenaGrid::WriteCellCrystalPulseData()
@@ -1738,7 +1739,9 @@ void ARRArenaGrid::WriteCellCrystalPulseData()
 		{
 			continue;
 		}
-		WriteCrystalPulseData(Component, CellInstanceIndex[Index], FRRPulseDesync::CellDomain, static_cast<uint32>(Index));
+		// The cluster material (OreCrystalMaterial / HealOreCrystalMaterial, M_XPNutGlow children) covers every slot of the cluster
+		// mesh: no rock slot reads this data, so the M_XPNutGlow indices 4 / 5 stay (task-267-01).
+		WriteCrystalPulseData(Component, CellInstanceIndex[Index], FRRPulseDesync::CellDomain, static_cast<uint32>(Index), PulsePhaseCustomDataIndex, PulseRateCustomDataIndex);
 		Dirty.Add(Component);
 	}
 	for (UHierarchicalInstancedStaticMeshComponent* Component : Dirty)

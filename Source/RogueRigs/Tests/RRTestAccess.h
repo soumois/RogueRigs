@@ -71,6 +71,8 @@ namespace RRTestAccess
 		static FVector2f PulseRateRangeOf(const ARRArenaGrid* Grid) { return FVector2f(Grid->*(&FGridAccess::PulseRateMin), Grid->*(&FGridAccess::PulseRateMax)); }
 		static int32 PulsePhaseIndexOf(const ARRArenaGrid* Grid) { return Grid->*(&FGridAccess::PulsePhaseCustomDataIndex); }
 		static int32 PulseRateIndexOf(const ARRArenaGrid* Grid) { return Grid->*(&FGridAccess::PulseRateCustomDataIndex); }
+		static int32 DepositPulsePhaseIndexOf(const ARRArenaGrid* Grid) { return Grid->*(&FGridAccess::DepositPulsePhaseCustomDataIndex); }
+		static int32 DepositPulseRateIndexOf(const ARRArenaGrid* Grid) { return Grid->*(&FGridAccess::DepositPulseRateCustomDataIndex); }
 		static bool DepositMeshHasRockSlotOf(const ARRArenaGrid* Grid, const UStaticMesh* Mesh) { return (Grid->*(&FGridAccess::DepositMeshHasRockSlot))(Mesh); }
 		static bool UsesDepositCrystalsOf(const ARRArenaGrid* Grid, ERRCellType Type) { return (Grid->*(&FGridAccess::UsesDepositCrystals))(Type); }
 		static FTransform DepositCrystalRestOf(const ARRArenaGrid* Grid, int32 DepositId) { return (Grid->*(&FGridAccess::GetDepositCrystalTransform))(DepositId); }

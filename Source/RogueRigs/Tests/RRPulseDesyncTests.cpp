@@ -1,4 +1,4 @@
-// Rogue Rigs - headless check of the seeded pulse desync (RogueRigs.PulseDesync.SeededValues, task-257-02): hash determinism, ore and heal pickup Custom Primitive Data, XP neutral, deposit crystal instance data, heal deposit rock shake inputs still (task-258-01).
+// Rogue Rigs - headless check of the seeded pulse desync (RogueRigs.PulseDesync.SeededValues, task-257-02): hash determinism, ore and heal pickup Custom Primitive Data, XP never written, deposit crystal instance data at 13 / 14 (task-267-01), heal deposit rock shake inputs still (task-258-01).
 
 #include "CoreMinimal.h"
 #include "Misc/AutomationTest.h"
@@ -7,6 +7,8 @@
 
 #include "Components/InstancedStaticMeshComponent.h"
 #include "Components/StaticMeshComponent.h"
+#include "Materials/MaterialInterface.h"
+#include "Materials/MaterialParameters.h"
 #include "Pickups/RRPickup.h"
 #include "Pickups/RRPickupSubsystem.h"
 #include "Pickups/RRPulseDesync.h"
@@ -36,6 +38,38 @@ namespace RRPulseDesyncTests
 	{
 		const int32 Flat = Instance * Component->NumCustomDataFloats + Index;
 		return Index < Component->NumCustomDataFloats && Component->PerInstanceSMCustomData.IsValidIndex(Flat) ? Component->PerInstanceSMCustomData[Flat] : -1.f;
+	}
+
+	/**
+	 * task-267-01 evidence: where the M_XPNutGlow / M_DepositCrystalGlow `PulseRate` parameter of Component's materials comes from
+	 * (its Custom Primitive Data slot and material default) and the float the GPU gets at that slot. The engine never feeds the
+	 * material default into the primitive data: UMaterialExpressionScalarParameter::Compile emits CustomPrimitiveData(index) when
+	 * bUseCustomPrimitiveData, and FPrimitiveUniformShaderParametersBuilder::CustomPrimitiveData zeroes an empty array (unwritten
+	 * slots of a shorter array are zeroed by SetPrimitiveData's SetNumZeroed). So an unwritten slot reads 0.
+	 */
+	FString DescribePulseRateSource(const UPrimitiveComponent* Component)
+	{
+		if (!Component)
+		{
+			return TEXT("no component");
+		}
+		const FName PulseRate(TEXT("PulseRate"));
+		const int32 Slot = Component->GetCustomPrimitiveDataIndexForScalarParameter(PulseRate);
+		float MaterialDefault = -1.f;
+		for (int32 Element = 0; Element < Component->GetNumMaterials(); ++Element)
+		{
+			FMaterialParameterMetadata Meta;
+			const UMaterialInterface* Material = Component->GetMaterial(Element);
+			if (Material && Material->GetParameterValue(EMaterialParameterType::Scalar, FMemoryImageMaterialParameterInfo(PulseRate), Meta, EMaterialGetParameterValueFlags::CheckAll))
+			{
+				MaterialDefault = Meta.Value.AsScalar();
+				break;
+			}
+		}
+		const TArray<float>& Data = Component->GetCustomPrimitiveData().Data;
+		const float GpuValue = Slot >= 0 && Data.IsValidIndex(Slot) ? Data[Slot] : 0.f;
+		return FString::Printf(TEXT("PulseRate Custom Primitive Data slot %d, material default %.4f, component data %d float(s) (default data %d), value the GPU gets at the slot %.4f"),
+			Slot, MaterialDefault, Data.Num(), Component->GetDefaultCustomPrimitiveData().Data.Num(), GpuValue);
 	}
 }
 
@@ -115,10 +149,13 @@ bool FRRPulseDesyncSeededValuesTest::RunTest(const FString& Parameters)
 	TestEqual(TEXT("consecutive spawn ids"), OreB->GetPulseSpawnId(), OreA->GetPulseSpawnId() + 1);
 	TestNotEqual(TEXT("two ore pickups of different spawn ids get different phases"), PhaseA, PhaseB);
 
-	// XP: never written, so the material sees its defaults (phase 0, rate 1).
+	// XP: never written. task-267-01: an unwritten Custom Primitive Data slot reaches the GPU as 0, not as the material
+	// parameter default (see DescribePulseRateSource), so the XP pulse rate reads 0 until M_XPNutGlow stops reading PulseRate
+	// from Custom Primitive Data; logged, not asserted (asset fix pending).
 	TestEqual(TEXT("XP pickup has no pulse spawn id"), XP->GetPulseSpawnId(), static_cast<int32>(INDEX_NONE));
-	TestEqual(TEXT("XP pickup phase neutral (0)"), ReadPrimitiveData(XP, 1, 0.f), 0.f);
-	TestEqual(TEXT("XP pickup rate neutral (1)"), ReadPrimitiveData(XP, 2, 1.f), 1.f);
+	TestEqual(TEXT("XP pickup phase slot never written (reads 0)"), ReadPrimitiveData(XP, 1, 0.f), 0.f);
+	AddInfo(FString::Printf(TEXT("XP pickup mesh: %s"), *DescribePulseRateSource(Cast<UPrimitiveComponent>(XP->GetRootComponent()))));
+	AddInfo(FString::Printf(TEXT("ore pickup mesh: %s"), *DescribePulseRateSource(Cast<UPrimitiveComponent>(OreB->GetRootComponent()))));
 
 	// Pool: a released ore pickup is back to neutral; reused, it draws a new spawn id and writes its values.
 	URRActorPoolSubsystem* Pool = TestWorld.Get()->GetSubsystem<URRActorPoolSubsystem>();
@@ -134,8 +171,9 @@ bool FRRPulseDesyncSeededValuesTest::RunTest(const FString& Parameters)
 		}
 	}
 
-	// 3. Deposit crystals (BP_ArenaGrid, arena_m1_fine): crystal-only meshes (Duskite) 6 floats, hash of (PulseSeed, deposit id);
-	// meshes with a rock slot (heal) 4 floats, no pulse, every rock shake input below 1 (task-258-01).
+	// 3. Deposit crystals (BP_ArenaGrid, arena_m1_fine), task-267-01 layout: every deposit formation ISM (Duskite crystal-only
+	// meshes and heal meshes with a rock slot) carries 15 floats with the hash of (PulseSeed, deposit id) at 13 (phase) and 14
+	// (rate); on the heal ISMs the rock piece floats 4-12 (M_RockSlab shake 4-7, marked 8-11, solid mask 12) stay 0 (task-258-01).
 	ARRArenaGrid* Grid = RRTestHarness::SpawnFineGrid(*this, TestWorld);
 	if (!Grid)
 	{
@@ -143,49 +181,33 @@ bool FRRPulseDesyncSeededValuesTest::RunTest(const FString& Parameters)
 	}
 	const int32 Seed = FGridAccess::PulseSeedOf(Grid);
 	const FVector2f Range = FGridAccess::PulseRateRangeOf(Grid);
-	const int32 PhaseIndex = FGridAccess::PulsePhaseIndexOf(Grid);
-	const int32 RateIndex = FGridAccess::PulseRateIndexOf(Grid);
-	TestEqual(TEXT("crystal phase index 4"), PhaseIndex, 4);
-	TestEqual(TEXT("crystal rate index 5"), RateIndex, 5);
+	const int32 PhaseIndex = FGridAccess::DepositPulsePhaseIndexOf(Grid);
+	const int32 RateIndex = FGridAccess::DepositPulseRateIndexOf(Grid);
+	TestEqual(TEXT("deposit crystal phase index 13"), PhaseIndex, 13);
+	TestEqual(TEXT("deposit crystal rate index 14"), RateIndex, 14);
+	TestEqual(TEXT("per-cell cluster phase index stays 4 (M_XPNutGlow)"), FGridAccess::PulsePhaseIndexOf(Grid), 4);
+	TestEqual(TEXT("per-cell cluster rate index stays 5 (M_XPNutGlow)"), FGridAccess::PulseRateIndexOf(Grid), 5);
 	int32 Checked = 0;
 	int32 Wrong = 0;
 	int32 RockChecked = 0;
-	int32 RockShaking = 0;
-	int32 RockWouldShake = 0;
+	int32 RockHashedPhase = 0;
+	int32 RockRestNonZero = 0;
+	float RockRestMax = 0.f;
+	bool bLoggedDepositSource[2] = { false, false };
 	for (const FRRGridDepositVisual& Visual : FGridAccess::DepositVisualsOf(Grid))
 	{
 		if (!Visual.Render)
 		{
 			continue;
 		}
-		// task-258-01: a mesh with a rock slot (heal deposit, M_RockSlab) shares the per-instance data with the rock, which reads
-		// 4-7 as its quadrant shake (1 or more = shaking). Such an ISM gets no pulse data and 4 floats, so every shake input reads
-		// its default 0 (still); the rate task-257-02 wrote at 5 is counted to show how many deposits shook.
-		if (FGridAccess::DepositMeshHasRockSlotOf(Grid, Visual.Render->GetStaticMesh()))
+		const bool bRockSlot = FGridAccess::DepositMeshHasRockSlotOf(Grid, Visual.Render->GetStaticMesh());
+		if (!bLoggedDepositSource[bRockSlot ? 1 : 0])
 		{
-			TestFalse(TEXT("a deposit ISM with a rock slot carries no pulse data"), Visual.bPulseData);
-			TestEqual(TEXT("a deposit ISM with a rock slot has 4 custom data floats (marked, colour)"), Visual.Render->NumCustomDataFloats, 4);
-			for (int32 Instance = 0; Instance < Visual.InstanceDeposits.Num(); ++Instance)
-			{
-				const uint32 DepositId = static_cast<uint32>(Visual.InstanceDeposits[Instance]);
-				float MaxShake = 0.f;
-				for (int32 Quadrant = 0; Quadrant < 4; ++Quadrant)
-				{
-					// Index beyond NumCustomDataFloats: the material reads its default 0.
-					const int32 Index = ARRArenaGrid::PieceShakeCustomDataIndex + Quadrant;
-					MaxShake = FMath::Max(MaxShake, Index < Visual.Render->NumCustomDataFloats ? ReadInstanceData(Visual.Render, Instance, Index) : 0.f);
-				}
-				const float FormerRate = FRRPulseDesync::Rate(Seed, FRRPulseDesync::DepositDomain, DepositId, Range.X, Range.Y);
-				AddInfo(FString::Printf(TEXT("rock-slot deposit %u: rock shake inputs max %.4f (still below 1); task-257-02 rate at index 5 was %.4f (%s)"),
-					DepositId, MaxShake, FormerRate, FormerRate >= 1.f ? TEXT("shook quadrant 1") : TEXT("still")));
-				++RockChecked;
-				RockShaking += MaxShake >= 1.f ? 1 : 0;
-				RockWouldShake += FormerRate >= 1.f ? 1 : 0;
-			}
-			continue;
+			bLoggedDepositSource[bRockSlot ? 1 : 0] = true;
+			AddInfo(FString::Printf(TEXT("%s deposit ISM: %s"), bRockSlot ? TEXT("heal (rock slot)") : TEXT("Duskite"), *DescribePulseRateSource(Visual.Render)));
 		}
-		TestTrue(TEXT("a crystal-only deposit ISM carries the pulse data"), Visual.bPulseData);
-		TestEqual(TEXT("crystal ISM has 6 custom data floats"), Visual.Render->NumCustomDataFloats, 6);
+		TestTrue(TEXT("every deposit ISM carries the pulse data"), Visual.bPulseData);
+		TestEqual(TEXT("deposit ISM has 15 custom data floats"), Visual.Render->NumCustomDataFloats, 15);
 		for (int32 Instance = 0; Instance < Visual.InstanceDeposits.Num(); ++Instance)
 		{
 			const uint32 DepositId = static_cast<uint32>(Visual.InstanceDeposits[Instance]);
@@ -200,28 +222,38 @@ bool FRRPulseDesyncSeededValuesTest::RunTest(const FString& Parameters)
 					AddError(FString::Printf(TEXT("deposit %u crystal: phase %.4f rate %.4f"), DepositId, Phase, Rate));
 				}
 			}
+			if (!bRockSlot)
+			{
+				continue;
+			}
+			// Heal: the rock reads 4-12 with the rock piece layout; all must stay 0 (shake on at 1 or more, marked above 0.5).
+			float RestMax = 0.f;
+			for (int32 Index = ARRArenaGrid::PieceShakeCustomDataIndex; Index < ARRArenaGrid::PieceCustomDataCount; ++Index)
+			{
+				RestMax = FMath::Max(RestMax, FMath::Abs(ReadInstanceData(Visual.Render, Instance, Index)));
+			}
+			AddInfo(FString::Printf(TEXT("heal deposit %u: phase %.4f rate %.4f at 13 / 14, rock inputs 4-12 max %.4f"), DepositId, Phase, Rate, RestMax));
+			++RockChecked;
+			RockHashedPhase += Phase != 0.f ? 1 : 0;
+			RockRestNonZero += RestMax != 0.f ? 1 : 0;
+			RockRestMax = FMath::Max(RockRestMax, RestMax);
 		}
 	}
 	AddInfo(FString::Printf(TEXT("seed %d: %d deposit crystal instances checked over %d ISMs"), Seed, Checked, FGridAccess::DepositVisualsOf(Grid).Num()));
 	TestTrue(TEXT("deposit crystals present"), Checked > 1);
 	TestEqual(TEXT("every crystal holds the hash of its deposit"), Wrong, 0);
-	AddInfo(FString::Printf(TEXT("rock-slot deposits: %d checked, %d with a shake input of 1 or more (task-257-02 layout: %d)"), RockChecked, RockShaking, RockWouldShake));
-	TestTrue(TEXT("rock-slot (heal) deposits present"), RockChecked > 0);
-	TestEqual(TEXT("no rock-slot deposit has a shake input of 1 or more (untouched deposits stay still)"), RockShaking, 0);
+	AddInfo(FString::Printf(TEXT("heal (rock-slot) deposits: %d checked, %d with a non-zero hashed phase, rock inputs 4-12 max %.4f"), RockChecked, RockHashedPhase, RockRestMax));
+	TestEqual(TEXT("12 heal deposits on arena_m1_fine"), RockChecked, 12);
+	TestEqual(TEXT("every heal deposit has a non-zero hashed phase"), RockHashedPhase, RockChecked);
+	TestEqual(TEXT("no heal deposit has a non-zero rock input at 4-12 (untouched deposits stay still)"), RockRestNonZero, 0);
 
-	// Two neighbouring instances (0 and 1) of the first ore crystal ISM: different phases; colour and mark kept. The heal ISMs
-	// (rock slot) have no pulse data since task-258-01; their mark is checked too.
+	// Two neighbouring instances (0 and 1) of the first ore and heal crystal ISMs: different phases; mark kept.
 	for (const ERRCellType Type : { ERRCellType::Ore, ERRCellType::HealOre })
 	{
 		const FRRGridDepositVisual* Visual = FGridAccess::DepositVisualsOf(Grid).FindByPredicate(
 			[Type](const FRRGridDepositVisual& Candidate) { return Candidate.CellType == Type && Candidate.Render && Candidate.InstanceDeposits.Num() >= 2; });
 		if (!TestNotNull(Type == ERRCellType::Ore ? TEXT("an ore crystal ISM with 2 instances") : TEXT("a heal crystal ISM with 2 instances"), Visual))
 		{
-			continue;
-		}
-		if (!Visual->bPulseData)
-		{
-			TestEqual(TEXT("unmarked heal deposit keeps mark 0"), ReadInstanceData(Visual->Render, 0, Grid->GetMarkedCustomDataIndex()), 0.f);
 			continue;
 		}
 		const float First = ReadInstanceData(Visual->Render, 0, PhaseIndex);

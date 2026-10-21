@@ -853,8 +853,11 @@ protected:
 	/** Writes the marked float (MarkedCustomDataValue when one standing block of the deposit is marked, else 0) and the ore colour (when the deposit has one) into the crystal of DepositId; marks the ISM render state dirty when bMarkDirty. */
 	void WriteDepositCrystalData(int32 DepositId, bool bMarkDirty);
 
-	/** Custom data floats a crystal ISM needs for the pulse data: max(PulsePhaseCustomDataIndex, PulseRateCustomDataIndex) + 1 (6 by default). */
+	/** Custom data floats a per-cell crystal cluster HISM needs for the pulse data: max(PulsePhaseCustomDataIndex, PulseRateCustomDataIndex) + 1 (6 by default). */
 	int32 GetCrystalPulseFloatCount() const { return FMath::Max(PulsePhaseCustomDataIndex, PulseRateCustomDataIndex) + 1; }
+
+	/** task-267-01: custom data floats a deposit formation ISM needs for the pulse data: max(DepositPulsePhaseCustomDataIndex, DepositPulseRateCustomDataIndex) + 1 (15 by default). */
+	int32 GetDepositPulseFloatCount() const { return FMath::Max(DepositPulsePhaseCustomDataIndex, DepositPulseRateCustomDataIndex) + 1; }
 
 	/**
 	 * task-258-01: true when Mesh has a slot other than DepositCrystalSlotName (the `rock` slot of the heal deposit meshes,
@@ -865,16 +868,17 @@ protected:
 
 	/**
 	 * task-258-01: whether the formation ISM of Mesh carries the pulse data: always for a crystal-only mesh; for a mesh with a
-	 * rock slot only when both pulse indices are at or above PieceCustomDataCount (indices the rock never reads). With the
-	 * defaults 4 and 5 the rate (0.8 to 1.2) at 5 is the rock quadrant 1 shake, so the heal deposits get no pulse data.
+	 * rock slot only when both deposit pulse indices are at or above PieceCustomDataCount (indices the rock never reads). Since
+	 * task-267-01 the deposit indices are 13 and 14, so the heal deposits carry it again (with 0 at the rock floats 4-12).
 	 */
 	bool CanWriteDepositPulseData(const UStaticMesh* Mesh) const;
 
 	/**
-	 * task-257-02: writes FRRPulseDesync phase and rate of (PulseSeed, Domain, Id) to Instance of Component at
-	 * PulsePhaseCustomDataIndex / PulseRateCustomDataIndex (no render state dirty; skipped when the component has too few floats).
+	 * task-257-02: writes FRRPulseDesync phase and rate of (PulseSeed, Domain, Id) to Instance of Component at PhaseIndex /
+	 * RateIndex (no render state dirty; skipped when the component has too few floats). Per-cell clusters pass
+	 * PulsePhaseCustomDataIndex / PulseRateCustomDataIndex, deposit formations the Deposit* indices (task-267-01).
 	 */
-	void WriteCrystalPulseData(UInstancedStaticMeshComponent* Component, int32 Instance, uint32 Domain, uint32 Id);
+	void WriteCrystalPulseData(UInstancedStaticMeshComponent* Component, int32 Instance, uint32 Domain, uint32 Id, int32 PhaseIndex, int32 RateIndex);
 
 	/** task-257-02: pulse data of every per-cell ore and heal ore crystal cluster (types without deposit meshes), id = cell index. Called by BuildInstances. */
 	void WriteCellCrystalPulseData();
@@ -1247,7 +1251,8 @@ protected:
 	/**
 	 * task-257-02 (owner 2026-10-20, provisional): seed of the crystal pulse desync. Every ore and heal ore crystal instance
 	 * (deposit formation: id = deposit id; per-cell cluster: id = cell index) gets FRRPulseDesync phase and rate of (PulseSeed,
-	 * id) in its per-instance custom data PulsePhaseCustomDataIndex / PulseRateCustomDataIndex: same layout and seed, same pulses.
+	 * id) in its per-instance custom data (deposits: DepositPulsePhaseCustomDataIndex / DepositPulseRateCustomDataIndex; clusters:
+	 * PulsePhaseCustomDataIndex / PulseRateCustomDataIndex): same layout and seed, same pulses.
 	 */
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Grid|Ore Deposits")
 	int32 PulseSeed = 1;
@@ -1260,13 +1265,25 @@ protected:
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Grid|Ore Deposits", meta = (ClampMin = "0.01"))
 	float PulseRateMax = 1.2f;
 
-	/** Per-instance custom data float of the crystal ISMs receiving the pulse phase in turns (M_XPNutGlow, task-257-01: 4, after marked 0 and ore colour 1-3). */
+	/** Per-instance custom data float of the per-cell crystal cluster HISMs (fallback without deposit meshes, M_XPNutGlow children) receiving the pulse phase in turns (task-257-01: 4, after marked 0 and ore colour 1-3). */
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Grid|Ore Deposits", meta = (ClampMin = "0", ClampMax = "15"))
 	int32 PulsePhaseCustomDataIndex = 4;
 
-	/** Per-instance custom data float of the crystal ISMs receiving the pulse rate (M_XPNutGlow, task-257-01: 5). */
+	/** Per-instance custom data float of the per-cell crystal cluster HISMs receiving the pulse rate (M_XPNutGlow, task-257-01: 5). */
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Grid|Ore Deposits", meta = (ClampMin = "0", ClampMax = "15"))
 	int32 PulseRateCustomDataIndex = 5;
+
+	/**
+	 * task-267-01: per-instance custom data float of every deposit formation ISM (Duskite and heal) receiving the pulse phase in
+	 * turns (M_DepositCrystalGlow). 13, beyond the 13 rock piece floats (0-12) M_RockSlab reads on the `rock` slot of the heal
+	 * deposit meshes, so the heal deposits carry the pulse without touching the rock shake inputs 4-7.
+	 */
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Grid|Ore Deposits", meta = (ClampMin = "0", ClampMax = "31"))
+	int32 DepositPulsePhaseCustomDataIndex = 13;
+
+	/** task-267-01: per-instance custom data float of every deposit formation ISM receiving the pulse rate (M_DepositCrystalGlow): 14. */
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Grid|Ore Deposits", meta = (ClampMin = "0", ClampMax = "31"))
+	int32 DepositPulseRateCustomDataIndex = 14;
 
 	/** When false (default, owner 2026-10-19, task-237-01) the ore and heal ore crystals cast no shadow at all (CastShadow, dynamic, static and contact shadow off): deposit formation ISMs and the per-cell cluster fallback chunks. When true they keep the Ore / HealOre template shadow settings. Read when the components are created (BuildInstances). */
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Grid|Ore Deposits")
