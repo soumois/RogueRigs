@@ -481,6 +481,7 @@ kind: note
 | [[task-257-02-pulse-desync]] | opus | 1 | 0k | 168k | 5863k | 35k |
 | [[task-261-01-no-shadows]] | sonnet | 1 | 0k | 125k | 5664k | 1k |
 | [[task-262-01-deposit-crystal-volume]] | sonnet | 1 | 0k | 110k | 2155k | 4k |
+| [[task-258-01-heal-deposit-vibration]] | opus | 1 | 0k | 106k | 3035k | 24k |
 
 ## Totals
 | Scope | Input | Cache write | Cache read | Output |

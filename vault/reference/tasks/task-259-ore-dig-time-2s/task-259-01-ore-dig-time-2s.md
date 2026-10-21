@@ -3,7 +3,7 @@ id: task-259-01-ore-dig-time-2s
 description: "Ore blocks (ore, special ore and heal ore) take 2 s instead of 1.5 s to dig at mining speed 1."
 parent: task-259-ore-dig-time-2s
 kind: task
-status: todo
+status: in-progress
 ---
 # Ore dig time 2 s
 
