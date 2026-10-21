@@ -6,7 +6,7 @@ kind: doc
 ---
 # Dark violet ambient (L_ArenaM1)
 
-Current look (task-274-03): flat shadowless sun (intensity 4.0) plus a low sky light, raised by exposure (min = max -3.4 EV100, task-274-05), with a darkening-only post-process mask (gain 1 at the miner, darker away); the history below is kept.
+Current look (task-275-01, owner 2026-10-21: back to Monday lighting, shader kept): sun 6 white with shadows, sky 0.3 white with shadows; exposure being re-measured in task-275-03/04; the darkening mask is kept, see [[mpp-player-light-mask]]. The history below is kept.
 
 Provisional (owner 2026-10-20, task-265-01; owner tunes by eye). Reason: reference game look, a dark violet ambient with a warm pool of light around the player (the player light comes from task-263-02). The strong sun (intensity 6) burnt the yellow chasers white-yellow.
 
@@ -51,6 +51,9 @@ Values picked from real -game captures (Saved/LookTune/r1, variant close to v6),
 
 ## task-274-05
 - task-274-05 (owner 2026-10-21, provisional): PPV_XPGlow `AutoExposureMinBrightness` = `AutoExposureMaxBrightness` -2.9 -> -3.4 EV100 (read back -3.4; overrides on, bloom 1.3 / -1, blendable weight 1 unchanged). Reason: round-10 sweep variant Q4 (best match to the DRGS ring profile, A score 0.230), with the mask defaults of [[mpp-player-light-mask]]. Revert: -2.9, then 1.8.
+
+## task-275-01
+- task-275-01 (owner 2026-10-21): external packages of DirectionalLight_0 and SkyLight_0 restored from commit 75610b21 (Monday 2026-10-19). DirectionalLight_0: `intensity` 4.0 -> 6, `lightColor` (0.75, 0.62, 1.0) -> (1, 1, 1), `castShadows` false -> true. SkyLight_0: `intensity` 0.08 -> 0.3, `lightColor` (0.35, 0.25, 0.6) -> (1, 1, 1), `castShadows` false -> true. Editor read-back pending task-275-04. Revert = task-272-18 state: sun 4.0 (0.75, 0.62, 1.0) no shadows, sky 0.08 (0.35, 0.25, 0.6) no shadows (git: checkout 1958a46f for the two packages).
 
 ## Notes and risks
 - The sun has `bAtmosphereSunLight` true, but the level has no SkyAtmosphere actor, so the flag has no visible effect.
