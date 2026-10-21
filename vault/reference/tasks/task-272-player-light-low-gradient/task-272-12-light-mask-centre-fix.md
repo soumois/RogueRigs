@@ -3,7 +3,7 @@ id: task-272-12-light-mask-centre-fix
 description: "M_PP_PlayerLightMask world position fixed so the mask is centred on the miner (smoke frames showed it 300 px off to the left)."
 parent: task-272-player-light-low-gradient
 kind: task
-status: todo
+status: in-progress
 ---
 # Light mask centre fix
 
