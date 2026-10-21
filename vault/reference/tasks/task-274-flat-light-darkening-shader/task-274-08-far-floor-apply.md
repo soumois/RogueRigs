@@ -3,7 +3,7 @@ id: task-274-08-far-floor-apply
 description: "MPC_PlayerLight defaults set to the values chosen in step 7."
 parent: task-274-flat-light-darkening-shader
 kind: task
-status: in-progress
+status: done
 ---
 # Far floor values applied
 
@@ -15,11 +15,11 @@ status: in-progress
 - done_when: Values read back; saved by path; doc updated with previous values; lint clean; committed by path.
 - editor_state: open
 - token_ceiling: 30k
-- model: open
-- tokens: open
-- runs: open
+- model: sonnet
+- tokens: input 52, cache write 63533, cache read 961184, output 882
+- runs: 1
 - milestone: M1
-- result: open
+- result: MPC_PlayerLight defaults read before 1 / 0.002 / 260 / 4, set FarBrightness 0.03, Radius 250, Exponent 4 (Enable 1 kept), read back, saved (not dirty), commit eb1627e3; owner 2026-10-21 validated 0.03 / 250 / 4 and accepted brighter far rock tops (about 75/255); mpp-player-light-mask updated with previous values. bDriveTunables false on BP_Miner LightMask; only M_PP_PlayerLightMask references the MPC. No PIE or capture.
 
 ## Relations
 - [[task-274-flat-light-darkening-shader]] — parent global task.
