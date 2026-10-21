@@ -3,7 +3,7 @@ id: task-272-18-flat-level-light
 description: "Flat shadowless level lighting (violet sun, low sky, exposure) set to the values chosen from the sweep."
 parent: task-272-player-light-low-gradient
 kind: task
-status: todo
+status: in-progress
 ---
 # Flat level light
 

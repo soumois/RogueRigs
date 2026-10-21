@@ -3,7 +3,7 @@ id: task-272-17-mask-defaults
 description: "MPC_PlayerLight defaults set to the values chosen from the sweep, effect enabled."
 parent: task-272-player-light-low-gradient
 kind: task
-status: in-progress
+status: done
 ---
 # Mask defaults
 
@@ -15,11 +15,11 @@ status: in-progress
 - done_when: Defaults read back, saved, doc updated, lint clean, committed by path.
 - editor_state: open
 - token_ceiling: 30k
-- model: open
-- tokens: open
-- runs: open
+- model: sonnet
+- tokens: input 20, cache write 34888, cache read 224972, output 265
+- runs: 1
 - milestone: M1
-- result: open
+- result: Commit 37ca9160. MPC_PlayerLight defaults: Enable 0 -> 1, CenterBrightness 3 -> 30, FarBrightness 0.4 -> 0.15, Radius 225 -> 200 uu, Exponent 2 -> 3, WarmTint -> (1, 0.9, 0.06), FarTint -> (1, 0.7, 0.55), TintStrength 1; read back, saved; doc with revert (Enable 0) and tuning notes.
 
 ## Relations
 - [[task-272-player-light-low-gradient]] — parent global task.
