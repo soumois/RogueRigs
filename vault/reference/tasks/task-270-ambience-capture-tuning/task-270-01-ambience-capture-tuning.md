@@ -3,7 +3,7 @@ id: task-270-01-ambience-capture-tuning
 description: "The arena around the miner matches the DRGS reference on real -game screenshots judged by the Orchestrator: dark violet scene, tight warm light pool, readable robots."
 parent: task-270-ambience-capture-tuning
 kind: task
-status: in-progress
+status: done
 ---
 # Ambience tuned on screenshots
 
@@ -16,10 +16,10 @@ status: in-progress
 - editor_state: closed
 - token_ceiling: 60k
 - model: opus
-- tokens: open
-- runs: open
+- tokens: input 66, cache write 202744, cache read 2400065, output 3935
+- runs: 1
 - milestone: M1
-- result: open
+- result: Baseline frames A idle, B wall, C dig (no falling blocks: shots too late), D robots+XP, E XP, F deposits and 11 runtime variants in Saved/LookTune/r0/ (not committed); commands in Saved/LookTune/capture_cmd.txt. Seen: beyond the pool pure black (RGB about 3,0,12), pool dull orange-brown with half-luminance radius 230-275 px (0.26 of the width, target 0.18), rock tops in the radius very bright, chasers read orange, robots outside the pool invisible, XP 12-21 px (bloom about half). Runtime overrides that work: setnopec <Class> <Prop> <Value> + r.RecreateRenderStateContext, r.ExposureOffset, r.BloomQuality; plain set on PointLightComponent hangs the game. Sun/sky at 0.12/0.08 have almost no visible effect.
 
 ## Relations
 - [[task-270-ambience-capture-tuning]] — parent global task.
