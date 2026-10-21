@@ -13,7 +13,7 @@ A global task moves to [[tasks-done-index]] when it is done (`vault/scripts/task
 - [[task-188-editor-lock]] — Editor lock shared by sessions: a lock file, a node script to take, release and read it, and the runbook and protocol rules to use it. Status todo.
 - [[task-230-rock-slab-integration]] — Dual-grid slab rock look in the grid: pieces, world-UV top texture, cracks, plates, crystals. Status in-progress.
 - [[task-234-ore-deposit-look]] — Each 2 x 2 ore or heal deposit is drawn as one crystal formation, at least 3 variants per type, from images the owner generates with prompts we write. Status in-progress.
-- [[task-277-xp-glow-revert]] — The XP pickups glow as before task-269: task-269-01 values reverted, PPV bloom 1.3 / -1 kept. Status todo.
+- [[task-277-xp-glow-revert]] — The XP pickups glow as before task-269: task-269-01 values reverted, PPV bloom 1.3 / -1 kept. Status in-progress.
 - [[task-278-chaser-eye-glow]] — The chaser and shield chaser red eyes glow stronger; the body look is unchanged. Status todo.
 - [[task-279-drone-eye-glow]] — The miner drone camera eye glows a little, orange, through an emissive restricted to the eye texels of M_Drone. Status todo.
 - [[task-280-drone-thruster-boost]] — The drone thruster idle look equals its current top-speed look, and top speed is stronger than that. Status todo.

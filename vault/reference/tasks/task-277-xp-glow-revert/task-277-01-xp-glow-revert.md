@@ -3,7 +3,7 @@ id: task-277-01-xp-glow-revert
 description: "The XP pickups glow as before task-269: task-269-01 values reverted, PPV bloom 1.3 / -1 kept."
 parent: task-277-xp-glow-revert
 kind: task
-status: todo
+status: in-progress
 ---
 # XP glow back to before task-269
 
