@@ -3,7 +3,7 @@ id: task-270-09-ambience-capture-r4
 description: "Round 4 captures at the same frames with the round 4 values, judged by the Orchestrator and sent to the owner."
 parent: task-270-ambience-capture-tuning
 kind: task
-status: in-progress
+status: done
 ---
 # Ambience round 4 captures
 
@@ -15,11 +15,11 @@ status: in-progress
 - done_when: Frames exist and are measured; no game process left; Orchestrator judged them.
 - editor_state: closed
 - token_ceiling: 60k
-- model: open
-- tokens: open
-- runs: open
+- model: opus
+- tokens: input 36, cache write 93440, cache read 808727, output 2259
+- runs: 1
 - milestone: M1
-- result: open
+- result: Frames Saved/LookTune/r4/ with sbs3_* (r0 | r2 | r4) and a SpecularScale/exposure sweep. Seen: chasers now read yellow-orange (identifiable), miner top and drone still white-hot; pool warm and bright (core L 177) but too wide again (half radius 260 px, 0.27 of width); rock crescent still cream-white (L 244) and larger; SpecularScale 0 changes neither the crescent nor the white tops (diffuse, not specular); exposure -0.3 darkens everything without fixing the crescent. Next: radius about 640.
 
 ## Relations
 - [[task-270-ambience-capture-tuning]] — parent global task.

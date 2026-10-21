@@ -502,6 +502,7 @@ kind: note
 | [[task-270-06-ambience-capture-r3]] | opus | 1 | 0k | 91k | 1377k | 2k |
 | [[task-270-07-ambience-light-r4]] | sonnet | 1 | 0k | 35k | 283k | 0k |
 | [[task-270-08-chaser-brightness-r4]] | sonnet | 2 | 0k | 102k | 865k | 1k |
+| [[task-270-09-ambience-capture-r4]] | opus | 1 | 0k | 93k | 809k | 2k |
 
 ## Totals
 | Scope | Input | Cache write | Cache read | Output |
