@@ -29,6 +29,9 @@ Values picked from real -game captures (Saved/LookTune/r1, variant close to v6),
 - Reason: r0 captures showed the pool too wide and a dull orange, the scene beyond the pool pure black; the r1 sweep showed radius 520, about 700 cd, a cream colour and a sun of 1.2 to 2.0 matched the reference best.
 - Revert (task-268 values): DirectionalLight_0 intensity 0.12; PlayerLight attenuationRadius 650, intensity 120, lightColor (1.0, 0.62, 0.30).
 
+## task-270-05
+- task-270-05 (round 3, owner 2026-10-21, provisional): PlayerLight relative Z 300 -> 450, `attenuationRadius` 520 -> 600, `intensity` 650 -> 2400 cd, `lightColor` (1.0, 0.804, 0.588) -> (1.0, 0.75, 0.50) (8-bit 255/191/128; read back 1.0 / 0.7490 / 0.5020); castShadows true kept; read back after compile and save. Reason: r2 captures showed chasers and rock tops near the miner burnt white because the light sits low; raising it keeps the floor pool reach about sqrt(600^2 - 450^2) = 397 uu and the centre illuminance about the same: 2400 cd / 4.5 m^2 x window 0.47 ~ 650 / 3 m^2 x 0.79. Revert = task-270-03 values (Z 300, radius 520, 650 cd, colour (1.0, 0.804, 0.588)).
+
 ## Notes and risks
 - The sun has `bAtmosphereSunLight` true, but the level has no SkyAtmosphere actor, so the flag has no visible effect.
 - The sky light captures the scene (SLS_CapturedScene, real-time capture off): it uses the capture baked in the editor, and its colour multiplies it. It contributes only what that capture holds; it was not recaptured here. If the ambient stays too black, recapture the sky light in the editor (Recapture) or give it a cubemap/specified colour. Not verified by eye.
