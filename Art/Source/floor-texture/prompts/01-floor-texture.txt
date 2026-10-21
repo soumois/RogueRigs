@@ -1,0 +1,11 @@
+A flat square 1:1 texture swatch of an alien stone floor seen from straight above (orthographic, exactly vertical camera, no perspective, no horizon, no depth of field). Hand-painted, stylised low-poly game texture, painterly brush work.
+
+The floor is made of large irregular cracked faceted stone plates: about 6 to 10 large polygonal plates (4 to 7 sides each, sharp angular outlines, different sizes) fill the square, and some plates are split in two or three by thinner secondary cracks. Between plates run fine, thin, dark crack lines (dark plum, almost black violet), thin and sharp, not wide gaps. The edge of every plate is slightly bevelled and slightly lighter than the plate surface, as a thin lighter rim that gives a gentle raised look. Inside each plate, subtle soft painted brush variation: slightly lighter and darker patches of the same hue, no hard detail.
+
+Colour: a MEDIUM-dark violet-magenta, not near-black, so the cracks and the lighter edges stay clearly readable. Plate surface roughly #5A2A5C to #7A3A78 (range), lighter plate edges roughly #9A58A0, crack lines roughly #2A1030. Moderate saturation, one hue family only (violet-magenta), small variation between plates.
+
+Seamless tile: the pattern must continue across the borders, with plates crossing the left edge and continuing on the right edge, and the same for top and bottom, so the square can be repeated without a visible seam. No frame, no border, no vignette, no darker corners. No single dominant plate or unique landmark that would repeat obviously.
+
+Lighting: completely flat, uniform, even illumination. No baked lighting: no cast shadows, no highlights from a light direction, no light gradient across the image, no glow, no ambient occlusion, no bright spot in the centre. All plates have the same average brightness across the whole image.
+
+Forbidden: no pebbles, no rubble, no scattered stones, no gravel, no crystals, no ore, no objects, no characters, no machines, no text, no letters, no logo, no UI, no watermark, no stars, no water, no grass.

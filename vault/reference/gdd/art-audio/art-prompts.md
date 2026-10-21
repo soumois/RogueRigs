@@ -41,6 +41,7 @@ Reference images are generated in ChatGPT image generation. The prompts are stor
 - [[art-prompts-drone]] — drone turnaround prompt as used, Meshy mesh files, game meshes.
 - [[art-prompts-xp-core]] — four any-angle proposals to replace the big XP chip; choice open.
 - [[art-prompts-rock-top-texture]] — tileable painted rock top texture for the slab material: prompt, seam method, review.
+- [[art-prompts-floor-texture]] — ChatGPT prompts for the tileable painted floor of cracked faceted plates: chain, seam method, review.
 - [[art-prompts-rock]] — rock and ore look proposals: per-cell blocks versus continuous slab; choice open.
 - [[art-prompts-card-back]] — level-up card back, neutral grey candidate: prompt, delivery to 1000 x 1440.
 - [[art-style-guide]] — the general style rules derived from these prompts.

@@ -1,0 +1,5 @@
+CORRECTION A (baked light, too dark or too saturated). Attach the previous image.
+Keep this exact image: same plate layout, same plate shapes, same crack lines, same lighter plate edges, same painted brush look, same square top-down framing. Only change the lighting and tone: remove every light gradient, bright centre, dark corner and cast shadow so the illumination is perfectly flat and even over the whole image, and set the colour to a medium-dark violet-magenta (plates about #6A3268, edges about #9A58A0, cracks about #2A1030), less saturated and not near-black.
+
+CORRECTION B (visible border or seam). Attach the previous image.
+Keep this exact image: same plate layout, same plate shapes, same crack lines, same colours, same flat lighting, same painted look. Only change the borders: remove any frame, border line, vignette or edge darkening, and make the plates and crack lines run straight off every edge of the square, so that the left edge matches the right edge and the top edge matches the bottom edge when the image is repeated.
