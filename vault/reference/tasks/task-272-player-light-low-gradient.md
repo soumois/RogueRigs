@@ -13,7 +13,7 @@ status: in-progress
 - gdd_check: done by the Orchestrator when the task is planned (2026-10-21).
 - confirmed_by_owner: yes (2026-10-21)
 - milestone: M1
-- next_step: task-272-03-ambient-level-apply
+- next_step: task-272-04-low-light-capture
 - result: open
 
 ## Subtasks

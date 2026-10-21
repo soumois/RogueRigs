@@ -3,7 +3,7 @@ id: task-272-04-low-light-capture
 description: "Final -game captures A to H at the applied values, measured, compared with r5 and DRGS; final side by sides for the owner."
 parent: task-272-player-light-low-gradient
 kind: task
-status: todo
+status: in-progress
 ---
 # Low light final captures
 
