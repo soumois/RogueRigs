@@ -16,6 +16,7 @@ class ARRPickup;
 class UAbilitySystemComponent;
 class UCapsuleComponent;
 class URRAbilitySystemComponent;
+class URRBlobShadowComponent;
 class URREnemyAttributeSet;
 class URREnemyMovementComponent;
 class URRHealthAttributeSet;
@@ -52,7 +53,10 @@ struct FOnAttributeChangeData;
  * movement, far-movement LOD, visual parts (relative transforms, visibility, materials, light intensity captured at the first
  * life) restored, separation registration. OnPoolReleased leaves the separation and cancels latent actions. A released robot
  * keeps State.Dead while idle, so every IsDead filter also skips it. Each hit (the killing one too) is sent to
- * URRDamageNumberSubsystem at DamageNumberHeight above the capsule top (one pooled number per hit, starting in a DamageNumberSpawnRadius disc). Subclasses implement their behavior in
+ * URRDamageNumberSubsystem at DamageNumberHeight above the capsule top (one pooled number per hit, starting in a DamageNumberSpawnRadius disc).
+ * Blob shadow (task-264-02): BlobShadow, a flat dark disc attached under the capsule (diameter = own capsule radius x
+ * BlobShadowDiameterScale), hidden when the death starts, shown again with the visual parts on pool reuse; never blinks with
+ * the wind-up flash. Subclasses implement their behavior in
  * UpdateBehavior (alive only) and may extend HandleDeath. Subclass in Blueprint for the mesh.
  */
 UCLASS(Abstract)
@@ -154,6 +158,9 @@ public:
 
 	/** Capsule of the robot's own size that takes the miner's shots (Projectile overlap); the root capsule only moves. */
 	UCapsuleComponent* GetHitCapsule() const { return HitCapsule; }
+
+	/** Fake round shadow on the floor under the robot (task-264-02). */
+	URRBlobShadowComponent* GetBlobShadow() const { return BlobShadow; }
 
 	/**
 	 * Teleports the robot to Location (the capsule center) for the spawner's recycling and resets its motion: velocity, pending
@@ -413,6 +420,14 @@ protected:
 	/** Body-size capsule taking the miner's shots (Pawn object type, overlaps Projectile only; URRHitCapsuleComponent, passive on moves since task-093-01); sized in PostInitializeComponents. */
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Enemy|Collision")
 	TObjectPtr<UCapsuleComponent> HitCapsule;
+
+	/** Flat dark disc on the floor under the robot (task-264-02): attached to the root, absolute zero rotation, no collision or shadow. */
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Enemy|Blob Shadow")
+	TObjectPtr<URRBlobShadowComponent> BlobShadow;
+
+	/** Blob shadow diameter = own capsule radius (before the terrain shrink) x this (2.2: a bit wider than the body). 0 = no disc. */
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Enemy|Blob Shadow", meta = (ClampMin = "0"))
+	float BlobShadowDiameterScale = 2.2f;
 
 	/** Own capsule radius before the shrink (uu). */
 	UPROPERTY(VisibleInstanceOnly, Transient, Category = "Enemy|Collision")

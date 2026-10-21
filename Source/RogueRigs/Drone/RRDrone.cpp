@@ -21,6 +21,7 @@
 #include "Misc/App.h"
 #include "UObject/ConstructorHelpers.h"
 #include "RogueRigs.h"
+#include "World/RRBlobShadowComponent.h"
 #include "World/RRShadows.h"
 
 ARRDrone::ARRDrone()
@@ -99,6 +100,12 @@ ARRDrone::ARRDrone()
 	{
 		ThrusterSystem = ThrusterFinder.Object;
 	}
+
+	// Blob shadow (task-264-02): on the floor, not at the hover height, so the whole transform is world space (UpdateBlobShadow).
+	BlobShadow = CreateDefaultSubobject<URRBlobShadowComponent>(TEXT("BlobShadow"));
+	BlobShadow->SetupAttachment(Mesh);
+	BlobShadow->SetUsingAbsoluteLocation(true);
+	BlobShadow->SetUsingAbsoluteScale(true);
 }
 
 void ARRDrone::PostInitializeComponents()
@@ -106,6 +113,7 @@ void ARRDrone::PostInitializeComponents()
 	Super::PostInitializeComponents();
 	// task-263-01: only the grid rocks cast shadows (from the player light); no mesh of this actor or its Blueprint does.
 	RRShadows::DisableCastShadows(this);
+	BlobShadow->SetFootprintDiameter(BlobShadowDiameter);
 }
 
 void ARRDrone::OnConstruction(const FTransform& Transform)
@@ -573,6 +581,30 @@ void ARRDrone::Tick(float DeltaSeconds)
 
 	// Thrusters last (task-254-02): the speed uses this frame's final location, in every state.
 	UpdateThrusters(DeltaSeconds);
+
+	// Shadow after the final location of this frame.
+	UpdateBlobShadow();
+}
+
+void ARRDrone::UpdateBlobShadow()
+{
+	if (!IsValid(OwnerMiner))
+	{
+		return;
+	}
+	const FVector Location = GetActorLocation();
+	const double FloorZ = OwnerMiner->GetActorLocation().Z - OwnerMiner->GetCapsuleComponent()->GetScaledCapsuleHalfHeight();
+	BlobShadow->PlaceOnFloor(Location, FloorZ, GetBlobShadowHeightScale(static_cast<float>(Location.Z - FloorZ)));
+}
+
+float ARRDrone::GetBlobShadowHeightScale(float Height) const
+{
+	if (BlobShadowHighHeight <= BlobShadowFullSizeHeight)
+	{
+		return Height > BlobShadowFullSizeHeight ? BlobShadowHighScale : 1.f;
+	}
+	const float Alpha = FMath::Clamp((Height - BlobShadowFullSizeHeight) / (BlobShadowHighHeight - BlobShadowFullSizeHeight), 0.f, 1.f);
+	return FMath::Lerp(1.f, BlobShadowHighScale, Alpha);
 }
 
 void ARRDrone::UpdateThrusters(float DeltaSeconds)

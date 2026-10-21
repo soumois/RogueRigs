@@ -11,6 +11,7 @@ class ARRArenaGrid;
 class ARRMiner;
 class UNiagaraComponent;
 class UNiagaraSystem;
+class URRBlobShadowComponent;
 class UStaticMeshComponent;
 
 /** What the drone is doing. */
@@ -93,6 +94,8 @@ DECLARE_DYNAMIC_MULTICAST_DELEGATE_TwoParams(FRROnDigBlockStoppedSignature, FInt
  * Thrusters (task-254-02, owner 2026-10-20, provisional, visual only): ThrusterLeft and ThrusterRight play ThrusterSystem
  * (NS_DroneThruster) under the two side pods, always active (Orbit, Dig, Hack; idle glow at rest); every tick User.Speed =
  * the actor's own world speed (location delta / DeltaSeconds, smoothed over ThrusterSpeedSmoothing). Never active under -nullrhi.
+ * Blob shadow (task-264-02): BlobShadow, a flat dark disc kept every tick on the miner's floor under the drone (absolute
+ * transform, no tick of its own), BlobShadowDiameter wide, shrunk to BlobShadowHighScale as the drone rises.
  * The drone has no ASC: it reads MiningSpeed on the miner's ASC. Its meshes never collide. The grid is assumed unrotated
  * and unscaled (world X / Y = grid X / Y).
  * Subclass in Blueprint for the base, laser arm and antenna meshes and the beam mesh and material.
@@ -396,6 +399,18 @@ protected:
 	 */
 	void UpdateThrusters(float DeltaSeconds);
 
+	/**
+	 * Blob shadow (task-264-02), every tick after the move: BlobShadow on the miner's floor (capsule bottom) right under the drone,
+	 * diameter BlobShadowDiameter, shrunk with the height above that floor (GetBlobShadowHeightScale). Nothing without a miner.
+	 */
+	void UpdateBlobShadow();
+
+	/**
+	 * Size multiplier of the blob shadow for a drone Height uu above the floor: 1 up to BlobShadowFullSizeHeight, falling linearly
+	 * to BlobShadowHighScale at BlobShadowHighHeight and kept there above.
+	 */
+	float GetBlobShadowHeightScale(float Height) const;
+
 	/** Chip colour of the dug arc: the colour of the cell type held by most dug cells (ties: the type met first, nearest the miner's front). */
 	FLinearColor GetDigChipColor() const;
 
@@ -511,6 +526,29 @@ protected:
 	/** Right pod thruster: same as ThrusterLeft, at ThrusterRightOffset. */
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Components")
 	TObjectPtr<UNiagaraComponent> ThrusterRight;
+
+	/**
+	 * Flat dark disc on the floor under the hovering drone (task-264-02): attached to Mesh with an absolute location, rotation and
+	 * scale, placed every tick by UpdateBlobShadow. No collision, no shadow.
+	 */
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Components")
+	TObjectPtr<URRBlobShadowComponent> BlobShadow;
+
+	/** Blob shadow diameter at full size, in uu (70: the base mesh width, task-264-02). 0 = no disc. */
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Drone|Blob Shadow", meta = (ClampMin = 0, Units = "cm"))
+	float BlobShadowDiameter = 70.f;
+
+	/** Height above the floor (uu) up to which the blob shadow keeps its full size (130: the dig hover height; provisional). */
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Drone|Blob Shadow", meta = (ClampMin = 0, Units = "cm"))
+	float BlobShadowFullSizeHeight = 130.f;
+
+	/** Height above the floor (uu) at which the blob shadow reaches BlobShadowHighScale (250; provisional). */
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Drone|Blob Shadow", meta = (ClampMin = 0, Units = "cm"))
+	float BlobShadowHighHeight = 250.f;
+
+	/** Size multiplier of the blob shadow at BlobShadowHighHeight and above (0.75; provisional). 1 = no shrink with height. */
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Drone|Blob Shadow", meta = (ClampMin = 0, ClampMax = 1))
+	float BlobShadowHighScale = 0.75f;
 
 	/**
 	 * Niagara system both thrusters play. Default /Game/RogueRigs/FX/Drone/NS_DroneThruster (constructor reference). None = no

@@ -18,6 +18,7 @@ class ARRWeapon;
 class UAbilitySystemComponent;
 class UCameraComponent;
 class URRAbilitySystemComponent;
+class URRBlobShadowComponent;
 class URRHealthAttributeSet;
 class URRMovementAttributeSet;
 class URRPlayerAttributeSet;
@@ -75,6 +76,8 @@ DECLARE_DYNAMIC_MULTICAST_DELEGATE_TwoParams(FRROnWeaponSlotChangedSignature, in
  * OnDeath (single death, State.Dead added by the set) it stops moving, ignores move and aim input, stops its weapons
  * firing and broadcasts OnDeath. At BeginPlay it registers with the run game mode (ARRGameMode::RegisterMiner), which
  * turns OnDeath into the game over.
+ * Blob shadow (task-264-02): BlobShadow, a flat dark disc attached under the capsule (diameter = capsule radius x
+ * BlobShadowDiameterScale); the i-frames blink (mesh and its children) leaves it alone.
  * Subclass in Blueprint for the mesh and animation.
  */
 UCLASS(Abstract)
@@ -274,7 +277,10 @@ protected:
 	/** Applies the camera tunables (pitch, arm length, lag, FOV) to the components, so Blueprint edits show up. */
 	virtual void OnConstruction(const FTransform& Transform) override;
 
-	/** Turns shadow casting off on every primitive component, the skeletal mesh and Blueprint ones included (task-263-01: only rocks cast). */
+	/**
+	 * Turns shadow casting off on every primitive component, the skeletal mesh and Blueprint ones included (task-263-01: only
+	 * rocks cast), then sizes and places BlobShadow from the capsule (task-264-02).
+	 */
 	virtual void PostInitializeComponents() override;
 
 	/** Initializes the ASC actor info, applies the CSV base stats and starts mirroring MoveSpeed. */
@@ -370,6 +376,14 @@ protected:
 	/** Level-up flow: listens to Progression, heals, broadcasts the effect and offer events, pauses on the choice screens. */
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Components")
 	TObjectPtr<URRLevelUpComponent> LevelUp;
+
+	/** Flat dark disc on the floor under the miner (task-264-02): attached to the capsule, absolute zero rotation, no collision or shadow. */
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Components")
+	TObjectPtr<URRBlobShadowComponent> BlobShadow;
+
+	/** Blob shadow diameter = capsule radius x this (2.2, like the robots). 0 = no disc. */
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Miner|Blob Shadow", meta = (ClampMin = "0"))
+	float BlobShadowDiameterScale = 2.2f;
 
 	/** Row of PlayerBaseStats.csv applied as base stats at BeginPlay. */
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Miner|Stats")

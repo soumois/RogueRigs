@@ -34,6 +34,7 @@
 #include "Weapons/RRTurretLauncher.h"
 #include "Weapons/RRWeapon.h"
 #include "World/RRWorld.h"
+#include "World/RRBlobShadowComponent.h"
 #include "World/RRShadows.h"
 
 ARRMiner::ARRMiner(const FObjectInitializer& ObjectInitializer)
@@ -91,6 +92,10 @@ ARRMiner::ARRMiner(const FObjectInitializer& ObjectInitializer)
 
 	// Projectiles (own or enemy) never block the capsule; Overlap keeps their overlap events (hits by overlap).
 	GetCapsuleComponent()->SetCollisionResponseToChannel(RRCollisionChannels::Projectile, ECR_Overlap);
+
+	// task-264-02: fake round shadow, placed and sized from the capsule in PostInitializeComponents.
+	BlobShadow = CreateDefaultSubobject<URRBlobShadowComponent>(TEXT("BlobShadow"));
+	BlobShadow->SetupAttachment(GetCapsuleComponent());
 }
 
 UAbilitySystemComponent* ARRMiner::GetAbilitySystemComponent() const
@@ -113,6 +118,11 @@ void ARRMiner::PostInitializeComponents()
 	Super::PostInitializeComponents();
 	// task-263-01: only the grid rocks cast shadows (from the player light); no mesh of this actor or its Blueprint does.
 	RRShadows::DisableCastShadows(this);
+
+	// Unscaled sizes: the disc is a child of the capsule, so the actor scale applies to both alike.
+	const UCapsuleComponent* Capsule = GetCapsuleComponent();
+	BlobShadow->SetFootprintDiameter(Capsule->GetUnscaledCapsuleRadius() * BlobShadowDiameterScale);
+	BlobShadow->PlaceUnderCapsule(Capsule->GetUnscaledCapsuleHalfHeight());
 }
 
 void ARRMiner::BeginPlay()

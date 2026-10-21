@@ -37,6 +37,7 @@
 #include "Projectiles/RRCollisionChannels.h"
 #include "RogueRigs.h"
 #include "Telegraph/RRGroundTelegraphComponent.h"
+#include "World/RRBlobShadowComponent.h"
 #include "World/RRShadows.h"
 #include "World/RRWorld.h"
 
@@ -91,6 +92,9 @@ ARREnemy::ARREnemy(const FObjectInitializer& ObjectInitializer)
 	HitCapsule->CanCharacterStepUpOn = ECB_No;
 	HitCapsule->SetHiddenInGame(true);
 
+	// task-264-02: fake round shadow, placed and sized from the capsule in PostInitializeComponents.
+	BlobShadow = CreateDefaultSubobject<URRBlobShadowComponent>(TEXT("BlobShadow"));
+	BlobShadow->SetupAttachment(GetCapsuleComponent());
 }
 
 UAbilitySystemComponent* ARREnemy::GetAbilitySystemComponent() const
@@ -127,6 +131,9 @@ void ARREnemy::PostInitializeComponents()
 	UCapsuleComponent* Capsule = GetCapsuleComponent();
 	BodyRadius = Capsule->GetScaledCapsuleRadius();
 	HitCapsule->SetCapsuleSize(Capsule->GetUnscaledCapsuleRadius(), Capsule->GetUnscaledCapsuleHalfHeight());
+	// Unscaled sizes: the disc is a child of the capsule, so the actor scale applies to both alike.
+	BlobShadow->SetFootprintDiameter(Capsule->GetUnscaledCapsuleRadius() * BlobShadowDiameterScale);
+	BlobShadow->PlaceUnderCapsule(Capsule->GetUnscaledCapsuleHalfHeight());
 	if (TerrainCapsuleRadius > 0.f && TerrainCapsuleRadius < Capsule->GetUnscaledCapsuleRadius())
 	{
 		Capsule->SetCapsuleRadius(TerrainCapsuleRadius);
@@ -412,6 +419,8 @@ void ARREnemy::HandleDeath(AActor* DeathInstigator)
 	GetCharacterMovement()->DisableMovement();
 	SetActorEnableCollision(false);
 	SetMeshesVisible(true);
+	// The shadow leaves with the robot (the puff hides the shrink); RestoreVisualParts shows it again on pool reuse.
+	BlobShadow->SetVisibility(false);
 
 	// Puff of sparks at the robot centre hiding the shrink (pooled; skipped when the pool is full).
 	if (DeathPuffSystem)
@@ -741,7 +750,8 @@ void ARREnemy::SetMeshesVisible(bool bVisible)
 	TInlineComponentArray<UMeshComponent*> Meshes(this);
 	for (UMeshComponent* MeshComponent : Meshes)
 	{
-		if (MeshComponent->IsVisible())
+		// The floor shadow stays during the flash (task-264-02).
+		if (MeshComponent->IsVisible() && MeshComponent != BlobShadow.Get())
 		{
 			MeshComponent->SetVisibility(false);
 			BlinkHiddenMeshes.Add(MeshComponent);

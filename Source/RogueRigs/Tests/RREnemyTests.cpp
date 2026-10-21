@@ -31,6 +31,7 @@
 #include "Weapons/RRAutoFireComponent.h"
 #include "Weapons/RRWeapon.h"
 #include "Weapons/RRWeaponAttributeSet.h"
+#include "World/RRBlobShadowComponent.h"
 
 namespace RREnemyTests
 {
@@ -693,6 +694,8 @@ bool FRREnemyPassiveHitCapsuleTest::RunTest(const FString& Parameters)
 	// Visual parts (BodyMesh, EyeMesh), their world scale at full size and their visibility at rest. EyeMesh is hidden in
 	// BP_Chaser since task-152-02 (owner 2026-10-13: the eye is in the model), so the death must keep each part's rest visibility.
 	TInlineComponentArray<UStaticMeshComponent*> Parts(Chaser);
+	// The blob shadow (task-264-02) is not a body part: it hides when the death starts.
+	Parts.RemoveAll([](const UStaticMeshComponent* Part) { return Part->IsA<URRBlobShadowComponent>(); });
 	TestTrue(TEXT("BP_Chaser has at least 2 mesh parts"), Parts.Num() >= 2);
 	TArray<float> FullScale;
 	TArray<bool> VisibleAtRest;
