@@ -3,7 +3,7 @@ id: task-264-01-blob-shadows
 description: "Simple fake round shadows under the enemies, the miner and the drone."
 parent: task-264-blob-shadows
 kind: task
-status: in-progress
+status: done
 ---
 # Blob shadows
 
@@ -15,11 +15,11 @@ status: in-progress
 - done_when: Material compiles with read-back of its parameters (opacity, softness, colour); doc node written; lint clean.
 - editor_state: open (editor + MCP)
 - token_ceiling: 100k
-- model: open
-- tokens: open
-- runs: open
+- model: sonnet
+- tokens: input 42, cache write 79907, cache read 1137981, output 2943
+- runs: 1
 - milestone: M1
-- result: open
+- result: M_BlobShadow (unlit translucent, two sided, radial soft disc from the Plane UVs, no texture) and MI_BlobShadow (Opacity 0.45, Softness 1.6, Tint (0.02, 0, 0.04)) under /Game/RogueRigs/FX/BlobShadow/; compiles; node bp-blob-shadow-material. Translucency sort priority is not a material property in 5.8: set it on the component in 264-02. Not seen on screen.
 
 ## Relations
 - [[task-264-blob-shadows]] — parent global task.

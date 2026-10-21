@@ -3,7 +3,7 @@ id: task-265-01-scene-ambient-dark
 description: "A dark violet ambient with the sun lowered, so the player light is the main light and bright bodies are no longer burnt."
 parent: task-265-scene-ambient-dark
 kind: task
-status: todo
+status: in-progress
 ---
 # Dark violet ambient
 

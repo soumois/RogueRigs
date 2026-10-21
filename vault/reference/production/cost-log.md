@@ -486,6 +486,7 @@ kind: note
 | [[task-260-01-rock-dig-time-065]] | opus | 1 | 0k | 118k | 2885k | 7k |
 | [[task-263-01-player-light-shadows]] | opus | 1 | 0k | 100k | 3970k | 13k |
 | [[task-267-01-crystal-pulse-restore]] | opus | 1 | 0k | 147k | 4910k | 38k |
+| [[task-264-01-blob-shadows]] | sonnet | 1 | 0k | 80k | 1138k | 3k |
 
 ## Totals
 | Scope | Input | Cache write | Cache read | Output |
