@@ -3,7 +3,7 @@ id: task-274-03-exposure-raise
 description: "PPV_XPGlow exposure min = max 1.8 -> -2.9 EV100 so the unmasked scene matches the old masked centre; sun and sky unchanged."
 parent: task-274-flat-light-darkening-shader
 kind: task
-status: todo
+status: in-progress
 ---
 # Exposure raised for the flat light
 
