@@ -14,8 +14,8 @@ kind: doc
 | name | default | unit | meaning and tuning |
 |---|---|---|---|
 | Enable | 1 | 0 or 1 | 0 = effect off, 1 = on. |
-| FarBrightness | 0.002 | multiplier (0 to 1) | brightness far from the miner (1 = no darkening). Previous 0.005 (task-274-02). |
-| Radius | 260 | uu | distance where the gain is halfway between FarBrightness and 1. Raise to widen the lit zone. Previous 200. |
+| FarBrightness | 0.03 | multiplier (0 to 1) | brightness far from the miner (1 = no darkening). Previous 0.002 (task-274-08), before that 0.005 (task-274-02). |
+| Radius | 250 | uu | distance where the gain is halfway between FarBrightness and 1. Raise to widen the lit zone. Previous 260 (task-274-08), before that 200. |
 | Exponent | 4 | none | falloff shape: 2 = long tail, higher = tighter edge. Previous 3. |
 | PlayerPosition | (0,0,0) | world uu | written by C++ each tick, XY used. Do not edit. |
 
@@ -33,6 +33,7 @@ kind: doc
 Previous FarBrightness was 0.15 (neutral 0.4) and previous formula: gain = FarBrightness + (CenterBrightness - FarBrightness) * mask; tint = lerp(1, lerp(FarTint, WarmTint, mask), TintStrength); out = lerp(SceneColor, SceneColor * gain * tint, saturate(Enable)).
 
 - task-274-05 (owner 2026-10-21, provisional): defaults FarBrightness 0.005 -> 0.002, Radius 200 -> 260, Exponent 3 -> 4 (read back; Enable 1 kept). Reason: round-10 sweep (variant Q4) best match to the DRGS ring profile, A score 0.230. Paired with exposure -3.4 in [[ppv-xp-glow]]. Revert: 0.005 / 200 / 3.
+- task-274-08 (owner 2026-10-21, provisional): defaults FarBrightness 0.002 -> 0.03, Radius 260 -> 250, Exponent 4 kept (read back; Enable 1 kept). Reason: round-12 floor-only sweep: far floor 9.6-10.2/255 and 350 uu about 39/255; brighter far rock tops about 75/255 accepted by the owner. Revert: 0.002 / 260 / 4.
 - history: task-272-06 first mask. task-272-12 WorldPosition node. task-272-14 parameters renamed. task-272-17 defaults from the sweep, Enable 1. task-274-02 darkener: CenterBrightness, TintStrength, WarmTint, FarTint removed, FarBrightness 0.15 to 0.005.
 - not_verified: look at runtime; instruction count; FarBrightness calibration.
 - owner_agent: agent-bp
