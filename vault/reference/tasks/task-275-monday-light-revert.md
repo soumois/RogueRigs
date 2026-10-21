@@ -1,9 +1,9 @@
 ---
 id: task-275-monday-light-revert
 description: "Global task: L_ArenaM1 lights and robot materials back to their Monday 2026-10-19 state, exposure frozen at the Monday auto exposure, darkening shader kept."
-parent: tasks-to-do-index
+parent: tasks-done-index
 kind: task
-status: in-progress
+status: done
 ---
 # Monday lighting back, shader kept
 
@@ -13,8 +13,8 @@ status: in-progress
 - gdd_check: art-style-guide A12 and visual-style ("strong directional light with lifted shadows", shadows suspended provisionally by task-261): the revert restores the rule, the suspension lines are removed. No `open` value. Not reverted (owner): blob shadows (264), XP halo (269), deposit crystal (262), pulse fixes (257/267), floor (273), bloom 1.3 / -1, removed PlayerLight (272-15). Per-actor shadow flags of task-263-01 (C++: robots, miner, drone, pickups, weapons, projectiles cast no shadow; grid floor never, blocks per bBlocksCastShadows) are kept pending an owner question: on Monday these actors cast shadows, so restoring it would add a real sun shadow next to the blob disc.
 - confirmed_by_owner: yes (2026-10-21, owner answers relayed by the main session)
 - milestone: M1
-- next_step: task-275-04-exposure-freeze
-- result: open
+- next_step: none
+- result: Done. Commit 8e172790: PPV_XPGlow AutoExposureMin = Max -3.4 -> -0.94 EV100 (overrides on, Histogram, bias 1, bloom 1.3 / -1, mask blendable weight 1 kept). Read back: sun 6 (1,1,1) shadows on, sky 0.3 (1,1,1) shadows on, chaser masters without Readability parameters (GlowAmount and animation parameters present), MI_GB_Shooter (0.45, 1, 0.05), MI_GB_Heavy (0.15, 0.35, 0.7), MPC_PlayerLight Enable 1 / 0.03 / 250 / 4 (unchanged). Docs ppv-xp-glow, lights-dark-ambient, bp-robot-readability, lights-no-shadows. Editor closed.
 
 ## Subtasks
 1. task-275-01-monday-light-revert — bp, sun and sky packages restored to Monday (git, editor closed), docs.
@@ -23,7 +23,7 @@ status: in-progress
 4. task-275-04-exposure-freeze — bp, editor open: PPV_XPGlow min = max at the measured EV100, read-back of everything, docs.
 
 ## Relations
-- [[tasks-to-do-index]] — parent index.
+- [[tasks-done-index]] — parent index.
 - [[task-275-01-monday-light-revert]] — step 1, bp.
 - [[task-275-02-robot-materials-monday]] — step 2, bp.
 - [[task-275-03-monday-exposure-measure]] — step 3, cpp.

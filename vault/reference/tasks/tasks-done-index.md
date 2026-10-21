@@ -281,3 +281,4 @@ Archive: it exceeds the index size limits of [[_authoring]] on purpose (owner, 2
 - [[task-272-player-light-low-gradient]] — The player light sits below the rock tops so walls cast their shadows on the floor, and the screen shows a smooth wide light gradient with no disc edge, judged on -game captures. Status done.
 - [[task-273-floor-texture]] — First painted floor texture: cracked faceted plates with fine crack lines and light-catching edges, tileable albedo and normal, world-aligned floor material with a slight world-position noise against repetition. Status done.
 - [[task-274-flat-light-darkening-shader]] — Post-process mask becomes a pure darkener (no tint, gain 1 at the miner); flat light raised so the unmasked screen looks like the old centre. Status done.
+- [[task-275-monday-light-revert]] — L_ArenaM1 lights and robot materials back to their Monday 2026-10-19 state, exposure frozen at the Monday auto exposure, darkening shader kept. Status done.
