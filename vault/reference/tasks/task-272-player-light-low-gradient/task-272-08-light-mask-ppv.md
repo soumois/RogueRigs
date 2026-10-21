@@ -3,7 +3,7 @@ id: task-272-08-light-mask-ppv
 description: "M_PP_PlayerLightMask added to the PPV_XPGlow blendables (neutral until the mask is tuned)."
 parent: task-272-player-light-low-gradient
 kind: task
-status: todo
+status: in-progress
 ---
 # Light mask in the volume
 
