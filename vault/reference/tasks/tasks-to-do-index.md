@@ -16,4 +16,3 @@ A global task moves to [[tasks-done-index]] when it is done (`vault/scripts/task
 - [[task-263-player-light-shadows]] — The player carries a warm light that is the only source of cast shadows (rock walls), like the reference game: the walls block it and release it when they fall. Status in-progress.
 - [[task-264-blob-shadows]] — Simple fake round shadows under the enemies, the miner and the drone. Status in-progress.
 - [[task-266-robot-readability]] — The robot bodies read better: the yellow is no longer burnt and the robots separate from the floor. Status todo.
-- [[task-267-crystal-pulse-restore]] — The deposit crystals pulse again, and the heal crystals get their hashed pulse back. Status in-progress.

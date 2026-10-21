@@ -3,7 +3,7 @@ id: task-267-02-crystal-pulse-restore
 description: "M_DepositCrystalGlow reads the new pulse indices 13 and 14."
 parent: task-267-crystal-pulse-restore
 kind: task
-status: in-progress
+status: done
 ---
 # Deposit crystal pulse indices
 
@@ -15,11 +15,11 @@ status: in-progress
 - done_when: Compile OK; the node graph read back; the deposit instances still reference the material; docs updated; lint clean.
 - editor_state: open (editor + MCP)
 - token_ceiling: 100k
-- model: open
-- tokens: open
-- runs: open
+- model: sonnet
+- tokens: input 52, cache write 80089, cache read 1491042, output 555
+- runs: 1
 - milestone: M1
-- result: open
+- result: M_DepositCrystalGlow reads per-instance 13 (phase) and 14 (rate), CPD parameters PulsePhase and PulseRate deleted (no CPD left); M_XPNutGlow: If(PulseRate > 0, PulseRate, 1) so an unwritten slot means rate 1 (XP nut, XP cube cores and every child recompile, 7 direct referencers). Docs updated. Runtime pulse unverified on screen.
 
 ## Relations
 - [[task-267-crystal-pulse-restore]] — parent global task.

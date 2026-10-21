@@ -3,7 +3,7 @@ id: task-263-02-player-light-shadows
 description: "A movable warm point light on BP_Miner is the only cast-shadow source."
 parent: task-263-player-light-shadows
 kind: task
-status: todo
+status: in-progress
 ---
 # Player light on BP_Miner
 
