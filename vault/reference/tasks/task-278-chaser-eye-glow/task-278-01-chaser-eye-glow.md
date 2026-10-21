@@ -3,7 +3,7 @@ id: task-278-01-chaser-eye-glow
 description: "The chaser and shield chaser red eyes glow stronger; the body look is unchanged."
 parent: task-278-chaser-eye-glow
 kind: task
-status: blocked
+status: done
 ---
 # Chaser eye glow stronger
 
@@ -19,7 +19,7 @@ status: blocked
 - tokens: input 0k, cache write 106k, cache read 1992k, output 1k
 - runs: 1
 - milestone: M1
-- result: Stopped, no asset change (owner rule: mask leak = stop). Leak check (commit bc342b32, line eye_mask_leak_check in chaser-meshy-pipeline): the red mask also covers the red neck ring (about 13k texels > 0.1 outside the eye, 37 islands of 30+ texels, z 85-92 cm, RGB8 about 120/34/30) on T_Chaser_Meshy_BaseColor, used by BP_Chaser and MI_ShieldChaser_Body/BodyPlain; shield and emblem textures clean; no GlowAmount override on instances. GlowAmount 25 kept. Options for the owner: tighter mask saturate((R - 2 max(G,B) - 0.4) x 4) (26 non-eye texels, eye at 54 % so GlowAmount about 95 for x2), repaint the neck darker, or a head-only UV/height mask. Model sonnet.
+- result: Superseded (owner 2026-10-21: separate eye material slot, task-278-02 to 10). Leak check only, no asset change: the red mask also covers the red neck ring (about 13k texels > 0.1 outside the eye, z 85-92 cm, RGB8 about 120/34/30) of T_Chaser_Meshy_BaseColor; shield and emblem textures clean; details in chaser-meshy-pipeline eye_mask_leak_check (commit bc342b32). Model sonnet.
 
 ## Relations
 - [[task-278-chaser-eye-glow]] — parent global task.
