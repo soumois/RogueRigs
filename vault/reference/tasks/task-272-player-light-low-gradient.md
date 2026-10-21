@@ -1,9 +1,9 @@
 ---
 id: task-272-player-light-low-gradient
 description: "Global task: player light below the rock tops so walls shade the floor; smooth wide light gradient, no disc edge; judged on -game captures."
-parent: tasks-to-do-index
+parent: tasks-done-index
 kind: task
-status: in-progress
+status: done
 ---
 # Low player light and broad gradient
 
@@ -13,8 +13,8 @@ status: in-progress
 - gdd_check: done by the Orchestrator when the task is planned (2026-10-21).
 - confirmed_by_owner: yes (2026-10-21)
 - milestone: M1
-- next_step: task-272-19-flat-mask-capture
-- result: open (physical-light variant done in steps 1-5: see subtask results; hybrid variant in progress)
+- next_step: none
+- result: Done. Frames Saved/LookTune/r9/ (A-H at the asset values, read back: no PlayerLight, sun 4.0, sky 0.08, exposure 1.8, blendable on, bDriveTunables false), profiles r9/sheets/profiles.txt; side by sides Saved/LookTune/final_272_flat_{A_idle,B_wall,D_robots_xp,E_xp,G_wallside,H_dig}.png. A rings 175 137 93 56 32 23 17 18 19 19 14 11 (score 0.223, r7 0.213), D 0.123 (r7 0.204); p99 173-197, no clipped core; core gold-yellow (201,156,109), far plum (29,10,33). Seen: smooth round centre brightening, uniform on floor, robots and miner, no disc edge; rock tops beside the miner glow pale lilac (XY mask, no occlusion); no shadows; chasers near the miner pale peach, low contrast; XP and crystals readable. Cost frame D 8.17 ms, mask pass 0.043 ms, ShadowDepths 0.03 ms.
 
 ## Subtasks
 1. task-272-01-player-light-low-gradient — cpp, baseline G/H and runtime sweep
@@ -38,7 +38,7 @@ status: in-progress
 18. task-272-19-flat-mask-capture — cpp, final captures
 
 ## Relations
-- [[tasks-to-do-index]] — parent index.
+- [[tasks-done-index]] — parent index.
 - [[task-272-01-player-light-low-gradient]] — step 1, cpp.
 - [[task-272-05-low-light-sweep-r2]] — step 2, cpp.
 - [[task-272-02-player-light-low-apply]] — step 3, bp.
