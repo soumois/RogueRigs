@@ -19,11 +19,11 @@ kind: doc
 - verified_028: PIE (task-028-02): ShockRing RelativeScale3D (8, 8, 0.02) read on a live heavy, no Blueprint runtime error.
 - task-124-02: ShockRing component deleted (nothing referenced it: EventGraph and construction script read back, find_nodes ShockRing empty, no variable); compiled and saved. Components read back: StripeA-D, EyeLeft, EyeRight, LogoPlate, BodyMesh plus C++ ones.
 - task-123-01: ShockRing show/scale/hide nodes removed from OnTelegraphStart, OnSlam, OnRecover (stray old nodes of OnSlam deleted); component kept then, hidden, because `RRHeavyIntegrationTests.cpp` requires it by name. Read back: no ShockRing, SetVisibility or Delay left in the EventGraph.
-- readability (task-266-01, provisional, owner 2026-10-20): MI_GB_Heavy Color lowered from (0.15, 0.35, 0.7) to (0.12, 0.28, 0.56) against burn; see [[bp-robot-readability]].
+- readability: task-266-01 lowered MI_GB_Heavy Color to (0.12, 0.28, 0.56); task-275-02 (owner 2026-10-21) restored (0.15, 0.35, 0.7); see [[bp-robot-readability]].
 - owner_agent: agent-bp
 
 ## Relations
-- [[bp-robot-readability]] — the colour tweak against burn.
+- [[bp-robot-readability]] — the reverted colour tweak against burn.
 - [[blueprints-index]] — parent index.
 - [[sys-enemies-heavy]] — the C++ class.
 - [[bp-pickup-xp]] — the pickup it drops.
