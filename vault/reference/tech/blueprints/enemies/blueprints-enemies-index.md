@@ -15,3 +15,4 @@ The robot Blueprints: chaser, shield chaser, kamikaze, shooter, heavy.
 - [[bp-kamikaze]] — BP_Kamikaze, the kamikaze robot.
 - [[bp-shooter]] — BP_Shooter and BP_ShooterProjectile, the shooter robot.
 - [[bp-heavy]] — BP_Heavy, the heavy slam robot.
+- [[bp-robot-readability]] — brightness, saturation, roughness and rim parameters that stop the robots burning.

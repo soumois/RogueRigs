@@ -15,6 +15,7 @@ kind: doc
 - logic_in_bp: visuals only (three SetMaterial calls, SpawnSystemAtLocation inactive, SetNiagaraVariable Vector3, Activate).
 - assets: /Game/RogueRigs/Art/ShieldChaser/ SM_ShieldChaser_Meshy_Anim, MI_ShieldChaser_Body, MI_ShieldChaser_Shield, MI_ShieldChaser_Emblem, MI_ShieldChaser_BodyPlain, MI_ShieldChaser_Hidden (instances of M_ShieldChaser_Anim, task-220-02).
 - verified: task-224-03: OnShieldBroken rewritten and read back (three SetMaterial, spawn with bAutoActivate false, SetNiagaraVariable User.HitDirection, Activate), compile and save without error; not run in PIE, so the debris direction is not seen. task-222-04: compile and save without error, OnShieldBroken read back with the spawn node after the three swaps; not run in PIE, so the debris spawn is not seen. Task-220-03: compile without error and save. Mesh, three materials, location and shadow flags read back. Not verified: PIE spawn with the new mesh, any render. Earlier PIE (task-028-02): spawned by the director after 1:00 with no Blueprint runtime error.
+- readability (task-266-01, provisional, owner 2026-10-20): M_ShieldChaser_Anim has the same Readability parameters as the chaser master; MI_ShieldChaser_Emblem overrides BodyBrightness 1, BodySaturation 1, RimAmount 0; see [[bp-robot-readability]].
 - owner_agent: agent-bp
 
 ## Relations
@@ -25,3 +26,4 @@ kind: doc
 - [[bp-pickup-xp]] — the pickup it drops.
 - [[bp-robot-debris]] — the debris system set as its DebrisSystem.
 - [[bp-shield-debris]] — NS_ShieldDebris, spawned by OnShieldBroken.
+- [[bp-robot-readability]] — the body brightness, saturation and rim parameters.
