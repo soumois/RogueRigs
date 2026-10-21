@@ -3,7 +3,7 @@ id: task-272-02-player-light-low-apply
 description: "PlayerLight on BP_Miner (and a shadowless fill light if the sweep chose one) set to the values chosen from the sweep, read back and documented."
 parent: task-272-player-light-low-gradient
 kind: task
-status: todo
+status: in-progress
 ---
 # Low player light applied
 

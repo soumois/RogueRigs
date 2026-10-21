@@ -506,6 +506,7 @@ kind: note
 | [[task-270-10-ambience-radius-r5]] | sonnet | 1 | 0k | 37k | 335k | 0k |
 | [[task-270-11-ambience-capture-r5]] | opus | 1 | 0k | 70k | 542k | 1k |
 | [[task-272-01-player-light-low-gradient]] | opus | 1 | 0k | 189k | 5754k | 18k |
+| [[task-272-05-low-light-sweep-r2]] | opus | 1 | 0k | 90k | 1926k | 2k |
 
 ## Totals
 | Scope | Input | Cache write | Cache read | Output |
