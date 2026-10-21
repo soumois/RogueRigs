@@ -6,7 +6,7 @@ kind: doc
 ---
 # Dark violet ambient (L_ArenaM1)
 
-Current look (task-275-01, owner 2026-10-21: back to Monday lighting, shader kept): sun 6 white with shadows, sky 0.3 white with shadows; exposure frozen at -0.94 EV100 (task-275-04); the darkening mask is kept, see [[mpp-player-light-mask]]. The history below is kept.
+Current look (task-275-01, owner 2026-10-21: back to Monday lighting, shader kept; sun lowered by the owner in task-276): sun 3 white with shadows, sky 0.3 white with shadows; exposure frozen at -0.94 EV100 (task-275-04); the darkening mask is kept, see [[mpp-player-light-mask]]. The history below is kept.
 
 Provisional (owner 2026-10-20, task-265-01; owner tunes by eye). Reason: reference game look, a dark violet ambient with a warm pool of light around the player (the player light comes from task-263-02). The strong sun (intensity 6) burnt the yellow chasers white-yellow.
 
@@ -70,6 +70,9 @@ Set DirectionalLight_0 intensity 6 and lightColor (1, 1, 1); SkyLight_0 intensit
 
 ## task-275-04
 - task-275-04 (owner 2026-10-21: fixed exposure at the Monday auto exposure): PPV_XPGlow `autoExposureMinBrightness` = `autoExposureMaxBrightness` -3.4 -> -0.94 EV100 (overrides on, AEM_Histogram, bias 1, bloom 1.3 / -1 and the mask blendable weight 1 unchanged). Measured in task-275-03: Monday PPV without mask, Monday lights, ShowFlag.VisualizeHDR in one -game run, settled Average Scene EV100 -0.945 / -0.943 / -0.943, smoothed pre-bias marker -0.93 / -0.94 / -0.94 (with-bias marker -1.94); bias multiplies after the min/max clamp, so min = max = -0.94 with bias 1 reproduces the adapted exposure. MPC_PlayerLight read back Enable 1, FarBrightness 0.03, Radius 250, Exponent 4 (no change). Revert: -3.4 in both fields (task-274-05 state).
+
+## task-276
+- task-276 (owner edit in the editor, 2026-10-21, saved and committed by the owner as 15dc423d): DirectionalLight_0 `intensity` 6 -> 3 lux (colour (1, 1, 1) and castShadows true not changed by him). Confirmed from the saved external actor package (Content/RogueRigs/Maps/L_ArenaM1/7/NT/V5ATLGD6KXMEQFO2WZJWIB.uasset, which holds DirectionalLight_0: the float 6 before, 3 after); not read in the editor. Same edit session: [[mpp-player-light-mask]] 0.08 / 200 / 1.8. SkyLight_0 and PPV_XPGlow exposure (-0.94 EV100) untouched. Revert: intensity 6.
 
 ## Relations
 - [[blueprints-world-index]] — parent index.

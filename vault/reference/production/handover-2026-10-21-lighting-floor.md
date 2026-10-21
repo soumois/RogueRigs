@@ -31,6 +31,9 @@ Rock top albedo (burnt crescent), XP mesh scale about 0.45, barrels 0.5 or 0.65 
 ## Update task-275 (2026-10-21, after the owner's play)
 Owner saw a milky veil: lights and robot materials back to Monday (sun 6 white, sky 0.3 white, shadows on; chaser readability removed; greybox colours restored), exposure fixed at the Monday auto exposure -0.94 EV100, darkening mask kept (0.03 / 250 / 4). The "Current values" above are superseded for sun, sky and exposure ([[task-275-monday-light-revert]]).
 
+## Update task-276 (2026-10-21, owner edit)
+The owner tuned and saved in the editor himself (commit 15dc423d): MPC_PlayerLight FarBrightness 0.03 -> 0.08, Radius 250 -> 200, Exponent 4 -> 1.8 (Enable 1); DirectionalLight_0 6 -> 3 lux. Current values: sun 3 white with shadows, sky 0.3 white with shadows, exposure -0.94 EV100, mask 0.08 / 200 / 1.8. Revert: [[mpp-player-light-mask]], [[lights-dark-ambient]].
+
 ## Quirks learned
 - Captures: setnopec for light components, macro path with Binaries, r.RecreateRenderStateContext ([[task-270-01-ambience-capture-tuning]]).
 - External actors save only through the empty save_assets route; a Save Content dialog blocks CloseMainWindow.
