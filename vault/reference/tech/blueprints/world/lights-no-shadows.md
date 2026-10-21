@@ -24,7 +24,8 @@ Provisional, temporary (owner 2026-10-20, task-261: "aucun objet ne doit avoir u
 - Per-object CastShadow flags (meshes, ArenaGrid components) are on or off as before and are not part of this change (task-263-01 sets them since, section below).
 - Decals: only the ground telegraph and explosion decals, which are gameplay marks, not shadows. No ShadowProxy mesh, no blob shadow actor found.
 
-## Player light, the only shadow caster (task-263)
+## Player light, the only shadow caster (task-263; removed in task-272-15)
+Since task-272-15 (owner 2026-10-21) no light casts shadows: the sun and sky are shadowless and the player light is removed from BP_Miner. The grid flag `bBlocksCastShadows` on rocks and barrels stays on but has no visible effect now (no shadow-casting light). Revert: re-add the light with the values in [[bp-miner]]. The text below is the history of task-263.
 Owner 2026-10-20 (reference game video): the only cast shadows are those of the player's light on the rock walls; rocks cast, nothing else. The sun and sky light above stay without shadows. Per-object flags set in C++ (task-263-01):
 - Cast: grid rock piece ISMs, barrel HISMs and special ore (`ARRArenaGrid::bBlocksCastShadows`, default true, [[sys-grid]]). Ore and heal ore crystals stay off (`bDepositCrystalsCastShadow` false, task-237-01).
 - Never cast: grid floor chunks; every primitive of robots (`ARREnemy`), pickups (`ARRPickup`), the drone (`ARRDrone`), the miner (`ARRMiner`), weapons and turrets (`ARRWeapon`) and projectiles (`ARRProjectile`), through `RRShadows::DisableCastShadows` in their `PostInitializeComponents` (C++ and Blueprint components, kept across pool reuse). Robots get a fake blob shadow instead (task-264).

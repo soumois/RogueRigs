@@ -40,6 +40,7 @@ Values picked from real -game captures (Saved/LookTune/r1, variant close to v6),
 
 ## task-272
 - task-272-02 (owner 2026-10-21): PlayerLight lowered to Z -15 (about 75 uu above the floor), radius 640 -> 3000, 3000 -> 400 cd, colour 255/194/158, for a smooth full-screen gradient with wall shadows; before/after and revert values in [[bp-miner]]. Sun and exposure: task-272-03 below.
+- task-272-15 (owner 2026-10-21): the player light is removed from BP_Miner; the scene is lit flat by the shadowless sun and sky. The centre-brighter effect comes only from [[mpp-player-light-mask]]. Revert values: [[bp-miner]].
 - task-272-03 (owner 2026-10-21, provisional): DirectionalLight_0 `intensity` 1.5 -> 0.3 (colour (0.75, 0.62, 1.0) and castShadows false kept, read back after save); PPV_XPGlow `AutoExposureMinBrightness` = `AutoExposureMaxBrightness` 1.3 -> 1.8 EV100 (overrides on, AutoExposureBias 1, method AEM_Histogram, bloom unchanged; +0.5 EV100 darkens by half a stop, equal to the runtime r.ExposureOffset -0.5 of the sweep). SkyLight_0 unchanged (0.08), read back. Reason: with the low player light the far floor and rock tops must fall toward the measured DRGS ring profile (far rings about 9 to 12 of 255); sweep task-272-05 variant M10 (sun 0.3, exposure -0.5) matched best (score 0.21 against 0.61 for the old values). Revert: sun 1.5, exposure min = max 1.3.
 
 ## Notes and risks
@@ -59,5 +60,6 @@ Set DirectionalLight_0 intensity 6 and lightColor (1, 1, 1); SkyLight_0 intensit
 - [[blueprints-world-index]] — parent index.
 - [[lights-no-shadows]] — same two actors, shadow flags and the MCP save method.
 - [[ppv-xp-glow]] — bloom, and the fixed exposure (task-268-01).
-- [[bp-miner]] — the PlayerLight whose radius and intensity changed.
+- [[bp-miner]] — the PlayerLight whose radius and intensity changed (removed in task-272-15, revert values there).
+- [[mpp-player-light-mask]] — the post-process mask that gives the centre-brighter effect since task-272-15.
 - [[visual-style]] — the look statement.
