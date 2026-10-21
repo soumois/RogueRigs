@@ -14,4 +14,3 @@ A global task moves to [[tasks-done-index]] when it is done (`vault/scripts/task
 - [[task-230-rock-slab-integration]] — Dual-grid slab rock look in the grid: pieces, world-UV top texture, cracks, plates, crystals. Status in-progress.
 - [[task-234-ore-deposit-look]] — Each 2 x 2 ore or heal deposit is drawn as one crystal formation, at least 3 variants per type, from images the owner generates with prompts we write. Status in-progress.
 - [[task-264-blob-shadows]] — Simple fake round shadows under the enemies, the miner and the drone. Status in-progress.
-- [[task-266-robot-readability]] — The robot bodies read better: the yellow is no longer burnt and the robots separate from the floor. Status in-progress.

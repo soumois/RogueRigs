@@ -490,6 +490,7 @@ kind: note
 | [[task-265-01-scene-ambient-dark]] | sonnet | 1 | 0k | 57k | 989k | 3k |
 | [[task-267-02-crystal-pulse-restore]] | sonnet | 1 | 0k | 80k | 1491k | 1k |
 | [[task-263-02-player-light-shadows]] | sonnet | 1 | 0k | 53k | 702k | 0k |
+| [[task-266-01-robot-readability]] | sonnet | 1 | 0k | 107k | 2484k | 5k |
 
 ## Totals
 | Scope | Input | Cache write | Cache read | Output |

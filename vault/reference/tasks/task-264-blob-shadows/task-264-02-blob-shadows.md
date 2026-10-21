@@ -3,7 +3,7 @@ id: task-264-02-blob-shadows
 description: "A cheap blob shadow component under the robots, the miner and the drone."
 parent: task-264-blob-shadows
 kind: task
-status: todo
+status: in-progress
 ---
 # Blob shadow component
 

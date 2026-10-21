@@ -3,7 +3,7 @@ id: task-266-01-robot-readability
 description: "The robot bodies read better: the yellow is no longer burnt and the robots separate from the floor."
 parent: task-266-robot-readability
 kind: task
-status: in-progress
+status: done
 ---
 # Robot readability
 
@@ -15,11 +15,11 @@ status: in-progress
 - done_when: Material parameters read back with before and after values; compile OK; docs updated; lint clean.
 - editor_state: open (editor + MCP)
 - token_ceiling: 150k
-- model: open
-- tokens: open
-- runs: open
+- model: sonnet
+- tokens: input 68, cache write 106955, cache read 2483670, output 4559
+- runs: 1
 - milestone: M1
-- result: open
+- result: Chaser master materials M_Chaser_Meshy_Anim and M_ShieldChaser_Anim (separate copies) get Readability parameters (no CPD): BodyBrightness 0.7, BodySaturation 0.85, BodyRoughness 0.75 (floor, was fixed 0.6), cool Fresnel rim RimColor (0.25, 0.35, 0.8) RimAmount 0.35 RimPower 3 (peak emissive about 0.13), all masked off the red eye texels; logo plate cannot be separated from the body (same yellow) so it is darkened too; shield chaser emblem instance kept neutral; MI_GB_Shooter and MI_GB_Heavy colours lowered; kamikaze unchanged; animation and CPD untouched; compiles; node bp-robot-readability. Not seen on screen; owner tunes by eye.
 
 ## Relations
 - [[task-266-robot-readability]] — parent global task.

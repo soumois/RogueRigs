@@ -271,4 +271,5 @@ Archive: it exceeds the index size limits of [[_authoring]] on purpose (owner, 2
 - [[task-262-deposit-crystal-volume]] — The Duskite and heal deposit crystals read as volumes: capped emission peak, height gradient and rim light, textures allowed if needed. Status done.
 - [[task-263-player-light-shadows]] — The player carries a warm light that is the only source of cast shadows (rock walls), like the reference game: the walls block it and release it when they fall. Status done.
 - [[task-265-scene-ambient-dark]] — A dark violet ambient with the sun lowered, so the player light is the main light and bright bodies are no longer burnt. Status done.
+- [[task-266-robot-readability]] — The robot bodies read better: the yellow is no longer burnt and the robots separate from the floor. Status done.
 - [[task-267-crystal-pulse-restore]] — The deposit crystals pulse again, and the heal crystals get their hashed pulse back. Status done.
