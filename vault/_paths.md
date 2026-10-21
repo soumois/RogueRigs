@@ -36,6 +36,7 @@ art-prompts-floor-texture-maps  reference/gdd/art-audio/art-prompts-floor-textur
 art-prompts-ore-deposit  reference/gdd/art-audio/art-prompts-ore-deposit.md
 art-prompts-rigs  reference/gdd/art-audio/art-prompts-rigs.md
 art-prompts-robots  reference/gdd/art-audio/art-prompts-robots.md
+art-prompts-robots-meshy  reference/gdd/art-audio/art-prompts-robots-meshy.md
 art-prompts-rock  reference/gdd/art-audio/art-prompts-rock.md
 art-prompts-rock-top-texture  reference/gdd/art-audio/art-prompts-rock-top-texture.md
 art-prompts-shield  reference/gdd/art-audio/art-prompts-shield.md

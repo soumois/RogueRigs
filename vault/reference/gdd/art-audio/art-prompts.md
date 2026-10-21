@@ -38,6 +38,7 @@ Reference images are generated in ChatGPT image generation. The prompts are stor
 - [[art-prompts-robots]] — corporate robot sheet and its four corrections.
 - [[art-prompts-rigs]] — miner, drone, turret sheet, drone fix, T-pose.
 - [[art-prompts-shield]] — shield chaser riot shield: sheet, Meshy views, raw mesh, open texture steps.
+- [[art-prompts-robots-meshy]] — shooter, heavy, kamikaze: Meshy sheet and view prompts, not run yet.
 - [[art-prompts-drone]] — drone turnaround prompt as used, Meshy mesh files, game meshes.
 - [[art-prompts-xp-core]] — four any-angle proposals to replace the big XP chip; choice open.
 - [[art-prompts-rock-top-texture]] — tileable painted rock top texture for the slab material: prompt, seam method, review.
