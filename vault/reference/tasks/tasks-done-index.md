@@ -278,4 +278,3 @@ Archive: it exceeds the index size limits of [[_authoring]] on purpose (owner, 2
 - [[task-269-xp-bloom-smaller]] — The XP pickups no longer bloom into big glowing blobs: small bright cyan dots with a small halo. Status done.
 - [[task-270-ambience-capture-tuning]] — The arena around the miner matches the DRGS reference on real -game screenshots judged by the Orchestrator: dark violet scene, tight warm light pool, readable robots. Status done.
 - [[task-271-xp-bloom-capture-tuning]] — XP pickups read as small bright cyan dots (about 8 to 14 px at 1080p, small halo) on real -game screenshots judged by the Orchestrator. Status done.
-- [[task-272-player-light-low-gradient]] — The player light sits below the rock tops so walls cast their shadows on the floor, and the screen shows a smooth wide light gradient with no disc edge, judged on -game captures. Status done.
