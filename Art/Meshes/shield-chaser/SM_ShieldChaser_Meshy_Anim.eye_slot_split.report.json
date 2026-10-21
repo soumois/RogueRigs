@@ -1,0 +1,160 @@
+{
+ "task": "task-278-02-eye-slot-split",
+ "fbx": "SM_ShieldChaser_Meshy_Anim.fbx",
+ "script": "Tools/art/blender/eye_slot_split.py",
+ "criterion": {
+  "texture": "chaser_meshy_fixed_basecolor.png",
+  "mask": "saturate((R - 2*max(G,B))*3), linear, > 0.1, on a texel covered by the UV0 triangle (texel centres inside + texels of the vertices and centroid)",
+  "head_zone_cm": {
+   "z": [
+    92.0,
+    108.0
+   ],
+   "x_min": 2.0
+  },
+  "candidate_material": "meshy_chaser",
+  "neck_ring_z_cm": [
+   85.0,
+   91.6
+  ]
+ },
+ "eye_faces": 159,
+ "eye_faces_per_object": {
+  "HeadTorso": 159
+ },
+ "eye_texels_in_eye_faces": 69771,
+ "tris_before": 4242,
+ "tris_after": 4242,
+ "eye_texels_left_in_body_faces_head_zone": 0,
+ "neck_ring_texels_in_eye_faces": 0,
+ "max_deltas_before_vs_after": {
+  "pos": {
+   "direct": 1.0491570719750598e-05,
+   "matched_by_pos_uv": 1.0491570719750598e-05
+  },
+  "uv0": {
+   "direct": 0.0,
+   "matched_by_pos_uv": 0.0
+  },
+  "uv1": {
+   "direct": 0.0,
+   "matched_by_pos_uv": 0.0
+  },
+  "uv2": {
+   "direct": 0.0,
+   "matched_by_pos_uv": 0.0
+  },
+  "col": {
+   "direct": 0.0,
+   "matched_by_pos_uv": 0.0
+  }
+ },
+ "material_order_before_per_object": {
+  "ForearmHand_L": [
+   "meshy_chaser"
+  ],
+  "ForearmHand_R": [
+   "meshy_chaser"
+  ],
+  "HeadTorso": [
+   "meshy_chaser"
+  ],
+  "Pelvis": [
+   "meshy_chaser"
+  ],
+  "Shield": [
+   "M_ChaserShield",
+   "M_ChaserShield_Emblem"
+  ],
+  "ShinFoot_L": [
+   "meshy_chaser"
+  ],
+  "ShinFoot_R": [
+   "meshy_chaser"
+  ],
+  "Thigh_L": [
+   "meshy_chaser"
+  ],
+  "Thigh_R": [
+   "meshy_chaser"
+  ],
+  "UpperArm_L": [
+   "meshy_chaser"
+  ],
+  "UpperArm_R": [
+   "meshy_chaser"
+  ]
+ },
+ "material_order_after_per_object": {
+  "ForearmHand_L": [
+   "meshy_chaser"
+  ],
+  "ForearmHand_R": [
+   "meshy_chaser"
+  ],
+  "HeadTorso": [
+   "meshy_chaser",
+   "robot_eye"
+  ],
+  "Pelvis": [
+   "meshy_chaser"
+  ],
+  "Shield": [
+   "M_ChaserShield",
+   "M_ChaserShield_Emblem"
+  ],
+  "ShinFoot_L": [
+   "meshy_chaser"
+  ],
+  "ShinFoot_R": [
+   "meshy_chaser"
+  ],
+  "Thigh_L": [
+   "meshy_chaser"
+  ],
+  "Thigh_R": [
+   "meshy_chaser"
+  ],
+  "UpperArm_L": [
+   "meshy_chaser"
+  ],
+  "UpperArm_R": [
+   "meshy_chaser"
+  ]
+ },
+ "fbx_file_material_order": [
+  "meshy_chaser",
+  "M_ChaserShield",
+  "M_ChaserShield_Emblem",
+  "robot_eye"
+ ],
+ "fbx_file_object_order": [
+  "ForearmHand_L",
+  "ForearmHand_R",
+  "HeadTorso",
+  "Pelvis",
+  "Shield",
+  "ShinFoot_L",
+  "ShinFoot_R",
+  "Thigh_L",
+  "Thigh_R",
+  "UpperArm_L",
+  "UpperArm_R"
+ ],
+ "checks": {
+  "tris_unchanged": true,
+  "eye_faces_match": true,
+  "eye_texels_left_in_body_zero": true,
+  "neck_texels_in_eye_zero": true,
+  "material_order_ok": true,
+  "other_faces_slot_ok": true,
+  "corner_counts_ok": true,
+  "pos_ok": true,
+  "uv0_ok": true,
+  "uv1_ok": true,
+  "uv2_ok": true,
+  "col_ok": true
+ },
+ "passed": true,
+ "written": true
+}
