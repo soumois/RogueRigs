@@ -539,6 +539,7 @@ kind: note
 | [[task-275-04-exposure-freeze]] | sonnet | 1 | 0k | 62k | 1004k | 1k |
 | [[task-277-01-xp-glow-revert]] | sonnet | 1 | 0k | 66k | 384k | 0k |
 | [[task-279-01-drone-eye-glow]] | sonnet | 2 | 0k | 103k | 2788k | 1k |
+| [[task-280-01-drone-thruster-boost]] | sonnet | 1 | 0k | 128k | 1110k | 1k |
 
 ## Totals
 | Scope | Input | Cache write | Cache read | Output |

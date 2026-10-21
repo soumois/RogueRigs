@@ -3,7 +3,7 @@ id: task-280-01-drone-thruster-boost
 description: "The drone thruster idle look equals its current top-speed look, and top speed is stronger than that."
 parent: task-280-drone-thruster-boost
 kind: task
-status: in-progress
+status: done
 ---
 # Drone thruster particles boosted
 
@@ -15,11 +15,11 @@ status: in-progress
 - done_when: Every lerp endpoint read back; system compiles (0 errors) and is saved; doc updated; lint clean.
 - editor_state: open (editor + MCP)
 - token_ceiling: 120k
-- model: open
-- tokens: open
-- runs: open
+- model: sonnet
+- tokens: input 34, cache write 127724, cache read 1110257, output 612
+- runs: 1
 - milestone: M1
-- result: open
+- result: Commit 5a1b8cfe. NS_DroneThruster lerp endpoints (idle, top), read back after save: Glow size (7, 15) -> (15, 22) cm, alpha (0.2, 0.8) -> (0.8, 1.0); Trail spawn (3, 40) -> (40, 70)/s, speed min (20, 100) -> (100, 150), max (30, 125) -> (125, 190), width (2, 4.5) -> (4.5, 6.5), length (3, 20) -> (20, 32), alpha (0.25, 0.7) -> (0.7, 1.0). Colours, lifetimes, cone, Trail bounds (-40,-40,-80)..(40,40,20) kept (longest streak about 70 cm). Compile UpToDate, 0 errors. Doc bp-drone-thruster (revert = old endpoints, about 20 live idle, 30 top). Not seen on screen.
 
 ## Relations
 - [[task-280-drone-thruster-boost]] — parent global task.
