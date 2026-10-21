@@ -9,7 +9,7 @@ status: todo
 
 - request: the crystals no longer pulse (reported 2026-10-20) (owner, 2026-10-21)
 - goal: The deposit crystals pulse again, and the heal crystals get their hashed pulse back.
-- acceptance: Cause identified with numbers; PulseDesync check updated to the new indices and passing; existing tests pass; docs updated; lint clean; committed.
+- acceptance: cause of the frozen crystal pulse identified, Duskite and heal deposit crystals pulse with hashed phase and rate again; docs and lint clean; committed.
 - gdd_check: done by the Orchestrator when the task is planned (2026-10-21).
 - confirmed_by_owner: yes (2026-10-21)
 - milestone: M1
@@ -18,7 +18,9 @@ status: todo
 
 ## Subtasks
 1. task-267-01-crystal-pulse-restore — cpp
+2. task-267-02-crystal-pulse-restore — bp
 
 ## Relations
 - [[tasks-to-do-index]] — parent index.
 - [[task-267-01-crystal-pulse-restore]] — step 1, cpp.
+- [[task-267-02-crystal-pulse-restore]] — step 2, bp.
