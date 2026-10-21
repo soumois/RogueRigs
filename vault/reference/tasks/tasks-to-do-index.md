@@ -17,3 +17,4 @@ A global task moves to [[tasks-done-index]] when it is done (`vault/scripts/task
 - [[task-264-blob-shadows]] — Simple fake round shadows under the enemies, the miner and the drone. Status in-progress.
 - [[task-265-scene-ambient-dark]] — A dark violet ambient with the sun lowered, so the player light is the main light and bright bodies are no longer burnt. Status todo.
 - [[task-266-robot-readability]] — The robot bodies read better: the yellow is no longer burnt and the robots separate from the floor. Status todo.
+- [[task-267-crystal-pulse-restore]] — The deposit crystals pulse again, and the heal crystals get their hashed pulse back. Status in-progress.
