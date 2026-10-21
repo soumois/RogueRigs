@@ -3,7 +3,7 @@ id: task-272-14-mask-owner-params
 description: "MPC_PlayerLight and M_PP_PlayerLightMask rebuilt around the owner parameters: centre and far brightness, radius, exponent, warm tint."
 parent: task-272-player-light-low-gradient
 kind: task
-status: todo
+status: in-progress
 ---
 # Mask owner parameters
 

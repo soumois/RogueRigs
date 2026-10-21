@@ -516,6 +516,7 @@ kind: note
 | [[task-273-02-floor-texture-maps]] | sonnet | 1 | 0k | 39k | 282k | 1k |
 | [[task-272-07-light-mask-writer]] | opus | 1 | 0k | 99k | 1571k | 7k |
 | [[task-272-12-light-mask-centre-fix]] | sonnet | 1 | 0k | 62k | 1022k | 2k |
+| [[task-272-13-mask-writer-position]] | opus | 1 | 0k | 41k | 428k | 7k |
 
 ## Totals
 | Scope | Input | Cache write | Cache read | Output |
