@@ -3,7 +3,7 @@ id: task-272-16-flat-mask-sweep
 description: "Runtime sweep of the flat sun level and the shader mask parameters, scored on the DRGS ring profile."
 parent: task-272-player-light-low-gradient
 kind: task
-status: todo
+status: in-progress
 ---
 # Flat light and mask sweep
 
