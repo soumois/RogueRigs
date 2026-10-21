@@ -3,7 +3,7 @@ id: task-278-08-bp-shield-chaser-eye
 description: "BP_ShieldChaser uses MI_RobotEye_ShieldChaser on the eye slot and swaps it to the Plain eye when the shield breaks."
 parent: task-278-chaser-eye-glow
 kind: task
-status: in-progress
+status: done
 ---
 # BP_ShieldChaser uses MI_RobotEye_ShieldChaser on the eye slot and swaps it to the Plain eye when the shield breaks
 
@@ -15,11 +15,11 @@ status: in-progress
 - done_when: Four overrides and the new SetMaterial read back; graph otherwise unchanged; compile without error; saved; doc updated; lint clean; committed.
 - editor_state: open (editor + MCP)
 - token_ceiling: 100k
-- model: open
-- tokens: open
-- runs: open
+- model: sonnet
+- tokens: input 34, cache write 37596, cache read 459729, output 814
+- runs: 1
 - milestone: M1
-- result: open
+- result: Done (commit 26512aaf). BP_ShieldChaser BodyMesh overrides [Body, Shield, Emblem] -> [Body, Shield, Emblem, MI_RobotEye_ShieldChaser]; OnShieldBroken gains SetMaterial element 3 = MI_RobotEye_ShieldChaserPlain after the element 2 swap and before SpawnSystemAtLocation (eye follows the body ClipOffset 2); rest of the graph read back unchanged; compile without error; saved. Doc bp-shield-chaser (revert git checkout 2ad7698a). Unverified: PIE shield break, render, eye/body sync on screen, pool reuse of slot 3.
 
 ## Relations
 - [[task-278-chaser-eye-glow]] — parent global task.

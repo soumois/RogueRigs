@@ -3,7 +3,7 @@ id: task-278-09-bp-heavy-eye
 description: "BP_Heavy eyes use MI_RobotEye_GreyBox, also after the telegraph."
 parent: task-278-chaser-eye-glow
 kind: task
-status: todo
+status: in-progress
 ---
 # BP_Heavy eyes use MI_RobotEye_GreyBox, also after the telegraph
 
