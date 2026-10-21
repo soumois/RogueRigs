@@ -3,7 +3,7 @@ id: task-272-09-hybrid-sweep
 description: "Runtime sweep of the hybrid look: faint shadow-casting player light plus the radial light mask, measured against r7 and DRGS."
 parent: task-272-player-light-low-gradient
 kind: task
-status: in-progress
+status: done
 ---
 # Hybrid runtime sweep
 
@@ -19,7 +19,7 @@ status: in-progress
 - tokens: open
 - runs: open
 - milestone: M1
-- result: open
+- result: Not run: superseded by the owner's direction change of 2026-10-21 (flat light, no player light, effect by the shader only); replaced by steps 13-19.
 
 ## Relations
 - [[task-272-player-light-low-gradient]] — parent global task.

@@ -7,13 +7,13 @@ status: in-progress
 ---
 # Low player light and broad gradient
 
-- request: light must not be above the rocks or the rocks no longer block it; no marked light disc, a fade over the whole image accelerating near the player, the rest less dark (owner feedback on task-270/271 captures) (owner, 2026-10-21). Formalised by the main session with the capture procedure of task-270; one global task because both points tune the same light and are judged on the same captures. Extended 2026-10-21 by the owner after the r6-r7 tests (relayed by the main session): also test a hybrid, a faint shadow-casting light for the wall shadows plus a radial light mask shader around the player, and compare both variants.
+- request: light must not be above the rocks or the rocks no longer block it; no marked light disc, a fade over the whole image accelerating near the player, the rest less dark (owner feedback on task-270/271 captures) (owner, 2026-10-21). Formalised by the main session with the capture procedure of task-270; one global task because both points tune the same light and are judged on the same captures. Extended 2026-10-21 by the owner after the r6-r7 tests (relayed by the main session): also test a hybrid, a faint shadow-casting light for the wall shadows plus a radial light mask shader around the player, and compare both variants. Direction changed 2026-10-21 by the owner (relayed by the main session): remove the player light, flat shadowless lighting, the centre-brighter effect only by the shader, parameters exposed in one place for him to tune; hybrid steps 09-11 not run, replaced by 13-19, at most 3 capture rounds.
 - goal: The player light sits below the rock tops so walls cast their shadows on the floor, and the screen shows a smooth wide light gradient with no disc edge, judged on -game captures.
 - acceptance: Light height below the rock tops (read back); final captures A to H at the same frames as r5 judged by the Orchestrator: wall shadows on the floor behind walls (G), falling wall opens the light (H), no visible disc edge, far floor readable dark violet (measured); light cost stated; docs updated with before, after and revert values; final side by sides in Saved/LookTune/final_272_*.png; lint clean; committed.
 - gdd_check: done by the Orchestrator when the task is planned (2026-10-21).
 - confirmed_by_owner: yes (2026-10-21)
 - milestone: M1
-- next_step: task-272-09-hybrid-sweep
+- next_step: task-272-13-mask-writer-position
 - result: open (physical-light variant done in steps 1-5: see subtask results; hybrid variant in progress)
 
 ## Subtasks
@@ -26,9 +26,16 @@ status: in-progress
 7. task-272-07-light-mask-writer — cpp, MPC writer on the miner
 8. task-272-08-light-mask-ppv — bp, mask in PPV_XPGlow
 8b. task-272-12-light-mask-centre-fix — bp, mask centred on the miner (added after step 7)
-9. task-272-09-hybrid-sweep — cpp, hybrid runtime sweep
-10. task-272-10-hybrid-apply — bp, winning values applied
-11. task-272-11-hybrid-capture — cpp, final captures of both variants
+9. task-272-09-hybrid-sweep — cpp, hybrid runtime sweep (not run)
+10. task-272-10-hybrid-apply — bp, winning values applied (not run)
+11. task-272-11-hybrid-capture — cpp, final captures of both variants (not run)
+12. task-272-13-mask-writer-position — cpp, writer pushes the position only
+13. task-272-14-mask-owner-params — bp, owner parameters in MPC and material
+14. task-272-15-player-light-remove — bp, PlayerLight removed
+15. task-272-16-flat-mask-sweep — cpp, flat light and mask sweep
+16. task-272-17-mask-defaults — bp, MPC defaults
+17. task-272-18-flat-level-light — bp, flat level light
+18. task-272-19-flat-mask-capture — cpp, final captures
 
 ## Relations
 - [[tasks-to-do-index]] — parent index.
@@ -44,3 +51,10 @@ status: in-progress
 - [[task-272-09-hybrid-sweep]] — step 9, cpp.
 - [[task-272-10-hybrid-apply]] — step 10, bp.
 - [[task-272-11-hybrid-capture]] — step 11, cpp.
+- [[task-272-13-mask-writer-position]] — step 12, cpp.
+- [[task-272-14-mask-owner-params]] — step 13, bp.
+- [[task-272-15-player-light-remove]] — step 14, bp.
+- [[task-272-16-flat-mask-sweep]] — step 15, cpp.
+- [[task-272-17-mask-defaults]] — step 16, bp.
+- [[task-272-18-flat-level-light]] — step 17, bp.
+- [[task-272-19-flat-mask-capture]] — step 18, cpp.

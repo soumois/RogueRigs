@@ -3,7 +3,7 @@ id: task-272-11-hybrid-capture
 description: "Final captures of the applied variant at the same frames, measured, with side by sides against the physical-light variant and DRGS."
 parent: task-272-player-light-low-gradient
 kind: task
-status: todo
+status: done
 ---
 # Hybrid final captures
 
@@ -19,7 +19,7 @@ status: todo
 - tokens: open
 - runs: open
 - milestone: M1
-- result: open
+- result: Not run: superseded by the owner's direction change of 2026-10-21 (flat light, no player light, effect by the shader only); replaced by steps 13-19.
 
 ## Relations
 - [[task-272-player-light-low-gradient]] — parent global task.

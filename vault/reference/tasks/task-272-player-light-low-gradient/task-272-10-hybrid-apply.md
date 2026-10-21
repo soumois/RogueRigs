@@ -3,7 +3,7 @@ id: task-272-10-hybrid-apply
 description: "The winning variant's values set on BP_Miner (PlayerLight and light mask defaults), read back and documented."
 parent: task-272-player-light-low-gradient
 kind: task
-status: todo
+status: done
 ---
 # Hybrid values applied
 
@@ -19,7 +19,7 @@ status: todo
 - tokens: open
 - runs: open
 - milestone: M1
-- result: open
+- result: Not run: superseded by the owner's direction change of 2026-10-21 (flat light, no player light, effect by the shader only); replaced by steps 13-19.
 
 ## Relations
 - [[task-272-player-light-low-gradient]] — parent global task.
