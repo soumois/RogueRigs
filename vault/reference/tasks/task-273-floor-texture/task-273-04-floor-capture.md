@@ -3,7 +3,7 @@ id: task-273-04-floor-capture
 description: "-game captures of the floor before and after the new material at the task-272 frames, ring luminance measured against the DRGS profile."
 parent: task-273-floor-texture
 kind: task
-status: todo
+status: in-progress
 ---
 # Floor capture
 

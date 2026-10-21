@@ -523,6 +523,7 @@ kind: note
 | [[task-272-17-mask-defaults]] | sonnet | 1 | 0k | 35k | 225k | 0k |
 | [[task-272-18-flat-level-light]] | sonnet | 1 | 0k | 48k | 469k | 1k |
 | [[task-272-19-flat-mask-capture]] | opus | 1 | 0k | 54k | 605k | 2k |
+| [[task-273-03-floor-material]] | sonnet | 2 | 0k | 135k | 4671k | 4k |
 
 ## Totals
 | Scope | Input | Cache write | Cache read | Output |
