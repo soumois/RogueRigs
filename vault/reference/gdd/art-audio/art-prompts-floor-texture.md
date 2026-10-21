@@ -1,6 +1,6 @@
 ---
 id: art-prompts-floor-texture
-description: "Prompts the owner pastes into ChatGPT for the tileable painted floor of cracked faceted plates (task-273-01): prompt chain, seam method, review checklist; owner image archived (first version), maps 2048 baked."
+description: "Prompts and baked maps of the tileable painted floor of cracked faceted plates (task-273): prompt chain, seam method, review checklist, bake numbers, material values."
 parent: art-prompts
 kind: note
 ---
