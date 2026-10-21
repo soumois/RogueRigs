@@ -3,7 +3,7 @@ id: task-272-02-player-light-low-apply
 description: "PlayerLight on BP_Miner (and a shadowless fill light if the sweep chose one) set to the values chosen from the sweep, read back and documented."
 parent: task-272-player-light-low-gradient
 kind: task
-status: in-progress
+status: done
 ---
 # Low player light applied
 
@@ -15,11 +15,11 @@ status: in-progress
 - done_when: Values read back; compiled and saved; docs updated; lint clean; committed by path.
 - editor_state: open
 - token_ceiling: 40k
-- model: open
-- tokens: open
-- runs: open
+- model: sonnet
+- tokens: input 22, cache write 36577, cache read 272975, output 196
+- runs: 1
 - milestone: M1
-- result: open
+- result: Commit 9a98df41. BP_Miner PlayerLight relativeLocation Z 450 -> -15, attenuationRadius 640 -> 3000, 3000 -> 400 cd, colour (1, 0.75, 0.50) -> (1, 0.7608, 0.6196) = 255/194/158, read back after compile and save; castShadows true, sourceRadius 20 unchanged. Docs bp-miner, lights-dark-ambient, lights-no-shadows, perf-risks updated (revert = task-270-10 values).
 
 ## Relations
 - [[task-272-player-light-low-gradient]] — parent global task.

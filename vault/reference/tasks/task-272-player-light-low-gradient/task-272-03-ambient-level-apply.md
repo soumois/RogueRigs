@@ -3,7 +3,7 @@ id: task-272-03-ambient-level-apply
 description: "Sun, sky light and PPV_XPGlow exposure of L_ArenaM1 set to the sweep values and documented; skipped if the sweep keeps them."
 parent: task-272-player-light-low-gradient
 kind: task
-status: todo
+status: in-progress
 ---
 # Level ambient applied
 
