@@ -9,7 +9,7 @@ status: todo
 
 - goal: Runtime sweep of the hybrid look: faint shadow-casting player light plus the radial light mask, measured against r7 and DRGS.
 - agent: cpp
-- depends_on: task-272-08-light-mask-ppv
+- depends_on: task-272-07-light-mask-writer, task-272-08-light-mask-ppv
 - inputs: agent-cpp (vault/reference/agents/agent-cpp.md), sys-player (vault/reference/tech/systems/core/sys-player.md), Saved/LookTune/capture_cmd.txt
 - expected_output: Saved/LookTune/r8/: hybrid variants (faint shadowed light + radial mask) on A, D, G, H, ring profiles, cost, comparison with r7 and the DRGS frames.
 - done_when: Frames exist, described and measured; values read back; no game process left; Orchestrator judged them.
