@@ -280,4 +280,3 @@ Archive: it exceeds the index size limits of [[_authoring]] on purpose (owner, 2
 - [[task-271-xp-bloom-capture-tuning]] — XP pickups read as small bright cyan dots (about 8 to 14 px at 1080p, small halo) on real -game screenshots judged by the Orchestrator. Status done.
 - [[task-272-player-light-low-gradient]] — The player light sits below the rock tops so walls cast their shadows on the floor, and the screen shows a smooth wide light gradient with no disc edge, judged on -game captures. Status done.
 - [[task-273-floor-texture]] — First painted floor texture: cracked faceted plates with fine crack lines and light-catching edges, tileable albedo and normal, world-aligned floor material with a slight world-position noise against repetition. Status done.
-- [[task-274-flat-light-darkening-shader]] — Post-process mask becomes a pure darkener (no tint, gain 1 at the miner); flat light raised so the unmasked screen looks like the old centre. Status done.
