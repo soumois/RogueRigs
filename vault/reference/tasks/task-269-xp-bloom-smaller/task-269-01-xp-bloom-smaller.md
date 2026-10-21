@@ -3,7 +3,7 @@ id: task-269-01-xp-bloom-smaller
 description: "The XP pickups no longer bloom into big glowing blobs: small bright cyan dots with a small halo."
 parent: task-269-xp-bloom-smaller
 kind: task
-status: todo
+status: in-progress
 ---
 # XP bloom reduced
 

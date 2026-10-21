@@ -274,3 +274,4 @@ Archive: it exceeds the index size limits of [[_authoring]] on purpose (owner, 2
 - [[task-265-scene-ambient-dark]] — A dark violet ambient with the sun lowered, so the player light is the main light and bright bodies are no longer burnt. Status done.
 - [[task-266-robot-readability]] — The robot bodies read better: the yellow is no longer burnt and the robots separate from the floor. Status done.
 - [[task-267-crystal-pulse-restore]] — The deposit crystals pulse again, and the heal crystals get their hashed pulse back. Status done.
+- [[task-268-dark-ambience-tight-light]] — The ambience is dark around a tight warm pool of light on the player, like the reference: shorter light radius, much dimmer ambient, fixed exposure. Status done.

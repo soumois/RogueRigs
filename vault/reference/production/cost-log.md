@@ -492,6 +492,7 @@ kind: note
 | [[task-263-02-player-light-shadows]] | sonnet | 1 | 0k | 53k | 702k | 0k |
 | [[task-266-01-robot-readability]] | sonnet | 1 | 0k | 107k | 2484k | 5k |
 | [[task-264-02-blob-shadows]] | opus | 1 | 0k | 148k | 4556k | 21k |
+| [[task-268-01-dark-ambience-tight-light]] | sonnet | 1 | 0k | 79k | 796k | 1k |
 
 ## Totals
 | Scope | Input | Cache write | Cache read | Output |
