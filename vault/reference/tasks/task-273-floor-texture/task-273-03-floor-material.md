@@ -3,7 +3,7 @@ id: task-273-03-floor-material
 description: "Floor material sampling the new maps by world position with a slight world-position noise against repetition, applied to BP_ArenaGrid FloorMaterial."
 parent: task-273-floor-texture
 kind: task
-status: in-progress
+status: todo
 ---
 # Floor material with world-position noise
 
@@ -19,7 +19,7 @@ status: in-progress
 - tokens: open
 - runs: open
 - milestone: M1
-- result: open
+- result: open (waiting for the editor: task-272 in progress on 2026-10-21, editor not launched)
 
 ## Relations
 - [[task-273-floor-texture]] — parent global task.
