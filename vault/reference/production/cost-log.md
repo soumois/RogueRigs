@@ -479,6 +479,7 @@ kind: note
 | [[task-257-01-pulse-desync]] | sonnet | 1 | 0k | 77k | 1180k | 2k |
 | [[task-255-01-camera-arm-1400]] | opus | 1 | 0k | 28k | 282k | 2k |
 | [[task-257-02-pulse-desync]] | opus | 1 | 0k | 168k | 5863k | 35k |
+| [[task-261-01-no-shadows]] | sonnet | 1 | 0k | 125k | 5664k | 1k |
 
 ## Totals
 | Scope | Input | Cache write | Cache read | Output |

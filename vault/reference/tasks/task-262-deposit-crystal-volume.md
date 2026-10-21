@@ -3,7 +3,7 @@ id: task-262-deposit-crystal-volume
 description: "Global task: The Duskite and heal deposit crystals read as volumes: capped emission peak, height gradient and rim light, textures allowed if needed."
 parent: tasks-to-do-index
 kind: task
-status: todo
+status: in-progress
 ---
 # Deposit crystal volume
 

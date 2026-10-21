@@ -264,3 +264,4 @@ Archive: it exceeds the index size limits of [[_authoring]] on purpose (owner, 2
 - [[task-255-camera-arm-1400]] — The miner camera arm is 1400 uu instead of 1700, to test the closer view. Status done.
 - [[task-256-pickup-pop-distance]] — Ore and heal pickups land close enough to be collected without moving: PopMaxDistance lowered. Status done.
 - [[task-257-pulse-desync]] — Ore and heal crystals and pickups no longer pulse in sync: each object gets a seeded random pulse phase and a +-20 percent rate. Status done.
+- [[task-261-no-shadows]] — No object casts a shadow for now: shadow casting is switched off on the lights of the arena level. Status done.
