@@ -1,4 +1,4 @@
-// Rogue Rigs - player light mask writer (task-272-07, task-272-13): pushes the miner position into MPC_PlayerLight each tick; the tunables only for console sweeps.
+// Rogue Rigs - player light mask writer (task-272-07, task-272-13, task-274-01): pushes the miner position into MPC_PlayerLight each tick; the darkening tunables only for console sweeps.
 
 #include "World/RRPlayerLightMaskComponent.h"
 
@@ -16,13 +16,9 @@ namespace RRPlayerLightMask
 	// Parameter names of MPC_PlayerLight (mpp-player-light-mask).
 	static const FName PlayerPosition(TEXT("PlayerPosition"));
 	static const FName Enable(TEXT("Enable"));
-	static const FName CenterBrightness(TEXT("CenterBrightness"));
 	static const FName FarBrightness(TEXT("FarBrightness"));
 	static const FName Radius(TEXT("Radius"));
 	static const FName Exponent(TEXT("Exponent"));
-	static const FName TintStrength(TEXT("TintStrength"));
-	static const FName WarmTint(TEXT("WarmTint"));
-	static const FName FarTint(TEXT("FarTint"));
 }
 
 URRPlayerLightMaskComponent::URRPlayerLightMaskComponent(const FObjectInitializer& ObjectInitializer)
@@ -98,11 +94,7 @@ void URRPlayerLightMaskComponent::PushParameters()
 		return;
 	}
 	Instance->SetScalarParameterValue(RRPlayerLightMask::Enable, Enable);
-	Instance->SetScalarParameterValue(RRPlayerLightMask::CenterBrightness, CenterBrightness);
 	Instance->SetScalarParameterValue(RRPlayerLightMask::FarBrightness, FarBrightness);
 	Instance->SetScalarParameterValue(RRPlayerLightMask::Radius, Radius);
 	Instance->SetScalarParameterValue(RRPlayerLightMask::Exponent, Exponent);
-	Instance->SetScalarParameterValue(RRPlayerLightMask::TintStrength, TintStrength);
-	Instance->SetVectorParameterValue(RRPlayerLightMask::WarmTint, WarmTint);
-	Instance->SetVectorParameterValue(RRPlayerLightMask::FarTint, FarTint);
 }

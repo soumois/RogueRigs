@@ -1,4 +1,4 @@
-// Rogue Rigs - player light mask writer (task-272-07, task-272-13): pushes the miner position into MPC_PlayerLight each tick; the tunables only for console sweeps.
+// Rogue Rigs - player light mask writer (task-272-07, task-272-13, task-274-01): pushes the miner position into MPC_PlayerLight each tick; the darkening tunables only for console sweeps.
 
 #pragma once
 
@@ -10,7 +10,8 @@ class UMaterialParameterCollection;
 class UMaterialParameterCollectionInstance;
 
 /**
- * Feeds the radial post-process light mask around the miner (M_PP_PlayerLightMask, mpp-player-light-mask). Each tick
+ * Feeds the radial post-process light mask around the miner (M_PP_PlayerLightMask, mpp-player-light-mask), a pure darkener:
+ * gain 1 at the miner, FarBrightness far from it, no tint. Each tick
  * (TG_PostUpdateWork, after movement, so the position matches the rendered frame) it writes the owner location into the
  * PlayerPosition vector of the world's instance of ParameterCollection (MPC_PlayerLight, loaded in the constructor).
  * MPC_PlayerLight is the owner's single tuning place: editing its defaults in the editor updates the look live, and this
@@ -57,33 +58,20 @@ protected:
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "RogueRigs|LightMask", meta = (ClampMin = "0", ClampMax = "1"))
 	float Enable = 1.f;
 
-	/** CenterBrightness: scene-colour gain at the miner. Pushed only when bDriveTunables. */
+	/**
+	 * FarBrightness: scene-colour gain far from the miner (the gain at the miner is always 1, no tint: the material only
+	 * darkens, out = SceneColor x lerp(FarBrightness, 1, mask)). Pushed only when bDriveTunables.
+	 */
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "RogueRigs|LightMask", meta = (ClampMin = "0"))
-	float CenterBrightness = 3.f;
-
-	/** FarBrightness: scene-colour gain far from the miner. Pushed only when bDriveTunables. */
-	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "RogueRigs|LightMask", meta = (ClampMin = "0"))
-	float FarBrightness = 0.4f;
+	float FarBrightness = 0.005f;
 
 	/** Radius (uu): XY distance of the falloff. Pushed only when bDriveTunables. */
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "RogueRigs|LightMask", meta = (ClampMin = "1", Units = "cm"))
-	float Radius = 225.f;
+	float Radius = 200.f;
 
 	/** Exponent: falloff steepness. Pushed only when bDriveTunables. */
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "RogueRigs|LightMask", meta = (ClampMin = "0"))
-	float Exponent = 2.f;
-
-	/** TintStrength: how much WarmTint / FarTint colour the picture (0 = none). Pushed only when bDriveTunables. */
-	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "RogueRigs|LightMask", meta = (ClampMin = "0"))
-	float TintStrength = 1.f;
-
-	/** WarmTint: tint at the miner. Pushed only when bDriveTunables. */
-	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "RogueRigs|LightMask")
-	FLinearColor WarmTint = FLinearColor(1.f, 0.76f, 0.62f, 1.f);
-
-	/** FarTint: tint far from the miner. Pushed only when bDriveTunables. */
-	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "RogueRigs|LightMask")
-	FLinearColor FarTint = FLinearColor(0.85f, 0.55f, 0.9f, 1.f);
+	float Exponent = 3.f;
 
 	/** Cached collection instance of CachedWorld. */
 	TWeakObjectPtr<UMaterialParameterCollectionInstance> CachedInstance;
