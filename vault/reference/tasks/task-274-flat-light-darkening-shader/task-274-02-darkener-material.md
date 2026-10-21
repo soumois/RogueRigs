@@ -3,7 +3,7 @@ id: task-274-02-darkener-material
 description: "M_PP_PlayerLightMask outputs SceneColor x lerp(FarBrightness, 1, mask); MPC_PlayerLight keeps Enable, FarBrightness, Radius, Exponent, PlayerPosition; tint and CenterBrightness removed."
 parent: task-274-flat-light-darkening-shader
 kind: task
-status: todo
+status: in-progress
 ---
 # Darkening-only mask material
 
