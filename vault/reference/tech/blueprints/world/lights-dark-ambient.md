@@ -1,6 +1,6 @@
 ---
 id: lights-dark-ambient
-description: "Provisional: dark violet ambient of L_ArenaM1 (sun 0.12, sky 0.08, fixed exposure, tight player light); previous values for revert."
+description: "Provisional: dark violet ambient of L_ArenaM1 (sun, sky, fixed exposure, player light); values tuned per task, history and revert values inside."
 parent: blueprints-world-index
 kind: doc
 ---
@@ -39,7 +39,8 @@ Values picked from real -game captures (Saved/LookTune/r1, variant close to v6),
 - task-270-10 (round 5, owner 2026-10-21, provisional): PlayerLight `attenuationRadius` 680 -> 640 (read back 640 after compile and save); intensity 3000 cd, height 450 and colour 255/191/128 kept. Reason: r4 captures pool too wide again (half radius 260 px, 0.27 of width; r3 at 600 gave 150 px); 640 aims at about 0.2. Revert = task-270-07 value 680.
 
 ## task-272
-- task-272-02 (owner 2026-10-21): PlayerLight lowered to Z -15 (about 75 uu above the floor), radius 640 -> 3000, 3000 -> 400 cd, colour 255/194/158, for a smooth full-screen gradient with wall shadows; before/after and revert values in [[bp-miner]]. Sun and exposure change in task-272-03.
+- task-272-02 (owner 2026-10-21): PlayerLight lowered to Z -15 (about 75 uu above the floor), radius 640 -> 3000, 3000 -> 400 cd, colour 255/194/158, for a smooth full-screen gradient with wall shadows; before/after and revert values in [[bp-miner]]. Sun and exposure: task-272-03 below.
+- task-272-03 (owner 2026-10-21, provisional): DirectionalLight_0 `intensity` 1.5 -> 0.3 (colour (0.75, 0.62, 1.0) and castShadows false kept, read back after save); PPV_XPGlow `AutoExposureMinBrightness` = `AutoExposureMaxBrightness` 1.3 -> 1.8 EV100 (overrides on, AutoExposureBias 1, method AEM_Histogram, bloom unchanged; +0.5 EV100 darkens by half a stop, equal to the runtime r.ExposureOffset -0.5 of the sweep). SkyLight_0 unchanged (0.08), read back. Reason: with the low player light the far floor and rock tops must fall toward the measured DRGS ring profile (far rings about 9 to 12 of 255); sweep task-272-05 variant M10 (sun 0.3, exposure -0.5) matched best (score 0.21 against 0.61 for the old values). Revert: sun 1.5, exposure min = max 1.3.
 
 ## Notes and risks
 - The sun has `bAtmosphereSunLight` true, but the level has no SkyAtmosphere actor, so the flag has no visible effect.
