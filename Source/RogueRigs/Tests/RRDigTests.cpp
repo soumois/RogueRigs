@@ -386,8 +386,8 @@ IMPLEMENT_SIMPLE_AUTOMATION_TEST(FRRDigHealOreDropsTest, "RogueRigs.Dig.HealOreD
 
 bool FRRDigHealOreDropsTest::RunTest(const FString& Parameters)
 {
-	// Game grid (67 uu): heal ore takes 1.5 s per block; its 2 x 2 vein holds 4 pickups, popped one by one over the dig at
-	// progress k / 4, i.e. every 0.375 s, the last one on the destroying hit (task-235-01, heal-ore, owner 2026-10-19).
+	// Game grid (67 uu): heal ore takes 2 s per block (task-259-01, was 1.5); its 2 x 2 vein holds 4 pickups, popped one by one over the dig at
+	// progress k / 4, i.e. every 0.5 s, the last one on the destroying hit (task-235-01, heal-ore, owner 2026-10-19).
 	FTestWorld TestWorld;
 	ARRArenaGrid* Grid = SpawnFineGrid(*this, TestWorld);
 	UClass* HealClass = LoadTestClass<ARRPickup>(*this, HealPickupClassPath);
@@ -403,7 +403,7 @@ bool FRRDigHealOreDropsTest::RunTest(const FString& Parameters)
 	}
 
 	TestEqual(TEXT("(148, 136) is heal ore"), Grid->GetCellType(FineHealOreCell), ERRCellType::HealOre);
-	TestNearlyEqual(TEXT("heal ore health 1.5"), Grid->GetCellHealth(FineHealOreCell), 1.5f);
+	TestNearlyEqual(TEXT("heal ore health 2"), Grid->GetCellHealth(FineHealOreCell), 2.f);
 	TestEqual(TEXT("one pickup per block"), FGridAccess::DropsOnDestroy(Grid), 1);
 	const int32 DepositId = Grid->GetDepositId(FineHealOreCell);
 	if (!TestTrue(TEXT("(148, 136) is in a heal vein"), DepositId != INDEX_NONE))
@@ -445,13 +445,13 @@ bool FRRDigHealOreDropsTest::RunTest(const FString& Parameters)
 		Frames += FString::Printf(TEXT(" %d (%.4f s)"), Frame, Frame * FrameSeconds);
 	}
 	AddInfo(FString::Printf(TEXT("pops at frames%s; destroyed at frame %d (%.4f s)"), *Frames, DestroyFrame, DestroyFrame * FrameSeconds));
-	TestTrue(TEXT("destroyed at 1.5 s +- 1 frame"), DestroyFrame >= 89 && DestroyFrame <= 91);
+	TestTrue(TEXT("destroyed at 2 s +- 1 frame"), DestroyFrame >= 119 && DestroyFrame <= 121);
 	if (TestEqual(TEXT("4 pops during the dig"), PopFrames.Num(), Expected))
 	{
-		// Pickup k at progress k / 4: 0.375 s = 22.5 frames, so frames 22.5 k rounded up (+- 1).
+		// Pickup k at progress k / 4: 0.5 s = 30 frames, so frames 30 k (+- 1).
 		for (int32 Pop = 0; Pop < PopFrames.Num(); ++Pop)
 		{
-			const float ExpectedFrame = (Pop + 1) * 1.5f / Expected / FrameSeconds;
+			const float ExpectedFrame = (Pop + 1) * 2.f / Expected / FrameSeconds;
 			TestTrue(FString::Printf(TEXT("pickup %d pops at progress %d / 4 (frame %d, expected %.1f +- 1)"), Pop + 1, Pop + 1, PopFrames[Pop], ExpectedFrame),
 				FMath::Abs(PopFrames[Pop] - ExpectedFrame) <= 1.f);
 		}
@@ -805,7 +805,7 @@ bool FRRDigArcSpeedsTest::RunTest(const FString& Parameters)
 {
 	using namespace RRDigTests;
 
-	// Heal ore at mining speed 1: 1.5 s per block, in parallel (Duskite uses the same 1.5 s, RogueRigs.Ore.MineDeposit). Since
+	// Heal ore at mining speed 1: 2 s per block, in parallel (Duskite uses the same 2 s, RogueRigs.Ore.MineDeposit). Since
 	// task-088-01 the vein is 2 x 2 (147-148, 135-136): the 8-block arc holds its 4 blocks and 4 rocks, which keep their 0.5 s.
 	{
 		FTestWorld TestWorld;
@@ -831,14 +831,14 @@ bool FRRDigArcSpeedsTest::RunTest(const FString& Parameters)
 			IsHealOre.Add(Grid->GetCellType(Cell) == ERRCellType::HealOre);
 		}
 		TArray<int32> Frames;
-		TickUntilDestroyed(TestWorld, Grid, Arc, 120, Frames);
+		TickUntilDestroyed(TestWorld, Grid, Arc, 150, Frames);
 		for (int32 Index = 0; Index < Arc.Num(); ++Index)
 		{
 			const int32 Frame = Frames[Index] == INDEX_NONE ? INDEX_NONE : Frames[Index] + 1;
 			const TCHAR* Kind = IsHealOre[Index] ? TEXT("heal ore") : TEXT("rock");
 			AddInfo(FString::Printf(TEXT("%s %s destroyed at frame %d"), Kind, *Arc[Index].ToString(), Frame));
-			TestTrue(FString::Printf(TEXT("%s %s destroyed after about %s"), Kind, *Arc[Index].ToString(), IsHealOre[Index] ? TEXT("1.5 s") : TEXT("0.5 s")),
-				IsHealOre[Index] ? Frame >= 89 && Frame <= 91 : Frame >= 29 && Frame <= 31);
+			TestTrue(FString::Printf(TEXT("%s %s destroyed after about %s"), Kind, *Arc[Index].ToString(), IsHealOre[Index] ? TEXT("2 s") : TEXT("0.5 s")),
+				IsHealOre[Index] ? Frame >= 119 && Frame <= 121 : Frame >= 29 && Frame <= 31);
 		}
 	}
 

@@ -88,7 +88,7 @@ namespace RROreDepositTests
 
 	/** Live Ore pickups in the world; OutValueSum receives the sum of their ore values. */
 	/**
-	 * Loot over the dig (task-235-01): a dug 2 x 2 deposit pops pickup k at dig progress k / 4, so 4 pops 0.375 s (22.5 frames)
+	 * Loot over the dig (task-235-01): a dug 2 x 2 deposit pops pickup k at dig progress k / 4, so 4 pops 0.5 s (30 frames)
 	 * apart, the last on BreakFrame. PopFrames = frame at which each pickup popped.
 	 */
 	void CheckPopTiming(FAutomationTestBase& Test, const TArray<int32>& PopFrames, int32 BreakFrame)
@@ -107,7 +107,7 @@ namespace RROreDepositTests
 		for (int32 Pop = 1; Pop < PopFrames.Num(); ++Pop)
 		{
 			const int32 Gap = PopFrames[Pop] - PopFrames[Pop - 1];
-			Test.TestTrue(FString::Printf(TEXT("pickups %d and %d are 0.375 s apart (%d frames, 22.5 +- 1)"), Pop, Pop + 1, Gap), Gap >= 21 && Gap <= 24);
+			Test.TestTrue(FString::Printf(TEXT("pickups %d and %d are 0.5 s apart (%d frames, 30 +- 1)"), Pop, Pop + 1, Gap), Gap >= 29 && Gap <= 31);
 		}
 	}
 
@@ -304,8 +304,8 @@ bool FRROreMineDepositTest::RunTest(const FString& Parameters)
 	using namespace RROreDepositTests;
 
 	// The miner stands on a floor cell touching a Duskite deposit block from the north, with no input: the drone digs the arc,
-	// the whole deposit takes the damage, shakes together and breaks at once after 1.5 s; its 4 chunks of value 1 pop one by one
-	// during the dig, every 0.375 s, the last on the break frame (task-235-01).
+	// the whole deposit takes the damage, shakes together and breaks at once after 2 s; its 4 chunks of value 1 pop one by one
+	// during the dig, every 0.5 s, the last on the break frame (task-235-01).
 	FTestWorld TestWorld;
 	ARRArenaGrid* Grid = SpawnOreGrid(*this, TestWorld, /*bPlaceDeposits*/ true);
 	if (!Grid)
@@ -369,7 +369,7 @@ bool FRROreMineDepositTest::RunTest(const FString& Parameters)
 	TArray<int32> BreakFrames;
 	BreakFrames.Init(INDEX_NONE, DepositCells.Num());
 	bool bAllShookTogether = false;
-	for (int32 Frame = 1; Frame <= 150; ++Frame)
+	for (int32 Frame = 1; Frame <= 180; ++Frame)
 	{
 		TestWorld.Tick();
 		while (PopFrames.Num() < Grid->GetDeposit(TargetId)->PoppedPickups)
@@ -413,7 +413,7 @@ bool FRROreMineDepositTest::RunTest(const FString& Parameters)
 	{
 		TestEqual(FString::Printf(TEXT("block %s breaks with the first"), *DepositCells[Index].ToString()), BreakFrames[Index], BreakFrames[0]);
 	}
-	TestTrue(TEXT("the deposit breaks after about 1.5 s"), BreakFrames[0] >= 89 && BreakFrames[0] <= 91);
+	TestTrue(TEXT("the deposit breaks after about 2 s"), BreakFrames[0] >= 119 && BreakFrames[0] <= 121);
 	CheckPopTiming(*this, PopFrames, BreakFrames[0]);
 
 	// Drops: 4 chunks of value 1 per broken deposit; another deposit of the arc still standing has popped its share so far.
@@ -614,8 +614,8 @@ bool FRROreHealVeinTest::RunTest(const FString& Parameters)
 	TStrongObjectPtr<URRTestEventRecorder> Recorder(NewObject<URRTestEventRecorder>());
 	Miner->OnPickupCollected.AddDynamic(Recorder.Get(), &URRTestEventRecorder::HandlePickupCollected);
 
-	// Dig: the 4 blocks shake together and break on the same frame, about 1.5 s in; the 4 heal pickups worth 15 pop one by one
-	// during the dig, every 0.375 s, the last on the break frame (task-235-01).
+	// Dig: the 4 blocks shake together and break on the same frame, about 2 s in; the 4 heal pickups worth 15 pop one by one
+	// during the dig, every 0.5 s, the last on the break frame (task-235-01).
 	// task-213-02: each pickup pops at a random yaw and 80-300 uu (task-195-02) from the global FMath stream, clock-seeded; a
 	// pickup popping away from the miner can land beyond the pickup radius and stay there. Seeded only so the logged numbers
 	// repeat; since task-250-01 the result no longer depends on the seed (the miner walks to a pickup left beyond the radius).
@@ -627,7 +627,7 @@ bool FRROreHealVeinTest::RunTest(const FString& Parameters)
 	int32 HealPickupsSeen = 0;
 	TSet<TWeakObjectPtr<ARRPickup>> Seen;
 	TArray<int32> PopFrames;
-	for (int32 Frame = 1; Frame <= 150; ++Frame)
+	for (int32 Frame = 1; Frame <= 180; ++Frame)
 	{
 		TestWorld.Tick();
 		while (PopFrames.Num() < Grid->GetDeposit(TargetId)->PoppedPickups)
@@ -684,7 +684,7 @@ bool FRROreHealVeinTest::RunTest(const FString& Parameters)
 	{
 		TestEqual(FString::Printf(TEXT("block %s breaks with the first"), *VeinCellsOfTarget[Index].ToString()), BreakFrames[Index], BreakFrames[0]);
 	}
-	TestTrue(TEXT("the vein breaks after about 1.5 s"), BreakFrames[0] >= 89 && BreakFrames[0] <= 91);
+	TestTrue(TEXT("the vein breaks after about 2 s"), BreakFrames[0] >= 119 && BreakFrames[0] <= 121);
 	CheckPopTiming(*this, PopFrames, BreakFrames[0]);
 	TestEqual(TEXT("4 heal pickups"), HealPickupsSeen, 4);
 

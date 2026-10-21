@@ -1005,17 +1005,17 @@ protected:
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Grid|Destruction", meta = (ClampMin = "0.01", Units = "s"))
 	float RockHealth = 0.5f;
 
-	/** Health of an ore block: drone dig time in seconds at mining speed 1 (ore-blocks gdd: 1.5 s per 67 uu block). */
+	/** Health of an ore block: drone dig time in seconds at mining speed 1 (ore-blocks gdd: 2 s per 67 uu block, owner 2026-10-20, provisional; was 1.5). */
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Grid|Destruction", meta = (ClampMin = "0.01", Units = "s"))
-	float OreHealth = 1.5f;
+	float OreHealth = 2.f;
 
-	/** Health of a heal ore block: drone dig time in seconds at mining speed 1 (drone gdd: 1.5 s per 67 uu block). */
+	/** Health of a heal ore block: drone dig time in seconds at mining speed 1 (heal-ore gdd: 2 s per 67 uu block, owner 2026-10-20, provisional; was 1.5). */
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Grid|Destruction", meta = (ClampMin = "0.01", Units = "s"))
-	float HealOreHealth = 1.5f;
+	float HealOreHealth = 2.f;
 
-	/** Health of a special ore block: drone dig time in seconds at mining speed 1 (same as ore). */
+	/** Health of a special ore block: drone dig time in seconds at mining speed 1 (same as ore: 2 s, was 1.5). */
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Grid|Destruction", meta = (ClampMin = "0.01", Units = "s"))
-	float SpecialOreHealth = 1.5f;
+	float SpecialOreHealth = 2.f;
 
 	/** Health of a barrel block: drone dig time in seconds at mining speed 1 (same as rock, provisional). */
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Grid|Destruction", meta = (ClampMin = "0.01", Units = "s"))
@@ -1091,9 +1091,9 @@ protected:
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Grid|Drops")
 	TSubclassOf<ARRPickup> HealPickupClass;
 
-	/** Accumulated damage, in dig-seconds, between two drops while a block is dug (provisional). */
+	/** Accumulated damage, in dig-seconds, between two drops while a block outside any deposit is dug (provisional). Kept equal to the ore health (2, was 1.5; task-259-01) so such a block drops nothing during the dig and DestroyDropCount at destruction. */
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Grid|Drops", meta = (ClampMin = "0.01", Units = "s"))
-	float DropInterval = 1.5f;
+	float DropInterval = 2.f;
 
 	/** Pickups spawned when an ore or heal ore block is destroyed, whatever the source (ore-blocks gdd: one chunk per broken 67 uu block, provisional). */
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Grid|Drops", meta = (ClampMin = "0"))

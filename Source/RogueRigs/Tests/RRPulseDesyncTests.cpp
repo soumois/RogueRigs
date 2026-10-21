@@ -72,9 +72,9 @@ bool FRRPulseDesyncSeededValuesTest::RunTest(const FString& Parameters)
 
 	FTestWorld TestWorld(TEXT("RRPulseDesync"));
 	URRPickupSubsystem* Pickups = TestWorld.Get()->GetSubsystem<URRPickupSubsystem>();
-	UClass* OreClass = RRTestHarness::LoadTestClass<ARRPickup>(*this, OrePickupClassPath);
-	UClass* HealClass = RRTestHarness::LoadTestClass<ARRPickup>(*this, HealPickupClassPath);
-	UClass* XPClass = RRTestHarness::LoadTestClass<ARRPickup>(*this, XPPickupClassPath);
+	UClass* OreClass = RRTestHarness::LoadTestClass<ARRPickup>(*this, RRPulseDesyncTests::OrePickupClassPath);
+	UClass* HealClass = RRTestHarness::LoadTestClass<ARRPickup>(*this, RRPulseDesyncTests::HealPickupClassPath);
+	UClass* XPClass = RRTestHarness::LoadTestClass<ARRPickup>(*this, RRPulseDesyncTests::XPPickupClassPath);
 	if (!TestNotNull(TEXT("pickup subsystem"), Pickups) || !OreClass || !HealClass || !XPClass)
 	{
 		return false;
