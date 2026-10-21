@@ -3,7 +3,7 @@ id: task-278-06-shield-chaser-body-material
 description: "M_ShieldChaser_Anim takes its WPO from MF_RobotAnimWPO and loses the red-mask emissive; instances unchanged."
 parent: task-278-chaser-eye-glow
 kind: task
-status: todo
+status: in-progress
 ---
 # M_ShieldChaser_Anim takes its WPO from MF_RobotAnimWPO and loses the red-mask emissive; instances unchanged
 

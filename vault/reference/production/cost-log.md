@@ -543,6 +543,7 @@ kind: note
 | [[task-278-02-eye-slot-split]] | sonnet | 1 | 0k | 54k | 628k | 6k |
 | [[task-278-03-eye-slot-reimport]] | opus | 1 | 0k | 45k | 419k | 0k |
 | [[task-278-04-robot-eye-material]] | sonnet | 1 | 0k | 81k | 1744k | 1k |
+| [[task-278-05-chaser-body-material]] | sonnet | 1 | 0k | 59k | 992k | 1k |
 
 ## Totals
 | Scope | Input | Cache write | Cache read | Output |

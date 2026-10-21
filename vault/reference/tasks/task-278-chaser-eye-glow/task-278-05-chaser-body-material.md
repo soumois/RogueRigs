@@ -3,7 +3,7 @@ id: task-278-05-chaser-body-material
 description: "M_Chaser_Meshy_Anim takes its WPO from MF_RobotAnimWPO and loses the red-mask emissive."
 parent: task-278-chaser-eye-glow
 kind: task
-status: in-progress
+status: done
 ---
 # M_Chaser_Meshy_Anim takes its WPO from MF_RobotAnimWPO and loses the red-mask emissive
 
@@ -15,11 +15,11 @@ status: in-progress
 - done_when: WPO from the MF, no emissive, RunRate 0.7 read back; compiles without error; saved; docs updated; lint clean; committed.
 - editor_state: open (editor + MCP)
 - token_ceiling: 100k
-- model: open
-- tokens: open
-- runs: open
+- model: sonnet
+- tokens: input 50, cache write 58595, cache read 992489, output 968
+- runs: 1
 - milestone: M1
-- result: open
+- result: Done (commit c34e717b). M_Chaser_Meshy_Anim: WPO = MF_RobotAnimWPO (AnimTex T_ChaserAnim, ClipOffset Constant 0, RunRate parameter 0.7), no second transform; ClipId CPD 0 and AnimStart CPD 1 now from the function; emissive chain and GlowAmount (25) removed; base colour texture, roughness 0.6, metallic 0 unchanged; recompile without error, no LogMaterial entry for it. Docs bp-chaser and chaser-meshy-pipeline (revert git checkout 2ad7698a of the .uasset). Unverified: render, PIE, instruction count.
 
 ## Relations
 - [[task-278-chaser-eye-glow]] — parent global task.
