@@ -3,7 +3,7 @@ id: task-266-01-robot-readability
 description: "The robot bodies read better: the yellow is no longer burnt and the robots separate from the floor."
 parent: task-266-robot-readability
 kind: task
-status: todo
+status: in-progress
 ---
 # Robot readability
 

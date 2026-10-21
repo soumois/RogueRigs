@@ -3,7 +3,7 @@ id: task-263-02-player-light-shadows
 description: "A movable warm point light on BP_Miner is the only cast-shadow source."
 parent: task-263-player-light-shadows
 kind: task
-status: in-progress
+status: done
 ---
 # Player light on BP_Miner
 
@@ -15,11 +15,11 @@ status: in-progress
 - done_when: BP_Miner compiles; the light component and its values read back; DirectionalLight and SkyLight still cast no shadow; docs updated; lint clean.
 - editor_state: open (editor + MCP)
 - token_ceiling: 100k
-- model: open
-- tokens: open
-- runs: open
+- model: sonnet
+- tokens: input 38, cache write 53231, cache read 702208, output 305
+- runs: 1
 - milestone: M1
-- result: open
+- result: BP_Miner gets PlayerLight (point light, child of the capsule, relative (0, 0, 300), warm (1.0, 0.62, 0.30), 60 cd, AttenuationRadius 1400, SourceRadius 20, inverse squared falloff, castShadows true dynamic only, no volumetric); compiled and saved; docs bp-miner and lights-no-shadows updated; perf knobs noted. Look, brightness against the ambient, shadow quality and frame cost unverified.
 
 ## Relations
 - [[task-263-player-light-shadows]] — parent global task.
