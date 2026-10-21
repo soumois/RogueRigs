@@ -540,6 +540,7 @@ kind: note
 | [[task-277-01-xp-glow-revert]] | sonnet | 1 | 0k | 66k | 384k | 0k |
 | [[task-279-01-drone-eye-glow]] | sonnet | 2 | 0k | 103k | 2788k | 1k |
 | [[task-280-01-drone-thruster-boost]] | sonnet | 1 | 0k | 128k | 1110k | 1k |
+| [[task-278-02-eye-slot-split]] | sonnet | 1 | 0k | 54k | 628k | 6k |
 
 ## Totals
 | Scope | Input | Cache write | Cache read | Output |

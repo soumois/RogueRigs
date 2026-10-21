@@ -3,7 +3,7 @@ id: task-278-02-eye-slot-split
 description: "The chaser and shield-chaser source FBX get a last material slot robot_eye holding every eye face; nothing else changes."
 parent: task-278-chaser-eye-glow
 kind: task
-status: in-progress
+status: done
 ---
 # The chaser and shield-chaser source FBX get a last material slot robot_eye holding every eye face; nothing else changes
 
@@ -15,11 +15,11 @@ status: in-progress
 - done_when: Both FBX re-exported; tris unchanged; eye texels (mask > 0.1, head zone) left in body faces = 0; neck texels in eye faces = 0; positions, UV0-2 and vertex colours identical (float epsilon); robot_eye is the last slot; no Blender process left; chaser-meshy-pipeline updated (step, counts, revert = git checkout 2ad7698a of both FBX); committed. If any check fails, restore both FBX with git and stop.
 - editor_state: closed
 - token_ceiling: 150k
-- model: open
-- tokens: open
-- runs: open
+- model: sonnet
+- tokens: input 36, cache write 54430, cache read 628160, output 5923
+- runs: 1
 - milestone: M1
-- result: open
+- result: Done (commit 2d0cde72). Tools/art/blender/eye_slot_split.py moved 159 HeadTorso faces (69,771 eye texels) to a last slot robot_eye in chaser_meshy_parts.fbx [meshy_chaser, robot_eye] and SM_ShieldChaser_Meshy_Anim.fbx [meshy_chaser, M_ChaserShield, M_ChaserShield_Emblem, robot_eye]; tris 3263/3263 and 4242/4242; eye texels left in body 0; neck texels in eye 0; positions delta 1e-5 cm, UV0-2 and vertex colours delta 0. Reports next to each FBX; chaser-meshy-pipeline updated, revert git checkout 2ad7698a of both FBX.
 
 ## Relations
 - [[task-278-chaser-eye-glow]] — parent global task.

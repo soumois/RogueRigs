@@ -3,7 +3,7 @@ id: task-278-03-eye-slot-reimport
 description: "SM_Chaser_Meshy_Anim and SM_ShieldChaser_Meshy_Anim reimported with the eye slot, slot order and PartId channel intact."
 parent: task-278-chaser-eye-glow
 kind: task
-status: todo
+status: in-progress
 ---
 # SM_Chaser_Meshy_Anim and SM_ShieldChaser_Meshy_Anim reimported with the eye slot, slot order and PartId channel intact
 
