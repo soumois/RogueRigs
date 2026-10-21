@@ -3,7 +3,7 @@ id: task-278-03-eye-slot-reimport
 description: "SM_Chaser_Meshy_Anim and SM_ShieldChaser_Meshy_Anim reimported with the eye slot, slot order and PartId channel intact."
 parent: task-278-chaser-eye-glow
 kind: task
-status: in-progress
+status: done
 ---
 # SM_Chaser_Meshy_Anim and SM_ShieldChaser_Meshy_Anim reimported with the eye slot, slot order and PartId channel intact
 
@@ -15,11 +15,11 @@ status: in-progress
 - done_when: Slot order chaser [meshy_chaser, robot_eye], shield [meshy_chaser, M_ChaserShield, M_ChaserShield_Emblem, robot_eye] with the old slot materials kept; UVCHECK off_bin 0 and mixed 0 on both; build settings (no lightmap generation, full precision, LightMapCoordinateIndex 1) read back; bounds extension unchanged; chaser-meshy-pipeline updated (before, after, revert = git checkout 2ad7698a of the two .uasset and FBX); committed. If slot order differs or channel 2 broke, restore the .uasset files with git and stop.
 - editor_state: closed
 - token_ceiling: 120k
-- model: open
-- tokens: open
-- runs: open
+- model: opus
+- tokens: input 30, cache write 44502, cache read 418628, output 181
+- runs: 1
 - milestone: M1
-- result: open
+- result: Done (commit 648344cd). Headless reimport of SM_Chaser_Meshy_Anim [meshy_chaser, robot_eye] and SM_ShieldChaser_Meshy_Anim [meshy_chaser, M_ChaserShield, M_ChaserShield_Emblem, robot_eye]; shield slots keep MI_ShieldChaser_Body/_Shield/_Emblem, chaser slot 0 was and stays WorldGridMaterial (material set on BP_Chaser); new slot WorldGridMaterial; build settings lightmap gen off, full precision, LightMapCoordinateIndex 1; UVCHECK off_bin 0 mixed 0 (eye 159 tris at PartId 0.15); bounds and extension unchanged (40/60). Note: chaser asset went 3273 -> 3263 tris (the old asset came from an earlier cut than the committed 2026-10-14 FBX; the shield body already had these 3104 body tris); 30 vertex-colour corners less; uv2 identical.
 
 ## Relations
 - [[task-278-chaser-eye-glow]] — parent global task.

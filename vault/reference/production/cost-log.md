@@ -541,6 +541,7 @@ kind: note
 | [[task-279-01-drone-eye-glow]] | sonnet | 2 | 0k | 103k | 2788k | 1k |
 | [[task-280-01-drone-thruster-boost]] | sonnet | 1 | 0k | 128k | 1110k | 1k |
 | [[task-278-02-eye-slot-split]] | sonnet | 1 | 0k | 54k | 628k | 6k |
+| [[task-278-03-eye-slot-reimport]] | opus | 1 | 0k | 45k | 419k | 0k |
 
 ## Totals
 | Scope | Input | Cache write | Cache read | Output |

@@ -3,7 +3,7 @@ id: task-278-04-robot-eye-material
 description: "A shared robot eye material M_RobotEye with its WPO in a material function shared with the chaser bodies, and four instances."
 parent: task-278-chaser-eye-glow
 kind: task
-status: todo
+status: in-progress
 ---
 # A shared robot eye material M_RobotEye with its WPO in a material function shared with the chaser bodies, and four instances
 
