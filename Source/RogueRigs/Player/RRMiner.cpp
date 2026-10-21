@@ -35,6 +35,7 @@
 #include "Weapons/RRWeapon.h"
 #include "World/RRWorld.h"
 #include "World/RRBlobShadowComponent.h"
+#include "World/RRPlayerLightMaskComponent.h"
 #include "World/RRShadows.h"
 
 ARRMiner::ARRMiner(const FObjectInitializer& ObjectInitializer)
@@ -96,6 +97,9 @@ ARRMiner::ARRMiner(const FObjectInitializer& ObjectInitializer)
 	// task-264-02: fake round shadow, placed and sized from the capsule in PostInitializeComponents.
 	BlobShadow = CreateDefaultSubobject<URRBlobShadowComponent>(TEXT("BlobShadow"));
 	BlobShadow->SetupAttachment(GetCapsuleComponent());
+
+	// task-272-07: feeds MPC_PlayerLight (post-process light mask around the miner).
+	LightMask = CreateDefaultSubobject<URRPlayerLightMaskComponent>(TEXT("LightMask"));
 }
 
 UAbilitySystemComponent* ARRMiner::GetAbilitySystemComponent() const

@@ -19,6 +19,7 @@ class UAbilitySystemComponent;
 class UCameraComponent;
 class URRAbilitySystemComponent;
 class URRBlobShadowComponent;
+class URRPlayerLightMaskComponent;
 class URRHealthAttributeSet;
 class URRMovementAttributeSet;
 class URRPlayerAttributeSet;
@@ -78,6 +79,8 @@ DECLARE_DYNAMIC_MULTICAST_DELEGATE_TwoParams(FRROnWeaponSlotChangedSignature, in
  * turns OnDeath into the game over.
  * Blob shadow (task-264-02): BlobShadow, a flat dark disc attached under the capsule (diameter = capsule radius x
  * BlobShadowDiameterScale); the i-frames blink (mesh and its children) leaves it alone.
+ * Light mask (task-272-07): LightMask (URRPlayerLightMaskComponent) writes the miner position and the mask tunables into
+ * MPC_PlayerLight each tick (radial post-process brightening, neutral by default).
  * Subclass in Blueprint for the mesh and animation.
  */
 UCLASS(Abstract)
@@ -380,6 +383,10 @@ protected:
 	/** Flat dark disc on the floor under the miner (task-264-02): attached to the capsule, absolute zero rotation, no collision or shadow. */
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Components")
 	TObjectPtr<URRBlobShadowComponent> BlobShadow;
+
+	/** Writes the miner position and the light mask tunables into MPC_PlayerLight each tick (task-272-07, neutral by default). */
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Components")
+	TObjectPtr<URRPlayerLightMaskComponent> LightMask;
 
 	/** Blob shadow diameter = capsule radius x this (2.2, like the robots). 0 = no disc. */
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Miner|Blob Shadow", meta = (ClampMin = "0"))
