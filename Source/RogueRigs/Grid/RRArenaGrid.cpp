@@ -1562,7 +1562,12 @@ void ARRArenaGrid::BuildDepositCrystals()
 				}
 			}
 			// Marked 0, ore colour 1-3 and the pulse phase and rate 4-5 (task-257-02): at least 6 floats.
-			Component->SetNumCustomDataFloats(FMath::Max3(Template->NumCustomDataFloats, MarkedCustomDataIndex + 1, GetCrystalPulseFloatCount()));
+			// task-258-01: a mesh with a rock slot (heal deposit, MI_RockSlab) shares the data with M_RockSlab, which reads 4-7 as
+			// its quadrant shake (1 or more = shaking): the pulse rate at 5 shook the rock by itself. Such an ISM keeps marked and
+			// colour only (4 floats), so the rock reads its defaults (still) and the crystal its neutral pulse (phase 0, rate 1).
+			const bool bPulseData = CanWriteDepositPulseData(Meshes[Variant]);
+			const int32 BaseFloats = FMath::Max(MarkedCustomDataIndex + 1, OreColorCustomDataIndex + 3);
+			Component->SetNumCustomDataFloats(bPulseData ? FMath::Max3(Template->NumCustomDataFloats, BaseFloats, GetCrystalPulseFloatCount()) : BaseFloats);
 			// Rendering only: collision stays one cube per cell in the collision ISMs.
 			Component->SetCollisionEnabled(ECollisionEnabled::NoCollision);
 			Component->SetCollisionProfileName(UCollisionProfile::NoCollision_ProfileName);
@@ -1585,13 +1590,17 @@ void ARRArenaGrid::BuildDepositCrystals()
 			Visual.Variant = Variant;
 			Visual.Render = Component;
 			Visual.InstanceDeposits = BatchDeposits[Variant];
+			Visual.bPulseData = bPulseData;
 			for (int32 Instance = 0; Instance < Visual.InstanceDeposits.Num(); ++Instance)
 			{
 				DepositCrystalVisual[Visual.InstanceDeposits[Instance]] = VisualIndex;
 				DepositCrystalInstance[Visual.InstanceDeposits[Instance]] = Instance;
 				WriteDepositCrystalData(Visual.InstanceDeposits[Instance], /*bMarkDirty*/ false);
 				// Pulse data written once: it follows the instance through remove-at-swap (the ISM swaps whole custom data blocks).
-				WriteCrystalPulseData(Component, Instance, FRRPulseDesync::DepositDomain, static_cast<uint32>(Visual.InstanceDeposits[Instance]));
+				if (bPulseData)
+				{
+					WriteCrystalPulseData(Component, Instance, FRRPulseDesync::DepositDomain, static_cast<uint32>(Visual.InstanceDeposits[Instance]));
+				}
 			}
 			Component->MarkRenderStateDirty();
 		}
@@ -1666,6 +1675,27 @@ void ARRArenaGrid::WriteDepositCrystalData(int32 DepositId, bool bMarkDirty)
 	{
 		Component->MarkRenderStateDirty();
 	}
+}
+
+bool ARRArenaGrid::DepositMeshHasRockSlot(const UStaticMesh* Mesh) const
+{
+	if (!Mesh)
+	{
+		return false;
+	}
+	for (const FStaticMaterial& Slot : Mesh->GetStaticMaterials())
+	{
+		if (Slot.MaterialSlotName != DepositCrystalSlotName)
+		{
+			return true;
+		}
+	}
+	return false;
+}
+
+bool ARRArenaGrid::CanWriteDepositPulseData(const UStaticMesh* Mesh) const
+{
+	return !DepositMeshHasRockSlot(Mesh) || FMath::Min(PulsePhaseCustomDataIndex, PulseRateCustomDataIndex) >= PieceCustomDataCount;
 }
 
 void ARRArenaGrid::WriteCrystalPulseData(UInstancedStaticMeshComponent* Component, int32 Instance, uint32 Domain, uint32 Id)

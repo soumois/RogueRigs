@@ -204,6 +204,10 @@ struct FRRGridDepositVisual
 	/** Deposit id (index in ARRArenaGrid::Deposits) of each instance, in instance order. */
 	UPROPERTY()
 	TArray<int32> InstanceDeposits;
+
+	/** True when the instances carry the pulse phase and rate (task-257-02); false for a mesh whose rock slot would read them as shake (task-258-01). */
+	UPROPERTY()
+	bool bPulseData = false;
 };
 
 /**
@@ -851,6 +855,20 @@ protected:
 
 	/** Custom data floats a crystal ISM needs for the pulse data: max(PulsePhaseCustomDataIndex, PulseRateCustomDataIndex) + 1 (6 by default). */
 	int32 GetCrystalPulseFloatCount() const { return FMath::Max(PulsePhaseCustomDataIndex, PulseRateCustomDataIndex) + 1; }
+
+	/**
+	 * task-258-01: true when Mesh has a slot other than DepositCrystalSlotName (the `rock` slot of the heal deposit meshes,
+	 * MI_RockSlab). Every slot of an ISM reads the same per-instance custom data, and M_RockSlab reads it with the rock piece
+	 * layout (0-3 damage, 4-7 shake: a value of 1 or more shakes its quadrant, 8-11 marked, 12 solid mask).
+	 */
+	bool DepositMeshHasRockSlot(const UStaticMesh* Mesh) const;
+
+	/**
+	 * task-258-01: whether the formation ISM of Mesh carries the pulse data: always for a crystal-only mesh; for a mesh with a
+	 * rock slot only when both pulse indices are at or above PieceCustomDataCount (indices the rock never reads). With the
+	 * defaults 4 and 5 the rate (0.8 to 1.2) at 5 is the rock quadrant 1 shake, so the heal deposits get no pulse data.
+	 */
+	bool CanWriteDepositPulseData(const UStaticMesh* Mesh) const;
 
 	/**
 	 * task-257-02: writes FRRPulseDesync phase and rate of (PulseSeed, Domain, Id) to Instance of Component at

@@ -1,4 +1,4 @@
-// Rogue Rigs - headless check of the seeded pulse desync (RogueRigs.PulseDesync.SeededValues, task-257-02): hash determinism, ore and heal pickup Custom Primitive Data, XP neutral, deposit crystal instance data.
+// Rogue Rigs - headless check of the seeded pulse desync (RogueRigs.PulseDesync.SeededValues, task-257-02): hash determinism, ore and heal pickup Custom Primitive Data, XP neutral, deposit crystal instance data, heal deposit rock shake inputs still (task-258-01).
 
 #include "CoreMinimal.h"
 #include "Misc/AutomationTest.h"
@@ -134,7 +134,8 @@ bool FRRPulseDesyncSeededValuesTest::RunTest(const FString& Parameters)
 		}
 	}
 
-	// 3. Deposit crystals (BP_ArenaGrid, arena_m1_fine, ore and heal deposit meshes): 6 floats, hash of (PulseSeed, deposit id).
+	// 3. Deposit crystals (BP_ArenaGrid, arena_m1_fine): crystal-only meshes (Duskite) 6 floats, hash of (PulseSeed, deposit id);
+	// meshes with a rock slot (heal) 4 floats, no pulse, every rock shake input below 1 (task-258-01).
 	ARRArenaGrid* Grid = RRTestHarness::SpawnFineGrid(*this, TestWorld);
 	if (!Grid)
 	{
@@ -148,12 +149,42 @@ bool FRRPulseDesyncSeededValuesTest::RunTest(const FString& Parameters)
 	TestEqual(TEXT("crystal rate index 5"), RateIndex, 5);
 	int32 Checked = 0;
 	int32 Wrong = 0;
+	int32 RockChecked = 0;
+	int32 RockShaking = 0;
+	int32 RockWouldShake = 0;
 	for (const FRRGridDepositVisual& Visual : FGridAccess::DepositVisualsOf(Grid))
 	{
 		if (!Visual.Render)
 		{
 			continue;
 		}
+		// task-258-01: a mesh with a rock slot (heal deposit, M_RockSlab) shares the per-instance data with the rock, which reads
+		// 4-7 as its quadrant shake (1 or more = shaking). Such an ISM gets no pulse data and 4 floats, so every shake input reads
+		// its default 0 (still); the rate task-257-02 wrote at 5 is counted to show how many deposits shook.
+		if (FGridAccess::DepositMeshHasRockSlotOf(Grid, Visual.Render->GetStaticMesh()))
+		{
+			TestFalse(TEXT("a deposit ISM with a rock slot carries no pulse data"), Visual.bPulseData);
+			TestEqual(TEXT("a deposit ISM with a rock slot has 4 custom data floats (marked, colour)"), Visual.Render->NumCustomDataFloats, 4);
+			for (int32 Instance = 0; Instance < Visual.InstanceDeposits.Num(); ++Instance)
+			{
+				const uint32 DepositId = static_cast<uint32>(Visual.InstanceDeposits[Instance]);
+				float MaxShake = 0.f;
+				for (int32 Quadrant = 0; Quadrant < 4; ++Quadrant)
+				{
+					// Index beyond NumCustomDataFloats: the material reads its default 0.
+					const int32 Index = ARRArenaGrid::PieceShakeCustomDataIndex + Quadrant;
+					MaxShake = FMath::Max(MaxShake, Index < Visual.Render->NumCustomDataFloats ? ReadInstanceData(Visual.Render, Instance, Index) : 0.f);
+				}
+				const float FormerRate = FRRPulseDesync::Rate(Seed, FRRPulseDesync::DepositDomain, DepositId, Range.X, Range.Y);
+				AddInfo(FString::Printf(TEXT("rock-slot deposit %u: rock shake inputs max %.4f (still below 1); task-257-02 rate at index 5 was %.4f (%s)"),
+					DepositId, MaxShake, FormerRate, FormerRate >= 1.f ? TEXT("shook quadrant 1") : TEXT("still")));
+				++RockChecked;
+				RockShaking += MaxShake >= 1.f ? 1 : 0;
+				RockWouldShake += FormerRate >= 1.f ? 1 : 0;
+			}
+			continue;
+		}
+		TestTrue(TEXT("a crystal-only deposit ISM carries the pulse data"), Visual.bPulseData);
 		TestEqual(TEXT("crystal ISM has 6 custom data floats"), Visual.Render->NumCustomDataFloats, 6);
 		for (int32 Instance = 0; Instance < Visual.InstanceDeposits.Num(); ++Instance)
 		{
@@ -174,14 +205,23 @@ bool FRRPulseDesyncSeededValuesTest::RunTest(const FString& Parameters)
 	AddInfo(FString::Printf(TEXT("seed %d: %d deposit crystal instances checked over %d ISMs"), Seed, Checked, FGridAccess::DepositVisualsOf(Grid).Num()));
 	TestTrue(TEXT("deposit crystals present"), Checked > 1);
 	TestEqual(TEXT("every crystal holds the hash of its deposit"), Wrong, 0);
+	AddInfo(FString::Printf(TEXT("rock-slot deposits: %d checked, %d with a shake input of 1 or more (task-257-02 layout: %d)"), RockChecked, RockShaking, RockWouldShake));
+	TestTrue(TEXT("rock-slot (heal) deposits present"), RockChecked > 0);
+	TestEqual(TEXT("no rock-slot deposit has a shake input of 1 or more (untouched deposits stay still)"), RockShaking, 0);
 
-	// Two neighbouring instances (0 and 1) of the first ore and the first heal crystal ISM: different phases; colour and mark kept.
+	// Two neighbouring instances (0 and 1) of the first ore crystal ISM: different phases; colour and mark kept. The heal ISMs
+	// (rock slot) have no pulse data since task-258-01; their mark is checked too.
 	for (const ERRCellType Type : { ERRCellType::Ore, ERRCellType::HealOre })
 	{
 		const FRRGridDepositVisual* Visual = FGridAccess::DepositVisualsOf(Grid).FindByPredicate(
 			[Type](const FRRGridDepositVisual& Candidate) { return Candidate.CellType == Type && Candidate.Render && Candidate.InstanceDeposits.Num() >= 2; });
 		if (!TestNotNull(Type == ERRCellType::Ore ? TEXT("an ore crystal ISM with 2 instances") : TEXT("a heal crystal ISM with 2 instances"), Visual))
 		{
+			continue;
+		}
+		if (!Visual->bPulseData)
+		{
+			TestEqual(TEXT("unmarked heal deposit keeps mark 0"), ReadInstanceData(Visual->Render, 0, Grid->GetMarkedCustomDataIndex()), 0.f);
 			continue;
 		}
 		const float First = ReadInstanceData(Visual->Render, 0, PhaseIndex);
