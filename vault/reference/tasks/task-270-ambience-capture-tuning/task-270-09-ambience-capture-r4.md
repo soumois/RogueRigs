@@ -3,7 +3,7 @@ id: task-270-09-ambience-capture-r4
 description: "Round 4 captures at the same frames with the round 4 values, judged by the Orchestrator and sent to the owner."
 parent: task-270-ambience-capture-tuning
 kind: task
-status: todo
+status: in-progress
 ---
 # Ambience round 4 captures
 
