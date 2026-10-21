@@ -6,7 +6,7 @@ kind: doc
 ---
 # Dark violet ambient (L_ArenaM1)
 
-Current look (task-272-18): flat shadowless sun (intensity 4.0) plus a low sky light, with the centre-brighter effect from the post-process mask; the history below is kept.
+Current look (task-274-03): flat shadowless sun (intensity 4.0) plus a low sky light, raised by exposure (min = max -2.9 EV100), with a darkening-only post-process mask (gain 1 at the miner, darker away); the history below is kept.
 
 Provisional (owner 2026-10-20, task-265-01; owner tunes by eye). Reason: reference game look, a dark violet ambient with a warm pool of light around the player (the player light comes from task-263-02). The strong sun (intensity 6) burnt the yellow chasers white-yellow.
 
@@ -45,6 +45,9 @@ Values picked from real -game captures (Saved/LookTune/r1, variant close to v6),
 - task-272-15 (owner 2026-10-21): the player light is removed from BP_Miner; the scene is lit flat by the shadowless sun and sky. The centre-brighter effect comes only from [[mpp-player-light-mask]]. Revert values: [[bp-miner]].
 - task-272-18 (owner 2026-10-21, provisional): flat lighting: DirectionalLight_0 `intensity` 0.3 -> 4.0 (colour (0.75, 0.62, 1.0) and castShadows false kept, read back after save); SkyLight_0 (0.08) and exposure (min = max 1.8 EV100) unchanged. The centre-brighter effect is [[mpp-player-light-mask]]. Source: sweep task-272-16 (Saved/LookTune/r8, S10-S40): sun 4.0 reads evenly without the effect (floor about 25/255, rock tops 40-50, no hot spot); a directional light is kept so the floor normal map still shows relief. Revert: sun 0.3.
 - task-272-03 (owner 2026-10-21, provisional): DirectionalLight_0 `intensity` 1.5 -> 0.3 (colour (0.75, 0.62, 1.0) and castShadows false kept, read back after save); PPV_XPGlow `AutoExposureMinBrightness` = `AutoExposureMaxBrightness` 1.3 -> 1.8 EV100 (overrides on, AutoExposureBias 1, method AEM_Histogram, bloom unchanged; +0.5 EV100 darkens by half a stop, equal to the runtime r.ExposureOffset -0.5 of the sweep). SkyLight_0 unchanged (0.08), read back. Reason: with the low player light the far floor and rock tops must fall toward the measured DRGS ring profile (far rings about 9 to 12 of 255); sweep task-272-05 variant M10 (sun 0.3, exposure -0.5) matched best (score 0.21 against 0.61 for the old values). Revert: sun 1.5, exposure min = max 1.3.
+
+## task-274-03
+- task-274-03 (owner 2026-10-21, provisional): PPV_XPGlow `AutoExposureMinBrightness` = `AutoExposureMaxBrightness` 1.8 -> -2.9 EV100 (read back -2.9; overrides on, method AEM_Histogram, bias 1 unchanged). Sun 4.0, sky 0.08, bloom 1.3 / -1 and the M_PP_PlayerLightMask blendable read back unchanged. Reason: the old mask multiplied the centre by 30 x WarmTint (luminance about x25 = +4.7 EV); the mask is now a pure darkener with gain 1 at the miner (task-274-02), so exposure raises the flat scene to the old centre brightness: 1.8 - 4.7 = -2.9. Exposure rather than sun, because emissives (XP, crystals, thrusters) were multiplied by the same old mask and keep their relation to the scene; the sun stays 4.0 for the floor normal-map relief. Value calibrated by the next sweep. Revert: exposure 1.8.
 
 ## Notes and risks
 - The sun has `bAtmosphereSunLight` true, but the level has no SkyAtmosphere actor, so the flag has no visible effect.
