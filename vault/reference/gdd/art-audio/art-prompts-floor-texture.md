@@ -1,6 +1,6 @@
 ---
 id: art-prompts-floor-texture
-description: "Prompts the owner pastes into ChatGPT for the tileable painted floor of cracked faceted plates (task-273-01): prompt chain, seam method, review checklist; image open."
+description: "Prompts the owner pastes into ChatGPT for the tileable painted floor of cracked faceted plates (task-273-01): prompt chain, seam method, review checklist; owner image archived (first version), maps 2048 baked."
 parent: art-prompts
 kind: note
 ---
@@ -27,10 +27,23 @@ ChatGPT image generation, by the owner. Save the pick as `Art/Source/floor-textu
 - 3 x 3 preview: no seam line, no strong repeating motif.
 
 ## Files
-Owner image: open. Tileable and preview: open (after the owner pick).
+Owner image, 2026-10-21, "première version" (the owner may iterate): `Art/Source/floor-texture/owner-2026-10-21-floor-texture.webp` (1254 px, kept untouched) and lossless `.png` of it. Saturated magenta-violet, lighter than asked.
+Baked by `Tools/art/blender/floor_texture_maps.py` into the same folder (2048 px): `T_Floor_Plates_D_asis.png`, `T_Floor_Plates_D.png` (material albedo), `T_Floor_Plates_N.png`, `T_Floor_Plates_H.png` (16-bit), `..._D_tiled3x3.png`, `..._N_tiled3x3.png` (1536).
+
+## Bake method and numbers (levels of 255)
+- Seam: source wrap step 3.42 (x) and 3.52 (y) against inner 1.21 and 1.36, above 1.5 x, so a correction: the border mismatch is split over 16 px each side (cosine ramp), no content shift; after 0.01 and 0.01. Then Lanczos-3 resample to 2048 with wrapped taps, no sharpening.
+- D_asis: mean RGB (123, 52, 113), mean luminance 71.6, p1 25.0, p99 104.0.
+- D: linear space, saturation x0.8, per-channel gain to mean RGB (95, 45, 95); luminance 59.3, p1 20.5, p99 86.2. Wrap vs inner: 0.13 vs 0.65 (x), 0.12 vs 0.73 (y).
+- Height: luminance low-pass (sigma 20, faint), cracks as grooves (blur-8 minus luminance, depth 0.38), rims raised (0.12); mean 0.49.
+- Normal: DirectX (green down, Unreal default), wrapped central differences, bake strength 12 (height in 0..1 per pixel step). Mean bytes (127.5, 127.6, 253.8), length 0.993 to 1.006, wrap vs inner 0.57 vs 1.34 (x), 0.50 vs 1.49 (y).
+
+## Material values
+Roughness constant 0.8, no map. Brightness (far floor 9-12/255, mid 39/255) is tuned in the material; NormalStrength starts at 1.
+
 
 ## Relations
 - [[art-prompts]] — parent: method and locked phrases.
 - [[art-prompts-rock-top-texture]] — model followed: seam method and review.
 - [[art-style-guide]] — A13, the floor rule this texture serves.
+- [[task-273-02-floor-texture-maps]] — task that baked these maps.
 - [[color-code]] — violet-magenta family.
