@@ -14,4 +14,3 @@ A global task moves to [[tasks-done-index]] when it is done (`vault/scripts/task
 - [[task-230-rock-slab-integration]] — Dual-grid slab rock look in the grid: pieces, world-UV top texture, cracks, plates, crystals. Status in-progress.
 - [[task-234-ore-deposit-look]] — Each 2 x 2 ore or heal deposit is drawn as one crystal formation, at least 3 variants per type, from images the owner generates with prompts we write. Status in-progress.
 - [[task-273-floor-texture]] — First painted floor texture: cracked faceted plates with fine crack lines and light-catching edges, tileable albedo and normal, world-aligned floor material with a slight world-position noise against repetition. Status in-progress.
-- [[task-274-flat-light-darkening-shader]] — Post-process mask becomes a pure darkener (no tint, gain 1 at the miner); flat light raised so the unmasked screen looks like the old centre. Status in-progress.
