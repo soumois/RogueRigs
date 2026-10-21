@@ -510,6 +510,7 @@ kind: note
 | [[task-272-02-player-light-low-apply]] | sonnet | 1 | 0k | 37k | 273k | 0k |
 | [[task-272-03-ambient-level-apply]] | sonnet | 1 | 0k | 71k | 755k | 0k |
 | [[task-272-04-low-light-capture]] | opus | 1 | 0k | 77k | 1258k | 7k |
+| [[task-273-01-floor-texture]] | sonnet | 1 | 0k | 23k | 65k | 1k |
 
 ## Totals
 | Scope | Input | Cache write | Cache read | Output |

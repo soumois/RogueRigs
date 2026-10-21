@@ -3,7 +3,7 @@ id: task-273-02-floor-texture-maps
 description: "Tileable albedo and normal map at 2048 px from the owner's validated floor image, checked by numbers (seams, size, mean value)."
 parent: task-273-floor-texture
 kind: task
-status: todo
+status: in-progress
 ---
 # Floor texture maps
 

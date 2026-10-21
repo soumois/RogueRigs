@@ -3,7 +3,7 @@ id: task-273-01-floor-texture
 description: "Image prompts for ChatGPT of a tileable painted floor of cracked faceted plates, with seam method and review; no image generated."
 parent: task-273-floor-texture
 kind: task
-status: in-progress
+status: done
 ---
 # Floor texture prompts
 
@@ -15,11 +15,11 @@ status: in-progress
 - done_when: Prompts written (tileable, straight top-down, no baked light or shadow, no rubble, own design, base colour stated); seam method and review checklist in the node; node linked from art-prompts; lint clean; committed by path.
 - editor_state: any
 - token_ceiling: 30k
-- model: open
-- tokens: open
-- runs: open
+- model: sonnet
+- tokens: input 10, cache write 23416, cache read 65249, output 755
+- runs: 1
 - milestone: M1
-- result: open
+- result: Commit 9e25bb41: ChatGPT prompts Art/Source/floor-texture/prompts/01-floor-texture.txt (main) and 02-floor-texture-correction.txt (corrections A light/tone, B border); node art-prompts-floor-texture; no image generated. Waiting for the owner's ChatGPT image.
 
 ## Relations
 - [[task-273-floor-texture]] — parent global task.
