@@ -17,9 +17,11 @@ kind: doc
 - verified: PIE with the cheat route (bInvulnerable, spawner TrickleDuration 1 / PackInterval 2 set on the PIE instance only): 25 shooters among chasers and kamikazes, held 900 to 1000 uu from the miner, LaserBeam bVisible true with scale (8.6, 0.04, 0.04) while aiming then false, ShooterProjectile actors appeared (one at z = 60 next to the miner) and only 2 were alive among 25 shooters; no game log error. Shots stopping on rock was not observed directly (covered by the C++ tests).
 - gotcha: the level-up screen pauses the game; during checks send `ChooseUpgrade 0` on the cheat CDO ([[sys-cheats]]) or time stands still. Keep the editor in front (no shell commands) while PIE runs.
 - readability: task-266-01 lowered MI_GB_Shooter Color to (0.3, 0.68, 0.035); task-275-02 (owner 2026-10-21) restored (0.45, 1, 0.05); see [[bp-robot-readability]].
+- eye_278_10 (task-278-10, 2026-10-21): before = EyeLeft and EyeRight OverrideMaterials [MI_GB_Eye]; the EventGraph has no SetMaterial (only empty EventBeginPlay, EventActorBeginOverlap, EventTick). After = both eyes [/Game/RogueRigs/Materials/Robots/MI_RobotEye_GreyBox]. Nothing else changed. The eyes now glow red: EyeColor (1, 0.05, 0.05) x GlowAmount 23, provisional, owner 2026-10-21, task-278. MI_GB_Eye itself unchanged; BP_ShooterProjectile ShotMesh keeps MI_GB_Eye (untouched). Read back, compiled without LogBlueprint error, saved. Revert: `git checkout 2ad7698a -- Content/RogueRigs/Blueprints/Enemies/BP_Shooter.uasset`. Not verified: PIE, render, glow look.
 - owner_agent: agent-bp
 
 ## Relations
+- [[bp-robot-eye-material]] — the eye material the eyes use now.
 - [[bp-robot-readability]] — the reverted colour tweak against burn.
 - [[blueprints-index]] — parent index.
 - [[sys-enemies-shooter]] — the C++ class.
