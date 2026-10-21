@@ -3,7 +3,7 @@ id: task-278-10-bp-shooter-eye
 description: "BP_Shooter eyes use MI_RobotEye_GreyBox."
 parent: task-278-chaser-eye-glow
 kind: task
-status: in-progress
+status: done
 ---
 # BP_Shooter eyes use MI_RobotEye_GreyBox
 
@@ -15,11 +15,11 @@ status: in-progress
 - done_when: Eye materials read back; compile without error; saved; doc updated; lint clean; committed.
 - editor_state: open (editor + MCP)
 - token_ceiling: 60k
-- model: open
-- tokens: open
-- runs: open
+- model: sonnet
+- tokens: input 14, cache write 20100, cache read 111389, output 678
+- runs: 1
 - milestone: M1
-- result: open
+- result: Done (commit eb663fa5). BP_Shooter EyeLeft and EyeRight OverrideMaterials [MI_GB_Eye] -> [MI_RobotEye_GreyBox]; no graph node touches the eyes; BP_ShooterProjectile ShotMesh keeps MI_GB_Eye; compile without error; saved. Doc bp-shooter (revert git checkout 2ad7698a). Unverified: PIE, render.
 
 ## Relations
 - [[task-278-chaser-eye-glow]] — parent global task.
