@@ -13,7 +13,7 @@ status: in-progress
 - gdd_check: done by the Orchestrator when the task is planned (2026-10-21).
 - confirmed_by_owner: yes (2026-10-21)
 - milestone: M1
-- next_step: task-272-18-flat-level-light
+- next_step: task-272-19-flat-mask-capture
 - result: open (physical-light variant done in steps 1-5: see subtask results; hybrid variant in progress)
 
 ## Subtasks

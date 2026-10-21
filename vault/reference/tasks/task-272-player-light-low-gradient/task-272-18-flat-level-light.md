@@ -3,7 +3,7 @@ id: task-272-18-flat-level-light
 description: "Flat shadowless level lighting (violet sun, low sky, exposure) set to the values chosen from the sweep."
 parent: task-272-player-light-low-gradient
 kind: task
-status: in-progress
+status: done
 ---
 # Flat level light
 
@@ -15,11 +15,11 @@ status: in-progress
 - done_when: Values read back, level saved, docs updated, lint clean, committed by path.
 - editor_state: open
 - token_ceiling: 30k
-- model: open
-- tokens: open
-- runs: open
+- model: sonnet
+- tokens: input 26, cache write 48078, cache read 469134, output 916
+- runs: 1
 - milestone: M1
-- result: open
+- result: Commit 8b43a5e3. DirectionalLight_0 intensity 0.3 -> 4.0 (violet, no shadows), read back; SkyLight_0 0.08 unchanged; PPV_XPGlow untouched (not read back, checked in task-272-19). Doc lights-dark-ambient: current look paragraph and task-272-18 line, revert sun 0.3.
 
 ## Relations
 - [[task-272-player-light-low-gradient]] — parent global task.

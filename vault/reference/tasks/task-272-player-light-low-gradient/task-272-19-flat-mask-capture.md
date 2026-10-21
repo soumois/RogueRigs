@@ -3,7 +3,7 @@ id: task-272-19-flat-mask-capture
 description: "Final captures of the flat light plus shader mask at the asset values, measured against DRGS, side by sides for the owner."
 parent: task-272-player-light-low-gradient
 kind: task
-status: todo
+status: in-progress
 ---
 # Flat mask final captures
 
