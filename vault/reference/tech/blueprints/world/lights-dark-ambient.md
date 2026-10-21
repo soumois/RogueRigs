@@ -35,6 +35,9 @@ Values picked from real -game captures (Saved/LookTune/r1, variant close to v6),
 ## task-270-07
 - task-270-07 (round 4, owner 2026-10-21, provisional): PlayerLight `attenuationRadius` 600 -> 680, `intensity` 2400 -> 3000 cd (read back 680 / 3000 after compile and save); height 450, colour 255/191/128 and castShadows kept. Reason: r3 captures showed the pool too small and dim (core L 99, half radius 150 px); a larger radius widens the floor reach to sqrt(680^2 - 450^2) = 510 uu and raises the window at the floor centre from 0.47 to 0.65. Revert = task-270-05 values (radius 600, 2400 cd).
 
+## task-270-10
+- task-270-10 (round 5, owner 2026-10-21, provisional): PlayerLight `attenuationRadius` 680 -> 640 (read back 640 after compile and save); intensity 3000 cd, height 450 and colour 255/191/128 kept. Reason: r4 captures pool too wide again (half radius 260 px, 0.27 of width; r3 at 600 gave 150 px); 640 aims at about 0.2. Revert = task-270-07 value 680.
+
 ## Notes and risks
 - The sun has `bAtmosphereSunLight` true, but the level has no SkyAtmosphere actor, so the flag has no visible effect.
 - The sky light captures the scene (SLS_CapturedScene, real-time capture off): it uses the capture baked in the editor, and its colour multiplies it. It contributes only what that capture holds; it was not recaptured here. If the ambient stays too black, recapture the sky light in the editor (Recapture) or give it a cubemap/specified colour. Not verified by eye.
