@@ -29,7 +29,7 @@ Owner 2026-10-20 (reference game video): the only cast shadows are those of the 
 - Cast: grid rock piece ISMs, barrel HISMs and special ore (`ARRArenaGrid::bBlocksCastShadows`, default true, [[sys-grid]]). Ore and heal ore crystals stay off (`bDepositCrystalsCastShadow` false, task-237-01).
 - Never cast: grid floor chunks; every primitive of robots (`ARREnemy`), pickups (`ARRPickup`), the drone (`ARRDrone`), the miner (`ARRMiner`), weapons and turrets (`ARRWeapon`) and projectiles (`ARRProjectile`), through `RRShadows::DisableCastShadows` in their `PostInitializeComponents` (C++ and Blueprint components, kept across pool reuse). Robots get a fake blob shadow instead (task-264).
 - Not covered (no C++ rule, flags as authored): objectives (console, shuttle, bonus chest), Niagara debris and effects, explosion FX (already off in C++).
-- The light itself (movable warm point light on BP_Miner, cast shadows on) is added by task-263-02 ([[bp-miner]]).
+- The light itself now exists (task-263-02, provisional, owner 2026-10-20, owner tunes by eye): PointLightComponent `PlayerLight` on BP_Miner, Movable, warm (1.0, 0.62, 0.30), 60 Candelas, radius 1400, height 300 above the capsule, cast shadows on; values and tuning in [[bp-miner]]. DirectionalLight_0 and SkyLight_0 still cast no shadow (unchanged). Cost: a moving shadowed local light invalidates virtual shadow map pages each frame ([[perf-risks]]); reduce with a smaller AttenuationRadius or castShadows off.
 
 ## Revert (bring the shadows back)
 1. Open L_ArenaM1, select DirectionalLight_0, Details, Light, Cast Shadows: tick it.
@@ -49,3 +49,4 @@ Owner 2026-10-20 (reference game video): the only cast shadows are those of the 
 - [[sys-grid]] — `bBlocksCastShadows`: the rock and barrel shadow casters of the player light.
 - [[lights-dark-ambient]] — same two actors: intensity and violet tint (task-265).
 - [[bp-miner]] — carries the player light (task-263-02).
+- [[perf-risks]] — cost of the moving shadowed light.
