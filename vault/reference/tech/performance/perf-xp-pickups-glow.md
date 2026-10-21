@@ -26,6 +26,9 @@ Burst of XP nuts and chips ([[bp-pickup-xp]]) held still around an idle miner, b
 - 16.6 ms average: pass at every count, worst 9.00. 25 ms p99: pass, worst 11.27. The thresholds hold through 400 pickups, the largest count tested; no ceiling found.
 - Not covered: cooked build, a truly cold shader cache (DDC not cleared), Insights per-pass GPU split.
 
+## Task-269 note
+- Glow disc radius cut (nut 50 -> 22 cm, chip 68 -> 32 cm, owner 2026-10-21): fewer overdrawn additive pixels per pickup, so the cost can only fall; not re-measured.
+
 ## Relations
 - [[performance-index]] — parent index.
 - [[perf-xp-pickups-glow-table]] — method, windows and the full 0–400 table, bloom on and off.
