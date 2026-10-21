@@ -530,6 +530,7 @@ kind: note
 | [[task-274-04-darkener-sweep]] | opus | 1 | 0k | 68k | 1073k | 11k |
 | [[task-274-05-darkener-defaults]] | sonnet | 1 | 0k | 56k | 771k | 1k |
 | [[task-274-06-darkener-capture]] | opus | 1 | 0k | 54k | 708k | 1k |
+| [[task-273-04-floor-capture]] | opus | 1 | 0k | 92k | 1691k | 6k |
 
 ## Totals
 | Scope | Input | Cache write | Cache read | Output |

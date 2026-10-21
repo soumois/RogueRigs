@@ -1,9 +1,9 @@
 ---
 id: task-273-floor-texture
 description: "Global task: first painted floor texture, cracked faceted plates with light-catching edges; tileable albedo and normal; world-aligned floor material with slight world-position noise."
-parent: tasks-to-do-index
+parent: tasks-done-index
 kind: task
-status: in-progress
+status: done
 ---
 # Floor texture, first version
 
@@ -13,8 +13,8 @@ status: in-progress
 - gdd_check: read art-style-guide, art-prompts, visual-style, arena-grid (2026-10-21). Conflict: A13 "clean flat floor with subtle large facets and no pebbles". Owner decision 2026-10-21: A13 replaced by cracked faceted plates, painted look, crack lines and edges catching the light, no rubble (A14 stays); A13, the art-prompts floor phrase, visual-style and arena-grid updated, provisional. Lights, exposure and post-process belong to task-272 and are not touched here.
 - confirmed_by_owner: yes (2026-10-21, relayed by the main session with its defaults)
 - milestone: M1
-- next_step: task-273-04-floor-capture
-- result: open
+- next_step: none
+- result: Done. No new run: r9 (old floor, old light) vs r11 (new floor, task-274 light). Side by sides Saved/LookTune/floor_273_{A_idle,F_deposits,B_wall,E_xp,H_after}.png (r9 | r11 on | r11 Enable 0), crop floor_273_crop.png (no tiling seam). r11 A_idle_on floor only: 350 uu 37.4/255 (target 39, ok), far floor beyond 600 px 1.8/255 (target 9-12, too dark: darkener falloff and exposure, handled in task-274). Normal sign: HLSL of M_FloorPlates ported and registered on r11 Enable 0 frames (corr 0.68); sun direction (-0.639, 0.116, 0.760); as-built normal correlates positively, red flip negatively on A and F; green agrees on A, inconclusive on F; bake and material chain give (-dH/dX, -dH/dY, 1): no flip. Relief signal weak (corr 0.06), most crack shading is painted in the albedo.
 
 ## Subtasks
 1. task-273-01-floor-texture — art, ChatGPT prompts only; stop for the owner's image.
@@ -25,7 +25,7 @@ status: in-progress
 A cpp grid change is planned only if the bp subtask finds the floor mesh cannot take world-aligned UVs (not expected: the material uses WorldPosition).
 
 ## Relations
-- [[tasks-to-do-index]] — parent index.
+- [[tasks-done-index]] — parent index.
 - [[task-273-01-floor-texture]] — step 1, art.
 - [[task-273-02-floor-texture-maps]] — step 2, 3d.
 - [[task-273-03-floor-material]] — step 3, bp.
