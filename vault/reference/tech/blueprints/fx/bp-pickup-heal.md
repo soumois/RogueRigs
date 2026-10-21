@@ -17,6 +17,7 @@ kind: doc
 - rest_orientation: `RestOrientation` = Full (task-192-02, owner 2026-10-15; [[sys-pickups-lifecycle]]); `MeshVariants` left empty. Read back on the class default object after compile and save.
 - floaty_pop (task-195-02, provisional, owner 2026-10-15): class defaults PopDuration 1.6 s, PopArcHeight 250, PopMinDistance 80, PopMaxDistance 300 (were 0.35 s, 80, 25, 67), PopFallTimeRatio 2, bAttractDuringPop true, PopAttractDelay 1.2 s; PopBounceFraction 0.25 unchanged; read back on the class default object after compile and save. Landing on unbroken rock accepted for now. task-256-02 (provisional, owner 2026-10-20): PopMaxDistance = 150 (was 300), PopMinDistance 80 kept, other defaults unchanged (same change as [[bp-pickup-ore]]); read back on the class default object after compile and save.
 - simple_collision (task-229-01, read only): /Engine/BasicShapes/Cube already carries one box, centre (0, 0, 0), size 100 x 100 x 100 (30 cm at the 0.3 scale), CTF_UseDefault; it fits the cube shape, so nothing was changed (engine content, shared, not saved).
+- heal_deposit_crystal (task-262-01): the crystal slot of SM_HealDeposit_01..03 now uses MI_HealDepositCrystal (/Game/RogueRigs/Art/OreDeposit/, parent M_DepositCrystalGlow, Color (0.5, 0, 0.025), GlowColor (1, 0, 0.05), GlowAmount 1.5, PulseAmount 0.5) instead of MI_HealCrystal_Bright, which stays as it was for the grid rock crystals; see [[bp-deposit-crystal-material]].
 - owner_agent: agent-bp
 - verified: defaults read back through ObjectTools on the class default object; referenced by BP_ArenaGrid ([[bp-arena-grid]]) as `HealPickupClass`. PIE collection not driven through MCP (see [[task-006-04-bp-dig]]).
 
@@ -27,4 +28,5 @@ kind: doc
 - [[bp-arena-grid]] — the grid Blueprint that spawns it.
 - [[bp-pickup-ore]] — sibling Blueprint with the same pop distance.
 - [[color-code]] — colour convention.
+- [[bp-deposit-crystal-material]] — the deposit crystal material.
 - [[bp-heal-ring]] — the ring it spawns on collection.

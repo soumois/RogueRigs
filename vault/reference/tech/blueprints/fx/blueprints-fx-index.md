@@ -14,6 +14,7 @@ Pickups, explosion and heal visuals, damage numbers: effects and collectibles.
 - [[bp-pickup-ore]] — BP_PickupOre, the cyan ore pickup.
 - [[bp-pickup-xp]] — BP_PickupXP, the cyan XP pickup.
 - [[bp-pickup-sparkle]] — BP_PickupSparkle, the XP collect sparkle.
+- [[bp-deposit-crystal-material]] — M_DepositCrystalGlow, the lit and rim-lit crystal material of the Duskite and heal deposits.
 - [[bp-explosion-fx]] — BP_ExplosionFX, the explosion visual.
 - [[bp-explosion-fx-barrel]] — BP_ExplosionFX_Barrel, the barrel explosion visual (burst and ring).
 - [[bp-explosion-shockwave]] — M_ExplosionShockwave and its orange instance, the explosion ground ring decal.
