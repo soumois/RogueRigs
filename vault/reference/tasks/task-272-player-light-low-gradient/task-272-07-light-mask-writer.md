@@ -3,7 +3,7 @@ id: task-272-07-light-mask-writer
 description: "C++ writer that pushes the miner position and the mask tunables into MPC_PlayerLight each tick, without per-frame allocation."
 parent: task-272-player-light-low-gradient
 kind: task
-status: todo
+status: in-progress
 ---
 # Light mask writer
 

@@ -3,7 +3,7 @@ id: task-272-08-light-mask-ppv
 description: "M_PP_PlayerLightMask added to the PPV_XPGlow blendables (neutral until the mask is tuned)."
 parent: task-272-player-light-low-gradient
 kind: task
-status: in-progress
+status: done
 ---
 # Light mask in the volume
 
@@ -15,11 +15,11 @@ status: in-progress
 - done_when: Blendable read back; level saved; doc updated; lint clean; committed by path.
 - editor_state: open
 - token_ceiling: 30k
-- model: open
-- tokens: open
-- runs: open
+- model: sonnet
+- tokens: input 24, cache write 48441, cache read 433106, output 1247
+- runs: 1
 - milestone: M1
-- result: open
+- result: Commit 6e1deae5. PPV_XPGlow WeightedBlendables empty -> [M_PP_PlayerLightMask, weight 1]; bloom 1.3/-1 and exposure 1.8 read back unchanged; docs ppv-xp-glow, mpp-player-light-mask updated (revert: remove the entry). Neutral until the MPC is enabled.
 
 ## Relations
 - [[task-272-player-light-low-gradient]] — parent global task.
