@@ -27,6 +27,7 @@ Derived from the four approved reference images and their prompts ([[art-prompts
 
 ## Scene composition
 - A12. Steep near-vertical camera, miner centered, strong directional light with lifted shadows.
+  - Provisional: Shadows off for now (owner 2026-10-20, temporary, task-261): the shadow part of A12 is suspended, see [[lights-no-shadows]].
 - A13. Clean flat floor with subtle large facets and no pebbles; the arena edge is a cliff into space with stars and a planet.
 
 ## Forbidden
@@ -46,3 +47,4 @@ Derived from the four approved reference images and their prompts ([[art-prompts
 - [[readability-rules]] — rules the guide must never break.
 - [[asset-pipeline]] — what happens to the images after approval.
 - [[agent-style-guide]] — the critic that cites these rule ids.
+- [[lights-no-shadows]] — provisional suspension of the shadow part of A12 (lights without shadows, revert steps).

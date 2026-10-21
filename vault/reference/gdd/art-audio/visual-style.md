@@ -13,6 +13,7 @@ status: approved
 - Clean floor; arena edge is a cliff into space with stars and a planet.
 - The Rigs' side looks repaired and bolted together; corporate robots look clean.
 - No textures, no UI in reference art; strong directional light with lifted shadows; floor clean with no pebbles so robots, pickups and blocks stand out.
+- Provisional (owner 2026-10-20, temporary, task-261): shadows are off for now, the "lifted shadows" above are suspended, see [[lights-no-shadows]].
 - Key art: `vault/assets/keyart.jpg` (readability reference, not a fidelity promise).
 - M1 is grey box: plain cubes colored by block type after [[color-code]]; final assets come later ([[sys-grid]]).
 
@@ -22,3 +23,4 @@ status: approved
 - [[asset-pipeline]] — how assets are made.
 - [[art-style-guide]] — detailed rules for shapes, factions and effects.
 - [[art-prompts]] — exact prompts and locked phrases that produce this style.
+- [[lights-no-shadows]] — provisional: shadows off on the level lights.
