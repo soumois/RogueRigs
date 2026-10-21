@@ -47,4 +47,5 @@ Owner 2026-10-20 (reference game video): the only cast shadows are those of the 
 - [[ppv-xp-glow]] — the other lighting actor of the level, untouched.
 - [[sys-cheats]] — the runtime halo light.
 - [[sys-grid]] — `bBlocksCastShadows`: the rock and barrel shadow casters of the player light.
+- [[lights-dark-ambient]] — same two actors: intensity and violet tint (task-265).
 - [[bp-miner]] — carries the player light (task-263-02).
