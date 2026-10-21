@@ -14,10 +14,10 @@ kind: doc
 - formula: world position rebuilt from SvPosition and SceneDepth (a post-process WorldPosition node gives only the screen plane). r = XY distance to PlayerPosition (same mask at every height). mask = 1 / (1 + (r / max(MaskRadius, 1))^MaskExponent). tint = lerp(FarColour, NearColour, mask). lit = SceneColor * (FarGain + NearGain * mask) * tint + AddIntensity * mask * NearColour. Output = lerp(SceneColor, lit, saturate(MaskEnabled)).
 - events: the C++ writer (task-272-07) pushes PlayerPosition and the tunables into the collection each tick. Nothing else reads it.
 - logic_in_bp: none. Neutral by default: MaskEnabled 0 gives output = scene colour (also NearGain 0, FarGain 1, white FarColour, AddIntensity 0).
-- assets: blendable location is Scene Color Before Bloom (HDR, before tonemapping). The editor reset Before Tonemapping to After DOF when set through MCP, so Before Bloom was used (task-272-06). The material is NOT in PPV_XPGlow blendables yet (task-272-08, see [[ppv-xp-glow]]). Shader instruction count not read (no MCP tool).
+- assets: blendable location is Scene Color Before Bloom (HDR, before tonemapping). The editor reset Before Tonemapping to After DOF when set through MCP, so Before Bloom was used (task-272-06). The material is in the PPV_XPGlow blendables since task-272-08 (weight 1.0, neutral while MaskEnabled is 0, see [[ppv-xp-glow]]). Shader instruction count not read (no MCP tool).
 - owner_agent: agent-bp
 
 ## Relations
 - [[blueprints-world-index]] — parent index.
-- [[ppv-xp-glow]] — the volume that will carry the material as a blendable.
+- [[ppv-xp-glow]] — the volume that carries the material as a blendable (task-272-08).
 - [[lights-dark-ambient]] — the dark ambient this mask brightens around the miner.
