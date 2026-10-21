@@ -13,7 +13,7 @@ status: in-progress
 - gdd_check: done by the Orchestrator when the task is planned (2026-10-21).
 - confirmed_by_owner: yes (2026-10-21)
 - milestone: M1
-- next_step: task-270-06-ambience-capture-r3
+- next_step: task-270-07-ambience-light-r4
 - result: open
 
 ## Subtasks
@@ -23,6 +23,9 @@ status: in-progress
 4. task-270-04-ambience-after-capture — cpp, after captures
 5. task-270-05-ambience-apply-r3 — bp, round 3 values
 6. task-270-06-ambience-capture-r3 — cpp, round 3 captures
+7. task-270-07-ambience-light-r4 — bp, round 4 light
+8. task-270-08-chaser-brightness-r4 — bp, round 4 chaser brightness
+9. task-270-09-ambience-capture-r4 — cpp, round 4 captures
 
 ## Relations
 - [[tasks-to-do-index]] — parent index.
@@ -32,3 +35,6 @@ status: in-progress
 - [[task-270-04-ambience-after-capture]] — step 4, cpp.
 - [[task-270-05-ambience-apply-r3]] — step 5, bp.
 - [[task-270-06-ambience-capture-r3]] — step 6, cpp.
+- [[task-270-07-ambience-light-r4]] — step 7, bp.
+- [[task-270-08-chaser-brightness-r4]] — step 8, bp.
+- [[task-270-09-ambience-capture-r4]] — step 9, cpp.
