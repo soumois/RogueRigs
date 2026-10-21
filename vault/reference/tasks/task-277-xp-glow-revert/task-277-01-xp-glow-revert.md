@@ -3,7 +3,7 @@ id: task-277-01-xp-glow-revert
 description: "The XP pickups glow as before task-269: task-269-01 values reverted, PPV bloom 1.3 / -1 kept."
 parent: task-277-xp-glow-revert
 kind: task
-status: in-progress
+status: done
 ---
 # XP glow back to before task-269
 
@@ -15,11 +15,11 @@ status: in-progress
 - done_when: Five values read back at their pre-task-269 values; assets saved; docs updated; lint clean.
 - editor_state: open (editor + MCP)
 - token_ceiling: 80k
-- model: open
-- tokens: open
-- runs: open
+- model: sonnet
+- tokens: input 18, cache write 66307, cache read 384030, output 365
+- runs: 1
 - milestone: M1
-- result: open
+- result: Commit 4eac8d71. Read back after save: M_XPNut_hole GlowAmount 8 -> 25; MI_XPGlowDisc_Nut Radius 22 -> 50; MI_XPGlowDisc_Chip Radius 32 -> 68, Intensity 0.25 -> 0.5; M_XPCube_core_bright 6 -> 12, _dark 3 -> 6. PPV_XPGlow bloom and exposure, sparkle, trail, colours, pulse untouched. Docs bp-pickup-xp (xp_glow_revert, revert = task-269 values), perf-xp-pickups-glow. Not seen on screen.
 
 ## Relations
 - [[task-277-xp-glow-revert]] — parent global task.

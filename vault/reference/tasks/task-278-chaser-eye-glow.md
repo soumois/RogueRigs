@@ -3,7 +3,7 @@ id: task-278-chaser-eye-glow
 description: "Global task: The chaser and shield chaser red eyes glow stronger; the body look is unchanged."
 parent: tasks-to-do-index
 kind: task
-status: todo
+status: in-progress
 ---
 # Chaser eye glow stronger
 
