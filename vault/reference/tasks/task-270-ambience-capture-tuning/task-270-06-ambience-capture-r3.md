@@ -3,7 +3,7 @@ id: task-270-06-ambience-capture-r3
 description: "Round 3 captures at the same frames, with a runtime intensity and colour mini-sweep, judged by the Orchestrator."
 parent: task-270-ambience-capture-tuning
 kind: task
-status: todo
+status: in-progress
 ---
 # Ambience round 3 captures
 

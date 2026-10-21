@@ -3,7 +3,7 @@ id: task-270-05-ambience-apply-r3
 description: "PlayerLight raised and recoloured so robots and rock tops near the miner are no longer burnt white, set in the editor and documented."
 parent: task-270-ambience-capture-tuning
 kind: task
-status: in-progress
+status: done
 ---
 # Ambience round 3 values
 
@@ -15,11 +15,11 @@ status: in-progress
 - done_when: Values read back; compiled and saved; docs updated; lint clean; committed by path.
 - editor_state: open
 - token_ceiling: 60k
-- model: open
-- tokens: open
-- runs: open
+- model: sonnet
+- tokens: input 26, cache write 44273, cache read 392034, output 261
+- runs: 1
 - milestone: M1
-- result: open
+- result: Commit 3f27b18a. BP_Miner PlayerLight RelativeLocation Z 300 -> 450, AttenuationRadius 520 -> 600, Intensity 650 -> 2400 cd, LightColor (1, 0.80, 0.59) -> (1, 0.75, 0.50); castShadows kept; docs bp-miner and lights-dark-ambient updated, revert = task-270-03 values.
 
 ## Relations
 - [[task-270-ambience-capture-tuning]] — parent global task.
