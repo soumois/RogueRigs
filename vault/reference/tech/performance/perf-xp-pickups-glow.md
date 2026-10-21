@@ -27,7 +27,8 @@ Burst of XP nuts and chips ([[bp-pickup-xp]]) held still around an idle miner, b
 - Not covered: cooked build, a truly cold shader cache (DDC not cleared), Insights per-pass GPU split.
 
 ## Task-269 note
-- Glow disc radius cut (nut 50 -> 22 cm, chip 68 -> 32 cm, owner 2026-10-21): fewer overdrawn additive pixels per pickup, so the cost can only fall; not re-measured.
+- Glow disc radius cut (nut 50 -> 22 cm, chip 68 -> 32 cm, owner 2026-10-21): fewer overdrawn additive pixels per pickup, so the cost could only fall; not re-measured.
+- Reverted by task-277-01 (owner 2026-10-21): radii back to 50 (nut) and 68 (chip), so the cost is back to the measured state above (the figures of this note hold).
 
 ## Relations
 - [[performance-index]] — parent index.
