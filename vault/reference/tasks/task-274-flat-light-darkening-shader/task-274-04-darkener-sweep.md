@@ -3,7 +3,7 @@ id: task-274-04-darkener-sweep
 description: "-game sweep (round 1) of FarBrightness, Radius, Exponent and exposure offset, ring profile scored against DRGS; emissives compared with the final_272_flat frames."
 parent: task-274-flat-light-darkening-shader
 kind: task
-status: todo
+status: in-progress
 ---
 # Darkener sweep
 
