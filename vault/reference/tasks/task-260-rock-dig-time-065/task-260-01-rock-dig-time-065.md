@@ -3,7 +3,7 @@ id: task-260-01-rock-dig-time-065
 description: "Rock blocks take 0.65 s instead of 0.5 s to dig at mining speed 1."
 parent: task-260-rock-dig-time-065
 kind: task
-status: todo
+status: in-progress
 ---
 # Rock dig time 0.65 s
 

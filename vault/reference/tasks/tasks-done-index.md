@@ -265,5 +265,6 @@ Archive: it exceeds the index size limits of [[_authoring]] on purpose (owner, 2
 - [[task-256-pickup-pop-distance]] — Ore and heal pickups land close enough to be collected without moving: PopMaxDistance lowered. Status done.
 - [[task-257-pulse-desync]] — Ore and heal crystals and pickups no longer pulse in sync: each object gets a seeded random pulse phase and a +-20 percent rate. Status done.
 - [[task-258-heal-deposit-vibration]] — The heal deposit no longer vibrates by itself: only its upper part moves without contact, even in the editor; find the cause and fix it. Status done.
+- [[task-259-ore-dig-time-2s]] — Ore blocks (ore, special ore and heal ore) take 2 s instead of 1.5 s to dig at mining speed 1. Status done.
 - [[task-261-no-shadows]] — No object casts a shadow for now: shadow casting is switched off on the lights of the arena level. Status done.
 - [[task-262-deposit-crystal-volume]] — The Duskite and heal deposit crystals read as volumes: capped emission peak, height gradient and rim light, textures allowed if needed. Status done.

@@ -482,6 +482,7 @@ kind: note
 | [[task-261-01-no-shadows]] | sonnet | 1 | 0k | 125k | 5664k | 1k |
 | [[task-262-01-deposit-crystal-volume]] | sonnet | 1 | 0k | 110k | 2155k | 4k |
 | [[task-258-01-heal-deposit-vibration]] | opus | 1 | 0k | 106k | 3035k | 24k |
+| [[task-259-01-ore-dig-time-2s]] | opus | 1 | 0k | 122k | 4637k | 8k |
 
 ## Totals
 | Scope | Input | Cache write | Cache read | Output |
