@@ -547,6 +547,7 @@ kind: note
 | [[task-278-06-shield-chaser-body-material]] | sonnet | 1 | 0k | 45k | 497k | 1k |
 | [[task-278-07-bp-chaser-eye]] | sonnet | 1 | 0k | 33k | 333k | 1k |
 | [[task-278-08-bp-shield-chaser-eye]] | sonnet | 1 | 0k | 38k | 460k | 1k |
+| [[task-278-09-bp-heavy-eye]] | sonnet | 1 | 0k | 37k | 478k | 1k |
 
 ## Totals
 | Scope | Input | Cache write | Cache read | Output |

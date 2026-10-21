@@ -3,7 +3,7 @@ id: task-278-10-bp-shooter-eye
 description: "BP_Shooter eyes use MI_RobotEye_GreyBox."
 parent: task-278-chaser-eye-glow
 kind: task
-status: todo
+status: in-progress
 ---
 # BP_Shooter eyes use MI_RobotEye_GreyBox
 

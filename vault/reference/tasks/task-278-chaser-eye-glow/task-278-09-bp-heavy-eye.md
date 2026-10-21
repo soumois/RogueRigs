@@ -3,7 +3,7 @@ id: task-278-09-bp-heavy-eye
 description: "BP_Heavy eyes use MI_RobotEye_GreyBox, also after the telegraph."
 parent: task-278-chaser-eye-glow
 kind: task
-status: in-progress
+status: done
 ---
 # BP_Heavy eyes use MI_RobotEye_GreyBox, also after the telegraph
 
@@ -15,11 +15,11 @@ status: in-progress
 - done_when: Eye materials and OnRecover targets read back; compile without error; saved; doc updated; lint clean; committed.
 - editor_state: open (editor + MCP)
 - token_ceiling: 80k
-- model: open
-- tokens: open
-- runs: open
+- model: sonnet
+- tokens: input 34, cache write 37496, cache read 477516, output 877
+- runs: 1
 - milestone: M1
-- result: open
+- result: Done (commit 0a72c276). BP_Heavy EyeLeft and EyeRight OverrideMaterials [MI_GB_Eye] -> [MI_RobotEye_GreyBox]; OnRecover eye SetMaterial pins MI_GB_Eye -> MI_RobotEye_GreyBox; OnTelegraphStart (MI_GB_HeavyGlow), stripe restore and pitch unchanged; compile without error; saved. Doc bp-heavy (revert git checkout 2ad7698a). Unverified: PIE, render.
 
 ## Relations
 - [[task-278-chaser-eye-glow]] — parent global task.
