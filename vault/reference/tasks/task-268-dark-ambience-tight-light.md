@@ -3,7 +3,7 @@ id: task-268-dark-ambience-tight-light
 description: "Global task: The ambience is dark around a tight warm pool of light on the player, like the reference: shorter light radius, much dimmer ambient, fixed exposure."
 parent: tasks-to-do-index
 kind: task
-status: todo
+status: in-progress
 ---
 # Dark ambience and tight player light
 
