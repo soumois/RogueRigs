@@ -3,7 +3,7 @@ id: task-270-04-ambience-after-capture
 description: "After captures at the frames of task-270-01 with the applied values, judged by the Orchestrator against the reference."
 parent: task-270-ambience-capture-tuning
 kind: task
-status: todo
+status: in-progress
 ---
 # Ambience after captures
 

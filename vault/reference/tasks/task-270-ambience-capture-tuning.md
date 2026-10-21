@@ -13,7 +13,7 @@ status: in-progress
 - gdd_check: done by the Orchestrator when the task is planned (2026-10-21).
 - confirmed_by_owner: yes (2026-10-21)
 - milestone: M1
-- next_step: task-270-03-ambience-apply
+- next_step: task-270-04-ambience-after-capture
 - result: open
 
 ## Subtasks

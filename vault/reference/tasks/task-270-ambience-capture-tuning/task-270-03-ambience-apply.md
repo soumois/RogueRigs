@@ -3,7 +3,7 @@ id: task-270-03-ambience-apply
 description: "The light, exposure and readability values picked on the captures are set in the editor, read back and documented with the previous values."
 parent: task-270-ambience-capture-tuning
 kind: task
-status: in-progress
+status: done
 ---
 # Ambience values applied
 
@@ -15,11 +15,11 @@ status: in-progress
 - done_when: Values read back; compiled and saved; docs updated; lint clean; committed by path.
 - editor_state: open
 - token_ceiling: 80k
-- model: open
-- tokens: open
-- runs: open
+- model: sonnet
+- tokens: input 46, cache write 67895, cache read 827734, output 826
+- runs: 1
 - milestone: M1
-- result: open
+- result: Commit 8ae872b9. BP_Miner PlayerLight attenuationRadius 650 -> 520, intensity 120 -> 650 cd, lightColor (1, 0.62, 0.30) -> (1, 0.80, 0.59), height 300 and shadows kept; DirectionalLight_0 intensity 0.12 -> 1.5 (violet, no shadows); SkyLight_0 0.08 and PPV_XPGlow exposure 1.3 / bloom 1.3 -1 unchanged (read back). Docs bp-miner and lights-dark-ambient updated with revert values.
 
 ## Relations
 - [[task-270-ambience-capture-tuning]] — parent global task.
