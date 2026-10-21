@@ -3,7 +3,7 @@ id: task-272-01-player-light-low-gradient
 description: "Baseline frames G and H and a runtime sweep of player light height, radius, intensity, fill light, sun and exposure."
 parent: task-272-player-light-low-gradient
 kind: task
-status: in-progress
+status: done
 ---
 # Low light runtime sweep
 
@@ -15,11 +15,11 @@ status: in-progress
 - done_when: Frames exist, are described and measured; values read back; no game process left; Orchestrator judged them.
 - editor_state: closed
 - token_ceiling: 80k
-- model: open
-- tokens: open
-- runs: open
+- model: opus
+- tokens: input 108, cache write 189396, cache read 5753662, output 17683
+- runs: 1
 - milestone: M1
-- result: open
+- result: Frames Saved/LookTune/r6/ (A-F baseline, new G_wallside at BugItGo 7939.5 7537.5, H_before/H_after dig at 8006.5 7336.5), sweeps V0-V10 and W0-W6 on D, G, H, B, measures r6/sheets/meas1-2.txt, commands in capture_cmd.txt round 6. Runtime height works: RelativeLocation by object path then teleport + Walk + recreate. Seen: low key light (Z -15, R 1800-2400, 250-400 cd) removes the disc edge, walls shade the floor behind (G 19 vs 30), a dug wall lets a beam through (H), no crescent on rock tops; core saturates at the feet (about 245); shadowless fill light (cheat halo) greys rock tops and fills wall shadows: rejected. Cost ProfileGPU static: frame 7.84 -> 8.57 ms (D), 7.98 -> 8.71 ms (B), shadow depths 0.62 -> 1.16 ms; moving case not measured. No code, no commit by the agent.
 
 ## Relations
 - [[task-272-player-light-low-gradient]] — parent global task.

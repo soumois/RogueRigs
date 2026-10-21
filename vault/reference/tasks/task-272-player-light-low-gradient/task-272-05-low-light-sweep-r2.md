@@ -3,7 +3,7 @@ id: task-272-05-low-light-sweep-r2
 description: "Second runtime sweep of the low player light matched to the measured DRGS ring profile: softer core, darker far ambient, DRGS colour."
 parent: task-272-player-light-low-gradient
 kind: task
-status: todo
+status: in-progress
 ---
 # Low light sweep round 2
 
