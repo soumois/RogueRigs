@@ -3,7 +3,7 @@ id: task-270-03-ambience-apply
 description: "The light, exposure and readability values picked on the captures are set in the editor, read back and documented with the previous values."
 parent: task-270-ambience-capture-tuning
 kind: task
-status: todo
+status: in-progress
 ---
 # Ambience values applied
 

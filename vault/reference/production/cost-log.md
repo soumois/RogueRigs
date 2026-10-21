@@ -495,6 +495,7 @@ kind: note
 | [[task-268-01-dark-ambience-tight-light]] | sonnet | 1 | 0k | 79k | 796k | 1k |
 | [[task-269-01-xp-bloom-smaller]] | sonnet | 1 | 0k | 42k | 439k | 1k |
 | [[task-270-01-ambience-capture-tuning]] | opus | 1 | 0k | 203k | 2400k | 4k |
+| [[task-270-02-ambience-sweep]] | opus | 1 | 0k | 148k | 2906k | 8k |
 
 ## Totals
 | Scope | Input | Cache write | Cache read | Output |
