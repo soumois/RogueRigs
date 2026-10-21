@@ -28,6 +28,7 @@ Provisional, temporary (owner 2026-10-20, task-261: "aucun objet ne doit avoir u
 Owner 2026-10-20 (reference game video): the only cast shadows are those of the player's light on the rock walls; rocks cast, nothing else. The sun and sky light above stay without shadows. Per-object flags set in C++ (task-263-01):
 - Cast: grid rock piece ISMs, barrel HISMs and special ore (`ARRArenaGrid::bBlocksCastShadows`, default true, [[sys-grid]]). Ore and heal ore crystals stay off (`bDepositCrystalsCastShadow` false, task-237-01).
 - Never cast: grid floor chunks; every primitive of robots (`ARREnemy`), pickups (`ARRPickup`), the drone (`ARRDrone`), the miner (`ARRMiner`), weapons and turrets (`ARRWeapon`) and projectiles (`ARRProjectile`), through `RRShadows::DisableCastShadows` in their `PostInitializeComponents` (C++ and Blueprint components, kept across pool reuse). Robots get a fake blob shadow instead (task-264).
+- Blob shadows under actors (task-264): `URRBlobShadowComponent`, a flat translucent dark disc (MI_BlobShadow) under every robot, the miner and the drone, no cast shadow ([[sys-blob-shadow]]).
 - Not covered (no C++ rule, flags as authored): objectives (console, shuttle, bonus chest), Niagara debris and effects, explosion FX (already off in C++).
 - The light itself now exists (task-263-02, provisional, owner 2026-10-20, owner tunes by eye): PointLightComponent `PlayerLight` on BP_Miner, Movable, warm (1.0, 0.62, 0.30), 60 Candelas, radius 1400, height 300 above the capsule, cast shadows on; values and tuning in [[bp-miner]]. DirectionalLight_0 and SkyLight_0 still cast no shadow (unchanged). Cost: a moving shadowed local light invalidates virtual shadow map pages each frame ([[perf-risks]]); reduce with a smaller AttenuationRadius or castShadows off.
 
@@ -50,3 +51,4 @@ Owner 2026-10-20 (reference game video): the only cast shadows are those of the 
 - [[lights-dark-ambient]] — same two actors: intensity and violet tint (task-265).
 - [[bp-miner]] — carries the player light (task-263-02).
 - [[perf-risks]] — cost of the moving shadowed light.
+- [[sys-blob-shadow]] — the fake blob shadows under actors (task-264).

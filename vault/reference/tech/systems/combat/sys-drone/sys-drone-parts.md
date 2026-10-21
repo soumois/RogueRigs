@@ -22,6 +22,7 @@ kind: doc
   - With the base turning at 120 deg/s, the drone can need up to 1.5 s to face a dig target; a 0.65 s rock arc (0.5 s before task-260-01) may break before it does (the beam always goes from the emitter to the impact point, even off the arm's axis).
   - Measured by `Dig.DroneParts` ([[sys-tests-dig-ore]]). The thrusters have no test (no new test asked; Niagara never runs under `-nullrhi`).
   - Shadows (task-263-01): `ARRDrone::PostInitializeComponents` calls `RRShadows::DisableCastShadows`: base, laser arm, antenna, beam, thrusters and any BP_Drone component cast no shadow (only the grid rocks cast, [[lights-no-shadows]]).
+  - Blob shadow (task-264-02, `Drone|Blob Shadow`, provisional): `BlobShadow` (`URRBlobShadowComponent`, [[sys-blob-shadow]]) attached to `Mesh` with absolute location, rotation and scale; `UpdateBlobShadow`, after `UpdateThrusters` in `Tick`, puts it on the miner floor (capsule bottom) + 3 uu under the drone; diameter `BlobShadowDiameter` (70 uu, the base width) × `GetBlobShadowHeightScale`: 1 up to `BlobShadowFullSizeHeight` (130 uu above the floor), linear to `BlobShadowHighScale` (0.75) at `BlobShadowHighHeight` (250). No miner = not moved.
   - Thrusters: a teleport other than `SetOwnerMiner` (the patrol snap beyond `EscortSnapDistance`) reads as a one-frame speed spike; the smoothing and the system's 700 uu/s clamp keep it short.
 
 ## Relations
@@ -30,4 +31,5 @@ kind: doc
 - [[bp-drone-materials]] — meshes, bounds and attachment offsets.
 - [[drone]] — gameplay spec.
 - [[sys-tests-dig-ore]] — the headless check.
+- [[sys-blob-shadow]] — the floor disc under the drone.
 - [[bp-drone-thruster]] — NS_DroneThruster, the system both thrusters play (User.Speed).

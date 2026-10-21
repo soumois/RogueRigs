@@ -17,6 +17,7 @@ Measure in S0 ([[perf-stress-test-m1]]) before changing any architecture.
 | Animation | 150+ animated skeletal meshes (rigid parts on bones) | Animation Budget Allocator plugin, or lower animation rate at distance | 1 |
 | Rendering | `DefaultEngine.ini` enables Lumen GI and reflections, virtual shadows, hardware ray tracing, Substrate | Test without Lumen and ray tracing for flat low-poly with one main light; 5.8 also offers Lumen Lite | 0.5 |
 | Player light shadows | task-263: one movable point light on the miner is the only shadow caster; grid rock pieces and barrels cast ([[sys-grid]] `bBlocksCastShadows`), nothing else does. A moving local light renders its virtual shadow pages uncached each frame it moves | Measure with the light's shadows on and off, then with `bBlocksCastShadows` off; fallback: smaller attenuation radius or no shadow on broken pieces | 0.5 |
+| Blob shadows | task-264-02: one translucent disc component per robot, the miner and the drone ([[sys-blob-shadow]]); 400 robots = 400 sorted translucent draws, proxy updates and child transforms (unmeasured) | S0 with `BlobShadowDiameterScale` 0 vs 2.2; fallback: [[perf-lead-blob-shadow-instancing]] | 0.5 |
 | Line of sight | Shooters and turrets test line of sight; blocks are the only obstacles | Grid cell walk instead of physics traces, throttled | 1 |
 | Explosion chains | Barrel → kamikaze → barrel, synchronous in damage callbacks: recursion, double hits | Queue on next tick, "already exploded" flag ([[sys-explosions]]) | 0.5 |
 | Projectiles | Template projectile spawned and destroyed each shot, `bForceSubStepping = true` | Projectile pool; sub-stepping off unless needed | 1 |
@@ -35,3 +36,4 @@ Ranked optimization leads, with what task-018 already did: [[perf-leads]].
 - [[perf-stress-opt-m1]] — post-optimization tables and ceiling.
 - [[perf-stress-grid-cells]] — before/after numbers of the robot light movement (task-071-01).
 - [[sys-enemies-movement]] — the light movement that replaced the robots' walking physics.
+- [[sys-blob-shadow]] — the per-actor blob shadow row.

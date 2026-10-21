@@ -199,6 +199,7 @@ ore-blocks  reference/gdd/terrain/ore-blocks.md
 ore-economy  reference/gdd/run/ore-economy.md
 ore-in-rock-plan  reference/production/ore-in-rock-plan.md
 ore-in-rock-proposal  reference/production/ore-in-rock-proposal.md
+perf-lead-blob-shadow-instancing  reference/tech/performance/perf-leads/perf-lead-blob-shadow-instancing.md
 perf-lead-debris-gpu  reference/tech/performance/perf-leads/perf-lead-debris-gpu.md
 perf-lead-lumen-robots  reference/tech/performance/perf-leads/perf-lead-lumen-robots.md
 perf-lead-pickup-simulated-roll  reference/tech/performance/perf-leads/perf-lead-pickup-simulated-roll.md
@@ -250,6 +251,7 @@ style-loop  reference/tech/pipelines/style-loop.md
 sys-actor-pool  reference/tech/systems/world/sys-actor-pool.md
 sys-auto-fire  reference/tech/systems/combat/sys-auto-fire.md
 sys-automation-tests  reference/tech/systems/tools/sys-automation-tests.md
+sys-blob-shadow  reference/tech/systems/world/sys-blob-shadow.md
 sys-cheats  reference/tech/systems/core/sys-cheats.md
 sys-damage  reference/tech/systems/core/sys-damage.md
 sys-damage-numbers  reference/tech/systems/combat/sys-damage-numbers.md

@@ -13,6 +13,7 @@ kind: doc
 - parameters and defaults: Opacity 0.45, Softness 1.6 (power on the radial falloff: 1 linear, higher gives a tighter core and softer edge), Tint (0.02, 0, 0.04) dark violet-black.
 - usage: engine /Engine/BasicShapes/Plane (100 x 100 uu, UV 0..1) lying flat just above the floor (a few uu), scale X = Y = footprint diameter / 100. Component: no collision, no cast shadow, no lighting; set the primitive's Translucency Sort Priority low on the component (the material has no such property in this engine version, so draw order under effects is a component setting).
 - what 264-02 expects: a static mesh component with the Plane and MI_BlobShadow, `CastShadow` false, collision off, scale from the actor footprint, kept at floor height under the actor, in the robot base class, the miner and the drone. Several of them can share the instance; per-actor variation (opacity) can use a dynamic instance or custom primitive data if needed (not wired).
+- c++ (task-264-02): used by `URRBlobShadowComponent` ([[sys-blob-shadow]]) on robots, the miner and the drone; instance defaults only, no dynamic instance, no custom primitive data.
 - verified (MCP read-back): recompile without error; blend Translucent, shading model Unlit, two sided true, depth test not disabled, fully rough; wiring of Opacity (Multiply of Power and Opacity) and EmissiveColor (Tint); parameter list Softness, Opacity, Tint on the instance with defaults 0.45, 1.6, (0.02, 0, 0.04, 1); both assets saved.
 - unverified: the on-screen look (no capture was taken), the falloff shape at the chosen Softness, the draw order against the floor and the effects, the opacity against the darkest floor tiles.
 - owner_agent: agent-bp
@@ -21,4 +22,5 @@ kind: doc
 - [[blueprints-fx-index]] — parent index.
 - [[lights-no-shadows]] — why a fake blob shadow replaces cast shadows.
 - [[readability-rules]] — the dark disc must not hide the silhouettes or the telegraphs.
+- [[sys-blob-shadow]] — the C++ component that draws it.
 - [[perf-robot-components-audit]] — the cost budget of per-robot components.

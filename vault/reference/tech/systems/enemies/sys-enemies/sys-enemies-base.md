@@ -19,8 +19,10 @@ kind: doc
 - data: `StatsRowName`, `XPPickupClass`, `DeathPuffSystem` (set by the Blueprint), `DeathPuffPoolSize`; `DebrisSystem`, `DebrisPoolSize` (40), `DebrisPieces` (`TArray<FRRDebrisPiece>`: `Group` `ERRDebrisGroup` Torso, ArmL, ArmR, LegL, LegR; `Kind` `ERRDebrisKind` Whole, Upper, Lower; `MeshIndex`; `Offset` cm, robot space from the floor under the robot, front +X: the report `centre_offset_cm_unreal`; set on BP_Chaser by the bp agent, chaser 13 pieces: 0 Torso Whole, 1/2 ArmL/ArmR Upper, 3/4 ArmL/ArmR Lower, 5/6 ArmL/ArmR Whole, 7/8 LegL/LegR Upper, 9/10 LegL/LegR Lower, 11/12 LegL/LegR Whole; unset in C++); CSV in [[sys-enemies]].
 - depends_on: [[sys-gas-core]], [[sys-flow-field]], [[sys-world-queries]].
 - implements: [[enemy-death]].
+- blob shadow (task-264-02, `Enemy|Blob Shadow`): `BlobShadow` (`URRBlobShadowComponent`) on the root capsule, diameter = own capsule radius × `BlobShadowDiameterScale` (2.2), hidden at death start, restored with the visual parts; not part of the wind-up flash ([[sys-blob-shadow]]).
 - gotchas: no native `BodyMesh` on the base: `BP_Chaser` and `ARRKamikaze` own one.
 
 ## Relations
 - [[sys-enemies]] — parent index.
 - [[sys-enemies-movement]] — the light movement the base also sets up.
+- [[sys-blob-shadow]] — the blob shadow component on every robot.
