@@ -18,13 +18,15 @@ status: in-progress
 
 ## Subtasks
 1. task-272-01-player-light-low-gradient — cpp, baseline G/H and runtime sweep
-2. task-272-02-player-light-low-apply — bp, BP_Miner light values
-3. task-272-03-ambient-level-apply — bp, sun, sky, exposure (if changed)
-4. task-272-04-low-light-capture — cpp, final captures and side by sides
+2. task-272-05-low-light-sweep-r2 — cpp, second sweep on the DRGS ring profile (added after step 1)
+3. task-272-02-player-light-low-apply — bp, BP_Miner light values
+4. task-272-03-ambient-level-apply — bp, sun, sky, exposure (if changed)
+5. task-272-04-low-light-capture — cpp, final captures and side by sides
 
 ## Relations
 - [[tasks-to-do-index]] — parent index.
 - [[task-272-01-player-light-low-gradient]] — step 1, cpp.
-- [[task-272-02-player-light-low-apply]] — step 2, bp.
-- [[task-272-03-ambient-level-apply]] — step 3, bp.
-- [[task-272-04-low-light-capture]] — step 4, cpp.
+- [[task-272-05-low-light-sweep-r2]] — step 2, cpp.
+- [[task-272-02-player-light-low-apply]] — step 3, bp.
+- [[task-272-03-ambient-level-apply]] — step 4, bp.
+- [[task-272-04-low-light-capture]] — step 5, cpp.

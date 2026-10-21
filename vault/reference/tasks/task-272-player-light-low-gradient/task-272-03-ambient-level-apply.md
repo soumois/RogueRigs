@@ -9,7 +9,7 @@ status: todo
 
 - goal: Level ambient of L_ArenaM1 (sun, sky light, PPV_XPGlow exposure) set to the values chosen from the sweep, read back and documented; skipped if the sweep keeps them.
 - agent: bp
-- depends_on: task-272-01-player-light-low-gradient
+- depends_on: task-272-05-low-light-sweep-r2
 - inputs: lights-dark-ambient (vault/reference/tech/blueprints/world/lights-dark-ambient.md), lights-no-shadows (vault/reference/tech/blueprints/world/lights-no-shadows.md), ppv-xp-glow (vault/reference/tech/blueprints/world/ppv-xp-glow.md), bp-mcp-lessons (vault/reference/agents/bp-mcp-lessons.md), unreal-mcp-quirks (vault/reference/tech/pipelines/unreal-mcp-quirks.md)
 - expected_output: Level actor values as listed in the delegation; docs updated with before, after and revert values.
 - done_when: Values read back; level saved; docs updated; lint clean; committed by path.
