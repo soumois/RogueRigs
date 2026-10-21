@@ -19,7 +19,7 @@ kind: doc
 - implements: [[drone]] (Parts line).
 - gotchas:
   - BP_Drone scales `Mesh` to 0.4 for the grey sphere: the children inherit it until the bp subtask assigns SM_DroneBase at scale 1 (the offsets are in the base mesh's units).
-  - With the base turning at 120 deg/s, the drone can need up to 1.5 s to face a dig target; a 0.5 s rock arc may break before it does (the beam always goes from the emitter to the impact point, even off the arm's axis).
+  - With the base turning at 120 deg/s, the drone can need up to 1.5 s to face a dig target; a 0.65 s rock arc (0.5 s before task-260-01) may break before it does (the beam always goes from the emitter to the impact point, even off the arm's axis).
   - Measured by `Dig.DroneParts` ([[sys-tests-dig-ore]]). The thrusters have no test (no new test asked; Niagara never runs under `-nullrhi`).
   - Thrusters: a teleport other than `SetOwnerMiner` (the patrol snap beyond `EscortSnapDistance`) reads as a one-frame speed spike; the smoothing and the system's 700 uu/s clamp keep it short.
 

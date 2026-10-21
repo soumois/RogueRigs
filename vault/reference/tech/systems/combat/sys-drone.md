@@ -31,7 +31,7 @@ kind: doc
 - implements: [[drone]].
 - gotchas:
   - Damage starts on the first Dig tick, while the drone still flies to its dig hover point.
-  - Each block of the arc is cut at the full rate (4 rock blocks in 0.5 s), as the GDD's cleared area per second requires.
+  - Each block of the arc is cut at the full rate (4 rock blocks in 0.65 s; 0.5 s before task-260-01), as the GDD's cleared area per second requires.
   - Whole-deposit mining (task-034-01, generic since task-070-01, [[ore-blocks]]): touching one block of a deposit (a 2 × 2 Duskite deposit from the ore table, a layout heal vein, any size read from data) damages all its blocks at the full rate, so it breaks whole after one block dig time (2 s since task-259-01, was 1.5 s) and drops one chunk per block (Duskite: 4 of value 1, `RogueRigs.Ore.MineDeposit`); all its blocks shake together while dug, all stop on release or break (task-043-01, [[heal-ore]]); deposit blocks outside the arc get no laser and no events. No drone code depends on the size.
   - Arc direction is world-space; the miner's facing does not steer it.
   - Tick order: the miner requests, then the drone ticks (prerequisite), so a request is served the same frame.

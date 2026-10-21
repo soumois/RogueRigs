@@ -7,7 +7,7 @@ status: approved
 ---
 # Ore blocks
 
-- Tougher than plain rock blocks: drone dig time 2 s per 67 uu block at mining speed 1, against 0.5 s for rock (owner 2026-10-20, provisional, [[task-259-ore-dig-time-2s]]; was 1.5 s, owner after handover-2026-10-06).
+- Tougher than plain rock blocks: drone dig time 2 s per 67 uu block at mining speed 1, against 0.65 s for rock (rock was 0.5 s until [[task-260-rock-dig-time-065]]) (owner 2026-10-20, provisional, [[task-259-ore-dig-time-2s]]; was 1.5 s, owner after handover-2026-10-06).
 - Each broken ore block pops one ore chunk (DRGS-like arc then suction, [[xp-level-up]]); ore value per chunk: 1 (owner 2026-10-10, provisional).
 - The chunk drops whatever destroyed the block, drone or explosion; no extra bundle ([[ore-economy]]; owner, after handover-2026-10-06).
 - The chunk lands within about one cell of the broken block, so it never rests over unbroken rock (provisional, task-027-01, owner to judge). Replaced 2026-10-15 (owner, provisional, task-195): chunks fly the long floaty pop up to 300 uu ([[xp-level-up]]) and may land on unbroken rock, accepted for now.
