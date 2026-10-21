@@ -491,6 +491,7 @@ kind: note
 | [[task-267-02-crystal-pulse-restore]] | sonnet | 1 | 0k | 80k | 1491k | 1k |
 | [[task-263-02-player-light-shadows]] | sonnet | 1 | 0k | 53k | 702k | 0k |
 | [[task-266-01-robot-readability]] | sonnet | 1 | 0k | 107k | 2484k | 5k |
+| [[task-264-02-blob-shadows]] | opus | 1 | 0k | 148k | 4556k | 21k |
 
 ## Totals
 | Scope | Input | Cache write | Cache read | Output |
