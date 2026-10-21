@@ -3,7 +3,7 @@ id: task-267-01-crystal-pulse-restore
 description: "The deposit crystals pulse again, and the heal crystals get their hashed pulse back."
 parent: task-267-crystal-pulse-restore
 kind: task
-status: todo
+status: in-progress
 ---
 # Crystal pulse restore
 

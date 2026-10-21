@@ -484,6 +484,7 @@ kind: note
 | [[task-258-01-heal-deposit-vibration]] | opus | 1 | 0k | 106k | 3035k | 24k |
 | [[task-259-01-ore-dig-time-2s]] | opus | 1 | 0k | 122k | 4637k | 8k |
 | [[task-260-01-rock-dig-time-065]] | opus | 1 | 0k | 118k | 2885k | 7k |
+| [[task-263-01-player-light-shadows]] | opus | 1 | 0k | 100k | 3970k | 13k |
 
 ## Totals
 | Scope | Input | Cache write | Cache read | Output |

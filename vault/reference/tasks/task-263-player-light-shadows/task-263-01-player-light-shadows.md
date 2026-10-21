@@ -3,7 +3,7 @@ id: task-263-01-player-light-shadows
 description: "The player carries a warm light that is the only source of cast shadows (rock walls), like the reference game: the walls block it and release it when they fall."
 parent: task-263-player-light-shadows
 kind: task
-status: in-progress
+status: done
 ---
 # Player light and wall shadows
 
@@ -15,11 +15,11 @@ status: in-progress
 - done_when: Build passes; existing Dig, Ore, PulseDesync, FineContactDigOpensPassage and RunFlow tests pass; docs updated; lint clean.
 - editor_state: closed (C++ build)
 - token_ceiling: 150k
-- model: open
-- tokens: open
-- runs: open
+- model: opus
+- tokens: input 118, cache write 100455, cache read 3969996, output 13085
+- runs: 1
 - milestone: M1
-- result: open
+- result: Shadow flags in C++: new RRShadows::DisableCastShadows called from PostInitializeComponents of ARREnemy, ARRProjectile, ARRPickup, ARRDrone, ARRMiner, ARRWeapon (covers every subclass and pooled actors); grid property bBlocksCastShadows (default true): rock and barrel components cast, floor does not; deposit crystals keep bDepositCrystalsCastShadow false (owner decision of task-237, not flipped). Build OK, 39 of 39 tests pass (Dig, Enemies, Ore, RunFlow, FineContact, PulseDesync). Perf noted in perf-risks (moving light invalidates virtual shadow map pages every frame); not measured; no shadow light exists until 263-02.
 
 ## Relations
 - [[task-263-player-light-shadows]] — parent global task.
