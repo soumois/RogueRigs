@@ -26,7 +26,10 @@ See [[mpp-player-light-mask]], [[lights-dark-ambient]], [[ppv-xp-glow]], [[bp-fl
 Everything above is judged on -game captures (Saved/LookTune) and numbers only.
 
 ## Open owner decisions
-Rock top albedo (burnt crescent), XP mesh scale about 0.45, barrels 0.5 or 0.65 s, task-234 deposit look check, the later player light.
+Rock top albedo (burnt crescent), XP mesh scale about 0.45, barrels 0.5 or 0.65 s, task-234 deposit look check, the later player light; whether to revert the task-263-01 per-actor shadow flags (robots, miner, drone would cast a sun shadow next to their blob disc).
+
+## Update task-275 (2026-10-21, after the owner's play)
+Owner saw a milky veil: lights and robot materials back to Monday (sun 6 white, sky 0.3 white, shadows on; chaser readability removed; greybox colours restored), exposure fixed at the Monday auto exposure -0.94 EV100, darkening mask kept (0.03 / 250 / 4). The "Current values" above are superseded for sun, sky and exposure ([[task-275-monday-light-revert]]).
 
 ## Quirks learned
 - Captures: setnopec for light components, macro path with Binaries, r.RecreateRenderStateContext ([[task-270-01-ambience-capture-tuning]]).
