@@ -25,6 +25,7 @@ status: in-progress
 6. task-272-06-light-mask-material — bp, MPC and post-process mask material
 7. task-272-07-light-mask-writer — cpp, MPC writer on the miner
 8. task-272-08-light-mask-ppv — bp, mask in PPV_XPGlow
+8b. task-272-12-light-mask-centre-fix — bp, mask centred on the miner (added after step 7)
 9. task-272-09-hybrid-sweep — cpp, hybrid runtime sweep
 10. task-272-10-hybrid-apply — bp, winning values applied
 11. task-272-11-hybrid-capture — cpp, final captures of both variants
@@ -39,6 +40,7 @@ status: in-progress
 - [[task-272-06-light-mask-material]] — step 6, bp.
 - [[task-272-07-light-mask-writer]] — step 7, cpp.
 - [[task-272-08-light-mask-ppv]] — step 8, bp.
+- [[task-272-12-light-mask-centre-fix]] — step 8b, bp.
 - [[task-272-09-hybrid-sweep]] — step 9, cpp.
 - [[task-272-10-hybrid-apply]] — step 10, bp.
 - [[task-272-11-hybrid-capture]] — step 11, cpp.
