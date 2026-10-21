@@ -6,7 +6,7 @@ kind: doc
 ---
 # Dark violet ambient (L_ArenaM1)
 
-Current look (task-274-03): flat shadowless sun (intensity 4.0) plus a low sky light, raised by exposure (min = max -2.9 EV100), with a darkening-only post-process mask (gain 1 at the miner, darker away); the history below is kept.
+Current look (task-274-03): flat shadowless sun (intensity 4.0) plus a low sky light, raised by exposure (min = max -3.4 EV100, task-274-05), with a darkening-only post-process mask (gain 1 at the miner, darker away); the history below is kept.
 
 Provisional (owner 2026-10-20, task-265-01; owner tunes by eye). Reason: reference game look, a dark violet ambient with a warm pool of light around the player (the player light comes from task-263-02). The strong sun (intensity 6) burnt the yellow chasers white-yellow.
 
@@ -48,6 +48,9 @@ Values picked from real -game captures (Saved/LookTune/r1, variant close to v6),
 
 ## task-274-03
 - task-274-03 (owner 2026-10-21, provisional): PPV_XPGlow `AutoExposureMinBrightness` = `AutoExposureMaxBrightness` 1.8 -> -2.9 EV100 (read back -2.9; overrides on, method AEM_Histogram, bias 1 unchanged). Sun 4.0, sky 0.08, bloom 1.3 / -1 and the M_PP_PlayerLightMask blendable read back unchanged. Reason: the old mask multiplied the centre by 30 x WarmTint (luminance about x25 = +4.7 EV); the mask is now a pure darkener with gain 1 at the miner (task-274-02), so exposure raises the flat scene to the old centre brightness: 1.8 - 4.7 = -2.9. Exposure rather than sun, because emissives (XP, crystals, thrusters) were multiplied by the same old mask and keep their relation to the scene; the sun stays 4.0 for the floor normal-map relief. Value calibrated by the next sweep. Revert: exposure 1.8.
+
+## task-274-05
+- task-274-05 (owner 2026-10-21, provisional): PPV_XPGlow `AutoExposureMinBrightness` = `AutoExposureMaxBrightness` -2.9 -> -3.4 EV100 (read back -3.4; overrides on, bloom 1.3 / -1, blendable weight 1 unchanged). Reason: round-10 sweep variant Q4 (best match to the DRGS ring profile, A score 0.230), with the mask defaults of [[mpp-player-light-mask]]. Revert: -2.9, then 1.8.
 
 ## Notes and risks
 - The sun has `bAtmosphereSunLight` true, but the level has no SkyAtmosphere actor, so the flag has no visible effect.

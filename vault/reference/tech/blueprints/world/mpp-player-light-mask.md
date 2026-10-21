@@ -14,9 +14,9 @@ kind: doc
 | name | default | unit | meaning and tuning |
 |---|---|---|---|
 | Enable | 1 | 0 or 1 | 0 = effect off, 1 = on. |
-| FarBrightness | 0.005 | multiplier (0 to 1) | brightness far from the miner (1 = no darkening). Starting value 0.15 / 30, because exposure is raised about x25 in task-274-03; to calibrate later. |
-| Radius | 200 | uu | distance where the gain is halfway between FarBrightness and 1. Raise to widen the lit zone. |
-| Exponent | 3 | none | falloff shape: 2 = long tail, higher = tighter edge. |
+| FarBrightness | 0.002 | multiplier (0 to 1) | brightness far from the miner (1 = no darkening). Previous 0.005 (task-274-02). |
+| Radius | 260 | uu | distance where the gain is halfway between FarBrightness and 1. Raise to widen the lit zone. Previous 200. |
+| Exponent | 4 | none | falloff shape: 2 = long tail, higher = tighter edge. Previous 3. |
 | PlayerPosition | (0,0,0) | world uu | written by C++ each tick, XY used. Do not edit. |
 
 - formula (Custom HLSL, Scene Color Before Bloom): r = length(WorldPos.xy - PlayerPosition.xy); mask = 1 / (1 + pow(r / max(Radius, 1), Exponent)); gain = lerp(FarBrightness, 1, mask); out = lerp(SceneColor, SceneColor * gain, saturate(Enable)). WorldPos is the engine WorldPosition node.
@@ -32,6 +32,7 @@ kind: doc
 
 Previous FarBrightness was 0.15 (neutral 0.4) and previous formula: gain = FarBrightness + (CenterBrightness - FarBrightness) * mask; tint = lerp(1, lerp(FarTint, WarmTint, mask), TintStrength); out = lerp(SceneColor, SceneColor * gain * tint, saturate(Enable)).
 
+- task-274-05 (owner 2026-10-21, provisional): defaults FarBrightness 0.005 -> 0.002, Radius 200 -> 260, Exponent 3 -> 4 (read back; Enable 1 kept). Reason: round-10 sweep (variant Q4) best match to the DRGS ring profile, A score 0.230. Paired with exposure -3.4 in [[ppv-xp-glow]]. Revert: 0.005 / 200 / 3.
 - history: task-272-06 first mask. task-272-12 WorldPosition node. task-272-14 parameters renamed. task-272-17 defaults from the sweep, Enable 1. task-274-02 darkener: CenterBrightness, TintStrength, WarmTint, FarTint removed, FarBrightness 0.15 to 0.005.
 - not_verified: look at runtime; instruction count; FarBrightness calibration.
 - owner_agent: agent-bp
