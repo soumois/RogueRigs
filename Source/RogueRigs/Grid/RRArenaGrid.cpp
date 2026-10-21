@@ -533,6 +533,19 @@ UInstancedStaticMeshComponent* ARRArenaGrid::CreateChunkComponent(TSubclassOf<UI
 	Component->SetCastShadow(Template->CastShadow);
 	Component->bCastDynamicShadow = Template->bCastDynamicShadow;
 	Component->bCastContactShadow = Template->bCastContactShadow;
+	// Shadow casters (task-263-01): the player's light is the only shadow-casting light; blocks cast per bBlocksCastShadows, the
+	// floor never casts (it receives). Collision templates (hidden, no shadow) keep their own flags.
+	if (Template == FloorInstances)
+	{
+		Component->SetCastShadow(false);
+		Component->bCastDynamicShadow = false;
+	}
+	else if (Template == RockInstances || Template == OreInstances || Template == HealOreInstances
+		|| Template == SpecialOreInstances || Template == BarrelInstances)
+	{
+		Component->SetCastShadow(bBlocksCastShadows);
+		Component->bCastDynamicShadow = bBlocksCastShadows;
+	}
 	// Ore and heal ore crystals (per-cell cluster chunks and deposit formation ISMs, both built from these templates) cast no
 	// shadow at all unless bDepositCrystalsCastShadow (task-237-01). Rock pieces, barrels and collision ISMs are untouched.
 	if (!bDepositCrystalsCastShadow && (Template == GetTemplateComponent(ERRCellType::Ore) || Template == GetTemplateComponent(ERRCellType::HealOre)))

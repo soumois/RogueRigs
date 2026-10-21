@@ -13,6 +13,7 @@
 #include "Projectiles/RRCollisionChannels.h"
 #include "RogueRigs.h"
 #include "Weapons/RRWeaponAttributeSet.h"
+#include "World/RRShadows.h"
 
 #include UE_INLINE_GENERATED_CPP_BY_NAME(RRProjectile)
 
@@ -48,6 +49,8 @@ void ARRProjectile::PostInitializeComponents()
 {
 	Super::PostInitializeComponents();
 	DisableVisualCollision();
+	// task-263-01: only the grid rocks cast shadows (from the player light); no projectile mesh does.
+	RRShadows::DisableCastShadows(this);
 
 	// The miner's capsule and mesh, and the weapon's mesh, never stop or receive this projectile.
 	if (AActor* OwnerActor = GetOwner())

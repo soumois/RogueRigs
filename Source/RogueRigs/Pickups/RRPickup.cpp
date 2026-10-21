@@ -21,6 +21,7 @@
 #include "Progression/RRProgressionComponent.h"
 #include "Projectiles/RRCollisionChannels.h"
 #include "RogueRigs.h"
+#include "World/RRShadows.h"
 
 #include UE_INLINE_GENERATED_CPP_BY_NAME(RRPickup)
 
@@ -54,6 +55,13 @@ ARRPickup::ARRPickup()
 	SetRootComponent(PickupMesh);
 
 	HealEffectClass = URRGE_Heal::StaticClass();
+}
+
+void ARRPickup::PostInitializeComponents()
+{
+	Super::PostInitializeComponents();
+	// task-263-01: only the grid rocks cast shadows (from the player light); no mesh of this actor or its Blueprint does.
+	RRShadows::DisableCastShadows(this);
 }
 
 void ARRPickup::BeginPlay()

@@ -173,6 +173,9 @@ protected:
 	/** Stops the auto-fire. */
 	virtual void EndPlay(const EEndPlayReason::Type EndPlayReason) override;
 
+	/** Turns shadow casting off on every primitive component, Blueprint weapon meshes included (task-263-01: only rocks cast). */
+	virtual void PostInitializeComponents() override;
+
 	/**
 	 * Fires one shot, called by the auto-fire for each bullet. Default (burst rifle): makes a DamageEffectClass spec
 	 * on the weapon's ASC, spawns one ProjectileClass at GetShotOrigin, flat, toward GetAimDirection rotated by a random

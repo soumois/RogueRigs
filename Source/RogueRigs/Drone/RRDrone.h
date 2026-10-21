@@ -109,6 +109,9 @@ public:
 	/** Places the two thrusters at ThrusterLeftOffset and ThrusterRightOffset (so a Blueprint override of the offsets applies). */
 	virtual void OnConstruction(const FTransform& Transform) override;
 
+	/** Turns shadow casting off on every primitive component: body, laser arm, antenna, beam, thrusters and Blueprint parts (task-263-01: only rocks cast). */
+	virtual void PostInitializeComponents() override;
+
 	/** Smoothed world speed of the drone written to the thrusters' User.Speed, in uu/s (0 at rest). */
 	UFUNCTION(BlueprintPure, Category = "Drone|Thrusters")
 	float GetThrusterSpeed() const { return ThrusterSpeed; }

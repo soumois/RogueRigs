@@ -34,6 +34,7 @@
 #include "Weapons/RRTurretLauncher.h"
 #include "Weapons/RRWeapon.h"
 #include "World/RRWorld.h"
+#include "World/RRShadows.h"
 
 ARRMiner::ARRMiner(const FObjectInitializer& ObjectInitializer)
 	: Super(ObjectInitializer)
@@ -105,6 +106,13 @@ void ARRMiner::OnConstruction(const FTransform& Transform)
 	SpringArm->TargetArmLength = CameraArmLength;
 	SpringArm->bEnableCameraLag = bCameraLag;
 	Camera->SetFieldOfView(CameraFieldOfView);
+}
+
+void ARRMiner::PostInitializeComponents()
+{
+	Super::PostInitializeComponents();
+	// task-263-01: only the grid rocks cast shadows (from the player light); no mesh of this actor or its Blueprint does.
+	RRShadows::DisableCastShadows(this);
 }
 
 void ARRMiner::BeginPlay()

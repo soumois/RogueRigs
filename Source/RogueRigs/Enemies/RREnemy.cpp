@@ -37,6 +37,7 @@
 #include "Projectiles/RRCollisionChannels.h"
 #include "RogueRigs.h"
 #include "Telegraph/RRGroundTelegraphComponent.h"
+#include "World/RRShadows.h"
 #include "World/RRWorld.h"
 
 #include UE_INLINE_GENERATED_CPP_BY_NAME(RREnemy)
@@ -120,6 +121,8 @@ void ARREnemy::PostInitializeComponents()
 	Super::PostInitializeComponents();
 	// Ground telegraphs (sys-ground-telegraph) never tint a robot: every mesh of the class and of its Blueprint ignores decals.
 	URRGroundTelegraphComponent::DisableDecalsOn(this);
+	// task-263-01: only the grid rocks cast shadows (from the player light); robots get a blob shadow instead (task-264).
+	RRShadows::DisableCastShadows(this);
 
 	UCapsuleComponent* Capsule = GetCapsuleComponent();
 	BodyRadius = Capsule->GetScaledCapsuleRadius();

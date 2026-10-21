@@ -1272,6 +1272,16 @@ protected:
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Grid|Ore Deposits")
 	bool bDepositCrystalsCastShadow = false;
 
+	/**
+	 * When true (default, owner 2026-10-20, task-263-01) every render component built from a block template casts shadows
+	 * (CastShadow and dynamic shadow on): rock piece ISMs, barrel HISMs, special ore, and the ore / heal ore crystals unless
+	 * bDepositCrystalsCastShadow keeps those off. With the player's light as the only shadow-casting light, rocks cast, nothing else.
+	 * The floor chunks never cast (they only receive) and the collision ISMs stay hidden without shadow, whatever this flag.
+	 * Read when the components are created (BuildInstances); it overrides the block template shadow flags.
+	 */
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Grid|Rendering")
+	bool bBlocksCastShadows = true;
+
 	/** Seed of the per-corner variant and full-piece rotation hash: same layout and seed give the same pieces. */
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Grid|Rock Pieces")
 	int32 RockPieceSeed = 1;

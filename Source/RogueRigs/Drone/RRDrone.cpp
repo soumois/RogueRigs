@@ -21,6 +21,7 @@
 #include "Misc/App.h"
 #include "UObject/ConstructorHelpers.h"
 #include "RogueRigs.h"
+#include "World/RRShadows.h"
 
 ARRDrone::ARRDrone()
 {
@@ -98,6 +99,13 @@ ARRDrone::ARRDrone()
 	{
 		ThrusterSystem = ThrusterFinder.Object;
 	}
+}
+
+void ARRDrone::PostInitializeComponents()
+{
+	Super::PostInitializeComponents();
+	// task-263-01: only the grid rocks cast shadows (from the player light); no mesh of this actor or its Blueprint does.
+	RRShadows::DisableCastShadows(this);
 }
 
 void ARRDrone::OnConstruction(const FTransform& Transform)

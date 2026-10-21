@@ -274,6 +274,9 @@ protected:
 	/** Applies the camera tunables (pitch, arm length, lag, FOV) to the components, so Blueprint edits show up. */
 	virtual void OnConstruction(const FTransform& Transform) override;
 
+	/** Turns shadow casting off on every primitive component, the skeletal mesh and Blueprint ones included (task-263-01: only rocks cast). */
+	virtual void PostInitializeComponents() override;
+
 	/** Initializes the ASC actor info, applies the CSV base stats and starts mirroring MoveSpeed. */
 	virtual void BeginPlay() override;
 

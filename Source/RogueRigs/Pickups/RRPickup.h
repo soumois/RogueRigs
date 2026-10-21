@@ -185,6 +185,9 @@ public:
 	UPhysicalMaterial* MakePhysicalMaterial(UObject* Outer) const;
 
 protected:
+	/** Turns shadow casting off on every primitive component, Blueprint ones included (task-263-01: only rocks cast; holds across pool reuse). */
+	virtual void PostInitializeComponents() override;
+
 	/** Turns collision off on every primitive component (Blueprint ones included) except PickupMesh, which gets the physics setup (ConfigurePhysicsBody); then StartLife. */
 	virtual void BeginPlay() override;
 

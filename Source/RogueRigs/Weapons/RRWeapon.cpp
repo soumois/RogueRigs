@@ -18,6 +18,7 @@
 #include "Weapons/RRAutoFireComponent.h"
 #include "Weapons/RRWeaponAttributeSet.h"
 #include "Weapons/RRWeaponStatsRow.h"
+#include "World/RRShadows.h"
 
 #include UE_INLINE_GENERATED_CPP_BY_NAME(RRWeapon)
 
@@ -229,6 +230,13 @@ int32 ARRWeapon::GetPierceCount() const
 	const float Pierce = AbilitySystemComponent ? AbilitySystemComponent->GetNumericAttribute(URRWeaponAttributeSet::GetPierceAttribute()) : 0.f;
 	// Small tolerance so 3.9999 from stacked modifiers still counts as 4.
 	return FMath::Max(FMath::FloorToInt32(Pierce + KINDA_SMALL_NUMBER), 1);
+}
+
+void ARRWeapon::PostInitializeComponents()
+{
+	Super::PostInitializeComponents();
+	// task-263-01: only the grid rocks cast shadows (from the player light); no mesh of this actor or its Blueprint does.
+	RRShadows::DisableCastShadows(this);
 }
 
 void ARRWeapon::EndPlay(const EEndPlayReason::Type EndPlayReason)
