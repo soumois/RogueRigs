@@ -284,3 +284,4 @@ Archive: it exceeds the index size limits of [[_authoring]] on purpose (owner, 2
 - [[task-275-monday-light-revert]] — L_ArenaM1 lights and robot materials back to their Monday 2026-10-19 state, exposure frozen at the Monday auto exposure, darkening shader kept. Status done.
 - [[task-276-owner-light-edits-record]] — The owner editor changes of 2026-10-21 (MPC_PlayerLight 0.08 / 200 / 1.8, sun 3 lux) are recorded in the docs with before, after and revert values. Status done.
 - [[task-277-xp-glow-revert]] — The XP pickups glow as before task-269: task-269-01 values reverted, PPV bloom 1.3 / -1 kept. Status done.
+- [[task-279-drone-eye-glow]] — The miner drone camera eye glows a little, orange, through an emissive restricted to the eye texels of M_Drone. Status done.

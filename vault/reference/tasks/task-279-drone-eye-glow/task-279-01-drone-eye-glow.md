@@ -3,7 +3,7 @@ id: task-279-01-drone-eye-glow
 description: "The miner drone camera eye glows a little, orange, through an emissive restricted to the eye texels of M_Drone."
 parent: task-279-drone-eye-glow
 kind: task
-status: in-progress
+status: done
 ---
 # Drone eye glow, orange
 
@@ -15,11 +15,11 @@ status: in-progress
 - done_when: Mask texel report; parameters read back; M_Drone compiles and is saved; docs and colour decision recorded; lint clean.
 - editor_state: open (editor + MCP)
 - token_ceiling: 120k
-- model: open
-- tokens: open
-- runs: open
+- model: sonnet
+- tokens: input 90, cache write 102592, cache read 2788263, output 620
+- runs: 2
 - milestone: M1
-- result: open
+- result: Commits 94dea849 (first run: colour test alone left 250 amber texels on 7 body faces, no change) and b12f7147 (retry). M_Drone emissive = Custom EyeGlowMask: amber test on linear base colour x LocalPosition box (x > 10, |y| < 3.5, -4.5 < z < 2.5) x EyeGlowColor (1, 0.45, 0.08) x EyeGlowAmount 6; 4639 eye texels, 0 non-eye texels pass, laser excluded, rust fails the colour test. Read back: before no parameters and no emissive, after EyeGlowAmount 6 and EyeGlowColor (1, 0.45, 0.08) on MI_Drone (no override), Emissive = Custom_0; recompiled, saved. Docs bp-drone-materials (revert: disconnect Emissive or EyeGlowAmount 0), color-code row. Not seen on screen.
 
 ## Relations
 - [[task-279-drone-eye-glow]] — parent global task.

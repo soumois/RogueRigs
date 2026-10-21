@@ -3,7 +3,7 @@ id: task-280-01-drone-thruster-boost
 description: "The drone thruster idle look equals its current top-speed look, and top speed is stronger than that."
 parent: task-280-drone-thruster-boost
 kind: task
-status: todo
+status: in-progress
 ---
 # Drone thruster particles boosted
 
