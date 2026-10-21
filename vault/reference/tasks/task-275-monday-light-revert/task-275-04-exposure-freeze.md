@@ -3,7 +3,7 @@ id: task-275-04-exposure-freeze
 description: "Editor open: PPV_XPGlow AutoExposureMin = Max set to the measured Monday EV100; read-back of lights, robot materials, MPC_PlayerLight and blendable; docs."
 parent: task-275-monday-light-revert
 kind: task
-status: todo
+status: in-progress
 ---
 # Exposure frozen at the Monday value
 

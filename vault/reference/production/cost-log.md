@@ -535,6 +535,7 @@ kind: note
 | [[task-274-08-far-floor-apply]] | sonnet | 1 | 0k | 64k | 961k | 1k |
 | [[task-275-01-monday-light-revert]] | sonnet | 1 | 0k | 28k | 70k | 0k |
 | [[task-275-02-robot-materials-monday]] | sonnet | 1 | 0k | 14k | 44k | 0k |
+| [[task-275-03-monday-exposure-measure]] | opus | 1 | 0k | 75k | 971k | 2k |
 
 ## Totals
 | Scope | Input | Cache write | Cache read | Output |

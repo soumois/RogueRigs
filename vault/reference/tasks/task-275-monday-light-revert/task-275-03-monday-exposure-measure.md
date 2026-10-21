@@ -3,7 +3,7 @@ id: task-275-03-monday-exposure-measure
 description: "One -game run with the Monday lights and the Monday PPV_XPGlow (auto exposure, no mask) measures the adapted EV100 to freeze; PPV restored after."
 parent: task-275-monday-light-revert
 kind: task
-status: in-progress
+status: done
 ---
 # Monday auto exposure measured
 
@@ -15,11 +15,11 @@ status: in-progress
 - done_when: a single EV100 value with how it was read (engine readout, not an estimate) and its spread over the settled window; the PPV package back to HEAD; no committed code change unless a debug readout was indispensable (then committed by path with its reason); no other run, test or capture.
 - editor_state: closed
 - token_ceiling: 40k
-- model: open
-- tokens: open
-- runs: open
+- model: opus
+- tokens: input 46, cache write 75320, cache read 971018, output 2393
+- runs: 1
 - milestone: M1
-- result: open
+- result: No commit (measurement only). One -game run with the Monday PPV_XPGlow swapped in (auto exposure, no mask), sun 6 / sky 0.3 read back by getall; ShowFlag.VisualizeHDR: settled Average Scene EV100 -0.945/-0.943/-0.943 and smoothed pre-bias marker -0.93/-0.94/-0.94 (8-13 s, spread 0.01 EV, settles in 7-8 s); with-bias marker -1.94 (bias 1, curve 0). Value to freeze: -0.94 EV100 (UE 5.8 source: bias multiplies after the min/max clamp). Frame Saved/LookTune/monday_275/m275_normal_00.png. PPV package restored to HEAD, git clean.
 
 ## Relations
 - [[task-275-monday-light-revert]] — parent global task.
