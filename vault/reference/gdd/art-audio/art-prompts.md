@@ -12,7 +12,7 @@ Reference images are generated in ChatGPT image generation. The prompts are stor
 - Look: "flat-shaded low-poly", "visible facets", "no textures", "no UI, no text".
 - Scene camera: "steep top-down camera (almost vertical, slight perspective), 16:9".
 - Light: "strong directional light with lifted shadows so everything stays readable".
-- Floor: "clean, flat, slightly dark, subtle large facets, no pebbles".
+- Floor: "large cracked faceted stone plates, painted look, fine crack lines, plate edges catching the light, dark violet-magenta, no pebbles, no rubble" (owner 2026-10-21, provisional, task-273; was "clean, flat, slightly dark, subtle large facets, no pebbles").
 - Character sheets: plain light grey background, three-quarter top view. Turnaround for 3D: plain white background, even neutral lighting, no shadows.
 - Rigs side: "patched, mismatched white and teal", rust, "repaired, bolted and improvised"; no yellow, green, blue or violet ([[color-code]]).
 - Corporate side: "clean industrial", red eyes, small yellow logo plate, rigid mechanical parts only.
