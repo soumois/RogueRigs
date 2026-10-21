@@ -513,6 +513,7 @@ kind: note
 | [[task-273-01-floor-texture]] | sonnet | 1 | 0k | 23k | 65k | 1k |
 | [[task-272-06-light-mask-material]] | sonnet | 1 | 0k | 108k | 2663k | 2k |
 | [[task-272-08-light-mask-ppv]] | sonnet | 1 | 0k | 48k | 433k | 1k |
+| [[task-273-02-floor-texture-maps]] | sonnet | 1 | 0k | 39k | 282k | 1k |
 
 ## Totals
 | Scope | Input | Cache write | Cache read | Output |

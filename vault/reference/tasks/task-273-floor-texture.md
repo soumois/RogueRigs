@@ -13,7 +13,7 @@ status: in-progress
 - gdd_check: read art-style-guide, art-prompts, visual-style, arena-grid (2026-10-21). Conflict: A13 "clean flat floor with subtle large facets and no pebbles". Owner decision 2026-10-21: A13 replaced by cracked faceted plates, painted look, crack lines and edges catching the light, no rubble (A14 stays); A13, the art-prompts floor phrase, visual-style and arena-grid updated, provisional. Lights, exposure and post-process belong to task-272 and are not touched here.
 - confirmed_by_owner: yes (2026-10-21, relayed by the main session with its defaults)
 - milestone: M1
-- next_step: task-273-02-floor-texture-maps
+- next_step: task-273-03-floor-material
 - result: open
 
 ## Subtasks

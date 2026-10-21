@@ -3,7 +3,7 @@ id: task-273-02-floor-texture-maps
 description: "Tileable albedo and normal map at 2048 px from the owner's validated floor image, checked by numbers (seams, size, mean value)."
 parent: task-273-floor-texture
 kind: task
-status: in-progress
+status: done
 ---
 # Floor texture maps
 
@@ -15,11 +15,11 @@ status: in-progress
 - done_when: Both maps 2048 square; wrap step close to inner step; mean albedo in the stated range; no Blender process left; node updated; lint clean; committed by path.
 - editor_state: any
 - token_ceiling: 40k
-- model: open
-- tokens: open
-- runs: open
+- model: sonnet
+- tokens: input 22, cache write 39160, cache read 282168, output 1244
+- runs: 1
 - milestone: M1
-- result: open
+- result: Commits 315881e4, 0672d56b, split node: Tools/art/blender/floor_texture_maps.py; source seam wrap 3.42/3.52 vs inner 1.21/1.36 fixed by a 16 px cosine border ramp (after 0.01); Lanczos-3 1254 -> 2048 wrapped; T_Floor_Plates_D mean sRGB (95,45,95), lum 59.3 (asis 71.6); N DirectX, bake strength 12, mean bytes (127.5,127.6,253.8); H 16-bit; roughness 0.8 proposed; all maps wrap step below inner step; no Blender left.
 
 ## Relations
 - [[task-273-floor-texture]] — parent global task.
