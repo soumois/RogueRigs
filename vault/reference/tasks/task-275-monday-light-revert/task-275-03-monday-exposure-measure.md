@@ -3,7 +3,7 @@ id: task-275-03-monday-exposure-measure
 description: "One -game run with the Monday lights and the Monday PPV_XPGlow (auto exposure, no mask) measures the adapted EV100 to freeze; PPV restored after."
 parent: task-275-monday-light-revert
 kind: task
-status: todo
+status: in-progress
 ---
 # Monday auto exposure measured
 

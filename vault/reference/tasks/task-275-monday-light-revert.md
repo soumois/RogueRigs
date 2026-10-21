@@ -13,7 +13,7 @@ status: in-progress
 - gdd_check: art-style-guide A12 and visual-style ("strong directional light with lifted shadows", shadows suspended provisionally by task-261): the revert restores the rule, the suspension lines are removed. No `open` value. Not reverted (owner): blob shadows (264), XP halo (269), deposit crystal (262), pulse fixes (257/267), floor (273), bloom 1.3 / -1, removed PlayerLight (272-15). Per-actor shadow flags of task-263-01 (C++: robots, miner, drone, pickups, weapons, projectiles cast no shadow; grid floor never, blocks per bBlocksCastShadows) are kept pending an owner question: on Monday these actors cast shadows, so restoring it would add a real sun shadow next to the blob disc.
 - confirmed_by_owner: yes (2026-10-21, owner answers relayed by the main session)
 - milestone: M1
-- next_step: task-275-02-robot-materials-monday
+- next_step: task-275-03-monday-exposure-measure
 - result: open
 
 ## Subtasks
