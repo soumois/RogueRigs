@@ -3,7 +3,7 @@ id: task-279-drone-eye-glow
 description: "Global task: The miner drone camera eye glows a little, orange, through an emissive restricted to the eye texels of M_Drone."
 parent: tasks-to-do-index
 kind: task
-status: todo
+status: in-progress
 ---
 # Drone eye glow, orange
 
