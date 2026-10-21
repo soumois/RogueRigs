@@ -3,7 +3,7 @@ id: task-267-01-crystal-pulse-restore
 description: "The deposit crystals pulse again, and the heal crystals get their hashed pulse back."
 parent: task-267-crystal-pulse-restore
 kind: task
-status: in-progress
+status: done
 ---
 # Crystal pulse restore
 
@@ -15,11 +15,11 @@ status: in-progress
 - done_when: Cause identified with numbers; PulseDesync check updated to the new indices and passing; existing tests pass; docs updated; lint clean.
 - editor_state: closed (C++ build)
 - token_ceiling: 150k
-- model: open
-- tokens: open
-- runs: open
+- model: opus
+- tokens: input 102, cache write 146571, cache read 4909574, output 37956
+- runs: 1
 - milestone: M1
-- result: open
+- result: Cause (engine source, 5.8): a scalar parameter with Use Custom Primitive Data compiles to the CPD slot and never uses its default; a primitive that writes nothing gets 36 zeroed floats, so PulseRate reads 0 and Time x 0 freezes the pulse: measured 0.0000 on the Duskite and heal deposit ISMs and on BP_PickupXP; ore pickups write 0.8972 and still pulse; task-262 values not the cause. XP nut frozen too (regression of 257-01). C++: deposit pulse data moved to per-instance indices 13 and 14 with 15 floats on every deposit ISM (heal rock keeps 0 at 4..12, shake input 0.0000 on 12 of 12; 371 instances hold their hash); cells keep 4 and 5; PulseDesync check updated; 26 of 26 other tests pass. Pending bp (267-02): M_DepositCrystalGlow reads 13 and 14 and drops its CPD parameters; M_XPNutGlow: If(PulseRate > 0, PulseRate, 1). Not seen on screen.
 
 ## Relations
 - [[task-267-crystal-pulse-restore]] — parent global task.

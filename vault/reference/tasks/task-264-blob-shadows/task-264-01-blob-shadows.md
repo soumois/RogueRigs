@@ -3,7 +3,7 @@ id: task-264-01-blob-shadows
 description: "Simple fake round shadows under the enemies, the miner and the drone."
 parent: task-264-blob-shadows
 kind: task
-status: todo
+status: in-progress
 ---
 # Blob shadows
 
