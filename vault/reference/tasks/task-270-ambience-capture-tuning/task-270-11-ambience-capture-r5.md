@@ -3,7 +3,7 @@ id: task-270-11-ambience-capture-r5
 description: "Round 5 captures at the same frames with a small radius sweep, judged by the Orchestrator; final side by sides for the owner."
 parent: task-270-ambience-capture-tuning
 kind: task
-status: todo
+status: in-progress
 ---
 # Ambience round 5 captures
 
