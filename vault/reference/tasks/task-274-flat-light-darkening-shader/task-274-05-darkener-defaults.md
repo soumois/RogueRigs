@@ -3,7 +3,7 @@ id: task-274-05-darkener-defaults
 description: "MPC_PlayerLight defaults (and exposure or emissive parameters if the sweep requires them) set to the values chosen in step 4."
 parent: task-274-flat-light-darkening-shader
 kind: task
-status: in-progress
+status: done
 ---
 # Darkener defaults
 
@@ -15,11 +15,11 @@ status: in-progress
 - done_when: Values read back; saved by path; docs updated with previous values; lint clean; committed by path.
 - editor_state: open
 - token_ceiling: 30k
-- model: open
-- tokens: open
-- runs: open
+- model: sonnet
+- tokens: input 44, cache write 56037, cache read 771261, output 1117
+- runs: 1
 - milestone: M1
-- result: open
+- result: Commit 1cd5a185: MPC_PlayerLight FarBrightness 0.005 -> 0.002, Radius 200 -> 260, Exponent 3 -> 4, Enable 1; PPV_XPGlow exposure min = max -2.9 -> -3.4 EV100; all read back; bloom, bias, blendable unchanged; MPC and PPV external package saved, not dirty; docs updated.
 
 ## Relations
 - [[task-274-flat-light-darkening-shader]] — parent global task.

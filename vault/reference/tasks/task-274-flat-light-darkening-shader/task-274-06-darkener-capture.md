@@ -3,7 +3,7 @@ id: task-274-06-darkener-capture
 description: "Final -game frames A, B, D, E, F, H with Enable 1 and Enable 0, centre-versus-unmasked proof numbers, DRGS profile, side by sides final_274_*.png."
 parent: task-274-flat-light-darkening-shader
 kind: task
-status: todo
+status: in-progress
 ---
 # Darkener final captures
 

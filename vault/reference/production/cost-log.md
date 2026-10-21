@@ -528,6 +528,7 @@ kind: note
 | [[task-274-02-darkener-material]] | sonnet | 1 | 0k | 49k | 510k | 1k |
 | [[task-274-03-exposure-raise]] | sonnet | 1 | 0k | 44k | 839k | 1k |
 | [[task-274-04-darkener-sweep]] | opus | 1 | 0k | 68k | 1073k | 11k |
+| [[task-274-05-darkener-defaults]] | sonnet | 1 | 0k | 56k | 771k | 1k |
 
 ## Totals
 | Scope | Input | Cache write | Cache read | Output |
