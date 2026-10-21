@@ -13,7 +13,7 @@ status: in-progress
 - gdd_check: done by the Orchestrator when the task is planned (2026-10-21).
 - confirmed_by_owner: yes (2026-10-21)
 - milestone: M1
-- next_step: task-270-04-ambience-after-capture
+- next_step: task-270-05-ambience-apply-r3
 - result: open
 
 ## Subtasks
@@ -21,6 +21,8 @@ status: in-progress
 2. task-270-02-ambience-sweep — cpp, second runtime sweep
 3. task-270-03-ambience-apply — bp, values set in the editor
 4. task-270-04-ambience-after-capture — cpp, after captures
+5. task-270-05-ambience-apply-r3 — bp, round 3 values
+6. task-270-06-ambience-capture-r3 — cpp, round 3 captures
 
 ## Relations
 - [[tasks-to-do-index]] — parent index.
@@ -28,3 +30,5 @@ status: in-progress
 - [[task-270-02-ambience-sweep]] — step 2, cpp.
 - [[task-270-03-ambience-apply]] — step 3, bp.
 - [[task-270-04-ambience-after-capture]] — step 4, cpp.
+- [[task-270-05-ambience-apply-r3]] — step 5, bp.
+- [[task-270-06-ambience-capture-r3]] — step 6, cpp.
