@@ -519,6 +519,7 @@ kind: note
 | [[task-272-13-mask-writer-position]] | opus | 1 | 0k | 41k | 428k | 7k |
 | [[task-272-14-mask-owner-params]] | sonnet | 1 | 0k | 65k | 778k | 2k |
 | [[task-272-15-player-light-remove]] | sonnet | 1 | 0k | 45k | 647k | 0k |
+| [[task-272-16-flat-mask-sweep]] | opus | 1 | 0k | 196k | 2511k | 9k |
 
 ## Totals
 | Scope | Input | Cache write | Cache read | Output |

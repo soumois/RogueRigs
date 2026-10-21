@@ -3,7 +3,7 @@ id: task-272-17-mask-defaults
 description: "MPC_PlayerLight defaults set to the values chosen from the sweep, effect enabled."
 parent: task-272-player-light-low-gradient
 kind: task
-status: todo
+status: in-progress
 ---
 # Mask defaults
 
