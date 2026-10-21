@@ -13,7 +13,7 @@ status: in-progress
 - gdd_check: done by the Orchestrator (2026-10-21): no conflict with color-code (red eyes on every robot), no open value; glow values provisional.
 - confirmed_by_owner: yes (2026-10-21, owner "ok" to every default: chaser eye EyeColor (1, 0.05, 0.05) x GlowAmount 23 (about x2 of the old 0.46 x 25), Heavy and Shooter same values, kamikaze untouched, stop if the material function cannot be made (no WPO copy), no captures)
 - milestone: M1
-- next_step: task-278-04-robot-eye-material
+- next_step: task-278-05-chaser-body-material
 - result: open. History: first approach (task-278-01, GlowAmount 25 -> 50 on the red-texel mask) stopped on a mask leak (red neck ring); owner chose a separate eye material slot instead (2026-10-21), so 278-01 is closed as superseded.
 
 ## Subtasks

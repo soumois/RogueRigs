@@ -3,7 +3,7 @@ id: task-278-04-robot-eye-material
 description: "A shared robot eye material M_RobotEye with its WPO in a material function shared with the chaser bodies, and four instances."
 parent: task-278-chaser-eye-glow
 kind: task
-status: in-progress
+status: done
 ---
 # A shared robot eye material M_RobotEye with its WPO in a material function shared with the chaser bodies, and four instances
 
@@ -15,11 +15,11 @@ status: in-progress
 - done_when: WPO code comparison reported; MF_RobotAnimWPO, M_RobotEye and 4 instances exist, compile and are saved; every parameter read back on each instance; doc node created with revert (delete the new assets); lint clean; committed.
 - editor_state: open (editor + MCP)
 - token_ceiling: 150k
-- model: open
-- tokens: open
-- runs: open
+- model: sonnet
+- tokens: input 76, cache write 81245, cache read 1743557, output 594
+- runs: 1
 - milestone: M1
-- result: open
+- result: Done (commit e41622cb). WPO codes compared: shield code with ClipOffset 0 equals the chaser code for ClipId 0 and 1 (differs only for other ClipId values). /Game/RogueRigs/Materials/Robots/: MF_RobotAnimWPO (inputs AnimTex, ClipOffset, RunRate; ClipId CPD 0, AnimStart CPD 1, Time, UV2 R, LocalPosition, shield Custom node, Transform Local to World; output WPO), M_RobotEye (static switches UseEyeTexture and Animated; emissive EyeColor x GlowAmount x red mask or 1), instances MI_RobotEye_Chaser (T_ChaserAnim, ClipOffset 0), _ShieldChaser (T_ShieldChaserAnim, 0), _ShieldChaserPlain (2), _GreyBox (no texture, no WPO); all EyeColor (1, 0.05, 0.05), GlowAmount 23, RunRate 0.7 read back. Doc bp-robot-eye-material. Unverified: render, PIE; MF standalone preview logs an SM6 compile failure (likely no preview texture).
 
 ## Relations
 - [[task-278-chaser-eye-glow]] — parent global task.

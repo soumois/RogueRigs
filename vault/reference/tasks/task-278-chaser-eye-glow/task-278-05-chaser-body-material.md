@@ -3,7 +3,7 @@ id: task-278-05-chaser-body-material
 description: "M_Chaser_Meshy_Anim takes its WPO from MF_RobotAnimWPO and loses the red-mask emissive."
 parent: task-278-chaser-eye-glow
 kind: task
-status: todo
+status: in-progress
 ---
 # M_Chaser_Meshy_Anim takes its WPO from MF_RobotAnimWPO and loses the red-mask emissive
 
