@@ -276,3 +276,4 @@ Archive: it exceeds the index size limits of [[_authoring]] on purpose (owner, 2
 - [[task-267-crystal-pulse-restore]] — The deposit crystals pulse again, and the heal crystals get their hashed pulse back. Status done.
 - [[task-268-dark-ambience-tight-light]] — The ambience is dark around a tight warm pool of light on the player, like the reference: shorter light radius, much dimmer ambient, fixed exposure. Status done.
 - [[task-269-xp-bloom-smaller]] — The XP pickups no longer bloom into big glowing blobs: small bright cyan dots with a small halo. Status done.
+- [[task-270-ambience-capture-tuning]] — The arena around the miner matches the DRGS reference on real -game screenshots judged by the Orchestrator: dark violet scene, tight warm light pool, readable robots. Status done.

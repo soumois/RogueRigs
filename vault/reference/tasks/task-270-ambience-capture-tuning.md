@@ -1,9 +1,9 @@
 ---
 id: task-270-ambience-capture-tuning
 description: "Global task: The arena around the miner matches the DRGS reference on real -game screenshots judged by the Orchestrator: dark violet scene, tight warm light pool, readable robots."
-parent: tasks-to-do-index
+parent: tasks-done-index
 kind: task
-status: in-progress
+status: done
 ---
 # Ambience tuned on screenshots
 
@@ -13,8 +13,8 @@ status: in-progress
 - gdd_check: done by the Orchestrator when the task is planned (2026-10-21).
 - confirmed_by_owner: yes (2026-10-21)
 - milestone: M1
-- next_step: task-270-11-ambience-capture-r5
-- result: open
+- next_step: none
+- result: Done. Frames Saved/LookTune/r5/ and final side by sides Saved/LookTune/final_270_{A_idle,B_wall,D_robots_xp,E_xp}.png (r0 | r5); radius sweep 620/640/660 on D. Seen at 640: warm amber-cream pool core L 155, half radius 210 px (0.22 of width, target 0.18), violet rock tops readable (L 39), chasers golden yellow and identifiable, XP small cyan. Still off: lit rock tops a cream-white crescent (L 242), floor outside the pool very dark (L 10-12 vs about 40 in DRGS), miner top and drone white-hot. 640 kept.
 
 ## Subtasks
 1. task-270-01-ambience-capture-tuning — cpp, baseline captures and first runtime sweep
@@ -30,7 +30,7 @@ status: in-progress
 11. task-270-11-ambience-capture-r5 — cpp, round 5 captures
 
 ## Relations
-- [[tasks-to-do-index]] — parent index.
+- [[tasks-done-index]] — parent index.
 - [[task-270-01-ambience-capture-tuning]] — step 1, cpp.
 - [[task-270-02-ambience-sweep]] — step 2, cpp.
 - [[task-270-03-ambience-apply]] — step 3, bp.
