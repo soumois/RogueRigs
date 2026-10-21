@@ -14,7 +14,7 @@ status: done
 - confirmed_by_owner: yes (2026-10-21)
 - milestone: M1
 - next_step: none
-- result: Done. Frames Saved/LookTune/r5/ and final side by sides Saved/LookTune/final_270_{A_idle,B_wall,D_robots_xp,E_xp}.png (r0 | r5); radius sweep 620/640/660 on D. Seen at 640: warm amber-cream pool core L 155, half radius 210 px (0.22 of width, target 0.18), violet rock tops readable (L 39), chasers golden yellow and identifiable, XP small cyan. Still off: lit rock tops a cream-white crescent (L 242), floor outside the pool very dark (L 10-12 vs about 40 in DRGS), miner top and drone white-hot. 640 kept.
+- result: Done, tuned on 5 capture rounds judged by the Orchestrator (Saved/LookTune/r0-r5, final r0 | r5 side by sides Saved/LookTune/final_270_*.png). Final: PlayerLight height 300 -> 450, radius 650 -> 640, 120 -> 3000 cd, colour (1, 0.62, 0.30) -> (1, 0.75, 0.50); DirectionalLight_0 0.12 -> 1.5 (violet); chaser BodyBrightness 0.7 -> 0.5; sky 0.08, exposure 1.3, bloom unchanged. Seen: warm amber-cream pool (core L 155, half radius 210 px = 0.22 of width), violet rocks readable outside, chasers golden yellow. Still differs from DRGS: lit rock tops burn to a cream-white crescent (diffuse, not specular; the light rock albedo against the dark floor, owner decision), open floor outside the pool L 10-12 vs about 40 (floor albedo, owner decision), miner top and drone white-hot. Revert values in lights-dark-ambient, bp-miner, bp-robot-readability.
 
 ## Subtasks
 1. task-270-01-ambience-capture-tuning — cpp, baseline captures and first runtime sweep
