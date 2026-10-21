@@ -3,7 +3,7 @@ id: task-265-01-scene-ambient-dark
 description: "A dark violet ambient with the sun lowered, so the player light is the main light and bright bodies are no longer burnt."
 parent: task-265-scene-ambient-dark
 kind: task
-status: in-progress
+status: done
 ---
 # Dark violet ambient
 
@@ -15,11 +15,11 @@ status: in-progress
 - done_when: Lights read back with the new values and the previous ones recorded for revert; docs updated; lint clean.
 - editor_state: open (editor + MCP)
 - token_ceiling: 100k
-- model: open
-- tokens: open
-- runs: open
+- model: sonnet
+- tokens: input 50, cache write 57308, cache read 989015, output 2615
+- runs: 1
 - milestone: M1
-- result: open
+- result: DirectionalLight_0 intensity 6 -> 1.0 with colour (0.75, 0.62, 1.0); SkyLight_0 intensity 0.3 -> 0.5 with colour (0.35, 0.25, 0.6); castShadows stay false; no exposure, bloom, Lumen or material change; node lights-dark-ambient with previous values for revert. Risks: default auto exposure may brighten the dark scene back; the sky light (captured scene, real-time capture off, no cubemap) may contribute nothing until recaptured. Saved with the documented empty save_assets route (only the two light files changed). Not seen on screen.
 
 ## Relations
 - [[task-265-scene-ambient-dark]] — parent global task.

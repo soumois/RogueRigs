@@ -487,6 +487,7 @@ kind: note
 | [[task-263-01-player-light-shadows]] | opus | 1 | 0k | 100k | 3970k | 13k |
 | [[task-267-01-crystal-pulse-restore]] | opus | 1 | 0k | 147k | 4910k | 38k |
 | [[task-264-01-blob-shadows]] | sonnet | 1 | 0k | 80k | 1138k | 3k |
+| [[task-265-01-scene-ambient-dark]] | sonnet | 1 | 0k | 57k | 989k | 3k |
 
 ## Totals
 | Scope | Input | Cache write | Cache read | Output |

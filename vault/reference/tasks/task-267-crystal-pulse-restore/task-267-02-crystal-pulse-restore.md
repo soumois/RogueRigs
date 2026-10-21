@@ -3,7 +3,7 @@ id: task-267-02-crystal-pulse-restore
 description: "M_DepositCrystalGlow reads the new pulse indices 13 and 14."
 parent: task-267-crystal-pulse-restore
 kind: task
-status: todo
+status: in-progress
 ---
 # Deposit crystal pulse indices
 
