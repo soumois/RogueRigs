@@ -3,7 +3,7 @@ id: task-258-01-heal-deposit-vibration
 description: "The heal deposit no longer vibrates by itself: only its upper part moves without contact, even in the editor; find the cause and fix it."
 parent: task-258-heal-deposit-vibration
 kind: task
-status: todo
+status: in-progress
 ---
 # Heal deposit vibration
 
