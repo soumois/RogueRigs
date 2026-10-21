@@ -350,7 +350,7 @@ bool FRRDigRockDestroyTest::RunTest(const FString& Parameters)
 
 	TestEqual(TEXT("(129, 115) is rock"), Grid->GetCellType(FineRockCell), ERRCellType::Rock);
 	TestEqual(TEXT("(128, 115) is floor"), Grid->GetCellType(FineRockWestFloorCell), ERRCellType::Floor);
-	TestNearlyEqual(TEXT("rock health 0.5 (drone gdd: 0.5 s per 67 uu block)"), Grid->GetCellHealth(FineRockCell), 0.5f);
+	TestNearlyEqual(TEXT("rock health 0.65 (drone gdd: 0.65 s per 67 uu block)"), Grid->GetCellHealth(FineRockCell), 0.65f);
 	CheckInstanceMaps(*this, Grid);
 
 	const int32 RockBefore = FGridAccess::InstanceCount(Grid, ERRCellType::Rock);
@@ -369,7 +369,7 @@ bool FRRDigRockDestroyTest::RunTest(const FString& Parameters)
 
 	const float DestroySeconds = DestroyFrame * FrameSeconds;
 	AddInfo(FString::Printf(TEXT("rock destroyed at frame %d (%.4f s)"), DestroyFrame, DestroySeconds));
-	TestTrue(TEXT("rock destroyed within 0.5 s +- 1 frame"), DestroyFrame >= 29 && DestroyFrame <= 31);
+	TestTrue(TEXT("rock destroyed within 0.65 s +- 1 frame"), DestroyFrame >= 38 && DestroyFrame <= 40);
 	TestEqual(TEXT("cell is floor after destruction"), Grid->GetCellType(FineRockCell), ERRCellType::Floor);
 	TestFalse(TEXT("cell is no longer a block"), Grid->IsBlockCell(FineRockCell));
 	TestEqual(TEXT("rock collision lost one instance"), FGridAccess::InstanceCount(Grid, ERRCellType::Rock), RockBefore - 1);
@@ -661,7 +661,7 @@ bool FRRDigArcContactTest::RunTest(const FString& Parameters)
 	using namespace RRDigTests;
 
 	// Game grid (67 uu): the miner stands on (128, 115), against the rock wall x = 129, with no input. Touching is enough:
-	// the drone cuts the 6 blocks of the arc in parallel (two rows: the wall is 2 cells thick), each in the GDD 0.5 s, then
+	// the drone cuts the 6 blocks of the arc in parallel (two rows: the wall is 2 cells thick), each in the GDD 0.65 s, then
 	// goes back to Orbit.
 	FTestWorld TestWorld;
 	ARRArenaGrid* Grid = nullptr;
@@ -687,7 +687,7 @@ bool FRRDigArcContactTest::RunTest(const FString& Parameters)
 	TestTrue(TEXT("arc points east"), Drone->GetDigArcDirection().Equals(FVector::ForwardVector, 1e-3));
 	TestEqual(TEXT("6 blocks shaking"), FGridAccess::Shaking(Grid).Num(), 6);
 	TestTrue(TEXT("one start event per block"), SameCells(Recorder->GetDigStartedCells(), Arc));
-	TestNearlyEqual(TEXT("first frame of damage on every block"), Grid->GetCellHealth(FIntPoint(130, 115)), 0.5f - FrameSeconds, 1e-4f);
+	TestNearlyEqual(TEXT("first frame of damage on every block"), Grid->GetCellHealth(FIntPoint(130, 115)), 0.65f - FrameSeconds, 1e-4f);
 
 	TestWorld.Tick();
 	TestTrue(TEXT("laser visible while digging"), FDroneAccess::Laser(Drone)->IsVisible());
@@ -713,7 +713,7 @@ bool FRRDigArcContactTest::RunTest(const FString& Parameters)
 	{
 		const int32 Frame = DestroyFrames[Index] == INDEX_NONE ? INDEX_NONE : DestroyFrames[Index] + 25;
 		AddInfo(FString::Printf(TEXT("block %s destroyed at frame %d"), *Arc[Index].ToString(), Frame));
-		TestTrue(FString::Printf(TEXT("block %s destroyed after about 0.5 s"), *Arc[Index].ToString()), Frame >= 29 && Frame <= 31);
+		TestTrue(FString::Printf(TEXT("block %s destroyed after about 0.65 s"), *Arc[Index].ToString()), Frame >= 38 && Frame <= 40);
 	}
 	TestTrue(TEXT("all destroyed"), LastFrame != INDEX_NONE);
 
@@ -806,7 +806,7 @@ bool FRRDigArcSpeedsTest::RunTest(const FString& Parameters)
 	using namespace RRDigTests;
 
 	// Heal ore at mining speed 1: 2 s per block, in parallel (Duskite uses the same 2 s, RogueRigs.Ore.MineDeposit). Since
-	// task-088-01 the vein is 2 x 2 (147-148, 135-136): the 8-block arc holds its 4 blocks and 4 rocks, which keep their 0.5 s.
+	// task-088-01 the vein is 2 x 2 (147-148, 135-136): the 8-block arc holds its 4 blocks and 4 rocks, which keep their 0.65 s.
 	{
 		FTestWorld TestWorld;
 		ARRArenaGrid* Grid = nullptr;
@@ -837,12 +837,12 @@ bool FRRDigArcSpeedsTest::RunTest(const FString& Parameters)
 			const int32 Frame = Frames[Index] == INDEX_NONE ? INDEX_NONE : Frames[Index] + 1;
 			const TCHAR* Kind = IsHealOre[Index] ? TEXT("heal ore") : TEXT("rock");
 			AddInfo(FString::Printf(TEXT("%s %s destroyed at frame %d"), Kind, *Arc[Index].ToString(), Frame));
-			TestTrue(FString::Printf(TEXT("%s %s destroyed after about %s"), Kind, *Arc[Index].ToString(), IsHealOre[Index] ? TEXT("2 s") : TEXT("0.5 s")),
-				IsHealOre[Index] ? Frame >= 119 && Frame <= 121 : Frame >= 29 && Frame <= 31);
+			TestTrue(FString::Printf(TEXT("%s %s destroyed after about %s"), Kind, *Arc[Index].ToString(), IsHealOre[Index] ? TEXT("2 s") : TEXT("0.65 s")),
+				IsHealOre[Index] ? Frame >= 119 && Frame <= 121 : Frame >= 38 && Frame <= 40);
 		}
 	}
 
-	// Rock at mining speed 2: 0.25 s per block.
+	// Rock at mining speed 2: 0.325 s per block.
 	{
 		FTestWorld TestWorld;
 		ARRArenaGrid* Grid = nullptr;
@@ -857,7 +857,7 @@ bool FRRDigArcSpeedsTest::RunTest(const FString& Parameters)
 		TArray<int32> Frames;
 		TickUntilDestroyed(TestWorld, Grid, { FineRockCell }, 60, Frames);
 		AddInfo(FString::Printf(TEXT("rock at mining speed 2 destroyed at frame %d"), Frames[0]));
-		TestTrue(TEXT("rock destroyed after about 0.25 s at mining speed 2"), Frames[0] >= 14 && Frames[0] <= 16);
+		TestTrue(TEXT("rock destroyed after about 0.325 s at mining speed 2"), Frames[0] >= 19 && Frames[0] <= 21);
 	}
 	return true;
 }
@@ -886,7 +886,7 @@ bool FRRDigArcReleaseTest::RunTest(const FString& Parameters)
 		TestWorld.Tick();
 	}
 	const float HealthBeforeMove = Grid->GetCellHealth(FineRockCell);
-	TestNearlyEqual(TEXT("0.25 s of damage done"), HealthBeforeMove, 0.25f, 0.02f);
+	TestNearlyEqual(TEXT("0.25 s of damage done (0.4 of 0.65 left)"), HealthBeforeMove, 0.4f, 0.02f);
 	TestEqual(TEXT("still digging"), Drone->GetState(), ERRDroneState::Dig);
 	CheckDigBeam(*this, Drone, TEXT("frame 15"));
 	TestEqual(TEXT("6 blocks cut by the one beam before the release"), Drone->GetDigCells().Num(), 6);
@@ -917,7 +917,7 @@ bool FRRDigArcReleaseTest::RunTest(const FString& Parameters)
 	TArray<int32> Frames;
 	TickUntilDestroyed(TestWorld, Grid, { FineRockCell }, 60, Frames);
 	AddInfo(FString::Printf(TEXT("rock destroyed %d frames after the return"), Frames[0]));
-	TestTrue(TEXT("resumed: the remaining 0.25 s"), Frames[0] >= 14 && Frames[0] <= 16);
+	TestTrue(TEXT("resumed: the remaining 0.4 s"), Frames[0] >= 23 && Frames[0] <= 25);
 	return true;
 }
 
@@ -1288,7 +1288,7 @@ bool FRRDroneAliveTest::RunTest(const FString& Parameters)
 			return false;
 		}
 		// Rock wall x = 129. task-253-01: the base turns at BaseYawTurnRate (120 deg/s) at most, so it needs up to 1.5 s to face the
-		// target; MiningSpeed 0.25 makes the 6 blocks last 2 s (frame about 120), and from frame 100 the yaw must face the impact point.
+		// target; MiningSpeed 0.25 makes the 6 blocks last 2.6 s (frame about 156), and from frame 100 the yaw must face the impact point.
 		Miner->GetRRAbilitySystemComponent()->SetNumericAttributeBase(URRPlayerAttributeSet::GetMiningSpeedAttribute(), 0.25f);
 		double MaxError = 0.0;
 		double FirstError = 0.0;
@@ -1325,7 +1325,7 @@ bool FRRDronePartsTest::RunTest(const FString& Parameters)
 	using namespace RRDigTests;
 
 	// task-253-01, headless check only (no capture, no mesh needed): the ArcContactDig scene (miner on (128, 115) against the wall
-	// x = 129) with MiningSpeed 0.25, so the 6 blocks last 2 s. During Dig the base yaw error to the impact point shrinks without a
+	// x = 129) with MiningSpeed 0.25, so the 6 blocks last 2.6 s. During Dig the base yaw error to the impact point shrinks without a
 	// jump (never more than BaseYawTurnRate per second), the laser arm pitch points its emitter at the impact point within
 	// PitchTolerance once the yaw faces it, the antenna turns at AntennaSpinSpeed; back in Orbit the arm rests straight down.
 	constexpr double PitchTolerance = 10.0;
@@ -1440,7 +1440,7 @@ bool FRRDronePartsTest::RunTest(const FString& Parameters)
 	TestTrue(TEXT("laser arm pitch inside its range"), MinPitch >= FDroneAccess::LaserPitchMinOf(Drone) - 0.01 && MaxPitch <= FDroneAccess::LaserPitchMaxOf(Drone) + 0.01);
 	TestTrue(TEXT("antenna turns at AntennaSpinSpeed (within 1 deg)"), FMath::Abs(AntennaTurn - ExpectedAntennaTurn) <= 1.0);
 
-	// Blocks break around frame 120; back in Orbit the arm returns straight down within 0.5 s.
+	// Blocks break around frame 156; back in Orbit the arm returns straight down within 0.5 s.
 	TArray<int32> DestroyFrames;
 	const TArray<FIntPoint> Remaining = Drone->GetDigCells();
 	TickUntilDestroyed(TestWorld, Grid, Remaining, 60, DestroyFrames);
@@ -1921,7 +1921,7 @@ bool FRRDigFineGridDefaultsTest::RunTest(const FString& Parameters)
 		}
 	}
 	TestEqual(TEXT("48 heal ore cells (12 veins of 2 x 2, task-088-01)"), HealOre, 48);
-	TestNearlyEqual(TEXT("rock 0.5 s"), Grid->GetCellHealth(FineRockCell), 0.5f);
+	TestNearlyEqual(TEXT("rock 0.65 s"), Grid->GetCellHealth(FineRockCell), 0.65f);
 	TestEqual(TEXT("one pickup per broken ore block"), FGridAccess::DropsOnDestroy(Grid), 1);
 
 	// Explosion radii stay in uu (ExplosionStats.csv): the barrel clears every block center within 700 uu (owner 2026-10-12, was 350), about 10.4 cells of 67 uu.
@@ -2010,9 +2010,9 @@ bool FRRDigRockDamageDataTest::RunTest(const FString& Parameters)
 	const FIntPoint Corners[] = { Cell, Cell + FIntPoint(1, 0), Cell + FIntPoint(0, 1), Cell + FIntPoint(1, 1) };
 	TestEqual(TEXT("(129, 115) is rock"), Grid->GetCellType(Cell), ERRCellType::Rock);
 
-	// First damage: 0.1 of 0.5 dig-seconds, d = 0.2; the 4 corner pieces switch to the broken set at once.
-	Grid->ApplyTerrainDamage(Cell, 0.1f, ERRTerrainDamageSource::Drone);
-	TestNearlyEqual(TEXT("display damage 0.2 after 0.1 of 0.5 dig-seconds"), Grid->GetCellDisplayDamage(Cell), 0.2f, 1e-4f);
+	// First damage: 0.13 of 0.65 dig-seconds, d = 0.2; the 4 corner pieces switch to the broken set at once.
+	Grid->ApplyTerrainDamage(Cell, 0.13f, ERRTerrainDamageSource::Drone);
+	TestNearlyEqual(TEXT("display damage 0.2 after 0.13 of 0.65 dig-seconds"), Grid->GetCellDisplayDamage(Cell), 0.2f, 1e-4f);
 	TestNearlyEqual(TEXT("empty west neighbour derives the largest solid neighbour damage (provisional)"), Grid->GetCellDisplayDamage(FineRockWestFloorCell), 0.2f, 1e-4f);
 	for (const FIntPoint& Corner : Corners)
 	{
@@ -2031,7 +2031,7 @@ bool FRRDigRockDamageDataTest::RunTest(const FString& Parameters)
 	TestTrue(TEXT("instance maps and piece data consistent after the swap"), CheckInstanceMaps(*this, Grid));
 
 	// More damage: the floats follow, no further swap.
-	Grid->ApplyTerrainDamage(Cell, 0.1f, ERRTerrainDamageSource::Drone);
+	Grid->ApplyTerrainDamage(Cell, 0.13f, ERRTerrainDamageSource::Drone);
 	TestNearlyEqual(TEXT("damage float 0.4"), FGridAccess::PieceData(Grid, Cell, ARRArenaGrid::PieceDamageCustomDataIndex + 3), 0.4f, 1e-4f);
 	TestEqual(TEXT("still 4 broken pieces"), CountBroken(), 4);
 

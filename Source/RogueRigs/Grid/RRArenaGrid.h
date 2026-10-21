@@ -1001,9 +1001,9 @@ protected:
 
 	// --- Block health, in dig-seconds at mining speed 1 (provisional) ---
 
-	/** Health of a rock block: drone dig time in seconds at mining speed 1 (drone gdd: 0.5 s per 67 uu block). */
+	/** Health of a rock block: drone dig time in seconds at mining speed 1 (drone gdd: 0.65 s per 67 uu block, owner 2026-10-20, provisional; was 0.5). */
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Grid|Destruction", meta = (ClampMin = "0.01", Units = "s"))
-	float RockHealth = 0.5f;
+	float RockHealth = 0.65f;
 
 	/** Health of an ore block: drone dig time in seconds at mining speed 1 (ore-blocks gdd: 2 s per 67 uu block, owner 2026-10-20, provisional; was 1.5). */
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Grid|Destruction", meta = (ClampMin = "0.01", Units = "s"))
@@ -1017,7 +1017,7 @@ protected:
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Grid|Destruction", meta = (ClampMin = "0.01", Units = "s"))
 	float SpecialOreHealth = 2.f;
 
-	/** Health of a barrel block: drone dig time in seconds at mining speed 1 (same as rock, provisional). */
+	/** Health of a barrel block: drone dig time in seconds at mining speed 1 (0.5 s, provisional; was equal to rock before rock went to 0.65 s in task-260-01). */
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Grid|Destruction", meta = (ClampMin = "0.01", Units = "s"))
 	float BarrelHealth = 0.5f;
 
