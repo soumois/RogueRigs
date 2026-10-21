@@ -3,7 +3,7 @@ id: task-263-01-player-light-shadows
 description: "The player carries a warm light that is the only source of cast shadows (rock walls), like the reference game: the walls block it and release it when they fall."
 parent: task-263-player-light-shadows
 kind: task
-status: todo
+status: in-progress
 ---
 # Player light and wall shadows
 
