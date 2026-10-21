@@ -3,7 +3,7 @@ id: task-274-08-far-floor-apply
 description: "MPC_PlayerLight defaults set to the values chosen in step 7."
 parent: task-274-flat-light-darkening-shader
 kind: task
-status: todo
+status: in-progress
 ---
 # Far floor values applied
 
