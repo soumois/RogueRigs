@@ -188,6 +188,7 @@ m-card-burn  reference/tech/blueprints/ui/m-card-burn.md
 mesh-fidelity-loop  reference/tech/pipelines/mesh-fidelity-loop.md
 milestones  reference/production/milestones.md
 miner  reference/gdd/player/miner.md
+mpp-player-light-mask  reference/tech/blueprints/world/mpp-player-light-mask.md
 naming  reference/tech/conventions/naming.md
 objective-bonus-chest  reference/gdd/run/objective-bonus-chest.md
 objective-console  reference/gdd/run/objective-console.md
