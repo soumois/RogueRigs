@@ -1,25 +1,36 @@
 ---
 id: mpp-player-light-mask
-description: "MPC_PlayerLight and M_PP_PlayerLightMask: radial post-process light mask around the player (DRGS-style brightening), neutral by default; open to tune or wire it."
+description: "Owner guide to the player light mask: MPC_PlayerLight parameters (Enable, CenterBrightness, FarBrightness, Radius, Exponent, tints), how to tune, disable and remove it."
 parent: blueprints-world-index
 kind: doc
 ---
 # MPC_PlayerLight and M_PP_PlayerLightMask (player light mask)
 
-- asset_path: /Game/RogueRigs/Materials/PostProcess/MPC_PlayerLight (Material Parameter Collection) and /Game/RogueRigs/Materials/PostProcess/M_PP_PlayerLightMask (Material, domain Post Process). Task-272-06, provisional, owner 2026-10-21.
-- parent_class: MaterialParameterCollection and Material (no Blueprint, no C++ class).
-- purpose: owner 2026-10-21, task-272: DRGS shows a radial brightening of everything near the player, not a directional light. A faint shadow-casting PlayerLight keeps only the wall shadows; this mask does the brightening, uniform on every pixel whatever its normal (floor, rocks, robots, pickups).
-- components: one Custom HLSL node (output Float3 to Emissive Color) fed by SceneTexture PostProcessInput0 (colour, input SceneCol), a WorldPosition node (input WorldPos) and nine Collection Parameter nodes. HLSL: `float r = length(WorldPos.xy - PlayerPos.xy);` then mask, tint, lit and the final lerp as in the formula line. Blend mode Opaque.
-- exposed_defaults (MPC, read back): scalars MaskRadius 220 (uu, R0), MaskExponent 2, NearGain 0, FarGain 1, AddIntensity 0, MaskEnabled 0; vectors PlayerPosition (0,0,0,0, world position, XY used), NearColour (1, 0.76, 0.62, 1), FarColour (1, 1, 1, 1).
-- centre fix (task-272-12): the task-272-06 graph rebuilt the world position by hand (SvPosition, SceneDepth, ConvertToDeviceZ, ResolvedView.SVPositionToTranslatedWorld, PreViewTranslation). The task-272-07 smoke frames (-game, pitch -50, arm 1400, fov 75, 1920x1080) showed the mask uniform but centred about 300 px left and 100 px up of the miner, while PlayerPosition was correct. The hand reconstruction was removed: the Custom node now takes the engine's WorldPosition node (Absolute World Position, default offset) as input WorldPos. Engine source check (PostProcessMaterialShaders.usf): the post-process pass sets SvPosition.z to the scene device depth before CalcMaterialParametersPost, so the WorldPosition node returns the scene world position of each pixel (not the screen plane, contrary to the earlier note). The SceneTexture SceneDepth node was deleted. Centring at runtime is not verified yet (next sweep, task-272-09).
-- formula: world position = WorldPosition node (input WorldPos). r = XY distance to PlayerPosition (same mask at every height). mask = 1 / (1 + (r / max(MaskRadius, 1))^MaskExponent). tint = lerp(FarColour, NearColour, mask). lit = SceneColor * (FarGain + NearGain * mask) * tint + AddIntensity * mask * NearColour. Output = lerp(SceneColor, lit, saturate(MaskEnabled)).
-- events: the C++ writer (task-272-07) pushes PlayerPosition and the tunables into the collection each tick. Nothing else reads it.
-- logic_in_bp: none. Neutral by default: MaskEnabled 0 gives output = scene colour (also NearGain 0, FarGain 1, white FarColour, AddIntensity 0).
-- assets: blendable location is Scene Color Before Bloom (HDR, before tonemapping). The editor reset Before Tonemapping to After DOF when set through MCP, so Before Bloom was used (task-272-06). The material is in the PPV_XPGlow blendables since task-272-08 (weight 1.0, neutral while MaskEnabled is 0, see [[ppv-xp-glow]]). Shader instruction count not read (no MCP tool).
+- asset_path: /Game/RogueRigs/Materials/PostProcess/MPC_PlayerLight (Material Parameter Collection) and /Game/RogueRigs/Materials/PostProcess/M_PP_PlayerLightMask (Material, domain Post Process, blendable in PPV_XPGlow). No Blueprint, no C++ class, no graph logic.
+- what_it_is: owner direction 2026-10-21: lighting is flat and shadowless, with no player point light. The only "centre brighter" effect is this screen-space mask: every pixel is multiplied by a brightness that is high near the miner and low far away, with a warm tint near and a dark magenta tint far. Only C++ writes PlayerPosition (the miner LightMask component, see [[sys-player]]); everything else is yours.
+- where_to_edit: Content Browser > RogueRigs/Materials/PostProcess/MPC_PlayerLight, change the default values. Edits apply live in PIE and in game.
+- disable: Enable = 0 (output = scene colour). Remove fully: delete the M_PP_PlayerLightMask entry in the blendables of PPV_XPGlow ([[ppv-xp-glow]]).
+
+| name | default | unit | meaning and tuning |
+|---|---|---|---|
+| Enable | 0 | 0 or 1 | 0 = effect off, 1 = on. Stays 0 until task-272-17 sets the chosen defaults. |
+| CenterBrightness | 3.0 | multiplier | brightness at the miner. Raise for a hotter centre. |
+| FarBrightness | 0.4 | multiplier | floor of the mask far from the miner. Raise if the edges are too dark. |
+| Radius | 225 | uu | distance where the extra brightness has halved (about 200 px on screen). Raise to widen. |
+| Exponent | 2 | none | falloff shape: 2 = long inverse-square-like tail, higher = tighter. |
+| TintStrength | 1 | 0 to 1 | 0 = no colour change, 1 = full tint. |
+| WarmTint | (1.0, 0.76, 0.62) | colour | colour near the miner. |
+| FarTint | (0.85, 0.55, 0.9) | colour | colour far away (dark magenta side). |
+| PlayerPosition | (0,0,0) | world uu | written by C++ each tick, XY used. Do not edit. |
+
+- formula (Custom HLSL): r = length(WorldPos.xy - PlayerPosition.xy); mask = 1 / (1 + pow(r / max(Radius, 1), Exponent)); gain = FarBrightness + (CenterBrightness - FarBrightness) * mask; tint = lerp(1, lerp(FarTint, WarmTint, mask), TintStrength); out = lerp(SceneColor, SceneColor * gain * tint, saturate(Enable)). WorldPos is the engine WorldPosition node (scene world position of each pixel). Blendable location Scene Color Before Bloom (HDR).
+- console: the C++ writer overwrites the parameters above only when bDriveTunables is set from the console, with exactly these names (sys-player).
+- history: task-272-06 first mask (MaskRadius, NearGain, FarGain, AddIntensity, NearColour, FarColour). task-272-12 centre fix: hand-made world position replaced by the WorldPosition node. task-272-14 parameters rebuilt around the owner names above; old ones removed.
+- not_verified: centring and look at runtime; instruction count.
 - owner_agent: agent-bp
 
 ## Relations
 - [[blueprints-world-index]] — parent index.
-- [[ppv-xp-glow]] — the volume that carries the material as a blendable (task-272-08).
-- [[lights-dark-ambient]] — the dark ambient this mask brightens around the miner.
-- [[sys-player]] — the miner LightMask component (URRPlayerLightMaskComponent) that writes the collection each tick (task-272-07).
+- [[ppv-xp-glow]] — the volume that carries the material as a blendable.
+- [[lights-dark-ambient]] — the flat dark ambient this mask brightens around the miner.
+- [[sys-player]] — the miner LightMask component that writes PlayerPosition.
