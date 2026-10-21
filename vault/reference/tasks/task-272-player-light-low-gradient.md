@@ -1,9 +1,9 @@
 ---
 id: task-272-player-light-low-gradient
 description: "Global task: player light below the rock tops so walls shade the floor; smooth wide light gradient, no disc edge; judged on -game captures."
-parent: tasks-to-do-index
+parent: tasks-done-index
 kind: task
-status: in-progress
+status: done
 ---
 # Low player light and broad gradient
 
@@ -13,8 +13,8 @@ status: in-progress
 - gdd_check: done by the Orchestrator when the task is planned (2026-10-21).
 - confirmed_by_owner: yes (2026-10-21)
 - milestone: M1
-- next_step: task-272-04-low-light-capture
-- result: open
+- next_step: none
+- result: Done. Frames Saved/LookTune/r7/ (A-H at the asset values, read back), profiles r7/sheets/profiles.txt, side by sides Saved/LookTune/final_272_{A_idle,B_wall,D_robots_xp,E_xp,G_wallside,H_dig}.png. A rings 208 167 105 60 37 25 27 18 20 14 11 12 (score 0.213 vs r5 0.604; DRGS 164 140 84 57 39 30 22 17 12 10 9 9); D 0.204. Seen: no disc edge; G floor behind the wall black (shadow 1 vs open 13, r5 values 12 vs 11); H after the dig two warm wedges through the corridor; no rock-top crescent; core cream-white and clipped (p99 232), miner top dark; rock tops dark violet-grey, floor warm brown to black at edges; robots readable, XP less saturated. Cost frame D: shadows on vs off +2.5 to 3.0 ms (ShadowDepths 1.95 vs 0.11, Lights 1.35 vs 0.24), moving = static. Physical-light variant done; hybrid variant requested next.
 
 ## Subtasks
 1. task-272-01-player-light-low-gradient — cpp, baseline G/H and runtime sweep
@@ -24,7 +24,7 @@ status: in-progress
 5. task-272-04-low-light-capture — cpp, final captures and side by sides
 
 ## Relations
-- [[tasks-to-do-index]] — parent index.
+- [[tasks-done-index]] — parent index.
 - [[task-272-01-player-light-low-gradient]] — step 1, cpp.
 - [[task-272-05-low-light-sweep-r2]] — step 2, cpp.
 - [[task-272-02-player-light-low-apply]] — step 3, bp.
