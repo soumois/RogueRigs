@@ -19,7 +19,7 @@ One shared material on every piece; 2 to 3 texture samples per top pixel; no per
 
 ## Shake
 Shake moves the render instance (25 uu, 8 Hz) while world UV stays fixed: the texture slides over the shaking piece. Options:
-- A. Accept: the slide lasts the dig (0.5 to 1.5 s) and may read as a shimmer.
+- A. Accept: the slide lasts the dig (0.5 to 2 s; 1.5 s before task-259-01) and may read as a shimmer.
 - B. Write the shake offset to custom data and subtract it from the UV: one more pair of floats.
 - C. Move the shake into the material (WPO by quadrant flag and time) and sample `Absolute World Position (Excluding Material Offsets)`: no slide, no per-frame instance transform (removes the HISM tree dirtying gotcha of [[sys-grid]]); the dual grid needs a quadrant shake anyway. Recommended. Collision already never moves.
 

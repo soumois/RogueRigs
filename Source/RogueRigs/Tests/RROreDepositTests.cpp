@@ -650,9 +650,12 @@ bool FRROreHealVeinTest::RunTest(const FString& Parameters)
 		}
 		for (TActorIterator<ARRPickup> It(TestWorld.Get()); It; ++It)
 		{
-			// task-092-01: idle pool pickups are not live pickups.
+			// task-092-01: idle pool pickups are not live pickups. task-259-01: with the 2 s dig the first pickup is collected
+			// before the last pops, and the pool hands its actor back for the last one: an idle actor leaves Seen, so its next
+			// life counts as a new pickup.
 			if (URRActorPoolSubsystem::IsPooledIdle(*It))
 			{
+				Seen.Remove(*It);
 				continue;
 			}
 			if (It->GetPickupType() == ERRPickupType::Heal && !Seen.Contains(*It))
