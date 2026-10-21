@@ -3,7 +3,7 @@ id: task-278-08-bp-shield-chaser-eye
 description: "BP_ShieldChaser uses MI_RobotEye_ShieldChaser on the eye slot and swaps it to the Plain eye when the shield breaks."
 parent: task-278-chaser-eye-glow
 kind: task
-status: todo
+status: in-progress
 ---
 # BP_ShieldChaser uses MI_RobotEye_ShieldChaser on the eye slot and swaps it to the Plain eye when the shield breaks
 

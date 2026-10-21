@@ -3,7 +3,7 @@ id: task-278-07-bp-chaser-eye
 description: "BP_Chaser BodyMesh uses MI_RobotEye_Chaser on the eye slot."
 parent: task-278-chaser-eye-glow
 kind: task
-status: in-progress
+status: done
 ---
 # BP_Chaser BodyMesh uses MI_RobotEye_Chaser on the eye slot
 
@@ -15,11 +15,11 @@ status: in-progress
 - done_when: Both elements read back; compile without error; saved; doc updated; lint clean; committed.
 - editor_state: open (editor + MCP)
 - token_ceiling: 80k
-- model: open
-- tokens: open
-- runs: open
+- model: sonnet
+- tokens: input 26, cache write 33044, cache read 333318, output 664
+- runs: 1
 - milestone: M1
-- result: open
+- result: Done (commit f7fba00f). BP_Chaser BodyMesh OverrideMaterials [M_Chaser_Meshy_Anim] -> [M_Chaser_Meshy_Anim, MI_RobotEye_Chaser], read back from the component template; compile without log error; saved. Doc bp-chaser (revert single element or git checkout 2ad7698a). Unverified: render, PIE.
 
 ## Relations
 - [[task-278-chaser-eye-glow]] — parent global task.
