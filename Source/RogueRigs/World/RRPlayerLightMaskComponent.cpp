@@ -1,4 +1,4 @@
-// Rogue Rigs - player light mask writer (task-272-07): pushes the miner position and the mask tunables into MPC_PlayerLight each tick.
+// Rogue Rigs - player light mask writer (task-272-07, task-272-13): pushes the miner position into MPC_PlayerLight each tick; the tunables only for console sweeps.
 
 #include "World/RRPlayerLightMaskComponent.h"
 
@@ -15,14 +15,14 @@ namespace RRPlayerLightMask
 {
 	// Parameter names of MPC_PlayerLight (mpp-player-light-mask).
 	static const FName PlayerPosition(TEXT("PlayerPosition"));
-	static const FName MaskEnabled(TEXT("MaskEnabled"));
-	static const FName MaskRadius(TEXT("MaskRadius"));
-	static const FName MaskExponent(TEXT("MaskExponent"));
-	static const FName NearGain(TEXT("NearGain"));
-	static const FName FarGain(TEXT("FarGain"));
-	static const FName AddIntensity(TEXT("AddIntensity"));
-	static const FName NearColour(TEXT("NearColour"));
-	static const FName FarColour(TEXT("FarColour"));
+	static const FName Enable(TEXT("Enable"));
+	static const FName CenterBrightness(TEXT("CenterBrightness"));
+	static const FName FarBrightness(TEXT("FarBrightness"));
+	static const FName Radius(TEXT("Radius"));
+	static const FName Exponent(TEXT("Exponent"));
+	static const FName TintStrength(TEXT("TintStrength"));
+	static const FName WarmTint(TEXT("WarmTint"));
+	static const FName FarTint(TEXT("FarTint"));
 }
 
 URRPlayerLightMaskComponent::URRPlayerLightMaskComponent(const FObjectInitializer& ObjectInitializer)
@@ -89,14 +89,20 @@ void URRPlayerLightMaskComponent::PushParameters()
 		return;
 	}
 
-	// The engine skips the render update for unchanged values.
+	// The engine skips the render update for unchanged values and ignores names missing from the collection.
 	Instance->SetVectorParameterValue(RRPlayerLightMask::PlayerPosition, FLinearColor(FVector(Owner->GetActorLocation())));
-	Instance->SetScalarParameterValue(RRPlayerLightMask::MaskEnabled, bMaskEnabled ? 1.f : 0.f);
-	Instance->SetScalarParameterValue(RRPlayerLightMask::MaskRadius, MaskRadius);
-	Instance->SetScalarParameterValue(RRPlayerLightMask::MaskExponent, MaskExponent);
-	Instance->SetScalarParameterValue(RRPlayerLightMask::NearGain, NearGain);
-	Instance->SetScalarParameterValue(RRPlayerLightMask::FarGain, FarGain);
-	Instance->SetScalarParameterValue(RRPlayerLightMask::AddIntensity, AddIntensity);
-	Instance->SetVectorParameterValue(RRPlayerLightMask::NearColour, NearColour);
-	Instance->SetVectorParameterValue(RRPlayerLightMask::FarColour, FarColour);
+
+	// MPC_PlayerLight is the owner's tuning place: the tunables are pushed only for console sweeps.
+	if (!bDriveTunables)
+	{
+		return;
+	}
+	Instance->SetScalarParameterValue(RRPlayerLightMask::Enable, Enable);
+	Instance->SetScalarParameterValue(RRPlayerLightMask::CenterBrightness, CenterBrightness);
+	Instance->SetScalarParameterValue(RRPlayerLightMask::FarBrightness, FarBrightness);
+	Instance->SetScalarParameterValue(RRPlayerLightMask::Radius, Radius);
+	Instance->SetScalarParameterValue(RRPlayerLightMask::Exponent, Exponent);
+	Instance->SetScalarParameterValue(RRPlayerLightMask::TintStrength, TintStrength);
+	Instance->SetVectorParameterValue(RRPlayerLightMask::WarmTint, WarmTint);
+	Instance->SetVectorParameterValue(RRPlayerLightMask::FarTint, FarTint);
 }
