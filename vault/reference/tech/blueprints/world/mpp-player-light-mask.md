@@ -21,3 +21,4 @@ kind: doc
 - [[blueprints-world-index]] — parent index.
 - [[ppv-xp-glow]] — the volume that carries the material as a blendable (task-272-08).
 - [[lights-dark-ambient]] — the dark ambient this mask brightens around the miner.
+- [[sys-player]] — the miner LightMask component (URRPlayerLightMaskComponent) that writes the collection each tick (task-272-07).
