@@ -3,7 +3,7 @@ id: task-272-15-player-light-remove
 description: "The PlayerLight point light removed from BP_Miner, its last values documented for revert."
 parent: task-272-player-light-low-gradient
 kind: task
-status: todo
+status: in-progress
 ---
 # Player light removed
 
