@@ -527,6 +527,7 @@ kind: note
 | [[task-274-01-mask-writer-cleanup]] | opus | 1 | 0k | 28k | 165k | 4k |
 | [[task-274-02-darkener-material]] | sonnet | 1 | 0k | 49k | 510k | 1k |
 | [[task-274-03-exposure-raise]] | sonnet | 1 | 0k | 44k | 839k | 1k |
+| [[task-274-04-darkener-sweep]] | opus | 1 | 0k | 68k | 1073k | 11k |
 
 ## Totals
 | Scope | Input | Cache write | Cache read | Output |

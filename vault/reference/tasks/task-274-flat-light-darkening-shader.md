@@ -14,7 +14,7 @@ status: in-progress
 - design: exposure is the lever. Today the centre is scene x 30 x WarmTint (luminance factor about 0.83), about x25 = +4.7 EV, so exposure min = max 1.8 -> -2.9 EV100 gives the same centre with gain 1. Emissives were multiplied by the same mask, so the exposure path keeps them where they were (near: x25 then x1; far: x25 then x0.005, as the old x0.15); raising the sun instead would leave emissives about 25 times too dark against the scene. FarBrightness starts at 0.15 / 30 = 0.005, Radius 200, Exponent 3, then calibrated by measurement. Sun 4.0 kept (floor normal map relief).
 - confirmed_by_owner: yes (2026-10-21, relayed by the main session with its defaults)
 - milestone: M1
-- next_step: task-274-04-darkener-sweep
+- next_step: task-274-05-darkener-defaults
 - result: open
 
 ## Subtasks

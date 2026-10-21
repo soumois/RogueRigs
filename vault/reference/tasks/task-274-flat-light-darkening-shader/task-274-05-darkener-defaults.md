@@ -3,7 +3,7 @@ id: task-274-05-darkener-defaults
 description: "MPC_PlayerLight defaults (and exposure or emissive parameters if the sweep requires them) set to the values chosen in step 4."
 parent: task-274-flat-light-darkening-shader
 kind: task
-status: todo
+status: in-progress
 ---
 # Darkener defaults
 
