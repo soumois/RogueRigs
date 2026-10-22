@@ -1,0 +1,2097 @@
+{
+ "task": "task-161-01-chaser-cut-pose-check",
+ "source": {
+  "fbx": "shooter_meshy_parts.fbx",
+  "exr": "T_ShooterAnim.exr",
+  "blender": "5.2.2 LTS",
+  "note": "all positions in Blender space, cm (X forward, Y left, Z up), parts at their rest positions; planes and pivots from chaser_meshy_parts.report.json"
+ },
+ "method": {
+  "components": "connected components of triangles after merging vertices by position (1e-4 cm)",
+  "far_triangles": "triangles outside the main (largest) component: distance of the centroid to the bbox of the main component and to its centroid",
+  "wrong_side": "a triangle centroid (or vertex) inside the plane zone box on the side of the plane opposite to the part's main component by more than 0.05 cm; hip planes only count triangles on the pelvis side of the waist plane (as the cut did)",
+  "open_edges": "triangle edges used by one triangle (merged positions)",
+  "joint_distance": "vertex distance to the part's own pivot (its joint) and to the parent's pivot"
+ },
+ "parts": {
+  "Pelvis": {
+   "tris": 396,
+   "vertices": 249,
+   "vertices_unreferenced": 0,
+   "merged_positions": 246,
+   "connected_components": {
+    "count": 1,
+    "per_component": [
+     {
+      "index": 0,
+      "tris": 396,
+      "vertices": 249,
+      "centroid_cm": [
+       2.129,
+       -1.195,
+       88.686
+      ],
+      "bbox_min_cm": [
+       -15.441,
+       -10.713,
+       71.225
+      ],
+      "bbox_max_cm": [
+       21.867,
+       10.0,
+       99.087
+      ]
+     }
+    ],
+    "main_component": 0
+   },
+   "bbox_min_cm": [
+    -15.441,
+    -10.713,
+    71.225
+   ],
+   "bbox_max_cm": [
+    21.867,
+    10.0,
+    99.087
+   ],
+   "bbox_size_cm": [
+    37.308,
+    20.713,
+    27.861
+   ],
+   "pivot_cm": [
+    2.0,
+    0.0,
+    86.5
+   ],
+   "pivot_inside_bbox": true,
+   "triangles_not_in_main_component": {
+    "count": 0,
+    "list": []
+   },
+   "open_edges": 96,
+   "nonmanifold_edges": 0,
+   "open_edges_merged_by_position": 94,
+   "nonmanifold_edges_merged_by_position": 2,
+   "vertex_distance_to_own_joint_cm": {
+    "min": 7.822,
+    "max": 21.917,
+    "mean": 15.181
+   },
+   "vertex_distance_to_parent_joint_cm": null,
+   "planes": {
+    "waist": {
+     "expected_side_sign": -1.0,
+     "triangles_in_zone": 186,
+     "vertices_in_zone": 134,
+     "wrong_side_triangle_centroids": 0,
+     "worst_triangle_depth_cm": 0.0,
+     "wrong_side_vertices": 1,
+     "worst_vertex_depth_cm": 0.087,
+     "min_signed_distance_triangle_centroid_in_zone_cm": -0.029,
+     "tolerance_cm": 0.05,
+     "pivot_signed_distance_to_plane_cm": 12.5
+    },
+    "hip_R": {
+     "expected_side_sign": -1.0,
+     "triangles_in_zone": 205,
+     "vertices_in_zone": 106,
+     "wrong_side_triangle_centroids": 0,
+     "worst_triangle_depth_cm": 0.0,
+     "wrong_side_vertices": 0,
+     "worst_vertex_depth_cm": 0.0,
+     "min_signed_distance_triangle_centroid_in_zone_cm": -0.0,
+     "tolerance_cm": 0.05,
+     "pivot_signed_distance_to_plane_cm": 10.0
+    }
+   }
+  },
+  "HeadTorso": {
+   "tris": 2120,
+   "vertices": 1086,
+   "vertices_unreferenced": 0,
+   "merged_positions": 1045,
+   "connected_components": {
+    "count": 1,
+    "per_component": [
+     {
+      "index": 0,
+      "tris": 2120,
+      "vertices": 1086,
+      "centroid_cm": [
+       8.852,
+       -0.308,
+       122.067
+      ],
+      "bbox_min_cm": [
+       -20.911,
+       -31.0,
+       91.244
+      ],
+      "bbox_max_cm": [
+       39.565,
+       31.0,
+       176.0
+      ]
+     }
+    ],
+    "main_component": 0
+   },
+   "bbox_min_cm": [
+    -20.911,
+    -31.0,
+    91.244
+   ],
+   "bbox_max_cm": [
+    39.565,
+    31.0,
+    176.0
+   ],
+   "bbox_size_cm": [
+    60.476,
+    62.0,
+    84.756
+   ],
+   "pivot_cm": [
+    2.0,
+    0.0,
+    98.5
+   ],
+   "pivot_inside_bbox": true,
+   "triangles_not_in_main_component": {
+    "count": 0,
+    "list": []
+   },
+   "open_edges": 54,
+   "nonmanifold_edges": 11,
+   "open_edges_merged_by_position": 41,
+   "nonmanifold_edges_merged_by_position": 77,
+   "vertex_distance_to_own_joint_cm": {
+    "min": 7.773,
+    "max": 78.938,
+    "mean": 36.527
+   },
+   "vertex_distance_to_parent_joint_cm": {
+    "parent": "Pelvis",
+    "min": 12.149,
+    "max": 90.748
+   },
+   "planes": {
+    "waist": {
+     "expected_side_sign": 1.0,
+     "triangles_in_zone": 705,
+     "vertices_in_zone": 385,
+     "wrong_side_triangle_centroids": 87,
+     "worst_triangle_depth_cm": 7.41,
+     "wrong_side_vertices": 37,
+     "worst_vertex_depth_cm": 7.756,
+     "min_signed_distance_triangle_centroid_in_zone_cm": -7.41,
+     "tolerance_cm": 0.05,
+     "wrong_triangles": [
+      {
+       "tri": 375,
+       "centroid_cm": [
+        22.161,
+        -15.066,
+        98.783
+       ],
+       "depth_cm": 0.217
+      },
+      {
+       "tri": 389,
+       "centroid_cm": [
+        21.881,
+        -15.083,
+        98.783
+       ],
+       "depth_cm": 0.217
+      },
+      {
+       "tri": 457,
+       "centroid_cm": [
+        6.821,
+        -14.898,
+        98.273
+       ],
+       "depth_cm": 0.727
+      },
+      {
+       "tri": 501,
+       "centroid_cm": [
+        21.697,
+        -14.541,
+        98.783
+       ],
+       "depth_cm": 0.217
+      },
+      {
+       "tri": 532,
+       "centroid_cm": [
+        11.126,
+        -11.032,
+        98.509
+       ],
+       "depth_cm": 0.491
+      },
+      {
+       "tri": 538,
+       "centroid_cm": [
+        22.585,
+        -14.75,
+        98.783
+       ],
+       "depth_cm": 0.217
+      },
+      {
+       "tri": 545,
+       "centroid_cm": [
+        -4.176,
+        -12.819,
+        97.866
+       ],
+       "depth_cm": 1.134
+      },
+      {
+       "tri": 548,
+       "centroid_cm": [
+        -5.901,
+        -12.8,
+        95.856
+       ],
+       "depth_cm": 3.144
+      },
+      {
+       "tri": 549,
+       "centroid_cm": [
+        -5.707,
+        -12.982,
+        97.583
+       ],
+       "depth_cm": 1.417
+      },
+      {
+       "tri": 550,
+       "centroid_cm": [
+        -2.546,
+        -12.707,
+        98.885
+       ],
+       "depth_cm": 0.115
+      },
+      {
+       "tri": 552,
+       "centroid_cm": [
+        9.98,
+        -12.485,
+        96.998
+       ],
+       "depth_cm": 2.002
+      },
+      {
+       "tri": 553,
+       "centroid_cm": [
+        -4.411,
+        -12.559,
+        94.168
+       ],
+       "depth_cm": 4.832
+      },
+      {
+       "tri": 560,
+       "centroid_cm": [
+        2.395,
+        -13.227,
+        96.814
+       ],
+       "depth_cm": 2.186
+      },
+      {
+       "tri": 561,
+       "centroid_cm": [
+        -1.69,
+        -12.702,
+        97.426
+       ],
+       "depth_cm": 1.574
+      },
+      {
+       "tri": 565,
+       "centroid_cm": [
+        6.006,
+        -12.642,
+        96.73
+       ],
+       "depth_cm": 2.27
+      },
+      {
+       "tri": 566,
+       "centroid_cm": [
+        -5.417,
+        -11.885,
+        92.717
+       ],
+       "depth_cm": 6.283
+      },
+      {
+       "tri": 569,
+       "centroid_cm": [
+        -2.79,
+        -12.184,
+        94.109
+       ],
+       "depth_cm": 4.891
+      },
+      {
+       "tri": 570,
+       "centroid_cm": [
+        -2.749,
+        -12.263,
+        96.08
+       ],
+       "depth_cm": 2.92
+      },
+      {
+       "tri": 580,
+       "centroid_cm": [
+        -2.196,
+        -11.75,
+        96.209
+       ],
+       "depth_cm": 2.791
+      },
+      {
+       "tri": 581,
+       "centroid_cm": [
+        6.107,
+        -11.535,
+        95.312
+       ],
+       "depth_cm": 3.688
+      }
+     ],
+     "pivot_signed_distance_to_plane_cm": -0.5
+    },
+    "shoulder_L": {
+     "expected_side_sign": -1.0,
+     "triangles_in_zone": 206,
+     "vertices_in_zone": 106,
+     "wrong_side_triangle_centroids": 0,
+     "worst_triangle_depth_cm": 0.0,
+     "wrong_side_vertices": 0,
+     "worst_vertex_depth_cm": 0.0,
+     "min_signed_distance_triangle_centroid_in_zone_cm": -0.0,
+     "tolerance_cm": 0.05,
+     "pivot_signed_distance_to_plane_cm": 31.0
+    },
+    "shoulder_R": {
+     "expected_side_sign": -1.0,
+     "triangles_in_zone": 226,
+     "vertices_in_zone": 122,
+     "wrong_side_triangle_centroids": 0,
+     "worst_triangle_depth_cm": 0.0,
+     "wrong_side_vertices": 0,
+     "worst_vertex_depth_cm": 0.0,
+     "min_signed_distance_triangle_centroid_in_zone_cm": 0.0,
+     "tolerance_cm": 0.05,
+     "pivot_signed_distance_to_plane_cm": 31.0
+    }
+   }
+  },
+  "UpperArm_L": {
+   "tris": 580,
+   "vertices": 292,
+   "vertices_unreferenced": 0,
+   "merged_positions": 292,
+   "connected_components": {
+    "count": 1,
+    "per_component": [
+     {
+      "index": 0,
+      "tris": 580,
+      "vertices": 292,
+      "centroid_cm": [
+       0.935,
+       42.309,
+       115.531
+      ],
+      "bbox_min_cm": [
+       -14.968,
+       31.0,
+       98.305
+      ],
+      "bbox_max_cm": [
+       18.515,
+       57.991,
+       142.33
+      ]
+     }
+    ],
+    "main_component": 0
+   },
+   "bbox_min_cm": [
+    -14.968,
+    31.0,
+    98.305
+   ],
+   "bbox_max_cm": [
+    18.515,
+    57.991,
+    142.33
+   ],
+   "bbox_size_cm": [
+    33.483,
+    26.991,
+    44.024
+   ],
+   "pivot_cm": [
+    2.0,
+    36.0,
+    125.0
+   ],
+   "pivot_inside_bbox": true,
+   "triangles_not_in_main_component": {
+    "count": 0,
+    "list": []
+   },
+   "open_edges": 0,
+   "nonmanifold_edges": 0,
+   "open_edges_merged_by_position": 0,
+   "nonmanifold_edges_merged_by_position": 0,
+   "vertex_distance_to_own_joint_cm": {
+    "min": 8.719,
+    "max": 31.761,
+    "mean": 19.411
+   },
+   "vertex_distance_to_parent_joint_cm": {
+    "parent": "HeadTorso",
+    "min": 34.818,
+    "max": 63.632
+   },
+   "planes": {
+    "shoulder_L": {
+     "expected_side_sign": 1.0,
+     "triangles_in_zone": 435,
+     "vertices_in_zone": 220,
+     "wrong_side_triangle_centroids": 0,
+     "worst_triangle_depth_cm": 0.0,
+     "wrong_side_vertices": 0,
+     "worst_vertex_depth_cm": 0.0,
+     "min_signed_distance_triangle_centroid_in_zone_cm": 0.0,
+     "tolerance_cm": 0.05,
+     "pivot_signed_distance_to_plane_cm": 5.0
+    },
+    "elbow_L": {
+     "expected_side_sign": 1.0,
+     "triangles_in_zone": 323,
+     "vertices_in_zone": 161,
+     "wrong_side_triangle_centroids": 0,
+     "worst_triangle_depth_cm": 0.0,
+     "wrong_side_vertices": 0,
+     "worst_vertex_depth_cm": 0.0,
+     "min_signed_distance_triangle_centroid_in_zone_cm": -0.003,
+     "tolerance_cm": 0.05,
+     "pivot_signed_distance_to_plane_cm": 24.345
+    }
+   }
+  },
+  "UpperArm_R": {
+   "tris": 809,
+   "vertices": 406,
+   "vertices_unreferenced": 0,
+   "merged_positions": 400,
+   "connected_components": {
+    "count": 1,
+    "per_component": [
+     {
+      "index": 0,
+      "tris": 809,
+      "vertices": 406,
+      "centroid_cm": [
+       2.589,
+       -42.987,
+       112.043
+      ],
+      "bbox_min_cm": [
+       -14.858,
+       -60.24,
+       97.115
+      ],
+      "bbox_max_cm": [
+       18.521,
+       -30.929,
+       142.651
+      ]
+     }
+    ],
+    "main_component": 0
+   },
+   "bbox_min_cm": [
+    -14.858,
+    -60.24,
+    97.115
+   ],
+   "bbox_max_cm": [
+    18.521,
+    -30.929,
+    142.651
+   ],
+   "bbox_size_cm": [
+    33.379,
+    29.311,
+    45.535
+   ],
+   "pivot_cm": [
+    2.0,
+    -36.0,
+    125.0
+   ],
+   "pivot_inside_bbox": true,
+   "triangles_not_in_main_component": {
+    "count": 0,
+    "list": []
+   },
+   "open_edges": 2,
+   "nonmanifold_edges": 3,
+   "open_edges_merged_by_position": 2,
+   "nonmanifold_edges_merged_by_position": 12,
+   "vertex_distance_to_own_joint_cm": {
+    "min": 9.015,
+    "max": 31.821,
+    "mean": 21.085
+   },
+   "vertex_distance_to_parent_joint_cm": {
+    "parent": "HeadTorso",
+    "min": 33.969,
+    "max": 61.399
+   },
+   "planes": {
+    "shoulder_R": {
+     "expected_side_sign": 1.0,
+     "triangles_in_zone": 574,
+     "vertices_in_zone": 285,
+     "wrong_side_triangle_centroids": 0,
+     "worst_triangle_depth_cm": 0.0,
+     "wrong_side_vertices": 1,
+     "worst_vertex_depth_cm": 0.071,
+     "min_signed_distance_triangle_centroid_in_zone_cm": -0.04,
+     "tolerance_cm": 0.05,
+     "pivot_signed_distance_to_plane_cm": 5.0
+    },
+    "elbow_R": {
+     "expected_side_sign": 1.0,
+     "triangles_in_zone": 561,
+     "vertices_in_zone": 277,
+     "wrong_side_triangle_centroids": 0,
+     "worst_triangle_depth_cm": 0.0,
+     "wrong_side_vertices": 0,
+     "worst_vertex_depth_cm": 0.0,
+     "min_signed_distance_triangle_centroid_in_zone_cm": -0.004,
+     "tolerance_cm": 0.05,
+     "pivot_signed_distance_to_plane_cm": 24.345
+    }
+   }
+  },
+  "ForearmHand_L": {
+   "tris": 1115,
+   "vertices": 544,
+   "vertices_unreferenced": 0,
+   "merged_positions": 536,
+   "connected_components": {
+    "count": 1,
+    "per_component": [
+     {
+      "index": 0,
+      "tris": 1115,
+      "vertices": 544,
+      "centroid_cm": [
+       15.592,
+       50.632,
+       75.903
+      ],
+      "bbox_min_cm": [
+       -6.98,
+       36.567,
+       48.123
+      ],
+      "bbox_max_cm": [
+       35.173,
+       66.389,
+       105.886
+      ]
+     }
+    ],
+    "main_component": 0
+   },
+   "bbox_min_cm": [
+    -6.98,
+    36.567,
+    48.123
+   ],
+   "bbox_max_cm": [
+    35.173,
+    66.389,
+    105.886
+   ],
+   "bbox_size_cm": [
+    42.153,
+    29.822,
+    57.762
+   ],
+   "pivot_cm": [
+    1.5,
+    45.0,
+    105.0
+   ],
+   "pivot_inside_bbox": true,
+   "triangles_not_in_main_component": {
+    "count": 0,
+    "list": []
+   },
+   "open_edges": 8,
+   "nonmanifold_edges": 10,
+   "open_edges_merged_by_position": 8,
+   "nonmanifold_edges_merged_by_position": 21,
+   "vertex_distance_to_own_joint_cm": {
+    "min": 6.648,
+    "max": 62.588,
+    "mean": 34.956
+   },
+   "vertex_distance_to_parent_joint_cm": {
+    "parent": "UpperArm_L",
+    "min": 24.401,
+    "max": 80.928
+   },
+   "planes": {
+    "elbow_L": {
+     "expected_side_sign": -1.0,
+     "triangles_in_zone": 774,
+     "vertices_in_zone": 382,
+     "wrong_side_triangle_centroids": 0,
+     "worst_triangle_depth_cm": 0.0,
+     "wrong_side_vertices": 1,
+     "worst_vertex_depth_cm": 0.09,
+     "min_signed_distance_triangle_centroid_in_zone_cm": -0.032,
+     "tolerance_cm": 0.05,
+     "pivot_signed_distance_to_plane_cm": -3.833
+    },
+    "knee_L": {
+     "expected_side_sign": 1.0,
+     "triangles_in_zone": 31,
+     "vertices_in_zone": 21,
+     "wrong_side_triangle_centroids": 15,
+     "worst_triangle_depth_cm": 7.575,
+     "wrong_side_vertices": 8,
+     "worst_vertex_depth_cm": 8.496,
+     "min_signed_distance_triangle_centroid_in_zone_cm": -7.575,
+     "tolerance_cm": 0.05,
+     "wrong_triangles": [
+      {
+       "tri": 3,
+       "centroid_cm": [
+        30.25,
+        38.135,
+        60.599
+       ],
+       "depth_cm": 0.228
+      },
+      {
+       "tri": 8,
+       "centroid_cm": [
+        26.07,
+        38.21,
+        59.886
+       ],
+       "depth_cm": 0.306
+      },
+      {
+       "tri": 10,
+       "centroid_cm": [
+        29.273,
+        38.218,
+        59.762
+       ],
+       "depth_cm": 0.909
+      },
+      {
+       "tri": 12,
+       "centroid_cm": [
+        28.554,
+        38.426,
+        59.264
+       ],
+       "depth_cm": 1.293
+      },
+      {
+       "tri": 17,
+       "centroid_cm": [
+        32.329,
+        39.677,
+        53.484
+       ],
+       "depth_cm": 7.575
+      },
+      {
+       "tri": 21,
+       "centroid_cm": [
+        26.167,
+        39.148,
+        58.912
+       ],
+       "depth_cm": 1.284
+      },
+      {
+       "tri": 22,
+       "centroid_cm": [
+        27.133,
+        38.738,
+        58.734
+       ],
+       "depth_cm": 1.604
+      },
+      {
+       "tri": 24,
+       "centroid_cm": [
+        29.734,
+        39.549,
+        59.116
+       ],
+       "depth_cm": 1.617
+      },
+      {
+       "tri": 27,
+       "centroid_cm": [
+        31.326,
+        39.854,
+        54.143
+       ],
+       "depth_cm": 6.772
+      },
+      {
+       "tri": 63,
+       "centroid_cm": [
+        27.643,
+        39.979,
+        58.379
+       ],
+       "depth_cm": 2.032
+      },
+      {
+       "tri": 995,
+       "centroid_cm": [
+        30.54,
+        38.506,
+        60.643
+       ],
+       "depth_cm": 0.228
+      },
+      {
+       "tri": 997,
+       "centroid_cm": [
+        27.546,
+        37.686,
+        60.11
+       ],
+       "depth_cm": 0.306
+      },
+      {
+       "tri": 999,
+       "centroid_cm": [
+        25.774,
+        39.005,
+        59.549
+       ],
+       "depth_cm": 0.595
+      },
+      {
+       "tri": 1039,
+       "centroid_cm": [
+        30.681,
+        38.808,
+        60.282
+       ],
+       "depth_cm": 0.606
+      },
+      {
+       "tri": 1040,
+       "centroid_cm": [
+        28.935,
+        37.862,
+        60.093
+       ],
+       "depth_cm": 0.531
+      }
+     ],
+     "pivot_signed_distance_to_plane_cm": 47.982
+    }
+   }
+  },
+  "ForearmHand_R": {
+   "tris": 849,
+   "vertices": 418,
+   "vertices_unreferenced": 0,
+   "merged_positions": 418,
+   "connected_components": {
+    "count": 1,
+    "per_component": [
+     {
+      "index": 0,
+      "tris": 849,
+      "vertices": 418,
+      "centroid_cm": [
+       15.092,
+       -47.869,
+       92.906
+      ],
+      "bbox_min_cm": [
+       -6.71,
+       -65.154,
+       58.396
+      ],
+      "bbox_max_cm": [
+       53.357,
+       -33.351,
+       107.761
+      ]
+     }
+    ],
+    "main_component": 0
+   },
+   "bbox_min_cm": [
+    -6.71,
+    -65.154,
+    58.396
+   ],
+   "bbox_max_cm": [
+    53.357,
+    -33.351,
+    107.761
+   ],
+   "bbox_size_cm": [
+    60.066,
+    31.803,
+    49.365
+   ],
+   "pivot_cm": [
+    1.5,
+    -45.0,
+    105.0
+   ],
+   "pivot_inside_bbox": true,
+   "triangles_not_in_main_component": {
+    "count": 0,
+    "list": []
+   },
+   "open_edges": 2,
+   "nonmanifold_edges": 2,
+   "open_edges_merged_by_position": 2,
+   "nonmanifold_edges_merged_by_position": 2,
+   "vertex_distance_to_own_joint_cm": {
+    "min": 6.115,
+    "max": 61.711,
+    "mean": 23.555
+   },
+   "vertex_distance_to_parent_joint_cm": {
+    "parent": "UpperArm_R",
+    "min": 24.369,
+    "max": 79.16
+   },
+   "planes": {
+    "elbow_R": {
+     "expected_side_sign": -1.0,
+     "triangles_in_zone": 844,
+     "vertices_in_zone": 415,
+     "wrong_side_triangle_centroids": 0,
+     "worst_triangle_depth_cm": 0.0,
+     "wrong_side_vertices": 0,
+     "worst_vertex_depth_cm": 0.0,
+     "min_signed_distance_triangle_centroid_in_zone_cm": -0.007,
+     "tolerance_cm": 0.05,
+     "pivot_signed_distance_to_plane_cm": -3.833
+    }
+   }
+  },
+  "Thigh_L": {
+   "tris": 675,
+   "vertices": 365,
+   "vertices_unreferenced": 0,
+   "merged_positions": 365,
+   "connected_components": {
+    "count": 1,
+    "per_component": [
+     {
+      "index": 0,
+      "tris": 675,
+      "vertices": 365,
+      "centroid_cm": [
+       2.985,
+       20.366,
+       75.333
+      ],
+      "bbox_min_cm": [
+       -13.382,
+       10.0,
+       55.599
+      ],
+      "bbox_max_cm": [
+       20.495,
+       34.151,
+       99.0
+      ]
+     }
+    ],
+    "main_component": 0
+   },
+   "bbox_min_cm": [
+    -13.382,
+    10.0,
+    55.599
+   ],
+   "bbox_max_cm": [
+    20.495,
+    34.151,
+    99.0
+   ],
+   "bbox_size_cm": [
+    33.877,
+    24.151,
+    43.401
+   ],
+   "pivot_cm": [
+    2.0,
+    22.0,
+    86.5
+   ],
+   "pivot_inside_bbox": true,
+   "triangles_not_in_main_component": {
+    "count": 0,
+    "list": []
+   },
+   "open_edges": 57,
+   "nonmanifold_edges": 1,
+   "open_edges_merged_by_position": 57,
+   "nonmanifold_edges_merged_by_position": 1,
+   "vertex_distance_to_own_joint_cm": {
+    "min": 4.276,
+    "max": 33.429,
+    "mean": 18.597
+   },
+   "vertex_distance_to_parent_joint_cm": {
+    "parent": "Pelvis",
+    "min": 10.585,
+    "max": 44.962
+   },
+   "planes": {
+    "knee_L": {
+     "expected_side_sign": 1.0,
+     "triangles_in_zone": 311,
+     "vertices_in_zone": 152,
+     "wrong_side_triangle_centroids": 0,
+     "worst_triangle_depth_cm": 0.0,
+     "wrong_side_vertices": 0,
+     "worst_vertex_depth_cm": 0.0,
+     "min_signed_distance_triangle_centroid_in_zone_cm": -0.002,
+     "tolerance_cm": 0.05,
+     "pivot_signed_distance_to_plane_cm": 29.616
+    }
+   }
+  },
+  "Thigh_R": {
+   "tris": 668,
+   "vertices": 340,
+   "vertices_unreferenced": 0,
+   "merged_positions": 324,
+   "connected_components": {
+    "count": 1,
+    "per_component": [
+     {
+      "index": 0,
+      "tris": 668,
+      "vertices": 340,
+      "centroid_cm": [
+       4.184,
+       -18.462,
+       73.691
+      ],
+      "bbox_min_cm": [
+       -12.565,
+       -32.426,
+       55.652
+      ],
+      "bbox_max_cm": [
+       20.939,
+       -9.363,
+       93.42
+      ]
+     }
+    ],
+    "main_component": 0
+   },
+   "bbox_min_cm": [
+    -12.565,
+    -32.426,
+    55.652
+   ],
+   "bbox_max_cm": [
+    20.939,
+    -9.363,
+    93.42
+   ],
+   "bbox_size_cm": [
+    33.504,
+    23.063,
+    37.769
+   ],
+   "pivot_cm": [
+    2.0,
+    -22.0,
+    86.5
+   ],
+   "pivot_inside_bbox": true,
+   "triangles_not_in_main_component": {
+    "count": 0,
+    "list": []
+   },
+   "open_edges": 0,
+   "nonmanifold_edges": 0,
+   "open_edges_merged_by_position": 0,
+   "nonmanifold_edges_merged_by_position": 26,
+   "vertex_distance_to_own_joint_cm": {
+    "min": 4.872,
+    "max": 33.317,
+    "mean": 18.955
+   },
+   "vertex_distance_to_parent_joint_cm": {
+    "parent": "Pelvis",
+    "min": 10.077,
+    "max": 43.441
+   },
+   "planes": {
+    "hip_R": {
+     "expected_side_sign": 1.0,
+     "triangles_in_zone": 550,
+     "vertices_in_zone": 274,
+     "wrong_side_triangle_centroids": 16,
+     "worst_triangle_depth_cm": 0.366,
+     "wrong_side_vertices": 4,
+     "worst_vertex_depth_cm": 0.637,
+     "min_signed_distance_triangle_centroid_in_zone_cm": -0.366,
+     "tolerance_cm": 0.05,
+     "wrong_triangles": [
+      {
+       "tri": 324,
+       "centroid_cm": [
+        14.016,
+        -9.922,
+        74.949
+       ],
+       "depth_cm": 0.078
+      },
+      {
+       "tri": 364,
+       "centroid_cm": [
+        14.009,
+        -9.922,
+        74.583
+       ],
+       "depth_cm": 0.078
+      },
+      {
+       "tri": 372,
+       "centroid_cm": [
+        -2.215,
+        -9.846,
+        70.697
+       ],
+       "depth_cm": 0.154
+      },
+      {
+       "tri": 373,
+       "centroid_cm": [
+        13.799,
+        -9.922,
+        74.442
+       ],
+       "depth_cm": 0.078
+      },
+      {
+       "tri": 426,
+       "centroid_cm": [
+        13.719,
+        -9.922,
+        75.114
+       ],
+       "depth_cm": 0.078
+      },
+      {
+       "tri": 438,
+       "centroid_cm": [
+        -0.172,
+        -9.846,
+        71.222
+       ],
+       "depth_cm": 0.154
+      },
+      {
+       "tri": 442,
+       "centroid_cm": [
+        -1.548,
+        -9.788,
+        72.642
+       ],
+       "depth_cm": 0.212
+      },
+      {
+       "tri": 443,
+       "centroid_cm": [
+        -1.188,
+        -9.788,
+        72.817
+       ],
+       "depth_cm": 0.212
+      },
+      {
+       "tri": 444,
+       "centroid_cm": [
+        -2.441,
+        -9.846,
+        71.335
+       ],
+       "depth_cm": 0.154
+      },
+      {
+       "tri": 449,
+       "centroid_cm": [
+        -2.252,
+        -9.846,
+        71.884
+       ],
+       "depth_cm": 0.154
+      },
+      {
+       "tri": 454,
+       "centroid_cm": [
+        0.601,
+        -9.788,
+        72.744
+       ],
+       "depth_cm": 0.212
+      },
+      {
+       "tri": 479,
+       "centroid_cm": [
+        0.028,
+        -9.634,
+        72.097
+       ],
+       "depth_cm": 0.366
+      },
+      {
+       "tri": 527,
+       "centroid_cm": [
+        11.787,
+        -9.897,
+        73.933
+       ],
+       "depth_cm": 0.103
+      },
+      {
+       "tri": 530,
+       "centroid_cm": [
+        11.701,
+        -9.897,
+        74.238
+       ],
+       "depth_cm": 0.103
+      },
+      {
+       "tri": 531,
+       "centroid_cm": [
+        -1.826,
+        -9.634,
+        72.121
+       ],
+       "depth_cm": 0.366
+      },
+      {
+       "tri": 544,
+       "centroid_cm": [
+        2.096,
+        -9.788,
+        72.546
+       ],
+       "depth_cm": 0.212
+      }
+     ],
+     "pivot_signed_distance_to_plane_cm": 12.0
+    },
+    "knee_L": {
+     "expected_side_sign": 1.0,
+     "triangles_in_zone": 0,
+     "vertices_in_zone": 0,
+     "wrong_side_triangle_centroids": 0,
+     "worst_triangle_depth_cm": 0.0,
+     "wrong_side_vertices": 0,
+     "worst_vertex_depth_cm": 0.0,
+     "min_signed_distance_triangle_centroid_in_zone_cm": null,
+     "tolerance_cm": 0.05,
+     "pivot_signed_distance_to_plane_cm": 29.616
+    }
+   }
+  },
+  "ShinFoot_L": {
+   "tris": 1027,
+   "vertices": 513,
+   "vertices_unreferenced": 0,
+   "merged_positions": 513,
+   "connected_components": {
+    "count": 1,
+    "per_component": [
+     {
+      "index": 0,
+      "tris": 1027,
+      "vertices": 513,
+      "centroid_cm": [
+       1.776,
+       27.855,
+       26.906
+      ],
+      "bbox_min_cm": [
+       -29.233,
+       9.207,
+       0.07
+      ],
+      "bbox_max_cm": [
+       28.939,
+       48.007,
+       59.348
+      ]
+     }
+    ],
+    "main_component": 0
+   },
+   "bbox_min_cm": [
+    -29.233,
+    9.207,
+    0.07
+   ],
+   "bbox_max_cm": [
+    28.939,
+    48.007,
+    59.348
+   ],
+   "bbox_size_cm": [
+    58.173,
+    38.8,
+    59.278
+   ],
+   "pivot_cm": [
+    6.0,
+    25.0,
+    57.0
+   ],
+   "pivot_inside_bbox": true,
+   "triangles_not_in_main_component": {
+    "count": 0,
+    "list": []
+   },
+   "open_edges": 6,
+   "nonmanifold_edges": 6,
+   "open_edges_merged_by_position": 6,
+   "nonmanifold_edges_merged_by_position": 6,
+   "vertex_distance_to_own_joint_cm": {
+    "min": 7.846,
+    "max": 67.275,
+    "mean": 34.688
+   },
+   "vertex_distance_to_parent_joint_cm": {
+    "parent": "Thigh_L",
+    "min": 30.344,
+    "max": 92.385
+   },
+   "planes": {
+    "knee_L": {
+     "expected_side_sign": -1.0,
+     "triangles_in_zone": 344,
+     "vertices_in_zone": 173,
+     "wrong_side_triangle_centroids": 0,
+     "worst_triangle_depth_cm": 0.0,
+     "wrong_side_vertices": 0,
+     "worst_vertex_depth_cm": 0.0,
+     "min_signed_distance_triangle_centroid_in_zone_cm": -0.001,
+     "tolerance_cm": 0.05,
+     "pivot_signed_distance_to_plane_cm": 0.15
+    }
+   }
+  },
+  "ShinFoot_R": {
+   "tris": 1102,
+   "vertices": 553,
+   "vertices_unreferenced": 0,
+   "merged_positions": 540,
+   "connected_components": {
+    "count": 1,
+    "per_component": [
+     {
+      "index": 0,
+      "tris": 1102,
+      "vertices": 553,
+      "centroid_cm": [
+       1.242,
+       -27.557,
+       29.11
+      ],
+      "bbox_min_cm": [
+       -29.009,
+       -48.007,
+       0.0
+      ],
+      "bbox_max_cm": [
+       29.233,
+       -8.466,
+       59.415
+      ]
+     }
+    ],
+    "main_component": 0
+   },
+   "bbox_min_cm": [
+    -29.009,
+    -48.007,
+    0.0
+   ],
+   "bbox_max_cm": [
+    29.233,
+    -8.466,
+    59.415
+   ],
+   "bbox_size_cm": [
+    58.243,
+    39.541,
+    59.415
+   ],
+   "pivot_cm": [
+    6.0,
+    -25.0,
+    57.0
+   ],
+   "pivot_inside_bbox": true,
+   "triangles_not_in_main_component": {
+    "count": 0,
+    "list": []
+   },
+   "open_edges": 0,
+   "nonmanifold_edges": 1,
+   "open_edges_merged_by_position": 0,
+   "nonmanifold_edges_merged_by_position": 24,
+   "vertex_distance_to_own_joint_cm": {
+    "min": 5.784,
+    "max": 67.494,
+    "mean": 33.042
+   },
+   "vertex_distance_to_parent_joint_cm": {
+    "parent": "Thigh_R",
+    "min": 30.497,
+    "max": 92.641
+   },
+   "planes": {
+    "knee_L": {
+     "expected_side_sign": -1.0,
+     "triangles_in_zone": 0,
+     "vertices_in_zone": 0,
+     "wrong_side_triangle_centroids": 0,
+     "worst_triangle_depth_cm": 0.0,
+     "wrong_side_vertices": 0,
+     "worst_vertex_depth_cm": 0.0,
+     "min_signed_distance_triangle_centroid_in_zone_cm": null,
+     "tolerance_cm": 0.05,
+     "pivot_signed_distance_to_plane_cm": 0.15
+    }
+   }
+  }
+ },
+ "stray_fragments": [],
+ "plane_sides": {
+  "waist": {
+   "HeadTorso": 1.0,
+   "Pelvis": -1.0
+  },
+  "shoulder_L": {
+   "HeadTorso": -1.0,
+   "UpperArm_L": 1.0
+  },
+  "shoulder_R": {
+   "HeadTorso": -1.0,
+   "UpperArm_R": 1.0
+  },
+  "elbow_L": {
+   "ForearmHand_L": -1.0,
+   "UpperArm_L": 1.0
+  },
+  "elbow_R": {
+   "ForearmHand_R": -1.0,
+   "UpperArm_R": 1.0
+  },
+  "hip_L": {},
+  "hip_R": {
+   "Pelvis": -1.0,
+   "Thigh_R": 1.0
+  },
+  "knee_L": {
+   "ForearmHand_L": 1.0,
+   "ShinFoot_L": -1.0,
+   "ShinFoot_R": -1.0,
+   "Thigh_L": 1.0,
+   "Thigh_R": 1.0
+  },
+  "knee_R": {}
+ },
+ "parts_report_open_edges": {
+  "Pelvis": 96,
+  "HeadTorso": 54,
+  "UpperArm_L": 0,
+  "UpperArm_R": 2,
+  "ForearmHand_L": 8,
+  "ForearmHand_R": 2,
+  "Thigh_L": 57,
+  "Thigh_R": 0,
+  "ShinFoot_L": 6,
+  "ShinFoot_R": 0
+ },
+ "pose_check": {
+  "frames": [
+   0,
+   4,
+   8,
+   12
+  ],
+  "exr": {
+   "width": 20,
+   "height": 62,
+   "channel_layout": "texel x=2*part quaternion xyzw, x=2*part+1 translation t cm; frame f = row f from the top of the file",
+   "load_vs_raw_parse_max_abs": 0.0
+  },
+  "formula": "line by line port of the Unreal Custom node: q renormalised, q=(-x,y,-z,w), tr=(x,-y,z), LocalPos=(x,-y,z) of the Blender vertex, new=LocalPos+offset, mirrored back; part index of each vertex read from the PartId UV (floor(uv*10)) and checked against the object",
+  "exr_vs_keyed_max_vertex_difference_cm_per_frame": [
+   0.00477,
+   0.00508,
+   0.00422,
+   0.00266,
+   0.00879,
+   0.00546,
+   0.01128,
+   0.00604,
+   0.00608,
+   0.00458,
+   0.0042,
+   0.00352,
+   0.01004,
+   0.01344,
+   0.00982,
+   0.00682
+  ],
+  "selected_frames": {
+   "0": {
+    "max_cm": 0.00477,
+    "per_part": {
+     "Pelvis": {
+      "max_norm_cm": 0.00108,
+      "max_abs_x_cm": 0.0,
+      "max_abs_y_cm": 0.0,
+      "max_abs_z_cm": 0.00108,
+      "worst_vertex": 0,
+      "worst_vertex_diff_xyz_cm": [
+       0.0,
+       0.0,
+       -0.001
+      ]
+     },
+     "HeadTorso": {
+      "max_norm_cm": 0.0038,
+      "max_abs_x_cm": 0.00346,
+      "max_abs_y_cm": 0.00052,
+      "max_abs_z_cm": 0.00187,
+      "worst_vertex": 943,
+      "worst_vertex_diff_xyz_cm": [
+       -0.003,
+       -0.0,
+       0.002
+      ]
+     },
+     "UpperArm_L": {
+      "max_norm_cm": 0.00411,
+      "max_abs_x_cm": 0.00385,
+      "max_abs_y_cm": 0.00079,
+      "max_abs_z_cm": 0.00155,
+      "worst_vertex": 72,
+      "worst_vertex_diff_xyz_cm": [
+       0.004,
+       -0.001,
+       0.001
+      ]
+     },
+     "UpperArm_R": {
+      "max_norm_cm": 0.00375,
+      "max_abs_x_cm": 0.00371,
+      "max_abs_y_cm": 0.00077,
+      "max_abs_z_cm": 0.00106,
+      "worst_vertex": 332,
+      "worst_vertex_diff_xyz_cm": [
+       -0.004,
+       0.0,
+       -0.0
+      ]
+     },
+     "ForearmHand_L": {
+      "max_norm_cm": 0.00343,
+      "max_abs_x_cm": 0.0031,
+      "max_abs_y_cm": 0.00071,
+      "max_abs_z_cm": 0.00152,
+      "worst_vertex": 100,
+      "worst_vertex_diff_xyz_cm": [
+       0.003,
+       -0.001,
+       0.001
+      ]
+     },
+     "ForearmHand_R": {
+      "max_norm_cm": 0.00261,
+      "max_abs_x_cm": 0.00254,
+      "max_abs_y_cm": 0.00179,
+      "max_abs_z_cm": 0.00083,
+      "worst_vertex": 43,
+      "worst_vertex_diff_xyz_cm": [
+       -0.002,
+       0.002,
+       0.001
+      ]
+     },
+     "Thigh_L": {
+      "max_norm_cm": 0.00477,
+      "max_abs_x_cm": 0.00454,
+      "max_abs_y_cm": 0.0,
+      "max_abs_z_cm": 0.00357,
+      "worst_vertex": 321,
+      "worst_vertex_diff_xyz_cm": [
+       -0.004,
+       -0.0,
+       -0.003
+      ]
+     },
+     "Thigh_R": {
+      "max_norm_cm": 0.00322,
+      "max_abs_x_cm": 0.00316,
+      "max_abs_y_cm": 0.0,
+      "max_abs_z_cm": 0.00095,
+      "worst_vertex": 270,
+      "worst_vertex_diff_xyz_cm": [
+       -0.003,
+       0.0,
+       0.001
+      ]
+     },
+     "ShinFoot_L": {
+      "max_norm_cm": 0.00392,
+      "max_abs_x_cm": 0.00271,
+      "max_abs_y_cm": 1e-05,
+      "max_abs_z_cm": 0.00341,
+      "worst_vertex": 182,
+      "worst_vertex_diff_xyz_cm": [
+       -0.002,
+       0.0,
+       -0.003
+      ]
+     },
+     "ShinFoot_R": {
+      "max_norm_cm": 0.00468,
+      "max_abs_x_cm": 0.00466,
+      "max_abs_y_cm": 1e-05,
+      "max_abs_z_cm": 0.00174,
+      "worst_vertex": 473,
+      "worst_vertex_diff_xyz_cm": [
+       -0.004,
+       -0.0,
+       0.002
+      ]
+     }
+    }
+   },
+   "4": {
+    "max_cm": 0.00879,
+    "per_part": {
+     "Pelvis": {
+      "max_norm_cm": 2e-05,
+      "max_abs_x_cm": 0.0,
+      "max_abs_y_cm": 0.0,
+      "max_abs_z_cm": 2e-05,
+      "worst_vertex": 0,
+      "worst_vertex_diff_xyz_cm": [
+       0.0,
+       0.0,
+       0.0
+      ]
+     },
+     "HeadTorso": {
+      "max_norm_cm": 0.00313,
+      "max_abs_x_cm": 0.00312,
+      "max_abs_y_cm": 1e-05,
+      "max_abs_z_cm": 0.00033,
+      "worst_vertex": 1083,
+      "worst_vertex_diff_xyz_cm": [
+       0.003,
+       -0.0,
+       -0.0
+      ]
+     },
+     "UpperArm_L": {
+      "max_norm_cm": 0.00207,
+      "max_abs_x_cm": 0.00207,
+      "max_abs_y_cm": 1e-05,
+      "max_abs_z_cm": 6e-05,
+      "worst_vertex": 217,
+      "worst_vertex_diff_xyz_cm": [
+       0.002,
+       -0.0,
+       -0.0
+      ]
+     },
+     "UpperArm_R": {
+      "max_norm_cm": 0.00078,
+      "max_abs_x_cm": 0.00077,
+      "max_abs_y_cm": 1e-05,
+      "max_abs_z_cm": 0.00028,
+      "worst_vertex": 300,
+      "worst_vertex_diff_xyz_cm": [
+       -0.001,
+       0.0,
+       0.0
+      ]
+     },
+     "ForearmHand_L": {
+      "max_norm_cm": 0.00137,
+      "max_abs_x_cm": 0.00136,
+      "max_abs_y_cm": 1e-05,
+      "max_abs_z_cm": 0.00065,
+      "worst_vertex": 489,
+      "worst_vertex_diff_xyz_cm": [
+       0.001,
+       0.0,
+       0.0
+      ]
+     },
+     "ForearmHand_R": {
+      "max_norm_cm": 0.00081,
+      "max_abs_x_cm": 0.00081,
+      "max_abs_y_cm": 1e-05,
+      "max_abs_z_cm": 0.00064,
+      "worst_vertex": 283,
+      "worst_vertex_diff_xyz_cm": [
+       0.001,
+       0.0,
+       0.0
+      ]
+     },
+     "Thigh_L": {
+      "max_norm_cm": 2e-05,
+      "max_abs_x_cm": 1e-05,
+      "max_abs_y_cm": 0.0,
+      "max_abs_z_cm": 2e-05,
+      "worst_vertex": 315,
+      "worst_vertex_diff_xyz_cm": [
+       -0.0,
+       0.0,
+       0.0
+      ]
+     },
+     "Thigh_R": {
+      "max_norm_cm": 0.00879,
+      "max_abs_x_cm": 0.00852,
+      "max_abs_y_cm": 0.0,
+      "max_abs_z_cm": 0.00435,
+      "worst_vertex": 3,
+      "worst_vertex_diff_xyz_cm": [
+       -0.009,
+       0.0,
+       -0.002
+      ]
+     },
+     "ShinFoot_L": {
+      "max_norm_cm": 3e-05,
+      "max_abs_x_cm": 2e-05,
+      "max_abs_y_cm": 1e-05,
+      "max_abs_z_cm": 2e-05,
+      "worst_vertex": 108,
+      "worst_vertex_diff_xyz_cm": [
+       0.0,
+       0.0,
+       0.0
+      ]
+     },
+     "ShinFoot_R": {
+      "max_norm_cm": 0.00141,
+      "max_abs_x_cm": 0.00134,
+      "max_abs_y_cm": 1e-05,
+      "max_abs_z_cm": 0.00046,
+      "worst_vertex": 183,
+      "worst_vertex_diff_xyz_cm": [
+       0.001,
+       -0.0,
+       -0.0
+      ]
+     }
+    }
+   },
+   "8": {
+    "max_cm": 0.00608,
+    "per_part": {
+     "Pelvis": {
+      "max_norm_cm": 0.00108,
+      "max_abs_x_cm": 0.0,
+      "max_abs_y_cm": 0.0,
+      "max_abs_z_cm": 0.00108,
+      "worst_vertex": 0,
+      "worst_vertex_diff_xyz_cm": [
+       0.0,
+       0.0,
+       -0.001
+      ]
+     },
+     "HeadTorso": {
+      "max_norm_cm": 0.00393,
+      "max_abs_x_cm": 0.00359,
+      "max_abs_y_cm": 0.00057,
+      "max_abs_z_cm": 0.00186,
+      "worst_vertex": 943,
+      "worst_vertex_diff_xyz_cm": [
+       -0.004,
+       0.0,
+       0.002
+      ]
+     },
+     "UpperArm_L": {
+      "max_norm_cm": 0.00407,
+      "max_abs_x_cm": 0.00407,
+      "max_abs_y_cm": 0.00081,
+      "max_abs_z_cm": 0.00055,
+      "worst_vertex": 245,
+      "worst_vertex_diff_xyz_cm": [
+       -0.004,
+       0.0,
+       -0.0
+      ]
+     },
+     "UpperArm_R": {
+      "max_norm_cm": 0.00608,
+      "max_abs_x_cm": 0.00605,
+      "max_abs_y_cm": 0.00089,
+      "max_abs_z_cm": 0.0014,
+      "worst_vertex": 354,
+      "worst_vertex_diff_xyz_cm": [
+       0.006,
+       0.0,
+       0.0
+      ]
+     },
+     "ForearmHand_L": {
+      "max_norm_cm": 0.00295,
+      "max_abs_x_cm": 0.00294,
+      "max_abs_y_cm": 0.00052,
+      "max_abs_z_cm": 0.0025,
+      "worst_vertex": 489,
+      "worst_vertex_diff_xyz_cm": [
+       -0.003,
+       -0.0,
+       -0.0
+      ]
+     },
+     "ForearmHand_R": {
+      "max_norm_cm": 0.00303,
+      "max_abs_x_cm": 0.00216,
+      "max_abs_y_cm": 0.00114,
+      "max_abs_z_cm": 0.00244,
+      "worst_vertex": 377,
+      "worst_vertex_diff_xyz_cm": [
+       0.002,
+       0.0,
+       0.002
+      ]
+     },
+     "Thigh_L": {
+      "max_norm_cm": 0.00323,
+      "max_abs_x_cm": 0.00316,
+      "max_abs_y_cm": 0.0,
+      "max_abs_z_cm": 0.00095,
+      "worst_vertex": 298,
+      "worst_vertex_diff_xyz_cm": [
+       -0.003,
+       -0.0,
+       0.001
+      ]
+     },
+     "Thigh_R": {
+      "max_norm_cm": 0.00417,
+      "max_abs_x_cm": 0.00365,
+      "max_abs_y_cm": 0.0,
+      "max_abs_z_cm": 0.00364,
+      "worst_vertex": 327,
+      "worst_vertex_diff_xyz_cm": [
+       0.002,
+       -0.0,
+       0.004
+      ]
+     },
+     "ShinFoot_L": {
+      "max_norm_cm": 0.00467,
+      "max_abs_x_cm": 0.00466,
+      "max_abs_y_cm": 1e-05,
+      "max_abs_z_cm": 0.00174,
+      "worst_vertex": 327,
+      "worst_vertex_diff_xyz_cm": [
+       -0.004,
+       0.0,
+       0.002
+      ]
+     },
+     "ShinFoot_R": {
+      "max_norm_cm": 0.00394,
+      "max_abs_x_cm": 0.00271,
+      "max_abs_y_cm": 1e-05,
+      "max_abs_z_cm": 0.00343,
+      "worst_vertex": 183,
+      "worst_vertex_diff_xyz_cm": [
+       -0.002,
+       0.0,
+       -0.003
+      ]
+     }
+    }
+   },
+   "12": {
+    "max_cm": 0.01004,
+    "per_part": {
+     "Pelvis": {
+      "max_norm_cm": 2e-05,
+      "max_abs_x_cm": 0.0,
+      "max_abs_y_cm": 0.0,
+      "max_abs_z_cm": 2e-05,
+      "worst_vertex": 0,
+      "worst_vertex_diff_xyz_cm": [
+       0.0,
+       0.0,
+       0.0
+      ]
+     },
+     "HeadTorso": {
+      "max_norm_cm": 0.00134,
+      "max_abs_x_cm": 0.00125,
+      "max_abs_y_cm": 0.00063,
+      "max_abs_z_cm": 0.00064,
+      "worst_vertex": 446,
+      "worst_vertex_diff_xyz_cm": [
+       -0.001,
+       0.0,
+       -0.0
+      ]
+     },
+     "UpperArm_L": {
+      "max_norm_cm": 0.00702,
+      "max_abs_x_cm": 0.00699,
+      "max_abs_y_cm": 0.00165,
+      "max_abs_z_cm": 0.00157,
+      "worst_vertex": 16,
+      "worst_vertex_diff_xyz_cm": [
+       0.007,
+       -0.001,
+       -0.0
+      ]
+     },
+     "UpperArm_R": {
+      "max_norm_cm": 0.00288,
+      "max_abs_x_cm": 0.00287,
+      "max_abs_y_cm": 0.00037,
+      "max_abs_z_cm": 0.0013,
+      "worst_vertex": 9,
+      "worst_vertex_diff_xyz_cm": [
+       -0.003,
+       -0.0,
+       0.0
+      ]
+     },
+     "ForearmHand_L": {
+      "max_norm_cm": 0.00462,
+      "max_abs_x_cm": 0.00416,
+      "max_abs_y_cm": 0.00179,
+      "max_abs_z_cm": 0.00306,
+      "worst_vertex": 470,
+      "worst_vertex_diff_xyz_cm": [
+       0.004,
+       0.0,
+       -0.002
+      ]
+     },
+     "ForearmHand_R": {
+      "max_norm_cm": 0.00199,
+      "max_abs_x_cm": 0.0019,
+      "max_abs_y_cm": 0.00055,
+      "max_abs_z_cm": 0.00102,
+      "worst_vertex": 414,
+      "worst_vertex_diff_xyz_cm": [
+       -0.002,
+       0.0,
+       0.0
+      ]
+     },
+     "Thigh_L": {
+      "max_norm_cm": 0.01004,
+      "max_abs_x_cm": 0.01001,
+      "max_abs_y_cm": 0.0,
+      "max_abs_z_cm": 0.00441,
+      "worst_vertex": 263,
+      "worst_vertex_diff_xyz_cm": [
+       -0.01,
+       0.0,
+       -0.001
+      ]
+     },
+     "Thigh_R": {
+      "max_norm_cm": 2e-05,
+      "max_abs_x_cm": 1e-05,
+      "max_abs_y_cm": 0.0,
+      "max_abs_z_cm": 2e-05,
+      "worst_vertex": 125,
+      "worst_vertex_diff_xyz_cm": [
+       -0.0,
+       0.0,
+       0.0
+      ]
+     },
+     "ShinFoot_L": {
+      "max_norm_cm": 0.00141,
+      "max_abs_x_cm": 0.00134,
+      "max_abs_y_cm": 1e-05,
+      "max_abs_z_cm": 0.00046,
+      "worst_vertex": 370,
+      "worst_vertex_diff_xyz_cm": [
+       0.001,
+       0.0,
+       -0.0
+      ]
+     },
+     "ShinFoot_R": {
+      "max_norm_cm": 3e-05,
+      "max_abs_x_cm": 2e-05,
+      "max_abs_y_cm": 1e-05,
+      "max_abs_z_cm": 2e-05,
+      "worst_vertex": 154,
+      "worst_vertex_diff_xyz_cm": [
+       0.0,
+       0.0,
+       0.0
+      ]
+     }
+    }
+   }
+  },
+  "max_over_all_run_frames_cm": 0.01344,
+  "keyed_path": "meshy_bake_anim.py functions: run_pose, apply_pose, fit_ground on the parent hierarchy, vertices = matrix_world @ local",
+  "images": []
+ },
+ "anomalies": [
+  "open edges: 225 at build time in the parts (source 35), cap boundary edges open 189"
+ ],
+ "notes": [
+  "non-manifold edges merged by position: parts 171, source not read (source defects of the Meshy mesh; position merging also welds coincident cut seams and slivers inside one part, so the total is larger than the source)"
+ ],
+ "edges_vs_source": {
+  "rule": "open and non-manifold edges that already exist in the source mesh are source defects, not cut defects. Anomaly only when the build-time open edges of the parts (parts report, by vertex index) exceed the source count, or when the cut left cap boundary edges open.",
+  "source_fbx": null,
+  "source_open_edges_build_count": 35,
+  "source_nonmanifold_edges_build_count": 34,
+  "parts_open_build_total": 225,
+  "cap_boundary_edges_still_open": 189,
+  "parts_open_read_back_total": 225,
+  "parts_open_merged_by_position_total": 210,
+  "parts_nonmanifold_merged_by_position_total": 171,
+  "per_part": {
+   "Pelvis": {
+    "open_read_back": 96,
+    "open_merged_by_position": 94,
+    "open_build": 96,
+    "nonmanifold_read_back": 0,
+    "nonmanifold_merged_by_position": 2
+   },
+   "HeadTorso": {
+    "open_read_back": 54,
+    "open_merged_by_position": 41,
+    "open_build": 54,
+    "nonmanifold_read_back": 11,
+    "nonmanifold_merged_by_position": 77
+   },
+   "UpperArm_L": {
+    "open_read_back": 0,
+    "open_merged_by_position": 0,
+    "open_build": 0,
+    "nonmanifold_read_back": 0,
+    "nonmanifold_merged_by_position": 0
+   },
+   "UpperArm_R": {
+    "open_read_back": 2,
+    "open_merged_by_position": 2,
+    "open_build": 2,
+    "nonmanifold_read_back": 3,
+    "nonmanifold_merged_by_position": 12
+   },
+   "ForearmHand_L": {
+    "open_read_back": 8,
+    "open_merged_by_position": 8,
+    "open_build": 8,
+    "nonmanifold_read_back": 10,
+    "nonmanifold_merged_by_position": 21
+   },
+   "ForearmHand_R": {
+    "open_read_back": 2,
+    "open_merged_by_position": 2,
+    "open_build": 2,
+    "nonmanifold_read_back": 2,
+    "nonmanifold_merged_by_position": 2
+   },
+   "Thigh_L": {
+    "open_read_back": 57,
+    "open_merged_by_position": 57,
+    "open_build": 57,
+    "nonmanifold_read_back": 1,
+    "nonmanifold_merged_by_position": 1
+   },
+   "Thigh_R": {
+    "open_read_back": 0,
+    "open_merged_by_position": 0,
+    "open_build": 0,
+    "nonmanifold_read_back": 0,
+    "nonmanifold_merged_by_position": 26
+   },
+   "ShinFoot_L": {
+    "open_read_back": 6,
+    "open_merged_by_position": 6,
+    "open_build": 6,
+    "nonmanifold_read_back": 6,
+    "nonmanifold_merged_by_position": 6
+   },
+   "ShinFoot_R": {
+    "open_read_back": 0,
+    "open_merged_by_position": 0,
+    "open_build": 0,
+    "nonmanifold_read_back": 1,
+    "nonmanifold_merged_by_position": 24
+   }
+  }
+ },
+ "plane_deviations": {
+  "note": "deviation of the cut from the planar model: a triangle centroid / vertex of a part on the other side of the joint plane than its main component. Not an assignment error by itself when the cut followed mesh edges (zigzag cut, mode 'edges' of meshy_cut_parts.py): the depth is then the zigzag amplitude",
+  "list": [
+   "HeadTorso vs plane waist: 87 triangle centroids on the wrong side (worst 7.410 cm), 37 vertices (worst 7.756 cm)",
+   "Thigh_R vs plane hip_R: 16 triangle centroids on the wrong side (worst 0.366 cm), 4 vertices (worst 0.637 cm)",
+   "ForearmHand_L vs plane knee_L: 15 triangle centroids on the wrong side (worst 7.575 cm), 8 vertices (worst 8.496 cm)"
+  ]
+ },
+ "warnings": []
+}

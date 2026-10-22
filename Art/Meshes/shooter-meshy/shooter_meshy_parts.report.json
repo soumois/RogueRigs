@@ -1,0 +1,1848 @@
+{
+ "task": "task-284-02-parts-bake-shooter",
+ "inputs": {
+  "fbx": "shooter_meshy_game.fbx",
+  "texture": "shooter_meshy_clean_basecolor.png",
+  "source": {
+   "height_as_imported": 176.0,
+   "scale_fix_applied": 1.0,
+   "object_matrix_identity": false,
+   "tris": 7263,
+   "vertices": 3600,
+   "uv_layers": [
+    "UVMap",
+    "LightMap"
+   ]
+  },
+  "source_tris_triangulated": 7263,
+  "source_vertices": 3600,
+  "source_open_edges": 35,
+  "source_nonmanifold_edges": 34
+ },
+ "outputs": {
+  "fbx": "shooter_meshy_parts.fbx",
+  "renders": [],
+  "texture_referenced": "shooter_meshy_clean_basecolor.png",
+  "embedded": false
+ },
+ "joints_cm": {
+  "found_on_mesh": {
+   "waist": [
+    2.0,
+    0.0,
+    98.5
+   ],
+   "hip": [
+    2.0,
+    22.0,
+    86.5
+   ],
+   "knee": [
+    6.0,
+    25.0,
+    57.0
+   ],
+   "shoulder": [
+    2.0,
+    36.0,
+    125.0
+   ],
+   "elbow": [
+    1.5,
+    45.0,
+    105.0
+   ]
+  },
+  "note": "left side (+Y); right = mirror through y = 0 (cannon on the right forearm, y -34..-65; left hand y 38..60). Found on the mesh with orthographic slab renders (front, side of the right leg slab y -37..-5, arm slabs, torso slab) read against a cm grid: hip = dark hub on the thigh (side view x 2, z 86.7), knee = dark hub between the thigh panel (bottom z ~61) and the shin panel (top z ~54..56) at x 6, z 56..57, shoulder = hub between torso and shoulder pad (x 2, z 124, pad y 32..56), elbow = dark hinge block between the pad (bottom z 114) and the forearm block (top z 98..107) at y 45, z ~105, waist = black band under the torso green (z 94..99)."
+ },
+ "pivots_cm": {
+  "Pelvis": [
+   2.0,
+   0.0,
+   86.5
+  ],
+  "HeadTorso": [
+   2.0,
+   0.0,
+   98.5
+  ],
+  "UpperArm_L": [
+   2.0,
+   36.0,
+   125.0
+  ],
+  "UpperArm_R": [
+   2.0,
+   -36.0,
+   125.0
+  ],
+  "ForearmHand_L": [
+   1.5,
+   45.0,
+   105.0
+  ],
+  "ForearmHand_R": [
+   1.5,
+   -45.0,
+   105.0
+  ],
+  "Thigh_L": [
+   2.0,
+   22.0,
+   86.5
+  ],
+  "Thigh_R": [
+   2.0,
+   -22.0,
+   86.5
+  ],
+  "ShinFoot_L": [
+   6.0,
+   25.0,
+   57.0
+  ],
+  "ShinFoot_R": [
+   6.0,
+   -25.0,
+   57.0
+  ]
+ },
+ "hierarchy": {
+  "Pelvis": null,
+  "HeadTorso": "Pelvis",
+  "UpperArm_L": "HeadTorso",
+  "UpperArm_R": "HeadTorso",
+  "ForearmHand_L": "UpperArm_L",
+  "ForearmHand_R": "UpperArm_R",
+  "Thigh_L": "Pelvis",
+  "Thigh_R": "Pelvis",
+  "ShinFoot_L": "Thigh_L",
+  "ShinFoot_R": "Thigh_R"
+ },
+ "cut_planes": [
+  {
+   "label": "waist",
+   "plane_point_cm": [
+    2.0,
+    0.0,
+    99.0
+   ],
+   "plane_normal": [
+    0.0,
+    0.0,
+    1.0
+   ],
+   "zone_box_cm": [
+    [
+     -40,
+     -30,
+     90
+    ],
+    [
+     60,
+     30,
+     112
+    ]
+   ],
+   "parts": [
+    "HeadTorso",
+    "Pelvis"
+   ],
+   "section_length_cm": 193.99,
+   "cut_edges": 77,
+   "caps": {
+    "HeadTorso": {
+     "faces": 101,
+     "area_cm2": 935.31
+    },
+    "Pelvis": {
+     "faces": 5,
+     "area_cm2": 1.58
+    }
+   },
+   "pivot_to_plane_distance_cm": 0.5,
+   "min_vertex_distance_between_parts_beyond_0.6cm_of_plane_cm": 0.0
+  },
+  {
+   "label": "shoulder_L",
+   "plane_point_cm": [
+    2.0,
+    31.0,
+    125.0
+   ],
+   "plane_normal": [
+    0.0,
+    1.0,
+    0.0
+   ],
+   "zone_box_cm": [
+    [
+     -40,
+     26,
+     105
+    ],
+    [
+     60,
+     70,
+     150
+    ]
+   ],
+   "parts": [
+    "HeadTorso",
+    "UpperArm_L"
+   ],
+   "section_length_cm": 86.01,
+   "cut_edges": 37,
+   "caps": {
+    "HeadTorso": {
+     "faces": 35,
+     "area_cm2": 359.26
+    },
+    "UpperArm_L": {
+     "faces": 35,
+     "area_cm2": 359.26
+    }
+   },
+   "pivot_to_plane_distance_cm": 5.0,
+   "min_vertex_distance_between_parts_beyond_0.6cm_of_plane_cm": 3.49
+  },
+  {
+   "label": "shoulder_R",
+   "plane_point_cm": [
+    2.0,
+    -31.0,
+    125.0
+   ],
+   "plane_normal": [
+    0.0,
+    -1.0,
+    0.0
+   ],
+   "zone_box_cm": [
+    [
+     -40,
+     -70,
+     105
+    ],
+    [
+     60,
+     -26,
+     150
+    ]
+   ],
+   "parts": [
+    "HeadTorso",
+    "UpperArm_R"
+   ],
+   "section_length_cm": 124.52,
+   "cut_edges": 57,
+   "caps": {
+    "UpperArm_R": {
+     "faces": 57,
+     "area_cm2": 531.64
+    },
+    "HeadTorso": {
+     "faces": 49,
+     "area_cm2": 527.23
+    }
+   },
+   "pivot_to_plane_distance_cm": 5.0,
+   "min_vertex_distance_between_parts_beyond_0.6cm_of_plane_cm": 2.34
+  },
+  {
+   "label": "elbow_L",
+   "plane_point_cm": [
+    2.0,
+    45.0,
+    101.0
+   ],
+   "plane_normal": [
+    -0.3,
+    -0.25,
+    0.921
+   ],
+   "zone_box_cm": [
+    [
+     -40,
+     32,
+     60
+    ],
+    [
+     60,
+     70,
+     116
+    ]
+   ],
+   "parts": [
+    "ForearmHand_L",
+    "UpperArm_L"
+   ],
+   "section_length_cm": 81.71,
+   "cut_edges": 68,
+   "caps": {
+    "UpperArm_L": {
+     "faces": 61,
+     "area_cm2": 243.66
+    },
+    "ForearmHand_L": {
+     "faces": 67,
+     "area_cm2": 243.69
+    }
+   },
+   "pivot_to_plane_distance_cm": 3.83,
+   "min_vertex_distance_between_parts_beyond_0.6cm_of_plane_cm": 2.06
+  },
+  {
+   "label": "elbow_R",
+   "plane_point_cm": [
+    2.0,
+    -45.0,
+    101.0
+   ],
+   "plane_normal": [
+    -0.3,
+    0.25,
+    0.921
+   ],
+   "zone_box_cm": [
+    [
+     -40,
+     -70,
+     60
+    ],
+    [
+     60,
+     -32,
+     116
+    ]
+   ],
+   "parts": [
+    "ForearmHand_R",
+    "UpperArm_R"
+   ],
+   "section_length_cm": 160.01,
+   "cut_edges": 113,
+   "caps": {
+    "UpperArm_R": {
+     "faces": 109,
+     "area_cm2": 557.3
+    },
+    "ForearmHand_R": {
+     "faces": 109,
+     "area_cm2": 557.3
+    }
+   },
+   "pivot_to_plane_distance_cm": 3.83,
+   "min_vertex_distance_between_parts_beyond_0.6cm_of_plane_cm": 1.8
+  },
+  {
+   "label": "hip_L",
+   "plane_point_cm": [
+    2.0,
+    10.0,
+    86.5
+   ],
+   "plane_normal": [
+    0.0,
+    1.0,
+    0.0
+   ],
+   "zone_box_cm": [
+    [
+     -40,
+     -2,
+     60
+    ],
+    [
+     60,
+     40,
+     106
+    ]
+   ],
+   "parts": [],
+   "section_length_cm": 85.62,
+   "cut_edges": 47,
+   "caps": {},
+   "pivot_to_plane_distance_cm": 12.0
+  },
+  {
+   "label": "hip_R",
+   "plane_point_cm": [
+    2.0,
+    -10.0,
+    86.5
+   ],
+   "plane_normal": [
+    0.0,
+    -1.0,
+    0.0
+   ],
+   "zone_box_cm": [
+    [
+     -40,
+     -40,
+     60
+    ],
+    [
+     60,
+     2,
+     106
+    ]
+   ],
+   "parts": [
+    "Pelvis",
+    "Thigh_R"
+   ],
+   "section_length_cm": 126.54,
+   "cut_edges": 65,
+   "caps": {
+    "Pelvis": {
+     "faces": 27,
+     "area_cm2": 194.41
+    },
+    "Thigh_R": {
+     "faces": 51,
+     "area_cm2": 224.41
+    }
+   },
+   "pivot_to_plane_distance_cm": 12.0,
+   "min_vertex_distance_between_parts_beyond_0.6cm_of_plane_cm": 1.82
+  },
+  {
+   "label": "knee_L",
+   "plane_point_cm": [
+    5.0,
+    25.0,
+    57.0
+   ],
+   "plane_normal": [
+    -0.15,
+    0.0,
+    0.989
+   ],
+   "zone_box_cm": [
+    [
+     -40,
+     10,
+     40
+    ],
+    [
+     60,
+     40,
+     75
+    ]
+   ],
+   "parts": [
+    "ForearmHand_L",
+    "ShinFoot_L",
+    "ShinFoot_R",
+    "Thigh_L",
+    "Thigh_R"
+   ],
+   "section_length_cm": 85.69,
+   "cut_edges": 50,
+   "caps": {
+    "ForearmHand_L": {
+     "faces": 6,
+     "area_cm2": 0.0
+    },
+    "Thigh_L": {
+     "faces": 44,
+     "area_cm2": 341.73
+    },
+    "ShinFoot_L": {
+     "faces": 44,
+     "area_cm2": 341.73
+    },
+    "Thigh_R": {
+     "faces": 47,
+     "area_cm2": 321.75
+    },
+    "ShinFoot_R": {
+     "faces": 69,
+     "area_cm2": 323.68
+    }
+   },
+   "pivot_to_plane_distance_cm": 0.15
+  },
+  {
+   "label": "knee_R",
+   "plane_point_cm": [
+    5.0,
+    -25.0,
+    57.0
+   ],
+   "plane_normal": [
+    -0.15,
+    -0.0,
+    0.989
+   ],
+   "zone_box_cm": [
+    [
+     -40,
+     -40,
+     40
+    ],
+    [
+     60,
+     -10,
+     75
+    ]
+   ],
+   "parts": [],
+   "section_length_cm": 83.55,
+   "cut_edges": 62,
+   "caps": {},
+   "pivot_to_plane_distance_cm": 0.15
+  }
+ ],
+ "plane_method": "visual guess from orthographic close-ups, then a minimum section-length scan over offset (cm) and tilt (deg) around it inside the zone box; hips only count faces below the waist plane",
+ "uv_interpolation_check": {
+  "uv_area_before": 0.164579,
+  "uv_area_after_bisect": 0.164579,
+  "surface_area_cm2_before": 67955.0
+ },
+ "triangles": {
+  "total": 9341,
+  "limit": 12000,
+  "source": 7263,
+  "cap_faces_added": 916,
+  "cut_triangles_added_by_bisect_and_split": 1162,
+  "vertices_total": 4766,
+  "vertices_source": 3600,
+  "per_part": {
+   "Pelvis": {
+    "tris": 396,
+    "vertices": 249,
+    "cap_faces": 32,
+    "open_edges": 96
+   },
+   "HeadTorso": {
+    "tris": 2120,
+    "vertices": 1086,
+    "cap_faces": 185,
+    "open_edges": 54
+   },
+   "UpperArm_L": {
+    "tris": 580,
+    "vertices": 292,
+    "cap_faces": 96,
+    "open_edges": 0
+   },
+   "UpperArm_R": {
+    "tris": 809,
+    "vertices": 406,
+    "cap_faces": 166,
+    "open_edges": 2
+   },
+   "ForearmHand_L": {
+    "tris": 1115,
+    "vertices": 544,
+    "cap_faces": 73,
+    "open_edges": 8
+   },
+   "ForearmHand_R": {
+    "tris": 849,
+    "vertices": 418,
+    "cap_faces": 109,
+    "open_edges": 2
+   },
+   "Thigh_L": {
+    "tris": 675,
+    "vertices": 365,
+    "cap_faces": 44,
+    "open_edges": 57
+   },
+   "Thigh_R": {
+    "tris": 668,
+    "vertices": 340,
+    "cap_faces": 98,
+    "open_edges": 0
+   },
+   "ShinFoot_L": {
+    "tris": 1027,
+    "vertices": 513,
+    "cap_faces": 44,
+    "open_edges": 6
+   },
+   "ShinFoot_R": {
+    "tris": 1102,
+    "vertices": 553,
+    "cap_faces": 69,
+    "open_edges": 0
+   }
+  }
+ },
+ "cap_boundary_edges_before_fill": 1166,
+ "cap_boundary_edges_still_open": 189,
+ "cap_faces_flipped_to_outward": 131,
+ "cap_uv_method": "every cap triangle gets all three UV0 corners at the UV centroid of the nearest existing (non-cap) face of the same part that shares a vertex with the cap, so it samples that face's texels (flat colour); texture file untouched",
+ "connected_pieces": {
+  "total_after_cut": 18,
+  "ten_largest": [
+   {
+    "part": "HeadTorso",
+    "faces": 1991,
+    "area_cm2": 17058.59,
+    "centroid_cm": [
+     8.1,
+     -0.0,
+     125.8
+    ]
+   },
+   {
+    "part": "ShinFoot_R",
+    "faces": 1076,
+    "area_cm2": 10955.0,
+    "centroid_cm": [
+     0.2,
+     -27.2,
+     22.9
+    ]
+   },
+   {
+    "part": "ShinFoot_L",
+    "faces": 1027,
+    "area_cm2": 10689.16,
+    "centroid_cm": [
+     0.2,
+     27.4,
+     22.7
+    ]
+   },
+   {
+    "part": "ForearmHand_R",
+    "faces": 849,
+    "area_cm2": 7669.51,
+    "centroid_cm": [
+     21.2,
+     -49.0,
+     86.9
+    ]
+   },
+   {
+    "part": "ForearmHand_L",
+    "faces": 1107,
+    "area_cm2": 5742.98,
+    "centroid_cm": [
+     14.0,
+     51.1,
+     78.4
+    ]
+   },
+   {
+    "part": "UpperArm_R",
+    "faces": 797,
+    "area_cm2": 5270.53,
+    "centroid_cm": [
+     1.7,
+     -42.6,
+     118.8
+    ]
+   },
+   {
+    "part": "UpperArm_L",
+    "faces": 580,
+    "area_cm2": 4664.31,
+    "centroid_cm": [
+     1.1,
+     42.7,
+     121.5
+    ]
+   },
+   {
+    "part": "Thigh_L",
+    "faces": 675,
+    "area_cm2": 4449.36,
+    "centroid_cm": [
+     3.3,
+     21.0,
+     75.4
+    ]
+   },
+   {
+    "part": "Thigh_R",
+    "faces": 636,
+    "area_cm2": 4154.62,
+    "centroid_cm": [
+     3.8,
+     -19.8,
+     74.3
+    ]
+   },
+   {
+    "part": "Pelvis",
+    "faces": 384,
+    "area_cm2": 2778.29,
+    "centroid_cm": [
+     3.2,
+     -0.6,
+     84.2
+    ]
+   }
+  ],
+  "small_fragments": [
+   {
+    "faces": 70,
+    "area_cm2": 329.514,
+    "centroid_cm": [
+     23.6,
+     0.8,
+     98.8
+    ],
+    "assigned_to": "HeadTorso"
+   },
+   {
+    "faces": 59,
+    "area_cm2": 214.7,
+    "centroid_cm": [
+     1.0,
+     -12.1,
+     95.8
+    ],
+    "assigned_to": "HeadTorso"
+   },
+   {
+    "faces": 16,
+    "area_cm2": 22.974,
+    "centroid_cm": [
+     -0.2,
+     -9.9,
+     71.8
+    ],
+    "assigned_to": "Thigh_R"
+   },
+   {
+    "faces": 16,
+    "area_cm2": 9.313,
+    "centroid_cm": [
+     11.6,
+     -10.0,
+     74.0
+    ],
+    "assigned_to": "Thigh_R"
+   },
+   {
+    "faces": 12,
+    "area_cm2": 4.619,
+    "centroid_cm": [
+     0.9,
+     -31.0,
+     115.2
+    ],
+    "assigned_to": "UpperArm_R"
+   },
+   {
+    "faces": 12,
+    "area_cm2": 3.23,
+    "centroid_cm": [
+     -6.7,
+     -9.6,
+     99.0
+    ],
+    "assigned_to": "Pelvis"
+   },
+   {
+    "faces": 26,
+    "area_cm2": 2.139,
+    "centroid_cm": [
+     -1.7,
+     -33.7,
+     56.0
+    ],
+    "assigned_to": "ShinFoot_R"
+   },
+   {
+    "faces": 8,
+    "area_cm2": 0.076,
+    "centroid_cm": [
+     0.4,
+     56.8,
+     103.7
+    ],
+    "assigned_to": "ForearmHand_L"
+   }
+  ]
+ },
+ "parts": {
+  "Pelvis": {
+   "pivot_cm": [
+    2.0,
+    0.0,
+    86.5
+   ],
+   "tris": 396,
+   "vertices": 249,
+   "lightmap_px_per_cm": 21.8609,
+   "lightmap": {
+    "overlapping_pairs_bbox": 0,
+    "min_gap_px": 2.0,
+    "in_range": true,
+    "passed": true
+   },
+   "open_edges": 96,
+   "uv_layers": [
+    "UVMap",
+    "LightMap",
+    "PartId"
+   ],
+   "cap_faces": 32
+  },
+  "HeadTorso": {
+   "pivot_cm": [
+    2.0,
+    0.0,
+    98.5
+   ],
+   "tris": 2120,
+   "vertices": 1086,
+   "lightmap_px_per_cm": 8.4715,
+   "lightmap": {
+    "overlapping_pairs_bbox": 0,
+    "min_gap_px": 2.0,
+    "in_range": true,
+    "passed": true
+   },
+   "open_edges": 54,
+   "uv_layers": [
+    "UVMap",
+    "LightMap",
+    "PartId"
+   ],
+   "cap_faces": 185
+  },
+  "UpperArm_L": {
+   "pivot_cm": [
+    2.0,
+    36.0,
+    125.0
+   ],
+   "tris": 580,
+   "vertices": 292,
+   "lightmap_px_per_cm": 16.5678,
+   "lightmap": {
+    "overlapping_pairs_bbox": 0,
+    "min_gap_px": 2.0,
+    "in_range": true,
+    "passed": true
+   },
+   "open_edges": 0,
+   "uv_layers": [
+    "UVMap",
+    "LightMap",
+    "PartId"
+   ],
+   "cap_faces": 96
+  },
+  "UpperArm_R": {
+   "pivot_cm": [
+    2.0,
+    -36.0,
+    125.0
+   ],
+   "tris": 809,
+   "vertices": 406,
+   "lightmap_px_per_cm": 15.1805,
+   "lightmap": {
+    "overlapping_pairs_bbox": 0,
+    "min_gap_px": 2.0,
+    "in_range": true,
+    "passed": true
+   },
+   "open_edges": 2,
+   "uv_layers": [
+    "UVMap",
+    "LightMap",
+    "PartId"
+   ],
+   "cap_faces": 166
+  },
+  "ForearmHand_L": {
+   "pivot_cm": [
+    1.5,
+    45.0,
+    105.0
+   ],
+   "tris": 1115,
+   "vertices": 544,
+   "lightmap_px_per_cm": 14.2812,
+   "lightmap": {
+    "overlapping_pairs_bbox": 0,
+    "min_gap_px": 2.0,
+    "in_range": true,
+    "passed": true
+   },
+   "open_edges": 8,
+   "uv_layers": [
+    "UVMap",
+    "LightMap",
+    "PartId"
+   ],
+   "cap_faces": 73
+  },
+  "ForearmHand_R": {
+   "pivot_cm": [
+    1.5,
+    -45.0,
+    105.0
+   ],
+   "tris": 849,
+   "vertices": 418,
+   "lightmap_px_per_cm": 11.4039,
+   "lightmap": {
+    "overlapping_pairs_bbox": 0,
+    "min_gap_px": 2.0,
+    "in_range": true,
+    "passed": true
+   },
+   "open_edges": 2,
+   "uv_layers": [
+    "UVMap",
+    "LightMap",
+    "PartId"
+   ],
+   "cap_faces": 109
+  },
+  "Thigh_L": {
+   "pivot_cm": [
+    2.0,
+    22.0,
+    86.5
+   ],
+   "tris": 675,
+   "vertices": 365,
+   "lightmap_px_per_cm": 17.0985,
+   "lightmap": {
+    "overlapping_pairs_bbox": 0,
+    "min_gap_px": 2.0,
+    "in_range": true,
+    "passed": true
+   },
+   "open_edges": 57,
+   "uv_layers": [
+    "UVMap",
+    "LightMap",
+    "PartId"
+   ],
+   "cap_faces": 44
+  },
+  "Thigh_R": {
+   "pivot_cm": [
+    2.0,
+    -22.0,
+    86.5
+   ],
+   "tris": 668,
+   "vertices": 340,
+   "lightmap_px_per_cm": 17.4315,
+   "lightmap": {
+    "overlapping_pairs_bbox": 0,
+    "min_gap_px": 2.0,
+    "in_range": true,
+    "passed": true
+   },
+   "open_edges": 0,
+   "uv_layers": [
+    "UVMap",
+    "LightMap",
+    "PartId"
+   ],
+   "cap_faces": 98
+  },
+  "ShinFoot_L": {
+   "pivot_cm": [
+    6.0,
+    25.0,
+    57.0
+   ],
+   "tris": 1027,
+   "vertices": 513,
+   "lightmap_px_per_cm": 11.0405,
+   "lightmap": {
+    "overlapping_pairs_bbox": 0,
+    "min_gap_px": 2.0,
+    "in_range": true,
+    "passed": true
+   },
+   "open_edges": 6,
+   "uv_layers": [
+    "UVMap",
+    "LightMap",
+    "PartId"
+   ],
+   "cap_faces": 44
+  },
+  "ShinFoot_R": {
+   "pivot_cm": [
+    6.0,
+    -25.0,
+    57.0
+   ],
+   "tris": 1102,
+   "vertices": 553,
+   "lightmap_px_per_cm": 10.9677,
+   "lightmap": {
+    "overlapping_pairs_bbox": 0,
+    "min_gap_px": 2.0,
+    "in_range": true,
+    "passed": true
+   },
+   "open_edges": 0,
+   "uv_layers": [
+    "UVMap",
+    "LightMap",
+    "PartId"
+   ],
+   "cap_faces": 69
+  }
+ },
+ "silhouette": {
+  "views": {
+   "front": {
+    "uncut_px": 1187746,
+    "parts_px": 1187745,
+    "differing_px": 1,
+    "only_uncut_px": 1,
+    "only_parts_px": 0,
+    "difference_percent_of_uncut_area": 0.0001,
+    "px_per_cm": 13.333,
+    "passed": true
+   },
+   "side": {
+    "uncut_px": 704587,
+    "parts_px": 704587,
+    "differing_px": 0,
+    "only_uncut_px": 0,
+    "only_parts_px": 0,
+    "difference_percent_of_uncut_area": 0.0,
+    "px_per_cm": 13.333,
+    "passed": true
+   },
+   "back": {
+    "uncut_px": 1187746,
+    "parts_px": 1187745,
+    "differing_px": 1,
+    "only_uncut_px": 1,
+    "only_parts_px": 0,
+    "difference_percent_of_uncut_area": 0.0001,
+    "px_per_cm": 13.333,
+    "passed": true
+   }
+  },
+  "limit_percent": 1.0,
+  "method": "orthographic 150 cm frame, 2000 px (13.33 px/cm), flat white on black, no anti-aliasing; uncut = input FBX, parts = exported FBX re-imported; difference = XOR of the masks over the uncut area"
+ },
+ "vertex_colour_check": {
+  "attribute": "PartIndex",
+  "domain": "CORNER",
+  "type": "FLOAT_COLOR written; exported with colors_type LINEAR (no gamma); the FBX exporter stores the values as float32 (error below 1e-7)",
+  "expected_red": "index / 9",
+  "all_parts_read_back_exact_tol_1e5": true,
+  "file_float_values_exact_red_index_over_9": true,
+  "file_values_per_part": {
+   "ForearmHand_L": {
+    "layer": "PartIndex",
+    "values": 1,
+    "red_unique": [
+     0.4444444477558136
+    ],
+    "alpha_unique": [
+     1.0
+    ],
+    "green_blue_max": 0.0
+   },
+   "ForearmHand_R": {
+    "layer": "PartIndex",
+    "values": 1,
+    "red_unique": [
+     0.5555555820465088
+    ],
+    "alpha_unique": [
+     1.0
+    ],
+    "green_blue_max": 0.0
+   },
+   "HeadTorso": {
+    "layer": "PartIndex",
+    "values": 1,
+    "red_unique": [
+     0.1111111119389534
+    ],
+    "alpha_unique": [
+     1.0
+    ],
+    "green_blue_max": 0.0
+   },
+   "Pelvis": {
+    "layer": "PartIndex",
+    "values": 1,
+    "red_unique": [
+     0.0
+    ],
+    "alpha_unique": [
+     1.0
+    ],
+    "green_blue_max": 0.0
+   },
+   "ShinFoot_L": {
+    "layer": "PartIndex",
+    "values": 1,
+    "red_unique": [
+     0.8888888955116272
+    ],
+    "alpha_unique": [
+     1.0
+    ],
+    "green_blue_max": 0.0
+   },
+   "ShinFoot_R": {
+    "layer": "PartIndex",
+    "values": 1,
+    "red_unique": [
+     1.0
+    ],
+    "alpha_unique": [
+     1.0
+    ],
+    "green_blue_max": 0.0
+   },
+   "Thigh_L": {
+    "layer": "PartIndex",
+    "values": 1,
+    "red_unique": [
+     0.6666666865348816
+    ],
+    "alpha_unique": [
+     1.0
+    ],
+    "green_blue_max": 0.0
+   },
+   "Thigh_R": {
+    "layer": "PartIndex",
+    "values": 1,
+    "red_unique": [
+     0.7777777910232544
+    ],
+    "alpha_unique": [
+     1.0
+    ],
+    "green_blue_max": 0.0
+   },
+   "UpperArm_L": {
+    "layer": "PartIndex",
+    "values": 1,
+    "red_unique": [
+     0.2222222238779068
+    ],
+    "alpha_unique": [
+     1.0
+    ],
+    "green_blue_max": 0.0
+   },
+   "UpperArm_R": {
+    "layer": "PartIndex",
+    "values": 1,
+    "red_unique": [
+     0.3333333432674408
+    ],
+    "alpha_unique": [
+     1.0
+    ],
+    "green_blue_max": 0.0
+   }
+  },
+  "int8_roundtrip_all_ok": true,
+  "int8_note": "if a reader quantises to 8 bits: round(index/9*255) values [0, 28, 57, 85, 113, 142, 170, 198, 227, 255] read back to index via round(v/255*9)"
+ },
+ "export_settings": {
+  "use_selection": true,
+  "object_types": [
+   "MESH"
+  ],
+  "apply_scale_options": "FBX_SCALE_UNITS",
+  "global_scale": 1.0,
+  "axis_forward": "-Z",
+  "axis_up": "Y",
+  "mesh_smooth_type": "OFF",
+  "add_leaf_bones": false,
+  "path_mode": "RELATIVE",
+  "embed_textures": false,
+  "colors_type": "LINEAR",
+  "blender": "5.2.2 LTS",
+  "scene_unit_scale_length": 1.0,
+  "fbx_unit_scale_factor_in_file": 100.0
+ },
+ "partid_uv_check": {
+  "layer": "PartId",
+  "rule": "both coordinates of every corner = (index + 0.5) / 10",
+  "order_expected": [
+   "UVMap",
+   "LightMap",
+   "PartId"
+  ],
+  "read_from_exported_fbx": {
+   "Pelvis": {
+    "corners": 1188,
+    "expected": 0.05000000074505806,
+    "unique_u": [
+     0.05000000074505806
+    ],
+    "unique_v": [
+     0.05000000074505806
+    ],
+    "max_abs_error": 0.0,
+    "exact_float32": true
+   },
+   "HeadTorso": {
+    "corners": 6360,
+    "expected": 0.15000000596046448,
+    "unique_u": [
+     0.15000000596046448
+    ],
+    "unique_v": [
+     0.15000000596046448
+    ],
+    "max_abs_error": 0.0,
+    "exact_float32": true
+   },
+   "UpperArm_L": {
+    "corners": 1740,
+    "expected": 0.25,
+    "unique_u": [
+     0.25
+    ],
+    "unique_v": [
+     0.25
+    ],
+    "max_abs_error": 0.0,
+    "exact_float32": true
+   },
+   "UpperArm_R": {
+    "corners": 2427,
+    "expected": 0.3499999940395355,
+    "unique_u": [
+     0.3499999940395355
+    ],
+    "unique_v": [
+     0.3499999940395355
+    ],
+    "max_abs_error": 0.0,
+    "exact_float32": true
+   },
+   "ForearmHand_L": {
+    "corners": 3345,
+    "expected": 0.44999998807907104,
+    "unique_u": [
+     0.44999998807907104
+    ],
+    "unique_v": [
+     0.44999998807907104
+    ],
+    "max_abs_error": 0.0,
+    "exact_float32": true
+   },
+   "ForearmHand_R": {
+    "corners": 2547,
+    "expected": 0.550000011920929,
+    "unique_u": [
+     0.550000011920929
+    ],
+    "unique_v": [
+     0.550000011920929
+    ],
+    "max_abs_error": 0.0,
+    "exact_float32": true
+   },
+   "Thigh_L": {
+    "corners": 2025,
+    "expected": 0.6499999761581421,
+    "unique_u": [
+     0.6499999761581421
+    ],
+    "unique_v": [
+     0.6499999761581421
+    ],
+    "max_abs_error": 0.0,
+    "exact_float32": true
+   },
+   "Thigh_R": {
+    "corners": 2004,
+    "expected": 0.75,
+    "unique_u": [
+     0.75
+    ],
+    "unique_v": [
+     0.75
+    ],
+    "max_abs_error": 0.0,
+    "exact_float32": true
+   },
+   "ShinFoot_L": {
+    "corners": 3081,
+    "expected": 0.8500000238418579,
+    "unique_u": [
+     0.8500000238418579
+    ],
+    "unique_v": [
+     0.8500000238418579
+    ],
+    "max_abs_error": 0.0,
+    "exact_float32": true
+   },
+   "ShinFoot_R": {
+    "corners": 3306,
+    "expected": 0.949999988079071,
+    "unique_u": [
+     0.949999988079071
+    ],
+    "unique_v": [
+     0.949999988079071
+    ],
+    "max_abs_error": 0.0,
+    "exact_float32": true
+   }
+  },
+  "all_exact": true,
+  "uv_layer_order_per_part": {
+   "Pelvis": [
+    "UVMap",
+    "LightMap",
+    "PartId"
+   ],
+   "HeadTorso": [
+    "UVMap",
+    "LightMap",
+    "PartId"
+   ],
+   "UpperArm_L": [
+    "UVMap",
+    "LightMap",
+    "PartId"
+   ],
+   "UpperArm_R": [
+    "UVMap",
+    "LightMap",
+    "PartId"
+   ],
+   "ForearmHand_L": [
+    "UVMap",
+    "LightMap",
+    "PartId"
+   ],
+   "ForearmHand_R": [
+    "UVMap",
+    "LightMap",
+    "PartId"
+   ],
+   "Thigh_L": [
+    "UVMap",
+    "LightMap",
+    "PartId"
+   ],
+   "Thigh_R": [
+    "UVMap",
+    "LightMap",
+    "PartId"
+   ],
+   "ShinFoot_L": [
+    "UVMap",
+    "LightMap",
+    "PartId"
+   ],
+   "ShinFoot_R": [
+    "UVMap",
+    "LightMap",
+    "PartId"
+   ]
+  }
+ },
+ "readback": {
+  "objects": [
+   "ForearmHand_L",
+   "ForearmHand_R",
+   "HeadTorso",
+   "Pelvis",
+   "ShinFoot_L",
+   "ShinFoot_R",
+   "Thigh_L",
+   "Thigh_R",
+   "UpperArm_L",
+   "UpperArm_R"
+  ],
+  "count": 10,
+  "parents": {
+   "ForearmHand_L": "UpperArm_L",
+   "ForearmHand_R": "UpperArm_R",
+   "HeadTorso": "Pelvis",
+   "Pelvis": null,
+   "ShinFoot_L": "Thigh_L",
+   "ShinFoot_R": "Thigh_R",
+   "Thigh_L": "Pelvis",
+   "Thigh_R": "Pelvis",
+   "UpperArm_L": "HeadTorso",
+   "UpperArm_R": "HeadTorso"
+  },
+  "per_part": {
+   "Pelvis": {
+    "tris": 396,
+    "vertices": 249,
+    "world_origin_cm": [
+     2.0,
+     0.0,
+     86.5
+    ],
+    "local_location_cm": [
+     2.0,
+     0.0,
+     86.5
+    ],
+    "bounds_min": [
+     -15.44,
+     -10.71,
+     71.23
+    ],
+    "bounds_max": [
+     21.87,
+     10.0,
+     99.09
+    ],
+    "uv_layers": [
+     "UVMap",
+     "LightMap",
+     "PartId"
+    ],
+    "colour_attribute": "FLOAT_COLOR",
+    "partindex_red_values": [
+     0.0
+    ],
+    "partindex_alpha_values": [
+     1.0
+    ],
+    "red_equals_index_over_9": true,
+    "int8_value": 0,
+    "int8_roundtrip_index_ok": true,
+    "materials": [
+     "body",
+     "robot_eye"
+    ]
+   },
+   "HeadTorso": {
+    "tris": 2120,
+    "vertices": 1086,
+    "world_origin_cm": [
+     2.0,
+     0.0,
+     98.5
+    ],
+    "local_location_cm": [
+     0.0,
+     0.0,
+     12.0
+    ],
+    "bounds_min": [
+     -20.91,
+     -31.0,
+     91.24
+    ],
+    "bounds_max": [
+     39.57,
+     31.0,
+     176.0
+    ],
+    "uv_layers": [
+     "UVMap",
+     "LightMap",
+     "PartId"
+    ],
+    "colour_attribute": "FLOAT_COLOR",
+    "partindex_red_values": [
+     0.111111
+    ],
+    "partindex_alpha_values": [
+     1.0
+    ],
+    "red_equals_index_over_9": true,
+    "int8_value": 28,
+    "int8_roundtrip_index_ok": true,
+    "materials": [
+     "body",
+     "robot_eye"
+    ]
+   },
+   "UpperArm_L": {
+    "tris": 580,
+    "vertices": 292,
+    "world_origin_cm": [
+     2.0,
+     36.0,
+     125.0
+    ],
+    "local_location_cm": [
+     0.0,
+     36.0,
+     26.5
+    ],
+    "bounds_min": [
+     -14.97,
+     31.0,
+     98.31
+    ],
+    "bounds_max": [
+     18.52,
+     57.99,
+     142.33
+    ],
+    "uv_layers": [
+     "UVMap",
+     "LightMap",
+     "PartId"
+    ],
+    "colour_attribute": "FLOAT_COLOR",
+    "partindex_red_values": [
+     0.222222
+    ],
+    "partindex_alpha_values": [
+     1.0
+    ],
+    "red_equals_index_over_9": true,
+    "int8_value": 57,
+    "int8_roundtrip_index_ok": true,
+    "materials": [
+     "body",
+     "robot_eye"
+    ]
+   },
+   "UpperArm_R": {
+    "tris": 809,
+    "vertices": 406,
+    "world_origin_cm": [
+     2.0,
+     -36.0,
+     125.0
+    ],
+    "local_location_cm": [
+     0.0,
+     -36.0,
+     26.5
+    ],
+    "bounds_min": [
+     -14.86,
+     -60.24,
+     97.12
+    ],
+    "bounds_max": [
+     18.52,
+     -30.93,
+     142.65
+    ],
+    "uv_layers": [
+     "UVMap",
+     "LightMap",
+     "PartId"
+    ],
+    "colour_attribute": "FLOAT_COLOR",
+    "partindex_red_values": [
+     0.333333
+    ],
+    "partindex_alpha_values": [
+     1.0
+    ],
+    "red_equals_index_over_9": true,
+    "int8_value": 85,
+    "int8_roundtrip_index_ok": true,
+    "materials": [
+     "body",
+     "robot_eye"
+    ]
+   },
+   "ForearmHand_L": {
+    "tris": 1115,
+    "vertices": 544,
+    "world_origin_cm": [
+     1.5,
+     45.0,
+     105.0
+    ],
+    "local_location_cm": [
+     -0.5,
+     9.0,
+     -20.0
+    ],
+    "bounds_min": [
+     -6.98,
+     36.57,
+     48.12
+    ],
+    "bounds_max": [
+     35.17,
+     66.39,
+     105.89
+    ],
+    "uv_layers": [
+     "UVMap",
+     "LightMap",
+     "PartId"
+    ],
+    "colour_attribute": "FLOAT_COLOR",
+    "partindex_red_values": [
+     0.444444
+    ],
+    "partindex_alpha_values": [
+     1.0
+    ],
+    "red_equals_index_over_9": true,
+    "int8_value": 113,
+    "int8_roundtrip_index_ok": true,
+    "materials": [
+     "body",
+     "robot_eye"
+    ]
+   },
+   "ForearmHand_R": {
+    "tris": 849,
+    "vertices": 418,
+    "world_origin_cm": [
+     1.5,
+     -45.0,
+     105.0
+    ],
+    "local_location_cm": [
+     -0.5,
+     -9.0,
+     -20.0
+    ],
+    "bounds_min": [
+     -6.71,
+     -65.15,
+     58.4
+    ],
+    "bounds_max": [
+     53.36,
+     -33.35,
+     107.76
+    ],
+    "uv_layers": [
+     "UVMap",
+     "LightMap",
+     "PartId"
+    ],
+    "colour_attribute": "FLOAT_COLOR",
+    "partindex_red_values": [
+     0.555556
+    ],
+    "partindex_alpha_values": [
+     1.0
+    ],
+    "red_equals_index_over_9": true,
+    "int8_value": 142,
+    "int8_roundtrip_index_ok": true,
+    "materials": [
+     "body",
+     "robot_eye"
+    ]
+   },
+   "Thigh_L": {
+    "tris": 675,
+    "vertices": 365,
+    "world_origin_cm": [
+     2.0,
+     22.0,
+     86.5
+    ],
+    "local_location_cm": [
+     0.0,
+     22.0,
+     0.0
+    ],
+    "bounds_min": [
+     -13.38,
+     10.0,
+     55.6
+    ],
+    "bounds_max": [
+     20.5,
+     34.15,
+     99.0
+    ],
+    "uv_layers": [
+     "UVMap",
+     "LightMap",
+     "PartId"
+    ],
+    "colour_attribute": "FLOAT_COLOR",
+    "partindex_red_values": [
+     0.666667
+    ],
+    "partindex_alpha_values": [
+     1.0
+    ],
+    "red_equals_index_over_9": true,
+    "int8_value": 170,
+    "int8_roundtrip_index_ok": true,
+    "materials": [
+     "body",
+     "robot_eye"
+    ]
+   },
+   "Thigh_R": {
+    "tris": 668,
+    "vertices": 340,
+    "world_origin_cm": [
+     2.0,
+     -22.0,
+     86.5
+    ],
+    "local_location_cm": [
+     0.0,
+     -22.0,
+     0.0
+    ],
+    "bounds_min": [
+     -12.56,
+     -32.43,
+     55.65
+    ],
+    "bounds_max": [
+     20.94,
+     -9.36,
+     93.42
+    ],
+    "uv_layers": [
+     "UVMap",
+     "LightMap",
+     "PartId"
+    ],
+    "colour_attribute": "FLOAT_COLOR",
+    "partindex_red_values": [
+     0.777778
+    ],
+    "partindex_alpha_values": [
+     1.0
+    ],
+    "red_equals_index_over_9": true,
+    "int8_value": 198,
+    "int8_roundtrip_index_ok": true,
+    "materials": [
+     "body",
+     "robot_eye"
+    ]
+   },
+   "ShinFoot_L": {
+    "tris": 1027,
+    "vertices": 513,
+    "world_origin_cm": [
+     6.0,
+     25.0,
+     57.0
+    ],
+    "local_location_cm": [
+     4.0,
+     3.0,
+     -29.5
+    ],
+    "bounds_min": [
+     -29.23,
+     9.21,
+     0.07
+    ],
+    "bounds_max": [
+     28.94,
+     48.01,
+     59.35
+    ],
+    "uv_layers": [
+     "UVMap",
+     "LightMap",
+     "PartId"
+    ],
+    "colour_attribute": "FLOAT_COLOR",
+    "partindex_red_values": [
+     0.888889
+    ],
+    "partindex_alpha_values": [
+     1.0
+    ],
+    "red_equals_index_over_9": true,
+    "int8_value": 227,
+    "int8_roundtrip_index_ok": true,
+    "materials": [
+     "body",
+     "robot_eye"
+    ]
+   },
+   "ShinFoot_R": {
+    "tris": 1102,
+    "vertices": 553,
+    "world_origin_cm": [
+     6.0,
+     -25.0,
+     57.0
+    ],
+    "local_location_cm": [
+     4.0,
+     -3.0,
+     -29.5
+    ],
+    "bounds_min": [
+     -29.01,
+     -48.01,
+     0.0
+    ],
+    "bounds_max": [
+     29.23,
+     -8.47,
+     59.42
+    ],
+    "uv_layers": [
+     "UVMap",
+     "LightMap",
+     "PartId"
+    ],
+    "colour_attribute": "FLOAT_COLOR",
+    "partindex_red_values": [
+     1.0
+    ],
+    "partindex_alpha_values": [
+     1.0
+    ],
+    "red_equals_index_over_9": true,
+    "int8_value": 255,
+    "int8_roundtrip_index_ok": true,
+    "materials": [
+     "body",
+     "robot_eye"
+    ]
+   }
+  },
+  "total_tris": 9341,
+  "total_vertices": 4766,
+  "bounds_min_cm": [
+   -29.233,
+   -65.154,
+   0.0
+  ],
+  "bounds_max_cm": [
+   53.357,
+   66.389,
+   176.0
+  ],
+  "height_cm": 176.0
+ },
+ "warnings": [
+  "189 cap boundary edges still open (loop not closed)",
+  "8 small connected fragments assigned to the nearest part"
+ ],
+ "timings_s": {
+  "load": 0.63,
+  "bisect": 0.2,
+  "caps": 0.2,
+  "components": 0.18,
+  "cap_uv": 0.39,
+  "parts": 0.59,
+  "clearance": 0.08,
+  "export": 0.13,
+  "readback": 0.47,
+  "silhouette": 14.39,
+  "total": 17.86
+ }
+}

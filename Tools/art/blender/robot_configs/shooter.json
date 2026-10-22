@@ -1,0 +1,244 @@
+{
+ "task": "task-284-02-parts-bake-shooter",
+ "robot": "shooter",
+ "out_name": "shooter_meshy_parts",
+ "height_cm": 176.0,
+ "tris_limit": 12000,
+ "fragment_rule": "nearest_face",
+ "view_frame_cm": 200,
+ "lit_frame_cm": 190,
+ "joint_note": "left side (+Y); right = mirror through y = 0 (cannon on the right forearm, y -34..-65; left hand y 38..60). Found on the mesh with orthographic slab renders (front, side of the right leg slab y -37..-5, arm slabs, torso slab) read against a cm grid: hip = dark hub on the thigh (side view x 2, z 86.7), knee = dark hub between the thigh panel (bottom z ~61) and the shin panel (top z ~54..56) at x 6, z 56..57, shoulder = hub between torso and shoulder pad (x 2, z 124, pad y 32..56), elbow = dark hinge block between the pad (bottom z 114) and the forearm block (top z 98..107) at y 45, z ~105, waist = black band under the torso green (z 94..99).",
+ "joints": {
+  "waist": [
+   2.0,
+   0.0,
+   98.5
+  ],
+  "hip": [
+   2.0,
+   22.0,
+   86.5
+  ],
+  "knee": [
+   6.0,
+   25.0,
+   57.0
+  ],
+  "shoulder": [
+   2.0,
+   36.0,
+   125.0
+  ],
+  "elbow": [
+   1.5,
+   45.0,
+   105.0
+  ]
+ },
+ "refs": {
+  "HeadTorso": [
+   8,
+   0,
+   130
+  ],
+  "Pelvis": [
+   0,
+   0,
+   85
+  ],
+  "UpperArm": [
+   2,
+   43,
+   128
+  ],
+  "ForearmHand": [
+   10,
+   48,
+   78
+  ],
+  "Thigh": [
+   2,
+   23,
+   76
+  ],
+  "ShinFoot": [
+   2,
+   25,
+   28
+  ]
+ },
+ "bake": {
+  "task": "task-284-02-parts-bake-shooter",
+  "walk_style": "planted",
+  "run_rate": 1.25,
+  "speed_cm_s": 180,
+  "knee_deg": 15,
+  "arm_deg": 8,
+  "elbow_deg": 0,
+  "lean_deg": 3,
+  "twist_deg": 3,
+  "attack": false,
+  "tex_name": "T_ShooterAnim.exr",
+  "tex_rows": 62,
+  "report_name": "shooter_meshy_anim_report.json",
+  "render_frame_cm": 200,
+  "reserved": [
+   {
+    "clip_id": 1,
+    "rows": "16..30",
+    "frames": 15,
+    "note": "free for the aim clip of task-287 (shader: clamps at the last frame)"
+   },
+   {
+    "clip_id": 2,
+    "rows": "31..46",
+    "frames": 16,
+    "note": "free; the shader loops this clip with RunRate"
+   },
+   {
+    "clip_id": 3,
+    "rows": "47..61",
+    "frames": 15,
+    "note": "free for the fire clip of task-287 (shader: clamps at the last frame)"
+   }
+  ]
+ },
+ "planes": [
+  {
+   "name": "waist",
+   "P": [
+    2.0,
+    0.0,
+    99.0
+   ],
+   "n": [
+    0,
+    0,
+    1
+   ],
+   "box": [
+    [
+     -40,
+     -30,
+     90
+    ],
+    [
+     60,
+     30,
+     112
+    ]
+   ],
+   "side": 0,
+   "pivot": "HeadTorso"
+  },
+  {
+   "name": "shoulder",
+   "P": [
+    2.0,
+    31.0,
+    125.0
+   ],
+   "n": [
+    0,
+    1,
+    0
+   ],
+   "box": [
+    [
+     -40,
+     26,
+     105
+    ],
+    [
+     60,
+     70,
+     150
+    ]
+   ],
+   "side": 1,
+   "pivot": "UpperArm"
+  },
+  {
+   "name": "elbow",
+   "P": [
+    2.0,
+    45.0,
+    101.0
+   ],
+   "n": [
+    -0.3,
+    -0.25,
+    0.92
+   ],
+   "box": [
+    [
+     -40,
+     32,
+     60
+    ],
+    [
+     60,
+     70,
+     116
+    ]
+   ],
+   "side": 1,
+   "pivot": "ForearmHand"
+  },
+  {
+   "name": "hip",
+   "P": [
+    2.0,
+    10.0,
+    86.5
+   ],
+   "n": [
+    0,
+    1,
+    0
+   ],
+   "box": [
+    [
+     -40,
+     -2,
+     60
+    ],
+    [
+     60,
+     40,
+     106
+    ]
+   ],
+   "side": 1,
+   "pivot": "Thigh",
+   "below_waist": true
+  },
+  {
+   "name": "knee",
+   "P": [
+    5.0,
+    25.0,
+    57.0
+   ],
+   "n": [
+    -0.15,
+    0,
+    0.99
+   ],
+   "box": [
+    [
+     -40,
+     10,
+     40
+    ],
+    [
+     60,
+     40,
+     75
+    ]
+   ],
+   "side": 1,
+   "pivot": "ShinFoot"
+  }
+ ]
+}
