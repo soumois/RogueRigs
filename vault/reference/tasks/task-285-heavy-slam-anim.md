@@ -15,7 +15,7 @@ status: done
 - confirmed_by_owner: yes (2026-10-22, plan accepted; launch on the owner's word)
 - milestone: M2
 - next_step: none
-- result: Done. Slam shots Saved/RobotMeshes/slam/heavy_front_0-15.png (and profile heavy_0-15): telegraph fists raised above the shoulders with orange eye (front_1, front_8), crouched with fists at ground level after the strike (front_2, front_9), upright red eye between slams (front_6); ring unchanged; parts joined. Exact impact frame not captured (screenshots stall ~0.3 s).
+- result: Done. Heavy telegraph/strike/recover clips baked in T_HeavyAnim (285-01), written by ARRHeavy on its states (285-02, CPD sequence 1,2,3,0 checked), T_HeavyAnimSlam on the heavy instances and BodyMesh pitch removed (285-03); slam shots Saved/RobotMeshes/slam/heavy_front_*.png show raised fists then fists at ground level. Unverified: exact contact frame on camera; bounds (220,220,60) are an estimate.
 
 ## Subtasks
 1. task-285-01-bake-heavy-slam — 3d: Bake the heavy telegraph and slam clips
