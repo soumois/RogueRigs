@@ -3,7 +3,7 @@ id: task-283-09-bp-shooter-mesh
 description: "BP_Shooter uses the Meshy mesh (bp)."
 parent: task-283-robot-mesh-integration
 kind: task
-status: in-progress
+status: done
 ---
 # BP_Shooter uses the Meshy mesh
 
@@ -15,11 +15,11 @@ status: in-progress
 - done_when: mesh bounds read back match the report (Y mirrored), slots and materials read back, BP_Shooter compiles without LogBlueprint error, events read back, doc updated; lint clean
 - editor_state: open
 - token_ceiling: 80000
-- model: open
-- tokens: open
-- runs: open
+- model: sonnet
+- tokens: input 40, cache write 69879, cache read 937825, output 734
+- runs: 1
 - milestone: M2
-- result: open
+- result: SM_Shooter_Meshy imported (bounds match, Y mirrored, 7263 tris), slots body/robot_eye; BodyMesh z -88; EyeLeft/Right, LogoPlate, UpperArm, ElbowJoint, Cannon removed; MuzzlePoint (45.7, 50.4, -17.4); compiles clean; bp-shooter updated.
 
 ## Relations
 - [[task-283-robot-mesh-integration]] — parent global task.

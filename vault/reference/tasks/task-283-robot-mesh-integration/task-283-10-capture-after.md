@@ -3,7 +3,7 @@ id: task-283-10-capture-after
 description: "Capture the robots after integration (cpp)."
 parent: task-283-robot-mesh-integration
 kind: task
-status: todo
+status: in-progress
 ---
 # Capture the robots after integration
 

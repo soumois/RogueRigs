@@ -565,6 +565,7 @@ kind: note
 | [[task-283-06-robot-body-material]] | sonnet | 2 | 0k | 105k | 1760k | 1k |
 | [[task-283-07-bp-heavy-mesh]] | sonnet | 1 | 0k | 94k | 2120k | 1k |
 | [[task-283-08-bp-kamikaze-mesh]] | sonnet | 1 | 0k | 78k | 1181k | 1k |
+| [[task-283-09-bp-shooter-mesh]] | sonnet | 1 | 0k | 70k | 938k | 1k |
 
 ## Totals
 | Scope | Input | Cache write | Cache read | Output |
