@@ -46,6 +46,8 @@ enum class ERRShooterState : uint8
  * distance every flow-field step goes through MakeNonRetreatingDirection (URREnemyMovementComponent direction filter), so the
  * robot never moves away from the target. The C++ drives a
  * LaserBeam mesh between the muzzle and the line-of-sight-clipped aim point while aiming; Blueprint events add the rest.
+ * Animation (task-284-05, ARREnemy clip writer): walk loop (clip 0, random phase) while the movement is on (Approach, Reposition),
+ * rest pose (RestClipId 2 held) while it is off (Hold, Aim); the aim and fire clips of task-287 go on the state events.
  */
 UCLASS(Blueprintable)
 class ROGUERIGS_API ARRShooter : public ARREnemy

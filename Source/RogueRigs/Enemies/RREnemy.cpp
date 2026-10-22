@@ -8,6 +8,7 @@
 #include "Components/LightComponent.h"
 #include "Components/MeshComponent.h"
 #include "Components/SkeletalMeshComponent.h"
+#include "Components/StaticMeshComponent.h"
 #include "Damage/RRDamageNumberSubsystem.h"
 #include "Enemies/RRHitCapsuleComponent.h"
 #include "Enemies/RRRobotMovementComponent.h"
@@ -38,6 +39,7 @@
 #include "RogueRigs.h"
 #include "Telegraph/RRGroundTelegraphComponent.h"
 #include "World/RRBlobShadowComponent.h"
+#include "TimerManager.h"
 #include "World/RRShadows.h"
 #include "World/RRWorld.h"
 
@@ -196,6 +198,11 @@ void ARREnemy::BeginPlay()
 	{
 		Separation->RegisterRobot(this);
 	}
+
+	// Baked clips: loop from a random phase (or rest when the movement is off); subclass state entries follow.
+	ResolveAnimatedMesh();
+	bMovementClipActive = EnemyMovement->IsMovementEnabled();
+	PlayMovementClip();
 
 	// Puff and debris components are created here (once per pool, up to its cap), never at a death.
 	if (URRNiagaraPoolSubsystem* FXPool = GetWorld()->GetSubsystem<URRNiagaraPoolSubsystem>())
@@ -595,11 +602,14 @@ void ARREnemy::ResetForNewLife()
 	}
 	Movement->SetDefaultMovementMode();
 	EnemyMovement->ResetMovementState();
+	bMovementClipActive = true;
 	SetMovementActive(true);
 	SetFarMovement(false);
 	MovementLODTimer = FMath::FRand() * MovementLODCheckInterval;
 	CachedTarget.Reset();
 	MarkStateStart();
+	// New life, new loop phase (any clip of the last life stopped).
+	PlayMovementClip();
 
 	BlinkHiddenMeshes.Reset();
 	RestoreVisualParts();
@@ -767,6 +777,89 @@ void ARREnemy::SetMovementActive(bool bActive)
 		ConsumeMovementInputVector();
 		GetCharacterMovement()->StopMovementImmediately();
 	}
+
+	// Animation event: only on a change of movement (state entries repeat the same value), never while dying (the clip stays).
+	if (RestClipId >= 0.f && !bDying && bActive != bMovementClipActive)
+	{
+		bMovementClipActive = bActive;
+		PlayMovementClip();
+	}
+}
+
+void ARREnemy::ResolveAnimatedMesh()
+{
+	AnimatedMesh = nullptr;
+	if (AnimatedMeshName.IsNone())
+	{
+		return;
+	}
+	TInlineComponentArray<UStaticMeshComponent*> Meshes(this);
+	for (UStaticMeshComponent* MeshComponent : Meshes)
+	{
+		if (MeshComponent->GetFName() == AnimatedMeshName)
+		{
+			AnimatedMesh = MeshComponent;
+			return;
+		}
+	}
+	UE_LOG(LogRogueRigs, Verbose, TEXT("%s: no static mesh component named %s; no baked clips played."), *GetName(), *AnimatedMeshName.ToString());
+}
+
+void ARREnemy::SetAnimClip(float ClipId, double StartTime)
+{
+	static_assert(AnimStartDataIndex == AnimClipDataIndex + 1, "SetAnimClip writes both floats in one call.");
+	if (AnimatedMesh)
+	{
+		// One render update for both floats. The material reads the same world time (Time node), so pause and time dilation agree.
+		AnimatedMesh->SetCustomPrimitiveDataVector2f(AnimClipDataIndex, FVector2f(ClipId, static_cast<float>(StartTime)));
+		CurrentAnimClipId = ClipId;
+		CurrentAnimClipStart = StartTime;
+	}
+}
+
+void ARREnemy::PlayLoopClip(float ClipId)
+{
+	GetWorldTimerManager().ClearTimer(AnimClipTimer);
+	// Own phase per robot, drawn at each loop start.
+	SetAnimClip(ClipId, GetWorld()->GetTimeSeconds() - FMath::FRand() * LoopPhaseSpread);
+}
+
+void ARREnemy::PlayClip(float ClipId, double Duration)
+{
+	GetWorldTimerManager().ClearTimer(AnimClipTimer);
+	SetAnimClip(ClipId, GetWorld()->GetTimeSeconds());
+	if (Duration > 0.0)
+	{
+		GetWorldTimerManager().SetTimer(AnimClipTimer, this, &ARREnemy::OnAnimClipEnded, static_cast<float>(Duration), false);
+	}
+}
+
+void ARREnemy::HoldClipEnd(float ClipId)
+{
+	GetWorldTimerManager().ClearTimer(AnimClipTimer);
+	SetAnimClip(ClipId, GetWorld()->GetTimeSeconds() - AnimHoldLead);
+}
+
+void ARREnemy::PlayMovementClip()
+{
+	if (RestClipId >= 0.f && !bMovementClipActive)
+	{
+		HoldClipEnd(RestClipId);
+	}
+	else
+	{
+		PlayLoopClip(LoopClipId);
+	}
+}
+
+void ARREnemy::OnAnimClipEnded()
+{
+	PlayMovementClip();
+}
+
+bool ARREnemy::IsTimedClipPlaying() const
+{
+	return GetWorldTimerManager().IsTimerActive(AnimClipTimer);
 }
 
 bool ARREnemy::IsTargetWithin(const ARRMiner* Target, float Range) const

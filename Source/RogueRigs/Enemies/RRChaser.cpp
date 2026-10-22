@@ -4,13 +4,11 @@
 
 #include "AbilitySystemComponent.h"
 #include "Components/CapsuleComponent.h"
-#include "Components/StaticMeshComponent.h"
 #include "Damage/RRGE_DamageFlat.h"
 #include "Engine/World.h"
 #include "FlowField/RREnemyMovementComponent.h"
 #include "Player/RRMiner.h"
 #include "RogueRigs.h"
-#include "TimerManager.h"
 
 #include UE_INLINE_GENERATED_CPP_BY_NAME(RRChaser)
 
@@ -31,9 +29,8 @@ void ARRChaser::BeginPlay()
 {
 	Super::BeginPlay();
 
+	// The base BeginPlay already started the run loop (LoopClipId = RunClipId).
 	EnemyMovement->SetArrivalDistance(Stats.AttackRange * ArrivalRangeRatio);
-	ResolveAnimatedMesh();
-	PlayRunClip();
 	EnterState(ERRChaserState::Chase);
 }
 
@@ -54,52 +51,16 @@ void ARRChaser::EnterState(ERRChaserState NewState)
 	{
 		PlayAttackClip();
 	}
-	else if (NewState == ERRChaserState::Chase && GetWorldTimerManager().IsTimerActive(AttackClipTimer))
+	else if (NewState == ERRChaserState::Chase && IsTimedClipPlaying())
 	{
-		PlayRunClip();
+		PlayMovementClip();
 	}
-}
-
-void ARRChaser::ResolveAnimatedMesh()
-{
-	AnimatedMesh = nullptr;
-	if (AnimatedMeshName.IsNone())
-	{
-		return;
-	}
-	TInlineComponentArray<UStaticMeshComponent*> Meshes(this);
-	for (UStaticMeshComponent* MeshComponent : Meshes)
-	{
-		if (MeshComponent->GetFName() == AnimatedMeshName)
-		{
-			AnimatedMesh = MeshComponent;
-			return;
-		}
-	}
-	UE_LOG(LogRogueRigs, Verbose, TEXT("%s: no static mesh component named %s; the chaser clips are not played."), *GetName(), *AnimatedMeshName.ToString());
-}
-
-void ARRChaser::SetAnimClip(float ClipId, double StartTime)
-{
-	static_assert(AnimStartDataIndex == AnimClipDataIndex + 1, "SetAnimClip writes both floats in one call.");
-	if (AnimatedMesh)
-	{
-		// One render update for both floats. The material reads the same world time (Time node), so pause and time dilation agree.
-		AnimatedMesh->SetCustomPrimitiveDataVector2f(AnimClipDataIndex, FVector2f(ClipId, static_cast<float>(StartTime)));
-	}
-}
-
-void ARRChaser::PlayRunClip()
-{
-	GetWorldTimerManager().ClearTimer(AttackClipTimer);
-	// Own phase per chaser, drawn at each run start (BeginPlay, pool reuse, end of attack, cancelled wind-up).
-	SetAnimClip(RunClipId, GetWorld()->GetTimeSeconds() - FMath::FRand() * RunPhaseSpread);
 }
 
 void ARRChaser::PlayAttackClip()
 {
-	SetAnimClip(AttackClipId, GetWorld()->GetTimeSeconds());
-	GetWorldTimerManager().SetTimer(AttackClipTimer, this, &ARRChaser::PlayRunClip, static_cast<float>(AttackClipDuration), false);
+	// The base OnAnimClipEnded plays the run loop (new phase) when the attack clip ends.
+	PlayClip(AttackClipId, AttackClipDuration);
 }
 
 void ARRChaser::UpdateBehavior(float DeltaSeconds)
@@ -173,8 +134,8 @@ void ARRChaser::ResetForNewLife()
 	Super::ResetForNewLife();
 	LastAttackTime = -1.0;
 	AttackCount = 0;
+	// The base reset already restarted the run loop with a new phase.
 	EnemyMovement->SetArrivalDistance(Stats.AttackRange * ArrivalRangeRatio);
-	PlayRunClip();
 	EnterState(ERRChaserState::Chase);
 }
 

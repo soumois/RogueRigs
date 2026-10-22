@@ -36,6 +36,8 @@ enum class ERRHeavyState : uint8
  * Blueprint mesh is twice the chaser's.
  * GroundTelegraph (sys-ground-telegraph, task-115-01): shown in Danger mode at radius GetSlamRadius on entering Telegraph,
  * progress = GetTelegraphProgress each telegraph frame, hidden on leaving Telegraph (Slam, death) and on pool reuse (progress 0).
+ * Animation (task-284-05, ARREnemy clip writer): walk loop (clip 0, random phase) while the movement is on, rest pose (RestClipId 3
+ * held) while it is off (Telegraph, Slam, Recover); the telegraph, slam and recover clips of task-285 go on the state events.
  */
 UCLASS(Blueprintable)
 class ROGUERIGS_API ARRHeavy : public ARREnemy

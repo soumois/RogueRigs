@@ -40,6 +40,8 @@ enum class ERRKamikazeState : uint8
  * The robot being the explosion source, the subsystem never explodes it twice.
  * The Armed phase is the flare (enemy-kamikaze, owner 2026-10-05: strong core light for 0.5 s before a proximity explosion):
  * OnFlareStart(Duration) fires on arming, GetFlareProgress runs 0 -> 1 over the fuse, OnFlareEnd fires when it leaves Armed.
+ * Animation (task-284-05, ARREnemy clip writer): leg sway loop (clip 0, random phase) always on (no rest clip), from BeginPlay and
+ * each pool reuse; armed, fuse and death leave it running.
  */
 UCLASS(Blueprintable)
 class ROGUERIGS_API ARRKamikaze : public ARREnemy

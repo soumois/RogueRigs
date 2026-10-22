@@ -24,6 +24,9 @@ ARRShooter::ARRShooter(const FObjectInitializer& ObjectInitializer)
 	XPCubeCount = 6;
 	// The movement arrives at the preferred distance itself (the ring is the engage range).
 	ArrivalRangeRatio = 1.f;
+	// Baked clips (task-284-05): walk = clip 0 while moving; rest = clip 2 held (rows 31..46, rest pose, not used by the aim
+	// and fire clips 1 and 3 of task-287) while stopped.
+	RestClipId = 2.f;
 	DamageEffectClass = URRGE_DamageFlat::StaticClass();
 	ProjectileClass = ARREnemyProjectile::StaticClass();
 

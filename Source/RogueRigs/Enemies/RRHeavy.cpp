@@ -23,6 +23,9 @@ ARRHeavy::ARRHeavy(const FObjectInitializer& ObjectInitializer)
 	DamageEffectClass = URRGE_DamageFlat::StaticClass();
 	// Wider damage number disc for the larger body (damage-numbers: 45 uu, task-059-01).
 	DamageNumberSpawnRadius = 45.f;
+	// Baked clips (task-284-05): walk = clip 0 while moving; rest = clip 3 held at its last frame (row 61) while stopped. Rows
+	// 16..61 belong to task-285 (telegraph, slam, recover): its clip 3 must end at the rest pose, or change RestClipId.
+	RestClipId = 3.f;
 
 	// Twice the chaser (24 x 62), radius well under the 80 uu limit so it crosses one-cell (200 uu) corridors (enemy-heavy).
 	GetCapsuleComponent()->InitCapsuleSize(48.f, 124.f);

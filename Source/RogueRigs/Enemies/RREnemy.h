@@ -25,6 +25,7 @@ class UGameplayEffect;
 class UMaterialInterface;
 class UMeshComponent;
 class UNiagaraSystem;
+class UStaticMeshComponent;
 class USceneComponent;
 struct FOnAttributeChangeData;
 
@@ -56,7 +57,13 @@ struct FOnAttributeChangeData;
  * URRDamageNumberSubsystem at DamageNumberHeight above the capsule top (one pooled number per hit, starting in a DamageNumberSpawnRadius disc).
  * Blob shadow (task-264-02): BlobShadow, a flat dark disc attached under the capsule (diameter = own capsule radius x
  * BlobShadowDiameterScale), hidden when the death starts, shown again with the visual parts on pool reuse; never blinks with
- * the wind-up flash. Subclasses implement their behavior in
+ * the wind-up flash.
+ * Baked animation clips (task-284-05, moved from ARRChaser): the static mesh component named AnimatedMeshName plays clips baked in
+ * a texture (MF_RobotAnimWPO). The robot writes Custom Primitive Data 0 (clip id) and 1 (clip start, world seconds) on events
+ * only, never per tick (SetAnimClip). LoopClipId loops from a random phase at BeginPlay and pool reuse; with RestClipId >= 0,
+ * SetMovementActive switches between the loop (movement on) and the held rest clip (movement off). Subclasses add their own
+ * clips on state events with PlayClip / HoldClipEnd and return with PlayMovementClip (default OnAnimClipEnded).
+ * Subclasses implement their behavior in
  * UpdateBehavior (alive only) and may extend HandleDeath. Subclass in Blueprint for the mesh.
  */
 UCLASS(Abstract)
@@ -192,6 +199,12 @@ public:
 	/** XP pickup class dropped on death (the spawner prewarms it from the class defaults, task-111-01). */
 	TSubclassOf<ARRPickup> GetXPPickupClass() const { return XPPickupClass; }
 
+	/** Clip id last written to the animated mesh (Custom Primitive Data 0); -1 before any write or without animated mesh. Tests and debug. */
+	float GetAnimClipId() const { return CurrentAnimClipId; }
+
+	/** Start (world seconds) of the clip last written to the animated mesh (Custom Primitive Data 1). Tests and debug. */
+	double GetAnimClipStart() const { return CurrentAnimClipStart; }
+
 protected:
 	/**
 	 * Per-life reset of a robot reused from the actor pool (called by OnPoolAcquired from the second life on). Base: every
@@ -283,6 +296,36 @@ protected:
 	 * robot that stops to attack or telegraph does not slide. Subclass state machines call it when entering a state.
 	 */
 	void SetMovementActive(bool bActive);
+
+	/** Finds the static mesh component named AnimatedMeshName and stores it in AnimatedMesh (null when none). Called at BeginPlay. */
+	void ResolveAnimatedMesh();
+
+	/**
+	 * Writes the clip id (Custom Primitive Data AnimClipDataIndex) and its start in world seconds (AnimStartDataIndex) to the
+	 * animated mesh in one render update. The only CPD write of the animation; nothing without animated mesh.
+	 */
+	void SetAnimClip(float ClipId, double StartTime);
+
+	/** Loops ClipId from a random phase (start = now - uniform [0, LoopPhaseSpread)) so a crowd does not step in sync; stops the clip timer. */
+	void PlayLoopClip(float ClipId);
+
+	/**
+	 * Plays ClipId from now (a clamped clip holds its last frame). Duration > 0: OnAnimClipEnded runs Duration seconds later
+	 * (AnimClipTimer), unless another clip is played first; Duration <= 0: no timer. Use it on state events (attack, telegraph, aim).
+	 */
+	void PlayClip(float ClipId, double Duration);
+
+	/** Holds the last frame of the clamped clip ClipId (start = now - AnimHoldLead); stops the clip timer. Used for the rest pose. */
+	void HoldClipEnd(float ClipId);
+
+	/** Plays the movement clip: RestClipId held when RestClipId >= 0 and the movement is off, else LoopClipId looped (new phase). */
+	void PlayMovementClip();
+
+	/** End of a timed clip (PlayClip with Duration > 0). Base: PlayMovementClip. Override to chain clips. */
+	virtual void OnAnimClipEnded();
+
+	/** True while a timed clip plays (its OnAnimClipEnded is pending). */
+	bool IsTimedClipPlaying() const;
 
 	/** True when Target is a living miner within Range (uu, 2D between actor centers, range inclusive). */
 	bool IsTargetWithin(const ARRMiner* Target, float Range) const;
@@ -484,6 +527,56 @@ protected:
 	 */
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Enemy|Movement", meta = (ClampMin = 0, ClampMax = 1))
 	float ArrivalRangeRatio = 0.9f;
+
+	/**
+	 * Name of the static mesh component that plays the baked clips (BP_Chaser, BP_ShieldChaser, BP_Heavy, BP_Shooter, BP_Kamikaze:
+	 * BodyMesh). Resolved once at BeginPlay; no component of that name (native classes in tests) or None = no animation.
+	 */
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Enemy|Animation")
+	FName AnimatedMeshName = TEXT("BodyMesh");
+
+	/** Clip id looped while the robot moves (all the time when RestClipId < 0): chaser run, heavy and shooter walk, kamikaze sway = 0. */
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Enemy|Animation")
+	float LoopClipId = 0.f;
+
+	/**
+	 * Clip id held at its last frame while the movement is off (rest pose); negative = no rest clip, the loop never stops on
+	 * SetMovementActive (chaser, kamikaze). Heavy 3, shooter 2 (rows whose last frame is the rest pose).
+	 */
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Enemy|Animation")
+	float RestClipId = -1.f;
+
+	/**
+	 * Range (s) of the random loop phase: PlayLoopClip starts the loop at now - uniform [0, LoopPhaseSpread). Longer than any loop
+	 * period at its material RunRate (chaser 0.762 s at 0.7, kamikaze 1.524 s at 0.35) so the phase covers the whole loop.
+	 */
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Enemy|Animation", meta = (ClampMin = 0, Units = "s"))
+	float LoopPhaseSpread = 2.f;
+
+	/** Custom Primitive Data index of the clip id on the animated mesh (MF_RobotAnimWPO ClipId). */
+	static constexpr int32 AnimClipDataIndex = 0;
+
+	/** Custom Primitive Data index of the clip start time (world seconds) on the animated mesh (MF_RobotAnimWPO AnimStart). */
+	static constexpr int32 AnimStartDataIndex = 1;
+
+	/** Age (s) given to a held clip by HoldClipEnd: far beyond any clamped clip (15 frames at 30 fps = 0.5 s). */
+	static constexpr double AnimHoldLead = 10.0;
+
+	/** Body mesh playing the baked clips (null when the class has none). */
+	UPROPERTY(Transient)
+	TObjectPtr<UStaticMeshComponent> AnimatedMesh;
+
+	/** Fires OnAnimClipEnded at the end of a timed clip; active only while it plays. */
+	FTimerHandle AnimClipTimer;
+
+	/** Movement state the movement clip was last chosen for (SetMovementActive acts only on a change; reset each life). */
+	bool bMovementClipActive = true;
+
+	/** Clip id last written (GetAnimClipId); -1 = none. */
+	float CurrentAnimClipId = -1.f;
+
+	/** Clip start last written, world seconds (GetAnimClipStart). */
+	double CurrentAnimClipStart = 0.0;
 
 	/** Stats read at BeginPlay. */
 	UPROPERTY(VisibleInstanceOnly, BlueprintReadOnly, Category = "Enemy|Stats")
