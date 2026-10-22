@@ -3,7 +3,7 @@ id: task-283-06-robot-body-material
 description: "Robot body material and instances (bp)."
 parent: task-283-robot-mesh-integration
 kind: task
-status: todo
+status: in-progress
 ---
 # Robot body material and instances
 

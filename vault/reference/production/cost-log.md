@@ -561,6 +561,7 @@ kind: note
 | [[task-283-02-game-ready-heavy]] | sonnet | 1 | 0k | 73k | 587k | 9k |
 | [[task-283-03-game-ready-kamikaze]] | sonnet | 1 | 0k | 66k | 971k | 2k |
 | [[task-283-04-game-ready-shooter]] | sonnet | 1 | 0k | 34k | 249k | 0k |
+| [[task-283-05-game-ready-chaser-v2]] | sonnet | 1 | 0k | 36k | 259k | 0k |
 
 ## Totals
 | Scope | Input | Cache write | Cache read | Output |

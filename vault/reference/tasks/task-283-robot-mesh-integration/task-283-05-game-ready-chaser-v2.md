@@ -3,7 +3,7 @@ id: task-283-05-game-ready-chaser-v2
 description: "Make the chaser v2 mesh game ready (3d)."
 parent: task-283-robot-mesh-integration
 kind: task
-status: in-progress
+status: done
 ---
 # Make the chaser v2 mesh game ready
 
@@ -15,11 +15,11 @@ status: in-progress
 - done_when: dims match the decided height within 1 cm, origin at the floor, front +X, slots body then robot_eye, eye faces > 0 and red eye texels left in body faces 0, UV0 unchanged, LightMap UV1 without overlap; Blender processes stopped
 - editor_state: closed (Blender headless only)
 - token_ceiling: 60000
-- model: open
-- tokens: open
-- runs: open
+- model: sonnet
+- tokens: input 18, cache write 36168, cache read 258726, output 97
+- runs: 1
 - milestone: M2
-- result: open
+- result: chaser_v2_meshy_game.fbx: 55.2 x 97.7 x 123.0 cm, floor origin, front +X, slots [body, robot_eye], 58 eye faces (front eye, matches render), 0 red texels left in eye zone, UV0 delta 0, UV1 no overlap; 5120 tris; chaser v1 untouched.
 
 ## Relations
 - [[task-283-robot-mesh-integration]] — parent global task.
