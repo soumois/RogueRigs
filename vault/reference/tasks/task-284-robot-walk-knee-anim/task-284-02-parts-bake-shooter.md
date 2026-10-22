@@ -3,7 +3,7 @@ id: task-284-02-parts-bake-shooter
 description: "Cut and bake the shooter walk (3d)."
 parent: task-284-robot-walk-knee-anim
 kind: task
-status: in-progress
+status: done
 ---
 # Cut and bake the shooter walk
 
@@ -15,11 +15,11 @@ status: in-progress
 - done_when: meshy_cut_check passes, PartId bins clean, knee pivot inside the knee panel gap, knee angle within the decided limit, foot slide under 2 cm per cycle, loop seamless; the Orchestrator renders 4 frames of the clip and sends them to the owner; Blender processes stopped
 - editor_state: closed (Blender headless only)
 - token_ceiling: 60000
-- model: open
-- tokens: open
-- runs: open
+- model: sonnet
+- tokens: input 138, cache write 140108, cache read 6042532, output 58221
+- runs: 2
 - milestone: M2
-- result: open
+- result: shooter_meshy_parts.fbx (10 parts, cannon on ForearmHand_R, 9520 tris, PartId exact) + T_ShooterAnim.exr (clip 0 walk rows 0-15 for RunRate 1.25 at 180 uu/s, rows 16-61 reserved for 287); knee max 15 deg, foot slide 0.031 cm/cycle, loop seamless, cut_check 0 anomalies after final_fill cap fix (heavy output unchanged); lowest foot vertex -0.12 cm at pivot switch; renders Saved/Renders/task-284/shooter_walk_f0-3.png.
 
 ## Relations
 - [[task-284-robot-walk-knee-anim]] — parent global task.

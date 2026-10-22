@@ -569,6 +569,7 @@ kind: note
 | [[task-283-10-capture-after]] | opus | 1 | 0k | 68k | 717k | 3k |
 | [[task-283-11-kamikaze-core-scale]] | sonnet | 1 | 0k | 34k | 244k | 4k |
 | [[task-284-01-parts-bake-heavy]] | sonnet | 3 | 0k | 1977k | 29453k | 31k |
+| [[task-284-02-parts-bake-shooter]] | sonnet | 2 | 0k | 140k | 6043k | 58k |
 
 ## Totals
 | Scope | Input | Cache write | Cache read | Output |
