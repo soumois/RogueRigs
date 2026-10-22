@@ -15,7 +15,7 @@ status: done
 - confirmed_by_owner: yes (2026-10-22, plan accepted; launch on the owner's word)
 - milestone: M2
 - next_step: none
-- result: Done. chaser_v2_meshy_flat.fbx: 82 planar regions (693 of 5120 faces), deviation 1.113 -> 0.016 cm, max move 1.45 cm, tris/verts/UV0 unchanged, 0 flipped normals; renders Saved/Renders/task-281/chaser_v2_*.
+- result: Done. Four flat FBX + reports in Art/Meshes/{heavy,kamikaze,shooter,chaser-v2}-meshy/ via Tools/art/blender/meshy_flatten_panels.py (82 to 229 planar regions each, deviation after < 0.03 cm, max move < 1.9 cm, tris/verts/UV0 unchanged); before/after renders Saved/Renders/task-281/ (robot_preview.py). Effect subtle: smooth shading kept.
 
 ## Subtasks
 1. task-281-01-flatten-heavy — 3d: Flatten the heavy panels
