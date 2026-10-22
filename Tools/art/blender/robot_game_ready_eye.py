@@ -5,7 +5,11 @@ Same transform, LightMap UV1 and FBX export as meshy_game_ready.py (uniform scal
 feet midpoint, UV0 untouched, flat shading, FBX_SCALE_UNITS), but the single Meshy material (4 texture nodes) is replaced by two clean slots: body
 (Principled, base colour texture on UV0, referenced not embedded) then robot_eye (plain material, no texture). Eye faces = faces whose UV0 triangle covers a texel
 with linear mask saturate((R - 2 max(G,B)) x 3) > 0.1 and whose centroid is inside the zone (game cm, defaults: whole mesh). Reports every red texel not in an eye face.
-Writes <name>.fbx and <name>.report.json. Nothing is imported in Unreal."""
+Writes <name>.fbx and <name>.report.json. Nothing is imported in Unreal.
+Optional core split (task-283-03, kamikaze): --core-center x,y,z --core-radius r [--core-ratio 1.12] [--core-name <name>] [--core-object <obj>] [--core-slot core].
+Seed sphere in game cm (Blender axes, X forward, Y left, Z up, origin on the floor). Core faces = faces whose 3 vertices are all within ratio x radius of the
+refitted sphere centre, largest connected group only. They leave the body mesh (never eye faces) and go to a second mesh <core-name>.fbx: one slot (core-slot,
+same base colour on the same UV0), vertices centred on the sphere centre (pivot there), own LightMap UV1. Without these arguments the output is the plain one."""
 import bpy, bmesh, sys, os, json, shutil, struct
 import numpy as np
 from mathutils import Vector, Matrix
@@ -24,10 +28,17 @@ NAME = arg("--name", "heavy_meshy_game")
 OBJ = arg("--object", "SM_Heavy_Meshy")
 HEIGHT = float(arg("--height-cm", 248))
 ZMIN, ZMAX, XMIN = float(arg("--eye-zmin", -1e9)), float(arg("--eye-zmax", 1e9)), float(arg("--eye-xmin", -1e9))
+CORE_ARG = arg("--core-center")
+CORE_R0 = float(arg("--core-radius", 0))
+CORE_RATIO = float(arg("--core-ratio", 1.12))
+CORE_NAME = arg("--core-name", NAME.replace("_game", "_core"))
+CORE_OBJ = arg("--core-object", OBJ.replace("Meshy", "Core_Meshy") if "Meshy" in OBJ else OBJ + "_Core")
+CORE_SLOT = arg("--core-slot", "core")
 TEXNAME = os.path.basename(IN_TEX)
 WORK = os.path.abspath(arg("--work", "C:/Users/soumo/AppData/Local/Temp/rr-meshy2/work_eye"))
 os.makedirs(WORK, exist_ok=True)
 FBX = os.path.join(WORK, NAME + ".fbx")
+CFBX = os.path.join(WORK, CORE_NAME + ".fbx")
 LM = 2048
 THR = 0.1
 
@@ -82,6 +93,47 @@ for p in me.polygons:
     p.use_smooth = False
 me.update()
 
+# ---------------------------------------------------------------- core faces (optional)
+CORE_MASK = None
+core_info = None
+if CORE_ARG:
+    cv = np.array([x.co[:] for x in me.vertices])
+    cvi = np.empty(len(me.loops), np.int64)
+    me.loops.foreach_get("vertex_index", cvi)
+    cvi = cvi.reshape(-1, 3)
+    cc = np.array([float(t) for t in CORE_ARG.split(",")])
+    cr = CORE_R0
+    for _it in range(6):
+        vd = np.linalg.norm(cv - cc, axis=1) / cr
+        fm = (vd[cvi] < CORE_RATIO).all(1)
+        pp = {}
+
+        def fnd(x):
+            while pp.setdefault(x, x) != x:
+                pp[x] = pp[pp[x]]
+                x = pp[x]
+            return x
+        for i in np.where(fm)[0]:
+            for vv in cvi[i]:
+                pp[fnd(("f", int(i)))] = fnd(("v", int(vv)))
+        grp = {}
+        for i in np.where(fm)[0]:
+            grp.setdefault(fnd(("f", int(i))), []).append(int(i))
+        big = max(grp.values(), key=len)
+        fm = np.zeros(len(cvi), bool)
+        fm[big] = True
+        pv = np.unique(cvi[fm])
+        P = cv[pv]
+        P = P[np.abs(np.linalg.norm(P - cc, axis=1) / cr - 1) < 0.1]
+        A_ = np.c_[2 * P, np.ones(len(P))]
+        sol = np.linalg.lstsq(A_, (P ** 2).sum(1), rcond=None)[0]
+        cc = sol[:3]
+        cr = float(np.sqrt(sol[3] + cc @ cc))
+    CORE_MASK = fm
+    core_info = dict(centre_blender_cm=[float(x) for x in cc], radius_cm=cr, ratio=CORE_RATIO, groups_sizes=sorted([len(g) for g in grp.values()], reverse=True)[:8])
+    print("core faces", int(fm.sum()), "centre", cc, "radius", cr, "groups", core_info["groups_sizes"])
+body_idx = np.where(~CORE_MASK)[0] if CORE_MASK is not None else np.arange(len(me.polygons))
+
 # ---------------------------------------------------------------- eye faces
 img = bpy.data.images.load(IN_TEX, check_existing=False)
 img.colorspace_settings.name = "Non-Color"
@@ -123,6 +175,8 @@ fcen = V1[VI1].mean(1)
 eye_idx, eye_cov, body_red = [], set(), set()
 red_cov_faces = []
 for i in range(len(VI1)):
+    if CORE_MASK is not None and CORE_MASK[i]:
+        continue
     ids = np.fromiter(cover(UV1_[i].astype(np.float64)), np.int64)
     red = ids[RED[ids]] if len(ids) else ids
     if not len(red):
@@ -177,64 +231,100 @@ mi = np.zeros(len(me.polygons), np.int32)
 mi[eye_idx] = 1
 me.polygons.foreach_set("material_index", mi)
 
+# ---------------------------------------------------------------- core split
+core_ob = None
+cme = None
+if CORE_MASK is not None:
+    cme = me.copy()
+    cme.name = CORE_OBJ
+    for mesh_, drop in ((me, CORE_MASK), (cme, ~CORE_MASK)):
+        bmx = bmesh.new()
+        bmx.from_mesh(mesh_)
+        bmx.faces.ensure_lookup_table()
+        bmesh.ops.delete(bmx, geom=[bmx.faces[i] for i in np.where(drop)[0]], context="FACES")
+        bmx.to_mesh(mesh_)
+        bmx.free()
+    cmat = bpy.data.materials.new(CORE_SLOT)
+    cmat.use_nodes = True
+    ctx = cmat.node_tree.nodes.new("ShaderNodeTexImage")
+    ctx.image = bimg
+    cmat.node_tree.links.new(ctx.outputs["Color"], cmat.node_tree.nodes["Principled BSDF"].inputs["Base Color"])
+    cme.materials.clear()
+    cme.materials.append(cmat)
+    cme.polygons.foreach_set("material_index", np.zeros(len(cme.polygons), np.int32))
+    cc_vec = Vector(core_info["centre_blender_cm"])
+    for x in cme.vertices:
+        x.co = x.co - cc_vec
+    cme.update()
+    core_ob = bpy.data.objects.new(CORE_OBJ, cme)
+    bpy.context.scene.collection.objects.link(core_ob)
+    for p in cme.polygons:
+        p.use_smooth = False
+    me.update()
+
+
 # ---------------------------------------------------------------- LightMap UV1
-bm = bmesh.new()
-bm.from_mesh(me)
-bm.faces.ensure_lookup_table()
-bm.normal_update()
-uv1 = bm.loops.layers.uv.get("LightMap") or bm.loops.layers.uv.new("LightMap")
-PAD = 2.0
-island = []
-for f in bm.faces:
-    nn = f.normal.normalized()
-    tt = Vector((1, 0, 0)) if abs(nn.z) > 0.99 else Vector((-nn.y, nn.x, 0)).normalized()
-    ss = nn.cross(tt).normalized()
-    loc = [(l.vert.co.dot(tt), l.vert.co.dot(ss)) for l in f.loops]
-    mx_, my_ = min(q[0] for q in loc), min(q[1] for q in loc)
-    loc = [(q[0] - mx_, q[1] - my_) for q in loc]
-    island.append((loc, max(q[0] for q in loc), max(q[1] for q in loc)))
-order = sorted(range(len(island)), key=lambda i: -island[i][2])
+def lightmap(me):
+    bm = bmesh.new()
+    bm.from_mesh(me)
+    bm.faces.ensure_lookup_table()
+    bm.normal_update()
+    uv1 = bm.loops.layers.uv.get("LightMap") or bm.loops.layers.uv.new("LightMap")
+    PAD = 2.0
+    island = []
+    for f in bm.faces:
+        nn = f.normal.normalized()
+        tt = Vector((1, 0, 0)) if abs(nn.z) > 0.99 else Vector((-nn.y, nn.x, 0)).normalized()
+        ss = nn.cross(tt).normalized()
+        loc = [(l.vert.co.dot(tt), l.vert.co.dot(ss)) for l in f.loops]
+        mx_, my_ = min(q[0] for q in loc), min(q[1] for q in loc)
+        loc = [(q[0] - mx_, q[1] - my_) for q in loc]
+        island.append((loc, max(q[0] for q in loc), max(q[1] for q in loc)))
+    order = sorted(range(len(island)), key=lambda i: -island[i][2])
+
+    def pack(sc):
+        x = y = PAD
+        rowh = 0.0
+        out = {}
+        for i in order:
+            _, w, hh = island[i]
+            pw, ph = w * sc, hh * sc
+            if x + pw + PAD > LM:
+                x = PAD
+                y += rowh + PAD
+                rowh = 0.0
+            if x + pw + PAD > LM or y + ph + PAD > LM:
+                return None
+            out[i] = (x, y)
+            x += pw + PAD
+            rowh = max(rowh, ph)
+        return out
+
+    lo, hi = 1e-4, 50.0
+    for _ in range(50):
+        mid = (lo + hi) / 2
+        if pack(mid):
+            lo = mid
+        else:
+            hi = mid
+    placed = pack(lo)
+    for f in bm.faces:
+        x, y = placed[f.index]
+        for l, (lx, ly) in zip(f.loops, island[f.index][0]):
+            l[uv1].uv = ((x + lx * lo) / LM, (y + ly * lo) / LM)
+    bm.to_mesh(me)
+    bm.free()
+    for p in me.polygons:
+        p.use_smooth = False
+    me.uv_layers.active_index = 0
+    return lo
 
 
-def pack(sc):
-    x = y = PAD
-    rowh = 0.0
-    out = {}
-    for i in order:
-        _, w, hh = island[i]
-        pw, ph = w * sc, hh * sc
-        if x + pw + PAD > LM:
-            x = PAD
-            y += rowh + PAD
-            rowh = 0.0
-        if x + pw + PAD > LM or y + ph + PAD > LM:
-            return None
-        out[i] = (x, y)
-        x += pw + PAD
-        rowh = max(rowh, ph)
-    return out
+lo = lightmap(me)
+lo_core = lightmap(cme) if cme is not None else None
 
 
-lo, hi = 1e-4, 50.0
-for _ in range(50):
-    mid = (lo + hi) / 2
-    if pack(mid):
-        lo = mid
-    else:
-        hi = mid
-placed = pack(lo)
-for f in bm.faces:
-    x, y = placed[f.index]
-    for l, (lx, ly) in zip(f.loops, island[f.index][0]):
-        l[uv1].uv = ((x + lx * lo) / LM, (y + ly * lo) / LM)
-bm.to_mesh(me)
-bm.free()
-for p in me.polygons:
-    p.use_smooth = False
-me.uv_layers.active_index = 0
-
-
-def lm_check(o):
+def lm_check(o, lo):
     u1 = np.array([l.uv[:] for l in o.data.uv_layers["LightMap"].data]).reshape(-1, 3, 2) * LM
     bmin, bmax = u1.min(1), u1.max(1)
     ov = 0
@@ -260,6 +350,11 @@ bpy.context.view_layer.objects.active = ob
 EXPORT = dict(use_selection=True, object_types={"MESH"}, apply_scale_options="FBX_SCALE_UNITS", global_scale=1.0, axis_forward="-Z", axis_up="Y",
               mesh_smooth_type="OFF", add_leaf_bones=False, path_mode="RELATIVE", embed_textures=False)
 bpy.ops.export_scene.fbx(filepath=FBX, **EXPORT)
+if core_ob is not None:
+    bpy.ops.object.select_all(action="DESELECT")
+    core_ob.select_set(True)
+    bpy.context.view_layer.objects.active = core_ob
+    bpy.ops.export_scene.fbx(filepath=CFBX, **EXPORT)
 b = open(FBX, "rb").read()
 usf = None
 j = b.find(b"UnitScaleFactor")
@@ -277,17 +372,18 @@ obs2 = import_fbx(FBX)
 ob2 = obs2[0]
 m2 = ob2.data
 V2, VI2, UV2 = tri_arrays(ob2)
-lm2 = lm_check(ob2)
+lm2 = lm_check(ob2, lo)
 bb_min, bb_max = V2.min(0), V2.max(0)
 size = bb_max - bb_min
 mats2 = [m.name if m else None for m in m2.materials]
 mi2 = np.empty(len(m2.polygons), np.int64)
 m2.polygons.foreach_get("material_index", mi2)
 imgs2 = sorted({n.image.filepath for m in m2.materials for n in m.node_tree.nodes if n.type == "TEX_IMAGE" and n.image})
-uv_direct = float(np.abs(UV2 - UV_IN).max()) if UV2.shape == UV_IN.shape else None
+UV_B = UV_IN[body_idx]
+uv_direct = float(np.abs(UV2 - UV_B).max()) if UV2.shape == UV_B.shape else None
 Rz = np.array([[0, -1, 0], [1, 0, 0], [0, 0, 1]], float)
 exp = (V0 * scale) @ Rz.T + np.array(off[:])
-kA = np.round(np.hstack([exp[VI0].reshape(-1, 3), UV_IN.reshape(-1, 2)]), 2)
+kA = np.round(np.hstack([exp[VI0[body_idx]].reshape(-1, 3), UV_B.reshape(-1, 2)]), 2)
 kA = kA[np.lexsort(kA.T[::-1])]
 kB = np.round(np.hstack([V2[VI2].reshape(-1, 3), UV2.reshape(-1, 2)]), 2)
 kB = kB[np.lexsort(kB.T[::-1])]
@@ -322,11 +418,11 @@ rep = dict(
              eye_faces=int(eye2.sum()), eye_faces_before_export=int(len(eye_idx)), eye_texels_in_eye_faces=len(eye_cov2),
              red_texels_left_in_body_faces_in_zone=len(body_red_zone), red_texels_in_body_faces_outside_zone=len(body_red2 - body_red_zone), body_faces_outside_zone_covering_red=int(len(allred) - len(eye_idx)), components=comps[:12], component_count=len(comps)),
     uv0_unchanged=dict(max_abs_diff_direct=uv_direct,
-                       vertices_equal=len(m2.vertices) == verts_in, triangles_equal=len(VI2) == tris_in),
+                       vertices_equal=len(m2.vertices) == (verts_in if CORE_MASK is None else len(np.unique(VI0[body_idx]))), triangles_equal=len(VI2) == len(body_idx)),
     lightmap_uv1=lm2, warnings=[])
 if abs(size[2] - HEIGHT) > 1.0:
     rep["warnings"].append("height off by more than 1 cm")
-if len(VI2) != tris_in:
+if len(VI2) != len(body_idx):
     rep["warnings"].append("triangle count changed")
 if mats2 != ["body", "robot_eye"]:
     rep["warnings"].append("slot order wrong")
@@ -336,9 +432,39 @@ if len(body_red2):
     rep["warnings"].append("%d red texels (stray red spots, not the eye) stay in body faces outside the zone" % len(body_red2))
 if not lm2["passed"]:
     rep["warnings"].append("lightmap check failed")
+if core_ob is not None:
+    obs3 = import_fbx(CFBX)
+    o3 = obs3[0]
+    m3 = o3.data
+    V3, VI3, UV3 = tri_arrays(o3)
+    lm3 = lm_check(o3, lo_core)
+    c_idx = np.where(CORE_MASK)[0]
+    UV_C = UV_IN[c_idx]
+    cbmin, cbmax = V3.min(0), V3.max(0)
+    ccen = np.array(core_info["centre_blender_cm"])
+    rep["body"] = dict(triangles=len(VI2), tris_in_total=tris_in, tris_core=len(VI3), tris_body_plus_core=len(VI2) + len(VI3))
+    rep["core"] = dict(
+        fbx=CORE_NAME + ".fbx", object_name=o3.name, triangles=len(VI3), vertices=len(m3.vertices), objects=len(obs3),
+        material_slots=[m.name if m else None for m in m3.materials], uv_layers=[u.name for u in m3.uv_layers],
+        pivot="vertices centred on the fitted sphere centre; object transform identity",
+        bounds_min_cm=[round(float(x), 3) for x in cbmin], bounds_max_cm=[round(float(x), 3) for x in cbmax], size_cm=[round(float(x), 3) for x in cbmax - cbmin],
+        bounds_centre_offset_from_pivot_cm=[round(float(x), 3) for x in (cbmin + cbmax) / 2],
+        sphere=dict(radius_cm=round(core_info["radius_cm"], 3), ratio=core_info["ratio"], face_groups=core_info["groups_sizes"]),
+        centre_offset_from_floor_origin_blender_cm=dict(x_forward=round(float(ccen[0]), 3), y_left=round(float(ccen[1]), 3), z_up=round(float(ccen[2]), 3)),
+        centre_offset_from_floor_origin_unreal_cm=dict(X=round(float(ccen[0]), 3), Y=round(float(-ccen[1]), 3), Z=round(float(ccen[2]), 3),
+                                                        convention="Unreal X forward, Z up, Y = -Blender Y (Unreal is left-handed, +Y right). Not verified in Unreal (nothing imported)."),
+        uv0_unchanged=dict(max_abs_diff_direct=float(np.abs(UV3 - UV_C).max()) if UV3.shape == UV_C.shape else None, triangles_equal=len(VI3) == len(c_idx)),
+        lightmap_uv1=lm3, flat_shaded=not any(p.use_smooth for p in m3.polygons))
+    if not lm3["passed"]:
+        rep["warnings"].append("core lightmap check failed")
+    if len(VI3) + len(VI2) != tris_in:
+        rep["warnings"].append("body + core triangles differ from the input")
+    print("CORE", json.dumps(rep["core"]))
 os.makedirs(OUT, exist_ok=True)
 if "--no-write" not in a:
     shutil.copyfile(FBX, os.path.join(OUT, NAME + ".fbx"))
+    if core_ob is not None:
+        shutil.copyfile(CFBX, os.path.join(OUT, CORE_NAME + ".fbx"))
     with open(os.path.join(OUT, NAME + ".report.json"), "w", encoding="utf-8") as f:
         json.dump(rep, f, indent=1)
 print("DONE", json.dumps({k_: rep[k_] for k_ in ("readback", "origin", "front_axis", "uv0_unchanged", "warnings")}))
