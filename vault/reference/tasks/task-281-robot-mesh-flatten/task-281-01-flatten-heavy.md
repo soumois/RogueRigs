@@ -3,7 +3,7 @@ id: task-281-01-flatten-heavy
 description: "Flatten the heavy panels (3d)."
 parent: task-281-robot-mesh-flatten
 kind: task
-status: todo
+status: in-progress
 ---
 # Flatten the heavy panels
 

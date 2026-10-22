@@ -3,7 +3,7 @@ id: task-281-robot-mesh-flatten
 description: "Global task: Flatten the Meshy-bulged planar panels of the heavy, kamikaze, shooter and chaser v2 meshes with a headless Blender pass, UVs unchanged."
 parent: tasks-to-do-index
 kind: task
-status: todo
+status: in-progress
 ---
 # Robot meshes: flatten bulged panels
 
