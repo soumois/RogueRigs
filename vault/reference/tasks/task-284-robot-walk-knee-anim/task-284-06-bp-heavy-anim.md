@@ -3,7 +3,7 @@ id: task-284-06-bp-heavy-anim
 description: "BP_Heavy plays the walk (bp)."
 parent: task-284-robot-walk-knee-anim
 kind: task
-status: todo
+status: in-progress
 ---
 # BP_Heavy plays the walk
 

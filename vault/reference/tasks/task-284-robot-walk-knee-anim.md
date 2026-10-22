@@ -14,7 +14,7 @@ status: in-progress
 - depends_on_global: task-283
 - confirmed_by_owner: yes (2026-10-22, plan accepted; launch on the owner's word)
 - milestone: M2
-- next_step: task-284-05-cpp-anim-clips
+- next_step: task-284-06-bp-heavy-anim
 - result: open
 
 ## Subtasks

@@ -572,6 +572,7 @@ kind: note
 | [[task-284-02-parts-bake-shooter]] | sonnet | 2 | 0k | 140k | 6043k | 58k |
 | [[task-284-03-parts-bake-chaser-v2]] | sonnet | 1 | 0k | 114k | 3495k | 42k |
 | [[task-284-04-parts-bake-kamikaze]] | sonnet | 1 | 0k | 107k | 1976k | 39k |
+| [[task-284-05-cpp-anim-clips]] | opus | 2 | 0k | 145k | 4325k | 46k |
 
 ## Totals
 | Scope | Input | Cache write | Cache read | Output |

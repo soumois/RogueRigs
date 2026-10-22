@@ -3,7 +3,7 @@ id: task-284-05-cpp-anim-clips
 description: "Shared anim clip writer for the robots (cpp)."
 parent: task-284-robot-walk-knee-anim
 kind: task
-status: in-progress
+status: done
 ---
 # Shared anim clip writer for the robots
 
@@ -15,11 +15,11 @@ status: in-progress
 - done_when: build succeeds, all automation tests pass, getall CustomPrimitiveDataInternal shows the expected clip on a moving and a stopped heavy and shooter in a -game run
 - editor_state: closed
 - token_ceiling: 60000
-- model: open
-- tokens: open
-- runs: open
+- model: opus
+- tokens: input 104, cache write 144765, cache read 4325432, output 46473
+- runs: 2
 - milestone: M2
-- result: open
+- result: Shared clip writer in ARREnemy (SetAnimClip, PlayLoopClip, PlayClip, HoldClipEnd, PlayMovementClip on SetMovementActive events; LoopClipId, RestClipId); chaser refactored onto it; heavy RestClipId 3, shooter RestClipId 2 (provisional, 285/287 may change), kamikaze sway always; build OK; 267/269 tests pass, the 2 failures (JuiceKillDropsStreamingCubes, LevelUpUpgradeLoop) fail identically without this change (pre-existing); -game CPD: moving heavy/shooter clip 0, stopped clip 3/2 held. Commits 24d61bd5, 310e452a.
 
 ## Relations
 - [[task-284-robot-walk-knee-anim]] — parent global task.
