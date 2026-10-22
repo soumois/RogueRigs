@@ -3,7 +3,7 @@ id: task-284-10-bp-spawner-chaser-v2
 description: "Spawner uses BP_ChaserV2 (bp)."
 parent: task-284-robot-walk-knee-anim
 kind: task
-status: in-progress
+status: done
 ---
 # Spawner uses BP_ChaserV2
 
@@ -15,11 +15,11 @@ status: in-progress
 - done_when: entries read back, compiles without error, the placed L_ArenaM1 instance has no override, doc updated; lint clean
 - editor_state: open
 - token_ceiling: 80000
-- model: open
-- tokens: open
-- runs: open
+- model: sonnet
+- tokens: input 26, cache write 48860, cache read 482445, output 6110
+- runs: 1
 - milestone: M2
-- result: open
+- result: BP_EnemySpawner: first WeightedEnemyClasses entry and EnemyClass BP_Chaser_C -> BP_ChaserV2_C (weight 65, MaxAlive 0), others unchanged; compiles, saved; no map override; restore step in bp-enemy-spawner.
 
 ## Relations
 - [[task-284-robot-walk-knee-anim]] — parent global task.

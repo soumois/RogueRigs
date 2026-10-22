@@ -3,7 +3,7 @@ id: task-284-11-capture-walk
 description: "Capture the robots walking (cpp)."
 parent: task-284-robot-walk-knee-anim
 kind: task
-status: todo
+status: in-progress
 ---
 # Capture the robots walking
 
