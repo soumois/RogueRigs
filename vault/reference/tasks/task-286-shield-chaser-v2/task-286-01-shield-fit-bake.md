@@ -3,7 +3,7 @@ id: task-286-01-shield-fit-bake
 description: "Fit the shield on chaser v2 and bake (3d)."
 parent: task-286-shield-chaser-v2
 kind: task
-status: todo
+status: in-progress
 ---
 # Fit the shield on chaser v2 and bake
 

@@ -3,7 +3,7 @@ id: task-286-shield-chaser-v2
 description: "Global task: Build a shield chaser on the chaser v2 mesh in new assets (BP_ShieldChaserV2), the v1 shield chaser kept intact for restore."
 parent: tasks-to-do-index
 kind: task
-status: todo
+status: in-progress
 ---
 # Shield chaser v2
 
