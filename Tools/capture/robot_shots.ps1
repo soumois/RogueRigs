@@ -3,7 +3,8 @@
 # PNG copied to Saved/RobotMeshes/<Label>/<robot>.png. Runs alongside an open editor; only the -game process it starts is closed.
 # -NoFreeze (task-284-11): no slomo, -ShotCount shots every -ShotInterval s from -ShotDelay s after the spawn, copied to <robot><Suffix>_<i>.png (robots caught walking);
 #   with -NoFreeze: -Distance/-Yaw (SpawnNear uu and degrees), -Camera "<Pitch> <Arm> [Yaw]" (rr.Debug.Camera at 14 s), -StopSpawner (rr.Spawner.Enabled 0).
-# Usage: powershell -NoProfile -ExecutionPolicy Bypass -File Tools\capture\robot_shots.ps1 [-Label before|after] [-Robots heavy,kamikaze,shooter,chaser,chaserv2] [-NoFreeze -ShotCount 4 -ShotInterval 0.25 -ShotDelay 0.5]
+#   -BreakShieldsAt <s> (task-286-04, with -NoFreeze): rr.Debug.BreakShields <s> seconds after the spawn (shield chasers shot before and after the break).
+# Usage: powershell -NoProfile -ExecutionPolicy Bypass -File Tools\capture\robot_shots.ps1 [-Label before|after] [-Robots heavy,kamikaze,shooter,chaser,chaserv2,shieldchaserv2] [-NoFreeze -ShotCount 4 -ShotInterval 0.25 -ShotDelay 0.5]
 param(
 	[string]$Label = "before",
 	[string[]]$Robots = @("heavy", "kamikaze", "shooter", "chaser"),
@@ -16,7 +17,8 @@ param(
 	[int]$Yaw = 0,
 	[string]$Camera = "",
 	[switch]$StopSpawner,
-	[string]$Suffix = ""
+	[string]$Suffix = "",
+	[double]$BreakShieldsAt = -1
 )
 
 $ErrorActionPreference = "Stop"
@@ -32,6 +34,7 @@ $Classes = @{
 	shooter  = "/Game/RogueRigs/Blueprints/Enemies/BP_Shooter.BP_Shooter_C"
 	chaser   = "/Game/RogueRigs/Blueprints/Enemies/BP_Chaser.BP_Chaser_C"
 	chaserv2 = "/Game/RogueRigs/Blueprints/Enemies/BP_ChaserV2.BP_ChaserV2_C"
+	shieldchaserv2 = "/Game/RogueRigs/Blueprints/Enemies/BP_ShieldChaserV2.BP_ShieldChaserV2_C"
 }
 $OutDir = Join-Path $ProjectDir "Saved\RobotMeshes\$Label"
 New-Item -ItemType Directory -Force -Path $OutDir | Out-Null
@@ -48,6 +51,10 @@ foreach ($Robot in $Robots) {
 		$Gap = [string]::Format([Globalization.CultureInfo]::InvariantCulture, "{0:0.###}", $ShotInterval)
 		$QuitAt = [int][Math]::Ceiling(15 + $ShotDelay + $ShotInterval * $ShotCount + 4)
 		$Exec = "rr.Stress.Peace 1,rr.Debug.Delayed 15 rr.Debug.SpawnNear $Class $Distance $Yaw,rr.Debug.Shots $First $ShotCount $Gap $Prefix,rr.Debug.Delayed $QuitAt Quit"
+		if ($BreakShieldsAt -ge 0) {
+			$BreakAt = [string]::Format([Globalization.CultureInfo]::InvariantCulture, "{0:0.###}", 15 + $BreakShieldsAt)
+			$Exec = "$Exec,rr.Debug.Delayed $BreakAt rr.Debug.BreakShields"
+		}
 		if ($StopSpawner) { $Exec = "rr.Spawner.Enabled 0,rr.Debug.Delayed 1 rr.Spawner.Enabled 0,$Exec" }
 		if ($Camera) { $Exec = "rr.Debug.Delayed 14 rr.Debug.Camera $Camera,$Exec" }
 	}
