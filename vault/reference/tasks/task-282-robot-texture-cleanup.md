@@ -1,9 +1,9 @@
 ---
 id: task-282-robot-texture-cleanup
 description: "Global task: Clean the texture artefacts of the four new robot meshes (heavy glassy back panels, kamikaze smeared leg tips) against the owner turnaround sheets."
-parent: tasks-to-do-index
+parent: tasks-done-index
 kind: task
-status: in-progress
+status: done
 ---
 # Robot meshes: clean textures from the sheets
 
@@ -14,8 +14,8 @@ status: in-progress
 - depends_on_global: task-281
 - confirmed_by_owner: yes (2026-10-22, plan accepted; launch on the owner's word)
 - milestone: M2
-- next_step: task-282-04-texture-clean-chaser-v2
-- result: open
+- next_step: none
+- result: Done. Cause: base colour (olive discs/hubs, dark smears on yellow panel edges); metallic/roughness clean. texture_clean/chaser_v2.json; 227,666 texels changed (yellow (253,187,19), charcoal (24,24,24)), outside-class unchanged, other three outputs byte-identical; renders Saved/Renders/task-282/chaser_v2_* incl. shoulder close-up.
 
 ## Subtasks
 1. task-282-01-texture-clean-heavy — 3d: Clean the heavy textures
@@ -24,7 +24,7 @@ status: in-progress
 4. task-282-04-texture-clean-chaser-v2 — 3d: Clean the chaser v2 textures
 
 ## Relations
-- [[tasks-to-do-index]] — parent index.
+- [[tasks-done-index]] — parent index.
 - [[task-282-01-texture-clean-heavy]] — step 01, 3d.
 - [[task-282-02-texture-clean-kamikaze]] — step 02, 3d.
 - [[task-282-03-texture-clean-shooter]] — step 03, 3d.

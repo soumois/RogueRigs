@@ -3,7 +3,7 @@ id: task-283-robot-mesh-integration
 description: "Global task: Integrate the flattened, cleaned heavy, kamikaze and shooter meshes into their Blueprints, and prepare chaser v2, replacing the grey-box primitives."
 parent: tasks-to-do-index
 kind: task
-status: todo
+status: in-progress
 ---
 # Robot meshes: integrate into Unreal
 

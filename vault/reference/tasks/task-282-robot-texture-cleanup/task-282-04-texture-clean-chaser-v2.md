@@ -3,7 +3,7 @@ id: task-282-04-texture-clean-chaser-v2
 description: "Clean the chaser v2 textures (3d)."
 parent: task-282-robot-texture-cleanup
 kind: task
-status: in-progress
+status: done
 ---
 # Clean the chaser v2 textures
 
@@ -15,11 +15,11 @@ status: in-progress
 - done_when: report names the cause; texels outside the treated classes unchanged; geometry and UV untouched; the Orchestrator renders the same camera (barrel_preview.py settings scaled to a 190 cm robot: front three-quarter and back three-quarter) before and after and sends both to the owner with the cleaned textures, plus a close-up of the defect area; Blender processes stopped
 - editor_state: closed (Blender headless only)
 - token_ceiling: 60000
-- model: open
-- tokens: open
-- runs: open
+- model: sonnet
+- tokens: input 36, cache write 73149, cache read 827438, output 1619
+- runs: 1
 - milestone: M2
-- result: open
+- result: Cause: base colour (olive discs/hubs, dark smears on yellow panel edges); metallic/roughness clean. texture_clean/chaser_v2.json; 227,666 texels changed (yellow (253,187,19), charcoal (24,24,24)), outside-class unchanged, other three outputs byte-identical; renders Saved/Renders/task-282/chaser_v2_* incl. shoulder close-up.
 
 ## Relations
 - [[task-282-robot-texture-cleanup]] — parent global task.
