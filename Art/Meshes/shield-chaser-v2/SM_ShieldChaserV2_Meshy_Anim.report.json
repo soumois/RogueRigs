@@ -1,0 +1,922 @@
+{
+ "task": "task-286-01-shield-fit-bake",
+ "script": "Tools/art/blender/shield_chaser_v2_bake.py",
+ "blender": "5.2.2 LTS",
+ "files": {
+  "texture": "T_ShieldChaserV2Anim.exr",
+  "fbx": "SM_ShieldChaserV2_Meshy_Anim.fbx",
+  "previews": [
+   "shield_chaser_v2_shield_run_f00_tq.png",
+   "shield_chaser_v2_shield_run_f04_tq.png",
+   "shield_chaser_v2_shield_run_f08_tq.png",
+   "shield_chaser_v2_shield_run_f12_tq.png",
+   "shield_chaser_v2_shield_bash_f16_tq.png",
+   "shield_chaser_v2_shield_bash_f18_tq.png",
+   "shield_chaser_v2_shield_bash_f22_tq.png",
+   "shield_chaser_v2_shield_bash_f26_tq.png",
+   "shield_chaser_v2_plain_run_f35_tq.png",
+   "shield_chaser_v2_plain_attack_f53_tq.png",
+   "shield_chaser_v2_contact_sheet.png",
+   "shield_chaser_v2_contact_side.png"
+  ]
+ },
+ "tris": {
+  "chaser_parts": 6155,
+  "shield": 979,
+  "total_read_back": 7134,
+  "expected_total": 7134
+ },
+ "texture": {
+  "width": 20,
+  "height": 62,
+  "format": "OpenEXR RGBA half float, compression NONE, Non-Color",
+  "rows_from_top": true,
+  "clips": [
+   {
+    "name": "shield_run",
+    "start": 0,
+    "length": 16,
+    "loop": true
+   },
+   {
+    "name": "shield_bash",
+    "start": 16,
+    "length": 15,
+    "loop": false
+   },
+   {
+    "name": "chaser_run",
+    "start": 31,
+    "length": 16,
+    "loop": true
+   },
+   {
+    "name": "chaser_attack",
+    "start": 47,
+    "length": 15,
+    "loop": false
+   }
+  ],
+  "texel_layout": "same as T_ChaserV2Anim: x = 2p quaternion xyzw, x = 2p+1 translation cm, new = R v + t; shield follows part 4 (ForearmHand_L)",
+  "clip2_rows_31_46_equal_T_ChaserV2Anim_rows_0_15_max_abs_diff": 0.0,
+  "clip3_rows_47_61_equal_T_ChaserV2Anim_rows_16_30_max_abs_diff": 0.0,
+  "exr_reload_vs_arrays_max_abs": 0.0,
+  "source_exr_compression_code": 0,
+  "written_compression_code": 0
+ },
+ "clip0_loop_error_cm": 0.0,
+ "clip0_loop_min_quaternion_dot_frame15_to_0": 0.9946345901095522,
+ "shield_frame0_vs_placed_max_cm": 6.65017867683819e-06,
+ "bake_verification": {
+  "limit_cm": 0.05,
+  "float32": {
+   "clip0_max_cm": 2.002963439206051e-05,
+   "clip1_max_cm": 1.9357667825366392e-05
+  },
+  "saved_exr_float16": {
+   "clip0_max_cm": 0.041857816716479083,
+   "clip1_max_cm": 0.042426646558535765
+  },
+  "saved_exr_float16_not_renormalised": {
+   "clip0_max_cm": 0.03750302307225893,
+   "clip1_max_cm": 0.03991226767687701
+  },
+  "shield_only_saved_exr_float16_max_cm": 0.042426646558535765,
+  "shield_only_not_renormalised_max_cm": 0.03991226767687701,
+  "rest_pose_check_max_cm": 3.814697265625e-06
+ },
+ "walk_checks": {
+  "clip0_shield_run": {
+   "slide_per_cycle_cm": 0.0309,
+   "slide_max_frame_cm": 0.0053,
+   "contact_pairs": 14,
+   "lowest_foot_vertex_z_cm": -1.358
+  },
+  "clip2_plain_run": {
+   "slide_per_cycle_cm": 0.0309,
+   "slide_max_frame_cm": 0.0053,
+   "contact_pairs": 14,
+   "lowest_foot_vertex_z_cm": -1.358
+  },
+  "knee_max_deg": 15.0,
+  "run_rate": 1.5,
+  "speed_cm_s": 180.0,
+  "cycle_s_at_run_rate": 0.3556,
+  "stride_step_cm": 32.0
+ },
+ "shield_to_body_min_distance_cm": {
+  "clip0_shield_run": {
+   "torso": {
+    "min_cm": 1.409,
+    "frame": 14,
+    "overlap_pairs_any_frame": 0
+   },
+   "legs": {
+    "min_cm": 2.084,
+    "frame": 0,
+    "overlap_pairs_any_frame": 0
+   },
+   "arms": {
+    "min_cm": 12.223,
+    "frame": 9,
+    "overlap_pairs_any_frame": 0
+   },
+   "hand_L": {
+    "min_cm": 0.0,
+    "frame": 8,
+    "overlap_pairs_any_frame": 7712
+   }
+  },
+  "clip1_shield_bash": {
+   "torso": {
+    "min_cm": 2.311,
+    "frame": 20,
+    "overlap_pairs_any_frame": 0
+   },
+   "legs": {
+    "min_cm": 5.95,
+    "frame": 22,
+    "overlap_pairs_any_frame": 0
+   },
+   "arms": {
+    "min_cm": 12.014,
+    "frame": 18,
+    "overlap_pairs_any_frame": 0
+   },
+   "hand_L": {
+    "min_cm": 0.0,
+    "frame": 21,
+    "overlap_pairs_any_frame": 7230
+   }
+  }
+ },
+ "shield_to_body_per_frame": [
+  {
+   "frame": 0,
+   "torso": 1.69,
+   "legs": 2.08,
+   "arms": 12.22,
+   "hand_L": 0.0
+  },
+  {
+   "frame": 1,
+   "torso": 1.65,
+   "legs": 3.49,
+   "arms": 12.22,
+   "hand_L": 0.0
+  },
+  {
+   "frame": 2,
+   "torso": 1.64,
+   "legs": 6.42,
+   "arms": 12.22,
+   "hand_L": 0.0
+  },
+  {
+   "frame": 3,
+   "torso": 1.65,
+   "legs": 10.81,
+   "arms": 12.22,
+   "hand_L": 0.0
+  },
+  {
+   "frame": 4,
+   "torso": 1.69,
+   "legs": 12.92,
+   "arms": 12.22,
+   "hand_L": 0.0
+  },
+  {
+   "frame": 5,
+   "torso": 1.46,
+   "legs": 10.23,
+   "arms": 12.22,
+   "hand_L": 0.0
+  },
+  {
+   "frame": 6,
+   "torso": 1.41,
+   "legs": 9.69,
+   "arms": 12.22,
+   "hand_L": 0.0
+  },
+  {
+   "frame": 7,
+   "torso": 1.46,
+   "legs": 8.18,
+   "arms": 12.22,
+   "hand_L": 0.0
+  },
+  {
+   "frame": 8,
+   "torso": 1.69,
+   "legs": 7.45,
+   "arms": 12.22,
+   "hand_L": 0.0
+  },
+  {
+   "frame": 9,
+   "torso": 1.65,
+   "legs": 9.45,
+   "arms": 12.22,
+   "hand_L": 0.0
+  },
+  {
+   "frame": 10,
+   "torso": 1.64,
+   "legs": 8.71,
+   "arms": 12.22,
+   "hand_L": 0.0
+  },
+  {
+   "frame": 11,
+   "torso": 1.65,
+   "legs": 7.19,
+   "arms": 12.22,
+   "hand_L": 0.0
+  },
+  {
+   "frame": 12,
+   "torso": 1.69,
+   "legs": 5.94,
+   "arms": 12.22,
+   "hand_L": 0.0
+  },
+  {
+   "frame": 13,
+   "torso": 1.46,
+   "legs": 4.83,
+   "arms": 12.22,
+   "hand_L": 0.0
+  },
+  {
+   "frame": 14,
+   "torso": 1.41,
+   "legs": 5.17,
+   "arms": 12.22,
+   "hand_L": 0.0
+  },
+  {
+   "frame": 15,
+   "torso": 1.46,
+   "legs": 3.8,
+   "arms": 12.22,
+   "hand_L": 0.0
+  },
+  {
+   "frame": 16,
+   "torso": 2.8,
+   "legs": 12.92,
+   "arms": 12.09,
+   "hand_L": 0.0
+  },
+  {
+   "frame": 17,
+   "torso": 2.57,
+   "legs": 11.11,
+   "arms": 12.04,
+   "hand_L": 0.0
+  },
+  {
+   "frame": 18,
+   "torso": 2.48,
+   "legs": 10.14,
+   "arms": 12.01,
+   "hand_L": 0.0
+  },
+  {
+   "frame": 19,
+   "torso": 2.42,
+   "legs": 12.07,
+   "arms": 12.07,
+   "hand_L": 0.0
+  },
+  {
+   "frame": 20,
+   "torso": 2.31,
+   "legs": 11.95,
+   "arms": 12.19,
+   "hand_L": 0.0
+  },
+  {
+   "frame": 21,
+   "torso": 4.93,
+   "legs": 8.03,
+   "arms": 12.31,
+   "hand_L": 0.0
+  },
+  {
+   "frame": 22,
+   "torso": 5.18,
+   "legs": 5.95,
+   "arms": 12.37,
+   "hand_L": 0.0
+  },
+  {
+   "frame": 23,
+   "torso": 5.16,
+   "legs": 6.56,
+   "arms": 12.36,
+   "hand_L": 0.0
+  },
+  {
+   "frame": 24,
+   "torso": 5.17,
+   "legs": 8.15,
+   "arms": 12.33,
+   "hand_L": 0.0
+  },
+  {
+   "frame": 25,
+   "torso": 4.22,
+   "legs": 10.32,
+   "arms": 12.29,
+   "hand_L": 0.0
+  },
+  {
+   "frame": 26,
+   "torso": 3.29,
+   "legs": 12.68,
+   "arms": 12.25,
+   "hand_L": 0.0
+  },
+  {
+   "frame": 27,
+   "torso": 2.78,
+   "legs": 14.4,
+   "arms": 12.2,
+   "hand_L": 0.0
+  },
+  {
+   "frame": 28,
+   "torso": 2.61,
+   "legs": 14.15,
+   "arms": 12.16,
+   "hand_L": 0.0
+  },
+  {
+   "frame": 29,
+   "torso": 2.71,
+   "legs": 14.0,
+   "arms": 12.13,
+   "hand_L": 0.0
+  },
+  {
+   "frame": 30,
+   "torso": 2.79,
+   "legs": 13.89,
+   "arms": 12.12,
+   "hand_L": 0.0
+  }
+ ],
+ "shield_pose": {
+  "plate_pitch_deg_per_frame": [
+   3.0,
+   2.05,
+   1.66,
+   2.05,
+   3.0,
+   3.95,
+   4.34,
+   3.95,
+   3.0,
+   2.05,
+   1.66,
+   2.05,
+   3.0,
+   3.95,
+   4.34,
+   3.95,
+   5.56,
+   6.47,
+   7.07,
+   7.17,
+   7.89,
+   8.58,
+   8.59,
+   8.52,
+   8.26,
+   7.8,
+   7.16,
+   6.44,
+   5.79,
+   5.32,
+   5.15
+  ],
+  "plate_yaw_deg_per_frame": [
+   0.0,
+   -0.8,
+   -1.57,
+   -2.3,
+   -3.02,
+   -3.72,
+   -4.44,
+   -5.21,
+   -2.47,
+   -2.26,
+   -1.6,
+   -0.62,
+   0.53,
+   1.68,
+   0.62,
+   -0.2,
+   0.46,
+   0.33,
+   0.34,
+   -0.02,
+   -0.2,
+   1.01,
+   2.18,
+   1.97,
+   1.49,
+   0.97,
+   0.6,
+   0.45,
+   0.47,
+   0.56,
+   0.6
+  ],
+  "lowest_vertex_z_cm_per_frame": [
+   13.9,
+   13.0,
+   12.3,
+   12.1,
+   12.3,
+   14.0,
+   15.2,
+   15.6,
+   13.9,
+   13.0,
+   12.3,
+   12.1,
+   12.3,
+   14.0,
+   15.2,
+   15.6,
+   12.4,
+   12.3,
+   12.4,
+   13.7,
+   16.5,
+   17.9,
+   18.4,
+   18.3,
+   17.8,
+   17.3,
+   16.5,
+   15.3,
+   14.0,
+   12.9,
+   12.5
+  ],
+  "max_x_cm_per_frame": [
+   34.6,
+   33.6,
+   33.4,
+   34.3,
+   36.1,
+   37.8,
+   38.7,
+   38.5,
+   35.8,
+   34.3,
+   33.4,
+   33.5,
+   34.6,
+   36.1,
+   36.6,
+   36.1,
+   36.1,
+   33.8,
+   32.7,
+   36.1,
+   44.5,
+   53.1,
+   57.0,
+   56.2,
+   54.1,
+   51.0,
+   47.4,
+   43.8,
+   40.7,
+   38.5,
+   37.7
+  ]
+ },
+ "shield_placement": {
+  "rule": "v_rest = R0^T (v_placed - t0) with (R0, t0) = ForearmHand_L transform of clip 0 frame 0; placed = Ry(-3.0 deg) v + origin, origin = hand centre - Ry g",
+  "tilt_back_deg": 3.0,
+  "grip_centre_cm_shield_space": [
+   -2.4119999999999995,
+   5.52,
+   51.436
+  ],
+  "hand_centre_rest_cm": [
+   -6.558,
+   40.86,
+   54.528
+  ],
+  "placed_origin_cm": [
+   29.341,
+   7.26,
+   13.787
+  ],
+  "hand_centre_frame0_cm": [
+   24.24,
+   12.78,
+   65.026
+  ],
+  "placed_bounds_min": [
+   20.06,
+   -18.42,
+   13.91
+  ],
+  "placed_bounds_max": [
+   34.59,
+   32.94,
+   112.33
+  ]
+ },
+ "arm_solution_deg": {
+  "guard_run": [
+   -28.842,
+   -53.768,
+   -29.495,
+   -31.951,
+   85.326
+  ],
+  "guard_stand": [
+   -38.446,
+   -51.127,
+   -14.247,
+   -30.168,
+   79.739
+  ],
+  "wind": [
+   -50.44,
+   -41.548,
+   -4.567,
+   -30.573,
+   76.359
+  ],
+  "strike": [
+   -16.976,
+   -71.653,
+   -31.919,
+   -27.645,
+   84.462
+  ]
+ },
+ "keys": {
+  "guard_run": {
+   "target": [
+    36.0,
+    9.0,
+    54.0
+   ],
+   "tilt": null
+  },
+  "guard_stand": {
+   "target": [
+    36.0,
+    9.0,
+    54.0
+   ],
+   "tilt": 3.0
+  },
+  "wind": {
+   "target": [
+    28.0,
+    5.0,
+    56.0
+   ],
+   "tilt": 6.0
+  },
+  "strike": {
+   "target": [
+    58.0,
+    9.0,
+    58.0
+   ],
+   "tilt": 3.0
+  }
+ },
+ "uv2_check": {
+  "shield": {
+   "expected": 0.44999998807907104,
+   "corners": 2937,
+   "unique_u": [
+    0.44999998807907104
+   ],
+   "unique_v": [
+    0.44999998807907104
+   ],
+   "max_abs_error": 0.0
+  },
+  "shield_partindex_red": [
+   0.444444
+  ],
+  "shield_expected_red": 0.4444444444444444,
+  "chaser_parts_unchanged_vs_chaser_meshy_parts_fbx": true,
+  "chaser_max_vertex_diff_cm": 7.62939453125e-06,
+  "per_part": {
+   "Pelvis": {
+    "tris": 284,
+    "max_vertex_diff_cm": 0.0,
+    "unchanged_vs_source": true,
+    "partid_unique": [
+     0.05
+    ]
+   },
+   "HeadTorso": {
+    "tris": 1261,
+    "max_vertex_diff_cm": 1e-05,
+    "unchanged_vs_source": true,
+    "partid_unique": [
+     0.15
+    ]
+   },
+   "UpperArm_L": {
+    "tris": 336,
+    "max_vertex_diff_cm": 0.0,
+    "unchanged_vs_source": true,
+    "partid_unique": [
+     0.25
+    ]
+   },
+   "UpperArm_R": {
+    "tris": 318,
+    "max_vertex_diff_cm": 0.0,
+    "unchanged_vs_source": true,
+    "partid_unique": [
+     0.35
+    ]
+   },
+   "ForearmHand_L": {
+    "tris": 678,
+    "max_vertex_diff_cm": 1e-05,
+    "unchanged_vs_source": true,
+    "partid_unique": [
+     0.45
+    ]
+   },
+   "ForearmHand_R": {
+    "tris": 698,
+    "max_vertex_diff_cm": 1e-05,
+    "unchanged_vs_source": true,
+    "partid_unique": [
+     0.55
+    ]
+   },
+   "Thigh_L": {
+    "tris": 350,
+    "max_vertex_diff_cm": 0.0,
+    "unchanged_vs_source": true,
+    "partid_unique": [
+     0.65
+    ]
+   },
+   "Thigh_R": {
+    "tris": 350,
+    "max_vertex_diff_cm": 0.0,
+    "unchanged_vs_source": true,
+    "partid_unique": [
+     0.75
+    ]
+   },
+   "ShinFoot_L": {
+    "tris": 926,
+    "max_vertex_diff_cm": 1e-05,
+    "unchanged_vs_source": true,
+    "partid_unique": [
+     0.85
+    ]
+   },
+   "ShinFoot_R": {
+    "tris": 954,
+    "max_vertex_diff_cm": 1e-05,
+    "unchanged_vs_source": true,
+    "partid_unique": [
+     0.95
+    ]
+   }
+  }
+ },
+ "slots": {
+  "file_order": {
+   "models": [
+    "ForearmHand_L",
+    "ForearmHand_R",
+    "HeadTorso",
+    "Pelvis",
+    "Shield",
+    "ShinFoot_L",
+    "ShinFoot_R",
+    "Thigh_L",
+    "Thigh_R",
+    "UpperArm_L",
+    "UpperArm_R"
+   ],
+   "materials": [
+    "body",
+    "M_ChaserShield",
+    "M_ChaserShield_Emblem",
+    "robot_eye"
+   ]
+  },
+  "shield_materials": [
+   "M_ChaserShield",
+   "M_ChaserShield_Emblem"
+  ],
+  "chaser_material": [
+   "body",
+   "robot_eye"
+  ],
+  "shield_tris_per_material": [
+   977,
+   2
+  ],
+  "expected": "meshy_chaser, M_ChaserShield, M_ChaserShield_Emblem"
+ },
+ "lightmap_uv1": {
+  "per_object": {
+   "ForearmHand_L": {
+    "in_0_1": true,
+    "finite": true,
+    "zero_area_tris": 0
+   },
+   "ForearmHand_R": {
+    "in_0_1": true,
+    "finite": true,
+    "zero_area_tris": 0
+   },
+   "HeadTorso": {
+    "in_0_1": true,
+    "finite": true,
+    "zero_area_tris": 0
+   },
+   "Pelvis": {
+    "in_0_1": true,
+    "finite": true,
+    "zero_area_tris": 0
+   },
+   "Shield": {
+    "in_0_1": true,
+    "finite": true,
+    "zero_area_tris": 0
+   },
+   "ShinFoot_L": {
+    "in_0_1": true,
+    "finite": true,
+    "zero_area_tris": 0
+   },
+   "ShinFoot_R": {
+    "in_0_1": true,
+    "finite": true,
+    "zero_area_tris": 0
+   },
+   "Thigh_L": {
+    "in_0_1": true,
+    "finite": true,
+    "zero_area_tris": 0
+   },
+   "Thigh_R": {
+    "in_0_1": true,
+    "finite": true,
+    "zero_area_tris": 0
+   },
+   "UpperArm_L": {
+    "in_0_1": true,
+    "finite": true,
+    "zero_area_tris": 0
+   },
+   "UpperArm_R": {
+    "in_0_1": true,
+    "finite": true,
+    "zero_area_tris": 0
+   }
+  },
+  "all_in_0_1_and_finite": true,
+  "note": "every part keeps its own 0..1 packing like the chaser parts of chaser_v2_meshy_parts.fbx (parts overlap each other in UV1; unchanged)"
+ },
+ "export": {
+  "use_selection": true,
+  "object_types": [
+   "MESH"
+  ],
+  "apply_scale_options": "FBX_SCALE_UNITS",
+  "global_scale": 1.0,
+  "axis_forward": "-Z",
+  "axis_up": "Y",
+  "mesh_smooth_type": "OFF",
+  "add_leaf_bones": false,
+  "path_mode": "RELATIVE",
+  "embed_textures": false,
+  "colors_type": "LINEAR",
+  "fbx_unit_scale_factor_in_file": 100.0
+ },
+ "readback": {
+  "objects": [
+   "ForearmHand_L",
+   "ForearmHand_R",
+   "HeadTorso",
+   "Pelvis",
+   "Shield",
+   "ShinFoot_L",
+   "ShinFoot_R",
+   "Thigh_L",
+   "Thigh_R",
+   "UpperArm_L",
+   "UpperArm_R"
+  ],
+  "parents": {
+   "ForearmHand_L": "UpperArm_L",
+   "ForearmHand_R": "UpperArm_R",
+   "HeadTorso": "Pelvis",
+   "Pelvis": null,
+   "Shield": null,
+   "ShinFoot_L": "Thigh_L",
+   "ShinFoot_R": "Thigh_R",
+   "Thigh_L": "Pelvis",
+   "Thigh_R": "Pelvis",
+   "UpperArm_L": "HeadTorso",
+   "UpperArm_R": "HeadTorso"
+  },
+  "bounds_min_cm": [
+   -33.79,
+   -48.91,
+   -0.0
+  ],
+  "bounds_max_cm": [
+   24.0,
+   83.24,
+   123.0
+  ],
+  "shield": {
+   "tris": 979,
+   "uv_layers": [
+    "UVMap",
+    "LightMap",
+    "PartId"
+   ],
+   "materials": [
+    "M_ChaserShield",
+    "M_ChaserShield_Emblem"
+   ],
+   "tris_per_material": [
+    977,
+    2
+   ],
+   "rest_vertices_vs_expected_max_cm": 1e-05,
+   "world_matrix_identity": true,
+   "partid": {
+    "expected": 0.44999998807907104,
+    "corners": 2937,
+    "unique_u": [
+     0.44999998807907104
+    ],
+    "unique_v": [
+     0.44999998807907104
+    ],
+    "max_abs_error": 0.0
+   },
+   "partindex_red_unique": [
+    0.444444
+   ],
+   "expected_red": 0.4444444444444444,
+   "lightmap": {
+    "min": [
+     0.010265619494020939,
+     0.010352181270718575
+    ],
+    "max": [
+     0.9850000143051147,
+     0.9397905468940735
+    ],
+    "finite": true
+   }
+  }
+ },
+ "preview": {
+  "camera": "orthographic 150 cm, 750 x 1000 px per tile, tq = azimuth -40 deg from +X toward +Y (camera front right of the robot), elevation 20, target (14, 0, 66); side = azimuth -90; light = sun 1.0 following the camera as in the ChaserShield previews, white world 0.35; poses taken from the saved EXR rows; frames are rows of the texture",
+  "frames": {
+   "clip0": [
+    0,
+    4,
+    8,
+    12
+   ],
+   "clip1": [
+    16,
+    18,
+    22,
+    26
+   ],
+   "plain": [
+    35,
+    53
+   ]
+  }
+ },
+ "warnings": []
+}
