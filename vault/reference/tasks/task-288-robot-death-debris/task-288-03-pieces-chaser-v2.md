@@ -3,7 +3,7 @@ id: task-288-03-pieces-chaser-v2
 description: "Debris pieces of the chaser v2 (3d)."
 parent: task-288-robot-death-debris
 kind: task
-status: todo
+status: in-progress
 ---
 # Debris pieces of the chaser v2
 

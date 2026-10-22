@@ -3,7 +3,7 @@ id: task-288-02-pieces-shooter
 description: "Debris pieces of the shooter (3d)."
 parent: task-288-robot-death-debris
 kind: task
-status: in-progress
+status: done
 ---
 # Debris pieces of the shooter
 
@@ -15,11 +15,11 @@ status: in-progress
 - done_when: piece count and order as listed, offsets mirrored left and right within 0.5 cm, UV0 only, FBX_SCALE_UNITS, v1 debris files unchanged (git diff); the Orchestrator renders the pieces laid out and sends the render to the owner; Blender processes stopped
 - editor_state: closed (Blender headless only)
 - token_ceiling: 60000
-- model: open
-- tokens: open
-- runs: open
+- model: sonnet
+- tokens: input 62, cache write 92359, cache read 955573, output 15830
+- runs: 1
 - milestone: M2
-- result: open
+- result: 13 shooter debris pieces Art/Source/shooter-meshy/debris/ + debris_pieces.json (cannon on Forearm_R); mirror_vs_source: all misses = source asymmetry or the cannon; v1 and heavy debris unchanged; tools take --robot; render Saved/Renders/task-288/shooter_debris_layout.png.
 
 ## Relations
 - [[task-288-robot-death-debris]] — parent global task.
