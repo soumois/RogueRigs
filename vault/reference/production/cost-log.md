@@ -575,6 +575,7 @@ kind: note
 | [[task-284-05-cpp-anim-clips]] | opus | 2 | 0k | 145k | 4325k | 46k |
 | [[task-284-06-bp-heavy-anim]] | sonnet | 1 | 0k | 131k | 4089k | 28k |
 | [[task-284-07-bp-shooter-anim]] | sonnet | 1 | 0k | 62k | 1098k | 14k |
+| [[task-284-08-bp-chaser-v2-anim]] | sonnet | 1 | 0k | 91k | 1582k | 19k |
 
 ## Totals
 | Scope | Input | Cache write | Cache read | Output |

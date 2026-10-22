@@ -3,7 +3,7 @@ id: task-284-08-bp-chaser-v2-anim
 description: "BP_ChaserV2 plays the run and attack (bp)."
 parent: task-284-robot-walk-knee-anim
 kind: task
-status: in-progress
+status: done
 ---
 # BP_ChaserV2 plays the run and attack
 
@@ -15,11 +15,11 @@ status: in-progress
 - done_when: git diff shows no chaser v1 asset changed; RENDER_DATA UV channel 2 read back clean on every corner, build settings and texture settings read back, eye RunRate and ClipOffset equal to the body instance, compiles without error, doc updated; lint clean
 - editor_state: open
 - token_ceiling: 80000
-- model: open
-- tokens: open
-- runs: open
+- model: sonnet
+- tokens: input 50, cache write 90664, cache read 1581825, output 18906
+- runs: 1
 - milestone: M2
-- result: open
+- result: BP_ChaserV2 (duplicate of BP_Chaser, ARRChaser, same debris/puff) with SM_ChaserV2_Meshy_Anim (BodyMesh z -62) + T_ChaserV2Anim; UV2 RENDER_DATA clean; settings read back; MI_ChaserV2_Body/MI_RobotEye_ChaserV2 Animated, RunRate 1.5; compiles clean; v1 untouched; doc bp-chaser-v2.
 
 ## Relations
 - [[task-284-robot-walk-knee-anim]] — parent global task.

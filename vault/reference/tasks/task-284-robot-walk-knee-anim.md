@@ -14,7 +14,7 @@ status: in-progress
 - depends_on_global: task-283
 - confirmed_by_owner: yes (2026-10-22, plan accepted; launch on the owner's word)
 - milestone: M2
-- next_step: task-284-08-bp-chaser-v2-anim
+- next_step: task-284-09-bp-kamikaze-anim
 - result: open
 
 ## Subtasks

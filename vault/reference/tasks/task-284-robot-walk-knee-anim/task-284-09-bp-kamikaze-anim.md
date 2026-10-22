@@ -3,7 +3,7 @@ id: task-284-09-bp-kamikaze-anim
 description: "BP_Kamikaze plays the leg sway (bp)."
 parent: task-284-robot-walk-knee-anim
 kind: task
-status: todo
+status: in-progress
 ---
 # BP_Kamikaze plays the leg sway
 
