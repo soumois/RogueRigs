@@ -15,7 +15,7 @@ status: done
 - confirmed_by_owner: yes (2026-10-22, plan accepted; launch on the owner's word)
 - milestone: M2
 - next_step: none
-- result: Done. Cause: base colour (olive discs/hubs, dark smears on yellow panel edges); metallic/roughness clean. texture_clean/chaser_v2.json; 227,666 texels changed (yellow (253,187,19), charcoal (24,24,24)), outside-class unchanged, other three outputs byte-identical; renders Saved/Renders/task-282/chaser_v2_* incl. shoulder close-up.
+- result: Done. Defect in base colour for all four (metallic/roughness clean, unused under the base-colour-only default). Tools/art/blender/meshy_texture_clean.py + texture_clean/{heavy,kamikaze,shooter,chaser_v2}.json; *_clean_basecolor.png and reports in Art/Meshes/*-meshy/; outside-class texels unchanged; before/after renders and close-ups Saved/Renders/task-282/.
 
 ## Subtasks
 1. task-282-01-texture-clean-heavy — 3d: Clean the heavy textures
