@@ -28,6 +28,7 @@ status: done
 8. task-283-08-bp-kamikaze-mesh — bp: BP_Kamikaze uses the Meshy mesh
 9. task-283-09-bp-shooter-mesh — bp: BP_Shooter uses the Meshy mesh
 10. task-283-10-capture-after — cpp: Capture the robots after integration
+11. task-283-11-kamikaze-core-scale — bp: Kamikaze armed core scale 1.2 (owner 2026-10-22)
 
 ## Relations
 - [[tasks-done-index]] — parent index.
@@ -41,3 +42,4 @@ status: done
 - [[task-283-08-bp-kamikaze-mesh]] — step 08, bp.
 - [[task-283-09-bp-shooter-mesh]] — step 09, bp.
 - [[task-283-10-capture-after]] — step 10, cpp.
+- [[task-283-11-kamikaze-core-scale]] — step 11, bp (owner answer 2026-10-22).
