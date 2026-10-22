@@ -1,7 +1,8 @@
 # Rogue Rigs - robot capture for visual checks (task-283-01): one -game run per robot (heavy, kamikaze, shooter, chaser),
 # robot spawned 400 uu from the miner with rr.Debug.SpawnNear, time frozen with slomo, one game-camera shot with rr.Debug.Shots,
 # PNG copied to Saved/RobotMeshes/<Label>/<robot>.png. Runs alongside an open editor; only the -game process it starts is closed.
-# -NoFreeze (task-284-11): no slomo, -ShotCount shots every -ShotInterval s from -ShotDelay s after the spawn, copied to <robot>_<i>.png (robots caught walking).
+# -NoFreeze (task-284-11): no slomo, -ShotCount shots every -ShotInterval s from -ShotDelay s after the spawn, copied to <robot><Suffix>_<i>.png (robots caught walking);
+#   with -NoFreeze: -Distance/-Yaw (SpawnNear uu and degrees), -Camera "<Pitch> <Arm> [Yaw]" (rr.Debug.Camera at 14 s), -StopSpawner (rr.Spawner.Enabled 0).
 # Usage: powershell -NoProfile -ExecutionPolicy Bypass -File Tools\capture\robot_shots.ps1 [-Label before|after] [-Robots heavy,kamikaze,shooter,chaser,chaserv2] [-NoFreeze -ShotCount 4 -ShotInterval 0.25 -ShotDelay 0.5]
 param(
 	[string]$Label = "before",
@@ -10,7 +11,12 @@ param(
 	[switch]$NoFreeze,
 	[int]$ShotCount = 4,
 	[double]$ShotInterval = 0.25,
-	[double]$ShotDelay = 0.5
+	[double]$ShotDelay = 0.5,
+	[int]$Distance = 400,
+	[int]$Yaw = 0,
+	[string]$Camera = "",
+	[switch]$StopSpawner,
+	[string]$Suffix = ""
 )
 
 $ErrorActionPreference = "Stop"
@@ -41,7 +47,9 @@ foreach ($Robot in $Robots) {
 		$First = [string]::Format([Globalization.CultureInfo]::InvariantCulture, "{0:0.###}", 15 + $ShotDelay)
 		$Gap = [string]::Format([Globalization.CultureInfo]::InvariantCulture, "{0:0.###}", $ShotInterval)
 		$QuitAt = [int][Math]::Ceiling(15 + $ShotDelay + $ShotInterval * $ShotCount + 4)
-		$Exec = "rr.Stress.Peace 1,rr.Debug.Delayed 15 rr.Debug.SpawnNear $Class 400 0,rr.Debug.Shots $First $ShotCount $Gap $Prefix,rr.Debug.Delayed $QuitAt Quit"
+		$Exec = "rr.Stress.Peace 1,rr.Debug.Delayed 15 rr.Debug.SpawnNear $Class $Distance $Yaw,rr.Debug.Shots $First $ShotCount $Gap $Prefix,rr.Debug.Delayed $QuitAt Quit"
+		if ($StopSpawner) { $Exec = "rr.Spawner.Enabled 0,rr.Debug.Delayed 1 rr.Spawner.Enabled 0,$Exec" }
+		if ($Camera) { $Exec = "rr.Debug.Delayed 14 rr.Debug.Camera $Camera,$Exec" }
 	}
 	Write-Host "[$Robot] UnrealEditor.exe `"$Project`" $Map -game -windowed -ResX=1600 -ResY=900 -nosplash -log -ExecCmds=`"$Exec`""
 	$Start = Get-Date
@@ -53,7 +61,7 @@ foreach ($Robot in $Robots) {
 	$Count = if ($NoFreeze) { $ShotCount } else { 1 }
 	for ($i = 0; $i -lt $Count; $i++) {
 		$Name = "{0}_{1:00}.png" -f $Prefix, $i
-		$Dest = if ($NoFreeze) { Join-Path $OutDir ("{0}_{1}.png" -f $Robot, $i) } else { Join-Path $OutDir "$Robot.png" }
+		$Dest = if ($NoFreeze) { Join-Path $OutDir ("{0}{1}_{2}.png" -f $Robot, $Suffix, $i) } else { Join-Path $OutDir "$Robot.png" }
 		$Shot = Get-ChildItem -Path (Join-Path $ProjectDir "Saved\Screenshots") -Recurse -Filter $Name -ErrorAction SilentlyContinue |
 			Where-Object { $_.LastWriteTime -ge $Start } | Select-Object -First 1
 		if ($Shot) {
