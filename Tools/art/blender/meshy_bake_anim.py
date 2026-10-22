@@ -51,7 +51,8 @@ shutil.copyfile(opt["--in-tex"], TEX)
 PARTS = ["Pelvis", "HeadTorso", "UpperArm_L", "UpperArm_R", "ForearmHand_L", "ForearmHand_R", "Thigh_L", "Thigh_R", "ShinFoot_L", "ShinFoot_R"]
 PARENT = {"Pelvis": None, "HeadTorso": "Pelvis", "UpperArm_L": "HeadTorso", "UpperArm_R": "HeadTorso", "ForearmHand_L": "UpperArm_L", "ForearmHand_R": "UpperArm_R",
           "Thigh_L": "Pelvis", "Thigh_R": "Pelvis", "ShinFoot_L": "Thigh_L", "ShinFoot_R": "Thigh_R"}
-SLAMC = BK.get("slam")                  # task-285-01: telegraph (clip 1), strike (clip 2), recover (clip 3) on the rows after the walk
+AIMF = "aimfire" in BK and "slam" not in BK         # task-287-01: aim (clip 1), rest (clip 2), fire (clip 3) of the shooter, poses from robot_aimfire_poses.py (same row layout as the slam)
+SLAMC = BK.get("slam") or BK.get("aimfire")                  # task-285-01: telegraph (clip 1), strike (clip 2), recover (clip 3) on the rows after the walk
 NRUN, NATT = 16, (int(SLAMC["telegraph_frames"]) + int(SLAMC["strike_frames"]) + int(SLAMC["recover_frames"]) if SLAMC else (15 if BK.get("attack", True) else 0))
 NF = NRUN + NATT                       # baked frames
 NFT = int(BK.get("tex_rows", NF))      # texture rows: rows NF..NFT-1 are reserved (rest pose) for clips a later task adds
@@ -191,8 +192,12 @@ def set_pelvis(pose):
 
 SLAMP = None
 if SLAMC:
-    import robot_slam_poses as rsp
-    SLAMP = rsp.Slam(SLAMC, apply_pose, world_verts, REST_P, REST_V)
+    if AIMF:
+        import robot_aimfire_poses as rafp
+        SLAMP = rafp.AimFire(SLAMC, apply_pose, world_verts, REST_P, REST_V)
+    else:
+        import robot_slam_poses as rsp
+        SLAMP = rsp.Slam(SLAMC, apply_pose, world_verts, REST_P, REST_V)
     SLAM_LIST = SLAMP.poses()
 for f in range(NF):
     if f < NRUN:
@@ -476,7 +481,7 @@ pelvis_step_cm = [round(abs(POSES[(f + 1) % NRUN]["Pelvis"]["loc"][2] - POSES[f]
 
 # ---------------------------------------------------------------- slam checks (task-285-01), from the SAVED half-float texture
 SLAM_REP = None
-if SLAMP:
+if SLAMP and not AIMF:
     HEADV = REST_V["HeadTorso"]
     rows = []
     foot_rest = {n: REST_V[n] for n in FOOT}
@@ -503,6 +508,9 @@ if SLAMP:
         keys={k: {a: round(b, 3) for a, b in v.items()} for k, v in SLAMP.keys.items()}, per_row=rows)
     if SLAM_REP["max_foot_displacement_cm"] > 0.1:
         WARN.append("feet move during the slam clips by more than 0.1 cm")
+
+if AIMF:
+    exec(open(os.path.join(os.path.dirname(os.path.abspath(__file__)), "robot_aimfire_report.py"), encoding="utf-8").read())
 
 # ---------------------------------------------------------------- renders
 RENDERS = []
@@ -668,7 +676,7 @@ if CFG:      # per-robot additions (the chaser v1 report is left as it was)
     rep["texture"]["frame_index"] = dict(walk="0..%d" % (NRUN - 1), **{k_: v_ for k_, v_ in BK.get("frame_index_extra", {}).items()})
     rep["texture"]["reserved_rows_note"] = "rows %d..%d hold the rest pose (identity quaternion, translation 0) until a later task bakes clips there" % (NF, NFT - 1) if NFT > NF else None
     if SLAMC:
-        rep["texture"]["frame_index"] = dict(walk="0..15", telegraph_clip1="16..30", strike_clip2="31..46", recover_clip3="47..61")
+        rep["texture"]["frame_index"] = dict(walk="0..15", aim_clip1="16..30", rest_clip2="31..46", fire_clip3="47..61") if AIMF else dict(walk="0..15", telegraph_clip1="16..30", strike_clip2="31..46", recover_clip3="47..61")
         rep["reserved_rows"] = []
     rep["parameters"]["run_rate"] = RUN_RATE
     rep["parameters"]["walk_style"] = WALK_STYLE
@@ -682,7 +690,7 @@ if CFG:      # per-robot additions (the chaser v1 report is left as it was)
             rep.pop(k_, None)
         rep["feet"].pop("attack", None)
         rep["clips"].pop("attack", None)
-        rep["slam"] = SLAM_REP
+        rep["aimfire" if AIMF else "slam"] = SLAM_REP
         rep["clips"].update({k_: dict(start_frame=int(v_["rows"].split("..")[0]), **v_) for k_, v_ in SLAM_REP["clips"].items()})
     rep["walk_checks"] = dict(
         source="positions rebuilt from the SAVED half-float texture (quaternion renormalised as in the shader), rest vertices of the foot parts",

@@ -17,6 +17,27 @@
    "rows": "0..15",
    "run_rate_baked_for": 1.25,
    "seconds_at_run_rate": 0.4267
+  },
+  "aim": {
+   "start_frame": 16,
+   "clip_id": 1,
+   "rows": "16..30",
+   "frames": 15,
+   "behaviour": "clamped (30 fps, frame = floor(t x 30)): arm raised with a smoothstep over frames 0..9 (reached at frame 9 = 0.300 s), held to row 30 = aim pose"
+  },
+  "rest": {
+   "start_frame": 31,
+   "clip_id": 2,
+   "rows": "31..46",
+   "frames": 16,
+   "behaviour": "LOOPED by the shader with RunRate: every row = exact rest pose (RestClipId 2 unchanged)"
+  },
+  "fire": {
+   "start_frame": 47,
+   "clip_id": 3,
+   "rows": "47..61",
+   "frames": 15,
+   "behaviour": "clamped: frame 0 = aim pose, recoil peak at frame 2 (0.067 s), back to the aim pose at frame 6 (0.200 s), held to the last row = aim pose"
   }
  },
  "parts": [
@@ -134,7 +155,10 @@
   "format": "OpenEXR RGBA half float (16 bit), compression NONE, colourspace Non-Color (raw linear data), written by Blender save_render",
   "row_mapping": "frame f is the f-th scanline of the file counted from the TOP of the image (Unreal row 0 = frame 0 = run start); Blender in-memory row = (height - 1 - f); sample at u = (x + 0.5)/20, v = (f + 0.5)/31",
   "frame_index": {
-   "walk": "0..15"
+   "walk": "0..15",
+   "aim_clip1": "16..30",
+   "rest_clip2": "31..46",
+   "fire_clip3": "47..61"
   },
   "raw_exr_parse": {
    "channels": [
@@ -159,21 +183,21 @@
   "reload_vs_half_rounded_arrays_max_abs": 0.0,
   "reload_vs_float32_arrays_max_abs": 0.0,
   "reload_vs_float32_arrays_max_relative": 0.0,
-  "reserved_rows_note": "rows 16..61 hold the rest pose (identity quaternion, translation 0) until a later task bakes clips there"
+  "reserved_rows_note": null
  },
  "bake_verification": {
   "method": "for every frame and part: R(q_baked) * v_rest + t_baked against matrix_world @ local vertex of the keyed objects; max over all vertices (cm). float32 = arrays before the EXR; from_saved_exr = values re-read from the half float file (half float step: plain rounding of q and t costs up to ~0.06 cm; the script therefore stores, per frame and part, the float16 q (within one half step of exact) and float16 t (least squares) with the smallest max error, taking the worse of the normalised and not-renormalised quaternion use)",
   "float32": {
    "run_max_cm": 1.3455282621276033e-05,
-   "attack_max_cm": 0.0
+   "attack_max_cm": 1.1201099048517794e-05
   },
   "from_saved_exr_float16": {
    "run_max_cm": 0.013446419360197429,
-   "attack_max_cm": 0.0
+   "attack_max_cm": 0.029571211563614832
   },
   "from_saved_exr_float16_quaternion_not_renormalised": {
    "run_max_cm": 0.009825121141093731,
-   "attack_max_cm": 0.0
+   "attack_max_cm": 0.026552250377068275
   },
   "limit_cm": 0.05,
   "per_frame_float32_max_cm": [
@@ -192,7 +216,53 @@
    0.0,
    1e-05,
    1e-05,
-   1e-05
+   1e-05,
+   0.0,
+   0.0,
+   0.0,
+   0.0,
+   1e-05,
+   0.0,
+   0.0,
+   1e-05,
+   0.0,
+   0.0,
+   0.0,
+   0.0,
+   0.0,
+   0.0,
+   0.0,
+   0.0,
+   0.0,
+   0.0,
+   0.0,
+   0.0,
+   0.0,
+   0.0,
+   0.0,
+   0.0,
+   0.0,
+   0.0,
+   0.0,
+   0.0,
+   0.0,
+   0.0,
+   0.0,
+   0.0,
+   1e-05,
+   1e-05,
+   1e-05,
+   1e-05,
+   1e-05,
+   0.0,
+   0.0,
+   0.0,
+   0.0,
+   0.0,
+   0.0,
+   0.0,
+   0.0,
+   0.0
   ],
   "per_frame_saved_exr_max_cm": [
    0.00477,
@@ -210,7 +280,53 @@
    0.01004,
    0.01345,
    0.00982,
-   0.00682
+   0.00682,
+   0.0,
+   0.00039,
+   0.00061,
+   0.00142,
+   0.01645,
+   0.01525,
+   0.01013,
+   0.02035,
+   0.02957,
+   0.01189,
+   0.01189,
+   0.01189,
+   0.01189,
+   0.01189,
+   0.01189,
+   0.0,
+   0.0,
+   0.0,
+   0.0,
+   0.0,
+   0.0,
+   0.0,
+   0.0,
+   0.0,
+   0.0,
+   0.0,
+   0.0,
+   0.0,
+   0.0,
+   0.0,
+   0.0,
+   0.01189,
+   0.01874,
+   0.0271,
+   0.01531,
+   0.01874,
+   0.02567,
+   0.01189,
+   0.01189,
+   0.01189,
+   0.01189,
+   0.01189,
+   0.01189,
+   0.01189,
+   0.01189,
+   0.01189
   ]
  },
  "run_loop_closure": {
@@ -781,7 +897,31 @@
    12,
    14
   ],
-  "attack_frames": [],
+  "attack_frames": [
+   16,
+   18,
+   20,
+   22,
+   24,
+   26,
+   28,
+   30,
+   32,
+   34,
+   36,
+   38,
+   40,
+   42,
+   44,
+   46,
+   48,
+   50,
+   52,
+   54,
+   56,
+   58,
+   60
+  ],
   "camera": "orthographic 150 cm frame, 420 px per panel, 8 panels in a row; side = camera at -Y looking +Y (robot faces image right), front = camera at +X; lit rig of meshy_texture_fix.py (EEVEE, sun 4.5, world grey 0.62 strength 0.55), chaser_meshy_fixed_basecolor.png, dark floor slab top at z = 0"
  },
  "warnings": [
@@ -805,48 +945,25 @@
    "tex_rows": 62,
    "report_name": "shooter_meshy_anim_report.json",
    "render_frame_cm": 200,
-   "reserved": [
-    {
-     "clip_id": 1,
-     "rows": "16..30",
-     "frames": 15,
-     "note": "free for the aim clip of task-287 (shader: clamps at the last frame)"
-    },
-    {
-     "clip_id": 2,
-     "rows": "31..46",
-     "frames": 16,
-     "note": "free; the shader loops this clip with RunRate"
-    },
-    {
-     "clip_id": 3,
-     "rows": "47..61",
-     "frames": 15,
-     "note": "free for the fire clip of task-287 (shader: clamps at the last frame)"
-    }
-   ]
+   "reserved": [],
+   "aimfire": {
+    "task": "task-287-01-bake-shooter-aim-fire",
+    "note": "clip 1 = aim rows 16..30 (clamped), clip 2 = rest rows 31..46 (looped, RestClipId 2), clip 3 = fire rows 47..61 (clamped, ends on the aim pose); provisional owner timings 2026-10-22: aim over 0.3 s of the 0.6 s laser then held, recoil 0.2 s",
+    "telegraph_frames": 15,
+    "strike_frames": 16,
+    "recover_frames": 15,
+    "aim_frames": 9,
+    "peak_frame": 2,
+    "return_frame": 6,
+    "shoulder_back_cm": 4,
+    "forearm_back_cm": 3,
+    "forearm_pitch_deg": -5,
+    "cannon_fraction": 0.35,
+    "tip_depth_cm": 3
+   }
   }
  },
- "reserved_rows": [
-  {
-   "clip_id": 1,
-   "rows": "16..30",
-   "frames": 15,
-   "note": "free for the aim clip of task-287 (shader: clamps at the last frame)"
-  },
-  {
-   "clip_id": 2,
-   "rows": "31..46",
-   "frames": 16,
-   "note": "free; the shader loops this clip with RunRate"
-  },
-  {
-   "clip_id": 3,
-   "rows": "47..61",
-   "frames": 15,
-   "note": "free for the fire clip of task-287 (shader: clamps at the last frame)"
-  }
- ],
+ "reserved_rows": [],
  "planted_walk": {
   "cycle_s": 0.4267,
   "stance_s": 0.2133,
@@ -2840,8 +2957,3177 @@
      0.0
     ]
    }
+  },
+  {
+   "Pelvis": {
+    "rot": [
+     0.0,
+     0.0,
+     0.0
+    ],
+    "loc": [
+     0.0,
+     0.0,
+     0.0
+    ]
+   },
+   "UpperArm_R": {
+    "rot": [
+     0.0,
+     -0.0,
+     0.0
+    ],
+    "loc": [
+     -0.0,
+     0.0,
+     0.0
+    ]
+   },
+   "ForearmHand_R": {
+    "rot": [
+     0.0,
+     -0.0,
+     0.0
+    ],
+    "loc": [
+     0.0,
+     0.0,
+     0.0
+    ]
+   }
+  },
+  {
+   "Pelvis": {
+    "rot": [
+     0.0,
+     0.0,
+     0.0
+    ],
+    "loc": [
+     0.0,
+     0.0,
+     0.0
+    ]
+   },
+   "UpperArm_R": {
+    "rot": [
+     0.0,
+     -1.433344,
+     0.222458
+    ],
+    "loc": [
+     -0.0,
+     0.0,
+     0.0
+    ]
+   },
+   "ForearmHand_R": {
+    "rot": [
+     0.0,
+     -0.0,
+     0.0
+    ],
+    "loc": [
+     0.0,
+     0.0,
+     0.0
+    ]
+   }
+  },
+  {
+   "Pelvis": {
+    "rot": [
+     0.0,
+     0.0,
+     0.0
+    ],
+    "loc": [
+     0.0,
+     0.0,
+     0.0
+    ]
+   },
+   "UpperArm_R": {
+    "rot": [
+     0.0,
+     -5.274705,
+     0.818646
+    ],
+    "loc": [
+     -0.0,
+     0.0,
+     0.0
+    ]
+   },
+   "ForearmHand_R": {
+    "rot": [
+     0.0,
+     -0.0,
+     0.0
+    ],
+    "loc": [
+     0.0,
+     0.0,
+     0.0
+    ]
+   }
+  },
+  {
+   "Pelvis": {
+    "rot": [
+     0.0,
+     0.0,
+     0.0
+    ],
+    "loc": [
+     0.0,
+     0.0,
+     0.0
+    ]
+   },
+   "UpperArm_R": {
+    "rot": [
+     0.0,
+     -10.836079,
+     1.681785
+    ],
+    "loc": [
+     -0.0,
+     0.0,
+     0.0
+    ]
+   },
+   "ForearmHand_R": {
+    "rot": [
+     0.0,
+     -0.0,
+     0.0
+    ],
+    "loc": [
+     0.0,
+     0.0,
+     0.0
+    ]
+   }
+  },
+  {
+   "Pelvis": {
+    "rot": [
+     0.0,
+     0.0,
+     0.0
+    ],
+    "loc": [
+     0.0,
+     0.0,
+     0.0
+    ]
+   },
+   "UpperArm_R": {
+    "rot": [
+     0.0,
+     -17.429461,
+     2.705093
+    ],
+    "loc": [
+     -0.0,
+     0.0,
+     0.0
+    ]
+   },
+   "ForearmHand_R": {
+    "rot": [
+     0.0,
+     -0.0,
+     0.0
+    ],
+    "loc": [
+     0.0,
+     0.0,
+     0.0
+    ]
+   }
+  },
+  {
+   "Pelvis": {
+    "rot": [
+     0.0,
+     0.0,
+     0.0
+    ],
+    "loc": [
+     0.0,
+     0.0,
+     0.0
+    ]
+   },
+   "UpperArm_R": {
+    "rot": [
+     0.0,
+     -24.366845,
+     3.781791
+    ],
+    "loc": [
+     -0.0,
+     0.0,
+     0.0
+    ]
+   },
+   "ForearmHand_R": {
+    "rot": [
+     0.0,
+     -0.0,
+     0.0
+    ],
+    "loc": [
+     0.0,
+     0.0,
+     0.0
+    ]
+   }
+  },
+  {
+   "Pelvis": {
+    "rot": [
+     0.0,
+     0.0,
+     0.0
+    ],
+    "loc": [
+     0.0,
+     0.0,
+     0.0
+    ]
+   },
+   "UpperArm_R": {
+    "rot": [
+     0.0,
+     -30.960227,
+     4.805099
+    ],
+    "loc": [
+     -0.0,
+     0.0,
+     0.0
+    ]
+   },
+   "ForearmHand_R": {
+    "rot": [
+     0.0,
+     -0.0,
+     0.0
+    ],
+    "loc": [
+     0.0,
+     0.0,
+     0.0
+    ]
+   }
+  },
+  {
+   "Pelvis": {
+    "rot": [
+     0.0,
+     0.0,
+     0.0
+    ],
+    "loc": [
+     0.0,
+     0.0,
+     0.0
+    ]
+   },
+   "UpperArm_R": {
+    "rot": [
+     0.0,
+     -36.521601,
+     5.668237
+    ],
+    "loc": [
+     -0.0,
+     0.0,
+     0.0
+    ]
+   },
+   "ForearmHand_R": {
+    "rot": [
+     0.0,
+     -0.0,
+     0.0
+    ],
+    "loc": [
+     0.0,
+     0.0,
+     0.0
+    ]
+   }
+  },
+  {
+   "Pelvis": {
+    "rot": [
+     0.0,
+     0.0,
+     0.0
+    ],
+    "loc": [
+     0.0,
+     0.0,
+     0.0
+    ]
+   },
+   "UpperArm_R": {
+    "rot": [
+     0.0,
+     -40.362962,
+     6.264425
+    ],
+    "loc": [
+     -0.0,
+     0.0,
+     0.0
+    ]
+   },
+   "ForearmHand_R": {
+    "rot": [
+     0.0,
+     -0.0,
+     0.0
+    ],
+    "loc": [
+     0.0,
+     0.0,
+     0.0
+    ]
+   }
+  },
+  {
+   "Pelvis": {
+    "rot": [
+     0.0,
+     0.0,
+     0.0
+    ],
+    "loc": [
+     0.0,
+     0.0,
+     0.0
+    ]
+   },
+   "UpperArm_R": {
+    "rot": [
+     0.0,
+     -41.796306,
+     6.486883
+    ],
+    "loc": [
+     -0.0,
+     0.0,
+     0.0
+    ]
+   },
+   "ForearmHand_R": {
+    "rot": [
+     0.0,
+     -0.0,
+     0.0
+    ],
+    "loc": [
+     0.0,
+     0.0,
+     0.0
+    ]
+   }
+  },
+  {
+   "Pelvis": {
+    "rot": [
+     0.0,
+     0.0,
+     0.0
+    ],
+    "loc": [
+     0.0,
+     0.0,
+     0.0
+    ]
+   },
+   "UpperArm_R": {
+    "rot": [
+     0.0,
+     -41.796306,
+     6.486883
+    ],
+    "loc": [
+     -0.0,
+     0.0,
+     0.0
+    ]
+   },
+   "ForearmHand_R": {
+    "rot": [
+     0.0,
+     -0.0,
+     0.0
+    ],
+    "loc": [
+     0.0,
+     0.0,
+     0.0
+    ]
+   }
+  },
+  {
+   "Pelvis": {
+    "rot": [
+     0.0,
+     0.0,
+     0.0
+    ],
+    "loc": [
+     0.0,
+     0.0,
+     0.0
+    ]
+   },
+   "UpperArm_R": {
+    "rot": [
+     0.0,
+     -41.796306,
+     6.486883
+    ],
+    "loc": [
+     -0.0,
+     0.0,
+     0.0
+    ]
+   },
+   "ForearmHand_R": {
+    "rot": [
+     0.0,
+     -0.0,
+     0.0
+    ],
+    "loc": [
+     0.0,
+     0.0,
+     0.0
+    ]
+   }
+  },
+  {
+   "Pelvis": {
+    "rot": [
+     0.0,
+     0.0,
+     0.0
+    ],
+    "loc": [
+     0.0,
+     0.0,
+     0.0
+    ]
+   },
+   "UpperArm_R": {
+    "rot": [
+     0.0,
+     -41.796306,
+     6.486883
+    ],
+    "loc": [
+     -0.0,
+     0.0,
+     0.0
+    ]
+   },
+   "ForearmHand_R": {
+    "rot": [
+     0.0,
+     -0.0,
+     0.0
+    ],
+    "loc": [
+     0.0,
+     0.0,
+     0.0
+    ]
+   }
+  },
+  {
+   "Pelvis": {
+    "rot": [
+     0.0,
+     0.0,
+     0.0
+    ],
+    "loc": [
+     0.0,
+     0.0,
+     0.0
+    ]
+   },
+   "UpperArm_R": {
+    "rot": [
+     0.0,
+     -41.796306,
+     6.486883
+    ],
+    "loc": [
+     -0.0,
+     0.0,
+     0.0
+    ]
+   },
+   "ForearmHand_R": {
+    "rot": [
+     0.0,
+     -0.0,
+     0.0
+    ],
+    "loc": [
+     0.0,
+     0.0,
+     0.0
+    ]
+   }
+  },
+  {
+   "Pelvis": {
+    "rot": [
+     0.0,
+     0.0,
+     0.0
+    ],
+    "loc": [
+     0.0,
+     0.0,
+     0.0
+    ]
+   },
+   "UpperArm_R": {
+    "rot": [
+     0.0,
+     -41.796306,
+     6.486883
+    ],
+    "loc": [
+     -0.0,
+     0.0,
+     0.0
+    ]
+   },
+   "ForearmHand_R": {
+    "rot": [
+     0.0,
+     -0.0,
+     0.0
+    ],
+    "loc": [
+     0.0,
+     0.0,
+     0.0
+    ]
+   }
+  },
+  {
+   "Pelvis": {
+    "rot": [
+     0.0,
+     0.0,
+     0.0
+    ],
+    "loc": [
+     0.0,
+     0.0,
+     0.0
+    ]
+   },
+   "UpperArm_R": {
+    "rot": [
+     0.0,
+     -0.0,
+     0.0
+    ],
+    "loc": [
+     -0.0,
+     0.0,
+     0.0
+    ]
+   },
+   "ForearmHand_R": {
+    "rot": [
+     0.0,
+     -0.0,
+     0.0
+    ],
+    "loc": [
+     0.0,
+     0.0,
+     0.0
+    ]
+   }
+  },
+  {
+   "Pelvis": {
+    "rot": [
+     0.0,
+     0.0,
+     0.0
+    ],
+    "loc": [
+     0.0,
+     0.0,
+     0.0
+    ]
+   },
+   "UpperArm_R": {
+    "rot": [
+     0.0,
+     -0.0,
+     0.0
+    ],
+    "loc": [
+     -0.0,
+     0.0,
+     0.0
+    ]
+   },
+   "ForearmHand_R": {
+    "rot": [
+     0.0,
+     -0.0,
+     0.0
+    ],
+    "loc": [
+     0.0,
+     0.0,
+     0.0
+    ]
+   }
+  },
+  {
+   "Pelvis": {
+    "rot": [
+     0.0,
+     0.0,
+     0.0
+    ],
+    "loc": [
+     0.0,
+     0.0,
+     0.0
+    ]
+   },
+   "UpperArm_R": {
+    "rot": [
+     0.0,
+     -0.0,
+     0.0
+    ],
+    "loc": [
+     -0.0,
+     0.0,
+     0.0
+    ]
+   },
+   "ForearmHand_R": {
+    "rot": [
+     0.0,
+     -0.0,
+     0.0
+    ],
+    "loc": [
+     0.0,
+     0.0,
+     0.0
+    ]
+   }
+  },
+  {
+   "Pelvis": {
+    "rot": [
+     0.0,
+     0.0,
+     0.0
+    ],
+    "loc": [
+     0.0,
+     0.0,
+     0.0
+    ]
+   },
+   "UpperArm_R": {
+    "rot": [
+     0.0,
+     -0.0,
+     0.0
+    ],
+    "loc": [
+     -0.0,
+     0.0,
+     0.0
+    ]
+   },
+   "ForearmHand_R": {
+    "rot": [
+     0.0,
+     -0.0,
+     0.0
+    ],
+    "loc": [
+     0.0,
+     0.0,
+     0.0
+    ]
+   }
+  },
+  {
+   "Pelvis": {
+    "rot": [
+     0.0,
+     0.0,
+     0.0
+    ],
+    "loc": [
+     0.0,
+     0.0,
+     0.0
+    ]
+   },
+   "UpperArm_R": {
+    "rot": [
+     0.0,
+     -0.0,
+     0.0
+    ],
+    "loc": [
+     -0.0,
+     0.0,
+     0.0
+    ]
+   },
+   "ForearmHand_R": {
+    "rot": [
+     0.0,
+     -0.0,
+     0.0
+    ],
+    "loc": [
+     0.0,
+     0.0,
+     0.0
+    ]
+   }
+  },
+  {
+   "Pelvis": {
+    "rot": [
+     0.0,
+     0.0,
+     0.0
+    ],
+    "loc": [
+     0.0,
+     0.0,
+     0.0
+    ]
+   },
+   "UpperArm_R": {
+    "rot": [
+     0.0,
+     -0.0,
+     0.0
+    ],
+    "loc": [
+     -0.0,
+     0.0,
+     0.0
+    ]
+   },
+   "ForearmHand_R": {
+    "rot": [
+     0.0,
+     -0.0,
+     0.0
+    ],
+    "loc": [
+     0.0,
+     0.0,
+     0.0
+    ]
+   }
+  },
+  {
+   "Pelvis": {
+    "rot": [
+     0.0,
+     0.0,
+     0.0
+    ],
+    "loc": [
+     0.0,
+     0.0,
+     0.0
+    ]
+   },
+   "UpperArm_R": {
+    "rot": [
+     0.0,
+     -0.0,
+     0.0
+    ],
+    "loc": [
+     -0.0,
+     0.0,
+     0.0
+    ]
+   },
+   "ForearmHand_R": {
+    "rot": [
+     0.0,
+     -0.0,
+     0.0
+    ],
+    "loc": [
+     0.0,
+     0.0,
+     0.0
+    ]
+   }
+  },
+  {
+   "Pelvis": {
+    "rot": [
+     0.0,
+     0.0,
+     0.0
+    ],
+    "loc": [
+     0.0,
+     0.0,
+     0.0
+    ]
+   },
+   "UpperArm_R": {
+    "rot": [
+     0.0,
+     -0.0,
+     0.0
+    ],
+    "loc": [
+     -0.0,
+     0.0,
+     0.0
+    ]
+   },
+   "ForearmHand_R": {
+    "rot": [
+     0.0,
+     -0.0,
+     0.0
+    ],
+    "loc": [
+     0.0,
+     0.0,
+     0.0
+    ]
+   }
+  },
+  {
+   "Pelvis": {
+    "rot": [
+     0.0,
+     0.0,
+     0.0
+    ],
+    "loc": [
+     0.0,
+     0.0,
+     0.0
+    ]
+   },
+   "UpperArm_R": {
+    "rot": [
+     0.0,
+     -0.0,
+     0.0
+    ],
+    "loc": [
+     -0.0,
+     0.0,
+     0.0
+    ]
+   },
+   "ForearmHand_R": {
+    "rot": [
+     0.0,
+     -0.0,
+     0.0
+    ],
+    "loc": [
+     0.0,
+     0.0,
+     0.0
+    ]
+   }
+  },
+  {
+   "Pelvis": {
+    "rot": [
+     0.0,
+     0.0,
+     0.0
+    ],
+    "loc": [
+     0.0,
+     0.0,
+     0.0
+    ]
+   },
+   "UpperArm_R": {
+    "rot": [
+     0.0,
+     -0.0,
+     0.0
+    ],
+    "loc": [
+     -0.0,
+     0.0,
+     0.0
+    ]
+   },
+   "ForearmHand_R": {
+    "rot": [
+     0.0,
+     -0.0,
+     0.0
+    ],
+    "loc": [
+     0.0,
+     0.0,
+     0.0
+    ]
+   }
+  },
+  {
+   "Pelvis": {
+    "rot": [
+     0.0,
+     0.0,
+     0.0
+    ],
+    "loc": [
+     0.0,
+     0.0,
+     0.0
+    ]
+   },
+   "UpperArm_R": {
+    "rot": [
+     0.0,
+     -0.0,
+     0.0
+    ],
+    "loc": [
+     -0.0,
+     0.0,
+     0.0
+    ]
+   },
+   "ForearmHand_R": {
+    "rot": [
+     0.0,
+     -0.0,
+     0.0
+    ],
+    "loc": [
+     0.0,
+     0.0,
+     0.0
+    ]
+   }
+  },
+  {
+   "Pelvis": {
+    "rot": [
+     0.0,
+     0.0,
+     0.0
+    ],
+    "loc": [
+     0.0,
+     0.0,
+     0.0
+    ]
+   },
+   "UpperArm_R": {
+    "rot": [
+     0.0,
+     -0.0,
+     0.0
+    ],
+    "loc": [
+     -0.0,
+     0.0,
+     0.0
+    ]
+   },
+   "ForearmHand_R": {
+    "rot": [
+     0.0,
+     -0.0,
+     0.0
+    ],
+    "loc": [
+     0.0,
+     0.0,
+     0.0
+    ]
+   }
+  },
+  {
+   "Pelvis": {
+    "rot": [
+     0.0,
+     0.0,
+     0.0
+    ],
+    "loc": [
+     0.0,
+     0.0,
+     0.0
+    ]
+   },
+   "UpperArm_R": {
+    "rot": [
+     0.0,
+     -0.0,
+     0.0
+    ],
+    "loc": [
+     -0.0,
+     0.0,
+     0.0
+    ]
+   },
+   "ForearmHand_R": {
+    "rot": [
+     0.0,
+     -0.0,
+     0.0
+    ],
+    "loc": [
+     0.0,
+     0.0,
+     0.0
+    ]
+   }
+  },
+  {
+   "Pelvis": {
+    "rot": [
+     0.0,
+     0.0,
+     0.0
+    ],
+    "loc": [
+     0.0,
+     0.0,
+     0.0
+    ]
+   },
+   "UpperArm_R": {
+    "rot": [
+     0.0,
+     -0.0,
+     0.0
+    ],
+    "loc": [
+     -0.0,
+     0.0,
+     0.0
+    ]
+   },
+   "ForearmHand_R": {
+    "rot": [
+     0.0,
+     -0.0,
+     0.0
+    ],
+    "loc": [
+     0.0,
+     0.0,
+     0.0
+    ]
+   }
+  },
+  {
+   "Pelvis": {
+    "rot": [
+     0.0,
+     0.0,
+     0.0
+    ],
+    "loc": [
+     0.0,
+     0.0,
+     0.0
+    ]
+   },
+   "UpperArm_R": {
+    "rot": [
+     0.0,
+     -0.0,
+     0.0
+    ],
+    "loc": [
+     -0.0,
+     0.0,
+     0.0
+    ]
+   },
+   "ForearmHand_R": {
+    "rot": [
+     0.0,
+     -0.0,
+     0.0
+    ],
+    "loc": [
+     0.0,
+     0.0,
+     0.0
+    ]
+   }
+  },
+  {
+   "Pelvis": {
+    "rot": [
+     0.0,
+     0.0,
+     0.0
+    ],
+    "loc": [
+     0.0,
+     0.0,
+     0.0
+    ]
+   },
+   "UpperArm_R": {
+    "rot": [
+     0.0,
+     -0.0,
+     0.0
+    ],
+    "loc": [
+     -0.0,
+     0.0,
+     0.0
+    ]
+   },
+   "ForearmHand_R": {
+    "rot": [
+     0.0,
+     -0.0,
+     0.0
+    ],
+    "loc": [
+     0.0,
+     0.0,
+     0.0
+    ]
+   }
+  },
+  {
+   "Pelvis": {
+    "rot": [
+     0.0,
+     0.0,
+     0.0
+    ],
+    "loc": [
+     0.0,
+     0.0,
+     0.0
+    ]
+   },
+   "UpperArm_R": {
+    "rot": [
+     0.0,
+     -41.796306,
+     6.486883
+    ],
+    "loc": [
+     -0.0,
+     0.0,
+     0.0
+    ]
+   },
+   "ForearmHand_R": {
+    "rot": [
+     0.0,
+     -0.0,
+     0.0
+    ],
+    "loc": [
+     0.0,
+     0.0,
+     0.0
+    ]
+   }
+  },
+  {
+   "Pelvis": {
+    "rot": [
+     0.0,
+     0.0,
+     0.0
+    ],
+    "loc": [
+     0.0,
+     0.0,
+     0.0
+    ]
+   },
+   "UpperArm_R": {
+    "rot": [
+     0.0,
+     -41.796306,
+     6.486883
+    ],
+    "loc": [
+     -2.0,
+     0.0,
+     0.0
+    ]
+   },
+   "ForearmHand_R": {
+    "rot": [
+     0.0,
+     -2.5,
+     0.0
+    ],
+    "loc": [
+     -1.111119,
+     0.169464,
+     0.993326
+    ]
+   }
+  },
+  {
+   "Pelvis": {
+    "rot": [
+     0.0,
+     0.0,
+     0.0
+    ],
+    "loc": [
+     0.0,
+     0.0,
+     0.0
+    ]
+   },
+   "UpperArm_R": {
+    "rot": [
+     0.0,
+     -41.796306,
+     6.486883
+    ],
+    "loc": [
+     -4.0,
+     0.0,
+     0.0
+    ]
+   },
+   "ForearmHand_R": {
+    "rot": [
+     0.0,
+     -5.0,
+     0.0
+    ],
+    "loc": [
+     -2.222238,
+     0.338927,
+     1.986652
+    ]
+   }
+  },
+  {
+   "Pelvis": {
+    "rot": [
+     0.0,
+     0.0,
+     0.0
+    ],
+    "loc": [
+     0.0,
+     0.0,
+     0.0
+    ]
+   },
+   "UpperArm_R": {
+    "rot": [
+     0.0,
+     -41.796306,
+     6.486883
+    ],
+    "loc": [
+     -3.375,
+     0.0,
+     0.0
+    ]
+   },
+   "ForearmHand_R": {
+    "rot": [
+     0.0,
+     -4.21875,
+     0.0
+    ],
+    "loc": [
+     -1.875013,
+     0.28597,
+     1.676238
+    ]
+   }
+  },
+  {
+   "Pelvis": {
+    "rot": [
+     0.0,
+     0.0,
+     0.0
+    ],
+    "loc": [
+     0.0,
+     0.0,
+     0.0
+    ]
+   },
+   "UpperArm_R": {
+    "rot": [
+     0.0,
+     -41.796306,
+     6.486883
+    ],
+    "loc": [
+     -2.0,
+     0.0,
+     0.0
+    ]
+   },
+   "ForearmHand_R": {
+    "rot": [
+     0.0,
+     -2.5,
+     0.0
+    ],
+    "loc": [
+     -1.111119,
+     0.169464,
+     0.993326
+    ]
+   }
+  },
+  {
+   "Pelvis": {
+    "rot": [
+     0.0,
+     0.0,
+     0.0
+    ],
+    "loc": [
+     0.0,
+     0.0,
+     0.0
+    ]
+   },
+   "UpperArm_R": {
+    "rot": [
+     0.0,
+     -41.796306,
+     6.486883
+    ],
+    "loc": [
+     -0.625,
+     0.0,
+     0.0
+    ]
+   },
+   "ForearmHand_R": {
+    "rot": [
+     0.0,
+     -0.78125,
+     0.0
+    ],
+    "loc": [
+     -0.347225,
+     0.052957,
+     0.310414
+    ]
+   }
+  },
+  {
+   "Pelvis": {
+    "rot": [
+     0.0,
+     0.0,
+     0.0
+    ],
+    "loc": [
+     0.0,
+     0.0,
+     0.0
+    ]
+   },
+   "UpperArm_R": {
+    "rot": [
+     0.0,
+     -41.796306,
+     6.486883
+    ],
+    "loc": [
+     -0.0,
+     0.0,
+     0.0
+    ]
+   },
+   "ForearmHand_R": {
+    "rot": [
+     0.0,
+     -0.0,
+     0.0
+    ],
+    "loc": [
+     0.0,
+     0.0,
+     0.0
+    ]
+   }
+  },
+  {
+   "Pelvis": {
+    "rot": [
+     0.0,
+     0.0,
+     0.0
+    ],
+    "loc": [
+     0.0,
+     0.0,
+     0.0
+    ]
+   },
+   "UpperArm_R": {
+    "rot": [
+     0.0,
+     -41.796306,
+     6.486883
+    ],
+    "loc": [
+     -0.0,
+     0.0,
+     0.0
+    ]
+   },
+   "ForearmHand_R": {
+    "rot": [
+     0.0,
+     -0.0,
+     0.0
+    ],
+    "loc": [
+     0.0,
+     0.0,
+     0.0
+    ]
+   }
+  },
+  {
+   "Pelvis": {
+    "rot": [
+     0.0,
+     0.0,
+     0.0
+    ],
+    "loc": [
+     0.0,
+     0.0,
+     0.0
+    ]
+   },
+   "UpperArm_R": {
+    "rot": [
+     0.0,
+     -41.796306,
+     6.486883
+    ],
+    "loc": [
+     -0.0,
+     0.0,
+     0.0
+    ]
+   },
+   "ForearmHand_R": {
+    "rot": [
+     0.0,
+     -0.0,
+     0.0
+    ],
+    "loc": [
+     0.0,
+     0.0,
+     0.0
+    ]
+   }
+  },
+  {
+   "Pelvis": {
+    "rot": [
+     0.0,
+     0.0,
+     0.0
+    ],
+    "loc": [
+     0.0,
+     0.0,
+     0.0
+    ]
+   },
+   "UpperArm_R": {
+    "rot": [
+     0.0,
+     -41.796306,
+     6.486883
+    ],
+    "loc": [
+     -0.0,
+     0.0,
+     0.0
+    ]
+   },
+   "ForearmHand_R": {
+    "rot": [
+     0.0,
+     -0.0,
+     0.0
+    ],
+    "loc": [
+     0.0,
+     0.0,
+     0.0
+    ]
+   }
+  },
+  {
+   "Pelvis": {
+    "rot": [
+     0.0,
+     0.0,
+     0.0
+    ],
+    "loc": [
+     0.0,
+     0.0,
+     0.0
+    ]
+   },
+   "UpperArm_R": {
+    "rot": [
+     0.0,
+     -41.796306,
+     6.486883
+    ],
+    "loc": [
+     -0.0,
+     0.0,
+     0.0
+    ]
+   },
+   "ForearmHand_R": {
+    "rot": [
+     0.0,
+     -0.0,
+     0.0
+    ],
+    "loc": [
+     0.0,
+     0.0,
+     0.0
+    ]
+   }
+  },
+  {
+   "Pelvis": {
+    "rot": [
+     0.0,
+     0.0,
+     0.0
+    ],
+    "loc": [
+     0.0,
+     0.0,
+     0.0
+    ]
+   },
+   "UpperArm_R": {
+    "rot": [
+     0.0,
+     -41.796306,
+     6.486883
+    ],
+    "loc": [
+     -0.0,
+     0.0,
+     0.0
+    ]
+   },
+   "ForearmHand_R": {
+    "rot": [
+     0.0,
+     -0.0,
+     0.0
+    ],
+    "loc": [
+     0.0,
+     0.0,
+     0.0
+    ]
+   }
+  },
+  {
+   "Pelvis": {
+    "rot": [
+     0.0,
+     0.0,
+     0.0
+    ],
+    "loc": [
+     0.0,
+     0.0,
+     0.0
+    ]
+   },
+   "UpperArm_R": {
+    "rot": [
+     0.0,
+     -41.796306,
+     6.486883
+    ],
+    "loc": [
+     -0.0,
+     0.0,
+     0.0
+    ]
+   },
+   "ForearmHand_R": {
+    "rot": [
+     0.0,
+     -0.0,
+     0.0
+    ],
+    "loc": [
+     0.0,
+     0.0,
+     0.0
+    ]
+   }
+  },
+  {
+   "Pelvis": {
+    "rot": [
+     0.0,
+     0.0,
+     0.0
+    ],
+    "loc": [
+     0.0,
+     0.0,
+     0.0
+    ]
+   },
+   "UpperArm_R": {
+    "rot": [
+     0.0,
+     -41.796306,
+     6.486883
+    ],
+    "loc": [
+     -0.0,
+     0.0,
+     0.0
+    ]
+   },
+   "ForearmHand_R": {
+    "rot": [
+     0.0,
+     -0.0,
+     0.0
+    ],
+    "loc": [
+     0.0,
+     0.0,
+     0.0
+    ]
+   }
+  },
+  {
+   "Pelvis": {
+    "rot": [
+     0.0,
+     0.0,
+     0.0
+    ],
+    "loc": [
+     0.0,
+     0.0,
+     0.0
+    ]
+   },
+   "UpperArm_R": {
+    "rot": [
+     0.0,
+     -41.796306,
+     6.486883
+    ],
+    "loc": [
+     -0.0,
+     0.0,
+     0.0
+    ]
+   },
+   "ForearmHand_R": {
+    "rot": [
+     0.0,
+     -0.0,
+     0.0
+    ],
+    "loc": [
+     0.0,
+     0.0,
+     0.0
+    ]
+   }
   }
  ],
+ "aimfire": {
+  "clips": {
+   "aim": {
+    "clip_id": 1,
+    "rows": "16..30",
+    "frames": 15,
+    "behaviour": "clamped (30 fps, frame = floor(t x 30)): arm raised with a smoothstep over frames 0..9 (reached at frame 9 = 0.300 s), held to row 30 = aim pose"
+   },
+   "rest": {
+    "clip_id": 2,
+    "rows": "31..46",
+    "frames": 16,
+    "behaviour": "LOOPED by the shader with RunRate: every row = exact rest pose (RestClipId 2 unchanged)"
+   },
+   "fire": {
+    "clip_id": 3,
+    "rows": "47..61",
+    "frames": 15,
+    "behaviour": "clamped: frame 0 = aim pose, recoil peak at frame 2 (0.067 s), back to the aim pose at frame 6 (0.200 s), held to the last row = aim pose"
+   }
+  },
+  "method": {
+   "cannon_axis": "first principal axis (+X sign) of ForearmHand_R vertices farther than 0.35 of the elbow reach (153 vertices)",
+   "tip": "centroid of the cannon vertices within 3.0 cm of the farthest point along the axis (muzzle face centre); the farthest vertex is also listed",
+   "unreal_axes": "Unreal = (X, -Y, Z) of the robot space, cm, floor origin (mesh z 0 = floor)"
+  },
+  "keys": {
+   "aim_upper_arm_R_euler_deg": {
+    "y": -41.7963,
+    "z": 6.4869
+   },
+   "recoil": {
+    "shoulder_back_cm": 4,
+    "forearm_back_cm": 3,
+    "forearm_pitch_deg": -5,
+    "peak_frame": 2,
+    "return_frame": 6
+   }
+  },
+  "rest_pose": {
+   "cannon_tip_robot_cm": [
+    45.17,
+    -52.26,
+    64.98
+   ],
+   "cannon_axis_elevation_deg": -41.469
+  },
+  "aim_end": {
+   "texture_row": 30,
+   "time_to_reach_s": 0.3,
+   "cannon_tip_robot_cm": [
+    75.57,
+    -44.0,
+    109.03
+   ],
+   "cannon_tip_unreal_cm": [
+    75.57,
+    44.0,
+    109.03
+   ],
+   "muzzle_farthest_vertex_robot_cm": [
+    77.02,
+    -45.04,
+    101.38
+   ],
+   "cannon_axis_elevation_deg": 0.011,
+   "cannon_axis_azimuth_deg_from_plus_x_horizontal": -0.003
+  },
+  "recoil": {
+   "peak_row": 49,
+   "peak_cannon_tip_unreal_cm": [
+    68.39,
+    44.02,
+    114.21
+   ],
+   "return_row": 53,
+   "fire_frame0_vs_aim_end_max_vertex_error_cm": 0.0,
+   "last_fire_row_vs_aim_end_max_vertex_error_cm": 0.0,
+   "return_error_cm": 0.0
+  },
+  "rest_rows_vs_source_max_vertex_error_cm": 1e-05,
+  "aim_row0_vs_source_max_vertex_error_cm": 1e-05,
+  "max_foot_displacement_cm": 0.0,
+  "max_non_shooting_part_displacement_cm": 0.0,
+  "per_row": [
+   {
+    "texture_row": 16,
+    "clip": "aim",
+    "frame_in_clip": 0,
+    "time_s": 0.0,
+    "params": {
+     "aim": 0.0,
+     "recoil": 0.0
+    },
+    "cannon_tip_robot_cm": [
+     45.17,
+     -52.26,
+     64.98
+    ],
+    "cannon_tip_unreal_cm": [
+     45.17,
+     52.26,
+     64.98
+    ],
+    "muzzle_farthest_vertex_robot_cm": [
+     41.06,
+     -53.45,
+     58.4
+    ],
+    "cannon_axis_elevation_deg": -41.469,
+    "cannon_axis_azimuth_deg": -8.672,
+    "foot_max_displacement_from_rest_cm": 0.0,
+    "other_nonshooting_parts_max_displacement_cm": 0.0
+   },
+   {
+    "texture_row": 17,
+    "clip": "aim",
+    "frame_in_clip": 1,
+    "time_s": 0.0333,
+    "params": {
+     "aim": 0.0343,
+     "recoil": 0.0
+    },
+    "cannon_tip_robot_cm": [
+     46.72,
+     -52.08,
+     66.07
+    ],
+    "cannon_tip_unreal_cm": [
+     46.72,
+     52.08,
+     66.07
+    ],
+    "muzzle_farthest_vertex_robot_cm": [
+     42.78,
+     -53.29,
+     59.39
+    ],
+    "cannon_axis_elevation_deg": -40.052,
+    "cannon_axis_azimuth_deg": -8.265,
+    "foot_max_displacement_from_rest_cm": 0.0,
+    "other_nonshooting_parts_max_displacement_cm": 0.0
+   },
+   {
+    "texture_row": 18,
+    "clip": "aim",
+    "frame_in_clip": 2,
+    "time_s": 0.0667,
+    "params": {
+     "aim": 0.1262,
+     "recoil": 0.0
+    },
+    "cannon_tip_robot_cm": [
+     50.73,
+     -51.56,
+     69.2
+    ],
+    "cannon_tip_unreal_cm": [
+     50.73,
+     51.56,
+     69.2
+    ],
+    "muzzle_farthest_vertex_robot_cm": [
+     47.26,
+     -52.81,
+     62.27
+    ],
+    "cannon_axis_elevation_deg": -36.25,
+    "cannon_axis_azimuth_deg": -7.234,
+    "foot_max_displacement_from_rest_cm": 0.0,
+    "other_nonshooting_parts_max_displacement_cm": 0.0
+   },
+   {
+    "texture_row": 19,
+    "clip": "aim",
+    "frame_in_clip": 3,
+    "time_s": 0.1,
+    "params": {
+     "aim": 0.2593,
+     "recoil": 0.0
+    },
+    "cannon_tip_robot_cm": [
+     56.14,
+     -50.67,
+     74.16
+    ],
+    "cannon_tip_unreal_cm": [
+     56.14,
+     50.67,
+     74.16
+    ],
+    "muzzle_farthest_vertex_robot_cm": [
+     53.37,
+     -51.95,
+     66.93
+    ],
+    "cannon_axis_elevation_deg": -30.741,
+    "cannon_axis_azimuth_deg": -5.871,
+    "foot_max_displacement_from_rest_cm": 0.0,
+    "other_nonshooting_parts_max_displacement_cm": 0.0
+   },
+   {
+    "texture_row": 20,
+    "clip": "aim",
+    "frame_in_clip": 4,
+    "time_s": 0.1333,
+    "params": {
+     "aim": 0.417,
+     "recoil": 0.0
+    },
+    "cannon_tip_robot_cm": [
+     61.87,
+     -49.45,
+     80.65
+    ],
+    "cannon_tip_unreal_cm": [
+     61.87,
+     49.45,
+     80.65
+    ],
+    "muzzle_farthest_vertex_robot_cm": [
+     59.98,
+     -50.73,
+     73.14
+    ],
+    "cannon_axis_elevation_deg": -24.214,
+    "cannon_axis_azimuth_deg": -4.413,
+    "foot_max_displacement_from_rest_cm": 0.0,
+    "other_nonshooting_parts_max_displacement_cm": 0.0
+   },
+   {
+    "texture_row": 21,
+    "clip": "aim",
+    "frame_in_clip": 5,
+    "time_s": 0.1667,
+    "params": {
+     "aim": 0.583,
+     "recoil": 0.0
+    },
+    "cannon_tip_robot_cm": [
+     67.02,
+     -48.0,
+     88.12
+    ],
+    "cannon_tip_unreal_cm": [
+     67.02,
+     48.0,
+     88.12
+    ],
+    "muzzle_farthest_vertex_robot_cm": [
+     66.07,
+     -49.26,
+     80.43
+    ],
+    "cannon_axis_elevation_deg": -17.329,
+    "cannon_axis_azimuth_deg": -3.018,
+    "foot_max_displacement_from_rest_cm": 0.0,
+    "other_nonshooting_parts_max_displacement_cm": 0.0
+   },
+   {
+    "texture_row": 22,
+    "clip": "aim",
+    "frame_in_clip": 6,
+    "time_s": 0.2,
+    "params": {
+     "aim": 0.7407,
+     "recoil": 0.0
+    },
+    "cannon_tip_robot_cm": [
+     71.02,
+     -46.51,
+     95.73
+    ],
+    "cannon_tip_unreal_cm": [
+     71.02,
+     46.51,
+     95.73
+    ],
+    "muzzle_farthest_vertex_robot_cm": [
+     70.98,
+     -47.72,
+     87.98
+    ],
+    "cannon_axis_elevation_deg": -10.774,
+    "cannon_axis_azimuth_deg": -1.801,
+    "foot_max_displacement_from_rest_cm": 0.0,
+    "other_nonshooting_parts_max_displacement_cm": 0.0
+   },
+   {
+    "texture_row": 23,
+    "clip": "aim",
+    "frame_in_clip": 7,
+    "time_s": 0.2333,
+    "params": {
+     "aim": 0.8738,
+     "recoil": 0.0
+    },
+    "cannon_tip_robot_cm": [
+     73.66,
+     -45.22,
+     102.46
+    ],
+    "cannon_tip_unreal_cm": [
+     73.66,
+     45.22,
+     102.46
+    ],
+    "muzzle_farthest_vertex_robot_cm": [
+     74.39,
+     -46.35,
+     94.72
+    ],
+    "cannon_axis_elevation_deg": -5.229,
+    "cannon_axis_azimuth_deg": -0.843,
+    "foot_max_displacement_from_rest_cm": 0.0,
+    "other_nonshooting_parts_max_displacement_cm": 0.0
+   },
+   {
+    "texture_row": 24,
+    "clip": "aim",
+    "frame_in_clip": 8,
+    "time_s": 0.2667,
+    "params": {
+     "aim": 0.9657,
+     "recoil": 0.0
+    },
+    "cannon_tip_robot_cm": [
+     75.1,
+     -44.32,
+     107.24
+    ],
+    "cannon_tip_unreal_cm": [
+     75.1,
+     44.32,
+     107.24
+    ],
+    "muzzle_farthest_vertex_robot_cm": [
+     76.36,
+     -45.39,
+     99.57
+    ],
+    "cannon_axis_elevation_deg": -1.39,
+    "cannon_axis_azimuth_deg": -0.219,
+    "foot_max_displacement_from_rest_cm": 0.0,
+    "other_nonshooting_parts_max_displacement_cm": 0.0
+   },
+   {
+    "texture_row": 25,
+    "clip": "aim",
+    "frame_in_clip": 9,
+    "time_s": 0.3,
+    "params": {
+     "aim": 1.0,
+     "recoil": 0.0
+    },
+    "cannon_tip_robot_cm": [
+     75.57,
+     -44.0,
+     109.03
+    ],
+    "cannon_tip_unreal_cm": [
+     75.57,
+     44.0,
+     109.03
+    ],
+    "muzzle_farthest_vertex_robot_cm": [
+     77.02,
+     -45.04,
+     101.38
+    ],
+    "cannon_axis_elevation_deg": 0.011,
+    "cannon_axis_azimuth_deg": -0.003,
+    "foot_max_displacement_from_rest_cm": 0.0,
+    "other_nonshooting_parts_max_displacement_cm": 0.0
+   },
+   {
+    "texture_row": 26,
+    "clip": "aim",
+    "frame_in_clip": 10,
+    "time_s": 0.3333,
+    "params": {
+     "aim": 1.0,
+     "recoil": 0.0
+    },
+    "cannon_tip_robot_cm": [
+     75.57,
+     -44.0,
+     109.03
+    ],
+    "cannon_tip_unreal_cm": [
+     75.57,
+     44.0,
+     109.03
+    ],
+    "muzzle_farthest_vertex_robot_cm": [
+     77.02,
+     -45.04,
+     101.38
+    ],
+    "cannon_axis_elevation_deg": 0.011,
+    "cannon_axis_azimuth_deg": -0.003,
+    "foot_max_displacement_from_rest_cm": 0.0,
+    "other_nonshooting_parts_max_displacement_cm": 0.0
+   },
+   {
+    "texture_row": 27,
+    "clip": "aim",
+    "frame_in_clip": 11,
+    "time_s": 0.3667,
+    "params": {
+     "aim": 1.0,
+     "recoil": 0.0
+    },
+    "cannon_tip_robot_cm": [
+     75.57,
+     -44.0,
+     109.03
+    ],
+    "cannon_tip_unreal_cm": [
+     75.57,
+     44.0,
+     109.03
+    ],
+    "muzzle_farthest_vertex_robot_cm": [
+     77.02,
+     -45.04,
+     101.38
+    ],
+    "cannon_axis_elevation_deg": 0.011,
+    "cannon_axis_azimuth_deg": -0.003,
+    "foot_max_displacement_from_rest_cm": 0.0,
+    "other_nonshooting_parts_max_displacement_cm": 0.0
+   },
+   {
+    "texture_row": 28,
+    "clip": "aim",
+    "frame_in_clip": 12,
+    "time_s": 0.4,
+    "params": {
+     "aim": 1.0,
+     "recoil": 0.0
+    },
+    "cannon_tip_robot_cm": [
+     75.57,
+     -44.0,
+     109.03
+    ],
+    "cannon_tip_unreal_cm": [
+     75.57,
+     44.0,
+     109.03
+    ],
+    "muzzle_farthest_vertex_robot_cm": [
+     77.02,
+     -45.04,
+     101.38
+    ],
+    "cannon_axis_elevation_deg": 0.011,
+    "cannon_axis_azimuth_deg": -0.003,
+    "foot_max_displacement_from_rest_cm": 0.0,
+    "other_nonshooting_parts_max_displacement_cm": 0.0
+   },
+   {
+    "texture_row": 29,
+    "clip": "aim",
+    "frame_in_clip": 13,
+    "time_s": 0.4333,
+    "params": {
+     "aim": 1.0,
+     "recoil": 0.0
+    },
+    "cannon_tip_robot_cm": [
+     75.57,
+     -44.0,
+     109.03
+    ],
+    "cannon_tip_unreal_cm": [
+     75.57,
+     44.0,
+     109.03
+    ],
+    "muzzle_farthest_vertex_robot_cm": [
+     77.02,
+     -45.04,
+     101.38
+    ],
+    "cannon_axis_elevation_deg": 0.011,
+    "cannon_axis_azimuth_deg": -0.003,
+    "foot_max_displacement_from_rest_cm": 0.0,
+    "other_nonshooting_parts_max_displacement_cm": 0.0
+   },
+   {
+    "texture_row": 30,
+    "clip": "aim",
+    "frame_in_clip": 14,
+    "time_s": 0.4667,
+    "params": {
+     "aim": 1.0,
+     "recoil": 0.0
+    },
+    "cannon_tip_robot_cm": [
+     75.57,
+     -44.0,
+     109.03
+    ],
+    "cannon_tip_unreal_cm": [
+     75.57,
+     44.0,
+     109.03
+    ],
+    "muzzle_farthest_vertex_robot_cm": [
+     77.02,
+     -45.04,
+     101.38
+    ],
+    "cannon_axis_elevation_deg": 0.011,
+    "cannon_axis_azimuth_deg": -0.003,
+    "foot_max_displacement_from_rest_cm": 0.0,
+    "other_nonshooting_parts_max_displacement_cm": 0.0
+   },
+   {
+    "texture_row": 31,
+    "clip": "rest",
+    "frame_in_clip": 0,
+    "time_s": 0.0,
+    "params": {
+     "aim": 0.0,
+     "recoil": 0.0
+    },
+    "cannon_tip_robot_cm": [
+     45.17,
+     -52.26,
+     64.98
+    ],
+    "cannon_tip_unreal_cm": [
+     45.17,
+     52.26,
+     64.98
+    ],
+    "muzzle_farthest_vertex_robot_cm": [
+     41.06,
+     -53.45,
+     58.4
+    ],
+    "cannon_axis_elevation_deg": -41.469,
+    "cannon_axis_azimuth_deg": -8.672,
+    "foot_max_displacement_from_rest_cm": 0.0,
+    "other_nonshooting_parts_max_displacement_cm": 0.0
+   },
+   {
+    "texture_row": 32,
+    "clip": "rest",
+    "frame_in_clip": 1,
+    "time_s": 0.0333,
+    "params": {
+     "aim": 0.0,
+     "recoil": 0.0
+    },
+    "cannon_tip_robot_cm": [
+     45.17,
+     -52.26,
+     64.98
+    ],
+    "cannon_tip_unreal_cm": [
+     45.17,
+     52.26,
+     64.98
+    ],
+    "muzzle_farthest_vertex_robot_cm": [
+     41.06,
+     -53.45,
+     58.4
+    ],
+    "cannon_axis_elevation_deg": -41.469,
+    "cannon_axis_azimuth_deg": -8.672,
+    "foot_max_displacement_from_rest_cm": 0.0,
+    "other_nonshooting_parts_max_displacement_cm": 0.0
+   },
+   {
+    "texture_row": 33,
+    "clip": "rest",
+    "frame_in_clip": 2,
+    "time_s": 0.0667,
+    "params": {
+     "aim": 0.0,
+     "recoil": 0.0
+    },
+    "cannon_tip_robot_cm": [
+     45.17,
+     -52.26,
+     64.98
+    ],
+    "cannon_tip_unreal_cm": [
+     45.17,
+     52.26,
+     64.98
+    ],
+    "muzzle_farthest_vertex_robot_cm": [
+     41.06,
+     -53.45,
+     58.4
+    ],
+    "cannon_axis_elevation_deg": -41.469,
+    "cannon_axis_azimuth_deg": -8.672,
+    "foot_max_displacement_from_rest_cm": 0.0,
+    "other_nonshooting_parts_max_displacement_cm": 0.0
+   },
+   {
+    "texture_row": 34,
+    "clip": "rest",
+    "frame_in_clip": 3,
+    "time_s": 0.1,
+    "params": {
+     "aim": 0.0,
+     "recoil": 0.0
+    },
+    "cannon_tip_robot_cm": [
+     45.17,
+     -52.26,
+     64.98
+    ],
+    "cannon_tip_unreal_cm": [
+     45.17,
+     52.26,
+     64.98
+    ],
+    "muzzle_farthest_vertex_robot_cm": [
+     41.06,
+     -53.45,
+     58.4
+    ],
+    "cannon_axis_elevation_deg": -41.469,
+    "cannon_axis_azimuth_deg": -8.672,
+    "foot_max_displacement_from_rest_cm": 0.0,
+    "other_nonshooting_parts_max_displacement_cm": 0.0
+   },
+   {
+    "texture_row": 35,
+    "clip": "rest",
+    "frame_in_clip": 4,
+    "time_s": 0.1333,
+    "params": {
+     "aim": 0.0,
+     "recoil": 0.0
+    },
+    "cannon_tip_robot_cm": [
+     45.17,
+     -52.26,
+     64.98
+    ],
+    "cannon_tip_unreal_cm": [
+     45.17,
+     52.26,
+     64.98
+    ],
+    "muzzle_farthest_vertex_robot_cm": [
+     41.06,
+     -53.45,
+     58.4
+    ],
+    "cannon_axis_elevation_deg": -41.469,
+    "cannon_axis_azimuth_deg": -8.672,
+    "foot_max_displacement_from_rest_cm": 0.0,
+    "other_nonshooting_parts_max_displacement_cm": 0.0
+   },
+   {
+    "texture_row": 36,
+    "clip": "rest",
+    "frame_in_clip": 5,
+    "time_s": 0.1667,
+    "params": {
+     "aim": 0.0,
+     "recoil": 0.0
+    },
+    "cannon_tip_robot_cm": [
+     45.17,
+     -52.26,
+     64.98
+    ],
+    "cannon_tip_unreal_cm": [
+     45.17,
+     52.26,
+     64.98
+    ],
+    "muzzle_farthest_vertex_robot_cm": [
+     41.06,
+     -53.45,
+     58.4
+    ],
+    "cannon_axis_elevation_deg": -41.469,
+    "cannon_axis_azimuth_deg": -8.672,
+    "foot_max_displacement_from_rest_cm": 0.0,
+    "other_nonshooting_parts_max_displacement_cm": 0.0
+   },
+   {
+    "texture_row": 37,
+    "clip": "rest",
+    "frame_in_clip": 6,
+    "time_s": 0.2,
+    "params": {
+     "aim": 0.0,
+     "recoil": 0.0
+    },
+    "cannon_tip_robot_cm": [
+     45.17,
+     -52.26,
+     64.98
+    ],
+    "cannon_tip_unreal_cm": [
+     45.17,
+     52.26,
+     64.98
+    ],
+    "muzzle_farthest_vertex_robot_cm": [
+     41.06,
+     -53.45,
+     58.4
+    ],
+    "cannon_axis_elevation_deg": -41.469,
+    "cannon_axis_azimuth_deg": -8.672,
+    "foot_max_displacement_from_rest_cm": 0.0,
+    "other_nonshooting_parts_max_displacement_cm": 0.0
+   },
+   {
+    "texture_row": 38,
+    "clip": "rest",
+    "frame_in_clip": 7,
+    "time_s": 0.2333,
+    "params": {
+     "aim": 0.0,
+     "recoil": 0.0
+    },
+    "cannon_tip_robot_cm": [
+     45.17,
+     -52.26,
+     64.98
+    ],
+    "cannon_tip_unreal_cm": [
+     45.17,
+     52.26,
+     64.98
+    ],
+    "muzzle_farthest_vertex_robot_cm": [
+     41.06,
+     -53.45,
+     58.4
+    ],
+    "cannon_axis_elevation_deg": -41.469,
+    "cannon_axis_azimuth_deg": -8.672,
+    "foot_max_displacement_from_rest_cm": 0.0,
+    "other_nonshooting_parts_max_displacement_cm": 0.0
+   },
+   {
+    "texture_row": 39,
+    "clip": "rest",
+    "frame_in_clip": 8,
+    "time_s": 0.2667,
+    "params": {
+     "aim": 0.0,
+     "recoil": 0.0
+    },
+    "cannon_tip_robot_cm": [
+     45.17,
+     -52.26,
+     64.98
+    ],
+    "cannon_tip_unreal_cm": [
+     45.17,
+     52.26,
+     64.98
+    ],
+    "muzzle_farthest_vertex_robot_cm": [
+     41.06,
+     -53.45,
+     58.4
+    ],
+    "cannon_axis_elevation_deg": -41.469,
+    "cannon_axis_azimuth_deg": -8.672,
+    "foot_max_displacement_from_rest_cm": 0.0,
+    "other_nonshooting_parts_max_displacement_cm": 0.0
+   },
+   {
+    "texture_row": 40,
+    "clip": "rest",
+    "frame_in_clip": 9,
+    "time_s": 0.3,
+    "params": {
+     "aim": 0.0,
+     "recoil": 0.0
+    },
+    "cannon_tip_robot_cm": [
+     45.17,
+     -52.26,
+     64.98
+    ],
+    "cannon_tip_unreal_cm": [
+     45.17,
+     52.26,
+     64.98
+    ],
+    "muzzle_farthest_vertex_robot_cm": [
+     41.06,
+     -53.45,
+     58.4
+    ],
+    "cannon_axis_elevation_deg": -41.469,
+    "cannon_axis_azimuth_deg": -8.672,
+    "foot_max_displacement_from_rest_cm": 0.0,
+    "other_nonshooting_parts_max_displacement_cm": 0.0
+   },
+   {
+    "texture_row": 41,
+    "clip": "rest",
+    "frame_in_clip": 10,
+    "time_s": 0.3333,
+    "params": {
+     "aim": 0.0,
+     "recoil": 0.0
+    },
+    "cannon_tip_robot_cm": [
+     45.17,
+     -52.26,
+     64.98
+    ],
+    "cannon_tip_unreal_cm": [
+     45.17,
+     52.26,
+     64.98
+    ],
+    "muzzle_farthest_vertex_robot_cm": [
+     41.06,
+     -53.45,
+     58.4
+    ],
+    "cannon_axis_elevation_deg": -41.469,
+    "cannon_axis_azimuth_deg": -8.672,
+    "foot_max_displacement_from_rest_cm": 0.0,
+    "other_nonshooting_parts_max_displacement_cm": 0.0
+   },
+   {
+    "texture_row": 42,
+    "clip": "rest",
+    "frame_in_clip": 11,
+    "time_s": 0.3667,
+    "params": {
+     "aim": 0.0,
+     "recoil": 0.0
+    },
+    "cannon_tip_robot_cm": [
+     45.17,
+     -52.26,
+     64.98
+    ],
+    "cannon_tip_unreal_cm": [
+     45.17,
+     52.26,
+     64.98
+    ],
+    "muzzle_farthest_vertex_robot_cm": [
+     41.06,
+     -53.45,
+     58.4
+    ],
+    "cannon_axis_elevation_deg": -41.469,
+    "cannon_axis_azimuth_deg": -8.672,
+    "foot_max_displacement_from_rest_cm": 0.0,
+    "other_nonshooting_parts_max_displacement_cm": 0.0
+   },
+   {
+    "texture_row": 43,
+    "clip": "rest",
+    "frame_in_clip": 12,
+    "time_s": 0.4,
+    "params": {
+     "aim": 0.0,
+     "recoil": 0.0
+    },
+    "cannon_tip_robot_cm": [
+     45.17,
+     -52.26,
+     64.98
+    ],
+    "cannon_tip_unreal_cm": [
+     45.17,
+     52.26,
+     64.98
+    ],
+    "muzzle_farthest_vertex_robot_cm": [
+     41.06,
+     -53.45,
+     58.4
+    ],
+    "cannon_axis_elevation_deg": -41.469,
+    "cannon_axis_azimuth_deg": -8.672,
+    "foot_max_displacement_from_rest_cm": 0.0,
+    "other_nonshooting_parts_max_displacement_cm": 0.0
+   },
+   {
+    "texture_row": 44,
+    "clip": "rest",
+    "frame_in_clip": 13,
+    "time_s": 0.4333,
+    "params": {
+     "aim": 0.0,
+     "recoil": 0.0
+    },
+    "cannon_tip_robot_cm": [
+     45.17,
+     -52.26,
+     64.98
+    ],
+    "cannon_tip_unreal_cm": [
+     45.17,
+     52.26,
+     64.98
+    ],
+    "muzzle_farthest_vertex_robot_cm": [
+     41.06,
+     -53.45,
+     58.4
+    ],
+    "cannon_axis_elevation_deg": -41.469,
+    "cannon_axis_azimuth_deg": -8.672,
+    "foot_max_displacement_from_rest_cm": 0.0,
+    "other_nonshooting_parts_max_displacement_cm": 0.0
+   },
+   {
+    "texture_row": 45,
+    "clip": "rest",
+    "frame_in_clip": 14,
+    "time_s": 0.4667,
+    "params": {
+     "aim": 0.0,
+     "recoil": 0.0
+    },
+    "cannon_tip_robot_cm": [
+     45.17,
+     -52.26,
+     64.98
+    ],
+    "cannon_tip_unreal_cm": [
+     45.17,
+     52.26,
+     64.98
+    ],
+    "muzzle_farthest_vertex_robot_cm": [
+     41.06,
+     -53.45,
+     58.4
+    ],
+    "cannon_axis_elevation_deg": -41.469,
+    "cannon_axis_azimuth_deg": -8.672,
+    "foot_max_displacement_from_rest_cm": 0.0,
+    "other_nonshooting_parts_max_displacement_cm": 0.0
+   },
+   {
+    "texture_row": 46,
+    "clip": "rest",
+    "frame_in_clip": 15,
+    "time_s": 0.5,
+    "params": {
+     "aim": 0.0,
+     "recoil": 0.0
+    },
+    "cannon_tip_robot_cm": [
+     45.17,
+     -52.26,
+     64.98
+    ],
+    "cannon_tip_unreal_cm": [
+     45.17,
+     52.26,
+     64.98
+    ],
+    "muzzle_farthest_vertex_robot_cm": [
+     41.06,
+     -53.45,
+     58.4
+    ],
+    "cannon_axis_elevation_deg": -41.469,
+    "cannon_axis_azimuth_deg": -8.672,
+    "foot_max_displacement_from_rest_cm": 0.0,
+    "other_nonshooting_parts_max_displacement_cm": 0.0
+   },
+   {
+    "texture_row": 47,
+    "clip": "fire",
+    "frame_in_clip": 0,
+    "time_s": 0.0,
+    "params": {
+     "aim": 1.0,
+     "recoil": 0.0
+    },
+    "cannon_tip_robot_cm": [
+     75.57,
+     -44.0,
+     109.03
+    ],
+    "cannon_tip_unreal_cm": [
+     75.57,
+     44.0,
+     109.03
+    ],
+    "muzzle_farthest_vertex_robot_cm": [
+     77.02,
+     -45.04,
+     101.38
+    ],
+    "cannon_axis_elevation_deg": 0.011,
+    "cannon_axis_azimuth_deg": -0.003,
+    "foot_max_displacement_from_rest_cm": 0.0,
+    "other_nonshooting_parts_max_displacement_cm": 0.0
+   },
+   {
+    "texture_row": 48,
+    "clip": "fire",
+    "frame_in_clip": 1,
+    "time_s": 0.0333,
+    "params": {
+     "aim": 1.0,
+     "recoil": 0.5
+    },
+    "cannon_tip_robot_cm": [
+     72.05,
+     -44.0,
+     111.61
+    ],
+    "cannon_tip_unreal_cm": [
+     72.05,
+     44.0,
+     111.61
+    ],
+    "muzzle_farthest_vertex_robot_cm": [
+     73.83,
+     -45.0,
+     104.03
+    ],
+    "cannon_axis_elevation_deg": 2.488,
+    "cannon_axis_azimuth_deg": -0.011,
+    "foot_max_displacement_from_rest_cm": 0.0,
+    "other_nonshooting_parts_max_displacement_cm": 0.0
+   },
+   {
+    "texture_row": 49,
+    "clip": "fire",
+    "frame_in_clip": 2,
+    "time_s": 0.0667,
+    "params": {
+     "aim": 1.0,
+     "recoil": 1.0
+    },
+    "cannon_tip_robot_cm": [
+     68.39,
+     -44.02,
+     114.21
+    ],
+    "cannon_tip_unreal_cm": [
+     68.39,
+     44.02,
+     114.21
+    ],
+    "muzzle_farthest_vertex_robot_cm": [
+     70.5,
+     -44.98,
+     106.71
+    ],
+    "cannon_axis_elevation_deg": 5.007,
+    "cannon_axis_azimuth_deg": -0.022,
+    "foot_max_displacement_from_rest_cm": 0.0,
+    "other_nonshooting_parts_max_displacement_cm": 0.0
+   },
+   {
+    "texture_row": 50,
+    "clip": "fire",
+    "frame_in_clip": 3,
+    "time_s": 0.1,
+    "params": {
+     "aim": 1.0,
+     "recoil": 0.8438
+    },
+    "cannon_tip_robot_cm": [
+     69.56,
+     -44.01,
+     113.37
+    ],
+    "cannon_tip_unreal_cm": [
+     69.56,
+     44.01,
+     113.37
+    ],
+    "muzzle_farthest_vertex_robot_cm": [
+     71.56,
+     -44.99,
+     105.85
+    ],
+    "cannon_axis_elevation_deg": 4.184,
+    "cannon_axis_azimuth_deg": -0.023,
+    "foot_max_displacement_from_rest_cm": 0.0,
+    "other_nonshooting_parts_max_displacement_cm": 0.0
+   },
+   {
+    "texture_row": 51,
+    "clip": "fire",
+    "frame_in_clip": 4,
+    "time_s": 0.1333,
+    "params": {
+     "aim": 1.0,
+     "recoil": 0.5
+    },
+    "cannon_tip_robot_cm": [
+     72.05,
+     -44.0,
+     111.61
+    ],
+    "cannon_tip_unreal_cm": [
+     72.05,
+     44.0,
+     111.61
+    ],
+    "muzzle_farthest_vertex_robot_cm": [
+     73.83,
+     -45.0,
+     104.03
+    ],
+    "cannon_axis_elevation_deg": 2.488,
+    "cannon_axis_azimuth_deg": -0.011,
+    "foot_max_displacement_from_rest_cm": 0.0,
+    "other_nonshooting_parts_max_displacement_cm": 0.0
+   },
+   {
+    "texture_row": 52,
+    "clip": "fire",
+    "frame_in_clip": 5,
+    "time_s": 0.1667,
+    "params": {
+     "aim": 1.0,
+     "recoil": 0.1562
+    },
+    "cannon_tip_robot_cm": [
+     74.47,
+     -43.99,
+     109.85
+    ],
+    "cannon_tip_unreal_cm": [
+     74.47,
+     43.99,
+     109.85
+    ],
+    "muzzle_farthest_vertex_robot_cm": [
+     76.03,
+     -45.02,
+     102.23
+    ],
+    "cannon_axis_elevation_deg": 0.813,
+    "cannon_axis_azimuth_deg": 0.001,
+    "foot_max_displacement_from_rest_cm": 0.0,
+    "other_nonshooting_parts_max_displacement_cm": 0.0
+   },
+   {
+    "texture_row": 53,
+    "clip": "fire",
+    "frame_in_clip": 6,
+    "time_s": 0.2,
+    "params": {
+     "aim": 1.0,
+     "recoil": 0.0
+    },
+    "cannon_tip_robot_cm": [
+     75.57,
+     -44.0,
+     109.03
+    ],
+    "cannon_tip_unreal_cm": [
+     75.57,
+     44.0,
+     109.03
+    ],
+    "muzzle_farthest_vertex_robot_cm": [
+     77.02,
+     -45.04,
+     101.38
+    ],
+    "cannon_axis_elevation_deg": 0.011,
+    "cannon_axis_azimuth_deg": -0.003,
+    "foot_max_displacement_from_rest_cm": 0.0,
+    "other_nonshooting_parts_max_displacement_cm": 0.0
+   },
+   {
+    "texture_row": 54,
+    "clip": "fire",
+    "frame_in_clip": 7,
+    "time_s": 0.2333,
+    "params": {
+     "aim": 1.0,
+     "recoil": 0.0
+    },
+    "cannon_tip_robot_cm": [
+     75.57,
+     -44.0,
+     109.03
+    ],
+    "cannon_tip_unreal_cm": [
+     75.57,
+     44.0,
+     109.03
+    ],
+    "muzzle_farthest_vertex_robot_cm": [
+     77.02,
+     -45.04,
+     101.38
+    ],
+    "cannon_axis_elevation_deg": 0.011,
+    "cannon_axis_azimuth_deg": -0.003,
+    "foot_max_displacement_from_rest_cm": 0.0,
+    "other_nonshooting_parts_max_displacement_cm": 0.0
+   },
+   {
+    "texture_row": 55,
+    "clip": "fire",
+    "frame_in_clip": 8,
+    "time_s": 0.2667,
+    "params": {
+     "aim": 1.0,
+     "recoil": 0.0
+    },
+    "cannon_tip_robot_cm": [
+     75.57,
+     -44.0,
+     109.03
+    ],
+    "cannon_tip_unreal_cm": [
+     75.57,
+     44.0,
+     109.03
+    ],
+    "muzzle_farthest_vertex_robot_cm": [
+     77.02,
+     -45.04,
+     101.38
+    ],
+    "cannon_axis_elevation_deg": 0.011,
+    "cannon_axis_azimuth_deg": -0.003,
+    "foot_max_displacement_from_rest_cm": 0.0,
+    "other_nonshooting_parts_max_displacement_cm": 0.0
+   },
+   {
+    "texture_row": 56,
+    "clip": "fire",
+    "frame_in_clip": 9,
+    "time_s": 0.3,
+    "params": {
+     "aim": 1.0,
+     "recoil": 0.0
+    },
+    "cannon_tip_robot_cm": [
+     75.57,
+     -44.0,
+     109.03
+    ],
+    "cannon_tip_unreal_cm": [
+     75.57,
+     44.0,
+     109.03
+    ],
+    "muzzle_farthest_vertex_robot_cm": [
+     77.02,
+     -45.04,
+     101.38
+    ],
+    "cannon_axis_elevation_deg": 0.011,
+    "cannon_axis_azimuth_deg": -0.003,
+    "foot_max_displacement_from_rest_cm": 0.0,
+    "other_nonshooting_parts_max_displacement_cm": 0.0
+   },
+   {
+    "texture_row": 57,
+    "clip": "fire",
+    "frame_in_clip": 10,
+    "time_s": 0.3333,
+    "params": {
+     "aim": 1.0,
+     "recoil": 0.0
+    },
+    "cannon_tip_robot_cm": [
+     75.57,
+     -44.0,
+     109.03
+    ],
+    "cannon_tip_unreal_cm": [
+     75.57,
+     44.0,
+     109.03
+    ],
+    "muzzle_farthest_vertex_robot_cm": [
+     77.02,
+     -45.04,
+     101.38
+    ],
+    "cannon_axis_elevation_deg": 0.011,
+    "cannon_axis_azimuth_deg": -0.003,
+    "foot_max_displacement_from_rest_cm": 0.0,
+    "other_nonshooting_parts_max_displacement_cm": 0.0
+   },
+   {
+    "texture_row": 58,
+    "clip": "fire",
+    "frame_in_clip": 11,
+    "time_s": 0.3667,
+    "params": {
+     "aim": 1.0,
+     "recoil": 0.0
+    },
+    "cannon_tip_robot_cm": [
+     75.57,
+     -44.0,
+     109.03
+    ],
+    "cannon_tip_unreal_cm": [
+     75.57,
+     44.0,
+     109.03
+    ],
+    "muzzle_farthest_vertex_robot_cm": [
+     77.02,
+     -45.04,
+     101.38
+    ],
+    "cannon_axis_elevation_deg": 0.011,
+    "cannon_axis_azimuth_deg": -0.003,
+    "foot_max_displacement_from_rest_cm": 0.0,
+    "other_nonshooting_parts_max_displacement_cm": 0.0
+   },
+   {
+    "texture_row": 59,
+    "clip": "fire",
+    "frame_in_clip": 12,
+    "time_s": 0.4,
+    "params": {
+     "aim": 1.0,
+     "recoil": 0.0
+    },
+    "cannon_tip_robot_cm": [
+     75.57,
+     -44.0,
+     109.03
+    ],
+    "cannon_tip_unreal_cm": [
+     75.57,
+     44.0,
+     109.03
+    ],
+    "muzzle_farthest_vertex_robot_cm": [
+     77.02,
+     -45.04,
+     101.38
+    ],
+    "cannon_axis_elevation_deg": 0.011,
+    "cannon_axis_azimuth_deg": -0.003,
+    "foot_max_displacement_from_rest_cm": 0.0,
+    "other_nonshooting_parts_max_displacement_cm": 0.0
+   },
+   {
+    "texture_row": 60,
+    "clip": "fire",
+    "frame_in_clip": 13,
+    "time_s": 0.4333,
+    "params": {
+     "aim": 1.0,
+     "recoil": 0.0
+    },
+    "cannon_tip_robot_cm": [
+     75.57,
+     -44.0,
+     109.03
+    ],
+    "cannon_tip_unreal_cm": [
+     75.57,
+     44.0,
+     109.03
+    ],
+    "muzzle_farthest_vertex_robot_cm": [
+     77.02,
+     -45.04,
+     101.38
+    ],
+    "cannon_axis_elevation_deg": 0.011,
+    "cannon_axis_azimuth_deg": -0.003,
+    "foot_max_displacement_from_rest_cm": 0.0,
+    "other_nonshooting_parts_max_displacement_cm": 0.0
+   },
+   {
+    "texture_row": 61,
+    "clip": "fire",
+    "frame_in_clip": 14,
+    "time_s": 0.4667,
+    "params": {
+     "aim": 1.0,
+     "recoil": 0.0
+    },
+    "cannon_tip_robot_cm": [
+     75.57,
+     -44.0,
+     109.03
+    ],
+    "cannon_tip_unreal_cm": [
+     75.57,
+     44.0,
+     109.03
+    ],
+    "muzzle_farthest_vertex_robot_cm": [
+     77.02,
+     -45.04,
+     101.38
+    ],
+    "cannon_axis_elevation_deg": 0.011,
+    "cannon_axis_azimuth_deg": -0.003,
+    "foot_max_displacement_from_rest_cm": 0.0,
+    "other_nonshooting_parts_max_displacement_cm": 0.0
+   }
+  ]
+ },
  "walk_checks": {
   "source": "positions rebuilt from the SAVED half-float texture (quaternion renormalised as in the shader), rest vertices of the foot parts",
   "knee_flexion_max_deg": 15.0,

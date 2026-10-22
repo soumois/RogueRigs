@@ -2,7 +2,7 @@
  "task": "task-284-02-parts-bake-shooter",
  "robot": "shooter",
  "out_name": "shooter_meshy_parts",
- "height_cm": 176.0,
+ "height_cm": 176,
  "tris_limit": 12000,
  "fragment_rule": "nearest_face",
  "view_frame_cm": 200,
@@ -10,29 +10,29 @@
  "joint_note": "left side (+Y); right = mirror through y = 0 (cannon on the right forearm, y -34..-65; left hand y 38..60). Found on the mesh with orthographic slab renders (front, side of the right leg slab y -37..-5, arm slabs, torso slab) read against a cm grid: hip = dark hub on the thigh (side view x 2, z 86.7), knee = dark hub between the thigh panel (bottom z ~61) and the shin panel (top z ~54..56) at x 6, z 56..57, shoulder = hub between torso and shoulder pad (x 2, z 124, pad y 32..56), elbow = dark hinge block between the pad (bottom z 114) and the forearm block (top z 98..107) at y 45, z ~105, waist = black band under the torso green (z 94..99).",
  "joints": {
   "waist": [
-   2.0,
-   0.0,
+   2,
+   0,
    98.5
   ],
   "hip": [
-   2.0,
-   22.0,
+   2,
+   22,
    86.5
   ],
   "knee": [
-   6.0,
-   25.0,
-   57.0
+   6,
+   25,
+   57
   ],
   "shoulder": [
-   2.0,
-   36.0,
-   125.0
+   2,
+   36,
+   125
   ],
   "elbow": [
    1.5,
-   45.0,
-   105.0
+   45,
+   105
   ]
  },
  "refs": {
@@ -82,34 +82,30 @@
   "tex_rows": 62,
   "report_name": "shooter_meshy_anim_report.json",
   "render_frame_cm": 200,
-  "reserved": [
-   {
-    "clip_id": 1,
-    "rows": "16..30",
-    "frames": 15,
-    "note": "free for the aim clip of task-287 (shader: clamps at the last frame)"
-   },
-   {
-    "clip_id": 2,
-    "rows": "31..46",
-    "frames": 16,
-    "note": "free; the shader loops this clip with RunRate"
-   },
-   {
-    "clip_id": 3,
-    "rows": "47..61",
-    "frames": 15,
-    "note": "free for the fire clip of task-287 (shader: clamps at the last frame)"
-   }
-  ]
+  "reserved": [],
+  "aimfire": {
+   "task": "task-287-01-bake-shooter-aim-fire",
+   "note": "clip 1 = aim rows 16..30 (clamped), clip 2 = rest rows 31..46 (looped, RestClipId 2), clip 3 = fire rows 47..61 (clamped, ends on the aim pose); provisional owner timings 2026-10-22: aim over 0.3 s of the 0.6 s laser then held, recoil 0.2 s",
+   "telegraph_frames": 15,
+   "strike_frames": 16,
+   "recover_frames": 15,
+   "aim_frames": 9,
+   "peak_frame": 2,
+   "return_frame": 6,
+   "shoulder_back_cm": 4,
+   "forearm_back_cm": 3,
+   "forearm_pitch_deg": -5,
+   "cannon_fraction": 0.35,
+   "tip_depth_cm": 3
+  }
  },
  "planes": [
   {
    "name": "waist",
    "P": [
-    2.0,
-    0.0,
-    99.0
+    2,
+    0,
+    99
    ],
    "n": [
     0,
@@ -134,9 +130,9 @@
   {
    "name": "shoulder",
    "P": [
-    2.0,
-    31.0,
-    125.0
+    2,
+    31,
+    125
    ],
    "n": [
     0,
@@ -161,9 +157,9 @@
   {
    "name": "elbow",
    "P": [
-    2.0,
-    45.0,
-    101.0
+    2,
+    45,
+    101
    ],
    "n": [
     -0.3,
@@ -188,8 +184,8 @@
   {
    "name": "hip",
    "P": [
-    2.0,
-    10.0,
+    2,
+    10,
     86.5
    ],
    "n": [
@@ -216,9 +212,9 @@
   {
    "name": "knee",
    "P": [
-    5.0,
-    25.0,
-    57.0
+    5,
+    25,
+    57
    ],
    "n": [
     -0.15,
