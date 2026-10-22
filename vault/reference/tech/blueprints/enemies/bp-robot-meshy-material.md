@@ -16,7 +16,7 @@ kind: doc
 - assets: textures T_Heavy_Meshy_BaseColor (/Game/RogueRigs/Art/Heavy/), T_Kamikaze_Meshy_BaseColor (/Art/Kamikaze/), T_Shooter_Meshy_BaseColor (/Art/Shooter/), T_ChaserV2_Meshy_BaseColor (/Art/ChaserV2/); sources Art/Meshes/*-meshy/*_clean_basecolor.png; sRGB on, TC_Default, World group. T_ChaserAnim for the placeholder AnimTex.
 - sync_rule: a body instance and its eye instance use the same BaseColorTex, RunRate and ClipOffset; Animated is switched on together, with a baked AnimTex per robot (not built yet).
 - revert: delete the nine material assets above and the four textures (and their folders if empty); nothing references them until the slot assignment subtasks.
-- verified: all eight instances read back (texture, Animated, UseEyeTexture, scalars); M_RobotMeshy recompiled without error; all assets saved. Not verified: any render, PIE, animation (no AnimTex baked for these robots).
+- verified: all eight instances read back (texture, Animated, UseEyeTexture; RunRate 0.7 and ClipOffset 0 on all eight; GlowAmount 23 and EyeColor (1, 0.05, 0.05) on the four eyes); M_RobotMeshy recompiled without error; all assets saved. Not verified: any render, PIE, animation (no AnimTex baked for these robots).
 - owner_agent: agent-bp
 
 ## Relations
