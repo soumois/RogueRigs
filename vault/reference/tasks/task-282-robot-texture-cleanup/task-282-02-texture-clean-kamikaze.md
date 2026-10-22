@@ -3,7 +3,7 @@ id: task-282-02-texture-clean-kamikaze
 description: "Clean the kamikaze textures (3d)."
 parent: task-282-robot-texture-cleanup
 kind: task
-status: todo
+status: in-progress
 ---
 # Clean the kamikaze textures
 

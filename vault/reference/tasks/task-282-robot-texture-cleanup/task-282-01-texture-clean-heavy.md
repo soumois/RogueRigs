@@ -3,7 +3,7 @@ id: task-282-01-texture-clean-heavy
 description: "Clean the heavy textures (3d)."
 parent: task-282-robot-texture-cleanup
 kind: task
-status: in-progress
+status: done
 ---
 # Clean the heavy textures
 
@@ -15,11 +15,11 @@ status: in-progress
 - done_when: report names the cause; texels outside the treated classes unchanged; geometry and UV untouched; the Orchestrator renders the same camera (barrel_preview.py settings scaled to a 190 cm robot: front three-quarter and back three-quarter) before and after and sends both to the owner with the cleaned textures, plus a close-up of the defect area; Blender processes stopped
 - editor_state: closed (Blender headless only)
 - token_ceiling: 60000
-- model: open
-- tokens: open
-- runs: open
+- model: sonnet
+- tokens: input 38, cache write 85764, cache read 1173226, output 2085
+- runs: 1
 - milestone: M2
-- result: open
+- result: Cause: base colour (grey/tan blotches + dark outlines); metallic ~0, roughness smooth, not rewritten. Tools/art/blender/meshy_texture_clean.py + texture_clean/heavy.json; heavy_meshy_clean_basecolor.png: blue panels flattened to (56,110,180), 1.33 M texels changed, 2.85 M outside-class texels unchanged; FBX untouched; renders Saved/Renders/task-282/heavy_* incl. close-up. Small specks remain on back torso and left arm.
 
 ## Relations
 - [[task-282-robot-texture-cleanup]] — parent global task.
