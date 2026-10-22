@@ -3,7 +3,7 @@ id: task-283-08-bp-kamikaze-mesh
 description: "BP_Kamikaze uses the Meshy mesh (bp)."
 parent: task-283-robot-mesh-integration
 kind: task
-status: in-progress
+status: done
 ---
 # BP_Kamikaze uses the Meshy mesh
 
@@ -15,11 +15,11 @@ status: in-progress
 - done_when: mesh bounds read back match the report (Y mirrored), slots and materials read back, BP_Kamikaze compiles without LogBlueprint error, events read back, doc updated; lint clean
 - editor_state: open
 - token_ceiling: 80000
-- model: open
-- tokens: open
-- runs: open
+- model: sonnet
+- tokens: input 44, cache write 78493, cache read 1181072, output 813
+- runs: 1
 - milestone: M2
-- result: open
+- result: SM_Kamikaze_Meshy + SM_Kamikaze_Core_Meshy imported (bounds match, Y mirrored); slots body/robot_eye and core=MI_Kamikaze_Body; BodyMesh z -40 (VisualRoot hover 40), CoreMesh (-4.1, 0.6, 30.4), CoreLight at core centre; EyeMesh removed; compiles clean; bp-kamikaze updated. Core 102 cm at scale 1, armed growth 1.8 may exceed the body.
 
 ## Relations
 - [[task-283-robot-mesh-integration]] — parent global task.

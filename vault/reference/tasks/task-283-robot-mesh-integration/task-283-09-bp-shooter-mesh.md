@@ -3,7 +3,7 @@ id: task-283-09-bp-shooter-mesh
 description: "BP_Shooter uses the Meshy mesh (bp)."
 parent: task-283-robot-mesh-integration
 kind: task
-status: todo
+status: in-progress
 ---
 # BP_Shooter uses the Meshy mesh
 
