@@ -3,7 +3,7 @@ id: task-287-01-bake-shooter-aim-fire
 description: "Bake the shooter aim and fire clips (3d)."
 parent: task-287-shooter-aim-fire-anim
 kind: task
-status: todo
+status: in-progress
 ---
 # Bake the shooter aim and fire clips
 

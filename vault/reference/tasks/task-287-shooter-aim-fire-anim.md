@@ -3,7 +3,7 @@ id: task-287-shooter-aim-fire-anim
 description: "Global task: Animate the shooter aim clip (cannon arm raised during the laser) and fire clip (recoil at the shot), after its walk."
 parent: tasks-to-do-index
 kind: task
-status: todo
+status: in-progress
 ---
 # Shooter aim and fire animation
 
