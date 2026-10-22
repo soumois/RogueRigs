@@ -1,9 +1,10 @@
-"""task-288-01: compare the L/R centre-offset difference of the debris pieces with the asymmetry of the source parts mesh and the game mesh. Writes JSON to --out. Headless Blender."""
+"""task-288-01: compare the L/R centre-offset difference of the debris pieces with the asymmetry of the source parts mesh and the game mesh. Writes JSON to --out. Headless Blender. Optional --robot <name> (default heavy) picks Art/Meshes/<name>-meshy/."""
 import bpy, sys, os, json
 from mathutils import Vector
 a = sys.argv[sys.argv.index("--") + 1:]
 o = dict(zip(a[::2], a[1::2]))
-M = "Art/Meshes/heavy-meshy/"
+R_ = o.get("--robot", "heavy"); P_ = R_.capitalize()
+M = "Art/Meshes/%s-meshy/" % R_
 
 
 def bbox(vs):
@@ -17,19 +18,19 @@ def tris(me):
 
 
 bpy.ops.wm.read_factory_settings(use_empty=True)
-bpy.ops.import_scene.fbx(filepath=os.path.abspath(M + "heavy_meshy_parts.fbx"), colors_type="LINEAR")
+bpy.ops.import_scene.fbx(filepath=os.path.abspath(M + R_ + "_meshy_parts.fbx"), colors_type="LINEAR")
 parts = {x.name: x for x in bpy.data.objects if x.type == "MESH"}
 bpy.context.view_layer.update()
 pv, ptri = {}, {}
 for n, ob in parts.items():
     pv[n] = [ob.matrix_world @ v.co for v in ob.data.vertices]; ptri[n] = tris(ob.data)
 bpy.ops.wm.read_factory_settings(use_empty=True)
-bpy.ops.import_scene.fbx(filepath=os.path.abspath(M + "heavy_meshy_game.fbx"), colors_type="LINEAR")
+bpy.ops.import_scene.fbx(filepath=os.path.abspath(M + R_ + "_meshy_game.fbx"), colors_type="LINEAR")
 bpy.context.view_layer.update()
 gv = [x.matrix_world @ v.co for x in bpy.data.objects if x.type == "MESH" for v in x.data.vertices]
 deb = json.load(open(os.path.abspath(o["--debris"])))
-rp = json.load(open(os.path.abspath(M + "heavy_meshy_parts.report.json")))["triangles"]["per_part"]
-srcmap = {p["name"].replace("SM_HeavyDebris_", ""): p for p in deb["pieces"]}
+rp = json.load(open(os.path.abspath(M + R_ + "_meshy_parts.report.json")))["triangles"]["per_part"]
+srcmap = {p["name"].replace("SM_" + P_ + "Debris_", ""): p for p in deb["pieces"]}
 
 
 def unreal(c):  # same convention as debris_pieces.json: (x, -y, z)

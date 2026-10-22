@@ -237,5 +237,13 @@
    "pivot": "ShinFoot"
   }
  ],
- "final_fill": true
+ "final_fill": true,
+ "debris": {
+  "task": "task-288-02-pieces-shooter",
+  "prefix": "Shooter",
+  "in_fbx": "Art/Meshes/shooter-meshy/shooter_meshy_parts.fbx",
+  "in_tex": "Art/Meshes/shooter-meshy/shooter_meshy_clean_basecolor.png",
+  "out_dir": "Art/Source/shooter-meshy/debris",
+  "eye_to_body": true
+ }
 }

@@ -1,0 +1,659 @@
+{
+  "source": "Art/Meshes/shooter-meshy/shooter_meshy_parts.fbx",
+  "texture": "shooter_meshy_clean_basecolor.png",
+  "offset_convention": "centre_offset_cm_unreal = (x, -y, z) of the piece bounds centre in the rest-pose Blender world (cm, origin at the floor between the feet, front +X, robot left +Y, Z up). The FBX is exported with the Blender default axes (forward -Z, up Y) which Unreal imports with X and Z kept and Y mirrored; the chaser pipeline mirrors Y the same way (ChaserAnimWPO). So the robot's left (+Y Blender) is -Y in Unreal. Mesh pivot = bounds centre, so the piece's Unreal location at rest = this offset.",
+  "units": "cm",
+  "pieces": [
+    {
+      "index": 0,
+      "name": "SM_ShooterDebris_Torso",
+      "file": "SM_ShooterDebris_Torso.fbx",
+      "triangles": 2640,
+      "source_parts": [
+        "HeadTorso",
+        "Pelvis"
+      ],
+      "centre_offset_cm_unreal": [
+        9.33,
+        0,
+        123.61
+      ],
+      "size_cm": [
+        60.48,
+        62,
+        104.77
+      ],
+      "uv_layers": [
+        "UVMap"
+      ],
+      "materials": [
+        "body"
+      ]
+    },
+    {
+      "index": 1,
+      "name": "SM_ShooterDebris_UpperArm_L",
+      "file": "SM_ShooterDebris_UpperArm_L.fbx",
+      "triangles": 580,
+      "source_parts": [
+        "UpperArm_L"
+      ],
+      "centre_offset_cm_unreal": [
+        1.77,
+        -44.5,
+        120.32
+      ],
+      "size_cm": [
+        33.48,
+        26.99,
+        44.02
+      ],
+      "uv_layers": [
+        "UVMap"
+      ],
+      "materials": [
+        "body"
+      ]
+    },
+    {
+      "index": 2,
+      "name": "SM_ShooterDebris_UpperArm_R",
+      "file": "SM_ShooterDebris_UpperArm_R.fbx",
+      "triangles": 809,
+      "source_parts": [
+        "UpperArm_R"
+      ],
+      "centre_offset_cm_unreal": [
+        1.83,
+        45.58,
+        119.88
+      ],
+      "size_cm": [
+        33.38,
+        29.31,
+        45.54
+      ],
+      "uv_layers": [
+        "UVMap"
+      ],
+      "materials": [
+        "body"
+      ]
+    },
+    {
+      "index": 3,
+      "name": "SM_ShooterDebris_Forearm_L",
+      "file": "SM_ShooterDebris_Forearm_L.fbx",
+      "triangles": 1115,
+      "source_parts": [
+        "ForearmHand_L"
+      ],
+      "centre_offset_cm_unreal": [
+        14.1,
+        -51.48,
+        77
+      ],
+      "size_cm": [
+        42.15,
+        29.82,
+        57.76
+      ],
+      "uv_layers": [
+        "UVMap"
+      ],
+      "materials": [
+        "body"
+      ]
+    },
+    {
+      "index": 4,
+      "name": "SM_ShooterDebris_Forearm_R",
+      "file": "SM_ShooterDebris_Forearm_R.fbx",
+      "triangles": 849,
+      "source_parts": [
+        "ForearmHand_R"
+      ],
+      "centre_offset_cm_unreal": [
+        23.32,
+        49.25,
+        83.08
+      ],
+      "size_cm": [
+        60.07,
+        31.8,
+        49.36
+      ],
+      "uv_layers": [
+        "UVMap"
+      ],
+      "materials": [
+        "body"
+      ]
+    },
+    {
+      "index": 5,
+      "name": "SM_ShooterDebris_Arm_L",
+      "file": "SM_ShooterDebris_Arm_L.fbx",
+      "triangles": 1695,
+      "source_parts": [
+        "UpperArm_L",
+        "ForearmHand_L"
+      ],
+      "centre_offset_cm_unreal": [
+        10.1,
+        -48.69,
+        95.23
+      ],
+      "size_cm": [
+        50.14,
+        35.39,
+        94.21
+      ],
+      "uv_layers": [
+        "UVMap"
+      ],
+      "materials": [
+        "body"
+      ]
+    },
+    {
+      "index": 6,
+      "name": "SM_ShooterDebris_Arm_R",
+      "file": "SM_ShooterDebris_Arm_R.fbx",
+      "triangles": 1658,
+      "source_parts": [
+        "UpperArm_R",
+        "ForearmHand_R"
+      ],
+      "centre_offset_cm_unreal": [
+        19.25,
+        48.04,
+        100.52
+      ],
+      "size_cm": [
+        68.21,
+        34.22,
+        84.25
+      ],
+      "uv_layers": [
+        "UVMap"
+      ],
+      "materials": [
+        "body"
+      ]
+    },
+    {
+      "index": 7,
+      "name": "SM_ShooterDebris_Thigh_L",
+      "file": "SM_ShooterDebris_Thigh_L.fbx",
+      "triangles": 730,
+      "source_parts": [
+        "Thigh_L"
+      ],
+      "centre_offset_cm_unreal": [
+        3.56,
+        -22.08,
+        77.3
+      ],
+      "size_cm": [
+        33.88,
+        24.15,
+        43.4
+      ],
+      "uv_layers": [
+        "UVMap"
+      ],
+      "materials": [
+        "body"
+      ]
+    },
+    {
+      "index": 8,
+      "name": "SM_ShooterDebris_Thigh_R",
+      "file": "SM_ShooterDebris_Thigh_R.fbx",
+      "triangles": 668,
+      "source_parts": [
+        "Thigh_R"
+      ],
+      "centre_offset_cm_unreal": [
+        4.19,
+        20.89,
+        74.54
+      ],
+      "size_cm": [
+        33.5,
+        23.06,
+        37.77
+      ],
+      "uv_layers": [
+        "UVMap"
+      ],
+      "materials": [
+        "body"
+      ]
+    },
+    {
+      "index": 9,
+      "name": "SM_ShooterDebris_LowerLeg_L",
+      "file": "SM_ShooterDebris_LowerLeg_L.fbx",
+      "triangles": 1027,
+      "source_parts": [
+        "ShinFoot_L"
+      ],
+      "centre_offset_cm_unreal": [
+        -0.15,
+        -28.61,
+        29.71
+      ],
+      "size_cm": [
+        58.17,
+        38.8,
+        59.28
+      ],
+      "uv_layers": [
+        "UVMap"
+      ],
+      "materials": [
+        "body"
+      ]
+    },
+    {
+      "index": 10,
+      "name": "SM_ShooterDebris_LowerLeg_R",
+      "file": "SM_ShooterDebris_LowerLeg_R.fbx",
+      "triangles": 1102,
+      "source_parts": [
+        "ShinFoot_R"
+      ],
+      "centre_offset_cm_unreal": [
+        0.11,
+        28.24,
+        29.71
+      ],
+      "size_cm": [
+        58.24,
+        39.54,
+        59.41
+      ],
+      "uv_layers": [
+        "UVMap"
+      ],
+      "materials": [
+        "body"
+      ]
+    },
+    {
+      "index": 11,
+      "name": "SM_ShooterDebris_Leg_L",
+      "file": "SM_ShooterDebris_Leg_L.fbx",
+      "triangles": 1757,
+      "source_parts": [
+        "Thigh_L",
+        "ShinFoot_L"
+      ],
+      "centre_offset_cm_unreal": [
+        -0.15,
+        -28.61,
+        49.53
+      ],
+      "size_cm": [
+        58.17,
+        38.8,
+        98.93
+      ],
+      "uv_layers": [
+        "UVMap"
+      ],
+      "materials": [
+        "body"
+      ]
+    },
+    {
+      "index": 12,
+      "name": "SM_ShooterDebris_Leg_R",
+      "file": "SM_ShooterDebris_Leg_R.fbx",
+      "triangles": 1770,
+      "source_parts": [
+        "Thigh_R",
+        "ShinFoot_R"
+      ],
+      "centre_offset_cm_unreal": [
+        0.11,
+        28.24,
+        46.71
+      ],
+      "size_cm": [
+        58.24,
+        39.54,
+        93.42
+      ],
+      "uv_layers": [
+        "UVMap"
+      ],
+      "materials": [
+        "body"
+      ]
+    }
+  ],
+  "part_triangles": {
+    "ForearmHand_L": 1115,
+    "ForearmHand_R": 849,
+    "HeadTorso": 2151,
+    "Pelvis": 489,
+    "ShinFoot_L": 1027,
+    "ShinFoot_R": 1102,
+    "Thigh_L": 730,
+    "Thigh_R": 668,
+    "UpperArm_L": 580,
+    "UpperArm_R": 809
+  },
+  "sum_parts_triangles": 9520,
+  "mirror_vs_source": {
+    "note": "debris_diff = |L - mirror(R)| of centre_offset_cm_unreal (x, y mirrored, z). parts_diff = same on the bbox centre of the source parts (rest pose, heavy_meshy_parts.fbx, the same source parts joined per piece). game_zone_diff = same on the bbox centre of the game-mesh vertices inside each piece's bbox grown 1 cm (heavy_meshy_game.fbx is not split into parts, so this is a sample of the source, not an exact cut). No geometry or offset was altered.",
+    "pairs": {
+      "UpperArm": {
+        "debris_diff": [
+          0.06,
+          1.08,
+          0.44
+        ],
+        "parts_diff": [
+          0.06,
+          1.09,
+          0.43
+        ],
+        "game_zone_diff": [
+          0.06,
+          0.88,
+          0.32
+        ],
+        "size_cm_L": [
+          33.48,
+          26.99,
+          44.02
+        ],
+        "size_cm_R": [
+          33.38,
+          29.31,
+          45.54
+        ],
+        "parts_size_cm_L": [
+          33.48,
+          26.99,
+          44.02
+        ],
+        "parts_size_cm_R": [
+          33.38,
+          29.31,
+          45.54
+        ]
+      },
+      "Forearm": {
+        "debris_diff": [
+          9.22,
+          2.23,
+          6.08
+        ],
+        "parts_diff": [
+          9.23,
+          2.23,
+          6.07
+        ],
+        "game_zone_diff": [
+          8.73,
+          2.29,
+          6.17
+        ],
+        "size_cm_L": [
+          42.15,
+          29.82,
+          57.76
+        ],
+        "size_cm_R": [
+          60.07,
+          31.8,
+          49.36
+        ],
+        "parts_size_cm_L": [
+          42.15,
+          29.82,
+          57.76
+        ],
+        "parts_size_cm_R": [
+          60.07,
+          31.8,
+          49.36
+        ]
+      },
+      "Arm": {
+        "debris_diff": [
+          9.15,
+          0.65,
+          5.29
+        ],
+        "parts_diff": [
+          9.15,
+          0.65,
+          5.3
+        ],
+        "game_zone_diff": [
+          9.15,
+          0.66,
+          5.37
+        ],
+        "size_cm_L": [
+          50.14,
+          35.39,
+          94.21
+        ],
+        "size_cm_R": [
+          68.21,
+          34.22,
+          84.25
+        ],
+        "parts_size_cm_L": [
+          50.14,
+          35.39,
+          94.21
+        ],
+        "parts_size_cm_R": [
+          68.21,
+          34.22,
+          84.25
+        ]
+      },
+      "Thigh": {
+        "debris_diff": [
+          0.63,
+          1.19,
+          2.76
+        ],
+        "parts_diff": [
+          0.63,
+          1.18,
+          2.76
+        ],
+        "game_zone_diff": [
+          0.48,
+          1.26,
+          3.05
+        ],
+        "size_cm_L": [
+          33.88,
+          24.15,
+          43.4
+        ],
+        "size_cm_R": [
+          33.5,
+          23.06,
+          37.77
+        ],
+        "parts_size_cm_L": [
+          33.88,
+          24.15,
+          43.4
+        ],
+        "parts_size_cm_R": [
+          33.5,
+          23.06,
+          37.77
+        ]
+      },
+      "LowerLeg": {
+        "debris_diff": [
+          0.26,
+          0.37,
+          0
+        ],
+        "parts_diff": [
+          0.26,
+          0.37,
+          0
+        ],
+        "game_zone_diff": [
+          0.18,
+          0.82,
+          0.03
+        ],
+        "size_cm_L": [
+          58.17,
+          38.8,
+          59.28
+        ],
+        "size_cm_R": [
+          58.24,
+          39.54,
+          59.41
+        ],
+        "parts_size_cm_L": [
+          58.17,
+          38.8,
+          59.28
+        ],
+        "parts_size_cm_R": [
+          58.24,
+          39.54,
+          59.41
+        ]
+      },
+      "Leg": {
+        "debris_diff": [
+          0.26,
+          0.37,
+          2.82
+        ],
+        "parts_diff": [
+          0.26,
+          0.37,
+          2.82
+        ],
+        "game_zone_diff": [
+          0.18,
+          0.24,
+          2.76
+        ],
+        "size_cm_L": [
+          58.17,
+          38.8,
+          98.93
+        ],
+        "size_cm_R": [
+          58.24,
+          39.54,
+          93.42
+        ],
+        "parts_size_cm_L": [
+          58.17,
+          38.8,
+          98.93
+        ],
+        "parts_size_cm_R": [
+          58.24,
+          39.54,
+          93.42
+        ]
+      }
+    },
+    "face_check": {
+      "Torso": {
+        "piece_tris": 2640,
+        "sum_parts_tris_reimport": 2640,
+        "sum_parts_tris_report": 2641,
+        "delta_vs_report": -1
+      },
+      "UpperArm_L": {
+        "piece_tris": 580,
+        "sum_parts_tris_reimport": 580,
+        "sum_parts_tris_report": 580,
+        "delta_vs_report": 0
+      },
+      "UpperArm_R": {
+        "piece_tris": 809,
+        "sum_parts_tris_reimport": 809,
+        "sum_parts_tris_report": 809,
+        "delta_vs_report": 0
+      },
+      "Forearm_L": {
+        "piece_tris": 1115,
+        "sum_parts_tris_reimport": 1115,
+        "sum_parts_tris_report": 1115,
+        "delta_vs_report": 0
+      },
+      "Forearm_R": {
+        "piece_tris": 849,
+        "sum_parts_tris_reimport": 849,
+        "sum_parts_tris_report": 849,
+        "delta_vs_report": 0
+      },
+      "Arm_L": {
+        "piece_tris": 1695,
+        "sum_parts_tris_reimport": 1695,
+        "sum_parts_tris_report": 1695,
+        "delta_vs_report": 0
+      },
+      "Arm_R": {
+        "piece_tris": 1658,
+        "sum_parts_tris_reimport": 1658,
+        "sum_parts_tris_report": 1658,
+        "delta_vs_report": 0
+      },
+      "Thigh_L": {
+        "piece_tris": 730,
+        "sum_parts_tris_reimport": 730,
+        "sum_parts_tris_report": 730,
+        "delta_vs_report": 0
+      },
+      "Thigh_R": {
+        "piece_tris": 668,
+        "sum_parts_tris_reimport": 668,
+        "sum_parts_tris_report": 668,
+        "delta_vs_report": 0
+      },
+      "LowerLeg_L": {
+        "piece_tris": 1027,
+        "sum_parts_tris_reimport": 1027,
+        "sum_parts_tris_report": 1027,
+        "delta_vs_report": 0
+      },
+      "LowerLeg_R": {
+        "piece_tris": 1102,
+        "sum_parts_tris_reimport": 1102,
+        "sum_parts_tris_report": 1102,
+        "delta_vs_report": 0
+      },
+      "Leg_L": {
+        "piece_tris": 1757,
+        "sum_parts_tris_reimport": 1757,
+        "sum_parts_tris_report": 1757,
+        "delta_vs_report": 0
+      },
+      "Leg_R": {
+        "piece_tris": 1770,
+        "sum_parts_tris_reimport": 1770,
+        "sum_parts_tris_report": 1770,
+        "delta_vs_report": 0
+      }
+    },
+    "accepted": "Every debris_diff equals parts_diff (source asymmetry). Forearm and Arm differ by design (cannon on the right forearm piece); the small Thigh/UpperArm misses are the source parts asymmetry. No offset altered. Torso is 1 tri below the parts report sum (report counts 2641, reimport 2640)."
+  }
+}

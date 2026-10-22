@@ -13,8 +13,9 @@ nt = mat.node_tree; t = nt.nodes.new("ShaderNodeTexImage"); t.image = img
 nt.links.new(t.outputs["Color"], nt.nodes["Principled BSDF"].inputs["Base Color"])
 cols = 5; cell = 230.0; pos = []
 for i, p in enumerate(rep["pieces"]):
+    _before = {x.name for x in bpy.data.objects}
     bpy.ops.import_scene.fbx(filepath=os.path.join(D, p["file"]), axis_forward="-Z", axis_up="Y")
-    ob = [x for x in bpy.context.selected_objects if x.type == "MESH"][0]
+    ob = [x for x in bpy.data.objects if x.name not in _before and x.type == "MESH"][0]
     ob.data.materials.clear(); ob.data.materials.append(mat)
     for poly in ob.data.polygons: poly.use_smooth = False
     r, c = divmod(i, cols)
