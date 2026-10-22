@@ -1,0 +1,225 @@
+{
+ "task": "task-284-03-parts-bake-chaser-v2",
+ "robot": "chaser_v2",
+ "out_name": "chaser_v2_meshy_parts",
+ "height_cm": 123,
+ "tris_limit": 12000,
+ "fragment_rule": "nearest_face",
+ "view_frame_cm": 150,
+ "lit_frame_cm": 140,
+ "joint_note": "left side (+Y); right = mirror through y = 0. Found on the mesh with orthographic slab renders of the game FBX (side slab y 5..40 and 8..24, front slab x -15..15, arm slabs) read against a cm grid: hip = hex hub on the black hip block (x -3.5, z 70.3, y 14 = centre of the thigh block), knee = dark round hub (x -0.3, z 45.5, y 16) under the black thigh neck (ends z ~53) and inside the shin guard (top z 52.9), shoulder = dark rod hub between torso side plate (y 13..18) and the shoulder pad (y 24..37), x -6.6, z ~97, elbow = dark hinge hub (x -8, z 80.5, y 35) between the upper-arm dark link and the forearm yellow top (slanted edge from y 31 z 76.7 to y 39 z 81.6), waist = black band under the torso (z 75.6..81).",
+ "joints": {
+  "waist": [
+   -2,
+   0,
+   79
+  ],
+  "hip": [
+   -3.5,
+   14,
+   70.3
+  ],
+  "knee": [
+   -0.3,
+   16,
+   45.5
+  ],
+  "shoulder": [
+   -6.6,
+   23,
+   97
+  ],
+  "elbow": [
+   -8,
+   35,
+   80.5
+  ]
+ },
+ "refs": {
+  "HeadTorso": [
+   0,
+   0,
+   100
+  ],
+  "Pelvis": [
+   0,
+   0,
+   70
+  ],
+  "UpperArm": [
+   -5,
+   30,
+   95
+  ],
+  "ForearmHand": [
+   5,
+   36,
+   62
+  ],
+  "Thigh": [
+   -3,
+   14,
+   62
+  ],
+  "ShinFoot": [
+   -3,
+   18,
+   25
+  ]
+ },
+ "bake": {
+  "task": "task-284-03-parts-bake-chaser-v2",
+  "walk_style": "planted",
+  "run_rate": 1.5,
+  "speed_cm_s": 180,
+  "knee_deg": 15,
+  "arm_deg": 8,
+  "elbow_deg": 0,
+  "lean_deg": 3,
+  "twist_deg": 3,
+  "attack": true,
+  "tex_name": "T_ChaserV2Anim.exr",
+  "tex_rows": 31,
+  "report_name": "chaser_v2_meshy_anim_report.json",
+  "render_frame_cm": 150
+ },
+ "planes": [
+  {
+   "name": "waist",
+   "P": [
+    -2,
+    0,
+    79
+   ],
+   "n": [
+    0,
+    0,
+    1
+   ],
+   "box": [
+    [
+     -40,
+     -30,
+     70
+    ],
+    [
+     40,
+     30,
+     90
+    ]
+   ],
+   "side": 0,
+   "pivot": "HeadTorso"
+  },
+  {
+   "name": "shoulder",
+   "P": [
+    -6.6,
+    20.5,
+    97
+   ],
+   "n": [
+    0,
+    1,
+    0
+   ],
+   "box": [
+    [
+     -40,
+     15,
+     70
+    ],
+    [
+     40,
+     70,
+     130
+    ]
+   ],
+   "side": 1,
+   "pivot": "UpperArm"
+  },
+  {
+   "name": "elbow",
+   "P": [
+    -8,
+    34,
+    79.5
+   ],
+   "n": [
+    0,
+    -0.5,
+    0.866
+   ],
+   "box": [
+    [
+     -40,
+     27,
+     55
+    ],
+    [
+     40,
+     70,
+     95
+    ]
+   ],
+   "side": 1,
+   "pivot": "ForearmHand"
+  },
+  {
+   "name": "hip",
+   "P": [
+    -3.5,
+    6.5,
+    70.3
+   ],
+   "n": [
+    0,
+    1,
+    0
+   ],
+   "box": [
+    [
+     -40,
+     2,
+     58
+    ],
+    [
+     40,
+     40,
+     80
+    ]
+   ],
+   "side": 1,
+   "pivot": "Thigh",
+   "below_waist": true
+  },
+  {
+   "name": "knee",
+   "P": [
+    -0.3,
+    16,
+    53.2
+   ],
+   "n": [
+    0,
+    0,
+    1
+   ],
+   "box": [
+    [
+     -40,
+     5,
+     38
+    ],
+    [
+     40,
+     30,
+     70
+    ]
+   ],
+   "side": 1,
+   "pivot": "ShinFoot"
+  }
+ ],
+ "final_fill": true
+}

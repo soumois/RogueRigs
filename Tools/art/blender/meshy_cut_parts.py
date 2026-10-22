@@ -380,6 +380,7 @@ if CFG.get("final_fill"):      # config key (default off): boundary loops left o
             new_faces += list(bmesh.ops.holes_fill(bm, edges=left_, sides=2000)["faces"])
         left_ = [e for e in bm.edges if e[LAY_CUT] == 999 and len(e.link_faces) == 1]
         print("FINAL_FILL after weld:", len(left_), "open")
+new_faces = [f for f in new_faces if f.is_valid]      # faces consumed by the final weld are gone
 for f in new_faces:
     f[LAY_CAP] = 1
 bmesh.ops.triangulate(bm, faces=new_faces)
