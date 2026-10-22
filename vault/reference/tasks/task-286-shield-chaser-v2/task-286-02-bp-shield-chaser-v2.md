@@ -3,7 +3,7 @@ id: task-286-02-bp-shield-chaser-v2
 description: "BP_ShieldChaserV2 with its materials (bp)."
 parent: task-286-shield-chaser-v2
 kind: task
-status: in-progress
+status: done
 ---
 # BP_ShieldChaserV2 with its materials
 
@@ -15,11 +15,11 @@ status: in-progress
 - done_when: git diff shows no v1 asset changed, UV2 on RENDER_DATA clean, instance parameters and OnShieldBroken read back, compiles without error; lint clean
 - editor_state: open
 - token_ceiling: 80000
-- model: open
-- tokens: open
-- runs: open
+- model: sonnet
+- tokens: input 108, cache write 136404, cache read 5016895, output 38139
+- runs: 1
 - milestone: M2
-- result: open
+- result: SM_ShieldChaserV2_Meshy_Anim + T_ShieldChaserV2Anim in Art/ShieldChaserV2 (v1 settings; slots body, robot_eye, shield, emblem; UV2 clean); new master M_ShieldChaserV2_Anim (v1 master hard-codes its anim texture); MI_ShieldChaserV2_{Body,BodyPlain,Shield,Emblem,Hidden} and MI_RobotEye_ShieldChaserV2(Plain), RunRate 1.5, ClipOffset 0/2; BP_ShieldChaserV2 (dup of BP_ShieldChaser) with OnShieldBroken swaps on v2 slot indices; compiles; v1 untouched; doc bp-shield-chaser-v2.
 
 ## Relations
 - [[task-286-shield-chaser-v2]] — parent global task.

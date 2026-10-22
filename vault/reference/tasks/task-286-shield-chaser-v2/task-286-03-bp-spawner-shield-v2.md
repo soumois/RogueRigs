@@ -3,7 +3,7 @@ id: task-286-03-bp-spawner-shield-v2
 description: "Spawner uses BP_ShieldChaserV2 (bp)."
 parent: task-286-shield-chaser-v2
 kind: task
-status: todo
+status: in-progress
 ---
 # Spawner uses BP_ShieldChaserV2
 
