@@ -15,7 +15,7 @@ status: done
 - confirmed_by_owner: yes (2026-10-22, plan accepted; launch on the owner's word)
 - milestone: M2
 - next_step: none
-- result: Done. No build needed (no Source change since binaries). 50 enemy/integration tests pass (headless alongside the editor). After shots Saved/RobotMeshes/after-integration/{heavy,kamikaze,shooter,chaser}.png + kamikaze_pulse_00-04: Meshy heavy, kamikaze, shooter visible, eyes red, no grey-box left, shooter laser from cannon tip, core pulses. Defect: armed kamikaze core (102 cm shell x ArmedCoreScale 1.8) swallows the robot; owner question.
+- result: Done. Heavy, kamikaze (body + separate core), shooter Meshy meshes game-ready (robot_game_ready_eye.py) and in BP_Heavy, BP_Kamikaze, BP_Shooter with M_RobotMeshy instances and per-robot eye instances; chaser v2 game mesh ready; grey-box removed; 50 enemy tests pass; before/after shots Saved/RobotMeshes/{before,after-integration}/. Open: armed kamikaze core too big (owner question).
 
 ## Subtasks
 1. task-283-01-capture-before — cpp: Capture the robots before integration
