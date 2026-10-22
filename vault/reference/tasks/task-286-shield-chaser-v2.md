@@ -10,9 +10,9 @@ status: todo
 - request: "Chasseur: essayer le chasseur v2 ET un chasseur v2 avec bouclier; garder la version v1 (assets, fichiers, BP) intacte pour pouvoir la restaurer (owner answer relayed by the main session)" (owner, 2026-10-22)
 - goal: Build a shield chaser on the chaser v2 mesh in new assets (BP_ShieldChaserV2), the v1 shield chaser kept intact for restore.
 - acceptance: every subtask done and its checks passed; BP_ShieldChaserV2 spawns in game with the shield run and bash clips, v1 assets unchanged; committed.
-- gdd_check: read enemy-heavy, enemy-kamikaze, enemy-shooter, enemy-chaser, chaser-meshy-pipeline, art-prompts-robots-meshy, the bp-* and sys-enemies-* nodes (2026-10-22). Owner decisions 2026-10-22 (provisional): Meshy triangle counts kept, no decimation (chaser v2 5120, heavy 10361, kamikaze 10172, shooter 7263; the chaser 3000 budget is lifted for v2); kamikaze keeps hover, only a very light leg motion, no walk; chaser v2 and a shield chaser v2 are tried in new assets, every chaser v1 and shield chaser v1 asset, file and Blueprint kept intact for restore; shooter gets walk, aim and fire clips. Open, asked with defaults: spawner switched to BP_ShieldChaserV2 (default yes, restore = switch back); chaser v2 debris pieces not requested (death debris stay v1).
+- gdd_check: read enemy-heavy, enemy-kamikaze, enemy-shooter, enemy-chaser, chaser-meshy-pipeline, art-prompts-robots-meshy, the bp-* and sys-enemies-* nodes (2026-10-22). Owner decisions 2026-10-22 (provisional): Meshy triangle counts kept, no decimation (chaser v2 5120, heavy 10361, kamikaze 10172, shooter 7263; the chaser 3000 budget is lifted for v2); kamikaze keeps hover, only a very light leg motion, no walk; chaser v2 and a shield chaser v2 are tried in new assets, every chaser v1 and shield chaser v1 asset, file and Blueprint kept intact for restore; shooter gets walk, aim and fire clips. Defaults accepted by the owner (provisional, owner 2026-10-22): spawner switched to BP_ShieldChaserV2 (default yes, restore = switch back); death debris of the v2 robots in task-288 (owner 2026-10-22).
 - depends_on_global: task-284
-- confirmed_by_owner: no (prepared 2026-10-22, owner said "on ne lance rien")
+- confirmed_by_owner: yes (2026-10-22, plan accepted; launch on the owner's word)
 - milestone: M2
 - next_step: task-286-01-shield-fit-bake
 - result: open

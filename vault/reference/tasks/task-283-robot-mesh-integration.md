@@ -10,9 +10,9 @@ status: todo
 - request: "Ensuite, il faudra intégrer les mesh" (owner, 2026-10-22)
 - goal: Integrate the flattened, cleaned heavy, kamikaze and shooter meshes into their Blueprints, and prepare chaser v2, replacing the grey-box primitives.
 - acceptance: every subtask done and its checks passed; BP_Heavy, BP_Kamikaze and BP_Shooter show their Meshy mesh in a -game capture compared with the grey-box capture; committed.
-- gdd_check: read enemy-heavy, enemy-kamikaze, enemy-shooter, enemy-chaser, chaser-meshy-pipeline, art-prompts-robots-meshy, the bp-* and sys-enemies-* nodes (2026-10-22). Owner decisions 2026-10-22 (provisional): Meshy triangle counts kept, no decimation (chaser v2 5120, heavy 10361, kamikaze 10172, shooter 7263; the chaser 3000 budget is lifted for v2); kamikaze keeps hover, only a very light leg motion, no walk; chaser v2 and a shield chaser v2 are tried in new assets, every chaser v1 and shield chaser v1 asset, file and Blueprint kept intact for restore; shooter gets walk, aim and fire clips. Open, asked with defaults: game heights (default: chaser v2 123 cm as v1, heavy 248, shooter 176, kamikaze 194 = current capsules); heavy telegraph glow on the new mesh (default: eye slot glows, stripes no longer glow).
+- gdd_check: read enemy-heavy, enemy-kamikaze, enemy-shooter, enemy-chaser, chaser-meshy-pipeline, art-prompts-robots-meshy, the bp-* and sys-enemies-* nodes (2026-10-22). Owner decisions 2026-10-22 (provisional): Meshy triangle counts kept, no decimation (chaser v2 5120, heavy 10361, kamikaze 10172, shooter 7263; the chaser 3000 budget is lifted for v2); kamikaze keeps hover, only a very light leg motion, no walk; chaser v2 and a shield chaser v2 are tried in new assets, every chaser v1 and shield chaser v1 asset, file and Blueprint kept intact for restore; shooter gets walk, aim and fire clips. Defaults accepted by the owner (provisional, owner 2026-10-22): game heights (default: chaser v2 123 cm as v1, heavy 248, shooter 176, kamikaze 194 = current capsules); heavy telegraph glow on the new mesh (default: eye slot glows, stripes no longer glow).
 - depends_on_global: task-282
-- confirmed_by_owner: no (prepared 2026-10-22, owner said "on ne lance rien")
+- confirmed_by_owner: yes (2026-10-22, plan accepted; launch on the owner's word)
 - milestone: M2
 - next_step: task-283-01-capture-before
 - result: open

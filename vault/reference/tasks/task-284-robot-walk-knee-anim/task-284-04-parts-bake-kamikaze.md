@@ -7,7 +7,7 @@ status: todo
 ---
 # Cut and bake the kamikaze leg sway
 
-- goal: Cut the kamikaze game mesh into 3 rigid parts (body = head, arms, core shell and vanes; 2 lower legs), pivots at the leg joints found on the mesh, PartId in UV2, and bake a very light leg sway loop (owner 2026-10-22: it hovers, no walk, only a very light leg motion; default at most 8 degrees) to T_KamikazeAnim.exr; the hover bob stays in C++. Generalise meshy_cut_parts.py and meshy_bake_anim.py with a per-robot config instead of copying them.
+- goal: Cut the kamikaze game mesh into 3 rigid parts (body = head, arms, core shell and vanes; 2 lower legs), pivots at the leg joints found on the mesh, PartId in UV2, and bake a very light leg sway loop (owner 2026-10-22: it hovers, no walk, only a very light leg motion; at most 8 degrees, provisional) to T_KamikazeAnim.exr; the hover bob stays in C++. Generalise meshy_cut_parts.py and meshy_bake_anim.py with a per-robot config instead of copying them.
 - agent: 3d
 - depends_on: task-284-03-parts-bake-chaser-v2
 - inputs: art-3d-lessons (vault/reference/agents/art-3d-lessons.md), agent-3d (vault/reference/agents/agent-3d.md), robots-meshy-raw-2026-10-22 (vault/reference/tech/pipelines/robots-meshy-raw-2026-10-22.md), art-prompts-robots-meshy (vault/reference/gdd/art-audio/art-prompts-robots-meshy.md), blender-asset-route (vault/reference/tech/pipelines/blender-asset-route.md), chaser-meshy-pipeline (vault/reference/tech/pipelines/chaser-meshy-pipeline.md), enemy-kamikaze (vault/reference/gdd/enemies/enemy-kamikaze.md); files: Art/Meshes/kamikaze-meshy/kamikaze_meshy_game.fbx (task-283), sheet vault/assets/kamikaze-turnaround.webp

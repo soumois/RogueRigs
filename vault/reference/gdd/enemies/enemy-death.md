@@ -19,7 +19,7 @@ status: approved
 - Pieces stay 4.5 s at full size, then sink into the floor in 0.4 s without shrinking: 4.9 s in all; no debris stays in the arena (provisional, owner 2026-10-15; was 1.2 s with a shrink, then 3.4 s).
 - Each piece spins about a random axis at 0.3 to 0.8 rev/s at the throw; in the air the spin halves every 1 s, each floor bounce halves it, and it stops once the piece rests on the floor (provisional, owner 2026-10-15; was a fixed 1.5 rev/s that never slowed down).
 - Debris and puff systems are pooled, debris 80 and puff 40 at most; when the debris pool is empty, only the puff plays (provisional, owner 2026-10-15, test).
-- First robots: the chaser and the shield chaser (same mesh); other robots keep the M1 death until their parts exist.
+- First robots: the chaser and the shield chaser (same mesh); other robots keep the M1 death until their parts exist. Planned (provisional, owner 2026-10-22, decided, not built yet: tasks 281 to 288): heavy, shooter and chaser v2 with 13 pieces each as the chaser, kamikaze with 3 pieces (body, 2 legs; 2 or 3 thrown), shield chaser v2 with the chaser v2 pieces; v1 debris unchanged.
 - A robot dies exactly once ([[sys-damage]]).
 - Chaos Destruction is not used, for robots or terrain.
 - Milestone: M3 (juice pass), brought forward on 2026-10-14 by the owner so he can measure its cost. M1: the robot shrinks for 0.15 s, disappears and drops its XP cube (owner 2026-10-02).

@@ -10,9 +10,10 @@ status: approved
 - role: charges the miner and explodes. Its explosions open chokepoints, so no position holds forever.
 - locomotion: hover
 - rig: rigid parts, one bone per part
-- parts: open
+- parts (provisional, owner 2026-10-22, decided, not built yet: tasks 281 to 288): 3 rigid parts: body (head, arms, core shell, vanes) and 2 lower legs; the core is a separate mesh so it keeps its pulse; death debris = these 3 pieces, 2 or 3 thrown
+- model_source (provisional, owner 2026-10-22): the owner's Meshy mesh (10172 triangles kept), flattened panels, cleaned texture, base colour only ([[robots-meshy-raw-2026-10-22]]); 194 cm tall
 - size: 1.1 × the miner, hovering (owner 2026-10-02, was 0.6)
-- animations: open
+- animations (provisional, owner 2026-10-22, decided, not built yet: tasks 281 to 288): it keeps hovering, no walk; only a very light leg sway loop (at most 8 degrees)
 - behavior:
   - explodes on proximity or on death, with the same radius and damage both ways; before a proximity explosion its core flares with a strong light for the 0.65 s fuse (owner 2026-10-05; 0.5 s before 2026-10-06); killed by the player (weapon, turret, drone) it does not explode at once: it goes through the same preparation as a proximity trigger (stops, core flares, 0.65 s) and then explodes, and it releases its XP only at the explosion, never before (owner 2026-10-10); killed by an explosion (chain reaction, barrel) its death explosion stays instant;
   - the explosion hurts robots, the miner and terrain ([[explosions]]);

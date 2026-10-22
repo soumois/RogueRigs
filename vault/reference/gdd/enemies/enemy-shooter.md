@@ -10,9 +10,10 @@ status: approved
 - role: ranged pressure; forces the miner to move and use rock as cover.
 - locomotion: biped
 - rig: rigid parts, one bone per part
-- parts: arm cannon integrated from the elbow; rest open
+- parts (provisional, owner 2026-10-22, decided, not built yet: tasks 281 to 288): 10 rigid parts as the chaser, the cannon on the right forearm part (arm cannon integrated from the elbow)
+- model_source (provisional, owner 2026-10-22): the owner's Meshy mesh (7263 triangles kept), flattened panels, cleaned texture, base colour only ([[robots-meshy-raw-2026-10-22]]); 176 cm tall (the current capsule)
 - size: 1.0 × the miner (provisional, owner 2026-10-04)
-- animations: none in grey-box, rigid parts like the other robots (owner 2026-10-04)
+- animations (provisional, owner 2026-10-22, decided, not built yet: tasks 281 to 288): walk loop with a light knee bend (at most 15 degrees), rest pose when stopped; aim clip = cannon arm raised over the first 0.3 s of the 0.6 s laser, held; fire clip = 0.2 s recoil at the shot. Was: none in grey-box (owner 2026-10-04)
 - behavior:
   - keeps distance from the miner;
   - never backs away from the miner (owner 2026-10-06): it closes in until in range with line of sight, then stops and fires, even when the miner comes into contact;

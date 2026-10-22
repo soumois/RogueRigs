@@ -7,7 +7,7 @@ status: todo
 ---
 # Bake the heavy telegraph and slam clips
 
-- goal: Add to the heavy bake, after the walk loop, a telegraph clip (fists raised upwards over the telegraph, held), a slam clip (knees bend and the body leans forward so both fists touch the ground at the contact frame) and a recover clip (back to rest over RecoverDuration 0.5 s); timing as decided by the owner (default: contact at the OnSlam frame, raise over the first 0.45 s of the 0.6 s telegraph, strike over the last 0.15 s).
+- goal: Add to the heavy bake, after the walk loop, a telegraph clip (fists raised upwards over the telegraph, held), a slam clip (knees bend and the body leans forward so both fists touch the ground at the contact frame) and a recover clip (back to rest over RecoverDuration 0.5 s); timing (provisional, owner 2026-10-22): telegraph 0.6 s unchanged, fists raised over the first 0.45 s, strike over the last 0.15 s, contact on the OnSlam damage frame.
 - agent: 3d
 - depends_on: none
 - inputs: art-3d-lessons (vault/reference/agents/art-3d-lessons.md), agent-3d (vault/reference/agents/agent-3d.md), robots-meshy-raw-2026-10-22 (vault/reference/tech/pipelines/robots-meshy-raw-2026-10-22.md), art-prompts-robots-meshy (vault/reference/gdd/art-audio/art-prompts-robots-meshy.md), blender-asset-route (vault/reference/tech/pipelines/blender-asset-route.md), chaser-meshy-pipeline (vault/reference/tech/pipelines/chaser-meshy-pipeline.md), enemy-heavy (vault/reference/gdd/enemies/enemy-heavy.md), sys-enemies-heavy (vault/reference/tech/systems/enemies/sys-enemies/sys-enemies-heavy.md); files: Art/Meshes/heavy-meshy/heavy_meshy_parts.fbx and the heavy bake config of task-284

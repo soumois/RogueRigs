@@ -7,7 +7,7 @@ status: todo
 ---
 # Bake the shooter aim and fire clips
 
-- goal: Add to the shooter bake, after the walk loop, an aim clip (cannon arm raised to point at target height over the start of the 0.6 s laser, then held) and a fire clip (short recoil of the cannon forearm and shoulder, back to the aim pose), and report the cannon tip of the aimed pose; feet fixed (owner 2026-10-22: walk, aim and fire clips).
+- goal: Add to the shooter bake, after the walk loop, an aim clip (cannon arm raised to point at target height over the first 0.3 s of the 0.6 s laser, then held) and a fire clip (0.2 s recoil of the cannon forearm and shoulder, back to the aim pose), and report the cannon tip of the aimed pose; feet fixed (owner 2026-10-22: walk, aim and fire clips).
 - agent: 3d
 - depends_on: none
 - inputs: art-3d-lessons (vault/reference/agents/art-3d-lessons.md), agent-3d (vault/reference/agents/agent-3d.md), robots-meshy-raw-2026-10-22 (vault/reference/tech/pipelines/robots-meshy-raw-2026-10-22.md), art-prompts-robots-meshy (vault/reference/gdd/art-audio/art-prompts-robots-meshy.md), blender-asset-route (vault/reference/tech/pipelines/blender-asset-route.md), chaser-meshy-pipeline (vault/reference/tech/pipelines/chaser-meshy-pipeline.md), enemy-shooter (vault/reference/gdd/enemies/enemy-shooter.md), sys-enemies-shooter (vault/reference/tech/systems/enemies/sys-enemies/sys-enemies-shooter.md); files: Art/Meshes/shooter-meshy/shooter_meshy_parts.fbx and the shooter bake config of task-284

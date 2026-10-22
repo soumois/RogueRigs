@@ -23,6 +23,9 @@ status: approved
 - milestone: M1
 - references: `vault/assets/enemies-lineup.jpg`; design sheet `chaser-turnaround.png` (crops chaser-front, chaser-side, chaser-back); Meshy input views `chaser-meshy-front.png`, `-left`, `-back`, `-right`; in game `chaser-ingame-run.png`, `chaser-ingame-attack.png`
 
+## Chaser v2 trial (provisional, owner 2026-10-22, decided, not built yet: tasks 281 to 288)
+- A chaser v2 from the owner's Meshy mesh of `chaser-turnaround-v2.webp` (5120 triangles kept: the 3000 budget is lifted for v2), 123 cm, 10 parts, run and attack clips with a light knee bend (at most 15 degrees), its own debris pieces, and a shield chaser v2 carrying the same riot shield. Both are new assets (BP_ChaserV2, BP_ShieldChaserV2) and the spawner points to them; every v1 asset, file and Blueprint stays intact so v1 can be restored by pointing the spawner back ([[robots-meshy-raw-2026-10-22]]).
+
 ## Shield variant (provisional, owner 2026-10-05)
 - A chaser with a 30-point shield that absorbs damage before health; translucent pale blue-white shell that breaks; xp 2; the look changes to a physical riot shield carried on the left forearm, with a run clip holding it in front and a shield bash clip (owner 2026-10-17, provisional; not built, the game still shows the shell, [[art-prompts-shield]]); mixed into chaser packs (25 %) after 1:00. Inspired by the DRGS red swarmers.
 - Same hp, speed and damage as the chaser; the shield never regenerates; a hit larger than the remaining shield carries the rest into health. From 1:00, chaser packs hold 2–4 shield chasers among 8–16 chasers (25 % on average); lone chasers, the heavy escort and hordes stay plain chasers (provisional, task-028-01).
