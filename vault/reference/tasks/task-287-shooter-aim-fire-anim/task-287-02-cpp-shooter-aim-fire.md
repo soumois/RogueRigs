@@ -3,7 +3,7 @@ id: task-287-02-cpp-shooter-aim-fire
 description: "ARRShooter plays aim and fire clips (cpp)."
 parent: task-287-shooter-aim-fire-anim
 kind: task
-status: todo
+status: in-progress
 ---
 # ARRShooter plays aim and fire clips
 

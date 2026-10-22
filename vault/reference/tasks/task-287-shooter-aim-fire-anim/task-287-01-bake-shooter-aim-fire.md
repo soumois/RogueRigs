@@ -3,7 +3,7 @@ id: task-287-01-bake-shooter-aim-fire
 description: "Bake the shooter aim and fire clips (3d)."
 parent: task-287-shooter-aim-fire-anim
 kind: task
-status: in-progress
+status: done
 ---
 # Bake the shooter aim and fire clips
 
@@ -15,11 +15,11 @@ status: in-progress
 - done_when: cannon horizontal toward +X at the end of the aim clip, recoil returns to the aim pose, feet do not move; the Orchestrator renders key frames and sends them to the owner; Blender processes stopped
 - editor_state: closed (Blender headless only)
 - token_ceiling: 60000
-- model: open
-- tokens: open
-- runs: open
+- model: sonnet
+- tokens: input 50, cache write 88313, cache read 1451422, output 28376
+- runs: 1
 - milestone: M2
-- result: open
+- result: T_ShooterAnim.exr: clip 1 aim (rows 16-30, arm up by 0.3 s, cannon horizontal +X within 0.01 deg), clip 2 rest kept, clip 3 fire (recoil peak 0.067 s, back to aim at 0.2 s, error 0); feet fixed; aimed cannon tip Unreal (75.6, 44.0, 109.0) cm from floor; mapping OnAimStart 1, OnFire 3, OnAimEnd 2; renders Saved/Renders/task-287/shooter_{aim_end,recoil_peak,recoil_end}.png.
 
 ## Relations
 - [[task-287-shooter-aim-fire-anim]] — parent global task.
