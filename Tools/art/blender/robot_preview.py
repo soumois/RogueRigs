@@ -9,7 +9,12 @@ from mathutils import Vector, Euler
 args = sys.argv[sys.argv.index("--") + 1:]
 FBX, TEX, OUT = (os.path.abspath(a) for a in args[:3])
 VIEW = args[3]
-assert VIEW in ("front34", "back34"), "view must be front34 or back34"
+CLOSE = None      # optional close-up view "closeup:<az_deg>:<el_deg>:<target_z_cm>:<ortho_cm>" (task-282): same sun, world and EEVEE, target on the robot axis (x, y of the bounding-box centre) at the given height above the bounding-box bottom
+if VIEW.startswith("closeup:"):
+    CLOSE = [float(v) for v in VIEW.split(":")[1:]]
+    assert len(CLOSE) == 4, "closeup:<az>:<el>:<target_z_cm>:<ortho_cm>"
+else:
+    assert VIEW in ("front34", "back34"), "view must be front34, back34 or closeup:<az>:<el>:<target_z_cm>:<ortho_cm>"
 FRONT_AXIS = (0.0, -1.0)   # direction the robot faces (x, y), FBX import
 
 bpy.ops.wm.read_factory_settings(use_empty=True)
@@ -49,7 +54,11 @@ bg = w.node_tree.nodes["Background"]; bg.inputs["Color"].default_value = (1, 1, 
 unit_m = 0.01 if size < 20 else 1.0
 target = (lo + hi) / 2
 az = math.radians(-35 if VIEW == "front34" else 145); el = math.radians(28); dist = 400.0 * S * unit_m
-cam_d = bpy.data.cameras.new("Cam"); cam_d.type = "ORTHO"; cam_d.ortho_scale = 200.0 * S * unit_m
+ortho = 200.0 * S * unit_m
+if CLOSE:
+    az, el = math.radians(CLOSE[0]), math.radians(CLOSE[1]); ortho = CLOSE[3] * unit_m
+    target = Vector((target.x, target.y, lo.z + CLOSE[2] * unit_m))
+cam_d = bpy.data.cameras.new("Cam"); cam_d.type = "ORTHO"; cam_d.ortho_scale = ortho
 cam_d.clip_start = 1 * unit_m; cam_d.clip_end = 2000 * unit_m
 cam = bpy.data.objects.new("Cam", cam_d); sc.collection.objects.link(cam)
 cam.location = target + Vector((math.sin(az) * math.cos(el), -math.cos(az) * math.cos(el), math.sin(el))) * dist
