@@ -216,6 +216,10 @@ if "full_yellow_face_fraction" in RES:      # faces whose owned texels are mostl
         if len(ys) and YEL[ys, xs].mean() >= RES["full_yellow_face_fraction"]:
             sel = ~YEL[ys, xs] & ~RED[ys, xs]
             residue[ys[sel], xs[sel]] = True
+OLV = CFG.get("olive")      # optional (chaser v2): olive/brown mixed texels (class other, brown tint) -> yellow inside yellow faces, charcoal elsewhere
+olive = np.zeros((H, W), bool)
+if OLV:
+    olive = (CLS == 4) & (R - B >= OLV["r_minus_b_min"]) & (R >= G) & (G > B) & (sat >= OLV["sat_min"]) & (R <= OLV["r_max"]) & ~residue
 STAIN = CFG.get("stain")      # optional (shooter): texels of the main colour with a low luminance inside faces of another class (dark green stains in charcoal) -> that class colour
 stain = np.zeros((H, W), bool)
 if STAIN:
@@ -228,6 +232,9 @@ for k, nm in ((0, "blue"), (1, "yellow"), (2, "red"), (3, "charcoal")):
         out[sel] = TARGET[k]
 out[residue] = YEL_RGB if RES["target"] == "yellow" else BLUE
 out[stain] = CHAR
+if OLV:
+    out[olive & (FCT == 1)] = YEL_RGB
+    out[olive & (FCT != 1)] = CHAR
 logo = np.zeros((H, W), bool)
 for LP in CFG.get("logo_patches", []):      # optional (shooter): muddy logo plate repainted: yellow ring texels -> yellow, red or orange centre texels -> dark; inside a disc (centre x, y from the top)
     yy, xx = np.mgrid[0:H, 0:W]
@@ -244,11 +251,11 @@ os.makedirs(os.path.dirname(OUT_PNG), exist_ok=True)
 save_png(OUT_PNG, final)
 back = to8(load_png(OUT_PNG))
 changed = (back != RGB).any(2)
-treated = blue_mask | blot | residue | logo
+treated = blue_mask | blot | residue | logo | olive
 outside = int((changed & ~treated).sum())
 changed_by = dict(blue_flattened=int((changed & blue_mask & ~residue).sum()), ink_residue_in_blue_faces_to_blue=int((changed & residue).sum()),
                   blotch_to_blue=int((changed & blot & (LAB == 0)).sum()), blotch_to_yellow=int((changed & blot & (LAB == 1)).sum()),
-                  blotch_to_charcoal=int((changed & blot & (LAB == 3)).sum()), stain_to_charcoal=int((changed & stain).sum()), logo_repainted=int((changed & logo).sum()), blotch_left_in_red_faces=int((blot & (LAB == 2)).sum()))
+                  blotch_to_charcoal=int((changed & blot & (LAB == 3)).sum()), stain_to_charcoal=int((changed & stain).sum()), olive_to_yellow=int((changed & olive & (FCT == 1)).sum()), olive_to_charcoal=int((changed & olive & (FCT != 1)).sum()), logo_repainted=int((changed & logo).sum()), blotch_left_in_red_faces=int((blot & (LAB == 2)).sum()))
 
 # ------------------------------------------------------------ cause: metallic and roughness vs the defect
 MET = load_png(P("in_metallic"))[..., 0]
