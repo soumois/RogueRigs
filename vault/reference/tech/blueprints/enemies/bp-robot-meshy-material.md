@@ -6,7 +6,7 @@ kind: doc
 ---
 # M_RobotMeshy and the robot body and eye instances
 
-- asset_path: /Game/RogueRigs/Materials/Robots/ (M_RobotMeshy, MI_Heavy_Body, MI_Kamikaze_Body, MI_Shooter_Body, MI_ChaserV2_Body, MI_RobotEye_Heavy, MI_RobotEye_Kamikaze, MI_RobotEye_Shooter, MI_RobotEye_ChaserV2). Created by task-283-06; not yet assigned to any mesh slot.
+- asset_path: /Game/RogueRigs/Materials/Robots/ (M_RobotMeshy, MI_Heavy_Body, MI_Kamikaze_Body, MI_Shooter_Body, MI_ChaserV2_Body, MI_RobotEye_Heavy, MI_RobotEye_Kamikaze, MI_RobotEye_Shooter, MI_RobotEye_ChaserV2). Created by task-283-06; MI_Heavy_Body and MI_RobotEye_Heavy are assigned to SM_Heavy_Meshy since task-283-07 (see [[bp-heavy]]); the others not yet.
 - parent_class: none (material assets; instances are MaterialInstanceConstant of M_RobotMeshy or M_RobotEye).
 - purpose: one lit body material for the `body` slot of the four new robot meshes, base colour from the Meshy texture only; the eye instances give each robot its `robot_eye` slot.
 - components: M_RobotMeshy: lit, opaque. Base colour = BaseColorTex RGB (texture parameter). Roughness constant 0.6, metallic constant 0, no normal, metallic or roughness map. WPO = Animated ? MF_RobotAnimWPO(AnimTex, ClipOffset, RunRate) : (0,0,0); Animated is a static switch, default off. Parameters: BaseColorTex, AnimTex, ClipOffset, RunRate, Animated (plus ClipId and AnimStart inside the function). Compiled without error.
@@ -17,9 +17,11 @@ kind: doc
 - sync_rule: a body instance and its eye instance use the same BaseColorTex, RunRate and ClipOffset; Animated is switched on together, with a baked AnimTex per robot (not built yet).
 - revert: delete the nine material assets above and the four textures (and their folders if empty); nothing references them until the slot assignment subtasks.
 - verified: all eight instances read back (texture, Animated, UseEyeTexture; RunRate 0.7 and ClipOffset 0 on all eight; GlowAmount 23 and EyeColor (1, 0.05, 0.05) on the four eyes); M_RobotMeshy recompiled without error; all assets saved. Not verified: any render, PIE, animation (no AnimTex baked for these robots).
+- glow_283_07: MI_RobotEye_Heavy_Glow (new, task-283-07, in /Game/RogueRigs/Materials/Robots/): child of MI_RobotEye_Heavy, GlowAmount 60, EyeColor (1, 0.35, 0), RunRate 0.7 and ClipOffset 0 inherited (same as MI_Heavy_Body); BP_Heavy swaps the robot_eye slot to it on OnTelegraphStart. Provisional, owner 2026-10-22. Revert: delete the asset and restore the OnTelegraphStart pin.
 - owner_agent: agent-bp
 
 ## Relations
+- [[bp-heavy]] — first user of the heavy instances.
 - [[blueprints-enemies-index]] — parent index.
 - [[bp-robot-eye-material]] — M_RobotEye and MF_RobotAnimWPO that the master and the eye instances use.
 - [[bp-robot-readability]] — body glow parameters, for comparison.
