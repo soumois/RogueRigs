@@ -15,7 +15,7 @@ status: done
 - confirmed_by_owner: yes (2026-10-22, plan accepted; launch on the owner's word)
 - milestone: M2
 - next_step: none
-- result: Done. Shots Saved/RobotMeshes/shield-v2/: shield on the left forearm while running (shieldchaserv2_c_3, _d_2, _d_3), break with shield fragments (_c_4), plain chaser v2 after the break (_c_7, _d_5, _d_7), parts joined; robot_shots.ps1 -BreakShieldsAt (rr.Debug.BreakShields). Eyes not visible in any frame (shield then miner in front).
+- result: Done. Shield chaser v2 = chaser v2 parts + v1 riot shield on the left forearm (grip lowered 16->4 cm), four v1 clips at RunRate 1.5 (286-01); BP_ShieldChaserV2 with new M_ShieldChaserV2_Anim and instances, v1 untouched (286-02); spawner fifth entry on BP_ShieldChaserV2 (286-03); shots Saved/RobotMeshes/shield-v2/. Unverified: eyes on camera.
 
 ## Subtasks
 1. task-286-01-shield-fit-bake — 3d: Fit the shield on chaser v2 and bake
