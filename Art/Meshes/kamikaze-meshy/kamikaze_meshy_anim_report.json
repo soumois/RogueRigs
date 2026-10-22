@@ -1,0 +1,390 @@
+{
+ "task": "task-284-04-parts-bake-kamikaze",
+ "robot": "kamikaze",
+ "parts": [
+  {
+   "index": 0,
+   "name": "Body",
+   "parent": null,
+   "rest_pivot_cm": [
+    0.0,
+    0.0,
+    0.0
+   ]
+  },
+  {
+   "index": 1,
+   "name": "LowerLeg_L",
+   "parent": "Body",
+   "rest_pivot_cm": [
+    44.0,
+    36.0,
+    58.0
+   ]
+  },
+  {
+   "index": 2,
+   "name": "LowerLeg_R",
+   "parent": "Body",
+   "rest_pivot_cm": [
+    44.0,
+    -36.0,
+    58.0
+   ]
+  }
+ ],
+ "clips": [
+  {
+   "id": 0,
+   "name": "sway",
+   "frames": 16,
+   "rows": "0..15",
+   "loop": true,
+   "fps": 30,
+   "run_rate_baked_for": 0.35,
+   "cycle_s": 1.524,
+   "note": "shader plays frame = fmod(t x RunRate x 30, 16) (MF_RobotAnimWPO, clip 0); the kamikaze instance RunRate must be 0.35; rows 16..61 are the identity (rest) pose"
+  }
+ ],
+ "joints_cm": {
+  "LowerLeg_L": [
+   44.0,
+   36.0,
+   58.0
+  ],
+  "LowerLeg_R": [
+   44.0,
+   -36.0,
+   58.0
+  ]
+ },
+ "sway": {
+  "amp_deg": 6.0,
+  "axis": "Y (positive = backward swing), L = +sin, R = -sin (antiphase)",
+  "max_angle_deg_per_part": {
+   "Body": 0,
+   "LowerLeg_L": 6.0,
+   "LowerLeg_R": 6.0
+  },
+  "max_angle_deg": 6.0,
+  "limit_deg": 8,
+  "limit_note": "provisional, owner 2026-10-22: at most 8 degrees",
+  "knee_height_cm": null,
+  "foot_slide_cm_per_cycle": null,
+  "foot_note": "hover: no ground contact, no knee, no foot slide"
+ },
+ "seam": {
+  "loop_max_vertex_error_cm": 0.0,
+  "frame_NF_equals_frame_0": true,
+  "quaternion_dot_last_vs_first": 0.9997992608682372,
+  "max_vertex_step_cm_per_frame": 2.3278,
+  "wrap_step_cm": 2.3278,
+  "steps_cm": [
+   2.3278,
+   1.9735,
+   1.3187,
+   0.4631,
+   0.4631,
+   1.3187,
+   1.9735,
+   2.3278,
+   2.3278,
+   1.9735,
+   1.3187,
+   0.4631,
+   0.4631,
+   1.3187,
+   1.9735,
+   2.3278
+  ]
+ },
+ "texture": {
+  "file": "T_KamikazeAnim.exr",
+  "width": 20,
+  "height": 62,
+  "format": "OpenEXR RGBA half float, compression NONE, Non-Color",
+  "layout": "texel 2i = quaternion xyzw, texel 2i+1 = translation cm (i = PartId index), frame f = scanline f from the top, v = (f + 0.5) / 62",
+  "used_columns": {
+   "Body": [
+    0,
+    1
+   ],
+   "LowerLeg_L": [
+    2,
+    3
+   ],
+   "LowerLeg_R": [
+    4,
+    5
+   ]
+  },
+  "reload_vs_half_rounded_max_abs": 0.0
+ },
+ "bake_verification": {
+  "saved_exr_normalised_max_cm": 0.0022170788962395127,
+  "saved_exr_raw_quaternion_max_cm": 0.0030307834036126997,
+  "limit_cm": 0.05,
+  "rest_pose_vs_part_origin_max_cm": 1.0789593218788873e-05
+ },
+ "frames": 16,
+ "rows": 62,
+ "walk_poses": [
+  {
+   "LowerLeg_L": {
+    "rot": [
+     0,
+     0.0,
+     0
+    ]
+   },
+   "LowerLeg_R": {
+    "rot": [
+     0,
+     -0.0,
+     0
+    ]
+   }
+  },
+  {
+   "LowerLeg_L": {
+    "rot": [
+     0,
+     2.2961005941905386,
+     0
+    ]
+   },
+   "LowerLeg_R": {
+    "rot": [
+     0,
+     -2.2961005941905386,
+     0
+    ]
+   }
+  },
+  {
+   "LowerLeg_L": {
+    "rot": [
+     0,
+     4.242640687119286,
+     0
+    ]
+   },
+   "LowerLeg_R": {
+    "rot": [
+     0,
+     -4.242640687119286,
+     0
+    ]
+   }
+  },
+  {
+   "LowerLeg_L": {
+    "rot": [
+     0,
+     5.54327719506772,
+     0
+    ]
+   },
+   "LowerLeg_R": {
+    "rot": [
+     0,
+     -5.54327719506772,
+     0
+    ]
+   }
+  },
+  {
+   "LowerLeg_L": {
+    "rot": [
+     0,
+     6.0,
+     0
+    ]
+   },
+   "LowerLeg_R": {
+    "rot": [
+     0,
+     -6.0,
+     0
+    ]
+   }
+  },
+  {
+   "LowerLeg_L": {
+    "rot": [
+     0,
+     5.54327719506772,
+     0
+    ]
+   },
+   "LowerLeg_R": {
+    "rot": [
+     0,
+     -5.54327719506772,
+     0
+    ]
+   }
+  },
+  {
+   "LowerLeg_L": {
+    "rot": [
+     0,
+     4.242640687119286,
+     0
+    ]
+   },
+   "LowerLeg_R": {
+    "rot": [
+     0,
+     -4.242640687119286,
+     0
+    ]
+   }
+  },
+  {
+   "LowerLeg_L": {
+    "rot": [
+     0,
+     2.2961005941905395,
+     0
+    ]
+   },
+   "LowerLeg_R": {
+    "rot": [
+     0,
+     -2.2961005941905395,
+     0
+    ]
+   }
+  },
+  {
+   "LowerLeg_L": {
+    "rot": [
+     0,
+     7.347880794884119e-16,
+     0
+    ]
+   },
+   "LowerLeg_R": {
+    "rot": [
+     0,
+     -7.347880794884119e-16,
+     0
+    ]
+   }
+  },
+  {
+   "LowerLeg_L": {
+    "rot": [
+     0,
+     -2.296100594190538,
+     0
+    ]
+   },
+   "LowerLeg_R": {
+    "rot": [
+     0,
+     2.296100594190538,
+     0
+    ]
+   }
+  },
+  {
+   "LowerLeg_L": {
+    "rot": [
+     0,
+     -4.242640687119285,
+     0
+    ]
+   },
+   "LowerLeg_R": {
+    "rot": [
+     0,
+     4.242640687119285,
+     0
+    ]
+   }
+  },
+  {
+   "LowerLeg_L": {
+    "rot": [
+     0,
+     -5.543277195067719,
+     0
+    ]
+   },
+   "LowerLeg_R": {
+    "rot": [
+     0,
+     5.543277195067719,
+     0
+    ]
+   }
+  },
+  {
+   "LowerLeg_L": {
+    "rot": [
+     0,
+     -6.0,
+     0
+    ]
+   },
+   "LowerLeg_R": {
+    "rot": [
+     0,
+     6.0,
+     0
+    ]
+   }
+  },
+  {
+   "LowerLeg_L": {
+    "rot": [
+     0,
+     -5.54327719506772,
+     0
+    ]
+   },
+   "LowerLeg_R": {
+    "rot": [
+     0,
+     5.54327719506772,
+     0
+    ]
+   }
+  },
+  {
+   "LowerLeg_L": {
+    "rot": [
+     0,
+     -4.242640687119286,
+     0
+    ]
+   },
+   "LowerLeg_R": {
+    "rot": [
+     0,
+     4.242640687119286,
+     0
+    ]
+   }
+  },
+  {
+   "LowerLeg_L": {
+    "rot": [
+     0,
+     -2.296100594190542,
+     0
+    ]
+   },
+   "LowerLeg_R": {
+    "rot": [
+     0,
+     2.296100594190542,
+     0
+    ]
+   }
+  }
+ ],
+ "warnings": []
+}

@@ -30,6 +30,12 @@ Generalises the chaser v1 chain of [[chaser-meshy-pipeline]]. Without `--config`
 - Joints (left, cm): hip (-3.5, 14, 70.3), knee (-0.3, 16, 45.5), shoulder (-6.6, 23, 97), elbow (-8, 35, 80.5), waist z 79; hip cut plane y = +-6.5 (a plane at the thigh block inner face y = 8 left the right thigh fused with the pelvis), knee cut plane z 53.2 (thigh neck ends z ~53, shin guard top 52.9). Knee at most 15 degrees, foot slide 0.03 cm per cycle. Open: lowest foot vertex -1.36 cm at the pivot switch frames (long toe, short legs; RunRate 1.7 gives -1.02).
 - Scripts: `meshy_cut_parts.py` skips cap faces consumed by the final weld; `meshy_bake_anim.py` writes `walk_poses` for every baked frame (run and attack; heavy and shooter have no attack: shooter bake rerun identical), so `robot_walk_preview.py --frames 18,22` renders attack key frames.
 
+## Kamikaze (task-284-04; provisional, owner 2026-10-22)
+- Files in `Art/Meshes/kamikaze-meshy/`: `kamikaze_meshy_parts.fbx` (+ `.report.json`, 5302 tris = source, slots body and robot_eye last), `T_KamikazeAnim.exr` (20 x 62), `kamikaze_meshy_anim_report.json`, `cut_check.report.json` (0 anomalies); config `robot_configs/kamikaze.json`; script `Tools/art/blender/robot_component_parts_bake.py` (new: `meshy_cut_parts.py`, `meshy_bake_anim.py` and `meshy_cut_check.py` hard-code the ten chaser parts, so they are unchanged and the other robots are untouched). Command: `-- --in-fbx <game.fbx> --in-tex <basecolor.png> --out-dir <dir> --config robot_configs/kamikaze.json`.
+- Cut by connected component, no bisect and no cap: the mesh has 18 components. 3 parts: Body (index 0, pivot = world origin; head, vanes, arms, core shell remnants, and the two rear hanging pieces x -46..-10 cm that are fused to the arm components), LowerLeg_L (index 1, +Y) and LowerLeg_R (index 2), the two front legs (x 13..63, y +-(25..76), z 1..62), pivots (44, +-36, 58) = inner top of the leg under the yellow pad. The mesh has 4 hanging lower pieces (2 front legs, 2 rear pieces fused to the arms): choice = the 2 front legs only, which are the two lower legs of the turnaround sheet front view. PartId = (index + 0.5) / 10 (0.05, 0.15, 0.25), same 20-column layout; columns of unused indices are the identity.
+- Clip 0 = sway, rows 0..15 (16 frames, loop), leg rotation about Y, amplitude 6 degrees (limit 8), L and R in antiphase, body at rest (the hover bob stays in C++). Baked for RunRate 0.35 (cycle 1.524 s): the kamikaze instance RunRate must be 0.35. Rows 16..61 are the identity pose. Seam: frame 16 = frame 0 exactly (error 0.0 cm), largest step 2.33 cm at the leg tip, the wrap step equals it. Texture error against the keyed poses 0.003 cm. Core mesh (`kamikaze_meshy_core.fbx`) not part of the cut.
+- Preview: `robot_walk_preview.py --frame-cm 230 --height-cm 194 --prefix kamikaze_sway_f` to `Saved/Renders/task-284/`.
+
 ## Relations
 - [[pipelines-index]] — parent index.
 - [[chaser-meshy-pipeline]] — the v1 chain these scripts keep.
@@ -37,4 +43,5 @@ Generalises the chaser v1 chain of [[chaser-meshy-pipeline]]. Without `--config`
 - [[enemy-shooter]] — design of the shooter.
 - [[enemy-chaser]] — design and clips of the chaser.
 - [[enemy-heavy]] — design, speed and clips of the heavy.
+- [[enemy-kamikaze]] — design of the kamikaze (3 parts, hover).
 - [[bp-robot-eye-material]] — the WPO function that reads this texture.

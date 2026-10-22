@@ -1,0 +1,58 @@
+{
+ "task": "task-284-04-parts-bake-kamikaze",
+ "tool": "robot_component_parts_bake.py (subset of meshy_cut_check.py: that script asserts the ten chaser part names)",
+ "anomalies": 0,
+ "anomaly_list": [],
+ "checks": {
+  "tris_total": 5302,
+  "tris_source": 5302,
+  "rest_vertices_vs_source_max_cm": 0.0010000000000047748,
+  "open_edges_parts": 253,
+  "open_edges_source": 253,
+  "shared_vertex_positions": 0,
+  "partid": {
+   "Body": {
+    "index": 0,
+    "expected_float32": 0.05000000074505806,
+    "unique_u": [
+     0.05000000074505806
+    ],
+    "unique_v": [
+     0.05000000074505806
+    ],
+    "max_abs_error": 0.0,
+    "partindex_red_max_error": 0.0
+   },
+   "LowerLeg_L": {
+    "index": 1,
+    "expected_float32": 0.15000000596046448,
+    "unique_u": [
+     0.15000000596046448
+    ],
+    "unique_v": [
+     0.15000000596046448
+    ],
+    "max_abs_error": 0.0,
+    "partindex_red_max_error": 8.278422947149977e-10
+   },
+   "LowerLeg_R": {
+    "index": 2,
+    "expected_float32": 0.25,
+    "unique_u": [
+     0.25
+    ],
+    "unique_v": [
+     0.25
+    ],
+    "max_abs_error": 0.0,
+    "partindex_red_max_error": 1.6556845894299954e-09
+   }
+  },
+  "caps_added": 0,
+  "bisect_planes": 0,
+  "bake_vs_keyed_poses_saved_exr_max_cm": {
+   "normalised": 0.0022170788962395127,
+   "raw": 0.0030307834036126997
+  }
+ }
+}
