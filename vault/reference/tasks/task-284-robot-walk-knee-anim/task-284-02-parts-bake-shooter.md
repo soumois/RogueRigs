@@ -3,7 +3,7 @@ id: task-284-02-parts-bake-shooter
 description: "Cut and bake the shooter walk (3d)."
 parent: task-284-robot-walk-knee-anim
 kind: task
-status: todo
+status: in-progress
 ---
 # Cut and bake the shooter walk
 

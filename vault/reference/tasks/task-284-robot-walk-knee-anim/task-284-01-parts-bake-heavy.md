@@ -3,7 +3,7 @@ id: task-284-01-parts-bake-heavy
 description: "Cut and bake the heavy walk (3d)."
 parent: task-284-robot-walk-knee-anim
 kind: task
-status: in-progress
+status: done
 ---
 # Cut and bake the heavy walk
 
@@ -15,11 +15,11 @@ status: in-progress
 - done_when: meshy_cut_check passes, PartId bins clean, knee pivot inside the knee panel gap, knee angle within the decided limit, foot slide under 2 cm per cycle, loop seamless; the Orchestrator renders 4 frames of the clip and sends them to the owner; Blender processes stopped
 - editor_state: closed (Blender headless only)
 - token_ceiling: 60000
-- model: open
-- tokens: open
-- runs: open
+- model: sonnet
+- tokens: input 252, cache write 1977240, cache read 29452870, output 31423
+- runs: 3
 - milestone: M2
-- result: open
+- result: heavy_meshy_parts.fbx (10 parts, PartId bins exact, 11691 tris) + T_HeavyAnim.exr (20x62, clip 0 walk rows 0-15, rows 16-61 reserved for 285) via generalised meshy_cut_parts/meshy_bake_anim/meshy_cut_check + robot_configs/heavy.json + robot_walk_planted.py; knee max 15 deg, foot slide 0.04 cm/cycle, loop seamless, cut_check 0 anomalies after fix; walk baked for RunRate 1.0 (heavy instances must use 1.0); pelvis 2.5 cm hand-over jump; renders Saved/Renders/task-284/heavy_walk_f0-3.png; doc robot-parts-bake-pipeline.
 
 ## Relations
 - [[task-284-robot-walk-knee-anim]] — parent global task.

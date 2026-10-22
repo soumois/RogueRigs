@@ -14,7 +14,7 @@ status: in-progress
 - depends_on_global: task-283
 - confirmed_by_owner: yes (2026-10-22, plan accepted; launch on the owner's word)
 - milestone: M2
-- next_step: task-284-01-parts-bake-heavy
+- next_step: task-284-02-parts-bake-shooter
 - result: open
 
 ## Subtasks
