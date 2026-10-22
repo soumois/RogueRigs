@@ -3,8 +3,8 @@ import bpy, sys, os, json
 from mathutils import Vector
 a = sys.argv[sys.argv.index("--") + 1:]
 o = dict(zip(a[::2], a[1::2]))
-R_ = o.get("--robot", "heavy"); P_ = R_.capitalize()
-M = "Art/Meshes/%s-meshy/" % R_
+R_ = o.get("--robot", "heavy"); P_ = "".join(t.capitalize() for t in R_.split("_"))
+M = "Art/Meshes/%s-meshy/" % R_.replace("_", "-")
 
 
 def bbox(vs):

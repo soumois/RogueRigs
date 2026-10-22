@@ -221,5 +221,13 @@
    "pivot": "ShinFoot"
   }
  ],
- "final_fill": true
+ "final_fill": true,
+ "debris": {
+  "task": "task-288-03-pieces-chaser-v2",
+  "prefix": "ChaserV2",
+  "in_fbx": "Art/Meshes/chaser-v2-meshy/chaser_v2_meshy_parts.fbx",
+  "in_tex": "Art/Meshes/chaser-v2-meshy/chaser_v2_meshy_clean_basecolor.png",
+  "out_dir": "Art/Source/chaser-v2-meshy/debris",
+  "eye_to_body": true
+ }
 }
