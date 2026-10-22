@@ -3,7 +3,7 @@ id: task-283-08-bp-kamikaze-mesh
 description: "BP_Kamikaze uses the Meshy mesh (bp)."
 parent: task-283-robot-mesh-integration
 kind: task
-status: todo
+status: in-progress
 ---
 # BP_Kamikaze uses the Meshy mesh
 

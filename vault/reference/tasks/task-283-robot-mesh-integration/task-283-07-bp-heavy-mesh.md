@@ -3,7 +3,7 @@ id: task-283-07-bp-heavy-mesh
 description: "BP_Heavy uses the Meshy mesh (bp)."
 parent: task-283-robot-mesh-integration
 kind: task
-status: in-progress
+status: done
 ---
 # BP_Heavy uses the Meshy mesh
 
@@ -15,11 +15,11 @@ status: in-progress
 - done_when: mesh bounds read back match the report (Y mirrored), slots and materials read back, BP_Heavy compiles without LogBlueprint error, events read back, doc updated; lint clean
 - editor_state: open
 - token_ceiling: 80000
-- model: open
-- tokens: open
-- runs: open
+- model: sonnet
+- tokens: input 68, cache write 94288, cache read 2119740, output 958
+- runs: 1
 - milestone: M2
-- result: open
+- result: SM_Heavy_Meshy imported (bounds match report, Y mirrored, Nanite off, 1 LOD), slots body=MI_Heavy_Body, robot_eye=MI_RobotEye_Heavy; BodyMesh z -124; grey-box StripeA-D, EyeLeft/Right, LogoPlate removed (no test names them); OnTelegraphStart/OnRecover swap slot 1 to new MI_RobotEye_Heavy_Glow (GlowAmount 60, EyeColor (1,0.35,0), provisional) and back, pitch 14 kept; compiles clean; bp-heavy updated.
 
 ## Relations
 - [[task-283-robot-mesh-integration]] — parent global task.
