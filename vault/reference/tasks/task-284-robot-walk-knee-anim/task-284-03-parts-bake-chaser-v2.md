@@ -3,7 +3,7 @@ id: task-284-03-parts-bake-chaser-v2
 description: "Cut and bake the chaser v2 walk (3d)."
 parent: task-284-robot-walk-knee-anim
 kind: task
-status: in-progress
+status: done
 ---
 # Cut and bake the chaser v2 walk
 
@@ -15,11 +15,11 @@ status: in-progress
 - done_when: meshy_cut_check passes, PartId bins clean, knee pivot inside the knee panel gap, knee angle within the decided limit, foot slide under 2 cm per cycle, loop seamless; the Orchestrator renders 4 frames of the clip and sends them to the owner; Blender processes stopped
 - editor_state: closed (Blender headless only)
 - token_ceiling: 60000
-- model: open
-- tokens: open
-- runs: open
+- model: sonnet
+- tokens: input 106, cache write 113512, cache read 3495022, output 41810
+- runs: 1
 - milestone: M2
-- result: open
+- result: chaser_v2_meshy_parts.fbx (10 parts, 6155 tris, PartId exact, cut_check 0 anomalies) + T_ChaserV2Anim.exr (20x31, v1 layout: clip 0 run rows 0-15, clip 1 attack rows 16-30, wind-up 16-18); run baked for RunRate 1.5 (0.7 infeasible with 15 deg knee at 180 uu/s); knee max 15 deg, slide 0.03 cm/cycle, seamless; foot dips -1.36 cm at pivot switch; renders Saved/Renders/task-284/chaser_v2_run_f0-3, chaser_v2_attack_f0-1.png.
 
 ## Relations
 - [[task-284-robot-walk-knee-anim]] — parent global task.

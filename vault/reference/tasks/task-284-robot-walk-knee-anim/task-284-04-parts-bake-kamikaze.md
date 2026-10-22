@@ -3,7 +3,7 @@ id: task-284-04-parts-bake-kamikaze
 description: "Cut and bake the kamikaze leg sway (3d)."
 parent: task-284-robot-walk-knee-anim
 kind: task
-status: todo
+status: in-progress
 ---
 # Cut and bake the kamikaze leg sway
 
