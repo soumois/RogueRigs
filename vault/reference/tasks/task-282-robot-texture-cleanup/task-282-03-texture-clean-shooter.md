@@ -3,7 +3,7 @@ id: task-282-03-texture-clean-shooter
 description: "Clean the shooter textures (3d)."
 parent: task-282-robot-texture-cleanup
 kind: task
-status: in-progress
+status: done
 ---
 # Clean the shooter textures
 
@@ -15,11 +15,11 @@ status: in-progress
 - done_when: report names the cause; texels outside the treated classes unchanged; geometry and UV untouched; the Orchestrator renders the same camera (barrel_preview.py settings scaled to a 190 cm robot: front three-quarter and back three-quarter) before and after and sends both to the owner with the cleaned textures, plus a close-up of the defect area; Blender processes stopped
 - editor_state: closed (Blender headless only)
 - token_ceiling: 60000
-- model: open
-- tokens: open
-- runs: open
+- model: sonnet
+- tokens: input 46, cache write 69684, cache read 1087619, output 6396
+- runs: 1
 - milestone: M2
-- result: open
+- result: Cause: base colour (muddy shoulder logo, dark green stains in charcoal, olive baked shading on green); metallic/roughness clean. texture_clean/shooter.json; 521,064 texels changed (green (136,187,37), logo yellow/black), outside-class unchanged, heavy and kamikaze outputs byte-identical; renders Saved/Renders/task-282/shooter_* incl. logo close-up. Charcoal kept at raw (27,28,27); small orange patch on head back left.
 
 ## Relations
 - [[task-282-robot-texture-cleanup]] — parent global task.

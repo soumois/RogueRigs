@@ -555,6 +555,7 @@ kind: note
 | [[task-281-04-flatten-chaser-v2]] | sonnet | 1 | 0k | 17k | 87k | 0k |
 | [[task-282-01-texture-clean-heavy]] | sonnet | 1 | 0k | 86k | 1173k | 2k |
 | [[task-282-02-texture-clean-kamikaze]] | sonnet | 1 | 0k | 61k | 641k | 4k |
+| [[task-282-03-texture-clean-shooter]] | sonnet | 1 | 0k | 70k | 1088k | 6k |
 
 ## Totals
 | Scope | Input | Cache write | Cache read | Output |

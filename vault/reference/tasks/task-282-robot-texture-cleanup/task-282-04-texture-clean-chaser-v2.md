@@ -3,7 +3,7 @@ id: task-282-04-texture-clean-chaser-v2
 description: "Clean the chaser v2 textures (3d)."
 parent: task-282-robot-texture-cleanup
 kind: task
-status: todo
+status: in-progress
 ---
 # Clean the chaser v2 textures
 
