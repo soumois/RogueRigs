@@ -39,6 +39,7 @@ Generalises the chaser v1 chain of [[chaser-meshy-pipeline]]. Without `--config`
 - Cut by connected component, no bisect and no cap: the mesh has 18 components. 3 parts: Body (index 0, pivot = world origin; head, vanes, arms, core shell remnants, and the two rear hanging pieces x -46..-10 cm that are fused to the arm components), LowerLeg_L (index 1, +Y) and LowerLeg_R (index 2), the two front legs (x 13..63, y +-(25..76), z 1..62), pivots (44, +-36, 58) = inner top of the leg under the yellow pad. The mesh has 4 hanging lower pieces (2 front legs, 2 rear pieces fused to the arms): choice = the 2 front legs only, which are the two lower legs of the turnaround sheet front view. PartId = (index + 0.5) / 10 (0.05, 0.15, 0.25), same 20-column layout; columns of unused indices are the identity.
 - Clip 0 = sway, rows 0..15 (16 frames, loop), leg rotation about Y, amplitude 6 degrees (limit 8), L and R in antiphase, body at rest (the hover bob stays in C++). Baked for RunRate 0.35 (cycle 1.524 s): the kamikaze instance RunRate must be 0.35. Rows 16..61 are the identity pose. Seam: frame 16 = frame 0 exactly (error 0.0 cm), largest step 2.33 cm at the leg tip, the wrap step equals it. Texture error against the keyed poses 0.003 cm. Core mesh (`kamikaze_meshy_core.fbx`) not part of the cut.
 - Preview: `robot_walk_preview.py --frame-cm 230 --height-cm 194 --prefix kamikaze_sway_f` to `Saved/Renders/task-284/`.
+- Unreal (task-284-09, 2026-10-22): `SM_Kamikaze_Meshy_Anim` and `T_KamikazeAnim` in `/Game/RogueRigs/Art/Kamikaze/`, on the BodyMesh of BP_Kamikaze ([[bp-kamikaze]], location z -40 unchanged), same recipe as the heavy, bounds extension 60 cm. Read back: 5302 render triangles, geometry z 0 to 194, build settings Generate Lightmap UVs off, full precision UVs on, LightMapCoordinateIndex 1; texture TC_HDR, no mips, Nearest, sRGB off, never stream, Clamp; UVCHECK body 5123 triangles (bins 0.05: 12231 corners, 0.15: 1446, 0.25: 1692) and robot_eye 179 triangles at 0.05, off_bin 0, mixed 0; instances Animated, T_KamikazeAnim, RunRate 0.35, ClipOffset 0. The core `SM_Kamikaze_Core_Meshy` keeps static: its UV2 is an engine lightmap, so it got its own `MI_Kamikaze_Core` (Animated off). SM_Kamikaze_Meshy kept for revert.
 
 ## Relations
 - [[pipelines-index]] — parent index.
@@ -49,5 +50,6 @@ Generalises the chaser v1 chain of [[chaser-meshy-pipeline]]. Without `--config`
 - [[bp-chaser-v2]] — BP_ChaserV2 that plays the baked run and attack.
 - [[bp-heavy]] — BP_Heavy that plays the baked walk.
 - [[enemy-heavy]] — design, speed and clips of the heavy.
+- [[bp-kamikaze]] — BP_Kamikaze that plays the baked sway.
 - [[enemy-kamikaze]] — design of the kamikaze (3 parts, hover).
 - [[bp-robot-eye-material]] — the WPO function that reads this texture.
