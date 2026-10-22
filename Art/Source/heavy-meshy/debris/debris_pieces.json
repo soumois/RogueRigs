@@ -1,0 +1,351 @@
+{
+  "source": "Art/Meshes/heavy-meshy/heavy_meshy_parts.fbx",
+  "texture": "heavy_meshy_clean_basecolor.png",
+  "offset_convention": "centre_offset_cm_unreal = (x, -y, z) of the piece bounds centre in the rest-pose Blender world (cm, origin at the floor between the feet, front +X, robot left +Y, Z up). The FBX is exported with the Blender default axes (forward -Z, up Y) which Unreal imports with X and Z kept and Y mirrored; the chaser pipeline mirrors Y the same way (ChaserAnimWPO). So the robot's left (+Y Blender) is -Y in Unreal. Mesh pivot = bounds centre, so the piece's Unreal location at rest = this offset.",
+  "units": "cm",
+  "pieces": [
+    {
+      "index": 0,
+      "name": "SM_HeavyDebris_Torso",
+      "file": "SM_HeavyDebris_Torso.fbx",
+      "triangles": 3622,
+      "source_parts": [
+        "HeadTorso",
+        "Pelvis"
+      ],
+      "centre_offset_cm_unreal": [
+        12.58,
+        0.26,
+        175.13
+      ],
+      "size_cm": [
+        137.81,
+        132.2,
+        145.73
+      ],
+      "uv_layers": [
+        "UVMap"
+      ],
+      "materials": [
+        "body"
+      ]
+    },
+    {
+      "index": 1,
+      "name": "SM_HeavyDebris_UpperArm_L",
+      "file": "SM_HeavyDebris_UpperArm_L.fbx",
+      "triangles": 1538,
+      "source_parts": [
+        "UpperArm_L"
+      ],
+      "centre_offset_cm_unreal": [
+        1.43,
+        -98.62,
+        168.91
+      ],
+      "size_cm": [
+        85.64,
+        81.3,
+        150.05
+      ],
+      "uv_layers": [
+        "UVMap"
+      ],
+      "materials": [
+        "body"
+      ]
+    },
+    {
+      "index": 2,
+      "name": "SM_HeavyDebris_UpperArm_R",
+      "file": "SM_HeavyDebris_UpperArm_R.fbx",
+      "triangles": 1542,
+      "source_parts": [
+        "UpperArm_R"
+      ],
+      "centre_offset_cm_unreal": [
+        1.04,
+        98.02,
+        169.51
+      ],
+      "size_cm": [
+        86.53,
+        81.53,
+        148.83
+      ],
+      "uv_layers": [
+        "UVMap"
+      ],
+      "materials": [
+        "body"
+      ]
+    },
+    {
+      "index": 3,
+      "name": "SM_HeavyDebris_Forearm_L",
+      "file": "SM_HeavyDebris_Forearm_L.fbx",
+      "triangles": 728,
+      "source_parts": [
+        "ForearmHand_L"
+      ],
+      "centre_offset_cm_unreal": [
+        37.35,
+        -108.16,
+        84.23
+      ],
+      "size_cm": [
+        58.12,
+        49.74,
+        58.97
+      ],
+      "uv_layers": [
+        "UVMap"
+      ],
+      "materials": [
+        "body"
+      ]
+    },
+    {
+      "index": 4,
+      "name": "SM_HeavyDebris_Forearm_R",
+      "file": "SM_HeavyDebris_Forearm_R.fbx",
+      "triangles": 847,
+      "source_parts": [
+        "ForearmHand_R"
+      ],
+      "centre_offset_cm_unreal": [
+        30.92,
+        107.64,
+        84.34
+      ],
+      "size_cm": [
+        71.43,
+        49.85,
+        58.92
+      ],
+      "uv_layers": [
+        "UVMap"
+      ],
+      "materials": [
+        "body"
+      ]
+    },
+    {
+      "index": 5,
+      "name": "SM_HeavyDebris_Arm_L",
+      "file": "SM_HeavyDebris_Arm_L.fbx",
+      "triangles": 2266,
+      "source_parts": [
+        "UpperArm_L",
+        "ForearmHand_L"
+      ],
+      "centre_offset_cm_unreal": [
+        12.51,
+        -98.62,
+        149.34
+      ],
+      "size_cm": [
+        107.81,
+        81.3,
+        189.18
+      ],
+      "uv_layers": [
+        "UVMap"
+      ],
+      "materials": [
+        "body"
+      ]
+    },
+    {
+      "index": 6,
+      "name": "SM_HeavyDebris_Arm_R",
+      "file": "SM_HeavyDebris_Arm_R.fbx",
+      "triangles": 2389,
+      "source_parts": [
+        "UpperArm_R",
+        "ForearmHand_R"
+      ],
+      "centre_offset_cm_unreal": [
+        12.21,
+        98.02,
+        149.4
+      ],
+      "size_cm": [
+        108.87,
+        81.53,
+        189.04
+      ],
+      "uv_layers": [
+        "UVMap"
+      ],
+      "materials": [
+        "body"
+      ]
+    },
+    {
+      "index": 7,
+      "name": "SM_HeavyDebris_Thigh_L",
+      "file": "SM_HeavyDebris_Thigh_L.fbx",
+      "triangles": 794,
+      "source_parts": [
+        "Thigh_L"
+      ],
+      "centre_offset_cm_unreal": [
+        0.73,
+        -52.7,
+        101.51
+      ],
+      "size_cm": [
+        66.89,
+        51.56,
+        84.89
+      ],
+      "uv_layers": [
+        "UVMap"
+      ],
+      "materials": [
+        "body"
+      ]
+    },
+    {
+      "index": 8,
+      "name": "SM_HeavyDebris_Thigh_R",
+      "file": "SM_HeavyDebris_Thigh_R.fbx",
+      "triangles": 827,
+      "source_parts": [
+        "Thigh_R"
+      ],
+      "centre_offset_cm_unreal": [
+        0.79,
+        52.07,
+        101.41
+      ],
+      "size_cm": [
+        66.6,
+        51.5,
+        84.82
+      ],
+      "uv_layers": [
+        "UVMap"
+      ],
+      "materials": [
+        "body"
+      ]
+    },
+    {
+      "index": 9,
+      "name": "SM_HeavyDebris_LowerLeg_L",
+      "file": "SM_HeavyDebris_LowerLeg_L.fbx",
+      "triangles": 917,
+      "source_parts": [
+        "ShinFoot_L"
+      ],
+      "centre_offset_cm_unreal": [
+        0.0,
+        -57.33,
+        35.28
+      ],
+      "size_cm": [
+        112.84,
+        76.51,
+        70.57
+      ],
+      "uv_layers": [
+        "UVMap"
+      ],
+      "materials": [
+        "body"
+      ]
+    },
+    {
+      "index": 10,
+      "name": "SM_HeavyDebris_LowerLeg_R",
+      "file": "SM_HeavyDebris_LowerLeg_R.fbx",
+      "triangles": 876,
+      "source_parts": [
+        "ShinFoot_R"
+      ],
+      "centre_offset_cm_unreal": [
+        0.04,
+        57.08,
+        35.28
+      ],
+      "size_cm": [
+        112.63,
+        77.02,
+        70.42
+      ],
+      "uv_layers": [
+        "UVMap"
+      ],
+      "materials": [
+        "body"
+      ]
+    },
+    {
+      "index": 11,
+      "name": "SM_HeavyDebris_Leg_L",
+      "file": "SM_HeavyDebris_Leg_L.fbx",
+      "triangles": 1711,
+      "source_parts": [
+        "Thigh_L",
+        "ShinFoot_L"
+      ],
+      "centre_offset_cm_unreal": [
+        0.0,
+        -57.33,
+        71.98
+      ],
+      "size_cm": [
+        112.84,
+        76.51,
+        143.95
+      ],
+      "uv_layers": [
+        "UVMap"
+      ],
+      "materials": [
+        "body"
+      ]
+    },
+    {
+      "index": 12,
+      "name": "SM_HeavyDebris_Leg_R",
+      "file": "SM_HeavyDebris_Leg_R.fbx",
+      "triangles": 1703,
+      "source_parts": [
+        "Thigh_R",
+        "ShinFoot_R"
+      ],
+      "centre_offset_cm_unreal": [
+        0.04,
+        57.08,
+        71.94
+      ],
+      "size_cm": [
+        112.63,
+        77.02,
+        143.75
+      ],
+      "uv_layers": [
+        "UVMap"
+      ],
+      "materials": [
+        "body"
+      ]
+    }
+  ],
+  "part_triangles": {
+    "ForearmHand_L": 728,
+    "ForearmHand_R": 847,
+    "HeadTorso": 2854,
+    "Pelvis": 768,
+    "ShinFoot_L": 917,
+    "ShinFoot_R": 876,
+    "Thigh_L": 794,
+    "Thigh_R": 827,
+    "UpperArm_L": 1538,
+    "UpperArm_R": 1542
+  },
+  "sum_parts_triangles": 11691
+}

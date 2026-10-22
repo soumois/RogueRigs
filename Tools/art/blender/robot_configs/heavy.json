@@ -56,5 +56,13 @@
     {"name": "elbow", "P": [20.0, 112.0, 105.0], "n": [-0.371, 0.0, 0.928], "box": [[-70, 75, 50], [110, 145, 150]], "side": 1, "pivot": "ForearmHand"},
     {"name": "hip", "P": [-9.5, 33.5, 127.0], "n": [0, 1, 0], "box": [[-70, 17, 89.5], [70, 62, 160]], "side": 1, "pivot": "Thigh", "below_waist": true},
     {"name": "knee", "P": [-4.0, 56.0, 65.0], "n": [0.268, 0.0, 0.963], "box": [[-70, 20, 20], [70, 82, 110]], "side": 1, "pivot": "ShinFoot"}
-  ]
+  ],
+  "debris": {
+    "task": "task-288-01-pieces-heavy",
+    "prefix": "Heavy",
+    "in_fbx": "Art/Meshes/heavy-meshy/heavy_meshy_parts.fbx",
+    "in_tex": "Art/Meshes/heavy-meshy/heavy_meshy_clean_basecolor.png",
+    "out_dir": "Art/Source/heavy-meshy/debris",
+    "eye_to_body": true
+  }
 }

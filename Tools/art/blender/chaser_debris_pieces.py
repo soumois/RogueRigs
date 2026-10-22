@@ -11,11 +11,19 @@ argv = sys.argv[sys.argv.index("--") + 1:] if "--" in sys.argv else []
 opt = {"--in-fbx": "Art/Meshes/chaser-meshy/chaser_meshy_parts.fbx", "--in-tex": "Art/Meshes/chaser-meshy/chaser_meshy_fixed_basecolor.png", "--out-dir": "Art/Source/chaser-meshy/debris"}
 for i in range(0, len(argv) - 1, 2):
     opt[argv[i]] = argv[i + 1]
+# task-288-01: optional per-robot config (--config robot_configs/<robot>.json, key "debris": in_fbx, in_tex, out_dir, prefix, eye_to_body); no config = chaser v1 defaults
+PREFIX, EYE_TO_BODY = "Chaser", False
+if "--config" in opt:
+    _d = json.load(open(opt["--config"]))["debris"]
+    PREFIX, EYE_TO_BODY = _d.get("prefix", PREFIX), _d.get("eye_to_body", False)
+    for _k, _o in (("in_fbx", "--in-fbx"), ("in_tex", "--in-tex"), ("out_dir", "--out-dir")):
+        if _k in _d and _o not in argv:
+            opt[_o] = _d[_k]
 OUT = os.path.abspath(opt["--out-dir"])
 TEX = os.path.abspath(opt["--in-tex"])
 os.makedirs(OUT, exist_ok=True)
 for f in os.listdir(OUT):
-    if f.startswith("SM_ChaserDebris_") or f == "debris_pieces.json":
+    if f.startswith("SM_" + PREFIX + "Debris_") or f == "debris_pieces.json":
         os.remove(os.path.join(OUT, f))
 shutil.copyfile(TEX, os.path.join(OUT, os.path.basename(TEX)))
 
@@ -85,6 +93,11 @@ for idx, (name, srcs) in enumerate(PIECES):
         bpy.ops.object.join()
     ob = bpy.context.view_layer.objects.active
     me = ob.data
+    if EYE_TO_BODY:  # eye faces keep their UV0 on the body texture: one material, no glow slot
+        for p in me.polygons:
+            p.material_index = 0
+        while len(me.materials) > 1:
+            me.materials.pop(index=len(me.materials) - 1)
     for n in [u.name for u in me.uv_layers][1:]:
         me.uv_layers.remove(me.uv_layers[n])
     for n in [c.name for c in me.color_attributes]:
@@ -94,7 +107,7 @@ for idx, (name, srcs) in enumerate(PIECES):
     hi = Vector((max(c.x for c in xs), max(c.y for c in xs), max(c.z for c in xs)))
     ctr = (lo + hi) / 2
     me.transform(__import__("mathutils").Matrix.Translation(-ctr))
-    ob.name = me.name = "SM_ChaserDebris_" + name
+    ob.name = me.name = "SM_" + PREFIX + "Debris_" + name
     ob.location = (0, 0, 0)
     bpy.ops.object.select_all(action="DESELECT")
     ob.select_set(True)
