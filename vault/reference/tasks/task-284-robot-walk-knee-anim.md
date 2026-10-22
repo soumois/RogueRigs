@@ -1,9 +1,9 @@
 ---
 id: task-284-robot-walk-knee-anim
 description: "Global task: Animate the heavy, shooter and chaser v2 walk with a light knee bend found on each mesh, and light kamikaze legs."
-parent: tasks-to-do-index
+parent: tasks-done-index
 kind: task
-status: in-progress
+status: done
 ---
 # Robot walk animation with knees
 
@@ -14,8 +14,8 @@ status: in-progress
 - depends_on_global: task-283
 - confirmed_by_owner: yes (2026-10-22, plan accepted; launch on the owner's word)
 - milestone: M2
-- next_step: task-284-11-capture-walk
-- result: open
+- next_step: none
+- result: Done. Walk shots Saved/RobotMeshes/walk/: heavy_0-3 (legs in phases, joined, visor on head), kamikaze_0-3 (light leg sway), shooter_far_0-3 (walks from 1300 uu, stride changes), chaserv2_0-3 and chaserv2_attack_0-7 (walks, crouched knee bend near the miner); robot_shots.ps1 gained -NoFreeze, -Distance, -Yaw, -Camera, -StopSpawner, -Suffix. Not confirmed: chaser v2 strike pose, clear knee bend from the top-down camera; chaser v2 missing in 2 of 8 frames (cause unknown, open).
 
 ## Subtasks
 1. task-284-01-parts-bake-heavy — 3d: Cut and bake the heavy walk
@@ -31,7 +31,7 @@ status: in-progress
 11. task-284-11-capture-walk — cpp: Capture the robots walking
 
 ## Relations
-- [[tasks-to-do-index]] — parent index.
+- [[tasks-done-index]] — parent index.
 - [[task-284-01-parts-bake-heavy]] — step 01, 3d.
 - [[task-284-02-parts-bake-shooter]] — step 02, 3d.
 - [[task-284-03-parts-bake-chaser-v2]] — step 03, 3d.

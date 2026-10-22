@@ -3,7 +3,7 @@ id: task-285-heavy-slam-anim
 description: "Global task: Animate the heavy slam: fists raised during the telegraph, then knees bent and body leaning forward so the fists touch the ground."
 parent: tasks-to-do-index
 kind: task
-status: todo
+status: in-progress
 ---
 # Heavy slam animation
 

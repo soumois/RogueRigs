@@ -3,7 +3,7 @@ id: task-285-01-bake-heavy-slam
 description: "Bake the heavy telegraph and slam clips (3d)."
 parent: task-285-heavy-slam-anim
 kind: task
-status: todo
+status: in-progress
 ---
 # Bake the heavy telegraph and slam clips
 
