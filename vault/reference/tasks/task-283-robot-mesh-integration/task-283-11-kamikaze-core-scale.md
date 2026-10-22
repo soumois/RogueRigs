@@ -3,7 +3,7 @@ id: task-283-11-kamikaze-core-scale
 description: "Set ArmedCoreScale 1.2 on BP_Kamikaze so the armed Meshy core no longer swallows the robot (bp)."
 parent: task-283-robot-mesh-integration
 kind: task
-status: in-progress
+status: done
 ---
 # Kamikaze armed core scale on the Meshy core
 
@@ -15,11 +15,11 @@ status: in-progress
 - done_when: ArmedCoreScale read back 1.2 on the BP default object, compiles without error, no C++ test expects the BP value (checked), doc updated; lint clean
 - editor_state: open
 - token_ceiling: 30000
-- model: open
-- tokens: open
-- runs: open
+- model: sonnet
+- tokens: input 22, cache write 34242, cache read 244391, output 4317
+- runs: 1
 - milestone: M2
-- result: open
+- result: ArmedCoreScale 1.2 on BP_Kamikaze defaults (read back, compiles, saved; C++ default 1.8 unchanged; no test reads it); bp-kamikaze updated; commit b1542394.
 
 ## Relations
 - [[task-283-robot-mesh-integration]] — parent global task.
