@@ -361,6 +361,25 @@ new_faces = []
 for c in CUTS:
     nf_, nleft_ = close_cut(bm, LAY_CUT, c["id"], c["n"])
     new_faces += nf_
+if CFG.get("final_fill"):      # config key (default off): boundary loops left open where two cuts meet (hip cut ending on the waist cut) are filled together, whatever their cut id
+    left_ = [e for e in bm.edges if e[LAY_CUT] > 0 and len(e.link_faces) == 1]
+    for e in left_:
+        e[LAY_CUT] = 999
+    for nrm_ in ((0.0, 0.0, 1.0), (0.0, 1.0, 0.0), (1.0, 0.0, 0.0)):
+        if not left_:
+            break
+        nf_, nleft_ = close_cut(bm, LAY_CUT, 999, nrm_)
+        new_faces += nf_
+        print("FINAL_FILL", len(left_), "edges ->", nleft_, "left, normal", nrm_)
+        left_ = [e for e in bm.edges if e[LAY_CUT] == 999 and len(e.link_faces) == 1]
+    if left_:      # what is left: coincident duplicate vertices of a sliver; weld them and fill again
+        bmesh.ops.remove_doubles(bm, verts=list({v for e in left_ for v in e.verts}), dist=1e-4)
+        bm.edges.ensure_lookup_table()
+        left_ = [e for e in bm.edges if e[LAY_CUT] == 999 and len(e.link_faces) == 1]
+        if left_:
+            new_faces += list(bmesh.ops.holes_fill(bm, edges=left_, sides=2000)["faces"])
+        left_ = [e for e in bm.edges if e[LAY_CUT] == 999 and len(e.link_faces) == 1]
+        print("FINAL_FILL after weld:", len(left_), "open")
 for f in new_faces:
     f[LAY_CAP] = 1
 bmesh.ops.triangulate(bm, faces=new_faces)

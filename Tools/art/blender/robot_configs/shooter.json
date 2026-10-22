@@ -240,5 +240,6 @@
    "side": 1,
    "pivot": "ShinFoot"
   }
- ]
+ ],
+ "final_fill": true
 }

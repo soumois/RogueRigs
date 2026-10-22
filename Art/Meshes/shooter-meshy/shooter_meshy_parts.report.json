@@ -146,22 +146,26 @@
    ],
    "parts": [
     "HeadTorso",
-    "Pelvis"
+    "Pelvis",
+    "Thigh_L"
    ],
    "section_length_cm": 193.99,
    "cut_edges": 77,
    "caps": {
     "HeadTorso": {
-     "faces": 101,
-     "area_cm2": 935.31
+     "faces": 109,
+     "area_cm2": 938.83
     },
     "Pelvis": {
+     "faces": 30,
+     "area_cm2": 413.5
+    },
+    "Thigh_L": {
      "faces": 5,
-     "area_cm2": 1.58
+     "area_cm2": 7.89
     }
    },
-   "pivot_to_plane_distance_cm": 0.5,
-   "min_vertex_distance_between_parts_beyond_0.6cm_of_plane_cm": 0.0
+   "pivot_to_plane_distance_cm": 0.5
   },
   {
    "label": "shoulder_L",
@@ -359,11 +363,24 @@
      106
     ]
    ],
-   "parts": [],
+   "parts": [
+    "Pelvis",
+    "Thigh_L"
+   ],
    "section_length_cm": 85.62,
    "cut_edges": 47,
-   "caps": {},
-   "pivot_to_plane_distance_cm": 12.0
+   "caps": {
+    "Thigh_L": {
+     "faces": 50,
+     "area_cm2": 475.04
+    },
+    "Pelvis": {
+     "faces": 48,
+     "area_cm2": 407.55
+    }
+   },
+   "pivot_to_plane_distance_cm": 12.0,
+   "min_vertex_distance_between_parts_beyond_0.6cm_of_plane_cm": 1.61
   },
   {
    "label": "hip_R",
@@ -390,6 +407,7 @@
     ]
    ],
    "parts": [
+    "HeadTorso",
     "Pelvis",
     "Thigh_R"
    ],
@@ -397,16 +415,19 @@
    "cut_edges": 65,
    "caps": {
     "Pelvis": {
-     "faces": 27,
-     "area_cm2": 194.41
+     "faces": 48,
+     "area_cm2": 346.59
     },
     "Thigh_R": {
      "faces": 51,
      "area_cm2": 224.41
+    },
+    "HeadTorso": {
+     "faces": 23,
+     "area_cm2": 180.75
     }
    },
-   "pivot_to_plane_distance_cm": 12.0,
-   "min_vertex_distance_between_parts_beyond_0.6cm_of_plane_cm": 1.82
+   "pivot_to_plane_distance_cm": 12.0
   },
   {
    "label": "knee_L",
@@ -503,25 +524,25 @@
   "surface_area_cm2_before": 67955.0
  },
  "triangles": {
-  "total": 9341,
+  "total": 9520,
   "limit": 12000,
   "source": 7263,
-  "cap_faces_added": 916,
+  "cap_faces_added": 1096,
   "cut_triangles_added_by_bisect_and_split": 1162,
-  "vertices_total": 4766,
+  "vertices_total": 4765,
   "vertices_source": 3600,
   "per_part": {
    "Pelvis": {
-    "tris": 396,
+    "tris": 490,
     "vertices": 249,
-    "cap_faces": 32,
-    "open_edges": 96
+    "cap_faces": 126,
+    "open_edges": 0
    },
    "HeadTorso": {
-    "tris": 2120,
-    "vertices": 1086,
-    "cap_faces": 185,
-    "open_edges": 54
+    "tris": 2151,
+    "vertices": 1085,
+    "cap_faces": 216,
+    "open_edges": 17
    },
    "UpperArm_L": {
     "tris": 580,
@@ -548,10 +569,10 @@
     "open_edges": 2
    },
    "Thigh_L": {
-    "tris": 675,
+    "tris": 730,
     "vertices": 365,
-    "cap_faces": 44,
-    "open_edges": 57
+    "cap_faces": 99,
+    "open_edges": 0
    },
    "Thigh_R": {
     "tris": 668,
@@ -574,8 +595,8 @@
   }
  },
  "cap_boundary_edges_before_fill": 1166,
- "cap_boundary_edges_still_open": 189,
- "cap_faces_flipped_to_outward": 131,
+ "cap_boundary_edges_still_open": 0,
+ "cap_faces_flipped_to_outward": 164,
  "cap_uv_method": "every cap triangle gets all three UV0 corners at the UV centroid of the nearest existing (non-cap) face of the same part that shares a vertex with the cap, so it samples that face's texels (flat colour); texture file untouched",
  "connected_pieces": {
   "total_after_cut": 18,
@@ -641,6 +662,16 @@
     ]
    },
    {
+    "part": "Thigh_L",
+    "faces": 730,
+    "area_cm2": 4932.29,
+    "centroid_cm": [
+     3.2,
+     20.1,
+     76.8
+    ]
+   },
+   {
     "part": "UpperArm_L",
     "faces": 580,
     "area_cm2": 4664.31,
@@ -648,16 +679,6 @@
      1.1,
      42.7,
      121.5
-    ]
-   },
-   {
-    "part": "Thigh_L",
-    "faces": 675,
-    "area_cm2": 4449.36,
-    "centroid_cm": [
-     3.3,
-     21.0,
-     75.4
     ]
    },
    {
@@ -672,16 +693,26 @@
    },
    {
     "part": "Pelvis",
-    "faces": 384,
-    "area_cm2": 2778.29,
+    "faces": 478,
+    "area_cm2": 3749.92,
     "centroid_cm": [
-     3.2,
-     -0.6,
-     84.2
+     3.1,
+     0.3,
+     86.7
     ]
    }
   ],
   "small_fragments": [
+   {
+    "faces": 90,
+    "area_cm2": 398.971,
+    "centroid_cm": [
+     1.5,
+     -11.7,
+     95.9
+    ],
+    "assigned_to": "HeadTorso"
+   },
    {
     "faces": 70,
     "area_cm2": 329.514,
@@ -689,16 +720,6 @@
      23.6,
      0.8,
      98.8
-    ],
-    "assigned_to": "HeadTorso"
-   },
-   {
-    "faces": 59,
-    "area_cm2": 214.7,
-    "centroid_cm": [
-     1.0,
-     -12.1,
-     95.8
     ],
     "assigned_to": "HeadTorso"
    },
@@ -771,22 +792,22 @@
     0.0,
     86.5
    ],
-   "tris": 396,
+   "tris": 490,
    "vertices": 249,
-   "lightmap_px_per_cm": 21.8609,
+   "lightmap_px_per_cm": 19.4105,
    "lightmap": {
     "overlapping_pairs_bbox": 0,
     "min_gap_px": 2.0,
     "in_range": true,
     "passed": true
    },
-   "open_edges": 96,
+   "open_edges": 0,
    "uv_layers": [
     "UVMap",
     "LightMap",
     "PartId"
    ],
-   "cap_faces": 32
+   "cap_faces": 126
   },
   "HeadTorso": {
    "pivot_cm": [
@@ -794,22 +815,22 @@
     0.0,
     98.5
    ],
-   "tris": 2120,
-   "vertices": 1086,
-   "lightmap_px_per_cm": 8.4715,
+   "tris": 2151,
+   "vertices": 1085,
+   "lightmap_px_per_cm": 8.4428,
    "lightmap": {
     "overlapping_pairs_bbox": 0,
     "min_gap_px": 2.0,
     "in_range": true,
     "passed": true
    },
-   "open_edges": 54,
+   "open_edges": 17,
    "uv_layers": [
     "UVMap",
     "LightMap",
     "PartId"
    ],
-   "cap_faces": 185
+   "cap_faces": 216
   },
   "UpperArm_L": {
    "pivot_cm": [
@@ -909,22 +930,22 @@
     22.0,
     86.5
    ],
-   "tris": 675,
+   "tris": 730,
    "vertices": 365,
-   "lightmap_px_per_cm": 17.0985,
+   "lightmap_px_per_cm": 16.2283,
    "lightmap": {
     "overlapping_pairs_bbox": 0,
     "min_gap_px": 2.0,
     "in_range": true,
     "passed": true
    },
-   "open_edges": 57,
+   "open_edges": 0,
    "uv_layers": [
     "UVMap",
     "LightMap",
     "PartId"
    ],
-   "cap_faces": 44
+   "cap_faces": 99
   },
   "Thigh_R": {
    "pivot_cm": [
@@ -1000,11 +1021,11 @@
   "views": {
    "front": {
     "uncut_px": 1187746,
-    "parts_px": 1187745,
-    "differing_px": 1,
+    "parts_px": 1187751,
+    "differing_px": 7,
     "only_uncut_px": 1,
-    "only_parts_px": 0,
-    "difference_percent_of_uncut_area": 0.0001,
+    "only_parts_px": 6,
+    "difference_percent_of_uncut_area": 0.0006,
     "px_per_cm": 13.333,
     "passed": true
    },
@@ -1020,11 +1041,11 @@
    },
    "back": {
     "uncut_px": 1187746,
-    "parts_px": 1187745,
-    "differing_px": 1,
+    "parts_px": 1187751,
+    "differing_px": 7,
     "only_uncut_px": 1,
-    "only_parts_px": 0,
-    "difference_percent_of_uncut_area": 0.0001,
+    "only_parts_px": 6,
+    "difference_percent_of_uncut_area": 0.0006,
     "px_per_cm": 13.333,
     "passed": true
    }
@@ -1182,7 +1203,7 @@
   ],
   "read_from_exported_fbx": {
    "Pelvis": {
-    "corners": 1188,
+    "corners": 1467,
     "expected": 0.05000000074505806,
     "unique_u": [
      0.05000000074505806
@@ -1194,7 +1215,7 @@
     "exact_float32": true
    },
    "HeadTorso": {
-    "corners": 6360,
+    "corners": 6453,
     "expected": 0.15000000596046448,
     "unique_u": [
      0.15000000596046448
@@ -1254,7 +1275,7 @@
     "exact_float32": true
    },
    "Thigh_L": {
-    "corners": 2025,
+    "corners": 2190,
     "expected": 0.6499999761581421,
     "unique_u": [
      0.6499999761581421
@@ -1384,7 +1405,7 @@
   },
   "per_part": {
    "Pelvis": {
-    "tris": 396,
+    "tris": 489,
     "vertices": 249,
     "world_origin_cm": [
      2.0,
@@ -1427,8 +1448,8 @@
     ]
    },
    "HeadTorso": {
-    "tris": 2120,
-    "vertices": 1086,
+    "tris": 2151,
+    "vertices": 1085,
     "world_origin_cm": [
      2.0,
      0.0,
@@ -1642,7 +1663,7 @@
     ]
    },
    "Thigh_L": {
-    "tris": 675,
+    "tris": 730,
     "vertices": 365,
     "world_origin_cm": [
      2.0,
@@ -1814,8 +1835,8 @@
     ]
    }
   },
-  "total_tris": 9341,
-  "total_vertices": 4766,
+  "total_tris": 9520,
+  "total_vertices": 4765,
   "bounds_min_cm": [
    -29.233,
    -65.154,
@@ -1829,20 +1850,19 @@
   "height_cm": 176.0
  },
  "warnings": [
-  "189 cap boundary edges still open (loop not closed)",
   "8 small connected fragments assigned to the nearest part"
  ],
  "timings_s": {
-  "load": 0.63,
+  "load": 0.67,
   "bisect": 0.2,
-  "caps": 0.2,
-  "components": 0.18,
-  "cap_uv": 0.39,
-  "parts": 0.59,
-  "clearance": 0.08,
-  "export": 0.13,
-  "readback": 0.47,
-  "silhouette": 14.39,
-  "total": 17.86
+  "caps": 0.27,
+  "components": 0.21,
+  "cap_uv": 0.45,
+  "parts": 0.65,
+  "clearance": 0.07,
+  "export": 0.14,
+  "readback": 0.49,
+  "silhouette": 30.28,
+  "total": 34.05
  }
 }

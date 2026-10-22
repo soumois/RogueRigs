@@ -15,7 +15,7 @@
  },
  "parts": {
   "Pelvis": {
-   "tris": 396,
+   "tris": 489,
    "vertices": 249,
    "vertices_unreferenced": 0,
    "merged_positions": 246,
@@ -24,12 +24,12 @@
     "per_component": [
      {
       "index": 0,
-      "tris": 396,
+      "tris": 489,
       "vertices": 249,
       "centroid_cm": [
-       2.129,
-       -1.195,
-       88.686
+       1.969,
+       -0.41,
+       89.62
       ],
       "bbox_min_cm": [
        -15.441,
@@ -70,10 +70,10 @@
     "count": 0,
     "list": []
    },
-   "open_edges": 96,
-   "nonmanifold_edges": 0,
-   "open_edges_merged_by_position": 94,
-   "nonmanifold_edges_merged_by_position": 2,
+   "open_edges": 2,
+   "nonmanifold_edges": 1,
+   "open_edges_merged_by_position": 2,
+   "nonmanifold_edges_merged_by_position": 4,
    "vertex_distance_to_own_joint_cm": {
     "min": 7.822,
     "max": 21.917,
@@ -83,7 +83,7 @@
    "planes": {
     "waist": {
      "expected_side_sign": -1.0,
-     "triangles_in_zone": 186,
+     "triangles_in_zone": 259,
      "vertices_in_zone": 134,
      "wrong_side_triangle_centroids": 0,
      "worst_triangle_depth_cm": 0.0,
@@ -93,9 +93,21 @@
      "tolerance_cm": 0.05,
      "pivot_signed_distance_to_plane_cm": 12.5
     },
+    "hip_L": {
+     "expected_side_sign": -1.0,
+     "triangles_in_zone": 204,
+     "vertices_in_zone": 91,
+     "wrong_side_triangle_centroids": 0,
+     "worst_triangle_depth_cm": 0.0,
+     "wrong_side_vertices": 0,
+     "worst_vertex_depth_cm": 0.0,
+     "min_signed_distance_triangle_centroid_in_zone_cm": -0.0,
+     "tolerance_cm": 0.05,
+     "pivot_signed_distance_to_plane_cm": 10.0
+    },
     "hip_R": {
      "expected_side_sign": -1.0,
-     "triangles_in_zone": 205,
+     "triangles_in_zone": 221,
      "vertices_in_zone": 106,
      "wrong_side_triangle_centroids": 0,
      "worst_triangle_depth_cm": 0.0,
@@ -108,8 +120,8 @@
    }
   },
   "HeadTorso": {
-   "tris": 2120,
-   "vertices": 1086,
+   "tris": 2151,
+   "vertices": 1085,
    "vertices_unreferenced": 0,
    "merged_positions": 1045,
    "connected_components": {
@@ -117,12 +129,12 @@
     "per_component": [
      {
       "index": 0,
-      "tris": 2120,
-      "vertices": 1086,
+      "tris": 2151,
+      "vertices": 1085,
       "centroid_cm": [
-       8.852,
-       -0.308,
-       122.067
+       8.732,
+       -0.459,
+       121.702
       ],
       "bbox_min_cm": [
        -20.911,
@@ -163,14 +175,14 @@
     "count": 0,
     "list": []
    },
-   "open_edges": 54,
+   "open_edges": 17,
    "nonmanifold_edges": 11,
-   "open_edges_merged_by_position": 41,
-   "nonmanifold_edges_merged_by_position": 77,
+   "open_edges_merged_by_position": 17,
+   "nonmanifold_edges_merged_by_position": 80,
    "vertex_distance_to_own_joint_cm": {
     "min": 7.773,
     "max": 78.938,
-    "mean": 36.527
+    "mean": 36.541
    },
    "vertex_distance_to_parent_joint_cm": {
     "parent": "Pelvis",
@@ -180,9 +192,9 @@
    "planes": {
     "waist": {
      "expected_side_sign": 1.0,
-     "triangles_in_zone": 705,
-     "vertices_in_zone": 385,
-     "wrong_side_triangle_centroids": 87,
+     "triangles_in_zone": 736,
+     "vertices_in_zone": 384,
+     "wrong_side_triangle_centroids": 105,
      "worst_triangle_depth_cm": 7.41,
      "wrong_side_vertices": 37,
      "worst_vertex_depth_cm": 7.756,
@@ -395,6 +407,200 @@
      "min_signed_distance_triangle_centroid_in_zone_cm": 0.0,
      "tolerance_cm": 0.05,
      "pivot_signed_distance_to_plane_cm": 31.0
+    },
+    "hip_R": {
+     "expected_side_sign": -1.0,
+     "triangles_in_zone": 57,
+     "vertices_in_zone": 27,
+     "wrong_side_triangle_centroids": 44,
+     "worst_triangle_depth_cm": 4.898,
+     "wrong_side_vertices": 14,
+     "worst_vertex_depth_cm": 4.707,
+     "min_signed_distance_triangle_centroid_in_zone_cm": -4.898,
+     "tolerance_cm": 0.05,
+     "wrong_triangles": [
+      {
+       "tri": 457,
+       "centroid_cm": [
+        6.821,
+        -14.898,
+        98.273
+       ],
+       "depth_cm": 4.898
+      },
+      {
+       "tri": 545,
+       "centroid_cm": [
+        -4.176,
+        -12.819,
+        97.866
+       ],
+       "depth_cm": 2.819
+      },
+      {
+       "tri": 548,
+       "centroid_cm": [
+        -5.901,
+        -12.8,
+        95.856
+       ],
+       "depth_cm": 2.8
+      },
+      {
+       "tri": 549,
+       "centroid_cm": [
+        -5.707,
+        -12.982,
+        97.583
+       ],
+       "depth_cm": 2.982
+      },
+      {
+       "tri": 552,
+       "centroid_cm": [
+        9.98,
+        -12.485,
+        96.998
+       ],
+       "depth_cm": 2.485
+      },
+      {
+       "tri": 553,
+       "centroid_cm": [
+        -4.411,
+        -12.559,
+        94.168
+       ],
+       "depth_cm": 2.559
+      },
+      {
+       "tri": 560,
+       "centroid_cm": [
+        2.395,
+        -13.227,
+        96.814
+       ],
+       "depth_cm": 3.227
+      },
+      {
+       "tri": 561,
+       "centroid_cm": [
+        -1.69,
+        -12.702,
+        97.426
+       ],
+       "depth_cm": 2.702
+      },
+      {
+       "tri": 565,
+       "centroid_cm": [
+        6.006,
+        -12.642,
+        96.73
+       ],
+       "depth_cm": 2.642
+      },
+      {
+       "tri": 566,
+       "centroid_cm": [
+        -5.417,
+        -11.885,
+        92.717
+       ],
+       "depth_cm": 1.885
+      },
+      {
+       "tri": 569,
+       "centroid_cm": [
+        -2.79,
+        -12.184,
+        94.109
+       ],
+       "depth_cm": 2.184
+      },
+      {
+       "tri": 570,
+       "centroid_cm": [
+        -2.749,
+        -12.263,
+        96.08
+       ],
+       "depth_cm": 2.263
+      },
+      {
+       "tri": 580,
+       "centroid_cm": [
+        -2.196,
+        -11.75,
+        96.209
+       ],
+       "depth_cm": 1.75
+      },
+      {
+       "tri": 581,
+       "centroid_cm": [
+        6.107,
+        -11.535,
+        95.312
+       ],
+       "depth_cm": 1.535
+      },
+      {
+       "tri": 595,
+       "centroid_cm": [
+        10.389,
+        -10.687,
+        94.401
+       ],
+       "depth_cm": 0.687
+      },
+      {
+       "tri": 605,
+       "centroid_cm": [
+        -3.795,
+        -11.511,
+        92.658
+       ],
+       "depth_cm": 1.511
+      },
+      {
+       "tri": 624,
+       "centroid_cm": [
+        1.99,
+        -11.168,
+        94.179
+       ],
+       "depth_cm": 1.168
+      },
+      {
+       "tri": 641,
+       "centroid_cm": [
+        -6.749,
+        -10.496,
+        91.901
+       ],
+       "depth_cm": 0.496
+      },
+      {
+       "tri": 656,
+       "centroid_cm": [
+        -0.832,
+        -10.321,
+        92.234
+       ],
+       "depth_cm": 0.321
+      },
+      {
+       "tri": 662,
+       "centroid_cm": [
+        10.711,
+        -10.5,
+        96.123
+       ],
+       "depth_cm": 0.5
+      }
+     ],
+     "pivot_signed_distance_to_plane_cm": 10.0
     }
    }
   },
@@ -912,7 +1118,7 @@
    }
   },
   "Thigh_L": {
-   "tris": 675,
+   "tris": 730,
    "vertices": 365,
    "vertices_unreferenced": 0,
    "merged_positions": 365,
@@ -921,12 +1127,12 @@
     "per_component": [
      {
       "index": 0,
-      "tris": 675,
+      "tris": 730,
       "vertices": 365,
       "centroid_cm": [
-       2.985,
-       20.366,
-       75.333
+       2.802,
+       19.648,
+       76.525
       ],
       "bbox_min_cm": [
        -13.382,
@@ -967,9 +1173,9 @@
     "count": 0,
     "list": []
    },
-   "open_edges": 57,
+   "open_edges": 0,
    "nonmanifold_edges": 1,
-   "open_edges_merged_by_position": 57,
+   "open_edges_merged_by_position": 0,
    "nonmanifold_edges_merged_by_position": 1,
    "vertex_distance_to_own_joint_cm": {
     "min": 4.276,
@@ -982,6 +1188,30 @@
     "max": 44.962
    },
    "planes": {
+    "waist": {
+     "expected_side_sign": -1.0,
+     "triangles_in_zone": 136,
+     "vertices_in_zone": 68,
+     "wrong_side_triangle_centroids": 0,
+     "worst_triangle_depth_cm": 0.0,
+     "wrong_side_vertices": 0,
+     "worst_vertex_depth_cm": 0.0,
+     "min_signed_distance_triangle_centroid_in_zone_cm": -0.0,
+     "tolerance_cm": 0.05,
+     "pivot_signed_distance_to_plane_cm": 12.5
+    },
+    "hip_L": {
+     "expected_side_sign": 1.0,
+     "triangles_in_zone": 573,
+     "vertices_in_zone": 273,
+     "wrong_side_triangle_centroids": 0,
+     "worst_triangle_depth_cm": 0.0,
+     "wrong_side_vertices": 0,
+     "worst_vertex_depth_cm": 0.0,
+     "min_signed_distance_triangle_centroid_in_zone_cm": 0.0,
+     "tolerance_cm": 0.05,
+     "pivot_signed_distance_to_plane_cm": 12.0
+    },
     "knee_L": {
      "expected_side_sign": 1.0,
      "triangles_in_zone": 311,
@@ -1414,7 +1644,8 @@
  "plane_sides": {
   "waist": {
    "HeadTorso": 1.0,
-   "Pelvis": -1.0
+   "Pelvis": -1.0,
+   "Thigh_L": -1.0
   },
   "shoulder_L": {
    "HeadTorso": -1.0,
@@ -1432,8 +1663,12 @@
    "ForearmHand_R": -1.0,
    "UpperArm_R": 1.0
   },
-  "hip_L": {},
+  "hip_L": {
+   "Pelvis": -1.0,
+   "Thigh_L": 1.0
+  },
   "hip_R": {
+   "HeadTorso": -1.0,
    "Pelvis": -1.0,
    "Thigh_R": 1.0
   },
@@ -1447,13 +1682,13 @@
   "knee_R": {}
  },
  "parts_report_open_edges": {
-  "Pelvis": 96,
-  "HeadTorso": 54,
+  "Pelvis": 0,
+  "HeadTorso": 17,
   "UpperArm_L": 0,
   "UpperArm_R": 2,
   "ForearmHand_L": 8,
   "ForearmHand_R": 2,
-  "Thigh_L": 57,
+  "Thigh_L": 0,
   "Thigh_R": 0,
   "ShinFoot_L": 6,
   "ShinFoot_R": 0
@@ -1636,7 +1871,7 @@
       "max_abs_x_cm": 0.00312,
       "max_abs_y_cm": 1e-05,
       "max_abs_z_cm": 0.00033,
-      "worst_vertex": 1083,
+      "worst_vertex": 1082,
       "worst_vertex_diff_xyz_cm": [
        0.003,
        -0.0,
@@ -1996,36 +2231,34 @@
   "keyed_path": "meshy_bake_anim.py functions: run_pose, apply_pose, fit_ground on the parent hierarchy, vertices = matrix_world @ local",
   "images": []
  },
- "anomalies": [
-  "open edges: 225 at build time in the parts (source 35), cap boundary edges open 189"
- ],
+ "anomalies": [],
  "notes": [
-  "non-manifold edges merged by position: parts 171, source not read (source defects of the Meshy mesh; position merging also welds coincident cut seams and slivers inside one part, so the total is larger than the source)"
+  "non-manifold edges merged by position: parts 176, source not read (source defects of the Meshy mesh; position merging also welds coincident cut seams and slivers inside one part, so the total is larger than the source)"
  ],
  "edges_vs_source": {
   "rule": "open and non-manifold edges that already exist in the source mesh are source defects, not cut defects. Anomaly only when the build-time open edges of the parts (parts report, by vertex index) exceed the source count, or when the cut left cap boundary edges open.",
   "source_fbx": null,
   "source_open_edges_build_count": 35,
   "source_nonmanifold_edges_build_count": 34,
-  "parts_open_build_total": 225,
-  "cap_boundary_edges_still_open": 189,
-  "parts_open_read_back_total": 225,
-  "parts_open_merged_by_position_total": 210,
-  "parts_nonmanifold_merged_by_position_total": 171,
+  "parts_open_build_total": 35,
+  "cap_boundary_edges_still_open": 0,
+  "parts_open_read_back_total": 37,
+  "parts_open_merged_by_position_total": 37,
+  "parts_nonmanifold_merged_by_position_total": 176,
   "per_part": {
    "Pelvis": {
-    "open_read_back": 96,
-    "open_merged_by_position": 94,
-    "open_build": 96,
-    "nonmanifold_read_back": 0,
-    "nonmanifold_merged_by_position": 2
+    "open_read_back": 2,
+    "open_merged_by_position": 2,
+    "open_build": 0,
+    "nonmanifold_read_back": 1,
+    "nonmanifold_merged_by_position": 4
    },
    "HeadTorso": {
-    "open_read_back": 54,
-    "open_merged_by_position": 41,
-    "open_build": 54,
+    "open_read_back": 17,
+    "open_merged_by_position": 17,
+    "open_build": 17,
     "nonmanifold_read_back": 11,
-    "nonmanifold_merged_by_position": 77
+    "nonmanifold_merged_by_position": 80
    },
    "UpperArm_L": {
     "open_read_back": 0,
@@ -2056,9 +2289,9 @@
     "nonmanifold_merged_by_position": 2
    },
    "Thigh_L": {
-    "open_read_back": 57,
-    "open_merged_by_position": 57,
-    "open_build": 57,
+    "open_read_back": 0,
+    "open_merged_by_position": 0,
+    "open_build": 0,
     "nonmanifold_read_back": 1,
     "nonmanifold_merged_by_position": 1
    },
@@ -2088,7 +2321,8 @@
  "plane_deviations": {
   "note": "deviation of the cut from the planar model: a triangle centroid / vertex of a part on the other side of the joint plane than its main component. Not an assignment error by itself when the cut followed mesh edges (zigzag cut, mode 'edges' of meshy_cut_parts.py): the depth is then the zigzag amplitude",
   "list": [
-   "HeadTorso vs plane waist: 87 triangle centroids on the wrong side (worst 7.410 cm), 37 vertices (worst 7.756 cm)",
+   "HeadTorso vs plane waist: 105 triangle centroids on the wrong side (worst 7.410 cm), 37 vertices (worst 7.756 cm)",
+   "HeadTorso vs plane hip_R: 44 triangle centroids on the wrong side (worst 4.898 cm), 14 vertices (worst 4.707 cm)",
    "Thigh_R vs plane hip_R: 16 triangle centroids on the wrong side (worst 0.366 cm), 4 vertices (worst 0.637 cm)",
    "ForearmHand_L vs plane knee_L: 15 triangle centroids on the wrong side (worst 7.575 cm), 8 vertices (worst 8.496 cm)"
   ]
