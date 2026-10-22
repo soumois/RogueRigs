@@ -1,0 +1,164 @@
+{
+ "inputs": {
+  "fbx": "chaser_v2_meshy_flat.fbx",
+  "texture": "chaser_v2_meshy_clean_basecolor.png",
+  "input_height_units": 1.89904,
+  "input_triangles": 5120,
+  "input_vertices": 2500
+ },
+ "outputs": {
+  "fbx": "chaser_v2_meshy_game.fbx",
+  "texture_referenced": "chaser_v2_meshy_clean_basecolor.png",
+  "embedded": false,
+  "texture_paths_in_fbx": [
+   "C:\\Users\\soumo\\AppData\\Local\\Temp\\rr-c2\\work\\chaser_v2_meshy_clean_basecolor.png"
+  ]
+ },
+ "scale_factor": 64.769504,
+ "rotation_about_z_deg": 90,
+ "applied_origin_offset_cm": [
+  -3.51,
+  0.0251,
+  61.5466
+ ],
+ "export_settings": {
+  "use_selection": true,
+  "object_types": [
+   "MESH"
+  ],
+  "apply_scale_options": "FBX_SCALE_UNITS",
+  "global_scale": 1.0,
+  "axis_forward": "-Z",
+  "axis_up": "Y",
+  "mesh_smooth_type": "OFF",
+  "add_leaf_bones": false,
+  "path_mode": "RELATIVE",
+  "embed_textures": false,
+  "blender": "5.2.2 LTS",
+  "scene_unit_scale_length": 1.0
+ },
+ "axis_note": "Blender side: X forward (robot front), Y left, Z up. Exporter axis_forward=-Z, axis_up=Y (same as chaser): Unreal maps it to X forward, Z up. Not verified in Unreal (nothing imported).",
+ "fbx_unit_scale_factor_in_file": 100.0,
+ "readback": {
+  "bounds_min_cm": [
+   -31.152,
+   -48.911,
+   -0.0
+  ],
+  "bounds_max_cm": [
+   24.005,
+   48.798,
+   123.0
+  ],
+  "size_cm": [
+   55.157,
+   97.709,
+   123.0
+  ],
+  "height_cm": 123.0,
+  "triangles": 5120,
+  "vertices": 2500,
+  "objects": 1,
+  "object_name": "SM_ChaserV2_Meshy",
+  "material_slots": [
+   "body",
+   "robot_eye"
+  ],
+  "fbx_file_material_order": [
+   "body",
+   "robot_eye"
+  ],
+  "uv_layers": [
+   "UVMap",
+   "LightMap"
+  ],
+  "flat_shaded": false
+ },
+ "origin": {
+  "floor_z_cm": -0.0,
+  "feet_midpoint_xy_cm": [
+   0.0,
+   0.0
+  ]
+ },
+ "front_axis": {
+  "eye_centroid_cm": [
+   16.05,
+   0.14,
+   89.27
+  ],
+  "mesh_centroid_cm": [
+   -4.17,
+   -0.23,
+   57.49
+  ],
+  "front_is_plus_x": true,
+  "note": "the eye (red faces) lies on +X in Blender; the raw mesh faced -Y"
+ },
+ "eye": {
+  "criterion": "UV0 triangle covers a texel with linear saturate((R - 2 max(G,B)) x 3) > 0.1 (texel centres inside + texels of vertices and centroid) and face centroid inside the zone",
+  "zone_game_cm": {
+   "zmin": 75.0,
+   "zmax": 110.0,
+   "xmin": 10.0
+  },
+  "texture": "chaser_v2_meshy_clean_basecolor.png",
+  "red_texels_total": 36943,
+  "eye_faces": 58,
+  "eye_faces_before_export": 58,
+  "eye_texels_in_eye_faces": 14556,
+  "red_texels_left_in_body_faces_in_zone": 0,
+  "red_texels_in_body_faces_outside_zone": 10025,
+  "body_faces_outside_zone_covering_red": 421,
+  "components": [
+   {
+    "faces": 56,
+    "min_cm": [
+     12.1,
+     -9.9,
+     82.5
+    ],
+    "max_cm": [
+     21.6,
+     9.9,
+     98.6
+    ]
+   },
+   {
+    "faces": 2,
+    "min_cm": [
+     11.6,
+     11.1,
+     81.9
+    ],
+    "max_cm": [
+     15.2,
+     12.0,
+     88.6
+    ]
+   }
+  ],
+  "component_count": 2
+ },
+ "uv0_unchanged": {
+  "max_abs_diff_direct": 0.0,
+  "vertices_equal": true,
+  "triangles_equal": true
+ },
+ "lightmap_uv1": {
+  "layer": "LightMap",
+  "atlas_px": 2048,
+  "faces": 5120,
+  "island_scale_px_per_cm": 6.1905,
+  "method": "one island per face, shelf packed, bbox test",
+  "overlapping_face_pairs_bbox": 0,
+  "min_gap_px": 2.0,
+  "min_border_px": 2.0,
+  "bounds_min": 0.00098,
+  "bounds_max": 0.99902,
+  "passed": true
+ },
+ "warnings": [
+  "10025 red texels (stray red spots, not the eye) stay in body faces outside the zone"
+ ]
+}
