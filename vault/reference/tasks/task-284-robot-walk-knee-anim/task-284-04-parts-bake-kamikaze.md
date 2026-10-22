@@ -3,7 +3,7 @@ id: task-284-04-parts-bake-kamikaze
 description: "Cut and bake the kamikaze leg sway (3d)."
 parent: task-284-robot-walk-knee-anim
 kind: task
-status: in-progress
+status: done
 ---
 # Cut and bake the kamikaze leg sway
 
@@ -15,11 +15,11 @@ status: in-progress
 - done_when: meshy_cut_check passes, PartId bins clean, sway loop seamless; the Orchestrator renders 4 frames of the clip and sends them to the owner; Blender processes stopped
 - editor_state: closed (Blender headless only)
 - token_ceiling: 60000
-- model: open
-- tokens: open
-- runs: open
+- model: sonnet
+- tokens: input 60, cache write 107154, cache read 1976250, output 39060
+- runs: 1
 - milestone: M2
-- result: open
+- result: kamikaze_meshy_parts.fbx (3 parts: Body, LowerLeg_L/R = the 2 front legs, separate components, no cut; 5302 tris) + T_KamikazeAnim.exr (20x62, clip 0 sway rows 0-15, legs antiphase 6 deg, RunRate 0.35) via new Tools/art/blender/robot_component_parts_bake.py + robot_configs/kamikaze.json; own check 0 anomalies, PartId exact, seamless; renders Saved/Renders/task-284/kamikaze_sway_f0-3.png.
 
 ## Relations
 - [[task-284-robot-walk-knee-anim]] — parent global task.

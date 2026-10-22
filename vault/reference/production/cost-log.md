@@ -571,6 +571,7 @@ kind: note
 | [[task-284-01-parts-bake-heavy]] | sonnet | 3 | 0k | 1977k | 29453k | 31k |
 | [[task-284-02-parts-bake-shooter]] | sonnet | 2 | 0k | 140k | 6043k | 58k |
 | [[task-284-03-parts-bake-chaser-v2]] | sonnet | 1 | 0k | 114k | 3495k | 42k |
+| [[task-284-04-parts-bake-kamikaze]] | sonnet | 1 | 0k | 107k | 1976k | 39k |
 
 ## Totals
 | Scope | Input | Cache write | Cache read | Output |

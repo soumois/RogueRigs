@@ -3,7 +3,7 @@ id: task-284-05-cpp-anim-clips
 description: "Shared anim clip writer for the robots (cpp)."
 parent: task-284-robot-walk-knee-anim
 kind: task
-status: todo
+status: in-progress
 ---
 # Shared anim clip writer for the robots
 
