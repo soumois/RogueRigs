@@ -23,8 +23,8 @@ ARRHeavy::ARRHeavy(const FObjectInitializer& ObjectInitializer)
 	DamageEffectClass = URRGE_DamageFlat::StaticClass();
 	// Wider damage number disc for the larger body (damage-numbers: 45 uu, task-059-01).
 	DamageNumberSpawnRadius = 45.f;
-	// Baked clips (task-284-05): walk = clip 0 while moving; rest = clip 3 held at its last frame (row 61) while stopped. Rows
-	// 16..61 belong to task-285 (telegraph, slam, recover): its clip 3 must end at the rest pose, or change RestClipId.
+	// Baked clips (task-284-05): walk = clip 0 while moving; rest = clip 3 held at its last frame (row 61) while stopped. The
+	// slam clips 1..3 (task-285) play on the state events; clip 3 (recover) ends at the rest pose, so it stays the rest clip.
 	RestClipId = 3.f;
 
 	// Twice the chaser (24 x 62), radius well under the 80 uu limit so it crosses one-cell (200 uu) corridors (enemy-heavy).
@@ -99,6 +99,8 @@ void ARRHeavy::UpdateBehavior(float DeltaSeconds)
 		if (IsSlamReady(Now) && IsTargetWithin(FindTarget(), Stats.AttackRange * SlamTriggerRatio))
 		{
 			EnterState(ERRHeavyState::Telegraph);
+			// After EnterState (its movement-off rest hold): fists up now, slam-down clip SlamContactLead before the slam frame.
+			PlayClip(TelegraphClipId, FMath::Max(static_cast<double>(Stats.WindUp - SlamContactLead), UE_KINDA_SMALL_NUMBER));
 			OnTelegraphStart();
 			UpdateTelegraphBlink(TelegraphFlashRate);
 		}
@@ -150,9 +152,28 @@ void ARRHeavy::PerformSlam(ARRMiner* Target, double Now)
 		++SlamHitCount;
 	}
 
+	// Fists on the ground (contact held 3 frames), then back to the rest pose before the recovery ends.
+	PlayClip(RecoverClipId, 0.0);
+
 	const FVector Feet = GetActorLocation() - FVector(0.f, 0.f, GetCapsuleComponent()->GetScaledCapsuleHalfHeight());
 	UE_LOG(LogRogueRigs, Verbose, TEXT("ARRHeavy %s: slam %d at t=%.3f, hits %d."), *GetName(), SlamCount, Now, SlamHitCount);
 	OnSlam(Feet, Stats.AttackRange);
+}
+
+void ARRHeavy::OnAnimClipEnded()
+{
+	if (State == ERRHeavyState::Telegraph)
+	{
+		// Untimed: the slam frame replaces it with the recover clip (PerformSlam) well before its loop restarts (0.533 s).
+		PlayClip(SlamClipId, 0.0);
+		return;
+	}
+	if (State == ERRHeavyState::Dead)
+	{
+		// Death leaves the clip (base rule).
+		return;
+	}
+	Super::OnAnimClipEnded();
 }
 
 void ARRHeavy::HandleDeath(AActor* DeathInstigator)

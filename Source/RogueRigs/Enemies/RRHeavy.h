@@ -36,8 +36,12 @@ enum class ERRHeavyState : uint8
  * Blueprint mesh is twice the chaser's.
  * GroundTelegraph (sys-ground-telegraph, task-115-01): shown in Danger mode at radius GetSlamRadius on entering Telegraph,
  * progress = GetTelegraphProgress each telegraph frame, hidden on leaving Telegraph (Slam, death) and on pool reuse (progress 0).
- * Animation (task-284-05, ARREnemy clip writer): walk loop (clip 0, random phase) while the movement is on, rest pose (RestClipId 3
- * held) while it is off (Telegraph, Slam, Recover); the telegraph, slam and recover clips of task-285 go on the state events.
+ * Animation (task-284-05, ARREnemy clip writer): walk loop (clip 0, random phase) while the movement is on (Chase). Slam clips
+ * (task-285-02, baked in task-285-01): entering Telegraph plays TelegraphClipId (1, clamped: fists raised over 0.45 s, then held)
+ * with a timer of Stats.WindUp - SlamContactLead; its end (OnAnimClipEnded, still in Telegraph) plays SlamClipId (2, looped by the
+ * shader, contact pose at 0.133 s), so the fists reach the ground just before the slam frame; the slam frame (PerformSlam) plays
+ * RecoverClipId (3, clamped, contact held 3 frames, back to rest by 0.467 s < RecoverDuration). Clip 3 ends at the rest pose
+ * (row 61), so RestClipId stays 3. Chase again: walk loop (base SetMovementActive). Death leaves the clip.
  */
 UCLASS(Blueprintable)
 class ROGUERIGS_API ARRHeavy : public ARREnemy
@@ -105,7 +109,10 @@ protected:
 	/** True when the cadence allows a new telegraph at Now (the slam it leads to lands 1 / AttackRate after the previous one). */
 	bool IsSlamReady(double Now) const;
 
-	/** Performs the slam: damage to the miner within the radius, counters, OnSlam. */
+	/** Telegraph clip end (WindUp - SlamContactLead into the telegraph): plays the slam-down clip; nothing once Dead; else base. */
+	virtual void OnAnimClipEnded() override;
+
+	/** Performs the slam: damage to the miner within the radius, counters, recover clip, OnSlam. */
 	void PerformSlam(ARRMiner* Target, double Now);
 
 	/** Called when the telegraph starts (raise the arms, light the eyes and stripes). */
@@ -135,6 +142,22 @@ protected:
 	/** Blink frequency of the meshes during the telegraph (base UpdateTelegraphBlink). 0 = no blink: the Blueprint glows instead. */
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Heavy|Slam", meta = (ClampMin = 0, Units = "Hz"))
 	float TelegraphFlashRate = 0.f;
+
+	/** Baked clip played from the telegraph start (rows 16..30, clamped: fists raised, then held). */
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Heavy|Animation")
+	float TelegraphClipId = 1.f;
+
+	/** Baked clip played SlamContactLead seconds before the slam (rows 31..46, looped by the shader: must be replaced before 0.533 s). */
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Heavy|Animation")
+	float SlamClipId = 2.f;
+
+	/** Baked clip played on the slam frame (rows 47..61, clamped: contact held, back to the rest pose by 0.467 s). */
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Heavy|Animation")
+	float RecoverClipId = 3.f;
+
+	/** Seconds before the slam frame at which SlamClipId starts (its contact pose comes 0.133 s in, so the fists land on the slam). */
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Heavy|Animation", meta = (ClampMin = 0, Units = "s"))
+	float SlamContactLead = 0.15f;
 
 	/** Ground signal of the slam, centered on the heavy's feet; visible only during Telegraph. */
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Components")
