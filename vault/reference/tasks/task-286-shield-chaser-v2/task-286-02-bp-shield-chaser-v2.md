@@ -3,7 +3,7 @@ id: task-286-02-bp-shield-chaser-v2
 description: "BP_ShieldChaserV2 with its materials (bp)."
 parent: task-286-shield-chaser-v2
 kind: task
-status: todo
+status: in-progress
 ---
 # BP_ShieldChaserV2 with its materials
 

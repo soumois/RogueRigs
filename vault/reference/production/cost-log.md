@@ -581,6 +581,7 @@ kind: note
 | [[task-284-11-capture-walk]] | opus | 2 | 0k | 90k | 1733k | 25k |
 | [[task-285-01-bake-heavy-slam]] | sonnet | 1 | 0k | 106k | 1755k | 39k |
 | [[task-285-02-cpp-heavy-slam-clips]] | opus | 1 | 0k | 62k | 942k | 16k |
+| [[task-286-01-shield-fit-bake]] | sonnet | 1 | 0k | 116k | 1900k | 21k |
 
 ## Totals
 | Scope | Input | Cache write | Cache read | Output |

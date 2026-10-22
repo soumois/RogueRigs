@@ -3,7 +3,7 @@ id: task-286-01-shield-fit-bake
 description: "Fit the shield on chaser v2 and bake (3d)."
 parent: task-286-shield-chaser-v2
 kind: task
-status: in-progress
+status: done
 ---
 # Fit the shield on chaser v2 and bake
 
@@ -15,11 +15,11 @@ status: in-progress
 - done_when: shield on the left forearm part (PartId of that part), the four clips present with the v1 frame counts, foot slide under 2 cm per cycle, git diff shows no v1 file changed; the Orchestrator renders key frames and sends them to the owner; Blender processes stopped
 - editor_state: closed (Blender headless only)
 - token_ceiling: 60000
-- model: open
-- tokens: open
-- runs: open
+- model: sonnet
+- tokens: input 54, cache write 116414, cache read 1900104, output 21033
+- runs: 1
 - milestone: M2
-- result: open
+- result: SM_ShieldChaserV2_Meshy_Anim.fbx (chaser v2 parts + v1 riot shield on ForearmHand_L, grip lowered 16->4 cm to clear the v2 stride, slots body/shield/emblem/robot_eye, 7134 tris) + T_ShieldChaserV2Anim.exr (clips 0 shield run, 1 bash, 2 plain run, 3 plain attack, v1 ids/frames, ClipOffset 0/2, RunRate 1.5); slide 0.031 cm/cycle; v1 untouched; shield_chaser_v2_bake.py; renders Saved/Renders/task-286/.
 
 ## Relations
 - [[task-286-shield-chaser-v2]] — parent global task.
