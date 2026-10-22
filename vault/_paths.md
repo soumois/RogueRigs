@@ -76,6 +76,7 @@ bp-blob-shadow-material  reference/tech/blueprints/fx/bp-blob-shadow-material.md
 bp-bonus-chest  reference/tech/blueprints/world/bp-bonus-chest.md
 bp-burst-rifle  reference/tech/blueprints/player/bp-burst-rifle.md
 bp-chaser  reference/tech/blueprints/enemies/bp-chaser.md
+bp-chaser-v2  reference/tech/blueprints/enemies/bp-chaser-v2.md
 bp-damage-numbers  reference/tech/blueprints/fx/bp-damage-numbers.md
 bp-deposit-crystal-material  reference/tech/blueprints/fx/bp-deposit-crystal-material.md
 bp-dig-impact  reference/tech/blueprints/fx/bp-dig-impact.md

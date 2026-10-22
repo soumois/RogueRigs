@@ -20,11 +20,13 @@ kind: doc
 - glow_283_07: MI_RobotEye_Heavy_Glow (new, task-283-07, in /Game/RogueRigs/Materials/Robots/): child of MI_RobotEye_Heavy, GlowAmount 60, EyeColor (1, 0.35, 0), RunRate 0.7 and ClipOffset 0 inherited (same as MI_Heavy_Body); BP_Heavy swaps the robot_eye slot to it on OnTelegraphStart. Provisional, owner 2026-10-22. Revert: delete the asset and restore the OnTelegraphStart pin.
 - anim_284_06 (task-284-06, 2026-10-22): MI_Heavy_Body, MI_RobotEye_Heavy and MI_RobotEye_Heavy_Glow now have Animated on (the Glow instance inherits it), AnimTex T_HeavyAnim and RunRate 1.0 (was 0.7: the heavy walk is baked for RunRate 1.0), ClipOffset 0 on all three; GlowAmount (23, 60) and EyeColor unchanged. Read back. Revert: Animated off, RunRate 0.7, AnimTex back to the T_ChaserAnim default. See [[bp-heavy]].
 - anim_284_07 (task-284-07, 2026-10-22): MI_Shooter_Body and MI_RobotEye_Shooter now have Animated on, AnimTex T_ShooterAnim and RunRate 1.25 (was 0.7: the shooter walk is baked for RunRate 1.25), ClipOffset 0 on both; GlowAmount and EyeColor unchanged. Read back. Revert: Animated off, RunRate 0.7, AnimTex back to the T_ChaserAnim default. See [[bp-shooter]].
+- anim_284_08 (task-284-08, 2026-10-22): MI_ChaserV2_Body and MI_RobotEye_ChaserV2 now have Animated on, AnimTex T_ChaserV2Anim and RunRate 1.5 (was 0.7: the chaser v2 run is baked for RunRate 1.5), ClipOffset 0 on both; GlowAmount and EyeColor unchanged. Both assigned to SM_ChaserV2_Meshy_Anim on BP_ChaserV2. Read back. Revert: Animated off, RunRate 0.7, AnimTex back to the T_ChaserAnim default. See [[bp-chaser-v2]].
 - owner_agent: agent-bp
 
 ## Relations
 - [[bp-kamikaze]] — kamikaze body, eye and core use.
 - [[bp-shooter]] — shooter body and eye use.
+- [[bp-chaser-v2]] — chaser v2 body and eye use.
 - [[bp-heavy]] — first user of the heavy instances.
 - [[blueprints-enemies-index]] — parent index.
 - [[bp-robot-eye-material]] — M_RobotEye and MF_RobotAnimWPO that the master and the eye instances use.
