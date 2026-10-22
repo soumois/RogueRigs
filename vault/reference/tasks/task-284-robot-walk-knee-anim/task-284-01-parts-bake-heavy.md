@@ -3,7 +3,7 @@ id: task-284-01-parts-bake-heavy
 description: "Cut and bake the heavy walk (3d)."
 parent: task-284-robot-walk-knee-anim
 kind: task
-status: todo
+status: in-progress
 ---
 # Cut and bake the heavy walk
 

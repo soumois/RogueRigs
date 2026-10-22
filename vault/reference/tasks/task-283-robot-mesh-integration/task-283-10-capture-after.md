@@ -3,7 +3,7 @@ id: task-283-10-capture-after
 description: "Capture the robots after integration (cpp)."
 parent: task-283-robot-mesh-integration
 kind: task
-status: in-progress
+status: done
 ---
 # Capture the robots after integration
 
@@ -15,11 +15,11 @@ status: in-progress
 - done_when: heavy, kamikaze and shooter show their Meshy mesh at the expected size, eyes red, no grey-box primitive left, the kamikaze core pulses; existing enemy tests pass; the Orchestrator sends both shot sets to the owner
 - editor_state: closed
 - token_ceiling: 60000
-- model: open
-- tokens: open
-- runs: open
+- model: opus
+- tokens: input 36, cache write 67985, cache read 717076, output 2792
+- runs: 1
 - milestone: M2
-- result: open
+- result: No build needed (no Source change since binaries). 50 enemy/integration tests pass (headless alongside the editor). After shots Saved/RobotMeshes/after-integration/{heavy,kamikaze,shooter,chaser}.png + kamikaze_pulse_00-04: Meshy heavy, kamikaze, shooter visible, eyes red, no grey-box left, shooter laser from cannon tip, core pulses. Defect: armed kamikaze core (102 cm shell x ArmedCoreScale 1.8) swallows the robot; owner question.
 
 ## Relations
 - [[task-283-robot-mesh-integration]] — parent global task.

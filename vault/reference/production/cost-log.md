@@ -566,6 +566,7 @@ kind: note
 | [[task-283-07-bp-heavy-mesh]] | sonnet | 1 | 0k | 94k | 2120k | 1k |
 | [[task-283-08-bp-kamikaze-mesh]] | sonnet | 1 | 0k | 78k | 1181k | 1k |
 | [[task-283-09-bp-shooter-mesh]] | sonnet | 1 | 0k | 70k | 938k | 1k |
+| [[task-283-10-capture-after]] | opus | 1 | 0k | 68k | 717k | 3k |
 
 ## Totals
 | Scope | Input | Cache write | Cache read | Output |

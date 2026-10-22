@@ -1,9 +1,9 @@
 ---
 id: task-283-robot-mesh-integration
 description: "Global task: Integrate the flattened, cleaned heavy, kamikaze and shooter meshes into their Blueprints, and prepare chaser v2, replacing the grey-box primitives."
-parent: tasks-to-do-index
+parent: tasks-done-index
 kind: task
-status: in-progress
+status: done
 ---
 # Robot meshes: integrate into Unreal
 
@@ -14,8 +14,8 @@ status: in-progress
 - depends_on_global: task-282
 - confirmed_by_owner: yes (2026-10-22, plan accepted; launch on the owner's word)
 - milestone: M2
-- next_step: task-283-10-capture-after
-- result: open
+- next_step: none
+- result: Done. No build needed (no Source change since binaries). 50 enemy/integration tests pass (headless alongside the editor). After shots Saved/RobotMeshes/after-integration/{heavy,kamikaze,shooter,chaser}.png + kamikaze_pulse_00-04: Meshy heavy, kamikaze, shooter visible, eyes red, no grey-box left, shooter laser from cannon tip, core pulses. Defect: armed kamikaze core (102 cm shell x ArmedCoreScale 1.8) swallows the robot; owner question.
 
 ## Subtasks
 1. task-283-01-capture-before — cpp: Capture the robots before integration
@@ -30,7 +30,7 @@ status: in-progress
 10. task-283-10-capture-after — cpp: Capture the robots after integration
 
 ## Relations
-- [[tasks-to-do-index]] — parent index.
+- [[tasks-done-index]] — parent index.
 - [[task-283-01-capture-before]] — step 01, cpp.
 - [[task-283-02-game-ready-heavy]] — step 02, 3d.
 - [[task-283-03-game-ready-kamikaze]] — step 03, 3d.

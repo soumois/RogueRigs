@@ -289,3 +289,4 @@ Archive: it exceeds the index size limits of [[_authoring]] on purpose (owner, 2
 - [[task-280-drone-thruster-boost]] — The drone thruster idle look equals its current top-speed look, and top speed is stronger than that. Status done.
 - [[task-281-robot-mesh-flatten]] — Flatten the Meshy-bulged planar panels of the heavy, kamikaze, shooter and chaser v2 meshes with a headless Blender pass, UVs unchanged. Status done.
 - [[task-282-robot-texture-cleanup]] — Clean the texture artefacts of the four new robot meshes (heavy glassy back panels, kamikaze smeared leg tips) against the owner turnaround sheets. Status done.
+- [[task-283-robot-mesh-integration]] — Integrate the flattened, cleaned heavy, kamikaze and shooter meshes into their Blueprints, and prepare chaser v2, replacing the grey-box primitives. Status done.

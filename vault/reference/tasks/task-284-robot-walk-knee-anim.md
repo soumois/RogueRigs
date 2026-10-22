@@ -3,7 +3,7 @@ id: task-284-robot-walk-knee-anim
 description: "Global task: Animate the heavy, shooter and chaser v2 walk with a light knee bend found on each mesh, and light kamikaze legs."
 parent: tasks-to-do-index
 kind: task
-status: todo
+status: in-progress
 ---
 # Robot walk animation with knees
 
