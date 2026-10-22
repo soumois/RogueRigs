@@ -3,7 +3,7 @@ id: task-283-02-game-ready-heavy
 description: "Make the heavy mesh game ready (3d)."
 parent: task-283-robot-mesh-integration
 kind: task
-status: todo
+status: in-progress
 ---
 # Make the heavy mesh game ready
 
