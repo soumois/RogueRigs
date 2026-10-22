@@ -3,7 +3,7 @@ id: task-284-09-bp-kamikaze-anim
 description: "BP_Kamikaze plays the leg sway (bp)."
 parent: task-284-robot-walk-knee-anim
 kind: task
-status: in-progress
+status: done
 ---
 # BP_Kamikaze plays the leg sway
 
@@ -15,11 +15,11 @@ status: in-progress
 - done_when: RENDER_DATA UV channel 2 read back clean on every corner, build settings and texture settings read back, eye RunRate and ClipOffset equal to the body instance, compiles without error, doc updated; lint clean
 - editor_state: open
 - token_ceiling: 80000
-- model: open
-- tokens: open
-- runs: open
+- model: sonnet
+- tokens: input 52, cache write 80212, cache read 1430791, output 17657
+- runs: 1
 - milestone: M2
-- result: open
+- result: SM_Kamikaze_Meshy_Anim + T_KamikazeAnim imported; UV2 RENDER_DATA clean (3 bins); settings read back; MI_Kamikaze_Body/MI_RobotEye_Kamikaze Animated, RunRate 0.35; new MI_Kamikaze_Core (Animated off) on the static core; BP_Kamikaze compiles; docs updated.
 
 ## Relations
 - [[task-284-robot-walk-knee-anim]] — parent global task.

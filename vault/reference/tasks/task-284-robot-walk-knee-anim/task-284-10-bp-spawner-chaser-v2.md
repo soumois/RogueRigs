@@ -3,7 +3,7 @@ id: task-284-10-bp-spawner-chaser-v2
 description: "Spawner uses BP_ChaserV2 (bp)."
 parent: task-284-robot-walk-knee-anim
 kind: task
-status: todo
+status: in-progress
 ---
 # Spawner uses BP_ChaserV2
 
