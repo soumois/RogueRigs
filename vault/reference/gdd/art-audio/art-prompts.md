@@ -30,6 +30,7 @@ Reference images are generated in ChatGPT image generation. The prompts are stor
 - `miner-turnaround.jpg` — front, side, back T-pose sheet for 3D ([[art-prompts-rigs]]).
 - `shield-turnaround.webp` — the shield chaser riot shield, front, side, back ([[art-prompts-shield]]).
 - `drone-turnaround.webp` — the drone, front, side, back, source of the Meshy mesh ([[art-prompts-drone]]).
+- `shooter-turnaround.webp`, `heavy-turnaround.webp`, `kamikaze-turnaround.webp`, `chaser-turnaround-v2.webp` — owner sheets for the next Meshy meshes ([[art-prompts-robots-meshy]]).
 
 ## Relations
 - [[art-audio-index]] — parent index.
@@ -38,7 +39,7 @@ Reference images are generated in ChatGPT image generation. The prompts are stor
 - [[art-prompts-robots]] — corporate robot sheet and its four corrections.
 - [[art-prompts-rigs]] — miner, drone, turret sheet, drone fix, T-pose.
 - [[art-prompts-shield]] — shield chaser riot shield: sheet, Meshy views, raw mesh, open texture steps.
-- [[art-prompts-robots-meshy]] — shooter, heavy, kamikaze: Meshy sheet and view prompts, not run yet.
+- [[art-prompts-robots-meshy]] — shooter, heavy, kamikaze, chaser v2: Meshy prompts and owner sheets, views not made yet.
 - [[art-prompts-drone]] — drone turnaround prompt as used, Meshy mesh files, game meshes.
 - [[art-prompts-xp-core]] — four any-angle proposals to replace the big XP chip; choice open.
 - [[art-prompts-rock-top-texture]] — tileable painted rock top texture for the slab material: prompt, seam method, review.

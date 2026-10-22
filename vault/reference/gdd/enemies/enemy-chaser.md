@@ -32,3 +32,4 @@ status: approved
 - [[enemy-death]] — death effect.
 - [[chaser-meshy-pipeline]] — how the chaser mesh and its animation are built.
 - [[art-prompts-shield]] — the riot shield of the shield variant: images, prompts, raw mesh.
+- [[art-prompts-robots-meshy]] — v2 turnaround sheet (cleaner) and its Meshy prompts; mesh not made yet.

@@ -32,4 +32,4 @@ Must be spotted in under a second: it changes how the player moves.
 ## Relations
 - [[enemies-index]] — parent index.
 - [[sys-enemy-ai]] — line of sight and repositioning as built.
-- [[art-prompts-robots-meshy]] — Meshy sheet and view prompts for this robot (not run yet).
+- [[art-prompts-robots-meshy]] — Meshy prompts and owner turnaround sheet for this robot.

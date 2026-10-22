@@ -26,4 +26,4 @@ Glowing weak point on its back: [[wishlist]].
 
 ## Relations
 - [[enemies-index]] — parent index.
-- [[art-prompts-robots-meshy]] — Meshy sheet and view prompts for this robot (not run yet).
+- [[art-prompts-robots-meshy]] — Meshy prompts and owner turnaround sheet for this robot.

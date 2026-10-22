@@ -31,4 +31,4 @@ status: approved
 ## Relations
 - [[enemies-index]] — parent index.
 - [[destruction-rules]] — it is one of three block-destruction sources.
-- [[art-prompts-robots-meshy]] — Meshy sheet and view prompts for this robot (not run yet).
+- [[art-prompts-robots-meshy]] — Meshy prompts and owner turnaround sheet for this robot.
