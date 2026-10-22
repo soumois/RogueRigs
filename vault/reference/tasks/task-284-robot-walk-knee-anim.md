@@ -15,7 +15,7 @@ status: done
 - confirmed_by_owner: yes (2026-10-22, plan accepted; launch on the owner's word)
 - milestone: M2
 - next_step: none
-- result: Done. Walk shots Saved/RobotMeshes/walk/: heavy_0-3 (legs in phases, joined, visor on head), kamikaze_0-3 (light leg sway), shooter_far_0-3 (walks from 1300 uu, stride changes), chaserv2_0-3 and chaserv2_attack_0-7 (walks, crouched knee bend near the miner); robot_shots.ps1 gained -NoFreeze, -Distance, -Yaw, -Camera, -StopSpawner, -Suffix. Not confirmed: chaser v2 strike pose, clear knee bend from the top-down camera; chaser v2 missing in 2 of 8 frames (cause unknown, open).
+- result: Done. Heavy, shooter, chaser v2 (10 parts, knee <= 15 deg) and kamikaze (3 parts, sway 6 deg) cut and baked (robot-parts-bake-pipeline); shared C++ clip writer in ARREnemy; anim meshes and textures in BP_Heavy, BP_Shooter, BP_Kamikaze and new BP_ChaserV2 (RunRate heavy 1.0, shooter 1.25, chaser v2 1.5, kamikaze 0.35); spawner on BP_ChaserV2; walk shots Saved/RobotMeshes/walk/. Open: chaser v2 strike and knee bend not confirmed on camera, chaser v2 missing in 2 frames; 2 pre-existing test failures (JuiceKillDropsStreamingCubes, LevelUpUpgradeLoop).
 
 ## Subtasks
 1. task-284-01-parts-bake-heavy — 3d: Cut and bake the heavy walk
