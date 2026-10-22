@@ -3,7 +3,7 @@ id: task-282-01-texture-clean-heavy
 description: "Clean the heavy textures (3d)."
 parent: task-282-robot-texture-cleanup
 kind: task
-status: todo
+status: in-progress
 ---
 # Clean the heavy textures
 

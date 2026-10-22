@@ -3,7 +3,7 @@ id: task-282-robot-texture-cleanup
 description: "Global task: Clean the texture artefacts of the four new robot meshes (heavy glassy back panels, kamikaze smeared leg tips) against the owner turnaround sheets."
 parent: tasks-to-do-index
 kind: task
-status: todo
+status: in-progress
 ---
 # Robot meshes: clean textures from the sheets
 

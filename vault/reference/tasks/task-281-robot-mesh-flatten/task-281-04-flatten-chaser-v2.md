@@ -3,7 +3,7 @@ id: task-281-04-flatten-chaser-v2
 description: "Flatten the chaser v2 panels (3d)."
 parent: task-281-robot-mesh-flatten
 kind: task
-status: in-progress
+status: done
 ---
 # Flatten the chaser v2 panels
 
@@ -15,11 +15,11 @@ status: in-progress
 - done_when: report: tris and verts unchanged, UV0 unchanged, deviation from plane after flattening under 0.1 cm (scale 1.9 m) on every listed region, no vertex moved more than 2 cm, no flipped normal; the Orchestrator renders the same camera (barrel_preview.py settings scaled to a 190 cm robot: front three-quarter and back three-quarter) before and after and sends both to the owner; Blender processes stopped (Get-Process blender)
 - editor_state: closed (Blender headless only)
 - token_ceiling: 60000
-- model: open
-- tokens: open
-- runs: open
+- model: sonnet
+- tokens: input 12, cache write 16534, cache read 86642, output 425
+- runs: 1
 - milestone: M2
-- result: open
+- result: chaser_v2_meshy_flat.fbx: 82 planar regions (693 of 5120 faces), deviation 1.113 -> 0.016 cm, max move 1.45 cm, tris/verts/UV0 unchanged, 0 flipped normals; renders Saved/Renders/task-281/chaser_v2_*.
 
 ## Relations
 - [[task-281-robot-mesh-flatten]] — parent global task.

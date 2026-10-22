@@ -1,9 +1,9 @@
 ---
 id: task-281-robot-mesh-flatten
 description: "Global task: Flatten the Meshy-bulged planar panels of the heavy, kamikaze, shooter and chaser v2 meshes with a headless Blender pass, UVs unchanged."
-parent: tasks-to-do-index
+parent: tasks-done-index
 kind: task
-status: in-progress
+status: done
 ---
 # Robot meshes: flatten bulged panels
 
@@ -14,8 +14,8 @@ status: in-progress
 - depends_on_global: none (raw meshes stored, robots-meshy-raw-2026-10-22)
 - confirmed_by_owner: yes (2026-10-22, plan accepted; launch on the owner's word)
 - milestone: M2
-- next_step: task-281-04-flatten-chaser-v2
-- result: open
+- next_step: none
+- result: Done. chaser_v2_meshy_flat.fbx: 82 planar regions (693 of 5120 faces), deviation 1.113 -> 0.016 cm, max move 1.45 cm, tris/verts/UV0 unchanged, 0 flipped normals; renders Saved/Renders/task-281/chaser_v2_*.
 
 ## Subtasks
 1. task-281-01-flatten-heavy — 3d: Flatten the heavy panels
@@ -24,7 +24,7 @@ status: in-progress
 4. task-281-04-flatten-chaser-v2 — 3d: Flatten the chaser v2 panels
 
 ## Relations
-- [[tasks-to-do-index]] — parent index.
+- [[tasks-done-index]] — parent index.
 - [[task-281-01-flatten-heavy]] — step 01, 3d.
 - [[task-281-02-flatten-kamikaze]] — step 02, 3d.
 - [[task-281-03-flatten-shooter]] — step 03, 3d.

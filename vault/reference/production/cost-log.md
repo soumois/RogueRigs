@@ -552,6 +552,7 @@ kind: note
 | [[task-281-01-flatten-heavy]] | sonnet | 1 | 0k | 46k | 429k | 8k |
 | [[task-281-02-flatten-kamikaze]] | sonnet | 1 | 0k | 41k | 145k | 0k |
 | [[task-281-03-flatten-shooter]] | sonnet | 1 | 0k | 17k | 65k | 0k |
+| [[task-281-04-flatten-chaser-v2]] | sonnet | 1 | 0k | 17k | 87k | 0k |
 
 ## Totals
 | Scope | Input | Cache write | Cache read | Output |
