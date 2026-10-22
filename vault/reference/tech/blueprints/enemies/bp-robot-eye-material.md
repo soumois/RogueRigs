@@ -24,3 +24,4 @@ kind: doc
 - [[bp-chaser]] — body whose animation code this function shares.
 - [[bp-shield-chaser]] — body whose code (ClipOffset) the function holds.
 - [[bp-robot-readability]] — body glow parameters, for comparison.
+- [[bp-robot-meshy-material]] — four more eye instances (Heavy, Kamikaze, Shooter, ChaserV2) and the body master.
