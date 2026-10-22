@@ -3,7 +3,7 @@ id: task-285-03-bp-heavy-slam
 description: "BP_Heavy uses the slam clips (bp)."
 parent: task-285-heavy-slam-anim
 kind: task
-status: todo
+status: in-progress
 ---
 # BP_Heavy uses the slam clips
 

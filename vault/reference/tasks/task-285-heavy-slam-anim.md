@@ -14,7 +14,7 @@ status: in-progress
 - depends_on_global: task-284
 - confirmed_by_owner: yes (2026-10-22, plan accepted; launch on the owner's word)
 - milestone: M2
-- next_step: task-285-02-cpp-heavy-slam-clips
+- next_step: task-285-03-bp-heavy-slam
 - result: open
 
 ## Subtasks
