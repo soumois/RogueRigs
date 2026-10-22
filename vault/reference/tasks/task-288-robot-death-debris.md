@@ -14,7 +14,7 @@ status: in-progress
 - depends_on_global: task-284 (parts meshes), task-286 (shield chaser v2, step 15 only)
 - confirmed_by_owner: yes (2026-10-22, plan accepted; launch on the owner's word)
 - milestone: M2
-- next_step: task-288-01-pieces-heavy
+- next_step: task-288-02-pieces-shooter
 - result: open
 
 ## Subtasks

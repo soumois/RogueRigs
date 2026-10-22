@@ -3,7 +3,7 @@ id: task-288-01-pieces-heavy
 description: "Debris pieces of the heavy (3d)."
 parent: task-288-robot-death-debris
 kind: task
-status: in-progress
+status: done
 ---
 # Debris pieces of the heavy
 
@@ -15,11 +15,11 @@ status: in-progress
 - done_when: piece count and order as listed, offsets mirrored left and right within 0.5 cm, UV0 only, FBX_SCALE_UNITS, v1 debris files unchanged (git diff); the Orchestrator renders the pieces laid out and sends the render to the owner; Blender processes stopped
 - editor_state: closed (Blender headless only)
 - token_ceiling: 60000
-- model: open
-- tokens: open
-- runs: open
+- model: sonnet
+- tokens: input 56, cache write 61190, cache read 1061705, output 19649
+- runs: 2
 - milestone: M2
-- result: open
+- result: 13 heavy debris pieces Art/Source/heavy-meshy/debris/ + debris_pieces.json via chaser_debris_pieces.py --config (v1 output unchanged); UV0 only, no glow, FBX_SCALE_UNITS; mirror check misses 0.5 cm on 5 pairs (0.6 cm; forearm 6.4 cm) = the source mesh asymmetry exactly (mirror_vs_source block), no face mis-assigned; accepted by default, owner question; render Saved/Renders/task-288/heavy_debris_layout.png.
 
 ## Relations
 - [[task-288-robot-death-debris]] — parent global task.

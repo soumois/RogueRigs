@@ -586,6 +586,7 @@ kind: note
 | [[task-287-01-bake-shooter-aim-fire]] | sonnet | 1 | 0k | 88k | 1451k | 28k |
 | [[task-286-02-bp-shield-chaser-v2]] | sonnet | 1 | 0k | 136k | 5017k | 38k |
 | [[task-286-03-bp-spawner-shield-v2]] | sonnet | 1 | 0k | 38k | 347k | 5k |
+| [[task-288-01-pieces-heavy]] | sonnet | 2 | 0k | 61k | 1062k | 20k |
 
 ## Totals
 | Scope | Input | Cache write | Cache read | Output |
