@@ -18,6 +18,7 @@ kind: doc
 - revert: delete the nine material assets above and the four textures (and their folders if empty); nothing references them until the slot assignment subtasks.
 - verified: all eight instances read back (texture, Animated, UseEyeTexture; RunRate 0.7 and ClipOffset 0 on all eight; GlowAmount 23 and EyeColor (1, 0.05, 0.05) on the four eyes); M_RobotMeshy recompiled without error; all assets saved. Not verified: any render, PIE, animation (no AnimTex baked for these robots).
 - glow_283_07: MI_RobotEye_Heavy_Glow (new, task-283-07, in /Game/RogueRigs/Materials/Robots/): child of MI_RobotEye_Heavy, GlowAmount 60, EyeColor (1, 0.35, 0), RunRate 0.7 and ClipOffset 0 inherited (same as MI_Heavy_Body); BP_Heavy swaps the robot_eye slot to it on OnTelegraphStart. Provisional, owner 2026-10-22. Revert: delete the asset and restore the OnTelegraphStart pin.
+- anim_284_06 (task-284-06, 2026-10-22): MI_Heavy_Body, MI_RobotEye_Heavy and MI_RobotEye_Heavy_Glow now have Animated on (the Glow instance inherits it), AnimTex T_HeavyAnim and RunRate 1.0 (was 0.7: the heavy walk is baked for RunRate 1.0), ClipOffset 0 on all three; GlowAmount (23, 60) and EyeColor unchanged. Read back. Revert: Animated off, RunRate 0.7, AnimTex back to the T_ChaserAnim default. See [[bp-heavy]].
 - owner_agent: agent-bp
 
 ## Relations
