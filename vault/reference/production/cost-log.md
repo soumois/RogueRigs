@@ -558,6 +558,7 @@ kind: note
 | [[task-282-03-texture-clean-shooter]] | sonnet | 1 | 0k | 70k | 1088k | 6k |
 | [[task-282-04-texture-clean-chaser-v2]] | sonnet | 1 | 0k | 73k | 827k | 2k |
 | [[task-283-01-capture-before]] | opus | 1 | 0k | 44k | 414k | 1k |
+| [[task-283-02-game-ready-heavy]] | sonnet | 1 | 0k | 73k | 587k | 9k |
 
 ## Totals
 | Scope | Input | Cache write | Cache read | Output |

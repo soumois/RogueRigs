@@ -3,7 +3,7 @@ id: task-283-03-game-ready-kamikaze
 description: "Make the kamikaze mesh game ready (3d)."
 parent: task-283-robot-mesh-integration
 kind: task
-status: todo
+status: in-progress
 ---
 # Make the kamikaze mesh game ready
 

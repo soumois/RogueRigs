@@ -3,7 +3,7 @@ id: task-283-02-game-ready-heavy
 description: "Make the heavy mesh game ready (3d)."
 parent: task-283-robot-mesh-integration
 kind: task
-status: in-progress
+status: done
 ---
 # Make the heavy mesh game ready
 
@@ -15,11 +15,11 @@ status: in-progress
 - done_when: dims match the decided height within 1 cm, origin at the floor, front +X, slots body then robot_eye, eye faces > 0 and red eye texels left in body faces 0, UV0 unchanged, LightMap UV1 without overlap; Blender processes stopped
 - editor_state: closed (Blender headless only)
 - token_ceiling: 60000
-- model: open
-- tokens: open
-- runs: open
+- model: sonnet
+- tokens: input 26, cache write 73446, cache read 586600, output 8959
+- runs: 1
 - milestone: M2
-- result: open
+- result: heavy_meshy_game.fbx via new Tools/art/blender/robot_game_ready_eye.py: 137.9 x 278.1 x 248.0 cm, floor origin, front +X, slots [body, robot_eye], 105 eye faces, 0 red texels left in body faces in the eye zone (69 stray red texels elsewhere), UV0 delta 0, UV1 0 overlaps; tris 10361.
 
 ## Relations
 - [[task-283-robot-mesh-integration]] — parent global task.
