@@ -1,4 +1,4 @@
-"""task-161-01: check the part cut of the chaser parts FBX and render four fixed run poses (frames 0, 4, 8, 12).
+"""task-161-01 (also robots with walk_poses in the anim report, task-284-01): check the part cut of the chaser parts FBX and render four fixed run poses (frames 0, 4, 8, 12).
 Headless:
   "$BLENDER_EXE" -b --factory-startup -P Tools/art/blender/meshy_cut_check.py -- --in-fbx Art/Meshes/chaser-meshy/chaser_meshy_parts.fbx --parts-report Art/Meshes/chaser-meshy/chaser_meshy_parts.report.json --in-exr Art/Meshes/chaser-meshy/T_ChaserAnim.exr --anim-report Art/Meshes/chaser-meshy/anim_report.json --in-tex Art/Meshes/chaser-meshy/chaser_meshy_fixed_basecolor.png --out-dir Art/Meshes/chaser-meshy [--work <short dir>] [--no-render]
 Part 1: cut check -> <out-dir>/cut_check.report.json, renders/check/parts_isolated_*.png.
@@ -39,7 +39,8 @@ PREP = json.load(open(opt["--parts-report"], encoding="utf-8"))
 AREP = json.load(open(opt["--anim-report"], encoding="utf-8"))
 PRM = AREP["parameters"]
 A_THIGH, A_KNEE, A_ARM, A_ELBOW, A_LEAN, A_TWIST = (PRM[k] for k in ("thigh_swing_deg", "knee_flexion_max_deg", "arm_swing_deg", "elbow_bend_deg", "torso_lean_deg", "torso_twist_deg"))
-NRUN = AREP["clips"]["run"]["length"]
+NRUN = AREP["clips"].get("run", AREP["clips"].get("walk"))["length"]
+WALK_POSES = AREP.get("walk_poses")      # robots baked with walk_style planted store their keyed poses in the report
 
 PARTS = [p["name"] for p in AREP["parts"]]
 PARENT = {p["name"]: p["parent"] for p in AREP["parts"]}
@@ -295,8 +296,12 @@ def run_pose(phase):
 KEYED = {}
 KEYED_POSE = {}
 for f in range(NRUN):
-    pose = run_pose(f / NRUN)
-    fit_ground(pose)
+    if WALK_POSES:
+        pose = WALK_POSES[f]
+        apply_pose(pose)
+    else:
+        pose = run_pose(f / NRUN)
+        fit_ground(pose)
     KEYED[f] = {n: world_verts(n) for n in PARTS}
     KEYED_POSE[f] = pose
 apply_pose({})

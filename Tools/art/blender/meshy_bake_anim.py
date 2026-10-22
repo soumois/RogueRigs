@@ -1,4 +1,4 @@
-"""task-157-02: author the chaser RUN (16 frame loop) and ATTACK (15 frames) procedurally on the ten rigid parts and bake one transform per part and frame into a float texture.
+"""task-157-02 (generalised task-284-01 with --config robot_configs/<robot>.json, walk_style planted): author the chaser RUN (16 frame loop) and ATTACK (15 frames) procedurally on the ten rigid parts and bake one transform per part and frame into a float texture.
 Headless:
   "$BLENDER_EXE" -b --factory-startup -P Tools/art/blender/meshy_bake_anim.py -- --in-fbx Art/Meshes/chaser-meshy/chaser_meshy_parts.fbx --in-tex Art/Meshes/chaser-meshy/chaser_meshy_fixed_basecolor.png --out-dir Art/Meshes/chaser-meshy [--work <short dir>] [--no-render]
 Space: robot space, cm: X forward, Y left, Z up. Right-handed rotations. A positive rotation about Y swings a hanging limb BACKWARD (and leans a standing torso FORWARD); a negative one swings it forward.
@@ -17,12 +17,19 @@ argv = sys.argv[sys.argv.index("--") + 1:] if "--" in sys.argv else []
 NORENDER = "--no-render" in argv
 argv = [a for a in argv if a != "--no-render"]
 opt = {"--in-fbx": "", "--in-tex": "", "--out-dir": "", "--work": "C:/Users/soumo/AppData/Local/Temp/rr-meshy2/work", "--height-cm": "123",
-       "--thigh-deg": "35", "--knee-deg": "55", "--arm-deg": "30", "--elbow-deg": "40", "--lean-deg": "8", "--twist-deg": "5", "--speed-cm-s": "180"}
+       "--thigh-deg": "35", "--knee-deg": "55", "--arm-deg": "30", "--elbow-deg": "40", "--lean-deg": "8", "--twist-deg": "5", "--speed-cm-s": "180", "--config": ""}
+CLI = set(argv[0::2])
 for i in range(0, len(argv) - 1, 2):
     opt[argv[i]] = argv[i + 1]
 for k in ("--in-fbx", "--in-tex", "--out-dir"):
     if not opt[k]:
         raise SystemExit("missing " + k)
+# per-robot config (Tools/art/blender/robot_configs/<robot>.json, key "bake"); without --config every value below is the chaser v1 one. A command line flag beats the config.
+CFG = json.load(open(opt["--config"], encoding="utf-8")) if opt["--config"] else {}
+BK = CFG.get("bake", {})
+for flag, key in (("--height-cm", "height_cm"), ("--knee-deg", "knee_deg"), ("--arm-deg", "arm_deg"), ("--elbow-deg", "elbow_deg"), ("--lean-deg", "lean_deg"), ("--twist-deg", "twist_deg"), ("--speed-cm-s", "speed_cm_s")):
+    if flag not in CLI and key in (BK if key != "height_cm" else CFG):
+        opt[flag] = str((BK if key != "height_cm" else CFG)[key])
 OUT = os.path.abspath(opt["--out-dir"])
 WORK = os.path.abspath(opt["--work"])
 os.makedirs(WORK, exist_ok=True)
@@ -30,6 +37,12 @@ HEIGHT = float(opt["--height-cm"])
 A_THIGH, A_KNEE, A_ARM, A_ELBOW, A_LEAN, A_TWIST = (float(opt[k]) for k in ("--thigh-deg", "--knee-deg", "--arm-deg", "--elbow-deg", "--lean-deg", "--twist-deg"))
 SPEED = float(opt["--speed-cm-s"])
 FPS = 30
+RUN_RATE = float(BK.get("run_rate", 1.0))            # RunRate the walk is baked for: the shader plays frame = fmod(t x RunRate, 16) at 30 fps, so one cycle lasts 16 / (30 x RunRate) s
+WALK_STYLE = BK.get("walk_style", "sine")            # sine = chaser v1 run; planted = robot_walk_planted.py (feet pivot on a fixed ground point)
+TEX_NAME = BK.get("tex_name", "T_ChaserAnim.exr")
+REPORT_NAME = BK.get("report_name", "anim_report.json")
+TASK_NAME = BK.get("task", "task-157-02-chaser-clips-bake")
+sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 IN_FBX = os.path.join(WORK, "anim_in_parts.fbx")
 shutil.copyfile(opt["--in-fbx"], IN_FBX)
 TEX = os.path.join(WORK, os.path.basename(opt["--in-tex"]))
@@ -38,8 +51,9 @@ shutil.copyfile(opt["--in-tex"], TEX)
 PARTS = ["Pelvis", "HeadTorso", "UpperArm_L", "UpperArm_R", "ForearmHand_L", "ForearmHand_R", "Thigh_L", "Thigh_R", "ShinFoot_L", "ShinFoot_R"]
 PARENT = {"Pelvis": None, "HeadTorso": "Pelvis", "UpperArm_L": "HeadTorso", "UpperArm_R": "HeadTorso", "ForearmHand_L": "UpperArm_L", "ForearmHand_R": "UpperArm_R",
           "Thigh_L": "Pelvis", "Thigh_R": "Pelvis", "ShinFoot_L": "Thigh_L", "ShinFoot_R": "Thigh_R"}
-NRUN, NATT = 16, 15
-NF = NRUN + NATT
+NRUN, NATT = 16, (15 if BK.get("attack", True) else 0)
+NF = NRUN + NATT                       # baked frames
+NFT = int(BK.get("tex_rows", NF))      # texture rows: rows NF..NFT-1 are reserved (rest pose) for clips a later task adds
 TEXW = 2 * len(PARTS)
 
 # ---------------------------------------------------------------- import
@@ -162,22 +176,40 @@ DZ = []
 FOOTZ = []
 WORLD = []       # per frame: dict part -> (R, q)
 VERTS = []       # per frame: dict part -> world verts (independent path: matrix_world @ local co)
+WALK = None
+if WALK_STYLE == "planted":
+    import robot_walk_planted as rwp
+    WALK = rwp.Walk(REST_V, REST_P, NRUN, FPS, RUN_RATE, SPEED, A_KNEE, A_ARM, A_ELBOW, A_LEAN, A_TWIST)
+
+
+def set_pelvis(pose):
+    """planted walk: the pelvis height is part of the pose (solved from the stance foot), no ground fit"""
+    apply_pose(pose)
+    return pose["Pelvis"]["loc"][2]
+
+
 for f in range(NF):
-    pose = run_pose(f / NRUN) if f < NRUN else attack_pose(f - NRUN)
-    dz = fit_ground(pose)
+    if f < NRUN:
+        pose = WALK.pose_at(f / NRUN) if WALK else run_pose(f / NRUN)
+    else:
+        pose = attack_pose(f - NRUN)
+    dz = set_pelvis(pose) if (WALK and f < NRUN) else fit_ground(pose)
     POSES.append(pose)
     DZ.append(dz)
     FOOTZ.append(foot_min())
     WORLD.append(world_state())
     VERTS.append({n: world_verts(n) for n in PARTS})
 # loop closure: pose at phase 1.0 against frame 0
-pose1 = run_pose(1.0)
-fit_ground(pose1)
+pose1 = WALK.pose_at(1.0) if WALK else run_pose(1.0)
+if WALK:
+    set_pelvis(pose1)
+else:
+    fit_ground(pose1)
 V_NEXT = {n: world_verts(n) for n in PARTS}
 loop_err = max(float(np.linalg.norm(V_NEXT[n] - VERTS[0][n], axis=1).max()) for n in PARTS)
 apply_pose({})
 V_REST_CHECK = max(float(np.linalg.norm(world_verts(n) - REST_V[n], axis=1).max()) for n in PARTS)
-att14_err = max(float(np.linalg.norm(VERTS[NRUN + 14][n] - REST_V[n], axis=1).max()) for n in PARTS)
+att14_err = max(float(np.linalg.norm(VERTS[NRUN + 14][n] - REST_V[n], axis=1).max()) for n in PARTS) if NATT else None
 
 
 def quat_from(R):
@@ -200,7 +232,7 @@ for f in range(NF):
         R, q = WORLD[f][n]
         Q[f, pi] = quat_from(R)
         T[f, pi] = q - R @ REST_P[n]
-for lo, hi in ((0, NRUN), (NRUN, NF)):          # sign continuity inside each clip
+for lo, hi in [c for c in ((0, NRUN), (NRUN, NF)) if c[1] > c[0]]:          # sign continuity inside each clip
     for pi in range(len(PARTS)):
         if Q[lo, pi, 3] < 0:
             Q[lo, pi] *= -1
@@ -242,20 +274,21 @@ for f in range(NF):
                     best = (err, qc, tq)
         Qh[f, pi], Th[f, pi] = best[1], best[2]
 
-tex = np.zeros((NF, TEXW, 4), np.float32)        # tex[frame, x] frame 0 = top row of the image file
+tex = np.zeros((NFT, TEXW, 4), np.float32)        # tex[frame, x] frame 0 = top row of the image file
+tex[NF:, 0::2, 3] = 1.0                           # reserved rows (NF..NFT-1): rest pose = identity quaternion (0, 0, 0, 1), translation 0
 for pi in range(len(PARTS)):
-    tex[:, 2 * pi, :] = Qh[:, pi, :]
-    tex[:, 2 * pi + 1, :3] = Th[:, pi, :]
+    tex[:NF, 2 * pi, :] = Qh[:, pi, :]
+    tex[:NF, 2 * pi + 1, :3] = Th[:, pi, :]
 
 # ---------------------------------------------------------------- EXR write (float16, raw) and read back
-EXR_W = os.path.join(WORK, "T_ChaserAnim.exr")
+EXR_W = os.path.join(WORK, TEX_NAME)
 sc = bpy.context.scene
 ims = sc.render.image_settings
 ims.file_format = "OPEN_EXR"
 ims.color_depth = "16"
 ims.color_mode = "RGBA"
 ims.exr_codec = "NONE"
-img = bpy.data.images.new("T_ChaserAnim", TEXW, NF, alpha=True, float_buffer=True)
+img = bpy.data.images.new(os.path.splitext(TEX_NAME)[0], TEXW, NFT, alpha=True, float_buffer=True)
 img.colorspace_settings.name = "Non-Color"
 buf = np.flipud(tex)             # Blender row 0 = bottom of the image: frame 0 goes to the last Blender row = top of the saved file
 img.pixels.foreach_set(buf.astype(np.float32).ravel())
@@ -263,8 +296,8 @@ img.pixels.update()
 img.save_render(EXR_W, scene=sc)
 img2 = bpy.data.images.load(EXR_W, check_existing=False)
 img2.colorspace_settings.name = "Non-Color"
-assert tuple(img2.size) == (TEXW, NF), tuple(img2.size)
-back = np.array(img2.pixels[:], np.float32).reshape(NF, TEXW, 4)
+assert tuple(img2.size) == (TEXW, NFT), tuple(img2.size)
+back = np.array(img2.pixels[:], np.float32).reshape(NFT, TEXW, 4)
 back = np.flipud(back)            # back[frame]
 half_ref = tex.astype(np.float16).astype(np.float32)
 exr_vs_half = float(np.abs(back - half_ref).max())
@@ -341,14 +374,14 @@ def bake_err(QQ, TT, raw=False):
 SQ = np.zeros((NF, len(PARTS), 4))
 ST = np.zeros((NF, len(PARTS), 3))
 for pi in range(len(PARTS)):
-    SQ[:, pi] = SAVED[:, 2 * pi]
-    ST[:, pi] = SAVED[:, 2 * pi + 1, :3]
+    SQ[:, pi] = SAVED[:NF, 2 * pi]
+    ST[:, pi] = SAVED[:NF, 2 * pi + 1, :3]
 e32 = bake_err(Q, T)
 e16 = bake_err(SQ, ST)
 e16raw = bake_err(SQ, ST, raw=True)
-bake = dict(float32=dict(run_max_cm=max(e32[f] for f in range(NRUN)), attack_max_cm=max(e32[f] for f in range(NRUN, NF))),
-            from_saved_exr_float16=dict(run_max_cm=max(e16[f] for f in range(NRUN)), attack_max_cm=max(e16[f] for f in range(NRUN, NF))),
-            from_saved_exr_float16_quaternion_not_renormalised=dict(run_max_cm=max(e16raw[f] for f in range(NRUN)), attack_max_cm=max(e16raw[f] for f in range(NRUN, NF))))
+bake = dict(float32=dict(run_max_cm=max(e32[f] for f in range(NRUN)), attack_max_cm=max((e32[f] for f in range(NRUN, NF)), default=0.0)),
+            from_saved_exr_float16=dict(run_max_cm=max(e16[f] for f in range(NRUN)), attack_max_cm=max((e16[f] for f in range(NRUN, NF)), default=0.0)),
+            from_saved_exr_float16_quaternion_not_renormalised=dict(run_max_cm=max(e16raw[f] for f in range(NRUN)), attack_max_cm=max((e16raw[f] for f in range(NRUN, NF)), default=0.0)))
 # the half-float step of t grows with |t|; report the shader-side normalisation too (quaternion renormalised after sampling, which qmat does)
 
 # ---------------------------------------------------------------- numbers per clip
@@ -379,7 +412,7 @@ fz = np.array(FOOTZ)
 run_dz = np.array(DZ[:NRUN])
 att_dz = np.array(DZ[NRUN:])
 slide = []
-per_frame = SPEED / FPS
+per_frame = SPEED / (FPS * RUN_RATE)
 for f in range(NRUN):
     f2 = (f + 1) % NRUN
     best = None
@@ -404,6 +437,32 @@ for f in range(NRUN):
     f2 = (f + 1) % NRUN
     frame_step.append(max(float(np.linalg.norm(VERTS[f2][n] - VERTS[f][n], axis=1).max()) for n in PARTS))
 att_step = [max(float(np.linalg.norm(VERTS[f + 1][n] - VERTS[f][n], axis=1).max()) for n in PARTS) for f in range(NRUN, NF - 1)]
+
+# walk checks from the SAVED half-float texture (the shader path: quaternion renormalised): contact vertex drift against the ground, knee angle
+BAKED = [{n: REST_V[n] @ qmat(SQ[f, pi]).T + ST[f, pi] for pi, n in enumerate(PARTS)} for f in range(NRUN)]
+dt_frame = 1.0 / (FPS * RUN_RATE)
+SLIDE_BAKED = {}
+for n in FOOT:
+    pairs = []
+    for f in range(NRUN):
+        f2 = (f + 1) % NRUN
+        za, zb = BAKED[f][n][:, 2], BAKED[f2][n][:, 2]
+        cands = [int(za.argmin()), int(zb.argmin())]
+        in_stance = WALK is None or all(WALK.leg_state(ff / NRUN, n[-1])["kind"] == "stance" for ff in (f, f2))      # planted walk: only the design stance frames count (the swing foot is checked by the floor clearance)
+        ok = [i for i in cands if abs(za[i]) <= 0.6 and abs(zb[i]) <= 0.6] if in_stance else []
+        if ok:
+            d = [float(BAKED[f2][n][i, 0] - BAKED[f][n][i, 0] + SPEED * dt_frame) for i in ok]
+            k_ = int(np.argmin(np.abs(d)))
+            pairs.append(dict(frame=f, vertex=ok[k_], drift_cm=round(d[k_], 4), z_cm=[round(float(za[ok[k_]]), 3), round(float(zb[ok[k_]]), 3)]))
+        else:
+            pairs.append(dict(frame=f, vertex=None, drift_cm=None, z_cm=[round(float(za.min()), 3), round(float(zb.min()), 3)]))
+    SLIDE_BAKED[n] = pairs
+sl_b = {n: [p["drift_cm"] for p in SLIDE_BAKED[n] if p["drift_cm"] is not None] for n in FOOT}
+slide_cycle_cm = float(sum(abs(x) for n in FOOT for x in sl_b[n]))
+slide_max_frame_cm = float(max([abs(x) for n in FOOT for x in sl_b[n]] or [0.0]))
+knee_max_deg = float(max(abs(POSES[f][n]["rot"][1]) for f in range(NRUN) for n in FOOT))
+foot_floor_min_cm = float(min(float(BAKED[f][n][:, 2].min()) for f in range(NRUN) for n in FOOT))
+pelvis_step_cm = [round(abs(POSES[(f + 1) % NRUN]["Pelvis"]["loc"][2] - POSES[f]["Pelvis"]["loc"][2]), 3) for f in range(NRUN)]
 
 # ---------------------------------------------------------------- renders
 RENDERS = []
@@ -475,7 +534,7 @@ if not NORENDER:
         return fwd, r, u
 
     def shot(d, path):
-        fwd, r, u = aim(d, CENTRE, 150, PX)
+        fwd, r, u = aim(d, CENTRE, float(BK.get("render_frame_cm", 150)), PX)
         key = (fwd + r * 0.75 + Vector((0, 0, -1.1))).normalized()
         so.rotation_euler = key.to_track_quat("-Z", "Y").to_euler()
         sc.render.filepath = path
@@ -505,14 +564,15 @@ if not NORENDER:
         RENDERS.append(fname)
 
     sheet(list(range(0, 16, 2)), "side", "run_contact.png")
-    sheet(list(range(NRUN, NF, 2)), "side", "attack_contact.png")
+    if NATT:
+        sheet(list(range(NRUN, NF, 2)), "side", "attack_contact.png")
     sheet(list(range(0, 16, 2)), "front", "run_contact_front.png")
 
 # ---------------------------------------------------------------- report
 if any(abs(x) > 0.05 for x in (bake["float32"]["run_max_cm"], bake["float32"]["attack_max_cm"], bake["from_saved_exr_float16"]["run_max_cm"], bake["from_saved_exr_float16"]["attack_max_cm"], bake["from_saved_exr_float16_quaternion_not_renormalised"]["run_max_cm"], bake["from_saved_exr_float16_quaternion_not_renormalised"]["attack_max_cm"], loop_err)):
     WARN.append("a bake / loop error is above 0.05 cm (see bake_verification)")
 rep = dict(
-    task="task-157-02-chaser-clips-bake",
+    task=TASK_NAME,
     source=dict(fbx=os.path.basename(opt["--in-fbx"]), blender=bpy.app.version_string, rest_matches_import_check_max_cm=round(V_REST_CHECK, 6)),
     space="robot space, cm: X forward, Y left, Z up, right-handed; positive rotation about +Y swings a hanging limb backward and leans a torso forward; rest rotation of every part is identity",
     frame_rate_fps=FPS,
@@ -523,7 +583,7 @@ rep = dict(
         composition_order="world matrix of a part = parent world matrix @ Translation(rest local offset + keyed local translation) @ Rz Ry Rx (keyed Euler XYZ, about the part pivot). R = world matrix 3x3, q = world matrix translation. The pose is evaluated with Blender object matrix_world (hierarchy), the quaternion is taken from R, t = q - R p is computed from them. In the material: rotate v by the quaternion (x y z w, unit length) then add t.",
         quaternion_layout="texel x = 2*part_index: RGBA = (qx, qy, qz, qw); texel x = 2*part_index+1: RGB = t in cm, A = 0",
         sign_continuity="per part, the sign of q is flipped when needed so that dot(q[f], q[f-1]) >= 0 inside each clip; frame 0 and frame 16 start with w >= 0; min dot between run frame 15 and frame 0 = %.5f" % loop_dot_min),
-    texture=dict(file="T_ChaserAnim.exr", width=TEXW, height=NF, format="OpenEXR RGBA half float (16 bit), compression NONE, colourspace Non-Color (raw linear data), written by Blender save_render",
+    texture=dict(file=TEX_NAME, width=TEXW, height=NFT, format="OpenEXR RGBA half float (16 bit), compression NONE, colourspace Non-Color (raw linear data), written by Blender save_render",
                  row_mapping="frame f is the f-th scanline of the file counted from the TOP of the image (Unreal row 0 = frame 0 = run start); Blender in-memory row = (height - 1 - f); sample at u = (x + 0.5)/20, v = (f + 0.5)/31",
                  frame_index=dict(run="0..15", attack="16..30", attack_phases=dict(wind_up="16..18", strike="19..22", recovery="23..30")),
                  raw_exr_parse=dict(channels=ch_names, channel_types_1_is_half=ch_types, compression_code=rcomp, line_order=rline, width=rw, height=rh,
@@ -533,12 +593,12 @@ rep = dict(
                            **bake, limit_cm=0.05, per_frame_float32_max_cm=[round(e32[f], 5) for f in range(NF)], per_frame_saved_exr_max_cm=[round(e16[f], 5) for f in range(NF)]),
     run_loop_closure=dict(pose_at_phase_1_vs_frame_0_max_vertex_error_cm=loop_err, note="the next loop's first frame is the pose at phase 16/16; the texture has no frame for it", wrap_step_frame15_to_0_max_vertex_move_cm=round(frame_step[NRUN - 1], 3),
                           max_vertex_move_between_consecutive_frames_cm=[round(x, 3) for x in frame_step]),
-    attack_end=dict(frame_30_vs_rest_max_vertex_error_cm=att14_err, frame_30_max_world_rotation_deg=round(max(angle_deg(Q[NF - 1, pi]) for pi in range(len(PARTS))), 4),
-                    attack_consecutive_frame_max_vertex_move_cm=[round(x, 3) for x in att_step]),
+    attack_end=(dict(frame_30_vs_rest_max_vertex_error_cm=att14_err, frame_30_max_world_rotation_deg=round(max(angle_deg(Q[NF - 1, pi]) for pi in range(len(PARTS))), 4),
+                    attack_consecutive_frame_max_vertex_move_cm=[round(x, 3) for x in att_step]) if NATT else None),
     parameters=dict(thigh_swing_deg=A_THIGH, knee_flexion_max_deg=A_KNEE, arm_swing_deg=A_ARM, elbow_bend_deg=A_ELBOW, torso_lean_deg=A_LEAN, torso_twist_deg=A_TWIST, speed_cm_s=SPEED, pelvis_z_rule="per frame, pelvis local z set so that the lowest vertex of both feet is at z = 0 (no separate 2.5 cm bob term: the ground fit sets the pelvis height)",
                     attack_keys=dict(wind_up=WIND, strike=STRIKE, interpolation="smoothstep per phase; wind-up frames 16..18 reach WIND at frame 18; strike 19..22 reaches STRIKE at frame 22; recovery 23..30 reaches rest at frame 30")),
     run=clip_stats(0, NRUN),
-    attack=clip_stats(NRUN, NF),
+    attack=(clip_stats(NRUN, NF) if NATT else None),
     feet=dict(
         run=dict(pelvis_z_offset_from_ground_fit_cm=dict(min=round(float(run_dz.min()), 3), max=round(float(run_dz.max()), 3), range=round(float(run_dz.max() - run_dz.min()), 3), per_frame=[round(float(x), 3) for x in run_dz]),
                  lowest_foot_vertex_z_per_frame_cm_L_R=[[round(a, 3), round(b, 3)] for a, b in FOOTZ[:NRUN]],
@@ -549,17 +609,52 @@ rep = dict(
                             note="slide of the lowest foot vertex (same vertex tracked to the next frame, loop wraps) = body-space x change per frame + travel per frame; 0 = planted on the floor. Counted only when the vertex is within 0.5 cm of the floor at the frame and within 1 cm at the next"),
                  geometry=dict(leg_length_hip_to_floor_cm=leg_len, foot_excursion_cm_two_legs_straight_at_thigh_swing=round(stride_cm, 2), cycle_travel_cm=round(SPEED * NRUN / FPS, 2),
                                thigh_amplitude_deg_for_zero_slide_straight_leg_estimate=round(ideal_amp, 2))),
-        attack=dict(pelvis_z_offset_from_ground_fit_cm=dict(min=round(float(att_dz.min()), 3), max=round(float(att_dz.max()), 3), per_frame=[round(float(x), 3) for x in att_dz]),
+        attack=(dict(pelvis_z_offset_from_ground_fit_cm=dict(min=round(float(att_dz.min()), 3), max=round(float(att_dz.max()), 3), per_frame=[round(float(x), 3) for x in att_dz]),
                     lowest_foot_vertex_z_per_frame_cm_L_R=[[round(a, 3), round(b, 3)] for a, b in FOOTZ[NRUN:]],
-                    min_foot_vertex_z_cm=round(float(fz[NRUN:].min()), 4), max_penetration_below_floor_cm=round(float(max(0.0, -fz[NRUN:].min())), 4), higher_foot_lowest_vertex_z_max_cm=round(float(fz[NRUN:].max()), 3))),
+                    min_foot_vertex_z_cm=round(float(fz[NRUN:].min()), 4), max_penetration_below_floor_cm=round(float(max(0.0, -fz[NRUN:].min())), 4), higher_foot_lowest_vertex_z_max_cm=round(float(fz[NRUN:].max()), 3)) if NATT else None)),
     contact_sheets=dict(files=RENDERS, run_frames=list(range(0, 16, 2)), attack_frames=list(range(NRUN, NF, 2)), camera="orthographic 150 cm frame, 420 px per panel, 8 panels in a row; side = camera at -Y looking +Y (robot faces image right), front = camera at +X; lit rig of meshy_texture_fix.py (EEVEE, sun 4.5, world grey 0.62 strength 0.55), chaser_meshy_fixed_basecolor.png, dark floor slab top at z = 0"),
     warnings=WARN)
-rep_path = os.path.join(WORK, "anim_report.json")
+if CFG:      # per-robot additions (the chaser v1 report is left as it was)
+    rep["robot"] = CFG.get("robot")
+    rep["config"] = dict(file=os.path.basename(opt["--config"]), bake=BK)
+    if not NATT:
+        for k_ in ("attack_end", "attack"):
+            rep.pop(k_, None)
+        rep["feet"].pop("attack", None)
+        rep["clips"].pop("attack", None)
+    rep["clips"] = {"walk" if k_ == "run" else k_: v_ for k_, v_ in rep["clips"].items()}
+    rep["clips"]["walk"].update(clip_id=0, rows="0..%d" % (NRUN - 1), run_rate_baked_for=RUN_RATE, seconds_at_run_rate=round(NRUN / (FPS * RUN_RATE), 4), loop=True)
+    rep["reserved_rows"] = BK.get("reserved", [])
+    rep["texture"]["frame_index"] = dict(walk="0..%d" % (NRUN - 1), **{k_: v_ for k_, v_ in BK.get("frame_index_extra", {}).items()})
+    rep["texture"]["reserved_rows_note"] = "rows %d..%d hold the rest pose (identity quaternion, translation 0) until a later task bakes clips there" % (NF, NFT - 1) if NFT > NF else None
+    rep["parameters"]["run_rate"] = RUN_RATE
+    rep["parameters"]["walk_style"] = WALK_STYLE
+    if WALK:
+        rep["parameters"]["thigh_swing_deg"] = round(math.degrees(WALK.psi_max), 3)
+        rep["parameters"]["pelvis_z_rule"] = "planted walk: pelvis dz solved from the stance foot (robot_walk_planted.py), no ground fit"
+        rep["planted_walk"] = WALK.info()
+        rep["walk_poses"] = [{n: dict(rot=[round(float(x), 6) for x in p["rot"]], loc=[round(float(x), 6) for x in p.get("loc", (0, 0, 0))]) for n, p in POSES[f].items()} for f in range(NRUN)]
+    rep["walk_checks"] = dict(
+        source="positions rebuilt from the SAVED half-float texture (quaternion renormalised as in the shader), rest vertices of the foot parts",
+        knee_flexion_max_deg=round(knee_max_deg, 3), knee_limit_deg=A_KNEE, knee_within_limit=bool(knee_max_deg <= A_KNEE + 1e-6),
+        foot_slide=dict(speed_cm_s=SPEED, run_rate=RUN_RATE, travel_per_frame_cm=round(SPEED * dt_frame, 4), cycle_total_abs_cm=round(slide_cycle_cm, 4), max_abs_per_frame_cm=round(slide_max_frame_cm, 4),
+                        limit_cm_per_cycle=2.0, within_limit=bool(slide_cycle_cm < 2.0),
+                        rule="per foot and frame pair: the foot vertex that is within 0.6 cm of the floor in both frames (tracked to the next frame, loop wraps); drift = world x change + speed x frame time; the cycle value is the sum of |drift| over both feet. Pairs with no such vertex (the heel to toe switch of the rolling foot) are not counted",
+                        pairs_in_contact={n: sum(1 for p in SLIDE_BAKED[n] if p["drift_cm"] is not None) for n in FOOT}, pairs_not_counted={n: [p["frame"] for p in SLIDE_BAKED[n] if p["drift_cm"] is None] for n in FOOT},
+                        per_frame=SLIDE_BAKED),
+        lowest_foot_vertex_z_cm=round(foot_floor_min_cm, 4), pelvis_z_step_per_frame_cm=pelvis_step_cm)
+    if knee_max_deg > A_KNEE + 1e-6:
+        rep["warnings"].append("knee flexion above the limit")
+    if slide_cycle_cm >= 2.0:
+        rep["warnings"].append("foot slide per cycle at or above 2 cm")
+    if foot_floor_min_cm < -0.1:
+        rep["warnings"].append("a foot vertex goes below the floor by more than 0.1 cm")
+rep_path = os.path.join(WORK, REPORT_NAME)
 with open(rep_path, "w", encoding="utf-8") as f:
     json.dump(rep, f, indent=1)
 os.makedirs(OUT, exist_ok=True)
-shutil.copyfile(EXR_W, os.path.join(OUT, "T_ChaserAnim.exr"))
-shutil.copyfile(rep_path, os.path.join(OUT, "anim_report.json"))
+shutil.copyfile(EXR_W, os.path.join(OUT, TEX_NAME))
+shutil.copyfile(rep_path, os.path.join(OUT, REPORT_NAME))
 os.makedirs(os.path.join(OUT, "renders", "anim"), exist_ok=True)
 for fn in RENDERS:
     shutil.copyfile(os.path.join(WORK, fn), os.path.join(OUT, "renders", "anim", fn))

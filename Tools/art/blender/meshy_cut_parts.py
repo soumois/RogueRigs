@@ -18,7 +18,7 @@ TIM = {}
 argv = sys.argv[sys.argv.index("--") + 1:] if "--" in sys.argv else []
 NORENDER = "--no-render" in argv
 argv = [a for a in argv if a != "--no-render"]
-opt = {"--in-fbx": "", "--in-tex": "", "--out-dir": "", "--height-cm": "123", "--work": "C:/Users/soumo/AppData/Local/Temp/rr-meshy2/work", "--mode": "auto"}
+opt = {"--in-fbx": "", "--in-tex": "", "--out-dir": "", "--height-cm": "123", "--work": "C:/Users/soumo/AppData/Local/Temp/rr-meshy2/work", "--mode": "auto", "--config": ""}
 for i in range(0, len(argv) - 1, 2):
     opt[argv[i]] = argv[i + 1]
 for k in ("--in-fbx", "--in-tex", "--out-dir"):
@@ -26,7 +26,8 @@ for k in ("--in-fbx", "--in-tex", "--out-dir"):
         raise SystemExit("missing " + k)
 OUT = os.path.abspath(opt["--out-dir"])
 WORK = os.path.abspath(opt["--work"])
-HEIGHT = float(opt["--height-cm"])
+CFG = json.load(open(opt["--config"], encoding="utf-8")) if opt["--config"] else {}      # per-robot config (see Tools/art/blender/robot_configs/); without it every constant below keeps the chaser v1 value
+HEIGHT = float(CFG.get("height_cm", opt["--height-cm"]))
 MODE = opt["--mode"]      # auto = per cut, edges when its loops close else plane; plane = bisect along the plane (planar caps, +1 triangle per cut edge); edges = cut along existing mesh edges closest to the plane (no new triangles, zigzag caps)
 WO = os.path.join(WORK, "parts_out")
 os.makedirs(WO, exist_ok=True)
@@ -39,7 +40,7 @@ shutil.copyfile(opt["--in-fbx"], IN_FBX)
 TEXNAME = os.path.basename(opt["--in-tex"])
 WTEX = os.path.join(WO, TEXNAME)
 shutil.copyfile(opt["--in-tex"], WTEX)
-OUT_NAME = "chaser_meshy_parts"
+OUT_NAME = CFG.get("out_name", "chaser_meshy_parts")
 FBX = os.path.join(WO, OUT_NAME + ".fbx")
 LM = 2048
 
@@ -54,12 +55,14 @@ PARENT = {"Pelvis": None, "HeadTorso": "Pelvis", "UpperArm_L": "HeadTorso", "Upp
           "Thigh_L": "Pelvis", "Thigh_R": "Pelvis", "ShinFoot_L": "Thigh_L", "ShinFoot_R": "Thigh_R"}
 # joints found on the mesh (cm; +X front, +Y robot left, Z up); R = mirror through y = 0
 J = dict(waist=(-4.0, 0.0, 88.5), hip=(-2.2, 10.0, 78.0), knee=(-6.1, 11.4, 50.9), shoulder=(-7.5, 17.0, 106.5), elbow=(-10.8, 27.4, 93.4))
+J.update({k: tuple(v) for k, v in CFG.get("joints", {}).items()})
 PIVOT = {"Pelvis": (J["hip"][0], 0.0, J["hip"][2]), "HeadTorso": J["waist"]}
 for nm_, jn in (("UpperArm", "shoulder"), ("ForearmHand", "elbow"), ("Thigh", "hip"), ("ShinFoot", "knee")):
     PIVOT[nm_ + "_L"] = J[jn]
     PIVOT[nm_ + "_R"] = (J[jn][0], -J[jn][1], J[jn][2])
 # reference centroids used only to name the connected pieces
 REF = {"HeadTorso": (-1, 0, 104), "Pelvis": (-3, 0, 80), "UpperArm": (-8, 19, 105), "ForearmHand": (-9, 30, 78), "Thigh": (-3, 10, 66), "ShinFoot": (-5, 13, 28)}
+REF.update({k: tuple(v) for k, v in CFG.get("refs", {}).items()})
 REFP = {"HeadTorso": REF["HeadTorso"], "Pelvis": REF["Pelvis"]}
 for nm_ in ("UpperArm", "ForearmHand", "Thigh", "ShinFoot"):
     REFP[nm_ + "_L"] = REF[nm_]
@@ -79,6 +82,8 @@ PL = [
     dict(name="hip", P=(-3.0, 8.6, 78.0), n=unit((0.0, 0.866, -0.5)), box=((-30, -14, 55), (30, 22, 92)), side=1, pivot="Thigh", below_waist=True),
     dict(name="knee", P=(-5.5, 12.0, 56.5), n=unit((0.0, 0.0, 1.0)), box=((-30, -2, 30), (30, 26, 70)), side=1, pivot="ShinFoot"),
 ]
+if "planes" in CFG:
+    PL = [dict(p, P=tuple(p["P"]), n=unit(p["n"]), box=(tuple(p["box"][0]), tuple(p["box"][1]))) for p in CFG["planes"]]
 CUTS = []
 for pl in PL:
     if pl["side"] == 0:
@@ -126,8 +131,10 @@ if abs(h_in - HEIGHT) > 0.5:
     SCALE_FIX = HEIGHT / h_in      # importer applied a unit factor: bring the mesh back to 1 unit = 1 cm
 SRC_STATS = dict(height_as_imported=round(h_in, 4), scale_fix_applied=round(SCALE_FIX, 6), object_matrix_identity=bool(SRC.matrix_world == Matrix.Identity(4)),
                  tris=tri_count(SRC.data), vertices=len(SRC.data.vertices), uv_layers=[u.name for u in SRC.data.uv_layers])
-SRC_MAT = SRC.data.materials[0]
-SRC_MAT.name = "meshy_chaser"
+SRC_MATS = list(SRC.data.materials)      # chaser v1: one material; heavy: [body, robot_eye] kept in order on every part
+SRC_MAT = SRC_MATS[0]
+if not CFG:
+    SRC_MAT.name = "meshy_chaser"
 TEX_IMG = bpy.data.images.load(WTEX, check_existing=False)
 TEX_IMG.colorspace_settings.name = "sRGB"
 for n in SRC_MAT.node_tree.nodes:
@@ -414,7 +421,7 @@ for k in order[10:]:
 partof = np.array([PARTS.index(assign[int(comp[i])]) for i in range(NF)])
 COMP_REP = [dict(part=assign[int(k)], faces=int(cfaces[k]), area_cm2=round(float(carea[k]), 2), centroid_cm=[round(float(x), 1) for x in ccent[k]]) for k in big]
 tick("components", t)
-print("COMP", ncomp, [(int(k), int(cfaces[k]), round(float(carea[k]),1), [round(float(x),1) for x in ccent[k]], assign[int(k)]) for k in order[:14]])
+print("COMP", ncomp, [(int(k), int(cfaces[k]), round(float(carea[k]),1), [round(float(x),1) for x in ccent[k]], assign[int(k)], [round(float(x)) for x in fc[comp == k].min(0)], [round(float(x)) for x in fc[comp == k].max(0)]) for k in order[:14]])
 print("CUTREP", CUTREP, len(bnd), len(open_after))
 
 # ---------------------------------------------------------------- 4. cap orientation and UV
@@ -534,7 +541,8 @@ for pi, name in enumerate(PARTS):
     me.shade_flat()
     pid = me.uv_layers.new(name="PartId")      # task-159: third UV channel (Unreal UV2), every corner = ((index + 0.5) / 10, same); vertex colours do not survive the Unreal import
     pid.data.foreach_set("uv", np.full(len(me.loops) * 2, (pi + 0.5) / 10.0, np.float32))
-    me.materials.append(SRC_MAT)
+    for m_ in SRC_MATS:
+        me.materials.append(m_)
     ca = me.color_attributes.new("PartIndex", "FLOAT_COLOR", "CORNER")
     col = np.tile(np.array([pi / 9.0, 0.0, 0.0, 1.0], np.float32), (len(me.loops), 1))
     ca.data.foreach_set("color", col.ravel())
@@ -753,7 +761,7 @@ if True:
                 if o.type == "MESH":
                     o.scale = (SCALE_FIX,) * 3
         for vn, d in VIEWS.items():
-            aim(co, d, CENTRE, 150, 2000)
+            aim(co, d, CENTRE, CFG.get("view_frame_cm", 150), 2000)
             p = os.path.join(WORK, "sil_%s_%s.png" % (tag, vn))
             sc.render.filepath = p
             bpy.ops.render.render(write_still=True)
@@ -806,7 +814,7 @@ if not NORENDER:
         return sc, co, so
 
     def lit_shot(sc, co, so, d, path):
-        fwd, r, u = aim(co, d, CENTRE, 140, 1100)
+        fwd, r, u = aim(co, d, CENTRE, CFG.get("lit_frame_cm", 140), 1100)
         key = (fwd + r * 0.75 + Vector((0, 0, -1.1))).normalized()
         so.rotation_euler = key.to_track_quat("-Z", "Y").to_euler()
         sc.render.filepath = path
@@ -838,8 +846,9 @@ if not NORENDER:
 
 # ---------------------------------------------------------------- report
 WARN = []
-if tot_tris > 3300:
-    WARN.append("total triangles above 3300")
+TRIS_LIMIT = CFG.get("tris_limit", 3300)
+if tot_tris > TRIS_LIMIT:
+    WARN.append("total triangles above %d" % TRIS_LIMIT)
 if not all(s["passed"] for s in SIL.values()):
     WARN.append("silhouette difference above 1 percent in a view")
 if not file_exact:
@@ -852,16 +861,16 @@ if FRAG:
     WARN.append("%d small connected fragments assigned to the nearest part" % len(FRAG))
 cap_total = len(CAPS)
 rep = dict(
-    task="task-157-01-chaser-run-attack-animation",
+    task=CFG.get("task", "task-157-01-chaser-run-attack-animation"),
     inputs=dict(fbx=os.path.basename(opt["--in-fbx"]), texture=TEXNAME, source=SRC_STATS, source_tris_triangulated=TRIS_IN, source_vertices=VERTS_IN, source_open_edges=SRC_OPEN_EDGES, source_nonmanifold_edges=SRC_NONMANIFOLD_EDGES),
     outputs=dict(fbx=OUT_NAME + ".fbx", renders=RENDERS, texture_referenced=TEXNAME, embedded=False),
-    joints_cm=dict(found_on_mesh={k: list(v) for k, v in J.items()}, note="left side (+Y); right = mirror through y = 0. waist = narrowest section of the neck (red ring, z 84-90), hip = centre of the dark upper thigh block, knee = centre of the dark knee ball (side view z 50.9), shoulder = centre of the dark shoulder pod, elbow = centre of the dark elbow ball (front and side views agree on y 27.4, z 93.4)"),
+    joints_cm=dict(found_on_mesh={k: list(v) for k, v in J.items()}, note=CFG.get("joint_note", "left side (+Y); right = mirror through y = 0. waist = narrowest section of the neck (red ring, z 84-90), hip = centre of the dark upper thigh block, knee = centre of the dark knee ball (side view z 50.9), shoulder = centre of the dark shoulder pod, elbow = centre of the dark elbow ball (front and side views agree on y 27.4, z 93.4)")),
     pivots_cm={k: [round(x, 3) for x in v] for k, v in PIVOT.items()},
     hierarchy=PARENT,
     cut_planes=JOINTS,
     plane_method="visual guess from orthographic close-ups, then a minimum section-length scan over offset (cm) and tilt (deg) around it inside the zone box; hips only count faces below the waist plane",
     uv_interpolation_check=dict(uv_area_before=round(UVA_BEFORE, 6), uv_area_after_bisect=round(UVA_AFTER, 6), surface_area_cm2_before=round(AREA_BEFORE, 2)),
-    triangles=dict(total=tot_tris, limit=3300, source=TRIS_IN, cap_faces_added=cap_total, cut_triangles_added_by_bisect_and_split=int(tris_before_caps - TRIS_IN), vertices_total=tot_v, vertices_source=VERTS_IN,
+    triangles=dict(total=tot_tris, limit=TRIS_LIMIT, source=TRIS_IN, cap_faces_added=cap_total, cut_triangles_added_by_bisect_and_split=int(tris_before_caps - TRIS_IN), vertices_total=tot_v, vertices_source=VERTS_IN,
                    per_part={n: dict(tris=v["tris"], vertices=v["vertices"], cap_faces=v["cap_faces"], open_edges=v["open_edges"]) for n, v in PART_REP.items()}),
     cap_boundary_edges_before_fill=len(bnd), cap_boundary_edges_still_open=len(open_after), cap_faces_flipped_to_outward=flipped,
     cap_uv_method="every cap triangle gets all three UV0 corners at the UV centroid of the nearest existing (non-cap) face of the same part that shares a vertex with the cap, so it samples that face's texels (flat colour); texture file untouched",
