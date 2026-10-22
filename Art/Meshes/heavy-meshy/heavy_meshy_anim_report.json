@@ -172,7 +172,7 @@
    "attack_max_cm": 0.0
   },
   "from_saved_exr_float16_quaternion_not_renormalised": {
-   "run_max_cm": 0.011223837207350781,
+   "run_max_cm": 0.011223837246811391,
    "attack_max_cm": 0.0
   },
   "limit_cm": 0.05,
@@ -689,7 +689,7 @@
       "frame": 9,
       "vertex": [
        "ShinFoot_R",
-       214
+       212
       ],
       "z_cm": 0.097,
       "next_z_cm": 0.091,
@@ -699,7 +699,7 @@
       "frame": 10,
       "vertex": [
        "ShinFoot_R",
-       214
+       212
       ],
       "z_cm": 0.091,
       "next_z_cm": 0.085,
@@ -709,7 +709,7 @@
       "frame": 11,
       "vertex": [
        "ShinFoot_R",
-       214
+       212
       ],
       "z_cm": 0.085,
       "next_z_cm": 0.079,
@@ -719,7 +719,7 @@
       "frame": 12,
       "vertex": [
        "ShinFoot_R",
-       215
+       213
       ],
       "z_cm": 0.066,
       "next_z_cm": 4.118,
@@ -729,7 +729,7 @@
       "frame": 13,
       "vertex": [
        "ShinFoot_R",
-       64
+       62
       ],
       "z_cm": 0.034,
       "next_z_cm": 0.036,
@@ -739,7 +739,7 @@
       "frame": 14,
       "vertex": [
        "ShinFoot_R",
-       64
+       62
       ],
       "z_cm": 0.036,
       "next_z_cm": 0.039,
@@ -749,7 +749,7 @@
       "frame": 15,
       "vertex": [
        "ShinFoot_R",
-       64
+       62
       ],
       "z_cm": 0.039,
       "next_z_cm": -0.0,
@@ -3104,7 +3104,7 @@
      },
      {
       "frame": 8,
-      "vertex": 214,
+      "vertex": 212,
       "drift_cm": -0.0045,
       "z_cm": [
        0.097,
@@ -3113,7 +3113,7 @@
      },
      {
       "frame": 9,
-      "vertex": 214,
+      "vertex": 212,
       "drift_cm": 0.0034,
       "z_cm": [
        0.098,
@@ -3122,7 +3122,7 @@
      },
      {
       "frame": 10,
-      "vertex": 214,
+      "vertex": 212,
       "drift_cm": 0.0056,
       "z_cm": [
        0.091,
@@ -3131,7 +3131,7 @@
      },
      {
       "frame": 11,
-      "vertex": 214,
+      "vertex": 212,
       "drift_cm": 0.0042,
       "z_cm": [
        0.086,
@@ -3140,7 +3140,7 @@
      },
      {
       "frame": 12,
-      "vertex": 64,
+      "vertex": 62,
       "drift_cm": 0.0032,
       "z_cm": [
        0.494,
@@ -3149,7 +3149,7 @@
      },
      {
       "frame": 13,
-      "vertex": 64,
+      "vertex": 62,
       "drift_cm": -0.0007,
       "z_cm": [
        0.034,
@@ -3158,7 +3158,7 @@
      },
      {
       "frame": 14,
-      "vertex": 64,
+      "vertex": 62,
       "drift_cm": -0.0006,
       "z_cm": [
        0.032,

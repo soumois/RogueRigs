@@ -157,16 +157,16 @@
    "cut_edges": 99,
    "caps": {
     "HeadTorso": {
-     "faces": 91,
-     "area_cm2": 2594.39
+     "faces": 131,
+     "area_cm2": 3212.48
     },
     "Pelvis": {
-     "faces": 91,
-     "area_cm2": 2594.39
+     "faces": 51,
+     "area_cm2": 1976.3
     }
    },
    "pivot_to_plane_distance_cm": 3.0,
-   "min_vertex_distance_between_parts_beyond_0.6cm_of_plane_cm": 2.7
+   "min_vertex_distance_between_parts_beyond_0.6cm_of_plane_cm": 3.25
   },
   {
    "label": "shoulder_L",
@@ -464,12 +464,12 @@
      "area_cm2": 1495.53
     },
     "Thigh_R": {
-     "faces": 52,
-     "area_cm2": 1508.13
+     "faces": 58,
+     "area_cm2": 1518.98
     },
     "ShinFoot_R": {
-     "faces": 52,
-     "area_cm2": 1508.13
+     "faces": 46,
+     "area_cm2": 1497.28
     }
    },
    "pivot_to_plane_distance_cm": 13.49
@@ -521,15 +521,15 @@
   "vertices_source": 5136,
   "per_part": {
    "Pelvis": {
-    "tris": 890,
-    "vertices": 453,
-    "cap_faces": 120,
+    "tris": 768,
+    "vertices": 386,
+    "cap_faces": 80,
     "open_edges": 0
    },
    "HeadTorso": {
-    "tris": 2740,
-    "vertices": 1362,
-    "cap_faces": 160,
+    "tris": 2862,
+    "vertices": 1429,
+    "cap_faces": 200,
     "open_edges": 4
    },
    "UpperArm_L": {
@@ -563,9 +563,9 @@
     "open_edges": 4
    },
    "Thigh_R": {
-    "tris": 812,
-    "vertices": 406,
-    "cap_faces": 66,
+    "tris": 828,
+    "vertices": 416,
+    "cap_faces": 72,
     "open_edges": 3
    },
    "ShinFoot_L": {
@@ -575,16 +575,16 @@
     "open_edges": 6
    },
    "ShinFoot_R": {
-    "tris": 892,
-    "vertices": 446,
-    "cap_faces": 52,
+    "tris": 876,
+    "vertices": 436,
+    "cap_faces": 46,
     "open_edges": 7
    }
   }
  },
  "cap_boundary_edges_before_fill": 834,
  "cap_boundary_edges_still_open": 0,
- "cap_faces_flipped_to_outward": 31,
+ "cap_faces_flipped_to_outward": 65,
  "cap_uv_method": "every cap triangle gets all three UV0 corners at the UV centroid of the nearest existing (non-cap) face of the same part that shares a vertex with the cap, so it samples that face's texels (flat colour); texture file untouched",
  "connected_pieces": {
   "total_after_cut": 15,
@@ -699,7 +699,7 @@
      0.1,
      145.5
     ],
-    "assigned_to": "Pelvis"
+    "assigned_to": "HeadTorso"
    },
    {
     "faces": 4,
@@ -719,7 +719,7 @@
      25.3,
      146.8
     ],
-    "assigned_to": "Pelvis"
+    "assigned_to": "HeadTorso"
    },
    {
     "faces": 16,
@@ -729,7 +729,7 @@
      -24.9,
      146.8
     ],
-    "assigned_to": "Pelvis"
+    "assigned_to": "HeadTorso"
    },
    {
     "faces": 16,
@@ -739,7 +739,7 @@
      -66.6,
      66.8
     ],
-    "assigned_to": "ShinFoot_R"
+    "assigned_to": "Thigh_R"
    }
   ]
  },
@@ -750,9 +750,9 @@
     0.0,
     124.0
    ],
-   "tris": 890,
-   "vertices": 453,
-   "lightmap_px_per_cm": 8.5302,
+   "tris": 768,
+   "vertices": 386,
+   "lightmap_px_per_cm": 8.9032,
    "lightmap": {
     "overlapping_pairs_bbox": 0,
     "min_gap_px": 2.0,
@@ -765,7 +765,7 @@
     "LightMap",
     "PartId"
    ],
-   "cap_faces": 120
+   "cap_faces": 80
   },
   "HeadTorso": {
    "pivot_cm": [
@@ -773,9 +773,9 @@
     0.0,
     144.0
    ],
-   "tris": 2740,
-   "vertices": 1362,
-   "lightmap_px_per_cm": 4.0989,
+   "tris": 2862,
+   "vertices": 1429,
+   "lightmap_px_per_cm": 4.0487,
    "lightmap": {
     "overlapping_pairs_bbox": 0,
     "min_gap_px": 2.0,
@@ -788,7 +788,7 @@
     "LightMap",
     "PartId"
    ],
-   "cap_faces": 160
+   "cap_faces": 200
   },
   "UpperArm_L": {
    "pivot_cm": [
@@ -911,9 +911,9 @@
     -28.0,
     124.0
    ],
-   "tris": 812,
-   "vertices": 406,
-   "lightmap_px_per_cm": 8.764,
+   "tris": 828,
+   "vertices": 416,
+   "lightmap_px_per_cm": 8.7582,
    "lightmap": {
     "overlapping_pairs_bbox": 0,
     "min_gap_px": 2.0,
@@ -926,7 +926,7 @@
     "LightMap",
     "PartId"
    ],
-   "cap_faces": 66
+   "cap_faces": 72
   },
   "ShinFoot_L": {
    "pivot_cm": [
@@ -957,8 +957,8 @@
     -56.0,
     76.5
    ],
-   "tris": 892,
-   "vertices": 446,
+   "tris": 876,
+   "vertices": 436,
    "lightmap_px_per_cm": 6.7182,
    "lightmap": {
     "overlapping_pairs_bbox": 0,
@@ -972,7 +972,7 @@
     "LightMap",
     "PartId"
    ],
-   "cap_faces": 52
+   "cap_faces": 46
   }
  },
  "silhouette": {
@@ -1161,7 +1161,7 @@
   ],
   "read_from_exported_fbx": {
    "Pelvis": {
-    "corners": 2670,
+    "corners": 2304,
     "expected": 0.05000000074505806,
     "unique_u": [
      0.05000000074505806
@@ -1173,7 +1173,7 @@
     "exact_float32": true
    },
    "HeadTorso": {
-    "corners": 8196,
+    "corners": 8562,
     "expected": 0.15000000596046448,
     "unique_u": [
      0.15000000596046448
@@ -1245,7 +1245,7 @@
     "exact_float32": true
    },
    "Thigh_R": {
-    "corners": 2433,
+    "corners": 2481,
     "expected": 0.75,
     "unique_u": [
      0.75
@@ -1269,7 +1269,7 @@
     "exact_float32": true
    },
    "ShinFoot_R": {
-    "corners": 2676,
+    "corners": 2628,
     "expected": 0.949999988079071,
     "unique_u": [
      0.949999988079071
@@ -1363,8 +1363,8 @@
   },
   "per_part": {
    "Pelvis": {
-    "tris": 890,
-    "vertices": 453,
+    "tris": 768,
+    "vertices": 386,
     "world_origin_cm": [
      -9.5,
      0.0,
@@ -1381,7 +1381,7 @@
      102.27
     ],
     "bounds_max": [
-     47.01,
+     26.84,
      35.73,
      147.0
     ],
@@ -1406,8 +1406,8 @@
     ]
    },
    "HeadTorso": {
-    "tris": 2732,
-    "vertices": 1362,
+    "tris": 2854,
+    "vertices": 1429,
     "world_origin_cm": [
      0.0,
      0.0,
@@ -1421,7 +1421,7 @@
     "bounds_min": [
      -56.33,
      -66.37,
-     147.0
+     141.93
     ],
     "bounds_max": [
      81.48,
@@ -1664,8 +1664,8 @@
     ]
    },
    "Thigh_R": {
-    "tris": 811,
-    "vertices": 406,
+    "tris": 827,
+    "vertices": 416,
     "world_origin_cm": [
      -9.5,
      -28.0,
@@ -1750,8 +1750,8 @@
     ]
    },
    "ShinFoot_R": {
-    "tris": 892,
-    "vertices": 446,
+    "tris": 876,
+    "vertices": 436,
     "world_origin_cm": [
      5.0,
      -56.0,
@@ -1811,17 +1811,17 @@
   "5 small connected fragments assigned to the nearest part"
  ],
  "timings_s": {
-  "load": 0.83,
-  "bisect": 7.07,
-  "caps": 0.2,
-  "components": 0.1,
-  "cap_uv": 0.39,
-  "parts": 0.88,
-  "clearance": 0.21,
-  "export": 0.18,
-  "readback": 0.65,
-  "silhouette": 18.79,
-  "renders": 8.16,
-  "total": 38.35
+  "load": 0.62,
+  "bisect": 3.32,
+  "caps": 0.11,
+  "components": 0.14,
+  "cap_uv": 0.14,
+  "parts": 0.74,
+  "clearance": 0.2,
+  "export": 0.17,
+  "readback": 0.55,
+  "silhouette": 12.65,
+  "renders": 3.0,
+  "total": 22.08
  }
 }

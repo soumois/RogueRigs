@@ -4,6 +4,7 @@
   "out_name": "heavy_meshy_parts",
   "height_cm": 248.0,
   "tris_limit": 12000,
+  "fragment_rule": "nearest_face",
   "view_frame_cm": 300,
   "lit_frame_cm": 290,
   "joint_note": "left side (+Y); right = mirror through y = 0 (the mesh is symmetric within 1 cm at the joints). Found on the mesh with section slices (planes x = const, y = const, z = const through the game FBX, rendered and read): hip = centre of the dark hip ball (slice y = 34: x -24.4..5.5, z 110.4..137.9), knee = centre of the dark knee ball (slice y = 34: x -5.6..15.6, z 65..88; the ball sits under the knee guard, between the thigh block above and the blue shin armour below), shoulder = centre of the dark shoulder joint (x -12, y 80..92, z 160..176), elbow = hinge between the slanted upper-arm armour and the forearm block (slices y = 112 and 125: boundary line from (x 10, z 100) to (x 36, z 114)), waist = middle of the black band between the torso and the pelvis plate (z 136..151).",

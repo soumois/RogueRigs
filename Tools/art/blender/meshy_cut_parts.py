@@ -416,6 +416,10 @@ for d, k, p in cost:
 FRAG = []
 for k in order[10:]:
     p = min(PARTS, key=lambda q: np.linalg.norm(ccent[k] - np.array(REFP[q])))
+    if CFG.get("fragment_rule") == "nearest_face":      # a split-off sliver goes to the part owning the closest face (the panel it hangs on), not to the nearest reference centroid
+        big_faces = np.where(np.isin(comp, [int(b) for b in big]))[0]
+        d_ = np.linalg.norm(fc[big_faces][None, :, :] - fc[comp == k][:, None, :], axis=2)
+        p = assign[int(comp[big_faces[int(np.argmin(d_.min(0)))]])]
     assign[int(k)] = p
     FRAG.append(dict(faces=int(cfaces[k]), area_cm2=round(float(carea[k]), 3), centroid_cm=[round(float(x), 1) for x in ccent[k]], assigned_to=p))
 partof = np.array([PARTS.index(assign[int(comp[i])]) for i in range(NF)])

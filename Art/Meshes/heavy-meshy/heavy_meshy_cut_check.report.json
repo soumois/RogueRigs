@@ -15,12 +15,12 @@
  },
  "parts": {
   "Pelvis": {
-   "tris": 890,
-   "vertices": 453,
+   "tris": 768,
+   "vertices": 386,
    "vertices_unreferenced": 0,
-   "merged_positions": 453,
+   "merged_positions": 386,
    "connected_components": {
-    "count": 4,
+    "count": 1,
     "per_component": [
      {
       "index": 0,
@@ -41,66 +41,6 @@
        35.726,
        147.0
       ]
-     },
-     {
-      "index": 1,
-      "tris": 16,
-      "vertices": 10,
-      "centroid_cm": [
-       29.846,
-       -22.794,
-       146.858
-      ],
-      "bbox_min_cm": [
-       26.436,
-       -29.749,
-       146.168
-      ],
-      "bbox_max_cm": [
-       31.236,
-       -18.961,
-       147.0
-      ]
-     },
-     {
-      "index": 2,
-      "tris": 12,
-      "vertices": 8,
-      "centroid_cm": [
-       29.294,
-       24.72,
-       146.805
-      ],
-      "bbox_min_cm": [
-       25.474,
-       19.781,
-       146.229
-      ],
-      "bbox_max_cm": [
-       31.449,
-       30.814,
-       147.0
-      ]
-     },
-     {
-      "index": 3,
-      "tris": 94,
-      "vertices": 49,
-      "centroid_cm": [
-       37.083,
-       -1.6,
-       146.083
-      ],
-      "bbox_min_cm": [
-       25.733,
-       -15.656,
-       141.929
-      ],
-      "bbox_max_cm": [
-       47.006,
-       15.843,
-       147.0
-      ]
      }
     ],
     "main_component": 0
@@ -111,12 +51,12 @@
     102.267
    ],
    "bbox_max_cm": [
-    47.006,
+    26.84,
     35.726,
     147.0
    ],
    "bbox_size_cm": [
-    87.113,
+    66.947,
     67.876,
     44.733
    ],
@@ -127,449 +67,8 @@
    ],
    "pivot_inside_bbox": true,
    "triangles_not_in_main_component": {
-    "count": 122,
-    "list": [
-     {
-      "tri": 98,
-      "component": 1,
-      "centroid_cm": [
-       30.946,
-       -28.342,
-       146.723
-      ],
-      "distance_to_main_bbox_cm": 4.106,
-      "distance_to_main_centroid_cm": 49.256
-     },
-     {
-      "tri": 106,
-      "component": 1,
-      "centroid_cm": [
-       31.018,
-       -21.4,
-       146.873
-      ],
-      "distance_to_main_bbox_cm": 4.178,
-      "distance_to_main_centroid_cm": 45.503
-     },
-     {
-      "tri": 160,
-      "component": 1,
-      "centroid_cm": [
-       30.404,
-       -18.975,
-       146.873
-      ],
-      "distance_to_main_bbox_cm": 3.564,
-      "distance_to_main_centroid_cm": 43.848
-     },
-     {
-      "tri": 193,
-      "component": 3,
-      "centroid_cm": [
-       34.048,
-       -15.492,
-       146.802
-      ],
-      "distance_to_main_bbox_cm": 7.208,
-      "distance_to_main_centroid_cm": 45.327
-     },
-     {
-      "tri": 233,
-      "component": 3,
-      "centroid_cm": [
-       32.282,
-       -13.226,
-       146.552
-      ],
-      "distance_to_main_bbox_cm": 5.442,
-      "distance_to_main_centroid_cm": 42.923
-     },
-     {
-      "tri": 262,
-      "component": 3,
-      "centroid_cm": [
-       44.432,
-       -10.531,
-       146.301
-      ],
-      "distance_to_main_bbox_cm": 17.592,
-      "distance_to_main_centroid_cm": 52.852
-     },
-     {
-      "tri": 263,
-      "component": 3,
-      "centroid_cm": [
-       31.828,
-       -9.673,
-       146.328
-      ],
-      "distance_to_main_bbox_cm": 4.988,
-      "distance_to_main_centroid_cm": 41.35
-     },
-     {
-      "tri": 264,
-      "component": 3,
-      "centroid_cm": [
-       46.116,
-       -9.39,
-       146.6
-      ],
-      "distance_to_main_bbox_cm": 19.276,
-      "distance_to_main_centroid_cm": 54.258
-     },
-     {
-      "tri": 265,
-      "component": 3,
-      "centroid_cm": [
-       43.146,
-       -10.649,
-       146.301
-      ],
-      "distance_to_main_bbox_cm": 16.306,
-      "distance_to_main_centroid_cm": 51.701
-     },
-     {
-      "tri": 268,
-      "component": 3,
-      "centroid_cm": [
-       42.175,
-       -9.694,
-       144.613
-      ],
-      "distance_to_main_bbox_cm": 15.335,
-      "distance_to_main_centroid_cm": 50.051
-     },
-     {
-      "tri": 269,
-      "component": 3,
-      "centroid_cm": [
-       45.042,
-       -9.504,
-       144.886
-      ],
-      "distance_to_main_bbox_cm": 18.202,
-      "distance_to_main_centroid_cm": 52.753
-     },
-     {
-      "tri": 270,
-      "component": 3,
-      "centroid_cm": [
-       26.716,
-       -8.638,
-       145.95
-      ],
-      "distance_to_main_bbox_cm": 0.0,
-      "distance_to_main_centroid_cm": 36.521
-     },
-     {
-      "tri": 276,
-      "component": 3,
-      "centroid_cm": [
-       39.615,
-       -8.466,
-       143.62
-      ],
-      "distance_to_main_bbox_cm": 12.775,
-      "distance_to_main_centroid_cm": 47.106
-     },
-     {
-      "tri": 278,
-      "component": 3,
-      "centroid_cm": [
-       41.173,
-       -8.852,
-       144.295
-      ],
-      "distance_to_main_bbox_cm": 14.333,
-      "distance_to_main_centroid_cm": 48.841
-     },
-     {
-      "tri": 284,
-      "component": 3,
-      "centroid_cm": [
-       43.329,
-       -2.251,
-       144.16
-      ],
-      "distance_to_main_bbox_cm": 16.489,
-      "distance_to_main_centroid_cm": 49.883
-     },
-     {
-      "tri": 292,
-      "component": 3,
-      "centroid_cm": [
-       30.711,
-       -2.611,
-       143.275
-      ],
-      "distance_to_main_bbox_cm": 3.871,
-      "distance_to_main_centroid_cm": 37.784
-     },
-     {
-      "tri": 299,
-      "component": 3,
-      "centroid_cm": [
-       45.947,
-       -2.958,
-       145.251
-      ],
-      "distance_to_main_bbox_cm": 19.107,
-      "distance_to_main_centroid_cm": 52.757
-     },
-     {
-      "tri": 306,
-      "component": 3,
-      "centroid_cm": [
-       35.007,
-       2.956,
-       142.657
-      ],
-      "distance_to_main_bbox_cm": 8.167,
-      "distance_to_main_centroid_cm": 41.395
-     },
-     {
-      "tri": 316,
-      "component": 3,
-      "centroid_cm": [
-       40.716,
-       -2.823,
-       143.305
-      ],
-      "distance_to_main_bbox_cm": 13.876,
-      "distance_to_main_centroid_cm": 47.191
-     },
-     {
-      "tri": 322,
-      "component": 3,
-      "centroid_cm": [
-       40.061,
-       2.694,
-       142.654
-      ],
-      "distance_to_main_bbox_cm": 13.221,
-      "distance_to_main_centroid_cm": 46.192
-     },
-     {
-      "tri": 332,
-      "component": 3,
-      "centroid_cm": [
-       26.033,
-       -6.739,
-       145.95
-      ],
-      "distance_to_main_bbox_cm": 0.0,
-      "distance_to_main_centroid_cm": 35.459
-     },
-     {
-      "tri": 339,
-      "component": 3,
-      "centroid_cm": [
-       26.03,
-       -4.265,
-       145.95
-      ],
-      "distance_to_main_bbox_cm": 0.0,
-      "distance_to_main_centroid_cm": 34.965
-     },
-     {
-      "tri": 348,
-      "component": 3,
-      "centroid_cm": [
-       42.538,
-       3.489,
-       144.188
-      ],
-      "distance_to_main_bbox_cm": 15.698,
-      "distance_to_main_centroid_cm": 49.039
-     },
-     {
-      "tri": 349,
-      "component": 3,
-      "centroid_cm": [
-       46.843,
-       6.388,
-       146.666
-      ],
-      "distance_to_main_bbox_cm": 20.003,
-      "distance_to_main_centroid_cm": 54.088
-     },
-     {
-      "tri": 350,
-      "component": 3,
-      "centroid_cm": [
-       45.238,
-       3.454,
-       144.843
-      ],
-      "distance_to_main_bbox_cm": 18.398,
-      "distance_to_main_centroid_cm": 51.806
-     },
-     {
-      "tri": 365,
-      "component": 3,
-      "centroid_cm": [
-       34.348,
-       9.061,
-       143.782
-      ],
-      "distance_to_main_bbox_cm": 7.508,
-      "distance_to_main_centroid_cm": 41.824
-     },
-     {
-      "tri": 366,
-      "component": 3,
-      "centroid_cm": [
-       39.403,
-       8.799,
-       143.779
-      ],
-      "distance_to_main_bbox_cm": 12.563,
-      "distance_to_main_centroid_cm": 46.471
-     },
-     {
-      "tri": 367,
-      "component": 3,
-      "centroid_cm": [
-       42.064,
-       9.68,
-       145.027
-      ],
-      "distance_to_main_bbox_cm": 15.224,
-      "distance_to_main_centroid_cm": 49.496
-     },
-     {
-      "tri": 369,
-      "component": 3,
-      "centroid_cm": [
-       39.584,
-       9.473,
-       145.269
-      ],
-      "distance_to_main_bbox_cm": 12.744,
-      "distance_to_main_centroid_cm": 47.237
-     },
-     {
-      "tri": 373,
-      "component": 3,
-      "centroid_cm": [
-       40.45,
-       10.864,
-       146.822
-      ],
-      "distance_to_main_bbox_cm": 13.61,
-      "distance_to_main_centroid_cm": 48.83
-     },
-     {
-      "tri": 374,
-      "component": 3,
-      "centroid_cm": [
-       33.019,
-       11.669,
-       146.435
-      ],
-      "distance_to_main_bbox_cm": 6.179,
-      "distance_to_main_centroid_cm": 42.187
-     },
-     {
-      "tri": 400,
-      "component": 3,
-      "centroid_cm": [
-       39.763,
-       11.43,
-       146.822
-      ],
-      "distance_to_main_bbox_cm": 12.923,
-      "distance_to_main_centroid_cm": 48.317
-     },
-     {
-      "tri": 412,
-      "component": 3,
-      "centroid_cm": [
-       38.074,
-       12.163,
-       145.951
-      ],
-      "distance_to_main_bbox_cm": 11.234,
-      "distance_to_main_centroid_cm": 46.63
-     },
-     {
-      "tri": 417,
-      "component": 3,
-      "centroid_cm": [
-       33.05,
-       13.476,
-       146.435
-      ],
-      "distance_to_main_bbox_cm": 6.21,
-      "distance_to_main_centroid_cm": 42.686
-     },
-     {
-      "tri": 472,
-      "component": 2,
-      "centroid_cm": [
-       29.62,
-       19.941,
-       146.788
-      ],
-      "distance_to_main_bbox_cm": 2.78,
-      "distance_to_main_centroid_cm": 42.286
-     },
-     {
-      "tri": 507,
-      "component": 2,
-      "centroid_cm": [
-       27.848,
-       21.378,
-       146.788
-      ],
-      "distance_to_main_bbox_cm": 1.008,
-      "distance_to_main_centroid_cm": 41.555
-     },
-     {
-      "tri": 533,
-      "component": 2,
-      "centroid_cm": [
-       31.216,
-       21.231,
-       146.788
-      ],
-      "distance_to_main_bbox_cm": 4.376,
-      "distance_to_main_centroid_cm": 44.131
-     },
-     {
-      "tri": 603,
-      "component": 2,
-      "centroid_cm": [
-       31.1,
-       28.112,
-       146.743
-      ],
-      "distance_to_main_bbox_cm": 4.26,
-      "distance_to_main_centroid_cm": 47.506
-     },
-     {
-      "tri": 668,
-      "component": 2,
-      "centroid_cm": [
-       29.135,
-       30.268,
-       146.743
-      ],
-      "distance_to_main_bbox_cm": 2.295,
-      "distance_to_main_centroid_cm": 47.349
-     },
-     {
-      "tri": 671,
-      "component": 2,
-      "centroid_cm": [
-       27.41,
-       28.089,
-       146.743
-      ],
-      "distance_to_main_bbox_cm": 0.57,
-      "distance_to_main_centroid_cm": 44.827
-     }
-    ]
+    "count": 0,
+    "list": []
    },
    "open_edges": 0,
    "nonmanifold_edges": 0,
@@ -577,15 +76,15 @@
    "nonmanifold_edges_merged_by_position": 0,
    "vertex_distance_to_own_joint_cm": {
     "min": 19.337,
-    "max": 61.588,
-    "mean": 34.023
+    "max": 42.154,
+    "mean": 30.833
    },
    "vertex_distance_to_parent_joint_cm": null,
    "planes": {
     "waist": {
      "expected_side_sign": -1.0,
-     "triangles_in_zone": 657,
-     "vertices_in_zone": 336,
+     "triangles_in_zone": 535,
+     "vertices_in_zone": 269,
      "wrong_side_triangle_centroids": 0,
      "worst_triangle_depth_cm": 0.0,
      "wrong_side_vertices": 0,
@@ -597,7 +96,7 @@
     "hip_L": {
      "expected_side_sign": -1.0,
      "triangles_in_zone": 244,
-     "vertices_in_zone": 110,
+     "vertices_in_zone": 108,
      "wrong_side_triangle_centroids": 9,
      "worst_triangle_depth_cm": 0.85,
      "wrong_side_vertices": 6,
@@ -606,7 +105,7 @@
      "tolerance_cm": 0.05,
      "wrong_triangles": [
       {
-       "tri": 776,
+       "tri": 691,
        "centroid_cm": [
         -17.899,
         33.647,
@@ -615,7 +114,7 @@
        "depth_cm": 0.147
       },
       {
-       "tri": 778,
+       "tri": 693,
        "centroid_cm": [
         -1.748,
         34.35,
@@ -624,7 +123,7 @@
        "depth_cm": 0.85
       },
       {
-       "tri": 779,
+       "tri": 694,
        "centroid_cm": [
         -2.177,
         33.778,
@@ -633,7 +132,7 @@
        "depth_cm": 0.278
       },
       {
-       "tri": 780,
+       "tri": 695,
        "centroid_cm": [
         -9.951,
         34.27,
@@ -642,7 +141,7 @@
        "depth_cm": 0.77
       },
       {
-       "tri": 781,
+       "tri": 696,
        "centroid_cm": [
         1.846,
         34.194,
@@ -651,7 +150,7 @@
        "depth_cm": 0.694
       },
       {
-       "tri": 782,
+       "tri": 697,
        "centroid_cm": [
         -13.752,
         33.93,
@@ -660,7 +159,7 @@
        "depth_cm": 0.43
       },
       {
-       "tri": 783,
+       "tri": 698,
        "centroid_cm": [
         -6.46,
         33.779,
@@ -669,7 +168,7 @@
        "depth_cm": 0.279
       },
       {
-       "tri": 784,
+       "tri": 699,
        "centroid_cm": [
         -10.936,
         33.748,
@@ -678,7 +177,7 @@
        "depth_cm": 0.248
       },
       {
-       "tri": 787,
+       "tri": 702,
        "centroid_cm": [
         -11.705,
         33.598,
@@ -692,7 +191,7 @@
     "hip_R": {
      "expected_side_sign": -1.0,
      "triangles_in_zone": 203,
-     "vertices_in_zone": 95,
+     "vertices_in_zone": 94,
      "wrong_side_triangle_centroids": 0,
      "worst_triangle_depth_cm": 0.0,
      "wrong_side_vertices": 0,
@@ -704,26 +203,26 @@
    }
   },
   "HeadTorso": {
-   "tris": 2732,
-   "vertices": 1362,
+   "tris": 2854,
+   "vertices": 1429,
    "vertices_unreferenced": 0,
-   "merged_positions": 1362,
+   "merged_positions": 1383,
    "connected_components": {
     "count": 1,
     "per_component": [
      {
       "index": 0,
-      "tris": 2732,
-      "vertices": 1362,
+      "tris": 2854,
+      "vertices": 1429,
       "centroid_cm": [
-       14.509,
-       0.694,
-       196.091
+       15.4,
+       0.588,
+       193.961
       ],
       "bbox_min_cm": [
        -56.328,
        -66.365,
-       147.0
+       141.929
       ],
       "bbox_max_cm": [
        81.48,
@@ -737,7 +236,7 @@
    "bbox_min_cm": [
     -56.328,
     -66.365,
-    147.0
+    141.929
    ],
    "bbox_max_cm": [
     81.48,
@@ -747,14 +246,14 @@
    "bbox_size_cm": [
     137.808,
     132.203,
-    101.0
+    106.071
    ],
    "pivot_cm": [
     0.0,
     0.0,
     144.0
    ],
-   "pivot_inside_bbox": false,
+   "pivot_inside_bbox": true,
    "triangles_not_in_main_component": {
     "count": 0,
     "list": []
@@ -762,11 +261,11 @@
    "open_edges": 19,
    "nonmanifold_edges": 20,
    "open_edges_merged_by_position": 19,
-   "nonmanifold_edges_merged_by_position": 20,
+   "nonmanifold_edges_merged_by_position": 103,
    "vertex_distance_to_own_joint_cm": {
     "min": 21.901,
     "max": 115.568,
-    "mean": 74.987
+    "mean": 73.281
    },
    "vertex_distance_to_parent_joint_cm": {
     "parent": "Pelvis",
@@ -776,14 +275,196 @@
    "planes": {
     "waist": {
      "expected_side_sign": 1.0,
-     "triangles_in_zone": 782,
-     "vertices_in_zone": 388,
-     "wrong_side_triangle_centroids": 0,
-     "worst_triangle_depth_cm": 0.0,
-     "wrong_side_vertices": 0,
-     "worst_vertex_depth_cm": 0.0,
-     "min_signed_distance_triangle_centroid_in_zone_cm": 0.0,
+     "triangles_in_zone": 904,
+     "vertices_in_zone": 455,
+     "wrong_side_triangle_centroids": 82,
+     "worst_triangle_depth_cm": 4.346,
+     "wrong_side_vertices": 21,
+     "worst_vertex_depth_cm": 5.071,
+     "min_signed_distance_triangle_centroid_in_zone_cm": -4.346,
      "tolerance_cm": 0.05,
+     "wrong_triangles": [
+      {
+       "tri": 775,
+       "centroid_cm": [
+        30.946,
+        -28.342,
+        146.723
+       ],
+       "depth_cm": 0.277
+      },
+      {
+       "tri": 793,
+       "centroid_cm": [
+        31.018,
+        -21.4,
+        146.873
+       ],
+       "depth_cm": 0.127
+      },
+      {
+       "tri": 953,
+       "centroid_cm": [
+        30.404,
+        -18.975,
+        146.873
+       ],
+       "depth_cm": 0.127
+      },
+      {
+       "tri": 1049,
+       "centroid_cm": [
+        34.048,
+        -15.492,
+        146.802
+       ],
+       "depth_cm": 0.198
+      },
+      {
+       "tri": 1076,
+       "centroid_cm": [
+        32.282,
+        -13.226,
+        146.552
+       ],
+       "depth_cm": 0.448
+      },
+      {
+       "tri": 1145,
+       "centroid_cm": [
+        44.432,
+        -10.531,
+        146.301
+       ],
+       "depth_cm": 0.699
+      },
+      {
+       "tri": 1146,
+       "centroid_cm": [
+        31.828,
+        -9.673,
+        146.328
+       ],
+       "depth_cm": 0.672
+      },
+      {
+       "tri": 1147,
+       "centroid_cm": [
+        46.116,
+        -9.39,
+        146.6
+       ],
+       "depth_cm": 0.4
+      },
+      {
+       "tri": 1151,
+       "centroid_cm": [
+        43.146,
+        -10.649,
+        146.301
+       ],
+       "depth_cm": 0.699
+      },
+      {
+       "tri": 1158,
+       "centroid_cm": [
+        42.175,
+        -9.694,
+        144.613
+       ],
+       "depth_cm": 2.387
+      },
+      {
+       "tri": 1162,
+       "centroid_cm": [
+        45.042,
+        -9.504,
+        144.886
+       ],
+       "depth_cm": 2.114
+      },
+      {
+       "tri": 1168,
+       "centroid_cm": [
+        26.716,
+        -8.638,
+        145.95
+       ],
+       "depth_cm": 1.05
+      },
+      {
+       "tri": 1182,
+       "centroid_cm": [
+        39.615,
+        -8.466,
+        143.62
+       ],
+       "depth_cm": 3.38
+      },
+      {
+       "tri": 1183,
+       "centroid_cm": [
+        41.173,
+        -8.852,
+        144.295
+       ],
+       "depth_cm": 2.705
+      },
+      {
+       "tri": 1196,
+       "centroid_cm": [
+        43.329,
+        -2.251,
+        144.16
+       ],
+       "depth_cm": 2.84
+      },
+      {
+       "tri": 1204,
+       "centroid_cm": [
+        30.711,
+        -2.611,
+        143.275
+       ],
+       "depth_cm": 3.725
+      },
+      {
+       "tri": 1214,
+       "centroid_cm": [
+        45.947,
+        -2.958,
+        145.251
+       ],
+       "depth_cm": 1.749
+      },
+      {
+       "tri": 1226,
+       "centroid_cm": [
+        35.007,
+        2.956,
+        142.657
+       ],
+       "depth_cm": 4.343
+      },
+      {
+       "tri": 1242,
+       "centroid_cm": [
+        40.716,
+        -2.823,
+        143.305
+       ],
+       "depth_cm": 3.695
+      },
+      {
+       "tri": 1257,
+       "centroid_cm": [
+        40.061,
+        2.694,
+        142.654
+       ],
+       "depth_cm": 4.346
+      }
+     ],
      "pivot_signed_distance_to_plane_cm": -3.0
     },
     "shoulder_L": {
@@ -798,7 +479,7 @@
      "tolerance_cm": 0.05,
      "wrong_triangles": [
       {
-       "tri": 2679,
+       "tri": 2801,
        "centroid_cm": [
         -27.733,
         62.719,
@@ -807,7 +488,7 @@
        "depth_cm": 0.719
       },
       {
-       "tri": 2686,
+       "tri": 2808,
        "centroid_cm": [
         16.086,
         62.822,
@@ -816,7 +497,7 @@
        "depth_cm": 0.822
       },
       {
-       "tri": 2687,
+       "tri": 2809,
        "centroid_cm": [
         -4.937,
         62.986,
@@ -825,7 +506,7 @@
        "depth_cm": 0.986
       },
       {
-       "tri": 2688,
+       "tri": 2810,
        "centroid_cm": [
         -2.383,
         62.557,
@@ -834,7 +515,7 @@
        "depth_cm": 0.557
       },
       {
-       "tri": 2690,
+       "tri": 2812,
        "centroid_cm": [
         -12.881,
         62.896,
@@ -843,7 +524,7 @@
        "depth_cm": 0.896
       },
       {
-       "tri": 2694,
+       "tri": 2816,
        "centroid_cm": [
         -6.396,
         63.082,
@@ -866,7 +547,7 @@
      "tolerance_cm": 0.05,
      "wrong_triangles": [
       {
-       "tri": 2718,
+       "tri": 2840,
        "centroid_cm": [
         3.612,
         -62.106,
@@ -875,7 +556,7 @@
        "depth_cm": 0.106
       },
       {
-       "tri": 2727,
+       "tri": 2849,
        "centroid_cm": [
         -13.068,
         -62.241,
@@ -884,7 +565,7 @@
        "depth_cm": 0.241
       },
       {
-       "tri": 2730,
+       "tri": 2852,
        "centroid_cm": [
         -9.835,
         -62.638,
@@ -2033,21 +1714,21 @@
    }
   },
   "Thigh_R": {
-   "tris": 811,
-   "vertices": 406,
+   "tris": 827,
+   "vertices": 416,
    "vertices_unreferenced": 0,
-   "merged_positions": 406,
+   "merged_positions": 408,
    "connected_components": {
     "count": 1,
     "per_component": [
      {
       "index": 0,
-      "tris": 811,
-      "vertices": 406,
+      "tris": 827,
+      "vertices": 416,
       "centroid_cm": [
-       -1.96,
-       -49.144,
-       89.493
+       -2.098,
+       -49.488,
+       89.042
       ],
       "bbox_min_cm": [
        -32.513,
@@ -2091,11 +1772,11 @@
    "open_edges": 5,
    "nonmanifold_edges": 3,
    "open_edges_merged_by_position": 5,
-   "nonmanifold_edges_merged_by_position": 3,
+   "nonmanifold_edges_merged_by_position": 16,
    "vertex_distance_to_own_joint_cm": {
     "min": 8.012,
     "max": 80.772,
-    "mean": 47.727
+    "mean": 48.256
    },
    "vertex_distance_to_parent_joint_cm": {
     "parent": "Pelvis",
@@ -2115,7 +1796,7 @@
      "tolerance_cm": 0.05,
      "wrong_triangles": [
       {
-       "tri": 564,
+       "tri": 566,
        "centroid_cm": [
         -2.333,
         -33.189,
@@ -2124,7 +1805,7 @@
        "depth_cm": 0.311
       },
       {
-       "tri": 566,
+       "tri": 568,
        "centroid_cm": [
         4.267,
         -32.369,
@@ -2133,7 +1814,7 @@
        "depth_cm": 1.131
       },
       {
-       "tri": 570,
+       "tri": 572,
        "centroid_cm": [
         -6.287,
         -33.256,
@@ -2142,7 +1823,7 @@
        "depth_cm": 0.244
       },
       {
-       "tri": 578,
+       "tri": 580,
        "centroid_cm": [
         -24.28,
         -32.795,
@@ -2151,7 +1832,7 @@
        "depth_cm": 0.705
       },
       {
-       "tri": 580,
+       "tri": 582,
        "centroid_cm": [
         -5.478,
         -32.111,
@@ -2160,7 +1841,7 @@
        "depth_cm": 1.389
       },
       {
-       "tri": 583,
+       "tri": 585,
        "centroid_cm": [
         -7.058,
         -33.193,
@@ -2169,7 +1850,7 @@
        "depth_cm": 0.307
       },
       {
-       "tri": 587,
+       "tri": 589,
        "centroid_cm": [
         -11.442,
         -32.54,
@@ -2178,7 +1859,7 @@
        "depth_cm": 0.96
       },
       {
-       "tri": 593,
+       "tri": 595,
        "centroid_cm": [
         -12.981,
         -32.187,
@@ -2187,7 +1868,7 @@
        "depth_cm": 1.313
       },
       {
-       "tri": 594,
+       "tri": 596,
        "centroid_cm": [
         1.357,
         -32.591,
@@ -2196,7 +1877,7 @@
        "depth_cm": 0.909
       },
       {
-       "tri": 595,
+       "tri": 597,
        "centroid_cm": [
         -24.588,
         -32.782,
@@ -2205,7 +1886,7 @@
        "depth_cm": 0.718
       },
       {
-       "tri": 597,
+       "tri": 599,
        "centroid_cm": [
         -15.617,
         -32.123,
@@ -2214,7 +1895,7 @@
        "depth_cm": 1.377
       },
       {
-       "tri": 598,
+       "tri": 600,
        "centroid_cm": [
         -3.913,
         -32.69,
@@ -2223,7 +1904,7 @@
        "depth_cm": 0.81
       },
       {
-       "tri": 601,
+       "tri": 603,
        "centroid_cm": [
         -16.203,
         -31.699,
@@ -2232,7 +1913,7 @@
        "depth_cm": 1.801
       },
       {
-       "tri": 602,
+       "tri": 604,
        "centroid_cm": [
         -15.715,
         -31.769,
@@ -2241,7 +1922,7 @@
        "depth_cm": 1.731
       },
       {
-       "tri": 603,
+       "tri": 605,
        "centroid_cm": [
         -15.453,
         -32.412,
@@ -2250,7 +1931,7 @@
        "depth_cm": 1.088
       },
       {
-       "tri": 606,
+       "tri": 608,
        "centroid_cm": [
         -9.132,
         -32.912,
@@ -2259,7 +1940,7 @@
        "depth_cm": 0.588
       },
       {
-       "tri": 607,
+       "tri": 609,
        "centroid_cm": [
         -2.544,
         -32.453,
@@ -2268,7 +1949,7 @@
        "depth_cm": 1.047
       },
       {
-       "tri": 609,
+       "tri": 611,
        "centroid_cm": [
         -18.35,
         -33.287,
@@ -2277,7 +1958,7 @@
        "depth_cm": 0.213
       },
       {
-       "tri": 610,
+       "tri": 612,
        "centroid_cm": [
         -5.177,
         -32.294,
@@ -2286,7 +1967,7 @@
        "depth_cm": 1.206
       },
       {
-       "tri": 611,
+       "tri": 613,
        "centroid_cm": [
         -17.812,
         -32.065,
@@ -2397,12 +2078,12 @@
    }
   },
   "ShinFoot_R": {
-   "tris": 892,
-   "vertices": 446,
+   "tris": 876,
+   "vertices": 436,
    "vertices_unreferenced": 0,
-   "merged_positions": 446,
+   "merged_positions": 436,
    "connected_components": {
-    "count": 2,
+    "count": 1,
     "per_component": [
      {
       "index": 0,
@@ -2422,26 +2103,6 @@
        56.357,
        -18.572,
        70.487
-      ]
-     },
-     {
-      "index": 1,
-      "tris": 16,
-      "vertices": 10,
-      "centroid_cm": [
-       -9.068,
-       -66.952,
-       66.17
-      ],
-      "bbox_min_cm": [
-       -18.32,
-       -68.029,
-       64.966
-      ],
-      "bbox_max_cm": [
-       -4.936,
-       -64.723,
-       68.985
       ]
      }
     ],
@@ -2469,185 +2130,8 @@
    ],
    "pivot_inside_bbox": false,
    "triangles_not_in_main_component": {
-    "count": 16,
-    "list": [
-     {
-      "tri": 313,
-      "component": 1,
-      "centroid_cm": [
-       -6.009,
-       -67.158,
-       65.409
-      ],
-      "distance_to_main_bbox_cm": 0.0,
-      "distance_to_main_centroid_cm": 36.529
-     },
-     {
-      "tri": 335,
-      "component": 1,
-      "centroid_cm": [
-       -15.181,
-       -66.138,
-       67.621
-      ],
-      "distance_to_main_bbox_cm": 0.0,
-      "distance_to_main_centroid_cm": 38.075
-     },
-     {
-      "tri": 811,
-      "component": 1,
-      "centroid_cm": [
-       -14.969,
-       -65.742,
-       67.562
-      ],
-      "distance_to_main_bbox_cm": 0.0,
-      "distance_to_main_centroid_cm": 37.891
-     },
-     {
-      "tri": 812,
-      "component": 1,
-      "centroid_cm": [
-       -8.93,
-       -66.875,
-       65.732
-      ],
-      "distance_to_main_bbox_cm": 0.0,
-      "distance_to_main_centroid_cm": 36.413
-     },
-     {
-      "tri": 813,
-      "component": 1,
-      "centroid_cm": [
-       -5.194,
-       -67.355,
-       65.183
-      ],
-      "distance_to_main_bbox_cm": 0.0,
-      "distance_to_main_centroid_cm": 36.514
-     },
-     {
-      "tri": 814,
-      "component": 1,
-      "centroid_cm": [
-       -5.123,
-       -67.581,
-       65.163
-      ],
-      "distance_to_main_bbox_cm": 0.0,
-      "distance_to_main_centroid_cm": 36.581
-     },
-     {
-      "tri": 815,
-      "component": 1,
-      "centroid_cm": [
-       -5.812,
-       -67.598,
-       65.355
-      ],
-      "distance_to_main_bbox_cm": 0.0,
-      "distance_to_main_centroid_cm": 36.65
-     },
-     {
-      "tri": 816,
-      "component": 1,
-      "centroid_cm": [
-       -8.804,
-       -67.088,
-       65.697
-      ],
-      "distance_to_main_bbox_cm": 0.0,
-      "distance_to_main_centroid_cm": 36.456
-     },
-     {
-      "tri": 834,
-      "component": 1,
-      "centroid_cm": [
-       -11.323,
-       -66.439,
-       66.547
-      ],
-      "distance_to_main_bbox_cm": 0.0,
-      "distance_to_main_centroid_cm": 36.963
-     },
-     {
-      "tri": 835,
-      "component": 1,
-      "centroid_cm": [
-       -11.409,
-       -67.048,
-       66.571
-      ],
-      "distance_to_main_bbox_cm": 0.0,
-      "distance_to_main_centroid_cm": 37.168
-     },
-     {
-      "tri": 841,
-      "component": 1,
-      "centroid_cm": [
-       -5.701,
-       -67.611,
-       65.473
-      ],
-      "distance_to_main_bbox_cm": 0.0,
-      "distance_to_main_centroid_cm": 36.782
-     },
-     {
-      "tri": 887,
-      "component": 1,
-      "centroid_cm": [
-       -11.118,
-       -66.67,
-       66.981
-      ],
-      "distance_to_main_bbox_cm": 0.0,
-      "distance_to_main_centroid_cm": 37.448
-     },
-     {
-      "tri": 888,
-      "component": 1,
-      "centroid_cm": [
-       -6.514,
-       -67.205,
-       65.7
-      ],
-      "distance_to_main_bbox_cm": 0.0,
-      "distance_to_main_centroid_cm": 36.742
-     },
-     {
-      "tri": 889,
-      "component": 1,
-      "centroid_cm": [
-       -5.012,
-       -67.594,
-       65.282
-      ],
-      "distance_to_main_bbox_cm": 0.0,
-      "distance_to_main_centroid_cm": 36.715
-     },
-     {
-      "tri": 890,
-      "component": 1,
-      "centroid_cm": [
-       -9.23,
-       -67.153,
-       66.455
-      ],
-      "distance_to_main_bbox_cm": 0.0,
-      "distance_to_main_centroid_cm": 37.165
-     },
-     {
-      "tri": 891,
-      "component": 1,
-      "centroid_cm": [
-       -14.765,
-       -65.973,
-       67.996
-      ],
-      "distance_to_main_bbox_cm": 0.0,
-      "distance_to_main_centroid_cm": 38.352
-     }
-    ]
+    "count": 0,
+    "list": []
    },
    "open_edges": 7,
    "nonmanifold_edges": 3,
@@ -2656,7 +2140,7 @@
    "vertex_distance_to_own_joint_cm": {
     "min": 18.643,
     "max": 97.954,
-    "mean": 55.61
+    "mean": 56.402
    },
    "vertex_distance_to_parent_joint_cm": {
     "parent": "Thigh_R",
@@ -2679,104 +2163,7 @@
    }
   }
  },
- "stray_fragments": [
-  {
-   "part": "Pelvis",
-   "tris": 16,
-   "vertices": 10,
-   "centroid_cm": [
-    29.846,
-    -22.794,
-    146.858
-   ],
-   "bbox_min_cm": [
-    26.436,
-    -29.749,
-    146.168
-   ],
-   "bbox_max_cm": [
-    31.236,
-    -18.961,
-    147.0
-   ],
-   "distance_centroid_to_own_joint_cm": 50.894,
-   "distance_centroid_to_main_component_centroid_cm": 45.33,
-   "min_z_cm": 146.168,
-   "max_z_cm": 147.0
-  },
-  {
-   "part": "Pelvis",
-   "tris": 12,
-   "vertices": 8,
-   "centroid_cm": [
-    29.294,
-    24.72,
-    146.805
-   ],
-   "bbox_min_cm": [
-    25.474,
-    19.781,
-    146.229
-   ],
-   "bbox_max_cm": [
-    31.449,
-    30.814,
-    147.0
-   ],
-   "distance_centroid_to_own_joint_cm": 51.343,
-   "distance_centroid_to_main_component_centroid_cm": 44.34,
-   "min_z_cm": 146.229,
-   "max_z_cm": 147.0
-  },
-  {
-   "part": "Pelvis",
-   "tris": 94,
-   "vertices": 49,
-   "centroid_cm": [
-    37.083,
-    -1.6,
-    146.083
-   ],
-   "bbox_min_cm": [
-    25.733,
-    -15.656,
-    141.929
-   ],
-   "bbox_max_cm": [
-    47.006,
-    15.843,
-    147.0
-   ],
-   "distance_centroid_to_own_joint_cm": 51.577,
-   "distance_centroid_to_main_component_centroid_cm": 44.629,
-   "min_z_cm": 141.929,
-   "max_z_cm": 147.0
-  },
-  {
-   "part": "ShinFoot_R",
-   "tris": 16,
-   "vertices": 10,
-   "centroid_cm": [
-    -9.068,
-    -66.952,
-    66.17
-   ],
-   "bbox_min_cm": [
-    -18.32,
-    -68.029,
-    64.966
-   ],
-   "bbox_max_cm": [
-    -4.936,
-    -64.723,
-    68.985
-   ],
-   "distance_centroid_to_own_joint_cm": 20.605,
-   "distance_centroid_to_main_component_centroid_cm": 36.843,
-   "min_z_cm": 64.966,
-   "max_z_cm": 68.985
-  }
- ],
+ "stray_fragments": [],
  "plane_sides": {
   "waist": {
    "HeadTorso": 1.0,
@@ -2866,7 +2253,7 @@
       "max_abs_x_cm": 0.0,
       "max_abs_y_cm": 0.0,
       "max_abs_z_cm": 0.00182,
-      "worst_vertex": 19,
+      "worst_vertex": 6,
       "worst_vertex_diff_xyz_cm": [
        0.0,
        0.0,
@@ -2878,7 +2265,7 @@
       "max_abs_x_cm": 0.00389,
       "max_abs_y_cm": 0.00077,
       "max_abs_z_cm": 0.00065,
-      "worst_vertex": 809,
+      "worst_vertex": 824,
       "worst_vertex_diff_xyz_cm": [
        -0.004,
        -0.0,
@@ -2950,7 +2337,7 @@
       "max_abs_x_cm": 0.00235,
       "max_abs_y_cm": 1e-05,
       "max_abs_z_cm": 0.00185,
-      "worst_vertex": 348,
+      "worst_vertex": 352,
       "worst_vertex_diff_xyz_cm": [
        0.002,
        0.0,
@@ -2974,7 +2361,7 @@
       "max_abs_x_cm": 0.0016,
       "max_abs_y_cm": 1e-05,
       "max_abs_z_cm": 0.00168,
-      "worst_vertex": 64,
+      "worst_vertex": 62,
       "worst_vertex_diff_xyz_cm": [
        -0.001,
        0.0,
@@ -3003,10 +2390,10 @@
       "max_abs_x_cm": 0.00277,
       "max_abs_y_cm": 2e-05,
       "max_abs_z_cm": 0.00177,
-      "worst_vertex": 984,
+      "worst_vertex": 999,
       "worst_vertex_diff_xyz_cm": [
        0.003,
-       0.0,
+       -0.0,
        0.001
       ]
      },
@@ -3099,7 +2486,7 @@
       "max_abs_x_cm": 0.0005,
       "max_abs_y_cm": 2e-05,
       "max_abs_z_cm": 8e-05,
-      "worst_vertex": 248,
+      "worst_vertex": 246,
       "worst_vertex_diff_xyz_cm": [
        -0.0,
        0.0,
@@ -3116,7 +2503,7 @@
       "max_abs_x_cm": 0.0,
       "max_abs_y_cm": 0.0,
       "max_abs_z_cm": 0.00182,
-      "worst_vertex": 19,
+      "worst_vertex": 6,
       "worst_vertex_diff_xyz_cm": [
        0.0,
        0.0,
@@ -3200,7 +2587,7 @@
       "max_abs_x_cm": 0.01062,
       "max_abs_y_cm": 1e-05,
       "max_abs_z_cm": 0.0016,
-      "worst_vertex": 366,
+      "worst_vertex": 371,
       "worst_vertex_diff_xyz_cm": [
        -0.011,
        0.0,
@@ -3224,7 +2611,7 @@
       "max_abs_x_cm": 0.00585,
       "max_abs_y_cm": 1e-05,
       "max_abs_z_cm": 0.00803,
-      "worst_vertex": 64,
+      "worst_vertex": 62,
       "worst_vertex_diff_xyz_cm": [
        0.004,
        -0.0,
@@ -3253,7 +2640,7 @@
       "max_abs_x_cm": 0.00424,
       "max_abs_y_cm": 0.00096,
       "max_abs_z_cm": 0.00298,
-      "worst_vertex": 972,
+      "worst_vertex": 987,
       "worst_vertex_diff_xyz_cm": [
        -0.004,
        0.0,
@@ -3349,7 +2736,7 @@
       "max_abs_x_cm": 2e-05,
       "max_abs_y_cm": 1e-05,
       "max_abs_z_cm": 2e-05,
-      "worst_vertex": 64,
+      "worst_vertex": 62,
       "worst_vertex_diff_xyz_cm": [
        -0.0,
        0.0,
@@ -3361,33 +2748,115 @@
   },
   "max_over_all_run_frames_cm": 0.0109,
   "keyed_path": "meshy_bake_anim.py functions: run_pose, apply_pose, fit_ground on the parent hierarchy, vertices = matrix_world @ local",
-  "images": []
+  "images": [
+   "renders/check/pose_run_front.png",
+   "renders/check/pose_run_keyed_front.png",
+   "renders/check/pose_run_side.png",
+   "renders/check/pose_run_keyed_side.png",
+   "renders/check/parts_isolated_colour_front.png",
+   "renders/check/parts_isolated_colour_side.png",
+   "renders/check/parts_isolated_textured_front.png",
+   "renders/check/parts_isolated_textured_side.png",
+   "renders/check/parts_isolated_all_colour_front.png",
+   "renders/check/parts_isolated_all_colour_side.png"
+  ]
  },
- "anomalies": [
-  "Pelvis: 4 connected components, tris [768, 16, 12, 94]",
-  "HeadTorso: open edges 19 by vertex index (19 merged by position 1e-4 cm), 4 in the parts report",
-  "HeadTorso: 20 non-manifold edges by vertex index (20 merged by position)",
-  "UpperArm_L: 8 open edges by vertex index (same as the parts report; 8 merged by position)",
-  "UpperArm_L: 9 non-manifold edges by vertex index (9 merged by position)",
-  "UpperArm_R: open edges 6 by vertex index (6 merged by position 1e-4 cm), 4 in the parts report",
-  "UpperArm_R: 5 non-manifold edges by vertex index (5 merged by position)",
-  "ForearmHand_L: open edges 11 by vertex index (11 merged by position 1e-4 cm), 2 in the parts report",
-  "ForearmHand_L: 9 non-manifold edges by vertex index (15 merged by position)",
-  "ForearmHand_R: 2 open edges by vertex index (same as the parts report; 2 merged by position)",
-  "ForearmHand_R: 2 non-manifold edges by vertex index (2 merged by position)",
-  "Thigh_L: open edges 6 by vertex index (6 merged by position 1e-4 cm), 4 in the parts report",
-  "Thigh_L: 3 non-manifold edges by vertex index (7 merged by position)",
-  "Thigh_R: open edges 5 by vertex index (5 merged by position 1e-4 cm), 3 in the parts report",
-  "Thigh_R: 3 non-manifold edges by vertex index (3 merged by position)",
-  "ShinFoot_L: 6 open edges by vertex index (same as the parts report; 6 merged by position)",
-  "ShinFoot_L: 5 non-manifold edges by vertex index (5 merged by position)",
-  "ShinFoot_R: 2 connected components, tris [876, 16]",
-  "ShinFoot_R: 7 open edges by vertex index (same as the parts report; 7 merged by position)",
-  "ShinFoot_R: 3 non-manifold edges by vertex index (3 merged by position)"
+ "anomalies": [],
+ "notes": [
+  "open edges merged by position: parts 70, source 40 (read back from the FBX; not explained further: the build-time count of the parts equals the source count, 0 cap boundary edges are open)",
+  "non-manifold edges merged by position: parts 165, source 43 (source defects of the Meshy mesh; position merging also welds coincident cut seams and slivers inside one part, so the total is larger than the source)"
  ],
+ "edges_vs_source": {
+  "rule": "open and non-manifold edges that already exist in the source mesh are source defects, not cut defects. Anomaly only when the build-time open edges of the parts (parts report, by vertex index) exceed the source count, or when the cut left cap boundary edges open.",
+  "source_fbx": {
+   "file": "heavy_meshy_game.fbx",
+   "open_edges_merged_by_position": 40,
+   "nonmanifold_edges_merged_by_position": 43
+  },
+  "source_open_edges_build_count": 40,
+  "source_nonmanifold_edges_build_count": 43,
+  "parts_open_build_total": 40,
+  "cap_boundary_edges_still_open": 0,
+  "parts_open_read_back_total": 70,
+  "parts_open_merged_by_position_total": 70,
+  "parts_nonmanifold_merged_by_position_total": 165,
+  "per_part": {
+   "Pelvis": {
+    "open_read_back": 0,
+    "open_merged_by_position": 0,
+    "open_build": 0,
+    "nonmanifold_read_back": 0,
+    "nonmanifold_merged_by_position": 0
+   },
+   "HeadTorso": {
+    "open_read_back": 19,
+    "open_merged_by_position": 19,
+    "open_build": 4,
+    "nonmanifold_read_back": 20,
+    "nonmanifold_merged_by_position": 103
+   },
+   "UpperArm_L": {
+    "open_read_back": 8,
+    "open_merged_by_position": 8,
+    "open_build": 8,
+    "nonmanifold_read_back": 9,
+    "nonmanifold_merged_by_position": 9
+   },
+   "UpperArm_R": {
+    "open_read_back": 6,
+    "open_merged_by_position": 6,
+    "open_build": 4,
+    "nonmanifold_read_back": 5,
+    "nonmanifold_merged_by_position": 5
+   },
+   "ForearmHand_L": {
+    "open_read_back": 11,
+    "open_merged_by_position": 11,
+    "open_build": 2,
+    "nonmanifold_read_back": 9,
+    "nonmanifold_merged_by_position": 15
+   },
+   "ForearmHand_R": {
+    "open_read_back": 2,
+    "open_merged_by_position": 2,
+    "open_build": 2,
+    "nonmanifold_read_back": 2,
+    "nonmanifold_merged_by_position": 2
+   },
+   "Thigh_L": {
+    "open_read_back": 6,
+    "open_merged_by_position": 6,
+    "open_build": 4,
+    "nonmanifold_read_back": 3,
+    "nonmanifold_merged_by_position": 7
+   },
+   "Thigh_R": {
+    "open_read_back": 5,
+    "open_merged_by_position": 5,
+    "open_build": 3,
+    "nonmanifold_read_back": 3,
+    "nonmanifold_merged_by_position": 16
+   },
+   "ShinFoot_L": {
+    "open_read_back": 6,
+    "open_merged_by_position": 6,
+    "open_build": 6,
+    "nonmanifold_read_back": 5,
+    "nonmanifold_merged_by_position": 5
+   },
+   "ShinFoot_R": {
+    "open_read_back": 7,
+    "open_merged_by_position": 7,
+    "open_build": 7,
+    "nonmanifold_read_back": 3,
+    "nonmanifold_merged_by_position": 3
+   }
+  }
+ },
  "plane_deviations": {
   "note": "deviation of the cut from the planar model: a triangle centroid / vertex of a part on the other side of the joint plane than its main component. Not an assignment error by itself when the cut followed mesh edges (zigzag cut, mode 'edges' of meshy_cut_parts.py): the depth is then the zigzag amplitude",
   "list": [
+   "HeadTorso vs plane waist: 82 triangle centroids on the wrong side (worst 4.346 cm), 21 vertices (worst 5.071 cm)",
    "HeadTorso vs plane shoulder_L: 6 triangle centroids on the wrong side (worst 1.082 cm), 10 vertices (worst 3.838 cm)",
    "UpperArm_L vs plane shoulder_L: 27 triangle centroids on the wrong side (worst 3.102 cm), 25 vertices (worst 4.026 cm)",
    "HeadTorso vs plane shoulder_R: 3 triangle centroids on the wrong side (worst 0.638 cm), 9 vertices (worst 4.365 cm)",
@@ -3398,5 +2867,58 @@
    "Thigh_R vs plane hip_R: 43 triangle centroids on the wrong side (worst 2.458 cm), 26 vertices (worst 3.061 cm)"
   ]
  },
- "warnings": []
+ "warnings": [],
+ "part_colours_rgb": {
+  "Pelvis": [
+   0.95,
+   0.237,
+   0.237
+  ],
+  "HeadTorso": [
+   0.95,
+   0.665,
+   0.237
+  ],
+  "UpperArm_L": [
+   0.807,
+   0.95,
+   0.237
+  ],
+  "UpperArm_R": [
+   0.38,
+   0.95,
+   0.237
+  ],
+  "ForearmHand_L": [
+   0.237,
+   0.95,
+   0.523
+  ],
+  "ForearmHand_R": [
+   0.237,
+   0.95,
+   0.95
+  ],
+  "Thigh_L": [
+   0.237,
+   0.523,
+   0.95
+  ],
+  "Thigh_R": [
+   0.38,
+   0.237,
+   0.95
+  ],
+  "ShinFoot_L": [
+   0.808,
+   0.237,
+   0.95
+  ],
+  "ShinFoot_R": [
+   0.95,
+   0.237,
+   0.665
+  ]
+ },
+ "render_setup": "EEVEE, orthographic, lit rig of meshy_bake_anim.py (sun 4.5, world grey 0.62 strength 0.55), 480 px tiles; poses: 150 cm frame centred at z=124.0, front camera at +X (robot left = image right), side camera at -Y (robot faces image right); isolated parts: frame = 1.45 x the largest bbox extent of the part (>= 20 cm), tile label = part, view, triangles"
 }

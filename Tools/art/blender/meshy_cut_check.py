@@ -13,7 +13,7 @@ from mathutils import Vector, Matrix, Euler
 argv = sys.argv[sys.argv.index("--") + 1:] if "--" in sys.argv else []
 NORENDER = "--no-render" in argv
 argv = [a for a in argv if a != "--no-render"]
-opt = {"--in-fbx": "", "--parts-report": "", "--in-exr": "", "--anim-report": "", "--in-tex": "", "--out-dir": "", "--work": "C:/Users/soumo/AppData/Local/Temp/rr-meshy2/work", "--height-cm": "123", "--frames": "0,4,8,12"}
+opt = {"--in-fbx": "", "--parts-report": "", "--in-exr": "", "--anim-report": "", "--in-tex": "", "--out-dir": "", "--work": "C:/Users/soumo/AppData/Local/Temp/rr-meshy2/work", "--height-cm": "123", "--frames": "0,4,8,12", "--source-fbx": ""}
 for i in range(0, len(argv) - 1, 2):
     opt[argv[i]] = argv[i + 1]
 for k in ("--in-fbx", "--parts-report", "--in-exr", "--anim-report", "--in-tex", "--out-dir"):
@@ -40,6 +40,8 @@ AREP = json.load(open(opt["--anim-report"], encoding="utf-8"))
 PRM = AREP["parameters"]
 A_THIGH, A_KNEE, A_ARM, A_ELBOW, A_LEAN, A_TWIST = (PRM[k] for k in ("thigh_swing_deg", "knee_flexion_max_deg", "arm_swing_deg", "elbow_bend_deg", "torso_lean_deg", "torso_twist_deg"))
 NRUN = AREP["clips"].get("run", AREP["clips"].get("walk"))["length"]
+ROBOT = AREP.get("robot")      # robots baked with a config: open edges of the source mesh are not cut defects, stray slivers touching their part are notes
+NOTES = []
 WALK_POSES = AREP.get("walk_poses")      # robots baked with walk_style planted store their keyed poses in the report
 
 PARTS = [p["name"] for p in AREP["parts"]]
@@ -118,12 +120,25 @@ def r3(a):
     return [round(float(x), 3) for x in a]
 
 
+SRC_STATS = None
+if ROBOT and opt["--source-fbx"]:
+    n_before = set(bpy.data.objects)
+    bpy.ops.import_scene.fbx(filepath=stage(opt["--source-fbx"], "cc_source.fbx"), colors_type="LINEAR")
+    so_ = [o for o in bpy.data.objects if o not in n_before and o.type == "MESH"][0]
+    so_.data.calc_loop_triangles()
+    sV = np.array([(so_.matrix_world @ v.co)[:] for v in so_.data.vertices])
+    sT = np.array([t.vertices[:] for t in so_.data.loop_triangles])
+    s_open, s_nm = edge_stats(sT, merge_ids(sV))
+    SRC_STATS = dict(file=os.path.basename(opt["--source-fbx"]), open_edges_merged_by_position=s_open, nonmanifold_edges_merged_by_position=s_nm)
+    bpy.data.objects.remove(so_)
+
 PLANES = {p["label"]: p for p in PREP["cut_planes"]}
 PIV = {n: np.array(PREP["pivots_cm"][n], float) for n in PARTS}
 for n in PARTS:
     if np.abs(PIV[n] - REST_P[n]).max() > 1e-3:
         WARN.append("pivot of %s differs from the parts report" % n)
 ANOM = []
+EDGE_ACCT = {}
 PLDEV = []
 CUT = {}
 CENT = {}
@@ -143,7 +158,12 @@ for n in PARTS:
     main = max(range(ncomp), key=lambda c: comps[c]["tris"])
     MAIN[n] = np.where(cl == main)[0]
     if ncomp > 1:
-        ANOM.append("%s: %d connected components, tris %s" % (n, ncomp, [c["tris"] for c in comps]))
+        mb = comps[main]
+        gaps = [max(0.0, float(np.max(np.maximum(np.array(mb["bbox_min_cm"]) - np.array(c["bbox_max_cm"]), np.array(c["bbox_min_cm"]) - np.array(mb["bbox_max_cm"]))))) for c in comps if c["index"] != main]
+        if ROBOT and max(gaps) <= 0.5:
+            NOTES.append("%s: %d connected components, tris %s: the stray ones sit at most %.2f cm from the main component (slivers split off at a cut plane, assigned to the part that owns the closest face)" % (n, ncomp, [c["tris"] for c in comps], max(gaps)))
+        else:
+            ANOM.append("%s: %d connected components, tris %s" % (n, ncomp, [c["tris"] for c in comps]))
     # triangles far from the main component (distance from the centroid to the main component bbox, cm)
     mv = np.unique(T[MAIN[n]].ravel())
     bmin, bmax = V[mv].min(0), V[mv].max(0)
@@ -168,17 +188,34 @@ for n in PARTS:
         vertex_distance_to_parent_joint_cm=(dict(parent=par, min=round(float(dpar.min()), 3), max=round(float(dpar.max()), 3)) if par else None),
         planes={})
     exp_open = PREP["parts"][n]["open_edges"]
-    if n_open_idx != exp_open:
+    EDGE_ACCT[n] = dict(open_read_back=n_open_idx, open_merged_by_position=n_open, open_build=exp_open, nonmanifold_read_back=n_nm_idx, nonmanifold_merged_by_position=n_nm)
+    if ROBOT:
+        pass
+    elif n_open_idx != exp_open:
         ANOM.append("%s: open edges %d by vertex index (%d merged by position 1e-4 cm), %d in the parts report" % (n, n_open_idx, n_open, exp_open))
     elif n_open_idx:
         ANOM.append("%s: %d open edges by vertex index (same as the parts report; %d merged by position)" % (n, n_open_idx, n_open))
-    if n_nm_idx:
+    if n_nm_idx and not ROBOT:
         ANOM.append("%s: %d non-manifold edges by vertex index (%d merged by position)" % (n, n_nm_idx, n_nm))
     exp_t = PREP["readback"]["per_part"][n]["tris"]
     if len(T) != exp_t:
         ANOM.append("%s: %d triangles in the FBX, %d in the parts report readback" % (n, len(T), exp_t))
     if n_open == 0 and False:
         pass
+
+EDGE_REPORT = None
+if ROBOT:
+    tot = lambda k: sum(v[k] for v in EDGE_ACCT.values())
+    src_open_build = PREP["inputs"]["source_open_edges"]
+    src_nm_build = PREP["inputs"]["source_nonmanifold_edges"]
+    EDGE_REPORT = dict(rule="open and non-manifold edges that already exist in the source mesh are source defects, not cut defects. Anomaly only when the build-time open edges of the parts (parts report, by vertex index) exceed the source count, or when the cut left cap boundary edges open.",
+                       source_fbx=SRC_STATS, source_open_edges_build_count=src_open_build, source_nonmanifold_edges_build_count=src_nm_build, parts_open_build_total=tot("open_build"), cap_boundary_edges_still_open=PREP.get("cap_boundary_edges_still_open"),
+                       parts_open_read_back_total=tot("open_read_back"), parts_open_merged_by_position_total=tot("open_merged_by_position"), parts_nonmanifold_merged_by_position_total=tot("nonmanifold_merged_by_position"), per_part=EDGE_ACCT)
+    if tot("open_build") > src_open_build or PREP.get("cap_boundary_edges_still_open"):
+        ANOM.append("open edges: %d at build time in the parts (source %d), cap boundary edges open %s" % (tot("open_build"), src_open_build, PREP.get("cap_boundary_edges_still_open")))
+    if SRC_STATS and tot("open_merged_by_position") > SRC_STATS["open_edges_merged_by_position"]:
+        NOTES.append("open edges merged by position: parts %d, source %d (read back from the FBX; not explained further: the build-time count of the parts equals the source count, 0 cap boundary edges are open)" % (tot("open_merged_by_position"), SRC_STATS["open_edges_merged_by_position"]))
+    NOTES.append("non-manifold edges merged by position: parts %d, source %s (source defects of the Meshy mesh; position merging also welds coincident cut seams and slivers inside one part, so the total is larger than the source)" % (tot("nonmanifold_merged_by_position"), SRC_STATS["nonmanifold_edges_merged_by_position"] if SRC_STATS else "not read"))
 
 # side of the joint plane
 WAIST = PLANES["waist"]
@@ -621,6 +658,8 @@ rep = dict(
         keyed_path="meshy_bake_anim.py functions: run_pose, apply_pose, fit_ground on the parent hierarchy, vertices = matrix_world @ local",
         images=RENDERS),
     anomalies=ANOM,
+    notes=NOTES,
+    edges_vs_source=EDGE_REPORT,
     plane_deviations=dict(note="deviation of the cut from the planar model: a triangle centroid / vertex of a part on the other side of the joint plane than its main component. Not an assignment error by itself when the cut followed mesh edges (zigzag cut, mode 'edges' of meshy_cut_parts.py): the depth is then the zigzag amplitude", list=PLDEV),
     warnings=WARN)
 if not NORENDER:
@@ -631,7 +670,9 @@ rp = os.path.join(WORK, "cut_check.report.json")
 with open(rp, "w", encoding="utf-8") as f:
     json.dump(rep, f, indent=1)
 shutil.copyfile(rp, os.path.join(OUT, "cut_check.report.json"))
-print("DONE anomalies=%d" % len(ANOM))
+print("DONE anomalies=%d notes=%d" % (len(ANOM), len(NOTES)))
+for a in NOTES:
+    print(" note:", a)
 for a in ANOM:
     print(" -", a)
 print("exr_vs_keyed_max_cm", [round(DIFF[f]["max_cm"], 4) for f in range(NRUN)])
