@@ -3,7 +3,7 @@ id: task-284-08-bp-chaser-v2-anim
 description: "BP_ChaserV2 plays the run and attack (bp)."
 parent: task-284-robot-walk-knee-anim
 kind: task
-status: todo
+status: in-progress
 ---
 # BP_ChaserV2 plays the run and attack
 

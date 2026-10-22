@@ -3,7 +3,7 @@ id: task-284-07-bp-shooter-anim
 description: "BP_Shooter plays the walk (bp)."
 parent: task-284-robot-walk-knee-anim
 kind: task
-status: in-progress
+status: done
 ---
 # BP_Shooter plays the walk
 
@@ -15,11 +15,11 @@ status: in-progress
 - done_when: RENDER_DATA UV channel 2 read back clean on every corner, build settings and texture settings read back, eye RunRate and ClipOffset equal to the body instance, compiles without error, doc updated; lint clean
 - editor_state: open
 - token_ceiling: 80000
-- model: open
-- tokens: open
-- runs: open
+- model: sonnet
+- tokens: input 48, cache write 61676, cache read 1098475, output 13555
+- runs: 1
 - milestone: M2
-- result: open
+- result: SM_Shooter_Meshy_Anim + T_ShooterAnim imported; RENDER_DATA UV2 clean; build/texture settings read back; bounds +60 cm; MI_Shooter_Body, MI_RobotEye_Shooter Animated on, RunRate 1.25; BP_Shooter BodyMesh = anim mesh, compiled and saved; docs updated.
 
 ## Relations
 - [[task-284-robot-walk-knee-anim]] — parent global task.
