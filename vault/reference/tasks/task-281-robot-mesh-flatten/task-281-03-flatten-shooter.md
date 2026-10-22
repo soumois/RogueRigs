@@ -3,7 +3,7 @@ id: task-281-03-flatten-shooter
 description: "Flatten the shooter panels (3d)."
 parent: task-281-robot-mesh-flatten
 kind: task
-status: todo
+status: in-progress
 ---
 # Flatten the shooter panels
 

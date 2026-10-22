@@ -3,7 +3,7 @@ id: task-281-02-flatten-kamikaze
 description: "Flatten the kamikaze panels (3d)."
 parent: task-281-robot-mesh-flatten
 kind: task
-status: in-progress
+status: done
 ---
 # Flatten the kamikaze panels
 
@@ -15,11 +15,11 @@ status: in-progress
 - done_when: report: tris and verts unchanged, UV0 unchanged, deviation from plane after flattening under 0.1 cm (scale 1.9 m) on every listed region, no vertex moved more than 2 cm, no flipped normal; the Orchestrator renders the same camera (barrel_preview.py settings scaled to a 190 cm robot: front three-quarter and back three-quarter) before and after and sends both to the owner; Blender processes stopped (Get-Process blender)
 - editor_state: closed (Blender headless only)
 - token_ceiling: 60000
-- model: open
-- tokens: open
-- runs: open
+- model: sonnet
+- tokens: input 10, cache write 41309, cache read 144506, output 383
+- runs: 1
 - milestone: M2
-- result: open
+- result: kamikaze_meshy_flat.fbx: 229 planar regions (2032 of 10172 faces), deviation 1.402 -> 0.013 cm, max move 1.84 cm, tris/verts/UV0 unchanged, 0 flipped normals; renders Saved/Renders/task-281/kamikaze_*.
 
 ## Relations
 - [[task-281-robot-mesh-flatten]] — parent global task.

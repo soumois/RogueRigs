@@ -14,7 +14,7 @@ status: in-progress
 - depends_on_global: none (raw meshes stored, robots-meshy-raw-2026-10-22)
 - confirmed_by_owner: yes (2026-10-22, plan accepted; launch on the owner's word)
 - milestone: M2
-- next_step: task-281-02-flatten-kamikaze
+- next_step: task-281-03-flatten-shooter
 - result: open
 
 ## Subtasks

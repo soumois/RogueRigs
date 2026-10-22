@@ -550,6 +550,7 @@ kind: note
 | [[task-278-09-bp-heavy-eye]] | sonnet | 1 | 0k | 37k | 478k | 1k |
 | [[task-278-10-bp-shooter-eye]] | sonnet | 1 | 0k | 20k | 111k | 1k |
 | [[task-281-01-flatten-heavy]] | sonnet | 1 | 0k | 46k | 429k | 8k |
+| [[task-281-02-flatten-kamikaze]] | sonnet | 1 | 0k | 41k | 145k | 0k |
 
 ## Totals
 | Scope | Input | Cache write | Cache read | Output |
