@@ -3,7 +3,7 @@ id: task-288-robot-death-debris
 description: "Global task: Death debris pieces for heavy, kamikaze, shooter, chaser v2 and shield chaser v2, as for the chaser, v1 debris untouched."
 parent: tasks-to-do-index
 kind: task
-status: todo
+status: in-progress
 ---
 # Robot death debris for the new meshes
 

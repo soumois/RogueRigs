@@ -3,7 +3,7 @@ id: task-288-01-pieces-heavy
 description: "Debris pieces of the heavy (3d)."
 parent: task-288-robot-death-debris
 kind: task
-status: todo
+status: in-progress
 ---
 # Debris pieces of the heavy
 
