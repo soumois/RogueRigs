@@ -240,6 +240,7 @@ ppv-xp-glow  reference/tech/blueprints/world/ppv-xp-glow.md
 production-index  reference/production/production-index.md
 rarities  reference/gdd/weapons/rarities.md
 readability-rules  reference/gdd/art-audio/readability-rules.md
+robots-meshy-raw-2026-10-22  reference/tech/pipelines/robots-meshy-raw-2026-10-22.md
 rock-look-reference  reference/gdd/art-audio/rock-look-reference.md
 rock-render-counts  reference/tech/systems/world/sys-grid/rock-state-render-options/rock-render-counts.md
 rock-render-damage  reference/tech/systems/world/sys-grid/rock-state-render-options/rock-render-damage.md

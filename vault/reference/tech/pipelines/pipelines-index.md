@@ -13,6 +13,7 @@ kind: note
 - [[mesh-fidelity-loop]] — validation of a Blender-route mesh against its source image: criteria, comparison render, max returns, report fields.
 - [[chaser-model-pipeline]] — chaser Blender model split by part: files, commands, contract per part, part preview, how to edit one part.
 - [[chaser-meshy-pipeline]] — the animated chaser from the Meshy mesh: Blender scripts, bake format, Unreal assets and parameters.
+- [[robots-meshy-raw-2026-10-22]] — raw Meshy meshes of heavy, kamikaze, shooter and chaser v2 (owner 2026-10-22): files, measures, texture defects.
 - [[level-layout-schema]] — layout JSON format, brief format, validator. Read before writing or loading a layout.
 - [[layout-generator-recipe]] — algorithm behind arena_m1 (outline, organic paths, hidden pockets, heal ore); read before writing the C++ generator.
 - [[layout-review-rules]] — review rules for generated 240 layouts: seed pick, dead zones, straight lanes, pocket distance. Open before writing a layout.
