@@ -3,7 +3,7 @@ id: task-283-04-game-ready-shooter
 description: "Make the shooter mesh game ready (3d)."
 parent: task-283-robot-mesh-integration
 kind: task
-status: todo
+status: in-progress
 ---
 # Make the shooter mesh game ready
 
