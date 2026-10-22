@@ -3,7 +3,7 @@ id: task-283-05-game-ready-chaser-v2
 description: "Make the chaser v2 mesh game ready (3d)."
 parent: task-283-robot-mesh-integration
 kind: task
-status: todo
+status: in-progress
 ---
 # Make the chaser v2 mesh game ready
 

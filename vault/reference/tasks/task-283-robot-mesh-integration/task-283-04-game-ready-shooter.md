@@ -3,7 +3,7 @@ id: task-283-04-game-ready-shooter
 description: "Make the shooter mesh game ready (3d)."
 parent: task-283-robot-mesh-integration
 kind: task
-status: in-progress
+status: done
 ---
 # Make the shooter mesh game ready
 
@@ -15,11 +15,11 @@ status: in-progress
 - done_when: dims match the decided height within 1 cm, origin at the floor, front +X, slots body then robot_eye, eye faces > 0 and red eye texels left in body faces 0, UV0 unchanged, LightMap UV1 without overlap; Blender processes stopped
 - editor_state: closed (Blender headless only)
 - token_ceiling: 60000
-- model: open
-- tokens: open
-- runs: open
+- model: sonnet
+- tokens: input 18, cache write 34091, cache read 248705, output 428
+- runs: 1
 - milestone: M2
-- result: open
+- result: shooter_meshy_game.fbx: 82.6 x 131.5 x 176.0 cm, floor origin, front +X, slots [body, robot_eye], 83 eye faces, 0 red texels left in eye zone (cannon glow kept in body), UV0 delta 0, UV1 no overlap; cannon tip Unreal (45.7, 50.4, 70.6) cm.
 
 ## Relations
 - [[task-283-robot-mesh-integration]] — parent global task.

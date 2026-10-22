@@ -560,6 +560,7 @@ kind: note
 | [[task-283-01-capture-before]] | opus | 1 | 0k | 44k | 414k | 1k |
 | [[task-283-02-game-ready-heavy]] | sonnet | 1 | 0k | 73k | 587k | 9k |
 | [[task-283-03-game-ready-kamikaze]] | sonnet | 1 | 0k | 66k | 971k | 2k |
+| [[task-283-04-game-ready-shooter]] | sonnet | 1 | 0k | 34k | 249k | 0k |
 
 ## Totals
 | Scope | Input | Cache write | Cache read | Output |

@@ -14,7 +14,7 @@ status: in-progress
 - depends_on_global: task-282
 - confirmed_by_owner: yes (2026-10-22, plan accepted; launch on the owner's word)
 - milestone: M2
-- next_step: task-283-04-game-ready-shooter
+- next_step: task-283-05-game-ready-chaser-v2
 - result: open
 
 ## Subtasks
