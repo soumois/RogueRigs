@@ -3,7 +3,7 @@ id: task-283-06-robot-body-material
 description: "Robot body material and instances (bp)."
 parent: task-283-robot-mesh-integration
 kind: task
-status: in-progress
+status: done
 ---
 # Robot body material and instances
 
@@ -15,11 +15,11 @@ status: in-progress
 - done_when: every instance read back (texture, switches, scalars), master compiles without error, saved, doc node written; lint clean
 - editor_state: open
 - token_ceiling: 80000
-- model: open
-- tokens: open
-- runs: open
+- model: sonnet
+- tokens: input 58, cache write 104558, cache read 1760103, output 1042
+- runs: 2
 - milestone: M2
-- result: open
+- result: 4 textures T_{Heavy,Kamikaze,Shooter,ChaserV2}_Meshy_BaseColor imported; M_RobotMeshy (BaseColorTex, roughness 0.6, metallic 0, static switch Animated -> MF_RobotAnimWPO) + MI_{Heavy,Kamikaze,Shooter,ChaserV2}_Body and MI_RobotEye_{Heavy,Kamikaze,Shooter,ChaserV2} (UseEyeTexture on, Animated off, GlowAmount 23) all read back; doc bp-robot-meshy-material. Note: M_RobotEye master GlowAmount default is 35, doc says 23.
 
 ## Relations
 - [[task-283-robot-mesh-integration]] — parent global task.

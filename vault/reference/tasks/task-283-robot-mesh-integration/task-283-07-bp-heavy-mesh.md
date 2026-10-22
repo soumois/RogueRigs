@@ -3,7 +3,7 @@ id: task-283-07-bp-heavy-mesh
 description: "BP_Heavy uses the Meshy mesh (bp)."
 parent: task-283-robot-mesh-integration
 kind: task
-status: todo
+status: in-progress
 ---
 # BP_Heavy uses the Meshy mesh
 
