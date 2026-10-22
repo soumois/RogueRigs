@@ -3,7 +3,7 @@ id: task-284-06-bp-heavy-anim
 description: "BP_Heavy plays the walk (bp)."
 parent: task-284-robot-walk-knee-anim
 kind: task
-status: in-progress
+status: done
 ---
 # BP_Heavy plays the walk
 
@@ -15,11 +15,11 @@ status: in-progress
 - done_when: RENDER_DATA UV channel 2 read back clean on every corner, build settings and texture settings read back, eye RunRate and ClipOffset equal to the body instance, compiles without error, doc updated; lint clean
 - editor_state: open
 - token_ceiling: 80000
-- model: open
-- tokens: open
-- runs: open
+- model: sonnet
+- tokens: input 90, cache write 130654, cache read 4088543, output 27927
+- runs: 1
 - milestone: M2
-- result: open
+- result: SM_Heavy_Meshy_Anim + T_HeavyAnim imported; RENDER_DATA UV2 clean (10 bins, 0 off-bin); build/texture settings read back; bounds +60 cm; MI_Heavy_Body, MI_RobotEye_Heavy, _Glow Animated on, AnimTex T_HeavyAnim, RunRate 1.0; BP_Heavy BodyMesh = anim mesh, compiles; docs bp-heavy, bp-robot-meshy-material, robot-parts-bake-pipeline (Unreal recipe).
 
 ## Relations
 - [[task-284-robot-walk-knee-anim]] — parent global task.

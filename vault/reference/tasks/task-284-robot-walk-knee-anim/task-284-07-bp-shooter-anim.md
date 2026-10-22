@@ -3,7 +3,7 @@ id: task-284-07-bp-shooter-anim
 description: "BP_Shooter plays the walk (bp)."
 parent: task-284-robot-walk-knee-anim
 kind: task
-status: todo
+status: in-progress
 ---
 # BP_Shooter plays the walk
 
