@@ -3,7 +3,7 @@ id: task-281-02-flatten-kamikaze
 description: "Flatten the kamikaze panels (3d)."
 parent: task-281-robot-mesh-flatten
 kind: task
-status: todo
+status: in-progress
 ---
 # Flatten the kamikaze panels
 

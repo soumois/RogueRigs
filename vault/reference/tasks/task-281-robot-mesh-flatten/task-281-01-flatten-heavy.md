@@ -3,7 +3,7 @@ id: task-281-01-flatten-heavy
 description: "Flatten the heavy panels (3d)."
 parent: task-281-robot-mesh-flatten
 kind: task
-status: in-progress
+status: done
 ---
 # Flatten the heavy panels
 
@@ -15,11 +15,11 @@ status: in-progress
 - done_when: report: tris and verts unchanged, UV0 unchanged, deviation from plane after flattening under 0.1 cm (scale 1.9 m) on every listed region, no vertex moved more than 2 cm, no flipped normal; the Orchestrator renders the same camera (barrel_preview.py settings scaled to a 190 cm robot: front three-quarter and back three-quarter) before and after and sends both to the owner; Blender processes stopped (Get-Process blender)
 - editor_state: closed (Blender headless only)
 - token_ceiling: 60000
-- model: open
-- tokens: open
-- runs: open
+- model: sonnet
+- tokens: input 30, cache write 46441, cache read 429372, output 7762
+- runs: 1
 - milestone: M2
-- result: open
+- result: Tools/art/blender/meshy_flatten_panels.py and robot_preview.py written; heavy_meshy_flat.fbx: 165 planar regions (1342 of 10361 faces), deviation 1.362 -> 0.026 cm, max move 1.59 cm, tris/verts/UV0 unchanged, 0 flipped normals; renders Saved/Renders/task-281/heavy_*; effect subtle (smooth shading kept).
 
 ## Relations
 - [[task-281-robot-mesh-flatten]] — parent global task.
