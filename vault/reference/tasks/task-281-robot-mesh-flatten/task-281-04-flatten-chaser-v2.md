@@ -3,7 +3,7 @@ id: task-281-04-flatten-chaser-v2
 description: "Flatten the chaser v2 panels (3d)."
 parent: task-281-robot-mesh-flatten
 kind: task
-status: todo
+status: in-progress
 ---
 # Flatten the chaser v2 panels
 
