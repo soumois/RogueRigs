@@ -109,6 +109,7 @@ bp-rock-slab-material  reference/tech/blueprints/world/bp-rock-slab-material.md
 bp-rr-game-mode  reference/tech/blueprints/player/bp-rr-game-mode.md
 bp-rr-player-controller  reference/tech/blueprints/player/bp-rr-player-controller.md
 bp-shield-chaser  reference/tech/blueprints/enemies/bp-shield-chaser.md
+bp-shield-chaser-v2  reference/tech/blueprints/enemies/bp-shield-chaser-v2.md
 bp-shield-debris  reference/tech/blueprints/fx/bp-shield-debris.md
 bp-shooter  reference/tech/blueprints/enemies/bp-shooter.md
 bp-shotgun  reference/tech/blueprints/player/bp-shotgun.md

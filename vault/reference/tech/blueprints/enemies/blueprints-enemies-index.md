@@ -12,6 +12,7 @@ The robot Blueprints: chaser, shield chaser, kamikaze, shooter, heavy.
 - [[blueprints-index]] — parent index.
 - [[bp-chaser]] — BP_Chaser, the chaser robot.
 - [[bp-chaser-v2]] — BP_ChaserV2, the chaser with the animated Meshy v2 mesh.
+- [[bp-shield-chaser-v2]] — BP_ShieldChaserV2, the shield chaser with the animated Meshy v2 mesh.
 - [[bp-shield-chaser]] — BP_ShieldChaser, the shielded chaser with a pale shell.
 - [[bp-kamikaze]] — BP_Kamikaze, the kamikaze robot.
 - [[bp-shooter]] — BP_Shooter and BP_ShooterProjectile, the shooter robot.
