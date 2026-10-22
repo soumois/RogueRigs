@@ -121,6 +121,8 @@ yb, rb, bb, kb = RU["yellow"], RU["red"], RU["blue"], RU["blotch"]
 RED = (R > rb["r_min"]) & (G < rb["g_max"]) & (B < rb["b_max"])
 YEL = (R > yb["r_min"]) & (G > yb["g_min"]) & (B < yb["b_max"]) & (R - B > yb["r_minus_b_min"]) & ~RED
 BLU = (B - R > bb["b_minus_r_min"]) & (sat > bb["sat_min"]) & ~RED & ~YEL
+if bb.get("mode") == "green":      # optional (shooter): the treated main colour is green instead of blue
+    BLU = (G - R > bb["g_minus_r_min"]) & (G - B > bb["g_minus_b_min"]) & (sat > bb["sat_min"]) & ~RED & ~YEL
 BLO = (sat < kb["sat_max"]) & (lum >= kb["lum_min"]) & (lum <= kb["lum_max"]) & ~RED & ~YEL & ~BLU
 DRK = (mx < RU["dark_max_channel"]) & ~RED & ~YEL & ~BLU & ~BLO
 CLS = np.full((H, W), 4, np.int8)      # 0 blue 1 yellow 2 red 3 dark 4 other, 5 blotch
@@ -214,6 +216,10 @@ if "full_yellow_face_fraction" in RES:      # faces whose owned texels are mostl
         if len(ys) and YEL[ys, xs].mean() >= RES["full_yellow_face_fraction"]:
             sel = ~YEL[ys, xs] & ~RED[ys, xs]
             residue[ys[sel], xs[sel]] = True
+STAIN = CFG.get("stain")      # optional (shooter): texels of the main colour with a low luminance inside faces of another class (dark green stains in charcoal) -> that class colour
+stain = np.zeros((H, W), bool)
+if STAIN:
+    stain = blue_mask & (FCT == STAIN["face_class"]) & (lum <= STAIN["lum_max"])
 painted = {}
 for k, nm in ((0, "blue"), (1, "yellow"), (2, "red"), (3, "charcoal")):
     sel = blot & (LAB == k)
@@ -221,6 +227,16 @@ for k, nm in ((0, "blue"), (1, "yellow"), (2, "red"), (3, "charcoal")):
     if k in TARGET:
         out[sel] = TARGET[k]
 out[residue] = YEL_RGB if RES["target"] == "yellow" else BLUE
+out[stain] = CHAR
+logo = np.zeros((H, W), bool)
+for LP in CFG.get("logo_patches", []):      # optional (shooter): muddy logo plate repainted: yellow ring texels -> yellow, red or orange centre texels -> dark; inside a disc (centre x, y from the top)
+    yy, xx = np.mgrid[0:H, 0:W]
+    disc = ((xx - LP["cx"]) ** 2 + (H - 1 - yy - LP["cy"]) ** 2) <= LP["r"] ** 2
+    ye = disc & (R > LP["yellow_r_min"]) & (B < LP["yellow_b_max"]) & (G - R < LP["yellow_g_minus_r_max"])
+    ce = disc & (R > 90) & (G < R * 0.8) & (B < 90)
+    out[ye] = YEL_RGB
+    out[ce] = np.array(LP["centre_rgb"], float)
+    logo |= ye | ce
 final = np.clip(np.round(out), 0, 255).astype(np.float32) / 255.0
 
 OUT_PNG = P("out_basecolor")
@@ -228,11 +244,11 @@ os.makedirs(os.path.dirname(OUT_PNG), exist_ok=True)
 save_png(OUT_PNG, final)
 back = to8(load_png(OUT_PNG))
 changed = (back != RGB).any(2)
-treated = blue_mask | blot | residue
+treated = blue_mask | blot | residue | logo
 outside = int((changed & ~treated).sum())
 changed_by = dict(blue_flattened=int((changed & blue_mask & ~residue).sum()), ink_residue_in_blue_faces_to_blue=int((changed & residue).sum()),
                   blotch_to_blue=int((changed & blot & (LAB == 0)).sum()), blotch_to_yellow=int((changed & blot & (LAB == 1)).sum()),
-                  blotch_to_charcoal=int((changed & blot & (LAB == 3)).sum()), blotch_left_in_red_faces=int((blot & (LAB == 2)).sum()))
+                  blotch_to_charcoal=int((changed & blot & (LAB == 3)).sum()), stain_to_charcoal=int((changed & stain).sum()), logo_repainted=int((changed & logo).sum()), blotch_left_in_red_faces=int((blot & (LAB == 2)).sum()))
 
 # ------------------------------------------------------------ cause: metallic and roughness vs the defect
 MET = load_png(P("in_metallic"))[..., 0]

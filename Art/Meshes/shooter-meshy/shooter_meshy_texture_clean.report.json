@@ -1,0 +1,170 @@
+{
+ "robot": "shooter",
+ "inputs": {
+  "in_fbx": "Art/Meshes/shooter-meshy/shooter_meshy_flat.fbx",
+  "in_basecolor": "Art/Source/shooter-meshy/meshy-raw/shooter_meshy_raw_basecolor.png",
+  "in_metallic": "Art/Source/shooter-meshy/meshy-raw/shooter_meshy_raw_metallic.png",
+  "in_roughness": "Art/Source/shooter-meshy/meshy-raw/shooter_meshy_raw_roughness.png"
+ },
+ "outputs": {
+  "basecolor": "Art/Meshes/shooter-meshy/shooter_meshy_clean_basecolor.png",
+  "size_px": [
+   2048,
+   2048
+  ]
+ },
+ "cause": {
+  "metallic": {
+   "all": {
+    "mean": 0.00061,
+    "max": 0.42353
+   },
+   "in_blotch": {
+    "n": 0
+   },
+   "in_blue": {
+    "mean": 0.0022,
+    "std": 0.0063,
+    "p5": 0.0,
+    "p95": 0.0049
+   }
+  },
+  "roughness": {
+   "all": {
+    "mean": 0.123,
+    "std": 0.2068,
+    "p5": 0.0,
+    "p95": 0.5088
+   },
+   "in_blotch": {
+    "n": 0
+   },
+   "in_blue": {
+    "mean": 0.4304,
+    "std": 0.0378,
+    "p5": 0.3843,
+    "p95": 0.5069
+   },
+   "in_dark": {
+    "mean": 0.0736,
+    "std": 0.1772,
+    "p5": 0.0,
+    "p95": 0.5078
+   },
+   "in_yellow": {
+    "mean": 0.498,
+    "std": 0.0513,
+    "p5": 0.394,
+    "p95": 0.5577
+   }
+  },
+  "blotch_texels_fraction": 0.0,
+  "verdict": "base colour: the muddy olive and red-centre logo plate on the shoulder and the dark green stains bleeding into the charcoal are painted in the base colour map itself. Metallic max 0.4235; roughness is smooth (mean 0.12 overall, nan in blotches, 0.07 on dark, 0.50 on yellow), so neither holds the defect. Cleaned metallic and roughness maps are not written (unused in game under the owner default of 2026-10-22: base colour only, constant roughness, metallic 0)."
+ },
+ "colours_used": {
+  "blue_rgb": [
+   136,
+   187,
+   37
+  ],
+  "charcoal_rgb": [
+   27,
+   28,
+   27
+  ],
+  "yellow_rgb_median_of_raw_yellow_texels": [
+   230,
+   201,
+   37
+  ],
+  "source": {
+   "blue": "ACID GREEN (the 'blue' slot of the script is the main colour): median of the lit green of the owner sheet vault/assets/shooter-turnaround.webp (136,187,37); the raw texture median is (128,181,37)",
+   "charcoal": "median of the raw dark texels (27,28,27), kept as is (the sheet charcoal is lit grey about (48,48,48), a lighting difference); yellow = median of the raw yellow texels"
+  }
+ },
+ "rules": {
+  "blue": {
+   "mode": "green",
+   "g_minus_r_min": 30,
+   "g_minus_b_min": 60,
+   "b_minus_r_min": 999,
+   "sat_min": 0.4,
+   "flatten_full_lum": 100,
+   "dark_lum": 30
+  },
+  "blotch": {
+   "sat_max": -1,
+   "lum_min": 62,
+   "lum_max": 200
+  },
+  "dark_max_channel": 62,
+  "yellow": {
+   "r_min": 200,
+   "g_min": 120,
+   "b_max": 120,
+   "r_minus_b_min": 100
+  },
+  "red": {
+   "r_min": 150,
+   "g_max": 90,
+   "b_max": 90
+  },
+  "face_resolve_min_known_fraction": 0.4,
+  "dilate_px": 4,
+  "residue_radius": 6
+ },
+ "residue_texels": 0,
+ "texel_classes_raw": {
+  "total": 4194304,
+  "blue": 520651,
+  "yellow": 384,
+  "red": 3215,
+  "dark": 3620441,
+  "other": 49613,
+  "blotch": 0
+ },
+ "face_classes": {
+  "faces": 7263,
+  "resolved_directly": 7106,
+  "resolved_by_neighbour_vote": 157,
+  "defaulted_to_dark": 0,
+  "final_counts": {
+   "blue": 3103,
+   "yellow": 1,
+   "red": 75,
+   "dark": 4084
+  }
+ },
+ "texels_changed_per_class": {
+  "blue_flattened": 520588,
+  "ink_residue_in_blue_faces_to_blue": 0,
+  "blotch_to_blue": 0,
+  "blotch_to_yellow": 0,
+  "blotch_to_charcoal": 0,
+  "stain_to_charcoal": 9249,
+  "logo_repainted": 476,
+  "blotch_left_in_red_faces": 0
+ },
+ "blotch_texels_by_target_class": {
+  "blue": 0,
+  "yellow": 0,
+  "red": 0,
+  "charcoal": 0
+ },
+ "blotch_texels_unlabelled": 0,
+ "texels_changed_total": 521064,
+ "outside_check": {
+  "treated_class_texels": 521127,
+  "texels_outside_treated_classes": 3673177,
+  "changed_outside_treated_classes": 0,
+  "note": "8-bit read back of the written PNG compared with the raw PNG"
+ },
+ "geometry_uv": {
+  "fbx": "Art/Meshes/shooter-meshy/shooter_meshy_flat.fbx",
+  "sha256_before": "62583ae64e167e9bdf5a879e066944e1d25a1f57fc71d03e92ec036ec805e475",
+  "sha256_after": "62583ae64e167e9bdf5a879e066944e1d25a1f57fc71d03e92ec036ec805e475",
+  "unchanged": true,
+  "note": "the FBX is only read; not re-exported"
+ },
+ "unused_in_game_note": "Metallic, roughness and normal maps are unused in game under the owner default of 2026-10-22 (base colour only, constant roughness, metallic 0)."
+}

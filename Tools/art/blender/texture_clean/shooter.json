@@ -1,0 +1,33 @@
+{
+  "robot": "shooter",
+  "in_fbx": "Art/Meshes/shooter-meshy/shooter_meshy_flat.fbx",
+  "in_basecolor": "Art/Source/shooter-meshy/meshy-raw/shooter_meshy_raw_basecolor.png",
+  "in_metallic": "Art/Source/shooter-meshy/meshy-raw/shooter_meshy_raw_metallic.png",
+  "in_roughness": "Art/Source/shooter-meshy/meshy-raw/shooter_meshy_raw_roughness.png",
+  "out_basecolor": "Art/Meshes/shooter-meshy/shooter_meshy_clean_basecolor.png",
+  "out_report": "Art/Meshes/shooter-meshy/shooter_meshy_texture_clean.report.json",
+  "colours": {
+    "blue": [136, 187, 37],
+    "charcoal": [27, 28, 27]
+  },
+  "colour_source": {
+    "blue": "ACID GREEN (the 'blue' slot of the script is the main colour): median of the lit green of the owner sheet vault/assets/shooter-turnaround.webp (136,187,37); the raw texture median is (128,181,37)",
+    "charcoal": "median of the raw dark texels (27,28,27), kept as is (the sheet charcoal is lit grey about (48,48,48), a lighting difference); yellow = median of the raw yellow texels"
+  },
+  "stain": { "face_class": 3, "lum_max": 100 },
+  "logo_patches": [
+    { "cx": 32, "cy": 160, "r": 17, "yellow_r_min": 100, "yellow_b_max": 110, "yellow_g_minus_r_max": 25, "centre_rgb": [24, 24, 22] }
+  ],
+  "rules": {
+    "blue": { "mode": "green", "g_minus_r_min": 30, "g_minus_b_min": 60, "b_minus_r_min": 999, "sat_min": 0.4, "flatten_full_lum": 100, "dark_lum": 30 },
+    "blotch": { "sat_max": -1, "lum_min": 62, "lum_max": 200 },
+    "dark_max_channel": 62,
+    "yellow": { "r_min": 200, "g_min": 120, "b_max": 120, "r_minus_b_min": 100 },
+    "red": { "r_min": 150, "g_max": 90, "b_max": 90 },
+    "face_resolve_min_known_fraction": 0.4,
+    "dilate_px": 4,
+    "residue_radius": 6
+  },
+  "residue": { "face_class": 0, "target": "blue", "zone": "blotch" },
+  "verdict_template": "base colour: the muddy olive and red-centre logo plate on the shoulder and the dark green stains bleeding into the charcoal are painted in the base colour map itself. Metallic max %(met_max)s; roughness is smooth (mean %(rou_mean)s overall, %(rou_blot)s in blotches, %(rou_dark)s on dark, %(rou_yel)s on yellow), so neither holds the defect. Cleaned metallic and roughness maps are not written (unused in game under the owner default of 2026-10-22: base colour only, constant roughness, metallic 0)."
+}
