@@ -291,3 +291,4 @@ Archive: it exceeds the index size limits of [[_authoring]] on purpose (owner, 2
 - [[task-282-robot-texture-cleanup]] — Clean the texture artefacts of the four new robot meshes (heavy glassy back panels, kamikaze smeared leg tips) against the owner turnaround sheets. Status done.
 - [[task-283-robot-mesh-integration]] — Integrate the flattened, cleaned heavy, kamikaze and shooter meshes into their Blueprints, and prepare chaser v2, replacing the grey-box primitives. Status done.
 - [[task-284-robot-walk-knee-anim]] — Animate the heavy, shooter and chaser v2 walk with a light knee bend found on each mesh, and light kamikaze legs. Status done.
+- [[task-285-heavy-slam-anim]] — Animate the heavy slam: fists raised during the telegraph, then knees bent and body leaning forward so the fists touch the ground. Status done.

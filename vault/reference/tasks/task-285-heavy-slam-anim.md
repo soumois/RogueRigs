@@ -1,9 +1,9 @@
 ---
 id: task-285-heavy-slam-anim
 description: "Global task: Animate the heavy slam: fists raised during the telegraph, then knees bent and body leaning forward so the fists touch the ground."
-parent: tasks-to-do-index
+parent: tasks-done-index
 kind: task
-status: in-progress
+status: done
 ---
 # Heavy slam animation
 
@@ -14,8 +14,8 @@ status: in-progress
 - depends_on_global: task-284
 - confirmed_by_owner: yes (2026-10-22, plan accepted; launch on the owner's word)
 - milestone: M2
-- next_step: task-285-04-capture-slam
-- result: open
+- next_step: none
+- result: Done. Slam shots Saved/RobotMeshes/slam/heavy_front_0-15.png (and profile heavy_0-15): telegraph fists raised above the shoulders with orange eye (front_1, front_8), crouched with fists at ground level after the strike (front_2, front_9), upright red eye between slams (front_6); ring unchanged; parts joined. Exact impact frame not captured (screenshots stall ~0.3 s).
 
 ## Subtasks
 1. task-285-01-bake-heavy-slam — 3d: Bake the heavy telegraph and slam clips
@@ -24,7 +24,7 @@ status: in-progress
 4. task-285-04-capture-slam — cpp: Capture the heavy slam
 
 ## Relations
-- [[tasks-to-do-index]] — parent index.
+- [[tasks-done-index]] — parent index.
 - [[task-285-01-bake-heavy-slam]] — step 01, 3d.
 - [[task-285-02-cpp-heavy-slam-clips]] — step 02, cpp.
 - [[task-285-03-bp-heavy-slam]] — step 03, bp.
