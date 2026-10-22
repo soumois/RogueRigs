@@ -3,7 +3,7 @@ id: task-285-04-capture-slam
 description: "Capture the heavy slam (cpp)."
 parent: task-285-heavy-slam-anim
 kind: task
-status: todo
+status: in-progress
 ---
 # Capture the heavy slam
 

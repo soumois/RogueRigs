@@ -3,7 +3,7 @@ id: task-285-03-bp-heavy-slam
 description: "BP_Heavy uses the slam clips (bp)."
 parent: task-285-heavy-slam-anim
 kind: task
-status: in-progress
+status: done
 ---
 # BP_Heavy uses the slam clips
 
@@ -15,11 +15,11 @@ status: in-progress
 - done_when: texture settings and instance parameters read back, events read back, compiles without error, doc updated; lint clean
 - editor_state: open
 - token_ceiling: 80000
-- model: open
-- tokens: open
-- runs: open
+- model: sonnet
+- tokens: input 72, cache write 85563, cache read 1997533, output 20412
+- runs: 1
 - milestone: M2
-- result: open
+- result: T_HeavyAnimSlam imported (settings read back; old T_HeavyAnim kept), MI_Heavy_Body/MI_RobotEye_Heavy(+Glow) AnimTex T_HeavyAnimSlam, RunRate 1.0; SM_Heavy_Meshy_Anim bounds extension (220,220,60) for the lean (estimate); BP_Heavy pitch 14/0 nodes removed, eye glow swap kept; compiles clean.
 
 ## Relations
 - [[task-285-heavy-slam-anim]] — parent global task.

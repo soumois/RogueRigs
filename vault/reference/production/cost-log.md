@@ -582,6 +582,7 @@ kind: note
 | [[task-285-01-bake-heavy-slam]] | sonnet | 1 | 0k | 106k | 1755k | 39k |
 | [[task-285-02-cpp-heavy-slam-clips]] | opus | 1 | 0k | 62k | 942k | 16k |
 | [[task-286-01-shield-fit-bake]] | sonnet | 1 | 0k | 116k | 1900k | 21k |
+| [[task-285-03-bp-heavy-slam]] | sonnet | 1 | 0k | 86k | 1998k | 20k |
 
 ## Totals
 | Scope | Input | Cache write | Cache read | Output |
