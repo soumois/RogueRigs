@@ -3,7 +3,7 @@ id: task-285-02-cpp-heavy-slam-clips
 description: "ARRHeavy plays the slam clips (cpp)."
 parent: task-285-heavy-slam-anim
 kind: task
-status: todo
+status: in-progress
 ---
 # ARRHeavy plays the slam clips
 

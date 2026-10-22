@@ -3,7 +3,7 @@ id: task-285-01-bake-heavy-slam
 description: "Bake the heavy telegraph and slam clips (3d)."
 parent: task-285-heavy-slam-anim
 kind: task
-status: in-progress
+status: done
 ---
 # Bake the heavy telegraph and slam clips
 
@@ -15,11 +15,11 @@ status: in-progress
 - done_when: fists at or under 2 cm above the floor at the contact frame and above the head at the end of the telegraph, feet do not move during telegraph, slam and recover, knees bend; the Orchestrator renders the key frames and sends them to the owner; Blender processes stopped
 - editor_state: closed (Blender headless only)
 - token_ceiling: 60000
-- model: open
-- tokens: open
-- runs: open
+- model: sonnet
+- tokens: input 52, cache write 106320, cache read 1754940, output 39066
+- runs: 1
 - milestone: M2
-- result: open
+- result: T_HeavyAnim.exr + walk rows unchanged; clip 1 telegraph raise (rows 16-30, 0.45 s, held), clip 2 strike (rows 31-46, contact row 35, play ~0.15 s only: loops), clip 3 recover (rows 47-61, ends at rest, RestClipId 3 stays); fists 0.99/1.12 cm at contact, 261/259 cm above head 246 at telegraph end, feet fixed, knees bend 60 deg; robot_slam_poses.py; renders Saved/Renders/task-285/heavy_{telegraph_end,contact,recover_mid}.png; slam bake error 0.149 cm (half float).
 
 ## Relations
 - [[task-285-heavy-slam-anim]] — parent global task.
