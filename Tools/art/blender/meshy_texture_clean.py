@@ -147,7 +147,7 @@ for it in range(60):
         break
     new = {}
     for i in todo:
-        votes = [FC[j] for j in NB[i] if FC[j] >= 0]
+        votes = [FC[j] for j in NB[i] if FC[j] >= 0 and FC[j] not in CFG.get("vote_exclude_classes", [])]
         if votes:
             new[i] = int(np.bincount(votes, minlength=4).argmax())
     if not new:
@@ -197,7 +197,8 @@ for _ in range(RU["dilate_px"]):
             sh = np.roll(np.roll(FCT, dy, 0), dx, 1)
             best = np.where((best < 0) & (sh >= 0), sh, best)
     FCT = np.where(cand & (best >= 0), best, FCT)
-zone = blot.copy()
+RES = CFG.get("residue", {"face_class": 0, "target": "blue", "zone": "blotch"})
+zone = (blot | YEL) if RES["zone"] == "blotch_yellow" else blot.copy()
 for _ in range(2):      # square dilation by residue_radius px (separable)
     r_ = int(RU["residue_radius"])
     for ax in (0, 1):
@@ -206,15 +207,20 @@ for _ in range(2):      # square dilation by residue_radius px (separable)
             acc |= np.roll(zone, d, ax) | np.roll(zone, -d, ax)
         zone = acc
     break
-residue = zone & (FCT == 0) & ~blot & ~YEL & ~RED & ((CLS == 3) | (CLS == 4) | (CLS == 0))
+residue = zone & (FCT == RES["face_class"]) & ~blot & ~YEL & ~RED & np.isin(CLS, RES.get("classes", [3, 4, 0]))
 
+if "full_yellow_face_fraction" in RES:      # faces whose owned texels are mostly yellow: their remaining dark/mixed texels become yellow too (clean tip, no dark smear)
+    for i, (ys, xs) in enumerate(RAST):
+        if len(ys) and YEL[ys, xs].mean() >= RES["full_yellow_face_fraction"]:
+            sel = ~YEL[ys, xs] & ~RED[ys, xs]
+            residue[ys[sel], xs[sel]] = True
 painted = {}
 for k, nm in ((0, "blue"), (1, "yellow"), (2, "red"), (3, "charcoal")):
     sel = blot & (LAB == k)
     painted[nm] = int(sel.sum())
     if k in TARGET:
         out[sel] = TARGET[k]
-out[residue] = BLUE
+out[residue] = YEL_RGB if RES["target"] == "yellow" else BLUE
 final = np.clip(np.round(out), 0, 255).astype(np.float32) / 255.0
 
 OUT_PNG = P("out_basecolor")
@@ -239,7 +245,7 @@ def down(a):
 
 
 MET, ROU = down(MET), down(ROU)
-stat = lambda v, mk: dict(mean=round(float(v[mk].mean()), 4), std=round(float(v[mk].std()), 4), p5=round(float(np.percentile(v[mk], 5)), 4), p95=round(float(np.percentile(v[mk], 95)), 4))
+stat = lambda v, mk: dict(n=0) if not mk.any() else dict(mean=round(float(v[mk].mean()), 4), std=round(float(v[mk].std()), 4), p5=round(float(np.percentile(v[mk], 5)), 4), p95=round(float(np.percentile(v[mk], 95)), 4))
 cause = dict(
     metallic=dict(all=dict(mean=round(float(MET.mean()), 5), max=round(float(MET.max()), 5)), in_blotch=stat(MET, blot), in_blue=stat(MET, blue_mask)),
     roughness=dict(all=stat(ROU, np.ones((H, W), bool)), in_blotch=stat(ROU, blot), in_blue=stat(ROU, blue_mask), in_dark=stat(ROU, CLS == 3), in_yellow=stat(ROU, CLS == 1)),
@@ -249,6 +255,10 @@ cause["verdict"] = ("base colour: the grey and tan blotches and the washed blue 
                     "and the roughness map is smooth, mean %.2f, nearly the same inside blotches (%.2f) and in blue panels (%.2f), so it does not hold the defect. "
                     "Cleaned metallic and roughness maps are therefore not written (and are unused in game under the owner default: base colour only, constant roughness, metallic 0)."
                     % (float(MET.max()), float(ROU.mean()), float(ROU[blot].mean()), float(ROU[blue_mask].mean())))
+
+if "verdict_template" in CFG:      # per-robot wording: %(met_max)s %(rou_mean)s %(rou_blot)s %(rou_dark)s %(rou_yel)s
+    cause["verdict"] = CFG["verdict_template"] % dict(met_max="%.4f" % float(MET.max()), rou_mean="%.2f" % float(ROU.mean()), rou_blot="%.2f" % float(ROU[blot].mean()),
+                                                      rou_dark="%.2f" % float(ROU[CLS == 3].mean()), rou_yel="%.2f" % float(ROU[CLS == 1].mean()))
 
 rep = dict(
     robot=CFG["robot"], inputs={k: CFG[k] for k in ("in_fbx", "in_basecolor", "in_metallic", "in_roughness")},
