@@ -588,6 +588,7 @@ kind: note
 | [[task-286-03-bp-spawner-shield-v2]] | sonnet | 1 | 0k | 38k | 347k | 5k |
 | [[task-288-01-pieces-heavy]] | sonnet | 2 | 0k | 61k | 1062k | 20k |
 | [[task-285-04-capture-slam]] | opus | 1 | 0k | 63k | 306k | 6k |
+| [[task-286-04-capture-shield-v2]] | opus | 1 | 0k | 70k | 740k | 9k |
 
 ## Totals
 | Scope | Input | Cache write | Cache read | Output |

@@ -1,9 +1,9 @@
 ---
 id: task-286-shield-chaser-v2
 description: "Global task: Build a shield chaser on the chaser v2 mesh in new assets (BP_ShieldChaserV2), the v1 shield chaser kept intact for restore."
-parent: tasks-to-do-index
+parent: tasks-done-index
 kind: task
-status: in-progress
+status: done
 ---
 # Shield chaser v2
 
@@ -14,8 +14,8 @@ status: in-progress
 - depends_on_global: task-284
 - confirmed_by_owner: yes (2026-10-22, plan accepted; launch on the owner's word)
 - milestone: M2
-- next_step: task-286-04-capture-shield-v2
-- result: open
+- next_step: none
+- result: Done. Shots Saved/RobotMeshes/shield-v2/: shield on the left forearm while running (shieldchaserv2_c_3, _d_2, _d_3), break with shield fragments (_c_4), plain chaser v2 after the break (_c_7, _d_5, _d_7), parts joined; robot_shots.ps1 -BreakShieldsAt (rr.Debug.BreakShields). Eyes not visible in any frame (shield then miner in front).
 
 ## Subtasks
 1. task-286-01-shield-fit-bake — 3d: Fit the shield on chaser v2 and bake
@@ -24,7 +24,7 @@ status: in-progress
 4. task-286-04-capture-shield-v2 — cpp: Capture the shield chaser v2
 
 ## Relations
-- [[tasks-to-do-index]] — parent index.
+- [[tasks-done-index]] — parent index.
 - [[task-286-01-shield-fit-bake]] — step 01, 3d.
 - [[task-286-02-bp-shield-chaser-v2]] — step 02, bp.
 - [[task-286-03-bp-spawner-shield-v2]] — step 03, bp.

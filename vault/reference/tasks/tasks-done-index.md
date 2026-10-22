@@ -292,3 +292,4 @@ Archive: it exceeds the index size limits of [[_authoring]] on purpose (owner, 2
 - [[task-283-robot-mesh-integration]] — Integrate the flattened, cleaned heavy, kamikaze and shooter meshes into their Blueprints, and prepare chaser v2, replacing the grey-box primitives. Status done.
 - [[task-284-robot-walk-knee-anim]] — Animate the heavy, shooter and chaser v2 walk with a light knee bend found on each mesh, and light kamikaze legs. Status done.
 - [[task-285-heavy-slam-anim]] — Animate the heavy slam: fists raised during the telegraph, then knees bent and body leaning forward so the fists touch the ground. Status done.
+- [[task-286-shield-chaser-v2]] — Build a shield chaser on the chaser v2 mesh in new assets (BP_ShieldChaserV2), the v1 shield chaser kept intact for restore. Status done.
