@@ -3,7 +3,7 @@ id: task-282-03-texture-clean-shooter
 description: "Clean the shooter textures (3d)."
 parent: task-282-robot-texture-cleanup
 kind: task
-status: todo
+status: in-progress
 ---
 # Clean the shooter textures
 

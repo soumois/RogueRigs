@@ -3,7 +3,7 @@ id: task-282-02-texture-clean-kamikaze
 description: "Clean the kamikaze textures (3d)."
 parent: task-282-robot-texture-cleanup
 kind: task
-status: in-progress
+status: done
 ---
 # Clean the kamikaze textures
 
@@ -15,11 +15,11 @@ status: in-progress
 - done_when: report names the cause; texels outside the treated classes unchanged; geometry and UV untouched; the Orchestrator renders the same camera (barrel_preview.py settings scaled to a 190 cm robot: front three-quarter and back three-quarter) before and after and sends both to the owner with the cleaned textures, plus a close-up of the defect area; Blender processes stopped
 - editor_state: closed (Blender headless only)
 - token_ceiling: 60000
-- model: open
-- tokens: open
-- runs: open
+- model: sonnet
+- tokens: input 34, cache write 60622, cache read 640528, output 3614
+- runs: 1
 - milestone: M2
-- result: open
+- result: Cause: base colour (dark/brown mixed texels around yellow tips, grey patches on gunmetal); metallic/roughness clean, not rewritten. texture_clean/kamikaze.json; 223,901 texels changed (gunmetal (55,55,54), yellow (253,191,37)), outside-class unchanged, heavy output byte-identical; renders Saved/Renders/task-282/kamikaze_* incl. leg close-up. Faint stair-step line remains on some yellow seams.
 
 ## Relations
 - [[task-282-robot-texture-cleanup]] — parent global task.

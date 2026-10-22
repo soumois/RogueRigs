@@ -14,7 +14,7 @@ status: in-progress
 - depends_on_global: task-281
 - confirmed_by_owner: yes (2026-10-22, plan accepted; launch on the owner's word)
 - milestone: M2
-- next_step: task-282-02-texture-clean-kamikaze
+- next_step: task-282-03-texture-clean-shooter
 - result: open
 
 ## Subtasks
