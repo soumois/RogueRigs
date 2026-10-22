@@ -6,7 +6,7 @@ kind: doc
 ---
 # M_RobotMeshy and the robot body and eye instances
 
-- asset_path: /Game/RogueRigs/Materials/Robots/ (M_RobotMeshy, MI_Heavy_Body, MI_Kamikaze_Body, MI_Shooter_Body, MI_ChaserV2_Body, MI_RobotEye_Heavy, MI_RobotEye_Kamikaze, MI_RobotEye_Shooter, MI_RobotEye_ChaserV2). Created by task-283-06; MI_Heavy_Body and MI_RobotEye_Heavy are assigned to SM_Heavy_Meshy since task-283-07 (see [[bp-heavy]]); the others not yet.
+- asset_path: /Game/RogueRigs/Materials/Robots/ (M_RobotMeshy, MI_Heavy_Body, MI_Kamikaze_Body, MI_Shooter_Body, MI_ChaserV2_Body, MI_RobotEye_Heavy, MI_RobotEye_Kamikaze, MI_RobotEye_Shooter, MI_RobotEye_ChaserV2). Created by task-283-06; MI_Heavy_Body and MI_RobotEye_Heavy are assigned to SM_Heavy_Meshy since task-283-07 (see [[bp-heavy]]); MI_Kamikaze_Body and MI_RobotEye_Kamikaze are assigned to SM_Kamikaze_Meshy and MI_Kamikaze_Body to SM_Kamikaze_Core_Meshy since task-283-08 (see [[bp-kamikaze]]); the others not yet.
 - parent_class: none (material assets; instances are MaterialInstanceConstant of M_RobotMeshy or M_RobotEye).
 - purpose: one lit body material for the `body` slot of the four new robot meshes, base colour from the Meshy texture only; the eye instances give each robot its `robot_eye` slot.
 - components: M_RobotMeshy: lit, opaque. Base colour = BaseColorTex RGB (texture parameter). Roughness constant 0.6, metallic constant 0, no normal, metallic or roughness map. WPO = Animated ? MF_RobotAnimWPO(AnimTex, ClipOffset, RunRate) : (0,0,0); Animated is a static switch, default off. Parameters: BaseColorTex, AnimTex, ClipOffset, RunRate, Animated (plus ClipId and AnimStart inside the function). Compiled without error.
@@ -21,6 +21,7 @@ kind: doc
 - owner_agent: agent-bp
 
 ## Relations
+- [[bp-kamikaze]] — kamikaze body, eye and core use.
 - [[bp-heavy]] — first user of the heavy instances.
 - [[blueprints-enemies-index]] — parent index.
 - [[bp-robot-eye-material]] — M_RobotEye and MF_RobotAnimWPO that the master and the eye instances use.

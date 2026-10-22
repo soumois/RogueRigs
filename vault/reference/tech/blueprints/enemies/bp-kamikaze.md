@@ -1,6 +1,6 @@
 ---
 id: bp-kamikaze
-description: "BP_Kamikaze, Blueprint of ARRKamikaze with gunmetal sphere body, orange core, red eye and XP drop class; open for its meshes and materials."
+description: "BP_Kamikaze, Blueprint of ARRKamikaze: Meshy body SM_Kamikaze_Meshy and core SM_Kamikaze_Core_Meshy (since task-283-08), core light ramp, XP drop class."
 parent: blueprints-enemies-index
 kind: doc
 ---
@@ -9,15 +9,18 @@ kind: doc
 - asset_path: /Game/RogueRigs/Blueprints/Enemies/BP_Kamikaze
 - parent_class: ARRKamikaze (/Script/RogueRigs.RRKamikaze)
 - purpose: the kamikaze robot; visuals only, behaviour in C++ ([[sys-enemies]]).
-- components: CoreLight (PointLight on the root capsule, relative (60, 0, 60), colour 255/170/90, attenuation 400, no shadow, intensity 0 until the flare); inherited C++ components (VisualRoot, BodyMesh, CoreMesh) plus EyeMesh added under VisualRoot. Sized to about 1.1 x the miner (capsule 37.4 x 96.8, task-012-03). BodyMesh: engine Sphere, scale 1.15 (115 uu, bottom at the VisualRoot origin), relative (0, 0, 57.5), MI_GB_Kamikaze. CoreMesh: engine Sphere, scale 0.644, relative (48.3, 0, 46), protrudes at the front, MI_GB_Core. EyeMesh: engine Sphere, scale 0.23, relative (39, 0, 94.3) (front, near the top), MI_GB_Eye, no collision, no shadow. Earlier sizes (body 0.5, core 0.28, eye 0.1) scaled by 2.3.
+- components_current (task-283-08): inherited C++ components plus CoreLight. BodyMesh: StaticMesh /Game/RogueRigs/Art/Kamikaze/SM_Kamikaze_Meshy, relative (0, 0, -40), scale 1, no OverrideMaterials (slots body = MI_Kamikaze_Body, robot_eye = MI_RobotEye_Kamikaze). CoreMesh: StaticMesh SM_Kamikaze_Core_Meshy (slot core = MI_Kamikaze_Body, no override), relative (-4.107, 0.634, 30.425), scale 1 (C++ CoreBaseScale = 1, pulse and growth x1.8 unchanged). VisualRoot sits HoverHeight (40) above the capsule bottom in game, so z -40 puts the mesh origin on the floor (offset 70.425 from the floor origin becomes z 30.425). CoreLight relative to the capsule (60, 0, 60) moved to (-4.107, 0.634, -26.375) = core centre at game rest (floor -96.8 + 70.425; the light does not bob). EyeMesh removed (no C++ code or test names it; the only mention is a chaser test comment). Capsule 37.4 x 96.8 unchanged (mesh height 194 = 2 x 96.8 = 193.6, provisional owner 2026-10-22).
+- components_before_283_08: CoreLight (PointLight on the root capsule, relative (60, 0, 60), colour 255/170/90, attenuation 400, no shadow, intensity 0 until the flare); inherited C++ components (VisualRoot, BodyMesh, CoreMesh) plus EyeMesh added under VisualRoot. Sized to about 1.1 x the miner (capsule 37.4 x 96.8, task-012-03). BodyMesh: engine Sphere, scale 1.15 (115 uu, bottom at the VisualRoot origin), relative (0, 0, 57.5), MI_GB_Kamikaze. CoreMesh: engine Sphere, scale 0.644, relative (48.3, 0, 46), protrudes at the front, MI_GB_Core. EyeMesh: engine Sphere, scale 0.23, relative (39, 0, 94.3) (front, near the top), MI_GB_Eye, no collision, no shadow. Earlier sizes (body 0.5, core 0.28, eye 0.1) scaled by 2.3.
 - exposed_defaults: XPPickupClass = BP_PickupXP_C; all other C++ defaults kept.
 - events: EventTick: while IsFlaring, CoreLight intensity = GetFlareProgress x 10000 (a ramp to a strong orange-white over the 0.5 s flare); OnFlareEnd sets it back to 0 (task-027-02; multiplier 60000 lowered to 10000 in task-028-02 because the flare blew out; the tick only reads a getter and sets a light).
 - logic_in_bp: display only (light ramp).
+- task-283-08 (2026-10-22): before = BodyMesh engine Sphere scale 1.15 at (0, 0, 57.5) override MI_GB_Kamikaze; CoreMesh engine Sphere scale 0.644 at (48.3, 0, 46) override MI_GB_Core; EyeMesh sphere 0.23 at (39, 0, 94.3) MI_GB_Eye; CoreLight at (60, 0, 60). After = components_current. Meshes imported from Art/Meshes/kamikaze-meshy (cm, no collision, Nanite off, 1 LOD, no material or texture imported). Bounds read back: body min (-63.90, -93.25, 0) max (63.38, 94.65, 194.0) = report (127.3 x 188 x 194, Y mirrored), 5302 triangles per the report; core min (-51.62, -51.58, -50.68) max (50.95, 52.41, 47.96), pivot near the sphere centre. C++ does not set a material on CoreMesh (only scale), so the core keeps MI_Kamikaze_Body. Events read back unchanged: EventTick (light ramp), OnFlareEnd. Compiled without LogBlueprint error, saved. Not verified: PIE, render, core size in game (about 102 cm at scale 1 against the old 64 cm sphere; armed growth x1.8 makes about 184 cm and may leave the body), hover look. Revert: `git checkout 4382d1d7 -- Content/RogueRigs/Blueprints/Enemies/BP_Kamikaze.uasset`, then delete SM_Kamikaze_Meshy and SM_Kamikaze_Core_Meshy (new files).
 - assets: /Game/RogueRigs/Materials/GreyBox/MI_GB_Kamikaze (dark gunmetal, Color 0.12, 0.13, 0.15), MI_GB_Core (bright orange, Color 1, 0.5, 0), MI_GB_Eye; instances of M_GreyBox.
 - owner_agent: agent-bp
 
 ## Relations
 - [[blueprints-index]] — parent index.
 - [[sys-enemies]] — the C++ class.
+- [[bp-robot-meshy-material]] — MI_Kamikaze_Body and MI_RobotEye_Kamikaze used on the new meshes.
 - [[bp-pickup-xp]] — the pickup it drops.
 - [[bp-enemy-spawner]] — the spawner that creates it.
