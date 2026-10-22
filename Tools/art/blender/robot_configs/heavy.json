@@ -38,11 +38,17 @@
     "tex_rows": 62,
     "report_name": "heavy_meshy_anim_report.json",
     "render_frame_cm": 300,
-    "reserved": [
-      {"clip_id": 1, "rows": "16..30", "frames": 15, "note": "free for task-285-01 (shader: clamps at the last frame)"},
-      {"clip_id": 2, "rows": "31..46", "frames": 16, "note": "free; the shader loops this clip with RunRate"},
-      {"clip_id": 3, "rows": "47..61", "frames": 15, "note": "free (shader: clamps at the last frame)"}
-    ]
+    "slam": {
+      "task": "task-285-01-bake-heavy-slam",
+      "note": "clip 1 = telegraph rows 16..30 (clamped), clip 2 = strike rows 31..46 (looped by the shader: played only for 0.15 s), clip 3 = recover rows 47..61 (clamped, last row = rest)",
+      "telegraph_frames": 15, "strike_frames": 16, "recover_frames": 15,
+      "raise_s": 0.45, "contact_frame": 4, "strike_ease_power": 2.0, "recover_hold_frames": 3,
+      "fist_z_cm": 1.0, "hand_end_fraction": 0.65, "solve_u_range": [-120, 20],
+      "keys": {
+        "raised": {"alpha": -12, "p": 5, "phi": 5, "u": -145, "e": 0},
+        "contact": {"alpha": -60, "p": 30, "phi": 75, "u": "solve", "e": -10}
+      }
+    }
   },
   "planes": [
     {"name": "waist", "P": [0.0, 0.0, 147.0], "n": [0, 0, 1], "box": [[-70, -62, 120], [90, 62, 175]], "side": 0, "pivot": "HeadTorso"},

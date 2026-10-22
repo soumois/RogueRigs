@@ -51,7 +51,8 @@ shutil.copyfile(opt["--in-tex"], TEX)
 PARTS = ["Pelvis", "HeadTorso", "UpperArm_L", "UpperArm_R", "ForearmHand_L", "ForearmHand_R", "Thigh_L", "Thigh_R", "ShinFoot_L", "ShinFoot_R"]
 PARENT = {"Pelvis": None, "HeadTorso": "Pelvis", "UpperArm_L": "HeadTorso", "UpperArm_R": "HeadTorso", "ForearmHand_L": "UpperArm_L", "ForearmHand_R": "UpperArm_R",
           "Thigh_L": "Pelvis", "Thigh_R": "Pelvis", "ShinFoot_L": "Thigh_L", "ShinFoot_R": "Thigh_R"}
-NRUN, NATT = 16, (15 if BK.get("attack", True) else 0)
+SLAMC = BK.get("slam")                  # task-285-01: telegraph (clip 1), strike (clip 2), recover (clip 3) on the rows after the walk
+NRUN, NATT = 16, (int(SLAMC["telegraph_frames"]) + int(SLAMC["strike_frames"]) + int(SLAMC["recover_frames"]) if SLAMC else (15 if BK.get("attack", True) else 0))
 NF = NRUN + NATT                       # baked frames
 NFT = int(BK.get("tex_rows", NF))      # texture rows: rows NF..NFT-1 are reserved (rest pose) for clips a later task adds
 TEXW = 2 * len(PARTS)
@@ -188,12 +189,19 @@ def set_pelvis(pose):
     return pose["Pelvis"]["loc"][2]
 
 
+SLAMP = None
+if SLAMC:
+    import robot_slam_poses as rsp
+    SLAMP = rsp.Slam(SLAMC, apply_pose, world_verts, REST_P, REST_V)
+    SLAM_LIST = SLAMP.poses()
 for f in range(NF):
     if f < NRUN:
         pose = WALK.pose_at(f / NRUN) if WALK else run_pose(f / NRUN)
+    elif SLAMP:
+        pose = SLAM_LIST[f - NRUN]["pose"]
     else:
         pose = attack_pose(f - NRUN)
-    dz = set_pelvis(pose) if (WALK and f < NRUN) else fit_ground(pose)
+    dz = set_pelvis(pose) if ((WALK and f < NRUN) or SLAMP) else fit_ground(pose)
     POSES.append(pose)
     DZ.append(dz)
     FOOTZ.append(foot_min())
@@ -209,7 +217,7 @@ V_NEXT = {n: world_verts(n) for n in PARTS}
 loop_err = max(float(np.linalg.norm(V_NEXT[n] - VERTS[0][n], axis=1).max()) for n in PARTS)
 apply_pose({})
 V_REST_CHECK = max(float(np.linalg.norm(world_verts(n) - REST_V[n], axis=1).max()) for n in PARTS)
-att14_err = max(float(np.linalg.norm(VERTS[NRUN + 14][n] - REST_V[n], axis=1).max()) for n in PARTS) if NATT else None
+att14_err = max(float(np.linalg.norm(VERTS[NRUN + 14 if not SLAMP else NF - 1][n] - REST_V[n], axis=1).max()) for n in PARTS) if NATT else None
 
 
 def quat_from(R):
@@ -232,7 +240,8 @@ for f in range(NF):
         R, q = WORLD[f][n]
         Q[f, pi] = quat_from(R)
         T[f, pi] = q - R @ REST_P[n]
-for lo, hi in [c for c in ((0, NRUN), (NRUN, NF)) if c[1] > c[0]]:          # sign continuity inside each clip
+CLIPR = ((0, NRUN), (NRUN, NF)) if not SLAMP else ((0, NRUN), (NRUN, NRUN + int(SLAMC["telegraph_frames"])), (NRUN + int(SLAMC["telegraph_frames"]), NRUN + int(SLAMC["telegraph_frames"]) + int(SLAMC["strike_frames"])), (NRUN + int(SLAMC["telegraph_frames"]) + int(SLAMC["strike_frames"]), NF))
+for lo, hi in [c for c in CLIPR if c[1] > c[0]]:          # sign continuity inside each clip
     for pi in range(len(PARTS)):
         if Q[lo, pi, 3] < 0:
             Q[lo, pi] *= -1
@@ -464,6 +473,37 @@ knee_max_deg = float(max(abs(POSES[f][n]["rot"][1]) for f in range(NRUN) for n i
 foot_floor_min_cm = float(min(float(BAKED[f][n][:, 2].min()) for f in range(NRUN) for n in FOOT))
 pelvis_step_cm = [round(abs(POSES[(f + 1) % NRUN]["Pelvis"]["loc"][2] - POSES[f]["Pelvis"]["loc"][2]), 3) for f in range(NRUN)]
 
+
+# ---------------------------------------------------------------- slam checks (task-285-01), from the SAVED half-float texture
+SLAM_REP = None
+if SLAMP:
+    HEADV = REST_V["HeadTorso"]
+    rows = []
+    foot_rest = {n: REST_V[n] for n in FOOT}
+    for i, r in enumerate(SLAM_LIST):
+        f = NRUN + i
+        pos = {n: REST_V[n] @ qmat(SQ[f, pi]).T + ST[f, pi] for pi, n in enumerate(PARTS)}
+        fist = [float(pos[n][SLAMP.hands[n], 2].min()) for n in ("ForearmHand_L", "ForearmHand_R")]
+        arm_min = [float(pos[n][:, 2].min()) for n in ("ForearmHand_L", "ForearmHand_R", "UpperArm_L", "UpperArm_R")]
+        slide = max(float(np.linalg.norm(pos[n] - foot_rest[n], axis=1).max()) for n in FOOT)
+        rows.append(dict(texture_row=f, clip=r["clip"], frame_in_clip=r["row_in_clip"], params={k: round(v, 3) for k, v in r["params"].items()},
+                         fist_lowest_z_cm_L_R=[round(x, 3) for x in fist], arm_parts_lowest_z_cm=round(min(arm_min), 3), head_top_z_cm=round(float(pos["HeadTorso"][:, 2].max()), 2),
+                         foot_max_displacement_from_rest_cm=round(slide, 4), knee_flexion_deg=round(abs(r["params"]["alpha"]), 2)))
+    n_t, n_s = int(SLAMC["telegraph_frames"]), int(SLAMC["strike_frames"])
+    cf = int(SLAMC["contact_frame"])
+    row_tel_end, row_contact = NRUN + n_t - 1, NRUN + n_t + cf
+    SLAM_REP = dict(
+        clips=dict(telegraph=dict(clip_id=1, rows="%d..%d" % (NRUN, NRUN + n_t - 1), frames=n_t, behaviour="clamped, shader shows the last frame (row %d, fists raised) from 0.467 s on; raise over frames 0..13 (0.45 s), held after" % row_tel_end),
+                   strike=dict(clip_id=2, rows="%d..%d" % (NRUN + n_t, NRUN + n_t + n_s - 1), frames=n_s, behaviour="LOOPED by the shader with RunRate (1.0 on the heavy: 30 fps, wraps after 0.533 s): play it only for the last 0.15 s of the telegraph, frame %d = contact, frames %d..%d hold the contact pose" % (cf, cf, n_s - 1)),
+                   recover=dict(clip_id=3, rows="%d..%d" % (NRUN + n_t + n_s, NF - 1), frames=int(SLAMC["recover_frames"]), behaviour="clamped, last frame (row %d) = rest pose exactly (RestClipId 3 holds it); contact pose held frames 0..%d, back to rest by frame %d (0.467 s)" % (NF - 1, int(SLAMC.get("recover_hold_frames", 3)) - 1, int(SLAMC["recover_frames"]) - 1))),
+        contact=dict(strike_frame=cf, texture_row=row_contact, time_in_strike_clip_s=round(cf / 30.0, 4), fist_lowest_z_cm_L_R=rows[row_contact - NRUN]["fist_lowest_z_cm_L_R"], arm_parts_lowest_z_cm=rows[row_contact - NRUN]["arm_parts_lowest_z_cm"], solved_upper_arm_u_deg=round(SLAMP.contact_u, 3)),
+        telegraph_end=dict(texture_row=row_tel_end, fist_lowest_z_cm_L_R=rows[n_t - 1]["fist_lowest_z_cm_L_R"], head_top_z_cm=rows[n_t - 1]["head_top_z_cm"]),
+        max_foot_displacement_cm=max(r["foot_max_displacement_from_rest_cm"] for r in rows), max_knee_flexion_deg=max(r["knee_flexion_deg"] for r in rows),
+        lowest_arm_part_z_cm=min(r["arm_parts_lowest_z_cm"] for r in rows), rest_end_error_cm=att14_err,
+        keys={k: {a: round(b, 3) for a, b in v.items()} for k, v in SLAMP.keys.items()}, per_row=rows)
+    if SLAM_REP["max_foot_displacement_cm"] > 0.1:
+        WARN.append("feet move during the slam clips by more than 0.1 cm")
+
 # ---------------------------------------------------------------- renders
 RENDERS = []
 if not NORENDER:
@@ -627,6 +667,9 @@ if CFG:      # per-robot additions (the chaser v1 report is left as it was)
     rep["reserved_rows"] = BK.get("reserved", [])
     rep["texture"]["frame_index"] = dict(walk="0..%d" % (NRUN - 1), **{k_: v_ for k_, v_ in BK.get("frame_index_extra", {}).items()})
     rep["texture"]["reserved_rows_note"] = "rows %d..%d hold the rest pose (identity quaternion, translation 0) until a later task bakes clips there" % (NF, NFT - 1) if NFT > NF else None
+    if SLAMC:
+        rep["texture"]["frame_index"] = dict(walk="0..15", telegraph_clip1="16..30", strike_clip2="31..46", recover_clip3="47..61")
+        rep["reserved_rows"] = []
     rep["parameters"]["run_rate"] = RUN_RATE
     rep["parameters"]["walk_style"] = WALK_STYLE
     if WALK:
@@ -634,6 +677,13 @@ if CFG:      # per-robot additions (the chaser v1 report is left as it was)
         rep["parameters"]["pelvis_z_rule"] = "planted walk: pelvis dz solved from the stance foot (robot_walk_planted.py), no ground fit"
         rep["planted_walk"] = WALK.info()
         rep["walk_poses"] = [{n: dict(rot=[round(float(x), 6) for x in p.get("rot", (0, 0, 0))], loc=[round(float(x), 6) for x in p.get("loc", (0, 0, 0))]) for n, p in POSES[f].items()} for f in range(NF)]      # NF = NRUN when the robot has no attack clip (heavy, shooter: unchanged)
+    if SLAM_REP:
+        for k_ in ("attack_end", "attack"):
+            rep.pop(k_, None)
+        rep["feet"].pop("attack", None)
+        rep["clips"].pop("attack", None)
+        rep["slam"] = SLAM_REP
+        rep["clips"].update({k_: dict(start_frame=int(v_["rows"].split("..")[0]), **v_) for k_, v_ in SLAM_REP["clips"].items()})
     rep["walk_checks"] = dict(
         source="positions rebuilt from the SAVED half-float texture (quaternion renormalised as in the shader), rest vertices of the foot parts",
         knee_flexion_max_deg=round(knee_max_deg, 3), knee_limit_deg=A_KNEE, knee_within_limit=bool(knee_max_deg <= A_KNEE + 1e-6),
