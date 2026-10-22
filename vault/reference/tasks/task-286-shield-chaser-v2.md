@@ -14,7 +14,7 @@ status: in-progress
 - depends_on_global: task-284
 - confirmed_by_owner: yes (2026-10-22, plan accepted; launch on the owner's word)
 - milestone: M2
-- next_step: task-286-03-bp-spawner-shield-v2
+- next_step: task-286-04-capture-shield-v2
 - result: open
 
 ## Subtasks

@@ -3,7 +3,7 @@ id: task-286-03-bp-spawner-shield-v2
 description: "Spawner uses BP_ShieldChaserV2 (bp)."
 parent: task-286-shield-chaser-v2
 kind: task
-status: in-progress
+status: done
 ---
 # Spawner uses BP_ShieldChaserV2
 
@@ -15,11 +15,11 @@ status: in-progress
 - done_when: entries read back, compiles without error, doc updated; lint clean
 - editor_state: open
 - token_ceiling: 80000
-- model: open
-- tokens: open
-- runs: open
+- model: sonnet
+- tokens: input 26, cache write 37990, cache read 346939, output 5370
+- runs: 1
 - milestone: M2
-- result: open
+- result: BP_EnemySpawner fifth WeightedEnemyClasses entry BP_ShieldChaser_C -> BP_ShieldChaserV2_C (weight 0, MaxAlive 0, director resolves through it); compiles; no map override, no test expects v1; restore step in bp-enemy-spawner.
 
 ## Relations
 - [[task-286-shield-chaser-v2]] — parent global task.

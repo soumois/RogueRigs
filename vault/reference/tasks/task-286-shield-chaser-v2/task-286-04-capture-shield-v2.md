@@ -3,7 +3,7 @@ id: task-286-04-capture-shield-v2
 description: "Capture the shield chaser v2 (cpp)."
 parent: task-286-shield-chaser-v2
 kind: task
-status: todo
+status: in-progress
 ---
 # Capture the shield chaser v2
 
