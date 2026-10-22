@@ -1,0 +1,178 @@
+{
+ "inputs": {
+  "fbx": "shooter_meshy_flat.fbx",
+  "texture": "shooter_meshy_clean_basecolor.png",
+  "input_height_units": 1.89925,
+  "input_triangles": 7263,
+  "input_vertices": 3600
+ },
+ "outputs": {
+  "fbx": "shooter_meshy_game.fbx",
+  "texture_referenced": "shooter_meshy_clean_basecolor.png",
+  "embedded": false,
+  "texture_paths_in_fbx": [
+   "C:\\Users\\soumo\\AppData\\Local\\Temp\\claude\\C--Users-soumo-Documents-Unreal-Projects-RogueRigs\\c4d831e1-b082-4159-8dd8-82aabf58cf93\\scratchpad\\s1w\\shooter_meshy_clean_basecolor.png"
+  ]
+ },
+ "scale_factor": 92.667974,
+ "rotation_about_z_deg": 90,
+ "applied_origin_offset_cm": [
+  11.9386,
+  1.1244,
+  88.0258
+ ],
+ "export_settings": {
+  "use_selection": true,
+  "object_types": [
+   "MESH"
+  ],
+  "apply_scale_options": "FBX_SCALE_UNITS",
+  "global_scale": 1,
+  "axis_forward": "-Z",
+  "axis_up": "Y",
+  "mesh_smooth_type": "OFF",
+  "add_leaf_bones": false,
+  "path_mode": "RELATIVE",
+  "embed_textures": false,
+  "blender": "5.2.2 LTS",
+  "scene_unit_scale_length": 1
+ },
+ "axis_note": "Blender side: X forward (robot front), Y left, Z up. Exporter axis_forward=-Z, axis_up=Y (same as chaser): Unreal maps it to X forward, Z up. Not verified in Unreal (nothing imported).",
+ "fbx_unit_scale_factor_in_file": 100,
+ "readback": {
+  "bounds_min_cm": [
+   -29.233,
+   -65.154,
+   0
+  ],
+  "bounds_max_cm": [
+   53.357,
+   66.389,
+   176
+  ],
+  "size_cm": [
+   82.59,
+   131.543,
+   176
+  ],
+  "height_cm": 176,
+  "triangles": 7263,
+  "vertices": 3600,
+  "objects": 1,
+  "object_name": "SM_Shooter_Meshy",
+  "material_slots": [
+   "body",
+   "robot_eye"
+  ],
+  "fbx_file_material_order": [
+   "body",
+   "robot_eye"
+  ],
+  "uv_layers": [
+   "UVMap",
+   "LightMap"
+  ],
+  "flat_shaded": false
+ },
+ "origin": {
+  "floor_z_cm": 0,
+  "feet_midpoint_xy_cm": [
+   0,
+   0
+  ]
+ },
+ "front_axis": {
+  "eye_centroid_cm": [
+   34.38,
+   0.69,
+   129.3
+  ],
+  "mesh_centroid_cm": [
+   6.78,
+   2.12,
+   79.74
+  ],
+  "front_is_plus_x": true,
+  "note": "the eye (red faces) lies on +X in Blender; the raw mesh faced -Y"
+ },
+ "eye": {
+  "criterion": "UV0 triangle covers a texel with linear saturate((R - 2 max(G,B)) x 3) > 0.1 (texel centres inside + texels of vertices and centroid) and face centroid inside the zone",
+  "zone_game_cm": {
+   "zmin": 100,
+   "zmax": 1000000000,
+   "xmin": 25
+  },
+  "texture": "shooter_meshy_clean_basecolor.png",
+  "red_texels_total": 10418,
+  "eye_faces": 83,
+  "eye_faces_before_export": 83,
+  "eye_texels_in_eye_faces": 4470,
+  "red_texels_left_in_body_faces_in_zone": 0,
+  "red_texels_in_body_faces_outside_zone": 2255,
+  "body_faces_outside_zone_covering_red": 64,
+  "components": [
+   {
+    "faces": 83,
+    "min_cm": [
+     31,
+     -11.3,
+     118.2
+    ],
+    "max_cm": [
+     37.7,
+     13.3,
+     139.7
+    ]
+   }
+  ],
+  "component_count": 1,
+  "note": "zone zmin 100, xmin 25: eyes only (83 faces, one component x31-38 y-11..13 z118-140); cannon glow (63 faces, x41-53 y-61..-39 z59-80) and 1 stray face (x2.5,y51,z133) stay in body; the 2255 red texels outside the zone are the cannon glow"
+ },
+ "uv0_unchanged": {
+  "max_abs_diff_direct": 0,
+  "vertices_equal": true,
+  "triangles_equal": true
+ },
+ "lightmap_uv1": {
+  "layer": "LightMap",
+  "atlas_px": 2048,
+  "faces": 7263,
+  "island_scale_px_per_cm": 4.20889,
+  "method": "one island per face, shelf packed, bbox test",
+  "overlapping_face_pairs_bbox": 0,
+  "min_gap_px": 2,
+  "min_border_px": 2,
+  "bounds_min": 0.00098,
+  "bounds_max": 0.99902,
+  "passed": true
+ },
+ "warnings": [
+  "2255 red texels (stray red spots, not the eye) stay in body faces outside the zone"
+ ],
+ "cannon_tip": {
+  "definition": "centre of the cannon muzzle face (red glow cap, flat disc about 24 cm wide by 28 cm tall, normal about +X tilted 15 deg down), taken as the mean of the 51 vertices of the glow faces and cross-checked with the bbox centre of the glow faces (46.9,-50.0,69.4)",
+  "blender_cm": {
+   "x_forward": 45.7,
+   "y_left": -50.4,
+   "z_up": 70.6
+  },
+  "unreal_cm": {
+   "X": 45.7,
+   "Y": 50.4,
+   "Z": 70.6
+  },
+  "convention": "from the floor origin; Unreal X forward, Z up, Y = -Blender Y (Unreal +Y right). Not verified in Unreal (nothing imported). Accuracy about +-1.5 cm; the cannon is on the robots right side as seen from behind (Blender -Y).",
+  "glow_face_range_cm": {
+   "min": [
+    33,
+    -61.9,
+    58.4
+   ],
+   "max": [
+    53.4,
+    -37.8,
+    86.4
+   ]
+  }
+ }
+}
