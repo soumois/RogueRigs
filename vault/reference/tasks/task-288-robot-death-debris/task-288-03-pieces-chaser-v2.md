@@ -3,7 +3,7 @@ id: task-288-03-pieces-chaser-v2
 description: "Debris pieces of the chaser v2 (3d)."
 parent: task-288-robot-death-debris
 kind: task
-status: in-progress
+status: done
 ---
 # Debris pieces of the chaser v2
 
@@ -15,11 +15,11 @@ status: in-progress
 - done_when: piece count and order as listed, offsets mirrored left and right within 0.5 cm, UV0 only, FBX_SCALE_UNITS, v1 debris files unchanged (git diff); the Orchestrator renders the pieces laid out and sends the render to the owner; Blender processes stopped
 - editor_state: closed (Blender headless only)
 - token_ceiling: 60000
-- model: open
-- tokens: open
-- runs: open
+- model: sonnet
+- tokens: input 16, cache write 23967, cache read 116803, output 4152
+- runs: 1
 - milestone: M2
-- result: open
+- result: 13 chaser v2 debris pieces Art/Source/chaser-v2-meshy/debris/ + debris_pieces.json; mirror within 0.5 cm except Thigh/Leg y 0.53/0.58 = source asymmetry; other debris unchanged; render Saved/Renders/task-288/chaser_v2_debris_layout.png.
 
 ## Relations
 - [[task-288-robot-death-debris]] — parent global task.

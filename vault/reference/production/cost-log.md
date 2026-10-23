@@ -591,6 +591,7 @@ kind: note
 | [[task-286-04-capture-shield-v2]] | opus | 1 | 0k | 70k | 740k | 9k |
 | [[task-288-02-pieces-shooter]] | sonnet | 1 | 0k | 92k | 956k | 16k |
 | [[task-287-02-cpp-shooter-aim-fire]] | opus | 1 | 0k | 108k | 1797k | 24k |
+| [[task-288-03-pieces-chaser-v2]] | sonnet | 1 | 0k | 24k | 117k | 4k |
 
 ## Totals
 | Scope | Input | Cache write | Cache read | Output |

@@ -3,7 +3,7 @@ id: task-288-04-pieces-kamikaze
 description: "Debris pieces of the kamikaze (3d)."
 parent: task-288-robot-death-debris
 kind: task
-status: todo
+status: in-progress
 ---
 # Debris pieces of the kamikaze
 
