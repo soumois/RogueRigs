@@ -1,4 +1,4 @@
-// Rogue Rigs - automation tests of the kamikaze (RogueRigs.Kamikaze.*): arming and fuse, kill fuse after a player kill (explosion and XP 0.65 s later), chain death in another explosion (instant), damage ignored during the kill fuse, weighted spawner picks.
+// Rogue Rigs - automation tests of the kamikaze (RogueRigs.Kamikaze.*): arming and fuse, kill fuse after a player kill (explosion and XP 0.65 s later), chain death in another explosion (instant), damage ignored during the kill fuse, weighted spawner picks, 3-piece debris draw (task-288-05).
 
 #include "CoreMinimal.h"
 #include "Misc/AutomationTest.h"
@@ -7,6 +7,7 @@
 
 #include "AbilitySystemComponent.h"
 #include "Enemies/RRChaser.h"
+#include "Enemies/RRDebrisPiece.h"
 #include "Enemies/RREnemySpawner.h"
 #include "Enemies/RRKamikaze.h"
 #include "EngineUtils.h"
@@ -500,6 +501,82 @@ bool FRRKamikazeWeightedSpawnTest::RunTest(const FString& Parameters)
 	}
 	AddInfo(FString::Printf(TEXT("global random: %d kamikazes over %d picks"), GlobalKamikazes, Picks));
 	TestTrue(TEXT("global random picks both classes"), GlobalKamikazes > 0 && GlobalKamikazes < Picks);
+	return true;
+}
+
+IMPLEMENT_SIMPLE_AUTOMATION_TEST(FRRKamikazeDebrisDrawTest, "RogueRigs.Kamikaze.DebrisThrowsTwoOrThreePieces",
+	EAutomationTestFlags::EditorContext | EAutomationTestFlags::EngineFilter)
+
+bool FRRKamikazeDebrisDrawTest::RunTest(const FString& Parameters)
+{
+	// Native copy of the kamikaze debris list (Art/Source/kamikaze-meshy/debris/debris_pieces.json, task-288-04): Torso, Leg_L,
+	// Leg_R, all Whole, no arms, no Upper / Lower kinds. Same draw as ARREnemy::LaunchDebris: a count of 2 to 4, then Choose.
+	auto MakePiece = [](ERRDebrisGroup Group, ERRDebrisKind Kind, int32 MeshIndex, const FVector& Offset)
+	{
+		FRRDebrisPiece Piece;
+		Piece.Group = Group;
+		Piece.Kind = Kind;
+		Piece.MeshIndex = MeshIndex;
+		Piece.Offset = Offset;
+		return Piece;
+	};
+	TArray<FRRDebrisPiece> Pieces;
+	Pieces.Add(MakePiece(ERRDebrisGroup::Torso, ERRDebrisKind::Whole, 0, FVector(-8.62, 0.7, 97.0)));
+	Pieces.Add(MakePiece(ERRDebrisGroup::LegL, ERRDebrisKind::Whole, 1, FVector(37.97, -50.06, 31.86)));
+	Pieces.Add(MakePiece(ERRDebrisGroup::LegR, ERRDebrisKind::Whole, 2, FVector(38.65, 51.01, 31.66)));
+
+	constexpr int32 Draws = 3000;
+	int32 CountHits[5] = {0, 0, 0, 0, 0};
+	int32 GroupHits[3] = {0, 0, 0};
+	bool bAllValid = true;
+	TArray<int32> Chosen;
+	for (int32 Draw = 0; Draw < Draws; ++Draw)
+	{
+		const int32 MeshCount = FMath::RandRange(2, 4);
+		FRRDebrisSelection::Choose(Pieces, MeshCount, Chosen);
+		const int32 Expected = FMath::Min(MeshCount, Pieces.Num());
+		bool bValid = Chosen.Num() == Expected;
+		TSet<ERRDebrisGroup> Seen;
+		for (const int32 PieceIndex : Chosen)
+		{
+			if (!Pieces.IsValidIndex(PieceIndex))
+			{
+				bValid = false;
+				continue;
+			}
+			const FRRDebrisPiece& Piece = Pieces[PieceIndex];
+			bool bAlreadySeen = false;
+			Seen.Add(Piece.Group, &bAlreadySeen);
+			bValid &= !bAlreadySeen && Piece.Kind == ERRDebrisKind::Whole;
+			++GroupHits[PieceIndex];
+		}
+		if (!bValid && bAllValid)
+		{
+			AddError(FString::Printf(TEXT("draw %d: count %d gave %d pieces (expected %d), or a repeated group / missing piece."),
+				Draw, MeshCount, Chosen.Num(), Expected));
+		}
+		bAllValid &= bValid;
+		++CountHits[FMath::Clamp(Chosen.Num(), 0, 4)];
+	}
+
+	TestTrue(TEXT("every draw throws min(count, 3) existing pieces, each group at most once"), bAllValid);
+	TestEqual(TEXT("never 0, 1 or 4 pieces"), CountHits[0] + CountHits[1] + CountHits[4], 0);
+	TestTrue(TEXT("2 pieces about one draw in three"), CountHits[2] > Draws / 5 && CountHits[2] < Draws / 2);
+	TestTrue(TEXT("3 pieces about two draws in three (count 3 or 4 capped at 3)"), CountHits[3] > Draws / 2);
+	for (int32 Index = 0; Index < 3; ++Index)
+	{
+		TestTrue(FString::Printf(TEXT("piece %d is thrown"), Index), GroupHits[Index] > Draws / 2);
+	}
+
+	// A limb with a lone half (no Whole, no matching half) is never thrown: no missing half in a draw.
+	Pieces.Add(MakePiece(ERRDebrisGroup::ArmL, ERRDebrisKind::Upper, 3, FVector::ZeroVector));
+	bool bLoneHalfThrown = false;
+	for (int32 Draw = 0; Draw < 500; ++Draw)
+	{
+		FRRDebrisSelection::Choose(Pieces, 4, Chosen);
+		bLoneHalfThrown |= Chosen.Contains(3) || Chosen.Num() != 3;
+	}
+	TestFalse(TEXT("lone half limb never thrown, still 3 pieces"), bLoneHalfThrown);
 	return true;
 }
 
