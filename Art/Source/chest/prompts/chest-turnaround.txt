@@ -1,0 +1,6 @@
+Turnaround sheet for 3D modeling of [OBJECT]: front view, side view (exact 90 degrees) and back view, all three at the same size, same angle and same framing, subject centred with a margin, no ground.
+Style: stylized flat-shaded low-poly game asset, chunky blocky volumes with large flat facets, facets clearly visible, no smoothing, no textures, clean hard-surface look. Rigid parts only: plates, pistons, bolts, no cloth, no organic forms. The silhouette must read clearly from a steep top-down camera.
+Background and light: plain white background, even neutral lighting, no shadows, no effects, no text, no UI.
+
+
+Design: a clean industrial corporate supply locker, wide and low, dark gunmetal armoured panels with sharp bevelled edges, a heavy lid with two hinge blocks, a reinforced lock block on the front with a small red lock light, and a small yellow logo plate on the lid. Spotless, no wear, no rust, no hazard stripes.

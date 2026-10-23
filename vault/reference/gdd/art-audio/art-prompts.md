@@ -31,6 +31,7 @@ Reference images are generated in ChatGPT image generation. The prompts are stor
 - `shield-turnaround.webp` — the shield chaser riot shield, front, side, back ([[art-prompts-shield]]).
 - `drone-turnaround.webp` — the drone, front, side, back, source of the Meshy mesh ([[art-prompts-drone]]).
 - `shooter-turnaround.webp`, `heavy-turnaround.webp`, `kamikaze-turnaround.webp`, `chaser-turnaround-v2.webp` — owner sheets for the next Meshy meshes ([[art-prompts-robots-meshy]]).
+- `chest-turnaround.webp` — the bonus chest supply locker, front, side, back ([[art-prompts-chest]]).
 
 ## Relations
 - [[art-audio-index]] — parent index.
@@ -45,6 +46,7 @@ Reference images are generated in ChatGPT image generation. The prompts are stor
 - [[art-prompts-rock-top-texture]] — tileable painted rock top texture for the slab material: prompt, seam method, review.
 - [[art-prompts-floor-texture]] — ChatGPT prompts for the tileable painted floor of cracked faceted plates: chain, seam method, review.
 - [[art-prompts-rock]] — rock and ore look proposals: per-cell blocks versus continuous slab; choice open.
+- [[art-prompts-chest]] — bonus chest supply locker: validated turnaround sheet and its prompt.
 - [[art-prompts-card-back]] — level-up card back, neutral grey candidate: prompt, delivery to 1000 x 1440.
 - [[art-style-guide]] — the general style rules derived from these prompts.
 - [[visual-style]] — the style these prompts produce.

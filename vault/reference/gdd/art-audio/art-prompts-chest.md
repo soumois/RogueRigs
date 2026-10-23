@@ -1,0 +1,39 @@
+---
+id: art-prompts-chest
+description: "Bonus chest supply locker: owner-validated turnaround sheet (front, side, back) and its verbatim prompt. Open for chest art or its 3D mesh."
+parent: art-prompts
+kind: note
+---
+# Bonus chest — supply locker turnaround
+
+Owner validated 2026-10-23. Look of the chest of [[objective-bonus-chest]]: a corporate (Kessler-Voss) supply locker, so the corporate side of [[color-code]] applies.
+
+## Files
+- Validated sheet (front, side, back), generated in ChatGPT by the owner: `vault/assets/chest-turnaround.webp`.
+- Prompt as a text file: `Art/Source/chest/prompts/chest-turnaround.txt`.
+
+## Sheet prompt (verbatim)
+The `[OBJECT]` placeholder was left as is by the owner; the `Design:` paragraph defines the object.
+```
+Turnaround sheet for 3D modeling of [OBJECT]: front view, side view (exact 90 degrees) and back view, all three at the same size, same angle and same framing, subject centred with a margin, no ground.
+Style: stylized flat-shaded low-poly game asset, chunky blocky volumes with large flat facets, facets clearly visible, no smoothing, no textures, clean hard-surface look. Rigid parts only: plates, pistons, bolts, no cloth, no organic forms. The silhouette must read clearly from a steep top-down camera.
+Background and light: plain white background, even neutral lighting, no shadows, no effects, no text, no UI.
+
+Design: a clean industrial corporate supply locker, wide and low, dark gunmetal armoured panels with sharp bevelled edges, a heavy lid with two hinge blocks, a reinforced lock block on the front with a small red lock light, and a small yellow logo plate on the lid. Spotless, no wear, no rust, no hazard stripes.
+```
+
+## What the sheet shows
+- Wide, low gunmetal box, bevelled corners, chamfered feet with slots.
+- Lid: two hinge blocks at the back, yellow logo plate (simplified, not the [[kessler-voss-logo]] artwork).
+- Front: lock block with a small red light. Side handles on both ends.
+- The side view is not a clean 90-degree view (lid and hinges read at an angle).
+
+## Next steps (open)
+- 3D mesh route (Meshy or Blender), size and pivot: open.
+- Logo plate: keep the simplified mark or apply the real logo as a decal: open.
+
+## Relations
+- [[art-prompts]] — parent: method and locked phrases.
+- [[objective-bonus-chest]] — the objective this chest belongs to.
+- [[color-code]] — corporate colours.
+- [[kessler-voss-logo]] — the company logo the yellow plate stands for.

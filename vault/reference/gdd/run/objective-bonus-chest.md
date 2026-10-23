@@ -21,3 +21,4 @@ status: approved
 ## Relations
 - [[run-index]] — parent index.
 - [[upgrades]] — what the choice offers.
+- [[art-prompts-chest]] — the chest look: owner-validated turnaround sheet and prompt.
