@@ -27,6 +27,8 @@ Design: a field uplink terminal on a heavy square base, with a tall central mast
 5. Foot lamps go into the "other orange" material, flat emissive, clean round caps like image 3.
 6. The 3d agent repaints the dish-back area of the base colour texture in Blender after the back view of the sheet; the render is shown to the owner before going further.
 
+Owner verdict on the task-301-03 renders (2026-10-23): "Garde l'original, sauf pour la correction de la texture pour les couleurs, ça c'est bon". The dish back keeps the original Meshy texture (repaint dropped); the eight round foot caps, the darkened foot smear and the slot split are kept. Size: no objection, scaled in the Blueprint to the 2 x 2 cell footprint.
+
 Material slots: antenna orange (blinks), other orange (same colour, no blink), screen. State colours and rules live in [[objective-console]] and its task nodes, not here.
 
 ## Files
