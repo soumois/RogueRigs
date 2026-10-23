@@ -3,7 +3,7 @@ id: task-299-01-cpp-kamikaze-fuse-shake
 description: "Jitter the kamikaze VisualRoot during the fuse with the rock shake amplitudes, frequency rising 8 to 24 Hz (cpp)."
 parent: task-299-kamikaze-fuse-shake
 kind: task
-status: in-progress
+status: done
 ---
 # Kamikaze fuse shake
 
@@ -15,11 +15,11 @@ status: in-progress
 - done_when: build clean; kamikaze tests pass (armed drift under 1 uu); shake offset timeline over a fuse reported (amplitude, rate at start and end); docs updated; lint clean
 - editor_state: closed (owner closes it, or Live Coding off)
 - token_ceiling: 35000
-- model: open
-- tokens: open
-- runs: open
+- model: opus
+- tokens: input 34, cache write 59548, cache read 739536, output 14812
+- runs: 1
 - milestone: M2
-- result: open
+- result: Build clean; 7 Kamikaze tests pass, armed drift 0.00 uu. VisualRoot offset (8 sin t, 8 sin 1.37t, 3 sin 1.71t), rate 8 Hz at arming to 23.6 Hz on the last frame (explosion at 0.65 s), about 10 cycles; cleared on leaving Armed and ResetForNewLife. Commits 10217219, b6174222. Look not verified (nullrhi).
 
 ## Relations
 - [[task-299-kamikaze-fuse-shake]] — parent global task.

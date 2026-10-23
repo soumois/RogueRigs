@@ -3,7 +3,7 @@ id: task-299-02-capture-kamikaze-shake
 description: "Capture frames of an armed kamikaze over its 0.65 s fuse in -game (cpp)."
 parent: task-299-kamikaze-fuse-shake
 kind: task
-status: todo
+status: in-progress
 ---
 # Capture the kamikaze fuse
 

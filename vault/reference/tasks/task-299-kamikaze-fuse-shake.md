@@ -13,7 +13,7 @@ status: in-progress
 - gdd_check: enemy-kamikaze and sys-grid-rock-damage read (2026-10-23): fuse shake line added (provisional, owner 2026-10-23). Defaults accepted (provisional, owner 2026-10-23): rock shake amplitudes reused (8 uu horizontal, 3 uu vertical), frequency 8 to 24 Hz; core growth left as built (BP_Kamikaze ArmedCoreScale 1.2 since task-283-11).
 - confirmed_by_owner: yes (2026-10-23, "Le reste est bon"; planned in a planning pass, each task run later by its own orchestrator)
 - milestone: M2
-- next_step: task-299-01-cpp-kamikaze-fuse-shake
+- next_step: task-299-02-capture-kamikaze-shake
 - result: open
 
 ## Subtasks
