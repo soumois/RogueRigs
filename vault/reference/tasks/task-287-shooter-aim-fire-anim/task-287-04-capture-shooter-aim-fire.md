@@ -3,7 +3,7 @@ id: task-287-04-capture-shooter-aim-fire
 description: "Capture the shooter aiming and firing (cpp)."
 parent: task-287-shooter-aim-fire-anim
 kind: task
-status: in-progress
+status: todo
 ---
 # Capture the shooter aiming and firing
 
