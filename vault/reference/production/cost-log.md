@@ -599,6 +599,7 @@ kind: note
 | [[task-288-06-bp-debris-material]] | sonnet | 1 | 0k | 49k | 527k | 9k |
 | [[task-288-07-bp-ns-heavy-debris]] | sonnet | 1 | 0k | 86k | 1775k | 15k |
 | [[task-288-08-bp-ns-shooter-debris]] | sonnet | 1 | 0k | 68k | 2126k | 18k |
+| [[task-288-09-bp-ns-chaser-v2-debris]] | sonnet | 1 | 0k | 71k | 2517k | 20k |
 
 ## Totals
 | Scope | Input | Cache write | Cache read | Output |

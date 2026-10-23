@@ -3,7 +3,7 @@ id: task-288-09-bp-ns-chaser-v2-debris
 description: "NS_ChaserV2Debris with its pieces (bp)."
 parent: task-288-robot-death-debris
 kind: task
-status: in-progress
+status: done
 ---
 # NS_ChaserV2Debris with its pieces
 
@@ -15,11 +15,11 @@ status: in-progress
 - done_when: mesh bounds read back match the json (Y mirrored), renderer mesh list and offset table read back, system compiles UpToDate (GPU script too), git diff shows NS_RobotDebris and the v1 debris meshes unchanged; lint clean
 - editor_state: open
 - token_ceiling: 80000
-- model: open
-- tokens: open
-- runs: open
+- model: sonnet
+- tokens: input 98, cache write 71003, cache read 2516682, output 19595
+- runs: 1
 - milestone: M2
-- result: open
+- result: 13 SM_ChaserV2Debris_* in Art/ChaserV2/Debris (MI_ChaserV2Debris, sizes = json); NS_ChaserV2Debris renderer list and PieceLocal read back, UpToDate incl. GPU; v1 unchanged.
 
 ## Relations
 - [[task-288-robot-death-debris]] — parent global task.
