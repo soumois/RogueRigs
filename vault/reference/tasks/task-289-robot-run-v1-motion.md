@@ -1,9 +1,9 @@
 ---
 id: task-289-robot-run-v1-motion
 description: "Global task: heavy and chaser v2 run clips rebaked with the chaser v1 run motion, light knee bend kept, RunRate reset against foot slide."
-parent: tasks-done-index
+parent: tasks-to-do-index
 kind: task
-status: done
+status: in-progress
 ---
 # Robot run with the chaser v1 motion
 
@@ -14,7 +14,7 @@ status: done
 - confirmed_by_owner: yes (2026-10-23, direct order, run to the end)
 - milestone: M2
 - next_step: task-289-06-capture-run
-- result: Done. New T_ChaserV2AnimRunV1 (20x31, settings read back; T_ChaserV2Anim kept); MI_ChaserV2_Body and MI_RobotEye_ChaserV2 AnimTex -> it, RunRate 0.7 (was 1.5); shield chaser v2 untouched; commit 6e14be7d.
+- result: open
 
 ## Subtasks
 1. task-289-01-bake-heavy-run — 3d: Rebake the heavy run with the v1 motion
@@ -25,7 +25,7 @@ status: done
 6. task-289-06-capture-run — cpp: Capture both robots running
 
 ## Relations
-- [[tasks-done-index]] — parent index.
+- [[tasks-to-do-index]] — parent index.
 - [[task-289-01-bake-heavy-run]] — step 01, 3d.
 - [[task-289-02-bake-chaser-v2-run]] — step 02, 3d.
 - [[task-289-03-bp-heavy-run]] — step 03, bp.
