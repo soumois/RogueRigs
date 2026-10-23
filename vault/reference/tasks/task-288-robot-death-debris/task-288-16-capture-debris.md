@@ -3,7 +3,7 @@ id: task-288-16-capture-debris
 description: "Capture the new robot deaths (cpp)."
 parent: task-288-robot-death-debris
 kind: task
-status: todo
+status: in-progress
 ---
 # Capture the new robot deaths
 

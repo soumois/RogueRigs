@@ -3,7 +3,7 @@ id: task-288-15-bp-shield-v2-death
 description: "BP_ShieldChaserV2 throws chaser v2 debris (bp)."
 parent: task-288-robot-death-debris
 kind: task
-status: in-progress
+status: done
 ---
 # BP_ShieldChaserV2 throws chaser v2 debris
 
@@ -15,11 +15,11 @@ status: in-progress
 - done_when: defaults read back equal to BP_ChaserV2, OnShieldBroken still spawns NS_ShieldDebris, git diff shows no v1 asset changed; lint clean
 - editor_state: open
 - token_ceiling: 80000
-- model: open
-- tokens: open
-- runs: open
+- model: sonnet
+- tokens: input 44, cache write 35576, cache read 568749, output 9013
+- runs: 1
 - milestone: M2
-- result: open
+- result: BP_ShieldChaserV2: DebrisSystem NS_ChaserV2Debris and the 13 BP_ChaserV2 DebrisPieces (defaults identical to BP_ChaserV2); OnShieldBroken still spawns NS_ShieldDebris (v1 shards referenced); compiles; v1 untouched.
 
 ## Relations
 - [[task-288-robot-death-debris]] — parent global task.
