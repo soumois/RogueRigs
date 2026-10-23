@@ -14,7 +14,7 @@ status: done
 - confirmed_by_owner: yes (2026-10-23, "Le reste est bon"; planned in a planning pass, each task run later by its own orchestrator)
 - milestone: M2
 - next_step: none
-- result: Done. 14 -game frames at slomo 0.1 over one fuse, 0.05 s apart, plus sheet (Saved/RobotMeshes/kamikaze-shake/kamikaze_sheet.png): body offset against a fixed cross visible between frames (about 21 px travel each screen axis); core bigger at the end but mixed with its pulse. Not verified: uu amplitude, rate rise 8 to 24 Hz, look at normal speed.
+- result: Done. 01 (10217219, b6174222): ARRKamikaze VisualRoot fuse shake, rock form (8 uu x/y, 3 uu z), rate 8 Hz at arming to 23.6 Hz on the last frame before the 0.65 s explosion, cleared on leaving Armed and ResetForNewLife; core scale untouched; 7 Kamikaze tests pass, armed drift 0.00 uu. 02: 14 -game frames at slomo 0.1 plus sheet Saved/RobotMeshes/kamikaze-shake/kamikaze_sheet.png, body offset visible against a fixed cross; core growth mixed with its pulse. Not verified: uu amplitude on screen, rate rise, look at normal speed.
 
 ## Subtasks
 1. task-299-01-cpp-kamikaze-fuse-shake — cpp: Kamikaze fuse shake
