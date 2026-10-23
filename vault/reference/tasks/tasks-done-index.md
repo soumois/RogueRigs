@@ -299,3 +299,4 @@ Archive: it exceeds the index size limits of [[_authoring]] on purpose (owner, 2
 - [[task-290-robot-run-knee-cap]] — Heavy and chaser v2 run knee follows the v1 curve, capped at 35 and 45 degrees instead of 15. Status done (cancelled, replaced by task-291).
 - [[task-291-chaser-v2-v1-anims]] — Chaser v2 run and attack, and shield chaser v2 shield run and bash, become exactly the v1 clips on the v2 parts. Status done.
 - [[task-292-heavy-one-per-pack]] — Packs carry at most 1 heavy so heavies arrive from different sides; heavy alive cap 3 unchanged. Status done.
+- [[task-293-heavy-slam-bigger-slower]] — Heavy slam radius 289 to 361 uu and telegraph 0.6 to 1.0 s, fist raise stretched to the longer telegraph. Status done.

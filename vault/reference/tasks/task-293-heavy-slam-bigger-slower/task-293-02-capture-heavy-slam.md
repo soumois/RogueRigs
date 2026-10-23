@@ -3,7 +3,7 @@ id: task-293-02-capture-heavy-slam
 description: "Capture the heavy telegraph circle and slow fist raise in -game, compared with run-v1 shots (cpp)."
 parent: task-293-heavy-slam-bigger-slower
 kind: task
-status: in-progress
+status: done
 ---
 # Capture the heavy telegraph and slam
 
@@ -15,11 +15,11 @@ status: in-progress
 - done_when: circle size and raise timing visible on the frames; fists on the ground at the slam; no untracked throwaway files
 - editor_state: any (runs beside the owner editor)
 - token_ceiling: 30000
-- model: open
-- tokens: open
-- runs: open
+- model: opus
+- tokens: input 42, cache write 47263, cache read 539349, output 10626
+- runs: 1
 - milestone: M2
-- result: open
+- result: -game slomo 0.1 capture, Saved/RobotMeshes/heavy-slam-1s/heavy_00..15.png + heavy_sheet.png: 361 uu ring for the whole telegraph, fists rise hip -> shoulder (+0.51) -> above head (+0.72..0.82), swing down +0.92, slam +1.0 bent forward fists low by the feet; ground contact not provable from the top-down camera
 
 ## Relations
 - [[task-293-heavy-slam-bigger-slower]] — parent global task.

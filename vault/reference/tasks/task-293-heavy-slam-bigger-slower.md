@@ -1,9 +1,9 @@
 ---
 id: task-293-heavy-slam-bigger-slower
 description: "Global task: Heavy slam radius 289 to 361 uu and telegraph 0.6 to 1.0 s, fist raise stretched to the longer telegraph."
-parent: tasks-to-do-index
+parent: tasks-done-index
 kind: task
-status: in-progress
+status: done
 ---
 # Heavy slam 25 % larger, 1 s wind-up
 
@@ -14,14 +14,14 @@ status: in-progress
 - confirmed_by_owner: yes (2026-10-23, "Le reste est bon"; planned in a planning pass, each task run later by its own orchestrator)
 - owner_defaults: clip-1 frame driven in C++ by GetTelegraphProgress (about 17 poses/s), no shader change; fallback if blocked: per-clip speed parameter in MF_RobotAnimWPO (extra bp subtask); radius 361, WindUp 1.0 s, trigger ratio 0.7 kept; SlamContactLead checked so fists touch the ground on the damage frame (provisional, owner 2026-10-23, "ok pour les défauts")
 - milestone: M2
-- next_step: task-293-02-capture-heavy-slam
-- result: open
+- next_step: none
+- result: Done. -game slomo 0.1 capture, Saved/RobotMeshes/heavy-slam-1s/heavy_00..15.png + heavy_sheet.png: 361 uu ring for the whole telegraph, fists rise hip -> shoulder (+0.51) -> above head (+0.72..0.82), swing down +0.92, slam +1.0 bent forward fists low by the feet; ground contact not provable from the top-down camera
 
 ## Subtasks
 1. task-293-01-cpp-heavy-slam-values — cpp: Heavy slam radius and wind-up
 2. task-293-02-capture-heavy-slam — cpp: Capture the heavy telegraph and slam
 
 ## Relations
-- [[tasks-to-do-index]] — parent index.
+- [[tasks-done-index]] — parent index.
 - [[task-293-01-cpp-heavy-slam-values]] — step 01, cpp.
 - [[task-293-02-capture-heavy-slam]] — step 02, cpp.

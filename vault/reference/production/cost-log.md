@@ -621,6 +621,7 @@ kind: note
 | [[task-291-05-capture-v2-v1-clips]] | opus | 1 | 0k | 92k | 696k | 9k |
 | [[task-292-01-cpp-heavy-one-per-pack]] | opus | 1 | 0k | 41k | 484k | 10k |
 | [[task-293-01-cpp-heavy-slam-values]] | opus | 1 | 0k | 95k | 2819k | 25k |
+| [[task-293-02-capture-heavy-slam]] | opus | 1 | 0k | 47k | 539k | 11k |
 
 ## Totals
 | Scope | Input | Cache write | Cache read | Output |
