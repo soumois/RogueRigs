@@ -3,7 +3,7 @@ id: task-296-shield-v2-arm-forward
 description: "Global task: Shield chaser v2 holds its forearm forward and carries the shield about 30 cm further forward to free the feet."
 parent: tasks-to-do-index
 kind: task
-status: todo
+status: in-progress
 ---
 # Shield chaser v2 holds the shield forward
 

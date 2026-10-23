@@ -3,7 +3,7 @@ id: task-296-01-bake-shield-arm-forward
 description: "Rebake the shield chaser v2 shield clips with the forearm held forward and the shield about 30 cm forward (3d)."
 parent: task-296-shield-v2-arm-forward
 kind: task
-status: todo
+status: in-progress
 ---
 # Bake the shield held forward
 
