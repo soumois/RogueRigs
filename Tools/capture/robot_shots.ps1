@@ -4,7 +4,7 @@
 # -NoFreeze (task-284-11): no slomo, -ShotCount shots every -ShotInterval s from -ShotDelay s after the spawn, copied to <robot><Suffix>_<i>.png (robots caught walking);
 #   with -NoFreeze: -Distance/-Yaw (SpawnNear uu and degrees), -Camera "<Pitch> <Arm> [Yaw]" (rr.Debug.Camera at 14 s), -StopSpawner (rr.Spawner.Enabled 0).
 #   -BreakShieldsAt <s> (task-286-04, with -NoFreeze): rr.Debug.BreakShields <s> seconds after the spawn (shield chasers shot before and after the break).
-# Usage: powershell -NoProfile -ExecutionPolicy Bypass -File Tools\capture\robot_shots.ps1 [-Label before|after] [-Robots heavy,kamikaze,shooter,chaser,chaserv2,shieldchaserv2] [-NoFreeze -ShotCount 4 -ShotInterval 0.25 -ShotDelay 0.5]
+# Usage: powershell -NoProfile -ExecutionPolicy Bypass -File Tools\capture\robot_shots.ps1 [-Label before|after] [-Robots heavy,kamikaze,shooter,chaser,chaserv2,shieldchaser,shieldchaserv2] [-NoFreeze -ShotCount 4 -ShotInterval 0.25 -ShotDelay 0.5]
 param(
 	[string]$Label = "before",
 	[string[]]$Robots = @("heavy", "kamikaze", "shooter", "chaser"),
@@ -34,6 +34,7 @@ $Classes = @{
 	shooter  = "/Game/RogueRigs/Blueprints/Enemies/BP_Shooter.BP_Shooter_C"
 	chaser   = "/Game/RogueRigs/Blueprints/Enemies/BP_Chaser.BP_Chaser_C"
 	chaserv2 = "/Game/RogueRigs/Blueprints/Enemies/BP_ChaserV2.BP_ChaserV2_C"
+	shieldchaser = "/Game/RogueRigs/Blueprints/Enemies/BP_ShieldChaser.BP_ShieldChaser_C"
 	shieldchaserv2 = "/Game/RogueRigs/Blueprints/Enemies/BP_ShieldChaserV2.BP_ShieldChaserV2_C"
 }
 $OutDir = Join-Path $ProjectDir "Saved\RobotMeshes\$Label"
