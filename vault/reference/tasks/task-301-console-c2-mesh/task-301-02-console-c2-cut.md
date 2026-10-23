@@ -3,7 +3,7 @@ id: task-301-02-console-c2-cut
 description: "Cut the console C2 mobile head and set its material slots (3d): console c2 uplink mast mesh, step 02."
 parent: task-301-console-c2-mesh
 kind: task
-status: in-progress
+status: done
 ---
 # Cut the console C2 mobile head and set its material slots
 
@@ -15,11 +15,11 @@ status: in-progress
 - done_when: two FBX files; head pivot on the mast axis (numbers in the report); three named slots; renders sent to the owner by the Orchestrator; no Blender process left running; committed
 - editor_state: any
 - token_ceiling: 40000
-- model: open
-- tokens: open
-- runs: open
+- model: sonnet
+- tokens: input 62, cache write 118263, cache read 2187631, output 55376
+- runs: 1
 - milestone: M2
-- result: open
+- result: Blender route: console_c2_base.fbx (147.7 x 126.7 x 108 cm) and console_c2_head.fbx (dish, feed arm, joint; cut plane z 108) in Art/Source/console-meshy/clean/; head origin on the mast axis, offset on base (-4.904, 16.690, 108.0) cm; slots ConsoleBody, AntennaOrange (head 332 tris), OtherOrange (base 3778 tris), Screen (10 tris); FBX_SCALE_UNITS; fixed-camera renders in clean/renders/ (assembled, lifted, tint, source_raw); commit d996ab57.
 
 ## Relations
 - [[task-301-console-c2-mesh]] — parent global task.

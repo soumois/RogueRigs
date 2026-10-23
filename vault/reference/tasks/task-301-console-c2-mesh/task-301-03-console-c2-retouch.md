@@ -3,7 +3,7 @@ id: task-301-03-console-c2-retouch
 description: "Repaint the console C2 dish back and foot lamps (3d): console c2 uplink mast mesh, step 03."
 parent: task-301-console-c2-mesh
 kind: task
-status: todo
+status: in-progress
 ---
 # Repaint the console C2 dish back and foot lamps
 
