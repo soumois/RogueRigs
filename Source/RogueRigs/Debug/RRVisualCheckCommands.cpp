@@ -1,4 +1,4 @@
-// Rogue Rigs - visual check console commands for unattended -game checks (debug only, compiled out of shipping): rr.Debug.Shots (timed screenshots + damage number state), rr.Debug.CritChance (weapon crit chance override), rr.Debug.Delayed (runs a command later), rr.Debug.DamageMiner (direct hit on the player miner, logs the vignette state for 6 frames), rr.Debug.SpawnNear (actors around the miner), rr.Debug.Objective (miner moved to the console or shuttle), rr.Debug.ScreenText (logs a screen text item through the text subsystem), rr.Debug.BreakShields (drains the shield of living shield chasers, health kept), rr.Debug.DamageCell (block brought to a display damage), rr.Debug.Camera (camera boom pitch, length, yaw).
+// Rogue Rigs - visual check console commands for unattended -game checks (debug only, compiled out of shipping): rr.Debug.Shots (timed screenshots + damage number state), rr.Debug.CritChance (weapon crit chance override), rr.Debug.Delayed (runs a command later), rr.Debug.DamageMiner (direct hit on the player miner, logs the vignette state for 6 frames), rr.Debug.SpawnNear (actors around the miner), rr.Debug.Objective (miner moved to the console or shuttle), rr.Debug.ScreenText (logs a screen text item through the text subsystem), rr.Debug.BreakShields (drains the shield of living shield chasers, health kept), rr.Debug.DamageCell (block brought to a display damage), rr.Debug.Camera (camera boom pitch, length, yaw), rr.Debug.KillRobots (kills living robots through the normal death path).
 
 #include "CoreMinimal.h"
 #include "AbilitySystemComponent.h"
@@ -579,6 +579,41 @@ namespace RRScreenshotCommands
 			Arm->SetRelativeRotation(FRotator(FCString::Atof(*Args[0]), Yaw, 0.f));
 			Arm->TargetArmLength = FMath::Max(0.f, FCString::Atof(*Args[1]));
 			UE_LOG(LogRogueRigs, Log, TEXT("rr.Debug.Camera: pitch %s, arm %.0f, yaw %.0f."), *Args[0], Arm->TargetArmLength, Yaw);
+		}),
+		ECVF_Cheat);
+
+	/**
+	 * rr.Debug.KillRobots [RadiusUU]: kills every living ARREnemy (within RadiusUU, 2D, of the first living miner when given) through
+	 * URRStressSubsystem::KillEnemy, the explosion-hit path: normal death (puff, shrink, XP, kamikaze explosion). Death visual checks.
+	 */
+	FAutoConsoleCommandWithWorldAndArgs KillRobotsCommand(
+		TEXT("rr.Debug.KillRobots"),
+		TEXT("rr.Debug.KillRobots [RadiusUU]: kills every living robot (within RadiusUU of the first living miner when given) through the normal death path."),
+		FConsoleCommandWithWorldAndArgsDelegate::CreateLambda([](const TArray<FString>& Args, UWorld* World)
+		{
+			World = World ? World : RRCheats::FindCheatWorld();
+			const ARRMiner* Miner = World ? RRWorld::FindMiner(World, /*bLivingOnly*/ true) : nullptr;
+			const bool bUseRadius = Args.Num() > 0;
+			if (!World || (bUseRadius && !Miner))
+			{
+				UE_LOG(LogRogueRigs, Warning, TEXT("rr.Debug.KillRobots: no game world, or a radius without a living miner."));
+				return;
+			}
+			const float Radius = bUseRadius ? FMath::Max(0.f, FCString::Atof(*Args[0])) : 0.f;
+			TArray<ARREnemy*> Targets;
+			for (TActorIterator<ARREnemy> It(World); It; ++It)
+			{
+				if (!It->IsDead() && (!bUseRadius || FVector::Dist2D(It->GetActorLocation(), Miner->GetActorLocation()) <= Radius))
+				{
+					Targets.Add(*It);
+				}
+			}
+			int32 Killed = 0;
+			for (ARREnemy* Enemy : Targets)
+			{
+				Killed += URRStressSubsystem::KillEnemy(Enemy) ? 1 : 0;
+			}
+			UE_LOG(LogRogueRigs, Log, TEXT("rr.Debug.KillRobots: %d killed of %d living robots."), Killed, Targets.Num());
 		}),
 		ECVF_Cheat);
 }
