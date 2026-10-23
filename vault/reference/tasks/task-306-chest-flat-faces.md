@@ -11,7 +11,7 @@ status: todo
 - goal: Flatten the puffed Meshy chest faces after the sheet, cut it into body, lid and latch, and show it in BP_BonusChest.
 - acceptance: BP_BonusChest shows the owner chest with flat faces matching the sheet (body, lid and latch as separate parts with their pivots, lock light in its own slot), footprint 2 x 2 cells kept; renders and -game frames before and after sent to the owner; committed.
 - gdd_check: objective-bonus-chest, art-prompts-chest, color-code read (2026-10-23). No conflict (corporate locker, colours of the sheet). Pending owner answers, defaults: Q1 Blender cleanup of the Meshy mesh (not a rebuild); Q2 at most 3000 tris; Q3 about 130 x 80 x 70 uu, bottom-centre origin, lock face toward the camera; Q4 the cut into body, lid (pivot on the hinge axis) and latch (pivot on its top edge, lock light slot LockLight) is done here once, for task-308 and task-309; Q5 the gold whole-chest glow (GlowAmount) is dropped; Q15 logo plate kept as in the mesh.
-- confirmed_by_owner: no (planned 2026-10-23, "ne lance rien pour l'instant"; waiting for the owner's answers, the defaults below apply if he answers "ok")
+- confirmed_by_owner: yes (owner 2026-10-23: "ok pour tous les défauts (Q1 à Q25)"; every default below applies; not launched yet)
 - milestone: M2
 - next_step: task-306-01-chest-flatten
 - result: open

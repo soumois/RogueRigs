@@ -31,6 +31,7 @@ art-prompts-arena-draft  reference/gdd/art-audio/art-prompts-arena-draft.md
 art-prompts-arena-final  reference/gdd/art-audio/art-prompts-arena-final.md
 art-prompts-card-back  reference/gdd/art-audio/art-prompts-card-back.md
 art-prompts-chest  reference/gdd/art-audio/art-prompts-chest.md
+art-prompts-console  reference/gdd/art-audio/art-prompts-console.md
 art-prompts-drone  reference/gdd/art-audio/art-prompts-drone.md
 art-prompts-floor-texture  reference/gdd/art-audio/art-prompts-floor-texture.md
 art-prompts-floor-texture-maps  reference/gdd/art-audio/art-prompts-floor-texture-maps.md
