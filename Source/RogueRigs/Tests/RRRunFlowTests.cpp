@@ -377,7 +377,7 @@ bool FRRConsoleHackTest::RunTest(const FString& Parameters)
 	}
 	Console->OnConsoleStateChanged.AddDynamic(Recorder.Get(), &URRTestEventRecorder::HandleConsoleStateChanged);
 	Console->InitializeConsole(Grid, Miner, RunHackConsoleCell);
-	TestEqual(TEXT("hack 12 s"), Console->GetHackDuration(), 12.f);
+	TestEqual(TEXT("hack 10 s"), Console->GetHackDuration(), 10.f);
 	TestEqual(TEXT("drain 5 %/s"), Console->GetDrainPerSecond(), 0.05f);
 	TestEqual(TEXT("zone 7 cells"), Console->GetZoneRadius(), 7.f * Grid->GetCellSize());
 	TestTrue(TEXT("rock (129, 115) marked"), Grid->IsCellMarked(FineRockCell));
@@ -419,12 +419,12 @@ bool FRRConsoleHackTest::RunTest(const FString& Parameters)
 	TestFalse(TEXT("no second hack target"), Drone->StartHack(Grid));
 	TestEqual(TEXT("still in Hack"), Drone->GetState(), ERRDroneState::Hack);
 
-	// 360 frames of hacking (the first was the frame the rocks cleared) = 6 s = half the gauge.
-	for (int32 Frame = 1; Frame < 360; ++Frame)
+	// 300 frames of hacking (the first was the frame the rocks cleared) = 5 s = half the gauge.
+	for (int32 Frame = 1; Frame < 300; ++Frame)
 	{
 		TestWorld.Tick();
 	}
-	TestNearlyEqual(TEXT("half after 6 s"), Console->GetHackProgress(), 0.5f, 0.002f);
+	TestNearlyEqual(TEXT("half after 5 s"), Console->GetHackProgress(), 0.5f, 0.002f);
 
 	// Miner leaves: the drone follows him, progress drains 5 %/s.
 	const FVector InZone = Miner->GetActorLocation();
@@ -439,7 +439,7 @@ bool FRRConsoleHackTest::RunTest(const FString& Parameters)
 	TestNull(TEXT("drone unlinked"), Drone->GetHackTarget());
 	TestNearlyEqual(TEXT("drained 5 % in 1 s"), Console->GetHackProgress(), 0.45f, 0.002f);
 
-	// Back in: 0.55 of the gauge left = 6.6 s = 396 frames.
+	// Back in: 0.55 of the gauge left = 5.5 s = 330 frames.
 	Miner->SetActorLocation(InZone);
 	int32 CompleteFrame = -1;
 	for (int32 Frame = 1; Frame <= 800 && CompleteFrame < 0; ++Frame)
@@ -451,7 +451,7 @@ bool FRRConsoleHackTest::RunTest(const FString& Parameters)
 		}
 	}
 	AddInfo(FString::Printf(TEXT("complete %d frames after coming back."), CompleteFrame));
-	TestTrue(TEXT("complete after 396 frames (+-2)"), FMath::Abs(CompleteFrame - 396) <= 2);
+	TestTrue(TEXT("complete after 330 frames (+-2)"), FMath::Abs(CompleteFrame - 330) <= 2);
 	TestEqual(TEXT("progress 1"), Console->GetHackProgress(), 1.f);
 	TestEqual(TEXT("drone released"), Drone->GetState(), ERRDroneState::Orbit);
 	for (int32 Frame = 0; Frame < 30; ++Frame)

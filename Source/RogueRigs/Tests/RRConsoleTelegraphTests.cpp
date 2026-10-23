@@ -114,8 +114,8 @@ bool FRRConsoleZoneTelegraphTest::RunTest(const FString& Parameters)
 	TestEqual(TEXT("ZoneActive once the last marked rock is gone"), Telegraph->GetMode(), ERRGroundTelegraphMode::ZoneActive);
 
 	// Progress follows the hack.
-	TickFrames(TestWorld, 359);
-	TestNearlyEqual(TEXT("half after 6 s"), Console->GetHackProgress(), 0.5f, 0.002f);
+	TickFrames(TestWorld, 299);
+	TestNearlyEqual(TEXT("half after 5 s"), Console->GetHackProgress(), 0.5f, 0.002f);
 	TestEqual(TEXT("telegraph progress = hack progress"), Telegraph->GetProgress(), Console->GetHackProgress());
 
 	// Miner out of the zone: the progress circle shrinks with the drain.

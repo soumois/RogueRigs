@@ -211,9 +211,9 @@ protected:
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Console")
 	TArray<ERRCellType> MarkedCellTypes = { ERRCellType::Rock, ERRCellType::Ore, ERRCellType::HealOre, ERRCellType::SpecialOre };
 
-	/** Seconds of hacking from 0 to complete (objective-console, owner 2026-10-13: 12 s, provisional; 16 s before task-120-01, 20 s before task-042-01). */
+	/** Seconds of hacking from 0 to complete (objective-console, owner 2026-10-23: 10 s, provisional; 12 s before task-305-01, 16 s before task-120-01, 20 s before task-042-01). */
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Console", meta = (ClampMin = 0.1, Units = "s"))
-	float HackDuration = 12.f;
+	float HackDuration = 10.f;
 
 	/**
 	 * Hack zone radius in cells, from the console center (footprint centre): the miner must be within it (2D) for the drone to hack,
