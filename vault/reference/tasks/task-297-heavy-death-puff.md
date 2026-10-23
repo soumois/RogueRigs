@@ -15,6 +15,7 @@ status: done
 - milestone: M2
 - next_step: none
 - result: Done. Added rr.Debug.KillRobots (b5b37c44, sys-cheats 8ea89703). Run 1: heavy head drawn over the puff at 0.04 s -> 297-01 rework f729a121 (puff +130 cm, sprites 70-190 cm). Run 2 (Saved/RobotMeshes/heavy-death/heavy_sheet.png): head, torso and arms hidden from the first puff frame (0.04 s); feet and shins still visible below the puff 0.04-0.09 s, hidden from 0.14 s; colour reads cream-yellow with orange edges. Residual feet left for owner review.
+- owner_review: "On accepte, les pieds visibles ne gênent pas" (owner 2026-10-23): the feet briefly visible under NS_HeavyDeathPuff are accepted, no rework.
 
 ## Subtasks
 1. task-297-01-bp-heavy-death-puff-ns — bp: NS_HeavyDeathPuff

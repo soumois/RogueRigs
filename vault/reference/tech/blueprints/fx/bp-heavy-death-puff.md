@@ -17,6 +17,7 @@ kind: doc
 - logic_in_bp: none
 - assets: used by BP_Heavy as DeathPuffSystem since task-297-02 (read back).
 - verified: compiles (UpToDate, 0 errors, 0 warnings); NS_RobotDeathPuff read back unchanged. Not verified in game after the rework: the +130 offset assumes the heavy actor origin is near its mid-height; look and cost not judged.
+- owner_review: feet and shins briefly visible below the puff (0.04 to 0.09 s) accepted, no rework (owner 2026-10-23, "On accepte, les pieds visibles ne gênent pas").
 - owner_agent: agent-bp
 
 ## Relations

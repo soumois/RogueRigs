@@ -10,7 +10,7 @@ status: todo
 - request: "tout le body se met à vibrer légèrement comme les murs (la vibration s'accélère pendant les 0.65 s) et en parallèle tu continues l'effet de scale sur le cœur qui explose" (owner, 2026-10-23)
 - goal: While Armed, VisualRoot (body and core) jitters with the amplitudes of the existing rock dig shake (8 uu horizontal, 3 uu vertical), its frequency rising over the fuse (default 8 to 24 Hz); core growth and pulse unchanged (ArmedCoreScale as built); actor position, fuse and explosion unchanged (provisional, owner 2026-10-23).
 - acceptance: shake only while armed, rising rate, cleared on explosion and pool reuse; kamikaze tests pass (armed drift under 1 uu); -game frames over a fuse; committed.
-- gdd_check: enemy-kamikaze and sys-grid-rock-damage read (2026-10-23): fuse shake line added (provisional, owner 2026-10-23). Defaults to confirm: rock shake amplitudes reused, frequency 8 to 24 Hz.
+- gdd_check: enemy-kamikaze and sys-grid-rock-damage read (2026-10-23): fuse shake line added (provisional, owner 2026-10-23). Defaults accepted (provisional, owner 2026-10-23): rock shake amplitudes reused (8 uu horizontal, 3 uu vertical), frequency 8 to 24 Hz; core growth left as built (BP_Kamikaze ArmedCoreScale 1.2 since task-283-11).
 - confirmed_by_owner: yes (2026-10-23, "Le reste est bon"; planned in a planning pass, each task run later by its own orchestrator)
 - milestone: M2
 - next_step: task-299-01-cpp-kamikaze-fuse-shake
