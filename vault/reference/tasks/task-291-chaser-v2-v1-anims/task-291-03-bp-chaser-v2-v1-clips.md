@@ -3,7 +3,7 @@ id: task-291-03-bp-chaser-v2-v1-clips
 description: "Import the 291-01 bake as a new texture on the chaser v2 body and eye instances, RunRate in sync (bp)."
 parent: task-291-chaser-v2-v1-anims
 kind: task
-status: in-progress
+status: done
 ---
 # Chaser v2 v1-clips texture in Unreal
 
@@ -15,11 +15,11 @@ status: in-progress
 - done_when: texture 20 x 31 and settings read back; AnimTex and RunRate read back equal on every chaser v2 body and eye instance; shield chaser v2 and v1 untouched; docs updated; lint clean
 - editor_state: open (owner editor, MCP route, do not close it)
 - token_ceiling: 35000
-- model: open
-- tokens: open
-- runs: open
+- model: sonnet
+- tokens: input 30, cache write 47858, cache read 461276, output 7785
+- runs: 1
 - milestone: M2
-- result: open
+- result: T_ChaserV2AnimV1Clips imported (20x31, TC_HDR, no mips, Nearest, sRGB off, never stream, Clamp); AnimTex set on MI_ChaserV2_Body and MI_RobotEye_ChaserV2 (only referencers), RunRate 0.7 read back; T_ChaserV2AnimRunV1 kept; docs updated; commit b30cf32b.
 
 ## Relations
 - [[task-291-chaser-v2-v1-anims]] — parent global task.

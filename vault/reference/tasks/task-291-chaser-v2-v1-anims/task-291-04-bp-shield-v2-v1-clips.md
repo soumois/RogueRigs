@@ -3,7 +3,7 @@ id: task-291-04-bp-shield-v2-v1-clips
 description: "Import the 291-02 bake as a new texture for the shield chaser v2 master and instances, RunRate in sync (bp)."
 parent: task-291-chaser-v2-v1-anims
 kind: task
-status: todo
+status: in-progress
 ---
 # Shield chaser v2 v1-clips texture in Unreal
 
