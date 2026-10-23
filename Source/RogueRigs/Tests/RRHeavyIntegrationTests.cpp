@@ -1,4 +1,4 @@
-// Rogue Rigs - heavy integration tests with the final Blueprints (RogueRigs.Integration.Heavy*): BP_Heavy telegraphs then slams a vulnerable BP_Miner for 25 with its glow and tilt, misses beyond 289 uu, takes the BP_Miner shotgun pellet knockback reduced by 0.8 and crosses a one-cell corridor of arena_m1.
+// Rogue Rigs - heavy integration tests with the final Blueprints (RogueRigs.Integration.Heavy*): BP_Heavy telegraphs then slams a vulnerable BP_Miner for 25 with its glow and telegraph clip (id 1), misses beyond 289 uu, takes the BP_Miner shotgun pellet knockback reduced by 0.8 and crosses a one-cell corridor of arena_m1.
 
 #include "CoreMinimal.h"
 #include "Misc/AutomationTest.h"
@@ -48,6 +48,9 @@ namespace RRHeavyIntegrationTests
 	constexpr double TelegraphSeconds = 0.6;
 	constexpr double SlamPeriod = 2.0;
 	constexpr float HeavyResistance = 0.8f;
+
+	/** ARRHeavy TelegraphClipId: clip written on entering Telegraph (task-285-02; replaced the BP body tilt removed in task-285-03). */
+	constexpr float TelegraphClipId = 1.f;
 
 	/** Spawns a robot of Blueprint class Class with its feet on the floor at FloorLocation. */
 	template <typename T>
@@ -156,7 +159,8 @@ bool FRRIntegrationHeavySlamTest::RunTest(const FString& Parameters)
 	TArray<float> HealthAfterSlams;
 	TArray<double> RecoverEnds;
 	float FirstTelegraphDistance = -1.f;
-	float MaxTelegraphPitch = 0.f;
+	bool bTelegraphClipAtStart = true;
+	TArray<float> TelegraphStartClips;
 	bool bStoppedWhileTelegraphing = true;
 	bool bPoseResetAfterRecover = true;
 	for (int32 Frame = 0; Frame < 60 * 10 && RecoverEnds.Num() < 2; ++Frame)
@@ -168,6 +172,8 @@ bool FRRIntegrationHeavySlamTest::RunTest(const FString& Parameters)
 		if (Previous != ERRHeavyState::Telegraph && Heavy->IsTelegraphing())
 		{
 			TelegraphStarts.Add(Now);
+			TelegraphStartClips.Add(Heavy->GetAnimClipId());
+			bTelegraphClipAtStart &= FMath::IsNearlyEqual(Heavy->GetAnimClipId(), TelegraphClipId);
 			if (FirstTelegraphDistance < 0.f)
 			{
 				FirstTelegraphDistance = FVector::Dist2D(Heavy->GetActorLocation(), Miner->GetActorLocation());
@@ -176,7 +182,6 @@ bool FRRIntegrationHeavySlamTest::RunTest(const FString& Parameters)
 		if (Heavy->IsTelegraphing())
 		{
 			bStoppedWhileTelegraphing &= Heavy->GetVelocity().Size2D() < 1.f;
-			MaxTelegraphPitch = FMath::Max(MaxTelegraphPitch, FMath::Abs(Body->GetRelativeRotation().Pitch));
 		}
 		if (Heavy->GetSlamCount() > SlamsBefore)
 		{
@@ -193,8 +198,9 @@ bool FRRIntegrationHeavySlamTest::RunTest(const FString& Parameters)
 	{
 		return FString::JoinBy(Times, TEXT(", "), [](double Time) { return FString::Printf(TEXT("%.3f"), Time); });
 	};
-	AddInfo(FString::Printf(TEXT("BP_Heavy from 600 uu: telegraphs at %s (first at %.0f uu); slams at %s; recover ends at %s; miner %.0f -> %.0f; body pitch %.1f"),
-		*Join(TelegraphStarts), FirstTelegraphDistance, *Join(SlamTimes), *Join(RecoverEnds), HealthBefore, Health(Miner), MaxTelegraphPitch));
+	AddInfo(FString::Printf(TEXT("BP_Heavy from 600 uu: telegraphs at %s (first at %.0f uu); slams at %s; recover ends at %s; miner %.0f -> %.0f; telegraph start clips %s"),
+		*Join(TelegraphStarts), FirstTelegraphDistance, *Join(SlamTimes), *Join(RecoverEnds), HealthBefore, Health(Miner),
+		*FString::JoinBy(TelegraphStartClips, TEXT(", "), [](float Clip) { return FString::Printf(TEXT("%.0f"), Clip); })));
 
 	if (!TestEqual(TEXT("two slams within 10 s"), SlamTimes.Num(), 2) || !TestTrue(TEXT("one telegraph per slam"), TelegraphStarts.Num() >= 2)
 		|| !TestEqual(TEXT("two recoveries"), RecoverEnds.Num(), 2))
@@ -213,7 +219,7 @@ bool FRRIntegrationHeavySlamTest::RunTest(const FString& Parameters)
 	TestTrue(TEXT("slams 2 s apart (within one frame)"), FMath::Abs(SlamTimes[1] - SlamTimes[0] - SlamPeriod) <= FrameSeconds + 1e-3);
 	TestTrue(TEXT("stopped while telegraphing"), bStoppedWhileTelegraphing);
 	TestEqual(TEXT("two hits counted"), Heavy->GetSlamHitCount(), 2);
-	TestTrue(TEXT("BP_Heavy tilts its body during the telegraph (pitch 14)"), FMath::IsNearlyEqual(MaxTelegraphPitch, 14.f, 1.f));
+	TestTrue(TEXT("BP_Heavy plays the telegraph clip (id 1) when the telegraph starts"), bTelegraphClipAtStart);
 	TestTrue(TEXT("body pose reset once the recovery ends"), bPoseResetAfterRecover);
 	TestTrue(TEXT("miner alive"), !Miner->IsDead());
 	return true;
