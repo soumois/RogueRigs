@@ -13,7 +13,7 @@ status: in-progress
 - gdd_check: enemy-chaser read (2026-10-23): shield chaser v2 forearm forward, shield about 30 cm further forward (provisional, owner 2026-10-23). Depends on task-291 (its shield clips are rebaked there); runs after it.
 - confirmed_by_owner: yes (2026-10-23, "Le reste est bon"; planned in a planning pass, each task run later by its own orchestrator)
 - milestone: M2
-- next_step: task-296-01-bake-shield-arm-forward
+- next_step: task-296-02-bp-shield-arm-forward
 - result: open
 
 ## Subtasks

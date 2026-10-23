@@ -3,7 +3,7 @@ id: task-296-02-bp-shield-arm-forward
 description: "Import the 296-01 mesh and texture as new assets on BP_ShieldChaserV2 (bp)."
 parent: task-296-shield-v2-arm-forward
 kind: task
-status: todo
+status: in-progress
 ---
 # Shield held forward in Unreal
 
