@@ -3,7 +3,7 @@ id: task-301-03-console-c2-retouch
 description: "Repaint the console C2 dish back and foot lamps (3d): console c2 uplink mast mesh, step 03."
 parent: task-301-console-c2-mesh
 kind: task
-status: in-progress
+status: review
 ---
 # Repaint the console C2 dish back and foot lamps
 
@@ -19,7 +19,7 @@ status: in-progress
 - tokens: open
 - runs: open
 - milestone: M2
-- result: open
+- result: Renders made (commit 1fcf8ca2): dish back repainted after the sheet back view, 8 round amber foot caps (2 per foot) in OtherOrange; waiting for the owner go on the before/after renders before task-301-04.
 
 ## Relations
 - [[task-301-console-c2-mesh]] — parent global task.
