@@ -3,7 +3,7 @@ id: task-297-03-capture-heavy-death
 description: "Capture frames of a heavy death in -game to check the shrink is hidden (cpp)."
 parent: task-297-heavy-death-puff
 kind: task
-status: todo
+status: in-progress
 ---
 # Capture a heavy death
 

@@ -3,7 +3,7 @@ id: task-297-02-bp-heavy-death-puff-set
 description: "Set BP_Heavy DeathPuffSystem to NS_HeavyDeathPuff (bp)."
 parent: task-297-heavy-death-puff
 kind: task
-status: in-progress
+status: done
 ---
 # BP_Heavy uses the heavy puff
 
@@ -15,11 +15,11 @@ status: in-progress
 - done_when: DeathPuffSystem read back; compiled and saved; other robot Blueprints unchanged; doc updated; lint clean
 - editor_state: open (owner editor, MCP route, do not close it)
 - token_ceiling: 20000
-- model: open
-- tokens: open
-- runs: open
+- model: sonnet
+- tokens: input 50, cache write 36193, cache read 670386, output 7948
+- runs: 1
 - milestone: M2
-- result: open
+- result: BP_Heavy DeathPuffSystem = NS_HeavyDeathPuff (pool 40 kept), read back after save; the 6 other robot Blueprints still NS_RobotDeathPuff; bp-heavy doc updated (c169d219).
 
 ## Relations
 - [[task-297-heavy-death-puff]] — parent global task.

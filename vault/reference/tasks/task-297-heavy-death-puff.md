@@ -13,7 +13,7 @@ status: in-progress
 - gdd_check: enemy-heavy read (2026-10-23): death puff line added (provisional, owner 2026-10-23); enemy-death rule (shrink 0.15 s, puff) unchanged for the others. Owner default accepted 2026-10-23: same warm orange as the robots' death puff, puff big enough to hide the heavy's death shrink (provisional, owner 2026-10-23).
 - confirmed_by_owner: yes (2026-10-23, "Le reste est bon"; planned in a planning pass, each task run later by its own orchestrator)
 - milestone: M2
-- next_step: task-297-02-bp-heavy-death-puff-set
+- next_step: task-297-03-capture-heavy-death
 - result: open
 
 ## Subtasks
