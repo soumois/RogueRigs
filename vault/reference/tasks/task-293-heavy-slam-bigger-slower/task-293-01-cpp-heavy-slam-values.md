@@ -3,7 +3,7 @@ id: task-293-01-cpp-heavy-slam-values
 description: "Heavy CSV radius 361 and wind-up 1.0, telegraph clip frame driven by telegraph progress, contact lead checked (cpp)."
 parent: task-293-heavy-slam-bigger-slower
 kind: task
-status: todo
+status: in-progress
 ---
 # Heavy slam radius and wind-up
 

@@ -3,7 +3,7 @@ id: task-293-heavy-slam-bigger-slower
 description: "Global task: Heavy slam radius 289 to 361 uu and telegraph 0.6 to 1.0 s, fist raise stretched to the longer telegraph."
 parent: tasks-to-do-index
 kind: task
-status: todo
+status: in-progress
 ---
 # Heavy slam 25 % larger, 1 s wind-up
 
@@ -12,6 +12,7 @@ status: todo
 - acceptance: CSV values read back; telegraph circle 361 uu in game; raise reaches the top just before the strike; fists touch the ground on the slam frame; broken heavy tests updated and passing; -game capture of a telegraph and slam; committed.
 - gdd_check: enemy-heavy read (2026-10-23): slam radius 361, telegraph 1.0 s, raise over 0.85 s, trigger 253 uu written (provisional, owner 2026-10-23). Note: the telegraph clip is 15 rows played at 30 fps (0.47 s max), so a rebake alone cannot stretch it; route chosen: C++ drives the clip-1 frame from the telegraph progress (no shader change); the raise then steps at about 17 poses per second.
 - confirmed_by_owner: yes (2026-10-23, "Le reste est bon"; planned in a planning pass, each task run later by its own orchestrator)
+- owner_defaults: clip-1 frame driven in C++ by GetTelegraphProgress (about 17 poses/s), no shader change; fallback if blocked: per-clip speed parameter in MF_RobotAnimWPO (extra bp subtask); radius 361, WindUp 1.0 s, trigger ratio 0.7 kept; SlamContactLead checked so fists touch the ground on the damage frame (provisional, owner 2026-10-23, "ok pour les défauts")
 - milestone: M2
 - next_step: task-293-01-cpp-heavy-slam-values
 - result: open
