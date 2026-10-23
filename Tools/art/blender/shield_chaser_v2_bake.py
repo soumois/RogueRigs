@@ -62,17 +62,18 @@ BOB_DEG = 1.5
 SH_THIGH = float(os.environ.get("SC_THIGH", "12.0"))     # thigh swing of the shield run (clip 0 only); reduced when the low shield cannot clear the front leg
 SHIELD_TILT_DEG = 3.0              # plate tilted back by this angle (pavise carry)
 SHIELD_SCALE = 1.2                 # task-220-05: 20 percent larger
-GRIP_Z_SHIFT_CM = float(os.environ.get("SC_GRIPZ", "4.0"))     # hand holds the upper block of the handle (lets the shield hang lower than the arm reaches)      # v1 16.0; v2 4.0: the v2 stride (32 cm step, long toe) hits a shield hanging 0-4 cm above the floor (v1 grip: 24 overlapping triangle pairs with the legs), 4.0 gives 2.1 cm clearance to the legs
-SHIELD_GRIP_CM = tuple(SHIELD_SCALE * x for x in (-2.01, 4.6, 39.53)); SHIELD_GRIP_CM = (SHIELD_GRIP_CM[0], SHIELD_GRIP_CM[1], SHIELD_GRIP_CM[2] + GRIP_Z_SHIFT_CM)    # centre of the middle grip block, from the shield pivot (SM_ChaserShield.report.json grip_offset_cm, Unreal axes x, -y, z -> y mirrored back to Blender)
-FOREARM_DZ = float(os.environ.get("SC_FDZ", "-0.85"))     # frame 0 forearm elevation (z of its unit direction): nearly vertical, arm hangs
+GRIP_Z_SHIFT_CM = float(os.environ.get("SC_GRIPZ", "21.0"))     # hand holds the upper block of the handle (lets the shield hang lower than the arm reaches)      # v1 16.0; v2 4.0: the v2 stride (32 cm step, long toe) hits a shield hanging 0-4 cm above the floor (v1 grip: 24 overlapping triangle pairs with the legs), 4.0 gives 2.1 cm clearance to the legs
+GRIP_X_SHIFT_CM = float(os.environ.get("SC_GRIPX", "25.0"))     # task-296: grip offset, the shield sits this far further forward (+X in the plate frame) than the hand (the v2 arm cannot reach far enough)
+SHIELD_GRIP_CM = tuple(SHIELD_SCALE * x for x in (-2.01, 4.6, 39.53)); SHIELD_GRIP_CM = (SHIELD_GRIP_CM[0] - GRIP_X_SHIFT_CM, SHIELD_GRIP_CM[1], SHIELD_GRIP_CM[2] + GRIP_Z_SHIFT_CM)    # centre of the middle grip block, from the shield pivot (SM_ChaserShield.report.json grip_offset_cm, Unreal axes x, -y, z -> y mirrored back to Blender)
+FOREARM_DZ = float(os.environ.get("SC_FDZ", "-0.1"))     # frame 0 forearm elevation (z of its unit direction): nearly vertical, arm hangs
 HAND_Z_MAX = 68.0                       # rest vertices of ForearmHand_L below this z are the hand
 for k_, v_ in zip(argv[::2], argv[1::2]):
     pass
 KEYS = dict(
-    guard_run=dict(target=(36.0, 9.0, 54.0), tilt=None),
-    guard_stand=dict(target=(36.0, 9.0, 54.0), tilt=SHIELD_TILT_DEG),
-    wind=dict(target=(28.0, 5.0, 56.0), tilt=6.0),
-    strike=dict(target=(58.0, 9.0, 58.0), tilt=3.0),
+    guard_run=dict(target=(50.0, 10.0, 72.0), tilt=None),
+    guard_stand=dict(target=(50.0, 10.0, 72.0), tilt=SHIELD_TILT_DEG),
+    wind=dict(target=(42.0, 6.0, 72.0), tilt=6.0),
+    strike=dict(target=(72.0, 10.0, 72.0), tilt=3.0),
 )
 ENV = os.environ.get("SC_KEYS")
 if ENV:
@@ -255,10 +256,10 @@ def solve_arm(pose_base, key, R0=None, Rs=None, u0=(-8.0, -20.0, 0.0, -70.0, 0.0
             d = d / np.linalg.norm(d)
             r.append(30.0 * (d[2] - FOREARM_DZ))
             r.append(0.0)
-        r += list(0.05 * np.radians(np.array(u) - prior) * 30.0)
+        r += list(float(os.environ.get("SC_REG", "0.05")) * np.radians(np.array(u) - prior) * 30.0)
         return np.array(r)
 
-    u = np.array(u0, float)
+    u = np.array(json.loads(os.environ["SC_U0"]) if (os.environ.get("SC_U0") and R0 is None) else u0, float)
     lam = 1.0
     r = res(u)
     for it in range(120):
@@ -637,6 +638,13 @@ for f in range(NCL):
     n = R @ R0.T @ Rs @ np.array([1.0, 0, 0])
     plate_pitch.append(round(math.degrees(math.asin(n[2])), 2))
     plate_yaw.append(round(math.degrees(math.atan2(n[1], n[0])), 2))
+SH_CENTRE = [[round(float(x), 2) for x in (SHW[f].min(0) + SHW[f].max(0)) / 2] for f in range(NCL)]
+FA_ELEV = []
+for f in range(NCL):
+    d_ = WORLD[f][SHIELD_PART][0] @ (HAND_REST - REST_P[SHIELD_PART])
+    FA_ELEV.append(round(math.degrees(math.asin(float(d_[2] / np.linalg.norm(d_)))), 2))      # forearm elevation, 0 = horizontal, negative = pointing down
+print("shield centre", SH_CENTRE)
+print("forearm elevation deg", FA_ELEV)
 print("pitch", plate_pitch, "yaw", plate_yaw)
 print("shield zmin", [round(x, 1) for x in SH_Z], "xmax", [round(x, 1) for x in SH_X_MAX])
 print("hand x", [round(float((WORLD[f][SHIELD_PART][0] @ (HAND_REST - REST_P[SHIELD_PART]) + WORLD[f][SHIELD_PART][1])[0]), 1) for f in range(NCL)])
@@ -759,7 +767,8 @@ RB["bounds_max_cm"] = [round(float(x), 2) for x in allv.max(0)]
 
 # ---------------------------------------------------------------- previews (scene rebuilt from the exported FBX: parts + shield at rest, posed by the baked values)
 RENDERS = []
-PREV = os.path.join(REPO, "Saved", "Renders", "task-291")
+PREV = os.path.abspath(os.environ.get("SC_PREV", os.path.join(REPO, "Saved", "Renders", "task-296")))
+PFX = os.environ.get("SC_PFX", "")
 os.makedirs(PREV, exist_ok=True)
 if not NORENDER:
     sc = bpy.context.scene
@@ -872,7 +881,7 @@ if not NORENDER:
         im.save()
         bpy.data.images.remove(im)
 
-    VIEWS = dict(tq=(-40, 20, (14, 0, 66), 150, 750, 1000), side=(-90, 0, (14, 0, 66), 150, 750, 1000))
+    VIEWS = dict(tq=(-40, 20, (30, 0, 66), 170, 750, 1000), side=(-90, 0, (30, 0, 66), 170, 750, 1000), top=(180, 89.9, (30, 0, 66), 170, 750, 1000))
     FR_RUN = [0, 4, 8, 12]
     FR_BASH = [16, 18, 22, 26]
     FR_PLAIN = [35, 53]
@@ -885,13 +894,13 @@ if not NORENDER:
             if fr < 31:
                 tiles[vn].append(a)
             if vn == "tq":
-                fn = "shield_chaser_v2_%s_f%02d_tq.png" % ("shield_run" if fr < 16 else ("shield_bash" if fr < 31 else ("plain_run" if fr < 47 else "plain_attack")), fr)
+                fn = PFX + "shield_chaser_v2_%s_f%02d_tq.png" % ("shield_run" if fr < 16 else ("shield_bash" if fr < 31 else ("plain_run" if fr < 47 else "plain_attack")), fr)
                 save_rgb(os.path.join(PREV, fn), a)
                 RENDERS.append(fn)
     for vn in VIEWS:
         row1 = np.concatenate(tiles[vn][:4], axis=1)
         row2 = np.concatenate(tiles[vn][4:], axis=1)
-        fn = "shield_chaser_v2_contact_%s.png" % ("sheet" if vn == "tq" else "side")
+        fn = PFX + "shield_chaser_v2_contact_%s.png" % vn
         save_rgb(os.path.join(PREV, fn), np.concatenate([row2, row1], axis=0))
         RENDERS.append(fn)
 
@@ -904,7 +913,7 @@ if bad_clear:
 if not chaser_unchanged:
     WARN.append("a chaser part changed in the export read back")
 rep = dict(
-    task="task-291-02-bake-shield-v2-v1-clips", script="Tools/art/blender/shield_chaser_v2_bake.py", blender=bpy.app.version_string,
+    task="task-296-01-bake-shield-arm-forward", script="Tools/art/blender/shield_chaser_v2_bake.py", blender=bpy.app.version_string,
     files=dict(texture="T_ShieldChaserV2Anim.exr", fbx="SM_ShieldChaserV2_Meshy_Anim.fbx", previews=RENDERS),
     tris=dict(chaser_parts=CHASER_TRIS, shield=SHIELD_TRIS, total_read_back=RB["total_tris"], expected_total=CHASER_TRIS + SHIELD_TRIS),
     texture=dict(width=TEXW, height=NROWS, format="OpenEXR RGBA half float, compression NONE, Non-Color", rows_from_top=True,
@@ -916,7 +925,7 @@ rep = dict(
     bake_verification=dict(limit_cm=0.05, **bake, rest_pose_check_max_cm=V_REST_CHECK), walk_checks=WALKCHK,
     shield_to_body_min_distance_cm=CLEAR,
     shield_to_body_per_frame=[dict(frame=f, torso=round(CLR[f]["torso"]["min_cm"], 2), legs=round(CLR[f]["legs"]["min_cm"], 2), arms=round(CLR[f]["arms"]["min_cm"], 2), hand_L=round(CLR[f]["hand_L"]["min_cm"], 2)) for f in range(NCL)],
-    shield_pose=dict(plate_pitch_deg_per_frame=plate_pitch, plate_yaw_deg_per_frame=plate_yaw, lowest_vertex_z_cm_per_frame=[round(x, 1) for x in SH_Z], max_x_cm_per_frame=[round(x, 1) for x in SH_X_MAX]),
+    shield_pose=dict(centre_cm_per_frame=SH_CENTRE, forearm_elevation_deg_per_frame=FA_ELEV, plate_pitch_deg_per_frame=plate_pitch, plate_yaw_deg_per_frame=plate_yaw, lowest_vertex_z_cm_per_frame=[round(x, 1) for x in SH_Z], max_x_cm_per_frame=[round(x, 1) for x in SH_X_MAX]),
     shield_placement=dict(rule="v_rest = R0^T (v_placed - t0) with (R0, t0) = ForearmHand_L transform of clip 0 frame 0; placed = Ry(-%.1f deg) v + origin, origin = hand centre - Ry g" % SHIELD_TILT_DEG,
                           tilt_back_deg=SHIELD_TILT_DEG, grip_centre_cm_shield_space=list(SHIELD_GRIP_CM), hand_centre_rest_cm=[round(float(x), 3) for x in HAND_REST],
                           placed_origin_cm=[round(float(x), 3) for x in org], hand_centre_frame0_cm=[round(float(x), 3) for x in H0], placed_bounds_min=[round(float(x), 2) for x in V_PLACED.min(0)], placed_bounds_max=[round(float(x), 2) for x in V_PLACED.max(0)]),
