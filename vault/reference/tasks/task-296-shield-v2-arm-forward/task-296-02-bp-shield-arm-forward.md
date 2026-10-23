@@ -3,7 +3,7 @@ id: task-296-02-bp-shield-arm-forward
 description: "Import the 296-01 mesh and texture as new assets on BP_ShieldChaserV2 (bp)."
 parent: task-296-shield-v2-arm-forward
 kind: task
-status: in-progress
+status: done
 ---
 # Shield held forward in Unreal
 
@@ -15,11 +15,11 @@ status: in-progress
 - done_when: UV channel and build settings read back; slots read back; master recompiled; BP compiled and saved; v1 untouched; docs updated; lint clean
 - editor_state: open (owner editor, MCP route, do not close it)
 - token_ceiling: 40000
-- model: open
-- tokens: open
-- runs: open
+- model: sonnet
+- tokens: input 68, cache write 58083, cache read 1365488, output 17385
+- runs: 1
 - milestone: M2
-- result: open
+- result: SM_ShieldChaserV2_Meshy_AnimFwd (7134 tris, 4 slots, lightmap index 1, UV sets checked) and T_ShieldChaserV2AnimFwd (20x62 HDR nearest, read back) imported; BP_ShieldChaserV2 BodyMesh on the Fwd mesh with slots 0 body 1 eye 2 shield 3 emblem; M_ShieldChaserV2_Anim and both eye instances on the new texture, master recompiled, BP compiled and saved; AnimV1Clips assets kept; docs updated; commit 9674cdfc.
 
 ## Relations
 - [[task-296-shield-v2-arm-forward]] — parent global task.

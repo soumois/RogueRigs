@@ -625,6 +625,7 @@ kind: note
 | [[task-294-01-cpp-kamikaze-split-damage]] | opus | 1 | 0k | 55k | 569k | 12k |
 | [[task-295-01-cpp-separation-radius]] | opus | 1 | 0k | 36k | 457k | 9k |
 | [[task-296-01-bake-shield-arm-forward]] | sonnet | 2 | 0k | 119k | 2474k | 33k |
+| [[task-296-02-bp-shield-arm-forward]] | sonnet | 1 | 0k | 58k | 1365k | 17k |
 
 ## Totals
 | Scope | Input | Cache write | Cache read | Output |

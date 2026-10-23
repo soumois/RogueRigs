@@ -3,7 +3,7 @@ id: task-296-03-capture-shield-arm-forward
 description: "Capture the shield chaser v2 running with the shield forward, compared with the task-291 shots (cpp)."
 parent: task-296-shield-v2-arm-forward
 kind: task
-status: todo
+status: in-progress
 ---
 # Capture the shield held forward
 
