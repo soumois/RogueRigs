@@ -3,7 +3,7 @@ id: task-298-01-bp-shooter-charge-ns
 description: "Create NS_ShooterCharge, a red charge-up glow at a point growing over 0.6 s, with its doc node (bp)."
 parent: task-298-shooter-charge-fx
 kind: task
-status: todo
+status: in-progress
 ---
 # NS_ShooterCharge
 

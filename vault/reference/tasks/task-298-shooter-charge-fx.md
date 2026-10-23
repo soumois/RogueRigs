@@ -3,7 +3,7 @@ id: task-298-shooter-charge-fx
 description: "Global task: A red charge-up effect grows at the shooter cannon tip during the 0.6 s targeting laser."
 parent: tasks-to-do-index
 kind: task
-status: todo
+status: in-progress
 ---
 # Shooter weapon charge-up effect
 

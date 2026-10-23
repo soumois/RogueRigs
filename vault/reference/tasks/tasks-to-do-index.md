@@ -13,6 +13,6 @@ A global task moves to [[tasks-done-index]] when it is done (`vault/scripts/task
 - [[task-188-editor-lock]] — Editor lock shared by sessions: a lock file, a node script to take, release and read it, and the runbook and protocol rules to use it. Status todo.
 - [[task-230-rock-slab-integration]] — Dual-grid slab rock look in the grid: pieces, world-UV top texture, cracks, plates, crystals. Status in-progress.
 - [[task-234-ore-deposit-look]] — Each 2 x 2 ore or heal deposit is drawn as one crystal formation, at least 3 variants per type, from images the owner generates with prompts we write. Status in-progress.
-- [[task-298-shooter-charge-fx]] — A red charge-up effect grows at the shooter cannon tip during the 0.6 s targeting laser. Status todo.
+- [[task-298-shooter-charge-fx]] — A red charge-up effect grows at the shooter cannon tip during the 0.6 s targeting laser. Status in-progress.
 - [[task-299-kamikaze-fuse-shake]] — During the 0.65 s fuse the whole kamikaze body shakes lightly like a dug wall, faster and faster; core pulse kept. Status todo.
 - [[task-300-heavy-slam-impact-fx]] — A dust ring and rock chips burst from the ground when the heavy slam lands, sized to the slam radius. Status todo.
