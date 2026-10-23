@@ -3,7 +3,7 @@ id: task-297-01-bp-heavy-death-puff-ns
 description: "Create NS_HeavyDeathPuff, a scaled copy of NS_RobotDeathPuff that covers the heavy, with its doc node (bp)."
 parent: task-297-heavy-death-puff
 kind: task
-status: todo
+status: in-progress
 ---
 # NS_HeavyDeathPuff
 
