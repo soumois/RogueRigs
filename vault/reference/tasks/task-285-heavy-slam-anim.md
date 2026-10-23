@@ -22,6 +22,7 @@ status: done
 2. task-285-02-cpp-heavy-slam-clips — cpp: ARRHeavy plays the slam clips
 3. task-285-03-bp-heavy-slam — bp: BP_Heavy uses the slam clips
 4. task-285-04-capture-slam — cpp: Capture the heavy slam
+5. task-285-05-fix-heavy-tilt-test — cpp: Fix the heavy telegraph test after the pitch removal
 
 ## Relations
 - [[tasks-done-index]] — parent index.
@@ -29,3 +30,4 @@ status: done
 - [[task-285-02-cpp-heavy-slam-clips]] — step 02, cpp.
 - [[task-285-03-bp-heavy-slam]] — step 03, bp.
 - [[task-285-04-capture-slam]] — step 04, cpp.
+- [[task-285-05-fix-heavy-tilt-test]] — step 05, cpp (test broken by 285-03).
