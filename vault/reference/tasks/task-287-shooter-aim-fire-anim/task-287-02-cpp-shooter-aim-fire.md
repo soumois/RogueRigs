@@ -3,7 +3,7 @@ id: task-287-02-cpp-shooter-aim-fire
 description: "ARRShooter plays aim and fire clips (cpp)."
 parent: task-287-shooter-aim-fire-anim
 kind: task
-status: in-progress
+status: done
 ---
 # ARRShooter plays aim and fire clips
 
@@ -15,11 +15,11 @@ status: in-progress
 - done_when: build succeeds, all automation tests pass, the clip id read in a -game run follows Aim, Fire, Chase
 - editor_state: closed
 - token_ceiling: 60000
-- model: open
-- tokens: open
-- runs: open
+- model: opus
+- tokens: input 58, cache write 108224, cache read 1797271, output 23664
+- runs: 1
 - milestone: M2
-- result: open
+- result: ARRShooter: Aim -> PlayClip(1), shot -> PlayClip(3, 0.2) then movement clip, cancelled aim -> rest; AimClipId/FireClipId/FireClipDuration; build OK; -game CPD 1 -> 3 (+0.606 s) -> 2 (+0.2 s), walk 0 on Approach; shot/laser read MuzzlePoint at fire time. Tests: only failure added is HeavyTelegraphSlamsMiner, broken by 285-03 (fixed in 285-05).
 
 ## Relations
 - [[task-287-shooter-aim-fire-anim]] — parent global task.

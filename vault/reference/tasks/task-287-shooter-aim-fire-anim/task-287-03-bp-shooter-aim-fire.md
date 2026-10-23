@@ -3,7 +3,7 @@ id: task-287-03-bp-shooter-aim-fire
 description: "BP_Shooter uses the aim and fire clips (bp)."
 parent: task-287-shooter-aim-fire-anim
 kind: task
-status: todo
+status: in-progress
 ---
 # BP_Shooter uses the aim and fire clips
 
