@@ -3,7 +3,7 @@ id: task-297-01-bp-heavy-death-puff-ns
 description: "Create NS_HeavyDeathPuff, a scaled copy of NS_RobotDeathPuff that covers the heavy, with its doc node (bp)."
 parent: task-297-heavy-death-puff
 kind: task
-status: in-progress
+status: done
 ---
 # NS_HeavyDeathPuff
 
@@ -15,11 +15,11 @@ status: in-progress
 - done_when: compiles without error; values read back; NS_RobotDeathPuff unchanged; doc node and index relation added; lint clean
 - editor_state: open (owner editor, MCP route, do not close it)
 - token_ceiling: 30000
-- model: open
-- tokens: open
-- runs: open
+- model: sonnet
+- tokens: input 60, cache write 62736, cache read 1111748, output 14367
+- runs: 1
 - milestone: M2
-- result: open
+- result: NS_HeavyDeathPuff duplicated from NS_RobotDeathPuff: count 24, sphere 105 cm, speed 180-780, sprite 42-150 cm, same colour and lifetime 0.2-0.3 s; compiles clean; robot puff unchanged; doc bp-heavy-death-puff (62e472e3).
 
 ## Relations
 - [[task-297-heavy-death-puff]] — parent global task.

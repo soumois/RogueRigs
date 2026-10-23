@@ -3,7 +3,7 @@ id: task-297-02-bp-heavy-death-puff-set
 description: "Set BP_Heavy DeathPuffSystem to NS_HeavyDeathPuff (bp)."
 parent: task-297-heavy-death-puff
 kind: task
-status: todo
+status: in-progress
 ---
 # BP_Heavy uses the heavy puff
 

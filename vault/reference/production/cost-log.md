@@ -627,6 +627,7 @@ kind: note
 | [[task-296-01-bake-shield-arm-forward]] | sonnet | 2 | 0k | 119k | 2474k | 33k |
 | [[task-296-02-bp-shield-arm-forward]] | sonnet | 1 | 0k | 58k | 1365k | 17k |
 | [[task-296-03-capture-shield-arm-forward]] | opus | 1 | 0k | 46k | 422k | 9k |
+| [[task-297-01-bp-heavy-death-puff-ns]] | sonnet | 1 | 0k | 63k | 1112k | 14k |
 
 ## Totals
 | Scope | Input | Cache write | Cache read | Output |
