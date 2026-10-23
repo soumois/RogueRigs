@@ -3,7 +3,7 @@ id: task-288-10-bp-ns-kamikaze-debris
 description: "NS_KamikazeDebris with its pieces (bp)."
 parent: task-288-robot-death-debris
 kind: task
-status: todo
+status: in-progress
 ---
 # NS_KamikazeDebris with its pieces
 

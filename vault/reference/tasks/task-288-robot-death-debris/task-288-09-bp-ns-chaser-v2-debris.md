@@ -3,7 +3,7 @@ id: task-288-09-bp-ns-chaser-v2-debris
 description: "NS_ChaserV2Debris with its pieces (bp)."
 parent: task-288-robot-death-debris
 kind: task
-status: todo
+status: in-progress
 ---
 # NS_ChaserV2Debris with its pieces
 
