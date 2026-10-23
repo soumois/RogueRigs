@@ -619,6 +619,7 @@ kind: note
 | [[task-291-03-bp-chaser-v2-v1-clips]] | sonnet | 1 | 0k | 48k | 461k | 8k |
 | [[task-291-04-bp-shield-v2-v1-clips]] | sonnet | 1 | 0k | 58k | 936k | 15k |
 | [[task-291-05-capture-v2-v1-clips]] | opus | 1 | 0k | 92k | 696k | 9k |
+| [[task-292-01-cpp-heavy-one-per-pack]] | opus | 1 | 0k | 41k | 484k | 10k |
 
 ## Totals
 | Scope | Input | Cache write | Cache read | Output |

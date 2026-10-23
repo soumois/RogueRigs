@@ -3,7 +3,7 @@ id: task-292-01-cpp-heavy-one-per-pack
 description: "Set the Heavies and WideHeavies packs to 1 heavy and spread horde heavies along the front row (cpp)."
 parent: task-292-heavy-one-per-pack
 kind: task
-status: in-progress
+status: done
 ---
 # Director: one heavy per pack
 
@@ -15,11 +15,11 @@ status: in-progress
 - done_when: build clean; RogueRigs.Spawner tests pass; config read back: every pack type at most 1 heavy; horde heavies not adjacent (report their cells from an existing test or log); docs updated; lint clean
 - editor_state: closed (owner closes it, or Live Coding off)
 - token_ceiling: 40000
-- model: open
-- tokens: open
-- runs: open
+- model: opus
+- tokens: input 34, cache write 40919, cache read 484496, output 10093
+- runs: 1
 - milestone: M2
-- result: open
+- result: Heavies and WideHeavies packs hold 1 heavy (was 2..3) in MakeDefault and MakeLastLevel; horde heavies spread along the front row (PrepareHorde, ends and middle; test cells (96,138) (109,138) (134,138)); weights 96/4 and alive cap 3 unchanged; build clean; RogueRigs.Spawner 20/20 pass; DirectorHorde gained a non-adjacency check; not seen in game.
 
 ## Relations
 - [[task-292-heavy-one-per-pack]] — parent global task.

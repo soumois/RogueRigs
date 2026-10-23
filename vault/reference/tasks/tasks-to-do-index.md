@@ -13,7 +13,6 @@ A global task moves to [[tasks-done-index]] when it is done (`vault/scripts/task
 - [[task-188-editor-lock]] — Editor lock shared by sessions: a lock file, a node script to take, release and read it, and the runbook and protocol rules to use it. Status todo.
 - [[task-230-rock-slab-integration]] — Dual-grid slab rock look in the grid: pieces, world-UV top texture, cracks, plates, crystals. Status in-progress.
 - [[task-234-ore-deposit-look]] — Each 2 x 2 ore or heal deposit is drawn as one crystal formation, at least 3 variants per type, from images the owner generates with prompts we write. Status in-progress.
-- [[task-292-heavy-one-per-pack]] — Packs carry at most 1 heavy so heavies arrive from different sides; heavy alive cap 3 unchanged. Status in-progress.
 - [[task-293-heavy-slam-bigger-slower]] — Heavy slam radius 289 to 361 uu and telegraph 0.6 to 1.0 s, fist raise stretched to the longer telegraph. Status todo.
 - [[task-294-kamikaze-split-damage]] — Kamikaze explosion deals 40 to robots and 30 to the miner; barrels and terrain rule unchanged. Status todo.
 - [[task-295-separation-radius-kamikaze-heavy]] — The crowd separation radius of the kamikaze and the heavy grows by 30 %; capsules unchanged. Status todo.
