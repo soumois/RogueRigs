@@ -15,8 +15,8 @@
    "seconds": 0.5333,
    "clip_id": 0,
    "rows": "0..15",
-   "run_rate_baked_for": 1.0,
-   "seconds_at_run_rate": 0.5333
+   "run_rate_baked_for": 0.7,
+   "seconds_at_run_rate": 0.7619
   },
   "telegraph": {
    "start_frame": 16,
@@ -146,7 +146,7 @@
   "text": "for a part with rest-pose world pivot p, current world rotation R (relative to rest, includes the whole parent chain) and current world pivot position q: new_position = R (v - p) + q = R v + t, with t = q - R p; v = rest vertex in the mesh space of the combined static mesh (the same space as the rest parts FBX, cm).",
   "composition_order": "world matrix of a part = parent world matrix @ Translation(rest local offset + keyed local translation) @ Rz Ry Rx (keyed Euler XYZ, about the part pivot). R = world matrix 3x3, q = world matrix translation. The pose is evaluated with Blender object matrix_world (hierarchy), the quaternion is taken from R, t = q - R p is computed from them. In the material: rotate v by the quaternion (x y z w, unit length) then add t.",
   "quaternion_layout": "texel x = 2*part_index: RGBA = (qx, qy, qz, qw); texel x = 2*part_index+1: RGB = t in cm, A = 0",
-  "sign_continuity": "per part, the sign of q is flipped when needed so that dot(q[f], q[f-1]) >= 0 inside each clip; frame 0 and frame 16 start with w >= 0; min dot between run frame 15 and frame 0 = 0.99643"
+  "sign_continuity": "per part, the sign of q is flipped when needed so that dot(q[f], q[f-1]) >= 0 inside each clip; frame 0 and frame 16 start with w >= 0; min dot between run frame 15 and frame 0 = 0.99318"
  },
  "texture": {
   "file": "T_HeavyAnim.exr",
@@ -188,22 +188,26 @@
  "bake_verification": {
   "method": "for every frame and part: R(q_baked) * v_rest + t_baked against matrix_world @ local vertex of the keyed objects; max over all vertices (cm). float32 = arrays before the EXR; from_saved_exr = values re-read from the half float file (half float step: plain rounding of q and t costs up to ~0.06 cm; the script therefore stores, per frame and part, the float16 q (within one half step of exact) and float16 t (least squares) with the smallest max error, taking the worse of the normalised and not-renormalised quaternion use)",
   "float32": {
-   "run_max_cm": 2.5787095617710034e-05,
+   "run_max_cm": 2.8022386636680897e-05,
    "attack_max_cm": 4.1020382220775e-05
   },
   "from_saved_exr_float16": {
-   "run_max_cm": 0.010901418078402995,
+   "run_max_cm": 0.053483614657838956,
    "attack_max_cm": 0.12504169323962405
   },
   "from_saved_exr_float16_quaternion_not_renormalised": {
-   "run_max_cm": 0.011223837246811391,
+   "run_max_cm": 0.04081151475010167,
    "attack_max_cm": 0.15504501867725734
   },
   "limit_cm": 0.05,
   "per_frame_float32_max_cm": [
    1e-05,
    1e-05,
+   2e-05,
    1e-05,
+   3e-05,
+   1e-05,
+   2e-05,
    1e-05,
    1e-05,
    1e-05,
@@ -211,11 +215,7 @@
    1e-05,
    3e-05,
    1e-05,
-   1e-05,
-   1e-05,
-   1e-05,
-   1e-05,
-   1e-05,
+   2e-05,
    1e-05,
    0.0,
    1e-05,
@@ -265,22 +265,22 @@
    0.0
   ],
   "per_frame_saved_exr_max_cm": [
-   0.01071,
-   0.00523,
-   0.00414,
-   0.00503,
-   0.0097,
-   0.00381,
-   0.00676,
-   0.00599,
-   0.01072,
-   0.00796,
-   0.00854,
-   0.0056,
-   0.0109,
-   0.00789,
-   0.00755,
-   0.006,
+   0.01394,
+   0.01303,
+   0.02257,
+   0.02154,
+   0.05348,
+   0.02965,
+   0.02228,
+   0.01431,
+   0.01393,
+   0.01206,
+   0.02097,
+   0.02117,
+   0.05241,
+   0.02971,
+   0.02262,
+   0.01601,
    0.0,
    0.00297,
    0.00992,
@@ -330,37 +330,37 @@
   ]
  },
  "run_loop_closure": {
-  "pose_at_phase_1_vs_frame_0_max_vertex_error_cm": 0.0,
+  "pose_at_phase_1_vs_frame_0_max_vertex_error_cm": 2.0097183471152322e-14,
   "note": "the next loop's first frame is the pose at phase 16/16; the texture has no frame for it",
-  "wrap_step_frame15_to_0_max_vertex_move_cm": 12.033,
+  "wrap_step_frame15_to_0_max_vertex_move_cm": 36.702,
   "max_vertex_move_between_consecutive_frames_cm": [
-   6.266,
-   6.434,
-   6.607,
-   7.004,
-   8.643,
-   7.038,
-   6.804,
-   24.999,
-   8.743,
-   6.844,
-   6.605,
-   7.027,
-   8.68,
-   6.614,
-   6.428,
-   12.033
+   35.293,
+   36.036,
+   26.293,
+   15.726,
+   6.114,
+   17.402,
+   27.888,
+   36.709,
+   35.32,
+   36.026,
+   26.284,
+   15.704,
+   6.11,
+   17.384,
+   27.881,
+   36.702
   ]
  },
  "parameters": {
-  "thigh_swing_deg": 9.153,
+  "thigh_swing_deg": 35.0,
   "knee_flexion_max_deg": 15.0,
-  "arm_swing_deg": 8.0,
-  "elbow_bend_deg": 0.0,
-  "torso_lean_deg": 3.0,
-  "torso_twist_deg": 3.0,
+  "arm_swing_deg": 30.0,
+  "elbow_bend_deg": 40.0,
+  "torso_lean_deg": 8.0,
+  "torso_twist_deg": 5.0,
   "speed_cm_s": 153.0,
-  "pelvis_z_rule": "planted walk: pelvis dz solved from the stance foot (robot_walk_planted.py), no ground fit",
+  "pelvis_z_rule": "per frame, pelvis local z set so that the lowest vertex of both feet is at z = 0 (no separate 2.5 cm bob term: the ground fit sets the pelvis height)",
   "attack_keys": {
    "wind_up": {
     "HeadTorso": {
@@ -436,47 +436,47 @@
    },
    "interpolation": "smoothstep per phase; wind-up frames 16..18 reach WIND at frame 18; strike 19..22 reaches STRIKE at frame 22; recovery 23..30 reaches rest at frame 30"
   },
-  "run_rate": 1.0,
-  "walk_style": "planted"
+  "run_rate": 0.7,
+  "walk_style": "sine"
  },
  "run": {
   "max_world_rotation_deg_per_part": {
    "Pelvis": 0.0,
-   "HeadTorso": 4.87,
-   "UpperArm_L": 13.79,
-   "UpperArm_R": 9.34,
-   "ForearmHand_L": 13.79,
-   "ForearmHand_R": 9.34,
-   "Thigh_L": 11.72,
-   "Thigh_R": 11.51,
-   "ShinFoot_L": 9.15,
-   "ShinFoot_R": 9.15
+   "HeadTorso": 9.43,
+   "UpperArm_L": 38.32,
+   "UpperArm_R": 38.32,
+   "ForearmHand_L": 62.18,
+   "ForearmHand_R": 62.18,
+   "Thigh_L": 35.0,
+   "Thigh_R": 35.0,
+   "ShinFoot_L": 38.08,
+   "ShinFoot_R": 38.08
   },
-  "max_world_rotation_deg": 13.79,
+  "max_world_rotation_deg": 62.18,
   "max_abs_t_cm_per_part": {
-   "Pelvis": 6.52,
-   "HeadTorso": 10.09,
-   "UpperArm_L": 37.8,
-   "UpperArm_R": 26.36,
-   "ForearmHand_L": 37.8,
-   "ForearmHand_R": 26.36,
-   "Thigh_L": 25.85,
-   "Thigh_R": 25.39,
-   "ShinFoot_L": 21.56,
-   "ShinFoot_R": 21.56
+   "Pelvis": 16.92,
+   "HeadTorso": 27.15,
+   "UpperArm_L": 111.78,
+   "UpperArm_R": 111.8,
+   "ForearmHand_L": 147.56,
+   "ForearmHand_R": 147.53,
+   "Thigh_L": 81.52,
+   "Thigh_R": 81.55,
+   "ShinFoot_L": 81.52,
+   "ShinFoot_R": 81.55
   },
-  "max_abs_t_cm": 37.8,
+  "max_abs_t_cm": 147.56,
   "max_pivot_displacement_cm_per_part": {
-   "Pelvis": 6.52,
-   "HeadTorso": 6.52,
-   "UpperArm_L": 8.53,
-   "UpperArm_R": 8.94,
-   "ForearmHand_L": 21.71,
-   "ForearmHand_R": 18.09,
-   "Thigh_L": 6.52,
-   "Thigh_R": 6.52,
-   "ShinFoot_L": 11.48,
-   "ShinFoot_R": 11.48
+   "Pelvis": 16.92,
+   "HeadTorso": 16.92,
+   "UpperArm_L": 20.35,
+   "UpperArm_R": 20.29,
+   "ForearmHand_L": 52.47,
+   "ForearmHand_R": 52.47,
+   "Thigh_L": 16.92,
+   "Thigh_R": 16.92,
+   "ShinFoot_L": 40.21,
+   "ShinFoot_R": 40.26
   },
   "keyed_local_euler_extents": {
    "Pelvis": {
@@ -494,91 +494,91 @@
    "HeadTorso": {
     "rot_min_deg": [
      0.0,
-     3.0,
-     -2.27
+     8.0,
+     -5.0
     ],
     "rot_max_deg": [
      0.0,
-     3.0,
-     3.84
+     8.0,
+     5.0
     ]
    },
    "UpperArm_L": {
     "rot_min_deg": [
      0.0,
-     -6.06,
+     -30.0,
      0.0
     ],
     "rot_max_deg": [
      0.0,
-     10.25,
+     30.0,
      0.0
     ]
    },
    "UpperArm_R": {
     "rot_min_deg": [
      0.0,
-     -10.25,
+     -30.0,
      0.0
     ],
     "rot_max_deg": [
      0.0,
-     6.06,
+     30.0,
      0.0
     ]
    },
    "ForearmHand_L": {
     "rot_min_deg": [
      0.0,
-     -0.0,
+     -40.0,
      0.0
     ],
     "rot_max_deg": [
      0.0,
-     -0.0,
+     -40.0,
      0.0
     ]
    },
    "ForearmHand_R": {
     "rot_min_deg": [
      0.0,
-     -0.0,
+     -40.0,
      0.0
     ],
     "rot_max_deg": [
      0.0,
-     -0.0,
+     -40.0,
      0.0
     ]
    },
    "Thigh_L": {
     "rot_min_deg": [
      0.0,
-     -11.72,
+     -35.0,
      0.0
     ],
     "rot_max_deg": [
      0.0,
-     6.93,
+     35.0,
      0.0
     ]
    },
    "Thigh_R": {
     "rot_min_deg": [
      0.0,
-     -11.51,
+     -35.0,
      0.0
     ],
     "rot_max_deg": [
      0.0,
-     6.93,
+     35.0,
      0.0
     ]
    },
    "ShinFoot_L": {
     "rot_min_deg": [
      0.0,
-     -0.0,
+     0.0,
      0.0
     ],
     "rot_max_deg": [
@@ -590,12 +590,12 @@
    "ShinFoot_R": {
     "rot_min_deg": [
      0.0,
-     -0.0,
+     0.0,
      0.0
     ],
     "rot_max_deg": [
      0.0,
-     14.98,
+     15.0,
      0.0
     ]
    }
@@ -604,115 +604,115 @@
    "min": [
     0.0,
     0.0,
-    -0.03
+    10.14
    ],
    "max": [
     0.0,
     0.0,
-    6.52
+    16.92
    ]
   }
  },
  "feet": {
   "run": {
    "pelvis_z_offset_from_ground_fit_cm": {
-    "min": -0.029,
-    "max": 6.518,
-    "range": 6.547,
+    "min": 10.141,
+    "max": 16.919,
+    "range": 6.778,
     "per_frame": [
-     5.885,
-     4.735,
-     3.371,
-     1.786,
-     -0.029,
-     2.094,
-     4.426,
-     6.518,
-     5.885,
-     4.735,
-     3.371,
-     1.786,
-     -0.029,
-     2.094,
-     4.426,
-     6.518
+     10.187,
+     11.334,
+     15.669,
+     15.52,
+     14.887,
+     15.338,
+     16.857,
+     16.591,
+     10.141,
+     11.379,
+     15.724,
+     15.58,
+     14.949,
+     15.402,
+     16.919,
+     16.647
     ]
    },
    "lowest_foot_vertex_z_per_frame_cm_L_R": [
     [
      -0.0,
+     10.255
+    ],
+    [
+     16.103,
      -0.0
     ],
     [
-     -0.0,
-     0.439
+     13.414,
+     0.0
     ],
     [
-     -0.0,
-     1.5
+     11.239,
+     0.0
     ],
     [
-     -0.0,
-     2.561
+     10.4,
+     0.0
     ],
     [
-     -0.0,
-     3.0
+     9.471,
+     0.0
     ],
     [
-     -0.0,
-     2.561
+     8.603,
+     0.0
     ],
     [
-     -0.0,
-     1.5
+     9.095,
+     0.0
     ],
     [
-     -0.0,
-     1.111
+     10.141,
+     -0.0
     ],
     [
      0.0,
-     0.102
+     16.18
     ],
     [
-     0.439,
-     0.097
+     0.0,
+     13.583
     ],
     [
-     1.47,
-     0.091
+     -0.0,
+     11.438
     ],
     [
-     2.561,
-     0.085
+     0.0,
+     10.613
     ],
     [
-     3.0,
-     0.066
+     -0.0,
+     9.682
     ],
     [
-     2.561,
-     0.034
+     -0.0,
+     8.801
     ],
     [
-     1.5,
-     0.036
-    ],
-    [
-     1.01,
-     0.039
+     -0.0,
+     9.264
     ]
    ],
-   "min_foot_vertex_z_over_cycle_cm": -0.0002,
-   "max_penetration_below_floor_cm": 0.0002,
-   "higher_foot_lowest_vertex_z_max_cm": 3.0,
+   "min_foot_vertex_z_over_cycle_cm": -0.0,
+   "max_penetration_below_floor_cm": 0.0,
+   "higher_foot_lowest_vertex_z_max_cm": 16.18,
    "slide": {
     "speed_cm_s": 153.0,
-    "travel_per_frame_cm": 5.1,
+    "travel_per_frame_cm": 7.285714285714286,
     "per_frame": 1.7059844799040144e-05,
-    "max_abs_cm_per_frame": 10.12,
-    "mean_abs_cm_per_frame": 2.07,
+    "max_abs_cm_per_frame": 37.76,
+    "mean_abs_cm_per_frame": 17.51,
     "frames_in_contact": 14,
     "note": "slide of the lowest foot vertex (same vertex tracked to the next frame, loop wraps) = body-space x change per frame + travel per frame; 0 = planted on the floor. Counted only when the vertex is within 0.5 cm of the floor at the frame and within 1 cm at the next"
    },
@@ -764,21 +764,22 @@
   "camera": "orthographic 150 cm frame, 420 px per panel, 8 panels in a row; side = camera at -Y looking +Y (robot faces image right), front = camera at +X; lit rig of meshy_texture_fix.py (EEVEE, sun 4.5, world grey 0.62 strength 0.55), chaser_meshy_fixed_basecolor.png, dark floor slab top at z = 0"
  },
  "warnings": [
-  "a bake / loop error is above 0.05 cm (see bake_verification)"
+  "a bake / loop error is above 0.05 cm (see bake_verification)",
+  "foot slide per cycle at or above 2 cm"
  ],
  "robot": "heavy",
  "config": {
   "file": "heavy.json",
   "bake": {
    "task": "task-284-01-parts-bake-heavy",
-   "walk_style": "planted",
-   "run_rate": 1.0,
+   "walk_style": "sine",
+   "run_rate": 0.7,
    "speed_cm_s": 153,
    "knee_deg": 15,
-   "arm_deg": 8,
-   "elbow_deg": 0,
-   "lean_deg": 3,
-   "twist_deg": 3,
+   "arm_deg": 30,
+   "elbow_deg": 40,
+   "lean_deg": 8,
+   "twist_deg": 5,
    "attack": false,
    "tex_name": "T_HeavyAnim.exr",
    "tex_rows": 62,
@@ -820,122 +821,9 @@
   }
  },
  "reserved_rows": [],
- "planted_walk": {
-  "cycle_s": 0.5333,
-  "stance_s": 0.2667,
-  "step_travel_cm": 40.8,
-  "first_pivot_switch_s_after_heel_strike": {
-   "L": 0.1367,
-   "R": 0.1367
-  },
-  "flat_instant_solved": {
-   "L": false,
-   "R": false
-  },
-  "rigid_leg_angle_deg": {
-   "L": {
-    "heel_strike": -9.153,
-    "toe_off": 9.151,
-    "stance_knee_flexion_at_toe_off": -0.0
-   },
-   "R": {
-    "heel_strike": -9.153,
-    "toe_off": 9.151,
-    "stance_knee_flexion_at_toe_off": -0.0
-   }
-  },
-  "pelvis_z_cm_at_heel_strike_and_toe_off": {
-   "L": {
-    "heel_strike": 5.885,
-    "toe_off": 8.38
-   },
-   "R": {
-    "heel_strike": 5.885,
-    "toe_off": 8.38
-   }
-  },
-  "swing": {
-   "clearance_target_cm": 3.0,
-   "knee_flexion_max_deg": 15.0,
-   "knee_limit_deg": 15,
-   "min_foot_vertex_z_cm": -0.0
-  }
- },
  "walk_poses": [
   {
-   "Pelvis": {
-    "rot": [
-     0.0,
-     0.0,
-     0.0
-    ],
-    "loc": [
-     0.0,
-     0.0,
-     5.884896
-    ]
-   },
    "HeadTorso": {
-    "rot": [
-     0.0,
-     3.0,
-     3.0
-    ],
-    "loc": [
-     0.0,
-     0.0,
-     0.0
-    ]
-   },
-   "Thigh_L": {
-    "rot": [
-     0.0,
-     -9.15332,
-     0.0
-    ],
-    "loc": [
-     0.0,
-     0.0,
-     0.0
-    ]
-   },
-   "ShinFoot_L": {
-    "rot": [
-     0.0,
-     -0.0,
-     0.0
-    ],
-    "loc": [
-     0.0,
-     0.0,
-     0.0
-    ]
-   },
-   "Thigh_R": {
-    "rot": [
-     0.0,
-     -2.756951,
-     0.0
-    ],
-    "loc": [
-     0.0,
-     0.0,
-     0.0
-    ]
-   },
-   "ShinFoot_R": {
-    "rot": [
-     0.0,
-     11.908373,
-     0.0
-    ],
-    "loc": [
-     0.0,
-     0.0,
-     0.0
-    ]
-   },
-   "UpperArm_L": {
     "rot": [
      0.0,
      8.0,
@@ -947,81 +835,7 @@
      0.0
     ]
    },
-   "UpperArm_R": {
-    "rot": [
-     0.0,
-     -8.0,
-     0.0
-    ],
-    "loc": [
-     0.0,
-     0.0,
-     0.0
-    ]
-   },
-   "ForearmHand_L": {
-    "rot": [
-     0.0,
-     -0.0,
-     0.0
-    ],
-    "loc": [
-     0.0,
-     0.0,
-     0.0
-    ]
-   },
-   "ForearmHand_R": {
-    "rot": [
-     0.0,
-     -0.0,
-     0.0
-    ],
-    "loc": [
-     0.0,
-     0.0,
-     0.0
-    ]
-   }
-  },
-  {
-   "Pelvis": {
-    "rot": [
-     0.0,
-     0.0,
-     0.0
-    ],
-    "loc": [
-     0.0,
-     0.0,
-     4.735337
-    ]
-   },
-   "HeadTorso": {
-    "rot": [
-     0.0,
-     3.0,
-     2.259463
-    ],
-    "loc": [
-     0.0,
-     0.0,
-     0.0
-    ]
-   },
    "Thigh_L": {
-    "rot": [
-     0.0,
-     -6.893864,
-     0.0
-    ],
-    "loc": [
-     0.0,
-     0.0,
-     0.0
-    ]
-   },
-   "ShinFoot_L": {
     "rot": [
      0.0,
      -0.0,
@@ -1036,1081 +850,7 @@
    "Thigh_R": {
     "rot": [
      0.0,
-     -6.080794,
-     0.0
-    ],
-    "loc": [
      0.0,
-     0.0,
-     0.0
-    ]
-   },
-   "ShinFoot_R": {
-    "rot": [
-     0.0,
-     14.445684,
-     0.0
-    ],
-    "loc": [
-     0.0,
-     0.0,
-     0.0
-    ]
-   },
-   "UpperArm_L": {
-    "rot": [
-     0.0,
-     6.025235,
-     0.0
-    ],
-    "loc": [
-     0.0,
-     0.0,
-     0.0
-    ]
-   },
-   "UpperArm_R": {
-    "rot": [
-     0.0,
-     -6.025235,
-     0.0
-    ],
-    "loc": [
-     0.0,
-     0.0,
-     0.0
-    ]
-   },
-   "ForearmHand_L": {
-    "rot": [
-     0.0,
-     -0.0,
-     0.0
-    ],
-    "loc": [
-     0.0,
-     0.0,
-     0.0
-    ]
-   },
-   "ForearmHand_R": {
-    "rot": [
-     0.0,
-     -0.0,
-     0.0
-    ],
-    "loc": [
-     0.0,
-     0.0,
-     0.0
-    ]
-   }
-  },
-  {
-   "Pelvis": {
-    "rot": [
-     0.0,
-     0.0,
-     0.0
-    ],
-    "loc": [
-     0.0,
-     0.0,
-     3.371377
-    ]
-   },
-   "HeadTorso": {
-    "rot": [
-     0.0,
-     3.0,
-     1.51166
-    ],
-    "loc": [
-     0.0,
-     0.0,
-     0.0
-    ]
-   },
-   "Thigh_L": {
-    "rot": [
-     0.0,
-     -4.612237,
-     0.0
-    ],
-    "loc": [
-     0.0,
-     0.0,
-     0.0
-    ]
-   },
-   "ShinFoot_L": {
-    "rot": [
-     0.0,
-     -0.0,
-     0.0
-    ],
-    "loc": [
-     0.0,
-     0.0,
-     0.0
-    ]
-   },
-   "Thigh_R": {
-    "rot": [
-     0.0,
-     -8.687175,
-     0.0
-    ],
-    "loc": [
-     0.0,
-     0.0,
-     0.0
-    ]
-   },
-   "ShinFoot_R": {
-    "rot": [
-     0.0,
-     14.978481,
-     0.0
-    ],
-    "loc": [
-     0.0,
-     0.0,
-     0.0
-    ]
-   },
-   "UpperArm_L": {
-    "rot": [
-     0.0,
-     4.031095,
-     0.0
-    ],
-    "loc": [
-     0.0,
-     0.0,
-     0.0
-    ]
-   },
-   "UpperArm_R": {
-    "rot": [
-     0.0,
-     -4.031095,
-     0.0
-    ],
-    "loc": [
-     0.0,
-     0.0,
-     0.0
-    ]
-   },
-   "ForearmHand_L": {
-    "rot": [
-     0.0,
-     -0.0,
-     0.0
-    ],
-    "loc": [
-     0.0,
-     0.0,
-     0.0
-    ]
-   },
-   "ForearmHand_R": {
-    "rot": [
-     0.0,
-     -0.0,
-     0.0
-    ],
-    "loc": [
-     0.0,
-     0.0,
-     0.0
-    ]
-   }
-  },
-  {
-   "Pelvis": {
-    "rot": [
-     0.0,
-     0.0,
-     0.0
-    ],
-    "loc": [
-     0.0,
-     0.0,
-     1.786041
-    ]
-   },
-   "HeadTorso": {
-    "rot": [
-     0.0,
-     3.0,
-     0.755148
-    ],
-    "loc": [
-     0.0,
-     0.0,
-     0.0
-    ]
-   },
-   "Thigh_L": {
-    "rot": [
-     0.0,
-     -2.304037,
-     0.0
-    ],
-    "loc": [
-     0.0,
-     0.0,
-     0.0
-    ]
-   },
-   "ShinFoot_L": {
-    "rot": [
-     0.0,
-     0.0,
-     0.0
-    ],
-    "loc": [
-     0.0,
-     0.0,
-     0.0
-    ]
-   },
-   "Thigh_R": {
-    "rot": [
-     0.0,
-     -9.616258,
-     0.0
-    ],
-    "loc": [
-     0.0,
-     0.0,
-     0.0
-    ]
-   },
-   "ShinFoot_R": {
-    "rot": [
-     0.0,
-     12.975945,
-     0.0
-    ],
-    "loc": [
-     0.0,
-     0.0,
-     0.0
-    ]
-   },
-   "UpperArm_L": {
-    "rot": [
-     0.0,
-     2.013728,
-     0.0
-    ],
-    "loc": [
-     0.0,
-     0.0,
-     0.0
-    ]
-   },
-   "UpperArm_R": {
-    "rot": [
-     0.0,
-     -2.013728,
-     0.0
-    ],
-    "loc": [
-     0.0,
-     0.0,
-     0.0
-    ]
-   },
-   "ForearmHand_L": {
-    "rot": [
-     0.0,
-     -0.0,
-     0.0
-    ],
-    "loc": [
-     0.0,
-     0.0,
-     0.0
-    ]
-   },
-   "ForearmHand_R": {
-    "rot": [
-     0.0,
-     -0.0,
-     0.0
-    ],
-    "loc": [
-     0.0,
-     0.0,
-     0.0
-    ]
-   }
-  },
-  {
-   "Pelvis": {
-    "rot": [
-     0.0,
-     0.0,
-     0.0
-    ],
-    "loc": [
-     0.0,
-     0.0,
-     -0.029161
-    ]
-   },
-   "HeadTorso": {
-    "rot": [
-     0.0,
-     3.0,
-     -0.011662
-    ],
-    "loc": [
-     0.0,
-     0.0,
-     0.0
-    ]
-   },
-   "Thigh_L": {
-    "rot": [
-     0.0,
-     0.035581,
-     0.0
-    ],
-    "loc": [
-     0.0,
-     0.0,
-     0.0
-    ]
-   },
-   "ShinFoot_L": {
-    "rot": [
-     0.0,
-     -0.0,
-     0.0
-    ],
-    "loc": [
-     0.0,
-     0.0,
-     0.0
-    ]
-   },
-   "Thigh_R": {
-    "rot": [
-     0.0,
-     -9.287396,
-     0.0
-    ],
-    "loc": [
-     0.0,
-     0.0,
-     0.0
-    ]
-   },
-   "ShinFoot_R": {
-    "rot": [
-     0.0,
-     9.286447,
-     0.0
-    ],
-    "loc": [
-     0.0,
-     0.0,
-     0.0
-    ]
-   },
-   "UpperArm_L": {
-    "rot": [
-     0.0,
-     -0.031098,
-     0.0
-    ],
-    "loc": [
-     0.0,
-     0.0,
-     0.0
-    ]
-   },
-   "UpperArm_R": {
-    "rot": [
-     0.0,
-     0.031098,
-     0.0
-    ],
-    "loc": [
-     0.0,
-     0.0,
-     0.0
-    ]
-   },
-   "ForearmHand_L": {
-    "rot": [
-     0.0,
-     -0.0,
-     0.0
-    ],
-    "loc": [
-     0.0,
-     0.0,
-     0.0
-    ]
-   },
-   "ForearmHand_R": {
-    "rot": [
-     0.0,
-     -0.0,
-     0.0
-    ],
-    "loc": [
-     0.0,
-     0.0,
-     0.0
-    ]
-   }
-  },
-  {
-   "Pelvis": {
-    "rot": [
-     0.0,
-     0.0,
-     0.0
-    ],
-    "loc": [
-     0.0,
-     0.0,
-     2.093955
-    ]
-   },
-   "HeadTorso": {
-    "rot": [
-     0.0,
-     3.0,
-     -0.77881
-    ],
-    "loc": [
-     0.0,
-     0.0,
-     0.0
-    ]
-   },
-   "Thigh_L": {
-    "rot": [
-     0.0,
-     2.376233,
-     0.0
-    ],
-    "loc": [
-     0.0,
-     0.0,
-     0.0
-    ]
-   },
-   "ShinFoot_L": {
-    "rot": [
-     0.0,
-     -0.0,
-     0.0
-    ],
-    "loc": [
-     0.0,
-     0.0,
-     0.0
-    ]
-   },
-   "Thigh_R": {
-    "rot": [
-     0.0,
-     -11.509684,
-     0.0
-    ],
-    "loc": [
-     0.0,
-     0.0,
-     0.0
-    ]
-   },
-   "ShinFoot_R": {
-    "rot": [
-     0.0,
-     8.148099,
-     0.0
-    ],
-    "loc": [
-     0.0,
-     0.0,
-     0.0
-    ]
-   },
-   "UpperArm_L": {
-    "rot": [
-     0.0,
-     -2.076827,
-     0.0
-    ],
-    "loc": [
-     0.0,
-     0.0,
-     0.0
-    ]
-   },
-   "UpperArm_R": {
-    "rot": [
-     0.0,
-     2.076827,
-     0.0
-    ],
-    "loc": [
-     0.0,
-     0.0,
-     0.0
-    ]
-   },
-   "ForearmHand_L": {
-    "rot": [
-     0.0,
-     -0.0,
-     0.0
-    ],
-    "loc": [
-     0.0,
-     0.0,
-     0.0
-    ]
-   },
-   "ForearmHand_R": {
-    "rot": [
-     0.0,
-     -0.0,
-     0.0
-    ],
-    "loc": [
-     0.0,
-     0.0,
-     0.0
-    ]
-   }
-  },
-  {
-   "Pelvis": {
-    "rot": [
-     0.0,
-     0.0,
-     0.0
-    ],
-    "loc": [
-     0.0,
-     0.0,
-     4.426113
-    ]
-   },
-   "HeadTorso": {
-    "rot": [
-     0.0,
-     3.0,
-     -1.531273
-    ],
-    "loc": [
-     0.0,
-     0.0,
-     0.0
-    ]
-   },
-   "Thigh_L": {
-    "rot": [
-     0.0,
-     4.672078,
-     0.0
-    ],
-    "loc": [
-     0.0,
-     0.0,
-     0.0
-    ]
-   },
-   "ShinFoot_L": {
-    "rot": [
-     0.0,
-     0.0,
-     0.0
-    ],
-    "loc": [
-     0.0,
-     0.0,
-     0.0
-    ]
-   },
-   "Thigh_R": {
-    "rot": [
-     0.0,
-     -10.026708,
-     0.0
-    ],
-    "loc": [
-     0.0,
-     0.0,
-     0.0
-    ]
-   },
-   "ShinFoot_R": {
-    "rot": [
-     0.0,
-     3.733503,
-     0.0
-    ],
-    "loc": [
-     0.0,
-     0.0,
-     0.0
-    ]
-   },
-   "UpperArm_L": {
-    "rot": [
-     0.0,
-     -4.083395,
-     0.0
-    ],
-    "loc": [
-     0.0,
-     0.0,
-     0.0
-    ]
-   },
-   "UpperArm_R": {
-    "rot": [
-     0.0,
-     4.083395,
-     0.0
-    ],
-    "loc": [
-     0.0,
-     0.0,
-     0.0
-    ]
-   },
-   "ForearmHand_L": {
-    "rot": [
-     0.0,
-     -0.0,
-     0.0
-    ],
-    "loc": [
-     0.0,
-     0.0,
-     0.0
-    ]
-   },
-   "ForearmHand_R": {
-    "rot": [
-     0.0,
-     -0.0,
-     0.0
-    ],
-    "loc": [
-     0.0,
-     0.0,
-     0.0
-    ]
-   }
-  },
-  {
-   "Pelvis": {
-    "rot": [
-     0.0,
-     0.0,
-     0.0
-    ],
-    "loc": [
-     0.0,
-     0.0,
-     6.517538
-    ]
-   },
-   "HeadTorso": {
-    "rot": [
-     0.0,
-     3.0,
-     -2.270885
-    ],
-    "loc": [
-     0.0,
-     0.0,
-     0.0
-    ]
-   },
-   "Thigh_L": {
-    "rot": [
-     0.0,
-     6.928714,
-     0.0
-    ],
-    "loc": [
-     0.0,
-     0.0,
-     0.0
-    ]
-   },
-   "ShinFoot_L": {
-    "rot": [
-     0.0,
-     -0.0,
-     0.0
-    ],
-    "loc": [
-     0.0,
-     0.0,
-     0.0
-    ]
-   },
-   "Thigh_R": {
-    "rot": [
-     0.0,
-     -8.366788,
-     0.0
-    ],
-    "loc": [
-     0.0,
-     0.0,
-     0.0
-    ]
-   },
-   "ShinFoot_R": {
-    "rot": [
-     0.0,
-     -0.0,
-     0.0
-    ],
-    "loc": [
-     0.0,
-     0.0,
-     0.0
-    ]
-   },
-   "UpperArm_L": {
-    "rot": [
-     0.0,
-     -6.055694,
-     0.0
-    ],
-    "loc": [
-     0.0,
-     0.0,
-     0.0
-    ]
-   },
-   "UpperArm_R": {
-    "rot": [
-     0.0,
-     6.055694,
-     0.0
-    ],
-    "loc": [
-     0.0,
-     0.0,
-     0.0
-    ]
-   },
-   "ForearmHand_L": {
-    "rot": [
-     0.0,
-     -0.0,
-     0.0
-    ],
-    "loc": [
-     0.0,
-     0.0,
-     0.0
-    ]
-   },
-   "ForearmHand_R": {
-    "rot": [
-     0.0,
-     -0.0,
-     0.0
-    ],
-    "loc": [
-     0.0,
-     0.0,
-     0.0
-    ]
-   }
-  },
-  {
-   "Pelvis": {
-    "rot": [
-     0.0,
-     0.0,
-     0.0
-    ],
-    "loc": [
-     0.0,
-     0.0,
-     5.884896
-    ]
-   },
-   "HeadTorso": {
-    "rot": [
-     0.0,
-     3.0,
-     0.949413
-    ],
-    "loc": [
-     0.0,
-     0.0,
-     0.0
-    ]
-   },
-   "Thigh_L": {
-    "rot": [
-     0.0,
-     -2.89676,
-     0.0
-    ],
-    "loc": [
-     0.0,
-     0.0,
-     0.0
-    ]
-   },
-   "ShinFoot_L": {
-    "rot": [
-     0.0,
-     12.048182,
-     0.0
-    ],
-    "loc": [
-     0.0,
-     0.0,
-     0.0
-    ]
-   },
-   "Thigh_R": {
-    "rot": [
-     0.0,
-     -9.15332,
-     0.0
-    ],
-    "loc": [
-     0.0,
-     0.0,
-     0.0
-    ]
-   },
-   "ShinFoot_R": {
-    "rot": [
-     0.0,
-     -0.0,
-     0.0
-    ],
-    "loc": [
-     0.0,
-     0.0,
-     0.0
-    ]
-   },
-   "UpperArm_L": {
-    "rot": [
-     0.0,
-     2.531768,
-     0.0
-    ],
-    "loc": [
-     0.0,
-     0.0,
-     0.0
-    ]
-   },
-   "UpperArm_R": {
-    "rot": [
-     0.0,
-     -2.531768,
-     0.0
-    ],
-    "loc": [
-     0.0,
-     0.0,
-     0.0
-    ]
-   },
-   "ForearmHand_L": {
-    "rot": [
-     0.0,
-     -0.0,
-     0.0
-    ],
-    "loc": [
-     0.0,
-     0.0,
-     0.0
-    ]
-   },
-   "ForearmHand_R": {
-    "rot": [
-     0.0,
-     -0.0,
-     0.0
-    ],
-    "loc": [
-     0.0,
-     0.0,
-     0.0
-    ]
-   }
-  },
-  {
-   "Pelvis": {
-    "rot": [
-     0.0,
-     0.0,
-     0.0
-    ],
-    "loc": [
-     0.0,
-     0.0,
-     4.735337
-    ]
-   },
-   "HeadTorso": {
-    "rot": [
-     0.0,
-     3.0,
-     2.031762
-    ],
-    "loc": [
-     0.0,
-     0.0,
-     0.0
-    ]
-   },
-   "Thigh_L": {
-    "rot": [
-     0.0,
-     -6.199123,
-     0.0
-    ],
-    "loc": [
-     0.0,
-     0.0,
-     0.0
-    ]
-   },
-   "ShinFoot_L": {
-    "rot": [
-     0.0,
-     14.564013,
-     0.0
-    ],
-    "loc": [
-     0.0,
-     0.0,
-     0.0
-    ]
-   },
-   "Thigh_R": {
-    "rot": [
-     0.0,
-     -6.893864,
-     0.0
-    ],
-    "loc": [
-     0.0,
-     0.0,
-     0.0
-    ]
-   },
-   "ShinFoot_R": {
-    "rot": [
-     0.0,
-     -0.0,
-     0.0
-    ],
-    "loc": [
-     0.0,
-     0.0,
-     0.0
-    ]
-   },
-   "UpperArm_L": {
-    "rot": [
-     0.0,
-     5.418032,
-     0.0
-    ],
-    "loc": [
-     0.0,
-     0.0,
-     0.0
-    ]
-   },
-   "UpperArm_R": {
-    "rot": [
-     0.0,
-     -5.418032,
-     0.0
-    ],
-    "loc": [
-     0.0,
-     0.0,
-     0.0
-    ]
-   },
-   "ForearmHand_L": {
-    "rot": [
-     0.0,
-     -0.0,
-     0.0
-    ],
-    "loc": [
-     0.0,
-     0.0,
-     0.0
-    ]
-   },
-   "ForearmHand_R": {
-    "rot": [
-     0.0,
-     -0.0,
-     0.0
-    ],
-    "loc": [
-     0.0,
-     0.0,
-     0.0
-    ]
-   }
-  },
-  {
-   "Pelvis": {
-    "rot": [
-     0.0,
-     0.0,
-     0.0
-    ],
-    "loc": [
-     0.0,
-     0.0,
-     3.371377
-    ]
-   },
-   "HeadTorso": {
-    "rot": [
-     0.0,
-     3.0,
-     2.854274
-    ],
-    "loc": [
-     0.0,
-     0.0,
-     0.0
-    ]
-   },
-   "Thigh_L": {
-    "rot": [
-     0.0,
-     -8.708694,
      0.0
     ],
     "loc": [
@@ -2131,22 +871,10 @@
      0.0
     ]
    },
-   "Thigh_R": {
-    "rot": [
-     0.0,
-     -4.612237,
-     0.0
-    ],
-    "loc": [
-     0.0,
-     0.0,
-     0.0
-    ]
-   },
    "ShinFoot_R": {
     "rot": [
      0.0,
-     -0.0,
+     0.0,
      0.0
     ],
     "loc": [
@@ -2158,7 +886,7 @@
    "UpperArm_L": {
     "rot": [
      0.0,
-     7.611397,
+     0.0,
      0.0
     ],
     "loc": [
@@ -2170,7 +898,7 @@
    "UpperArm_R": {
     "rot": [
      0.0,
-     -7.611397,
+     -0.0,
      0.0
     ],
     "loc": [
@@ -2182,7 +910,7 @@
    "ForearmHand_L": {
     "rot": [
      0.0,
-     -0.0,
+     -40.0,
      0.0
     ],
     "loc": [
@@ -2194,7 +922,7 @@
    "ForearmHand_R": {
     "rot": [
      0.0,
-     -0.0,
+     -40.0,
      0.0
     ],
     "loc": [
@@ -2202,9 +930,7 @@
      0.0,
      0.0
     ]
-   }
-  },
-  {
+   },
    "Pelvis": {
     "rot": [
      0.0,
@@ -2214,14 +940,16 @@
     "loc": [
      0.0,
      0.0,
-     1.786041
+     10.187231
     ]
-   },
+   }
+  },
+  {
    "HeadTorso": {
     "rot": [
      0.0,
-     3.0,
-     3.18131
+     8.0,
+     1.913417
     ],
     "loc": [
      0.0,
@@ -2232,7 +960,19 @@
    "Thigh_L": {
     "rot": [
      0.0,
-     -9.706518,
+     -13.39392,
+     0.0
+    ],
+    "loc": [
+     0.0,
+     0.0,
+     0.0
+    ]
+   },
+   "Thigh_R": {
+    "rot": [
+     0.0,
+     13.39392,
      0.0
     ],
     "loc": [
@@ -2244,19 +984,7 @@
    "ShinFoot_L": {
     "rot": [
      0.0,
-     13.066205,
-     0.0
-    ],
-    "loc": [
-     0.0,
-     0.0,
-     0.0
-    ]
-   },
-   "Thigh_R": {
-    "rot": [
-     0.0,
-     -2.304037,
+     13.858193,
      0.0
     ],
     "loc": [
@@ -2280,7 +1008,7 @@
    "UpperArm_L": {
     "rot": [
      0.0,
-     8.483495,
+     11.480503,
      0.0
     ],
     "loc": [
@@ -2292,7 +1020,7 @@
    "UpperArm_R": {
     "rot": [
      0.0,
-     -8.483495,
+     -11.480503,
      0.0
     ],
     "loc": [
@@ -2304,7 +1032,7 @@
    "ForearmHand_L": {
     "rot": [
      0.0,
-     -0.0,
+     -40.0,
      0.0
     ],
     "loc": [
@@ -2316,7 +1044,7 @@
    "ForearmHand_R": {
     "rot": [
      0.0,
-     -0.0,
+     -40.0,
      0.0
     ],
     "loc": [
@@ -2324,9 +1052,7 @@
      0.0,
      0.0
     ]
-   }
-  },
-  {
+   },
    "Pelvis": {
     "rot": [
      0.0,
@@ -2336,14 +1062,16 @@
     "loc": [
      0.0,
      0.0,
-     -0.029161
+     11.333899
     ]
-   },
+   }
+  },
+  {
    "HeadTorso": {
     "rot": [
      0.0,
-     3.0,
-     3.101384
+     8.0,
+     3.535534
     ],
     "loc": [
      0.0,
@@ -2354,7 +1082,19 @@
    "Thigh_L": {
     "rot": [
      0.0,
-     -9.462653,
+     -24.748737,
+     0.0
+    ],
+    "loc": [
+     0.0,
+     0.0,
+     0.0
+    ]
+   },
+   "Thigh_R": {
+    "rot": [
+     0.0,
+     24.748737,
      0.0
     ],
     "loc": [
@@ -2366,19 +1106,7 @@
    "ShinFoot_L": {
     "rot": [
      0.0,
-     9.461704,
-     0.0
-    ],
-    "loc": [
-     0.0,
-     0.0,
-     0.0
-    ]
-   },
-   "Thigh_R": {
-    "rot": [
-     0.0,
-     0.035581,
+     10.606602,
      0.0
     ],
     "loc": [
@@ -2390,7 +1118,7 @@
    "ShinFoot_R": {
     "rot": [
      0.0,
-     -0.0,
+     0.0,
      0.0
     ],
     "loc": [
@@ -2402,7 +1130,7 @@
    "UpperArm_L": {
     "rot": [
      0.0,
-     8.270357,
+     21.213203,
      0.0
     ],
     "loc": [
@@ -2414,7 +1142,7 @@
    "UpperArm_R": {
     "rot": [
      0.0,
-     -8.270357,
+     -21.213203,
      0.0
     ],
     "loc": [
@@ -2426,7 +1154,7 @@
    "ForearmHand_L": {
     "rot": [
      0.0,
-     -0.0,
+     -40.0,
      0.0
     ],
     "loc": [
@@ -2438,7 +1166,7 @@
    "ForearmHand_R": {
     "rot": [
      0.0,
-     -0.0,
+     -40.0,
      0.0
     ],
     "loc": [
@@ -2446,9 +1174,7 @@
      0.0,
      0.0
     ]
-   }
-  },
-  {
+   },
    "Pelvis": {
     "rot": [
      0.0,
@@ -2458,14 +1184,16 @@
     "loc": [
      0.0,
      0.0,
-     2.093955
+     15.66899
     ]
-   },
+   }
+  },
+  {
    "HeadTorso": {
     "rot": [
      0.0,
-     3.0,
-     3.841977
+     8.0,
+     4.619398
     ],
     "loc": [
      0.0,
@@ -2476,7 +1204,19 @@
    "Thigh_L": {
     "rot": [
      0.0,
-     -11.722281,
+     -32.335784,
+     0.0
+    ],
+    "loc": [
+     0.0,
+     0.0,
+     0.0
+    ]
+   },
+   "Thigh_R": {
+    "rot": [
+     0.0,
+     32.335784,
      0.0
     ],
     "loc": [
@@ -2488,19 +1228,7 @@
    "ShinFoot_L": {
     "rot": [
      0.0,
-     8.360696,
-     0.0
-    ],
-    "loc": [
-     0.0,
-     0.0,
-     0.0
-    ]
-   },
-   "Thigh_R": {
-    "rot": [
-     0.0,
-     2.376233,
+     5.740251,
      0.0
     ],
     "loc": [
@@ -2512,7 +1240,7 @@
    "ShinFoot_R": {
     "rot": [
      0.0,
-     -0.0,
+     0.0,
      0.0
     ],
     "loc": [
@@ -2524,7 +1252,7 @@
    "UpperArm_L": {
     "rot": [
      0.0,
-     10.245271,
+     27.716386,
      0.0
     ],
     "loc": [
@@ -2536,7 +1264,7 @@
    "UpperArm_R": {
     "rot": [
      0.0,
-     -10.245271,
+     -27.716386,
      0.0
     ],
     "loc": [
@@ -2548,7 +1276,7 @@
    "ForearmHand_L": {
     "rot": [
      0.0,
-     -0.0,
+     -40.0,
      0.0
     ],
     "loc": [
@@ -2560,7 +1288,7 @@
    "ForearmHand_R": {
     "rot": [
      0.0,
-     -0.0,
+     -40.0,
      0.0
     ],
     "loc": [
@@ -2568,9 +1296,7 @@
      0.0,
      0.0
     ]
-   }
-  },
-  {
+   },
    "Pelvis": {
     "rot": [
      0.0,
@@ -2580,14 +1306,16 @@
     "loc": [
      0.0,
      0.0,
-     4.426113
+     15.520107
     ]
-   },
+   }
+  },
+  {
    "HeadTorso": {
     "rot": [
      0.0,
-     3.0,
-     3.365498
+     8.0,
+     5.0
     ],
     "loc": [
      0.0,
@@ -2598,7 +1326,19 @@
    "Thigh_L": {
     "rot": [
      0.0,
-     -10.268493,
+     -35.0,
+     0.0
+    ],
+    "loc": [
+     0.0,
+     0.0,
+     0.0
+    ]
+   },
+   "Thigh_R": {
+    "rot": [
+     0.0,
+     35.0,
      0.0
     ],
     "loc": [
@@ -2610,19 +1350,7 @@
    "ShinFoot_L": {
     "rot": [
      0.0,
-     3.975289,
-     0.0
-    ],
-    "loc": [
      0.0,
-     0.0,
-     0.0
-    ]
-   },
-   "Thigh_R": {
-    "rot": [
-     0.0,
-     4.672078,
      0.0
     ],
     "loc": [
@@ -2646,7 +1374,7 @@
    "UpperArm_L": {
     "rot": [
      0.0,
-     8.974661,
+     30.0,
      0.0
     ],
     "loc": [
@@ -2658,7 +1386,7 @@
    "UpperArm_R": {
     "rot": [
      0.0,
-     -8.974661,
+     -30.0,
      0.0
     ],
     "loc": [
@@ -2670,7 +1398,7 @@
    "ForearmHand_L": {
     "rot": [
      0.0,
-     -0.0,
+     -40.0,
      0.0
     ],
     "loc": [
@@ -2682,7 +1410,7 @@
    "ForearmHand_R": {
     "rot": [
      0.0,
-     -0.0,
+     -40.0,
      0.0
     ],
     "loc": [
@@ -2690,9 +1418,7 @@
      0.0,
      0.0
     ]
-   }
-  },
-  {
+   },
    "Pelvis": {
     "rot": [
      0.0,
@@ -2702,14 +1428,16 @@
     "loc": [
      0.0,
      0.0,
-     6.517538
+     14.88687
     ]
-   },
+   }
+  },
+  {
    "HeadTorso": {
     "rot": [
      0.0,
-     3.0,
-     2.742214
+     8.0,
+     4.619398
     ],
     "loc": [
      0.0,
@@ -2720,7 +1448,19 @@
    "Thigh_L": {
     "rot": [
      0.0,
-     -8.366788,
+     -32.335784,
+     0.0
+    ],
+    "loc": [
+     0.0,
+     0.0,
+     0.0
+    ]
+   },
+   "Thigh_R": {
+    "rot": [
+     0.0,
+     32.335784,
      0.0
     ],
     "loc": [
@@ -2732,6 +1472,348 @@
    "ShinFoot_L": {
     "rot": [
      0.0,
+     0.0,
+     0.0
+    ],
+    "loc": [
+     0.0,
+     0.0,
+     0.0
+    ]
+   },
+   "ShinFoot_R": {
+    "rot": [
+     0.0,
+     5.740251,
+     0.0
+    ],
+    "loc": [
+     0.0,
+     0.0,
+     0.0
+    ]
+   },
+   "UpperArm_L": {
+    "rot": [
+     0.0,
+     27.716386,
+     0.0
+    ],
+    "loc": [
+     0.0,
+     0.0,
+     0.0
+    ]
+   },
+   "UpperArm_R": {
+    "rot": [
+     0.0,
+     -27.716386,
+     0.0
+    ],
+    "loc": [
+     0.0,
+     0.0,
+     0.0
+    ]
+   },
+   "ForearmHand_L": {
+    "rot": [
+     0.0,
+     -40.0,
+     0.0
+    ],
+    "loc": [
+     0.0,
+     0.0,
+     0.0
+    ]
+   },
+   "ForearmHand_R": {
+    "rot": [
+     0.0,
+     -40.0,
+     0.0
+    ],
+    "loc": [
+     0.0,
+     0.0,
+     0.0
+    ]
+   },
+   "Pelvis": {
+    "rot": [
+     0.0,
+     0.0,
+     0.0
+    ],
+    "loc": [
+     0.0,
+     0.0,
+     15.338346
+    ]
+   }
+  },
+  {
+   "HeadTorso": {
+    "rot": [
+     0.0,
+     8.0,
+     3.535534
+    ],
+    "loc": [
+     0.0,
+     0.0,
+     0.0
+    ]
+   },
+   "Thigh_L": {
+    "rot": [
+     0.0,
+     -24.748737,
+     0.0
+    ],
+    "loc": [
+     0.0,
+     0.0,
+     0.0
+    ]
+   },
+   "Thigh_R": {
+    "rot": [
+     0.0,
+     24.748737,
+     0.0
+    ],
+    "loc": [
+     0.0,
+     0.0,
+     0.0
+    ]
+   },
+   "ShinFoot_L": {
+    "rot": [
+     0.0,
+     0.0,
+     0.0
+    ],
+    "loc": [
+     0.0,
+     0.0,
+     0.0
+    ]
+   },
+   "ShinFoot_R": {
+    "rot": [
+     0.0,
+     10.606602,
+     0.0
+    ],
+    "loc": [
+     0.0,
+     0.0,
+     0.0
+    ]
+   },
+   "UpperArm_L": {
+    "rot": [
+     0.0,
+     21.213203,
+     0.0
+    ],
+    "loc": [
+     0.0,
+     0.0,
+     0.0
+    ]
+   },
+   "UpperArm_R": {
+    "rot": [
+     0.0,
+     -21.213203,
+     0.0
+    ],
+    "loc": [
+     0.0,
+     0.0,
+     0.0
+    ]
+   },
+   "ForearmHand_L": {
+    "rot": [
+     0.0,
+     -40.0,
+     0.0
+    ],
+    "loc": [
+     0.0,
+     0.0,
+     0.0
+    ]
+   },
+   "ForearmHand_R": {
+    "rot": [
+     0.0,
+     -40.0,
+     0.0
+    ],
+    "loc": [
+     0.0,
+     0.0,
+     0.0
+    ]
+   },
+   "Pelvis": {
+    "rot": [
+     0.0,
+     0.0,
+     0.0
+    ],
+    "loc": [
+     0.0,
+     0.0,
+     16.856822
+    ]
+   }
+  },
+  {
+   "HeadTorso": {
+    "rot": [
+     0.0,
+     8.0,
+     1.913417
+    ],
+    "loc": [
+     0.0,
+     0.0,
+     0.0
+    ]
+   },
+   "Thigh_L": {
+    "rot": [
+     0.0,
+     -13.39392,
+     0.0
+    ],
+    "loc": [
+     0.0,
+     0.0,
+     0.0
+    ]
+   },
+   "Thigh_R": {
+    "rot": [
+     0.0,
+     13.39392,
+     0.0
+    ],
+    "loc": [
+     0.0,
+     0.0,
+     0.0
+    ]
+   },
+   "ShinFoot_L": {
+    "rot": [
+     0.0,
+     0.0,
+     0.0
+    ],
+    "loc": [
+     0.0,
+     0.0,
+     0.0
+    ]
+   },
+   "ShinFoot_R": {
+    "rot": [
+     0.0,
+     13.858193,
+     0.0
+    ],
+    "loc": [
+     0.0,
+     0.0,
+     0.0
+    ]
+   },
+   "UpperArm_L": {
+    "rot": [
+     0.0,
+     11.480503,
+     0.0
+    ],
+    "loc": [
+     0.0,
+     0.0,
+     0.0
+    ]
+   },
+   "UpperArm_R": {
+    "rot": [
+     0.0,
+     -11.480503,
+     0.0
+    ],
+    "loc": [
+     0.0,
+     0.0,
+     0.0
+    ]
+   },
+   "ForearmHand_L": {
+    "rot": [
+     0.0,
+     -40.0,
+     0.0
+    ],
+    "loc": [
+     0.0,
+     0.0,
+     0.0
+    ]
+   },
+   "ForearmHand_R": {
+    "rot": [
+     0.0,
+     -40.0,
+     0.0
+    ],
+    "loc": [
+     0.0,
+     0.0,
+     0.0
+    ]
+   },
+   "Pelvis": {
+    "rot": [
+     0.0,
+     0.0,
+     0.0
+    ],
+    "loc": [
+     0.0,
+     0.0,
+     16.590665
+    ]
+   }
+  },
+  {
+   "HeadTorso": {
+    "rot": [
+     0.0,
+     8.0,
+     0.0
+    ],
+    "loc": [
+     0.0,
+     0.0,
+     0.0
+    ]
+   },
+   "Thigh_L": {
+    "rot": [
+     0.0,
      -0.0,
      0.0
     ],
@@ -2744,7 +1826,19 @@
    "Thigh_R": {
     "rot": [
      0.0,
-     6.928714,
+     0.0,
+     0.0
+    ],
+    "loc": [
+     0.0,
+     0.0,
+     0.0
+    ]
+   },
+   "ShinFoot_L": {
+    "rot": [
+     0.0,
+     0.0,
      0.0
     ],
     "loc": [
@@ -2756,7 +1850,7 @@
    "ShinFoot_R": {
     "rot": [
      0.0,
-     -0.0,
+     15.0,
      0.0
     ],
     "loc": [
@@ -2768,7 +1862,7 @@
    "UpperArm_L": {
     "rot": [
      0.0,
-     7.312571,
+     0.0,
      0.0
     ],
     "loc": [
@@ -2780,7 +1874,7 @@
    "UpperArm_R": {
     "rot": [
      0.0,
-     -7.312571,
+     -0.0,
      0.0
     ],
     "loc": [
@@ -2792,7 +1886,7 @@
    "ForearmHand_L": {
     "rot": [
      0.0,
-     -0.0,
+     -40.0,
      0.0
     ],
     "loc": [
@@ -2804,13 +1898,879 @@
    "ForearmHand_R": {
     "rot": [
      0.0,
-     -0.0,
+     -40.0,
      0.0
     ],
     "loc": [
      0.0,
      0.0,
      0.0
+    ]
+   },
+   "Pelvis": {
+    "rot": [
+     0.0,
+     0.0,
+     0.0
+    ],
+    "loc": [
+     0.0,
+     0.0,
+     10.140595
+    ]
+   }
+  },
+  {
+   "HeadTorso": {
+    "rot": [
+     0.0,
+     8.0,
+     -1.913417
+    ],
+    "loc": [
+     0.0,
+     0.0,
+     0.0
+    ]
+   },
+   "Thigh_L": {
+    "rot": [
+     0.0,
+     13.39392,
+     0.0
+    ],
+    "loc": [
+     0.0,
+     0.0,
+     0.0
+    ]
+   },
+   "Thigh_R": {
+    "rot": [
+     0.0,
+     -13.39392,
+     0.0
+    ],
+    "loc": [
+     0.0,
+     0.0,
+     0.0
+    ]
+   },
+   "ShinFoot_L": {
+    "rot": [
+     0.0,
+     0.0,
+     0.0
+    ],
+    "loc": [
+     0.0,
+     0.0,
+     0.0
+    ]
+   },
+   "ShinFoot_R": {
+    "rot": [
+     0.0,
+     13.858193,
+     0.0
+    ],
+    "loc": [
+     0.0,
+     0.0,
+     0.0
+    ]
+   },
+   "UpperArm_L": {
+    "rot": [
+     0.0,
+     -11.480503,
+     0.0
+    ],
+    "loc": [
+     0.0,
+     0.0,
+     0.0
+    ]
+   },
+   "UpperArm_R": {
+    "rot": [
+     0.0,
+     11.480503,
+     0.0
+    ],
+    "loc": [
+     0.0,
+     0.0,
+     0.0
+    ]
+   },
+   "ForearmHand_L": {
+    "rot": [
+     0.0,
+     -40.0,
+     0.0
+    ],
+    "loc": [
+     0.0,
+     0.0,
+     0.0
+    ]
+   },
+   "ForearmHand_R": {
+    "rot": [
+     0.0,
+     -40.0,
+     0.0
+    ],
+    "loc": [
+     0.0,
+     0.0,
+     0.0
+    ]
+   },
+   "Pelvis": {
+    "rot": [
+     0.0,
+     0.0,
+     0.0
+    ],
+    "loc": [
+     0.0,
+     0.0,
+     11.379041
+    ]
+   }
+  },
+  {
+   "HeadTorso": {
+    "rot": [
+     0.0,
+     8.0,
+     -3.535534
+    ],
+    "loc": [
+     0.0,
+     0.0,
+     0.0
+    ]
+   },
+   "Thigh_L": {
+    "rot": [
+     0.0,
+     24.748737,
+     0.0
+    ],
+    "loc": [
+     0.0,
+     0.0,
+     0.0
+    ]
+   },
+   "Thigh_R": {
+    "rot": [
+     0.0,
+     -24.748737,
+     0.0
+    ],
+    "loc": [
+     0.0,
+     0.0,
+     0.0
+    ]
+   },
+   "ShinFoot_L": {
+    "rot": [
+     0.0,
+     0.0,
+     0.0
+    ],
+    "loc": [
+     0.0,
+     0.0,
+     0.0
+    ]
+   },
+   "ShinFoot_R": {
+    "rot": [
+     0.0,
+     10.606602,
+     0.0
+    ],
+    "loc": [
+     0.0,
+     0.0,
+     0.0
+    ]
+   },
+   "UpperArm_L": {
+    "rot": [
+     0.0,
+     -21.213203,
+     0.0
+    ],
+    "loc": [
+     0.0,
+     0.0,
+     0.0
+    ]
+   },
+   "UpperArm_R": {
+    "rot": [
+     0.0,
+     21.213203,
+     0.0
+    ],
+    "loc": [
+     0.0,
+     0.0,
+     0.0
+    ]
+   },
+   "ForearmHand_L": {
+    "rot": [
+     0.0,
+     -40.0,
+     0.0
+    ],
+    "loc": [
+     0.0,
+     0.0,
+     0.0
+    ]
+   },
+   "ForearmHand_R": {
+    "rot": [
+     0.0,
+     -40.0,
+     0.0
+    ],
+    "loc": [
+     0.0,
+     0.0,
+     0.0
+    ]
+   },
+   "Pelvis": {
+    "rot": [
+     0.0,
+     0.0,
+     0.0
+    ],
+    "loc": [
+     0.0,
+     0.0,
+     15.723875
+    ]
+   }
+  },
+  {
+   "HeadTorso": {
+    "rot": [
+     0.0,
+     8.0,
+     -4.619398
+    ],
+    "loc": [
+     0.0,
+     0.0,
+     0.0
+    ]
+   },
+   "Thigh_L": {
+    "rot": [
+     0.0,
+     32.335784,
+     0.0
+    ],
+    "loc": [
+     0.0,
+     0.0,
+     0.0
+    ]
+   },
+   "Thigh_R": {
+    "rot": [
+     0.0,
+     -32.335784,
+     0.0
+    ],
+    "loc": [
+     0.0,
+     0.0,
+     0.0
+    ]
+   },
+   "ShinFoot_L": {
+    "rot": [
+     0.0,
+     0.0,
+     0.0
+    ],
+    "loc": [
+     0.0,
+     0.0,
+     0.0
+    ]
+   },
+   "ShinFoot_R": {
+    "rot": [
+     0.0,
+     5.740251,
+     0.0
+    ],
+    "loc": [
+     0.0,
+     0.0,
+     0.0
+    ]
+   },
+   "UpperArm_L": {
+    "rot": [
+     0.0,
+     -27.716386,
+     0.0
+    ],
+    "loc": [
+     0.0,
+     0.0,
+     0.0
+    ]
+   },
+   "UpperArm_R": {
+    "rot": [
+     0.0,
+     27.716386,
+     0.0
+    ],
+    "loc": [
+     0.0,
+     0.0,
+     0.0
+    ]
+   },
+   "ForearmHand_L": {
+    "rot": [
+     0.0,
+     -40.0,
+     0.0
+    ],
+    "loc": [
+     0.0,
+     0.0,
+     0.0
+    ]
+   },
+   "ForearmHand_R": {
+    "rot": [
+     0.0,
+     -40.0,
+     0.0
+    ],
+    "loc": [
+     0.0,
+     0.0,
+     0.0
+    ]
+   },
+   "Pelvis": {
+    "rot": [
+     0.0,
+     0.0,
+     0.0
+    ],
+    "loc": [
+     0.0,
+     0.0,
+     15.580325
+    ]
+   }
+  },
+  {
+   "HeadTorso": {
+    "rot": [
+     0.0,
+     8.0,
+     -5.0
+    ],
+    "loc": [
+     0.0,
+     0.0,
+     0.0
+    ]
+   },
+   "Thigh_L": {
+    "rot": [
+     0.0,
+     35.0,
+     0.0
+    ],
+    "loc": [
+     0.0,
+     0.0,
+     0.0
+    ]
+   },
+   "Thigh_R": {
+    "rot": [
+     0.0,
+     -35.0,
+     0.0
+    ],
+    "loc": [
+     0.0,
+     0.0,
+     0.0
+    ]
+   },
+   "ShinFoot_L": {
+    "rot": [
+     0.0,
+     0.0,
+     0.0
+    ],
+    "loc": [
+     0.0,
+     0.0,
+     0.0
+    ]
+   },
+   "ShinFoot_R": {
+    "rot": [
+     0.0,
+     0.0,
+     0.0
+    ],
+    "loc": [
+     0.0,
+     0.0,
+     0.0
+    ]
+   },
+   "UpperArm_L": {
+    "rot": [
+     0.0,
+     -30.0,
+     0.0
+    ],
+    "loc": [
+     0.0,
+     0.0,
+     0.0
+    ]
+   },
+   "UpperArm_R": {
+    "rot": [
+     0.0,
+     30.0,
+     0.0
+    ],
+    "loc": [
+     0.0,
+     0.0,
+     0.0
+    ]
+   },
+   "ForearmHand_L": {
+    "rot": [
+     0.0,
+     -40.0,
+     0.0
+    ],
+    "loc": [
+     0.0,
+     0.0,
+     0.0
+    ]
+   },
+   "ForearmHand_R": {
+    "rot": [
+     0.0,
+     -40.0,
+     0.0
+    ],
+    "loc": [
+     0.0,
+     0.0,
+     0.0
+    ]
+   },
+   "Pelvis": {
+    "rot": [
+     0.0,
+     0.0,
+     0.0
+    ],
+    "loc": [
+     0.0,
+     0.0,
+     14.948715
+    ]
+   }
+  },
+  {
+   "HeadTorso": {
+    "rot": [
+     0.0,
+     8.0,
+     -4.619398
+    ],
+    "loc": [
+     0.0,
+     0.0,
+     0.0
+    ]
+   },
+   "Thigh_L": {
+    "rot": [
+     0.0,
+     32.335784,
+     0.0
+    ],
+    "loc": [
+     0.0,
+     0.0,
+     0.0
+    ]
+   },
+   "Thigh_R": {
+    "rot": [
+     0.0,
+     -32.335784,
+     0.0
+    ],
+    "loc": [
+     0.0,
+     0.0,
+     0.0
+    ]
+   },
+   "ShinFoot_L": {
+    "rot": [
+     0.0,
+     5.740251,
+     0.0
+    ],
+    "loc": [
+     0.0,
+     0.0,
+     0.0
+    ]
+   },
+   "ShinFoot_R": {
+    "rot": [
+     0.0,
+     0.0,
+     0.0
+    ],
+    "loc": [
+     0.0,
+     0.0,
+     0.0
+    ]
+   },
+   "UpperArm_L": {
+    "rot": [
+     0.0,
+     -27.716386,
+     0.0
+    ],
+    "loc": [
+     0.0,
+     0.0,
+     0.0
+    ]
+   },
+   "UpperArm_R": {
+    "rot": [
+     0.0,
+     27.716386,
+     0.0
+    ],
+    "loc": [
+     0.0,
+     0.0,
+     0.0
+    ]
+   },
+   "ForearmHand_L": {
+    "rot": [
+     0.0,
+     -40.0,
+     0.0
+    ],
+    "loc": [
+     0.0,
+     0.0,
+     0.0
+    ]
+   },
+   "ForearmHand_R": {
+    "rot": [
+     0.0,
+     -40.0,
+     0.0
+    ],
+    "loc": [
+     0.0,
+     0.0,
+     0.0
+    ]
+   },
+   "Pelvis": {
+    "rot": [
+     0.0,
+     0.0,
+     0.0
+    ],
+    "loc": [
+     0.0,
+     0.0,
+     15.401903
+    ]
+   }
+  },
+  {
+   "HeadTorso": {
+    "rot": [
+     0.0,
+     8.0,
+     -3.535534
+    ],
+    "loc": [
+     0.0,
+     0.0,
+     0.0
+    ]
+   },
+   "Thigh_L": {
+    "rot": [
+     0.0,
+     24.748737,
+     0.0
+    ],
+    "loc": [
+     0.0,
+     0.0,
+     0.0
+    ]
+   },
+   "Thigh_R": {
+    "rot": [
+     0.0,
+     -24.748737,
+     0.0
+    ],
+    "loc": [
+     0.0,
+     0.0,
+     0.0
+    ]
+   },
+   "ShinFoot_L": {
+    "rot": [
+     0.0,
+     10.606602,
+     0.0
+    ],
+    "loc": [
+     0.0,
+     0.0,
+     0.0
+    ]
+   },
+   "ShinFoot_R": {
+    "rot": [
+     0.0,
+     0.0,
+     0.0
+    ],
+    "loc": [
+     0.0,
+     0.0,
+     0.0
+    ]
+   },
+   "UpperArm_L": {
+    "rot": [
+     0.0,
+     -21.213203,
+     0.0
+    ],
+    "loc": [
+     0.0,
+     0.0,
+     0.0
+    ]
+   },
+   "UpperArm_R": {
+    "rot": [
+     0.0,
+     21.213203,
+     0.0
+    ],
+    "loc": [
+     0.0,
+     0.0,
+     0.0
+    ]
+   },
+   "ForearmHand_L": {
+    "rot": [
+     0.0,
+     -40.0,
+     0.0
+    ],
+    "loc": [
+     0.0,
+     0.0,
+     0.0
+    ]
+   },
+   "ForearmHand_R": {
+    "rot": [
+     0.0,
+     -40.0,
+     0.0
+    ],
+    "loc": [
+     0.0,
+     0.0,
+     0.0
+    ]
+   },
+   "Pelvis": {
+    "rot": [
+     0.0,
+     0.0,
+     0.0
+    ],
+    "loc": [
+     0.0,
+     0.0,
+     16.918875
+    ]
+   }
+  },
+  {
+   "HeadTorso": {
+    "rot": [
+     0.0,
+     8.0,
+     -1.913417
+    ],
+    "loc": [
+     0.0,
+     0.0,
+     0.0
+    ]
+   },
+   "Thigh_L": {
+    "rot": [
+     0.0,
+     13.39392,
+     0.0
+    ],
+    "loc": [
+     0.0,
+     0.0,
+     0.0
+    ]
+   },
+   "Thigh_R": {
+    "rot": [
+     0.0,
+     -13.39392,
+     0.0
+    ],
+    "loc": [
+     0.0,
+     0.0,
+     0.0
+    ]
+   },
+   "ShinFoot_L": {
+    "rot": [
+     0.0,
+     13.858193,
+     0.0
+    ],
+    "loc": [
+     0.0,
+     0.0,
+     0.0
+    ]
+   },
+   "ShinFoot_R": {
+    "rot": [
+     0.0,
+     0.0,
+     0.0
+    ],
+    "loc": [
+     0.0,
+     0.0,
+     0.0
+    ]
+   },
+   "UpperArm_L": {
+    "rot": [
+     0.0,
+     -11.480503,
+     0.0
+    ],
+    "loc": [
+     0.0,
+     0.0,
+     0.0
+    ]
+   },
+   "UpperArm_R": {
+    "rot": [
+     0.0,
+     11.480503,
+     0.0
+    ],
+    "loc": [
+     0.0,
+     0.0,
+     0.0
+    ]
+   },
+   "ForearmHand_L": {
+    "rot": [
+     0.0,
+     -40.0,
+     0.0
+    ],
+    "loc": [
+     0.0,
+     0.0,
+     0.0
+    ]
+   },
+   "ForearmHand_R": {
+    "rot": [
+     0.0,
+     -40.0,
+     0.0
+    ],
+    "loc": [
+     0.0,
+     0.0,
+     0.0
+    ]
+   },
+   "Pelvis": {
+    "rot": [
+     0.0,
+     0.0,
+     0.0
+    ],
+    "loc": [
+     0.0,
+     0.0,
+     16.647421
     ]
    }
   },
@@ -9424,12 +9384,12 @@
   "knee_within_limit": true,
   "foot_slide": {
    "speed_cm_s": 153.0,
-   "run_rate": 1.0,
-   "travel_per_frame_cm": 5.1,
-   "cycle_total_abs_cm": 0.0398,
-   "max_abs_per_frame_cm": 0.0084,
+   "run_rate": 0.7,
+   "travel_per_frame_cm": 7.2857,
+   "cycle_total_abs_cm": 245.2051,
+   "max_abs_per_frame_cm": 37.7743,
    "limit_cm_per_cycle": 2.0,
-   "within_limit": true,
+   "within_limit": false,
    "rule": "per foot and frame pair: the foot vertex that is within 0.6 cm of the floor in both frames (tracked to the next frame, loop wraps); drift = world x change + speed x frame time; the cycle value is the sum of |drift| over both feet. Pairs with no such vertex (the heel to toe switch of the rolling foot) are not counted",
    "pairs_in_contact": {
     "ShinFoot_L": 7,
@@ -9437,17 +9397,6 @@
    },
    "pairs_not_counted": {
     "ShinFoot_L": [
-     7,
-     8,
-     9,
-     10,
-     11,
-     12,
-     13,
-     14,
-     15
-    ],
-    "ShinFoot_R": [
      0,
      1,
      2,
@@ -9456,6 +9405,17 @@
      5,
      6,
      7,
+     8
+    ],
+    "ShinFoot_R": [
+     0,
+     8,
+     9,
+     10,
+     11,
+     12,
+     13,
+     14,
      15
     ]
    },
@@ -9463,65 +9423,65 @@
     "ShinFoot_L": [
      {
       "frame": 0,
-      "vertex": 204,
-      "drift_cm": -0.0084,
+      "vertex": null,
+      "drift_cm": null,
       "z_cm": [
-       -0.005,
-       0.001
+       0.005,
+       16.107
       ]
      },
      {
       "frame": 1,
-      "vertex": 204,
-      "drift_cm": -0.0003,
+      "vertex": null,
+      "drift_cm": null,
       "z_cm": [
-       0.001,
-       -0.001
+       16.107,
+       13.414
       ]
      },
      {
       "frame": 2,
-      "vertex": 204,
-      "drift_cm": 0.002,
+      "vertex": null,
+      "drift_cm": null,
       "z_cm": [
-       -0.001,
-       0.001
+       13.414,
+       11.243
       ]
      },
      {
       "frame": 3,
-      "vertex": 204,
-      "drift_cm": 0.0009,
+      "vertex": null,
+      "drift_cm": null,
       "z_cm": [
-       0.001,
-       0.0
+       11.243,
+       10.41
       ]
      },
      {
       "frame": 4,
-      "vertex": 69,
-      "drift_cm": 0.0018,
+      "vertex": null,
+      "drift_cm": null,
       "z_cm": [
-       0.463,
-       0.0
+       10.41,
+       9.468
       ]
      },
      {
       "frame": 5,
-      "vertex": 69,
-      "drift_cm": -0.0022,
+      "vertex": null,
+      "drift_cm": null,
       "z_cm": [
-       0.0,
-       -0.004
+       9.468,
+       8.601
       ]
      },
      {
       "frame": 6,
-      "vertex": 69,
-      "drift_cm": -0.002,
+      "vertex": null,
+      "drift_cm": null,
       "z_cm": [
-       -0.004,
-       -0.001
+       8.601,
+       9.1
       ]
      },
      {
@@ -9529,8 +9489,8 @@
       "vertex": null,
       "drift_cm": null,
       "z_cm": [
-       -0.001,
-       -0.004
+       9.1,
+       10.141
       ]
      },
      {
@@ -9538,71 +9498,71 @@
       "vertex": null,
       "drift_cm": null,
       "z_cm": [
-       -0.004,
-       0.438
+       10.141,
+       0.001
       ]
      },
      {
       "frame": 9,
-      "vertex": null,
-      "drift_cm": null,
+      "vertex": 69,
+      "drift_cm": -20.0576,
       "z_cm": [
-       0.438,
-       1.473
+       0.001,
+       0.007
       ]
      },
      {
       "frame": 10,
-      "vertex": null,
-      "drift_cm": null,
+      "vertex": 69,
+      "drift_cm": -11.258,
       "z_cm": [
-       1.473,
-       2.561
+       0.007,
+       -0.004
       ]
      },
      {
       "frame": 11,
-      "vertex": null,
-      "drift_cm": null,
+      "vertex": 69,
+      "drift_cm": 0.7893,
       "z_cm": [
-       2.561,
-       2.999
+       -0.004,
+       -0.013
       ]
      },
      {
       "frame": 12,
-      "vertex": null,
-      "drift_cm": null,
+      "vertex": 69,
+      "drift_cm": 4.6389,
       "z_cm": [
-       2.999,
-       2.559
+       -0.013,
+       0.002
       ]
      },
      {
       "frame": 13,
-      "vertex": null,
-      "drift_cm": null,
+      "vertex": 69,
+      "drift_cm": 18.0469,
       "z_cm": [
-       2.559,
-       1.498
+       0.002,
+       -0.002
       ]
      },
      {
       "frame": 14,
-      "vertex": null,
-      "drift_cm": null,
+      "vertex": 69,
+      "drift_cm": 30.0545,
       "z_cm": [
-       1.498,
-       1.012
+       -0.002,
+       -0.007
       ]
      },
      {
       "frame": 15,
-      "vertex": null,
-      "drift_cm": null,
+      "vertex": 69,
+      "drift_cm": 37.7743,
       "z_cm": [
-       1.012,
-       -0.005
+       -0.007,
+       0.005
       ]
      }
     ],
@@ -9612,134 +9572,134 @@
       "vertex": null,
       "drift_cm": null,
       "z_cm": [
-       -0.002,
-       0.439
+       10.255,
+       -0.001
       ]
      },
      {
       "frame": 1,
-      "vertex": null,
-      "drift_cm": null,
+      "vertex": 62,
+      "drift_cm": -20.0476,
       "z_cm": [
-       0.439,
-       1.499
+       -0.001,
+       -0.001
       ]
      },
      {
       "frame": 2,
-      "vertex": null,
-      "drift_cm": null,
+      "vertex": 62,
+      "drift_cm": -11.2504,
       "z_cm": [
-       1.499,
-       2.561
+       -0.001,
+       -0.006
       ]
      },
      {
       "frame": 3,
-      "vertex": null,
-      "drift_cm": null,
+      "vertex": 62,
+      "drift_cm": 0.7922,
       "z_cm": [
-       2.561,
-       3.0
+       -0.006,
+       -0.013
       ]
      },
      {
       "frame": 4,
-      "vertex": null,
-      "drift_cm": null,
+      "vertex": 62,
+      "drift_cm": 4.6422,
       "z_cm": [
-       3.0,
-       2.561
+       -0.013,
+       0.003
       ]
      },
      {
       "frame": 5,
-      "vertex": null,
-      "drift_cm": null,
+      "vertex": 62,
+      "drift_cm": 18.0439,
       "z_cm": [
-       2.561,
-       1.5
+       0.003,
+       -0.003
       ]
      },
      {
       "frame": 6,
-      "vertex": null,
-      "drift_cm": null,
+      "vertex": 62,
+      "drift_cm": 30.0461,
       "z_cm": [
-       1.5,
-       1.113
+       -0.003,
+       0.002
       ]
      },
      {
       "frame": 7,
-      "vertex": null,
-      "drift_cm": null,
+      "vertex": 62,
+      "drift_cm": 37.7632,
       "z_cm": [
-       1.113,
-       0.097
+       0.002,
+       0.005
       ]
      },
      {
       "frame": 8,
-      "vertex": 212,
-      "drift_cm": -0.0045,
+      "vertex": null,
+      "drift_cm": null,
       "z_cm": [
-       0.097,
-       0.098
+       0.005,
+       16.186
       ]
      },
      {
       "frame": 9,
-      "vertex": 212,
-      "drift_cm": 0.0034,
+      "vertex": null,
+      "drift_cm": null,
       "z_cm": [
-       0.098,
-       0.091
+       16.186,
+       13.575
       ]
      },
      {
       "frame": 10,
-      "vertex": 212,
-      "drift_cm": 0.0056,
+      "vertex": null,
+      "drift_cm": null,
       "z_cm": [
-       0.091,
-       0.086
+       13.575,
+       11.444
       ]
      },
      {
       "frame": 11,
-      "vertex": 212,
-      "drift_cm": 0.0042,
+      "vertex": null,
+      "drift_cm": null,
       "z_cm": [
-       0.086,
-       0.079
+       11.444,
+       10.625
       ]
      },
      {
       "frame": 12,
-      "vertex": 62,
-      "drift_cm": 0.0032,
+      "vertex": null,
+      "drift_cm": null,
       "z_cm": [
-       0.494,
-       0.034
+       10.625,
+       9.678
       ]
      },
      {
       "frame": 13,
-      "vertex": 62,
-      "drift_cm": -0.0007,
+      "vertex": null,
+      "drift_cm": null,
       "z_cm": [
-       0.034,
-       0.032
+       9.678,
+       8.799
       ]
      },
      {
       "frame": 14,
-      "vertex": 62,
-      "drift_cm": -0.0006,
+      "vertex": null,
+      "drift_cm": null,
       "z_cm": [
-       0.032,
-       0.038
+       8.799,
+       9.259
       ]
      },
      {
@@ -9747,31 +9707,31 @@
       "vertex": null,
       "drift_cm": null,
       "z_cm": [
-       0.038,
-       -0.002
+       9.259,
+       10.255
       ]
      }
     ]
    }
   },
-  "lowest_foot_vertex_z_cm": -0.0052,
+  "lowest_foot_vertex_z_cm": -0.0132,
   "pelvis_z_step_per_frame_cm": [
-   1.15,
-   1.364,
-   1.585,
-   1.815,
-   2.123,
-   2.332,
-   2.091,
+   1.147,
+   4.335,
+   0.149,
    0.633,
-   1.15,
-   1.364,
-   1.585,
-   1.815,
-   2.123,
-   2.332,
-   2.091,
-   0.633
+   0.451,
+   1.518,
+   0.266,
+   6.45,
+   1.238,
+   4.345,
+   0.144,
+   0.632,
+   0.453,
+   1.517,
+   0.271,
+   6.46
   ]
  }
 }

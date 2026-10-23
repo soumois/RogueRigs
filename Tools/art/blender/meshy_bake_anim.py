@@ -206,7 +206,7 @@ for f in range(NF):
         pose = SLAM_LIST[f - NRUN]["pose"]
     else:
         pose = attack_pose(f - NRUN)
-    dz = set_pelvis(pose) if ((WALK and f < NRUN) or SLAMP) else fit_ground(pose)
+    dz = set_pelvis(pose) if ((WALK and f < NRUN) or (SLAMP and f >= NRUN)) else fit_ground(pose)
     POSES.append(pose)
     DZ.append(dz)
     FOOTZ.append(foot_min())
@@ -684,6 +684,8 @@ if CFG:      # per-robot additions (the chaser v1 report is left as it was)
         rep["parameters"]["thigh_swing_deg"] = round(math.degrees(WALK.psi_max), 3)
         rep["parameters"]["pelvis_z_rule"] = "planted walk: pelvis dz solved from the stance foot (robot_walk_planted.py), no ground fit"
         rep["planted_walk"] = WALK.info()
+        rep["walk_poses"] = [{n: dict(rot=[round(float(x), 6) for x in p.get("rot", (0, 0, 0))], loc=[round(float(x), 6) for x in p.get("loc", (0, 0, 0))]) for n, p in POSES[f].items()} for f in range(NF)]      # NF = NRUN when the robot has no attack clip (heavy, shooter: unchanged)
+    else:      # sine walk with a config (task-289-01): keyed poses for robot_walk_preview.py
         rep["walk_poses"] = [{n: dict(rot=[round(float(x), 6) for x in p.get("rot", (0, 0, 0))], loc=[round(float(x), 6) for x in p.get("loc", (0, 0, 0))]) for n, p in POSES[f].items()} for f in range(NF)]      # NF = NRUN when the robot has no attack clip (heavy, shooter: unchanged)
     if SLAM_REP:
         for k_ in ("attack_end", "attack"):
