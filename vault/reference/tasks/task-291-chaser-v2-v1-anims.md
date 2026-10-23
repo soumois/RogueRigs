@@ -14,7 +14,7 @@ status: done
 - confirmed_by_owner: yes (2026-10-23, "Le reste est bon"; planned in a planning pass, each task run later by its own orchestrator)
 - milestone: M2
 - next_step: none
-- result: Done. -game captures in Saved/RobotMeshes/v1-clips/ (run and attack sheets, 4 robots): chaser v2 and shield chaser v2 run with the v1 motion, parts joined, shield held; attack swing hidden by the miner in the top-down view and shield chaser v2 eye hidden behind the shield (unverified); robot_shots.ps1 gained shieldchaser entry (71a5b029).
+- result: Done. Chaser v2 clips 0-1 = v1 run and attack (knee 55 no cap, was 15); shield chaser v2 clips 0-1 = shield v1 run and bash, rows 31-61 = chaser v2 rows (diff 0.0), grip unchanged (leg-shield min 2.6 cm), new mesh SM_ShieldChaserV2_Meshy_AnimV1Clips; new textures T_ChaserV2AnimV1Clips and T_ShieldChaserV2AnimV1Clips, old assets kept; RunRate 0.7 on every body and eye instance of both (shield was 1.5); renders Saved/Renders/task-291/, -game captures Saved/RobotMeshes/v1-clips/ show the v1 run on both v2 robots; unverified: attack swing in game (hidden by the miner), shield chaser v2 eye behind the shield, foot slide in game (about 70 cm per cycle, no RunRate plants the feet).
 
 ## Subtasks
 1. task-291-01-bake-chaser-v2-v1-clips — 3d: Bake the chaser v1 clips on chaser v2
