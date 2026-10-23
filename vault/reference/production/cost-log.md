@@ -604,6 +604,7 @@ kind: note
 | [[task-288-11-bp-heavy-death]] | sonnet | 1 | 0k | 42k | 639k | 8k |
 | [[task-288-12-bp-shooter-death]] | sonnet | 1 | 0k | 32k | 343k | 7k |
 | [[task-288-13-bp-chaser-v2-death]] | sonnet | 1 | 0k | 32k | 336k | 7k |
+| [[task-288-14-bp-kamikaze-death]] | sonnet | 1 | 0k | 42k | 411k | 7k |
 
 ## Totals
 | Scope | Input | Cache write | Cache read | Output |

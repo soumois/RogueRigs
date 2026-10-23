@@ -3,7 +3,7 @@ id: task-288-14-bp-kamikaze-death
 description: "BP_Kamikaze throws its debris (bp)."
 parent: task-288-robot-death-debris
 kind: task
-status: in-progress
+status: done
 ---
 # BP_Kamikaze throws its debris
 
@@ -15,11 +15,11 @@ status: in-progress
 - done_when: defaults read back (entries, indexes, offsets), compiles without LogBlueprint error, doc updated; lint clean
 - editor_state: open
 - token_ceiling: 80000
-- model: open
-- tokens: open
-- runs: open
+- model: sonnet
+- tokens: input 26, cache write 42310, cache read 411431, output 7451
+- runs: 1
 - milestone: M2
-- result: open
+- result: BP_Kamikaze: NS_RobotDeathPuff (40), NS_KamikazeDebris, pool 80, 3 DebrisPieces (Torso/LegL/LegR Whole, json offsets) read back; ArmedCoreScale 1.2 kept; compiles.
 
 ## Relations
 - [[task-288-robot-death-debris]] — parent global task.
