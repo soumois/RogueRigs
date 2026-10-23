@@ -71,6 +71,15 @@ public:
 	 */
 	TArray<FIntPoint> FindMarkableCells(const ARRArenaGrid* InGrid, FIntPoint Center) const;
 
+	/** Fewest markable blocks a landing spot may hold (MinMarkedCells); the drop picker filters on [Min, Max]. */
+	int32 GetMinMarkedCells() const { return MinMarkedCells; }
+
+	/** Most markable blocks a landing spot may hold (MaxMarkedCells). */
+	int32 GetMaxMarkedCells() const { return MaxMarkedCells; }
+
+	/** True when this console class marks blocks (MarkedCellTypes not empty), so the drop picker applies the marked-block range. */
+	bool UsesMarkedCellRange() const { return !MarkedCellTypes.IsEmpty(); }
+
 	/** Updates the marked rocks, the zone check, the drone link and the hack progress. */
 	virtual void Tick(float DeltaSeconds) override;
 
@@ -210,6 +219,17 @@ protected:
 	/** Block types that get marked inside the zone (every rock kind, ore included). Barrels are left out: they explode and are not rock. Empty = no marked rock. */
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Console")
 	TArray<ERRCellType> MarkedCellTypes = { ERRCellType::Rock, ERRCellType::Ore, ERRCellType::HealOre, ERRCellType::SpecialOre };
+
+	/**
+	 * Fewest markable blocks (FindMarkableCells) the zone may hold where the console lands; the drop picker keeps only spots in
+	 * [MinMarkedCells, MaxMarkedCells], else the spot nearest the range with a warning (objective-console, owner 2026-10-23: 10, provisional).
+	 */
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Console", meta = (ClampMin = 0))
+	int32 MinMarkedCells = 10;
+
+	/** Most markable blocks the zone may hold where the console lands (objective-console, owner 2026-10-23: 40, provisional). */
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Console", meta = (ClampMin = 0))
+	int32 MaxMarkedCells = 40;
 
 	/** Seconds of hacking from 0 to complete (objective-console, owner 2026-10-23: 10 s, provisional; 12 s before task-305-01, 16 s before task-120-01, 20 s before task-042-01). */
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Console", meta = (ClampMin = 0.1, Units = "s"))

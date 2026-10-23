@@ -267,7 +267,7 @@ bool URRRunFlowSubsystem::FindConsoleCell(FIntPoint& OutCell)
 		Config.bPreferCellsWithMarkedRocks, TEXT("console"), OutCell);
 }
 
-bool URRRunFlowSubsystem::FindObjectiveCell(const ARRConsole* Defaults, float MinCells, float MaxCells, bool bPreferMarkedRocks, const TCHAR* What, FIntPoint& OutCell)
+bool URRRunFlowSubsystem::FindObjectiveCell(const ARRConsole* Defaults, float MinCells, float MaxCells, bool bApplyMarkedRange, const TCHAR* What, FIntPoint& OutCell)
 {
 	if (!Grid || !Miner || !Defaults)
 	{
@@ -308,16 +308,46 @@ bool URRRunFlowSubsystem::FindObjectiveCell(const ARRConsole* Defaults, float Mi
 		Candidates = MoveTemp(Ring);
 	}
 
-	// Prefer cells with rocks to mark, so the console has something to clear.
-	if (bPreferMarkedRocks)
+	// Marked-block range: keep spots whose zone holds [MinMarkedCells, MaxMarkedCells] markable blocks; none = the nearest to the range.
+	if (bApplyMarkedRange && Defaults->UsesMarkedCellRange())
 	{
-		TArray<FIntPoint> WithRocks = Candidates.FilterByPredicate([this, Defaults](const FIntPoint& Cell)
+		const int32 MinMarked = Defaults->GetMinMarkedCells();
+		const int32 MaxMarked = FMath::Max(MinMarked, Defaults->GetMaxMarkedCells());
+		TArray<FIntPoint> InRange;
+		TArray<FIntPoint> Nearest;
+		int32 NearestGap = MAX_int32;
+		int32 NearestCount = 0;
+		for (const FIntPoint& Cell : Candidates)
 		{
-			return !Defaults->FindMarkableCells(Grid, Cell).IsEmpty();
-		});
-		if (!WithRocks.IsEmpty())
+			const int32 Count = Defaults->FindMarkableCells(Grid, Cell).Num();
+			const int32 Gap = Count < MinMarked ? MinMarked - Count : (Count > MaxMarked ? Count - MaxMarked : 0);
+			if (Gap == 0)
+			{
+				InRange.Add(Cell);
+			}
+			else if (InRange.IsEmpty())
+			{
+				if (Gap < NearestGap)
+				{
+					NearestGap = Gap;
+					NearestCount = Count;
+					Nearest.Reset();
+				}
+				if (Gap == NearestGap)
+				{
+					Nearest.Add(Cell);
+				}
+			}
+		}
+		if (!InRange.IsEmpty())
 		{
-			Candidates = MoveTemp(WithRocks);
+			Candidates = MoveTemp(InRange);
+		}
+		else
+		{
+			UE_LOG(LogRogueRigs, Warning, TEXT("URRRunFlowSubsystem: no %s spot holds %d to %d markable blocks; landing on the nearest (%d blocks)."),
+				What, MinMarked, MaxMarked, NearestCount);
+			Candidates = MoveTemp(Nearest);
 		}
 	}
 	OutCell = Candidates[RandomStream.RandRange(0, Candidates.Num() - 1)];
@@ -378,7 +408,7 @@ ARRBonusChest* URRRunFlowSubsystem::DropBonusChest()
 	UClass* ChestClass = Config.BonusChestClass ? Config.BonusChestClass.Get() : ARRBonusChest::StaticClass();
 	FIntPoint Cell;
 	if (!FindObjectiveCell(ChestClass->GetDefaultObject<ARRBonusChest>(), Config.BonusChestMinDistanceCells, Config.BonusChestMaxDistanceCells,
-		/*bPreferMarkedRocks*/ false, TEXT("bonus chest"), Cell))
+		/*bApplyMarkedRange*/ false, TEXT("bonus chest"), Cell))
 	{
 		if (!bBonusChestFailureLogged)
 		{

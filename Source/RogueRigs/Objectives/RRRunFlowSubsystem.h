@@ -85,14 +85,14 @@ DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FRROnSpawnerRegisteredSignature, ARR
  * game is paused (the subsystem does not tick when paused).
  * Console: when Alert reaches ConsoleAlertThreshold the alert is clamped there and the console drops (ConsoleClass) on a random
  * Floor cell whose straight-line distance to the miner's cell is within [ConsoleMinDistanceCells, ConsoleMaxDistanceCells] and
- * that the flow field reaches from the miner, preferring cells with rocks to mark (bPreferCellsWithMarkedRocks); no candidate =
+ * that the flow field reaches from the miner, keeping cells whose zone holds [MinMarkedCells, MaxMarkedCells] markable blocks (ARRConsole; bPreferCellsWithMarkedRocks; none = nearest count, warning); no candidate =
  * retried each tick (warning once). The alert stays paused until
  * the console is Complete. Console and shuttle land only where every cell of their FootprintCells is reachable floor
  * (RRLandingFootprint); when no such spot exists the fallback is logged as a warning.
  * Bonus chest (objective-bonus-chest): once per level, when Alert reaches BonusChestAlertThreshold (> 0) before extraction is
  * ready, the chest (BonusChestClass) drops on a random reachable Floor cell within [BonusChestMinDistanceCells,
- * BonusChestMaxDistanceCells] of the miner's cell whose footprint is reachable floor (same picker as the console, no marked-rock
- * preference; no candidate = retried each tick). Optional: the alert keeps filling, nothing waits for it. An alert that jumps
+ * BonusChestMaxDistanceCells] of the miner's cell whose footprint is reachable floor (same picker as the console, no marked-block
+ * range; no candidate = retried each tick). Optional: the alert keeps filling, nothing waits for it. An alert that jumps
  * straight to full (cheat) skips it when extraction becomes ready in that same tick.
  * Extraction: when Alert is 1 and no objective is pending, OnExtractionReady fires once (phase ExtractionReady) and the shuttle
  * (ShuttleClass) lands on a random reachable Floor cell within [ShuttleMinDistanceCells, ShuttleMaxDistanceCells] of the miner's
@@ -424,10 +424,11 @@ protected:
 
 	/**
 	 * Shared console and chest picker: a random reachable Floor cell straight-line [MinCells, MaxCells] from the miner's cell whose
-	 * Defaults footprint is reachable floor (none fits: any ring cell, warning naming What); with bPreferMarkedRocks, cells where
-	 * Defaults would mark rocks win. False when the ring is empty.
+	 * Defaults footprint is reachable floor (none fits: any ring cell, warning naming What); with bApplyMarkedRange and a Defaults
+	 * that marks blocks, only cells whose FindMarkableCells count is in [MinMarkedCells, MaxMarkedCells] (none: the cells nearest the
+	 * range, warning). False when the ring is empty.
 	 */
-	bool FindObjectiveCell(const ARRConsole* Defaults, float MinCells, float MaxCells, bool bPreferMarkedRocks, const TCHAR* What, FIntPoint& OutCell);
+	bool FindObjectiveCell(const ARRConsole* Defaults, float MinCells, float MaxCells, bool bApplyMarkedRange, const TCHAR* What, FIntPoint& OutCell);
 
 	/** Spawns and initializes the bonus chest on a picked cell. Null when no cell qualifies or the spawn failed. */
 	ARRBonusChest* DropBonusChest();

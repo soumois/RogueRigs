@@ -41,9 +41,9 @@ struct ROGUERIGS_API FRRRunFlowConfig
 	float ConsoleMaxDistanceCells = 60.f;
 
 	/**
-	 * When true and at least one candidate cell has blocks to mark around it (the console class's ZoneRadiusCells and
-	 * MarkedCellTypes), the console drops only on such a cell, so there are rocks to clear (objective-console: "the rocks around
-	 * it are marked"). False = any candidate. Provisional choice of task-016-01.
+	 * When true the console drops only where its zone holds between the console class's MinMarkedCells and MaxMarkedCells markable
+	 * blocks (FindMarkableCells: ZoneRadiusCells, MarkedCellTypes); no such spot = the spot nearest the range, warning
+	 * (objective-console, owner 2026-10-23, provisional; a plain "has marked rocks" preference before task-304-01). False = any candidate.
 	 */
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Run Flow")
 	bool bPreferCellsWithMarkedRocks = true;
