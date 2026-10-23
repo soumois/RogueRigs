@@ -3,7 +3,7 @@ id: task-287-04-capture-shooter-aim-fire
 description: "Capture the shooter aiming and firing (cpp)."
 parent: task-287-shooter-aim-fire-anim
 kind: task
-status: in-progress
+status: done
 ---
 # Capture the shooter aiming and firing
 
@@ -15,11 +15,11 @@ status: in-progress
 - done_when: cannon arm raised along the laser, laser and shot leave from the cannon tip; the Orchestrator sends the shots to the owner
 - editor_state: closed
 - token_ceiling: 60000
-- model: open
-- tokens: open
-- runs: open
+- model: opus
+- tokens: input 40, cache write 68674, cache read 663474, output 10013
+- runs: 1
 - milestone: M2
-- result: open
+- result: -game L_ArenaM1 side capture (robot_shots.ps1 + slomo 0.2): cannon arm raised horizontal along the laser (slow 4/8/10), laser from cannon tip, shot leaves the glowing tip with recoil tilt (slow 11-14), arm back horizontal after (slow 20); before: arm hanging, laser from hip (walk/shooter_0). Shots Saved/RobotMeshes/shooter-aim/. Unverified: 0.3 s raise not caught, rest pose after fire vs walk arm, side view only. No code change.
 
 ## Relations
 - [[task-287-shooter-aim-fire-anim]] — parent global task.
