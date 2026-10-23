@@ -13,7 +13,7 @@ status: in-progress
 - gdd_check: enemy-chaser and enemy-heavy read (2026-10-23): chaser v2 line now says run and attack identical to v1 (no knee cap) and shield clips identical to shield v1; the 35 and 45 degree lines of 26a7a5a2 reverted, heavy back to the 15 degree rule (owner 2026-10-23). No open value.
 - confirmed_by_owner: yes (2026-10-23, "Le reste est bon"; planned in a planning pass, each task run later by its own orchestrator)
 - milestone: M2
-- next_step: task-291-04-bp-shield-v2-v1-clips
+- next_step: task-291-05-capture-v2-v1-clips
 - result: open
 
 ## Subtasks

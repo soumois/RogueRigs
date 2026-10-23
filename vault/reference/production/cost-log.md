@@ -617,6 +617,7 @@ kind: note
 | [[task-291-01-bake-chaser-v2-v1-clips]] | sonnet | 1 | 0k | 92k | 789k | 17k |
 | [[task-291-02-bake-shield-v2-v1-clips]] | sonnet | 1 | 0k | 82k | 858k | 13k |
 | [[task-291-03-bp-chaser-v2-v1-clips]] | sonnet | 1 | 0k | 48k | 461k | 8k |
+| [[task-291-04-bp-shield-v2-v1-clips]] | sonnet | 1 | 0k | 58k | 936k | 15k |
 
 ## Totals
 | Scope | Input | Cache write | Cache read | Output |

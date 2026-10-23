@@ -3,7 +3,7 @@ id: task-291-05-capture-v2-v1-clips
 description: "Capture chaser v2 and shield chaser v2 running and attacking in -game next to their v1 versions (cpp)."
 parent: task-291-chaser-v2-v1-anims
 kind: task
-status: todo
+status: in-progress
 ---
 # Capture chaser v2 and shield chaser v2
 
