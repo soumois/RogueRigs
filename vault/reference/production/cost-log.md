@@ -615,6 +615,7 @@ kind: note
 | [[task-289-05-cpp-slam-lead]] | sonnet | 1 | 0k | 39k | 673k | 9k |
 | [[task-289-06-capture-run]] | opus | 1 | 0k | 43k | 286k | 5k |
 | [[task-291-01-bake-chaser-v2-v1-clips]] | sonnet | 1 | 0k | 92k | 789k | 17k |
+| [[task-291-02-bake-shield-v2-v1-clips]] | sonnet | 1 | 0k | 82k | 858k | 13k |
 
 ## Totals
 | Scope | Input | Cache write | Cache read | Output |

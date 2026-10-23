@@ -3,7 +3,7 @@ id: task-291-03-bp-chaser-v2-v1-clips
 description: "Import the 291-01 bake as a new texture on the chaser v2 body and eye instances, RunRate in sync (bp)."
 parent: task-291-chaser-v2-v1-anims
 kind: task
-status: todo
+status: in-progress
 ---
 # Chaser v2 v1-clips texture in Unreal
 

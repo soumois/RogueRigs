@@ -3,7 +3,7 @@ id: task-291-02-bake-shield-v2-v1-clips
 description: "Rebake T_ShieldChaserV2Anim: shield run and bash = shield chaser v1 clips on the v2 parts, plain clips = new chaser v2 rows (3d)."
 parent: task-291-chaser-v2-v1-anims
 kind: task
-status: in-progress
+status: done
 ---
 # Bake the shield chaser v1 clips on shield chaser v2
 
@@ -15,11 +15,11 @@ status: in-progress
 - done_when: clips 0 and 1 follow the v1 shield clips (parameters reported); rows 31..61 max diff 0.0 against 291-01 rows 0..30; leg-shield minimum distance reported; foot slide and bake error reported; renders exist; Blender stopped; shield_chaser_bake.py and v1 files unchanged
 - editor_state: any (Blender headless only)
 - token_ceiling: 50000
-- model: open
-- tokens: open
-- runs: open
+- model: sonnet
+- tokens: input 30, cache write 82332, cache read 857637, output 12933
+- runs: 1
 - milestone: M2
-- result: open
+- result: Shield v2 clips 0-1 = shield v1 run_base curve (knee 55 no cap) and v1 bash keys on v2 parts; rows 31-61 = 291-01 rows 0-30 (max diff 0.0); grip unchanged (leg-shield min 2.64 cm run, 6.34 cm bash); FBX re-exported (guard solve moved shield rest verts, 7134 tris); RunRate 0.7 (was 1.5); bake error 0.040/0.042 cm; commit ab1763cb.
 
 ## Relations
 - [[task-291-chaser-v2-v1-anims]] — parent global task.
