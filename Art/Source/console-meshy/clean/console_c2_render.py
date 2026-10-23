@@ -10,7 +10,7 @@ Light: one sun energy 4.0 rotated (50, 10, -60), world 0.35 (as blender-asset-ro
 import bpy, sys, os, math
 from mathutils import Vector
 argv = sys.argv[sys.argv.index("--") + 1:]
-a = {"--out-dir": ".", "--prefix": "r", "--lift-cm": "0"}
+a = {"--out-dir": ".", "--prefix": "r", "--lift-cm": "0", "--set": "std"}
 files, tint, raw, i = [], False, False, 0
 while i < len(argv):
     t = argv[i]
@@ -73,7 +73,19 @@ views = {"top": (T + Vector((0, 0, 600)), (0, 0, 0)),
 az, el, d = math.radians(-35), math.radians(28), 600
 views["iso"] = (T + Vector((d * math.cos(el) * math.sin(-az) * -1, -d * math.cos(el) * math.cos(az), d * math.sin(el))), (90 - 28, 0, -35))
 os.makedirs(a["--out-dir"], exist_ok=True)
-for n, (loc, rot) in views.items():
+SET = a.get("--set", "std")
+if SET == "close":
+    views = {"back": (T + Vector((0, 600, 0)), (90, 0, 180), 280),
+             "back_close": (Vector((0, 600, 125)), (90, 0, 180), 140),
+             "back_iso": (Vector((0, 0, 130)) + 600 * Vector((0.5 * math.cos(math.radians(20)), 0.866 * math.cos(math.radians(20)), math.sin(math.radians(20)))), (70, 0, 150), 200),
+             "feet_top": (Vector((0, -45, 600)), (0, 0, 0), 170),
+             "foot_fl": (Vector((-57, -49, 600)), (0, 0, 0), 55),
+             "foot_fr": (Vector((57, -49, 600)), (0, 0, 0), 55),
+             "foot_bl": (Vector((-57, 49, 600)), (0, 0, 0), 55),
+             "foot_br": (Vector((57, 49, 600)), (0, 0, 0), 55)}
+views = {k: (v + (280,))[:3] if len(v) == 2 else v for k, v in views.items()}
+for n, (loc, rot, osc) in views.items():
+    cam.data.ortho_scale = osc
     aim(loc, rot)
     sc.render.filepath = os.path.join(os.path.abspath(a["--out-dir"]), "%s_%s.png" % (a["--prefix"], n))
     bpy.ops.render.render(write_still=True)

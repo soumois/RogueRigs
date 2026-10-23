@@ -1,0 +1,255 @@
+{
+ "task": "task-301-03-console-c2-retouch",
+ "inputs": {
+  "base": "console_c2_base.fbx",
+  "head": "console_c2_head.fbx",
+  "texture_before": "console_c2_basecolor_meshy.png"
+ },
+ "frame": "cm, front of the console faces -Y, Z up; Blender unit = 1 m, FBX_SCALE_UNITS, axis_forward -Z, axis_up Y as the drone parts; UnitScaleFactor read in files: [100.0, 100.0]",
+ "unit_scale_factor_in_files": [
+  100.0,
+  100.0
+ ],
+ "pivots": {
+  "base_pivot_stage_cm": [
+   -0.754,
+   -0.014,
+   0.0
+  ],
+  "head_offset_on_base_cm": [
+   -4.904,
+   16.69,
+   108.0
+  ],
+  "note": "unchanged from console_c2_cut.report.json: base origin = bottom centre of the footprint, head origin = mast axis at z 108 cm"
+ },
+ "dish_back": {
+  "frame_centre_head_cm": [
+   0.0,
+   -21.0,
+   45.0
+  ],
+  "axis": [
+   0.0,
+   -0.7071,
+   0.7071
+  ],
+  "faces_repainted": 1130,
+  "dark_faces_kept": 1621,
+  "rho_max_cm": 61.4,
+  "texels_painted": 209415,
+  "colours": {
+   "white": [
+    0.819,
+    0.779,
+    0.742
+   ],
+   "teal": [
+    0.266,
+    0.413,
+    0.403
+   ]
+  },
+  "rust_chips": 26
+ },
+ "foot_lamps": {
+  "orange_faces_returned_to_ConsoleBody": 2166,
+  "texels_darkened": 4130,
+  "cap_faces_added": 960,
+  "caps": {
+   "FL_big": {
+    "centre_xy": [
+     -54.25,
+     -39.2
+    ],
+    "radius": 2.8,
+    "housing_top_z": 27.01
+   },
+   "FL_small": {
+    "centre_xy": [
+     -49.0,
+     -42.1
+    ],
+    "radius": 1.9,
+    "housing_top_z": 23.83
+   },
+   "FR_big": {
+    "centre_xy": [
+     52.3,
+     -39.2
+    ],
+    "radius": 2.8,
+    "housing_top_z": 26.96
+   },
+   "FR_small": {
+    "centre_xy": [
+     46.8,
+     -40.0
+    ],
+    "radius": 1.9,
+    "housing_top_z": 23.84
+   },
+   "BL_big": {
+    "centre_xy": [
+     -54.0,
+     39.7
+    ],
+    "radius": 2.8,
+    "housing_top_z": 25.94
+   },
+   "BL_small": {
+    "centre_xy": [
+     -49.1,
+     42.1
+    ],
+    "radius": 1.9,
+    "housing_top_z": 23.79
+   },
+   "BR_big": {
+    "centre_xy": [
+     52.3,
+     38.6
+    ],
+    "radius": 2.8,
+    "housing_top_z": 26.94
+   },
+   "BR_small": {
+    "centre_xy": [
+     46.9,
+     40.9
+    ],
+    "radius": 1.9,
+    "housing_top_z": 23.81
+   }
+  },
+  "cap_profile": "cylinder + 4-ring dome, 20 sides, height about 2.4 cm (buried 0.6), OtherOrange slot, flat emissive material (1.0, 0.45, 0.02) strength 2.0"
+ },
+ "parts": {
+  "console_c2_base": {
+   "tris": 24358,
+   "size_cm": [
+    147.65,
+    126.74,
+    108.0
+   ],
+   "bounds_min_cm": [
+    -73.83,
+    -63.37,
+    -0.0
+   ],
+   "bounds_max_cm": [
+    73.83,
+    63.37,
+    108.0
+   ],
+   "world_origin_cm": [
+    0.0,
+    0.0,
+    0.0
+   ],
+   "slots": [
+    "ConsoleBody",
+    "OtherOrange",
+    "Screen"
+   ],
+   "faces_per_slot": {
+    "ConsoleBody": 21136,
+    "OtherOrange": 3212,
+    "Screen": 10
+   },
+   "uv_layers": [
+    "UVMap"
+   ],
+   "open_edges": 68,
+   "nonmanifold_edges": 67,
+   "texture": [
+    "C:\\Users\\soumo\\Documents\\Unreal Projects\\RogueRigs\\Art\\Source\\console-meshy\\clean\\console_c2_basecolor.png"
+   ]
+  },
+  "console_c2_head": {
+   "tris": 5416,
+   "size_cm": [
+    124.48,
+    76.21,
+    81.91
+   ],
+   "bounds_min_cm": [
+    -62.14,
+    -57.68,
+    -0.0
+   ],
+   "bounds_max_cm": [
+    62.33,
+    18.53,
+    81.91
+   ],
+   "world_origin_cm": [
+    0.0,
+    0.0,
+    0.0
+   ],
+   "slots": [
+    "ConsoleBody",
+    "AntennaOrange"
+   ],
+   "faces_per_slot": {
+    "ConsoleBody": 5084,
+    "AntennaOrange": 332
+   },
+   "uv_layers": [
+    "UVMap"
+   ],
+   "open_edges": 4,
+   "nonmanifold_edges": 3,
+   "texture": [
+    "C:\\Users\\soumo\\Documents\\Unreal Projects\\RogueRigs\\Art\\Source\\console-meshy\\clean\\console_c2_basecolor.png"
+   ]
+  }
+ },
+ "faces_per_slot": {
+  "console_c2_base": {
+   "ConsoleBody": 21136,
+   "OtherOrange": 3212,
+   "Screen": 10
+  },
+  "console_c2_head": {
+   "ConsoleBody": 5084,
+   "AntennaOrange": 332
+  }
+ },
+ "faces_per_slot_before": {
+  "console_c2_base": {
+   "ConsoleBody": 18970,
+   "OtherOrange": 3778,
+   "Screen": 10
+  },
+  "console_c2_head": {
+   "ConsoleBody": 5084,
+   "AntennaOrange": 332
+  }
+ },
+ "assembled": {
+  "size_cm": [
+   147.66,
+   126.74,
+   189.91
+  ],
+  "bounds_min_cm": [
+   -73.83,
+   -63.37,
+   -0.0
+  ],
+  "bounds_max_cm": [
+   73.83,
+   63.37,
+   189.91
+  ],
+  "before_size_cm": [
+   147.66,
+   126.74,
+   189.91
+  ]
+ },
+ "texture": "console_c2_basecolor.png",
+ "seconds": 57.6
+}
