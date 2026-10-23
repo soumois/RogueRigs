@@ -13,7 +13,7 @@ status: in-progress
 - gdd_check: objective-console, art-style-guide, color-code read (2026-10-23). Conflict: red and green state lamps break A7 (enemy colours); owner default accepted: exception "console state lamps" (written by task-302-01). Drone dock dropped (no dock, no folding antenna), drone hack unchanged. Mobile part = image 1 (dish + head above the mast elbow), turns about the vertical mast axis. Foot lamps go to the "other orange" material, flat emissive, round caps like image 3. Dish back repainted in Blender after the sheet back view, render shown to the owner before going further.
 - confirmed_by_owner: yes (2026-10-23, "ok" to the plan and every default; planned in one planning pass, each task run later by its own orchestrator)
 - milestone: M2
-- next_step: task-301-03-console-c2-retouch
+- next_step: task-301-04-bp-console-c2-import
 - result: open
 
 ## Subtasks

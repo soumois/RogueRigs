@@ -642,6 +642,7 @@ kind: note
 | [[task-304-01-console-marked-rocks-range]] | opus | 1 | 0k | 80k | 574k | 11k |
 | [[task-301-01-console-c2-files]] | sonnet | 1 | 0k | 27k | 223k | 6k |
 | [[task-301-02-console-c2-cut]] | sonnet | 1 | 0k | 118k | 2188k | 55k |
+| [[task-301-03-console-c2-retouch]] | sonnet | 2 | 0k | 131k | 3116k | 52k |
 
 ## Totals
 | Scope | Input | Cache write | Cache read | Output |

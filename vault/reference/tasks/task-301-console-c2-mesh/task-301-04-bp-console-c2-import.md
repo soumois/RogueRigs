@@ -3,7 +3,7 @@ id: task-301-04-bp-console-c2-import
 description: "Import the console C2 into BP_ObjectiveConsole (bp): console c2 uplink mast mesh, step 04."
 parent: task-301-console-c2-mesh
 kind: task
-status: todo
+status: in-progress
 ---
 # Import the console C2 into BP_ObjectiveConsole
 

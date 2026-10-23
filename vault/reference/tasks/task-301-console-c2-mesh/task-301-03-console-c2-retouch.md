@@ -3,7 +3,7 @@ id: task-301-03-console-c2-retouch
 description: "Repaint the console C2 dish back and foot lamps (3d): console c2 uplink mast mesh, step 03."
 parent: task-301-console-c2-mesh
 kind: task
-status: review
+status: done
 ---
 # Repaint the console C2 dish back and foot lamps
 
@@ -15,11 +15,11 @@ status: review
 - done_when: dish back and foot caps visible in the renders; caps in OtherOrange; owner shown the renders and gave his go; no Blender process left; committed
 - editor_state: any
 - token_ceiling: 40000
-- model: open
-- tokens: open
-- runs: open
+- model: sonnet
+- tokens: input 74, cache write 130705, cache read 3115778, output 52187
+- runs: 2
 - milestone: M2
-- result: Renders made (commit 1fcf8ca2): dish back repainted after the sheet back view, 8 round amber foot caps (2 per foot) in OtherOrange; waiting for the owner go on the before/after renders before task-301-04.
+- result: Owner verdict 2026-10-23 'Garde l'original, sauf pour la correction de la texture pour les couleurs': dish back keeps the original Meshy texture (repaint dropped, commit 4aabab5d); 8 round foot caps in OtherOrange, darkened foot smear and slot split kept; both FBX re-exported, same pivots and head offset (-4.904, 16.69, 108.0) cm; size accepted, scaled in BP to the 2 x 2 footprint.
 
 ## Relations
 - [[task-301-console-c2-mesh]] — parent global task.
