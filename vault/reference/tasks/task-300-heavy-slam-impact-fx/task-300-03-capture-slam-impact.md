@@ -3,7 +3,7 @@ id: task-300-03-capture-slam-impact
 description: "Capture frames of a heavy slam impact in -game (cpp)."
 parent: task-300-heavy-slam-impact-fx
 kind: task
-status: todo
+status: in-progress
 ---
 # Capture the slam impact
 
