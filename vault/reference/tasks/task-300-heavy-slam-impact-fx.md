@@ -13,16 +13,18 @@ status: in-progress
 - gdd_check: enemy-heavy read (2026-10-23): slam impact line added (provisional, owner 2026-10-23). Default: dust in neutral rock grey-brown, chips reuse the NS_DigImpact chip look; no gameplay effect.
 - confirmed_by_owner: yes (2026-10-23, "Le reste est bon"; planned in a planning pass, each task run later by its own orchestrator)
 - milestone: M2
-- next_step: task-300-03-capture-slam-impact
+- next_step: task-300-04-bp-slam-impact-fix
 - result: open
 
 ## Subtasks
 1. task-300-01-bp-slam-impact-ns — bp: NS_HeavySlamImpact
 2. task-300-02-bp-slam-impact-wire — bp: BP_Heavy plays the slam impact
-3. task-300-03-capture-slam-impact — cpp: Capture the slam impact
+3. task-300-03-capture-slam-impact — cpp: Capture the slam impact (run 1 found defects; rerun after 04)
+4. task-300-04-bp-slam-impact-fix — bp: fix NS_HeavySlamImpact from the capture
 
 ## Relations
 - [[tasks-to-do-index]] — parent index.
 - [[task-300-01-bp-slam-impact-ns]] — step 01, bp.
 - [[task-300-02-bp-slam-impact-wire]] — step 02, bp.
 - [[task-300-03-capture-slam-impact]] — step 03, cpp.
+- [[task-300-04-bp-slam-impact-fix]] — step 04, bp fix after the first capture.
