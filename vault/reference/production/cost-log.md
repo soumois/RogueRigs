@@ -610,6 +610,7 @@ kind: note
 | [[task-288-16-capture-debris]] | opus | 1 | 0k | 191k | 3710k | 36k |
 | [[task-289-01-bake-heavy-run]] | sonnet | 1 | 0k | 87k | 1767k | 25k |
 | [[task-289-02-bake-chaser-v2-run]] | sonnet | 1 | 0k | 41k | 450k | 8k |
+| [[task-289-03-bp-heavy-run]] | sonnet | 1 | 0k | 38k | 443k | 9k |
 
 ## Totals
 | Scope | Input | Cache write | Cache read | Output |

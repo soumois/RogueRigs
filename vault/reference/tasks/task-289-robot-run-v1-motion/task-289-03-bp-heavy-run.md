@@ -3,7 +3,7 @@ id: task-289-03-bp-heavy-run
 description: "Put the 289-01 heavy bake in Unreal and set the new RunRate on its instances (bp)."
 parent: task-289-robot-run-v1-motion
 kind: task
-status: in-progress
+status: done
 ---
 # Heavy anim texture and RunRate in Unreal
 
@@ -15,11 +15,11 @@ status: in-progress
 - done_when: texture 20 x 62 and settings read back; RunRate read back equal on body and eye; no other parameter changed; docs updated; lint clean
 - editor_state: open (owner opened it at 18:48; MCP route, do not close it)
 - token_ceiling: 50000
-- model: open
-- tokens: open
-- runs: open
+- model: sonnet
+- tokens: input 32, cache write 37669, cache read 442522, output 9436
+- runs: 1
 - milestone: M2
-- result: open
+- result: New T_HeavyAnimRunV1 (20x62, HDR/no mips/Nearest/sRGB off/never stream/Clamp read back; T_HeavyAnimSlam kept for revert); MI_Heavy_Body, MI_RobotEye_Heavy, MI_RobotEye_Heavy_Glow AnimTex -> it, RunRate 0.7 (was 1.0) read back; commit d6e94a24. Pixel content not compared.
 
 ## Relations
 - [[task-289-robot-run-v1-motion]] — parent global task.
