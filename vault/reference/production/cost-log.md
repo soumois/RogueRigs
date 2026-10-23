@@ -592,6 +592,7 @@ kind: note
 | [[task-288-02-pieces-shooter]] | sonnet | 1 | 0k | 92k | 956k | 16k |
 | [[task-287-02-cpp-shooter-aim-fire]] | opus | 1 | 0k | 108k | 1797k | 24k |
 | [[task-288-03-pieces-chaser-v2]] | sonnet | 1 | 0k | 24k | 117k | 4k |
+| [[task-285-05-fix-heavy-tilt-test]] | opus | 1 | 0k | 67k | 203k | 5k |
 
 ## Totals
 | Scope | Input | Cache write | Cache read | Output |
