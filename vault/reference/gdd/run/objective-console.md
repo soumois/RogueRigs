@@ -34,6 +34,8 @@ status: approved
 
 - Hack time (owner 2026-10-23, provisional): 10 s, console only (was 12 s); the bonus chest is unchanged ([[objective-bonus-chest]]).
 
+- Marked rocks per drop (owner 2026-10-23, provisional): the console lands only where its zone holds between 10 and 40 markable rocks (ore included); when no spot fits, it lands where the count is nearest that range. Replaces the plain "prefer spots with rocks" choice. The bonus chest is unchanged ([[objective-bonus-chest]]).
+
 ## Relations
 - [[run-index]] — parent index.
 - [[drone]] — the drone's hack state.
