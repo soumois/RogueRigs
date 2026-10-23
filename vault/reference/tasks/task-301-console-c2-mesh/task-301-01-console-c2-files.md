@@ -3,7 +3,7 @@ id: task-301-01-console-c2-files
 description: "Save the console C2 sheet, Meshy files and prompt (art): console c2 uplink mast mesh, step 01."
 parent: task-301-console-c2-mesh
 kind: task
-status: in-progress
+status: done
 ---
 # Save the console C2 sheet, Meshy files and prompt
 
@@ -15,11 +15,11 @@ status: in-progress
 - done_when: files tracked in git; art-prompts-console holds the prompt verbatim and the file list; relations on both ends; lint clean; committed
 - editor_state: any
 - token_ceiling: 20000
-- model: open
-- tokens: open
-- runs: open
+- model: sonnet
+- tokens: input 22, cache write 27002, cache read 223028, output 5573
+- runs: 1
 - milestone: M2
-- result: open
+- result: Owner sheet, 3 reference images, Meshy FBX and 5 maps committed in Art/Source/console-meshy/ (plain git, like drone-meshy); sheet copied to vault/assets/console-c2-turnaround.webp; node art-prompts-console with verbatim prompt, owner words, decisions 2,3,5,6 and file list; commit d00cd406.
 
 ## Relations
 - [[task-301-console-c2-mesh]] — parent global task.

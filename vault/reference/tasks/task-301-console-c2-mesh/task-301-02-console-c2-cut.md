@@ -3,7 +3,7 @@ id: task-301-02-console-c2-cut
 description: "Cut the console C2 mobile head and set its material slots (3d): console c2 uplink mast mesh, step 02."
 parent: task-301-console-c2-mesh
 kind: task
-status: todo
+status: in-progress
 ---
 # Cut the console C2 mobile head and set its material slots
 
