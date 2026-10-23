@@ -3,7 +3,7 @@ id: task-294-01-cpp-kamikaze-split-damage
 description: "Add a miner damage column to ExplosionStats; kamikaze 40 to robots and 30 to the miner (cpp)."
 parent: task-294-kamikaze-split-damage
 kind: task
-status: todo
+status: in-progress
 ---
 # Separate miner damage for explosions
 

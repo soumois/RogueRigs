@@ -3,7 +3,7 @@ id: task-294-kamikaze-split-damage
 description: "Global task: Kamikaze explosion deals 40 to robots and 30 to the miner; barrels and terrain rule unchanged."
 parent: tasks-to-do-index
 kind: task
-status: todo
+status: in-progress
 ---
 # Kamikaze explosion 40 to robots, 30 to the miner
 
