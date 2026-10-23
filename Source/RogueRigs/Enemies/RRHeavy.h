@@ -37,8 +37,9 @@ enum class ERRHeavyState : uint8
  * GroundTelegraph (sys-ground-telegraph, task-115-01): shown in Danger mode at radius GetSlamRadius on entering Telegraph,
  * progress = GetTelegraphProgress each telegraph frame, hidden on leaving Telegraph (Slam, death) and on pool reuse (progress 0).
  * Animation (task-284-05, ARREnemy clip writer): walk loop (clip 0, random phase) while the movement is on (Chase). Slam clips
- * (task-285-02, baked in task-285-01): entering Telegraph plays TelegraphClipId (1, clamped: fists raised over 0.45 s, then held)
- * with a timer of Stats.WindUp - SlamContactLead; its end (OnAnimClipEnded, still in Telegraph) plays SlamClipId (2, looped by the
+ * (task-285-02, baked in task-285-01): entering Telegraph plays TelegraphClipId (1, clamped) with a timer of Stats.WindUp -
+ * SlamContactLead; each Telegraph step (task-293-01, no extra tick) rewrites its start so the shown frame follows the telegraph
+ * progress: frame TelegraphRaiseTopFrame (13, fists up) is reached when the timer ends instead of 0.43 s in; its end (OnAnimClipEnded, still in Telegraph) plays SlamClipId (2, looped by the
  * shader, contact pose at 0.133 s), so the fists reach the ground just before the slam frame; the slam frame (PerformSlam) plays
  * RecoverClipId (3, clamped, contact held 3 frames, back to rest by 0.467 s < RecoverDuration). Clip 3 ends at the rest pose
  * (row 61), so RestClipId stays 3. Chase again: walk loop (base SetMovementActive). Death leaves the clip.
@@ -64,11 +65,11 @@ public:
 	UFUNCTION(BlueprintPure, Category = "Heavy")
 	float GetTelegraphProgress() const;
 
-	/** Radius (uu) of the shockwave = Stats.AttackRange (289). */
+	/** Radius (uu) of the shockwave = Stats.AttackRange (361). */
 	UFUNCTION(BlueprintPure, Category = "Heavy")
 	float GetSlamRadius() const { return Stats.AttackRange; }
 
-	/** Telegraph duration (s) = Stats.WindUp (0.6). */
+	/** Telegraph duration (s) = Stats.WindUp (1.0). */
 	UFUNCTION(BlueprintPure, Category = "Heavy")
 	float GetTelegraphDuration() const { return Stats.WindUp; }
 
@@ -112,6 +113,13 @@ protected:
 	/** Telegraph clip end (WindUp - SlamContactLead into the telegraph): plays the slam-down clip; nothing once Dead; else base. */
 	virtual void OnAnimClipEnded() override;
 
+	/**
+	 * While the telegraph clip plays (its timer pending), rewrites its start (Custom Primitive Data AnimStartDataIndex) so the
+	 * shader shows frame TelegraphRaiseTopFrame x GetTelegraphProgress x WindUp / (WindUp - SlamContactLead): the raise lasts until
+	 * the slam-down clip. Called each Telegraph step; between two writes the shader runs on from that frame at 30 fps.
+	 */
+	void UpdateTelegraphClipFrame();
+
 	/** Performs the slam: damage to the miner within the radius, counters, recover clip, OnSlam. */
 	void PerformSlam(ARRMiner* Target, double Now);
 
@@ -146,6 +154,13 @@ protected:
 	/** Baked clip played from the telegraph start (rows 16..30, clamped: fists raised, then held). */
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Heavy|Animation")
 	float TelegraphClipId = 1.f;
+
+	/** Frame of TelegraphClipId (0-based, 30 fps bake) where the fists reach the top; shown when the slam-down clip starts. */
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Heavy|Animation", meta = (ClampMin = 0, ClampMax = 14))
+	float TelegraphRaiseTopFrame = 13.f;
+
+	/** Frame rate of the baked clamped clips in MF_RobotAnimWPO (frame = clip age x 30; RunRate applies to clips 0 and 2 only). */
+	static constexpr double BakedClipFrameRate = 30.0;
 
 	/** Baked clip played SlamContactLead seconds before the slam (rows 31..46, looped by the shader: must be replaced before 0.533 s). */
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Heavy|Animation")

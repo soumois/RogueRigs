@@ -119,6 +119,7 @@ void ARRHeavy::UpdateBehavior(float DeltaSeconds)
 		}
 		else
 		{
+			UpdateTelegraphClipFrame();
 			UpdateTelegraphBlink(TelegraphFlashRate);
 		}
 		break;
@@ -138,6 +139,21 @@ void ARRHeavy::UpdateBehavior(float DeltaSeconds)
 	case ERRHeavyState::Dead:
 		break;
 	}
+}
+
+void ARRHeavy::UpdateTelegraphClipFrame()
+{
+	// Only the raise: once the timer ended (slam-down clip) or another clip replaced it, nothing to stretch.
+	if (!IsTimedClipPlaying() || !FMath::IsNearlyEqual(GetAnimClipId(), TelegraphClipId))
+	{
+		return;
+	}
+	// The baked raise lasts TelegraphRaiseTopFrame / 30 s (0.43 s); stretch it over WindUp - SlamContactLead (the clip timer).
+	const double RaiseDuration = FMath::Max(static_cast<double>(Stats.WindUp - SlamContactLead), UE_KINDA_SMALL_NUMBER);
+	const double RaiseAlpha = FMath::Clamp(GetTelegraphProgress() * Stats.WindUp / RaiseDuration, 0.0, 1.0);
+	const double Frame = RaiseAlpha * TelegraphRaiseTopFrame;
+	// The shader shows frame (Time - AnimStart) x 30 (clamped clip): the start that shows Frame now.
+	SetAnimClip(TelegraphClipId, GetWorld()->GetTimeSeconds() - Frame / BakedClipFrameRate);
 }
 
 void ARRHeavy::PerformSlam(ARRMiner* Target, double Now)

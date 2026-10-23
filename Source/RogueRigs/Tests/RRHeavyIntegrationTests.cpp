@@ -1,4 +1,4 @@
-// Rogue Rigs - heavy integration tests with the final Blueprints (RogueRigs.Integration.Heavy*): BP_Heavy telegraphs then slams a vulnerable BP_Miner for 25 with its glow and telegraph clip (id 1), misses beyond 289 uu, takes the BP_Miner shotgun pellet knockback reduced by 0.8 and crosses a one-cell corridor of arena_m1.
+// Rogue Rigs - heavy integration tests with the final Blueprints (RogueRigs.Integration.Heavy*): BP_Heavy telegraphs then slams a vulnerable BP_Miner for 25 with its glow and telegraph clip (id 1), misses beyond 361 uu, takes the BP_Miner shotgun pellet knockback reduced by 0.8 and crosses a one-cell corridor of arena_m1.
 
 #include "CoreMinimal.h"
 #include "Misc/AutomationTest.h"
@@ -41,11 +41,11 @@ namespace RRHeavyIntegrationTests
 	constexpr int32 CorridorMinY = 66;
 	constexpr int32 CorridorMaxY = 68;
 
-	/** Heavy CSV row: slam damage, radius, telegraph, cadence, knockback resistance; trigger 289 x SlamTriggerRatio 0.7. */
+	/** Heavy CSV row: slam damage, radius, telegraph, cadence, knockback resistance; trigger 361 x SlamTriggerRatio 0.7. */
 	constexpr float SlamDamage = 25.f;
-	constexpr float SlamRadius = 289.f;
-	constexpr float TriggerDistance = 202.3f;
-	constexpr double TelegraphSeconds = 0.6;
+	constexpr float SlamRadius = 361.f;
+	constexpr float TriggerDistance = 252.7f;
+	constexpr double TelegraphSeconds = 1.0;
 	constexpr double SlamPeriod = 2.0;
 	constexpr float HeavyResistance = 0.8f;
 
@@ -163,6 +163,8 @@ bool FRRIntegrationHeavySlamTest::RunTest(const FString& Parameters)
 	TArray<float> TelegraphStartClips;
 	bool bStoppedWhileTelegraphing = true;
 	bool bPoseResetAfterRecover = true;
+	TArray<FString> RaiseFrames;
+	double SlamClipStart = -1.0;
 	for (int32 Frame = 0; Frame < 60 * 10 && RecoverEnds.Num() < 2; ++Frame)
 	{
 		const ERRHeavyState Previous = Heavy->GetState();
@@ -182,6 +184,15 @@ bool FRRIntegrationHeavySlamTest::RunTest(const FString& Parameters)
 		if (Heavy->IsTelegraphing())
 		{
 			bStoppedWhileTelegraphing &= Heavy->GetVelocity().Size2D() < 1.f;
+			// First telegraph only (task-293-01, info): clip-1 shown frame per step, then the slam-down clip start.
+			if (TelegraphStarts.Num() == 1 && FMath::IsNearlyEqual(Heavy->GetAnimClipId(), TelegraphClipId))
+			{
+				RaiseFrames.Add(FString::Printf(TEXT("%.3f:%.1f"), Now - TelegraphStarts[0], (Now - Heavy->GetAnimClipStart()) * 30.0));
+			}
+			else if (TelegraphStarts.Num() == 1 && SlamClipStart < 0.0)
+			{
+				SlamClipStart = Heavy->GetAnimClipStart();
+			}
 		}
 		if (Heavy->GetSlamCount() > SlamsBefore)
 		{
@@ -202,15 +213,20 @@ bool FRRIntegrationHeavySlamTest::RunTest(const FString& Parameters)
 		*Join(TelegraphStarts), FirstTelegraphDistance, *Join(SlamTimes), *Join(RecoverEnds), HealthBefore, Health(Miner),
 		*FString::JoinBy(TelegraphStartClips, TEXT(", "), [](float Clip) { return FString::Printf(TEXT("%.0f"), Clip); })));
 
+	AddInfo(FString::Printf(TEXT("telegraph 1 clip-1 frames (s:frame): %s; slam-down clip at +%.3f s, slam at +%.3f s (%.3f s after the slam-down start)"),
+		*FString::Join(RaiseFrames, TEXT(" ")), TelegraphStarts.Num() > 0 ? SlamClipStart - TelegraphStarts[0] : -1.0,
+		TelegraphStarts.Num() > 0 && SlamTimes.Num() > 0 ? SlamTimes[0] - TelegraphStarts[0] : -1.0,
+		SlamTimes.Num() > 0 ? SlamTimes[0] - SlamClipStart : -1.0));
+
 	if (!TestEqual(TEXT("two slams within 10 s"), SlamTimes.Num(), 2) || !TestTrue(TEXT("one telegraph per slam"), TelegraphStarts.Num() >= 2)
 		|| !TestEqual(TEXT("two recoveries"), RecoverEnds.Num(), 2))
 	{
 		return false;
 	}
-	TestTrue(TEXT("telegraph starts within 202.3 uu (289 x 0.7)"), FirstTelegraphDistance > 0.f && FirstTelegraphDistance <= TriggerDistance + 1.f);
+	TestTrue(TEXT("telegraph starts within 252.7 uu (361 x 0.7)"), FirstTelegraphDistance > 0.f && FirstTelegraphDistance <= TriggerDistance + 1.f);
 	for (int32 Index = 0; Index < 2; ++Index)
 	{
-		TestTrue(FString::Printf(TEXT("slam %d lands 0.6 s after its telegraph (within one frame)"), Index + 1),
+		TestTrue(FString::Printf(TEXT("slam %d lands 1.0 s after its telegraph (within one frame)"), Index + 1),
 			FMath::Abs(SlamTimes[Index] - TelegraphStarts[Index] - TelegraphSeconds) <= FrameSeconds + 1e-3);
 		TestEqual(FString::Printf(TEXT("slam %d deals 25 to the vulnerable miner"), Index + 1), HealthAfterSlams[Index], HealthBefore - SlamDamage * (Index + 1));
 		TestTrue(FString::Printf(TEXT("recovery %d ends 0.5 s after its slam (within one frame)"), Index + 1),
@@ -248,26 +264,26 @@ bool FRRIntegrationHeavyRadiusTest::RunTest(const FString& Parameters)
 	}
 	const float HealthBefore = Health(Miner);
 
-	// 1. During the first telegraph the miner steps to 279 uu (inside the 289 uu radius, outside the 202 uu trigger): hit for 25.
+	// 1. During the first telegraph the miner steps to 351 uu (inside the 361 uu radius, outside the 253 uu trigger): hit for 25.
 	if (!TestTrue(TEXT("first telegraph within 5 s"), TickUntilTelegraph(TestWorld, Heavy, 60 * 5)))
 	{
 		return false;
 	}
-	TeleportWestOf(Miner, Heavy, 279.f);
-	for (int32 Frame = 0; Frame < 60 && Heavy->GetSlamCount() < 1; ++Frame)
+	TeleportWestOf(Miner, Heavy, 351.f);
+	for (int32 Frame = 0; Frame < 90 && Heavy->GetSlamCount() < 1; ++Frame)
 	{
 		TestWorld.Tick();
 	}
 	const float InsideDistance = FVector::Dist2D(Heavy->GetActorLocation(), Miner->GetActorLocation());
 	const float HealthAfterInside = Health(Miner);
 
-	// 2. During the second telegraph the miner steps to 299 uu (just outside the radius): the slam lands and misses.
+	// 2. During the second telegraph the miner steps to 371 uu (just outside the radius): the slam lands and misses.
 	if (!TestTrue(TEXT("second telegraph within 5 s"), TickUntilTelegraph(TestWorld, Heavy, 60 * 5)))
 	{
 		return false;
 	}
-	TeleportWestOf(Miner, Heavy, 299.f);
-	for (int32 Frame = 0; Frame < 60 && Heavy->GetSlamCount() < 2; ++Frame)
+	TeleportWestOf(Miner, Heavy, 371.f);
+	for (int32 Frame = 0; Frame < 90 && Heavy->GetSlamCount() < 2; ++Frame)
 	{
 		TestWorld.Tick();
 	}
@@ -276,9 +292,9 @@ bool FRRIntegrationHeavyRadiusTest::RunTest(const FString& Parameters)
 		OutsideDistance, Health(Miner)));
 
 	TestEqual(TEXT("two slams landed"), Heavy->GetSlamCount(), 2);
-	TestTrue(TEXT("slam 1 with the miner inside 289 uu"), InsideDistance < SlamRadius && InsideDistance > TriggerDistance);
+	TestTrue(TEXT("slam 1 with the miner inside 361 uu"), InsideDistance < SlamRadius && InsideDistance > TriggerDistance);
 	TestEqual(TEXT("slam 1 deals 25"), HealthAfterInside, HealthBefore - SlamDamage);
-	TestTrue(TEXT("slam 2 with the miner beyond 289 uu"), OutsideDistance > SlamRadius);
+	TestTrue(TEXT("slam 2 with the miner beyond 361 uu"), OutsideDistance > SlamRadius);
 	TestEqual(TEXT("slam 2 deals nothing"), Health(Miner), HealthAfterInside);
 	TestEqual(TEXT("one hit in total"), Heavy->GetSlamHitCount(), 1);
 	return true;

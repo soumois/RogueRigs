@@ -158,7 +158,7 @@ bool FRRHeavyTelegraphShownTest::RunTest(const FString& Parameters)
 	TestTrue(TEXT("telegraph frames seen"), TelegraphFrames > 20);
 	TestTrue(TEXT("shown if and only if telegraphing"), bShownIffTelegraph);
 	TestTrue(TEXT("radius = slam radius while shown"), bRightRadius);
-	TestEqual(TEXT("slam radius follows the stats (289)"), Telegraph->GetRadius(), 289.f);
+	TestEqual(TEXT("slam radius follows the stats (361)"), Telegraph->GetRadius(), 361.f);
 	TestTrue(TEXT("Danger mode while shown"), bDanger);
 	TestTrue(TEXT("progress = GetTelegraphProgress"), bMatchesHeavy);
 	TestTrue(TEXT("progress rises every telegraph frame"), bRising);
