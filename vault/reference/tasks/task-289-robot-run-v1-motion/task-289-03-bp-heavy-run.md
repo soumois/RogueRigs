@@ -3,7 +3,7 @@ id: task-289-03-bp-heavy-run
 description: "Put the 289-01 heavy bake in Unreal and set the new RunRate on its instances (bp)."
 parent: task-289-robot-run-v1-motion
 kind: task
-status: todo
+status: in-progress
 ---
 # Heavy anim texture and RunRate in Unreal
 

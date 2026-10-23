@@ -609,6 +609,7 @@ kind: note
 | [[task-287-04-capture-shooter-aim-fire]] | opus | 1 | 0k | 69k | 663k | 10k |
 | [[task-288-16-capture-debris]] | opus | 1 | 0k | 191k | 3710k | 36k |
 | [[task-289-01-bake-heavy-run]] | sonnet | 1 | 0k | 87k | 1767k | 25k |
+| [[task-289-02-bake-chaser-v2-run]] | sonnet | 1 | 0k | 41k | 450k | 8k |
 
 ## Totals
 | Scope | Input | Cache write | Cache read | Output |

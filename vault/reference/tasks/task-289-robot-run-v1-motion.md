@@ -13,7 +13,7 @@ status: in-progress
 - gdd_check: enemy-heavy and enemy-chaser read (2026-10-23): walk loop "with a light knee bend (at most 15 degrees)" kept; speeds heavy 153, chaser 180 uu/s unchanged; only the look of the run changes (rendering, not a rule). Shield chaser v2 (not named by the owner) has its own T_ShieldChaserV2Anim (copy of the old chaser v2 rows): left as is.
 - confirmed_by_owner: yes (2026-10-23, direct order, run to the end)
 - milestone: M2
-- next_step: task-289-02-bake-chaser-v2-run
+- next_step: task-289-03-bp-heavy-run
 - result: open
 
 ## Subtasks
