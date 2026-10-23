@@ -32,6 +32,7 @@ Reference images are generated in ChatGPT image generation. The prompts are stor
 - `drone-turnaround.webp` — the drone, front, side, back, source of the Meshy mesh ([[art-prompts-drone]]).
 - `shooter-turnaround.webp`, `heavy-turnaround.webp`, `kamikaze-turnaround.webp`, `chaser-turnaround-v2.webp` — owner sheets for the next Meshy meshes ([[art-prompts-robots-meshy]]).
 - `chest-turnaround.webp` — the bonus chest supply locker, front, side, back ([[art-prompts-chest]]).
+- `console-c2-turnaround.webp` — the field uplink console (C2 uplink mast), front, side, back, source of the Meshy mesh ([[art-prompts-console]]).
 
 ## Relations
 - [[art-audio-index]] — parent index.
@@ -48,6 +49,7 @@ Reference images are generated in ChatGPT image generation. The prompts are stor
 - [[art-prompts-rock]] — rock and ore look proposals: per-cell blocks versus continuous slab; choice open.
 - [[art-prompts-chest]] — bonus chest supply locker: validated turnaround sheet and its prompt.
 - [[art-prompts-card-back]] — level-up card back, neutral grey candidate: prompt, delivery to 1000 x 1440.
+- [[art-prompts-console]] — console C2 uplink mast: turnaround prompt, owner words, mesh decisions, Meshy files.
 - [[art-style-guide]] — the general style rules derived from these prompts.
 - [[visual-style]] — the style these prompts produce.
 - [[asset-pipeline]] — where the images go next (Meshy, Tripo).
