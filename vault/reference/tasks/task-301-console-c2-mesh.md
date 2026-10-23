@@ -3,7 +3,7 @@ id: task-301-console-c2-mesh
 description: "Global task: Replace the console cylinder with the owner C2 uplink mast mesh: mobile dish head, three material slots, retouched dish back and foot lamps."
 parent: tasks-to-do-index
 kind: task
-status: todo
+status: in-progress
 ---
 # Console C2 uplink mast mesh
 

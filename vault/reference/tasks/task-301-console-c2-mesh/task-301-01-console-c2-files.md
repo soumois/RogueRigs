@@ -3,7 +3,7 @@ id: task-301-01-console-c2-files
 description: "Save the console C2 sheet, Meshy files and prompt (art): console c2 uplink mast mesh, step 01."
 parent: task-301-console-c2-mesh
 kind: task
-status: todo
+status: in-progress
 ---
 # Save the console C2 sheet, Meshy files and prompt
 
