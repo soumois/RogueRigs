@@ -1503,6 +1503,7 @@ ERRSpawnSide ARREnemySpawner::PrepareHorde(int32 HordeIndex)
 	TArray<TSubclassOf<ARREnemy>> Classes;
 	TArray<TSubclassOf<ARREnemy>> Back;
 	DrawMembers(Horde.Members, Room, ShooterRoom, Classes, Back);
+	const int32 FrontCount = Classes.Num();
 	if (const TSubclassOf<ARREnemy> Fill = ResolveRobotClass(Horde.FillClass))
 	{
 		for (int32 Index = Classes.Num() + Back.Num(); Index < Size; ++Index)
@@ -1543,6 +1544,39 @@ ERRSpawnSide ARREnemySpawner::PrepareHorde(int32 HordeIndex)
 		return GetDistanceToRectangle(View, FVector2D(Center.X, Center.Y));
 	};
 	SideCells.StableSort([&ViewDistance](const FIntPoint& A, const FIntPoint& B) { return ViewDistance(A) < ViewDistance(B); });
+
+	// Front members (heavies) spread along the front row (task-292-01): the side cells at the nearest view distance, ordered along
+	// the side, the members at the two ends and evenly between (one member: the middle); they move to the head of SideCells so they
+	// keep the first slots. A row shorter than the front members leaves them on the nearest cells.
+	const int32 SpreadCount = FMath::Min(FrontCount, SideCells.Num());
+	if (SpreadCount > 1 || (SpreadCount == 1 && SideCells.Num() > 1))
+	{
+		const float RowDistance = ViewDistance(SideCells[0]) + 1.f;
+		TArray<FIntPoint> Row;
+		for (const FIntPoint& Cell : SideCells)
+		{
+			if (ViewDistance(Cell) > RowDistance)
+			{
+				break;
+			}
+			Row.Add(Cell);
+		}
+		if (Row.Num() >= SpreadCount)
+		{
+			Row.Sort([](const FIntPoint& A, const FIntPoint& B) { return A.X != B.X ? A.X < B.X : A.Y < B.Y; });
+			TArray<FIntPoint> Spread;
+			for (int32 Index = 0; Index < SpreadCount; ++Index)
+			{
+				const int32 RowIndex = SpreadCount == 1 ? (Row.Num() - 1) / 2 : FMath::RoundToInt(static_cast<float>(Index * (Row.Num() - 1)) / (SpreadCount - 1));
+				Spread.AddUnique(Row[RowIndex]);
+			}
+			for (const FIntPoint& Cell : Spread)
+			{
+				SideCells.RemoveSingle(Cell);
+			}
+			SideCells.Insert(Spread, 0);
+		}
+	}
 	const int32 Count = FMath::Min(Classes.Num(), SideCells.Num());
 	for (int32 Index = 0; Index < Count; ++Index)
 	{

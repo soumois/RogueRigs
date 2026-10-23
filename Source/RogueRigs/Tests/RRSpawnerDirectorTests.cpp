@@ -654,12 +654,17 @@ bool FRRSpawnerDirectorHordeTest::RunTest(const FString& Parameters)
 	float OtherNearest = TNumericLimits<float>::Max();
 	int32 MinAlong = TNumericLimits<int32>::Max();
 	int32 MaxAlong = TNumericLimits<int32>::Min();
+	TArray<FIntPoint> HeavyCells;
 	const bool bAlongY = Side == ERRSpawnSide::NegativeX || Side == ERRSpawnSide::PositiveX;
 	for (int32 Index = 0; Index < Plan.Num(); ++Index)
 	{
 		const FRRHordeSlot& Slot = Plan[Index];
 		TestEqual(*FString::Printf(TEXT("slot %d on the horde side"), Index), DirectorSideOf(Setup, Slot.Cell), Side);
 		const bool bHeavy = Slot.Class == ARRHeavy::StaticClass();
+		if (bHeavy)
+		{
+			HeavyCells.Add(Slot.Cell);
+		}
 		bHeaviesFirst &= !bHeavy || Index == Heavies;
 		Heavies += bHeavy ? 1 : 0;
 		Kamikazes += Slot.Class == ARRKamikaze::StaticClass() ? 1 : 0;
@@ -678,6 +683,19 @@ bool FRRSpawnerDirectorHordeTest::RunTest(const FString& Parameters)
 	TestTrue(TEXT("heavies spawn first"), bHeaviesFirst);
 	TestTrue(*FString::Printf(TEXT("heavies in the front row (%.0f <= %.0f)"), HeavyFarthest, OtherNearest), HeavyFarthest <= OtherNearest);
 	TestTrue(*FString::Printf(TEXT("a front along the side (%d cells long)"), MaxAlong - MinAlong + 1), MaxAlong - MinAlong + 1 >= 15);
+	// Heavies spread along the front row, never in adjacent cells (task-292-01).
+	FString HeavyText;
+	for (int32 Index = 0; Index < HeavyCells.Num(); ++Index)
+	{
+		HeavyText += FString::Printf(TEXT(" (%d, %d)"), HeavyCells[Index].X, HeavyCells[Index].Y);
+		for (int32 Other = Index + 1; Other < HeavyCells.Num(); ++Other)
+		{
+			const FIntPoint Delta = HeavyCells[Index] - HeavyCells[Other];
+			TestTrue(*FString::Printf(TEXT("heavies (%d, %d) and (%d, %d) not adjacent"), HeavyCells[Index].X, HeavyCells[Index].Y, HeavyCells[Other].X, HeavyCells[Other].Y),
+				FMath::Max(FMath::Abs(Delta.X), FMath::Abs(Delta.Y)) > 1);
+		}
+	}
+	AddInfo(FString::Printf(TEXT("horde heavy cells:%s"), *HeavyText));
 	return true;
 }
 
