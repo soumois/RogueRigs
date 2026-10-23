@@ -3,7 +3,7 @@ id: task-288-14-bp-kamikaze-death
 description: "BP_Kamikaze throws its debris (bp)."
 parent: task-288-robot-death-debris
 kind: task
-status: todo
+status: in-progress
 ---
 # BP_Kamikaze throws its debris
 

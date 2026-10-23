@@ -3,7 +3,7 @@ id: task-288-12-bp-shooter-death
 description: "BP_Shooter throws its debris (bp)."
 parent: task-288-robot-death-debris
 kind: task
-status: todo
+status: in-progress
 ---
 # BP_Shooter throws its debris
 
