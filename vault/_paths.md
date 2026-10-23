@@ -92,6 +92,7 @@ bp-floor-plates-material  reference/tech/blueprints/world/bp-floor-plates-materi
 bp-heal-ring  reference/tech/blueprints/fx/bp-heal-ring.md
 bp-heavy  reference/tech/blueprints/enemies/bp-heavy.md
 bp-heavy-death-puff  reference/tech/blueprints/fx/bp-heavy-death-puff.md
+bp-heavy-slam-impact  reference/tech/blueprints/fx/bp-heavy-slam-impact.md
 bp-kamikaze  reference/tech/blueprints/enemies/bp-kamikaze.md
 bp-mcp-lessons  reference/agents/bp-mcp-lessons.md
 bp-miner  reference/tech/blueprints/player/bp-miner.md

@@ -29,3 +29,4 @@ Pickups, explosion and heal visuals, damage numbers: effects and collectibles.
 - [[bp-dig-impact]] — NS_DigImpact and M_DigChip, the drone laser impact sparks, chips and dust.
 - [[bp-drone-thruster]] — NS_DroneThruster and M_DroneThruster, the drone engine exhaust driven by User.Speed.
 - [[bp-shooter-charge]] — NS_ShooterCharge, the red charge-up glow and inward sparks at the shooter cannon tip.
+- [[bp-heavy-slam-impact]] — NS_HeavySlamImpact, the one-shot dust ring (User.Radius) and rock chips of the heavy slam.
