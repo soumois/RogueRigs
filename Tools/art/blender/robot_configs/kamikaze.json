@@ -6,9 +6,46 @@
  "tris_limit": 6000,
  "note": "Hover robot, 3 rigid parts cut by connected component (no bisect plane, no cap): Body = every component that is not a lower leg (head, vanes, arms with their hanging rear pieces, core shell remnants), LowerLeg_L / LowerLeg_R = the two front legs, the two separate components x 13..63 cm, y +-(25..76), z 1..62. The mesh also has two rear hanging pieces (x -46..-10, z 0..56) fused to the arm components: they stay in Body. Pivot = inner top of the leg under the yellow pad where the leg stub meets the shell; body pivot = world origin (actor ground point, the C++ hover bob moves the whole actor). PartId = (index + 0.5) / 10 with the same index layout and texture layout (20 columns, texel 2i = quaternion, 2i+1 = translation) as the other robots; columns of unused indices stay identity.",
  "parts": [
-  {"name": "Body", "index": 0, "parent": null, "pivot": [0, 0, 0]},
-  {"name": "LowerLeg_L", "index": 1, "parent": "Body", "pivot": [44, 36, 58], "ref": [40, 50, 30]},
-  {"name": "LowerLeg_R", "index": 2, "parent": "Body", "pivot": [44, -36, 58], "ref": [40, -50, 30]}
+  {
+   "name": "Body",
+   "index": 0,
+   "parent": null,
+   "pivot": [
+    0,
+    0,
+    0
+   ]
+  },
+  {
+   "name": "LowerLeg_L",
+   "index": 1,
+   "parent": "Body",
+   "pivot": [
+    44,
+    36,
+    58
+   ],
+   "ref": [
+    40,
+    50,
+    30
+   ]
+  },
+  {
+   "name": "LowerLeg_R",
+   "index": 2,
+   "parent": "Body",
+   "pivot": [
+    44,
+    -36,
+    58
+   ],
+   "ref": [
+    40,
+    -50,
+    30
+   ]
+  }
  ],
  "sway": {
   "amp_deg": 6,
@@ -18,5 +55,33 @@
   "tex_name": "T_KamikazeAnim.exr",
   "tex_rows": 62,
   "report_name": "kamikaze_meshy_anim_report.json"
+ },
+ "debris": {
+  "task": "task-288-04-pieces-kamikaze",
+  "prefix": "Kamikaze",
+  "in_fbx": "Art/Meshes/kamikaze-meshy/kamikaze_meshy_parts.fbx",
+  "in_tex": "Art/Meshes/kamikaze-meshy/kamikaze_meshy_clean_basecolor.png",
+  "out_dir": "Art/Source/kamikaze-meshy/debris",
+  "eye_to_body": true,
+  "pieces": [
+   {
+    "name": "Torso",
+    "parts": [
+     "Body"
+    ]
+   },
+   {
+    "name": "Leg_L",
+    "parts": [
+     "LowerLeg_L"
+    ]
+   },
+   {
+    "name": "Leg_R",
+    "parts": [
+     "LowerLeg_R"
+    ]
+   }
+  ]
  }
 }

@@ -1,0 +1,89 @@
+{
+  "source": "Art/Meshes/kamikaze-meshy/kamikaze_meshy_parts.fbx",
+  "texture": "kamikaze_meshy_clean_basecolor.png",
+  "offset_convention": "centre_offset_cm_unreal = (x, -y, z) of the piece bounds centre in the rest-pose Blender world (cm, origin at the floor between the feet, front +X, robot left +Y, Z up). The FBX is exported with the Blender default axes (forward -Z, up Y) which Unreal imports with X and Z kept and Y mirrored; the chaser pipeline mirrors Y the same way (ChaserAnimWPO). So the robot's left (+Y Blender) is -Y in Unreal. Mesh pivot = bounds centre, so the piece's Unreal location at rest = this offset.",
+  "units": "cm",
+  "pieces": [
+    {
+      "index": 0,
+      "name": "SM_KamikazeDebris_Torso",
+      "file": "SM_KamikazeDebris_Torso.fbx",
+      "triangles": 4256,
+      "source_parts": [
+        "Body"
+      ],
+      "centre_offset_cm_unreal": [
+        -8.62,
+        0.7,
+        97.0
+      ],
+      "size_cm": [
+        110.54,
+        187.9,
+        194.0
+      ],
+      "uv_layers": [
+        "UVMap"
+      ],
+      "materials": [
+        "body"
+      ]
+    },
+    {
+      "index": 1,
+      "name": "SM_KamikazeDebris_Leg_L",
+      "file": "SM_KamikazeDebris_Leg_L.fbx",
+      "triangles": 482,
+      "source_parts": [
+        "LowerLeg_L"
+      ],
+      "centre_offset_cm_unreal": [
+        37.97,
+        -50.06,
+        31.86
+      ],
+      "size_cm": [
+        50.82,
+        49.3,
+        61.1
+      ],
+      "uv_layers": [
+        "UVMap"
+      ],
+      "materials": [
+        "body"
+      ]
+    },
+    {
+      "index": 2,
+      "name": "SM_KamikazeDebris_Leg_R",
+      "file": "SM_KamikazeDebris_Leg_R.fbx",
+      "triangles": 564,
+      "source_parts": [
+        "LowerLeg_R"
+      ],
+      "centre_offset_cm_unreal": [
+        38.65,
+        51.01,
+        31.66
+      ],
+      "size_cm": [
+        49.16,
+        49.46,
+        60.66
+      ],
+      "uv_layers": [
+        "UVMap"
+      ],
+      "materials": [
+        "body"
+      ]
+    }
+  ],
+  "part_triangles": {
+    "Body": 4256,
+    "LowerLeg_L": 482,
+    "LowerLeg_R": 564
+  },
+  "sum_parts_triangles": 5302
+}

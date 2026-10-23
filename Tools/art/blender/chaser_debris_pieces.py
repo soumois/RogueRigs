@@ -12,10 +12,11 @@ opt = {"--in-fbx": "Art/Meshes/chaser-meshy/chaser_meshy_parts.fbx", "--in-tex":
 for i in range(0, len(argv) - 1, 2):
     opt[argv[i]] = argv[i + 1]
 # task-288-01: optional per-robot config (--config robot_configs/<robot>.json, key "debris": in_fbx, in_tex, out_dir, prefix, eye_to_body); no config = chaser v1 defaults
-PREFIX, EYE_TO_BODY = "Chaser", False
+PREFIX, EYE_TO_BODY, CFG_PIECES = "Chaser", False, None
 if "--config" in opt:
     _d = json.load(open(opt["--config"]))["debris"]
     PREFIX, EYE_TO_BODY = _d.get("prefix", PREFIX), _d.get("eye_to_body", False)
+    CFG_PIECES = _d.get("pieces")  # task-288-04: optional [{"name", "parts": [...]}] in Niagara order; absent = the chaser 13
     for _k, _o in (("in_fbx", "--in-fbx"), ("in_tex", "--in-tex"), ("out_dir", "--out-dir")):
         if _k in _d and _o not in argv:
             opt[_o] = _d[_k]
@@ -42,10 +43,16 @@ for s in ("L", "R"):
 for s in ("L", "R"):
     PIECES.append(("Leg_" + s, ["Thigh_" + s, "ShinFoot_" + s]))
 
+if CFG_PIECES:
+    PIECES = [(p["name"], p["parts"]) for p in CFG_PIECES]
+
 bpy.ops.wm.read_factory_settings(use_empty=True)
 bpy.ops.import_scene.fbx(filepath=os.path.abspath(opt["--in-fbx"]), colors_type="LINEAR")
 parts = {o.name: o for o in bpy.data.objects if o.type == "MESH"}
-assert len(parts) == 10, sorted(parts)
+if CFG_PIECES:
+    assert all(s_ in parts for _n, _ss in PIECES for s_ in _ss), sorted(parts)
+else:
+    assert len(parts) == 10, sorted(parts)
 img = bpy.data.images.load(os.path.join(OUT, os.path.basename(TEX)), check_existing=False)
 img.colorspace_settings.name = "sRGB"
 for o in parts.values():

@@ -1,0 +1,62 @@
+{
+ "note": "debris_diff = |L - mirror(R)| of centre_offset_cm_unreal (x, y mirrored, z). parts_diff = same on the bbox centre of the source parts (rest pose, heavy_meshy_parts.fbx, the same source parts joined per piece). game_zone_diff = same on the bbox centre of the game-mesh vertices inside each piece's bbox grown 1 cm (heavy_meshy_game.fbx is not split into parts, so this is a sample of the source, not an exact cut). No geometry or offset was altered.",
+ "pairs": {
+  "Leg": {
+   "debris_diff": [
+    0.68,
+    0.95,
+    0.2
+   ],
+   "parts_diff": [
+    0.68,
+    0.95,
+    0.2
+   ],
+   "game_zone_diff": [
+    0.68,
+    0.95,
+    0.2
+   ],
+   "size_cm_L": [
+    50.82,
+    49.3,
+    61.1
+   ],
+   "size_cm_R": [
+    49.16,
+    49.46,
+    60.66
+   ],
+   "parts_size_cm_L": [
+    50.82,
+    49.3,
+    61.1
+   ],
+   "parts_size_cm_R": [
+    49.15,
+    49.46,
+    60.66
+   ]
+  }
+ },
+ "face_check": {
+  "Torso": {
+   "piece_tris": 4256,
+   "sum_parts_tris_reimport": 4256,
+   "sum_parts_tris_report": 4256,
+   "delta_vs_report": 0
+  },
+  "Leg_L": {
+   "piece_tris": 482,
+   "sum_parts_tris_reimport": 482,
+   "sum_parts_tris_report": 482,
+   "delta_vs_report": 0
+  },
+  "Leg_R": {
+   "piece_tris": 564,
+   "sum_parts_tris_reimport": 564,
+   "sum_parts_tris_report": 564,
+   "delta_vs_report": 0
+  }
+ }
+}

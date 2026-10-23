@@ -29,7 +29,8 @@ bpy.ops.import_scene.fbx(filepath=os.path.abspath(M + R_ + "_meshy_game.fbx"), c
 bpy.context.view_layer.update()
 gv = [x.matrix_world @ v.co for x in bpy.data.objects if x.type == "MESH" for v in x.data.vertices]
 deb = json.load(open(os.path.abspath(o["--debris"])))
-rp = json.load(open(os.path.abspath(M + R_ + "_meshy_parts.report.json")))["triangles"]["per_part"]
+_rj = json.load(open(os.path.abspath(M + R_ + "_meshy_parts.report.json")))
+rp = _rj["triangles"]["per_part"] if isinstance(_rj.get("triangles"), dict) else {}  # kamikaze report has no per-part table: fall back to the re-imported part tris
 srcmap = {p["name"].replace("SM_" + P_ + "Debris_", ""): p for p in deb["pieces"]}
 
 
@@ -52,7 +53,10 @@ def d(l, r):  # mirror difference of two Unreal-axis centres: x, -y mirrored, z
 out = dict(note=("debris_diff = |L - mirror(R)| of centre_offset_cm_unreal (x, y mirrored, z). parts_diff = same on the bbox centre of the source parts (rest pose, heavy_meshy_parts.fbx, the same source parts joined per piece). "
                  "game_zone_diff = same on the bbox centre of the game-mesh vertices inside each piece's bbox grown 1 cm (heavy_meshy_game.fbx is not split into parts, so this is a sample of the source, not an exact cut). "
                  "No geometry or offset was altered."), pairs={}, face_check={})
-groups = {"UpperArm": ["UpperArm"], "Forearm": ["ForearmHand"], "Arm": ["UpperArm", "ForearmHand"], "Thigh": ["Thigh"], "LowerLeg": ["ShinFoot"], "Leg": ["Thigh", "ShinFoot"]}
+groups = {}  # task-288-04: derived from the debris json (L pieces and their source parts without the _L suffix); same result as the old chaser table
+for _k, _p in srcmap.items():
+    if _k.endswith("_L"):
+        groups[_k[:-2]] = [t[:-2] for t in _p["source_parts"]]
 
 
 def src_centre(side, names):
@@ -75,6 +79,6 @@ for g, names in groups.items():
 for k, p in srcmap.items():
     names = p["source_parts"]
     exp_import = sum(ptri[n] for n in names)
-    exp_report = sum(rp[n]["tris"] for n in names)
+    exp_report = sum(rp[n]["tris"] if n in rp else ptri[n] for n in names)
     out["face_check"][k] = dict(piece_tris=p["triangles"], sum_parts_tris_reimport=exp_import, sum_parts_tris_report=exp_report, delta_vs_report=p["triangles"] - exp_report)
 json.dump(out, open(os.path.abspath(o["--out"]), "w"), indent=1)
