@@ -185,10 +185,8 @@ def world_verts(n):
 
 FOOT = ["ShinFoot_L", "ShinFoot_R"]
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
-import robot_walk_planted as rwp
 BK = json.load(open(os.path.join(os.path.dirname(os.path.abspath(__file__)), "robot_configs", "chaser_v2.json"), encoding="utf-8"))["bake"]
 RUN_RATE, SPEED = float(BK["run_rate"]), float(BK["speed_cm_s"])
-WALK = rwp.Walk(REST_V, REST_P, 16, 30, RUN_RATE, SPEED, BK["knee_deg"], BK["arm_deg"], BK["elbow_deg"], BK["lean_deg"], BK["twist_deg"])
 
 
 def foot_min():
@@ -285,9 +283,19 @@ def solve_arm(pose_base, key, R0=None, Rs=None, u0=(-8.0, -20.0, 0.0, -70.0, 0.0
 
 
 # ---------------------------------------------------------------- base poses
-def run_base(phase):
-    pose = copy.deepcopy(WALK.pose_at(phase))      # chaser v2 planted knee walk
-    pose["_planted"] = True
+def run_base(phase, A_THIGH=None):
+    """task-291-02: the shield chaser v1 run curve (shield_chaser_bake.py run_base, thigh SH_THIGH, knee A_KNEE with no cap) on the v2 parts, ground fit by foot_min"""
+    A_THIGH = SH_THIGH if A_THIGH is None else A_THIGH
+    th = 2 * math.pi * phase
+    s = math.sin(th)
+    pose = {}
+    pose["HeadTorso"] = dict(rot=(0, A_LEAN, A_TWIST * s))
+    pose["Thigh_L"] = dict(rot=(0, -A_THIGH * s, 0))
+    pose["Thigh_R"] = dict(rot=(0, A_THIGH * s, 0))
+    pose["ShinFoot_L"] = dict(rot=(0, A_KNEE * max(0.0, math.cos(th)), 0))
+    pose["ShinFoot_R"] = dict(rot=(0, A_KNEE * max(0.0, -math.cos(th)), 0))
+    pose["UpperArm_R"] = dict(rot=(0, -A_ARM_R * s, 0))
+    pose["ForearmHand_R"] = dict(rot=(0, -A_ELBOW_R, 0))
     return pose
 
 
@@ -561,7 +569,7 @@ def walk_checks(row0):
         for f in range(NRUN):
             f2 = (f + 1) % NRUN
             za, zb = BK_[f][n][:, 2], BK_[f2][n][:, 2]
-            in_stance = all(WALK.leg_state(ff / NRUN, n[-1])["kind"] == "stance" for ff in (f, f2))
+            in_stance = True      # sine walk: every pair with both lowest vertices on the floor (z within 0.6 cm) counts, as for the 291-01 figure
             ok = [i for i in (int(za.argmin()), int(zb.argmin())) if abs(za[i]) <= 0.6 and abs(zb[i]) <= 0.6] if in_stance else []
             if ok:
                 L.append(min(float(BK_[f2][n][i, 0] - BK_[f][n][i, 0] + SPEED * DT_FRAME) for i in ok))
@@ -751,7 +759,7 @@ RB["bounds_max_cm"] = [round(float(x), 2) for x in allv.max(0)]
 
 # ---------------------------------------------------------------- previews (scene rebuilt from the exported FBX: parts + shield at rest, posed by the baked values)
 RENDERS = []
-PREV = os.path.join(REPO, "Saved", "Renders", "task-286")
+PREV = os.path.join(REPO, "Saved", "Renders", "task-291")
 os.makedirs(PREV, exist_ok=True)
 if not NORENDER:
     sc = bpy.context.scene
@@ -896,7 +904,7 @@ if bad_clear:
 if not chaser_unchanged:
     WARN.append("a chaser part changed in the export read back")
 rep = dict(
-    task="task-286-01-shield-fit-bake", script="Tools/art/blender/shield_chaser_v2_bake.py", blender=bpy.app.version_string,
+    task="task-291-02-bake-shield-v2-v1-clips", script="Tools/art/blender/shield_chaser_v2_bake.py", blender=bpy.app.version_string,
     files=dict(texture="T_ShieldChaserV2Anim.exr", fbx="SM_ShieldChaserV2_Meshy_Anim.fbx", previews=RENDERS),
     tris=dict(chaser_parts=CHASER_TRIS, shield=SHIELD_TRIS, total_read_back=RB["total_tris"], expected_total=CHASER_TRIS + SHIELD_TRIS),
     texture=dict(width=TEXW, height=NROWS, format="OpenEXR RGBA half float, compression NONE, Non-Color", rows_from_top=True,

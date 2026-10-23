@@ -1,5 +1,5 @@
 {
- "task": "task-286-01-shield-fit-bake",
+ "task": "task-291-02-bake-shield-v2-v1-clips",
  "script": "Tools/art/blender/shield_chaser_v2_bake.py",
  "blender": "5.2.2 LTS",
  "files": {
@@ -64,443 +64,443 @@
   "source_exr_compression_code": 0,
   "written_compression_code": 0
  },
- "clip0_loop_error_cm": 0.0,
- "clip0_loop_min_quaternion_dot_frame15_to_0": 0.9946345901095522,
- "shield_frame0_vs_placed_max_cm": 6.65017867683819e-06,
+ "clip0_loop_error_cm": 3.552713678800501e-15,
+ "clip0_loop_min_quaternion_dot_frame15_to_0": 0.9977202633712042,
+ "shield_frame0_vs_placed_max_cm": 7.904903038723166e-06,
  "bake_verification": {
   "limit_cm": 0.05,
   "float32": {
-   "clip0_max_cm": 2.002963439206051e-05,
-   "clip1_max_cm": 1.9357667825366392e-05
+   "clip0_max_cm": 1.886341662269271e-05,
+   "clip1_max_cm": 1.8552021853614026e-05
   },
   "saved_exr_float16": {
-   "clip0_max_cm": 0.041857816716479083,
-   "clip1_max_cm": 0.042426646558535765
+   "clip0_max_cm": 0.03972198631915329,
+   "clip1_max_cm": 0.0424215772167489
   },
   "saved_exr_float16_not_renormalised": {
-   "clip0_max_cm": 0.03750302307225893,
-   "clip1_max_cm": 0.03991226767687701
+   "clip0_max_cm": 0.04010618076294571,
+   "clip1_max_cm": 0.041572751309790185
   },
-  "shield_only_saved_exr_float16_max_cm": 0.042426646558535765,
-  "shield_only_not_renormalised_max_cm": 0.03991226767687701,
+  "shield_only_saved_exr_float16_max_cm": 0.0424215772167489,
+  "shield_only_not_renormalised_max_cm": 0.041572751309790185,
   "rest_pose_check_max_cm": 3.814697265625e-06
  },
  "walk_checks": {
   "clip0_shield_run": {
-   "slide_per_cycle_cm": 0.0309,
-   "slide_max_frame_cm": 0.0053,
+   "slide_per_cycle_cm": 68.2158,
+   "slide_max_frame_cm": 8.3329,
    "contact_pairs": 14,
-   "lowest_foot_vertex_z_cm": -1.358
+   "lowest_foot_vertex_z_cm": -0.005
   },
   "clip2_plain_run": {
-   "slide_per_cycle_cm": 0.0309,
-   "slide_max_frame_cm": 0.0053,
+   "slide_per_cycle_cm": 69.8594,
+   "slide_max_frame_cm": 8.3249,
    "contact_pairs": 14,
-   "lowest_foot_vertex_z_cm": -1.358
+   "lowest_foot_vertex_z_cm": -0.004
   },
-  "knee_max_deg": 15.0,
-  "run_rate": 1.5,
+  "knee_max_deg": 55.0,
+  "run_rate": 0.7,
   "speed_cm_s": 180.0,
-  "cycle_s_at_run_rate": 0.3556,
-  "stride_step_cm": 32.0
+  "cycle_s_at_run_rate": 0.7619,
+  "stride_step_cm": 68.57
  },
  "shield_to_body_min_distance_cm": {
   "clip0_shield_run": {
    "torso": {
-    "min_cm": 1.409,
-    "frame": 14,
+    "min_cm": 2.097,
+    "frame": 12,
     "overlap_pairs_any_frame": 0
    },
    "legs": {
-    "min_cm": 2.084,
-    "frame": 0,
+    "min_cm": 2.636,
+    "frame": 4,
     "overlap_pairs_any_frame": 0
    },
    "arms": {
-    "min_cm": 12.223,
-    "frame": 9,
+    "min_cm": 12.028,
+    "frame": 1,
     "overlap_pairs_any_frame": 0
    },
    "hand_L": {
-    "min_cm": 0.0,
-    "frame": 8,
-    "overlap_pairs_any_frame": 7712
+    "min_cm": 0.011,
+    "frame": 3,
+    "overlap_pairs_any_frame": 7824
    }
   },
   "clip1_shield_bash": {
    "torso": {
-    "min_cm": 2.311,
+    "min_cm": 1.941,
     "frame": 20,
     "overlap_pairs_any_frame": 0
    },
    "legs": {
-    "min_cm": 5.95,
+    "min_cm": 6.335,
     "frame": 22,
     "overlap_pairs_any_frame": 0
    },
    "arms": {
-    "min_cm": 12.014,
+    "min_cm": 11.865,
     "frame": 18,
     "overlap_pairs_any_frame": 0
    },
    "hand_L": {
-    "min_cm": 0.0,
-    "frame": 21,
-    "overlap_pairs_any_frame": 7230
+    "min_cm": 0.011,
+    "frame": 27,
+    "overlap_pairs_any_frame": 7335
    }
   }
  },
  "shield_to_body_per_frame": [
   {
    "frame": 0,
-   "torso": 1.69,
-   "legs": 2.08,
-   "arms": 12.22,
-   "hand_L": 0.0
+   "torso": 2.1,
+   "legs": 14.97,
+   "arms": 12.03,
+   "hand_L": 0.01
   },
   {
    "frame": 1,
-   "torso": 1.65,
-   "legs": 3.49,
-   "arms": 12.22,
-   "hand_L": 0.0
+   "torso": 2.22,
+   "legs": 12.65,
+   "arms": 12.03,
+   "hand_L": 0.01
   },
   {
    "frame": 2,
-   "torso": 1.64,
-   "legs": 6.42,
-   "arms": 12.22,
-   "hand_L": 0.0
+   "torso": 2.28,
+   "legs": 9.33,
+   "arms": 12.03,
+   "hand_L": 0.01
   },
   {
    "frame": 3,
-   "torso": 1.65,
-   "legs": 10.81,
-   "arms": 12.22,
-   "hand_L": 0.0
+   "torso": 2.22,
+   "legs": 8.32,
+   "arms": 12.03,
+   "hand_L": 0.01
   },
   {
    "frame": 4,
-   "torso": 1.69,
-   "legs": 12.92,
-   "arms": 12.22,
-   "hand_L": 0.0
+   "torso": 2.1,
+   "legs": 2.64,
+   "arms": 12.03,
+   "hand_L": 0.01
   },
   {
    "frame": 5,
-   "torso": 1.46,
-   "legs": 10.23,
-   "arms": 12.22,
-   "hand_L": 0.0
+   "torso": 2.19,
+   "legs": 5.03,
+   "arms": 12.03,
+   "hand_L": 0.01
   },
   {
    "frame": 6,
-   "torso": 1.41,
-   "legs": 9.69,
-   "arms": 12.22,
-   "hand_L": 0.0
+   "torso": 2.25,
+   "legs": 8.85,
+   "arms": 12.03,
+   "hand_L": 0.01
   },
   {
    "frame": 7,
-   "torso": 1.46,
-   "legs": 8.18,
-   "arms": 12.22,
-   "hand_L": 0.0
+   "torso": 2.19,
+   "legs": 13.14,
+   "arms": 12.03,
+   "hand_L": 0.01
   },
   {
    "frame": 8,
-   "torso": 1.69,
-   "legs": 7.45,
-   "arms": 12.22,
-   "hand_L": 0.0
+   "torso": 2.1,
+   "legs": 14.47,
+   "arms": 12.03,
+   "hand_L": 0.01
   },
   {
    "frame": 9,
-   "torso": 1.65,
-   "legs": 9.45,
-   "arms": 12.22,
-   "hand_L": 0.0
+   "torso": 2.22,
+   "legs": 14.48,
+   "arms": 12.03,
+   "hand_L": 0.01
   },
   {
    "frame": 10,
-   "torso": 1.64,
-   "legs": 8.71,
-   "arms": 12.22,
-   "hand_L": 0.0
+   "torso": 2.28,
+   "legs": 14.15,
+   "arms": 12.03,
+   "hand_L": 0.01
   },
   {
    "frame": 11,
-   "torso": 1.65,
-   "legs": 7.19,
-   "arms": 12.22,
-   "hand_L": 0.0
+   "torso": 2.22,
+   "legs": 14.06,
+   "arms": 12.03,
+   "hand_L": 0.01
   },
   {
    "frame": 12,
-   "torso": 1.69,
-   "legs": 5.94,
-   "arms": 12.22,
-   "hand_L": 0.0
+   "torso": 2.1,
+   "legs": 8.77,
+   "arms": 12.03,
+   "hand_L": 0.01
   },
   {
    "frame": 13,
-   "torso": 1.46,
-   "legs": 4.83,
-   "arms": 12.22,
-   "hand_L": 0.0
+   "torso": 2.19,
+   "legs": 10.03,
+   "arms": 12.03,
+   "hand_L": 0.01
   },
   {
    "frame": 14,
-   "torso": 1.41,
-   "legs": 5.17,
-   "arms": 12.22,
-   "hand_L": 0.0
+   "torso": 2.25,
+   "legs": 12.9,
+   "arms": 12.03,
+   "hand_L": 0.01
   },
   {
    "frame": 15,
-   "torso": 1.46,
-   "legs": 3.8,
-   "arms": 12.22,
-   "hand_L": 0.0
+   "torso": 2.19,
+   "legs": 15.0,
+   "arms": 12.03,
+   "hand_L": 0.01
   },
   {
    "frame": 16,
-   "torso": 2.8,
-   "legs": 12.92,
-   "arms": 12.09,
-   "hand_L": 0.0
+   "torso": 2.43,
+   "legs": 12.67,
+   "arms": 11.95,
+   "hand_L": 0.01
   },
   {
    "frame": 17,
-   "torso": 2.57,
-   "legs": 11.11,
-   "arms": 12.04,
-   "hand_L": 0.0
+   "torso": 2.2,
+   "legs": 10.86,
+   "arms": 11.89,
+   "hand_L": 0.01
   },
   {
    "frame": 18,
-   "torso": 2.48,
-   "legs": 10.14,
-   "arms": 12.01,
-   "hand_L": 0.0
+   "torso": 2.12,
+   "legs": 9.89,
+   "arms": 11.86,
+   "hand_L": 0.01
   },
   {
    "frame": 19,
-   "torso": 2.42,
-   "legs": 12.07,
-   "arms": 12.07,
-   "hand_L": 0.0
+   "torso": 2.08,
+   "legs": 11.84,
+   "arms": 11.91,
+   "hand_L": 0.01
   },
   {
    "frame": 20,
-   "torso": 2.31,
-   "legs": 11.95,
-   "arms": 12.19,
-   "hand_L": 0.0
+   "torso": 1.94,
+   "legs": 12.63,
+   "arms": 12.02,
+   "hand_L": 0.01
   },
   {
    "frame": 21,
-   "torso": 4.93,
-   "legs": 8.03,
-   "arms": 12.31,
-   "hand_L": 0.0
+   "torso": 4.54,
+   "legs": 8.59,
+   "arms": 12.13,
+   "hand_L": 0.01
   },
   {
    "frame": 22,
-   "torso": 5.18,
-   "legs": 5.95,
-   "arms": 12.37,
-   "hand_L": 0.0
+   "torso": 4.81,
+   "legs": 6.34,
+   "arms": 12.18,
+   "hand_L": 0.01
   },
   {
    "frame": 23,
-   "torso": 5.16,
-   "legs": 6.56,
-   "arms": 12.36,
-   "hand_L": 0.0
+   "torso": 4.8,
+   "legs": 6.97,
+   "arms": 12.17,
+   "hand_L": 0.01
   },
   {
    "frame": 24,
-   "torso": 5.17,
-   "legs": 8.15,
-   "arms": 12.33,
-   "hand_L": 0.0
+   "torso": 4.77,
+   "legs": 8.61,
+   "arms": 12.15,
+   "hand_L": 0.01
   },
   {
    "frame": 25,
-   "torso": 4.22,
-   "legs": 10.32,
-   "arms": 12.29,
-   "hand_L": 0.0
+   "torso": 3.85,
+   "legs": 10.83,
+   "arms": 12.12,
+   "hand_L": 0.01
   },
   {
    "frame": 26,
-   "torso": 3.29,
-   "legs": 12.68,
-   "arms": 12.25,
-   "hand_L": 0.0
+   "torso": 2.95,
+   "legs": 13.19,
+   "arms": 12.08,
+   "hand_L": 0.01
   },
   {
    "frame": 27,
-   "torso": 2.78,
-   "legs": 14.4,
-   "arms": 12.2,
-   "hand_L": 0.0
+   "torso": 2.44,
+   "legs": 14.49,
+   "arms": 12.04,
+   "hand_L": 0.01
   },
   {
    "frame": 28,
-   "torso": 2.61,
-   "legs": 14.15,
-   "arms": 12.16,
-   "hand_L": 0.0
+   "torso": 2.35,
+   "legs": 14.22,
+   "arms": 12.01,
+   "hand_L": 0.01
   },
   {
    "frame": 29,
-   "torso": 2.71,
-   "legs": 14.0,
-   "arms": 12.13,
-   "hand_L": 0.0
+   "torso": 2.49,
+   "legs": 13.99,
+   "arms": 11.99,
+   "hand_L": 0.01
   },
   {
    "frame": 30,
-   "torso": 2.79,
-   "legs": 13.89,
-   "arms": 12.12,
-   "hand_L": 0.0
+   "torso": 2.61,
+   "legs": 13.63,
+   "arms": 11.98,
+   "hand_L": 0.01
   }
  ],
  "shield_pose": {
   "plate_pitch_deg_per_frame": [
    3.0,
-   2.05,
-   1.66,
-   2.05,
+   2.12,
+   1.75,
+   2.12,
    3.0,
-   3.95,
-   4.34,
-   3.95,
+   3.88,
+   4.24,
+   3.88,
    3.0,
-   2.05,
-   1.66,
-   2.05,
+   2.12,
+   1.75,
+   2.12,
    3.0,
-   3.95,
-   4.34,
-   3.95,
-   5.56,
-   6.47,
-   7.07,
-   7.17,
-   7.89,
-   8.58,
-   8.59,
-   8.52,
-   8.26,
-   7.8,
-   7.16,
-   6.44,
-   5.79,
-   5.32,
-   5.15
+   3.88,
+   4.24,
+   3.88,
+   6.01,
+   6.9,
+   7.47,
+   7.74,
+   8.66,
+   9.31,
+   9.22,
+   9.16,
+   8.93,
+   8.49,
+   7.83,
+   7.06,
+   6.34,
+   5.81,
+   5.61
   ],
   "plate_yaw_deg_per_frame": [
-   0.0,
-   -0.8,
-   -1.57,
-   -2.3,
-   -3.02,
-   -3.72,
-   -4.44,
-   -5.21,
-   -2.47,
-   -2.26,
-   -1.6,
-   -0.62,
-   0.53,
-   1.68,
-   0.62,
-   -0.2,
-   0.46,
-   0.33,
-   0.34,
-   -0.02,
-   -0.2,
-   1.01,
-   2.18,
+   -0.0,
+   1.04,
    1.97,
-   1.49,
-   0.97,
-   0.6,
-   0.45,
-   0.47,
-   0.56,
-   0.6
+   2.66,
+   3.0,
+   2.89,
+   2.29,
+   1.27,
+   -0.0,
+   -1.26,
+   -2.27,
+   -2.88,
+   -3.0,
+   -2.65,
+   -1.95,
+   -1.03,
+   0.65,
+   0.53,
+   0.53,
+   0.17,
+   0.01,
+   1.31,
+   2.55,
+   2.32,
+   1.8,
+   1.24,
+   0.83,
+   0.65,
+   0.66,
+   0.75,
+   0.79
   ],
   "lowest_vertex_z_cm_per_frame": [
-   13.9,
-   13.0,
-   12.3,
    12.1,
-   12.3,
-   14.0,
-   15.2,
-   15.6,
-   13.9,
-   13.0,
-   12.3,
-   12.1,
-   12.3,
-   14.0,
-   15.2,
-   15.6,
-   12.4,
-   12.3,
-   12.4,
+   12.8,
    13.7,
-   16.5,
-   17.9,
+   14.2,
+   15.2,
+   16.1,
+   14.3,
+   13.6,
+   12.1,
+   12.8,
+   13.7,
+   14.3,
+   15.2,
+   16.2,
+   14.3,
+   13.6,
+   12.5,
+   12.4,
+   12.5,
+   13.9,
+   16.8,
+   18.2,
+   18.5,
    18.4,
-   18.3,
-   17.8,
-   17.3,
-   16.5,
-   15.3,
-   14.0,
-   12.9,
-   12.5
+   18.0,
+   17.5,
+   16.7,
+   15.5,
+   14.2,
+   13.0,
+   12.6
   ],
   "max_x_cm_per_frame": [
-   34.6,
-   33.6,
-   33.4,
-   34.3,
-   36.1,
-   37.8,
-   38.7,
-   38.5,
+   36.7,
+   35.6,
+   35.2,
    35.8,
-   34.3,
-   33.4,
-   33.5,
-   34.6,
-   36.1,
-   36.6,
-   36.1,
-   36.1,
-   33.8,
-   32.7,
-   36.1,
-   44.5,
-   53.1,
-   57.0,
-   56.2,
-   54.1,
-   51.0,
-   47.4,
-   43.8,
-   40.7,
-   38.5,
-   37.7
+   36.9,
+   38.2,
+   38.8,
+   38.2,
+   36.7,
+   36.0,
+   36.0,
+   36.9,
+   38.2,
+   39.3,
+   39.6,
+   38.6,
+   36.5,
+   34.0,
+   32.9,
+   36.5,
+   45.1,
+   53.7,
+   57.5,
+   56.7,
+   54.6,
+   51.6,
+   48.0,
+   44.4,
+   41.1,
+   38.9,
+   38.0
   ]
  },
  "shield_placement": {
@@ -517,54 +517,54 @@
    54.528
   ],
   "placed_origin_cm": [
-   29.341,
-   7.26,
-   13.787
+   31.477,
+   6.846,
+   11.938
   ],
   "hand_centre_frame0_cm": [
-   24.24,
-   12.78,
-   65.026
+   26.376,
+   12.366,
+   63.177
   ],
   "placed_bounds_min": [
-   20.06,
-   -18.42,
-   13.91
+   22.19,
+   -18.83,
+   12.06
   ],
   "placed_bounds_max": [
-   34.59,
-   32.94,
-   112.33
+   36.72,
+   32.53,
+   110.48
   ]
  },
  "arm_solution_deg": {
   "guard_run": [
-   -28.842,
-   -53.768,
-   -29.495,
-   -31.951,
-   85.326
+   -22.628,
+   -57.109,
+   -33.841,
+   -31.585,
+   85.167
   ],
   "guard_stand": [
-   -38.446,
-   -51.127,
-   -14.247,
-   -30.168,
-   79.739
+   -33.955,
+   -51.391,
+   -19.87,
+   -29.284,
+   80.548
   ],
   "wind": [
-   -50.44,
-   -41.548,
-   -4.567,
-   -30.573,
-   76.359
+   -47.008,
+   -42.769,
+   -9.616,
+   -29.891,
+   77.553
   ],
   "strike": [
-   -16.976,
-   -71.653,
-   -31.919,
-   -27.645,
-   84.462
+   -10.778,
+   -70.574,
+   -38.522,
+   -26.882,
+   83.998
   ]
  },
  "keys": {
@@ -843,13 +843,13 @@
    "UpperArm_R": "HeadTorso"
   },
   "bounds_min_cm": [
-   -33.79,
+   -33.33,
    -48.91,
    -0.0
   ],
   "bounds_max_cm": [
    24.0,
-   83.24,
+   83.49,
    123.0
   ],
   "shield": {
