@@ -3,7 +3,7 @@ id: task-288-05-cpp-debris-groups
 description: "Debris launch for robots with fewer parts (cpp)."
 parent: task-288-robot-death-debris
 kind: task
-status: todo
+status: in-progress
 ---
 # Debris launch for robots with fewer parts
 

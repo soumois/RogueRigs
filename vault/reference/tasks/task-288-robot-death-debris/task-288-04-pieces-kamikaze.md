@@ -3,7 +3,7 @@ id: task-288-04-pieces-kamikaze
 description: "Debris pieces of the kamikaze (3d)."
 parent: task-288-robot-death-debris
 kind: task
-status: in-progress
+status: done
 ---
 # Debris pieces of the kamikaze
 
@@ -15,11 +15,11 @@ status: in-progress
 - done_when: piece count and order as listed, offsets mirrored left and right within 0.5 cm, UV0 only, FBX_SCALE_UNITS, v1 debris files unchanged (git diff); the Orchestrator renders the pieces laid out and sends the render to the owner; Blender processes stopped
 - editor_state: closed (Blender headless only)
 - token_ceiling: 60000
-- model: open
-- tokens: open
-- runs: open
+- model: sonnet
+- tokens: input 20, cache write 31061, cache read 204795, output 5804
+- runs: 1
 - milestone: M2
-- result: open
+- result: 3 kamikaze debris pieces (Torso 4256, Leg_L 482, Leg_R 564) Art/Source/kamikaze-meshy/debris/ + debris_pieces.json; config-driven piece list in chaser_debris_pieces.py (default chaser 13); leg mirror (0.68, 0.95, 0.2) cm = source asymmetry; core mesh not a piece; render Saved/Renders/task-288/kamikaze_debris_layout.png.
 
 ## Relations
 - [[task-288-robot-death-debris]] — parent global task.
