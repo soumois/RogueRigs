@@ -27,7 +27,7 @@ Glowing weak point on its back: [[wishlist]].
 - Crowd spacing (provisional, owner 2026-10-23): its separation radius from other robots is 30 % larger than its body radius.
 - Slam impact (provisional, owner 2026-10-23): when the slam lands, a dust ring and rock chips burst from the ground, sized to the slam radius.
 - Death puff (provisional, owner 2026-10-23): a larger puff than the other robots, so the death shrink of this big robot is hidden ([[enemy-death]]).
-- Packs (provisional, owner 2026-10-23): at most 1 heavy per pack, so heavies come from different sides; at most 3 alive unchanged ([[enemies-index]]).
+- Packs (provisional, owner 2026-10-23): at most 1 heavy per pack, so heavies come from different sides; pack weights unchanged, so fewer heavies per run; in hordes the 2–3 heavies stay but are spread along the front, not side by side; same rule on the last level; at most 3 alive unchanged ([[enemies-index]]).
 
 ## Relations
 - [[enemies-index]] — parent index.

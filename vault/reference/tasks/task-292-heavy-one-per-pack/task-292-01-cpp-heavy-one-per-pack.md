@@ -3,7 +3,7 @@ id: task-292-01-cpp-heavy-one-per-pack
 description: "Set the Heavies and WideHeavies packs to 1 heavy and spread horde heavies along the front row (cpp)."
 parent: task-292-heavy-one-per-pack
 kind: task
-status: todo
+status: in-progress
 ---
 # Director: one heavy per pack
 
