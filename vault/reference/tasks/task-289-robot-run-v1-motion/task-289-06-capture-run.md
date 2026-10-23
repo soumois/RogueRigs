@@ -3,7 +3,7 @@ id: task-289-06-capture-run
 description: "Capture the heavy and chaser v2 running in -game, compared with the old walk shots and a chaser v1 run (cpp)."
 parent: task-289-robot-run-v1-motion
 kind: task
-status: todo
+status: in-progress
 ---
 # Capture both robots running
 

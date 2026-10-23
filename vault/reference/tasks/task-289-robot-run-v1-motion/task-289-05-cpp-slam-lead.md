@@ -3,7 +3,7 @@ id: task-289-05-cpp-slam-lead
 description: "Heavy slam-down clip starts early enough for the contact pose at the new RunRate (bp)."
 parent: task-289-robot-run-v1-motion
 kind: task
-status: in-progress
+status: done
 ---
 # Heavy slam lead for the new RunRate (BP default)
 
@@ -15,11 +15,11 @@ status: in-progress
 - done_when: CDO value read back 0.20; compiles without error; docs updated; lint clean
 - editor_state: open
 - token_ceiling: 30000
-- model: open
-- tokens: open
-- runs: open
+- model: sonnet
+- tokens: input 50, cache write 39486, cache read 673439, output 8757
+- runs: 1
 - milestone: M2
-- result: open
+- result: BP_Heavy CDO SlamContactLead 0.20 (was 0.15 inherited) so strike contact frame 4 lands on the slam at RunRate 0.7; compiled, saved; commit fe235d63. Ran as bp (editor open, no build).
 
 ## Relations
 - [[task-289-robot-run-v1-motion]] — parent global task.
