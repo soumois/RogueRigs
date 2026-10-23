@@ -8,7 +8,7 @@ kind: doc
 
 - asset_path: /Game/RogueRigs/FX/NS_HeavySlamImpact (Niagara system, no Blueprint); chip material /Game/RogueRigs/FX/Dig/M_DigChip
 - parent_class: UNiagaraSystem
-- purpose: impact effect when the heavy's slam lands ([[enemy-heavy]]): a flat dust ring expanding to the slam radius, and rock chips thrown up near the centre. Neutral rock colours, no gameplay colour ([[color-code]]). Duplicated from NS_DigImpact ([[bp-dig-impact]]) then reworked. Not wired yet: playing it is the next subtask of task-300-heavy-slam-impact-fx (provisional, owner 2026-10-23).
+- purpose: impact effect when the heavy's slam lands ([[enemy-heavy]]): a flat dust ring expanding to the slam radius, and rock chips thrown up near the centre. Neutral rock colours, no gameplay colour ([[color-code]]). Duplicated from NS_DigImpact ([[bp-dig-impact]]) then reworked. Played by BP_Heavy OnSlam since task-300-02 ([[bp-heavy]]), which sets User.Radius to the slam Radius (provisional, owner 2026-10-23).
 - user_params:
   - `User.Radius`: float (`SetVariableFloat`), default 361 (the current slam radius, cm). Scales the ring: the Dust emitter's AddVelocity speed is the HLSL `User.Radius * 6.67` and its sprite size is `User.Radius * 0.15` to `* 0.22`, so the ring edge reaches about the radius whatever the value. The chips do not scale.
 - emitters (both CPU sim, loop behaviour Once, inactive response Complete, one SpawnBurst_Instantaneous at t=0, no SpawnRate; sprite renderers from the Fountain template):
@@ -28,4 +28,5 @@ kind: doc
 - [[blueprints-fx-index]] — parent index.
 - [[enemy-heavy]] — the slam it shows.
 - [[color-code]] — no gameplay colour.
+- [[bp-heavy]] — its OnSlam spawns this system.
 - [[bp-dig-impact]] — the system it was duplicated from, and M_DigChip.
