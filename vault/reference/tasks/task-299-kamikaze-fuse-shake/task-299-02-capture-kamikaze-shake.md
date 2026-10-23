@@ -3,7 +3,7 @@ id: task-299-02-capture-kamikaze-shake
 description: "Capture frames of an armed kamikaze over its 0.65 s fuse in -game (cpp)."
 parent: task-299-kamikaze-fuse-shake
 kind: task
-status: in-progress
+status: done
 ---
 # Capture the kamikaze fuse
 
@@ -15,11 +15,11 @@ status: in-progress
 - done_when: body offset visible between frames, core growth visible; no untracked throwaway files
 - editor_state: any (runs beside the owner editor)
 - token_ceiling: 30000
-- model: open
-- tokens: open
-- runs: open
+- model: opus
+- tokens: input 38, cache write 45862, cache read 519938, output 11352
+- runs: 1
 - milestone: M2
-- result: open
+- result: 14 -game frames at slomo 0.1 over one fuse, 0.05 s apart, plus sheet (Saved/RobotMeshes/kamikaze-shake/kamikaze_sheet.png): body offset against a fixed cross visible between frames (about 21 px travel each screen axis); core bigger at the end but mixed with its pulse. Not verified: uu amplitude, rate rise 8 to 24 Hz, look at normal speed.
 
 ## Relations
 - [[task-299-kamikaze-fuse-shake]] — parent global task.
