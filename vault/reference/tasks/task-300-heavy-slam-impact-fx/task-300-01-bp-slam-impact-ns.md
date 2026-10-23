@@ -3,7 +3,7 @@ id: task-300-01-bp-slam-impact-ns
 description: "Create NS_HeavySlamImpact, a dust ring and rock chips scaled by User.Radius, with its doc node (bp)."
 parent: task-300-heavy-slam-impact-fx
 kind: task
-status: todo
+status: in-progress
 ---
 # NS_HeavySlamImpact
 

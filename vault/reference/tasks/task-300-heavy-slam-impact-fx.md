@@ -3,7 +3,7 @@ id: task-300-heavy-slam-impact-fx
 description: "Global task: A dust ring and rock chips burst from the ground when the heavy slam lands, sized to the slam radius."
 parent: tasks-to-do-index
 kind: task
-status: todo
+status: in-progress
 ---
 # Heavy slam ground impact effect
 
