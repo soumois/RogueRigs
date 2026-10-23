@@ -21,7 +21,7 @@ status: in-progress
 2. task-289-02-bake-chaser-v2-run — 3d: Rebake the chaser v2 run with the v1 motion
 3. task-289-03-bp-heavy-run — bp: Heavy anim texture and RunRate in Unreal
 4. task-289-04-bp-chaser-v2-run — bp: Chaser v2 anim texture and RunRate in Unreal
-5. task-289-05-cpp-slam-lead — cpp: Heavy slam lead for the new RunRate
+5. task-289-05-cpp-slam-lead — bp: Heavy slam lead for the new RunRate
 6. task-289-06-capture-run — cpp: Capture both robots running
 
 ## Relations
@@ -30,5 +30,5 @@ status: in-progress
 - [[task-289-02-bake-chaser-v2-run]] — step 02, 3d.
 - [[task-289-03-bp-heavy-run]] — step 03, bp.
 - [[task-289-04-bp-chaser-v2-run]] — step 04, bp.
-- [[task-289-05-cpp-slam-lead]] — step 05, cpp.
+- [[task-289-05-cpp-slam-lead]] — step 05, bp.
 - [[task-289-06-capture-run]] — step 06, cpp.
