@@ -123,7 +123,7 @@ bool FRRHeavyStatsTest::RunTest(const FString& Parameters)
 	TestEqual(TEXT("knockback resistance 0.8"), Heavy->GetKnockbackResistance(), 0.8f);
 	TestEqual(TEXT("slam radius 361"), Heavy->GetSlamRadius(), 361.f);
 	TestEqual(TEXT("telegraph 1.0 s"), Heavy->GetTelegraphDuration(), 1.f);
-	TestEqual(TEXT("arrival 144.5 uu (half the slam radius)"), Heavy->GetEnemyMovement()->GetArrivalDistance(), 144.5f);
+	TestEqual(TEXT("arrival 180.5 uu (half the slam radius)"), Heavy->GetEnemyMovement()->GetArrivalDistance(), 180.5f);
 	const float Radius = Heavy->GetBodyRadius();
 	TestTrue(TEXT("body radius at most 80 uu"), Radius <= 80.f);
 	TestEqual(TEXT("body 2x chaser (48 x 124)"), Radius, 48.f);
