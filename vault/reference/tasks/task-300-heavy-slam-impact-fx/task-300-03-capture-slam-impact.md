@@ -3,7 +3,7 @@ id: task-300-03-capture-slam-impact
 description: "Capture frames of a heavy slam impact in -game (cpp)."
 parent: task-300-heavy-slam-impact-fx
 kind: task
-status: in-progress
+status: done
 ---
 # Capture the slam impact
 
@@ -15,11 +15,11 @@ status: in-progress
 - done_when: ring reaching about the slam radius and chips visible; no untracked throwaway files
 - editor_state: any (runs beside the owner editor)
 - token_ceiling: 30000
-- model: open
-- tokens: open
-- runs: open
+- model: opus
+- tokens: input 44, cache write 49336, cache read 595298, output 11346
+- runs: 2
 - milestone: M2
-- result: open
+- result: Run 1 (Saved/RobotMeshes/slam-impact/): ring ~0.4 R, raised, whitish, chips specks -> fix task-300-04. Run 2 (Saved/RobotMeshes/slam-impact-v2/slam_sheet.png, frames 08-17, slomo 0.1): flat ring centred at the feet, ~0.86 R at frame 14, ~0.98 R at frame 15 (~+0.3 s), gone at +0.35 s; light beige-tan semi-transparent (lighter than intended grey-brown); ~5 light-tan chips visible near the legs, short throw. Pixel estimates from the pitched camera.
 
 ## Relations
 - [[task-300-heavy-slam-impact-fx]] — parent global task.

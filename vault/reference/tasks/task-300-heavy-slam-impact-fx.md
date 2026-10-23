@@ -1,9 +1,9 @@
 ---
 id: task-300-heavy-slam-impact-fx
 description: "Global task: A dust ring and rock chips burst from the ground when the heavy slam lands, sized to the slam radius."
-parent: tasks-to-do-index
+parent: tasks-done-index
 kind: task
-status: in-progress
+status: done
 ---
 # Heavy slam ground impact effect
 
@@ -13,8 +13,8 @@ status: in-progress
 - gdd_check: enemy-heavy read (2026-10-23): slam impact line added (provisional, owner 2026-10-23). Default: dust in neutral rock grey-brown, chips reuse the NS_DigImpact chip look; no gameplay effect.
 - confirmed_by_owner: yes (2026-10-23, "Le reste est bon"; planned in a planning pass, each task run later by its own orchestrator)
 - milestone: M2
-- next_step: task-300-03-capture-slam-impact
-- result: open
+- next_step: none
+- result: Done. Run 1 (Saved/RobotMeshes/slam-impact/): ring ~0.4 R, raised, whitish, chips specks -> fix task-300-04. Run 2 (Saved/RobotMeshes/slam-impact-v2/slam_sheet.png, frames 08-17, slomo 0.1): flat ring centred at the feet, ~0.86 R at frame 14, ~0.98 R at frame 15 (~+0.3 s), gone at +0.35 s; light beige-tan semi-transparent (lighter than intended grey-brown); ~5 light-tan chips visible near the legs, short throw. Pixel estimates from the pitched camera.
 
 ## Subtasks
 1. task-300-01-bp-slam-impact-ns — bp: NS_HeavySlamImpact
@@ -23,7 +23,7 @@ status: in-progress
 4. task-300-04-bp-slam-impact-fix — bp: fix NS_HeavySlamImpact from the capture
 
 ## Relations
-- [[tasks-to-do-index]] — parent index.
+- [[tasks-done-index]] — parent index.
 - [[task-300-01-bp-slam-impact-ns]] — step 01, bp.
 - [[task-300-02-bp-slam-impact-wire]] — step 02, bp.
 - [[task-300-03-capture-slam-impact]] — step 03, cpp.
