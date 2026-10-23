@@ -1,6 +1,6 @@
 ---
 id: bp-shield-chaser-v2
-description: "BP_ShieldChaserV2, duplicate of BP_ShieldChaser with the animated Meshy v2 mesh and its own master and instances; open for slots, RunRate 1.5, OnShieldBroken and revert."
+description: "BP_ShieldChaserV2, duplicate of BP_ShieldChaser with the animated Meshy v2 mesh and its own master and instances; open for slots, RunRate 0.7, OnShieldBroken and revert."
 parent: blueprints-enemies-index
 kind: doc
 ---
@@ -16,7 +16,7 @@ kind: doc
 - events: OnShieldBroken (ShieldChaser EventOnShieldBroken), read back: BodyMesh SetMaterial element 0 = MI_ShieldChaserV2_BodyPlain, element 1 = MI_RobotEye_ShieldChaserV2Plain, element 2 and element 3 = MI_ShieldChaserV2_Hidden, then SpawnSystemAtLocation NS_ShieldDebris (bAutoActivate false), SetNiagaraVariable Vector3 User.HitDirection = GetShieldDebrisDirection, Activate; unchanged from v1 apart from the four materials. Pooled reuse restores the captured materials (ARREnemy RestoreVisualParts).
 - logic_in_bp: visuals only (four SetMaterial calls, spawn, SetNiagaraVariable, Activate).
 - assets: /Game/RogueRigs/Art/ShieldChaserV2/ SM_ShieldChaserV2_Meshy_Anim (imported by MCP from Art/Meshes/shield-chaser-v2/SM_ShieldChaserV2_Meshy_Anim.fbx; bounds extension 60 cm, collision removed, LightMapCoordinateIndex 1, Generate Lightmap UVs off, full precision UVs on), T_ShieldChaserV2Anim (20 x 62, TC_HDR, no mips, Nearest, sRGB off, never stream, Clamp, World group), M_ShieldChaserV2_Anim (duplicate of M_ShieldChaser_Anim: the master hard-codes its anim texture in a TextureObject, so v2 needs its own master; only that TextureObject changed to T_ShieldChaserV2Anim, recompiled), MI_ShieldChaserV2_Body, _BodyPlain, _Shield, _Emblem, _Hidden; and in /Game/RogueRigs/Materials/Robots/ MI_RobotEye_ShieldChaserV2 and MI_RobotEye_ShieldChaserV2Plain (duplicates of MI_RobotEye_ChaserV2 with AnimTex T_ShieldChaserV2Anim). Values in [[bp-robot-meshy-material]].
-- animation: clip 0 shield run, clip 1 bash, clip 2 plain run, clip 3 plain attack (ClipOffset 0 shield, 2 plain), baked for RunRate 1.5 ([[robot-parts-bake-pipeline]]).
+- animation: clip 0 shield run, clip 1 bash, clip 2 plain run, clip 3 plain attack (ClipOffset 0 shield, 2 plain), baked for RunRate 0.7 since task-291 ([[robot-parts-bake-pipeline]]).
 - verified: UV channel 2 (PartId) on RENDER_DATA: 3 UV sets, 7134 triangles; body (id 0) 6097 triangles on bins 0.05 to 0.95, robot_eye (id 1) 58 at 0.15, shield (id 2) 977 at 0.45, emblem (id 3) 2 at 0.45; off_bin 0, mixed 0. Build settings read back. BP compiled (LogBlueprint: only the Compiling lines), BodyMesh and OnShieldBroken read back, saved. v1 assets untouched.
 - not_verified: debris in game (PIE, shield-chaser debris offsets still those of the chaser v2 mesh, not the shield chaser), PIE, render, shield and run look, bounds sufficiency, debris direction, spawn.
 - revert: delete BP_ShieldChaserV2, the Art/ShieldChaserV2 folder and the two MI_RobotEye_ShieldChaserV2* instances. No v1 asset was changed.
