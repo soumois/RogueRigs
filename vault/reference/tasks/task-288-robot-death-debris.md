@@ -15,7 +15,7 @@ status: done
 - confirmed_by_owner: yes (2026-10-22, plan accepted; launch on the owner's word)
 - milestone: M2
 - next_step: none
-- result: Done. Death shots Saved/RobotMeshes/debris/ (sheets/ contact sheets) via a scratch -game script (SpawnNear 450 yaw -30, crit 1, slomo 0.25, timed Shots); heavy 3, shooter 3, chaser v2 3, kamikaze 3 (Niagara dump NumParticles 3, reads as 5-6 objects on screen), shield chaser v2 >=3 v2 pieces + v1 shards (not separable); no glow; all gone by 4.9-6.1 s after death; chaser v1 reference 2 small pieces. Unverified: piece identities, exact counts except kamikaze.
+- result: Done. 13 pieces each for heavy, shooter and chaser v2, 3 for kamikaze (288-01..04; left/right offset differences above 0.5 cm = Meshy mesh asymmetry, up to 6.4 cm on the heavy forearm, accepted provisional, owner 2026-10-23); grouped launch in C++ (288-05); M_RobotDebris and NS_Heavy/Shooter/ChaserV2/KamikazeDebris (288-06..10); each new BP throws its debris, shield chaser v2 = chaser v2 pieces + v1 shield shards (288-11..15); -game capture Saved/RobotMeshes/debris/: 3 pieces per robot (kamikaze 3 per Niagara dump), no glow, gone by about 5 s; v1 debris untouched. Unverified: piece identities on camera, exact counts except kamikaze, shield chaser v2 pieces versus shards.
 
 ## Subtasks
 1. task-288-01-pieces-heavy — 3d: Debris pieces of the heavy
