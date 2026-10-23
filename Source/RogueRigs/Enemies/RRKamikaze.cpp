@@ -27,6 +27,8 @@ ARRKamikaze::ARRKamikaze(const FObjectInitializer& ObjectInitializer)
 	// 1.1 x the miner's capsule (34 x 88 -> 37.4 x 96.8, enemy-kamikaze size), on the ground: the flow field and avoidance are
 	// unchanged. Contact with the miner is at 71.4 uu between centers, inside the arm range (CSV AttackRange 150) and the arrival distance (75). Editable in the Blueprint.
 	GetCapsuleComponent()->InitCapsuleSize(37.4f, 96.8f);
+	// Wider crowd spacing only (task-295-01): the separation uses body radius x 1.3; capsule and body radius unchanged.
+	SeparationRadiusScale = 1.3f;
 
 	VisualRoot = CreateDefaultSubobject<USceneComponent>(TEXT("VisualRoot"));
 	VisualRoot->SetupAttachment(GetCapsuleComponent());

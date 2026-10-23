@@ -57,7 +57,11 @@ void URRRobotSeparationSubsystem::RebuildIfNeeded()
 		const FVector2D Position(Robot->GetActorLocation());
 		const int32 Entry = Entries.Add(Robot);
 		Positions.Add(Position);
-		Radii.Add(Robot->GetBodyRadius());
+		const float SeparationRadius = Robot->GetSeparationRadius();
+		// The 3 x 3 bucket read only finds every contact while two separation radii fit in one bucket.
+		ensureMsgf(2.f * SeparationRadius <= BucketSize, TEXT("%s separation radius %.1f exceeds half the bucket size %.0f"),
+			*Robot->GetName(), SeparationRadius, BucketSize);
+		Radii.Add(SeparationRadius);
 		Buckets.FindOrAdd(BucketOf(Position)).Add(Entry);
 	}
 }
@@ -71,7 +75,7 @@ FVector URRRobotSeparationSubsystem::GetSeparation(const ARREnemy* Robot)
 	RebuildIfNeeded();
 
 	const FVector2D Position(Robot->GetActorLocation());
-	const float Radius = Robot->GetBodyRadius();
+	const float Radius = Robot->GetSeparationRadius();
 	const FIntPoint Center = BucketOf(Position);
 	FVector2D Push = FVector2D::ZeroVector;
 	for (int32 Y = Center.Y - 1; Y <= Center.Y + 1; ++Y)

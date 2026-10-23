@@ -29,6 +29,8 @@ ARRHeavy::ARRHeavy(const FObjectInitializer& ObjectInitializer)
 
 	// Twice the chaser (24 x 62), radius well under the 80 uu limit so it crosses one-cell (200 uu) corridors (enemy-heavy).
 	GetCapsuleComponent()->InitCapsuleSize(48.f, 124.f);
+	// Wider crowd spacing only (task-295-01): the separation uses body radius x 1.3; capsule and body radius unchanged.
+	SeparationRadiusScale = 1.3f;
 
 	// Slam ground signal (task-115-01): centered on the feet, hidden until a telegraph starts.
 	GroundTelegraph = CreateDefaultSubobject<URRGroundTelegraphComponent>(TEXT("GroundTelegraph"));

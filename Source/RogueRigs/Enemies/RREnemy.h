@@ -160,8 +160,11 @@ public:
 	/** True while the movement runs at the far tick interval. */
 	bool IsFarMovementActive() const { return bFarMovementActive; }
 
-	/** Radius (uu) of the robot body: its own capsule radius before the terrain capsule shrink; used by the hit capsule and the separation. */
+	/** Radius (uu) of the robot body: its own capsule radius before the terrain capsule shrink; used by the hit capsule; the separation scales it (GetSeparationRadius). */
 	float GetBodyRadius() const { return BodyRadius; }
+
+	/** Radius (uu) the separation uses: GetBodyRadius x SeparationRadiusScale (task-295-01). */
+	float GetSeparationRadius() const { return BodyRadius * SeparationRadiusScale; }
 
 	/** Capsule of the robot's own size that takes the miner's shots (Projectile overlap); the root capsule only moves. */
 	UCapsuleComponent* GetHitCapsule() const { return HitCapsule; }
@@ -452,6 +455,13 @@ protected:
 	/** Weight of the separation push against the flow-field input (1). 0.5 = a full overlap steers at half the path weight (provisional). */
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Enemy|Crowd", meta = (ClampMin = "0"))
 	float SeparationWeight = 0.5f;
+
+	/**
+	 * Multiplier of the body radius used only by URRRobotSeparationSubsystem (contact distance between two robots = sum of
+	 * both separation radii). 1 = the body radius; kamikaze and heavy 1.3 (task-295-01). Capsules and GetBodyRadius unchanged.
+	 */
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Enemy|Crowd", meta = (ClampMin = "0"))
+	float SeparationRadiusScale = 1.f;
 
 	/**
 	 * Root capsule radius against the world (rock, floor, the miner) for every robot: the chaser's 24 uu (enemies-index fourth
