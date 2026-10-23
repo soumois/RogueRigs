@@ -3,7 +3,7 @@ id: task-291-chaser-v2-v1-anims
 description: "Global task: Chaser v2 run and attack, and shield chaser v2 shield run and bash, become exactly the v1 clips on the v2 parts."
 parent: tasks-to-do-index
 kind: task
-status: todo
+status: in-progress
 ---
 # Chaser v2 and shield chaser v2 play the v1 clips
 

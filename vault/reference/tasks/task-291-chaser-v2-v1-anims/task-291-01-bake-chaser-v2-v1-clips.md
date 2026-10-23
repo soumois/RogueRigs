@@ -3,7 +3,7 @@ id: task-291-01-bake-chaser-v2-v1-clips
 description: "Rebake T_ChaserV2Anim rows 0..30 with the exact chaser v1 run and attack curves on the v2 parts (3d)."
 parent: task-291-chaser-v2-v1-anims
 kind: task
-status: todo
+status: in-progress
 ---
 # Bake the chaser v1 clips on chaser v2
 
