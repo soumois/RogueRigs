@@ -22,7 +22,8 @@ DECLARE_DYNAMIC_MULTICAST_DELEGATE_TwoParams(FRROnExplosionSignature, FVector, C
  * (world time) after the previous one. Each source object explodes once: a source already queued or exploded is refused.
  * An explosion, in order: destroys every block whose cell center is within the 2D radius (grid QueueDestroyCellsInRadius,
  * source from the row: barrels at once, the other blocks nearest first under the grid's per-frame budget, task-121-01); applies URRGE_DamageExplosion once to every actor whose ASC owns a URRHealthAttributeSet and whose
- * location is within the 2D radius; spawns the row's FX class; broadcasts OnExplosion.
+ * location is within the 2D radius (the row's MinerDamage to an ARRMiner, its Damage to any other character, task-294-01);
+ * spawns the row's FX class; broadcasts OnExplosion.
  * No-one-shot rule: when the target is an ARRMiner at full health (Health >= MaxHealth), the damage is capped at
  * Health - MinerHealthLeftAtFullHealth, so an explosion never takes a full-health miner to 0. Below full health the damage
  * is not capped. I-frames are respected: the GE is refused while the miner has State.Invulnerable.
@@ -135,8 +136,8 @@ protected:
 	/** Applies URRGE_DamageExplosion once to every ASC with a health set whose actor is inside the 2D radius. */
 	void DamageCharacters(const FPendingExplosion& Explosion);
 
-	/** Damage dealt to Target after the miner no-one-shot cap. */
-	float ComputeCharacterDamage(const AActor* Target, const UAbilitySystemComponent& TargetASC, float Damage) const;
+	/** Damage dealt to Target: Stats.MinerDamage after the no-one-shot cap for an ARRMiner, Stats.Damage for any other character. */
+	float ComputeCharacterDamage(const AActor* Target, const UAbilitySystemComponent& TargetASC, const FRRExplosionStatsRow& Stats) const;
 
 	/** Spawns the row's FX class at the center, sized to GetVisualRadius(radius) with VisualHoldSeconds; nothing when the class is empty or missing. */
 	void SpawnFX(const FPendingExplosion& Explosion);

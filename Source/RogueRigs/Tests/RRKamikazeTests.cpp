@@ -333,7 +333,7 @@ bool FRRKamikazeKilledTest::RunTest(const FString& Parameters)
 	TestEqual(TEXT("one explosion"), Recorder->GetExplosionRows().Num(), 1);
 	const bool bChaserAlive = WeakChaser.IsValid() && !WeakChaser->IsActorBeingDestroyed() && !WeakChaser->IsDead();
 	AddInfo(FString::Printf(TEXT("chaser at 150 uu: health %.1f, dead %d"), WeakChaser.IsValid() ? Health(WeakChaser.Get()) : 0.f, bChaserAlive ? 0 : 1));
-	TestFalse(TEXT("the explosion killed the chaser (30 damage on 30 health)"), bChaserAlive);
+	TestFalse(TEXT("the explosion killed the chaser (40 damage on 30 health)"), bChaserAlive);
 
 	int32 NearKamikaze = 0;
 	const TArray<ARRPickup*> Pickups = GetXPPickups(TestWorld.Get());

@@ -1174,10 +1174,10 @@ bool FRRIntegrationKamikazeReachesTest::RunTest(const FString& Parameters)
 	TestEqual(TEXT("row Kamikaze"), Recorder->GetExplosionRows()[0], FName(TEXT("Kamikaze")));
 	if (TestEqual(TEXT("miner hit once"), Hits.Num(), 1))
 	{
-		TestEqual(TEXT("hit = Kamikaze explosion damage (30)"), Hits[0].Damage, Stats.Damage);
+		TestEqual(TEXT("hit = Kamikaze miner damage (30)"), Hits[0].Damage, Stats.MinerDamage);
 	}
-	TestEqual(TEXT("explosion damage is 30"), Stats.Damage, 30.f);
-	TestEqual(TEXT("miner Health lowered by 30"), GetHealth(Miner), StartHealth - Stats.Damage);
+	TestEqual(TEXT("explosion miner damage is 30"), Stats.MinerDamage, 30.f);
+	TestEqual(TEXT("miner Health lowered by 30"), GetHealth(Miner), StartHealth - Stats.MinerDamage);
 	TestFalse(TEXT("miner alive"), Miner->IsDead());
 	TestFalse(TEXT("kamikaze destroyed"), Weak.IsValid() && !Weak->IsActorBeingDestroyed());
 	TestEqual(TEXT("no XP after a fuse explosion"), CountXPPickups(TestWorld.Get()), 0);

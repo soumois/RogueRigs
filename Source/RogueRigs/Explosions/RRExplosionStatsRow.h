@@ -22,9 +22,13 @@ struct ROGUERIGS_API FRRExplosionStatsRow : public FTableRowBase
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Explosion Stats")
 	float Radius = 0.f;
 
-	/** Character damage (SetByCaller Data.Damage of URRGE_DamageExplosion), before the miner no-one-shot cap. */
+	/** Damage to every character that is not the miner (robots): SetByCaller Data.Damage of URRGE_DamageExplosion. */
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Explosion Stats")
 	float Damage = 0.f;
+
+	/** Damage to an ARRMiner target, before the miner no-one-shot cap (task-294-01; Kamikaze 30 while robots take 40). */
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Explosion Stats")
+	float MinerDamage = 0.f;
 
 	/** Terrain source reported to the grid for the destroyed blocks (Barrel or Kamikaze). */
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Explosion Stats")

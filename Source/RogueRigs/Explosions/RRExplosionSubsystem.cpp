@@ -143,14 +143,14 @@ void URRExplosionSubsystem::Explode(const FPendingExplosion& Explosion)
 	}
 	DamageCharacters(Explosion);
 	SpawnFX(Explosion);
-	UE_LOG(LogRogueRigs, Verbose, TEXT("Explosion '%s' at %s (radius %.0f, damage %.0f)"), *Explosion.RowName.ToString(), *Explosion.Center.ToString(), Explosion.Stats.Radius, Explosion.Stats.Damage);
+	UE_LOG(LogRogueRigs, Verbose, TEXT("Explosion '%s' at %s (radius %.0f, damage %.0f, miner damage %.0f)"), *Explosion.RowName.ToString(), *Explosion.Center.ToString(), Explosion.Stats.Radius, Explosion.Stats.Damage, Explosion.Stats.MinerDamage);
 	OnExplosion.Broadcast(Explosion.Center, Explosion.RowName);
 }
 
 void URRExplosionSubsystem::DamageCharacters(const FPendingExplosion& Explosion)
 {
 	UWorld* World = GetWorld();
-	if (!World || Explosion.Stats.Damage <= 0.f)
+	if (!World || (Explosion.Stats.Damage <= 0.f && Explosion.Stats.MinerDamage <= 0.f))
 	{
 		return;
 	}
@@ -191,7 +191,7 @@ void URRExplosionSubsystem::DamageCharacters(const FPendingExplosion& Explosion)
 		{
 			continue;
 		}
-		const float Damage = ComputeCharacterDamage(Actor, *ASC, Explosion.Stats.Damage);
+		const float Damage = ComputeCharacterDamage(Actor, *ASC, Explosion.Stats);
 		if (Damage <= 0.f)
 		{
 			continue;
@@ -216,12 +216,14 @@ void URRExplosionSubsystem::DamageCharacters(const FPendingExplosion& Explosion)
 	}
 }
 
-float URRExplosionSubsystem::ComputeCharacterDamage(const AActor* Target, const UAbilitySystemComponent& TargetASC, float Damage) const
+float URRExplosionSubsystem::ComputeCharacterDamage(const AActor* Target, const UAbilitySystemComponent& TargetASC, const FRRExplosionStatsRow& Stats) const
 {
 	if (!Cast<ARRMiner>(Target))
 	{
-		return Damage;
+		return Stats.Damage;
 	}
+	// The miner takes his own value; the no-one-shot cap applies to it.
+	const float Damage = Stats.MinerDamage;
 	const float Health = TargetASC.GetNumericAttribute(URRHealthAttributeSet::GetHealthAttribute());
 	const float MaxHealth = TargetASC.GetNumericAttribute(URRHealthAttributeSet::GetMaxHealthAttribute());
 	if (MaxHealth > 0.f && Health >= MaxHealth)

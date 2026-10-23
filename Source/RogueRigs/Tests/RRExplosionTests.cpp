@@ -112,11 +112,13 @@ bool FRRExplosionBlocksInRadiusTest::RunTest(const FString& Parameters)
 	}
 	TestEqual(TEXT("Barrel radius 700 (owner 2026-10-12, was 350)"), Stats.Radius, 700.f);
 	TestEqual(TEXT("Barrel damage 40"), Stats.Damage, 40.f);
+	TestEqual(TEXT("Barrel miner damage 40"), Stats.MinerDamage, 40.f);
 	TestTrue(TEXT("Barrel terrain source"), Stats.TerrainSource == ERRTerrainDamageSource::Barrel);
 	FRRExplosionStatsRow KamikazeStats;
 	TestTrue(TEXT("Kamikaze row loads"), Subsystem->GetExplosionStats(TEXT("Kamikaze"), KamikazeStats));
 	TestEqual(TEXT("Kamikaze radius 312"), KamikazeStats.Radius, 312.f);
-	TestEqual(TEXT("Kamikaze damage 30"), KamikazeStats.Damage, 30.f);
+	TestEqual(TEXT("Kamikaze damage 40 (owner 2026-10-23, was 30)"), KamikazeStats.Damage, 40.f);
+	TestEqual(TEXT("Kamikaze miner damage 30"), KamikazeStats.MinerDamage, 30.f);
 
 	// Blocks around the floor cell west of the test rock, before the explosion.
 	const FIntPoint CenterCell = RockWestFloorCell;
@@ -351,6 +353,7 @@ bool FRRExplosionNoOneShotTest::RunTest(const FString& Parameters)
 	FRRExplosionStatsRow Huge;
 	Huge.Radius = 300.f;
 	Huge.Damage = 1000.f;
+	Huge.MinerDamage = 1000.f;
 	Huge.TerrainSource = ERRTerrainDamageSource::Barrel;
 	const FVector Center = Miner->GetActorLocation();
 
@@ -406,7 +409,7 @@ bool FRRExplosionVisualTest::RunTest(const FString& Parameters)
 		float CollisionRadius;
 		float Damage;
 	};
-	const FRowCase Cases[] = { { TEXT("Barrel"), 700.f, 40.f }, { TEXT("Kamikaze"), 312.f, 30.f } };
+	const FRowCase Cases[] = { { TEXT("Barrel"), 700.f, 40.f }, { TEXT("Kamikaze"), 312.f, 40.f } };
 	for (int32 Index = 0; Index < UE_ARRAY_COUNT(Cases); ++Index)
 	{
 		const FRowCase& Case = Cases[Index];
