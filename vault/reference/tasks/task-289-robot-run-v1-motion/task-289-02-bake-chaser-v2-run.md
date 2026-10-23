@@ -3,7 +3,7 @@ id: task-289-02-bake-chaser-v2-run
 description: "Rebake the chaser v2 run clip with the chaser v1 run curves, attack rows kept (3d)."
 parent: task-289-robot-run-v1-motion
 kind: task
-status: todo
+status: in-progress
 ---
 # Rebake the chaser v2 run with the v1 motion
 

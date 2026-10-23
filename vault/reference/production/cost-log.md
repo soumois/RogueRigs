@@ -608,6 +608,7 @@ kind: note
 | [[task-288-15-bp-shield-v2-death]] | sonnet | 1 | 0k | 36k | 569k | 9k |
 | [[task-287-04-capture-shooter-aim-fire]] | opus | 1 | 0k | 69k | 663k | 10k |
 | [[task-288-16-capture-debris]] | opus | 1 | 0k | 191k | 3710k | 36k |
+| [[task-289-01-bake-heavy-run]] | sonnet | 1 | 0k | 87k | 1767k | 25k |
 
 ## Totals
 | Scope | Input | Cache write | Cache read | Output |
