@@ -3,7 +3,7 @@ id: task-288-10-bp-ns-kamikaze-debris
 description: "NS_KamikazeDebris with its pieces (bp)."
 parent: task-288-robot-death-debris
 kind: task
-status: in-progress
+status: done
 ---
 # NS_KamikazeDebris with its pieces
 
@@ -15,11 +15,11 @@ status: in-progress
 - done_when: mesh bounds read back match the json (Y mirrored), renderer mesh list and offset table read back, system compiles UpToDate (GPU script too), git diff shows NS_RobotDebris and the v1 debris meshes unchanged; lint clean
 - editor_state: open
 - token_ceiling: 80000
-- model: open
-- tokens: open
-- runs: open
+- model: sonnet
+- tokens: input 20, cache write 30633, cache read 240776, output 4316
+- runs: 1
 - milestone: M2
-- result: open
+- result: 3 SM_KamikazeDebris_* in Art/Kamikaze/Debris (MI_KamikazeDebris, sizes = json); NS_KamikazeDebris renderer list (3) and PieceLocal read back, UpToDate incl. GPU; v1 unchanged.
 
 ## Relations
 - [[task-288-robot-death-debris]] — parent global task.

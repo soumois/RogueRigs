@@ -3,7 +3,7 @@ id: task-288-11-bp-heavy-death
 description: "BP_Heavy throws its debris (bp)."
 parent: task-288-robot-death-debris
 kind: task
-status: todo
+status: in-progress
 ---
 # BP_Heavy throws its debris
 
