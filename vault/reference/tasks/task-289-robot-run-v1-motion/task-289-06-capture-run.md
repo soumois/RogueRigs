@@ -3,7 +3,7 @@ id: task-289-06-capture-run
 description: "Capture the heavy and chaser v2 running in -game, compared with the old walk shots and a chaser v1 run (cpp)."
 parent: task-289-robot-run-v1-motion
 kind: task
-status: in-progress
+status: done
 ---
 # Capture both robots running
 
@@ -15,11 +15,11 @@ status: in-progress
 - done_when: both robots run with visible thigh and arm swing, parts joined, eyes on the head; the Orchestrator sends the shots to the owner
 - editor_state: closed
 - token_ceiling: 50000
-- model: open
-- tokens: open
-- runs: open
+- model: opus
+- tokens: input 26, cache write 42955, cache read 285723, output 5136
+- runs: 1
 - milestone: M2
-- result: open
+- result: -game shots Saved/RobotMeshes/run-v1/{heavy,chaserv2,chaserv1}_0-5.png + *_sheet.png (robot_shots.ps1 -Label run-v1 -NoFreeze -Distance 900 -StopSpawner, run beside the owner's open editor). Heavy: thigh and arm swing clearly larger than the old walk, joined, eye on head. Chaser v2: legs in phase, stride visible in 2 of 6 frames, swing reads weaker than v1 from the top-down camera (v1 knee bend 55 vs 15 here). Unverified: foot slide in game, slam contact timing.
 
 ## Relations
 - [[task-289-robot-run-v1-motion]] — parent global task.
