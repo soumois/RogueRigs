@@ -1,9 +1,9 @@
 ---
 id: task-295-separation-radius-kamikaze-heavy
 description: "Global task: The crowd separation radius of the kamikaze and the heavy grows by 30 %; capsules unchanged."
-parent: tasks-to-do-index
+parent: tasks-done-index
 kind: task
-status: in-progress
+status: done
 ---
 # Kamikaze and heavy separation radius +30 %
 
@@ -13,12 +13,12 @@ status: in-progress
 - gdd_check: enemy-kamikaze and enemy-heavy read (2026-10-23): crowd spacing line added (provisional, owner 2026-10-23). Reading kept: the zone is the robot-robot separation, not the kamikaze arm range nor the slam radius. No capture: a spacing rule.
 - confirmed_by_owner: yes (2026-10-23, "Le reste est bon"; planned in a planning pass, each task run later by its own orchestrator)
 - milestone: M2
-- next_step: task-295-01-cpp-separation-radius
-- result: open
+- next_step: none
+- result: Done. SeparationRadiusScale on ARREnemy (default 1.0), 1.3 on kamikaze and heavy; separation radius kamikaze 37.4 -> 48.6 uu, heavy 48 -> 62.4 uu, chaser 24, shield chaser 24, shooter 34 unchanged; capsules and GetBodyRadius unchanged; build clean, 38 enemy tests pass, no test changed; commits 7569c5a5, 63f60eff
 
 ## Subtasks
 1. task-295-01-cpp-separation-radius — cpp: Per-class separation radius
 
 ## Relations
-- [[tasks-to-do-index]] — parent index.
+- [[tasks-done-index]] — parent index.
 - [[task-295-01-cpp-separation-radius]] — step 01, cpp.

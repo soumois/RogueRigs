@@ -301,3 +301,4 @@ Archive: it exceeds the index size limits of [[_authoring]] on purpose (owner, 2
 - [[task-292-heavy-one-per-pack]] — Packs carry at most 1 heavy so heavies arrive from different sides; heavy alive cap 3 unchanged. Status done.
 - [[task-293-heavy-slam-bigger-slower]] — Heavy slam radius 289 to 361 uu and telegraph 0.6 to 1.0 s, fist raise stretched to the longer telegraph. Status done.
 - [[task-294-kamikaze-split-damage]] — Kamikaze explosion deals 40 to robots and 30 to the miner; barrels and terrain rule unchanged. Status done.
+- [[task-295-separation-radius-kamikaze-heavy]] — The crowd separation radius of the kamikaze and the heavy grows by 30 %; capsules unchanged. Status done.

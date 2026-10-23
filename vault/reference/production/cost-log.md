@@ -623,6 +623,7 @@ kind: note
 | [[task-293-01-cpp-heavy-slam-values]] | opus | 1 | 0k | 95k | 2819k | 25k |
 | [[task-293-02-capture-heavy-slam]] | opus | 1 | 0k | 47k | 539k | 11k |
 | [[task-294-01-cpp-kamikaze-split-damage]] | opus | 1 | 0k | 55k | 569k | 12k |
+| [[task-295-01-cpp-separation-radius]] | opus | 1 | 0k | 36k | 457k | 9k |
 
 ## Totals
 | Scope | Input | Cache write | Cache read | Output |
