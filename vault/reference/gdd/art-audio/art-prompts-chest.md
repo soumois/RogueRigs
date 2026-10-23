@@ -11,6 +11,8 @@ Owner validated 2026-10-23. Look of the chest of [[objective-bonus-chest]]: a co
 ## Files
 - Validated sheet (front, side, back), generated in ChatGPT by the owner: `vault/assets/chest-turnaround.webp`.
 - Prompt as a text file: `Art/Source/chest/prompts/chest-turnaround.txt`.
+- Meshy mesh by the owner, textured, optimised in Meshy (2026-10-23): `Art/Source/chest/meshy/` (copied from the owner's Downloads). Defect reported by the owner: the faces are puffed, not flat.
+- Lock latch crop (front lock block with the red light, the part that pivots at opening): `vault/assets/chest-lock-latch.png`.
 
 ## Sheet prompt (verbatim)
 The `[OBJECT]` placeholder was left as is by the owner; the `Design:` paragraph defines the object.
