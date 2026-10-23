@@ -34,10 +34,13 @@
    -0.7071,
    0.7071
   ],
-  "faces_repainted": 1130,
+  "repaint_enabled": false,
+  "note": "owner kept the original Meshy dish back; stats below are the candidate faces, repainted only with --dish",
+  "candidate_faces": 1130,
+  "faces_repainted": 0,
   "dark_faces_kept": 1621,
   "rho_max_cm": 61.4,
-  "texels_painted": 209415,
+  "texels_painted": 0,
   "colours": {
    "white": [
     0.819,
@@ -251,5 +254,5 @@
   ]
  },
  "texture": "console_c2_basecolor.png",
- "seconds": 57.6
+ "seconds": 37.3
 }

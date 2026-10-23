@@ -1,7 +1,7 @@
 """task-301-03: retouch the console C2 after the cut (dish back texture, foot lamp caps). Headless:
   "$BLENDER_EXE" -b --factory-startup -P Art/Source/console-meshy/clean/console_c2_retouch.py -- [--out-dir Art/Source/console-meshy/clean] [--in-dir <dir of the subtask-02 FBX>]
 Inputs : console_c2_base.fbx, console_c2_head.fbx (subtask 02, FBX_SCALE_UNITS), console_c2_basecolor_meshy.png (the untouched Meshy texture).
-1. Dish back: the head faces on the outer side of the bowl (dish axis 45 deg, centre in head frame cm) that are not dark clamps are repainted per texel from their 3D position:
+1. Dish back (only with --dish, OFF by default since the owner kept the original): the head faces on the outer side of the bowl (dish axis 45 deg, centre in head frame cm) that are not dark clamps are repainted per texel from their 3D position:
    off-white panels, radial seams every 30 deg, one ring seam, teal panel strip at the top centre, thin teal rim band, sparse rust chips. Everything else in the texture is untouched.
 2. Foot lamps: every orange face of the four feet (smears included) goes back to ConsoleBody with a dark texture; one round amber cap (cylinder + dome, 20 sides) per lamp (4 big, 4 small)
    is added in the OtherOrange slot (flat emissive material).
@@ -218,7 +218,9 @@ def paint_dish(P, ti):
 
 
 DISH_MASK = np.zeros((TH, TW), bool)
-raster(sel_uv, sel_pos, paint_dish, DISH_MASK)
+DISH_ON = "--dish" in sys.argv      # owner verdict 2026-10-23: original dish back texels kept, repaint off by default
+if DISH_ON:
+    raster(sel_uv, sel_pos, paint_dish, DISH_MASK)
 
 # ================================================================== 2. foot lamps (base)
 bme = base_o.data
@@ -383,7 +385,7 @@ rep = dict(task="task-301-03-console-c2-retouch", inputs=dict(base="console_c2_b
            frame=cut["frame"], unit_scale_factor_in_files=usf,
            pivots=dict(base_pivot_stage_cm=cut["pivots"]["base_pivot_stage_cm"], head_offset_on_base_cm=cut["pivots"]["head_offset_on_base_cm"],
                        note="unchanged from console_c2_cut.report.json: base origin = bottom centre of the footprint, head origin = mast axis at z 108 cm"),
-           dish_back=dict(frame_centre_head_cm=C.tolist(), axis=[round(float(x), 4) for x in A], faces_repainted=len(SEL_FACES), dark_faces_kept=n_dark, rho_max_cm=round(RHO_MAX, 1),
+           dish_back=dict(frame_centre_head_cm=C.tolist(), axis=[round(float(x), 4) for x in A], repaint_enabled=DISH_ON, note="owner kept the original Meshy dish back; stats below are the candidate faces, repainted only with --dish", candidate_faces=len(SEL_FACES), faces_repainted=len(SEL_FACES) if DISH_ON else 0, dark_faces_kept=n_dark, rho_max_cm=round(RHO_MAX, 1),
                           texels_painted=int(DISH_MASK.sum()), colours=dict(white=[round(float(x), 3) for x in WHITE], teal=[round(float(x), 3) for x in TEAL]), rust_chips=len(CHIPS)),
            foot_lamps=dict(orange_faces_returned_to_ConsoleBody=N_CONV, texels_darkened=int(FOOT_MASK.sum()), cap_faces_added=cap_faces, caps=CAPS,
                            cap_profile="cylinder + 4-ring dome, 20 sides, height about 2.4 cm (buried 0.6), OtherOrange slot, flat emissive material (1.0, 0.45, 0.02) strength 2.0"),
