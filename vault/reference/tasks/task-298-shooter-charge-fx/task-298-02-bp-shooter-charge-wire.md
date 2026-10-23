@@ -3,7 +3,7 @@ id: task-298-02-bp-shooter-charge-wire
 description: "Attach NS_ShooterCharge to the shooter MuzzlePoint, started on OnAimStart, stopped on OnFire and OnAimEnd (bp)."
 parent: task-298-shooter-charge-fx
 kind: task
-status: todo
+status: in-progress
 ---
 # BP_Shooter plays the charge-up
 

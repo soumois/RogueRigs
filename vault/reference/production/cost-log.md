@@ -630,6 +630,7 @@ kind: note
 | [[task-297-01-bp-heavy-death-puff-ns]] | sonnet | 1 | 0k | 63k | 1112k | 14k |
 | [[task-297-02-bp-heavy-death-puff-set]] | sonnet | 1 | 0k | 36k | 670k | 8k |
 | [[task-297-03-capture-heavy-death]] | opus | 2 | 0k | 72k | 1149k | 15k |
+| [[task-298-01-bp-shooter-charge-ns]] | sonnet | 1 | 0k | 86k | 1483k | 22k |
 
 ## Totals
 | Scope | Input | Cache write | Cache read | Output |

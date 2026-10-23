@@ -13,7 +13,7 @@ status: in-progress
 - gdd_check: enemy-shooter and color-code read (2026-10-23): charge-up line added, red as shots and laser (provisional, owner 2026-10-23). MuzzlePoint is at the aimed tip, so during the first 0.3 s raise the effect leads the cannon (accepted default).
 - confirmed_by_owner: yes (2026-10-23, "Le reste est bon"; planned in a planning pass, each task run later by its own orchestrator)
 - milestone: M2
-- next_step: task-298-01-bp-shooter-charge-ns
+- next_step: task-298-02-bp-shooter-charge-wire
 - result: open
 
 ## Subtasks

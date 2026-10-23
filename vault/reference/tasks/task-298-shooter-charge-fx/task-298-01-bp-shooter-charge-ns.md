@@ -3,7 +3,7 @@ id: task-298-01-bp-shooter-charge-ns
 description: "Create NS_ShooterCharge, a red charge-up glow at a point growing over 0.6 s, with its doc node (bp)."
 parent: task-298-shooter-charge-fx
 kind: task
-status: in-progress
+status: done
 ---
 # NS_ShooterCharge
 
@@ -15,11 +15,11 @@ status: in-progress
 - done_when: compiles without error; values read back; doc node and index relation added; lint clean
 - editor_state: open (owner editor, MCP route, do not close it)
 - token_ceiling: 30000
-- model: open
-- tokens: open
-- runs: open
+- model: sonnet
+- tokens: input 58, cache write 86093, cache read 1483252, output 21980
+- runs: 1
 - milestone: M2
-- result: open
+- result: NS_ShooterCharge (1646b004): glow sprite 0->24 cm over 0.6 s, HDR red (8,0.25,0.25); inward sparks 20/s from 28 cm sphere, 2-4 cm; local space, ends on Deactivate. Compiled clean; look unverified.
 
 ## Relations
 - [[task-298-shooter-charge-fx]] — parent global task.
