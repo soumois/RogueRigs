@@ -113,6 +113,7 @@ bp-shield-chaser  reference/tech/blueprints/enemies/bp-shield-chaser.md
 bp-shield-chaser-v2  reference/tech/blueprints/enemies/bp-shield-chaser-v2.md
 bp-shield-debris  reference/tech/blueprints/fx/bp-shield-debris.md
 bp-shooter  reference/tech/blueprints/enemies/bp-shooter.md
+bp-shooter-charge  reference/tech/blueprints/fx/bp-shooter-charge.md
 bp-shotgun  reference/tech/blueprints/player/bp-shotgun.md
 bp-turret  reference/tech/blueprints/player/bp-turret.md
 build-toolchain  reference/tech/pipelines/build-toolchain.md
