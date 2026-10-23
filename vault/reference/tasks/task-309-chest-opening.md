@@ -1,28 +1,34 @@
 ---
 id: task-309-chest-opening
-description: "Global task: On chest hack complete the latch swings up, the lid opens 0.5 s later, a particle plays, three big XP chips fly out."
+description: "Global task: Chest opening: latch swings, lid slams open with overshoot, freeze and shake, inner light, ground ring, three popping XP chips, sparks."
 parent: tasks-to-do-index
 kind: task
 status: todo
 ---
-# Bonus chest opening: latch, lid, particle and XP burst
+# Bonus chest opening: latch, lid slam, light and XP burst
 
-- request: "lorsqu'on ouvre le coffre, il faudra pivoter la partie sur l'image (avec le point de pivot en haut), puis le coffre s'ouvre après 0.5sec. Il y a une particule qui se lance et en plus de l'amélioration gagnée, il doit y avoir de l'xp lancé dans toutes les directions (environ l'équivalent de 3 gros)." (owner, 2026-10-23)
-- goal: On chest hack complete the latch swings up, the lid opens 0.5 s later, a particle plays, three big XP chips fly out.
-- acceptance: on chest hack complete: the latch rotates about its top edge, 0.5 s later the lid opens about its hinges and stays open; at lid opening a one-shot particle plays, 3 big XP chips (8 nuts each) fly out in evenly spread directions, the 5 ore chunks pop and the one upgrade choice is queued; spec updated; -game frames sent to the owner; committed.
-- gdd_check: objective-bonus-chest read (2026-10-23). Overlaps task-307: the thrown XP replaces the 50 % direct XP (default Q7). Pending owner answers, defaults: Q7 3 big chips of 8 nuts, same burst code as the console (task-303-01); Q9 latch 90 deg outward and up in 0.2 s; Q10 lid starts 0.5 s after the latch starts, 100 deg in 0.4 s, stays open; Q11 particle, XP, ore and upgrade choice at lid opening; Q12 NS_BonusChestOpen: gold-yellow sparks and a short flash rising from the open lid. Runs after task-306, task-307 and task-303-01.
+- request: "lorsqu'on ouvre le coffre, il faudra pivoter la partie sur l'image (avec le point de pivot en haut), puis le coffre s'ouvre après 0.5sec. Il y a une particule qui se lance et en plus de l'amélioration gagnée, il doit y avoir de l'xp lancé dans toutes les directions (environ l'équivalent de 3 gros)." (owner, 2026-10-23); after the game-feel video Art/Source/chest/reference/egor-chest-juice.mp4: "309 - D E F G et H" (owner, 2026-10-23; B and C refused: no chest wobble during the hack, no squash or stretch of the body).
+- goal: On chest hack complete the latch swings up, 0.5 s later the lid slams open with an overshoot, the chest freezes an instant and the camera shakes lightly, an inner light with turning rays and a ground ring play, three big XP chips pop out and sparks float up.
+- acceptance: on chest hack complete: the latch rotates about its top edge; 0.5 s later the lid opens past its target, holds an instant (chest only, no global slow-down), settles and stays open (D, E); a light camera shake follows (E, task-310); a ground ring plays at the slam (G); the interior glows with a point light and slowly turning rays (F); 3 big XP chips (8 nuts each) pop out with a scale overshoot in evenly spread directions, the 5 ore chunks pop and the one upgrade choice is queued (H); small sparks float up from the open chest for 2 to 3 s and fade (H); NS_HeavySlamImpact unchanged for the heavy; spec updated; -game frames sent to the owner; committed.
+- gdd_check: objective-bonus-chest read (2026-10-23). Overlaps task-307: the thrown XP replaces the 50 % direct XP (default Q7). Pending owner answers, defaults: Q7 3 big chips of 8 nuts, same burst code as the console (task-303-01); Q9 latch 90 deg outward and up in 0.2 s; Q10 lid starts 0.5 s after the latch starts, 100 deg in 0.4 s, stays open; Q11 particle, XP, ore and upgrade choice at lid opening; Q12 replaced by Q22 and Q25 (no separate flash). Owner video techniques (2026-10-23), color-code, art-style-guide, kessler-voss-logo and bp-heavy-slam-impact read; colour check: company yellow on the corporate chest is a detail (colour principle 2026-10-13), A7 not involved, no conflict; the company yellow has no linear value in the vault. Provisional defaults: Q18 lid to 115 deg in 0.4 s then back to 100 deg in 0.15 s; Q19 chest-only freeze 0.06 s at the 115 deg peak, ring at the freeze start, shake at its end; Q22 point light, emissive Interior slot, 4 rays turning about 30 deg/s, light and rays fade out after 3 s, interior stays lit; Q23 company yellow sampled from the chest logo plate; Q24 NS_HeavySlamImpact gains DustColor and ChipCount at the heavy values, chest ring radius 200 uu, faint yellow, no chips; Q25 chips scale 0 to 1.3 to 1.0 in 0.25 s (chest only), about 20 yellow sparks rising for 2.5 s. Runs after task-306, task-307, task-310 and task-303-01.
 - confirmed_by_owner: no (planned 2026-10-23, "ne lance rien pour l'instant"; waiting for the owner's answers, the defaults below apply if he answers "ok")
 - milestone: M2
 - next_step: task-309-01-chest-opening-sequence
 - result: open
 
 ## Subtasks
-1. task-309-01-chest-opening-sequence — cpp: Chest opening sequence and XP burst
-2. task-309-02-bp-chest-open-fx — bp: NS_BonusChestOpen and its wiring
-3. task-309-03-capture-chest-opening — cpp: Capture the chest opening
+1. task-309-01-chest-opening-sequence — cpp: Chest opening sequence, slam, light drive and XP burst
+2. task-309-02-bp-chest-interior-material — bp: MI_ChestInterior on the Interior slot
+3. task-309-03-bp-slam-ring-params — bp: DustColor and ChipCount on NS_HeavySlamImpact
+4. task-309-04-bp-chest-open-fx — bp: NS_BonusChestOpen, turning rays and floating sparks
+5. task-309-05-bp-chest-open-wiring — bp: BP_BonusChest opening wiring
+6. task-309-06-capture-chest-opening — cpp: Capture the chest opening
 
 ## Relations
 - [[tasks-to-do-index]] — parent index.
 - [[task-309-01-chest-opening-sequence]] — step 01, cpp.
-- [[task-309-02-bp-chest-open-fx]] — step 02, bp.
-- [[task-309-03-capture-chest-opening]] — step 03, cpp.
+- [[task-309-02-bp-chest-interior-material]] — step 02, bp.
+- [[task-309-03-bp-slam-ring-params]] — step 03, bp.
+- [[task-309-04-bp-chest-open-fx]] — step 04, bp.
+- [[task-309-05-bp-chest-open-wiring]] — step 05, bp.
+- [[task-309-06-capture-chest-opening]] — step 06, cpp.

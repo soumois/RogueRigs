@@ -1,20 +1,20 @@
 ---
 id: task-309-01-chest-opening-sequence
-description: "Chest opening sequence and XP burst (cpp): bonus chest opening: latch, lid, particle and xp burst, step 01."
+description: "Chest opening sequence, slam, light drive and XP burst (cpp): bonus chest opening, step 01."
 parent: task-309-chest-opening
 kind: task
 status: todo
 ---
-# Chest opening sequence and XP burst
+# Chest opening sequence, slam, light drive and XP burst
 
-- goal: On ARRBonusChest CompleteHack: rotate the Latch component about its top edge (90 deg in 0.2 s), then at 0.5 s after completion rotate the Lid about its hinge axis (100 deg in 0.4 s, stays open); grant the reward at lid opening instead of at completion: the big XP chip burst of task-303-01 enabled on the chest with 3 chips of 8 nuts, the 5 ore chunks and the one upgrade choice; angles, durations, delay and chip count EditDefaultsOnly, provisional owner 2026-10-23; a BlueprintImplementableEvent OnLidOpened for the particle; spec objective-bonus-chest opening and reward lines; sys-objectives-console-chest and sys-pickups docs; fix only tests the change breaks.
+- goal: On ARRBonusChest CompleteHack: rotate the Latch component about its top edge (90 deg in 0.2 s); 0.5 s after completion rotate the Lid about its hinge axis to 115 deg in 0.4 s (ease-out), hold it 0.06 s (chest only: no global time dilation, the rest of the game runs), then settle to 100 deg in 0.15 s and stay open (Q10, Q18, Q19); at the hold start fire a BlueprintImplementableEvent OnLidSlam (ground ring), at its end play the light shake of task-310-01; at lid opening fire OnLidOpened (rays and sparks), switch on a C++ UPointLightComponent InnerLight (off by default) and a scalar InteriorGlow on the Interior slot, fade the light out after 3 s and keep InteriorGlow on (Q22); grant the reward at lid opening: the big XP chip burst of task-303-01 with 3 chips of 8 nuts, each chip scaling 0 to 1.3 to 1.0 in 0.25 s on spawn (chest burst only, console unchanged, Q25), the 5 ore chunks and the one upgrade choice; every angle, time, scale and intensity EditDefaultsOnly, provisional owner 2026-10-23; spec objective-bonus-chest opening and reward lines; sys-objectives-console-chest and sys-pickups docs; fix only tests the change breaks.
 - agent: cpp
-- depends_on: task-306-03-bp-chest-import; task-307-01-chest-one-upgrade; task-303-01-console-xp-burst
-- inputs: agent-cpp (vault/reference/agents/agent-cpp.md), build-toolchain (vault/reference/tech/pipelines/build-toolchain.md), editor-workflow (vault/reference/tech/conventions/editor-workflow.md), objective-bonus-chest (vault/reference/gdd/run/objective-bonus-chest.md), sys-objectives-console-chest (vault/reference/tech/systems/world/sys-objectives/sys-objectives-console-chest.md), bp-bonus-chest (vault/reference/tech/blueprints/world/bp-bonus-chest.md), sys-pickups (vault/reference/tech/systems/world/sys-pickups.md), sys-pickups-xp (vault/reference/tech/systems/world/sys-pickups/sys-pickups-xp.md), xp-level-up (vault/reference/gdd/run/xp-level-up.md), bp-pickup-xp (vault/reference/tech/blueprints/fx/bp-pickup-xp.md), sys-objectives-events (vault/reference/tech/systems/world/sys-objectives/sys-objectives-events.md), sys-automation-tests (vault/reference/tech/systems/tools/sys-automation-tests.md); files: Source/RogueRigs/Objectives/RRBonusChest.h, Source/RogueRigs/Objectives/RRBonusChest.cpp, Source/RogueRigs/Objectives/RRConsole.h
+- depends_on: task-306-03-bp-chest-import; task-307-01-chest-one-upgrade; task-303-01-console-xp-burst; task-310-01-camera-shake
+- inputs: agent-cpp (vault/reference/agents/agent-cpp.md), build-toolchain (vault/reference/tech/pipelines/build-toolchain.md), editor-workflow (vault/reference/tech/conventions/editor-workflow.md), objective-bonus-chest (vault/reference/gdd/run/objective-bonus-chest.md), sys-objectives-console-chest (vault/reference/tech/systems/world/sys-objectives/sys-objectives-console-chest.md), bp-bonus-chest (vault/reference/tech/blueprints/world/bp-bonus-chest.md), sys-pickups (vault/reference/tech/systems/world/sys-pickups.md), sys-pickups-xp (vault/reference/tech/systems/world/sys-pickups/sys-pickups-xp.md), xp-level-up (vault/reference/gdd/run/xp-level-up.md), bp-pickup-xp (vault/reference/tech/blueprints/fx/bp-pickup-xp.md), sys-objectives-events (vault/reference/tech/systems/world/sys-objectives/sys-objectives-events.md), sys-camera-shake (vault/reference/tech/systems/core/sys-camera-shake.md, written by task-310-01), sys-automation-tests (vault/reference/tech/systems/tools/sys-automation-tests.md); files: Source/RogueRigs/Objectives/RRBonusChest.h, Source/RogueRigs/Objectives/RRBonusChest.cpp, Source/RogueRigs/Objectives/RRConsole.h; Art/Source/chest/reference/egor-chest-juice.mp4 (owner reference, techniques D, E, H)
 - expected_output: C++ change, spec and tech doc lines, tests green
-- done_when: build green; RogueRigs.Console.* and RogueRigs.RunFlow.* pass; chest reward gives 3 chips of 8 and one choice, after the lid delay; docs updated; lint clean; committed
+- done_when: build green; RogueRigs.Console.* and RogueRigs.RunFlow.* pass; chest reward gives 3 chips of 8 and one choice, after the lid delay; no time dilation call; console burst unchanged; docs updated; lint clean; committed
 - editor_state: closed
-- token_ceiling: 40000
+- token_ceiling: 45000
 - model: open
 - tokens: open
 - runs: open
