@@ -3,7 +3,7 @@ id: task-305-01-console-hack-10s
 description: "Console HackDuration 10 s (cpp): console hack time 10 s, step 01."
 parent: task-305-console-hack-10s
 kind: task
-status: in-progress
+status: done
 ---
 # Console HackDuration 10 s
 
@@ -15,11 +15,11 @@ status: in-progress
 - done_when: build green; RogueRigs.Console.* and RogueRigs.RunFlow.* pass (and Integration.ConsoleExtractionWin if it is run); chest 8 s unchanged; docs updated; lint clean; committed
 - editor_state: closed
 - token_ceiling: 30000
-- model: open
-- tokens: open
-- runs: open
+- model: opus
+- tokens: input 32, cache write 80684, cache read 454611, output 6680
+- runs: 1
 - milestone: M2
-- result: open
+- result: ARRConsole HackDuration 12 -> 10 s (RRConsole.h, commit 4070fb23); chest stays 8 s; BP_ObjectiveConsole overrides nothing (doc, asset not opened). Tests fixed: Console.HackRules (RRRunFlowTests.cpp) and Console.ZoneTelegraph (RRConsoleTelegraphTests.cpp) timings. GDD objective-console and sys-objectives-console-chest updated (commit 0131474c). Build exit 0; 8/8 tests pass (Console.*, RunFlow.*, Integration.ConsoleExtractionWin).
 
 ## Relations
 - [[task-305-console-hack-10s]] — parent global task.

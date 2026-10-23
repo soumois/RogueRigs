@@ -638,6 +638,7 @@ kind: note
 | [[task-300-01-bp-slam-impact-ns]] | sonnet | 1 | 0k | 82k | 1244k | 23k |
 | [[task-300-02-bp-slam-impact-wire]] | sonnet | 1 | 0k | 32k | 345k | 6k |
 | [[task-300-03-capture-slam-impact]] | opus | 2 | 0k | 49k | 595k | 11k |
+| [[task-305-01-console-hack-10s]] | opus | 1 | 0k | 81k | 455k | 7k |
 
 ## Totals
 | Scope | Input | Cache write | Cache read | Output |
