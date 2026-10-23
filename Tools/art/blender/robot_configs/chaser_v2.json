@@ -72,7 +72,7 @@
   "walk_style": "sine",
   "run_rate": 0.7,
   "speed_cm_s": 180,
-  "knee_deg": 15,
+  "knee_deg": 55,
   "arm_deg": 30,
   "elbow_deg": 40,
   "lean_deg": 8,
