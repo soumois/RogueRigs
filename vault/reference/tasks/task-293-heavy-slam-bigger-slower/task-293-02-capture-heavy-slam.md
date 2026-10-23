@@ -3,7 +3,7 @@ id: task-293-02-capture-heavy-slam
 description: "Capture the heavy telegraph circle and slow fist raise in -game, compared with run-v1 shots (cpp)."
 parent: task-293-heavy-slam-bigger-slower
 kind: task
-status: todo
+status: in-progress
 ---
 # Capture the heavy telegraph and slam
 

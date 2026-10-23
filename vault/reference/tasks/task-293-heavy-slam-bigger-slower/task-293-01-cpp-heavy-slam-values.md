@@ -3,7 +3,7 @@ id: task-293-01-cpp-heavy-slam-values
 description: "Heavy CSV radius 361 and wind-up 1.0, telegraph clip frame driven by telegraph progress, contact lead checked (cpp)."
 parent: task-293-heavy-slam-bigger-slower
 kind: task
-status: in-progress
+status: done
 ---
 # Heavy slam radius and wind-up
 
@@ -15,11 +15,11 @@ status: in-progress
 - done_when: build clean; heavy tests pass with 361 / 252.7 uu and 1.0 s; clip-1 frame timeline reported (frame 13 reached at WindUp - lead); contact time vs slam frame reported; docs updated; lint clean
 - editor_state: closed (owner closes it, or Live Coding off)
 - token_ceiling: 45000
-- model: open
-- tokens: open
-- runs: open
+- model: opus
+- tokens: input 84, cache write 95197, cache read 2818751, output 25496
+- runs: 1
 - milestone: M2
-- result: open
+- result: CSV Heavy AttackRange 361, WindUp 1.0 (trigger 252.7, arrival 180.5); RRHeavy::UpdateTelegraphClipFrame rewrites AnimStart so clip-1 frame = 13 x progress over WindUp - lead (no material change); raise tops at +0.80 s, slam +1.00 s, contact frame at 0.19 s into strike (lead 0.20 ok); heavy tests 12/12; docs updated; commits 46b5d64b 8a22d190 33356315
 
 ## Relations
 - [[task-293-heavy-slam-bigger-slower]] — parent global task.

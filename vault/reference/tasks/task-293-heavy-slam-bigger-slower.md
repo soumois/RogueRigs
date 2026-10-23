@@ -14,7 +14,7 @@ status: in-progress
 - confirmed_by_owner: yes (2026-10-23, "Le reste est bon"; planned in a planning pass, each task run later by its own orchestrator)
 - owner_defaults: clip-1 frame driven in C++ by GetTelegraphProgress (about 17 poses/s), no shader change; fallback if blocked: per-clip speed parameter in MF_RobotAnimWPO (extra bp subtask); radius 361, WindUp 1.0 s, trigger ratio 0.7 kept; SlamContactLead checked so fists touch the ground on the damage frame (provisional, owner 2026-10-23, "ok pour les défauts")
 - milestone: M2
-- next_step: task-293-01-cpp-heavy-slam-values
+- next_step: task-293-02-capture-heavy-slam
 - result: open
 
 ## Subtasks
