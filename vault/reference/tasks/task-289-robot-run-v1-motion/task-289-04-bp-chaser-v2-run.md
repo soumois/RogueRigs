@@ -3,7 +3,7 @@ id: task-289-04-bp-chaser-v2-run
 description: "Put the 289-02 chaser v2 bake in Unreal and set the new RunRate on its instances (bp)."
 parent: task-289-robot-run-v1-motion
 kind: task
-status: todo
+status: in-progress
 ---
 # Chaser v2 anim texture and RunRate in Unreal
 

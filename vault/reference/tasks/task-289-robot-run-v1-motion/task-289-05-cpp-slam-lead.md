@@ -3,7 +3,7 @@ id: task-289-05-cpp-slam-lead
 description: "Heavy slam-down clip starts early enough for the contact pose at the new RunRate (bp)."
 parent: task-289-robot-run-v1-motion
 kind: task
-status: todo
+status: in-progress
 ---
 # Heavy slam lead for the new RunRate (BP default)
 
