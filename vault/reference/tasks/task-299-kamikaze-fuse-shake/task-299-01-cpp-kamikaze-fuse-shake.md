@@ -3,7 +3,7 @@ id: task-299-01-cpp-kamikaze-fuse-shake
 description: "Jitter the kamikaze VisualRoot during the fuse with the rock shake amplitudes, frequency rising 8 to 24 Hz (cpp)."
 parent: task-299-kamikaze-fuse-shake
 kind: task
-status: todo
+status: in-progress
 ---
 # Kamikaze fuse shake
 

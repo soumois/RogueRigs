@@ -3,7 +3,7 @@ id: task-299-kamikaze-fuse-shake
 description: "Global task: During the 0.65 s fuse the whole kamikaze body shakes lightly like a dug wall, faster and faster; core pulse kept."
 parent: tasks-to-do-index
 kind: task
-status: todo
+status: in-progress
 ---
 # Kamikaze shakes during its fuse
 
