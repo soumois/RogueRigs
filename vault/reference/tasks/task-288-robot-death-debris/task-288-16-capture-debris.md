@@ -3,7 +3,7 @@ id: task-288-16-capture-debris
 description: "Capture the new robot deaths (cpp)."
 parent: task-288-robot-death-debris
 kind: task
-status: in-progress
+status: done
 ---
 # Capture the new robot deaths
 
@@ -15,11 +15,11 @@ status: in-progress
 - done_when: 2 to 4 pieces of the right robot thrown (kamikaze 2 or 3), no glow, pieces gone after about 5 s; the Orchestrator sends the shots to the owner
 - editor_state: closed
 - token_ceiling: 60000
-- model: open
-- tokens: open
-- runs: open
+- model: opus
+- tokens: input 98, cache write 191369, cache read 3709686, output 35789
+- runs: 1
 - milestone: M2
-- result: open
+- result: Death shots Saved/RobotMeshes/debris/ (sheets/ contact sheets) via a scratch -game script (SpawnNear 450 yaw -30, crit 1, slomo 0.25, timed Shots); heavy 3, shooter 3, chaser v2 3, kamikaze 3 (Niagara dump NumParticles 3, reads as 5-6 objects on screen), shield chaser v2 >=3 v2 pieces + v1 shards (not separable); no glow; all gone by 4.9-6.1 s after death; chaser v1 reference 2 small pieces. Unverified: piece identities, exact counts except kamikaze.
 
 ## Relations
 - [[task-288-robot-death-debris]] — parent global task.

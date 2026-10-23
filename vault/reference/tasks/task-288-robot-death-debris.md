@@ -1,9 +1,9 @@
 ---
 id: task-288-robot-death-debris
 description: "Global task: Death debris pieces for heavy, kamikaze, shooter, chaser v2 and shield chaser v2, as for the chaser, v1 debris untouched."
-parent: tasks-to-do-index
+parent: tasks-done-index
 kind: task
-status: in-progress
+status: done
 ---
 # Robot death debris for the new meshes
 
@@ -14,8 +14,8 @@ status: in-progress
 - depends_on_global: task-284 (parts meshes), task-286 (shield chaser v2, step 15 only)
 - confirmed_by_owner: yes (2026-10-22, plan accepted; launch on the owner's word)
 - milestone: M2
-- next_step: task-288-16-capture-debris
-- result: open
+- next_step: none
+- result: Done. Death shots Saved/RobotMeshes/debris/ (sheets/ contact sheets) via a scratch -game script (SpawnNear 450 yaw -30, crit 1, slomo 0.25, timed Shots); heavy 3, shooter 3, chaser v2 3, kamikaze 3 (Niagara dump NumParticles 3, reads as 5-6 objects on screen), shield chaser v2 >=3 v2 pieces + v1 shards (not separable); no glow; all gone by 4.9-6.1 s after death; chaser v1 reference 2 small pieces. Unverified: piece identities, exact counts except kamikaze.
 
 ## Subtasks
 1. task-288-01-pieces-heavy — 3d: Debris pieces of the heavy
@@ -36,7 +36,7 @@ status: in-progress
 16. task-288-16-capture-debris — cpp: Capture the new robot deaths
 
 ## Relations
-- [[tasks-to-do-index]] — parent index.
+- [[tasks-done-index]] — parent index.
 - [[task-288-01-pieces-heavy]] — step 01, 3d.
 - [[task-288-02-pieces-shooter]] — step 02, 3d.
 - [[task-288-03-pieces-chaser-v2]] — step 03, 3d.
