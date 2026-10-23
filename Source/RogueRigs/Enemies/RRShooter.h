@@ -47,7 +47,10 @@ enum class ERRShooterState : uint8
  * robot never moves away from the target. The C++ drives a
  * LaserBeam mesh between the muzzle and the line-of-sight-clipped aim point while aiming; Blueprint events add the rest.
  * Animation (task-284-05, ARREnemy clip writer): walk loop (clip 0, random phase) while the movement is on (Approach, Reposition),
- * rest pose (RestClipId 2 held) while it is off (Hold, Aim); the aim and fire clips of task-287 go on the state events.
+ * rest pose (RestClipId 2 held) while it is off (Hold); task-287-02: entering Aim plays AimClipId (1, clamped: cannon raised by
+ * 0.3 s, then held); a cancelled aim returns to the movement clip (rest held); a shot skips that return and plays FireClipId
+ * (3, clamped: recoil, back to the aim pose by FireClipDuration 0.2 s), whose end (OnAnimClipEnded) plays the movement clip.
+ * Death leaves the clip.
  */
 UCLASS(Blueprintable)
 class ROGUERIGS_API ARRShooter : public ARREnemy
@@ -127,7 +130,10 @@ protected:
 	/** Pool reuse: base reset, then aim, sight, shot counters, laser and view override cleared, back to Approach. */
 	virtual void ResetForNewLife() override;
 
-	/** Leaves the current state and enters NewState. Flow-field movement on in Approach and Reposition (arrival 0 in Reposition). Leaving Aim hides the laser and calls OnAimEnd. */
+	/** Fire clip end: nothing once Dead (death leaves the clip); else the base movement clip (rest held in Hold, walk if moving). */
+	virtual void OnAnimClipEnded() override;
+
+	/** Leaves the current state and enters NewState. Flow-field movement on in Approach and Reposition (arrival 0 in Reposition). Leaving Aim hides the laser and calls OnAimEnd. Clips: Aim plays AimClipId; leaving Aim to a stopped state plays the movement clip unless bLeavingAimForShot. */
 	void EnterState(ERRShooterState NewState);
 
 	/** Movement decisions of Approach, Hold and Reposition for the current target, distance and sight. */
@@ -210,6 +216,21 @@ protected:
 	 */
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Shooter|Reposition", meta = (ClampMin = 0, ClampMax = 1))
 	float RepositionInwardBias = 0.1f;
+
+	/** Baked clip played on entering Aim (rows 16..30, clamped: cannon raised by 0.3 s, then held at the aim pose). */
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Shooter|Animation")
+	float AimClipId = 1.f;
+
+	/** Baked clip played on each shot (rows 47..61, clamped: recoil peak at 0.067 s, back to the aim pose at 0.2 s, then held). */
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Shooter|Animation")
+	float FireClipId = 3.f;
+
+	/** Seconds the fire clip plays before the movement clip returns (the recoil is back to the aim pose at 0.2 s). */
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Shooter|Animation", meta = (ClampMin = 0, Units = "s"))
+	float FireClipDuration = 0.2f;
+
+	/** True while the shot path leaves Aim: EnterState skips the movement clip, Fire plays FireClipId instead. */
+	bool bLeavingAimForShot = false;
 
 	/** Current state. */
 	UPROPERTY(VisibleInstanceOnly, BlueprintReadOnly, Category = "Shooter")

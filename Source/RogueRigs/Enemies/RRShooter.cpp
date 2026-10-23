@@ -127,7 +127,8 @@ void ARRShooter::SetViewRectangleOverride(FBox2D Rectangle)
 
 void ARRShooter::EnterState(ERRShooterState NewState)
 {
-	if (State == ERRShooterState::Aim && NewState != ERRShooterState::Aim)
+	const bool bWasAiming = State == ERRShooterState::Aim && NewState != ERRShooterState::Aim;
+	if (bWasAiming)
 	{
 		LaserBeam->SetVisibility(false);
 		AimTarget.Reset();
@@ -147,7 +148,19 @@ void ARRShooter::EnterState(ERRShooterState NewState)
 		EnemyMovement->SetArrivalDistance(0.f);
 	}
 	// The flow field drives Approach and Reposition; Hold and Aim stand still.
-	SetMovementActive(NewState == ERRShooterState::Approach || NewState == ERRShooterState::Reposition);
+	const bool bMoving = NewState == ERRShooterState::Approach || NewState == ERRShooterState::Reposition;
+	SetMovementActive(bMoving);
+
+	// Clips (task-287-02): a movement change already wrote the walk loop; Aim stays stopped, so its clip goes here.
+	if (NewState == ERRShooterState::Aim)
+	{
+		PlayClip(AimClipId, 0.0);
+	}
+	else if (bWasAiming && !bMoving && !bLeavingAimForShot)
+	{
+		// Cancelled aim (or no target): back to the rest pose. A shot plays the fire clip instead (Fire).
+		PlayMovementClip();
+	}
 }
 
 void ARRShooter::UpdateBehavior(float DeltaSeconds)
@@ -188,7 +201,10 @@ void ARRShooter::UpdateBehavior(float DeltaSeconds)
 			FaceTarget(Target);
 			if (HasStateLasted(Stats.WindUp))
 			{
+				// OnAimEnd, then the shot and OnFire (order unchanged); the fire clip replaces the rest pose.
+				bLeavingAimForShot = true;
 				EnterState(ERRShooterState::Hold);
+				bLeavingAimForShot = false;
 				Fire(Target);
 			}
 			else
@@ -289,6 +305,8 @@ void ARRShooter::Fire(const ARRMiner* Target)
 {
 	++ShotCount;
 	LastShotTime = GetWorld()->GetTimeSeconds();
+	// Recoil, back to the aim pose by FireClipDuration; its end returns to the movement clip (OnAnimClipEnded).
+	PlayClip(FireClipId, FireClipDuration);
 
 	if (!ProjectileClass || Stats.ProjectileSpeed <= 0.f)
 	{
@@ -390,6 +408,16 @@ void ARRShooter::ResetForNewLife()
 	LaserBeam->SetVisibility(false);
 	EnemyMovement->SetArrivalDistance(Stats.PreferredDistance * ArrivalRangeRatio);
 	EnterState(ERRShooterState::Approach);
+}
+
+void ARRShooter::OnAnimClipEnded()
+{
+	if (State == ERRShooterState::Dead)
+	{
+		// Death leaves the clip (base rule).
+		return;
+	}
+	Super::OnAnimClipEnded();
 }
 
 void ARRShooter::ResetStateMachine()
