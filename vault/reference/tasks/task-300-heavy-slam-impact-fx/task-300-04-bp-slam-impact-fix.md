@@ -3,7 +3,7 @@ id: task-300-04-bp-slam-impact-fix
 description: "Fix NS_HeavySlamImpact after the 300-03 capture: ring too small, raised off the feet, whitish, chips invisible (bp)."
 parent: task-300-heavy-slam-impact-fx
 kind: task
-status: in-progress
+status: done
 ---
 # Fix NS_HeavySlamImpact from the capture
 
@@ -15,11 +15,11 @@ status: in-progress
 - done_when: causes named; values read back; compiles without error; doc updated; lint clean; committed
 - editor_state: open
 - token_ceiling: 30000
-- model: open
+- model: sonnet
 - tokens: open
-- runs: open
+- runs: 1
 - milestone: M2
-- result: open
+- result: NS_HeavySlamImpact fix (commit acad3b15): Dust explicit horizontal Linear velocity float3(cos,sin of UniqueID*2pi/48,0)*User.Radius*2.6, drag 6->0, Sphere r0 at origin; colour (0.18,0.13,0.09) a0.7; chips 10-18 size, (0.45,0.32,0.20), burst 16. Causes inferred (drag, ring orientation, pale alpha, tiny chips). Cost counted under task-300-01 (resumed agent).
 
 ## Relations
 - [[task-300-heavy-slam-impact-fx]] — parent global task.

@@ -13,7 +13,7 @@ status: in-progress
 - gdd_check: enemy-heavy read (2026-10-23): slam impact line added (provisional, owner 2026-10-23). Default: dust in neutral rock grey-brown, chips reuse the NS_DigImpact chip look; no gameplay effect.
 - confirmed_by_owner: yes (2026-10-23, "Le reste est bon"; planned in a planning pass, each task run later by its own orchestrator)
 - milestone: M2
-- next_step: task-300-04-bp-slam-impact-fix
+- next_step: task-300-03-capture-slam-impact
 - result: open
 
 ## Subtasks
