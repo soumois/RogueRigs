@@ -3,7 +3,7 @@ id: task-287-03-bp-shooter-aim-fire
 description: "BP_Shooter uses the aim and fire clips (bp)."
 parent: task-287-shooter-aim-fire-anim
 kind: task
-status: in-progress
+status: done
 ---
 # BP_Shooter uses the aim and fire clips
 
@@ -15,11 +15,11 @@ status: in-progress
 - done_when: texture settings, instance parameters and MuzzlePoint read back, compiles without error, doc updated; lint clean
 - editor_state: open
 - token_ceiling: 80000
-- model: open
-- tokens: open
-- runs: open
+- model: sonnet
+- tokens: input 54, cache write 55514, cache read 971460, output 14316
+- runs: 1
 - milestone: M2
-- result: open
+- result: T_ShooterAnimAim imported (settings read back, old T_ShooterAnim kept), MI_Shooter_Body/MI_RobotEye_Shooter AnimTex T_ShooterAnimAim, RunRate 1.25; MuzzlePoint (45.7,50.4,-17.4) -> (75.57,44.0,21.03) = aimed cannon tip; bounds unchanged (cover aim pose); BP_Shooter compiles.
 
 ## Relations
 - [[task-287-shooter-aim-fire-anim]] — parent global task.

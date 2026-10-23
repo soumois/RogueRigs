@@ -595,6 +595,7 @@ kind: note
 | [[task-285-05-fix-heavy-tilt-test]] | opus | 1 | 0k | 67k | 203k | 5k |
 | [[task-288-04-pieces-kamikaze]] | sonnet | 1 | 0k | 31k | 205k | 6k |
 | [[task-288-05-cpp-debris-groups]] | opus | 1 | 0k | 44k | 712k | 11k |
+| [[task-287-03-bp-shooter-aim-fire]] | sonnet | 1 | 0k | 56k | 971k | 14k |
 
 ## Totals
 | Scope | Input | Cache write | Cache read | Output |
