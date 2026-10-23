@@ -3,7 +3,7 @@ id: task-288-13-bp-chaser-v2-death
 description: "BP_ChaserV2 throws its debris (bp)."
 parent: task-288-robot-death-debris
 kind: task
-status: in-progress
+status: done
 ---
 # BP_ChaserV2 throws its debris
 
@@ -15,11 +15,11 @@ status: in-progress
 - done_when: defaults read back (entries, indexes, offsets), compiles without LogBlueprint error, doc updated; lint clean
 - editor_state: open
 - token_ceiling: 80000
-- model: open
-- tokens: open
-- runs: open
+- model: sonnet
+- tokens: input 30, cache write 32136, cache read 336432, output 6650
+- runs: 1
 - milestone: M2
-- result: open
+- result: BP_ChaserV2: NS_RobotDeathPuff (40), NS_ChaserV2Debris, pool 80, 13 DebrisPieces read back; compiles; BP_Chaser untouched.
 
 ## Relations
 - [[task-288-robot-death-debris]] — parent global task.

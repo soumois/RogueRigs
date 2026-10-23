@@ -3,7 +3,7 @@ id: task-288-12-bp-shooter-death
 description: "BP_Shooter throws its debris (bp)."
 parent: task-288-robot-death-debris
 kind: task
-status: in-progress
+status: done
 ---
 # BP_Shooter throws its debris
 
@@ -15,11 +15,11 @@ status: in-progress
 - done_when: defaults read back (entries, indexes, offsets), compiles without LogBlueprint error, doc updated; lint clean
 - editor_state: open
 - token_ceiling: 80000
-- model: open
-- tokens: open
-- runs: open
+- model: sonnet
+- tokens: input 30, cache write 31820, cache read 343396, output 7028
+- runs: 1
 - milestone: M2
-- result: open
+- result: BP_Shooter: NS_RobotDeathPuff (40), NS_ShooterDebris, pool 80, 13 DebrisPieces read back; compiles.
 
 ## Relations
 - [[task-288-robot-death-debris]] — parent global task.

@@ -3,7 +3,7 @@ id: task-288-11-bp-heavy-death
 description: "BP_Heavy throws its debris (bp)."
 parent: task-288-robot-death-debris
 kind: task
-status: in-progress
+status: done
 ---
 # BP_Heavy throws its debris
 
@@ -15,11 +15,11 @@ status: in-progress
 - done_when: defaults read back (entries, indexes, offsets), compiles without LogBlueprint error, doc updated; lint clean
 - editor_state: open
 - token_ceiling: 80000
-- model: open
-- tokens: open
-- runs: open
+- model: sonnet
+- tokens: input 40, cache write 41650, cache read 639058, output 7935
+- runs: 1
 - milestone: M2
-- result: open
+- result: BP_Heavy: DeathPuffSystem NS_RobotDeathPuff (40), DebrisSystem NS_HeavyDebris, pool 80, 13 DebrisPieces (BP_Chaser Group/Kind, json offsets) read back; compiles.
 
 ## Relations
 - [[task-288-robot-death-debris]] — parent global task.

@@ -3,7 +3,7 @@ id: task-288-15-bp-shield-v2-death
 description: "BP_ShieldChaserV2 throws chaser v2 debris (bp)."
 parent: task-288-robot-death-debris
 kind: task
-status: todo
+status: in-progress
 ---
 # BP_ShieldChaserV2 throws chaser v2 debris
 
