@@ -1,6 +1,6 @@
 ---
 id: bp-chaser-v2
-description: "BP_ChaserV2, duplicate of BP_Chaser with the animated Meshy v2 mesh SM_ChaserV2_Meshy_Anim; open for its mesh, instances, RunRate 1.5 and revert."
+description: "BP_ChaserV2, duplicate of BP_Chaser with the animated Meshy v2 mesh SM_ChaserV2_Meshy_Anim; open for its mesh, instances, RunRate 0.7 and revert."
 parent: blueprints-enemies-index
 kind: doc
 ---
@@ -15,12 +15,13 @@ kind: doc
 - events: none
 - logic_in_bp: none
 - assets: /Game/RogueRigs/Art/ChaserV2/ SM_ChaserV2_Meshy_Anim (imported by MCP from Art/Meshes/chaser-v2-meshy/chaser_v2_meshy_parts.fbx: 6156 render triangles, geometry x -31.15 to 24.00, y -48.80 to 48.91, z 0 to 123, bounds extension 60 cm each side, no collision, Nanite off; build settings Generate Lightmap UVs off, full precision UVs on, LightMapCoordinateIndex 1) and T_ChaserV2Anim (20 x 31, TC_HDR, no mips, Nearest, sRGB off, never stream, Clamp). Instances MI_ChaserV2_Body and MI_RobotEye_ChaserV2: Animated on, AnimTex T_ChaserV2Anim, RunRate 1.5, ClipOffset 0 ([[bp-robot-meshy-material]]).
-- animation: clip 0 run (rows 0..15, baked for RunRate 1.5), clip 1 attack (rows 16..30, not scaled by RunRate), same contract as v1 ([[sys-enemies-chaser]]).
+- animation: clip 0 run (rows 0..15, v1 sine motion baked for RunRate 0.7, task-289-02), clip 1 attack (rows 16..30, not scaled by RunRate), same contract as v1 ([[sys-enemies-chaser]]).
 - verified: UV channel 2 (PartId) read back on RENDER_DATA: body 6098 triangles on bins 0.05 to 0.95, robot_eye 58 triangles at 0.15, off_bin 0, mixed 0; the render data had a generated lightmap in a fourth UV set before the build settings fix, 3 UV sets after (uv2 u 0.05 to 0.95, 10 distinct values). Compiled: LogBlueprint logged only the Compiling lines, no error or warning. Saved. Properties read back.
 - gotcha: the MCP import leaves Generate Lightmap UVs on; the settings were fixed by a second headless UnrealEditor-Cmd process rewriting the saved .uasset, so never save SM_ChaserV2_Meshy_Anim again from the open editor (stale copy).
 - revert: delete BP_ChaserV2, SM_ChaserV2_Meshy_Anim and T_ChaserV2Anim, and restore the two instances (Animated off, RunRate 0.7, AnimTex default) with `git checkout 98a046e6 -- Content/RogueRigs/Materials/Robots/MI_ChaserV2_Body.uasset Content/RogueRigs/Materials/Robots/MI_RobotEye_ChaserV2.uasset`. BP_Chaser and all v1 assets untouched.
 - not_verified: debris in game (PIE), PIE, render, run and attack look, bounds sufficiency in game, spawn.
-- run_rate: baked walk RunRate 1.5 kept on the body and eye instances (provisional, owner 2026-10-23).
+- run_rate: 0.7 on the body and eye instances (task-289-04, 2026-10-23, provisional, owner 2026-10-23; was 1.5).
+- run_v1_289_04 (task-289-04, 2026-10-23): rows 0..15 are the v1-motion run of task-289-02. The old T_ChaserV2Anim is kept; new T_ChaserV2AnimRunV1 (/Game/RogueRigs/Art/ChaserV2/, imported by MCP from Art/Meshes/chaser-v2-meshy/T_ChaserV2Anim.exr; MCP cannot reimport; 20 x 31, TC_HDR, no mips, Nearest, sRGB off, never stream, Clamp, World group, read back) is now AnimTex of MI_ChaserV2_Body and MI_RobotEye_ChaserV2, RunRate 0.7, ClipOffset 0, Animated on. Revert: AnimTex back to T_ChaserV2Anim, RunRate 1.5 (`git checkout <commit before task-289-04> -- Content/RogueRigs/Materials/Robots/MI_ChaserV2_Body.uasset Content/RogueRigs/Materials/Robots/MI_RobotEye_ChaserV2.uasset`), delete T_ChaserV2AnimRunV1. Shield chaser v2 untouched. Not verified: render, PIE, look.
 - owner_agent: agent-bp
 
 ## Relations
