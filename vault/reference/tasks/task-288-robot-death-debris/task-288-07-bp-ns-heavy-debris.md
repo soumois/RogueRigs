@@ -3,7 +3,7 @@ id: task-288-07-bp-ns-heavy-debris
 description: "NS_HeavyDebris with its pieces (bp)."
 parent: task-288-robot-death-debris
 kind: task
-status: todo
+status: in-progress
 ---
 # NS_HeavyDebris with its pieces
 

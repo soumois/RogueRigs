@@ -3,7 +3,7 @@ id: task-288-06-bp-debris-material
 description: "Robot debris material and instances (bp)."
 parent: task-288-robot-death-debris
 kind: task
-status: in-progress
+status: done
 ---
 # Robot debris material and instances
 
@@ -15,11 +15,11 @@ status: in-progress
 - done_when: instances read back, compiles without error, saved, doc updated; lint clean
 - editor_state: open
 - token_ceiling: 80000
-- model: open
-- tokens: open
-- runs: open
+- model: sonnet
+- tokens: input 34, cache write 48779, cache read 526887, output 9496
+- runs: 1
 - milestone: M2
-- result: open
+- result: M_RobotDebris (opaque, lit, one-sided, BaseColorTex, no WPO/emissive, bUsedWithNiagaraMeshParticles) + MI_HeavyDebris, MI_ShooterDebris, MI_ChaserV2Debris, MI_KamikazeDebris in Materials/Robots, read back; M_ChaserDebris untouched; bp-robot-debris updated.
 
 ## Relations
 - [[task-288-robot-death-debris]] — parent global task.
