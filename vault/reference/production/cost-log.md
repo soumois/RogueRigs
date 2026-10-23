@@ -629,6 +629,7 @@ kind: note
 | [[task-296-03-capture-shield-arm-forward]] | opus | 1 | 0k | 46k | 422k | 9k |
 | [[task-297-01-bp-heavy-death-puff-ns]] | sonnet | 1 | 0k | 63k | 1112k | 14k |
 | [[task-297-02-bp-heavy-death-puff-set]] | sonnet | 1 | 0k | 36k | 670k | 8k |
+| [[task-297-03-capture-heavy-death]] | opus | 2 | 0k | 72k | 1149k | 15k |
 
 ## Totals
 | Scope | Input | Cache write | Cache read | Output |
