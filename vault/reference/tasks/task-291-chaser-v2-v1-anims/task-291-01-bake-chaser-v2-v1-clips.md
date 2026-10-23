@@ -3,7 +3,7 @@ id: task-291-01-bake-chaser-v2-v1-clips
 description: "Rebake T_ChaserV2Anim rows 0..30 with the exact chaser v1 run and attack curves on the v2 parts (3d)."
 parent: task-291-chaser-v2-v1-anims
 kind: task
-status: in-progress
+status: done
 ---
 # Bake the chaser v1 clips on chaser v2
 
@@ -15,11 +15,11 @@ status: in-progress
 - done_when: run and attack curves equal to v1 (report the per-part parameters side by side); knee peak reported; knee gap and interpenetration measured; foot slide per cycle reported for RunRate 0.4..1.0 and a RunRate recommended; loop seamless; bake error reported; renders exist; Blender stopped; v1 and other robots files unchanged
 - editor_state: any (Blender headless only)
 - token_ceiling: 50000
-- model: open
-- tokens: open
-- runs: open
+- model: sonnet
+- tokens: input 26, cache write 91737, cache read 788613, output 16537
+- runs: 1
 - milestone: M2
-- result: open
+- result: Chaser v2 clips 0-1 rebaked with exact v1 curves (knee 55 no cap, was 15); RunRate 0.7 kept (slide 69.8 cm/cycle, 0.4-0.5 only 20% less); knee gap up to 7.6 cm, thigh/shin overlap 50-52 tri pairs at peak; seam 7e-15, bake error 0.022/0.040 cm; renders Saved/Renders/task-291/; commit be707856.
 
 ## Relations
 - [[task-291-chaser-v2-v1-anims]] — parent global task.

@@ -3,7 +3,7 @@ id: task-291-02-bake-shield-v2-v1-clips
 description: "Rebake T_ShieldChaserV2Anim: shield run and bash = shield chaser v1 clips on the v2 parts, plain clips = new chaser v2 rows (3d)."
 parent: task-291-chaser-v2-v1-anims
 kind: task
-status: todo
+status: in-progress
 ---
 # Bake the shield chaser v1 clips on shield chaser v2
 
