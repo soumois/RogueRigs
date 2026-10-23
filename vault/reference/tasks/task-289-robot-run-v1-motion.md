@@ -14,7 +14,7 @@ status: done
 - confirmed_by_owner: yes (2026-10-23, direct order, run to the end)
 - milestone: M2
 - next_step: none
-- result: Done. -game shots Saved/RobotMeshes/run-v1/{heavy,chaserv2,chaserv1}_0-5.png + *_sheet.png (robot_shots.ps1 -Label run-v1 -NoFreeze -Distance 900 -StopSpawner, run beside the owner's open editor). Heavy: thigh and arm swing clearly larger than the old walk, joined, eye on head. Chaser v2: legs in phase, stride visible in 2 of 6 frames, swing reads weaker than v1 from the top-down camera (v1 knee bend 55 vs 15 here). Unverified: foot slide in game, slam contact timing.
+- result: Done. Heavy and chaser v2 clip 0 rebaked with the v1 sine run (thigh 35, arm 30, elbow 40, lean 8, twist 5, ground-fit bob), knee capped 15 (289-01, 289-02); slam rows 16..61 and attack rows 16..30 identical; new textures T_HeavyAnimRunV1 and T_ChaserV2AnimRunV1 on the body and eye instances, RunRate 0.7 for both (was 1.0 and 1.5; provisional, owner 2026-10-23; 289-03, 289-04); BP_Heavy SlamContactLead 0.20 so the strike contact still lands on the slam at 0.7 (289-05); -game shots Saved/RobotMeshes/run-v1/ (289-06), renders Saved/Renders/task-289/. Shield chaser v2 untouched (own texture, old v2 run, RunRate 1.5). Open: foot slide not removable with a 15 degree knee (heavy 245, chaser v2 79, v1 127 cm per cycle on the script rule); heavy walk bake error 0.0535 cm (half float); slam timing and look in game not checked.
 
 ## Subtasks
 1. task-289-01-bake-heavy-run — 3d: Rebake the heavy run with the v1 motion
