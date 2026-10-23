@@ -3,7 +3,7 @@ id: task-304-01-console-marked-rocks-range
 description: "Drop picker marked-rock range (cpp): console marked rocks between 10 and 40, step 01."
 parent: task-304-console-marked-rocks-range
 kind: task
-status: todo
+status: in-progress
 ---
 # Drop picker marked-rock range
 

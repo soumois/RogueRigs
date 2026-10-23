@@ -14,7 +14,7 @@ A global task moves to [[tasks-done-index]] when it is done (`vault/scripts/task
 - [[task-301-console-c2-mesh]] — Replace the console cylinder with the owner C2 uplink mast mesh: mobile dish head, three material slots, retouched dish back and foot lamps. Status todo.
 - [[task-302-console-state-visuals]] — The console shows its state: lamp colour and blink, antenna head rotation and screen colour driven by ERRConsoleState. Status todo.
 - [[task-303-console-hack-reward]] — When the console hack completes, three big XP chips fly out in every direction and a big green ring flash plays. Status todo.
-- [[task-304-console-marked-rocks-range]] — The console lands only where its zone holds between 10 and 40 markable blocks, with both bounds editable in Blueprint defaults. Status todo.
+- [[task-304-console-marked-rocks-range]] — The console lands only where its zone holds between 10 and 40 markable blocks, with both bounds editable in Blueprint defaults. Status in-progress.
 - [[task-306-chest-flat-faces]] — Flatten the puffed Meshy chest faces after the sheet, cut it into body, lid and latch, and show it in BP_BonusChest. Status todo.
 - [[task-307-chest-one-upgrade]] — Opening the bonus chest gives exactly one upgrade choice: its direct XP grant no longer triggers a second level-up. Status todo.
 - [[task-308-chest-lock-light]] — The chest lock light glows red blinking while waiting, orange blinking while the miner is in the zone, and steady green once open. Status todo.

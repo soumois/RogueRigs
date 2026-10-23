@@ -3,7 +3,7 @@ id: task-304-console-marked-rocks-range
 description: "Global task: The console lands only where its zone holds between 10 and 40 markable blocks, with both bounds editable in Blueprint defaults."
 parent: tasks-to-do-index
 kind: task
-status: todo
+status: in-progress
 ---
 # Console marked rocks between 10 and 40
 
