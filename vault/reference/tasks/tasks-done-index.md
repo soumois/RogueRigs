@@ -238,9 +238,11 @@ Archive: it exceeds the index size limits of [[_authoring]] on purpose (owner, 2
 - [[task-227-shield-debris-script-fix]] — Shield debris cut script works on the charcoal texture. Status done.
 - [[task-228-xp-big-pop]] — Big XP cube gets the floaty pop of the XP nut. Status done.
 - [[task-229-pickup-physics]] — Pickups land into Chaos physics (box collisions, floor and walls only) and spin lightly in flight. Status done.
+- [[task-230-rock-slab-integration]] — Dual-grid slab rock look in the grid: pieces, world-UV top texture, cracks, plates, crystals. Status done.
 - [[task-231-dig-shake-reduced]] — The dug block shake is smaller now that the rock look is final: 8 uu horizontal, 3 uu vertical, and it draws on every piece. Status done.
 - [[task-232-drone-single-beam]] — The drone shows one laser beam aimed at the middle of the dug blocks, whatever their number. Status done.
 - [[task-233-dig-impact-particle]] — A particle effect where the drone laser hits the wall: white-gold sparks, chips of the block colour and a little dust while it cuts. Status done.
+- [[task-234-ore-deposit-look]] — Each 2 x 2 ore or heal deposit is drawn as one crystal formation, at least 3 variants per type, from images the owner generates with prompts we write. Status done.
 - [[task-235-ore-loot-over-dig]] — Ore and heal deposits release their loot one by one during the dig, evenly spread over the dig time, instead of all at destruction. Status done.
 - [[task-236-bloom-intensity]] — The arena post-process bloom intensity goes back to 1.3 (now 1.8). Status done.
 - [[task-237-deposit-no-shadow]] — Ore and heal deposit formations cast no shadow. Status done.

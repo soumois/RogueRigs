@@ -1,9 +1,9 @@
 ---
 id: task-234-ore-deposit-look
 description: "Global task: each 2 x 2 ore or heal deposit drawn as one crystal formation, 3 variants per type, from owner images."
-parent: tasks-to-do-index
+parent: tasks-done-index
 kind: task
-status: in-progress
+status: done
 ---
 # Ore deposit look
 
@@ -13,8 +13,8 @@ status: in-progress
 - gdd_check: done by the Orchestrator when the task is planned (2026-10-19).
 - confirmed_by_owner: yes (2026-10-19)
 - milestone: M2
-- next_step: owner check in the editor
-- result: open
+- next_step: none
+- result: validated by the owner (2026-10-23)
 
 ## Subtasks
 1. task-234-01-ore-deposit-look — art (prompts)
@@ -27,7 +27,7 @@ status: in-progress
 7. task-234-07-heal-deposit-meshes — 3d: heal meshes from the owner sheet (before 04, which imports both types)
 
 ## Relations
-- [[tasks-to-do-index]] — parent index.
+- [[tasks-done-index]] — parent index.
 - [[task-234-01-ore-deposit-look]] — step 1, art.
 - [[task-234-02-duskite-deposit-meshes]] — step 2.
 - [[task-234-03-deposit-crystal-visual]] — step 3.

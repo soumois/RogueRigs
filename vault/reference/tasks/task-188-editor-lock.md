@@ -3,7 +3,7 @@ id: task-188-editor-lock
 description: "Global task: editor lock shared by sessions: lock file, take and release script, runbook and protocol rules."
 parent: tasks-to-do-index
 kind: task
-status: todo
+status: blocked
 ---
 # Editor lock between sessions
 
@@ -14,7 +14,7 @@ status: todo
 - confirmed_by_owner: no (prepared only, owner 2026-10-15: not to run yet)
 - milestone: M2
 - next_step: task-188-01-editor-lock
-- result: open
+- result: cancelled for now by the owner (2026-10-23); not run
 
 ## Subtasks
 1. task-188-01-editor-lock — claude

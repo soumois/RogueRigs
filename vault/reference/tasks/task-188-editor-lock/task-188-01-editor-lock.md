@@ -3,7 +3,7 @@ id: task-188-01-editor-lock
 description: "Editor lock shared by sessions: lock file, take and release script, runbook and protocol rules."
 parent: task-188-editor-lock
 kind: task
-status: todo
+status: blocked
 ---
 # Editor lock between sessions
 

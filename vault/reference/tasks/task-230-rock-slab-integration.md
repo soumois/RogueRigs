@@ -1,9 +1,9 @@
 ---
 id: task-230-rock-slab-integration
 description: "Integrate the dual-grid slab rock look (pieces, world-UV top texture, cracks, plates, crystals) in the grid; prepared, not launched."
-parent: tasks-to-do-index
+parent: tasks-done-index
 kind: task
-status: in-progress
+status: done
 ---
 # Rock slab look: integration
 
@@ -13,8 +13,8 @@ status: in-progress
 - gdd_check: [[rock-state-render-options]] and children (owner decisions 2026-10-17: dual grid for display only, provisional triangle budget, rim as vertex colour in one material, cracks from any damage, one variant per shape with variant support, Nanite assumed), [[art-style-guide]] A1 level 3, [[color-code]], [[readability-rules]], [[sys-grid]]. Open: weak rock (separate task, maximum share open), number of variants later. Not in this task: weak rock, collision rounding of corners.
 - confirmed_by_owner: yes (2026-10-17). Launch rules (owner): 01 then 02 run one after the other (not in parallel); 03 to 06 each wait for the owner validation of the previous one; 07 to 12 run together as one sequence without asking again.
 - milestone: M2
-- next_step: task-230-26-rock-control-capture-2
-- result: open
+- next_step: none
+- result: validated by the owner (2026-10-23)
 
 ## Subtasks
 1. task-230-01-rock-baseline-capture — cpp: Baseline before the change: -game captures of rock areas and a grid perf measure.
@@ -45,7 +45,7 @@ status: in-progress
 26. task-230-26-rock-control-capture-2 — cpp: Control capture after 22 to 25.
 
 ## Relations
-- [[tasks-to-do-index]] — parent index.
+- [[tasks-done-index]] — parent index.
 - [[task-230-01-rock-baseline-capture]] — step 1, cpp.
 - [[task-230-02-rock-slab-pieces]] — step 2, 3d.
 - [[task-230-03-rock-top-texture]] — step 3, art.
