@@ -8,6 +8,8 @@ kind: doc
 
 Generalises the chaser v1 chain of [[chaser-meshy-pipeline]]. Without `--config` the three scripts keep the chaser v1 values (v1 rerun: outputs identical to the previous script version). Same 10 parts, PartId = (index + 0.5) / 10 in UV channel 3, and texture layout (20 columns, 2 texels per part, frame = row from the top) as v1, so `MF_RobotAnimWPO` ([[bp-robot-eye-material]]) works unchanged.
 
+- Baked walk RunRate kept (provisional, owner 2026-10-23): heavy 1.0, shooter 1.25, chaser v2 and shield chaser v2 1.5, kamikaze 0.35.
+
 ## Files
 - `Tools/art/blender/robot_configs/<robot>.json`: `joints`, `refs` (reference centroids that name the connected pieces), `planes` (point, normal, zone box, side, pivot), `tris_limit`, view frames, and the `bake` object (run rate, speed, knee limit, arm, lean, twist, texture name and rows, report name, reserved clips).
 - `meshy_cut_parts.py --config`: all source material slots are kept on every part in order (heavy: body, robot_eye last). A zone box must contain whole large triangles: a triangle with one vertex outside the box is not cut.

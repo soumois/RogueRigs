@@ -20,6 +20,8 @@ kind: doc
 - verified: UV channel 2 (PartId) on RENDER_DATA: 3 UV sets, 7134 triangles; body (id 0) 6097 triangles on bins 0.05 to 0.95, robot_eye (id 1) 58 at 0.15, shield (id 2) 977 at 0.45, emblem (id 3) 2 at 0.45; off_bin 0, mixed 0. Build settings read back. BP compiled (LogBlueprint: only the Compiling lines), BodyMesh and OnShieldBroken read back, saved. v1 assets untouched.
 - not_verified: debris in game (PIE, shield-chaser debris offsets still those of the chaser v2 mesh, not the shield chaser), PIE, render, shield and run look, bounds sufficiency, debris direction, spawn.
 - revert: delete BP_ShieldChaserV2, the Art/ShieldChaserV2 folder and the two MI_RobotEye_ShieldChaserV2* instances. No v1 asset was changed.
+- run_rate: baked walk RunRate 1.5 kept on the body and eye instances (provisional, owner 2026-10-23).
+- shield_height: the shield is carried 12 cm higher than on v1 (bottom 12 to 18 cm off the ground, grip lowered 16 to 4 cm in [[robot-parts-bake-pipeline]]); accepted (provisional, owner 2026-10-23).
 - owner_agent: agent-bp
 
 ## Relations

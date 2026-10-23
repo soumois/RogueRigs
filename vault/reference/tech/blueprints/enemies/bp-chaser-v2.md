@@ -20,6 +20,7 @@ kind: doc
 - gotcha: the MCP import leaves Generate Lightmap UVs on; the settings were fixed by a second headless UnrealEditor-Cmd process rewriting the saved .uasset, so never save SM_ChaserV2_Meshy_Anim again from the open editor (stale copy).
 - revert: delete BP_ChaserV2, SM_ChaserV2_Meshy_Anim and T_ChaserV2Anim, and restore the two instances (Animated off, RunRate 0.7, AnimTex default) with `git checkout 98a046e6 -- Content/RogueRigs/Materials/Robots/MI_ChaserV2_Body.uasset Content/RogueRigs/Materials/Robots/MI_RobotEye_ChaserV2.uasset`. BP_Chaser and all v1 assets untouched.
 - not_verified: debris in game (PIE), PIE, render, run and attack look, bounds sufficiency in game, spawn.
+- run_rate: baked walk RunRate 1.5 kept on the body and eye instances (provisional, owner 2026-10-23).
 - owner_agent: agent-bp
 
 ## Relations

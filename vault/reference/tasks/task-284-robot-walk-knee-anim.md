@@ -15,7 +15,7 @@ status: done
 - confirmed_by_owner: yes (2026-10-22, plan accepted; launch on the owner's word)
 - milestone: M2
 - next_step: none
-- result: Done. Heavy, shooter, chaser v2 (10 parts, knee <= 15 deg) and kamikaze (3 parts, sway 6 deg) cut and baked (robot-parts-bake-pipeline); shared C++ clip writer in ARREnemy; anim meshes and textures in BP_Heavy, BP_Shooter, BP_Kamikaze and new BP_ChaserV2 (RunRate heavy 1.0, shooter 1.25, chaser v2 1.5, kamikaze 0.35); spawner on BP_ChaserV2; walk shots Saved/RobotMeshes/walk/. Open: chaser v2 strike and knee bend not confirmed on camera, chaser v2 missing in 2 frames; 2 pre-existing test failures (JuiceKillDropsStreamingCubes, LevelUpUpgradeLoop).
+- result: Done. Heavy, shooter, chaser v2 (10 parts, knee <= 15 deg) and kamikaze (3 parts, sway 6 deg) cut and baked (robot-parts-bake-pipeline); shared C++ clip writer in ARREnemy; anim meshes and textures in BP_Heavy, BP_Shooter, BP_Kamikaze and new BP_ChaserV2 (RunRate heavy 1.0, shooter 1.25, chaser v2 1.5, kamikaze 0.35; kept, shield chaser v2 1.5 too, provisional, owner 2026-10-23); spawner on BP_ChaserV2; walk shots Saved/RobotMeshes/walk/. Open: chaser v2 strike and knee bend not confirmed on camera, chaser v2 missing in 2 frames; 2 pre-existing test failures (JuiceKillDropsStreamingCubes, LevelUpUpgradeLoop).
 
 ## Subtasks
 1. task-284-01-parts-bake-heavy — 3d: Cut and bake the heavy walk

@@ -15,7 +15,7 @@ status: done
 - confirmed_by_owner: yes (2026-10-22, plan accepted; launch on the owner's word)
 - milestone: M2
 - next_step: none
-- result: Done. Shield chaser v2 = chaser v2 parts + v1 riot shield on the left forearm (grip lowered 16->4 cm), four v1 clips at RunRate 1.5 (286-01); BP_ShieldChaserV2 with new M_ShieldChaserV2_Anim and instances, v1 untouched (286-02); spawner fifth entry on BP_ShieldChaserV2 (286-03); shots Saved/RobotMeshes/shield-v2/. Unverified: eyes on camera.
+- result: Done. Shield chaser v2 = chaser v2 parts + v1 riot shield on the left forearm (grip lowered 16->4 cm), four v1 clips at RunRate 1.5 (286-01); BP_ShieldChaserV2 with new M_ShieldChaserV2_Anim and instances, v1 untouched (286-02); spawner fifth entry on BP_ShieldChaserV2 (286-03); shots Saved/RobotMeshes/shield-v2/. Shield carried 12 cm higher than v1 (12 to 18 cm off the ground), accepted (provisional, owner 2026-10-23). Unverified: eyes on camera.
 
 ## Subtasks
 1. task-286-01-shield-fit-bake — 3d: Fit the shield on chaser v2 and bake

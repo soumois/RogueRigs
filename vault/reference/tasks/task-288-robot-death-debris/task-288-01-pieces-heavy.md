@@ -19,7 +19,7 @@ status: done
 - tokens: input 56, cache write 61190, cache read 1061705, output 19649
 - runs: 2
 - milestone: M2
-- result: 13 heavy debris pieces Art/Source/heavy-meshy/debris/ + debris_pieces.json via chaser_debris_pieces.py --config (v1 output unchanged); UV0 only, no glow, FBX_SCALE_UNITS; mirror check misses 0.5 cm on 5 pairs (0.6 cm; forearm 6.4 cm) = the source mesh asymmetry exactly (mirror_vs_source block), no face mis-assigned; accepted by default, owner question; render Saved/Renders/task-288/heavy_debris_layout.png.
+- result: 13 heavy debris pieces Art/Source/heavy-meshy/debris/ + debris_pieces.json via chaser_debris_pieces.py --config (v1 output unchanged); UV0 only, no glow, FBX_SCALE_UNITS; mirror check misses 0.5 cm on 5 pairs (0.6 cm; forearm 6.4 cm) = the source mesh asymmetry exactly (mirror_vs_source block), no face mis-assigned; accepted (provisional, owner 2026-10-23); render Saved/Renders/task-288/heavy_debris_layout.png.
 
 ## Relations
 - [[task-288-robot-death-debris]] — parent global task.
