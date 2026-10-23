@@ -14,7 +14,7 @@ status: done
 - confirmed_by_owner: yes (2026-10-23, direct order, run to the end)
 - milestone: M2
 - next_step: none
-- result: Done. New T_HeavyAnimRunV1 (20x62, HDR/no mips/Nearest/sRGB off/never stream/Clamp read back; T_HeavyAnimSlam kept for revert); MI_Heavy_Body, MI_RobotEye_Heavy, MI_RobotEye_Heavy_Glow AnimTex -> it, RunRate 0.7 (was 1.0) read back; commit d6e94a24. Pixel content not compared.
+- result: Done. New T_ChaserV2AnimRunV1 (20x31, settings read back; T_ChaserV2Anim kept); MI_ChaserV2_Body and MI_RobotEye_ChaserV2 AnimTex -> it, RunRate 0.7 (was 1.5); shield chaser v2 untouched; commit 6e14be7d.
 
 ## Subtasks
 1. task-289-01-bake-heavy-run — 3d: Rebake the heavy run with the v1 motion

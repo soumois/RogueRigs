@@ -611,6 +611,7 @@ kind: note
 | [[task-289-01-bake-heavy-run]] | sonnet | 1 | 0k | 87k | 1767k | 25k |
 | [[task-289-02-bake-chaser-v2-run]] | sonnet | 1 | 0k | 41k | 450k | 8k |
 | [[task-289-03-bp-heavy-run]] | sonnet | 1 | 0k | 38k | 443k | 9k |
+| [[task-289-04-bp-chaser-v2-run]] | sonnet | 1 | 0k | 45k | 680k | 12k |
 
 ## Totals
 | Scope | Input | Cache write | Cache read | Output |
