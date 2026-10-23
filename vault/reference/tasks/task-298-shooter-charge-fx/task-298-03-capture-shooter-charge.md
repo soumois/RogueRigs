@@ -3,7 +3,7 @@ id: task-298-03-capture-shooter-charge
 description: "Capture the shooter charge-up during the laser in -game (cpp)."
 parent: task-298-shooter-charge-fx
 kind: task
-status: todo
+status: in-progress
 ---
 # Capture the shooter charge-up
 
