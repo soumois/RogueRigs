@@ -3,7 +3,7 @@ id: task-288-06-bp-debris-material
 description: "Robot debris material and instances (bp)."
 parent: task-288-robot-death-debris
 kind: task
-status: todo
+status: in-progress
 ---
 # Robot debris material and instances
 

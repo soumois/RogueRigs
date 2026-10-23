@@ -3,7 +3,7 @@ id: task-288-05-cpp-debris-groups
 description: "Debris launch for robots with fewer parts (cpp)."
 parent: task-288-robot-death-debris
 kind: task
-status: in-progress
+status: done
 ---
 # Debris launch for robots with fewer parts
 
@@ -15,11 +15,11 @@ status: in-progress
 - done_when: build succeeds, all automation tests pass, the new test throws 2 or 3 kamikaze pieces and never a missing group
 - editor_state: closed
 - token_ceiling: 60000
-- model: open
-- tokens: open
-- runs: open
+- model: opus
+- tokens: input 42, cache write 44362, cache read 712149, output 10660
+- runs: 1
 - milestone: M2
-- result: open
+- result: LaunchDebris already handles reduced lists (FRRDebrisSelection::Choose draws only existing groups, caps at available); no change; new test Kamikaze.DebrisThrowsTwoOrThreePieces (3000 draws: 2 or 3 pieces, never a missing group); build OK; 268 pass, 2 known pre-existing failures.
 
 ## Relations
 - [[task-288-robot-death-debris]] — parent global task.

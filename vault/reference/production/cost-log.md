@@ -594,6 +594,7 @@ kind: note
 | [[task-288-03-pieces-chaser-v2]] | sonnet | 1 | 0k | 24k | 117k | 4k |
 | [[task-285-05-fix-heavy-tilt-test]] | opus | 1 | 0k | 67k | 203k | 5k |
 | [[task-288-04-pieces-kamikaze]] | sonnet | 1 | 0k | 31k | 205k | 6k |
+| [[task-288-05-cpp-debris-groups]] | opus | 1 | 0k | 44k | 712k | 11k |
 
 ## Totals
 | Scope | Input | Cache write | Cache read | Output |
