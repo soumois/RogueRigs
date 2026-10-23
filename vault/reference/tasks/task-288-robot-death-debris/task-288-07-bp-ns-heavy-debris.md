@@ -3,7 +3,7 @@ id: task-288-07-bp-ns-heavy-debris
 description: "NS_HeavyDebris with its pieces (bp)."
 parent: task-288-robot-death-debris
 kind: task
-status: in-progress
+status: done
 ---
 # NS_HeavyDebris with its pieces
 
@@ -15,11 +15,11 @@ status: in-progress
 - done_when: mesh bounds read back match the json (Y mirrored), renderer mesh list and offset table read back, system compiles UpToDate (GPU script too), git diff shows NS_RobotDebris and the v1 debris meshes unchanged; lint clean
 - editor_state: open
 - token_ceiling: 80000
-- model: open
-- tokens: open
-- runs: open
+- model: sonnet
+- tokens: input 62, cache write 85643, cache read 1775028, output 14699
+- runs: 1
 - milestone: M2
-- result: open
+- result: 13 SM_HeavyDebris_* in Art/Heavy/Debris (MI_HeavyDebris, sizes = json); NS_HeavyDebris = copy of NS_RobotDebris with 13-mesh renderer list and PieceLocal table read back, UpToDate incl. GPU; v1 unchanged.
 
 ## Relations
 - [[task-288-robot-death-debris]] — parent global task.

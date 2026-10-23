@@ -597,6 +597,8 @@ kind: note
 | [[task-288-05-cpp-debris-groups]] | opus | 1 | 0k | 44k | 712k | 11k |
 | [[task-287-03-bp-shooter-aim-fire]] | sonnet | 1 | 0k | 56k | 971k | 14k |
 | [[task-288-06-bp-debris-material]] | sonnet | 1 | 0k | 49k | 527k | 9k |
+| [[task-288-07-bp-ns-heavy-debris]] | sonnet | 1 | 0k | 86k | 1775k | 15k |
+| [[task-288-08-bp-ns-shooter-debris]] | sonnet | 1 | 0k | 68k | 2126k | 18k |
 
 ## Totals
 | Scope | Input | Cache write | Cache read | Output |
