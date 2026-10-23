@@ -3,7 +3,7 @@ id: task-295-01-cpp-separation-radius
 description: "Add a separation radius scale, 1.3 on kamikaze and heavy, used only by the separation subsystem (cpp)."
 parent: task-295-separation-radius-kamikaze-heavy
 kind: task
-status: todo
+status: in-progress
 ---
 # Per-class separation radius
 

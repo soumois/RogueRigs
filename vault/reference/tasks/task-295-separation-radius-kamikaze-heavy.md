@@ -3,7 +3,7 @@ id: task-295-separation-radius-kamikaze-heavy
 description: "Global task: The crowd separation radius of the kamikaze and the heavy grows by 30 %; capsules unchanged."
 parent: tasks-to-do-index
 kind: task
-status: todo
+status: in-progress
 ---
 # Kamikaze and heavy separation radius +30 %
 
