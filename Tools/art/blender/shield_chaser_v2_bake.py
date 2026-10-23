@@ -62,18 +62,18 @@ BOB_DEG = 1.5
 SH_THIGH = float(os.environ.get("SC_THIGH", "12.0"))     # thigh swing of the shield run (clip 0 only); reduced when the low shield cannot clear the front leg
 SHIELD_TILT_DEG = 3.0              # plate tilted back by this angle (pavise carry)
 SHIELD_SCALE = 1.2                 # task-220-05: 20 percent larger
-GRIP_Z_SHIFT_CM = float(os.environ.get("SC_GRIPZ", "21.0"))     # hand holds the upper block of the handle (lets the shield hang lower than the arm reaches)      # v1 16.0; v2 4.0: the v2 stride (32 cm step, long toe) hits a shield hanging 0-4 cm above the floor (v1 grip: 24 overlapping triangle pairs with the legs), 4.0 gives 2.1 cm clearance to the legs
-GRIP_X_SHIFT_CM = float(os.environ.get("SC_GRIPX", "25.0"))     # task-296: grip offset, the shield sits this far further forward (+X in the plate frame) than the hand (the v2 arm cannot reach far enough)
+GRIP_Z_SHIFT_CM = float(os.environ.get("SC_GRIPZ", "14.0"))     # hand holds the upper block of the handle (lets the shield hang lower than the arm reaches)      # v1 16.0; v2 4.0: the v2 stride (32 cm step, long toe) hits a shield hanging 0-4 cm above the floor (v1 grip: 24 overlapping triangle pairs with the legs), 4.0 gives 2.1 cm clearance to the legs
+GRIP_X_SHIFT_CM = float(os.environ.get("SC_GRIPX", "17.0"))     # task-296: grip offset, the shield sits this far further forward (+X in the plate frame) than the hand (the v2 arm cannot reach far enough)
 SHIELD_GRIP_CM = tuple(SHIELD_SCALE * x for x in (-2.01, 4.6, 39.53)); SHIELD_GRIP_CM = (SHIELD_GRIP_CM[0] - GRIP_X_SHIFT_CM, SHIELD_GRIP_CM[1], SHIELD_GRIP_CM[2] + GRIP_Z_SHIFT_CM)    # centre of the middle grip block, from the shield pivot (SM_ChaserShield.report.json grip_offset_cm, Unreal axes x, -y, z -> y mirrored back to Blender)
-FOREARM_DZ = float(os.environ.get("SC_FDZ", "-0.1"))     # frame 0 forearm elevation (z of its unit direction): nearly vertical, arm hangs
+FOREARM_DZ = float(os.environ.get("SC_FDZ", "0.0"))     # frame 0 forearm elevation (z of its unit direction): nearly vertical, arm hangs
 HAND_Z_MAX = 68.0                       # rest vertices of ForearmHand_L below this z are the hand
 for k_, v_ in zip(argv[::2], argv[1::2]):
     pass
 KEYS = dict(
-    guard_run=dict(target=(50.0, 10.0, 72.0), tilt=None),
-    guard_stand=dict(target=(50.0, 10.0, 72.0), tilt=SHIELD_TILT_DEG),
-    wind=dict(target=(42.0, 6.0, 72.0), tilt=6.0),
-    strike=dict(target=(72.0, 10.0, 72.0), tilt=3.0),
+    guard_run=dict(target=(120.0, 14.0, 92.0), tilt=None),      # task-296: out of reach on purpose, the solver ends at the arm's maximum reach (hand x about 43 cm, forearm about horizontal)
+    guard_stand=dict(target=(120.0, 14.0, 92.0), tilt=SHIELD_TILT_DEG),
+    wind=dict(target=(100.0, 10.0, 92.0), tilt=6.0),
+    strike=dict(target=(140.0, 14.0, 92.0), tilt=3.0),
 )
 ENV = os.environ.get("SC_KEYS")
 if ENV:
@@ -398,9 +398,13 @@ def qmat_raw(q):
                      [2 * (x * z - y * w), 2 * (y * z + x * w), 1 - 2 * (x * x + y * y)]])
 
 
-def half_neighbours(x):
+def half_neighbours(x, k=1):
     h = np.float16(x)
-    return [float(np.nextafter(h, np.float16(-np.inf))), float(h), float(np.nextafter(h, np.float16(np.inf)))]
+    lo, hi, out = h, h, [float(h)]
+    for _ in range(k):
+        lo, hi = np.nextafter(lo, np.float16(-np.inf)), np.nextafter(hi, np.float16(np.inf))
+        out = [float(lo)] + out + [float(hi)]
+    return out
 
 
 Q = np.zeros((NCL, len(PARTS), 4))
@@ -427,7 +431,7 @@ for f in range(NCL):
         tgt = VERTS[f][n]
         rest = REST_V_FIT[n]
         best = None
-        for c in itertools.product(*[half_neighbours(Q[f, pi, k]) for k in range(4)]):
+        for c in itertools.product(*[half_neighbours(Q[f, pi, k], 2 if n == SHIELD_PART else 1) for k in range(4)]):   # task-296: the forearm carries the long shield lever, search two half steps
             qc = np.array(c, float)
             Rr, Rn = qmat_raw(qc), qmat(qc)
             br, bn = rest @ Rr.T, rest @ Rn.T
@@ -435,6 +439,15 @@ for f in range(NCL):
                 tq = np.array([float(np.float16(x)) for x in tl])
                 err = max(float(np.linalg.norm(br + tq - tgt, axis=1).max()), float(np.linalg.norm(bn + tq - tgt, axis=1).max()))
                 if best is None or err < best[0]:
+                    best = (err, qc, tq)
+        if best[0] > 0.03:        # task-296: long lever (shield far from the elbow) and large translations: also try the half-float neighbours of the translation
+            qc = best[1]
+            Rr, Rn = qmat_raw(qc), qmat(qc)
+            br, bn = rest @ Rr.T, rest @ Rn.T
+            for tn in itertools.product(*[half_neighbours(best[2][k]) for k in range(3)]):
+                tq = np.array(tn, float)
+                err = max(float(np.linalg.norm(br + tq - tgt, axis=1).max()), float(np.linalg.norm(bn + tq - tgt, axis=1).max()))
+                if err < best[0]:
                     best = (err, qc, tq)
         Qh[f, pi], Th[f, pi] = best[1], best[2]
 tex_new = np.zeros((NCL, TEXW, 4), np.float32)
@@ -547,6 +560,8 @@ def shield_bake_err(QQ, TT, raw=False):
     return out
 
 
+PER_PART = {n: round(max(bake_err(SQ, ST, which=n).values()), 4) for n in PARTS}
+print("BAKE per part", PER_PART)
 e32 = bake_err(Q, T)
 e16 = bake_err(SQ, ST)
 e16r = bake_err(SQ, ST, raw=True)
@@ -555,7 +570,7 @@ sh16r = shield_bake_err(SQ, ST, raw=True)
 bake = dict(float32=dict(clip0_max_cm=max(e32[f] for f in range(NRUN)), clip1_max_cm=max(e32[f] for f in range(NRUN, NCL))),
             saved_exr_float16=dict(clip0_max_cm=max(e16[f] for f in range(NRUN)), clip1_max_cm=max(e16[f] for f in range(NRUN, NCL))),
             saved_exr_float16_not_renormalised=dict(clip0_max_cm=max(e16r[f] for f in range(NRUN)), clip1_max_cm=max(e16r[f] for f in range(NRUN, NCL))),
-            shield_only_saved_exr_float16_max_cm=max(sh16), shield_only_not_renormalised_max_cm=max(sh16r))
+            shield_only_saved_exr_float16_max_cm=max(sh16), per_part_saved_exr_float16_max_cm=PER_PART, shield_only_not_renormalised_max_cm=max(sh16r))
 
 
 # ---------------------------------------------------------------- walk checks from the SAVED half-float texture (shader path), clip 0 (shield run) and clip 2 (plain run)
