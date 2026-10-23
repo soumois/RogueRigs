@@ -24,6 +24,7 @@ kind: doc
 - unverified: look and feel after the fix (not captured); the ring reaching R on the ground and the 0.385 s timing are computed (no drag), not measured; that the 48 UniqueID angles spread evenly (IDs assumed to start at 0 and increase by 1 per burst); not tested in PIE.
 - tools_that_worked: AssetTools duplicate (NS_DigImpact), NiagaraToolset_System RemoveEmitter, AddModule (`SpawnBurst_Instantaneous`), RemoveModule (`SpawnRate`), AddUserVariables, RemoveUserVariables, SetStackInputData (Float, Int32, Vector3f, LinearColor, Enum, HlslExpression, nested `["Velocity Speed","Minimum"]`), GetModuleInputValues, GetStackIssues, GetSystemCompileState, NiagaraToolset_Info UEnum_Info (enum value names), AssetTools save_assets. An input hidden by a static switch (Cone Axis in From Point mode) refuses writes: switch the mode, set, switch back. A removed user variable returns while a hidden input still links it.
 - owner_agent: agent-bp
+- owner_decision: "On garde l'impact au sol comme ça" (owner 2026-10-23): the light beige-tan dust, faded ring edge and small chips are accepted, no rework.
 
 ## Relations
 - [[blueprints-fx-index]] — parent index.

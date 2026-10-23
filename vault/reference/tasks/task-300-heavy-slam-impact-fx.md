@@ -15,6 +15,7 @@ status: done
 - milestone: M2
 - next_step: none
 - result: Done. Run 1 (Saved/RobotMeshes/slam-impact/): ring ~0.4 R, raised, whitish, chips specks -> fix task-300-04. Run 2 (Saved/RobotMeshes/slam-impact-v2/slam_sheet.png, frames 08-17, slomo 0.1): flat ring centred at the feet, ~0.86 R at frame 14, ~0.98 R at frame 15 (~+0.3 s), gone at +0.35 s; light beige-tan semi-transparent (lighter than intended grey-brown); ~5 light-tan chips visible near the legs, short throw. Pixel estimates from the pitched camera.
+- owner_decision: "On garde l'impact au sol comme ça" (owner 2026-10-23): the light beige-tan dust, faded ring edge and small chips are accepted, no rework.
 
 ## Subtasks
 1. task-300-01-bp-slam-impact-ns — bp: NS_HeavySlamImpact
