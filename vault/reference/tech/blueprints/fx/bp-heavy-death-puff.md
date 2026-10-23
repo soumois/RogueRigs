@@ -15,7 +15,7 @@ kind: doc
 - colour: same warm spark orange, a detail colour; owner default 2026-10-23, provisional ([[color-code]]).
 - events: none
 - logic_in_bp: none
-- assets: none yet; to be used by BP_Heavy as DeathPuffSystem (task-297-02).
+- assets: used by BP_Heavy as DeathPuffSystem since task-297-02 (read back).
 - verified: compiles (UpToDate, 0 errors, 0 warnings); NS_RobotDeathPuff read back unchanged. Not verified in game: coverage of the heavy, look and cost not judged.
 - owner_agent: agent-bp
 
@@ -24,3 +24,4 @@ kind: doc
 - [[bp-robot-death-puff]] — the robot puff it was duplicated from.
 - [[enemy-death]] — the design of the death puff.
 - [[color-code]] — colours.
+- [[bp-heavy]] — the Blueprint that uses it.
