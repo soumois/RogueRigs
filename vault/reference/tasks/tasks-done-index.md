@@ -304,3 +304,4 @@ Archive: it exceeds the index size limits of [[_authoring]] on purpose (owner, 2
 - [[task-295-separation-radius-kamikaze-heavy]] — The crowd separation radius of the kamikaze and the heavy grows by 30 %; capsules unchanged. Status done.
 - [[task-296-shield-v2-arm-forward]] — Shield chaser v2 holds its forearm forward and carries the shield about 30 cm further forward to free the feet. Status done.
 - [[task-297-heavy-death-puff]] — The heavy gets its own larger death puff that hides its death shrink. Status done.
+- [[task-298-shooter-charge-fx]] — A red charge-up effect grows at the shooter cannon tip during the 0.6 s targeting laser. Status done.

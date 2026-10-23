@@ -632,6 +632,7 @@ kind: note
 | [[task-297-03-capture-heavy-death]] | opus | 2 | 0k | 72k | 1149k | 15k |
 | [[task-298-01-bp-shooter-charge-ns]] | sonnet | 1 | 0k | 86k | 1483k | 22k |
 | [[task-298-02-bp-shooter-charge-wire]] | sonnet | 1 | 0k | 59k | 970k | 11k |
+| [[task-298-03-capture-shooter-charge]] | opus | 1 | 0k | 51k | 538k | 9k |
 
 ## Totals
 | Scope | Input | Cache write | Cache read | Output |

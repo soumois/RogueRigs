@@ -1,9 +1,9 @@
 ---
 id: task-298-shooter-charge-fx
 description: "Global task: A red charge-up effect grows at the shooter cannon tip during the 0.6 s targeting laser."
-parent: tasks-to-do-index
+parent: tasks-done-index
 kind: task
-status: in-progress
+status: done
 ---
 # Shooter weapon charge-up effect
 
@@ -13,8 +13,8 @@ status: in-progress
 - gdd_check: enemy-shooter and color-code read (2026-10-23): charge-up line added, red as shots and laser (provisional, owner 2026-10-23). MuzzlePoint is at the aimed tip, so during the first 0.3 s raise the effect leads the cannon (accepted default).
 - confirmed_by_owner: yes (2026-10-23, "Le reste est bon"; planned in a planning pass, each task run later by its own orchestrator)
 - milestone: M2
-- next_step: task-298-03-capture-shooter-charge
-- result: open
+- next_step: none
+- result: Done. Saved/RobotMeshes/shooter-charge/ (shooter_sheet.png, shooter_tip_zoom.png, frames 00-27, slomo 0.2, ~0.05 s apart): red glow at the cannon tip from ~0.1 s into the laser, full size by ~0.25 s, pinkish-white core; sparks seen as tiny dots (inward motion unverified); glow lingers ~0.15-0.2 s after the shot, darkening (inactive response Complete), gone by frame 19. No code, no commit.
 
 ## Subtasks
 1. task-298-01-bp-shooter-charge-ns — bp: NS_ShooterCharge
@@ -22,7 +22,7 @@ status: in-progress
 3. task-298-03-capture-shooter-charge — cpp: Capture the shooter charge-up
 
 ## Relations
-- [[tasks-to-do-index]] — parent index.
+- [[tasks-done-index]] — parent index.
 - [[task-298-01-bp-shooter-charge-ns]] — step 01, bp.
 - [[task-298-02-bp-shooter-charge-wire]] — step 02, bp.
 - [[task-298-03-capture-shooter-charge]] — step 03, cpp.
