@@ -1,0 +1,222 @@
+{
+ "task": "task-301-02-console-c2-cut",
+ "source": "Art\\Source\\console-meshy\\meshy\\Meshy_AI_Satellite_Receiver_St_1023222045_texture.fbx",
+ "source_tris": 20070,
+ "source_open_edges": 72,
+ "tris_after_refinement": 28038,
+ "frame": "cm, front of the console faces -Y, Z up; Blender unit = 1 m, FBX_SCALE_UNITS, axis_forward -Z, axis_up Y as the drone parts; UnitScaleFactor read in files: [100.0, 100.0]",
+ "source_size_cm": [
+  147.65,
+  126.74,
+  189.91
+ ],
+ "scale_note": "Meshy scale kept as is (1 unit = 1 m): 190 cm tall; the subtask gave no height",
+ "cut": {
+  "plane_z_cm": 108.0,
+  "section_bounds_cm": [
+   [
+    -17.47,
+    8.12
+   ],
+   [
+    5.97,
+    25.45
+   ]
+  ],
+  "connected_pieces": 2,
+  "small_fragments": [],
+  "mast_section_centres_xy_cm": {
+   "z98": [
+    -5.83,
+    14.81
+   ],
+   "z102": [
+    -5.75,
+    15.1
+   ],
+   "z106": [
+    -5.7,
+    13.9
+   ],
+   "cap": [
+    -5.66,
+    16.68
+   ]
+  }
+ },
+ "pivots": {
+  "base_pivot_stage_cm": [
+   -0.754,
+   -0.014,
+   0.0
+  ],
+  "mast_axis_xy_in_base_frame_cm": [
+   -4.904,
+   16.69
+  ],
+  "head_origin_height_in_base_frame_cm": 108.0,
+  "head_offset_on_base_cm": [
+   -4.904,
+   16.69,
+   108.0
+  ],
+  "head_note": "head origin on the mast axis at the cut height: rotate the head about Z through its origin; place it at head_offset_on_base_cm in the base frame"
+ },
+ "screen": {
+  "rect_x_cm": [
+   2.4,
+   26.4
+  ],
+  "rect_z_cm": [
+   57.4,
+   68.5
+  ],
+  "plane": {
+   "normal": [
+    0.017,
+    -0.8424,
+    0.5385
+   ],
+   "offset_cm": 51.426
+  },
+  "patch_faces_after_cut": 33
+ },
+ "orange_refinement_rounds_mixed_faces": [
+  218,
+  526,
+  1057
+ ],
+ "parts": {
+  "console_c2_base": {
+   "tris": 22758,
+   "vertices": 11297,
+   "pivot_stage_cm": [
+    -0.754,
+    -0.014,
+    0.0
+   ],
+   "faces_per_slot": {
+    "ConsoleBody": 18970,
+    "OtherOrange": 3778,
+    "Screen": 10
+   },
+   "readback": {
+    "tris": 22758,
+    "size_cm": [
+     147.65,
+     126.74,
+     108.0
+    ],
+    "bounds_min_cm": [
+     -73.83,
+     -63.37,
+     -0.0
+    ],
+    "bounds_max_cm": [
+     73.83,
+     63.37,
+     108.0
+    ],
+    "world_origin_cm": [
+     0.0,
+     0.0,
+     0.0
+    ],
+    "slots": [
+     "ConsoleBody",
+     "OtherOrange",
+     "Screen"
+    ],
+    "faces_per_slot": {
+     "ConsoleBody": 18970,
+     "OtherOrange": 3778,
+     "Screen": 10
+    },
+    "uv_layers": [
+     "UVMap"
+    ],
+    "open_edges": 68,
+    "nonmanifold_edges": 67
+   }
+  },
+  "console_c2_head": {
+   "tris": 5416,
+   "vertices": 2694,
+   "pivot_stage_cm": [
+    -5.658,
+    16.675,
+    108.0
+   ],
+   "faces_per_slot": {
+    "ConsoleBody": 5084,
+    "AntennaOrange": 332
+   },
+   "readback": {
+    "tris": 5416,
+    "size_cm": [
+     124.48,
+     76.21,
+     81.91
+    ],
+    "bounds_min_cm": [
+     -62.14,
+     -57.68,
+     -0.0
+    ],
+    "bounds_max_cm": [
+     62.33,
+     18.53,
+     81.91
+    ],
+    "world_origin_cm": [
+     0.0,
+     0.0,
+     0.0
+    ],
+    "slots": [
+     "ConsoleBody",
+     "AntennaOrange"
+    ],
+    "faces_per_slot": {
+     "ConsoleBody": 5084,
+     "AntennaOrange": 332
+    },
+    "uv_layers": [
+     "UVMap"
+    ],
+    "open_edges": 4,
+    "nonmanifold_edges": 3
+   }
+  }
+ },
+ "assembled": {
+  "size_cm": [
+   147.66,
+   126.74,
+   189.91
+  ],
+  "bounds_min_cm": [
+   -73.83,
+   -63.37,
+   -0.0
+  ],
+  "bounds_max_cm": [
+   73.83,
+   63.37,
+   189.91
+  ],
+  "source_bounds_min_cm": [
+   -73.83,
+   -63.37,
+   0.0
+  ],
+  "source_bounds_max_cm": [
+   73.83,
+   63.37,
+   189.91
+  ]
+ },
+ "texture": "console_c2_basecolor.png",
+ "warnings": [],
+ "seconds": 11.6
+}
