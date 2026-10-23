@@ -3,7 +3,7 @@ id: task-291-05-capture-v2-v1-clips
 description: "Capture chaser v2 and shield chaser v2 running and attacking in -game next to their v1 versions (cpp)."
 parent: task-291-chaser-v2-v1-anims
 kind: task
-status: in-progress
+status: done
 ---
 # Capture chaser v2 and shield chaser v2
 
@@ -15,11 +15,11 @@ status: in-progress
 - done_when: both v2 robots run and attack with the v1 motion, parts joined, shield held, eyes on the head; no untracked throwaway files
 - editor_state: any (runs beside the owner editor)
 - token_ceiling: 35000
-- model: open
-- tokens: open
-- runs: open
+- model: opus
+- tokens: input 46, cache write 91837, cache read 695856, output 9194
+- runs: 1
 - milestone: M2
-- result: open
+- result: -game captures in Saved/RobotMeshes/v1-clips/ (run and attack sheets, 4 robots): chaser v2 and shield chaser v2 run with the v1 motion, parts joined, shield held; attack swing hidden by the miner in the top-down view and shield chaser v2 eye hidden behind the shield (unverified); robot_shots.ps1 gained shieldchaser entry (71a5b029).
 
 ## Relations
 - [[task-291-chaser-v2-v1-anims]] — parent global task.

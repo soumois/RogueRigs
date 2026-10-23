@@ -1,9 +1,9 @@
 ---
 id: task-291-chaser-v2-v1-anims
 description: "Global task: Chaser v2 run and attack, and shield chaser v2 shield run and bash, become exactly the v1 clips on the v2 parts."
-parent: tasks-to-do-index
+parent: tasks-done-index
 kind: task
-status: in-progress
+status: done
 ---
 # Chaser v2 and shield chaser v2 play the v1 clips
 
@@ -13,8 +13,8 @@ status: in-progress
 - gdd_check: enemy-chaser and enemy-heavy read (2026-10-23): chaser v2 line now says run and attack identical to v1 (no knee cap) and shield clips identical to shield v1; the 35 and 45 degree lines of 26a7a5a2 reverted, heavy back to the 15 degree rule (owner 2026-10-23). No open value.
 - confirmed_by_owner: yes (2026-10-23, "Le reste est bon"; planned in a planning pass, each task run later by its own orchestrator)
 - milestone: M2
-- next_step: task-291-05-capture-v2-v1-clips
-- result: open
+- next_step: none
+- result: Done. -game captures in Saved/RobotMeshes/v1-clips/ (run and attack sheets, 4 robots): chaser v2 and shield chaser v2 run with the v1 motion, parts joined, shield held; attack swing hidden by the miner in the top-down view and shield chaser v2 eye hidden behind the shield (unverified); robot_shots.ps1 gained shieldchaser entry (71a5b029).
 
 ## Subtasks
 1. task-291-01-bake-chaser-v2-v1-clips — 3d: Bake the chaser v1 clips on chaser v2
@@ -24,7 +24,7 @@ status: in-progress
 5. task-291-05-capture-v2-v1-clips — cpp: Capture chaser v2 and shield chaser v2
 
 ## Relations
-- [[tasks-to-do-index]] — parent index.
+- [[tasks-done-index]] — parent index.
 - [[task-291-01-bake-chaser-v2-v1-clips]] — step 01, 3d.
 - [[task-291-02-bake-shield-v2-v1-clips]] — step 02, 3d.
 - [[task-291-03-bp-chaser-v2-v1-clips]] — step 03, bp.
