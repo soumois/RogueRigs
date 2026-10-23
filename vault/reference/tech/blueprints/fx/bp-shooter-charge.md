@@ -8,7 +8,7 @@ kind: doc
 
 - asset_path: /Game/RogueRigs/FX/NS_ShooterCharge (Niagara system, no Blueprint)
 - parent_class: UNiagaraSystem
-- purpose: red charge-up glow that grows at the cannon tip during the shooter's 0.6 s targeting laser ([[enemy-shooter]]). Not wired yet: BP_Shooter gets a component in the next subtask of task-298 ([[bp-shooter]]).
+- purpose: red charge-up glow that grows at the cannon tip during the shooter's 0.6 s targeting laser ([[enemy-shooter]]). Wired in task-298-02: BP_Shooter component ChargeFX plays it on OnAimStart and stops it on OnFire and OnAimEnd ([[bp-shooter]]).
 - user_params: none.
 - emitters (both CPU sim, local space `bLocalSpace` true so it follows the muzzle, loop Infinite, inactive response Complete: Deactivate stops spawning and live particles finish, then the component ends; from the engine Fountain template):
   - `Glow`: spawn rate 1.6/s (one particle per 0.625 s, so a charge held past 0.6 s restarts), lifetime 0.6 s, one sprite at the emitter origin (shape, velocity, gravity, drag and ScaleColor modules removed), sprite size 24 cm (inside 15 to 30), ScaleSpriteSize uniform curve 0 to 1 linear over normalized age (grows from nothing to 24 cm over 0.6 s), colour HDR red (8, 0.25, 0.25, 1), default sprite material.
@@ -27,4 +27,4 @@ kind: doc
 - [[blueprints-fx-index]] — parent index.
 - [[enemy-shooter]] — the telegraph it shows.
 - [[color-code]] — enemy shots and laser are red.
-- [[bp-shooter]] — the Blueprint that will play it.
+- [[bp-shooter]] — the Blueprint that plays it.
