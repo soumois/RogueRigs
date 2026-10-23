@@ -42,6 +42,8 @@ enum class ERRKamikazeState : uint8
  * OnFlareStart(Duration) fires on arming, GetFlareProgress runs 0 -> 1 over the fuse, OnFlareEnd fires when it leaves Armed.
  * Animation (task-284-05, ARREnemy clip writer): leg sway loop (clip 0, random phase) always on (no rest clip), from BeginPlay and
  * each pool reuse; armed, fuse and death leave it running.
+ * Fuse shake (task-299-01): while Armed, VisualRoot jitters with the rock shake form of ARRArenaGrid (8 uu horizontal, 3 uu vertical),
+ * its frequency rising linearly from FuseShakeStartRate to FuseShakeEndRate over the fuse; the actor itself never moves.
  */
 UCLASS(Blueprintable)
 class ROGUERIGS_API ARRKamikaze : public ARREnemy
@@ -71,6 +73,12 @@ public:
 
 	/** Seconds between arming and the explosion: CSV WindUp (enemy-kamikaze: 0.5). */
 	float GetFuseTime() const { return Stats.WindUp; }
+
+	/** Current fuse shake offset (uu) added to VisualRoot while Armed; zero otherwise. For tests and debug. */
+	FVector GetFuseShakeOffset() const { return FuseShakeOffset; }
+
+	/** Current fuse shake frequency (Hz): FuseShakeStartRate to FuseShakeEndRate over the fuse while Armed; 0 otherwise. */
+	float GetFuseShakeRate() const;
 
 	/** Current core scale multiplier (pulse x arming growth), for tests and debug. */
 	float GetCoreScaleFactor() const { return CoreScaleFactor; }
@@ -148,7 +156,10 @@ protected:
 	/** Queues one ExplosionRowName explosion at the robot (instigator and source: this robot). Once. */
 	void QueueOwnExplosion();
 
-	/** Places VisualRoot HoverHeight above the capsule bottom plus the bob. */
+	/** Advances the fuse shake phase at GetFuseShakeRate and computes FuseShakeOffset (zero and phase reset outside Armed). */
+	void UpdateFuseShake(float DeltaSeconds);
+
+	/** Places VisualRoot HoverHeight above the capsule bottom plus the bob and the fuse shake offset. */
 	void UpdateHover();
 
 	/** Advances the core pulse phase and applies the pulse and arming growth to CoreMesh. */
@@ -198,6 +209,22 @@ protected:
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Kamikaze|Core", meta = (ClampMin = 1))
 	float ArmedCoreScale = 1.8f;
 
+	/** Maximum horizontal offset (uu) of the fuse shake (task-299-01, enemy-kamikaze fuse shake; same as ARRArenaGrid ShakeAmplitude). 0 = no shake. */
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Kamikaze|Fuse Shake", meta = (ClampMin = 0, Units = "cm"))
+	float FuseShakeAmplitude = 8.f;
+
+	/** Maximum vertical offset (uu) of the fuse shake (same as ARRArenaGrid ShakeVerticalAmplitude). */
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Kamikaze|Fuse Shake", meta = (ClampMin = 0, Units = "cm"))
+	float FuseShakeVerticalAmplitude = 3.f;
+
+	/** Fuse shake frequency when the fuse starts (arming), in full cycles per second (rock shake: 8). */
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Kamikaze|Fuse Shake", meta = (ClampMin = 0, Units = "Hz"))
+	float FuseShakeStartRate = 8.f;
+
+	/** Fuse shake frequency at the explosion (linear from FuseShakeStartRate over the fuse), in full cycles per second. */
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Kamikaze|Fuse Shake", meta = (ClampMin = 0, Units = "Hz"))
+	float FuseShakeEndRate = 24.f;
+
 	/** Current state. */
 	UPROPERTY(VisibleInstanceOnly, BlueprintReadOnly, Category = "Kamikaze")
 	ERRKamikazeState State = ERRKamikazeState::Chase;
@@ -210,6 +237,12 @@ protected:
 
 	/** Core pulse phase in cycles (accumulated so a rate change does not jump). */
 	double CorePulsePhase = 0.0;
+
+	/** Fuse shake phase in cycles since arming (accumulated so the rising rate does not jump; not wrapped, the axes use incommensurate multiples). */
+	double FuseShakePhase = 0.0;
+
+	/** Current fuse shake offset (uu) added to VisualRoot. */
+	FVector FuseShakeOffset = FVector::ZeroVector;
 
 	/** Current core scale multiplier. */
 	float CoreScaleFactor = 1.f;

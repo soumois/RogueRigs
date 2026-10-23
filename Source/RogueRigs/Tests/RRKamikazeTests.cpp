@@ -180,6 +180,11 @@ bool FRRKamikazeFuseTest::RunTest(const FString& Parameters)
 	float MaxCoreScaleArmed = 0.f;
 	FVector ArmLocation = FVector::ZeroVector;
 	float MaxArmedDrift = 0.f;
+	// Fuse shake timeline (task-299-01): peak offsets per axis, rate on the first and last armed frames, armed frame count.
+	FVector MaxShake = FVector::ZeroVector;
+	float FirstShakeRate = -1.f;
+	float LastShakeRate = -1.f;
+	int32 ArmedFrames = 0;
 	for (int32 Frame = 0; Frame < 300 && Weak.IsValid() && !Weak->HasDetonated(); ++Frame)
 	{
 		const ERRKamikazeState Previous = Weak->GetState();
@@ -197,6 +202,14 @@ bool FRRKamikazeFuseTest::RunTest(const FString& Parameters)
 		{
 			MaxCoreScaleArmed = FMath::Max(MaxCoreScaleArmed, Weak->GetCoreScaleFactor());
 			MaxArmedDrift = FMath::Max(MaxArmedDrift, static_cast<float>(FVector::Dist2D(Weak->GetActorLocation(), ArmLocation)));
+			const FVector Shake = Weak->GetFuseShakeOffset();
+			MaxShake = FVector(FMath::Max(MaxShake.X, FMath::Abs(Shake.X)), FMath::Max(MaxShake.Y, FMath::Abs(Shake.Y)), FMath::Max(MaxShake.Z, FMath::Abs(Shake.Z)));
+			if (FirstShakeRate < 0.f)
+			{
+				FirstShakeRate = Weak->GetFuseShakeRate();
+			}
+			LastShakeRate = Weak->GetFuseShakeRate();
+			++ArmedFrames;
 		}
 	}
 	if (!TestTrue(TEXT("kamikaze detonated"), Weak.IsValid() && Weak->HasDetonated()))
@@ -209,6 +222,9 @@ bool FRRKamikazeFuseTest::RunTest(const FString& Parameters)
 	TestTrue(TEXT("armed within 250 uu"), ArmDistance > 0.f && ArmDistance <= 250.f);
 	TestTrue(TEXT("armed near the 250 uu edge (one frame of travel)"), ArmDistance > 250.f - 2.f * Row.MoveSpeed * FrameSeconds);
 	TestTrue(TEXT("stopped once armed"), MaxArmedDrift < 1.f);
+	AddInfo(FString::Printf(TEXT("fuse shake over %d armed frames: peak |x| %.2f, |y| %.2f, |z| %.2f uu, rate %.2f Hz first frame -> %.2f Hz last frame, offset after explosion %s"),
+		ArmedFrames, MaxShake.X, MaxShake.Y, MaxShake.Z, FirstShakeRate, LastShakeRate, *Kamikaze->GetFuseShakeOffset().ToString()));
+	TestTrue(TEXT("fuse shake cleared after the explosion"), Kamikaze->GetFuseShakeOffset().IsZero());
 	const float ContactDistance = Kamikaze->GetCapsuleComponent()->GetScaledCapsuleRadius() + Miner->GetCapsuleComponent()->GetScaledCapsuleRadius();
 	TestTrue(TEXT("armed before its capsule touches the miner"), ArmDistance > ContactDistance);
 	TestTrue(TEXT("fuse 0.65 s (within one frame)"), Fuse >= 0.65 - 1e-3 && Fuse <= 0.65 + FrameSeconds + 1e-3);

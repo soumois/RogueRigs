@@ -69,6 +69,9 @@ void ARRKamikaze::EnterState(ERRKamikazeState NewState)
 	{
 		// Detonate sets bDetonated before the death enters Dead.
 		OnFlareEnd(bDetonated);
+		// The fuse shake stops with the flare (explosion, death or reset): VisualRoot back to its hover place.
+		UpdateFuseShake(0.f);
+		UpdateHover();
 	}
 	if (NewState == ERRKamikazeState::Armed && PreviousState != ERRKamikazeState::Armed)
 	{
@@ -111,6 +114,7 @@ void ARRKamikaze::UpdateBehavior(float DeltaSeconds)
 		return;
 	}
 
+	UpdateFuseShake(DeltaSeconds);
 	UpdateHover();
 	UpdateCore(DeltaSeconds);
 }
@@ -223,12 +227,41 @@ void ARRKamikaze::DropXP()
 	Super::DropXP();
 }
 
+float ARRKamikaze::GetFuseShakeRate() const
+{
+	if (State != ERRKamikazeState::Armed)
+	{
+		return 0.f;
+	}
+	const float FuseTime = GetFuseTime();
+	const double Alpha = FuseTime > 0.f ? FMath::Clamp(GetTimeInState() / FuseTime, 0.0, 1.0) : 1.0;
+	return FMath::Lerp(FuseShakeStartRate, FuseShakeEndRate, static_cast<float>(Alpha));
+}
+
+void ARRKamikaze::UpdateFuseShake(float DeltaSeconds)
+{
+	if (State != ERRKamikazeState::Armed)
+	{
+		FuseShakePhase = 0.0;
+		FuseShakeOffset = FVector::ZeroVector;
+		return;
+	}
+	FuseShakePhase += DeltaSeconds * GetFuseShakeRate();
+	// Rock shake form (ARRArenaGrid shake tick): incommensurate sines per axis, a horizontal jitter bounded by FuseShakeAmplitude
+	// plus a vertical bob bounded by FuseShakeVerticalAmplitude. Phase 0 at arming: the shake starts from the rest place.
+	const float Angle = static_cast<float>(UE_TWO_PI * FuseShakePhase);
+	FuseShakeOffset = FVector(
+		FuseShakeAmplitude * FMath::Sin(Angle),
+		FuseShakeAmplitude * FMath::Sin(1.37f * Angle),
+		FuseShakeVerticalAmplitude * FMath::Sin(1.71f * Angle));
+}
+
 void ARRKamikaze::UpdateHover()
 {
 	const double Time = GetWorld()->GetTimeSeconds();
 	const float Bob = HoverBobAmplitude * FMath::Sin(UE_TWO_PI * HoverBobRate * Time);
 	const float Z = -GetCapsuleComponent()->GetUnscaledCapsuleHalfHeight() + HoverHeight + Bob;
-	VisualRoot->SetRelativeLocation(FVector(VisualRootBaseLocation.X, VisualRootBaseLocation.Y, Z));
+	VisualRoot->SetRelativeLocation(FVector(VisualRootBaseLocation.X, VisualRootBaseLocation.Y, Z) + FuseShakeOffset);
 }
 
 void ARRKamikaze::UpdateCore(float DeltaSeconds)
@@ -266,6 +299,8 @@ void ARRKamikaze::ResetForNewLife()
 	ExplosionQueuedTime = -1.0;
 	CorePulsePhase = 0.0;
 	CoreScaleFactor = 1.f;
+	FuseShakePhase = 0.0;
+	FuseShakeOffset = FVector::ZeroVector;
 	EnemyMovement->SetArrivalDistance(GetArmRange() * ArrivalRangeRatio);
 	EnterState(ERRKamikazeState::Chase);
 	UpdateHover();
