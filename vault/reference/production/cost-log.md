@@ -635,6 +635,7 @@ kind: note
 | [[task-298-03-capture-shooter-charge]] | opus | 1 | 0k | 51k | 538k | 9k |
 | [[task-299-01-cpp-kamikaze-fuse-shake]] | opus | 1 | 0k | 60k | 740k | 15k |
 | [[task-299-02-capture-kamikaze-shake]] | opus | 1 | 0k | 46k | 520k | 11k |
+| [[task-300-01-bp-slam-impact-ns]] | sonnet | 1 | 0k | 82k | 1244k | 23k |
 
 ## Totals
 | Scope | Input | Cache write | Cache read | Output |

@@ -3,7 +3,7 @@ id: task-300-02-bp-slam-impact-wire
 description: "BP_Heavy OnSlam spawns NS_HeavySlamImpact at Location with User.Radius = Radius (bp)."
 parent: task-300-heavy-slam-impact-fx
 kind: task
-status: todo
+status: in-progress
 ---
 # BP_Heavy plays the slam impact
 

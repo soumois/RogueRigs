@@ -3,7 +3,7 @@ id: task-300-01-bp-slam-impact-ns
 description: "Create NS_HeavySlamImpact, a dust ring and rock chips scaled by User.Radius, with its doc node (bp)."
 parent: task-300-heavy-slam-impact-fx
 kind: task
-status: in-progress
+status: done
 ---
 # NS_HeavySlamImpact
 
@@ -15,11 +15,11 @@ status: in-progress
 - done_when: compiles without error; User.Radius and values read back; doc node and index relation added; lint clean
 - editor_state: open (owner editor, MCP route, do not close it)
 - token_ceiling: 30000
-- model: open
-- tokens: open
-- runs: open
+- model: sonnet
+- tokens: input 60, cache write 82220, cache read 1244388, output 22826
+- runs: 1
 - milestone: M2
-- result: open
+- result: NS_HeavySlamImpact (commit 019ed400): Dust ring 48 puffs, burst once, From Point velocity User.Radius*6.67 with drag 6 (edge ~0.93 R at 0.3 s), grey-brown (0.42,0.35,0.28) a0.5; Chips 14, M_DigChip, cone up 40 deg, gravity -980. User.Radius float default 361. Compile 0 errors. Look unverified.
 
 ## Relations
 - [[task-300-heavy-slam-impact-fx]] — parent global task.
