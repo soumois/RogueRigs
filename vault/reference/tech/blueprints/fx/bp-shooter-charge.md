@@ -21,6 +21,7 @@ kind: doc
 - compile: system UpToDate, 0 errors, 0 warnings, 4 info notes (module version upgrade), saved.
 - unverified: look and feel (nobody saw the viewport); sizes and speeds are guesses, tune after seeing it in game; the inward direction of the From Point velocity (negative speed) is read back but not seen; local-space following not tested in PIE.
 - tools_that_worked: NiagaraToolset_System CreateNiagaraSystem (template NS_PickupSparkle, its emitter then removed), AddEmitter (Fountain x2), RemoveEmitter (`emitterToRemove`), RemoveModule (`moduleToRemove`), AddModule (ScaleSpriteSize), SetEmitterData (`emitter` + `emitterData.propertyValues` `{"bLocalSpace":true}`), SetStackInputData (nested `["Velocity Speed","Minimum"]`), GetStackIssues, GetSystemCompileState, AssetTools save_assets. The editor tools are reached through the `call_tool` wrapper (JSON-RPC, `toolset_name` + `tool_name`).
+- owner_decision: "Garde la lueur comme ça, le fondu après le tir ne gêne pas" (owner 2026-10-23): the ~0.2 s fade after the shot (inactive response Complete) is accepted, no rework.
 - owner_agent: agent-bp
 
 ## Relations

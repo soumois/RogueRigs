@@ -12,6 +12,7 @@ status: done
 - acceptance: effect visible at the cannon tip during the laser in -game, gone after the shot or a cancelled aim; committed.
 - gdd_check: enemy-shooter and color-code read (2026-10-23): charge-up line added, red as shots and laser (provisional, owner 2026-10-23). MuzzlePoint is at the aimed tip, so during the first 0.3 s raise the effect leads the cannon (accepted default).
 - confirmed_by_owner: yes (2026-10-23, "Le reste est bon"; planned in a planning pass, each task run later by its own orchestrator)
+- owner_decision: "Garde la lueur comme ça, le fondu après le tir ne gêne pas" (owner 2026-10-23): the ~0.2 s fade after the shot is accepted, no rework.
 - milestone: M2
 - next_step: none
 - result: Done. Saved/RobotMeshes/shooter-charge/ (shooter_sheet.png, shooter_tip_zoom.png, frames 00-27, slomo 0.2, ~0.05 s apart): red glow at the cannon tip from ~0.1 s into the laser, full size by ~0.25 s, pinkish-white core; sparks seen as tiny dots (inward motion unverified); glow lingers ~0.15-0.2 s after the shot, darkening (inactive response Complete), gone by frame 19. No code, no commit.
