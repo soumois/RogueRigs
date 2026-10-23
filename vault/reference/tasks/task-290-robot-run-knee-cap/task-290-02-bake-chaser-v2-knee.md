@@ -3,7 +3,7 @@ id: task-290-02-bake-chaser-v2-knee
 description: "Rebake the chaser v2 run clip with the knee on the v1 curve capped at 45 degrees, attack rows kept (3d)."
 parent: task-290-robot-run-knee-cap
 kind: task
-status: todo
+status: done
 ---
 # Rebake the chaser v2 run, knee cap 45
 
@@ -19,7 +19,7 @@ status: todo
 - tokens: open
 - runs: open
 - milestone: M2
-- result: open
+- result: Cancelled before running (nothing baked or imported): the owner changed his mind on 2026-10-23, replaced by task-291-chaser-v2-v1-anims.
 
 ## Relations
 - [[task-290-robot-run-knee-cap]] — parent global task.

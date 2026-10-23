@@ -3,7 +3,7 @@ id: task-290-01-robot-run-knee-cap
 description: "Rebake the heavy run clip with the knee on the v1 curve capped at 35 degrees, slam rows kept (3d)."
 parent: task-290-robot-run-knee-cap
 kind: task
-status: in-progress
+status: done
 ---
 # Rebake the heavy run, knee cap 35
 
@@ -19,7 +19,7 @@ status: in-progress
 - tokens: open
 - runs: open
 - milestone: M2
-- result: open
+- result: Cancelled before running (nothing baked or imported): the owner changed his mind on 2026-10-23, replaced by task-291-chaser-v2-v1-anims.
 
 ## Relations
 - [[task-290-robot-run-knee-cap]] — parent global task.

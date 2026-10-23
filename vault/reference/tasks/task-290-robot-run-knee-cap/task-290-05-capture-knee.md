@@ -3,7 +3,7 @@ id: task-290-05-capture-knee
 description: "Capture the heavy and chaser v2 running in -game with the new knee, compared with run-v1 shots (cpp)."
 parent: task-290-robot-run-knee-cap
 kind: task
-status: todo
+status: done
 ---
 # Capture both robots running
 
@@ -19,7 +19,7 @@ status: todo
 - tokens: open
 - runs: open
 - milestone: M2
-- result: open
+- result: Cancelled before running (nothing baked or imported): the owner changed his mind on 2026-10-23, replaced by task-291-chaser-v2-v1-anims.
 
 ## Relations
 - [[task-290-robot-run-knee-cap]] — parent global task.

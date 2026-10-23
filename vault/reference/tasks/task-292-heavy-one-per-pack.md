@@ -1,0 +1,24 @@
+---
+id: task-292-heavy-one-per-pack
+description: "Global task: Packs carry at most 1 heavy so heavies arrive from different sides; heavy alive cap 3 unchanged."
+parent: tasks-to-do-index
+kind: task
+status: todo
+---
+# At most one heavy per pack
+
+- request: "Le gros robot, je les vois souvent arriver par 3 et pas par différents groupes" (owner, 2026-10-23)
+- goal: Heavies and WideHeavies pack types hold 1 heavy (was 2..3) at the front; in hordes the 2..3 heavies are spread along the front row instead of side by side; pack weights, alive cap 3 and every other director value unchanged (provisional, owner 2026-10-23).
+- acceptance: no pack holds more than 1 heavy; horde heavies spread along the front; existing Spawner.Director tests updated and passing; sys-spawner-director-defaults updated; committed.
+- gdd_check: enemies-index and enemy-heavy read (2026-10-23): rule added (at most 1 heavy per pack, provisional, owner 2026-10-23); alive cap 3 kept. Defaults chosen, to confirm: pack weights 96/4 kept (fewer heavies per run), horde heavies spread not removed, MakeLastLevel gets the same rule.
+- confirmed_by_owner: yes (2026-10-23, "Le reste est bon"; planned in a planning pass, each task run later by its own orchestrator)
+- milestone: M2
+- next_step: task-292-01-cpp-heavy-one-per-pack
+- result: open
+
+## Subtasks
+1. task-292-01-cpp-heavy-one-per-pack — cpp: Director: one heavy per pack
+
+## Relations
+- [[tasks-to-do-index]] — parent index.
+- [[task-292-01-cpp-heavy-one-per-pack]] — step 01, cpp.

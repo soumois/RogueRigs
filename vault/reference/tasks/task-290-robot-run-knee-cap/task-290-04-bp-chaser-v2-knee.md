@@ -3,7 +3,7 @@ id: task-290-04-bp-chaser-v2-knee
 description: "Import the 290-02 chaser v2 bake as a new texture on the chaser v2 body and eye instances (bp)."
 parent: task-290-robot-run-knee-cap
 kind: task
-status: todo
+status: done
 ---
 # Chaser v2 anim texture in Unreal
 
@@ -19,7 +19,7 @@ status: todo
 - tokens: open
 - runs: open
 - milestone: M2
-- result: open
+- result: Cancelled before running (nothing baked or imported): the owner changed his mind on 2026-10-23, replaced by task-291-chaser-v2-v1-anims.
 
 ## Relations
 - [[task-290-robot-run-knee-cap]] — parent global task.

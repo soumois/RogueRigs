@@ -296,3 +296,4 @@ Archive: it exceeds the index size limits of [[_authoring]] on purpose (owner, 2
 - [[task-287-shooter-aim-fire-anim]] — Animate the shooter aim clip (cannon arm raised during the laser) and fire clip (recoil at the shot), after its walk. Status done.
 - [[task-288-robot-death-debris]] — Death debris pieces for heavy, kamikaze, shooter, chaser v2 and shield chaser v2, as for the chaser, v1 debris untouched. Status done.
 - [[task-289-robot-run-v1-motion]] — Heavy and chaser v2 run clips rebaked with the chaser v1 run motion, light knee bend kept, RunRate reset against foot slide. Status done.
+- [[task-290-robot-run-knee-cap]] — Heavy and chaser v2 run knee follows the v1 curve, capped at 35 and 45 degrees instead of 15. Status done (cancelled, replaced by task-291).

@@ -1,9 +1,9 @@
 ---
 id: task-290-robot-run-knee-cap
 description: "Global task: heavy and chaser v2 run knee follows the v1 curve, capped at 35 and 45 degrees instead of 15."
-parent: tasks-to-do-index
+parent: tasks-done-index
 kind: task
-status: in-progress
+status: done
 ---
 # Robot run knee cap raised toward v1
 
@@ -13,8 +13,8 @@ status: in-progress
 - gdd_check: enemy-heavy and enemy-chaser read (2026-10-23): the walk/run knee "at most 15 degrees" is replaced by the owner decision (heavy 35, chaser v2 45 degrees, provisional, owner 2026-10-23) in both specs; speeds unchanged; kamikaze leg sway and shield chaser v2 unchanged.
 - confirmed_by_owner: yes (2026-10-23)
 - milestone: M2
-- next_step: task-290-01-robot-run-knee-cap
-- result: open
+- next_step: none
+- result: Cancelled before any bake (owner 2026-10-23: L'animation V1 du chasseur et du chasseur avec bouclier était mieux, retranscris ça sur le chasseur V2. Et laisse les autres animations comme ça pour l'instant). Heavy keeps its task-289 run (knee 15); the 35 and 45 degree GDD lines of 26a7a5a2 reverted; chaser v2 and shield chaser v2 now in task-291-chaser-v2-v1-anims.
 
 ## Subtasks
 1. task-290-01-robot-run-knee-cap — 3d: Rebake the heavy run, knee cap 35
@@ -24,7 +24,7 @@ status: in-progress
 5. task-290-05-capture-knee — cpp: Capture both robots running
 
 ## Relations
-- [[tasks-to-do-index]] — parent index.
+- [[tasks-done-index]] — parent index.
 - [[task-290-01-robot-run-knee-cap]] — step 01, 3d.
 - [[task-290-02-bake-chaser-v2-knee]] — step 02, 3d.
 - [[task-290-03-bp-heavy-knee]] — step 03, bp.

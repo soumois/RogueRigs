@@ -22,11 +22,13 @@ status: approved
   - the share of kamikazes per wave controls how long a chokepoint lasts.
 - telegraph: the core always pulses; within 250 uu of the miner it arms, stops, the core pulses faster and grows for 0.65 s, then it explodes (owner 2026-10-06; was 150 uu and 0.5 s, owner 2026-10-02)
 - colors: dark gunmetal, pulsing orange core; red eyes, yellow logo plate ([[color-code]])
-- stats (provisional, owner 2026-10-02): hp 100 (about 3.3 × a chaser), speed 180 uu/s (owner 2026-10-06: every robot moves at the same speed, 180; before that 151; owner 2026-10-06 third test: 10 % slower again, was 168; owner 2026-10-06 second test: 30 % slower so the miner has time to dig, was 240; 20 % slower, owner 2026-10-06, was 300; slow and tough; owner 2026-10-02, was 15 and 520), explosion radius 312 uu (owner 2026-10-04: +25 %, was 250), character damage 30, terrain: every block in the radius, xp_value 1; knockback_resistance open
+- stats (provisional, owner 2026-10-02): hp 100 (about 3.3 × a chaser), speed 180 uu/s (owner 2026-10-06: every robot moves at the same speed, 180; before that 151; owner 2026-10-06 third test: 10 % slower again, was 168; owner 2026-10-06 second test: 30 % slower so the miner has time to dig, was 240; 20 % slower, owner 2026-10-06, was 300; slow and tough; owner 2026-10-02, was 15 and 520), explosion radius 312 uu (owner 2026-10-04: +25 %, was 250), damage 40 to robots and 30 to the miner (provisional, owner 2026-10-23; was 30 to every character), terrain: every block in the radius, xp_value 1; knockback_resistance open
 - spawn share: set per pack by the wave director, at most 1 kamikaze per pack in one pack out of two on average, 1–2 per horde ([[enemies-index]], owner 2026-10-07; the M1 rule was 25 % of spawned robots)
 - milestone: M1
 - references: `vault/assets/enemies-lineup.jpg`
 
+- Fuse shake (provisional, owner 2026-10-23): during the 0.65 s fuse the whole body shakes lightly like a rock wall being dug, the shake speeding up over the fuse; the core keeps growing and pulsing at the same time.
+- Crowd spacing (provisional, owner 2026-10-23): its separation radius from other robots is 30 % larger than its body radius.
 - Trigger (owner 2026-10-06 fourth test, provisional): it arms when the miner comes within 250 uu (was 150), stops dead once armed, and explodes 0.65 s later (was 0.5 s).
 
 ## Relations
