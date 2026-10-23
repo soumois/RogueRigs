@@ -18,6 +18,7 @@ kind: doc
 - implements: [[enemy-heavy]].
 - gotchas: measurements below were taken at radius 220 (trigger 154) before task-028-01 unless stated; radius tests now use 289 / 202.3 (task-052-01, measured: hit at 279 uu, miss at 299 uu, first telegraph at 202 uu, telegraphs 2.650 / 4.650 / 6.650 s, ring scale 5.78 in `Integration.HeavyTelegraphSlamsMiner`, BP_Heavy ring scale 5.78 = 289 / 50 via `GetSlamRadius` / `OnSlam` Radius, no asset change; 340 / 238 in task-039-01). Measured in contact (task-032-01): telegraphs every 2 s (3.217, 5.217, 7.217 s), slam 0.600 s later, 25 per hit; the telegraph started at 278 uu (trigger 280 then). Crosses the corridor x 36, rows 66–68 of `arena_m1` in 4.58 s (also with `BP_Heavy`). With `BP_Heavy` and `BP_Miner` (task-022-03): 25 per slam on a vulnerable miner, hit at 210 uu, miss at 230 uu, shotgun launch 120 uu/s vs 600 for `BP_Chaser`. SlamTriggerRatio, RecoverDuration and the arrival ratio are code choices, not gdd values. Tests: [[sys-automation-tests]].
 
+- BP_Heavy overrides `SlamContactLead` 0.20 (C++ default 0.15) for RunRate 0.7: strike clip contact at 0.190 s (task-289-05, [[bp-heavy]]).
 ## Relations
 - [[sys-enemies]] — parent index.
 - [[sys-enemies-base]] — the shared helpers it uses.
