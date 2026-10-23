@@ -1,9 +1,9 @@
 ---
 id: task-304-console-marked-rocks-range
 description: "Global task: The console lands only where its zone holds between 10 and 40 markable blocks, with both bounds editable in Blueprint defaults."
-parent: tasks-to-do-index
+parent: tasks-done-index
 kind: task
-status: in-progress
+status: done
 ---
 # Console marked rocks between 10 and 40
 
@@ -13,12 +13,12 @@ status: in-progress
 - gdd_check: objective-console read (2026-10-23): no marked-rock count rule before; owner default: 10..40 (provisional owner 2026-10-23), replaces the plain marked-rock preference; fallback nearest count with a warning.
 - confirmed_by_owner: yes (2026-10-23, "ok" to the plan and every default; planned in one planning pass, each task run later by its own orchestrator)
 - milestone: M2
-- next_step: task-304-01-console-marked-rocks-range
-- result: open
+- next_step: none
+- result: Done. ARRConsole MinMarkedCells 10 / MaxMarkedCells 40 (EditDefaultsOnly, provisional owner 2026-10-23); console picker keeps spots in range, else nearest count with a warning; chest unfiltered; GDD objective-console, sys-objectives-console-chest, sys-objectives-run-flow, bp-objective-console updated; build green; Console.* and RunFlow.* 7/7 pass, no test changed; code 0a357aea, docs 3134b212
 
 ## Subtasks
 1. task-304-01-console-marked-rocks-range — cpp: Drop picker marked-rock range
 
 ## Relations
-- [[tasks-to-do-index]] — parent index.
+- [[tasks-done-index]] — parent index.
 - [[task-304-01-console-marked-rocks-range]] — step 01, cpp.

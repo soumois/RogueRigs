@@ -3,7 +3,7 @@ id: task-304-01-console-marked-rocks-range
 description: "Drop picker marked-rock range (cpp): console marked rocks between 10 and 40, step 01."
 parent: task-304-console-marked-rocks-range
 kind: task
-status: in-progress
+status: done
 ---
 # Drop picker marked-rock range
 
@@ -15,11 +15,11 @@ status: in-progress
 - done_when: build green; RogueRigs.Console.* and RogueRigs.RunFlow.* pass; docs updated; lint clean; committed
 - editor_state: closed
 - token_ceiling: 40000
-- model: open
-- tokens: open
-- runs: open
+- model: opus
+- tokens: input 36, cache write 80469, cache read 573541, output 10694
+- runs: 1
 - milestone: M2
-- result: open
+- result: ARRConsole MinMarkedCells 10 / MaxMarkedCells 40 (EditDefaultsOnly, provisional owner 2026-10-23); console picker keeps spots in range, else nearest count with a warning; chest unfiltered; GDD objective-console, sys-objectives-console-chest, sys-objectives-run-flow, bp-objective-console updated; build green; Console.* and RunFlow.* 7/7 pass, no test changed; code 0a357aea, docs 3134b212
 
 ## Relations
 - [[task-304-console-marked-rocks-range]] — parent global task.
