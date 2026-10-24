@@ -9,6 +9,7 @@
 #include "Debug/RRStressSubsystem.h"
 #include "GameFramework/Character.h"
 #include "Grid/RRArenaGrid.h"
+#include "Objectives/RRBonusChest.h"
 #include "Objectives/RRConsole.h"
 #include "Objectives/RRRunFlowSubsystem.h"
 #include "Objectives/RRShuttle.h"
@@ -307,14 +308,14 @@ namespace RRScreenshotCommands
 		ECVF_Cheat);
 
 	/**
-	 * rr.Debug.Objective <Console|Shuttle> [Distance]: moves the player miner Distance uu (2D) from the run's console (default
+	 * rr.Debug.Objective <Console|Shuttle|Chest> [Distance]: moves the player miner Distance uu (2D) from the run's console (default
 	 * 150, inside the zone; its marked rocks are destroyed first so the drone hacks) or shuttle (default 900, so the shuttle
-	 * and the chevrons share the screen), on the side it came from (the first floor cell found turning by 30 degrees).
+	 * and the chevrons share the screen) or bonus chest (default 300, task-306-04: the dropped chest seen from the game camera), on the side it came from (the first floor cell found turning by 30 degrees).
 	 * Logs the miner and target positions and the bearing from the miner to the target.
 	 */
 	FAutoConsoleCommandWithWorldAndArgs ObjectiveCommand(
 		TEXT("rr.Debug.Objective"),
-		TEXT("rr.Debug.Objective <Console|Shuttle> [Distance]: moves the player miner next to the run's console (marked rocks destroyed) or shuttle (visual checks)."),
+		TEXT("rr.Debug.Objective <Console|Shuttle|Chest> [Distance]: moves the player miner next to the run's console (marked rocks destroyed), shuttle or bonus chest (visual checks)."),
 		FConsoleCommandWithWorldAndArgsDelegate::CreateLambda([](const TArray<FString>& Args, UWorld* World)
 		{
 			World = World ? World : RRCheats::FindCheatWorld();
@@ -323,11 +324,13 @@ namespace RRScreenshotCommands
 			ARRArenaGrid* Grid = World ? FindGrid(World) : nullptr;
 			if (!Miner || !RunFlow || !Grid || Args.Num() < 1)
 			{
-				UE_LOG(LogRogueRigs, Warning, TEXT("rr.Debug.Objective <Console|Shuttle> [Distance]: needs a run flow, a grid and a player miner."));
+				UE_LOG(LogRogueRigs, Warning, TEXT("rr.Debug.Objective <Console|Shuttle|Chest> [Distance]: needs a run flow, a grid and a player miner."));
 				return;
 			}
 			const bool bConsole = Args[0].Equals(TEXT("Console"), ESearchCase::IgnoreCase);
-			AActor* Target = bConsole ? static_cast<AActor*>(RunFlow->GetConsole()) : static_cast<AActor*>(RunFlow->GetShuttle());
+			const bool bChest = Args[0].Equals(TEXT("Chest"), ESearchCase::IgnoreCase);
+			AActor* Target = bConsole ? static_cast<AActor*>(RunFlow->GetConsole())
+				: (bChest ? static_cast<AActor*>(RunFlow->GetBonusChest()) : static_cast<AActor*>(RunFlow->GetShuttle()));
 			if (!Target)
 			{
 				UE_LOG(LogRogueRigs, Warning, TEXT("rr.Debug.Objective: no %s in the run yet."), *Args[0]);
@@ -340,7 +343,7 @@ namespace RRScreenshotCommands
 					Grid->DestroyCell(Rock, ERRTerrainDamageSource::Drone);
 				}
 			}
-			const float Distance = Args.Num() > 1 ? FCString::Atof(*Args[1]) : (bConsole ? 150.f : 900.f);
+			const float Distance = Args.Num() > 1 ? FCString::Atof(*Args[1]) : (bConsole ? 150.f : (bChest ? 300.f : 900.f));
 			const FVector TargetLocation = Target->GetActorLocation();
 			const FVector Away = (Miner->GetActorLocation() - TargetLocation).GetSafeNormal2D(UE_SMALL_NUMBER, FVector::XAxisVector);
 			FVector Destination = Miner->GetActorLocation();
