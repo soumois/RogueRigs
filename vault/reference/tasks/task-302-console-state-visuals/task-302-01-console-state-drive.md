@@ -15,11 +15,11 @@ status: done
 - done_when: build green; RogueRigs.Console.* and RogueRigs.RunFlow.* pass; values and names in the docs; lint clean; committed
 - editor_state: closed
 - token_ceiling: 40000
-- model: opus
-- tokens: input 60, cache write 167295, cache read 1314016, output 21892
-- runs: 2
+- model: sonnet+opus
+- tokens: input 140, cache write 229595, cache read 2817563, output 41098
+- runs: 3
 - milestone: M2
-- result: ARRConsole drives LampColor, antenna BlinkRate 2 Hz + BlinkAmount 1, ScreenColor and AntennaHeadComp yaw (0/10/45/0 deg/s) per state via FRRConsoleStateVisual Locked/Idle/Hacking/CompleteVisual; chest opts out; GDD A7 exception, docs; run 2 (4dcc4e84) renamed the C++ member AntennaHead to AntennaHeadComp (clashed with the BP component, head and antenna lamp not found); red (1, 0.05, 0.03) kept, reads salmon (likely tone mapper on bright emissive, untested); build green, 7/7 Console+RunFlow tests
+- result: ARRConsole drives LampColor, antenna BlinkRate 2 Hz + BlinkAmount 1, ScreenColor and AntennaHeadComp yaw (0/10/45/0 deg/s) per state via FRRConsoleStateVisual; chest opts out; GDD A7 exception, docs; run 2 (4dcc4e84) renamed AntennaHead to AntennaHeadComp (BP component clash); run 3 bp (28342c19) M_ConsoleLamp blink factor saturated and applied to BaseColor too, so the antenna lamp goes fully dark; red (1, 0.05, 0.03) kept, reads salmon; build green, 7/7 Console+RunFlow tests
 
 ## Relations
 - [[task-302-console-state-visuals]] — parent global task.
