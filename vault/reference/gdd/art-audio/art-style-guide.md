@@ -17,7 +17,7 @@ Derived from the four approved reference images and their prompts ([[art-prompts
 ## Two factions, one contrast
 - A5. Corporate robots: clean panels, one big red eye in a boxy head, a small yellow logo plate, hazard stripes on heavy armor, no wear.
 - A6. The Rigs: patched, mismatched white and teal plates with rust chips, bolted-on pouches and a backpack, rivets and welded repairs; amber visor on the miner.
-- A7. Anything on the player side never uses enemy colors; anything corporate is never rusty.
+- A7. Anything on the player side never uses enemy colors; anything corporate is never rusty. Exception "console state lamps" (owner 2026-10-23, provisional): the command console lamps and screen may glow red or green as a small state detail ([[objective-console]], [[color-code]]).
 
 ## Effects
 - A8. Player fire: white-gold bolts, bright muzzle flash, small impact sparks on the hit target.
@@ -46,4 +46,5 @@ Derived from the four approved reference images and their prompts ([[art-prompts
 - [[readability-rules]] — rules the guide must never break.
 - [[asset-pipeline]] — what happens to the images after approval.
 - [[agent-style-guide]] — the critic that cites these rule ids.
+- [[objective-console]] — the console state lamps exception to A7.
 - [[lights-no-shadows]] — history: shadow suspension of A12, lifted by task-275-01.

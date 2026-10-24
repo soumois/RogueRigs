@@ -36,7 +36,10 @@ status: approved
 
 - Marked rocks per drop (owner 2026-10-23, provisional): the console lands only where its zone holds between 10 and 40 markable rocks (ore included); when no spot fits, it lands where the count is nearest that range. Replaces the plain "prefer spots with rocks" choice. The bonus chest is unchanged ([[objective-bonus-chest]]).
 
+- State visuals (owner 2026-10-23, provisional): the orange lamps follow the state. Locked (marked rocks left): red, antenna still, screen black. Idle (rocks cleared, miner out of the zone): orange, antenna turns slowly (10 deg/s), screen black. Hacking: green, antenna turns 45 deg/s, screen green. Complete: steady green, antenna stopped, screen green. Only the antenna lamp blinks (2 Hz, not on Complete); the other orange parts take the same colour without blinking. The bonus chest is unchanged ([[objective-bonus-chest]]). Red and green here are an allowed detail ([[color-code]], console state lamps).
+
 ## Relations
 - [[run-index]] — parent index.
 - [[drone]] — the drone's hack state.
 - [[objective-bonus-chest]] — the optional hack objective.
+- [[color-code]] — the console state lamps colour exception.
