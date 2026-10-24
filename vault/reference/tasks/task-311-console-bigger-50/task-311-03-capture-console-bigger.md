@@ -3,7 +3,7 @@ id: task-311-03-capture-console-bigger
 description: "Capture the bigger console (cpp): console 50 % bigger, step 03."
 parent: task-311-console-bigger-50
 kind: task
-status: todo
+status: in-progress
 ---
 # Capture the bigger console
 

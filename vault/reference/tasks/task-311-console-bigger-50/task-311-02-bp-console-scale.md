@@ -3,7 +3,7 @@ id: task-311-02-bp-console-scale
 description: "BP_ObjectiveConsole scale 1.361 (bp): console 50 % bigger, step 02."
 parent: task-311-console-bigger-50
 kind: task
-status: in-progress
+status: done
 ---
 # BP_ObjectiveConsole scale 1.361
 
@@ -15,11 +15,11 @@ status: in-progress
 - done_when: Mesh scale read back about 1.361 on all three axes; AntennaHead offset and scale unchanged; compiles with no error; doc node updated; lint clean; committed
 - editor_state: open
 - token_ceiling: 30000
-- model: open
-- tokens: open
-- runs: open
+- model: sonnet
+- tokens: input 32, cache write 34611, cache read 366385, output 7366
+- runs: 1
 - milestone: M2
-- result: open
+- result: BP_ObjectiveConsole inherited Mesh relative scale 0.90754 -> 1.361 (3 x 3 cells, 201 uu), read back after save; AntennaHead (-4.904, 16.69, 108.0), rot 0, scale 1 unchanged; compiled with no error, saved; bp-objective-console updated (commit f908699e). Look not checked on screen (step 03).
 
 ## Relations
 - [[task-311-console-bigger-50]] — parent global task.
