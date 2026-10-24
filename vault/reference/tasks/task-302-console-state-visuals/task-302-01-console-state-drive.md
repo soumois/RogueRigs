@@ -3,7 +3,7 @@ id: task-302-01-console-state-drive
 description: "Drive the console lamps, head and screen from its state (cpp): console state visuals, step 01."
 parent: task-302-console-state-visuals
 kind: task
-status: todo
+status: in-progress
 ---
 # Drive the console lamps, head and screen from its state
 

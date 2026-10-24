@@ -3,7 +3,7 @@ id: task-302-console-state-visuals
 description: "Global task: The console shows its state: lamp colour and blink, antenna head rotation and screen colour driven by ERRConsoleState."
 parent: tasks-to-do-index
 kind: task
-status: todo
+status: in-progress
 ---
 # Console state visuals
 
