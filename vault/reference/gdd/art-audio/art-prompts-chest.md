@@ -32,7 +32,8 @@ Design: a clean industrial corporate supply locker, wide and low, dark gunmetal 
 - The side view is not a clean 90-degree view (lid and hinges read at an angle).
 
 ## Next steps (open)
-- 3D mesh route (Meshy or Blender), size and pivot: open.
+- 3D mesh route: Blender cleanup of the Meshy mesh (task-306). Size about 130 x 70 x 66 uu, the Meshy proportions (owner 2026-10-24); pivots: set by task-306-02.
+- Lid logo missing on the flattened mesh: separate task (owner 2026-10-24).
 - Logo plate: keep the simplified mark or apply the real logo as a decal: open.
 
 ## Relations
