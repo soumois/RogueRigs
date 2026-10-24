@@ -653,6 +653,7 @@ kind: note
 | [[task-312-01-telegraph-under-actors]] | opus | 1 | 0k | 63k | 1049k | 16k |
 | [[task-312-02-capture-zone-colour]] | opus | 1 | 0k | 60k | 1077k | 18k |
 | [[task-313-01-drone-socket-hover]] | opus | 2 | 0k | 209k | 3068k | 38k |
+| [[task-313-02-capture-drone-socket]] | opus | 2 | 0k | 254k | 3014k | 34k |
 
 ## Totals
 | Scope | Input | Cache write | Cache read | Output |

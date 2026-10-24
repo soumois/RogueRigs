@@ -3,7 +3,7 @@ id: task-313-02-capture-drone-socket
 description: "Capture the drone at the socket (cpp): drone at the console socket while hacking, step 02."
 parent: task-313-drone-at-console-socket
 kind: task
-status: in-progress
+status: done
 ---
 # Capture the drone at the socket
 
@@ -15,11 +15,11 @@ status: in-progress
 - done_when: drone seen in front of the socket, at its height, facing it, link on the socket; sheet written; nothing else changed
 - editor_state: closed
 - token_ceiling: 30000
-- model: open
-- tokens: open
-- runs: open
+- model: opus
+- tokens: input 94, cache write 253716, cache read 3014339, output 33912
+- runs: 2
 - milestone: M2
-- result: open
+- result: run 2 (after the Y mirror fix): drone hovers in front of the dark port under the green screen (+Y face), at port height, facing it, red link lands in the port recess between the lamps; sideways miss at most about 10-15 uu toward -X (pixel estimate); antenna head on the mast; Saved/DroneSocket/contact_sheet_drone_socket.png + 9 frames; run 1 had found the drone at the back face
 
 ## Relations
 - [[task-313-drone-at-console-socket]] — parent global task.
