@@ -1,9 +1,9 @@
 ---
 id: task-301-console-c2-mesh
 description: "Global task: Replace the console cylinder with the owner C2 uplink mast mesh: mobile dish head, three material slots, retouched dish back and foot lamps."
-parent: tasks-to-do-index
+parent: tasks-done-index
 kind: task
-status: in-progress
+status: done
 ---
 # Console C2 uplink mast mesh
 
@@ -13,8 +13,8 @@ status: in-progress
 - gdd_check: objective-console, art-style-guide, color-code read (2026-10-23). Conflict: red and green state lamps break A7 (enemy colours); owner default accepted: exception "console state lamps" (written by task-302-01). Drone dock dropped (no dock, no folding antenna), drone hack unchanged. Mobile part = image 1 (dish + head above the mast elbow), turns about the vertical mast axis. Foot lamps go to the "other orange" material, flat emissive, round caps like image 3. Dish back repainted in Blender after the sheet back view, render shown to the owner before going further.
 - confirmed_by_owner: yes (2026-10-23, "ok" to the plan and every default; planned in one planning pass, each task run later by its own orchestrator)
 - milestone: M2
-- next_step: task-301-05-capture-console-c2
-- result: open
+- next_step: none
+- result: Done. Headless -game captures in Saved/ConsoleC2/ (before_*, after_*, contact_sheet_before_after.png): C2 mesh at the console spot, head on the mast, steady amber lamps; mesh looks washed out on the bright hack disc; console drop cell differed between runs despite -FixedSeed; no repo change.
 
 ## Subtasks
 1. task-301-01-console-c2-files — art: Save the console C2 sheet, Meshy files and prompt
@@ -24,7 +24,7 @@ status: in-progress
 5. task-301-05-capture-console-c2 — cpp: Capture the console C2 in game
 
 ## Relations
-- [[tasks-to-do-index]] — parent index.
+- [[tasks-done-index]] — parent index.
 - [[task-301-01-console-c2-files]] — step 01, art.
 - [[task-301-02-console-c2-cut]] — step 02, 3d.
 - [[task-301-03-console-c2-retouch]] — step 03, 3d.

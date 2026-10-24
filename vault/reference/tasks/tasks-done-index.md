@@ -309,5 +309,6 @@ Archive: it exceeds the index size limits of [[_authoring]] on purpose (owner, 2
 - [[task-298-shooter-charge-fx]] — A red charge-up effect grows at the shooter cannon tip during the 0.6 s targeting laser. Status done.
 - [[task-299-kamikaze-fuse-shake]] — During the 0.65 s fuse the whole kamikaze body shakes lightly like a dug wall, faster and faster; core pulse kept. Status done.
 - [[task-300-heavy-slam-impact-fx]] — A dust ring and rock chips burst from the ground when the heavy slam lands, sized to the slam radius. Status done.
+- [[task-301-console-c2-mesh]] — Replace the console cylinder with the owner C2 uplink mast mesh: mobile dish head, three material slots, retouched dish back and foot lamps. Status done.
 - [[task-304-console-marked-rocks-range]] — The console lands only where its zone holds between 10 and 40 markable blocks, with both bounds editable in Blueprint defaults. Status done.
 - [[task-305-console-hack-10s]] — The console hack takes 10 s instead of 12 s; the bonus chest is unchanged. Status done.
