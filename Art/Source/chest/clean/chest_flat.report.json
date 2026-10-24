@@ -1,0 +1,195 @@
+{
+  "script": "Tools/art/blender/chest_flatten.py",
+  "source": "Art/Source/chest/meshy/Meshy_AI_Black_Tactical_Storag_1023224033_texture.fbx",
+  "output": "Art/Source/chest/clean/chest_flat.fbx",
+  "tris_before": 9336,
+  "tris_after_dissolve": 8984,
+  "tris_after_decimation": 2949,
+  "tris_after": 2946,
+  "budget": 2950,
+  "verts_before": 4634,
+  "verts_after": 1441,
+  "scale_factor_to_cm": 68.972732,
+  "dimensions_cm_xyz": [
+    130.0,
+    69.82,
+    65.56
+  ],
+  "source_dimensions_cm_xyz": [
+    129.92,
+    69.79,
+    65.22
+  ],
+  "origin": "bottom-centre (bbox centre in X and Y, min Z = 0), 1 Blender unit = 1 cm",
+  "front": "lock face toward -Y (as in the Meshy file; Z up, X is the long side)",
+  "shading": "flat (face smoothing off)",
+  "materials": [
+    "M_BonusChest"
+  ],
+  "uv_layers": [
+    "UVMap"
+  ],
+  "texture": "RE-BAKED: new smart-project UVs, Meshy base colour baked from the original mesh (Cycles diffuse colour pass, 2048 px) to chest_flat_basecolor.png; roughness 0.454 and metallic 0.003 are the mean of the Meshy maps (constants); Meshy normal map dropped (baked from noisy geometry)",
+  "uv_checks": {
+    "flipped_uv_triangles": 0,
+    "triangles": 2946,
+    "triangles_with_uv_outside_0_1": 0
+  },
+  "regions": {
+    "original": 245,
+    "decimated": 148,
+    "faces_in_regions_decimated": 1115,
+    "faces_decimated": 2946
+  },
+  "planarity_note": "uu = cm in final scale; max distance of the region vertices to the best-fit plane of that region. original = Meshy mesh, regions found by meshy_flatten_panels (faces farther than 2.7 mesh-cm from the plane are pruned out of a region first); decimated_before_refit = after collapse decimation; final = after the second plane fit (what is exported).",
+  "large_faces": [
+    {
+      "face": "-Z @ (5,5,4) cm",
+      "area_cm2_original": 4308.1,
+      "planarity_original_uu": 0.262,
+      "planarity_original_after_first_fit_uu": 0.0,
+      "planarity_decimated_before_refit_uu": 0.121,
+      "planarity_final_uu": 0.0,
+      "final_faces": 16
+    },
+    {
+      "face": "+Y @ (2,32,24) cm",
+      "area_cm2_original": 2766.7,
+      "planarity_original_uu": 0.986,
+      "planarity_original_after_first_fit_uu": 0.0,
+      "planarity_decimated_before_refit_uu": 0.208,
+      "planarity_final_uu": 0.0,
+      "final_faces": 4
+    },
+    {
+      "face": "-X @ (-59,0,25) cm",
+      "area_cm2_original": 1303.6,
+      "planarity_original_uu": 0.137,
+      "planarity_original_after_first_fit_uu": 0.0,
+      "planarity_decimated_before_refit_uu": 0.102,
+      "planarity_final_uu": 0.0,
+      "final_faces": 37
+    },
+    {
+      "face": "+X @ (60,0,23) cm",
+      "area_cm2_original": 1288.0,
+      "planarity_original_uu": 0.202,
+      "planarity_original_after_first_fit_uu": 0.0003,
+      "planarity_decimated_before_refit_uu": 0.065,
+      "planarity_final_uu": 0.0,
+      "final_faces": 28
+    },
+    {
+      "face": "+Z @ (9,-11,57) cm",
+      "area_cm2_original": 938.9,
+      "planarity_original_uu": 0.701,
+      "planarity_original_after_first_fit_uu": 0.0,
+      "planarity_decimated_before_refit_uu": 0.988,
+      "planarity_final_uu": 0.0,
+      "final_faces": 30
+    },
+    {
+      "face": "-Y @ (32,-27,20) cm",
+      "area_cm2_original": 913.3,
+      "planarity_original_uu": 0.523,
+      "planarity_original_after_first_fit_uu": 0.0,
+      "planarity_decimated_before_refit_uu": 0.27,
+      "planarity_final_uu": 0.0,
+      "final_faces": 7
+    },
+    {
+      "face": "-Y @ (-32,-26,27) cm",
+      "area_cm2_original": 910.5,
+      "planarity_original_uu": 0.403,
+      "planarity_original_after_first_fit_uu": 0.0,
+      "planarity_decimated_before_refit_uu": 1.328,
+      "planarity_final_uu": 0.0,
+      "final_faces": 11
+    },
+    {
+      "face": "+Z @ (-9,3,59) cm",
+      "area_cm2_original": 758.9,
+      "planarity_original_uu": 0.349,
+      "planarity_original_after_first_fit_uu": 0.0,
+      "planarity_decimated_before_refit_uu": 0.988,
+      "planarity_final_uu": 0.0,
+      "final_faces": 30
+    },
+    {
+      "face": "+Z @ (10,21,60) cm",
+      "area_cm2_original": 755.3,
+      "planarity_original_uu": 0.537,
+      "planarity_original_after_first_fit_uu": 0.0,
+      "planarity_decimated_before_refit_uu": null,
+      "planarity_final_uu": null,
+      "final_faces": null
+    },
+    {
+      "face": "+Y @ (3,29,6) cm",
+      "area_cm2_original": 471.0,
+      "planarity_original_uu": 0.033,
+      "planarity_original_after_first_fit_uu": 0.0,
+      "planarity_decimated_before_refit_uu": null,
+      "planarity_final_uu": null,
+      "final_faces": null
+    },
+    {
+      "face": "+X @ (60,-6,47) cm",
+      "area_cm2_original": 368.1,
+      "planarity_original_uu": 0.822,
+      "planarity_original_after_first_fit_uu": 0.0,
+      "planarity_decimated_before_refit_uu": 0.01,
+      "planarity_final_uu": 0.0,
+      "final_faces": 6
+    },
+    {
+      "face": "-Y @ (11,-24,6) cm",
+      "area_cm2_original": 363.2,
+      "planarity_original_uu": 0.166,
+      "planarity_original_after_first_fit_uu": 0.0,
+      "planarity_decimated_before_refit_uu": 0.203,
+      "planarity_final_uu": 0.0,
+      "final_faces": 9
+    },
+    {
+      "face": "-X @ (-60,-1,48) cm",
+      "area_cm2_original": 362.8,
+      "planarity_original_uu": 0.037,
+      "planarity_original_after_first_fit_uu": 0.0,
+      "planarity_decimated_before_refit_uu": 0.003,
+      "planarity_final_uu": 0.0,
+      "final_faces": 4
+    },
+    {
+      "face": "+Y @ (7,30,57) cm",
+      "area_cm2_original": 292.0,
+      "planarity_original_uu": 0.146,
+      "planarity_original_after_first_fit_uu": 0.0,
+      "planarity_decimated_before_refit_uu": 0.631,
+      "planarity_final_uu": 0.0,
+      "final_faces": 10
+    },
+    {
+      "face": "-Z @ (-44,22,0) cm",
+      "area_cm2_original": 263.8,
+      "planarity_original_uu": 0.268,
+      "planarity_original_after_first_fit_uu": 0.0,
+      "planarity_decimated_before_refit_uu": 0.106,
+      "planarity_final_uu": 0.0,
+      "final_faces": 4
+    },
+    {
+      "face": "-Y @ (-1,-35,24) cm",
+      "area_cm2_original": 252.7,
+      "planarity_original_uu": 0.111,
+      "planarity_original_after_first_fit_uu": 0.0,
+      "planarity_decimated_before_refit_uu": 0.039,
+      "planarity_final_uu": 0.0,
+      "final_faces": 8
+    }
+  ],
+  "max_planarity_final_uu": 0.0,
+  "max_planarity_original_uu": 0.986,
+  "flipped_normals_tool": 0,
+  "warnings": []
+}
