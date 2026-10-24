@@ -40,7 +40,10 @@ status: approved
 
 - Landing clearance (owner 2026-10-24, provisional): the console is 50 % bigger; it lands only where its whole 3 × 3-cell footprint is open floor (was 2 × 2) and stands at the centre of that footprint. The hack zone stays 7 cells around it. The bonus chest keeps its 2 × 2 footprint ([[objective-bonus-chest]]).
 
+- Hack reward (owner 2026-10-23, provisional): when the console hack completes, it flings 3 big XP chips, each worth 8 basic XP nuts (24 XP in all), in 3 directions 120° apart, with the long floaty arc of the XP pickups; they land clear of the console. A one-shot burst effect plays at the console. Console only: the bonus chest keeps its own reward ([[objective-bonus-chest]]). Implemented in [[sys-objectives-console-chest]].
+
 ## Relations
+- [[sys-objectives-console-chest]] — the reward as built.
 - [[run-index]] — parent index.
 - [[drone]] — the drone's hack state.
 - [[objective-bonus-chest]] — the optional hack objective.
