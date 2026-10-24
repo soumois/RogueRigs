@@ -3,7 +3,7 @@ id: task-312-01-telegraph-under-actors
 description: "Ground telegraph under actors (cpp): zone colour does not touch the console, step 01."
 parent: task-312-zone-colour-off-console
 kind: task
-status: in-progress
+status: done
 ---
 # Ground telegraph under actors
 
@@ -15,11 +15,11 @@ status: in-progress
 - done_when: build green; RogueRigs.GroundTelegraph.* and RogueRigs.Console.* pass; docs updated; lint clean; committed
 - editor_state: closed
 - token_ceiling: 30000
-- model: open
-- tokens: open
-- runs: open
+- model: opus
+- tokens: input 48, cache write 63014, cache read 1048626, output 16376
+- runs: 1
 - milestone: M2
-- result: open
+- result: Cause: the zone decal (deferred, 256 uu box) painted every decal receiver inside it; console, bonus chest and drone meshes still received decals. Fix: telegraph owners opt out (bKeepDecalsOffOwner, DisableDecalsOn in BeginPlay; barrel telegraph keeps grid receiving), drone opts out; no material change. Build green, 9 GroundTelegraph/Console tests pass; 8a276ed5, 9132e7d4.
 
 ## Relations
 - [[task-312-zone-colour-off-console]] — parent global task.

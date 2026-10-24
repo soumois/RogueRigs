@@ -3,7 +3,7 @@ id: task-312-02-capture-zone-colour
 description: "Capture the zone without wash (cpp): zone colour does not touch the console, step 02."
 parent: task-312-zone-colour-off-console
 kind: task
-status: todo
+status: in-progress
 ---
 # Capture the zone without wash
 

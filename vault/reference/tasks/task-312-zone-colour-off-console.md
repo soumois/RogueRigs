@@ -13,7 +13,7 @@ status: in-progress
 - gdd_check: ground-telegraph and objective-console read (2026-10-24): rendering only, the rules are unchanged; no conflict, no open value. Decision 12 (owner 2026-10-24). task-302-02 saw the console washed out inside the light hack disc.
 - confirmed_by_owner: yes (2026-10-24, "ok" to the plan and every default; planned in one planning pass, each task run later by its own orchestrator)
 - milestone: M2
-- next_step: task-312-01-telegraph-under-actors
+- next_step: task-312-02-capture-zone-colour
 - result: open
 
 ## Subtasks
