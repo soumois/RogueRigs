@@ -314,3 +314,4 @@ Archive: it exceeds the index size limits of [[_authoring]] on purpose (owner, 2
 - [[task-304-console-marked-rocks-range]] — The console lands only where its zone holds between 10 and 40 markable blocks, with both bounds editable in Blueprint defaults. Status done.
 - [[task-305-console-hack-10s]] — The console hack takes 10 s instead of 12 s; the bonus chest is unchanged. Status done.
 - [[task-311-console-bigger-50]] — The objective console is 50 % bigger and lands only on a fully free 3 x 3 floor footprint; the bonus chest is unchanged. Status done.
+- [[task-312-zone-colour-off-console]] — The hack zone colour stays on the ground: the console, miner and drone inside the zone are no longer washed out. Status done.

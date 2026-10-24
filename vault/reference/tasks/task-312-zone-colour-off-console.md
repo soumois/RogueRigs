@@ -1,9 +1,9 @@
 ---
 id: task-312-zone-colour-off-console
 description: "Global task: The hack zone colour stays on the ground: the console, miner and drone inside the zone are no longer washed out."
-parent: tasks-to-do-index
+parent: tasks-done-index
 kind: task
-status: review
+status: done
 ---
 # Zone colour does not touch the console
 
@@ -14,7 +14,7 @@ status: review
 - confirmed_by_owner: yes (2026-10-24, "ok" to the plan and every default; planned in one planning pass, each task run later by its own orchestrator)
 - milestone: M2
 - next_step: none
-- result: Cause: the deferred zone decal painted every decal receiver in its box (console, bonus chest, drone meshes). Fix: telegraph owners and the drone opt out of decals (8a276ed5). Hacking capture before/after in Saved/ZoneColour/ shows no wash. Not captured: Locked state with miner inside, chest zone (no debug command reaches them); chest covered by unit test only. Review: owner decides on a debug-command follow-up.
+- result: Cause: the deferred zone decal painted every decal receiver in its box (console, bonus chest, drone meshes). Fix: telegraph owners and the drone opt out of decals (8a276ed5). Hacking capture before/after in Saved/ZoneColour/ shows no wash. Not captured: Locked state with miner inside, chest zone (no debug command reaches them); chest covered by unit test only. Owner 2026-10-24: closed as is ("Oui, clos la task-312 telle quelle"), no debug-command follow-up.
 
 ## Subtasks
 1. task-312-01-telegraph-under-actors — cpp: Ground telegraph under actors
