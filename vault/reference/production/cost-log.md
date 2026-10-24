@@ -656,6 +656,7 @@ kind: note
 | [[task-313-02-capture-drone-socket]] | opus | 2 | 0k | 254k | 3014k | 34k |
 | [[task-303-01-console-xp-burst]] | opus | 1 | 0k | 179k | 2567k | 24k |
 | [[task-303-02-bp-hack-complete-fx]] | sonnet | 1 | 0k | 89k | 1646k | 21k |
+| [[task-303-03-capture-hack-reward]] | opus | 1 | 0k | 77k | 1029k | 14k |
 
 ## Totals
 | Scope | Input | Cache write | Cache read | Output |
