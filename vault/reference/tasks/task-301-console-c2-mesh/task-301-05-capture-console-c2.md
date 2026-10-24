@@ -3,7 +3,7 @@ id: task-301-05-capture-console-c2
 description: "Capture the console C2 in game (cpp): console c2 uplink mast mesh, step 05."
 parent: task-301-console-c2-mesh
 kind: task
-status: todo
+status: in-progress
 ---
 # Capture the console C2 in game
 

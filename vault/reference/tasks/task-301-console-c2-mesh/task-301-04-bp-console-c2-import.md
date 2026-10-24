@@ -3,7 +3,7 @@ id: task-301-04-bp-console-c2-import
 description: "Import the console C2 into BP_ObjectiveConsole (bp): console c2 uplink mast mesh, step 04."
 parent: task-301-console-c2-mesh
 kind: task
-status: in-progress
+status: done
 ---
 # Import the console C2 into BP_ObjectiveConsole
 
@@ -15,11 +15,11 @@ status: in-progress
 - done_when: compiles without error; mesh, component and slot assignments read back; footprint size kept (2 x 2 cells); doc node updated; lint clean; committed
 - editor_state: open
 - token_ceiling: 30000
-- model: open
-- tokens: open
-- runs: open
+- model: sonnet
+- tokens: input 96, cache write 93959, cache read 2694250, output 33970
+- runs: 1
 - milestone: M2
-- result: open
+- result: Imported SM_ConsoleBase, SM_ConsoleHead (headless FbxImportUI scale 1; MCP Interchange import was 100x too small), T_Console_BaseColor, M_ConsoleBody+MI, M_ConsoleLamp (LampColor, BlinkRate, BlinkAmount) with MI_ConsoleLampOther and MI_ConsoleLampAntenna, M_ConsoleScreen (ScreenColor) under /Game/RogueRigs/Art/Console/; BP_ObjectiveConsole Mesh = SM_ConsoleBase at z 0, uniform scale 0.90754 (134 x 115 uu footprint), child AntennaHead at (-4.904, 16.69, 108.0) NoCollision; OnHackProgress GlowAmount call left as no-op for task-302; doc updated; commit 59fbc6ad.
 
 ## Relations
 - [[task-301-console-c2-mesh]] — parent global task.
