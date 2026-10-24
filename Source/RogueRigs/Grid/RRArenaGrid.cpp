@@ -2377,6 +2377,8 @@ URRGroundTelegraphComponent* ARRArenaGrid::CreateBarrelTelegraph()
 {
 	URRGroundTelegraphComponent* Telegraph = NewObject<URRGroundTelegraphComponent>(this, NAME_None, RF_Transient);
 	Telegraph->SetupAttachment(GetRootComponent());
+	// The grid owns the floor and rocks: they must keep receiving the fuse zone decal (task-312-01).
+	Telegraph->SetKeepDecalsOffOwner(false);
 	Telegraph->RegisterComponent();
 	BarrelTelegraphs.Add(Telegraph);
 	return Telegraph;

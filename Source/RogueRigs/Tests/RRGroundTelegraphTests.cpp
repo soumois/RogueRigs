@@ -8,10 +8,13 @@
 #include "AbilitySystemComponent.h"
 #include "Components/SkeletalMeshComponent.h"
 #include "Damage/RRGE_DamageFlat.h"
+#include "Drone/RRDrone.h"
 #include "Enemies/RRChaser.h"
 #include "GAS/RRGameplayTags.h"
 #include "Materials/Material.h"
 #include "Materials/MaterialInstanceDynamic.h"
+#include "Objectives/RRBonusChest.h"
+#include "Objectives/RRConsole.h"
 #include "Pool/RRActorPoolSubsystem.h"
 #include "Telegraph/RRGroundTelegraphComponent.h"
 #include "Tests/RRTestHarness.h"
@@ -249,6 +252,30 @@ bool FRRGroundTelegraphNoDecalsTest::RunTest(const FString& Parameters)
 	{
 		CheckActor(Robot, TEXT("robot"));
 	}
+	if (const ARRDrone* Drone = Miner->GetDrone())
+	{
+		CheckActor(Drone, TEXT("drone"));
+	}
+
+	// task-312-01: telegraph owners (console, bonus chest) keep decals off their own meshes; the arena grid opts out (floor and rocks).
+	ARRConsole* Console = TestWorld.Spawn<ARRConsole>(ARRConsole::StaticClass(), Miner->GetActorLocation() + FVector(-400.f, 0.f, -90.f));
+	if (TestNotNull(TEXT("console spawned"), Console) && TestNotNull(TEXT("console telegraph"), Console->GetGroundTelegraph()))
+	{
+		TestTrue(TEXT("console telegraph keeps decals off its owner"), Console->GetGroundTelegraph()->GetKeepDecalsOffOwner());
+		CheckActor(Console, TEXT("console"));
+	}
+	ARRBonusChest* Chest = TestWorld.Spawn<ARRBonusChest>(ARRBonusChest::StaticClass(), Miner->GetActorLocation() + FVector(0.f, 400.f, -90.f));
+	if (TestNotNull(TEXT("chest spawned"), Chest))
+	{
+		CheckActor(Chest, TEXT("chest"));
+	}
+	bool bGridReceives = false;
+	TInlineComponentArray<UPrimitiveComponent*> GridPrimitives(Grid);
+	for (const UPrimitiveComponent* Primitive : GridPrimitives)
+	{
+		bGridReceives |= Primitive->bReceivesDecals;
+	}
+	TestTrue(TEXT("grid floor and rocks still receive decals"), GridPrimitives.IsEmpty() || bGridReceives);
 	return true;
 }
 

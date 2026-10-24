@@ -21,6 +21,7 @@
 #include "Misc/App.h"
 #include "UObject/ConstructorHelpers.h"
 #include "RogueRigs.h"
+#include "Telegraph/RRGroundTelegraphComponent.h"
 #include "World/RRBlobShadowComponent.h"
 #include "World/RRShadows.h"
 
@@ -113,6 +114,8 @@ void ARRDrone::PostInitializeComponents()
 	Super::PostInitializeComponents();
 	// task-263-01: only the grid rocks cast shadows (from the player light); no mesh of this actor or its Blueprint does.
 	RRShadows::DisableCastShadows(this);
+	// task-312-01: ground telegraph decals (hack zone) stay on the ground and never tint the drone.
+	URRGroundTelegraphComponent::DisableDecalsOn(this);
 	BlobShadow->SetFootprintDiameter(BlobShadowDiameter);
 }
 

@@ -46,6 +46,12 @@ void URRGroundTelegraphComponent::BeginPlay()
 {
 	Super::BeginPlay();
 
+	// The decal box covers its owner (console, chest, heavy): without this the owner's meshes take the zone colour (task-312-01).
+	if (bKeepDecalsOffOwner)
+	{
+		DisableDecalsOn(GetOwner());
+	}
+
 	UMaterialInterface* Material = DecalMaterial;
 	if (Material && Material->IsA<UMaterialInstanceDynamic>())
 	{
