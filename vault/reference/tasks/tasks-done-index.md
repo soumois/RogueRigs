@@ -314,6 +314,7 @@ Archive: it exceeds the index size limits of [[_authoring]] on purpose (owner, 2
 - [[task-303-console-hack-reward]] — When the console hack completes, three big XP chips fly out in every direction and a big green ring flash plays. Status done.
 - [[task-304-console-marked-rocks-range]] — The console lands only where its zone holds between 10 and 40 markable blocks, with both bounds editable in Blueprint defaults. Status done.
 - [[task-305-console-hack-10s]] — The console hack takes 10 s instead of 12 s; the bonus chest is unchanged. Status done.
+- [[task-307-chest-one-upgrade]] — Opening the bonus chest gives exactly one upgrade choice: its direct XP grant no longer triggers a second level-up. Status done.
 - [[task-311-console-bigger-50]] — The objective console is 50 % bigger and lands only on a fully free 3 x 3 floor footprint; the bonus chest is unchanged. Status done.
 - [[task-312-zone-colour-off-console]] — The hack zone colour stays on the ground: the console, miner and drone inside the zone are no longer washed out. Status done.
 - [[task-313-drone-at-console-socket]] — While hacking, the drone hovers in front of the console round data socket, at its height, facing it, and the hack link aims at it. Status done.

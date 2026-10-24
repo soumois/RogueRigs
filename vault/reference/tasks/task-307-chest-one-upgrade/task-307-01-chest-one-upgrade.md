@@ -3,7 +3,7 @@ id: task-307-01-chest-one-upgrade
 description: "Drop the chest direct XP grant (cpp): bonus chest gives one upgrade, not two, step 01."
 parent: task-307-chest-one-upgrade
 kind: task
-status: in-progress
+status: done
 ---
 # Drop the chest direct XP grant
 
@@ -15,11 +15,11 @@ status: in-progress
 - done_when: build green; RogueRigs.RunFlow.*, RogueRigs.Console.* and RogueRigs.Progression.* (or the matching suites) pass; a chest reward with the bar above half queues one choice only (existing test or log check); docs updated; lint clean; committed
 - editor_state: closed
 - token_ceiling: 30000
-- model: open
-- tokens: open
-- runs: open
+- model: opus
+- tokens: input 38, cache write 47210, cache read 573680, output 9487
+- runs: 1
 - milestone: M2
-- result: open
+- result: Bonus chest XPNeedFraction default 0 (AddXP skipped at 0): reward is 5 ore chunks + one +3-luck choice, no level-up from the chest; HackXPBurst asserts one choice with bar at 75 %; spec and docs updated; build green, RunFlow/Console/Progression 13/13 pass; commit 15c2f58c
 
 ## Relations
 - [[task-307-chest-one-upgrade]] — parent global task.
