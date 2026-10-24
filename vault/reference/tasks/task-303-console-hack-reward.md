@@ -3,7 +3,7 @@ id: task-303-console-hack-reward
 description: "Global task: When the console hack completes, three big XP chips fly out in every direction and a big green ring flash plays."
 parent: tasks-to-do-index
 kind: task
-status: todo
+status: in-progress
 ---
 # Console hack reward: XP burst and big particle
 

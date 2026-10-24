@@ -7,10 +7,10 @@ status: todo
 ---
 # NS_ConsoleHackComplete and its wiring
 
-- goal: One-shot Niagara NS_ConsoleHackComplete: a green ring expanding past the console then fading, plus white-gold sparks; spawned once by BP_ObjectiveConsole on hack complete; doc node bp-console-hack-complete under blueprints-fx-index and bp-objective-console updated.
+- goal: One-shot Niagara NS_ConsoleHackComplete: a green ring expanding past the console then fading, plus white-gold sparks, sized to the task-311 console (3 x 3 cells of 67 uu, about 201 x 172 x 147 uu at scale 1.361): ring from about the footprint edge (radius ~110 uu) out to about 3 times that, inside the 7-cell hack zone (469 uu), sparks rising above the 147 uu console top; spawned once by BP_ObjectiveConsole on hack complete; doc node bp-console-hack-complete under blueprints-fx-index and bp-objective-console updated.
 - agent: bp
 - depends_on: task-303-01-console-xp-burst
-- inputs: agent-bp (vault/reference/agents/agent-bp.md), bp-mcp-lessons (vault/reference/agents/bp-mcp-lessons.md), blueprints-fx-index (vault/reference/tech/blueprints/fx/blueprints-fx-index.md), bp-heavy-slam-impact (vault/reference/tech/blueprints/fx/bp-heavy-slam-impact.md), bp-objective-console (vault/reference/tech/blueprints/world/bp-objective-console.md), color-code (vault/reference/gdd/art-audio/color-code.md), objective-console (vault/reference/gdd/run/objective-console.md); files: none
+- inputs: agent-bp (vault/reference/agents/agent-bp.md), bp-mcp-lessons (vault/reference/agents/bp-mcp-lessons.md), unreal-mcp-quirks (vault/reference/tech/pipelines/unreal-mcp-quirks.md), blueprints-fx-index (vault/reference/tech/blueprints/fx/blueprints-fx-index.md), bp-heavy-slam-impact (vault/reference/tech/blueprints/fx/bp-heavy-slam-impact.md), bp-objective-console (vault/reference/tech/blueprints/world/bp-objective-console.md), color-code (vault/reference/gdd/art-audio/color-code.md), objective-console (vault/reference/gdd/run/objective-console.md); files: none
 - expected_output: /Game/RogueRigs/FX/NS_ConsoleHackComplete, BP_ObjectiveConsole wiring, doc nodes
 - done_when: compiles without error; values read back; wired event read back; doc nodes and index relation; lint clean; committed
 - editor_state: open

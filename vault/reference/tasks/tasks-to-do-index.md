@@ -11,7 +11,7 @@ A global task moves to [[tasks-done-index]] when it is done (`vault/scripts/task
 ## Relations
 - [[tasks-index]] — parent index.
 - [[task-188-editor-lock]] — Editor lock shared by sessions: a lock file, a node script to take, release and read it, and the runbook and protocol rules to use it. Status blocked.
-- [[task-303-console-hack-reward]] — When the console hack completes, three big XP chips fly out in every direction and a big green ring flash plays. Status todo.
+- [[task-303-console-hack-reward]] — When the console hack completes, three big XP chips fly out in every direction and a big green ring flash plays. Status in-progress.
 - [[task-306-chest-flat-faces]] — Flatten the puffed Meshy chest faces after the sheet, cut it into body, lid and latch, and show it in BP_BonusChest. Status todo.
 - [[task-307-chest-one-upgrade]] — Opening the bonus chest gives exactly one upgrade choice: its direct XP grant no longer triggers a second level-up. Status todo.
 - [[task-308-chest-lock-light]] — Chest lock light: red blinking while waiting, orange blinking faster with hack progress in the zone, steady green once open. Status todo.
