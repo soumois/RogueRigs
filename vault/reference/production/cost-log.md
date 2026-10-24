@@ -649,6 +649,7 @@ kind: note
 | [[task-302-02-capture-console-states]] | opus | 3 | 0k | 282k | 5708k | 62k |
 | [[task-311-01-console-footprint-3x3]] | opus | 1 | 0k | 38k | 556k | 9k |
 | [[task-311-02-bp-console-scale]] | sonnet | 1 | 0k | 35k | 366k | 7k |
+| [[task-311-03-capture-console-bigger]] | opus | 1 | 0k | 114k | 1352k | 17k |
 
 ## Totals
 | Scope | Input | Cache write | Cache read | Output |

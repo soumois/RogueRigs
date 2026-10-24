@@ -3,7 +3,7 @@ id: task-311-03-capture-console-bigger
 description: "Capture the bigger console (cpp): console 50 % bigger, step 03."
 parent: task-311-console-bigger-50
 kind: task
-status: in-progress
+status: done
 ---
 # Capture the bigger console
 
@@ -15,11 +15,11 @@ status: in-progress
 - done_when: console about 3 cells wide in game, on free floor, head and lamps in place; before/after sheet written; nothing else changed
 - editor_state: closed
 - token_ceiling: 30000
-- model: open
-- tokens: open
-- runs: open
+- model: opus
+- tokens: input 58, cache write 113597, cache read 1352232, output 17333
+- runs: 1
 - milestone: M2
-- result: open
+- result: Saved/ConsoleBigger/contact_sheet_console_before_after.png (6 before/after pairs, same cameras; frames cb_* in Saved/ConsoleBigger/, log run1.log): console about 1.5 x bigger (about 200-220 uu, pixel estimate), on open floor, head on the mast and turning in Idle, lamps and screen in place, zone circle fits with margin; no defect from the change; still washed out inside the light hack disc (task-312); no repo change
 
 ## Relations
 - [[task-311-console-bigger-50]] — parent global task.
