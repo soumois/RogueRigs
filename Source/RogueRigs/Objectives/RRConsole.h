@@ -11,6 +11,7 @@ class ARRMiner;
 class USceneComponent;
 class UStaticMeshComponent;
 class URRGroundTelegraphComponent;
+class UMaterialInstanceDynamic;
 
 /** Where a console stands in its objective. */
 UENUM(BlueprintType)
@@ -24,6 +25,36 @@ enum class ERRConsoleState : uint8
 	Hacking,
 	/** Hacked: the objective is done (the run flow unpauses the alert). Final. */
 	Complete
+};
+
+/** Look of the console in one state (objective-console state visuals, owner 2026-10-23, provisional): lamps, antenna blink, screen, head turn. */
+USTRUCT(BlueprintType)
+struct FRRConsoleStateVisual
+{
+	GENERATED_BODY()
+
+	FRRConsoleStateVisual() = default;
+
+	FRRConsoleStateVisual(const FLinearColor& InLampColor, float InAntennaBlinkRate, const FLinearColor& InScreenColor, float InHeadYawSpeed)
+		: LampColor(InLampColor), AntennaBlinkRate(InAntennaBlinkRate), ScreenColor(InScreenColor), HeadYawSpeed(InHeadYawSpeed)
+	{
+	}
+
+	/** LampColor written on both lamp materials (antenna orange and the other orange parts). */
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Console")
+	FLinearColor LampColor = FLinearColor(1.f, 0.45f, 0.05f);
+
+	/** BlinkRate (Hz) written on the antenna lamp only; 0 = steady. The other orange parts never blink. */
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Console", meta = (ClampMin = 0, Units = "Hz"))
+	float AntennaBlinkRate = 0.f;
+
+	/** ScreenColor written on the screen material (black = off). */
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Console")
+	FLinearColor ScreenColor = FLinearColor::Black;
+
+	/** AntennaHead yaw speed about the mast axis, degrees per second; 0 = still. */
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Console", meta = (ClampMin = 0, Units = "DegreesPerSecond"))
+	float HeadYawSpeed = 0.f;
 };
 
 class ARRConsole;
@@ -49,6 +80,9 @@ DECLARE_DYNAMIC_MULTICAST_DELEGATE_ThreeParams(FRROnConsoleMarkedRocksChangedSig
  * Blueprint (headless tests) still works; subclass in Blueprint for the mesh and the gauge. The zone is drawn on the ground by
  * GroundTelegraph (sys-ground-telegraph): radius = GetZoneRadius, mode ZoneBlocked while marked rocks remain else ZoneActive,
  * progress = the hack progress (drain included); shown from InitializeConsole, hidden at completion and at EndPlay.
+ * State visuals (bDriveStateVisuals, task-302-01): on every state change the console writes the state FRRConsoleStateVisual
+ * on dynamic instances of the lamp slots (Mesh OtherLampSlotName, AntennaHead AntennaLampSlotName) and the screen slot, and
+ * turns the Blueprint component AntennaHeadName about its local Z while the state HeadYawSpeed is above 0.
  */
 UCLASS(Blueprintable)
 class ROGUERIGS_API ARRConsole : public AActor
@@ -82,6 +116,12 @@ public:
 
 	/** Updates the marked rocks, the zone check, the drone link and the hack progress. */
 	virtual void Tick(float DeltaSeconds) override;
+
+	/** Look the console takes in State (LockedVisual, IdleVisual, HackingVisual, CompleteVisual). */
+	const FRRConsoleStateVisual& GetStateVisual(ERRConsoleState State) const;
+
+	/** Antenna head found by name at the first visual refresh (null when the Blueprint has none, or before it ran). */
+	UStaticMeshComponent* GetAntennaHead() const { return AntennaHead; }
 
 	/** Current state. */
 	UFUNCTION(BlueprintPure, Category = "Console")
@@ -158,6 +198,15 @@ public:
 	FRROnConsoleMarkedRocksChangedSignature OnConsoleMarkedRocksChanged;
 
 protected:
+	/** Builds the state visual instances and shows the current state. */
+	virtual void BeginPlay() override;
+
+	/** Finds AntennaHead and creates the dynamic lamp and screen instances once (no-op afterwards or when bDriveStateVisuals is false). */
+	void SetupStateVisuals();
+
+	/** Writes the current state visual on the lamp and screen instances (and sets up the instances first if needed). */
+	void ApplyStateVisuals();
+
 	/** Releases the drone and unmarks the rocks left when the console goes away. */
 	virtual void EndPlay(const EEndPlayReason::Type EndPlayReason) override;
 
@@ -245,6 +294,68 @@ protected:
 	/** Gauge fraction lost per second while the miner is out of the zone (objective-console: 5 %/s = 0.05, provisional). */
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Console", meta = (ClampMin = 0))
 	float DrainPerSecond = 0.05f;
+
+	/**
+	 * True: the console drives its lamps, screen and antenna head from its state (task-302-01). ARRBonusChest sets it false
+	 * so the chest keeps its own look.
+	 */
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Console|Visuals")
+	bool bDriveStateVisuals = true;
+
+	/** Locked (marked rocks left): red, antenna blinks 2 Hz, screen black, head still (objective-console, owner 2026-10-23, provisional). */
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Console|Visuals")
+	FRRConsoleStateVisual LockedVisual = { FLinearColor(1.f, 0.05f, 0.03f), 2.f, FLinearColor::Black, 0.f };
+
+	/** Idle (rocks cleared, miner out of the zone): orange, antenna blinks 2 Hz, screen black, head 10 deg/s (owner 2026-10-23, provisional). */
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Console|Visuals")
+	FRRConsoleStateVisual IdleVisual = { FLinearColor(1.f, 0.45f, 0.05f), 2.f, FLinearColor::Black, 10.f };
+
+	/** Hacking: green, antenna blinks 2 Hz, screen green, head 45 deg/s (owner 2026-10-23, provisional). */
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Console|Visuals")
+	FRRConsoleStateVisual HackingVisual = { FLinearColor(0.1f, 1.f, 0.15f), 2.f, FLinearColor(0.1f, 1.f, 0.15f), 45.f };
+
+	/** Complete: steady green (no blink), screen green, head stopped (owner 2026-10-23, provisional). */
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Console|Visuals")
+	FRRConsoleStateVisual CompleteVisual = { FLinearColor(0.1f, 1.f, 0.15f), 0.f, FLinearColor(0.1f, 1.f, 0.15f), 0.f };
+
+	/** BlinkAmount written on the antenna lamp while its BlinkRate is above 0 (1 = full on/off pulse; the material ignores BlinkRate at 0). Implementation choice. */
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Console|Visuals", meta = (ClampMin = 0, ClampMax = 1))
+	float AntennaBlinkAmount = 1.f;
+
+	/** Name of the Blueprint StaticMeshComponent that turns (the dish head, pivot on the mast axis). */
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Console|Visuals")
+	FName AntennaHeadName = TEXT("AntennaHead");
+
+	/** Material slot of AntennaHead holding the blinking antenna lamp. */
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Console|Visuals")
+	FName AntennaLampSlotName = TEXT("AntennaOrange");
+
+	/** Material slot of Mesh holding the other (steady) orange parts. */
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Console|Visuals")
+	FName OtherLampSlotName = TEXT("OtherOrange");
+
+	/** Material slot of Mesh holding the screen. */
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Console|Visuals")
+	FName ScreenSlotName = TEXT("Screen");
+
+	/** Turning head found by AntennaHeadName (Blueprint component). */
+	UPROPERTY(Transient)
+	TObjectPtr<UStaticMeshComponent> AntennaHead;
+
+	/** Dynamic instance of the antenna lamp slot (blinks). */
+	UPROPERTY(Transient)
+	TObjectPtr<UMaterialInstanceDynamic> AntennaLampMID;
+
+	/** Dynamic instance of the other orange slot (steady). */
+	UPROPERTY(Transient)
+	TObjectPtr<UMaterialInstanceDynamic> OtherLampMID;
+
+	/** Dynamic instance of the screen slot. */
+	UPROPERTY(Transient)
+	TObjectPtr<UMaterialInstanceDynamic> ScreenMID;
+
+	/** True once SetupStateVisuals ran. */
+	bool bStateVisualsSetUp = false;
 
 	/** Grid the console stands on. */
 	UPROPERTY(VisibleInstanceOnly, BlueprintReadOnly, Category = "Console")

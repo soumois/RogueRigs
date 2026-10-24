@@ -15,6 +15,7 @@ ARRBonusChest::ARRBonusChest()
 	HackDuration = 8.f;
 	ZoneRadiusCells = 6.f;
 	MarkedCellTypes.Reset();
+	bDriveStateVisuals = false; // the chest keeps its own look (task-302-01)
 }
 
 void ARRBonusChest::CompleteHack()

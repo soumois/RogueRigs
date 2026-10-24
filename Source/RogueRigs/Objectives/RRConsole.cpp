@@ -7,9 +7,19 @@
 #include "Drone/RRDrone.h"
 #include "Objectives/RRLandingFootprint.h"
 #include "Engine/CollisionProfile.h"
+#include "Materials/MaterialInstanceDynamic.h"
 #include "Player/RRMiner.h"
 #include "Telegraph/RRGroundTelegraphComponent.h"
 #include "RogueRigs.h"
+
+namespace RRConsoleVisuals
+{
+	/** Parameters of M_ConsoleLamp and M_ConsoleScreen (bp-objective-console). */
+	static const FName LampColorParam(TEXT("LampColor"));
+	static const FName BlinkRateParam(TEXT("BlinkRate"));
+	static const FName BlinkAmountParam(TEXT("BlinkAmount"));
+	static const FName ScreenColorParam(TEXT("ScreenColor"));
+}
 
 ARRConsole::ARRConsole()
 {
@@ -26,6 +36,89 @@ ARRConsole::ARRConsole()
 
 	GroundTelegraph = CreateDefaultSubobject<URRGroundTelegraphComponent>(TEXT("GroundTelegraph"));
 	GroundTelegraph->SetupAttachment(ConsoleRoot);
+}
+
+void ARRConsole::BeginPlay()
+{
+	Super::BeginPlay();
+	ApplyStateVisuals();
+}
+
+const FRRConsoleStateVisual& ARRConsole::GetStateVisual(ERRConsoleState State) const
+{
+	switch (State)
+	{
+	case ERRConsoleState::Idle:
+		return IdleVisual;
+	case ERRConsoleState::Hacking:
+		return HackingVisual;
+	case ERRConsoleState::Complete:
+		return CompleteVisual;
+	default:
+		return LockedVisual;
+	}
+}
+
+void ARRConsole::SetupStateVisuals()
+{
+	if (bStateVisualsSetUp || !bDriveStateVisuals)
+	{
+		return;
+	}
+	bStateVisualsSetUp = true;
+
+	TInlineComponentArray<UStaticMeshComponent*> MeshComponents(this);
+	for (UStaticMeshComponent* Component : MeshComponents)
+	{
+		if (Component && Component->GetFName() == AntennaHeadName)
+		{
+			AntennaHead = Component;
+			break;
+		}
+	}
+
+	// A slot the mesh lacks is skipped (INDEX_NONE): a console without the C2 mesh (headless tests) simply shows nothing.
+	auto MakeMID = [](UStaticMeshComponent* Component, FName SlotName) -> UMaterialInstanceDynamic*
+	{
+		if (!Component || SlotName.IsNone())
+		{
+			return nullptr;
+		}
+		const int32 Index = Component->GetMaterialIndex(SlotName);
+		return Index != INDEX_NONE && Component->GetMaterial(Index) ? Component->CreateDynamicMaterialInstance(Index) : nullptr;
+	};
+	OtherLampMID = MakeMID(Mesh, OtherLampSlotName);
+	ScreenMID = MakeMID(Mesh, ScreenSlotName);
+	AntennaLampMID = MakeMID(AntennaHead, AntennaLampSlotName);
+	UE_LOG(LogRogueRigs, Verbose, TEXT("%s: state visuals head %s, antenna lamp %s, other lamp %s, screen %s."), *GetName(),
+		AntennaHead ? TEXT("yes") : TEXT("no"), AntennaLampMID ? TEXT("yes") : TEXT("no"), OtherLampMID ? TEXT("yes") : TEXT("no"), ScreenMID ? TEXT("yes") : TEXT("no"));
+}
+
+void ARRConsole::ApplyStateVisuals()
+{
+	if (!bDriveStateVisuals)
+	{
+		return;
+	}
+	SetupStateVisuals();
+
+	const FRRConsoleStateVisual& Visual = GetStateVisual(ConsoleState);
+	if (AntennaLampMID)
+	{
+		AntennaLampMID->SetVectorParameterValue(RRConsoleVisuals::LampColorParam, Visual.LampColor);
+		AntennaLampMID->SetScalarParameterValue(RRConsoleVisuals::BlinkRateParam, Visual.AntennaBlinkRate);
+		AntennaLampMID->SetScalarParameterValue(RRConsoleVisuals::BlinkAmountParam, Visual.AntennaBlinkRate > 0.f ? AntennaBlinkAmount : 0.f);
+	}
+	if (OtherLampMID)
+	{
+		OtherLampMID->SetVectorParameterValue(RRConsoleVisuals::LampColorParam, Visual.LampColor);
+		OtherLampMID->SetScalarParameterValue(RRConsoleVisuals::BlinkRateParam, 0.f);
+		OtherLampMID->SetScalarParameterValue(RRConsoleVisuals::BlinkAmountParam, 0.f);
+	}
+	if (ScreenMID)
+	{
+		ScreenMID->SetVectorParameterValue(RRConsoleVisuals::ScreenColorParam, Visual.ScreenColor);
+	}
 }
 
 void ARRConsole::InitializeConsole(ARRArenaGrid* InGrid, ARRMiner* InMiner, FIntPoint InCell)
@@ -45,6 +138,7 @@ void ARRConsole::InitializeConsole(ARRArenaGrid* InGrid, ARRMiner* InMiner, FInt
 
 	BroadcastMarkedRocks();
 	ConsoleState = MarkedRocks.IsEmpty() ? ERRConsoleState::Idle : ERRConsoleState::Locked;
+	ApplyStateVisuals();
 	OnHackStateChanged(ConsoleState);
 	OnConsoleStateChanged.Broadcast(this, ConsoleState);
 	OnHackProgress(HackProgress, bDroneLinked);
@@ -66,6 +160,15 @@ float ARRConsole::GetZoneRadius() const
 void ARRConsole::Tick(float DeltaSeconds)
 {
 	Super::Tick(DeltaSeconds);
+
+	if (AntennaHead)
+	{
+		const float YawSpeed = GetStateVisual(ConsoleState).HeadYawSpeed;
+		if (YawSpeed > 0.f)
+		{
+			AntennaHead->AddLocalRotation(FRotator(0.f, YawSpeed * DeltaSeconds, 0.f));
+		}
+	}
 
 	if (!bInitialized || IsComplete())
 	{
@@ -231,6 +334,7 @@ void ARRConsole::SetConsoleState(ERRConsoleState NewState)
 	}
 	ConsoleState = NewState;
 	UE_LOG(LogRogueRigs, Verbose, TEXT("%s: state %s."), *GetName(), *UEnum::GetValueAsString(NewState));
+	ApplyStateVisuals();
 	OnHackStateChanged(NewState);
 	OnConsoleStateChanged.Broadcast(this, NewState);
 }
