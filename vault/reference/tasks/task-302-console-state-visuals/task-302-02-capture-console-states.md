@@ -3,7 +3,7 @@ id: task-302-02-capture-console-states
 description: "Capture the console states in game (cpp): console state visuals, step 02."
 parent: task-302-console-state-visuals
 kind: task
-status: todo
+status: in-progress
 ---
 # Capture the console states in game
 

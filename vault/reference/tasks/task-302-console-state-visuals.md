@@ -13,7 +13,7 @@ status: in-progress
 - gdd_check: objective-console, art-style-guide, color-code read (2026-10-23). Conflict A7 (red and green are enemy colours): owner default accepted, exception "console state lamps" added to art-style-guide A7 and color-code. Values provisional, owner 2026-10-23. Runs after task-301.
 - confirmed_by_owner: yes (2026-10-23, "ok" to the plan and every default; planned in one planning pass, each task run later by its own orchestrator)
 - milestone: M2
-- next_step: task-302-01-console-state-drive
+- next_step: task-302-02-capture-console-states
 - result: open
 
 ## Subtasks

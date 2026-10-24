@@ -3,7 +3,7 @@ id: task-302-01-console-state-drive
 description: "Drive the console lamps, head and screen from its state (cpp): console state visuals, step 01."
 parent: task-302-console-state-visuals
 kind: task
-status: in-progress
+status: done
 ---
 # Drive the console lamps, head and screen from its state
 
@@ -15,11 +15,11 @@ status: in-progress
 - done_when: build green; RogueRigs.Console.* and RogueRigs.RunFlow.* pass; values and names in the docs; lint clean; committed
 - editor_state: closed
 - token_ceiling: 40000
-- model: open
-- tokens: open
-- runs: open
+- model: opus
+- tokens: input 38, cache write 101589, cache read 704592, output 16676
+- runs: 1
 - milestone: M2
-- result: open
+- result: ARRConsole drives LampColor, antenna BlinkRate 2 Hz + BlinkAmount 1, ScreenColor and AntennaHead yaw (0/10/45/0 deg/s) per state via FRRConsoleStateVisual Locked/Idle/Hacking/CompleteVisual; chest opts out (bDriveStateVisuals false); GDD A7 exception, docs; build green, Console+RunFlow tests pass
 
 ## Relations
 - [[task-302-console-state-visuals]] — parent global task.
