@@ -16,10 +16,10 @@ status: done
 - editor_state: closed
 - token_ceiling: 30000
 - model: opus
-- tokens: input 70, cache write 97261, cache read 2070996, output 29848
-- runs: 1
+- tokens: input 92, cache write 208962, cache read 3068316, output 37630
+- runs: 2
 - milestone: M2
-- result: DataSocketOffset (12.5,-30,46) uu in SM_ConsoleBase space through the Mesh transform (scale 1.361, about (17,-41,63) on BP_ObjectiveConsole), facing -Y, standoff 70 uu, +20 uu height, all provisional; console only (bHackAtDataSocket false on ARRBonusChest, chest hover unchanged); blocked point via ResolveClearHoverPoint; build green; Console+Dig+Drone 22/22 incl. new Console.DroneAtDataSocket; sys-drone and sys-objectives-console-chest updated; offset estimated, not measured on the mesh
+- result: DataSocketOffset (12.5,30,46) uu in SM_ConsoleBase space through the Mesh transform (scale 1.361), DataSocketFacing (0,1,0) (run 2: UE FBX import mirrors Y, first run had -30/-Y and hovered at the back face), standoff 70 uu, +20 uu height, all provisional; console only (bHackAtDataSocket false on ARRBonusChest, chest hover unchanged); blocked point via ResolveClearHoverPoint; build green; Console+Dig 22/22 incl. new Console.DroneAtDataSocket; sys-drone and sys-objectives-console-chest updated; port lateral and height positions estimated
 
 ## Relations
 - [[task-313-drone-at-console-socket]] — parent global task.
