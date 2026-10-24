@@ -1,6 +1,6 @@
 ---
 id: bp-objective-console
-description: "BP_ObjectiveConsole, Blueprint of ARRConsole: white cylinder whose teal glow follows the hack progress; zone circle drawn by the C++ ground telegraph."
+description: "BP_ObjectiveConsole, Blueprint of ARRConsole: C2 uplink console mesh (base Mesh + AntennaHead, lamp and screen materials); zone circle drawn by the C++ ground telegraph."
 parent: blueprints-world-index
 kind: doc
 ---
@@ -9,13 +9,15 @@ kind: doc
 - asset_path: /Game/RogueRigs/Blueprints/Objectives/BP_ObjectiveConsole
 - parent_class: ARRConsole (/Script/RogueRigs.RRConsole)
 - purpose: the command console dropped by the run flow ([[sys-objectives]]); visuals only.
-- components: no own component (the HackRing plane added by task-027-02 was removed by task-113-02; the zone circle is the inherited GroundTelegraph of [[sys-ground-telegraph]]); inherited Mesh: StaticMesh = engine Cylinder, scale (1, 1, 1.5), relative location z 75, material slot 0 = MI_GB_Console, NoCollision, no dynamic shadow.
+- components (task-301-04, task-302 drives them by these names): inherited Mesh (ARRConsole, under ConsoleRoot at the ground): StaticMesh = SM_ConsoleBase, relative location (0, 0, 0) (the mesh origin is the footprint bottom centre, feet at z 0, the same ground reference as the old cylinder whose bottom sat at 0), relative scale (0.90754, 0.90754, 0.90754) = 134 / 147.65 (largest horizontal size 147.65 uu to 134 uu = 2 x 2 cells of 67 uu; scaled bounds read back about 134 x 115 x 98 uu), NoCollision, no dynamic shadow, no overlay override (the old MI_GB_Console override was cleared). New AntennaHead (StaticMeshComponent, a Blueprint component), attached under Mesh: StaticMesh = SM_ConsoleHead, relative location = the raw head offset (-4.904, 16.69, 108.0) because the parent Mesh already carries the 0.90754 scale (world offset about (-4.45, 15.15, 98.0)), rotation 0, scale 1 (world scale 0.90754 inherited), NoCollision (profile and collisionEnabled), overlap events off, no navigation, no dynamic shadow. GroundTelegraph inherited unchanged (the zone circle, [[sys-ground-telegraph]]).
+- material_slots: SM_ConsoleBase slots (index order) ConsoleBody = MI_ConsoleBody, OtherOrange = MI_ConsoleLampOther, Screen = M_ConsoleScreen. SM_ConsoleHead slots ConsoleBody = MI_ConsoleBody, AntennaOrange = MI_ConsoleLampAntenna. The slot names were renamed from the FBX import names (ConsoleBody_002, OtherOrange_001, Screen_001, AntennaOrange_001); the imported slot name is kept in the mesh.
 - exposed_defaults: C++ defaults kept (zone radius, which is also the marking radius since task-120-01; hack duration; drain; marked cell types; marked-block drop range `MinMarkedCells` / `MaxMarkedCells` since task-304-01); task-120-01 checked the asset: no console property overridden. Set as `ConsoleClass` in `RunFlowConfig` of [[bp-rr-game-mode]].
-- events: OnHackProgress(Progress, bHacking) calls SetScalarParameterValueOnMaterials(Mesh, GlowAmount, 0.15 + Progress * 3.5): the teal glow grows with the gauge. The old SetRelativeScale3D(HackRing) call was removed by task-113-02. OnMarkedRocksChanged and OnHackStateChanged are not implemented (the rock outline and the HUD carry that feedback).
-- logic_in_bp: display only (one event, one call).
-- assets: /Game/RogueRigs/Materials/GreyBox/MI_GB_Console (parent M_GreyBoxGlow: Color white, GlowColor teal 0/0.85/1, GlowAmount 0.3).
+- events: OnHackProgress(Progress, bHacking) still calls SetScalarParameterValueOnMaterials(Mesh, GlowAmount, 0.15 + Progress * 3.5), left in place (task-301-04): none of the new materials has a GlowAmount parameter, so the call does nothing visible; task-302 replaces it by the lamp and screen drive. The old SetRelativeScale3D(HackRing) call was removed by task-113-02. OnMarkedRocksChanged and OnHackStateChanged are not implemented.
+- logic_in_bp: display only (one event, one call, now a harmless no-op).
+- assets (/Game/RogueRigs/Art/Console/, task-301-04): SM_ConsoleBase (bounds read back x -73.83..73.83, y -63.37..63.37, z 0..108 uu, 3 slots), SM_ConsoleHead (bounds read back x -62.14..62.33, y -18.53..57.68, z 0..81.91 uu, 2 slots), imported from Art/Source/console-meshy/clean/ console_c2_base.fbx and console_c2_head.fbx with FbxImportUI headless (import scale 1, materials and textures not imported, combine meshes, lightmap UVs off, Nanite off; the MCP import_file came out 100 times too small, 1.48 uu, because Interchange converts the FBX unit: not used). T_Console_BaseColor (2048 x 2048, sRGB, TC_Default, from console_c2_basecolor.png). M_ConsoleBody (BaseColor = T_Console_BaseColor RGB, Roughness 0.7) with MI_ConsoleBody. M_ConsoleLamp (vector LampColor default (1, 0.45, 0.05); scalars BlinkRate default 0 and BlinkAmount default 0; Emissive = LampColor x Lerp(1, Sine(Time x BlinkRate, period 1), BlinkAmount) x 3; BaseColor = LampColor): steady at 0, with MI_ConsoleLampOther and MI_ConsoleLampAntenna, no override. M_ConsoleScreen (vector ScreenColor default black (0, 0, 0), Emissive = ScreenColor, used directly in slot Screen; task-302 makes a dynamic instance).
 - owner_agent: agent-bp
 - verified: task-016-03 PIE: dropped as BP_ObjectiveConsole_C_0, hack completed (state Complete, progress 1) with no log error; glow not viewed on screen.
+- verified_task_301_04: compile with no error raised, saved; components, meshes, slots, scale and collision read back after the save; not verified: the look in the editor or in game (no capture allowed), the lamp blink (no PIE).
 
 ## Relations
 - [[blueprints-index]] — parent index.
