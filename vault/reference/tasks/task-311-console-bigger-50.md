@@ -14,7 +14,7 @@ status: done
 - confirmed_by_owner: yes (2026-10-24, "ok" to the plan and every default; planned in one planning pass, each task run later by its own orchestrator)
 - milestone: M2
 - next_step: none
-- result: Done. Saved/ConsoleBigger/contact_sheet_console_before_after.png (6 before/after pairs, same cameras; frames cb_* in Saved/ConsoleBigger/, log run1.log): console about 1.5 x bigger (about 200-220 uu, pixel estimate), on open floor, head on the mast and turning in Idle, lamps and screen in place, zone circle fits with margin; no defect from the change; still washed out inside the light hack disc (task-312); no repo change
+- result: Done. ARRConsole FootprintCells 3 x 3 (commit 5f7a8010), chest keeps 2 x 2 explicitly; GDD objective-console and sys-objectives-console-chest updated (f7875a91); tests RunFlow and FineConsoleShuttlePlacement fixed, 22/22 pass; BP_ObjectiveConsole Mesh scale 1.361, AntennaHead offset unchanged, doc updated (f908699e); -game before/after sheet Saved/ConsoleBigger/contact_sheet_console_before_after.png: about 1.5 x bigger, on open floor, head and lamps in place, zone circle fits; still washed out in the hack disc (task-312).
 
 ## Subtasks
 1. task-311-01-console-footprint-3x3 — cpp: Console footprint 3 x 3
