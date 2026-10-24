@@ -5,9 +5,11 @@
 #include "CoreMinimal.h"
 #include "GameFramework/Actor.h"
 #include "Grid/RRArenaGrid.h"
+#include "UObject/SoftObjectPtr.h"
 #include "RRConsole.generated.h"
 
 class ARRMiner;
+class ARRPickup;
 class USceneComponent;
 class UStaticMeshComponent;
 class URRGroundTelegraphComponent;
@@ -86,6 +88,11 @@ DECLARE_DYNAMIC_MULTICAST_DELEGATE_ThreeParams(FRROnConsoleMarkedRocksChangedSig
  * Data socket (bHackAtDataSocket, task-313-01, owner decision 13 2026-10-24): GetHackDataSocket gives the round data socket on
  * the front console block (DataSocketOffset and DataSocketFacing in Mesh space, so it follows the Mesh scale); the drone
  * hovers in front of it and aims its hack link at it. Off for ARRBonusChest (the chest keeps the default drone hover).
+ * XP burst (task-303-01, objective-console owner 2026-10-23, provisional): CompleteHack spawns XPBurstChipCount big XP chips
+ * (XPBurstChipClass, BP_PickupXPBig) worth XPBurstChipXP each, XPBurstSpawnRadius out from the console centre along evenly
+ * spread yaws (random start), each popped outward along its yaw with the class pop arc, so they land clear of the 3 x 3 mesh.
+ * Console only: the constructor sets XPBurstChipCount to 0 for ARRBonusChest (the chest keeps its own reward). Then the
+ * Blueprint event OnHackCompleteBurst fires (one-shot FX, BP_ObjectiveConsole).
  */
 UCLASS(Blueprintable)
 class ROGUERIGS_API ARRConsole : public AActor
@@ -190,6 +197,22 @@ public:
 	UFUNCTION(BlueprintPure, Category = "Console|Hack")
 	bool GetHackDataSocket(FVector& OutLocation, FVector& OutFacing) const;
 
+	/** Big XP chips spawned when the hack completes (3 on the console, 0 on ARRBonusChest). */
+	UFUNCTION(BlueprintPure, Category = "Console|Reward")
+	int32 GetXPBurstChipCount() const { return XPBurstChipCount; }
+
+	/** Raw XP of each burst chip (8 = eight basic XP nuts of 1 XP). */
+	UFUNCTION(BlueprintPure, Category = "Console|Reward")
+	float GetXPBurstChipXP() const { return XPBurstChipXP; }
+
+	/** Horizontal distance from the console centre where the burst chips start their pop. */
+	UFUNCTION(BlueprintPure, Category = "Console|Reward")
+	float GetXPBurstSpawnRadius() const { return XPBurstSpawnRadius; }
+
+	/** Burst chips requested by the last completion (0 before completion; pooled chips may appear up to a few frames later). */
+	UFUNCTION(BlueprintPure, Category = "Console|Reward")
+	int32 GetXPBurstChipsSpawned() const { return XPBurstChipsSpawned; }
+
 	//~ Begin cheats (non-shipping: these entry points do nothing in shipping builds)
 	/** Cheat and tests: completes the hack at once (CompleteHack). Does nothing in shipping builds. */
 	UFUNCTION(BlueprintCallable, Category = "Cheats")
@@ -235,6 +258,17 @@ protected:
 	/** Display event: the console entered NewState (Locked, Idle, Hacking, Complete). Implement in Blueprint. */
 	UFUNCTION(BlueprintImplementableEvent, Category = "Console")
 	void OnHackStateChanged(ERRConsoleState NewState);
+
+	/**
+	 * Display event, once per console, at the end of CompleteHack (after OnHackStateChanged(Complete) and the XP burst):
+	 * Location = the actor location (console footprint centre, floor), ChipCount = burst chips requested (0 on the chest).
+	 * BP_ObjectiveConsole spawns its one-shot hack complete Niagara here (NS_ConsoleHackComplete, task-303-02).
+	 */
+	UFUNCTION(BlueprintImplementableEvent, Category = "Console")
+	void OnHackCompleteBurst(FVector Location, int32 ChipCount);
+
+	/** Spawns the XP burst chips (pool through URRPickupSubsystem::RequestXPCube, direct spawn without it). Returns how many were requested. Called once by CompleteHack. */
+	int32 SpawnXPBurst();
 
 	/** Marks every cell FindMarkableCells returns around Cell. */
 	void MarkRocks();
@@ -314,6 +348,29 @@ protected:
 	 */
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Console|Hack")
 	bool bHackAtDataSocket = true;
+
+	/**
+	 * Big XP chips spawned when the hack completes (objective-console, owner 2026-10-23, provisional: 3). The ARRConsole
+	 * constructor sets 0 for ARRBonusChest and its subclasses (the chest keeps its own reward).
+	 */
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Console|Reward", meta = (ClampMin = 0))
+	int32 XPBurstChipCount = 3;
+
+	/** Raw XP of each burst chip, before the XPGain stat (owner 2026-10-23, provisional: a big chip = 8 basic nuts of 1 XP, 24 in all). */
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Console|Reward", meta = (ClampMin = 0))
+	float XPBurstChipXP = 8.f;
+
+	/** Pickup class of the burst chips (the big XP chip; its class defaults give the pop arc). None = no burst. */
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Console|Reward")
+	TSoftClassPtr<ARRPickup> XPBurstChipClass;
+
+	/**
+	 * Horizontal distance from the console centre to the chip spawn point, along its fling yaw (implementation choice,
+	 * task-303-01). 140 uu clears the 3 x 3 console mesh (about 201 x 172 uu at scale 1.361: half diagonal about 132 uu); the
+	 * chip pop then adds PopMinDistance..PopMaxDistance (BP_PickupXPBig: 80..300) outward, so it lands 220..440 uu from the centre.
+	 */
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Console|Reward", meta = (ClampMin = 0, Units = "cm"))
+	float XPBurstSpawnRadius = 140.f;
 
 	/**
 	 * Centre of the round data socket in Mesh space, in uu at mesh scale 1 (SM_ConsoleBase frame in UE: origin at the footprint
@@ -427,4 +484,8 @@ protected:
 
 	/** True once InitializeConsole ran. */
 	bool bInitialized = false;
+
+	/** Burst chips requested by the completion (SpawnXPBurst). */
+	UPROPERTY(VisibleInstanceOnly, BlueprintReadOnly, Category = "Console|Reward")
+	int32 XPBurstChipsSpawned = 0;
 };

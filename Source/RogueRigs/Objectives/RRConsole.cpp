@@ -9,6 +9,9 @@
 #include "Engine/CollisionProfile.h"
 #include "Materials/MaterialInstanceDynamic.h"
 #include "Objectives/RRBonusChest.h"
+#include "Pickups/RRPickup.h"
+#include "Pickups/RRPickupSubsystem.h"
+#include "Engine/World.h"
 #include "Player/RRMiner.h"
 #include "Telegraph/RRGroundTelegraphComponent.h"
 #include "RogueRigs.h"
@@ -40,6 +43,13 @@ ARRConsole::ARRConsole()
 
 	// The data socket hover is console only (task-313-01): the bonus chest keeps its default hack hover.
 	bHackAtDataSocket = !IsA<ARRBonusChest>();
+
+	// The XP burst is console only (task-303-01): the bonus chest keeps its own reward.
+	XPBurstChipClass = TSoftClassPtr<ARRPickup>(FSoftObjectPath(TEXT("/Game/RogueRigs/Blueprints/Pickups/BP_PickupXPBig.BP_PickupXPBig_C")));
+	if (IsA<ARRBonusChest>())
+	{
+		XPBurstChipCount = 0;
+	}
 }
 
 bool ARRConsole::GetHackDataSocket(FVector& OutLocation, FVector& OutFacing) const
@@ -263,7 +273,53 @@ void ARRConsole::CompleteHack()
 	{
 		GroundTelegraph->Hide();
 	}
-	UE_LOG(LogRogueRigs, Log, TEXT("%s: hack complete."), *GetName());
+	XPBurstChipsSpawned = SpawnXPBurst();
+	UE_LOG(LogRogueRigs, Log, TEXT("%s: hack complete, %d XP chip(s) of %.1f XP."), *GetName(), XPBurstChipsSpawned, XPBurstChipXP);
+	OnHackCompleteBurst(GetActorLocation(), XPBurstChipsSpawned);
+}
+
+int32 ARRConsole::SpawnXPBurst()
+{
+	UWorld* World = GetWorld();
+	if (XPBurstChipCount <= 0 || !World || !World->IsGameWorld())
+	{
+		return 0;
+	}
+	const TSubclassOf<ARRPickup> ChipClass = XPBurstChipClass.LoadSynchronous();
+	if (!ChipClass)
+	{
+		UE_LOG(LogRogueRigs, Warning, TEXT("%s: no XP burst chip class (%s); %d chip(s) not dropped."), *GetName(), *XPBurstChipClass.ToString(), XPBurstChipCount);
+		return 0;
+	}
+
+	// Evenly spread yaws from a random start; each chip starts XPBurstSpawnRadius out (clear of the mesh) and pops further out.
+	URRPickupSubsystem* Pickups = World->GetSubsystem<URRPickupSubsystem>();
+	const float Spacing = 360.f / static_cast<float>(XPBurstChipCount);
+	const float StartYaw = FMath::FRandRange(0.f, 360.f);
+	const FVector Centre = GetActorLocation();
+	int32 Requested = 0;
+	for (int32 Index = 0; Index < XPBurstChipCount; ++Index)
+	{
+		const float Yaw = StartYaw + Spacing * static_cast<float>(Index);
+		const float YawRadians = FMath::DegreesToRadians(Yaw);
+		const FVector Location = Centre + FVector(FMath::Cos(YawRadians), FMath::Sin(YawRadians), 0.f) * XPBurstSpawnRadius;
+		if (Pickups)
+		{
+			// Pooled: nullptr also means queued (created within the pool SpawnMaxFrames), so every request counts.
+			Pickups->RequestXPCube(ChipClass, Location, XPBurstChipXP, Yaw);
+			++Requested;
+			continue;
+		}
+		const FTransform SpawnTransform(FRotator::ZeroRotator, Location);
+		if (ARRPickup* Chip = World->SpawnActorDeferred<ARRPickup>(ChipClass, SpawnTransform, this, nullptr, ESpawnActorCollisionHandlingMethod::AlwaysSpawn))
+		{
+			Chip->SetXPAmount(XPBurstChipXP);
+			Chip->SetPopYaw(Yaw);
+			Chip->FinishSpawning(SpawnTransform);
+			++Requested;
+		}
+	}
+	return Requested;
 }
 
 void ARRConsole::EndPlay(const EEndPlayReason::Type EndPlayReason)
