@@ -3,7 +3,7 @@ id: task-306-04-capture-chest-mesh
 description: "Capture the new chest in game (cpp): bonus chest mesh with flat faces, step 04."
 parent: task-306-chest-flat-faces
 kind: task
-status: in-progress
+status: done
 ---
 # Capture the new chest in game
 
@@ -15,11 +15,11 @@ status: in-progress
 - done_when: frames show the new chest at its drop spot; sheet sent to the owner; nothing else changed
 - editor_state: closed
 - token_ceiling: 30000
-- model: open
-- tokens: open
-- runs: open
+- model: opus
+- tokens: input 86, cache write 149755, cache read 2476334, output 25575
+- runs: 1
 - milestone: M2
-- result: open
+- result: Headless -game capture: new chest at its real drop spot from the game camera and closer, lock face toward the camera, lid and latch in place, flat faces read; before (grey-box cube, task-312 frame) | after sheet Saved/ChestMesh/contact_sheet_chest_before_after.png. Debug tool rr.Debug.Objective now accepts Chest (f37555e5, sys-cheats 5de1b024), to be confirmed by the owner.
 
 ## Relations
 - [[task-306-chest-flat-faces]] — parent global task.

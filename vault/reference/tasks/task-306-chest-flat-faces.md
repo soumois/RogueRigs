@@ -1,9 +1,9 @@
 ---
 id: task-306-chest-flat-faces
 description: "Global task: Flatten the puffed Meshy chest faces after the sheet, cut it into body, lid and latch, and show it in BP_BonusChest."
-parent: tasks-to-do-index
+parent: tasks-done-index
 kind: task
-status: in-progress
+status: done
 ---
 # Bonus chest mesh with flat faces
 
@@ -14,8 +14,8 @@ status: in-progress
 - confirmed_by_owner: yes (owner 2026-10-23: "ok pour tous les défauts (Q1 à Q25)"; every default below applies)
 - owner_gate_306_01: 2026-10-24, on the chest_flat renders: flat faces "c'est bon" (go to 306-02); missing yellow lid logo "Il faut le rajouter sur le top, mais en effet prépare une tâche à part" (separate task, not in task-306); size 130 x 70 x 66 uu "On garde ces proportions" (Q3 updated); round handles, hinge pins and the thin dark line on the front "ok" (accepted)
 - milestone: M2
-- next_step: task-306-04-capture-chest-mesh
-- result: open
+- next_step: none
+- result: Done. Headless -game capture: new chest at its real drop spot from the game camera and closer, lock face toward the camera, lid and latch in place, flat faces read; before (grey-box cube, task-312 frame) | after sheet Saved/ChestMesh/contact_sheet_chest_before_after.png. Debug tool rr.Debug.Objective now accepts Chest (f37555e5, sys-cheats 5de1b024), to be confirmed by the owner.
 
 ## Subtasks
 1. task-306-01-chest-flatten — 3d: Flatten the chest faces after the sheet
@@ -24,7 +24,7 @@ status: in-progress
 4. task-306-04-capture-chest-mesh — cpp: Capture the new chest in game
 
 ## Relations
-- [[tasks-to-do-index]] — parent index.
+- [[tasks-done-index]] — parent index.
 - [[task-306-01-chest-flatten]] — step 01, 3d.
 - [[task-306-02-chest-cut]] — step 02, 3d.
 - [[task-306-03-bp-chest-import]] — step 03, bp.

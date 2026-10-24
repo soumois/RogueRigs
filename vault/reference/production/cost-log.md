@@ -662,6 +662,7 @@ kind: note
 | [[task-306-01-chest-flatten]] | sonnet | 1 | 0k | 115k | 2593k | 42k |
 | [[task-306-02-chest-cut]] | sonnet | 1 | 0k | 134k | 3558k | 63k |
 | [[task-306-03-bp-chest-import]] | sonnet | 1 | 0k | 69k | 1542k | 23k |
+| [[task-306-04-capture-chest-mesh]] | opus | 1 | 0k | 150k | 2476k | 26k |
 
 ## Totals
 | Scope | Input | Cache write | Cache read | Output |

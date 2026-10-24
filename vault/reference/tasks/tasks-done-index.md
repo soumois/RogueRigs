@@ -314,6 +314,7 @@ Archive: it exceeds the index size limits of [[_authoring]] on purpose (owner, 2
 - [[task-303-console-hack-reward]] — When the console hack completes, three big XP chips fly out in every direction and a big green ring flash plays. Status done.
 - [[task-304-console-marked-rocks-range]] — The console lands only where its zone holds between 10 and 40 markable blocks, with both bounds editable in Blueprint defaults. Status done.
 - [[task-305-console-hack-10s]] — The console hack takes 10 s instead of 12 s; the bonus chest is unchanged. Status done.
+- [[task-306-chest-flat-faces]] — Flatten the puffed Meshy chest faces after the sheet, cut it into body, lid and latch, and show it in BP_BonusChest. Status done.
 - [[task-307-chest-one-upgrade]] — Opening the bonus chest gives exactly one upgrade choice: its direct XP grant no longer triggers a second level-up. Status done.
 - [[task-310-camera-shake]] — A shared C++ camera shake any actor can play on the player camera; first used by the bonus chest lid slam (task-309). Status done.
 - [[task-311-console-bigger-50]] — The objective console is 50 % bigger and lands only on a fully free 3 x 3 floor footprint; the bonus chest is unchanged. Status done.
