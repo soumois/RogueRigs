@@ -3,7 +3,7 @@ id: task-310-01-camera-shake
 description: "Shared camera shake in C++ (cpp): one call plays a light shake on the player camera, step 01."
 parent: task-310-camera-shake
 kind: task
-status: in-progress
+status: done
 ---
 # Shared camera shake in C++
 
@@ -15,11 +15,11 @@ status: in-progress
 - done_when: build green; existing suites pass; the call compiles from another actor (used by task-309-01); doc node and relations; lint clean; committed
 - editor_state: closed
 - token_ceiling: 30000
-- model: open
-- tokens: open
-- runs: open
+- model: opus
+- tokens: input 44, cache write 108971, cache read 760474, output 19838
+- runs: 1
 - milestone: M2
-- result: open
+- result: URRCameraShake + own Perlin translation pattern URRCameraShakePattern (engine Perlin pattern sits in EngineCameras plugin, not a dependency) + URRCameraShakeLibrary::PlayCameraShake(WorldContext, Scale=1, ShakeClass=null) on the first local player's camera manager; Duration 0.2 s, TranslationAmplitude (0,4,4) uu, BlendOut 0.08 s, Frequency 25 Hz, all EditDefaultsOnly provisional owner 2026-10-23; no rotation, falloff or time dilation; not wired. Doc sys-camera-shake + relations. Build green; full RogueRigs suite 270/272: JuiceKillDropsStreamingCubes (BP_PickupXP collision) and LevelUpUpgradeLoop (RerollButton) fail, unrelated (new code has no caller). Commits 926e01d1, 0ab7c041.
 
 ## Relations
 - [[task-310-camera-shake]] — parent global task.

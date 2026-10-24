@@ -1,9 +1,9 @@
 ---
 id: task-310-camera-shake
 description: "Global task: A shared C++ camera shake any actor can play on the player camera; first used by the bonus chest lid slam (task-309)."
-parent: tasks-to-do-index
+parent: tasks-done-index
 kind: task
-status: in-progress
+status: done
 ---
 # Shared camera shake
 
@@ -13,12 +13,12 @@ status: in-progress
 - gdd_check: sys-player (camera) read 2026-10-23. Separate global task by the splitting rule: a reusable camera system is its own system, not part of the chest. Pending owner answers, defaults: Q20 new global task, Perlin-noise shake defined in C++, chest preset 0.2 s, about 4 uu translation, no rotation, no distance falloff; Q21 not wired to the heavy slam or explosions.
 - confirmed_by_owner: yes (owner 2026-10-23: "ok pour tous les défauts (Q1 à Q25)"; every default below applies; not launched yet)
 - milestone: M2
-- next_step: task-310-01-camera-shake
-- result: open
+- next_step: none
+- result: Done. URRCameraShake + own Perlin translation pattern URRCameraShakePattern (engine Perlin pattern sits in EngineCameras plugin, not a dependency) + URRCameraShakeLibrary::PlayCameraShake(WorldContext, Scale=1, ShakeClass=null) on the first local player's camera manager; Duration 0.2 s, TranslationAmplitude (0,4,4) uu, BlendOut 0.08 s, Frequency 25 Hz, all EditDefaultsOnly provisional owner 2026-10-23; no rotation, falloff or time dilation; not wired. Doc sys-camera-shake + relations. Build green; full RogueRigs suite 270/272: JuiceKillDropsStreamingCubes (BP_PickupXP collision) and LevelUpUpgradeLoop (RerollButton) fail, unrelated (new code has no caller). Commits 926e01d1, 0ab7c041.
 
 ## Subtasks
 1. task-310-01-camera-shake — cpp: Shared camera shake in C++
 
 ## Relations
-- [[tasks-to-do-index]] — parent index.
+- [[tasks-done-index]] — parent index.
 - [[task-310-01-camera-shake]] — step 01, cpp.
