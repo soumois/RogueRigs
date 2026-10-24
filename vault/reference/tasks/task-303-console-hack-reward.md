@@ -13,7 +13,7 @@ status: in-progress
 - gdd_check: objective-console read (2026-10-23): it has no reward; the owner default adds it (3 big chips, a big chip = 8 basic nuts, provisional owner 2026-10-23). Particle: green ring flash with white-gold sparks (green allowed by the console exception of task-302). Runs after task-301.
 - confirmed_by_owner: yes (2026-10-23, "ok" to the plan and every default; planned in one planning pass, each task run later by its own orchestrator)
 - milestone: M2
-- next_step: task-303-01-console-xp-burst
+- next_step: task-303-02-bp-hack-complete-fx
 - result: open
 
 ## Subtasks

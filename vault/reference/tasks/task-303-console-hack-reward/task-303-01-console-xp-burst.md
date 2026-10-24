@@ -3,7 +3,7 @@ id: task-303-01-console-xp-burst
 description: "Console hack XP burst (cpp): console hack reward: xp burst and big particle, step 01."
 parent: task-303-console-hack-reward
 kind: task
-status: in-progress
+status: done
 ---
 # Console hack XP burst
 
@@ -15,11 +15,11 @@ status: in-progress
 - done_when: build green; a test or existing test shows 3 chips of 8 on console complete and none extra on the chest; RogueRigs.Console.* pass; docs updated; lint clean; committed
 - editor_state: closed
 - token_ceiling: 40000
-- model: open
-- tokens: open
-- runs: open
+- model: opus
+- tokens: input 72, cache write 178562, cache read 2567133, output 23732
+- runs: 1
 - milestone: M2
-- result: open
+- result: ARRConsole::CompleteHack spawns 3 BP_PickupXPBig chips of 8 XP (EditDefaultsOnly XPBurstChipCount 3, XPBurstChipXP 8, spawn radius 140 uu, 120 deg apart, long arc, rest 220..440 uu); chest count 0; BlueprintImplementableEvent OnHackCompleteBurst(Location, ChipCount); RogueRigs.Console.* 6/6 incl. HackXPBurst; GDD and docs updated (6fcf9754, ab1d2d1e).
 
 ## Relations
 - [[task-303-console-hack-reward]] — parent global task.

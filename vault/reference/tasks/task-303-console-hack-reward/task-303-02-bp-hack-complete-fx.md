@@ -3,7 +3,7 @@ id: task-303-02-bp-hack-complete-fx
 description: "NS_ConsoleHackComplete and its wiring (bp): console hack reward: xp burst and big particle, step 02."
 parent: task-303-console-hack-reward
 kind: task
-status: todo
+status: in-progress
 ---
 # NS_ConsoleHackComplete and its wiring
 
