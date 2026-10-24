@@ -3,7 +3,7 @@ id: task-306-03-bp-chest-import
 description: "Import the chest parts into BP_BonusChest (bp): bonus chest mesh with flat faces, step 03."
 parent: task-306-chest-flat-faces
 kind: task
-status: todo
+status: in-progress
 ---
 # Import the chest parts into BP_BonusChest
 
