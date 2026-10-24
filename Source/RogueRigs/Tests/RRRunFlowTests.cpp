@@ -480,8 +480,8 @@ bool FRRConsoleDroneAtDataSocketTest::RunTest(const FString& Parameters)
 	using namespace RRRunFlowTests;
 
 	// Console (task-313-01, owner decision 13): the drone hovers HackSocketStandoff (70 uu) in front of the data socket, along
-	// its facing (-Y in Mesh space), HackSocketHeightOffset (20 uu) above it. The bare C++ console has Mesh scale 1, so the
-	// socket is the actor location + DataSocketOffset (12.5, -30, 46).
+	// its facing (+Y in Mesh space), HackSocketHeightOffset (20 uu) above it. The bare C++ console has Mesh scale 1, so the
+	// socket is the actor location + DataSocketOffset (12.5, 30, 46).
 	{
 		FTestWorld TestWorld(TEXT("RRConsoleDroneSocketWorld"));
 		FRunSetup Setup;
@@ -505,8 +505,8 @@ bool FRRConsoleDroneAtDataSocketTest::RunTest(const FString& Parameters)
 		FVector Socket;
 		FVector Facing;
 		TestTrue(TEXT("console has a data socket"), Console->GetHackDataSocket(Socket, Facing));
-		TestTrue(TEXT("socket = location + offset at scale 1"), Socket.Equals(Console->GetActorLocation() + FVector(12.5, -30.0, 46.0), 0.01));
-		TestTrue(TEXT("socket faces -Y"), Facing.Equals(FVector(0.0, -1.0, 0.0), 0.001));
+		TestTrue(TEXT("socket = location + offset at scale 1"), Socket.Equals(Console->GetActorLocation() + FVector(12.5, 30.0, 46.0), 0.01));
+		TestTrue(TEXT("socket faces +Y"), Facing.Equals(FVector(0.0, 1.0, 0.0), 0.001));
 		for (int32 Frame = 0; Frame < 180; ++Frame)
 		{
 			TestWorld.Tick();

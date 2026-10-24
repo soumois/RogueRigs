@@ -316,16 +316,18 @@ protected:
 	bool bHackAtDataSocket = true;
 
 	/**
-	 * Centre of the round data socket in Mesh space, in uu at mesh scale 1 (SM_ConsoleBase frame: origin at the footprint
-	 * bottom centre, front toward -Y): below the screen of the front block, read from the console_c2 cut report and the front
-	 * render (task-313-01, provisional). Scaled by the Mesh scale (1.361 on BP_ObjectiveConsole: about (17, -41, 63) uu).
+	 * Centre of the round data socket in Mesh space, in uu at mesh scale 1 (SM_ConsoleBase frame in UE: origin at the footprint
+	 * bottom centre, screen face toward +Y): below the screen of the front block. Read from the console_c2 cut report (Blender
+	 * frame, front toward -Y) with Y negated: the FBX import mirrors Y (X kept), checked on the task-313-02 capture (screen face
+	 * toward world +Y, screen on the +X side of the mast as in the owner turnaround). Task-313-01, provisional. Scaled by the
+	 * Mesh scale (1.361 on BP_ObjectiveConsole: about (17, 41, 63) uu).
 	 */
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Console|Hack")
-	FVector DataSocketOffset = FVector(12.5f, -30.f, 46.f);
+	FVector DataSocketOffset = FVector(12.5f, 30.f, 46.f);
 
-	/** Outward direction of the data socket in Mesh space (the front of SM_ConsoleBase, -Y); only its horizontal part is used. */
+	/** Outward direction of the data socket in Mesh space (the screen face of SM_ConsoleBase, +Y in UE); only its horizontal part is used. */
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Console|Hack")
-	FVector DataSocketFacing = FVector(0.f, -1.f, 0.f);
+	FVector DataSocketFacing = FVector(0.f, 1.f, 0.f);
 
 	/**
 	 * True: the console drives its lamps, screen and antenna head from its state (task-302-01). ARRBonusChest sets it false
