@@ -3,7 +3,7 @@ id: task-311-01-console-footprint-3x3
 description: "Console footprint 3 x 3 (cpp): console 50 % bigger, step 01."
 parent: task-311-console-bigger-50
 kind: task
-status: todo
+status: in-progress
 ---
 # Console footprint 3 x 3
 

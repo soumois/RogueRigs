@@ -3,7 +3,7 @@ id: task-311-console-bigger-50
 description: "Global task: The objective console is 50 % bigger and lands only on a free 3 x 3 floor footprint; chest unchanged."
 parent: tasks-to-do-index
 kind: task
-status: todo
+status: in-progress
 ---
 # Console 50 % bigger
 
