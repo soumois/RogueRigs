@@ -3,7 +3,7 @@ id: task-303-03-capture-hack-reward
 description: "Capture the console hack reward (cpp): console hack reward: xp burst and big particle, step 03."
 parent: task-303-console-hack-reward
 kind: task
-status: todo
+status: in-progress
 ---
 # Capture the console hack reward
 

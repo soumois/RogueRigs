@@ -3,7 +3,7 @@ id: task-303-02-bp-hack-complete-fx
 description: "NS_ConsoleHackComplete and its wiring (bp): console hack reward: xp burst and big particle, step 02."
 parent: task-303-console-hack-reward
 kind: task
-status: in-progress
+status: done
 ---
 # NS_ConsoleHackComplete and its wiring
 
@@ -15,11 +15,11 @@ status: in-progress
 - done_when: compiles without error; values read back; wired event read back; doc nodes and index relation; lint clean; committed
 - editor_state: open
 - token_ceiling: 30000
-- model: open
-- tokens: open
-- runs: open
+- model: sonnet
+- tokens: input 60, cache write 88999, cache read 1645651, output 20642
+- runs: 1
 - milestone: M2
-- result: open
+- result: NS_ConsoleHackComplete (CPU, one burst): green ring 64 sprites at 600 uu/s, 0.55-0.6 s, colour (0.2,1.6,0.45), radius ~110 -> ~330 uu; 40 white-gold sparks (2.0,1.6,0.6) cone 25 deg up 250-450 uu/s, rise ~150-350 uu; BP_ObjectiveConsole OnHackCompleteBurst -> SpawnSystemAtLocation; compiled, read back; doc bp-console-hack-complete (32a6b03c, 7cc67160).
 
 ## Relations
 - [[task-303-console-hack-reward]] — parent global task.
