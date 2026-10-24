@@ -3,7 +3,7 @@ id: task-306-01-chest-flatten
 description: "Flatten the chest faces after the sheet (3d): bonus chest mesh with flat faces, step 01."
 parent: task-306-chest-flat-faces
 kind: task
-status: in-progress
+status: done
 ---
 # Flatten the chest faces after the sheet
 
@@ -15,11 +15,11 @@ status: in-progress
 - done_when: faces flat in the renders and by the planarity numbers; tris within budget; owner shown the renders and gave his go; no Blender process left running; committed
 - editor_state: any
 - token_ceiling: 40000
-- model: open
-- tokens: open
-- runs: open
+- model: sonnet
+- tokens: input 78, cache write 115162, cache read 2592736, output 41752
+- runs: 1
 - milestone: M2
-- result: open
+- result: chest_flat.fbx 2946 tris (from 9336), 130 x 69.8 x 65.6 uu, bottom-centre origin, large faces planar (0.0 uu after refit), base colour re-baked 2048 px, renders front/side/back/q/top vs original and sheet in Art/Source/chest/clean/renders; script Tools/art/blender/chest_flatten.py. Owner go 2026-10-24 (flat ok; lid logo to a separate task; size kept; round handles and front line accepted).
 
 ## Relations
 - [[task-306-chest-flat-faces]] — parent global task.

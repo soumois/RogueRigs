@@ -3,7 +3,7 @@ id: task-306-02-chest-cut
 description: "Cut the chest into body, lid and latch (3d): bonus chest mesh with flat faces, step 02."
 parent: task-306-chest-flat-faces
 kind: task
-status: todo
+status: in-progress
 ---
 # Cut the chest into body, lid and latch
 

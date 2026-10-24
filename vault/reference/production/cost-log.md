@@ -659,6 +659,7 @@ kind: note
 | [[task-303-03-capture-hack-reward]] | opus | 1 | 0k | 77k | 1029k | 14k |
 | [[task-307-01-chest-one-upgrade]] | opus | 1 | 0k | 47k | 574k | 9k |
 | [[task-310-01-camera-shake]] | opus | 1 | 0k | 109k | 760k | 20k |
+| [[task-306-01-chest-flatten]] | sonnet | 1 | 0k | 115k | 2593k | 42k |
 
 ## Totals
 | Scope | Input | Cache write | Cache read | Output |
