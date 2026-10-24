@@ -3,7 +3,7 @@ id: task-307-01-chest-one-upgrade
 description: "Drop the chest direct XP grant (cpp): bonus chest gives one upgrade, not two, step 01."
 parent: task-307-chest-one-upgrade
 kind: task
-status: todo
+status: in-progress
 ---
 # Drop the chest direct XP grant
 
