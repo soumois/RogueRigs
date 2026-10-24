@@ -7,7 +7,7 @@ status: todo
 ---
 # MI_ChestLockLight on the chest latch
 
-- goal: Create MI_ChestLockLight, child of M_ConsoleLamp (LampColor red, BlinkRate 2, emissive as the console lamp), and assign it to the LockLight slot of the Latch component of BP_BonusChest; record it in bp-bonus-chest.
+- goal: Create MI_ChestLockLight, child of M_ConsoleLamp (LampColor red, BlinkRate 2, emissive as the console lamp), and assign it to the LockLight slot of the Latch component of BP_BonusChest; record it in bp-bonus-chest. M_Chest has no emissive input (task-306-03, bp-bonus-chest): the glow comes only from MI_ChestLockLight on the LockLight slot; M_Chest stays unchanged.
 - agent: bp
 - depends_on: task-306-03-bp-chest-import; task-301-04-bp-console-c2-import (M_ConsoleLamp)
 - inputs: agent-bp (vault/reference/agents/agent-bp.md), bp-mcp-lessons (vault/reference/agents/bp-mcp-lessons.md), bp-bonus-chest (vault/reference/tech/blueprints/world/bp-bonus-chest.md), bp-objective-console (vault/reference/tech/blueprints/world/bp-objective-console.md), color-code (vault/reference/gdd/art-audio/color-code.md); files: none

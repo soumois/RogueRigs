@@ -7,7 +7,7 @@ status: todo
 ---
 # MI_ChestInterior on the Interior slot
 
-- goal: Create MI_ChestInterior: emissive company yellow sampled from the chest logo plate of the Meshy texture (Q23), scalar InteriorGlow 0 by default (driven by task-309-01); assign it to the Interior slot of the chest body in BP_BonusChest; record the linear colour value in bp-bonus-chest and report it.
+- goal: Create MI_ChestInterior (M_Chest has no emissive input, bp-bonus-chest: use or create an emissive parent, M_Chest stays unchanged): emissive company yellow sampled from the chest logo plate of the Meshy texture (Q23), scalar InteriorGlow 0 by default (driven by task-309-01); assign it to the Interior slot of the chest body in BP_BonusChest; record the linear colour value in bp-bonus-chest and report it.
 - agent: bp
 - depends_on: task-306-03-bp-chest-import
 - inputs: agent-bp (vault/reference/agents/agent-bp.md), bp-mcp-lessons (vault/reference/agents/bp-mcp-lessons.md), bp-bonus-chest (vault/reference/tech/blueprints/world/bp-bonus-chest.md), color-code (vault/reference/gdd/art-audio/color-code.md), kessler-voss-logo (vault/reference/gdd/art-audio/kessler-voss-logo.md), art-prompts-chest (vault/reference/gdd/art-audio/art-prompts-chest.md); files: Art/Source/chest/clean/ (texture); Art/Source/chest/reference/egor-chest-juice.mp4 (technique F)

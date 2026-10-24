@@ -19,7 +19,7 @@ status: done
 - tokens: input 88, cache write 134044, cache read 3557947, output 62501
 - runs: 1
 - milestone: M2
-- result: chest_body.fbx 2110 tris (M_BonusChest 1809, Interior 301, cavity 22 cm deep), chest_lid.fbx 1326 tris (pivot on the hinge axis 0, 31.137, 41.25 cm from the body origin), chest_latch.fbx 428 tris (LockLight 9 faces, pivot on its top edge -0.475, -24.149, 51.488; child of the lid); assembled 130 x 69.8 x 65.6 uu; total 3864 tris (caps and cavity, over the 3000 of Q2, reported to the owner); script Tools/art/blender/chest_cut.py, report chest_cut.report.json, renders cut_closed_*, cut_latchout_*, cut_open_*.
+- result: chest_body.fbx 2110 tris (M_BonusChest 1809, Interior 301, cavity 22 cm deep), chest_lid.fbx 1326 tris (pivot on the hinge axis 0, 31.137, 41.25 cm from the body origin), chest_latch.fbx 428 tris (LockLight 9 faces, pivot on its top edge -0.475, -24.149, 51.488; child of the lid); assembled 130 x 69.8 x 65.6 uu; total 3864 tris (caps and cavity, over the 3000 of Q2, accepted by the owner 2026-10-24); lid origin on the body back top edge, not on the hinge pins, moved by task-309-07; script Tools/art/blender/chest_cut.py, report chest_cut.report.json, renders cut_closed_*, cut_latchout_*, cut_open_*.
 
 ## Relations
 - [[task-306-chest-flat-faces]] — parent global task.
