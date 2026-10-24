@@ -3,7 +3,7 @@ id: task-310-camera-shake
 description: "Global task: A shared C++ camera shake any actor can play on the player camera; first used by the bonus chest lid slam (task-309)."
 parent: tasks-to-do-index
 kind: task
-status: todo
+status: in-progress
 ---
 # Shared camera shake
 

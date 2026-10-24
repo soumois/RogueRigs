@@ -3,7 +3,7 @@ id: task-310-01-camera-shake
 description: "Shared camera shake in C++ (cpp): one call plays a light shake on the player camera, step 01."
 parent: task-310-camera-shake
 kind: task
-status: todo
+status: in-progress
 ---
 # Shared camera shake in C++
 
