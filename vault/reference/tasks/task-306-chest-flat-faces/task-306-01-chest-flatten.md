@@ -3,7 +3,7 @@ id: task-306-01-chest-flatten
 description: "Flatten the chest faces after the sheet (3d): bonus chest mesh with flat faces, step 01."
 parent: task-306-chest-flat-faces
 kind: task
-status: todo
+status: in-progress
 ---
 # Flatten the chest faces after the sheet
 

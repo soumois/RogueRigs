@@ -3,7 +3,7 @@ id: task-306-chest-flat-faces
 description: "Global task: Flatten the puffed Meshy chest faces after the sheet, cut it into body, lid and latch, and show it in BP_BonusChest."
 parent: tasks-to-do-index
 kind: task
-status: todo
+status: in-progress
 ---
 # Bonus chest mesh with flat faces
 
