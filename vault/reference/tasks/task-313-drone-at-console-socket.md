@@ -13,7 +13,7 @@ status: in-progress
 - gdd_check: drone and objective-console read (2026-10-24): rendering and position only, the hack rules are unchanged; no conflict, no open value. Decision 13 (owner 2026-10-24). Depends on task-311 (the socket position comes from the scaled mesh).
 - confirmed_by_owner: yes (2026-10-24, "ok" to the plan and every default; planned in one planning pass, each task run later by its own orchestrator)
 - milestone: M2
-- next_step: task-313-01-drone-socket-hover
+- next_step: task-313-02-capture-drone-socket
 - result: open
 
 ## Subtasks

@@ -3,7 +3,7 @@ id: task-313-01-drone-socket-hover
 description: "Drone hover point at the socket (cpp): drone at the console socket while hacking, step 01."
 parent: task-313-drone-at-console-socket
 kind: task
-status: in-progress
+status: done
 ---
 # Drone hover point at the socket
 
@@ -15,11 +15,11 @@ status: in-progress
 - done_when: build green; RogueRigs.Drone.* and RogueRigs.Console.* pass; docs updated; lint clean; committed
 - editor_state: closed
 - token_ceiling: 30000
-- model: open
-- tokens: open
-- runs: open
+- model: opus
+- tokens: input 70, cache write 97261, cache read 2070996, output 29848
+- runs: 1
 - milestone: M2
-- result: open
+- result: DataSocketOffset (12.5,-30,46) uu in SM_ConsoleBase space through the Mesh transform (scale 1.361, about (17,-41,63) on BP_ObjectiveConsole), facing -Y, standoff 70 uu, +20 uu height, all provisional; console only (bHackAtDataSocket false on ARRBonusChest, chest hover unchanged); blocked point via ResolveClearHoverPoint; build green; Console+Dig+Drone 22/22 incl. new Console.DroneAtDataSocket; sys-drone and sys-objectives-console-chest updated; offset estimated, not measured on the mesh
 
 ## Relations
 - [[task-313-drone-at-console-socket]] — parent global task.

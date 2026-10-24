@@ -3,7 +3,7 @@ id: task-313-02-capture-drone-socket
 description: "Capture the drone at the socket (cpp): drone at the console socket while hacking, step 02."
 parent: task-313-drone-at-console-socket
 kind: task
-status: todo
+status: in-progress
 ---
 # Capture the drone at the socket
 
