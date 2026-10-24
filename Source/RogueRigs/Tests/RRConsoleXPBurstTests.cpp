@@ -1,4 +1,4 @@
-// Rogue Rigs - automation test of the console hack XP burst (RogueRigs.Console.HackXPBurst): 3 big chips of 8 XP on console completion, none on the bonus chest.
+// Rogue Rigs - automation test of the console hack XP burst (RogueRigs.Console.HackXPBurst): 3 big chips of 8 XP on console completion, none on the bonus chest, whose reward queues exactly one choice.
 
 #include "CoreMinimal.h"
 #include "Misc/AutomationTest.h"
@@ -11,6 +11,8 @@
 #include "Objectives/RRRunFlowSubsystem.h"
 #include "Pickups/RRPickup.h"
 #include "Player/RRMiner.h"
+#include "Progression/RRLevelUpComponent.h"
+#include "Progression/RRProgressionComponent.h"
 #include "Tests/RRTestHarness.h"
 #include "Weapons/RRAutoFireComponent.h"
 #include "Weapons/RRWeapon.h"
@@ -118,7 +120,8 @@ bool FRRConsoleHackXPBurstTest::RunTest(const FString& Parameters)
 		TestNearlyEqual(TEXT("yaws 120 degrees apart"), Next - Yaws[Index], 120.f, 0.5f);
 	}
 
-	// Bonus chest: its own reward only, no extra XP chip.
+	// Bonus chest: its own reward only, no extra XP chip; with the XP bar above half it queues exactly one choice and no level-up
+	// (owner 2026-10-23: one upgrade, not two).
 	ARRBonusChest* Chest = TestWorld.Spawn<ARRBonusChest>(ARRBonusChest::StaticClass(), CellCenter);
 	if (!TestNotNull(TEXT("chest spawned"), Chest))
 	{
@@ -126,12 +129,29 @@ bool FRRConsoleHackXPBurstTest::RunTest(const FString& Parameters)
 	}
 	TestEqual(TEXT("chest chip count 0"), Chest->GetXPBurstChipCount(), 0);
 	const int32 XPBeforeChest = GetLiveXPPickups(World).Num();
+	URRProgressionComponent* Progression = Miner->GetProgression();
+	URRLevelUpComponent* LevelUp = Miner->GetLevelUp();
+	if (!TestNotNull(TEXT("miner progression"), Progression) || !TestNotNull(TEXT("miner level-up"), LevelUp))
+	{
+		return false;
+	}
+	Progression->RestoreProgress(Progression->GetLevel(), 0.75f * Progression->GetXPToNextLevel());
+	const int32 LevelBeforeChest = Progression->GetLevel();
+	const float BarBeforeChest = Progression->GetXP();
+	const int32 ChoicesBeforeChest = LevelUp->GetPendingChoices();
 	Chest->InitializeConsole(Grid, Miner, ConsoleCell);
 	Chest->ForceComplete();
 	TickFrames(TestWorld, 6);
 	TestTrue(TEXT("chest reward granted"), Chest->WasRewardGranted());
 	TestEqual(TEXT("chest requested no chip"), Chest->GetXPBurstChipsSpawned(), 0);
 	TestEqual(TEXT("no extra XP pickup after the chest"), GetLiveXPPickups(World).Num(), XPBeforeChest);
+	TestEqual(TEXT("chest XP fraction default 0"), Chest->GetXPNeedFraction(), 0.f);
+	TestEqual(TEXT("chest gives no direct XP"), Chest->GetRewardXP(), 0.f);
+	TestEqual(TEXT("no level gained from the chest"), Progression->GetLevel(), LevelBeforeChest);
+	TestEqual(TEXT("XP bar unchanged by the chest"), Progression->GetXP(), BarBeforeChest);
+	TestEqual(TEXT("chest queues exactly one choice"), LevelUp->GetPendingChoices() - ChoicesBeforeChest, 1);
+	AddInfo(FString::Printf(TEXT("chest at bar %.1f / %.1f: pending choices %d -> %d, level %d"), BarBeforeChest, Progression->GetXPToNextLevel(),
+		ChoicesBeforeChest, LevelUp->GetPendingChoices(), Progression->GetLevel()));
 	return true;
 }
 

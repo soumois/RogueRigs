@@ -1,4 +1,4 @@
-// Rogue Rigs - bonus chest objective: an optional console-like hack target that rewards XP, ore and a lucky upgrade choice.
+// Rogue Rigs - bonus chest objective: an optional console-like hack target that rewards ore and a lucky upgrade choice (direct XP off by default).
 
 #include "Objectives/RRBonusChest.h"
 
@@ -41,7 +41,10 @@ void ARRBonusChest::GrantReward()
 	if (URRProgressionComponent* Progression = bMinerAlive ? Miner->GetProgression() : nullptr)
 	{
 		RewardXP = XPNeedFraction * Progression->GetXPToNextLevel();
-		Progression->AddXP(RewardXP);
+		if (RewardXP > 0.f)
+		{
+			Progression->AddXP(RewardXP);
+		}
 	}
 	const int32 OreChunks = PopOreChunks();
 	URRLevelUpComponent* LevelUp = bMinerAlive ? Miner->GetLevelUp() : nullptr;

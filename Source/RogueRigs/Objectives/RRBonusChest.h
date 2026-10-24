@@ -1,4 +1,4 @@
-// Rogue Rigs - bonus chest objective: an optional console-like hack target that rewards XP, ore and a lucky upgrade choice.
+// Rogue Rigs - bonus chest objective: an optional console-like hack target that rewards ore and a lucky upgrade choice (direct XP off by default).
 
 #pragma once
 
@@ -15,7 +15,7 @@ class ARRPickup;
  * (miner alive within ZoneRadiusCells -> ARRDrone::StartHack, progress dt / HackDuration, DrainPerSecond while out), but marks no
  * rock (MarkedCellTypes empty), so it starts Idle. When the hack completes (CompleteHack, or ForceComplete
  * cheat) it grants its reward once: XP = XPNeedFraction x the miner's current level need (URRProgressionComponent::AddXP, so the
- * XPGain stat applies like any XP), OreChunkCount ore pickups popped around it (OrePickupClass, none = the grid's ore pickup),
+ * XPGain stat applies like any XP; skipped when the amount is 0, the default since owner 2026-10-23), OreChunkCount ore pickups popped around it (OrePickupClass, none = the grid's ore pickup),
  * and one upgrade choice drawn with the miner's luck + BonusLuck for that draw only (URRLevelUpComponent::QueueBonusChoice).
  * Blueprint events: the console ones (OnHackProgress, OnHackStateChanged) plus OnRewardGranted. Not abstract: works headless.
  */
@@ -62,9 +62,13 @@ protected:
 	UFUNCTION(BlueprintImplementableEvent, Category = "Bonus Chest")
 	void OnRewardGranted(float XP, int32 OreChunks, bool bUpgradeChoiceQueued);
 
-	/** Fraction of the miner's current level XP need given as XP (objective-bonus-chest: 50 %, provisional). */
+	/**
+	 * Fraction of the miner's current level XP need given as XP (objective-bonus-chest). Default 0: no direct XP, AddXP skipped.
+	 * History: was 0.5 (50 % of the level need); owner 2026-10-23: one upgrade, not two (the XP could trigger a level-up on top of
+	 * the bonus choice). Kept as a tunable.
+	 */
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Bonus Chest", meta = (ClampMin = 0))
-	float XPNeedFraction = 0.5f;
+	float XPNeedFraction = 0.f;
 
 	/** Ore pickups popped when the hack completes (objective-bonus-chest: 5, provisional). */
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Bonus Chest", meta = (ClampMin = 0))
