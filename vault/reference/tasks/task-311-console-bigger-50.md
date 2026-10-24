@@ -13,7 +13,7 @@ status: in-progress
 - gdd_check: objective-console read (2026-10-24): landing clearance 2 x 2 cells (provisional, owner after handover-2026-10-06) -> 3 x 3 (owner 2026-10-24, decision 11, provisional); zone radius 7 cells unchanged; no conflict, no open value. The bonus chest inherits ARRConsole: its footprint stays 2 x 2 (tasks 306-310 belong to another session, not touched).
 - confirmed_by_owner: yes (2026-10-24, "ok" to the plan and every default; planned in one planning pass, each task run later by its own orchestrator)
 - milestone: M2
-- next_step: task-311-01-console-footprint-3x3
+- next_step: task-311-02-bp-console-scale
 - result: open
 
 ## Subtasks

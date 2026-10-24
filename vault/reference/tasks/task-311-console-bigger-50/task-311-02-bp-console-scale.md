@@ -3,7 +3,7 @@ id: task-311-02-bp-console-scale
 description: "BP_ObjectiveConsole scale 1.361 (bp): console 50 % bigger, step 02."
 parent: task-311-console-bigger-50
 kind: task
-status: todo
+status: in-progress
 ---
 # BP_ObjectiveConsole scale 1.361
 

@@ -3,7 +3,7 @@ id: task-311-01-console-footprint-3x3
 description: "Console footprint 3 x 3 (cpp): console 50 % bigger, step 01."
 parent: task-311-console-bigger-50
 kind: task
-status: in-progress
+status: done
 ---
 # Console footprint 3 x 3
 
@@ -15,11 +15,11 @@ status: in-progress
 - done_when: build green; RogueRigs.Console.*, RogueRigs.RunFlow.*, the bonus chest tests (if present) and Integration.ConsoleExtractionWin pass; the console footprint is 3 x 3 and the chest 2 x 2; docs updated; lint clean; committed
 - editor_state: closed
 - token_ceiling: 30000
-- model: open
-- tokens: open
-- runs: open
+- model: opus
+- tokens: input 42, cache write 38423, cache read 556193, output 8911
+- runs: 1
 - milestone: M2
-- result: open
+- result: ARRConsole FootprintCells 2 x 2 -> 3 x 3 (RRConsole.h, commit 5f7a8010): actor and zone centre at the anchor cell centre; ARRBonusChest sets 2 x 2 explicitly (one constructor line). Tests fixed: RunFlow footprint count and marking offset from the footprint centre (RRRunFlowTests.cpp), FineConsoleShuttlePlacement 3 x 3 (RRFineGridIntegrationTests.cpp). GDD objective-console and sys-objectives-console-chest updated (commit f7875a91). Build exit 0; 22/22 tests pass (Console.*, RunFlow.*, HUD.*, Integration.FineConsoleShuttlePlacement, Integration.ConsoleExtractionWin).
 
 ## Relations
 - [[task-311-console-bigger-50]] — parent global task.
