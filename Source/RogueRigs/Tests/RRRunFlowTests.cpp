@@ -13,6 +13,7 @@
 #include "FlowField/RREnemyMovementComponent.h"
 #include "FlowField/RRFlowFieldSubsystem.h"
 #include "GAS/RRGameplayTags.h"
+#include "Objectives/RRBonusChest.h"
 #include "Objectives/RRConsole.h"
 #include "Objectives/RRLandingFootprint.h"
 #include "Objectives/RRRunFlowSubsystem.h"
@@ -467,6 +468,94 @@ bool FRRConsoleHackTest::RunTest(const FString& Parameters)
 
 	const TArray<ERRConsoleState> ExpectedStates = { ERRConsoleState::Locked, ERRConsoleState::Hacking, ERRConsoleState::Idle, ERRConsoleState::Hacking, ERRConsoleState::Complete };
 	TestTrue(TEXT("state sequence Locked, Hacking, Idle, Hacking, Complete"), Recorder->GetConsoleStates() == ExpectedStates);
+	return true;
+}
+
+IMPLEMENT_SIMPLE_AUTOMATION_TEST(FRRConsoleDroneAtDataSocketTest, "RogueRigs.Console.DroneAtDataSocket",
+	EAutomationTestFlags::EditorContext | EAutomationTestFlags::EngineFilter)
+
+bool FRRConsoleDroneAtDataSocketTest::RunTest(const FString& Parameters)
+{
+	using namespace RRTestHarness;
+	using namespace RRRunFlowTests;
+
+	// Console (task-313-01, owner decision 13): the drone hovers HackSocketStandoff (70 uu) in front of the data socket, along
+	// its facing (-Y in Mesh space), HackSocketHeightOffset (20 uu) above it. The bare C++ console has Mesh scale 1, so the
+	// socket is the actor location + DataSocketOffset (12.5, -30, 46).
+	{
+		FTestWorld TestWorld(TEXT("RRConsoleDroneSocketWorld"));
+		FRunSetup Setup;
+		if (!SetUpRun(*this, TestWorld, Setup))
+		{
+			return false;
+		}
+		Setup.RunFlow->SetRunFlowEnabled(false);
+		ARRArenaGrid* Grid = Setup.Grid;
+		ARRDrone* Drone = Setup.Miner->GetDrone();
+		ARRConsole* Console = TestWorld.Spawn<ARRConsole>(ARRConsole::StaticClass(), Grid->GetCellCenter(RunHackConsoleCell.X, RunHackConsoleCell.Y));
+		if (!TestNotNull(TEXT("drone"), Drone) || !TestNotNull(TEXT("console spawned"), Console))
+		{
+			return false;
+		}
+		Console->InitializeConsole(Grid, Setup.Miner, RunHackConsoleCell);
+		for (const FIntPoint& Cell : Console->GetMarkedRocks())
+		{
+			Grid->DestroyCell(Cell, ERRTerrainDamageSource::Drone);
+		}
+		FVector Socket;
+		FVector Facing;
+		TestTrue(TEXT("console has a data socket"), Console->GetHackDataSocket(Socket, Facing));
+		TestTrue(TEXT("socket = location + offset at scale 1"), Socket.Equals(Console->GetActorLocation() + FVector(12.5, -30.0, 46.0), 0.01));
+		TestTrue(TEXT("socket faces -Y"), Facing.Equals(FVector(0.0, -1.0, 0.0), 0.001));
+		for (int32 Frame = 0; Frame < 180; ++Frame)
+		{
+			TestWorld.Tick();
+		}
+		TestEqual(TEXT("drone in Hack"), Drone->GetState(), ERRDroneState::Hack);
+		const FVector Expected = Socket + Facing * 70.0 + FVector(0.0, 0.0, 20.0);
+		const FVector DroneLocation = Drone->GetActorLocation();
+		AddInfo(FString::Printf(TEXT("drone %s, expected hover %s"), *DroneLocation.ToString(), *Expected.ToString()));
+		TestTrue(TEXT("drone in front of the socket (2D, 5 uu)"), FVector::Dist2D(DroneLocation, Expected) < 5.0);
+		TestTrue(TEXT("drone at the socket height (5 uu)"), FMath::Abs(DroneLocation.Z - Expected.Z) < 5.0);
+	}
+
+	// Bonus chest: no data socket, the default hover HackHoverDistance (100 uu) from the chest toward the miner is unchanged.
+	{
+		FTestWorld TestWorld(TEXT("RRChestDroneSocketWorld"));
+		FRunSetup Setup;
+		if (!SetUpRun(*this, TestWorld, Setup))
+		{
+			return false;
+		}
+		Setup.RunFlow->SetRunFlowEnabled(false);
+		ARRArenaGrid* Grid = Setup.Grid;
+		ARRMiner* Miner = Setup.Miner;
+		ARRDrone* Drone = Miner->GetDrone();
+		const FVector ChestLocation = Grid->GetCellCenter(RunHackConsoleCell.X, RunHackConsoleCell.Y) + FVector(0.5 * Grid->GetCellSize(), 0.5 * Grid->GetCellSize(), 0.0);
+		ARRBonusChest* Chest = TestWorld.Spawn<ARRBonusChest>(ARRBonusChest::StaticClass(), ChestLocation);
+		if (!TestNotNull(TEXT("drone"), Drone) || !TestNotNull(TEXT("chest spawned"), Chest))
+		{
+			return false;
+		}
+		Chest->InitializeConsole(Grid, Miner, RunHackConsoleCell);
+		FVector Socket;
+		FVector Facing;
+		TestFalse(TEXT("chest has no data socket"), Chest->GetHackDataSocket(Socket, Facing));
+		for (int32 Frame = 0; Frame < 180; ++Frame)
+		{
+			TestWorld.Tick();
+		}
+		if (!TestEqual(TEXT("drone in Hack on the chest"), Drone->GetState(), ERRDroneState::Hack))
+		{
+			return false;
+		}
+		const double Distance = FVector::Dist2D(Drone->GetActorLocation(), Chest->GetActorLocation());
+		const FVector ToDrone = (Drone->GetActorLocation() - Chest->GetActorLocation()).GetSafeNormal2D();
+		const FVector ToMiner = (Miner->GetActorLocation() - Chest->GetActorLocation()).GetSafeNormal2D();
+		AddInfo(FString::Printf(TEXT("chest hover %.1f uu from the chest, dot toward the miner %.3f"), Distance, ToDrone | ToMiner));
+		TestTrue(TEXT("chest hover 100 uu from the chest (5 uu)"), FMath::Abs(Distance - 100.0) < 5.0);
+		TestTrue(TEXT("chest hover toward the miner"), (ToDrone | ToMiner) > 0.99);
+	}
 	return true;
 }
 

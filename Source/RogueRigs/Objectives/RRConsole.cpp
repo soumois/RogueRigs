@@ -8,6 +8,7 @@
 #include "Objectives/RRLandingFootprint.h"
 #include "Engine/CollisionProfile.h"
 #include "Materials/MaterialInstanceDynamic.h"
+#include "Objectives/RRBonusChest.h"
 #include "Player/RRMiner.h"
 #include "Telegraph/RRGroundTelegraphComponent.h"
 #include "RogueRigs.h"
@@ -36,6 +37,28 @@ ARRConsole::ARRConsole()
 
 	GroundTelegraph = CreateDefaultSubobject<URRGroundTelegraphComponent>(TEXT("GroundTelegraph"));
 	GroundTelegraph->SetupAttachment(ConsoleRoot);
+
+	// The data socket hover is console only (task-313-01): the bonus chest keeps its default hack hover.
+	bHackAtDataSocket = !IsA<ARRBonusChest>();
+}
+
+bool ARRConsole::GetHackDataSocket(FVector& OutLocation, FVector& OutFacing) const
+{
+	OutLocation = FVector::ZeroVector;
+	OutFacing = FVector::ZeroVector;
+	if (!bHackAtDataSocket || !Mesh)
+	{
+		return false;
+	}
+	const FTransform& MeshTransform = Mesh->GetComponentTransform();
+	const FVector Facing = MeshTransform.TransformVectorNoScale(DataSocketFacing).GetSafeNormal2D();
+	if (Facing.IsZero())
+	{
+		return false;
+	}
+	OutLocation = MeshTransform.TransformPosition(DataSocketOffset);
+	OutFacing = Facing;
+	return true;
 }
 
 void ARRConsole::BeginPlay()

@@ -83,7 +83,10 @@ DECLARE_DYNAMIC_MULTICAST_DELEGATE_TwoParams(FRROnDigBlockStoppedSignature, FInt
  * Hack (StartHack, called every tick by the objective while the miner is in its zone): the drone stops any dig, hovers
  * HackHoverDistance from the target toward the miner (same HoverHeight; pulled back toward the miner when that point is
  * not clear, task-248-01) and shows LaserMesh from itself to the target's
- * location + HackLinkOffset. One target at a time; RequestArcDig is refused while hacking. StopHack (or the target or miner
+ * location + HackLinkOffset. A console with a data socket (ARRConsole::GetHackDataSocket, task-313-01, owner decision 13) is
+ * hacked from its front instead: the drone hovers HackSocketStandoff in front of the socket along its facing, at the socket
+ * height + HackSocketHeightOffset, looks at it and aims the link at it (same clear-point rule toward the miner); the bonus
+ * chest has no socket and keeps the default hover. One target at a time; RequestArcDig is refused while hacking. StopHack (or the target or miner
  * gone) returns it to Orbit. The objective owns the hack progress.
  * Parts (task-253-01, owner 2026-10-20, provisional, visual only): the root Mesh is the base (body); its yaw is the actor yaw,
  * which turns toward the dig or hack target at BaseYawTurnRate at most (never instantly). LaserPivot (the laser arm, hanging
@@ -354,10 +357,16 @@ protected:
 	void UpdateDigLaser();
 
 	/**
-	 * Point the laser arm aims at (task-253-01): GetDigImpactPoint in Dig (false with an empty arc), the hack target's location +
-	 * HackLinkOffset in Hack; false in Orbit (the arm rests straight down).
+	 * Point the laser arm aims at (task-253-01): GetDigImpactPoint in Dig (false with an empty arc), GetHackLinkPoint in Hack;
+	 * false in Orbit (the arm rests straight down).
 	 */
 	bool GetLaserAimPoint(FVector& OutPoint) const;
+
+	/** Data socket of the hack target (task-313-01): ARRConsole::GetHackDataSocket; false when not hacking or the target has none (bonus chest). */
+	bool GetHackTargetSocket(FVector& OutLocation, FVector& OutFacing) const;
+
+	/** Point the hack link aims at: the target's data socket when it has one (task-313-01), else its location + HackLinkOffset. Requires a valid HackTarget. */
+	FVector GetHackLinkPoint() const;
 
 	/**
 	 * Pitch of LaserPivot, in degrees (0 = straight down, positive = toward the base's forward +X), that puts the line from the pivot
@@ -804,6 +813,17 @@ protected:
 	/** Offset from the hack target's location to the point the link beam aims at, in uu (provisional). */
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Drone|Hack")
 	FVector HackLinkOffset = FVector(0.f, 0.f, 50.f);
+
+	/** Horizontal distance of the hack hover point in front of a console data socket, along the socket facing, in uu (task-313-01, provisional). */
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Drone|Hack", meta = (ClampMin = 0, Units = "cm"))
+	float HackSocketStandoff = 70.f;
+
+	/**
+	 * Height of the drone centre above a console data socket while hacking, in uu (task-313-01, provisional): about the drop of
+	 * the laser emitter tip under the body (LaserEmitterLocal Z -19), so the link leaves the arm at the socket height.
+	 */
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Drone|Hack", meta = (Units = "cm"))
+	float HackSocketHeightOffset = 20.f;
 
 	/** Miner the drone follows. Set by SetOwnerMiner. */
 	UPROPERTY(VisibleInstanceOnly, BlueprintReadOnly, Category = "Drone")

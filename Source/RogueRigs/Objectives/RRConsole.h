@@ -83,6 +83,9 @@ DECLARE_DYNAMIC_MULTICAST_DELEGATE_ThreeParams(FRROnConsoleMarkedRocksChangedSig
  * State visuals (bDriveStateVisuals, task-302-01): on every state change the console writes the state FRRConsoleStateVisual
  * on dynamic instances of the lamp slots (Mesh OtherLampSlotName, AntennaHead AntennaLampSlotName) and the screen slot, and
  * turns the Blueprint component AntennaHeadName about its local Z while the state HeadYawSpeed is above 0.
+ * Data socket (bHackAtDataSocket, task-313-01, owner decision 13 2026-10-24): GetHackDataSocket gives the round data socket on
+ * the front console block (DataSocketOffset and DataSocketFacing in Mesh space, so it follows the Mesh scale); the drone
+ * hovers in front of it and aims its hack link at it. Off for ARRBonusChest (the chest keeps the default drone hover).
  */
 UCLASS(Blueprintable)
 class ROGUERIGS_API ARRConsole : public AActor
@@ -178,6 +181,14 @@ public:
 	/** Progress lost per second while the miner is out of the zone (fraction of the gauge). */
 	UFUNCTION(BlueprintPure, Category = "Console")
 	float GetDrainPerSecond() const { return DrainPerSecond; }
+
+	/**
+	 * World location of the round data socket the drone links to while hacking (task-313-01) and its outward facing (unit,
+	 * horizontal): DataSocketOffset and DataSocketFacing transformed by Mesh (location, rotation and scale). False when
+	 * bHackAtDataSocket is off (ARRBonusChest) or the facing has no horizontal part: the drone keeps its default hack hover.
+	 */
+	UFUNCTION(BlueprintPure, Category = "Console|Hack")
+	bool GetHackDataSocket(FVector& OutLocation, FVector& OutFacing) const;
 
 	//~ Begin cheats (non-shipping: these entry points do nothing in shipping builds)
 	/** Cheat and tests: completes the hack at once (CompleteHack). Does nothing in shipping builds. */
@@ -295,6 +306,26 @@ protected:
 	/** Gauge fraction lost per second while the miner is out of the zone (objective-console: 5 %/s = 0.05, provisional). */
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Console", meta = (ClampMin = 0))
 	float DrainPerSecond = 0.05f;
+
+	/**
+	 * True: the drone hovers in front of the data socket and links to it while hacking (task-313-01, owner decision 13).
+	 * Set in the ARRConsole constructor: true for the console, false for ARRBonusChest and its subclasses (the chest keeps
+	 * the default drone hover toward the miner).
+	 */
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Console|Hack")
+	bool bHackAtDataSocket = true;
+
+	/**
+	 * Centre of the round data socket in Mesh space, in uu at mesh scale 1 (SM_ConsoleBase frame: origin at the footprint
+	 * bottom centre, front toward -Y): below the screen of the front block, read from the console_c2 cut report and the front
+	 * render (task-313-01, provisional). Scaled by the Mesh scale (1.361 on BP_ObjectiveConsole: about (17, -41, 63) uu).
+	 */
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Console|Hack")
+	FVector DataSocketOffset = FVector(12.5f, -30.f, 46.f);
+
+	/** Outward direction of the data socket in Mesh space (the front of SM_ConsoleBase, -Y); only its horizontal part is used. */
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Console|Hack")
+	FVector DataSocketFacing = FVector(0.f, -1.f, 0.f);
 
 	/**
 	 * True: the console drives its lamps, screen and antenna head from its state (task-302-01). ARRBonusChest sets it false

@@ -669,10 +669,29 @@ bool ARRDrone::GetLaserAimPoint(FVector& OutPoint) const
 	}
 	if (State == ERRDroneState::Hack && IsValid(HackTarget))
 	{
-		OutPoint = HackTarget->GetActorLocation() + HackLinkOffset;
+		OutPoint = GetHackLinkPoint();
 		return true;
 	}
 	return false;
+}
+
+bool ARRDrone::GetHackTargetSocket(FVector& OutLocation, FVector& OutFacing) const
+{
+	const ARRConsole* Console = State == ERRDroneState::Hack ? Cast<ARRConsole>(HackTarget) : nullptr;
+	if (IsValid(Console))
+	{
+		return Console->GetHackDataSocket(OutLocation, OutFacing);
+	}
+	OutLocation = FVector::ZeroVector;
+	OutFacing = FVector::ZeroVector;
+	return false;
+}
+
+FVector ARRDrone::GetHackLinkPoint() const
+{
+	FVector Socket;
+	FVector Facing;
+	return GetHackTargetSocket(Socket, Facing) ? Socket : HackTarget->GetActorLocation() + HackLinkOffset;
 }
 
 float ARRDrone::ComputeLaserPitchToward(const FVector& Point) const
@@ -872,7 +891,10 @@ FVector ARRDrone::GetLookTarget() const
 	}
 	else if (State == ERRDroneState::Hack && IsValid(HackTarget))
 	{
-		return HackTarget->GetActorLocation();
+		// Faces the data socket when the target has one (task-313-01), else the target.
+		FVector Socket;
+		FVector Facing;
+		return GetHackTargetSocket(Socket, Facing) ? Socket : HackTarget->GetActorLocation();
 	}
 	else if (IdleGesture != ERRDroneIdleGesture::Nod)
 	{
@@ -1340,16 +1362,28 @@ void ARRDrone::TickHack(float DeltaSeconds)
 
 	const FVector MinerLocation = OwnerMiner->GetActorLocation();
 	const double FloorZ = MinerLocation.Z - OwnerMiner->GetCapsuleComponent()->GetScaledCapsuleHalfHeight();
-	const FVector TargetLocation = HackTarget->GetActorLocation();
-	const FVector TowardMiner = (MinerLocation - TargetLocation).GetSafeNormal2D();
-	const FVector HoverPoint = TargetLocation + TowardMiner * HackHoverDistance;
+	FVector HoverPoint;
+	FVector Socket;
+	FVector SocketFacing;
+	if (GetHackTargetSocket(Socket, SocketFacing))
+	{
+		// Console data socket (task-313-01, owner decision 13): in front of it along its facing, at its height.
+		HoverPoint = Socket + SocketFacing * HackSocketStandoff + FVector(0.0, 0.0, HackSocketHeightOffset);
+	}
+	else
+	{
+		const FVector TargetLocation = HackTarget->GetActorLocation();
+		const FVector TowardMiner = (MinerLocation - TargetLocation).GetSafeNormal2D();
+		HoverPoint = TargetLocation + TowardMiner * HackHoverDistance;
+		HoverPoint.Z = FloorZ + HoverHeight;
+	}
 
 	// The hover point must be clear of rock (task-248-01), else it is pulled back toward the miner.
 	const ARRArenaGrid* Grid = GetTerrainGrid();
-	const FVector ClearHover = ResolveClearHoverPoint(Grid, FVector(HoverPoint.X, HoverPoint.Y, FloorZ + HoverHeight));
+	const FVector ClearHover = ResolveClearHoverPoint(Grid, HoverPoint);
 	const FVector From = GetActorLocation();
 	SetActorLocation(ConstrainToClearCells(Grid, From, FMath::VInterpTo(From, ClearHover, DeltaSeconds, FollowInterpSpeed)));
-	UpdateLaser(LaserMesh, GetLaserEmitterLocation(), TargetLocation + HackLinkOffset);
+	UpdateLaser(LaserMesh, GetLaserEmitterLocation(), GetHackLinkPoint());
 }
 
 void ARRDrone::EndHack()
