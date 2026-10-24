@@ -121,7 +121,7 @@ public:
 	const FRRConsoleStateVisual& GetStateVisual(ERRConsoleState State) const;
 
 	/** Antenna head found by name at the first visual refresh (null when the Blueprint has none, or before it ran). */
-	UStaticMeshComponent* GetAntennaHead() const { return AntennaHead; }
+	UStaticMeshComponent* GetAntennaHead() const { return AntennaHeadComp; }
 
 	/** Current state. */
 	UFUNCTION(BlueprintPure, Category = "Console")
@@ -340,7 +340,7 @@ protected:
 
 	/** Turning head found by AntennaHeadName (Blueprint component). */
 	UPROPERTY(Transient)
-	TObjectPtr<UStaticMeshComponent> AntennaHead;
+	TObjectPtr<UStaticMeshComponent> AntennaHeadComp;
 
 	/** Dynamic instance of the antenna lamp slot (blinks). */
 	UPROPERTY(Transient)

@@ -72,7 +72,7 @@ void ARRConsole::SetupStateVisuals()
 	{
 		if (Component && Component->GetFName() == AntennaHeadName)
 		{
-			AntennaHead = Component;
+			AntennaHeadComp = Component;
 			break;
 		}
 	}
@@ -89,9 +89,9 @@ void ARRConsole::SetupStateVisuals()
 	};
 	OtherLampMID = MakeMID(Mesh, OtherLampSlotName);
 	ScreenMID = MakeMID(Mesh, ScreenSlotName);
-	AntennaLampMID = MakeMID(AntennaHead, AntennaLampSlotName);
+	AntennaLampMID = MakeMID(AntennaHeadComp, AntennaLampSlotName);
 	UE_LOG(LogRogueRigs, Verbose, TEXT("%s: state visuals head %s, antenna lamp %s, other lamp %s, screen %s."), *GetName(),
-		AntennaHead ? TEXT("yes") : TEXT("no"), AntennaLampMID ? TEXT("yes") : TEXT("no"), OtherLampMID ? TEXT("yes") : TEXT("no"), ScreenMID ? TEXT("yes") : TEXT("no"));
+		AntennaHeadComp ? TEXT("yes") : TEXT("no"), AntennaLampMID ? TEXT("yes") : TEXT("no"), OtherLampMID ? TEXT("yes") : TEXT("no"), ScreenMID ? TEXT("yes") : TEXT("no"));
 }
 
 void ARRConsole::ApplyStateVisuals()
@@ -161,12 +161,12 @@ void ARRConsole::Tick(float DeltaSeconds)
 {
 	Super::Tick(DeltaSeconds);
 
-	if (AntennaHead)
+	if (AntennaHeadComp)
 	{
 		const float YawSpeed = GetStateVisual(ConsoleState).HeadYawSpeed;
 		if (YawSpeed > 0.f)
 		{
-			AntennaHead->AddLocalRotation(FRotator(0.f, YawSpeed * DeltaSeconds, 0.f));
+			AntennaHeadComp->AddLocalRotation(FRotator(0.f, YawSpeed * DeltaSeconds, 0.f));
 		}
 	}
 
