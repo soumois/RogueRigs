@@ -270,6 +270,7 @@ sys-actor-pool  reference/tech/systems/world/sys-actor-pool.md
 sys-auto-fire  reference/tech/systems/combat/sys-auto-fire.md
 sys-automation-tests  reference/tech/systems/tools/sys-automation-tests.md
 sys-blob-shadow  reference/tech/systems/world/sys-blob-shadow.md
+sys-camera-shake  reference/tech/systems/core/sys-camera-shake.md
 sys-cheats  reference/tech/systems/core/sys-cheats.md
 sys-damage  reference/tech/systems/core/sys-damage.md
 sys-damage-numbers  reference/tech/systems/combat/sys-damage-numbers.md

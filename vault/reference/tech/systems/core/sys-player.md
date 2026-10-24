@@ -37,4 +37,5 @@ kind: doc
 - [[sys-hud]] — the HUD widget the controller creates, fed by the miner health and the game over.
 - [[sys-progression]] — the XP and level component the miner owns.
 - [[sys-turret]] — the turret launcher the place-turret input drives.
+- [[sys-camera-shake]] — the shared shake played on this camera through URRCameraShakeLibrary::PlayCameraShake.
 - [[mpp-player-light-mask]] — the post-process light mask whose collection the LightMask component writes each tick.
