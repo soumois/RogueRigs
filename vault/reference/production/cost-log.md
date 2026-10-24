@@ -646,6 +646,7 @@ kind: note
 | [[task-301-04-bp-console-c2-import]] | sonnet | 1 | 0k | 94k | 2694k | 34k |
 | [[task-301-05-capture-console-c2]] | opus | 1 | 0k | 57k | 748k | 9k |
 | [[task-302-01-console-state-drive]] | sonnet+opus | 3 | 0k | 230k | 2818k | 41k |
+| [[task-302-02-capture-console-states]] | opus | 3 | 0k | 282k | 5708k | 62k |
 
 ## Totals
 | Scope | Input | Cache write | Cache read | Output |

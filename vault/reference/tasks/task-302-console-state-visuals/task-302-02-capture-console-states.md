@@ -3,7 +3,7 @@ id: task-302-02-capture-console-states
 description: "Capture the console states in game (cpp): console state visuals, step 02."
 parent: task-302-console-state-visuals
 kind: task
-status: in-progress
+status: done
 ---
 # Capture the console states in game
 
@@ -15,11 +15,11 @@ status: in-progress
 - done_when: each state seen with the right colour and screen; sheet sent to the owner; nothing else changed
 - editor_state: closed
 - token_ceiling: 30000
-- model: open
-- tokens: open
-- runs: open
+- model: opus
+- tokens: input 192, cache write 281603, cache read 5707939, output 61894
+- runs: 3
 - milestone: M2
-- result: run 2 (after 4dcc4e84, Saved/ConsoleStates/after-fix/contact_sheet_console_states_after_fix.png): head turns in Idle/Hacking, still in Locked/Complete, Complete steady green, screen black/black/green/green, no BP compile error; FAIL antenna lamp never goes dark (no 2 Hz blink) in Locked/Idle/Hacking; sent back to 01 for diagnosis
+- result: Saved/ConsoleStates/blink-fix/contact_sheet_antenna_blink.png (+ after-fix/contact_sheet_console_states_after_fix.png): Locked red, Idle orange, Hacking green, Complete steady green; antenna lamp blinks lit/dark in Locked, Idle, Hacking, base lamps steady; head turns in Idle/Hacking, still in Locked/Complete; screen black/black/green/green; no BP errors; inside the light hack disc the console is washed out, lamp and screen readable in zoomed crops, faint at play zoom; no repo change
 
 ## Relations
 - [[task-302-console-state-visuals]] — parent global task.
