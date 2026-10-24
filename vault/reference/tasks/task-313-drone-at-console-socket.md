@@ -14,7 +14,7 @@ status: done
 - confirmed_by_owner: yes (2026-10-24, "ok" to the plan and every default; planned in one planning pass, each task run later by its own orchestrator)
 - milestone: M2
 - next_step: none
-- result: Done. run 2 (after the Y mirror fix): drone hovers in front of the dark port under the green screen (+Y face), at port height, facing it, red link lands in the port recess between the lamps; sideways miss at most about 10-15 uu toward -X (pixel estimate); antenna head on the mast; Saved/DroneSocket/contact_sheet_drone_socket.png + 9 frames; run 1 had found the drone at the back face
+- result: Done. run 2 (after the Y mirror fix): drone hovers in front of the dark port under the green screen (+Y face), at port height, facing it, red link lands in the port recess between the lamps; sideways miss at most about 10-15 uu toward -X (pixel estimate); antenna head on the mast; Saved/DroneSocket/contact_sheet_drone_socket.png + 9 frames; run 1 had found the drone at the back face; owner observation (not fixed): the hack link beam renders red, while color-code reserves red lines for enemies (A9) and player lasers are white-gold
 
 ## Subtasks
 1. task-313-01-drone-socket-hover — cpp: Drone hover point at the socket
