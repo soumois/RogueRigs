@@ -1,0 +1,253 @@
+{
+  "script": "Tools/art/blender/chest_cut.py",
+  "source": "Art/Source/chest/clean/chest_flat.fbx",
+  "source_tris": 2946,
+  "units": "1 Blender unit = 1 cm = 1 uu; X long side, lock face toward -Y, Z up; FBX_SCALE_UNITS",
+  "seam_plane_z_cm": 41.25,
+  "latch_box": {
+    "abs_x_max": 11.6,
+    "y_below": -24,
+    "z_min": 8,
+    "z_max": 54
+  },
+  "cavity": {
+    "wall_cm": 3,
+    "depth_cm": 22,
+    "floor_z_cm": 19.25
+  },
+  "parts": {
+    "body": {
+      "file": "Art/Source/chest/clean/chest_body.fbx",
+      "tris": 2110,
+      "verts": 1023,
+      "dimensions_cm_xyz": [
+        130,
+        67.77,
+        41.25
+      ],
+      "local_bbox_min_cm": [
+        -65,
+        -34.13,
+        0
+      ],
+      "local_bbox_max_cm": [
+        65,
+        33.64,
+        41.25
+      ],
+      "world_bbox_min_cm": [
+        -65,
+        -34.13,
+        0
+      ],
+      "world_bbox_max_cm": [
+        65,
+        33.64,
+        41.25
+      ],
+      "pivot_rel_body_origin_cm": [
+        0,
+        0,
+        0
+      ],
+      "material_slots": [
+        "M_BonusChest",
+        "Interior"
+      ],
+      "faces_per_slot": {
+        "M_BonusChest": 1809,
+        "Interior": 301
+      },
+      "uv_layers": [
+        "UVMap"
+      ],
+      "triangles_with_uv_outside_0_1": 0,
+      "cap_faces_before_triangulation": 0,
+      "edges_before_triangulation": {
+        "open_edges": 26,
+        "edges_over_2_faces": 17
+      },
+      "shading": "flat"
+    },
+    "lid": {
+      "file": "Art/Source/chest/clean/chest_lid.fbx",
+      "tris": 1326,
+      "verts": 675,
+      "dimensions_cm_xyz": [
+        121.08,
+        65.52,
+        24.31
+      ],
+      "local_bbox_min_cm": [
+        -60.43,
+        -61.74,
+        0
+      ],
+      "local_bbox_max_cm": [
+        60.65,
+        3.77,
+        24.31
+      ],
+      "world_bbox_min_cm": [
+        -60.43,
+        -30.61,
+        41.25
+      ],
+      "world_bbox_max_cm": [
+        60.65,
+        34.91,
+        65.56
+      ],
+      "pivot_rel_body_origin_cm": [
+        0,
+        31.137,
+        41.25
+      ],
+      "material_slots": [
+        "M_BonusChest"
+      ],
+      "faces_per_slot": {
+        "M_BonusChest": 1326
+      },
+      "uv_layers": [
+        "UVMap"
+      ],
+      "triangles_with_uv_outside_0_1": 0,
+      "cap_faces_before_triangulation": 0,
+      "edges_before_triangulation": {
+        "open_edges": 36,
+        "edges_over_2_faces": 15
+      },
+      "shading": "flat"
+    },
+    "latch": {
+      "file": "Art/Source/chest/clean/chest_latch.fbx",
+      "tris": 428,
+      "verts": 231,
+      "dimensions_cm_xyz": [
+        24.94,
+        11.91,
+        43.91
+      ],
+      "local_bbox_min_cm": [
+        -12.47,
+        -10.76,
+        -43.91
+      ],
+      "local_bbox_max_cm": [
+        12.47,
+        1.15,
+        0
+      ],
+      "world_bbox_min_cm": [
+        -12.95,
+        -34.91,
+        7.58
+      ],
+      "world_bbox_max_cm": [
+        12,
+        -23,
+        51.49
+      ],
+      "pivot_rel_body_origin_cm": [
+        -0.475,
+        -24.149,
+        51.488
+      ],
+      "material_slots": [
+        "M_BonusChest",
+        "LockLight"
+      ],
+      "faces_per_slot": {
+        "M_BonusChest": 419,
+        "LockLight": 9
+      },
+      "uv_layers": [
+        "UVMap"
+      ],
+      "triangles_with_uv_outside_0_1": 0,
+      "cap_faces_before_triangulation": 0,
+      "edges_before_triangulation": {
+        "open_edges": 33,
+        "edges_over_2_faces": 1
+      },
+      "shading": "flat"
+    }
+  },
+  "tris_total": 3864,
+  "assembled_dimensions_cm_xyz": [
+    130,
+    69.82,
+    65.56
+  ],
+  "pivots_relative_to_body_origin_cm": {
+    "body": [
+      0,
+      0,
+      0
+    ],
+    "lid_hinge_axis_X": [
+      0,
+      31.137,
+      41.25
+    ],
+    "latch_top_edge_axis_X": [
+      -0.475,
+      -24.149,
+      51.488
+    ]
+  },
+  "latch_pivot_relative_to_lid_origin_cm": [
+    -0.475,
+    -55.286,
+    10.238
+  ],
+  "pivot_notes": "lid: origin on the hinge axis (a line along X) at the back top edge of the body (y = back wall of the body at the seam, z = seam plane); rotate about X, negative angle opens the front up. latch: origin on the top edge of the latch block (X axis, mid depth of its top face, x centred); it hangs on the lid front, so in the Blueprint it is a child of the lid; negative X rotation swings its bottom out toward -Y.",
+  "texture": "Art/Source/chest/clean/chest_flat_basecolor.png (shared by body, lid and latch; cap faces map to one dark texel)",
+  "lock_light_face_count": 9,
+  "lock_light_rect_x0_x1_z0_z1_cm": [
+    -2.76,
+    2.76,
+    40.58,
+    43.28
+  ],
+  "warnings": [
+    "removed 1 stray triangle(s) of the source mesh (separate island, 1 face)",
+    "body: 26 open edges after the caps",
+    "lid: 36 open edges after the caps",
+    "latch: 33 open edges after the caps"
+  ],
+  "manifold_note": "edges_over_2_faces are inherited from the Meshy source mesh (27 edges with 3 faces and 6 with 4 in chest_flat.fbx: interpenetrating thin parts); the caps close the open loops",
+  "renders": {
+    "dir": "Art/Source/chest/clean/renders/",
+    "closed": [
+      "cut_closed_front.png",
+      "cut_closed_side.png",
+      "cut_closed_back.png",
+      "cut_closed_q.png",
+      "cut_closed_top.png"
+    ],
+    "latch_released_lid_closed": [
+      "cut_latchout_front.png",
+      "cut_latchout_q.png"
+    ],
+    "open": [
+      "cut_open_front.png",
+      "cut_open_side.png",
+      "cut_open_q.png",
+      "cut_open_top.png",
+      "cut_open_high_q.png"
+    ],
+    "camera": "same as the 306-01 renders: ortho 170, target (0,0,33), 500 cm, EEVEE, one sun 4.0 rotated (50,10,-60), world 0.85 at 0.6",
+    "poses": "closed = all at identity; latch released = latch -60 deg about X at its pivot; open = lid -105 deg about X at the hinge axis, latch child of the lid with +80 deg local (hangs down, total -25 deg)"
+  },
+  "closed_vs_306_01_render_pixels_differing_over_0_1_of_640000": {
+    "front": 480,
+    "side": 326,
+    "back": 0,
+    "q": 392,
+    "top": 173
+  },
+  "texture_note": "LockLight faces are cut out of the three source triangles that held the painted red rectangle (rectangle x -2.76..2.76, z 40.58..43.28 cm on the latch); the colour of those faces is the LockLight material (flat red, emission 2.0 in Blender, the FBX carries the base colour only)",
+  "open_edges_note": "26 / 36 / 33 open edges remain on body / lid / latch: tiny cracks at junctions of the Meshy source (51 open edges in chest_flat.fbx) and non-simple loops the hole fill skips; none is visible in the renders"
+}
