@@ -3,7 +3,7 @@ id: task-312-01-telegraph-under-actors
 description: "Ground telegraph under actors (cpp): zone colour does not touch the console, step 01."
 parent: task-312-zone-colour-off-console
 kind: task
-status: todo
+status: in-progress
 ---
 # Ground telegraph under actors
 

@@ -3,7 +3,7 @@ id: task-312-zone-colour-off-console
 description: "Global task: The hack zone colour stays on the ground: the console, miner and drone inside the zone are no longer washed out."
 parent: tasks-to-do-index
 kind: task
-status: todo
+status: in-progress
 ---
 # Zone colour does not touch the console
 
