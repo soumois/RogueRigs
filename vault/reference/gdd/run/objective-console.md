@@ -17,7 +17,7 @@ status: approved
 - The drone hacks one target at a time and cannot dig and hack at once.
 - While the console is not hacked, the alert bar is paused.
 - Values (provisional, owner 2026-10-03): dropped 36 to 60 cells (67 uu) from the miner; marked rocks within 6 cells, pulsing white outline; hack 16 s (owner 2026-10-07 fifth test: 20 % shorter, was 20 s); zone radius 9 cells; progress drains 5 %/s while the miner is out. Cell counts converted to 67 uu cells in task-029-04, same world distances.
-- Landing clearance (provisional, owner after handover-2026-10-06): the console lands only where its whole 2 × 2-cell footprint is open floor, so its mesh never overlaps rock.
+- Landing clearance (provisional, owner after handover-2026-10-06): the console lands only where its whole 2 × 2-cell footprint is open floor, so its mesh never overlaps rock. Superseded on 2026-10-24 (below): 3 × 3.
 - M1: one console, dropped when the alert bar reaches 40 % ([[level-flow]]).
 - Lore (provisional): the Rigs' ship detects an entry point into the claim's network and drops the console there as an access point ([[lore]]).
 - Milestone: M1.
@@ -37,6 +37,8 @@ status: approved
 - Marked rocks per drop (owner 2026-10-23, provisional): the console lands only where its zone holds between 10 and 40 markable rocks (ore included); when no spot fits, it lands where the count is nearest that range. Replaces the plain "prefer spots with rocks" choice. The bonus chest is unchanged ([[objective-bonus-chest]]).
 
 - State visuals (owner 2026-10-23, provisional): the orange lamps follow the state. Locked (marked rocks left): red, antenna still, screen black. Idle (rocks cleared, miner out of the zone): orange, antenna turns slowly (10 deg/s), screen black. Hacking: green, antenna turns 45 deg/s, screen green. Complete: steady green, antenna stopped, screen green. Only the antenna lamp blinks (2 Hz, not on Complete); the other orange parts take the same colour without blinking. The bonus chest is unchanged ([[objective-bonus-chest]]). Red and green here are an allowed detail ([[color-code]], console state lamps).
+
+- Landing clearance (owner 2026-10-24, provisional): the console is 50 % bigger; it lands only where its whole 3 × 3-cell footprint is open floor (was 2 × 2) and stands at the centre of that footprint. The hack zone stays 7 cells around it. The bonus chest keeps its 2 × 2 footprint ([[objective-bonus-chest]]).
 
 ## Relations
 - [[run-index]] — parent index.
