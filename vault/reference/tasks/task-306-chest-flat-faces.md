@@ -14,7 +14,7 @@ status: in-progress
 - confirmed_by_owner: yes (owner 2026-10-23: "ok pour tous les défauts (Q1 à Q25)"; every default below applies)
 - owner_gate_306_01: 2026-10-24, on the chest_flat renders: flat faces "c'est bon" (go to 306-02); missing yellow lid logo "Il faut le rajouter sur le top, mais en effet prépare une tâche à part" (separate task, not in task-306); size 130 x 70 x 66 uu "On garde ces proportions" (Q3 updated); round handles, hinge pins and the thin dark line on the front "ok" (accepted)
 - milestone: M2
-- next_step: task-306-03-bp-chest-import
+- next_step: task-306-04-capture-chest-mesh
 - result: open
 
 ## Subtasks

@@ -3,7 +3,7 @@ id: task-306-04-capture-chest-mesh
 description: "Capture the new chest in game (cpp): bonus chest mesh with flat faces, step 04."
 parent: task-306-chest-flat-faces
 kind: task
-status: todo
+status: in-progress
 ---
 # Capture the new chest in game
 
