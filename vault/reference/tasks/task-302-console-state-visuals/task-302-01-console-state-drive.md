@@ -16,10 +16,10 @@ status: done
 - editor_state: closed
 - token_ceiling: 40000
 - model: opus
-- tokens: input 38, cache write 101589, cache read 704592, output 16676
-- runs: 1
+- tokens: input 60, cache write 167295, cache read 1314016, output 21892
+- runs: 2
 - milestone: M2
-- result: ARRConsole drives LampColor, antenna BlinkRate 2 Hz + BlinkAmount 1, ScreenColor and AntennaHead yaw (0/10/45/0 deg/s) per state via FRRConsoleStateVisual Locked/Idle/Hacking/CompleteVisual; chest opts out (bDriveStateVisuals false); GDD A7 exception, docs; build green, Console+RunFlow tests pass
+- result: ARRConsole drives LampColor, antenna BlinkRate 2 Hz + BlinkAmount 1, ScreenColor and AntennaHeadComp yaw (0/10/45/0 deg/s) per state via FRRConsoleStateVisual Locked/Idle/Hacking/CompleteVisual; chest opts out; GDD A7 exception, docs; run 2 (4dcc4e84) renamed the C++ member AntennaHead to AntennaHeadComp (clashed with the BP component, head and antenna lamp not found); red (1, 0.05, 0.03) kept, reads salmon (likely tone mapper on bright emissive, untested); build green, 7/7 Console+RunFlow tests
 
 ## Relations
 - [[task-302-console-state-visuals]] — parent global task.
