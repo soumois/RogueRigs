@@ -651,6 +651,7 @@ kind: note
 | [[task-311-02-bp-console-scale]] | sonnet | 1 | 0k | 35k | 366k | 7k |
 | [[task-311-03-capture-console-bigger]] | opus | 1 | 0k | 114k | 1352k | 17k |
 | [[task-312-01-telegraph-under-actors]] | opus | 1 | 0k | 63k | 1049k | 16k |
+| [[task-312-02-capture-zone-colour]] | opus | 1 | 0k | 60k | 1077k | 18k |
 
 ## Totals
 | Scope | Input | Cache write | Cache read | Output |
