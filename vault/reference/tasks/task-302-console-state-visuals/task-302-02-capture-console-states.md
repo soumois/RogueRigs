@@ -19,7 +19,7 @@ status: in-progress
 - tokens: open
 - runs: open
 - milestone: M2
-- result: open
+- result: run 2 (after 4dcc4e84, Saved/ConsoleStates/after-fix/contact_sheet_console_states_after_fix.png): head turns in Idle/Hacking, still in Locked/Complete, Complete steady green, screen black/black/green/green, no BP compile error; FAIL antenna lamp never goes dark (no 2 Hz blink) in Locked/Idle/Hacking; sent back to 01 for diagnosis
 
 ## Relations
 - [[task-302-console-state-visuals]] — parent global task.
