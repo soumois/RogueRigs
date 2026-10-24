@@ -259,11 +259,12 @@ protected:
 	TObjectPtr<URRGroundTelegraphComponent> GroundTelegraph;
 
 	/**
-	 * Landing footprint in cells of the grid, rotation zero (2 x 2 cells of 67 uu = 134 uu for the 100 x 100 uu console mesh, task-026-00).
+	 * Landing footprint in cells of the grid, rotation zero: 3 x 3 cells of 67 uu = 201 uu (owner 2026-10-24, provisional: console 50 % bigger, task-311-01;
+	 * was 2 x 2 = 134 uu for the 100 x 100 uu console mesh, task-026-00). An odd size puts the actor at the anchor cell centre, an even size at a cell corner.
 	 * The console lands only where every cell is reachable floor and stands at the footprint centre (RRLandingFootprint).
 	 */
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Console", meta = (ClampMin = 1))
-	FIntPoint FootprintCells = FIntPoint(2, 2);
+	FIntPoint FootprintCells = FIntPoint(3, 3);
 
 	/** Block types that get marked inside the zone (every rock kind, ore included). Barrels are left out: they explode and are not rock. Empty = no marked rock. */
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Console")

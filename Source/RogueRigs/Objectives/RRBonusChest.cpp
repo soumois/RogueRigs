@@ -16,6 +16,7 @@ ARRBonusChest::ARRBonusChest()
 	ZoneRadiusCells = 6.f;
 	MarkedCellTypes.Reset();
 	bDriveStateVisuals = false; // the chest keeps its own look (task-302-01)
+	FootprintCells = FIntPoint(2, 2); // the chest keeps the 2 x 2 footprint, the console default is 3 x 3 (task-311-01)
 }
 
 void ARRBonusChest::CompleteHack()

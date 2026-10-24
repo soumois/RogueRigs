@@ -427,7 +427,7 @@ bool FRRFineConsoleShuttlePlacementTest::RunTest(const FString& Parameters)
 			ConsoleDistance, ConsoleDistance / CellSize, Console->GetMarkedRockCount(), Console->GetZoneRadius()));
 		TestTrue(*FString::Printf(TEXT("seed %d: console is BP_ObjectiveConsole"), Seed), Console->IsA(ConsoleClass));
 		TestEqual(*FString::Printf(TEXT("seed %d: console on floor"), Seed), Grid->GetCellType(ConsoleCell), ERRCellType::Floor);
-		TestTrue(*FString::Printf(TEXT("seed %d: console at its 2 x 2 footprint centre"), Seed), Console->GetFootprintCells() == FIntPoint(2, 2)
+		TestTrue(*FString::Printf(TEXT("seed %d: console at its 3 x 3 footprint centre (task-311-01)"), Seed), Console->GetFootprintCells() == FIntPoint(3, 3)
 			&& Console->GetActorLocation().Equals(RRLandingFootprint::GetCenter(Grid, ConsoleCell, Console->GetFootprintCells()), 0.5));
 		TestTrue(*FString::Printf(TEXT("seed %d: console 2400..4000 uu away (one cell of slack)"), Seed), ConsoleDistance >= 2400.0 - CellSize && ConsoleDistance <= 4000.0 + CellSize);
 		TestTrue(*FString::Printf(TEXT("seed %d: console reachable"), Seed), FlowField->GetCellDistance(ConsoleCell) >= 0);

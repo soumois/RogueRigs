@@ -298,7 +298,7 @@ bool FRRConsoleDropTest::RunTest(const FString& Parameters)
 		TestTrue(*FString::Printf(TEXT("seed %d: at the footprint centre"), Seed), Console->GetActorLocation().Equals(RRLandingFootprint::GetCenter(Grid, Cell, Console->GetFootprintCells()), 0.1));
 		TArray<FIntPoint> FootprintCells;
 		RRLandingFootprint::GetCells(Cell, Console->GetFootprintCells(), FootprintCells);
-		TestEqual(*FString::Printf(TEXT("seed %d: 2 x 2 footprint"), Seed), FootprintCells.Num(), 4);
+		TestEqual(*FString::Printf(TEXT("seed %d: 3 x 3 footprint (task-311-01)"), Seed), FootprintCells.Num(), 9);
 		for (const FIntPoint& FootprintCell : FootprintCells)
 		{
 			TestTrue(*FString::Printf(TEXT("seed %d: footprint cell (%d, %d) is reachable floor"), Seed, FootprintCell.X, FootprintCell.Y),
@@ -307,7 +307,11 @@ bool FRRConsoleDropTest::RunTest(const FString& Parameters)
 		TestNearlyEqual(*FString::Printf(TEXT("seed %d: alert at 0.4"), Seed), Setup.RunFlow->GetAlert(), 0.4f, 1e-6f);
 
 		// Marked = every rock-type block (Duskite deposits included) whose centre is within the 7-cell zone of the footprint centre
-		// (anchor + 0.5 cell on X and Y for the 2 x 2 footprint), nothing else.
+		// (the footprint centre: MinCell + (Size - 1) / 2 on X and Y, the anchor cell centre for the 3 x 3 footprint, task-311-01), nothing else.
+		const FIntPoint RunFootprint = Console->GetFootprintCells();
+		const FIntPoint RunMinCell = RRLandingFootprint::GetMinCell(Cell, RunFootprint);
+		const double CentreDX = RunMinCell.X + 0.5 * (RunFootprint.X - 1) - Cell.X;
+		const double CentreDY = RunMinCell.Y + 0.5 * (RunFootprint.Y - 1) - Cell.Y;
 		int32 Expected = 0;
 		int32 DepositMarked = 0;
 		const int32 Scan = RunZoneRadiusCells + 2;
@@ -316,8 +320,8 @@ bool FRRConsoleDropTest::RunTest(const FString& Parameters)
 			for (int32 DX = -Scan; DX <= Scan; ++DX)
 			{
 				const FIntPoint Near(Cell.X + DX, Cell.Y + DY);
-				const double OffsetX = DX - 0.5;
-				const double OffsetY = DY - 0.5;
+				const double OffsetX = DX - CentreDX;
+				const double OffsetY = DY - CentreDY;
 				const bool bShouldMark = OffsetX * OffsetX + OffsetY * OffsetY <= RunZoneRadiusCells * RunZoneRadiusCells && IsMarkableType(Grid->GetCellType(Near));
 				DepositMarked += bShouldMark && Grid->IsTableDepositCell(Near) ? 1 : 0;
 				Expected += bShouldMark ? 1 : 0;
