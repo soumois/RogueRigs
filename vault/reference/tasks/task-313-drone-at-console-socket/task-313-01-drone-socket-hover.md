@@ -3,7 +3,7 @@ id: task-313-01-drone-socket-hover
 description: "Drone hover point at the socket (cpp): drone at the console socket while hacking, step 01."
 parent: task-313-drone-at-console-socket
 kind: task
-status: todo
+status: in-progress
 ---
 # Drone hover point at the socket
 

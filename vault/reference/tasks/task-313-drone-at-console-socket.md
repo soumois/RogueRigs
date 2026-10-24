@@ -3,7 +3,7 @@ id: task-313-drone-at-console-socket
 description: "Global task: While hacking, the drone hovers in front of the console data socket, facing it, and the hack link aims at it."
 parent: tasks-to-do-index
 kind: task
-status: todo
+status: in-progress
 ---
 # Drone at the console socket while hacking
 
