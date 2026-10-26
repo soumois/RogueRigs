@@ -3,7 +3,7 @@ id: task-317-05-capture-stats-cards
 description: "Capture in -game the stats screen, the cards screen and the level 4 stats screen and send them to the owner."
 parent: task-317-stats-then-cards
 kind: task
-status: todo
+status: in-progress
 ---
 # Capture in -game the stats screen, the cards screen and the level 4 stats screen and send them to the owner
 
