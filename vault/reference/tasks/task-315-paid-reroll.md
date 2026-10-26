@@ -3,7 +3,7 @@ id: task-315-paid-reroll
 description: "Global task: The level-up reroll costs Duskite ore: 15, plus 5 for each further reroll without a level-up, usable while the ore lasts."
 parent: tasks-to-do-index
 kind: task
-status: todo
+status: in-progress
 ---
 # Paid level-up reroll
 
