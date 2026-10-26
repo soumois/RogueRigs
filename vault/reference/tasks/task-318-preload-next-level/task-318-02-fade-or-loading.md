@@ -3,7 +3,7 @@ id: task-318-02-fade-or-loading
 description: "Continue fades into the ready level, or shows the loading screen until it is ready, then fades in."
 parent: task-318-preload-next-level
 kind: task
-status: in-progress
+status: done
 ---
 # Continue fades into the ready level, or shows the loading screen until it is ready, then fades in
 
@@ -15,11 +15,11 @@ status: in-progress
 - done_when: build passes; Continue with the level ready: fade out 0.3 s, switch, fade in 0.5 s (provisional, data), no loading screen; not ready: loading screen shown (OnLoadingStarted) with the progress value available to the widget, then the fade in when ready; HUD and subtitles hidden and restored as before; gameplay held until ready; log lines for both paths; lint clean.
 - editor_state: closed
 - token_ceiling: 60000
-- model: open
-- tokens: open
-- runs: open
+- model: opus
+- tokens: input 88, cache write 133776, cache read 4262852, output 44106
+- runs: 1
 - milestone: M2
-- result: open
+- result: Continue ready: fade out 0.3 s, switch, fade in 0.5 s (URRRunSettings TransitionFadeOutSeconds/TransitionFadeInSeconds, provisional), no loading screen; not ready: OnLoadingStarted loading screen, OnNextLevelProgressChanged and URRLoadingScreenWidget GetLoadingProgress/OnLoadingProgressChanged, then fade in; C++ URRScreenFadeWidget overlay at ZOrder 60; HUD/subtitles restored; log lines for both paths in -nullrhi run; overlay unseen on screen. Commits 3e342bb8, 9480054c.
 
 ## Relations
 - [[task-318-preload-next-level]] — parent global task.

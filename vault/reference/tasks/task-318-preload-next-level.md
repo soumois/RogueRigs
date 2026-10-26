@@ -13,7 +13,7 @@ status: in-progress
 - gdd_check: intermission read (2026-10-26). Today the level change is a blocking OpenLevel of the same map (2.3-3.3 s) plus prewarm hold, only the layout is async: real preloading confirmed by the owner (Q4). Fade durations Q5 and loading screen with progress bar and empty image slot Q6 accepted; loading image open. Depends on task-317 (cards screen).
 - confirmed_by_owner: yes (2026-10-26)
 - milestone: M2
-- next_step: task-318-02-fade-or-loading
+- next_step: task-318-03-bp-loading-progress
 - result: open
 
 ## Subtasks

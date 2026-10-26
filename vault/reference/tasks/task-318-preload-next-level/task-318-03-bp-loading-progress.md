@@ -3,7 +3,7 @@ id: task-318-03-bp-loading-progress
 description: "WBP_Loading gets a progress bar bound to the next-level progress and a collapsed image slot for later."
 parent: task-318-preload-next-level
 kind: task
-status: todo
+status: in-progress
 ---
 # WBP_Loading gets a progress bar bound to the next-level progress and a collapsed image slot for later
 
