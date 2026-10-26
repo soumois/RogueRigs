@@ -15,7 +15,7 @@ kind: doc
 - logic_in_bp: display only (text, button state from C++ booleans, two calls to C++: Continue, RequestReroll).
 - assets: none new (T_Icon_Ore).
 - owner_agent: agent-bp
-- verified: task-317-03: compiled (CompileWidgetBlueprint true, compile_blueprint warnings as errors, no error) and saved; Backdrop BrushColor a = 1 read back; graphs read back; ShopScreenWidgetClass on BP_RRPlayerController read back. Not run in PIE, nothing seen: layout fit, click behaviour, refresh, that the Self calls (RefreshShop, LoadShopTexts; printed by MCP as Class|WBPIntermission|...) bind to this widget. LoadShopTexts reads GetScreenText twice (a Break node fed by a second call) as WBP_Intermission did.
+- verified: task-317-05: rendered -game at 1920 x 1080 (Saved/StatsCards/sc_b_cards_00.png, not committed): opaque black screen, "SPARE PARTS", 5 priced cards, balance 0, every card button "Short on ore" and dimmed, "Reroll stock 15", Continue; so RefreshShop, LoadShopTexts and the card refresh bind to this widget. Continue reached through `rr.Run.Continue`. Not seen: a mouse click on Continue, reroll or buy, a refresh after a purchase on this widget, cards with enough ore. task-317-03: compiled (CompileWidgetBlueprint true, compile_blueprint warnings as errors, no error) and saved; Backdrop BrushColor a = 1 read back; graphs read back; ShopScreenWidgetClass on BP_RRPlayerController read back. Not run in PIE, nothing seen: layout fit, click behaviour, refresh, that the Self calls (RefreshShop, LoadShopTexts; printed by MCP as Class|WBPIntermission|...) bind to this widget. LoadShopTexts reads GetScreenText twice (a Break node fed by a second call) as WBP_Intermission did.
 
 ## Relations
 - [[blueprints-ui-index]] — parent index.
