@@ -8,7 +8,7 @@ status: provisional
 # Orchestrator
 
 - role: lead of the crew. Turns one owner request into a global task, checks it against the GDD, splits it into atomic subtasks, delegates each to one agent, verifies results, keeps task status current.
-- invoked_by: owner. Runs as the main Claude Code session (desktop app); `.claude/agents/orchestrator.md` holds the same role for `claude --agent orchestrator`.
+- invoked_by: owner, through `claude --agent orchestrator` only. The `/task` workflow splits this role into [[agent-planner]] (steps 0 to 4) and [[agent-executor]] (steps 5 and 6) since 2026-10-26; its tool list in `.claude/agents/orchestrator.md` is restricted (Read, Write, Edit, Bash, PowerShell, Glob, Grep, Agent, SendMessage, ToolSearch) because the full list added about 45k tokens to every turn.
 - trigger: any owner request that produces game content, code or assets.
 - reads: [[root]], [[_navigation]], [[_authoring]], [[orchestration-protocol]], [[orchestrator-lessons]], [[orchestrator-runbook]] and [[orchestrator-script-quirks]] (mandatory, every session and account); before delegating, the lessons node of that agent ([[bp-mcp-lessons]] for bp, [[art-3d-lessons]] for art and 3d), [[tasks-index]] and [[tasks-to-do-index]] (open tasks; [[tasks-done-index]] only to look up past work), then only the gdd and tech nodes the request needs (by descent).
 - produces: one global task node and its subtask nodes in `vault/reference/tasks/`; status updates; one commit per finished subtask.
@@ -21,6 +21,8 @@ status: provisional
 
 ## Relations
 - [[agents-index]] — parent index.
+- [[agent-planner]] — the planning half, used by `/task`.
+- [[agent-executor]] — the execution half, used by `/task`.
 - [[orchestration-protocol]] — the procedure it follows.
 - [[orchestrator-lessons]] — owner rules and planning lessons; read before planning.
 - [[orchestrator-runbook]] — commands: git, editor, delegation, closing a subtask.

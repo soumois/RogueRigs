@@ -6,16 +6,18 @@ kind: note
 ---
 # Dev crew
 
-The main Claude Code session acts as the Orchestrator. It splits each owner request into subtasks and delegates each to one specialized subagent (`.claude/agents/`). Agents never talk to each other: they read inputs from and write outputs to this vault and the repo. Token ceilings are first estimates, corrected after each milestone retrospective.
+The main Claude Code session only relays between the owner and two agents: the Planner turns each owner request into confirmed task nodes, then one fresh Executor per global task delegates each subtask to one specialized subagent (`.claude/agents/`). Agents never talk to each other: they read inputs from and write outputs to this vault and the repo. Token ceilings are first estimates, corrected after each milestone retrospective.
 
-Crew in use: orchestrator → cpp, bp (code and editor); level-design (layouts); text → style-guide (critic); art → style-guide → 3d → bp (assets).
+Crew in use: planner → executor → cpp, bp (code and editor); level-design (layouts); text → style-guide (critic); art → style-guide → 3d → bp (assets).
 Planned, not written yet: agent-balance, agent-animation, agent-sound, agent-qa (deferred).
 
 Lessons are filed by theme, and each agent reads the node about its own limits: owner rules for the Orchestrator, [[bp-mcp-lessons]] for bp, [[art-3d-lessons]] for art and 3d.
 
 ## Relations
 - [[root]] — the vault map.
-- [[agent-orchestrator]] — the Orchestrator: role, tools, model, limits.
+- [[agent-planner]] — plans a request into confirmed task nodes and asks the owner; open to run or change planning.
+- [[agent-executor]] — runs one confirmed global task from its nodes, delegating each subtask; open to run or change execution.
+- [[agent-orchestrator]] — the combined Orchestrator role (planner plus executor), kept for `claude --agent orchestrator`.
 - [[agent-level-design]] — writes arena layouts as validated grid JSON.
 - [[agent-cpp]] — writes and builds C++ and Node tooling, runs visual checks, updates system docs.
 - [[agent-bp]] — builds the editor layer through Unreal MCP and documents each Blueprint.
