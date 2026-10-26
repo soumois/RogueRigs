@@ -476,7 +476,6 @@ TArray<FRRUpgradeCard> URRUpgradeComponent::BuildOffer(int32 CardCount, float Lu
 	CurrentOffer = DrawOffer(CardCount, Luck, {});
 	OfferLuck = Luck;
 	bHasOffer = true;
-	bRerollUsed = false;
 	if (CurrentOffer.Num() < CardCount)
 	{
 		UE_LOG(LogRogueRigs, Warning, TEXT("URRUpgradeComponent: offer of %d cards asked, %d available."), CardCount, CurrentOffer.Num());
@@ -498,7 +497,6 @@ bool URRUpgradeComponent::Reroll(TArray<FRRUpgradeCard>& OutCards)
 	}
 
 	CurrentOffer = DrawOffer(CurrentOffer.Num(), OfferLuck, CurrentOffer);
-	bRerollUsed = true;
 	OutCards = CurrentOffer;
 	return true;
 }
@@ -576,7 +574,6 @@ void URRUpgradeComponent::FinishPick(const FRRUpgradeCard& Picked)
 	PickedUpgrades.Add(Picked);
 	CurrentOffer.Reset();
 	bHasOffer = false;
-	bRerollUsed = false;
 	OnUpgradeApplied.Broadcast(Picked);
 }
 

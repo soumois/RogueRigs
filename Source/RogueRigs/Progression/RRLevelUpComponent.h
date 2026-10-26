@@ -11,12 +11,16 @@
 class APlayerController;
 class UGameplayEffect;
 class URRProgressionComponent;
+class URRRunFlowSubsystem;
 class URRUpgradeComponent;
 
 /** Fired once per level gained, right after the heal: play the level-up feedback (ring, sound). */
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FRROnLevelUpEffectSignature, int32, NewLevel);
 
-/** Fired when a choice screen must show (game paused), again after a reroll and for each chained screen: the cards, reroll available. */
+/**
+ * Fired when a choice screen must show (game paused), again after a reroll and for each chained screen: the cards, and
+ * bCanReroll = a reroll is affordable now (URRLevelUpComponent::CanReroll; its cost: GetRerollCost).
+ */
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_TwoParams(FRROnUpgradeOfferShownSignature, const TArray<FRRUpgradeCard>&, Cards, bool, bCanReroll);
 
 /** Fired after the last queued choice: hide the choice screen (the game resumes). */
@@ -30,7 +34,9 @@ DECLARE_DYNAMIC_MULTICAST_DELEGATE(FRROnUpgradeOfferClosedSignature);
  * player controller, the input mode switches to game-and-UI with the cursor visible, an offer of CardCount cards is built
  * by the owner's URRUpgradeComponent (BuildOfferWithOwnerLuck) and OnUpgradeOfferShown fires. ChooseUpgrade applies a
  * card; the next queued choice shows at once (still paused) or, after the last, OnUpgradeOfferClosed fires, the game
- * resumes and game input returns. RequestReroll forwards to the offer builder. Levels gained during the delay or while a
+ * resumes and game input returns. RequestReroll pays the reroll in ore (URRRunFlowSubsystem::SpendOre, carried then secured;
+ * cost from URRRerollCostLibrary: 15, 20, 25... per reroll count) and forwards to the offer builder; the count returns to 0
+ * when a level-up screen opens (chained ones included) and is kept by a bonus chest screen. Levels gained during the delay or while a
  * screen is open join the queue. No pause when the miner died before the delay ended.
  */
 UCLASS(ClassGroup = (RogueRigs), meta = (BlueprintSpawnableComponent))
@@ -50,8 +56,9 @@ public:
 	bool ChooseUpgrade(int32 Index);
 
 	/**
-	 * Rerolls the current offer once (URRUpgradeComponent::Reroll) and broadcasts OnUpgradeOfferShown with the new cards and
-	 * bCanReroll false. Returns false when no screen is open or the reroll was used.
+	 * Pays GetRerollCost ore (URRRunFlowSubsystem::SpendOre: carried first, then secured), rerolls the current offer
+	 * (URRUpgradeComponent::Reroll), counts the reroll and broadcasts OnUpgradeOfferShown with the new cards and CanReroll() for
+	 * the next cost. Returns false (nothing spent) when no screen is open or the miner cannot pay.
 	 */
 	UFUNCTION(BlueprintCallable, Category = "LevelUp")
 	bool RequestReroll();
@@ -90,9 +97,17 @@ public:
 	UFUNCTION(BlueprintPure, Category = "LevelUp")
 	TArray<FRRUpgradeCard> GetOfferCards() const;
 
-	/** True while the open screen can still be rerolled. */
+	/** True while a screen is open and the miner can pay GetRerollCost (carried plus secured ore). */
 	UFUNCTION(BlueprintPure, Category = "LevelUp")
 	bool CanReroll() const;
+
+	/** Ore cost of the next reroll: URRRerollCostLibrary::GetRerollCostForCount(GetRerollCount()). */
+	UFUNCTION(BlueprintPure, Category = "LevelUp")
+	int32 GetRerollCost() const;
+
+	/** Rerolls paid since the last level-up screen opened (a bonus chest screen keeps the count). */
+	UFUNCTION(BlueprintPure, Category = "LevelUp")
+	int32 GetRerollCount() const { return RerollCount; }
 
 	/** Game-time delay between a level-up and the pause on its choice screen, in seconds. */
 	float GetChoiceDelay() const { return ChoiceDelay; }
@@ -144,6 +159,9 @@ protected:
 	/** Clears the queue, broadcasts OnUpgradeOfferClosed and ends the pause. */
 	void CloseChoice();
 
+	/** The run flow of this world (pays the rerolls), or null outside Game and PIE worlds. */
+	URRRunFlowSubsystem* GetRunFlow() const;
+
 	/** True when the owner is an ARRMiner that died. */
 	bool IsOwnerDead() const;
 
@@ -186,6 +204,9 @@ protected:
 
 	/** Bonus luck of each owed choice, parallel to PendingLevels (0 for a level-up, the chest bonus for a chest choice). */
 	TArray<float> PendingBonusLuck;
+
+	/** Rerolls paid since the last level-up screen opened; reset by ShowNextOffer for a level-up offer (OfferLevel > 0). */
+	int32 RerollCount = 0;
 
 	/** True while a choice screen is open. */
 	bool bAwaitingChoice = false;

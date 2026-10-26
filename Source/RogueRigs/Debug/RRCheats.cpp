@@ -129,7 +129,7 @@ namespace RRCheats
 		ARRMiner* Miner = FindPlayerMiner(World);
 		URRLevelUpComponent* LevelUp = Miner ? Miner->GetLevelUp() : nullptr;
 		const bool bAccepted = LevelUp && LevelUp->RequestReroll();
-		UE_LOG(LogRogueRigs, Log, TEXT("rr.Cheat.Reroll (%s): %s."), Source, bAccepted ? TEXT("rerolled") : TEXT("refused (no screen or reroll used)"));
+		UE_LOG(LogRogueRigs, Log, TEXT("rr.Cheat.Reroll (%s): %s."), Source, bAccepted ? TEXT("rerolled") : TEXT("refused (no screen or not enough ore)"));
 		return bAccepted;
 	}
 

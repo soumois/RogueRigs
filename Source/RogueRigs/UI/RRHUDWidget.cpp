@@ -287,6 +287,12 @@ bool URRHUDWidget::CanRerollUpgrade() const
 	return LevelUp && LevelUp->CanReroll();
 }
 
+int32 URRHUDWidget::GetUpgradeRerollCost() const
+{
+	const URRLevelUpComponent* LevelUp = BoundLevelUp.Get();
+	return LevelUp ? LevelUp->GetRerollCost() : 0;
+}
+
 void URRHUDWidget::BindToGameMode(ARRGameMode* GameMode)
 {
 	if (ARRGameMode* Previous = BoundGameMode.Get())

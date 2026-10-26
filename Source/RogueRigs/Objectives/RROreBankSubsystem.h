@@ -10,8 +10,8 @@
  * Secured ore of the play session (ore-economy): the run flow adds the carried ore here when the miner boards the shuttle
  * (URRRunFlowSubsystem::EndRun success). Lives on the game instance, so it survives URRRunFlowSubsystem::RestartLevel; it is
  * not saved to disk (meta-progression is deferred). Read it through URRRunFlowSubsystem::GetSecuredOre and the run flow
- * OnOreChanged event, which also cover worlds without an initialized game instance (headless tests). The share of secured ore
- * lost on a failed run is open (ore-economy): nothing removes ore here.
+ * OnOreChanged event, which also cover worlds without an initialized game instance (headless tests). Paid rerolls spend it
+ * through URRRunFlowSubsystem::SpendOre (RemoveSecuredOre). The share of secured ore lost on a failed run is open (ore-economy).
  */
 UCLASS()
 class ROGUERIGS_API URROreBankSubsystem : public UGameInstanceSubsystem
@@ -28,6 +28,9 @@ public:
 
 	/** Adds Amount (> 0) to the secured total; returns the new total. Called by the run flow on extraction success. */
 	int32 AddSecuredOre(int32 Amount);
+
+	/** Removes Amount (> 0, at most the total) from the secured total; returns the new total. Called by URRRunFlowSubsystem::SpendOre. */
+	int32 RemoveSecuredOre(int32 Amount);
 
 protected:
 	/** Ore secured this session (starts at 0 with the game instance). */

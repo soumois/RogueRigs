@@ -372,7 +372,7 @@ bool FRRUpgradeStackingTest::RunTest(const FString& Parameters)
 	return true;
 }
 
-IMPLEMENT_SIMPLE_AUTOMATION_TEST(FRRUpgradeRerollTest, "RogueRigs.Upgrades.RerollOnce",
+IMPLEMENT_SIMPLE_AUTOMATION_TEST(FRRUpgradeRerollTest, "RogueRigs.Upgrades.RerollRepeat",
 	EAutomationTestFlags::EditorContext | EAutomationTestFlags::EngineFilter)
 
 bool FRRUpgradeRerollTest::RunTest(const FString& Parameters)
@@ -406,18 +406,20 @@ bool FRRUpgradeRerollTest::RunTest(const FString& Parameters)
 			}
 		}
 		TestEqual(TEXT("rerolled cards share no stat and target with the replaced ones"), Shared, 0);
-		TestFalse(TEXT("reroll used"), S.Upgrades->CanReroll());
+		TestTrue(TEXT("no limit per offer (task-315: the caller pays)"), S.Upgrades->CanReroll());
 
 		TArray<FRRUpgradeCard> Third;
-		TestFalse(TEXT("second reroll refused"), S.Upgrades->Reroll(Third));
-		TestEqual(TEXT("refused reroll keeps the offer"), S.Upgrades->GetCurrentOffer().Num(), 3);
-		if (Third.Num() == 3)
+		TestTrue(TEXT("second reroll accepted"), S.Upgrades->Reroll(Third));
+		TestEqual(TEXT("second reroll gives 3 cards"), Third.Num(), 3);
+		int32 SharedAgain = 0;
+		for (const FRRUpgradeCard& New : Third)
 		{
-			for (int32 Index = 0; Index < 3; ++Index)
+			for (const FRRUpgradeCard& Old : Second)
 			{
-				TestTrue(TEXT("refused reroll returns the current cards"), Third[Index].IsSameChoice(Second[Index]) && Third[Index].Tier == Second[Index].Tier);
+				SharedAgain += New.IsSameChoice(Old) ? 1 : 0;
 			}
 		}
+		TestEqual(TEXT("second reroll shares no stat and target with the first reroll"), SharedAgain, 0);
 	}
 
 	S.Upgrades->ApplyUpgrade(S.Upgrades->GetCurrentOffer()[0]);

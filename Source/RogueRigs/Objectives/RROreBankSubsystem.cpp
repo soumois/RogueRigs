@@ -23,3 +23,14 @@ int32 URROreBankSubsystem::AddSecuredOre(int32 Amount)
 	}
 	return SecuredOre;
 }
+
+int32 URROreBankSubsystem::RemoveSecuredOre(int32 Amount)
+{
+	const int32 Removed = FMath::Clamp(Amount, 0, SecuredOre);
+	if (Removed > 0)
+	{
+		SecuredOre -= Removed;
+		UE_LOG(LogRogueRigs, Log, TEXT("URROreBankSubsystem: %d secured ore spent, session total %d."), Removed, SecuredOre);
+	}
+	return SecuredOre;
+}

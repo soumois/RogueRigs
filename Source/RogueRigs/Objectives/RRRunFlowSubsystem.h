@@ -309,6 +309,21 @@ public:
 	 */
 	bool AddCarriedOre(int32 Amount);
 
+	/** Ore that can pay a purchase now: carried plus secured. */
+	UFUNCTION(BlueprintPure, Category = "RunFlow|Ore")
+	int32 GetSpendableOre() const { return CarriedOre + GetSecuredOre(); }
+
+	/** True when Amount (>= 0) can be paid now (GetSpendableOre() >= Amount). */
+	UFUNCTION(BlueprintPure, Category = "RunFlow|Ore")
+	bool CanSpendOre(int32 Amount) const { return Amount >= 0 && GetSpendableOre() >= Amount; }
+
+	/**
+	 * Pays Amount (> 0) from the carried ore first, then the rest from the secured ore (URROreBankSubsystem, or the world-local
+	 * total), and broadcasts OnOreChanged once. Refused (false, nothing spent) when Amount is not positive or exceeds
+	 * GetSpendableOre. Used by the paid level-up reroll and reusable by the intermission shop.
+	 */
+	bool SpendOre(int32 Amount);
+
 	/** Called by ARRMiner at the end of its BeginPlay: becomes the run's miner when none is valid, then OnMinerRegistered. */
 	void RegisterMiner(ARRMiner* InMiner);
 

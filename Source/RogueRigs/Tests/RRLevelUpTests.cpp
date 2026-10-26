@@ -8,6 +8,7 @@
 #include "AbilitySystemComponent.h"
 #include "GAS/RRHealthAttributeSet.h"
 #include "GAS/RRPlayerAttributeSet.h"
+#include "Objectives/RRRunFlowSubsystem.h"
 #include "Progression/RRLevelUpComponent.h"
 #include "Progression/RRProgressionComponent.h"
 #include "Tests/RRTestEventRecorder.h"
@@ -171,6 +172,13 @@ bool FRRLevelUpDelayTest::RunTest(const FString& Parameters)
 		return false;
 	}
 
+	// 30 carried ore: one paid reroll of 15, not the next one of 20 (task-315).
+	URRRunFlowSubsystem* RunFlow = TestWorld.Get()->GetSubsystem<URRRunFlowSubsystem>();
+	if (!TestNotNull(TEXT("run flow"), RunFlow) || !TestTrue(TEXT("30 ore granted"), RunFlow->AddCarriedOre(30)))
+	{
+		return false;
+	}
+
 	const float StartTime = TestWorld.Get()->GetTimeSeconds();
 	S.Progression->AddXP(LevelUpTestRawXPFor(S.Progression, 1));
 	TestFalse(TEXT("not paused at the level-up"), S.LevelUp->IsAwaitingChoice());
@@ -193,15 +201,19 @@ bool FRRLevelUpDelayTest::RunTest(const FString& Parameters)
 	}
 	TestEqual(TEXT("offer cards = upgrade component offer"), S.LevelUp->GetOfferCards().Num(), 3);
 
-	// Reroll forwards to the offer builder, once.
+	// Reroll pays 15 ore and forwards to the offer builder; the next one costs 20.
 	TestFalse(TEXT("out-of-range pick refused"), S.LevelUp->ChooseUpgrade(3));
+	TestEqual(TEXT("first reroll costs 15"), S.LevelUp->GetRerollCost(), 15);
 	TestTrue(TEXT("reroll accepted"), S.LevelUp->RequestReroll());
+	TestEqual(TEXT("15 ore spent"), RunFlow->GetCarriedOre(), 15);
+	TestEqual(TEXT("next reroll costs 20"), S.LevelUp->GetRerollCost(), 20);
 	TestEqual(TEXT("offer shown again after the reroll"), Recorder->GetOfferCardCounts().Num(), 2);
 	if (Recorder->GetOfferRerollFlags().Num() == 2)
 	{
-		TestFalse(TEXT("no second reroll offered"), Recorder->GetOfferRerollFlags()[1]);
+		TestFalse(TEXT("second reroll not affordable"), Recorder->GetOfferRerollFlags()[1]);
 	}
-	TestFalse(TEXT("second reroll refused"), S.LevelUp->RequestReroll());
+	TestFalse(TEXT("second reroll refused (15 ore < 20)"), S.LevelUp->RequestReroll());
+	TestEqual(TEXT("refused reroll spends nothing"), RunFlow->GetCarriedOre(), 15);
 	TestTrue(TEXT("still awaiting the choice"), S.LevelUp->IsAwaitingChoice());
 
 	// Paused game: further ticks do not open anything new.
@@ -223,6 +235,13 @@ bool FRRLevelUpChainTest::RunTest(const FString& Parameters)
 		return false;
 	}
 
+	// 35 carried ore: a reroll of 15 on the first screen; the chained level-up screen restarts the cost at 15 (task-315).
+	URRRunFlowSubsystem* RunFlow = TestWorld.Get()->GetSubsystem<URRRunFlowSubsystem>();
+	if (!TestNotNull(TEXT("run flow"), RunFlow) || !TestTrue(TEXT("35 ore granted"), RunFlow->AddCarriedOre(35)))
+	{
+		return false;
+	}
+
 	// Two levels at once: one delay, then two screens in sequence.
 	S.Progression->AddXP(LevelUpTestRawXPFor(S.Progression, 2, 2.f));
 	TestEqual(TEXT("level 3"), S.Progression->GetLevel(), 3);
@@ -230,14 +249,17 @@ bool FRRLevelUpChainTest::RunTest(const FString& Parameters)
 	TickFrames(TestWorld, FramesAfterDelay);
 	TestTrue(TEXT("first screen open"), S.LevelUp->IsAwaitingChoice());
 	TestEqual(TEXT("one offer shown"), Recorder->GetOfferCardCounts().Num(), 1);
+	TestTrue(TEXT("first screen reroll accepted"), S.LevelUp->RequestReroll());
+	TestEqual(TEXT("first screen next reroll costs 20"), S.LevelUp->GetRerollCost(), 20);
 
 	TestTrue(TEXT("first pick accepted"), S.LevelUp->ChooseUpgrade(0));
 	TestEqual(TEXT("one upgrade picked"), S.Upgrades->GetPickedUpgrades().Num(), 1);
 	TestTrue(TEXT("second screen open at once (still paused)"), S.LevelUp->IsAwaitingChoice());
-	TestEqual(TEXT("second offer shown"), Recorder->GetOfferCardCounts().Num(), 2);
-	if (Recorder->GetOfferRerollFlags().Num() == 2)
+	TestEqual(TEXT("second offer shown"), Recorder->GetOfferCardCounts().Num(), 3);
+	TestEqual(TEXT("chained level-up screen: cost back to 15"), S.LevelUp->GetRerollCost(), 15);
+	if (Recorder->GetOfferRerollFlags().Num() == 3)
 	{
-		TestTrue(TEXT("second screen has its own reroll"), Recorder->GetOfferRerollFlags()[1]);
+		TestTrue(TEXT("second screen reroll affordable (20 ore >= 15)"), Recorder->GetOfferRerollFlags()[2]);
 	}
 	TestEqual(TEXT("one choice left"), S.LevelUp->GetPendingChoices(), 1);
 	TestEqual(TEXT("not closed between the screens"), Recorder->GetOfferClosedCount(), 0);

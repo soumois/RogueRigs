@@ -27,7 +27,7 @@ DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FRROnUpgradeAppliedSignature, const 
  * player; weapon stats: all weapons or one weapon of ARRMiner::GetWeapons, so a new weapon becomes a target by itself),
  * then a tier by the luck-weighted draw; when the stat has no row at the drawn tier (Pierce below blue) that choice is
  * dropped for this offer and the card is drawn again from the other choices. Two cards of one offer never share stat and target. Reroll replaces the offer
- * once with cards sharing no (stat, target) with it. ApplyUpgrade ends the offer.
+ * (any number of times; the caller pays it) with cards sharing no (stat, target) with it. ApplyUpgrade ends the offer.
  * New-weapon cards (upgrades gdd, owner 2026-10-06 third test): only on offers for a level that is a multiple of
  * WeaponCardLevelInterval (5, 10, 15...): the first slots become "New weapon" cards, one per acquirable catalogue weapon
  * (ARRMiner::GetAcquirableWeapons: not owned, fewer than MaxWeapons owned) up to MaxNewWeaponCardsPerOffer (2), weapons
@@ -81,16 +81,16 @@ public:
 	float GetStatDrawWeight(ERRUpgradeStat Stat) const;
 
 	/**
-	 * Replaces the current offer, once per offer, with the same number of cards drawn with the offer's luck, none sharing
-	 * stat and target with the replaced cards (if the pool is too small, only identical cards are excluded). Returns false
-	 * (offer unchanged) when there is no current offer or its reroll was used.
+	 * Replaces the current offer with the same number of cards drawn with the offer's luck, none sharing stat and target with
+	 * the replaced cards (if the pool is too small, only identical cards are excluded). No limit per offer: the caller pays
+	 * (URRLevelUpComponent::RequestReroll, ore, URRRerollCostLibrary). Returns false (offer unchanged) without a current offer.
 	 */
 	UFUNCTION(BlueprintCallable, Category = "Upgrades")
 	bool Reroll(TArray<FRRUpgradeCard>& OutCards);
 
-	/** True while a current offer exists and its reroll is unused. */
+	/** True while a current offer exists (the cost check belongs to the caller). */
 	UFUNCTION(BlueprintPure, Category = "Upgrades")
-	bool CanReroll() const { return bHasOffer && !bRerollUsed; }
+	bool CanReroll() const { return bHasOffer; }
 
 	/** True between BuildOffer and ApplyUpgrade. */
 	UFUNCTION(BlueprintPure, Category = "Upgrades")
@@ -267,8 +267,6 @@ protected:
 	/** True between BuildOffer and ApplyUpgrade. */
 	bool bHasOffer = false;
 
-	/** True once the current offer was rerolled. */
-	bool bRerollUsed = false;
 
 	/** Random stream of the draws; seeded at initialization, reseeded by SetRandomSeed. */
 	FRandomStream RandomStream;

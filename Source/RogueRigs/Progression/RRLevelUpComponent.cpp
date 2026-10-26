@@ -7,6 +7,7 @@
 #include "Engine/World.h"
 #include "GameFramework/Pawn.h"
 #include "GameFramework/PlayerController.h"
+#include "Objectives/RRRunFlowSubsystem.h"
 #include "GAS/RRGameplayTags.h"
 #include "GAS/RRGE_Heal.h"
 #include "GAS/RRHealthAttributeSet.h"
@@ -14,7 +15,9 @@
 #include "Progression/RRProgressionComponent.h"
 #include "RogueRigs.h"
 #include "TimerManager.h"
+#include "Upgrades/RRRerollCost.h"
 #include "Upgrades/RRUpgradeComponent.h"
+#include "Weapons/RRWeapon.h"
 
 #include UE_INLINE_GENERATED_CPP_BY_NAME(RRLevelUpComponent)
 
@@ -78,7 +81,19 @@ TArray<FRRUpgradeCard> URRLevelUpComponent::GetOfferCards() const
 bool URRLevelUpComponent::CanReroll() const
 {
 	const URRUpgradeComponent* Upgrades = UpgradeComponent.Get();
-	return bAwaitingChoice && Upgrades && Upgrades->CanReroll();
+	const URRRunFlowSubsystem* RunFlow = GetRunFlow();
+	return bAwaitingChoice && Upgrades && Upgrades->CanReroll() && RunFlow && RunFlow->CanSpendOre(GetRerollCost());
+}
+
+int32 URRLevelUpComponent::GetRerollCost() const
+{
+	return URRRerollCostLibrary::GetRerollCostForCount(RerollCount);
+}
+
+URRRunFlowSubsystem* URRLevelUpComponent::GetRunFlow() const
+{
+	const UWorld* World = GetWorld();
+	return World ? World->GetSubsystem<URRRunFlowSubsystem>() : nullptr;
 }
 
 void URRLevelUpComponent::HandleLevelUp(int32 NewLevel)
@@ -175,7 +190,12 @@ void URRLevelUpComponent::ShowNextOffer()
 		CloseChoice();
 		return;
 	}
-	OnUpgradeOfferShown.Broadcast(Cards, Upgrades->CanReroll());
+	if (OfferLevel > 0)
+	{
+		// A level-up screen (chained ones included) restarts the reroll cost; a bonus chest screen (level 0) keeps it.
+		RerollCount = 0;
+	}
+	OnUpgradeOfferShown.Broadcast(Cards, CanReroll());
 }
 
 bool URRLevelUpComponent::ChooseUpgrade(int32 Index)
@@ -214,12 +234,17 @@ bool URRLevelUpComponent::ChooseUpgrade(int32 Index)
 bool URRLevelUpComponent::RequestReroll()
 {
 	URRUpgradeComponent* Upgrades = UpgradeComponent.Get();
-	TArray<FRRUpgradeCard> Cards;
-	if (!bAwaitingChoice || !Upgrades || !Upgrades->Reroll(Cards))
+	URRRunFlowSubsystem* RunFlow = GetRunFlow();
+	const int32 Cost = GetRerollCost();
+	if (!CanReroll() || !RunFlow->SpendOre(Cost))
 	{
 		return false;
 	}
-	OnUpgradeOfferShown.Broadcast(Cards, Upgrades->CanReroll());
+	TArray<FRRUpgradeCard> Cards;
+	Upgrades->Reroll(Cards);
+	++RerollCount;
+	UE_LOG(LogRogueRigs, Log, TEXT("URRLevelUpComponent: reroll paid %d ore (reroll %d since the last level-up screen), next cost %d."), Cost, RerollCount, GetRerollCost());
+	OnUpgradeOfferShown.Broadcast(Cards, CanReroll());
 	return true;
 }
 

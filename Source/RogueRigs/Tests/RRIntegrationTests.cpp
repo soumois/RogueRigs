@@ -16,6 +16,7 @@
 #include "Debug/RRCheats.h"
 #include "Kismet/GameplayStatics.h"
 #include "Objectives/RRConsole.h"
+#include "Objectives/RROreBankSubsystem.h"
 #include "Objectives/RRRunFlowSubsystem.h"
 #include "Objectives/RRShuttle.h"
 #include "Enemies/RRChaser.h"
@@ -1614,6 +1615,17 @@ bool FRRIntegrationUpgradeLoopTest::RunTest(const FString& Parameters)
 	Spawner->SetSpawningEnabled(true);
 	const float RifleDamageBefore = RifleASC->GetNumericAttribute(Damage);
 
+	// Paid reroll (task-315): 10 carried + 20 secured ore pays one reroll of 15 (carried first), not the next one of 20.
+	URRRunFlowSubsystem* RunFlow = World->GetSubsystem<URRRunFlowSubsystem>();
+	URROreBankSubsystem* Bank = URROreBankSubsystem::Get(World);
+	if (!TestNotNull(TEXT("run flow"), RunFlow) || !TestNotNull(TEXT("ore bank (game instance)"), Bank)
+		|| !TestEqual(TEXT("no ore before the grant"), RunFlow->GetSpendableOre(), 0))
+	{
+		return false;
+	}
+	RunFlow->AddCarriedOre(10);
+	Bank->AddSecuredOre(20);
+
 	// Wait the delay frame by frame: the world pauses on the frame the screen opens.
 	const double LevelUpTime = World->GetTimeSeconds();
 	int32 PauseFrame = -1;
@@ -1664,14 +1676,19 @@ bool FRRIntegrationUpgradeLoopTest::RunTest(const FString& Parameters)
 	TestTrue(TEXT("miner still while paused"), Miner->GetActorLocation().Equals(PausedLocation, 0.01f));
 	TestTrue(TEXT("still awaiting the choice"), LevelUp->IsAwaitingChoice());
 
-	// Reroll through the HUD (the Relancer button): new cards, no second reroll.
+	// Reroll through the HUD (the Relancer button): costs 15, new cards; the next one (20) is not affordable.
+	TestEqual(TEXT("first reroll costs 15"), HUD->GetUpgradeRerollCost(), 15);
 	TestTrue(TEXT("HUD reroll accepted"), HUD->RequestReroll());
+	TestEqual(TEXT("carried ore spent first: 10 -> 0"), RunFlow->GetCarriedOre(), 0);
+	TestEqual(TEXT("then secured ore: 20 -> 15"), RunFlow->GetSecuredOre(), 15);
+	TestEqual(TEXT("next reroll costs 20"), HUD->GetUpgradeRerollCost(), 20);
 	if (!TestEqual(TEXT("offer shown again"), Recorder->GetOfferCardCounts().Num(), 2))
 	{
 		return false;
 	}
-	TestFalse(TEXT("no second reroll offered"), Recorder->GetOfferRerollFlags()[1]);
-	TestFalse(TEXT("second HUD reroll refused"), HUD->RequestReroll());
+	TestFalse(TEXT("second reroll not affordable"), Recorder->GetOfferRerollFlags()[1]);
+	TestFalse(TEXT("second HUD reroll refused (15 ore < 20)"), HUD->RequestReroll());
+	TestEqual(TEXT("refused reroll spends nothing"), RunFlow->GetSecuredOre(), 15);
 	const TArray<FRRUpgradeCard> Cards = Recorder->GetLastOfferCards();
 	CheckOfferValid(*this, Miner, Cards, TEXT("rerolled offer"));
 	CheckHUDCards(*this, HUD, Cards, false, TEXT("rerolled offer"));

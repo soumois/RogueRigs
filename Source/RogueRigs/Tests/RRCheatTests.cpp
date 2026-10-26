@@ -97,9 +97,11 @@ bool FRRCheatConsoleVariablesTest::RunTest(const FString& Parameters)
 	{
 		return false;
 	}
+	TestFalse(TEXT("Reroll not affordable without ore"), LevelUp->CanReroll());
+	SetCheat(*this, TEXT("rr.Cheat.GrantOre"), TEXT("15"));
 	IConsoleVariable* Reroll = SetCheat(*this, TEXT("rr.Cheat.Reroll"), TEXT("1"));
 	TestEqual(TEXT("Reroll 1: offer shown again"), Recorder->GetOfferCardCounts().Num(), 2);
-	TestFalse(TEXT("Reroll used"), LevelUp->CanReroll());
+	TestFalse(TEXT("Reroll paid 15: next one (20) not affordable"), LevelUp->CanReroll());
 	if (Reroll)
 	{
 		TestEqual(TEXT("Reroll back to 0"), Reroll->GetInt(), 0);
@@ -208,11 +210,13 @@ bool FRRCheatPropertyRouteTest::RunTest(const FString& Parameters)
 	{
 		return false;
 	}
+	Settings->GrantOre = 15;
+	TestWorld.Tick();
 	Settings->bReroll = true;
 	TestWorld.Tick();
 	TestFalse(TEXT("bReroll consumed"), Settings->bReroll);
 	TestEqual(TEXT("bReroll: offer shown again"), Recorder->GetOfferCardCounts().Num(), 2);
-	TestFalse(TEXT("reroll used"), LevelUp->CanReroll());
+	TestFalse(TEXT("reroll paid 15: next one (20) not affordable"), LevelUp->CanReroll());
 	const TArray<FRRUpgradeCard> Cards = LevelUp->GetOfferCards();
 	Settings->ChooseUpgrade = 1;
 	TestWorld.Tick();

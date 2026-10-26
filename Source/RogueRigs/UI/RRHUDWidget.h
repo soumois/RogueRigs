@@ -195,9 +195,13 @@ public:
 	UFUNCTION(BlueprintCallable, Category = "HUD|Upgrades")
 	bool RequestReroll();
 
-	/** True while the open choice screen can still be rerolled (reroll button enabled). */
+	/** True while a choice screen is open and the miner can pay the reroll in ore (reroll button enabled, greyed otherwise). */
 	UFUNCTION(BlueprintPure, Category = "HUD|Upgrades")
 	bool CanRerollUpgrade() const;
+
+	/** Ore cost of the next reroll (URRLevelUpComponent::GetRerollCost; 0 without a bound miner). Shown on the reroll button. */
+	UFUNCTION(BlueprintPure, Category = "HUD|Upgrades")
+	int32 GetUpgradeRerollCost() const;
 
 	/** Progress 0..1 of the bound turret launcher's running recharge (0 when none or without a launcher), for a per-frame bar. */
 	UFUNCTION(BlueprintPure, Category = "HUD|Turret")
@@ -515,7 +519,8 @@ protected:
 
 	/**
 	 * Display event: show (or refresh) the choice screen with Cards (game paused, cursor visible). Called when a screen opens,
-	 * after a reroll (bCanReroll false) and for each chained screen. Implement in Blueprint.
+	 * after a reroll and for each chained screen; bCanReroll = the next reroll is affordable now (cost: GetUpgradeRerollCost).
+	 * Implement in Blueprint.
 	 */
 	UFUNCTION(BlueprintImplementableEvent, Category = "HUD|Upgrades")
 	void OnUpgradeOfferShown(const TArray<FRRUpgradeCard>& Cards, bool bCanReroll);

@@ -778,6 +778,34 @@ bool URRRunFlowSubsystem::AddCarriedOre(int32 Amount)
 	return true;
 }
 
+bool URRRunFlowSubsystem::SpendOre(int32 Amount)
+{
+	if (Amount <= 0 || !CanSpendOre(Amount))
+	{
+		UE_LOG(LogRogueRigs, Verbose, TEXT("URRRunFlowSubsystem: spending %d ore refused (spendable %d)."), Amount, GetSpendableOre());
+		return false;
+	}
+	const int32 FromCarried = FMath::Min(Amount, CarriedOre);
+	const int32 FromSecured = Amount - FromCarried;
+	CarriedOre -= FromCarried;
+	int32 Secured = GetSecuredOre();
+	if (FromSecured > 0)
+	{
+		if (URROreBankSubsystem* Bank = URROreBankSubsystem::Get(this))
+		{
+			Secured = Bank->RemoveSecuredOre(FromSecured);
+		}
+		else
+		{
+			LocalSecuredOre -= FromSecured;
+			Secured = LocalSecuredOre;
+		}
+	}
+	UE_LOG(LogRogueRigs, Log, TEXT("URRRunFlowSubsystem: %d ore spent (%d carried, %d secured), carried %d, secured %d."), Amount, FromCarried, FromSecured, CarriedOre, Secured);
+	OnOreChanged.Broadcast(CarriedOre, Secured);
+	return true;
+}
+
 void URRRunFlowSubsystem::SecureCarriedOre()
 {
 	bCarriedOreClosed = true;
