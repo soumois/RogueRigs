@@ -2358,6 +2358,7 @@ namespace RRIntegrationIntermissionTests
 		// OnNextLevelReady -> ARRPlayerController::HandleNextLevelReady: the old HUD removed, a new one created and bound to the same miner.
 		Test.AddInfo(FString::Printf(TEXT("%s: next level ready %d, HUD swap"), Path, Transition->IsNextLevelReady() ? 1 : 0));
 		HUD.Destroy();
+		Test.AddInfo(FString::Printf(TEXT("%s: old HUD destroyed (Destruct ran), OnLevelUp -> HandleLevelUp bound %d"), Path, IsLevelUpFlowBound(Miner) ? 1 : 0));
 		if (!HUD.Create(Test, World, HUDClass, Miner, TEXT("WBP_HUD (level 2)")))
 		{
 			return;
