@@ -3,7 +3,7 @@ id: task-316-05-capture-shop
 description: "Capture the intermission shop in game (cpp): upgrade shop between levels, step 05."
 parent: task-316-intermission-shop
 kind: task
-status: todo
+status: in-progress
 ---
 # Capture the shop in game
 

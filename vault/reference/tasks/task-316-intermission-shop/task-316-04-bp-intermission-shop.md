@@ -3,7 +3,7 @@ id: task-316-04-bp-intermission-shop
 description: "WBP_Intermission hosts the shop: 5 WBP_ShopCard in a row, ore balance, reroll with cost, Continue (bp): upgrade shop between levels, step 04."
 parent: task-316-intermission-shop
 kind: task
-status: in-progress
+status: done
 ---
 # Shop on the intermission screen
 
@@ -15,11 +15,11 @@ status: in-progress
 - done_when: compiled with warnings as errors and saved; tree and graph wiring read back; doc node updated; lint clean; committed
 - editor_state: open
 - token_ceiling: 50000
-- model: open
-- tokens: open
-- runs: open
+- model: sonnet
+- tokens: input 98, cache write 116268, cache read 3651909, output 33770
+- runs: 1
 - milestone: M2
-- result: open
+- result: WBP_Intermission hosts the shop: Salvage Stall title (Labels 0), row of 5 WBP_ShopCard (SlotIndex 0-4), balance row (T_Icon_Ore + GetOreBalance), Reroll button (Labels 5, ore icon, GetRerollCost, disabled when CanReroll false, RequestReroll), Continue unchanged; RefreshShop on Construct and OnShopRefreshed; compiled warnings as errors, saved; doc wbp-intermission; commit 809d366f; nothing seen in game, 1080 px height fit tight
 
 ## Relations
 - [[task-316-intermission-shop]] — parent global task.
