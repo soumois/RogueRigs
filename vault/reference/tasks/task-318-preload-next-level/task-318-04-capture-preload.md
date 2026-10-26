@@ -3,7 +3,7 @@ id: task-318-04-capture-preload
 description: "Capture in -game the fade path and the loading-screen path and send them to the owner."
 parent: task-318-preload-next-level
 kind: task
-status: todo
+status: in-progress
 ---
 # Capture in -game the fade path and the loading-screen path and send them to the owner
 
