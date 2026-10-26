@@ -1,6 +1,6 @@
 ---
 id: orchestration-protocol
-description: "Procedure the Orchestrator follows for every request: restate, GDD check, plan, confirm, delegate, verify, record; how to resume after a limit."
+description: "Procedure the Planner and Executor follow for every request: restate, GDD check, plan, confirm, delegate, verify, record; how to resume after a limit."
 parent: agents-index
 kind: rule
 applies_to: orchestrator
@@ -8,7 +8,7 @@ applies_to: orchestrator
 # Orchestration protocol
 
 ## Roles
-`/task` splits the procedure between two agents (owner 2026-10-26). The [[agent-planner]] does steps 0 to 4 and writes every decision into the task nodes; the [[agent-executor]] does steps 5 and 6 for one confirmed global task, from those nodes only, in a fresh context. Executor step 0: check `git status` and the task's `next_step`; it does not read `tasks-index` or report other tasks. [[agent-orchestrator]] is the combined role, kept for `claude --agent orchestrator`.
+`/task` splits the procedure between two agents (owner 2026-10-26). The [[agent-planner]] does steps 0 to 4 and writes every decision into the task nodes; the [[agent-executor]] does steps 5 and 6 for one confirmed global task, from those nodes only, in a fresh context. Executor step 0: check `git status` and the task's `next_step`; it does not read `tasks-index` or report other tasks.
 
 ## 0. Resume first
 On every start, read [[tasks-index]]. If a global task is `in-progress`, read it, open its `next_step` subtask, check `git status` for partial work, and continue from there. Do not take a new request before reporting where the current one stands.
@@ -55,7 +55,6 @@ Run the global acceptance checks, fill `result`, set `done`, `next_step: none`, 
 - [[orchestrator-runbook]] — the commands that apply this protocol.
 - [[orchestrator-lessons]] — owner rules and planning lessons: read before every plan; agent limits are in [[bp-mcp-lessons]] and [[art-3d-lessons]].
 - [[agents-index]] — parent index.
-- [[agent-orchestrator]] — the combined agent bound by this protocol.
 - [[agent-planner]] — runs steps 0 to 4.
 - [[agent-executor]] — runs steps 5 and 6.
 - [[cost-log]] — where step 5 records tokens per subtask.

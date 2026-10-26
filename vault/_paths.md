@@ -20,7 +20,6 @@ agent-bp  reference/agents/agent-bp.md
 agent-cpp  reference/agents/agent-cpp.md
 agent-executor  reference/agents/agent-executor.md
 agent-level-design  reference/agents/agent-level-design.md
-agent-orchestrator  reference/agents/agent-orchestrator.md
 agent-planner  reference/agents/agent-planner.md
 agent-style-guide  reference/agents/agent-style-guide.md
 agent-text  reference/agents/agent-text.md

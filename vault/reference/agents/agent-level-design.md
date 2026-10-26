@@ -20,5 +20,5 @@ status: provisional
 
 ## Relations
 - [[agents-index]] — parent index.
-- [[agent-orchestrator]] — who delegates to it.
+- [[agent-executor]] — who delegates to it.
 - [[layout-review-rules]] — seed pick and review rules for generated layouts.

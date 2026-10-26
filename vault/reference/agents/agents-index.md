@@ -11,13 +11,12 @@ The main Claude Code session only relays between the owner and two agents: the P
 Crew in use: planner → executor → cpp, bp (code and editor); level-design (layouts); text → style-guide (critic); art → style-guide → 3d → bp (assets).
 Planned, not written yet: agent-balance, agent-animation, agent-sound, agent-qa (deferred).
 
-Lessons are filed by theme, and each agent reads the node about its own limits: owner rules for the Orchestrator, [[bp-mcp-lessons]] for bp, [[art-3d-lessons]] for art and 3d.
+Lessons are filed by theme, and each agent reads the node about its own limits: owner rules for the Planner, [[bp-mcp-lessons]] for bp, [[art-3d-lessons]] for art and 3d.
 
 ## Relations
 - [[root]] — the vault map.
 - [[agent-planner]] — plans a request into confirmed task nodes and asks the owner; open to run or change planning.
 - [[agent-executor]] — runs one confirmed global task from its nodes, delegating each subtask; open to run or change execution.
-- [[agent-orchestrator]] — the combined Orchestrator role (planner plus executor), kept for `claude --agent orchestrator`.
 - [[agent-level-design]] — writes arena layouts as validated grid JSON.
 - [[agent-cpp]] — writes and builds C++ and Node tooling, runs visual checks, updates system docs.
 - [[agent-bp]] — builds the editor layer through Unreal MCP and documents each Blueprint.
@@ -26,7 +25,7 @@ Lessons are filed by theme, and each agent reads the node about its own limits: 
 - [[agent-art]] — image prompts and candidate images with GPT Image 2 through Kie.ai (`Tools/art/kie_image.js`).
 - [[agent-3d]] — validated image to cleaned FBX through Meshy and headless Blender (`Tools/art/`).
 - [[cloud-session-git]] — committing, tagging and pushing from a cloud session linked to the PC: lock files, identity, trailers; open before a commit from the cloud.
-- [[orchestration-protocol]] — the step-by-step procedure the Orchestrator follows for every request, including resume after a limit.
+- [[orchestration-protocol]] — the step-by-step procedure the Planner (steps 0 to 4) and the Executor (steps 5 and 6) follow for every request, including resume after a limit.
 - [[orchestrator-runbook]] — the commands that work: git, editor start and stop, delegation prompt, closing a subtask, dashboard.
 - [[orchestrator-lessons]] — owner rules and planning lessons; read before every plan.
 - [[orchestrator-script-quirks]] — task scripts, git, editor, shells and permission pitfalls; open before closing a subtask or committing.

@@ -21,7 +21,6 @@ status: provisional
 ## Relations
 - [[agents-index]] — parent index.
 - [[agent-planner]] — writes the nodes it runs.
-- [[agent-orchestrator]] — the combined role it replaces in `/task`.
 - [[orchestration-protocol]] — steps 5 and 6 are its procedure.
 - [[orchestrator-runbook]] — the commands it uses.
 - [[orchestrator-script-quirks]] — script, git and editor pitfalls.

@@ -21,5 +21,5 @@ status: provisional
 
 ## Relations
 - [[agents-index]] — parent index.
-- [[agent-orchestrator]] — who delegates to it.
+- [[agent-executor]] — who delegates to it.
 - [[agent-style-guide]] — the critic that reviews its output.

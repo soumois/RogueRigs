@@ -23,5 +23,5 @@ status: provisional
 
 ## Relations
 - [[agents-index]] — parent index.
-- [[agent-orchestrator]] — who delegates to it.
+- [[agent-executor]] — who delegates to it.
 - [[bp-mcp-lessons]] — its known limits and working rules.

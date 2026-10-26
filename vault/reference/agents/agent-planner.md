@@ -22,6 +22,5 @@ status: provisional
 ## Relations
 - [[agents-index]] — parent index.
 - [[agent-executor]] — runs the tasks it writes.
-- [[agent-orchestrator]] — the combined role it replaces in `/task`.
 - [[orchestration-protocol]] — steps 0 to 4 are its procedure.
 - [[orchestrator-lessons]] — owner rules it applies.
