@@ -15,7 +15,7 @@ kind: doc
   3. RebuildingTerrain: grid rebuilt from the prepared layout.
   4. PlacingMiner: miner (and drone) teleported to the game mode's player start, flow field recomputed.
   5. Ready: `OnNextLevelReady(LevelIndex, LayoutName)`; the controller replaces the HUD by a fresh one (collapsed until `OnLevelReady`).
-  - `Continue`: shop closed, phase Loading, `OnLoadingStarted`, stage PreparingLevel; ready: `StartPreparedLevel` at once; else when the preparation ends. `StartPreparedLevel`: snapshot consumed in place (log line compares miner and snapshot values), run log level start, level-up choices allowed again, unpause, game input, phase None, `OnLevelReady`.
+  - `Continue`: shop closed, phase Loading, stage PreparingLevel; ready: fade out then `StartPreparedLevel`; else `OnLoadingStarted` and `StartPreparedLevel` when the preparation ends; fade in after it (task-318-02, [[sys-run-transition-fade]]). `StartPreparedLevel`: snapshot consumed in place (log line compares miner and snapshot values), run log level start, level-up choices allowed again, unpause, game input, phase None, `OnLevelReady`.
   - Pure (Blueprint): `IsNextLevelReady()`, `GetNextLevelProgress()` (0-1: completed work steps / 4), `GetNextLevelPrepStep()`.
 - data: none.
 - depends_on: [[sys-run-layout]], [[sys-grid]], [[sys-objectives-run-flow]], [[sys-spawner-pool-prewarm]], [[sys-hud-bindings]], [[sys-run-log]].
@@ -32,3 +32,4 @@ kind: doc
 - [[sys-run-log]] — level counters restarted at Continue.
 - [[intermission]] — the cards screen it hides behind.
 - [[task-318-01-preload-next-level]] — the task that built it.
+- [[sys-run-transition-fade]] — what Continue shows depending on the readiness.

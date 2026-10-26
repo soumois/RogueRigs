@@ -328,6 +328,7 @@ sys-run-log  reference/tech/systems/world/sys-run-log.md
 sys-run-log-writer  reference/tech/systems/world/sys-run-log/sys-run-log-writer.md
 sys-run-shop  reference/tech/systems/world/sys-run/sys-run-shop.md
 sys-run-transition  reference/tech/systems/world/sys-run/sys-run-transition.md
+sys-run-transition-fade  reference/tech/systems/world/sys-run/sys-run-transition-fade.md
 sys-run-transition-preload  reference/tech/systems/world/sys-run/sys-run-transition-preload.md
 sys-spawner  reference/tech/systems/enemies/sys-spawner.md
 sys-spawner-cells-heading  reference/tech/systems/enemies/sys-spawner/sys-spawner-cells-heading.md
