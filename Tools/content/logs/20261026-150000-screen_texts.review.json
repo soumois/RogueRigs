@@ -1,0 +1,7 @@
+{"run_id": "20261026-150000-screen_texts", "rounds": [{"loop": 0, "reviews": [
+  {"item_id": "end_run_won", "verdict": "pass", "rule": null, "reason": "Unchanged in this run; not re-reviewed (out of the scope named by the Orchestrator).", "suggestion": null},
+  {"item_id": "intermission_recap", "verdict": "pass", "rule": null, "reason": "New labels 'Robots destroyed', 'Damage by weapon' and 'Next level' are plain English headings matching the GDD stats screen; no company voice, no film line, no player mockery; labels 0-5 and the other fields were not re-reviewed.", "suggestion": null},
+  {"item_id": "intermission_run_won", "verdict": "pass", "rule": null, "reason": "Rigs voice: 'CLAIM EMPTIED' and 'Cash out' fit the scrapper counting his cut, 'damage report' is a generic phrase rather than a film line, and nothing claims the Rigs are in the right (L4) or puts anyone on site (L1, L2).", "suggestion": null},
+  {"item_id": "shop_screen", "verdict": "pass", "rule": null, "reason": "'SPARE PARTS' fits the patched, salvage side of the Rigs; neutral title, no rule touched.", "suggestion": null},
+  {"item_id": "loading_level", "verdict": "pass", "rule": null, "reason": "Unchanged in this run; not re-reviewed (out of the scope named by the Orchestrator).", "suggestion": null}
+]}]}
