@@ -3,7 +3,7 @@ id: task-317-01-stats-then-cards
 description: "The end-of-level stats screen and the cards shop screen are two distinct screens; level 4 shows the stats screen only, then the run-won screen."
 parent: task-317-stats-then-cards
 kind: task
-status: todo
+status: in-progress
 ---
 # Stats screen then cards screen
 

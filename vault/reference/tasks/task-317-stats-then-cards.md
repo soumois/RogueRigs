@@ -3,7 +3,7 @@ id: task-317-stats-then-cards
 description: "Global task: end-of-level stats screen and cards shop screen become two distinct screens; level 4 shows stats only, then run-won."
 parent: tasks-to-do-index
 kind: task
-status: todo
+status: in-progress
 ---
 # Stats screen then cards screen
 
