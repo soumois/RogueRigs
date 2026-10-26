@@ -13,7 +13,7 @@ status: in-progress
 - gdd_check: intermission, run-shop, run-structure, ore-economy read (2026-10-26). Conflicts: GDD had one recap+shop screen (owner: two screens, GDD updated); shop at run end not in the GDD (owner Q1: level 4 shows stats only, no cards). Owner Q2: add kills per robot type (names only, no icons; real counts from the run log KillsByRobotType) and damage per weapon (DamageDealtByWeapon). Q3 cards screen on opaque black: ok. Reading to confirm: on level 4 the stats button leads to the existing run-won screen. Old task-319 (run-end shop) dropped.
 - confirmed_by_owner: yes (2026-10-26)
 - milestone: M2
-- next_step: task-317-02-text-stats-labels
+- next_step: task-317-03-bp-shop-screen
 - result: open
 
 ## Subtasks

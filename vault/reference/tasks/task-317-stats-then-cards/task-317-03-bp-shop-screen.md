@@ -3,7 +3,7 @@ id: task-317-03-bp-shop-screen
 description: "New WBP_ShopScreen: the shop moved to its own screen on an opaque black background, set on the controller."
 parent: task-317-stats-then-cards
 kind: task
-status: todo
+status: in-progress
 ---
 # New WBP_ShopScreen: the shop moved to its own screen on an opaque black background, set on the controller
 

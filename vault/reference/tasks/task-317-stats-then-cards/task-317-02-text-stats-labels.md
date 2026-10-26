@@ -3,7 +3,7 @@ id: task-317-02-text-stats-labels
 description: "Stats screen and cards screen labels in screen_texts.json."
 parent: task-317-stats-then-cards
 kind: task
-status: in-progress
+status: done
 ---
 # Stats screen and cards screen labels in screen_texts.json
 
@@ -15,11 +15,11 @@ status: in-progress
 - done_when: items exist in English in the voice rules of agent-text, reviewed by style-guide, existing item keys kept or their renames listed for the bp subtasks; lint clean.
 - editor_state: any
 - token_ceiling: 20000
-- model: open
-- tokens: open
-- runs: open
+- model: opus+sonnet
+- tokens: input 34, cache write 89264, cache read 470472, output 11318
+- runs: 1
 - milestone: M2
-- result: open
+- result: screen_texts.json: intermission_recap labels 6-8 (Robots destroyed, Damage by weapon, Next level), new intermission_run_won (CLAIM EMPTIED, Cash out), new shop_screen (SPARE PARTS); no renames; style-guide pass on all items. Commit 897b9915.
 
 ## Relations
 - [[task-317-stats-then-cards]] — parent global task.
