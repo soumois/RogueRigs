@@ -1,0 +1,4 @@
+{"run_id": "20261026-120000-screen_texts", "rounds": [{"loop": 0, "reviews": [
+  {"item_id": "end_run_won", "verdict": "pass", "rule": null, "reason": "Unchanged item outside this subtask; Rigs voice, joke on company paperwork, consistent with L4.", "suggestion": null},
+  {"item_id": "intermission_recap", "verdict": "pass", "rule": null, "reason": "New shop labels Salvage Stall, Buy, Sold. No refunds., Short on ore and Reroll stock are short Rigs-side UI text with no film line, no vault example, no player mockery and no company voice or human on site.", "suggestion": null},
+  {"item_id": "loading_level", "verdict": "pass", "rule": null, "reason": "Unchanged item outside this subtask; neutral loading text, no rule touched.", "suggestion": null}]}]}
