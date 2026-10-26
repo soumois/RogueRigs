@@ -3,7 +3,7 @@ id: task-316-02-text-shop-labels
 description: "Shop labels of the intermission screen in screen_texts.json (text): upgrade shop between levels, step 02."
 parent: task-316-intermission-shop
 kind: task
-status: in-progress
+status: done
 ---
 # Shop labels
 
@@ -15,11 +15,11 @@ status: in-progress
 - done_when: JSON valid; existing keys and Labels[1] Continue unchanged in position or the report states the new indexes; style loop passed; lint clean; committed
 - editor_state: any
 - token_ceiling: 20000
-- model: open
-- tokens: open
-- runs: open
+- model: opus+sonnet
+- tokens: input 30, cache write 81786, cache read 357185, output 7842
+- runs: 1
 - milestone: M2
-- result: open
+- result: intermission_recap labels: [0] Salvage Stall (title), [1] Continue unchanged, [2] Buy, [3] Sold. No refunds. (bought slot), [4] Short on ore (unaffordable), [5] Reroll stock; validator valid; style-guide review 5/5 pass; commits ecff51f9 and review
 
 ## Relations
 - [[task-316-intermission-shop]] — parent global task.

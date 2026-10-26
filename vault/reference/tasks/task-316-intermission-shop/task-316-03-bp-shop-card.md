@@ -3,7 +3,7 @@ id: task-316-03-bp-shop-card
 description: "New WBP_ShopCard widget: one smaller priced upgrade card for the intermission shop (bp): upgrade shop between levels, step 03."
 parent: task-316-intermission-shop
 kind: task
-status: todo
+status: in-progress
 ---
 # Shop card widget
 
