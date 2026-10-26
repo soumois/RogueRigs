@@ -679,6 +679,7 @@ kind: note
 | [[task-318-01-preload-next-level]] | opus | 2 | 0k | 214k | 11862k | 68k |
 | [[task-318-02-fade-or-loading]] | opus | 1 | 0k | 134k | 4263k | 44k |
 | [[task-318-03-bp-loading-progress]] | sonnet | 1 | 0k | 59k | 842k | 11k |
+| [[task-318-04-capture-preload]] | opus | 1 | 0k | 82k | 1627k | 17k |
 
 ## Totals
 | Scope | Input | Cache write | Cache read | Output |

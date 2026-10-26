@@ -1,9 +1,9 @@
 ---
 id: task-318-preload-next-level
 description: "Global task: the next level loads during the cards screen; Continue fades into it, or shows a loading screen with progress bar."
-parent: tasks-to-do-index
+parent: tasks-done-index
 kind: task
-status: in-progress
+status: done
 ---
 # Preload the next level during the cards screen
 
@@ -13,8 +13,8 @@ status: in-progress
 - gdd_check: intermission read (2026-10-26). Today the level change is a blocking OpenLevel of the same map (2.3-3.3 s) plus prewarm hold, only the layout is async: real preloading confirmed by the owner (Q4). Fade durations Q5 and loading screen with progress bar and empty image slot Q6 accepted; loading image open. Depends on task-317 (cards screen).
 - confirmed_by_owner: yes (2026-10-26)
 - milestone: M2
-- next_step: task-318-04-capture-preload
-- result: open
+- next_step: none
+- result: Done. Rendered -game captures in Saved/PreloadNextLevel (contact_sheet.png): cards screen on black while level 2 prepared (601.8 ms, ready before Continue); fade path darkens cards then level 2 with no loading screen; loading path shows WBP_Loading with orange bar at 0.25 and 0.75, then fade in on level 3; carried state kept (trivial level-1 state). Unseen: fade-in on fade path (hitch), bar at 0.5/1.0, LoadingImage, fallback, restart/death. Fade-ins logged 684-705 ms because of post-switch hitches. Commit cd3bce1f.
 
 ## Subtasks
 1. task-318-01-preload-next-level — cpp
@@ -23,7 +23,7 @@ status: in-progress
 4. task-318-04-capture-preload — cpp
 
 ## Relations
-- [[tasks-to-do-index]] — parent index.
+- [[tasks-done-index]] — parent index.
 - [[task-318-01-preload-next-level]] — step 1, cpp.
 - [[task-318-02-fade-or-loading]] — step 2, cpp.
 - [[task-318-03-bp-loading-progress]] — step 3, bp.
