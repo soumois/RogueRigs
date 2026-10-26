@@ -15,7 +15,7 @@ kind: doc
 - logic_in_bp: display only.
 - assets: none.
 - owner_agent: agent-bp
-- verified: task-206-05: tree read back, graph read back, compiled with warnings as errors, saved. task-210-04: tree defaults read back (DROPPING IN, Level 1, Surveying the terrain), graph wiring read back, compiled with warnings as errors, saved. task-318-03: tree and slot values read back (bar 600 x 24, fill orange, image Collapsed, brush no image), graph read back, compiled with warnings as errors, saved. Earlier: Not run in PIE, not seen on screen; the runtime text lookup was not exercised.
+- verified: task-206-05: tree read back, graph read back, compiled with warnings as errors, saved. task-210-04: tree defaults read back (DROPPING IN, Level 1, Surveying the terrain), graph wiring read back, compiled with warnings as errors, saved. task-318-03: tree and slot values read back (bar 600 x 24, fill orange, image Collapsed, brush no image), graph read back, compiled with warnings as errors, saved. task-318-04: seen on screen in a rendered -game run (Saved/PreloadNextLevel/t318_loading_00.png, _01.png): dark backdrop, "DROPPING IN", orange "Level 3", stage line "Prepping the level" (runtime text lookup works), LoadingBar orange fill at 0.25 then 0.75; 0.5 and 1.0 not drawn (single-frame steps); LoadingImage not visible (collapsed).
 
 ## Relations
 - [[blueprints-ui-index]] — parent index.
