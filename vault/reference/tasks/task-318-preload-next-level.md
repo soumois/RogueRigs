@@ -3,7 +3,7 @@ id: task-318-preload-next-level
 description: "Global task: the next level loads during the cards screen; Continue fades into it, or shows a loading screen with progress bar."
 parent: tasks-to-do-index
 kind: task
-status: todo
+status: in-progress
 ---
 # Preload the next level during the cards screen
 

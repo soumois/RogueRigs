@@ -3,7 +3,7 @@ id: task-318-01-preload-next-level
 description: "Prepare the next level in the background from the cards screen, with readiness and 0-1 progress API, no blocking load at Continue."
 parent: task-318-preload-next-level
 kind: task
-status: todo
+status: in-progress
 ---
 # Preload the next level during the cards screen
 
