@@ -27,6 +27,13 @@ public:
 	UFUNCTION(BlueprintPure, Category = "Run|Transition")
 	ERRRunLoadingStage GetLoadingStage() const;
 
+	/**
+	 * Progress 0-1 for the progress bar (task-318-02): URRRunTransitionSubsystem::GetLoadingProgress (next level preparation in
+	 * this world; 0 on the map-travel fallback). Readable from a binding or Tick, also pushed by OnLoadingProgressChanged.
+	 */
+	UFUNCTION(BlueprintPure, Category = "Run|Transition")
+	float GetLoadingProgress() const;
+
 protected:
 	/** Binds URRRunTransitionSubsystem::OnLoadingStageChanged. */
 	virtual void NativeConstruct() override;
@@ -44,6 +51,14 @@ protected:
 	/** Subsystem OnLoadingStageChanged callback: forwards to OnLoadingStageChanged. */
 	UFUNCTION()
 	void HandleLoadingStageChanged(ERRRunLoadingStage Stage);
+
+	/** Subsystem OnNextLevelProgressChanged callback: forwards GetLoadingProgress to OnLoadingProgressChanged. */
+	UFUNCTION()
+	void HandleNextLevelProgressChanged(float Progress);
+
+	/** Loading progress changed (0-1, task-318-02); also once at ShowLoading. Implement in Blueprint (progress bar percent). */
+	UFUNCTION(BlueprintImplementableEvent, Category = "Run|Transition")
+	void OnLoadingProgressChanged(float Progress);
 
 	/** Show the loading screen for level LevelIndex (layout LayoutName). Implement in Blueprint. */
 	UFUNCTION(BlueprintImplementableEvent, Category = "Run|Transition")

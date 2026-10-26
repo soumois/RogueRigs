@@ -218,28 +218,30 @@ bool URRRunTransitionSubsystem::Continue()
 	LoadingStartFrame = GFrameCounter;
 	LoadingFirstPaintFrame = 0;
 	bTravelRequested = false;
-	UE_LOG(LogRogueRigs, Log, TEXT("URRRunTransitionSubsystem: Continue: loading started for level %d (layout %s), frame %llu."), LoadingLevelIndex,
-		*LoadingLayoutName, LoadingStartFrame);
-	OnLoadingStarted.Broadcast(LoadingLevelIndex, LoadingLayoutName);
-
 	if (PrepStep != ERRNextLevelPrepStep::None)
 	{
-		// In-place path (task-318-01): no map load. Ready: the level starts now; else it starts when the preparation ends.
+		// In-place path (task-318-01): no map load. Ready: fade out, switch, fade in, no loading screen (task-318-02, intermission
+		// gdd); else the loading screen until the preparation ends, then the switch and the fade in.
 		SetLoadingStage(ERRRunLoadingStage::PreparingLevel);
 		if (IsNextLevelReady())
 		{
-			UE_LOG(LogRogueRigs, Log, TEXT("URRRunTransitionSubsystem: Continue: next level %d already prepared in this world (ready %.1f ms before Continue)."),
-				LoadingLevelIndex, (LoadingStartSeconds - PrepReadySeconds) * 1000.0);
-			StartPreparedLevel();
+			UE_LOG(LogRogueRigs, Log, TEXT("URRRunTransitionSubsystem: Continue: next level %d already prepared in this world (ready %.1f ms before Continue), frame %llu: fade path, no loading screen."),
+				LoadingLevelIndex, (LoadingStartSeconds - PrepReadySeconds) * 1000.0, LoadingStartFrame);
+			StartScreenFade(ERRTransitionFade::FadingOut, GetDefault<URRRunSettings>()->TransitionFadeOutSeconds);
 		}
 		else
 		{
 			bStartWhenPrepared = true;
-			UE_LOG(LogRogueRigs, Log, TEXT("URRRunTransitionSubsystem: Continue: next level %d still being prepared (progress %.2f), it starts when ready."),
-				LoadingLevelIndex, GetNextLevelProgress());
+			UE_LOG(LogRogueRigs, Log, TEXT("URRRunTransitionSubsystem: Continue: next level %d still being prepared (progress %.2f), frame %llu: loading path, loading screen until ready."),
+				LoadingLevelIndex, GetNextLevelProgress(), LoadingStartFrame);
+			OnLoadingStarted.Broadcast(LoadingLevelIndex, LoadingLayoutName);
 		}
 		return true;
 	}
+
+	UE_LOG(LogRogueRigs, Log, TEXT("URRRunTransitionSubsystem: Continue: loading started for level %d (layout %s), frame %llu."), LoadingLevelIndex,
+		*LoadingLayoutName, LoadingStartFrame);
+	OnLoadingStarted.Broadcast(LoadingLevelIndex, LoadingLayoutName);
 
 	if (Run->IsLayoutPending(LoadingLevelIndex))
 	{
@@ -470,6 +472,8 @@ void URRRunTransitionSubsystem::FinishLoading(const TCHAR* Reason)
 	SetLoadingStage(ERRRunLoadingStage::None);
 	LoadingLevelIndex = 0;
 	OnLevelReady.Broadcast(Level, Layout);
+	// The loading screen is gone: black fades away over the new level (task-318-02).
+	StartScreenFade(ERRTransitionFade::FadingIn, GetDefault<URRRunSettings>()->TransitionFadeInSeconds);
 }
 
 void URRRunTransitionSubsystem::SetLoadingStage(ERRRunLoadingStage NewStage)
@@ -522,6 +526,7 @@ void URRRunTransitionSubsystem::ClearTransition()
 		TravelWaitHandle.Reset();
 	}
 	StopNextLevelPreparation();
+	StopScreenFade();
 	bTravelRequested = false;
 	LoadingFirstPaintFrame = 0;
 	HeldRunFlow.Reset();
@@ -542,6 +547,108 @@ float URRRunTransitionSubsystem::GetNextLevelProgress() const
 	return PrepStep == ERRNextLevelPrepStep::None ? 0.f : FMath::Clamp(static_cast<float>(Done) / static_cast<float>(Total), 0.f, 1.f);
 }
 
+float URRRunTransitionSubsystem::GetLoadingProgress() const
+{
+	return IsLevelLoading() && PrepStep != ERRNextLevelPrepStep::None ? GetNextLevelProgress() : 0.f;
+}
+
+void URRRunTransitionSubsystem::SetPrepStep(ERRNextLevelPrepStep NewStep)
+{
+	if (PrepStep == NewStep)
+	{
+		return;
+	}
+	PrepStep = NewStep;
+	const float Progress = GetNextLevelProgress();
+	if (IsLevelLoading())
+	{
+		UE_LOG(LogRogueRigs, Log, TEXT("URRRunTransitionSubsystem: loading progress %.2f (step %s), frame %llu."), Progress,
+			*StaticEnum<ERRNextLevelPrepStep>()->GetNameStringByValue(static_cast<int64>(NewStep)), GFrameCounter);
+	}
+	OnNextLevelProgressChanged.Broadcast(Progress);
+}
+
+float URRRunTransitionSubsystem::GetScreenFadeAlpha() const
+{
+	if (ScreenFade == ERRTransitionFade::None)
+	{
+		return 0.f;
+	}
+	const float T = ScreenFadeDuration > 0.f ? FMath::Clamp(static_cast<float>((FPlatformTime::Seconds() - ScreenFadeStartSeconds) / ScreenFadeDuration), 0.f, 1.f) : 1.f;
+	return ScreenFade == ERRTransitionFade::FadingOut ? T : 1.f - T;
+}
+
+void URRRunTransitionSubsystem::StartScreenFade(ERRTransitionFade Fade, float Duration)
+{
+	StopScreenFade();
+	if (Fade == ERRTransitionFade::None)
+	{
+		return;
+	}
+	ScreenFade = Fade;
+	ScreenFadeDuration = FMath::Max(0.f, Duration);
+	ScreenFadeStartSeconds = FPlatformTime::Seconds();
+	UE_LOG(LogRogueRigs, Log, TEXT("URRRunTransitionSubsystem: screen fade %s started (%.2f s), frame %llu."),
+		Fade == ERRTransitionFade::FadingOut ? TEXT("out") : TEXT("in"), ScreenFadeDuration, GFrameCounter);
+	OnScreenFadeStarted.Broadcast(Fade, ScreenFadeDuration);
+	if (ScreenFadeDuration <= 0.f)
+	{
+		FinishScreenFade();
+		return;
+	}
+	// Real time on the core ticker: the fade out runs while the world is still paused behind the cards screen.
+	TWeakObjectPtr<URRRunTransitionSubsystem> WeakThis(this);
+	ScreenFadeHandle = FTSTicker::GetCoreTicker().AddTicker(FTickerDelegate::CreateLambda([WeakThis](float)
+	{
+		if (URRRunTransitionSubsystem* Self = WeakThis.Get())
+		{
+			Self->ScreenFadeHandle.Reset();
+			Self->FinishScreenFade();
+		}
+		return false;
+	}), ScreenFadeDuration);
+}
+
+void URRRunTransitionSubsystem::FinishScreenFade()
+{
+	const ERRTransitionFade Fade = ScreenFade;
+	if (Fade == ERRTransitionFade::None)
+	{
+		return;
+	}
+	if (ScreenFadeHandle.IsValid())
+	{
+		FTSTicker::GetCoreTicker().RemoveTicker(ScreenFadeHandle);
+		ScreenFadeHandle.Reset();
+	}
+	const double ElapsedMs = (FPlatformTime::Seconds() - ScreenFadeStartSeconds) * 1000.0;
+	ScreenFade = ERRTransitionFade::None;
+	UE_LOG(LogRogueRigs, Log, TEXT("URRRunTransitionSubsystem: screen fade %s finished after %.1f ms, frame %llu%s."),
+		Fade == ERRTransitionFade::FadingOut ? TEXT("out") : TEXT("in"), ElapsedMs, GFrameCounter,
+		Fade == ERRTransitionFade::FadingOut ? TEXT(": switching to the prepared level") : TEXT(""));
+	if (Fade == ERRTransitionFade::FadingOut)
+	{
+		// The screen stays black until the fade in starts in StartPreparedLevel, in this frame (the overlay keeps its full opacity).
+		OnScreenFadeFinished.Broadcast(Fade);
+		if (IsLevelLoading() && IsNextLevelReady())
+		{
+			StartPreparedLevel();
+		}
+		return;
+	}
+	OnScreenFadeFinished.Broadcast(Fade);
+}
+
+void URRRunTransitionSubsystem::StopScreenFade()
+{
+	if (ScreenFadeHandle.IsValid())
+	{
+		FTSTicker::GetCoreTicker().RemoveTicker(ScreenFadeHandle);
+		ScreenFadeHandle.Reset();
+	}
+	ScreenFade = ERRTransitionFade::None;
+}
+
 bool URRRunTransitionSubsystem::StartNextLevelPreparation()
 {
 	StopNextLevelPreparation();
@@ -553,7 +660,7 @@ bool URRRunTransitionSubsystem::StartNextLevelPreparation()
 			Recap.NextLevelIndex);
 		return false;
 	}
-	PrepStep = ERRNextLevelPrepStep::WaitingForLayout;
+	SetPrepStep(ERRNextLevelPrepStep::WaitingForLayout);
 	bStartWhenPrepared = false;
 	PrepStartSeconds = FPlatformTime::Seconds();
 	PrepReadySeconds = 0.0;
@@ -596,14 +703,14 @@ bool URRRunTransitionSubsystem::TickNextLevelPreparation(float DeltaTime)
 			// Provisional decision (task-206-03): the grid falls back to its own LayoutName, logged as an error.
 			UE_LOG(LogRogueRigs, Error, TEXT("URRRunTransitionSubsystem: layout %s of level %d failed; the grid will fall back to its own layout."), *Recap.NextLayoutName, Level);
 		}
-		PrepStep = ERRNextLevelPrepStep::ClearingLevel;
+		SetPrepStep(ERRNextLevelPrepStep::ClearingLevel);
 		return true;
 	case ERRNextLevelPrepStep::ClearingLevel:
 	{
 		const int32 Removed = ClearLevelActors(*World);
 		UE_LOG(LogRogueRigs, Log, TEXT("URRRunTransitionSubsystem: next level %d: level cleared (%d actors, objectives and run flow reset) in %.1f ms."),
 			Level, Removed, (FPlatformTime::Seconds() - StepStart) * 1000.0);
-		PrepStep = ERRNextLevelPrepStep::RebuildingTerrain;
+		SetPrepStep(ERRNextLevelPrepStep::RebuildingTerrain);
 		return true;
 	}
 	case ERRNextLevelPrepStep::RebuildingTerrain:
@@ -613,7 +720,7 @@ bool URRRunTransitionSubsystem::TickNextLevelPreparation(float DeltaTime)
 		const FIntPoint Size = Grid ? Grid->GetGridSize() : FIntPoint::ZeroValue;
 		UE_LOG(LogRogueRigs, Log, TEXT("URRRunTransitionSubsystem: next level %d: terrain rebuilt %d x %d on layout %s%s in %.1f ms."), Level, Size.X, Size.Y,
 			Grid ? *Grid->GetLayoutName() : TEXT("none"), bBuilt ? TEXT("") : TEXT(" (FAILED, empty grid)"), (FPlatformTime::Seconds() - StepStart) * 1000.0);
-		PrepStep = ERRNextLevelPrepStep::PlacingMiner;
+		SetPrepStep(ERRNextLevelPrepStep::PlacingMiner);
 		return true;
 	}
 	case ERRNextLevelPrepStep::PlacingMiner:
@@ -625,7 +732,7 @@ bool URRRunTransitionSubsystem::TickNextLevelPreparation(float DeltaTime)
 		break;
 	}
 
-	PrepStep = ERRNextLevelPrepStep::Ready;
+	SetPrepStep(ERRNextLevelPrepStep::Ready);
 	PrepReadySeconds = FPlatformTime::Seconds();
 	PrepTickHandle.Reset();
 	const URRRunFlowSubsystem* RunFlow = World->GetSubsystem<URRRunFlowSubsystem>();
@@ -784,4 +891,6 @@ void URRRunTransitionSubsystem::StartPreparedLevel()
 	SetLoadingStage(ERRRunLoadingStage::None);
 	LoadingLevelIndex = 0;
 	OnLevelReady.Broadcast(Level, Layout);
+	// Fade path: black since the fade out; loading path: the loading screen just left. Either way black fades away (task-318-02).
+	StartScreenFade(ERRTransitionFade::FadingIn, GetDefault<URRRunSettings>()->TransitionFadeInSeconds);
 }

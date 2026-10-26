@@ -16,7 +16,9 @@
 #include "RogueRigs.h"
 #include "UI/RRHUDWidget.h"
 #include "UI/RRIntermissionWidget.h"
+#include "Engine/GameViewportClient.h"
 #include "UI/RRLoadingScreenWidget.h"
+#include "UI/RRScreenFadeWidget.h"
 #include "UI/RRShopScreenWidget.h"
 #include "Weapons/RRWeapon.h"
 
@@ -44,6 +46,8 @@ void ARRPlayerController::BeginPlay()
 			Transition->OnLoadingStarted.AddUniqueDynamic(this, &ARRPlayerController::HandleLoadingStarted);
 			Transition->OnLevelReady.AddUniqueDynamic(this, &ARRPlayerController::HandleLevelReady);
 			Transition->OnNextLevelReady.AddUniqueDynamic(this, &ARRPlayerController::HandleNextLevelReady);
+			Transition->OnScreenFadeStarted.AddUniqueDynamic(this, &ARRPlayerController::HandleScreenFadeStarted);
+			Transition->OnScreenFadeFinished.AddUniqueDynamic(this, &ARRPlayerController::HandleScreenFadeFinished);
 			// A widget does not survive OpenLevel: the world opened by a transition shows the loading screen again until OnLevelReady
 			// (higher Z-order than the HUD created below).
 			if (Transition->IsLevelLoading())
@@ -115,8 +119,11 @@ void ARRPlayerController::EndPlay(const EEndPlayReason::Type EndPlayReason)
 		Transition->OnLoadingStarted.RemoveDynamic(this, &ARRPlayerController::HandleLoadingStarted);
 		Transition->OnLevelReady.RemoveDynamic(this, &ARRPlayerController::HandleLevelReady);
 		Transition->OnNextLevelReady.RemoveDynamic(this, &ARRPlayerController::HandleNextLevelReady);
+		Transition->OnScreenFadeStarted.RemoveDynamic(this, &ARRPlayerController::HandleScreenFadeStarted);
+		Transition->OnScreenFadeFinished.RemoveDynamic(this, &ARRPlayerController::HandleScreenFadeFinished);
 	}
 	BoundTransition.Reset();
+	RemoveScreenFadeOverlay();
 	Super::EndPlay(EndPlayReason);
 }
 
@@ -194,7 +201,75 @@ void ARRPlayerController::RemoveShopScreenWidget()
 void ARRPlayerController::HandleLevelReady(int32 LevelIndex, const FString& LayoutName)
 {
 	RemoveLoadingScreenWidget();
+	// Fade path (task-318-02): no OnLoadingStarted, the cards screen stayed under the black until this switch.
+	RemoveIntermissionWidget();
+	RemoveShopScreenWidget();
 	SetHUDHiddenForTransition(false, TEXT("level ready"));
+}
+
+void ARRPlayerController::HandleScreenFadeStarted(ERRTransitionFade Fade, float Duration)
+{
+	AddScreenFadeOverlay();
+	UE_LOG(LogRogueRigs, Log, TEXT("%s: screen fade %s over %.2f s (%s)."), *GetName(), Fade == ERRTransitionFade::FadingOut ? TEXT("out") : TEXT("in"),
+		Duration, ScreenFadeWidget ? TEXT("overlay in the viewport") : TEXT("no viewport, nothing drawn"));
+}
+
+void ARRPlayerController::HandleScreenFadeFinished(ERRTransitionFade Fade)
+{
+	// After the fade out the overlay stays at full black until the fade in that follows in the same frame.
+	if (Fade == ERRTransitionFade::FadingIn)
+	{
+		RemoveScreenFadeOverlay();
+	}
+}
+
+void ARRPlayerController::AddScreenFadeOverlay()
+{
+	const URRRunTransitionSubsystem* Transition = BoundTransition.Get();
+	if (!IsLocalPlayerController() || !GetLocalPlayer() || !GetWorld() || !GetWorld()->GetGameViewport())
+	{
+		return;
+	}
+	if (!ScreenFadeWidget)
+	{
+		ScreenFadeWidget = CreateWidget<URRScreenFadeWidget>(this, URRScreenFadeWidget::StaticClass());
+		if (!ScreenFadeWidget)
+		{
+			return;
+		}
+		ScreenFadeWidget->AddToViewport(ScreenFadeZOrder);
+	}
+	ScreenFadeWidget->SetFadeAlpha(Transition ? Transition->GetScreenFadeAlpha() : 0.f);
+	if (!ScreenFadeTickHandle.IsValid())
+	{
+		// The world is paused during the fade out: the core ticker still runs every frame.
+		TWeakObjectPtr<ARRPlayerController> WeakThis(this);
+		ScreenFadeTickHandle = FTSTicker::GetCoreTicker().AddTicker(FTickerDelegate::CreateLambda([WeakThis](float)
+		{
+			ARRPlayerController* Self = WeakThis.Get();
+			if (!Self || !Self->ScreenFadeWidget)
+			{
+				return false;
+			}
+			const URRRunTransitionSubsystem* Transition = Self->BoundTransition.Get();
+			Self->ScreenFadeWidget->SetFadeAlpha(Transition ? Transition->GetScreenFadeAlpha() : 0.f);
+			return true;
+		}));
+	}
+}
+
+void ARRPlayerController::RemoveScreenFadeOverlay()
+{
+	if (ScreenFadeTickHandle.IsValid())
+	{
+		FTSTicker::GetCoreTicker().RemoveTicker(ScreenFadeTickHandle);
+		ScreenFadeTickHandle.Reset();
+	}
+	if (ScreenFadeWidget)
+	{
+		ScreenFadeWidget->RemoveFromParent();
+		ScreenFadeWidget = nullptr;
+	}
 }
 
 void ARRPlayerController::SetHUDHiddenForTransition(bool bHideHUD, const TCHAR* Reason)

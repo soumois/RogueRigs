@@ -17,6 +17,7 @@ class URRHUDWidget;
 class URRIntermissionWidget;
 class URRLoadingScreenWidget;
 class URRShopScreenWidget;
+class URRScreenFadeWidget;
 struct FInputActionValue;
 
 /**
@@ -83,7 +84,7 @@ protected:
 	UFUNCTION()
 	void HandleLoadingStarted(int32 LevelIndex, const FString& LayoutName);
 
-	/** Transition OnLevelReady callback: removes the loading screen and shows the HUD again. */
+	/** Transition OnLevelReady callback: removes the loading screen (and the stats or cards screen left by the fade path) and shows the HUD again. */
 	UFUNCTION()
 	void HandleLevelReady(int32 LevelIndex, const FString& LayoutName);
 
@@ -94,6 +95,20 @@ protected:
 	 */
 	UFUNCTION()
 	void HandleNextLevelReady(int32 LevelIndex, const FString& LayoutName);
+
+	/** Transition OnScreenFadeStarted callback (task-318-02): adds the black fade overlay to the viewport (once). */
+	UFUNCTION()
+	void HandleScreenFadeStarted(ERRTransitionFade Fade, float Duration);
+
+	/** Transition OnScreenFadeFinished callback: removes the overlay after the fade in (kept black after the fade out). */
+	UFUNCTION()
+	void HandleScreenFadeFinished(ERRTransitionFade Fade);
+
+	/** Creates the URRScreenFadeWidget overlay (once) at ScreenFadeZOrder and starts the ticker that sets its alpha. No local player: none. */
+	void AddScreenFadeOverlay();
+
+	/** Removes the fade overlay from the game viewport. */
+	void RemoveScreenFadeOverlay();
 
 	/** Creates HUDWidgetClass, adds it to the viewport and binds it to the game mode, the miner, the run flow and the spawner. */
 	void CreateHUDWidget();
@@ -204,6 +219,17 @@ protected:
 	/** Viewport Z-order of the intermission and loading widgets (above the HUD, which is added at 0). */
 	UPROPERTY(EditDefaultsOnly, Category = "HUD|Run Transition")
 	int32 TransitionWidgetZOrder = 50;
+
+	/** Viewport Z-order of the transition fade overlay (task-318-02): above the transition widgets (TransitionWidgetZOrder, + 1). */
+	UPROPERTY(EditDefaultsOnly, Category = "HUD|Run Transition")
+	int32 ScreenFadeZOrder = 60;
+
+	/** The fade overlay in the viewport (null when no fade is drawn). */
+	UPROPERTY(Transient)
+	TObjectPtr<URRScreenFadeWidget> ScreenFadeWidget;
+
+	/** Core ticker pushing GetScreenFadeAlpha to the overlay every frame, also while paused (valid while the overlay is up). */
+	FTSTicker::FDelegateHandle ScreenFadeTickHandle;
 
 	/** The intermission widget on screen. */
 	UPROPERTY(Transient)

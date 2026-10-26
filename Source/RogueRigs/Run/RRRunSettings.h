@@ -47,4 +47,18 @@ public:
 	 */
 	UPROPERTY(Config, EditAnywhere, Category = "Run|Transition", meta = (ClampMin = "0"))
 	int32 LoadingPaintWaitMaxFrames = 5;
+
+	/**
+	 * Continue with the next level already prepared (task-318-02, intermission gdd): seconds of the fade to black over the cards
+	 * screen before the switch. Real time. 0 = cut. Provisional value (owner 2026-10-26).
+	 */
+	UPROPERTY(Config, EditAnywhere, Category = "Run|Transition", meta = (ClampMin = "0"))
+	float TransitionFadeOutSeconds = 0.3f;
+
+	/**
+	 * Seconds of the fade from black to the new level once it started (after the fade out or the loading screen). Real time.
+	 * 0 = cut. Provisional value (owner 2026-10-26).
+	 */
+	UPROPERTY(Config, EditAnywhere, Category = "Run|Transition", meta = (ClampMin = "0"))
+	float TransitionFadeInSeconds = 0.5f;
 };

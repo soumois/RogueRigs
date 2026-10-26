@@ -154,6 +154,27 @@ DECLARE_DYNAMIC_MULTICAST_DELEGATE_TwoParams(FRROnLevelReadySignature, int32, Le
  */
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_TwoParams(FRROnNextLevelReadySignature, int32, LevelIndex, const FString&, LayoutName);
 
+/** Screen fade of a level transition (task-318-02): black over the whole viewport, transition widgets included. */
+UENUM(BlueprintType)
+enum class ERRTransitionFade : uint8
+{
+	/** No fade: nothing drawn. */
+	None,
+	/** Continue with the next level ready: the cards screen fades to black (URRRunSettings::TransitionFadeOutSeconds). */
+	FadingOut,
+	/** Level started: black fades away over the new level (URRRunSettings::TransitionFadeInSeconds). */
+	FadingIn
+};
+
+/** Fired when a screen fade starts (task-318-02): which fade and its duration in seconds (real time, runs while paused). */
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_TwoParams(FRROnScreenFadeStartedSignature, ERRTransitionFade, Fade, float, Duration);
+
+/** Fired when a screen fade ends (FadingOut: the level switch follows in the same frame; FadingIn: screen clear). */
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FRROnScreenFadeFinishedSignature, ERRTransitionFade, Fade);
+
+/** Fired when the next level preparation advances (task-318-02): progress 0-1 (GetNextLevelProgress), for the loading bar. */
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FRROnNextLevelProgressChangedSignature, float, Progress);
+
 /** Step of the in-place preparation of the next level (task-318-01), in order; Ready is the last. */
 UENUM(BlueprintType)
 enum class ERRNextLevelPrepStep : uint8
@@ -225,8 +246,10 @@ public:
 	bool NextLevel();
 
 	/**
-	 * Shop screen Continue button: closes the shop, starts the loading (OnLoadingStarted), waits for the next layout if it is still
-	 * pending, then opens the arena map. False outside the Shop phase.
+	 * Shop screen Continue button: closes the shop, phase Loading. Next level prepared in this world (task-318-02): ready = fade
+	 * out (no loading screen, no OnLoadingStarted), switch, fade in; still preparing = OnLoadingStarted (loading screen with
+	 * GetLoadingProgress), then switch and fade in when ready. No preparation: OnLoadingStarted, waits for the next layout if it
+	 * is still pending, then opens the arena map (fade in at OnLevelReady). False outside the Shop phase.
 	 */
 	UFUNCTION(BlueprintCallable, Category = "Run|Transition")
 	bool Continue();
@@ -290,6 +313,33 @@ public:
 	/** Current step of the next level preparation (None when none runs). */
 	UFUNCTION(BlueprintPure, Category = "Run|Transition")
 	ERRNextLevelPrepStep GetNextLevelPrepStep() const { return PrepStep; }
+
+	/**
+	 * Progress 0-1 for the loading screen bar (task-318-02): GetNextLevelProgress while the next level is prepared in this world;
+	 * 0 on the map-travel fallback (no measurable progress) and outside a loading.
+	 */
+	UFUNCTION(BlueprintPure, Category = "Run|Transition")
+	float GetLoadingProgress() const;
+
+	/** Current screen fade (None when no fade runs). */
+	UFUNCTION(BlueprintPure, Category = "Run|Transition")
+	ERRTransitionFade GetScreenFade() const { return ScreenFade; }
+
+	/** Black opacity 0-1 of the screen fade now (FadingOut 0 to 1, FadingIn 1 to 0, linear in real time); 0 without a fade. */
+	UFUNCTION(BlueprintPure, Category = "Run|Transition")
+	float GetScreenFadeAlpha() const;
+
+	/** See FRROnScreenFadeStartedSignature. */
+	UPROPERTY(BlueprintAssignable, Category = "Run|Transition")
+	FRROnScreenFadeStartedSignature OnScreenFadeStarted;
+
+	/** See FRROnScreenFadeFinishedSignature. */
+	UPROPERTY(BlueprintAssignable, Category = "Run|Transition")
+	FRROnScreenFadeFinishedSignature OnScreenFadeFinished;
+
+	/** See FRROnNextLevelProgressChangedSignature. */
+	UPROPERTY(BlueprintAssignable, Category = "Run|Transition")
+	FRROnNextLevelProgressChangedSignature OnNextLevelProgressChanged;
 
 	/** See FRROnNextLevelReadySignature. */
 	UPROPERTY(BlueprintAssignable, Category = "Run|Transition")
@@ -386,6 +436,31 @@ protected:
 	 * place, run log level start, level-up choices allowed again, game unpaused with game input, phase None, OnLevelReady.
 	 */
 	void StartPreparedLevel();
+
+	/** Sets the preparation step and broadcasts OnNextLevelProgressChanged (logged while the loading screen waits for it). */
+	void SetPrepStep(ERRNextLevelPrepStep NewStep);
+
+	/**
+	 * Starts a screen fade of Duration seconds (real time, core ticker: runs while paused) and broadcasts OnScreenFadeStarted; a
+	 * duration of 0 or less ends it at once. FadingOut ends in StartPreparedLevel, FadingIn in the screen cleared.
+	 */
+	void StartScreenFade(ERRTransitionFade Fade, float Duration);
+
+	/** End of the current fade: OnScreenFadeFinished, then the switch (FadingOut) or nothing more (FadingIn). */
+	void FinishScreenFade();
+
+	/** Stops the fade ticker and forgets the fade (no broadcast). */
+	void StopScreenFade();
+
+	/** Current screen fade. */
+	ERRTransitionFade ScreenFade = ERRTransitionFade::None;
+
+	/** FPlatformTime::Seconds at the fade start and its duration. */
+	double ScreenFadeStartSeconds = 0.0;
+	float ScreenFadeDuration = 0.f;
+
+	/** Core ticker ending the fade (valid while it runs). */
+	FTSTicker::FDelegateHandle ScreenFadeHandle;
 
 	/** Current preparation step. */
 	ERRNextLevelPrepStep PrepStep = ERRNextLevelPrepStep::None;
