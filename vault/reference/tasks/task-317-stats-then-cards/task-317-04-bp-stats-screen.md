@@ -3,7 +3,7 @@ id: task-317-04-bp-stats-screen
 description: "WBP_Intermission becomes the stats screen: recap, kills per robot type, damage per weapon, Next level button; shop removed."
 parent: task-317-stats-then-cards
 kind: task
-status: todo
+status: in-progress
 ---
 # WBP_Intermission becomes the stats screen: recap, kills per robot type, damage per weapon, Next level button; shop removed
 

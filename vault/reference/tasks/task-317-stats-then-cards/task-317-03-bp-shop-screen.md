@@ -3,7 +3,7 @@ id: task-317-03-bp-shop-screen
 description: "New WBP_ShopScreen: the shop moved to its own screen on an opaque black background, set on the controller."
 parent: task-317-stats-then-cards
 kind: task
-status: in-progress
+status: done
 ---
 # New WBP_ShopScreen: the shop moved to its own screen on an opaque black background, set on the controller
 
@@ -15,11 +15,11 @@ status: in-progress
 - done_when: compiled with warnings as errors and saved; opaque black backdrop (alpha 1); title, 5 WBP_ShopCard, ore balance, reroll button with cost, Continue calling Continue(); refresh on OnShopRefreshed; ShopScreenWidgetClass set on BP_RRPlayerController; doc nodes written; lint clean.
 - editor_state: open
 - token_ceiling: 40000
-- model: open
-- tokens: open
-- runs: open
+- model: sonnet
+- tokens: input 106, cache write 94326, cache read 3271716, output 31487
+- runs: 1
 - milestone: M2
-- result: open
+- result: WBP_ShopScreen (duplicate of WBP_Intermission reparented to URRShopScreenWidget): opaque black backdrop, SPARE PARTS title, 5 WBP_ShopCard, balance, reroll, Continue -> Continue(), refresh on OnShopRefreshed; ShopScreenWidgetClass set on BP_RRPlayerController; doc wbp-shop-screen; not run in PIE. Commit bad2c6b6.
 
 ## Relations
 - [[task-317-stats-then-cards]] — parent global task.

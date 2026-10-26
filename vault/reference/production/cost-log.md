@@ -673,6 +673,7 @@ kind: note
 | [[task-316-05-capture-shop]] | opus | 1 | 0k | 81k | 1397k | 16k |
 | [[task-317-01-stats-then-cards]] | opus | 1 | 0k | 289k | 4360k | 52k |
 | [[task-317-02-text-stats-labels]] | opus+sonnet | 1 | 0k | 89k | 470k | 11k |
+| [[task-317-03-bp-shop-screen]] | sonnet | 1 | 0k | 94k | 3272k | 31k |
 
 ## Totals
 | Scope | Input | Cache write | Cache read | Output |
