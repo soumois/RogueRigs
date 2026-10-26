@@ -3,7 +3,7 @@ id: task-319-02-fix-levelup-after-intermission
 description: "WBP_XPStatus UnbindXP removes only its own OnXPChanged and OnLevelUp handlers instead of clearing every listener; doc wbp-xp-status updated."
 parent: task-319-levelup-choice-after-intermission
 kind: task
-status: todo
+status: in-progress
 ---
 # Fix: WBP_XPStatus unbinds only its own handlers
 

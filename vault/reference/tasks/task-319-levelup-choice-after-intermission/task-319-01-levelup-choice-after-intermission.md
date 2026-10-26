@@ -3,7 +3,7 @@ id: task-319-01-levelup-choice-after-intermission
 description: "Automation test with the real WBP_HUD and HUD swap reproducing level-ups that queue no choice after the intermission; fails on current code, cause confirmed."
 parent: task-319-levelup-choice-after-intermission
 kind: task
-status: in-progress
+status: done
 ---
 # Reproduction test: level-up choice after the intermission
 
@@ -15,12 +15,12 @@ status: in-progress
 - done_when: build passes; the test with the HUD runs and FAILS on the current code on both paths (no choice queued for the level-2 level-up, and `OnLevelUp` no longer bound to `HandleLevelUp` after the HUD swap); the cause is confirmed in result (asset, function, node); no gameplay code or Blueprint changed; existing tests unchanged in outcome (known pre-existing failures JuiceKillDropsStreamingCubes and LevelUpUpgradeLoop are unrelated, not fixed here); test doc node updated; lint clean.
 - editor_state: closed
 - token_ceiling: 60000
-- model: open
-- tokens: open
-- usage: open
-- runs: open
+- model: opus
+- tokens: input 194, cache write 298773, cache read 5166904, output 56444
+- usage: turns 97, context start 11k peak 108k, resumes 0, 21 min, units 1.17 M
+- runs: 1
 - milestone: M2
-- result: open. First run, superseded by the HUD rewrite: (2026-10-26) test `RogueRigs.Integration.LevelUpChoiceAfterIntermission` built and run headless: it PASSES on both paths (level 2 started: blocked 0; level 2 level-up after the delay: blocked 0, pending 1, awaiting 1), so it does not reproduce the bug and the C++ block / `ResumeChoices` path is not the cause. Stopped as the node asks; no gameplay code changed. Best-supported hypothesis (not proven by a test): `ARRPlayerController::HandleNextLevelReady` (Player/RRPlayerController.cpp) removes the old `WBP_HUD` and creates a new one; the old HUD's `WBP_XPStatus` Destruct calls `UnbindXP(Miner)`, which per [[wbp-xp-status]] "unbinds all OnXPChanged and OnLevelUp listeners" of the miner's progression (a `K2Node_ClearDelegate` node in the asset), so `URRLevelUpComponent::HandleLevelUp` loses its `OnLevelUp` binding (bound once in BeginPlay; the miner is kept across levels since task-318). Owner log fits: level 2 had 5 level-ups and no choice, yet the bonus chest choice (`QueueBonusChoice`, not through `OnLevelUp`) was queued and picked (13 cards at level 2 start, 14 in the level 2 snapshot, +2 shop buys = 16). The headless test has no HUD, so it passes. To reproduce: create and bind `WBP_HUD` in the test, then go through `HandleNextLevelReady` (or destroy the old HUD) before the level 2 level-up.
+- result: HUD test fails on both paths as expected (OnLevelUp->HandleLevelUp bound 1, then 0 after old HUD Destruct; level-2 level-up queues no choice). Cause confirmed: WBP_XPStatus Destruct -> UnbindXP -> K2Node_ClearDelegate on OnLevelUp removes all listeners incl. URRLevelUpComponent::HandleLevelUp. Test swaps HUD itself (no local player headless). Commits af5c0ed9, 98561ec5.
 
 ## Relations
 - [[task-319-levelup-choice-after-intermission]] — parent global task.
