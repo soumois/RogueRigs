@@ -390,6 +390,7 @@ wbp-intermission  reference/tech/blueprints/ui/wbp-intermission.md
 wbp-loading  reference/tech/blueprints/ui/wbp-loading.md
 wbp-minimap-locator  reference/tech/blueprints/ui/wbp-minimap-locator.md
 wbp-ore-counter  reference/tech/blueprints/ui/wbp-ore-counter.md
+wbp-shop-card  reference/tech/blueprints/ui/wbp-shop-card.md
 wbp-subtitles  reference/tech/blueprints/ui/wbp-subtitles.md
 wbp-upgrade-choice  reference/tech/blueprints/ui/wbp-upgrade-choice.md
 wbp-weapons  reference/tech/blueprints/ui/wbp-weapons.md
