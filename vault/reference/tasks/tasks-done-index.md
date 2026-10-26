@@ -322,3 +322,4 @@ Archive: it exceeds the index size limits of [[_authoring]] on purpose (owner, 2
 - [[task-313-drone-at-console-socket]] — While hacking, the drone hovers in front of the console round data socket, at its height, facing it, and the hack link aims at it. Status done.
 - [[task-315-paid-reroll]] — The level-up reroll costs Duskite ore: 15, plus 5 for each further reroll without a level-up, usable while the ore lasts. Status done.
 - [[task-316-intermission-shop]] — The intermission screen sells 5 upgrade cards priced by rarity, with an escalating reroll and the Continue button. Status done.
+- [[task-317-stats-then-cards]] — The end-of-level stats screen and the cards shop screen are two distinct screens; level 4 shows the stats screen only, then the run-won screen. Status done.

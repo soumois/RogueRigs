@@ -1,9 +1,9 @@
 ---
 id: task-317-stats-then-cards
 description: "Global task: end-of-level stats screen and cards shop screen become two distinct screens; level 4 shows stats only, then run-won."
-parent: tasks-to-do-index
+parent: tasks-done-index
 kind: task
-status: in-progress
+status: done
 ---
 # Stats screen then cards screen
 
@@ -13,8 +13,8 @@ status: in-progress
 - gdd_check: intermission, run-shop, run-structure, ore-economy read (2026-10-26). Conflicts: GDD had one recap+shop screen (owner: two screens, GDD updated); shop at run end not in the GDD (owner Q1: level 4 shows stats only, no cards). Owner Q2: add kills per robot type (names only, no icons; real counts from the run log KillsByRobotType) and damage per weapon (DamageDealtByWeapon). Q3 cards screen on opaque black: ok. Reading to confirm: on level 4 the stats button leads to the existing run-won screen. Old task-319 (run-end shop) dropped.
 - confirmed_by_owner: yes (2026-10-26)
 - milestone: M2
-- next_step: task-317-05-capture-stats-cards
-- result: open
+- next_step: none
+- result: Done. -game captures in Saved/StatsCards (contact-sheet.png): L1 stats (Chaser: 8, Burst rifle: 125, Next level), cards on black with 5 priced cards, L4 stats CLAIM EMPTIED / Cash out, then run-won screen, no cards on L4; no defect; unseen: mouse clicks, multi-entry lists, buy/reroll on new screen, nonzero ore. Commit f14a7110.
 
 ## Subtasks
 1. task-317-01-stats-then-cards — cpp
@@ -24,7 +24,7 @@ status: in-progress
 5. task-317-05-capture-stats-cards — cpp
 
 ## Relations
-- [[tasks-to-do-index]] — parent index.
+- [[tasks-done-index]] — parent index.
 - [[task-317-01-stats-then-cards]] — step 1, cpp.
 - [[task-317-02-text-stats-labels]] — step 2, text.
 - [[task-317-03-bp-shop-screen]] — step 3, bp.
