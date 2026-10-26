@@ -13,7 +13,7 @@ status: in-progress
 - gdd_check: run-shop, intermission, ore-economy, rarities, xp-level-up, run-structure read (2026-10-26). run-shop catalogue, prices and reroll cost were open: decided by this request. Rarity mapping (Q5): blanche = grey, verte = green, bleue = blue, épique = purple, légendaire = yellow. Owner defaults accepted 2026-10-26: Q6 cards drawn as a level-up offer with owner luck, stat cards only; Q7 several buys, a bought card leaves its slot empty, reroll redraws the 5 slots; Q8 own reroll count, back to 15 at each intermission; Q9 level-up screen unchanged (3 cards), shop cards smaller on one row, same card look without deal, suspense or fly animations, recap kept at the top, ore balance shown. Depends on task-315 (shared reroll cost rule).
 - confirmed_by_owner: yes (owner 2026-10-26: "ok" to questions 1-9, every default accepted; plan task-315 then task-316 confirmed)
 - milestone: M2
-- next_step: task-316-03-bp-shop-card
+- next_step: task-316-04-bp-intermission-shop
 - result: open
 
 ## Subtasks

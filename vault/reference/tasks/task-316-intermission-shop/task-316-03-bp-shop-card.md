@@ -3,7 +3,7 @@ id: task-316-03-bp-shop-card
 description: "New WBP_ShopCard widget: one smaller priced upgrade card for the intermission shop (bp): upgrade shop between levels, step 03."
 parent: task-316-intermission-shop
 kind: task
-status: in-progress
+status: done
 ---
 # Shop card widget
 
@@ -15,11 +15,11 @@ status: in-progress
 - done_when: compiled with warnings as errors and saved; tree and graphs read back; doc node created and linked; lint clean; committed
 - editor_state: open
 - token_ceiling: 50000
-- model: open
-- tokens: open
-- runs: open
+- model: sonnet
+- tokens: input 142, cache write 171625, cache read 7383731, output 58090
+- runs: 2
 - milestone: M2
-- result: open
+- result: WBP_ShopCard: 330x470 host scaling the WBP_UpgradeChoice stat card stack, price row (T_Icon_Ore + price), Buy button; SlotIndex var, SetCard, SetBought, RefreshFromShop, LoadLabels (screen_texts Labels 2-4), dispatcher OnBuyClicked; self-refreshing on OnShopChanged, Destruct unbinds only its own event; compiled warnings as errors, saved; doc wbp-shop-card; commits c36ffac4 dc853dcf; nothing seen in game
 
 ## Relations
 - [[task-316-intermission-shop]] — parent global task.

@@ -3,7 +3,7 @@ id: task-316-04-bp-intermission-shop
 description: "WBP_Intermission hosts the shop: 5 WBP_ShopCard in a row, ore balance, reroll with cost, Continue (bp): upgrade shop between levels, step 04."
 parent: task-316-intermission-shop
 kind: task
-status: todo
+status: in-progress
 ---
 # Shop on the intermission screen
 

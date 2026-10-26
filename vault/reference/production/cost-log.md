@@ -668,6 +668,7 @@ kind: note
 | [[task-315-03-capture-reroll]] | opus | 1 | 0k | 69k | 554k | 8k |
 | [[task-316-01-intermission-shop]] | opus | 1 | 0k | 148k | 3962k | 40k |
 | [[task-316-02-text-shop-labels]] | opus+sonnet | 1 | 0k | 82k | 357k | 8k |
+| [[task-316-03-bp-shop-card]] | sonnet | 2 | 0k | 172k | 7384k | 58k |
 
 ## Totals
 | Scope | Input | Cache write | Cache read | Output |
