@@ -17,6 +17,7 @@ status: done
 - token_ceiling: 40000
 - model: sonnet
 - tokens: input 62, cache write 118263, cache read 2187631, output 55376
+- usage: turns 31, context start 10k peak 122k, resumes 0, 13 min, units 0.64 M
 - runs: 1
 - milestone: M2
 - result: Blender route: console_c2_base.fbx (147.7 x 126.7 x 108 cm) and console_c2_head.fbx (dish, feed arm, joint; cut plane z 108) in Art/Source/console-meshy/clean/; head origin on the mast axis, offset on base (-4.904, 16.690, 108.0) cm; slots ConsoleBody, AntennaOrange (head 332 tris), OtherOrange (base 3778 tris), Screen (10 tris); FBX_SCALE_UNITS; fixed-camera renders in clean/renders/ (assembled, lifted, tint, source_raw); commit d996ab57.

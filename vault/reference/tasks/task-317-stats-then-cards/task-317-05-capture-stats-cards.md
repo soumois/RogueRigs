@@ -17,6 +17,7 @@ status: done
 - token_ceiling: 50000
 - model: opus
 - tokens: input 60, cache write 82727, cache read 1498563, output 12963
+- usage: turns 30, context start 12k peak 83k, resumes 0, 4 min, units 0.32 M
 - runs: 1
 - milestone: M2
 - result: -game captures in Saved/StatsCards (contact-sheet.png): L1 stats (Chaser: 8, Burst rifle: 125, Next level), cards on black with 5 priced cards, L4 stats CLAIM EMPTIED / Cash out, then run-won screen, no cards on L4; no defect; unseen: mouse clicks, multi-entry lists, buy/reroll on new screen, nonzero ore. Commit f14a7110.

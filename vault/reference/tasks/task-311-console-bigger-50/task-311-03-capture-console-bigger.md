@@ -17,6 +17,7 @@ status: done
 - token_ceiling: 30000
 - model: opus
 - tokens: input 58, cache write 113597, cache read 1352232, output 17333
+- usage: turns 29, context start 11k peak 88k, resumes 1 (message x1), 11 min, units 0.36 M
 - runs: 1
 - milestone: M2
 - result: Saved/ConsoleBigger/contact_sheet_console_before_after.png (6 before/after pairs, same cameras; frames cb_* in Saved/ConsoleBigger/, log run1.log): console about 1.5 x bigger (about 200-220 uu, pixel estimate), on open floor, head on the mast and turning in Idle, lamps and screen in place, zone circle fits with margin; no defect from the change; still washed out inside the light hack disc (task-312); no repo change

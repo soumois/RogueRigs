@@ -17,6 +17,7 @@ status: todo
 - token_ceiling: <number>
 - model: <model of the agent that ran it (opus | sonnet | haiku), filled when done>
 - tokens: <input N, cache write N, cache read N, output N — from `node vault/scripts/agent-usage.js`, all runs included; filled when done>
+- usage: <turns, context start and peak, resumes with cause, minutes, units; written by record-cost.js when done>
 - runs: <number of agent runs, resumes included; filled when done>
 - milestone: M1 | M2 | M3
 - result: <filled when done: what changed, commit, tokens used>

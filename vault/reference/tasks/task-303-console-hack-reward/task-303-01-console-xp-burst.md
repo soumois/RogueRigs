@@ -17,6 +17,7 @@ status: done
 - token_ceiling: 40000
 - model: opus
 - tokens: input 72, cache write 178562, cache read 2567133, output 23732
+- usage: turns 36, context start 11k peak 104k, resumes 0, 14 min, units 0.60 M
 - runs: 1
 - milestone: M2
 - result: ARRConsole::CompleteHack spawns 3 BP_PickupXPBig chips of 8 XP (EditDefaultsOnly XPBurstChipCount 3, XPBurstChipXP 8, spawn radius 140 uu, 120 deg apart, long arc, rest 220..440 uu); chest count 0; BlueprintImplementableEvent OnHackCompleteBurst(Location, ChipCount); RogueRigs.Console.* 6/6 incl. HackXPBurst; GDD and docs updated (6fcf9754, ab1d2d1e).

@@ -17,6 +17,7 @@ status: done
 - token_ceiling: 30000
 - model: sonnet
 - tokens: input 44, cache write 59483, cache read 841586, output 11063
+- usage: turns 22, context start 10k peak 59k, resumes 0, 3 min, units 0.21 M
 - runs: 1
 - milestone: M2
 - result: WBP_Loading: LoadingBarBox (600x24) with LoadingBar ProgressBar (fill 1/0.35/0.1, AlertBar orange) set by OnLoadingProgressChanged; LoadingImage Collapsed, no texture; texts kept; compiled warnings as errors, saved; doc wbp-loading updated. Not seen on screen. Commit 57c2892e.

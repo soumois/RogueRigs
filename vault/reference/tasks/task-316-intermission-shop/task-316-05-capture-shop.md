@@ -17,6 +17,7 @@ status: done
 - token_ceiling: 30000
 - model: opus
 - tokens: input 60, cache write 80593, cache read 1397329, output 16021
+- usage: turns 30, context start 11k peak 81k, resumes 0, 6 min, units 0.32 M
 - runs: 1
 - milestone: M2
 - result: Headless -game capture in Saved/IntermissionShop (contact-sheet.png): 5 priced cards, balance 300, reroll 15, Continue, all within 1920x1080 (Continue 8-10 px from bottom); buy slot 0 Green 40 -> 260 and sold slot shown; reroll 1 paid 15 -> 245, next 20; level 2 log 1/1 cards replayed; debug commands rr.Run.EndLevel, rr.Shop.Buy, rr.Shop.Reroll added (d836701f, docs 17ec2233); greyed states not seen

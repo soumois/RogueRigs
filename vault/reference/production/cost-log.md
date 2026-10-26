@@ -6,694 +6,697 @@ kind: note
 ---
 # Cost log
 
-- Source: `node vault/scripts/agent-usage.js` (add `--json`, `--from <n>`). It reads this machine's Claude Code transcripts, matches each agent to its subtask by the id at the start of its description, and counts every API call once. Delegations must therefore start their description with the subtask id.
+- Source: `node vault/scripts/agent-usage.js` (`--json`, `--from <n>`, `--snapshot`). It reads this machine's Claude Code transcripts and counts every API call once. A worker is matched to its subtask by the id at the start of its description (delegations must start with it); an executor, or a legacy orchestrator launched with "Run global task", is the pilot of the first task number in its prompt; planners and legacy planning passes are listed apart (they create tasks after their prompt, so none is guessed); main sessions are listed one by one.
 - Columns are billed separately and at different prices: input (uncached), cache write (context written to the prompt cache), cache read (context re-read from the cache on each turn, the cheapest but by far the largest), output (the most expensive per token).
-- Runs: agent launches including resumes (a resume continues the same transcript).
+- Unit (M): input-token equivalents, weights in `vault/scripts/cost-rates.json` (cache write x1.25, cache read x0.1, output x5), one comparable column. Dollar amounts appear only once `usdPerMillionInputTokens` is filled there: open, no price entered. A `~` marks a row derived from rounded columns (rows before 2026-10-26 have no turns).
+- Runs: agent launches. Turns: API calls of the subtask. Resumes: messages sent to an agent after it started; the cause (turn-limit, rate-limit, message) is in the subtask `usage` line.
+- Snapshot: `vault/scripts/usage-snapshot.json`, refreshed at each closing, keeps every agent and session record because Claude Code deletes old transcripts (on 2026-10-26, 566 of 665 subtask rows no longer had theirs).
+- Alerts: `record-cost.js` prints an ALERT for input plus output over `token_ceiling`, a start context over 25k, a turn-limit resume or 55 turns, and any resume (write its cause in the subtask `result`). `task-status.js` refuses `status=done` while `tokens` is `open`.
 - Not covered: tasks 000 to 012 (their agents carry no subtask id in the description).
 - Each finished subtask adds a row ([[orchestration-protocol]] step 5).
 
 ## Per subtask
-| Subtask | Model | Runs | Input | Cache write | Cache read | Output |
-|---|---|---|---|---|---|---|
-| [[task-013-01-baseline]] | opus | 1 | 0k | 108k | 3940k | 46k |
-| [[task-013-02-final]] | opus | 1 | 0k | 117k | 2652k | 50k |
-| [[task-014-01-spawn-packs]] | opus | 1 | 0k | 90k | 1684k | 40k |
-| [[task-014-02-upgrade-system]] | opus | 1 | 0k | 154k | 3647k | 65k |
-| [[task-014-03-levelup-flow]] | opus | 1 | 0k | 143k | 5033k | 59k |
-| [[task-014-04-bp-upgrade-ui]] | sonnet | 4 | 0k | 242k | 19229k | 81k |
-| [[task-014-05-tests-integration]] | opus | 2 | 0k | 172k | 6700k | 65k |
-| [[task-015-01-shotgun-cpp]] | opus | 2 | 0k | 196k | 8481k | 72k |
-| [[task-015-02-bp-shotgun]] | sonnet | 2 | 0k | 121k | 4445k | 31k |
-| [[task-016-01-alert-console]] | opus | 2 | 0k | 251k | 11240k | 116k |
-| [[task-016-02-shuttle]] | opus | 1 | 0k | 119k | 2610k | 48k |
-| [[task-016-03-bp-objectives]] | sonnet | 4 | 0k | 202k | 16009k | 69k |
-| [[task-016-04-tests-integration]] | opus | 2 | 0k | 170k | 2291k | 44k |
-| [[task-017-01-radius]] | opus | 1 | 0k | 51k | 515k | 8k |
-| [[task-018-01-trace]] | opus | 1 | 0k | 84k | 2444k | 29k |
-| [[task-018-02-crowd-collision]] | opus | 1 | 0k | 117k | 3839k | 41k |
-| [[task-018-03-light-movement]] | opus | 1 | 0k | 95k | 2968k | 37k |
-| [[task-018-04-hitch]] | opus | 1 | 0k | 70k | 1694k | 20k |
-| [[task-018-05-final-stress]] | opus | 1 | 0k | 162k | 538k | 17k |
-| [[task-019-01-asset-manager]] | opus | 1 | 0k | 36k | 390k | 8k |
-| [[task-020-01-review]] | opus | 1 | 0k | 188k | 7197k | 38k |
-| [[task-020-02-refactor]] | opus | 2 | 0k | 191k | 7042k | 69k |
-| [[task-020-03-refactor-cleanup]] | opus | 1 | 0k | 117k | 3705k | 40k |
-| [[task-020-04-bp-check]] | sonnet | 1 | 0k | 76k | 1578k | 9k |
-| [[task-021-01-shooter-cpp]] | opus | 1 | 0k | 200k | 6584k | 87k |
-| [[task-021-02-bp-shooter]] | sonnet | 2 | 0k | 138k | 6637k | 39k |
-| [[task-021-03-tests-integration]] | opus | 1 | 0k | 106k | 1812k | 25k |
-| [[task-022-01-heavy-cpp]] | opus | 1 | 0k | 142k | 3564k | 44k |
-| [[task-022-02-bp-heavy]] | sonnet | 4 | 0k | 349k | 9269k | 59k |
-| [[task-022-03-tests-integration]] | opus | 2 | 0k | 127k | 2801k | 30k |
-| [[task-023-01-cell-stress]] | opus | 2 | 0k | 458k | 7854k | 67k |
-| [[task-024-01-rifle-pierce]] | opus | 1 | 0k | 170k | 4373k | 56k |
-| [[task-024-02-shotgun-pellets]] | opus | 1 | 0k | 184k | 5599k | 79k |
-| [[task-024-03-turret]] | opus | 2 | 0k | 206k | 9284k | 87k |
-| [[task-024-04-weapon-cards]] | opus | 1 | 0k | 152k | 4094k | 68k |
-| [[task-024-05-bp-weapons]] | sonnet | 6 | 0k | 245k | 26014k | 87k |
-| [[task-024-06-tests-integration]] | opus | 2 | 0k | 214k | 5029k | 61k |
-| [[task-025-01-numbers-pipeline]] | opus | 1 | 0k | 150k | 3989k | 55k |
-| [[task-025-02-bp-numbers]] | sonnet | 2 | 0k | 154k | 7174k | 52k |
-| [[task-025-03-numbers-perf]] | opus | 2 | 0k | 175k | 7657k | 55k |
-| [[task-025-04-per-digit-contract]] | opus | 1 | 0k | 145k | 4931k | 58k |
-| [[task-025-05-bp-numbers-rebuild]] | sonnet | 3 | 0k | 163k | 9492k | 65k |
-| [[task-025-06-numbers-visual-check]] | opus | 1 | 0k | 89k | 1720k | 19k |
-| [[task-029-01-grid-render]] | opus | 2 | 0k | 598k | 10948k | 75k |
-| [[task-029-02-flow-field-incremental]] | opus | 1 | 0k | 176k | 6095k | 87k |
-| [[task-029-03-layout-67]] | sonnet | 1 | 0k | 55k | 461k | 1k |
-| [[task-029-04-switch-67]] | opus | 2 | 0k | 339k | 11663k | 44k |
-| [[task-029-05-arc-mining]] | opus | 1 | 0k | 160k | 6134k | 80k |
-| [[task-029-06-bp-fine-grid]] | sonnet | 1 | 0k | 72k | 1938k | 18k |
-| [[task-029-08-laser-fan]] | opus | 1 | 0k | 58k | 716k | 16k |
-| [[task-029-09-bp-fan-holes]] | sonnet | 2 | 0k | 79k | 2354k | 29k |
-| [[task-029-07-final-check]] | opus | 2 | 0k | 178k | 8102k | 54k |
-| [[task-026-00-landing-clearance]] | opus | 1 | 0k | 83k | 2512k | 32k |
-| [[task-026-01-wave-director]] | opus | 1 | 0k | 173k | 5774k | 99k |
-| [[task-026-02-feedback-events]] | opus | 1 | 0k | 131k | 4276k | 50k |
-| [[task-026-03-bp-pressure]] | sonnet | 2 | 0k | 121k | 3736k | 41k |
-| [[task-026-04-tests-integration]] | opus | 2 | 0k | 396k | 9265k | 83k |
-| [[task-027-01-pickup-motion]] | opus | 2 | 0k | 205k | 9515k | 92k |
-| [[task-027-02-bp-juice]] | sonnet | 2 | 0k | 129k | 5708k | 46k |
-| [[task-027-03-tests-integration]] | opus | 2 | 0k | 226k | 11364k | 76k |
-| [[task-028-01-heavy-shield-values]] | opus | 2 | 0k | 172k | 6777k | 58k |
-| [[task-028-02-bp-shield-heavy]] | sonnet | 2 | 0k | 132k | 6469k | 46k |
-| [[task-028-03-xp-pacing]] | opus | 2 | 0k | 426k | 8439k | 62k |
-| [[task-030-01-director-speeds]] | opus | 1 | 0k | 171k | 4580k | 53k |
-| [[task-030-02-pacing-retune]] | opus | 2 | 0k | 501k | 6689k | 51k |
-| [[task-031-01-remove-dummy]] | opus | 2 | 0k | 155k | 5632k | 38k |
-| [[task-031-02-spawn-speed-shooter]] | opus | 3 | 0k | 399k | 10460k | 89k |
-| [[task-032-01-cpp-fixes]] | opus | 2 | 0k | 743k | 22786k | 139k |
-| [[task-032-02-bp-fixes]] | sonnet | 2 | 0k | 109k | 3779k | 32k |
-| [[task-031-03-pacing-retune]] | opus | 2 | 0k | 790k | 7962k | 72k |
-| [[task-033-01-update-tests]] | opus | 2 | 0k | 77k | 1795k | 22k |
-| [[task-034-01-cpp-fixes]] | opus | 3 | 0k | 211k | 10174k | 68k |
-| [[task-034-03-docs]] | opus | 1 | 0k | 91k | 1414k | 16k |
-| [[task-034-04-director-mix]] | opus | 2 | 0k | 95k | 2042k | 27k |
-| [[task-035-01-heal-value]] | opus | 1 | 0k | 40k | 487k | 6k |
-| [[task-036-01-relocate]] | opus | 1 | 0k | 147k | 4931k | 49k |
-| [[task-037-01-hud-ammo-data]] | opus | 1 | 0k | 56k | 592k | 11k |
-| [[task-037-02-bp-ammo-hud]] | sonnet | 2 | 0k | 99k | 2916k | 34k |
-| [[task-038-01-shooter-detour]] | opus | 1 | 0k | 109k | 3137k | 30k |
-| [[task-039-01-heavy-radius]] | opus | 1 | 0k | 26k | 294k | 7k |
-| [[task-041-01-front-detour]] | opus | 2 | 0k | 34k | 589k | 8k |
-| [[task-042-01-hack-time]] | opus | 1 | 0k | 22k | 239k | 5k |
-| [[task-043-01-vein-shake]] | opus | 1 | 0k | 34k | 542k | 10k |
-| [[task-040-01-locator-arrow]] | sonnet | 2 | 0k | 151k | 5575k | 40k |
-| [[task-044-01-fewer-kamikazes]] | opus | 1 | 0k | 47k | 977k | 14k |
-| [[task-045-01-easier-first-level]] | opus | 1 | 0k | 141k | 1122k | 15k |
-| [[task-045-02-bp-heavy-cap]] | sonnet | 1 | 0k | 62k | 941k | 8k |
-| [[task-048-01-last-level-profile]] | opus | 1 | 0k | 33k | 235k | 5k |
-| [[task-046-01-level1-pressure]] | opus | 1 | 0k | 229k | 1032k | 28k |
-| [[task-047-01-heavy-speed]] | opus | 1 | 0k | 40k | 191k | 4k |
-| [[task-049-01-shuttle-distance]] | opus | 1 | 0k | 51k | 760k | 13k |
-| [[task-050-01-flaky-stacking-test]] | opus | 1 | 0k | 54k | 987k | 14k |
-| [[task-051-01-turret-spacing]] | opus | 1 | 0k | 50k | 613k | 10k |
-| [[task-052-01-heavy-radius-2]] | opus | 1 | 0k | 34k | 434k | 7k |
-| [[task-055-01-first-hit-vignette]] | opus | 2 | 0k | 300k | 3962k | 39k |
-| [[task-056-01-bonus-chest]] | opus | 1 | 0k | 132k | 4869k | 42k |
-| [[task-053-01-weapon-info-centred]] | sonnet | 2 | 0k | 56k | 1184k | 16k |
-| [[task-054-01-niagara-trail-sparkle]] | sonnet | 2 | 0k | 78k | 2163k | 23k |
-| [[task-056-02-bp-bonus-chest]] | sonnet | 2 | 0k | 82k | 3135k | 28k |
-| [[task-054-02-juice-test]] | opus | 2 | 0k | 112k | 1044k | 19k |
-| [[task-055-02-bp-flash-hold]] | sonnet | 1 | 0k | 48k | 636k | 10k |
-| [[task-057-01-flaky-xp-pickup-test]] | opus | 1 | 0k | 77k | 578k | 10k |
-| [[task-059-01-damage-numbers-no-merge]] | opus | 1 | 0k | 213k | 2835k | 38k |
-| [[task-060-01-deep-mining]] | opus | 1 | 0k | 153k | 1244k | 19k |
-| [[task-061-01-minimap]] | opus | 1 | 0k | 135k | 1217k | 29k |
-| [[task-058-01-xp-trail-visible]] | sonnet | 1 | 0k | 47k | 728k | 11k |
-| [[task-061-02-bp-minimap]] | sonnet | 2 | 0k | 100k | 3758k | 41k |
-| [[task-062-01-alert-bar-x2]] | sonnet | 1 | 0k | 49k | 843k | 12k |
-| [[task-063-01-perf-session]] | opus | 1 | 0k | 232k | 1527k | 20k |
-| [[task-064-01-minimap-circle-reveal]] | opus | 1 | 0k | 76k | 460k | 9k |
-| [[task-065-01-diagonal-dig]] | opus | 1 | 0k | 82k | 499k | 14k |
-| [[task-062-02-pressure-test]] | opus | 1 | 0k | 32k | 172k | 4k |
-| [[task-066-01-async-flow-field]] | opus | 1 | 0k | 273k | 3725k | 49k |
-| [[task-066-02-perf-check]] | opus | 1 | 0k | 98k | 964k | 14k |
-| [[task-067-01-real-game-stress]] | opus | 1 | 0k | 183k | 5745k | 52k |
-| [[task-068-01-shipping-insights]] | opus | 2 | 0k | 146k | 5846k | 48k |
-| [[task-072-02-film-pool]] | opus | 1 | 0k | 33k | 67k | 6k |
-| [[task-072-01-film-pool]] | sonnet | 1 | 0k | 17k | 86k | 6k |
-| [[task-073-01-text-schema]] | opus | 1 | 0k | 55k | 263k | 18k |
-| [[task-074-01-text-validator]] | opus | 1 | 0k | 53k | 473k | 27k |
-| [[task-075-01-baseline-run]] | sonnet | 1 | 0k | 21k | 46k | 4k |
-| [[task-078-02-alert-texts]] | opus | 2 | 0k | 33k | 74k | 5k |
-| [[task-076-02-upgrade-texts]] | opus | 3 | 0k | 68k | 150k | 9k |
-| [[task-077-02-barks]] | opus | 3 | 0k | 78k | 242k | 14k |
-| [[task-079-01-text-loader]] | opus | 2 | 0k | 295k | 4536k | 59k |
-| [[task-081-01-a4-readme]] | sonnet | 1 | 0k | 178k | 3297k | 45k |
-| [[task-082-02-shuttle-lines]] | opus | 3 | 0k | 73k | 187k | 11k |
-| [[task-083-02-voice-tweak]] | opus | 3 | 0k | 69k | 153k | 11k |
-| [[task-086-01-a4-readme-update]] | sonnet | 1 | 0k | 133k | 2425k | 36k |
-| [[task-070-01-ore-in-rock]] | opus | 1 | 0k | 43k | 453k | 13k |
-| [[task-071-01-robot-light-movement]] | opus | 2 | 0k | 580k | 9409k | 74k |
-| [[task-087-01-card-desc-test]] | opus | 1 | 0k | 36k | 485k | 7k |
-| [[task-088-01-heal-veins-2x2]] | sonnet | 1 | 0k | 28k | 155k | 6k |
-| [[task-088-02-heal-veins-2x2]] | opus | 2 | 0k | 227k | 3937k | 39k |
-| [[task-089-01-heal-not-at-full]] | opus | 1 | 0k | 160k | 1518k | 22k |
-| [[task-090-01-actor-pool]] | opus | 1 | 0k | 101k | 2076k | 54k |
-| [[task-091-01-robot-pool]] | opus | 3 | 0k | 318k | 22362k | 109k |
-| [[task-092-01-xp-pool]] | opus | 2 | 0k | 170k | 6540k | 64k |
-| [[task-093-01-robot-overlap-cost]] | opus | 1 | 0k | 128k | 4650k | 42k |
-| [[task-095-01-xp-cube-scale]] | opus | 1 | 0k | 131k | 836k | 20k |
-| [[task-100-01-ore-rename-duskite]] | opus | 1 | 0k | 66k | 492k | 10k |
-| [[task-096-01-kamikaze-death-fuse]] | opus | 1 | 0k | 294k | 2553k | 37k |
-| [[task-097-01-explosion-visual]] | opus | 1 | 0k | 74k | 1202k | 23k |
-| [[task-099-01-company-subtitles]] | opus | 3 | 0k | 92k | 2398k | 39k |
-| [[task-094-01-hud-refactor]] | sonnet | 1 | 0k | 107k | 1424k | 30k |
-| [[task-094-02-hud-events]] | opus | 2 | 0k | 203k | 8786k | 92k |
-| [[task-094-04-hud-xp]] | sonnet | 2 | 0k | 159k | 2420k | 29k |
-| [[task-094-05-hud-weapons]] | sonnet | 2 | 0k | 136k | 4831k | 50k |
-| [[task-094-06-hud-cards]] | sonnet | 2 | 0k | 152k | 5006k | 45k |
-| [[task-094-07-hud-alerts]] | sonnet | 3 | 0k | 173k | 6364k | 54k |
-| [[task-094-08-hud-minimap]] | sonnet | 2 | 0k | 126k | 4151k | 43k |
-| [[task-094-09-hud-root]] | sonnet | 1 | 0k | 60k | 798k | 16k |
-| [[task-102-01-company-logo]] | sonnet | 2 | 0k | 68k | 175k | 2k |
-| [[task-101-01-barrel-asset]] | sonnet | 4 | 0k | 29k | 272k | 1k |
-| [[task-101-02-barrel-sticker]] | sonnet | 2 | 0k | 61k | 197k | 2k |
-| [[task-104-01-hud-regressions]] | sonnet | 1 | 0k | 41k | 532k | 9k |
-| [[task-103-01-hud-events-only]] | opus | 2 | 0k | 182k | 7159k | 79k |
-| [[task-101-03-barrel-warning]] | sonnet | 1 | 0k | 24k | 77k | 0k |
-| [[task-103-02-hud-events-only]] | sonnet | 2 | 0k | 97k | 3106k | 41k |
-| [[task-105-01-hud-insights]] | opus | 1 | 0k | 75k | 1097k | 18k |
-| [[task-101-04-barrel-mesh]] | sonnet | 3 | 0k | 69k | 355k | 6k |
-| [[task-101-05-barrel-wear-mask]] | sonnet | 1 | 0k | 35k | 520k | 1k |
-| [[task-106-02-scratch-mask]] | sonnet | 2 | 0k | 119k | 3397k | 38k |
-| [[task-101-06-barrel-edge-wear]] | sonnet | 1 | 0k | 45k | 329k | 1k |
-| [[task-107-01-barrel-integration]] | opus | 1 | 0k | 40k | 474k | 9k |
-| [[task-107-02-barrel-integration-bp]] | sonnet | 3 | 0k | 117k | 3235k | 1k |
-| [[task-117-01-barrel-on-floor]] | opus | 1 | 0k | 69k | 1251k | 16k |
-| [[task-106-01-wear-mask-texture]] | sonnet | 1 | 0k | 70k | 947k | 17k |
-| [[task-108-01-weapon-icons-placeholder]] | opus+sonnet | 1 | 0k | 133k | 1536k | 22k |
-| [[task-108-02-weapon-icons-placeholder]] | opus | 1 | 0k | 40k | 373k | 17k |
-| [[task-109-01-weapon-slot-icons]] | opus | 1 | 0k | 30k | 255k | 8k |
-| [[task-110-01-xp-big-block]] | opus | 1 | 0k | 81k | 1842k | 29k |
-| [[task-111-01-pool-prewarm]] | opus | 2 | 0k | 175k | 7717k | 57k |
-| [[task-111-02-pool-prewarm]] | opus | 1 | 0k | 88k | 1644k | 24k |
-| [[task-112-01-ground-telegraph]] | opus | 1 | 0k | 92k | 2199k | 39k |
-| [[task-113-01-capture-zone-visual]] | opus | 2 | 0k | 68k | 1470k | 21k |
-| [[task-115-01-heavy-slam-telegraph]] | opus | 1 | 0k | 92k | 1797k | 26k |
-| [[task-114-01-barrel-fuse]] | opus | 1 | 0k | 161k | 6636k | 66k |
-| [[task-112-02-ground-telegraph]] | sonnet | 1 | 0k | 57k | 1037k | 20k |
-| [[task-109-02-weapon-slot-icons]] | sonnet | 2 | 0k | 72k | 2025k | 32k |
-| [[task-113-02-capture-zone-visual]] | sonnet | 1 | 0k | 44k | 842k | 15k |
-| [[task-110-02-xp-big-block]] | sonnet | 1 | 0k | 46k | 1141k | 16k |
-| [[task-119-01-heavy-telegraph-far-bug]] | opus | 1 | 0k | 71k | 1055k | 13k |
-| [[task-120-01-console-rules]] | opus | 1 | 0k | 104k | 2794k | 31k |
-| [[task-121-01-barrel-explosion-spread]] | opus | 1 | 0k | 157k | 4541k | 38k |
-| [[task-118-01-telegraph-fill]] | sonnet | 1 | 0k | 50k | 702k | 12k |
-| [[task-122-01-xp-big-block-magenta]] | sonnet | 1 | 0k | 56k | 1039k | 16k |
-| [[task-123-01-heavy-remove-shockring]] | sonnet | 1 | 0k | 46k | 738k | 12k |
-| [[task-124-01-heavy-shockring-cleanup]] | opus | 1 | 0k | 43k | 504k | 10k |
-| [[task-124-02-remove-shockring-component]] | sonnet | 1 | 0k | 35k | 392k | 7k |
-| [[task-125-01-xp-chip-images]] | sonnet | 1 | 0k | 27k | 147k | 1k |
-| [[task-126-01-xp-nut-images]] | sonnet | 1 | 0k | 22k | 87k | 1k |
-| [[task-127-01-xp-chip-magenta]] | sonnet | 1 | 0k | 14k | 94k | 1k |
-| [[task-128-01-xp-nut-mesh]] | sonnet | 1 | 0k | 59k | 486k | 5k |
-| [[task-129-01-xp-chip-big-mesh]] | sonnet | 1 | 0k | 61k | 568k | 8k |
-| [[task-130-01-xp-nut-mesh-fidelity]] | sonnet | 5 | 0k | 165k | 1182k | 11k |
-| [[task-131-01-xp-chip-big-mesh-fidelity]] | sonnet | 5 | 0k | 236k | 1831k | 10k |
-| [[task-132-01-xp-nut-integration]] | sonnet | 2 | 0k | 59k | 1472k | 1k |
-| [[task-133-01-xp-chip-integration]] | sonnet | 1 | 0k | 44k | 668k | 1k |
-| [[task-134-01-xp-pickups-no-shadow]] | sonnet | 1 | 0k | 23k | 212k | 1k |
-| [[task-135-01-xp-pickups-pivot-float]] | sonnet | 1 | 0k | 26k | 113k | 0k |
-| [[task-135-02-xp-pickups-pivot-export]] | sonnet | 1 | 0k | 29k | 126k | 3k |
-| [[task-136-01-xp-pickups-stronger-glow]] | sonnet | 1 | 0k | 29k | 442k | 1k |
-| [[task-135-03-xp-pickups-pivot-reimport]] | sonnet | 1 | 0k | 33k | 349k | 1k |
-| [[task-137-01-unreal-reimport-tool]] | opus | 1 | 0k | 94k | 2734k | 12k |
-| [[task-138-01-xp-pickups-perf-test]] | opus | 1 | 0k | 115k | 1964k | 11k |
-| [[task-138-02-xp-pickups-perf-test]] | opus | 1 | 0k | 232k | 4211k | 15k |
-| [[task-140-01-xp-chip-glow-violet]] | sonnet | 1 | 0k | 19k | 97k | 0k |
-| [[task-141-01-xp-pickups-lumen-test]] | sonnet | 1 | 0k | 32k | 521k | 1k |
-| [[task-142-01-xp-bloom-post-process]] | sonnet | 1 | 0k | 51k | 1369k | 1k |
-| [[task-143-01-xp-pickups-distance-field]] | sonnet | 1 | 0k | 35k | 496k | 1k |
-| [[task-144-01-xp-chip-glow-12-6]] | sonnet | 1 | 0k | 15k | 138k | 0k |
-| [[task-145-01-xp-glow-disc]] | sonnet | 1 | 0k | 34k | 182k | 0k |
-| [[task-145-02-disc-reimport]] | sonnet | 1 | 0k | 14k | 70k | 0k |
-| [[task-145-03-disc-material]] | sonnet | 1 | 0k | 56k | 1276k | 1k |
-| [[task-146-01-xp-nut-disc-lighter]] | sonnet | 2 | 0k | 22k | 175k | 0k |
-| [[task-147-01-xp-disc-billboard]] | sonnet | 1 | 0k | 42k | 535k | 1k |
-| [[task-148-01-xp-disc-fade]] | opus | 1 | 0k | 55k | 565k | 9k |
-| [[task-148-02-xp-disc-fade-material]] | sonnet | 1 | 0k | 38k | 456k | 1k |
-| [[task-149-01-xp-disc-depth-cut]] | sonnet | 1 | 0k | 39k | 498k | 1k |
-| [[task-150-01-xp-nut-disc-lighter-2]] | sonnet | 1 | 0k | 18k | 124k | 1k |
-| [[task-151-01-chaser-robot]] | sonnet | 1 | 0k | 30k | 145k | 1k |
-| [[task-151-02-chaser-sheet-simplified]] | sonnet | 1 | 0k | 22k | 92k | 1k |
-| [[task-151-03-chaser-model]] | sonnet | 1 | 0k | 184k | 4234k | 26k |
-| [[task-151-04-chaser-refine]] | sonnet | 1 | 0k | 143k | 2887k | 16k |
-| [[task-151-05-chaser-split]] | sonnet | 1 | 0k | 87k | 1198k | 16k |
-| [[task-151-06-chaser-part-headtorso]] | sonnet | 1 | 0k | 25k | 255k | 3k |
-| [[task-151-07-chaser-part-pelvis]] | sonnet | 1 | 0k | 15k | 117k | 1k |
-| [[task-151-08-chaser-part-upperarm]] | sonnet | 1 | 0k | 24k | 216k | 2k |
-| [[task-151-09-chaser-part-forearmhand]] | sonnet | 1 | 0k | 26k | 192k | 2k |
-| [[task-151-10-chaser-part-thigh]] | sonnet | 1 | 0k | 27k | 256k | 2k |
-| [[task-151-11-chaser-part-shinfoot]] | sonnet | 1 | 0k | 22k | 180k | 3k |
-| [[task-151-12-chaser-assembly]] | sonnet | 1 | 0k | 53k | 570k | 4k |
-| [[task-151-13-chaser-torso-pass]] | opus+sonnet | 9 | 0k | 663k | 9327k | 88k |
-| [[task-151-14-chaser-reassembly]] | sonnet | 1 | 0k | 50k | 926k | 2k |
-| [[task-152-01-chaser-static-integration]] | sonnet | 1 | 0k | 61k | 630k | 2k |
-| [[task-152-02-chaser-blueprint-swap]] | sonnet | 1 | 0k | 47k | 651k | 1k |
-| [[task-153-01-chaser-meshy-optimization-test]] | sonnet | 1 | 0k | 59k | 340k | 33k |
-| [[task-154-01-chaser-meshy-views]] | sonnet | 1 | 0k | 28k | 216k | 1k |
-| [[task-155-01-chaser-meshy-texture-fixes]] | sonnet | 1 | 0k | 164k | 4220k | 27k |
-| [[task-156-01-chaser-meshy-integration]] | sonnet | 1 | 0k | 50k | 464k | 0k |
-| [[task-156-02-chaser-meshy-unreal-import]] | sonnet | 3 | 0k | 109k | 3066k | 3k |
-| [[task-157-01-chaser-run-attack-animation]] | sonnet | 2 | 0k | 349k | 7301k | 26k |
-| [[task-157-02-chaser-clips-bake]] | sonnet | 1 | 0k | 89k | 663k | 19k |
-| [[task-157-03-chaser-anim-cpp-hook]] | opus | 1 | 0k | 100k | 1518k | 10k |
-| [[task-157-04-chaser-anim-unreal]] | sonnet | 1 | 0k | 128k | 2877k | 1k |
-| [[task-158-01-chaser-glow-mask-fix]] | sonnet | 1 | 0k | 60k | 1015k | 0k |
-| [[task-159-01-chaser-anim-part-index]] | sonnet | 1 | 0k | 40k | 194k | 2k |
-| [[task-159-02-chaser-part-index-unreal]] | sonnet | 1 | 0k | 78k | 1593k | 2k |
-| [[task-160-01-chaser-no-shadow]] | sonnet | 3 | 0k | 128k | 1774k | 1k |
-| [[task-161-01-chaser-cut-pose-check]] | sonnet | 1 | 0k | 102k | 713k | 15k |
-| [[task-162-01-chaser-anim-game-look]] | opus | 1 | 0k | 137k | 3609k | 12k |
-| [[task-166-01-robot-debris-pieces]] | sonnet | 1 | 0k | 36k | 294k | 11k |
-| [[task-169-01-weapon-lore-lines]] | opus+sonnet | 3 | 0k | 62k | 359k | 4k |
-| [[task-168-01-card-lore-lines]] | opus+sonnet | 2 | 0k | 67k | 378k | 5k |
-| [[task-167-01-robot-death-puff]] | opus | 1 | 0k | 62k | 897k | 19k |
-| [[task-166-02-debris-code]] | opus | 1 | 0k | 84k | 1475k | 21k |
-| [[task-166-03-debris-meshes-import]] | sonnet | 1 | 0k | 70k | 1458k | 15k |
-| [[task-167-02-death-puff-niagara]] | sonnet | 2 | 0k | 127k | 4599k | 31k |
-| [[task-166-04-debris-niagara]] | sonnet | 3 | 0k | 165k | 8238k | 60k |
-| [[task-166-05-debris-not-visible]] | opus | 1 | 0k | 134k | 3816k | 27k |
-| [[task-169-02-weapon-card-frame]] | sonnet | 2 | 0k | 70k | 398k | 2k |
-| [[task-168-02-stat-icons]] | sonnet | 4 | 0k | 329k | 1636k | 5k |
-| [[task-168-03-card-frames]] | sonnet | 3 | 0k | 129k | 1126k | 7k |
-| [[task-173-01-debris-count-variety]] | opus | 1 | 0k | 334k | 4096k | 41k |
-| [[task-170-01-debris-sink-3s]] | sonnet | 1 | 0k | 70k | 971k | 13k |
-| [[task-171-01-debris-throw-random]] | sonnet | 1 | 0k | 49k | 821k | 13k |
-| [[task-172-01-debris-start-jitter]] | sonnet | 2 | 0k | 47k | 822k | 11k |
-| [[task-174-01-debris-regression]] | opus | 1 | 0k | 79k | 1184k | 15k |
-| [[task-174-02-debris-position-fix]] | sonnet | 2 | 0k | 74k | 1145k | 11k |
-| [[task-168-04-card-icon-data]] | opus | 1 | 0k | 61k | 1015k | 0k |
-| [[task-169-03-weapon-card-lore]] | opus | 1 | 0k | 67k | 1474k | 1k |
-| [[task-168-05-upgrade-choice-layout]] | sonnet | 3 | 0k | 164k | 6315k | 1k |
-| [[task-169-04-weapon-card-layout]] | sonnet | 2 | 0k | 126k | 4092k | 1k |
-| [[task-169-05-weapon-card-test-fix]] | opus | 1 | 0k | 51k | 504k | 3k |
-| [[task-168-06-card-layout-fix]] | sonnet | 1 | 0k | 52k | 624k | 1k |
-| [[task-168-07-hide-alert-bar]] | sonnet | 2 | 0k | 138k | 3163k | 2k |
-| [[task-168-08-baked-card-frames]] | sonnet | 1 | 0k | 32k | 220k | 5k |
-| [[task-168-09-plain-frame-images]] | sonnet | 1 | 0k | 67k | 1038k | 1k |
-| [[task-177-01-wider-upgrade-cards]] | sonnet | 1 | 0k | 21k | 64k | 1k |
-| [[task-176-01-lone-stat-icon-larger]] | sonnet | 1 | 0k | 85k | 1406k | 1k |
-| [[task-177-02-wider-cards-layout]] | sonnet | 1 | 0k | 56k | 994k | 1k |
-| [[task-178-01-card-glow-hover]] | sonnet | 1 | 0k | 27k | 142k | 0k |
-| [[task-178-02-glow-hover-layout]] | sonnet | 1 | 0k | 103k | 1893k | 0k |
-| [[task-175-01-alert-objectives-node-cleanup]] | sonnet | 1 | 0k | 43k | 277k | 0k |
-| [[task-179-01-debris-debug-plane-off]] | sonnet | 1 | 0k | 105k | 1316k | 8k |
-| [[task-180-01-burst-rifle-push-collision]] | opus | 1 | 0k | 114k | 4121k | 35k |
-| [[task-181-01-perf-chaser-meshy-death]] | opus | 1 | 0k | 234k | 4241k | 37k |
-| [[task-183-01-ore-counter-logic]] | opus | 1 | 0k | 126k | 3634k | 4k |
-| [[task-183-02-ore-hud-render]] | opus+sonnet | 1 | 0k | 93k | 239k | 6k |
-| [[task-183-03-ore-hud-icon]] | opus+sonnet | 1 | 0k | 53k | 199k | 3k |
-| [[task-183-04-ore-counter-widget]] | sonnet | 1 | 0k | 165k | 7246k | 1k |
-| [[task-187-01-deposit-whole-on-explosion]] | opus | 1 | 0k | 92k | 2789k | 27k |
-| [[task-184-01-minimap-opaque]] | sonnet | 1 | 0k | 62k | 820k | 8k |
-| [[task-182-01-debris-lifetime-4-5s]] | sonnet | 1 | 0k | 39k | 481k | 7k |
-| [[task-185-01-alert-label-widget]] | sonnet | 1 | 0k | 60k | 821k | 13k |
-| [[task-182-02-debris-pool-80]] | sonnet | 1 | 0k | 34k | 223k | 5k |
-| [[task-186-01-debris-throw-speed-range]] | sonnet | 1 | 0k | 44k | 375k | 6k |
-| [[task-185-02-alert-label-test]] | opus | 1 | 0k | 19k | 181k | 4k |
-| [[task-182-03-debris-pool-cost]] | opus | 1 | 0k | 74k | 1485k | 21k |
-| [[task-190-01-debris-spin-damping]] | sonnet | 1 | 0k | 88k | 1059k | 13k |
-| [[task-191-01-debris-gpu-df-collision]] | sonnet | 2 | 0k | 161k | 5238k | 39k |
-| [[task-191-02-debris-gpu-cost]] | opus | 1 | 0k | 137k | 2361k | 30k |
-| [[task-194-01-debris-pool-counter]] | opus | 1 | 0k | 111k | 3011k | 26k |
-| [[task-189-01-ore-chunk-look]] | sonnet | 4 | 0k | 139k | 1288k | 2k |
-| [[task-193-01-debris-gpu-cost-remeasure]] | opus | 2 | 0k | 213k | 4612k | 48k |
-| [[task-189-02-ore-chunk-mesh]] | sonnet | 2 | 0k | 71k | 577k | 2k |
-| [[task-189-03-ore-chunk-materials]] | sonnet | 1 | 0k | 70k | 1512k | 1k |
-| [[task-189-04-ore-chunk-trail]] | sonnet | 1 | 0k | 44k | 680k | 1k |
-| [[task-192-01-pickup-spawn-orientation-variants]] | opus | 1 | 0k | 77k | 952k | 0k |
-| [[task-192-02-pickup-orientation-defaults]] | sonnet | 1 | 0k | 36k | 432k | 1k |
-| [[task-189-05-ore-chunk-blueprint]] | sonnet | 1 | 0k | 64k | 1084k | 0k |
-| [[task-195-01-floaty-pop-midair-magnet]] | opus | 1 | 0k | 89k | 1505k | 1k |
-| [[task-192-03-pool-reuse-test-rotation]] | opus | 1 | 0k | 36k | 283k | 0k |
-| [[task-196-01-xp-chip-smaller]] | sonnet | 1 | 0k | 39k | 443k | 0k |
-| [[task-195-02-floaty-pop-values]] | sonnet | 1 | 0k | 40k | 546k | 1k |
-| [[task-195-03-dig-pickup-collect-test]] | opus | 1 | 0k | 36k | 237k | 0k |
-| [[task-197-01-barrel-fuse-instability]] | opus | 1 | 0k | 82k | 1627k | 22k |
-| [[task-197-02-explosion-fx-burst-shockwave]] | opus | 1 | 0k | 79k | 1676k | 26k |
-| [[task-197-05-shockwave-decal-material]] | sonnet | 1 | 0k | 42k | 428k | 9k |
-| [[task-197-03-barrel-fuse-blink-material]] | sonnet | 1 | 0k | 55k | 643k | 15k |
-| [[task-197-04-barrel-explosion-niagara]] | sonnet | 1 | 0k | 99k | 3034k | 34k |
-| [[task-197-06-barrel-explosion-fx-blueprint]] | sonnet | 1 | 0k | 47k | 908k | 13k |
-| [[task-197-07-barrel-fx-visual-check]] | opus | 1 | 0k | 119k | 3575k | 29k |
-| [[task-198-01-shockwave-ring-timing]] | opus | 1 | 0k | 66k | 1180k | 20k |
-| [[task-198-02-shockwave-ring-width]] | sonnet | 1 | 0k | 42k | 538k | 10k |
-| [[task-199-01-barrel-burst-bigger]] | sonnet | 1 | 0k | 55k | 651k | 11k |
-| [[task-200-01-decal-green-square-check]] | opus | 1 | 0k | 73k | 861k | 13k |
-| [[task-201-01-decal-first-frame-green]] | opus | 2 | 0k | 183k | 7932k | 51k |
-| [[task-202-01-crater-first-frame-black]] | opus | 1 | 0k | 83k | 1710k | 17k |
-| [[task-203-01-drain]] | opus | 1 | 0k | 59k | 805k | 6k |
-| [[task-203-02-damage-chunk]] | opus | 1 | 0k | 31k | 253k | 0k |
-| [[task-203-03-hit-flash]] | opus | 1 | 0k | 35k | 350k | 1k |
-| [[task-203-04-shake]] | opus | 1 | 0k | 37k | 493k | 1k |
-| [[task-203-05-punch]] | opus | 1 | 0k | 47k | 520k | 7k |
-| [[task-203-06-color-states]] | opus | 1 | 0k | 38k | 239k | 0k |
-| [[task-203-07-wbp-health-status]] | sonnet | 1 | 0k | 64k | 1111k | 1k |
-| [[task-203-08-health-bar-size]] | sonnet | 1 | 0k | 39k | 544k | 1k |
-| [[task-203-09-health-bar-visual-check]] | opus | 1 | 0k | 53k | 395k | 2k |
-| [[task-204-01-empty-bar-color]] | sonnet | 1 | 0k | 40k | 403k | 1k |
-| [[task-204-02-empty-bar-capture]] | opus | 1 | 0k | 27k | 145k | 1k |
-| [[task-205-01-direct-240-generator]] | opus | 1 | 0k | 88k | 1491k | 15k |
-| [[task-205-02-layout-l2]] | sonnet | 1 | 0k | 21k | 104k | 0k |
-| [[task-205-03-layout-l3]] | sonnet | 1 | 0k | 21k | 201k | 0k |
-| [[task-206-01-run-state]] | opus | 1 | 0k | 119k | 4054k | 17k |
-| [[task-205-04-layout-l4]] | sonnet | 1 | 0k | 19k | 154k | 0k |
-| [[task-206-02-async-layout]] | opus | 1 | 0k | 99k | 2773k | 2k |
-| [[task-206-03-transition-flow]] | opus | 2 | 0k | 199k | 8673k | 23k |
-| [[task-206-05-wbp-loading]] | sonnet | 1 | 0k | 61k | 1314k | 1k |
-| [[task-206-04-wbp-intermission]] | sonnet | 1 | 0k | 90k | 2266k | 1k |
-| [[task-206-06-transition-capture]] | opus | 1 | 0k | 60k | 469k | 1k |
-| [[task-209-01-run-won-copy]] | sonnet | 1 | 0k | 36k | 166k | 0k |
-| [[task-209-02-run-won-review]] | opus | 1 | 0k | 28k | 54k | 1k |
-| [[task-207-01-hide-hud-code]] | opus | 1 | 0k | 98k | 3176k | 5k |
-| [[task-208-01-delay-travel-code]] | opus | 1 | 0k | 48k | 800k | 0k |
-| [[task-209-03-screen-texts-code]] | opus | 1 | 0k | 104k | 2610k | 2k |
-| [[task-210-01-transition-copy]] | sonnet | 1 | 0k | 31k | 109k | 0k |
-| [[task-210-02-transition-review]] | opus | 1 | 0k | 19k | 81k | 3k |
-| [[task-207-02-capture]] | opus | 1 | 0k | 47k | 364k | 1k |
-| [[task-209-04-run-won-bp]] | sonnet | 1 | 0k | 52k | 747k | 1k |
-| [[task-210-03-intermission-bp]] | sonnet | 1 | 0k | 66k | 1375k | 1k |
-| [[task-210-04-loading-bp]] | sonnet | 1 | 0k | 69k | 1492k | 1k |
-| [[task-208-02-capture]] | opus | 1 | 0k | 75k | 839k | 4k |
-| [[task-209-05-capture]] | opus | 1 | 0k | 56k | 452k | 1k |
-| [[task-214-01-excerpt-fix]] | sonnet | 1 | 0k | 12k | 31k | 0k |
-| [[task-211-01-end-silence-code]] | opus | 1 | 0k | 101k | 3112k | 9k |
-| [[task-211-02-end-hud-bp]] | sonnet | 1 | 0k | 95k | 3471k | 1k |
-| [[task-211-03-end-capture]] | opus | 1 | 0k | 84k | 792k | 1k |
-| [[task-212-01-collector]] | opus | 1 | 0k | 260k | 4605k | 11k |
-| [[task-212-02-writer]] | opus | 1 | 0k | 143k | 5708k | 11k |
-| [[task-213-01-death-parts-test]] | opus | 1 | 0k | 30k | 407k | 0k |
-| [[task-213-02-heal-pop-tests]] | opus | 1 | 0k | 56k | 1047k | 3k |
-| [[task-215-01-no-prefix-code]] | opus | 1 | 0k | 42k | 597k | 0k |
-| [[task-215-02-capture]] | opus | 1 | 0k | 25k | 148k | 1k |
-| [[task-220-01-shield-clips-bake]] | sonnet | 1 | 0k | 201k | 2476k | 37k |
-| [[task-220-02-shield-chaser-material]] | sonnet | 1 | 0k | 92k | 2499k | 2k |
-| [[task-220-05-shield-pavise-pose]] | sonnet | 1 | 0k | 86k | 1568k | 1k |
-| [[task-220-06-shield-chaser-reimport]] | opus | 1 | 0k | 71k | 1769k | 9k |
-| [[task-220-03-bp-shield-chaser-wiring]] | sonnet | 1 | 0k | 130k | 1335k | 1k |
-| [[task-221-01-xp-cube-import]] | sonnet | 1 | 0k | 48k | 586k | 0k |
-| [[task-221-02-bp-pickup-xp-big-cube]] | sonnet | 1 | 0k | 32k | 363k | 1k |
-| [[task-221-03-xp-chip-cleanup]] | sonnet | 1 | 0k | 34k | 428k | 1k |
-| [[task-222-01-shield-debris-pieces]] | sonnet | 1 | 0k | 106k | 2120k | 11k |
-| [[task-222-02-shield-debris-import]] | sonnet | 1 | 0k | 43k | 457k | 1k |
-| [[task-222-03-ns-shield-debris]] | sonnet | 1 | 0k | 68k | 1344k | 1k |
-| [[task-222-04-bp-shield-chaser-debris]] | sonnet | 1 | 0k | 38k | 596k | 1k |
-| [[task-223-01-debug-break-shields-command]] | opus | 1 | 0k | 61k | 817k | 0k |
-| [[task-224-01-shield-debris-direction-cpp]] | opus | 1 | 0k | 43k | 397k | 2k |
-| [[task-219-02-rock-ore-review]] | opus | 1 | 0k | 32k | 48k | 9k |
-| [[task-224-02-ns-shield-debris-hitdir]] | sonnet | 1 | 0k | 49k | 919k | 1k |
-| [[task-219-04-rock-look-c-fix]] | sonnet | 1 | 0k | 20k | 129k | 1k |
-| [[task-224-03-bp-shield-chaser-hitdir]] | sonnet | 1 | 0k | 53k | 668k | 0k |
-| [[task-225-01-shield-colour-renders]] | sonnet | 1 | 0k | 105k | 1369k | 18k |
-| [[task-224-04-shield-debris-direction-capture]] | opus | 1 | 0k | 58k | 542k | 6k |
-| [[task-219-05-rock-look-c-review]] | opus | 1 | 0k | 28k | 43k | 8k |
-| [[task-219-03-rock-render-note]] | opus | 1 | 0k | 49k | 542k | 0k |
-| [[task-226-01-shield-charcoal-textures]] | sonnet | 1 | 0k | 70k | 823k | 1k |
-| [[task-226-02-shield-charcoal-reimport]] | opus | 1 | 0k | 48k | 607k | 3k |
-| [[task-227-01-shield-debris-script-fix]] | sonnet | 1 | 0k | 32k | 215k | 2k |
-| [[task-228-01-bp-pickup-xp-big-pop]] | sonnet | 1 | 0k | 32k | 289k | 0k |
-| [[task-229-01-pickup-simple-collisions]] | opus | 1 | 0k | 103k | 2098k | 6k |
-| [[task-229-02-pickup-physics-cpp]] | opus | 2 | 0k | 215k | 10323k | 12k |
-| [[task-229-03-pickup-physics-capture]] | opus | 1 | 0k | 73k | 1372k | 8k |
-| [[task-230-01-rock-baseline-capture]] | opus | 1 | 0k | 136k | 3692k | 4k |
-| [[task-230-02-rock-slab-pieces]] | sonnet | 1 | 0k | 95k | 1327k | 23k |
-| [[task-230-03-rock-top-texture]] | sonnet | 1 | 0k | 48k | 325k | 1k |
-| [[task-230-04-rock-top-texture-review]] | opus | 1 | 0k | 24k | 40k | 4k |
-| [[task-230-05-rock-crack-mask]] | sonnet | 2 | 0k | 47k | 338k | 1k |
-| [[task-230-06-rock-plate-overlay]] | sonnet | 4 | 0k | 574k | 6149k | 88k |
-| [[task-230-07-dual-grid-placement]] | opus | 2 | 0k | 510k | 13281k | 43k |
-| [[task-230-08-rock-damage-data]] | opus | 2 | 0k | 233k | 10962k | 32k |
-| [[task-230-09-rock-slab-material]] | sonnet | 1 | 0k | 123k | 3105k | 1k |
-| [[task-230-10-heal-crystal-material]] | sonnet | 1 | 0k | 27k | 279k | 0k |
-| [[task-230-11-rock-slab-assign]] | sonnet | 1 | 0k | 97k | 2571k | 1k |
-| [[task-230-12-rock-slab-check]] | opus | 1 | 0k | 205k | 3050k | 4k |
-| [[task-230-13-rock-collision-fix]] | opus | 1 | 0k | 102k | 2667k | 2k |
-| [[task-230-14-barrel-chain-crash]] | opus | 2 | 0k | 268k | 6938k | 2k |
-| [[task-230-15-duskite-crystal-colour]] | sonnet | 1 | 0k | 80k | 2047k | 1k |
-| [[task-230-16-rock-top-texture-shade]] | sonnet | 1 | 0k | 48k | 916k | 1k |
-| [[task-230-17-rock-sag-visible-check]] | opus | 2 | 0k | 153k | 6797k | 5k |
-| [[task-230-18-rock-material-diagnosis]] | sonnet | 1 | 0k | 114k | 3291k | 3k |
-| [[task-230-20-rock-vertex-colour-reimport]] | opus | 1 | 0k | 100k | 1927k | 4k |
-| [[task-230-21-rock-rim-tone-restore]] | sonnet | 1 | 0k | 36k | 466k | 1k |
-| [[task-230-19-rock-control-capture]] | opus | 1 | 0k | 70k | 1226k | 5k |
-| [[task-230-25-heal-crystal-red]] | sonnet | 1 | 0k | 42k | 547k | 1k |
-| [[task-230-22-broken-top-texture]] | sonnet | 1 | 0k | 64k | 999k | 2k |
-| [[task-230-23-rock-top-lavender]] | sonnet | 1 | 0k | 34k | 513k | 1k |
-| [[task-230-24-rock-rim-visible]] | sonnet | 1 | 0k | 27k | 240k | 0k |
-| [[task-230-26-rock-control-capture-2]] | opus | 1 | 0k | 46k | 618k | 4k |
-| [[task-234-01-ore-deposit-look]] | sonnet | 1 | 0k | 33k | 198k | 1k |
-| [[task-231-01-dig-shake-reduced]] | opus | 1 | 0k | 114k | 4018k | 10k |
-| [[task-232-01-drone-single-beam]] | opus | 1 | 0k | 103k | 2310k | 2k |
-| [[task-235-01-ore-loot-over-dig]] | opus | 1 | 0k | 127k | 4381k | 2k |
-| [[task-233-01-dig-impact-particle]] | sonnet | 1 | 0k | 98k | 2563k | 1k |
-| [[task-233-02-dig-impact-wiring]] | opus | 2 | 0k | 190k | 8014k | 10k |
-| [[task-234-06-heal-deposit-prompts]] | sonnet | 1 | 0k | 18k | 70k | 0k |
-| [[task-234-02-duskite-deposit-meshes]] | sonnet | 1 | 0k | 43k | 454k | 2k |
-| [[task-234-07-heal-deposit-meshes]] | sonnet | 1 | 0k | 52k | 657k | 8k |
-| [[task-234-03-deposit-crystal-visual]] | opus | 2 | 0k | 696k | 5574k | 29k |
-| [[task-234-04-deposit-mesh-assign]] | sonnet | 2 | 0k | 52k | 794k | 1k |
-| [[task-234-05-deposit-look-capture]] | opus | 1 | 0k | 69k | 969k | 4k |
-| [[task-234-08-duskite-rest-pulse]] | sonnet | 1 | 0k | 48k | 466k | 0k |
-| [[task-237-01-deposit-no-shadow]] | opus | 3 | 0k | 212k | 1441k | 1k |
-| [[task-238-01-crit-number-colour]] | opus | 1 | 0k | 28k | 180k | 3k |
-| [[task-239-01-number-size-by-damage]] | opus | 1 | 0k | 63k | 1177k | 10k |
-| [[task-247-01-drone-escort-movement]] | opus | 1 | 0k | 172k | 5906k | 27k |
-| [[task-248-01-drone-no-flight-over-walls]] | opus | 1 | 0k | 143k | 4131k | 16k |
-| [[task-249-01-drone-alive-orientation-height]] | opus | 1 | 0k | 161k | 5567k | 18k |
-| [[task-251-01-drone-patrol-movement]] | opus | 1 | 0k | 196k | 7637k | 39k |
-| [[task-252-01-drone-mesh-parts]] | sonnet | 1 | 0k | 175k | 4993k | 32k |
-| [[task-252-02-drone-mesh-parts]] | sonnet | 1 | 0k | 58k | 381k | 16k |
-| [[task-252-03-drone-mesh-parts]] | sonnet | 1 | 0k | 69k | 874k | 1k |
-| [[task-252-04-drone-mesh-parts]] | sonnet | 1 | 0k | 70k | 811k | 1k |
-| [[task-254-01-drone-thruster-particles]] | sonnet | 1 | 0k | 100k | 2055k | 1k |
-| [[task-253-01-drone-parts-animation]] | opus | 1 | 0k | 175k | 6081k | 27k |
-| [[task-254-02-drone-thruster-particles]] | opus | 1 | 0k | 79k | 1454k | 14k |
-| [[task-253-02-drone-parts-animation]] | sonnet | 1 | 0k | 45k | 498k | 1k |
-| [[task-254-03-drone-thruster-particles]] | sonnet | 1 | 0k | 35k | 519k | 0k |
-| [[task-250-01-fix-heal-vein-test]] | opus | 1 | 0k | 101k | 2006k | 13k |
-| [[task-256-01-pickup-pop-distance]] | sonnet | 1 | 0k | 42k | 327k | 1k |
-| [[task-256-02-pickup-pop-distance]] | sonnet | 1 | 0k | 30k | 231k | 1k |
-| [[task-257-01-pulse-desync]] | sonnet | 1 | 0k | 77k | 1180k | 2k |
-| [[task-255-01-camera-arm-1400]] | opus | 1 | 0k | 28k | 282k | 2k |
-| [[task-257-02-pulse-desync]] | opus | 1 | 0k | 168k | 5863k | 35k |
-| [[task-261-01-no-shadows]] | sonnet | 1 | 0k | 125k | 5664k | 1k |
-| [[task-262-01-deposit-crystal-volume]] | sonnet | 1 | 0k | 110k | 2155k | 4k |
-| [[task-258-01-heal-deposit-vibration]] | opus | 1 | 0k | 106k | 3035k | 24k |
-| [[task-259-01-ore-dig-time-2s]] | opus | 1 | 0k | 122k | 4637k | 8k |
-| [[task-260-01-rock-dig-time-065]] | opus | 1 | 0k | 118k | 2885k | 7k |
-| [[task-263-01-player-light-shadows]] | opus | 1 | 0k | 100k | 3970k | 13k |
-| [[task-267-01-crystal-pulse-restore]] | opus | 1 | 0k | 147k | 4910k | 38k |
-| [[task-264-01-blob-shadows]] | sonnet | 1 | 0k | 80k | 1138k | 3k |
-| [[task-265-01-scene-ambient-dark]] | sonnet | 1 | 0k | 57k | 989k | 3k |
-| [[task-267-02-crystal-pulse-restore]] | sonnet | 1 | 0k | 80k | 1491k | 1k |
-| [[task-263-02-player-light-shadows]] | sonnet | 1 | 0k | 53k | 702k | 0k |
-| [[task-266-01-robot-readability]] | sonnet | 1 | 0k | 107k | 2484k | 5k |
-| [[task-264-02-blob-shadows]] | opus | 1 | 0k | 148k | 4556k | 21k |
-| [[task-268-01-dark-ambience-tight-light]] | sonnet | 1 | 0k | 79k | 796k | 1k |
-| [[task-269-01-xp-bloom-smaller]] | sonnet | 1 | 0k | 42k | 439k | 1k |
-| [[task-270-01-ambience-capture-tuning]] | opus | 1 | 0k | 203k | 2400k | 4k |
-| [[task-270-02-ambience-sweep]] | opus | 1 | 0k | 148k | 2906k | 8k |
-| [[task-270-03-ambience-apply]] | sonnet | 1 | 0k | 68k | 828k | 1k |
-| [[task-270-04-ambience-after-capture]] | opus | 1 | 0k | 77k | 828k | 1k |
-| [[task-270-05-ambience-apply-r3]] | sonnet | 1 | 0k | 44k | 392k | 0k |
-| [[task-270-06-ambience-capture-r3]] | opus | 1 | 0k | 91k | 1377k | 2k |
-| [[task-270-07-ambience-light-r4]] | sonnet | 1 | 0k | 35k | 283k | 0k |
-| [[task-270-08-chaser-brightness-r4]] | sonnet | 2 | 0k | 102k | 865k | 1k |
-| [[task-270-09-ambience-capture-r4]] | opus | 1 | 0k | 93k | 809k | 2k |
-| [[task-270-10-ambience-radius-r5]] | sonnet | 1 | 0k | 37k | 335k | 0k |
-| [[task-270-11-ambience-capture-r5]] | opus | 1 | 0k | 70k | 542k | 1k |
-| [[task-272-01-player-light-low-gradient]] | opus | 1 | 0k | 189k | 5754k | 18k |
-| [[task-272-05-low-light-sweep-r2]] | opus | 1 | 0k | 90k | 1926k | 2k |
-| [[task-272-02-player-light-low-apply]] | sonnet | 1 | 0k | 37k | 273k | 0k |
-| [[task-272-03-ambient-level-apply]] | sonnet | 1 | 0k | 71k | 755k | 0k |
-| [[task-272-04-low-light-capture]] | opus | 1 | 0k | 77k | 1258k | 7k |
-| [[task-273-01-floor-texture]] | sonnet | 1 | 0k | 23k | 65k | 1k |
-| [[task-272-06-light-mask-material]] | sonnet | 1 | 0k | 108k | 2663k | 2k |
-| [[task-272-08-light-mask-ppv]] | sonnet | 1 | 0k | 48k | 433k | 1k |
-| [[task-273-02-floor-texture-maps]] | sonnet | 1 | 0k | 39k | 282k | 1k |
-| [[task-272-07-light-mask-writer]] | opus | 1 | 0k | 99k | 1571k | 7k |
-| [[task-272-12-light-mask-centre-fix]] | sonnet | 1 | 0k | 62k | 1022k | 2k |
-| [[task-272-13-mask-writer-position]] | opus | 1 | 0k | 41k | 428k | 7k |
-| [[task-272-14-mask-owner-params]] | sonnet | 1 | 0k | 65k | 778k | 2k |
-| [[task-272-15-player-light-remove]] | sonnet | 1 | 0k | 45k | 647k | 0k |
-| [[task-272-16-flat-mask-sweep]] | opus | 1 | 0k | 196k | 2511k | 9k |
-| [[task-272-17-mask-defaults]] | sonnet | 1 | 0k | 35k | 225k | 0k |
-| [[task-272-18-flat-level-light]] | sonnet | 1 | 0k | 48k | 469k | 1k |
-| [[task-272-19-flat-mask-capture]] | opus | 1 | 0k | 54k | 605k | 2k |
-| [[task-273-03-floor-material]] | sonnet | 2 | 0k | 135k | 4671k | 4k |
-| [[task-274-01-mask-writer-cleanup]] | opus | 1 | 0k | 28k | 165k | 4k |
-| [[task-274-02-darkener-material]] | sonnet | 1 | 0k | 49k | 510k | 1k |
-| [[task-274-03-exposure-raise]] | sonnet | 1 | 0k | 44k | 839k | 1k |
-| [[task-274-04-darkener-sweep]] | opus | 1 | 0k | 68k | 1073k | 11k |
-| [[task-274-05-darkener-defaults]] | sonnet | 1 | 0k | 56k | 771k | 1k |
-| [[task-274-06-darkener-capture]] | opus | 1 | 0k | 54k | 708k | 1k |
-| [[task-273-04-floor-capture]] | opus | 1 | 0k | 92k | 1691k | 6k |
-| [[task-274-07-far-floor-sweep]] | opus | 2 | 0k | 135k | 1858k | 3k |
-| [[task-274-08-far-floor-apply]] | sonnet | 1 | 0k | 64k | 961k | 1k |
-| [[task-275-01-monday-light-revert]] | sonnet | 1 | 0k | 28k | 70k | 0k |
-| [[task-275-02-robot-materials-monday]] | sonnet | 1 | 0k | 14k | 44k | 0k |
-| [[task-275-03-monday-exposure-measure]] | opus | 1 | 0k | 75k | 971k | 2k |
-| [[task-275-04-exposure-freeze]] | sonnet | 1 | 0k | 62k | 1004k | 1k |
-| [[task-277-01-xp-glow-revert]] | sonnet | 1 | 0k | 66k | 384k | 0k |
-| [[task-279-01-drone-eye-glow]] | sonnet | 2 | 0k | 103k | 2788k | 1k |
-| [[task-280-01-drone-thruster-boost]] | sonnet | 1 | 0k | 128k | 1110k | 1k |
-| [[task-278-02-eye-slot-split]] | sonnet | 1 | 0k | 54k | 628k | 6k |
-| [[task-278-03-eye-slot-reimport]] | opus | 1 | 0k | 45k | 419k | 0k |
-| [[task-278-04-robot-eye-material]] | sonnet | 1 | 0k | 81k | 1744k | 1k |
-| [[task-278-05-chaser-body-material]] | sonnet | 1 | 0k | 59k | 992k | 1k |
-| [[task-278-06-shield-chaser-body-material]] | sonnet | 1 | 0k | 45k | 497k | 1k |
-| [[task-278-07-bp-chaser-eye]] | sonnet | 1 | 0k | 33k | 333k | 1k |
-| [[task-278-08-bp-shield-chaser-eye]] | sonnet | 1 | 0k | 38k | 460k | 1k |
-| [[task-278-09-bp-heavy-eye]] | sonnet | 1 | 0k | 37k | 478k | 1k |
-| [[task-278-10-bp-shooter-eye]] | sonnet | 1 | 0k | 20k | 111k | 1k |
-| [[task-281-01-flatten-heavy]] | sonnet | 1 | 0k | 46k | 429k | 8k |
-| [[task-281-02-flatten-kamikaze]] | sonnet | 1 | 0k | 41k | 145k | 0k |
-| [[task-281-03-flatten-shooter]] | sonnet | 1 | 0k | 17k | 65k | 0k |
-| [[task-281-04-flatten-chaser-v2]] | sonnet | 1 | 0k | 17k | 87k | 0k |
-| [[task-282-01-texture-clean-heavy]] | sonnet | 1 | 0k | 86k | 1173k | 2k |
-| [[task-282-02-texture-clean-kamikaze]] | sonnet | 1 | 0k | 61k | 641k | 4k |
-| [[task-282-03-texture-clean-shooter]] | sonnet | 1 | 0k | 70k | 1088k | 6k |
-| [[task-282-04-texture-clean-chaser-v2]] | sonnet | 1 | 0k | 73k | 827k | 2k |
-| [[task-283-01-capture-before]] | opus | 1 | 0k | 44k | 414k | 1k |
-| [[task-283-02-game-ready-heavy]] | sonnet | 1 | 0k | 73k | 587k | 9k |
-| [[task-283-03-game-ready-kamikaze]] | sonnet | 1 | 0k | 66k | 971k | 2k |
-| [[task-283-04-game-ready-shooter]] | sonnet | 1 | 0k | 34k | 249k | 0k |
-| [[task-283-05-game-ready-chaser-v2]] | sonnet | 1 | 0k | 36k | 259k | 0k |
-| [[task-283-06-robot-body-material]] | sonnet | 2 | 0k | 105k | 1760k | 1k |
-| [[task-283-07-bp-heavy-mesh]] | sonnet | 1 | 0k | 94k | 2120k | 1k |
-| [[task-283-08-bp-kamikaze-mesh]] | sonnet | 1 | 0k | 78k | 1181k | 1k |
-| [[task-283-09-bp-shooter-mesh]] | sonnet | 1 | 0k | 70k | 938k | 1k |
-| [[task-283-10-capture-after]] | opus | 1 | 0k | 68k | 717k | 3k |
-| [[task-283-11-kamikaze-core-scale]] | sonnet | 1 | 0k | 34k | 244k | 4k |
-| [[task-284-01-parts-bake-heavy]] | sonnet | 3 | 0k | 1977k | 29453k | 31k |
-| [[task-284-02-parts-bake-shooter]] | sonnet | 2 | 0k | 140k | 6043k | 58k |
-| [[task-284-03-parts-bake-chaser-v2]] | sonnet | 1 | 0k | 114k | 3495k | 42k |
-| [[task-284-04-parts-bake-kamikaze]] | sonnet | 1 | 0k | 107k | 1976k | 39k |
-| [[task-284-05-cpp-anim-clips]] | opus | 2 | 0k | 145k | 4325k | 46k |
-| [[task-284-06-bp-heavy-anim]] | sonnet | 1 | 0k | 131k | 4089k | 28k |
-| [[task-284-07-bp-shooter-anim]] | sonnet | 1 | 0k | 62k | 1098k | 14k |
-| [[task-284-08-bp-chaser-v2-anim]] | sonnet | 1 | 0k | 91k | 1582k | 19k |
-| [[task-284-09-bp-kamikaze-anim]] | sonnet | 1 | 0k | 80k | 1431k | 18k |
-| [[task-284-10-bp-spawner-chaser-v2]] | sonnet | 1 | 0k | 49k | 482k | 6k |
-| [[task-284-11-capture-walk]] | opus | 2 | 0k | 90k | 1733k | 25k |
-| [[task-285-01-bake-heavy-slam]] | sonnet | 1 | 0k | 106k | 1755k | 39k |
-| [[task-285-02-cpp-heavy-slam-clips]] | opus | 1 | 0k | 62k | 942k | 16k |
-| [[task-286-01-shield-fit-bake]] | sonnet | 1 | 0k | 116k | 1900k | 21k |
-| [[task-285-03-bp-heavy-slam]] | sonnet | 1 | 0k | 86k | 1998k | 20k |
-| [[task-287-01-bake-shooter-aim-fire]] | sonnet | 1 | 0k | 88k | 1451k | 28k |
-| [[task-286-02-bp-shield-chaser-v2]] | sonnet | 1 | 0k | 136k | 5017k | 38k |
-| [[task-286-03-bp-spawner-shield-v2]] | sonnet | 1 | 0k | 38k | 347k | 5k |
-| [[task-288-01-pieces-heavy]] | sonnet | 2 | 0k | 61k | 1062k | 20k |
-| [[task-285-04-capture-slam]] | opus | 1 | 0k | 63k | 306k | 6k |
-| [[task-286-04-capture-shield-v2]] | opus | 1 | 0k | 70k | 740k | 9k |
-| [[task-288-02-pieces-shooter]] | sonnet | 1 | 0k | 92k | 956k | 16k |
-| [[task-287-02-cpp-shooter-aim-fire]] | opus | 1 | 0k | 108k | 1797k | 24k |
-| [[task-288-03-pieces-chaser-v2]] | sonnet | 1 | 0k | 24k | 117k | 4k |
-| [[task-285-05-fix-heavy-tilt-test]] | opus | 1 | 0k | 67k | 203k | 5k |
-| [[task-288-04-pieces-kamikaze]] | sonnet | 1 | 0k | 31k | 205k | 6k |
-| [[task-288-05-cpp-debris-groups]] | opus | 1 | 0k | 44k | 712k | 11k |
-| [[task-287-03-bp-shooter-aim-fire]] | sonnet | 1 | 0k | 56k | 971k | 14k |
-| [[task-288-06-bp-debris-material]] | sonnet | 1 | 0k | 49k | 527k | 9k |
-| [[task-288-07-bp-ns-heavy-debris]] | sonnet | 1 | 0k | 86k | 1775k | 15k |
-| [[task-288-08-bp-ns-shooter-debris]] | sonnet | 1 | 0k | 68k | 2126k | 18k |
-| [[task-288-09-bp-ns-chaser-v2-debris]] | sonnet | 1 | 0k | 71k | 2517k | 20k |
-| [[task-288-10-bp-ns-kamikaze-debris]] | sonnet | 1 | 0k | 31k | 241k | 4k |
-| [[task-288-11-bp-heavy-death]] | sonnet | 1 | 0k | 42k | 639k | 8k |
-| [[task-288-12-bp-shooter-death]] | sonnet | 1 | 0k | 32k | 343k | 7k |
-| [[task-288-13-bp-chaser-v2-death]] | sonnet | 1 | 0k | 32k | 336k | 7k |
-| [[task-288-14-bp-kamikaze-death]] | sonnet | 1 | 0k | 42k | 411k | 7k |
-| [[task-288-15-bp-shield-v2-death]] | sonnet | 1 | 0k | 36k | 569k | 9k |
-| [[task-287-04-capture-shooter-aim-fire]] | opus | 1 | 0k | 69k | 663k | 10k |
-| [[task-288-16-capture-debris]] | opus | 1 | 0k | 191k | 3710k | 36k |
-| [[task-289-01-bake-heavy-run]] | sonnet | 1 | 0k | 87k | 1767k | 25k |
-| [[task-289-02-bake-chaser-v2-run]] | sonnet | 1 | 0k | 41k | 450k | 8k |
-| [[task-289-03-bp-heavy-run]] | sonnet | 1 | 0k | 38k | 443k | 9k |
-| [[task-289-04-bp-chaser-v2-run]] | sonnet | 1 | 0k | 45k | 680k | 12k |
-| [[task-289-05-cpp-slam-lead]] | sonnet | 1 | 0k | 39k | 673k | 9k |
-| [[task-289-06-capture-run]] | opus | 1 | 0k | 43k | 286k | 5k |
-| [[task-291-01-bake-chaser-v2-v1-clips]] | sonnet | 1 | 0k | 92k | 789k | 17k |
-| [[task-291-02-bake-shield-v2-v1-clips]] | sonnet | 1 | 0k | 82k | 858k | 13k |
-| [[task-291-03-bp-chaser-v2-v1-clips]] | sonnet | 1 | 0k | 48k | 461k | 8k |
-| [[task-291-04-bp-shield-v2-v1-clips]] | sonnet | 1 | 0k | 58k | 936k | 15k |
-| [[task-291-05-capture-v2-v1-clips]] | opus | 1 | 0k | 92k | 696k | 9k |
-| [[task-292-01-cpp-heavy-one-per-pack]] | opus | 1 | 0k | 41k | 484k | 10k |
-| [[task-293-01-cpp-heavy-slam-values]] | opus | 1 | 0k | 95k | 2819k | 25k |
-| [[task-293-02-capture-heavy-slam]] | opus | 1 | 0k | 47k | 539k | 11k |
-| [[task-294-01-cpp-kamikaze-split-damage]] | opus | 1 | 0k | 55k | 569k | 12k |
-| [[task-295-01-cpp-separation-radius]] | opus | 1 | 0k | 36k | 457k | 9k |
-| [[task-296-01-bake-shield-arm-forward]] | sonnet | 2 | 0k | 119k | 2474k | 33k |
-| [[task-296-02-bp-shield-arm-forward]] | sonnet | 1 | 0k | 58k | 1365k | 17k |
-| [[task-296-03-capture-shield-arm-forward]] | opus | 1 | 0k | 46k | 422k | 9k |
-| [[task-297-01-bp-heavy-death-puff-ns]] | sonnet | 1 | 0k | 63k | 1112k | 14k |
-| [[task-297-02-bp-heavy-death-puff-set]] | sonnet | 1 | 0k | 36k | 670k | 8k |
-| [[task-297-03-capture-heavy-death]] | opus | 2 | 0k | 72k | 1149k | 15k |
-| [[task-298-01-bp-shooter-charge-ns]] | sonnet | 1 | 0k | 86k | 1483k | 22k |
-| [[task-298-02-bp-shooter-charge-wire]] | sonnet | 1 | 0k | 59k | 970k | 11k |
-| [[task-298-03-capture-shooter-charge]] | opus | 1 | 0k | 51k | 538k | 9k |
-| [[task-299-01-cpp-kamikaze-fuse-shake]] | opus | 1 | 0k | 60k | 740k | 15k |
-| [[task-299-02-capture-kamikaze-shake]] | opus | 1 | 0k | 46k | 520k | 11k |
-| [[task-300-01-bp-slam-impact-ns]] | sonnet | 1 | 0k | 82k | 1244k | 23k |
-| [[task-300-02-bp-slam-impact-wire]] | sonnet | 1 | 0k | 32k | 345k | 6k |
-| [[task-300-03-capture-slam-impact]] | opus | 2 | 0k | 49k | 595k | 11k |
-| [[task-305-01-console-hack-10s]] | opus | 1 | 0k | 81k | 455k | 7k |
-| [[task-304-01-console-marked-rocks-range]] | opus | 1 | 0k | 80k | 574k | 11k |
-| [[task-301-01-console-c2-files]] | sonnet | 1 | 0k | 27k | 223k | 6k |
-| [[task-301-02-console-c2-cut]] | sonnet | 1 | 0k | 118k | 2188k | 55k |
-| [[task-301-03-console-c2-retouch]] | sonnet | 2 | 0k | 131k | 3116k | 52k |
-| [[task-301-04-bp-console-c2-import]] | sonnet | 1 | 0k | 94k | 2694k | 34k |
-| [[task-301-05-capture-console-c2]] | opus | 1 | 0k | 57k | 748k | 9k |
-| [[task-302-01-console-state-drive]] | sonnet+opus | 3 | 0k | 230k | 2818k | 41k |
-| [[task-302-02-capture-console-states]] | opus | 3 | 0k | 282k | 5708k | 62k |
-| [[task-311-01-console-footprint-3x3]] | opus | 1 | 0k | 38k | 556k | 9k |
-| [[task-311-02-bp-console-scale]] | sonnet | 1 | 0k | 35k | 366k | 7k |
-| [[task-311-03-capture-console-bigger]] | opus | 1 | 0k | 114k | 1352k | 17k |
-| [[task-312-01-telegraph-under-actors]] | opus | 1 | 0k | 63k | 1049k | 16k |
-| [[task-312-02-capture-zone-colour]] | opus | 1 | 0k | 60k | 1077k | 18k |
-| [[task-313-01-drone-socket-hover]] | opus | 2 | 0k | 209k | 3068k | 38k |
-| [[task-313-02-capture-drone-socket]] | opus | 2 | 0k | 254k | 3014k | 34k |
-| [[task-303-01-console-xp-burst]] | opus | 1 | 0k | 179k | 2567k | 24k |
-| [[task-303-02-bp-hack-complete-fx]] | sonnet | 1 | 0k | 89k | 1646k | 21k |
-| [[task-303-03-capture-hack-reward]] | opus | 1 | 0k | 77k | 1029k | 14k |
-| [[task-307-01-chest-one-upgrade]] | opus | 1 | 0k | 47k | 574k | 9k |
-| [[task-310-01-camera-shake]] | opus | 1 | 0k | 109k | 760k | 20k |
-| [[task-306-01-chest-flatten]] | sonnet | 1 | 0k | 115k | 2593k | 42k |
-| [[task-306-02-chest-cut]] | sonnet | 1 | 0k | 134k | 3558k | 63k |
-| [[task-306-03-bp-chest-import]] | sonnet | 1 | 0k | 69k | 1542k | 23k |
-| [[task-306-04-capture-chest-mesh]] | opus | 1 | 0k | 150k | 2476k | 26k |
-| [[task-315-01-paid-reroll]] | opus | 1 | 0k | 124k | 4197k | 40k |
-| [[task-315-02-bp-reroll-button]] | sonnet | 1 | 0k | 83k | 1728k | 15k |
-| [[task-315-03-capture-reroll]] | opus | 1 | 0k | 69k | 554k | 8k |
-| [[task-316-01-intermission-shop]] | opus | 1 | 0k | 148k | 3962k | 40k |
-| [[task-316-02-text-shop-labels]] | opus+sonnet | 1 | 0k | 82k | 357k | 8k |
-| [[task-316-03-bp-shop-card]] | sonnet | 2 | 0k | 172k | 7384k | 58k |
-| [[task-316-04-bp-intermission-shop]] | sonnet | 1 | 0k | 116k | 3652k | 34k |
-| [[task-316-05-capture-shop]] | opus | 1 | 0k | 81k | 1397k | 16k |
-| [[task-317-01-stats-then-cards]] | opus | 1 | 0k | 289k | 4360k | 52k |
-| [[task-317-02-text-stats-labels]] | opus+sonnet | 1 | 0k | 89k | 470k | 11k |
-| [[task-317-03-bp-shop-screen]] | sonnet | 1 | 0k | 94k | 3272k | 31k |
-| [[task-317-04-bp-stats-screen]] | sonnet | 1 | 0k | 101k | 2988k | 32k |
-| [[task-317-05-capture-stats-cards]] | opus | 1 | 0k | 83k | 1499k | 13k |
-| [[task-318-01-preload-next-level]] | opus | 2 | 0k | 214k | 11862k | 68k |
-| [[task-318-02-fade-or-loading]] | opus | 1 | 0k | 134k | 4263k | 44k |
-| [[task-318-03-bp-loading-progress]] | sonnet | 1 | 0k | 59k | 842k | 11k |
-| [[task-318-04-capture-preload]] | opus | 1 | 0k | 82k | 1627k | 17k |
+| Subtask | Model | Runs | Input | Cache write | Cache read | Output | Units (M) | Turns | Resumes |
+|---|---|---|---|---|---|---|---|---|---|
+| [[task-013-01-baseline]] | opus | 1 | 0k | 108k | 3940k | 46k | ~0.76 | — | — |
+| [[task-013-02-final]] | opus | 1 | 0k | 117k | 2652k | 50k | ~0.66 | — | — |
+| [[task-014-01-spawn-packs]] | opus | 1 | 0k | 90k | 1684k | 40k | ~0.48 | — | — |
+| [[task-014-02-upgrade-system]] | opus | 1 | 0k | 154k | 3647k | 65k | ~0.88 | — | — |
+| [[task-014-03-levelup-flow]] | opus | 1 | 0k | 143k | 5033k | 59k | ~0.98 | — | — |
+| [[task-014-04-bp-upgrade-ui]] | sonnet | 4 | 0k | 242k | 19229k | 81k | ~2.63 | — | — |
+| [[task-014-05-tests-integration]] | opus | 2 | 0k | 172k | 6700k | 65k | ~1.21 | — | — |
+| [[task-015-01-shotgun-cpp]] | opus | 2 | 0k | 196k | 8481k | 72k | ~1.45 | — | — |
+| [[task-015-02-bp-shotgun]] | sonnet | 2 | 0k | 121k | 4445k | 31k | ~0.75 | — | — |
+| [[task-016-01-alert-console]] | opus | 2 | 0k | 251k | 11240k | 116k | ~2.02 | — | — |
+| [[task-016-02-shuttle]] | opus | 1 | 0k | 119k | 2610k | 48k | ~0.65 | — | — |
+| [[task-016-03-bp-objectives]] | sonnet | 4 | 0k | 202k | 16009k | 69k | ~2.20 | — | — |
+| [[task-016-04-tests-integration]] | opus | 2 | 0k | 170k | 2291k | 44k | ~0.66 | — | — |
+| [[task-017-01-radius]] | opus | 1 | 0k | 51k | 515k | 8k | ~0.16 | — | — |
+| [[task-018-01-trace]] | opus | 1 | 0k | 84k | 2444k | 29k | ~0.49 | — | — |
+| [[task-018-02-crowd-collision]] | opus | 1 | 0k | 117k | 3839k | 41k | ~0.74 | — | — |
+| [[task-018-03-light-movement]] | opus | 1 | 0k | 95k | 2968k | 37k | ~0.60 | — | — |
+| [[task-018-04-hitch]] | opus | 1 | 0k | 70k | 1694k | 20k | ~0.36 | — | — |
+| [[task-018-05-final-stress]] | opus | 1 | 0k | 162k | 538k | 17k | ~0.34 | — | — |
+| [[task-019-01-asset-manager]] | opus | 1 | 0k | 36k | 390k | 8k | ~0.12 | — | — |
+| [[task-020-01-review]] | opus | 1 | 0k | 188k | 7197k | 38k | ~1.14 | — | — |
+| [[task-020-02-refactor]] | opus | 2 | 0k | 191k | 7042k | 69k | ~1.29 | — | — |
+| [[task-020-03-refactor-cleanup]] | opus | 1 | 0k | 117k | 3705k | 40k | ~0.72 | — | — |
+| [[task-020-04-bp-check]] | sonnet | 1 | 0k | 76k | 1578k | 9k | ~0.30 | — | — |
+| [[task-021-01-shooter-cpp]] | opus | 1 | 0k | 200k | 6584k | 87k | ~1.34 | — | — |
+| [[task-021-02-bp-shooter]] | sonnet | 2 | 0k | 138k | 6637k | 39k | ~1.03 | — | — |
+| [[task-021-03-tests-integration]] | opus | 1 | 0k | 106k | 1812k | 25k | ~0.44 | — | — |
+| [[task-022-01-heavy-cpp]] | opus | 1 | 0k | 142k | 3564k | 44k | ~0.75 | — | — |
+| [[task-022-02-bp-heavy]] | sonnet | 4 | 0k | 349k | 9269k | 59k | ~1.66 | — | — |
+| [[task-022-03-tests-integration]] | opus | 2 | 0k | 127k | 2801k | 30k | ~0.59 | — | — |
+| [[task-023-01-cell-stress]] | opus | 2 | 0k | 458k | 7854k | 67k | ~1.69 | — | — |
+| [[task-024-01-rifle-pierce]] | opus | 1 | 0k | 170k | 4373k | 56k | ~0.93 | — | — |
+| [[task-024-02-shotgun-pellets]] | opus | 1 | 0k | 184k | 5599k | 79k | ~1.18 | — | — |
+| [[task-024-03-turret]] | opus | 2 | 0k | 206k | 9284k | 87k | ~1.62 | — | — |
+| [[task-024-04-weapon-cards]] | opus | 1 | 0k | 152k | 4094k | 68k | ~0.94 | — | — |
+| [[task-024-05-bp-weapons]] | sonnet | 6 | 0k | 245k | 26014k | 87k | ~3.34 | — | — |
+| [[task-024-06-tests-integration]] | opus | 2 | 0k | 214k | 5029k | 61k | ~1.08 | — | — |
+| [[task-025-01-numbers-pipeline]] | opus | 1 | 0k | 150k | 3989k | 55k | ~0.86 | — | — |
+| [[task-025-02-bp-numbers]] | sonnet | 2 | 0k | 154k | 7174k | 52k | ~1.17 | — | — |
+| [[task-025-03-numbers-perf]] | opus | 2 | 0k | 175k | 7657k | 55k | ~1.26 | — | — |
+| [[task-025-04-per-digit-contract]] | opus | 1 | 0k | 145k | 4931k | 58k | ~0.96 | — | — |
+| [[task-025-05-bp-numbers-rebuild]] | sonnet | 3 | 0k | 163k | 9492k | 65k | ~1.48 | — | — |
+| [[task-025-06-numbers-visual-check]] | opus | 1 | 0k | 89k | 1720k | 19k | ~0.38 | — | — |
+| [[task-029-01-grid-render]] | opus | 2 | 0k | 598k | 10948k | 75k | ~2.22 | — | — |
+| [[task-029-02-flow-field-incremental]] | opus | 1 | 0k | 176k | 6095k | 87k | ~1.26 | — | — |
+| [[task-029-03-layout-67]] | sonnet | 1 | 0k | 55k | 461k | 1k | ~0.12 | — | — |
+| [[task-029-04-switch-67]] | opus | 2 | 0k | 339k | 11663k | 44k | ~1.81 | — | — |
+| [[task-029-05-arc-mining]] | opus | 1 | 0k | 160k | 6134k | 80k | ~1.21 | — | — |
+| [[task-029-06-bp-fine-grid]] | sonnet | 1 | 0k | 72k | 1938k | 18k | ~0.37 | — | — |
+| [[task-029-08-laser-fan]] | opus | 1 | 0k | 58k | 716k | 16k | ~0.22 | — | — |
+| [[task-029-09-bp-fan-holes]] | sonnet | 2 | 0k | 79k | 2354k | 29k | ~0.48 | — | — |
+| [[task-029-07-final-check]] | opus | 2 | 0k | 178k | 8102k | 54k | ~1.30 | — | — |
+| [[task-026-00-landing-clearance]] | opus | 1 | 0k | 83k | 2512k | 32k | ~0.51 | — | — |
+| [[task-026-01-wave-director]] | opus | 1 | 0k | 173k | 5774k | 99k | ~1.29 | — | — |
+| [[task-026-02-feedback-events]] | opus | 1 | 0k | 131k | 4276k | 50k | ~0.84 | — | — |
+| [[task-026-03-bp-pressure]] | sonnet | 2 | 0k | 121k | 3736k | 41k | ~0.73 | — | — |
+| [[task-026-04-tests-integration]] | opus | 2 | 0k | 396k | 9265k | 83k | ~1.84 | — | — |
+| [[task-027-01-pickup-motion]] | opus | 2 | 0k | 205k | 9515k | 92k | ~1.67 | — | — |
+| [[task-027-02-bp-juice]] | sonnet | 2 | 0k | 129k | 5708k | 46k | ~0.96 | — | — |
+| [[task-027-03-tests-integration]] | opus | 2 | 0k | 226k | 11364k | 76k | ~1.80 | — | — |
+| [[task-028-01-heavy-shield-values]] | opus | 2 | 0k | 172k | 6777k | 58k | ~1.18 | — | — |
+| [[task-028-02-bp-shield-heavy]] | sonnet | 2 | 0k | 132k | 6469k | 46k | ~1.04 | — | — |
+| [[task-028-03-xp-pacing]] | opus | 2 | 0k | 426k | 8439k | 62k | ~1.69 | — | — |
+| [[task-030-01-director-speeds]] | opus | 1 | 0k | 171k | 4580k | 53k | ~0.94 | — | — |
+| [[task-030-02-pacing-retune]] | opus | 2 | 0k | 501k | 6689k | 51k | ~1.55 | — | — |
+| [[task-031-01-remove-dummy]] | opus | 2 | 0k | 155k | 5632k | 38k | ~0.95 | — | — |
+| [[task-031-02-spawn-speed-shooter]] | opus | 3 | 0k | 399k | 10460k | 89k | ~1.99 | — | — |
+| [[task-032-01-cpp-fixes]] | opus | 2 | 0k | 743k | 22786k | 139k | ~3.90 | — | — |
+| [[task-032-02-bp-fixes]] | sonnet | 2 | 0k | 109k | 3779k | 32k | ~0.67 | — | — |
+| [[task-031-03-pacing-retune]] | opus | 2 | 0k | 790k | 7962k | 72k | ~2.14 | — | — |
+| [[task-033-01-update-tests]] | opus | 2 | 0k | 77k | 1795k | 22k | ~0.39 | — | — |
+| [[task-034-01-cpp-fixes]] | opus | 3 | 0k | 211k | 10174k | 68k | ~1.62 | — | — |
+| [[task-034-03-docs]] | opus | 1 | 0k | 91k | 1414k | 16k | ~0.34 | — | — |
+| [[task-034-04-director-mix]] | opus | 2 | 0k | 95k | 2042k | 27k | ~0.46 | — | — |
+| [[task-035-01-heal-value]] | opus | 1 | 0k | 40k | 487k | 6k | ~0.13 | — | — |
+| [[task-036-01-relocate]] | opus | 1 | 0k | 147k | 4931k | 49k | ~0.92 | — | — |
+| [[task-037-01-hud-ammo-data]] | opus | 1 | 0k | 56k | 592k | 11k | ~0.18 | — | — |
+| [[task-037-02-bp-ammo-hud]] | sonnet | 2 | 0k | 99k | 2916k | 34k | ~0.59 | — | — |
+| [[task-038-01-shooter-detour]] | opus | 1 | 0k | 109k | 3137k | 30k | ~0.60 | — | — |
+| [[task-039-01-heavy-radius]] | opus | 1 | 0k | 26k | 294k | 7k | ~0.10 | — | — |
+| [[task-041-01-front-detour]] | opus | 2 | 0k | 34k | 589k | 8k | ~0.14 | — | — |
+| [[task-042-01-hack-time]] | opus | 1 | 0k | 22k | 239k | 5k | ~0.08 | — | — |
+| [[task-043-01-vein-shake]] | opus | 1 | 0k | 34k | 542k | 10k | ~0.15 | — | — |
+| [[task-040-01-locator-arrow]] | sonnet | 2 | 0k | 151k | 5575k | 40k | ~0.95 | — | — |
+| [[task-044-01-fewer-kamikazes]] | opus | 1 | 0k | 47k | 977k | 14k | ~0.23 | — | — |
+| [[task-045-01-easier-first-level]] | opus | 1 | 0k | 141k | 1122k | 15k | ~0.36 | — | — |
+| [[task-045-02-bp-heavy-cap]] | sonnet | 1 | 0k | 62k | 941k | 8k | ~0.21 | — | — |
+| [[task-048-01-last-level-profile]] | opus | 1 | 0k | 33k | 235k | 5k | ~0.09 | — | — |
+| [[task-046-01-level1-pressure]] | opus | 1 | 0k | 229k | 1032k | 28k | ~0.53 | — | — |
+| [[task-047-01-heavy-speed]] | opus | 1 | 0k | 40k | 191k | 4k | ~0.09 | — | — |
+| [[task-049-01-shuttle-distance]] | opus | 1 | 0k | 51k | 760k | 13k | ~0.20 | — | — |
+| [[task-050-01-flaky-stacking-test]] | opus | 1 | 0k | 54k | 987k | 14k | ~0.24 | — | — |
+| [[task-051-01-turret-spacing]] | opus | 1 | 0k | 50k | 613k | 10k | ~0.17 | — | — |
+| [[task-052-01-heavy-radius-2]] | opus | 1 | 0k | 34k | 434k | 7k | ~0.12 | — | — |
+| [[task-055-01-first-hit-vignette]] | opus | 2 | 0k | 300k | 3962k | 39k | ~0.97 | — | — |
+| [[task-056-01-bonus-chest]] | opus | 1 | 0k | 132k | 4869k | 42k | ~0.86 | — | — |
+| [[task-053-01-weapon-info-centred]] | sonnet | 2 | 0k | 56k | 1184k | 16k | ~0.27 | — | — |
+| [[task-054-01-niagara-trail-sparkle]] | sonnet | 2 | 0k | 78k | 2163k | 23k | ~0.43 | — | — |
+| [[task-056-02-bp-bonus-chest]] | sonnet | 2 | 0k | 82k | 3135k | 28k | ~0.56 | — | — |
+| [[task-054-02-juice-test]] | opus | 2 | 0k | 112k | 1044k | 19k | ~0.34 | — | — |
+| [[task-055-02-bp-flash-hold]] | sonnet | 1 | 0k | 48k | 636k | 10k | ~0.17 | — | — |
+| [[task-057-01-flaky-xp-pickup-test]] | opus | 1 | 0k | 77k | 578k | 10k | ~0.20 | — | — |
+| [[task-059-01-damage-numbers-no-merge]] | opus | 1 | 0k | 213k | 2835k | 38k | ~0.74 | — | — |
+| [[task-060-01-deep-mining]] | opus | 1 | 0k | 153k | 1244k | 19k | ~0.41 | — | — |
+| [[task-061-01-minimap]] | opus | 1 | 0k | 135k | 1217k | 29k | ~0.44 | — | — |
+| [[task-058-01-xp-trail-visible]] | sonnet | 1 | 0k | 47k | 728k | 11k | ~0.19 | — | — |
+| [[task-061-02-bp-minimap]] | sonnet | 2 | 0k | 100k | 3758k | 41k | ~0.71 | — | — |
+| [[task-062-01-alert-bar-x2]] | sonnet | 1 | 0k | 49k | 843k | 12k | ~0.21 | — | — |
+| [[task-063-01-perf-session]] | opus | 1 | 0k | 232k | 1527k | 20k | ~0.54 | — | — |
+| [[task-064-01-minimap-circle-reveal]] | opus | 1 | 0k | 76k | 460k | 9k | ~0.19 | — | — |
+| [[task-065-01-diagonal-dig]] | opus | 1 | 0k | 82k | 499k | 14k | ~0.22 | — | — |
+| [[task-062-02-pressure-test]] | opus | 1 | 0k | 32k | 172k | 4k | ~0.08 | — | — |
+| [[task-066-01-async-flow-field]] | opus | 1 | 0k | 273k | 3725k | 49k | ~0.96 | — | — |
+| [[task-066-02-perf-check]] | opus | 1 | 0k | 98k | 964k | 14k | ~0.29 | — | — |
+| [[task-067-01-real-game-stress]] | opus | 1 | 0k | 183k | 5745k | 52k | ~1.06 | — | — |
+| [[task-068-01-shipping-insights]] | opus | 2 | 0k | 146k | 5846k | 48k | ~1.01 | — | — |
+| [[task-072-02-film-pool]] | opus | 1 | 0k | 33k | 67k | 6k | ~0.08 | — | — |
+| [[task-072-01-film-pool]] | sonnet | 1 | 0k | 17k | 86k | 6k | ~0.06 | — | — |
+| [[task-073-01-text-schema]] | opus | 1 | 0k | 55k | 263k | 18k | ~0.19 | — | — |
+| [[task-074-01-text-validator]] | opus | 1 | 0k | 53k | 473k | 27k | ~0.25 | — | — |
+| [[task-075-01-baseline-run]] | sonnet | 1 | 0k | 21k | 46k | 4k | ~0.05 | — | — |
+| [[task-078-02-alert-texts]] | opus | 2 | 0k | 33k | 74k | 5k | ~0.07 | — | — |
+| [[task-076-02-upgrade-texts]] | opus | 3 | 0k | 68k | 150k | 9k | ~0.14 | — | — |
+| [[task-077-02-barks]] | opus | 3 | 0k | 78k | 242k | 14k | ~0.19 | — | — |
+| [[task-079-01-text-loader]] | opus | 2 | 0k | 295k | 4536k | 59k | ~1.12 | — | — |
+| [[task-081-01-a4-readme]] | sonnet | 1 | 0k | 178k | 3297k | 45k | ~0.78 | — | — |
+| [[task-082-02-shuttle-lines]] | opus | 3 | 0k | 73k | 187k | 11k | ~0.16 | — | — |
+| [[task-083-02-voice-tweak]] | opus | 3 | 0k | 69k | 153k | 11k | ~0.16 | — | — |
+| [[task-086-01-a4-readme-update]] | sonnet | 1 | 0k | 133k | 2425k | 36k | ~0.59 | — | — |
+| [[task-070-01-ore-in-rock]] | opus | 1 | 0k | 43k | 453k | 13k | ~0.16 | — | — |
+| [[task-071-01-robot-light-movement]] | opus | 2 | 0k | 580k | 9409k | 74k | ~2.04 | — | — |
+| [[task-087-01-card-desc-test]] | opus | 1 | 0k | 36k | 485k | 7k | ~0.13 | — | — |
+| [[task-088-01-heal-veins-2x2]] | sonnet | 1 | 0k | 28k | 155k | 6k | ~0.08 | — | — |
+| [[task-088-02-heal-veins-2x2]] | opus | 2 | 0k | 227k | 3937k | 39k | ~0.87 | — | — |
+| [[task-089-01-heal-not-at-full]] | opus | 1 | 0k | 160k | 1518k | 22k | ~0.46 | — | — |
+| [[task-090-01-actor-pool]] | opus | 1 | 0k | 101k | 2076k | 54k | ~0.60 | — | — |
+| [[task-091-01-robot-pool]] | opus | 3 | 0k | 318k | 22362k | 109k | ~3.18 | — | — |
+| [[task-092-01-xp-pool]] | opus | 2 | 0k | 170k | 6540k | 64k | ~1.19 | — | — |
+| [[task-093-01-robot-overlap-cost]] | opus | 1 | 0k | 128k | 4650k | 42k | ~0.83 | — | — |
+| [[task-095-01-xp-cube-scale]] | opus | 1 | 0k | 131k | 836k | 20k | ~0.35 | — | — |
+| [[task-100-01-ore-rename-duskite]] | opus | 1 | 0k | 66k | 492k | 10k | ~0.18 | — | — |
+| [[task-096-01-kamikaze-death-fuse]] | opus | 1 | 0k | 294k | 2553k | 37k | ~0.81 | — | — |
+| [[task-097-01-explosion-visual]] | opus | 1 | 0k | 74k | 1202k | 23k | ~0.33 | — | — |
+| [[task-099-01-company-subtitles]] | opus | 3 | 0k | 92k | 2398k | 39k | ~0.55 | — | — |
+| [[task-094-01-hud-refactor]] | sonnet | 1 | 0k | 107k | 1424k | 30k | ~0.43 | — | — |
+| [[task-094-02-hud-events]] | opus | 2 | 0k | 203k | 8786k | 92k | ~1.59 | — | — |
+| [[task-094-04-hud-xp]] | sonnet | 2 | 0k | 159k | 2420k | 29k | ~0.59 | — | — |
+| [[task-094-05-hud-weapons]] | sonnet | 2 | 0k | 136k | 4831k | 50k | ~0.90 | — | — |
+| [[task-094-06-hud-cards]] | sonnet | 2 | 0k | 152k | 5006k | 45k | ~0.92 | — | — |
+| [[task-094-07-hud-alerts]] | sonnet | 3 | 0k | 173k | 6364k | 54k | ~1.12 | — | — |
+| [[task-094-08-hud-minimap]] | sonnet | 2 | 0k | 126k | 4151k | 43k | ~0.79 | — | — |
+| [[task-094-09-hud-root]] | sonnet | 1 | 0k | 60k | 798k | 16k | ~0.23 | — | — |
+| [[task-102-01-company-logo]] | sonnet | 2 | 0k | 68k | 175k | 2k | ~0.11 | — | — |
+| [[task-101-01-barrel-asset]] | sonnet | 4 | 0k | 29k | 272k | 1k | ~0.07 | — | — |
+| [[task-101-02-barrel-sticker]] | sonnet | 2 | 0k | 61k | 197k | 2k | ~0.11 | — | — |
+| [[task-104-01-hud-regressions]] | sonnet | 1 | 0k | 41k | 532k | 9k | ~0.15 | — | — |
+| [[task-103-01-hud-events-only]] | opus | 2 | 0k | 182k | 7159k | 79k | ~1.34 | — | — |
+| [[task-101-03-barrel-warning]] | sonnet | 1 | 0k | 24k | 77k | 0k | ~0.04 | — | — |
+| [[task-103-02-hud-events-only]] | sonnet | 2 | 0k | 97k | 3106k | 41k | ~0.64 | — | — |
+| [[task-105-01-hud-insights]] | opus | 1 | 0k | 75k | 1097k | 18k | ~0.29 | — | — |
+| [[task-101-04-barrel-mesh]] | sonnet | 3 | 0k | 69k | 355k | 6k | ~0.15 | — | — |
+| [[task-101-05-barrel-wear-mask]] | sonnet | 1 | 0k | 35k | 520k | 1k | ~0.10 | — | — |
+| [[task-106-02-scratch-mask]] | sonnet | 2 | 0k | 119k | 3397k | 38k | ~0.68 | — | — |
+| [[task-101-06-barrel-edge-wear]] | sonnet | 1 | 0k | 45k | 329k | 1k | ~0.09 | — | — |
+| [[task-107-01-barrel-integration]] | opus | 1 | 0k | 40k | 474k | 9k | ~0.14 | — | — |
+| [[task-107-02-barrel-integration-bp]] | sonnet | 3 | 0k | 117k | 3235k | 1k | ~0.47 | — | — |
+| [[task-117-01-barrel-on-floor]] | opus | 1 | 0k | 69k | 1251k | 16k | ~0.29 | — | — |
+| [[task-106-01-wear-mask-texture]] | sonnet | 1 | 0k | 70k | 947k | 17k | ~0.27 | — | — |
+| [[task-108-01-weapon-icons-placeholder]] | opus+sonnet | 1 | 0k | 133k | 1536k | 22k | ~0.43 | — | — |
+| [[task-108-02-weapon-icons-placeholder]] | opus | 1 | 0k | 40k | 373k | 17k | ~0.17 | — | — |
+| [[task-109-01-weapon-slot-icons]] | opus | 1 | 0k | 30k | 255k | 8k | ~0.10 | — | — |
+| [[task-110-01-xp-big-block]] | opus | 1 | 0k | 81k | 1842k | 29k | ~0.43 | — | — |
+| [[task-111-01-pool-prewarm]] | opus | 2 | 0k | 175k | 7717k | 57k | ~1.28 | — | — |
+| [[task-111-02-pool-prewarm]] | opus | 1 | 0k | 88k | 1644k | 24k | ~0.39 | — | — |
+| [[task-112-01-ground-telegraph]] | opus | 1 | 0k | 92k | 2199k | 39k | ~0.53 | — | — |
+| [[task-113-01-capture-zone-visual]] | opus | 2 | 0k | 68k | 1470k | 21k | ~0.34 | — | — |
+| [[task-115-01-heavy-slam-telegraph]] | opus | 1 | 0k | 92k | 1797k | 26k | ~0.42 | — | — |
+| [[task-114-01-barrel-fuse]] | opus | 1 | 0k | 161k | 6636k | 66k | ~1.19 | — | — |
+| [[task-112-02-ground-telegraph]] | sonnet | 1 | 0k | 57k | 1037k | 20k | ~0.27 | — | — |
+| [[task-109-02-weapon-slot-icons]] | sonnet | 2 | 0k | 72k | 2025k | 32k | ~0.45 | — | — |
+| [[task-113-02-capture-zone-visual]] | sonnet | 1 | 0k | 44k | 842k | 15k | ~0.21 | — | — |
+| [[task-110-02-xp-big-block]] | sonnet | 1 | 0k | 46k | 1141k | 16k | ~0.25 | — | — |
+| [[task-119-01-heavy-telegraph-far-bug]] | opus | 1 | 0k | 71k | 1055k | 13k | ~0.26 | — | — |
+| [[task-120-01-console-rules]] | opus | 1 | 0k | 104k | 2794k | 31k | ~0.56 | — | — |
+| [[task-121-01-barrel-explosion-spread]] | opus | 1 | 0k | 157k | 4541k | 38k | ~0.84 | — | — |
+| [[task-118-01-telegraph-fill]] | sonnet | 1 | 0k | 50k | 702k | 12k | ~0.19 | — | — |
+| [[task-122-01-xp-big-block-magenta]] | sonnet | 1 | 0k | 56k | 1039k | 16k | ~0.25 | — | — |
+| [[task-123-01-heavy-remove-shockring]] | sonnet | 1 | 0k | 46k | 738k | 12k | ~0.19 | — | — |
+| [[task-124-01-heavy-shockring-cleanup]] | opus | 1 | 0k | 43k | 504k | 10k | ~0.15 | — | — |
+| [[task-124-02-remove-shockring-component]] | sonnet | 1 | 0k | 35k | 392k | 7k | ~0.12 | — | — |
+| [[task-125-01-xp-chip-images]] | sonnet | 1 | 0k | 27k | 147k | 1k | ~0.05 | — | — |
+| [[task-126-01-xp-nut-images]] | sonnet | 1 | 0k | 22k | 87k | 1k | ~0.04 | — | — |
+| [[task-127-01-xp-chip-magenta]] | sonnet | 1 | 0k | 14k | 94k | 1k | ~0.03 | — | — |
+| [[task-128-01-xp-nut-mesh]] | sonnet | 1 | 0k | 59k | 486k | 5k | ~0.15 | — | — |
+| [[task-129-01-xp-chip-big-mesh]] | sonnet | 1 | 0k | 61k | 568k | 8k | ~0.17 | — | — |
+| [[task-130-01-xp-nut-mesh-fidelity]] | sonnet | 5 | 0k | 165k | 1182k | 11k | ~0.38 | — | — |
+| [[task-131-01-xp-chip-big-mesh-fidelity]] | sonnet | 5 | 0k | 236k | 1831k | 10k | ~0.53 | — | — |
+| [[task-132-01-xp-nut-integration]] | sonnet | 2 | 0k | 59k | 1472k | 1k | ~0.23 | — | — |
+| [[task-133-01-xp-chip-integration]] | sonnet | 1 | 0k | 44k | 668k | 1k | ~0.13 | — | — |
+| [[task-134-01-xp-pickups-no-shadow]] | sonnet | 1 | 0k | 23k | 212k | 1k | ~0.05 | — | — |
+| [[task-135-01-xp-pickups-pivot-float]] | sonnet | 1 | 0k | 26k | 113k | 0k | ~0.04 | — | — |
+| [[task-135-02-xp-pickups-pivot-export]] | sonnet | 1 | 0k | 29k | 126k | 3k | ~0.06 | — | — |
+| [[task-136-01-xp-pickups-stronger-glow]] | sonnet | 1 | 0k | 29k | 442k | 1k | ~0.09 | — | — |
+| [[task-135-03-xp-pickups-pivot-reimport]] | sonnet | 1 | 0k | 33k | 349k | 1k | ~0.08 | — | — |
+| [[task-137-01-unreal-reimport-tool]] | opus | 1 | 0k | 94k | 2734k | 12k | ~0.45 | — | — |
+| [[task-138-01-xp-pickups-perf-test]] | opus | 1 | 0k | 115k | 1964k | 11k | ~0.40 | — | — |
+| [[task-138-02-xp-pickups-perf-test]] | opus | 1 | 0k | 232k | 4211k | 15k | ~0.79 | — | — |
+| [[task-140-01-xp-chip-glow-violet]] | sonnet | 1 | 0k | 19k | 97k | 0k | ~0.03 | — | — |
+| [[task-141-01-xp-pickups-lumen-test]] | sonnet | 1 | 0k | 32k | 521k | 1k | ~0.10 | — | — |
+| [[task-142-01-xp-bloom-post-process]] | sonnet | 1 | 0k | 51k | 1369k | 1k | ~0.21 | — | — |
+| [[task-143-01-xp-pickups-distance-field]] | sonnet | 1 | 0k | 35k | 496k | 1k | ~0.10 | — | — |
+| [[task-144-01-xp-chip-glow-12-6]] | sonnet | 1 | 0k | 15k | 138k | 0k | ~0.03 | — | — |
+| [[task-145-01-xp-glow-disc]] | sonnet | 1 | 0k | 34k | 182k | 0k | ~0.06 | — | — |
+| [[task-145-02-disc-reimport]] | sonnet | 1 | 0k | 14k | 70k | 0k | ~0.02 | — | — |
+| [[task-145-03-disc-material]] | sonnet | 1 | 0k | 56k | 1276k | 1k | ~0.20 | — | — |
+| [[task-146-01-xp-nut-disc-lighter]] | sonnet | 2 | 0k | 22k | 175k | 0k | ~0.04 | — | — |
+| [[task-147-01-xp-disc-billboard]] | sonnet | 1 | 0k | 42k | 535k | 1k | ~0.11 | — | — |
+| [[task-148-01-xp-disc-fade]] | opus | 1 | 0k | 55k | 565k | 9k | ~0.17 | — | — |
+| [[task-148-02-xp-disc-fade-material]] | sonnet | 1 | 0k | 38k | 456k | 1k | ~0.10 | — | — |
+| [[task-149-01-xp-disc-depth-cut]] | sonnet | 1 | 0k | 39k | 498k | 1k | ~0.10 | — | — |
+| [[task-150-01-xp-nut-disc-lighter-2]] | sonnet | 1 | 0k | 18k | 124k | 1k | ~0.04 | — | — |
+| [[task-151-01-chaser-robot]] | sonnet | 1 | 0k | 30k | 145k | 1k | ~0.06 | — | — |
+| [[task-151-02-chaser-sheet-simplified]] | sonnet | 1 | 0k | 22k | 92k | 1k | ~0.04 | — | — |
+| [[task-151-03-chaser-model]] | sonnet | 1 | 0k | 184k | 4234k | 26k | ~0.78 | — | — |
+| [[task-151-04-chaser-refine]] | sonnet | 1 | 0k | 143k | 2887k | 16k | ~0.55 | — | — |
+| [[task-151-05-chaser-split]] | sonnet | 1 | 0k | 87k | 1198k | 16k | ~0.31 | — | — |
+| [[task-151-06-chaser-part-headtorso]] | sonnet | 1 | 0k | 25k | 255k | 3k | ~0.07 | — | — |
+| [[task-151-07-chaser-part-pelvis]] | sonnet | 1 | 0k | 15k | 117k | 1k | ~0.04 | — | — |
+| [[task-151-08-chaser-part-upperarm]] | sonnet | 1 | 0k | 24k | 216k | 2k | ~0.06 | — | — |
+| [[task-151-09-chaser-part-forearmhand]] | sonnet | 1 | 0k | 26k | 192k | 2k | ~0.06 | — | — |
+| [[task-151-10-chaser-part-thigh]] | sonnet | 1 | 0k | 27k | 256k | 2k | ~0.07 | — | — |
+| [[task-151-11-chaser-part-shinfoot]] | sonnet | 1 | 0k | 22k | 180k | 3k | ~0.06 | — | — |
+| [[task-151-12-chaser-assembly]] | sonnet | 1 | 0k | 53k | 570k | 4k | ~0.14 | — | — |
+| [[task-151-13-chaser-torso-pass]] | opus+sonnet | 9 | 0k | 663k | 9327k | 88k | ~2.20 | — | — |
+| [[task-151-14-chaser-reassembly]] | sonnet | 1 | 0k | 50k | 926k | 2k | ~0.17 | — | — |
+| [[task-152-01-chaser-static-integration]] | sonnet | 1 | 0k | 61k | 630k | 2k | ~0.15 | — | — |
+| [[task-152-02-chaser-blueprint-swap]] | sonnet | 1 | 0k | 47k | 651k | 1k | ~0.13 | — | — |
+| [[task-153-01-chaser-meshy-optimization-test]] | sonnet | 1 | 0k | 59k | 340k | 33k | ~0.27 | — | — |
+| [[task-154-01-chaser-meshy-views]] | sonnet | 1 | 0k | 28k | 216k | 1k | ~0.06 | — | — |
+| [[task-155-01-chaser-meshy-texture-fixes]] | sonnet | 1 | 0k | 164k | 4220k | 27k | ~0.76 | — | — |
+| [[task-156-01-chaser-meshy-integration]] | sonnet | 1 | 0k | 50k | 464k | 0k | ~0.11 | — | — |
+| [[task-156-02-chaser-meshy-unreal-import]] | sonnet | 3 | 0k | 109k | 3066k | 3k | ~0.46 | — | — |
+| [[task-157-01-chaser-run-attack-animation]] | sonnet | 2 | 0k | 349k | 7301k | 26k | ~1.30 | — | — |
+| [[task-157-02-chaser-clips-bake]] | sonnet | 1 | 0k | 89k | 663k | 19k | ~0.27 | — | — |
+| [[task-157-03-chaser-anim-cpp-hook]] | opus | 1 | 0k | 100k | 1518k | 10k | ~0.33 | — | — |
+| [[task-157-04-chaser-anim-unreal]] | sonnet | 1 | 0k | 128k | 2877k | 1k | ~0.45 | — | — |
+| [[task-158-01-chaser-glow-mask-fix]] | sonnet | 1 | 0k | 60k | 1015k | 0k | ~0.18 | — | — |
+| [[task-159-01-chaser-anim-part-index]] | sonnet | 1 | 0k | 40k | 194k | 2k | ~0.08 | — | — |
+| [[task-159-02-chaser-part-index-unreal]] | sonnet | 1 | 0k | 78k | 1593k | 2k | ~0.27 | — | — |
+| [[task-160-01-chaser-no-shadow]] | sonnet | 3 | 0k | 128k | 1774k | 1k | ~0.34 | — | — |
+| [[task-161-01-chaser-cut-pose-check]] | sonnet | 1 | 0k | 102k | 713k | 15k | ~0.27 | — | — |
+| [[task-162-01-chaser-anim-game-look]] | opus | 1 | 0k | 137k | 3609k | 12k | ~0.59 | — | — |
+| [[task-166-01-robot-debris-pieces]] | sonnet | 1 | 0k | 36k | 294k | 11k | ~0.13 | — | — |
+| [[task-169-01-weapon-lore-lines]] | opus+sonnet | 3 | 0k | 62k | 359k | 4k | ~0.13 | — | — |
+| [[task-168-01-card-lore-lines]] | opus+sonnet | 2 | 0k | 67k | 378k | 5k | ~0.15 | — | — |
+| [[task-167-01-robot-death-puff]] | opus | 1 | 0k | 62k | 897k | 19k | ~0.26 | — | — |
+| [[task-166-02-debris-code]] | opus | 1 | 0k | 84k | 1475k | 21k | ~0.36 | — | — |
+| [[task-166-03-debris-meshes-import]] | sonnet | 1 | 0k | 70k | 1458k | 15k | ~0.31 | — | — |
+| [[task-167-02-death-puff-niagara]] | sonnet | 2 | 0k | 127k | 4599k | 31k | ~0.77 | — | — |
+| [[task-166-04-debris-niagara]] | sonnet | 3 | 0k | 165k | 8238k | 60k | ~1.33 | — | — |
+| [[task-166-05-debris-not-visible]] | opus | 1 | 0k | 134k | 3816k | 27k | ~0.68 | — | — |
+| [[task-169-02-weapon-card-frame]] | sonnet | 2 | 0k | 70k | 398k | 2k | ~0.14 | — | — |
+| [[task-168-02-stat-icons]] | sonnet | 4 | 0k | 329k | 1636k | 5k | ~0.60 | — | — |
+| [[task-168-03-card-frames]] | sonnet | 3 | 0k | 129k | 1126k | 7k | ~0.31 | — | — |
+| [[task-173-01-debris-count-variety]] | opus | 1 | 0k | 334k | 4096k | 41k | ~1.03 | — | — |
+| [[task-170-01-debris-sink-3s]] | sonnet | 1 | 0k | 70k | 971k | 13k | ~0.25 | — | — |
+| [[task-171-01-debris-throw-random]] | sonnet | 1 | 0k | 49k | 821k | 13k | ~0.21 | — | — |
+| [[task-172-01-debris-start-jitter]] | sonnet | 2 | 0k | 47k | 822k | 11k | ~0.20 | — | — |
+| [[task-174-01-debris-regression]] | opus | 1 | 0k | 79k | 1184k | 15k | ~0.29 | — | — |
+| [[task-174-02-debris-position-fix]] | sonnet | 2 | 0k | 74k | 1145k | 11k | ~0.26 | — | — |
+| [[task-168-04-card-icon-data]] | opus | 1 | 0k | 61k | 1015k | 0k | ~0.18 | — | — |
+| [[task-169-03-weapon-card-lore]] | opus | 1 | 0k | 67k | 1474k | 1k | ~0.24 | — | — |
+| [[task-168-05-upgrade-choice-layout]] | sonnet | 3 | 0k | 164k | 6315k | 1k | ~0.84 | — | — |
+| [[task-169-04-weapon-card-layout]] | sonnet | 2 | 0k | 126k | 4092k | 1k | ~0.57 | — | — |
+| [[task-169-05-weapon-card-test-fix]] | opus | 1 | 0k | 51k | 504k | 3k | ~0.13 | — | — |
+| [[task-168-06-card-layout-fix]] | sonnet | 1 | 0k | 52k | 624k | 1k | ~0.13 | — | — |
+| [[task-168-07-hide-alert-bar]] | sonnet | 2 | 0k | 138k | 3163k | 2k | ~0.50 | — | — |
+| [[task-168-08-baked-card-frames]] | sonnet | 1 | 0k | 32k | 220k | 5k | ~0.09 | — | — |
+| [[task-168-09-plain-frame-images]] | sonnet | 1 | 0k | 67k | 1038k | 1k | ~0.19 | — | — |
+| [[task-177-01-wider-upgrade-cards]] | sonnet | 1 | 0k | 21k | 64k | 1k | ~0.04 | — | — |
+| [[task-176-01-lone-stat-icon-larger]] | sonnet | 1 | 0k | 85k | 1406k | 1k | ~0.25 | — | — |
+| [[task-177-02-wider-cards-layout]] | sonnet | 1 | 0k | 56k | 994k | 1k | ~0.17 | — | — |
+| [[task-178-01-card-glow-hover]] | sonnet | 1 | 0k | 27k | 142k | 0k | ~0.05 | — | — |
+| [[task-178-02-glow-hover-layout]] | sonnet | 1 | 0k | 103k | 1893k | 0k | ~0.32 | — | — |
+| [[task-175-01-alert-objectives-node-cleanup]] | sonnet | 1 | 0k | 43k | 277k | 0k | ~0.08 | — | — |
+| [[task-179-01-debris-debug-plane-off]] | sonnet | 1 | 0k | 105k | 1316k | 8k | ~0.30 | — | — |
+| [[task-180-01-burst-rifle-push-collision]] | opus | 1 | 0k | 114k | 4121k | 35k | ~0.73 | — | — |
+| [[task-181-01-perf-chaser-meshy-death]] | opus | 1 | 0k | 234k | 4241k | 37k | ~0.90 | — | — |
+| [[task-183-01-ore-counter-logic]] | opus | 1 | 0k | 126k | 3634k | 4k | ~0.54 | — | — |
+| [[task-183-02-ore-hud-render]] | opus+sonnet | 1 | 0k | 93k | 239k | 6k | ~0.17 | — | — |
+| [[task-183-03-ore-hud-icon]] | opus+sonnet | 1 | 0k | 53k | 199k | 3k | ~0.10 | — | — |
+| [[task-183-04-ore-counter-widget]] | sonnet | 1 | 0k | 165k | 7246k | 1k | ~0.94 | — | — |
+| [[task-187-01-deposit-whole-on-explosion]] | opus | 1 | 0k | 92k | 2789k | 27k | ~0.53 | — | — |
+| [[task-184-01-minimap-opaque]] | sonnet | 1 | 0k | 62k | 820k | 8k | ~0.20 | — | — |
+| [[task-182-01-debris-lifetime-4-5s]] | sonnet | 1 | 0k | 39k | 481k | 7k | ~0.13 | — | — |
+| [[task-185-01-alert-label-widget]] | sonnet | 1 | 0k | 60k | 821k | 13k | ~0.22 | — | — |
+| [[task-182-02-debris-pool-80]] | sonnet | 1 | 0k | 34k | 223k | 5k | ~0.09 | — | — |
+| [[task-186-01-debris-throw-speed-range]] | sonnet | 1 | 0k | 44k | 375k | 6k | ~0.12 | — | — |
+| [[task-185-02-alert-label-test]] | opus | 1 | 0k | 19k | 181k | 4k | ~0.06 | — | — |
+| [[task-182-03-debris-pool-cost]] | opus | 1 | 0k | 74k | 1485k | 21k | ~0.35 | — | — |
+| [[task-190-01-debris-spin-damping]] | sonnet | 1 | 0k | 88k | 1059k | 13k | ~0.28 | — | — |
+| [[task-191-01-debris-gpu-df-collision]] | sonnet | 2 | 0k | 161k | 5238k | 39k | ~0.92 | — | — |
+| [[task-191-02-debris-gpu-cost]] | opus | 1 | 0k | 137k | 2361k | 30k | ~0.56 | — | — |
+| [[task-194-01-debris-pool-counter]] | opus | 1 | 0k | 111k | 3011k | 26k | ~0.57 | — | — |
+| [[task-189-01-ore-chunk-look]] | sonnet | 4 | 0k | 139k | 1288k | 2k | ~0.31 | — | — |
+| [[task-193-01-debris-gpu-cost-remeasure]] | opus | 2 | 0k | 213k | 4612k | 48k | ~0.97 | — | — |
+| [[task-189-02-ore-chunk-mesh]] | sonnet | 2 | 0k | 71k | 577k | 2k | ~0.16 | — | — |
+| [[task-189-03-ore-chunk-materials]] | sonnet | 1 | 0k | 70k | 1512k | 1k | ~0.24 | — | — |
+| [[task-189-04-ore-chunk-trail]] | sonnet | 1 | 0k | 44k | 680k | 1k | ~0.13 | — | — |
+| [[task-192-01-pickup-spawn-orientation-variants]] | opus | 1 | 0k | 77k | 952k | 0k | ~0.19 | — | — |
+| [[task-192-02-pickup-orientation-defaults]] | sonnet | 1 | 0k | 36k | 432k | 1k | ~0.09 | — | — |
+| [[task-189-05-ore-chunk-blueprint]] | sonnet | 1 | 0k | 64k | 1084k | 0k | ~0.19 | — | — |
+| [[task-195-01-floaty-pop-midair-magnet]] | opus | 1 | 0k | 89k | 1505k | 1k | ~0.27 | — | — |
+| [[task-192-03-pool-reuse-test-rotation]] | opus | 1 | 0k | 36k | 283k | 0k | ~0.07 | — | — |
+| [[task-196-01-xp-chip-smaller]] | sonnet | 1 | 0k | 39k | 443k | 0k | ~0.09 | — | — |
+| [[task-195-02-floaty-pop-values]] | sonnet | 1 | 0k | 40k | 546k | 1k | ~0.11 | — | — |
+| [[task-195-03-dig-pickup-collect-test]] | opus | 1 | 0k | 36k | 237k | 0k | ~0.07 | — | — |
+| [[task-197-01-barrel-fuse-instability]] | opus | 1 | 0k | 82k | 1627k | 22k | ~0.38 | — | — |
+| [[task-197-02-explosion-fx-burst-shockwave]] | opus | 1 | 0k | 79k | 1676k | 26k | ~0.40 | — | — |
+| [[task-197-05-shockwave-decal-material]] | sonnet | 1 | 0k | 42k | 428k | 9k | ~0.14 | — | — |
+| [[task-197-03-barrel-fuse-blink-material]] | sonnet | 1 | 0k | 55k | 643k | 15k | ~0.21 | — | — |
+| [[task-197-04-barrel-explosion-niagara]] | sonnet | 1 | 0k | 99k | 3034k | 34k | ~0.60 | — | — |
+| [[task-197-06-barrel-explosion-fx-blueprint]] | sonnet | 1 | 0k | 47k | 908k | 13k | ~0.21 | — | — |
+| [[task-197-07-barrel-fx-visual-check]] | opus | 1 | 0k | 119k | 3575k | 29k | ~0.65 | — | — |
+| [[task-198-01-shockwave-ring-timing]] | opus | 1 | 0k | 66k | 1180k | 20k | ~0.30 | — | — |
+| [[task-198-02-shockwave-ring-width]] | sonnet | 1 | 0k | 42k | 538k | 10k | ~0.16 | — | — |
+| [[task-199-01-barrel-burst-bigger]] | sonnet | 1 | 0k | 55k | 651k | 11k | ~0.19 | — | — |
+| [[task-200-01-decal-green-square-check]] | opus | 1 | 0k | 73k | 861k | 13k | ~0.24 | — | — |
+| [[task-201-01-decal-first-frame-green]] | opus | 2 | 0k | 183k | 7932k | 51k | ~1.28 | — | — |
+| [[task-202-01-crater-first-frame-black]] | opus | 1 | 0k | 83k | 1710k | 17k | ~0.36 | — | — |
+| [[task-203-01-drain]] | opus | 1 | 0k | 59k | 805k | 6k | ~0.18 | — | — |
+| [[task-203-02-damage-chunk]] | opus | 1 | 0k | 31k | 253k | 0k | ~0.06 | — | — |
+| [[task-203-03-hit-flash]] | opus | 1 | 0k | 35k | 350k | 1k | ~0.08 | — | — |
+| [[task-203-04-shake]] | opus | 1 | 0k | 37k | 493k | 1k | ~0.10 | — | — |
+| [[task-203-05-punch]] | opus | 1 | 0k | 47k | 520k | 7k | ~0.15 | — | — |
+| [[task-203-06-color-states]] | opus | 1 | 0k | 38k | 239k | 0k | ~0.07 | — | — |
+| [[task-203-07-wbp-health-status]] | sonnet | 1 | 0k | 64k | 1111k | 1k | ~0.20 | — | — |
+| [[task-203-08-health-bar-size]] | sonnet | 1 | 0k | 39k | 544k | 1k | ~0.11 | — | — |
+| [[task-203-09-health-bar-visual-check]] | opus | 1 | 0k | 53k | 395k | 2k | ~0.12 | — | — |
+| [[task-204-01-empty-bar-color]] | sonnet | 1 | 0k | 40k | 403k | 1k | ~0.10 | — | — |
+| [[task-204-02-empty-bar-capture]] | opus | 1 | 0k | 27k | 145k | 1k | ~0.05 | — | — |
+| [[task-205-01-direct-240-generator]] | opus | 1 | 0k | 88k | 1491k | 15k | ~0.33 | — | — |
+| [[task-205-02-layout-l2]] | sonnet | 1 | 0k | 21k | 104k | 0k | ~0.04 | — | — |
+| [[task-205-03-layout-l3]] | sonnet | 1 | 0k | 21k | 201k | 0k | ~0.05 | — | — |
+| [[task-206-01-run-state]] | opus | 1 | 0k | 119k | 4054k | 17k | ~0.64 | — | — |
+| [[task-205-04-layout-l4]] | sonnet | 1 | 0k | 19k | 154k | 0k | ~0.04 | — | — |
+| [[task-206-02-async-layout]] | opus | 1 | 0k | 99k | 2773k | 2k | ~0.41 | — | — |
+| [[task-206-03-transition-flow]] | opus | 2 | 0k | 199k | 8673k | 23k | ~1.23 | — | — |
+| [[task-206-05-wbp-loading]] | sonnet | 1 | 0k | 61k | 1314k | 1k | ~0.21 | — | — |
+| [[task-206-04-wbp-intermission]] | sonnet | 1 | 0k | 90k | 2266k | 1k | ~0.34 | — | — |
+| [[task-206-06-transition-capture]] | opus | 1 | 0k | 60k | 469k | 1k | ~0.13 | — | — |
+| [[task-209-01-run-won-copy]] | sonnet | 1 | 0k | 36k | 166k | 0k | ~0.06 | — | — |
+| [[task-209-02-run-won-review]] | opus | 1 | 0k | 28k | 54k | 1k | ~0.05 | — | — |
+| [[task-207-01-hide-hud-code]] | opus | 1 | 0k | 98k | 3176k | 5k | ~0.47 | — | — |
+| [[task-208-01-delay-travel-code]] | opus | 1 | 0k | 48k | 800k | 0k | ~0.14 | — | — |
+| [[task-209-03-screen-texts-code]] | opus | 1 | 0k | 104k | 2610k | 2k | ~0.40 | — | — |
+| [[task-210-01-transition-copy]] | sonnet | 1 | 0k | 31k | 109k | 0k | ~0.05 | — | — |
+| [[task-210-02-transition-review]] | opus | 1 | 0k | 19k | 81k | 3k | ~0.05 | — | — |
+| [[task-207-02-capture]] | opus | 1 | 0k | 47k | 364k | 1k | ~0.10 | — | — |
+| [[task-209-04-run-won-bp]] | sonnet | 1 | 0k | 52k | 747k | 1k | ~0.14 | — | — |
+| [[task-210-03-intermission-bp]] | sonnet | 1 | 0k | 66k | 1375k | 1k | ~0.23 | — | — |
+| [[task-210-04-loading-bp]] | sonnet | 1 | 0k | 69k | 1492k | 1k | ~0.24 | — | — |
+| [[task-208-02-capture]] | opus | 1 | 0k | 75k | 839k | 4k | ~0.20 | — | — |
+| [[task-209-05-capture]] | opus | 1 | 0k | 56k | 452k | 1k | ~0.12 | — | — |
+| [[task-214-01-excerpt-fix]] | sonnet | 1 | 0k | 12k | 31k | 0k | ~0.02 | — | — |
+| [[task-211-01-end-silence-code]] | opus | 1 | 0k | 101k | 3112k | 9k | ~0.48 | — | — |
+| [[task-211-02-end-hud-bp]] | sonnet | 1 | 0k | 95k | 3471k | 1k | ~0.47 | — | — |
+| [[task-211-03-end-capture]] | opus | 1 | 0k | 84k | 792k | 1k | ~0.19 | — | — |
+| [[task-212-01-collector]] | opus | 1 | 0k | 260k | 4605k | 11k | ~0.84 | — | — |
+| [[task-212-02-writer]] | opus | 1 | 0k | 143k | 5708k | 11k | ~0.80 | — | — |
+| [[task-213-01-death-parts-test]] | opus | 1 | 0k | 30k | 407k | 0k | ~0.08 | — | — |
+| [[task-213-02-heal-pop-tests]] | opus | 1 | 0k | 56k | 1047k | 3k | ~0.19 | — | — |
+| [[task-215-01-no-prefix-code]] | opus | 1 | 0k | 42k | 597k | 0k | ~0.11 | — | — |
+| [[task-215-02-capture]] | opus | 1 | 0k | 25k | 148k | 1k | ~0.05 | — | — |
+| [[task-220-01-shield-clips-bake]] | sonnet | 1 | 0k | 201k | 2476k | 37k | ~0.68 | — | — |
+| [[task-220-02-shield-chaser-material]] | sonnet | 1 | 0k | 92k | 2499k | 2k | ~0.37 | — | — |
+| [[task-220-05-shield-pavise-pose]] | sonnet | 1 | 0k | 86k | 1568k | 1k | ~0.27 | — | — |
+| [[task-220-06-shield-chaser-reimport]] | opus | 1 | 0k | 71k | 1769k | 9k | ~0.31 | — | — |
+| [[task-220-03-bp-shield-chaser-wiring]] | sonnet | 1 | 0k | 130k | 1335k | 1k | ~0.30 | — | — |
+| [[task-221-01-xp-cube-import]] | sonnet | 1 | 0k | 48k | 586k | 0k | ~0.12 | — | — |
+| [[task-221-02-bp-pickup-xp-big-cube]] | sonnet | 1 | 0k | 32k | 363k | 1k | ~0.08 | — | — |
+| [[task-221-03-xp-chip-cleanup]] | sonnet | 1 | 0k | 34k | 428k | 1k | ~0.09 | — | — |
+| [[task-222-01-shield-debris-pieces]] | sonnet | 1 | 0k | 106k | 2120k | 11k | ~0.40 | — | — |
+| [[task-222-02-shield-debris-import]] | sonnet | 1 | 0k | 43k | 457k | 1k | ~0.10 | — | — |
+| [[task-222-03-ns-shield-debris]] | sonnet | 1 | 0k | 68k | 1344k | 1k | ~0.22 | — | — |
+| [[task-222-04-bp-shield-chaser-debris]] | sonnet | 1 | 0k | 38k | 596k | 1k | ~0.11 | — | — |
+| [[task-223-01-debug-break-shields-command]] | opus | 1 | 0k | 61k | 817k | 0k | ~0.16 | — | — |
+| [[task-224-01-shield-debris-direction-cpp]] | opus | 1 | 0k | 43k | 397k | 2k | ~0.10 | — | — |
+| [[task-219-02-rock-ore-review]] | opus | 1 | 0k | 32k | 48k | 9k | ~0.09 | — | — |
+| [[task-224-02-ns-shield-debris-hitdir]] | sonnet | 1 | 0k | 49k | 919k | 1k | ~0.16 | — | — |
+| [[task-219-04-rock-look-c-fix]] | sonnet | 1 | 0k | 20k | 129k | 1k | ~0.04 | — | — |
+| [[task-224-03-bp-shield-chaser-hitdir]] | sonnet | 1 | 0k | 53k | 668k | 0k | ~0.13 | — | — |
+| [[task-225-01-shield-colour-renders]] | sonnet | 1 | 0k | 105k | 1369k | 18k | ~0.36 | — | — |
+| [[task-224-04-shield-debris-direction-capture]] | opus | 1 | 0k | 58k | 542k | 6k | ~0.16 | — | — |
+| [[task-219-05-rock-look-c-review]] | opus | 1 | 0k | 28k | 43k | 8k | ~0.08 | — | — |
+| [[task-219-03-rock-render-note]] | opus | 1 | 0k | 49k | 542k | 0k | ~0.12 | — | — |
+| [[task-226-01-shield-charcoal-textures]] | sonnet | 1 | 0k | 70k | 823k | 1k | ~0.17 | — | — |
+| [[task-226-02-shield-charcoal-reimport]] | opus | 1 | 0k | 48k | 607k | 3k | ~0.14 | — | — |
+| [[task-227-01-shield-debris-script-fix]] | sonnet | 1 | 0k | 32k | 215k | 2k | ~0.07 | — | — |
+| [[task-228-01-bp-pickup-xp-big-pop]] | sonnet | 1 | 0k | 32k | 289k | 0k | ~0.07 | — | — |
+| [[task-229-01-pickup-simple-collisions]] | opus | 1 | 0k | 103k | 2098k | 6k | ~0.37 | — | — |
+| [[task-229-02-pickup-physics-cpp]] | opus | 2 | 0k | 215k | 10323k | 12k | ~1.36 | — | — |
+| [[task-229-03-pickup-physics-capture]] | opus | 1 | 0k | 73k | 1372k | 8k | ~0.27 | — | — |
+| [[task-230-01-rock-baseline-capture]] | opus | 1 | 0k | 136k | 3692k | 4k | ~0.56 | — | — |
+| [[task-230-02-rock-slab-pieces]] | sonnet | 1 | 0k | 95k | 1327k | 23k | ~0.37 | — | — |
+| [[task-230-03-rock-top-texture]] | sonnet | 1 | 0k | 48k | 325k | 1k | ~0.10 | — | — |
+| [[task-230-04-rock-top-texture-review]] | opus | 1 | 0k | 24k | 40k | 4k | ~0.05 | — | — |
+| [[task-230-05-rock-crack-mask]] | sonnet | 2 | 0k | 47k | 338k | 1k | ~0.10 | — | — |
+| [[task-230-06-rock-plate-overlay]] | sonnet | 4 | 0k | 574k | 6149k | 88k | ~1.77 | — | — |
+| [[task-230-07-dual-grid-placement]] | opus | 2 | 0k | 510k | 13281k | 43k | ~2.18 | — | — |
+| [[task-230-08-rock-damage-data]] | opus | 2 | 0k | 233k | 10962k | 32k | ~1.55 | — | — |
+| [[task-230-09-rock-slab-material]] | sonnet | 1 | 0k | 123k | 3105k | 1k | ~0.47 | — | — |
+| [[task-230-10-heal-crystal-material]] | sonnet | 1 | 0k | 27k | 279k | 0k | ~0.06 | — | — |
+| [[task-230-11-rock-slab-assign]] | sonnet | 1 | 0k | 97k | 2571k | 1k | ~0.38 | — | — |
+| [[task-230-12-rock-slab-check]] | opus | 1 | 0k | 205k | 3050k | 4k | ~0.58 | — | — |
+| [[task-230-13-rock-collision-fix]] | opus | 1 | 0k | 102k | 2667k | 2k | ~0.40 | — | — |
+| [[task-230-14-barrel-chain-crash]] | opus | 2 | 0k | 268k | 6938k | 2k | ~1.04 | — | — |
+| [[task-230-15-duskite-crystal-colour]] | sonnet | 1 | 0k | 80k | 2047k | 1k | ~0.31 | — | — |
+| [[task-230-16-rock-top-texture-shade]] | sonnet | 1 | 0k | 48k | 916k | 1k | ~0.16 | — | — |
+| [[task-230-17-rock-sag-visible-check]] | opus | 2 | 0k | 153k | 6797k | 5k | ~0.90 | — | — |
+| [[task-230-18-rock-material-diagnosis]] | sonnet | 1 | 0k | 114k | 3291k | 3k | ~0.49 | — | — |
+| [[task-230-20-rock-vertex-colour-reimport]] | opus | 1 | 0k | 100k | 1927k | 4k | ~0.34 | — | — |
+| [[task-230-21-rock-rim-tone-restore]] | sonnet | 1 | 0k | 36k | 466k | 1k | ~0.10 | — | — |
+| [[task-230-19-rock-control-capture]] | opus | 1 | 0k | 70k | 1226k | 5k | ~0.24 | — | — |
+| [[task-230-25-heal-crystal-red]] | sonnet | 1 | 0k | 42k | 547k | 1k | ~0.11 | — | — |
+| [[task-230-22-broken-top-texture]] | sonnet | 1 | 0k | 64k | 999k | 2k | ~0.19 | — | — |
+| [[task-230-23-rock-top-lavender]] | sonnet | 1 | 0k | 34k | 513k | 1k | ~0.10 | — | — |
+| [[task-230-24-rock-rim-visible]] | sonnet | 1 | 0k | 27k | 240k | 0k | ~0.06 | — | — |
+| [[task-230-26-rock-control-capture-2]] | opus | 1 | 0k | 46k | 618k | 4k | ~0.14 | — | — |
+| [[task-234-01-ore-deposit-look]] | sonnet | 1 | 0k | 33k | 198k | 1k | ~0.07 | — | — |
+| [[task-231-01-dig-shake-reduced]] | opus | 1 | 0k | 114k | 4018k | 10k | ~0.59 | — | — |
+| [[task-232-01-drone-single-beam]] | opus | 1 | 0k | 103k | 2310k | 2k | ~0.37 | — | — |
+| [[task-235-01-ore-loot-over-dig]] | opus | 1 | 0k | 127k | 4381k | 2k | ~0.61 | — | — |
+| [[task-233-01-dig-impact-particle]] | sonnet | 1 | 0k | 98k | 2563k | 1k | ~0.38 | — | — |
+| [[task-233-02-dig-impact-wiring]] | opus | 2 | 0k | 190k | 8014k | 10k | ~1.09 | — | — |
+| [[task-234-06-heal-deposit-prompts]] | sonnet | 1 | 0k | 18k | 70k | 0k | ~0.03 | — | — |
+| [[task-234-02-duskite-deposit-meshes]] | sonnet | 1 | 0k | 43k | 454k | 2k | ~0.11 | — | — |
+| [[task-234-07-heal-deposit-meshes]] | sonnet | 1 | 0k | 52k | 657k | 8k | ~0.17 | — | — |
+| [[task-234-03-deposit-crystal-visual]] | opus | 2 | 0k | 696k | 5574k | 29k | ~1.57 | — | — |
+| [[task-234-04-deposit-mesh-assign]] | sonnet | 2 | 0k | 52k | 794k | 1k | ~0.15 | — | — |
+| [[task-234-05-deposit-look-capture]] | opus | 1 | 0k | 69k | 969k | 4k | ~0.20 | — | — |
+| [[task-234-08-duskite-rest-pulse]] | sonnet | 1 | 0k | 48k | 466k | 0k | ~0.11 | — | — |
+| [[task-237-01-deposit-no-shadow]] | opus | 3 | 0k | 212k | 1441k | 1k | ~0.41 | — | — |
+| [[task-238-01-crit-number-colour]] | opus | 1 | 0k | 28k | 180k | 3k | ~0.07 | — | — |
+| [[task-239-01-number-size-by-damage]] | opus | 1 | 0k | 63k | 1177k | 10k | ~0.25 | — | — |
+| [[task-247-01-drone-escort-movement]] | opus | 1 | 0k | 172k | 5906k | 27k | ~0.94 | — | — |
+| [[task-248-01-drone-no-flight-over-walls]] | opus | 1 | 0k | 143k | 4131k | 16k | ~0.67 | — | — |
+| [[task-249-01-drone-alive-orientation-height]] | opus | 1 | 0k | 161k | 5567k | 18k | ~0.85 | — | — |
+| [[task-251-01-drone-patrol-movement]] | opus | 1 | 0k | 196k | 7637k | 39k | ~1.20 | — | — |
+| [[task-252-01-drone-mesh-parts]] | sonnet | 1 | 0k | 175k | 4993k | 32k | ~0.88 | — | — |
+| [[task-252-02-drone-mesh-parts]] | sonnet | 1 | 0k | 58k | 381k | 16k | ~0.19 | — | — |
+| [[task-252-03-drone-mesh-parts]] | sonnet | 1 | 0k | 69k | 874k | 1k | ~0.18 | — | — |
+| [[task-252-04-drone-mesh-parts]] | sonnet | 1 | 0k | 70k | 811k | 1k | ~0.17 | — | — |
+| [[task-254-01-drone-thruster-particles]] | sonnet | 1 | 0k | 100k | 2055k | 1k | ~0.34 | — | — |
+| [[task-253-01-drone-parts-animation]] | opus | 1 | 0k | 175k | 6081k | 27k | ~0.96 | — | — |
+| [[task-254-02-drone-thruster-particles]] | opus | 1 | 0k | 79k | 1454k | 14k | ~0.31 | — | — |
+| [[task-253-02-drone-parts-animation]] | sonnet | 1 | 0k | 45k | 498k | 1k | ~0.11 | — | — |
+| [[task-254-03-drone-thruster-particles]] | sonnet | 1 | 0k | 35k | 519k | 0k | ~0.10 | — | — |
+| [[task-250-01-fix-heal-vein-test]] | opus | 1 | 0k | 101k | 2006k | 13k | ~0.39 | — | — |
+| [[task-256-01-pickup-pop-distance]] | sonnet | 1 | 0k | 42k | 327k | 1k | ~0.09 | — | — |
+| [[task-256-02-pickup-pop-distance]] | sonnet | 1 | 0k | 30k | 231k | 1k | ~0.07 | — | — |
+| [[task-257-01-pulse-desync]] | sonnet | 1 | 0k | 77k | 1180k | 2k | ~0.22 | — | — |
+| [[task-255-01-camera-arm-1400]] | opus | 1 | 0k | 28k | 282k | 2k | ~0.07 | — | — |
+| [[task-257-02-pulse-desync]] | opus | 1 | 0k | 168k | 5863k | 35k | ~0.97 | — | — |
+| [[task-261-01-no-shadows]] | sonnet | 1 | 0k | 125k | 5664k | 1k | ~0.73 | — | — |
+| [[task-262-01-deposit-crystal-volume]] | sonnet | 1 | 0k | 110k | 2155k | 4k | ~0.37 | — | — |
+| [[task-258-01-heal-deposit-vibration]] | opus | 1 | 0k | 106k | 3035k | 24k | ~0.56 | — | — |
+| [[task-259-01-ore-dig-time-2s]] | opus | 1 | 0k | 122k | 4637k | 8k | ~0.66 | — | — |
+| [[task-260-01-rock-dig-time-065]] | opus | 1 | 0k | 118k | 2885k | 7k | ~0.47 | — | — |
+| [[task-263-01-player-light-shadows]] | opus | 1 | 0k | 100k | 3970k | 13k | ~0.59 | — | — |
+| [[task-267-01-crystal-pulse-restore]] | opus | 1 | 0k | 147k | 4910k | 38k | ~0.86 | — | — |
+| [[task-264-01-blob-shadows]] | sonnet | 1 | 0k | 80k | 1138k | 3k | ~0.23 | — | — |
+| [[task-265-01-scene-ambient-dark]] | sonnet | 1 | 0k | 57k | 989k | 3k | ~0.19 | — | — |
+| [[task-267-02-crystal-pulse-restore]] | sonnet | 1 | 0k | 80k | 1491k | 1k | ~0.25 | — | — |
+| [[task-263-02-player-light-shadows]] | sonnet | 1 | 0k | 53k | 702k | 0k | ~0.14 | — | — |
+| [[task-266-01-robot-readability]] | sonnet | 1 | 0k | 107k | 2484k | 5k | ~0.41 | — | — |
+| [[task-264-02-blob-shadows]] | opus | 1 | 0k | 148k | 4556k | 21k | ~0.75 | — | — |
+| [[task-268-01-dark-ambience-tight-light]] | sonnet | 1 | 0k | 79k | 796k | 1k | ~0.18 | — | — |
+| [[task-269-01-xp-bloom-smaller]] | sonnet | 1 | 0k | 42k | 439k | 1k | ~0.10 | — | — |
+| [[task-270-01-ambience-capture-tuning]] | opus | 1 | 0k | 203k | 2400k | 4k | ~0.51 | — | — |
+| [[task-270-02-ambience-sweep]] | opus | 1 | 0k | 148k | 2906k | 8k | ~0.52 | — | — |
+| [[task-270-03-ambience-apply]] | sonnet | 1 | 0k | 68k | 828k | 1k | ~0.17 | — | — |
+| [[task-270-04-ambience-after-capture]] | opus | 1 | 0k | 77k | 828k | 1k | ~0.18 | — | — |
+| [[task-270-05-ambience-apply-r3]] | sonnet | 1 | 0k | 44k | 392k | 0k | ~0.09 | — | — |
+| [[task-270-06-ambience-capture-r3]] | opus | 1 | 0k | 91k | 1377k | 2k | ~0.26 | — | — |
+| [[task-270-07-ambience-light-r4]] | sonnet | 1 | 0k | 35k | 283k | 0k | ~0.07 | — | — |
+| [[task-270-08-chaser-brightness-r4]] | sonnet | 2 | 0k | 102k | 865k | 1k | ~0.22 | — | — |
+| [[task-270-09-ambience-capture-r4]] | opus | 1 | 0k | 93k | 809k | 2k | ~0.21 | — | — |
+| [[task-270-10-ambience-radius-r5]] | sonnet | 1 | 0k | 37k | 335k | 0k | ~0.08 | — | — |
+| [[task-270-11-ambience-capture-r5]] | opus | 1 | 0k | 70k | 542k | 1k | ~0.15 | — | — |
+| [[task-272-01-player-light-low-gradient]] | opus | 1 | 0k | 189k | 5754k | 18k | ~0.90 | — | — |
+| [[task-272-05-low-light-sweep-r2]] | opus | 1 | 0k | 90k | 1926k | 2k | ~0.32 | — | — |
+| [[task-272-02-player-light-low-apply]] | sonnet | 1 | 0k | 37k | 273k | 0k | ~0.07 | — | — |
+| [[task-272-03-ambient-level-apply]] | sonnet | 1 | 0k | 71k | 755k | 0k | ~0.16 | — | — |
+| [[task-272-04-low-light-capture]] | opus | 1 | 0k | 77k | 1258k | 7k | ~0.26 | — | — |
+| [[task-273-01-floor-texture]] | sonnet | 1 | 0k | 23k | 65k | 1k | ~0.04 | — | — |
+| [[task-272-06-light-mask-material]] | sonnet | 1 | 0k | 108k | 2663k | 2k | ~0.41 | — | — |
+| [[task-272-08-light-mask-ppv]] | sonnet | 1 | 0k | 48k | 433k | 1k | ~0.11 | — | — |
+| [[task-273-02-floor-texture-maps]] | sonnet | 1 | 0k | 39k | 282k | 1k | ~0.08 | — | — |
+| [[task-272-07-light-mask-writer]] | opus | 1 | 0k | 99k | 1571k | 7k | ~0.32 | — | — |
+| [[task-272-12-light-mask-centre-fix]] | sonnet | 1 | 0k | 62k | 1022k | 2k | ~0.19 | — | — |
+| [[task-272-13-mask-writer-position]] | opus | 1 | 0k | 41k | 428k | 7k | ~0.13 | — | — |
+| [[task-272-14-mask-owner-params]] | sonnet | 1 | 0k | 65k | 778k | 2k | ~0.17 | — | — |
+| [[task-272-15-player-light-remove]] | sonnet | 1 | 0k | 45k | 647k | 0k | ~0.12 | — | — |
+| [[task-272-16-flat-mask-sweep]] | opus | 1 | 0k | 196k | 2511k | 9k | ~0.54 | — | — |
+| [[task-272-17-mask-defaults]] | sonnet | 1 | 0k | 35k | 225k | 0k | ~0.07 | — | — |
+| [[task-272-18-flat-level-light]] | sonnet | 1 | 0k | 48k | 469k | 1k | ~0.11 | — | — |
+| [[task-272-19-flat-mask-capture]] | opus | 1 | 0k | 54k | 605k | 2k | ~0.14 | — | — |
+| [[task-273-03-floor-material]] | sonnet | 2 | 0k | 135k | 4671k | 4k | ~0.66 | — | — |
+| [[task-274-01-mask-writer-cleanup]] | opus | 1 | 0k | 28k | 165k | 4k | ~0.07 | — | — |
+| [[task-274-02-darkener-material]] | sonnet | 1 | 0k | 49k | 510k | 1k | ~0.12 | — | — |
+| [[task-274-03-exposure-raise]] | sonnet | 1 | 0k | 44k | 839k | 1k | ~0.14 | — | — |
+| [[task-274-04-darkener-sweep]] | opus | 1 | 0k | 68k | 1073k | 11k | ~0.25 | — | — |
+| [[task-274-05-darkener-defaults]] | sonnet | 1 | 0k | 56k | 771k | 1k | ~0.15 | — | — |
+| [[task-274-06-darkener-capture]] | opus | 1 | 0k | 54k | 708k | 1k | ~0.14 | — | — |
+| [[task-273-04-floor-capture]] | opus | 1 | 0k | 92k | 1691k | 6k | ~0.31 | — | — |
+| [[task-274-07-far-floor-sweep]] | opus | 2 | 0k | 135k | 1858k | 3k | ~0.37 | — | — |
+| [[task-274-08-far-floor-apply]] | sonnet | 1 | 0k | 64k | 961k | 1k | ~0.18 | — | — |
+| [[task-275-01-monday-light-revert]] | sonnet | 1 | 0k | 28k | 70k | 0k | ~0.04 | — | — |
+| [[task-275-02-robot-materials-monday]] | sonnet | 1 | 0k | 14k | 44k | 0k | ~0.02 | — | — |
+| [[task-275-03-monday-exposure-measure]] | opus | 1 | 0k | 75k | 971k | 2k | ~0.20 | — | — |
+| [[task-275-04-exposure-freeze]] | sonnet | 1 | 0k | 62k | 1004k | 1k | ~0.18 | — | — |
+| [[task-277-01-xp-glow-revert]] | sonnet | 1 | 0k | 66k | 384k | 0k | ~0.12 | — | — |
+| [[task-279-01-drone-eye-glow]] | sonnet | 2 | 0k | 103k | 2788k | 1k | ~0.41 | — | — |
+| [[task-280-01-drone-thruster-boost]] | sonnet | 1 | 0k | 128k | 1110k | 1k | ~0.28 | — | — |
+| [[task-278-02-eye-slot-split]] | sonnet | 1 | 0k | 54k | 628k | 6k | ~0.16 | — | — |
+| [[task-278-03-eye-slot-reimport]] | opus | 1 | 0k | 45k | 419k | 0k | ~0.10 | — | — |
+| [[task-278-04-robot-eye-material]] | sonnet | 1 | 0k | 81k | 1744k | 1k | ~0.28 | — | — |
+| [[task-278-05-chaser-body-material]] | sonnet | 1 | 0k | 59k | 992k | 1k | ~0.18 | — | — |
+| [[task-278-06-shield-chaser-body-material]] | sonnet | 1 | 0k | 45k | 497k | 1k | ~0.11 | — | — |
+| [[task-278-07-bp-chaser-eye]] | sonnet | 1 | 0k | 33k | 333k | 1k | ~0.08 | — | — |
+| [[task-278-08-bp-shield-chaser-eye]] | sonnet | 1 | 0k | 38k | 460k | 1k | ~0.10 | — | — |
+| [[task-278-09-bp-heavy-eye]] | sonnet | 1 | 0k | 37k | 478k | 1k | ~0.10 | — | — |
+| [[task-278-10-bp-shooter-eye]] | sonnet | 1 | 0k | 20k | 111k | 1k | ~0.04 | — | — |
+| [[task-281-01-flatten-heavy]] | sonnet | 1 | 0k | 46k | 429k | 8k | ~0.14 | — | — |
+| [[task-281-02-flatten-kamikaze]] | sonnet | 1 | 0k | 41k | 145k | 0k | ~0.07 | — | — |
+| [[task-281-03-flatten-shooter]] | sonnet | 1 | 0k | 17k | 65k | 0k | ~0.03 | — | — |
+| [[task-281-04-flatten-chaser-v2]] | sonnet | 1 | 0k | 17k | 87k | 0k | ~0.03 | — | — |
+| [[task-282-01-texture-clean-heavy]] | sonnet | 1 | 0k | 86k | 1173k | 2k | ~0.23 | — | — |
+| [[task-282-02-texture-clean-kamikaze]] | sonnet | 1 | 0k | 61k | 641k | 4k | ~0.16 | — | — |
+| [[task-282-03-texture-clean-shooter]] | sonnet | 1 | 0k | 70k | 1088k | 6k | ~0.23 | — | — |
+| [[task-282-04-texture-clean-chaser-v2]] | sonnet | 1 | 0k | 73k | 827k | 2k | ~0.18 | — | — |
+| [[task-283-01-capture-before]] | opus | 1 | 0k | 44k | 414k | 1k | ~0.10 | — | — |
+| [[task-283-02-game-ready-heavy]] | sonnet | 1 | 0k | 73k | 587k | 9k | ~0.19 | — | — |
+| [[task-283-03-game-ready-kamikaze]] | sonnet | 1 | 0k | 66k | 971k | 2k | ~0.19 | — | — |
+| [[task-283-04-game-ready-shooter]] | sonnet | 1 | 0k | 34k | 249k | 0k | ~0.07 | — | — |
+| [[task-283-05-game-ready-chaser-v2]] | sonnet | 1 | 0k | 36k | 259k | 0k | ~0.07 | — | — |
+| [[task-283-06-robot-body-material]] | sonnet | 2 | 0k | 105k | 1760k | 1k | ~0.31 | — | — |
+| [[task-283-07-bp-heavy-mesh]] | sonnet | 1 | 0k | 94k | 2120k | 1k | ~0.33 | — | — |
+| [[task-283-08-bp-kamikaze-mesh]] | sonnet | 1 | 0k | 78k | 1181k | 1k | ~0.22 | — | — |
+| [[task-283-09-bp-shooter-mesh]] | sonnet | 1 | 0k | 70k | 938k | 1k | ~0.19 | — | — |
+| [[task-283-10-capture-after]] | opus | 1 | 0k | 68k | 717k | 3k | ~0.17 | — | — |
+| [[task-283-11-kamikaze-core-scale]] | sonnet | 1 | 0k | 34k | 244k | 4k | ~0.09 | — | — |
+| [[task-284-01-parts-bake-heavy]] | sonnet | 3 | 0k | 1977k | 29453k | 31k | ~5.57 | — | — |
+| [[task-284-02-parts-bake-shooter]] | sonnet | 2 | 0k | 140k | 6043k | 58k | ~1.07 | — | — |
+| [[task-284-03-parts-bake-chaser-v2]] | sonnet | 1 | 0k | 114k | 3495k | 42k | ~0.70 | — | — |
+| [[task-284-04-parts-bake-kamikaze]] | sonnet | 1 | 0k | 107k | 1976k | 39k | ~0.53 | — | — |
+| [[task-284-05-cpp-anim-clips]] | opus | 2 | 0k | 145k | 4325k | 46k | ~0.84 | — | — |
+| [[task-284-06-bp-heavy-anim]] | sonnet | 1 | 0k | 131k | 4089k | 28k | ~0.71 | — | — |
+| [[task-284-07-bp-shooter-anim]] | sonnet | 1 | 0k | 62k | 1098k | 14k | ~0.26 | — | — |
+| [[task-284-08-bp-chaser-v2-anim]] | sonnet | 1 | 0k | 91k | 1582k | 19k | ~0.37 | — | — |
+| [[task-284-09-bp-kamikaze-anim]] | sonnet | 1 | 0k | 80k | 1431k | 18k | ~0.33 | — | — |
+| [[task-284-10-bp-spawner-chaser-v2]] | sonnet | 1 | 0k | 49k | 482k | 6k | ~0.14 | — | — |
+| [[task-284-11-capture-walk]] | opus | 2 | 0k | 90k | 1733k | 25k | ~0.41 | — | — |
+| [[task-285-01-bake-heavy-slam]] | sonnet | 1 | 0k | 106k | 1755k | 39k | ~0.50 | — | — |
+| [[task-285-02-cpp-heavy-slam-clips]] | opus | 1 | 0k | 62k | 942k | 16k | ~0.25 | — | — |
+| [[task-286-01-shield-fit-bake]] | sonnet | 1 | 0k | 116k | 1900k | 21k | ~0.44 | — | — |
+| [[task-285-03-bp-heavy-slam]] | sonnet | 1 | 0k | 86k | 1998k | 20k | ~0.41 | — | — |
+| [[task-287-01-bake-shooter-aim-fire]] | sonnet | 1 | 0k | 88k | 1451k | 28k | ~0.40 | — | — |
+| [[task-286-02-bp-shield-chaser-v2]] | sonnet | 1 | 0k | 136k | 5017k | 38k | ~0.86 | — | — |
+| [[task-286-03-bp-spawner-shield-v2]] | sonnet | 1 | 0k | 38k | 347k | 5k | ~0.11 | — | — |
+| [[task-288-01-pieces-heavy]] | sonnet | 2 | 0k | 61k | 1062k | 20k | ~0.28 | — | — |
+| [[task-285-04-capture-slam]] | opus | 1 | 0k | 63k | 306k | 6k | ~0.14 | — | — |
+| [[task-286-04-capture-shield-v2]] | opus | 1 | 0k | 70k | 740k | 9k | ~0.21 | — | — |
+| [[task-288-02-pieces-shooter]] | sonnet | 1 | 0k | 92k | 956k | 16k | ~0.29 | — | — |
+| [[task-287-02-cpp-shooter-aim-fire]] | opus | 1 | 0k | 108k | 1797k | 24k | ~0.43 | — | — |
+| [[task-288-03-pieces-chaser-v2]] | sonnet | 1 | 0k | 24k | 117k | 4k | ~0.06 | — | — |
+| [[task-285-05-fix-heavy-tilt-test]] | opus | 1 | 0k | 67k | 203k | 5k | ~0.13 | — | — |
+| [[task-288-04-pieces-kamikaze]] | sonnet | 1 | 0k | 31k | 205k | 6k | ~0.09 | — | — |
+| [[task-288-05-cpp-debris-groups]] | opus | 1 | 0k | 44k | 712k | 11k | ~0.18 | — | — |
+| [[task-287-03-bp-shooter-aim-fire]] | sonnet | 1 | 0k | 56k | 971k | 14k | ~0.24 | — | — |
+| [[task-288-06-bp-debris-material]] | sonnet | 1 | 0k | 49k | 527k | 9k | ~0.16 | — | — |
+| [[task-288-07-bp-ns-heavy-debris]] | sonnet | 1 | 0k | 86k | 1775k | 15k | ~0.36 | — | — |
+| [[task-288-08-bp-ns-shooter-debris]] | sonnet | 1 | 0k | 68k | 2126k | 18k | ~0.39 | — | — |
+| [[task-288-09-bp-ns-chaser-v2-debris]] | sonnet | 1 | 0k | 71k | 2517k | 20k | ~0.44 | — | — |
+| [[task-288-10-bp-ns-kamikaze-debris]] | sonnet | 1 | 0k | 31k | 241k | 4k | ~0.08 | — | — |
+| [[task-288-11-bp-heavy-death]] | sonnet | 1 | 0k | 42k | 639k | 8k | ~0.16 | — | — |
+| [[task-288-12-bp-shooter-death]] | sonnet | 1 | 0k | 32k | 343k | 7k | ~0.11 | — | — |
+| [[task-288-13-bp-chaser-v2-death]] | sonnet | 1 | 0k | 32k | 336k | 7k | ~0.11 | — | — |
+| [[task-288-14-bp-kamikaze-death]] | sonnet | 1 | 0k | 42k | 411k | 7k | ~0.13 | — | — |
+| [[task-288-15-bp-shield-v2-death]] | sonnet | 1 | 0k | 36k | 569k | 9k | ~0.15 | — | — |
+| [[task-287-04-capture-shooter-aim-fire]] | opus | 1 | 0k | 69k | 663k | 10k | ~0.20 | — | — |
+| [[task-288-16-capture-debris]] | opus | 1 | 0k | 191k | 3710k | 36k | ~0.79 | — | — |
+| [[task-289-01-bake-heavy-run]] | sonnet | 1 | 0k | 87k | 1767k | 25k | ~0.41 | — | — |
+| [[task-289-02-bake-chaser-v2-run]] | sonnet | 1 | 0k | 41k | 450k | 8k | ~0.14 | — | — |
+| [[task-289-03-bp-heavy-run]] | sonnet | 1 | 0k | 38k | 443k | 9k | ~0.14 | — | — |
+| [[task-289-04-bp-chaser-v2-run]] | sonnet | 1 | 0k | 45k | 680k | 12k | ~0.18 | — | — |
+| [[task-289-05-cpp-slam-lead]] | sonnet | 1 | 0k | 39k | 673k | 9k | ~0.16 | — | — |
+| [[task-289-06-capture-run]] | opus | 1 | 0k | 43k | 286k | 5k | ~0.11 | — | — |
+| [[task-291-01-bake-chaser-v2-v1-clips]] | sonnet | 1 | 0k | 92k | 789k | 17k | ~0.28 | — | — |
+| [[task-291-02-bake-shield-v2-v1-clips]] | sonnet | 1 | 0k | 82k | 858k | 13k | ~0.25 | — | — |
+| [[task-291-03-bp-chaser-v2-v1-clips]] | sonnet | 1 | 0k | 48k | 461k | 8k | ~0.15 | — | — |
+| [[task-291-04-bp-shield-v2-v1-clips]] | sonnet | 1 | 0k | 58k | 936k | 15k | ~0.24 | — | — |
+| [[task-291-05-capture-v2-v1-clips]] | opus | 1 | 0k | 92k | 696k | 9k | ~0.23 | — | — |
+| [[task-292-01-cpp-heavy-one-per-pack]] | opus | 1 | 0k | 41k | 484k | 10k | ~0.15 | — | — |
+| [[task-293-01-cpp-heavy-slam-values]] | opus | 1 | 0k | 95k | 2819k | 25k | ~0.53 | — | — |
+| [[task-293-02-capture-heavy-slam]] | opus | 1 | 0k | 47k | 539k | 11k | ~0.17 | — | — |
+| [[task-294-01-cpp-kamikaze-split-damage]] | opus | 1 | 0k | 55k | 569k | 12k | ~0.19 | — | — |
+| [[task-295-01-cpp-separation-radius]] | opus | 1 | 0k | 36k | 457k | 9k | ~0.14 | — | — |
+| [[task-296-01-bake-shield-arm-forward]] | sonnet | 2 | 0k | 119k | 2474k | 33k | ~0.56 | — | — |
+| [[task-296-02-bp-shield-arm-forward]] | sonnet | 1 | 0k | 58k | 1365k | 17k | ~0.29 | — | — |
+| [[task-296-03-capture-shield-arm-forward]] | opus | 1 | 0k | 46k | 422k | 9k | ~0.14 | — | — |
+| [[task-297-01-bp-heavy-death-puff-ns]] | sonnet | 1 | 0k | 63k | 1112k | 14k | ~0.26 | — | — |
+| [[task-297-02-bp-heavy-death-puff-set]] | sonnet | 1 | 0k | 36k | 670k | 8k | ~0.15 | — | — |
+| [[task-297-03-capture-heavy-death]] | opus | 2 | 0k | 72k | 1149k | 15k | ~0.28 | — | — |
+| [[task-298-01-bp-shooter-charge-ns]] | sonnet | 1 | 0k | 86k | 1483k | 22k | ~0.37 | — | — |
+| [[task-298-02-bp-shooter-charge-wire]] | sonnet | 1 | 0k | 59k | 970k | 11k | ~0.23 | — | — |
+| [[task-298-03-capture-shooter-charge]] | opus | 1 | 0k | 51k | 538k | 9k | ~0.16 | — | — |
+| [[task-299-01-cpp-kamikaze-fuse-shake]] | opus | 1 | 0k | 60k | 740k | 15k | ~0.22 | — | — |
+| [[task-299-02-capture-kamikaze-shake]] | opus | 1 | 0k | 46k | 520k | 11k | ~0.16 | — | — |
+| [[task-300-01-bp-slam-impact-ns]] | sonnet | 1 | 0k | 82k | 1244k | 23k | ~0.34 | — | — |
+| [[task-300-02-bp-slam-impact-wire]] | sonnet | 1 | 0k | 32k | 345k | 6k | ~0.10 | — | — |
+| [[task-300-03-capture-slam-impact]] | opus | 2 | 0k | 49k | 595k | 11k | ~0.18 | — | — |
+| [[task-305-01-console-hack-10s]] | opus | 1 | 0k | 81k | 455k | 7k | 0.18 | 16 | 0 |
+| [[task-304-01-console-marked-rocks-range]] | opus | 1 | 0k | 80k | 574k | 11k | 0.21 | 18 | 0 |
+| [[task-301-01-console-c2-files]] | sonnet | 1 | 0k | 27k | 223k | 6k | 0.08 | 11 | 0 |
+| [[task-301-02-console-c2-cut]] | sonnet | 1 | 0k | 118k | 2188k | 55k | 0.64 | 31 | 0 |
+| [[task-301-03-console-c2-retouch]] | sonnet | 2 | 0k | 131k | 3116k | 52k | 0.74 | 37 | 2 |
+| [[task-301-04-bp-console-c2-import]] | sonnet | 1 | 0k | 94k | 2694k | 34k | 0.56 | 48 | 0 |
+| [[task-301-05-capture-console-c2]] | opus | 1 | 0k | 57k | 748k | 9k | 0.19 | 23 | 0 |
+| [[task-302-01-console-state-drive]] | opus+sonnet | 3 | 0k | 230k | 2818k | 41k | 0.77 | 69 | 1 |
+| [[task-302-02-capture-console-states]] | opus | 3 | 0k | 282k | 5708k | 62k | 1.23 | 96 | 8 |
+| [[task-311-01-console-footprint-3x3]] | opus | 1 | 0k | 38k | 556k | 9k | 0.15 | 21 | 0 |
+| [[task-311-02-bp-console-scale]] | sonnet | 1 | 0k | 35k | 366k | 7k | 0.12 | 16 | 0 |
+| [[task-311-03-capture-console-bigger]] | opus | 1 | 0k | 114k | 1352k | 17k | 0.36 | 29 | 1 |
+| [[task-312-01-telegraph-under-actors]] | opus | 1 | 0k | 63k | 1049k | 16k | 0.27 | 24 | 0 |
+| [[task-312-02-capture-zone-colour]] | opus | 1 | 0k | 60k | 1077k | 18k | 0.27 | 29 | 0 |
+| [[task-313-01-drone-socket-hover]] | opus | 2 | 0k | 209k | 3068k | 38k | 0.76 | 45 | 1 |
+| [[task-313-02-capture-drone-socket]] | opus | 2 | 0k | 254k | 3014k | 34k | 0.79 | 47 | 1 |
+| [[task-303-01-console-xp-burst]] | opus | 1 | 0k | 179k | 2567k | 24k | 0.60 | 36 | 0 |
+| [[task-303-02-bp-hack-complete-fx]] | sonnet | 1 | 0k | 89k | 1646k | 21k | 0.38 | 30 | 0 |
+| [[task-303-03-capture-hack-reward]] | opus | 1 | 0k | 77k | 1029k | 14k | 0.27 | 25 | 1 |
+| [[task-307-01-chest-one-upgrade]] | opus | 1 | 0k | 47k | 574k | 9k | 0.16 | 19 | 0 |
+| [[task-310-01-camera-shake]] | opus | 1 | 0k | 109k | 760k | 20k | 0.31 | 22 | 0 |
+| [[task-306-01-chest-flatten]] | sonnet | 1 | 0k | 115k | 2593k | 42k | 0.61 | 39 | 4 |
+| [[task-306-02-chest-cut]] | sonnet | 1 | 0k | 134k | 3558k | 63k | 0.84 | 44 | 0 |
+| [[task-306-03-bp-chest-import]] | sonnet | 1 | 0k | 69k | 1542k | 23k | 0.36 | 36 | 0 |
+| [[task-306-04-capture-chest-mesh]] | opus | 1 | 0k | 150k | 2476k | 26k | 0.56 | 43 | 0 |
+| [[task-315-01-paid-reroll]] | opus | 1 | 0k | 124k | 4197k | 40k | 0.78 | 50 | 0 |
+| [[task-315-02-bp-reroll-button]] | sonnet | 1 | 0k | 83k | 1728k | 15k | 0.35 | 31 | 0 |
+| [[task-315-03-capture-reroll]] | opus | 1 | 0k | 69k | 554k | 8k | 0.18 | 15 | 0 |
+| [[task-316-01-intermission-shop]] | opus | 1 | 0k | 148k | 3962k | 40k | 0.78 | 37 | 0 |
+| [[task-316-02-text-shop-labels]] | sonnet+opus | 1 | 0k | 82k | 357k | 8k | 0.18 | 15 | 0 |
+| [[task-316-03-bp-shop-card]] | sonnet | 2 | 0k | 172k | 7384k | 58k | 1.24 | 70 | 1 |
+| [[task-316-04-bp-intermission-shop]] | sonnet | 1 | 0k | 116k | 3652k | 34k | 0.68 | 49 | 0 |
+| [[task-316-05-capture-shop]] | opus | 1 | 0k | 81k | 1397k | 16k | 0.32 | 30 | 0 |
+| [[task-317-01-stats-then-cards]] | opus | 1 | 0k | 289k | 4360k | 52k | 1.06 | 48 | 0 |
+| [[task-317-02-text-stats-labels]] | sonnet+opus | 1 | 0k | 89k | 470k | 11k | 0.22 | 17 | 0 |
+| [[task-317-03-bp-shop-screen]] | sonnet | 1 | 0k | 94k | 3272k | 31k | 0.60 | 53 | 0 |
+| [[task-317-04-bp-stats-screen]] | sonnet | 1 | 0k | 101k | 2988k | 32k | 0.58 | 46 | 0 |
+| [[task-317-05-capture-stats-cards]] | opus | 1 | 0k | 83k | 1499k | 13k | 0.32 | 30 | 0 |
+| [[task-318-01-preload-next-level]] | opus | 2 | 0k | 214k | 11862k | 68k | 1.79 | 88 | 1 |
+| [[task-318-02-fade-or-loading]] | opus | 1 | 0k | 134k | 4263k | 44k | 0.81 | 44 | 0 |
+| [[task-318-03-bp-loading-progress]] | sonnet | 1 | 0k | 59k | 842k | 11k | 0.21 | 22 | 0 |
+| [[task-318-04-capture-preload]] | opus | 1 | 0k | 82k | 1627k | 17k | 0.35 | 30 | 1 |
 
 ## Totals
-| Scope | Input | Cache write | Cache read | Output |
-|---|---|---|---|---|
-| [[task-013-stress-test]] | 0k | 0.22 M | 6.59 M | 96k |
-| [[task-014-upgrades-levelup]] | 1k | 0.80 M | 36.29 M | 310k |
-| [[task-015-shotgun]] | 0k | 0.32 M | 12.93 M | 104k |
-| [[task-016-console-extraction]] | 1k | 0.74 M | 32.15 M | 277k |
-| [[task-017-kamikaze-radius]] | 0k | 0.05 M | 0.52 M | 8k |
-| [[task-018-robot-perf]] | 0k | 0.53 M | 11.48 M | 144k |
-| model opus | 1k | 2.10 M | 60.27 M | 757k |
-| model sonnet | 1k | 0.56 M | 39.68 M | 181k |
-| **All agents, tasks 013 to 018** | **2k | 2.66 M | 99.96 M | 938k** |
-| Orchestrator, all main sessions of this project (also covers tasks 000 to 012 and non-task chat) | 1k | 4.47 M | 150.89 M | 438k |
+Rebuilt by `record-cost.js` at each closing; do not edit. Units are input-token equivalents (weights in `vault/scripts/cost-rates.json`). Subtask rows are rounded to k; the lines below them come from the usage snapshot (exact).
+
+| Scope | Units (M) | Input | Cache write | Cache read | Output |
+|---|---|---|---|---|---|
+| All subtask rows above | 290.70 | 0k | 67.67 M | 1484.65 M | 11537k |
+| model mixed | 4.35 | 0k | 1.47 M | 15.68 M | 188k |
+| model opus | 174.62 | 0k | 38.70 M | 889.35 M | 7467k |
+| model sonnet | 111.73 | 0k | 27.50 M | 579.62 M | 3882k |
+| Executors and legacy orchestrators that ran a task (pilot) | 7.87 | 1k | 4.07 M | 20.20 M | 153k |
+| Planning runs (planners and legacy planning passes) | 6.04 | 0k | 2.19 M | 22.15 M | 216k |
+| Agents without a subtask id (other) | 0.34 | 0k | 0.14 M | 1.50 M | 5k |
+| Main sessions (all of them, also chat outside tasks) | 35.75 | 2k | 6.21 M | 240.53 M | 787k |
 
 ## Lessons for estimates
 - Per C++ subtask: output 20k to 115k, cache write 50k to 250k, cache read 0.5 M to 11 M.

@@ -15,8 +15,9 @@ status: done
 - done_when: JSON valid; existing keys and Labels[1] Continue unchanged in position or the report states the new indexes; style loop passed; lint clean; committed
 - editor_state: any
 - token_ceiling: 20000
-- model: opus+sonnet
+- model: sonnet+opus
 - tokens: input 30, cache write 81786, cache read 357185, output 7842
+- usage: turns 15, context start 10k peak 46k, resumes 0, 2 min, units 0.18 M
 - runs: 1
 - milestone: M2
 - result: intermission_recap labels: [0] Salvage Stall (title), [1] Continue unchanged, [2] Buy, [3] Sold. No refunds. (bought slot), [4] Short on ore (unaffordable), [5] Reroll stock; validator valid; style-guide review 5/5 pass; commits ecff51f9 and review

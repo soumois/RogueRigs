@@ -17,6 +17,7 @@ status: done
 - token_ceiling: 30000
 - model: opus
 - tokens: input 38, cache write 47210, cache read 573680, output 9487
+- usage: turns 19, context start 11k peak 47k, resumes 0, 8 min, units 0.16 M
 - runs: 1
 - milestone: M2
 - result: Bonus chest XPNeedFraction default 0 (AddXP skipped at 0): reward is 5 ore chunks + one +3-luck choice, no level-up from the chest; HackXPBurst asserts one choice with bar at 75 %; spec and docs updated; build green, RunFlow/Console/Progression 13/13 pass; commit 15c2f58c

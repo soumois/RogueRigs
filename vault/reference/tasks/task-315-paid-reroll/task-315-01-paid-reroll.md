@@ -17,6 +17,7 @@ status: done
 - token_ceiling: 60000
 - model: opus
 - tokens: input 100, cache write 123969, cache read 4197428, output 40432
+- usage: turns 50, context start 11k peak 124k, resumes 0, 10 min, units 0.78 M
 - runs: 1
 - milestone: M2
 - result: Reroll costs 15 then +5 per reroll (URRRerollCostLibrary, URRRerollSettings 15/5 provisional), count reset on each level-up offer, chest offer keeps it; carried then secured ore spent (URRRunFlowSubsystem::SpendOre, URROreBankSubsystem::RemoveSecuredOre); GetRerollCost, CanReroll = affordable; tests updated (Upgrades.RerollRepeat, LevelUp.PauseAfterDelay, ChainedOffers, Cheats, Integration.LevelUpUpgradeLoop); 22/23 pass, LevelUpUpgradeLoop RerollButton check still fails as before (task-284-05, deal animation timing); commits 535b6c7f c5e67ddd 9ceaa596

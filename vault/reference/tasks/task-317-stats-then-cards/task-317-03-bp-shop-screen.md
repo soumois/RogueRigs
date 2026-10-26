@@ -17,6 +17,7 @@ status: done
 - token_ceiling: 40000
 - model: sonnet
 - tokens: input 106, cache write 94326, cache read 3271716, output 31487
+- usage: turns 53, context start 10k peak 98k, resumes 0, 9 min, units 0.60 M
 - runs: 1
 - milestone: M2
 - result: WBP_ShopScreen (duplicate of WBP_Intermission reparented to URRShopScreenWidget): opaque black backdrop, SPARE PARTS title, 5 WBP_ShopCard, balance, reroll, Continue -> Continue(), refresh on OnShopRefreshed; ShopScreenWidgetClass set on BP_RRPlayerController; doc wbp-shop-screen; not run in PIE. Commit bad2c6b6.

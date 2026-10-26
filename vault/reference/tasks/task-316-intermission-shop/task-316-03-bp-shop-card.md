@@ -17,6 +17,7 @@ status: done
 - token_ceiling: 50000
 - model: sonnet
 - tokens: input 142, cache write 171625, cache read 7383731, output 58090
+- usage: turns 70, context start 10k peak 175k, resumes 1 (message x1), 15 min, units 1.24 M
 - runs: 2
 - milestone: M2
 - result: WBP_ShopCard: 330x470 host scaling the WBP_UpgradeChoice stat card stack, price row (T_Icon_Ore + price), Buy button; SlotIndex var, SetCard, SetBought, RefreshFromShop, LoadLabels (screen_texts Labels 2-4), dispatcher OnBuyClicked; self-refreshing on OnShopChanged, Destruct unbinds only its own event; compiled warnings as errors, saved; doc wbp-shop-card; commits c36ffac4 dc853dcf; nothing seen in game

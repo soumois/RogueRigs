@@ -17,6 +17,7 @@ status: done
 - token_ceiling: 30000
 - model: opus
 - tokens: input 48, cache write 63014, cache read 1048626, output 16376
+- usage: turns 24, context start 11k peak 69k, resumes 0, 10 min, units 0.27 M
 - runs: 1
 - milestone: M2
 - result: Cause: the zone decal (deferred, 256 uu box) painted every decal receiver inside it; console, bonus chest and drone meshes still received decals. Fix: telegraph owners opt out (bKeepDecalsOffOwner, DisableDecalsOn in BeginPlay; barrel telegraph keeps grid receiving), drone opts out; no material change. Build green, 9 GroundTelegraph/Console tests pass; 8a276ed5, 9132e7d4.

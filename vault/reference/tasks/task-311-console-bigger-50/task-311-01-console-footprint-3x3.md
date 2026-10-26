@@ -17,6 +17,7 @@ status: done
 - token_ceiling: 30000
 - model: opus
 - tokens: input 42, cache write 38423, cache read 556193, output 8911
+- usage: turns 21, context start 11k peak 38k, resumes 0, 10 min, units 0.15 M
 - runs: 1
 - milestone: M2
 - result: ARRConsole FootprintCells 2 x 2 -> 3 x 3 (RRConsole.h, commit 5f7a8010): actor and zone centre at the anchor cell centre; ARRBonusChest sets 2 x 2 explicitly (one constructor line). Tests fixed: RunFlow footprint count and marking offset from the footprint centre (RRRunFlowTests.cpp), FineConsoleShuttlePlacement 3 x 3 (RRFineGridIntegrationTests.cpp). GDD objective-console and sys-objectives-console-chest updated (commit f7875a91). Build exit 0; 22/22 tests pass (Console.*, RunFlow.*, HUD.*, Integration.FineConsoleShuttlePlacement, Integration.ConsoleExtractionWin).

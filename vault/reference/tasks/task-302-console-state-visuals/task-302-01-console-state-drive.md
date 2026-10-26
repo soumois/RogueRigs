@@ -15,8 +15,9 @@ status: done
 - done_when: build green; RogueRigs.Console.* and RogueRigs.RunFlow.* pass; values and names in the docs; lint clean; committed
 - editor_state: closed
 - token_ceiling: 40000
-- model: sonnet+opus
+- model: opus+sonnet
 - tokens: input 140, cache write 229595, cache read 2817563, output 41098
+- usage: turns 69, context start 11k peak 71k, resumes 1 (message x1), 43 min, units 0.77 M
 - runs: 3
 - milestone: M2
 - result: ARRConsole drives LampColor, antenna BlinkRate 2 Hz + BlinkAmount 1, ScreenColor and AntennaHeadComp yaw (0/10/45/0 deg/s) per state via FRRConsoleStateVisual; chest opts out; GDD A7 exception, docs; run 2 (4dcc4e84) renamed AntennaHead to AntennaHeadComp (BP component clash); run 3 bp (28342c19) M_ConsoleLamp blink factor saturated and applied to BaseColor too, so the antenna lamp goes fully dark; red (1, 0.05, 0.03) kept, reads salmon; build green, 7/7 Console+RunFlow tests

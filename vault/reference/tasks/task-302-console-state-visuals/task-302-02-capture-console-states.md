@@ -17,6 +17,7 @@ status: done
 - token_ceiling: 30000
 - model: opus
 - tokens: input 192, cache write 281603, cache read 5707939, output 61894
+- usage: turns 96, context start 11k peak 117k, resumes 8 (message x8), 44 min, units 1.23 M
 - runs: 3
 - milestone: M2
 - result: Saved/ConsoleStates/blink-fix/contact_sheet_antenna_blink.png (+ after-fix/contact_sheet_console_states_after_fix.png): Locked red, Idle orange, Hacking green, Complete steady green; antenna lamp blinks lit/dark in Locked, Idle, Hacking, base lamps steady; head turns in Idle/Hacking, still in Locked/Complete; screen black/black/green/green; no BP errors; inside the light hack disc the console is washed out, lamp and screen readable in zoomed crops, faint at play zoom; no repo change

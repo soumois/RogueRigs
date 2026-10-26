@@ -45,7 +45,7 @@ Show the plan once. A "no" to every proposed option means no task: ask or wait, 
 2. Prepare the editor state (close Unreal before C++ builds; launch it before BP work).
 3. Delegate to the subagent with the subtask node and the resolved paths of its inputs as the only reading list.
 4. Run the `done_when` checks.
-5. Pass: fill `result`, `model`, `tokens` (input, cache write, cache read, output from `node vault/scripts/agent-usage.js`) and `runs`, add the subtask to [[cost-log]], set `done`, move `next_step`, lint, commit `task-<id>: done`.
+5. Pass: fill `result`, `model`, `tokens` (input, cache write, cache read, output from `node vault/scripts/agent-usage.js`) and `runs`, add the subtask to [[cost-log]] (turns, context, resumes; read its ALERT lines and write each cause in `result`), set `done`, move `next_step`, lint, commit `task-<id>: done`.
 6. Fail: send the error back to the same agent once. Second failure: set `blocked`, record why, stop and report.
 
 ## 6. Close

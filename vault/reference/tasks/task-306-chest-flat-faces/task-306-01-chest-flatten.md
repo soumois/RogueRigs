@@ -17,6 +17,7 @@ status: done
 - token_ceiling: 40000
 - model: sonnet
 - tokens: input 78, cache write 115162, cache read 2592736, output 41752
+- usage: turns 39, context start 11k peak 115k, resumes 4 (message x4), 18 min, units 0.61 M
 - runs: 1
 - milestone: M2
 - result: chest_flat.fbx 2946 tris (from 9336), 130 x 69.8 x 65.6 uu, bottom-centre origin, large faces planar (0.0 uu after refit), base colour re-baked 2048 px, renders front/side/back/q/top vs original and sheet in Art/Source/chest/clean/renders; script Tools/art/blender/chest_flatten.py. Owner go 2026-10-24 (flat ok; lid logo to a separate task; size kept; round handles and front line accepted).

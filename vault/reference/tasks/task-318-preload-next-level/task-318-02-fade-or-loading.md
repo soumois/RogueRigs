@@ -17,6 +17,7 @@ status: done
 - token_ceiling: 60000
 - model: opus
 - tokens: input 88, cache write 133776, cache read 4262852, output 44106
+- usage: turns 44, context start 11k peak 139k, resumes 0, 9 min, units 0.81 M
 - runs: 1
 - milestone: M2
 - result: Continue ready: fade out 0.3 s, switch, fade in 0.5 s (URRRunSettings TransitionFadeOutSeconds/TransitionFadeInSeconds, provisional), no loading screen; not ready: OnLoadingStarted loading screen, OnNextLevelProgressChanged and URRLoadingScreenWidget GetLoadingProgress/OnLoadingProgressChanged, then fade in; C++ URRScreenFadeWidget overlay at ZOrder 60; HUD/subtitles restored; log lines for both paths in -nullrhi run; overlay unseen on screen. Commits 3e342bb8, 9480054c.

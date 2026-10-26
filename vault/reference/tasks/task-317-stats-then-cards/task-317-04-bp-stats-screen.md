@@ -17,6 +17,7 @@ status: done
 - token_ceiling: 40000
 - model: sonnet
 - tokens: input 92, cache write 100626, cache read 2987605, output 31954
+- usage: turns 46, context start 10k peak 105k, resumes 0, 9 min, units 0.58 M
 - runs: 1
 - milestone: M2
 - result: WBP_Intermission is the stats screen: shop panel removed, recap kept, Robots destroyed and Damage by weapon lists from KillsByRobotType and DamageByWeapon, button Next level -> NextLevel(), run-won variant CLAIM EMPTIED / Cash out; backdrop 0.85 unchanged; not run in PIE. Commit 114c7539.

@@ -17,6 +17,7 @@ status: done
 - token_ceiling: 40000
 - model: sonnet
 - tokens: input 62, cache write 82911, cache read 1727912, output 15470
+- usage: turns 31, context start 10k peak 83k, resumes 0, 5 min, units 0.35 M
 - runs: 1
 - milestone: M2
 - result: RerollButton holds RerollRow (RerollText, RerollOre T_Icon_Ore 32x32, RerollCost variable); RefreshReroll sets the cost from GetRerollCost on every ShowCards; enabled state still bCanReroll via RerollAllowed at the end of the deal; compiled, saved, read back; not seen in PIE; commit 9abff278

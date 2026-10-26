@@ -17,6 +17,7 @@ status: done
 - token_ceiling: 80000
 - model: opus
 - tokens: input 96, cache write 289448, cache read 4359926, output 51851
+- usage: turns 48, context start 11k peak 145k, resumes 0, 15 min, units 1.06 M
 - runs: 1
 - milestone: M2
 - result: Stats and Shop phases split; NextLevel(), OnShopScreenStarted, OnRunWonScreenStarted, URRShopScreenWidget, ShopScreenWidgetClass, recap KillsByRobotType and DamageByWeapon, rr.Run.Stats.Next; build OK, 270/272 tests (2 known failures); not run in game. Commits 948b1d34, 170667b8.

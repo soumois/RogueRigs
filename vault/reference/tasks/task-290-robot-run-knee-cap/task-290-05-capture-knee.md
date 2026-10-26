@@ -16,7 +16,7 @@ status: done
 - editor_state: any (runs beside the owner's open editor)
 - token_ceiling: 40000
 - model: open
-- tokens: open
+- tokens: not measured: no subagent transcript found (checked 2026-10-26)
 - runs: open
 - milestone: M2
 - result: Cancelled before running (nothing baked or imported): the owner changed his mind on 2026-10-23, replaced by task-291-chaser-v2-v1-anims.

@@ -17,6 +17,7 @@ status: done
 - token_ceiling: 30000
 - model: opus
 - tokens: input 58, cache write 60101, cache read 1077122, output 18384
+- usage: turns 29, context start 11k peak 66k, resumes 0, 11 min, units 0.27 M
 - runs: 1
 - milestone: M2
 - result: Saved/ZoneColour/contact_sheet_zone_colour_before_after.png: Hacking (fill disc) after fix: ring and disc on the ground, console white/teal with bright lamps, drone and miner unwashed; before (task-302) console grey. Locked frame and chest zone not captured (no debug command places the miner in a Locked zone or a real chest zone); unit tests cover chest opt-out.

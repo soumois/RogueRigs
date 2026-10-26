@@ -17,6 +17,7 @@ status: done
 - token_ceiling: 30000
 - model: sonnet
 - tokens: input 32, cache write 34611, cache read 366385, output 7366
+- usage: turns 16, context start 10k peak 35k, resumes 0, 2 min, units 0.12 M
 - runs: 1
 - milestone: M2
 - result: BP_ObjectiveConsole inherited Mesh relative scale 0.90754 -> 1.361 (3 x 3 cells, 201 uu), read back after save; AntennaHead (-4.904, 16.69, 108.0), rot 0, scale 1 unchanged; compiled with no error, saved; bp-objective-console updated (commit f908699e). Look not checked on screen (step 03).

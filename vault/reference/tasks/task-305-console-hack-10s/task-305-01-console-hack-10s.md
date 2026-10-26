@@ -17,6 +17,7 @@ status: done
 - token_ceiling: 30000
 - model: opus
 - tokens: input 32, cache write 80684, cache read 454611, output 6680
+- usage: turns 16, context start 11k peak 45k, resumes 0, 14 min, units 0.18 M
 - runs: 1
 - milestone: M2
 - result: ARRConsole HackDuration 12 -> 10 s (RRConsole.h, commit 4070fb23); chest stays 8 s; BP_ObjectiveConsole overrides nothing (doc, asset not opened). Tests fixed: Console.HackRules (RRRunFlowTests.cpp) and Console.ZoneTelegraph (RRConsoleTelegraphTests.cpp) timings. GDD objective-console and sys-objectives-console-chest updated (commit 0131474c). Build exit 0; 8/8 tests pass (Console.*, RunFlow.*, Integration.ConsoleExtractionWin).

@@ -3,6 +3,11 @@
 const fs = require('fs');
 const f = require('path').resolve(__dirname, '..', 'reference', 'tasks', process.argv[2]);
 let s = fs.readFileSync(f, 'utf8');
+// A subtask is not closed with its cost unrecorded: run record-cost.js (task-next.js does) or say why it cannot be measured.
+const extra = process.argv.slice(3);
+if (/^task-\d+-[^/]+[\\/]task-\d+-\d+-/.test(process.argv[2]) && extra.includes('status=done') && /^- tokens: open\s*$/m.test(s) && !extra.some(x => x.startsWith('tokens='))) {
+  throw new Error('refusing to close ' + process.argv[2] + ': tokens is still open. Run record-cost.js (task-next.js does), or pass tokens=<why it cannot be measured>.');
+}
 for (const a of process.argv.slice(3)) {
   const i = a.indexOf('='); const k = a.slice(0, i), v = a.slice(i + 1);
   if (k === 'status') s = s.replace(/^status: .*$/m, 'status: ' + v);

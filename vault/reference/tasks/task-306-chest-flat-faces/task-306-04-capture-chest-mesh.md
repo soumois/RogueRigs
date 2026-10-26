@@ -17,6 +17,7 @@ status: done
 - token_ceiling: 30000
 - model: opus
 - tokens: input 86, cache write 149755, cache read 2476334, output 25575
+- usage: turns 43, context start 11k peak 99k, resumes 0, 21 min, units 0.56 M
 - runs: 1
 - milestone: M2
 - result: Headless -game capture: new chest at its real drop spot from the game camera and closer, lock face toward the camera, lid and latch in place, flat faces read; before (grey-box cube, task-312 frame) | after sheet Saved/ChestMesh/contact_sheet_chest_before_after.png. Debug tool rr.Debug.Objective now accepts Chest (f37555e5, sys-cheats 5de1b024), to be confirmed by the owner.

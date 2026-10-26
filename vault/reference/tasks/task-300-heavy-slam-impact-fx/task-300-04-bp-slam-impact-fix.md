@@ -16,7 +16,7 @@ status: done
 - editor_state: open
 - token_ceiling: 30000
 - model: sonnet
-- tokens: open
+- tokens: not measured: no subagent transcript found (checked 2026-10-26)
 - runs: 1
 - milestone: M2
 - result: NS_HeavySlamImpact fix (commit acad3b15): Dust explicit horizontal Linear velocity float3(cos,sin of UniqueID*2pi/48,0)*User.Radius*2.6, drag 6->0, Sphere r0 at origin; colour (0.18,0.13,0.09) a0.7; chips 10-18 size, (0.45,0.32,0.20), burst 16. Causes inferred (drag, ring orientation, pale alpha, tiny chips). Cost counted under task-300-01 (resumed agent).

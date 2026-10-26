@@ -17,6 +17,7 @@ status: done
 - token_ceiling: 70000
 - model: opus
 - tokens: input 74, cache write 147886, cache read 3962376, output 40140
+- usage: turns 37, context start 11k peak 154k, resumes 0, 8 min, units 0.78 M
 - runs: 1
 - milestone: M2
 - result: Shop built in URRIntermissionShopSubsystem (offer of 5 stat cards with owner luck, prices in URRShopSettings grey 25 green 40 blue 60 purple 80 yellow 100, BuySlot spends ore and appends to the run snapshot, RequestReroll on the task-315 cost rule with own count, OnShopChanged event, OnShopRefreshed widget hook); build passes; tests unchanged, only known failures LevelUpUpgradeLoop RerollButton and JuiceKillDropsStreamingCubes pickup collision (unrelated); docs sys-run-shop new, sys-run-transition, sys-upgrades updated; commits eedadd04 3b5f4992

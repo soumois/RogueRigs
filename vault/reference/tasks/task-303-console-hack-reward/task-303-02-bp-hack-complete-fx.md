@@ -17,6 +17,7 @@ status: done
 - token_ceiling: 30000
 - model: sonnet
 - tokens: input 60, cache write 88999, cache read 1645651, output 20642
+- usage: turns 30, context start 10k peak 89k, resumes 0, 8 min, units 0.38 M
 - runs: 1
 - milestone: M2
 - result: NS_ConsoleHackComplete (CPU, one burst): green ring 64 sprites at 600 uu/s, 0.55-0.6 s, colour (0.2,1.6,0.45), radius ~110 -> ~330 uu; 40 white-gold sparks (2.0,1.6,0.6) cone 25 deg up 250-450 uu/s, rise ~150-350 uu; BP_ObjectiveConsole OnHackCompleteBurst -> SpawnSystemAtLocation; compiled, read back; doc bp-console-hack-complete (32a6b03c, 7cc67160). Editor close blocked by a Save Content dialog (unknown dirty package, git clean): owner 2026-10-24 "Ferme l'éditeur sans sauvegarder", editor force-stopped without saving.

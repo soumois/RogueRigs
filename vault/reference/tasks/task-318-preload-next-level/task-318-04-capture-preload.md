@@ -17,6 +17,7 @@ status: done
 - token_ceiling: 50000
 - model: opus
 - tokens: input 60, cache write 82392, cache read 1626593, output 17114
+- usage: turns 30, context start 11k peak 88k, resumes 1 (message x1), 4 min, units 0.35 M
 - runs: 1
 - milestone: M2
 - result: Rendered -game captures in Saved/PreloadNextLevel (contact_sheet.png): cards screen on black while level 2 prepared (601.8 ms, ready before Continue); fade path darkens cards then level 2 with no loading screen; loading path shows WBP_Loading with orange bar at 0.25 and 0.75, then fade in on level 3; carried state kept (trivial level-1 state). Unseen: fade-in on fade path (hitch), bar at 0.5/1.0, LoadingImage, fallback, restart/death. Fade-ins logged 684-705 ms because of post-switch hitches. Commit cd3bce1f.

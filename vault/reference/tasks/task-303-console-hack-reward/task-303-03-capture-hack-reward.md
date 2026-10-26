@@ -17,6 +17,7 @@ status: done
 - token_ceiling: 30000
 - model: opus
 - tokens: input 50, cache write 76668, cache read 1028877, output 13798
+- usage: turns 25, context start 11k peak 77k, resumes 1 (message x1), 9 min, units 0.27 M
 - runs: 1
 - milestone: M2
 - result: Capture Saved/ConsoleReward/ (contact_sheet_console_reward.png + 12 frames, slomo 0.1): green ring ~200 uu at 0.27 s, ~290 uu at 0.42 s, faded by 0.57 s; white-gold sparks faint, seen at 0.87-1.17 s only; 3 chips fly out, the miner (150 uu away) collected one, 2 rest NE ~290 uu and SE ~210-260 uu; no change, no commit.

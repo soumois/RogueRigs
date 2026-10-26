@@ -31,7 +31,7 @@ for (const [num, slug, desc, agent, title, req, inputs, out, done, ed, ceil, con
   fs.writeFileSync(path.join(T, gid, sid + '.md'), ['---', `id: ${sid}`, `description: "${desc}"`, `parent: ${gid}`, 'kind: task',
     'status: todo', '---', `# ${title}`, '', `- goal: ${desc}`, `- agent: ${agent}`, '- depends_on: none', `- inputs: ${res(inputs)}`,
     `- expected_output: ${out}`, `- done_when: ${done}`, `- editor_state: ${ed}`, `- token_ceiling: ${ceil}`, '- model: open',
-    '- tokens: open', '- runs: open', '- milestone: M2', '- result: open', '', '## Relations', `- [[${gid}]] — parent global task.`, ''].join('\n'));
+    '- tokens: open', '- usage: open', '- runs: open', '- milestone: M2', '- result: open', '', '## Relations', `- [[${gid}]] — parent global task.`, ''].join('\n'));
   add += `\n- [[${gid}]] — ${desc.replace(/\.$/, '')}. Status todo.`;
   console.log('created', gid);
 }

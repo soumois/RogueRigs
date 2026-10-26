@@ -17,6 +17,7 @@ status: done
 - token_ceiling: 30000
 - model: sonnet
 - tokens: input 72, cache write 68878, cache read 1542069, output 23224
+- usage: turns 36, context start 10k peak 72k, resumes 0, 5 min, units 0.36 M
 - runs: 1
 - milestone: M2
 - result: Imported SM_Chest_Body, SM_Chest_Lid, SM_Chest_Latch, T_Chest_BaseColor and M_Chest under /Game/RogueRigs/Art/Chest/; BP_BonusChest: Mesh = body (yaw 90, lock face toward the camera at -X), Lid child of Mesh at (0, -31.137, 41.25), Latch child of Lid at (-0.475, 55.286, 10.238) (Y mirrored by FBX import), NoCollision, no dynamic shadow; slots LockLight and Interior on M_Chest until task-308/309; GlowAmount calls removed; compiles; bp-bonus-chest updated. Opening roll sign about X unmeasured (task-309).

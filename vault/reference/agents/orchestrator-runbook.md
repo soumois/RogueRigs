@@ -30,7 +30,7 @@ Complements [[orchestration-protocol]] (the rules) with the commands that worked
 
 ## Closing a subtask
 1. Check the report against `done_when`.
-2. `node vault/scripts/task-next.js <global> <subtask> <runs> "<result>" [<next-global> <next-subtask>]`: records the cost, closes the subtask (and the global when it was the last one), starts the next one, lints and commits only those vault files. Pass the same global as next to continue its next subtask.
+2. `node vault/scripts/task-next.js <global> <subtask> <runs> "<result>" [<next-global> <next-subtask>]`: records the cost, closes the subtask (and the global when it was the last one), starts the next one, lints and commits only those vault files. Pass the same global as next to continue its next subtask. It prints an ALERT line per budget overrun (over `token_ceiling`, large start context, turn limit, resume): write the cause in the subtask `result` and tell the main session. `task-status.js` refuses `status=done` on a subtask whose `tokens` is still `open`.
 3. `node vault/scripts/crew-board.js "<note in French>"` writes `Saved/CrewBoard/crew-board.html`; publish it as an artifact for the owner when asked.
 
 ## Pitfalls

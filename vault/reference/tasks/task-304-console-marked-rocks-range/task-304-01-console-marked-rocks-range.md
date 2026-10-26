@@ -17,6 +17,7 @@ status: done
 - token_ceiling: 40000
 - model: opus
 - tokens: input 36, cache write 80469, cache read 573541, output 10694
+- usage: turns 18, context start 11k peak 52k, resumes 0, 10 min, units 0.21 M
 - runs: 1
 - milestone: M2
 - result: ARRConsole MinMarkedCells 10 / MaxMarkedCells 40 (EditDefaultsOnly, provisional owner 2026-10-23); console picker keeps spots in range, else nearest count with a warning; chest unfiltered; GDD objective-console, sys-objectives-console-chest, sys-objectives-run-flow, bp-objective-console updated; build green; Console.* and RunFlow.* 7/7 pass, no test changed; code 0a357aea, docs 3134b212

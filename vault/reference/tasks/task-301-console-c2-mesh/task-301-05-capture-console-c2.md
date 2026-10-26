@@ -17,6 +17,7 @@ status: done
 - token_ceiling: 30000
 - model: opus
 - tokens: input 46, cache write 57304, cache read 748167, output 9231
+- usage: turns 23, context start 11k peak 57k, resumes 0, 8 min, units 0.19 M
 - runs: 1
 - milestone: M2
 - result: Headless -game captures in Saved/ConsoleC2/ (before_*, after_*, contact_sheet_before_after.png): C2 mesh at the console spot, head on the mast, steady amber lamps; mesh looks washed out on the bright hack disc; console drop cell differed between runs despite -FixedSeed; no repo change.

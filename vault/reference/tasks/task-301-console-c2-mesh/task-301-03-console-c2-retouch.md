@@ -17,6 +17,7 @@ status: done
 - token_ceiling: 40000
 - model: sonnet
 - tokens: input 74, cache write 130705, cache read 3115778, output 52187
+- usage: turns 37, context start 11k peak 135k, resumes 2 (message x2), 29 min, units 0.74 M
 - runs: 2
 - milestone: M2
 - result: Owner verdict 2026-10-23 'Garde l'original, sauf pour la correction de la texture pour les couleurs': dish back keeps the original Meshy texture (repaint dropped, commit 4aabab5d); 8 round foot caps in OtherOrange, darkened foot smear and slot split kept; both FBX re-exported, same pivots and head offset (-4.904, 16.69, 108.0) cm; size accepted, scaled in BP to the 2 x 2 footprint.

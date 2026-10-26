@@ -17,6 +17,7 @@ status: done
 - token_ceiling: 30000
 - model: opus
 - tokens: input 44, cache write 108971, cache read 760474, output 19838
+- usage: turns 22, context start 11k peak 56k, resumes 0, 18 min, units 0.31 M
 - runs: 1
 - milestone: M2
 - result: URRCameraShake + own Perlin translation pattern URRCameraShakePattern (engine Perlin pattern sits in EngineCameras plugin, not a dependency) + URRCameraShakeLibrary::PlayCameraShake(WorldContext, Scale=1, ShakeClass=null) on the first local player's camera manager; Duration 0.2 s, TranslationAmplitude (0,4,4) uu, BlendOut 0.08 s, Frequency 25 Hz, all EditDefaultsOnly provisional owner 2026-10-23; no rotation, falloff or time dilation; not wired. Doc sys-camera-shake + relations. Build green; full RogueRigs suite 270/272: JuiceKillDropsStreamingCubes (BP_PickupXP collision) and LevelUpUpgradeLoop (RerollButton) fail, unrelated (new code has no caller). Commits 926e01d1, 0ab7c041.

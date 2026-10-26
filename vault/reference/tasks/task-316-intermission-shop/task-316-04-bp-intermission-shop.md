@@ -17,6 +17,7 @@ status: done
 - token_ceiling: 50000
 - model: sonnet
 - tokens: input 98, cache write 116268, cache read 3651909, output 33770
+- usage: turns 49, context start 10k peak 121k, resumes 0, 8 min, units 0.68 M
 - runs: 1
 - milestone: M2
 - result: WBP_Intermission hosts the shop: Salvage Stall title (Labels 0), row of 5 WBP_ShopCard (SlotIndex 0-4), balance row (T_Icon_Ore + GetOreBalance), Reroll button (Labels 5, ore icon, GetRerollCost, disabled when CanReroll false, RequestReroll), Continue unchanged; RefreshShop on Construct and OnShopRefreshed; compiled warnings as errors, saved; doc wbp-intermission; commit 809d366f; nothing seen in game, 1080 px height fit tight

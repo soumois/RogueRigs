@@ -17,6 +17,7 @@ status: done
 - token_ceiling: 30000
 - model: opus
 - tokens: input 30, cache write 68632, cache read 553645, output 7699
+- usage: turns 15, context start 11k peak 69k, resumes 0, 3 min, units 0.18 M
 - runs: 1
 - milestone: M2
 - result: -game capture Saved/PaidReroll/contact-sheet.png: cost 15, 20, 25 shown, ore 60 -> 45 -> 25 -> 0, cost 30 greyed and refused; seen: the reroll button overlaps weapon slots 2-3 (as before, task-243 frame) and white on light grey reads poorly; secured-ore payment and mouse click not exercised

@@ -17,6 +17,7 @@ status: done
 - token_ceiling: 100000
 - model: opus
 - tokens: input 178, cache write 213924, cache read 11862235, output 68096
+- usage: turns 88, context start 11k peak 220k, resumes 1 (turn-limit x1), 17 min, units 1.79 M
 - runs: 2
 - milestone: M2
 - result: Next level prepared in the same world from the cards screen (layout, grid, actors and objectives reset, prewarm, miner snapshot), no map travel; IsNextLevelReady, GetNextLevelProgress, OnNextLevelReady; approach in sys-run-transition-preload; build passes, 270 tests pass (2 known unrelated failures); -game log shows level 2 ready before Continue. Terrain rebuild ~0.5 s in one frame freezes the cards screen once (owner to decide on time-slicing). Commits bd0bbf66, a2d45398.

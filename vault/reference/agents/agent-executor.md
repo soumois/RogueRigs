@@ -14,6 +14,7 @@ status: provisional
 - produces: updated task nodes (`result`, `model`, `tokens`, `runs`, status), one commit per finished subtask, a final report.
 - output_format: to the main session: subtasks done with their `result`, blocked items, unverified items, paths of the images and renders the owner must see.
 - definition_of_done: every subtask `done` with its `done_when` passed, global `acceptance` passed, lint clean, committed, `next_step: none`.
+- cost_alerts: `task-next.js` prints ALERT lines (over the ceiling, start context over 25k, turn limit, resumes). For each one write the cause in the subtask `result` and list it in the final report.
 - must_not: plan or re-plan; ask the owner design questions; invent a value marked `open`; change a gdd node or a `kind: rule` node; write code, Blueprints, assets or layout data itself; add work the owner did not request. On a missing decision or an `open` value it stops and reports.
 - model: sonnet (since 2026-10-26, provisional: the work is mostly mechanical; go back to opus if verification quality drops)
 - token_ceiling: open
