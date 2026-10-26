@@ -15,3 +15,6 @@ A global task moves to [[tasks-done-index]] when it is done (`vault/scripts/task
 - [[task-309-chest-opening]] — Chest opening: latch swings, lid slams open with overshoot, freeze and shake, inner light, ground ring, three popping XP chips, sparks. Status todo.
 - [[task-314-chest-lid-logo]] — Add the yellow Kessler-Voss mark on top of the chest lid, as on the validated sheet, and show it in game. Status todo.
 - [[task-319-levelup-choice-after-intermission]] — after the first intermission, level-ups no longer offer upgrade cards; reproduce with a test, find the cause, fix. Status in-progress.
+- [[task-320-task-start-script]] — one script, task-start.js, sets a global task and its first subtask in-progress with next_step, run by the Executor at its step 0. Status todo.
+- [[task-321-started-field]] — every move of a task node to in-progress writes a started ISO date-time bullet, so the dashboard can flag stale in-progress tasks. Status todo.
+- [[task-322-cancelled-status]] — add cancelled to the allowed task statuses, in the writing contract, lint, task-status.js, the tasks indexes and crew-board.js. Status todo.
