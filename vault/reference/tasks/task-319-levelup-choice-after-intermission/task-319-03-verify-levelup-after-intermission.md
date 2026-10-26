@@ -3,7 +3,7 @@ id: task-319-03-verify-levelup-after-intermission
 description: "Rerun the task-319-01 HUD reproduction test and the automation suite on the fixed WBP_XPStatus; the test passes on both transition paths."
 parent: task-319-levelup-choice-after-intermission
 kind: task
-status: todo
+status: in-progress
 ---
 # Verify: level-up choice after the intermission
 

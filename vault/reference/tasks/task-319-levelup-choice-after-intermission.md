@@ -14,7 +14,7 @@ status: in-progress
 - gdd_check: [[xp-level-up]] read (2026-10-26): "Each level-up offers 3 upgrades", "Level-up keeps across the 4 levels of a run": the bug contradicts the GDD, no conflict with the request. [[intermission]] read: no rule blocks choices after it. No `open` value needed. M2 scope. The test is requested by the owner. No capture: nothing changes on screen. Fix location (Planner, 2026-10-26, not a design choice): in the widget, which clears listeners it does not own; no C++ rebind workaround.
 - confirmed_by_owner: yes (2026-10-26): step 1 "lance le test" and Q2 "Oui, test avec HUD"; fix Q1 "Oui (Recommended)".
 - milestone: M2
-- next_step: task-319-02-fix-levelup-after-intermission
+- next_step: task-319-03-verify-levelup-after-intermission
 - result: open
 
 ## Subtasks

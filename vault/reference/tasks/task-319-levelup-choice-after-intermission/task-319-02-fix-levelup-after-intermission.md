@@ -3,7 +3,7 @@ id: task-319-02-fix-levelup-after-intermission
 description: "WBP_XPStatus UnbindXP removes only its own OnXPChanged and OnLevelUp handlers instead of clearing every listener; doc wbp-xp-status updated."
 parent: task-319-levelup-choice-after-intermission
 kind: task
-status: in-progress
+status: done
 ---
 # Fix: WBP_XPStatus unbinds only its own handlers
 
@@ -15,12 +15,12 @@ status: in-progress
 - done_when: WBP_XPStatus compiles with 0 errors and is saved; the UnbindXP graph read back shows no ClearDelegate node, and one unbind of `OnXPChanged_Event_2` from OnXPChanged and one of `OnLevelUp_Event_2` from OnLevelUp, for a valid miner; BindToMiner and Destruct still call UnbindXP as before; no other asset changed; doc updated; lint clean; committed by explicit path. No capture.
 - editor_state: open (MCP server answering on http://127.0.0.1:8000/mcp)
 - token_ceiling: 40000
-- model: open
-- tokens: open
-- usage: open
-- runs: open
+- model: sonnet
+- tokens: input 48, cache write 51832, cache read 767426, output 13860
+- usage: turns 24, context start 10k peak 52k, resumes 0, 3 min, units 0.21 M
+- runs: 1
 - milestone: M2
-- result: open
+- result: WBP_XPStatus UnbindXP: both ClearDelegate nodes replaced by Unbind Event nodes fed by Create Event (OnXPChanged_Event_2, OnLevelUp_Event_2); read back: no ClearDelegate, BindToMiner and Destruct still call UnbindXP; compile ok, saved; 6 empty stray custom events removed from EventGraph. Not run in PIE (checked by 03). Commit 4078a1b0.
 
 ## Relations
 - [[task-319-levelup-choice-after-intermission]] — parent global task.
