@@ -3,7 +3,7 @@ id: task-315-03-capture-reroll
 description: "Capture the level-up screen with the paid reroll button in game (cpp): paid level-up reroll, step 03."
 parent: task-315-paid-reroll
 kind: task
-status: in-progress
+status: done
 ---
 # Capture the paid reroll in game
 
@@ -15,11 +15,11 @@ status: in-progress
 - done_when: frames show the cost 15, 20, 25 and the greyed button; ore count drops by the cost; sheet sent to the owner; nothing else changed
 - editor_state: closed
 - token_ceiling: 30000
-- model: open
-- tokens: open
-- runs: open
+- model: opus
+- tokens: input 30, cache write 68632, cache read 553645, output 7699
+- runs: 1
 - milestone: M2
-- result: open
+- result: -game capture Saved/PaidReroll/contact-sheet.png: cost 15, 20, 25 shown, ore 60 -> 45 -> 25 -> 0, cost 30 greyed and refused; seen: the reroll button overlaps weapon slots 2-3 (as before, task-243 frame) and white on light grey reads poorly; secured-ore payment and mouse click not exercised
 
 ## Relations
 - [[task-315-paid-reroll]] — parent global task.

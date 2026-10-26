@@ -320,3 +320,4 @@ Archive: it exceeds the index size limits of [[_authoring]] on purpose (owner, 2
 - [[task-311-console-bigger-50]] — The objective console is 50 % bigger and lands only on a fully free 3 x 3 floor footprint; the bonus chest is unchanged. Status done.
 - [[task-312-zone-colour-off-console]] — The hack zone colour stays on the ground: the console, miner and drone inside the zone are no longer washed out. Status done.
 - [[task-313-drone-at-console-socket]] — While hacking, the drone hovers in front of the console round data socket, at its height, facing it, and the hack link aims at it. Status done.
+- [[task-315-paid-reroll]] — The level-up reroll costs Duskite ore: 15, plus 5 for each further reroll without a level-up, usable while the ore lasts. Status done.

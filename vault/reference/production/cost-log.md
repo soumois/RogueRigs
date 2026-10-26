@@ -665,6 +665,7 @@ kind: note
 | [[task-306-04-capture-chest-mesh]] | opus | 1 | 0k | 150k | 2476k | 26k |
 | [[task-315-01-paid-reroll]] | opus | 1 | 0k | 124k | 4197k | 40k |
 | [[task-315-02-bp-reroll-button]] | sonnet | 1 | 0k | 83k | 1728k | 15k |
+| [[task-315-03-capture-reroll]] | opus | 1 | 0k | 69k | 554k | 8k |
 
 ## Totals
 | Scope | Input | Cache write | Cache read | Output |

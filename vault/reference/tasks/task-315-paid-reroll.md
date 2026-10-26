@@ -1,9 +1,9 @@
 ---
 id: task-315-paid-reroll
 description: "Global task: The level-up reroll costs Duskite ore: 15, plus 5 for each further reroll without a level-up, usable while the ore lasts."
-parent: tasks-to-do-index
+parent: tasks-done-index
 kind: task
-status: in-progress
+status: done
 ---
 # Paid level-up reroll
 
@@ -13,8 +13,8 @@ status: in-progress
 - gdd_check: xp-level-up, run-shop, ore-economy, ore-blocks, color-code, rarities read (2026-10-26). Conflict: xp-level-up said one free reroll per screen; the owner's request replaces it. Ore = Duskite, the only ore. Owner defaults accepted 2026-10-26: Q1 unlimited rerolls while ore suffices; Q2 carried ore first, then secured ore; Q3 cost back to 15 at each level-up screen, chained level-ups included, a chest screen keeps the count; Q4 button shows the cost, greyed when unaffordable.
 - confirmed_by_owner: yes (owner 2026-10-26: "ok" to questions 1-9, every default accepted; plan task-315 then task-316 confirmed)
 - milestone: M2
-- next_step: task-315-03-capture-reroll
-- result: open
+- next_step: none
+- result: Done. -game capture Saved/PaidReroll/contact-sheet.png: cost 15, 20, 25 shown, ore 60 -> 45 -> 25 -> 0, cost 30 greyed and refused; seen: the reroll button overlaps weapon slots 2-3 (as before, task-243 frame) and white on light grey reads poorly; secured-ore payment and mouse click not exercised
 
 ## Subtasks
 1. task-315-01-paid-reroll — cpp: cost rule, ore spending, Blueprint API
@@ -22,7 +22,7 @@ status: in-progress
 3. task-315-03-capture-reroll — cpp: capture the level-up screen in game
 
 ## Relations
-- [[tasks-to-do-index]] — parent index.
+- [[tasks-done-index]] — parent index.
 - [[task-315-01-paid-reroll]] — step 01, cpp.
 - [[task-315-02-bp-reroll-button]] — step 02, bp.
 - [[task-315-03-capture-reroll]] — step 03, cpp.
