@@ -3,7 +3,7 @@ id: task-316-02-text-shop-labels
 description: "Shop labels of the intermission screen in screen_texts.json (text): upgrade shop between levels, step 02."
 parent: task-316-intermission-shop
 kind: task
-status: todo
+status: in-progress
 ---
 # Shop labels
 

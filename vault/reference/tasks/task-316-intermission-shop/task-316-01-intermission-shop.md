@@ -3,7 +3,7 @@ id: task-316-01-intermission-shop
 description: "The intermission screen sells 5 upgrade cards priced by rarity, with an escalating reroll and the Continue button."
 parent: task-316-intermission-shop
 kind: task
-status: in-progress
+status: done
 ---
 # Upgrade shop between levels
 
@@ -15,11 +15,11 @@ status: in-progress
 - done_when: build passes; on the intermission a 5-card stat-only offer drawn with owner luck; price by tier grey 25, green 40, blue 60, purple 80, yellow 100 read from data; buying spends secured ore, applies the card, adds it to the run snapshot so it carries into the next level, leaves its slot empty; several buys allowed; refused without enough ore; shop reroll redraws the 5 slots at 15 then +5 per reroll, reset at each intermission; Blueprint API (offer, prices, balance, buy, reroll cost, change event) documented; existing tests broken by the change updated and passing; lint clean.
 - editor_state: closed
 - token_ceiling: 70000
-- model: open
-- tokens: open
-- runs: open
+- model: opus
+- tokens: input 74, cache write 147886, cache read 3962376, output 40140
+- runs: 1
 - milestone: M2
-- result: open
+- result: Shop built in URRIntermissionShopSubsystem (offer of 5 stat cards with owner luck, prices in URRShopSettings grey 25 green 40 blue 60 purple 80 yellow 100, BuySlot spends ore and appends to the run snapshot, RequestReroll on the task-315 cost rule with own count, OnShopChanged event, OnShopRefreshed widget hook); build passes; tests unchanged, only known failures LevelUpUpgradeLoop RerollButton and JuiceKillDropsStreamingCubes pickup collision (unrelated); docs sys-run-shop new, sys-run-transition, sys-upgrades updated; commits eedadd04 3b5f4992
 
 ## Relations
 - [[task-316-intermission-shop]] — parent global task.
