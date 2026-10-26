@@ -17,6 +17,7 @@
 #include "UI/RRHUDWidget.h"
 #include "UI/RRIntermissionWidget.h"
 #include "UI/RRLoadingScreenWidget.h"
+#include "UI/RRShopScreenWidget.h"
 #include "Weapons/RRWeapon.h"
 
 ARRPlayerController::ARRPlayerController(const FObjectInitializer& ObjectInitializer)
@@ -38,6 +39,8 @@ void ARRPlayerController::BeginPlay()
 		{
 			BoundTransition = Transition;
 			Transition->OnIntermissionStarted.AddUniqueDynamic(this, &ARRPlayerController::HandleIntermissionStarted);
+			Transition->OnShopScreenStarted.AddUniqueDynamic(this, &ARRPlayerController::HandleShopScreenStarted);
+			Transition->OnRunWonScreenStarted.AddUniqueDynamic(this, &ARRPlayerController::HandleRunWonScreenStarted);
 			Transition->OnLoadingStarted.AddUniqueDynamic(this, &ARRPlayerController::HandleLoadingStarted);
 			Transition->OnLevelReady.AddUniqueDynamic(this, &ARRPlayerController::HandleLevelReady);
 			// A widget does not survive OpenLevel: the world opened by a transition shows the loading screen again until OnLevelReady
@@ -82,6 +85,8 @@ void ARRPlayerController::EndPlay(const EEndPlayReason::Type EndPlayReason)
 	if (URRRunTransitionSubsystem* Transition = BoundTransition.Get())
 	{
 		Transition->OnIntermissionStarted.RemoveDynamic(this, &ARRPlayerController::HandleIntermissionStarted);
+		Transition->OnShopScreenStarted.RemoveDynamic(this, &ARRPlayerController::HandleShopScreenStarted);
+		Transition->OnRunWonScreenStarted.RemoveDynamic(this, &ARRPlayerController::HandleRunWonScreenStarted);
 		Transition->OnLoadingStarted.RemoveDynamic(this, &ARRPlayerController::HandleLoadingStarted);
 		Transition->OnLevelReady.RemoveDynamic(this, &ARRPlayerController::HandleLevelReady);
 	}
@@ -98,9 +103,10 @@ bool ARRPlayerController::IsGameplayInputHeld() const
 void ARRPlayerController::HandleIntermissionStarted(const FRRIntermissionRecap& Recap)
 {
 	SetHUDHiddenForTransition(true, TEXT("intermission"));
+	RemoveShopScreenWidget();
 	if (!IntermissionWidgetClass)
 	{
-		UE_LOG(LogRogueRigs, Warning, TEXT("%s: intermission after level %d but IntermissionWidgetClass is not set; run rr.Run.Continue to go on."),
+		UE_LOG(LogRogueRigs, Warning, TEXT("%s: stats screen after level %d but IntermissionWidgetClass is not set; run rr.Run.Stats.Next to go on."),
 			*GetName(), Recap.FinishedLevelIndex);
 		return;
 	}
@@ -119,7 +125,44 @@ void ARRPlayerController::HandleLoadingStarted(int32 LevelIndex, const FString& 
 {
 	SetHUDHiddenForTransition(true, TEXT("loading"));
 	RemoveIntermissionWidget();
+	RemoveShopScreenWidget();
 	ShowLoadingScreen(LevelIndex, LayoutName);
+}
+
+void ARRPlayerController::HandleShopScreenStarted()
+{
+	RemoveIntermissionWidget();
+	RemoveShopScreenWidget();
+	if (!ShopScreenWidgetClass)
+	{
+		UE_LOG(LogRogueRigs, Warning, TEXT("%s: shop screen but ShopScreenWidgetClass is not set; run rr.Run.Continue to go on."), *GetName());
+		return;
+	}
+	ShopScreenWidget = CreateWidget<URRShopScreenWidget>(this, ShopScreenWidgetClass);
+	if (!ShopScreenWidget)
+	{
+		UE_LOG(LogRogueRigs, Error, TEXT("%s: could not create the shop screen widget %s."), *GetName(), *GetNameSafe(ShopScreenWidgetClass));
+		return;
+	}
+	ShopScreenWidget->AddToViewport(TransitionWidgetZOrder);
+	UE_LOG(LogRogueRigs, Log, TEXT("%s: shop screen shown."), *GetName());
+}
+
+void ARRPlayerController::HandleRunWonScreenStarted()
+{
+	RemoveIntermissionWidget();
+	RemoveShopScreenWidget();
+	// The run won end screen is part of the HUD widget (URRHUDWidget, OnRunEnded).
+	SetHUDHiddenForTransition(false, TEXT("run won end screen"));
+}
+
+void ARRPlayerController::RemoveShopScreenWidget()
+{
+	if (ShopScreenWidget)
+	{
+		ShopScreenWidget->RemoveFromParent();
+		ShopScreenWidget = nullptr;
+	}
 }
 
 void ARRPlayerController::HandleLevelReady(int32 LevelIndex, const FString& LayoutName)

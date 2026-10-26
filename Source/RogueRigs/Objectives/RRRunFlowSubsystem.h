@@ -214,12 +214,18 @@ public:
 	/**
 	 * Ends the run once: cancels the miner's level-up offer (the end screen wins), pauses the game with UI input and the cursor
 	 * shown (player 0's controller, when there is one) and broadcasts OnRunEnded. Refused (false) when already ended or when the
-	 * miner is dead (the game over owns that end). Called when the shuttle finishes. A success on a run level that is not the
-	 * last one (URRRunTransitionSubsystem::HandleLevelExtracted) opens the intermission instead: OnRunEnded is not broadcast,
-	 * the phase is still Ended (task-206-03).
+	 * miner is dead (the game over owns that end). Called when the shuttle finishes. A success during a run
+	 * (URRRunTransitionSubsystem::HandleLevelExtracted) opens the stats screen instead: OnRunEnded is not broadcast, the phase is
+	 * still Ended (task-206-03); on the last level the stats screen's button calls ShowRunWonEndScreen (task-317-01).
 	 */
 	UFUNCTION(BlueprintCallable, Category = "RunFlow")
 	bool EndRun(bool bSuccess);
+
+	/**
+	 * Run won end screen after the last level's stats screen (URRRunTransitionSubsystem::NextLevel, task-317-01): broadcasts
+	 * OnRunEnded(true). Refused (false) unless the run ended with a success.
+	 */
+	bool ShowRunWonEndScreen();
 
 	/** Reopens the current map (end screen restart button); resets the run first (URRRunSubsystem::ResetRun), so it begins level 1. */
 	UFUNCTION(BlueprintCallable, Category = "RunFlow")

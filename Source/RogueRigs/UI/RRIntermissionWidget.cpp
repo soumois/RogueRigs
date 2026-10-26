@@ -1,4 +1,5 @@
-// Rogue Rigs - C++ base of the intermission screen (WBP_Intermission, task-206-04): level recap and the Continue button.
+// Rogue Rigs - C++ base of the end-of-level stats screen (WBP_Intermission, task-206-04, task-317-01): level recap and the Next
+// level button.
 
 #include "UI/RRIntermissionWidget.h"
 
@@ -39,10 +40,20 @@ void URRIntermissionWidget::ShowRecap(const FRRIntermissionRecap& InRecap)
 	OnRecapShown(Recap);
 }
 
+bool URRIntermissionWidget::NextLevel()
+{
+	URRRunTransitionSubsystem* Transition = URRRunTransitionSubsystem::Get(this);
+	return Transition && Transition->NextLevel();
+}
+
 bool URRIntermissionWidget::Continue()
 {
 	URRRunTransitionSubsystem* Transition = URRRunTransitionSubsystem::Get(this);
-	return Transition && Transition->Continue();
+	if (!Transition)
+	{
+		return false;
+	}
+	return Transition->IsInStatsScreen() ? Transition->NextLevel() : Transition->Continue();
 }
 
 FRRIntermissionRecap URRIntermissionWidget::GetRecap() const

@@ -1,5 +1,5 @@
-// Rogue Rigs - level-to-level transition of a run: intermission after an extraction, Continue, map travel and the loading hold
-// until the next level is ready (task-206-03).
+// Rogue Rigs - level-to-level transition of a run: stats screen after an extraction, then the cards shop screen (task-317-01),
+// Continue, map travel and the loading hold until the next level is ready (task-206-03).
 
 #pragma once
 
@@ -20,8 +20,13 @@ enum class ERRRunTransitionPhase : uint8
 {
 	/** No transition: a level is being played (or no run). */
 	None,
-	/** Level extracted (not the last one): game paused, recap shown, next layout prepared in the background. */
-	Intermission,
+	/**
+	 * Level extracted: game paused, stats screen (recap) shown. Levels 1-3: next layout prepared in the background, NextLevel opens
+	 * the shop phase. Last level: run won, NextLevel shows the run won end screen (task-317-01).
+	 */
+	Stats,
+	/** NextLevel pressed on the stats screen (levels 1-3): cards shop screen open; Continue starts the loading. */
+	Shop,
 	/** Continue pressed: loading screen up until the next level is ready (layout, map, grid, snapshot, pool prewarm). */
 	Loading
 };
@@ -40,17 +45,59 @@ enum class ERRRunLoadingStage : uint8
 	PreparingLevel
 };
 
-/** Recap of a finished level shown by the intermission (intermission gdd: level recap, run total). */
+/** Robots of one type destroyed during the finished level (stats screen line, task-317-01). */
+USTRUCT(BlueprintType)
+struct ROGUERIGS_API FRRRecapRobotKills
+{
+	GENERATED_BODY()
+
+	/** Run-log robot type key (enemy stats row name, or the class name without a row). */
+	UPROPERTY(BlueprintReadOnly, Category = "Run|Transition")
+	FName RobotType;
+
+	/** Name shown on the stats screen (the robot type as text for now; no icon). */
+	UPROPERTY(BlueprintReadOnly, Category = "Run|Transition")
+	FText DisplayName;
+
+	/** Robots of this type destroyed during the level. */
+	UPROPERTY(BlueprintReadOnly, Category = "Run|Transition")
+	int32 Count = 0;
+};
+
+/** Damage dealt by one weapon during the finished level (stats screen line, task-317-01). */
+USTRUCT(BlueprintType)
+struct ROGUERIGS_API FRRRecapWeaponDamage
+{
+	GENERATED_BODY()
+
+	/** Run-log weapon key (weapon class name). */
+	UPROPERTY(BlueprintReadOnly, Category = "Run|Transition")
+	FName WeaponClassName;
+
+	/** Weapon name shown on the stats screen (WeaponStats.csv DisplayName through ARRWeapon::GetClassDisplayName; the key when not found). */
+	UPROPERTY(BlueprintReadOnly, Category = "Run|Transition")
+	FText DisplayName;
+
+	/** Damage dealt by this weapon during the level (turret hits credited to their launcher). */
+	UPROPERTY(BlueprintReadOnly, Category = "Run|Transition")
+	float Damage = 0.f;
+};
+
+/** Recap of a finished level shown by the stats screen (intermission gdd: level recap, run total). */
 USTRUCT(BlueprintType)
 struct ROGUERIGS_API FRRIntermissionRecap
 {
 	GENERATED_BODY()
 
+	/** True on the last level's stats screen: the run is won, NextLevel shows the run won end screen (no shop). */
+	UPROPERTY(BlueprintReadOnly, Category = "Run|Transition")
+	bool bRunWon = false;
+
 	/** Level just extracted, 1-based. */
 	UPROPERTY(BlueprintReadOnly, Category = "Run|Transition")
 	int32 FinishedLevelIndex = 0;
 
-	/** Level that Continue starts (FinishedLevelIndex + 1). */
+	/** Level that Continue starts (FinishedLevelIndex + 1); 0 when the run is won. */
 	UPROPERTY(BlueprintReadOnly, Category = "Run|Transition")
 	int32 NextLevelIndex = 0;
 
@@ -66,13 +113,31 @@ struct ROGUERIGS_API FRRIntermissionRecap
 	UPROPERTY(BlueprintReadOnly, Category = "Run|Transition")
 	int32 RunSecuredOre = 0;
 
-	/** Layout of the next level (already requested). */
+	/** Layout of the next level (already requested); empty when the run is won. */
 	UPROPERTY(BlueprintReadOnly, Category = "Run|Transition")
 	FString NextLayoutName;
+
+	/** Robots destroyed during the level, per robot type (run log KillsByRobotType), most first. */
+	UPROPERTY(BlueprintReadOnly, Category = "Run|Transition")
+	TArray<FRRRecapRobotKills> KillsByRobotType;
+
+	/** Robots destroyed during the level, all types. */
+	UPROPERTY(BlueprintReadOnly, Category = "Run|Transition")
+	int32 TotalKills = 0;
+
+	/** Damage dealt during the level, per weapon (run log DamageDealtByWeapon), most first. */
+	UPROPERTY(BlueprintReadOnly, Category = "Run|Transition")
+	TArray<FRRRecapWeaponDamage> DamageByWeapon;
 };
 
-/** Fired when the intermission starts (game paused, next layout requested): the recap to show. */
+/** Fired when the stats screen starts (level extracted, game paused; levels 1-3: next layout requested): the recap to show. */
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FRROnIntermissionStartedSignature, const FRRIntermissionRecap&, Recap);
+
+/** Fired when NextLevel opens the cards shop screen (levels 1-3; shop offer already drawn). */
+DECLARE_DYNAMIC_MULTICAST_DELEGATE(FRROnShopScreenStartedSignature);
+
+/** Fired when NextLevel closes the last level's stats screen: the run won end screen follows (OnRunEnded(true)). */
+DECLARE_DYNAMIC_MULTICAST_DELEGATE(FRROnRunWonScreenStartedSignature);
 
 /** Fired when Continue is accepted: the loading screen must show now; level and layout to load. */
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_TwoParams(FRROnLoadingStartedSignature, int32, LevelIndex, const FString&, LayoutName);
@@ -87,10 +152,13 @@ DECLARE_DYNAMIC_MULTICAST_DELEGATE_TwoParams(FRROnLevelReadySignature, int32, Le
  * Transition between the levels of a run (intermission, run-structure). Game instance subsystem, so it survives the OpenLevel.
  *
  * Flow: URRRunFlowSubsystem::EndRun(true) (shuttle boarded; ore secured, game paused with UI input) asks
- * HandleLevelExtracted. Run in progress and not its last level: CaptureLevelEndSnapshot, AdvanceToNextLevel (the next layout is
- * requested at once), phase Intermission, OnIntermissionStarted(Recap); the run flow then does NOT broadcast OnRunEnded, so the
- * success end screen stays hidden. Last level: the run is won (IsRunWon), the run flow shows its end screen as before.
- * Continue (intermission button, rr.Run.Continue): phase Loading, OnLoadingStarted; next layout still pending: stage
+ * HandleLevelExtracted. Run in progress: the recap (ore, kills per robot type, damage per weapon from URRRunLogSubsystem) is
+ * built, phase Stats, OnIntermissionStarted(Recap); the run flow then does NOT broadcast OnRunEnded. Not the last level:
+ * CaptureLevelEndSnapshot and AdvanceToNextLevel (the next layout is requested at once) first; NextLevel (stats button,
+ * rr.Run.Stats.Next) opens the shop (URRIntermissionShopSubsystem::OpenShop), phase Shop, OnShopScreenStarted. Last level: the
+ * run is won (IsRunWon, Recap.bRunWon); NextLevel broadcasts OnRunWonScreenStarted, phase None, and asks the run flow for its run
+ * won end screen (URRRunFlowSubsystem::ShowRunWonEndScreen: OnRunEnded(true)); no shop (task-317-01).
+ * Continue (shop screen button, rr.Run.Continue; refused outside the Shop phase): phase Loading, OnLoadingStarted; next layout still pending: stage
  * WaitingForLayout until URRRunSubsystem::OnLayoutReady; then OpenLevel (stage OpeningMap) on URRRunSettings::ArenaMapName or
  * the current map. After the map load (FCoreUObjectDelegates::PostLoadMapWithWorld: every BeginPlay done, so the grid is
  * built from the prepared layout and the snapshot is re-applied, before the first tick) the new world is held (stage
@@ -98,7 +166,8 @@ DECLARE_DYNAMIC_MULTICAST_DELEGATE_TwoParams(FRROnLevelReadySignature, int32, Le
  * (ARRPlayerController). The hold ends on the spawner's OnPoolPrewarmFinished (or at once without a spawner or prewarm, or after
  * LoadingHoldTimeoutSeconds): run flow and spawner released, phase None, OnLevelReady.
  *
- * Widgets: ARRPlayerController creates IntermissionWidgetClass on OnIntermissionStarted and LoadingScreenWidgetClass on
+ * Widgets: ARRPlayerController creates IntermissionWidgetClass (stats screen) on OnIntermissionStarted, ShopScreenWidgetClass on
+ * OnShopScreenStarted and LoadingScreenWidgetClass on
  * OnLoadingStarted (old world) and again at its BeginPlay while IsLevelLoading (new world); a widget does not survive the travel.
  * Direct PIE or -game on a map: no transition, level 1 starts as before.
  */
@@ -118,15 +187,22 @@ public:
 	static URRRunTransitionSubsystem* Get(const UObject* WorldContext);
 
 	/**
-	 * Called by URRRunFlowSubsystem::EndRun(true) after the ore is secured and the game paused. Run in progress, not the last
-	 * level: starts the intermission (snapshot, advance, OnIntermissionStarted) and returns true (the caller skips its success
-	 * end screen). Last level: marks the run won and returns false. No run: false.
+	 * Called by URRRunFlowSubsystem::EndRun(true) after the run log level entry, the ore secured and the game paused. Run in
+	 * progress: starts the stats phase (levels 1-3: snapshot and advance first; last level: run won) with OnIntermissionStarted and
+	 * returns true (the caller skips its success end screen). No run (direct PIE, test worlds) or a failed snapshot: false.
 	 */
 	bool HandleLevelExtracted(ARRMiner* Miner);
 
 	/**
-	 * Intermission Continue button: starts the loading (OnLoadingStarted), waits for the next layout if it is still pending, then
-	 * opens the arena map. False outside the intermission.
+	 * Stats screen Next level button. Levels 1-3: opens the shop (offer drawn), phase Shop, OnShopScreenStarted. Last level (run
+	 * won): OnRunWonScreenStarted, phase None, then the run flow's run won end screen (OnRunEnded(true)). False outside the Stats phase.
+	 */
+	UFUNCTION(BlueprintCallable, Category = "Run|Transition")
+	bool NextLevel();
+
+	/**
+	 * Shop screen Continue button: closes the shop, starts the loading (OnLoadingStarted), waits for the next layout if it is still
+	 * pending, then opens the arena map. False outside the Shop phase.
 	 */
 	UFUNCTION(BlueprintCallable, Category = "Run|Transition")
 	bool Continue();
@@ -135,9 +211,17 @@ public:
 	UFUNCTION(BlueprintPure, Category = "Run|Transition")
 	ERRRunTransitionPhase GetPhase() const { return Phase; }
 
-	/** True during the intermission (between the extraction and Continue). */
+	/** True between the extraction and Continue (stats screen or shop screen). */
 	UFUNCTION(BlueprintPure, Category = "Run|Transition")
-	bool IsInIntermission() const { return Phase == ERRRunTransitionPhase::Intermission; }
+	bool IsInIntermission() const { return Phase == ERRRunTransitionPhase::Stats || Phase == ERRRunTransitionPhase::Shop; }
+
+	/** True while the stats screen is up (phase Stats). */
+	UFUNCTION(BlueprintPure, Category = "Run|Transition")
+	bool IsInStatsScreen() const { return Phase == ERRRunTransitionPhase::Stats; }
+
+	/** True while the cards shop screen is up (phase Shop). */
+	UFUNCTION(BlueprintPure, Category = "Run|Transition")
+	bool IsInShopScreen() const { return Phase == ERRRunTransitionPhase::Shop; }
 
 	/** True from Continue until OnLevelReady (the loading screen must be shown, gameplay is held). */
 	UFUNCTION(BlueprintPure, Category = "Run|Transition")
@@ -169,6 +253,14 @@ public:
 	UPROPERTY(BlueprintAssignable, Category = "Run|Transition")
 	FRROnIntermissionStartedSignature OnIntermissionStarted;
 
+	/** See FRROnShopScreenStartedSignature. */
+	UPROPERTY(BlueprintAssignable, Category = "Run|Transition")
+	FRROnShopScreenStartedSignature OnShopScreenStarted;
+
+	/** See FRROnRunWonScreenStartedSignature. */
+	UPROPERTY(BlueprintAssignable, Category = "Run|Transition")
+	FRROnRunWonScreenStartedSignature OnRunWonScreenStarted;
+
 	/** See FRROnLoadingStartedSignature. */
 	UPROPERTY(BlueprintAssignable, Category = "Run|Transition")
 	FRROnLoadingStartedSignature OnLoadingStarted;
@@ -184,6 +276,9 @@ public:
 protected:
 	/** Sets the loading stage and broadcasts OnLoadingStageChanged when it changed. */
 	void SetLoadingStage(ERRRunLoadingStage NewStage);
+
+	/** Fills Recap's kills per robot type and damage per weapon from the run log's current level counters (before the next level resets them). */
+	void FillCombatRecap(const UObject* WorldContext);
 
 	/** Run subsystem OnLayoutReady callback while waiting for the next layout: opens the map. */
 	UFUNCTION()
@@ -249,6 +344,9 @@ protected:
 
 	/** World of the intermission (the travel is requested from it). */
 	TWeakObjectPtr<UWorld> IntermissionWorld;
+
+	/** Miner extracted at the stats phase start (the shop draws its offer for it on NextLevel). */
+	TWeakObjectPtr<ARRMiner> IntermissionMiner;
 
 	/** World being held after the travel. */
 	TWeakObjectPtr<UWorld> HeldWorld;

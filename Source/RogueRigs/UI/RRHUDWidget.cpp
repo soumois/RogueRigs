@@ -380,9 +380,10 @@ void URRHUDWidget::BindToRunFlow(URRRunFlowSubsystem* RunFlow)
 	if (RunFlow->IsRunEnded())
 	{
 		OnRunEnded(RunFlow->WasRunSuccessful());
-		// A level 1-3 success ends the flow without an end screen (intermission, task-206-03).
+		// A level 1-3 success ends the flow without an end screen (intermission, task-206-03); the run won end screen waits for the
+		// end of the last level's stats screen (task-317-01).
 		const URRRunTransitionSubsystem* Transition = URRRunTransitionSubsystem::Get(this);
-		if (!RunFlow->WasRunSuccessful() || !Transition || Transition->IsRunWon())
+		if (!RunFlow->WasRunSuccessful() || !Transition || (Transition->IsRunWon() && !Transition->IsInIntermission()))
 		{
 			ShowEndScreen(RunFlow->WasRunSuccessful(), false);
 		}

@@ -186,6 +186,10 @@ public:
 	UFUNCTION(BlueprintPure, Category = "Run")
 	int32 GetRunSecuredOre() const;
 
+	/** Ore secured since the current level started (bank total minus the total at the level start); 0 without a run (task-317-01). */
+	UFUNCTION(BlueprintPure, Category = "Run")
+	int32 GetLevelSecuredOre() const;
+
 	/** See FRROnRunStartedSignature. */
 	UPROPERTY(BlueprintAssignable, Category = "Run")
 	FRROnRunStartedSignature OnRunStarted;

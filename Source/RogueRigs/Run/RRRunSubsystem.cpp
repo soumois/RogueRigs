@@ -468,6 +468,11 @@ int32 URRRunSubsystem::GetRunSecuredOre() const
 	return bRunInProgress ? GetBankSecuredOre() - SecuredOreAtRunStart : 0;
 }
 
+int32 URRRunSubsystem::GetLevelSecuredOre() const
+{
+	return bRunInProgress ? GetBankSecuredOre() - SecuredOreAtLevelStart : 0;
+}
+
 int32 URRRunSubsystem::GetBankSecuredOre() const
 {
 	const UGameInstance* GameInstance = GetGameInstance();

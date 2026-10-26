@@ -16,6 +16,7 @@ class UInputMappingContext;
 class URRHUDWidget;
 class URRIntermissionWidget;
 class URRLoadingScreenWidget;
+class URRShopScreenWidget;
 struct FInputActionValue;
 
 /**
@@ -39,6 +40,9 @@ public:
 
 	/** The intermission widget on screen; null outside the intermission or without IntermissionWidgetClass. */
 	URRIntermissionWidget* GetIntermissionWidget() const { return IntermissionWidget; }
+
+	/** The cards shop screen widget on screen; null outside the shop phase or without ShopScreenWidgetClass. */
+	URRShopScreenWidget* GetShopScreenWidget() const { return ShopScreenWidget; }
 
 	/** The loading screen widget on screen; null outside the loading or without LoadingScreenWidgetClass. */
 	URRLoadingScreenWidget* GetLoadingScreenWidget() const { return LoadingScreenWidget; }
@@ -64,7 +68,18 @@ protected:
 	UFUNCTION()
 	void HandleIntermissionStarted(const FRRIntermissionRecap& Recap);
 
-	/** Transition OnLoadingStarted callback: keeps the HUD hidden, removes the intermission widget, shows the loading screen. */
+	/** Transition OnShopScreenStarted callback: removes the stats widget, creates ShopScreenWidgetClass (warning when unset: rr.Run.Continue). */
+	UFUNCTION()
+	void HandleShopScreenStarted();
+
+	/** Transition OnRunWonScreenStarted callback: removes the stats widget and restores the HUD (its run won end screen follows). */
+	UFUNCTION()
+	void HandleRunWonScreenStarted();
+
+	/** Removes the cards shop screen widget from the viewport. */
+	void RemoveShopScreenWidget();
+
+	/** Transition OnLoadingStarted callback: keeps the HUD hidden, removes the stats and shop widgets, shows the loading screen. */
 	UFUNCTION()
 	void HandleLoadingStarted(int32 LevelIndex, const FString& LayoutName);
 
@@ -163,9 +178,13 @@ protected:
 	UPROPERTY(Transient)
 	TObjectPtr<URRHUDWidget> HUDWidget;
 
-	/** Intermission screen class (a Blueprint subclass of URRIntermissionWidget, task-206-04). None = no screen; rr.Run.Continue continues. */
+	/** Stats screen class (a Blueprint subclass of URRIntermissionWidget, task-206-04, task-317-01). None = no screen; rr.Run.Stats.Next goes on. */
 	UPROPERTY(EditDefaultsOnly, Category = "HUD|Run Transition")
 	TSubclassOf<URRIntermissionWidget> IntermissionWidgetClass;
+
+	/** Cards shop screen class (a Blueprint subclass of URRShopScreenWidget, task-317-01). None = no screen; rr.Run.Continue goes on. */
+	UPROPERTY(EditDefaultsOnly, Category = "HUD|Run Transition")
+	TSubclassOf<URRShopScreenWidget> ShopScreenWidgetClass;
 
 	/** Loading screen class (a Blueprint subclass of URRLoadingScreenWidget, task-206-05). None = no screen (the hold still runs). */
 	UPROPERTY(EditDefaultsOnly, Category = "HUD|Run Transition")
@@ -178,6 +197,10 @@ protected:
 	/** The intermission widget on screen. */
 	UPROPERTY(Transient)
 	TObjectPtr<URRIntermissionWidget> IntermissionWidget;
+
+	/** The cards shop screen widget on screen. */
+	UPROPERTY(Transient)
+	TObjectPtr<URRShopScreenWidget> ShopScreenWidget;
 
 	/** The loading screen widget on screen. */
 	UPROPERTY(Transient)

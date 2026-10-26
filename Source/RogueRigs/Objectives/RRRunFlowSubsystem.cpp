@@ -612,11 +612,12 @@ bool URRRunFlowSubsystem::EndRun(bool bSuccess)
 	}
 	EnterEndPause();
 
-	// Levels 1 to N-1 of a run (task-206-03): a success opens the intermission instead of the success end screen.
+	// A success during a run (task-206-03, task-317-01) opens the stats screen instead of the success end screen; on the last level
+	// the stats screen's button calls ShowRunWonEndScreen.
 	URRRunTransitionSubsystem* Transition = bSuccess ? URRRunTransitionSubsystem::Get(this) : nullptr;
 	if (Transition && Transition->HandleLevelExtracted(Miner))
 	{
-		UE_LOG(LogRogueRigs, Log, TEXT("URRRunFlowSubsystem: level ended, miner extracted: intermission (no end screen)."));
+		UE_LOG(LogRogueRigs, Log, TEXT("URRRunFlowSubsystem: level ended, miner extracted: stats screen (no end screen yet)%s."), Transition->IsRunWon() ? TEXT(", run won") : TEXT(""));
 		UpdateLocatorTarget();
 		return true;
 	}
@@ -625,6 +626,17 @@ bool URRRunFlowSubsystem::EndRun(bool bSuccess)
 		: TEXT("shuttle missed, run lost"));
 	OnRunEnded.Broadcast(bSuccess);
 	UpdateLocatorTarget();
+	return true;
+}
+
+bool URRRunFlowSubsystem::ShowRunWonEndScreen()
+{
+	if (!bRunEnded || !bRunSucceeded)
+	{
+		return false;
+	}
+	UE_LOG(LogRogueRigs, Log, TEXT("URRRunFlowSubsystem: run ended, miner extracted, run won (after the stats screen)."));
+	OnRunEnded.Broadcast(true);
 	return true;
 }
 

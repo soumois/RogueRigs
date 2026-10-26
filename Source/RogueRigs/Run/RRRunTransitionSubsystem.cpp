@@ -16,7 +16,9 @@
 #include "Run/RRIntermissionShopSubsystem.h"
 #include "Run/RRRunSettings.h"
 #include "Run/RRRunSubsystem.h"
+#include "RunLog/RRRunLogSubsystem.h"
 #include "UObject/UObjectGlobals.h"
+#include "Weapons/RRWeapon.h"
 #include "World/RRWorld.h"
 
 URRRunTransitionSubsystem* URRRunTransitionSubsystem::Get(const UObject* WorldContext)
@@ -67,56 +69,128 @@ bool URRRunTransitionSubsystem::HandleLevelExtracted(ARRMiner* Miner)
 	{
 		return false;
 	}
+	UWorld* World = Miner ? Miner->GetWorld() : nullptr;
+	Recap = FRRIntermissionRecap();
+	Recap.FinishedLevelIndex = Run->GetLevelIndex();
+	Recap.LevelCount = Run->GetLevelCount();
+
 	if (Run->IsLastLevel())
 	{
+		// Last level (task-317-01): stats screen with the run won flag; its button leads to the run won end screen, no shop.
 		bRunWon = true;
-		UE_LOG(LogRogueRigs, Log, TEXT("URRRunTransitionSubsystem: level %d/%d extracted, run won (end screen)."), Run->GetLevelIndex(), Run->GetLevelCount());
-		return false;
+		Recap.bRunWon = true;
+		Recap.OreSecuredThisLevel = Run->GetLevelSecuredOre();
+		Recap.RunSecuredOre = Run->GetRunSecuredOre();
+		MapToOpen.Reset();
 	}
-	if (!Run->CaptureLevelEndSnapshot(Miner))
+	else
 	{
-		return false;
+		if (!Run->CaptureLevelEndSnapshot(Miner) || !Run->AdvanceToNextLevel())
+		{
+			return false;
+		}
+		const FRRRunMinerSnapshot& Snapshot = Run->GetLastSnapshot();
+		Recap.NextLevelIndex = Run->GetLevelIndex();
+		Recap.OreSecuredThisLevel = Snapshot.OreSecuredThisLevel;
+		Recap.RunSecuredOre = Snapshot.RunSecuredOre;
+		Recap.NextLayoutName = Run->GetCurrentLayoutName();
+		const FString& ConfiguredMap = GetDefault<URRRunSettings>()->ArenaMapName;
+		MapToOpen = !ConfiguredMap.IsEmpty() ? ConfiguredMap : (World ? UGameplayStatics::GetCurrentLevelName(World, true) : FString());
 	}
-	const int32 FinishedLevel = Run->GetLevelIndex();
-	if (!Run->AdvanceToNextLevel())
-	{
-		return false;
-	}
+	// The run log counters still hold the finished level (reset only by the next level's first miner BeginPlay).
+	FillCombatRecap(Miner ? static_cast<const UObject*>(Miner) : this);
 
-	const FRRRunMinerSnapshot& Snapshot = Run->GetLastSnapshot();
-	Recap = FRRIntermissionRecap();
-	Recap.FinishedLevelIndex = FinishedLevel;
-	Recap.NextLevelIndex = Run->GetLevelIndex();
-	Recap.LevelCount = Run->GetLevelCount();
-	Recap.OreSecuredThisLevel = Snapshot.OreSecuredThisLevel;
-	Recap.RunSecuredOre = Snapshot.RunSecuredOre;
-	Recap.NextLayoutName = Run->GetCurrentLayoutName();
-
-	UWorld* World = Miner ? Miner->GetWorld() : nullptr;
 	IntermissionWorld = World;
-	const FString& ConfiguredMap = GetDefault<URRRunSettings>()->ArenaMapName;
-	MapToOpen = !ConfiguredMap.IsEmpty() ? ConfiguredMap : (World ? UGameplayStatics::GetCurrentLevelName(World, true) : FString());
-	Phase = ERRRunTransitionPhase::Intermission;
-	UE_LOG(LogRogueRigs, Log, TEXT("URRRunTransitionSubsystem: intermission started after level %d/%d: ore secured this level %d, run %d; next level %d on %s (layout %s), map %s."),
-		Recap.FinishedLevelIndex, Recap.LevelCount, Recap.OreSecuredThisLevel, Recap.RunSecuredOre, Recap.NextLevelIndex, *Recap.NextLayoutName,
-		Run->IsLayoutReady(Recap.NextLevelIndex) ? TEXT("ready") : (Run->IsLayoutPending(Recap.NextLevelIndex) ? TEXT("pending") : TEXT("failed")), *MapToOpen);
-	// The shop offer exists before the intermission widget is created on OnIntermissionStarted (run-shop, task-316-01).
-	if (URRIntermissionShopSubsystem* Shop = GetShop())
+	IntermissionMiner = Miner;
+	Phase = ERRRunTransitionPhase::Stats;
+	if (Recap.bRunWon)
 	{
-		Shop->OpenShop(Miner);
+		UE_LOG(LogRogueRigs, Log, TEXT("URRRunTransitionSubsystem: level %d/%d extracted, run won: stats screen (ore secured this level %d, run %d; %d kills, %d weapons)."),
+			Recap.FinishedLevelIndex, Recap.LevelCount, Recap.OreSecuredThisLevel, Recap.RunSecuredOre, Recap.TotalKills, Recap.DamageByWeapon.Num());
+	}
+	else
+	{
+		UE_LOG(LogRogueRigs, Log, TEXT("URRRunTransitionSubsystem: stats screen after level %d/%d: ore secured this level %d, run %d; %d kills, %d weapons; next level %d on %s (layout %s), map %s."),
+			Recap.FinishedLevelIndex, Recap.LevelCount, Recap.OreSecuredThisLevel, Recap.RunSecuredOre, Recap.TotalKills, Recap.DamageByWeapon.Num(),
+			Recap.NextLevelIndex, *Recap.NextLayoutName,
+			Run->IsLayoutReady(Recap.NextLevelIndex) ? TEXT("ready") : (Run->IsLayoutPending(Recap.NextLevelIndex) ? TEXT("pending") : TEXT("failed")), *MapToOpen);
 	}
 	OnIntermissionStarted.Broadcast(Recap);
+	return true;
+}
+
+void URRRunTransitionSubsystem::FillCombatRecap(const UObject* WorldContext)
+{
+	const URRRunLogSubsystem* RunLog = URRRunLogSubsystem::Get(WorldContext);
+	if (!RunLog)
+	{
+		return;
+	}
+	const FRRRunLevelStats Stats = RunLog->GetCurrentLevelStats();
+	for (const TPair<FString, int32>& Pair : Stats.KillsByRobotType)
+	{
+		FRRRecapRobotKills& Line = Recap.KillsByRobotType.AddDefaulted_GetRef();
+		Line.RobotType = FName(*Pair.Key);
+		Line.DisplayName = FText::FromString(Pair.Key);
+		Line.Count = Pair.Value;
+		Recap.TotalKills += Pair.Value;
+	}
+	Recap.KillsByRobotType.Sort([](const FRRRecapRobotKills& A, const FRRRecapRobotKills& B) { return A.Count > B.Count; });
+
+	for (const TPair<FString, float>& Pair : Stats.DamageDealtByWeapon)
+	{
+		FRRRecapWeaponDamage& Line = Recap.DamageByWeapon.AddDefaulted_GetRef();
+		Line.WeaponClassName = FName(*Pair.Key);
+		Line.Damage = Pair.Value;
+		// The run log keys damage by weapon class name; the class is loaded since one of its instances dealt the damage.
+		UClass* WeaponClass = FindFirstObject<UClass>(*Pair.Key, EFindFirstObjectOptions::NativeFirst);
+		const FText ClassName = WeaponClass && WeaponClass->IsChildOf(ARRWeapon::StaticClass()) ? ARRWeapon::GetClassDisplayName(WeaponClass) : FText::GetEmpty();
+		Line.DisplayName = ClassName.IsEmpty() ? FText::FromString(Pair.Key) : ClassName;
+	}
+	Recap.DamageByWeapon.Sort([](const FRRRecapWeaponDamage& A, const FRRRecapWeaponDamage& B) { return A.Damage > B.Damage; });
+}
+
+bool URRRunTransitionSubsystem::NextLevel()
+{
+	if (Phase != ERRRunTransitionPhase::Stats)
+	{
+		UE_LOG(LogRogueRigs, Warning, TEXT("URRRunTransitionSubsystem: NextLevel refused (not on the stats screen)."));
+		return false;
+	}
+	if (Recap.bRunWon)
+	{
+		UWorld* World = IntermissionWorld.Get();
+		Phase = ERRRunTransitionPhase::None;
+		IntermissionWorld.Reset();
+		IntermissionMiner.Reset();
+		UE_LOG(LogRogueRigs, Log, TEXT("URRRunTransitionSubsystem: stats screen closed, run won end screen."));
+		OnRunWonScreenStarted.Broadcast();
+		if (URRRunFlowSubsystem* RunFlow = World ? World->GetSubsystem<URRRunFlowSubsystem>() : nullptr)
+		{
+			RunFlow->ShowRunWonEndScreen();
+		}
+		return true;
+	}
+	Phase = ERRRunTransitionPhase::Shop;
+	// The offer is drawn before the shop widget is created on OnShopScreenStarted (run-shop, task-316-01).
+	if (URRIntermissionShopSubsystem* Shop = GetShop())
+	{
+		Shop->OpenShop(IntermissionMiner.Get());
+	}
+	UE_LOG(LogRogueRigs, Log, TEXT("URRRunTransitionSubsystem: stats screen closed, shop screen before level %d."), Recap.NextLevelIndex);
+	OnShopScreenStarted.Broadcast();
 	return true;
 }
 
 bool URRRunTransitionSubsystem::Continue()
 {
 	URRRunSubsystem* Run = GetRun();
-	if (Phase != ERRRunTransitionPhase::Intermission || !Run)
+	if (Phase != ERRRunTransitionPhase::Shop || !Run)
 	{
-		UE_LOG(LogRogueRigs, Warning, TEXT("URRRunTransitionSubsystem: Continue refused (not in the intermission)."));
+		UE_LOG(LogRogueRigs, Warning, TEXT("URRRunTransitionSubsystem: Continue refused (not on the shop screen)."));
 		return false;
 	}
+	IntermissionMiner.Reset();
 	Phase = ERRRunTransitionPhase::Loading;
 	if (URRIntermissionShopSubsystem* Shop = GetShop())
 	{
@@ -418,6 +492,7 @@ void URRRunTransitionSubsystem::ClearTransition()
 	HeldSpawner.Reset();
 	HeldWorld.Reset();
 	IntermissionWorld.Reset();
+	IntermissionMiner.Reset();
 	Phase = ERRRunTransitionPhase::None;
 	LoadingStage = ERRRunLoadingStage::None;
 	LoadingLevelIndex = 0;

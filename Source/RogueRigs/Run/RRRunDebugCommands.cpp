@@ -1,7 +1,7 @@
-// Rogue Rigs - run debug console commands (compiled out of shipping): rr.Run.Status (logs the run state), rr.Run.Continue (the
-// intermission Continue button), rr.Run.NextLevel (successful extraction then Continue), rr.Run.EndLevel (successful extraction,
-// the intermission stays open), rr.Run.Restart (the end screen restart button: run reset, level 1), rr.Shop.Buy and rr.Shop.Reroll
-// (the intermission shop card and reroll buttons, task-316-05).
+// Rogue Rigs - run debug console commands (compiled out of shipping): rr.Run.Status (logs the run state), rr.Run.Stats.Next (the
+// stats screen Next level button, task-317-01), rr.Run.Continue (the shop screen Continue button), rr.Run.NextLevel (successful
+// extraction, Next level, Continue), rr.Run.EndLevel (successful extraction, the stats screen stays open), rr.Run.Restart (the end
+// screen restart button: run reset, level 1), rr.Shop.Buy and rr.Shop.Reroll (the shop card and reroll buttons, task-316-05).
 
 #include "CoreMinimal.h"
 
@@ -23,7 +23,8 @@ namespace RRRunDebug
 	{
 		switch (Phase)
 		{
-		case ERRRunTransitionPhase::Intermission: return TEXT("intermission");
+		case ERRRunTransitionPhase::Stats: return TEXT("stats");
+		case ERRRunTransitionPhase::Shop: return TEXT("shop");
 		case ERRRunTransitionPhase::Loading: return TEXT("loading");
 		default: return TEXT("none");
 		}
@@ -50,25 +51,37 @@ namespace RRRunDebug
 		}),
 		ECVF_Cheat);
 
-	/** rr.Run.Continue: the intermission Continue button (URRRunTransitionSubsystem::Continue). */
+	/** rr.Run.Stats.Next: the stats screen Next level button (URRRunTransitionSubsystem::NextLevel: shop screen, or run won end screen). */
+	FAutoConsoleCommand StatsNextCommand(
+		TEXT("rr.Run.Stats.Next"),
+		TEXT("rr.Run.Stats.Next: presses the stats screen Next level button (cards shop screen, or the run won end screen on the last level)."),
+		FConsoleCommandDelegate::CreateLambda([]()
+		{
+			URRRunTransitionSubsystem* Transition = URRRunTransitionSubsystem::Get(RRCheats::FindCheatWorld());
+			const bool bAccepted = Transition && Transition->NextLevel();
+			UE_LOG(LogRogueRigs, Log, TEXT("rr.Run.Stats.Next: %s."), bAccepted ? TEXT("accepted") : TEXT("refused (not on the stats screen)"));
+		}),
+		ECVF_Cheat);
+
+	/** rr.Run.Continue: the shop screen Continue button (URRRunTransitionSubsystem::Continue; refused outside the shop screen). */
 	FAutoConsoleCommand ContinueCommand(
 		TEXT("rr.Run.Continue"),
-		TEXT("rr.Run.Continue: presses the intermission Continue button (loading screen, then the next level)."),
+		TEXT("rr.Run.Continue: presses the shop screen Continue button (loading screen, then the next level)."),
 		FConsoleCommandDelegate::CreateLambda([]()
 		{
 			URRRunTransitionSubsystem* Transition = URRRunTransitionSubsystem::Get(RRCheats::FindCheatWorld());
 			const bool bAccepted = Transition && Transition->Continue();
-			UE_LOG(LogRogueRigs, Log, TEXT("rr.Run.Continue: %s."), bAccepted ? TEXT("accepted") : TEXT("refused (not in the intermission)"));
+			UE_LOG(LogRogueRigs, Log, TEXT("rr.Run.Continue: %s."), bAccepted ? TEXT("accepted") : TEXT("refused (not on the shop screen)"));
 		}),
 		ECVF_Cheat);
 
 	/**
-	 * rr.Run.NextLevel: EndRun(true) when the level is still running (as a boarded shuttle: ore secured, intermission on levels
-	 * 1 to N-1, run won on the last), then Continue when the intermission opened.
+	 * rr.Run.NextLevel: EndRun(true) when the level is still running (as a boarded shuttle: ore secured, stats screen), then the
+	 * stats screen Next level button (levels 1 to N-1: shop screen, then Continue; last level: run won end screen).
 	 */
 	FAutoConsoleCommand NextLevelCommand(
 		TEXT("rr.Run.NextLevel"),
-		TEXT("rr.Run.NextLevel: ends the level as a successful extraction (intermission, or run won on the last level) and presses Continue."),
+		TEXT("rr.Run.NextLevel: ends the level as a successful extraction, presses Next level on the stats screen and Continue on the shop screen (run won end screen on the last level)."),
 		FConsoleCommandDelegate::CreateLambda([]()
 		{
 			UWorld* World = RRCheats::FindCheatWorld();
@@ -83,21 +96,25 @@ namespace RRRunDebug
 			{
 				RunFlow->EndRun(true);
 			}
-			if (Transition->IsInIntermission())
+			if (Transition->IsInStatsScreen())
+			{
+				Transition->NextLevel();
+			}
+			if (Transition->IsInShopScreen())
 			{
 				Transition->Continue();
 			}
-			else
+			else if (!Transition->IsLevelLoading())
 			{
-				UE_LOG(LogRogueRigs, Log, TEXT("rr.Run.NextLevel: no intermission (%s)."), Transition->IsRunWon() ? TEXT("run won") : TEXT("level not extracted"));
+				UE_LOG(LogRogueRigs, Log, TEXT("rr.Run.NextLevel: no next level (%s)."), Transition->IsRunWon() ? TEXT("run won") : TEXT("level not extracted"));
 			}
 		}),
 		ECVF_Cheat);
 
-	/** rr.Run.EndLevel: EndRun(true) when the level is still running (as a boarded shuttle), without Continue: the intermission stays open. */
+	/** rr.Run.EndLevel: EndRun(true) when the level is still running (as a boarded shuttle), without any button: the stats screen stays open. */
 	FAutoConsoleCommand EndLevelCommand(
 		TEXT("rr.Run.EndLevel"),
-		TEXT("rr.Run.EndLevel: ends the level as a successful extraction and leaves the intermission (or the run won screen) open."),
+		TEXT("rr.Run.EndLevel: ends the level as a successful extraction and leaves the stats screen open (rr.Run.Stats.Next goes on)."),
 		FConsoleCommandDelegate::CreateLambda([]()
 		{
 			UWorld* World = RRCheats::FindCheatWorld();
