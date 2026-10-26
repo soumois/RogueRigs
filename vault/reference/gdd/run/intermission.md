@@ -1,6 +1,6 @@
 ---
 id: intermission
-description: "Two screens between run levels: stats (recap, kills per robot, damage per weapon), then cards shop on black while the next level loads; fade or loading screen."
+description: "Two screens between run levels: stats (recap, kills per robot, damage per weapon), then cards shop on black while the next level loads."
 parent: run-index
 kind: spec
 status: provisional
