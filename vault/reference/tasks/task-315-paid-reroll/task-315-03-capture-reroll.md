@@ -3,7 +3,7 @@ id: task-315-03-capture-reroll
 description: "Capture the level-up screen with the paid reroll button in game (cpp): paid level-up reroll, step 03."
 parent: task-315-paid-reroll
 kind: task
-status: todo
+status: in-progress
 ---
 # Capture the paid reroll in game
 

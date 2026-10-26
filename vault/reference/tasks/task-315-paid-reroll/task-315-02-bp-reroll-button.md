@@ -3,7 +3,7 @@ id: task-315-02-bp-reroll-button
 description: "WBP_UpgradeChoice reroll button shows its ore cost and is greyed when unaffordable (bp): paid level-up reroll, step 02."
 parent: task-315-paid-reroll
 kind: task
-status: in-progress
+status: done
 ---
 # Reroll button with its cost
 
@@ -15,11 +15,11 @@ status: in-progress
 - done_when: compiled with warnings as errors and saved; tree and graph wiring read back; doc node updated; lint clean; committed
 - editor_state: open
 - token_ceiling: 40000
-- model: open
-- tokens: open
-- runs: open
+- model: sonnet
+- tokens: input 62, cache write 82911, cache read 1727912, output 15470
+- runs: 1
 - milestone: M2
-- result: open
+- result: RerollButton holds RerollRow (RerollText, RerollOre T_Icon_Ore 32x32, RerollCost variable); RefreshReroll sets the cost from GetRerollCost on every ShowCards; enabled state still bCanReroll via RerollAllowed at the end of the deal; compiled, saved, read back; not seen in PIE; commit 9abff278
 
 ## Relations
 - [[task-315-paid-reroll]] — parent global task.

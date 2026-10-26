@@ -13,7 +13,7 @@ status: in-progress
 - gdd_check: xp-level-up, run-shop, ore-economy, ore-blocks, color-code, rarities read (2026-10-26). Conflict: xp-level-up said one free reroll per screen; the owner's request replaces it. Ore = Duskite, the only ore. Owner defaults accepted 2026-10-26: Q1 unlimited rerolls while ore suffices; Q2 carried ore first, then secured ore; Q3 cost back to 15 at each level-up screen, chained level-ups included, a chest screen keeps the count; Q4 button shows the cost, greyed when unaffordable.
 - confirmed_by_owner: yes (owner 2026-10-26: "ok" to questions 1-9, every default accepted; plan task-315 then task-316 confirmed)
 - milestone: M2
-- next_step: task-315-02-bp-reroll-button
+- next_step: task-315-03-capture-reroll
 - result: open
 
 ## Subtasks
