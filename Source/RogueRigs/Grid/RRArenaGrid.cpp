@@ -129,6 +129,12 @@ void ARRArenaGrid::BeginPlay()
 	}
 }
 
+bool ARRArenaGrid::RebuildForRunLevel()
+{
+	RebuildFromLayout();
+	return GridWidth > 0 && GridHeight > 0;
+}
+
 void ARRArenaGrid::RebuildFromLayout()
 {
 	if (!LoadLayout())

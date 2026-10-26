@@ -73,6 +73,9 @@ public:
 	 */
 	void CancelChoices();
 
+	/** Next run level started in the same world (task-318-01): lifts the CancelChoices block, as a new level's miner starts. */
+	void ResumeChoices() { bChoicesBlocked = false; }
+
 	/**
 	 * Queues one extra choice that is not a level-up (bonus chest, objective-bonus-chest): offer level 0 (no weapon card), drawn with
 	 * the owner luck + BonusLuck for that offer only (its reroll keeps it). No heal, no OnLevelUpEffect; same delay, pause and

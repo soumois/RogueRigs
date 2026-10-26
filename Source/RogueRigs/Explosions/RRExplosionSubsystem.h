@@ -77,6 +77,12 @@ public:
 	bool IsSourcePending(const UObject* SourceObject) const;
 
 	/**
+	 * Next run level prepared in the same world (task-318-01): drops the queued explosions and forgets the spent sources, so the
+	 * rebuilt terrain's barrels can explode again. Returns the count of queued explosions dropped.
+	 */
+	int32 ClearForNextLevel();
+
+	/**
 	 * Lets SourceObject explode again: removes it from the spent sources unless one of its explosions is still queued (returns
 	 * false then). For pooled sources reused in a new life (kamikaze, sys-actor-pool).
 	 */

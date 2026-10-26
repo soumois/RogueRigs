@@ -43,6 +43,7 @@ void ARRPlayerController::BeginPlay()
 			Transition->OnRunWonScreenStarted.AddUniqueDynamic(this, &ARRPlayerController::HandleRunWonScreenStarted);
 			Transition->OnLoadingStarted.AddUniqueDynamic(this, &ARRPlayerController::HandleLoadingStarted);
 			Transition->OnLevelReady.AddUniqueDynamic(this, &ARRPlayerController::HandleLevelReady);
+			Transition->OnNextLevelReady.AddUniqueDynamic(this, &ARRPlayerController::HandleNextLevelReady);
 			// A widget does not survive OpenLevel: the world opened by a transition shows the loading screen again until OnLevelReady
 			// (higher Z-order than the HUD created below).
 			if (Transition->IsLevelLoading())
@@ -52,6 +53,18 @@ void ARRPlayerController::BeginPlay()
 		}
 	}
 
+	CreateHUDWidget();
+
+	// The world opened by a transition starts behind the loading screen: no HUD until OnLevelReady (task-207-01).
+	const URRRunTransitionSubsystem* Transition = BoundTransition.Get();
+	if (Transition && Transition->GetPhase() != ERRRunTransitionPhase::None)
+	{
+		SetHUDHiddenForTransition(true, Transition->IsLevelLoading() ? TEXT("loading") : TEXT("intermission"));
+	}
+}
+
+void ARRPlayerController::CreateHUDWidget()
+{
 	// Headless runs and non-local controllers have no viewport: no HUD.
 	if (!HUDWidgetClass || !IsLocalPlayerController() || !GetLocalPlayer())
 	{
@@ -71,13 +84,25 @@ void ARRPlayerController::BeginPlay()
 	// Horde banner and alert-bar horde icons: the level's spawner (one per level).
 	TActorIterator<ARREnemySpawner> SpawnerIt(GetWorld());
 	HUDWidget->BindToSpawner(SpawnerIt ? *SpawnerIt : nullptr);
+}
 
-	// The world opened by a transition starts behind the loading screen: no HUD until OnLevelReady (task-207-01).
-	const URRRunTransitionSubsystem* Transition = BoundTransition.Get();
-	if (Transition && Transition->GetPhase() != ERRRunTransitionPhase::None)
+void ARRPlayerController::HandleNextLevelReady(int32 LevelIndex, const FString& LayoutName)
+{
+	if (!HUDWidget)
 	{
-		SetHUDHiddenForTransition(true, Transition->IsLevelLoading() ? TEXT("loading") : TEXT("intermission"));
+		return;
 	}
+	// The old HUD's visibility before the transition is kept for the new one (restored on OnLevelReady).
+	const bool bWasHidden = bHUDHiddenForTransition;
+	HUDWidget->RemoveFromParent();
+	HUDWidget = nullptr;
+	CreateHUDWidget();
+	if (HUDWidget && bWasHidden)
+	{
+		HUDWidget->SetVisibility(ESlateVisibility::Collapsed);
+	}
+	UE_LOG(LogRogueRigs, Log, TEXT("%s: HUD recreated for level %d prepared in this world (%s)."), *GetName(), LevelIndex,
+		HUDWidget ? (bWasHidden ? TEXT("collapsed until level ready") : TEXT("visible")) : TEXT("no HUD"));
 }
 
 void ARRPlayerController::EndPlay(const EEndPlayReason::Type EndPlayReason)
@@ -89,6 +114,7 @@ void ARRPlayerController::EndPlay(const EEndPlayReason::Type EndPlayReason)
 		Transition->OnRunWonScreenStarted.RemoveDynamic(this, &ARRPlayerController::HandleRunWonScreenStarted);
 		Transition->OnLoadingStarted.RemoveDynamic(this, &ARRPlayerController::HandleLoadingStarted);
 		Transition->OnLevelReady.RemoveDynamic(this, &ARRPlayerController::HandleLevelReady);
+		Transition->OnNextLevelReady.RemoveDynamic(this, &ARRPlayerController::HandleNextLevelReady);
 	}
 	BoundTransition.Reset();
 	Super::EndPlay(EndPlayReason);

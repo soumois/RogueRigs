@@ -138,6 +138,13 @@ public:
 	bool ApplySnapshotToMiner(ARRMiner* Miner, const FRRRunMinerSnapshot& Snapshot);
 
 	/**
+	 * Next run level started in the same world (task-318-01): the extracted miner itself carries the state (cards, weapons, level,
+	 * XP, health; ore in the bank), so the pending snapshot is consumed without a replay. Logs the miner values next to the snapshot
+	 * values (same line shape as ApplySnapshotToMiner) and broadcasts OnSnapshotApplied. False without a pending snapshot or miner.
+	 */
+	bool ConsumeSnapshotInPlace(ARRMiner* Miner);
+
+	/**
 	 * Adds Card (applied to Miner after the capture, e.g. bought in the intermission shop) to the end of the pending snapshot's
 	 * picked cards, so the next level's miner replays it; refreshes the snapshot Health and MaxHealth from Miner (a MaxHealth
 	 * card heals). False (nothing recorded) without a run, a pending snapshot or a miner. The recap ore figures are unchanged.

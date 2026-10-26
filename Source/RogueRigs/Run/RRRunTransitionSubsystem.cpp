@@ -3,21 +3,35 @@
 
 #include "Run/RRRunTransitionSubsystem.h"
 
+#include "Drone/RRDrone.h"
+#include "Enemies/RREnemy.h"
 #include "Enemies/RREnemySpawner.h"
 #include "Engine/Engine.h"
 #include "Engine/GameInstance.h"
 #include "Engine/World.h"
+#include "EngineUtils.h"
+#include "Explosions/RRExplosionFX.h"
+#include "Explosions/RRExplosionSubsystem.h"
+#include "FlowField/RRFlowFieldSubsystem.h"
+#include "GameFramework/CharacterMovementComponent.h"
+#include "GameFramework/GameModeBase.h"
+#include "GameFramework/PlayerController.h"
 #include "Grid/RRArenaGrid.h"
 #include "HAL/PlatformTime.h"
 #include "Kismet/GameplayStatics.h"
 #include "Objectives/RRRunFlowSubsystem.h"
+#include "Pickups/RRPickup.h"
 #include "Player/RRMiner.h"
+#include "Pool/RRActorPoolSubsystem.h"
+#include "Progression/RRLevelUpComponent.h"
+#include "Projectiles/RRProjectile.h"
 #include "RogueRigs.h"
 #include "Run/RRIntermissionShopSubsystem.h"
 #include "Run/RRRunSettings.h"
 #include "Run/RRRunSubsystem.h"
 #include "RunLog/RRRunLogSubsystem.h"
 #include "UObject/UObjectGlobals.h"
+#include "Weapons/RRTurret.h"
 #include "Weapons/RRWeapon.h"
 #include "World/RRWorld.h"
 
@@ -179,6 +193,8 @@ bool URRRunTransitionSubsystem::NextLevel()
 	}
 	UE_LOG(LogRogueRigs, Log, TEXT("URRRunTransitionSubsystem: stats screen closed, shop screen before level %d."), Recap.NextLevelIndex);
 	OnShopScreenStarted.Broadcast();
+	// The cards screen opens: the next level is prepared behind it, in this world (task-318-01).
+	StartNextLevelPreparation();
 	return true;
 }
 
@@ -205,6 +221,25 @@ bool URRRunTransitionSubsystem::Continue()
 	UE_LOG(LogRogueRigs, Log, TEXT("URRRunTransitionSubsystem: Continue: loading started for level %d (layout %s), frame %llu."), LoadingLevelIndex,
 		*LoadingLayoutName, LoadingStartFrame);
 	OnLoadingStarted.Broadcast(LoadingLevelIndex, LoadingLayoutName);
+
+	if (PrepStep != ERRNextLevelPrepStep::None)
+	{
+		// In-place path (task-318-01): no map load. Ready: the level starts now; else it starts when the preparation ends.
+		SetLoadingStage(ERRRunLoadingStage::PreparingLevel);
+		if (IsNextLevelReady())
+		{
+			UE_LOG(LogRogueRigs, Log, TEXT("URRRunTransitionSubsystem: Continue: next level %d already prepared in this world (ready %.1f ms before Continue)."),
+				LoadingLevelIndex, (LoadingStartSeconds - PrepReadySeconds) * 1000.0);
+			StartPreparedLevel();
+		}
+		else
+		{
+			bStartWhenPrepared = true;
+			UE_LOG(LogRogueRigs, Log, TEXT("URRRunTransitionSubsystem: Continue: next level %d still being prepared (progress %.2f), it starts when ready."),
+				LoadingLevelIndex, GetNextLevelProgress());
+		}
+		return true;
+	}
 
 	if (Run->IsLayoutPending(LoadingLevelIndex))
 	{
@@ -486,6 +521,7 @@ void URRRunTransitionSubsystem::ClearTransition()
 		FTSTicker::GetCoreTicker().RemoveTicker(TravelWaitHandle);
 		TravelWaitHandle.Reset();
 	}
+	StopNextLevelPreparation();
 	bTravelRequested = false;
 	LoadingFirstPaintFrame = 0;
 	HeldRunFlow.Reset();
@@ -496,4 +532,256 @@ void URRRunTransitionSubsystem::ClearTransition()
 	Phase = ERRRunTransitionPhase::None;
 	LoadingStage = ERRRunLoadingStage::None;
 	LoadingLevelIndex = 0;
+}
+
+float URRRunTransitionSubsystem::GetNextLevelProgress() const
+{
+	// Work steps: WaitingForLayout, ClearingLevel, RebuildingTerrain, PlacingMiner; Ready is 1.
+	const int32 Done = static_cast<int32>(PrepStep) - static_cast<int32>(ERRNextLevelPrepStep::WaitingForLayout);
+	const int32 Total = static_cast<int32>(ERRNextLevelPrepStep::Ready) - static_cast<int32>(ERRNextLevelPrepStep::WaitingForLayout);
+	return PrepStep == ERRNextLevelPrepStep::None ? 0.f : FMath::Clamp(static_cast<float>(Done) / static_cast<float>(Total), 0.f, 1.f);
+}
+
+bool URRRunTransitionSubsystem::StartNextLevelPreparation()
+{
+	StopNextLevelPreparation();
+	UWorld* World = IntermissionWorld.Get();
+	const URRRunSubsystem* Run = GetRun();
+	if (!World || !Run || !RRWorld::FindArenaGrid(World) || !RRWorld::FindLivingMiner(World))
+	{
+		UE_LOG(LogRogueRigs, Warning, TEXT("URRRunTransitionSubsystem: next level %d cannot be prepared in this world (no world, run, grid or miner): Continue will open the map."),
+			Recap.NextLevelIndex);
+		return false;
+	}
+	PrepStep = ERRNextLevelPrepStep::WaitingForLayout;
+	bStartWhenPrepared = false;
+	PrepStartSeconds = FPlatformTime::Seconds();
+	PrepReadySeconds = 0.0;
+	UE_LOG(LogRogueRigs, Log, TEXT("URRRunTransitionSubsystem: next level %d preparation started in this world (layout %s %s), frame %llu."),
+		Recap.NextLevelIndex, *Recap.NextLayoutName, Run->IsLayoutPending(Recap.NextLevelIndex) ? TEXT("pending") : TEXT("prepared"), GFrameCounter);
+	// The world is paused behind the cards screen: the core ticker still runs. One step per frame keeps each hitch short.
+	TWeakObjectPtr<URRRunTransitionSubsystem> WeakThis(this);
+	PrepTickHandle = FTSTicker::GetCoreTicker().AddTicker(FTickerDelegate::CreateLambda([WeakThis](float DeltaTime)
+	{
+		URRRunTransitionSubsystem* Self = WeakThis.Get();
+		return Self ? Self->TickNextLevelPreparation(DeltaTime) : false;
+	}));
+	return true;
+}
+
+bool URRRunTransitionSubsystem::TickNextLevelPreparation(float DeltaTime)
+{
+	UWorld* World = IntermissionWorld.Get();
+	URRRunSubsystem* Run = GetRun();
+	if (!World || !Run || PrepStep == ERRNextLevelPrepStep::None || PrepStep == ERRNextLevelPrepStep::Ready)
+	{
+		if (PrepStep != ERRNextLevelPrepStep::Ready)
+		{
+			PrepStep = ERRNextLevelPrepStep::None;
+		}
+		PrepTickHandle.Reset();
+		return false;
+	}
+	const int32 Level = Recap.NextLevelIndex;
+	const double StepStart = FPlatformTime::Seconds();
+	switch (PrepStep)
+	{
+	case ERRNextLevelPrepStep::WaitingForLayout:
+		if (Run->IsLayoutPending(Level))
+		{
+			return true;
+		}
+		if (!Run->IsLayoutReady(Level))
+		{
+			// Provisional decision (task-206-03): the grid falls back to its own LayoutName, logged as an error.
+			UE_LOG(LogRogueRigs, Error, TEXT("URRRunTransitionSubsystem: layout %s of level %d failed; the grid will fall back to its own layout."), *Recap.NextLayoutName, Level);
+		}
+		PrepStep = ERRNextLevelPrepStep::ClearingLevel;
+		return true;
+	case ERRNextLevelPrepStep::ClearingLevel:
+	{
+		const int32 Removed = ClearLevelActors(*World);
+		UE_LOG(LogRogueRigs, Log, TEXT("URRRunTransitionSubsystem: next level %d: level cleared (%d actors, objectives and run flow reset) in %.1f ms."),
+			Level, Removed, (FPlatformTime::Seconds() - StepStart) * 1000.0);
+		PrepStep = ERRNextLevelPrepStep::RebuildingTerrain;
+		return true;
+	}
+	case ERRNextLevelPrepStep::RebuildingTerrain:
+	{
+		ARRArenaGrid* Grid = RRWorld::FindArenaGrid(World);
+		const bool bBuilt = Grid && Grid->RebuildForRunLevel();
+		const FIntPoint Size = Grid ? Grid->GetGridSize() : FIntPoint::ZeroValue;
+		UE_LOG(LogRogueRigs, Log, TEXT("URRRunTransitionSubsystem: next level %d: terrain rebuilt %d x %d on layout %s%s in %.1f ms."), Level, Size.X, Size.Y,
+			Grid ? *Grid->GetLayoutName() : TEXT("none"), bBuilt ? TEXT("") : TEXT(" (FAILED, empty grid)"), (FPlatformTime::Seconds() - StepStart) * 1000.0);
+		PrepStep = ERRNextLevelPrepStep::PlacingMiner;
+		return true;
+	}
+	case ERRNextLevelPrepStep::PlacingMiner:
+		PlaceMinerAtStart(*World);
+		UE_LOG(LogRogueRigs, Log, TEXT("URRRunTransitionSubsystem: next level %d: miner placed, flow field recomputed in %.1f ms."), Level,
+			(FPlatformTime::Seconds() - StepStart) * 1000.0);
+		break;
+	default:
+		break;
+	}
+
+	PrepStep = ERRNextLevelPrepStep::Ready;
+	PrepReadySeconds = FPlatformTime::Seconds();
+	PrepTickHandle.Reset();
+	const URRRunFlowSubsystem* RunFlow = World->GetSubsystem<URRRunFlowSubsystem>();
+	const ARREnemySpawner* Spawner = RunFlow ? RunFlow->GetSpawner() : nullptr;
+	UE_LOG(LogRogueRigs, Log, TEXT("URRRunTransitionSubsystem: next level %d ready in this world on layout %s (preparation %.1f ms, frame %llu; pool prewarm %s)%s."),
+		Level, *Recap.NextLayoutName, (PrepReadySeconds - PrepStartSeconds) * 1000.0, GFrameCounter,
+		!Spawner ? TEXT("no spawner") : (Spawner->IsPoolPrewarmComplete() ? TEXT("complete, pool kept warm") : TEXT("not complete")),
+		bStartWhenPrepared ? TEXT(", Continue already pressed") : TEXT(", before Continue"));
+	OnNextLevelReady.Broadcast(Level, Recap.NextLayoutName);
+	if (bStartWhenPrepared && IsLevelLoading())
+	{
+		StartPreparedLevel();
+	}
+	return false;
+}
+
+int32 URRRunTransitionSubsystem::ClearLevelActors(UWorld& World)
+{
+	ARRMiner* Miner = RRWorld::FindLivingMiner(&World);
+	URRRunFlowSubsystem* RunFlow = World.GetSubsystem<URRRunFlowSubsystem>();
+	if (RunFlow)
+	{
+		RunFlow->ResetForNextLevel();
+	}
+	if (ARRDrone* Drone = Miner ? Miner->GetDrone() : nullptr)
+	{
+		Drone->ReleaseDig();
+	}
+
+	// Everything a level spawns at runtime: robots, pickups, projectiles, explosion FX, placed turrets. Pool members go back idle
+	// (the pool stays warm), the others are destroyed, as a map travel would drop them.
+	URRActorPoolSubsystem* Pool = World.GetSubsystem<URRActorPoolSubsystem>();
+	TArray<AActor*> ToRemove;
+	for (TActorIterator<AActor> It(&World); It; ++It)
+	{
+		AActor* Actor = *It;
+		if (!IsValid(Actor) || Actor->IsActorBeingDestroyed() || URRActorPoolSubsystem::IsPooledIdle(Actor))
+		{
+			continue;
+		}
+		if (Actor->IsA<ARREnemy>() || Actor->IsA<ARRPickup>() || Actor->IsA<ARRProjectile>() || Actor->IsA<ARRExplosionFX>() || Actor->IsA<ARRTurret>())
+		{
+			ToRemove.Add(Actor);
+		}
+	}
+	int32 Released = 0;
+	for (AActor* Actor : ToRemove)
+	{
+		if (!IsValid(Actor) || Actor->IsActorBeingDestroyed())
+		{
+			continue;
+		}
+		if (Pool && Pool->IsPoolMember(Actor))
+		{
+			if (!Pool->IsIdle(Actor) && Pool->Release(Actor))
+			{
+				++Released;
+			}
+		}
+		else
+		{
+			Actor->Destroy();
+		}
+	}
+	if (URRExplosionSubsystem* Explosions = World.GetSubsystem<URRExplosionSubsystem>())
+	{
+		Explosions->ClearForNextLevel();
+	}
+	if (ARREnemySpawner* Spawner = RunFlow ? RunFlow->GetSpawner() : nullptr)
+	{
+		Spawner->ResetForNextLevel();
+	}
+	UE_LOG(LogRogueRigs, Log, TEXT("URRRunTransitionSubsystem: %d level actors removed (%d back to the pool, %d destroyed)."), ToRemove.Num(), Released,
+		ToRemove.Num() - Released);
+	return ToRemove.Num();
+}
+
+void URRRunTransitionSubsystem::PlaceMinerAtStart(UWorld& World)
+{
+	ARRMiner* Miner = RRWorld::FindLivingMiner(&World);
+	if (!Miner)
+	{
+		return;
+	}
+	AGameModeBase* GameMode = World.GetAuthGameMode();
+	AController* Controller = Miner->GetController();
+	const AActor* Start = GameMode && Controller ? GameMode->FindPlayerStart(Controller) : nullptr;
+	if (Start)
+	{
+		const FRotator Rotation(0.f, Start->GetActorRotation().Yaw, 0.f);
+		Miner->TeleportTo(Start->GetActorLocation(), Rotation, false, true);
+		if (UCharacterMovementComponent* Movement = Miner->GetCharacterMovement())
+		{
+			Movement->StopMovementImmediately();
+		}
+		if (ARRDrone* Drone = Miner->GetDrone())
+		{
+			Drone->SetActorLocation(Miner->GetActorLocation(), false, nullptr, ETeleportType::TeleportPhysics);
+		}
+		UE_LOG(LogRogueRigs, Log, TEXT("URRRunTransitionSubsystem: miner placed at %s (%s)."), *Miner->GetActorLocation().ToCompactString(), *Start->GetName());
+	}
+	else
+	{
+		UE_LOG(LogRogueRigs, Warning, TEXT("URRRunTransitionSubsystem: no player start found, the miner keeps its place."));
+	}
+	if (URRFlowFieldSubsystem* FlowField = World.GetSubsystem<URRFlowFieldSubsystem>())
+	{
+		FlowField->RebuildForNewTerrain();
+	}
+}
+
+void URRRunTransitionSubsystem::StopNextLevelPreparation()
+{
+	if (PrepTickHandle.IsValid())
+	{
+		FTSTicker::GetCoreTicker().RemoveTicker(PrepTickHandle);
+		PrepTickHandle.Reset();
+	}
+	PrepStep = ERRNextLevelPrepStep::None;
+	bStartWhenPrepared = false;
+}
+
+void URRRunTransitionSubsystem::StartPreparedLevel()
+{
+	UWorld* World = IntermissionWorld.Get();
+	ARRMiner* Miner = World ? RRWorld::FindLivingMiner(World) : nullptr;
+	if (URRRunSubsystem* Run = GetRun())
+	{
+		Run->ConsumeSnapshotInPlace(Miner);
+	}
+	if (URRRunLogSubsystem* RunLog = Miner ? URRRunLogSubsystem::Get(Miner) : nullptr)
+	{
+		RunLog->HandleLevelStartedInPlace(Miner);
+	}
+	if (URRLevelUpComponent* LevelUp = Miner ? Miner->GetLevelUp() : nullptr)
+	{
+		LevelUp->ResumeChoices();
+	}
+	if (APlayerController* Controller = World ? UGameplayStatics::GetPlayerController(World, 0) : nullptr)
+	{
+		Controller->SetPause(false);
+		// Back to the project's capture mode, as the level-up screen does when it closes.
+		FInputModeGameOnly InputMode;
+		InputMode.SetConsumeCaptureMouseDown(false);
+		Controller->SetInputMode(InputMode);
+		Controller->SetShowMouseCursor(Controller->GetClass()->GetDefaultObject<APlayerController>()->bShowMouseCursor);
+	}
+	StopNextLevelPreparation();
+
+	const int32 Level = LoadingLevelIndex;
+	const FString Layout = LoadingLayoutName;
+	UE_LOG(LogRogueRigs, Log, TEXT("URRRunTransitionSubsystem: level %d ready on layout %s (prepared in this world, no map load; %.1f ms after Continue): run flow starts."),
+		Level, *Layout, (FPlatformTime::Seconds() - LoadingStartSeconds) * 1000.0);
+	IntermissionWorld.Reset();
+	Phase = ERRRunTransitionPhase::None;
+	SetLoadingStage(ERRRunLoadingStage::None);
+	LoadingLevelIndex = 0;
+	OnLevelReady.Broadcast(Level, Layout);
 }

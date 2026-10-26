@@ -87,6 +87,17 @@ protected:
 	UFUNCTION()
 	void HandleLevelReady(int32 LevelIndex, const FString& LayoutName);
 
+	/**
+	 * Transition OnNextLevelReady callback (task-318-01: next level prepared in this world): replaces the HUD widget by a fresh one,
+	 * as a new world would create it (minimap of the rebuilt grid, objective, shuttle and alert state of a level start); it stays
+	 * collapsed until OnLevelReady.
+	 */
+	UFUNCTION()
+	void HandleNextLevelReady(int32 LevelIndex, const FString& LayoutName);
+
+	/** Creates HUDWidgetClass, adds it to the viewport and binds it to the game mode, the miner, the run flow and the spawner. */
+	void CreateHUDWidget();
+
 	/** Creates LoadingScreenWidgetClass (once) and shows it for LevelIndex / LayoutName. */
 	void ShowLoadingScreen(int32 LevelIndex, const FString& LayoutName);
 

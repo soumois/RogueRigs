@@ -260,6 +260,13 @@ public:
 	void CancelPendingSpawns();
 
 	/**
+	 * Next run level prepared in the same world (task-318-01), called after every robot was released or destroyed: cancels the
+	 * pending spawns and restarts the level clock as at BeginPlay (trickle, packs, director phases and hordes, recycling, heading,
+	 * new random seed). The pool prewarm state is kept: the pool stays warm across the levels of the world.
+	 */
+	void ResetForNextLevel();
+
+	/**
 	 * Robot classes part of this level (task-111-01), resolved like spawned robots (ResolveRobotClass). Director on: every class the
 	 * director data can spawn: phase SingleClass (none with SingleInterval > 0 = the weighted mix below), members with CountMax > 0
 	 * of pack types weighted > 0 by a phase with waves, timed horde members and FillClass, the overtime horde when overtime is on,

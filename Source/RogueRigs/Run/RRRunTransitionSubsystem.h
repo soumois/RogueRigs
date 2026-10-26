@@ -149,6 +149,30 @@ DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FRROnLoadingStageChangedSignature, E
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_TwoParams(FRROnLevelReadySignature, int32, LevelIndex, const FString&, LayoutName);
 
 /**
+ * Fired when the next level has been fully prepared in the background in the current world (task-318-01): layout, terrain and
+ * flow field rebuilt, actors and objectives reset, miner placed, pool warm. Continue then starts it without a map load.
+ */
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_TwoParams(FRROnNextLevelReadySignature, int32, LevelIndex, const FString&, LayoutName);
+
+/** Step of the in-place preparation of the next level (task-318-01), in order; Ready is the last. */
+UENUM(BlueprintType)
+enum class ERRNextLevelPrepStep : uint8
+{
+	/** No preparation running or done. */
+	None,
+	/** Waiting for the next layout (built off the game thread since the extraction). */
+	WaitingForLayout,
+	/** Releasing robots, pickups, projectiles, turrets and FX; objectives, run flow, spawner and explosions reset. */
+	ClearingLevel,
+	/** Grid rebuilt from the prepared layout. */
+	RebuildingTerrain,
+	/** Miner and drone placed at the player start, flow field recomputed on the new terrain. */
+	PlacingMiner,
+	/** Everything prepared: Continue starts the level at once. */
+	Ready
+};
+
+/**
  * Transition between the levels of a run (intermission, run-structure). Game instance subsystem, so it survives the OpenLevel.
  *
  * Flow: URRRunFlowSubsystem::EndRun(true) (shuttle boarded; ore secured, game paused with UI input) asks
@@ -249,6 +273,28 @@ public:
 	UFUNCTION(BlueprintPure, Category = "Run|Transition")
 	bool IsRunWon() const { return bRunWon; }
 
+	/**
+	 * True once the next level is fully prepared in the current world (task-318-01, from the cards screen opening): Continue starts
+	 * it at once, without a map load. False otherwise (not prepared yet, no transition, or the map-travel fallback).
+	 */
+	UFUNCTION(BlueprintPure, Category = "Run|Transition")
+	bool IsNextLevelReady() const { return PrepStep == ERRNextLevelPrepStep::Ready; }
+
+	/**
+	 * Progress 0-1 of the next level preparation: completed steps / steps (layout wait, clearing, terrain, placement); 1 when ready.
+	 * 0 when no preparation runs.
+	 */
+	UFUNCTION(BlueprintPure, Category = "Run|Transition")
+	float GetNextLevelProgress() const;
+
+	/** Current step of the next level preparation (None when none runs). */
+	UFUNCTION(BlueprintPure, Category = "Run|Transition")
+	ERRNextLevelPrepStep GetNextLevelPrepStep() const { return PrepStep; }
+
+	/** See FRROnNextLevelReadySignature. */
+	UPROPERTY(BlueprintAssignable, Category = "Run|Transition")
+	FRROnNextLevelReadySignature OnNextLevelReady;
+
 	/** See FRROnIntermissionStartedSignature. */
 	UPROPERTY(BlueprintAssignable, Category = "Run|Transition")
 	FRROnIntermissionStartedSignature OnIntermissionStarted;
@@ -316,6 +362,43 @@ protected:
 
 	/** Clears the phase, the hold and the listeners without any broadcast (run reset, deinitialize). */
 	void ClearTransition();
+
+	/**
+	 * Starts the in-place preparation of the next level in IntermissionWorld (cards screen opening): one step per core ticker
+	 * frame (the world is paused). False when it cannot run (no world, grid or miner): Continue then uses the map travel.
+	 */
+	bool StartNextLevelPreparation();
+
+	/** Core ticker callback: runs the next preparation step; false once ready or dropped. */
+	bool TickNextLevelPreparation(float DeltaTime);
+
+	/** Step ClearingLevel: releases or destroys the level actors and resets the run flow, spawner and explosions. Returns actors removed. */
+	int32 ClearLevelActors(UWorld& World);
+
+	/** Step PlacingMiner: miner (and drone) moved to the player start, velocity cleared; flow field recomputed. */
+	void PlaceMinerAtStart(UWorld& World);
+
+	/** Stops the preparation ticker and forgets the preparation (no broadcast). */
+	void StopNextLevelPreparation();
+
+	/**
+	 * Starts the prepared level in the same world (Continue when ready, or preparation finished after Continue): snapshot kept in
+	 * place, run log level start, level-up choices allowed again, game unpaused with game input, phase None, OnLevelReady.
+	 */
+	void StartPreparedLevel();
+
+	/** Current preparation step. */
+	ERRNextLevelPrepStep PrepStep = ERRNextLevelPrepStep::None;
+
+	/** True when Continue was pressed before the preparation finished: the level starts as soon as it is ready. */
+	bool bStartWhenPrepared = false;
+
+	/** FPlatformTime::Seconds when the preparation started and when it was ready (logs). */
+	double PrepStartSeconds = 0.0;
+	double PrepReadySeconds = 0.0;
+
+	/** Core ticker of the preparation (valid while it runs). */
+	FTSTicker::FDelegateHandle PrepTickHandle;
 
 	/** The run subsystem of this game instance. */
 	URRRunSubsystem* GetRun() const;

@@ -448,6 +448,26 @@ bool URRRunSubsystem::ApplySnapshotToMiner(ARRMiner* Miner, const FRRRunMinerSna
 	return true;
 }
 
+bool URRRunSubsystem::ConsumeSnapshotInPlace(ARRMiner* Miner)
+{
+	if (!Miner || !bSnapshotPending || !LastSnapshot.bValid)
+	{
+		return false;
+	}
+	bSnapshotPending = false;
+	HandledWorld = Miner->GetWorld();
+	const URRProgressionComponent* Progression = Miner->GetProgression();
+	const URRHealthAttributeSet* HealthSet = Miner->GetHealthSet();
+	const URRUpgradeComponent* Upgrades = Miner->GetUpgrades();
+	UE_LOG(LogRogueRigs, Log, TEXT("URRRunSubsystem: snapshot kept in place on level %d by %s: miner level %d XP %.2f, health %.1f/%.1f, weapons [%s], %d cards picked (snapshot: level %d XP %.2f, health %.1f/%.1f, weapons [%s], %d cards), bank %d."),
+		LevelIndex, *Miner->GetName(), Progression ? Progression->GetLevel() : 0, Progression ? Progression->GetXP() : 0.f,
+		HealthSet ? HealthSet->GetHealth() : 0.f, HealthSet ? HealthSet->GetMaxHealth() : 0.f, *DescribeWeaponClasses(GetWeaponClasses(*Miner)),
+		Upgrades ? Upgrades->GetPickedUpgrades().Num() : 0, LastSnapshot.MinerLevel, LastSnapshot.MinerXP, LastSnapshot.Health, LastSnapshot.MaxHealth,
+		*DescribeWeaponClasses(LastSnapshot.WeaponClasses), LastSnapshot.PickedCards.Num(), GetBankSecuredOre());
+	OnSnapshotApplied.Broadcast(Miner, LevelIndex);
+	return true;
+}
+
 int32 URRRunSubsystem::GetLevelCount() const
 {
 	return FMath::Max(1, GetDefault<URRRunSettings>()->LevelLayouts.Num());

@@ -657,6 +657,40 @@ void URRRunFlowSubsystem::RestartLevel()
 	UGameplayStatics::OpenLevel(World, FName(*LevelName));
 }
 
+void URRRunFlowSubsystem::ResetForNextLevel()
+{
+	for (AActor* Objective : TArray<AActor*>{ Console.Get(), BonusChest.Get(), Shuttle.Get() })
+	{
+		if (IsValid(Objective))
+		{
+			Objective->Destroy();
+		}
+	}
+	Console = nullptr;
+	BonusChest = nullptr;
+	Shuttle = nullptr;
+	AlertSeconds = 0.f;
+	KillCount = 0;
+	LastBroadcastAlert = -1.f;
+	bLastBroadcastPaused = false;
+	bConsoleTriggered = false;
+	bConsoleDone = false;
+	bExtractionReady = false;
+	bBonusChestTriggered = false;
+	bBonusChestFailureLogged = false;
+	bRunEnded = false;
+	bRunSucceeded = false;
+	bShuttleFailureLogged = false;
+	bDropFailureLogged = false;
+	CarriedOre = 0;
+	bCarriedOreClosed = false;
+	DoneHordePositions.Reset();
+	AlertBarEvents.Reset();
+	bAlertBarEventsSent = false;
+	LastLocatorTarget = ERRLocatorTarget::None;
+	UE_LOG(LogRogueRigs, Log, TEXT("URRRunFlowSubsystem: reset for the next level in the same world (objectives removed, alert 0)."));
+}
+
 void URRRunFlowSubsystem::EnterEndPause()
 {
 	APlayerController* Controller = UGameplayStatics::GetPlayerController(GetWorld(), 0);

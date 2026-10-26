@@ -597,6 +597,13 @@ public:
 	UPROPERTY(BlueprintAssignable, Category = "Grid|Destruction")
 	FRROnCellDestroyedSignature OnCellDestroyed;
 
+	/**
+	 * Next run level prepared in the same world (task-318-01): rebuilds cells, deposits and instances from the layout of the run's
+	 * current level (the prepared layout, as in BeginPlay), dropping fuses, queued destructions, marks and shaking. Returns false
+	 * when the layout could not be loaded (the grid is then empty).
+	 */
+	bool RebuildForRunLevel();
+
 protected:
 	/** Rebuilds the grid from the layout so play starts from a fresh, fully indexed state (placed actors do not rerun construction in PIE or cooked builds); in a rendering game world, creates one hidden barrel telegraph so its material is warmed up before the first fuse. */
 	virtual void BeginPlay() override;

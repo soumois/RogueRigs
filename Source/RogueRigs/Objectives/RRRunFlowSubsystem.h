@@ -231,6 +231,13 @@ public:
 	UFUNCTION(BlueprintCallable, Category = "RunFlow")
 	void RestartLevel();
 
+	/**
+	 * Next run level prepared in the same world (task-318-01): destroys the console, bonus chest and shuttle and puts the flow back
+	 * to its level start (alert 0, kills 0, no objective, run not ended, carried ore 0 and open again). Config and the registered
+	 * miner and spawner are kept. Nothing is broadcast (the HUD is recreated by the controller).
+	 */
+	void ResetForNextLevel();
+
 	/** Seeds the console placement stream (tests). */
 	void SetRandomSeed(int32 Seed) { RandomStream.Initialize(Seed); }
 

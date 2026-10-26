@@ -117,6 +117,14 @@ bool URRExplosionSubsystem::IsSourceSpent(const UObject* SourceObject) const
 	return SourceObject && SpentSources.Contains(FObjectKey(SourceObject));
 }
 
+int32 URRExplosionSubsystem::ClearForNextLevel()
+{
+	const int32 Dropped = Pending.Num();
+	Pending.Reset();
+	SpentSources.Reset();
+	return Dropped;
+}
+
 bool URRExplosionSubsystem::IsSourcePending(const UObject* SourceObject) const
 {
 	return SourceObject && Pending.ContainsByPredicate([SourceObject](const FPendingExplosion& Explosion)

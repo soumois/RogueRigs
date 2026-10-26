@@ -51,6 +51,12 @@ public:
 	 */
 	void HandleMinerBeginPlay(ARRMiner* Miner);
 
+	/**
+	 * Next run level started in the same world (task-318-01): the level start of HandleMinerBeginPlay for the same miner again
+	 * (counters reset, new run level and layout recorded; bindings are unique, so nothing is bound twice).
+	 */
+	void HandleLevelStartedInPlace(ARRMiner* Miner);
+
 	/** Copy of the counters of the current level (what the writer serializes at level end). */
 	UFUNCTION(BlueprintPure, Category = "Run Log")
 	FRRRunLevelStats GetCurrentLevelStats() const;

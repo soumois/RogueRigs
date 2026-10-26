@@ -67,6 +67,12 @@ public:
 	UFUNCTION(BlueprintCallable, Category = "FlowField")
 	void SetGrid(ARRArenaGrid* InGrid);
 
+	/**
+	 * Next run level prepared in the same world (task-318-01): the grid was rebuilt from another layout. Settles any job in flight,
+	 * marks the field dirty and recomputes it at once on the new terrain (FlushPendingWork), so no rebuild lands in the first frame.
+	 */
+	void RebuildForNewTerrain();
+
 	/** Uses Goal as the target of the field (instead of the first living miner) and marks the field dirty. */
 	UFUNCTION(BlueprintCallable, Category = "FlowField")
 	void SetGoalActor(AActor* Goal);

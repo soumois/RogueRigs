@@ -654,6 +654,30 @@ void ARREnemySpawner::CancelPendingSpawns()
 	PendingSpawns.Reset();
 }
 
+void ARREnemySpawner::ResetForNextLevel()
+{
+	CancelPendingSpawns();
+	AliveEnemies.Reset();
+	RecycleStates.Reset();
+	RecycledCount = 0;
+	SpawnTimer = 0.f;
+	RunTime = 0.f;
+	bPackPhase = false;
+	PackTimer = 0.f;
+	LoneTimer = 0.f;
+	HeadingSamples.Reset();
+	Director.Reset();
+	DirectorActions.Reset();
+	HordePlan.Reset();
+	HordePlanCursor = 0;
+	HordeSpawned = 0;
+	HordePlanIndex = INDEX_NONE;
+	HordeSide = ERRSpawnSide::None;
+	RandomStream.GenerateNewSeed();
+	UE_LOG(LogRogueRigs, Log, TEXT("Spawner %s: reset for the next level in the same world (pool prewarm %s)."), *GetName(),
+		IsPoolPrewarmComplete() ? TEXT("complete, kept") : TEXT("not complete"));
+}
+
 int32 ARREnemySpawner::GetPendingCount()
 {
 	PrunePending();

@@ -89,6 +89,19 @@ void URRFlowFieldSubsystem::SetGrid(ARRArenaGrid* InGrid)
 	bDirty = true;
 }
 
+void URRFlowFieldSubsystem::RebuildForNewTerrain()
+{
+	if (Job.IsValid())
+	{
+		// A job of the old terrain: settled first; ComputeField below makes its result obsolete.
+		JobTask.Wait();
+		ApplyCompletedJob();
+	}
+	bDirty = true;
+	LastComputeFrame = MAX_uint64;
+	FlushPendingWork();
+}
+
 void URRFlowFieldSubsystem::SetGoalActor(AActor* Goal)
 {
 	GoalActor = Goal;

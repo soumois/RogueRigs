@@ -103,6 +103,12 @@ void URRRunLogSubsystem::Deinitialize()
 	Super::Deinitialize();
 }
 
+void URRRunLogSubsystem::HandleLevelStartedInPlace(ARRMiner* Miner)
+{
+	TrackedWorld.Reset();
+	HandleMinerBeginPlay(Miner);
+}
+
 void URRRunLogSubsystem::HandleMinerBeginPlay(ARRMiner* Miner)
 {
 	UWorld* World = Miner ? Miner->GetWorld() : nullptr;
