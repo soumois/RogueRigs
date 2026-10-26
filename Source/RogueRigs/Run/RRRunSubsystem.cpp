@@ -300,6 +300,37 @@ bool URRRunSubsystem::CaptureLevelEndSnapshot(ARRMiner* Miner)
 	return true;
 }
 
+bool URRRunSubsystem::AppendCardToPendingSnapshot(ARRMiner* Miner, const FRRUpgradeCard& Card)
+{
+	if (!bRunInProgress || !bSnapshotPending || !LastSnapshot.bValid || !Miner)
+	{
+		UE_LOG(LogRogueRigs, Warning, TEXT("URRRunSubsystem: card not added to the snapshot (no run, no pending snapshot or no miner)."));
+		return false;
+	}
+	FRRRunPickedCard& Picked = LastSnapshot.PickedCards.AddDefaulted_GetRef();
+	Picked.Card = Card;
+	Picked.TargetWeaponClass = Card.TargetWeapon ? Card.TargetWeapon->GetClass() : nullptr;
+	Picked.Card.TargetWeapon = nullptr;
+	if (const URRHealthAttributeSet* HealthSet = Miner->GetHealthSet())
+	{
+		LastSnapshot.Health = HealthSet->GetHealth();
+		LastSnapshot.MaxHealth = HealthSet->GetMaxHealth();
+	}
+	UE_LOG(LogRogueRigs, Log, TEXT("URRRunSubsystem: card %s added to the level %d snapshot (%d cards), health %.1f/%.1f."),
+		*DescribeCards({ Picked }), LastSnapshot.LevelIndex, LastSnapshot.PickedCards.Num(), LastSnapshot.Health, LastSnapshot.MaxHealth);
+	return true;
+}
+
+void URRRunSubsystem::RecordIntermissionOreSpent(int32 Amount)
+{
+	if (!bRunInProgress || Amount <= 0)
+	{
+		return;
+	}
+	SecuredOreAtLevelStart -= Amount;
+	SecuredOreAtRunStart -= Amount;
+}
+
 bool URRRunSubsystem::AdvanceToNextLevel()
 {
 	if (!bRunInProgress || IsLastLevel())

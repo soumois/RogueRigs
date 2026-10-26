@@ -2,6 +2,36 @@
 
 #include "UI/RRIntermissionWidget.h"
 
+#include "Run/RRIntermissionShopSubsystem.h"
+
+URRIntermissionShopSubsystem* URRIntermissionWidget::GetShop() const
+{
+	return URRIntermissionShopSubsystem::Get(this);
+}
+
+void URRIntermissionWidget::NativeConstruct()
+{
+	if (URRIntermissionShopSubsystem* Shop = GetShop())
+	{
+		Shop->OnShopChanged.AddUniqueDynamic(this, &URRIntermissionWidget::HandleShopChanged);
+	}
+	Super::NativeConstruct();
+}
+
+void URRIntermissionWidget::NativeDestruct()
+{
+	if (URRIntermissionShopSubsystem* Shop = GetShop())
+	{
+		Shop->OnShopChanged.RemoveDynamic(this, &URRIntermissionWidget::HandleShopChanged);
+	}
+	Super::NativeDestruct();
+}
+
+void URRIntermissionWidget::HandleShopChanged()
+{
+	OnShopRefreshed();
+}
+
 void URRIntermissionWidget::ShowRecap(const FRRIntermissionRecap& InRecap)
 {
 	Recap = InRecap;

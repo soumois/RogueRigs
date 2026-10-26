@@ -137,6 +137,19 @@ public:
 	 */
 	bool ApplySnapshotToMiner(ARRMiner* Miner, const FRRRunMinerSnapshot& Snapshot);
 
+	/**
+	 * Adds Card (applied to Miner after the capture, e.g. bought in the intermission shop) to the end of the pending snapshot's
+	 * picked cards, so the next level's miner replays it; refreshes the snapshot Health and MaxHealth from Miner (a MaxHealth
+	 * card heals). False (nothing recorded) without a run, a pending snapshot or a miner. The recap ore figures are unchanged.
+	 */
+	bool AppendCardToPendingSnapshot(ARRMiner* Miner, const FRRUpgradeCard& Card);
+
+	/**
+	 * Ore spent from the secured ore between two levels (shop purchase or shop reroll): moves the level-start and run-start
+	 * baselines down by Amount so the next recap's OreSecuredThisLevel and RunSecuredOre still count ore secured, not spent.
+	 */
+	void RecordIntermissionOreSpent(int32 Amount);
+
 	/** True between BeginRun and ResetRun. */
 	UFUNCTION(BlueprintPure, Category = "Run")
 	bool IsRunInProgress() const { return bRunInProgress; }

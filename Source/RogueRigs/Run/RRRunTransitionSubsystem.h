@@ -10,6 +10,7 @@
 
 class ARREnemySpawner;
 class ARRMiner;
+class URRIntermissionShopSubsystem;
 class URRRunFlowSubsystem;
 class URRRunSubsystem;
 
@@ -223,6 +224,9 @@ protected:
 
 	/** The run subsystem of this game instance. */
 	URRRunSubsystem* GetRun() const;
+
+	/** The intermission shop of this game instance (opened with the intermission, closed on Continue or a reset). */
+	URRIntermissionShopSubsystem* GetShop() const;
 
 	/** Current phase. */
 	ERRRunTransitionPhase Phase = ERRRunTransitionPhase::None;

@@ -13,6 +13,7 @@
 #include "Objectives/RRRunFlowSubsystem.h"
 #include "Player/RRMiner.h"
 #include "RogueRigs.h"
+#include "Run/RRIntermissionShopSubsystem.h"
 #include "Run/RRRunSettings.h"
 #include "Run/RRRunSubsystem.h"
 #include "UObject/UObjectGlobals.h"
@@ -51,6 +52,12 @@ URRRunSubsystem* URRRunTransitionSubsystem::GetRun() const
 {
 	const UGameInstance* GameInstance = GetGameInstance();
 	return GameInstance ? GameInstance->GetSubsystem<URRRunSubsystem>() : nullptr;
+}
+
+URRIntermissionShopSubsystem* URRRunTransitionSubsystem::GetShop() const
+{
+	const UGameInstance* GameInstance = GetGameInstance();
+	return GameInstance ? GameInstance->GetSubsystem<URRIntermissionShopSubsystem>() : nullptr;
 }
 
 bool URRRunTransitionSubsystem::HandleLevelExtracted(ARRMiner* Miner)
@@ -93,6 +100,11 @@ bool URRRunTransitionSubsystem::HandleLevelExtracted(ARRMiner* Miner)
 	UE_LOG(LogRogueRigs, Log, TEXT("URRRunTransitionSubsystem: intermission started after level %d/%d: ore secured this level %d, run %d; next level %d on %s (layout %s), map %s."),
 		Recap.FinishedLevelIndex, Recap.LevelCount, Recap.OreSecuredThisLevel, Recap.RunSecuredOre, Recap.NextLevelIndex, *Recap.NextLayoutName,
 		Run->IsLayoutReady(Recap.NextLevelIndex) ? TEXT("ready") : (Run->IsLayoutPending(Recap.NextLevelIndex) ? TEXT("pending") : TEXT("failed")), *MapToOpen);
+	// The shop offer exists before the intermission widget is created on OnIntermissionStarted (run-shop, task-316-01).
+	if (URRIntermissionShopSubsystem* Shop = GetShop())
+	{
+		Shop->OpenShop(Miner);
+	}
 	OnIntermissionStarted.Broadcast(Recap);
 	return true;
 }
@@ -106,6 +118,10 @@ bool URRRunTransitionSubsystem::Continue()
 		return false;
 	}
 	Phase = ERRRunTransitionPhase::Loading;
+	if (URRIntermissionShopSubsystem* Shop = GetShop())
+	{
+		Shop->CloseShop();
+	}
 	LoadingLevelIndex = Run->GetLevelIndex();
 	LoadingLayoutName = Run->GetCurrentLayoutName();
 	LoadingStartSeconds = FPlatformTime::Seconds();
@@ -369,6 +385,10 @@ void URRRunTransitionSubsystem::HandleRunReset()
 
 void URRRunTransitionSubsystem::ClearTransition()
 {
+	if (URRIntermissionShopSubsystem* Shop = GetShop())
+	{
+		Shop->CloseShop();
+	}
 	if (URRRunSubsystem* Run = GetRun())
 	{
 		Run->OnLayoutReady.RemoveDynamic(this, &URRRunTransitionSubsystem::HandleLayoutReady);

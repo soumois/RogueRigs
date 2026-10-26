@@ -488,6 +488,16 @@ TArray<FRRUpgradeCard> URRUpgradeComponent::BuildOfferWithOwnerLuck(int32 CardCo
 	return BuildOffer(CardCount, GetOwnerLuck() + BonusLuck, InOfferLevel);
 }
 
+TArray<FRRUpgradeCard> URRUpgradeComponent::DrawStatCardsWithOwnerLuck(int32 CardCount, const TArray<FRRUpgradeCard>& Excluded)
+{
+	// Offer level 0 holds no new-weapon card; the current offer and its level are left as they were.
+	const int32 SavedOfferLevel = OfferLevel;
+	OfferLevel = 0;
+	TArray<FRRUpgradeCard> Cards = DrawOffer(FMath::Max(0, CardCount), GetOwnerLuck(), Excluded);
+	OfferLevel = SavedOfferLevel;
+	return Cards;
+}
+
 bool URRUpgradeComponent::Reroll(TArray<FRRUpgradeCard>& OutCards)
 {
 	if (!CanReroll())

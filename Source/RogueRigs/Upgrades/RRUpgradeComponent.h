@@ -88,6 +88,13 @@ public:
 	UFUNCTION(BlueprintCallable, Category = "Upgrades")
 	bool Reroll(TArray<FRRUpgradeCard>& OutCards);
 
+	/**
+	 * Draws up to CardCount stat cards with the owner's current Luck, like a level-up offer but with no new-weapon card (offer
+	 * level 0), none sharing stat and target with Excluded (if the pool is too small, only identical cards are excluded). Does
+	 * not touch the current offer: for an offer held by its caller (the intermission shop, URRIntermissionShopSubsystem).
+	 */
+	TArray<FRRUpgradeCard> DrawStatCardsWithOwnerLuck(int32 CardCount, const TArray<FRRUpgradeCard>& Excluded);
+
 	/** True while a current offer exists (the cost check belongs to the caller). */
 	UFUNCTION(BlueprintPure, Category = "Upgrades")
 	bool CanReroll() const { return bHasOffer; }
