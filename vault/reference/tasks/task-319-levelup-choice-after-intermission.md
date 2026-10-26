@@ -3,7 +3,7 @@ id: task-319-levelup-choice-after-intermission
 description: "Global task: after the first intermission, level-ups no longer offer upgrade cards; reproduce with a test, find the cause, fix."
 parent: tasks-to-do-index
 kind: task
-status: todo
+status: in-progress
 ---
 # Level-ups give nothing after the intermission
 

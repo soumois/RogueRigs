@@ -3,7 +3,7 @@ id: task-319-01-levelup-choice-after-intermission
 description: "Automation test with the real WBP_HUD and HUD swap reproducing level-ups that queue no choice after the intermission; fails on current code, cause confirmed."
 parent: task-319-levelup-choice-after-intermission
 kind: task
-status: todo
+status: in-progress
 ---
 # Reproduction test: level-up choice after the intermission
 
