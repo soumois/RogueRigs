@@ -8,7 +8,7 @@ kind: doc
 
 - asset_path: /Game/RogueRigs/UI/WBP_ShopScreen
 - parent_class: URRShopScreenWidget (/Script/RogueRigs.RRShopScreenWidget, abstract, [[sys-run-transition]], task-317-01)
-- purpose: full-screen shop shown after the stats screen on levels 1 to 3 ([[sys-run-shop]]): title "SPARE PARTS", 5 priced stat cards, ore balance, paid reroll and the Continue button. Created by BP_RRPlayerController (ShopScreenWidgetClass, Z-order 50) on OnShopScreenStarted, removed on OnLoadingStarted. Built in task-317-03 by duplicating [[wbp-intermission]] and removing the recap part (that widget is changed in task-317-04).
+- purpose: full-screen shop shown after the stats screen on levels 1 to 3 ([[sys-run-shop]]): title "SPARE PARTS", 5 priced stat cards, ore balance, paid reroll and the Continue button. Created by BP_RRPlayerController (ShopScreenWidgetClass, Z-order 50) on OnShopScreenStarted, removed on OnLoadingStarted. Built in task-317-03 by duplicating [[wbp-intermission]] and removing the recap part (changed to the stats screen in task-317-04).
 - components: CanvasPanel Root > Backdrop (Border, black, alpha 1, opaque) and Content (VerticalBox, anchors 0.5,0.5, alignment 0.5,0.5, auto size) holding, top to bottom: Title (TextBlock, 48, outline 3), ShopPanel (Border, padding 16/10) > ShopBox (VerticalBox) = CardsRow (HorizontalBox) of ShopCard0..4 (WBP_ShopCard, [[wbp-shop-card]], SlotIndex 0..4) + BalanceRow (OreIcon T_Icon_Ore + OreBalanceText + BalanceSpacer + RerollButton > RerollRow = RerollText + RerollOre + RerollCost); then ContinueButton > ContinueText. Variables: Title, ShopCard0..4, OreIcon, OreBalanceText, RerollButton, RerollText, RerollOre, RerollCost, ContinueButton, ContinueText. The recap panel, subtitle and "Salvage Stall" label of WBP_Intermission are removed.
 - exposed_defaults: none. Tree default of Title is "SPARE PARTS".
 - events: EventConstruct assigns ContinueButton OnClicked to custom event ContinueClicked (calls the C++ `Continue()` of URRShopScreenWidget) and RerollButton OnClicked to RerollClicked (calls RequestReroll on GetShop), then calls RefreshShop and LoadShopTexts once. OnShopRefreshed (C++ event, fired on every OnShopChanged) calls RefreshShop. RefreshShop: OreBalanceText = GetOreBalance, RerollCost = GetRerollCost, RerollButton SetIsEnabled(CanReroll). LoadShopTexts: Title = GetScreenTitle("shop_screen"); from GetScreenText("intermission_recap"): ContinueText = Labels[1], RerollText = Labels[5] ([[sys-text-content]]). The cards refresh and buy by themselves.
@@ -19,7 +19,7 @@ kind: doc
 
 ## Relations
 - [[blueprints-ui-index]] — parent index.
-- [[wbp-intermission]] — the widget it was duplicated from (shop panel).
+- [[wbp-intermission]] — the stats screen it was duplicated from (shop panel removed there in task-317-04).
 - [[wbp-shop-card]] — the five cards it hosts.
 - [[sys-run-transition]] — the C++ base, events and Continue.
 - [[sys-run-shop]] — the shop API it reads.

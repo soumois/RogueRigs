@@ -7,7 +7,7 @@ kind: doc
 # WBP_ShopCard
 
 - asset_path: /Game/RogueRigs/UI/WBP_ShopCard
-- parent_class: UUserWidget (/Script/UMG.UserWidget). Not a HUD panel: placed five times by [[wbp-intermission]] (task-316-03, [[sys-run-shop]]).
+- parent_class: UUserWidget (/Script/UMG.UserWidget). Not a HUD panel: placed five times by [[wbp-shop-screen]] (task-316-03, [[sys-run-shop]]).
 - purpose: one shop slot: a stat card with the look of a [[wbp-upgrade-choice]] stat card (baked frame, tier tint, stat icon, value, name, target, lore), a price row (T_Icon_Ore + price) and a Buy button. Display only, no deal, suspense, flip or fly animation. Five fit in one row on 1920 x 1080 (330 px each, 1650 px plus gaps).
 - components: VerticalBox Root > CardHost (SizeBox 330 x 470, centred) > CardScale (ScaleBox, ScaleToFit) > CardFace (SizeBox 500 x 720 = the UpgradeChoice card stack, so every inner value is copied from there and the whole card is scaled 0.653) > CardStack (Overlay): CardPanel (Image, RoundedBox #15171c, padding 14 24 14 25), FrameGroup (Overlay of FrameBase / FrameAccents / FrameGlow, the baked textures T_CardFrame_Stat_Baked, _Accents_Baked, _Glow_Baked, ImageSize 500 x 720, Glow RenderOpacity 0.6), CardBox (VerticalBox, padding 38 58 38 60): ImageArea (SizeBox 408 x 320) > ImageBg (Border, rounded 4) > StatIconBox (SizeBox 156 x 156) > StatIcon; EffectScale (ScaleBox DownOnly, top 18) > EffectRow = CardValue (Roboto Bold 30, tier colour) + CardName (Bold 30 white); CardTarget (Bold 20, grey); CardDesc (Italic 16 lore, Collapsed when empty, Fill slot, bottom aligned); SoldPanel (Border, rounded, Collapsed) > SoldText (Bold 30 grey); DimShade (Image, black alpha 0.55, Collapsed, same padding as CardPanel). Below the card: PriceRow (HorizontalBox, centred, top 10) = OreIcon (Image 40 x 40, T_Icon_Ore) + PriceText (Bold 36 white); BuyButton (default Button style, top 8) > BuyText (Bold 28). Only the weapon-card variant of UpgradeChoice is absent: the shop sells stat cards only. All named widgets above are variables.
 - exposed_defaults: SlotIndex (int, instance editable, default 0): the shop slot this card shows (0 to ShopCardCount - 1). BuyLabel "Buy", SoldLabel "Sold. No refunds.", ShortLabel "Short on ore" (Text variables, English defaults, replaced at Construct by LoadLabels).
@@ -22,7 +22,7 @@ kind: doc
 ## Relations
 - [[blueprints-ui-index]] — parent index.
 - [[wbp-upgrade-choice]] — the card look it copies (same texture, colours, fonts, sizes).
-- [[wbp-intermission]] — its parent, places five instances with SlotIndex 0..4.
+- [[wbp-shop-screen]] — its parent, places five instances with SlotIndex 0..4.
 - [[sys-run-shop]] — the shop subsystem it reads, BuySlot and OnShopChanged.
 - [[sys-text-content]] — the labels it reads from screen_texts.json.
 - [[wbp-ore-counter]] — shares the T_Icon_Ore icon.
