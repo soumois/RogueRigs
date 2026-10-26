@@ -3,7 +3,7 @@ id: task-315-01-paid-reroll
 description: "The level-up reroll costs Duskite ore: 15, plus 5 for each further reroll without a level-up, usable while the ore lasts."
 parent: task-315-paid-reroll
 kind: task
-status: in-progress
+status: done
 ---
 # Paid level-up reroll
 
@@ -15,11 +15,11 @@ status: in-progress
 - done_when: build passes; reroll costs 15, 20, 25 in a row and resets to 15 when a new level-up screen opens (a chest screen keeps the count); several rerolls per screen while ore suffices; refused without enough ore; ore spent from carried ore first then from secured ore; a Blueprint-readable cost and affordability; existing tests broken by the change updated and passing; docs updated; lint clean.
 - editor_state: closed
 - token_ceiling: 60000
-- model: open
-- tokens: open
-- runs: open
+- model: opus
+- tokens: input 100, cache write 123969, cache read 4197428, output 40432
+- runs: 1
 - milestone: M2
-- result: open
+- result: Reroll costs 15 then +5 per reroll (URRRerollCostLibrary, URRRerollSettings 15/5 provisional), count reset on each level-up offer, chest offer keeps it; carried then secured ore spent (URRRunFlowSubsystem::SpendOre, URROreBankSubsystem::RemoveSecuredOre); GetRerollCost, CanReroll = affordable; tests updated (Upgrades.RerollRepeat, LevelUp.PauseAfterDelay, ChainedOffers, Cheats, Integration.LevelUpUpgradeLoop); 22/23 pass, LevelUpUpgradeLoop RerollButton check still fails as before (task-284-05, deal animation timing); commits 535b6c7f c5e67ddd 9ceaa596
 
 ## Relations
 - [[task-315-paid-reroll]] — parent global task.

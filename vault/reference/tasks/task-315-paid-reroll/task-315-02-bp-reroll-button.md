@@ -3,7 +3,7 @@ id: task-315-02-bp-reroll-button
 description: "WBP_UpgradeChoice reroll button shows its ore cost and is greyed when unaffordable (bp): paid level-up reroll, step 02."
 parent: task-315-paid-reroll
 kind: task
-status: todo
+status: in-progress
 ---
 # Reroll button with its cost
 
