@@ -2232,10 +2232,52 @@ namespace RRIntegrationIntermissionTests
 			Miner->GetUpgrades()->GetPickedUpgrades().Num());
 	}
 
+	/** True while URRLevelUpComponent::HandleLevelUp is bound to the miner's progression OnLevelUp (bound once in its BeginPlay). */
+	bool IsLevelUpFlowBound(const ARRMiner* Miner)
+	{
+		return Miner->GetProgression()->OnLevelUp.Contains(Miner->GetLevelUp(), TEXT("HandleLevelUp"));
+	}
+
 	/**
-	 * Level 1 of a run in a test world with real game instance subsystems: a level-up offers a choice (control), extraction
-	 * (EndRun(true)), stats screen, shop, next level prepared in this world (task-318-01), Continue on the fade path (prepared
-	 * before Continue) or the loading path (Continue at once), then a level-up in level 2 must offer a choice again.
+	 * The real WBP_HUD as BP_RRPlayerController::CreateHUDWidget makes it (the test controller has no local player, so it creates
+	 * none): created, its Slate tree built (TakeWidget runs Construct on it and its panels, as AddToViewport does), bound to Miner.
+	 */
+	struct FTestHUD
+	{
+		TStrongObjectPtr<URRHUDWidget> Widget;
+		/** The only strong reference to the Slate tree (the viewport's role in a game): releasing it runs Destruct. */
+		TSharedPtr<SWidget> Slate;
+
+		bool Create(FAutomationTestBase& Test, UWorld* World, UClass* HUDClass, ARRMiner* Miner, const TCHAR* Label)
+		{
+			Widget.Reset(CreateWidget<URRHUDWidget>(World, HUDClass));
+			if (!Test.TestNotNull(FString::Printf(TEXT("%s created"), Label), Widget.Get()))
+			{
+				return false;
+			}
+			Slate = Widget->TakeWidget();
+			Widget->BindToMiner(Miner);
+			return true;
+		}
+
+		/** As ARRPlayerController::HandleNextLevelReady does with the old HUD: RemoveFromParent and its Slate released (Destruct). */
+		void Destroy()
+		{
+			if (Widget)
+			{
+				Widget->RemoveFromParent();
+			}
+			Slate.Reset();
+			Widget.Reset();
+		}
+	};
+
+	/**
+	 * Level 1 of a run in a test world with real game instance subsystems and the real WBP_HUD bound to the miner: a level-up offers
+	 * a choice (control), extraction (EndRun(true)), stats screen, shop, next level prepared in this world (task-318-01), Continue on
+	 * the fade path (prepared before Continue) or the loading path (Continue at once); when the next level is ready the HUD is
+	 * replaced as ARRPlayerController::HandleNextLevelReady does (old one destroyed, new one created and bound), then a level-up in
+	 * level 2 must offer a choice again (task-319-01).
 	 */
 	void RunIntermissionPath(FAutomationTestBase& Test, bool bFadePath)
 	{
@@ -2278,6 +2320,14 @@ namespace RRIntegrationIntermissionTests
 		Controller->Possess(Miner);
 		URRRunFlowSubsystem* RunFlow = World->GetSubsystem<URRRunFlowSubsystem>();
 		Test.TestTrue(FString::Printf(TEXT("%s: run in progress at level 1"), Path), Run->IsRunInProgress() && Run->GetLevelIndex() == 1);
+		UClass* HUDClass = LoadTestClass<URRHUDWidget>(Test, HUDClassPath);
+		FTestHUD HUD;
+		if (!HUDClass || !HUD.Create(Test, World, HUDClass, Miner, TEXT("WBP_HUD (level 1)")))
+		{
+			return;
+		}
+		Test.AddInfo(FString::Printf(TEXT("%s: WBP_HUD bound, OnLevelUp -> HandleLevelUp bound %d"), Path, IsLevelUpFlowBound(Miner) ? 1 : 0));
+		Test.TestTrue(FString::Printf(TEXT("%s: OnLevelUp bound to HandleLevelUp with the level 1 HUD"), Path), IsLevelUpFlowBound(Miner));
 
 		// Control: a level-up in level 1 offers a choice after ChoiceDelay.
 		GainOneLevel(Miner);
@@ -2305,6 +2355,15 @@ namespace RRIntegrationIntermissionTests
 		{
 			TickFrame(TestWorld);
 		}
+		// OnNextLevelReady -> ARRPlayerController::HandleNextLevelReady: the old HUD removed, a new one created and bound to the same miner.
+		Test.AddInfo(FString::Printf(TEXT("%s: next level ready %d, HUD swap"), Path, Transition->IsNextLevelReady() ? 1 : 0));
+		HUD.Destroy();
+		if (!HUD.Create(Test, World, HUDClass, Miner, TEXT("WBP_HUD (level 2)")))
+		{
+			return;
+		}
+		Test.AddInfo(FString::Printf(TEXT("%s: after the HUD swap, OnLevelUp -> HandleLevelUp bound %d"), Path, IsLevelUpFlowBound(Miner) ? 1 : 0));
+		Test.TestTrue(FString::Printf(TEXT("%s: OnLevelUp still bound to HandleLevelUp after the HUD swap"), Path), IsLevelUpFlowBound(Miner));
 		if (bFadePath)
 		{
 			Test.TestTrue(TEXT("fade path: prepared before Continue"), Transition->IsNextLevelReady());
