@@ -3,7 +3,7 @@ id: task-316-intermission-shop
 description: "Global task: The intermission screen sells 5 upgrade cards priced by rarity, with an escalating reroll and the Continue button."
 parent: tasks-to-do-index
 kind: task
-status: todo
+status: in-progress
 ---
 # Upgrade shop between levels
 
