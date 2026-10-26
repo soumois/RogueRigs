@@ -38,6 +38,9 @@
 #include "Player/RRGameMode.h"
 #include "Progression/RRLevelUpComponent.h"
 #include "Progression/RRProgressionComponent.h"
+#include "Containers/Ticker.h"
+#include "Run/RRRunSubsystem.h"
+#include "Run/RRRunTransitionSubsystem.h"
 #include "Tests/RRTestEventRecorder.h"
 #include "Tests/RRTestAccess.h"
 #include "Tests/RRTestHarness.h"
@@ -2181,6 +2184,169 @@ bool FRRIntegrationShuttleTimeoutLossTest::RunTest(const FString& Parameters)
 	TestEqual(TEXT("lost when the countdown runs out (within one frame)"), CountdownSeconds, double(ShortCountdown), double(FrameSeconds) + 1e-3);
 	TestTrue(TEXT("shuttle missed"), Shuttle->IsFinished() && !Shuttle->WasExtracted());
 	CheckEndScreen(*this, TestWorld, Loop, Recorder.Get(), /*bSuccess*/ false, TEXT("RUN LOST"));
+	return true;
+}
+
+namespace RRIntegrationIntermissionTests
+{
+	using namespace RRTestHarness;
+
+	/** Calls UGameInstance::Init (game instance subsystems: run, transition, shop) and Shutdown when it goes out of scope. */
+	struct FInitializedGameInstance
+	{
+		~FInitializedGameInstance()
+		{
+			if (UGameInstance* Instance = GameInstance.Get())
+			{
+				Instance->Shutdown();
+			}
+		}
+
+		TWeakObjectPtr<UGameInstance> GameInstance;
+	};
+
+	/** One frame: the world (paused or not) and the core ticker that runs the in-place preparation and the screen fade (task-318). */
+	void TickFrame(const FTestWorld& TestWorld)
+	{
+		TestWorld.Tick();
+		FTSTicker::GetCoreTicker().Tick(1.f / 60.f);
+	}
+
+	/** Gives Miner exactly one level (XPGain 1, the missing XP added). */
+	void GainOneLevel(ARRMiner* Miner)
+	{
+		URRProgressionComponent* Progression = Miner->GetProgression();
+		if (UAbilitySystemComponent* ASC = Miner->GetAbilitySystemComponent())
+		{
+			ASC->SetNumericAttributeBase(URRPlayerAttributeSet::GetXPGainAttribute(), 1.f);
+		}
+		Progression->AddXP(Progression->GetXPToNextLevel() - Progression->GetXP());
+	}
+
+	/** State of the level-up flow, for the log. */
+	FString DescribeLevelUp(const ARRMiner* Miner)
+	{
+		const URRLevelUpComponent* LevelUp = Miner->GetLevelUp();
+		return FString::Printf(TEXT("level %d, blocked %d, pending %d, delay %d, awaiting %d, cards %d"), Miner->GetProgression()->GetLevel(),
+			LevelUp->AreChoicesBlocked() ? 1 : 0, LevelUp->GetPendingChoices(), LevelUp->IsChoiceDelayActive() ? 1 : 0, LevelUp->IsAwaitingChoice() ? 1 : 0,
+			Miner->GetUpgrades()->GetPickedUpgrades().Num());
+	}
+
+	/**
+	 * Level 1 of a run in a test world with real game instance subsystems: a level-up offers a choice (control), extraction
+	 * (EndRun(true)), stats screen, shop, next level prepared in this world (task-318-01), Continue on the fade path (prepared
+	 * before Continue) or the loading path (Continue at once), then a level-up in level 2 must offer a choice again.
+	 */
+	void RunIntermissionPath(FAutomationTestBase& Test, bool bFadePath)
+	{
+		using namespace RRIntegrationTests;
+		using namespace RRIntegrationUpgradeTests;
+		const TCHAR* Path = bFadePath ? TEXT("fade path") : TEXT("loading path");
+
+		// Declared before the world: released after it.
+		FTestGameInstance GameInstance;
+		FInitializedGameInstance InitGuard;
+		FTestWorld TestWorld(TEXT("RRIntegrationLevelUpAfterIntermission"));
+		UWorld* World = TestWorld.Get();
+		UClass* GameModeClass = LoadTestClass<AGameModeBase>(Test, GameModeClassPath);
+		UClass* ControllerClass = LoadTestClass<APlayerController>(Test, PlayerControllerClassPath);
+		if (!GameModeClass || !ControllerClass || !StartGameMode(Test, TestWorld, GameModeClass, GameInstance))
+		{
+			return;
+		}
+		GameInstance.GameInstance->Init();
+		InitGuard.GameInstance = GameInstance.GameInstance.Get();
+		URRRunSubsystem* Run = GameInstance.GameInstance->GetSubsystem<URRRunSubsystem>();
+		URRRunTransitionSubsystem* Transition = GameInstance.GameInstance->GetSubsystem<URRRunTransitionSubsystem>();
+		if (!Test.TestNotNull(TEXT("run subsystem"), Run) || !Test.TestNotNull(TEXT("transition subsystem"), Transition))
+		{
+			return;
+		}
+
+		FLoopSetup Setup;
+		if (!SetUp(Test, TestWorld, FineCell(FIntPoint(40, 40)), /*bArmed*/ false, Setup, /*bFineGrid*/ true))
+		{
+			return;
+		}
+		ARRMiner* Miner = Setup.Miner;
+		URRLevelUpComponent* LevelUp = Miner->GetLevelUp();
+		APlayerController* Controller = TestWorld.Spawn<APlayerController>(ControllerClass, Miner->GetActorLocation());
+		if (!Test.TestNotNull(TEXT("BP_RRPlayerController spawned"), Controller) || !Test.TestNotNull(TEXT("level-up flow"), LevelUp))
+		{
+			return;
+		}
+		Controller->Possess(Miner);
+		URRRunFlowSubsystem* RunFlow = World->GetSubsystem<URRRunFlowSubsystem>();
+		Test.TestTrue(FString::Printf(TEXT("%s: run in progress at level 1"), Path), Run->IsRunInProgress() && Run->GetLevelIndex() == 1);
+
+		// Control: a level-up in level 1 offers a choice after ChoiceDelay.
+		GainOneLevel(Miner);
+		for (int32 Frame = 0; Frame < 90 && !LevelUp->IsAwaitingChoice(); ++Frame)
+		{
+			TickFrame(TestWorld);
+		}
+		Test.AddInfo(FString::Printf(TEXT("%s: level 1 level-up: %s"), Path, *DescribeLevelUp(Miner)));
+		Test.TestTrue(FString::Printf(TEXT("%s: level 1 level-up offers a choice"), Path), LevelUp->IsAwaitingChoice());
+		LevelUp->ChooseUpgrade(0);
+
+		// Extraction, stats screen, shop (the preparation starts behind it).
+		Test.TestTrue(FString::Printf(TEXT("%s: EndRun(true)"), Path), RunFlow && RunFlow->EndRun(true));
+		Test.TestTrue(FString::Printf(TEXT("%s: stats screen"), Path), Transition->IsInStatsScreen());
+		Test.AddInfo(FString::Printf(TEXT("%s: after EndRun: %s"), Path, *DescribeLevelUp(Miner)));
+		Test.TestTrue(FString::Printf(TEXT("%s: NextLevel (shop)"), Path), Transition->NextLevel());
+		if (!bFadePath)
+		{
+			// Loading path: Continue while the next level is still being prepared.
+			Test.TestFalse(TEXT("loading path: not prepared yet at Continue"), Transition->IsNextLevelReady());
+			Test.TestTrue(TEXT("loading path: Continue"), Transition->Continue());
+		}
+		Run->WaitForPreparedLayout(Run->GetLevelIndex());
+		for (int32 Frame = 0; Frame < 600 && !Transition->IsNextLevelReady() && Transition->GetPhase() != ERRRunTransitionPhase::None; ++Frame)
+		{
+			TickFrame(TestWorld);
+		}
+		if (bFadePath)
+		{
+			Test.TestTrue(TEXT("fade path: prepared before Continue"), Transition->IsNextLevelReady());
+			Test.TestTrue(TEXT("fade path: Continue"), Transition->Continue());
+		}
+		for (int32 Frame = 0; Frame < 600 && Transition->GetPhase() != ERRRunTransitionPhase::None; ++Frame)
+		{
+			TickFrame(TestWorld);
+		}
+		Test.TestEqual(FString::Printf(TEXT("%s: level 2 started in this world"), Path), Transition->GetPhase(), ERRRunTransitionPhase::None);
+		Test.TestEqual(FString::Printf(TEXT("%s: run level 2"), Path), Run->GetLevelIndex(), 2);
+		Test.TestFalse(FString::Printf(TEXT("%s: world unpaused"), Path), Controller->IsPaused());
+		Test.TestTrue(FString::Printf(TEXT("%s: same miner"), Path), IsValid(Miner) && !Miner->IsDead());
+		Test.AddInfo(FString::Printf(TEXT("%s: level 2 started: %s"), Path, *DescribeLevelUp(Miner)));
+		TickFrame(TestWorld);
+
+		// The bug (task-319): a level-up in level 2 must offer a choice, as in level 1.
+		const int32 CardsBefore = Miner->GetUpgrades()->GetPickedUpgrades().Num();
+		GainOneLevel(Miner);
+		Test.AddInfo(FString::Printf(TEXT("%s: level 2 level-up, same frame: %s"), Path, *DescribeLevelUp(Miner)));
+		for (int32 Frame = 0; Frame < 90 && !LevelUp->IsAwaitingChoice(); ++Frame)
+		{
+			TickFrame(TestWorld);
+		}
+		Test.AddInfo(FString::Printf(TEXT("%s: level 2 level-up after the delay: %s"), Path, *DescribeLevelUp(Miner)));
+		Test.TestFalse(FString::Printf(TEXT("%s: choices not blocked in level 2"), Path), LevelUp->AreChoicesBlocked());
+		if (Test.TestTrue(FString::Printf(TEXT("%s: level 2 level-up offers a choice"), Path), LevelUp->IsAwaitingChoice()))
+		{
+			Test.TestTrue(FString::Printf(TEXT("%s: the choice is taken"), Path), LevelUp->ChooseUpgrade(0));
+			Test.TestEqual(FString::Printf(TEXT("%s: one more card"), Path), Miner->GetUpgrades()->GetPickedUpgrades().Num(), CardsBefore + 1);
+		}
+	}
+}
+
+IMPLEMENT_SIMPLE_AUTOMATION_TEST(FRRIntegrationLevelUpAfterIntermissionTest, "RogueRigs.Integration.LevelUpChoiceAfterIntermission",
+	EAutomationTestFlags::EditorContext | EAutomationTestFlags::EngineFilter)
+
+bool FRRIntegrationLevelUpAfterIntermissionTest::RunTest(const FString& Parameters)
+{
+	// task-319-01: both task-318 transition paths into level 2.
+	RRIntegrationIntermissionTests::RunIntermissionPath(*this, /*bFadePath*/ true);
+	RRIntegrationIntermissionTests::RunIntermissionPath(*this, /*bFadePath*/ false);
 	return true;
 }
 
