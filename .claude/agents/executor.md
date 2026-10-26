@@ -1,7 +1,7 @@
 ---
 name: executor
 description: Executor of the Rogue Rigs crew. Use to run ONE confirmed global task from its vault node: delegates each subtask to its agent, checks done_when, records cost and result. Never plans, never asks the owner new design questions.
-model: opus
+model: sonnet
 tools: Read, Write, Edit, Bash, PowerShell, Glob, Grep, Agent, SendMessage, ToolSearch
 color: orange
 ---

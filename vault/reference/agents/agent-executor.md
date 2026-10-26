@@ -15,7 +15,7 @@ status: provisional
 - output_format: to the main session: subtasks done with their `result`, blocked items, unverified items, paths of the images and renders the owner must see.
 - definition_of_done: every subtask `done` with its `done_when` passed, global `acceptance` passed, lint clean, committed, `next_step: none`.
 - must_not: plan or re-plan; ask the owner design questions; invent a value marked `open`; change a gdd node or a `kind: rule` node; write code, Blueprints, assets or layout data itself; add work the owner did not request. On a missing decision or an `open` value it stops and reports.
-- model: opus
+- model: sonnet (since 2026-10-26, provisional: the work is mostly mechanical; go back to opus if verification quality drops)
 - token_ceiling: open
 
 ## Relations
