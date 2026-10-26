@@ -3,7 +3,7 @@ id: task-316-05-capture-shop
 description: "Capture the intermission shop in game (cpp): upgrade shop between levels, step 05."
 parent: task-316-intermission-shop
 kind: task
-status: in-progress
+status: done
 ---
 # Capture the shop in game
 
@@ -15,11 +15,11 @@ status: in-progress
 - done_when: frames show 5 priced cards, balance, reroll cost and Continue; balance drops by price and reroll cost; bought card present on the level 2 miner; sheet sent to the owner; nothing else changed
 - editor_state: closed
 - token_ceiling: 30000
-- model: open
-- tokens: open
-- runs: open
+- model: opus
+- tokens: input 60, cache write 80593, cache read 1397329, output 16021
+- runs: 1
 - milestone: M2
-- result: open
+- result: Headless -game capture in Saved/IntermissionShop (contact-sheet.png): 5 priced cards, balance 300, reroll 15, Continue, all within 1920x1080 (Continue 8-10 px from bottom); buy slot 0 Green 40 -> 260 and sold slot shown; reroll 1 paid 15 -> 245, next 20; level 2 log 1/1 cards replayed; debug commands rr.Run.EndLevel, rr.Shop.Buy, rr.Shop.Reroll added (d836701f, docs 17ec2233); greyed states not seen
 
 ## Relations
 - [[task-316-intermission-shop]] — parent global task.

@@ -1,9 +1,9 @@
 ---
 id: task-316-intermission-shop
 description: "Global task: The intermission screen sells 5 upgrade cards priced by rarity, with an escalating reroll and the Continue button."
-parent: tasks-to-do-index
+parent: tasks-done-index
 kind: task
-status: in-progress
+status: done
 ---
 # Upgrade shop between levels
 
@@ -13,8 +13,8 @@ status: in-progress
 - gdd_check: run-shop, intermission, ore-economy, rarities, xp-level-up, run-structure read (2026-10-26). run-shop catalogue, prices and reroll cost were open: decided by this request. Rarity mapping (Q5): blanche = grey, verte = green, bleue = blue, épique = purple, légendaire = yellow. Owner defaults accepted 2026-10-26: Q6 cards drawn as a level-up offer with owner luck, stat cards only; Q7 several buys, a bought card leaves its slot empty, reroll redraws the 5 slots; Q8 own reroll count, back to 15 at each intermission; Q9 level-up screen unchanged (3 cards), shop cards smaller on one row, same card look without deal, suspense or fly animations, recap kept at the top, ore balance shown. Depends on task-315 (shared reroll cost rule).
 - confirmed_by_owner: yes (owner 2026-10-26: "ok" to questions 1-9, every default accepted; plan task-315 then task-316 confirmed)
 - milestone: M2
-- next_step: task-316-05-capture-shop
-- result: open
+- next_step: none
+- result: Done. Headless -game capture in Saved/IntermissionShop (contact-sheet.png): 5 priced cards, balance 300, reroll 15, Continue, all within 1920x1080 (Continue 8-10 px from bottom); buy slot 0 Green 40 -> 260 and sold slot shown; reroll 1 paid 15 -> 245, next 20; level 2 log 1/1 cards replayed; debug commands rr.Run.EndLevel, rr.Shop.Buy, rr.Shop.Reroll added (d836701f, docs 17ec2233); greyed states not seen
 
 ## Subtasks
 1. task-316-01-intermission-shop — cpp: shop offer, prices, buy, reroll, Blueprint API
@@ -24,7 +24,7 @@ status: in-progress
 5. task-316-05-capture-shop — cpp: capture the intermission in game
 
 ## Relations
-- [[tasks-to-do-index]] — parent index.
+- [[tasks-done-index]] — parent index.
 - [[task-316-01-intermission-shop]] — step 01, cpp.
 - [[task-316-02-text-shop-labels]] — step 02, text.
 - [[task-316-03-bp-shop-card]] — step 03, bp.
