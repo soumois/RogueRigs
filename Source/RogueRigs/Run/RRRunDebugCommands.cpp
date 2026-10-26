@@ -1,6 +1,7 @@
 // Rogue Rigs - run debug console commands (compiled out of shipping): rr.Run.Status (logs the run state), rr.Run.Continue (the
-// intermission Continue button), rr.Run.NextLevel (successful extraction then Continue), rr.Run.Restart (the end screen restart
-// button: run reset, level 1).
+// intermission Continue button), rr.Run.NextLevel (successful extraction then Continue), rr.Run.EndLevel (successful extraction,
+// the intermission stays open), rr.Run.Restart (the end screen restart button: run reset, level 1), rr.Shop.Buy and rr.Shop.Reroll
+// (the intermission shop card and reroll buttons, task-316-05).
 
 #include "CoreMinimal.h"
 
@@ -11,6 +12,7 @@
 #include "HAL/IConsoleManager.h"
 #include "Objectives/RRRunFlowSubsystem.h"
 #include "RogueRigs.h"
+#include "Run/RRIntermissionShopSubsystem.h"
 #include "Run/RRRunSubsystem.h"
 #include "Run/RRRunTransitionSubsystem.h"
 
@@ -89,6 +91,54 @@ namespace RRRunDebug
 			{
 				UE_LOG(LogRogueRigs, Log, TEXT("rr.Run.NextLevel: no intermission (%s)."), Transition->IsRunWon() ? TEXT("run won") : TEXT("level not extracted"));
 			}
+		}),
+		ECVF_Cheat);
+
+	/** rr.Run.EndLevel: EndRun(true) when the level is still running (as a boarded shuttle), without Continue: the intermission stays open. */
+	FAutoConsoleCommand EndLevelCommand(
+		TEXT("rr.Run.EndLevel"),
+		TEXT("rr.Run.EndLevel: ends the level as a successful extraction and leaves the intermission (or the run won screen) open."),
+		FConsoleCommandDelegate::CreateLambda([]()
+		{
+			UWorld* World = RRCheats::FindCheatWorld();
+			URRRunFlowSubsystem* RunFlow = World ? World->GetSubsystem<URRRunFlowSubsystem>() : nullptr;
+			if (!RunFlow || RunFlow->IsRunEnded())
+			{
+				UE_LOG(LogRogueRigs, Warning, TEXT("rr.Run.EndLevel: refused (no run flow or the level already ended)."));
+				return;
+			}
+			RunFlow->EndRun(true);
+			const URRRunTransitionSubsystem* Transition = URRRunTransitionSubsystem::Get(World);
+			UE_LOG(LogRogueRigs, Log, TEXT("rr.Run.EndLevel: level extracted, transition %s."), Transition ? PhaseName(Transition->GetPhase()) : TEXT("no subsystem"));
+		}),
+		ECVF_Cheat);
+
+	/** rr.Shop.Buy <Slot>: the intermission shop card button of slot Slot (0-based, URRIntermissionShopSubsystem::BuySlot). */
+	FAutoConsoleCommand ShopBuyCommand(
+		TEXT("rr.Shop.Buy"),
+		TEXT("rr.Shop.Buy <Slot>: buys the intermission shop card of slot Slot (0-based), like its card button."),
+		FConsoleCommandWithArgsDelegate::CreateLambda([](const TArray<FString>& Args)
+		{
+			URRIntermissionShopSubsystem* Shop = URRIntermissionShopSubsystem::Get(RRCheats::FindCheatWorld());
+			if (!Shop || Args.Num() < 1)
+			{
+				UE_LOG(LogRogueRigs, Warning, TEXT("rr.Shop.Buy: refused (%s)."), Shop ? TEXT("usage: rr.Shop.Buy <Slot>") : TEXT("no shop subsystem"));
+				return;
+			}
+			const bool bBought = Shop->BuySlot(FCString::Atoi(*Args[0]));
+			UE_LOG(LogRogueRigs, Log, TEXT("rr.Shop.Buy %s: %s, balance %d."), *Args[0], bBought ? TEXT("bought") : TEXT("refused"), Shop->GetOreBalance());
+		}),
+		ECVF_Cheat);
+
+	/** rr.Shop.Reroll: the intermission shop reroll button (URRIntermissionShopSubsystem::RequestReroll). */
+	FAutoConsoleCommand ShopRerollCommand(
+		TEXT("rr.Shop.Reroll"),
+		TEXT("rr.Shop.Reroll: pays and rerolls the intermission shop, like its reroll button."),
+		FConsoleCommandDelegate::CreateLambda([]()
+		{
+			URRIntermissionShopSubsystem* Shop = URRIntermissionShopSubsystem::Get(RRCheats::FindCheatWorld());
+			const bool bRerolled = Shop && Shop->RequestReroll();
+			UE_LOG(LogRogueRigs, Log, TEXT("rr.Shop.Reroll: %s, balance %d."), bRerolled ? TEXT("paid") : TEXT("refused"), Shop ? Shop->GetOreBalance() : 0);
 		}),
 		ECVF_Cheat);
 
