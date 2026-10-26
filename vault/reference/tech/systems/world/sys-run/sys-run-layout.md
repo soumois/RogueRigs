@@ -17,6 +17,7 @@ kind: doc
 - data: no new data; layout names from `URRRunSettings::LevelLayouts`.
 - depends_on: [[sys-grid]] (parser, cell types), [[level-layout-schema]].
 - implements: [[intermission]] (next terrain prepared in the background).
+- in-place use (task-318-01): the preload waits for the requested layout (`IsLayoutPending` false) and rebuilds the grid of the current world from it (`ARRArenaGrid::RebuildForRunLevel`, same `FindRunPreparedLayout` path as BeginPlay), with no map load: [[sys-run-transition-preload]].
 - gotchas: the grid uses the prepared layout only in a game world, run in progress, level 2+, and sets its `LayoutName` to the prepared name; otherwise (direct PIE, editor, tests) it reads its own `LayoutName` synchronously as before. A failed layout logs an error and the grid falls back to its own `LayoutName`. `rr.Run.NextLevel` waits for `IsLayoutPending` false on the core ticker before `OpenLevel` (as the future Continue). Measured (task-206-02, -game -nullrhi): arena_l2 240 × 240 ready 110 ms after the request; L_ArenaM1 then built from it. No automation test (owner rule).
 
 ## Relations
@@ -26,3 +27,4 @@ kind: doc
 - [[arena-grid]] — the future generator that fills the provider slot.
 - [[level-layout-schema]] — the file format the JSON provider reads.
 - [[task-206-03-transition-flow]] — waits for OnLayoutReady before the map open.
+- [[sys-run-transition-preload]] — rebuilds the grid in place from the prepared layout behind the cards screen.
