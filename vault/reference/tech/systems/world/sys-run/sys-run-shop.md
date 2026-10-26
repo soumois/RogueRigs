@@ -22,7 +22,8 @@ kind: doc
 - data: `URRShopSettings` (`UCLASS(Config = Game, DefaultConfig)`, `GetDefault`): `ShopCardCount` 5, `PriceGrey` 25, `PriceGreen` 40, `PriceBlue` 60, `PricePurple` 80, `PriceYellow` 100 (provisional, owner 2026-10-26); override in `Config/DefaultGame.ini` `[/Script/RogueRigs.RRShopSettings]`. Reroll tunables: `URRRerollSettings`.
 - depends_on: [[sys-run-transition]], [[sys-run]], [[sys-upgrades]], [[sys-objectives-ore-counter]].
 - implements: [[run-shop]].
-- gotchas: bought cards also enter the old miner's `GetPickedUpgrades` and the run log through `OnUpgradeApplied`. The level-up reroll during a level still lowers the recap's secured figures when it spends secured ore (task-315 behaviour, unchanged). Log lines `URRIntermissionShopSubsystem: offer of N/5 cards: ...`, `slot N bought (...)`, `reroll N paid C`. Not verified in a running game yet (no widget binding, task-316-05 capture); no automation test (owner rule).
+- gotchas: bought cards also enter the old miner's `GetPickedUpgrades` and the run log through `OnUpgradeApplied`. The level-up reroll during a level still lowers the recap's secured figures when it spends secured ore (task-315 behaviour, unchanged). Log lines `URRIntermissionShopSubsystem: offer of N/5 cards: ...`, `slot N bought (...)`, `reroll N paid C`. Verified in a -game run (task-316-05, `Saved/IntermissionShop/`): offer 300 ore, slot 0 bought for 40 (balance 260, slot shows "Sold. No refunds."), reroll 1 paid 15 (balance 245, next 20), level 2 log `1/1 cards replayed`, bank 245. Greyed (unaffordable) states not captured. No automation test (owner rule).
+- debug: `rr.Shop.Buy <Slot>` (0-based, `BuySlot`) and `rr.Shop.Reroll` (`RequestReroll`) in `Run/RRRunDebugCommands.cpp`, plus `rr.Run.EndLevel` to open the intermission without Continue ([[sys-cheats]]).
 
 ## Relations
 - [[sys-run]] — parent: the run state and snapshot the shop writes to.
