@@ -3,7 +3,7 @@ id: task-318-02-fade-or-loading
 description: "Continue fades into the ready level, or shows the loading screen until it is ready, then fades in."
 parent: task-318-preload-next-level
 kind: task
-status: todo
+status: in-progress
 ---
 # Continue fades into the ready level, or shows the loading screen until it is ready, then fades in
 
