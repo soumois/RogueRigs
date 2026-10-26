@@ -3,7 +3,7 @@ id: task-317-02-text-stats-labels
 description: "Stats screen and cards screen labels in screen_texts.json."
 parent: task-317-stats-then-cards
 kind: task
-status: todo
+status: in-progress
 ---
 # Stats screen and cards screen labels in screen_texts.json
 

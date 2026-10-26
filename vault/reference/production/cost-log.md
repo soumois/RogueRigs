@@ -671,6 +671,7 @@ kind: note
 | [[task-316-03-bp-shop-card]] | sonnet | 2 | 0k | 172k | 7384k | 58k |
 | [[task-316-04-bp-intermission-shop]] | sonnet | 1 | 0k | 116k | 3652k | 34k |
 | [[task-316-05-capture-shop]] | opus | 1 | 0k | 81k | 1397k | 16k |
+| [[task-317-01-stats-then-cards]] | opus | 1 | 0k | 289k | 4360k | 52k |
 
 ## Totals
 | Scope | Input | Cache write | Cache read | Output |

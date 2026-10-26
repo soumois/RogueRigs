@@ -3,7 +3,7 @@ id: task-317-01-stats-then-cards
 description: "The end-of-level stats screen and the cards shop screen are two distinct screens; level 4 shows the stats screen only, then the run-won screen."
 parent: task-317-stats-then-cards
 kind: task
-status: in-progress
+status: done
 ---
 # Stats screen then cards screen
 
@@ -15,11 +15,11 @@ status: in-progress
 - done_when: build passes; extraction on levels 1-3 opens the stats phase (OnIntermissionStarted, shop not yet shown); NextLevel() opens the shop phase (shop opened, new event OnShopScreenStarted, new controller property ShopScreenWidgetClass with base URRShopScreenWidget carrying GetShop and OnShopRefreshed); Continue only from the shop phase; level 4 extraction opens the stats phase with a run-won flag and its button leads to the existing run-won screen (OnRunEnded(true)), no shop; the recap struct adds kills per robot type (display name and count, from URRRunLogSubsystem KillsByRobotType) and damage dealt per weapon (weapon display name and damage, from DamageDealtByWeapon), read before the level ends; Blueprint API documented; debug commands rr.Run.NextLevel and rr.Run.EndLevel still work (rr.Run.Stats.Next or equivalent documented); existing tests broken by the change updated and passing; lint clean.
 - editor_state: closed
 - token_ceiling: 80000
-- model: open
-- tokens: open
-- runs: open
+- model: opus
+- tokens: input 96, cache write 289448, cache read 4359926, output 51851
+- runs: 1
 - milestone: M2
-- result: open
+- result: Stats and Shop phases split; NextLevel(), OnShopScreenStarted, OnRunWonScreenStarted, URRShopScreenWidget, ShopScreenWidgetClass, recap KillsByRobotType and DamageByWeapon, rr.Run.Stats.Next; build OK, 270/272 tests (2 known failures); not run in game. Commits 948b1d34, 170667b8.
 
 ## Relations
 - [[task-317-stats-then-cards]] — parent global task.
