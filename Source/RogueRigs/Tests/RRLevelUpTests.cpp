@@ -268,7 +268,7 @@ bool FRRLevelUpChainTest::RunTest(const FString& Parameters)
 	TestEqual(TEXT("two upgrades picked"), S.Upgrades->GetPickedUpgrades().Num(), 2);
 	TestFalse(TEXT("no screen after the last pick"), S.LevelUp->IsAwaitingChoice());
 	TestEqual(TEXT("closed once"), Recorder->GetOfferClosedCount(), 1);
-	TestEqual(TEXT("still two offers"), Recorder->GetOfferCardCounts().Num(), 2);
+	TestEqual(TEXT("still three offers (two screens, one reroll)"), Recorder->GetOfferCardCounts().Num(), 3);
 
 	// A level gained during the delay joins the running delay (no restart).
 	S.Progression->AddXP(LevelUpTestRawXPFor(S.Progression, 1));
@@ -278,7 +278,7 @@ bool FRRLevelUpChainTest::RunTest(const FString& Parameters)
 	TestEqual(TEXT("two more choices owed"), S.LevelUp->GetPendingChoices(), 2);
 	TickFrames(TestWorld, FramesAfterDelay - 20);
 	TestTrue(TEXT("screen opens 0.8 s after the first of the two levels"), S.LevelUp->IsAwaitingChoice());
-	TestEqual(TEXT("third offer shown"), Recorder->GetOfferCardCounts().Num(), 3);
+	TestEqual(TEXT("third screen shown"), Recorder->GetOfferCardCounts().Num(), 4);
 	return true;
 }
 

@@ -1502,6 +1502,15 @@ namespace RRIntegrationUpgradeTests
 	}
 }
 
+namespace
+{
+	/** Never instantiated: exposes the run flow world-local secured total to the paid reroll check (task-315-01). */
+	struct FRunFlowOreAccess : URRRunFlowSubsystem
+	{
+		static int32 URRRunFlowSubsystem::* LocalSecuredOreMember() { return &FRunFlowOreAccess::LocalSecuredOre; }
+	};
+}
+
 IMPLEMENT_SIMPLE_AUTOMATION_TEST(FRRIntegrationUpgradeLoopTest, "RogueRigs.Integration.LevelUpUpgradeLoop",
 	EAutomationTestFlags::EditorContext | EAutomationTestFlags::EngineFilter)
 
@@ -1617,14 +1626,21 @@ bool FRRIntegrationUpgradeLoopTest::RunTest(const FString& Parameters)
 
 	// Paid reroll (task-315): 10 carried + 20 secured ore pays one reroll of 15 (carried first), not the next one of 20.
 	URRRunFlowSubsystem* RunFlow = World->GetSubsystem<URRRunFlowSubsystem>();
-	URROreBankSubsystem* Bank = URROreBankSubsystem::Get(World);
-	if (!TestNotNull(TEXT("run flow"), RunFlow) || !TestNotNull(TEXT("ore bank (game instance)"), Bank)
-		|| !TestEqual(TEXT("no ore before the grant"), RunFlow->GetSpendableOre(), 0))
+	if (!TestNotNull(TEXT("run flow"), RunFlow) || !TestEqual(TEXT("no ore before the grant"), RunFlow->GetSpendableOre(), 0))
 	{
 		return false;
 	}
 	RunFlow->AddCarriedOre(10);
-	Bank->AddSecuredOre(20);
+	if (URROreBankSubsystem* Bank = URROreBankSubsystem::Get(World))
+	{
+		Bank->AddSecuredOre(20);
+	}
+	else
+	{
+		// The test game instance initializes no subsystem: the run flow counts secured ore in its world-local total.
+		RunFlow->*FRunFlowOreAccess::LocalSecuredOreMember() = 20;
+	}
+	TestEqual(TEXT("10 carried + 20 secured"), RunFlow->GetSpendableOre(), 30);
 
 	// Wait the delay frame by frame: the world pauses on the frame the screen opens.
 	const double LevelUpTime = World->GetTimeSeconds();
