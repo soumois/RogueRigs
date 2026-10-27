@@ -28,7 +28,7 @@ status: approved
 | Shooter | acid green |
 | Heavy | steel blue + yellow/black hazard stripes |
 | Normal / critical damage number | white / larger white-gold |
-| Void space background | nebula in deep indigo-violet, violet and dusty magenta (the floor's dark violet-magenta family), low saturation; stars white with a slight warm or cool shift; never acid green, steel blue, red, orange or cyan (owner 2026-10-27, provisional, [[task-332-space-background]]) |
+| Void space background | clouds in saturated indigo, electric violet and magenta (the floor's violet-magenta family, saturation raised), plus deep ultramarine blue as second hue, mainly in the deep layer (saturated, never grey steel blue); stars white with a slight warm or cool shift; never acid green, steel blue, red, orange, cyan, teal, salmon or pink (owner 2026-10-27, provisional, [[task-332-space-background]]; B3 of [[task-335-space-texture-layers]] replaces "low saturation") |
 | Background asteroids (void) | breakable rock family, light grey tinted violet, flat, no crystals, darker than the arena rocks so they read as background, not ground (owner 2026-10-27, provisional, [[task-334-near-asteroids]]) |
 | Heal number ("+N" on the miner) | green, linear (0.1, 1, 0.2), the heal ring green; a small detail, so the Shooter keeps acid green as main colour (owner 2026-10-27, provisional, [[task-324-heal-numbers]], [[damage-numbers]]) |
 
