@@ -3,7 +3,7 @@ id: task-329-02-fade-material
 description: "Find why M_AimChevrons draws five equally bright chevrons despite Decay 0.78, and fix the distance fade in the material."
 parent: task-329-aim-chevrons-fade
 kind: task
-status: wait-answers
+status: in-progress
 ---
 # Aim chevrons: distance fade in the material
 
@@ -20,8 +20,8 @@ status: wait-answers
 - usage: open
 - runs: open
 - milestone: M3
-- started: 2026-10-27T16:32:04Z
-- waiting_for: owner decision: M_AimChevrons already applies Decay^i on Opacity (read back); fade is washed out by tonemapping/bloom/exposure (PPV_XPGlow EV100 -0.94, bloom 1.3) on full-strength emissive; choose: lower emissive gain of Color in the material (brightness change) or change exposure/bloom (level-wide)
+- started: 2026-10-27T16:36:04Z
+- waiting_for: none
 - result: open
 
 ## Relations
