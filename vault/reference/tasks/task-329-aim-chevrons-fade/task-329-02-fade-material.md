@@ -3,7 +3,7 @@ id: task-329-02-fade-material
 description: "Find why M_AimChevrons draws five equally bright chevrons despite Decay 0.78, and fix the distance fade in the material."
 parent: task-329-aim-chevrons-fade
 kind: task
-status: todo
+status: in-progress
 ---
 # Aim chevrons: distance fade in the material
 
@@ -20,7 +20,7 @@ status: todo
 - usage: open
 - runs: open
 - milestone: M3
-- started: open
+- started: 2026-10-27T16:30:18Z
 - waiting_for: none
 - result: open
 
