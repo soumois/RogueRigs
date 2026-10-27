@@ -3,7 +3,7 @@ id: task-325-01-doc-agent
 description: "Create the doc agent (definition file and vault node) and wire it into planner, executor, cpp, bp, protocol, runbook and agents-index."
 parent: task-325-doc-agent
 kind: task
-status: todo
+status: in-progress
 ---
 # Create and wire the doc agent
 
@@ -20,7 +20,7 @@ status: todo
 - usage: open
 - runs: open
 - milestone: M2
-- started: open
+- started: 2026-10-27T14:17:20Z
 - waiting_for: none
 - result: open
 

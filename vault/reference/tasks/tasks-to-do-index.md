@@ -13,5 +13,5 @@ A global task moves to [[tasks-done-index]] when it is done or cancelled (`vault
 - [[task-308-chest-lock-light]] — Chest lock light: red blinking while waiting, orange blinking faster with hack progress in the zone, steady green once open. Status todo.
 - [[task-309-chest-opening]] — Chest opening: latch swings, lid slams open with overshoot, freeze and shake, inner light, ground ring, three popping XP chips, sparks. Status todo.
 - [[task-314-chest-lid-logo]] — Add the yellow Kessler-Voss mark on top of the chest lid, as on the validated sheet, and show it in game. Status todo.
-- [[task-325-doc-agent]] — Add a Sonnet doc agent that writes a task's vault documentation from an executor brief; cpp and bp return a change summary instead. Status todo.
+- [[task-325-doc-agent]] — Add a Sonnet doc agent that writes a task's vault documentation from an executor brief; cpp and bp return a change summary instead. Status in-progress.
 - [[task-326-units-ceiling]] — token_ceiling bounds the weighted units figure, written in M units, so the over-ceiling alert flags real outliers. Status todo.

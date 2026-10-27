@@ -3,7 +3,7 @@ id: task-325-doc-agent
 description: "Global task: add a Sonnet doc agent that writes a task's vault documentation from an executor brief; cpp and bp return a change summary instead."
 parent: tasks-to-do-index
 kind: task
-status: todo
+status: in-progress
 ---
 # Doc agent for end-of-task vault documentation
 
@@ -14,7 +14,7 @@ status: todo
 - confirmed_by_owner: yes (2026-10-27)
 - milestone: M2
 - next_step: task-325-01-doc-agent
-- started: open
+- started: 2026-10-27T14:17:20Z
 - waiting_for: none
 - result: open
 
