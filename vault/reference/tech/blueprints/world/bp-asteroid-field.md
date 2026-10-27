@@ -12,7 +12,7 @@ kind: doc
 - components: 12 StaticMeshComponents Asteroid_01..12 and 12 RotatingMovementComponents Rot_01..12. All Movable, NoCollision (BodyInstance), CastShadow off, bReceivesDecals off, bAffectDistanceFieldLighting off.
 - exposed_defaults: none beyond the component values. Rotation rates 1 to 5 deg/s on random axes per asteroid (seeded; exact per-asteroid values `open` here, read them on the Rot_nn components or the script output).
 - events: EventBeginPlay.
-- logic_in_bp: DEVIATION from "no graph logic": EventBeginPlay makes 12 SetUpdatedComponent calls (Rot_nn to Asteroid_nn). Reason: RotatingMovement.UpdatedComponent is saved on the Blueprint but empty on the placed instance; without the calls the field swings around the actor root.
+- logic_in_bp: DEVIATION kept on purpose, owner accepted 2026-10-27 (graph wiring) from "no graph logic": EventBeginPlay makes 12 SetUpdatedComponent calls (Rot_nn to Asteroid_nn). Reason: RotatingMovement.UpdatedComponent is saved on the Blueprint but empty on the placed instance; without the calls the field swings around the actor root.
 - assets: [[bp-asteroid-material]] (SM_Asteroid_01..04, MI_Asteroid).
 - owner_agent: agent-bp
 - placed_in: /Game/RogueRigs/Maps/L_ArenaM1, one instance at (0, 0, 0), stored as an external actor file. Layout arena_m1_fine, 240 x 240, cell 67 uu.

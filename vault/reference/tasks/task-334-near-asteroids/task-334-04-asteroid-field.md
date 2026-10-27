@@ -22,7 +22,7 @@ status: done
 - milestone: M3
 - started: 2026-10-27T23:40:39Z
 - waiting_for: none
-- result: BP_AsteroidField (12 meshes + 12 RotatingMovement) placed in L_ArenaM1 (adcbfdd8, 592b0b87); tops <= -373, centres over void cells. DEVIATION: BeginPlay graph with 12 SetUpdatedComponent calls (UpdatedComponent not kept on placed instance), contradicts 'no graph logic'; wiring only. Layouts arena_l2..l4 not checked for distance
+- result: BP_AsteroidField (12 meshes + 12 RotatingMovement) placed in L_ArenaM1 (adcbfdd8, 592b0b87); tops <= -373, centres over void cells. DEVIATION KEPT ON PURPOSE (owner accepted 2026-10-27): BeginPlay graph with 12 SetUpdatedComponent calls (UpdatedComponent not kept on placed instance), contradicts 'no graph logic'; wiring only. Layouts arena_l2..l4 not checked for distance
 
 ## Relations
 - [[task-334-near-asteroids]] — parent global task.

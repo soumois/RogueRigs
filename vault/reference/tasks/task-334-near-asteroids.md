@@ -24,7 +24,7 @@ status: done
 - next_step: none
 - started: 2026-10-27T23:21:20Z
 - waiting_for: none
-- result: Done. bp-asteroid-material and bp-asteroid-field written, index, bp-arena-grid, bp-space-background updated (e84bf2c6)
+- result: Done. bp-asteroid-material and bp-asteroid-field written, index, bp-arena-grid, bp-space-background updated (e84bf2c6). Deviation kept on purpose: BP_AsteroidField has a BeginPlay graph with 12 SetUpdatedComponent calls (owner accepted 2026-10-27: "J accepte le cablage SetUpdatedComponent dans BP_AsteroidField (deviation voulue).")
 
 ## Subtasks
 1. task-334-01-asteroid-meshes (vault/reference/tasks/task-334-near-asteroids/task-334-01-asteroid-meshes.md) — 3d: Blender-route script, 4 low-poly asteroid FBX variants, report and preview render for the owner.
