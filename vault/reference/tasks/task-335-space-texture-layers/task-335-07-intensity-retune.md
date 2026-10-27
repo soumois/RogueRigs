@@ -3,7 +3,7 @@ id: task-335-07-intensity-retune
 description: "Retune Intensity of MI_Space_Clouds, and MI_Space_Deep if needed, from the task-335-06 numbers: cloud peak 70 to 100, void mean below floor strips."
 parent: task-335-space-texture-layers
 kind: task
-status: todo
+status: in-progress
 ---
 # Space layers: intensity retune from the capture
 
@@ -20,7 +20,7 @@ status: todo
 - usage: open
 - runs: open
 - milestone: M3
-- started: open
+- started: 2026-10-27T23:10:56Z
 - waiting_for: none
 - result: open
 
