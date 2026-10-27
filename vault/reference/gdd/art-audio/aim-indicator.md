@@ -25,4 +25,5 @@ status: provisional
 - [[miner]] — the aim it shows.
 - [[color-code]] — white-gold player side colour.
 - [[readability-rules]] — colours it must avoid.
+- [[sys-aim-indicator]] — the C++ component and material contract that implement it.
 - [[ground-telegraph]] — same projected-decal technique, different shape and meaning.

@@ -16,6 +16,7 @@ Weapons, projectiles, explosions, drone, turret, ground telegraph, damage number
 - [[sys-explosions]] — explosion queue and chain reactions.
 - [[sys-drone]] — helper drone actor spawned by the miner: orbit, contact arc dig (selection, speeds, per-block events), hack, MiningSpeed read.
 - [[sys-ground-telegraph]] — ground circle decal component: API, material parameter names (Radius, Progress, ZoneColor, ProgressColor, Opacity), hiding rules.
+- [[sys-aim-indicator]] — miner aim chevron decal component: API, M_AimChevrons parameters, hiding at death, stop at the first block.
 - [[sys-damage-numbers]] — damage number subsystem: one number per hit with a spawn disc (no merge since task-059), stacking, Niagara user parameters contract, player toggle.
 
 ## Relations
