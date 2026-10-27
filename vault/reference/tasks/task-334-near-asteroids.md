@@ -1,9 +1,9 @@
 ---
 id: task-334-near-asteroids
 description: "Global task: other low-poly asteroids floating in the void around the arena asteroid, nearer the camera than the space layers, with depth parallax."
-parent: tasks-to-do-index
+parent: tasks-done-index
 kind: task
-status: wait-answers
+status: done
 ---
 # Nearer asteroids around the arena asteroid
 
@@ -21,10 +21,10 @@ status: wait-answers
   - A7 one actor: default one data-only Blueprint BP_AsteroidField holding the 12 meshes, placed once in L_ArenaM1 (same pattern as BP_SpaceBackground), no C++ change.
 - confirmed_by_owner: yes (2026-10-27, "ok", relayed by the main session)
 - milestone: M3
-- next_step: task-334-06-docs
+- next_step: none
 - started: 2026-10-27T23:21:20Z
-- waiting_for: owner validation of the asteroid preview
-- result: open
+- waiting_for: none
+- result: Done. bp-asteroid-material and bp-asteroid-field written, index, bp-arena-grid, bp-space-background updated (e84bf2c6)
 
 ## Subtasks
 1. task-334-01-asteroid-meshes (vault/reference/tasks/task-334-near-asteroids/task-334-01-asteroid-meshes.md) — 3d: Blender-route script, 4 low-poly asteroid FBX variants, report and preview render for the owner.
@@ -35,7 +35,7 @@ status: wait-answers
 6. task-334-06-docs (vault/reference/tasks/task-334-near-asteroids/task-334-06-docs.md) — doc: doc nodes of M_Asteroid and BP_AsteroidField, world index, bp-arena-grid map line.
 
 ## Relations
-- [[tasks-to-do-index]] — parent index.
+- [[tasks-done-index]] — parent index.
 - [[task-334-01-asteroid-meshes]] — step 1, 3d.
 - [[task-334-02-asteroid-material]] — step 2, bp.
 - [[task-334-03-asteroid-import]] — step 3, bp.

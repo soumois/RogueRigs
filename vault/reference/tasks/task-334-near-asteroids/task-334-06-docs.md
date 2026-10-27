@@ -3,7 +3,7 @@ id: task-334-06-docs
 description: "Write the doc nodes of M_Asteroid and BP_AsteroidField, list them in the world index, update the bp-arena-grid map line."
 parent: task-334-near-asteroids
 kind: task
-status: in-progress
+status: done
 ---
 # Asteroids: docs
 
@@ -15,14 +15,14 @@ status: in-progress
 - done_when: both nodes exist with every template field filled (undecided = `open`); index lists them; lint clean; committed by explicit paths.
 - editor_state: any
 - token_ceiling: 0.3 M units
-- model: open
-- tokens: open
-- usage: open
-- runs: open
+- model: sonnet
+- tokens: input 18, cache write 37583, cache read 215785, output 6745
+- usage: turns 9, context start 11k peak 38k, resumes 0, 1 min, units 0.10 M
+- runs: 1
 - milestone: M3
 - started: 2026-10-27T23:52:45Z
 - waiting_for: none
-- result: open
+- result: bp-asteroid-material and bp-asteroid-field written, index, bp-arena-grid, bp-space-background updated (e84bf2c6)
 
 ## Relations
 - [[task-334-near-asteroids]] — parent global task.

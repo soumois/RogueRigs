@@ -340,4 +340,5 @@ Archive: it exceeds the index size limits of [[_authoring]] on purpose (owner, 2
 - [[task-331-aim-chevrons-fade-measured]] — Aim chevrons: make the distance fade really visible, measured on the final image (task-329 left it barely visible). Status done.
 - [[task-332-space-background]] — Layered procedural space background in the void around the arena, real depth parallax, not a flat pasted image. Status done.
 - [[task-333-nebula-visible]] — Make the nebula layer of the space background clearly visible at normal brightness, by retuning MI_Space_Nebula only. Status cancelled.
+- [[task-334-near-asteroids]] — Other low-poly asteroids floating in the void around the arena asteroid, nearer the camera than the space layers, with depth parallax. Status done.
 - [[task-335-space-texture-layers]] — Replace the procedural nebula of the void background with bold layered AI-generated tileable space textures at several depths, procedural stars kept. Status done.
