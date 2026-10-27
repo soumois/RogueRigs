@@ -1,9 +1,9 @@
 ---
 id: task-333-nebula-visible
 description: "Global task: make the nebula layer of the space background clearly visible at normal brightness, by retuning MI_Space_Nebula only."
-parent: tasks-to-do-index
+parent: tasks-done-index
 kind: task
-status: wait-answers
+status: cancelled
 ---
 # Clearly visible nebula in the void
 
@@ -19,10 +19,10 @@ status: wait-answers
   - N6 order: default this task runs before task-334, so the asteroid capture shows the final nebula.
 - confirmed_by_owner: yes (2026-10-27, "ok", relayed by the main session)
 - milestone: M3
-- next_step: task-333-02-capture
+- next_step: none
 - started: 2026-10-27T21:59:10Z
-- waiting_for: owner decision S1 of task-335 (cancel as superseded by task-335); 01 done, 02 capture taken in Saved/Captures/task333_nebula but not measured
-- result: open
+- waiting_for: none
+- result: Cancelled 2026-10-27, superseded by task-335-space-texture-layers (S1, owner ok): owner judged the procedural nebula not working. 01 done: MI_Space_Nebula Intensity 0.06 to 1.6, commit 975425cf (stays, plane switched by task-335). 02 capture taken, not measured: Saved/Captures/task333_nebula/, used as the before of task-335-05. 03 docs folded into task-335-06.
 
 ## Subtasks
 1. task-333-01-nebula-tune (vault/reference/tasks/task-333-nebula-visible/task-333-01-nebula-tune.md) — bp: retune MI_Space_Nebula so the nebula reaches the N1 band.
@@ -30,7 +30,7 @@ status: wait-answers
 3. task-333-03-docs (vault/reference/tasks/task-333-nebula-visible/task-333-03-docs.md) — doc: update bp-space-background-material (parameter table, finding).
 
 ## Relations
-- [[tasks-to-do-index]] — parent index.
+- [[tasks-done-index]] — parent index.
 - [[task-333-01-nebula-tune]] — step 1, bp.
 - [[task-333-02-capture]] — step 2, cpp.
 - [[task-333-03-docs]] — step 3, doc.

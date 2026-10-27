@@ -3,7 +3,7 @@ id: task-333-02-capture
 description: "One -game capture near an arena edge showing the retuned nebula at normal brightness, with luma numbers against the floor, sheet for the owner."
 parent: task-333-nebula-visible
 kind: task
-status: wait-answers
+status: cancelled
 ---
 # Nebula: capture for the owner
 
@@ -21,7 +21,7 @@ status: wait-answers
 - runs: open
 - milestone: M3
 - started: 2026-10-27T22:00:29Z
-- waiting_for: owner decision S1 of task-335; capture PNGs and contact sheet exist in Saved/Captures/task333_nebula, numbers not measured
+- waiting_for: none
 - result: open
 
 ## Relations

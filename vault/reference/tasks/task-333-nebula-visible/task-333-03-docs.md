@@ -3,7 +3,7 @@ id: task-333-03-docs
 description: "Update bp-space-background-material with the retuned MI_Space_Nebula values and the new capture finding."
 parent: task-333-nebula-visible
 kind: task
-status: todo
+status: cancelled
 ---
 # Nebula: docs
 
