@@ -3,7 +3,7 @@ id: task-331-03-fade-material
 description: "Name the measured cause of the weak chevron fade and fix it in M_AimChevrons, setting EmissiveGain as the owner decided."
 parent: task-331-aim-chevrons-fade-measured
 kind: task
-status: in-progress
+status: done
 ---
 # Aim chevrons: fix the fade from measurements
 
@@ -15,14 +15,14 @@ status: in-progress
 - done_when: material compiles and is saved; read-back values and the per-chevron opacity table are in the report; the cause is tied to those numbers; EmissiveGain read back equals the Q2 decision; parameter names unchanged; committed by explicit path. Rendered result is checked by subtask 04.
 - editor_state: open
 - token_ceiling: 1.0 M units
-- model: open
-- tokens: open
-- usage: open
-- runs: open
+- model: sonnet
+- tokens: input 64, cache write 113700, cache read 2329848, output 27371
+- usage: turns 32, context start 10k peak 114k, resumes 0, 5 min, units 0.51 M
+- runs: 1
 - milestone: M3
 - started: 2026-10-27T20:33:50Z
 - waiting_for: none
-- result: open
+- result: Material already drew 0.78^i opacity (1/0.78/0.608/0.475/0.370, PIE read-back Decay 0.78, Opacity 1); weak fade is post-process tonemap+sRGB (fit, exposure x1.64 ~ PPV_XPGlow -0.94 EV). Fix in M_AimChevrons: weight pow(Dec, FadeGain*i^FadeExp), FadeGain 5.15, FadeExp 0.55 (fitted to a model, not a capture), EmissiveGain 1.0. Commit 5e935801. Rendered result unverified, subtask 04 measures.
 
 ## Relations
 - [[task-331-aim-chevrons-fade-measured]] — parent global task.

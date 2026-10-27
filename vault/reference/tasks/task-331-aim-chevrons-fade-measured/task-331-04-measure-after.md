@@ -3,7 +3,7 @@ id: task-331-04-measure-after
 description: "Repeat the aim chevron -game capture after the material fix and check each chevron's contrast ratio against the 0.78^i target."
 parent: task-331-aim-chevrons-fade-measured
 kind: task
-status: todo
+status: in-progress
 ---
 # Aim chevrons: measure the fade after the fix
 
@@ -20,7 +20,7 @@ status: todo
 - usage: open
 - runs: open
 - milestone: M3
-- started: open
+- started: 2026-10-27T20:39:21Z
 - waiting_for: none
 - result: open
 
