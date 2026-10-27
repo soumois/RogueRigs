@@ -3,7 +3,7 @@ id: task-323-01-wait-answers-status
 description: "Allow status wait-answers with a waiting_for bullet in contract, lint, task-status.js, templates and protocol steps 4 and 5."
 parent: task-323-wait-answers-status
 kind: task
-status: in-progress
+status: done
 ---
 # Allow the wait-answers status
 
@@ -15,13 +15,13 @@ status: in-progress
 - done_when: on throwaway copies (never a live task, reverted after): `status=wait-answers` without `waiting_for=` is refused with no file changed; with it, the node gets one `waiting_for` bullet before `result` and the global index line reads `Status wait-answers.` in tasks-to-do-index; `status=in-progress` (directly, via task-next.js and via task-start.js) and `status=todo` reset it to `none`; lint accepts `wait-answers` and still rejects an unknown status; task-create.js output lints clean with `waiting_for: none`; `node vault/scripts/crew-board.js "test"` runs; protocol steps 4 and 5 and the three agent docs name the command; live nodes untouched; lint clean; committed by explicit path.
 - editor_state: any
 - token_ceiling: 40000
-- model: open
-- tokens: open
-- usage: open
-- runs: open
+- model: opus
+- tokens: input 54, cache write 65777, cache read 1273869, output 16877
+- usage: turns 27, context start 11k peak 71k, resumes 0, 3 min, units 0.29 M
+- runs: 1
 - milestone: M2
 - started: 2026-10-27T01:00:58Z
-- result: open
+- result: wait-answers status added: lint, task-status.js (waiting_for required, reset on any other status), templates, task-create.js, protocol steps 4 and 5, planner/executor/runbook, indexes, crew-board.js; verified on a throwaway vault copy; step 0 resume of waiting globals left unchanged (outside authorisation). ALERT tokens over ceiling: subagent used 72842 vs 40000, cause = 13 files edited plus a full throwaway-copy test matrix.
 
 ## Relations
 - [[task-323-wait-answers-status]] — parent global task.

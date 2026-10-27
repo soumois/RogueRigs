@@ -1,9 +1,9 @@
 ---
 id: task-323-wait-answers-status
 description: "Global task: add the wait-answers task status with a waiting_for bullet, set by Planner and Executor when they stop for the owner."
-parent: tasks-to-do-index
+parent: tasks-done-index
 kind: task
-status: in-progress
+status: done
 ---
 # wait-answers task status
 
@@ -15,9 +15,9 @@ status: in-progress
 - gdd_check: dev tooling, no gdd node read or changed (Planner, 2026-10-26). No `open` gdd value needed. Edits to `_authoring` and `orchestration-protocol` (kind: rule): owner intent "oui" to this addition, plus Q1 of task-320..322. Do not edit `.claude/agents/*.md` (as Q9).
 - confirmed_by_owner: yes (2026-10-26): "oui, va pour le 322" to this addition; planned as task-323 by the splitting rule.
 - milestone: M2
-- next_step: task-323-01-wait-answers-status
+- next_step: none
 - started: 2026-10-27T01:00:58Z
-- result: open
+- result: Done. wait-answers status added: lint, task-status.js (waiting_for required, reset on any other status), templates, task-create.js, protocol steps 4 and 5, planner/executor/runbook, indexes, crew-board.js; verified on a throwaway vault copy; step 0 resume of waiting globals left unchanged (outside authorisation). ALERT tokens over ceiling: subagent used 72842 vs 40000, cause = 13 files edited plus a full throwaway-copy test matrix.
 
 Run order: after task-319 closes, then task-320, task-321, task-322, task-323, one at a time (all edit task-status.js; 323 extends the field insertion of 321 and the status list of 322).
 
@@ -25,6 +25,6 @@ Run order: after task-319 closes, then task-320, task-321, task-322, task-323, o
 1. task-323-01-wait-answers-status — cpp, editor any: _authoring, lint.js, task-status.js, templates, task-create.js, protocol steps 4 and 5, planner and executor nodes, indexes, crew-board.js.
 
 ## Relations
-- [[tasks-to-do-index]] — parent index.
+- [[tasks-done-index]] — parent index.
 - [[task-323-01-wait-answers-status]] — step 1, cpp.
 - [[task-322-cancelled-status]] — the sibling status point, run before.
