@@ -3,7 +3,7 @@ id: task-331-aim-chevrons-fade-measured
 description: "Global task: make the aim chevron distance fade really visible, measured on the final image, since task-329 left it barely visible."
 parent: tasks-to-do-index
 kind: task
-status: in-progress
+status: wait-answers
 ---
 # Aim chevrons: measured distance fade
 
@@ -15,7 +15,7 @@ status: in-progress
 - milestone: M3
 - next_step: task-331-05-docs
 - started: 2026-10-27T20:33:50Z
-- waiting_for: none
+- waiting_for: owner decision: chevrons 1 and 2 miss the 0.78^i+0.08 limit by 0.02 (retune FadeGain/FadeExp, one more capture) and colour reads cream not gold (Q2)
 - result: open
 
 ## Subtasks

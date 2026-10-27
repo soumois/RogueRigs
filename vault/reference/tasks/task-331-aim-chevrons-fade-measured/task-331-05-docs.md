@@ -3,7 +3,7 @@ id: task-331-05-docs
 description: "Update sys-aim-indicator with the measured cause of the weak chevron fade, the material fix and the EmissiveGain decision."
 parent: task-331-aim-chevrons-fade-measured
 kind: task
-status: in-progress
+status: todo
 ---
 # Aim chevrons measured fade: docs
 
