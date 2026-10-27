@@ -27,10 +27,11 @@ Changed by the owner 2026-10-27 (S2): the art agent generates the raw images wit
 - 3 x 3 preview: no seam line, no strong repeating motif.
 
 ## Files
-Prompts: `Art/Source/space-background/prompts/01-space-deep.txt`, `02-space-clouds.txt`, `03-space-correction.txt` (not used). Model `gpt-image-2-text-to-image`, 1:1, 1K (1254 px square delivered), no reference. Raw, awaiting owner validation; seam step not run.
+Prompts: `Art/Source/space-background/prompts/01-space-deep.txt`, `02-space-clouds.txt`, `03-space-correction.txt` (not used), `04-space-clouds-desaturate.txt` (cloud correction, used). Model `gpt-image-2-text-to-image`, 1:1, 1K (1254 px square delivered), no reference. Raw, awaiting owner validation; seam step not run.
 - Deep: prompt 01, image `Art/Source/space-background/20261027-141216-space-background-1.png`, log `20261027-141216-space-background.json` (same folder), 6 credits. Verdict: pass. Max pixel #341741 (below #4A2850), near-black about 41 percent, no stray hue, no star or object, corners and centre 8 to 15 luma (no vignette), left/right and top/bottom border mean diff about 1 luma.
 - Clouds: prompt 02, image `Art/Source/space-background/20261027-141320-space-background-1.png`, log `20261027-141320-space-background.json`, 6 credits. Verdict: pass with a note. Strands and dark gaps (about 52 percent near-black), indigo/violet/magenta only, no star or object, corners 15 to 22 luma (no vignette), border mean diff about 2 luma. Brightest pixel #954B81, slightly above the stated #8A4A84 core limit (isolated magenta cores): scale it down in the material.
-- Total 12 credits, no correction run.
+- Clouds corrected: prompt 04 ("Keep this exact image ... only desaturate and darken the brightest magenta cores to dusty magenta no brighter than #7E3C78, no pink or salmon tint"), reference the 141320 cloud image, image `Art/Source/space-background/20261027-141558-space-background-1.png`, log `20261027-141558-space-background.json`, 6 credits (`gpt-image-2-image-to-image`, 1:1, 1K). Verdict: pass. Brightest pixel #6A4286, max red #723E79 (limit met), top-200 pixels hue about 288 degrees (purple-magenta, no pink or salmon), layout, strands and gaps identical, near-black about 43 percent, no new object, left/right border diff about 0.2 luma. Retain this one; the 141320 image is superseded.
+- Total 18 credits, one correction run.
 
 ## Relations
 - [[art-prompts]] — parent: method and locked phrases.

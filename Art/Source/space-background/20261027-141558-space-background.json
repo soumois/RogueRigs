@@ -1,0 +1,27 @@
+{
+  "run_id": "20261027-141558-space-background",
+  "asset": "space-background",
+  "model": "gpt-image-2-image-to-image",
+  "aspect_ratio": "1:1",
+  "resolution": "1K",
+  "variants": 1,
+  "prompt_file": "Art/Source/space-background/prompts/04-space-clouds-desaturate.txt",
+  "prompt": "Keep this exact image: same strands, same gaps, same layout, same near-black base, same soft painted look, same flat square framing, same edges. Only change the colour of the brightest magenta cores: desaturate and darken them to dusty magenta no brighter than #7E3C78, with no pink and no salmon tint. Add nothing new: no star, no object, no border.",
+  "refs": [
+    "Art/Source/space-background/20261027-141320-space-background-1.png"
+  ],
+  "tasks": [
+    {
+      "task_id": "6d8066d8b7926cdebf3f5d870fd0f44c",
+      "state": "success",
+      "credits": 6,
+      "error": null,
+      "result_urls": [
+        "https://tempfile.aiquickdraw.com/images/chatgpt/file_000000009cac8246b9555101ab18b10b.png"
+      ]
+    }
+  ],
+  "files": [
+    "Art/Source/space-background/20261027-141558-space-background-1.png"
+  ]
+}
