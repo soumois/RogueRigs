@@ -3,7 +3,7 @@ id: task-332-space-background
 description: "Global task: a layered procedural space background in the void around the arena, with real depth parallax, instead of a flat pasted image."
 parent: tasks-to-do-index
 kind: task
-status: todo
+status: in-progress
 ---
 # Layered procedural space background for the void
 
@@ -23,7 +23,7 @@ status: todo
 - confirmed_by_owner: yes (2026-10-27, "ok", relayed by the main session)
 - milestone: M3
 - next_step: task-332-01-space-material
-- started: open
+- started: 2026-10-27T21:27:42Z
 - waiting_for: none
 - result: open
 

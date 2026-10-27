@@ -3,7 +3,7 @@ id: task-332-01-space-material
 description: "Build M_SpaceBackground, an Unlit procedural space material, and its three instances for the star, nebula and dust layers."
 parent: task-332-space-background
 kind: task
-status: todo
+status: in-progress
 ---
 # Space background: procedural material
 
@@ -20,7 +20,7 @@ status: todo
 - usage: open
 - runs: open
 - milestone: M3
-- started: open
+- started: 2026-10-27T21:27:42Z
 - waiting_for: none
 - result: open
 
