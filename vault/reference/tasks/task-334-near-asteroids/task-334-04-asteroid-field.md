@@ -3,7 +3,7 @@ id: task-334-04-asteroid-field
 description: "Build BP_AsteroidField with the background asteroids at their positions, depths and slow rotations, and place one instance in L_ArenaM1."
 parent: task-334-near-asteroids
 kind: task
-status: in-progress
+status: done
 ---
 # Asteroids: field actor and placement
 
@@ -15,14 +15,14 @@ status: in-progress
 - done_when: the Blueprint compiles and is saved; the map is saved and, after reload, shows one BP_AsteroidField with the expected component count; every component top Z below -300 and no component centre over a floor cell (checked against the layout, result in the summary); collision and shadow flags read back; committed by explicit paths.
 - editor_state: open
 - token_ceiling: 1.0 M units
-- model: open
-- tokens: open
-- usage: open
-- runs: open
+- model: sonnet
+- tokens: input 100, cache write 108280, cache read 3723775, output 34924
+- usage: turns 50, context start 9k peak 112k, resumes 0, 7 min, units 0.68 M
+- runs: 1
 - milestone: M3
 - started: 2026-10-27T23:40:39Z
 - waiting_for: none
-- result: open
+- result: BP_AsteroidField (12 meshes + 12 RotatingMovement) placed in L_ArenaM1 (adcbfdd8, 592b0b87); tops <= -373, centres over void cells. DEVIATION: BeginPlay graph with 12 SetUpdatedComponent calls (UpdatedComponent not kept on placed instance), contradicts 'no graph logic'; wiring only. Layouts arena_l2..l4 not checked for distance
 
 ## Relations
 - [[task-334-near-asteroids]] — parent global task.

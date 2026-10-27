@@ -3,7 +3,7 @@ id: task-334-05-capture
 description: "One -game run near an arena edge, a shot at two miner positions, showing the asteroids and their parallax shift, sheet for the owner."
 parent: task-334-near-asteroids
 kind: task
-status: todo
+status: in-progress
 ---
 # Asteroids: capture for the owner
 
@@ -20,7 +20,7 @@ status: todo
 - usage: open
 - runs: open
 - milestone: M3
-- started: open
+- started: 2026-10-27T23:47:57Z
 - waiting_for: none
 - result: open
 
