@@ -3,7 +3,7 @@ id: task-329-01-owner-screenshot
 description: "Copy the owner's 2026-10-27 aim chevron test screenshot into Art/Source/aim-indicator and list it in the aim-indicator node."
 parent: task-329-aim-chevrons-fade
 kind: task
-status: todo
+status: in-progress
 ---
 # Aim chevrons: store the owner's test screenshot
 
@@ -20,7 +20,7 @@ status: todo
 - usage: open
 - runs: open
 - milestone: M3
-- started: open
+- started: 2026-10-27T16:29:44Z
 - waiting_for: none
 - result: open
 

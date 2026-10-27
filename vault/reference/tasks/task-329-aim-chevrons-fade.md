@@ -3,7 +3,7 @@ id: task-329-aim-chevrons-fade
 description: "Global task: make the aim chevrons visibly lose opacity with distance from the miner, as in the mockup; the task-328 build shows them equally bright."
 parent: tasks-to-do-index
 kind: task
-status: todo
+status: in-progress
 ---
 # Aim chevrons: distance fade
 
@@ -14,7 +14,7 @@ status: todo
 - confirmed_by_owner: yes (2026-10-27, "ok", relayed by the main session)
 - milestone: M3
 - next_step: task-329-01-owner-screenshot
-- started: open
+- started: 2026-10-27T16:29:44Z
 - waiting_for: none
 - result: open
 
