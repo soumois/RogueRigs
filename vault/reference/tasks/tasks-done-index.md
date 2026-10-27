@@ -337,3 +337,4 @@ Archive: it exceeds the index size limits of [[_authoring]] on purpose (owner, 2
 - [[task-328-aim-chevrons]] — Aim indicator: a row of white-gold chevrons on the ground in front of the miner, pointing where he aims, direction only. Status done.
 - [[task-329-aim-chevrons-fade]] — Aim chevrons: make them visibly lose opacity with distance from the miner, as in the mockup. Status done.
 - [[task-330-aim-chevrons-sharp]] — Aim chevrons: sharp outlines instead of blurry, after task-329 (same material). Status done.
+- [[task-331-aim-chevrons-fade-measured]] — Aim chevrons: make the distance fade really visible, measured on the final image (task-329 left it barely visible). Status done.

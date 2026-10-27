@@ -1,9 +1,9 @@
 ---
 id: task-331-aim-chevrons-fade-measured
 description: "Global task: make the aim chevron distance fade really visible, measured on the final image, since task-329 left it barely visible."
-parent: tasks-to-do-index
+parent: tasks-done-index
 kind: task
-status: in-progress
+status: done
 ---
 # Aim chevrons: measured distance fade
 
@@ -13,10 +13,10 @@ status: in-progress
 - gdd_check: read [[aim-indicator]] (fade 0.78 per chevron already specified and owner-approved; no conflict, the build does not show it), [[sys-aim-indicator]] (HLSL weights chevron i by Decay^i on `MP_Opacity`; `MP_EmissiveColor` = Color x EmissiveGain 0.5; C++ pushes Decay 0.78, Opacity 1; the task-329 cause "exposure + tonemapping" is marked not measured), [[color-code]] (player side white-gold; the beige look contradicts it, Q2), [[readability-rules]] (no red, orange, acid green, steel blue: unchanged). Engine fact checked by the Planner in the UE 5.8 source: on the deferred path every decal emissive is drawn in the Emissive stage with blend `SrcAlpha, One` whatever the material blend mode (`Engine/Source/Runtime/Renderer/Private/DecalRenderingCommon.cpp` line 919; `Engine/Shaders/Private/DecalCommon.ush` line 106 writes `(Emissive x PreExposure, Opacity)`): the emissive is already scaled by opacity and added on the floor, the floor is never darkened. So the opacity does reach the colour; switching Translucent to AlphaComposite does not change this stage; multiplying the emissive by Decay^i again would square the fade. The real cause is not known: candidates for subtask 03 include a weight not per chevron in practice, an alpha above 1, tonemap compression, the post-process (`PPV_XPGlow` fixed exposure -0.94 EV100, bloom 1.3) and the floor brightness under each chevron. EmissiveGain 0.5 (task-329, owner option A) rested on that unmeasured diagnosis. Milestone M3, in scope. Open values asked and decided (owner "ok" to every default, 2026-10-27): Q1 how to measure (default: one capture before and one after the fix, by cpp, editor stays open); Q2 EmissiveGain (default back to 1.0, white-gold; if the after measure shows washed-out far chevrons at 1.0, report, owner decides); Q3 fade target (default 0.78 per chevron measured on the final image, tolerance +0.08). No C++ change foreseen: if the cause is outside the material (C++, post-process, level), subtask 03 stops and reports.
 - confirmed_by_owner: yes (2026-10-27, "ok", relayed by the main session)
 - milestone: M3
-- next_step: task-331-05-docs
+- next_step: none
 - started: 2026-10-27T20:44:08Z
 - waiting_for: none
-- result: open
+- result: Done. sys-aim-indicator updated (measured cause, FadeGain/FadeExp weight, EmissiveGain 1.0, where-to-tune table), commit 47a416f2. Owner accepted the fade as measured (rows 1-2 +0.02 over limit, cream colour): no retune.
 
 ## Subtasks
 1. task-331-01-owner-screenshot (vault/reference/tasks/task-331-aim-chevrons-fade-measured/task-331-01-owner-screenshot.md) — art: store the owner's new test screenshot in the repo and list it in aim-indicator.
@@ -26,7 +26,7 @@ status: in-progress
 5. task-331-05-docs (vault/reference/tasks/task-331-aim-chevrons-fade-measured/task-331-05-docs.md) — doc: update sys-aim-indicator (measured cause, fix, EmissiveGain).
 
 ## Relations
-- [[tasks-to-do-index]] — parent index.
+- [[tasks-done-index]] — parent index.
 - [[task-331-01-owner-screenshot]] — step 1, art.
 - [[task-331-02-measure-before]] — step 2, cpp.
 - [[task-331-03-fade-material]] — step 3, bp.
