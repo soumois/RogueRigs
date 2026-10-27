@@ -6,7 +6,9 @@
 //        editor_state, token_ceiling, confirmed_by_owner (optional, default "yes (<today>)")], ... ]
 // token_ceiling is written as-is: give it as "<x> M units" (weighted units of record-cost.js, e.g. "1.2 M units") or "open";
 // record-cost.js ignores any other form (legacy integer or k) for its ceiling alert.
-// For a second subtask (another agent), write its node by hand from vault/templates/task.md.
+// The global's "## Subtasks" line gives the subtask's repo-relative path (task-327):
+// `1. task-NNN-01-slug (vault/reference/tasks/task-NNN-slug/task-NNN-01-slug.md) — <agent>: <desc>`; task-start.js parses it.
+// For a second subtask (another agent), write its node by hand from vault/templates/task.md, its Subtasks line in the same form.
 const fs = require('fs'), path = require('path');
 const V = path.resolve(__dirname, '..');
 const T = path.join(V, 'reference', 'tasks');
@@ -27,7 +29,7 @@ for (const [num, slug, desc, agent, title, req, inputs, out, done, ed, ceil, con
   fs.writeFileSync(path.join(T, gid + '.md'), ['---', `id: ${gid}`, `description: "Global task: ${desc}"`, 'parent: tasks-to-do-index',
     'kind: task', 'status: todo', '---', `# ${title}`, '', `- request: ${req} (owner, ${today})`, `- goal: ${desc}`,
     `- acceptance: ${done.replace(/\.$/, '')}; committed.`, `- gdd_check: done by the Orchestrator when the task is planned (${today}).`,
-    `- confirmed_by_owner: ${conf}`, '- milestone: M2', `- next_step: ${sid}`, '- started: open', '- waiting_for: none', '- result: open', '', '## Subtasks', `1. ${sid} — ${agent}`, '',
+    `- confirmed_by_owner: ${conf}`, '- milestone: M2', `- next_step: ${sid}`, '- started: open', '- waiting_for: none', '- result: open', '', '## Subtasks', `1. ${sid} (vault/reference/tasks/${gid}/${sid}.md) — ${agent}: ${desc}`, '',
     '## Relations', '- [[tasks-to-do-index]] — parent index.', `- [[${sid}]] — step 1, ${agent}.`, ''].join('\n'));
   fs.mkdirSync(path.join(T, gid), { recursive: true });
   fs.writeFileSync(path.join(T, gid, sid + '.md'), ['---', `id: ${sid}`, `description: "${desc}"`, `parent: ${gid}`, 'kind: task',

@@ -4,17 +4,19 @@
 // and commits only the vault files it touched (safe while another agent works).
 // <global-id> is relative to vault/reference/tasks, without ".md"; e.g. task-320-task-start-script.
 // Subtask picked: the global next_step if it names a subtask that is not done, else the first subtask of
-// "## Subtasks" whose status is todo. Refuses a global without "confirmed_by_owner: yes" and a global with
-// no subtask left. Idempotent: when everything is already set it changes nothing and exits 0.
+// "## Subtasks" whose status is todo. Both Subtasks line forms are parsed: `1. <id> — ...` and
+// `1. <id> (vault/reference/tasks/<global>/<id>.md) — ...`. Refuses a global without "confirmed_by_owner: yes"
+// and a global with no subtask left. Idempotent: when everything is already set it changes nothing and exits 0.
+// Output (task-327): only lines that need action. Children run through task-quiet.js: lint `warn:` and `vault OK`
+// lines, git line-ending warnings and Node stacks are dropped; refusals, errors, lint problem lines, hook or commit
+// failures (child's own text, non-zero exit) and ALERT lines are printed. On success: the `git log --oneline -1`
+// line (or the "already in-progress ... nothing to do" line), `left: <git status --porcelain line>` for each
+// committed file still modified or untracked, then last `next: <absolute path of the subtask node>`.
 // Later subtasks of the same global are started by task-next.js when the previous one closes.
-const { execFileSync } = require('child_process');
 const fs = require('fs');
 const path = require('path');
-const ROOT = path.resolve(__dirname, '..', '..');
+const { ROOT, node, git, gitData, leftovers, nextLine } = require('./task-quiet');
 const TASKS = path.join(ROOT, 'vault', 'reference', 'tasks');
-const run = (cmd, args) => execFileSync(cmd, args, { cwd: ROOT, stdio: ['ignore', 'pipe', 'inherit'] }).toString();
-const node = (script, ...args) => run(process.execPath, [path.join('vault', 'scripts', script), ...args]);
-const git = (...args) => run('git', ['-c', 'safe.directory=' + ROOT.replace(/\\/g, '/'), ...args]);
 const fail = msg => { console.error('task-start: ' + msg); process.exit(1); };
 
 const globalId = (process.argv[2] || '').replace(/\.md$/, '');
@@ -32,7 +34,8 @@ if (status(g) === 'done') fail(`refusing ${globalId}: the global task is done. N
 const subFile = id => path.join(TASKS, globalId, id + '.md');
 const subStatus = id => fs.existsSync(subFile(id)) ? status(fs.readFileSync(subFile(id), 'utf8')) : null;
 const section = (g.split(/^## Subtasks\s*$/m)[1] || '').split(/^## /m)[0];
-const subs = [...section.matchAll(/^\d+\.\s+(task-\d+-\d+-[a-z0-9-]+)/gm)].map(m => m[1]);
+// the id ends at the first space: `1. <id> — ...` and `1. <id> (vault/...md) — ...` both match
+const subs = [...section.matchAll(/^\d+\.\s+(task-\d+-\d+-[a-z0-9-]+)(?=\s|$)/gm)].map(m => m[1]);
 const next = field(g, 'next_step');
 let sub = null;
 if (/^task-\d+-\d+-/.test(next) && subStatus(next) !== null && subStatus(next) !== 'done') sub = next;
@@ -45,12 +48,14 @@ let changed = false;
 if (status(g) !== 'in-progress') { node('task-status.js', `${globalId}.md`, 'status=in-progress'); changed = true; }
 if (subStatus(sub) !== 'in-progress') { node('task-status.js', subRel, 'status=in-progress'); changed = true; }
 if (field(fs.readFileSync(globalFile, 'utf8'), 'next_step') !== sub) { node('task-status.js', `${globalId}.md`, `next_step=${sub}`); changed = true; }
-if (!changed) { console.log(`${globalId}: already in-progress at ${sub}; nothing to do.`); process.exit(0); }
+if (!changed) { console.log(`${globalId}: already in-progress at ${sub}; nothing to do.`); nextLine(subFile(sub)); process.exit(0); }
 
-process.stdout.write(node('lint.js', '--write').split('\n').filter(Boolean).pop() + '\n');
+node('lint.js', '--write');
 const files = ['vault/_paths.md', 'vault/reference/tasks/tasks-to-do-index.md', 'vault/reference/tasks/tasks-done-index.md',
   `vault/reference/tasks/${globalId}.md`, `vault/reference/tasks/${subRel}`];
 // a node not yet tracked fails a commit by path: add it by name first
-for (const f of files) if (!git('ls-files', '--', f).trim()) git('add', '--', f);
+for (const f of files) if (!gitData('ls-files', '--', f).trim()) git('add', '--', f);
 git('commit', '-q', '-m', `${sub}: in-progress\n\nCo-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>`, '--', ...files);
-process.stdout.write(git('log', '--oneline', '-1'));
+process.stdout.write(gitData('log', '--oneline', '-1'));
+leftovers(files);
+nextLine(subFile(sub));

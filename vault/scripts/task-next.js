@@ -3,12 +3,14 @@
 // lints the vault and commits only the vault files it touched (safe while another agent works).
 // Paths are relative to vault/reference/tasks, without ".md"; e.g. task-062-alert-bar-x2 task-062-01-alert-bar-x2.
 // If the global task has more subtasks left, pass the same global as <next-global> and the next subtask.
-const { execFileSync } = require('child_process');
+// Output (task-327): only lines that need action. Children run through task-quiet.js: the record-cost.js summary
+// line, lint `warn:` and `vault OK` lines, git line-ending warnings and Node stacks are dropped; ALERT lines,
+// refusals (e.g. `tokens is still open`), record-cost.js errors, lint problem lines and hook or commit failures
+// (child's own text, non-zero exit) are printed. On success: the `git log --oneline -1` line,
+// `left: <git status --porcelain line>` for each committed file still modified or untracked, then last
+// `next: <absolute path of <next-global>/<next-subtask>.md>`, or `next: none` when no next subtask was given.
 const path = require('path');
-const ROOT = path.resolve(__dirname, '..', '..');
-const run = (cmd, args) => execFileSync(cmd, args, { cwd: ROOT, stdio: ['ignore', 'pipe', 'inherit'] }).toString();
-const node = (script, ...args) => run(process.execPath, [path.join('vault', 'scripts', script), ...args]);
-const git = (...args) => run('git', ['-c', 'safe.directory=' + ROOT.replace(/\\/g, '/'), ...args]);
+const { ROOT, node, git, gitData, leftovers, nextLine } = require('./task-quiet');
 
 const [doneGlobal, doneSub, runs, result, nextGlobal, nextSub] = process.argv.slice(2);
 if (!doneGlobal || !doneSub || !runs || result === undefined) {
@@ -16,7 +18,7 @@ if (!doneGlobal || !doneSub || !runs || result === undefined) {
   process.exit(1);
 }
 const costId = doneSub.split('-').slice(0, 3).join('-'); // task-NNN-SS
-process.stdout.write(node('record-cost.js', costId, runs));
+node('record-cost.js', costId, runs);
 node('task-status.js', `${doneGlobal}/${doneSub}.md`, 'status=done', `result=${result}`);
 const files = ['vault/_paths.md', 'vault/reference/production/cost-log.md', 'vault/reference/tasks/tasks-to-do-index.md', 'vault/reference/tasks/tasks-done-index.md',
   `vault/reference/tasks/${doneGlobal}.md`, `vault/reference/tasks/${doneGlobal}/${doneSub}.md`];
@@ -30,6 +32,9 @@ if (nextGlobal && nextSub) {
   node('task-status.js', `${nextGlobal}/${nextSub}.md`, 'status=in-progress');
   files.push(`vault/reference/tasks/${nextGlobal}.md`, `vault/reference/tasks/${nextGlobal}/${nextSub}.md`);
 }
-process.stdout.write(node('lint.js', '--write').split('\n').filter(Boolean).pop() + '\n');
-git('commit', '-q', '-m', `${doneSub}: done; next ${nextSub || 'none'}\n\nCo-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>`, '--', ...new Set(files));
-process.stdout.write(git('log', '--oneline', '-1'));
+node('lint.js', '--write');
+const committed = [...new Set(files)];
+git('commit', '-q', '-m', `${doneSub}: done; next ${nextSub || 'none'}\n\nCo-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>`, '--', ...committed);
+process.stdout.write(gitData('log', '--oneline', '-1'));
+leftovers(committed);
+nextLine(nextGlobal && nextSub ? path.join(ROOT, 'vault', 'reference', 'tasks', nextGlobal, nextSub + '.md') : null);
