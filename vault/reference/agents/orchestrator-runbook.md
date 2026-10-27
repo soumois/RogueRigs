@@ -1,6 +1,6 @@
 ---
 id: orchestrator-runbook
-description: "Orchestrator how-to: git, editor start and stop, delegation prompt, closing a subtask with the vault scripts, dashboard. Open when taking over."
+description: "Orchestrator how-to: git, editor start and stop, delegation prompt, starting a task and closing a subtask with the vault scripts, dashboard. Open when taking over."
 parent: agents-index
 kind: note
 ---
@@ -27,6 +27,9 @@ Complements [[orchestration-protocol]] (the rules) with the commands that worked
 
 ## Creating tasks
 - One logical owner point = one global task ([[orchestration-protocol]]). Write a spec module and run `node vault/scripts/task-create.js <spec.js> <last-task-id>`: it writes each global task with one subtask, resolves the input ids to paths (the delegation hands those paths to the agent) and adds them to tasks-to-do-index (at the end of the list when the anchor is not there). `task-status.js` moves a global task to tasks-done-index when it is set to done. A second subtask for another agent is written by hand from `vault/templates/task.md`.
+
+## Starting a task
+- `node vault/scripts/task-start.js <global-id>` (no `.md`): refuses unless `confirmed_by_owner: yes`; picks the global `next_step` subtask if not done, else the first `todo` one of `## Subtasks`; sets both `in-progress` and `next_step` through `task-status.js`, lints and commits only those vault files (`<subtask>: in-progress`). A second run changes nothing and exits 0. Later subtasks start through `task-next.js`.
 
 ## Closing a subtask
 1. Check the report against `done_when`.

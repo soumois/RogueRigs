@@ -8,7 +8,7 @@ applies_to: orchestrator
 # Orchestration protocol
 
 ## Roles
-`/task` splits the procedure between two agents (owner 2026-10-26). The [[agent-planner]] does steps 0 to 4 and writes every decision into the task nodes; the [[agent-executor]] does steps 5 and 6 for one confirmed global task, from those nodes only, in a fresh context. Executor step 0: check `git status` and the task's `next_step`; it does not read `tasks-index` or report other tasks.
+`/task` splits the procedure between two agents (owner 2026-10-26). The [[agent-planner]] does steps 0 to 4 and writes every decision into the task nodes; the [[agent-executor]] does steps 5 and 6 for one confirmed global task, from those nodes only, in a fresh context. Executor step 0: check `git status` and the task's `next_step`, then run `node vault/scripts/task-start.js <global-id>` (a no-op when already started); it does not read `tasks-index` or report other tasks.
 
 ## 0. Resume first
 On every start, read [[tasks-index]]. If a global task is `in-progress`, read it, open its `next_step` subtask, check `git status` for partial work, and continue from there. Do not take a new request before reporting where the current one stands.
@@ -41,7 +41,7 @@ bp split (owner 2026-10-14): when one owner point needs several editor assets, o
 Show the plan once. A "no" to every proposed option means no task: ask or wait, never relaunch work on a reinterpreted target. The owner confirms the global task; subtasks then run without further confirmation. A second global task requested meanwhile waits for its own confirmation.
 
 ## 5. Execute, one subtask at a time
-1. Set the subtask `in-progress` and the global `next_step` to it; commit.
+1. Start the global with `node vault/scripts/task-start.js <global-id>`: it sets the global and its first open subtask `in-progress` and `next_step` to it, lints and commits. Later subtasks are started by `task-next.js` when the previous one closes.
 2. Prepare the editor state (close Unreal before C++ builds; launch it before BP work).
 3. Delegate to the subagent with the subtask node and the resolved paths of its inputs as the only reading list.
 4. Run the `done_when` checks.
