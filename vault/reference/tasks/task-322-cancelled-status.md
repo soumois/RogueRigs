@@ -1,9 +1,9 @@
 ---
 id: task-322-cancelled-status
 description: "Global task: add cancelled to the allowed task statuses, in the writing contract, lint, task-status.js, the tasks indexes and crew-board.js."
-parent: tasks-to-do-index
+parent: tasks-done-index
 kind: task
-status: in-progress
+status: done
 ---
 # cancelled task status
 
@@ -14,14 +14,14 @@ status: in-progress
 - gdd_check: dev tooling, no gdd node read or changed (Planner, 2026-10-26). No `open` gdd value needed. Editing `_authoring` (kind: rule) needs the owner's explicit intent: the request names the status; confirmation asked (Q1).
 - confirmed_by_owner: yes (2026-10-26): "ok" to every default, Q1-Q9.
 - milestone: M2
-- next_step: task-322-01-cancelled-status
+- next_step: none
 - started: 2026-10-27T00:57:16Z
-- result: open
+- result: Done. cancelled status allowed (authoring, lint, task-status.js moves cancelled globals to done index and cancels open subtasks, indexes, runbook, crew-board.js label and style); extra CRLF fix in crew-board.js parse() (3 live nodes crashed it); tested on throwaway task-999, reverted; commit d54f182d
 
 ## Subtasks
 1. task-322-01-cancelled-status — cpp, editor any: _authoring, lint.js, task-status.js, tasks indexes, crew-board.js.
 
 ## Relations
-- [[tasks-to-do-index]] — parent index.
+- [[tasks-done-index]] — parent index.
 - [[task-322-01-cancelled-status]] — step 1, cpp.
 - [[task-323-wait-answers-status]] — the wait-answers status added by the owner, run after this task.

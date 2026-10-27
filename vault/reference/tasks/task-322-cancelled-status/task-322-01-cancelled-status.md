@@ -3,7 +3,7 @@ id: task-322-01-cancelled-status
 description: "Allow status cancelled: _authoring, lint.js, task-status.js moves cancelled globals out of tasks-to-do-index, index texts, crew-board.js label."
 parent: task-322-cancelled-status
 kind: task
-status: in-progress
+status: done
 ---
 # Allow the cancelled status
 
@@ -15,13 +15,13 @@ status: in-progress
 - done_when: on a throwaway global with two subtasks (one done, one todo; never a live task, reverted after): `task-status.js <global>.md status=cancelled` moves its line to tasks-done-index with `Status cancelled.`, updates its parent field and parent link, sets the todo subtask cancelled and leaves the done one, sets `next_step: none`; lint accepts `cancelled` and still rejects an unknown status; `node vault/scripts/crew-board.js "test"` runs; `norm('cancelled')` in register.tsx still returns `cancel` (read, unchanged); live nodes untouched; lint clean; committed by explicit path.
 - editor_state: any
 - token_ceiling: 40000
-- model: open
-- tokens: open
-- usage: open
-- runs: open
+- model: opus
+- tokens: input 36, cache write 34908, cache read 489141, output 11637
+- usage: turns 18, context start 11k peak 40k, resumes 0, 3 min, units 0.15 M
+- runs: 1
 - milestone: M2
 - started: 2026-10-27T00:57:16Z
-- result: open
+- result: cancelled status allowed (authoring, lint, task-status.js moves cancelled globals to done index and cancels open subtasks, indexes, runbook, crew-board.js label and style); extra CRLF fix in crew-board.js parse() (3 live nodes crashed it); tested on throwaway task-999, reverted; commit d54f182d
 
 ## Relations
 - [[task-322-cancelled-status]] — parent global task.
