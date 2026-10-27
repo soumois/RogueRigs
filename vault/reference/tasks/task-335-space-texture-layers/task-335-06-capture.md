@@ -3,7 +3,7 @@ id: task-335-06-capture
 description: "One -game capture near the east arena edge showing the texture layers, luma numbers, comparison with the task-333 capture, sheet for the owner."
 parent: task-335-space-texture-layers
 kind: task
-status: todo
+status: in-progress
 ---
 # Space layers: capture for the owner
 
@@ -20,7 +20,7 @@ status: todo
 - usage: open
 - runs: open
 - milestone: M3
-- started: open
+- started: 2026-10-27T22:53:36Z
 - waiting_for: none
 - result: open
 

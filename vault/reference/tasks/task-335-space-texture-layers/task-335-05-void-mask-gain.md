@@ -3,7 +3,7 @@ id: task-335-05-void-mask-gain
 description: "M_PP_PlayerLightMask: pixels below world Z -200 (void background) use their own far gain 0.5 instead of 0.08; floor and units unchanged."
 parent: task-335-space-texture-layers
 kind: task
-status: in-progress
+status: done
 ---
 # Void: own far gain in the player light mask
 
@@ -15,14 +15,14 @@ status: in-progress
 - done_when: both assets compile with no log error and are saved; the MPC parameters read back; the formula reads back; a PIE or editor view check states whether floor pixels and the arena cliff faces stay on FarBrightness (cliff faces below Z -200, if any, reported, not fixed); only MPC_PlayerLight and M_PP_PlayerLightMask change in `git status`; committed by explicit path.
 - editor_state: open
 - token_ceiling: 1.0 M units
-- model: open
-- tokens: open
-- usage: open
-- runs: open
+- model: sonnet
+- tokens: input 54, cache write 50459, cache read 926849, output 13991
+- usage: turns 27, context start 9k peak 55k, resumes 0, 3 min, units 0.23 M
+- runs: 1
 - milestone: M3
 - started: 2026-10-27T22:50:34Z
 - waiting_for: none
-- result: open
+- result: MPC_PlayerLight VoidFarBrightness 0.5 and VoidZ -200; Custom HLSL farB = z<VoidZ ? VoidFar : FarBrightness; note saved FarBrightness reads 0.06 not 0.08 (doc to record); floor/cliff checked from code only, render unverified; commit 066b72d1
 
 ## Relations
 - [[task-335-space-texture-layers]] — parent global task.
