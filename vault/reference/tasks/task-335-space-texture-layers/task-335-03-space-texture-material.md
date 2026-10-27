@@ -3,7 +3,7 @@ id: task-335-03-space-texture-material
 description: "Import the two space textures and build M_SpaceTexture (Unlit additive, world-XY UV, slow drift) with MI_Space_Deep and MI_Space_Clouds."
 parent: task-335-space-texture-layers
 kind: task
-status: todo
+status: in-progress
 ---
 # Space layers: texture material and instances
 
@@ -20,7 +20,7 @@ status: todo
 - usage: open
 - runs: open
 - milestone: M3
-- started: open
+- started: 2026-10-27T22:43:41Z
 - waiting_for: none
 - result: open
 
