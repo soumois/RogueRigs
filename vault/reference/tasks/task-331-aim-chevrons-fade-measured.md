@@ -3,7 +3,7 @@ id: task-331-aim-chevrons-fade-measured
 description: "Global task: make the aim chevron distance fade really visible, measured on the final image, since task-329 left it barely visible."
 parent: tasks-to-do-index
 kind: task
-status: wait-answers
+status: in-progress
 ---
 # Aim chevrons: measured distance fade
 
@@ -14,8 +14,8 @@ status: wait-answers
 - confirmed_by_owner: yes (2026-10-27, "ok", relayed by the main session)
 - milestone: M3
 - next_step: task-331-03-fade-material
-- started: 2026-10-27T16:59:22Z
-- waiting_for: Unreal Editor closed, MCP port 8000 not answering at subtask 03
+- started: 2026-10-27T20:33:50Z
+- waiting_for: none
 - result: open
 
 ## Subtasks

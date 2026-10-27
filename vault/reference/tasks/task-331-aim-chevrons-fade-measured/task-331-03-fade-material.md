@@ -3,7 +3,7 @@ id: task-331-03-fade-material
 description: "Name the measured cause of the weak chevron fade and fix it in M_AimChevrons, setting EmissiveGain as the owner decided."
 parent: task-331-aim-chevrons-fade-measured
 kind: task
-status: wait-answers
+status: in-progress
 ---
 # Aim chevrons: fix the fade from measurements
 
@@ -20,8 +20,8 @@ status: wait-answers
 - usage: open
 - runs: open
 - milestone: M3
-- started: 2026-10-27T17:03:56Z
-- waiting_for: Unreal Editor closed, MCP port 8000 not answering: main session must relaunch the editor
+- started: 2026-10-27T20:33:50Z
+- waiting_for: none
 - result: open
 
 ## Relations
