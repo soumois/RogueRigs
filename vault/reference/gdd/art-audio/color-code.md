@@ -28,6 +28,7 @@ status: approved
 | Shooter | acid green |
 | Heavy | steel blue + yellow/black hazard stripes |
 | Normal / critical damage number | white / larger white-gold |
+| Heal number ("+N" on the miner) | green, linear (0.1, 1, 0.2), the heal ring green; a small detail, so the Shooter keeps acid green as main colour (owner 2026-10-27, provisional, [[task-324-heal-numbers]], [[damage-numbers]]) |
 
 Exception (owner 2026-10-11): the explosion warning sign on the barrel is a yellow triangle with a black border and a black burst, chosen by the owner after a reference sign; the yellow and black hazard stripes stay reserved for the heavy ([[barrel-asset]]).
 
@@ -41,3 +42,4 @@ Exception "console state lamps" (owner 2026-10-23, provisional): the command con
 - [[readability-rules]] — why these colors.
 - [[barrel-asset]] — the barrel and its yellow and black warning sign.
 - [[objective-console]] — the console state lamps exception.
+- [[damage-numbers]] — damage and heal number rules.

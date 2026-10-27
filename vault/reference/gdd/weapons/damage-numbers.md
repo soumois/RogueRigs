@@ -21,5 +21,8 @@ status: provisional
 
 - No merging (owner 2026-10-08, after the DRGS video): one number per hit; each number starts at a random point of a 30 uu disc around the hit (45 uu on the heavy) so repeated hits on one robot do not start from the same spot; the vertical stacking against overlap is kept. Replaces the 0.25 s merge window above.
 
+- Heal numbers (owner 2026-10-27, provisional, [[task-324-heal-numbers]]): each heal pickup that heals the miner shows "+N" above him, N = HP actually gained (health after minus before), green ([[color-code]]); same size rule, arc, pop and fade as a normal damage number of that value, never critical; one number per pickup, no merge, same vertical stacking; spawned at the top of the miner capsule + 40 uu within the 30 uu disc; hidden by the same toggle.
+
 ## Relations
 - [[weapons-index]] — parent index.
+- [[color-code]] — damage and heal number colours.
