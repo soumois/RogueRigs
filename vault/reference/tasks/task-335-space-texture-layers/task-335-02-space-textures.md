@@ -3,7 +3,7 @@ id: task-335-02-space-textures
 description: "Write bold prompts, regenerate the deep and cloud space images via Kie.ai, get owner validation, make them tileable at 2048 with previews."
 parent: task-335-space-texture-layers
 kind: task
-status: in-progress
+status: wait-answers
 ---
 # Space layers: bold images and tileable textures
 
@@ -22,7 +22,7 @@ status: in-progress
 - runs: open
 - milestone: M3
 - started: 2026-10-27T22:28:45Z
-- waiting_for: none
+- waiting_for: owner validation of the two bold raw images (deep 20261027-142923, clouds 20261027-143112)
 - result: open
 
 ## Relations
