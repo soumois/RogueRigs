@@ -1,9 +1,9 @@
 ---
 id: task-325-doc-agent
 description: "Global task: add a Sonnet doc agent that writes a task's vault documentation from an executor brief; cpp and bp return a change summary instead."
-parent: tasks-to-do-index
+parent: tasks-done-index
 kind: task
-status: in-progress
+status: done
 ---
 # Doc agent for end-of-task vault documentation
 
@@ -13,10 +13,10 @@ status: in-progress
 - gdd_check: dev tooling, no gdd node needed (Planner, 2026-10-27). Rule nodes edited with explicit owner intent (this request): [[orchestration-protocol]] (steps 3 and 5). Precedent for who edits crew definitions: tasks 320 to 323, one cpp subtask each. Decided (owner "ok" to the defaults, 2026-10-27, provisional): Q1 the docs split applies to cpp and bp only; art, 3d, level-design and text keep writing their own nodes, because those nodes are their output. Q2 one `doc` subtask at the end of each global task that has cpp or bp subtasks, planned by the Planner when it writes the plan, depends_on every implementing subtask; the Executor's brief gives the commit hashes and changed paths (the doc agent runs `git show <hash> -- <paths>` itself, the diff is not pasted into the prompt), the decided values (pointer to the global `request`/`gdd_check`), the implementers' change summaries and the list of nodes to create or update. Q3 the open tasks already planned (308, 309, 314) are not re-planned: their cpp and bp subtasks keep writing docs as written. Q4 doc agent definition: model sonnet, tools Read, Write, Edit, Bash, Glob (no Agent, no Unreal MCP), maxTurns 30, `token_ceiling` set by [[task-326-units-ceiling]] (written `open` here). The Blueprint doc rule of [[_authoring]] still holds: the task is not done until the doc subtask updates the `bp-*` node.
 - confirmed_by_owner: yes (2026-10-27)
 - milestone: M2
-- next_step: task-325-01-doc-agent
+- next_step: none
 - started: 2026-10-27T14:17:20Z
 - waiting_for: none
-- result: open
+- result: Done. Doc agent created (.claude/agents/doc.md, agent-doc) and wired into executor, planner, cpp, bp, protocol steps 3 and 5, runbook, agents-index; commit c78c7bea. Q3: cpp/bp keep an exception for tasks 308, 309, 314.
 
 Run order: task-325 before task-326 (326-02 is run by the doc agent).
 
@@ -24,6 +24,6 @@ Run order: task-325 before task-326 (326-02 is run by the doc agent).
 1. task-325-01-doc-agent — cpp, editor any: doc agent definition files, executor, planner, cpp and bp definitions, protocol, runbook, agents-index.
 
 ## Relations
-- [[tasks-to-do-index]] — parent index.
+- [[tasks-done-index]] — parent index.
 - [[task-325-01-doc-agent]] — step 1, cpp.
 - [[task-326-units-ceiling]] — sibling owner point (ceiling measure), run after; sets the doc agent's ceiling.

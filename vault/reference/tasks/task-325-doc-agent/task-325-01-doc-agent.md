@@ -3,7 +3,7 @@ id: task-325-01-doc-agent
 description: "Create the doc agent (definition file and vault node) and wire it into planner, executor, cpp, bp, protocol, runbook and agents-index."
 parent: task-325-doc-agent
 kind: task
-status: in-progress
+status: done
 ---
 # Create and wire the doc agent
 
@@ -15,14 +15,14 @@ status: in-progress
 - done_when: `.claude/agents/doc.md` has `model: sonnet` and the Q4 tools; `agent-doc` exists, is a child of agents-index and links back; executor, planner, cpp and bp definitions (vault node and `.claude/agents` file of each) agree with the decisions, and no definition still tells cpp or bp to write a `sys-*` or `bp-*` node; protocol steps 3 and 5 and the runbook name the doc subtask and its brief; executor, planner and protocol state that the doc subtask has its own node, a delegation description starting with its subtask id and a `task-next.js` closing (cost-log row, `usage` line, model, alerts); tasks 308, 309, 314 untouched; lint clean; committed by explicit path.
 - editor_state: any
 - token_ceiling: 40000
-- model: open
-- tokens: open
-- usage: open
-- runs: open
+- model: opus
+- tokens: input 34, cache write 54289, cache read 638598, output 18412
+- usage: turns 17, context start 11k peak 54k, resumes 0, 3 min, units 0.22 M
+- runs: 1
 - milestone: M2
 - started: 2026-10-27T14:17:20Z
 - waiting_for: none
-- result: open
+- result: Doc agent created (.claude/agents/doc.md, agent-doc) and wired into executor, planner, cpp, bp, protocol steps 3 and 5, runbook, agents-index; commit c78c7bea. Q3: cpp/bp keep an exception for tasks 308, 309, 314.
 
 ## Relations
 - [[task-325-doc-agent]] — parent global task.
