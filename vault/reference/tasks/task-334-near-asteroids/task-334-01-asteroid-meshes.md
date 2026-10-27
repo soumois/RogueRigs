@@ -3,7 +3,7 @@ id: task-334-01-asteroid-meshes
 description: "Blender route: a bpy script builds four low-poly faceted asteroid variants, exports FBX with reports and a preview render for owner validation."
 parent: task-334-near-asteroids
 kind: task
-status: wait-answers
+status: done
 ---
 # Asteroids: meshes (Blender route)
 
@@ -15,14 +15,14 @@ status: wait-answers
 - done_when: 4 FBX and 4 reports exist, each at most 400 triangles, one island, dimensions about 100 cm; the preview exists and the Executor has sent it to the owner, who validated it (until then the Executor sets this subtask and the global `wait-answers`, "waiting_for=owner validation of the asteroid preview"); no `blender` process left (`Get-Process blender`); asset node linked, lint clean; committed by explicit paths.
 - editor_state: any
 - token_ceiling: 1.2 M units
-- model: open
-- tokens: open
-- usage: open
-- runs: open
+- model: sonnet
+- tokens: input 26, cache write 42956, cache read 396910, output 10426
+- usage: turns 13, context start 10k peak 46k, resumes 0, 2 min, units 0.15 M
+- runs: 1
 - milestone: M3
 - started: 2026-10-27T23:21:20Z
-- waiting_for: owner validation of the asteroid preview
-- result: open
+- waiting_for: none
+- result: 4 asteroid FBX (<=400 tris) built by Blender script, preview validated by owner (2026-10-27: 'Les 4 asteroides sont valides, continue la tache 334')
 
 ## Relations
 - [[task-334-near-asteroids]] — parent global task.

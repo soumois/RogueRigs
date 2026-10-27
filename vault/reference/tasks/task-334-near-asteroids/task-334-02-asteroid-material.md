@@ -3,7 +3,7 @@ id: task-334-02-asteroid-material
 description: "Build M_Asteroid and MI_Asteroid, a lit flat-coloured rock material for the background asteroids, darker than the arena rocks."
 parent: task-334-near-asteroids
 kind: task
-status: todo
+status: in-progress
 ---
 # Asteroids: material
 
@@ -20,7 +20,7 @@ status: todo
 - usage: open
 - runs: open
 - milestone: M3
-- started: open
+- started: 2026-10-27T23:30:53Z
 - waiting_for: none
 - result: open
 
