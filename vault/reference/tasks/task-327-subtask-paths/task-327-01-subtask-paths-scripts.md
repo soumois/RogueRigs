@@ -3,7 +3,7 @@ id: task-327-01-subtask-paths-scripts
 description: "task-start.js and task-next.js print only errors, alerts, refusals, commit line and next: path; task-create.js writes subtask paths in Subtasks."
 parent: task-327-subtask-paths
 kind: task
-status: todo
+status: in-progress
 ---
 # Quiet task scripts ending with the subtask path
 
@@ -20,7 +20,7 @@ status: todo
 - usage: open
 - runs: open
 - milestone: M2
-- started: open
+- started: 2026-10-27T14:58:21Z
 - waiting_for: none
 - result: open
 

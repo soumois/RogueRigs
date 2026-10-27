@@ -3,7 +3,7 @@ id: task-327-subtask-paths
 description: "Global task: task-start.js and task-next.js print only signal lines and the started subtask's path; Subtasks lists give paths; Executor may open them directly."
 parent: tasks-to-do-index
 kind: task
-status: todo
+status: in-progress
 ---
 # Direct path to subtask nodes, quiet task scripts
 
@@ -14,7 +14,7 @@ status: todo
 - confirmed_by_owner: yes (2026-10-27, owner decisions (1) to (3) confirmed in chat; relayed by the main session)
 - milestone: M2
 - next_step: task-327-01-subtask-paths-scripts
-- started: open
+- started: 2026-10-27T14:58:21Z
 - waiting_for: none
 - result: open
 
