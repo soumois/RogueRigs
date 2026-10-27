@@ -1,0 +1,11 @@
+A flat square 1:1 texture of painted space cloud wisps, seen straight on (no perspective, no horizon, no camera angle). Hand-painted, stylised game texture, painterly brush work, dark digital gouache look, bold, vivid and dense, not timid.
+
+Content: dense luminous filaments, ribbons and billows of glowing gas on a near-black base, with strong structure: many curling and twisting strands, bright hot cores where strands gather, thick glowing billows, and dark dust lanes that cut across the clouds. Soft feathered edges but strong contrast between the glowing gas and the dark lanes. About 20 to 25 percent of the image is pure near-black, in gaps and lanes. The strands flow in one loose general direction, with turbulent curls. Wisps are very bright in their core and fade smoothly to black at their edges. No two areas look the same, no obvious repeated shape. No hard outline, no geometric shape.
+
+Colour: saturated and vivid. Near-black base roughly #04020C. Filaments in saturated indigo roughly #3418B0 to #4A24D0, electric violet roughly #7A28E0 to #9A3CFF, and magenta roughly #B0289A to #D03CC0 for the bright cores. A little saturated deep ultramarine blue roughly #1A2CC0 to #2A44E0 may appear in a few outer wisps (rich royal blue, never grey, never steel blue, not cyan). Cores glow clearly and reach about a third of full brightness or more, but no pure white, no white-hot spot. Never green, grey steel blue, red, orange, cyan, teal, yellow, salmon or pink.
+
+Seamless tile: the filaments must continue across the borders, with strands leaving the left edge and entering again from the right edge at the same height, and the same for top and bottom, so the square can be repeated without a visible seam. Keep dark lanes and filament density similar near opposite borders. No frame, no border, no vignette, no darker or lighter corners, no single dominant cloud or bright landmark that would repeat obviously.
+
+Lighting: no light direction, no cast shadow, no lens flare, no gradient from one side of the image to the other. The glow lives only inside the filaments.
+
+Forbidden: no stars, no star dots, no sparkles, no planets, no moons, no asteroids, no rocks, no galaxies, no spaceships, no objects, no characters, no machines, no text, no letters, no logo, no UI, no watermark.

@@ -1,6 +1,6 @@
 ---
 id: art-prompts-space-background
-description: "ChatGPT prompts, files and seam method of the two tileable void space layers (deep washes, cloud wisps, task-335): prompt chain, review checklist."
+description: "Kie.ai prompts (first and bold chain), files and seam method of the two tileable void space layers (deep washes, cloud wisps, task-335): prompt chain, review checklist."
 parent: art-prompts
 kind: note
 ---
@@ -14,6 +14,11 @@ Need: two square tileable painted textures for the void behind the arena ([[colo
 - Step 03, file `.../03-space-correction.txt`: A (border, vignette, seam), B (stars or objects), C (too bright or saturated), each "Keep this exact image: same ..." changing one thing, previous image attached.
 - The hex ranges are provisional: [[color-code]] gives the family (deep indigo-violet, violet, dusty magenta, low saturation), not values. Dark on purpose: the layers are additive and the cloud peak must stay about 20 to 35 sRGB luma near an edge.
 
+## Bold chain (B1 to B5 of [[task-335-space-texture-layers]], owner "ok" 2026-10-27, after "ça reste trés timide")
+- Step 05, verbatim file `Art/Source/space-background/prompts/05-space-deep-bold.txt` (deep). Core: "five to seven big billowing nebula masses ... glowing bright cores ... long curving dark dust lanes ... about 20 to 25 percent near-black ... saturated deep ultramarine blue #1A2CC0 to #2A44E0 (pure royal blue, not grey, not steel blue) as main second hue, indigo #3418B0 to #4A24D0, electric violet #7A28E0 to #9A3CFF, magenta #B0289A to #D03CC0 for cores only ... cores about a third of full brightness or more, no pure white ... never green, grey steel blue, red, orange, cyan, teal, yellow, salmon or pink ... seamless, no frame, no vignette ... no stars, planets, asteroids, text".
+- Step 06, file `.../06-space-clouds-bold.txt` (clouds). Core: "dense luminous filaments, ribbons and billows ... bright hot cores where strands gather ... dark dust lanes cut across ... about 20 to 25 percent near-black ... indigo, electric violet, magenta cores, a little ultramarine in a few outer wisps ... same brightness cap, same forbidden list".
+- The B values replace the hex caps (`#4A2850`, `#8A4A84`) and the 40 percent near-black of steps 01 and 02, which stay as the fallback chain. Hex ranges provisional: tuned by eye in the material (Contrast and Saturation parameters).
+
 ## Generation route
 Changed by the owner 2026-10-27 (S2): the art agent generates the raw images with `node Tools/art/kie_image.js --asset space-background` (text-to-image, 1:1, 1K, 1 variant per layer). The ChatGPT route is dropped.
 
@@ -21,6 +26,8 @@ Changed by the owner 2026-10-27 (S2): the art agent generates the raw images wit
 `Tools/art/make_tileable.js --in <image> --out <tileable> --preview <3x3> --size 2048` ([[art-prompts-rock-top-texture]]). Keep the raw file.
 
 ## Review checklist
+- Bold chain (B1 to B4): near-black share (max channel below 40) about 20 to 25 percent; saturated indigo, electric violet, magenta, ultramarine mainly in the deep layer; visible bright cores, dense filaments, dark dust lanes; deep layer shows large shapes, not a flat wash; hue bins only 220 to 320 degrees, no green, steel blue, red, orange, cyan, teal, salmon or pink; no near-white spot; border mean diff a few luma at most; no vignette.
+- Checks below apply to the fallback chain (01 to 04); in it the hex caps and 40 percent black are replaced by the bold values above.
 - Flat square, no perspective, no baked light, no vignette or corner darkening.
 - No star, planet, asteroid, text, object; only indigo, violet, dusty magenta, never green, blue, red, orange, cyan ([[readability-rules]]).
 - Deep: no filament or hard edge, very low contrast. Clouds: visible strands and dark gaps, cores below the stated peak.
@@ -32,6 +39,9 @@ Prompts: `Art/Source/space-background/prompts/01-space-deep.txt`, `02-space-clou
 - Clouds: prompt 02, image `Art/Source/space-background/20261027-141320-space-background-1.png`, log `20261027-141320-space-background.json`, 6 credits. Verdict: pass with a note. Strands and dark gaps (about 52 percent near-black), indigo/violet/magenta only, no star or object, corners 15 to 22 luma (no vignette), border mean diff about 2 luma. Brightest pixel #954B81, slightly above the stated #8A4A84 core limit (isolated magenta cores): scale it down in the material.
 - Clouds corrected: prompt 04 ("Keep this exact image ... only desaturate and darken the brightest magenta cores to dusty magenta no brighter than #7E3C78, no pink or salmon tint"), reference the 141320 cloud image, image `Art/Source/space-background/20261027-141558-space-background-1.png`, log `20261027-141558-space-background.json`, 6 credits (`gpt-image-2-image-to-image`, 1:1, 1K). Verdict: pass. Brightest pixel #6A4286, max red #723E79 (limit met), top-200 pixels hue about 288 degrees (purple-magenta, no pink or salmon), layout, strands and gaps identical, near-black about 43 percent, no new object, left/right border diff about 0.2 luma. Retain this one; the 141320 image is superseded.
 - Total 18 credits, one correction run.
+- Bold deep: prompt 05, image `Art/Source/space-background/20261027-142923-space-background-1.png`, log `20261027-142923-space-background.json`, 6 credits (`gpt-image-2-text-to-image`, 1:1, 1K, 1254 px). Self-check: pass. Max pixel (254,145,255) isolated, no near-white pixel (min channel above 180: 0 percent), near-black (max channel below 40) 20.0 percent, mean saturation 0.96, hues 240 deg (ultramarine) 67 percent, 260 deg (indigo-violet) 26 percent, 280 deg 6 percent, 300 deg 1 percent, no hue outside 220 to 320, corner luma 7 to 12, border mean diff 3.2 (left/right) and 2.6 (top/bottom) luma. Six large masses with magenta cores and dark lanes. Small note: the hottest cores lean pale pink-magenta (0.7 percent of pixels with red above 200), scale in the material.
+- Bold clouds: prompt 06, image `Art/Source/space-background/20261027-143112-space-background-1.png`, log `20261027-143112-space-background.json`, 6 credits. Self-check: pass. Max pixel (255,231,255) in a few isolated pixels (0.05 percent with red above 200 and green above 120), no near-white area, near-black 20.6 percent, mean saturation 0.95, hues 260 deg 51 percent, 240 deg 27 percent, 280 deg 18 percent, 300 deg 4 percent, none outside 220 to 320, corner luma 24 to 40 (slightly brighter than the deep, no vignette), border mean diff 3.7 (left/right) and 5.5 (top/bottom) luma. Dense swirling filaments, bright magenta cores, dark lanes. Note: border diff top/bottom 5.5, check in the 3 x 3 preview.
+- Bold chain total 12 credits, no correction. Both raw, awaiting owner validation; seam step not run. The 141216 and 141558 images stay as fallback, not retained.
 
 ## Relations
 - [[art-prompts]] — parent: method and locked phrases.

@@ -1,0 +1,25 @@
+{
+  "run_id": "20261027-142923-space-background",
+  "asset": "space-background",
+  "model": "gpt-image-2-text-to-image",
+  "aspect_ratio": "1:1",
+  "resolution": "1K",
+  "variants": 1,
+  "prompt_file": "Art/Source/space-background/prompts/05-space-deep-bold.txt",
+  "prompt": "A flat square 1:1 texture of painted deep space colour clouds, seen straight on (no perspective, no horizon, no camera angle). Hand-painted, stylised game texture, painterly brush work, dark digital gouache look, bold and rich, not timid.\n\nContent: a deep space backdrop with large, clearly visible shapes, not a flat wash. Five to seven big billowing nebula masses of different sizes, with defined soft-edged contours, glowing bright cores inside them, and a few long curving dark dust lanes that cut through the masses. Between the masses, areas of pure near-black. About 20 to 25 percent of the image is near-black. Strong contrast between the luminous masses and the dark lanes. The masses drift in one loose general direction. No two areas look the same, no obvious repeated shape. Soft edges, no hard outline, no geometric shape.\n\nColour: saturated and vivid. Near-black base roughly #04020C. Masses in saturated deep ultramarine blue roughly #1A2CC0 to #2A44E0 (a pure rich royal blue, not grey, not steel blue, not cyan, not teal), saturated indigo roughly #3418B0 to #4A24D0, electric violet roughly #7A28E0 to #9A3CFF, and magenta roughly #B0289A to #D03CC0 for the brightest cores only. Ultramarine blue is the main second hue in this image. Cores glow clearly and reach about a third of full brightness or more, but no pure white, no white-hot spot. Never green, grey steel blue, red, orange, cyan, teal, yellow, salmon or pink.\n\nSeamless tile: the masses and lanes must continue across the borders, leaving the left edge and entering again from the right edge at the same height, and the same for top and bottom, so the square can be repeated without a visible seam. Keep similar density and brightness near opposite borders. No frame, no border, no vignette, no darker or lighter corners, no single dominant cloud or bright landmark that would repeat obviously.\n\nLighting: no light direction, no cast shadow, no lens flare, no gradient from one side of the image to the other. The glow lives only inside the masses.\n\nForbidden: no stars, no star dots, no sparkles, no planets, no moons, no asteroids, no rocks, no galaxies, no spaceships, no objects, no characters, no machines, no text, no letters, no logo, no UI, no watermark.",
+  "refs": [],
+  "tasks": [
+    {
+      "task_id": "84b16623e97fbdba59a65d3ad6954e20",
+      "state": "success",
+      "credits": 6,
+      "error": null,
+      "result_urls": [
+        "https://tempfile.aiquickdraw.com/images/chatgpt/file_000000007c6881f59b02f6203f9b3ec6.png"
+      ]
+    }
+  ],
+  "files": [
+    "Art/Source/space-background/20261027-142923-space-background-1.png"
+  ]
+}
