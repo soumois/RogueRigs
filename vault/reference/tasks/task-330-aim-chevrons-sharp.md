@@ -1,9 +1,9 @@
 ---
 id: task-330-aim-chevrons-sharp
 description: "Global task: make the aim chevron outlines sharp instead of blurry, in M_AimChevrons, after the distance fade task."
-parent: tasks-to-do-index
+parent: tasks-done-index
 kind: task
-status: in-progress
+status: done
 ---
 # Aim chevrons: sharp outlines
 
@@ -13,17 +13,17 @@ status: in-progress
 - gdd_check: read [[aim-indicator]] (values say "with a soft glow": conflicts with "contours nets" if the halo is what reads as blur; asked as Q2, default remove the glow), [[sys-aim-indicator]] (GlowWidth 10, GlowOpacity 0.35 are material defaults not pushed by C++: a material-only change, no C++ build), [[sys-ground-telegraph]] (sharp lines with smoothstep over fwidth, no glow: the model to copy). Colour unchanged (white-gold), [[color-code]] and [[readability-rules]] as checked in task-328. Milestone M3, in scope. Open values asked and decided (owner "ok", 2026-10-27): glow removed (Q2, aim-indicator updated); no capture (Q3).
 - confirmed_by_owner: yes (2026-10-27, "ok", relayed by the main session)
 - milestone: M3
-- next_step: task-330-02-docs
+- next_step: none
 - started: 2026-10-27T16:38:12Z
 - waiting_for: none
-- result: open
+- result: Done. sys-aim-indicator updated: edge AA (fwidth one pixel), glow cause, GlowWidth/GlowOpacity unused. Commit e53e7966. Word count not checked.
 
 ## Subtasks
 1. task-330-01-sharp-edges-material (vault/reference/tasks/task-330-aim-chevrons-sharp/task-330-01-sharp-edges-material.md) — bp: find why the chevron edges are soft and make them sharp in M_AimChevrons.
 2. task-330-02-docs (vault/reference/tasks/task-330-aim-chevrons-sharp/task-330-02-docs.md) — doc: update sys-aim-indicator (edge AA, glow).
 
 ## Relations
-- [[tasks-to-do-index]] — parent index.
+- [[tasks-done-index]] — parent index.
 - [[task-330-01-sharp-edges-material]] — step 1, bp.
 - [[task-330-02-docs]] — step 2, doc.
 - [[task-329-aim-chevrons-fade]] — first owner point, same material, must be done before this one.
