@@ -3,7 +3,7 @@ id: task-328-aim-chevrons
 description: "Global task: show the miner's aim direction as a row of white-gold chevrons projected on the ground, direction only, stopping at rock."
 parent: tasks-to-do-index
 kind: task
-status: todo
+status: in-progress
 ---
 # Aim indicator: ground chevrons
 
@@ -14,7 +14,7 @@ status: todo
 - confirmed_by_owner: yes (2026-10-27, "lance juste l'éditeur que je puisse tester", relayed by the main session)
 - milestone: M3
 - next_step: task-328-01-reference-images
-- started: open
+- started: 2026-10-27T15:31:14Z
 - waiting_for: none
 - result: open
 

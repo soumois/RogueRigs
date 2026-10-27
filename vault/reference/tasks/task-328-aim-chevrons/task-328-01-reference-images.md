@@ -3,7 +3,7 @@ id: task-328-01-reference-images
 description: "Copy the owner-seen chevron mockup and its base screenshot into Art/Source/aim-indicator/ and list them in the aim-indicator node."
 parent: task-328-aim-chevrons
 kind: task
-status: todo
+status: in-progress
 ---
 # Aim chevrons: reference images into the repo
 
@@ -20,7 +20,7 @@ status: todo
 - usage: open
 - runs: open
 - milestone: M3
-- started: open
+- started: 2026-10-27T15:31:14Z
 - waiting_for: none
 - result: open
 
