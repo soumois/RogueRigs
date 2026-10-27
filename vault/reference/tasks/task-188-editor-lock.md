@@ -1,9 +1,9 @@
 ---
 id: task-188-editor-lock
 description: "Global task: editor lock shared by sessions: lock file, take and release script, runbook and protocol rules."
-parent: tasks-to-do-index
+parent: tasks-done-index
 kind: task
-status: blocked
+status: cancelled
 ---
 # Editor lock between sessions
 
@@ -13,12 +13,12 @@ status: blocked
 - gdd_check: done by the Orchestrator when the task is planned (2026-10-15).
 - confirmed_by_owner: no (prepared only, owner 2026-10-15: not to run yet)
 - milestone: M2
-- next_step: task-188-01-editor-lock
+- next_step: none
 - result: cancelled for now by the owner (2026-10-23); not run
 
 ## Subtasks
 1. task-188-01-editor-lock — claude
 
 ## Relations
-- [[tasks-to-do-index]] — parent index.
+- [[tasks-done-index]] — parent index.
 - [[task-188-01-editor-lock]] — step 1, claude.
