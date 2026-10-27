@@ -3,7 +3,7 @@ id: task-330-02-docs
 description: "Update sys-aim-indicator after the sharp-edge fix: edge anti-aliasing, glow parameters kept or removed."
 parent: task-330-aim-chevrons-sharp
 kind: task
-status: todo
+status: in-progress
 ---
 # Aim chevrons sharp edges: docs
 
@@ -20,7 +20,7 @@ status: todo
 - usage: open
 - runs: open
 - milestone: M3
-- started: open
+- started: 2026-10-27T16:39:41Z
 - waiting_for: none
 - result: open
 

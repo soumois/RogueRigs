@@ -3,7 +3,7 @@ id: task-330-01-sharp-edges-material
 description: "Find why the M_AimChevrons chevron edges look blurry and make them sharp with one-pixel AA, glow per the owner's answer."
 parent: task-330-aim-chevrons-sharp
 kind: task
-status: in-progress
+status: done
 ---
 # Aim chevrons: sharp edges in the material
 
@@ -15,14 +15,14 @@ status: in-progress
 - done_when: material compiles without error and is saved; read-back of the HLSL shows fwidth-based edge AA and the glow as decided; per-chevron Decay^i and the other parameter defaults read back unchanged; cause written in the report; committed by explicit path. Look judged by the owner (no capture unless the global `request` records a yes to Q3).
 - editor_state: open
 - token_ceiling: 1.0 M units
-- model: open
-- tokens: open
-- usage: open
-- runs: open
+- model: sonnet
+- tokens: input 34, cache write 49765, cache read 578117, output 8267
+- usage: turns 17, context start 10k peak 54k, resumes 0, 1 min, units 0.16 M
+- runs: 1
 - milestone: M3
 - started: 2026-10-27T16:38:12Z
 - waiting_for: none
-- result: open
+- result: Cause: not the edge AA (already fwidth one-pixel smoothstep) but the glow halo (GlowWidth 10, GlowOpacity 0.35) around the 12 uu line, inferred from HLSL. Glow term deleted from the Custom HLSL, res=max(res, ln*a); GlowWidth/GlowOpacity now unused (Inputs array could not be shrunk via MCP). EmissiveGain 0.5, Decay fade unchanged (defaults not read back). Compiled, saved, commit 8513d873. Look unverified (no capture).
 
 ## Relations
 - [[task-330-aim-chevrons-sharp]] — parent global task.

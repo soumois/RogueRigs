@@ -13,7 +13,7 @@ status: in-progress
 - gdd_check: read [[aim-indicator]] (values say "with a soft glow": conflicts with "contours nets" if the halo is what reads as blur; asked as Q2, default remove the glow), [[sys-aim-indicator]] (GlowWidth 10, GlowOpacity 0.35 are material defaults not pushed by C++: a material-only change, no C++ build), [[sys-ground-telegraph]] (sharp lines with smoothstep over fwidth, no glow: the model to copy). Colour unchanged (white-gold), [[color-code]] and [[readability-rules]] as checked in task-328. Milestone M3, in scope. Open values asked and decided (owner "ok", 2026-10-27): glow removed (Q2, aim-indicator updated); no capture (Q3).
 - confirmed_by_owner: yes (2026-10-27, "ok", relayed by the main session)
 - milestone: M3
-- next_step: task-330-01-sharp-edges-material
+- next_step: task-330-02-docs
 - started: 2026-10-27T16:38:12Z
 - waiting_for: none
 - result: open
