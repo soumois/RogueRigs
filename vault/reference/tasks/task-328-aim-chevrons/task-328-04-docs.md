@@ -3,7 +3,7 @@ id: task-328-04-docs
 description: "Document the aim indicator: new sys-aim-indicator node with the material contract, sys-player and systems-combat-index updated."
 parent: task-328-aim-chevrons
 kind: task
-status: todo
+status: in-progress
 ---
 # Aim chevrons: documentation
 
@@ -20,7 +20,7 @@ status: todo
 - usage: open
 - runs: open
 - milestone: M3
-- started: open
+- started: 2026-10-27T15:54:40Z
 - waiting_for: none
 - result: open
 

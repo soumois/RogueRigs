@@ -3,7 +3,7 @@ id: task-328-aim-chevrons
 description: "Global task: show the miner's aim direction as a row of white-gold chevrons projected on the ground, direction only, stopping at rock."
 parent: tasks-to-do-index
 kind: task
-status: wait-answers
+status: in-progress
 ---
 # Aim indicator: ground chevrons
 
@@ -13,9 +13,9 @@ status: wait-answers
 - gdd_check: read [[gdd-pillars]] (passes P1 feedback and P2 manual aim), [[miner]] (mouse or stick aim; cannot shoot through rock; turret on the aimed spot), [[drone]] (aim never places the drone; drone laser colour open red vs white-gold: not blocking, the chevrons are a static ground shape, not a beam, and white-gold is the player shot colour either way), [[color-code]] and [[readability-rules]] (white-gold = player shots; red, orange, acid green, steel blue, rarity colours and dotted circles excluded: no conflict), [[ground-telegraph]] and [[sys-ground-telegraph]] (same decal technique; a decal climbs onto rock tops, another reason for the stop-at-rock rule), [[destruction-rules]] (projectiles stop on rock), [[sys-player-input-aim]] (`GetAimDirection()` exists; no aim indicator or cursor visual is documented), [[mpp-player-light-mask]] (screen darkener: at 400 uu the gain is about 0.28, the far chevrons would be dim), [[milestones]] (juice = M3, current milestone: in scope). Conflicts: none. Open values were asked as Q1 to Q6 and are decided (see request): stop at rock yes; mockup values provisional; visible while alive; no darkener compensation; no capture, editor launched; images in `Art/Source/aim-indicator/`. GDD node created and updated: [[aim-indicator]].
 - confirmed_by_owner: yes (2026-10-27, "lance juste l'éditeur que je puisse tester", relayed by the main session)
 - milestone: M3
-- next_step: task-328-03-aim-indicator-component
-- started: 2026-10-27T15:31:14Z
-- waiting_for: editor closed for subtask 328-03 (cpp build)
+- next_step: task-328-04-docs
+- started: 2026-10-27T15:39:29Z
+- waiting_for: none
 - result: open
 
 ## Subtasks

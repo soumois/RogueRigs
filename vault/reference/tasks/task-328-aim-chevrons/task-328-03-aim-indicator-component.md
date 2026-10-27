@@ -3,7 +3,7 @@ id: task-328-03-aim-indicator-component
 description: "C++ aim indicator decal component on the miner: follows the aim, fixed length, stops at the first rock block, hidden at death; no capture."
 parent: task-328-aim-chevrons
 kind: task
-status: wait-answers
+status: done
 ---
 # Aim chevrons: C++ component
 
@@ -15,14 +15,14 @@ status: wait-answers
 - done_when: build succeeds; existing automation tests pass; the component is a default subobject of `ARRMiner` that loads `M_AimChevrons` and writes its parameters (checked by reading the code and the build or test log, not by a capture); committed by explicit path.
 - editor_state: closed
 - token_ceiling: 1.2 M units
-- model: open
-- tokens: open
-- usage: open
-- runs: open
+- model: opus
+- tokens: input 82, cache write 279104, cache read 3956194, output 29949
+- usage: turns 41, context start 11k peak 145k, resumes 0, 15 min, units 0.89 M
+- runs: 1
 - milestone: M3
-- started: 2026-10-27T15:36:38Z
-- waiting_for: editor closed by main session (cpp build)
-- result: open
+- started: 2026-10-27T15:39:29Z
+- waiting_for: none
+- result: URRAimIndicatorComponent on ARRMiner (commit e87a5eb1), build OK, 271 tests pass, 2 old failures (JuiceKillDropsStreamingCubes, LevelUpUpgradeLoop) unrelated; fixed length 416 uu derived by cpp (last chevron tip), not a decided value; look unverified; material uasset had later saved edits, committed separately
 
 ## Relations
 - [[task-328-aim-chevrons]] — parent global task.
