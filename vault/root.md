@@ -19,6 +19,7 @@ Read [[_navigation]] before descending. Read [[_authoring]] before creating or m
 | Plan work, check milestones, check what is cut, resume after a handover | `production-index` |
 | Pick up, create or update a work item | `tasks-index` |
 | Course material, assignments, rubrics, feedback | `course-index` |
+| Use, install or change a tool built around the project (the crew board mod), not a game or crew task | `external-tools-index` |
 
 `gdd` says WHAT the game does; `tech` says HOW it is built. A code task reads both, in that order.
 
@@ -29,6 +30,7 @@ Read [[_navigation]] before descending. Read [[_authoring]] before creating or m
 - [[production-index]] — milestones, scope rules and the wishlist of cut ideas.
 - [[tasks-index]] — Orchestrator work items and their status.
 - [[course-index]] — ELVTR course material: lesson summaries, assignments, rubrics, instructor feedback.
+- [[external-tools-index]] — tools built around the project, outside the game and the crew workflow: the crew board mod.
 
 ## Relations
 - [[_navigation]] — how to traverse the vault: read FIRST.
