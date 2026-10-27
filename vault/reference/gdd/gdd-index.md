@@ -6,30 +6,9 @@ kind: note
 ---
 # Rogue Rigs — game specification
 
-**Pitch.** A top-down roguelite auto-shooter. The player is an independent miner stealing ore from a corporate claim on an asteroid before extraction begins. The arena itself is the player's best weapon.
-
-**Hard constraint.** No AI runs at runtime. Runtime level generation is a deterministic C++ algorithm.
-
-## Design pillars (approved)
-Every feature must pass at least one test. A feature that passes none is cut.
-- **P1 Gamefeel / juice** — passes if it adds feedback the player feels, not just a number.
-- **P2 Manual aim + auto-fire** — weapons fire on their own; passes if the player decides where it happens.
-- **P3 The arena is a weapon** — passes if the terrain changes how a fight plays out.
-
-## Glossary
-- **Rigs**: the independent miners (player side).
-- **Kessler-Voss Mining Consortium**: the corporation that owns the claim; its robots are the enemies.
-- **Alert bar**: visible level progress bar; fills with time and kills, pauses while a mandatory objective is pending; each tier triggers an event.
-- **Threat**: hidden counter that drives enemy difficulty; grows with time and kills and never pauses.
-- **Command console**: the mandatory objective the drone hacks.
-- **Bonus chest**: an optional objective the drone hacks for a reward.
-- **Shuttle**: the Rigs' extraction craft; lands far from the miner with a countdown.
-- **Risk window**: time between shuttle landing and countdown end.
-- **Drone**: the miner's small helper; digs, hacks, carries dialogue.
-- **Heal ore**: a block that drops heal pickups when broken.
-- **Ore / special ore**: meta-progression resource / rare objective resource.
-
-## Relations
+## Children
+- [[gdd-pillars]] — pitch, no-runtime-AI constraint and the three design pillars with veto tests. Open to judge a feature.
+- [[gdd-glossary]] — definitions of the recurring terms. Open when a term is unclear.
 - [[lore]] — world, factions, the colleague behind the drone, how lore maps onto mechanics. Open for narrative or text work.
 - [[run-index]] — run structure, level flow, objectives, extraction, ore economy. Open for loop or win/loss questions.
 - [[player-index]] — the miner and the drone: controls, states, stats.
@@ -37,4 +16,6 @@ Every feature must pass at least one test. A feature that passes none is cut.
 - [[enemies-index]] — the corporate robots: one node per robot, locomotion, rig, behavior, look.
 - [[terrain-index]] — grid, blocks, destruction sources, ore blocks, explosions.
 - [[art-audio-index]] — visual style, color code, readability rules, sound, dialogue tone.
+
+## Relations
 - [[root]] — the vault map.

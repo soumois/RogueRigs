@@ -8,9 +8,11 @@ kind: note
 
 Instructor: Joshua Burdick (Epic Games). Capstone due November 9, 2026.
 
-## Relations
-- [[root]] — the vault map.
+## Children
 - [[course-overview]] — grading weights, schedule, submission rules: read first for any deliverable.
 - [[assignments-index]] — one node per assignment: brief, rubric, deadline, status, working plan.
 - [[lessons-index]] — one node per lesson: key points and what applies to Rogue Rigs.
 - [[instructor-feedback]] — feedback received from the instructor, and how it was addressed.
+
+## Relations
+- [[root]] — the vault map.

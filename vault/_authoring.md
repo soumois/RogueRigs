@@ -28,6 +28,7 @@ applies_to: writing
 - Max ~400 words per node; beyond that, split. Max ~30 entries per index.
 - Use the matching file in `vault/templates/`. Every template field is mandatory: an undecided value is written `open`, never left out.
 - End with `## Relations`: `- [[id]] — <relation + when to open>`.
+- An index (`root`, `*-index`) is a pure router: title, then `## Children` (every node whose `parent` is this index, one gloss each, the descent path), then `## Relations` (parent, cross-links; never a child). No prose beyond a few lines: pitch, rules and values go in a child node. Its `description` already says where you are; the parent gloss said why you came. Task indexes under `reference/tasks/` keep a single `## Relations`.
 - A fact already stated elsewhere is referenced with a wikilink, never copied.
 
 ## Blueprint documentation rule

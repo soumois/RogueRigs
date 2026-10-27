@@ -8,8 +8,7 @@ kind: note
 
 WBP_HUD and its eight panels plus the HUD refactor audit.
 
-## Relations
-- [[blueprints-index]] — parent index.
+## Children
 - [[wbp-hud]] — WBP_HUD, health bar and Game Over text.
 - [[wbp-subtitles]] — WBP_Subtitles, the company subtitle line, a sub-widget of WBP_HUD.
 - [[wbp-health-status]] — WBP_HealthStatus, health bar and text, Game Over text and damage vignette, a sub-widget of WBP_HUD.
@@ -26,3 +25,6 @@ WBP_HUD and its eight panels plus the HUD refactor audit.
 - [[wbp-shop-screen]] — WBP_ShopScreen, the cards shop on its own opaque black screen after the stats screen (5 WBP_ShopCard, balance, reroll, Continue).
 - [[hud-refactor-audit]] — audit of WBP_HUD: tick cost, per-feature tables, sub-widget plan, missing C++ events.
 - [[m-card-burn]] — M_CardBurn and MI_CardBurn, the dissolve material with fire edge for discarded cards.
+
+## Relations
+- [[blueprints-index]] — parent index.

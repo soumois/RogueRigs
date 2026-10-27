@@ -8,8 +8,7 @@ kind: note
 
 Grid, flow field, pickups, objectives, pools: the terrain and what lives on it.
 
-## Relations
-- [[systems-index]] — parent index.
+## Children
 - [[sys-grid]] — grid data, autotiling, instanced rendering, terrain damage.
 - [[sys-flow-field]] — flow field path provider and generic enemy movement component as built.
 - [[sys-pickups]] — ore, heal and XP pickups: drop rule, pop, attraction within PickupRadius, collection event, XP grant.
@@ -18,3 +17,6 @@ Grid, flow field, pickups, objectives, pools: the terrain and what lives on it.
 - [[sys-run]] — run state: level index, layout list, miner snapshot carried between levels.
 - [[sys-blob-shadow]] — blob shadow component: flat dark disc under robots, miner and drone (task-264-02).
 - [[sys-run-log]] — run log: per-level counters of terrain, damage, kills, upgrades and XP; the writer of the run JSON file below it.
+
+## Relations
+- [[systems-index]] — parent index.

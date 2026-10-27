@@ -8,8 +8,7 @@ kind: note
 
 Pickups, explosion and heal visuals, damage numbers: effects and collectibles.
 
-## Relations
-- [[blueprints-index]] — parent index.
+## Children
 - [[bp-pickup-heal]] — BP_PickupHeal, the red heal pickup.
 - [[bp-pickup-ore]] — BP_PickupOre, the cyan ore pickup.
 - [[bp-pickup-xp]] — BP_PickupXP, the cyan XP pickup.
@@ -31,3 +30,6 @@ Pickups, explosion and heal visuals, damage numbers: effects and collectibles.
 - [[bp-shooter-charge]] — NS_ShooterCharge, the red charge-up glow and inward sparks at the shooter cannon tip.
 - [[bp-heavy-slam-impact]] — NS_HeavySlamImpact, the one-shot dust ring (User.Radius) and rock chips of the heavy slam.
 - [[bp-console-hack-complete]] — NS_ConsoleHackComplete, the one-shot green ring and white-gold sparks at the console hack complete.
+
+## Relations
+- [[blueprints-index]] — parent index.

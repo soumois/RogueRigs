@@ -6,8 +6,7 @@ kind: note
 ---
 # Pipelines
 
-## Relations
-- [[tech-index]] — parent index.
+## Children
 - [[asset-pipeline]] — image, 3D generation, cleanup, rigid-part split.
 - [[blender-asset-route]] — Blender scripts for simple props: headless command, UV channels, mask contract, preview render, FBX quirks.
 - [[mesh-fidelity-loop]] — validation of a Blender-route mesh against its source image: criteria, comparison render, max returns, report fields.
@@ -27,3 +26,6 @@ kind: note
 - [[barrel-asset]] — the barrel as built and integrated: files, slots, decals, wear, rejected approaches, Unreal side.
 - [[kie-image-workflow]] — Kie.ai image generation in practice: hosts, variables, costs, permissions, rules.
 - [[barrel-asset-history]] — task map of the barrel work, what each step superseded, Kie credits spent.
+
+## Relations
+- [[tech-index]] — parent index.

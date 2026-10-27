@@ -8,8 +8,7 @@ kind: note
 
 Summaries written from the slides and transcripts. Lesson 10 onward: not summarized yet.
 
-## Relations
-- [[course-index]] — parent index.
+## Children
 - [[lesson-00-01-foundations]] — welcome, grading, AI in dev vs in game, the AI contract, getting unstuck.
 - [[lesson-02-gdd-anatomy]] — GDD as spec, scope, one agent one wow, pillars, the three AI pillars, token budget.
 - [[lesson-03-gdd-to-prototype]] — stress-testing a GDD with review agents, human feedback, revising for specificity.
@@ -21,3 +20,6 @@ Summaries written from the slides and transcripts. Lesson 10 onward: not summari
 - [[lesson-08-ger-loop]] — Generate, Evaluate, Refine, deterministic checks first, targeted refining, 3-pass circuit breaker, human placement.
 - [[lesson-08-constraints-and-demo]] — constraints, evaluator rules, GER per game type, Dungeon Builder demo, No Man's Sky.
 - [[lesson-09-human-touch-style-guide]] — aesthetic divide, safe vs human assets, AI librarian, ethics, player value, Style Guide Agent.
+
+## Relations
+- [[course-index]] — parent index.

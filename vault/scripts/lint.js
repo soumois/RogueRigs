@@ -10,13 +10,16 @@
 //   - every node has frontmatter with id, description, parent (root excepted), kind
 //   - kind: rule => applies_to present
 //   - every node ends with a "## Relations" section
-//   - a declared parent lists its child in its own ## Relations
+//   - a declared parent lists its child in its own body
+//   - an index node (root, *-index, outside reference/tasks/) that has children lists them under
+//     `## Children`, placed BEFORE `## Relations`; Children holds only nodes whose parent is this
+//     node, Relations holds none of them (parent, cross-links, meta nodes)
 //   - every node is reachable from root by body links only
 //   - PLACEMENT: a child lives in its parent's directory or in a direct
 //     subdirectory of it (root's children live in reference/<branch>/), so that
 //     list_directory on the current node's directory always resolves a parent link
 //   - _paths.md is present and up to date (run with --write to regenerate)
-// Warnings (non-blocking): description longer than 25 words.
+// Warnings (non-blocking): description longer than 25 words; an index with more than 120 words of prose before ## Children.
 
 const fs = require('fs');
 const path = require('path');
@@ -143,6 +146,35 @@ for (const [id, n] of Object.entries(notes)) {
     ? (n.meta ? n.dir === '.' : /^reference\/[^/]+$/.test(n.dir))
     : (n.dir === pdir || (n.dir.startsWith(pdir + '/') && !n.dir.slice(pdir.length + 1).includes('/')));
   if (!ok) problems.push(`${n.rel}: placement — must live in ${pdir}/ or a direct subdirectory of it (parent=${par})`);
+}
+
+// ---------- ## Children / ## Relations split (index nodes) ----------
+function section(body, name) {
+  const m = body.match(new RegExp('^## ' + name + '\\s*$', 'm'));
+  if (!m) return null;
+  const rest = body.slice(m.index + m[0].length);
+  const e = rest.search(/^## /m);
+  return { start: m.index, text: e < 0 ? rest : rest.slice(0, e) };
+}
+const linksOf = (t) => [...t.matchAll(/\[\[([^\]]+)\]\]/g)].map((m) => m[1].split('|')[0].split('#')[0].trim()).filter(Boolean);
+const realChildren = {};
+for (const [id, n] of Object.entries(notes)) {
+  const p = first(n.fm.parent);
+  if (p && ids.has(p) && !n.meta) (realChildren[p] = realChildren[p] || []).push(id);
+}
+for (const [id, n] of Object.entries(notes)) {
+  if (n.meta || n.rel.startsWith('reference/tasks/') || !(id === 'root' || id.endsWith('-index'))) continue;
+  const kids = realChildren[id] || [];
+  const ch = section(n.body, 'Children');
+  const re = section(n.body, 'Relations');
+  if (!ch) { if (kids.length) problems.push(`${n.rel}: has children but no "## Children" section`); continue; }
+  if (re && ch.start > re.start) problems.push(`${n.rel}: "## Children" must come before "## Relations"`);
+  const inCh = new Set(linksOf(ch.text));
+  for (const l of inCh) if (ids.has(l) && first(notes[l].fm.parent) !== id) problems.push(`${n.rel}: [[${l}]] under Children is not a child (parent=${first(notes[l].fm.parent)})`);
+  for (const k of kids) if (!inCh.has(k)) problems.push(`${n.rel}: child [[${k}]] not listed under "## Children"`);
+  if (re) for (const l of linksOf(re.text)) if (kids.includes(l)) problems.push(`${n.rel}: child [[${l}]] belongs under "## Children", not Relations`);
+  const pre = n.body.slice(0, ch.start).replace(/^---[\s\S]*?---/, '').split(/\s+/).filter(Boolean).length;
+  if (pre > 120) warnings.push(`${n.rel}: ${pre} words of prose before ## Children (> 120): move it to a child node`);
 }
 
 // ---------- _paths.md (id -> path map) ----------

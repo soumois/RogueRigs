@@ -13,8 +13,7 @@ Planned, not written yet: agent-balance, agent-animation, agent-sound, agent-qa 
 
 Lessons are filed by theme, and each agent reads the node about its own limits: owner rules for the Planner, [[bp-mcp-lessons]] for bp, [[art-3d-lessons]] for art and 3d.
 
-## Relations
-- [[root]] — the vault map.
+## Children
 - [[agent-planner]] — plans a request into confirmed task nodes and asks the owner; open to run or change planning.
 - [[agent-executor]] — runs one confirmed global task from its nodes, delegating each subtask; open to run or change execution.
 - [[agent-level-design]] — writes arena layouts as validated grid JSON.
@@ -31,3 +30,6 @@ Lessons are filed by theme, and each agent reads the node about its own limits: 
 - [[orchestrator-script-quirks]] — task scripts, git, editor, shells and permission pitfalls; open before closing a subtask or committing.
 - [[bp-mcp-lessons]] — bp agent limits and Unreal MCP working rules; read by bp and before delegating to it.
 - [[art-3d-lessons]] — owner art preferences, art and 3D agent limits, FBX and import traps; read by art and 3d.
+
+## Relations
+- [[root]] — the vault map.

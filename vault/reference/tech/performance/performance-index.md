@@ -6,8 +6,7 @@ kind: note
 ---
 # Performance
 
-## Relations
-- [[tech-index]] — parent index.
+## Children
 - [[perf-risks]] — likely cost centers outside GAS, with measures and fallbacks.
 - [[perf-leads]] — branch of performance improvement leads kept for later (M1 leads, robot rendering, death debris). Open before any perf work.
 - [[perf-stress-test-m1]] — scenarios, thresholds, target machine, stress procedure, baseline table and ceiling.
@@ -22,3 +21,6 @@ kind: note
 - [[perf-robot-components-audit]] — robot components per class, overlap flags, what needs them, movement cost ranking (task-093-01).
 - [[perf-stress-chaser-meshy]] — Meshy chaser and death effects (task-181-01): S0, S2, S7 chaser burst, game 100–300, puff and debris skips, M1 comparison.
 - [[perf-rock-slab]] — rock look and grid cost before and after the dual-grid slab rock: fixed spots, captures, frame, GPU, triangle, draw counts (task-230).
+
+## Relations
+- [[tech-index]] — parent index.

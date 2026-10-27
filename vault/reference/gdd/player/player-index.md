@@ -6,8 +6,10 @@ kind: note
 ---
 # Player side
 
-## Relations
-- [[gdd-index]] — parent index.
+## Children
 - [[miner]] — the player character: controls, aim, damage rules, look.
 - [[player-stats]] — the stat sheet: own stats and displayed weapon stats.
 - [[drone]] — the helper drone: orbit, dig and hack states, dialogue channel.
+
+## Relations
+- [[gdd-index]] — parent index.

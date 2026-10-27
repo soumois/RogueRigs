@@ -10,7 +10,7 @@ applies_to: reading
 Works with any tool that can list a directory and read a file.
 
 1. Read `vault/root.md`. Pick the entry branch with its `## Routing` table: route on the OBJECT of the task, not on its topic.
-2. Descend via `[[wikilinks]]`. At each node, the `## Relations` glosses say what each child holds and WHEN to open it. Open a node body only for the branch you need.
+2. Descend via `[[wikilinks]]`. In an index, `## Children` comes first and is the descent path: its glosses say what each child holds and WHEN to open it. Open a node body only for the branch you need. `## Relations` (parent, cross-links, meta nodes) is lateral: follow it only when the task needs that link.
 3. Before opening a node, state in one clause what you expect from it. If you cannot, do not open it. Loading the wrong body costs more than one extra step of descent.
 4. Constraint task: first read the `kind: rule` nodes whose `applies_to` matches the task.
 5. Read only what the task needs. Never load a whole branch "for context".

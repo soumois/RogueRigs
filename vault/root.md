@@ -22,13 +22,15 @@ Read [[_navigation]] before descending. Read [[_authoring]] before creating or m
 
 `gdd` says WHAT the game does; `tech` says HOW it is built. A code task reads both, in that order.
 
-## Relations
-- [[_navigation]] — how to traverse the vault: read FIRST.
-- [[_authoring]] — writing contract: read BEFORE any create/modify.
-- [[_paths]] — generated id -> path map; open once per session to resolve a non-task cross-branch wikilink.
+## Children
 - [[gdd-index]] — the game specification: pillars, glossary, run, player, weapons, enemies, terrain, art and audio.
 - [[agents-index]] — the dev crew: one node per agent with role, inputs, output format and token ceiling.
 - [[tech-index]] — how the game is built: conventions, C++ systems, Blueprint docs, pipelines.
 - [[production-index]] — milestones, scope rules and the wishlist of cut ideas.
 - [[tasks-index]] — Orchestrator work items and their status.
 - [[course-index]] — ELVTR course material: lesson summaries, assignments, rubrics, instructor feedback.
+
+## Relations
+- [[_navigation]] — how to traverse the vault: read FIRST.
+- [[_authoring]] — writing contract: read BEFORE any create/modify.
+- [[_paths]] — generated id -> path map; open once per session to resolve a non-task cross-branch wikilink.

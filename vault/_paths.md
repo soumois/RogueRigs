@@ -149,7 +149,9 @@ drgs-analysis  reference/production/drgs-analysis.md
 drgs-video-2026-10-06  reference/production/drgs-video-2026-10-06.md
 drone  reference/gdd/player/drone.md
 editor-workflow  reference/tech/conventions/editor-workflow.md
+enemies-current-values  reference/gdd/enemies/enemies-current-values.md
 enemies-index  reference/gdd/enemies/enemies-index.md
+enemies-spawn-rules  reference/gdd/enemies/enemies-spawn-rules.md
 enemies-tuning-history  reference/gdd/enemies/enemies-tuning-history.md
 enemy-chaser  reference/gdd/enemies/enemy-chaser.md
 enemy-death  reference/gdd/enemies/enemy-death.md
@@ -162,7 +164,9 @@ fictional-films  reference/gdd/fictional-films.md
 gas-api-notes  reference/tech/systems/core/gas-api-notes.md
 gas-engine-facts  reference/tech/systems/core/gas-engine-facts.md
 gas-scope  reference/production/gas-scope.md
+gdd-glossary  reference/gdd/gdd-glossary.md
 gdd-index  reference/gdd/gdd-index.md
+gdd-pillars  reference/gdd/gdd-pillars.md
 ground-telegraph  reference/gdd/art-audio/ground-telegraph.md
 handover-2026-10-06  reference/production/handover-2026-10-06.md
 handover-2026-10-09  reference/production/handover-2026-10-09.md

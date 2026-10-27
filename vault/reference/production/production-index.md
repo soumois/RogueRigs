@@ -8,8 +8,7 @@ kind: note
 
 Capstone submission: November 9, 2026. Budget: one person, 5 to 6 hours a week.
 
-## Relations
-- [[root]] — the vault map.
+## Children
 - [[milestones]] — M1 to M3 content, dates and the cut rule.
 - [[gas-scope]] — GAS work per milestone, in hours.
 - [[wishlist]] — every cut or deferred idea.
@@ -25,3 +24,6 @@ Capstone submission: November 9, 2026. Budget: one person, 5 to 6 hours a week.
 - [[handover-2026-10-18-rock-slab]] — state after the rock and ore look session: decisions, task-230 at step 06, launch rules, resume.
 - [[handover-2026-10-21-lighting-floor]] — state after the drone, lighting and floor session: tasks 247 to 274, values, open decisions, quirks; open first when resuming.
 - [[validation-checklist-2026-10-12]] — what to look at in game to validate the work of 2026-10-07 to 10-12.
+
+## Relations
+- [[root]] — the vault map.

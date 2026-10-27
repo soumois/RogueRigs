@@ -17,12 +17,14 @@ Deadlines are 23:59 BST = 15:59 Pacific unless a node says otherwise. Each assig
 | 5 | Goal-oriented coding agent | Oct 19 (aim 15:59 Pacific) | submitted (commit `c9f7810`, tag `a5-submission`) | `assignments/A5-goal-oriented-coding-agent/` |
 | 6 | Style Guide Agent | Oct 26, 16:59 Pacific | in progress | `assignments/A6-style-guide-agent/` |
 
-## Relations
-- [[course-index]] — parent index.
-- [[course-overview]] — submission and README rules.
+## Children
 - [[assignment-1-gdd-first-draft]] — GDD first draft.
 - [[assignment-2-gdd-final-draft]] — GDD final draft and its rubric.
 - [[assignment-3-agent-crew]] — agent crew and its rubric.
 - [[assignment-4-content-pipeline]] — content pipeline: brief, rubric, deadline. Open first for any Assignment 4 work.
 - [[assignment-5-goal-oriented-agent]] — goal-oriented coding agent: brief, rubric, blackboard rule, deadline. Open first for any Assignment 5 work, then its plan.
 - [[assignment-6-style-guide-agent]] — style guide agent: brief, rubric, deadline Oct 26, numbering caveat. Open first for any Assignment 6 work, then its plan.
+
+## Relations
+- [[course-index]] — parent index.
+- [[course-overview]] — submission and README rules.

@@ -6,8 +6,7 @@ kind: note
 ---
 # Art and audio
 
-## Relations
-- [[gdd-index]] — parent index.
+## Children
 - [[visual-style]] — low-poly look, camera, arena framing.
 - [[color-code]] — the color of every element.
 - [[readability-rules]] — rules that keep future biomes readable.
@@ -20,3 +19,6 @@ kind: note
 - [[style-guide-text]] — scored text style guide: four constraint types, scale 0-10, threshold 8; open to score or refine text.
 - [[kessler-voss-logo]] — the retained company logo: look, file, legibility, usage rules.
 - [[rock-look-reference]] — owner DRG Survivor captures of wall tops (cracked = weaker rock, slab look); open for rock or ore look work.
+
+## Relations
+- [[gdd-index]] — parent index.

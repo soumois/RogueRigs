@@ -6,8 +6,7 @@ kind: note
 ---
 # Run and level loop
 
-## Relations
-- [[gdd-index]] — parent index.
+## Children
 - [[run-structure]] — 4 levels, what carries over, run win and loss.
 - [[level-flow]] — alert tiers, events, end of a level.
 - [[difficulty]] — alert bar vs threat, difficulty between and inside levels.
@@ -19,3 +18,6 @@ kind: note
 - [[ore-economy]] — when ore is secured or lost, meta-progression.
 - [[intermission]] — screen between two levels: recap, shop slot, next terrain prepared, loading screen.
 - [[run-shop]] — run-only purchases between levels, paid in ore; content open.
+
+## Relations
+- [[gdd-index]] — parent index.

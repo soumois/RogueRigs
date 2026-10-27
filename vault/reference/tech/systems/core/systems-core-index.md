@@ -8,8 +8,7 @@ kind: note
 
 Player, GAS, damage, progression, upgrades, cheats: the miner and its numbers.
 
-## Relations
-- [[systems-index]] — parent index.
+## Children
 - [[sys-gas-core]] — which actors own an ASC, AttributeSets, plugin setup, debug tools. Read first for any GAS work.
 - [[sys-player]] — miner pawn (ASC, base stats, camera, move and aim), player controller input routing, game mode.
 - [[sys-camera-shake]] — shared C++ camera shake and the PlayCameraShake call any actor uses; chest preset values.
@@ -23,3 +22,6 @@ Player, GAS, damage, progression, upgrades, cheats: the miner and its numbers.
 - [[sys-world-queries]] — RRWorld lookups: the arena grid and the (living) miner of a world.
 - [[gas-engine-facts]] — GAS 5.8 behaviors read in engine source that fix project rules.
 - [[gas-api-notes]] — GAS 5.8 APIs used by the code skeletons, with source lines.
+
+## Relations
+- [[systems-index]] — parent index.
