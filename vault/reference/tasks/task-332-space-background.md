@@ -1,9 +1,9 @@
 ---
 id: task-332-space-background
 description: "Global task: a layered procedural space background in the void around the arena, with real depth parallax, instead of a flat pasted image."
-parent: tasks-to-do-index
+parent: tasks-done-index
 kind: task
-status: in-progress
+status: done
 ---
 # Layered procedural space background for the void
 
@@ -22,10 +22,10 @@ status: in-progress
   - Q9 capture: default one `-game` capture after the build, near an arena edge, by cpp, shown to the owner (lessons rule 2026-10-16, visible change); no before capture.
 - confirmed_by_owner: yes (2026-10-27, "ok", relayed by the main session)
 - milestone: M3
-- next_step: task-332-04-docs
+- next_step: none
 - started: 2026-10-27T21:27:42Z
 - waiting_for: none
-- result: open
+- result: Done. Doc nodes bp-space-background-material and bp-space-background written, world index and bp-arena-grid updated; commit 39a566ba.
 
 ## Subtasks
 1. task-332-01-space-material (vault/reference/tasks/task-332-space-background/task-332-01-space-material.md) — bp: M_SpaceBackground (Unlit procedural) with MI_Space_Stars, MI_Space_Nebula, MI_Space_Dust.
@@ -34,7 +34,7 @@ status: in-progress
 4. task-332-04-docs (vault/reference/tasks/task-332-space-background/task-332-04-docs.md) — doc: doc nodes of the material and the Blueprint, world index and bp-arena-grid placement line.
 
 ## Relations
-- [[tasks-to-do-index]] — parent index.
+- [[tasks-done-index]] — parent index.
 - [[task-332-01-space-material]] — step 1, bp.
 - [[task-332-02-space-layers-actor]] — step 2, bp.
 - [[task-332-03-capture]] — step 3, cpp.

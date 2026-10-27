@@ -3,7 +3,7 @@ id: task-332-04-docs
 description: "Write the doc nodes of M_SpaceBackground and BP_SpaceBackground, list them in the world index, update the bp-arena-grid map line."
 parent: task-332-space-background
 kind: task
-status: in-progress
+status: done
 ---
 # Space background: docs
 
@@ -15,14 +15,14 @@ status: in-progress
 - done_when: both nodes exist with every template field filled (undecided = `open`); index lists them; lint clean; committed by explicit paths.
 - editor_state: any
 - token_ceiling: 0.3 M units
-- model: open
-- tokens: open
-- usage: open
-- runs: open
+- model: sonnet
+- tokens: input 14, cache write 26493, cache read 126426, output 5494
+- usage: turns 7, context start 10k peak 30k, resumes 0, 1 min, units 0.07 M
+- runs: 1
 - milestone: M3
 - started: 2026-10-27T21:49:40Z
 - waiting_for: none
-- result: open
+- result: Doc nodes bp-space-background-material and bp-space-background written, world index and bp-arena-grid updated; commit 39a566ba.
 
 ## Relations
 - [[task-332-space-background]] — parent global task.
