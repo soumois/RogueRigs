@@ -3,7 +3,7 @@ id: task-329-02-fade-material
 description: "Find why M_AimChevrons draws five equally bright chevrons despite Decay 0.78, and fix the distance fade in the material."
 parent: task-329-aim-chevrons-fade
 kind: task
-status: in-progress
+status: done
 ---
 # Aim chevrons: distance fade in the material
 
@@ -15,14 +15,14 @@ status: in-progress
 - done_when: material compiles without error and is saved; read-back of the HLSL shows chevron i weighted by Decay^i on the value the decal blends (state which pin); parameter names and defaults read back unchanged; the cause is written in the report; committed by explicit path. Look on screen judged by the owner (no capture unless the global `request` records a yes to Q3).
 - editor_state: open
 - token_ceiling: 1.0 M units
-- model: open
-- tokens: open
-- usage: open
-- runs: open
+- model: sonnet
+- tokens: input 62, cache write 93854, cache read 1380842, output 15245
+- usage: turns 30, context start 10k peak 81k, resumes 1 (message x1), 5 min, units 0.33 M
+- runs: 2
 - milestone: M3
 - started: 2026-10-27T16:36:04Z
 - waiting_for: none
-- result: open
+- result: Cause: no defect in the material (Decay^i already on MP_Opacity via Multiply_0); fade hidden by fixed exposure -0.94 EV100 + tonemapping pushing full emissive near white (probable, not measured). Owner decision 2026-10-27 option A ('baisse l'intensite emissive de la couleur dans le materiau des fleches, pour que le fondu se voie'): new scalar EmissiveGain 0.5 (provisional, owner judges in open editor), MP_EmissiveColor = Color x EmissiveGain, Color default unchanged. PPV_XPGlow, C++ untouched. Commit 30ab5343. Not verified on screen.
 
 ## Relations
 - [[task-329-aim-chevrons-fade]] — parent global task.

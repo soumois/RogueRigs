@@ -3,7 +3,7 @@ id: task-329-03-docs
 description: "Update sys-aim-indicator after the fade fix: cause, material change, and the fixed length 416 uu now decided by the owner."
 parent: task-329-aim-chevrons-fade
 kind: task
-status: todo
+status: in-progress
 ---
 # Aim chevrons fade: docs
 
@@ -20,7 +20,7 @@ status: todo
 - usage: open
 - runs: open
 - milestone: M3
-- started: open
+- started: 2026-10-27T16:37:06Z
 - waiting_for: none
 - result: open
 
