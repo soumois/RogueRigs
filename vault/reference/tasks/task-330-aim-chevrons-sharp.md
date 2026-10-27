@@ -3,7 +3,7 @@ id: task-330-aim-chevrons-sharp
 description: "Global task: make the aim chevron outlines sharp instead of blurry, in M_AimChevrons, after the distance fade task."
 parent: tasks-to-do-index
 kind: task
-status: todo
+status: in-progress
 ---
 # Aim chevrons: sharp outlines
 
@@ -14,7 +14,7 @@ status: todo
 - confirmed_by_owner: yes (2026-10-27, "ok", relayed by the main session)
 - milestone: M3
 - next_step: task-330-01-sharp-edges-material
-- started: open
+- started: 2026-10-27T16:38:12Z
 - waiting_for: none
 - result: open
 

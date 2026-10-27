@@ -3,7 +3,7 @@ id: task-330-01-sharp-edges-material
 description: "Find why the M_AimChevrons chevron edges look blurry and make them sharp with one-pixel AA, glow per the owner's answer."
 parent: task-330-aim-chevrons-sharp
 kind: task
-status: todo
+status: in-progress
 ---
 # Aim chevrons: sharp edges in the material
 
@@ -20,7 +20,7 @@ status: todo
 - usage: open
 - runs: open
 - milestone: M3
-- started: open
+- started: 2026-10-27T16:38:12Z
 - waiting_for: none
 - result: open
 
