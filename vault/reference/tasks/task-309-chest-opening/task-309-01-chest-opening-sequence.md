@@ -14,7 +14,7 @@ status: todo
 - expected_output: C++ change, spec and tech doc lines, tests green
 - done_when: build green; RogueRigs.Console.* and RogueRigs.RunFlow.* pass; chest reward gives 3 chips of 8 and one choice, after the lid delay; no time dilation call; console burst unchanged; docs updated; lint clean; committed
 - editor_state: closed
-- token_ceiling: 45000
+- token_ceiling: 1.2 M units
 - model: open
 - tokens: open
 - runs: open

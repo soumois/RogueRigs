@@ -14,7 +14,7 @@ status: todo
 - expected_output: Saved/ChestLight/ frames and contact sheet, report
 - done_when: each state seen with its colour and blink; orange blink visibly faster late in the hack; sheet sent to the owner; nothing else changed
 - editor_state: closed
-- token_ceiling: 30000
+- token_ceiling: 1.2 M units
 - model: open
 - tokens: open
 - runs: open

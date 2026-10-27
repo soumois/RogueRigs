@@ -14,7 +14,7 @@ status: todo
 - expected_output: Saved/ChestLogo/ frames and contact sheet, report
 - done_when: frames show the yellow mark on the lid at the drop spot; sheet sent to the owner; nothing else changed
 - editor_state: closed
-- token_ceiling: 30000
+- token_ceiling: 1.2 M units
 - model: open
 - tokens: open
 - runs: open

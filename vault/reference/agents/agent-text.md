@@ -17,7 +17,7 @@ status: provisional
 - definition_of_done: the text validator exits 0 (script `open`); [[agent-style-guide]] returns pass on every item, or the owner rules after 2 correction loops.
 - must_not: change a number, mechanic or name; invent a value marked `open`; cite a past job or film absent from [[crew-characters]] or [[fictional-films]]; write outside its two paths.
 - model: sonnet
-- token_ceiling: 30k per task (provisional)
+- token_ceiling: 0.3 M units (provisional, owner 2026-10-27)
 
 ## Relations
 - [[agents-index]] — parent index.

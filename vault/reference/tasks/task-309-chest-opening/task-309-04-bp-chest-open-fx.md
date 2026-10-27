@@ -14,7 +14,7 @@ status: todo
 - expected_output: /Game/RogueRigs/FX/NS_BonusChestOpen, doc node bp-bonus-chest-open
 - done_when: system compiles with 0 errors; emitter values read back; doc node and index relation; lint clean; committed
 - editor_state: open
-- token_ceiling: 30000
+- token_ceiling: 1.0 M units
 - model: open
 - tokens: open
 - runs: open

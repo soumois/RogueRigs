@@ -14,7 +14,7 @@ status: todo
 - expected_output: C++ change, spec and tech doc lines, tests green
 - done_when: build green; RogueRigs.Console.* and RogueRigs.RunFlow.* pass; values in the docs; lint clean; committed
 - editor_state: closed
-- token_ceiling: 35000
+- token_ceiling: 1.2 M units
 - model: open
 - tokens: open
 - runs: open

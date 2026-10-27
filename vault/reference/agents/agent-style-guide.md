@@ -18,7 +18,7 @@ status: provisional
 - must_not: cite a rule that does not exist; rewrite an item that passes; edit the content file or an image; judge numbers or schema (the validator does); drop a fail because the owner overruled the same rule before (it reports, he decides).
 - scored_mode: for the style loop it returns a 0-10 score per dimension (voice, lore, reference) with rules, reason and suggestion instead of pass/fail, in `roundN.score.json` ([[style-guide-text]], [[style-loop]]); the verdict mode above is unchanged.
 - model: opus (a different model from the generators, so the work is not graded by its author)
-- token_ceiling: 20k per review (provisional)
+- token_ceiling: 0.3 M units (provisional, owner 2026-10-27)
 
 ## Relations
 - [[agents-index]] — parent index.

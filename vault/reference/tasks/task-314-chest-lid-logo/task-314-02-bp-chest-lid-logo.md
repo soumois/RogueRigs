@@ -14,7 +14,7 @@ status: todo
 - expected_output: SM_Chest_Lid reimported, M_ChestLogo under /Game/RogueRigs/Art/Chest/, doc node bp-bonus-chest updated
 - done_when: compiles without error; slots and materials read back; Lid transform unchanged; doc node updated; lint clean; committed
 - editor_state: open
-- token_ceiling: 30000
+- token_ceiling: 1.0 M units
 - model: open
 - tokens: open
 - runs: open

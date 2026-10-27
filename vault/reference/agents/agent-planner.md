@@ -19,7 +19,7 @@ status: provisional
 - definition_of_done: nodes created and linked, decisions written, `confirmed_by_owner` set, lint clean, committed by explicit path.
 - must_not: write code, Blueprints, assets or layout data; delegate or run a subtask; invent a value marked `open`; bundle separate owner points into one task; add work the owner did not request; relaunch after he refused every option.
 - model: opus
-- token_ceiling: 20k per planning pass (provisional)
+- token_ceiling: 1.0 M units per planning pass (provisional, owner 2026-10-27)
 
 ## Relations
 - [[agents-index]] — parent index.

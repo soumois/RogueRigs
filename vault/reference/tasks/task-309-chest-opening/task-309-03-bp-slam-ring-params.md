@@ -14,7 +14,7 @@ status: todo
 - expected_output: NS_HeavySlamImpact with two new user parameters; doc node updated
 - done_when: system compiles with 0 errors; both defaults read back equal to the old values; BP_Heavy still compiles; doc node updated; lint clean; committed
 - editor_state: open
-- token_ceiling: 25000
+- token_ceiling: 1.0 M units
 - model: open
 - tokens: open
 - runs: open

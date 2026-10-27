@@ -15,7 +15,7 @@ status: open
 - output_format: <exact format, path, schema>
 - definition_of_done: <checks before the task is closed>
 - must_not: <explicit limits>
-- token_ceiling: <per task>
+- token_ceiling: <x> M units per task — bound on the weighted units of one run (see the task template)
 
 ## Relations
 - [[agents-index]] — parent index.

@@ -19,7 +19,7 @@ status: provisional
 - scope: cpp and bp only; art, 3d, level-design and text keep writing their own nodes (Q1 of [[task-325-doc-agent]]).
 - definition_file: `.claude/agents/doc.md` (tools Read, Write, Edit, Bash, Glob; 30 turns).
 - model: sonnet
-- token_ceiling: open (set by [[task-326-units-ceiling]])
+- token_ceiling: 0.3 M units (provisional, owner 2026-10-27)
 
 ## Relations
 - [[agents-index]] — parent index.

@@ -17,7 +17,7 @@ status: provisional
 - must_not: put an image in `vault/assets/`; invent a design absent from the specs; exceed the variant count the subtask allows; run two `kie_image.js` runs at once; write an API key anywhere.
 - definition_file: `.claude/agents/art.md`
 - model: sonnet
-- token_ceiling: open (measured on the first run)
+- token_ceiling: 0.15 M units (provisional, owner 2026-10-27)
 
 ## Relations
 - [[agents-index]] — parent index.

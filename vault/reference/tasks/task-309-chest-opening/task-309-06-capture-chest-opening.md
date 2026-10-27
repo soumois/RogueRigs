@@ -14,7 +14,7 @@ status: todo
 - expected_output: Saved/ChestOpening/ frames and contact sheet, report
 - done_when: latch, lid slam, ring, light and rays, chips and sparks visible in order; open pose as in the goal (pivot on the pins, no stub, no dangling hasp, no dark recess); sheet sent to the owner; nothing else changed
 - editor_state: closed
-- token_ceiling: 30000
+- token_ceiling: 1.2 M units
 - model: open
 - tokens: open
 - runs: open

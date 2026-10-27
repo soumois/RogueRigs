@@ -20,7 +20,7 @@ status: provisional
 - definition_of_done: command-line build exits 0 with the editor closed; no new compiler warnings in the files touched; lint clean when it touched `vault/`; committed by explicit path; change summary returned.
 - must_not: edit Blueprints, assets, maps or layout files; change `.uproject`, `*.Build.cs`, `Config/` or plugins unless the subtask says so; change a gdd node; hard-code a tunable value; invent a value marked `open`; kill the owner's editor.
 - model: opus
-- token_ceiling: 80k per task (provisional)
+- token_ceiling: 1.2 M units (provisional, owner 2026-10-27)
 
 ## Relations
 - [[agents-index]] — parent index.

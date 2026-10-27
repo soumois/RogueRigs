@@ -18,7 +18,7 @@ status: provisional
 - must_not: use the Blender route without the subtask naming it; start a paid generation from an image outside `vault/assets/`; start a second paid generation for the same image unless the subtask allows it; split into rigid parts or rig without a parts and bones list in the subtask; import into Unreal; call a viewport capture tool; write a key anywhere.
 - definition_file: `.claude/agents/3d.md`
 - model: sonnet
-- token_ceiling: open (measured on the first run)
+- token_ceiling: 1.2 M units (provisional, owner 2026-10-27)
 
 Tripo (auto-rig for the miner) is deferred to the miner task: its v3 API fields are not verified. Blender MCP is not used.
 

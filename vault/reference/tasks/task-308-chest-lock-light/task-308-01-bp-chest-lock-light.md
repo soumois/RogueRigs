@@ -14,7 +14,7 @@ status: todo
 - expected_output: /Game/RogueRigs/ MI_ChestLockLight; BP_BonusChest slot assignment; doc node updated
 - done_when: compiles without error; slot assignment and parameter values read back; doc node updated; lint clean; committed
 - editor_state: open
-- token_ceiling: 25000
+- token_ceiling: 1.0 M units
 - model: open
 - tokens: open
 - runs: open

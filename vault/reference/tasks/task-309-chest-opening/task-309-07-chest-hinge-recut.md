@@ -14,7 +14,7 @@ status: todo
 - expected_output: Art/Source/chest/clean/chest_body.fbx, chest_lid.fbx, chest_latch.fbx updated, chest_cut.py updated, renders, chest_cut.report.json with pivots, slot face counts, tris and opening signs
 - done_when: open renders show the lid turning about the pins, no stub on the body, no dangling hasp, no dark recess; pivots, size, slots, tris and signs in the report; renders sent to the owner and his go; no Blender process left; committed
 - editor_state: any
-- token_ceiling: 35000
+- token_ceiling: 1.2 M units
 - model: open
 - tokens: open
 - runs: open

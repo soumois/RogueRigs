@@ -14,7 +14,7 @@ status: todo
 - expected_output: Art/Source/chest/clean/chest_lid.fbx with the mark, updated cut script or a logo script under Tools/art/blender/, renders top-down and three-quarter next to the sheet, report
 - done_when: mark centred on the lid top as on the sheet, in its own slot Logo; lid pivot, size and other slots unchanged (numbers in the report); renders sent to the owner and his go; no Blender process left; committed
 - editor_state: any
-- token_ceiling: 30000
+- token_ceiling: 1.2 M units
 - model: open
 - tokens: open
 - runs: open

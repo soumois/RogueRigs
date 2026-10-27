@@ -11,7 +11,7 @@ kind: note
 - Unit (M): input-token equivalents, weights in `vault/scripts/cost-rates.json` (cache write x1.25, cache read x0.1, output x5), one comparable column. Dollar amounts appear only once `usdPerMillionInputTokens` is filled there: open, no price entered. A `~` marks a row derived from rounded columns (rows before 2026-10-26 have no turns).
 - Runs: agent launches. Turns: API calls of the subtask. Resumes: messages sent to an agent after it started; the cause (turn-limit, rate-limit, message) is in the subtask `usage` line.
 - Snapshot: `vault/scripts/usage-snapshot.json`, refreshed at each closing, keeps every agent and session record because Claude Code deletes old transcripts (on 2026-10-26, 566 of 665 subtask rows no longer had theirs).
-- Alerts: `record-cost.js` prints an ALERT for input plus output over `token_ceiling`, a start context over 25k, a turn-limit resume or 55 turns, and any resume (write its cause in the subtask `result`). `task-status.js` refuses `status=done` while `tokens` is `open`.
+- Alerts: `record-cost.js` prints an ALERT when the subtask's `units` exceed `token_ceiling` written `<x> M units` (a legacy ceiling without `M units` gives none), a start context over 25k, a turn-limit resume or 55 turns, and any resume (write its cause in the subtask `result`). `task-status.js` refuses `status=done` while `tokens` is `open`.
 - Not covered: tasks 000 to 012 (their agents carry no subtask id in the description).
 - Each finished subtask adds a row ([[orchestration-protocol]] step 5).
 

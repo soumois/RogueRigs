@@ -14,7 +14,7 @@ status: todo
 - expected_output: three meshes reimported, Lid and Latch at the new pivots, BP_BonusChest event graph and InnerLight defaults; doc node updated
 - done_when: meshes reimported, Lid and Latch relative locations match the task-309-07 report, slot materials unchanged; compiles without error; both events and the spawn parameters read back; doc node updated; lint clean; committed
 - editor_state: open
-- token_ceiling: 25000
+- token_ceiling: 1.0 M units
 - model: open
 - tokens: open
 - runs: open

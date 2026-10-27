@@ -6,7 +6,7 @@ kind: note
 ---
 # Dev crew
 
-The main Claude Code session only relays between the owner and two agents: the Planner turns each owner request into confirmed task nodes, then one fresh Executor per global task delegates each subtask to one specialized subagent (`.claude/agents/`). Agents never talk to each other: they read inputs from and write outputs to this vault and the repo. Token ceilings are first estimates, corrected after each milestone retrospective.
+The main Claude Code session only relays between the owner and two agents: the Planner turns each owner request into confirmed task nodes, then one fresh Executor per global task delegates each subtask to one specialized subagent (`.claude/agents/`). Agents never talk to each other: they read inputs from and write outputs to this vault and the repo. Token ceilings are bounds on a subtask's weighted units (`<x> M units`), provisional, corrected after each milestone retrospective.
 
 Crew in use: planner → executor → cpp, bp (code and editor) → doc; level-design (layouts); text → style-guide (critic); art → style-guide → 3d → bp (assets).
 Not written yet: agent-balance, agent-animation, agent-sound, agent-qa (deferred).

@@ -16,7 +16,7 @@ status: provisional
 - definition_of_done: `node Tools/validate_layout.js <file> --brief <brief>` exits 0; the layout matches the subtask's intent.
 - must_not: edit any file outside `Content/RogueRigs/Data/Levels/`; add fields or types not in the schema; place robots, consoles, chests or the shuttle; choose the cell size.
 - model: sonnet
-- token_ceiling: 30k per task (provisional)
+- token_ceiling: 0.5 M units (provisional, owner 2026-10-27; no data)
 
 ## Relations
 - [[agents-index]] — parent index.

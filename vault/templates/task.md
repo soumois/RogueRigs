@@ -14,7 +14,7 @@ status: todo
 - expected_output: <files, format>
 - done_when: <checks the orchestrator runs before marking done>
 - editor_state: closed | open | any
-- token_ceiling: <number>
+- token_ceiling: <x> M units — bound on the subtask's weighted units (input-token equivalents, weights in `vault/scripts/cost-rates.json`), the `units` figure of `usage`; e.g. `1.2 M units`
 - model: <model of the agent that ran it (opus | sonnet | haiku), filled when done>
 - tokens: <input N, cache write N, cache read N, output N — from `node vault/scripts/agent-usage.js`, all runs included; filled when done>
 - usage: <turns, context start and peak, resumes with cause, minutes, units; written by record-cost.js when done>

@@ -19,7 +19,7 @@ status: provisional
 - known_limits: [[bp-mcp-lessons]] (turn limit, captures, PIE, cross-Blueprint calls).
 - definition_file: `.claude/agents/bp.md` (80 turns since 2026-10-14; 40 before).
 - model: sonnet
-- token_ceiling: 40k per task (provisional)
+- token_ceiling: 1.0 M units (provisional, owner 2026-10-27)
 
 ## Relations
 - [[agents-index]] — parent index.
