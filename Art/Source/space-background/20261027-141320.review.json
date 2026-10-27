@@ -1,0 +1,12 @@
+{
+  "run_id": "20261027-141320",
+  "items": [
+    {
+      "file": "Art/Source/space-background/20261027-141320-space-background-1.png",
+      "verdict": "fail",
+      "rule": "color-code (Void space background: dusty magenta, low saturation)",
+      "reason": "The brightest cores (centre around x 600 y 420, left around x 250 y 720, bottom around x 850 y 1060) turn rosy pink-salmon and noticeably more saturated than the rest of the image, so they leave the dusty, low-saturation magenta family (peak #954B81 is also above the brief's #8A4A84) and start to compete with the floor's brightness tier.",
+      "correction": "Keep this exact image, same strands, gaps and layout; only desaturate and darken the brightest magenta cores to dusty magenta no brighter than #7E3C78, with no pink or salmon tint."
+    }
+  ]
+}

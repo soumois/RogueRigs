@@ -1,0 +1,12 @@
+{
+  "run_id": "20261027-141216",
+  "items": [
+    {
+      "file": "Art/Source/space-background/20261027-141216-space-background-1.png",
+      "verdict": "pass",
+      "rule": null,
+      "reason": "Flat, near-black field with wide soft washes in indigo-violet, violet and dusty plum, no filament or hard edge, very low contrast, no star, planet, object or text, no visible vignette; it matches the color-code void line and keeps clear of every reserved colour in readability-rules.",
+      "correction": null
+    }
+  ]
+}

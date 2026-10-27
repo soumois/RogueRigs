@@ -12,7 +12,7 @@ status: wait-answers
 - acceptance: prompt node and retained images saved in the repo (01, 02); two tileable textures without seam in a 3 x 3 preview (02); material and instances compile (03); BP_SpaceBackground shows the texture layers at their depths, no plane edge in view, read back in L_ArenaM1 (04); a `-game` capture near the east edge shows the layers, compared with the task-333 capture, numbers in the S6 band (05); doc nodes updated (06); committed by explicit paths.
 - gdd_check: read [[visual-style]] (void line: "procedural, layered, never a pasted image", three procedural planes, motion in the material only, nebula peak 20 to 35 luma, mask applies), [[color-code]] (void palette), [[bp-space-background-material]] ("no texture"), [[bp-space-background]] (planes, coverage arithmetic), [[mpp-player-light-mask]] (about 0.08 far from the miner), [[art-prompts-floor-texture]] (precedent: art agent writes ChatGPT prompts, owner generates, `make_tileable.js` at 2048), [[agent-art]] and [[kie-image-workflow]] (Kie.ai route, 1K cap), [[milestones]] (M3 polish, in scope). Conflicts: the request supersedes "procedural" in the void line and Q2 of task-332 (three procedural planes), and N3 of task-333 (parameters only, no new material); "never a pasted image" stays (layers, depth, drift). Open values: S1 to S10. Questions asked 2026-10-27, each with its default; owner "ok" (2026-10-27) = every default below is DECIDED (provisional values, tuned by eye later):
   - S1 task-333: cancelled, superseded by this task; Intensity 1.6 stays on MI_Space_Nebula, which leaves its plane; its capture is the "before".
-  - S2 source: owner generates in ChatGPT from the art agent's prompts (floor-texture route). Alternative: art agent through Kie.ai (GPT Image 2, 1K, about 6 credits per image).
+  - S2 source: CHANGED by the owner 2026-10-27 ("Tu peux contacter l'api toi même"): the art agent generates the images through Kie.ai (GPT Image 2, 1K, about 6 credits per image) from the written prompts; one candidate per layer, at most one correction each; the main session shows them to the owner for validation before subtask 02 continues. Was: owner generates in ChatGPT.
   - S3 layers: two images. Deep: wide dark colour washes, very low contrast, Z -8000 (new plane). Clouds: wisps and filaments with dark gaps, Z -5000, replaces the procedural nebula. Procedural stars (Z -12000) and dust (Z -2000) untouched. No star, planet, asteroid or text in the images.
   - S4 format: square, tileable (`make_tileable.js`, 2048), world-XY UV, one tile about 20000 uu (deep) and 12000 uu (clouds). Alternative: one large non-repeating image per layer.
   - S5 blend and motion: Additive over near-black images; slow UV drift, deep about 5 uu/s, clouds about 12 uu/s, different directions; no rotation.
@@ -24,8 +24,8 @@ status: wait-answers
 - confirmed_by_owner: yes (2026-10-27, "ok", relayed by the main session)
 - milestone: M3
 - next_step: task-335-02-space-textures
-- started: 2026-10-27T22:07:59Z
-- waiting_for: owner generates two images in ChatGPT from Art/Source/space-background/prompts/01-space-deep.txt and 02-space-clouds.txt, saves them as Art/Source/space-background/owner-2026-10-27-space-deep.png and owner-2026-10-27-space-clouds.png
+- started: 2026-10-27T22:11:46Z
+- waiting_for: owner validates the raw images Art/Source/space-background/20261027-141216-space-background-1.png (deep) and 20261027-141558-space-background-1.png (clouds), relayed by the main session; then make_tileable and previews
 - result: open
 
 ## Subtasks
