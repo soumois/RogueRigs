@@ -3,7 +3,7 @@ id: task-321-01-started-field
 description: "task-status.js writes or replaces a started date-time bullet on every status=in-progress; templates and task-create.js get started: open."
 parent: task-321-started-field
 kind: task
-status: todo
+status: in-progress
 ---
 # Write started on every move to in-progress
 

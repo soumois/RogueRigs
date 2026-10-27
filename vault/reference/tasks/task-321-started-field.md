@@ -3,7 +3,7 @@ id: task-321-started-field
 description: "Global task: every move of a task node to in-progress writes a started ISO date-time bullet, so the dashboard can flag stale in-progress tasks."
 parent: tasks-to-do-index
 kind: task
-status: todo
+status: in-progress
 ---
 # started field on in-progress
 
