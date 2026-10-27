@@ -3,7 +3,7 @@ id: task-335-08-recapture
 description: "Second -game capture at the same east edge after the intensity retune: numbers, contact sheet, side-by-side with the task-335-06 capture."
 parent: task-335-space-texture-layers
 kind: task
-status: in-progress
+status: done
 ---
 # Space layers: capture after the retune
 
@@ -15,14 +15,14 @@ status: in-progress
 - done_when: the PNGs exist and are described; the numbers are given next to the task-335-06 numbers; cloud peak in 70 to 100 and void mean below the floor strips (else reported as a defect with the ratio, not fixed here); the sheet paths are given for the owner.
 - editor_state: any
 - token_ceiling: 1.2 M units
-- model: open
-- tokens: open
-- usage: open
-- runs: open
+- model: opus
+- tokens: input 30, cache write 30805, cache read 274827, output 7322
+- usage: turns 14, context start 10k peak 31k, resumes 1 (message x1), 2 min, units 0.10 M
+- runs: 1
 - milestone: M3
 - started: 2026-10-27T23:12:13Z
 - waiting_for: none
-- result: open
+- result: Recapture done (Saved/Captures/task335_space_retune/). Void mean 20.5 below floor strips 33.7-39.0 (pass). DEFECT reported, not fixed: cloud p99 116 vs band 70-100 (Intensity 0.6 gave x0.64 not x0.22 because of tonemapping; estimate 0.4-0.45 needed, unverified). Deep layer still not distinguishable. Near-black share of void L<5 19.2 percent.
 
 ## Relations
 - [[task-335-space-texture-layers]] — parent global task.
