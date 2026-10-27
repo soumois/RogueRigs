@@ -1,9 +1,9 @@
 ---
 id: task-321-started-field
 description: "Global task: every move of a task node to in-progress writes a started ISO date-time bullet, so the dashboard can flag stale in-progress tasks."
-parent: tasks-to-do-index
+parent: tasks-done-index
 kind: task
-status: in-progress
+status: done
 ---
 # started field on in-progress
 
@@ -14,12 +14,12 @@ status: in-progress
 - gdd_check: dev tooling, no gdd node read or changed (Planner, 2026-10-26). No `open` gdd value needed. Existing nodes are not back-filled (not requested). The dashboard reading `started` is out of scope (Tools/crew-board).
 - confirmed_by_owner: yes (2026-10-26): "ok" to every default, Q1-Q9.
 - milestone: M2
-- next_step: task-321-01-started-field
-- result: open
+- next_step: none
+- result: Done. task-status.js writes started (UTC ISO, replace or insert before result) on every move to in-progress; templates and task-create.js carry the field; runbook line added; verified on throwaway vault copy; commit 41f8969d
 
 ## Subtasks
 1. task-321-01-started-field — cpp, editor any: task-status.js writes `started`; templates and task-create.js get the field.
 
 ## Relations
-- [[tasks-to-do-index]] — parent index.
+- [[tasks-done-index]] — parent index.
 - [[task-321-01-started-field]] — step 1, cpp.

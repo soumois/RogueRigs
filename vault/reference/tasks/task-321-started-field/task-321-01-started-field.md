@@ -3,7 +3,7 @@ id: task-321-01-started-field
 description: "task-status.js writes or replaces a started date-time bullet on every status=in-progress; templates and task-create.js get started: open."
 parent: task-321-started-field
 kind: task
-status: in-progress
+status: done
 ---
 # Write started on every move to in-progress
 
@@ -15,12 +15,12 @@ status: in-progress
 - done_when: on throwaway copies (never a live task): `status=in-progress` on a node without the field inserts one `started` bullet before `result` in the agreed format; a second call replaces it (one bullet, new time); `status=done` keeps it; on a global the index line still syncs; `task-next.js` used on a throwaway pair writes `started` on the next subtask; task-create.js output lints clean and carries `started: open`; live nodes untouched; lint clean; committed by explicit path.
 - editor_state: any
 - token_ceiling: 40000
-- model: open
-- tokens: open
-- usage: open
-- runs: open
+- model: opus
+- tokens: input 26, cache write 31582, cache read 318018, output 8186
+- usage: turns 13, context start 11k peak 37k, resumes 0, 2 min, units 0.11 M
+- runs: 1
 - milestone: M2
-- result: open
+- result: task-status.js writes started (UTC ISO, replace or insert before result) on every move to in-progress; templates and task-create.js carry the field; runbook line added; verified on throwaway vault copy; commit 41f8969d
 
 ## Relations
 - [[task-321-started-field]] — parent global task.
