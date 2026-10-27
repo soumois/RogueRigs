@@ -335,3 +335,4 @@ Archive: it exceeds the index size limits of [[_authoring]] on purpose (owner, 2
 - [[task-326-units-ceiling]] — token_ceiling bounds the weighted units figure, written in M units, so the over-ceiling alert flags real outliers. Status done.
 - [[task-327-subtask-paths]] — task-start.js and task-next.js print only signal lines and the started subtask's path; Subtasks lists give paths; Executor may open them directly. Status done.
 - [[task-328-aim-chevrons]] — Aim indicator: a row of white-gold chevrons on the ground in front of the miner, pointing where he aims, direction only. Status done.
+- [[task-329-aim-chevrons-fade]] — Aim chevrons: make them visibly lose opacity with distance from the miner, as in the mockup. Status done.

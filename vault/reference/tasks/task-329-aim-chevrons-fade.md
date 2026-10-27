@@ -1,9 +1,9 @@
 ---
 id: task-329-aim-chevrons-fade
 description: "Global task: make the aim chevrons visibly lose opacity with distance from the miner, as in the mockup; the task-328 build shows them equally bright."
-parent: tasks-to-do-index
+parent: tasks-done-index
 kind: task
-status: in-progress
+status: done
 ---
 # Aim chevrons: distance fade
 
@@ -13,10 +13,10 @@ status: in-progress
 - gdd_check: read [[aim-indicator]] (opacity x0.78 per chevron already specified; no conflict, the build does not show it), [[sys-aim-indicator]] (C++ pushes `Decay` 0.78 and `Opacity` 1 every BeginPlay, checked in `RRAimIndicatorComponent.cpp` lines 128-140: the defect is in the material or the render, not the component), [[sys-ground-telegraph]] (same decal technique: translucent unlit, opacity = mask x Opacity, emissive = colour), [[mpp-player-light-mask]] (darkening around the miner; "let it fade", no compensation, unchanged). Colour unchanged (white-gold), so [[color-code]] and [[readability-rules]] as checked in task-328. Milestone M3 (juice), in scope. Conflicts: none. Open values asked and decided (owner "ok", 2026-10-27): fade 0.78 per chevron, one flat opacity per chevron as in the mockup (Q1); no capture (Q3). No C++ change planned: if the bp agent finds the cause outside the material (C++, post-process, level), it stops and reports, no other fix.
 - confirmed_by_owner: yes (2026-10-27, "ok", relayed by the main session)
 - milestone: M3
-- next_step: task-329-03-docs
+- next_step: none
 - started: 2026-10-27T16:36:04Z
 - waiting_for: none
-- result: open
+- result: Done. sys-aim-indicator updated (commit bba32b9c): Decay^i on MP_Opacity, EmissiveGain 0.5 provisional, probable cause, 416 uu owner value. Node 655 words, over the ~400 target (was ~620 before, trimmed from 730); left to owner decision.
 
 ## Subtasks
 1. task-329-01-owner-screenshot (vault/reference/tasks/task-329-aim-chevrons-fade/task-329-01-owner-screenshot.md) — art: store the owner's test screenshot in the repo and list it in aim-indicator.
@@ -24,7 +24,7 @@ status: in-progress
 3. task-329-03-docs (vault/reference/tasks/task-329-aim-chevrons-fade/task-329-03-docs.md) — doc: update sys-aim-indicator (fade cause and fix, fixed length now owner-decided).
 
 ## Relations
-- [[tasks-to-do-index]] — parent index.
+- [[tasks-done-index]] — parent index.
 - [[task-329-01-owner-screenshot]] — step 1, art.
 - [[task-329-02-fade-material]] — step 2, bp.
 - [[task-329-03-docs]] — step 3, doc.
