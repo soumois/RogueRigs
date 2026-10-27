@@ -1,9 +1,9 @@
 ---
 id: task-319-levelup-choice-after-intermission
 description: "Global task: after the first intermission, level-ups no longer offer upgrade cards; reproduce with a test, find the cause, fix."
-parent: tasks-to-do-index
+parent: tasks-done-index
 kind: task
-status: in-progress
+status: done
 ---
 # Level-ups give nothing after the intermission
 
@@ -14,8 +14,8 @@ status: in-progress
 - gdd_check: [[xp-level-up]] read (2026-10-26): "Each level-up offers 3 upgrades", "Level-up keeps across the 4 levels of a run": the bug contradicts the GDD, no conflict with the request. [[intermission]] read: no rule blocks choices after it. No `open` value needed. M2 scope. The test is requested by the owner. No capture: nothing changes on screen. Fix location (Planner, 2026-10-26, not a design choice): in the widget, which clears listeners it does not own; no C++ rebind workaround.
 - confirmed_by_owner: yes (2026-10-26): step 1 "lance le test" and Q2 "Oui, test avec HUD"; fix Q1 "Oui (Recommended)".
 - milestone: M2
-- next_step: task-319-03-verify-levelup-after-intermission
-- result: open
+- next_step: none
+- result: Done. HUD test passes on fade and loading paths (HandleLevelUp stays bound 1 after HUD swap, level-2 level-up queues a choice). Full suite 273 tests: 271 pass, 2 known unrelated failures (JuiceKillDropsStreamingCubes, LevelUpUpgradeLoop). No pre-fix per-test list, so unchanged outcome rests on only those 2 failing. Commit e5f2b530.
 
 ## Subtasks
 1. task-319-01-levelup-choice-after-intermission — cpp, editor closed: rewrite the test with WBP_HUD and the HUD swap; it fails; cause confirmed. No gameplay or Blueprint change.
@@ -23,7 +23,7 @@ status: in-progress
 3. task-319-03-verify-levelup-after-intermission — cpp, editor closed: rerun the HUD test (passes on both paths) and the suite.
 
 ## Relations
-- [[tasks-to-do-index]] — parent index.
+- [[tasks-done-index]] — parent index.
 - [[task-319-01-levelup-choice-after-intermission]] — step 1, cpp.
 - [[task-319-02-fix-levelup-after-intermission]] — step 2, bp.
 - [[task-319-03-verify-levelup-after-intermission]] — step 3, cpp.

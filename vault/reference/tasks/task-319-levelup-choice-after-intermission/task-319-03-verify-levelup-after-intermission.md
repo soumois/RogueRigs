@@ -3,7 +3,7 @@ id: task-319-03-verify-levelup-after-intermission
 description: "Rerun the task-319-01 HUD reproduction test and the automation suite on the fixed WBP_XPStatus; the test passes on both transition paths."
 parent: task-319-levelup-choice-after-intermission
 kind: task
-status: in-progress
+status: done
 ---
 # Verify: level-up choice after the intermission
 
@@ -15,12 +15,12 @@ status: in-progress
 - done_when: build passes; the HUD test passes on the fade path and the loading path (choice queued for the level-2 level-up, `HandleLevelUp` still bound after the HUD swap); every other automation test has the same outcome as before the fix (pre-existing unrelated failures JuiceKillDropsStreamingCubes and LevelUpUpgradeLoop listed, not fixed); lint clean. No capture, no bot run.
 - editor_state: closed
 - token_ceiling: 40000
-- model: open
-- tokens: open
-- usage: open
-- runs: open
+- model: opus
+- tokens: input 30, cache write 70310, cache read 366959, output 6625
+- usage: turns 15, context start 11k peak 37k, resumes 0, 8 min, units 0.16 M
+- runs: 1
 - milestone: M2
-- result: open
+- result: HUD test passes on fade and loading paths (HandleLevelUp stays bound 1 after HUD swap, level-2 level-up queues a choice). Full suite 273 tests: 271 pass, 2 known unrelated failures (JuiceKillDropsStreamingCubes, LevelUpUpgradeLoop). No pre-fix per-test list, so unchanged outcome rests on only those 2 failing. Commit e5f2b530.
 
 ## Relations
 - [[task-319-levelup-choice-after-intermission]] — parent global task.
