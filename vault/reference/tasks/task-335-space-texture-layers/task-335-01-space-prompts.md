@@ -3,7 +3,7 @@ id: task-335-01-space-prompts
 description: "Write the ChatGPT prompts for the two tileable space layers (deep washes, cloud wisps) and their prompt node, then hand them to the owner."
 parent: task-335-space-texture-layers
 kind: task
-status: todo
+status: in-progress
 ---
 # Space layers: ChatGPT prompts
 
@@ -20,7 +20,7 @@ status: todo
 - usage: open
 - runs: open
 - milestone: M3
-- started: open
+- started: 2026-10-27T22:07:59Z
 - waiting_for: none
 - result: open
 

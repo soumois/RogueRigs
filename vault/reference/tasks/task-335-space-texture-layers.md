@@ -3,7 +3,7 @@ id: task-335-space-texture-layers
 description: "Global task: replace the procedural nebula of the void background with layered ChatGPT-generated tileable space textures at several depths, procedural stars kept."
 parent: tasks-to-do-index
 kind: task
-status: todo
+status: in-progress
 ---
 # Layered generated space textures for the void
 
@@ -24,7 +24,7 @@ status: todo
 - confirmed_by_owner: yes (2026-10-27, "ok", relayed by the main session)
 - milestone: M3
 - next_step: task-335-01-space-prompts
-- started: open
+- started: 2026-10-27T22:07:59Z
 - waiting_for: none
 - result: open
 
