@@ -78,6 +78,8 @@ blueprints-player-index  reference/tech/blueprints/player/blueprints-player-inde
 blueprints-ui-index  reference/tech/blueprints/ui/blueprints-ui-index.md
 blueprints-world-index  reference/tech/blueprints/world/blueprints-world-index.md
 bp-arena-grid  reference/tech/blueprints/world/bp-arena-grid.md
+bp-asteroid-field  reference/tech/blueprints/world/bp-asteroid-field.md
+bp-asteroid-material  reference/tech/blueprints/world/bp-asteroid-material.md
 bp-barrel-explosion  reference/tech/blueprints/fx/bp-barrel-explosion.md
 bp-blob-shadow-material  reference/tech/blueprints/fx/bp-blob-shadow-material.md
 bp-bonus-chest  reference/tech/blueprints/world/bp-bonus-chest.md

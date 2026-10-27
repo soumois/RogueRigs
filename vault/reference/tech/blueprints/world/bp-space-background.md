@@ -44,4 +44,5 @@ On screen with `-game` near the east edge: no plane edge visible, no tiling. Loo
 - [[bp-space-background-material]] — procedural material (stars, dust), parameters, tuning and finding.
 - [[bp-space-texture-material]] — textured material of DeepPlane and NebulaPlane.
 - [[bp-arena-grid]] — the map's void this actor fills.
+- [[bp-asteroid-field]] — nearer asteroids placed in front of these planes (task-334).
 - [[task-332-space-background]] — global task with the decided values.

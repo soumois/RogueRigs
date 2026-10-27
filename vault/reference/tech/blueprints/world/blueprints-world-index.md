@@ -19,6 +19,8 @@ Arena grid, objective console, bonus chest, shuttle, spawner and barrel asset: t
 - [[bp-space-background-material]] — M_SpaceBackground and its three instances (procedural stars, nebula, dust; nebula plane replaced in task-335), parameters, tuning, revert.
 - [[bp-space-texture-material]] — M_SpaceTexture, MI_Space_Deep and MI_Space_Clouds, generated-texture void layers: parameters, final intensities, capture finding.
 - [[bp-space-background]] — BP_SpaceBackground, the four planes under the arena: depths, scales, placement, removal.
+- [[bp-asteroid-field]] — BP_AsteroidField, 12 rotating low-poly asteroids under the arena: positions table, BeginPlay fix, placement, removal.
+- [[bp-asteroid-material]] — M_Asteroid, MI_Asteroid and SM_Asteroid_01..04: parameters, import settings, reimport trap, revert.
 - [[ppv-xp-glow]] — PPV_XPGlow, the PostProcessVolume of L_ArenaM1 that sets the bloom (halo) of emissive elements; open to tune it.
 - [[mpp-player-light-mask]] — provisional: MPC_PlayerLight and M_PP_PlayerLightMask, the radial post-process light mask around the player with its own far gain for the void (task-272-06, task-335-05).
 - [[lights-no-shadows]] — provisional: shadow casting off on the sun and sky light of L_ArenaM1 (owner 2026-10-20); open for the revert steps.
