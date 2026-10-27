@@ -22,7 +22,7 @@ status: done
 - milestone: M3
 - started: 2026-10-27T23:12:13Z
 - waiting_for: none
-- result: Recapture done (Saved/Captures/task335_space_retune/). Void mean 20.5 below floor strips 33.7-39.0 (pass). DEFECT reported, not fixed: cloud p99 116 vs band 70-100 (Intensity 0.6 gave x0.64 not x0.22 because of tonemapping; estimate 0.4-0.45 needed, unverified). Deep layer still not distinguishable. Near-black share of void L<5 19.2 percent.
+- result: Recapture done (Saved/Captures/task335_space_retune/). Void mean 20.5 below floor strips 33.7-39.0 (pass). Cloud p99 116 vs band 70-100: ACCEPTANCE DEVIATION CHOSEN BY THE OWNER (2026-10-27 'Ok pour ça, passe à la 334'), kept on purpose, no second retune. Intensity MI_Space_Clouds 0.6, MI_Space_Deep 0.7. Deep layer still not distinguishable. Void near-black share 19.2 percent.
 
 ## Relations
 - [[task-335-space-texture-layers]] — parent global task.

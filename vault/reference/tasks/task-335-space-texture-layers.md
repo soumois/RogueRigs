@@ -34,7 +34,7 @@ status: done
 - next_step: none
 - started: 2026-10-27T22:40:11Z
 - waiting_for: none
-- result: Done. Doc nodes done (commit edcb24c0): bp-space-texture-material created; background, background-material, mpp-player-light-mask (FarBrightness 0.06 noted), world index updated; art-prompts-space-background description trimmed to 25 words. Open: Tint/Saturation/TileSize/PanVelocity read-back values not in summaries.
+- result: Done. All 9 subtasks done. Final intensities MI_Space_Clouds 0.6, MI_Space_Deep 0.7; void far gain 0.5 (saved FarBrightness 0.06). Recapture: void mean 20.5 below floor strips (pass); cloud p99 116 above the 70-100 band: acceptance deviation chosen by the owner (2026-10-27 'Ok pour ça, passe à la 334'), kept, no more retune or capture. Deep layer not distinguishable in captures.
 
 ## Subtasks
 1. task-335-01-space-prompts (vault/reference/tasks/task-335-space-texture-layers/task-335-01-space-prompts.md) — art: ChatGPT prompts for the deep and cloud layers, prompt node, handed to the owner.
