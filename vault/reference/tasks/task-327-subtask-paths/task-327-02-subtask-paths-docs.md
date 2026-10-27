@@ -3,7 +3,7 @@ id: task-327-02-subtask-paths-docs
 description: "Doc agent writes the execution exception to the navigation rule, the new task-script output and the Subtasks path format; adds paths to 308, 309, 314."
 parent: task-327-subtask-paths
 kind: task
-status: in-progress
+status: done
 ---
 # Execution exception and subtask paths in the crew definitions
 
@@ -15,14 +15,14 @@ status: in-progress
 - done_when: `_navigation` states the execution exception, cites the owner's intent of 2026-10-27, keeps "never search" for every case and leaves non-execution reading unchanged; protocol, agent-executor, runbook, agent-planner, template and executor.md describe the `next: <path>` last line, the kept and dropped output and the D2 Subtasks form consistently with the cpp change summary; every Subtasks line of 308, 309 and 314 carries a path that exists (checked by listing the subtask folders) and no other line of those nodes changed; lint clean; committed by explicit path.
 - editor_state: any
 - token_ceiling: 0.3 M units
-- model: open
-- tokens: open
-- usage: open
-- runs: open
+- model: sonnet
+- tokens: input 18, cache write 36309, cache read 221213, output 6177
+- usage: turns 9, context start 10k peak 36k, resumes 0, 1 min, units 0.10 M
+- runs: 1
 - milestone: M2
 - started: 2026-10-27T15:02:48Z
 - waiting_for: none
-- result: open
+- result: Done: commit dbeae895; execution exception in _navigation, script output and Subtasks path form documented, paths added to 308/309/314.
 
 ## Relations
 - [[task-327-subtask-paths]] — parent global task.

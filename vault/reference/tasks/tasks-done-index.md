@@ -333,3 +333,4 @@ Archive: it exceeds the index size limits of [[_authoring]] on purpose (owner, 2
 - [[task-324-heal-numbers]] — Green floating +N heal number on the miner when he collects a heal pickup, rendered like the damage numbers. Status done.
 - [[task-325-doc-agent]] — Add a Sonnet doc agent that writes a task's vault documentation from an executor brief; cpp and bp return a change summary instead. Status done.
 - [[task-326-units-ceiling]] — token_ceiling bounds the weighted units figure, written in M units, so the over-ceiling alert flags real outliers. Status done.
+- [[task-327-subtask-paths]] — task-start.js and task-next.js print only signal lines and the started subtask's path; Subtasks lists give paths; Executor may open them directly. Status done.
