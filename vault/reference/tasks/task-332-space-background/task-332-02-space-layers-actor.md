@@ -3,7 +3,7 @@ id: task-332-02-space-layers-actor
 description: "Build BP_SpaceBackground holding the background planes at their depths and place one instance in L_ArenaM1."
 parent: task-332-space-background
 kind: task
-status: todo
+status: in-progress
 ---
 # Space background: layer actor and placement
 
@@ -20,7 +20,7 @@ status: todo
 - usage: open
 - runs: open
 - milestone: M3
-- started: open
+- started: 2026-10-27T21:33:12Z
 - waiting_for: none
 - result: open
 

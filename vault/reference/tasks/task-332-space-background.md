@@ -22,7 +22,7 @@ status: in-progress
   - Q9 capture: default one `-game` capture after the build, near an arena edge, by cpp, shown to the owner (lessons rule 2026-10-16, visible change); no before capture.
 - confirmed_by_owner: yes (2026-10-27, "ok", relayed by the main session)
 - milestone: M3
-- next_step: task-332-01-space-material
+- next_step: task-332-02-space-layers-actor
 - started: 2026-10-27T21:27:42Z
 - waiting_for: none
 - result: open

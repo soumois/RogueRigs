@@ -3,7 +3,7 @@ id: task-332-01-space-material
 description: "Build M_SpaceBackground, an Unlit procedural space material, and its three instances for the star, nebula and dust layers."
 parent: task-332-space-background
 kind: task
-status: in-progress
+status: done
 ---
 # Space background: procedural material
 
@@ -15,14 +15,14 @@ status: in-progress
 - done_when: the three instances compile with no log error and are saved; parameters read back from each instance; blend mode per instance read back (stars opaque, nebula and dust additive, per Q2); no texture sampler in the graph; estimated pixel shader cost stated; committed by explicit paths.
 - editor_state: open
 - token_ceiling: 1.0 M units
-- model: open
-- tokens: open
-- usage: open
-- runs: open
+- model: sonnet
+- tokens: input 44, cache write 70467, cache read 912058, output 21772
+- usage: turns 22, context start 9k peak 70k, resumes 0, 5 min, units 0.29 M
+- runs: 1
 - milestone: M3
 - started: 2026-10-27T21:27:42Z
 - waiting_for: none
-- result: open
+- result: M_SpaceBackground (Unlit, one Custom HLSL, no texture) + MI_Space_Stars (opaque), MI_Space_Nebula, MI_Space_Dust (additive) in /Game/RogueRigs/Environment/Space, compiled, saved, commit 49d9998a. Look unverified (no capture).
 
 ## Relations
 - [[task-332-space-background]] — parent global task.
