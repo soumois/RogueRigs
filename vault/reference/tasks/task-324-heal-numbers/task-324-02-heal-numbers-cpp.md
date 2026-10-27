@@ -3,7 +3,7 @@ id: task-324-02-heal-numbers-cpp
 description: "C++ heal number path: green +N on the miner on each heal pickup, through the damage number subsystem; docs and a -game capture."
 parent: task-324-heal-numbers
 kind: task
-status: todo
+status: in-progress
 ---
 # Heal numbers in C++
 
@@ -20,7 +20,7 @@ status: todo
 - usage: open
 - runs: open
 - milestone: M2
-- started: open
+- started: 2026-10-27T12:45:43Z
 - waiting_for: none
 - result: open
 

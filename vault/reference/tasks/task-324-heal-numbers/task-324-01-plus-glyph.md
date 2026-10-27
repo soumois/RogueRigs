@@ -3,7 +3,7 @@ id: task-324-01-plus-glyph
 description: "Add a plus glyph in cell 10 of the damage digit atlas T_DamageDigitsOutline, digits 0-9 untouched, for the heal numbers."
 parent: task-324-heal-numbers
 kind: task
-status: in-progress
+status: done
 ---
 # Plus glyph in the damage digit atlas
 
@@ -15,14 +15,14 @@ status: in-progress
 - done_when: texture still 1024x64 with 16 cells; cell 10 shows a centred "+" with the digits' stroke width and outline; cells 0-9 pixel-identical to before; NS_DamageNumbers and M_DamageNumber unchanged; `RogueRigs.DamageNumbers.NiagaraIntegration` passes in the editor; bp-damage-numbers updated; lint clean; committed by path.
 - editor_state: open
 - token_ceiling: 40000
-- model: open
-- tokens: open
-- usage: open
-- runs: open
+- model: sonnet
+- tokens: input 76, cache write 83588, cache read 1957096, output 26773
+- usage: turns 38, context start 9k peak 84k, resumes 0, 6 min, units 0.43 M
+- runs: 1
 - milestone: M2
 - started: 2026-10-27T12:38:55Z
 - waiting_for: none
-- result: open
+- result: Plus glyph in cell 10 of T_DamageDigitsOutline, cells 0-9 pixel-identical, NiagaraIntegration test passes; not checked visually (render checked in subtask 02 capture).
 
 ## Relations
 - [[task-324-heal-numbers]] — parent global task.
