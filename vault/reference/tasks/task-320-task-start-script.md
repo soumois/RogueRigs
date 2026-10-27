@@ -3,7 +3,7 @@ id: task-320-task-start-script
 description: "Global task: one script, task-start.js, sets a global task and its first subtask in-progress with next_step, run by the Executor at its step 0."
 parent: tasks-to-do-index
 kind: task
-status: todo
+status: in-progress
 ---
 # Task start script
 

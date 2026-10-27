@@ -3,7 +3,7 @@ id: task-320-01-task-start-script
 description: "Write vault/scripts/task-start.js (global and first open subtask in-progress, next_step, lint, commit) and name it in protocol step 5.1, agent-executor and runbook."
 parent: task-320-task-start-script
 kind: task
-status: todo
+status: in-progress
 ---
 # Write task-start.js
 
