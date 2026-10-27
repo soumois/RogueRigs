@@ -3,7 +3,7 @@ id: task-328-02-chevron-material
 description: "Build M_AimChevrons, the deferred decal material drawing a row of white-gold chevrons with distance fade, per the parameter contract."
 parent: task-328-aim-chevrons
 kind: task
-status: in-progress
+status: done
 ---
 # Aim chevrons: decal material
 
@@ -15,14 +15,14 @@ status: in-progress
 - done_when: the material compiles without error and is saved; its parameters list matches the names above (read back); committed by explicit path.
 - editor_state: open
 - token_ceiling: 1.0 M units
-- model: open
-- tokens: open
-- usage: open
-- runs: open
+- model: sonnet
+- tokens: input 44, cache write 56700, cache read 825230, output 16723
+- usage: turns 22, context start 9k peak 60k, resumes 0, 4 min, units 0.24 M
+- runs: 1
 - milestone: M3
 - started: 2026-10-27T15:31:52Z
 - waiting_for: none
-- result: open
+- result: M_AimChevrons built, saved (commit e8204d64); params as contract plus HalfWidth (needed for uu width); forward = UV.x (local +Z), miner end UV.x=0; look and orientation unverified (no capture)
 
 ## Relations
 - [[task-328-aim-chevrons]] — parent global task.

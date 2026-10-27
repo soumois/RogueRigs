@@ -3,7 +3,7 @@ id: task-328-03-aim-indicator-component
 description: "C++ aim indicator decal component on the miner: follows the aim, fixed length, stops at the first rock block, hidden at death; no capture."
 parent: task-328-aim-chevrons
 kind: task
-status: todo
+status: in-progress
 ---
 # Aim chevrons: C++ component
 
@@ -20,7 +20,7 @@ status: todo
 - usage: open
 - runs: open
 - milestone: M3
-- started: open
+- started: 2026-10-27T15:36:38Z
 - waiting_for: none
 - result: open
 
