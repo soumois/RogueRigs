@@ -3,7 +3,7 @@ id: task-320-01-task-start-script
 description: "Write vault/scripts/task-start.js (global and first open subtask in-progress, next_step, lint, commit) and name it in protocol step 5.1, agent-executor and runbook."
 parent: task-320-task-start-script
 kind: task
-status: in-progress
+status: done
 ---
 # Write task-start.js
 
@@ -15,12 +15,12 @@ status: in-progress
 - done_when: on a throwaway copy (copy a todo global and its subtask under new ids in a scratch git worktree or revert afterwards, never on a live task), one run sets global and subtask `in-progress`, `next_step` to the subtask, the tasks-to-do-index line to `Status in-progress.`, lint clean and one commit of only those files; a second run changes nothing and exits 0; a global with `confirmed_by_owner: no` is refused with a message and no file changed; the three docs name the script; no live task node changed; lint clean; committed by explicit path.
 - editor_state: any
 - token_ceiling: 40000
-- model: open
-- tokens: open
-- usage: open
-- runs: open
+- model: opus
+- tokens: input 42, cache write 40617, cache read 543850, output 12077
+- usage: turns 21, context start 11k peak 41k, resumes 0, 3 min, units 0.17 M
+- runs: 1
 - milestone: M2
-- result: open
+- result: Done. vault/scripts/task-start.js written; protocol step 5.1 and Roles, agent-executor and runbook name it. Tested on a scratch worktree copy: one run sets in-progress and commits only 3 files, second run no-op exit 0, confirmed_by_owner: no refused. Lint clean.
 
 ## Relations
 - [[task-320-task-start-script]] — parent global task.

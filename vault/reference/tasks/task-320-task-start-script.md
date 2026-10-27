@@ -1,9 +1,9 @@
 ---
 id: task-320-task-start-script
 description: "Global task: one script, task-start.js, sets a global task and its first subtask in-progress with next_step, run by the Executor at its step 0."
-parent: tasks-to-do-index
+parent: tasks-done-index
 kind: task
-status: in-progress
+status: done
 ---
 # Task start script
 
@@ -14,12 +14,12 @@ status: in-progress
 - gdd_check: dev tooling, no gdd node read or changed (Planner, 2026-10-26). No `open` gdd value needed. Editing `orchestration-protocol` (kind: rule) needs the owner's explicit intent: asked (Q1). The `started` bullet is task-321, not this task; this script goes through `task-status.js`, so it gets `started` once task-321 is done.
 - confirmed_by_owner: yes (2026-10-26): "ok" to every default, Q1-Q9.
 - milestone: M2
-- next_step: task-320-01-task-start-script
-- result: open
+- next_step: none
+- result: Done. Done. vault/scripts/task-start.js written; protocol step 5.1 and Roles, agent-executor and runbook name it. Tested on a scratch worktree copy: one run sets in-progress and commits only 3 files, second run no-op exit 0, confirmed_by_owner: no refused. Lint clean.
 
 ## Subtasks
 1. task-320-01-task-start-script — cpp, editor any: write task-start.js and update protocol step 5.1, agent-executor and runbook.
 
 ## Relations
-- [[tasks-to-do-index]] — parent index.
+- [[tasks-done-index]] — parent index.
 - [[task-320-01-task-start-script]] — step 1, cpp.

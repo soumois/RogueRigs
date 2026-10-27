@@ -325,3 +325,4 @@ Archive: it exceeds the index size limits of [[_authoring]] on purpose (owner, 2
 - [[task-317-stats-then-cards]] — The end-of-level stats screen and the cards shop screen are two distinct screens; level 4 shows the stats screen only, then the run-won screen. Status done.
 - [[task-318-preload-next-level]] — The next level loads in the background while the cards screen is shown; Continue fades into it when ready, else shows the loading screen with a progress bar. Status done.
 - [[task-319-levelup-choice-after-intermission]] — after the first intermission, level-ups no longer offer upgrade cards; reproduce with a test, find the cause, fix. Status done.
+- [[task-320-task-start-script]] — one script, task-start.js, sets a global task and its first subtask in-progress with next_step, run by the Executor at its step 0. Status done.
