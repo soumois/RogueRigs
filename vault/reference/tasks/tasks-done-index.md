@@ -1,12 +1,12 @@
 ---
 id: tasks-done-index
-description: "Archive of every finished global task, one line each with its summary. Open only to look up past work."
+description: "Archive of every finished or cancelled global task, one line each with its summary. Open only to look up past work."
 parent: tasks-index
 kind: note
 ---
 # Tasks done
 
-Archive: it exceeds the index size limits of [[_authoring]] on purpose (owner, 2026-10-10). Lines are appended as tasks finish.
+Archive: it exceeds the index size limits of [[_authoring]] on purpose (owner, 2026-10-10). Lines are appended as tasks finish or are cancelled (line ending `Status done.` or `Status cancelled.`).
 
 ## Relations
 - [[tasks-index]] — parent index.

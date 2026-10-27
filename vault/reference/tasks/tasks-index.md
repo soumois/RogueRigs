@@ -15,4 +15,4 @@ Resuming: read [[handover-2026-10-21-lighting-floor]] first (drone, lighting, fl
 ## Relations
 - [[root]] — the vault map.
 - [[tasks-to-do-index]] — global tasks in progress, todo, review or blocked. Read on every start.
-- [[tasks-done-index]] — archive of every finished global task, one line each. Open only to look up past work.
+- [[tasks-done-index]] — archive of every finished or cancelled global task, one line each. Open only to look up past work.

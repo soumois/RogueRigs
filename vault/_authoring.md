@@ -21,7 +21,7 @@ applies_to: writing
   - `doc`: technical documentation of a C++ system or a Blueprint.
   - `task`: an Orchestrator work item; also needs `status`.
 - `status` for `spec`: `approved` | `provisional` | `open` | `deferred`.
-- `status` for `task`: `todo` | `in-progress` | `review` | `done` | `blocked`.
+- `status` for `task`: `todo` | `in-progress` | `review` | `done` | `blocked` | `cancelled`.
 
 ## Body
 - English. Concise, factual, no filler. ONE concept per node.

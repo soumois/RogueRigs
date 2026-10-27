@@ -6,7 +6,7 @@ kind: note
 ---
 # Tasks to do
 
-A global task moves to [[tasks-done-index]] when it is done (`vault/scripts/task-status.js` does it).
+A global task moves to [[tasks-done-index]] when it is done or cancelled (`vault/scripts/task-status.js` does it).
 
 ## Relations
 - [[tasks-index]] — parent index.

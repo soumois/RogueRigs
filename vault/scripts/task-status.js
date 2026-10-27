@@ -1,5 +1,6 @@
 // node vault/scripts/task-status.js <path under vault/reference/tasks> status=<s> [next_step=<v>] [result=<text>]
-// Sets the frontmatter status and bullet fields of a task node; keeps the index status line in sync for global tasks (done ones move to tasks-done-index).
+// Sets the frontmatter status and bullet fields of a task node; keeps the index status line in sync for global tasks (done and cancelled ones move to tasks-done-index).
+// status=cancelled on a global also sets each of its subtasks that is not done to cancelled and its next_step to none.
 // Every status=in-progress (global or subtask, each move) also writes `- started: <UTC ISO 8601 to the second>`, replacing
 // the bullet or inserting it before `- result:` on older nodes; other statuses leave `started` unchanged.
 const fs = require('fs');
@@ -21,11 +22,20 @@ if (extra.includes('status=in-progress')) {
   else if (/^- result: /m.test(s)) s = s.replace(/^- result: /m, () => started + '\n- result: ');
   else throw new Error('no field result to insert started before');
 }
-fs.writeFileSync(f, s);
-// keep the index status line in sync for global tasks; a global task that becomes done moves from
-// tasks-to-do-index to tasks-done-index (and back if it leaves done), with its parent field and parent link.
 const m = process.argv[2].match(/^(task-\d+-[^/]+)\.md$/);
 const st = (process.argv.find(a => a.startsWith('status=')) || '').slice(7);
+// cancelling a global also cancels each of its subtasks that is not done and sets its next_step to none
+if (m && st === 'cancelled') {
+  s = s.replace(/^- next_step: .*$/m, '- next_step: none');
+  const sub = require('path').resolve(__dirname, '..', 'reference', 'tasks', m[1]);
+  if (fs.existsSync(sub)) for (const x of fs.readdirSync(sub).filter(n => n.endsWith('.md'))) {
+    const p = require('path').join(sub, x), t = fs.readFileSync(p, 'utf8');
+    if (!/^status: done\s*$/m.test(t)) fs.writeFileSync(p, t.replace(/^status: .*$/m, 'status: cancelled'));
+  }
+}
+fs.writeFileSync(f, s);
+// keep the index status line in sync for global tasks; a global task that becomes done or cancelled moves from
+// tasks-to-do-index to tasks-done-index (and back if it leaves both), with its parent field and parent link.
 if (m && st) {
   const dir = require('path').resolve(__dirname, '..', 'reference', 'tasks');
   const P = n => require('path').join(dir, n + '.md');
@@ -34,7 +44,7 @@ if (m && st) {
   if (!from) throw new Error(m[1] + ' is in neither tasks-to-do-index nor tasks-done-index');
   let src = fs.readFileSync(P(from), 'utf8');
   const line = src.match(lineRe)[0].replace(/(Status )[a-z-]+\./, '$1' + st + '.');
-  const to = st === 'done' ? 'tasks-done-index' : 'tasks-to-do-index';
+  const to = st === 'done' || st === 'cancelled' ?'tasks-done-index' : 'tasks-to-do-index';
   if (to === from) fs.writeFileSync(P(from), src.replace(lineRe, () => line));
   else {
     fs.writeFileSync(P(from), src.replace(new RegExp(lineRe.source + '\\n?', 'm'), ''));

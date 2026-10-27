@@ -29,6 +29,8 @@ Complements [[orchestration-protocol]] (the rules) with the commands that worked
 - One logical owner point = one global task ([[orchestration-protocol]]). Write a spec module and run `node vault/scripts/task-create.js <spec.js> <last-task-id>`: it writes each global task with one subtask, resolves the input ids to paths (the delegation hands those paths to the agent) and adds them to tasks-to-do-index (at the end of the list when the anchor is not there). `task-status.js` moves a global task to tasks-done-index when it is set to done. A second subtask for another agent is written by hand from `vault/templates/task.md`.
 - `started`: every node carries `- started:` (`open` at creation). Each `task-status.js status=in-progress` (so `task-start.js` and `task-next.js` too) writes the UTC time to the second (`2026-10-26T23:35:54Z`), replacing the previous value or inserting the bullet before `result` on older nodes.
 
+- Cancelling: `node vault/scripts/task-status.js <global>.md status=cancelled [result=<why>]` moves the global to tasks-done-index (line ending `Status cancelled.`), sets each of its subtasks that is not done to `cancelled` and its `next_step` to `none`; lint and commit those files by path. Setting another status moves it back to tasks-to-do-index.
+
 ## Starting a task
 - `node vault/scripts/task-start.js <global-id>` (no `.md`): refuses unless `confirmed_by_owner: yes`; picks the global `next_step` subtask if not done, else the first `todo` one of `## Subtasks`; sets both `in-progress` and `next_step` through `task-status.js`, lints and commits only those vault files (`<subtask>: in-progress`). A second run changes nothing and exits 0. Later subtasks start through `task-next.js`.
 
