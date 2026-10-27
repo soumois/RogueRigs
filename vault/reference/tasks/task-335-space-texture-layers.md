@@ -21,11 +21,19 @@ status: wait-answers
   - S8 task-334: unchanged (12 Blender 3D asteroids), runs after this task. Alternative: asteroids as a generated texture layer.
   - S9 capture: one `-game` capture near the east edge, two shots 3 s apart, compared with the task-333 capture.
   - S10 GDD: void line becomes "layered: procedural stars and generated tileable cloud textures at depths, slow drift, never a single pasted image".
+- feedback_2: owner, 2026-10-27 (verbatim, French), after seeing the two Kie.ai raw images (deep 20261027-141216, clouds 20261027-141558 after the desaturation correction; 18 credits spent): "ça reste trés timide". Reading: too dim, too flat, too little presence, in the images and in the expected game look. GDD re-check: the timidity comes from decided values, not from a defect: (a) S6 and [[visual-style]]: cloud peak 20 to 35 sRGB luma, below the floor strip beside the edge (18 to 49); (b) [[color-code]] void line: one hue family, low saturation, which made the style review reject the brighter pinker try 141320; (c) [[mpp-player-light-mask]]: gain 1/(1+(r/200)^1.8) toward 0.08, about 0.13 at 1000 uu and 0.09 at 2000 uu from the miner, so the void is always at about a tenth of its value; (d) [[art-prompts-space-background]] prompts: hex caps (deep below #4A2850, clouds below #8A4A84) and 40 percent near-black asked. Retained images: deep max #341741, almost a flat wash; clouds max #6A4286, 43 percent near-black. Reserved colours limiting a second hue ([[readability-rules]], [[color-code]]): acid green, steel blue (enemies), red (enemy fire, healing), orange (explodes), cyan (XP), teal (player side), magenta-pink (big XP core). Questions B1 to B7 asked 2026-10-27, each with its default (not yet answered):
+  - B1 brightness: cloud peak about 70 to 100 sRGB luma near an edge; bright cores may exceed the floor strip beside the edge, the void mean stays below the floor mean. Replaces S6. Alternative: stay below the floor strip (peak about 45).
+  - B2 mask: void pixels (world Z below -200: stars plane, layers, later asteroids) get their own far gain 0.5 instead of 0.08 in M_PP_PlayerLightMask; new bp subtask before the capture. Alternatives: full exemption (gain 1); mask unchanged, Intensity compensates (corners stay near black).
+  - B3 colour: stronger saturation within the family (indigo, electric violet, magenta) plus a second hue, deep ultramarine blue (saturated, not grey steel blue), mainly in the deep layer. Alternatives: warm rose (close to the big XP magenta-pink and the heal red); single family, saturation only.
+  - B4 structure: near-black share about 20 to 25 percent (was 40 to 50); denser filaments, bright cores, dark dust lanes cutting the clouds; deep layer with visible large shapes, not a flat wash.
+  - B5 images: regenerate both through Kie.ai with new prompts, one image each, at most one correction each (12 to 24 credits); current images kept as fallback; M_SpaceTexture also gets Contrast and Saturation parameters. Alternative: keep the current images, boost in the material only (no credit, structure and colour limited).
+  - B6 depth: no third texture layer now (the task-334 asteroids are the near layer). Alternative: a third layer of sparse bright filaments near Z -3000.
+  - B7 GDD: [[visual-style]] void line and [[color-code]] void row rewritten with B1 to B4 (provisional), replacing S6 and "low saturation".
 - confirmed_by_owner: yes (2026-10-27, "ok", relayed by the main session)
 - milestone: M3
 - next_step: task-335-02-space-textures
 - started: 2026-10-27T22:11:46Z
-- waiting_for: owner validates the raw images Art/Source/space-background/20261027-141216-space-background-1.png (deep) and 20261027-141558-space-background-1.png (clouds), relayed by the main session; then make_tileable and previews
+- waiting_for: owner answers B1 to B7 (feedback 'ça reste trés timide' on the Kie.ai images)
 - result: open
 
 ## Subtasks

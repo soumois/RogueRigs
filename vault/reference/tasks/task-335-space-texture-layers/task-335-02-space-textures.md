@@ -22,7 +22,7 @@ status: wait-answers
 - runs: open
 - milestone: M3
 - started: 2026-10-27T22:11:46Z
-- waiting_for: owner validates the raw images Art/Source/space-background/20261027-141216-space-background-1.png (deep) and 20261027-141558-space-background-1.png (clouds), relayed by the main session; then make_tileable and previews
+- waiting_for: owner answers B1 to B7 of the global; current images not validated
 - result: open
 
 ## Relations
