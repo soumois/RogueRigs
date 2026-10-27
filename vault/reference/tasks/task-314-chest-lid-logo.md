@@ -18,9 +18,9 @@ status: todo
 - note: task-314-01 runs after task-309-07, which re-cuts the same lid (pivot on the hinge pins); the mark is cut into that lid.
 
 ## Subtasks
-1. task-314-01-chest-lid-logo — 3d: cut the mark into the lid mesh
-2. task-314-02-bp-chest-lid-logo — bp: reimport the lid and give the Logo slot its yellow material
-3. task-314-03-capture-chest-lid-logo — cpp: capture the chest in game
+1. task-314-01-chest-lid-logo (vault/reference/tasks/task-314-chest-lid-logo/task-314-01-chest-lid-logo.md) — 3d: cut the mark into the lid mesh
+2. task-314-02-bp-chest-lid-logo (vault/reference/tasks/task-314-chest-lid-logo/task-314-02-bp-chest-lid-logo.md) — bp: reimport the lid and give the Logo slot its yellow material
+3. task-314-03-capture-chest-lid-logo (vault/reference/tasks/task-314-chest-lid-logo/task-314-03-capture-chest-lid-logo.md) — cpp: capture the chest in game
 
 ## Relations
 - [[tasks-to-do-index]] — parent index.

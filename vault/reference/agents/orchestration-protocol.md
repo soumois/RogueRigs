@@ -8,7 +8,7 @@ applies_to: orchestrator
 # Orchestration protocol
 
 ## Roles
-`/task` splits the procedure between two agents (owner 2026-10-26). The [[agent-planner]] does steps 0 to 4 and writes every decision into the task nodes; the [[agent-executor]] does steps 5 and 6 for one confirmed global task, from those nodes only, in a fresh context. Executor step 0: check `git status` and the task's `next_step`, then run `node vault/scripts/task-start.js <global-id>` (a no-op when already started); it does not read `tasks-index` or report other tasks.
+`/task` splits the procedure between two agents (owner 2026-10-26). The [[agent-planner]] does steps 0 to 4 and writes every decision into the task nodes; the [[agent-executor]] does steps 5 and 6 for one confirmed global task, from those nodes only, in a fresh context. Executor step 0: check `git status` and the task's `next_step`, then run `node vault/scripts/task-start.js <global-id>` (a no-op when already started) and open the subtask path on its last line `next: <path>` directly (execution exception of [[_navigation]], owner 2026-10-27: no descent, no search); it does not read `tasks-index` or report other tasks.
 
 ## 0. Resume first
 On every start, read [[tasks-index]]. If a global task is `in-progress`, read it, open its `next_step` subtask, check `git status` for partial work, and continue from there. Do not take a new request before reporting where the current one stands.
@@ -30,6 +30,7 @@ Create the global task node. Add subtasks (task-NNN-SS) only when that one reque
 - has one agent and one output;
 - is small enough to finish inside one agent session, well under its token ceiling;
 - lists `depends_on`, `done_when` and `editor_state`;
+- is listed in the global `## Subtasks` as `N. <id> (<repo-relative path>) — <agent>: <goal>`, so the Executor opens it directly (`task-create.js` writes this form);
 - lists its inputs as resolved paths (from `_paths.md`), so the agent reads them directly instead of descending again; re-reading them in each subtask is the accepted cost of independent subtasks.
 
 Plan only what the owner asked: no new tests, bot runs, screenshot sessions or features he did not request; only update existing tests that a requested change breaks. The plan shown to the owner lists exactly the tasks and subtasks that will run.
@@ -44,7 +45,7 @@ Show the plan once. A "no" to every proposed option means no task: ask or wait, 
 When the Planner hands its plan and questions back, it sets each new global `wait-answers` with `node vault/scripts/task-status.js <global>.md status=wait-answers "waiting_for=owner confirmation of the plan"`, and `status=todo` once the owner confirms (this resets `waiting_for` to `none`).
 
 ## 5. Execute, one subtask at a time
-1. Start the global with `node vault/scripts/task-start.js <global-id>`: it sets the global and its first open subtask `in-progress` and `next_step` to it, lints and commits. Later subtasks are started by `task-next.js` when the previous one closes.
+1. Start the global with `node vault/scripts/task-start.js <global-id>`: it sets the global and its first open subtask `in-progress` and `next_step` to it, lints and commits. Later subtasks are started by `task-next.js` when the previous one closes. Both scripts print only lines that need action (ALERT lines, lint problems, hook and git errors, refusals, the commit line, `left:` leftovers) and end with `next: <absolute path of the started subtask>` or `next: none`; open that path directly. Refusals and failures print no `next:` line.
 2. Prepare the editor state (close Unreal before C++ builds; launch it before BP work).
 3. Delegate to the subagent with the subtask node and the resolved paths of its inputs as the only reading list, the description starting with the subtask id. Keep each cpp and bp change summary. The doc subtask is delegated to `doc` the same way, with the brief: commit hashes and changed paths (the agent runs `git show`, the diff is not pasted), a pointer to the global `request` and `gdd_check` for decided values, the change summaries, and the nodes to create or update; it is closed by `task-next.js` like any subtask (cost-log row, `usage` line, model, ALERT lines).
 4. Run the `done_when` checks.
@@ -63,3 +64,4 @@ Run the global acceptance checks, fill `result`, set `done`, `next_step: none`, 
 - [[agent-executor]] — runs steps 5 and 6.
 - [[cost-log]] — where step 5 records tokens per subtask.
 - [[agent-doc]] — runs the doc subtask of steps 3 and 5.
+- [[_navigation]] — execution exception for opening task nodes by path.

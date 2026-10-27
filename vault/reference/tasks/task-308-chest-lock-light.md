@@ -17,9 +17,9 @@ status: todo
 - result: open
 
 ## Subtasks
-1. task-308-01-bp-chest-lock-light — bp: MI_ChestLockLight on the chest latch
-2. task-308-02-chest-lock-light-drive — cpp: Drive the chest lock light from its state
-3. task-308-03-capture-chest-lock-light — cpp: Capture the chest lock light states
+1. task-308-01-bp-chest-lock-light (vault/reference/tasks/task-308-chest-lock-light/task-308-01-bp-chest-lock-light.md) — bp: MI_ChestLockLight on the chest latch
+2. task-308-02-chest-lock-light-drive (vault/reference/tasks/task-308-chest-lock-light/task-308-02-chest-lock-light-drive.md) — cpp: Drive the chest lock light from its state
+3. task-308-03-capture-chest-lock-light (vault/reference/tasks/task-308-chest-lock-light/task-308-03-capture-chest-lock-light.md) — cpp: Capture the chest lock light states
 
 ## Relations
 - [[tasks-to-do-index]] — parent index.

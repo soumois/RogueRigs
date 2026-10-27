@@ -18,13 +18,13 @@ status: todo
 - result: open
 
 ## Subtasks
-1. task-309-01-chest-opening-sequence — cpp: Chest opening sequence, slam, light drive and XP burst
-2. task-309-02-bp-chest-interior-material — bp: MI_ChestInterior on the Interior slot
-3. task-309-03-bp-slam-ring-params — bp: DustColor and ChipCount on NS_HeavySlamImpact
-4. task-309-04-bp-chest-open-fx — bp: NS_BonusChestOpen, turning rays and floating sparks
-5. task-309-05-bp-chest-open-wiring — bp: BP_BonusChest opening wiring
-6. task-309-06-capture-chest-opening — cpp: Capture the chest opening
-7. task-309-07-chest-hinge-recut — 3d: Lid pivot on the hinge pins and open-pose mesh fixes (runs first)
+1. task-309-01-chest-opening-sequence (vault/reference/tasks/task-309-chest-opening/task-309-01-chest-opening-sequence.md) — cpp: Chest opening sequence, slam, light drive and XP burst
+2. task-309-02-bp-chest-interior-material (vault/reference/tasks/task-309-chest-opening/task-309-02-bp-chest-interior-material.md) — bp: MI_ChestInterior on the Interior slot
+3. task-309-03-bp-slam-ring-params (vault/reference/tasks/task-309-chest-opening/task-309-03-bp-slam-ring-params.md) — bp: DustColor and ChipCount on NS_HeavySlamImpact
+4. task-309-04-bp-chest-open-fx (vault/reference/tasks/task-309-chest-opening/task-309-04-bp-chest-open-fx.md) — bp: NS_BonusChestOpen, turning rays and floating sparks
+5. task-309-05-bp-chest-open-wiring (vault/reference/tasks/task-309-chest-opening/task-309-05-bp-chest-open-wiring.md) — bp: BP_BonusChest opening wiring
+6. task-309-06-capture-chest-opening (vault/reference/tasks/task-309-chest-opening/task-309-06-capture-chest-opening.md) — cpp: Capture the chest opening
+7. task-309-07-chest-hinge-recut (vault/reference/tasks/task-309-chest-opening/task-309-07-chest-hinge-recut.md) — 3d: Lid pivot on the hinge pins and open-pose mesh fixes (runs first)
 
 ## Relations
 - [[tasks-to-do-index]] — parent index.

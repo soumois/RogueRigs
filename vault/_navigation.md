@@ -21,11 +21,14 @@ Works with any tool that can list a directory and read a file.
 - Never search the vault (grep, glob, full-text) to locate a node.
 - If descent does not reach what you need: STOP and report the trajectory (last node reached, and that no gloss matches). A failed descent is a defect in the tree; it must stay visible so the tree gets fixed.
 
+## Execution exception (owner intent 2026-10-27, [[task-327-subtask-paths]])
+During execution of a confirmed task, the Executor and the agents it launches may open a task or subtask node directly from a path printed by `task-start.js` / `task-next.js` (`next: <path>`) or listed in the global node's `## Subtasks`, without descending through the indexes and without re-walking the nodes. Searching (grep, glob, find) to locate a node stays forbidden, and a task path is never built by analogy. Reading outside execution is unchanged: everything above applies.
+
 ## Resolving a `[[wikilink]]`
 A wikilink is an id, and the file is `<id>.md`.
 1. Parent link: the child is in the current node's directory or a direct subdirectory. List that directory and take the path from the listing.
 2. Cross-branch link: open `vault/_paths.md` once per session; it maps every non-task id to its path.
-3. Task link (`task-NNN-slug`, `task-NNN-MM-slug`): not in `_paths.md`. A global task is `reference/tasks/task-NNN-slug.md`; its subtasks are in the folder `reference/tasks/task-NNN-slug/` (list it). Open tasks through `tasks-index`.
+3. Task link (`task-NNN-slug`, `task-NNN-MM-slug`): not in `_paths.md`. A global task is `reference/tasks/task-NNN-slug.md`; its subtasks are in the folder `reference/tasks/task-NNN-slug/` (list it). Open tasks through `tasks-index`. The global `## Subtasks` list gives each subtask path (`id (path) — agent: goal`); during execution open it directly (see "Execution exception" above).
 
 ## Relations
 - [[_authoring]] — the writing counterpart.

@@ -19,7 +19,7 @@ status: todo
 - result: <filled when done>
 
 ## Subtasks
-<ordered list of subtask ids with one-line goals, same as Relations>
+<ordered list, one line per subtask: `1. task-NNN-01-slug (vault/reference/tasks/task-NNN-slug/task-NNN-01-slug.md) — <agent>: <one-line goal>`; same subtasks as Relations>
 
 ## Relations
 - [[tasks-index]] — parent index.
