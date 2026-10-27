@@ -3,7 +3,7 @@ id: task-333-nebula-visible
 description: "Global task: make the nebula layer of the space background clearly visible at normal brightness, by retuning MI_Space_Nebula only."
 parent: tasks-to-do-index
 kind: task
-status: in-progress
+status: wait-answers
 ---
 # Clearly visible nebula in the void
 
@@ -21,7 +21,7 @@ status: in-progress
 - milestone: M3
 - next_step: task-333-02-capture
 - started: 2026-10-27T21:59:10Z
-- waiting_for: none
+- waiting_for: owner decision S1 of task-335 (cancel as superseded by task-335); 01 done, 02 capture taken in Saved/Captures/task333_nebula but not measured
 - result: open
 
 ## Subtasks
