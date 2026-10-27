@@ -3,7 +3,7 @@ id: task-327-02-subtask-paths-docs
 description: "Doc agent writes the execution exception to the navigation rule, the new task-script output and the Subtasks path format; adds paths to 308, 309, 314."
 parent: task-327-subtask-paths
 kind: task
-status: todo
+status: in-progress
 ---
 # Execution exception and subtask paths in the crew definitions
 
@@ -20,7 +20,7 @@ status: todo
 - usage: open
 - runs: open
 - milestone: M2
-- started: open
+- started: 2026-10-27T15:02:48Z
 - waiting_for: none
 - result: open
 

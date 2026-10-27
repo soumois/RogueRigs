@@ -3,7 +3,7 @@ id: task-327-01-subtask-paths-scripts
 description: "task-start.js and task-next.js print only errors, alerts, refusals, commit line and next: path; task-create.js writes subtask paths in Subtasks."
 parent: task-327-subtask-paths
 kind: task
-status: in-progress
+status: done
 ---
 # Quiet task scripts ending with the subtask path
 
@@ -15,14 +15,14 @@ status: in-progress
 - done_when: tested in a throwaway `git worktree` on a temporary branch with a throwaway global and two subtasks (worktree and branch removed after; no live task node touched): `task-start.js` prints no `warn:`, `vault OK` or line-ending warning line and ends with `next: <absolute path of the first subtask>`; a second run prints the "already in-progress" line and the same `next:`; with `confirmed_by_owner: no` it prints the refusal and exits non-zero; with a node that breaks lint the lint problem lines appear and it exits non-zero; `task-next.js` closing subtask 1 with subtask 2 as next ends with `next: <absolute path of subtask 2>`, and closing the last one ends with `next: none`; an `ALERT ...` line and a `record-cost.js` error still reach the output (in the worktree copy only, `record-cost.js` may be stubbed to print them, since a throwaway id has no agent usage); `task-create.js` on a throwaway spec writes the D2 Subtasks form and `task-start.js` parses it; lint clean; committed by explicit path.
 - editor_state: any
 - token_ceiling: 1.2 M units
-- model: open
-- tokens: open
-- usage: open
-- runs: open
+- model: opus
+- tokens: input 48, cache write 61619, cache read 1087836, output 23831
+- usage: turns 24, context start 11k peak 62k, resumes 0, 4 min, units 0.31 M
+- runs: 1
 - milestone: M2
 - started: 2026-10-27T14:58:21Z
 - waiting_for: none
-- result: open
+- result: Done: commit fb1d7dd0; task-quiet.js helper, task-start/next/create updated; tested in throwaway worktree.
 
 ## Relations
 - [[task-327-subtask-paths]] — parent global task.
