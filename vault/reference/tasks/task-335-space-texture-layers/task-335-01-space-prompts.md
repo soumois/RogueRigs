@@ -3,7 +3,7 @@ id: task-335-01-space-prompts
 description: "Write the ChatGPT prompts for the two tileable space layers (deep washes, cloud wisps) and their prompt node, then hand them to the owner."
 parent: task-335-space-texture-layers
 kind: task
-status: in-progress
+status: done
 ---
 # Space layers: ChatGPT prompts
 
@@ -15,14 +15,14 @@ status: in-progress
 - done_when: the three prompt files exist; the node passes lint and is linked both ways; the prompts are handed to the owner with the file names to save (`Art/Source/space-background/owner-<date>-space-deep.png`, `...-space-clouds.png`); committed by explicit path. The Executor then sets the global `wait-answers` for the owner's images.
 - editor_state: any
 - token_ceiling: 0.15 M units
-- model: open
-- tokens: open
-- usage: open
-- runs: open
+- model: sonnet
+- tokens: input 14, cache write 34565, cache read 141384, output 7552
+- usage: turns 7, context start 9k peak 35k, resumes 0, 1 min, units 0.10 M
+- runs: 1
 - milestone: M3
 - started: 2026-10-27T22:07:59Z
 - waiting_for: none
-- result: open
+- result: Prompts 01-space-deep, 02-space-clouds, 03-space-correction and node art-prompts-space-background committed (56f7a964); hex ranges provisional (color-code gives no hex); handed to owner
 
 ## Relations
 - [[task-335-space-texture-layers]] — parent global task.

@@ -23,7 +23,7 @@ status: in-progress
   - S10 GDD: void line becomes "layered: procedural stars and generated tileable cloud textures at depths, slow drift, never a single pasted image".
 - confirmed_by_owner: yes (2026-10-27, "ok", relayed by the main session)
 - milestone: M3
-- next_step: task-335-01-space-prompts
+- next_step: task-335-02-space-textures
 - started: 2026-10-27T22:07:59Z
 - waiting_for: none
 - result: open

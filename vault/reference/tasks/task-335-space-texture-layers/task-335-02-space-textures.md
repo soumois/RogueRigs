@@ -3,7 +3,7 @@ id: task-335-02-space-textures
 description: "Save the owner's two space images in the repo, make them tileable at 2048 with 3 x 3 previews, review and record them."
 parent: task-335-space-texture-layers
 kind: task
-status: todo
+status: in-progress
 ---
 # Space layers: tileable textures from the owner images
 
@@ -20,7 +20,7 @@ status: todo
 - usage: open
 - runs: open
 - milestone: M3
-- started: open
+- started: 2026-10-27T22:09:27Z
 - waiting_for: none
 - result: open
 
