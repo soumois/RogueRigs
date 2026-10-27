@@ -3,7 +3,7 @@ id: task-333-01-nebula-tune
 description: "Retune the parameters of MI_Space_Nebula so the nebula is clearly visible at normal brightness, without changing the M_SpaceBackground graph."
 parent: task-333-nebula-visible
 kind: task
-status: todo
+status: in-progress
 ---
 # Nebula: retune MI_Space_Nebula
 
@@ -20,7 +20,7 @@ status: todo
 - usage: open
 - runs: open
 - milestone: M3
-- started: open
+- started: 2026-10-27T21:59:11Z
 - waiting_for: none
 - result: open
 

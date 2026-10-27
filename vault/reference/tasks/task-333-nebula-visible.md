@@ -3,7 +3,7 @@ id: task-333-nebula-visible
 description: "Global task: make the nebula layer of the space background clearly visible at normal brightness, by retuning MI_Space_Nebula only."
 parent: tasks-to-do-index
 kind: task
-status: todo
+status: in-progress
 ---
 # Clearly visible nebula in the void
 
@@ -20,7 +20,7 @@ status: todo
 - confirmed_by_owner: yes (2026-10-27, "ok", relayed by the main session)
 - milestone: M3
 - next_step: task-333-01-nebula-tune
-- started: open
+- started: 2026-10-27T21:59:10Z
 - waiting_for: none
 - result: open
 
