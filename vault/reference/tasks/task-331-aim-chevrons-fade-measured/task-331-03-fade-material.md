@@ -22,7 +22,7 @@ status: done
 - milestone: M3
 - started: 2026-10-27T20:33:50Z
 - waiting_for: none
-- result: Material already drew 0.78^i opacity (1/0.78/0.608/0.475/0.370, PIE read-back Decay 0.78, Opacity 1); weak fade is post-process tonemap+sRGB (fit, exposure x1.64 ~ PPV_XPGlow -0.94 EV). Fix in M_AimChevrons: weight pow(Dec, FadeGain*i^FadeExp), FadeGain 5.15, FadeExp 0.55 (fitted to a model, not a capture), EmissiveGain 1.0. Commit 5e935801. Rendered result unverified, subtask 04 measures.
+- result: Material already drew 0.78^i opacity (1/0.78/0.608/0.475/0.370, PIE read-back); weak fade is post-process tonemap+sRGB (fitted model). Fix: weight pow(Decay, FadeGain*i^FadeExp), FadeGain 5.15, FadeExp 0.55, EmissiveGain 1.0. Commit 5e935801. Owner kept it as is (2026-10-27).
 
 ## Relations
 - [[task-331-aim-chevrons-fade-measured]] — parent global task.

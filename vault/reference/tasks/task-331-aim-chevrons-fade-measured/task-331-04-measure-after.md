@@ -22,7 +22,7 @@ status: done
 - milestone: M3
 - started: 2026-10-27T20:39:21Z
 - waiting_for: none
-- result: One -game capture (1 launch), Saved/Captures/AimFadeAfter/aimfade_after_03.png. C_i/C_0 after = 1.000/0.883/0.712/0.511/0.358 (limits 1.08/0.860/0.688/0.555/0.450): rows 1 and 2 FAIL by +0.023/+0.024, rows 3, 4 pass, C_4=52.5 visible. Colour reads cream/beige, not gold. Boxes re-placed (chevrons pointed another way); floors differ from before. Not fixed (capture_rules 3).
+- result: Capture Saved/Captures/AimFadeAfter/aimfade_after_03.png. C_i/C_0 = 1.000/0.883/0.712/0.511/0.358; rows 1 and 2 exceed limit by about 0.02, accepted by the owner with the cream/beige colour (2026-10-27), no retune. Cost counted in 04 record.
 
 ## Relations
 - [[task-331-aim-chevrons-fade-measured]] — parent global task.
