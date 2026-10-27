@@ -1,0 +1,11 @@
+A flat square 1:1 texture of deep space colour washes, seen straight on (no perspective, no horizon, no camera angle). Hand-painted, stylised game texture, soft painterly brush work, like a very dark digital gouache background.
+
+Content: a near-black base with a few very wide, very soft, very low-contrast colour washes drifting across it, like faint far-away nebula glow with no defined shapes. About 4 to 7 broad washes of different sizes, blending slowly into each other and into the black, with no outline, no edge, no filament and no fine detail. Some large areas stay pure near-black. The whole image is calm, smooth and quiet.
+
+Colour: near-black base roughly #05030A to #0B0714. Washes in deep indigo-violet roughly #1A1245 to #2A1A55, violet roughly #2E1858 to #3A2068, and dusty magenta roughly #3A1838 to #4A2046. Low saturation, dark, one hue family only (indigo, violet, dusty magenta). The brightest point of the image stays dark, no wash brighter than about #4A2850. Never green, blue, red, orange, cyan or white.
+
+Seamless tile: the washes must continue across the borders, with a wash leaving the left edge entering again from the right edge, and the same for top and bottom, so the square can be repeated without a visible seam. Keep the colour near each border similar to the colour on the opposite border. No frame, no border, no vignette, no darker or lighter corners, no single dominant wash or bright landmark that would repeat obviously.
+
+Lighting: completely flat. No light direction, no highlight, no shadow, no glow spot, no bright centre, no gradient from one side of the image to the other.
+
+Forbidden: no stars, no star dots, no sparkles, no planets, no moons, no asteroids, no rocks, no galaxies, no spaceships, no objects, no characters, no machines, no text, no letters, no logo, no UI, no watermark, no grain noise, no lens flare.

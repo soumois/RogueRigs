@@ -1,0 +1,11 @@
+A flat square 1:1 texture of painted space cloud wisps, seen straight on (no perspective, no horizon, no camera angle). Hand-painted, stylised game texture, painterly brush work, dark digital gouache look.
+
+Content: thin drifting wisps, ribbons and filaments of glowing gas on a near-black base, with real structure: curling and twisting strands, soft feathered edges, a few thicker billows where strands gather, and large dark gaps of pure near-black between them. Roughly 40 percent of the image is empty near-black. The strands flow in one loose general direction, with small turbulent curls. Soft edges, no hard outline, no geometric shape. Wisps are brighter in their core and fade smoothly to black at their edges. No two areas look the same, no obvious repeated shape.
+
+Colour: near-black base roughly #04020A to #0A0612. Wisps in deep indigo-violet roughly #241660 to #34207A, violet roughly #4A2A88 to #5E3A9C, and dusty magenta roughly #6A2E64 to #7E3C78 for the brightest cores only. Low to moderate saturation, one hue family only (indigo, violet, dusty magenta). The brightest core of any wisp stays below about #8A4A84, no pure white, no bright spot. Never green, blue, red, orange, cyan or yellow.
+
+Seamless tile: the wisps must continue across the borders, with strands leaving the left edge and entering again from the right edge at the same height, and the same for top and bottom, so the square can be repeated without a visible seam. Keep dark gaps and wisp density similar near opposite borders. No frame, no border, no vignette, no darker or lighter corners, no single dominant cloud or bright landmark that would repeat obviously.
+
+Lighting: completely flat. No light direction, no cast shadow, no lens flare, no bright centre, no gradient from one side of the image to the other. The glow lives only inside the wisps.
+
+Forbidden: no stars, no star dots, no sparkles, no planets, no moons, no asteroids, no rocks, no galaxies, no spaceships, no objects, no characters, no machines, no text, no letters, no logo, no UI, no watermark.

@@ -46,6 +46,7 @@ Reference images are generated in ChatGPT image generation. The prompts are stor
 - [[art-prompts-xp-core]] — four any-angle proposals to replace the big XP chip; choice open.
 - [[art-prompts-rock-top-texture]] — tileable painted rock top texture for the slab material: prompt, seam method, review.
 - [[art-prompts-floor-texture]] — ChatGPT prompts for the tileable painted floor of cracked faceted plates: chain, seam method, review.
+- [[art-prompts-space-background]] — ChatGPT prompts for the two tileable void space layers (deep washes, cloud wisps): chain, seam method, review.
 - [[art-prompts-rock]] — rock and ore look proposals: per-cell blocks versus continuous slab; choice open.
 - [[art-prompts-chest]] — bonus chest supply locker: validated turnaround sheet and its prompt.
 - [[art-prompts-card-back]] — level-up card back, neutral grey candidate: prompt, delivery to 1000 x 1440.

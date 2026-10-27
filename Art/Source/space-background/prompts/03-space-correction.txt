@@ -1,0 +1,8 @@
+CORRECTION A (visible border, vignette or seam). Attach the previous image (deep layer or cloud layer).
+Keep this exact image: same colour washes or wisps, same near-black base, same palette, same soft painted look, same flat square framing. Only change the borders: remove any frame, border line, vignette, corner darkening or edge fade, and make the washes or wisps run straight off every edge of the square at the same height and with the same colour, so that the left edge matches the right edge and the top edge matches the bottom edge when the image is repeated.
+
+CORRECTION B (stars or objects appeared, use only if needed, same rule). Attach the previous image.
+Keep this exact image: same colour washes or wisps, same near-black base, same palette, same soft painted look, same flat square framing. Only change the content: remove every star, star dot, sparkle, planet, asteroid and any text or object, replacing them with the surrounding near-black or wash colour.
+
+CORRECTION C (too bright or too saturated, use only if needed). Attach the previous image.
+Keep this exact image: same colour washes or wisps, same layout, same near-black base, same soft painted look, same flat square framing. Only change the brightness: darken the whole image so the brightest area stays below about #4A2850 (deep layer) or #8A4A84 (cloud layer), reduce the saturation slightly, and keep the large near-black areas pure near-black.

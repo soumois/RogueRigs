@@ -45,6 +45,7 @@ art-prompts-robots-meshy  reference/gdd/art-audio/art-prompts-robots-meshy.md
 art-prompts-rock  reference/gdd/art-audio/art-prompts-rock.md
 art-prompts-rock-top-texture  reference/gdd/art-audio/art-prompts-rock-top-texture.md
 art-prompts-shield  reference/gdd/art-audio/art-prompts-shield.md
+art-prompts-space-background  reference/gdd/art-audio/art-prompts-space-background.md
 art-prompts-xp-core  reference/gdd/art-audio/art-prompts-xp-core.md
 art-style-guide  reference/gdd/art-audio/art-style-guide.md
 asset-pipeline  reference/tech/pipelines/asset-pipeline.md
