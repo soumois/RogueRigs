@@ -3,7 +3,7 @@ id: task-335-space-texture-layers
 description: "Global task: replace the procedural nebula of the void background with bold layered AI-generated tileable space textures at several depths, procedural stars kept."
 parent: tasks-to-do-index
 kind: task
-status: wait-answers
+status: in-progress
 ---
 # Layered generated space textures for the void
 
@@ -32,8 +32,8 @@ status: wait-answers
 - confirmed_by_owner: yes (2026-10-27, "ok", relayed by the main session; changed plan B1 to B7 confirmed by a second "ok" the same day)
 - milestone: M3
 - next_step: task-335-02-space-textures
-- started: 2026-10-27T22:28:45Z
-- waiting_for: owner validation of the two bold raw images in task-335-02
+- started: 2026-10-27T22:40:11Z
+- waiting_for: none
 - result: open
 
 ## Subtasks
