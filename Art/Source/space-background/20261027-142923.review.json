@@ -1,0 +1,12 @@
+{
+  "run_id": "20261027-142923",
+  "items": [
+    {
+      "file": "Art/Source/space-background/20261027-142923-space-background-1.png",
+      "verdict": "fail",
+      "rule": "color-code",
+      "reason": "The two hottest cores (top right and bottom left, and a smaller one bottom right) go pale pink to hot pink at their centres, a hue the void row forbids ('never ... pink') and the one reserved for the big XP magenta-pink core; the rest passes: saturated ultramarine blue dominant, indigo, electric violet and magenta, large shapes with dark lanes, near-black share in the 20 to 25 percent range, no star, planet, asteroid, text, frame or vignette, no green, steel blue, red, orange, cyan, teal or salmon.",
+      "correction": "Keep the hottest cores in electric violet to saturated magenta leaning purple (hue toward #B030FF to #D028E0), with the brightest centres going to pale lilac-violet, never to pink, rose or white-pink."
+    }
+  ]
+}

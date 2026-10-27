@@ -1,0 +1,12 @@
+{
+  "run_id": "20261027-143112",
+  "items": [
+    {
+      "file": "Art/Source/space-background/20261027-143112-space-background-1.png",
+      "verdict": "fail",
+      "rule": "color-code",
+      "reason": "The brightest filament crests (centre left, upper left diagonal, right edge and lower right swirl) turn light hot pink rather than magenta, a milder case than the deep layer but still the pink the void row forbids; the rest passes: indigo, electric violet and magenta dominant with ultramarine blue accents, dense filaments, dark dust lanes, near-black share about 20 to 25 percent, no star, planet, asteroid, text, frame or vignette, no forbidden hue.",
+      "correction": "Keep the brightest filament crests saturated magenta to electric violet (hue toward #C028F0), never light pink or rose; highlights brighten toward lilac-violet, not pink."
+    }
+  ]
+}
