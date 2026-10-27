@@ -1,0 +1,25 @@
+{
+  "run_id": "20261027-141216-space-background",
+  "asset": "space-background",
+  "model": "gpt-image-2-text-to-image",
+  "aspect_ratio": "1:1",
+  "resolution": "1K",
+  "variants": 1,
+  "prompt_file": "Art/Source/space-background/prompts/01-space-deep.txt",
+  "prompt": "A flat square 1:1 texture of deep space colour washes, seen straight on (no perspective, no horizon, no camera angle). Hand-painted, stylised game texture, soft painterly brush work, like a very dark digital gouache background.\n\nContent: a near-black base with a few very wide, very soft, very low-contrast colour washes drifting across it, like faint far-away nebula glow with no defined shapes. About 4 to 7 broad washes of different sizes, blending slowly into each other and into the black, with no outline, no edge, no filament and no fine detail. Some large areas stay pure near-black. The whole image is calm, smooth and quiet.\n\nColour: near-black base roughly #05030A to #0B0714. Washes in deep indigo-violet roughly #1A1245 to #2A1A55, violet roughly #2E1858 to #3A2068, and dusty magenta roughly #3A1838 to #4A2046. Low saturation, dark, one hue family only (indigo, violet, dusty magenta). The brightest point of the image stays dark, no wash brighter than about #4A2850. Never green, blue, red, orange, cyan or white.\n\nSeamless tile: the washes must continue across the borders, with a wash leaving the left edge entering again from the right edge, and the same for top and bottom, so the square can be repeated without a visible seam. Keep the colour near each border similar to the colour on the opposite border. No frame, no border, no vignette, no darker or lighter corners, no single dominant wash or bright landmark that would repeat obviously.\n\nLighting: completely flat. No light direction, no highlight, no shadow, no glow spot, no bright centre, no gradient from one side of the image to the other.\n\nForbidden: no stars, no star dots, no sparkles, no planets, no moons, no asteroids, no rocks, no galaxies, no spaceships, no objects, no characters, no machines, no text, no letters, no logo, no UI, no watermark, no grain noise, no lens flare.",
+  "refs": [],
+  "tasks": [
+    {
+      "task_id": "e7d7e37807dd5101424891cc2ed3d0f1",
+      "state": "success",
+      "credits": 6,
+      "error": null,
+      "result_urls": [
+        "https://tempfile.aiquickdraw.com/images/chatgpt/file_000000009658820c8cab453a6c53327d.png"
+      ]
+    }
+  ],
+  "files": [
+    "Art/Source/space-background/20261027-141216-space-background-1.png"
+  ]
+}
