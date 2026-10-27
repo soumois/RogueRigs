@@ -3,7 +3,7 @@ id: task-335-08-recapture
 description: "Second -game capture at the same east edge after the intensity retune: numbers, contact sheet, side-by-side with the task-335-06 capture."
 parent: task-335-space-texture-layers
 kind: task
-status: todo
+status: in-progress
 ---
 # Space layers: capture after the retune
 
@@ -20,7 +20,7 @@ status: todo
 - usage: open
 - runs: open
 - milestone: M3
-- started: open
+- started: 2026-10-27T23:12:13Z
 - waiting_for: none
 - result: open
 

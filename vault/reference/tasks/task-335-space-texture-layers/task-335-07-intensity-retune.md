@@ -3,7 +3,7 @@ id: task-335-07-intensity-retune
 description: "Retune Intensity of MI_Space_Clouds, and MI_Space_Deep if needed, from the task-335-06 numbers: cloud peak 70 to 100, void mean below floor strips."
 parent: task-335-space-texture-layers
 kind: task
-status: in-progress
+status: done
 ---
 # Space layers: intensity retune from the capture
 
@@ -15,14 +15,14 @@ status: in-progress
 - done_when: the instances are saved with no log error; their parameters read back; only MI_Space_Clouds (and MI_Space_Deep if changed) show in `git status`; committed by explicit path.
 - editor_state: open
 - token_ceiling: 1.0 M units
-- model: open
-- tokens: open
-- usage: open
-- runs: open
+- model: sonnet
+- tokens: input 20, cache write 26913, cache read 171998, output 5563
+- usage: turns 10, context start 9k peak 27k, resumes 0, 1 min, units 0.08 M
+- runs: 1
 - milestone: M3
 - started: 2026-10-27T23:10:56Z
 - waiting_for: none
-- result: open
+- result: MI_Space_Clouds Intensity 2.7 to 0.6 (ratio 0.222 from p99 180 to target sRGB 90 linear 0.101); MI_Space_Deep unchanged 0.7. Commit b7fbf824. Computed, not seen.
 
 ## Relations
 - [[task-335-space-texture-layers]] — parent global task.
