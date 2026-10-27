@@ -3,7 +3,7 @@ id: task-324-02-heal-numbers-cpp
 description: "C++ heal number path: green +N on the miner on each heal pickup, through the damage number subsystem; docs and a -game capture."
 parent: task-324-heal-numbers
 kind: task
-status: in-progress
+status: done
 ---
 # Heal numbers in C++
 
@@ -15,14 +15,14 @@ status: in-progress
 - done_when: build passes; `RogueRigs.DamageNumbers.*` and pickup tests pass; a `-game` run (`rr.Debug.Shots`, see agent-cpp) captures a green "+N" above the miner after a heal pickup below full health, compared with a capture before the change, both paths reported for the owner; damage numbers on robots still white / light orange; docs updated; lint clean; committed by path.
 - editor_state: closed
 - token_ceiling: 80000
-- model: open
-- tokens: open
-- usage: open
-- runs: open
+- model: opus
+- tokens: input 86, cache write 136592, cache read 3710271, output 29582
+- usage: turns 43, context start 11k peak 137k, resumes 0, 9 min, units 0.69 M
+- runs: 1
 - milestone: M2
 - started: 2026-10-27T12:45:43Z
 - waiting_for: none
-- result: open
+- result: AddHeal on URRDamageNumberSubsystem (HealColor 0.1,1,0.2, plus glyph 10), called from RRPickup ApplyHeal with HP actually gained at capsule top +40; rr.Debug.SpawnNear got a HealAmount arg. Build ok, 24/24 DamageNumbers/Pickups tests pass, -game captures show green +N above miner. Unverified: robot numbers in an image (none appeared in the capture run; covered by CriticalStyle test), toggle hiding heals.
 
 ## Relations
 - [[task-324-heal-numbers]] — parent global task.
