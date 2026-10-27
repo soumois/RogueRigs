@@ -26,7 +26,7 @@ Changed by the owner 2026-10-27 (S2): the art agent generates the raw images wit
 `Tools/art/make_tileable.js --in <image> --out <tileable> --preview <3x3> --size 2048` ([[art-prompts-rock-top-texture]]). Keep the raw file.
 
 ## Review checklist
-- Bold chain (B1 to B4): near-black share (max channel below 40) about 20 to 25 percent; saturated indigo, electric violet, magenta, ultramarine mainly in the deep layer; visible bright cores, dense filaments, dark dust lanes; deep layer shows large shapes, not a flat wash; hue bins only 220 to 320 degrees, no green, steel blue, red, orange, cyan, teal, salmon or pink; no near-white spot; border mean diff a few luma at most; no vignette.
+- Bold chain (B1 to B4; owner-accepted deviation: pink-magenta cores in the brightest cloud centres, see Retained files): near-black share (max channel below 40) about 20 to 25 percent; saturated indigo, electric violet, magenta, ultramarine mainly in the deep layer; visible bright cores, dense filaments, dark dust lanes; deep layer shows large shapes, not a flat wash; hue bins only 220 to 320 degrees, no green, steel blue, red, orange, cyan, teal, salmon or pink; no near-white spot; border mean diff a few luma at most; no vignette.
 - Checks below apply to the fallback chain (01 to 04); in it the hex caps and 40 percent black are replaced by the bold values above.
 - Flat square, no perspective, no baked light, no vignette or corner darkening.
 - No star, planet, asteroid, text, object; only indigo, violet, dusty magenta, never green, blue, red, orange, cyan ([[readability-rules]]).
@@ -41,7 +41,14 @@ Prompts: `Art/Source/space-background/prompts/01-space-deep.txt`, `02-space-clou
 - Total 18 credits, one correction run.
 - Bold deep: prompt 05, image `Art/Source/space-background/20261027-142923-space-background-1.png`, log `20261027-142923-space-background.json`, 6 credits (`gpt-image-2-text-to-image`, 1:1, 1K, 1254 px). Self-check: pass. Max pixel (254,145,255) isolated, no near-white pixel (min channel above 180: 0 percent), near-black (max channel below 40) 20.0 percent, mean saturation 0.96, hues 240 deg (ultramarine) 67 percent, 260 deg (indigo-violet) 26 percent, 280 deg 6 percent, 300 deg 1 percent, no hue outside 220 to 320, corner luma 7 to 12, border mean diff 3.2 (left/right) and 2.6 (top/bottom) luma. Six large masses with magenta cores and dark lanes. Small note: the hottest cores lean pale pink-magenta (0.7 percent of pixels with red above 200), scale in the material.
 - Bold clouds: prompt 06, image `Art/Source/space-background/20261027-143112-space-background-1.png`, log `20261027-143112-space-background.json`, 6 credits. Self-check: pass. Max pixel (255,231,255) in a few isolated pixels (0.05 percent with red above 200 and green above 120), no near-white area, near-black 20.6 percent, mean saturation 0.95, hues 260 deg 51 percent, 240 deg 27 percent, 280 deg 18 percent, 300 deg 4 percent, none outside 220 to 320, corner luma 24 to 40 (slightly brighter than the deep, no vignette), border mean diff 3.7 (left/right) and 5.5 (top/bottom) luma. Dense swirling filaments, bright magenta cores, dark lanes. Note: border diff top/bottom 5.5, check in the 3 x 3 preview.
-- Bold chain total 12 credits, no correction. Both raw, awaiting owner validation; seam step not run. The 141216 and 141558 images stay as fallback, not retained.
+- Bold chain total 12 credits, no correction. The 141216 and 141558 images stay as fallback, not retained.
+
+### Retained files (owner 2026-10-27: "Je garde les deux images telles quelles (je tolère le rose, déviation voulue)")
+- Retained raw: deep `20261027-142923-space-background-1.png`, clouds `20261027-143112-space-background-1.png`; no further Kie.ai call, no correction.
+- Deviation kept on purpose by the owner: pink cores in the brightest cloud centres (close to the big-XP magenta-pink), a style-guide fail against the [[color-code]] void row, tolerated.
+- Tileable (`make_tileable.js --size 2048`, all in `Art/Source/space-background/`): `T_Space_Deep.png`, `T_Space_Clouds.png` (2048 x 2048), previews `T_Space_Deep_tiled3x3.png`, `T_Space_Clouds_tiled3x3.png` (6144 px).
+- Measured on the tileable: wrap edge diff deep 2.1 (top/bottom) and 1.9 (left/right) luma, clouds 3.7 and 2.8; near-black (max channel below 40) deep 21.2 percent, clouds 14.2 percent; hues 220 to 320 degrees only.
+- 3 x 3 previews: no seam line. Deep tiled shows its large masses and pink cores repeating (visible rhythm, acceptable at a 20000 uu tile); clouds tiled shows diagonal swirl repeats, no hard motif.
 
 ## Relations
 - [[art-prompts]] — parent: method and locked phrases.
