@@ -3,7 +3,7 @@ id: task-324-heal-numbers
 description: "Global task: green floating +N heal number on the miner when he collects a heal pickup, rendered like the damage numbers."
 parent: tasks-to-do-index
 kind: task
-status: todo
+status: in-progress
 ---
 # Heal numbers on the miner
 
@@ -14,7 +14,7 @@ status: todo
 - confirmed_by_owner: yes (2026-10-27)
 - milestone: M2
 - next_step: task-324-01-plus-glyph
-- started: open
+- started: 2026-10-27T12:38:55Z
 - waiting_for: none
 - result: open
 

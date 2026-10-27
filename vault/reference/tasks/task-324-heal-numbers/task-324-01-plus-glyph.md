@@ -3,7 +3,7 @@ id: task-324-01-plus-glyph
 description: "Add a plus glyph in cell 10 of the damage digit atlas T_DamageDigitsOutline, digits 0-9 untouched, for the heal numbers."
 parent: task-324-heal-numbers
 kind: task
-status: todo
+status: in-progress
 ---
 # Plus glyph in the damage digit atlas
 
@@ -20,7 +20,7 @@ status: todo
 - usage: open
 - runs: open
 - milestone: M2
-- started: open
+- started: 2026-10-27T12:38:55Z
 - waiting_for: none
 - result: open
 
