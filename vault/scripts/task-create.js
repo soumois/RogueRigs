@@ -25,13 +25,13 @@ for (const [num, slug, desc, agent, title, req, inputs, out, done, ed, ceil, con
   fs.writeFileSync(path.join(T, gid + '.md'), ['---', `id: ${gid}`, `description: "Global task: ${desc}"`, 'parent: tasks-to-do-index',
     'kind: task', 'status: todo', '---', `# ${title}`, '', `- request: ${req} (owner, ${today})`, `- goal: ${desc}`,
     `- acceptance: ${done.replace(/\.$/, '')}; committed.`, `- gdd_check: done by the Orchestrator when the task is planned (${today}).`,
-    `- confirmed_by_owner: ${conf}`, '- milestone: M2', `- next_step: ${sid}`, '- result: open', '', '## Subtasks', `1. ${sid} — ${agent}`, '',
+    `- confirmed_by_owner: ${conf}`, '- milestone: M2', `- next_step: ${sid}`, '- started: open', '- result: open', '', '## Subtasks', `1. ${sid} — ${agent}`, '',
     '## Relations', '- [[tasks-to-do-index]] — parent index.', `- [[${sid}]] — step 1, ${agent}.`, ''].join('\n'));
   fs.mkdirSync(path.join(T, gid), { recursive: true });
   fs.writeFileSync(path.join(T, gid, sid + '.md'), ['---', `id: ${sid}`, `description: "${desc}"`, `parent: ${gid}`, 'kind: task',
     'status: todo', '---', `# ${title}`, '', `- goal: ${desc}`, `- agent: ${agent}`, '- depends_on: none', `- inputs: ${res(inputs)}`,
     `- expected_output: ${out}`, `- done_when: ${done}`, `- editor_state: ${ed}`, `- token_ceiling: ${ceil}`, '- model: open',
-    '- tokens: open', '- usage: open', '- runs: open', '- milestone: M2', '- result: open', '', '## Relations', `- [[${gid}]] — parent global task.`, ''].join('\n'));
+    '- tokens: open', '- usage: open', '- runs: open', '- milestone: M2', '- started: open', '- result: open', '', '## Relations', `- [[${gid}]] — parent global task.`, ''].join('\n'));
   add += `\n- [[${gid}]] — ${desc.replace(/\.$/, '')}. Status todo.`;
   console.log('created', gid);
 }

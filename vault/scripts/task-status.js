@@ -1,5 +1,7 @@
 // node vault/scripts/task-status.js <path under vault/reference/tasks> status=<s> [next_step=<v>] [result=<text>]
 // Sets the frontmatter status and bullet fields of a task node; keeps the index status line in sync for global tasks (done ones move to tasks-done-index).
+// Every status=in-progress (global or subtask, each move) also writes `- started: <UTC ISO 8601 to the second>`, replacing
+// the bullet or inserting it before `- result:` on older nodes; other statuses leave `started` unchanged.
 const fs = require('fs');
 const f = require('path').resolve(__dirname, '..', 'reference', 'tasks', process.argv[2]);
 let s = fs.readFileSync(f, 'utf8');
@@ -12,6 +14,12 @@ for (const a of process.argv.slice(3)) {
   const i = a.indexOf('='); const k = a.slice(0, i), v = a.slice(i + 1);
   if (k === 'status') s = s.replace(/^status: .*$/m, 'status: ' + v);
   else { const re = new RegExp('^- ' + k + ': .*$', 'm'); if (!re.test(s)) throw new Error('no field ' + k); s = s.replace(re, () => '- ' + k + ': ' + v); }
+}
+if (extra.includes('status=in-progress')) {
+  const started = '- started: ' + new Date().toISOString().replace(/\.\d{3}Z$/, 'Z');
+  if (/^- started: .*$/m.test(s)) s = s.replace(/^- started: .*$/m, () => started);
+  else if (/^- result: /m.test(s)) s = s.replace(/^- result: /m, () => started + '\n- result: ');
+  else throw new Error('no field result to insert started before');
 }
 fs.writeFileSync(f, s);
 // keep the index status line in sync for global tasks; a global task that becomes done moves from

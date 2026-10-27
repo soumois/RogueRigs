@@ -20,6 +20,7 @@ status: todo
 - usage: <turns, context start and peak, resumes with cause, minutes, units; written by record-cost.js when done>
 - runs: <number of agent runs, resumes included; filled when done>
 - milestone: M1 | M2 | M3
+- started: <ISO date-time UTC, written by task-status.js on every move to in-progress>
 - result: <filled when done: what changed, commit, tokens used>
 
 ## Relations

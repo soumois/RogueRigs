@@ -14,6 +14,7 @@ status: todo
 - confirmed_by_owner: yes | no
 - milestone: M1 | M2 | M3
 - next_step: <id of the next subtask to run, or none>
+- started: <ISO date-time UTC, written by task-status.js on every move to in-progress>
 - result: <filled when done>
 
 ## Subtasks
