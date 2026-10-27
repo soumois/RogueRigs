@@ -3,7 +3,7 @@ id: task-326-02-units-ceiling-docs
 description: "Doc agent writes the units ceiling into templates, agent nodes, cost-log, runbook and executor, and converts the todo subtasks of 308, 309, 314."
 parent: task-326-units-ceiling
 kind: task
-status: in-progress
+status: done
 ---
 # Units ceiling in the crew definitions
 
@@ -15,14 +15,14 @@ status: in-progress
 - done_when: no template, agent node, cost-log or runbook line still describes the ceiling as input plus output or a raw token count; the nine agent ceilings read `<x> M units` with the Q6 values; the 13 todo subtasks of 308, 309, 314 carry `M units` ceilings and no other change; lint clean; committed by explicit path.
 - editor_state: any
 - token_ceiling: 0.3 M units
-- model: open
-- tokens: open
-- usage: open
-- runs: open
+- model: sonnet
+- tokens: input 14, cache write 28683, cache read 116449, output 3901
+- usage: turns 7, context start 10k peak 29k, resumes 0, 1 min, units 0.07 M
+- runs: 1
 - milestone: M2
 - started: 2026-10-27T14:22:00Z
 - waiting_for: none
-- result: open
+- result: Doc agent set M units ceiling in templates, 9 agent nodes, index, cost-log, runbook, executor cost_alerts and 13 todo subtasks of 308/309/314; commit 8f559946
 
 ## Relations
 - [[task-326-units-ceiling]] — parent global task.

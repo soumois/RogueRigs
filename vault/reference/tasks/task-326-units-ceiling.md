@@ -1,9 +1,9 @@
 ---
 id: task-326-units-ceiling
 description: "Global task: token_ceiling bounds the weighted units figure of record-cost.js, written in M units, so the over-ceiling alert flags real outliers."
-parent: tasks-to-do-index
+parent: tasks-done-index
 kind: task
-status: in-progress
+status: done
 ---
 # token_ceiling measured in units
 
@@ -13,10 +13,10 @@ status: in-progress
 - gdd_check: dev tooling, no gdd node needed (Planner, 2026-10-27). Findings: `record-cost.js` compares `input + output` to the ceiling (task-324-02: 30k vs 80k, no alert; cpp p90 72k, so it almost never fires), not the raw total; `usage` already carries `units` (weights in `vault/scripts/cost-rates.json`: input 1, cache write 1.25, cache read 0.1, output 5); the Executor of task-323 quoted a third figure (Agent tool total 72842 vs 40000). Output + cache write ignores cache read, the very cost of long contexts (the docs turns of 324-02). Measured with `agent-usage.js` (units M, p50 / p90): cpp 0.66 / 1.34, bp 0.60 / 2.20, 3d 0.61 / 1.25, art 0.08 / 0.11, text+style-guide 0.22, planning passes 0.49 / 0.95, executors 0.26 / 1.21. Decided (owner "ok" to the defaults, 2026-10-27, provisional): Q5 measure = `units`, field written `token_ceiling: <x> M units` (e.g. `1.2 M units`), alert when units > ceiling; field name unchanged. Q6 per-agent defaults (provisional, owner 2026-10-27): cpp 1.2, bp 1.0, 3d 1.2, art 0.15, text 0.3, style-guide 0.3, level-design 0.5 (no data), doc 0.3, planner 1.0 per planning pass; executor stays `open`. Q7 legacy values: done task nodes keep their old integers and `record-cost.js` gives no ceiling alert on a value without `M units`; the 13 todo subtasks of tasks 308, 309 and 314 get their agent's default in units. Q8 this needs a Node script change (`record-cost.js`, comments of `task-create.js` and `cost-rates.json`): a cpp subtask, outside "definitions only" strictly; then the doc agent updates the definitions.
 - confirmed_by_owner: yes (2026-10-27)
 - milestone: M2
-- next_step: task-326-02-units-ceiling-docs
+- next_step: none
 - started: 2026-10-27T14:20:40Z
 - waiting_for: none
-- result: open
+- result: Done. Doc agent set M units ceiling in templates, 9 agent nodes, index, cost-log, runbook, executor cost_alerts and 13 todo subtasks of 308/309/314; commit 8f559946
 
 Run order: after task-325 is done (326-02 is run by the doc agent).
 
@@ -25,7 +25,7 @@ Run order: after task-325 is done (326-02 is run by the doc agent).
 2. task-326-02-units-ceiling-docs — doc, editor any: templates, agent nodes, cost-log, runbook, executor, todo subtasks of 308, 309, 314.
 
 ## Relations
-- [[tasks-to-do-index]] — parent index.
+- [[tasks-done-index]] — parent index.
 - [[task-326-01-units-ceiling-script]] — step 1, cpp.
 - [[task-326-02-units-ceiling-docs]] — step 2, doc.
 - [[task-325-doc-agent]] — sibling owner point, run before; creates the doc agent.
