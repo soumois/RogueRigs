@@ -3,7 +3,7 @@ id: task-335-04-space-layers
 description: "BP_SpaceBackground: nebula plane switched to MI_Space_Clouds, new deep plane at Z -8000 with MI_Space_Deep, scale from the coverage formula."
 parent: task-335-space-texture-layers
 kind: task
-status: in-progress
+status: done
 ---
 # Space layers: planes in BP_SpaceBackground
 
@@ -15,14 +15,14 @@ status: in-progress
 - done_when: the Blueprint compiles and is saved; the placed instance reads back with the four components and their materials; only BP_SpaceBackground (and its external actor file if touched) changes in `git status`; committed by explicit path.
 - editor_state: open
 - token_ceiling: 1.0 M units
-- model: open
-- tokens: open
-- usage: open
-- runs: open
+- model: sonnet
+- tokens: input 44, cache write 44558, cache read 678661, output 11439
+- usage: turns 22, context start 9k peak 49k, resumes 0, 2 min, units 0.18 M
+- runs: 1
 - milestone: M3
 - started: 2026-10-27T22:47:59Z
 - waiting_for: none
-- result: open
+- result: BP_SpaceBackground: NebulaPlane -> MI_Space_Clouds, DeepPlane Z -8000 scale 790 (half 39500, margin 3986) MI_Space_Deep, four planes read back on the L_ArenaM1 instance; reload may be no-op, render unverified; commit 03e515f2
 
 ## Relations
 - [[task-335-space-texture-layers]] — parent global task.

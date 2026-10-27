@@ -3,7 +3,7 @@ id: task-335-05-void-mask-gain
 description: "M_PP_PlayerLightMask: pixels below world Z -200 (void background) use their own far gain 0.5 instead of 0.08; floor and units unchanged."
 parent: task-335-space-texture-layers
 kind: task
-status: todo
+status: in-progress
 ---
 # Void: own far gain in the player light mask
 
@@ -20,7 +20,7 @@ status: todo
 - usage: open
 - runs: open
 - milestone: M3
-- started: open
+- started: 2026-10-27T22:50:34Z
 - waiting_for: none
 - result: open
 
