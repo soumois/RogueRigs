@@ -1,0 +1,32 @@
+{
+  "name": "crew-board",
+  "version": "0.1.0",
+  "description": "Rogue Rigs crew board: vault tasks and subtasks, agent type, status, tokens and launches, live agents, in the game's colours.",
+  "types": "./types/index.d.ts",
+  "userConfig": {
+    "refreshSeconds": {
+      "type": "number",
+      "title": "Refresh every (seconds)",
+      "description": "How often the board re-reads the unfinished tasks and the live agents.",
+      "default": 5
+    },
+    "tasksDir": {
+      "type": "string",
+      "title": "Tasks folder",
+      "description": "The vault folder holding the task-NNN-slug.md nodes and their subtask folders.",
+      "default": "C:/Users/soumo/Documents/Unreal Projects/RogueRigs/vault/reference/tasks"
+    },
+    "transcriptsDir": {
+      "type": "string",
+      "title": "Agent transcripts folder",
+      "description": "The Claude projects folder of this game: each session holds a subagents folder the board watches for running agents.",
+      "default": "C:/Users/soumo/.claude/projects/C--Users-soumo-Documents-Unreal-Projects-RogueRigs"
+    },
+    "openAtStart": {
+      "type": "boolean",
+      "title": "Open the pane at session start",
+      "description": "Otherwise open it with /crew.",
+      "default": true
+    }
+  }
+}

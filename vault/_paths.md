@@ -142,6 +142,9 @@ course-index  reference/course/course-index.md
 course-overview  reference/course/course-overview.md
 cpp-bp-split  reference/tech/conventions/cpp-bp-split.md
 cpp-standard  reference/tech/conventions/cpp-standard.md
+crew-board  reference/external-tools/crew-board.md
+crew-board-assets  reference/external-tools/crew-board-assets.md
+crew-board-data  reference/external-tools/crew-board-data.md
 crew-characters  reference/gdd/crew-characters.md
 damage-numbers  reference/gdd/weapons/damage-numbers.md
 destruction-rules  reference/gdd/terrain/destruction-rules.md
@@ -161,6 +164,7 @@ enemy-heavy  reference/gdd/enemies/enemy-heavy.md
 enemy-kamikaze  reference/gdd/enemies/enemy-kamikaze.md
 enemy-shooter  reference/gdd/enemies/enemy-shooter.md
 explosions  reference/gdd/terrain/explosions.md
+external-tools-index  reference/external-tools/external-tools-index.md
 extraction  reference/gdd/run/extraction.md
 fictional-films  reference/gdd/fictional-films.md
 gas-api-notes  reference/tech/systems/core/gas-api-notes.md

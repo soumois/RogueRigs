@@ -1,0 +1,37 @@
+{
+  "run_id": "20261026-150754-crew-icons",
+  "asset": "crew-icons",
+  "model": "gpt-image-2-image-to-image",
+  "aspect_ratio": "16:9",
+  "resolution": "1K",
+  "variants": 2,
+  "prompt_file": "Art/Source/crew-icons/prompts/01-sheet.txt",
+  "prompt": "A sprite sheet of ten tiny pixel-art creature mascots, in the chunky pixel-art charm of the reference image (small round blocky body, two tiny arms, two tiny feet, tiny dot eyes, no mouth). Layout: exactly 5 columns by 2 rows, very wide empty gutters between characters, every character fully inside its own cell, none touching or overlapping a neighbour, all the same size and the same pixel scale, same body shape in all ten, front view. The only differences are the body colour and one hat or gear item. Perfectly flat solid background colour #15171c, no text, no labels, no shadows, no gradients, no border, no grid lines.\nRow 1, left to right:\n1. steel blue body #5B8FD6 wearing a hard hat with a small gear on it.\n2. teal body #2CB5A8 wearing a cap with a small blueprint grid pattern.\n3. magenta body #FF33CC wearing a beret with a small paintbrush stuck in it.\n4. violet body #B36CFF with a small cube balanced on its head.\n5. acid green body #9BE82E wearing a helmet with a grid pattern.\nRow 2, left to right:\n6. pale gold body #FFE9A8 wearing a hat with a quill feather.\n7. orange body #FF7314 wearing a visor with a monocle.\n8. cyan body #19D3F3 wearing a hat with a small clipboard on it.\n9. company yellow body #F2C200 wearing a hi-vis cap with a play-arrow badge.\n10. neutral grey body #8A8F99, no hat, plain bare head.",
+  "refs": [
+    "Art/Source/crew-icons/ref/style-ref.png"
+  ],
+  "tasks": [
+    {
+      "task_id": "3af7995b15ead297625ed80829fea572",
+      "state": "success",
+      "credits": 6,
+      "error": null,
+      "result_urls": [
+        "https://tempfile.aiquickdraw.com/images/chatgpt/file_000000003f8881f4bc6768e8a576ee8f.png"
+      ]
+    },
+    {
+      "task_id": "3351344ead5967400298be47ded405ed",
+      "state": "success",
+      "credits": 6,
+      "error": null,
+      "result_urls": [
+        "https://tempfile.aiquickdraw.com/images/chatgpt/file_00000000100081f9be7a128f722589a2.png"
+      ]
+    }
+  ],
+  "files": [
+    "Art/Source/crew-icons/20261026-150754-crew-icons-1.png",
+    "Art/Source/crew-icons/20261026-150754-crew-icons-2.png"
+  ]
+}

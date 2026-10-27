@@ -1,0 +1,38 @@
+{
+  "run_id": "20261027-064332-crew-icons",
+  "asset": "crew-icons",
+  "model": "gpt-image-2-image-to-image",
+  "aspect_ratio": "1:1",
+  "resolution": "1K",
+  "variants": 2,
+  "prompt_file": "Art/Source/crew-icons/prompts/02-doc.txt",
+  "prompt": "Using the first reference image (a sheet of ten pixel-art mascots) as the exact character model, and the second reference image as the pixel-art style: draw ONE single new mascot, the same small round blocky body, the same two tiny dot eyes, no mouth, two tiny arms, two tiny feet, the same chunky pixel scale and charm as the ten mascots, front view, centred in the image, with generous empty margin all around (the character fills about one third of the image width), fully inside the image, nothing cut off.\nBody colour coral #FB7185. On its head a small scholar's cap (mortarboard) in dark navy with a coral tassel. In front of it, held by the two tiny arms, an open book with cream-white pages and a dark navy cover, large enough to read clearly when the image is shrunk to 96 pixels.\nPerfectly flat solid background colour #15171c, no text, no labels, no shadows, no gradients, no border, no other characters. Square 1:1.",
+  "refs": [
+    "Art/Source/crew-icons/20261026-150754-crew-icons-1.png",
+    "Art/Source/crew-icons/ref/style-ref.png"
+  ],
+  "tasks": [
+    {
+      "task_id": "8edac1b7b19f295cbf929d547a3b0782",
+      "state": "success",
+      "credits": 6,
+      "error": null,
+      "result_urls": [
+        "https://tempfile.aiquickdraw.com/images/chatgpt/file_00000000442481f5ba557e89b5331e2c.png"
+      ]
+    },
+    {
+      "task_id": "b99160dcf5dd1619049cfe8bd222c523",
+      "state": "success",
+      "credits": 6,
+      "error": null,
+      "result_urls": [
+        "https://tempfile.aiquickdraw.com/images/chatgpt/file_000000004b4481fda2c1004083019132.png"
+      ]
+    }
+  ],
+  "files": [
+    "Art/Source/crew-icons/20261027-064332-crew-icons-1.png",
+    "Art/Source/crew-icons/20261027-064332-crew-icons-2.png"
+  ]
+}
