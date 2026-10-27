@@ -3,7 +3,7 @@ id: task-334-06-docs
 description: "Write the doc nodes of M_Asteroid and BP_AsteroidField, list them in the world index, update the bp-arena-grid map line."
 parent: task-334-near-asteroids
 kind: task
-status: todo
+status: in-progress
 ---
 # Asteroids: docs
 
@@ -20,7 +20,7 @@ status: todo
 - usage: open
 - runs: open
 - milestone: M3
-- started: open
+- started: 2026-10-27T23:52:45Z
 - waiting_for: none
 - result: open
 

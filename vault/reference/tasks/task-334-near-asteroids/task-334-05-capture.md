@@ -3,7 +3,7 @@ id: task-334-05-capture
 description: "One -game run near an arena edge, a shot at two miner positions, showing the asteroids and their parallax shift, sheet for the owner."
 parent: task-334-near-asteroids
 kind: task
-status: in-progress
+status: done
 ---
 # Asteroids: capture for the owner
 
@@ -15,14 +15,14 @@ status: in-progress
 - done_when: the PNGs exist and are described; at least one asteroid visible in each shot; no asteroid covers a floor cell or a unit (else reported as a defect, not fixed here); asteroid mean luma below the arena rock tops (else reported); the contact sheet path is given for the owner.
 - editor_state: any
 - token_ceiling: 1.2 M units
-- model: open
-- tokens: open
-- usage: open
-- runs: open
+- model: opus
+- tokens: input 62, cache write 67783, cache read 1343999, output 21547
+- usage: turns 31, context start 11k peak 68k, resumes 0, 5 min, units 0.33 M
+- runs: 1
 - milestone: M3
 - started: 2026-10-27T23:47:57Z
 - waiting_for: none
-- result: open
+- result: Capture done, sheet Saved/Captures/task334_asteroids/contact_sheet.png; asteroid #1 visible in both shots, shift -190 px vs cloud -64 px; asteroid mean luma ~85 vs rock tops 99-118; DEFECTS reported: asteroid #1 107.5 brighter than one rock-top crop (98.8) in shot 2; max 2 asteroids in view; #6 (150 px, grey) may read as rock piece
 
 ## Relations
 - [[task-334-near-asteroids]] — parent global task.

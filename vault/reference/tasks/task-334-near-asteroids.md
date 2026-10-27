@@ -21,7 +21,7 @@ status: wait-answers
   - A7 one actor: default one data-only Blueprint BP_AsteroidField holding the 12 meshes, placed once in L_ArenaM1 (same pattern as BP_SpaceBackground), no C++ change.
 - confirmed_by_owner: yes (2026-10-27, "ok", relayed by the main session)
 - milestone: M3
-- next_step: task-334-05-capture
+- next_step: task-334-06-docs
 - started: 2026-10-27T23:21:20Z
 - waiting_for: owner validation of the asteroid preview
 - result: open
