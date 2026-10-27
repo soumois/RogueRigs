@@ -10,7 +10,7 @@ kind: doc
 - main_classes: `URRDamageNumberSubsystem::PushToNiagara` (names as `static const FName` members, `Damage/RRDamageNumberSubsystem.h`).
 - entry_points: user parameters, exact names, one entry per digit, all arrays the same length, digit order = numbers in push order, each number's digits contiguous, most significant first:
   - `User.DigitPositions` Niagara Position Array: digit centre, world space (layout done in C++).
-  - `User.DigitIndices` Int32 Array: digit 0–9 = atlas cell (SubImage index).
+  - `User.DigitIndices` Int32 Array: glyph 0–10 = atlas cell (SubImage index): digits 0–9, 10 = "+" (`URRDamageNumberSubsystem::PlusGlyph`, cell 10 of T_DamageDigitsOutline since task-324-01), written first for a heal number (task-324-02).
   - `User.DigitSizes` Float Array: glyph world size.
   - `User.DigitColors` Color Array.
   - `User.DigitCriticals` Int32 Array: 1 critical (pop), 0 normal.

@@ -24,6 +24,7 @@
 #include "GameFramework/SpringArmComponent.h"
 #include "GAS/RRGameplayTags.h"
 #include "GAS/RRHealthAttributeSet.h"
+#include "Pickups/RRPickup.h"
 #include "Player/RRMiner.h"
 #include "Engine/World.h"
 #include "HAL/IConsoleManager.h"
@@ -255,15 +256,16 @@ namespace RRScreenshotCommands
 	}
 
 	/**
-	 * rr.Debug.SpawnNear <Class> <Distance> [YawDegrees] [Count]: spawns Count actors (default 1) of Class Distance uu from
+	 * rr.Debug.SpawnNear <Class> <Distance> [YawDegrees] [Count] [HealAmount]: spawns Count actors (default 1) of Class Distance uu from
 	 * the player miner, the first at YawDegrees (default 0 = +X), the others spread evenly around it. Class: a /Game class
 	 * path (e.g. /Game/RogueRigs/Blueprints/Pickups/BP_PickupHeal.BP_PickupHeal_C), else a robot name resolved like
 	 * rr.Stress.Spawn. Characters stand on the miner's floor height, other actors are placed at it (a kamikaze within its
-	 * arm range flares at once: visual check of the flare).
+	 * arm range flares at once: visual check of the flare). HealAmount > 0 sets it on spawned pickups (BP_PickupHeal defaults to 0,
+	 * the grid sets 15; task-324-02 heal number check).
 	 */
 	FAutoConsoleCommandWithWorldAndArgs SpawnNearCommand(
 		TEXT("rr.Debug.SpawnNear"),
-		TEXT("rr.Debug.SpawnNear <Class> <Distance> [YawDegrees] [Count]: spawns actors of Class (/Game class path or robot name) Distance uu from the player miner (visual checks)."),
+		TEXT("rr.Debug.SpawnNear <Class> <Distance> [YawDegrees] [Count] [HealAmount]: spawns actors of Class (/Game class path or robot name) Distance uu from the player miner (visual checks)."),
 		FConsoleCommandWithWorldAndArgsDelegate::CreateLambda([](const TArray<FString>& Args, UWorld* World)
 		{
 			World = World ? World : RRCheats::FindCheatWorld();
@@ -290,6 +292,7 @@ namespace RRScreenshotCommands
 			const float Distance = FCString::Atof(*Args[1]);
 			const float Yaw = Args.Num() > 2 ? FCString::Atof(*Args[2]) : 0.f;
 			const int32 Count = FMath::Clamp(Args.Num() > 3 ? FCString::Atoi(*Args[3]) : 1, 1, 64);
+			const float HealAmount = Args.Num() > 4 ? FMath::Max(0.f, FCString::Atof(*Args[4])) : 0.f;
 			const ACharacter* CharacterDefault = Cast<ACharacter>(Class->GetDefaultObject());
 			const float Lift = CharacterDefault ? CharacterDefault->GetCapsuleComponent()->GetScaledCapsuleHalfHeight() + 2.f : 0.f;
 			FActorSpawnParameters Params;
@@ -300,7 +303,12 @@ namespace RRScreenshotCommands
 				const float AngleDegrees = Yaw + 360.f * static_cast<float>(Index) / static_cast<float>(Count);
 				const FVector Direction = FRotator(0.f, AngleDegrees, 0.f).Vector();
 				const FVector Location = MinerFeet(*Miner) + Direction * Distance + FVector(0.f, 0.f, Lift);
-				Spawned += World->SpawnActor<AActor>(Class, Location, FRotator(0.f, AngleDegrees + 180.f, 0.f), Params) ? 1 : 0;
+				AActor* Actor = World->SpawnActor<AActor>(Class, Location, FRotator(0.f, AngleDegrees + 180.f, 0.f), Params);
+				if (ARRPickup* Pickup = Cast<ARRPickup>(Actor); Pickup && HealAmount > 0.f)
+				{
+					Pickup->SetHealAmount(HealAmount);
+				}
+				Spawned += Actor ? 1 : 0;
 			}
 			UE_LOG(LogRogueRigs, Log, TEXT("rr.Debug.SpawnNear: %d %s at %.0f uu from the miner %s (yaw %.0f)."), Spawned, *Class->GetName(), Distance,
 				*Miner->GetActorLocation().ToCompactString(), Yaw);

@@ -2,7 +2,9 @@
 
 #include "Pickups/RRPickup.h"
 
+#include "Components/CapsuleComponent.h"
 #include "Components/StaticMeshComponent.h"
+#include "Damage/RRDamageNumberSubsystem.h"
 #include "Engine/StaticMesh.h"
 #include "Engine/CollisionProfile.h"
 #include "Engine/World.h"
@@ -625,9 +627,20 @@ void ARRPickup::ApplyHeal(ARRMiner* Miner) const
 		return;
 	}
 	const FGameplayEffectSpecHandle Spec = ASC->MakeOutgoingSpec(HealEffectClass, 1.f, ASC->MakeEffectContext());
-	if (Spec.IsValid())
+	if (!Spec.IsValid())
 	{
-		Spec.Data->SetSetByCallerMagnitude(RRGameplayTags::Data_Heal, HealAmount);
-		ASC->ApplyGameplayEffectSpecToSelf(*Spec.Data.Get());
+		return;
+	}
+	const float HealthBefore = ASC->GetNumericAttribute(URRHealthAttributeSet::GetHealthAttribute());
+	Spec.Data->SetSetByCallerMagnitude(RRGameplayTags::Data_Heal, HealAmount);
+	ASC->ApplyGameplayEffectSpecToSelf(*Spec.Data.Get());
+
+	// Heal number (task-324-02): the HP actually gained (clamped at MaxHealth), nothing when 0, above the capsule top.
+	const float Gained = ASC->GetNumericAttribute(URRHealthAttributeSet::GetHealthAttribute()) - HealthBefore;
+	URRDamageNumberSubsystem* Numbers = GetWorld() ? GetWorld()->GetSubsystem<URRDamageNumberSubsystem>() : nullptr;
+	if (Numbers && Gained > 0.f)
+	{
+		const float CapsuleTop = Miner->GetCapsuleComponent()->GetScaledCapsuleHalfHeight();
+		Numbers->AddHeal(Miner->GetActorLocation() + FVector(0.f, 0.f, CapsuleTop + HealNumberHeight), Gained);
 	}
 }

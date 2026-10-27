@@ -279,7 +279,10 @@ protected:
 	/** Accelerates toward the miner; collects when within CollectDistance or when the step reaches it. A refused Heal pickup (IsRefusedByMiner) returns to Rest instead. */
 	void FlyToMiner(ARRMiner* Miner, float DeltaSeconds);
 
-	/** Heal pickup: applies HealEffectClass with SetByCaller Data.Heal = HealAmount to Miner (skipped when 0, dead or no ASC). */
+	/**
+	 * Heal pickup: applies HealEffectClass with SetByCaller Data.Heal = HealAmount to Miner (skipped when 0, dead or no ASC),
+	 * then shows the HP actually gained as a green "+N" (URRDamageNumberSubsystem::AddHeal, capsule top + HealNumberHeight; none when 0).
+	 */
 	void ApplyHeal(ARRMiner* Miner) const;
 
 	/** Logs the type, adds XPAmount XP to the miner for an XP pickup (OreValue carried ore to the run flow for an Ore pickup), notifies the miner (type, location), then releases this pickup to the pool (destroys it outside the pool). */
@@ -328,6 +331,10 @@ protected:
 	/** Instant effect applied to the miner by a Heal pickup (URRGE_Heal by default). */
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Pickup|Heal")
 	TSubclassOf<UGameplayEffect> HealEffectClass;
+
+	/** Height (uu) of the heal number above the miner capsule top (damage-numbers: 40, like ARREnemy::DamageNumberHeight). */
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Pickup|Heal", meta = (Units = "cm"))
+	float HealNumberHeight = 40.f;
 
 	/** Shortest horizontal ejection distance from the spawn point (task-027-01: 80 uu). */
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Pickup|Pop", meta = (ClampMin = 0, Units = "cm"))

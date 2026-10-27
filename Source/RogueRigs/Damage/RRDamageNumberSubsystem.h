@@ -24,15 +24,19 @@ struct ROGUERIGS_API FRRDamageNumber
 	UPROPERTY(BlueprintReadOnly, Category = "Damage Numbers")
 	float Value = 0.f;
 
-	/** True when the hit was critical. */
+	/** True when the hit was critical (never for a heal number). */
 	UPROPERTY(BlueprintReadOnly, Category = "Damage Numbers")
 	bool bCritical = false;
+
+	/** True for a heal number (URRDamageNumberSubsystem::AddHeal): "+" glyph before the digits, HealColor. */
+	UPROPERTY(BlueprintReadOnly, Category = "Damage Numbers")
+	bool bHeal = false;
 
 	/** World size of the glyphs (NumberSize x the damage factor SizeMin..SizeMax, x CriticalScale on a crit; URRDamageNumberSubsystem::GetHitSize). */
 	UPROPERTY(BlueprintReadOnly, Category = "Damage Numbers")
 	float Size = 0.f;
 
-	/** Color of the number (NormalColor or CriticalColor). */
+	/** Color of the number (NormalColor, CriticalColor or HealColor). */
 	UPROPERTY(BlueprintReadOnly, Category = "Damage Numbers")
 	FLinearColor Color = FLinearColor::White;
 
@@ -55,7 +59,7 @@ struct ROGUERIGS_API FRRDamageDigit
 	UPROPERTY(BlueprintReadOnly, Category = "Damage Numbers")
 	FVector Location = FVector::ZeroVector;
 
-	/** Digit value 0-9 (atlas cell). */
+	/** Atlas cell of the glyph: digit 0-9, or URRDamageNumberSubsystem::PlusGlyph (10, "+") before the digits of a heal number. */
 	UPROPERTY(BlueprintReadOnly, Category = "Damage Numbers")
 	int32 Digit = 0;
 
@@ -96,7 +100,9 @@ DECLARE_MULTICAST_DELEGATE_OneParam(FRROnDamageNumbersPushed, const TArray<FRRDa
  * digit in Niagara array user parameters, with the digit count and a batch id incremented on every push (never reset),
  * so the emitter spawns DigitCount particles once per batch id change and particle N reads entry N. The Niagara system is NumberSystem (config, DefaultGame.ini section
  * [/Script/RogueRigs.RRDamageNumberSubsystem]); unset or missing = no rendering, the numbers and OnNumbersPushed still run.
- * The player toggle is URRGameUserSettings::bShowDamageNumbers: off = hits ignored and pending numbers dropped.
+ * Heal numbers (task-324-02): AddHeal records a green "+N" through the same path (size by value, never critical, same
+ * stacking with the "+" counted in the footprint); ARRPickup calls it when a heal pickup heals the miner.
+ * The player toggle is URRGameUserSettings::bShowDamageNumbers: off = hits and heals ignored and pending numbers dropped.
  * Ticks with the world (stops while the game is paused, like the Niagara component).
  */
 UCLASS(Config = Game)
@@ -107,8 +113,10 @@ class ROGUERIGS_API URRDamageNumberSubsystem : public UTickableWorldSubsystem
 public:
 	/** Niagara user parameter (Niagara Position Array): world position of each digit of the batch. */
 	static const FName DigitPositionsParameter;
-	/** Niagara user parameter (Niagara Int32 Array): value 0-9 of each digit (atlas cell). */
+	/** Niagara user parameter (Niagara Int32 Array): atlas cell of each glyph (0-9 digits, PlusGlyph 10 = "+"). */
 	static const FName DigitIndicesParameter;
+	/** Atlas cell of the "+" glyph of T_DamageDigitsOutline (task-324-01), drawn before the digits of a heal number. */
+	static constexpr int32 PlusGlyph = 10;
 	/** Niagara user parameter (Niagara Float Array): glyph world size of each digit (its number's GetHitSize). */
 	static const FName DigitSizesParameter;
 	/** Niagara user parameter (Niagara Color Array): color of each digit. */
@@ -135,6 +143,14 @@ public:
 	 */
 	UFUNCTION(BlueprintCallable, Category = "Damage Numbers")
 	void AddHit(AActor* Target, float Value, bool bCritical, FVector Location, float InSpawnRadius = -1.f);
+
+	/**
+	 * Records a heal of Amount shown at Location (world, e.g. miner capsule top + 40 uu): one green "+N" number (HealColor,
+	 * size by value like a hit, never critical), same spawn disc (InSpawnRadius, negative = SpawnRadius), stacking and push as
+	 * AddHit. Ignored when Amount <= 0 or the player turned damage numbers off (damage-numbers, heal numbers line).
+	 */
+	UFUNCTION(BlueprintCallable, Category = "Damage Numbers")
+	void AddHeal(FVector Location, float Amount, float InSpawnRadius = -1.f);
 
 	/** True when the player setting shows damage numbers (true when the game user settings are not URRGameUserSettings). */
 	UFUNCTION(BlueprintPure, Category = "Damage Numbers")
@@ -163,6 +179,7 @@ public:
 	/**
 	 * Lays out Number into digits appended to OutDigits: the value rounded (at least 1, at most MaxDigits nines), most
 	 * significant digit first, placed left to right along DigitDirection, DigitAdvance x Size apart, centred on Location.
+	 * A heal number gets a PlusGlyph glyph before its digits, counted in the centring.
 	 */
 	void AppendDigits(const FRRDamageNumber& Number, TArray<FRRDamageDigit>& OutDigits) const;
 
@@ -228,6 +245,8 @@ protected:
 		float Value = 0.f;
 		/** Critical hit. */
 		bool bCritical = false;
+		/** Heal number ("+" glyph, HealColor). */
+		bool bHeal = false;
 	};
 
 	/** One pushed number still on screen: avoided by the stacking until it expires. */
@@ -250,14 +269,17 @@ protected:
 	/** Drops pending entries and the component. */
 	virtual void Deinitialize() override;
 
-	/** Screen footprint of a number (width along DigitDirection, height along StackDirection), from its value and style. */
-	FVector2D GetFootprint(float Value, bool bCritical) const;
+	/** Records one pending number (AddHit, AddHeal): spawn disc point, stack offset, style. Callers check World, Value and the toggle. */
+	void AddPendingNumber(float Value, bool bCritical, bool bHeal, const FVector& Location, float InSpawnRadius, double Now);
+
+	/** Screen footprint of a number (width along DigitDirection, height along StackDirection), from its value and style; a heal number counts its "+" glyph. */
+	FVector2D GetFootprint(float Value, bool bCritical, bool bHeal = false) const;
 
 	/**
 	 * Stack offset for a new number at Location recorded at Now: lifted along StackDirection above each pending number or
 	 * displayed number (risen by RiseVelocity since its push) whose footprint it would overlap, MaxStackSteps lifts at most.
 	 */
-	FVector ComputeStackOffset(const FVector& Location, float Value, bool bCritical, double Now) const;
+	FVector ComputeStackOffset(const FVector& Location, float Value, bool bCritical, bool bHeal, double Now) const;
 
 	/** Sends LastDigits and DigitBatchId to the Niagara component, when there is one (parameters the asset lacks are skipped). */
 	void PushToNiagara();
@@ -302,6 +324,10 @@ protected:
 	/** Color of a critical number (damage-numbers: lighter orange, linear (1, 0.7, 0.35), provisional, owner 2026-10-19; was gold (1, 0.55, 0.08)). */
 	UPROPERTY(Config)
 	FLinearColor CriticalColor = FLinearColor(1.f, 0.7f, 0.35f);
+
+	/** Color of a heal number "+N" (damage-numbers and color-code: the heal ring green, linear (0.1, 1, 0.2), provisional, owner 2026-10-27). */
+	UPROPERTY(Config)
+	FLinearColor HealColor = FLinearColor(0.1f, 1.f, 0.2f);
 
 	/** Distance between two digit centres, as a fraction of the glyph size (matches the atlas glyph width). */
 	UPROPERTY(Config)

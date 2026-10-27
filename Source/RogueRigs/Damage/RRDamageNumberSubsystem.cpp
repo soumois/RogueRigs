@@ -120,9 +120,23 @@ void URRDamageNumberSubsystem::AddHit(AActor* Target, float Value, bool bCritica
 	{
 		return;
 	}
-	const double Now = World->GetTimeSeconds();
-
 	// One number per hit (no merging, task-059-01); Target is not needed: the number stays where it was hit.
+	AddPendingNumber(Value, bCritical, /*bHeal*/ false, Location, InSpawnRadius, World->GetTimeSeconds());
+}
+
+void URRDamageNumberSubsystem::AddHeal(FVector Location, float Amount, float InSpawnRadius)
+{
+	const UWorld* World = GetWorld();
+	if (!World || Amount <= 0.f || !AreNumbersShown())
+	{
+		return;
+	}
+	// One number per heal, never critical (damage-numbers, heal numbers line).
+	AddPendingNumber(Amount, /*bCritical*/ false, /*bHeal*/ true, Location, InSpawnRadius, World->GetTimeSeconds());
+}
+
+void URRDamageNumberSubsystem::AddPendingNumber(float Value, bool bCritical, bool bHeal, const FVector& Location, float InSpawnRadius, double Now)
+{
 	FPendingNumber& Entry = Pending.AddDefaulted_GetRef();
 	Entry.HitLocation = Location;
 	// Uniform point of the horizontal disc, so repeated hits on one robot start from different spots.
@@ -130,9 +144,10 @@ void URRDamageNumberSubsystem::AddHit(AActor* Target, float Value, bool bCritica
 	const FVector2D DiscPoint = Radius > 0.f ? FMath::RandPointInCircle(Radius) : FVector2D::ZeroVector;
 	Entry.SpawnOffset = FVector(DiscPoint.X, DiscPoint.Y, 0.f);
 	// The new entry is already the last one of Pending; the scan skips it.
-	Entry.Stack = ComputeStackOffset(Location + Entry.SpawnOffset, Value, bCritical, Now);
+	Entry.Stack = ComputeStackOffset(Location + Entry.SpawnOffset, Value, bCritical, bHeal, Now);
 	Entry.Value = Value;
 	Entry.bCritical = bCritical;
+	Entry.bHeal = bHeal;
 }
 
 void URRDamageNumberSubsystem::Tick(float DeltaTime)
@@ -170,8 +185,9 @@ void URRDamageNumberSubsystem::Tick(float DeltaTime)
 		Number.Location = Entry.HitLocation + Entry.SpawnOffset + Entry.Stack;
 		Number.Value = Entry.Value;
 		Number.bCritical = Entry.bCritical;
+		Number.bHeal = Entry.bHeal;
 		Number.Size = GetHitSize(Entry.Value, Entry.bCritical);
-		Number.Color = Entry.bCritical ? CriticalColor : NormalColor;
+		Number.Color = Entry.bHeal ? HealColor : (Entry.bCritical ? CriticalColor : NormalColor);
 		Number.SpawnTime = static_cast<float>(Now);
 		// One draw per number: its digits share it (AppendDigits). The stacking keeps the mean RiseVelocity.
 		Number.Velocity = DrawRiseVelocity();
@@ -179,7 +195,7 @@ void URRDamageNumberSubsystem::Tick(float DeltaTime)
 		{
 			FDisplayedNumber& Shown = Displayed.AddDefaulted_GetRef();
 			Shown.Location = Number.Location;
-			Shown.Footprint = GetFootprint(Entry.Value, Entry.bCritical);
+			Shown.Footprint = GetFootprint(Entry.Value, Entry.bCritical, Entry.bHeal);
 			Shown.SpawnTime = Now;
 		}
 		++DueCount;
@@ -226,7 +242,7 @@ FVector URRDamageNumberSubsystem::DrawRiseVelocity() const
 	return Direction * SpeedFactor;
 }
 
-FVector2D URRDamageNumberSubsystem::GetFootprint(float Value, bool bCritical) const
+FVector2D URRDamageNumberSubsystem::GetFootprint(float Value, bool bCritical, bool bHeal) const
 {
 	const float Size = GetHitSize(Value, bCritical);
 	const int32 DigitLimit = FMath::Clamp(MaxDigits, 1, 9);
@@ -235,11 +251,13 @@ FVector2D URRDamageNumberSubsystem::GetFootprint(float Value, bool bCritical) co
 	{
 		++Digits;
 	}
+	// A heal number draws its "+" glyph in one more cell.
+	Digits += bHeal ? 1 : 0;
 	// The glyph cell is DigitAdvance x Size wide per digit and Size tall.
 	return FVector2D(DigitAdvance * Size * static_cast<float>(Digits), Size);
 }
 
-FVector URRDamageNumberSubsystem::ComputeStackOffset(const FVector& Location, float Value, bool bCritical, double Now) const
+FVector URRDamageNumberSubsystem::ComputeStackOffset(const FVector& Location, float Value, bool bCritical, bool bHeal, double Now) const
 {
 	if (MaxStackSteps <= 0)
 	{
@@ -247,7 +265,7 @@ FVector URRDamageNumberSubsystem::ComputeStackOffset(const FVector& Location, fl
 	}
 	const FVector Right = DigitDirection.GetSafeNormal(UE_SMALL_NUMBER, FVector::YAxisVector);
 	const FVector Up = StackDirection.GetSafeNormal(UE_SMALL_NUMBER, FVector::ZAxisVector);
-	const FVector2D Footprint = GetFootprint(Value, bCritical);
+	const FVector2D Footprint = GetFootprint(Value, bCritical, bHeal);
 	// The new number is pushed on the next tick: every other number is compared where it is now.
 	const double PushTime = Now;
 
@@ -262,7 +280,7 @@ FVector URRDamageNumberSubsystem::ComputeStackOffset(const FVector& Location, fl
 	for (int32 Index = 0; Index < Pending.Num() - 1; ++Index)
 	{
 		const FPendingNumber& Other = Pending[Index];
-		Obstacles.Add({ Other.HitLocation + Other.SpawnOffset + Other.Stack, GetFootprint(Other.Value, Other.bCritical) });
+		Obstacles.Add({ Other.HitLocation + Other.SpawnOffset + Other.Stack, GetFootprint(Other.Value, Other.bCritical, Other.bHeal) });
 	}
 	for (const FDisplayedNumber& Shown : Displayed)
 	{
@@ -349,11 +367,16 @@ void URRDamageNumberSubsystem::AppendDigits(const FRRDamageNumber& Number, TArra
 	// A positive hit never shows 0; a sum beyond the digit budget shows all nines.
 	const int32 Shown = FMath::Clamp(FMath::RoundToInt(Number.Value), 1, MaxValue - 1);
 
-	int32 DigitValues[9];
+	// Least significant glyph first; a heal number ends with the "+" glyph, read first.
+	int32 DigitValues[10];
 	int32 DigitTotal = 0;
 	for (int32 Rest = Shown; Rest > 0; Rest /= 10)
 	{
 		DigitValues[DigitTotal++] = Rest % 10;
+	}
+	if (Number.bHeal)
+	{
+		DigitValues[DigitTotal++] = PlusGlyph;
 	}
 
 	const FVector Direction = DigitDirection.GetSafeNormal(UE_SMALL_NUMBER, FVector::YAxisVector);
