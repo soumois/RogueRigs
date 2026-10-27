@@ -3,7 +3,7 @@ id: task-331-02-measure-before
 description: "Run one -game capture of the current aim chevrons and measure each chevron's contrast against the floor, before any fix."
 parent: task-331-aim-chevrons-fade-measured
 kind: task
-status: todo
+status: in-progress
 ---
 # Aim chevrons: measure the fade before the fix
 
@@ -20,7 +20,7 @@ status: todo
 - usage: open
 - runs: open
 - milestone: M3
-- started: open
+- started: 2026-10-27T16:59:56Z
 - waiting_for: none
 - result: open
 

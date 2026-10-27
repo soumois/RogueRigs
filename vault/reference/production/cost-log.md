@@ -706,20 +706,21 @@ kind: note
 | [[task-329-03-docs]] | sonnet | 1 | 0k | 20k | 78k | 4k | 0.05 | 6 | 0 |
 | [[task-330-01-sharp-edges-material]] | sonnet | 1 | 0k | 50k | 578k | 8k | 0.16 | 17 | 0 |
 | [[task-330-02-docs]] | sonnet | 1 | 0k | 14k | 48k | 2k | 0.03 | 4 | 0 |
+| [[task-331-01-owner-screenshot]] | sonnet | 1 | 0k | 18k | 53k | 2k | 0.04 | 5 | 0 |
 
 ## Totals
 Rebuilt by `record-cost.js` at each closing; do not edit. Units are input-token equivalents (weights in `vault/scripts/cost-rates.json`). Subtask rows are rounded to k; the lines below them come from the usage snapshot (exact).
 
 | Scope | Units (M) | Input | Cache write | Cache read | Output |
 |---|---|---|---|---|---|
-| All subtask rows above | 296.73 | 0k | 69.28 M | 1508.66 M | 11865k |
+| All subtask rows above | 296.77 | 0k | 69.30 M | 1508.71 M | 11867k |
 | model mixed | 4.35 | 0k | 1.47 M | 15.68 M | 188k |
 | model opus | 178.87 | 0k | 39.80 M | 907.07 M | 7688k |
-| model sonnet | 113.51 | 0k | 28.01 M | 585.90 M | 3989k |
-| Executors and legacy orchestrators that ran a task (pilot) | 9.57 | 1k | 4.81 M | 24.29 M | 225k |
-| Planning runs (planners and legacy planning passes) | 8.95 | 1k | 3.06 M | 31.46 M | 396k |
+| model sonnet | 113.55 | 0k | 28.03 M | 585.96 M | 3991k |
+| Executors and legacy orchestrators that ran a task (pilot) | 9.64 | 1k | 4.84 M | 24.48 M | 228k |
+| Planning runs (planners and legacy planning passes) | 9.46 | 1k | 3.24 M | 32.96 M | 422k |
 | Agents without a subtask id (other) | 0.49 | 0k | 0.18 M | 1.73 M | 17k |
-| Main sessions (all of them, also chat outside tasks) | 49.69 | 3k | 7.65 M | 341.11 M | 1205k |
+| Main sessions (all of them, also chat outside tasks) | 49.91 | 3k | 7.66 M | 342.69 M | 1212k |
 
 ## Lessons for estimates
 - Per C++ subtask: output 20k to 115k, cache write 50k to 250k, cache read 0.5 M to 11 M.

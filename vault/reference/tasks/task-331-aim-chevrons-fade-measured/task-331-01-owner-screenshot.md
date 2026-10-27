@@ -3,7 +3,7 @@ id: task-331-01-owner-screenshot
 description: "Copy the owner's second 2026-10-27 aim chevron test screenshot into Art/Source/aim-indicator and list it in the aim-indicator node."
 parent: task-331-aim-chevrons-fade-measured
 kind: task
-status: in-progress
+status: done
 ---
 # Aim chevrons: store the owner's second test screenshot
 
@@ -15,14 +15,14 @@ status: in-progress
 - done_when: the file exists at that path with the same size as the source; aim-indicator lists it; lint clean; committed by explicit paths.
 - editor_state: any
 - token_ceiling: 0.15 M units
-- model: open
-- tokens: open
-- usage: open
-- runs: open
+- model: sonnet
+- tokens: input 10, cache write 17667, cache read 53489, output 1781
+- usage: turns 5, context start 9k peak 18k, resumes 0, 0 min, units 0.04 M
+- runs: 1
 - milestone: M3
 - started: 2026-10-27T16:59:22Z
 - waiting_for: none
-- result: open
+- result: Owner screenshot copied (18236 bytes, byte copy) to Art/Source/aim-indicator/owner-test-2026-10-27-b.webp and listed in aim-indicator; commit 11fda14e.
 
 ## Relations
 - [[task-331-aim-chevrons-fade-measured]] — parent global task.
