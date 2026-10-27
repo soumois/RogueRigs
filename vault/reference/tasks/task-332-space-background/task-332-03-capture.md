@@ -3,7 +3,7 @@ id: task-332-03-capture
 description: "One -game capture near an arena edge showing the space background layers, with brightness numbers against the floor, sheet for the owner."
 parent: task-332-space-background
 kind: task
-status: in-progress
+status: done
 ---
 # Space background: capture for the owner
 
@@ -15,14 +15,14 @@ status: in-progress
 - done_when: the PNGs exist and are described; the void mean luma is below the floor strip mean luma (else reported as a defect, not fixed here); no plane edge visible (else reported); the contact sheet path is given for the owner.
 - editor_state: any
 - token_ceiling: 1.2 M units
-- model: open
-- tokens: open
-- usage: open
-- runs: open
+- model: opus
+- tokens: input 34, cache write 50771, cache read 578133, output 10227
+- usage: turns 17, context start 11k peak 51k, resumes 0, 3 min, units 0.17 M
+- runs: 1
 - milestone: M3
 - started: 2026-10-27T21:46:43Z
 - waiting_for: none
-- result: open
+- result: Capture Saved/Captures/task332_space (contact_sheet.png): void luma 0.16 vs floor strips 18-49 (darker, Q4 ok), no plane edge, no tiling, star twinkle visible, brightest star 108. Finding: nebula and dust invisible at normal brightness (nebula peak luma ~1.4); layers only visible with 25x boost; parallax not shown (camera static); one edge only.
 
 ## Relations
 - [[task-332-space-background]] — parent global task.

@@ -3,7 +3,7 @@ id: task-332-04-docs
 description: "Write the doc nodes of M_SpaceBackground and BP_SpaceBackground, list them in the world index, update the bp-arena-grid map line."
 parent: task-332-space-background
 kind: task
-status: todo
+status: in-progress
 ---
 # Space background: docs
 
@@ -20,7 +20,7 @@ status: todo
 - usage: open
 - runs: open
 - milestone: M3
-- started: open
+- started: 2026-10-27T21:49:40Z
 - waiting_for: none
 - result: open
 
