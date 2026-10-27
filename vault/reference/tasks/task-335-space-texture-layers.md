@@ -1,9 +1,9 @@
 ---
 id: task-335-space-texture-layers
 description: "Global task: replace the procedural nebula of the void background with bold layered AI-generated tileable space textures at several depths, procedural stars kept."
-parent: tasks-to-do-index
+parent: tasks-done-index
 kind: task
-status: in-progress
+status: done
 ---
 # Layered generated space textures for the void
 
@@ -31,10 +31,10 @@ status: in-progress
   - B7 GDD: [[visual-style]] void line and [[color-code]] void row rewritten with B1 to B4 (provisional), replacing S6 and "low saturation".
 - confirmed_by_owner: yes (2026-10-27, "ok", relayed by the main session; changed plan B1 to B7 confirmed by a second "ok" the same day)
 - milestone: M3
-- next_step: task-335-09-docs
+- next_step: none
 - started: 2026-10-27T22:40:11Z
 - waiting_for: none
-- result: open
+- result: Done. Doc nodes done (commit edcb24c0): bp-space-texture-material created; background, background-material, mpp-player-light-mask (FarBrightness 0.06 noted), world index updated; art-prompts-space-background description trimmed to 25 words. Open: Tint/Saturation/TileSize/PanVelocity read-back values not in summaries.
 
 ## Subtasks
 1. task-335-01-space-prompts (vault/reference/tasks/task-335-space-texture-layers/task-335-01-space-prompts.md) — art: ChatGPT prompts for the deep and cloud layers, prompt node, handed to the owner.
@@ -48,7 +48,7 @@ status: in-progress
 9. task-335-09-docs (vault/reference/tasks/task-335-space-texture-layers/task-335-09-docs.md) — doc: material, Blueprint and mask doc nodes (final intensities, FarBrightness 0.06), world index.
 
 ## Relations
-- [[tasks-to-do-index]] — parent index.
+- [[tasks-done-index]] — parent index.
 - [[task-335-01-space-prompts]] — step 1, art.
 - [[task-335-02-space-textures]] — step 2, art.
 - [[task-335-03-space-texture-material]] — step 3, bp.

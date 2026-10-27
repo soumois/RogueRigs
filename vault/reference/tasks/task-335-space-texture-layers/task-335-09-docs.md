@@ -3,7 +3,7 @@ id: task-335-09-docs
 description: "Doc subtask: new doc node for M_SpaceTexture, update bp-space-background-material, bp-space-background, mpp-player-light-mask and the world index."
 parent: task-335-space-texture-layers
 kind: task
-status: in-progress
+status: done
 ---
 # Space layers: doc nodes
 
@@ -15,14 +15,14 @@ status: in-progress
 - done_when: `node vault/scripts/lint.js --write` reports no problem; every value in the nodes matches the change summaries; committed by explicit path.
 - editor_state: any
 - token_ceiling: 0.3 M units
-- model: open
-- tokens: open
-- usage: open
-- runs: open
+- model: sonnet
+- tokens: input 28, cache write 43238, cache read 412082, output 8331
+- usage: turns 14, context start 10k peak 43k, resumes 0, 3 min, units 0.14 M
+- runs: 1
 - milestone: M3
 - started: 2026-10-27T23:14:32Z
 - waiting_for: none
-- result: open
+- result: Doc nodes done (commit edcb24c0): bp-space-texture-material created; background, background-material, mpp-player-light-mask (FarBrightness 0.06 noted), world index updated; art-prompts-space-background description trimmed to 25 words. Open: Tint/Saturation/TileSize/PanVelocity read-back values not in summaries.
 
 ## Relations
 - [[task-335-space-texture-layers]] — parent global task.
