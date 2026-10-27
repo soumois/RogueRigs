@@ -3,7 +3,7 @@ id: task-335-07-docs
 description: "Doc subtask: new doc node for M_SpaceTexture, update bp-space-background-material, bp-space-background, mpp-player-light-mask and the world index."
 parent: task-335-space-texture-layers
 kind: task
-status: todo
+status: in-progress
 ---
 # Space layers: doc nodes
 
@@ -20,7 +20,7 @@ status: todo
 - usage: open
 - runs: open
 - milestone: M3
-- started: open
+- started: 2026-10-27T22:56:15Z
 - waiting_for: none
 - result: open
 

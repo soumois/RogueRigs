@@ -3,7 +3,7 @@ id: task-335-06-capture
 description: "One -game capture near the east arena edge showing the texture layers, luma numbers, comparison with the task-333 capture, sheet for the owner."
 parent: task-335-space-texture-layers
 kind: task
-status: in-progress
+status: done
 ---
 # Space layers: capture for the owner
 
@@ -15,14 +15,14 @@ status: in-progress
 - done_when: the PNGs exist and are described; the numbers are given; cloud peak in the B1 band (70 to 100 sRGB luma) and void mean below the floor strip mean (else reported as a defect with the ratio, not fixed here); the sheet paths are given for the owner.
 - editor_state: any
 - token_ceiling: 1.2 M units
-- model: open
-- tokens: open
-- usage: open
-- runs: open
+- model: opus
+- tokens: input 26, cache write 33928, cache read 278016, output 9244
+- usage: turns 13, context start 11k peak 34k, resumes 0, 2 min, units 0.12 M
+- runs: 1
 - milestone: M3
 - started: 2026-10-27T22:53:36Z
 - waiting_for: none
-- result: open
+- result: Capture done (Saved/Captures/task335_space/, contact_sheet.png, side_by_side_task333_vs_task335.png). DEFECTS reported, not fixed: cloud peak p99 180 / max 232 (B1 band 70-100: Intensity x about 0.2 to 0.28 needed); void mean 45.5 above floor strip 34.6-37.3. Layers: dense saturated clouds, no tiling, no plane edge, drift ~2px/3s; deep layer not distinguishable. Mask-gain FarBrightness reads 0.06.
 
 ## Relations
 - [[task-335-space-texture-layers]] — parent global task.

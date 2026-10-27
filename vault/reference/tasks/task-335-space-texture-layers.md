@@ -31,7 +31,7 @@ status: in-progress
   - B7 GDD: [[visual-style]] void line and [[color-code]] void row rewritten with B1 to B4 (provisional), replacing S6 and "low saturation".
 - confirmed_by_owner: yes (2026-10-27, "ok", relayed by the main session; changed plan B1 to B7 confirmed by a second "ok" the same day)
 - milestone: M3
-- next_step: task-335-06-capture
+- next_step: task-335-07-docs
 - started: 2026-10-27T22:40:11Z
 - waiting_for: none
 - result: open
