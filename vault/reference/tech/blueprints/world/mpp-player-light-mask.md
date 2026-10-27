@@ -1,6 +1,6 @@
 ---
 id: mpp-player-light-mask
-description: "Owner guide to the player light mask darkener: MPC_PlayerLight parameters (Enable, FarBrightness, Radius, Exponent), formula, how to tune, disable and remove it, removed parameters."
+description: "Guide to the player light mask darkener: MPC_PlayerLight parameters (Enable, FarBrightness, VoidFarBrightness, VoidZ, Radius, Exponent), formula, how to tune, disable and remove it, removed parameters."
 parent: blueprints-world-index
 kind: doc
 ---
@@ -14,13 +14,17 @@ kind: doc
 | name | default | unit | meaning and tuning |
 |---|---|---|---|
 | Enable | 1 | 0 or 1 | 0 = effect off, 1 = on. |
-| FarBrightness | 0.08 | multiplier (0 to 1) | brightness far from the miner (1 = no darkening). Previous 0.03 (owner edit 2026-10-21, task-276), before that 0.002 (task-274-08), before that 0.005 (task-274-02). |
+| FarBrightness | 0.06 (saved value; documented 0.08, mismatch found in task-335-05 and 06, not explained) | multiplier (0 to 1) | brightness far from the miner (1 = no darkening). Previous 0.03 (owner edit 2026-10-21, task-276), before that 0.002 (task-274-08), before that 0.005 (task-274-02). |
+| VoidFarBrightness | 0.5 | multiplier (0 to 1) | far gain of void pixels (world Z below VoidZ: stars plane, texture layers, dust). Added in task-335-05 (066b72d1, B2 of [[task-335-space-texture-layers]]). Revert: delete it and use FarBrightness in the formula (void then about 0.06 to 0.08). |
+| VoidZ | -200 | world uu | pixels with WorldPos.z below this use VoidFarBrightness. Added in task-335-05. |
 | Radius | 200 | uu | distance where the gain is halfway between FarBrightness and 1. Raise to widen the lit zone. Previous 250 (owner edit 2026-10-21, task-276), before that 260 (task-274-08), before that 200. |
 | Exponent | 1.8 | none | falloff shape: 2 = long tail, higher = tighter edge. Previous 4 (owner edit 2026-10-21, task-276), before that 3. |
 | PlayerPosition | (0,0,0) | world uu | written by C++ each tick, XY used. Do not edit. |
 
-- formula (Custom HLSL, Scene Color Before Bloom): r = length(WorldPos.xy - PlayerPosition.xy); mask = 1 / (1 + pow(r / max(Radius, 1), Exponent)); gain = lerp(FarBrightness, 1, mask); out = lerp(SceneColor, SceneColor * gain, saturate(Enable)). WorldPos is the engine WorldPosition node.
+- formula (Custom HLSL, Scene Color Before Bloom): r = length(WorldPos.xy - PlayerPosition.xy); mask = 1 / (1 + pow(r / max(Radius, 1), Exponent)); farB = WorldPos.z < VoidZ ? VoidFarBrightness : FarBrightness; gain = lerp(farB, 1, mask); out = lerp(SceneColor, SceneColor * gain, saturate(Enable)). WorldPos is the engine WorldPosition node.
 - console: the C++ writer overwrites the parameters above only when bDriveTunables is set from the console, with exactly these names (sys-player).
+
+- task-335-05 (066b72d1): formula before: gain = lerp(FarBrightness, 1, mask). Floor and cliff faces checked from code only, render unverified; cliff faces below Z -200, if any, would take the void gain (not checked).
 
 ## Removed in task-274-02 (values to revert)
 | name | type | previous default | previous neutral / revert |
@@ -43,4 +47,5 @@ Previous FarBrightness was 0.15 (neutral 0.4) and previous formula: gain = FarBr
 - [[blueprints-world-index]] — parent index.
 - [[ppv-xp-glow]] — the volume that carries the material as a blendable.
 - [[lights-dark-ambient]] — the flat dark ambient this mask darkens away from the miner.
+- [[bp-space-texture-material]] — textured void layers that this void gain lights.
 - [[sys-player]] — the miner LightMask component that writes PlayerPosition.

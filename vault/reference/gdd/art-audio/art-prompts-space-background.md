@@ -1,6 +1,6 @@
 ---
 id: art-prompts-space-background
-description: "Kie.ai prompts (first and bold chain), files and seam method of the two tileable void space layers (deep washes, cloud wisps, task-335): prompt chain, review checklist."
+description: "Kie.ai prompts (first and bold chain), files and seam method of two tileable void space layers (deep washes, cloud wisps, task-335): prompt chain, review checklist."
 parent: art-prompts
 kind: note
 ---

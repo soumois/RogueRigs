@@ -125,6 +125,7 @@ bp-shooter-charge  reference/tech/blueprints/fx/bp-shooter-charge.md
 bp-shotgun  reference/tech/blueprints/player/bp-shotgun.md
 bp-space-background  reference/tech/blueprints/world/bp-space-background.md
 bp-space-background-material  reference/tech/blueprints/world/bp-space-background-material.md
+bp-space-texture-material  reference/tech/blueprints/world/bp-space-texture-material.md
 bp-turret  reference/tech/blueprints/player/bp-turret.md
 build-toolchain  reference/tech/pipelines/build-toolchain.md
 burst-rifle  reference/gdd/weapons/burst-rifle.md

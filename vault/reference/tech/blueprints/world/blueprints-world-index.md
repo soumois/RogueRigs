@@ -16,10 +16,11 @@ Arena grid, objective console, bonus chest, shuttle, spawner and barrel asset: t
 - [[bp-enemy-spawner]] — BP_EnemySpawner, the enemy spawner placed in the arena.
 - [[bp-rock-slab-material]] — M_RockSlab and MI_RockSlab, the rock piece material (top texture, cracks, shake, broken sag).
 - [[bp-floor-plates-material]] — M_FloorPlates and MI_FloorPlates, the floor material (world-aligned plate textures, noise anti-tiling, revert).
-- [[bp-space-background-material]] — M_SpaceBackground and its three instances (procedural stars, nebula, dust), parameters, tuning, revert.
-- [[bp-space-background]] — BP_SpaceBackground, the three planes under the arena: depths, scales, placement, removal.
+- [[bp-space-background-material]] — M_SpaceBackground and its three instances (procedural stars, nebula, dust; nebula plane replaced in task-335), parameters, tuning, revert.
+- [[bp-space-texture-material]] — M_SpaceTexture, MI_Space_Deep and MI_Space_Clouds, generated-texture void layers: parameters, final intensities, capture finding.
+- [[bp-space-background]] — BP_SpaceBackground, the four planes under the arena: depths, scales, placement, removal.
 - [[ppv-xp-glow]] — PPV_XPGlow, the PostProcessVolume of L_ArenaM1 that sets the bloom (halo) of emissive elements; open to tune it.
-- [[mpp-player-light-mask]] — provisional: MPC_PlayerLight and M_PP_PlayerLightMask, the radial post-process light mask around the player, neutral by default (task-272-06).
+- [[mpp-player-light-mask]] — provisional: MPC_PlayerLight and M_PP_PlayerLightMask, the radial post-process light mask around the player with its own far gain for the void (task-272-06, task-335-05).
 - [[lights-no-shadows]] — provisional: shadow casting off on the sun and sky light of L_ArenaM1 (owner 2026-10-20); open for the revert steps.
 - [[lights-dark-ambient]] — provisional: dark violet ambient, sun 1.0 and sky light 0.5 tinted violet (owner 2026-10-20, task-265); open for previous values.
 
