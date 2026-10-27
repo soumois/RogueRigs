@@ -3,7 +3,7 @@ id: task-334-near-asteroids
 description: "Global task: other low-poly asteroids floating in the void around the arena asteroid, nearer the camera than the space layers, with depth parallax."
 parent: tasks-to-do-index
 kind: task
-status: in-progress
+status: wait-answers
 ---
 # Nearer asteroids around the arena asteroid
 
@@ -23,7 +23,7 @@ status: in-progress
 - milestone: M3
 - next_step: task-334-01-asteroid-meshes
 - started: 2026-10-27T23:21:20Z
-- waiting_for: none
+- waiting_for: owner validation of the asteroid preview
 - result: open
 
 ## Subtasks

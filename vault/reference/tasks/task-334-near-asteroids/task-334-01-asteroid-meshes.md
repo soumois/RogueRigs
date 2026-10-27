@@ -3,7 +3,7 @@ id: task-334-01-asteroid-meshes
 description: "Blender route: a bpy script builds four low-poly faceted asteroid variants, exports FBX with reports and a preview render for owner validation."
 parent: task-334-near-asteroids
 kind: task
-status: in-progress
+status: wait-answers
 ---
 # Asteroids: meshes (Blender route)
 
@@ -21,7 +21,7 @@ status: in-progress
 - runs: open
 - milestone: M3
 - started: 2026-10-27T23:21:20Z
-- waiting_for: none
+- waiting_for: owner validation of the asteroid preview
 - result: open
 
 ## Relations
