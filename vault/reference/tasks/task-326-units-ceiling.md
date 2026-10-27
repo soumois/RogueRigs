@@ -3,7 +3,7 @@ id: task-326-units-ceiling
 description: "Global task: token_ceiling bounds the weighted units figure of record-cost.js, written in M units, so the over-ceiling alert flags real outliers."
 parent: tasks-to-do-index
 kind: task
-status: todo
+status: in-progress
 ---
 # token_ceiling measured in units
 
@@ -14,7 +14,7 @@ status: todo
 - confirmed_by_owner: yes (2026-10-27)
 - milestone: M2
 - next_step: task-326-01-units-ceiling-script
-- started: open
+- started: 2026-10-27T14:20:40Z
 - waiting_for: none
 - result: open
 

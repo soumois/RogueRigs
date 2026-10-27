@@ -3,7 +3,7 @@ id: task-326-01-units-ceiling-script
 description: "record-cost.js alerts when a subtask's weighted units exceed a token_ceiling written in M units; legacy integer ceilings give no alert."
 parent: task-326-units-ceiling
 kind: task
-status: todo
+status: in-progress
 ---
 # Ceiling alert on units
 
@@ -20,7 +20,7 @@ status: todo
 - usage: open
 - runs: open
 - milestone: M2
-- started: open
+- started: 2026-10-27T14:20:40Z
 - waiting_for: none
 - result: open
 
