@@ -3,7 +3,7 @@ id: task-333-02-capture
 description: "One -game capture near an arena edge showing the retuned nebula at normal brightness, with luma numbers against the floor, sheet for the owner."
 parent: task-333-nebula-visible
 kind: task
-status: todo
+status: in-progress
 ---
 # Nebula: capture for the owner
 
@@ -20,7 +20,7 @@ status: todo
 - usage: open
 - runs: open
 - milestone: M3
-- started: open
+- started: 2026-10-27T22:00:29Z
 - waiting_for: none
 - result: open
 

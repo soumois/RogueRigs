@@ -3,7 +3,7 @@ id: task-333-01-nebula-tune
 description: "Retune the parameters of MI_Space_Nebula so the nebula is clearly visible at normal brightness, without changing the M_SpaceBackground graph."
 parent: task-333-nebula-visible
 kind: task
-status: in-progress
+status: done
 ---
 # Nebula: retune MI_Space_Nebula
 
@@ -15,14 +15,14 @@ status: in-progress
 - done_when: the instance compiles with no log error and is saved; its parameters read back; M_SpaceBackground, MI_Space_Stars and MI_Space_Dust show no change in `git status`; committed by explicit path.
 - editor_state: open
 - token_ceiling: 1.0 M units
-- model: open
-- tokens: open
-- usage: open
-- runs: open
+- model: sonnet
+- tokens: input 32, cache write 29987, cache read 320472, output 6071
+- usage: turns 16, context start 9k peak 30k, resumes 0, 1 min, units 0.10 M
+- runs: 1
 - milestone: M3
 - started: 2026-10-27T21:59:11Z
 - waiting_for: none
-- result: open
+- result: Intensity 0.06 -> 1.6 (sRGB 1.4 -> 27.5 target, linear ratio 26.5), saved, commit 975425cf; render unverified until 02
 
 ## Relations
 - [[task-333-nebula-visible]] — parent global task.

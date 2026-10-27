@@ -19,7 +19,7 @@ status: in-progress
   - N6 order: default this task runs before task-334, so the asteroid capture shows the final nebula.
 - confirmed_by_owner: yes (2026-10-27, "ok", relayed by the main session)
 - milestone: M3
-- next_step: task-333-01-nebula-tune
+- next_step: task-333-02-capture
 - started: 2026-10-27T21:59:10Z
 - waiting_for: none
 - result: open
