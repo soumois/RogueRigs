@@ -14,4 +14,4 @@ A global task moves to [[tasks-done-index]] when it is done or cancelled (`vault
 - [[task-309-chest-opening]] — Chest opening: latch swings, lid slams open with overshoot, freeze and shake, inner light, ground ring, three popping XP chips, sparks. Status todo.
 - [[task-314-chest-lid-logo]] — Add the yellow Kessler-Voss mark on top of the chest lid, as on the validated sheet, and show it in game. Status todo.
 - [[task-334-near-asteroids]] — Other low-poly asteroids floating in the void around the arena asteroid, nearer the camera than the space layers, with depth parallax. Status todo.
-- [[task-335-space-texture-layers]] — Replace the procedural nebula of the void background with bold layered AI-generated tileable space textures at several depths, procedural stars kept. Status todo.
+- [[task-335-space-texture-layers]] — Replace the procedural nebula of the void background with bold layered AI-generated tileable space textures at several depths, procedural stars kept. Status in-progress.
