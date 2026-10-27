@@ -3,7 +3,7 @@ id: task-329-02-fade-material
 description: "Find why M_AimChevrons draws five equally bright chevrons despite Decay 0.78, and fix the distance fade in the material."
 parent: task-329-aim-chevrons-fade
 kind: task
-status: in-progress
+status: wait-answers
 ---
 # Aim chevrons: distance fade in the material
 
@@ -21,7 +21,7 @@ status: in-progress
 - runs: open
 - milestone: M3
 - started: 2026-10-27T16:30:18Z
-- waiting_for: none
+- waiting_for: owner action: open the Unreal Editor on RogueRigs.uproject (MCP on port 8000), no Play session
 - result: open
 
 ## Relations

@@ -3,7 +3,7 @@ id: task-329-aim-chevrons-fade
 description: "Global task: make the aim chevrons visibly lose opacity with distance from the miner, as in the mockup; the task-328 build shows them equally bright."
 parent: tasks-to-do-index
 kind: task
-status: in-progress
+status: wait-answers
 ---
 # Aim chevrons: distance fade
 
@@ -15,7 +15,7 @@ status: in-progress
 - milestone: M3
 - next_step: task-329-02-fade-material
 - started: 2026-10-27T16:29:44Z
-- waiting_for: none
+- waiting_for: owner action: open the Unreal Editor on RogueRigs.uproject (MCP on port 8000), no Play session
 - result: open
 
 ## Subtasks
