@@ -18,6 +18,7 @@ class ARRWeapon;
 class UAbilitySystemComponent;
 class UCameraComponent;
 class URRAbilitySystemComponent;
+class URRAimIndicatorComponent;
 class URRBlobShadowComponent;
 class URRPlayerLightMaskComponent;
 class URRHealthAttributeSet;
@@ -81,6 +82,8 @@ DECLARE_DYNAMIC_MULTICAST_DELEGATE_TwoParams(FRROnWeaponSlotChangedSignature, in
  * BlobShadowDiameterScale); the i-frames blink (mesh and its children) leaves it alone.
  * Light mask (task-272-07): LightMask (URRPlayerLightMaskComponent) writes the miner position and the mask tunables into
  * MPC_PlayerLight each tick (radial post-process brightening, neutral by default).
+ * Aim indicator (task-328-03): AimIndicator (URRAimIndicatorComponent), ground chevrons along GetAimDirection, stopped at
+ * the first rock block; shown while alive, hidden in HandleDeath.
  * Subclass in Blueprint for the mesh and animation.
  */
 UCLASS(Abstract)
@@ -125,6 +128,10 @@ public:
 	/** True while aiming with the mouse cursor, false while aiming with a stick. */
 	UFUNCTION(BlueprintPure, Category = "Miner|Aim")
 	bool IsUsingMouseAim() const { return bUsingMouseAim; }
+
+	/** Ground chevrons along the aim (default subobject, task-328-03). */
+	UFUNCTION(BlueprintPure, Category = "Miner|Aim")
+	URRAimIndicatorComponent* GetAimIndicator() const { return AimIndicator; }
 
 	/** The helper drone spawned at BeginPlay (null if DroneClass is unset or the spawn failed). */
 	UFUNCTION(BlueprintPure, Category = "Miner|Drone")
@@ -387,6 +394,10 @@ protected:
 	/** Writes the miner position and the light mask tunables into MPC_PlayerLight each tick (task-272-07, neutral by default). */
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Components")
 	TObjectPtr<URRPlayerLightMaskComponent> LightMask;
+
+	/** Aim chevrons decal at the miner's feet along the aim (task-328-03): placed each tick, hidden at death. */
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Components")
+	TObjectPtr<URRAimIndicatorComponent> AimIndicator;
 
 	/** Blob shadow diameter = capsule radius x this (2.2, like the robots). 0 = no disc. */
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Miner|Blob Shadow", meta = (ClampMin = "0"))
