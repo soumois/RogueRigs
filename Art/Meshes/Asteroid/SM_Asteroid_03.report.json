@@ -1,0 +1,27 @@
+{
+  "asset": "SM_Asteroid_03",
+  "seed": 3403,
+  "tris_out": 320,
+  "max_tris": 400,
+  "dimensions_cm": [
+    97.35,
+    100.0,
+    79.58
+  ],
+  "bbox_centre_cm": [
+    0.0,
+    0.0,
+    0.0
+  ],
+  "pivot": "bbox centre",
+  "islands": 1,
+  "materials": [
+    "M_Asteroid"
+  ],
+  "uv_layers": [
+    "UVMap"
+  ],
+  "shading": "flat",
+  "units": "cm (FBX_SCALE_UNITS)",
+  "warnings": []
+}

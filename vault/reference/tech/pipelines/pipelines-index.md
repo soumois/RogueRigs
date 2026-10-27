@@ -24,6 +24,7 @@ kind: note
 - [[build-toolchain]] — engine, compiler, plugins, regenerating project files.
 - [[tool-unreal-reimport]] — headless reimport of static meshes in place from their FBX; use after a Blender re-export.
 - [[barrel-asset]] — the barrel as built and integrated: files, slots, decals, wear, rejected approaches, Unreal side.
+- [[asteroid-asset]] — the four background asteroid meshes (Blender route): files, budget, seeds, rebuild command.
 - [[kie-image-workflow]] — Kie.ai image generation in practice: hosts, variables, costs, permissions, rules.
 - [[barrel-asset-history]] — task map of the barrel work, what each step superseded, Kie credits spent.
 

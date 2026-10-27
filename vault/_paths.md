@@ -65,6 +65,7 @@ assignment-5-vault-check  reference/course/assignments/assignment-5-vault-check.
 assignment-6-plan  reference/course/assignments/assignment-6-plan.md
 assignment-6-style-guide-agent  reference/course/assignments/assignment-6-style-guide-agent.md
 assignments-index  reference/course/assignments/assignments-index.md
+asteroid-asset  reference/tech/pipelines/asteroid-asset.md
 audio-direction  reference/gdd/art-audio/audio-direction.md
 barrel  reference/gdd/terrain/barrel.md
 barrel-asset  reference/tech/pipelines/barrel-asset.md
