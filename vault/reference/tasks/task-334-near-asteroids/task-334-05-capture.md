@@ -1,6 +1,6 @@
 ---
 id: task-334-05-capture
-description: "One -game run near an arena edge, one shot at each of two miner positions, showing the asteroids and their parallax shift, sheet for the owner."
+description: "One -game run near an arena edge, a shot at two miner positions, showing the asteroids and their parallax shift, sheet for the owner."
 parent: task-334-near-asteroids
 kind: task
 status: todo
