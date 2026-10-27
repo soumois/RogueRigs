@@ -3,7 +3,7 @@ id: task-334-02-asteroid-material
 description: "Build M_Asteroid and MI_Asteroid, a lit flat-coloured rock material for the background asteroids, darker than the arena rocks."
 parent: task-334-near-asteroids
 kind: task
-status: in-progress
+status: done
 ---
 # Asteroids: material
 
@@ -15,14 +15,14 @@ status: in-progress
 - done_when: the instance compiles with no log error and is saved; parameters read back; no texture sampler in the graph; committed by explicit paths.
 - editor_state: open
 - token_ceiling: 1.0 M units
-- model: open
-- tokens: open
-- usage: open
-- runs: open
+- model: sonnet
+- tokens: input 38, cache write 45786, cache read 544876, output 11407
+- usage: turns 19, context start 9k peak 46k, resumes 0, 2 min, units 0.17 M
+- runs: 1
 - milestone: M3
 - started: 2026-10-27T23:30:53Z
 - waiting_for: none
-- result: open
+- result: M_Asteroid + MI_Asteroid built, compiled, saved (515df4e8); BaseColor (0.10,0.095,0.14) Roughness 0.9 NoiseTintStrength 0.25 NoiseScale 0.0006; no texture; bUsedWithInstancedStaticMeshes set
 
 ## Relations
 - [[task-334-near-asteroids]] — parent global task.

@@ -3,7 +3,7 @@ id: task-334-03-asteroid-import
 description: "Import the four validated asteroid FBX as SM_Asteroid_01 to 04 with MI_Asteroid, no collision, no shadow casting."
 parent: task-334-near-asteroids
 kind: task
-status: todo
+status: in-progress
 ---
 # Asteroids: import
 
@@ -20,7 +20,7 @@ status: todo
 - usage: open
 - runs: open
 - milestone: M3
-- started: open
+- started: 2026-10-27T23:33:08Z
 - waiting_for: none
 - result: open
 
