@@ -3,7 +3,7 @@ id: task-335-04-space-layers
 description: "BP_SpaceBackground: nebula plane switched to MI_Space_Clouds, new deep plane at Z -8000 with MI_Space_Deep, scale from the coverage formula."
 parent: task-335-space-texture-layers
 kind: task
-status: todo
+status: in-progress
 ---
 # Space layers: planes in BP_SpaceBackground
 
@@ -20,7 +20,7 @@ status: todo
 - usage: open
 - runs: open
 - milestone: M3
-- started: open
+- started: 2026-10-27T22:47:59Z
 - waiting_for: none
 - result: open
 

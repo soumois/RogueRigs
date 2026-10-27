@@ -3,7 +3,7 @@ id: task-335-03-space-texture-material
 description: "Import the two space textures and build M_SpaceTexture (Unlit additive, world-XY UV, slow drift) with MI_Space_Deep and MI_Space_Clouds."
 parent: task-335-space-texture-layers
 kind: task
-status: in-progress
+status: done
 ---
 # Space layers: texture material and instances
 
@@ -15,14 +15,14 @@ status: in-progress
 - done_when: material and instances compile with no log error and are saved; parameters read back; M_SpaceBackground, MI_Space_Stars, MI_Space_Nebula and MI_Space_Dust show no change in `git status`; committed by explicit path.
 - editor_state: open
 - token_ceiling: 1.0 M units
-- model: open
-- tokens: open
-- usage: open
-- runs: open
+- model: sonnet
+- tokens: input 60, cache write 64207, cache read 1242983, output 21172
+- usage: turns 30, context start 9k peak 67k, resumes 0, 4 min, units 0.31 M
+- runs: 1
 - milestone: M3
 - started: 2026-10-27T22:43:41Z
 - waiting_for: none
-- result: open
+- result: Textures imported, M_SpaceTexture (Unlit additive, world XY UV, Contrast/Saturation) + MI_Space_Deep (I 0.7, C 1.3) and MI_Space_Clouds (I 2.7, C 1.6), arithmetic for peak 85 under gain 0.5 (rough E 0.27); recompile returned null, render unverified; commit 31991c2b
 
 ## Relations
 - [[task-335-space-texture-layers]] — parent global task.
