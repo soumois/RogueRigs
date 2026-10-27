@@ -13,3 +13,4 @@ A global task moves to [[tasks-done-index]] when it is done or cancelled (`vault
 - [[task-308-chest-lock-light]] — Chest lock light: red blinking while waiting, orange blinking faster with hack progress in the zone, steady green once open. Status todo.
 - [[task-309-chest-opening]] — Chest opening: latch swings, lid slams open with overshoot, freeze and shake, inner light, ground ring, three popping XP chips, sparks. Status todo.
 - [[task-314-chest-lid-logo]] — Add the yellow Kessler-Voss mark on top of the chest lid, as on the validated sheet, and show it in game. Status todo.
+- [[task-328-aim-chevrons]] — Aim indicator: a row of white-gold chevrons on the ground in front of the miner, pointing where he aims, direction only. Status wait-answers.

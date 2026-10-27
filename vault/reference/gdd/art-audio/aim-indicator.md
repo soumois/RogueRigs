@@ -1,0 +1,27 @@
+---
+id: aim-indicator
+description: "Aim indicator: white-gold ground chevrons in front of the miner showing aim direction only, weapon-agnostic, stopping at rock. Open for aim feedback."
+parent: art-audio-index
+kind: spec
+status: provisional
+---
+# Aim indicator
+
+- What (owner 2026-10-27, "piste 1", [[task-328-aim-chevrons]]): a row of chevrons ("› › ›") on the ground in front of the [[miner]], pointing in the aim direction, opacity decreasing with distance. Projected on the floor like the [[ground-telegraph]] (follows the floor, flattened by the camera perspective).
+- Why: shows where the auto-fire goes (P2) and gives a stick player, who has no cursor, an aim reference (P1, P2, [[gdd-pillars]]). Not a laser: red is enemy fire and the shooter targeting laser ([[readability-rules]]), and the owner finds a laser too classic.
+- Colour: white-gold, the player shots colour ([[color-code]]). Never red, orange, acid green or steel blue, no rarity colour, never a dotted circle (dotted circles are zone telegraphs).
+- Weapon-agnostic (owner 2026-10-27): direction only. No spread widening, no pulse per shot, no length tied to a weapon range. Weapon-specific feedback may come later as a separate layer; not part of this node.
+- Length: fixed. Stops at the first rock block on the aim line (miner cannot shoot through rock, [[destruction-rules]]): open, proposed in task-328.
+- Behaviour: pure visual, no collision, no gameplay effect; never places the [[drone]].
+- Values (all proposed from the owner-seen mockup, awaiting his ok, task-328): 5 chevrons; first at 120 uu from the miner; spacing 74 uu; opening about 60 degrees; arm length 40 uu; line width 12 uu; opacity 1 for the first, x0.78 per chevron; colour sRGB (255, 236, 170), linear about (1.0, 0.84, 0.40), with a soft glow.
+- Visibility: open, proposed: shown whenever the miner is alive, mouse and stick alike; hidden at death.
+- Reference images: mockup and base screenshot, placed in `Art/Source/aim-indicator/` by task-328-01.
+- Later, not in scope: turret placement preview at the aimed spot.
+- Milestone: M3 (juice).
+
+## Relations
+- [[art-audio-index]] — parent index.
+- [[miner]] — the aim it shows.
+- [[color-code]] — white-gold player side colour.
+- [[readability-rules]] — colours it must avoid.
+- [[ground-telegraph]] — same projected-decal technique, different shape and meaning.

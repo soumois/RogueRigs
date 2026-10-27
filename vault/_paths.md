@@ -25,6 +25,7 @@ agent-planner  reference/agents/agent-planner.md
 agent-style-guide  reference/agents/agent-style-guide.md
 agent-text  reference/agents/agent-text.md
 agents-index  reference/agents/agents-index.md
+aim-indicator  reference/gdd/art-audio/aim-indicator.md
 arena-grid  reference/gdd/terrain/arena-grid.md
 art-3d-lessons  reference/agents/art-3d-lessons.md
 art-audio-index  reference/gdd/art-audio/art-audio-index.md
