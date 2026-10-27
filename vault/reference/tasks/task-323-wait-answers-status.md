@@ -3,7 +3,7 @@ id: task-323-wait-answers-status
 description: "Global task: add the wait-answers task status with a waiting_for bullet, set by Planner and Executor when they stop for the owner."
 parent: tasks-to-do-index
 kind: task
-status: todo
+status: in-progress
 ---
 # wait-answers task status
 
@@ -16,6 +16,7 @@ status: todo
 - confirmed_by_owner: yes (2026-10-26): "oui, va pour le 322" to this addition; planned as task-323 by the splitting rule.
 - milestone: M2
 - next_step: task-323-01-wait-answers-status
+- started: 2026-10-27T01:00:58Z
 - result: open
 
 Run order: after task-319 closes, then task-320, task-321, task-322, task-323, one at a time (all edit task-status.js; 323 extends the field insertion of 321 and the status list of 322).

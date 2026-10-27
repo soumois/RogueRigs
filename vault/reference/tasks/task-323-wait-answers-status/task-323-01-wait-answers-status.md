@@ -3,7 +3,7 @@ id: task-323-01-wait-answers-status
 description: "Allow status wait-answers with a waiting_for bullet in contract, lint, task-status.js, templates and protocol steps 4 and 5."
 parent: task-323-wait-answers-status
 kind: task
-status: todo
+status: in-progress
 ---
 # Allow the wait-answers status
 
@@ -20,6 +20,7 @@ status: todo
 - usage: open
 - runs: open
 - milestone: M2
+- started: 2026-10-27T01:00:58Z
 - result: open
 
 ## Relations
