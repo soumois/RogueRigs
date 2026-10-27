@@ -3,7 +3,7 @@ id: task-328-02-chevron-material
 description: "Build M_AimChevrons, the deferred decal material drawing a row of white-gold chevrons with distance fade, per the parameter contract."
 parent: task-328-aim-chevrons
 kind: task
-status: todo
+status: in-progress
 ---
 # Aim chevrons: decal material
 
@@ -20,7 +20,7 @@ status: todo
 - usage: open
 - runs: open
 - milestone: M3
-- started: open
+- started: 2026-10-27T15:31:52Z
 - waiting_for: none
 - result: open
 
