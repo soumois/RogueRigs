@@ -3,7 +3,7 @@ id: task-326-01-units-ceiling-script
 description: "record-cost.js alerts when a subtask's weighted units exceed a token_ceiling written in M units; legacy integer ceilings give no alert."
 parent: task-326-units-ceiling
 kind: task
-status: in-progress
+status: done
 ---
 # Ceiling alert on units
 
@@ -15,14 +15,14 @@ status: in-progress
 - done_when: on a throwaway copy of a done subtask node and of cost-log (never a live node, reverted after; or a dry-run path if the script offers one): `1.2 M units` with units 0.69 gives no ceiling alert, `0.5 M units` gives one with the ratio; `80000` and `open` give none; the other alerts are unchanged; lint clean; committed by explicit path.
 - editor_state: any
 - token_ceiling: 0.5 M units
-- model: open
-- tokens: open
-- usage: open
-- runs: open
+- model: opus
+- tokens: input 18, cache write 25658, cache read 177394, output 7410
+- usage: turns 9, context start 10k peak 30k, resumes 0, 1 min, units 0.09 M
+- runs: 1
 - milestone: M2
 - started: 2026-10-27T14:20:40Z
 - waiting_for: none
-- result: open
+- result: record-cost.js compares units to an '<x> M units' ceiling, legacy/open give no alert; tests on throwaway copies pass; commit 93c7dc5d
 
 ## Relations
 - [[task-326-units-ceiling]] — parent global task.

@@ -3,7 +3,7 @@ id: task-326-02-units-ceiling-docs
 description: "Doc agent writes the units ceiling into templates, agent nodes, cost-log, runbook and executor, and converts the todo subtasks of 308, 309, 314."
 parent: task-326-units-ceiling
 kind: task
-status: todo
+status: in-progress
 ---
 # Units ceiling in the crew definitions
 
@@ -20,7 +20,7 @@ status: todo
 - usage: open
 - runs: open
 - milestone: M2
-- started: open
+- started: 2026-10-27T14:22:00Z
 - waiting_for: none
 - result: open
 
