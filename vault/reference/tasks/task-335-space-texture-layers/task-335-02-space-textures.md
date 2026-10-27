@@ -3,7 +3,7 @@ id: task-335-02-space-textures
 description: "Save the owner's two space images in the repo, make them tileable at 2048 with 3 x 3 previews, review and record them."
 parent: task-335-space-texture-layers
 kind: task
-status: in-progress
+status: wait-answers
 ---
 # Space layers: tileable textures from the owner images
 
@@ -21,7 +21,7 @@ status: in-progress
 - runs: open
 - milestone: M3
 - started: 2026-10-27T22:09:27Z
-- waiting_for: none
+- waiting_for: owner generates two images in ChatGPT from Art/Source/space-background/prompts/01-space-deep.txt and 02-space-clouds.txt, saves them as Art/Source/space-background/owner-2026-10-27-space-deep.png and owner-2026-10-27-space-clouds.png
 - result: open
 
 ## Relations
