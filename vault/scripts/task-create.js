@@ -4,6 +4,8 @@
 // so delegations can hand agents direct paths. Does not commit; lint and commit by name afterwards.
 // Spec: module.exports = [ [num, slug, desc, agent, title, request, [input ids], expected_output, done_when,
 //        editor_state, token_ceiling, confirmed_by_owner (optional, default "yes (<today>)")], ... ]
+// token_ceiling is written as-is: give it as "<x> M units" (weighted units of record-cost.js, e.g. "1.2 M units") or "open";
+// record-cost.js ignores any other form (legacy integer or k) for its ceiling alert.
 // For a second subtask (another agent), write its node by hand from vault/templates/task.md.
 const fs = require('fs'), path = require('path');
 const V = path.resolve(__dirname, '..');

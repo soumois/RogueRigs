@@ -1,7 +1,8 @@
 // node vault/scripts/record-cost.js <task-NNN-SS> <runs>
 // Fills model, tokens, usage and runs in the subtask node from agent-usage.js, adds or updates its row in cost-log, refreshes the
 // cost-log totals and the usage snapshot (vault/scripts/usage-snapshot.json), and prints an ALERT line for each budget overrun
-// (thresholds in cost-rates.json): output over token_ceiling, start context too large, turn limit near or hit.
+// (thresholds in cost-rates.json): weighted units over token_ceiling (field written `- token_ceiling: <x> M units`, decimal allowed;
+// a legacy integer or `k` value, or `open`, gives no ceiling alert), start context too large, turn limit near or hit.
 const fs = require('fs'), { execSync } = require('child_process');
 const R = require('path').resolve(__dirname, '..', '..').split(require('path').sep).join('/') + '/';
 process.chdir(R);
@@ -23,9 +24,10 @@ let s = fs.readFileSync(file, 'utf8');
 s = s.replace(/^- model: .*$/m, '- model: ' + model).replace(/^- runs: .*$/m, '- runs: ' + runs);
 if (/^- usage: .*$/m.test(s)) s = s.replace(/^- tokens: .*$/m, tokensLine).replace(/^- usage: .*$/m, '- usage: ' + usage);
 else s = s.replace(/^- tokens: .*$/m, tokensLine + '\n- usage: ' + usage);
-// token_ceiling is read before the node is rewritten; it bounds input plus output
-const ceilingM = s.match(/^- token_ceiling: (\d+)(k?)/m);
-const ceiling = ceilingM ? parseInt(ceilingM[1], 10) * (ceilingM[2] ? 1000 : 1) : null;
+// token_ceiling bounds the weighted units (the figure of the usage line), written `<x> M units` (decimal allowed, e.g. 1.2 M units).
+// A legacy value without `M units` (integer, `k`) or `open` gives no ceiling alert.
+const ceilingM = s.match(/^- token_ceiling: (\d+(?:\.\d+)?|\.\d+) ?M units\b/m);
+const ceiling = ceilingM ? parseFloat(ceilingM[1]) : null;
 fs.writeFileSync(file, s);
 
 const nodeId = file.split('/').pop().replace('.md', '');
@@ -66,8 +68,8 @@ fs.writeFileSync(C, c);
 
 console.log(id, model, k(r.cacheWrite), k(r.cacheRead), k(r.output), 'units ' + Mu(r.units) + ' M,', r.calls + ' turns');
 const alerts = [];
-const used = r.input + r.output;
-if (ceiling && used > ceiling * rates.alerts.ceilingRatio) alerts.push(`input+output ${k(used)} is over token_ceiling ${k(ceiling)} (${(used / ceiling).toFixed(2)}x): the subtask was too big, split the next similar one`);
+const unitsM = parseFloat(Mu(r.units)); // same rounded figure as the usage line
+if (ceiling && unitsM > ceiling * rates.alerts.ceilingRatio) alerts.push(`units ${Mu(r.units)} M is over token_ceiling ${ceilingM[1]} M (${(unitsM / ceiling).toFixed(2)}x): the subtask was too big, split the next similar one`);
 if (r.firstCtx > rates.alerts.startContextTokens) alerts.push(`context at the first turn is ${k(r.firstCtx)} (over ${k(rates.alerts.startContextTokens)}): check the agent's tool list and what it loads at start`);
 if (r.resumeReasons['turn-limit']) alerts.push('the agent hit its turn limit and was resumed: split the subtask, the whole context is re-read on every extra turn');
 else if (r.calls >= rates.alerts.turns) alerts.push(`${r.calls} turns (alert from ${rates.alerts.turns}): close to the turn limit`);
