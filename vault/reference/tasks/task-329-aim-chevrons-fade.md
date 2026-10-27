@@ -3,7 +3,7 @@ id: task-329-aim-chevrons-fade
 description: "Global task: make the aim chevrons visibly lose opacity with distance from the miner, as in the mockup; the task-328 build shows them equally bright."
 parent: tasks-to-do-index
 kind: task
-status: in-progress
+status: wait-answers
 ---
 # Aim chevrons: distance fade
 
@@ -15,7 +15,7 @@ status: in-progress
 - milestone: M3
 - next_step: task-329-02-fade-material
 - started: 2026-10-27T16:32:04Z
-- waiting_for: none
+- waiting_for: owner decision: M_AimChevrons already applies Decay^i on Opacity (read back); fade is washed out by tonemapping/bloom/exposure (PPV_XPGlow EV100 -0.94, bloom 1.3) on full-strength emissive; choose: lower emissive gain of Color in the material (brightness change) or change exposure/bloom (level-wide)
 - result: open
 
 ## Subtasks
