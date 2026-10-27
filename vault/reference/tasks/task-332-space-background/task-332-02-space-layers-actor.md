@@ -3,7 +3,7 @@ id: task-332-02-space-layers-actor
 description: "Build BP_SpaceBackground holding the background planes at their depths and place one instance in L_ArenaM1."
 parent: task-332-space-background
 kind: task
-status: in-progress
+status: done
 ---
 # Space background: layer actor and placement
 
@@ -15,14 +15,14 @@ status: in-progress
 - done_when: Blueprint compiled and saved; component values read back from the placed L_ArenaM1 instance after a map reload (not only the class); coverage arithmetic shows margin at the four arena corners for every layer; map saved; committed by explicit paths.
 - editor_state: open
 - token_ceiling: 1.0 M units
-- model: open
-- tokens: open
-- usage: open
-- runs: open
+- model: sonnet
+- tokens: input 94, cache write 71124, cache read 2384535, output 24835
+- usage: turns 47, context start 9k peak 75k, resumes 0, 13 min, units 0.45 M
+- runs: 1
 - milestone: M3
 - started: 2026-10-27T21:33:12Z
 - waiting_for: none
-- result: open
+- result: BP_SpaceBackground (3 planes Z -12000/-5000/-2000, scales 1010/615/450, no shadow/decal/collision) placed in L_ArenaM1 at (8040,8040,0), read back after reload, coverage margin computed for any yaw; commits 542bc21b, 72dfe6f8. Look unverified.
 
 ## Relations
 - [[task-332-space-background]] — parent global task.

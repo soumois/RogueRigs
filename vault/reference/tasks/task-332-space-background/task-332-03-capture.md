@@ -3,7 +3,7 @@ id: task-332-03-capture
 description: "One -game capture near an arena edge showing the space background layers, with brightness numbers against the floor, sheet for the owner."
 parent: task-332-space-background
 kind: task
-status: todo
+status: in-progress
 ---
 # Space background: capture for the owner
 
@@ -20,7 +20,7 @@ status: todo
 - usage: open
 - runs: open
 - milestone: M3
-- started: open
+- started: 2026-10-27T21:46:43Z
 - waiting_for: none
 - result: open
 
