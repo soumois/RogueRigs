@@ -11,7 +11,7 @@ function parse(file) {
   if (m) m[1].split('\n').forEach(l => { const i = l.indexOf(':'); if (i > 0) fm[l.slice(0, i).trim()] = l.slice(i + 1).trim().replace(/^"|"$/g, ''); });
   const field = k => { const r = s.match(new RegExp('^- ' + k + ': (.*)$', 'm')); return r ? r[1] : ''; };
   const title = (s.match(/^# (.*)$/m) || [])[1] || fm.id;
-  return { ...fm, title, agent: field('agent'), result: field('result'), next: field('next_step'), goal: field('goal') };
+  return { ...fm, title, agent: field('agent'), result: field('result'), waiting: field('waiting_for'), next: field('next_step'), goal: field('goal') };
 }
 const globals = fs.readdirSync(ROOT).filter(f => /^task-\d+.*\.md$/.test(f)).sort().map(f => {
   const g = parse(path.join(ROOT, f)); const dir = path.join(ROOT, f.replace(/\.md$/, ''));
@@ -24,7 +24,7 @@ const order = ['task-013-01', 'task-014', 'task-015', 'task-016', 'task-013-02',
 const queue = [];
 order.forEach(p => active.forEach(g => g.subs.forEach(s => { if (s.id.startsWith(p) && !queue.includes(s)) queue.push(s); })));
 const esc = t => String(t || '').replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/\[\[([^\]]+)\]\]/g, '$1').replace(/`/g, '');
-const STATUS = { 'todo': 'À venir', 'in-progress': 'En cours', 'review': 'En review', 'done': 'Fait', 'blocked': 'Bloqué', 'cancelled': 'Annulé' };
+const STATUS = { 'todo': 'À venir', 'in-progress': 'En cours', 'review': 'En review', 'done': 'Fait', 'blocked': 'Bloqué', 'cancelled': 'Annulé', 'wait-answers': 'En attente de réponse' };
 const AG = {
   orchestrator: ['Orchestrator', 'Planifie, délègue, vérifie, commite'],
   cpp: ['C++', 'Code gameplay, build, tests headless'],
@@ -46,7 +46,7 @@ function agentCard(key) {
   return `<article class="agent ${state}"><header><span class="dot" aria-hidden="true"></span><h3>${AG[key][0]}</h3><span class="meta">${m}</span></header><p class="role">${AG[key][1]}</p>${body}</article>`;
 }
 function row(s, i) {
-  return `<li class="step s-${s.status}"><span class="idx">${String(i + 1).padStart(2, '0')}</span><div class="sbody"><div class="sline"><code>${s.id}</code><span class="ag">${AG[s.agent] ? AG[s.agent][0] : esc(s.agent)}</span><span class="pill p-${s.status}">${STATUS[s.status] || s.status}</span></div><p class="sdesc">${esc(s.description)}</p>${s.status === 'done' || s.status === 'blocked' || s.status === 'cancelled' ? `<details><summary>Résultat</summary><p>${esc(s.result)}</p></details>` : ''}</div></li>`;
+  return `<li class="step s-${s.status}"><span class="idx">${String(i + 1).padStart(2, '0')}</span><div class="sbody"><div class="sline"><code>${s.id}</code><span class="ag">${AG[s.agent] ? AG[s.agent][0] : esc(s.agent)}</span><span class="pill p-${s.status}">${STATUS[s.status] || s.status}</span></div><p class="sdesc">${esc(s.description)}</p>${s.status === 'wait-answers' ? `<p class="swait">Attend : ${esc(s.waiting)}</p>` : ''}${s.status === 'done' || s.status === 'blocked' || s.status === 'cancelled' ? `<details><summary>Résultat</summary><p>${esc(s.result)}</p></details>` : ''}</div></li>`;
 }
 const stamp = new Date().toLocaleString('fr-FR', { timeZone: 'Europe/Paris', dateStyle: 'medium', timeStyle: 'short' });
 const html = `<title>Rogue Rigs Crew Board</title>
@@ -93,7 +93,8 @@ h2{font-size:1.35rem;text-transform:uppercase;letter-spacing:.08em;color:var(--m
 .sline code{font:500 .85rem var(--mono);overflow-wrap:anywhere}
 .ag{font:.72rem var(--mono);text-transform:uppercase;letter-spacing:.08em;color:var(--mute)}
 .pill{margin-left:auto;font:600 .72rem var(--body);text-transform:uppercase;letter-spacing:.06em;padding:2px 8px;border-radius:2px;border:1px solid currentColor}
-.p-done{color:var(--ok)}.p-in-progress{color:var(--teal);background:var(--wash)}.p-todo{color:var(--mute)}.p-blocked{color:var(--bad)}.p-review{color:var(--warn)}.p-cancelled{color:var(--mute);text-decoration:line-through}
+.p-done{color:var(--ok)}.p-in-progress{color:var(--teal);background:var(--wash)}.p-todo{color:var(--mute)}.p-blocked{color:var(--bad)}.p-review{color:var(--warn)}.p-cancelled{color:var(--mute);text-decoration:line-through}.p-wait-answers{color:var(--rust);background:var(--wash)}
+.swait{margin:4px 0 0;font-size:.85rem;color:var(--rust);overflow-wrap:anywhere}
 .sdesc{margin:4px 0 0;font-size:.9rem;color:var(--mute)}
 .s-in-progress{background:var(--wash)}.s-in-progress .sdesc{color:var(--ink)}
 .s-done .sline code{color:var(--mute)}

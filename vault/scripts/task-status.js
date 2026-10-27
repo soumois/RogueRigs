@@ -3,6 +3,9 @@
 // status=cancelled on a global also sets each of its subtasks that is not done to cancelled and its next_step to none.
 // Every status=in-progress (global or subtask, each move) also writes `- started: <UTC ISO 8601 to the second>`, replacing
 // the bullet or inserting it before `- result:` on older nodes; other statuses leave `started` unchanged.
+// status=wait-answers (the agent stopped for an owner answer or action) needs waiting_for=<question or owner action>
+// (refused without it, nothing written); it writes `- waiting_for: <text>`, inserted before `- result:` on older nodes.
+// Any other status on a node whose waiting_for is not none sets it to none. A waiting global stays in tasks-to-do-index.
 const fs = require('fs');
 const f = require('path').resolve(__dirname, '..', 'reference', 'tasks', process.argv[2]);
 let s = fs.readFileSync(f, 'utf8');
@@ -11,8 +14,14 @@ const extra = process.argv.slice(3);
 if (/^task-\d+-[^/]+[\\/]task-\d+-\d+-/.test(process.argv[2]) && extra.includes('status=done') && /^- tokens: open\s*$/m.test(s) && !extra.some(x => x.startsWith('tokens='))) {
   throw new Error('refusing to close ' + process.argv[2] + ': tokens is still open. Run record-cost.js (task-next.js does), or pass tokens=<why it cannot be measured>.');
 }
-for (const a of process.argv.slice(3)) {
+const st = (process.argv.find(a => a.startsWith('status=')) || '').slice(7);
+const waitArg = extra.find(a => a.startsWith('waiting_for='));
+const waitText = waitArg === undefined ? '' : waitArg.slice(12).trim();
+if (st === 'wait-answers' && !waitText) throw new Error('refusing status=wait-answers on ' + process.argv[2] + ': pass waiting_for=<question or owner action>. Nothing changed.');
+if (waitArg !== undefined && st !== 'wait-answers') throw new Error('refusing waiting_for= without status=wait-answers on ' + process.argv[2] + '. Nothing changed.');
+for (const a of extra) {
   const i = a.indexOf('='); const k = a.slice(0, i), v = a.slice(i + 1);
+  if (k === 'waiting_for') continue; // written below, inserted when missing
   if (k === 'status') s = s.replace(/^status: .*$/m, 'status: ' + v);
   else { const re = new RegExp('^- ' + k + ': .*$', 'm'); if (!re.test(s)) throw new Error('no field ' + k); s = s.replace(re, () => '- ' + k + ': ' + v); }
 }
@@ -22,8 +31,13 @@ if (extra.includes('status=in-progress')) {
   else if (/^- result: /m.test(s)) s = s.replace(/^- result: /m, () => started + '\n- result: ');
   else throw new Error('no field result to insert started before');
 }
+if (st === 'wait-answers') {
+  const waiting = '- waiting_for: ' + waitText;
+  if (/^- waiting_for: .*$/m.test(s)) s = s.replace(/^- waiting_for: .*$/m, () => waiting);
+  else if (/^- result: /m.test(s)) s = s.replace(/^- result: /m, () => waiting + '\n- result: ');
+  else throw new Error('no field result to insert waiting_for before');
+} else if (st && /^- waiting_for: (?!none\s*$).*$/m.test(s)) s = s.replace(/^- waiting_for: .*$/m, '- waiting_for: none');
 const m = process.argv[2].match(/^(task-\d+-[^/]+)\.md$/);
-const st = (process.argv.find(a => a.startsWith('status=')) || '').slice(7);
 // cancelling a global also cancels each of its subtasks that is not done and sets its next_step to none
 if (m && st === 'cancelled') {
   s = s.replace(/^- next_step: .*$/m, '- next_step: none');

@@ -39,6 +39,7 @@ bp split (owner 2026-10-14): when one owner point needs several editor assets, o
 
 ## 4. Confirm
 Show the plan once. A "no" to every proposed option means no task: ask or wait, never relaunch work on a reinterpreted target. The owner confirms the global task; subtasks then run without further confirmation. A second global task requested meanwhile waits for its own confirmation.
+When the Planner hands its plan and questions back, it sets each new global `wait-answers` with `node vault/scripts/task-status.js <global>.md status=wait-answers "waiting_for=owner confirmation of the plan"`, and `status=todo` once the owner confirms (this resets `waiting_for` to `none`).
 
 ## 5. Execute, one subtask at a time
 1. Start the global with `node vault/scripts/task-start.js <global-id>`: it sets the global and its first open subtask `in-progress` and `next_step` to it, lints and commits. Later subtasks are started by `task-next.js` when the previous one closes.
@@ -47,6 +48,7 @@ Show the plan once. A "no" to every proposed option means no task: ask or wait, 
 4. Run the `done_when` checks.
 5. Pass: fill `result`, `model`, `tokens` (input, cache write, cache read, output from `node vault/scripts/agent-usage.js`) and `runs`, add the subtask to [[cost-log]] (turns, context, resumes; read its ALERT lines and write each cause in `result`), set `done`, move `next_step`, lint, commit `task-<id>: done`.
 6. Fail: send the error back to the same agent once. Second failure: set `blocked`, record why, stop and report.
+7. Owner wait: when the Executor stops for an owner action or answer (close the editor, a missing decision), it sets the current subtask and its global `wait-answers` with `node vault/scripts/task-status.js <path>.md status=wait-answers "waiting_for=<the action or question>"`, commits them by path, and reports. On resume it sets both back with `status=in-progress` (or `task-start.js`; `task-next.js` does it for the next subtask), which resets `waiting_for` to `none`.
 
 ## 6. Close
 Run the global acceptance checks, fill `result`, set `done`, `next_step: none`, commit, report to the owner.

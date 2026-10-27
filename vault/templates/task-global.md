@@ -15,6 +15,7 @@ status: todo
 - milestone: M1 | M2 | M3
 - next_step: <id of the next subtask to run, or none>
 - started: <ISO date-time UTC, written by task-status.js on every move to in-progress>
+- waiting_for: none | <question or owner action awaited while status is wait-answers; written by task-status.js, reset to none on the next status>
 - result: <filled when done>
 
 ## Subtasks

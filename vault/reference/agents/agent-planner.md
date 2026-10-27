@@ -14,6 +14,7 @@ status: provisional
 - produces: global task nodes and subtask nodes in `vault/reference/tasks/`, updated gdd nodes for the decisions, one commit.
 - output_format: templates `task-global.md` and `task.md`; to the main session, a short report: task ids, plan (one line per subtask with its agent), open questions with defaults, owner confirmation yes or no.
 - handoff_contract: the Executor reads only the task nodes. The planner writes there the owner's words and answers (`request`), the checks (`gdd_check`), `confirmed_by_owner`, and for every subtask the inputs as resolved paths and a testable `done_when`. A decision left only in the conversation is lost.
+- owner_wait: when it hands its questions back, it sets each new global `wait-answers` with `node vault/scripts/task-status.js <global>.md status=wait-answers "waiting_for=owner confirmation of the plan"`, and `status=todo` once confirmed ([[orchestration-protocol]] step 4).
 - definition_of_done: nodes created and linked, decisions written, `confirmed_by_owner` set, lint clean, committed by explicit path.
 - must_not: write code, Blueprints, assets or layout data; delegate or run a subtask; invent a value marked `open`; bundle separate owner points into one task; add work the owner did not request; relaunch after he refused every option.
 - model: opus

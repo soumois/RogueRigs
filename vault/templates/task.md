@@ -21,6 +21,7 @@ status: todo
 - runs: <number of agent runs, resumes included; filled when done>
 - milestone: M1 | M2 | M3
 - started: <ISO date-time UTC, written by task-status.js on every move to in-progress>
+- waiting_for: none | <question or owner action awaited while status is wait-answers; written by task-status.js, reset to none on the next status>
 - result: <filled when done: what changed, commit, tokens used>
 
 ## Relations

@@ -27,7 +27,7 @@ const PATHS_FILE = path.join(VAULT, '_paths.md');
 const SKIP_DIRS = new Set(['.git', '.obsidian', 'private', 'node_modules', 'scripts', 'templates', 'assets']);
 const KINDS = new Set(['note', 'rule', 'spec', 'doc', 'task']);
 const SPEC_STATUS = new Set(['approved', 'provisional', 'open', 'deferred']);
-const TASK_STATUS = new Set(['todo', 'in-progress', 'review', 'done', 'blocked', 'cancelled']);
+const TASK_STATUS = new Set(['todo', 'in-progress', 'review', 'done', 'blocked', 'cancelled', 'wait-answers']);
 
 const toPosix = (p) => p.split(path.sep).join('/');
 
@@ -100,7 +100,7 @@ for (const abs of walk(VAULT)) {
   if (fm.kind === 'rule' && !fm.applies_to) problems.push(`${rel}: kind=rule without applies_to`);
   if (fm.kind && !KINDS.has(fm.kind)) problems.push(`${rel}: unknown kind "${fm.kind}" (note|rule|spec|doc|task)`);
   if (fm.kind === 'spec' && !SPEC_STATUS.has(fm.status)) problems.push(`${rel}: kind=spec needs status approved|provisional|open|deferred`);
-  if (fm.kind === 'task' && !TASK_STATUS.has(fm.status)) problems.push(`${rel}: kind=task needs status todo|in-progress|review|done|blocked|cancelled`);
+  if (fm.kind === 'task' && !TASK_STATUS.has(fm.status)) problems.push(`${rel}: kind=task needs status todo|in-progress|review|done|blocked|cancelled|wait-answers`);
   notes[id] = { fm, body: stripCode(text), rel, dir: path.posix.dirname(rel), meta };
 }
 
