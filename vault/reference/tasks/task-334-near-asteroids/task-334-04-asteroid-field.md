@@ -3,7 +3,7 @@ id: task-334-04-asteroid-field
 description: "Build BP_AsteroidField with the background asteroids at their positions, depths and slow rotations, and place one instance in L_ArenaM1."
 parent: task-334-near-asteroids
 kind: task
-status: todo
+status: in-progress
 ---
 # Asteroids: field actor and placement
 
@@ -20,7 +20,7 @@ status: todo
 - usage: open
 - runs: open
 - milestone: M3
-- started: open
+- started: 2026-10-27T23:40:39Z
 - waiting_for: none
 - result: open
 

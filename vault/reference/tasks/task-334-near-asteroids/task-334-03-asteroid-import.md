@@ -3,7 +3,7 @@ id: task-334-03-asteroid-import
 description: "Import the four validated asteroid FBX as SM_Asteroid_01 to 04 with MI_Asteroid, no collision, no shadow casting."
 parent: task-334-near-asteroids
 kind: task
-status: in-progress
+status: done
 ---
 # Asteroids: import
 
@@ -15,14 +15,14 @@ status: in-progress
 - done_when: the four meshes are saved; bounds read back about 100 uu (not 10000); material slot 0 reads MI_Asteroid; collision reads none; committed by explicit paths.
 - editor_state: open
 - token_ceiling: 1.0 M units
-- model: open
-- tokens: open
-- usage: open
-- runs: open
+- model: sonnet
+- tokens: input 72, cache write 68086, cache read 1559189, output 20729
+- usage: turns 36, context start 9k peak 72k, resumes 0, 7 min, units 0.34 M
+- runs: 1
 - milestone: M3
 - started: 2026-10-27T23:33:08Z
 - waiting_for: none
-- result: open
+- result: SM_Asteroid_01..04 imported (69f38e10): ~100 uu, 320 tris each, slot 0 MI_Asteroid, collision 0, Nanite off; import via editor Python FbxImportUI because MCP import gave 1 uu; CastShadow off left to the component (subtask 04)
 
 ## Relations
 - [[task-334-near-asteroids]] — parent global task.
