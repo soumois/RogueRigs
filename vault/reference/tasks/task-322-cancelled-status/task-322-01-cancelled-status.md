@@ -3,7 +3,7 @@ id: task-322-01-cancelled-status
 description: "Allow status cancelled: _authoring, lint.js, task-status.js moves cancelled globals out of tasks-to-do-index, index texts, crew-board.js label."
 parent: task-322-cancelled-status
 kind: task
-status: todo
+status: in-progress
 ---
 # Allow the cancelled status
 
@@ -20,6 +20,7 @@ status: todo
 - usage: open
 - runs: open
 - milestone: M2
+- started: 2026-10-27T00:57:16Z
 - result: open
 
 ## Relations

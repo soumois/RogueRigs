@@ -3,7 +3,7 @@ id: task-322-cancelled-status
 description: "Global task: add cancelled to the allowed task statuses, in the writing contract, lint, task-status.js, the tasks indexes and crew-board.js."
 parent: tasks-to-do-index
 kind: task
-status: todo
+status: in-progress
 ---
 # cancelled task status
 
@@ -15,6 +15,7 @@ status: todo
 - confirmed_by_owner: yes (2026-10-26): "ok" to every default, Q1-Q9.
 - milestone: M2
 - next_step: task-322-01-cancelled-status
+- started: 2026-10-27T00:57:16Z
 - result: open
 
 ## Subtasks

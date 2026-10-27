@@ -14,5 +14,5 @@ A global task moves to [[tasks-done-index]] when it is done (`vault/scripts/task
 - [[task-308-chest-lock-light]] — Chest lock light: red blinking while waiting, orange blinking faster with hack progress in the zone, steady green once open. Status todo.
 - [[task-309-chest-opening]] — Chest opening: latch swings, lid slams open with overshoot, freeze and shake, inner light, ground ring, three popping XP chips, sparks. Status todo.
 - [[task-314-chest-lid-logo]] — Add the yellow Kessler-Voss mark on top of the chest lid, as on the validated sheet, and show it in game. Status todo.
-- [[task-322-cancelled-status]] — add cancelled to the allowed task statuses, in the writing contract, lint, task-status.js, the tasks indexes and crew-board.js. Status todo.
+- [[task-322-cancelled-status]] — add cancelled to the allowed task statuses, in the writing contract, lint, task-status.js, the tasks indexes and crew-board.js. Status in-progress.
 - [[task-323-wait-answers-status]] — add the wait-answers task status with a waiting_for bullet, set by Planner and Executor when they stop for the owner. Status todo.
