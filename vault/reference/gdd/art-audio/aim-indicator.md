@@ -16,7 +16,7 @@ status: provisional
 - Values (provisional, owner 2026-10-27, read from the owner-seen mockup): 5 chevrons; first at 120 uu from the miner; spacing 74 uu; opening about 60 degrees; arm length 40 uu; line width 12 uu; opacity 1 for the first, x0.78 per chevron; colour sRGB (255, 236, 170), linear about (1.0, 0.84, 0.40), with a soft glow.
 - Light mask: no compensation; the far chevrons fade with the screen darkening around the miner ([[mpp-player-light-mask]]; owner 2026-10-27, "Laisser s'éteindre").
 - Visibility: shown whenever the miner is alive, mouse and stick alike; hidden at death (owner 2026-10-27, default accepted).
-- Reference images: mockup and base screenshot, placed in `Art/Source/aim-indicator/` by task-328-01 (owner 2026-10-27).
+- Reference images (in `Art/Source/aim-indicator/`, placed by task-328-01, owner 2026-10-27): `mockup-chevrons.png` (the chevron mockup the owner validated); `base-screenshot.png` (owner screenshot of the build the mockup was drawn on); `mockup-chevrons.ps1` (script that drew the mockup); `owner-screenshot.webp` (original owner image, source of the base screenshot). The mockup values are approximate, read off a drawing, not game values.
 - Later, not in scope: turret placement preview at the aimed spot.
 - Milestone: M3 (juice).
 
