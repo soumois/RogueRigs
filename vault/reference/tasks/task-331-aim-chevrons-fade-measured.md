@@ -3,7 +3,7 @@ id: task-331-aim-chevrons-fade-measured
 description: "Global task: make the aim chevron distance fade really visible, measured on the final image, since task-329 left it barely visible."
 parent: tasks-to-do-index
 kind: task
-status: todo
+status: in-progress
 ---
 # Aim chevrons: measured distance fade
 
@@ -14,7 +14,7 @@ status: todo
 - confirmed_by_owner: yes (2026-10-27, "ok", relayed by the main session)
 - milestone: M3
 - next_step: task-331-01-owner-screenshot
-- started: open
+- started: 2026-10-27T16:59:22Z
 - waiting_for: none
 - result: open
 
