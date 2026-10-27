@@ -28,6 +28,7 @@ status: approved
 | Shooter | acid green |
 | Heavy | steel blue + yellow/black hazard stripes |
 | Normal / critical damage number | white / larger white-gold |
+| Void space background | nebula in deep indigo-violet, violet and dusty magenta (the floor's dark violet-magenta family), low saturation; stars white with a slight warm or cool shift; never acid green, steel blue, red, orange or cyan (owner 2026-10-27, provisional, [[task-332-space-background]]) |
 | Heal number ("+N" on the miner) | green, linear (0.1, 1, 0.2), the heal ring green; a small detail, so the Shooter keeps acid green as main colour (owner 2026-10-27, provisional, [[task-324-heal-numbers]], [[damage-numbers]]) |
 
 Exception (owner 2026-10-11): the explosion warning sign on the barrel is a yellow triangle with a black border and a black burst, chosen by the owner after a reference sign; the yellow and black hazard stripes stay reserved for the heavy ([[barrel-asset]]).
