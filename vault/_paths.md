@@ -18,6 +18,7 @@ agent-3d  reference/agents/agent-3d.md
 agent-art  reference/agents/agent-art.md
 agent-bp  reference/agents/agent-bp.md
 agent-cpp  reference/agents/agent-cpp.md
+agent-doc  reference/agents/agent-doc.md
 agent-executor  reference/agents/agent-executor.md
 agent-level-design  reference/agents/agent-level-design.md
 agent-planner  reference/agents/agent-planner.md

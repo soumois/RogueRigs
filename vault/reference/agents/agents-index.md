@@ -8,17 +8,18 @@ kind: note
 
 The main Claude Code session only relays between the owner and two agents: the Planner turns each owner request into confirmed task nodes, then one fresh Executor per global task delegates each subtask to one specialized subagent (`.claude/agents/`). Agents never talk to each other: they read inputs from and write outputs to this vault and the repo. Token ceilings are first estimates, corrected after each milestone retrospective.
 
-Crew in use: planner → executor → cpp, bp (code and editor); level-design (layouts); text → style-guide (critic); art → style-guide → 3d → bp (assets).
-Planned, not written yet: agent-balance, agent-animation, agent-sound, agent-qa (deferred).
+Crew in use: planner → executor → cpp, bp (code and editor) → doc; level-design (layouts); text → style-guide (critic); art → style-guide → 3d → bp (assets).
+Not written yet: agent-balance, agent-animation, agent-sound, agent-qa (deferred).
 
-Lessons are filed by theme, and each agent reads the node about its own limits: owner rules for the Planner, [[bp-mcp-lessons]] for bp, [[art-3d-lessons]] for art and 3d.
+Lessons are filed by theme; each agent reads the node about its own limits: owner rules for the Planner, [[bp-mcp-lessons]] for bp, [[art-3d-lessons]] for art and 3d.
 
 ## Children
 - [[agent-planner]] — plans a request into confirmed task nodes and asks the owner; open to run or change planning.
 - [[agent-executor]] — runs one confirmed global task from its nodes, delegating each subtask; open to run or change execution.
 - [[agent-level-design]] — writes arena layouts as validated grid JSON.
-- [[agent-cpp]] — writes and builds C++ and Node tooling, runs visual checks, updates system docs.
-- [[agent-bp]] — builds the editor layer through Unreal MCP and documents each Blueprint.
+- [[agent-cpp]] — writes and builds C++ and Node tooling, runs visual checks, returns a change summary.
+- [[agent-bp]] — builds the editor layer through Unreal MCP, returns a change summary.
+- [[agent-doc]] — writes the `sys-*` and `bp-*` nodes of a task from the Executor's brief, in its own subtask.
 - [[agent-text]] — writes player-facing text from the lore nodes, with a retrieval log.
 - [[agent-style-guide]] — the critic of text and images: verdict and correction per item against numbered rules.
 - [[agent-art]] — image prompts and candidate images with GPT Image 2 through Kie.ai (`Tools/art/kie_image.js`).

@@ -22,6 +22,7 @@ Complements [[orchestration-protocol]] (the rules) with the commands that worked
 - One background `Agent` call per subtask; the description must start with the subtask id (cost tracking).
 - Prompt: the node path, the reading protocol, then notes: editor state, "do not modify task node status, model, tokens, runs fields", commit message `task-NNN-SS-slug: <summary>` with the session's Co-Authored-By line, and what to report.
 - Resolved paths (owner 2026-10-06): the Orchestrator resolves once, through _paths.md, the path of every node a subtask needs (its inputs and the docs to update) and lists those paths in the prompt; the agent reads them directly instead of descending from root again. Re-reading these files in each new subtask is the accepted cost of independent subtasks with a small context; never merge subtasks to save that reading.
+- Doc subtask ([[agent-doc]]): delegated to `doc`, description starting with its subtask id. Its brief, in the prompt after the notes: (1) commit hashes and changed paths of the implementing subtasks, from their change summaries (the agent runs `git show <hash> -- <paths>`; never paste the diff); (2) decided values: a pointer to the global `request` and `gdd_check`; (3) the cpp and bp change summaries (public API, properties set, values used); (4) the nodes to create or update, as resolved paths. Closed with `task-next.js` like any subtask.
 - On "turn limit": `SendMessage` to the same agent: continue, commit what works first.
 - The previous run's left-over files: tell the next agent to inspect `git diff` and finish them.
 
@@ -49,3 +50,4 @@ Script, git, editor, shell and permission pitfalls: [[orchestrator-script-quirks
 - [[orchestrator-lessons]] — owner rules and planning lessons.
 - [[cost-log]] — filled by record-cost.js.
 - [[orchestrator-script-quirks]] — defects of the scripts used here and their workarounds.
+- [[agent-doc]] — the agent the doc brief goes to.

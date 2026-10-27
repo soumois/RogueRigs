@@ -14,6 +14,7 @@ status: provisional
 - produces: global task nodes and subtask nodes in `vault/reference/tasks/`, updated gdd nodes for the decisions, one commit.
 - output_format: templates `task-global.md` and `task.md`; to the main session, a short report: task ids, plan (one line per subtask with its agent), open questions with defaults, owner confirmation yes or no.
 - handoff_contract: the Executor reads only the task nodes. The planner writes there the owner's words and answers (`request`), the checks (`gdd_check`), `confirmed_by_owner`, and for every subtask the inputs as resolved paths and a testable `done_when`. A decision left only in the conversation is lost.
+- doc_subtask: every global with cpp or bp subtasks ends with one doc subtask for [[agent-doc]], written from `vault/templates/task.md` like any subtask (`agent: doc`, `depends_on` every implementing subtask, `token_ceiling` from [[agent-doc]], `model`, `tokens`, `usage`, `runs` open), its `inputs` listing the `sys-*`, `bp-*` and tool doc nodes to create or update as resolved paths; it gets its own cost-log row and `usage` line when the Executor closes it ([[orchestration-protocol]] steps 3 and 5). cpp and bp subtasks no longer list a doc node in their output.
 - owner_wait: when it hands its questions back, it sets each new global `wait-answers` with `node vault/scripts/task-status.js <global>.md status=wait-answers "waiting_for=owner confirmation of the plan"`, and `status=todo` once confirmed ([[orchestration-protocol]] step 4).
 - definition_of_done: nodes created and linked, decisions written, `confirmed_by_owner` set, lint clean, committed by explicit path.
 - must_not: write code, Blueprints, assets or layout data; delegate or run a subtask; invent a value marked `open`; bundle separate owner points into one task; add work the owner did not request; relaunch after he refused every option.
@@ -25,3 +26,4 @@ status: provisional
 - [[agent-executor]] — runs the tasks it writes.
 - [[orchestration-protocol]] — steps 0 to 4 are its procedure.
 - [[orchestrator-lessons]] — owner rules it applies.
+- [[agent-doc]] — runs the doc subtask it plans.
