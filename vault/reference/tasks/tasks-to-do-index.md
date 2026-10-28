@@ -18,3 +18,4 @@ A global task moves to [[tasks-done-index]] when it is done or cancelled (`vault
 - [[task-344-shop-card-burn]] — A bought shop card plays the level-up card pick effect, without the flight to the weapon or XP bar, before showing the sold look. Status todo.
 - [[task-346-turret-canon]] — Rebuild the optimised Meshy turret canon by Blender script after the unoptimised mesh, with a perforated machine-gun shroud of real holes. Status in-progress.
 - [[task-347-turret-flat-surfaces]] — Make the surfaces that should be flat on the optimised Meshy turret flat again, using the unoptimised mesh as the reference. Status todo.
+- [[task-348-shop-screen-redesign]] — Rebuild the shop screen to the ChatGPT mockup look, making only the sprites the game lacks; stat icons and card frames stay. Status wait-answers.

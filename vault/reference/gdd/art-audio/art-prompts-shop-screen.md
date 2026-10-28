@@ -37,3 +37,4 @@ Not an image prompt: a text prompt the owner pastes into ChatGPT, with the scree
 - [[task-342-shop-ore-flight]] — planned ore flight to the Buy button.
 - [[task-343-shop-buy-juice]] — planned Buy button juice.
 - [[task-344-shop-card-burn]] — planned bought card burn.
+- [[art-prompts-shop-screen-mockup]] — ChatGPT's answer: mockup and asset sheet.

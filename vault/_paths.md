@@ -48,6 +48,7 @@ art-prompts-rock  reference/gdd/art-audio/art-prompts-rock.md
 art-prompts-rock-top-texture  reference/gdd/art-audio/art-prompts-rock-top-texture.md
 art-prompts-shield  reference/gdd/art-audio/art-prompts-shield.md
 art-prompts-shop-screen  reference/gdd/art-audio/art-prompts-shop-screen.md
+art-prompts-shop-screen-mockup  reference/gdd/art-audio/art-prompts-shop-screen-mockup.md
 art-prompts-space-background  reference/gdd/art-audio/art-prompts-space-background.md
 art-prompts-turret  reference/gdd/art-audio/art-prompts-turret.md
 art-prompts-xp-core  reference/gdd/art-audio/art-prompts-xp-core.md

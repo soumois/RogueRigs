@@ -55,6 +55,7 @@ Reference images are generated in ChatGPT image generation. The prompts are stor
 - [[art-prompts-heal-pickup]] — heal pickup crystal variants: Kie.ai prompt, 3-up sheet, self-review.
 - [[art-prompts-main-menu-background]] — main menu background: Kie.ai prompt, 3 variants, self-review.
 - [[art-prompts-shop-screen]] — ChatGPT text prompt for design and game-feel proposals of the shop screen, with screenshot.
+- [[art-prompts-shop-screen-mockup]] — ChatGPT's answer: shop screen mockup and asset sheet from the owner, elements taken.
 - [[art-style-guide]] — the general style rules derived from these prompts.
 - [[visual-style]] — the style these prompts produce.
 - [[asset-pipeline]] — where the images go next (Meshy, Tripo).
