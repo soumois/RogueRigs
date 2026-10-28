@@ -3,7 +3,7 @@ id: task-337-01-main-menu-background
 description: "Main menu background image: one 16:9 scene in the validated key art style, generated through Kie.ai, picked by the owner."
 parent: task-337-main-menu-background
 kind: task
-status: todo
+status: in-progress
 ---
 # Main menu background image
 
@@ -20,7 +20,7 @@ status: todo
 - usage: open
 - runs: open
 - milestone: M3
-- started: open
+- started: 2026-10-28T01:24:59Z
 - waiting_for: none
 - result: open
 
