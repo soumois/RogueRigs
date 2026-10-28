@@ -17,6 +17,7 @@ Owner 2026-10-17, provisional; catalogue, prices and reroll decided by the owner
 - Several cards may be bought; a bought card applies at once, carries into the next levels like a picked card ([[run-structure]]) and leaves its slot empty. A card the miner cannot pay is greyed.
 - Reroll: redraws the 5 slots; same cost rule as the level-up reroll ([[xp-level-up]]): 15, then +5 per further reroll; its own count, back to 15 at each intermission.
 - Layout: the level-up screen keeps its 3 cards; the shop shows 5 smaller cards in one row, same card look, without the deal, suspense or fly animations; on its own screen with an opaque black background (the recap is on the stats screen, owner 2026-10-26), the ore balance is shown, then Reroll and Continue.
+- Purchase effects (owner 2026-10-28, values provisional, [[task-342-shop-ore-flight]], [[task-343-shop-buy-juice]], [[task-344-shop-card-burn]]): on a buy, the Buy button punches, flashes and throws tier-coloured sparks; ore icons (one per 10 of price, 3 to 10) fly from the balance to that button while the balance counts down; when the last lands, the bought card burns away tinted by its tier, then shows "Sold"; the level-up flight to a weapon or the XP bar is not used; every shop button is blocked during the sequence (about 1.2 s). Design and game feel of the screen are under discussion ([[task-341-shop-design-prompt]]).
 
 ## Relations
 - [[run-index]] — parent index.
