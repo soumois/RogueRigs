@@ -3,7 +3,7 @@ id: task-342-01-shop-bought-event
 description: "Cpp: URRIntermissionShopSubsystem broadcasts OnSlotBought(SlotIndex, Price, BalanceBefore)."
 parent: task-342-shop-ore-flight
 kind: task
-status: todo
+status: in-progress
 ---
 # Shop purchase: ore flies from the balance to the Buy button: URRIntermissionShopSubsystem broadcasts OnSlotBought(SlotIndex, Price, BalanceBefore)
 
@@ -20,7 +20,7 @@ status: todo
 - usage: open
 - runs: open
 - milestone: M2
-- started: open
+- started: 2026-10-28T06:29:53Z
 - waiting_for: none
 - result: open
 

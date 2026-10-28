@@ -3,7 +3,7 @@ id: task-342-shop-ore-flight
 description: "Global task: When a shop card is bought, ore crystals fly from the balance counter to that card's Buy button while the balance counts down."
 parent: tasks-to-do-index
 kind: task
-status: todo
+status: in-progress
 ---
 # Shop purchase: ore flies from the balance to the Buy button
 
@@ -14,7 +14,7 @@ status: todo
 - confirmed_by_owner: yes (2026-10-28, "OK, tout par défaut" to Q1-Q11 and the plan, relayed by the main session)
 - milestone: M2
 - next_step: task-342-01-shop-bought-event
-- started: open
+- started: 2026-10-28T06:29:53Z
 - waiting_for: none
 - result: open
 
