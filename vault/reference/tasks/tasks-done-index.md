@@ -348,4 +348,5 @@ Archive: it exceeds the index size limits of [[_authoring]] on purpose (owner, 2
 - [[task-339-heal-chunk-mesh]] — Blender meshes of the 3 red heal pickup chunk variants from the chosen sheet, then in game on BP_PickupHeal, drawn at random per drop. Status done.
 - [[task-340-ore-run-carry]] — Duskite ore is never reset between levels: the miner sees and spends his whole run total, and every run starts at 0. Status done.
 - [[task-341-shop-design-prompt]] — A ready-to-paste ChatGPT prompt giving the full context of the shop screen so the owner can discuss design and game feel proposals. Status done.
+- [[task-342-shop-ore-flight]] — When a shop card is bought, ore crystals fly from the balance counter to that card's Buy button while the balance counts down. Status done.
 - [[task-345-turret-meshy-files]] — Identify which owner Meshy turret zip is the optimised mesh by headless Blender triangle counts, save both in Art/Source/turret-meshy/ and record them in a new node art-prompts-turret. Status done.

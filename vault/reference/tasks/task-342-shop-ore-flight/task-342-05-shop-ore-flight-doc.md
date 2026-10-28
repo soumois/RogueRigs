@@ -3,7 +3,7 @@ id: task-342-05-shop-ore-flight-doc
 description: "Doc: update sys-run-shop, wbp-shop-card, wbp-shop-screen."
 parent: task-342-shop-ore-flight
 kind: task
-status: in-progress
+status: done
 ---
 # Shop purchase: ore flies from the balance to the Buy button: update sys-run-shop, wbp-shop-card, wbp-shop-screen
 
@@ -15,14 +15,14 @@ status: in-progress
 - done_when: nodes match the commits (OnSlotBought, EndPurchaseFx contract, flight values); no value invented; lint clean; committed by path.
 - editor_state: any
 - token_ceiling: 0.3 M units
-- model: open
-- tokens: open
-- usage: open
-- runs: open
+- model: sonnet
+- tokens: input 12, cache write 29512, cache read 114806, output 5423
+- usage: turns 6, context start 11k peak 33k, resumes 0, 1 min, units 0.08 M
+- runs: 1
 - milestone: M2
 - started: 2026-10-28T06:55:58Z
 - waiting_for: none
-- result: open
+- result: sys-run-shop, wbp-shop-card, wbp-shop-screen updated; commit 2da7b290
 
 ## Relations
 - [[task-342-shop-ore-flight]] — parent global task.
