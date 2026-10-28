@@ -1,6 +1,6 @@
 """Turret preview renders (headless Blender). Same camera, light and scale for every mesh.
 
-Usage: blender -b --factory-startup -P turret_preview.py -- <fbx> <out_prefix> [--target x,y,z --closeup-scale s]
+Usage: blender -b --factory-startup -P turret_preview.py -- <fbx> <out_prefix> [--target x,y,z --closeup-scale s] [--grazing]
 Renders <out_prefix>_front.png, _side.png, _three_quarter.png, _canon.png (orthographic, 900 px,
 EEVEE, light-grey background, one sun, Standard view transform). Canon close-up looks at --target (cm, normalised space) with --closeup-scale (cm). Scene is in metres (FBX import).
 Meshes are normalised to bbox centre x/y = 0 and min z = 0 so views are comparable.
@@ -48,6 +48,10 @@ sc.world = world
 sun = bpy.data.objects.new("sun", bpy.data.lights.new("sun", "SUN"))
 sun.data.energy = 4.0
 sun.rotation_euler = (math.radians(50), math.radians(10), math.radians(-60))
+if "--grazing" in argv:
+    # task-347: low sun skimming the surfaces so bulges and facets show as gradients (default light unchanged)
+    sun.rotation_euler = (math.radians(80), math.radians(0), math.radians(-70))
+    sun.data.energy = 5.0
 sc.collection.objects.link(sun)
 cam = bpy.data.objects.new("cam", bpy.data.cameras.new("cam"))
 cam.data.type = "ORTHO"

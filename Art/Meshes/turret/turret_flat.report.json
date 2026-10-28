@@ -1,0 +1,6540 @@
+{
+  "asset": "SM_Turret",
+  "task": "task-347-01-turret-flat-surfaces",
+  "cause_of_bulge": {
+    "mapped_faces": 1547,
+    "vertex_distance_to_plane_cm": {
+      "mean": 0.15,
+      "p95": 0.5,
+      "max": 1.167
+    },
+    "face_normal_vs_plane_normal_deg": {
+      "mean": 4.821,
+      "p95": 15.02,
+      "max": 19.993
+    },
+    "split_normal_vs_face_normal_deg": {
+      "mean": 3.55,
+      "p95": 13.331,
+      "max": 38.461
+    },
+    "normal_map_tilt_deg_on_mapped_faces": {
+      "mean": 5.655,
+      "p95": 18.819,
+      "max": 100.606
+    },
+    "normal_map_tilt_deg_all_body_sample": {
+      "mean": 13.287,
+      "p95": 40.448,
+      "max": 96.064
+    },
+    "smooth_faces_before": 14374
+  },
+  "thresholds": {
+    "q3_default_region_normal_tolerance_deg": 3.0,
+    "q3_default_min_area_pct_of_surface": 0.5,
+    "used_grow_plane_distance_cm": 0.25,
+    "used_grow_normal_deg": 10.0,
+    "used_min_area_pct_of_surface": 0.05,
+    "map_max_vertex_distance_cm": 1.5,
+    "map_max_face_normal_deg": 20.0,
+    "max_vertex_move_cm": 1.5,
+    "silhouette_limit_1pct_height_cm": 1.561,
+    "note": "provisional, owner Q3 2026-10-28"
+  },
+  "unoptimised": {
+    "surface_cm2": 105326.1,
+    "faces": 152107,
+    "q3_default_detection": {
+      "regions_all": 126453,
+      "regions_kept": 6,
+      "kept_area_share_pct": 5.45,
+      "kept_normals_z": [
+        -1.0,
+        -1.0,
+        -1.0,
+        -1.0,
+        -1.0,
+        0.843
+      ]
+    },
+    "regions_all": 84671,
+    "regions_kept": 252,
+    "kept_area_share_pct": 33.28,
+    "sensitivity_min_area": {
+      "0.5": {
+        "regions": 8,
+        "area_share_pct": 6.88
+      },
+      "0.3": {
+        "regions": 15,
+        "area_share_pct": 9.35
+      },
+      "0.2": {
+        "regions": 37,
+        "area_share_pct": 14.72
+      },
+      "0.1": {
+        "regions": 91,
+        "area_share_pct": 22.24
+      },
+      "0.05": {
+        "regions": 252,
+        "area_share_pct": 33.28
+      }
+    }
+  },
+  "regions": [
+    {
+      "id": 0,
+      "area_cm2": 2593.5,
+      "area_pct": 2.462,
+      "unopt_faces": 60,
+      "centre_cm_sm_frame": [
+        -3.36,
+        4.09,
+        15.69
+      ],
+      "normal": [
+        -0.0003,
+        -0.0014,
+        -1.0
+      ],
+      "unopt_vertex_max_dist_to_plane_cm": 0.214,
+      "faces": 23,
+      "vertices": 25,
+      "max_residual_before_cm": 0.4868,
+      "max_residual_after_cm": 0.0,
+      "vertices_moved": 25,
+      "max_move_cm": 0.487
+    },
+    {
+      "id": 19,
+      "area_cm2": 747.3,
+      "area_pct": 0.709,
+      "unopt_faces": 153,
+      "centre_cm_sm_frame": [
+        4.29,
+        4.38,
+        120.29
+      ],
+      "normal": [
+        -0.0061,
+        0.0381,
+        0.9993
+      ],
+      "unopt_vertex_max_dist_to_plane_cm": 0.4466,
+      "faces": 24,
+      "vertices": 34,
+      "max_residual_before_cm": 0.5752,
+      "max_residual_after_cm": 0.0,
+      "vertices_moved": 34,
+      "max_move_cm": 1.174
+    },
+    {
+      "id": 2,
+      "area_cm2": 691.1,
+      "area_pct": 0.656,
+      "unopt_faces": 7,
+      "centre_cm_sm_frame": [
+        2.3,
+        76.97,
+        0.13
+      ],
+      "normal": [
+        0.0005,
+        -0.0007,
+        -1.0
+      ],
+      "unopt_vertex_max_dist_to_plane_cm": 0.029,
+      "faces": 3,
+      "vertices": 5,
+      "max_residual_before_cm": 0.2879,
+      "max_residual_after_cm": 0.0,
+      "vertices_moved": 5,
+      "max_move_cm": 0.611
+    },
+    {
+      "id": 3,
+      "area_cm2": 690.0,
+      "area_pct": 0.655,
+      "unopt_faces": 9,
+      "centre_cm_sm_frame": [
+        1.03,
+        -73.75,
+        0.12
+      ],
+      "normal": [
+        0.0006,
+        0.0003,
+        -1.0
+      ],
+      "unopt_vertex_max_dist_to_plane_cm": 0.0319,
+      "faces": 1,
+      "vertices": 3,
+      "max_residual_before_cm": 0.29,
+      "max_residual_after_cm": 0.0,
+      "vertices_moved": 3,
+      "max_move_cm": 0.614
+    },
+    {
+      "id": 4,
+      "area_cm2": 675.8,
+      "area_pct": 0.642,
+      "unopt_faces": 13,
+      "centre_cm_sm_frame": [
+        -78.47,
+        -0.73,
+        0.17
+      ],
+      "normal": [
+        0.0023,
+        -0.0024,
+        -1.0
+      ],
+      "unopt_vertex_max_dist_to_plane_cm": 0.1554,
+      "faces": 6,
+      "vertices": 8,
+      "max_residual_before_cm": 0.2868,
+      "max_residual_after_cm": 0.0,
+      "vertices_moved": 8,
+      "max_move_cm": 0.287
+    },
+    {
+      "id": 1,
+      "area_cm2": 668.9,
+      "area_pct": 0.635,
+      "unopt_faces": 6,
+      "centre_cm_sm_frame": [
+        80.8,
+        -0.93,
+        0.16
+      ],
+      "normal": [
+        -0.0066,
+        -0.0,
+        -1.0
+      ],
+      "unopt_vertex_max_dist_to_plane_cm": 0.0434,
+      "faces": 5,
+      "vertices": 7,
+      "max_residual_before_cm": 0.2691,
+      "max_residual_after_cm": 0.0,
+      "vertices_moved": 7,
+      "max_move_cm": 0.574
+    },
+    {
+      "id": 12,
+      "area_cm2": 618.8,
+      "area_pct": 0.587,
+      "unopt_faces": 89,
+      "centre_cm_sm_frame": [
+        -0.24,
+        53.7,
+        40.51
+      ],
+      "normal": [
+        0.0055,
+        0.5362,
+        0.8441
+      ],
+      "unopt_vertex_max_dist_to_plane_cm": 0.144,
+      "faces": 26,
+      "vertices": 27,
+      "max_residual_before_cm": 0.584,
+      "max_residual_after_cm": 0.0,
+      "vertices_moved": 27,
+      "max_move_cm": 0.761
+    },
+    {
+      "id": 9,
+      "area_cm2": 557.8,
+      "area_pct": 0.53,
+      "unopt_faces": 89,
+      "centre_cm_sm_frame": [
+        -0.84,
+        -48.6,
+        41.87
+      ],
+      "normal": [
+        0.0023,
+        -0.5322,
+        0.8466
+      ],
+      "unopt_vertex_max_dist_to_plane_cm": 0.252,
+      "faces": 20,
+      "vertices": 19,
+      "max_residual_before_cm": 0.4255,
+      "max_residual_after_cm": 0.0,
+      "vertices_moved": 19,
+      "max_move_cm": 0.426
+    },
+    {
+      "id": 21,
+      "area_cm2": 428.7,
+      "area_pct": 0.407,
+      "unopt_faces": 42,
+      "centre_cm_sm_frame": [
+        51.93,
+        -1.26,
+        40.93
+      ],
+      "normal": [
+        0.5368,
+        -0.0561,
+        0.8418
+      ],
+      "unopt_vertex_max_dist_to_plane_cm": 0.399,
+      "faces": 5,
+      "vertices": 8,
+      "max_residual_before_cm": 0.3081,
+      "max_residual_after_cm": 0.0,
+      "vertices_moved": 8,
+      "max_move_cm": 0.604
+    },
+    {
+      "id": 10,
+      "area_cm2": 412.9,
+      "area_pct": 0.392,
+      "unopt_faces": 32,
+      "centre_cm_sm_frame": [
+        34.77,
+        29.9,
+        90.07
+      ],
+      "normal": [
+        0.596,
+        0.803,
+        0.0099
+      ],
+      "unopt_vertex_max_dist_to_plane_cm": 0.1728,
+      "faces": 7,
+      "vertices": 9,
+      "max_residual_before_cm": 0.0966,
+      "max_residual_after_cm": 0.0,
+      "vertices_moved": 9,
+      "max_move_cm": 0.252
+    },
+    {
+      "id": 76,
+      "area_cm2": 394.1,
+      "area_pct": 0.374,
+      "unopt_faces": 92,
+      "centre_cm_sm_frame": [
+        -37.95,
+        -16.49,
+        32.25
+      ],
+      "normal": [
+        0.0934,
+        -0.9955,
+        -0.0161
+      ],
+      "unopt_vertex_max_dist_to_plane_cm": 0.2319,
+      "faces": 25,
+      "vertices": 23,
+      "max_residual_before_cm": 0.3254,
+      "max_residual_after_cm": 0.0,
+      "vertices_moved": 23,
+      "max_move_cm": 0.325
+    },
+    {
+      "id": 59,
+      "area_cm2": 387.5,
+      "area_pct": 0.368,
+      "unopt_faces": 51,
+      "centre_cm_sm_frame": [
+        -51.51,
+        -2.84,
+        40.64
+      ],
+      "normal": [
+        -0.5409,
+        -0.041,
+        0.8401
+      ],
+      "unopt_vertex_max_dist_to_plane_cm": 0.4915,
+      "faces": 1,
+      "vertices": 3,
+      "max_residual_before_cm": 0.2038,
+      "max_residual_after_cm": 0.0,
+      "vertices_moved": 3,
+      "max_move_cm": 0.204
+    },
+    {
+      "id": 18,
+      "area_cm2": 345.3,
+      "area_pct": 0.328,
+      "unopt_faces": 58,
+      "centre_cm_sm_frame": [
+        -16.49,
+        -50.08,
+        31.4
+      ],
+      "normal": [
+        -0.9937,
+        -0.0636,
+        0.0921
+      ],
+      "unopt_vertex_max_dist_to_plane_cm": 0.4929,
+      "faces": 6,
+      "vertices": 9,
+      "max_residual_before_cm": 0.2197,
+      "max_residual_after_cm": 0.0,
+      "vertices_moved": 9,
+      "max_move_cm": 0.498
+    },
+    {
+      "id": 5,
+      "area_cm2": 319.2,
+      "area_pct": 0.303,
+      "unopt_faces": 29,
+      "centre_cm_sm_frame": [
+        51.53,
+        2.79,
+        13.12
+      ],
+      "normal": [
+        -0.4939,
+        -0.0004,
+        -0.8695
+      ],
+      "unopt_vertex_max_dist_to_plane_cm": 0.1806,
+      "faces": 9,
+      "vertices": 11,
+      "max_residual_before_cm": 0.4931,
+      "max_residual_after_cm": 0.0,
+      "vertices_moved": 11,
+      "max_move_cm": 0.493
+    },
+    {
+      "id": 16,
+      "area_cm2": 318.0,
+      "area_pct": 0.302,
+      "unopt_faces": 26,
+      "centre_cm_sm_frame": [
+        -1.0,
+        -49.62,
+        12.26
+      ],
+      "normal": [
+        -0.0023,
+        0.4836,
+        -0.8753
+      ],
+      "unopt_vertex_max_dist_to_plane_cm": 0.138,
+      "faces": 6,
+      "vertices": 8,
+      "max_residual_before_cm": 0.5773,
+      "max_residual_after_cm": 0.0,
+      "vertices_moved": 8,
+      "max_move_cm": 0.577
+    },
+    {
+      "id": 17,
+      "area_cm2": 312.7,
+      "area_pct": 0.297,
+      "unopt_faces": 27,
+      "centre_cm_sm_frame": [
+        -50.19,
+        0.34,
+        13.26
+      ],
+      "normal": [
+        0.4892,
+        -0.0001,
+        -0.8722
+      ],
+      "unopt_vertex_max_dist_to_plane_cm": 0.1499,
+      "faces": 5,
+      "vertices": 7,
+      "max_residual_before_cm": 0.3912,
+      "max_residual_after_cm": 0.0,
+      "vertices_moved": 7,
+      "max_move_cm": 0.391
+    },
+    {
+      "id": 45,
+      "area_cm2": 307.2,
+      "area_pct": 0.292,
+      "unopt_faces": 58,
+      "centre_cm_sm_frame": [
+        41.52,
+        -16.76,
+        35.47
+      ],
+      "normal": [
+        -0.0862,
+        -0.9963,
+        -0.0016
+      ],
+      "unopt_vertex_max_dist_to_plane_cm": 0.2358,
+      "faces": 18,
+      "vertices": 19,
+      "max_residual_before_cm": 0.3226,
+      "max_residual_after_cm": 0.0,
+      "vertices_moved": 19,
+      "max_move_cm": 0.323
+    },
+    {
+      "id": 7,
+      "area_cm2": 288.5,
+      "area_pct": 0.274,
+      "unopt_faces": 19,
+      "centre_cm_sm_frame": [
+        4.48,
+        50.96,
+        13.27
+      ],
+      "normal": [
+        -0.0035,
+        -0.4963,
+        -0.8682
+      ],
+      "unopt_vertex_max_dist_to_plane_cm": 0.1149,
+      "faces": 5,
+      "vertices": 7,
+      "max_residual_before_cm": 0.4326,
+      "max_residual_after_cm": 0.0,
+      "vertices_moved": 7,
+      "max_move_cm": 0.433
+    },
+    {
+      "id": 25,
+      "area_cm2": 283.8,
+      "area_pct": 0.269,
+      "unopt_faces": 35,
+      "centre_cm_sm_frame": [
+        1.48,
+        -31.62,
+        48.24
+      ],
+      "normal": [
+        -0.001,
+        -0.0101,
+        0.9999
+      ],
+      "unopt_vertex_max_dist_to_plane_cm": 0.0711,
+      "faces": 15,
+      "vertices": 16,
+      "max_residual_before_cm": 0.4617,
+      "max_residual_after_cm": 0.0,
+      "vertices_moved": 16,
+      "max_move_cm": 0.462
+    },
+    {
+      "id": 73,
+      "area_cm2": 281.0,
+      "area_pct": 0.267,
+      "unopt_faces": 50,
+      "centre_cm_sm_frame": [
+        40.09,
+        18.47,
+        35.28
+      ],
+      "normal": [
+        -0.0268,
+        0.9996,
+        -0.0077
+      ],
+      "unopt_vertex_max_dist_to_plane_cm": 0.4564,
+      "faces": 8,
+      "vertices": 12,
+      "max_residual_before_cm": 0.4455,
+      "max_residual_after_cm": 0.0,
+      "vertices_moved": 12,
+      "max_move_cm": 0.446
+    },
+    {
+      "id": 30,
+      "area_cm2": 272.4,
+      "area_pct": 0.259,
+      "unopt_faces": 54,
+      "centre_cm_sm_frame": [
+        -16.11,
+        60.06,
+        20.65
+      ],
+      "normal": [
+        -0.9997,
+        0.002,
+        0.0232
+      ],
+      "unopt_vertex_max_dist_to_plane_cm": 0.1583,
+      "faces": 6,
+      "vertices": 11,
+      "max_residual_before_cm": 0.515,
+      "max_residual_after_cm": 0.0,
+      "vertices_moved": 11,
+      "max_move_cm": 0.515
+    },
+    {
+      "id": 41,
+      "area_cm2": 268.5,
+      "area_pct": 0.255,
+      "unopt_faces": 35,
+      "centre_cm_sm_frame": [
+        57.14,
+        17.69,
+        23.23
+      ],
+      "normal": [
+        -0.0641,
+        0.9977,
+        -0.0217
+      ],
+      "unopt_vertex_max_dist_to_plane_cm": 0.2515,
+      "faces": 9,
+      "vertices": 12,
+      "max_residual_before_cm": 0.817,
+      "max_residual_after_cm": 0.0,
+      "vertices_moved": 12,
+      "max_move_cm": 0.817
+    },
+    {
+      "id": 38,
+      "area_cm2": 263.3,
+      "area_pct": 0.25,
+      "unopt_faces": 54,
+      "centre_cm_sm_frame": [
+        17.12,
+        63.21,
+        21.78
+      ],
+      "normal": [
+        0.9998,
+        0.0057,
+        0.0182
+      ],
+      "unopt_vertex_max_dist_to_plane_cm": 0.1781,
+      "faces": 13,
+      "vertices": 16,
+      "max_residual_before_cm": 0.6975,
+      "max_residual_after_cm": 0.0,
+      "vertices_moved": 16,
+      "max_move_cm": 0.697
+    },
+    {
+      "id": 40,
+      "area_cm2": 260.4,
+      "area_pct": 0.247,
+      "unopt_faces": 70,
+      "centre_cm_sm_frame": [
+        17.14,
+        -57.68,
+        22.64
+      ],
+      "normal": [
+        0.9999,
+        0.0051,
+        0.0159
+      ],
+      "unopt_vertex_max_dist_to_plane_cm": 0.1964,
+      "faces": 9,
+      "vertices": 14,
+      "max_residual_before_cm": 0.6392,
+      "max_residual_after_cm": 0.0,
+      "vertices_moved": 14,
+      "max_move_cm": 0.639
+    },
+    {
+      "id": 58,
+      "area_cm2": 258.7,
+      "area_pct": 0.246,
+      "unopt_faces": 31,
+      "centre_cm_sm_frame": [
+        32.95,
+        -2.59,
+        48.61
+      ],
+      "normal": [
+        0.0002,
+        -0.004,
+        1.0
+      ],
+      "unopt_vertex_max_dist_to_plane_cm": 0.1656,
+      "faces": 11,
+      "vertices": 14,
+      "max_residual_before_cm": 0.6314,
+      "max_residual_after_cm": 0.0,
+      "vertices_moved": 14,
+      "max_move_cm": 0.631
+    },
+    {
+      "id": 26,
+      "area_cm2": 255.9,
+      "area_pct": 0.243,
+      "unopt_faces": 34,
+      "centre_cm_sm_frame": [
+        2.32,
+        36.45,
+        48.2
+      ],
+      "normal": [
+        0.0058,
+        0.014,
+        0.9999
+      ],
+      "unopt_vertex_max_dist_to_plane_cm": 0.2345,
+      "faces": 15,
+      "vertices": 16,
+      "max_residual_before_cm": 0.6017,
+      "max_residual_after_cm": 0.0,
+      "vertices_moved": 16,
+      "max_move_cm": 0.602
+    },
+    {
+      "id": 20,
+      "area_cm2": 255.7,
+      "area_pct": 0.243,
+      "unopt_faces": 54,
+      "centre_cm_sm_frame": [
+        -55.93,
+        17.63,
+        22.49
+      ],
+      "normal": [
+        0.0605,
+        0.9979,
+        -0.0248
+      ],
+      "unopt_vertex_max_dist_to_plane_cm": 0.2697,
+      "faces": 9,
+      "vertices": 10,
+      "max_residual_before_cm": 0.5309,
+      "max_residual_after_cm": 0.0,
+      "vertices_moved": 10,
+      "max_move_cm": 0.531
+    },
+    {
+      "id": 47,
+      "area_cm2": 253.6,
+      "area_pct": 0.241,
+      "unopt_faces": 32,
+      "centre_cm_sm_frame": [
+        -32.73,
+        0.35,
+        48.66
+      ],
+      "normal": [
+        0.0008,
+        -0.0002,
+        1.0
+      ],
+      "unopt_vertex_max_dist_to_plane_cm": 0.3909,
+      "faces": 11,
+      "vertices": 13,
+      "max_residual_before_cm": 0.7033,
+      "max_residual_after_cm": 0.0,
+      "vertices_moved": 13,
+      "max_move_cm": 0.703
+    },
+    {
+      "id": 31,
+      "area_cm2": 251.4,
+      "area_pct": 0.239,
+      "unopt_faces": 42,
+      "centre_cm_sm_frame": [
+        -54.28,
+        -15.94,
+        23.55
+      ],
+      "normal": [
+        0.0701,
+        -0.9973,
+        -0.0236
+      ],
+      "unopt_vertex_max_dist_to_plane_cm": 0.1816,
+      "faces": 12,
+      "vertices": 13,
+      "max_residual_before_cm": 0.5525,
+      "max_residual_after_cm": 0.0,
+      "vertices_moved": 13,
+      "max_move_cm": 0.729
+    },
+    {
+      "id": 54,
+      "area_cm2": 251.3,
+      "area_pct": 0.239,
+      "unopt_faces": 76,
+      "centre_cm_sm_frame": [
+        57.0,
+        -16.07,
+        23.66
+      ],
+      "normal": [
+        -0.073,
+        -0.997,
+        -0.0261
+      ],
+      "unopt_vertex_max_dist_to_plane_cm": 0.3463,
+      "faces": 18,
+      "vertices": 19,
+      "max_residual_before_cm": 0.6259,
+      "max_residual_after_cm": 0.0,
+      "vertices_moved": 19,
+      "max_move_cm": 0.626
+    },
+    {
+      "id": 100,
+      "area_cm2": 244.3,
+      "area_pct": 0.232,
+      "unopt_faces": 29,
+      "centre_cm_sm_frame": [
+        -36.46,
+        18.29,
+        34.8
+      ],
+      "normal": [
+        0.0405,
+        0.9989,
+        -0.0256
+      ],
+      "unopt_vertex_max_dist_to_plane_cm": 0.3204,
+      "faces": 1,
+      "vertices": 3,
+      "max_residual_before_cm": 0.4595,
+      "max_residual_after_cm": 0.0,
+      "vertices_moved": 3,
+      "max_move_cm": 0.46
+    },
+    {
+      "id": 132,
+      "area_cm2": 239.7,
+      "area_pct": 0.228,
+      "unopt_faces": 55,
+      "centre_cm_sm_frame": [
+        -15.23,
+        -10.41,
+        121.0
+      ],
+      "normal": [
+        -0.0033,
+        0.0125,
+        0.9999
+      ],
+      "unopt_vertex_max_dist_to_plane_cm": 0.159,
+      "faces": 3,
+      "vertices": 5,
+      "max_residual_before_cm": 0.3875,
+      "max_residual_after_cm": 0.0,
+      "vertices_moved": 5,
+      "max_move_cm": 0.388
+    },
+    {
+      "id": 29,
+      "area_cm2": 234.4,
+      "area_pct": 0.223,
+      "unopt_faces": 14,
+      "centre_cm_sm_frame": [
+        0.25,
+        29.88,
+        112.62
+      ],
+      "normal": [
+        -0.0013,
+        0.0299,
+        0.9996
+      ],
+      "unopt_vertex_max_dist_to_plane_cm": 0.096,
+      "faces": 3,
+      "vertices": 5,
+      "max_residual_before_cm": 0.2794,
+      "max_residual_after_cm": 0.0,
+      "vertices_moved": 5,
+      "max_move_cm": 0.459
+    },
+    {
+      "id": 32,
+      "area_cm2": 221.3,
+      "area_pct": 0.21,
+      "unopt_faces": 42,
+      "centre_cm_sm_frame": [
+        29.46,
+        -9.53,
+        115.93
+      ],
+      "normal": [
+        0.6002,
+        -0.0675,
+        0.797
+      ],
+      "unopt_vertex_max_dist_to_plane_cm": 0.1203,
+      "faces": 6,
+      "vertices": 9,
+      "max_residual_before_cm": 0.6953,
+      "max_residual_after_cm": 0.0,
+      "vertices_moved": 9,
+      "max_move_cm": 0.695
+    },
+    {
+      "id": 105,
+      "area_cm2": 219.5,
+      "area_pct": 0.208,
+      "unopt_faces": 31,
+      "centre_cm_sm_frame": [
+        -39.74,
+        22.99,
+        92.89
+      ],
+      "normal": [
+        0.9995,
+        -0.0263,
+        -0.0168
+      ],
+      "unopt_vertex_max_dist_to_plane_cm": 0.3091,
+      "faces": 6,
+      "vertices": 9,
+      "max_residual_before_cm": 0.5725,
+      "max_residual_after_cm": 0.0,
+      "vertices_moved": 9,
+      "max_move_cm": 0.572
+    },
+    {
+      "id": 75,
+      "area_cm2": 217.7,
+      "area_pct": 0.207,
+      "unopt_faces": 30,
+      "centre_cm_sm_frame": [
+        17.66,
+        -49.37,
+        31.21
+      ],
+      "normal": [
+        0.9952,
+        -0.0391,
+        0.0893
+      ],
+      "unopt_vertex_max_dist_to_plane_cm": 0.4276,
+      "faces": 2,
+      "vertices": 4,
+      "max_residual_before_cm": 0.2379,
+      "max_residual_after_cm": 0.0,
+      "vertices_moved": 4,
+      "max_move_cm": 0.238
+    },
+    {
+      "id": 34,
+      "area_cm2": 216.4,
+      "area_pct": 0.205,
+      "unopt_faces": 40,
+      "centre_cm_sm_frame": [
+        1.48,
+        92.88,
+        4.54
+      ],
+      "normal": [
+        0.0001,
+        0.9898,
+        0.1422
+      ],
+      "unopt_vertex_max_dist_to_plane_cm": 0.1393,
+      "faces": 20,
+      "vertices": 18,
+      "max_residual_before_cm": 0.1183,
+      "max_residual_after_cm": 0.0,
+      "vertices_moved": 18,
+      "max_move_cm": 0.256
+    },
+    {
+      "id": 162,
+      "area_cm2": 210.3,
+      "area_pct": 0.2,
+      "unopt_faces": 42,
+      "centre_cm_sm_frame": [
+        33.87,
+        -12.1,
+        97.59
+      ],
+      "normal": [
+        0.9905,
+        -0.1223,
+        -0.0634
+      ],
+      "unopt_vertex_max_dist_to_plane_cm": 0.4638,
+      "faces": 12,
+      "vertices": 14,
+      "max_residual_before_cm": 0.5514,
+      "max_residual_after_cm": 0.0,
+      "vertices_moved": 14,
+      "max_move_cm": 0.551
+    },
+    {
+      "id": 6,
+      "area_cm2": 209.8,
+      "area_pct": 0.199,
+      "unopt_faces": 3,
+      "centre_cm_sm_frame": [
+        -61.98,
+        30.94,
+        93.56
+      ],
+      "normal": [
+        -0.727,
+        0.6866,
+        -0.01
+      ],
+      "unopt_vertex_max_dist_to_plane_cm": 0.0175,
+      "faces": 3,
+      "vertices": 5,
+      "max_residual_before_cm": 0.2693,
+      "max_residual_after_cm": 0.0,
+      "vertices_moved": 5,
+      "max_move_cm": 0.459
+    },
+    {
+      "id": 235,
+      "area_cm2": 209.6,
+      "area_pct": 0.199,
+      "unopt_faces": 37,
+      "centre_cm_sm_frame": [
+        17.41,
+        36.91,
+        34.35
+      ],
+      "normal": [
+        0.999,
+        -0.0423,
+        0.0129
+      ],
+      "unopt_vertex_max_dist_to_plane_cm": 0.3141,
+      "faces": 5,
+      "vertices": 7,
+      "max_residual_before_cm": 0.2298,
+      "max_residual_after_cm": 0.0,
+      "vertices_moved": 7,
+      "max_move_cm": 0.23
+    },
+    {
+      "id": 48,
+      "area_cm2": 205.9,
+      "area_pct": 0.195,
+      "unopt_faces": 15,
+      "centre_cm_sm_frame": [
+        -31.23,
+        32.12,
+        98.91
+      ],
+      "normal": [
+        -0.4803,
+        0.8765,
+        -0.0327
+      ],
+      "unopt_vertex_max_dist_to_plane_cm": 0.3374,
+      "faces": 3,
+      "vertices": 6,
+      "max_residual_before_cm": 0.3372,
+      "max_residual_after_cm": 0.0,
+      "vertices_moved": 6,
+      "max_move_cm": 0.518
+    },
+    {
+      "id": 82,
+      "area_cm2": 198.2,
+      "area_pct": 0.188,
+      "unopt_faces": 23,
+      "centre_cm_sm_frame": [
+        -16.54,
+        -32.99,
+        30.51
+      ],
+      "normal": [
+        -0.9979,
+        0.0603,
+        0.0241
+      ],
+      "unopt_vertex_max_dist_to_plane_cm": 0.1786,
+      "faces": 2,
+      "vertices": 6,
+      "max_residual_before_cm": 0.2624,
+      "max_residual_after_cm": 0.0,
+      "vertices_moved": 6,
+      "max_move_cm": 0.262
+    },
+    {
+      "id": 27,
+      "area_cm2": 198.1,
+      "area_pct": 0.188,
+      "unopt_faces": 29,
+      "centre_cm_sm_frame": [
+        -16.54,
+        52.05,
+        32.28
+      ],
+      "normal": [
+        -0.9963,
+        0.0522,
+        0.0687
+      ],
+      "unopt_vertex_max_dist_to_plane_cm": 0.3305,
+      "faces": 2,
+      "vertices": 4,
+      "max_residual_before_cm": 0.3899,
+      "max_residual_after_cm": 0.0,
+      "vertices_moved": 4,
+      "max_move_cm": 0.39
+    },
+    {
+      "id": 133,
+      "area_cm2": 197.8,
+      "area_pct": 0.188,
+      "unopt_faces": 26,
+      "centre_cm_sm_frame": [
+        -16.44,
+        37.8,
+        32.18
+      ],
+      "normal": [
+        -0.9977,
+        -0.0648,
+        0.0183
+      ],
+      "unopt_vertex_max_dist_to_plane_cm": 0.3553,
+      "faces": 2,
+      "vertices": 4,
+      "max_residual_before_cm": 0.4689,
+      "max_residual_after_cm": 0.0,
+      "vertices_moved": 4,
+      "max_move_cm": 0.469
+    },
+    {
+      "id": 95,
+      "area_cm2": 197.7,
+      "area_pct": 0.188,
+      "unopt_faces": 36,
+      "centre_cm_sm_frame": [
+        -36.25,
+        -1.59,
+        106.06
+      ],
+      "normal": [
+        -0.9996,
+        0.022,
+        -0.0193
+      ],
+      "unopt_vertex_max_dist_to_plane_cm": 0.233,
+      "faces": 10,
+      "vertices": 11,
+      "max_residual_before_cm": 0.3008,
+      "max_residual_after_cm": 0.0,
+      "vertices_moved": 11,
+      "max_move_cm": 0.885
+    },
+    {
+      "id": 43,
+      "area_cm2": 188.7,
+      "area_pct": 0.179,
+      "unopt_faces": 19,
+      "centre_cm_sm_frame": [
+        -23.74,
+        -30.81,
+        98.77
+      ],
+      "normal": [
+        -0.4607,
+        -0.8876,
+        -0.003
+      ],
+      "unopt_vertex_max_dist_to_plane_cm": 0.213,
+      "faces": 6,
+      "vertices": 8,
+      "max_residual_before_cm": 0.1687,
+      "max_residual_after_cm": 0.0,
+      "vertices_moved": 8,
+      "max_move_cm": 0.603
+    },
+    {
+      "id": 8,
+      "area_cm2": 188.2,
+      "area_pct": 0.179,
+      "unopt_faces": 5,
+      "centre_cm_sm_frame": [
+        63.33,
+        30.7,
+        98.37
+      ],
+      "normal": [
+        0.73,
+        0.6834,
+        -0.0078
+      ],
+      "unopt_vertex_max_dist_to_plane_cm": 0.0628,
+      "faces": 3,
+      "vertices": 5,
+      "max_residual_before_cm": 0.1424,
+      "max_residual_after_cm": 0.0,
+      "vertices_moved": 5,
+      "max_move_cm": 0.542
+    },
+    {
+      "id": 172,
+      "area_cm2": 186.3,
+      "area_pct": 0.177,
+      "unopt_faces": 29,
+      "centre_cm_sm_frame": [
+        17.22,
+        -32.15,
+        36.29
+      ],
+      "normal": [
+        0.9995,
+        0.0299,
+        -0.0063
+      ],
+      "unopt_vertex_max_dist_to_plane_cm": 0.505,
+      "faces": 8,
+      "vertices": 10,
+      "max_residual_before_cm": 0.5197,
+      "max_residual_after_cm": 0.0,
+      "vertices_moved": 10,
+      "max_move_cm": 0.52
+    },
+    {
+      "id": 283,
+      "area_cm2": 181.6,
+      "area_pct": 0.172,
+      "unopt_faces": 33,
+      "centre_cm_sm_frame": [
+        -2.83,
+        40.56,
+        91.1
+      ],
+      "normal": [
+        0.0037,
+        1.0,
+        0.0077
+      ],
+      "unopt_vertex_max_dist_to_plane_cm": 0.2234,
+      "faces": 14,
+      "vertices": 16,
+      "max_residual_before_cm": 0.3484,
+      "max_residual_after_cm": 0.0,
+      "vertices_moved": 16,
+      "max_move_cm": 0.348
+    },
+    {
+      "id": 88,
+      "area_cm2": 180.9,
+      "area_pct": 0.172,
+      "unopt_faces": 33,
+      "centre_cm_sm_frame": [
+        -32.49,
+        6.82,
+        103.79
+      ],
+      "normal": [
+        -0.9875,
+        -0.147,
+        -0.0571
+      ],
+      "unopt_vertex_max_dist_to_plane_cm": 0.2138,
+      "faces": 6,
+      "vertices": 8,
+      "max_residual_before_cm": 0.4431,
+      "max_residual_after_cm": 0.0,
+      "vertices_moved": 8,
+      "max_move_cm": 1.244
+    },
+    {
+      "id": 23,
+      "area_cm2": 180.3,
+      "area_pct": 0.171,
+      "unopt_faces": 16,
+      "centre_cm_sm_frame": [
+        -19.71,
+        -26.48,
+        98.35
+      ],
+      "normal": [
+        0.9602,
+        0.2793,
+        0.0092
+      ],
+      "unopt_vertex_max_dist_to_plane_cm": 0.0831,
+      "faces": 2,
+      "vertices": 4,
+      "max_residual_before_cm": 0.1143,
+      "max_residual_after_cm": 0.0,
+      "vertices_moved": 4,
+      "max_move_cm": 0.114
+    },
+    {
+      "id": 97,
+      "area_cm2": 179.7,
+      "area_pct": 0.171,
+      "unopt_faces": 32,
+      "centre_cm_sm_frame": [
+        17.72,
+        50.35,
+        30.48
+      ],
+      "normal": [
+        0.9967,
+        0.0353,
+        0.0731
+      ],
+      "unopt_vertex_max_dist_to_plane_cm": 0.4792,
+      "faces": 5,
+      "vertices": 9,
+      "max_residual_before_cm": 0.4989,
+      "max_residual_after_cm": 0.0,
+      "vertices_moved": 9,
+      "max_move_cm": 0.615
+    },
+    {
+      "id": 36,
+      "area_cm2": 169.3,
+      "area_pct": 0.161,
+      "unopt_faces": 13,
+      "centre_cm_sm_frame": [
+        -1.06,
+        87.27,
+        15.76
+      ],
+      "normal": [
+        -0.0057,
+        0.6998,
+        0.7143
+      ],
+      "unopt_vertex_max_dist_to_plane_cm": 0.2312,
+      "faces": 6,
+      "vertices": 9,
+      "max_residual_before_cm": 0.4429,
+      "max_residual_after_cm": 0.0,
+      "vertices_moved": 9,
+      "max_move_cm": 0.443
+    },
+    {
+      "id": 61,
+      "area_cm2": 166.6,
+      "area_pct": 0.158,
+      "unopt_faces": 27,
+      "centre_cm_sm_frame": [
+        0.96,
+        -83.97,
+        15.8
+      ],
+      "normal": [
+        0.0341,
+        -0.7198,
+        0.6933
+      ],
+      "unopt_vertex_max_dist_to_plane_cm": 0.2943,
+      "faces": 3,
+      "vertices": 6,
+      "max_residual_before_cm": 0.2187,
+      "max_residual_after_cm": 0.0,
+      "vertices_moved": 6,
+      "max_move_cm": 0.261
+    },
+    {
+      "id": 39,
+      "area_cm2": 165.8,
+      "area_pct": 0.157,
+      "unopt_faces": 8,
+      "centre_cm_sm_frame": [
+        40.14,
+        29.94,
+        90.57
+      ],
+      "normal": [
+        -0.7727,
+        0.6348,
+        0.0005
+      ],
+      "unopt_vertex_max_dist_to_plane_cm": 0.0569,
+      "faces": 3,
+      "vertices": 5,
+      "max_residual_before_cm": 0.3222,
+      "max_residual_after_cm": 0.0,
+      "vertices_moved": 5,
+      "max_move_cm": 0.668
+    },
+    {
+      "id": 44,
+      "area_cm2": 155.8,
+      "area_pct": 0.148,
+      "unopt_faces": 27,
+      "centre_cm_sm_frame": [
+        -16.28,
+        -56.69,
+        18.33
+      ],
+      "normal": [
+        -0.9999,
+        0.0079,
+        -0.0111
+      ],
+      "unopt_vertex_max_dist_to_plane_cm": 0.162,
+      "faces": 5,
+      "vertices": 8,
+      "max_residual_before_cm": 0.4499,
+      "max_residual_after_cm": 0.0,
+      "vertices_moved": 8,
+      "max_move_cm": 0.498
+    },
+    {
+      "id": 46,
+      "area_cm2": 155.1,
+      "area_pct": 0.147,
+      "unopt_faces": 24,
+      "centre_cm_sm_frame": [
+        -29.53,
+        -6.35,
+        117.29
+      ],
+      "normal": [
+        -0.5668,
+        -0.0181,
+        0.8236
+      ],
+      "unopt_vertex_max_dist_to_plane_cm": 0.2293,
+      "faces": 3,
+      "vertices": 6,
+      "max_residual_before_cm": 0.1617,
+      "max_residual_after_cm": 0.0,
+      "vertices_moved": 6,
+      "max_move_cm": 0.849
+    },
+    {
+      "id": 225,
+      "area_cm2": 153.7,
+      "area_pct": 0.146,
+      "unopt_faces": 41,
+      "centre_cm_sm_frame": [
+        -34.88,
+        -15.71,
+        104.82
+      ],
+      "normal": [
+        -0.9542,
+        -0.2989,
+        0.0157
+      ],
+      "unopt_vertex_max_dist_to_plane_cm": 0.3126,
+      "faces": 13,
+      "vertices": 14,
+      "max_residual_before_cm": 0.5964,
+      "max_residual_after_cm": 0.0,
+      "vertices_moved": 14,
+      "max_move_cm": 0.885
+    },
+    {
+      "id": 102,
+      "area_cm2": 151.5,
+      "area_pct": 0.144,
+      "unopt_faces": 43,
+      "centre_cm_sm_frame": [
+        -0.29,
+        73.83,
+        29.83
+      ],
+      "normal": [
+        0.0179,
+        0.4958,
+        0.8683
+      ],
+      "unopt_vertex_max_dist_to_plane_cm": 0.3676,
+      "faces": 11,
+      "vertices": 14,
+      "max_residual_before_cm": 0.699,
+      "max_residual_after_cm": 0.0,
+      "vertices_moved": 14,
+      "max_move_cm": 0.699
+    },
+    {
+      "id": 60,
+      "area_cm2": 150.4,
+      "area_pct": 0.143,
+      "unopt_faces": 23,
+      "centre_cm_sm_frame": [
+        30.12,
+        -9.3,
+        76.82
+      ],
+      "normal": [
+        0.681,
+        -0.0821,
+        -0.7277
+      ],
+      "unopt_vertex_max_dist_to_plane_cm": 0.2246,
+      "faces": 5,
+      "vertices": 7,
+      "max_residual_before_cm": 0.8786,
+      "max_residual_after_cm": 0.0,
+      "vertices_moved": 7,
+      "max_move_cm": 1.119
+    },
+    {
+      "id": 28,
+      "area_cm2": 143.0,
+      "area_pct": 0.136,
+      "unopt_faces": 29,
+      "centre_cm_sm_frame": [
+        22.46,
+        -25.8,
+        115.77
+      ],
+      "normal": [
+        0.3607,
+        -0.5011,
+        0.7867
+      ],
+      "unopt_vertex_max_dist_to_plane_cm": 0.075,
+      "faces": 3,
+      "vertices": 5,
+      "max_residual_before_cm": 0.4859,
+      "max_residual_after_cm": 0.0,
+      "vertices_moved": 5,
+      "max_move_cm": 0.486
+    },
+    {
+      "id": 22,
+      "area_cm2": 141.5,
+      "area_pct": 0.134,
+      "unopt_faces": 3,
+      "centre_cm_sm_frame": [
+        44.5,
+        33.78,
+        95.06
+      ],
+      "normal": [
+        -0.4588,
+        0.8885,
+        -0.0039
+      ],
+      "unopt_vertex_max_dist_to_plane_cm": 0.0395,
+      "faces": 4,
+      "vertices": 6,
+      "max_residual_before_cm": 0.2559,
+      "max_residual_after_cm": 0.0,
+      "vertices_moved": 6,
+      "max_move_cm": 0.256
+    },
+    {
+      "id": 93,
+      "area_cm2": 141.4,
+      "area_pct": 0.134,
+      "unopt_faces": 23,
+      "centre_cm_sm_frame": [
+        -58.28,
+        9.36,
+        35.96
+      ],
+      "normal": [
+        -0.5501,
+        0.1741,
+        0.8168
+      ],
+      "unopt_vertex_max_dist_to_plane_cm": 0.5159,
+      "faces": 1,
+      "vertices": 3,
+      "max_residual_before_cm": 0.2456,
+      "max_residual_after_cm": 0.0,
+      "vertices_moved": 3,
+      "max_move_cm": 0.246
+    },
+    {
+      "id": 163,
+      "area_cm2": 136.9,
+      "area_pct": 0.13,
+      "unopt_faces": 31,
+      "centre_cm_sm_frame": [
+        30.67,
+        20.1,
+        117.21
+      ],
+      "normal": [
+        0.5053,
+        0.0343,
+        0.8623
+      ],
+      "unopt_vertex_max_dist_to_plane_cm": 0.3489,
+      "faces": 5,
+      "vertices": 7,
+      "max_residual_before_cm": 0.4827,
+      "max_residual_after_cm": 0.0,
+      "vertices_moved": 7,
+      "max_move_cm": 0.731
+    },
+    {
+      "id": 24,
+      "area_cm2": 132.3,
+      "area_pct": 0.126,
+      "unopt_faces": 6,
+      "centre_cm_sm_frame": [
+        -1.77,
+        25.25,
+        118.18
+      ],
+      "normal": [
+        -0.0001,
+        0.5593,
+        0.8289
+      ],
+      "unopt_vertex_max_dist_to_plane_cm": 0.0452,
+      "faces": 2,
+      "vertices": 4,
+      "max_residual_before_cm": 0.0482,
+      "max_residual_after_cm": 0.0,
+      "vertices_moved": 4,
+      "max_move_cm": 0.082
+    },
+    {
+      "id": 13,
+      "area_cm2": 128.1,
+      "area_pct": 0.122,
+      "unopt_faces": 8,
+      "centre_cm_sm_frame": [
+        -44.71,
+        34.64,
+        101.2
+      ],
+      "normal": [
+        0.4974,
+        0.8675,
+        -0.0033
+      ],
+      "unopt_vertex_max_dist_to_plane_cm": 0.0703,
+      "faces": 6,
+      "vertices": 8,
+      "max_residual_before_cm": 0.6414,
+      "max_residual_after_cm": 0.0,
+      "vertices_moved": 8,
+      "max_move_cm": 0.641
+    },
+    {
+      "id": 81,
+      "area_cm2": 127.6,
+      "area_pct": 0.121,
+      "unopt_faces": 28,
+      "centre_cm_sm_frame": [
+        25.35,
+        35.24,
+        91.48
+      ],
+      "normal": [
+        0.0611,
+        0.9981,
+        -0.003
+      ],
+      "unopt_vertex_max_dist_to_plane_cm": 0.0849,
+      "faces": 3,
+      "vertices": 7,
+      "max_residual_before_cm": 0.3969,
+      "max_residual_after_cm": 0.0,
+      "vertices_moved": 7,
+      "max_move_cm": 0.397
+    },
+    {
+      "id": 84,
+      "area_cm2": 127.1,
+      "area_pct": 0.121,
+      "unopt_faces": 36,
+      "centre_cm_sm_frame": [
+        32.46,
+        7.76,
+        105.1
+      ],
+      "normal": [
+        0.9925,
+        -0.121,
+        -0.0202
+      ],
+      "unopt_vertex_max_dist_to_plane_cm": 0.1713,
+      "faces": 10,
+      "vertices": 12,
+      "max_residual_before_cm": 0.3255,
+      "max_residual_after_cm": 0.0,
+      "vertices_moved": 12,
+      "max_move_cm": 0.36
+    },
+    {
+      "id": 37,
+      "area_cm2": 125.4,
+      "area_pct": 0.119,
+      "unopt_faces": 17,
+      "centre_cm_sm_frame": [
+        65.37,
+        26.84,
+        101.82
+      ],
+      "normal": [
+        0.9671,
+        0.2544,
+        -0.0084
+      ],
+      "unopt_vertex_max_dist_to_plane_cm": 0.0931,
+      "faces": 1,
+      "vertices": 3,
+      "max_residual_before_cm": 0.2042,
+      "max_residual_after_cm": 0.0,
+      "vertices_moved": 3,
+      "max_move_cm": 0.542
+    },
+    {
+      "id": 379,
+      "area_cm2": 124.3,
+      "area_pct": 0.118,
+      "unopt_faces": 49,
+      "centre_cm_sm_frame": [
+        -30.17,
+        -25.01,
+        92.75
+      ],
+      "normal": [
+        -0.7418,
+        -0.6704,
+        -0.0175
+      ],
+      "unopt_vertex_max_dist_to_plane_cm": 0.3755,
+      "faces": 11,
+      "vertices": 14,
+      "max_residual_before_cm": 1.0584,
+      "max_residual_after_cm": 0.0,
+      "vertices_moved": 14,
+      "max_move_cm": 1.058
+    },
+    {
+      "id": 14,
+      "area_cm2": 123.9,
+      "area_pct": 0.118,
+      "unopt_faces": 5,
+      "centre_cm_sm_frame": [
+        -56.48,
+        34.74,
+        100.47
+      ],
+      "normal": [
+        -0.2271,
+        0.9738,
+        -0.0072
+      ],
+      "unopt_vertex_max_dist_to_plane_cm": 0.0604,
+      "faces": 2,
+      "vertices": 4,
+      "max_residual_before_cm": 0.1515,
+      "max_residual_after_cm": 0.0,
+      "vertices_moved": 4,
+      "max_move_cm": 0.152
+    },
+    {
+      "id": 15,
+      "area_cm2": 122.4,
+      "area_pct": 0.116,
+      "unopt_faces": 4,
+      "centre_cm_sm_frame": [
+        57.37,
+        34.79,
+        96.89
+      ],
+      "normal": [
+        0.2448,
+        0.9695,
+        -0.0083
+      ],
+      "unopt_vertex_max_dist_to_plane_cm": 0.0505,
+      "faces": 2,
+      "vertices": 4,
+      "max_residual_before_cm": 0.2801,
+      "max_residual_after_cm": 0.0,
+      "vertices_moved": 4,
+      "max_move_cm": 0.28
+    },
+    {
+      "id": 98,
+      "area_cm2": 119.9,
+      "area_pct": 0.114,
+      "unopt_faces": 23,
+      "centre_cm_sm_frame": [
+        60.9,
+        -9.43,
+        34.04
+      ],
+      "normal": [
+        0.5687,
+        -0.1125,
+        0.8148
+      ],
+      "unopt_vertex_max_dist_to_plane_cm": 0.2702,
+      "faces": 3,
+      "vertices": 5,
+      "max_residual_before_cm": 0.2754,
+      "max_residual_after_cm": 0.0,
+      "vertices_moved": 5,
+      "max_move_cm": 0.275
+    },
+    {
+      "id": 49,
+      "area_cm2": 118.3,
+      "area_pct": 0.112,
+      "unopt_faces": 24,
+      "centre_cm_sm_frame": [
+        -65.04,
+        20.77,
+        89.04
+      ],
+      "normal": [
+        -0.9991,
+        -0.0424,
+        -0.0044
+      ],
+      "unopt_vertex_max_dist_to_plane_cm": 0.1757,
+      "faces": 3,
+      "vertices": 7,
+      "max_residual_before_cm": 0.3776,
+      "max_residual_after_cm": 0.0,
+      "vertices_moved": 7,
+      "max_move_cm": 0.523
+    },
+    {
+      "id": 87,
+      "area_cm2": 117.4,
+      "area_pct": 0.111,
+      "unopt_faces": 35,
+      "centre_cm_sm_frame": [
+        -9.73,
+        -67.75,
+        32.5
+      ],
+      "normal": [
+        -0.0327,
+        -0.5474,
+        0.8362
+      ],
+      "unopt_vertex_max_dist_to_plane_cm": 0.3512,
+      "faces": 2,
+      "vertices": 4,
+      "max_residual_before_cm": 0.5165,
+      "max_residual_after_cm": 0.0,
+      "vertices_moved": 4,
+      "max_move_cm": 0.516
+    },
+    {
+      "id": 33,
+      "area_cm2": 116.9,
+      "area_pct": 0.111,
+      "unopt_faces": 14,
+      "centre_cm_sm_frame": [
+        1.7,
+        25.17,
+        114.13
+      ],
+      "normal": [
+        -0.0018,
+        0.0444,
+        -0.999
+      ],
+      "unopt_vertex_max_dist_to_plane_cm": 0.1898,
+      "faces": 5,
+      "vertices": 7,
+      "max_residual_before_cm": 0.5732,
+      "max_residual_after_cm": 0.0,
+      "vertices_moved": 7,
+      "max_move_cm": 1.022
+    },
+    {
+      "id": 35,
+      "area_cm2": 116.2,
+      "area_pct": 0.11,
+      "unopt_faces": 9,
+      "centre_cm_sm_frame": [
+        -39.72,
+        30.69,
+        96.14
+      ],
+      "normal": [
+        0.7635,
+        0.6458,
+        -0.0021
+      ],
+      "unopt_vertex_max_dist_to_plane_cm": 0.0912,
+      "faces": 5,
+      "vertices": 7,
+      "max_residual_before_cm": 0.4436,
+      "max_residual_after_cm": 0.0,
+      "vertices_moved": 7,
+      "max_move_cm": 0.511
+    },
+    {
+      "id": 106,
+      "area_cm2": 116.0,
+      "area_pct": 0.11,
+      "unopt_faces": 24,
+      "centre_cm_sm_frame": [
+        -89.83,
+        4.85,
+        5.94
+      ],
+      "normal": [
+        -0.9918,
+        0.0198,
+        0.126
+      ],
+      "unopt_vertex_max_dist_to_plane_cm": 0.2889,
+      "faces": 2,
+      "vertices": 4,
+      "max_residual_before_cm": 0.1828,
+      "max_residual_after_cm": 0.0,
+      "vertices_moved": 4,
+      "max_move_cm": 0.183
+    },
+    {
+      "id": 241,
+      "area_cm2": 115.5,
+      "area_pct": 0.11,
+      "unopt_faces": 40,
+      "centre_cm_sm_frame": [
+        0.83,
+        -22.91,
+        114.86
+      ],
+      "normal": [
+        0.0001,
+        -0.2053,
+        0.9787
+      ],
+      "unopt_vertex_max_dist_to_plane_cm": 0.2525,
+      "faces": 3,
+      "vertices": 7,
+      "max_residual_before_cm": 0.3619,
+      "max_residual_after_cm": 0.0,
+      "vertices_moved": 7,
+      "max_move_cm": 0.368
+    },
+    {
+      "id": 218,
+      "area_cm2": 115.4,
+      "area_pct": 0.11,
+      "unopt_faces": 37,
+      "centre_cm_sm_frame": [
+        -12.12,
+        34.53,
+        91.18
+      ],
+      "normal": [
+        -0.0083,
+        1.0,
+        0.0014
+      ],
+      "unopt_vertex_max_dist_to_plane_cm": 0.124,
+      "faces": 10,
+      "vertices": 12,
+      "max_residual_before_cm": 0.298,
+      "max_residual_after_cm": 0.0,
+      "vertices_moved": 12,
+      "max_move_cm": 0.426
+    },
+    {
+      "id": 71,
+      "area_cm2": 115.1,
+      "area_pct": 0.109,
+      "unopt_faces": 23,
+      "centre_cm_sm_frame": [
+        -43.8,
+        9.06,
+        96.74
+      ],
+      "normal": [
+        0.5716,
+        -0.8205,
+        0.0077
+      ],
+      "unopt_vertex_max_dist_to_plane_cm": 0.2416,
+      "faces": 6,
+      "vertices": 8,
+      "max_residual_before_cm": 0.2251,
+      "max_residual_after_cm": 0.0,
+      "vertices_moved": 8,
+      "max_move_cm": 0.555
+    },
+    {
+      "id": 78,
+      "area_cm2": 114.8,
+      "area_pct": 0.109,
+      "unopt_faces": 26,
+      "centre_cm_sm_frame": [
+        -5.66,
+        -89.06,
+        5.61
+      ],
+      "normal": [
+        0.0319,
+        -0.9967,
+        0.074
+      ],
+      "unopt_vertex_max_dist_to_plane_cm": 0.2254,
+      "faces": 3,
+      "vertices": 6,
+      "max_residual_before_cm": 0.179,
+      "max_residual_after_cm": 0.0,
+      "vertices_moved": 6,
+      "max_move_cm": 0.179
+    },
+    {
+      "id": 51,
+      "area_cm2": 113.9,
+      "area_pct": 0.108,
+      "unopt_faces": 11,
+      "centre_cm_sm_frame": [
+        -2.05,
+        -21.82,
+        119.69
+      ],
+      "normal": [
+        -0.0022,
+        -0.4885,
+        0.8726
+      ],
+      "unopt_vertex_max_dist_to_plane_cm": 0.1766,
+      "faces": 2,
+      "vertices": 4,
+      "max_residual_before_cm": 0.1677,
+      "max_residual_after_cm": 0.0,
+      "vertices_moved": 4,
+      "max_move_cm": 1.174
+    },
+    {
+      "id": 90,
+      "area_cm2": 113.8,
+      "area_pct": 0.108,
+      "unopt_faces": 27,
+      "centre_cm_sm_frame": [
+        58.21,
+        9.88,
+        36.93
+      ],
+      "normal": [
+        0.5752,
+        0.0549,
+        0.8162
+      ],
+      "unopt_vertex_max_dist_to_plane_cm": 0.2334,
+      "faces": 1,
+      "vertices": 3,
+      "max_residual_before_cm": 0.4754,
+      "max_residual_after_cm": 0.0,
+      "vertices_moved": 3,
+      "max_move_cm": 0.475
+    },
+    {
+      "id": 119,
+      "area_cm2": 112.9,
+      "area_pct": 0.107,
+      "unopt_faces": 29,
+      "centre_cm_sm_frame": [
+        -0.54,
+        74.08,
+        25.65
+      ],
+      "normal": [
+        0.0033,
+        -0.4362,
+        -0.8998
+      ],
+      "unopt_vertex_max_dist_to_plane_cm": 0.1911,
+      "faces": 8,
+      "vertices": 9,
+      "max_residual_before_cm": 0.4956,
+      "max_residual_after_cm": 0.0,
+      "vertices_moved": 9,
+      "max_move_cm": 0.496
+    },
+    {
+      "id": 42,
+      "area_cm2": 112.6,
+      "area_pct": 0.107,
+      "unopt_faces": 8,
+      "centre_cm_sm_frame": [
+        -64.56,
+        26.33,
+        98.01
+      ],
+      "normal": [
+        -0.9804,
+        0.197,
+        -0.0067
+      ],
+      "unopt_vertex_max_dist_to_plane_cm": 0.1195,
+      "faces": 2,
+      "vertices": 4,
+      "max_residual_before_cm": 0.0796,
+      "max_residual_after_cm": 0.0,
+      "vertices_moved": 4,
+      "max_move_cm": 0.459
+    },
+    {
+      "id": 104,
+      "area_cm2": 111.3,
+      "area_pct": 0.106,
+      "unopt_faces": 16,
+      "centre_cm_sm_frame": [
+        15.14,
+        72.21,
+        4.68
+      ],
+      "normal": [
+        0.9996,
+        0.0024,
+        -0.0265
+      ],
+      "unopt_vertex_max_dist_to_plane_cm": 0.1571,
+      "faces": 8,
+      "vertices": 10,
+      "max_residual_before_cm": 0.5349,
+      "max_residual_after_cm": 0.0,
+      "vertices_moved": 10,
+      "max_move_cm": 0.611
+    },
+    {
+      "id": 56,
+      "area_cm2": 110.6,
+      "area_pct": 0.105,
+      "unopt_faces": 6,
+      "centre_cm_sm_frame": [
+        -64.04,
+        16.31,
+        90.42
+      ],
+      "normal": [
+        -0.9191,
+        -0.3939,
+        0.001
+      ],
+      "unopt_vertex_max_dist_to_plane_cm": 0.0999,
+      "faces": 3,
+      "vertices": 5,
+      "max_residual_before_cm": 0.1897,
+      "max_residual_after_cm": 0.0,
+      "vertices_moved": 5,
+      "max_move_cm": 0.523
+    },
+    {
+      "id": 239,
+      "area_cm2": 110.3,
+      "area_pct": 0.105,
+      "unopt_faces": 22,
+      "centre_cm_sm_frame": [
+        -11.91,
+        -27.52,
+        97.97
+      ],
+      "normal": [
+        -0.0015,
+        -1.0,
+        0.0028
+      ],
+      "unopt_vertex_max_dist_to_plane_cm": 0.0924,
+      "faces": 8,
+      "vertices": 10,
+      "max_residual_before_cm": 0.3157,
+      "max_residual_after_cm": 0.0,
+      "vertices_moved": 10,
+      "max_move_cm": 0.394
+    },
+    {
+      "id": 55,
+      "area_cm2": 108.0,
+      "area_pct": 0.103,
+      "unopt_faces": 10,
+      "centre_cm_sm_frame": [
+        -60.89,
+        11.34,
+        90.74
+      ],
+      "normal": [
+        -0.7491,
+        -0.6625,
+        0.0041
+      ],
+      "unopt_vertex_max_dist_to_plane_cm": 0.1136,
+      "faces": 1,
+      "vertices": 3,
+      "max_residual_before_cm": 0.1451,
+      "max_residual_after_cm": 0.0,
+      "vertices_moved": 3,
+      "max_move_cm": 0.157
+    },
+    {
+      "id": 142,
+      "area_cm2": 106.9,
+      "area_pct": 0.101,
+      "unopt_faces": 23,
+      "centre_cm_sm_frame": [
+        -33.34,
+        30.62,
+        83.62
+      ],
+      "normal": [
+        -0.5433,
+        0.8383,
+        -0.0465
+      ],
+      "unopt_vertex_max_dist_to_plane_cm": 0.2119,
+      "faces": 3,
+      "vertices": 6,
+      "max_residual_before_cm": 0.0698,
+      "max_residual_after_cm": 0.0,
+      "vertices_moved": 6,
+      "max_move_cm": 0.499
+    },
+    {
+      "id": 70,
+      "area_cm2": 104.1,
+      "area_pct": 0.099,
+      "unopt_faces": 31,
+      "centre_cm_sm_frame": [
+        32.63,
+        -12.49,
+        109.6
+      ],
+      "normal": [
+        0.9906,
+        -0.136,
+        -0.0146
+      ],
+      "unopt_vertex_max_dist_to_plane_cm": 0.1418,
+      "faces": 8,
+      "vertices": 10,
+      "max_residual_before_cm": 0.1658,
+      "max_residual_after_cm": 0.0,
+      "vertices_moved": 10,
+      "max_move_cm": 0.434
+    },
+    {
+      "id": 293,
+      "area_cm2": 103.9,
+      "area_pct": 0.099,
+      "unopt_faces": 41,
+      "centre_cm_sm_frame": [
+        31.59,
+        -18.12,
+        92.03
+      ],
+      "normal": [
+        0.9992,
+        0.0285,
+        0.0274
+      ],
+      "unopt_vertex_max_dist_to_plane_cm": 0.2012,
+      "faces": 7,
+      "vertices": 9,
+      "max_residual_before_cm": 0.3832,
+      "max_residual_after_cm": 0.0,
+      "vertices_moved": 9,
+      "max_move_cm": 0.383
+    },
+    {
+      "id": 116,
+      "area_cm2": 103.8,
+      "area_pct": 0.099,
+      "unopt_faces": 38,
+      "centre_cm_sm_frame": [
+        11.07,
+        34.55,
+        87.61
+      ],
+      "normal": [
+        0.0049,
+        1.0,
+        0.0015
+      ],
+      "unopt_vertex_max_dist_to_plane_cm": 0.2522,
+      "faces": 10,
+      "vertices": 12,
+      "max_residual_before_cm": 0.3343,
+      "max_residual_after_cm": 0.0,
+      "vertices_moved": 12,
+      "max_move_cm": 0.469
+    },
+    {
+      "id": 63,
+      "area_cm2": 103.5,
+      "area_pct": 0.098,
+      "unopt_faces": 12,
+      "centre_cm_sm_frame": [
+        -31.49,
+        16.91,
+        119.0
+      ],
+      "normal": [
+        -0.0038,
+        0.0184,
+        0.9998
+      ],
+      "unopt_vertex_max_dist_to_plane_cm": 0.1145,
+      "faces": 6,
+      "vertices": 8,
+      "max_residual_before_cm": 0.1862,
+      "max_residual_after_cm": 0.0,
+      "vertices_moved": 8,
+      "max_move_cm": 0.186
+    },
+    {
+      "id": 486,
+      "area_cm2": 102.2,
+      "area_pct": 0.097,
+      "unopt_faces": 31,
+      "centre_cm_sm_frame": [
+        -72.85,
+        5.62,
+        23.29
+      ],
+      "normal": [
+        -0.5468,
+        0.2214,
+        0.8075
+      ],
+      "unopt_vertex_max_dist_to_plane_cm": 0.1333,
+      "faces": 5,
+      "vertices": 7,
+      "max_residual_before_cm": 0.3398,
+      "max_residual_after_cm": 0.0,
+      "vertices_moved": 7,
+      "max_move_cm": 0.34
+    },
+    {
+      "id": 67,
+      "area_cm2": 101.9,
+      "area_pct": 0.097,
+      "unopt_faces": 13,
+      "centre_cm_sm_frame": [
+        -49.75,
+        6.89,
+        90.63
+      ],
+      "normal": [
+        0.0077,
+        -0.9997,
+        0.023
+      ],
+      "unopt_vertex_max_dist_to_plane_cm": 0.1639,
+      "faces": 2,
+      "vertices": 5,
+      "max_residual_before_cm": 0.2977,
+      "max_residual_after_cm": 0.0,
+      "vertices_moved": 5,
+      "max_move_cm": 1.354
+    },
+    {
+      "id": 66,
+      "area_cm2": 100.3,
+      "area_pct": 0.095,
+      "unopt_faces": 7,
+      "centre_cm_sm_frame": [
+        1.14,
+        45.36,
+        96.91
+      ],
+      "normal": [
+        0.0023,
+        1.0,
+        0.0011
+      ],
+      "unopt_vertex_max_dist_to_plane_cm": 0.0322,
+      "faces": 6,
+      "vertices": 8,
+      "max_residual_before_cm": 0.0323,
+      "max_residual_after_cm": 0.0,
+      "vertices_moved": 8,
+      "max_move_cm": 0.032
+    },
+    {
+      "id": 191,
+      "area_cm2": 100.1,
+      "area_pct": 0.095,
+      "unopt_faces": 25,
+      "centre_cm_sm_frame": [
+        -88.59,
+        -9.28,
+        4.55
+      ],
+      "normal": [
+        -0.957,
+        -0.2549,
+        0.1382
+      ],
+      "unopt_vertex_max_dist_to_plane_cm": 0.1688,
+      "faces": 5,
+      "vertices": 7,
+      "max_residual_before_cm": 0.1874,
+      "max_residual_after_cm": 0.0,
+      "vertices_moved": 7,
+      "max_move_cm": 0.47
+    },
+    {
+      "id": 64,
+      "area_cm2": 99.6,
+      "area_pct": 0.095,
+      "unopt_faces": 8,
+      "centre_cm_sm_frame": [
+        -28.38,
+        -22.87,
+        115.63
+      ],
+      "normal": [
+        -0.411,
+        -0.3378,
+        0.8467
+      ],
+      "unopt_vertex_max_dist_to_plane_cm": 0.1783,
+      "faces": 1,
+      "vertices": 3,
+      "max_residual_before_cm": 0.2984,
+      "max_residual_after_cm": 0.0,
+      "vertices_moved": 3,
+      "max_move_cm": 0.849
+    },
+    {
+      "id": 130,
+      "area_cm2": 99.3,
+      "area_pct": 0.094,
+      "unopt_faces": 28,
+      "centre_cm_sm_frame": [
+        63.11,
+        11.84,
+        87.45
+      ],
+      "normal": [
+        0.8108,
+        -0.585,
+        0.018
+      ],
+      "unopt_vertex_max_dist_to_plane_cm": 0.1796,
+      "faces": 6,
+      "vertices": 9,
+      "max_residual_before_cm": 0.6263,
+      "max_residual_after_cm": 0.0,
+      "vertices_moved": 9,
+      "max_move_cm": 0.626
+    },
+    {
+      "id": 175,
+      "area_cm2": 98.4,
+      "area_pct": 0.093,
+      "unopt_faces": 12,
+      "centre_cm_sm_frame": [
+        87.04,
+        7.74,
+        15.04
+      ],
+      "normal": [
+        0.7152,
+        -0.0004,
+        0.6989
+      ],
+      "unopt_vertex_max_dist_to_plane_cm": 0.2276,
+      "faces": 3,
+      "vertices": 5,
+      "max_residual_before_cm": 0.0808,
+      "max_residual_after_cm": 0.001167,
+      "vertices_moved": 5,
+      "max_move_cm": 0.621
+    },
+    {
+      "id": 77,
+      "area_cm2": 98.2,
+      "area_pct": 0.093,
+      "unopt_faces": 29,
+      "centre_cm_sm_frame": [
+        65.74,
+        21.75,
+        93.04
+      ],
+      "normal": [
+        0.9939,
+        -0.1101,
+        -0.0006
+      ],
+      "unopt_vertex_max_dist_to_plane_cm": 0.098,
+      "faces": 2,
+      "vertices": 4,
+      "max_residual_before_cm": 0.1695,
+      "max_residual_after_cm": 0.0,
+      "vertices_moved": 4,
+      "max_move_cm": 0.169
+    },
+    {
+      "id": 129,
+      "area_cm2": 98.1,
+      "area_pct": 0.093,
+      "unopt_faces": 31,
+      "centre_cm_sm_frame": [
+        90.57,
+        4.53,
+        7.25
+      ],
+      "normal": [
+        0.9936,
+        0.008,
+        0.1125
+      ],
+      "unopt_vertex_max_dist_to_plane_cm": 0.1188,
+      "faces": 4,
+      "vertices": 6,
+      "max_residual_before_cm": 0.1548,
+      "max_residual_after_cm": 0.000986,
+      "vertices_moved": 6,
+      "max_move_cm": 0.155
+    },
+    {
+      "id": 69,
+      "area_cm2": 98.0,
+      "area_pct": 0.093,
+      "unopt_faces": 21,
+      "centre_cm_sm_frame": [
+        12.04,
+        -27.53,
+        96.97
+      ],
+      "normal": [
+        0.0067,
+        -1.0,
+        0.0036
+      ],
+      "unopt_vertex_max_dist_to_plane_cm": 0.1013,
+      "faces": 8,
+      "vertices": 10,
+      "max_residual_before_cm": 0.2844,
+      "max_residual_after_cm": 0.0,
+      "vertices_moved": 10,
+      "max_move_cm": 0.368
+    },
+    {
+      "id": 331,
+      "area_cm2": 97.9,
+      "area_pct": 0.093,
+      "unopt_faces": 41,
+      "centre_cm_sm_frame": [
+        8.39,
+        66.76,
+        35.03
+      ],
+      "normal": [
+        0.0544,
+        0.5199,
+        0.8525
+      ],
+      "unopt_vertex_max_dist_to_plane_cm": 0.1334,
+      "faces": 10,
+      "vertices": 13,
+      "max_residual_before_cm": 0.7472,
+      "max_residual_after_cm": 0.0,
+      "vertices_moved": 13,
+      "max_move_cm": 0.747
+    },
+    {
+      "id": 179,
+      "area_cm2": 97.7,
+      "area_pct": 0.093,
+      "unopt_faces": 10,
+      "centre_cm_sm_frame": [
+        59.73,
+        9.12,
+        89.14
+      ],
+      "normal": [
+        0.3677,
+        -0.9299,
+        0.0103
+      ],
+      "unopt_vertex_max_dist_to_plane_cm": 0.1235,
+      "faces": 2,
+      "vertices": 4,
+      "max_residual_before_cm": 0.3435,
+      "max_residual_after_cm": 0.0,
+      "vertices_moved": 4,
+      "max_move_cm": 0.506
+    },
+    {
+      "id": 203,
+      "area_cm2": 96.0,
+      "area_pct": 0.091,
+      "unopt_faces": 26,
+      "centre_cm_sm_frame": [
+        16.48,
+        -1.18,
+        127.84
+      ],
+      "normal": [
+        0.9803,
+        -0.1296,
+        0.1488
+      ],
+      "unopt_vertex_max_dist_to_plane_cm": 0.2038,
+      "faces": 5,
+      "vertices": 7,
+      "max_residual_before_cm": 0.4552,
+      "max_residual_after_cm": 0.0,
+      "vertices_moved": 7,
+      "max_move_cm": 1.195
+    },
+    {
+      "id": 265,
+      "area_cm2": 95.2,
+      "area_pct": 0.09,
+      "unopt_faces": 16,
+      "centre_cm_sm_frame": [
+        20.85,
+        31.28,
+        115.99
+      ],
+      "normal": [
+        0.0094,
+        0.6342,
+        0.7731
+      ],
+      "unopt_vertex_max_dist_to_plane_cm": 0.3636,
+      "faces": 1,
+      "vertices": 3,
+      "max_residual_before_cm": 0.179,
+      "max_residual_after_cm": 0.0,
+      "vertices_moved": 3,
+      "max_move_cm": 0.54
+    },
+    {
+      "id": 157,
+      "area_cm2": 93.2,
+      "area_pct": 0.089,
+      "unopt_faces": 15,
+      "centre_cm_sm_frame": [
+        -54.56,
+        7.58,
+        94.31
+      ],
+      "normal": [
+        -0.2136,
+        -0.9769,
+        0.0098
+      ],
+      "unopt_vertex_max_dist_to_plane_cm": 0.1798,
+      "faces": 4,
+      "vertices": 6,
+      "max_residual_before_cm": 1.0612,
+      "max_residual_after_cm": 0.0,
+      "vertices_moved": 6,
+      "max_move_cm": 1.354
+    },
+    {
+      "id": 224,
+      "area_cm2": 93.0,
+      "area_pct": 0.088,
+      "unopt_faces": 24,
+      "centre_cm_sm_frame": [
+        -72.36,
+        15.57,
+        5.29
+      ],
+      "normal": [
+        0.0056,
+        1.0,
+        0.0056
+      ],
+      "unopt_vertex_max_dist_to_plane_cm": 0.1545,
+      "faces": 10,
+      "vertices": 12,
+      "max_residual_before_cm": 0.1734,
+      "max_residual_after_cm": 0.0,
+      "vertices_moved": 12,
+      "max_move_cm": 0.173
+    },
+    {
+      "id": 156,
+      "area_cm2": 93.0,
+      "area_pct": 0.088,
+      "unopt_faces": 33,
+      "centre_cm_sm_frame": [
+        30.97,
+        17.68,
+        30.25
+      ],
+      "normal": [
+        -0.0895,
+        0.9938,
+        -0.0654
+      ],
+      "unopt_vertex_max_dist_to_plane_cm": 0.2787,
+      "faces": 1,
+      "vertices": 3,
+      "max_residual_before_cm": 0.1082,
+      "max_residual_after_cm": 0.0,
+      "vertices_moved": 3,
+      "max_move_cm": 0.108
+    },
+    {
+      "id": 173,
+      "area_cm2": 91.9,
+      "area_pct": 0.087,
+      "unopt_faces": 11,
+      "centre_cm_sm_frame": [
+        0.83,
+        74.95,
+        23.4
+      ],
+      "normal": [
+        -0.0049,
+        0.4564,
+        0.8898
+      ],
+      "unopt_vertex_max_dist_to_plane_cm": 0.2552,
+      "faces": 6,
+      "vertices": 8,
+      "max_residual_before_cm": 0.5707,
+      "max_residual_after_cm": 0.0,
+      "vertices_moved": 8,
+      "max_move_cm": 0.571
+    },
+    {
+      "id": 107,
+      "area_cm2": 91.6,
+      "area_pct": 0.087,
+      "unopt_faces": 7,
+      "centre_cm_sm_frame": [
+        -23.47,
+        35.24,
+        98.61
+      ],
+      "normal": [
+        -0.0888,
+        0.996,
+        -0.0122
+      ],
+      "unopt_vertex_max_dist_to_plane_cm": 0.1512,
+      "faces": 4,
+      "vertices": 7,
+      "max_residual_before_cm": 0.3158,
+      "max_residual_after_cm": 0.0,
+      "vertices_moved": 7,
+      "max_move_cm": 0.518
+    },
+    {
+      "id": 462,
+      "area_cm2": 91.6,
+      "area_pct": 0.087,
+      "unopt_faces": 14,
+      "centre_cm_sm_frame": [
+        38.22,
+        0.32,
+        17.93
+      ],
+      "normal": [
+        -0.3143,
+        -0.0032,
+        -0.9493
+      ],
+      "unopt_vertex_max_dist_to_plane_cm": 0.1707,
+      "faces": 4,
+      "vertices": 6,
+      "max_residual_before_cm": 0.5951,
+      "max_residual_after_cm": 0.0,
+      "vertices_moved": 6,
+      "max_move_cm": 0.595
+    },
+    {
+      "id": 120,
+      "area_cm2": 91.5,
+      "area_pct": 0.087,
+      "unopt_faces": 23,
+      "centre_cm_sm_frame": [
+        -72.18,
+        -13.86,
+        4.54
+      ],
+      "normal": [
+        -0.0022,
+        -0.9999,
+        -0.0115
+      ],
+      "unopt_vertex_max_dist_to_plane_cm": 0.1519,
+      "faces": 9,
+      "vertices": 11,
+      "max_residual_before_cm": 0.3321,
+      "max_residual_after_cm": 0.0,
+      "vertices_moved": 11,
+      "max_move_cm": 0.332
+    },
+    {
+      "id": 261,
+      "area_cm2": 90.6,
+      "area_pct": 0.086,
+      "unopt_faces": 54,
+      "centre_cm_sm_frame": [
+        -46.38,
+        21.92,
+        76.39
+      ],
+      "normal": [
+        -0.0119,
+        0.0003,
+        -0.9999
+      ],
+      "unopt_vertex_max_dist_to_plane_cm": 0.1518,
+      "faces": 14,
+      "vertices": 18,
+      "max_residual_before_cm": 0.5353,
+      "max_residual_after_cm": 0.0,
+      "vertices_moved": 18,
+      "max_move_cm": 0.535
+    },
+    {
+      "id": 168,
+      "area_cm2": 89.8,
+      "area_pct": 0.085,
+      "unopt_faces": 20,
+      "centre_cm_sm_frame": [
+        17.18,
+        17.56,
+        53.22
+      ],
+      "normal": [
+        0.6936,
+        0.7149,
+        -0.0887
+      ],
+      "unopt_vertex_max_dist_to_plane_cm": 0.1467,
+      "faces": 6,
+      "vertices": 9,
+      "max_residual_before_cm": 0.9322,
+      "max_residual_after_cm": 0.0,
+      "vertices_moved": 9,
+      "max_move_cm": 0.932
+    },
+    {
+      "id": 190,
+      "area_cm2": 89.2,
+      "area_pct": 0.085,
+      "unopt_faces": 26,
+      "centre_cm_sm_frame": [
+        64.31,
+        17.13,
+        94.21
+      ],
+      "normal": [
+        0.8768,
+        -0.4809,
+        -0.003
+      ],
+      "unopt_vertex_max_dist_to_plane_cm": 0.1342,
+      "faces": 3,
+      "vertices": 5,
+      "max_residual_before_cm": 0.0719,
+      "max_residual_after_cm": 0.0,
+      "vertices_moved": 5,
+      "max_move_cm": 0.116
+    },
+    {
+      "id": 52,
+      "area_cm2": 89.1,
+      "area_pct": 0.085,
+      "unopt_faces": 9,
+      "centre_cm_sm_frame": [
+        18.46,
+        -28.81,
+        103.15
+      ],
+      "normal": [
+        -1.0,
+        -0.0032,
+        -0.0063
+      ],
+      "unopt_vertex_max_dist_to_plane_cm": 0.0609,
+      "faces": 3,
+      "vertices": 5,
+      "max_residual_before_cm": 0.1334,
+      "max_residual_after_cm": 0.0,
+      "vertices_moved": 5,
+      "max_move_cm": 0.133
+    },
+    {
+      "id": 608,
+      "area_cm2": 88.9,
+      "area_pct": 0.084,
+      "unopt_faces": 51,
+      "centre_cm_sm_frame": [
+        47.34,
+        22.82,
+        76.34
+      ],
+      "normal": [
+        -0.0061,
+        -0.0208,
+        -0.9998
+      ],
+      "unopt_vertex_max_dist_to_plane_cm": 0.1421,
+      "faces": 12,
+      "vertices": 17,
+      "max_residual_before_cm": 0.599,
+      "max_residual_after_cm": 0.0,
+      "vertices_moved": 17,
+      "max_move_cm": 0.599
+    },
+    {
+      "id": 305,
+      "area_cm2": 88.6,
+      "area_pct": 0.084,
+      "unopt_faces": 23,
+      "centre_cm_sm_frame": [
+        71.94,
+        15.57,
+        4.79
+      ],
+      "normal": [
+        -0.007,
+        1.0,
+        -0.001
+      ],
+      "unopt_vertex_max_dist_to_plane_cm": 0.1317,
+      "faces": 12,
+      "vertices": 14,
+      "max_residual_before_cm": 0.507,
+      "max_residual_after_cm": 0.0,
+      "vertices_moved": 14,
+      "max_move_cm": 0.574
+    },
+    {
+      "id": 724,
+      "area_cm2": 88.2,
+      "area_pct": 0.084,
+      "unopt_faces": 28,
+      "centre_cm_sm_frame": [
+        7.9,
+        -14.71,
+        59.62
+      ],
+      "normal": [
+        -0.0025,
+        0.0043,
+        1.0
+      ],
+      "unopt_vertex_max_dist_to_plane_cm": 0.2204,
+      "faces": 3,
+      "vertices": 6,
+      "max_residual_before_cm": 1.1669,
+      "max_residual_after_cm": 0.0,
+      "vertices_moved": 6,
+      "max_move_cm": 1.167
+    },
+    {
+      "id": 62,
+      "area_cm2": 85.3,
+      "area_pct": 0.081,
+      "unopt_faces": 8,
+      "centre_cm_sm_frame": [
+        -39.04,
+        19.57,
+        90.79
+      ],
+      "normal": [
+        -0.9998,
+        0.0141,
+        0.0161
+      ],
+      "unopt_vertex_max_dist_to_plane_cm": 0.1001,
+      "faces": 4,
+      "vertices": 6,
+      "max_residual_before_cm": 0.2647,
+      "max_residual_after_cm": 0.0,
+      "vertices_moved": 6,
+      "max_move_cm": 0.265
+    },
+    {
+      "id": 215,
+      "area_cm2": 85.2,
+      "area_pct": 0.081,
+      "unopt_faces": 27,
+      "centre_cm_sm_frame": [
+        0.88,
+        -73.64,
+        22.13
+      ],
+      "normal": [
+        -0.0003,
+        -0.575,
+        0.8181
+      ],
+      "unopt_vertex_max_dist_to_plane_cm": 0.2619,
+      "faces": 5,
+      "vertices": 9,
+      "max_residual_before_cm": 0.3267,
+      "max_residual_after_cm": 0.0,
+      "vertices_moved": 9,
+      "max_move_cm": 0.327
+    },
+    {
+      "id": 126,
+      "area_cm2": 85.0,
+      "area_pct": 0.081,
+      "unopt_faces": 26,
+      "centre_cm_sm_frame": [
+        12.32,
+        -10.51,
+        126.01
+      ],
+      "normal": [
+        0.6805,
+        -0.718,
+        0.1466
+      ],
+      "unopt_vertex_max_dist_to_plane_cm": 0.1701,
+      "faces": 7,
+      "vertices": 9,
+      "max_residual_before_cm": 0.3681,
+      "max_residual_after_cm": 0.0,
+      "vertices_moved": 9,
+      "max_move_cm": 0.368
+    },
+    {
+      "id": 148,
+      "area_cm2": 84.6,
+      "area_pct": 0.08,
+      "unopt_faces": 13,
+      "centre_cm_sm_frame": [
+        -0.49,
+        19.81,
+        124.23
+      ],
+      "normal": [
+        -0.0014,
+        -0.9456,
+        -0.3253
+      ],
+      "unopt_vertex_max_dist_to_plane_cm": 0.1297,
+      "faces": 2,
+      "vertices": 4,
+      "max_residual_before_cm": 0.5794,
+      "max_residual_after_cm": 0.0,
+      "vertices_moved": 4,
+      "max_move_cm": 0.632
+    },
+    {
+      "id": 373,
+      "area_cm2": 84.4,
+      "area_pct": 0.08,
+      "unopt_faces": 18,
+      "centre_cm_sm_frame": [
+        75.37,
+        -6.94,
+        26.63
+      ],
+      "normal": [
+        0.5617,
+        -0.0937,
+        0.822
+      ],
+      "unopt_vertex_max_dist_to_plane_cm": 0.1889,
+      "faces": 1,
+      "vertices": 3,
+      "max_residual_before_cm": 0.2809,
+      "max_residual_after_cm": 0.0,
+      "vertices_moved": 3,
+      "max_move_cm": 0.281
+    },
+    {
+      "id": 326,
+      "area_cm2": 83.3,
+      "area_pct": 0.079,
+      "unopt_faces": 32,
+      "centre_cm_sm_frame": [
+        7.71,
+        -46.14,
+        96.1
+      ],
+      "normal": [
+        0.0197,
+        -0.9998,
+        0.0038
+      ],
+      "unopt_vertex_max_dist_to_plane_cm": 0.1628,
+      "faces": 2,
+      "vertices": 5,
+      "max_residual_before_cm": 0.5174,
+      "max_residual_after_cm": 0.0,
+      "vertices_moved": 5,
+      "max_move_cm": 0.517
+    },
+    {
+      "id": 57,
+      "area_cm2": 83.2,
+      "area_pct": 0.079,
+      "unopt_faces": 9,
+      "centre_cm_sm_frame": [
+        -17.5,
+        16.29,
+        52.97
+      ],
+      "normal": [
+        -0.6542,
+        0.7471,
+        -0.1179
+      ],
+      "unopt_vertex_max_dist_to_plane_cm": 0.0864,
+      "faces": 6,
+      "vertices": 8,
+      "max_residual_before_cm": 0.5193,
+      "max_residual_after_cm": 0.0,
+      "vertices_moved": 8,
+      "max_move_cm": 0.519
+    },
+    {
+      "id": 263,
+      "area_cm2": 83.1,
+      "area_pct": 0.079,
+      "unopt_faces": 18,
+      "centre_cm_sm_frame": [
+        35.33,
+        20.86,
+        75.59
+      ],
+      "normal": [
+        0.696,
+        0.0397,
+        -0.717
+      ],
+      "unopt_vertex_max_dist_to_plane_cm": 0.121,
+      "faces": 5,
+      "vertices": 7,
+      "max_residual_before_cm": 0.6308,
+      "max_residual_after_cm": 0.0,
+      "vertices_moved": 7,
+      "max_move_cm": 0.631
+    },
+    {
+      "id": 185,
+      "area_cm2": 83.1,
+      "area_pct": 0.079,
+      "unopt_faces": 16,
+      "centre_cm_sm_frame": [
+        -11.19,
+        -42.17,
+        98.02
+      ],
+      "normal": [
+        -0.9998,
+        -0.0164,
+        -0.0066
+      ],
+      "unopt_vertex_max_dist_to_plane_cm": 0.1101,
+      "faces": 5,
+      "vertices": 7,
+      "max_residual_before_cm": 0.4481,
+      "max_residual_after_cm": 0.000553,
+      "vertices_moved": 7,
+      "max_move_cm": 0.448
+    },
+    {
+      "id": 96,
+      "area_cm2": 82.6,
+      "area_pct": 0.078,
+      "unopt_faces": 12,
+      "centre_cm_sm_frame": [
+        -39.61,
+        18.95,
+        114.24
+      ],
+      "normal": [
+        -0.9996,
+        0.0057,
+        -0.0265
+      ],
+      "unopt_vertex_max_dist_to_plane_cm": 0.0896,
+      "faces": 4,
+      "vertices": 6,
+      "max_residual_before_cm": 0.5903,
+      "max_residual_after_cm": 0.0,
+      "vertices_moved": 6,
+      "max_move_cm": 0.59
+    },
+    {
+      "id": 376,
+      "area_cm2": 82.4,
+      "area_pct": 0.078,
+      "unopt_faces": 14,
+      "centre_cm_sm_frame": [
+        15.68,
+        50.06,
+        41.38
+      ],
+      "normal": [
+        0.6326,
+        0.4208,
+        0.6502
+      ],
+      "unopt_vertex_max_dist_to_plane_cm": 0.1384,
+      "faces": 3,
+      "vertices": 5,
+      "max_residual_before_cm": 0.1507,
+      "max_residual_after_cm": 0.0,
+      "vertices_moved": 5,
+      "max_move_cm": 0.615
+    },
+    {
+      "id": 204,
+      "area_cm2": 82.1,
+      "area_pct": 0.078,
+      "unopt_faces": 16,
+      "centre_cm_sm_frame": [
+        24.71,
+        -24.46,
+        77.44
+      ],
+      "normal": [
+        0.341,
+        -0.5356,
+        -0.7726
+      ],
+      "unopt_vertex_max_dist_to_plane_cm": 0.2025,
+      "faces": 2,
+      "vertices": 5,
+      "max_residual_before_cm": 0.342,
+      "max_residual_after_cm": 0.0,
+      "vertices_moved": 5,
+      "max_move_cm": 0.488
+    },
+    {
+      "id": 147,
+      "area_cm2": 81.9,
+      "area_pct": 0.078,
+      "unopt_faces": 25,
+      "centre_cm_sm_frame": [
+        20.79,
+        27.1,
+        79.29
+      ],
+      "normal": [
+        0.9947,
+        0.0271,
+        -0.0988
+      ],
+      "unopt_vertex_max_dist_to_plane_cm": 0.1451,
+      "faces": 4,
+      "vertices": 6,
+      "max_residual_before_cm": 0.2387,
+      "max_residual_after_cm": 0.0,
+      "vertices_moved": 6,
+      "max_move_cm": 0.239
+    },
+    {
+      "id": 181,
+      "area_cm2": 81.9,
+      "area_pct": 0.078,
+      "unopt_faces": 10,
+      "centre_cm_sm_frame": [
+        0.6,
+        24.75,
+        123.85
+      ],
+      "normal": [
+        -0.0015,
+        0.9551,
+        -0.2963
+      ],
+      "unopt_vertex_max_dist_to_plane_cm": 0.0861,
+      "faces": 0
+    },
+    {
+      "id": 68,
+      "area_cm2": 80.9,
+      "area_pct": 0.077,
+      "unopt_faces": 5,
+      "centre_cm_sm_frame": [
+        0.91,
+        -21.53,
+        116.17
+      ],
+      "normal": [
+        0.008,
+        -0.0665,
+        -0.9978
+      ],
+      "unopt_vertex_max_dist_to_plane_cm": 0.1719,
+      "faces": 0
+    },
+    {
+      "id": 160,
+      "area_cm2": 80.8,
+      "area_pct": 0.077,
+      "unopt_faces": 16,
+      "centre_cm_sm_frame": [
+        27.59,
+        20.14,
+        72.33
+      ],
+      "normal": [
+        0.0248,
+        0.0178,
+        -0.9995
+      ],
+      "unopt_vertex_max_dist_to_plane_cm": 0.1026,
+      "faces": 6,
+      "vertices": 8,
+      "max_residual_before_cm": 0.1694,
+      "max_residual_after_cm": 0.0,
+      "vertices_moved": 8,
+      "max_move_cm": 0.169
+    },
+    {
+      "id": 50,
+      "area_cm2": 80.6,
+      "area_pct": 0.077,
+      "unopt_faces": 2,
+      "centre_cm_sm_frame": [
+        -0.09,
+        22.39,
+        122.14
+      ],
+      "normal": [
+        0.0005,
+        0.0102,
+        -0.9999
+      ],
+      "unopt_vertex_max_dist_to_plane_cm": 0.0271,
+      "faces": 2,
+      "vertices": 4,
+      "max_residual_before_cm": 0.0562,
+      "max_residual_after_cm": 0.0,
+      "vertices_moved": 4,
+      "max_move_cm": 0.632
+    },
+    {
+      "id": 141,
+      "area_cm2": 78.8,
+      "area_pct": 0.075,
+      "unopt_faces": 20,
+      "centre_cm_sm_frame": [
+        31.01,
+        28.67,
+        75.58
+      ],
+      "normal": [
+        0.4224,
+        0.4742,
+        -0.7725
+      ],
+      "unopt_vertex_max_dist_to_plane_cm": 0.0793,
+      "faces": 6,
+      "vertices": 9,
+      "max_residual_before_cm": 0.4852,
+      "max_residual_after_cm": 0.0,
+      "vertices_moved": 9,
+      "max_move_cm": 0.485
+    },
+    {
+      "id": 146,
+      "area_cm2": 78.2,
+      "area_pct": 0.074,
+      "unopt_faces": 12,
+      "centre_cm_sm_frame": [
+        41.21,
+        12.95,
+        93.64
+      ],
+      "normal": [
+        -0.7067,
+        -0.7075,
+        0.0002
+      ],
+      "unopt_vertex_max_dist_to_plane_cm": 0.107,
+      "faces": 1,
+      "vertices": 3,
+      "max_residual_before_cm": 0.1067,
+      "max_residual_after_cm": 0.0,
+      "vertices_moved": 3,
+      "max_move_cm": 1.49
+    },
+    {
+      "id": 108,
+      "area_cm2": 78.2,
+      "area_pct": 0.074,
+      "unopt_faces": 9,
+      "centre_cm_sm_frame": [
+        -85.44,
+        3.91,
+        16.49
+      ],
+      "normal": [
+        -0.6978,
+        0.0229,
+        0.7159
+      ],
+      "unopt_vertex_max_dist_to_plane_cm": 0.115,
+      "faces": 1,
+      "vertices": 3,
+      "max_residual_before_cm": 0.1156,
+      "max_residual_after_cm": 0.0,
+      "vertices_moved": 3,
+      "max_move_cm": 0.382
+    },
+    {
+      "id": 85,
+      "area_cm2": 78.1,
+      "area_pct": 0.074,
+      "unopt_faces": 6,
+      "centre_cm_sm_frame": [
+        -18.25,
+        -24.47,
+        100.61
+      ],
+      "normal": [
+        -0.8959,
+        -0.4432,
+        0.0314
+      ],
+      "unopt_vertex_max_dist_to_plane_cm": 0.1166,
+      "faces": 2,
+      "vertices": 4,
+      "max_residual_before_cm": 0.3663,
+      "max_residual_after_cm": 0.0,
+      "vertices_moved": 4,
+      "max_move_cm": 0.394
+    },
+    {
+      "id": 122,
+      "area_cm2": 77.3,
+      "area_pct": 0.073,
+      "unopt_faces": 10,
+      "centre_cm_sm_frame": [
+        50.1,
+        7.1,
+        93.15
+      ],
+      "normal": [
+        -0.2419,
+        -0.9703,
+        0.0042
+      ],
+      "unopt_vertex_max_dist_to_plane_cm": 0.1035,
+      "faces": 5,
+      "vertices": 7,
+      "max_residual_before_cm": 0.6902,
+      "max_residual_after_cm": 0.0,
+      "vertices_moved": 7,
+      "max_move_cm": 0.69
+    },
+    {
+      "id": 259,
+      "area_cm2": 76.4,
+      "area_pct": 0.073,
+      "unopt_faces": 35,
+      "centre_cm_sm_frame": [
+        11.73,
+        -36.37,
+        97.48
+      ],
+      "normal": [
+        1.0,
+        0.0088,
+        -0.0036
+      ],
+      "unopt_vertex_max_dist_to_plane_cm": 0.2194,
+      "faces": 9,
+      "vertices": 11,
+      "max_residual_before_cm": 0.5828,
+      "max_residual_after_cm": 0.0,
+      "vertices_moved": 11,
+      "max_move_cm": 0.583
+    },
+    {
+      "id": 135,
+      "area_cm2": 76.3,
+      "area_pct": 0.072,
+      "unopt_faces": 11,
+      "centre_cm_sm_frame": [
+        8.29,
+        0.52,
+        135.27
+      ],
+      "normal": [
+        0.1413,
+        -0.0043,
+        0.99
+      ],
+      "unopt_vertex_max_dist_to_plane_cm": 0.2418,
+      "faces": 3,
+      "vertices": 5,
+      "max_residual_before_cm": 0.3237,
+      "max_residual_after_cm": 0.0,
+      "vertices_moved": 5,
+      "max_move_cm": 1.312
+    },
+    {
+      "id": 262,
+      "area_cm2": 76.3,
+      "area_pct": 0.072,
+      "unopt_faces": 23,
+      "centre_cm_sm_frame": [
+        18.47,
+        -12.69,
+        120.94
+      ],
+      "normal": [
+        0.0011,
+        0.0282,
+        0.9996
+      ],
+      "unopt_vertex_max_dist_to_plane_cm": 0.0647,
+      "faces": 3,
+      "vertices": 5,
+      "max_residual_before_cm": 0.0461,
+      "max_residual_after_cm": 0.0,
+      "vertices_moved": 5,
+      "max_move_cm": 0.397
+    },
+    {
+      "id": 266,
+      "area_cm2": 76.1,
+      "area_pct": 0.072,
+      "unopt_faces": 14,
+      "centre_cm_sm_frame": [
+        -14.48,
+        55.12,
+        38.46
+      ],
+      "normal": [
+        -0.6811,
+        0.4018,
+        0.6121
+      ],
+      "unopt_vertex_max_dist_to_plane_cm": 0.149,
+      "faces": 0
+    },
+    {
+      "id": 167,
+      "area_cm2": 76.0,
+      "area_pct": 0.072,
+      "unopt_faces": 10,
+      "centre_cm_sm_frame": [
+        -14.17,
+        -72.65,
+        2.92
+      ],
+      "normal": [
+        -0.9991,
+        -0.008,
+        -0.0407
+      ],
+      "unopt_vertex_max_dist_to_plane_cm": 0.1149,
+      "faces": 5,
+      "vertices": 7,
+      "max_residual_before_cm": 0.5287,
+      "max_residual_after_cm": 0.0,
+      "vertices_moved": 7,
+      "max_move_cm": 0.614
+    },
+    {
+      "id": 226,
+      "area_cm2": 75.9,
+      "area_pct": 0.072,
+      "unopt_faces": 14,
+      "centre_cm_sm_frame": [
+        15.73,
+        8.52,
+        127.07
+      ],
+      "normal": [
+        0.9122,
+        0.3804,
+        0.1522
+      ],
+      "unopt_vertex_max_dist_to_plane_cm": 0.1817,
+      "faces": 2,
+      "vertices": 4,
+      "max_residual_before_cm": 0.6444,
+      "max_residual_after_cm": 0.0,
+      "vertices_moved": 4,
+      "max_move_cm": 1.195
+    },
+    {
+      "id": 74,
+      "area_cm2": 75.9,
+      "area_pct": 0.072,
+      "unopt_faces": 10,
+      "centre_cm_sm_frame": [
+        -58.05,
+        9.09,
+        89.27
+      ],
+      "normal": [
+        -0.5046,
+        -0.8633,
+        0.007
+      ],
+      "unopt_vertex_max_dist_to_plane_cm": 0.073,
+      "faces": 1,
+      "vertices": 3,
+      "max_residual_before_cm": 0.1611,
+      "max_residual_after_cm": 0.0,
+      "vertices_moved": 3,
+      "max_move_cm": 0.457
+    },
+    {
+      "id": 310,
+      "area_cm2": 75.2,
+      "area_pct": 0.071,
+      "unopt_faces": 19,
+      "centre_cm_sm_frame": [
+        -84.11,
+        -7.23,
+        16.3
+      ],
+      "normal": [
+        -0.6852,
+        -0.235,
+        0.6894
+      ],
+      "unopt_vertex_max_dist_to_plane_cm": 0.1737,
+      "faces": 2,
+      "vertices": 6,
+      "max_residual_before_cm": 0.1732,
+      "max_residual_after_cm": 0.0,
+      "vertices_moved": 6,
+      "max_move_cm": 0.47
+    },
+    {
+      "id": 886,
+      "area_cm2": 74.6,
+      "area_pct": 0.071,
+      "unopt_faces": 37,
+      "centre_cm_sm_frame": [
+        -17.71,
+        75.18,
+        8.14
+      ],
+      "normal": [
+        -0.9996,
+        0.022,
+        0.0157
+      ],
+      "unopt_vertex_max_dist_to_plane_cm": 0.1699,
+      "faces": 15,
+      "vertices": 15,
+      "max_residual_before_cm": 0.1654,
+      "max_residual_after_cm": 0.0,
+      "vertices_moved": 15,
+      "max_move_cm": 0.165
+    },
+    {
+      "id": 238,
+      "area_cm2": 74.3,
+      "area_pct": 0.071,
+      "unopt_faces": 18,
+      "centre_cm_sm_frame": [
+        -29.31,
+        -22.34,
+        78.28
+      ],
+      "normal": [
+        -0.503,
+        -0.4015,
+        -0.7654
+      ],
+      "unopt_vertex_max_dist_to_plane_cm": 0.0792,
+      "faces": 3,
+      "vertices": 6,
+      "max_residual_before_cm": 0.3271,
+      "max_residual_after_cm": 0.0,
+      "vertices_moved": 6,
+      "max_move_cm": 0.603
+    },
+    {
+      "id": 301,
+      "area_cm2": 74.1,
+      "area_pct": 0.07,
+      "unopt_faces": 16,
+      "centre_cm_sm_frame": [
+        -31.68,
+        2.82,
+        89.77
+      ],
+      "normal": [
+        -0.9966,
+        -0.082,
+        0.004
+      ],
+      "unopt_vertex_max_dist_to_plane_cm": 0.2282,
+      "faces": 5,
+      "vertices": 7,
+      "max_residual_before_cm": 0.474,
+      "max_residual_after_cm": 0.0,
+      "vertices_moved": 7,
+      "max_move_cm": 1.244
+    },
+    {
+      "id": 223,
+      "area_cm2": 73.5,
+      "area_pct": 0.07,
+      "unopt_faces": 16,
+      "centre_cm_sm_frame": [
+        -18.36,
+        -27.03,
+        117.17
+      ],
+      "normal": [
+        -0.1179,
+        -0.5238,
+        0.8436
+      ],
+      "unopt_vertex_max_dist_to_plane_cm": 0.3062,
+      "faces": 1,
+      "vertices": 3,
+      "max_residual_before_cm": 0.3065,
+      "max_residual_after_cm": 0.0,
+      "vertices_moved": 3,
+      "max_move_cm": 0.308
+    },
+    {
+      "id": 92,
+      "area_cm2": 73.3,
+      "area_pct": 0.07,
+      "unopt_faces": 18,
+      "centre_cm_sm_frame": [
+        9.03,
+        -88.65,
+        6.1
+      ],
+      "normal": [
+        0.0361,
+        -0.9875,
+        0.1533
+      ],
+      "unopt_vertex_max_dist_to_plane_cm": 0.2126,
+      "faces": 2,
+      "vertices": 5,
+      "max_residual_before_cm": 0.2607,
+      "max_residual_after_cm": 0.0,
+      "vertices_moved": 5,
+      "max_move_cm": 0.261
+    },
+    {
+      "id": 169,
+      "area_cm2": 72.8,
+      "area_pct": 0.069,
+      "unopt_faces": 13,
+      "centre_cm_sm_frame": [
+        -22.75,
+        -28.11,
+        78.08
+      ],
+      "normal": [
+        -0.3063,
+        -0.5505,
+        -0.7766
+      ],
+      "unopt_vertex_max_dist_to_plane_cm": 0.1539,
+      "faces": 2,
+      "vertices": 4,
+      "max_residual_before_cm": 0.7241,
+      "max_residual_after_cm": 0.0,
+      "vertices_moved": 4,
+      "max_move_cm": 0.724
+    },
+    {
+      "id": 176,
+      "area_cm2": 72.7,
+      "area_pct": 0.069,
+      "unopt_faces": 14,
+      "centre_cm_sm_frame": [
+        2.55,
+        -71.36,
+        29.98
+      ],
+      "normal": [
+        0.0202,
+        -0.5694,
+        0.8218
+      ],
+      "unopt_vertex_max_dist_to_plane_cm": 0.1613,
+      "faces": 3,
+      "vertices": 6,
+      "max_residual_before_cm": 0.6597,
+      "max_residual_after_cm": 0.0,
+      "vertices_moved": 6,
+      "max_move_cm": 0.66
+    },
+    {
+      "id": 11,
+      "area_cm2": 72.4,
+      "area_pct": 0.069,
+      "unopt_faces": 2,
+      "centre_cm_sm_frame": [
+        69.06,
+        -13.83,
+        2.34
+      ],
+      "normal": [
+        0.0051,
+        -1.0,
+        -0.008
+      ],
+      "unopt_vertex_max_dist_to_plane_cm": 0.0425,
+      "faces": 5,
+      "vertices": 7,
+      "max_residual_before_cm": 0.2443,
+      "max_residual_after_cm": 0.0,
+      "vertices_moved": 7,
+      "max_move_cm": 0.244
+    },
+    {
+      "id": 280,
+      "area_cm2": 72.2,
+      "area_pct": 0.069,
+      "unopt_faces": 18,
+      "centre_cm_sm_frame": [
+        21.62,
+        -16.21,
+        73.81
+      ],
+      "normal": [
+        0.0106,
+        -0.0082,
+        -0.9999
+      ],
+      "unopt_vertex_max_dist_to_plane_cm": 0.0812,
+      "faces": 7,
+      "vertices": 9,
+      "max_residual_before_cm": 0.1771,
+      "max_residual_after_cm": 0.0,
+      "vertices_moved": 9,
+      "max_move_cm": 1.119
+    },
+    {
+      "id": 244,
+      "area_cm2": 72.0,
+      "area_pct": 0.068,
+      "unopt_faces": 32,
+      "centre_cm_sm_frame": [
+        7.12,
+        -64.02,
+        35.29
+      ],
+      "normal": [
+        0.0022,
+        -0.5584,
+        0.8296
+      ],
+      "unopt_vertex_max_dist_to_plane_cm": 0.0977,
+      "faces": 7,
+      "vertices": 10,
+      "max_residual_before_cm": 0.6183,
+      "max_residual_after_cm": 0.0,
+      "vertices_moved": 10,
+      "max_move_cm": 0.618
+    },
+    {
+      "id": 400,
+      "area_cm2": 72.0,
+      "area_pct": 0.068,
+      "unopt_faces": 17,
+      "centre_cm_sm_frame": [
+        -35.66,
+        -16.98,
+        91.32
+      ],
+      "normal": [
+        -0.9445,
+        -0.3263,
+        0.0387
+      ],
+      "unopt_vertex_max_dist_to_plane_cm": 0.2076,
+      "faces": 5,
+      "vertices": 7,
+      "max_residual_before_cm": 0.474,
+      "max_residual_after_cm": 0.0,
+      "vertices_moved": 7,
+      "max_move_cm": 0.474
+    },
+    {
+      "id": 183,
+      "area_cm2": 71.6,
+      "area_pct": 0.068,
+      "unopt_faces": 15,
+      "centre_cm_sm_frame": [
+        38.1,
+        25.11,
+        99.22
+      ],
+      "normal": [
+        -0.983,
+        0.1836,
+        0.0089
+      ],
+      "unopt_vertex_max_dist_to_plane_cm": 0.1357,
+      "faces": 3,
+      "vertices": 5,
+      "max_residual_before_cm": 0.2113,
+      "max_residual_after_cm": 0.0,
+      "vertices_moved": 5,
+      "max_move_cm": 0.668
+    },
+    {
+      "id": 270,
+      "area_cm2": 70.6,
+      "area_pct": 0.067,
+      "unopt_faces": 12,
+      "centre_cm_sm_frame": [
+        15.6,
+        -45.52,
+        42.43
+      ],
+      "normal": [
+        0.6359,
+        -0.4166,
+        0.6497
+      ],
+      "unopt_vertex_max_dist_to_plane_cm": 0.1242,
+      "faces": 0
+    },
+    {
+      "id": 302,
+      "area_cm2": 70.3,
+      "area_pct": 0.067,
+      "unopt_faces": 14,
+      "centre_cm_sm_frame": [
+        -36.8,
+        26.04,
+        86.51
+      ],
+      "normal": [
+        -0.9885,
+        0.1498,
+        -0.0226
+      ],
+      "unopt_vertex_max_dist_to_plane_cm": 0.2188,
+      "faces": 0
+    },
+    {
+      "id": 53,
+      "area_cm2": 70.2,
+      "area_pct": 0.067,
+      "unopt_faces": 4,
+      "centre_cm_sm_frame": [
+        -2.79,
+        23.29,
+        130.17
+      ],
+      "normal": [
+        0.0066,
+        0.3927,
+        0.9197
+      ],
+      "unopt_vertex_max_dist_to_plane_cm": 0.1161,
+      "faces": 0
+    },
+    {
+      "id": 311,
+      "area_cm2": 70.2,
+      "area_pct": 0.067,
+      "unopt_faces": 12,
+      "centre_cm_sm_frame": [
+        -62.13,
+        -15.35,
+        30.69
+      ],
+      "normal": [
+        -0.3268,
+        -0.74,
+        0.5879
+      ],
+      "unopt_vertex_max_dist_to_plane_cm": 0.1442,
+      "faces": 2,
+      "vertices": 4,
+      "max_residual_before_cm": 0.3351,
+      "max_residual_after_cm": 0.0,
+      "vertices_moved": 4,
+      "max_move_cm": 0.729
+    },
+    {
+      "id": 153,
+      "area_cm2": 69.6,
+      "area_pct": 0.066,
+      "unopt_faces": 11,
+      "centre_cm_sm_frame": [
+        -11.38,
+        -34.7,
+        99.82
+      ],
+      "normal": [
+        -0.9999,
+        -0.0137,
+        0.0049
+      ],
+      "unopt_vertex_max_dist_to_plane_cm": 0.0893,
+      "faces": 4,
+      "vertices": 6,
+      "max_residual_before_cm": 0.447,
+      "max_residual_after_cm": 0.000553,
+      "vertices_moved": 6,
+      "max_move_cm": 0.448
+    },
+    {
+      "id": 79,
+      "area_cm2": 68.9,
+      "area_pct": 0.065,
+      "unopt_faces": 9,
+      "centre_cm_sm_frame": [
+        28.66,
+        -37.5,
+        101.88
+      ],
+      "normal": [
+        1.0,
+        0.0001,
+        -0.0022
+      ],
+      "unopt_vertex_max_dist_to_plane_cm": 0.0307,
+      "faces": 4,
+      "vertices": 6,
+      "max_residual_before_cm": 0.0898,
+      "max_residual_after_cm": 0.0,
+      "vertices_moved": 6,
+      "max_move_cm": 0.09
+    },
+    {
+      "id": 279,
+      "area_cm2": 68.8,
+      "area_pct": 0.065,
+      "unopt_faces": 21,
+      "centre_cm_sm_frame": [
+        1.61,
+        -7.43,
+        135.32
+      ],
+      "normal": [
+        -0.0176,
+        -0.1219,
+        0.9924
+      ],
+      "unopt_vertex_max_dist_to_plane_cm": 0.1528,
+      "faces": 4,
+      "vertices": 6,
+      "max_residual_before_cm": 0.427,
+      "max_residual_after_cm": 0.0,
+      "vertices_moved": 6,
+      "max_move_cm": 1.312
+    },
+    {
+      "id": 91,
+      "area_cm2": 68.6,
+      "area_pct": 0.065,
+      "unopt_faces": 5,
+      "centre_cm_sm_frame": [
+        46.66,
+        8.9,
+        91.06
+      ],
+      "normal": [
+        -0.7454,
+        -0.6666,
+        0.0046
+      ],
+      "unopt_vertex_max_dist_to_plane_cm": 0.034,
+      "faces": 2,
+      "vertices": 4,
+      "max_residual_before_cm": 0.3029,
+      "max_residual_after_cm": 0.0,
+      "vertices_moved": 4,
+      "max_move_cm": 0.423
+    },
+    {
+      "id": 734,
+      "area_cm2": 68.1,
+      "area_pct": 0.065,
+      "unopt_faces": 22,
+      "centre_cm_sm_frame": [
+        -38.85,
+        20.09,
+        103.37
+      ],
+      "normal": [
+        -0.9992,
+        0.0372,
+        0.0163
+      ],
+      "unopt_vertex_max_dist_to_plane_cm": 0.1662,
+      "faces": 6,
+      "vertices": 8,
+      "max_residual_before_cm": 0.3215,
+      "max_residual_after_cm": 0.0,
+      "vertices_moved": 8,
+      "max_move_cm": 0.322
+    },
+    {
+      "id": 714,
+      "area_cm2": 67.9,
+      "area_pct": 0.064,
+      "unopt_faces": 35,
+      "centre_cm_sm_frame": [
+        21.45,
+        27.58,
+        80.05
+      ],
+      "normal": [
+        -0.9998,
+        -0.001,
+        -0.0195
+      ],
+      "unopt_vertex_max_dist_to_plane_cm": 0.2143,
+      "faces": 1,
+      "vertices": 3,
+      "max_residual_before_cm": 0.3799,
+      "max_residual_after_cm": 0.0,
+      "vertices_moved": 3,
+      "max_move_cm": 0.38
+    },
+    {
+      "id": 234,
+      "area_cm2": 67.7,
+      "area_pct": 0.064,
+      "unopt_faces": 24,
+      "centre_cm_sm_frame": [
+        1.64,
+        -23.47,
+        80.06
+      ],
+      "normal": [
+        0.0123,
+        -0.4986,
+        -0.8667
+      ],
+      "unopt_vertex_max_dist_to_plane_cm": 0.2302,
+      "faces": 7,
+      "vertices": 10,
+      "max_residual_before_cm": 0.5133,
+      "max_residual_after_cm": 0.0,
+      "vertices_moved": 10,
+      "max_move_cm": 0.513
+    },
+    {
+      "id": 72,
+      "area_cm2": 67.6,
+      "area_pct": 0.064,
+      "unopt_faces": 9,
+      "centre_cm_sm_frame": [
+        -18.53,
+        21.22,
+        130.11
+      ],
+      "normal": [
+        -0.0194,
+        -0.4015,
+        0.9157
+      ],
+      "unopt_vertex_max_dist_to_plane_cm": 0.1071,
+      "faces": 2,
+      "vertices": 4,
+      "max_residual_before_cm": 0.0541,
+      "max_residual_after_cm": 0.0,
+      "vertices_moved": 4,
+      "max_move_cm": 0.054
+    },
+    {
+      "id": 353,
+      "area_cm2": 67.5,
+      "area_pct": 0.064,
+      "unopt_faces": 19,
+      "centre_cm_sm_frame": [
+        74.8,
+        -0.91,
+        22.03
+      ],
+      "normal": [
+        0.6083,
+        0.0172,
+        0.7935
+      ],
+      "unopt_vertex_max_dist_to_plane_cm": 0.1863,
+      "faces": 4,
+      "vertices": 6,
+      "max_residual_before_cm": 0.3396,
+      "max_residual_after_cm": 0.0,
+      "vertices_moved": 6,
+      "max_move_cm": 0.34
+    },
+    {
+      "id": 291,
+      "area_cm2": 67.4,
+      "area_pct": 0.064,
+      "unopt_faces": 19,
+      "centre_cm_sm_frame": [
+        -30.12,
+        27.68,
+        74.51
+      ],
+      "normal": [
+        -0.339,
+        0.5489,
+        -0.7641
+      ],
+      "unopt_vertex_max_dist_to_plane_cm": 0.0712,
+      "faces": 6,
+      "vertices": 7,
+      "max_residual_before_cm": 0.4639,
+      "max_residual_after_cm": 0.0,
+      "vertices_moved": 7,
+      "max_move_cm": 0.499
+    },
+    {
+      "id": 109,
+      "area_cm2": 66.9,
+      "area_pct": 0.064,
+      "unopt_faces": 13,
+      "centre_cm_sm_frame": [
+        15.11,
+        -67.18,
+        5.3
+      ],
+      "normal": [
+        1.0,
+        0.0077,
+        0.0037
+      ],
+      "unopt_vertex_max_dist_to_plane_cm": 0.0752,
+      "faces": 4,
+      "vertices": 6,
+      "max_residual_before_cm": 0.176,
+      "max_residual_after_cm": 0.0,
+      "vertices_moved": 6,
+      "max_move_cm": 0.176
+    },
+    {
+      "id": 626,
+      "area_cm2": 66.2,
+      "area_pct": 0.063,
+      "unopt_faces": 24,
+      "centre_cm_sm_frame": [
+        10.81,
+        -13.45,
+        75.65
+      ],
+      "normal": [
+        0.0277,
+        0.018,
+        -0.9995
+      ],
+      "unopt_vertex_max_dist_to_plane_cm": 0.1151,
+      "faces": 5,
+      "vertices": 8,
+      "max_residual_before_cm": 0.2963,
+      "max_residual_after_cm": 0.0,
+      "vertices_moved": 8,
+      "max_move_cm": 0.296
+    },
+    {
+      "id": 65,
+      "area_cm2": 65.1,
+      "area_pct": 0.062,
+      "unopt_faces": 7,
+      "centre_cm_sm_frame": [
+        32.16,
+        29.25,
+        114.43
+      ],
+      "normal": [
+        0.3836,
+        0.5864,
+        0.7135
+      ],
+      "unopt_vertex_max_dist_to_plane_cm": 0.0418,
+      "faces": 0
+    },
+    {
+      "id": 231,
+      "area_cm2": 64.8,
+      "area_pct": 0.062,
+      "unopt_faces": 5,
+      "centre_cm_sm_frame": [
+        -21.21,
+        23.35,
+        129.84
+      ],
+      "normal": [
+        -0.0275,
+        0.4358,
+        0.8996
+      ],
+      "unopt_vertex_max_dist_to_plane_cm": 0.0642,
+      "faces": 0
+    },
+    {
+      "id": 281,
+      "area_cm2": 64.8,
+      "area_pct": 0.061,
+      "unopt_faces": 22,
+      "centre_cm_sm_frame": [
+        -33.13,
+        10.51,
+        89.64
+      ],
+      "normal": [
+        -0.9769,
+        -0.2045,
+        -0.0625
+      ],
+      "unopt_vertex_max_dist_to_plane_cm": 0.1908,
+      "faces": 5,
+      "vertices": 7,
+      "max_residual_before_cm": 0.8807,
+      "max_residual_after_cm": 0.0,
+      "vertices_moved": 7,
+      "max_move_cm": 0.881
+    },
+    {
+      "id": 405,
+      "area_cm2": 64.7,
+      "area_pct": 0.061,
+      "unopt_faces": 31,
+      "centre_cm_sm_frame": [
+        -32.5,
+        -14.93,
+        76.85
+      ],
+      "normal": [
+        -0.6634,
+        -0.2288,
+        -0.7124
+      ],
+      "unopt_vertex_max_dist_to_plane_cm": 0.1353,
+      "faces": 6,
+      "vertices": 9,
+      "max_residual_before_cm": 0.4533,
+      "max_residual_after_cm": 0.0,
+      "vertices_moved": 9,
+      "max_move_cm": 0.453
+    },
+    {
+      "id": 277,
+      "area_cm2": 64.5,
+      "area_pct": 0.061,
+      "unopt_faces": 10,
+      "centre_cm_sm_frame": [
+        -9.13,
+        -11.41,
+        127.03
+      ],
+      "normal": [
+        -0.6543,
+        -0.7249,
+        0.2155
+      ],
+      "unopt_vertex_max_dist_to_plane_cm": 0.1674,
+      "faces": 3,
+      "vertices": 5,
+      "max_residual_before_cm": 0.215,
+      "max_residual_after_cm": 0.0,
+      "vertices_moved": 5,
+      "max_move_cm": 0.215
+    },
+    {
+      "id": 552,
+      "area_cm2": 64.5,
+      "area_pct": 0.061,
+      "unopt_faces": 19,
+      "centre_cm_sm_frame": [
+        -38.96,
+        -0.63,
+        17.18
+      ],
+      "normal": [
+        0.388,
+        -0.0011,
+        -0.9217
+      ],
+      "unopt_vertex_max_dist_to_plane_cm": 0.1656,
+      "faces": 2,
+      "vertices": 4,
+      "max_residual_before_cm": 0.3084,
+      "max_residual_after_cm": 0.0,
+      "vertices_moved": 4,
+      "max_move_cm": 0.308
+    },
+    {
+      "id": 298,
+      "area_cm2": 64.0,
+      "area_pct": 0.061,
+      "unopt_faces": 11,
+      "centre_cm_sm_frame": [
+        71.67,
+        4.44,
+        29.7
+      ],
+      "normal": [
+        0.5259,
+        0.0281,
+        0.8501
+      ],
+      "unopt_vertex_max_dist_to_plane_cm": 0.3027,
+      "faces": 2,
+      "vertices": 4,
+      "max_residual_before_cm": 0.3739,
+      "max_residual_after_cm": 0.0,
+      "vertices_moved": 4,
+      "max_move_cm": 0.374
+    },
+    {
+      "id": 209,
+      "area_cm2": 63.7,
+      "area_pct": 0.06,
+      "unopt_faces": 10,
+      "centre_cm_sm_frame": [
+        18.0,
+        -25.72,
+        96.45
+      ],
+      "normal": [
+        0.6947,
+        -0.7193,
+        0.0041
+      ],
+      "unopt_vertex_max_dist_to_plane_cm": 0.0718,
+      "faces": 4,
+      "vertices": 6,
+      "max_residual_before_cm": 0.4281,
+      "max_residual_after_cm": 0.0,
+      "vertices_moved": 6,
+      "max_move_cm": 0.428
+    },
+    {
+      "id": 140,
+      "area_cm2": 63.7,
+      "area_pct": 0.06,
+      "unopt_faces": 15,
+      "centre_cm_sm_frame": [
+        6.64,
+        8.57,
+        134.79
+      ],
+      "normal": [
+        0.1256,
+        0.1287,
+        0.9837
+      ],
+      "unopt_vertex_max_dist_to_plane_cm": 0.242,
+      "faces": 1,
+      "vertices": 3,
+      "max_residual_before_cm": 0.2766,
+      "max_residual_after_cm": 0.0,
+      "vertices_moved": 3,
+      "max_move_cm": 0.277
+    },
+    {
+      "id": 316,
+      "area_cm2": 63.5,
+      "area_pct": 0.06,
+      "unopt_faces": 17,
+      "centre_cm_sm_frame": [
+        -18.62,
+        33.11,
+        99.6
+      ],
+      "normal": [
+        -0.7049,
+        0.7093,
+        -0.0024
+      ],
+      "unopt_vertex_max_dist_to_plane_cm": 0.0973,
+      "faces": 5,
+      "vertices": 7,
+      "max_residual_before_cm": 0.2335,
+      "max_residual_after_cm": 0.0,
+      "vertices_moved": 7,
+      "max_move_cm": 0.233
+    },
+    {
+      "id": 957,
+      "area_cm2": 63.3,
+      "area_pct": 0.06,
+      "unopt_faces": 30,
+      "centre_cm_sm_frame": [
+        -14.33,
+        -16.3,
+        59.08
+      ],
+      "normal": [
+        -0.1913,
+        -0.224,
+        0.9556
+      ],
+      "unopt_vertex_max_dist_to_plane_cm": 0.306,
+      "faces": 3,
+      "vertices": 5,
+      "max_residual_before_cm": 0.8092,
+      "max_residual_after_cm": 0.0,
+      "vertices_moved": 5,
+      "max_move_cm": 0.809
+    },
+    {
+      "id": 769,
+      "area_cm2": 63.3,
+      "area_pct": 0.06,
+      "unopt_faces": 30,
+      "centre_cm_sm_frame": [
+        18.31,
+        -71.87,
+        8.4
+      ],
+      "normal": [
+        0.9999,
+        0.0144,
+        0.002
+      ],
+      "unopt_vertex_max_dist_to_plane_cm": 0.0856,
+      "faces": 13,
+      "vertices": 13,
+      "max_residual_before_cm": 0.3257,
+      "max_residual_after_cm": 0.0,
+      "vertices_moved": 13,
+      "max_move_cm": 0.326
+    },
+    {
+      "id": 206,
+      "area_cm2": 63.0,
+      "area_pct": 0.06,
+      "unopt_faces": 9,
+      "centre_cm_sm_frame": [
+        1.31,
+        32.88,
+        80.13
+      ],
+      "normal": [
+        0.0037,
+        0.2143,
+        -0.9768
+      ],
+      "unopt_vertex_max_dist_to_plane_cm": 0.1557,
+      "faces": 3,
+      "vertices": 5,
+      "max_residual_before_cm": 0.2166,
+      "max_residual_after_cm": 0.0,
+      "vertices_moved": 5,
+      "max_move_cm": 0.217
+    },
+    {
+      "id": 201,
+      "area_cm2": 62.8,
+      "area_pct": 0.06,
+      "unopt_faces": 17,
+      "centre_cm_sm_frame": [
+        6.87,
+        24.07,
+        113.34
+      ],
+      "normal": [
+        0.014,
+        0.3489,
+        0.9371
+      ],
+      "unopt_vertex_max_dist_to_plane_cm": 0.1703,
+      "faces": 1,
+      "vertices": 3,
+      "max_residual_before_cm": 0.3816,
+      "max_residual_after_cm": 0.0,
+      "vertices_moved": 3,
+      "max_move_cm": 1.022
+    },
+    {
+      "id": 274,
+      "area_cm2": 62.6,
+      "area_pct": 0.059,
+      "unopt_faces": 16,
+      "centre_cm_sm_frame": [
+        15.3,
+        17.0,
+        74.1
+      ],
+      "normal": [
+        0.3167,
+        0.0025,
+        -0.9485
+      ],
+      "unopt_vertex_max_dist_to_plane_cm": 0.1037,
+      "faces": 4,
+      "vertices": 6,
+      "max_residual_before_cm": 0.2137,
+      "max_residual_after_cm": 0.0,
+      "vertices_moved": 6,
+      "max_move_cm": 0.214
+    },
+    {
+      "id": 330,
+      "area_cm2": 62.5,
+      "area_pct": 0.059,
+      "unopt_faces": 15,
+      "centre_cm_sm_frame": [
+        28.66,
+        8.93,
+        116.99
+      ],
+      "normal": [
+        0.566,
+        -0.3971,
+        0.7224
+      ],
+      "unopt_vertex_max_dist_to_plane_cm": 0.1599,
+      "faces": 0
+    },
+    {
+      "id": 117,
+      "area_cm2": 62.4,
+      "area_pct": 0.059,
+      "unopt_faces": 5,
+      "centre_cm_sm_frame": [
+        19.86,
+        -38.83,
+        102.65
+      ],
+      "normal": [
+        -1.0,
+        0.0009,
+        0.006
+      ],
+      "unopt_vertex_max_dist_to_plane_cm": 0.0251,
+      "faces": 3,
+      "vertices": 5,
+      "max_residual_before_cm": 0.2762,
+      "max_residual_after_cm": 0.0,
+      "vertices_moved": 5,
+      "max_move_cm": 0.276
+    },
+    {
+      "id": 143,
+      "area_cm2": 62.3,
+      "area_pct": 0.059,
+      "unopt_faces": 11,
+      "centre_cm_sm_frame": [
+        86.39,
+        -9.02,
+        14.39
+      ],
+      "normal": [
+        0.6884,
+        -0.1342,
+        0.7128
+      ],
+      "unopt_vertex_max_dist_to_plane_cm": 0.2173,
+      "faces": 2,
+      "vertices": 4,
+      "max_residual_before_cm": 0.3336,
+      "max_residual_after_cm": 0.001172,
+      "vertices_moved": 4,
+      "max_move_cm": 0.621
+    },
+    {
+      "id": 413,
+      "area_cm2": 61.7,
+      "area_pct": 0.059,
+      "unopt_faces": 15,
+      "centre_cm_sm_frame": [
+        28.68,
+        2.2,
+        114.12
+      ],
+      "normal": [
+        0.6077,
+        -0.0281,
+        0.7936
+      ],
+      "unopt_vertex_max_dist_to_plane_cm": 0.0948,
+      "faces": 1,
+      "vertices": 3,
+      "max_residual_before_cm": 0.3043,
+      "max_residual_after_cm": 0.0,
+      "vertices_moved": 3,
+      "max_move_cm": 0.36
+    },
+    {
+      "id": 327,
+      "area_cm2": 61.5,
+      "area_pct": 0.058,
+      "unopt_faces": 15,
+      "centre_cm_sm_frame": [
+        -14.73,
+        84.0,
+        9.15
+      ],
+      "normal": [
+        -0.9948,
+        -0.0874,
+        -0.053
+      ],
+      "unopt_vertex_max_dist_to_plane_cm": 0.2269,
+      "faces": 4,
+      "vertices": 6,
+      "max_residual_before_cm": 0.3274,
+      "max_residual_after_cm": 0.0,
+      "vertices_moved": 6,
+      "max_move_cm": 0.327
+    },
+    {
+      "id": 194,
+      "area_cm2": 61.4,
+      "area_pct": 0.058,
+      "unopt_faces": 10,
+      "centre_cm_sm_frame": [
+        -14.39,
+        -46.46,
+        42.18
+      ],
+      "normal": [
+        -0.6752,
+        -0.3991,
+        0.6204
+      ],
+      "unopt_vertex_max_dist_to_plane_cm": 0.1219,
+      "faces": 0
+    },
+    {
+      "id": 325,
+      "area_cm2": 61.3,
+      "area_pct": 0.058,
+      "unopt_faces": 23,
+      "centre_cm_sm_frame": [
+        -4.82,
+        -46.14,
+        105.46
+      ],
+      "normal": [
+        -0.0121,
+        -0.9999,
+        0.0106
+      ],
+      "unopt_vertex_max_dist_to_plane_cm": 0.1249,
+      "faces": 2,
+      "vertices": 4,
+      "max_residual_before_cm": 0.1249,
+      "max_residual_after_cm": 0.0,
+      "vertices_moved": 4,
+      "max_move_cm": 0.149
+    },
+    {
+      "id": 111,
+      "area_cm2": 61.0,
+      "area_pct": 0.058,
+      "unopt_faces": 4,
+      "centre_cm_sm_frame": [
+        15.05,
+        37.56,
+        96.95
+      ],
+      "normal": [
+        0.9998,
+        0.0165,
+        0.0101
+      ],
+      "unopt_vertex_max_dist_to_plane_cm": 0.0768,
+      "faces": 2,
+      "vertices": 4,
+      "max_residual_before_cm": 0.2183,
+      "max_residual_after_cm": 0.0,
+      "vertices_moved": 4,
+      "max_move_cm": 0.233
+    },
+    {
+      "id": 735,
+      "area_cm2": 60.8,
+      "area_pct": 0.058,
+      "unopt_faces": 24,
+      "centre_cm_sm_frame": [
+        -71.44,
+        18.3,
+        8.78
+      ],
+      "normal": [
+        0.0044,
+        1.0,
+        -0.0002
+      ],
+      "unopt_vertex_max_dist_to_plane_cm": 0.074,
+      "faces": 12,
+      "vertices": 12,
+      "max_residual_before_cm": 0.3307,
+      "max_residual_after_cm": 0.0,
+      "vertices_moved": 12,
+      "max_move_cm": 0.331
+    },
+    {
+      "id": 196,
+      "area_cm2": 60.7,
+      "area_pct": 0.058,
+      "unopt_faces": 5,
+      "centre_cm_sm_frame": [
+        -14.77,
+        70.03,
+        28.77
+      ],
+      "normal": [
+        -0.7128,
+        0.3326,
+        0.6175
+      ],
+      "unopt_vertex_max_dist_to_plane_cm": 0.1371,
+      "faces": 1,
+      "vertices": 3,
+      "max_residual_before_cm": 0.0872,
+      "max_residual_after_cm": 0.0,
+      "vertices_moved": 3,
+      "max_move_cm": 0.308
+    },
+    {
+      "id": 80,
+      "area_cm2": 60.5,
+      "area_pct": 0.057,
+      "unopt_faces": 2,
+      "centre_cm_sm_frame": [
+        -52.58,
+        34.18,
+        94.21
+      ],
+      "normal": [
+        -0.0591,
+        0.9982,
+        0.0023
+      ],
+      "unopt_vertex_max_dist_to_plane_cm": 0.0699,
+      "faces": 2,
+      "vertices": 4,
+      "max_residual_before_cm": 0.1116,
+      "max_residual_after_cm": 0.0,
+      "vertices_moved": 4,
+      "max_move_cm": 0.112
+    },
+    {
+      "id": 145,
+      "area_cm2": 60.4,
+      "area_pct": 0.057,
+      "unopt_faces": 7,
+      "centre_cm_sm_frame": [
+        -0.3,
+        33.49,
+        18.94
+      ],
+      "normal": [
+        0.0004,
+        -0.0296,
+        -0.9996
+      ],
+      "unopt_vertex_max_dist_to_plane_cm": 0.0523,
+      "faces": 2,
+      "vertices": 4,
+      "max_residual_before_cm": 0.3723,
+      "max_residual_after_cm": 0.0,
+      "vertices_moved": 4,
+      "max_move_cm": 0.372
+    },
+    {
+      "id": 390,
+      "area_cm2": 59.7,
+      "area_pct": 0.057,
+      "unopt_faces": 20,
+      "centre_cm_sm_frame": [
+        -2.98,
+        -81.64,
+        107.05
+      ],
+      "normal": [
+        -0.3267,
+        -0.018,
+        0.945
+      ],
+      "unopt_vertex_max_dist_to_plane_cm": 0.2615,
+      "faces": 0
+    },
+    {
+      "id": 801,
+      "area_cm2": 59.7,
+      "area_pct": 0.057,
+      "unopt_faces": 22,
+      "centre_cm_sm_frame": [
+        -19.66,
+        29.57,
+        79.83
+      ],
+      "normal": [
+        0.9996,
+        0.0297,
+        -0.0024
+      ],
+      "unopt_vertex_max_dist_to_plane_cm": 0.402,
+      "faces": 9,
+      "vertices": 11,
+      "max_residual_before_cm": 0.5727,
+      "max_residual_after_cm": 0.0,
+      "vertices_moved": 11,
+      "max_move_cm": 0.573
+    },
+    {
+      "id": 982,
+      "area_cm2": 59.4,
+      "area_pct": 0.056,
+      "unopt_faces": 25,
+      "centre_cm_sm_frame": [
+        73.13,
+        18.18,
+        8.63
+      ],
+      "normal": [
+        0.0321,
+        0.9995,
+        -0.0046
+      ],
+      "unopt_vertex_max_dist_to_plane_cm": 0.0617,
+      "faces": 11,
+      "vertices": 13,
+      "max_residual_before_cm": 0.3723,
+      "max_residual_after_cm": 0.0,
+      "vertices_moved": 13,
+      "max_move_cm": 0.372
+    },
+    {
+      "id": 408,
+      "area_cm2": 59.3,
+      "area_pct": 0.056,
+      "unopt_faces": 21,
+      "centre_cm_sm_frame": [
+        14.64,
+        -17.8,
+        55.99
+      ],
+      "normal": [
+        0.5995,
+        -0.7917,
+        -0.117
+      ],
+      "unopt_vertex_max_dist_to_plane_cm": 0.1767,
+      "faces": 5,
+      "vertices": 8,
+      "max_residual_before_cm": 0.4748,
+      "max_residual_after_cm": 0.0,
+      "vertices_moved": 8,
+      "max_move_cm": 0.475
+    },
+    {
+      "id": 112,
+      "area_cm2": 59.2,
+      "area_pct": 0.056,
+      "unopt_faces": 8,
+      "centre_cm_sm_frame": [
+        20.04,
+        32.9,
+        98.68
+      ],
+      "normal": [
+        0.6889,
+        0.7248,
+        0.001
+      ],
+      "unopt_vertex_max_dist_to_plane_cm": 0.106,
+      "faces": 3,
+      "vertices": 5,
+      "max_residual_before_cm": 0.6189,
+      "max_residual_after_cm": 0.0,
+      "vertices_moved": 5,
+      "max_move_cm": 0.619
+    },
+    {
+      "id": 549,
+      "area_cm2": 59.2,
+      "area_pct": 0.056,
+      "unopt_faces": 19,
+      "centre_cm_sm_frame": [
+        38.87,
+        16.48,
+        90.34
+      ],
+      "normal": [
+        -0.907,
+        -0.4211,
+        -0.0004
+      ],
+      "unopt_vertex_max_dist_to_plane_cm": 0.0879,
+      "faces": 4,
+      "vertices": 7,
+      "max_residual_before_cm": 0.6115,
+      "max_residual_after_cm": 0.0,
+      "vertices_moved": 7,
+      "max_move_cm": 1.49
+    },
+    {
+      "id": 174,
+      "area_cm2": 59.0,
+      "area_pct": 0.056,
+      "unopt_faces": 8,
+      "centre_cm_sm_frame": [
+        -6.61,
+        7.99,
+        134.51
+      ],
+      "normal": [
+        -0.1228,
+        0.1627,
+        0.979
+      ],
+      "unopt_vertex_max_dist_to_plane_cm": 0.1848,
+      "faces": 2,
+      "vertices": 4,
+      "max_residual_before_cm": 0.0495,
+      "max_residual_after_cm": 0.0,
+      "vertices_moved": 4,
+      "max_move_cm": 0.05
+    },
+    {
+      "id": 984,
+      "area_cm2": 58.8,
+      "area_pct": 0.056,
+      "unopt_faces": 26,
+      "centre_cm_sm_frame": [
+        -72.09,
+        -16.86,
+        9.16
+      ],
+      "normal": [
+        -0.0017,
+        -1.0,
+        0.0035
+      ],
+      "unopt_vertex_max_dist_to_plane_cm": 0.1276,
+      "faces": 11,
+      "vertices": 12,
+      "max_residual_before_cm": 0.3359,
+      "max_residual_after_cm": 0.0,
+      "vertices_moved": 12,
+      "max_move_cm": 0.336
+    },
+    {
+      "id": 243,
+      "area_cm2": 58.8,
+      "area_pct": 0.056,
+      "unopt_faces": 15,
+      "centre_cm_sm_frame": [
+        -10.04,
+        70.56,
+        30.47
+      ],
+      "normal": [
+        -0.1258,
+        0.4675,
+        0.875
+      ],
+      "unopt_vertex_max_dist_to_plane_cm": 0.2711,
+      "faces": 4,
+      "vertices": 6,
+      "max_residual_before_cm": 0.3028,
+      "max_residual_after_cm": 0.0,
+      "vertices_moved": 6,
+      "max_move_cm": 0.761
+    },
+    {
+      "id": 152,
+      "area_cm2": 58.5,
+      "area_pct": 0.056,
+      "unopt_faces": 11,
+      "centre_cm_sm_frame": [
+        -75.46,
+        1.12,
+        24.73
+      ],
+      "normal": [
+        0.5887,
+        -0.0308,
+        -0.8078
+      ],
+      "unopt_vertex_max_dist_to_plane_cm": 0.0785,
+      "faces": 4,
+      "vertices": 6,
+      "max_residual_before_cm": 0.3715,
+      "max_residual_after_cm": 0.0,
+      "vertices_moved": 6,
+      "max_move_cm": 0.372
+    },
+    {
+      "id": 306,
+      "area_cm2": 58.2,
+      "area_pct": 0.055,
+      "unopt_faces": 8,
+      "centre_cm_sm_frame": [
+        -23.48,
+        24.95,
+        126.83
+      ],
+      "normal": [
+        -0.0023,
+        0.9984,
+        -0.0567
+      ],
+      "unopt_vertex_max_dist_to_plane_cm": 0.1154,
+      "faces": 1,
+      "vertices": 3,
+      "max_residual_before_cm": 0.0652,
+      "max_residual_after_cm": 0.0,
+      "vertices_moved": 3,
+      "max_move_cm": 0.065
+    },
+    {
+      "id": 1111,
+      "area_cm2": 58.1,
+      "area_pct": 0.055,
+      "unopt_faces": 31,
+      "centre_cm_sm_frame": [
+        73.1,
+        -16.86,
+        8.77
+      ],
+      "normal": [
+        0.0135,
+        -0.9999,
+        0.0007
+      ],
+      "unopt_vertex_max_dist_to_plane_cm": 0.1003,
+      "faces": 13,
+      "vertices": 13,
+      "max_residual_before_cm": 0.303,
+      "max_residual_after_cm": 0.0,
+      "vertices_moved": 13,
+      "max_move_cm": 0.303
+    },
+    {
+      "id": 309,
+      "area_cm2": 58.0,
+      "area_pct": 0.055,
+      "unopt_faces": 19,
+      "centre_cm_sm_frame": [
+        31.78,
+        -24.52,
+        101.96
+      ],
+      "normal": [
+        0.9343,
+        -0.3563,
+        0.0089
+      ],
+      "unopt_vertex_max_dist_to_plane_cm": 0.1547,
+      "faces": 2,
+      "vertices": 4,
+      "max_residual_before_cm": 0.1119,
+      "max_residual_after_cm": 0.0,
+      "vertices_moved": 4,
+      "max_move_cm": 0.324
+    },
+    {
+      "id": 134,
+      "area_cm2": 57.9,
+      "area_pct": 0.055,
+      "unopt_faces": 11,
+      "centre_cm_sm_frame": [
+        -14.8,
+        -2.77,
+        126.04
+      ],
+      "normal": [
+        -0.9698,
+        -0.1715,
+        0.1735
+      ],
+      "unopt_vertex_max_dist_to_plane_cm": 0.0835,
+      "faces": 2,
+      "vertices": 4,
+      "max_residual_before_cm": 0.2439,
+      "max_residual_after_cm": 0.0,
+      "vertices_moved": 4,
+      "max_move_cm": 0.536
+    },
+    {
+      "id": 138,
+      "area_cm2": 57.4,
+      "area_pct": 0.055,
+      "unopt_faces": 16,
+      "centre_cm_sm_frame": [
+        -29.51,
+        18.02,
+        41.72
+      ],
+      "normal": [
+        0.1097,
+        0.9939,
+        -0.0053
+      ],
+      "unopt_vertex_max_dist_to_plane_cm": 0.2246,
+      "faces": 2,
+      "vertices": 4,
+      "max_residual_before_cm": 0.1657,
+      "max_residual_after_cm": 0.0,
+      "vertices_moved": 4,
+      "max_move_cm": 0.166
+    },
+    {
+      "id": 125,
+      "area_cm2": 57.4,
+      "area_pct": 0.054,
+      "unopt_faces": 12,
+      "centre_cm_sm_frame": [
+        30.51,
+        -24.69,
+        87.8
+      ],
+      "normal": [
+        0.7294,
+        -0.684,
+        0.0119
+      ],
+      "unopt_vertex_max_dist_to_plane_cm": 0.1382,
+      "faces": 2,
+      "vertices": 4,
+      "max_residual_before_cm": 0.337,
+      "max_residual_after_cm": 0.0,
+      "vertices_moved": 4,
+      "max_move_cm": 0.427
+    },
+    {
+      "id": 371,
+      "area_cm2": 57.2,
+      "area_pct": 0.054,
+      "unopt_faces": 8,
+      "centre_cm_sm_frame": [
+        -14.1,
+        37.65,
+        95.14
+      ],
+      "normal": [
+        -0.9997,
+        0.0095,
+        -0.0214
+      ],
+      "unopt_vertex_max_dist_to_plane_cm": 0.0864,
+      "faces": 2,
+      "vertices": 4,
+      "max_residual_before_cm": 0.4256,
+      "max_residual_after_cm": 0.0,
+      "vertices_moved": 4,
+      "max_move_cm": 0.426
+    },
+    {
+      "id": 188,
+      "area_cm2": 57.0,
+      "area_pct": 0.054,
+      "unopt_faces": 9,
+      "centre_cm_sm_frame": [
+        -15.11,
+        4.19,
+        125.34
+      ],
+      "normal": [
+        -0.9768,
+        0.1416,
+        0.1607
+      ],
+      "unopt_vertex_max_dist_to_plane_cm": 0.1313,
+      "faces": 3,
+      "vertices": 5,
+      "max_residual_before_cm": 0.3878,
+      "max_residual_after_cm": 0.0,
+      "vertices_moved": 5,
+      "max_move_cm": 0.536
+    },
+    {
+      "id": 674,
+      "area_cm2": 57.0,
+      "area_pct": 0.054,
+      "unopt_faces": 14,
+      "centre_cm_sm_frame": [
+        -18.85,
+        -16.55,
+        47.64
+      ],
+      "normal": [
+        -0.2665,
+        -0.2566,
+        0.9291
+      ],
+      "unopt_vertex_max_dist_to_plane_cm": 0.2247,
+      "faces": 4,
+      "vertices": 7,
+      "max_residual_before_cm": 0.6691,
+      "max_residual_after_cm": 0.0,
+      "vertices_moved": 7,
+      "max_move_cm": 0.669
+    },
+    {
+      "id": 333,
+      "area_cm2": 56.7,
+      "area_pct": 0.054,
+      "unopt_faces": 29,
+      "centre_cm_sm_frame": [
+        53.71,
+        -9.95,
+        40.08
+      ],
+      "normal": [
+        0.5492,
+        -0.0978,
+        0.83
+      ],
+      "unopt_vertex_max_dist_to_plane_cm": 0.2032,
+      "faces": 10,
+      "vertices": 12,
+      "max_residual_before_cm": 0.339,
+      "max_residual_after_cm": 0.0,
+      "vertices_moved": 12,
+      "max_move_cm": 0.339
+    },
+    {
+      "id": 94,
+      "area_cm2": 56.7,
+      "area_pct": 0.054,
+      "unopt_faces": 4,
+      "centre_cm_sm_frame": [
+        -1.28,
+        20.21,
+        129.83
+      ],
+      "normal": [
+        -0.0016,
+        -0.4258,
+        0.9048
+      ],
+      "unopt_vertex_max_dist_to_plane_cm": 0.0432,
+      "faces": 2,
+      "vertices": 4,
+      "max_residual_before_cm": 0.0737,
+      "max_residual_after_cm": 0.0,
+      "vertices_moved": 4,
+      "max_move_cm": 0.074
+    },
+    {
+      "id": 1438,
+      "area_cm2": 56.4,
+      "area_pct": 0.054,
+      "unopt_faces": 33,
+      "centre_cm_sm_frame": [
+        51.67,
+        29.21,
+        110.55
+      ],
+      "normal": [
+        0.0134,
+        0.0088,
+        0.9999
+      ],
+      "unopt_vertex_max_dist_to_plane_cm": 0.1382,
+      "faces": 12,
+      "vertices": 14,
+      "max_residual_before_cm": 0.2583,
+      "max_residual_after_cm": 0.0,
+      "vertices_moved": 14,
+      "max_move_cm": 0.258
+    },
+    {
+      "id": 149,
+      "area_cm2": 56.2,
+      "area_pct": 0.053,
+      "unopt_faces": 15,
+      "centre_cm_sm_frame": [
+        -76.69,
+        0.14,
+        26.93
+      ],
+      "normal": [
+        -0.5823,
+        0.0186,
+        0.8128
+      ],
+      "unopt_vertex_max_dist_to_plane_cm": 0.1336,
+      "faces": 4,
+      "vertices": 6,
+      "max_residual_before_cm": 0.3323,
+      "max_residual_after_cm": 0.0,
+      "vertices_moved": 6,
+      "max_move_cm": 0.332
+    },
+    {
+      "id": 150,
+      "area_cm2": 56.2,
+      "area_pct": 0.053,
+      "unopt_faces": 9,
+      "centre_cm_sm_frame": [
+        -0.72,
+        58.91,
+        7.8
+      ],
+      "normal": [
+        0.0003,
+        -0.4889,
+        -0.8723
+      ],
+      "unopt_vertex_max_dist_to_plane_cm": 0.0858,
+      "faces": 3,
+      "vertices": 5,
+      "max_residual_before_cm": 0.4463,
+      "max_residual_after_cm": 0.0,
+      "vertices_moved": 5,
+      "max_move_cm": 0.446
+    },
+    {
+      "id": 86,
+      "area_cm2": 56.2,
+      "area_pct": 0.053,
+      "unopt_faces": 2,
+      "centre_cm_sm_frame": [
+        -0.63,
+        25.14,
+        127.96
+      ],
+      "normal": [
+        -0.0032,
+        0.9908,
+        -0.135
+      ],
+      "unopt_vertex_max_dist_to_plane_cm": 0.0173,
+      "faces": 1,
+      "vertices": 3,
+      "max_residual_before_cm": 0.1581,
+      "max_residual_after_cm": 0.0,
+      "vertices_moved": 3,
+      "max_move_cm": 0.158
+    },
+    {
+      "id": 101,
+      "area_cm2": 55.8,
+      "area_pct": 0.053,
+      "unopt_faces": 8,
+      "centre_cm_sm_frame": [
+        90.32,
+        -7.07,
+        5.99
+      ],
+      "normal": [
+        0.9791,
+        -0.1532,
+        0.1341
+      ],
+      "unopt_vertex_max_dist_to_plane_cm": 0.0984,
+      "faces": 3,
+      "vertices": 6,
+      "max_residual_before_cm": 0.5368,
+      "max_residual_after_cm": 0.000971,
+      "vertices_moved": 6,
+      "max_move_cm": 0.537
+    },
+    {
+      "id": 343,
+      "area_cm2": 55.3,
+      "area_pct": 0.053,
+      "unopt_faces": 11,
+      "centre_cm_sm_frame": [
+        44.92,
+        11.74,
+        98.39
+      ],
+      "normal": [
+        -0.5872,
+        -0.8094,
+        -0.0096
+      ],
+      "unopt_vertex_max_dist_to_plane_cm": 0.2712,
+      "faces": 3,
+      "vertices": 5,
+      "max_residual_before_cm": 0.2172,
+      "max_residual_after_cm": 0.0,
+      "vertices_moved": 5,
+      "max_move_cm": 0.217
+    },
+    {
+      "id": 250,
+      "area_cm2": 55.3,
+      "area_pct": 0.052,
+      "unopt_faces": 18,
+      "centre_cm_sm_frame": [
+        79.35,
+        -6.12,
+        19.25
+      ],
+      "normal": [
+        0.3061,
+        -0.1069,
+        0.946
+      ],
+      "unopt_vertex_max_dist_to_plane_cm": 0.1785,
+      "faces": 5,
+      "vertices": 8,
+      "max_residual_before_cm": 0.7115,
+      "max_residual_after_cm": 0.0,
+      "vertices_moved": 8,
+      "max_move_cm": 0.711
+    },
+    {
+      "id": 391,
+      "area_cm2": 55.2,
+      "area_pct": 0.052,
+      "unopt_faces": 8,
+      "centre_cm_sm_frame": [
+        -37.06,
+        18.4,
+        82.31
+      ],
+      "normal": [
+        -0.9991,
+        -0.0096,
+        -0.0408
+      ],
+      "unopt_vertex_max_dist_to_plane_cm": 0.1523,
+      "faces": 1,
+      "vertices": 3,
+      "max_residual_before_cm": 0.537,
+      "max_residual_after_cm": 0.0,
+      "vertices_moved": 3,
+      "max_move_cm": 0.537
+    },
+    {
+      "id": 127,
+      "area_cm2": 55.1,
+      "area_pct": 0.052,
+      "unopt_faces": 4,
+      "centre_cm_sm_frame": [
+        -1.4,
+        63.84,
+        4.72
+      ],
+      "normal": [
+        0.0074,
+        -0.9978,
+        0.0654
+      ],
+      "unopt_vertex_max_dist_to_plane_cm": 0.1033,
+      "faces": 2,
+      "vertices": 4,
+      "max_residual_before_cm": 0.2475,
+      "max_residual_after_cm": 0.0,
+      "vertices_moved": 4,
+      "max_move_cm": 0.247
+    },
+    {
+      "id": 683,
+      "area_cm2": 54.9,
+      "area_pct": 0.052,
+      "unopt_faces": 24,
+      "centre_cm_sm_frame": [
+        -10.38,
+        -11.81,
+        75.52
+      ],
+      "normal": [
+        0.0011,
+        0.0151,
+        -0.9999
+      ],
+      "unopt_vertex_max_dist_to_plane_cm": 0.0643,
+      "faces": 4,
+      "vertices": 6,
+      "max_residual_before_cm": 0.2635,
+      "max_residual_after_cm": 0.0,
+      "vertices_moved": 6,
+      "max_move_cm": 0.263
+    },
+    {
+      "id": 388,
+      "area_cm2": 54.7,
+      "area_pct": 0.052,
+      "unopt_faces": 12,
+      "centre_cm_sm_frame": [
+        -88.95,
+        10.29,
+        5.27
+      ],
+      "normal": [
+        -0.9464,
+        0.2902,
+        0.1416
+      ],
+      "unopt_vertex_max_dist_to_plane_cm": 0.2046,
+      "faces": 1,
+      "vertices": 3,
+      "max_residual_before_cm": 0.1567,
+      "max_residual_after_cm": 0.0,
+      "vertices_moved": 3,
+      "max_move_cm": 0.157
+    },
+    {
+      "id": 180,
+      "area_cm2": 54.4,
+      "area_pct": 0.052,
+      "unopt_faces": 4,
+      "centre_cm_sm_frame": [
+        1.98,
+        27.63,
+        115.57
+      ],
+      "normal": [
+        0.0024,
+        0.9998,
+        0.0212
+      ],
+      "unopt_vertex_max_dist_to_plane_cm": 0.0507,
+      "faces": 2,
+      "vertices": 4,
+      "max_residual_before_cm": 0.1415,
+      "max_residual_after_cm": 0.0,
+      "vertices_moved": 4,
+      "max_move_cm": 0.287
+    },
+    {
+      "id": 776,
+      "area_cm2": 54.3,
+      "area_pct": 0.052,
+      "unopt_faces": 18,
+      "centre_cm_sm_frame": [
+        15.28,
+        18.01,
+        59.16
+      ],
+      "normal": [
+        0.2151,
+        0.218,
+        0.952
+      ],
+      "unopt_vertex_max_dist_to_plane_cm": 0.2443,
+      "faces": 4,
+      "vertices": 6,
+      "max_residual_before_cm": 0.5909,
+      "max_residual_after_cm": 0.0,
+      "vertices_moved": 6,
+      "max_move_cm": 0.591
+    },
+    {
+      "id": 115,
+      "area_cm2": 54.2,
+      "area_pct": 0.051,
+      "unopt_faces": 5,
+      "centre_cm_sm_frame": [
+        15.06,
+        -76.53,
+        3.34
+      ],
+      "normal": [
+        0.9987,
+        -0.0187,
+        -0.0471
+      ],
+      "unopt_vertex_max_dist_to_plane_cm": 0.0739,
+      "faces": 1,
+      "vertices": 3,
+      "max_residual_before_cm": 0.564,
+      "max_residual_after_cm": 0.0,
+      "vertices_moved": 3,
+      "max_move_cm": 0.564
+    },
+    {
+      "id": 427,
+      "area_cm2": 53.8,
+      "area_pct": 0.051,
+      "unopt_faces": 21,
+      "centre_cm_sm_frame": [
+        17.41,
+        -24.94,
+        113.53
+      ],
+      "normal": [
+        -0.6518,
+        0.1361,
+        -0.7461
+      ],
+      "unopt_vertex_max_dist_to_plane_cm": 0.1312,
+      "faces": 3,
+      "vertices": 5,
+      "max_residual_before_cm": 0.3497,
+      "max_residual_after_cm": 0.0,
+      "vertices_moved": 5,
+      "max_move_cm": 0.35
+    },
+    {
+      "id": 210,
+      "area_cm2": 53.7,
+      "area_pct": 0.051,
+      "unopt_faces": 18,
+      "centre_cm_sm_frame": [
+        -24.83,
+        19.29,
+        74.86
+      ],
+      "normal": [
+        -0.009,
+        -0.005,
+        -0.9999
+      ],
+      "unopt_vertex_max_dist_to_plane_cm": 0.1221,
+      "faces": 6,
+      "vertices": 8,
+      "max_residual_before_cm": 0.3203,
+      "max_residual_after_cm": 0.0,
+      "vertices_moved": 8,
+      "max_move_cm": 0.33
+    },
+    {
+      "id": 186,
+      "area_cm2": 53.4,
+      "area_pct": 0.051,
+      "unopt_faces": 7,
+      "centre_cm_sm_frame": [
+        -0.21,
+        17.04,
+        126.41
+      ],
+      "normal": [
+        -0.0243,
+        0.9399,
+        0.3407
+      ],
+      "unopt_vertex_max_dist_to_plane_cm": 0.1921,
+      "faces": 2,
+      "vertices": 4,
+      "max_residual_before_cm": 0.8207,
+      "max_residual_after_cm": 0.0,
+      "vertices_moved": 4,
+      "max_move_cm": 0.821
+    },
+    {
+      "id": 103,
+      "area_cm2": 53.3,
+      "area_pct": 0.051,
+      "unopt_faces": 5,
+      "centre_cm_sm_frame": [
+        3.34,
+        -55.56,
+        8.08
+      ],
+      "normal": [
+        -0.0002,
+        0.4747,
+        -0.8801
+      ],
+      "unopt_vertex_max_dist_to_plane_cm": 0.0355,
+      "faces": 2,
+      "vertices": 4,
+      "max_residual_before_cm": 0.128,
+      "max_residual_after_cm": 0.0,
+      "vertices_moved": 4,
+      "max_move_cm": 0.128
+    },
+    {
+      "id": 268,
+      "area_cm2": 53.3,
+      "area_pct": 0.051,
+      "unopt_faces": 14,
+      "centre_cm_sm_frame": [
+        -19.6,
+        6.08,
+        120.47
+      ],
+      "normal": [
+        0.0025,
+        0.0954,
+        0.9954
+      ],
+      "unopt_vertex_max_dist_to_plane_cm": 0.1761,
+      "faces": 0
+    },
+    {
+      "id": 161,
+      "area_cm2": 53.2,
+      "area_pct": 0.051,
+      "unopt_faces": 9,
+      "centre_cm_sm_frame": [
+        -32.69,
+        17.19,
+        72.42
+      ],
+      "normal": [
+        0.0065,
+        0.0182,
+        -0.9998
+      ],
+      "unopt_vertex_max_dist_to_plane_cm": 0.0857,
+      "faces": 3,
+      "vertices": 5,
+      "max_residual_before_cm": 0.2127,
+      "max_residual_after_cm": 0.0,
+      "vertices_moved": 5,
+      "max_move_cm": 0.213
+    },
+    {
+      "id": 727,
+      "area_cm2": 53.2,
+      "area_pct": 0.051,
+      "unopt_faces": 18,
+      "centre_cm_sm_frame": [
+        15.77,
+        -80.67,
+        9.91
+      ],
+      "normal": [
+        0.9986,
+        0.0446,
+        -0.0297
+      ],
+      "unopt_vertex_max_dist_to_plane_cm": 0.2278,
+      "faces": 3,
+      "vertices": 5,
+      "max_residual_before_cm": 0.247,
+      "max_residual_after_cm": 0.0,
+      "vertices_moved": 5,
+      "max_move_cm": 0.247
+    },
+    {
+      "id": 171,
+      "area_cm2": 53.2,
+      "area_pct": 0.05,
+      "unopt_faces": 8,
+      "centre_cm_sm_frame": [
+        0.21,
+        -59.98,
+        4.02
+      ],
+      "normal": [
+        -0.0014,
+        0.9928,
+        0.1198
+      ],
+      "unopt_vertex_max_dist_to_plane_cm": 0.0731,
+      "faces": 2,
+      "vertices": 4,
+      "max_residual_before_cm": 0.3773,
+      "max_residual_after_cm": 0.0,
+      "vertices_moved": 4,
+      "max_move_cm": 0.377
+    },
+    {
+      "id": 319,
+      "area_cm2": 53.0,
+      "area_pct": 0.05,
+      "unopt_faces": 25,
+      "centre_cm_sm_frame": [
+        25.44,
+        -27.54,
+        91.51
+      ],
+      "normal": [
+        0.3244,
+        -0.9458,
+        0.0159
+      ],
+      "unopt_vertex_max_dist_to_plane_cm": 0.093,
+      "faces": 3,
+      "vertices": 6,
+      "max_residual_before_cm": 0.5238,
+      "max_residual_after_cm": 0.0,
+      "vertices_moved": 6,
+      "max_move_cm": 0.524
+    }
+  ],
+  "faces_mapped_first_pass": 1547,
+  "faces_unmapped_in_loop_by_reason": {
+    "move_over_limit": 203,
+    "conflicting_planes": 74,
+    "canon_vertex": 0
+  },
+  "refused_vertices": [
+    {
+      "regions": [
+        106,
+        388
+      ],
+      "move_cm": 2.616,
+      "pos_cm": [
+        -89.66,
+        10.12,
+        1.32
+      ]
+    },
+    {
+      "regions": [
+        106,
+        388
+      ],
+      "move_cm": 3.736,
+      "pos_cm": [
+        -88.68,
+        10.45,
+        12.51
+      ]
+    },
+    {
+      "regions": [
+        42,
+        49
+      ],
+      "move_cm": 1.799,
+      "pos_cm": [
+        -65.07,
+        21.29,
+        84.44
+      ]
+    },
+    {
+      "regions": [
+        55,
+        74
+      ],
+      "move_cm": 1.727,
+      "pos_cm": [
+        -61.12,
+        11.44,
+        102.56
+      ]
+    },
+    {
+      "regions": [
+        59,
+        93
+      ],
+      "move_cm": 3.812,
+      "pos_cm": [
+        -58.81,
+        1.99,
+        36.81
+      ]
+    },
+    {
+      "regions": [
+        59,
+        93
+      ],
+      "move_cm": 4.962,
+      "pos_cm": [
+        -49.93,
+        11.71,
+        41.49
+      ]
+    },
+    {
+      "regions": [
+        100,
+        138
+      ],
+      "move_cm": 3.665,
+      "pos_cm": [
+        -31.86,
+        18.45,
+        28.52
+      ]
+    },
+    {
+      "regions": [
+        100,
+        138
+      ],
+      "move_cm": 2.077,
+      "pos_cm": [
+        -35.35,
+        18.7,
+        46.06
+      ]
+    },
+    {
+      "regions": [
+        302,
+        391
+      ],
+      "move_cm": 2.154,
+      "pos_cm": [
+        -37.03,
+        25.21,
+        85.44
+      ]
+    },
+    {
+      "regions": [
+        302,
+        391
+      ],
+      "move_cm": 3.624,
+      "pos_cm": [
+        -37.05,
+        19.88,
+        81.14
+      ]
+    },
+    {
+      "regions": [
+        238,
+        379,
+        405
+      ],
+      "move_cm": 1.8,
+      "pos_cm": [
+        -34.25,
+        -21.42,
+        80.66
+      ]
+    },
+    {
+      "regions": [
+        48,
+        142
+      ],
+      "move_cm": 8.014,
+      "pos_cm": [
+        -28.67,
+        32.85,
+        84.97
+      ]
+    },
+    {
+      "regions": [
+        100,
+        138
+      ],
+      "move_cm": 3.27,
+      "pos_cm": [
+        -28.96,
+        18.02,
+        43.16
+      ]
+    },
+    {
+      "regions": [
+        43,
+        64,
+        223
+      ],
+      "move_cm": 2.224,
+      "pos_cm": [
+        -27.01,
+        -29.01,
+        113.75
+      ]
+    },
+    {
+      "regions": [
+        19,
+        268
+      ],
+      "move_cm": 2.16,
+      "pos_cm": [
+        -24.08,
+        11.33,
+        119.94
+      ]
+    },
+    {
+      "regions": [
+        19,
+        268
+      ],
+      "move_cm": 5.907,
+      "pos_cm": [
+        -22.38,
+        7.33,
+        120.49
+      ]
+    },
+    {
+      "regions": [
+        19,
+        268
+      ],
+      "move_cm": 3.099,
+      "pos_cm": [
+        -13.24,
+        8.76,
+        119.99
+      ]
+    },
+    {
+      "regions": [
+        132,
+        268
+      ],
+      "move_cm": 3.997,
+      "pos_cm": [
+        -22.87,
+        -1.44,
+        120.89
+      ]
+    },
+    {
+      "regions": [
+        51,
+        132,
+        223
+      ],
+      "move_cm": 10.485,
+      "pos_cm": [
+        -14.7,
+        -21.24,
+        121.0
+      ]
+    },
+    {
+      "regions": [
+        18,
+        82
+      ],
+      "move_cm": 3.486,
+      "pos_cm": [
+        -16.41,
+        -32.35,
+        40.83
+      ]
+    },
+    {
+      "regions": [
+        18,
+        82,
+        194
+      ],
+      "move_cm": 7.445,
+      "pos_cm": [
+        -16.33,
+        -37.18,
+        46.2
+      ]
+    },
+    {
+      "regions": [
+        27,
+        133
+      ],
+      "move_cm": 3.304,
+      "pos_cm": [
+        -17.52,
+        45.67,
+        22.62
+      ]
+    },
+    {
+      "regions": [
+        27,
+        133,
+        266
+      ],
+      "move_cm": 8.528,
+      "pos_cm": [
+        -16.15,
+        45.66,
+        42.71
+      ]
+    },
+    {
+      "regions": [
+        18,
+        44
+      ],
+      "move_cm": 2.138,
+      "pos_cm": [
+        -16.35,
+        -67.99,
+        17.44
+      ]
+    },
+    {
+      "regions": [
+        19,
+        132
+      ],
+      "move_cm": 6.629,
+      "pos_cm": [
+        -6.76,
+        -13.2,
+        121.09
+      ]
+    },
+    {
+      "regions": [
+        87,
+        176
+      ],
+      "move_cm": 1.867,
+      "pos_cm": [
+        -9.44,
+        -71.09,
+        30.39
+      ]
+    },
+    {
+      "regions": [
+        724,
+        957
+      ],
+      "move_cm": 3.544,
+      "pos_cm": [
+        -9.62,
+        -22.51,
+        58.48
+      ]
+    },
+    {
+      "regions": [
+        87,
+        244
+      ],
+      "move_cm": 1.723,
+      "pos_cm": [
+        2.7,
+        -60.79,
+        36.95
+      ]
+    },
+    {
+      "regions": [
+        68,
+        241
+      ],
+      "move_cm": 2.918,
+      "pos_cm": [
+        12.07,
+        -20.42,
+        116.22
+      ]
+    },
+    {
+      "regions": [
+        626,
+        683
+      ],
+      "move_cm": 9.53,
+      "pos_cm": [
+        -3.68,
+        -14.86,
+        75.39
+      ]
+    },
+    {
+      "regions": [
+        325,
+        326
+      ],
+      "move_cm": 2.428,
+      "pos_cm": [
+        5.76,
+        -45.96,
+        111.39
+      ]
+    },
+    {
+      "regions": [
+        78,
+        92
+      ],
+      "move_cm": 6.461,
+      "pos_cm": [
+        4.98,
+        -89.17,
+        1.15
+      ]
+    },
+    {
+      "regions": [
+        86,
+        181
+      ],
+      "move_cm": 2.984,
+      "pos_cm": [
+        10.73,
+        25.39,
+        125.85
+      ]
+    },
+    {
+      "regions": [
+        3,
+        109,
+        115
+      ],
+      "move_cm": 3.273,
+      "pos_cm": [
+        15.07,
+        -62.32,
+        0.19
+      ]
+    },
+    {
+      "regions": [
+        135,
+        140
+      ],
+      "move_cm": 2.471,
+      "pos_cm": [
+        4.74,
+        5.33,
+        135.54
+      ]
+    },
+    {
+      "regions": [
+        115,
+        727
+      ],
+      "move_cm": 9.721,
+      "pos_cm": [
+        15.46,
+        -81.86,
+        4.92
+      ]
+    },
+    {
+      "regions": [
+        97,
+        235
+      ],
+      "move_cm": 5.602,
+      "pos_cm": [
+        17.62,
+        51.75,
+        32.77
+      ]
+    },
+    {
+      "regions": [
+        97,
+        235
+      ],
+      "move_cm": 9.302,
+      "pos_cm": [
+        17.9,
+        40.14,
+        23.43
+      ]
+    },
+    {
+      "regions": [
+        75,
+        172
+      ],
+      "move_cm": 9.089,
+      "pos_cm": [
+        18.35,
+        -42.37,
+        24.62
+      ]
+    },
+    {
+      "regions": [
+        147,
+        714
+      ],
+      "move_cm": 2.634,
+      "pos_cm": [
+        21.35,
+        23.21,
+        81.37
+      ]
+    },
+    {
+      "regions": [
+        147,
+        714
+      ],
+      "move_cm": 2.626,
+      "pos_cm": [
+        21.3,
+        25.12,
+        81.8
+      ]
+    },
+    {
+      "regions": [
+        147,
+        714
+      ],
+      "move_cm": 2.847,
+      "pos_cm": [
+        21.11,
+        31.03,
+        82.89
+      ]
+    },
+    {
+      "regions": [
+        330,
+        413
+      ],
+      "move_cm": 1.522,
+      "pos_cm": [
+        24.94,
+        5.23,
+        117.16
+      ]
+    },
+    {
+      "regions": [
+        73,
+        156
+      ],
+      "move_cm": 2.565,
+      "pos_cm": [
+        27.63,
+        17.64,
+        46.3
+      ]
+    },
+    {
+      "regions": [
+        163,
+        330
+      ],
+      "move_cm": 2.719,
+      "pos_cm": [
+        36.08,
+        12.09,
+        113.07
+      ]
+    },
+    {
+      "regions": [
+        73,
+        156
+      ],
+      "move_cm": 1.547,
+      "pos_cm": [
+        31.6,
+        18.42,
+        40.54
+      ]
+    },
+    {
+      "regions": [
+        162,
+        309
+      ],
+      "move_cm": 1.737,
+      "pos_cm": [
+        32.94,
+        -21.23,
+        107.95
+      ]
+    },
+    {
+      "regions": [
+        73,
+        156
+      ],
+      "move_cm": 7.622,
+      "pos_cm": [
+        34.16,
+        17.5,
+        24.31
+      ]
+    },
+    {
+      "regions": [
+        146,
+        549
+      ],
+      "move_cm": 2.021,
+      "pos_cm": [
+        38.86,
+        16.01,
+        102.76
+      ]
+    },
+    {
+      "regions": [
+        21,
+        90
+      ],
+      "move_cm": 2.413,
+      "pos_cm": [
+        49.08,
+        11.72,
+        44.06
+      ]
+    },
+    {
+      "regions": [
+        21,
+        90,
+        98
+      ],
+      "move_cm": 2.463,
+      "pos_cm": [
+        65.83,
+        0.75,
+        32.72
+      ]
+    },
+    {
+      "regions": [
+        37,
+        77
+      ],
+      "move_cm": 2.497,
+      "pos_cm": [
+        65.44,
+        26.76,
+        103.15
+      ]
+    },
+    {
+      "regions": [
+        298,
+        373
+      ],
+      "move_cm": 1.596,
+      "pos_cm": [
+        69.47,
+        0.01,
+        31.38
+      ]
+    },
+    {
+      "regions": [
+        298,
+        373
+      ],
+      "move_cm": 2.816,
+      "pos_cm": [
+        74.44,
+        -2.42,
+        27.82
+      ]
+    }
+  ],
+  "vertices_moved": 1626,
+  "sites_moved": 1626,
+  "max_move_cm": 1.49,
+  "canon_vertices_shared_with_body": 0,
+  "faces_flat_shaded": 1270,
+  "warnings": [],
+  "output": {
+    "file": "Art/Meshes/turret/SM_Turret.fbx",
+    "tris": 15748,
+    "tris_before": 15748,
+    "budget": 16000,
+    "dimensions_cm": [
+      183.1,
+      188.49,
+      156.14
+    ],
+    "dimensions_before_cm": [
+      183.1,
+      188.49,
+      156.14
+    ],
+    "bbox_min_cm": [
+      -91.552,
+      -94.245,
+      0.0
+    ],
+    "bbox_max_cm": [
+      91.552,
+      94.245,
+      156.144
+    ],
+    "bbox_max_change_cm": 0.0,
+    "bbox_tolerance_1pct_height_cm": 1.561,
+    "pivot_bottom_centre": true,
+    "materials": [
+      "turret_body",
+      "turret_canon"
+    ],
+    "uv_layers": [
+      "UVMap"
+    ],
+    "uv_max_abs_diff": 0.0,
+    "max_residual_to_plane_after_reimport_cm": 0.00117,
+    "canon_identity": {
+      "same_topology_and_material_index": true,
+      "canon_vertices": 661,
+      "max_position_diff_cm": 0.0,
+      "unmoved_vertices_max_diff_cm": 0.0
+    },
+    "faces_smooth_after": 13104,
+    "faces_flat_after": 2644
+  }
+}

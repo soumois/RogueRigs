@@ -42,6 +42,14 @@ The optimised Meshy turret with its canon rebuilt by Blender script after the un
 - Not rebuilt: the hook bracket at the canon rear, the front plates' centre seam and edge chips as geometry, the underside rails; details in the report `warnings`.
 - Renders (not committed): `Saved/TurretMesh/canon/` before, after and reference, four views plus a top-down canon view.
 
+## Game mesh, flat surfaces (task-347-01, 2026-10-28)
+`Art/Meshes/turret/SM_Turret.fbx` re-exported with the planar surfaces of the unoptimised turret flat again. Script `Tools/art/blender/turret_flatten.py`, numbers in `Art/Meshes/turret/turret_flat.report.json`; no Meshy call, no decimation.
+- Cause of the bulge (1,547 mapped faces): two causes, not the normal map. Vertices sit off the plane (mean 0.15 cm, 95th percentile 0.50 cm, max 1.17 cm), which tilts the facets from their plane by 4.8 degrees on average (95th percentile 15 degrees); and the smooth split normals differ from the face normal by 3.6 degrees on average (95th percentile 13 degrees; all 14,374 body faces were smooth). The normal map is not the cause: its tilt on these faces is 5.7 degrees on average against 13.3 on the whole body (sample), so it is left untouched.
+- Regions: the Q3 default (normals within 3 degrees, area at least 0.5 %) finds only 6 regions (5.5 % of the surface, all the underside) because the Meshy surface is noisy at triangle scale (126,453 regions). Used instead, provisional and logged: regions grown by plane distance (face centre within 0.25 cm of the running plane, normal within 10 degrees), area at least 0.05 % of the surface: 252 regions, 33 % of the unoptimised surface (0.5 %: 8 regions, 0.1 %: 91).
+- Mapping and projection: an optimised body face joins a region when 2 of 4 sample points land on it, its vertices lie within 1.5 cm of the plane and its normal within 20 degrees. Vertices go onto the plane, onto the intersection of the planes where several regions meet (minimum move, never more than 1.5 cm = 1 % of the height). Faces that cannot be exactly planar (203 over the move limit, 74 conflicting planes) are left as they were. Result: 1,270 faces flat-shaded and planar (max residual to plane 0.0012 cm after reimport), 1,626 vertices moved (max 1.49 cm), 13,104 body faces still smooth.
+- Unchanged: 15,748 triangles, 183.10 x 188.49 x 156.14 cm (bounding box identical), UVs identical, canon vertices (661, shroud holes included) identical to task-346.
+- Renders (not committed): `Saved/TurretMesh/flat/` before (optimised source), after, reference (unoptimised), front, side, three-quarter, with the standard light and with a grazing sun.
+
 ## Relations
 - [[art-prompts]] — parent: method and locked phrases.
 - [[art-prompts-console]] — model node: owner words, Meshy files.
