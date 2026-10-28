@@ -1,0 +1,75 @@
+{
+  "run_id": "20261027-172530-main-menu-background",
+  "items": [
+    {
+      "file": "20261027-172530-main-menu-background-1.png",
+      "verdict": "fail",
+      "rule": "A3",
+      "reason": "The three chasers are squat and crouched almost on all fours with short limbs, so they read as crawlers or small heavies, not the lanky upright biped with arms forward of enemies-lineup.jpg.",
+      "correction": "Make the chasers tall, lanky upright bipeds with long thin legs and arms reaching forward, as the yellow chaser in enemies-lineup.jpg."
+    },
+    {
+      "file": "20261027-172530-main-menu-background-1.png",
+      "verdict": "fail",
+      "rule": "A13",
+      "reason": "No dark violet-magenta floor plates anywhere: the miner, the chasers and the whole cliff stand on light violet-grey breakable-rock material, so floor and rock no longer separate by brightness.",
+      "correction": "Put the miner on a ledge of dark violet-magenta cracked floor plates at the cliff edge, with the light violet-grey rocks and crystals as separate blocks on that floor."
+    },
+    {
+      "file": "20261027-172530-main-menu-background-1.png",
+      "verdict": "fail",
+      "rule": "readability-rules",
+      "reason": "The rock tops are covered in a dense cell pattern of cracks, which in the game means damaged rock, while intact breakable rock has a smooth top.",
+      "correction": "Give the rocks smooth, uncracked tops with large flat facets."
+    },
+    {
+      "file": "20261027-172530-main-menu-background-1.png",
+      "verdict": "fail",
+      "rule": "A5",
+      "reason": "The chaser plates look grimy, with dark wear patches on the limbs, but corporate robots are clean with no wear.",
+      "correction": "Keep the chasers clean, bright company yellow with crisp panels and no grime or wear."
+    },
+    {
+      "file": "20261027-172530-main-menu-background-2.png",
+      "verdict": "fail",
+      "rule": "A3",
+      "reason": "The front chaser is crouched low and wide with a hunched back, which is the heavy silhouette at chaser scale, and the two behind it are squat; none reads as a lanky biped.",
+      "correction": "Make the chasers tall, lanky upright bipeds with long thin legs and arms reaching forward, as the yellow chaser in enemies-lineup.jpg."
+    },
+    {
+      "file": "20261027-172530-main-menu-background-2.png",
+      "verdict": "fail",
+      "rule": "A13",
+      "reason": "No dark violet-magenta floor plates anywhere: everything stands on light violet-grey breakable-rock material, so floor and rock no longer separate by brightness.",
+      "correction": "Put the miner on a ledge of dark violet-magenta cracked floor plates at the cliff edge, with the light violet-grey rocks and crystals as separate blocks on that floor."
+    },
+    {
+      "file": "20261027-172530-main-menu-background-2.png",
+      "verdict": "fail",
+      "rule": "readability-rules",
+      "reason": "The rock tops under the miner and the chasers show many crack lines, which in the game means damaged rock, while intact breakable rock has a smooth top.",
+      "correction": "Give the rocks smooth, uncracked tops with large flat facets."
+    },
+    {
+      "file": "20261027-172530-main-menu-background-2.png",
+      "verdict": "fail",
+      "rule": "A5",
+      "reason": "The front chaser looks dirty orange-brown with dark wear patches, but corporate robots are clean with no wear.",
+      "correction": "Keep the chasers clean, bright company yellow with crisp panels and no grime or wear."
+    },
+    {
+      "file": "20261027-172530-main-menu-background-3.png",
+      "verdict": "fail",
+      "rule": "A13",
+      "reason": "No dark violet-magenta floor plates anywhere: the miner stands on a light violet-grey breakable-rock slab, so floor and rock no longer separate by brightness.",
+      "correction": "Put the miner on a ledge of dark violet-magenta cracked floor plates at the cliff edge, with the light violet-grey rocks and crystals as separate blocks on that floor."
+    },
+    {
+      "file": "20261027-172530-main-menu-background-3.png",
+      "verdict": "fail",
+      "rule": "readability-rules",
+      "reason": "The slab under the miner and the rocks behind it still show some crack lines across their tops (fewer than in images 1 and 2), and cracks mean damaged rock.",
+      "correction": "Give the rocks smooth, uncracked tops with large flat facets."
+    }
+  ]
+}

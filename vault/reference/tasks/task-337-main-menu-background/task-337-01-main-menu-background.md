@@ -3,7 +3,7 @@ id: task-337-01-main-menu-background
 description: "Main menu background image: one 16:9 scene in the validated key art style, generated through Kie.ai, picked by the owner."
 parent: task-337-main-menu-background
 kind: task
-status: in-progress
+status: wait-answers
 ---
 # Main menu background image
 
@@ -21,7 +21,7 @@ status: in-progress
 - runs: open
 - milestone: M3
 - started: 2026-10-28T01:24:59Z
-- waiting_for: none
+- waiting_for: owner pick or rejection of the 3 candidates (Art/Source/main-menu-background/)
 - result: open
 
 ## Relations
