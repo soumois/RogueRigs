@@ -3,7 +3,7 @@ id: task-339-03-heal-chunk-collision
 description: "cpp, editor closed: one simple collision primitive per heal chunk variant with pickup_simple_collision.py (best fit), so the Chaos rest and roll fit the shape."
 parent: task-339-heal-chunk-mesh
 kind: task
-status: in-progress
+status: done
 ---
 # Heal pickup chunks: simple collision
 
@@ -15,14 +15,14 @@ status: in-progress
 - done_when: three `PICKUPCOLLISION <path> ok` lines, each with exactly one primitive read back; no `Python script executed with errors`; committed by path (the three .uasset files).
 - editor_state: closed
 - token_ceiling: 1.2 M units
-- model: open
-- tokens: open
-- usage: open
-- runs: open
+- model: opus
+- tokens: input 12, cache write 29599, cache read 110028, output 4581
+- usage: turns 6, context start 11k peak 30k, resumes 0, 1 min, units 0.07 M
+- runs: 1
 - milestone: M2
 - started: 2026-10-28T02:37:27Z
 - waiting_for: none
-- result: open
+- result: one convex hull (48 tris) per variant in best mode (box/hull 2.16, 2.25, 2.10), 3 PICKUPCOLLISION ok lines, no errors; commit ab14624b
 
 ## Relations
 - [[task-339-heal-chunk-mesh]] — parent global task.

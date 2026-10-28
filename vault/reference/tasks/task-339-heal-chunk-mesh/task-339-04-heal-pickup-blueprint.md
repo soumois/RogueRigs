@@ -3,7 +3,7 @@ id: task-339-04-heal-pickup-blueprint
 description: "BP: BP_PickupHeal shows one of SM_HealChunk_01..03 per drop instead of the red cube, slot defaults, no shadow; other defaults unchanged."
 parent: task-339-heal-chunk-mesh
 kind: task
-status: todo
+status: in-progress
 ---
 # Heal pickup chunks: BP_PickupHeal wiring
 
@@ -20,7 +20,7 @@ status: todo
 - usage: open
 - runs: open
 - milestone: M2
-- started: open
+- started: 2026-10-28T02:38:38Z
 - waiting_for: none
 - result: open
 
