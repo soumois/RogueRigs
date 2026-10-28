@@ -3,7 +3,7 @@ id: task-348-01-shop-chrome-sprites
 description: "Art: title side bars, ore counter panel with pipes and riveted shop panel sprites after the ChatGPT sheet, keyed to alpha."
 parent: task-348-shop-screen-redesign
 kind: task
-status: in-progress
+status: wait-answers
 ---
 # Shop screen redesign: screen chrome sprites
 
@@ -21,7 +21,7 @@ status: in-progress
 - runs: open
 - milestone: M2
 - started: 2026-10-28T15:40:51Z
-- waiting_for: none
+- waiting_for: owner choice of sprite candidates c1/c2 (title bar, counter panel, shop panel)
 - result: open
 
 ## Relations

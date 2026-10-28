@@ -3,7 +3,7 @@ id: task-348-shop-screen-redesign
 description: "Global task: Rebuild the shop screen to the ChatGPT mockup look, making only the sprites the game lacks; stat icons and card frames stay."
 parent: tasks-to-do-index
 kind: task
-status: in-progress
+status: wait-answers
 ---
 # Shop screen redesign after the ChatGPT mockup
 
@@ -15,7 +15,7 @@ status: in-progress
 - milestone: M2
 - next_step: task-348-01-shop-chrome-sprites
 - started: 2026-10-28T15:40:51Z
-- waiting_for: none
+- waiting_for: owner choice of sprite candidates of subtask 01
 - result: open
 
 ## Questions
