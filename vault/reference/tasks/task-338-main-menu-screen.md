@@ -13,7 +13,7 @@ status: in-progress
 - gdd_check: no main menu exists in the GDD, tech or wishlist (descent gdd-index > run-index; tech > blueprints-ui-index, systems-ui-index). Today any map starts level 1 directly ([[sys-run]]: "PIE or -game on any map starts level 1, no menu"); GameDefaultMap and EditorStartupMap are both L_ArenaM1 (Config/DefaultEngine.ini). Read [[sys-run]] (ResetRun, BeginRun), [[sys-run-transition]] (loading and travel), [[wbp-loading]] and [[wbp-intermission]] (screen look: Roboto Bold, white with outline, orange 1/0.35/0.1 accent, texts from screen_texts.json), [[text-content-files]] (screen_texts.json items), [[cpp-bp-split]], [[milestones]] (a main menu is in no milestone). Open values: Q1 and Q6 to Q11 of the plan, asked 2026-10-28 with defaults (full list in the gdd_check of [[task-337-main-menu-background]]); answered "ok" 2026-10-28, see request. Decisions written in [[main-menu]].
 - confirmed_by_owner: yes (2026-10-28, "ok" to Q1 to Q11, relayed by the main session)
 - milestone: M3
-- next_step: task-338-02-wbp-main-menu
+- next_step: task-338-03-bp-main-menu-game-mode
 - started: 2026-10-28T01:53:55Z
 - waiting_for: none
 - result: open

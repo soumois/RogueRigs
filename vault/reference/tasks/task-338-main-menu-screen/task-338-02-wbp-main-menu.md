@@ -3,7 +3,7 @@ id: task-338-02-wbp-main-menu
 description: "WBP_MainMenu widget with the imported background texture, title and three buttons."
 parent: task-338-main-menu-screen
 kind: task
-status: in-progress
+status: done
 ---
 # Main menu: WBP_MainMenu
 
@@ -15,14 +15,14 @@ status: in-progress
 - done_when: widget compiles with warnings as errors and is saved; tree and graph read back; texture imported; change summary returned
 - editor_state: open
 - token_ceiling: 1.0 M units
-- model: open
-- tokens: open
-- usage: open
-- runs: open
+- model: sonnet
+- tokens: input 72, cache write 105072, cache read 2442219, output 23937
+- usage: turns 36, context start 9k peak 105k, resumes 0, 5 min, units 0.50 M
+- runs: 1
 - milestone: M3
 - started: 2026-10-28T02:02:32Z
 - waiting_for: none
-- result: open
+- result: T_MainMenuBackground imported, WBP_MainMenu built (parent URRMainMenuWidget), compiled and saved; five-band stepped gradient, unrendered; commit 05680914
 
 ## Relations
 - [[task-338-main-menu-screen]] — parent global task.

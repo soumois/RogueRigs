@@ -3,7 +3,7 @@ id: task-338-03-bp-main-menu-game-mode
 description: "BP_MainMenuGameMode, child of the C++ main menu game mode, with WBP_MainMenu assigned."
 parent: task-338-main-menu-screen
 kind: task
-status: todo
+status: in-progress
 ---
 # Main menu: BP_MainMenuGameMode
 
@@ -20,7 +20,7 @@ status: todo
 - usage: open
 - runs: open
 - milestone: M3
-- started: open
+- started: 2026-10-28T02:08:26Z
 - waiting_for: none
 - result: open
 
