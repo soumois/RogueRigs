@@ -3,7 +3,7 @@ id: task-350-04-turret-capture
 description: "-game capture of the new turret placed and firing, compared with the before frames, plus the turret tests on the final Blueprint; editor left open."
 parent: task-350-turret-in-game
 kind: task
-status: todo
+status: in-progress
 ---
 # Turret in game: after capture and tests
 
@@ -21,7 +21,7 @@ status: todo
 - usage: open
 - runs: open
 - milestone: M2
-- started: open
+- started: 2026-10-28T16:24:55Z
 - waiting_for: none
 - result: open
 

@@ -20,7 +20,7 @@ status: in-progress
   - Q6 muzzle flash: default: the current white-gold sphere flash is kept, moved to the canon tip; no new effect. DECIDED: default.
 - confirmed_by_owner: yes (2026-10-28, "ok" to the plan and every default of Q1-Q6, relayed by the main session)
 - milestone: M2
-- next_step: task-350-03-bp-turret-meshes
+- next_step: task-350-04-turret-capture
 - started: 2026-10-28T16:06:37Z
 - waiting_for: none
 - result: open

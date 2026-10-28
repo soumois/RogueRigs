@@ -3,7 +3,7 @@ id: task-350-03-bp-turret-meshes
 description: "BP_Turret shows SM_TurretBase and SM_TurretHead on the C++ HeadPivot at the grey-box height, flash at the canon tip, grey box and EventTick orbit removed."
 parent: task-350-turret-in-game
 kind: task
-status: in-progress
+status: done
 ---
 # BP_Turret: Meshy base and head on the C++ pivots
 
@@ -16,14 +16,14 @@ status: in-progress
 - done_when: BP_Turret compiles with no error and is saved; read-back components: TurretBaseMesh, HeadPivot with TurretHeadMesh, Muzzle with MuzzleFlash, no grey-box mesh, no EventTick node; scaled head top within 3 uu of the grey-box head top read in step 1; all meshes NoCollision; committed by path as `task-350-03-bp-turret-meshes: <summary>`; editor LEFT OPEN.
 - editor_state: open
 - token_ceiling: 1.0 M units
-- model: open
-- tokens: open
-- usage: open
-- runs: open
+- model: sonnet
+- tokens: input 66, cache write 89417, cache read 1934171, output 23097
+- usage: turns 33, context start 11k peak 94k, resumes 0, 3 min, units 0.42 M
+- runs: 1
 - milestone: M2
 - started: 2026-10-28T16:21:19Z
 - waiting_for: none
-- result: open
+- result: Done: BP_Turret has TurretBaseMesh, HeadPivot+TurretHeadMesh, Muzzle+MuzzleFlash, scale S=0.6148 (head top 95.99 vs 96), grey box and EventTick removed, compiled, saved, NoCollision. Muzzle world height 58.8 vs ShotHeight 50 (flash 8.8 uu above bullet start). Not seen on screen. Commit 92a18603.
 
 ## Relations
 - [[task-350-turret-in-game]] — parent global task.
