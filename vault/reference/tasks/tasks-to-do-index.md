@@ -15,4 +15,4 @@ A global task moves to [[tasks-done-index]] when it is done or cancelled (`vault
 - [[task-314-chest-lid-logo]] — Add the yellow Kessler-Voss mark on top of the chest lid, as on the validated sheet, and show it in game. Status todo.
 - [[task-337-main-menu-background]] — Main menu background image: one 16:9 scene in the validated key art style, generated through Kie.ai, picked by the owner. Status in-progress.
 - [[task-338-main-menu-screen]] — Main menu screen at game start: background image, New Run starts a run, Options placeholder, Exit quits the game. Status todo.
-- [[task-339-heal-chunk-mesh]] — Blender meshes of the 3 red heal pickup chunk variants from the chosen sheet, then in game on BP_PickupHeal, drawn at random per drop. Status todo.
+- [[task-339-heal-chunk-mesh]] — Blender meshes of the 3 red heal pickup chunk variants from the chosen sheet, then in game on BP_PickupHeal, drawn at random per drop. Status in-progress.
