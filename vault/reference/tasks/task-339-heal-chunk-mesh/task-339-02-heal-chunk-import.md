@@ -3,7 +3,7 @@ id: task-339-02-heal-chunk-import
 description: "BP: import SM_HealChunk_01..03 into Unreal and give their two slots new red glowing instances MI_HealChunk_Bright and MI_HealChunk_Dark."
 parent: task-339-heal-chunk-mesh
 kind: task
-status: in-progress
+status: done
 ---
 # Heal pickup chunks: import and materials
 
@@ -15,14 +15,14 @@ status: in-progress
 - done_when: mesh bounds read back (longest side about 30 cm, centred) and tris match the reports; each slot of the three meshes has its instance; instance parameters read back equal to the values above; MI_HealCrystal_* unchanged; materials compile; committed by path.
 - editor_state: open
 - token_ceiling: 1.0 M units
-- model: open
-- tokens: open
-- usage: open
-- runs: open
+- model: sonnet
+- tokens: input 32, cache write 44839, cache read 465455, output 8357
+- usage: turns 16, context start 9k peak 45k, resumes 0, 2 min, units 0.14 M
+- runs: 1
 - milestone: M2
 - started: 2026-10-28T02:34:53Z
 - waiting_for: none
-- result: open
+- result: 3 meshes imported (180/172/180 tris, 30 cm, centred, Nanite off), MI_HealChunk_Bright/Dark created and set as slot defaults, params read back equal; commit 26150b59
 
 ## Relations
 - [[task-339-heal-chunk-mesh]] — parent global task.

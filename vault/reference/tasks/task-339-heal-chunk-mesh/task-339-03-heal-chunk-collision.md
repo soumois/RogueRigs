@@ -3,7 +3,7 @@ id: task-339-03-heal-chunk-collision
 description: "cpp, editor closed: one simple collision primitive per heal chunk variant with pickup_simple_collision.py (best fit), so the Chaos rest and roll fit the shape."
 parent: task-339-heal-chunk-mesh
 kind: task
-status: todo
+status: in-progress
 ---
 # Heal pickup chunks: simple collision
 
@@ -20,7 +20,7 @@ status: todo
 - usage: open
 - runs: open
 - milestone: M2
-- started: open
+- started: 2026-10-28T02:37:27Z
 - waiting_for: none
 - result: open
 
