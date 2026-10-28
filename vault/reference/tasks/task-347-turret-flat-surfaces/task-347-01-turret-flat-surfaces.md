@@ -3,7 +3,7 @@ id: task-347-01-turret-flat-surfaces
 description: "Project the optimised turret vertices of each planar region of the unoptimised mesh onto its plane, canon excluded, and render before, after and reference."
 parent: task-347-turret-flat-surfaces
 kind: task
-status: todo
+status: in-progress
 ---
 # Turret mesh: flatten the bulged surfaces
 
@@ -21,7 +21,7 @@ status: todo
 - usage: open
 - runs: open
 - milestone: M2
-- started: open
+- started: 2026-10-28T07:02:17Z
 - waiting_for: none
 - result: open
 

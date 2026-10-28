@@ -3,7 +3,7 @@ id: task-347-turret-flat-surfaces
 description: "Global task: Make the surfaces that should be flat on the optimised Meshy turret flat again, using the unoptimised mesh as the reference."
 parent: tasks-to-do-index
 kind: task
-status: todo
+status: in-progress
 ---
 # Turret mesh: flatten the bulged flat surfaces of the optimised version
 
@@ -16,7 +16,7 @@ status: todo
 - confirmed_by_owner: yes (2026-10-28, "Yes" to the plan and the Q1-Q5 defaults, budget 10,000, holes in the outer barrel layer; budget raised to 16,000 the same day after the task-346 blocker; relayed by the main session)
 - milestone: M2
 - next_step: task-347-01-turret-flat-surfaces
-- started: open
+- started: 2026-10-28T07:02:17Z
 - waiting_for: none
 - result: open
 
