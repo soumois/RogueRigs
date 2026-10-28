@@ -3,7 +3,7 @@ id: task-350-05-turret-doc
 description: "Update sys-turret and bp-turret for the fixed base, yawing head and canon-tip shots; create bp-turret-materials for the turret textures, material and meshes."
 parent: task-350-turret-in-game
 kind: task
-status: todo
+status: in-progress
 ---
 # Turret docs: system, Blueprint, materials
 
@@ -20,7 +20,7 @@ status: todo
 - usage: open
 - runs: open
 - milestone: M2
-- started: open
+- started: 2026-10-28T16:29:12Z
 - waiting_for: none
 - result: open
 
