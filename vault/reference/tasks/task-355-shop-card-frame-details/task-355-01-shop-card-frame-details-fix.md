@@ -3,7 +3,7 @@ id: task-355-01-shop-card-frame-details-fix
 description: "Bp: WBP_ShopCard layout fix for owner point 5 of the shop capture, display only."
 parent: task-355-shop-card-frame-details
 kind: task
-status: in-progress
+status: done
 ---
 # Shop card: second frame line, cramped tier tab, sold panel fit: WBP_ShopCard fix
 
@@ -15,14 +15,14 @@ status: in-progress
 - done_when: compiled and saved; changed slots and brushes read back; widget names and task-342/343/344 graphs still present; committed by path.
 - editor_state: open
 - token_ceiling: 1.0 M units
-- model: open
-- tokens: open
-- usage: open
-- runs: open
+- model: sonnet
+- tokens: input 48, cache write 112555, cache read 1664558, output 12556
+- usage: turns 23, context start 11k peak 113k, resumes 1 (message x1), 2 min, units 0.37 M
+- runs: 1
 - milestone: M2
 - started: 2026-10-28T21:49:19Z
 - waiting_for: none
-- result: open
+- result: FrameGlow collapsed (inferred cause of the second line), TierTabText 26 to 20, SoldPanel slot padding 24/34/24/35 (was 14/24/14/25); commit 9c59e766; not rendered
 
 ## Relations
 - [[task-355-shop-card-frame-details]] — parent global task.

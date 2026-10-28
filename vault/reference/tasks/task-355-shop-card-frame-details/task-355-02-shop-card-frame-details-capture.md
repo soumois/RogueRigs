@@ -3,7 +3,7 @@ id: task-355-02-shop-card-frame-details-capture
 description: "Cpp: -game captures at four resolutions of the fix of owner point 5, compared with the look before and the mockup."
 parent: task-355-shop-card-frame-details
 kind: task
-status: todo
+status: in-progress
 ---
 # Shop card: second frame line, cramped tier tab, sold panel fit: capture
 
@@ -20,7 +20,7 @@ status: todo
 - usage: open
 - runs: open
 - milestone: M2
-- started: open
+- started: 2026-10-28T21:51:38Z
 - waiting_for: none
 - result: open
 
