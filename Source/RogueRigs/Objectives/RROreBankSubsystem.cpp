@@ -34,3 +34,11 @@ int32 URROreBankSubsystem::RemoveSecuredOre(int32 Amount)
 	}
 	return SecuredOre;
 }
+
+int32 URROreBankSubsystem::ResetSecuredOre()
+{
+	const int32 Cleared = SecuredOre;
+	SecuredOre = 0;
+	UE_LOG(LogRogueRigs, Log, TEXT("URROreBankSubsystem: run ended, %d secured ore cleared, session total 0."), Cleared);
+	return Cleared;
+}

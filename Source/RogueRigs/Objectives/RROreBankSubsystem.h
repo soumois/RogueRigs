@@ -11,7 +11,7 @@
  * (URRRunFlowSubsystem::EndRun success). Lives on the game instance, so it survives URRRunFlowSubsystem::RestartLevel; it is
  * not saved to disk (meta-progression is deferred). Read it through URRRunFlowSubsystem::GetSecuredOre and the run flow
  * OnOreChanged event, which also cover worlds without an initialized game instance (headless tests). Paid rerolls spend it
- * through URRRunFlowSubsystem::SpendOre (RemoveSecuredOre). The share of secured ore lost on a failed run is open (ore-economy).
+ * through URRRunFlowSubsystem::SpendOre (RemoveSecuredOre). URRRunSubsystem::ResetRun clears it at every run end (lost, won, restart, New Run), so ore lasts one run.
  */
 UCLASS()
 class ROGUERIGS_API URROreBankSubsystem : public UGameInstanceSubsystem
@@ -31,6 +31,9 @@ public:
 
 	/** Removes Amount (> 0, at most the total) from the secured total; returns the new total. Called by URRRunFlowSubsystem::SpendOre. */
 	int32 RemoveSecuredOre(int32 Amount);
+
+	/** Clears the secured total (ore lasts one run, ore-economy); returns the amount cleared. Called by URRRunSubsystem::ResetRun. */
+	int32 ResetSecuredOre();
 
 protected:
 	/** Ore secured this session (starts at 0 with the game instance). */

@@ -358,7 +358,13 @@ void URRRunSubsystem::ResetRun()
 	bSnapshotPending = false;
 	CaptureWorld.Reset();
 	ClearLayoutRequest();
-	UE_LOG(LogRogueRigs, Log, TEXT("URRRunSubsystem: run reset; the next map begins level 1."));
+	// Ore lasts one run (ore-economy, task-340): the secured bank starts the next run at 0.
+	const UGameInstance* GameInstance = GetGameInstance();
+	if (URROreBankSubsystem* Bank = GameInstance ? GameInstance->GetSubsystem<URROreBankSubsystem>() : nullptr)
+	{
+		Bank->ResetSecuredOre();
+	}
+	UE_LOG(LogRogueRigs, Log, TEXT("URRRunSubsystem: run reset; the next map begins level 1, secured ore %d."), GetBankSecuredOre());
 	OnRunReset.Broadcast();
 }
 

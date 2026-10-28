@@ -120,7 +120,7 @@ public:
 	/** Replaces the layout provider (the future generator); null restores the JSON provider. Takes effect at the next request. */
 	void SetLayoutProvider(TSharedPtr<IRRLayoutProvider> InProvider);
 
-	/** Ends the run state (run lost, run won, restart): no run in progress, snapshot cleared; the next map begins level 1. */
+	/** Ends the run state (run lost, run won, restart, main menu New Run): no run in progress, snapshot cleared, secured ore bank cleared (ore lasts one run); the next map begins level 1. */
 	UFUNCTION(BlueprintCallable, Category = "Run")
 	void ResetRun();
 
