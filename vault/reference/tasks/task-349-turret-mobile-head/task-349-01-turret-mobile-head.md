@@ -3,7 +3,7 @@ id: task-349-01-turret-mobile-head
 description: "Cut SM_Turret into a fixed SM_TurretBase and a SM_TurretHead pivoting on the yaw axis, cap the seam, check a 360 degree sweep, render."
 parent: task-349-turret-mobile-head
 kind: task
-status: in-progress
+status: done
 ---
 # Turret mesh: cut the rotating head from the fixed base
 
@@ -16,14 +16,14 @@ status: in-progress
 - done_when: two FBX reimport with the expected dimensions; head origin on the measured axis (offset within 0.1 cm) and base origin bottom centre; canon along +X at rest; no open boundary at the cut on either mesh (boundary edge count at the cut = 0); no head-base intersection at any of the 36 sweep angles; body vertices away from the cut and all UVs unchanged versus SM_Turret.fbx (numbers in the report); total triangles under 16,000; slots per Q4; renders exist and their paths are reported so the Executor sends them to the owner; art-prompts-turret updated; lint clean; committed by path as `task-349-01-turret-mobile-head: <summary>`; `Get-Process blender` empty.
 - editor_state: any
 - token_ceiling: 1.2 M units
-- model: open
-- tokens: open
-- usage: open
-- runs: open
+- model: sonnet
+- tokens: input 94, cache write 211953, cache read 3414994, output 93939
+- usage: turns 48, context start 10k peak 141k, resumes 0, 17 min, units 1.08 M
+- runs: 2
 - milestone: M2
 - started: 2026-10-28T07:14:11Z
 - waiting_for: none
-- result: open
+- result: Base 7,755 + head 8,219 = 15,974 tris; cut z 65.2, axis offset (0.501,0.518,65.2) cm, 0 boundary edges at cut, 0 intersections over 36 angles (min clearance 1.83 cm at 180), vertices/UVs unchanged; commit ef980eb0. First run cut by rate limit (429), resumed once; stale report regenerated (was 16,004 tris).
 
 ## Relations
 - [[task-349-turret-mobile-head]] — parent global task.

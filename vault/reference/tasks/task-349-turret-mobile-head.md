@@ -1,9 +1,9 @@
 ---
 id: task-349-turret-mobile-head
 description: "Global task: Cut the turret game mesh into a fixed base and a head that turns about a vertical axis, as for the console C2."
-parent: tasks-to-do-index
+parent: tasks-done-index
 kind: task
-status: in-progress
+status: done
 ---
 # Turret mesh: separate the rotating head from the fixed base
 
@@ -18,16 +18,16 @@ status: in-progress
   - Q5 no Unreal import in this task — default ok (BP_Turret stays the grey box; import is a separate request). DECIDED: default.
 - confirmed_by_owner: yes (2026-10-28, "ok" to the plan and every default of Q1-Q5, relayed by the main session)
 - milestone: M2
-- next_step: task-349-01-turret-mobile-head
+- next_step: none
 - started: 2026-10-28T07:14:11Z
 - waiting_for: none
-- result: open
+- result: Done. Base 7,755 + head 8,219 = 15,974 tris; cut z 65.2, axis offset (0.501,0.518,65.2) cm, 0 boundary edges at cut, 0 intersections over 36 angles (min clearance 1.83 cm at 180), vertices/UVs unchanged; commit ef980eb0. First run cut by rate limit (429), resumed once; stale report regenerated (was 16,004 tris).
 
 ## Subtasks
 1. task-349-01-turret-mobile-head (vault/reference/tasks/task-349-turret-mobile-head/task-349-01-turret-mobile-head.md) — 3d: cut SM_Turret into SM_TurretBase and SM_TurretHead (pivot on the yaw axis), cap the seam, check a 360 degree sweep, render.
 
 ## Relations
-- [[tasks-to-do-index]] — parent index.
+- [[tasks-done-index]] — parent index.
 - [[task-349-01-turret-mobile-head]] — step 1, 3d.
 - [[task-347-turret-flat-surfaces]] — must be done first: its SM_Turret.fbx is this task's input.
 - [[task-346-turret-canon]] — built the canon the head carries.

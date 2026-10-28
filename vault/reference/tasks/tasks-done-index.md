@@ -353,3 +353,4 @@ Archive: it exceeds the index size limits of [[_authoring]] on purpose (owner, 2
 - [[task-345-turret-meshy-files]] — Identify which owner Meshy turret zip is the optimised mesh by headless Blender triangle counts, save both in Art/Source/turret-meshy/ and record them in a new node art-prompts-turret. Status done.
 - [[task-346-turret-canon]] — Rebuild the optimised Meshy turret canon by Blender script after the unoptimised mesh, with a perforated machine-gun shroud of real holes. Status done.
 - [[task-347-turret-flat-surfaces]] — Make the surfaces that should be flat on the optimised Meshy turret flat again, using the unoptimised mesh as the reference. Status done.
+- [[task-349-turret-mobile-head]] — Cut the turret game mesh into a fixed base and a head that turns about a vertical axis, as for the console C2. Status done.
