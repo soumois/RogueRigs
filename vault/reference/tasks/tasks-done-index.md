@@ -359,3 +359,4 @@ Archive: it exceeds the index size limits of [[_authoring]] on purpose (owner, 2
 - [[task-350-turret-in-game]] — The placed turret shows the new Meshy base and a head that yaws toward its target, replacing the grey box, shots leaving the canon. Status done.
 - [[task-351-shop-title-clip]] — Shop screen title, its side bars and subtitle fully visible at the top of the 1920 x 1080 screen. Status done.
 - [[task-352-shop-continue-fit]] — Shop screen Continue plate fully visible above the bottom of the 1920 x 1080 screen, with Reroll above it. Status done.
+- [[task-353-shop-need-label]] — Shop card "NEED {n} MORE" label in smaller text on the grey Buy plate, inside the plate up to three digits. Status done.

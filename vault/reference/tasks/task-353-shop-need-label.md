@@ -1,9 +1,9 @@
 ---
 id: task-353-shop-need-label
 description: "Global task: Shop card 'NEED {n} MORE' label in smaller text on the grey Buy plate, inside the plate up to three digits."
-parent: tasks-to-do-index
+parent: tasks-done-index
 kind: task
-status: in-progress
+status: done
 ---
 # Shop card: NEED N MORE overflows the Buy plate
 
@@ -13,10 +13,10 @@ status: in-progress
 - gdd_check: read 2026-10-28 by the Planner: [[run-shop]] (screen look, provisional, owner 2026-10-28), tech [[wbp-shop-screen]], [[wbp-shop-card]], [[task-348-shop-screen-redesign]] (Q1 to Q11 stay decided) and its subtasks 07 to 09; capture frames srd_00, srd_23, crops_03_11, comparison_sheet and the mockup seen by the Planner: the five defects are confirmed. No conflict with the GDD; rules unchanged (display only). No `open` GDD value is needed; the sizes below are layout values the GDD does not hold, proposed as provisional defaults in `## Questions`. Scope: M2, same as task-348. Shared cause seen: the Content column (title, panel, Reroll, Continue) is taller than 1080 and centred, so it overflows at both ends; tasks run 351 to 355 in order, each keeping the previous fixes. Order: starts after [[task-352-shop-continue-fit]] done (one agent at a time). Owner answer 2026-10-28: "OK, tout par défaut": every default of `## Questions` is DECIDED (values provisional, owner 2026-10-28); [[run-shop]] updated by the Planner the same day. Run order confirmed: 351, 352, 353, 354, 355.
 - confirmed_by_owner: yes (2026-10-28, "OK, tout par défaut" to Q1-Q9 and the plan, relayed by the main session)
 - milestone: M2
-- next_step: task-353-03-shop-need-label-doc
+- next_step: none
 - started: 2026-10-28T17:47:19Z
 - waiting_for: none
-- result: open
+- result: Done. wbp-shop-card updated (NEED 16, BuyTextBox, BuyPlateBox, verified_need, open minor defects); commit 3e9f336f
 
 ## Questions
 Decided 2026-10-28 (owner "OK, tout par défaut"), values provisional.
@@ -30,7 +30,7 @@ Questions Q1 to Q9 were asked together; each lives in the task it applies to (Q8
 3. task-353-03-shop-need-label-doc (vault/reference/tasks/task-353-shop-need-label/task-353-03-shop-need-label-doc.md) — doc: update wbp-shop-card.
 
 ## Relations
-- [[tasks-to-do-index]] — parent index.
+- [[tasks-done-index]] — parent index.
 - [[task-353-01-shop-need-label-fix]] — step 1, bp.
 - [[task-353-02-shop-need-label-capture]] — step 2, cpp.
 - [[task-353-03-shop-need-label-doc]] — step 3, doc.
