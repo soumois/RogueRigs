@@ -3,7 +3,7 @@ id: task-348-02-shop-button-sprites
 description: "Art: Buy, Reroll and Continue button plates and the reroll arrow icon after the ChatGPT sheet, keyed to alpha, no text."
 parent: task-348-shop-screen-redesign
 kind: task
-status: wait-answers
+status: done
 ---
 # Shop screen redesign: button sprites
 
@@ -15,14 +15,14 @@ status: wait-answers
 - done_when: four keyed PNGs, clean alpha (`ui_icon_prepare.js --check`), no baked text; at most 2 variants and 1 correction run (Q1); images sent to the owner and retained by him; node updated; lint clean; committed by path.
 - editor_state: any
 - token_ceiling: 0.15 M units
-- model: open
-- tokens: open
-- usage: open
-- runs: open
+- model: sonnet+opus
+- tokens: input 52, cache write 142972, cache read 679169, output 18026
+- usage: turns 25, context start 10k peak 57k, resumes 1 (message x1), 18 min, units 0.34 M
+- runs: 2
 - milestone: M2
 - started: 2026-10-28T16:01:36Z
-- waiting_for: owner choice of button/icon candidates c1/c2
-- result: open
+- waiting_for: none
+- result: Retained Buy c2, Reroll c2, Continue c2, icon c2 in Art/UI/Shop/ (48 credits, no correction run). Plate heights are above the node targets (Buy 137, Reroll 180, Continue 163): adjust in UMG. Resume and units alerts: owner pick finalisation after image review. A6 white-plate look still accepted.
 
 ## Relations
 - [[task-348-shop-screen-redesign]] — parent global task.
