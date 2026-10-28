@@ -3,7 +3,7 @@ id: task-348-05-shop-sprites-import
 description: "Bp: import the ten shop screen sprites from Art/UI/Shop as UI textures in /Game/RogueRigs/UI/Shop."
 parent: task-348-shop-screen-redesign
 kind: task
-status: todo
+status: in-progress
 ---
 # Shop screen redesign: import the sprites
 
@@ -20,7 +20,7 @@ status: todo
 - usage: open
 - runs: open
 - milestone: M2
-- started: open
+- started: 2026-10-28T16:42:16Z
 - waiting_for: none
 - result: open
 
