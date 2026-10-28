@@ -51,6 +51,7 @@ Reference images are generated in ChatGPT image generation. The prompts are stor
 - [[art-prompts-chest]] — bonus chest supply locker: validated turnaround sheet and its prompt.
 - [[art-prompts-card-back]] — level-up card back, neutral grey candidate: prompt, delivery to 1000 x 1440.
 - [[art-prompts-console]] — console C2 uplink mast: turnaround prompt, owner words, mesh decisions, Meshy files.
+- [[art-prompts-turret]] — turret Meshy meshes: optimised and unoptimised zips, counts, files.
 - [[art-prompts-heal-pickup]] — heal pickup crystal variants: Kie.ai prompt, 3-up sheet, self-review.
 - [[art-prompts-main-menu-background]] — main menu background: Kie.ai prompt, 3 variants, self-review.
 - [[art-prompts-shop-screen]] — ChatGPT text prompt for design and game-feel proposals of the shop screen, with screenshot.

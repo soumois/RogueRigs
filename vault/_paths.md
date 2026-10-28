@@ -49,6 +49,7 @@ art-prompts-rock-top-texture  reference/gdd/art-audio/art-prompts-rock-top-textu
 art-prompts-shield  reference/gdd/art-audio/art-prompts-shield.md
 art-prompts-shop-screen  reference/gdd/art-audio/art-prompts-shop-screen.md
 art-prompts-space-background  reference/gdd/art-audio/art-prompts-space-background.md
+art-prompts-turret  reference/gdd/art-audio/art-prompts-turret.md
 art-prompts-xp-core  reference/gdd/art-audio/art-prompts-xp-core.md
 art-style-guide  reference/gdd/art-audio/art-style-guide.md
 asset-pipeline  reference/tech/pipelines/asset-pipeline.md

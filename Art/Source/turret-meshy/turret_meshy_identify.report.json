@@ -1,0 +1,88 @@
+{
+  "measured_by": "Tools/art/blender/turret_identify.py (headless Blender, evaluated and triangulated)",
+  "decision": "zip B (file name with (1)) is optimised (15455 tris); zip A is unoptimised (152107 tris); ratio 9.8x",
+  "zipA": {
+    "folder": "Art/Source/turret-meshy/meshy-unoptimised",
+    "role": "unoptimised",
+    "file": "Meshy_AI_Teal_Bastion_Gunner_20261028_texture_remesh_tri.fbx",
+    "triangles": 152107,
+    "vertices": 75925,
+    "objects": [
+      "output_unwrapped"
+    ],
+    "bbox_cm": [
+      183.43,
+      188.95,
+      156.23
+    ],
+    "unit_scale": 1,
+    "materials": [
+      "Material.001"
+    ],
+    "uv_layers": {
+      "output_unwrapped": [
+        "UVMap"
+      ]
+    },
+    "images": {
+      "normal": [
+        2048,
+        2048
+      ],
+      "texture_0": [
+        2048,
+        2048
+      ],
+      "texture_0_metallic.png": [
+        4096,
+        4096
+      ],
+      "texture_0_roughness.png": [
+        4096,
+        4096
+      ]
+    }
+  },
+  "zipB": {
+    "folder": "Art/Source/turret-meshy/meshy-optimised",
+    "role": "optimised",
+    "file": "Meshy_AI_Teal_Bastion_Gunner_20261028_texture_remesh_tri.fbx",
+    "triangles": 15455,
+    "vertices": 7635,
+    "objects": [
+      "output_unwrapped"
+    ],
+    "bbox_cm": [
+      183.1,
+      188.8,
+      156.14
+    ],
+    "unit_scale": 1,
+    "materials": [
+      "Material.001"
+    ],
+    "uv_layers": {
+      "output_unwrapped": [
+        "UVMap"
+      ]
+    },
+    "images": {
+      "normal": [
+        2048,
+        2048
+      ],
+      "texture_0": [
+        2048,
+        2048
+      ],
+      "texture_0_metallic.png": [
+        4096,
+        4096
+      ],
+      "texture_0_roughness.png": [
+        4096,
+        4096
+      ]
+    }
+  }
+}
