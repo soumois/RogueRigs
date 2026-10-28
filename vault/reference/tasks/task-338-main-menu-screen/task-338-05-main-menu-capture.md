@@ -3,7 +3,7 @@ id: task-338-05-main-menu-capture
 description: "-game capture of the main menu at 1920 x 1080 and log check that New Run reaches level 1 and Exit quits."
 parent: task-338-main-menu-screen
 kind: task
-status: in-progress
+status: done
 ---
 # Main menu: capture and check
 
@@ -15,14 +15,14 @@ status: in-progress
 - done_when: menu PNG exists and is described; New Run and Exit log lines quoted; existing launch commands still reach the arena; report lists the unseen items
 - editor_state: closed
 - token_ceiling: 1.2 M units
-- model: open
-- tokens: open
-- usage: open
-- runs: open
+- model: opus
+- tokens: input 40, cache write 49426, cache read 636760, output 8424
+- usage: turns 20, context start 11k peak 49k, resumes 0, 3 min, units 0.17 M
+- runs: 1
 - milestone: M3
 - started: 2026-10-28T02:22:00Z
 - waiting_for: none
-- result: open
+- result: Menu renders at 1920x1080 (Saved/Captures/MainMenu/MainMenu_00.png); rr.Menu.NewRun reaches level 1 on L_ArenaM1, rr.Menu.Exit quits; capture.js gained --map none; commit d61fd78c; unseen: real mouse click, cursor, hover colour
 
 ## Relations
 - [[task-338-main-menu-screen]] — parent global task.

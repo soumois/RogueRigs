@@ -3,7 +3,7 @@ id: task-338-06-main-menu-doc
 description: "System and Blueprint doc nodes of the main menu: C++ classes, WBP_MainMenu, BP_MainMenuGameMode, L_MainMenu, rr.Menu commands."
 parent: task-338-main-menu-screen
 kind: task
-status: todo
+status: in-progress
 ---
 # Main menu: documentation
 
@@ -20,7 +20,7 @@ status: todo
 - usage: open
 - runs: open
 - milestone: M3
-- started: open
+- started: 2026-10-28T02:26:08Z
 - waiting_for: none
 - result: open
 
