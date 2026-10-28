@@ -3,7 +3,7 @@ id: task-340-02-ore-counter-total
 description: "Bp: WBP_OreCounter shows carried + secured ore."
 parent: task-340-ore-run-carry
 kind: task
-status: in-progress
+status: done
 ---
 # Ore kept for the whole run, reset at run end: WBP_OreCounter shows carried + secured ore
 
@@ -15,14 +15,14 @@ status: in-progress
 - done_when: compiled and saved; graph read back: the custom event and the bind-time call pass carried + secured; committed.
 - editor_state: open
 - token_ceiling: 1.0 M units
-- model: open
-- tokens: open
-- usage: open
-- runs: open
+- model: sonnet
+- tokens: input 68, cache write 83048, cache read 3301272, output 13256
+- usage: turns 33, context start 60k peak 126k, resumes 0, 3 min, units 0.50 M
+- runs: 1
 - milestone: M2
 - started: 2026-10-28T06:18:43Z
 - waiting_for: none
-- result: open
+- result: Done, commit 67076453. WBP_OreCounter: OnOreChanged event (renamed OnOreChanged_Event_3) calls ShowOre(CarriedOre+SecuredOre); bind-time read uses GetSpendableOre. Compiled, saved, graph read back. No PIE check (covered by 03).
 
 ## Relations
 - [[task-340-ore-run-carry]] — parent global task.

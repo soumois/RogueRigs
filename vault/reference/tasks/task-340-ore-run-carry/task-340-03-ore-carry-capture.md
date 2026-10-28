@@ -3,7 +3,7 @@ id: task-340-03-ore-carry-capture
 description: "Cpp: -game capture: level 2 HUD and next shop show the carried total, new run at 0."
 parent: task-340-ore-run-carry
 kind: task
-status: todo
+status: in-progress
 ---
 # Ore kept for the whole run, reset at run end: -game capture: level 2 HUD and next shop show the carried total, new run at 0
 
@@ -20,7 +20,7 @@ status: todo
 - usage: open
 - runs: open
 - milestone: M2
-- started: open
+- started: 2026-10-28T06:22:52Z
 - waiting_for: none
 - result: open
 
