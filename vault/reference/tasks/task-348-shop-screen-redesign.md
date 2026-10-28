@@ -13,7 +13,7 @@ status: wait-answers
 - gdd_check: read 2026-10-28: [[run-shop]], [[rarities]], [[color-code]], [[readability-rules]], [[art-prompts]], [[art-prompts-shop-screen]], [[agent-art]], [[kie-image-workflow]], [[art-3d-lessons]], tech [[wbp-shop-screen]], [[wbp-shop-card]], [[sys-text-content]]; tasks 342 to 344. Existing: the mockup cards are the current baked stat frame tinted per tier, T_Icon_Ore, the stat icons, MI_CardBurn. Missing: title bars, counter panel, shop panel, button plates, reroll arrow, tier tab, sold look. Conflicts and open values: the sheet (1125 x 750) is too small to cut sprites from; [[kie-image-workflow]] treats an owner-sent third-party image as reference only; the mockup writes COMMON in blue while grey is common and blue is rare ([[rarities]]); tier names are not in the GDD; the mockup drops the target line and the red short price. Questions (defaults, values provisional): see `## Questions`. Owner answer 2026-10-28: "OK, tout par défaut": every default of `## Questions` is DECIDED (values provisional, owner 2026-10-28); [[run-shop]] updated by the Planner the same day. Order: starts only after [[task-344-shop-card-burn]] is done (Q11).
 - confirmed_by_owner: yes (2026-10-28, "OK, tout par défaut" to Q1-Q11 and the plan, relayed by the main session)
 - milestone: M2
-- next_step: task-348-07-shop-screen-restyle
+- next_step: task-348-08-shop-screen-capture
 - started: 2026-10-28T15:40:51Z
 - waiting_for: owner choice of sprite candidates of subtask 03
 - result: open

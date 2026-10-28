@@ -3,7 +3,7 @@ id: task-348-07-shop-screen-restyle
 description: "Bp: WBP_ShopScreen to the mockup: title bars and subtitle, counter panel top left, riveted shop panel, Reroll and Continue plates."
 parent: task-348-shop-screen-redesign
 kind: task
-status: in-progress
+status: done
 ---
 # Shop screen redesign: WBP_ShopScreen
 
@@ -15,14 +15,14 @@ status: in-progress
 - done_when: compiled and saved; tree and brushes read back; task-342 flight and lock graphs still present and OreIcon still the flight start; committed by path.
 - editor_state: open
 - token_ceiling: 1.0 M units
-- model: open
-- tokens: open
-- usage: open
-- runs: open
+- model: sonnet
+- tokens: input 86, cache write 140405, cache read 3935809, output 35207
+- usage: turns 43, context start 11k peak 145k, resumes 0, 6 min, units 0.75 M
+- runs: 1
 - milestone: M2
 - started: 2026-10-28T16:51:43Z
 - waiting_for: none
-- result: open
+- result: WBP_ShopScreen restyled (commit d904cb8b), compiled and saved, no C++. TitleRow with TitleBarL/R (R mirrored), Subtitle via GetScreenSubtitle in LoadShopTexts, CounterBox/CounterBg top left with OreIcon+OreBalanceText, ShopPanel box brush T_Shop_Panel, RerollBox/ContinueBox with plates, tints for states. BalanceRow/BalanceSpacer removed. Eight graphs of 342 kept, OreIcon still a variable. Unverified: nothing rendered; sizes estimated; RerollDivider solid colour may not draw; flight geometry after OreIcon move untested.
 
 ## Relations
 - [[task-348-shop-screen-redesign]] — parent global task.

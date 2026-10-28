@@ -3,7 +3,7 @@ id: task-348-08-shop-screen-capture
 description: "Cpp: -game capture of the restyled shop screen and one purchase, compared with the old screenshot and the mockup."
 parent: task-348-shop-screen-redesign
 kind: task
-status: todo
+status: in-progress
 ---
 # Shop screen redesign: capture
 
@@ -20,7 +20,7 @@ status: todo
 - usage: open
 - runs: open
 - milestone: M2
-- started: open
+- started: 2026-10-28T16:57:37Z
 - waiting_for: none
 - result: open
 
