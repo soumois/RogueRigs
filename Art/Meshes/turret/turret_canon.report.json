@@ -1,0 +1,952 @@
+{
+  "asset": "SM_Turret",
+  "task": "task-346-01-turret-canon",
+  "warnings": [
+    "hook bracket on the left of the canon rear (y -50 to -47 cm, R 11.5 cm) of both Meshy meshes is not rebuilt (cut with the canon faces, not in the new canon)",
+    "front half-shell plates are one cylinder: the centre seam, the white edge chips as geometry and the muzzle bolt heads are not modelled (white chips come from the baked texture only)",
+    "holes are 8-sided prisms through a 20-sided shroud (round dimples of the unoptimised shroud, area-equivalent size); the hole positions are those measured on the unoptimised upper arc 0-195 and 345-360 degrees",
+    "lower arc (195 to 345 degrees, underside) not searched for holes: the unoptimised underside is rails and recesses (reference radius 7.6 to 8.5 cm, not the shroud); 3 shallow candidates there are not reproduced",
+    "measured axis of both Meshy canons tilts 0.7 to 2.9 degrees depending on the fit seed (up to 2.46 cm across the canon length, inside the 2 percent tolerance); the new canon axis is exactly parallel to Y",
+    "body shading unchanged (smooth normals as imported): flat faces are task-347",
+    "normal and roughness bake use the Principled network of the unoptimised mesh (normal-map detail included only if Cycles evaluates it in the NORMAL pass)"
+  ],
+  "canon_measurements": {
+    "location_rule": "canon = faces whose centre has y < -46.5 cm and distance to the canon axis < 12.0 cm, or < 17.0 cm when y < -84.0 cm (muzzle block, lug); axis parallel to Y through x,z = -0.7, 19.3 cm, canon extends to -Y. Collar (white housing, R >= 12.5 cm) starts at y = -46.5 cm and is body.",
+    "unoptimised": {
+      "mesh": "unoptimised",
+      "axis_direction": "-Y (parallel to Y; slope of centre per cm of length: dx -0.0305, dz -0.0507)",
+      "axis_slope_dx_dy": -0.0305,
+      "axis_slope_dz_dy": -0.0507,
+      "axis_centre_cm_at_y-66": [
+        -0.76,
+        19.73
+      ],
+      "tip_y_cm": -94.5,
+      "collar_start_y_cm": -46.0,
+      "canon_length_cm": 48.5,
+      "outer_radius_cm_by_y": {
+        "-94.0": 5.7,
+        "-93.0": 5.78,
+        "-92.0": 9.32,
+        "-91.0": 9.58,
+        "-88.0": 10.83,
+        "-85.0": 10.37,
+        "-80.0": 10.18,
+        "-75.0": 10.31,
+        "-71.0": 10.28,
+        "-68.0": 8.4,
+        "-64.0": 8.68,
+        "-60.0": 9.22,
+        "-56.0": 9.33,
+        "-52.0": 9.86,
+        "-48.0": 10.1
+      }
+    },
+    "optimised_source": {
+      "mesh": "optimised (source canon, before)",
+      "axis_direction": "-Y (parallel to Y; slope of centre per cm of length: dx -0.0312, dz -0.0498)",
+      "axis_slope_dx_dy": -0.0312,
+      "axis_slope_dz_dy": -0.0498,
+      "axis_centre_cm_at_y-66": [
+        -0.73,
+        19.72
+      ],
+      "tip_y_cm": -94.5,
+      "collar_start_y_cm": -46.0,
+      "canon_length_cm": 48.5,
+      "outer_radius_cm_by_y": {
+        "-94.0": 5.51,
+        "-93.0": 5.7,
+        "-92.0": 8.55,
+        "-91.0": 9.42,
+        "-88.0": 10.7,
+        "-85.0": 10.21,
+        "-80.0": 10.08,
+        "-75.0": 10.15,
+        "-71.0": 10.15,
+        "-68.0": 8.36,
+        "-64.0": 8.69,
+        "-60.0": 9.14,
+        "-56.0": 9.37,
+        "-52.0": 9.79,
+        "-48.0": 9.99
+      }
+    },
+    "new_canon": {
+      "mesh": "new canon in the final mesh",
+      "axis_direction": "-Y (parallel to Y; slope of centre per cm of length: dx -0.0025, dz -0.0005)",
+      "axis_slope_dx_dy": -0.0025,
+      "axis_slope_dz_dy": -0.0005,
+      "axis_centre_cm_at_y-66": [
+        -0.67,
+        19.31
+      ],
+      "tip_y_cm": -94.5,
+      "collar_start_y_cm": -46.0,
+      "canon_length_cm": 48.5,
+      "outer_radius_cm_by_y": {
+        "-94.0": 5.97,
+        "-93.0": 5.97,
+        "-92.0": 9.25,
+        "-91.0": 9.25,
+        "-88.0": 10.2,
+        "-85.0": 10.2,
+        "-80.0": 10.2,
+        "-75.0": 10.2,
+        "-71.0": 10.2,
+        "-68.0": 8.42,
+        "-64.0": 8.74,
+        "-60.0": 9.12,
+        "-56.0": 9.45,
+        "-52.0": 9.78,
+        "-48.0": 10.1
+      }
+    }
+  },
+  "holes": {
+    "unoptimised": {
+      "stats": {
+        "count": 15,
+        "shape": "round (oval dimples on the unoptimised shroud)",
+        "rows": 7,
+        "count_per_row": [
+          1,
+          2,
+          2,
+          1,
+          3,
+          5,
+          1
+        ],
+        "row_y_cm": [
+          -82.1,
+          -77.5,
+          -75.1,
+          -68.1,
+          -62.6,
+          -56.7,
+          -51.3
+        ],
+        "size_d_eq_cm_mean": 3.1,
+        "size_d_eq_cm_min": 2.14,
+        "size_d_eq_cm_max": 4.94,
+        "spacing_nearest_neighbour_cm_mean": 5.67
+      },
+      "holes": [
+        {
+          "y_cm": -82.12,
+          "angle_deg": 355.6,
+          "height_cm": 5.25,
+          "width_cm": 3.59,
+          "d_eq_cm": 4.49,
+          "area_cm2": 15.85,
+          "ref_radius_cm": 9.81,
+          "depth_cm": 1.72
+        },
+        {
+          "y_cm": -77.81,
+          "angle_deg": 58.4,
+          "height_cm": 3.0,
+          "width_cm": 2.99,
+          "d_eq_cm": 2.96,
+          "area_cm2": 6.87,
+          "ref_radius_cm": 10.39,
+          "depth_cm": 2.52
+        },
+        {
+          "y_cm": -77.15,
+          "angle_deg": 117.8,
+          "height_cm": 2.5,
+          "width_cm": 2.15,
+          "d_eq_cm": 2.27,
+          "area_cm2": 4.03,
+          "ref_radius_cm": 10.27,
+          "depth_cm": 3.2
+        },
+        {
+          "y_cm": -75.27,
+          "angle_deg": 145.8,
+          "height_cm": 3.5,
+          "width_cm": 3.67,
+          "d_eq_cm": 3.38,
+          "area_cm2": 8.99,
+          "ref_radius_cm": 9.35,
+          "depth_cm": 1.41
+        },
+        {
+          "y_cm": -74.99,
+          "angle_deg": 33.8,
+          "height_cm": 3.5,
+          "width_cm": 4.56,
+          "d_eq_cm": 3.93,
+          "area_cm2": 12.13,
+          "ref_radius_cm": 10.24,
+          "depth_cm": 1.33
+        },
+        {
+          "y_cm": -68.11,
+          "angle_deg": 156.3,
+          "height_cm": 4.75,
+          "width_cm": 7.46,
+          "d_eq_cm": 4.72,
+          "area_cm2": 17.49,
+          "ref_radius_cm": 8.91,
+          "depth_cm": 2.59
+        },
+        {
+          "y_cm": -63.93,
+          "angle_deg": 88.9,
+          "height_cm": 4.75,
+          "width_cm": 5.38,
+          "d_eq_cm": 4.94,
+          "area_cm2": 19.14,
+          "ref_radius_cm": 8.94,
+          "depth_cm": 2.73
+        },
+        {
+          "y_cm": -62.41,
+          "angle_deg": 41.4,
+          "height_cm": 2.25,
+          "width_cm": 2.95,
+          "d_eq_cm": 2.56,
+          "area_cm2": 5.16,
+          "ref_radius_cm": 8.66,
+          "depth_cm": 2.12
+        },
+        {
+          "y_cm": -61.58,
+          "angle_deg": 136.1,
+          "height_cm": 2.5,
+          "width_cm": 3.7,
+          "d_eq_cm": 3.11,
+          "area_cm2": 7.58,
+          "ref_radius_cm": 8.84,
+          "depth_cm": 2.32
+        },
+        {
+          "y_cm": -59.11,
+          "angle_deg": 179.3,
+          "height_cm": 2.0,
+          "width_cm": 2.59,
+          "d_eq_cm": 2.22,
+          "area_cm2": 3.88,
+          "ref_radius_cm": 8.24,
+          "depth_cm": 2.08
+        },
+        {
+          "y_cm": -57.68,
+          "angle_deg": 57.7,
+          "height_cm": 2.75,
+          "width_cm": 2.94,
+          "d_eq_cm": 2.68,
+          "area_cm2": 5.63,
+          "ref_radius_cm": 9.35,
+          "depth_cm": 1.98
+        },
+        {
+          "y_cm": -56.57,
+          "angle_deg": 121.2,
+          "height_cm": 2.0,
+          "width_cm": 3.01,
+          "d_eq_cm": 2.31,
+          "area_cm2": 4.2,
+          "ref_radius_cm": 9.59,
+          "depth_cm": 2.39
+        },
+        {
+          "y_cm": -55.53,
+          "angle_deg": 43.0,
+          "height_cm": 2.25,
+          "width_cm": 2.94,
+          "d_eq_cm": 2.35,
+          "area_cm2": 4.35,
+          "ref_radius_cm": 9.36,
+          "depth_cm": 2.23
+        },
+        {
+          "y_cm": -54.39,
+          "angle_deg": 150.1,
+          "height_cm": 2.0,
+          "width_cm": 2.19,
+          "d_eq_cm": 2.14,
+          "area_cm2": 3.59,
+          "ref_radius_cm": 9.3,
+          "depth_cm": 2.16
+        },
+        {
+          "y_cm": -51.33,
+          "angle_deg": 63.8,
+          "height_cm": 2.25,
+          "width_cm": 2.57,
+          "d_eq_cm": 2.41,
+          "area_cm2": 4.57,
+          "ref_radius_cm": 9.83,
+          "depth_cm": 2.55
+        }
+      ],
+      "rejected_components": [
+        {
+          "y_cm": -80.85,
+          "angle_deg": 91.5,
+          "height_cm": 10.0,
+          "width_cm": 1.35,
+          "d_eq_cm": 4.1,
+          "area_cm2": 13.19,
+          "ref_radius_cm": 10.33,
+          "depth_cm": 2.06,
+          "why": "seam, step or hook, not a hole (aspect 7.4, h 10.0, w 1.4, R 10.3)"
+        },
+        {
+          "y_cm": -83.67,
+          "angle_deg": 158.5,
+          "height_cm": 4.0,
+          "width_cm": 12.64,
+          "d_eq_cm": 6.67,
+          "area_cm2": 34.89,
+          "ref_radius_cm": 9.47,
+          "depth_cm": 1.71,
+          "why": "seam, step or hook, not a hole (aspect 3.2, h 4.0, w 12.6, R 9.5)"
+        },
+        {
+          "y_cm": -68.25,
+          "angle_deg": 46.9,
+          "height_cm": 6.0,
+          "width_cm": 22.26,
+          "d_eq_cm": 8.25,
+          "area_cm2": 53.5,
+          "ref_radius_cm": 10.0,
+          "depth_cm": 2.48,
+          "why": "seam, step or hook, not a hole (aspect 3.7, h 6.0, w 22.3, R 10.0)"
+        },
+        {
+          "y_cm": -48.8,
+          "angle_deg": 155.7,
+          "height_cm": 1.5,
+          "width_cm": 2.73,
+          "d_eq_cm": 2.13,
+          "area_cm2": 3.57,
+          "ref_radius_cm": 11.59,
+          "depth_cm": 2.12,
+          "why": "seam, step or hook, not a hole (aspect 1.8, h 1.5, w 2.7, R 11.6)"
+        },
+        {
+          "y_cm": -48.82,
+          "angle_deg": 182.5,
+          "height_cm": 1.5,
+          "width_cm": 3.34,
+          "d_eq_cm": 2.37,
+          "area_cm2": 4.4,
+          "ref_radius_cm": 11.6,
+          "depth_cm": 2.55,
+          "why": "seam, step or hook, not a hole (aspect 2.2, h 1.5, w 3.3, R 11.6)"
+        }
+      ]
+    },
+    "optimised_source": {
+      "stats": {
+        "count": 13,
+        "shape": "round (oval dimples on the unoptimised shroud)",
+        "rows": 8,
+        "count_per_row": [
+          1,
+          2,
+          2,
+          1,
+          3,
+          2,
+          1,
+          1
+        ],
+        "row_y_cm": [
+          -82.1,
+          -77.5,
+          -75.1,
+          -67.8,
+          -62.6,
+          -57.1,
+          -54.4,
+          -51.3
+        ],
+        "size_d_eq_cm_mean": 2.7,
+        "size_d_eq_cm_min": 1.61,
+        "size_d_eq_cm_max": 4.7,
+        "spacing_nearest_neighbour_cm_mean": 6.03
+      }
+    },
+    "ray_through_centre": [
+      {
+        "hole": 1,
+        "first_hit_radius_cm": 6.49,
+        "reaches_inner_barrel": true
+      },
+      {
+        "hole": 2,
+        "first_hit_radius_cm": 6.55,
+        "reaches_inner_barrel": true
+      },
+      {
+        "hole": 3,
+        "first_hit_radius_cm": 6.54,
+        "reaches_inner_barrel": true
+      },
+      {
+        "hole": 4,
+        "first_hit_radius_cm": 6.49,
+        "reaches_inner_barrel": true
+      },
+      {
+        "hole": 5,
+        "first_hit_radius_cm": 6.5,
+        "reaches_inner_barrel": true
+      },
+      {
+        "hole": 6,
+        "first_hit_radius_cm": 6.45,
+        "reaches_inner_barrel": true
+      },
+      {
+        "hole": 7,
+        "first_hit_radius_cm": 6.57,
+        "reaches_inner_barrel": true
+      },
+      {
+        "hole": 8,
+        "first_hit_radius_cm": 6.39,
+        "reaches_inner_barrel": true
+      },
+      {
+        "hole": 9,
+        "first_hit_radius_cm": 6.38,
+        "reaches_inner_barrel": true
+      },
+      {
+        "hole": 10,
+        "first_hit_radius_cm": 6.58,
+        "reaches_inner_barrel": true
+      },
+      {
+        "hole": 11,
+        "first_hit_radius_cm": 6.53,
+        "reaches_inner_barrel": true
+      },
+      {
+        "hole": 12,
+        "first_hit_radius_cm": 6.56,
+        "reaches_inner_barrel": true
+      },
+      {
+        "hole": 13,
+        "first_hit_radius_cm": 6.38,
+        "reaches_inner_barrel": true
+      },
+      {
+        "hole": 14,
+        "first_hit_radius_cm": 6.6,
+        "reaches_inner_barrel": true
+      },
+      {
+        "hole": 15,
+        "first_hit_radius_cm": 6.5,
+        "reaches_inner_barrel": true
+      }
+    ],
+    "new": {
+      "constructed": [
+        {
+          "id": 1,
+          "y_cm": -82.12,
+          "angle_deg": 355.6,
+          "d_eq_cm": 4.49,
+          "circumradius_cm": 2.366,
+          "sides": 8,
+          "wall_faces": 22,
+          "rim_loops": 2
+        },
+        {
+          "id": 2,
+          "y_cm": -77.81,
+          "angle_deg": 58.4,
+          "d_eq_cm": 2.96,
+          "circumradius_cm": 1.56,
+          "sides": 8,
+          "wall_faces": 20,
+          "rim_loops": 2
+        },
+        {
+          "id": 3,
+          "y_cm": -77.15,
+          "angle_deg": 117.8,
+          "d_eq_cm": 2.27,
+          "circumradius_cm": 1.196,
+          "sides": 8,
+          "wall_faces": 18,
+          "rim_loops": 2
+        },
+        {
+          "id": 4,
+          "y_cm": -75.27,
+          "angle_deg": 145.8,
+          "d_eq_cm": 3.38,
+          "circumradius_cm": 1.781,
+          "sides": 8,
+          "wall_faces": 20,
+          "rim_loops": 2
+        },
+        {
+          "id": 5,
+          "y_cm": -74.99,
+          "angle_deg": 33.8,
+          "d_eq_cm": 3.93,
+          "circumradius_cm": 2.071,
+          "sides": 8,
+          "wall_faces": 20,
+          "rim_loops": 2
+        },
+        {
+          "id": 6,
+          "y_cm": -68.11,
+          "angle_deg": 156.3,
+          "d_eq_cm": 4.72,
+          "circumradius_cm": 2.487,
+          "sides": 8,
+          "wall_faces": 34,
+          "rim_loops": 2
+        },
+        {
+          "id": 7,
+          "y_cm": -63.93,
+          "angle_deg": 88.9,
+          "d_eq_cm": 4.94,
+          "circumradius_cm": 2.603,
+          "sides": 8,
+          "wall_faces": 26,
+          "rim_loops": 2
+        },
+        {
+          "id": 8,
+          "y_cm": -62.41,
+          "angle_deg": 41.4,
+          "d_eq_cm": 2.56,
+          "circumradius_cm": 1.349,
+          "sides": 8,
+          "wall_faces": 20,
+          "rim_loops": 2
+        },
+        {
+          "id": 9,
+          "y_cm": -61.58,
+          "angle_deg": 136.1,
+          "d_eq_cm": 3.11,
+          "circumradius_cm": 1.639,
+          "sides": 8,
+          "wall_faces": 24,
+          "rim_loops": 2
+        },
+        {
+          "id": 10,
+          "y_cm": -59.11,
+          "angle_deg": 179.3,
+          "d_eq_cm": 2.22,
+          "circumradius_cm": 1.17,
+          "sides": 8,
+          "wall_faces": 20,
+          "rim_loops": 2
+        },
+        {
+          "id": 11,
+          "y_cm": -57.68,
+          "angle_deg": 57.7,
+          "d_eq_cm": 2.68,
+          "circumradius_cm": 1.412,
+          "sides": 8,
+          "wall_faces": 22,
+          "rim_loops": 2
+        },
+        {
+          "id": 12,
+          "y_cm": -56.57,
+          "angle_deg": 121.2,
+          "d_eq_cm": 2.31,
+          "circumradius_cm": 1.217,
+          "sides": 8,
+          "wall_faces": 20,
+          "rim_loops": 2
+        },
+        {
+          "id": 13,
+          "y_cm": -55.53,
+          "angle_deg": 43.0,
+          "d_eq_cm": 2.35,
+          "circumradius_cm": 1.238,
+          "sides": 8,
+          "wall_faces": 20,
+          "rim_loops": 2
+        },
+        {
+          "id": 14,
+          "y_cm": -54.39,
+          "angle_deg": 150.1,
+          "d_eq_cm": 2.14,
+          "circumradius_cm": 1.128,
+          "sides": 8,
+          "wall_faces": 20,
+          "rim_loops": 2
+        },
+        {
+          "id": 15,
+          "y_cm": -51.33,
+          "angle_deg": 63.8,
+          "d_eq_cm": 2.41,
+          "circumradius_cm": 1.27,
+          "sides": 8,
+          "wall_faces": 18,
+          "rim_loops": 2
+        }
+      ],
+      "stats": {
+        "count": 15,
+        "shape": "round (oval dimples on the unoptimised shroud)",
+        "rows": 7,
+        "count_per_row": [
+          1,
+          2,
+          2,
+          1,
+          3,
+          5,
+          1
+        ],
+        "row_y_cm": [
+          -82.1,
+          -77.5,
+          -75.1,
+          -68.1,
+          -62.6,
+          -56.7,
+          -51.3
+        ],
+        "size_d_eq_cm_mean": 3.1,
+        "size_d_eq_cm_min": 2.14,
+        "size_d_eq_cm_max": 4.97,
+        "spacing_nearest_neighbour_cm_mean": 5.67
+      },
+      "holes": [
+        {
+          "y_cm": -82.12,
+          "angle_deg": 355.8,
+          "height_cm": 4.5,
+          "width_cm": 4.24,
+          "d_eq_cm": 4.46,
+          "area_cm2": 15.62,
+          "ref_radius_cm": 10.11,
+          "depth_cm": 3.64
+        },
+        {
+          "y_cm": -77.82,
+          "angle_deg": 58.4,
+          "height_cm": 3.0,
+          "width_cm": 2.91,
+          "d_eq_cm": 2.98,
+          "area_cm2": 6.95,
+          "ref_radius_cm": 10.12,
+          "depth_cm": 3.61
+        },
+        {
+          "y_cm": -77.17,
+          "angle_deg": 117.8,
+          "height_cm": 2.25,
+          "width_cm": 2.11,
+          "d_eq_cm": 2.26,
+          "area_cm2": 4.03,
+          "ref_radius_cm": 10.09,
+          "depth_cm": 3.57
+        },
+        {
+          "y_cm": -75.28,
+          "angle_deg": 145.7,
+          "height_cm": 3.5,
+          "width_cm": 3.44,
+          "d_eq_cm": 3.39,
+          "area_cm2": 9.01,
+          "ref_radius_cm": 10.12,
+          "depth_cm": 3.64
+        },
+        {
+          "y_cm": -75.0,
+          "angle_deg": 33.9,
+          "height_cm": 4.25,
+          "width_cm": 4.24,
+          "d_eq_cm": 3.96,
+          "area_cm2": 12.32,
+          "ref_radius_cm": 10.12,
+          "depth_cm": 3.64
+        },
+        {
+          "y_cm": -68.06,
+          "angle_deg": 156.2,
+          "height_cm": 5.0,
+          "width_cm": 4.84,
+          "d_eq_cm": 4.63,
+          "area_cm2": 16.83,
+          "ref_radius_cm": 8.81,
+          "depth_cm": 2.35
+        },
+        {
+          "y_cm": -63.94,
+          "angle_deg": 89.0,
+          "height_cm": 5.25,
+          "width_cm": 5.25,
+          "d_eq_cm": 4.97,
+          "area_cm2": 19.41,
+          "ref_radius_cm": 8.72,
+          "depth_cm": 2.26
+        },
+        {
+          "y_cm": -62.4,
+          "angle_deg": 41.3,
+          "height_cm": 2.5,
+          "width_cm": 2.78,
+          "d_eq_cm": 2.56,
+          "area_cm2": 5.16,
+          "ref_radius_cm": 8.85,
+          "depth_cm": 2.44
+        },
+        {
+          "y_cm": -61.6,
+          "angle_deg": 136.1,
+          "height_cm": 3.25,
+          "width_cm": 3.27,
+          "d_eq_cm": 3.12,
+          "area_cm2": 7.64,
+          "ref_radius_cm": 8.91,
+          "depth_cm": 2.51
+        },
+        {
+          "y_cm": -59.09,
+          "angle_deg": 179.2,
+          "height_cm": 2.25,
+          "width_cm": 2.39,
+          "d_eq_cm": 2.24,
+          "area_cm2": 3.95,
+          "ref_radius_cm": 9.14,
+          "depth_cm": 2.62
+        },
+        {
+          "y_cm": -57.69,
+          "angle_deg": 57.7,
+          "height_cm": 2.75,
+          "width_cm": 2.9,
+          "d_eq_cm": 2.68,
+          "area_cm2": 5.62,
+          "ref_radius_cm": 9.24,
+          "depth_cm": 2.74
+        },
+        {
+          "y_cm": -56.58,
+          "angle_deg": 121.2,
+          "height_cm": 2.5,
+          "width_cm": 2.44,
+          "d_eq_cm": 2.33,
+          "area_cm2": 4.27,
+          "ref_radius_cm": 9.32,
+          "depth_cm": 2.81
+        },
+        {
+          "y_cm": -55.51,
+          "angle_deg": 43.0,
+          "height_cm": 2.25,
+          "width_cm": 2.46,
+          "d_eq_cm": 2.32,
+          "area_cm2": 4.24,
+          "ref_radius_cm": 9.4,
+          "depth_cm": 3.0
+        },
+        {
+          "y_cm": -54.4,
+          "angle_deg": 150.1,
+          "height_cm": 2.25,
+          "width_cm": 2.24,
+          "d_eq_cm": 2.14,
+          "area_cm2": 3.6,
+          "ref_radius_cm": 9.49,
+          "depth_cm": 2.96
+        },
+        {
+          "y_cm": -51.32,
+          "angle_deg": 63.8,
+          "height_cm": 2.5,
+          "width_cm": 2.55,
+          "d_eq_cm": 2.42,
+          "area_cm2": 4.59,
+          "ref_radius_cm": 9.73,
+          "depth_cm": 3.23
+        }
+      ],
+      "rejected_components": []
+    }
+  },
+  "body": {
+    "source_tris": 15455,
+    "source_verts": 7635,
+    "canon_tris_removed": 1081,
+    "canon_faces_removed": 1081,
+    "body_tris_kept": 14374,
+    "body_verts_kept": 7109,
+    "source_verts_outside_canon": 7109
+  },
+  "texture": {
+    "material": "turret_canon",
+    "size_px": 1024,
+    "maps": [
+      "T_Turret_Canon_BaseColor.png",
+      "T_Turret_Canon_Normal.png",
+      "T_Turret_Canon_Roughness.png"
+    ],
+    "baked_from": "unoptimised canon faces (10313 tris), selected to active, cage extrusion 1.5 cm, max ray 3 cm, margin 8 px"
+  },
+  "deviation_vs_unoptimised": {
+    "turret_height_cm": 156.14,
+    "tolerance_2pct_cm": 3.12,
+    "length_cm": 0.0,
+    "tip_position_cm": 0.0,
+    "axis_position_cm": 0.43,
+    "axis_tilt_unopt_slope_dx_dz": [
+      -0.0305,
+      -0.0507
+    ],
+    "axis_tilt_new_slope_dx_dz": [
+      -0.0025,
+      -0.0005
+    ],
+    "axis_tilt_over_canon_length_cm": 2.46,
+    "outer_radius_abs_diff_cm_by_y": {
+      "-94.0": 0.27,
+      "-93.0": 0.19,
+      "-92.0": 0.07,
+      "-91.0": 0.33,
+      "-88.0": 0.63,
+      "-85.0": 0.17,
+      "-80.0": 0.02,
+      "-75.0": 0.11,
+      "-71.0": 0.08,
+      "-68.0": 0.02,
+      "-64.0": 0.06,
+      "-60.0": 0.1,
+      "-56.0": 0.12,
+      "-52.0": 0.08,
+      "-48.0": 0.0
+    },
+    "outer_radius_max_diff_cm": 0.63,
+    "within_2pct_of_height": true
+  },
+  "body_unchanged": {
+    "body_vertices_in_source_outside_canon": 7109,
+    "body_vertices_in_export_mesh_before_write": 7109,
+    "vertex_positions_max_abs_diff_cm_after_pivot_shift": 6e-06,
+    "uv_max_abs_diff": 0.0,
+    "pivot_offset_cm": [
+      0.641,
+      0.355,
+      78.116
+    ]
+  },
+  "tris": {
+    "source_total": 15455,
+    "canon_removed": 1081,
+    "body_kept": 14374,
+    "canon_new": 1374,
+    "total_after": 15748,
+    "budget": 16000
+  },
+  "dimensions_cm": {
+    "x": 183.1,
+    "y": 188.49,
+    "z": 156.14
+  },
+  "materials": [
+    "turret_body",
+    "turret_canon"
+  ],
+  "uv_layers": [
+    "UVMap"
+  ],
+  "fidelity": {
+    "note": "Agent judgement from renders in Saved/TurretMesh/canon/ (after_*.png against reference_*.png and before_*.png, same cameras); no criteria were listed in the subtask, these are the canon's own",
+    "returns_used": 1,
+    "return_1": "after_canon.png showed the white collar front chamfers cut with the canon (rule was r < 17 cm for every y < -46.5); rule changed to r < 12 cm behind y = -84 cm, collar restored",
+    "criteria": {
+      "C1 length, tip, radii, axis position within 2% of height": {
+        "verdict": "pass",
+        "evidence": "see deviation_vs_unoptimised"
+      },
+      "C2 muzzle ring with open bore, flange behind it": {
+        "verdict": "pass",
+        "evidence": "after_canon.png: dark bore visible in a ring, flange step behind it, as in reference_canon.png"
+      },
+      "C3 two shroud segments with a step (front plates larger than the rear tube)": {
+        "verdict": "pass",
+        "evidence": "after_canon_top.png: wide front segment, narrower rear tube, step at y = -69 cm, as reference_canon_top.png"
+      },
+      "C4 perforated outer shroud, real holes, inner barrel visible through them": {
+        "verdict": "pass",
+        "evidence": "after_canon.png and after_canon_top.png: 15 open holes with dark inner barrel behind; ray through each hole centre hits the barrel (report holes.ray_through_centre)"
+      },
+      "C5 studs on top of the front shroud": {
+        "verdict": "pass",
+        "evidence": "after_canon_top.png: two studs on the centre line, as the reference"
+      },
+      "C6 lug under the muzzle": {
+        "verdict": "pass",
+        "evidence": "after_canon.png: square lug under the muzzle (the reference lug is a curved hook, shape simplified)"
+      },
+      "C7 dark metal, white chips at the muzzle plates": {
+        "verdict": "pass",
+        "evidence": "after_canon.png: dark grey shroud, white chips at the front plate edges from the baked texture"
+      },
+      "C8 body, collar and housing untouched": {
+        "verdict": "pass",
+        "evidence": "body vertices equal the source outside the canon, positions and UVs identical (body_unchanged); after_front.png and after_side.png match before_*.png"
+      }
+    },
+    "final_render": "Saved/TurretMesh/canon/after_canon.png"
+  },
+  "output": "Art/Meshes/turret/SM_Turret.fbx",
+  "reimport_check": {
+    "object_scale": [
+      1.0,
+      1.0,
+      1.0
+    ],
+    "dimensions_cm": [
+      183.1,
+      188.49,
+      156.14
+    ],
+    "bbox_min_cm": [
+      -91.55,
+      -94.24,
+      0.0
+    ],
+    "bbox_max_cm": [
+      91.55,
+      94.24,
+      156.14
+    ],
+    "pivot_bottom_centre": true,
+    "materials": [
+      "turret_body",
+      "turret_canon"
+    ],
+    "uv_layers": [
+      "UVMap"
+    ],
+    "tris_total": 15748,
+    "tris_body": 14374,
+    "tris_canon": 1374,
+    "vertices_total": 7770,
+    "vertices_body": 7109,
+    "vertices_canon_only": 661,
+    "faces_flat_canon": 1374,
+    "faces_canon": 1374
+  }
+}

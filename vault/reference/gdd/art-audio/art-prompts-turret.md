@@ -32,6 +32,16 @@ Same six names in each folder, owner downloads untouched, committed as plain git
 - `Art/Source/turret-meshy/meshy-optimised/` (zip B) and `Art/Source/turret-meshy/meshy-unoptimised/` (zip A).
 - `Meshy_AI_Teal_Bastion_Gunner_20261028_texture_remesh_tri.fbx`, `.png` (base colour), `_metallic.png`, `_metallic_roughness.png`, `_normal.png`, `_roughness.png`.
 
+## Game mesh (task-346-01, 2026-10-28)
+The optimised Meshy turret with its canon rebuilt by Blender script after the unoptimised one (owner Q1 = B, no Meshy call, no credit).
+- Files in `Art/Meshes/turret/`: `SM_Turret.fbx` (centimetres, pivot bottom centre, material slots `turret_body` and `turret_canon`), `turret_canon.report.json`, body maps `T_Turret_Body_BaseColor.png`, `_Normal.png`, `_Roughness.png`, `_Metallic.png` (copies of the optimised maps), canon maps `T_Turret_Canon_BaseColor.png`, `_Normal.png`, `_Roughness.png` (1024 px, baked from the unoptimised canon).
+- Scripts: `Tools/art/blender/turret_canon.py` (measure, rebuild, bake, export, report), `turret_canon_check.py` (reimport check), `turret_preview.py` (renders).
+- Method: canon faces of the optimised mesh removed (faces with y < -46.5 cm and distance to the canon axis < 12 cm, or < 17 cm in front of y = -84 cm: muzzle block and lug; 1,081 tris); new canon built in bpy on the measured axis (x, z = -0.65, 19.3 cm, parallel to Y): inner barrel (R 6.6, 12 sides), muzzle tube with open bore, flange, one shroud tube (20 sides, wall 0.9 cm: front part R 10.2, step at y = -70.2 to -68.2, rear cone R 8.45 to 10.35) with 15 real holes cut by boolean (8-sided prisms, hole walls closed, the barrel visible through them), two studs, one lug. Flat shading. Body vertices, positions and UVs unchanged (7,109 vertices outside the canon, max position difference 0.000006 cm, UV difference 0).
+- Holes: measured on the unoptimised shroud by a radial ray grid (0.25 cm by 1.5 degrees): 15 round dimples on the upper arc, 7 rows (1, 2, 2, 1, 3, 5, 1 per row), equivalent diameter 2.1 to 4.9 cm (mean 3.1), nearest-neighbour spacing mean 5.7 cm; the new shroud has the same 15 positions and the same measured values (count equal, mean size 3.1, spacing 5.7).
+- Tris: 15,748 in total (body 14,374 + canon 1,374), budget 16,000. Dimensions: 183.10 x 188.49 x 156.14 cm.
+- Not rebuilt: the hook bracket at the canon rear, the front plates' centre seam and edge chips as geometry, the underside rails; details in the report `warnings`.
+- Renders (not committed): `Saved/TurretMesh/canon/` before, after and reference, four views plus a top-down canon view.
+
 ## Relations
 - [[art-prompts]] — parent: method and locked phrases.
 - [[art-prompts-console]] — model node: owner words, Meshy files.
