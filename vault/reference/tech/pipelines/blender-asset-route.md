@@ -10,7 +10,7 @@ Used when a 3D subtask says "Blender route" ([[agent-3d]]): no Meshy call, no cr
 
 ## Running
 - Headless: `"$BLENDER_EXE" -b --factory-startup -P Tools/art/blender/<script>.py -- <args>`. `BLENDER_EXE` is a Windows user variable (Blender 5.2). Python exists only inside Blender, numpy included.
-- Scripts in `Tools/art/blender/`: `barrel.py` (mesh, FBX, report), `warning_sign.py` (sign texture), `wear_mask.py` (scratch mask, seed 108, deterministic), `barrel_preview.py <fbx> <out.png>` (render), `cleanup.py` (Meshy meshes only).
+- Scripts in `Tools/art/blender/`: `barrel.py` (mesh, FBX, report), `warning_sign.py` (sign texture), `wear_mask.py` (scratch mask, seed 108, deterministic), `barrel_preview.py <fbx> <out.png>` (render), `heal_chunk.py` (heal pickup chunks, mesh, FBX, report and renders), `cleanup.py` (Meshy meshes only).
 - Output: `Art/Meshes/<asset>/SM_<Name>.fbx` in centimetres, bottom-centre pivot, plus `SM_<Name>.report.json` (`tris_out`, `dimensions_cm`, `materials`, `uv_layers`, `uv_checks`, `mask_contract`, `warnings`).
 
 ## Conventions (art charter level 1, [[art-style-guide]] A1)

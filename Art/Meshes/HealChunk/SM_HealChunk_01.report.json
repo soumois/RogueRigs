@@ -1,0 +1,98 @@
+{
+  "output": "C:\\Users\\soumo\\Documents\\Unreal Projects\\RogueRigs\\Art\\Meshes\\HealChunk\\SM_HealChunk_01.fbx",
+  "warnings": [],
+  "tris": 180,
+  "verts": 114,
+  "dimensions_cm": [
+    26.61,
+    25.76,
+    30.0
+  ],
+  "bbox_centre_cm": [
+    0.0,
+    0.0,
+    0.0
+  ],
+  "height_over_width": 1.128,
+  "resting_face": {
+    "faces": 9,
+    "area_cm2": 485.6,
+    "footprint_hull_cm2": 558.5,
+    "share_of_footprint": 0.87
+  },
+  "prism_top_height_cm": {
+    "A": 30.1,
+    "B": 25.6
+  },
+  "prism_B_over_A": 0.85,
+  "pivot": "bounding-box centre",
+  "materials": {
+    "crystal_bright": {
+      "slot": 0,
+      "tris": 52
+    },
+    "crystal_dark": {
+      "slot": 1,
+      "tris": 128
+    }
+  },
+  "uv_layers": [
+    "UVMap",
+    "LightMap"
+  ],
+  "uv_checks": {
+    "UVMap": {
+      "min": 0.0067,
+      "max": 0.9934
+    },
+    "LightMap": {
+      "min": 0.0067,
+      "max": 0.9934,
+      "uv_area_sum": 0.5427,
+      "inside_0_1": true,
+      "no_overlap": true
+    }
+  },
+  "shading": "flat",
+  "texture": "none",
+  "fidelity": {
+    "returns_used": 4,
+    "max_returns": 5,
+    "camera": "orthographic yaw -35, elevation 35 (also 4 and -55 and 20 for checks), sun energy 4 rotated (50,10,-60), world white 0.35, light-grey background",
+    "criteria": {
+      "C1": {
+        "verdict": "pass",
+        "evidence": "3-up render: each is one compact solid piece; dimensions_cm about 26.6 x 25.8 x 30.0 (longest 30.0), height over largest horizontal width 1.12 to 1.13."
+      },
+      "C2": {
+        "verdict": "pass",
+        "evidence": "side render: two six-sided pointed prisms touch at their base, lean 6 to 14 degrees outward (max 20), not splayed; prism tops stand above the body for about 45 to 58 percent of the height (core top at z 16 of 30)."
+      },
+      "C3": {
+        "verdict": "pass",
+        "evidence": "report prism_top_height_cm B over A: 01 0.85, 02 0.80, 03 0.95 (sheet 85, 80, 95)."
+      },
+      "C4": {
+        "verdict": "pass",
+        "evidence": "preview: 01 small tip front centre, 03 small tip front left, 02 none; tip about 6 to 7.5 cm tall (20 to 25 percent of 30)."
+      },
+      "C5": {
+        "verdict": "pass",
+        "evidence": "preview and side: wide body of eight tapered angular chips round a core, different heights with notches between them, same red family; prisms span about 69 percent of the body width; resting_face share of footprint 0.87 (one flat face per chip at z min, underside render dark and flat). Chips are more regular than the sheet's, noted."
+      },
+      "C6": {
+        "verdict": "pass",
+        "evidence": "preview: prisms and tip bright pure red (1,0,0), body darker duller red (0.5,0,0), no orange or pink (first render with blue 0.05 read crimson-pink, placeholders set to blue 0)."
+      },
+      "C7": {
+        "verdict": "pass",
+        "evidence": "all polygons flat shaded, large facets, no texture in any material."
+      },
+      "C8": {
+        "verdict": "pass",
+        "evidence": "dimensions of the three within 1 percent per axis (26.55 to 26.76, 25.71 to 25.91, 30.0); differ by prism lean, relative heights, tip, body mirrored on 02."
+      }
+    },
+    "final_render": "Art/Meshes/HealChunk/heal_chunk_preview.png"
+  }
+}
