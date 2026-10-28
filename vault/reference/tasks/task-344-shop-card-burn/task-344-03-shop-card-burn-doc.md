@@ -3,7 +3,7 @@ id: task-344-03-shop-card-burn-doc
 description: "Doc: update wbp-shop-card and m-card-burn."
 parent: task-344-shop-card-burn
 kind: task
-status: todo
+status: in-progress
 ---
 # Shop purchase: the bought card burns like a level-up pick: update wbp-shop-card and m-card-burn
 
@@ -20,7 +20,7 @@ status: todo
 - usage: open
 - runs: open
 - milestone: M2
-- started: open
+- started: 2026-10-28T15:39:46Z
 - waiting_for: none
 - result: open
 

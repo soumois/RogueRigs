@@ -13,7 +13,7 @@ status: in-progress
 - gdd_check: read 2026-10-28: [[run-shop]], [[xp-level-up]], tech [[wbp-upgrade-choice]] (pick animation: non-picked cards burn with MI_CardBurn over 0.5 s, CardBorder fades, icons fly to the weapon slot or XP bar; burn fixes: Index -1 parameter info, FitOverlay), [[m-card-burn]], [[wbp-shop-card]]. In the level-up screen the burn hits the cards NOT picked; in the shop the other cards stay on sale, so the effect is moved to the bought card. Depends on [[task-342-shop-ore-flight]] (EndPurchaseFx). Questions (defaults, values provisional): Q11 the bought card burns away (Burn 0 to 1 over 0.5 s, Tint = tier colour, Tex = T_CardFrame_Stat_Baked, frame and content fading as CardBorder does), starting when the last ore icon lands, then the sold look; the other cards do nothing. Owner answer 2026-10-28: "OK, tout par défaut": every default above is DECIDED (values provisional, owner 2026-10-28); GDD updated by the Planner the same day.
 - confirmed_by_owner: yes (2026-10-28, "OK, tout par défaut" to Q1-Q11 and the plan, relayed by the main session)
 - milestone: M2
-- next_step: task-344-02-shop-card-burn-capture
+- next_step: task-344-03-shop-card-burn-doc
 - started: 2026-10-28T07:24:20Z
 - waiting_for: none
 - result: open
