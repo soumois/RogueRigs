@@ -3,7 +3,7 @@ id: task-347-01-turret-flat-surfaces
 description: "Project the optimised turret vertices of each planar region of the unoptimised mesh onto its plane, canon excluded, and render before, after and reference."
 parent: task-347-turret-flat-surfaces
 kind: task
-status: in-progress
+status: done
 ---
 # Turret mesh: flatten the bulged surfaces
 
@@ -16,14 +16,14 @@ status: in-progress
 - done_when: every flattened region has a residual distance to its plane under 0.01 cm; canon vertex positions (shroud holes included) identical to task-346 output; total triangles under 16,000 (owner 2026-10-28), no decimation; UV coordinates identical; bounding box within 1 % of the turret height of the input; report names the cause of the bulge with numbers; renders exist and their paths are reported so the Executor sends them to the owner; art-prompts-turret updated; lint clean; committed by path as `task-347-01-turret-flat-surfaces: <summary>`; `Get-Process blender` empty.
 - editor_state: any
 - token_ceiling: 1.2 M units
-- model: open
-- tokens: open
-- usage: open
-- runs: open
+- model: sonnet
+- tokens: input 62, cache write 101908, cache read 1946318, output 43554
+- usage: turns 31, context start 10k peak 107k, resumes 0, 8 min, units 0.54 M
+- runs: 1
 - milestone: M2
 - started: 2026-10-28T07:02:17Z
 - waiting_for: none
-- result: open
+- result: Flattened 1,270 body faces (252 regions, Q3 thresholds relaxed: plane distance 0.25 cm, normal 10 deg, area 0.05 %), canon/UV/tris(15,748)/bbox unchanged, residual 0.0012 cm; bulge cause: off-plane vertices (mean 0.15 cm) plus smooth split normals, not the normal map. Commit 6de440e9.
 
 ## Relations
 - [[task-347-turret-flat-surfaces]] — parent global task.

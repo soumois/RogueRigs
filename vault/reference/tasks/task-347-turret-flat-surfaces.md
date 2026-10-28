@@ -1,9 +1,9 @@
 ---
 id: task-347-turret-flat-surfaces
 description: "Global task: Make the surfaces that should be flat on the optimised Meshy turret flat again, using the unoptimised mesh as the reference."
-parent: tasks-to-do-index
+parent: tasks-done-index
 kind: task
-status: in-progress
+status: done
 ---
 # Turret mesh: flatten the bulged flat surfaces of the optimised version
 
@@ -15,16 +15,16 @@ status: in-progress
   - Q5 DECIDED: no Unreal import or part cut. Q6 DECIDED: turret budget 16,000 triangles (owner 2026-10-28, was 10,000); flat faces truly flat within it; no decimation that bulges faces; the canon and its shroud holes from task-346 are untouched.
 - confirmed_by_owner: yes (2026-10-28, "Yes" to the plan and the Q1-Q5 defaults, budget 10,000, holes in the outer barrel layer; budget raised to 16,000 the same day after the task-346 blocker; relayed by the main session)
 - milestone: M2
-- next_step: task-347-01-turret-flat-surfaces
+- next_step: none
 - started: 2026-10-28T07:02:17Z
 - waiting_for: none
-- result: open
+- result: Done. Flattened 1,270 body faces (252 regions, Q3 thresholds relaxed: plane distance 0.25 cm, normal 10 deg, area 0.05 %), canon/UV/tris(15,748)/bbox unchanged, residual 0.0012 cm; bulge cause: off-plane vertices (mean 0.15 cm) plus smooth split normals, not the normal map. Commit 6de440e9.
 
 ## Subtasks
 1. task-347-01-turret-flat-surfaces (vault/reference/tasks/task-347-turret-flat-surfaces/task-347-01-turret-flat-surfaces.md) — 3d: project the optimised vertices of each planar region of the unoptimised mesh onto its plane and render before, after and reference.
 
 ## Relations
-- [[tasks-to-do-index]] — parent index.
+- [[tasks-done-index]] — parent index.
 - [[task-347-01-turret-flat-surfaces]] — step 1, 3d.
 - [[task-345-turret-meshy-files]] — must be done first: saves and identifies the two meshes.
 - [[task-346-turret-canon]] — must be done first: its SM_Turret.fbx is this task's input.
