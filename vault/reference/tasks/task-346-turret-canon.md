@@ -3,7 +3,7 @@ id: task-346-turret-canon
 description: "Global task: Rebuild the optimised Meshy turret canon by Blender script after the unoptimised mesh, with a perforated machine-gun shroud of real holes."
 parent: tasks-to-do-index
 kind: task
-status: in-progress
+status: wait-answers
 ---
 # Turret mesh: fix the canon of the optimised version
 
@@ -20,7 +20,7 @@ status: in-progress
 - milestone: M2
 - next_step: task-346-01-turret-canon
 - started: 2026-10-28T06:32:49Z
-- waiting_for: none
+- waiting_for: owner decision: turret budget 10,000 tris impossible, body outside canon is ~14,300 tris (options: raise budget ~16,000, reduce body, or rebuild whole turret)
 - result: open
 
 ## Subtasks

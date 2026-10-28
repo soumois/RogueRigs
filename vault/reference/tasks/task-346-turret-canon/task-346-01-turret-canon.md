@@ -3,7 +3,7 @@ id: task-346-01-turret-canon
 description: "Replace the optimised Meshy turret canon by a graft or a Blender rebuild after the unoptimised canon (Q1); render before, after, reference."
 parent: task-346-turret-canon
 kind: task
-status: in-progress
+status: wait-answers
 ---
 # Turret mesh: replace the optimised canon
 
@@ -22,7 +22,7 @@ status: in-progress
 - runs: open
 - milestone: M2
 - started: 2026-10-28T06:32:49Z
-- waiting_for: none
+- waiting_for: owner decision: turret budget 10,000 tris impossible, body outside canon is ~14,300 tris (options: raise budget ~16,000, reduce body, or rebuild whole turret)
 - result: open
 
 ## Relations
