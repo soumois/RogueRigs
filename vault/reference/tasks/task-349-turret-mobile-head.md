@@ -3,7 +3,7 @@ id: task-349-turret-mobile-head
 description: "Global task: Cut the turret game mesh into a fixed base and a head that turns about a vertical axis, as for the console C2."
 parent: tasks-to-do-index
 kind: task
-status: todo
+status: in-progress
 ---
 # Turret mesh: separate the rotating head from the fixed base
 
@@ -19,7 +19,7 @@ status: todo
 - confirmed_by_owner: yes (2026-10-28, "ok" to the plan and every default of Q1-Q5, relayed by the main session)
 - milestone: M2
 - next_step: task-349-01-turret-mobile-head
-- started: open
+- started: 2026-10-28T07:14:11Z
 - waiting_for: none
 - result: open
 

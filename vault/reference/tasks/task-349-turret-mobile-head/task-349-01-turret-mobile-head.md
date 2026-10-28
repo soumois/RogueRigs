@@ -3,7 +3,7 @@ id: task-349-01-turret-mobile-head
 description: "Cut SM_Turret into a fixed SM_TurretBase and a SM_TurretHead pivoting on the yaw axis, cap the seam, check a 360 degree sweep, render."
 parent: task-349-turret-mobile-head
 kind: task
-status: todo
+status: in-progress
 ---
 # Turret mesh: cut the rotating head from the fixed base
 
@@ -21,7 +21,7 @@ status: todo
 - usage: open
 - runs: open
 - milestone: M2
-- started: open
+- started: 2026-10-28T07:14:11Z
 - waiting_for: none
 - result: open
 
