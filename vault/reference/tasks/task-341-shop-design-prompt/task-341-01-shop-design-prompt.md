@@ -3,7 +3,7 @@ id: task-341-01-shop-design-prompt
 description: "Art: write the ChatGPT prompt and its vault prompt node."
 parent: task-341-shop-design-prompt
 kind: task
-status: todo
+status: in-progress
 ---
 # ChatGPT prompt for the shop screen design and game feel: write the ChatGPT prompt and its vault prompt node
 
@@ -20,7 +20,7 @@ status: todo
 - usage: open
 - runs: open
 - milestone: M2
-- started: open
+- started: 2026-10-28T06:28:01Z
 - waiting_for: none
 - result: open
 
