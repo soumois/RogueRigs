@@ -3,7 +3,7 @@ id: task-355-03-shop-card-frame-details-doc
 description: "Doc: update wbp-shop-card, wbp-shop-screen after the fix of owner point 5."
 parent: task-355-shop-card-frame-details
 kind: task
-status: in-progress
+status: done
 ---
 # Shop card: second frame line, cramped tier tab, sold panel fit: doc
 
@@ -15,14 +15,14 @@ status: in-progress
 - done_when: nodes match the commit and the capture; no value invented; lint clean; committed by path.
 - editor_state: any
 - token_ceiling: 0.3 M units
-- model: open
-- tokens: open
-- usage: open
-- runs: open
+- model: sonnet
+- tokens: input 10, cache write 32213, cache read 99705, output 3796
+- usage: turns 5, context start 11k peak 32k, resumes 0, 1 min, units 0.07 M
+- runs: 1
 - milestone: M2
 - started: 2026-10-28T22:02:51Z
 - waiting_for: none
-- result: open
+- result: wbp-shop-card and wbp-shop-screen updated (verified_frame_details), commit f90d2e6d
 
 ## Relations
 - [[task-355-shop-card-frame-details]] — parent global task.

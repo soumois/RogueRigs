@@ -1,9 +1,9 @@
 ---
 id: task-355-shop-card-frame-details
 description: "Global task: Shop cards: no second frame line beside slot 0, tier tab text with room, sold panel fitted to the frame opening."
-parent: tasks-to-do-index
+parent: tasks-done-index
 kind: task
-status: in-progress
+status: done
 ---
 # Shop card: second frame line, cramped tier tab, sold panel fit
 
@@ -13,10 +13,10 @@ status: in-progress
 - gdd_check: read 2026-10-28 by the Planner: [[run-shop]] (screen look, provisional, owner 2026-10-28), tech [[wbp-shop-screen]], [[wbp-shop-card]], [[task-348-shop-screen-redesign]] (Q1 to Q11 stay decided) and its subtasks 07 to 09; capture frames srd_00, srd_23, crops_03_11, comparison_sheet and the mockup seen by the Planner: the five defects are confirmed. No conflict with the GDD; rules unchanged (display only). No `open` GDD value is needed; the sizes below are layout values the GDD does not hold, proposed as provisional defaults in `## Questions`. Scope: M2, same as task-348. Shared cause seen: the Content column (title, panel, Reroll, Continue) is taller than 1080 and centred, so it overflows at both ends; tasks run 351 to 355 in order, each keeping the previous fixes. Order (re-planned 2026-10-28): starts after [[task-357-shop-resource-indicator]] done (run order 356, 357, 355; [[task-354-shop-counter-overlap]] cancelled, absorbed by 356); starts from the WBP_ShopCard and WBP_ShopScreen left by 356 and 357 (anchored layout, card filling its slot). Owner answer 2026-10-28: "OK, tout par défaut": every default of `## Questions` is DECIDED (values provisional, owner 2026-10-28); [[run-shop]] updated by the Planner the same day. Run order confirmed: 351, 352, 353, 354, 355.
 - confirmed_by_owner: yes (2026-10-28, "OK, tout par défaut" to Q1-Q9 and the plan, relayed by the main session)
 - milestone: M2
-- next_step: task-355-03-shop-card-frame-details-doc
+- next_step: none
 - started: 2026-10-28T21:49:19Z
 - waiting_for: none
-- result: open
+- result: Done. wbp-shop-card and wbp-shop-screen updated (verified_frame_details), commit f90d2e6d
 
 ## Questions
 Decided 2026-10-28 (owner "OK, tout par défaut"), values provisional.
@@ -31,7 +31,7 @@ Questions Q1 to Q9 were asked together; each lives in the task it applies to (Q8
 3. task-355-03-shop-card-frame-details-doc (vault/reference/tasks/task-355-shop-card-frame-details/task-355-03-shop-card-frame-details-doc.md) — doc: update wbp-shop-card, wbp-shop-screen.
 
 ## Relations
-- [[tasks-to-do-index]] — parent index.
+- [[tasks-done-index]] — parent index.
 - [[task-355-01-shop-card-frame-details-fix]] — step 1, bp.
 - [[task-355-02-shop-card-frame-details-capture]] — step 2, cpp.
 - [[task-355-03-shop-card-frame-details-doc]] — step 3, doc.
