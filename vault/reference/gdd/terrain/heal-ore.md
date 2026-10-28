@@ -12,6 +12,7 @@ status: approved
 - Pickups are collected within the miner's pickup radius ([[player-stats]]).
 - Heal pickups pop within 80-150 uu of their block, so a vein dug from where the miner stands stays within the pickup radius (owner 2026-10-20, provisional, task-256).
 - Look: red heal crystals and red pickups; static on the floor, unlike moving red enemy shots ([[color-code]]).
+- Pickup variants (owner 2026-10-28, provisional, [[task-336-heal-crystal-variants]]): the heal pickup becomes one of 3 near-identical red crystal clusters drawn at random per drop, visual only (same 15 HP, same rules, no names); 3 to 5 chunky faceted pure red points, no rock, same crystal as the heal deposits, the variants differing only by arrangement and angles. Images first; mesh and in-game assignment are a later request. Deposits keep their 3 validated variants.
 - Heal ore blocks are spread across the map; their density is a balance value.
 - Veins are 2 × 2 (owner 2026-10-10, was 3 × 3): each pickup heals 15 HP, so a whole vein restores 60 HP as before. Density: 12 veins of 2 × 2 (48 cells) on the 240 × 240 M1 arena, the 12 veins of the former 3 × 3 layout.
 - A heal pickup is not taken when the miner is at full health (owner 2026-10-10): it stays on the floor and is collected later, once health is below the maximum and the pickup is within the pickup radius.
