@@ -16,11 +16,12 @@ status: wait-answers
   - Q3 route: the art agent generates through Kie.ai (GPT Image 2, 1K, about 6 credits per image). Alternative: prompts handed to the owner for ChatGPT.
   - Q4 look: same red crystal as the heal deposit crystals (`vault/assets/heal-deposit-sheet.png` as image reference), a compact cluster of 3 to 5 chunky faceted red points, no rock, 30 cm pickup scale; the 3 variants share size, proportions and crystal count, only the arrangement and angles of the points change; not a red copy of the violet ore chunk shape. Pure red, no orange, no pink.
   - Q5 images: one 3-up sheet (three isolated variants, same camera, three-quarter top view, plain light grey background, usable for Blender), at most 2 correction passes (up to about 18 credits). The names Rubéline, Cinabrite, Grenat-géode are dropped: it stays "heal ore".
+- owner_pick: 2026-10-28, owner "ok" to Q1 of [[task-339-heal-chunk-mesh]] (relayed by the main session): the pass 2 sheet `Art/Source/heal-pickup/20261027-165219-heal-pickup-1.png` is validated despite the style-guide A1 fail; copy it to `vault/assets/heal-pickup-sheet.png`, commit it with `Art/Source/heal-pickup/20261027-165219-heal-pickup.review.json`, then close this task. Earlier sheets stay untracked.
 - confirmed_by_owner: yes (2026-10-28, "ok" to Q1 to Q5, relayed by the main session)
 - milestone: M2
 - next_step: task-336-01-heal-crystal-variants
 - started: 2026-10-28T00:37:24Z
-- waiting_for: owner confirms the pass 2 sheet 20261027-165219-heal-pickup-1.png as validated (Q1 of task-339); then copy to vault/assets/heal-pickup-sheet.png and close
+- waiting_for: none from the owner: sheet picked (owner_pick); an Executor copies it and closes
 - result: open
 
 ## Subtasks
