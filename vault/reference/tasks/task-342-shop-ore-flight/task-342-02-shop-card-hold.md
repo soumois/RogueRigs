@@ -3,7 +3,7 @@ id: task-342-02-shop-card-hold
 description: "Bp: WBP_ShopCard keeps its face and Buy button during the purchase sequence, sold look after."
 parent: task-342-shop-ore-flight
 kind: task
-status: in-progress
+status: done
 ---
 # Shop purchase: ore flies from the balance to the Buy button: WBP_ShopCard keeps its face and Buy button during the purchase sequence, sold look after
 
@@ -15,14 +15,14 @@ status: in-progress
 - done_when: compiled and saved; graphs read back: the bought slot ignores the refresh until EndPurchaseFx; committed.
 - editor_state: open
 - token_ceiling: 1.0 M units
-- model: open
-- tokens: open
-- usage: open
-- runs: open
+- model: sonnet
+- tokens: input 60, cache write 80233, cache read 1598205, output 20795
+- usage: turns 30, context start 10k peak 80k, resumes 0, 3 min, units 0.36 M
+- runs: 1
 - milestone: M2
 - started: 2026-10-28T06:34:36Z
 - waiting_for: none
-- result: open
+- result: WBP_ShopCard: bHolding, HoldIfBought bound to OnSlotBought, public EndPurchaseFx (clears hold, SetBought), RefreshUnlessHolding in ShopChangedEv; compiled and saved, graphs read back; PIE not run; commit bad1c58a
 
 ## Relations
 - [[task-342-shop-ore-flight]] — parent global task.
