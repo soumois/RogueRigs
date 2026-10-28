@@ -14,13 +14,20 @@ Same art style, same camera and same red crystal as the attached image (heal dep
 ```
 
 ## Run
-- Run log `Art/Source/heal-pickup/20261027-163753-heal-pickup.json`, image `Art/Source/heal-pickup/20261027-163753-heal-pickup-1.png` (1 variant, 6 credits, no correction pass needed). Delivery: 3-up sheet, plain light grey background, three-quarter top view; not copied to `vault/assets/` (owner validates first).
+- Step 01: run log `Art/Source/heal-pickup/20261027-163753-heal-pickup.json`, image `Art/Source/heal-pickup/20261027-163753-heal-pickup-1.png` (1 variant, 6 credits). Style-guide review FAILED it on A16: camera near eye level, undersides and sides visible instead of the tops.
+- Step 02 (correction pass 1): run log `Art/Source/heal-pickup/20261027-164005-heal-pickup.json`, image `Art/Source/heal-pickup/20261027-164005-heal-pickup-1.png` (1 variant, 6 credits). References: step 01 image (image 1) and `vault/assets/heal-deposit-sheet.png` (image 2). Delivery: 3-up sheet, plain light grey background, three-quarter top view; not copied to `vault/assets/` (owner validates first).
 
-## Self-review
-- A1 pass: large flat facets visible, no smoothing. A12/A16 pass: three-quarter top view, plain light grey background. A14 pass: no text, UI, pebbles, floor or shadows.
-- [[color-code]] and [[readability-rules]] pass: pure saturated red with inner glow, no orange, pink, yellow or violet; no rock, so not a red copy of the violet ore chunk.
-- Brief pass: each cluster shows 4 crystals, same size and proportions, arrangements differ (fan, lean right, lean left with a front point).
-- Gaps: the three silhouettes are close but not identical in height (right cluster slightly taller); the glow is a soft facet highlight with no halo; the base is a single merged crystal mass, to be modelled flat-bottomed in Blender.
+## Step 02 prompt (verbatim, `Art/Source/heal-pickup/prompts/02-correction-camera.txt`)
+```
+Keep this exact image: same 3 x 1 sheet of three separate isolated heal pickup crystal clusters, same size, same proportions, same four chunky faceted pure red crystal points per cluster, same plain light grey background, same low-poly hand-painted style, no rock, no floor, no text. Change ONE thing: the camera. Raise it to a true three-quarter top view, about 55 degrees looking down, exactly like the camera of the second attached image (heal deposit sheet), so the pointed tops and the upper facets of every crystal point are clearly visible, and the undersides and the lower sides are hidden. The points rise away from the viewer and their tips are seen from above, not from eye level. Give the three clusters a clearly different arrangement of the four points while keeping the same overall size and the same crystal sizes: left cluster, points fanning outward in a wide star; middle cluster, three points leaning to the right with one short upright point; right cluster, points leaning to the left with one pointing toward the camera. Pure red only: no orange, no pink, no yellow, no violet.
+```
+
+## Self-review of step 02 (image viewed)
+- A16 pass: the camera now looks down on the clusters; the top facets and tips of every point are visible and no undersides show. Caveat: the angle reads closer to 65 to 75 degrees than 55, so the points look splayed flat like a flower instead of rising upright; the deposit sheet is a more oblique view.
+- A1 pass: large flat facets, no smoothing. A14 pass: no text, rock, floor, pebbles or cast shadows; plain light grey background.
+- [[color-code]] pass: pure saturated red, no orange, pink, yellow or violet. Glow is only facet highlights, no halo.
+- Variation pass: the three arrangements now differ clearly (left fan, middle with an upright point and a leaning pair, right leaning with a front point). Each cluster shows four points.
+- Gaps: the right cluster is larger than the other two (not the same size); the middle cluster tips are seen at a slightly different angle; the base is a merged mass, to be modelled flat-bottomed in Blender.
 
 ## Relations
 - [[art-prompts]] — parent: method and locked style phrases.

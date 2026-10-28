@@ -1,0 +1,28 @@
+{
+  "run_id": "20261027-164005-heal-pickup",
+  "asset": "heal-pickup",
+  "model": "gpt-image-2-image-to-image",
+  "aspect_ratio": "16:9",
+  "resolution": "1K",
+  "variants": 1,
+  "prompt_file": "Art/Source/heal-pickup/prompts/02-correction-camera.txt",
+  "prompt": "Keep this exact image: same 3 x 1 sheet of three separate isolated heal pickup crystal clusters, same size, same proportions, same four chunky faceted pure red crystal points per cluster, same plain light grey background, same low-poly hand-painted style, no rock, no floor, no text. Change ONE thing: the camera. Raise it to a true three-quarter top view, about 55 degrees looking down, exactly like the camera of the second attached image (heal deposit sheet), so the pointed tops and the upper facets of every crystal point are clearly visible, and the undersides and the lower sides are hidden. The points rise away from the viewer and their tips are seen from above, not from eye level. Give the three clusters a clearly different arrangement of the four points while keeping the same overall size and the same crystal sizes: left cluster, points fanning outward in a wide star; middle cluster, three points leaning to the right with one short upright point; right cluster, points leaning to the left with one pointing toward the camera. Pure red only: no orange, no pink, no yellow, no violet.",
+  "refs": [
+    "Art/Source/heal-pickup/20261027-163753-heal-pickup-1.png",
+    "vault/assets/heal-deposit-sheet.png"
+  ],
+  "tasks": [
+    {
+      "task_id": "72bfbfb98f5c573b6cb004a721fd8595",
+      "state": "success",
+      "credits": 6,
+      "error": null,
+      "result_urls": [
+        "https://tempfile.aiquickdraw.com/images/chatgpt/file_0000000081ec8230bfc94fe8e9049976.png"
+      ]
+    }
+  ],
+  "files": [
+    "Art/Source/heal-pickup/20261027-164005-heal-pickup-1.png"
+  ]
+}
