@@ -3,7 +3,7 @@ id: task-343-02-shop-buy-juice-capture
 description: "Cpp: -game frame capture of the Buy button reaction."
 parent: task-343-shop-buy-juice
 kind: task
-status: todo
+status: in-progress
 ---
 # Shop purchase: juicy Buy button click: -game frame capture of the Buy button reaction
 
@@ -20,7 +20,7 @@ status: todo
 - usage: open
 - runs: open
 - milestone: M2
-- started: open
+- started: 2026-10-28T07:18:53Z
 - waiting_for: none
 - result: open
 
