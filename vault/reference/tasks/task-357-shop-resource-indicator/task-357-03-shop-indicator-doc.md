@@ -3,7 +3,7 @@ id: task-357-03-shop-indicator-doc
 description: "Doc: update wbp-shop-screen with the IndicatorRessource tree and anchors, from task-357-01 and its capture."
 parent: task-357-shop-resource-indicator
 kind: task
-status: todo
+status: in-progress
 ---
 # Shop screen: resource indicator centred on its font: doc
 
@@ -20,7 +20,7 @@ status: todo
 - usage: open
 - runs: open
 - milestone: M2
-- started: open
+- started: 2026-10-28T21:47:45Z
 - waiting_for: none
 - result: open
 
