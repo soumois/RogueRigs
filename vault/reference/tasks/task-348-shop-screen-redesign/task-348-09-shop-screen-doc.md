@@ -3,7 +3,7 @@ id: task-348-09-shop-screen-doc
 description: "Doc: update wbp-shop-card and wbp-shop-screen after the shop screen redesign."
 parent: task-348-shop-screen-redesign
 kind: task
-status: todo
+status: in-progress
 ---
 # Shop screen redesign: update the Blueprint docs
 
@@ -20,7 +20,7 @@ status: todo
 - usage: open
 - runs: open
 - milestone: M2
-- started: open
+- started: 2026-10-28T17:00:08Z
 - waiting_for: none
 - result: open
 

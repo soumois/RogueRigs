@@ -3,7 +3,7 @@ id: task-348-08-shop-screen-capture
 description: "Cpp: -game capture of the restyled shop screen and one purchase, compared with the old screenshot and the mockup."
 parent: task-348-shop-screen-redesign
 kind: task
-status: in-progress
+status: done
 ---
 # Shop screen redesign: capture
 
@@ -15,14 +15,14 @@ status: in-progress
 - done_when: the sheet shows every element of the global acceptance or lists what differs; unseen items listed.
 - editor_state: closed
 - token_ceiling: 1.2 M units
-- model: open
-- tokens: open
-- usage: open
-- runs: open
+- model: opus
+- tokens: input 34, cache write 45511, cache read 460478, output 7537
+- usage: turns 16, context start 12k peak 46k, resumes 1 (message x1), 2 min, units 0.14 M
+- runs: 1
 - milestone: M2
 - started: 2026-10-28T16:57:37Z
 - waiting_for: none
-- result: open
+- result: -game 1920x1080 capture ran with owner's editor left open (exit 0, 24 frames) in Saved/ShopRedesign/ (comparison_sheet.png, srd_00..23.png, crops_03_11.png, contact_sheet.png), not committed. Seen: counter panel with pipes top left, riveted panel with 5 cards, tier tabs, sold card burnt with wrench, Reroll/Continue plates, purchase fx play (ore flight, balance 45). DEFECTS: (1) title top clipped at y=0; (2) Continue plate cut at screen bottom (y 995-1080); (3) NEED 15 MORE overflows Buy plate (same size as BUY, mockup uses smaller text on grey plate); (4) counter overlaps panel top-left corner and first rivet; (5) minor second frame line beside slot 0, tab text cramped. Unseen: epic/uncommon/legendary tabs, hover/pressed, reroll disabled, burn at fine steps.
 
 ## Relations
 - [[task-348-shop-screen-redesign]] — parent global task.
