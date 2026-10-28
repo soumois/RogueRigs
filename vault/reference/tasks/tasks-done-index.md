@@ -347,3 +347,4 @@ Archive: it exceeds the index size limits of [[_authoring]] on purpose (owner, 2
 - [[task-338-main-menu-screen]] — Main menu screen at game start: background image, New Run starts a run, Options placeholder, Exit quits the game. Status done.
 - [[task-339-heal-chunk-mesh]] — Blender meshes of the 3 red heal pickup chunk variants from the chosen sheet, then in game on BP_PickupHeal, drawn at random per drop. Status done.
 - [[task-340-ore-run-carry]] — Duskite ore is never reset between levels: the miner sees and spends his whole run total, and every run starts at 0. Status done.
+- [[task-341-shop-design-prompt]] — A ready-to-paste ChatGPT prompt giving the full context of the shop screen so the owner can discuss design and game feel proposals. Status done.

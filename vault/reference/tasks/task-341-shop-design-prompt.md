@@ -1,9 +1,9 @@
 ---
 id: task-341-shop-design-prompt
 description: "Global task: A ready-to-paste ChatGPT prompt giving the full context of the shop screen so the owner can discuss design and game feel proposals."
-parent: tasks-to-do-index
+parent: tasks-done-index
 kind: task
-status: in-progress
+status: done
 ---
 # ChatGPT prompt for the shop screen design and game feel
 
@@ -13,14 +13,14 @@ status: in-progress
 - gdd_check: read 2026-10-28: [[run-shop]], [[intermission]], [[rarities]], [[art-prompts]] (prompt nodes branch), [[agent-art]], [[agents-index]]. No conflict. No crew agent writes a text prompt for an external chat; the closest is [[agent-art]] (prompt writing, prompt node under art-prompts); no image generated, no Kie.ai run. owner screenshot of the shop screen saved as `Art/Source/shop-screen/reference/shop-screen-2026-10-28.png` (SPARE PARTS, 4 cards greyed "Short on ore", slot 5 sold, balance 7, Reroll stock 20, Continue). Questions (defaults): Q4 the prompt is written in French (the language the owner uses with ChatGPT); Q5 the [[agent-art]] agent writes it, without image generation. Owner answer 2026-10-28: "OK, tout par défaut": every default above is DECIDED (values provisional, owner 2026-10-28); GDD updated by the Planner the same day.
 - confirmed_by_owner: yes (2026-10-28, "OK, tout par défaut" to Q1-Q11 and the plan, relayed by the main session)
 - milestone: M2
-- next_step: task-341-01-shop-design-prompt
+- next_step: none
 - started: 2026-10-28T06:28:01Z
 - waiting_for: none
-- result: open
+- result: Done. ChatGPT prompt (French, 7 sections) saved at Art/Source/shop-screen/prompts/chatgpt-shop-design.md; node art-prompts-shop-screen holds a summary (prompt over node size limit); no image generated; lint clean.
 
 ## Subtasks
 1. task-341-01-shop-design-prompt (vault/reference/tasks/task-341-shop-design-prompt/task-341-01-shop-design-prompt.md) — art: write the ChatGPT prompt and its vault prompt node.
 
 ## Relations
-- [[tasks-to-do-index]] — parent index.
+- [[tasks-done-index]] — parent index.
 - [[task-341-01-shop-design-prompt]] — step 1, art.

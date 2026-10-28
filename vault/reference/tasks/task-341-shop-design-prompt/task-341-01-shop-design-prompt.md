@@ -3,7 +3,7 @@ id: task-341-01-shop-design-prompt
 description: "Art: write the ChatGPT prompt and its vault prompt node."
 parent: task-341-shop-design-prompt
 kind: task
-status: in-progress
+status: done
 ---
 # ChatGPT prompt for the shop screen design and game feel: write the ChatGPT prompt and its vault prompt node
 
@@ -15,14 +15,14 @@ status: in-progress
 - done_when: prompt file and node exist; the prompt names every fixed rule with its value from run-shop and invents none; it references the screenshot; lint clean; committed by path.
 - editor_state: any
 - token_ceiling: 0.15 M units
-- model: open
-- tokens: open
-- usage: open
-- runs: open
+- model: sonnet
+- tokens: input 18, cache write 61120, cache read 343015, output 9943
+- usage: turns 9, context start 10k peak 61k, resumes 0, 1 min, units 0.16 M
+- runs: 1
 - milestone: M2
 - started: 2026-10-28T06:28:01Z
 - waiting_for: none
-- result: open
+- result: ChatGPT prompt (French, 7 sections) saved at Art/Source/shop-screen/prompts/chatgpt-shop-design.md; node art-prompts-shop-screen holds a summary (prompt over node size limit); no image generated; lint clean.
 
 ## Relations
 - [[task-341-shop-design-prompt]] — parent global task.
