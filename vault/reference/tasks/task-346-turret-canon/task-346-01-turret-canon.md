@@ -23,7 +23,7 @@ status: done
 - milestone: M2
 - started: 2026-10-28T06:47:38Z
 - waiting_for: none
-- result: Canon rebuilt in Blender (commit 06e565d9): 1,374 canon tris, total 15,748 under 16,000; 15 real round holes in the shroud matching the unoptimised pattern (rows 1,2,2,1,3,5,1); axis/length/radii within 2 pct; body vertices and UVs unchanged. Warnings: hook bracket at canon rear lost, underside arc not searched for holes, normal bake detail unverified.
+- result: Canon rebuilt in Blender (commit 06e565d9): 1,374 canon tris, total 15,748 under 16,000; 15 real round shroud holes matching the unoptimised rows 1,2,2,1,3,5,1; axis, length, radii within 2 pct; body vertices and UVs unchanged. Warnings: rear hook bracket lost, underside arc not searched for holes, normal bake detail unverified. ALERT: 1.37 M units over the 1.2 M ceiling (canon exploration, fidelity-loop return, bake); 69 turns.
 
 ## Relations
 - [[task-346-turret-canon]] — parent global task.
