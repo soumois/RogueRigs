@@ -16,7 +16,7 @@ status: wait-answers
   - Q3 values (provisional): 30 cm like today's cube and the Duskite chunk; centred pivot; 300 tris target, 500 max per variant (Duskite chunk budget); two materials, bright red prism faces and darker red fracture faces, as new instances MI_HealChunk_Bright and MI_HealChunk_Dark copied from the floor heal crystals (same values, tunable alone); one simple collision primitive per variant (Duskite rule); no cast shadow (as the Duskite chunk); RestOrientation Full kept. Alternative: reuse MI_HealCrystal_Bright and _Dark directly (one tuning then changes the floor crystals too).
 - confirmed_by_owner: yes (2026-10-28, "ok" to Q1 to Q3, relayed by the main session)
 - milestone: M2
-- next_step: task-339-01-heal-chunk-mesh
+- next_step: task-339-02-heal-chunk-import
 - started: 2026-10-28T01:25:52Z
 - waiting_for: owner acceptance of the 3 heal chunk meshes (preview render, subtask 01)
 - result: open

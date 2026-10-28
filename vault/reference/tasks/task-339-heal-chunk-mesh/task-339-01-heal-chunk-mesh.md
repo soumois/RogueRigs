@@ -3,7 +3,7 @@ id: task-339-01-heal-chunk-mesh
 description: "3D, Blender route: SM_HealChunk_01..03 from the chosen heal pickup sheet, 30 cm, centred pivot, two red slots, FBX, report and render."
 parent: task-339-heal-chunk-mesh
 kind: task
-status: wait-answers
+status: done
 ---
 # Heal pickup chunks: Blender meshes
 
@@ -26,14 +26,14 @@ status: wait-answers
 - done_when: three FBX and reports exist; each within 500 tris, longest side 30 cm (+-1), pivot centred, slots crystal_bright and crystal_dark in the same order on the three; every fidelity criterion pass, or open failures listed after 5 returns; no Blender process left (`Get-Process blender`); the Executor sends the preview to the owner with SendUserFile and the owner accepts the meshes (one return to the agent at most before asking him); committed by path.
 - editor_state: closed
 - token_ceiling: 1.2 M units
-- model: open
-- tokens: open
-- usage: open
-- runs: open
+- model: sonnet
+- tokens: input 42, cache write 83540, cache read 1159746, output 29837
+- usage: turns 21, context start 10k peak 87k, resumes 0, 8 min, units 0.37 M
+- runs: 1
 - milestone: M2
 - started: 2026-10-28T01:25:53Z
-- waiting_for: owner acceptance of the 3 heal chunk meshes (Art/Meshes/HealChunk/heal_chunk_preview.png)
-- result: open
+- waiting_for: none
+- result: 3 FBX + reports (180/172/180 tris, 30 cm, centred pivot, slots crystal_bright/crystal_dark); C1-C8 pass in 4 returns; owner accepted the preview 2026-10-28
 
 ## Relations
 - [[task-339-heal-chunk-mesh]] — parent global task.
