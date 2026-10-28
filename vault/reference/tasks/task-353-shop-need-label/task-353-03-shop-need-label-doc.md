@@ -3,7 +3,7 @@ id: task-353-03-shop-need-label-doc
 description: "Doc: update wbp-shop-card after the fix of owner point 3."
 parent: task-353-shop-need-label
 kind: task
-status: todo
+status: in-progress
 ---
 # Shop card: NEED N MORE overflows the Buy plate: doc
 
@@ -20,7 +20,7 @@ status: todo
 - usage: open
 - runs: open
 - milestone: M2
-- started: open
+- started: 2026-10-28T18:03:44Z
 - waiting_for: none
 - result: open
 
