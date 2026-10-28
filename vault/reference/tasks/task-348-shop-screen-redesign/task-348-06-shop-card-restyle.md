@@ -3,7 +3,7 @@ id: task-348-06-shop-card-restyle
 description: "Bp: WBP_ShopCard to the mockup: tier tab, violet price, styled Buy button with need-N-more, burnt sold look."
 parent: task-348-shop-screen-redesign
 kind: task
-status: todo
+status: in-progress
 ---
 # Shop screen redesign: WBP_ShopCard
 
@@ -20,7 +20,7 @@ status: todo
 - usage: open
 - runs: open
 - milestone: M2
-- started: open
+- started: 2026-10-28T16:44:06Z
 - waiting_for: none
 - result: open
 
