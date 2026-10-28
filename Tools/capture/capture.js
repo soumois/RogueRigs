@@ -12,6 +12,7 @@
 //   --expect  number of screenshots expected; the report flags a mismatch
 //   --keep    regex (case-insensitive): extra LogRogueRigs lines to keep besides rr.* debug lines
 //   --ignore  regex (case-insensitive): drop any log line that matches, whatever its category
+//   --map     map to open (default /Game/RogueRigs/Maps/L_ArenaM1); "none" passes no map, so GameDefaultMap (L_MainMenu) opens
 // Kept in the report: rr.* debug lines and --keep matches of LogRogueRigs, every Error/Fatal/ensure line, and Warning lines
 // of game categories (other warnings are only counted). Repeated lines are merged ("x12"), long lines cut at 160 characters.
 // Exit code: 0 run ended and screenshot count as expected, 1 timeout, crash or missing screenshots, 2 bad arguments.
@@ -159,13 +160,14 @@ async function main() {
   const keepRe = a.keep ? new RegExp(a.keep, 'i') : null;
   const ignoreRe = a.ignore ? new RegExp(a.ignore, 'i') : null;
   const [resW, resH] = (a.res || '1600x900').split('x');
-  const map = a.map || '/Game/RogueRigs/Maps/L_ArenaM1';
+  // --map none: no map argument, the game opens GameDefaultMap (L_MainMenu since task-338-04).
+  const map = a.map === 'none' ? null : (a.map || '/Game/RogueRigs/Maps/L_ArenaM1');
   const outDir = path.join(REPO, 'Saved', 'Captures', a.name);
   fs.rmSync(outDir, { recursive: true, force: true });
   fs.mkdirSync(outDir, { recursive: true });
   const logPath = path.join(outDir, 'run.log');
 
-  const args = [UPROJECT, map, '-game', '-windowed', `-ResX=${resW}`, `-ResY=${resH}`, '-nosplash', '-log', `-abslog=${logPath}`, `-ExecCmds=${a.exec}`];
+  const args = [UPROJECT, ...(map ? [map] : []), '-game', '-windowed', `-ResX=${resW}`, `-ResY=${resH}`, '-nosplash', '-log', `-abslog=${logPath}`, `-ExecCmds=${a.exec}`];
   const startMs = Date.now();
   const child = spawn(ENGINE, args, { stdio: 'ignore', windowsHide: false });
   const result = await new Promise((resolve) => {
