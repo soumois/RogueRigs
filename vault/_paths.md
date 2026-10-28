@@ -106,6 +106,7 @@ bp-heavy  reference/tech/blueprints/enemies/bp-heavy.md
 bp-heavy-death-puff  reference/tech/blueprints/fx/bp-heavy-death-puff.md
 bp-heavy-slam-impact  reference/tech/blueprints/fx/bp-heavy-slam-impact.md
 bp-kamikaze  reference/tech/blueprints/enemies/bp-kamikaze.md
+bp-main-menu-game-mode  reference/tech/blueprints/player/bp-main-menu-game-mode.md
 bp-mcp-lessons  reference/agents/bp-mcp-lessons.md
 bp-miner  reference/tech/blueprints/player/bp-miner.md
 bp-objective-console  reference/tech/blueprints/world/bp-objective-console.md
@@ -330,6 +331,7 @@ sys-hud-locator  reference/tech/systems/ui/sys-hud/sys-hud-locator.md
 sys-hud-minimap  reference/tech/systems/ui/sys-hud-minimap.md
 sys-hud-pressure  reference/tech/systems/ui/sys-hud-pressure.md
 sys-level-up  reference/tech/systems/core/sys-level-up.md
+sys-main-menu  reference/tech/systems/ui/sys-main-menu.md
 sys-objectives  reference/tech/systems/world/sys-objectives.md
 sys-objectives-console-chest  reference/tech/systems/world/sys-objectives/sys-objectives-console-chest.md
 sys-objectives-events  reference/tech/systems/world/sys-objectives/sys-objectives-events.md
@@ -412,6 +414,7 @@ wbp-health-status  reference/tech/blueprints/ui/wbp-health-status.md
 wbp-hud  reference/tech/blueprints/ui/wbp-hud.md
 wbp-intermission  reference/tech/blueprints/ui/wbp-intermission.md
 wbp-loading  reference/tech/blueprints/ui/wbp-loading.md
+wbp-main-menu  reference/tech/blueprints/ui/wbp-main-menu.md
 wbp-minimap-locator  reference/tech/blueprints/ui/wbp-minimap-locator.md
 wbp-ore-counter  reference/tech/blueprints/ui/wbp-ore-counter.md
 wbp-shop-card  reference/tech/blueprints/ui/wbp-shop-card.md
