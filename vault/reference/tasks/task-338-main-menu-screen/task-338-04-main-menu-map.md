@@ -3,7 +3,7 @@ id: task-338-04-main-menu-map
 description: "L_MainMenu map with the game mode override, set as GameDefaultMap."
 parent: task-338-main-menu-screen
 kind: task
-status: todo
+status: in-progress
 ---
 # Main menu: L_MainMenu map
 
@@ -20,7 +20,7 @@ status: todo
 - usage: open
 - runs: open
 - milestone: M3
-- started: open
+- started: 2026-10-28T02:09:24Z
 - waiting_for: none
 - result: open
 
