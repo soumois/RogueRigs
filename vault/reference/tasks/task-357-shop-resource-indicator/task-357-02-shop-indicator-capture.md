@@ -3,7 +3,7 @@ id: task-357-02-shop-indicator-capture
 description: "Cpp: -game captures of the shop resource indicator at four resolutions and three balance sizes, plus one purchase flight."
 parent: task-357-shop-resource-indicator
 kind: task
-status: todo
+status: in-progress
 ---
 # Shop screen: resource indicator centred on its font: capture
 
@@ -20,7 +20,7 @@ status: todo
 - usage: open
 - runs: open
 - milestone: M2
-- started: open
+- started: 2026-10-28T21:40:15Z
 - waiting_for: none
 - result: open
 

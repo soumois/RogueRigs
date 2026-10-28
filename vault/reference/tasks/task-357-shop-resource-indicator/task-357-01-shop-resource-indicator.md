@@ -3,7 +3,7 @@ id: task-357-01-shop-resource-indicator
 description: "Bp: WBP_ShopScreen IndicatorRessource rebuilt without a Row container, ore icon and value centred on the font line."
 parent: task-357-shop-resource-indicator
 kind: task
-status: in-progress
+status: done
 ---
 # Shop screen: resource indicator centred on its font: WBP_ShopScreen
 
@@ -15,14 +15,14 @@ status: in-progress
 - done_when: compiled and saved; no HorizontalBox left in IndicatorRessource; anchors read back; OreIcon and OreBalanceText still variables; graphs still present; committed by path.
 - editor_state: open
 - token_ceiling: 1.0 M units
-- model: open
-- tokens: open
-- usage: open
-- runs: open
+- model: sonnet
+- tokens: input 30, cache write 53672, cache read 510975, output 9685
+- usage: turns 15, context start 11k peak 54k, resumes 0, 2 min, units 0.17 M
+- runs: 1
 - milestone: M2
 - started: 2026-10-28T21:37:43Z
 - waiting_for: none
-- result: open
+- result: IndicatorRessource rebuilt without Row (e6cbb941): CounterCanvas with OreIcon (align 1,0.5) and OreBalanceText (align 0,0.5) both anchored 0.5,0.5; icon 60 / font 44 kept by hand, not bound. Unrendered at this step.
 
 ## Relations
 - [[task-357-shop-resource-indicator]] — parent global task.
