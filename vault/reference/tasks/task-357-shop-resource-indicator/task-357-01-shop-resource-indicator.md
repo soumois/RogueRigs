@@ -3,7 +3,7 @@ id: task-357-01-shop-resource-indicator
 description: "Bp: WBP_ShopScreen IndicatorRessource rebuilt without a Row container, ore icon and value centred on the font line."
 parent: task-357-shop-resource-indicator
 kind: task
-status: todo
+status: in-progress
 ---
 # Shop screen: resource indicator centred on its font: WBP_ShopScreen
 
@@ -20,7 +20,7 @@ status: todo
 - usage: open
 - runs: open
 - milestone: M2
-- started: open
+- started: 2026-10-28T21:37:43Z
 - waiting_for: none
 - result: open
 
