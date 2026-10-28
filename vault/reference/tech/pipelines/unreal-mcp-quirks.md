@@ -53,6 +53,7 @@ kind: doc
 - Pure nodes are re-evaluated at each consumer: a time delta computed after its setter reads zero.
 - `TextureTools.import_file` refuses to overwrite: delete, import, then set the UI texture group again.
 - Material graphs: `editor_toolset.toolsets.material.MaterialTools`, short tool names. A new Custom node input needs one `set_properties` call with all existing entries plus an empty `{}`, then a second call to name it; `get_expression_inputs` may misreport an input.
+- Static mesh FBX import (task-350-02): `StaticMeshTools.import_file` gave a mesh 100x too small; editor Python (`py "<script>"` typed in the status-bar Cmd box through SlateInspectorToolset) with `FbxImportUI` + `AssetImportTask` imported at the right scale. A mesh first imported through MCP must be deleted before reimport; Python `static_materials` edits did not stick, `StaticMeshTools.set_material` per slot did.
 
 ## Relations
 - [[unreal-mcp]] — parent: the MCP setup and its general limits.

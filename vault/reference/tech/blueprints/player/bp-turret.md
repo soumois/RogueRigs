@@ -1,6 +1,6 @@
 ---
 id: bp-turret
-description: "BP_TurretLauncher, BP_Turret and BP_TurretBullet, Blueprints of the turret launcher, the placed turret and its bullet: grey-box look, barrel tracking, muzzle flash."
+description: "BP_TurretLauncher, BP_Turret and BP_TurretBullet, Blueprints of the turret launcher, the placed turret and its bullet: Meshy base and yawing head, muzzle flash."
 parent: blueprints-player-index
 kind: doc
 ---
@@ -9,16 +9,17 @@ kind: doc
 - asset_path: /Game/RogueRigs/Blueprints/Weapons/BP_TurretLauncher, BP_Turret, BP_TurretBullet (also BP_ShotgunPellet, see [[bp-shotgun]])
 - parent_class: ARRTurretLauncher (/Script/RogueRigs.RRTurretLauncher), ARRTurret (/Script/RogueRigs.RRTurret), ARRTurretBullet (/Script/RogueRigs.RRTurretBullet)
 - purpose: the visible turret weapon; looks only, charges, placement, targeting and fire are C++ ([[sys-turret]]).
-- components: BP_TurretLauncher none added (never shown). BP_TurretBullet: ShotMesh (engine sphere, radius 6 uu, MI_GB_Shot white-gold, NoCollision). BP_Turret, all NoCollision, no shadow: TurretBase (cylinder r 28, h 12, rust grey), TurretBody (cube 36 x 36 x 24 at z 24, white), TurretHead (sphere r 18 at z 46, teal), TurretBarrel (cylinder r 5, h 40, pitch 90, rust grey), MuzzleFlash (sphere r 10, white-gold, hidden at rest); since task-032-02 every mesh component has RelativeScale3D and RelativeLocation x 1.5 (visual 50 % larger: e.g. TurretBase scale 0.84 / 0.84 / 0.18 at z 9, TurretHead scale 0.54 at z 69), the EventTick offsets became 69 (head height), 33 (barrel) and 70.5 (flash); no collision or range change (C++ untouched).
+- components: BP_TurretLauncher none added (never shown). BP_TurretBullet: ShotMesh (engine sphere, radius 6 uu, MI_GB_Shot white-gold, NoCollision). BP_Turret (task-350-03; scale S = 96 / 156.144 = 0.6148, the old grey-box head top of 96 uu; scaled head top reads 95.99; all meshes NoCollision, overlap events off, no cast-shadow flag: `RRShadows::DisableCastShadows` at runtime): TurretBaseMesh (SM_TurretBase, under Root, loc 0, scale S); HeadPivot (C++, under Root, loc (0.308, -0.318, 40.085) = S x (0.501, -0.518, 65.20), the head offset with Y mirrored); TurretHeadMesh (SM_TurretHead, under HeadPivot, loc 0, rot 0, scale S); Muzzle (C++, under HeadPivot, loc (58.79, 0.325, 18.70) = S x (95.628, 0.528, 30.416): X = canon tip at the head bound, Y/Z = canon axis from `canon_axis_yz_cm_in_head_frame` (-0.528, 30.416) in `turret_cut.report.json`, Y mirrored); MuzzleFlash (under Muzzle, loc 0, scale 0.3, sphere r 15 uu, MI_GB_Shot, hidden at rest). Muzzle world height 58.8 uu against ShotHeight 50: the flash sits about 8.8 uu above the bullet start. Before: TurretBase, TurretBody, TurretHead (z 69, scale 0.54), TurretBarrel and MuzzleFlash (67.5, 0, 69) at Root, grey box and cylinders, all NoCollision.
 - exposed_defaults: BP_TurretLauncher TurretClass = BP_Turret_C, ProjectileClass = BP_TurretBullet_C; BP_Turret ProjectileClass = BP_TurretBullet_C (the launcher copy wins at placement); other C++ defaults kept.
-- events: BP_Turret EventTick: when GetTarget is valid, yaw toward it (FindLookAtRotation), head turned, barrel and muzzle flash moved on a circle around the head (SetWorldLocationAndRotation, offsets 69 / 33 / 70.5; components cannot be re-parented through MCP, so the barrel is repositioned instead of attached). OnTurretFired(Origin, Direction): MuzzleFlash visible for 0.05 s.
-- logic_in_bp: visual only (barrel orbit and flash).
-- assets: /Game/RogueRigs/Materials/GreyBox/MI_GB_TurretWhite (0.9), MI_GB_TurretTeal (0, 0.6, 0.55), MI_GB_TurretRust (0.32, 0.24, 0.2), all instances of M_GreyBox; MI_GB_Shot reused.
+- events: BP_Turret EventTick deleted (task-350-03, 25 nodes: head yaw and barrel/flash orbit; the C++ HeadPivot now turns the head, [[sys-turret]]). BeginPlay and the overlap event untouched. OnTurretFired(Origin, Direction): MuzzleFlash visible, Delay 0.05 s, hidden. MuzzleFlash was re-parented under Muzzle with `ActorTools.set_parent_component` (this tool re-parents; the older note that MCP cannot re-parent components does not hold for it).
+- logic_in_bp: the muzzle flash only (show 0.05 s); no tick logic.
+- assets: SM_TurretBase and SM_TurretHead with MI_TurretBody and MI_TurretCanon ([[bp-turret-materials]]); MI_GB_Shot for the flash and the bullet. The grey-box MI_GB_TurretWhite, MI_GB_TurretTeal and MI_GB_TurretRust are no longer used by BP_Turret.
 - owner_agent: agent-bp
-- verified: compiled (warnings as errors), saved. PIE on L_ArenaM1: the launcher came from a new-weapon card (BP_TurretLauncher_C_0 in the miner), key E placed BP_Turret_C_0, which fired (ShotCount 14, BP_TurretBullet actors alive). Not viewed on screen (no screenshot allowed): barrel tracking and colours unchecked visually.
+- verified: task-350-03: compiled and saved; components, transforms and slots as listed read back by the Blueprint agent (slot materials read back in task-350-02, not again in 03). task-350-04: -game capture (frames in `Saved/TurretInGame/after/`, not committed): the base stays fixed, the head turns toward two different robots, the flash is a large blur; 8 tests pass on the final Blueprint (Turret.* x7 and Integration.PlaceTurretInputKillsRobot). Not verified: exact canon-tip shot start (flash blurred), on-screen size against the grey box, no shadow and no collision in frames, canon axis height 18.7 uu on the mesh. Earlier (task-032-02 and before): PIE firing checked, colours unchecked.
 
 ## Relations
 - [[blueprints-index]] — parent index.
+- [[bp-turret-materials]] — the turret textures, material, instances and meshes.
 - [[sys-turret]] — the C++ classes and placement rules.
 - [[turret]] — the weapon design.
 - [[bp-shotgun]] — sibling weapon Blueprint and the pellet.

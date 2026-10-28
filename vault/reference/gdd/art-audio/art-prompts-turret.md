@@ -65,5 +65,6 @@ The optimised Meshy turret with its canon rebuilt by Blender script after the un
 - [[art-prompts]] — parent: method and locked phrases.
 - [[art-prompts-console]] — model node: owner words, Meshy files.
 - [[art-prompts-rigs]] — turret in the rigs lineup (no turret turnaround stored).
+- [[bp-turret-materials]] — Unreal import of the base and head meshes, textures and materials (task-350-02).
 - [[turret]] — what the turret is and does.
 - [[asset-pipeline]] — turret budget 16,000 triangles.

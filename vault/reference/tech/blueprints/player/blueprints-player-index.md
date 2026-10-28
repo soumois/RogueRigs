@@ -18,6 +18,7 @@ Miner, drone, controller, game mode and the weapon Blueprints: the player side.
 - [[bp-burst-rifle]] — BP_BurstRifle, the burst rifle weapon.
 - [[bp-shotgun]] — BP_Shotgun and BP_ShotgunPellet, the shotgun weapon and its pellet.
 - [[bp-turret]] — BP_TurretLauncher, BP_Turret and BP_TurretBullet, the turret weapon.
+- [[bp-turret-materials]] — M_TurretMeshy, its two instances, turret textures and meshes.
 - [[bp-projectile]] — BP_Projectile, the rifle bullet.
 
 ## Relations
