@@ -3,7 +3,7 @@ id: task-355-01-shop-card-frame-details-fix
 description: "Bp: WBP_ShopCard layout fix for owner point 5 of the shop capture, display only."
 parent: task-355-shop-card-frame-details
 kind: task
-status: todo
+status: in-progress
 ---
 # Shop card: second frame line, cramped tier tab, sold panel fit: WBP_ShopCard fix
 
@@ -20,7 +20,7 @@ status: todo
 - usage: open
 - runs: open
 - milestone: M2
-- started: open
+- started: 2026-10-28T21:49:19Z
 - waiting_for: none
 - result: open
 

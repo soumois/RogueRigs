@@ -3,7 +3,7 @@ id: task-355-shop-card-frame-details
 description: "Global task: Shop cards: no second frame line beside slot 0, tier tab text with room, sold panel fitted to the frame opening."
 parent: tasks-to-do-index
 kind: task
-status: todo
+status: in-progress
 ---
 # Shop card: second frame line, cramped tier tab, sold panel fit
 
@@ -14,7 +14,7 @@ status: todo
 - confirmed_by_owner: yes (2026-10-28, "OK, tout par défaut" to Q1-Q9 and the plan, relayed by the main session)
 - milestone: M2
 - next_step: task-355-01-shop-card-frame-details-fix
-- started: open
+- started: 2026-10-28T21:49:19Z
 - waiting_for: none
 - result: open
 
