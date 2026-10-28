@@ -344,3 +344,4 @@ Archive: it exceeds the index size limits of [[_authoring]] on purpose (owner, 2
 - [[task-335-space-texture-layers]] — Replace the procedural nebula of the void background with bold layered AI-generated tileable space textures at several depths, procedural stars kept. Status done.
 - [[task-336-heal-crystal-variants]] — Images of 3 red heal crystal variants with near-identical silhouettes, visual only, so heal drops do not always look the same. Status done.
 - [[task-337-main-menu-background]] — Main menu background image: one 16:9 scene in the validated key art style, generated through Kie.ai, picked by the owner. Status done.
+- [[task-338-main-menu-screen]] — Main menu screen at game start: background image, New Run starts a run, Options placeholder, Exit quits the game. Status done.

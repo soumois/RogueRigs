@@ -3,7 +3,7 @@ id: task-338-06-main-menu-doc
 description: "System and Blueprint doc nodes of the main menu: C++ classes, WBP_MainMenu, BP_MainMenuGameMode, L_MainMenu, rr.Menu commands."
 parent: task-338-main-menu-screen
 kind: task
-status: in-progress
+status: done
 ---
 # Main menu: documentation
 
@@ -15,14 +15,14 @@ status: in-progress
 - done_when: nodes exist and are linked both ways; lint clean; committed
 - editor_state: any
 - token_ceiling: 0.3 M units
-- model: open
-- tokens: open
-- usage: open
-- runs: open
+- model: sonnet
+- tokens: input 18, cache write 41222, cache read 247339, output 9102
+- usage: turns 9, context start 11k peak 45k, resumes 0, 1 min, units 0.12 M
+- runs: 1
 - milestone: M3
 - started: 2026-10-28T02:26:08Z
 - waiting_for: none
-- result: open
+- result: Created sys-main-menu, wbp-main-menu, bp-main-menu-game-mode; updated 3 indexes, sys-cheats, sys-run; lint ok; commit 08114cac
 
 ## Relations
 - [[task-338-main-menu-screen]] — parent global task.
