@@ -3,7 +3,7 @@ id: task-336-01-heal-crystal-variants
 description: "Images of 3 red heal crystal variants with near-identical silhouettes, visual only, so heal drops do not always look the same."
 parent: task-336-heal-crystal-variants
 kind: task
-status: wait-answers
+status: in-progress
 ---
 # Heal crystal variants: images
 
@@ -21,8 +21,8 @@ status: wait-answers
 - usage: open
 - runs: open
 - milestone: M2
-- started: 2026-10-28T00:37:24Z
-- waiting_for: none from the owner: sheet picked (owner_pick); an Executor copies it and closes
+- started: 2026-10-28T01:25:15Z
+- waiting_for: none
 - result: open
 
 ## Relations
