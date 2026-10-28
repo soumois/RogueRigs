@@ -3,19 +3,19 @@ id: task-348-shop-screen-redesign
 description: "Global task: Rebuild the shop screen to the ChatGPT mockup look, making only the sprites the game lacks; stat icons and card frames stay."
 parent: tasks-to-do-index
 kind: task
-status: wait-answers
+status: todo
 ---
 # Shop screen redesign after the ChatGPT mockup
 
-- request: "Voilà la proposition de chatgpt. Ne reprend pas les icones, ne reprend que ce qu'il te manquait pour faire l'écran." (owner, 2026-10-28, with the mockup and the asset sheet saved in [[art-prompts-shop-screen-mockup]]; relayed by the main session: the stat icons already in the game stay; take only what is missing to build the new screen.)
+- request: "Voilà la proposition de chatgpt. Ne reprend pas les icones, ne reprend que ce qu'il te manquait pour faire l'écran." (owner, 2026-10-28, with the mockup and the asset sheet saved in [[art-prompts-shop-screen-mockup]]; relayed by the main session: the stat icons already in the game stay; take only what is missing to build the new screen.) Owner answer 2026-10-28 (relayed by the main session): "OK, tout par défaut" = every default of Q1 to Q11 accepted.
 - goal: WBP_ShopScreen and WBP_ShopCard take the look of the mockup; only the missing sprites are made; stat icons, tier card frames and T_Icon_Ore are kept.
 - acceptance: -game at 1920 x 1080: title with side bars and subtitle; ore counter in its pipe panel top left; riveted shop panel holding the 5 cards; a tier tab on each card; styled Buy button and "need N more" when short; sold card with burnt edges and wrench; Reroll and Continue styled under the panel; game rules unchanged; the 342 to 344 purchase effects still play; capture compared with `Art/Source/shop-screen/reference/shop-screen-2026-10-28.png` and the mockup, sent to the owner; docs updated; lint clean; committed.
-- gdd_check: read 2026-10-28: [[run-shop]], [[rarities]], [[color-code]], [[readability-rules]], [[art-prompts]], [[art-prompts-shop-screen]], [[agent-art]], [[kie-image-workflow]], [[art-3d-lessons]], tech [[wbp-shop-screen]], [[wbp-shop-card]], [[sys-text-content]]; tasks 342 to 344. Existing: the mockup cards are the current baked stat frame tinted per tier, T_Icon_Ore, the stat icons, MI_CardBurn. Missing: title bars, counter panel, shop panel, button plates, reroll arrow, tier tab, sold look. Conflicts and open values: the sheet (1125 x 750) is too small to cut sprites from; [[kie-image-workflow]] treats an owner-sent third-party image as reference only; the mockup writes COMMON in blue while grey is common and blue is rare ([[rarities]]); tier names are not in the GDD; the mockup drops the target line and the red short price. Questions (defaults, values provisional): see `## Questions`.
-- confirmed_by_owner: no
+- gdd_check: read 2026-10-28: [[run-shop]], [[rarities]], [[color-code]], [[readability-rules]], [[art-prompts]], [[art-prompts-shop-screen]], [[agent-art]], [[kie-image-workflow]], [[art-3d-lessons]], tech [[wbp-shop-screen]], [[wbp-shop-card]], [[sys-text-content]]; tasks 342 to 344. Existing: the mockup cards are the current baked stat frame tinted per tier, T_Icon_Ore, the stat icons, MI_CardBurn. Missing: title bars, counter panel, shop panel, button plates, reroll arrow, tier tab, sold look. Conflicts and open values: the sheet (1125 x 750) is too small to cut sprites from; [[kie-image-workflow]] treats an owner-sent third-party image as reference only; the mockup writes COMMON in blue while grey is common and blue is rare ([[rarities]]); tier names are not in the GDD; the mockup drops the target line and the red short price. Questions (defaults, values provisional): see `## Questions`. Owner answer 2026-10-28: "OK, tout par défaut": every default of `## Questions` is DECIDED (values provisional, owner 2026-10-28); [[run-shop]] updated by the Planner the same day. Order: starts only after [[task-344-shop-card-burn]] is done (Q11).
+- confirmed_by_owner: yes (2026-10-28, "OK, tout par défaut" to Q1-Q11 and the plan, relayed by the main session)
 - milestone: M2
 - next_step: task-348-01-shop-chrome-sprites
 - started: open
-- waiting_for: owner answers to Q1-Q11 and confirmation of the plan
+- waiting_for: none
 - result: open
 
 ## Questions
