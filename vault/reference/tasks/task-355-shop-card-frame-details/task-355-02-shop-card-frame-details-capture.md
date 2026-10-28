@@ -3,7 +3,7 @@ id: task-355-02-shop-card-frame-details-capture
 description: "Cpp: -game captures at four resolutions of the fix of owner point 5, compared with the look before and the mockup."
 parent: task-355-shop-card-frame-details
 kind: task
-status: in-progress
+status: done
 ---
 # Shop card: second frame line, cramped tier tab, sold panel fit: capture
 
@@ -15,14 +15,14 @@ status: in-progress
 - done_when: the sheet shows: no second frame line beside slot 0; tab texts with margins; sold panel inside the frame opening at every resolution; every state of Q6 shown or listed as unseen with the reason; or the report lists what differs; unseen items listed.
 - editor_state: any (no build; task-348-08 ran -game with the editor open)
 - token_ceiling: 1.5 M units
-- model: open
-- tokens: open
-- usage: open
-- runs: open
+- model: opus
+- tokens: input 86, cache write 128018, cache read 3437214, output 40712
+- usage: turns 42, context start 12k peak 134k, resumes 1 (message x1), 11 min, units 0.71 M
+- runs: 1
 - milestone: M2
 - started: 2026-10-28T21:51:38Z
 - waiting_for: none
-- result: open
+- result: Captures at 4 resolutions, tiers common/uncommon/rare/epic/legendary, greyed Reroll, burn at 0.05 s steps seen (Saved/ShopFix/task-355); glow band gone, 1-2 px tier line remains; hover/pressed unseen (mouse clicks went to another program on the main screen, no stray game action); no commit, no code change
 
 ## Relations
 - [[task-355-shop-card-frame-details]] — parent global task.

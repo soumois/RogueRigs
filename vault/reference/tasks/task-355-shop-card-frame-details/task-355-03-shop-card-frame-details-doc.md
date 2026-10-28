@@ -3,7 +3,7 @@ id: task-355-03-shop-card-frame-details-doc
 description: "Doc: update wbp-shop-card, wbp-shop-screen after the fix of owner point 5."
 parent: task-355-shop-card-frame-details
 kind: task
-status: todo
+status: in-progress
 ---
 # Shop card: second frame line, cramped tier tab, sold panel fit: doc
 
@@ -20,7 +20,7 @@ status: todo
 - usage: open
 - runs: open
 - milestone: M2
-- started: open
+- started: 2026-10-28T22:02:51Z
 - waiting_for: none
 - result: open
 
