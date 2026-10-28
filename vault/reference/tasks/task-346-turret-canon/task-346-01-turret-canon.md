@@ -3,7 +3,7 @@ id: task-346-01-turret-canon
 description: "Replace the optimised Meshy turret canon by a graft or a Blender rebuild after the unoptimised canon (Q1); render before, after, reference."
 parent: task-346-turret-canon
 kind: task
-status: todo
+status: in-progress
 ---
 # Turret mesh: replace the optimised canon
 
@@ -21,7 +21,7 @@ status: todo
 - usage: open
 - runs: open
 - milestone: M2
-- started: open
+- started: 2026-10-28T06:32:49Z
 - waiting_for: none
 - result: open
 
