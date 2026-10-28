@@ -3,7 +3,7 @@ id: task-348-03-shop-card-sprites
 description: "Art: card tier tab, sold burnt card panel and wrench icon after the ChatGPT sheet, keyed to alpha, no text."
 parent: task-348-shop-screen-redesign
 kind: task
-status: in-progress
+status: wait-answers
 ---
 # Shop screen redesign: card sprites
 
@@ -21,7 +21,7 @@ status: in-progress
 - runs: open
 - milestone: M2
 - started: 2026-10-28T16:19:41Z
-- waiting_for: none
+- waiting_for: owner choice of tab/sold panel/icon candidates c1/c2
 - result: open
 
 ## Relations
