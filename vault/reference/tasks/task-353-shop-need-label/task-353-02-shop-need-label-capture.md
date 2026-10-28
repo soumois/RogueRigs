@@ -3,7 +3,7 @@ id: task-353-02-shop-need-label-capture
 description: "Cpp: -game capture at 1920 x 1080 of the fix of owner point 3, compared with the look before and the mockup."
 parent: task-353-shop-need-label
 kind: task
-status: todo
+status: in-progress
 ---
 # Shop card: NEED N MORE overflows the Buy plate: capture
 
@@ -20,7 +20,7 @@ status: todo
 - usage: open
 - runs: open
 - milestone: M2
-- started: open
+- started: 2026-10-28T17:50:43Z
 - waiting_for: none
 - result: open
 
