@@ -3,7 +3,7 @@ id: task-356-01-shop-screen-anchors
 description: "Bp: commit the owner's hand-edited WBP_ShopScreen as-is, then rebuild its layout on the Root Canvas with explicit anchors."
 parent: task-356-shop-screen-anchors
 kind: task
-status: todo
+status: in-progress
 ---
 # Shop screen: Canvas and anchors: WBP_ShopScreen
 
@@ -20,7 +20,7 @@ status: todo
 - usage: open
 - runs: open
 - milestone: M2
-- started: open
+- started: 2026-10-28T21:22:09Z
 - waiting_for: none
 - result: open
 

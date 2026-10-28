@@ -3,7 +3,7 @@ id: task-356-shop-screen-anchors
 description: "Global task: shop screen rebuilt on a Root Canvas with explicit anchors, from the owner's hand-edited version, to adapt to resolution and ratio."
 parent: tasks-to-do-index
 kind: task
-status: todo
+status: in-progress
 ---
 # Shop screen: Canvas and anchors instead of fixed pixel layout
 
@@ -14,7 +14,7 @@ status: todo
 - confirmed_by_owner: yes (2026-10-28, "OK, tout par défaut" to Q1-Q7 and the plan, relayed by the main session)
 - milestone: M2
 - next_step: task-356-01-shop-screen-anchors
-- started: open
+- started: 2026-10-28T21:22:09Z
 - waiting_for: none
 - result: open
 
