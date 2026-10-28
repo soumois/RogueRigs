@@ -1,0 +1,28 @@
+{
+  "run_id": "20261027-165219-heal-pickup",
+  "asset": "heal-pickup",
+  "model": "gpt-image-2-image-to-image",
+  "aspect_ratio": "16:9",
+  "resolution": "1K",
+  "variants": 1,
+  "prompt_file": "Art/Source/heal-pickup/prompts/03-correction-broken-chunk.txt",
+  "prompt": "Keep this exact image: same 3 x 1 sheet of three separate isolated heal pickup crystal pieces, same size, same proportions, same pure saturated red color, same chunky large flat facets, same low-poly hand-painted style, same high three-quarter top view camera, same plain light grey background, no rock matrix, no floor, no text, no shadows. Change ONE thing: the shape. Each piece must read as a freshly broken-off chunk of crystal that was thrown out of a broken vein and can rest and roll on the ground: a compact, dense, stocky lump about as wide as it is tall, NOT a flower-like splayed cluster. Build each piece as one solid chunky body with a heavy, wide, solid base, topped by two or three short, stubby, blunt crystal points that stay close together and do not splay outward. The base and lower sides are a rough, jagged, irregular broken fracture surface made of large angular flat chips with sharp broken edges and a few small snapped-off notches, as if the piece was just torn from the vein; the fracture faces are the same pure red, a little darker and duller than the polished crystal faces. The three pieces are near identical in size and proportions and differ only by small changes in the outline and the position of the stubby points. Pure red only: no orange, no pink, no yellow, no violet.",
+  "refs": [
+    "Art/Source/heal-pickup/20261027-164005-heal-pickup-1.png",
+    "vault/assets/heal-deposit-sheet.png"
+  ],
+  "tasks": [
+    {
+      "task_id": "041e7926e7a6c7bdc90676d2c9a9050a",
+      "state": "success",
+      "credits": 6,
+      "error": null,
+      "result_urls": [
+        "https://tempfile.aiquickdraw.com/images/chatgpt/file_0000000035a4823096245ffd9f51e1d0.png"
+      ]
+    }
+  ],
+  "files": [
+    "Art/Source/heal-pickup/20261027-165219-heal-pickup-1.png"
+  ]
+}

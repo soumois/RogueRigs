@@ -1,0 +1,12 @@
+{
+  "run_id": "20261027-164005-heal-pickup",
+  "items": [
+    {
+      "file": "20261027-164005-heal-pickup-1.png",
+      "verdict": "pass",
+      "rule": null,
+      "reason": "Three isolated pure-red clusters of four chunky crystal points each, flat facets clearly visible (A1), no rock, no text (A14), plain light grey background and a high three-quarter top view (A16, the near eye-level camera of the previous run is fixed), red main colour as color-code and readability-rules require for heal pickups, no orange or pink, no enemy colours (A7).",
+      "correction": null
+    }
+  ]
+}

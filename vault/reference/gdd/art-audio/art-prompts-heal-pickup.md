@@ -16,6 +16,7 @@ Same art style, same camera and same red crystal as the attached image (heal dep
 ## Run
 - Step 01: run log `Art/Source/heal-pickup/20261027-163753-heal-pickup.json`, image `Art/Source/heal-pickup/20261027-163753-heal-pickup-1.png` (1 variant, 6 credits). Style-guide review FAILED it on A16: camera near eye level, undersides and sides visible instead of the tops.
 - Step 02 (correction pass 1): run log `Art/Source/heal-pickup/20261027-164005-heal-pickup.json`, image `Art/Source/heal-pickup/20261027-164005-heal-pickup-1.png` (1 variant, 6 credits). References: step 01 image (image 1) and `vault/assets/heal-deposit-sheet.png` (image 2). Delivery: 3-up sheet, plain light grey background, three-quarter top view; not copied to `vault/assets/` (owner validates first).
+- Step 03 (correction pass 2): run log `Art/Source/heal-pickup/20261027-165219-heal-pickup.json`, image `Art/Source/heal-pickup/20261027-165219-heal-pickup-1.png` (1 variant, 6 credits). References: pass 1 image (image 1) and `vault/assets/heal-deposit-sheet.png` (image 2). Owner feedback on pass 1: the pickup is thrown out of the broken vein and may roll, so it must read as a freshly broken-off chunk, not a splayed flower. Not copied to `vault/assets/`.
 
 ## Step 02 prompt (verbatim, `Art/Source/heal-pickup/prompts/02-correction-camera.txt`)
 ```
@@ -28,6 +29,17 @@ Keep this exact image: same 3 x 1 sheet of three separate isolated heal pickup c
 - [[color-code]] pass: pure saturated red, no orange, pink, yellow or violet. Glow is only facet highlights, no halo.
 - Variation pass: the three arrangements now differ clearly (left fan, middle with an upright point and a leaning pair, right leaning with a front point). Each cluster shows four points.
 - Gaps: the right cluster is larger than the other two (not the same size); the middle cluster tips are seen at a slightly different angle; the base is a merged mass, to be modelled flat-bottomed in Blender.
+
+## Step 03 prompt (verbatim, `Art/Source/heal-pickup/prompts/03-correction-broken-chunk.txt`)
+```
+Keep this exact image: same 3 x 1 sheet of three separate isolated heal pickup crystal pieces, same size, same proportions, same pure saturated red color, same chunky large flat facets, same low-poly hand-painted style, same high three-quarter top view camera, same plain light grey background, no rock matrix, no floor, no text, no shadows. Change ONE thing: the shape. Each piece must read as a freshly broken-off chunk of crystal that was thrown out of a broken vein and can rest and roll on the ground: a compact, dense, stocky lump about as wide as it is tall, NOT a flower-like splayed cluster. Build each piece as one solid chunky body with a heavy, wide, solid base, topped by two or three short, stubby, blunt crystal points that stay close together and do not splay outward. The base and lower sides are a rough, jagged, irregular broken fracture surface made of large angular flat chips with sharp broken edges and a few small snapped-off notches, as if the piece was just torn from the vein; the fracture faces are the same pure red, a little darker and duller than the polished crystal faces. The three pieces are near identical in size and proportions and differ only by small changes in the outline and the position of the stubby points. Pure red only: no orange, no pink, no yellow, no violet.
+```
+
+## Self-review of step 03 (image viewed)
+- Owner feedback pass: each piece is now a compact lump about as wide as tall, with a heavy wide base of jagged angular red chips and 2 main stubby points on top; no flower splay. Reads as a chunk that can rest and roll.
+- A1 pass: large flat facets. A14 pass: no text, floor, shadows; plain light grey background. [[color-code]] pass: pure red, no orange or pink; fracture faces slightly darker.
+- Three variants near identical in size and proportions, small differences in outline and point positions (left has a small third tip at the front, right has a small tip at the lower left).
+- Gaps: the fracture base is a bulky red mass that can read as a red rock matrix, and it is large relative to the crystal points (about half the height); the base is not clearly flat enough to confirm a resting face; points are two large plus one tiny, not 2 to 3 stubby; the camera is slightly lower than the pass 1 top view.
 
 ## Relations
 - [[art-prompts]] — parent: method and locked style phrases.

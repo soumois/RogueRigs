@@ -1,0 +1,12 @@
+{
+  "run_id": "20261027-163753-heal-pickup",
+  "items": [
+    {
+      "file": "Art/Source/heal-pickup/20261027-163753-heal-pickup-1.png",
+      "verdict": "fail",
+      "rule": "A16",
+      "reason": "The camera is close to eye level: the clusters show their pointed undersides and side faces, and the tops of the points cannot be seen, which is not the three-quarter top view of the reference heal deposit sheet.",
+      "correction": "Raise the camera to a three-quarter top view, about 45 to 60 degrees down, so the top facets of every point are visible as on the heal deposit reference sheet; keep everything else the same."
+    }
+  ]
+}
