@@ -3,7 +3,7 @@ id: task-356-04-shop-anchors-doc
 description: "Doc: update wbp-shop-screen and wbp-shop-card with the anchored layout, stating which widget is anchored where with which values."
 parent: task-356-shop-screen-anchors
 kind: task
-status: in-progress
+status: done
 ---
 # Shop screen: Canvas and anchors: doc
 
@@ -15,14 +15,14 @@ status: in-progress
 - done_when: both nodes match the commits; anchor values present for every Root child of WBP_ShopScreen and for the card slot; lint clean; committed by path.
 - editor_state: any
 - token_ceiling: 0.3 M units
-- model: open
-- tokens: open
-- usage: open
-- runs: open
+- model: sonnet
+- tokens: input 10, cache write 36536, cache read 105893, output 5533
+- usage: turns 5, context start 12k peak 37k, resumes 0, 1 min, units 0.08 M
+- runs: 1
 - milestone: M2
 - started: 2026-10-28T21:36:12Z
 - waiting_for: none
-- result: open
+- result: wbp-shop-screen and wbp-shop-card updated with anchor_rule, commit bb3e8fab; old verified lines left, nodes over length, --force-res not documented
 
 ## Relations
 - [[task-356-shop-screen-anchors]] — parent global task.

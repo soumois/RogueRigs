@@ -361,3 +361,4 @@ Archive: it exceeds the index size limits of [[_authoring]] on purpose (owner, 2
 - [[task-352-shop-continue-fit]] — Shop screen Continue plate fully visible above the bottom of the 1920 x 1080 screen, with Reroll above it. Status done.
 - [[task-353-shop-need-label]] — Shop card "NEED {n} MORE" label in smaller text on the grey Buy plate, inside the plate up to three digits. Status done.
 - [[task-354-shop-counter-overlap]] — Shop screen crystal counter no longer covers the top-left corner of the shop panel nor the first card rivet. Status cancelled.
+- [[task-356-shop-screen-anchors]] — Shop screen rebuilt on a Root Canvas with explicit anchors from the owner's hand-edited version, so it adapts to small changes of resolution and ratio. Status done.

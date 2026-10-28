@@ -1,9 +1,9 @@
 ---
 id: task-356-shop-screen-anchors
 description: "Global task: shop screen rebuilt on a Root Canvas with explicit anchors, from the owner's hand-edited version, to adapt to resolution and ratio."
-parent: tasks-to-do-index
+parent: tasks-done-index
 kind: task
-status: in-progress
+status: done
 ---
 # Shop screen: Canvas and anchors instead of fixed pixel layout
 
@@ -13,10 +13,10 @@ status: in-progress
 - gdd_check: read 2026-10-28 by the Planner: [[run-shop]] (screen look and "Screen fit at 1920 x 1080", provisional), tech [[wbp-shop-screen]], [[wbp-shop-card]], [[bp-mcp-lessons]], tasks [[task-354-shop-counter-overlap]] and [[task-355-shop-card-frame-details]] (paused). No conflict: display only, rules unchanged; the 1920 x 1080 fit values of run-shop stay the reference look and must also hold at the other resolutions. No `open` GDD value needed. Scope M2. Font scaling read: `Config/*.ini` has no `UserInterfaceSettings` override, so the engine default DPI scale rule applies (read back in Project Settings > User Interface by the bp agent, not changed). Binary scan of the modified asset (names only, no editor): it holds widgets CounterOverlay, CounterRow, CounterBg and a new "IndicatorRessource" ("Indicator Ressource" in the Designer); WBP_ShopCard and every other WBP are unmodified in git (only WBP_ShopScreen is ` M`). Effect on paused tasks: see Q6. Owner "OK, tout par défaut": every `## Questions` default is DECIDED; [[run-shop]] updated by the Planner the same day (screen fit by anchors at the four resolutions); rule node [[umg-layout]] written (Q5) and added to agent-bp `reads`; [[task-354-shop-counter-overlap]] cancelled, [[task-355-shop-card-frame-details]] rewritten to run after [[task-357-shop-resource-indicator]] under umg-layout.
 - confirmed_by_owner: yes (2026-10-28, "OK, tout par défaut" to Q1-Q7 and the plan, relayed by the main session)
 - milestone: M2
-- next_step: task-356-04-shop-anchors-doc
+- next_step: none
 - started: 2026-10-28T21:22:09Z
 - waiting_for: none
-- result: open
+- result: Done. wbp-shop-screen and wbp-shop-card updated with anchor_rule, commit bb3e8fab; old verified lines left, nodes over length, --force-res not documented
 
 ## Questions
 Decided 2026-10-28 (owner "OK, tout par défaut"), values provisional.
@@ -35,7 +35,7 @@ Q3 is in [[task-357-shop-resource-indicator]].
 4. task-356-04-shop-anchors-doc (vault/reference/tasks/task-356-shop-screen-anchors/task-356-04-shop-anchors-doc.md) — doc: wbp-shop-screen and wbp-shop-card with the anchor rule used.
 
 ## Relations
-- [[tasks-to-do-index]] — parent index.
+- [[tasks-done-index]] — parent index.
 - [[task-356-01-shop-screen-anchors]] — step 1, bp.
 - [[task-356-02-shop-card-fit]] — step 2, bp.
 - [[task-356-03-shop-anchors-capture]] — step 3, cpp.
