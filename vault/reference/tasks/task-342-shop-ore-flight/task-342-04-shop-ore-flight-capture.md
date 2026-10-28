@@ -3,7 +3,7 @@ id: task-342-04-shop-ore-flight-capture
 description: "Cpp: -game frame capture of a purchase."
 parent: task-342-shop-ore-flight
 kind: task
-status: todo
+status: in-progress
 ---
 # Shop purchase: ore flies from the balance to the Buy button: -game frame capture of a purchase
 
@@ -20,7 +20,7 @@ status: todo
 - usage: open
 - runs: open
 - milestone: M2
-- started: open
+- started: 2026-10-28T06:51:49Z
 - waiting_for: none
 - result: open
 
