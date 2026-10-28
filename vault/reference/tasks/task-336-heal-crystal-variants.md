@@ -1,9 +1,9 @@
 ---
 id: task-336-heal-crystal-variants
 description: "Global task: Images of 3 red heal crystal variants with near-identical silhouettes, visual only, so heal drops do not always look the same."
-parent: tasks-to-do-index
+parent: tasks-done-index
 kind: task
-status: in-progress
+status: done
 ---
 # Heal crystal variants: images
 
@@ -19,14 +19,14 @@ status: in-progress
 - owner_pick: 2026-10-28, owner "ok" to Q1 of [[task-339-heal-chunk-mesh]] (relayed by the main session): the pass 2 sheet `Art/Source/heal-pickup/20261027-165219-heal-pickup-1.png` is validated despite the style-guide A1 fail; copy it to `vault/assets/heal-pickup-sheet.png`, commit it with `Art/Source/heal-pickup/20261027-165219-heal-pickup.review.json`, then close this task. Earlier sheets stay untracked.
 - confirmed_by_owner: yes (2026-10-28, "ok" to Q1 to Q5, relayed by the main session)
 - milestone: M2
-- next_step: task-336-01-heal-crystal-variants
+- next_step: none
 - started: 2026-10-28T01:25:15Z
 - waiting_for: none
-- result: open
+- result: Done. Pass 2 sheet picked by the owner (despite style-guide A1 fail), copied to vault/assets/heal-pickup-sheet.png with its review json; prompt node art-prompts-heal-pickup; 18 credits Kie.ai total, 2 correction passes
 
 ## Subtasks
 1. task-336-01-heal-crystal-variants (vault/reference/tasks/task-336-heal-crystal-variants/task-336-01-heal-crystal-variants.md) — art: Images of 3 red heal crystal variants with near-identical silhouettes, visual only, so heal drops do not always look the same.
 
 ## Relations
-- [[tasks-to-do-index]] — parent index.
+- [[tasks-done-index]] — parent index.
 - [[task-336-01-heal-crystal-variants]] — step 1, art.

@@ -3,7 +3,7 @@ id: task-336-01-heal-crystal-variants
 description: "Images of 3 red heal crystal variants with near-identical silhouettes, visual only, so heal drops do not always look the same."
 parent: task-336-heal-crystal-variants
 kind: task
-status: in-progress
+status: done
 ---
 # Heal crystal variants: images
 
@@ -16,14 +16,14 @@ status: in-progress
 - done_when: images sent to the owner; style-guide review done; the owner picks or rejects; the chosen image is copied to vault/assets/ only on his word; prompt node written
 - editor_state: any
 - token_ceiling: 0.15 M units
-- model: open
-- tokens: open
-- usage: open
-- runs: open
+- model: sonnet+opus
+- tokens: input 68, cache write 146457, cache read 638599, output 21463
+- usage: turns 34, context start 10k peak 45k, resumes 0, 8 min, units 0.35 M
+- runs: 1
 - milestone: M2
 - started: 2026-10-28T01:25:15Z
 - waiting_for: none
-- result: open
+- result: Pass 2 sheet picked by the owner (despite style-guide A1 fail), copied to vault/assets/heal-pickup-sheet.png with its review json; prompt node art-prompts-heal-pickup; 18 credits Kie.ai total, 2 correction passes
 
 ## Relations
 - [[task-336-heal-crystal-variants]] — parent global task.

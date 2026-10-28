@@ -342,3 +342,4 @@ Archive: it exceeds the index size limits of [[_authoring]] on purpose (owner, 2
 - [[task-333-nebula-visible]] — Make the nebula layer of the space background clearly visible at normal brightness, by retuning MI_Space_Nebula only. Status cancelled.
 - [[task-334-near-asteroids]] — Other low-poly asteroids floating in the void around the arena asteroid, nearer the camera than the space layers, with depth parallax. Status done.
 - [[task-335-space-texture-layers]] — Replace the procedural nebula of the void background with bold layered AI-generated tileable space textures at several depths, procedural stars kept. Status done.
+- [[task-336-heal-crystal-variants]] — Images of 3 red heal crystal variants with near-identical silhouettes, visual only, so heal drops do not always look the same. Status done.
