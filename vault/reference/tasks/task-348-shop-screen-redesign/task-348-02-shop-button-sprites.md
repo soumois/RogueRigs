@@ -3,7 +3,7 @@ id: task-348-02-shop-button-sprites
 description: "Art: Buy, Reroll and Continue button plates and the reroll arrow icon after the ChatGPT sheet, keyed to alpha, no text."
 parent: task-348-shop-screen-redesign
 kind: task
-status: in-progress
+status: wait-answers
 ---
 # Shop screen redesign: button sprites
 
@@ -21,7 +21,7 @@ status: in-progress
 - runs: open
 - milestone: M2
 - started: 2026-10-28T16:01:36Z
-- waiting_for: none
+- waiting_for: owner choice of button/icon candidates c1/c2
 - result: open
 
 ## Relations

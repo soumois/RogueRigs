@@ -15,7 +15,7 @@ status: wait-answers
 - milestone: M2
 - next_step: task-348-02-shop-button-sprites
 - started: 2026-10-28T15:40:51Z
-- waiting_for: owner choice of sprite candidates of subtask 01
+- waiting_for: owner choice of sprite candidates of subtask 02
 - result: open
 
 ## Questions
