@@ -16,6 +16,13 @@ Answer of ChatGPT to the prompt of [[art-prompts-shop-screen]], brought by the o
 - The sheet is too small to cut final sprites from (a card frame is about 110 x 150 px, a button about 120 x 30 px).
 - The stat icons are not taken (owner). Elements taken: decided in [[task-348-shop-screen-redesign]] `gdd_check`.
 
+## Sprites (task-348-01)
+Kie.ai GPT Image 2 image-to-image, refs: the sheet (Image 1) and the mockup (Image 2), 16:9, 1K, magenta key, 2 variants per sprite, 6 credits each: 36 credits in all, no correction run. Prompts verbatim in `Art/Source/shop-screen/prompts/`: `01-title-bar.txt`, `02-counter-panel.txt`, `03-shop-panel.txt`. Runs `20261028-074147-shop-screen` (bar), `20261028-074308-shop-screen` (counter), `20261028-074429-shop-screen` (panel); keyed with `Tools/art/ui_icon_prepare.js --keep-aspect`, `--check` clean (no magenta, no pink spill).
+- Retained by the owner (2026-10-28): title bar candidate 2, counter panel candidate 1, shop panel candidate 2, copied to `Art/UI/Shop/`: `T_Shop_TitleBar.png` (512 x 69, left bar; UMG mirrors it), `T_Shop_CounterPanel.png` (512 x 228, empty inside), `T_Shop_Panel.png` (1024 x 409, empty inside).
+- 9-slice of `T_Shop_Panel.png` (estimates, untested in UMG): left and right about 150 px, top and bottom about 75 px.
+- A6 note: the gunmetal and teal look with no white plates is accepted on purpose by the owner; no white-plate correction.
+- Gaps: the pipes of the counter panel are cut at the image edge (left pair, top right); the shop panel has bolted side tabs that stick out in the middle of its long sides; the panel ratio is about 2.5:1, not 8:3.
+
 ## Relations
 - [[art-prompts]] — parent: method and prompt nodes.
 - [[art-prompts-shop-screen]] — the ChatGPT prompt these images answer.
