@@ -3,7 +3,7 @@ id: task-339-02-heal-chunk-import
 description: "BP: import SM_HealChunk_01..03 into Unreal and give their two slots new red glowing instances MI_HealChunk_Bright and MI_HealChunk_Dark."
 parent: task-339-heal-chunk-mesh
 kind: task
-status: in-progress
+status: wait-answers
 ---
 # Heal pickup chunks: import and materials
 
@@ -21,7 +21,7 @@ status: in-progress
 - runs: open
 - milestone: M2
 - started: 2026-10-28T01:53:54Z
-- waiting_for: none
+- waiting_for: owner opens the Unreal editor (MCP at 127.0.0.1:8000/mcp unreachable)
 - result: open
 
 ## Relations

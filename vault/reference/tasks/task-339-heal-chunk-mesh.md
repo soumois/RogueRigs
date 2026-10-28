@@ -18,7 +18,7 @@ status: wait-answers
 - milestone: M2
 - next_step: task-339-02-heal-chunk-import
 - started: 2026-10-28T01:25:52Z
-- waiting_for: owner acceptance of the 3 heal chunk meshes (preview render, subtask 01)
+- waiting_for: owner opens the Unreal editor for subtask 02
 - result: open
 
 ## Subtasks
