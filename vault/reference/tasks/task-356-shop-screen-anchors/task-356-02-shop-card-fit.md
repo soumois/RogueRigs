@@ -3,7 +3,7 @@ id: task-356-02-shop-card-fit
 description: "Bp: WBP_ShopCard scales to the anchored slot the shop screen gives it instead of a fixed 330 x 470 host."
 parent: task-356-shop-screen-anchors
 kind: task
-status: todo
+status: in-progress
 ---
 # Shop screen: Canvas and anchors: WBP_ShopCard fit
 
@@ -20,7 +20,7 @@ status: todo
 - usage: open
 - runs: open
 - milestone: M2
-- started: open
+- started: 2026-10-28T21:25:53Z
 - waiting_for: none
 - result: open
 

@@ -3,7 +3,7 @@ id: task-356-01-shop-screen-anchors
 description: "Bp: commit the owner's hand-edited WBP_ShopScreen as-is, then rebuild its layout on the Root Canvas with explicit anchors."
 parent: task-356-shop-screen-anchors
 kind: task
-status: in-progress
+status: done
 ---
 # Shop screen: Canvas and anchors: WBP_ShopScreen
 
@@ -15,14 +15,14 @@ status: in-progress
 - done_when: commit 1 exists and contains only WBP_ShopScreen.uasset, made before any edit; compiled and saved; anchors read back for every Root child; widget names, variables and task-342/343/344 graphs still present; committed by path.
 - editor_state: open
 - token_ceiling: 1.0 M units
-- model: open
-- tokens: open
-- usage: open
-- runs: open
+- model: sonnet
+- tokens: input 72, cache write 133294, cache read 2932701, output 26688
+- usage: turns 36, context start 11k peak 133k, resumes 0, 3 min, units 0.59 M
+- runs: 1
 - milestone: M2
 - started: 2026-10-28T21:22:09Z
 - waiting_for: none
-- result: open
+- result: Owner version committed 0610de2d, rebuilt on Root Canvas 18d21409; ShopPanel still content-sized (padding), Reroll/Continue fixed slots; no render check
 
 ## Relations
 - [[task-356-shop-screen-anchors]] — parent global task.
