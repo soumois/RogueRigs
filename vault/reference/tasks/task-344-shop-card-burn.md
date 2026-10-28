@@ -1,9 +1,9 @@
 ---
 id: task-344-shop-card-burn
 description: "Global task: A bought shop card plays the level-up pick burn, without the flight to the weapon or XP bar, then shows the sold look."
-parent: tasks-to-do-index
+parent: tasks-done-index
 kind: task
-status: in-progress
+status: done
 ---
 # Shop purchase: the bought card burns like a level-up pick
 
@@ -13,10 +13,10 @@ status: in-progress
 - gdd_check: read 2026-10-28: [[run-shop]], [[xp-level-up]], tech [[wbp-upgrade-choice]] (pick animation: non-picked cards burn with MI_CardBurn over 0.5 s, CardBorder fades, icons fly to the weapon slot or XP bar; burn fixes: Index -1 parameter info, FitOverlay), [[m-card-burn]], [[wbp-shop-card]]. In the level-up screen the burn hits the cards NOT picked; in the shop the other cards stay on sale, so the effect is moved to the bought card. Depends on [[task-342-shop-ore-flight]] (EndPurchaseFx). Questions (defaults, values provisional): Q11 the bought card burns away (Burn 0 to 1 over 0.5 s, Tint = tier colour, Tex = T_CardFrame_Stat_Baked, frame and content fading as CardBorder does), starting when the last ore icon lands, then the sold look; the other cards do nothing. Owner answer 2026-10-28: "OK, tout par défaut": every default above is DECIDED (values provisional, owner 2026-10-28); GDD updated by the Planner the same day.
 - confirmed_by_owner: yes (2026-10-28, "OK, tout par défaut" to Q1-Q11 and the plan, relayed by the main session)
 - milestone: M2
-- next_step: task-344-03-shop-card-burn-doc
+- next_step: none
 - started: 2026-10-28T07:24:20Z
 - waiting_for: none
-- result: open
+- result: Done. wbp-shop-card (BurnOverlay, vars, StartBurn/BurnStep/EndBurn, Tick branch, EndPurchaseFx contract, verified_burn) and m-card-burn (shop card as second user) updated; commit 6d56b0f1; lint OK; burn easing and fade shape left open (binary asset)
 
 ## Subtasks
 1. task-344-01-shop-card-burn (vault/reference/tasks/task-344-shop-card-burn/task-344-01-shop-card-burn.md) — bp: WBP_ShopCard burns the bought card with MI_CardBurn, then the sold look.
@@ -24,7 +24,7 @@ status: in-progress
 3. task-344-03-shop-card-burn-doc (vault/reference/tasks/task-344-shop-card-burn/task-344-03-shop-card-burn-doc.md) — doc: update wbp-shop-card and m-card-burn.
 
 ## Relations
-- [[tasks-to-do-index]] — parent index.
+- [[tasks-done-index]] — parent index.
 - [[task-344-01-shop-card-burn]] — step 1, bp.
 - [[task-344-02-shop-card-burn-capture]] — step 2, cpp.
 - [[task-344-03-shop-card-burn-doc]] — step 3, doc.

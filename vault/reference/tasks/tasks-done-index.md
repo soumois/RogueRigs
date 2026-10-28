@@ -350,6 +350,7 @@ Archive: it exceeds the index size limits of [[_authoring]] on purpose (owner, 2
 - [[task-341-shop-design-prompt]] — A ready-to-paste ChatGPT prompt giving the full context of the shop screen so the owner can discuss design and game feel proposals. Status done.
 - [[task-342-shop-ore-flight]] — When a shop card is bought, ore crystals fly from the balance counter to that card's Buy button while the balance counts down. Status done.
 - [[task-343-shop-buy-juice]] — Clicking an affordable Buy button gives a juicy press reaction of its own, separate from the ore flight. Status done.
+- [[task-344-shop-card-burn]] — A bought shop card plays the level-up card pick effect, without the flight to the weapon or XP bar, before showing the sold look. Status done.
 - [[task-345-turret-meshy-files]] — Identify which owner Meshy turret zip is the optimised mesh by headless Blender triangle counts, save both in Art/Source/turret-meshy/ and record them in a new node art-prompts-turret. Status done.
 - [[task-346-turret-canon]] — Rebuild the optimised Meshy turret canon by Blender script after the unoptimised mesh, with a perforated machine-gun shroud of real holes. Status done.
 - [[task-347-turret-flat-surfaces]] — Make the surfaces that should be flat on the optimised Meshy turret flat again, using the unoptimised mesh as the reference. Status done.

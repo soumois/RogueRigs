@@ -3,7 +3,7 @@ id: task-344-03-shop-card-burn-doc
 description: "Doc: update wbp-shop-card and m-card-burn."
 parent: task-344-shop-card-burn
 kind: task
-status: in-progress
+status: done
 ---
 # Shop purchase: the bought card burns like a level-up pick: update wbp-shop-card and m-card-burn
 
@@ -15,14 +15,14 @@ status: in-progress
 - done_when: nodes match the commits; no value invented; lint clean; committed by path.
 - editor_state: any
 - token_ceiling: 0.3 M units
-- model: open
-- tokens: open
-- usage: open
-- runs: open
+- model: sonnet
+- tokens: input 10, cache write 21218, cache read 75725, output 3227
+- usage: turns 5, context start 10k peak 25k, resumes 0, 1 min, units 0.05 M
+- runs: 1
 - milestone: M2
 - started: 2026-10-28T15:39:46Z
 - waiting_for: none
-- result: open
+- result: wbp-shop-card (BurnOverlay, vars, StartBurn/BurnStep/EndBurn, Tick branch, EndPurchaseFx contract, verified_burn) and m-card-burn (shop card as second user) updated; commit 6d56b0f1; lint OK; burn easing and fade shape left open (binary asset)
 
 ## Relations
 - [[task-344-shop-card-burn]] — parent global task.
