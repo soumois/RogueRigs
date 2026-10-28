@@ -3,7 +3,7 @@ id: task-342-05-shop-ore-flight-doc
 description: "Doc: update sys-run-shop, wbp-shop-card, wbp-shop-screen."
 parent: task-342-shop-ore-flight
 kind: task
-status: todo
+status: in-progress
 ---
 # Shop purchase: ore flies from the balance to the Buy button: update sys-run-shop, wbp-shop-card, wbp-shop-screen
 
@@ -20,7 +20,7 @@ status: todo
 - usage: open
 - runs: open
 - milestone: M2
-- started: open
+- started: 2026-10-28T06:55:58Z
 - waiting_for: none
 - result: open
 
