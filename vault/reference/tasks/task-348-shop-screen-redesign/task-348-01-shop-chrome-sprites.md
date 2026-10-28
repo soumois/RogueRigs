@@ -3,7 +3,7 @@ id: task-348-01-shop-chrome-sprites
 description: "Art: title side bars, ore counter panel with pipes and riveted shop panel sprites after the ChatGPT sheet, keyed to alpha."
 parent: task-348-shop-screen-redesign
 kind: task
-status: wait-answers
+status: done
 ---
 # Shop screen redesign: screen chrome sprites
 
@@ -15,14 +15,14 @@ status: wait-answers
 - done_when: three keyed PNGs exist with clean alpha (no magenta fringe, checked with `ui_icon_prepare.js --check`), no baked text; at most 2 variants and 1 correction run (Q1); images sent to the owner and retained by him; node updated; lint clean; committed by path.
 - editor_state: any
 - token_ceiling: 0.15 M units
-- model: open
-- tokens: open
-- usage: open
-- runs: open
+- model: sonnet+opus
+- tokens: input 50, cache write 182056, cache read 874253, output 18666
+- usage: turns 24, context start 9k peak 69k, resumes 1 (message x1), 20 min, units 0.41 M
+- runs: 2
 - milestone: M2
 - started: 2026-10-28T15:40:51Z
-- waiting_for: owner choice of sprite candidates c1/c2 (title bar, counter panel, shop panel)
-- result: open
+- waiting_for: none
+- result: Retained title bar c2, counter panel c1, shop panel c2 in Art/UI/Shop/ (36 credits, no correction run). style-guide failed all 6 on A6 (no white plates); owner accepted the gunmetal/teal look on purpose, no correction. 9-slice margins estimated, untested.
 
 ## Relations
 - [[task-348-shop-screen-redesign]] — parent global task.
