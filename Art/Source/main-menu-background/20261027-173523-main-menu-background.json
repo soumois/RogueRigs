@@ -1,0 +1,28 @@
+{
+  "run_id": "20261027-173523-main-menu-background",
+  "asset": "main-menu-background",
+  "model": "gpt-image-2-image-to-image",
+  "aspect_ratio": "16:9",
+  "resolution": "1K",
+  "variants": 1,
+  "prompt_file": "Art/Source/main-menu-background/prompts/02-correction-1.txt",
+  "prompt": "Keep this exact image: same art style, same flat-shaded low-poly look, same camera angle, same 16:9 composition, same dark left third with no characters, same three clean yellow chaser robots (tall thin upright bodies, glowing red eyes, small yellow logo plates) climbing on the left, same glowing violet crystals, same indigo violet magenta nebula, same starfield, same floating grey-violet asteroids, same large cratered planet on the right, same miner suit (patched white and teal with rust) and same small floating drone with thrusters. No text, no UI. Image 1 is the image to correct. Image 2 is the validated miner and drone design (rigs-lineup), used only for the drone laser emitter.\nOnly change these five things:\n1. The miner now stands on a ledge of dark violet-magenta floor made of flat plates at the cliff edge; this floor is clearly darker than the grey-violet rocks around it.\n2. The rock tops are smooth with large flat facets, no cracks and no fine surface detail.\n3. The cliff edge is more explicit: a clear sheer drop from the ledge straight down into the void, with the edge line visible and nothing below it but space.\n4. The miner is smaller in the frame, about 70 percent of his current size, still in the right half, with the drone beside him.\n5. The drone has the mining laser emitter exactly as in image 2 (the validated drone design) instead of the drill bit under it.\nChange nothing else.",
+  "refs": [
+    "Art/Source/main-menu-background/20261027-172530-main-menu-background-3.png",
+    "vault/assets/rigs-lineup.jpg"
+  ],
+  "tasks": [
+    {
+      "task_id": "983912441077d4a0c4dbf2657333930d",
+      "state": "success",
+      "credits": 6,
+      "error": null,
+      "result_urls": [
+        "https://tempfile.aiquickdraw.com/images/chatgpt/file_00000000808c81f58262501320a049f9.png"
+      ]
+    }
+  ],
+  "files": [
+    "Art/Source/main-menu-background/20261027-173523-main-menu-background-1.png"
+  ]
+}

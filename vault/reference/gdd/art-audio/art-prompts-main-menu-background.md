@@ -19,12 +19,29 @@ Composition: the left third of the image is calmer, darker and emptier (dark roc
 Strong directional light with lifted shadows so everything stays readable. The player side uses white, teal and rust only. No UI, no text, no logo.
 ```
 
-## Self-review (art-style-guide)
+## Self-review of the first run (art-style-guide)
 - Variant 1: pass. Miner white, teal, rust (A6), drone with thrusters and orange eye, three chasers yellow with red eye and logo plate (A5), violet crystals, nebula, planet, asteroids, left third dark and empty, no text or UI. Miner is large in frame, not small.
 - Variant 2: gap. Drone has a drill bit under it, the validated drone has a mining laser emitter (art-prompts-rigs 3); a pink patch on the miner's boot (rust expected). Rest as variant 1.
 - Variant 3: gap. Same drill bit on the drone. Best crystals and nebula, chasers read clearly. Rest as variant 1.
 - All three: ground is a rocky ridge rather than the key art plates, and the chasers climb a slope on the left, not a flat edge; the cliff is implied by the rock edge. Camera lower than A12 on purpose ([[main-menu]]).
 - No correction pass made; the owner picks first.
+
+## 2. Correction pass 1 (verbatim)
+Owner picked variant 3 of run 20261027-172530. Run 20261027-173523 (1 variant, 6 credits), file `Art/Source/main-menu-background/20261027-173523-main-menu-background-1.png`, log `.json`, prompt `Art/Source/main-menu-background/prompts/02-correction-1.txt`. References, in order: variant 3 (image to correct), `rigs-lineup.jpg`. Not validated; nothing copied to `vault/assets/`.
+```
+Keep this exact image: same art style, same flat-shaded low-poly look, same camera angle, same 16:9 composition, same dark left third with no characters, same three clean yellow chaser robots (tall thin upright bodies, glowing red eyes, small yellow logo plates) climbing on the left, same glowing violet crystals, same indigo violet magenta nebula, same starfield, same floating grey-violet asteroids, same large cratered planet on the right, same miner suit (patched white and teal with rust) and same small floating drone with thrusters. No text, no UI. Image 1 is the image to correct. Image 2 is the validated miner and drone design (rigs-lineup), used only for the drone laser emitter.
+Only change these five things:
+1. The miner now stands on a ledge of dark violet-magenta floor made of flat plates at the cliff edge; this floor is clearly darker than the grey-violet rocks around it.
+2. The rock tops are smooth with large flat facets, no cracks and no fine surface detail.
+3. The cliff edge is more explicit: a clear sheer drop from the ledge straight down into the void, with the edge line visible and nothing below it but space.
+4. The miner is smaller in the frame, about 70 percent of his current size, still in the right half, with the drone beside him.
+5. The drone has the mining laser emitter exactly as in image 2 (the validated drone design) instead of the drill bit under it.
+Change nothing else.
+```
+
+### Self-review (correction 1)
+- Pass: miner smaller in frame; drone now has a laser emitter with a beam (as the validated drone), no drill bit; rock tops smoother with large flat facets, no cracks; cliff edge reads as a sheer drop into the void; chasers (tall thin, yellow, red eyes), crystals, nebula, planet, asteroids, dark empty left third, miner white, teal, rust (A6), no text or UI all kept.
+- Gap: the whole rock mass went darker and violet, so the ledge is not clearly a separate darker floor of flat plates (A13): the miner stands on a rock top of the same violet tone, not on distinct plates. The drone emits a visible beam, the validated drone reference shows only the emitter. Left third is less distinct from the rock since everything darkened.
 
 ## Relations
 - [[art-prompts]] — parent: method and locked phrases.
