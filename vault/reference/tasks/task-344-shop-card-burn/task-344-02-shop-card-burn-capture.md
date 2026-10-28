@@ -3,7 +3,7 @@ id: task-344-02-shop-card-burn-capture
 description: "Cpp: -game frame capture of the bought card burning."
 parent: task-344-shop-card-burn
 kind: task
-status: todo
+status: in-progress
 ---
 # Shop purchase: the bought card burns like a level-up pick: -game frame capture of the bought card burning
 
@@ -20,7 +20,7 @@ status: todo
 - usage: open
 - runs: open
 - milestone: M2
-- started: open
+- started: 2026-10-28T15:35:23Z
 - waiting_for: none
 - result: open
 
