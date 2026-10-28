@@ -22,7 +22,7 @@ status: done
 - milestone: M3
 - started: 2026-10-28T01:53:17Z
 - waiting_for: none
-- result: Owner kept variant 3 (run 20261027-172530) as vault/assets/main-menu-background.png; 24 credits over 2 runs (18 + 6 correction pass 1, rejected). Open style-guide fails accepted for now: A13 floor, cracks on slab tops, drone drill bit.
+- result: Owner kept variant 1 (run 20261027-172530) as vault/assets/main-menu-background.png; 24 credits over 2 runs (18 + 6 unused correction pass 1 made on variant 3). Open style-guide fails of variant 1 accepted for now: A3 squat chasers, A13 floor, cracks on rock tops, A5 worn chasers, lit slope in left third, drone thruster flames.
 
 ## Relations
 - [[task-337-main-menu-background]] — parent global task.

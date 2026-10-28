@@ -27,7 +27,7 @@ status: done
 - next_step: none
 - started: 2026-10-28T01:53:18Z
 - waiting_for: none
-- result: Done. Owner kept variant 3 (run 20261027-172530) as vault/assets/main-menu-background.png; 24 credits over 2 runs (18 + 6 correction pass 1, rejected). Open style-guide fails accepted for now: A13 floor, cracks on slab tops, drone drill bit.
+- result: Done. Owner kept variant 1 (run 20261027-172530) as vault/assets/main-menu-background.png; 24 credits over 2 runs (18 + 6 unused correction pass 1 made on variant 3). Open style-guide fails of variant 1 accepted for now: A3 squat chasers, A13 floor, cracks on rock tops, A5 worn chasers, lit slope in left third, drone thruster flames.
 
 ## Subtasks
 1. task-337-01-main-menu-background (vault/reference/tasks/task-337-main-menu-background/task-337-01-main-menu-background.md) — art: Main menu background image: one 16:9 scene in the validated key art style, generated through Kie.ai, picked by the owner.

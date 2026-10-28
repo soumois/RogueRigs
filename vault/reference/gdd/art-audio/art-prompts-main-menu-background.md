@@ -6,7 +6,7 @@ kind: note
 ---
 # Main menu background — prompt and review
 
-Look decided in [[main-menu]]. Made by [[task-337-01-main-menu-background]]. Run 20261027-172530 (3 variants, 18 credits), files `Art/Source/main-menu-background/20261027-172530-main-menu-background-{1,2,3}.png`, log `.json`, prompt `Art/Source/main-menu-background/prompts/01-scene.txt`. References, in order: `keyart.jpg`, `rigs-lineup.jpg`, `enemies-lineup.jpg` (all in `vault/assets/`). Owner validated variant 3 (2026-10-28), copied to `vault/assets/main-menu-background.png`. Delivery: 16:9, 1K, no text, no UI.
+Look decided in [[main-menu]]. Made by [[task-337-01-main-menu-background]]. Run 20261027-172530 (3 variants, 18 credits), files `Art/Source/main-menu-background/20261027-172530-main-menu-background-{1,2,3}.png`, log `.json`, prompt `Art/Source/main-menu-background/prompts/01-scene.txt`. References, in order: `keyart.jpg`, `rigs-lineup.jpg`, `enemies-lineup.jpg` (all in `vault/assets/`). Owner validated variant 1 (2026-10-28), copied to `vault/assets/main-menu-background.png`. Delivery: 16:9, 1K, no text, no UI.
 
 ## 1. Scene (verbatim)
 ```
@@ -27,12 +27,12 @@ Strong directional light with lifted shadows so everything stays readable. The p
 - No correction pass made; the owner picks first.
 
 ## Decision
-- 2026-10-28: the owner keeps the first version, variant 3 of run 20261027-172530, as `vault/assets/main-menu-background.png`. Correction pass 1 was rejected; no second pass.
-- Known open fails of the style-guide review, accepted by the owner "for now": A13 (miner stands on a slab in the rock colour, not a dark violet-magenta floor), cracks on the slab tops (readability), drone with a drill bit instead of the mining laser emitter. Redo with the prompt of section 1 plus these fixes if wanted later.
+- 2026-10-28: the owner keeps the first version, variant 1 of run 20261027-172530, as `vault/assets/main-menu-background.png` (his first pick of variant 3 was a coordinator mistake, corrected the same day). Correction pass 1 (made on variant 3) is unused; no second pass.
+- Known open fails of the style-guide review of variant 1, accepted by the owner "for now": A3 squat crouched chasers, A13 no dark floor (everything on light rock), cracks on rock tops (readability), A5 worn chasers, a lit slope entering the left third, drone with thruster flames instead of the rigs-lineup cone. Redo with the prompt of section 1 plus these fixes if wanted later.
 - Total cost 24 credits over 2 runs.
 
-## 2. Correction pass 1 (verbatim, rejected)
-Owner picked variant 3 of run 20261027-172530. Run 20261027-173523 (1 variant, 6 credits), file `Art/Source/main-menu-background/20261027-173523-main-menu-background-1.png`, log `.json`, prompt `Art/Source/main-menu-background/prompts/02-correction-1.txt`. References, in order: variant 3 (image to correct), `rigs-lineup.jpg`. Rejected by the owner (the first version is kept).
+## 2. Correction pass 1 (verbatim, made on variant 3, unused)
+Owner picked variant 3 of run 20261027-172530. Run 20261027-173523 (1 variant, 6 credits), file `Art/Source/main-menu-background/20261027-173523-main-menu-background-1.png`, log `.json`, prompt `Art/Source/main-menu-background/prompts/02-correction-1.txt`. References, in order: variant 3 (image to correct), `rigs-lineup.jpg`. Made on variant 3, not kept.
 ```
 Keep this exact image: same art style, same flat-shaded low-poly look, same camera angle, same 16:9 composition, same dark left third with no characters, same three clean yellow chaser robots (tall thin upright bodies, glowing red eyes, small yellow logo plates) climbing on the left, same glowing violet crystals, same indigo violet magenta nebula, same starfield, same floating grey-violet asteroids, same large cratered planet on the right, same miner suit (patched white and teal with rust) and same small floating drone with thrusters. No text, no UI. Image 1 is the image to correct. Image 2 is the validated miner and drone design (rigs-lineup), used only for the drone laser emitter.
 Only change these five things:
