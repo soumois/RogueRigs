@@ -1,9 +1,9 @@
 ---
 id: task-346-turret-canon
 description: "Global task: Rebuild the optimised Meshy turret canon by Blender script after the unoptimised mesh, with a perforated machine-gun shroud of real holes."
-parent: tasks-to-do-index
+parent: tasks-done-index
 kind: task
-status: in-progress
+status: done
 ---
 # Turret mesh: fix the canon of the optimised version
 
@@ -18,16 +18,16 @@ status: in-progress
   - Q6 DECIDED (owner changed it twice): turret triangle budget 16,000 (owner 2026-10-28 after the task-346-01 blocker; was 10,000, first 2500 provisional; written in asset-pipeline); the optimised body (15,455 tris) is kept as it is, only the canon is rebuilt; flat faces stay truly flat; no decimation.
 - confirmed_by_owner: yes (2026-10-28, "Yes" to the plan and the Q1-Q5 defaults, budget 10,000, holes in the outer barrel layer; budget raised to 16,000 the same day after the blocker; relayed by the main session)
 - milestone: M2
-- next_step: task-346-01-turret-canon
+- next_step: none
 - started: 2026-10-28T06:47:37Z
 - waiting_for: none
-- result: open
+- result: Done. Canon rebuilt in Blender (commit 06e565d9): 1,374 canon tris, total 15,748 under 16,000; 15 real round holes in the shroud matching the unoptimised pattern (rows 1,2,2,1,3,5,1); axis/length/radii within 2 pct; body vertices and UVs unchanged. Warnings: hook bracket at canon rear lost, underside arc not searched for holes, normal bake detail unverified.
 
 ## Subtasks
 1. task-346-01-turret-canon (vault/reference/tasks/task-346-turret-canon/task-346-01-turret-canon.md) — 3d: replace the optimised turret canon (graft or Blender rebuild per Q1) and render before, after and reference.
 
 ## Relations
-- [[tasks-to-do-index]] — parent index.
+- [[tasks-done-index]] — parent index.
 - [[task-346-01-turret-canon]] — step 1, 3d.
 - [[task-345-turret-meshy-files]] — must be done first: saves and identifies the two meshes.
 - [[task-347-turret-flat-surfaces]] — point 2, runs on this task's output.
