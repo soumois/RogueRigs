@@ -19,6 +19,7 @@ kind: doc
   - Pure: `IsShopOpen()` bool; `GetShopSlots()` TArray<FRRShopSlot>; `GetSlotCount()` int32; `GetSlot(int32 SlotIndex, FRRShopSlot& OutSlot)` bool; `GetSlotPrice(int32 SlotIndex)` int32; `IsSlotEmpty(int32 SlotIndex)` bool; `CanBuySlot(int32 SlotIndex)` bool (false = greyed); `GetOreBalance()` int32 (spendable ore); `GetRerollCost()` int32; `GetRerollCount()` int32; `CanReroll()` bool (false = greyed); static `GetPriceForTier(ERRUpgradeRarity Tier)` int32.
   - Callable: `BuySlot(int32 SlotIndex)` bool; `RequestReroll()` bool.
   - Event: `OnShopChanged()` (BlueprintAssignable, no parameter) after open, close, buy, reroll and every ore change while open. `URRShopScreenWidget` binds it in `NativeConstruct` and calls the BlueprintImplementableEvent `OnShopRefreshed()`; the Blueprint also calls its refresh once at construction (the offer already exists). Continue button: `URRShopScreenWidget::Continue()`.
+  - Event `OnSlotBought(int32 SlotIndex, int32 Price, int32 BalanceBefore)` (`FRROnShopSlotBoughtSignature`, BlueprintAssignable, Category `Run|Shop`, task-342-01): broadcast once per successful `BuySlot` (card click or `rr.Shop.Buy`), after card applied, ore paid, snapshot written and slot marked sold, just before `OnShopChanged`. `BalanceBefore` = spendable ore before the payment (after = BalanceBefore - Price). Never fired on a refusal. Used by [[wbp-shop-screen]] and [[wbp-shop-card]] for the ore flight. Log `URRIntermissionShopSubsystem: OnSlotBought slot N, price P, balance before B.`
 - data: `URRShopSettings` (`UCLASS(Config = Game, DefaultConfig)`, `GetDefault`): `ShopCardCount` 5, `PriceGrey` 25, `PriceGreen` 40, `PriceBlue` 60, `PricePurple` 80, `PriceYellow` 100 (provisional, owner 2026-10-26); override in `Config/DefaultGame.ini` `[/Script/RogueRigs.RRShopSettings]`. Reroll tunables: `URRRerollSettings`.
 - depends_on: [[sys-run-transition]], [[sys-run]], [[sys-upgrades]], [[sys-objectives-ore-counter]].
 - implements: [[run-shop]].
@@ -34,3 +35,4 @@ kind: doc
 - [[intermission]] — the screen that hosts it.
 - [[task-316-01-intermission-shop]] — the task that built it.
 - [[task-317-01-stats-then-cards]] — the task that moved it to its own screen after the stats screen.
+- [[task-342-01-shop-bought-event]] — the task that added OnSlotBought (verified by capture: 4 events for 4 buys, none on 3 refusals).
