@@ -3,7 +3,7 @@ id: task-351-shop-title-clip
 description: "Global task: Shop screen title, its side bars and subtitle fully visible at the top of the 1920 x 1080 screen."
 parent: tasks-to-do-index
 kind: task
-status: todo
+status: in-progress
 ---
 # Shop screen: title clipped at the top
 
@@ -14,7 +14,7 @@ status: todo
 - confirmed_by_owner: yes (2026-10-28, "OK, tout par défaut" to Q1-Q9 and the plan, relayed by the main session)
 - milestone: M2
 - next_step: task-351-01-shop-title-clip-fix
-- started: open
+- started: 2026-10-28T17:35:42Z
 - waiting_for: none
 - result: open
 

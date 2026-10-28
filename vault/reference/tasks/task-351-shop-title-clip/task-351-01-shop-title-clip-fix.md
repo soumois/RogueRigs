@@ -3,7 +3,7 @@ id: task-351-01-shop-title-clip-fix
 description: "Bp: WBP_ShopScreen layout fix for owner point 1 of the shop capture, display only."
 parent: task-351-shop-title-clip
 kind: task
-status: todo
+status: in-progress
 ---
 # Shop screen: title clipped at the top: WBP_ShopScreen fix
 
@@ -20,7 +20,7 @@ status: todo
 - usage: open
 - runs: open
 - milestone: M2
-- started: open
+- started: 2026-10-28T17:35:42Z
 - waiting_for: none
 - result: open
 
