@@ -3,7 +3,7 @@ id: task-345-01-turret-meshy-files
 description: "Identify the optimised Meshy turret zip by headless Blender triangle counts, save both meshes in Art/Source/turret-meshy/, create art-prompts-turret."
 parent: task-345-turret-meshy-files
 kind: task
-status: todo
+status: in-progress
 ---
 # Turret Meshy files: identify, save, record
 
@@ -21,7 +21,7 @@ status: todo
 - usage: open
 - runs: open
 - milestone: M2
-- started: open
+- started: 2026-10-28T06:30:24Z
 - waiting_for: none
 - result: open
 

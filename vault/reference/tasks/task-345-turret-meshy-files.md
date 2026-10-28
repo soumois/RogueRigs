@@ -3,7 +3,7 @@ id: task-345-turret-meshy-files
 description: "Global task: Identify which owner Meshy turret zip is the optimised mesh by Blender triangle counts, save both in Art/Source/turret-meshy/, record them in art-prompts-turret."
 parent: tasks-to-do-index
 kind: task
-status: todo
+status: in-progress
 ---
 # Turret Meshy files: identify optimised and unoptimised, save and record
 
@@ -14,7 +14,7 @@ status: todo
 - confirmed_by_owner: yes (2026-10-28, "Yes" to the plan and the Q1-Q5 defaults, budget 10,000, holes in the outer barrel layer; relayed by the main session)
 - milestone: M2
 - next_step: task-345-01-turret-meshy-files
-- started: open
+- started: 2026-10-28T06:30:24Z
 - waiting_for: none
 - result: open
 
