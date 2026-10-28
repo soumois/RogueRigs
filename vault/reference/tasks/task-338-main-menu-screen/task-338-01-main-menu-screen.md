@@ -3,7 +3,7 @@ id: task-338-01-main-menu-screen
 description: "C++ main menu game mode, widget base (NewRun, Exit, Options disabled) and rr.Menu debug commands."
 parent: task-338-main-menu-screen
 kind: task
-status: todo
+status: done
 ---
 # Main menu: C++ classes
 
@@ -15,14 +15,14 @@ status: todo
 - done_when: build succeeds with the editor closed; PIE or -game on L_ArenaM1 still starts a run directly (no behaviour change outside the menu map); change summary returned
 - editor_state: closed
 - token_ceiling: 1.2 M units
-- model: open
-- tokens: open
-- usage: open
-- runs: open
+- model: opus
+- tokens: input 52, cache write 89786, cache read 1480068, output 21225
+- usage: turns 26, context start 11k peak 90k, resumes 0, 8 min, units 0.37 M
+- runs: 1
 - milestone: M3
-- started: open
+- started: 2026-10-28T01:53:55Z
 - waiting_for: none
-- result: open
+- result: C++ classes ARRMainMenuGameMode, ARRMainMenuPlayerController, URRMainMenuWidget, rr.Menu.NewRun/Exit, URRRunSettings::NewRunMapName; build ok, -game on L_ArenaM1 still starts run; commit fdcdae4c
 
 ## Relations
 - [[task-338-main-menu-screen]] — parent global task.

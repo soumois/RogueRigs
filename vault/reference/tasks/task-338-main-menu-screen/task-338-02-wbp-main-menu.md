@@ -3,7 +3,7 @@ id: task-338-02-wbp-main-menu
 description: "WBP_MainMenu widget with the imported background texture, title and three buttons."
 parent: task-338-main-menu-screen
 kind: task
-status: todo
+status: in-progress
 ---
 # Main menu: WBP_MainMenu
 
@@ -20,7 +20,7 @@ status: todo
 - usage: open
 - runs: open
 - milestone: M3
-- started: open
+- started: 2026-10-28T02:02:32Z
 - waiting_for: none
 - result: open
 
