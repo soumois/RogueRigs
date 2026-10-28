@@ -3,7 +3,7 @@ id: task-339-01-heal-chunk-mesh
 description: "3D, Blender route: SM_HealChunk_01..03 from the chosen heal pickup sheet, 30 cm, centred pivot, two red slots, FBX, report and render."
 parent: task-339-heal-chunk-mesh
 kind: task
-status: in-progress
+status: wait-answers
 ---
 # Heal pickup chunks: Blender meshes
 
@@ -32,7 +32,7 @@ status: in-progress
 - runs: open
 - milestone: M2
 - started: 2026-10-28T01:25:53Z
-- waiting_for: none
+- waiting_for: owner acceptance of the 3 heal chunk meshes (Art/Meshes/HealChunk/heal_chunk_preview.png)
 - result: open
 
 ## Relations

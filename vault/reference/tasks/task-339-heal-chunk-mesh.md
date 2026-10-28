@@ -3,7 +3,7 @@ id: task-339-heal-chunk-mesh
 description: "Global task: Blender meshes of 3 red heal pickup chunk variants from the chosen sheet, then in game on BP_PickupHeal, random per drop."
 parent: tasks-to-do-index
 kind: task
-status: in-progress
+status: wait-answers
 ---
 # Heal pickup chunks: Blender meshes and in-game look
 
@@ -18,7 +18,7 @@ status: in-progress
 - milestone: M2
 - next_step: task-339-01-heal-chunk-mesh
 - started: 2026-10-28T01:25:52Z
-- waiting_for: none
+- waiting_for: owner acceptance of the 3 heal chunk meshes (preview render, subtask 01)
 - result: open
 
 ## Subtasks
