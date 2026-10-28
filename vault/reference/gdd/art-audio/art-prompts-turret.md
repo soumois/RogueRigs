@@ -50,6 +50,17 @@ The optimised Meshy turret with its canon rebuilt by Blender script after the un
 - Unchanged: 15,748 triangles, 183.10 x 188.49 x 156.14 cm (bounding box identical), UVs identical, canon vertices (661, shroud holes included) identical to task-346.
 - Renders (not committed): `Saved/TurretMesh/flat/` before (optimised source), after, reference (unoptimised), front, side, three-quarter, with the standard light and with a grazing sun.
 
+## Base and head (task-349-01, 2026-10-28)
+`SM_Turret.fbx` cut into a fixed base and a head that yaws, all Q1 to Q5 defaults ("ok" by the owner). Script `Tools/art/blender/turret_cut_head.py`, numbers in `Art/Meshes/turret/turret_cut.report.json`; renders by `turret_cut_render.py` in `Saved/TurretMesh/cut/` (not committed). `SM_Turret.fbx` stays as the assembled reference. No Unreal import, no Meshy call.
+- Files in `Art/Meshes/turret/`: `SM_TurretBase.fbx` (slot `turret_body`) and `SM_TurretHead.fbx` (slots `turret_body` and `turret_canon`), centimetres, same maps as `SM_Turret.fbx`, no new material. Both turned +90 degrees about Z so the canon points +X (principal axis within 2 degrees of +X; the source canon is about 5 degrees nose-down).
+- Axis: turntable = the dark neck (radius 15.9 cm) above the fixed ring (radius 25.3 cm, top z 60.0). Axis = circle fit of the neck section, 0.09 cm from the ring centre. Cut plane z = 65.2 cm (the residual optimum, 66.03, gives 16,004 tris; 65.2 with a 0.3 cm vertex snap gives 15,974).
+- Pivots: base origin bottom centre. Head origin on the axis at the cut height. Head offset in the base frame: (0.50, 0.52, 65.20) cm; head origin 0.04 cm from the base cap circle centre.
+- Seam: bisected neck faces (UV and normals interpolated), both sides capped flat in `turret_body`, mapped to a dark patch of the atlas (luminance 0.18, pixel 908,732). Boundary edges at the cut: 0 on both meshes. Caps are 57 tris each.
+- Parts: base = legs, ring, neck stump (1 piece, 7,755 tris). Head = dome and body, canon and shroud (slot `turret_canon`), antenna, two ammo boxes, hoses, small canon fittings (9 pieces, 8,219 tris). The two hoses straddle the cut and go with the head; they hang 14.7 cm below the cut.
+- Sweep 0 to 350 degrees every 10: no triangle overlap at any angle; minimum clearance 1.83 cm (at 180 degrees; 2.2 cm at 130).
+- Vertices and UVs: 3,758 base and 4,009 head vertices identical to `SM_Turret.fbx` (max position difference 0.00002 cm), 59 new vertices per side on the cut, 0 UV difference on the unchanged corners.
+- Tris: 15,974 in total (base 7,755 + head 8,219), budget 16,000.
+
 ## Relations
 - [[art-prompts]] — parent: method and locked phrases.
 - [[art-prompts-console]] — model node: owner words, Meshy files.
