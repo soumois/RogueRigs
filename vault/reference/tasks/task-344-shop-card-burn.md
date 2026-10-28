@@ -3,7 +3,7 @@ id: task-344-shop-card-burn
 description: "Global task: A bought shop card plays the level-up pick burn, without the flight to the weapon or XP bar, then shows the sold look."
 parent: tasks-to-do-index
 kind: task
-status: todo
+status: in-progress
 ---
 # Shop purchase: the bought card burns like a level-up pick
 
@@ -14,7 +14,7 @@ status: todo
 - confirmed_by_owner: yes (2026-10-28, "OK, tout par défaut" to Q1-Q11 and the plan, relayed by the main session)
 - milestone: M2
 - next_step: task-344-01-shop-card-burn
-- started: open
+- started: 2026-10-28T07:24:20Z
 - waiting_for: none
 - result: open
 

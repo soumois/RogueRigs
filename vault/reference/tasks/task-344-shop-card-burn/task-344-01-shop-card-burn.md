@@ -3,7 +3,7 @@ id: task-344-01-shop-card-burn
 description: "Bp: WBP_ShopCard burns the bought card with MI_CardBurn, then the sold look."
 parent: task-344-shop-card-burn
 kind: task
-status: todo
+status: in-progress
 ---
 # Shop purchase: the bought card burns like a level-up pick: WBP_ShopCard burns the bought card with MI_CardBurn, then the sold look
 
@@ -20,7 +20,7 @@ status: todo
 - usage: open
 - runs: open
 - milestone: M2
-- started: open
+- started: 2026-10-28T07:24:20Z
 - waiting_for: none
 - result: open
 
