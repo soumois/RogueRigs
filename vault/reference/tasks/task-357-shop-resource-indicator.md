@@ -1,9 +1,9 @@
 ---
 id: task-357-shop-resource-indicator
 description: "Global task: Shop resource indicator (IndicatorRessource): ore icon and value centred on the font line without a Row container, following the screen-scaled font."
-parent: tasks-to-do-index
+parent: tasks-done-index
 kind: task
-status: in-progress
+status: done
 ---
 # Shop screen: resource indicator centred on its font
 
@@ -13,10 +13,10 @@ status: in-progress
 - gdd_check: read 2026-10-28 by the Planner: [[run-shop]] (ore counter in a pipe-framed panel at the top left, provisional), tech [[wbp-shop-screen]] (CounterBg, OreIcon, OreBalanceText, ore_flight CenterOf(OreIcon), RefreshShop writes OreBalanceText). No conflict, display only. No `open` GDD value needed. Font scaling: no `UserInterfaceSettings` override in `Config/*.ini`, engine default DPI rule (read back by task-356-01). Binary scan of the owner's asset: IndicatorRessource holds CounterOverlay, CounterBg and CounterRow (the "row" the owner doubts). Order: after [[task-356-shop-screen-anchors]] done (same asset, one agent at a time); then [[task-355-shop-card-frame-details]]. Owner "OK, tout par défaut": Q3 option (a) DECIDED (provisional, owner 2026-10-28); [[run-shop]] updated by the Planner; rule [[umg-layout]] applies.
 - confirmed_by_owner: yes (2026-10-28, "OK, tout par défaut" to Q1-Q7 and the plan, relayed by the main session)
 - milestone: M2
-- next_step: task-357-03-shop-indicator-doc
+- next_step: none
 - started: 2026-10-28T21:37:43Z
 - waiting_for: none
-- result: open
+- result: Done. wbp-shop-screen updated and new node wbp-shop-screen-indicator (08749242); no capture-tool node reachable, --force-res noted in wbp-shop-screen verified_anchors.
 
 ## Questions
 Decided 2026-10-28 (owner "OK, tout par défaut"): option (a), values provisional.
@@ -28,7 +28,7 @@ Decided 2026-10-28 (owner "OK, tout par défaut"): option (a), values provisiona
 3. task-357-03-shop-indicator-doc (vault/reference/tasks/task-357-shop-resource-indicator/task-357-03-shop-indicator-doc.md) — doc: update wbp-shop-screen.
 
 ## Relations
-- [[tasks-to-do-index]] — parent index.
+- [[tasks-done-index]] — parent index.
 - [[task-357-01-shop-resource-indicator]] — step 1, bp.
 - [[task-357-02-shop-indicator-capture]] — step 2, cpp.
 - [[task-357-03-shop-indicator-doc]] — step 3, doc.

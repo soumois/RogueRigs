@@ -362,3 +362,4 @@ Archive: it exceeds the index size limits of [[_authoring]] on purpose (owner, 2
 - [[task-353-shop-need-label]] — Shop card "NEED {n} MORE" label in smaller text on the grey Buy plate, inside the plate up to three digits. Status done.
 - [[task-354-shop-counter-overlap]] — Shop screen crystal counter no longer covers the top-left corner of the shop panel nor the first card rivet. Status cancelled.
 - [[task-356-shop-screen-anchors]] — Shop screen rebuilt on a Root Canvas with explicit anchors from the owner's hand-edited version, so it adapts to small changes of resolution and ratio. Status done.
+- [[task-357-shop-resource-indicator]] — Shop resource indicator (IndicatorRessource): ore icon and value centred on the font line without a Row container, following the screen-scaled font. Status done.
