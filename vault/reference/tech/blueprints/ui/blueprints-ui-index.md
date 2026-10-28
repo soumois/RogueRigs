@@ -23,6 +23,7 @@ WBP_HUD and its eight panels plus the HUD refactor audit.
 - [[wbp-intermission]] — WBP_Intermission, recap screen between run levels with a reserved shop area and the Continue button.
 - [[wbp-shop-card]] — WBP_ShopCard, one priced stat card of the intermission shop, self-refreshing by SlotIndex, placed five times by WBP_Intermission.
 - [[wbp-shop-screen]] — WBP_ShopScreen, the cards shop on its own opaque black screen after the stats screen (5 WBP_ShopCard, balance, reroll, Continue).
+- [[wbp-shop-screen-indicator]] — IndicatorRessource of the shop, the ore counter: tree, anchors of icon and value, icon-font ratio, capture check.
 - [[hud-refactor-audit]] — audit of WBP_HUD: tick cost, per-feature tables, sub-widget plan, missing C++ events.
 - [[m-card-burn]] — M_CardBurn and MI_CardBurn, the dissolve material with fire edge for discarded cards.
 - [[wbp-main-menu]] — WBP_MainMenu, the main menu screen: background, title, New Run, Options, Exit.
