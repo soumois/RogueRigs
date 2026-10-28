@@ -3,7 +3,7 @@ id: task-351-02-shop-title-clip-capture
 description: "Cpp: -game capture at 1920 x 1080 of the fix of owner point 1, compared with the look before and the mockup."
 parent: task-351-shop-title-clip
 kind: task
-status: todo
+status: in-progress
 ---
 # Shop screen: title clipped at the top: capture
 
@@ -20,7 +20,7 @@ status: todo
 - usage: open
 - runs: open
 - milestone: M2
-- started: open
+- started: 2026-10-28T17:37:28Z
 - waiting_for: none
 - result: open
 
