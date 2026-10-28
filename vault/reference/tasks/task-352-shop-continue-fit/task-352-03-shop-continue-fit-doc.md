@@ -3,7 +3,7 @@ id: task-352-03-shop-continue-fit-doc
 description: "Doc: update wbp-shop-screen after the fix of owner point 2."
 parent: task-352-shop-continue-fit
 kind: task
-status: in-progress
+status: done
 ---
 # Shop screen: Continue plate cut at the bottom: doc
 
@@ -15,14 +15,14 @@ status: in-progress
 - done_when: nodes match the commit and the capture; no value invented; lint clean; committed by path.
 - editor_state: any
 - token_ceiling: 0.3 M units
-- model: open
-- tokens: open
-- usage: open
-- runs: open
+- model: sonnet
+- tokens: input 8, cache write 16805, cache read 54156, output 2930
+- usage: turns 4, context start 11k peak 21k, resumes 0, 1 min, units 0.04 M
+- runs: 1
 - milestone: M2
 - started: 2026-10-28T17:45:47Z
 - waiting_for: none
-- result: open
+- result: wbp-shop-screen updated (commit c39fa2c3): new sizes and gaps, defect removed, verified_continue_fit added
 
 ## Relations
 - [[task-352-shop-continue-fit]] — parent global task.
