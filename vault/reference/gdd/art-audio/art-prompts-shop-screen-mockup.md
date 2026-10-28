@@ -23,6 +23,12 @@ Kie.ai GPT Image 2 image-to-image, refs: the sheet (Image 1) and the mockup (Ima
 - A6 note: the gunmetal and teal look with no white plates is accepted on purpose by the owner; no white-plate correction.
 - Gaps: the pipes of the counter panel are cut at the image edge (left pair, top right); the shop panel has bolted side tabs that stick out in the middle of its long sides; the panel ratio is about 2.5:1, not 8:3.
 
+## Sprites (task-348-02)
+Same method as task-348-01: Kie.ai GPT Image 2 image-to-image, refs the sheet and the mockup, 1K, magenta key, 2 variants per sprite, 6 credits each: 48 credits in all, no correction run. Prompts verbatim in `Art/Source/shop-screen/prompts/`: `04-button-buy.txt`, `05-button-reroll.txt`, `06-button-continue.txt` (16:9) and `07-icon-reroll.txt` (1:1). Runs `20261028-080238-shop-screen` (Buy), `20261028-080359-shop-screen` (Reroll), `20261028-080539-shop-screen` (Continue), `20261028-080700-shop-screen` (icon). Keyed with `Tools/art/ui_icon_prepare.js --keep-aspect` (icon: `--margin 0.06`), `--check` clean.
+- Retained by the owner (2026-10-28), candidate 2 of each, copied to `Art/UI/Shop/`: `T_Shop_ButtonBuy.png` (512 x 137, teal), `T_Shop_ButtonReroll.png` (640 x 180, dark teal, bolted ends), `T_Shop_ButtonContinue.png` (640 x 163, cream rusty metal, teal ends), `T_Shop_IconReroll.png` (256 x 256, light grey).
+- 9-slice, horizontal only (estimates, untested in UMG): left and right about 78 px for Buy, about 105 px for Reroll, about 95 to 105 px for Continue; top and bottom 0. Each PNG has a transparent margin of 20 px (Buy) or 26 px (Reroll, Continue).
+- Gaps: the plates are taller than the targets of the subtask (Buy 137 vs about 96, Reroll 180 vs about 112, Continue 163 vs about 128): set the height in UMG. Buy c1 (103 high, thin frame) was not retained. The A1 fail of Buy c1 is not kept (unretained).
+
 ## Relations
 - [[art-prompts]] — parent: method and prompt nodes.
 - [[art-prompts-shop-screen]] — the ChatGPT prompt these images answer.
