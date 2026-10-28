@@ -3,7 +3,7 @@ id: task-352-02-shop-continue-fit-capture
 description: "Cpp: -game capture at 1920 x 1080 of the fix of owner point 2, compared with the look before and the mockup."
 parent: task-352-shop-continue-fit
 kind: task
-status: todo
+status: in-progress
 ---
 # Shop screen: Continue plate cut at the bottom: capture
 
@@ -20,7 +20,7 @@ status: todo
 - usage: open
 - runs: open
 - milestone: M2
-- started: open
+- started: 2026-10-28T17:43:29Z
 - waiting_for: none
 - result: open
 

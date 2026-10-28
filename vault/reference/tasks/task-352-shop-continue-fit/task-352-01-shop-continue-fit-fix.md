@@ -3,7 +3,7 @@ id: task-352-01-shop-continue-fit-fix
 description: "Bp: WBP_ShopScreen layout fix for owner point 2 of the shop capture, display only."
 parent: task-352-shop-continue-fit
 kind: task
-status: in-progress
+status: done
 ---
 # Shop screen: Continue plate cut at the bottom: WBP_ShopScreen fix
 
@@ -15,14 +15,14 @@ status: in-progress
 - done_when: compiled and saved; changed slots and brushes read back; widget names and task-342/343/344 graphs still present; committed by path.
 - editor_state: open
 - token_ceiling: 1.0 M units
-- model: open
-- tokens: open
-- usage: open
-- runs: open
+- model: sonnet
+- tokens: input 28, cache write 61244, cache read 578056, output 9206
+- usage: turns 14, context start 11k peak 66k, resumes 0, 1 min, units 0.18 M
+- runs: 1
 - milestone: M2
 - started: 2026-10-28T17:41:33Z
 - waiting_for: none
-- result: open
+- result: WBP_ShopScreen: Reroll box 440x110, Continue box 416x106, brushes at box size, panel/subtitle/reroll gaps reduced (commit eb75ca95); fit estimated only, checked by 02 capture
 
 ## Relations
 - [[task-352-shop-continue-fit]] — parent global task.
