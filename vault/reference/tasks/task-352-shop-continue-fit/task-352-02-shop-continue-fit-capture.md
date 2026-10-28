@@ -3,7 +3,7 @@ id: task-352-02-shop-continue-fit-capture
 description: "Cpp: -game capture at 1920 x 1080 of the fix of owner point 2, compared with the look before and the mockup."
 parent: task-352-shop-continue-fit
 kind: task
-status: in-progress
+status: done
 ---
 # Shop screen: Continue plate cut at the bottom: capture
 
@@ -15,14 +15,14 @@ status: in-progress
 - done_when: the sheet shows: Continue and Reroll plates fully visible, Continue bottom at least the decided margin above y = 1080; title still fully visible; or the report lists what differs; unseen items listed.
 - editor_state: any (no build; task-348-08 ran -game with the editor open)
 - token_ceiling: 1.2 M units
-- model: open
-- tokens: open
-- usage: open
-- runs: open
+- model: opus
+- tokens: input 32, cache write 36545, cache read 355439, output 7628
+- usage: turns 15, context start 12k peak 42k, resumes 1 (message x1), 2 min, units 0.12 M
+- runs: 1
 - milestone: M2
 - started: 2026-10-28T17:43:29Z
 - waiting_for: none
-- result: open
+- result: -game 1920x1080 capture (Saved/ShopFix/task-352/comparison_sheet.png): Continue plate y 988-1059, 20 px above bottom (>=16 ok); Reroll y 877-953 whole; title 31-78 clear; 342-344 effects play. Seen: Reroll icon and the 5 of 15 sit on the plate end-caps, CONTINUE text touches end-caps. Unseen: hover/pressed, greyed Reroll, other tiers, other resolutions
 
 ## Relations
 - [[task-352-shop-continue-fit]] — parent global task.

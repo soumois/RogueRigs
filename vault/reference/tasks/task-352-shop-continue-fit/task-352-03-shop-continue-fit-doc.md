@@ -3,7 +3,7 @@ id: task-352-03-shop-continue-fit-doc
 description: "Doc: update wbp-shop-screen after the fix of owner point 2."
 parent: task-352-shop-continue-fit
 kind: task
-status: todo
+status: in-progress
 ---
 # Shop screen: Continue plate cut at the bottom: doc
 
@@ -20,7 +20,7 @@ status: todo
 - usage: open
 - runs: open
 - milestone: M2
-- started: open
+- started: 2026-10-28T17:45:47Z
 - waiting_for: none
 - result: open
 
