@@ -23,6 +23,11 @@ ARRTurret::ARRTurret(const FObjectInitializer& ObjectInitializer)
 	PrimaryActorTick.bCanEverTick = true;
 	PrimaryActorTick.bStartWithTickEnabled = true;
 	bStartFiringOnAcquire = false;
+
+	// Fixed base, yawing head (task-350-01): the Muzzle (created under Root by ARRWeapon) follows the head.
+	HeadPivot = CreateDefaultSubobject<USceneComponent>(TEXT("HeadPivot"));
+	HeadPivot->SetupAttachment(Root);
+	Muzzle->SetupAttachment(HeadPivot);
 }
 
 bool ARRTurret::InitFromLauncher(const ARRTurretLauncher& Launcher)
@@ -90,19 +95,48 @@ FVector ARRTurret::GetAimDirection() const
 {
 	if (const ARREnemy* Locked = Target.Get())
 	{
-		const FVector ToTarget = Locked->GetActorLocation() - GetShotOrigin();
-		const FVector Direction = ToTarget.GetSafeNormal2D();
-		if (!Direction.IsZero())
+		const FVector TargetLocation = Locked->GetActorLocation();
+		const FVector FromCentre = (TargetLocation - GetTargetingOrigin()).GetSafeNormal2D();
+		const FVector FromMuzzle = (TargetLocation - GetShotOrigin()).GetSafeNormal2D();
+		// From the canon tip, unless the robot is level with or behind it (closer than the canon): then from the centre.
+		if (!FromMuzzle.IsZero() && (FromCentre.IsZero() || FVector::DotProduct(FromMuzzle, FromCentre) > 0.f))
 		{
-			return Direction;
+			return FromMuzzle;
+		}
+		if (!FromCentre.IsZero())
+		{
+			return FromCentre;
 		}
 	}
-	return GetActorForwardVector().GetSafeNormal2D(UE_SMALL_NUMBER, FVector::ForwardVector);
+	return HeadPivot->GetForwardVector().GetSafeNormal2D(UE_SMALL_NUMBER, FVector::ForwardVector);
 }
 
 FVector ARRTurret::GetShotOrigin() const
 {
+	const FVector MuzzleLocation = Muzzle->GetComponentLocation();
+	return FVector(MuzzleLocation.X, MuzzleLocation.Y, GetActorLocation().Z + ShotHeight);
+}
+
+FVector ARRTurret::GetTargetingOrigin() const
+{
 	return GetActorLocation() + FVector(0.f, 0.f, ShotHeight);
+}
+
+void ARRTurret::UpdateHeadYaw()
+{
+	const ARREnemy* Locked = Target.Get();
+	if (!Locked)
+	{
+		return;
+	}
+	const FVector ToTarget = Locked->GetActorLocation() - HeadPivot->GetComponentLocation();
+	if (ToTarget.SizeSquared2D() < UE_KINDA_SMALL_NUMBER)
+	{
+		return;
+	}
+	FRotator Relative = HeadPivot->GetRelativeRotation();
+	Relative.Yaw = FRotator::NormalizeAxis(ToTarget.Rotation().Yaw - GetActorRotation().Yaw);
+	HeadPivot->SetRelativeRotation(Relative);
 }
 
 bool ARRTurret::IsValidTarget(const ARREnemy* Enemy) const
@@ -111,7 +145,7 @@ bool ARRTurret::IsValidTarget(const ARREnemy* Enemy) const
 	{
 		return false;
 	}
-	const FVector Origin = GetShotOrigin();
+	const FVector Origin = GetTargetingOrigin();
 	if (FVector::DistSquared2D(Origin, Enemy->GetActorLocation()) > FMath::Square(Range))
 	{
 		return false;
@@ -127,7 +161,7 @@ ARREnemy* ARRTurret::FindNearestTarget() const
 	{
 		return nullptr;
 	}
-	const FVector Origin = GetShotOrigin();
+	const FVector Origin = GetTargetingOrigin();
 	const double RangeSquared = FMath::Square(Range);
 	ARREnemy* Nearest = nullptr;
 	double NearestDistanceSquared = TNumericLimits<double>::Max();
@@ -180,7 +214,8 @@ void ARRTurret::Tick(float DeltaSeconds)
 	UpdateTarget(DeltaSeconds);
 	if (Target.IsValid())
 	{
-		SetActorRotation(FRotator(0.f, GetAimDirection().Rotation().Yaw, 0.f));
+		// The base keeps its placement yaw; only the head turns (owner Q3, task-350).
+		UpdateHeadYaw();
 		AutoFire->StartFiring();
 	}
 	else
@@ -195,6 +230,8 @@ void ARRTurret::FireOnce()
 	{
 		return;
 	}
+	// The auto-fire may run before this tick's head turn: aim the canon first so the Muzzle is current.
+	UpdateHeadYaw();
 	Super::FireOnce();
 	++ShotCount;
 	OnTurretFired(GetShotOrigin(), GetAimDirection());

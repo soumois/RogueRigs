@@ -1,4 +1,4 @@
-// Rogue Rigs - automation tests of the turret launcher and its turrets (RogueRigs.Turret.*): CSV stats, button placement and charges, recharge one at a time, placement cell, stat copy at placement, nearest-target lock with grid line of sight, range, fire and lifetime.
+// Rogue Rigs - automation tests of the turret launcher and its turrets (RogueRigs.Turret.*): CSV stats, button placement and charges, recharge one at a time, placement cell, stat copy at placement, nearest-target lock with grid line of sight, range, fire and lifetime, fixed base with a yawing head and shots from the canon tip.
 
 #include "CoreMinimal.h"
 #include "Misc/AutomationTest.h"
@@ -452,6 +452,91 @@ bool FRRTurretFireAndLifetimeTest::RunTest(const FString& Parameters)
 	TestTrue(TEXT("turret still there at 9.9 s"), WeakTurret.IsValid() && !WeakTurret->IsActorBeingDestroyed());
 	RRTurretTests::TickFrames(TestWorld, 9);
 	TestTrue(TEXT("turret gone after 10 s"), !WeakTurret.IsValid() || WeakTurret->IsActorBeingDestroyed());
+	return true;
+}
+
+IMPLEMENT_SIMPLE_AUTOMATION_TEST(FRRTurretHeadYawTest, "RogueRigs.Turret.HeadYaw",
+	EAutomationTestFlags::EditorContext | EAutomationTestFlags::EngineFilter)
+
+bool FRRTurretHeadYawTest::RunTest(const FString& Parameters)
+{
+	using namespace RRTurretTests;
+
+	// task-350-01 (owner Q3, Q4): the base keeps its placement yaw, HeadPivot turns toward the locked robot, shots leave the
+	// Muzzle (under HeadPivot) at ShotHeight while range and sight stay measured from the turret centre.
+	FTestWorld TestWorld(TEXT("RRTurretHeadYaw"));
+	ARRTurretLauncher* Launcher = TestWorld.Spawn<ARRTurretLauncher>(ARRTurretLauncher::StaticClass(), FVector::ZeroVector);
+	if (!TestNotNull(TEXT("launcher spawned"), Launcher) || !TestTrue(TEXT("launcher acquired without a miner"), Launcher->Acquire(nullptr)))
+	{
+		return false;
+	}
+	SetAttribute(Launcher, URRWeaponAttributeSet::GetCritChanceAttribute(), 0.f);
+	ARRTurret* Turret = Launcher->TryPlaceTurret();
+	if (!TestNotNull(TEXT("turret placed"), Turret) || !TestNotNull(TEXT("turret has a head pivot"), Turret->GetHeadPivot()))
+	{
+		return false;
+	}
+	USceneComponent* HeadPivot = Turret->GetHeadPivot();
+	USceneComponent* Muzzle = FWeaponAccess::MuzzleOf(Turret);
+	if (!TestNotNull(TEXT("turret has a muzzle"), Muzzle))
+	{
+		return false;
+	}
+	TestTrue(TEXT("the head pivot hangs under the root"), HeadPivot->GetAttachParent() == Turret->GetRootComponent());
+	TestTrue(TEXT("the muzzle hangs under the head pivot"), Muzzle->GetAttachParent() == HeadPivot);
+
+	// A canon tip 40 uu ahead of the yaw axis (BP_Turret sets the real one).
+	constexpr float CanonLength = 40.f;
+	Muzzle->SetRelativeLocation(FVector(CanonLength, 0.f, 30.f));
+	const FVector Base = Turret->GetActorLocation();
+	const double PlacementYaw = Turret->GetActorRotation().Yaw;
+	TestEqual(TEXT("placed facing the aim (+X)"), PlacementYaw, 0.0, 0.01);
+	const float ShotHeight = Turret->GetShotHeight();
+	TestTrue(TEXT("targeting origin: ShotHeight above the turret centre"), Turret->GetTargetingOrigin().Equals(Base + FVector(0.f, 0.f, ShotHeight), 0.01f));
+
+	// Locks a robot 700 uu to its left (+Y): actor yaw unchanged, head world yaw 90 within 1 degree.
+	ARRChaser* Left = SpawnFrozenChaser(*this, TestWorld, Base + FVector(0.f, 700.f, 0.f));
+	if (!Left)
+	{
+		return false;
+	}
+	int32 LeftHits = 0;
+	Left->GetHealthSet()->OnDamageReceived.AddLambda([&LeftHits](float, bool, float) { ++LeftHits; });
+	TestWorld.Tick();
+	TestEqual(TEXT("locks the robot on its left"), Turret->GetTarget(), static_cast<ARREnemy*>(Left));
+	auto YawToward = [HeadPivot](const AActor* Robot)
+	{
+		return (Robot->GetActorLocation() - HeadPivot->GetComponentLocation()).Rotation().Yaw;
+	};
+	TestEqual(TEXT("actor yaw unchanged after the lock"), Turret->GetActorRotation().Yaw, PlacementYaw, 0.01);
+	TestTrue(FString::Printf(TEXT("head world yaw %.2f points at the left robot (%.2f) within 1 degree"), HeadPivot->GetComponentRotation().Yaw, YawToward(Left)),
+		FMath::Abs(FMath::FindDeltaAngleDegrees(HeadPivot->GetComponentRotation().Yaw, YawToward(Left))) <= 1.0);
+	const FVector ShotOrigin = Turret->GetShotOrigin();
+	TestTrue(FString::Printf(TEXT("shot origin %s: the canon tip's horizontal position at ShotHeight"), *ShotOrigin.ToCompactString()),
+		ShotOrigin.Equals(Base + FVector(0.f, CanonLength, ShotHeight), 0.5f));
+	TestTrue(TEXT("aim from the canon tip toward the robot"), Turret->GetAimDirection().Equals(FVector(0.f, 1.f, 0.f), 1e-3f));
+
+	// The bullets from the canon tip hit it.
+	RRTurretTests::TickFrames(TestWorld, 30);
+	TestTrue(TEXT("the turret fired"), Turret->GetShotCount() > 0);
+	TestTrue(TEXT("the left robot was hit"), LeftHits > 0);
+	TestEqual(TEXT("actor yaw unchanged while firing"), Turret->GetActorRotation().Yaw, PlacementYaw, 0.01);
+
+	// Retarget behind-right (-135 degrees): the head follows at once, the base still does not turn.
+	Left->Destroy();
+	ARRChaser* Back = SpawnFrozenChaser(*this, TestWorld, Base + FVector(-500.f, -500.f, 0.f));
+	if (!Back)
+	{
+		return false;
+	}
+	TestWorld.Tick();
+	TestEqual(TEXT("retargets the robot behind"), Turret->GetTarget(), static_cast<ARREnemy*>(Back));
+	TestEqual(TEXT("actor yaw unchanged after the retarget"), Turret->GetActorRotation().Yaw, PlacementYaw, 0.01);
+	TestTrue(FString::Printf(TEXT("head world yaw %.2f points at the robot behind (%.2f) within 1 degree"), HeadPivot->GetComponentRotation().Yaw, YawToward(Back)),
+		FMath::Abs(FMath::FindDeltaAngleDegrees(HeadPivot->GetComponentRotation().Yaw, YawToward(Back))) <= 1.0);
+	const FVector Diagonal = FVector(-1.f, -1.f, 0.f).GetSafeNormal();
+	TestTrue(TEXT("shot origin follows the head"), Turret->GetShotOrigin().Equals(Base + Diagonal * CanonLength + FVector(0.f, 0.f, ShotHeight), 0.5f));
+	TestTrue(TEXT("range still measured from the centre"), FVector::Dist2D(Turret->GetTargetingOrigin(), Base) < 0.01);
 	return true;
 }
 

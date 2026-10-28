@@ -211,8 +211,8 @@ protected:
 	TObjectPtr<URRAutoFireComponent> AutoFire;
 
 	/**
-	 * Barrel tip, under Root; its relative location is set in the Blueprint subclass. Visual reference only (muzzle effects):
-	 * shots of a weapon held by a miner start at GetShotOrigin. Spawn point of the shots only when there is no owning miner.
+	 * Barrel tip, under Root (ARRTurret: under its HeadPivot); its relative location is set in the Blueprint subclass. Visual reference only (muzzle effects):
+	 * shots of a weapon held by a miner start at GetShotOrigin. Spawn point of the shots only when there is no owning miner (a turret uses its horizontal position).
 	 */
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Components")
 	TObjectPtr<USceneComponent> Muzzle;
