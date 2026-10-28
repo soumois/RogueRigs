@@ -1,9 +1,9 @@
 ---
 id: task-337-main-menu-background
 description: "Global task: Main menu background image: one 16:9 scene in the validated key art style, generated through Kie.ai, picked by the owner."
-parent: tasks-to-do-index
+parent: tasks-done-index
 kind: task
-status: wait-answers
+status: done
 ---
 # Main menu background image
 
@@ -24,15 +24,15 @@ status: wait-answers
   - Q11 milestone: in no milestone; filed under M3 (polish, November 9 submission).
 - confirmed_by_owner: yes (2026-10-28, "ok" to Q1 to Q11, relayed by the main session)
 - milestone: M3
-- next_step: task-337-01-main-menu-background
-- started: 2026-10-28T01:35:06Z
-- waiting_for: owner verdict on correction pass 1 image
-- result: open
+- next_step: none
+- started: 2026-10-28T01:53:18Z
+- waiting_for: none
+- result: Done. Owner kept variant 3 (run 20261027-172530) as vault/assets/main-menu-background.png; 24 credits over 2 runs (18 + 6 correction pass 1, rejected). Open style-guide fails accepted for now: A13 floor, cracks on slab tops, drone drill bit.
 
 ## Subtasks
 1. task-337-01-main-menu-background (vault/reference/tasks/task-337-main-menu-background/task-337-01-main-menu-background.md) — art: Main menu background image: one 16:9 scene in the validated key art style, generated through Kie.ai, picked by the owner.
 
 ## Relations
-- [[tasks-to-do-index]] — parent index.
+- [[tasks-done-index]] — parent index.
 - [[task-337-01-main-menu-background]] — step 1, art.
 - [[task-338-main-menu-screen]] — the menu screen that shows the picked image.

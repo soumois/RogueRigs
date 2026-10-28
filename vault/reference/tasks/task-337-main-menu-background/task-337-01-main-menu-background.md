@@ -3,7 +3,7 @@ id: task-337-01-main-menu-background
 description: "Main menu background image: one 16:9 scene in the validated key art style, generated through Kie.ai, picked by the owner."
 parent: task-337-main-menu-background
 kind: task
-status: wait-answers
+status: done
 ---
 # Main menu background image
 
@@ -15,14 +15,14 @@ status: wait-answers
 - done_when: images sent to the owner; style-guide review done; the owner picks or rejects; the chosen image is copied to vault/assets/ only on his word; prompt node written
 - editor_state: any
 - token_ceiling: 0.15 M units
-- model: open
-- tokens: open
-- usage: open
-- runs: open
+- model: sonnet+opus
+- tokens: input 50, cache write 129946, cache read 467532, output 23016
+- usage: turns 25, context start 10k peak 44k, resumes 0, 7 min, units 0.32 M
+- runs: 2
 - milestone: M3
-- started: 2026-10-28T01:35:06Z
-- waiting_for: owner verdict on correction pass 1 image (Art/Source/main-menu-background/20261027-173523-main-menu-background-1.png)
-- result: open
+- started: 2026-10-28T01:53:17Z
+- waiting_for: none
+- result: Owner kept variant 3 (run 20261027-172530) as vault/assets/main-menu-background.png; 24 credits over 2 runs (18 + 6 correction pass 1, rejected). Open style-guide fails accepted for now: A13 floor, cracks on slab tops, drone drill bit.
 
 ## Relations
 - [[task-337-main-menu-background]] — parent global task.
