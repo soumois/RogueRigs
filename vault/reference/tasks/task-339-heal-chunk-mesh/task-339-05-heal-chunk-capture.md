@@ -3,7 +3,7 @@ id: task-339-05-heal-chunk-capture
 description: "cpp: run the two existing BP_PickupHeal tests, then a -game capture of heal chunks resting on the floor after a heal vein breaks."
 parent: task-339-heal-chunk-mesh
 kind: task
-status: todo
+status: in-progress
 ---
 # Heal pickup chunks: tests and in-game capture
 
@@ -20,7 +20,7 @@ status: todo
 - usage: open
 - runs: open
 - milestone: M2
-- started: open
+- started: 2026-10-28T02:40:55Z
 - waiting_for: none
 - result: open
 

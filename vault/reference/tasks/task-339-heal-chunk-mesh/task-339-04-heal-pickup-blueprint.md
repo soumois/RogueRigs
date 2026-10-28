@@ -3,7 +3,7 @@ id: task-339-04-heal-pickup-blueprint
 description: "BP: BP_PickupHeal shows one of SM_HealChunk_01..03 per drop instead of the red cube, slot defaults, no shadow; other defaults unchanged."
 parent: task-339-heal-chunk-mesh
 kind: task
-status: in-progress
+status: done
 ---
 # Heal pickup chunks: BP_PickupHeal wiring
 
@@ -15,14 +15,14 @@ status: in-progress
 - done_when: Blueprint compiles with warnings as errors; class default object read back: mesh SM_HealChunk_01, scale 1, OverrideMaterials empty, MeshVariants the three chunks, RestOrientation Full, CastShadow false, pop and physics defaults unchanged; BP_ArenaGrid still has `HealPickupClass` = BP_PickupHeal_C; committed by path.
 - editor_state: open
 - token_ceiling: 1.0 M units
-- model: open
-- tokens: open
-- usage: open
-- runs: open
+- model: sonnet
+- tokens: input 32, cache write 40224, cache read 466366, output 7470
+- usage: turns 16, context start 9k peak 44k, resumes 0, 1 min, units 0.13 M
+- runs: 1
 - milestone: M2
 - started: 2026-10-28T02:38:38Z
 - waiting_for: none
-- result: open
+- result: BP_PickupHeal: mesh SM_HealChunk_01 scale 1, overrides cleared, MeshVariants 3 chunks, CastShadow false, rest/pop defaults unchanged, compiled and read back; commit a1c5dce7
 
 ## Relations
 - [[task-339-heal-chunk-mesh]] — parent global task.
