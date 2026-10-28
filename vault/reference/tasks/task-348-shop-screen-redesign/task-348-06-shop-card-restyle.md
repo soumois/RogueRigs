@@ -3,7 +3,7 @@ id: task-348-06-shop-card-restyle
 description: "Bp: WBP_ShopCard to the mockup: tier tab, violet price, styled Buy button with need-N-more, burnt sold look."
 parent: task-348-shop-screen-redesign
 kind: task
-status: in-progress
+status: done
 ---
 # Shop screen redesign: WBP_ShopCard
 
@@ -15,14 +15,14 @@ status: in-progress
 - done_when: compiled and saved; tree, brushes and graphs read back (tab tint, need-N label, sold look); 342 to 344 nodes still present; committed by path.
 - editor_state: open
 - token_ceiling: 1.0 M units
-- model: open
-- tokens: open
-- usage: open
-- runs: open
+- model: sonnet
+- tokens: input 112, cache write 156771, cache read 5780970, output 53527
+- usage: turns 56, context start 11k peak 162k, resumes 0, 7 min, units 1.04 M
+- runs: 1
 - milestone: M2
 - started: 2026-10-28T16:44:06Z
 - waiting_for: none
-- result: open
+- result: WBP_ShopCard restyled (commit fbbf8ca2), compiled and saved, no C++. Added TierTab (TierTabImg/TierTabText), NameDivider, SoldBox with SoldIcon/SoldSub; BuyButton box brush T_Shop_ButtonBuy with tints; functions ApplyShopLook (called from RefreshFromShop) and ApplySoldLook (end of SetBought); label defaults BUY/SOLD/NEED {n} MORE. 342-344 nodes kept. Tab plate tinted tier colour x0.45, label full tier colour (nuance on Q5). Unverified: no PIE/capture; NEED n runtime value, LEGENDARY fit, 342-344 fx.
 
 ## Relations
 - [[task-348-shop-screen-redesign]] — parent global task.

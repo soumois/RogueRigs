@@ -3,7 +3,7 @@ id: task-348-07-shop-screen-restyle
 description: "Bp: WBP_ShopScreen to the mockup: title bars and subtitle, counter panel top left, riveted shop panel, Reroll and Continue plates."
 parent: task-348-shop-screen-redesign
 kind: task
-status: todo
+status: in-progress
 ---
 # Shop screen redesign: WBP_ShopScreen
 
@@ -20,7 +20,7 @@ status: todo
 - usage: open
 - runs: open
 - milestone: M2
-- started: open
+- started: 2026-10-28T16:51:43Z
 - waiting_for: none
 - result: open
 
