@@ -1,0 +1,49 @@
+{
+  "run_id": "20261027-172530-main-menu-background",
+  "asset": "main-menu-background",
+  "model": "gpt-image-2-image-to-image",
+  "aspect_ratio": "16:9",
+  "resolution": "1K",
+  "variants": 3,
+  "prompt_file": "Art/Source/main-menu-background/prompts/01-scene.txt",
+  "prompt": "Same art style as all previous images. Image 1 is the key art scene (style, rock, crystals, void and planet reference). Image 2 is the miner and his drone design (patched white and teal suit with rust, small floating drone). Image 3 is the corporate robot design (yellow chasers with one big red eye and a small yellow logo plate).\nMake a new main menu background: flat-shaded low-poly 3D game screenshot, 16:9, no textures, visible facets. Three-quarter camera at about 35 degrees above the ground, lower than the key art camera, so the horizon of the void is visible.\nSetting: the edge of the arena asteroid. In the right half of the frame, the miner stands at the faceted cliff edge seen from behind and slightly from the side, facing the void, with his small floating drone hovering at his shoulder. Beyond the cliff, a vast void with an indigo, violet and magenta nebula, a dense starfield, a few floating grey-violet asteroids and a large distant cratered planet as in image 1.\nTerrain: light grey rock blocks with a violet tint, with glowing violet Duskite crystals growing in the rocks near the cliff and behind.\nBehind the miner, in the middle distance, a few clean yellow corporate chaser robots with glowing red eyes and small yellow logo plates climb over the rocks toward him, small in frame, none firing.\nComposition: the left third of the image is calmer, darker and emptier (dark rock and deep space shading, no characters, no bright details), to hold a menu column. The miner, drone and robots stay in the centre and right.\nStrong directional light with lifted shadows so everything stays readable. The player side uses white, teal and rust only. No UI, no text, no logo.",
+  "refs": [
+    "vault/assets/keyart.jpg",
+    "vault/assets/rigs-lineup.jpg",
+    "vault/assets/enemies-lineup.jpg"
+  ],
+  "tasks": [
+    {
+      "task_id": "53c0d4b721921f2fc66ea3222752c476",
+      "state": "success",
+      "credits": 6,
+      "error": null,
+      "result_urls": [
+        "https://tempfile.aiquickdraw.com/images/chatgpt/file_00000000fcdc81f5aba208019b44d989.png"
+      ]
+    },
+    {
+      "task_id": "88f0f7c7aa59797f27ba58ed5eacc7ca",
+      "state": "success",
+      "credits": 6,
+      "error": null,
+      "result_urls": [
+        "https://tempfile.aiquickdraw.com/images/chatgpt/file_0000000098e882308f0d9dc7bbdbb6a5.png"
+      ]
+    },
+    {
+      "task_id": "fae30ad6b3554228157776d0e25b7ac4",
+      "state": "success",
+      "credits": 6,
+      "error": null,
+      "result_urls": [
+        "https://tempfile.aiquickdraw.com/images/chatgpt/file_00000000496881f88e5bf55a5cdbae2d.png"
+      ]
+    }
+  ],
+  "files": [
+    "Art/Source/main-menu-background/20261027-172530-main-menu-background-1.png",
+    "Art/Source/main-menu-background/20261027-172530-main-menu-background-2.png",
+    "Art/Source/main-menu-background/20261027-172530-main-menu-background-3.png"
+  ]
+}
