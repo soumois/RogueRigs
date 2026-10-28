@@ -18,6 +18,7 @@ kind: note
 - [[ore-economy]] — when ore is secured or lost, meta-progression.
 - [[intermission]] — screen between two levels: recap, shop slot, next terrain prepared, loading screen.
 - [[run-shop]] — run-only purchases between levels, paid in ore; content open.
+- [[main-menu]] — screen at game start: background image, New Run, Options placeholder, Exit, start-up map.
 
 ## Relations
 - [[gdd-index]] — parent index.

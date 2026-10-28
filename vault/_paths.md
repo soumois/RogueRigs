@@ -218,6 +218,7 @@ lights-dark-ambient  reference/tech/blueprints/world/lights-dark-ambient.md
 lights-no-shadows  reference/tech/blueprints/world/lights-no-shadows.md
 lore  reference/gdd/lore.md
 m-card-burn  reference/tech/blueprints/ui/m-card-burn.md
+main-menu  reference/gdd/run/main-menu.md
 mesh-fidelity-loop  reference/tech/pipelines/mesh-fidelity-loop.md
 milestones  reference/production/milestones.md
 miner  reference/gdd/player/miner.md

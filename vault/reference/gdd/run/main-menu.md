@@ -1,0 +1,38 @@
+---
+id: main-menu
+description: "Main menu at game start: background image content and camera, layout, the three buttons (New Run, Options placeholder, Exit), start-up map. Open for menu work."
+parent: run-index
+kind: spec
+status: provisional
+---
+# Main menu
+
+All values provisional, owner 2026-10-28 ("ok" to Q1 to Q11 of [[task-337-main-menu-background]]).
+
+## Background image
+- One static 16:9 image, key art style ([[art-style-guide]], [[color-code]]), made by the art agent through Kie.ai GPT Image 2 image-to-image from `vault/assets/keyart.jpg`, `rigs-lineup.jpg` and `enemies-lineup.jpg`; 1K (cap kept), stretched to the screen.
+- Content: the miner and his drone at the cliff edge of the arena asteroid, facing the void (indigo, violet, magenta nebula, stars, floating asteroids, a distant planet as in the key art; image only, the in-game void stays without planet); violet Duskite crystals in the rocks; a few corporate robots (yellow chasers, red eyes) coming over the rocks behind; left third calmer and darker for the menu column.
+- Camera: three-quarter view about 35 degrees, lower than the game camera; [[art-style-guide]] A12 stays the rule for gameplay scene art.
+- No text, no UI in the image.
+
+## Layout
+- Full-screen image with a dark gradient behind a left column: title "ROGUE RIGS" (drawn by the widget, never in the image; no game logo yet), then the buttons "New Run", "Options", "Exit".
+- Labels in English, exactly these words, hardcoded in the widget (not in screen_texts.json).
+- Font and colours as [[wbp-loading]]: Roboto Bold, white with outline, orange (1, 0.35, 0.1) on hover and focus.
+- No animation, no music.
+
+## Behaviour
+- New Run: resets the run and opens L_ArenaM1 at level 1 ([[run-structure]]).
+- Options: shown greyed out, does nothing (built later).
+- Exit: quits the game.
+- Mouse cursor shown; keyboard focus on New Run (Enter starts a run).
+- Start-up: a launch outside the editor (-game, packaged) opens the menu map L_MainMenu; the editor and PIE keep L_ArenaM1 and start a run directly.
+- Not in scope: a "back to menu" button on end screens or in pause.
+
+## Relations
+- [[run-index]] — parent index.
+- [[run-structure]] — the run New Run starts.
+- [[art-style-guide]] — rules the background follows.
+- [[wbp-loading]] — font and colour reference.
+- [[task-337-main-menu-background]] — the task that makes the image.
+- [[task-338-main-menu-screen]] — the task that builds the screen.

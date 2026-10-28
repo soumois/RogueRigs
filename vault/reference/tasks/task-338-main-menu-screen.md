@@ -3,19 +3,19 @@ id: task-338-main-menu-screen
 description: "Global task: Main menu screen at game start: background image, New Run starts a run, Options placeholder, Exit quits the game."
 parent: tasks-to-do-index
 kind: task
-status: wait-answers
+status: todo
 ---
 # Main menu screen
 
-- request: "Ok maintenant, on va travailler au design du main menu. Travaille avec ce que tu as et les images que tu as et chatpgpt pour me faire un bon background, un menu ( new run , option qu'on fera plus tard et exit )." (relayed verbatim by the main session, owner 2026-10-28). This task covers the point "un menu ( new run , option qu'on fera plus tard et exit )"; the background image is [[task-337-main-menu-background]].
+- request: "Ok maintenant, on va travailler au design du main menu. Travaille avec ce que tu as et les images que tu as et chatpgpt pour me faire un bon background, un menu ( new run , option qu'on fera plus tard et exit )." (relayed verbatim by the main session, owner 2026-10-28). This task covers the point "un menu ( new run , option qu'on fera plus tard et exit )"; the background image is [[task-337-main-menu-background]]. Owner answer (2026-10-28, relayed by the main session): "ok" to the whole list = every default Q1 to Q11 is DECIDED as written (provisional values); the alternatives are not taken. Written in [[main-menu]] (vault/reference/gdd/run/main-menu.md).
 - goal: Main menu screen at game start: background image, New Run starts a run, Options placeholder, Exit quits the game.
 - acceptance: a -game launch opens the main menu over the picked background (capture at 1920 x 1080 sent to the owner); New Run reaches level 1 of a fresh run on L_ArenaM1; Options is shown and does nothing; Exit closes the game; PIE on L_ArenaM1 still starts a run directly; doc nodes written; committed.
-- gdd_check: no main menu exists in the GDD, tech or wishlist (descent gdd-index > run-index; tech > blueprints-ui-index, systems-ui-index). Today any map starts level 1 directly ([[sys-run]]: "PIE or -game on any map starts level 1, no menu"); GameDefaultMap and EditorStartupMap are both L_ArenaM1 (Config/DefaultEngine.ini). Read [[sys-run]] (ResetRun, BeginRun), [[sys-run-transition]] (loading and travel), [[wbp-loading]] and [[wbp-intermission]] (screen look: Roboto Bold, white with outline, orange 1/0.35/0.1 accent, texts from screen_texts.json), [[text-content-files]] (screen_texts.json items), [[cpp-bp-split]], [[milestones]] (a main menu is in no milestone). Open values: Q1 and Q6 to Q11 of the plan, asked 2026-10-28 with defaults (full list in the gdd_check of [[task-337-main-menu-background]]); answers pending. Decisions go to a new gdd node main-menu (vault/reference/gdd/run/main-menu.md) once answered.
-- confirmed_by_owner: no (questions asked 2026-10-28)
+- gdd_check: no main menu exists in the GDD, tech or wishlist (descent gdd-index > run-index; tech > blueprints-ui-index, systems-ui-index). Today any map starts level 1 directly ([[sys-run]]: "PIE or -game on any map starts level 1, no menu"); GameDefaultMap and EditorStartupMap are both L_ArenaM1 (Config/DefaultEngine.ini). Read [[sys-run]] (ResetRun, BeginRun), [[sys-run-transition]] (loading and travel), [[wbp-loading]] and [[wbp-intermission]] (screen look: Roboto Bold, white with outline, orange 1/0.35/0.1 accent, texts from screen_texts.json), [[text-content-files]] (screen_texts.json items), [[cpp-bp-split]], [[milestones]] (a main menu is in no milestone). Open values: Q1 and Q6 to Q11 of the plan, asked 2026-10-28 with defaults (full list in the gdd_check of [[task-337-main-menu-background]]); answered "ok" 2026-10-28, see request. Decisions written in [[main-menu]].
+- confirmed_by_owner: yes (2026-10-28, "ok" to Q1 to Q11, relayed by the main session)
 - milestone: M3
 - next_step: task-338-01-main-menu-screen
 - started: open
-- waiting_for: owner answers to Q1 to Q11 and confirmation of the plan
+- waiting_for: none
 - result: open
 
 ## Subtasks
