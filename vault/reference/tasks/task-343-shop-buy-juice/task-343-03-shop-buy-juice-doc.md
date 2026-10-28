@@ -3,7 +3,7 @@ id: task-343-03-shop-buy-juice-doc
 description: "Doc: update wbp-shop-card."
 parent: task-343-shop-buy-juice
 kind: task
-status: in-progress
+status: done
 ---
 # Shop purchase: juicy Buy button click: update wbp-shop-card
 
@@ -15,14 +15,14 @@ status: in-progress
 - done_when: node matches the commits; no value invented; lint clean; committed by path.
 - editor_state: any
 - token_ceiling: 0.3 M units
-- model: open
-- tokens: open
-- usage: open
-- runs: open
+- model: sonnet
+- tokens: input 12, cache write 20073, cache read 96917, output 3127
+- usage: turns 6, context start 10k peak 23k, resumes 0, 1 min, units 0.05 M
+- runs: 1
 - milestone: M2
 - started: 2026-10-28T07:23:05Z
 - waiting_for: none
-- result: open
+- result: wbp-shop-card updated with BuyHost/BuyFlash/Spark0..7, StartJuice/JuiceStep/SparkStep, Q10 values and capture verification (8d093514)
 
 ## Relations
 - [[task-343-shop-buy-juice]] — parent global task.

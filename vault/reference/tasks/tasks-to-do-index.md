@@ -13,7 +13,6 @@ A global task moves to [[tasks-done-index]] when it is done or cancelled (`vault
 - [[task-308-chest-lock-light]] — Chest lock light: red blinking while waiting, orange blinking faster with hack progress in the zone, steady green once open. Status todo.
 - [[task-309-chest-opening]] — Chest opening: latch swings, lid slams open with overshoot, freeze and shake, inner light, ground ring, three popping XP chips, sparks. Status todo.
 - [[task-314-chest-lid-logo]] — Add the yellow Kessler-Voss mark on top of the chest lid, as on the validated sheet, and show it in game. Status todo.
-- [[task-343-shop-buy-juice]] — Clicking an affordable Buy button gives a juicy press reaction of its own, separate from the ore flight. Status in-progress.
 - [[task-344-shop-card-burn]] — A bought shop card plays the level-up card pick effect, without the flight to the weapon or XP bar, before showing the sold look. Status todo.
 - [[task-348-shop-screen-redesign]] — Rebuild the shop screen to the ChatGPT mockup look, making only the sprites the game lacks; stat icons and card frames stay. Status todo.
 - [[task-349-turret-mobile-head]] — Cut the turret game mesh into a fixed base and a head that turns about a vertical axis, as for the console C2. Status in-progress.

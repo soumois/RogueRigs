@@ -1,9 +1,9 @@
 ---
 id: task-343-shop-buy-juice
 description: "Global task: Clicking an affordable Buy button gives a juicy press reaction of its own, separate from the ore flight."
-parent: tasks-to-do-index
+parent: tasks-done-index
 kind: task
-status: in-progress
+status: done
 ---
 # Shop purchase: juicy Buy button click
 
@@ -13,10 +13,10 @@ status: in-progress
 - gdd_check: read 2026-10-28: [[run-shop]], [[color-code]] (tier colours), [[rarities]], tech [[wbp-shop-card]], [[sys-run-shop]]. No conflict; values not in the GDD. Depends on [[task-342-shop-ore-flight]] (OnSlotBought, the card freeze during the sequence). Questions (defaults, values provisional): Q9 points 4 and 5 are two effects: 4 = the Buy button reaction, 5 = the bought card burning (task-344); Q10 the button reaction: scale 1 to 0.88 in 0.06 s then ease-out-back to 1.12 and back to 1 by 0.3 s, a white flash over the button fading in 0.2 s, 8 small sparks in the card tier colour bursting from the button over 0.35 s; no sound (no audio assets yet). Owner answer 2026-10-28: "OK, tout par défaut": every default above is DECIDED (values provisional, owner 2026-10-28); GDD updated by the Planner the same day.
 - confirmed_by_owner: yes (2026-10-28, "OK, tout par défaut" to Q1-Q11 and the plan, relayed by the main session)
 - milestone: M2
-- next_step: task-343-03-shop-buy-juice-doc
+- next_step: none
 - started: 2026-10-28T06:57:24Z
 - waiting_for: none
-- result: open
+- result: Done. wbp-shop-card updated with BuyHost/BuyFlash/Spark0..7, StartJuice/JuiceStep/SparkStep, Q10 values and capture verification (8d093514)
 
 ## Subtasks
 1. task-343-01-shop-buy-juice (vault/reference/tasks/task-343-shop-buy-juice/task-343-01-shop-buy-juice.md) — bp: WBP_ShopCard Buy button punch, flash and tier sparks on purchase.
@@ -24,7 +24,7 @@ status: in-progress
 3. task-343-03-shop-buy-juice-doc (vault/reference/tasks/task-343-shop-buy-juice/task-343-03-shop-buy-juice-doc.md) — doc: update wbp-shop-card.
 
 ## Relations
-- [[tasks-to-do-index]] — parent index.
+- [[tasks-done-index]] — parent index.
 - [[task-343-01-shop-buy-juice]] — step 1, bp.
 - [[task-343-02-shop-buy-juice-capture]] — step 2, cpp.
 - [[task-343-03-shop-buy-juice-doc]] — step 3, doc.
