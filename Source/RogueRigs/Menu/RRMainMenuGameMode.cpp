@@ -1,0 +1,35 @@
+// Rogue Rigs - game mode of the main menu map (L_MainMenu, task-338-01): no pawn, menu player controller, menu widget class.
+
+#include "Menu/RRMainMenuGameMode.h"
+
+#include "Blueprint/UserWidget.h"
+#include "GameFramework/PlayerController.h"
+#include "Menu/RRMainMenuPlayerController.h"
+#include "Menu/RRMainMenuWidget.h"
+#include "RogueRigs.h"
+
+ARRMainMenuGameMode::ARRMainMenuGameMode()
+{
+	DefaultPawnClass = nullptr;
+	PlayerControllerClass = ARRMainMenuPlayerController::StaticClass();
+}
+
+URRMainMenuWidget* ARRMainMenuGameMode::CreateMainMenuWidget(APlayerController* PlayerController)
+{
+	if (!PlayerController || !PlayerController->IsLocalPlayerController() || !PlayerController->GetLocalPlayer())
+	{
+		return nullptr;
+	}
+	if (!MainMenuWidgetClass)
+	{
+		UE_LOG(LogRogueRigs, Warning, TEXT("%s: MainMenuWidgetClass is not set, no main menu shown (rr.Menu.NewRun and rr.Menu.Exit still work)."), *GetName());
+		return nullptr;
+	}
+	URRMainMenuWidget* Widget = CreateWidget<URRMainMenuWidget>(PlayerController, MainMenuWidgetClass);
+	if (Widget)
+	{
+		Widget->AddToViewport(MainMenuWidgetZOrder);
+		UE_LOG(LogRogueRigs, Log, TEXT("%s: main menu shown (%s)."), *GetName(), *GetNameSafe(MainMenuWidgetClass.Get()));
+	}
+	return Widget;
+}

@@ -35,6 +35,13 @@ public:
 	FString ArenaMapName;
 
 	/**
+	 * Map opened by the main menu New Run (task-338-01, main-menu gdd: L_ArenaM1 at level 1), package name or short name. Read by
+	 * URRMainMenuWidget::StartNewRunInWorld after URRRunSubsystem::ResetRun.
+	 */
+	UPROPERTY(Config, EditAnywhere, Category = "Run|Menu")
+	FString NewRunMapName = TEXT("/Game/RogueRigs/Maps/L_ArenaM1");
+
+	/**
 	 * Safety limit of the loading hold after the map travel (task-206-03): when the pool prewarm has not reported its end
 	 * within this many seconds of real time, the level is released anyway, with a warning. 0 = no limit. Provisional value.
 	 */
