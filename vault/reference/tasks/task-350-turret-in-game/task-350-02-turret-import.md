@@ -3,7 +3,7 @@ id: task-350-02-turret-import
 description: "Import the turret textures, M_TurretMeshy with MI_TurretBody and MI_TurretCanon, and SM_TurretBase and SM_TurretHead with their material slots."
 parent: task-350-turret-in-game
 kind: task
-status: todo
+status: in-progress
 ---
 # Turret import: textures, material, two static meshes
 
@@ -21,7 +21,7 @@ status: todo
 - usage: open
 - runs: open
 - milestone: M2
-- started: open
+- started: 2026-10-28T16:14:52Z
 - waiting_for: none
 - result: open
 

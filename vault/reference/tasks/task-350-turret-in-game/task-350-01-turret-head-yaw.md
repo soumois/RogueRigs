@@ -3,7 +3,7 @@ id: task-350-01-turret-head-yaw
 description: "Before capture of the grey-box turret; ARRTurret keeps its placement yaw and turns a C++ HeadPivot toward the target, Muzzle on the head."
 parent: task-350-turret-in-game
 kind: task
-status: in-progress
+status: done
 ---
 # Turret C++: fixed base, yawing head pivot, shots from the canon tip
 
@@ -15,14 +15,14 @@ status: in-progress
 - done_when: before frames exist and their paths are reported; Development Editor build succeeds; `RogueRigs.Turret.*` and `Integration.PlaceTurretInputKillsRobot` pass (only expectations broken by the requested change are updated, and named in the summary); a new or extended check in `RogueRigs.Turret.FireRangeLifetime` or a sibling shows the actor yaw unchanged after a lock and `HeadPivot` world yaw pointing at the target within 1 degree; committed by path as `task-350-01-turret-head-yaw: <summary>`; editor left closed for the next step to open.
 - editor_state: closed
 - token_ceiling: 1.2 M units
-- model: open
-- tokens: open
-- usage: open
-- runs: open
+- model: opus
+- tokens: input 72, cache write 121532, cache read 2787911, output 27878
+- usage: turns 36, context start 11k peak 122k, resumes 0, 8 min, units 0.57 M
+- runs: 1
 - milestone: M2
 - started: 2026-10-28T16:06:37Z
 - waiting_for: none
-- result: open
+- result: Done: HeadPivot + Muzzle on head, GetTargetingOrigin, UpdateHeadYaw; build ok, 8 tests pass incl. new RogueRigs.Turret.HeadYaw; before frames Saved/TurretInGame/before/TurretBefore_00-05.png. Commit 1e694708.
 
 ## Relations
 - [[task-350-turret-in-game]] — parent global task.
