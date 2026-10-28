@@ -3,7 +3,7 @@ id: task-342-01-shop-bought-event
 description: "Cpp: URRIntermissionShopSubsystem broadcasts OnSlotBought(SlotIndex, Price, BalanceBefore)."
 parent: task-342-shop-ore-flight
 kind: task
-status: in-progress
+status: done
 ---
 # Shop purchase: ore flies from the balance to the Buy button: URRIntermissionShopSubsystem broadcasts OnSlotBought(SlotIndex, Price, BalanceBefore)
 
@@ -15,14 +15,14 @@ status: in-progress
 - done_when: build succeeds; a -game log or headless check shows OnSlotBought fired once per successful buy and never on a refused one; committed.
 - editor_state: closed
 - token_ceiling: 1.2 M units
-- model: open
-- tokens: open
-- usage: open
-- runs: open
+- model: opus
+- tokens: input 34, cache write 52285, cache read 593939, output 8072
+- usage: turns 17, context start 11k peak 52k, resumes 0, 4 min, units 0.17 M
+- runs: 1
 - milestone: M2
 - started: 2026-10-28T06:29:53Z
 - waiting_for: none
-- result: open
+- result: OnSlotBought(SlotIndex,Price,BalanceBefore) added to URRIntermissionShopSubsystem, broadcast in BuySlot before OnShopChanged; build green; capture ShopBoughtEvent: 4 events for 4 buys, none on 3 refusals; commit da3b826e
 
 ## Relations
 - [[task-342-shop-ore-flight]] — parent global task.
