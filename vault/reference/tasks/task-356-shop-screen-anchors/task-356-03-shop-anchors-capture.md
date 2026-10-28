@@ -3,7 +3,7 @@ id: task-356-03-shop-anchors-capture
 description: "Cpp: -game captures of the anchored shop screen at four resolutions (1080p, 720p, 16:10, 21:9), compared with the owner's version."
 parent: task-356-shop-screen-anchors
 kind: task
-status: todo
+status: in-progress
 ---
 # Shop screen: Canvas and anchors: capture
 
@@ -20,7 +20,7 @@ status: todo
 - usage: open
 - runs: open
 - milestone: M2
-- started: open
+- started: 2026-10-28T21:27:34Z
 - waiting_for: none
 - result: open
 

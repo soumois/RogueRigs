@@ -3,7 +3,7 @@ id: task-356-02-shop-card-fit
 description: "Bp: WBP_ShopCard scales to the anchored slot the shop screen gives it instead of a fixed 330 x 470 host."
 parent: task-356-shop-screen-anchors
 kind: task
-status: in-progress
+status: done
 ---
 # Shop screen: Canvas and anchors: WBP_ShopCard fit
 
@@ -15,14 +15,14 @@ status: in-progress
 - done_when: compiled and saved; WBP_ShopScreen recompiles without error; changed slots read back; names and graphs still present; committed by path.
 - editor_state: open
 - token_ceiling: 1.0 M units
-- model: open
-- tokens: open
-- usage: open
-- runs: open
+- model: sonnet
+- tokens: input 30, cache write 83110, cache read 879234, output 10944
+- usage: turns 15, context start 11k peak 88k, resumes 0, 1 min, units 0.25 M
+- runs: 1
 - milestone: M2
 - started: 2026-10-28T21:25:53Z
 - waiting_for: none
-- result: open
+- result: CardHost 330x470 override removed, slot Fill; ShopPanel stretched anchors (0.013,0.13)-(0.987,0.786); commit 97a53eae; not rendered
 
 ## Relations
 - [[task-356-shop-screen-anchors]] — parent global task.
