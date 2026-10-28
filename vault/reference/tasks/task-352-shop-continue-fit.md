@@ -3,7 +3,7 @@ id: task-352-shop-continue-fit
 description: "Global task: Shop screen Continue plate fully visible above the bottom of the 1920 x 1080 screen, with Reroll above it."
 parent: tasks-to-do-index
 kind: task
-status: todo
+status: in-progress
 ---
 # Shop screen: Continue plate cut at the bottom
 
@@ -14,7 +14,7 @@ status: todo
 - confirmed_by_owner: yes (2026-10-28, "OK, tout par défaut" to Q1-Q9 and the plan, relayed by the main session)
 - milestone: M2
 - next_step: task-352-01-shop-continue-fit-fix
-- started: open
+- started: 2026-10-28T17:41:33Z
 - waiting_for: none
 - result: open
 

@@ -3,7 +3,7 @@ id: task-352-01-shop-continue-fit-fix
 description: "Bp: WBP_ShopScreen layout fix for owner point 2 of the shop capture, display only."
 parent: task-352-shop-continue-fit
 kind: task
-status: todo
+status: in-progress
 ---
 # Shop screen: Continue plate cut at the bottom: WBP_ShopScreen fix
 
@@ -20,7 +20,7 @@ status: todo
 - usage: open
 - runs: open
 - milestone: M2
-- started: open
+- started: 2026-10-28T17:41:33Z
 - waiting_for: none
 - result: open
 
