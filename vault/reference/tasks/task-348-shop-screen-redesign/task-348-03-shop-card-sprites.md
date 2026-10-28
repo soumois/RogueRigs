@@ -3,7 +3,7 @@ id: task-348-03-shop-card-sprites
 description: "Art: card tier tab, sold burnt card panel and wrench icon after the ChatGPT sheet, keyed to alpha, no text."
 parent: task-348-shop-screen-redesign
 kind: task
-status: wait-answers
+status: done
 ---
 # Shop screen redesign: card sprites
 
@@ -15,14 +15,14 @@ status: wait-answers
 - done_when: three keyed PNGs, clean alpha (`ui_icon_prepare.js --check`), no baked text; at most 2 variants and 1 correction run (Q1); images sent to the owner and retained by him; node updated; lint clean; committed by path.
 - editor_state: any
 - token_ceiling: 0.15 M units
-- model: open
-- tokens: open
-- usage: open
-- runs: open
+- model: sonnet+opus
+- tokens: input 40, cache write 123737, cache read 454491, output 15021
+- usage: turns 19, context start 11k peak 49k, resumes 1 (message x1), 20 min, units 0.28 M
+- runs: 2
 - milestone: M2
 - started: 2026-10-28T16:19:41Z
-- waiting_for: owner choice of tab/sold panel/icon candidates c1/c2
-- result: open
+- waiting_for: none
+- result: Retained tier tab c1, sold panel c1, sold icon c1 in Art/UI/Shop/ (36 credits, no correction run). Tab is hexagonal, not a trapezoid; sold panel 450x600 to fit the frame opening (~398x594 on 500x720 card) in UMG. Resume/units alerts: resume to finalize owner picks.
 
 ## Relations
 - [[task-348-shop-screen-redesign]] — parent global task.

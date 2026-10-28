@@ -3,7 +3,7 @@ id: task-348-04-shop-screen-texts
 description: "Text: shop screen labels, subtitle and tier names after the mockup in screen_texts.json, upper case, English."
 parent: task-348-shop-screen-redesign
 kind: task
-status: todo
+status: in-progress
 ---
 # Shop screen redesign: texts
 
@@ -20,7 +20,7 @@ status: todo
 - usage: open
 - runs: open
 - milestone: M2
-- started: open
+- started: 2026-10-28T16:40:06Z
 - waiting_for: none
 - result: open
 
