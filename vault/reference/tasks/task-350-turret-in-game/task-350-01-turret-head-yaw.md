@@ -3,7 +3,7 @@ id: task-350-01-turret-head-yaw
 description: "Before capture of the grey-box turret; ARRTurret keeps its placement yaw and turns a C++ HeadPivot toward the target, Muzzle on the head."
 parent: task-350-turret-in-game
 kind: task
-status: todo
+status: in-progress
 ---
 # Turret C++: fixed base, yawing head pivot, shots from the canon tip
 
@@ -20,7 +20,7 @@ status: todo
 - usage: open
 - runs: open
 - milestone: M2
-- started: open
+- started: 2026-10-28T16:06:37Z
 - waiting_for: none
 - result: open
 

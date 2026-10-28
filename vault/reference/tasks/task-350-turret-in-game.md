@@ -3,7 +3,7 @@ id: task-350-turret-in-game
 description: "Global task: The placed turret shows the Meshy base and a head yawing toward its target instead of the grey box, shots leaving the canon."
 parent: tasks-to-do-index
 kind: task
-status: todo
+status: in-progress
 ---
 # Turret in game: Meshy base and rotating head replace the grey box
 
@@ -21,7 +21,7 @@ status: todo
 - confirmed_by_owner: yes (2026-10-28, "ok" to the plan and every default of Q1-Q6, relayed by the main session)
 - milestone: M2
 - next_step: task-350-01-turret-head-yaw
-- started: open
+- started: 2026-10-28T16:06:37Z
 - waiting_for: none
 - result: open
 
