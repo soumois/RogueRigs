@@ -38,6 +38,7 @@ art-prompts-console  reference/gdd/art-audio/art-prompts-console.md
 art-prompts-drone  reference/gdd/art-audio/art-prompts-drone.md
 art-prompts-floor-texture  reference/gdd/art-audio/art-prompts-floor-texture.md
 art-prompts-floor-texture-maps  reference/gdd/art-audio/art-prompts-floor-texture-maps.md
+art-prompts-heal-pickup  reference/gdd/art-audio/art-prompts-heal-pickup.md
 art-prompts-ore-deposit  reference/gdd/art-audio/art-prompts-ore-deposit.md
 art-prompts-rigs  reference/gdd/art-audio/art-prompts-rigs.md
 art-prompts-robots  reference/gdd/art-audio/art-prompts-robots.md
