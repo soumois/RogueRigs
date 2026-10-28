@@ -14,3 +14,4 @@ A global task moves to [[tasks-done-index]] when it is done or cancelled (`vault
 - [[task-309-chest-opening]] — Chest opening: latch swings, lid slams open with overshoot, freeze and shake, inner light, ground ring, three popping XP chips, sparks. Status todo.
 - [[task-314-chest-lid-logo]] — Add the yellow Kessler-Voss mark on top of the chest lid, as on the validated sheet, and show it in game. Status todo.
 - [[task-348-shop-screen-redesign]] — Rebuild the shop screen to the ChatGPT mockup look, making only the sprites the game lacks; stat icons and card frames stay. Status wait-answers.
+- [[task-350-turret-in-game]] — The placed turret shows the new Meshy base and a head that yaws toward its target, replacing the grey box, shots leaving the canon. Status wait-answers.
