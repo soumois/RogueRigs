@@ -3,7 +3,7 @@ id: task-340-02-ore-counter-total
 description: "Bp: WBP_OreCounter shows carried + secured ore."
 parent: task-340-ore-run-carry
 kind: task
-status: todo
+status: in-progress
 ---
 # Ore kept for the whole run, reset at run end: WBP_OreCounter shows carried + secured ore
 
@@ -20,7 +20,7 @@ status: todo
 - usage: open
 - runs: open
 - milestone: M2
-- started: open
+- started: 2026-10-28T06:18:43Z
 - waiting_for: none
 - result: open
 
