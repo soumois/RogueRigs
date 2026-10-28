@@ -3,7 +3,7 @@ id: task-340-01-ore-run-reset
 description: "Cpp: reproduce the reset seen by the owner, keep ore across levels, clear it at each new run."
 parent: task-340-ore-run-carry
 kind: task
-status: todo
+status: in-progress
 ---
 # Ore kept for the whole run, reset at run end: reproduce the reset seen by the owner, keep ore across levels, clear it at each new run
 
@@ -20,7 +20,7 @@ status: todo
 - usage: open
 - runs: open
 - milestone: M2
-- started: open
+- started: 2026-10-28T06:01:10Z
 - waiting_for: none
 - result: open
 

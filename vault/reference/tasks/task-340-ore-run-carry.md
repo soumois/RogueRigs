@@ -3,7 +3,7 @@ id: task-340-ore-run-carry
 description: "Global task: Duskite ore is never reset between levels: the miner sees and spends his whole run total, and every run starts at 0."
 parent: tasks-to-do-index
 kind: task
-status: todo
+status: in-progress
 ---
 # Ore kept for the whole run, reset at run end
 
@@ -14,7 +14,7 @@ status: todo
 - confirmed_by_owner: yes (2026-10-28, "OK, tout par défaut" to Q1-Q11 and the plan, relayed by the main session)
 - milestone: M2
 - next_step: task-340-01-ore-run-reset
-- started: open
+- started: 2026-10-28T06:01:10Z
 - waiting_for: none
 - result: open
 
