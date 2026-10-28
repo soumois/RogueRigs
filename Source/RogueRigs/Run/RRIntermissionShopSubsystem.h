@@ -36,6 +36,13 @@ struct ROGUERIGS_API FRRShopSlot
 DECLARE_DYNAMIC_MULTICAST_DELEGATE(FRROnShopChangedSignature);
 
 /**
+ * Fired once per successful BuySlot (card click or rr.Shop.Buy), before OnShopChanged: SlotIndex bought, Price paid and
+ * BalanceBefore (spendable ore before the payment; the balance after is BalanceBefore - Price). Starts the purchase effects
+ * (task-342: ore flight from the balance to the Buy button). Never fired on a refused buy.
+ */
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_ThreeParams(FRROnShopSlotBoughtSignature, int32, SlotIndex, int32, Price, int32, BalanceBefore);
+
+/**
  * Intermission shop (run-shop, intermission). Game instance subsystem driven by URRRunTransitionSubsystem: OpenShop when the
  * intermission starts (before OnIntermissionStarted, so the widget finds the offer at once), CloseShop on Continue or a run reset.
  *
@@ -49,6 +56,7 @@ DECLARE_DYNAMIC_MULTICAST_DELEGATE(FRROnShopChangedSignature);
  * at each OpenShop; redraws every slot (sold ones included), no card sharing stat and target with the unsold cards replaced.
  * Ore spent here is reported to URRRunSubsystem::RecordIntermissionOreSpent so the recap figures keep counting secured ore.
  * OnShopChanged fires after each of these and on every OnOreChanged of the intermission world's run flow while open.
+ * OnSlotBought fires once per successful buy, just before its OnShopChanged (purchase effects, task-342).
  */
 UCLASS()
 class ROGUERIGS_API URRIntermissionShopSubsystem : public UGameInstanceSubsystem
@@ -131,6 +139,10 @@ public:
 	/** See FRROnShopChangedSignature. */
 	UPROPERTY(BlueprintAssignable, Category = "Run|Shop")
 	FRROnShopChangedSignature OnShopChanged;
+
+	/** See FRROnShopSlotBoughtSignature: one broadcast per successful buy, before OnShopChanged (the slot is already bSold). */
+	UPROPERTY(BlueprintAssignable, Category = "Run|Shop")
+	FRROnShopSlotBoughtSignature OnSlotBought;
 
 protected:
 	/** Fills Slots with fresh cards from the miner, none sharing stat and target with Excluded; logs the offer. */

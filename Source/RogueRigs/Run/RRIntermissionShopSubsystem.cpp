@@ -142,6 +142,7 @@ bool URRIntermissionShopSubsystem::BuySlot(int32 SlotIndex)
 	ARRMiner* Miner = ShopMiner.Get();
 	URRUpgradeComponent* Upgrades = Miner->GetUpgrades();
 	const FRRShopSlot Bought = Slots[SlotIndex];
+	const int32 BalanceBefore = GetOreBalance();
 	if (!Upgrades || !Upgrades->ApplyUpgrade(Bought.Card))
 	{
 		UE_LOG(LogRogueRigs, Warning, TEXT("URRIntermissionShopSubsystem: card of slot %d (%s) refused by the miner, nothing spent."), SlotIndex, *DescribeShopSlot(Bought));
@@ -158,6 +159,9 @@ bool URRIntermissionShopSubsystem::BuySlot(int32 SlotIndex)
 	}
 	Slots[SlotIndex].bSold = true;
 	UE_LOG(LogRogueRigs, Log, TEXT("URRIntermissionShopSubsystem: slot %d bought (%s), balance %d."), SlotIndex, *DescribeShopSlot(Bought), GetOreBalance());
+	// Purchase effects first (the slot is already sold), then the generic refresh.
+	UE_LOG(LogRogueRigs, Log, TEXT("URRIntermissionShopSubsystem: OnSlotBought slot %d, price %d, balance before %d."), SlotIndex, Bought.Price, BalanceBefore);
+	OnSlotBought.Broadcast(SlotIndex, Bought.Price, BalanceBefore);
 	OnShopChanged.Broadcast();
 	return true;
 }
