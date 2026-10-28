@@ -5,7 +5,9 @@
 // Node 18+, no dependencies, like vault/scripts/lint.js. Runs alongside an open editor (as robot_shots.ps1).
 //
 // Usage: node Tools/capture/capture.js --name <Name> --exec "<ExecCmds>" [--prefix a,b] [--expect N] [--keep <regex>] [--ignore <regex>]
-//          [--map /Game/...] [--res 1600x900] [--timeout 240] [--max-lines 40] [--cols 3] [--no-sheet]
+//          [--map /Game/...] [--res 1600x900] [--force-res] [--timeout 240] [--max-lines 40] [--cols 3] [--no-sheet]
+//   --force-res  passes -ForceRes: keeps --res even when it is larger than the desktop (the engine otherwise falls back
+//                to a smaller windowed size, 1600x900 on a 1920x1080 desktop; task-356-03)
 //   --name    output folder Saved/Captures/<Name>/ (run.log, copied PNGs, contact_sheet.png)
 //   --exec    the -ExecCmds string, comma separated, ending with "rr.Debug.Delayed <s> Quit" (the script adds no Quit)
 //   --prefix  screenshot name prefix(es) given to rr.Debug.Shots; without it every PNG written during the run is taken
@@ -30,12 +32,12 @@ const GAME_CATEGORIES = ['LogRogueRigs', 'LogBlueprint', 'LogBlueprintUserMessag
 
 function usage(msg) {
   if (msg) console.error(`capture.js: ${msg}`);
-  console.error('Usage: node Tools/capture/capture.js --name <Name> --exec "<ExecCmds>" [--prefix a,b] [--expect N] [--keep <regex>] [--ignore <regex>] [--map <path>] [--res WxH] [--timeout s] [--max-lines N] [--cols N] [--no-sheet]');
+  console.error('Usage: node Tools/capture/capture.js --name <Name> --exec "<ExecCmds>" [--prefix a,b] [--expect N] [--keep <regex>] [--ignore <regex>] [--map <path>] [--res WxH] [--force-res] [--timeout s] [--max-lines N] [--cols N] [--no-sheet]');
   process.exit(2);
 }
 
 function parseArgs(argv) {
-  const flags = ['no-sheet'];
+  const flags = ['no-sheet', 'force-res'];
   const out = {};
   for (let i = 0; i < argv.length; i++) {
     const a = argv[i];
@@ -167,7 +169,7 @@ async function main() {
   fs.mkdirSync(outDir, { recursive: true });
   const logPath = path.join(outDir, 'run.log');
 
-  const args = [UPROJECT, ...(map ? [map] : []), '-game', '-windowed', `-ResX=${resW}`, `-ResY=${resH}`, '-nosplash', '-log', `-abslog=${logPath}`, `-ExecCmds=${a.exec}`];
+  const args = [UPROJECT, ...(map ? [map] : []), '-game', '-windowed', `-ResX=${resW}`, `-ResY=${resH}`, ...(a['force-res'] ? ['-ForceRes'] : []), '-nosplash', '-log', `-abslog=${logPath}`, `-ExecCmds=${a.exec}`];
   const startMs = Date.now();
   const child = spawn(ENGINE, args, { stdio: 'ignore', windowsHide: false });
   const result = await new Promise((resolve) => {
