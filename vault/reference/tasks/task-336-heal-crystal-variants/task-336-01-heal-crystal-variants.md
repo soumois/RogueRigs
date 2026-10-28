@@ -3,7 +3,7 @@ id: task-336-01-heal-crystal-variants
 description: "Images of 3 red heal crystal variants with near-identical silhouettes, visual only, so heal drops do not always look the same."
 parent: task-336-heal-crystal-variants
 kind: task
-status: todo
+status: in-progress
 ---
 # Heal crystal variants: images
 
@@ -20,7 +20,7 @@ status: todo
 - usage: open
 - runs: open
 - milestone: M2
-- started: open
+- started: 2026-10-28T00:37:24Z
 - waiting_for: none
 - result: open
 
