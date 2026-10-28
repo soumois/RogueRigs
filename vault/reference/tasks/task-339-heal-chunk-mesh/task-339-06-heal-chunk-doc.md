@@ -3,7 +3,7 @@ id: task-339-06-heal-chunk-doc
 description: "Doc: rewrite bp-pickup-heal for the three heal chunk meshes, their materials, collision and Blueprint defaults, from the task-339 change summaries."
 parent: task-339-heal-chunk-mesh
 kind: task
-status: in-progress
+status: done
 ---
 # Heal pickup chunks: documentation
 
@@ -15,14 +15,14 @@ status: in-progress
 - done_when: bp-pickup-heal matches the commits (mesh, variants, materials, collision, CastShadow, unchanged defaults); no value invented (unknown written open and reported); lint clean; committed by path.
 - editor_state: any
 - token_ceiling: 0.3 M units
-- model: open
-- tokens: open
-- usage: open
-- runs: open
+- model: sonnet
+- tokens: input 10, cache write 23807, cache read 82437, output 3742
+- usage: turns 5, context start 10k peak 27k, resumes 0, 0 min, units 0.06 M
+- runs: 1
 - milestone: M2
 - started: 2026-10-28T02:43:28Z
 - waiting_for: none
-- result: open
+- result: bp-pickup-heal rewritten for the chunk meshes, materials, collision, Blueprint defaults and capture result; commit fee44db2
 
 ## Relations
 - [[task-339-heal-chunk-mesh]] — parent global task.

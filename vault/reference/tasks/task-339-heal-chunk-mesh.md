@@ -1,9 +1,9 @@
 ---
 id: task-339-heal-chunk-mesh
 description: "Global task: Blender meshes of 3 red heal pickup chunk variants from the chosen sheet, then in game on BP_PickupHeal, random per drop."
-parent: tasks-to-do-index
+parent: tasks-done-index
 kind: task
-status: in-progress
+status: done
 ---
 # Heal pickup chunks: Blender meshes and in-game look
 
@@ -16,10 +16,10 @@ status: in-progress
   - Q3 values (provisional): 30 cm like today's cube and the Duskite chunk; centred pivot; 300 tris target, 500 max per variant (Duskite chunk budget); two materials, bright red prism faces and darker red fracture faces, as new instances MI_HealChunk_Bright and MI_HealChunk_Dark copied from the floor heal crystals (same values, tunable alone); one simple collision primitive per variant (Duskite rule); no cast shadow (as the Duskite chunk); RestOrientation Full kept. Alternative: reuse MI_HealCrystal_Bright and _Dark directly (one tuning then changes the floor crystals too).
 - confirmed_by_owner: yes (2026-10-28, "ok" to Q1 to Q3, relayed by the main session)
 - milestone: M2
-- next_step: task-339-06-heal-chunk-doc
+- next_step: none
 - started: 2026-10-28T02:34:53Z
 - waiting_for: none
-- result: open
+- result: Done. bp-pickup-heal rewritten for the chunk meshes, materials, collision, Blueprint defaults and capture result; commit fee44db2
 
 ## Subtasks
 1. task-339-01-heal-chunk-mesh (vault/reference/tasks/task-339-heal-chunk-mesh/task-339-01-heal-chunk-mesh.md) — 3d: Blender route, SM_HealChunk_01..03 from the chosen sheet, FBX, reports, fidelity loop, preview the owner accepts.
@@ -30,7 +30,7 @@ status: in-progress
 6. task-339-06-heal-chunk-doc (vault/reference/tasks/task-339-heal-chunk-mesh/task-339-06-heal-chunk-doc.md) — doc: rewrite bp-pickup-heal.
 
 ## Relations
-- [[tasks-to-do-index]] — parent index.
+- [[tasks-done-index]] — parent index.
 - [[task-339-01-heal-chunk-mesh]] — step 1, 3d.
 - [[task-339-02-heal-chunk-import]] — step 2, bp.
 - [[task-339-03-heal-chunk-collision]] — step 3, cpp.
