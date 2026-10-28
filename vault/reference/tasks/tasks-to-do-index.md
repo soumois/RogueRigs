@@ -18,3 +18,6 @@ A global task moves to [[tasks-done-index]] when it is done or cancelled (`vault
 - [[task-342-shop-ore-flight]] — When a shop card is bought, ore crystals fly from the balance counter to that card's Buy button while the balance counts down. Status todo.
 - [[task-343-shop-buy-juice]] — Clicking an affordable Buy button gives a juicy press reaction of its own, separate from the ore flight. Status todo.
 - [[task-344-shop-card-burn]] — A bought shop card plays the level-up card pick effect, without the flight to the weapon or XP bar, before showing the sold look. Status todo.
+- [[task-345-turret-meshy-files]] — Identify which owner Meshy turret zip is the optimised mesh by headless Blender triangle counts, save both in Art/Source/turret-meshy/ and record them in a new node art-prompts-turret. Status wait-answers.
+- [[task-346-turret-canon]] — Replace the wrong canon of the optimised Meshy turret with a canon taken from or modelled after the unoptimised mesh, as the owner chooses. Status wait-answers.
+- [[task-347-turret-flat-surfaces]] — Make the surfaces that should be flat on the optimised Meshy turret flat again, using the unoptimised mesh as the reference. Status wait-answers.
