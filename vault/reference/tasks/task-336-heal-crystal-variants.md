@@ -20,7 +20,7 @@ status: wait-answers
 - milestone: M2
 - next_step: task-336-01-heal-crystal-variants
 - started: 2026-10-28T00:37:24Z
-- waiting_for: owner picks or rejects the sheet Art/Source/heal-pickup/20261027-164005-heal-pickup-1.png (or the first one 20261027-163753); copy to vault/assets only on his word
+- waiting_for: owner picks or rejects a sheet in Art/Source/heal-pickup (latest 20261027-165219-heal-pickup-1.png, style-guide A1 fail); copy to vault/assets only on his word
 - result: open
 
 ## Subtasks
