@@ -3,7 +3,7 @@ id: task-353-01-shop-need-label-fix
 description: "Bp: WBP_ShopCard layout fix for owner point 3 of the shop capture, display only."
 parent: task-353-shop-need-label
 kind: task
-status: todo
+status: in-progress
 ---
 # Shop card: NEED N MORE overflows the Buy plate: WBP_ShopCard fix
 
@@ -20,7 +20,7 @@ status: todo
 - usage: open
 - runs: open
 - milestone: M2
-- started: open
+- started: 2026-10-28T17:47:19Z
 - waiting_for: none
 - result: open
 

@@ -3,7 +3,7 @@ id: task-353-shop-need-label
 description: "Global task: Shop card 'NEED {n} MORE' label in smaller text on the grey Buy plate, inside the plate up to three digits."
 parent: tasks-to-do-index
 kind: task
-status: todo
+status: in-progress
 ---
 # Shop card: NEED N MORE overflows the Buy plate
 
@@ -14,7 +14,7 @@ status: todo
 - confirmed_by_owner: yes (2026-10-28, "OK, tout par défaut" to Q1-Q9 and the plan, relayed by the main session)
 - milestone: M2
 - next_step: task-353-01-shop-need-label-fix
-- started: open
+- started: 2026-10-28T17:47:19Z
 - waiting_for: none
 - result: open
 
