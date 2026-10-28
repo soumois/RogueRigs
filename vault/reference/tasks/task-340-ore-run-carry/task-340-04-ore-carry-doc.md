@@ -3,7 +3,7 @@ id: task-340-04-ore-carry-doc
 description: "Doc: update sys-objectives-ore-counter, sys-run, wbp-ore-counter."
 parent: task-340-ore-run-carry
 kind: task
-status: todo
+status: in-progress
 ---
 # Ore kept for the whole run, reset at run end: update sys-objectives-ore-counter, sys-run, wbp-ore-counter
 
@@ -20,7 +20,7 @@ status: todo
 - usage: open
 - runs: open
 - milestone: M2
-- started: open
+- started: 2026-10-28T06:26:51Z
 - waiting_for: none
 - result: open
 

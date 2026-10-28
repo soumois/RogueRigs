@@ -3,7 +3,7 @@ id: task-340-03-ore-carry-capture
 description: "Cpp: -game capture: level 2 HUD and next shop show the carried total, new run at 0."
 parent: task-340-ore-run-carry
 kind: task
-status: in-progress
+status: done
 ---
 # Ore kept for the whole run, reset at run end: -game capture: level 2 HUD and next shop show the carried total, new run at 0
 
@@ -15,14 +15,14 @@ status: in-progress
 - done_when: contact sheet exists; the level 2 counter shows the level-1 secured ore; the restart shows 0; what was not seen is listed.
 - editor_state: closed
 - token_ceiling: 1.2 M units
-- model: open
-- tokens: open
-- usage: open
-- runs: open
+- model: sonnet
+- tokens: input 18, cache write 54361, cache read 689584, output 5523
+- usage: turns 9, context start 60k peak 97k, resumes 0, 4 min, units 0.16 M
+- runs: 1
 - milestone: M2
 - started: 2026-10-28T06:22:52Z
 - waiting_for: none
-- result: open
+- result: Done, no code change. -game: L1 GrantOre 7, EndLevel secured 7, shop balance 7, L2 HUD counter 7, rr.Run.Restart cleared 7, status 0, HUD 0. Contact sheet Saved/OreRunCarry/contact_sheet.png. Not seen: loss/win/New Run paths, mid-level pickups on L2, shop buying, L2 level-up reroll.
 
 ## Relations
 - [[task-340-ore-run-carry]] — parent global task.
