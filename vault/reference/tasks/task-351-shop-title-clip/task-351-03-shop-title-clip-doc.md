@@ -3,7 +3,7 @@ id: task-351-03-shop-title-clip-doc
 description: "Doc: update wbp-shop-screen after the fix of owner point 1."
 parent: task-351-shop-title-clip
 kind: task
-status: todo
+status: in-progress
 ---
 # Shop screen: title clipped at the top: doc
 
@@ -20,7 +20,7 @@ status: todo
 - usage: open
 - runs: open
 - milestone: M2
-- started: open
+- started: 2026-10-28T17:40:14Z
 - waiting_for: none
 - result: open
 
