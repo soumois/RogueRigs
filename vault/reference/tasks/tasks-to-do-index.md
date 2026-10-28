@@ -13,7 +13,6 @@ A global task moves to [[tasks-done-index]] when it is done or cancelled (`vault
 - [[task-308-chest-lock-light]] — Chest lock light: red blinking while waiting, orange blinking faster with hack progress in the zone, steady green once open. Status todo.
 - [[task-309-chest-opening]] — Chest opening: latch swings, lid slams open with overshoot, freeze and shake, inner light, ground ring, three popping XP chips, sparks. Status todo.
 - [[task-314-chest-lid-logo]] — Add the yellow Kessler-Voss mark on top of the chest lid, as on the validated sheet, and show it in game. Status todo.
-- [[task-351-shop-title-clip]] — Shop screen title, its side bars and subtitle fully visible at the top of the 1920 x 1080 screen. Status in-progress.
 - [[task-352-shop-continue-fit]] — Shop screen Continue plate fully visible above the bottom of the 1920 x 1080 screen, with Reroll above it. Status todo.
 - [[task-353-shop-need-label]] — Shop card "NEED {n} MORE" label in smaller text on the grey Buy plate, inside the plate up to three digits. Status todo.
 - [[task-354-shop-counter-overlap]] — Shop screen crystal counter no longer covers the top-left corner of the shop panel nor the first card rivet. Status todo.

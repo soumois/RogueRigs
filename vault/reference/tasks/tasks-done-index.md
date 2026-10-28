@@ -357,3 +357,4 @@ Archive: it exceeds the index size limits of [[_authoring]] on purpose (owner, 2
 - [[task-348-shop-screen-redesign]] — Rebuild the shop screen to the ChatGPT mockup look, making only the sprites the game lacks; stat icons and card frames stay. Status done.
 - [[task-349-turret-mobile-head]] — Cut the turret game mesh into a fixed base and a head that turns about a vertical axis, as for the console C2. Status done.
 - [[task-350-turret-in-game]] — The placed turret shows the new Meshy base and a head that yaws toward its target, replacing the grey box, shots leaving the canon. Status done.
+- [[task-351-shop-title-clip]] — Shop screen title, its side bars and subtitle fully visible at the top of the 1920 x 1080 screen. Status done.
