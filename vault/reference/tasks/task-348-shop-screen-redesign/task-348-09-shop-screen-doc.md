@@ -3,7 +3,7 @@ id: task-348-09-shop-screen-doc
 description: "Doc: update wbp-shop-card and wbp-shop-screen after the shop screen redesign."
 parent: task-348-shop-screen-redesign
 kind: task
-status: in-progress
+status: done
 ---
 # Shop screen redesign: update the Blueprint docs
 
@@ -15,14 +15,14 @@ status: in-progress
 - done_when: nodes match the commits; no value invented; lint clean; committed by path.
 - editor_state: any
 - token_ceiling: 0.3 M units
-- model: open
-- tokens: open
-- usage: open
-- runs: open
+- model: sonnet
+- tokens: input 10, cache write 31174, cache read 88098, output 5648
+- usage: turns 5, context start 12k peak 31k, resumes 0, 1 min, units 0.08 M
+- runs: 1
 - milestone: M2
 - started: 2026-10-28T17:00:08Z
 - waiting_for: none
-- result: open
+- result: wbp-shop-card and wbp-shop-screen updated (commit 26fcac60) with tree, brushes, labels, textures, verified_redesign and the 5 open layout defects of the capture.
 
 ## Relations
 - [[task-348-shop-screen-redesign]] — parent global task.
