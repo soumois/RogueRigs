@@ -29,6 +29,12 @@ Same method as task-348-01: Kie.ai GPT Image 2 image-to-image, refs the sheet an
 - 9-slice, horizontal only (estimates, untested in UMG): left and right about 78 px for Buy, about 105 px for Reroll, about 95 to 105 px for Continue; top and bottom 0. Each PNG has a transparent margin of 20 px (Buy) or 26 px (Reroll, Continue).
 - Gaps: the plates are taller than the targets of the subtask (Buy 137 vs about 96, Reroll 180 vs about 112, Continue 163 vs about 128): set the height in UMG. Buy c1 (103 high, thin frame) was not retained. The A1 fail of Buy c1 is not kept (unretained).
 
+## Sprites (task-348-03)
+Same method: Kie.ai GPT Image 2 image-to-image, refs the sheet and the mockup, 2 variants per sprite, 6 credits each: 36 credits in all, no correction run. Prompts verbatim in `Art/Source/shop-screen/prompts/`: `08-tier-tab.txt` (16:9), `09-sold-panel.txt` (3:4), `10-icon-sold.txt` (1:1). Runs `20261028-082016-shop-screen` (tab), `20261028-082153-shop-screen` (sold panel), `20261028-082359-shop-screen` (icon). Tab and icon keyed with `Tools/art/ui_icon_prepare.js` (tab `--keep-aspect`, icon `--margin 0.06`), `--check` clean; the sold panel is opaque, resized to 450 x 600.
+- Retained by the owner (2026-10-28), candidate 1 of each, copied to `Art/UI/Shop/`: `T_Shop_TierTab.png` (256 x 66, neutral light grey, UMG tints it per tier), `T_Shop_SoldPanel.png` (450 x 600, opaque, no text), `T_Shop_IconSold.png` (256 x 256, light grey wrench and screwdriver).
+- Sold panel: set it in UMG to fit the frame opening, about 398 x 594 on the 500 x 720 card; it overlaps under the frame.
+- Gaps: the tab is hexagonal (chamfered, symmetric ends), not the trapezoid asked for; accepted by the owner.
+
 ## Relations
 - [[art-prompts]] — parent: method and prompt nodes.
 - [[art-prompts-shop-screen]] — the ChatGPT prompt these images answer.
