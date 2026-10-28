@@ -3,7 +3,7 @@ id: task-354-01-shop-counter-overlap-fix
 description: "Bp: WBP_ShopScreen layout fix for owner point 4 of the shop capture, display only."
 parent: task-354-shop-counter-overlap
 kind: task
-status: todo
+status: cancelled
 ---
 # Shop screen: crystal counter covers the shop panel corner: WBP_ShopScreen fix
 

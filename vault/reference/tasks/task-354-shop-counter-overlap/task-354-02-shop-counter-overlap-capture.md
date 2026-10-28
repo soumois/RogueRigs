@@ -3,7 +3,7 @@ id: task-354-02-shop-counter-overlap-capture
 description: "Cpp: -game capture at 1920 x 1080 of the fix of owner point 4, compared with the look before and the mockup."
 parent: task-354-shop-counter-overlap
 kind: task
-status: todo
+status: cancelled
 ---
 # Shop screen: crystal counter covers the shop panel corner: capture
 
