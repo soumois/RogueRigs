@@ -3,7 +3,7 @@ id: task-339-05-heal-chunk-capture
 description: "cpp: run the two existing BP_PickupHeal tests, then a -game capture of heal chunks resting on the floor after a heal vein breaks."
 parent: task-339-heal-chunk-mesh
 kind: task
-status: in-progress
+status: done
 ---
 # Heal pickup chunks: tests and in-game capture
 
@@ -15,14 +15,14 @@ status: in-progress
 - done_when: both tests pass (or the fixed expectation is explained); the contact sheet exists and is described; the Executor sends it to the owner with SendUserFile; committed by path if a test file changed.
 - editor_state: closed
 - token_ceiling: 1.2 M units
-- model: open
-- tokens: open
-- usage: open
-- runs: open
+- model: opus
+- tokens: input 42, cache write 58576, cache read 847631, output 8393
+- usage: turns 21, context start 11k peak 64k, resumes 0, 2 min, units 0.20 M
+- runs: 1
 - milestone: M2
 - started: 2026-10-28T02:40:55Z
 - waiting_for: none
-- result: open
+- result: both heal tests pass, no expectation changed; -game capture (8 chunks spawned at rest near a full-health miner, not a real vein break) Saved/Captures/HealChunk/contact_sheet.png; reported: chunks read pink-red on screen (glow/bloom), ore size comparison and rest face not verifiable at this size
 
 ## Relations
 - [[task-339-heal-chunk-mesh]] — parent global task.

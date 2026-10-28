@@ -3,7 +3,7 @@ id: task-339-06-heal-chunk-doc
 description: "Doc: rewrite bp-pickup-heal for the three heal chunk meshes, their materials, collision and Blueprint defaults, from the task-339 change summaries."
 parent: task-339-heal-chunk-mesh
 kind: task
-status: todo
+status: in-progress
 ---
 # Heal pickup chunks: documentation
 
@@ -20,7 +20,7 @@ status: todo
 - usage: open
 - runs: open
 - milestone: M2
-- started: open
+- started: 2026-10-28T02:43:28Z
 - waiting_for: none
 - result: open
 
