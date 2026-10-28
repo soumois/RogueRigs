@@ -3,7 +3,7 @@ id: task-338-05-main-menu-capture
 description: "-game capture of the main menu at 1920 x 1080 and log check that New Run reaches level 1 and Exit quits."
 parent: task-338-main-menu-screen
 kind: task
-status: todo
+status: in-progress
 ---
 # Main menu: capture and check
 
@@ -20,7 +20,7 @@ status: todo
 - usage: open
 - runs: open
 - milestone: M3
-- started: open
+- started: 2026-10-28T02:22:00Z
 - waiting_for: none
 - result: open
 
