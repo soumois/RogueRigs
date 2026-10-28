@@ -1,0 +1,33 @@
+{
+  "run_id": "20261027-165219-heal-pickup",
+  "items": [
+    {
+      "file": "20261027-165219-heal-pickup-1.png",
+      "verdict": "fail",
+      "rule": "A1",
+      "reason": "Each piece is a small crystal cluster, not a chunky block: two tall, whole, pointed prisms stand on a base made of many small crumbly lumps, so the outline is spiky and broken up, and there is no large flat fracture plane (this is also the brief's 'cluster, not a broken-off chunk' deviation).",
+      "correction": "Ask for each piece to be one compact solid red crystal chunk, wider than tall, cut by 2 to 3 large flat jagged fracture planes, with the crystal tips snapped off short and no whole pointed prisms rising above the body."
+    },
+    {
+      "file": "20261027-165219-heal-pickup-1.png",
+      "verdict": "pass",
+      "rule": "color-code",
+      "reason": "All three pieces are a solid pure red (heal pickups = red) with only lighter red facet highlights; there is no orange, pink or other faction colour.",
+      "correction": null
+    },
+    {
+      "file": "20261027-165219-heal-pickup-1.png",
+      "verdict": "pass",
+      "rule": "A16",
+      "reason": "The background is plain light grey, there is no floor, the camera is a three-quarter top view (more mid-height than the brief's 'high'), and the three pieces are the same size with small differences.",
+      "correction": null
+    },
+    {
+      "file": "20261027-165219-heal-pickup-1.png",
+      "verdict": "pass",
+      "rule": "A14",
+      "reason": "There is no text, UI, caption or scattered rubble anywhere in the image.",
+      "correction": null
+    }
+  ]
+}
