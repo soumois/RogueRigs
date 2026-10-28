@@ -13,7 +13,7 @@ status: in-progress
 - gdd_check: read 2026-10-28: [[run-shop]], [[color-code]] (tier colours), [[rarities]], tech [[wbp-shop-card]], [[sys-run-shop]]. No conflict; values not in the GDD. Depends on [[task-342-shop-ore-flight]] (OnSlotBought, the card freeze during the sequence). Questions (defaults, values provisional): Q9 points 4 and 5 are two effects: 4 = the Buy button reaction, 5 = the bought card burning (task-344); Q10 the button reaction: scale 1 to 0.88 in 0.06 s then ease-out-back to 1.12 and back to 1 by 0.3 s, a white flash over the button fading in 0.2 s, 8 small sparks in the card tier colour bursting from the button over 0.35 s; no sound (no audio assets yet). Owner answer 2026-10-28: "OK, tout par défaut": every default above is DECIDED (values provisional, owner 2026-10-28); GDD updated by the Planner the same day.
 - confirmed_by_owner: yes (2026-10-28, "OK, tout par défaut" to Q1-Q11 and the plan, relayed by the main session)
 - milestone: M2
-- next_step: task-343-02-shop-buy-juice-capture
+- next_step: task-343-03-shop-buy-juice-doc
 - started: 2026-10-28T06:57:24Z
 - waiting_for: none
 - result: open

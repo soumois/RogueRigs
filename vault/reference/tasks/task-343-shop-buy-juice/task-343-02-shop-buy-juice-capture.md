@@ -3,7 +3,7 @@ id: task-343-02-shop-buy-juice-capture
 description: "Cpp: -game frame capture of the Buy button reaction."
 parent: task-343-shop-buy-juice
 kind: task
-status: in-progress
+status: done
 ---
 # Shop purchase: juicy Buy button click: -game frame capture of the Buy button reaction
 
@@ -15,14 +15,14 @@ status: in-progress
 - done_when: contact sheet shows the punch, flash and sparks; unseen items listed.
 - editor_state: closed
 - token_ceiling: 1.2 M units
-- model: open
-- tokens: open
-- usage: open
-- runs: open
+- model: opus
+- tokens: input 50, cache write 52791, cache read 761103, output 10500
+- usage: turns 23, context start 11k peak 53k, resumes 2 (message x2), 4 min, units 0.19 M
+- runs: 1
 - milestone: M2
 - started: 2026-10-28T07:18:53Z
 - waiting_for: none
-- result: open
+- result: Two -game runs via rr.Shop.Buy; frames ~0.1 s apart (screenshot stalls): flash, 8 tier sparks and overshoot visible; 0.88 low point and 1.12 peak not resolved; greyed button and real click not tested; Saved/ShopBuyJuice/contact_sheet.png
 
 ## Relations
 - [[task-343-shop-buy-juice]] — parent global task.

@@ -3,7 +3,7 @@ id: task-343-03-shop-buy-juice-doc
 description: "Doc: update wbp-shop-card."
 parent: task-343-shop-buy-juice
 kind: task
-status: todo
+status: in-progress
 ---
 # Shop purchase: juicy Buy button click: update wbp-shop-card
 
@@ -20,7 +20,7 @@ status: todo
 - usage: open
 - runs: open
 - milestone: M2
-- started: open
+- started: 2026-10-28T07:23:05Z
 - waiting_for: none
 - result: open
 
