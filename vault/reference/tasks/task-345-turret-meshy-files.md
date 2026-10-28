@@ -1,9 +1,9 @@
 ---
 id: task-345-turret-meshy-files
 description: "Global task: Identify which owner Meshy turret zip is the optimised mesh by Blender triangle counts, save both in Art/Source/turret-meshy/, record them in art-prompts-turret."
-parent: tasks-to-do-index
+parent: tasks-done-index
 kind: task
-status: in-progress
+status: done
 ---
 # Turret Meshy files: identify optimised and unoptimised, save and record
 
@@ -13,16 +13,16 @@ status: in-progress
 - gdd_check: read 2026-10-28: [[turret]] (approved; body white + teal + rust, M2), [[art-prompts]], [[art-prompts-rigs]] (no turret turnaround prompt stored), [[art-prompts-console]], [[art-prompts-drone]] (pattern), [[asset-pipeline]] (turret budget 2500 tris provisional, raised to 10,000 by the owner 2026-10-28), [[art-3d-lessons]]. The turret turnaround sheet the owner used is not in the repo (`vault/assets/` has no turret sheet): Q4. No conflict. DECIDED 2026-10-28 (owner "Yes"): Q4 the owner does not send the sheet now, the node records "turnaround sheet not in the repo". Q5 no Unreal import and no cut into base and turning head in this plan. Q6 triangle budget for the turret 10,000 (owner 2026-10-28, replaces 2500 provisional; written in asset-pipeline by the Planner); no decimation that bulges faces.
 - confirmed_by_owner: yes (2026-10-28, "Yes" to the plan and the Q1-Q5 defaults, budget 10,000, holes in the outer barrel layer; relayed by the main session)
 - milestone: M2
-- next_step: task-345-01-turret-meshy-files
+- next_step: none
 - started: 2026-10-28T06:30:24Z
 - waiting_for: none
-- result: open
+- result: Done. Zip B ('(1)') is optimised: 15,455 tris, 7,635 verts; zip A unoptimised: 152,107 tris, 75,925 verts (9.8x). Both saved in Art/Source/turret-meshy/, report json, art-prompts-turret created. Optimised mesh exceeds 10,000 budget by 5,455 (for task-346/347). Commit 228003da.
 
 ## Subtasks
 1. task-345-01-turret-meshy-files (vault/reference/tasks/task-345-turret-meshy-files/task-345-01-turret-meshy-files.md) — 3d: identify the optimised zip by headless Blender triangle counts, save both meshes, create art-prompts-turret.
 
 ## Relations
-- [[tasks-to-do-index]] — parent index.
+- [[tasks-done-index]] — parent index.
 - [[task-345-01-turret-meshy-files]] — step 1, 3d.
 - [[task-346-turret-canon]] — uses the saved meshes (point 1).
 - [[task-347-turret-flat-surfaces]] — uses the saved meshes (point 2).

@@ -3,7 +3,7 @@ id: task-345-01-turret-meshy-files
 description: "Identify the optimised Meshy turret zip by headless Blender triangle counts, save both meshes in Art/Source/turret-meshy/, create art-prompts-turret."
 parent: task-345-turret-meshy-files
 kind: task
-status: in-progress
+status: done
 ---
 # Turret Meshy files: identify, save, record
 
@@ -16,14 +16,14 @@ status: in-progress
 - done_when: the report gives triangles, vertices, bbox and materials for both FBX and names zip A and zip B as optimised or unoptimised; the optimised folder holds the FBX with fewer triangles; twelve files tracked in git (`git ls-files Art/Source/turret-meshy`); art-prompts-turret exists with owner words, counts and file list, relations on both ends; `node vault/scripts/lint.js --write` clean; committed by path as `task-345-01-turret-meshy-files: <summary>`; `Get-Process blender` empty.
 - editor_state: any
 - token_ceiling: 0.4 M units
-- model: open
-- tokens: open
-- usage: open
-- runs: open
+- model: sonnet
+- tokens: input 20, cache write 30670, cache read 217515, output 7374
+- usage: turns 10, context start 10k peak 34k, resumes 0, 2 min, units 0.10 M
+- runs: 1
 - milestone: M2
 - started: 2026-10-28T06:30:24Z
 - waiting_for: none
-- result: open
+- result: Zip B ('(1)') is optimised: 15,455 tris, 7,635 verts; zip A unoptimised: 152,107 tris, 75,925 verts (9.8x). Both saved in Art/Source/turret-meshy/, report json, art-prompts-turret created. Optimised mesh exceeds 10,000 budget by 5,455 (for task-346/347). Commit 228003da.
 
 ## Relations
 - [[task-345-turret-meshy-files]] — parent global task.
