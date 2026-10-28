@@ -1,9 +1,9 @@
 ---
 id: task-350-turret-in-game
 description: "Global task: The placed turret shows the Meshy base and a head yawing toward its target instead of the grey box, shots leaving the canon."
-parent: tasks-to-do-index
+parent: tasks-done-index
 kind: task
-status: in-progress
+status: done
 ---
 # Turret in game: Meshy base and rotating head replace the grey box
 
@@ -20,10 +20,10 @@ status: in-progress
   - Q6 muzzle flash: default: the current white-gold sphere flash is kept, moved to the canon tip; no new effect. DECIDED: default.
 - confirmed_by_owner: yes (2026-10-28, "ok" to the plan and every default of Q1-Q6, relayed by the main session)
 - milestone: M2
-- next_step: task-350-05-turret-doc
+- next_step: none
 - started: 2026-10-28T16:06:37Z
 - waiting_for: none
-- result: open
+- result: Done. Done: sys-turret, bp-turret, sys-tests-weapon-types updated, bp-turret-materials created, index, quirks line; lint OK. Commit 77942a95.
 
 ## Subtasks
 1. task-350-01-turret-head-yaw (vault/reference/tasks/task-350-turret-in-game/task-350-01-turret-head-yaw.md) — cpp: before capture; ARRTurret keeps its placement yaw and turns a C++ HeadPivot toward the target, Muzzle on the head, shots from the canon tip.
@@ -33,7 +33,7 @@ status: in-progress
 5. task-350-05-turret-doc (vault/reference/tasks/task-350-turret-in-game/task-350-05-turret-doc.md) — doc: update sys-turret and bp-turret, create bp-turret-materials.
 
 ## Relations
-- [[tasks-to-do-index]] — parent index.
+- [[tasks-done-index]] — parent index.
 - [[task-350-01-turret-head-yaw]] — step 1, cpp.
 - [[task-350-02-turret-import]] — step 2, bp.
 - [[task-350-03-bp-turret-meshes]] — step 3, bp.

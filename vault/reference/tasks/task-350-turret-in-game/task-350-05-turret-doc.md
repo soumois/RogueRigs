@@ -3,7 +3,7 @@ id: task-350-05-turret-doc
 description: "Update sys-turret and bp-turret for the fixed base, yawing head and canon-tip shots; create bp-turret-materials for the turret textures, material and meshes."
 parent: task-350-turret-in-game
 kind: task
-status: in-progress
+status: done
 ---
 # Turret docs: system, Blueprint, materials
 
@@ -15,14 +15,14 @@ status: in-progress
 - done_when: the three nodes state the values used (HeadPivot, Muzzle, scale S, materials, slots, bounds) as read back by the agents, with what is not verified; relations on both ends; `node vault/scripts/lint.js --write` clean; committed by path as `task-350-05-turret-doc: <summary>`.
 - editor_state: any
 - token_ceiling: 0.3 M units
-- model: open
-- tokens: open
-- usage: open
-- runs: open
+- model: sonnet
+- tokens: input 18, cache write 43011, cache read 275582, output 7855
+- usage: turns 9, context start 13k peak 46k, resumes 0, 1 min, units 0.12 M
+- runs: 1
 - milestone: M2
 - started: 2026-10-28T16:29:12Z
 - waiting_for: none
-- result: open
+- result: Done: sys-turret, bp-turret, sys-tests-weapon-types updated, bp-turret-materials created, index, quirks line; lint OK. Commit 77942a95.
 
 ## Relations
 - [[task-350-turret-in-game]] — parent global task.
