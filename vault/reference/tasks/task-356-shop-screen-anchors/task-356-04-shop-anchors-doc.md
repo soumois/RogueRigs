@@ -3,7 +3,7 @@ id: task-356-04-shop-anchors-doc
 description: "Doc: update wbp-shop-screen and wbp-shop-card with the anchored layout, stating which widget is anchored where with which values."
 parent: task-356-shop-screen-anchors
 kind: task
-status: todo
+status: in-progress
 ---
 # Shop screen: Canvas and anchors: doc
 
@@ -20,7 +20,7 @@ status: todo
 - usage: open
 - runs: open
 - milestone: M2
-- started: open
+- started: 2026-10-28T21:36:12Z
 - waiting_for: none
 - result: open
 
