@@ -20,8 +20,8 @@ status: wait-answers
 - usage: open
 - runs: open
 - milestone: M3
-- started: 2026-10-28T01:24:59Z
-- waiting_for: owner pick or rejection of the 3 candidates (Art/Source/main-menu-background/)
+- started: 2026-10-28T01:35:06Z
+- waiting_for: owner verdict on correction pass 1 image (Art/Source/main-menu-background/20261027-173523-main-menu-background-1.png)
 - result: open
 
 ## Relations

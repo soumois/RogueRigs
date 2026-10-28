@@ -1,0 +1,47 @@
+{
+  "run_id": "20261027-173523-main-menu-background",
+  "items": [
+    {
+      "file": "20261027-173523-main-menu-background-1.png",
+      "verdict": "fail",
+      "rule": "A3",
+      "reason": "The two front chasers are squat and crouched, with short legs and a big box torso, so they read as small brawlers rather than the lanky biped with arms forward (only the rear one comes close).",
+      "correction": "Make the chasers tall, thin-limbed lanky bipeds leaning forward with long arms reaching ahead, as in enemies-lineup.jpg."
+    },
+    {
+      "file": "20261027-173523-main-menu-background-1.png",
+      "verdict": "fail",
+      "rule": "color-code",
+      "reason": "The breakable rock blocks are the same saturated dark violet as the cliff top, not light grey tinted violet and lighter than the ground, and the grey background asteroids end up lighter than the arena rocks (readability: terrain separates by brightness).",
+      "correction": "Paint the crystal-bearing rock blocks light grey tinted violet, clearly lighter than the dark violet-magenta floor and lighter than the background asteroids, and keep the left third in deep shadow."
+    },
+    {
+      "file": "20261027-173523-main-menu-background-1.png",
+      "verdict": "fail",
+      "rule": "A8",
+      "reason": "The drone fires its orange-gold mining beam down into empty void and the sparks burst in mid-air with no target hit.",
+      "correction": "Show the drone hovering idle beside the miner's shoulder with only its orange camera eye glowing, no beam."
+    },
+    {
+      "file": "20261027-173523-main-menu-background-1.png",
+      "verdict": "fail",
+      "rule": "A13",
+      "reason": "The cliff-top ground is a few smooth flat violet facets with no cracked plates, fine crack lines or light-catching plate edges.",
+      "correction": "Make the ground at the cliff edge large cracked faceted plates on a dark violet-magenta base, with fine crack lines and plate edges that catch the light."
+    },
+    {
+      "file": "20261027-173523-main-menu-background-1.png",
+      "verdict": "fail",
+      "rule": "A12",
+      "reason": "Under the menu exception to A12 (main-menu: three-quarter view about 35 degrees) the camera here sits lower, about 20 degrees, near the horizon, so the cliff top shows little ground.",
+      "correction": "Raise the camera to a three-quarter view about 35 degrees above the horizon, looking down on the miner at the cliff edge."
+    },
+    {
+      "file": "20261027-173523-main-menu-background-1.png",
+      "verdict": "pass",
+      "rule": null,
+      "reason": "Everything else checks out: chunky faceted volumes with no smooth surfaces or normal-map clutter (A1), no cloth (A2), miner and drone white, teal and rust with pouches and backpack (A6, A7), drone the size of the miner's head and shoulders (A4), red eyes on company-yellow robots (A5), glowing violet Duskite, void in indigo, violet, magenta and ultramarine with a planet, left third calm and dark, and no text, UI or rubble (A14).",
+      "correction": null
+    }
+  ]
+}

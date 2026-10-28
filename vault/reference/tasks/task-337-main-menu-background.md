@@ -25,8 +25,8 @@ status: wait-answers
 - confirmed_by_owner: yes (2026-10-28, "ok" to Q1 to Q11, relayed by the main session)
 - milestone: M3
 - next_step: task-337-01-main-menu-background
-- started: 2026-10-28T01:24:59Z
-- waiting_for: owner pick of a main menu background candidate
+- started: 2026-10-28T01:35:06Z
+- waiting_for: owner verdict on correction pass 1 image
 - result: open
 
 ## Subtasks
