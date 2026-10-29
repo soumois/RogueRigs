@@ -683,8 +683,12 @@ void URRRunFlowSubsystem::StartArrivalTakeoff(const TCHAR* Trigger)
 	{
 		return;
 	}
-	UE_LOG(LogRogueRigs, Log, TEXT("URRRunFlowSubsystem: arrival extractor %s takeoff started on (%d, %d) (trigger: %s), frame %llu."),
-		*Arrival->GetName(), Arrival->GetCell().X, Arrival->GetCell().Y, Trigger, GFrameCounter);
+	// Controls: the controller ignores gameplay input only while a level is loading (ARRPlayerController::IsGameplayInputHeld).
+	const URRRunTransitionSubsystem* Transition = URRRunTransitionSubsystem::Get(this);
+	const UWorld* World = GetWorld();
+	UE_LOG(LogRogueRigs, Log, TEXT("URRRunFlowSubsystem: arrival extractor %s takeoff started on (%d, %d) (trigger: %s), frame %llu; world %s, controls %s, miner %s."),
+		*Arrival->GetName(), Arrival->GetCell().X, Arrival->GetCell().Y, Trigger, GFrameCounter, World && World->IsPaused() ? TEXT("paused") : TEXT("playing"),
+		Transition && Transition->IsLevelLoading() ? TEXT("held") : TEXT("free"), Miner ? *Miner->GetActorLocation().ToCompactString() : TEXT("none"));
 	Arrival->StartTakeoff();
 }
 
