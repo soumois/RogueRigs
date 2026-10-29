@@ -3,7 +3,7 @@ id: task-309-04-bp-chest-open-fx
 description: "NS_BonusChestOpen, turning rays and floating sparks (bp): bonus chest opening, step 04."
 parent: task-309-chest-opening
 kind: task
-status: todo
+status: in-progress
 ---
 # NS_BonusChestOpen, turning rays and floating sparks
 
@@ -19,6 +19,7 @@ status: todo
 - tokens: open
 - runs: open
 - milestone: M2
+- started: 2026-10-29T19:03:56Z
 - result: open
 
 ## Relations

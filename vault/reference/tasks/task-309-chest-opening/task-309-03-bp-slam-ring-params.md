@@ -3,7 +3,7 @@ id: task-309-03-bp-slam-ring-params
 description: "DustColor and ChipCount on NS_HeavySlamImpact (bp): reuse the slam ring for the chest, step 03."
 parent: task-309-chest-opening
 kind: task
-status: in-progress
+status: done
 ---
 # DustColor and ChipCount on NS_HeavySlamImpact
 
@@ -15,12 +15,13 @@ status: in-progress
 - done_when: system compiles with 0 errors; both defaults read back equal to the old values; BP_Heavy still compiles; doc node updated; lint clean; committed
 - editor_state: open
 - token_ceiling: 1.0 M units
-- model: open
-- tokens: open
-- runs: open
+- model: sonnet
+- tokens: input 30, cache write 51201, cache read 491266, output 7497
+- usage: turns 15, context start 12k peak 56k, resumes 0, 1 min, units 0.15 M
+- runs: 1
 - milestone: M2
 - started: 2026-10-29T19:02:27Z
-- result: open
+- result: Done (fbdfbfed): NS_HeavySlamImpact User.DustColor (0.18,0.13,0.09,0.7) -> Dust Color, User.ChipCount 16 -> Chips spawn count; defaults read back, compile UpToDate, BP_Heavy compiles. Look unverified.
 
 ## Relations
 - [[task-309-chest-opening]] — parent global task.
