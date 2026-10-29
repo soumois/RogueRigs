@@ -3,7 +3,7 @@ id: task-309-05-bp-chest-open-wiring
 description: "BP_BonusChest opening wiring (bp): ground ring, rays, sparks and inner light defaults, step 05."
 parent: task-309-chest-opening
 kind: task
-status: in-progress
+status: done
 ---
 # BP_BonusChest opening wiring
 
@@ -15,12 +15,13 @@ status: in-progress
 - done_when: meshes reimported, Lid and Latch relative locations match the task-309-07 report, slot materials unchanged; compiles without error; both events and the spawn parameters read back; doc node updated; lint clean; committed
 - editor_state: open
 - token_ceiling: 1.0 M units
-- model: open
-- tokens: open
-- runs: open
+- model: sonnet
+- tokens: input 106, cache write 141991, cache read 4814902, output 28787
+- usage: turns 53, context start 13k peak 147k, resumes 0, 5 min, units 0.80 M
+- runs: 1
 - milestone: M2
 - started: 2026-10-29T19:08:08Z
-- result: open
+- result: Done (c684632f, 03387dcb): 3 meshes reimported via AssetImportTask in open editor (Interchange branch failed; lightmap UV gen reset to on); Lid (0,-32,41.25), Latch (-0.475,56.149,10.238) lid-space read back; slots unchanged; InnerLight 3000 lm r300 sRGB(1,0.784,0) no shadow; OnLidSlam ring (Radius 200, yellow a0.25, ChipCount 0), OnLidOpened NS_BonusChestOpen at Lid component (hinge). Roll signs -1 reasoned not measured. Rays 260 cm likely oversized. Look unverified.
 
 ## Relations
 - [[task-309-chest-opening]] — parent global task.

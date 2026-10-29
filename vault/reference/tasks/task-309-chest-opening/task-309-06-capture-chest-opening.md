@@ -3,7 +3,7 @@ id: task-309-06-capture-chest-opening
 description: "Capture the chest opening (cpp): bonus chest opening, latch, slam, light, ring, chips and sparks, step 06."
 parent: task-309-chest-opening
 kind: task
-status: todo
+status: in-progress
 ---
 # Capture the chest opening
 
@@ -19,6 +19,7 @@ status: todo
 - tokens: open
 - runs: open
 - milestone: M2
+- started: 2026-10-29T19:13:10Z
 - result: open
 
 ## Relations
