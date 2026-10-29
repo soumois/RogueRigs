@@ -838,17 +838,18 @@ kind: note
 | [[task-373-01-cpp-extractor-rotor-spin]] | opus | 2 | 0k | 172k | 1707k | 22k | 0.50 | 32 | 1 |
 | [[task-373-02-doc-extractor-rotor-spin]] | sonnet | 1 | 0k | 27k | 97k | 4k | 0.06 | 6 | 0 |
 | [[task-374-01-bp-ns-extractor-rotor-wash]] | sonnet | 2 | 0k | 162k | 4535k | 29k | 0.80 | 40 | 1 |
+| [[task-374-02-bp-shuttle-rotor-wash-wiring]] | sonnet | 1 | 0k | 159k | 5019k | 19k | 0.80 | 35 | 0 |
 
 ## Totals
 Rebuilt by `record-cost.js` at each closing; do not edit. Units are input-token equivalents (weights in `vault/scripts/cost-rates.json`). Subtask rows are rounded to k; the lines below them come from the usage snapshot (exact).
 
 | Scope | Units (M) | Input | Cache write | Cache read | Output |
 |---|---|---|---|---|---|
-| All subtask rows above | 341.56 | 0k | 79.71 M | 1701.26 M | 14372k |
+| All subtask rows above | 342.36 | 0k | 79.86 M | 1706.28 M | 14391k |
 | model mixed | 7.07 | 0k | 2.55 M | 21.61 M | 345k |
 | model opus | 190.69 | 0k | 42.44 M | 960.74 M | 8321k |
-| model sonnet | 143.80 | 0k | 34.72 M | 718.92 M | 5706k |
-| Executors and legacy orchestrators that ran a task (pilot) | 17.94 | 2k | 8.41 M | 46.86 M | 548k |
+| model sonnet | 144.60 | 0k | 34.88 M | 723.94 M | 5725k |
+| Executors and legacy orchestrators that ran a task (pilot) | 17.98 | 2k | 8.42 M | 47.04 M | 550k |
 | Planning runs (planners and legacy planning passes) | 19.67 | 2k | 6.20 M | 71.54 M | 953k |
 | Agents without a subtask id (other) | 0.97 | 0k | 0.37 M | 3.96 M | 24k |
 | Main sessions (all of them, also chat outside tasks) | 58.51 | 4k | 9.41 M | 395.55 M | 1436k |
