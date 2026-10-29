@@ -22,7 +22,7 @@ status: done
 - milestone: M2
 - started: 2026-10-29T23:27:38Z
 - waiting_for: none
-- result: NS_ExtractorRotorWash + M_ExtractorRotorWash created, compiled, saved (aeb5cb49). Streaks and DustRing emitters, User.Intensity 0-1 and User.FloorHeight (ring spawn and alpha 0 above 300 uu). Read back by HLSL/inputs; look and PIE runtime unverified. Editor was found closed and relaunched by the executor; first run blocked.
+- result: NS_ExtractorRotorWash + M_ExtractorRotorWash created, compiled, saved (aeb5cb49). Streaks and DustRing, User.Intensity 0-1, User.FloorHeight (ring off above 300 uu). Read back by inputs; look and PIE runtime unverified. ALERTS: resumed once because the editor was closed at first run (executor relaunched it); start context 58k from reading the many input nodes.
 
 ## Relations
 - [[task-374-extractor-rotor-wash]] — parent global task.
