@@ -3,7 +3,7 @@ id: task-308-02-chest-lock-light-drive
 description: "Drive the chest lock light from its state (cpp): bonus chest lock light states, step 02."
 parent: task-308-chest-lock-light
 kind: task
-status: in-progress
+status: wait-answers
 ---
 # Drive the chest lock light from its state
 
@@ -20,6 +20,7 @@ status: in-progress
 - runs: open
 - milestone: M2
 - started: 2026-10-29T17:39:36Z
+- waiting_for: owner closes the Unreal Editor (subtask 02 cpp needs it closed; 02 and 03 then run headless)
 - result: open
 
 ## Relations

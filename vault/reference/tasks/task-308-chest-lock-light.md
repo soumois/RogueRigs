@@ -3,7 +3,7 @@ id: task-308-chest-lock-light
 description: "Global task: Chest lock light: red blinking while waiting, orange blinking faster with hack progress in the zone, steady green once open."
 parent: tasks-to-do-index
 kind: task
-status: in-progress
+status: wait-answers
 ---
 # Bonus chest lock light states
 
@@ -15,6 +15,7 @@ status: in-progress
 - milestone: M2
 - next_step: task-308-02-chest-lock-light-drive
 - started: 2026-10-29T17:38:20Z
+- waiting_for: owner closes the Unreal Editor (subtask 02 cpp needs it closed; 02 and 03 then run headless)
 - result: open
 
 ## Subtasks
