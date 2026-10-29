@@ -3,7 +3,7 @@ id: task-364-01-prompt-node
 description: "Art: write art-prompts-miner with the verbatim miner turnaround prompt; no generation"
 parent: task-364-miner-turnaround-prompt
 kind: task
-status: todo
+status: in-progress
 ---
 # Miner turnaround prompt for ChatGPT: art
 
@@ -20,7 +20,7 @@ status: todo
 - usage: open
 - runs: open
 - milestone: M2
-- started: open
+- started: 2026-10-29T17:56:22Z
 - waiting_for: none
 - result: open
 

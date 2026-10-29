@@ -3,7 +3,7 @@ id: task-364-miner-turnaround-prompt
 description: "Global task: Write the ChatGPT image prompt of the miner turnaround sheet (front, side, back, A-pose) that the owner turns into the 3D mesh himself."
 parent: tasks-to-do-index
 kind: task
-status: todo
+status: in-progress
 ---
 # Miner turnaround prompt for ChatGPT
 
@@ -14,7 +14,7 @@ status: todo
 - confirmed_by_owner: yes (2026-10-29, "ok")
 - milestone: M2
 - next_step: task-364-01-prompt-node
-- started: open
+- started: 2026-10-29T17:56:21Z
 - waiting_for: none
 - result: open
 
