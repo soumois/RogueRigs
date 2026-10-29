@@ -3,7 +3,7 @@ id: task-373-01-cpp-extractor-rotor-spin
 description: "Cpp: spin the four rotor components per Q6, ground and flight speeds, ramp, ticking while paused; speed fraction getter and event."
 parent: task-373-extractor-rotor-spin
 kind: task
-status: in-progress
+status: done
 ---
 # Extractor: the four rotors spin: cpp
 
@@ -15,14 +15,14 @@ status: in-progress
 - done_when: build succeeds; a -game log samples rotor yaw over 1 s on the ground and in flight matching 3 and 5 rev/s within 5 %, directions per Q6, still turning while paused after the extraction; existing tests pass; committed by path.
 - editor_state: closed
 - token_ceiling: 1.2 M units
-- model: open
-- tokens: open
-- usage: open
-- runs: open
+- model: opus
+- tokens: input 64, cache write 171663, cache read 1707169, output 22441
+- usage: turns 32, context start 13k peak 96k, resumes 1 (message x1), 84 min, units 0.50 M
+- runs: 2
 - milestone: M2
 - started: 2026-10-29T21:59:48Z
 - waiting_for: none
-- result: open
+- result: Rotors spin per Q6 (commit d88a3adf): RotorSpin test measured 3.000 rev/s ground, 5.000 flight, 5.000 paused; Extraction+RunFlow+FineConsoleShuttlePlacement 11 pass 0 fail. ALERT cause: first cpp run hit the session limit (rate limit) and was resumed. Not verified: -game log, full suite, on-screen direction.
 
 ## Relations
 - [[task-373-extractor-rotor-spin]] — parent global task.

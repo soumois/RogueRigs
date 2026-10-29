@@ -3,7 +3,7 @@ id: task-373-02-doc-extractor-rotor-spin
 description: "Doc: update sys-objectives-shuttle and bp-extraction-shuttle for the rotor spin."
 parent: task-373-extractor-rotor-spin
 kind: task
-status: todo
+status: in-progress
 ---
 # Extractor: the four rotors spin: doc
 
@@ -20,7 +20,7 @@ status: todo
 - usage: open
 - runs: open
 - milestone: M2
-- started: open
+- started: 2026-10-29T23:24:32Z
 - waiting_for: none
 - result: open
 
