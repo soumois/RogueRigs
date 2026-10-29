@@ -3,7 +3,7 @@ id: task-309-03-bp-slam-ring-params
 description: "DustColor and ChipCount on NS_HeavySlamImpact (bp): reuse the slam ring for the chest, step 03."
 parent: task-309-chest-opening
 kind: task
-status: todo
+status: in-progress
 ---
 # DustColor and ChipCount on NS_HeavySlamImpact
 
@@ -19,6 +19,7 @@ status: todo
 - tokens: open
 - runs: open
 - milestone: M2
+- started: 2026-10-29T19:02:27Z
 - result: open
 
 ## Relations
