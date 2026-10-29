@@ -107,6 +107,7 @@ bp-explosion-fx  reference/tech/blueprints/fx/bp-explosion-fx.md
 bp-explosion-fx-barrel  reference/tech/blueprints/fx/bp-explosion-fx-barrel.md
 bp-explosion-shockwave  reference/tech/blueprints/fx/bp-explosion-shockwave.md
 bp-extraction-shuttle  reference/tech/blueprints/world/bp-extraction-shuttle.md
+bp-extractor-rotor-wash  reference/tech/blueprints/fx/bp-extractor-rotor-wash.md
 bp-floor-plates-material  reference/tech/blueprints/world/bp-floor-plates-material.md
 bp-heal-ring  reference/tech/blueprints/fx/bp-heal-ring.md
 bp-heavy  reference/tech/blueprints/enemies/bp-heavy.md
