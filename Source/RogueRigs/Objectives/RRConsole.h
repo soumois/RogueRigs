@@ -238,8 +238,11 @@ protected:
 	/** Finds AntennaHead and creates the dynamic lamp and screen instances once (no-op afterwards or when bDriveStateVisuals is false). */
 	void SetupStateVisuals();
 
-	/** Writes the current state visual on the lamp and screen instances (and sets up the instances first if needed). */
-	void ApplyStateVisuals();
+	/** Writes the current state visual on the lamp and screen instances (and sets up the instances first if needed). Called on every state change (BeginPlay, InitializeConsole, SetConsoleState). Virtual: ARRBonusChest drives its lock light here (task-308-02). */
+	virtual void ApplyStateVisuals();
+
+	/** Called by SetProgress after the progress or hacking flag changed (before OnHackProgress). No-op here; ARRBonusChest updates its lock light blink rate (task-308-02). */
+	virtual void ApplyProgressVisuals() {}
 
 	/** Releases the drone and unmarks the rocks left when the console goes away. */
 	virtual void EndPlay(const EEndPlayReason::Type EndPlayReason) override;

@@ -2,7 +2,9 @@
 
 #include "Objectives/RRBonusChest.h"
 
+#include "Components/StaticMeshComponent.h"
 #include "Engine/World.h"
+#include "Materials/MaterialInstanceDynamic.h"
 #include "Pickups/RRPickup.h"
 #include "Player/RRMiner.h"
 #include "Progression/RRLevelUpComponent.h"
@@ -10,13 +12,110 @@
 #include "Weapons/RRWeapon.h"
 #include "RogueRigs.h"
 
+namespace RRChestLockLight
+{
+	/** Parameters of M_ConsoleLamp, parent of MI_ChestLockLight (bp-objective-console). */
+	static const FName LampColorParam(TEXT("LampColor"));
+	static const FName BlinkRateParam(TEXT("BlinkRate"));
+	static const FName BlinkAmountParam(TEXT("BlinkAmount"));
+}
+
 ARRBonusChest::ARRBonusChest()
 {
 	HackDuration = 8.f;
 	ZoneRadiusCells = 6.f;
 	MarkedCellTypes.Reset();
-	bDriveStateVisuals = false; // the chest keeps its own look (task-302-01)
+	bDriveStateVisuals = false; // the console lamps, screen and head drive is off; the chest drives its lock light instead (task-308-02)
 	FootprintCells = FIntPoint(2, 2); // the chest keeps the 2 x 2 footprint, the console default is 3 x 3 (task-311-01)
+}
+
+float ARRBonusChest::GetHackingBlinkRate(float Progress) const
+{
+	const float Alpha = FMath::Clamp(Progress, 0.f, 1.f);
+	if (LockHackBlinkRateSteps.IsEmpty())
+	{
+		return FMath::Lerp(LockHackBlinkRateStart, LockHackBlinkRateEnd, Alpha);
+	}
+	const int32 Count = LockHackBlinkRateSteps.Num();
+	const int32 Band = FMath::Min(FMath::FloorToInt32(Alpha * static_cast<float>(Count)), Count - 1);
+	return FMath::Max(LockHackBlinkRateSteps[Band], 0.f);
+}
+
+void ARRBonusChest::ApplyStateVisuals()
+{
+	Super::ApplyStateVisuals();
+	RefreshLockLight();
+}
+
+void ARRBonusChest::ApplyProgressVisuals()
+{
+	Super::ApplyProgressVisuals();
+	// Only while the drone is linked: the progress write that precedes a state change (leaving the zone, completion) keeps the old look until the state visual runs.
+	if (ConsoleState == ERRConsoleState::Hacking && bDroneLinked)
+	{
+		RefreshLockLight();
+	}
+}
+
+void ARRBonusChest::SetupLockLight()
+{
+	if (bLockLightSetUp)
+	{
+		return;
+	}
+	bLockLightSetUp = true;
+
+	UStaticMeshComponent* Latch = nullptr;
+	TInlineComponentArray<UStaticMeshComponent*> MeshComponents(this);
+	for (UStaticMeshComponent* Component : MeshComponents)
+	{
+		if (Component && Component->GetFName() == LatchComponentName)
+		{
+			Latch = Component;
+			break;
+		}
+	}
+	// No latch or slot (headless tests use the C++ class): the colour and rate are still computed, nothing is written.
+	const int32 Index = Latch && !LockLightSlotName.IsNone() ? Latch->GetMaterialIndex(LockLightSlotName) : INDEX_NONE;
+	if (Index != INDEX_NONE && Latch->GetMaterial(Index))
+	{
+		LockLightMID = Latch->CreateDynamicMaterialInstance(Index);
+	}
+	UE_LOG(LogRogueRigs, Verbose, TEXT("%s: lock light latch %s, instance %s."), *GetName(), Latch ? TEXT("yes") : TEXT("no"), LockLightMID ? TEXT("yes") : TEXT("no"));
+}
+
+void ARRBonusChest::RefreshLockLight()
+{
+	SetupLockLight();
+
+	FLinearColor NewColor = LockIdleColor;
+	float NewRate = LockIdleBlinkRate;
+	if (ConsoleState == ERRConsoleState::Hacking)
+	{
+		NewColor = LockHackColor;
+		NewRate = GetHackingBlinkRate(HackProgress);
+	}
+	else if (ConsoleState == ERRConsoleState::Complete)
+	{
+		NewColor = LockCompleteColor;
+		NewRate = 0.f;
+	}
+	NewRate = FMath::Max(NewRate, 0.f);
+
+	// Write only on change: every BlinkRate write shifts the material blink phase (Sine(Time x BlinkRate)).
+	if (bLockLightWritten && NewColor == LockLightColor && NewRate == LockLightBlinkRate)
+	{
+		return;
+	}
+	bLockLightWritten = true;
+	LockLightColor = NewColor;
+	LockLightBlinkRate = NewRate;
+	if (LockLightMID)
+	{
+		LockLightMID->SetVectorParameterValue(RRChestLockLight::LampColorParam, LockLightColor);
+		LockLightMID->SetScalarParameterValue(RRChestLockLight::BlinkRateParam, LockLightBlinkRate);
+		LockLightMID->SetScalarParameterValue(RRChestLockLight::BlinkAmountParam, LockLightBlinkRate > 0.f ? LockBlinkAmount : 0.f);
+	}
 }
 
 void ARRBonusChest::CompleteHack()

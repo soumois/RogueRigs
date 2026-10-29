@@ -427,6 +427,7 @@ void ARRConsole::SetProgress(float NewProgress, bool bNewHacking)
 	HackProgress = NewProgress;
 	bDroneLinked = bNewHacking;
 	RefreshGroundTelegraph();
+	ApplyProgressVisuals();
 	OnHackProgress(HackProgress, bDroneLinked);
 	OnConsoleProgressChanged.Broadcast(this, HackProgress, bDroneLinked);
 }
