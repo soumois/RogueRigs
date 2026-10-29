@@ -1,9 +1,9 @@
 ---
 id: task-360-capture-agent
 description: "Global task: New Sonnet capture agent: runs -game captures from a planner checklist with a minimal brief, reports each point seen, not seen or ambiguous."
-parent: tasks-to-do-index
+parent: tasks-done-index
 kind: task
-status: in-progress
+status: done
 ---
 # Capture agent on Sonnet with a checklist
 
@@ -13,10 +13,10 @@ status: in-progress
 - gdd_check: crew tooling, no gdd node involved (Planner, 2026-10-29). Read: agent-cpp (`capture_script`, `capture_rules`, `visual_check`, `reads`), `.claude/agents/cpp.md`, orchestrator-lessons ("Visual checks go to the cpp agent"), orchestration-protocol, agent-executor (`agents` list), task-355-02 (a capture subtask: 42 turns, peak 134k, it also scripted mouse hover with PowerShell). Planner answer to the owner's question: (1) correction: the capture is already run by a fresh cpp instance, not the builder, so the gain is not independence but a smaller brief and a cheaper model; (2) Sonnet suffices for running capture.js and judging explicit points (presence, overlap, clipping, colour, text); it is weaker on 1-2 px judgements, hence crops (task-359) and the ambiguous verdict escalated to the owner; (3) Sonnet lowers price, not units; units fall from dropping the C++ reading list and from task-359 tooling; (4) a capture that needs a code or tool change stops and reports instead of coding (today the cpp capture may patch). Run order: after [[task-359-capture-tooling]]. `orchestration-protocol` is `kind: rule`: the owner's "prévoir un agent pour ça" is taken as intent to edit it, confirmed by Q7. Scheduled tasks 308, 309, 314 have cpp capture subtasks planned before this agent (Q9).
 - confirmed_by_owner: yes (2026-10-29, "OK, tout par défaut" to Q1-Q12 and the plan, relayed by the main session)
 - milestone: M2
-- next_step: task-360-01-capture-agent-definition
+- next_step: none
 - started: 2026-10-29T14:25:15Z
 - waiting_for: none
-- result: open
+- result: Done. capture agent defined (capture.md, agent-capture), capture rules moved from agent-cpp, routing updated; commits 04937f68, 4467bdee
 
 ## Questions
 Decided 2026-10-29 (owner "OK, tout par défaut"): every default below is accepted; values provisional, owner 2026-10-29.
@@ -28,7 +28,7 @@ Decided 2026-10-29 (owner "OK, tout par défaut"): every default below is accept
 1. task-360-01-capture-agent-definition (vault/reference/tasks/task-360-capture-agent/task-360-01-capture-agent-definition.md) — doc: .claude/agents/capture.md and agent-capture node; capture moved out of agent-cpp; agents-index, executor, planner, protocol step 3, lessons updated.
 
 ## Relations
-- [[tasks-to-do-index]] — parent index.
+- [[tasks-done-index]] — parent index.
 - [[task-360-01-capture-agent-definition]] — step 1, doc.
 - [[task-359-capture-tooling]] — runs before; tool-capture is its output.
 - [[task-358-planner-cost]] — lever 1, same request.
