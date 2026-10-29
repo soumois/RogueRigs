@@ -3,7 +3,7 @@ id: task-309-02-bp-chest-interior-material
 description: "MI_ChestInterior on the Interior slot (bp): bonus chest opening, emissive interior, step 02."
 parent: task-309-chest-opening
 kind: task
-status: todo
+status: in-progress
 ---
 # MI_ChestInterior on the Interior slot
 
@@ -19,6 +19,7 @@ status: todo
 - tokens: open
 - runs: open
 - milestone: M2
+- started: 2026-10-29T18:57:21Z
 - result: open
 
 ## Relations

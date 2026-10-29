@@ -3,7 +3,7 @@ id: task-309-01-chest-opening-sequence
 description: "Chest opening sequence, slam, light drive and XP burst (cpp): bonus chest opening, step 01."
 parent: task-309-chest-opening
 kind: task
-status: in-progress
+status: done
 ---
 # Chest opening sequence, slam, light drive and XP burst
 
@@ -15,12 +15,13 @@ status: in-progress
 - done_when: build green; RogueRigs.Console.* and RogueRigs.RunFlow.* pass; chest reward gives 3 chips of 8 and one choice, after the lid delay; no time dilation call; console burst unchanged; docs updated; lint clean; committed
 - editor_state: closed
 - token_ceiling: 1.2 M units
-- model: open
-- tokens: open
-- runs: open
+- model: opus
+- tokens: input 118, cache write 196032, cache read 7834521, output 70417
+- usage: turns 59, context start 12k peak 196k, resumes 0, 15 min, units 1.38 M
+- runs: 1
 - milestone: M2
 - started: 2026-10-29T18:41:54Z
-- result: open
+- result: Done: commits 15e1bbf1 (code), 944fd76a (docs). Sequence timed in ARRBonusChest tick; OnLidSlam/OnLidOpened; InnerLight C++ component; InteriorGlow param; chips scale pop; lid/latch RollSign -1 (derived, verify in editor). Console+RunFlow 9/9, pickups 19/19.
 
 ## Relations
 - [[task-309-chest-opening]] — parent global task.
