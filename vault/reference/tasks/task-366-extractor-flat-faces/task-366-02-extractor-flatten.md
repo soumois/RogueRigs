@@ -3,7 +3,7 @@ id: task-366-02-extractor-flatten
 description: "3d: decimate the Meshy extractor to at most 48,000 tris without bulging planar regions, project them flat, scale and pivot per Q5, render before and after."
 parent: task-366-extractor-flat-faces
 kind: task
-status: in-progress
+status: done
 ---
 # Extractor mesh: save the Meshy files, decimate to budget, flatten the faces: 3d
 
@@ -15,14 +15,14 @@ status: in-progress
 - done_when: triangles at most 48,000; every flattened region residual under 0.01 cm; flat shading on those faces; horizontal bounds within 268 x 201 cm with the long side on X and the nose toward +X, origin bottom centre (min z = 0 within 0.1 cm); UV0 on every face, no texture file edited; silhouette within 1 % of the height against the scaled source (numbers in the report); FBX reimported in a clean scene gives the reported bounds; renders exist and their paths are reported so the Executor sends them to the owner; art-prompts-extractor updated; lint clean; committed by path as `task-366-02-extractor-flatten: <summary>`; `Get-Process blender` empty.
 - editor_state: any
 - token_ceiling: 1.2 M units
-- model: open
-- tokens: open
-- usage: open
-- runs: open
+- model: sonnet
+- tokens: input 68, cache write 102402, cache read 2497093, output 43219
+- usage: turns 34, context start 12k peak 107k, resumes 0, 10 min, units 0.59 M
+- runs: 1
 - milestone: M2
 - started: 2026-10-29T18:20:17Z
 - waiting_for: none
-- result: open
+- result: 47,000 tris, 190 regions residual 0.000004 cm, bounds 196.55x201x86.1 cm nose +X pivot bottom centre, silhouette max 0.78 cm. DEVIATION: long side not on X (rotors make footprint near-square), only 5.3 pct faces flat-shaded, UV stretch on large panels from 55x decimation. Commit 47e67b5b
 
 ## Relations
 - [[task-366-extractor-flat-faces]] — parent global task.

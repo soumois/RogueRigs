@@ -1,9 +1,9 @@
 ---
 id: task-366-extractor-flat-faces
 description: "Global task: Save the owner Meshy extractor (Rustwing quadrotor) files, then decimate it to budget and flatten its bulged flat faces as for the turret."
-parent: tasks-to-do-index
+parent: tasks-done-index
 kind: task
-status: in-progress
+status: done
 ---
 # Extractor mesh: save the Meshy files, decimate to budget, flatten the faces
 
@@ -13,10 +13,10 @@ status: in-progress
 - gdd_check: read 2026-10-29: [[extraction]] (shuttle, 4 x 3-cell landing footprint, M1), [[gdd-glossary]] and [[lore]] (shuttle = the Rigs' extraction craft, Rigs side patched and rusty: matches "Rustwing"), [[asset-pipeline]] (no triangle budget for the shuttle: open until Q2; height rule is a Blueprint capsule, none exists: Q5), [[art-style-guide]], [[art-3d-lessons]], precedents [[task-345-turret-meshy-files]], [[task-347-turret-flat-surfaces]], [[task-281-robot-mesh-flatten]]. No gdd node names an "extractor" (Q1). No conflict. Milestone: the shuttle is M1, art asset passes run as M2 like the turret.
 - confirmed_by_owner: yes (2026-10-29, "ok")
 - milestone: M2
-- next_step: task-366-02-extractor-flatten
+- next_step: none
 - started: 2026-10-29T18:18:53Z
 - waiting_for: none
-- result: open
+- result: Done. 47,000 tris, 190 regions residual 0.000004 cm, bounds 196.55x201x86.1 cm nose +X pivot bottom centre, silhouette max 0.78 cm. DEVIATION: long side not on X (rotors make footprint near-square), only 5.3 pct faces flat-shaded, UV stretch on large panels from 55x decimation. Commit 47e67b5b
 
 ## Questions
 Decided 2026-10-29 (owner "ok"): every default below is accepted; values provisional, owner 2026-10-29.
@@ -33,7 +33,7 @@ Decided 2026-10-29 (owner "ok"): every default below is accepted; values provisi
 2. task-366-02-extractor-flatten (vault/reference/tasks/task-366-extractor-flat-faces/task-366-02-extractor-flatten.md) — 3d: decimate the Meshy extractor to at most 48,000 tris without bulging planar regions, project them flat, scale and pivot per Q5, render before and after.
 
 ## Relations
-- [[tasks-to-do-index]] — parent index.
+- [[tasks-done-index]] — parent index.
 - [[task-366-01-extractor-meshy-files]] — step 1, 3d.
 - [[task-366-02-extractor-flatten]] — step 2, 3d.
 - [[extraction]] — the shuttle this mesh is for.
