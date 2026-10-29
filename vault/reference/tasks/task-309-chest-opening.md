@@ -14,7 +14,7 @@ status: wait-answers
 - confirmed_by_owner: yes (owner 2026-10-23: "ok pour tous les défauts (Q1 à Q25)"; every default below applies; not launched yet)
 - owner_2026-10-24: "ok : je garde la commande debug, j'accepte les 3864 tris, le pivot et la pose ouverte se règlent dans 309, et ok pour tous les défauts de la tâche 314." Pivot and open pose moved here from task-306: new 3d step task-309-07 (runs first: lid origin on the hinge pins, no hinge stubs on the body, latch hasp not dangling, recess behind the latch filled, opening signs reported); task-309-01 uses those signs; task-309-05 reimports the three meshes and moves the Lid and Latch components to the new pivots; task-309-06 checks the open pose. Task-314-01 cuts the logo into the lid after task-309-07.
 - milestone: M2
-- next_step: task-309-07-chest-hinge-recut
+- next_step: task-309-01-chest-opening-sequence
 - started: 2026-10-29T18:32:25Z
 - waiting_for: owner go on the new 309-07 renders (Art/Source/chest/clean/renders/cut_openwide100|105|115_*.png, lid on rear seam axis, gap 0.5-0.7 cm)
 - result: open

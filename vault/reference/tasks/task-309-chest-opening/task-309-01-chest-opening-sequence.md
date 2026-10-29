@@ -3,7 +3,7 @@ id: task-309-01-chest-opening-sequence
 description: "Chest opening sequence, slam, light drive and XP burst (cpp): bonus chest opening, step 01."
 parent: task-309-chest-opening
 kind: task
-status: todo
+status: in-progress
 ---
 # Chest opening sequence, slam, light drive and XP burst
 
@@ -19,6 +19,7 @@ status: todo
 - tokens: open
 - runs: open
 - milestone: M2
+- started: 2026-10-29T18:41:54Z
 - result: open
 
 ## Relations

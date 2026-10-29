@@ -3,7 +3,7 @@ id: task-309-07-chest-hinge-recut
 description: "Lid pivot on the hinge pins and open-pose mesh fixes (3d): bonus chest opening, step 07, runs first."
 parent: task-309-chest-opening
 kind: task
-status: wait-answers
+status: done
 ---
 # Lid pivot on the hinge pins and open-pose mesh fixes
 
@@ -16,13 +16,14 @@ status: wait-answers
 - done_when: open renders show the lid turning about the pins, no stub on the body, no dangling hasp, no dark recess; pivots, size, slots, tris and signs in the report; renders sent to the owner and his go; no Blender process left; committed
 - editor_state: any
 - token_ceiling: 1.2 M units
-- model: open
-- tokens: open
-- runs: open
+- model: sonnet
+- tokens: input 128, cache write 193556, cache read 4469126, output 77169
+- usage: turns 64, context start 12k peak 140k, resumes 0, 19 min, units 1.07 M
+- runs: 2
 - milestone: M2
 - started: 2026-10-29T18:32:25Z
-- waiting_for: owner go on the new 309-07 renders (Art/Source/chest/clean/renders/cut_openwide100|105|115_*.png, lid on rear seam axis, gap 0.5-0.7 cm)
-- result: open
+- waiting_for: none
+- result: Owner go 2026-10-29 ("Go") on the recut renders: lid hinge axis on rear seam line, open lid rests on rim, min gap 0.54-0.66 cm, 0 lid vertices inside body. Lid pivot Unreal Mesh space (0,-32,41.25); latch pivot Blender (-0.475,-24.149,51.488) rel. body origin; details in chest_cut.report.json. Two 3d runs (first cut, recut).
 
 ## Relations
 - [[task-309-chest-opening]] — parent global task.
