@@ -3,7 +3,7 @@ id: task-362-01-agents-path-of-doc
 description: "Doc: style-guide definition and node get fixed read paths; 3d, art, bp, cpp, doc, text definitions and nodes resolve wikilinks with path-of.js."
 parent: task-362-agents-path-of
 kind: task
-status: todo
+status: in-progress
 ---
 # Agent definitions: path-of.js instead of _paths.md: doc
 
@@ -20,7 +20,7 @@ status: todo
 - usage: open
 - runs: open
 - milestone: M2
-- started: open
+- started: 2026-10-29T15:22:12Z
 - waiting_for: none
 - result: open
 

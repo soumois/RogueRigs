@@ -3,7 +3,7 @@ id: task-362-agents-path-of
 description: "Global task: agent definitions stop opening _paths.md; style-guide gets its fixed read paths in its definition, six agents resolve wikilinks with path-of.js."
 parent: tasks-to-do-index
 kind: task
-status: todo
+status: in-progress
 ---
 # Agent definitions: path-of.js instead of _paths.md
 
@@ -14,7 +14,7 @@ status: todo
 - confirmed_by_owner: yes (2026-10-29, "OK, tout par défaut")
 - milestone: M2
 - next_step: task-362-01-agents-path-of-doc
-- started: open
+- started: 2026-10-29T15:22:12Z
 - waiting_for: none
 - result: open
 
