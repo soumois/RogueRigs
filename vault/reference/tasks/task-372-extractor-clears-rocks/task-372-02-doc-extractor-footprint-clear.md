@@ -3,7 +3,7 @@ id: task-372-02-doc-extractor-footprint-clear
 description: "Doc: update sys-grid-api, sys-grid, sys-grid-deposits, run-log-schema and sys-objectives-shuttle."
 parent: task-372-extractor-clears-rocks
 kind: task
-status: todo
+status: in-progress
 ---
 # Extractor: blocks under its footprint are destroyed, resources stay: doc
 
@@ -20,7 +20,7 @@ status: todo
 - usage: open
 - runs: open
 - milestone: M2
-- started: open
+- started: 2026-10-29T21:58:23Z
 - waiting_for: none
 - result: open
 
