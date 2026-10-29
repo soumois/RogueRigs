@@ -377,3 +377,4 @@ Archive: it exceeds the index size limits of [[_authoring]] on purpose (owner, 2
 - [[task-366-extractor-flat-faces]] — Save the owner Meshy extractor (Rustwing quadrotor) files, then decimate it to budget and flatten its bulged flat faces as for the turret. Status done.
 - [[task-367-extractor-rotors]] — Cut the four rotors of the flattened extractor mesh into separate meshes pivoting on their spin axes, body kept fixed, ready to spin later; runs after task-368. Status done.
 - [[task-368-extractor-rebake]] — Re-unwrap the 47,000-triangle flattened extractor and bake the Meshy high-poly look (colour, normal, roughness, metallic) onto it, fixing the stretched rust marks. Status done.
+- [[task-369-extractor-level-exit]] — Import the extractor body and rotors into Unreal and make the extraction shuttle show it; walking near it validates the level. Status done.

@@ -1,9 +1,9 @@
 ---
 id: task-369-extractor-level-exit
 description: "Global task: Import the extractor body and rotors into Unreal and make the extraction shuttle show it; walking near it validates the level."
-parent: tasks-to-do-index
+parent: tasks-done-index
 kind: task
-status: in-progress
+status: done
 ---
 # Extractor in game: the level exit you walk up to
 
@@ -13,10 +13,10 @@ status: in-progress
 - gdd_check: read 2026-10-29: [[extraction]] (approved: lands when the alert bar is full, 37-50 cells from the miner, 45 s countdown, reaching it ends the level, missing it loses the run, landing clearance on a clear 4 x 3-cell footprint, look = the Rustwing extractor with four separate rotors), [[level-flow]] (step 1 Land, no arrival described), [[intermission]] (stats screen drawn over the paused finished level, cards screen opaque), [[run-structure]], [[destruction-rules]] (approved: only three things break blocks), [[ore-blocks]] (a deposit is never left partly destroyed; start-zone drops thrown to the ground), [[color-code]] (shuttle white + teal), [[art-prompts-extractor]] (mesh 196.6 x 201.0 x 86.1 cm, nose +X, origin bottom centre, 50,000 triangles), tech [[sys-objectives-shuttle]], [[sys-objectives-run-flow]] (EndRun pauses the game), [[sys-run-transition-fade]] (fade in 0.5 s after the level switch; level 1 and direct PIE have no fade), [[bp-extraction-shuttle]] (white box, glow pulse, chevrons). Point 1 can be read two ways (Q1): A the current rule, extractor lands at full alert bar and approaching it validates (already built, board radius 3 cells); B the extractor waits on the map from the start and approaching it validates at any time (would change the approved extraction and level-flow). No landing animation is described or asked (Q2). Capture subtasks of the 2026-10-16 owner rule refused by the owner (Q8, 2026-10-29). Scope M2 (run of 4 levels, extractor art pass), no milestone conflict.
 - confirmed_by_owner: yes (2026-10-29, "Pas de vérification visuel pour le point 8, prépare les tâches avec les informations dedans, je les lancerais déjà que le mesh est prés.")
 - milestone: M2
-- next_step: task-369-04-doc-extractor-level-exit
+- next_step: none
 - started: 2026-10-29T21:01:18Z
 - waiting_for: none
-- result: open
+- result: Done. Doc: bp-extraction-shuttle, sys-objectives-shuttle, blueprints-world-index updated; commit 83c72430; lint OK.
 
 ## Questions
 Decided 2026-10-29 (owner "Pas de vérification visuel pour le point 8, prépare les tâches avec les informations dedans, je les lancerais déjà que le mesh est prés."): the defaults of Q1, Q2, Q3, Q4, Q5, Q6, Q7 are accepted; values provisional, owner 2026-10-29.
@@ -36,7 +36,7 @@ Decided 2026-10-29 (owner "Pas de vérification visuel pour le point 8, prépare
 4. task-369-04-doc-extractor-level-exit (vault/reference/tasks/task-369-extractor-level-exit/task-369-04-doc-extractor-level-exit.md) — doc: update bp-extraction-shuttle and sys-objectives-shuttle for the extractor meshes and rotor components.
 
 ## Relations
-- [[tasks-to-do-index]] — parent index.
+- [[tasks-done-index]] — parent index.
 - [[task-369-01-bp-extractor-import]] — step 1, bp.
 - [[task-369-02-cpp-shuttle-rotor-components]] — step 2, cpp.
 - [[task-369-03-bp-shuttle-extractor-look]] — step 3, bp.
