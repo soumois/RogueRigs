@@ -17,6 +17,7 @@ global `task-NNN-slug` is `reference/tasks/task-NNN-slug.md`; subtask `task-NNN-
 agent-3d  reference/agents/agent-3d.md
 agent-art  reference/agents/agent-art.md
 agent-bp  reference/agents/agent-bp.md
+agent-capture  reference/agents/agent-capture.md
 agent-cpp  reference/agents/agent-cpp.md
 agent-doc  reference/agents/agent-doc.md
 agent-executor  reference/agents/agent-executor.md

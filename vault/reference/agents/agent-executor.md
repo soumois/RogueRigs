@@ -16,7 +16,7 @@ status: provisional
 - definition_of_done: every subtask `done` with its `done_when` passed, global `acceptance` passed, lint clean, committed, `next_step: none`.
 - start: at its step 0, `node vault/scripts/task-start.js <global-id>` sets the global and its first open subtask `in-progress` with `next_step`, lints and commits; it refuses a global without `confirmed_by_owner: yes` and is a no-op when already started ([[orchestrator-runbook]]). Its output holds only signal lines and ends with `next: <absolute path of the subtask>`; open that path directly.
 - owner_wait: when it stops for an owner action or answer, it sets the current subtask and its global `wait-answers` with `node vault/scripts/task-status.js <path>.md status=wait-answers "waiting_for=<action or question>"` and commits them by path; on resume `status=in-progress` (or `task-start.js`) resets `waiting_for` to `none` ([[orchestration-protocol]] step 5).
-- agents: delegates to `cpp`, `bp`, `doc`, `level-design`, `text`, `style-guide`, `art`, `3d`, the one each subtask names.
+- agents: delegates to `cpp`, `bp`, `capture`, `doc`, `level-design`, `text`, `style-guide`, `art`, `3d`, the one each subtask names.
 - doc_subtask: the last subtask of a global with cpp or bp subtasks is a real node with `agent: doc` ([[agent-doc]]). Delegate it like any subtask, description starting with its subtask id (`task-NNN-SS-...`), with the brief: commit hashes and changed paths of the implementing subtasks (the doc agent runs `git show` itself; never paste the diff), the decided values (pointer to the global `request` and `gdd_check`), the implementers' change summaries, and the nodes to create or update (the subtask `inputs`). Close it with `task-next.js` like a cpp or bp subtask: `agent-usage.js` attributes it by the description prefix, `record-cost.js` writes its [[cost-log]] row, `usage` line, model and ALERT lines.
 - cost_alerts: `task-next.js` prints ALERT lines (units over the ceiling, start context over 25k, turn limit, resumes). For each one write the cause in the subtask `result` and list it in the final report. Only the ALERT lines of `record-cost.js` count: never compare the Agent tool total to the ceiling.
 - must_not: plan or re-plan; ask the owner design questions; invent a value marked `open`; change a gdd node or a `kind: rule` node; write code, Blueprints, assets or layout data itself; add work the owner did not request. On a missing decision or an `open` value it stops and reports.
@@ -30,4 +30,5 @@ status: provisional
 - [[orchestrator-runbook]] — the commands it uses.
 - [[orchestrator-script-quirks]] — script, git and editor pitfalls.
 - [[agent-doc]] — runs the doc subtask from its brief.
+- [[agent-capture]] — runs the capture subtask from its checklist.
 - [[_navigation]] — rule with the execution exception for task node paths.

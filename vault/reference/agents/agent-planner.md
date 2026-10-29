@@ -16,6 +16,7 @@ status: provisional
 - handoff_contract: the Executor reads only the task nodes. The planner writes there the owner's words and answers (`request`), the checks (`gdd_check`), `confirmed_by_owner`, and for every subtask the inputs as resolved paths and a testable `done_when`. Every line of the global `## Subtasks` gives the subtask path: `N. <id> (vault/reference/tasks/<global-id>/<id>.md) — <agent>: <goal>`, so the Executor opens it directly. A decision left only in the conversation is lost.
 - tools: ids are resolved with `node vault/scripts/path-of.js <id> [<id>...]`, not by opening `_paths.md`; the whole plan (every global, subtask and index line) is written in one `node vault/scripts/task-create.js <spec.js> [<anchor>]` call, spec v2 ([[orchestrator-runbook]] Creating tasks); at step 4, when it hands questions back, the spec carries `edits` and `status: wait-answers`, so task-create.js also writes `Saved/Planner/<first-global-id>.defaults.json` (not committed), which the main session passes to `node vault/scripts/task-confirm.js <file> "<owner words>"` on a pure "ok" ([[orchestration-protocol]] step 4). The planner is resumed only for another answer.
 - doc_subtask: every global with cpp or bp subtasks ends with one doc subtask for [[agent-doc]], written from `vault/templates/task.md` like any subtask (`agent: doc`, `depends_on` every implementing subtask, `token_ceiling` from [[agent-doc]], `model`, `tokens`, `usage`, `runs` open), its `inputs` listing the `sys-*`, `bp-*` and tool doc nodes to create or update as resolved paths; it gets its own cost-log row and `usage` line when the Executor closes it ([[orchestration-protocol]] steps 3 and 5). cpp and bp subtasks no longer list a doc node in their output.
+- capture_subtask: a visual check is a subtask for [[agent-capture]] (`agent: capture`), never for cpp. Its `done_when` is the checklist: numbered points C1..Cn taken from the global `acceptance`, each observable on a frame; its `inputs` list the look-before frames, the reference images and the debug commands to use when known. The report gives per point seen, not seen or ambiguous; ambiguous points go to the owner ([[task-360-capture-agent]]).
 - owner_wait: when it hands its questions back, it sets each new global `wait-answers` with `node vault/scripts/task-status.js <global>.md status=wait-answers "waiting_for=owner confirmation of the plan"`, and `status=todo` once confirmed ([[orchestration-protocol]] step 4).
 - definition_of_done: nodes created and linked, decisions written, `confirmed_by_owner` set, lint clean, committed by explicit path.
 - must_not: write code, Blueprints, assets or layout data; delegate or run a subtask; invent a value marked `open`; bundle separate owner points into one task; add work the owner did not request; relaunch after he refused every option.
@@ -24,6 +25,7 @@ status: provisional
 
 ## Relations
 - [[agents-index]] — parent index.
+- [[agent-capture]] — runs the visual-check subtask from the checklist.
 - [[agent-executor]] — runs the tasks it writes.
 - [[orchestration-protocol]] — steps 0 to 4 are its procedure.
 - [[orchestrator-lessons]] — owner rules it applies.

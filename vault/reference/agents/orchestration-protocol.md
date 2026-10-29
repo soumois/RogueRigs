@@ -38,6 +38,8 @@ Order subtasks so that every dependency comes first.
 
 Doc subtask (owner 2026-10-27, [[task-325-doc-agent]]): a global with cpp or bp subtasks ends with one subtask for [[agent-doc]], a real node from `vault/templates/task.md` (`agent: doc`, `token_ceiling`, `model`, `tokens`, `usage`, `runs`), `depends_on` every implementing subtask, `inputs` the `sys-*`, `bp-*` and tool doc nodes to create or update. cpp and bp subtasks no longer write those nodes; they return a change summary. Art, 3d, level-design and text keep writing their own nodes. Tasks planned before it (308, 309, 314) are not re-planned.
 
+Capture subtask (owner 2026-10-29, [[task-360-capture-agent]]): a visual check is a subtask for [[agent-capture]] (`agent: capture`), not for cpp. Its `done_when` is a checklist of numbered points C1..Cn taken from the global `acceptance`, each observable on a frame; its `inputs` list the look-before frames, the reference images and the debug commands to use when known. The agent reports each point seen, not seen or ambiguous with the frame or crop path; ambiguous points go to the owner, the Executor does not decide them. Tasks 308, 309, 314 keep their cpp capture subtasks as written.
+
 bp split (owner 2026-10-14): when one owner point needs several editor assets, one bp subtask = one main asset (a Niagara system, a widget, a material with its instances, or a Blueprint), with its own commit; its doc node goes to the doc subtask. Order: materials, then Niagara and widgets, then the Blueprint that wires them, then map placement. Independent bp subtasks on different assets may run in parallel, 3 at most on one editor.
 
 ## 4. Confirm
@@ -65,4 +67,5 @@ Run the global acceptance checks, fill `result`, set `done`, `next_step: none`, 
 - [[agent-executor]] — runs steps 5 and 6.
 - [[cost-log]] — where step 5 records tokens per subtask.
 - [[agent-doc]] — runs the doc subtask of steps 3 and 5.
+- [[agent-capture]] — runs the capture subtask of step 3.
 - [[_navigation]] — execution exception for opening task nodes by path.
