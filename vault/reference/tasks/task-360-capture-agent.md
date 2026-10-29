@@ -3,7 +3,7 @@ id: task-360-capture-agent
 description: "Global task: New Sonnet capture agent: runs -game captures from a planner checklist with a minimal brief, reports each point seen, not seen or ambiguous."
 parent: tasks-to-do-index
 kind: task
-status: todo
+status: in-progress
 ---
 # Capture agent on Sonnet with a checklist
 
@@ -14,7 +14,7 @@ status: todo
 - confirmed_by_owner: yes (2026-10-29, "OK, tout par défaut" to Q1-Q12 and the plan, relayed by the main session)
 - milestone: M2
 - next_step: task-360-01-capture-agent-definition
-- started: open
+- started: 2026-10-29T14:25:15Z
 - waiting_for: none
 - result: open
 

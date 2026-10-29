@@ -3,7 +3,7 @@ id: task-360-01-capture-agent-definition
 description: "Doc: write the capture agent definition and its vault node, move capture rules out of agent-cpp, route visual checks to it in the crew nodes."
 parent: task-360-capture-agent
 kind: task
-status: todo
+status: in-progress
 ---
 # Capture agent: definition
 
@@ -20,7 +20,7 @@ status: todo
 - usage: open
 - runs: open
 - milestone: M2
-- started: open
+- started: 2026-10-29T14:25:15Z
 - waiting_for: none
 - result: open
 
