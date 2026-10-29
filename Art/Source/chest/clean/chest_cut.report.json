@@ -6,57 +6,57 @@
   "seam_plane_z_cm": 41.25,
   "latch_box": {
     "abs_x_max": 11.6,
-    "y_below": -24,
-    "z_min": 8,
-    "z_max": 54
+    "y_below": -24.0,
+    "z_min": 8.0,
+    "z_max": 54.0
   },
   "cavity": {
-    "wall_cm": 3,
-    "depth_cm": 22,
+    "wall_cm": 3.0,
+    "depth_cm": 22.0,
     "floor_z_cm": 19.25
   },
   "parts": {
     "body": {
       "file": "Art/Source/chest/clean/chest_body.fbx",
-      "tris": 2110,
-      "verts": 1023,
+      "tris": 1854,
+      "verts": 895,
       "dimensions_cm_xyz": [
-        130,
-        67.77,
+        130.0,
+        66.01,
         41.25
       ],
       "local_bbox_min_cm": [
-        -65,
+        -65.0,
         -34.13,
-        0
+        0.0
       ],
       "local_bbox_max_cm": [
-        65,
-        33.64,
+        65.0,
+        31.88,
         41.25
       ],
       "world_bbox_min_cm": [
-        -65,
+        -65.0,
         -34.13,
-        0
+        0.0
       ],
       "world_bbox_max_cm": [
-        65,
-        33.64,
+        65.0,
+        31.88,
         41.25
       ],
       "pivot_rel_body_origin_cm": [
-        0,
-        0,
-        0
+        0.0,
+        0.0,
+        0.0
       ],
       "material_slots": [
         "M_BonusChest",
         "Interior"
       ],
       "faces_per_slot": {
-        "M_BonusChest": 1809,
-        "Interior": 301
+        "M_BonusChest": 1661,
+        "Interior": 193
       },
       "uv_layers": [
         "UVMap"
@@ -71,27 +71,27 @@
     },
     "lid": {
       "file": "Art/Source/chest/clean/chest_lid.fbx",
-      "tris": 1326,
-      "verts": 675,
+      "tris": 1316,
+      "verts": 670,
       "dimensions_cm_xyz": [
         121.08,
         65.52,
-        24.31
+        31.84
       ],
       "local_bbox_min_cm": [
         -60.43,
-        -61.74,
-        0
+        -55.21,
+        -25.78
       ],
       "local_bbox_max_cm": [
         60.65,
-        3.77,
-        24.31
+        10.31,
+        6.06
       ],
       "world_bbox_min_cm": [
         -60.43,
         -30.61,
-        41.25
+        33.72
       ],
       "world_bbox_max_cm": [
         60.65,
@@ -99,15 +99,15 @@
         65.56
       ],
       "pivot_rel_body_origin_cm": [
-        0,
-        31.137,
-        41.25
+        0.0,
+        24.6,
+        59.5
       ],
       "material_slots": [
         "M_BonusChest"
       ],
       "faces_per_slot": {
-        "M_BonusChest": 1326
+        "M_BonusChest": 1316
       },
       "uv_layers": [
         "UVMap"
@@ -137,7 +137,7 @@
       "local_bbox_max_cm": [
         12.47,
         1.15,
-        0
+        0.0
       ],
       "world_bbox_min_cm": [
         -12.95,
@@ -145,8 +145,8 @@
         7.58
       ],
       "world_bbox_max_cm": [
-        12,
-        -23,
+        12.0,
+        -23.0,
         51.49
       ],
       "pivot_rel_body_origin_cm": [
@@ -174,9 +174,9 @@
       "shading": "flat"
     }
   },
-  "tris_total": 3864,
+  "tris_total": 3598,
   "assembled_dimensions_cm_xyz": [
-    130,
+    130.0,
     69.82,
     65.56
   ],
@@ -187,9 +187,9 @@
       0
     ],
     "lid_hinge_axis_X": [
-      0,
-      31.137,
-      41.25
+      0.0,
+      24.6,
+      59.5
     ],
     "latch_top_edge_axis_X": [
       -0.475,
@@ -199,10 +199,58 @@
   },
   "latch_pivot_relative_to_lid_origin_cm": [
     -0.475,
-    -55.286,
-    10.238
+    -48.749,
+    -8.012
   ],
-  "pivot_notes": "lid: origin on the hinge axis (a line along X) at the back top edge of the body (y = back wall of the body at the seam, z = seam plane); rotate about X, negative angle opens the front up. latch: origin on the top edge of the latch block (X axis, mid depth of its top face, x centred); it hangs on the lid front, so in the Blueprint it is a child of the lid; negative X rotation swings its bottom out toward -Y.",
+  "pivot_notes": "lid: origin on the axis of the hinge pins (a line along X at y = 24.6, z = 59.5 in the body frame, measured on the pin cylinders at x = +-45); the whole hinge block (bracket from the pins down the back wall) belongs to the lid. latch: origin on the top edge of the latch block (X axis, mid depth of its top face, x centred); it hangs on the lid front, so in the Blueprint it is a child of the lid.",
+  "hinge": {
+    "pin_axis_y_z_cm": [
+      24.6,
+      59.5
+    ],
+    "block_box": {
+      "abs_x": [
+        20.5,
+        47.8
+      ],
+      "y_above": 27.5,
+      "face_centre_z_min": 33.0
+    },
+    "block_faces_to_lid": 412,
+    "block_faces_centred_below_the_seam_moved_to_lid": 58
+  },
+  "recess_fill_uv": {
+    "body": {
+      "faces": 1,
+      "uv": [
+        0.5439,
+        0.1251
+      ],
+      "refs": 5
+    },
+    "lid": {
+      "faces": 3,
+      "uv": [
+        0.4035,
+        0.1625
+      ],
+      "refs": 11
+    }
+  },
+  "opening_signs": {
+    "blender_frame": "Lid: rotation about +X of NEGATIVE angle opens it up and backward (lid -105 deg = open; the front, at -Y, goes to +Z). Latch, local, about its top edge: NEGATIVE angle swings its bottom outward (-Y) and up (-90 deg = hasp perpendicular to the lid front face, pointing away from the lid, above the lid front edge when the lid is open).",
+    "unreal_mesh_space": "The import mirrors Y (hinge at -Y, lid and latch extend toward +Y). Lid component relative Roll NEGATIVE (-105) lifts +Y into +Z (UE Roll is positive when +Y goes toward -Z); Latch relative Roll NEGATIVE (-90). Derived from the mirror and the left-handed rule, not measured in the editor.",
+    "lid_pivot_unreal_mesh_space_cm": [
+      0,
+      -24.6,
+      59.5
+    ],
+    "latch_relative_to_lid_unreal_cm": [
+      -0.475,
+      48.749,
+      -8.012
+    ]
+  },
   "texture": "Art/Source/chest/clean/chest_flat_basecolor.png (shared by body, lid and latch; cap faces map to one dark texel)",
   "lock_light_face_count": 9,
   "lock_light_rect_x0_x1_z0_z1_cm": [
@@ -218,36 +266,80 @@
     "latch: 33 open edges after the caps"
   ],
   "manifold_note": "edges_over_2_faces are inherited from the Meshy source mesh (27 edges with 3 faces and 6 with 4 in chest_flat.fbx: interpenetrating thin parts); the caps close the open loops",
+  "texture_note": "LockLight faces are cut out of the three source triangles that held the painted red rectangle (rectangle x -2.76..2.76, z 40.58..43.28 cm on the latch); the colour of those faces is the LockLight material (flat red, emission 2.0 in Blender, the FBX carries the base colour only)",
+  "open_edges_note": "26 / 36 / 33 open edges remain on body / lid / latch: tiny cracks at junctions of the Meshy source (51 open edges in chest_flat.fbx) and non-simple loops the hole fill skips; none is visible in the renders",
+  "open_pose_checks": {
+    "lid_100": {
+      "lid_front_edge_world_z": 116.2,
+      "latch_min_z": 108.9,
+      "latch_min_z_minus_lid_front_edge_z": -7.3,
+      "lid_min_z": 50.5,
+      "clearance_lid_over_body_rim": 9.2,
+      "latch_min_z_over_body_rim": 67.7,
+      "latch_pivot_world_z": 108.9,
+      "latch_min_z_minus_its_pivot_z": 0.0
+    },
+    "lid_105": {
+      "lid_front_edge_world_z": 116.8,
+      "latch_min_z": 107.9,
+      "latch_min_z_minus_lid_front_edge_z": -8.8,
+      "lid_min_z": 51.2,
+      "clearance_lid_over_body_rim": 10.0,
+      "latch_min_z_over_body_rim": 66.7,
+      "latch_pivot_world_z": 108.7,
+      "latch_min_z_minus_its_pivot_z": -0.7
+    },
+    "lid_115": {
+      "lid_front_edge_world_z": 116.5,
+      "latch_min_z": 104.7,
+      "latch_min_z_minus_lid_front_edge_z": -11.9,
+      "lid_min_z": 52.9,
+      "clearance_lid_over_body_rim": 11.6,
+      "latch_min_z_over_body_rim": 63.4,
+      "latch_pivot_world_z": 107.1,
+      "latch_min_z_minus_its_pivot_z": -2.4
+    }
+  },
   "renders": {
     "dir": "Art/Source/chest/clean/renders/",
-    "closed": [
-      "cut_closed_front.png",
-      "cut_closed_side.png",
+    "files": [
       "cut_closed_back.png",
+      "cut_closed_front.png",
       "cut_closed_q.png",
-      "cut_closed_top.png"
-    ],
-    "latch_released_lid_closed": [
+      "cut_closed_side.png",
+      "cut_closed_top.png",
       "cut_latchout_front.png",
-      "cut_latchout_q.png"
-    ],
-    "open": [
+      "cut_latchout_q.png",
+      "cut_open_back.png",
       "cut_open_front.png",
-      "cut_open_side.png",
+      "cut_open_high_q.png",
       "cut_open_q.png",
+      "cut_open_side.png",
       "cut_open_top.png",
-      "cut_open_high_q.png"
+      "cut_openwide100_q.png",
+      "cut_openwide100_side.png",
+      "cut_openwide105_q.png",
+      "cut_openwide105_side.png",
+      "cut_openwide115_q.png",
+      "cut_openwide115_side.png",
+      "cut_openwide_back.png",
+      "cut_openwide_front.png",
+      "cut_openwide_q.png",
+      "cut_openwide_side.png"
     ],
-    "camera": "same as the 306-01 renders: ortho 170, target (0,0,33), 500 cm, EEVEE, one sun 4.0 rotated (50,10,-60), world 0.85 at 0.6",
-    "poses": "closed = all at identity; latch released = latch -60 deg about X at its pivot; open = lid -105 deg about X at the hinge axis, latch child of the lid with +80 deg local (hangs down, total -25 deg)"
+    "before": [
+      "before_closed_back.png",
+      "before_closed_front.png",
+      "before_closed_q.png",
+      "before_closed_side.png",
+      "before_open_front.png",
+      "before_open_high_q.png",
+      "before_open_q.png",
+      "before_open_side.png",
+      "before_open_top.png"
+    ],
+    "camera": "ortho 170, target (0,0,33), 500 cm, EEVEE, one sun 4.0 rotated (50,10,-60), world 0.85 at 0.6 (the cut_* renders of 306-02)",
+    "poses": "closed = identity; latch released = latch -60 about X; open = lid -105 about X at the pin axis, latch child of the lid with -90 local; cut_openwide* = wide camera (ortho 260, target (0,20,70)); cut_openwide100 / cut_openwide115 = lid -100 / -115"
   },
-  "closed_vs_306_01_render_pixels_differing_over_0_1_of_640000": {
-    "front": 480,
-    "side": 326,
-    "back": 0,
-    "q": 392,
-    "top": 173
-  },
-  "texture_note": "LockLight faces are cut out of the three source triangles that held the painted red rectangle (rectangle x -2.76..2.76, z 40.58..43.28 cm on the latch); the colour of those faces is the LockLight material (flat red, emission 2.0 in Blender, the FBX carries the base colour only)",
-  "open_edges_note": "26 / 36 / 33 open edges remain on body / lid / latch: tiny cracks at junctions of the Meshy source (51 open edges in chest_flat.fbx) and non-simple loops the hole fill skips; none is visible in the renders"
+  "open_pose_note": "latch_min_z_minus_its_pivot_z is the no-dangling check: the lowest latch point is its own top edge (0 to -2.4 cm, its thickness), so nothing hangs below the hinge line. The latch top edge sits 6.5 cm behind the lid front face and 10 cm above its bottom edge, so it is 7 to 12 cm below the lid front-bottom edge in world z. The pins are at the top rear of the lid (z 59.5), 18 cm above the seam: opened about them the lid hovers 9 to 12 cm above the body rim (clearance_lid_over_body_rim), it never touches the body."
 }

@@ -32,8 +32,8 @@ Design: a clean industrial corporate supply locker, wide and low, dark gunmetal 
 - The side view is not a clean 90-degree view (lid and hinges read at an angle).
 
 ## Next steps (open)
-- 3D mesh route: Blender cleanup of the Meshy mesh (task-306). Size about 130 x 70 x 66 uu, the Meshy proportions (owner 2026-10-24); pivots (task-306-02, relative to the body bottom-centre origin): lid on the hinge axis (0, 31.14, 41.25) cm, latch on its top edge (-0.48, -24.15, 51.49) cm; report `Art/Source/chest/clean/chest_cut.report.json`. The lid origin sits on the body back top edge, not on the hinge pins: task-309-07 moves it to the pins and fixes the open pose (owner 2026-10-24).
-- Triangle budget: 3864 tris for body, lid and latch, accepted by the owner 2026-10-24 (default Q2 of task-306 was 3000); task-314 adds at most 150 on the lid.
+- 3D mesh route: Blender cleanup of the Meshy mesh (task-306). Size about 130 x 70 x 66 uu, the Meshy proportions (owner 2026-10-24); pivots (task-309-07, relative to the body bottom-centre origin, Blender frame): lid on the axis of the hinge pins (0, 24.6, 59.5) cm, latch on its top edge (-0.475, -24.149, 51.488) cm, i.e. (-0.475, -48.749, -8.012) in lid space; the hinge blocks belong whole to the lid, the recess behind the latch is filled with the front wall texel. Opening: lid negative rotation about X (-105), latch negative local rotation (-90); Unreal Mesh space (Y mirrored) Roll negative for both, derived not measured. Report `Art/Source/chest/clean/chest_cut.report.json`; the owner's go on the renders is pending.
+- Triangle budget: 3864 tris for body, lid and latch, accepted by the owner 2026-10-24 (default Q2 of task-306 was 3000); 3598 after task-309-07 (the hinge stub and its small caps are gone); task-314 adds at most 150 on the lid.
 - Lid logo missing on the flattened mesh: separate task (owner 2026-10-24).
 - Logo plate: keep the simplified mark or apply the real logo as a decal: open.
 

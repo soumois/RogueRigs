@@ -8,27 +8,34 @@ Cut: 1 the latch = faces in a box in front of the lock (|x| <= 11.6, y < -24, 8 
      3 the rest is bisected at the seam plane z = zs (inside the vertex gap 41.0 to 41.5 of the lid / body groove); above = lid, below = body;
      4 every open loop is closed with a flat cap (cap faces get one dark texel of the base colour); 5 the body top cap is inset by --wall and pushed down
      by --depth: its walls and floor are the Interior slot; 6 the red lock-light faces of the latch (UV triangle mostly red) are the LockLight slot;
-     7 normals recomputed, triangulated, flat shading; 8 origins: body bottom-centre, lid on the hinge axis (X axis at the back top edge of the body),
-     latch on its top edge (X axis at mid depth of its top face). The export keeps every vertex local to its origin; the report gives the origins relative to the body origin."""
+     7 normals recomputed, triangulated, flat shading; 8 origins: body bottom-centre, lid on the axis of the hinge pins (PIN_Y, PIN_Z, measured on the pin
+     cylinders of the source), latch on its top edge (X axis at mid depth of its top face). The export keeps every vertex local to its origin; the report gives
+     the origins relative to the body origin.
+task-309-07: each hinge block (the bracket from the pins down the back wall, HX0..HX1 / y > HY / z >= HZ) is cut whole into the lid (no stub left on the body);
+     the recess fill behind the latch takes the texel of the front wall around it (not the dark cap texel); the render pose swings the latch -90 deg about its
+     top edge (outward and up) with the lid at -100 / -105 / -115 deg. Opening sign: negative rotation about X in the Blender frame (see the report)."""
 import bpy, bmesh, json, math, os, sys
 import numpy as np
 from mathutils import Vector, Matrix, Euler
+
+sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
+import rr_blender as rr
 
 ROOT = os.path.abspath(os.path.join(os.path.dirname(__file__), "..", "..", ".."))
 CLEAN = os.path.join(ROOT, "Art", "Source", "chest", "clean")
 SRC = os.path.join(CLEAN, "chest_flat.fbx")
 TEX = os.path.join(CLEAN, "chest_flat_basecolor.png")
-RENDERS = os.path.join(CLEAN, "renders")
+RENDERS = os.path.join(CLEAN, "renders")  # overridden by --rdir (after argv parse)
 argv = sys.argv[sys.argv.index("--") + 1:]
 mode = argv[0]
+if "--rdir" in argv: RENDERS = argv[argv.index("--rdir") + 1]
 
 
 def opt(name, default):
     return type(default)(argv[argv.index(name) + 1]) if name in argv else default
 
 
-def tri_count(me):
-    return sum(len(p.vertices) - 2 for p in me.polygons)
+tri_count = rr.tri_count
 
 
 def mat_textured():
@@ -82,6 +89,8 @@ def nonmanifold(bm):
 if mode == "cut":
     ZS = opt("--zs", 41.25); WALL = opt("--wall", 3.0); DEPTH = opt("--depth", 22.0)
     LX, LY, LZ0, LZ1 = 11.6, -24.0, 8.0, 54.0
+    PIN_Y, PIN_Z = 24.6, 59.5                      # axis of the hinge pins (cm, body frame): mean of the fitted outer pin ends at x = +-45
+    HX0, HX1, HY, HZ = 20.5, 47.8, 27.5, 33.0      # hinge block box: |x| in HX0..HX1, y > HY, face centre z >= HZ -> lid
     bpy.ops.wm.read_factory_settings(use_empty=True)
     bpy.ops.import_scene.fbx(filepath=SRC)
     obj = next(o for o in bpy.context.scene.objects if o.type == "MESH")
@@ -122,16 +131,85 @@ if mode == "cut":
     bmL = split_off(bm, lat)
     bmR = split_off(bm, {f.index for f in bm.faces} - lat)
     bm.free()
-    # 2 recess behind the latch
-    fill_holes(bmR)
+    # 2 recess behind the latch: filled, then textured with the front wall around it (task-309-07)
+    fl = bmR.faces.layers.int.new("fill"); hl = bmR.faces.layers.int.new("hinge")
+    rec = [f for f in fill_holes(bmR) if abs(f.calc_center_median().x) <= LX + 1.0 and f.calc_center_median().y < LY]
+    for f in rec: f[fl] = 1
+    recset = set(rec)
+    bmR.normal_update()
+    uv0 = bmR.loops.layers.uv.verify()
+    refs = []                                       # (centre z, uv centroid, luminance) of the wall faces that share an edge with the fill
+    seen_g = set()
+    for f in rec:
+        for e in f.edges:
+            for g in e.link_faces:
+                if g in recset or g.index in seen_g or abs(g.normal.dot(f.normal)) < 0.8: continue
+                seen_g.add(g.index)
+                uc = sum((l[uv0].uv for l in g.loops), Vector((0, 0))) / len(g.loops)
+                ix, iy = min(w - 1, max(0, int(uc.x * w))), min(h - 1, max(0, int(uc.y * h)))
+                refs.append((g.calc_center_median().z, uc.copy(), float(px[iy, ix, :3].mean())))
+    print("RECESS fill faces", len(rec), "wall refs", len(refs), "fill y range", round(min(v.co.y for f in rec for v in f.verts), 2), round(max(v.co.y for f in rec for v in f.verts), 2))
+    # hinge block faces: they stay out of the seam cut and go to the lid
+    for f in bmR.faces:
+        c = f.calc_center_median()
+        if HX0 <= abs(c.x) <= HX1 and c.y > HY and c.z >= HZ: f[hl] = 1
+    n_hinge = sum(1 for f in bmR.faces if f[hl])
+    n_hinge_below = sum(1 for f in bmR.faces if f[hl] and f.calc_center_median().z < ZS)
     # 3 seam
-    bmesh.ops.bisect_plane(bmR, geom=list(bmR.verts) + list(bmR.edges) + list(bmR.faces), dist=1e-4, plane_co=(0, 0, ZS), plane_no=(0, 0, 1))
+    nh = [f for f in bmR.faces if not f[hl]]
+    bmesh.ops.bisect_plane(bmR, geom=nh + list({e for f in nh for e in f.edges}) + list({v for f in nh for v in f.verts}), dist=1e-4, plane_co=(0, 0, ZS), plane_no=(0, 0, 1))
     bmR.faces.ensure_lookup_table(); bmR.faces.index_update()
-    lid_i = {f.index for f in bmR.faces if f.calc_center_median().z > ZS}
+    print("HINGE faces", n_hinge, "centre below the seam", n_hinge_below, "after bisect", sum(1 for f in bmR.faces if f[hl]), "fill after bisect", sum(1 for f in bmR.faces if f[fl]))
+    lid_i = {f.index for f in bmR.faces if f.calc_center_median().z > ZS or f[hl]}
     bmB = split_off(bmR, {f.index for f in bmR.faces} - lid_i)
     bmD = split_off(bmR, lid_i)
     bmR.free()
     n_seam_edges_body = len(boundary_edges(bmB)); n_seam_edges_lid = len(boundary_edges(bmD))
+    recess_uv = {}
+    for nm, bx, below in (("body", bmB, True), ("lid", bmD, False)):
+        pool = [r for r in refs if (r[0] < ZS) == below] or refs
+        fx = bx.faces.layers.int.get("fill"); uvx = bx.loops.layers.uv.verify()
+        ff = [f for f in bx.faces if f[fx]]
+        if pool and ff:
+            pool.sort(key=lambda r: r[2]); pick = pool[len(pool) // 2]
+            for f in ff:
+                for l in f.loops: l[uvx].uv = pick[1]
+            recess_uv[nm] = dict(faces=len(ff), uv=[round(float(pick[1].x), 4), round(float(pick[1].y), 4)], refs=len(pool))
+    print("RECESS UV", recess_uv)
+    # back wall behind each hinge block: the block carried that part of the wall, so the body has a hole there; close it with a wall patch (wall texel)
+    wall_uv = None
+    wl = [f for f in bmB.faces if f.normal.y > 0.97 and 31.4 < f.calc_center_median().y < 32.0 and HX0 - 2 < abs(f.calc_center_median().x) < HX1 + 2 and f.calc_center_median().z < HZ]
+    if wl:
+        uvb = bmB.loops.layers.uv.verify()
+        cand = []
+        for f in wl:
+            uc = sum((l[uvb].uv for l in f.loops), Vector((0, 0))) / len(f.loops)
+            ix, iy = min(w - 1, max(0, int(uc.x * w))), min(h - 1, max(0, int(uc.y * h)))
+            cand.append((float(px[iy, ix, :3].mean()), uc.copy()))
+        cand.sort(key=lambda c: c[0]); wall_uv = cand[len(cand) // 2][1]
+    gap_info = []
+
+    def close_gap(bx, nm, uvval):
+        """close the open chain below the seam plane around the hinge blocks (hole in the body wall, open bottom of the lid blocks) with a flat patch"""
+        for sg in (1, -1):
+            ge = [e for e in boundary_edges(bx) if sg * ((e.verts[0].co.x + e.verts[1].co.x) / 2) > HX0 - 1 and abs((e.verts[0].co.x + e.verts[1].co.x) / 2) < HX1 + 1
+                  and (e.verts[0].co.y + e.verts[1].co.y) / 2 > HY and HZ - 3 <= (e.verts[0].co.z + e.verts[1].co.z) / 2 < ZS - 0.05]
+            deg = {}
+            for e in ge:
+                for v in e.verts: deg[v] = deg.get(v, 0) + 1
+            ends = [v for v, d in deg.items() if d == 1]
+            info = dict(part=nm, side=sg, gap_edges=len(ge), ends=[tuple(round(c, 2) for c in v.co) for v in ends])
+            if len(ends) == 2 and all(abs(v.co.z - ZS) < 0.05 for v in ends) and uvval is not None:
+                ne = bx.edges.new((ends[0], ends[1]))
+                nf = bmesh.ops.holes_fill(bx, edges=ge + [ne], sides=2000)["faces"]
+                uvb = bx.loops.layers.uv.verify()
+                for f in nf:
+                    for l in f.loops: l[uvb].uv = uvval
+                info["patch_faces"] = len(nf)
+            gap_info.append(info)
+    close_gap(bmB, "body", wall_uv)
+    close_gap(bmD, "lid", DARK_UV)
+    print("WALLGAP", gap_info)
     # 4 caps
     capB = fill_holes(bmB); capD = fill_holes(bmD); capL = fill_holes(bmL)
     # body cavity
@@ -218,7 +296,7 @@ if mode == "cut":
     ltop = [v.co for v in bL.verts if v.co.z > lz - 0.5]
     lx0 = (min(v.x for v in (v.co for v in bL.verts)) + max(v.x for v in (v.co for v in bL.verts))) / 2
     pivots["body"] = Vector((0, 0, 0))
-    pivots["lid"] = Vector((0, hinge_y, ZS))
+    pivots["lid"] = Vector((0, PIN_Y, PIN_Z))
     pivots["latch"] = Vector((lx0, (min(v.y for v in ltop) + max(v.y for v in ltop)) / 2, lz))
     slot_names = dict(body=[m_tex, m_int], lid=[m_tex], latch=[m_tex, m_red])
     slot_idx = dict(body=interior_faces, lid=set(), latch=red_faces)
@@ -271,17 +349,29 @@ if mode == "cut":
         assembled_dimensions_cm_xyz=[round(float(x), 2) for x in dims],
         pivots_relative_to_body_origin_cm=dict(body=[0, 0, 0], lid_hinge_axis_X=[round(float(x), 3) for x in pivots["lid"]], latch_top_edge_axis_X=[round(float(x), 3) for x in pivots["latch"]]),
         latch_pivot_relative_to_lid_origin_cm=[round(float(x), 3) for x in lp],
-        pivot_notes="lid: origin on the hinge axis (a line along X) at the back top edge of the body (y = back wall of the body at the seam, z = seam plane); rotate about X, negative angle opens the front up. "
-                    "latch: origin on the top edge of the latch block (X axis, mid depth of its top face, x centred); it hangs on the lid front, so in the Blueprint it is a child of the lid; negative X rotation swings its bottom out toward -Y.",
+        pivot_notes="lid: origin on the axis of the hinge pins (a line along X at y = %.1f, z = %.1f in the body frame, measured on the pin cylinders at x = +-45); the whole hinge block (bracket from the pins down the back wall) belongs to the lid. "
+                    "latch: origin on the top edge of the latch block (X axis, mid depth of its top face, x centred); it hangs on the lid front, so in the Blueprint it is a child of the lid." % (PIN_Y, PIN_Z),
+        hinge=dict(pin_axis_y_z_cm=[PIN_Y, PIN_Z], block_box=dict(abs_x=[HX0, HX1], y_above=HY, face_centre_z_min=HZ), block_faces_to_lid=n_hinge, block_faces_centred_below_the_seam_moved_to_lid=n_hinge_below),
+        recess_fill_uv=recess_uv,
+        opening_signs=dict(
+            blender_frame="Lid: rotation about +X of NEGATIVE angle opens it up and backward (lid -105 deg = open; the front, at -Y, goes to +Z). Latch, local, about its top edge: NEGATIVE angle swings its bottom outward (-Y) and up (-90 deg = hasp perpendicular to the lid front face, pointing away from the lid, above the lid front edge when the lid is open).",
+            unreal_mesh_space="The import mirrors Y (hinge at -Y, lid and latch extend toward +Y). Lid component relative Roll NEGATIVE (-105) lifts +Y into +Z (UE Roll is positive when +Y goes toward -Z); Latch relative Roll NEGATIVE (-90). Derived from the mirror and the left-handed rule, not measured in the editor.",
+            lid_pivot_unreal_mesh_space_cm=[0, -PIN_Y, PIN_Z],
+            latch_relative_to_lid_unreal_cm=[round(float(lp[0]), 3), round(float(-lp[1]), 3), round(float(lp[2]), 3)]),
         texture="Art/Source/chest/clean/chest_flat_basecolor.png (shared by body, lid and latch; cap faces map to one dark texel)",
         lock_light_face_count=len(red_faces), lock_light_rect_x0_x1_z0_z1_cm=red_rect_cm, warnings=warnings)
     rep["warnings"] += ["%s: %d open edges after the caps" % (n, summary[n]["edges_before_triangulation"]["open_edges"]) for n in summary if summary[n]["edges_before_triangulation"]["open_edges"]]
     rep["manifold_note"] = "edges_over_2_faces are inherited from the Meshy source mesh (27 edges with 3 faces and 6 with 4 in chest_flat.fbx: interpenetrating thin parts); the caps close the open loops"
-    json.dump(rep, open(os.path.join(CLEAN, "chest_cut.report.json"), "w", encoding="utf-8"), indent=2)
+    RJ = os.path.join(CLEAN, "chest_cut.report.json")
+    if os.path.exists(RJ):
+        old = json.load(open(RJ, encoding="utf-8"))
+        for k in ("texture_note", "open_edges_note"):
+            if k in old: rep[k] = old[k]
+    json.dump(rep, open(RJ, "w", encoding="utf-8"), indent=2)
     print("DONE", json.dumps(dict(tris={n: summary[n]["tris"] for n in summary}, slots={n: summary[n]["faces_per_slot"] for n in summary}, pivots=rep["pivots_relative_to_body_origin_cm"], dims=rep["assembled_dimensions_cm_xyz"], warnings=rep["warnings"])))
 
 elif mode == "render":
-    LID = opt("--lid", -105.0); LATCH = opt("--latch", 80.0); LATCH_OUT = opt("--latch-out", -60.0)
+    LID = opt("--lid", -105.0); LATCH = opt("--latch", -90.0); LATCH_OUT = opt("--latch-out", -60.0)
     bpy.ops.wm.read_factory_settings(use_empty=True)
     rep = json.load(open(os.path.join(CLEAN, "chest_cut.report.json"), encoding="utf-8"))
     pv = rep["pivots_relative_to_body_origin_cm"]
@@ -328,7 +418,36 @@ elif mode == "render":
             bpy.ops.render.render(write_still=True)
 
     allv = (("front", 0, 10), ("side", 90, 10), ("back", 180, 10), ("q", -35, 28), ("top", 0, 89.9))
+    if "--probe" in argv:
+        pose(LID, LATCH); shoot("probe", (("back", 180, 10), ("backq", 145, 30), ("side", 90, 10), ("sideq", 60, 20))); raise SystemExit
     pose(0, 0); shoot("cut_closed", allv)
     pose(0, LATCH_OUT); shoot("cut_latchout", (("front", 0, 10), ("q", -35, 28)))
-    pose(LID, LATCH); shoot("cut_open", (("front", 0, 10), ("side", 90, 10), ("q", -35, 28), ("top", 0, 89.9)))
+    pose(LID, LATCH); shoot("cut_open", (("front", 0, 10), ("side", 90, 10), ("q", -35, 28), ("top", 0, 89.9), ("back", 180, 10)))
     shoot("cut_open_high", (("q", -35, 55),))
+    # open pose checks: lid at 100 / 105 / 115, latch -90: nothing hangs below the lid front edge, nothing of the lid or latch goes into the body
+    from mathutils import Vector as V3
+    def world_verts(name): return [objs[name].matrix_world @ v.co for v in objs[name].data.vertices]
+    checks = {}
+    cd.ortho_scale = 260.0; t = Vector((0, 20, 70))      # wide camera (same light, same angles): the opened lid and the swung latch leave the 170 frame
+    pose(LID, LATCH); shoot("cut_openwide", (("front", 0, 10), ("side", 90, 10), ("q", -35, 28), ("back", 180, 10)))
+    for ld in (100.0, 105.0, 115.0):
+        pose(-ld, LATCH)
+        lidv = world_verts("lid"); latv = world_verts("latch"); bodv = world_verts("body")
+        loc = [v.co for v in objs["lid"].data.vertices]      # lid front-bottom edge: lowest vertices of the front-most 1 cm
+        ymin = min(l.y for l in loc)
+        fe = lidv[min((i for i in range(len(loc)) if loc[i].y < ymin + 1.0), key=lambda i: loc[i].z)]
+        body_top = max(v.z for v in bodv)
+        checks["lid_%d" % ld] = dict(lid_front_edge_world_z=round(fe.z, 1), latch_min_z=round(min(v.z for v in latv), 1), latch_min_z_minus_lid_front_edge_z=round(min(v.z for v in latv) - fe.z, 1),
+                                       lid_min_z=round(min(v.z for v in lidv), 1), clearance_lid_over_body_rim=round(min(v.z for v in lidv) - body_top, 1),
+                                       latch_min_z_over_body_rim=round(min(v.z for v in latv) - body_top, 1),
+                                       latch_pivot_world_z=round((objs["latch"].matrix_world @ V3((0, 0, 0))).z, 1), latch_min_z_minus_its_pivot_z=round(min(v.z for v in latv) - (objs["latch"].matrix_world @ V3((0, 0, 0))).z, 1))
+        shoot("cut_openwide%d" % ld, (("q", -35, 28), ("side", 90, 10)))
+    print("OPENCHECKS", json.dumps(checks))
+    rep["open_pose_checks"] = checks
+    rep["open_pose_note"] = ("latch_min_z_minus_its_pivot_z is the no-dangling check: the lowest latch point is its own top edge (0 to -2.4 cm, its thickness), so nothing hangs below the hinge line. "
+                             "The latch top edge sits 6.5 cm behind the lid front face and 10 cm above its bottom edge, so it is 7 to 12 cm below the lid front-bottom edge in world z. "
+                             "The pins are at the top rear of the lid (z 59.5), 18 cm above the seam: opened about them the lid hovers 9 to 12 cm above the body rim (clearance_lid_over_body_rim), it never touches the body.")
+    rep["renders"] = dict(dir="Art/Source/chest/clean/renders/", files=sorted(f for f in os.listdir(RENDERS) if f.startswith("cut_")), before=sorted(f for f in os.listdir(RENDERS) if f.startswith("before_")),
+                          camera="ortho 170, target (0,0,33), 500 cm, EEVEE, one sun 4.0 rotated (50,10,-60), world 0.85 at 0.6 (the cut_* renders of 306-02)",
+                          poses="closed = identity; latch released = latch -60 about X; open = lid -105 about X at the pin axis, latch child of the lid with -90 local; cut_openwide* = wide camera (ortho 260, target (0,20,70)); cut_openwide100 / cut_openwide115 = lid -100 / -115")
+    json.dump(rep, open(os.path.join(CLEAN, "chest_cut.report.json"), "w", encoding="utf-8"), indent=2)
