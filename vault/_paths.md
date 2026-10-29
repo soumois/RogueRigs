@@ -91,6 +91,7 @@ bp-asteroid-material  reference/tech/blueprints/world/bp-asteroid-material.md
 bp-barrel-explosion  reference/tech/blueprints/fx/bp-barrel-explosion.md
 bp-blob-shadow-material  reference/tech/blueprints/fx/bp-blob-shadow-material.md
 bp-bonus-chest  reference/tech/blueprints/world/bp-bonus-chest.md
+bp-bonus-chest-open  reference/tech/blueprints/fx/bp-bonus-chest-open.md
 bp-burst-rifle  reference/tech/blueprints/player/bp-burst-rifle.md
 bp-chaser  reference/tech/blueprints/enemies/bp-chaser.md
 bp-chaser-v2  reference/tech/blueprints/enemies/bp-chaser-v2.md
