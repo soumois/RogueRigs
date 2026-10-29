@@ -3,7 +3,7 @@ id: task-375-02-bp-shuttle-scale-x4
 description: "Bp: BP_ExtractionShuttle: Mesh scale 4 (rotors and wash follow), chevron hide distance 150 -> 600 uu."
 parent: task-375-extractor-scale-x4
 kind: task
-status: todo
+status: in-progress
 ---
 # Extractor: four times bigger, with its level-ending zone and footprint: bp
 
@@ -20,7 +20,7 @@ status: todo
 - usage: open
 - runs: open
 - milestone: M2
-- started: open
+- started: 2026-10-29T23:45:04Z
 - waiting_for: none
 - result: open
 

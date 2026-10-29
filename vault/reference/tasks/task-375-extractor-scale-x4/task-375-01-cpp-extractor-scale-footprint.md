@@ -3,7 +3,7 @@ id: task-375-01-cpp-extractor-scale-footprint
 description: "Cpp: ARRShuttle FootprintCells 16 x 12 and ShuttleBoardRadiusCells 12 (804 uu); test expectations updated."
 parent: task-375-extractor-scale-x4
 kind: task
-status: in-progress
+status: done
 ---
 # Extractor: four times bigger, with its level-ending zone and footprint: cpp
 
@@ -15,14 +15,14 @@ status: in-progress
 - done_when: build succeeds; RogueRigs.Extraction, RogueRigs.RunFlow and Integration.FineConsoleShuttlePlacement pass; committed by path.
 - editor_state: closed
 - token_ceiling: 1.2 M units
-- model: open
-- tokens: open
-- usage: open
-- runs: open
+- model: sonnet
+- tokens: input 28, cache write 49182, cache read 1092769, output 7214
+- usage: turns 14, context start 58k peak 93k, resumes 0, 5 min, units 0.21 M
+- runs: 1
 - milestone: M2
 - started: 2026-10-29T23:39:47Z
 - waiting_for: none
-- result: open
+- result: FootprintCells 16x12, ShuttleBoardRadiusCells 12; Extraction, RunFlow, FineConsoleShuttlePlacement pass; commit 8fae3518
 
 ## Relations
 - [[task-375-extractor-scale-x4]] — parent global task.
