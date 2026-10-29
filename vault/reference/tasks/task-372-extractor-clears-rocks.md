@@ -1,9 +1,9 @@
 ---
 id: task-372-extractor-clears-rocks
 description: "Global task: When the extractor is set on the ground, blocks under its footprint are destroyed and their ore or heal pickups stay on the floor."
-parent: tasks-to-do-index
+parent: tasks-done-index
 kind: task
-status: in-progress
+status: done
 ---
 # Extractor: blocks under its footprint are destroyed, resources stay
 
@@ -13,17 +13,17 @@ status: in-progress
 - gdd_check: read 2026-10-29: [[extraction]] (approved: lands when the alert bar is full, 37-50 cells from the miner, 45 s countdown, reaching it ends the level, missing it loses the run, landing clearance on a clear 4 x 3-cell footprint, look = the Rustwing extractor with four separate rotors), [[level-flow]] (step 1 Land, no arrival described), [[intermission]] (stats screen drawn over the paused finished level, cards screen opaque), [[run-structure]], [[destruction-rules]] (approved: only three things break blocks), [[ore-blocks]] (a deposit is never left partly destroyed; start-zone drops thrown to the ground), [[color-code]] (shuttle white + teal), [[art-prompts-extractor]] (mesh 196.6 x 201.0 x 86.1 cm, nose +X, origin bottom centre, 50,000 triangles), tech [[sys-objectives-shuttle]], [[sys-objectives-run-flow]] (EndRun pauses the game), [[sys-run-transition-fade]] (fade in 0.5 s after the level switch; level 1 and direct PIE have no fade), [[bp-extraction-shuttle]] (white box, glow pulse, chevrons). Conflict: destruction-rules (approved) allows only three block breakers; the extractor is a fourth, written by the Q5 edit. Extraction landing clearance kept (approved), so in practice this acts at arrival. ore-blocks already allows start-zone drops on the ground. Needs [[task-371-extractor-arrival]] first.
 - confirmed_by_owner: yes (2026-10-29, "Pas de vérification visuel pour le point 8, prépare les tâches avec les informations dedans, je les lancerais déjà que le mesh est prés.")
 - milestone: M2
-- next_step: task-372-02-doc-extractor-footprint-clear
+- next_step: none
 - started: 2026-10-29T21:42:09Z
 - waiting_for: none
-- result: open
+- result: Done. Done: 10 doc nodes updated citing commits de889932 and 0e85c9a0 (doc commit 7598c940); lint clean.
 
 ## Subtasks
 1. task-372-01-cpp-extractor-footprint-clear (vault/reference/tasks/task-372-extractor-clears-rocks/task-372-01-cpp-extractor-footprint-clear.md) — cpp: grid footprint clear with source Extractor at each extractor ground placement, drops at rest, barrels without explosion.
 2. task-372-02-doc-extractor-footprint-clear (vault/reference/tasks/task-372-extractor-clears-rocks/task-372-02-doc-extractor-footprint-clear.md) — doc: update sys-grid-api, sys-grid, sys-grid-deposits, run-log-schema and sys-objectives-shuttle.
 
 ## Relations
-- [[tasks-to-do-index]] — parent index.
+- [[tasks-done-index]] — parent index.
 - [[task-372-01-cpp-extractor-footprint-clear]] — step 1, cpp.
 - [[task-372-02-doc-extractor-footprint-clear]] — step 2, doc.
 - [[task-369-extractor-level-exit]] — holds the questions.

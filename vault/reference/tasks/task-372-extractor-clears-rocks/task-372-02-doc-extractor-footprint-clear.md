@@ -3,7 +3,7 @@ id: task-372-02-doc-extractor-footprint-clear
 description: "Doc: update sys-grid-api, sys-grid, sys-grid-deposits, run-log-schema and sys-objectives-shuttle."
 parent: task-372-extractor-clears-rocks
 kind: task
-status: in-progress
+status: done
 ---
 # Extractor: blocks under its footprint are destroyed, resources stay: doc
 
@@ -15,14 +15,14 @@ status: in-progress
 - done_when: source, entry point, drop rule and log line documented with the commit hash; lint clean; committed by path.
 - editor_state: any
 - token_ceiling: 0.3 M units
-- model: open
-- tokens: open
-- usage: open
-- runs: open
+- model: sonnet
+- tokens: input 18, cache write 47710, cache read 245051, output 6471
+- usage: turns 9, context start 12k peak 48k, resumes 0, 1 min, units 0.12 M
+- runs: 1
 - milestone: M2
 - started: 2026-10-29T21:58:23Z
 - waiting_for: none
-- result: open
+- result: Done: 10 doc nodes updated citing commits de889932 and 0e85c9a0 (doc commit 7598c940); lint clean.
 
 ## Relations
 - [[task-372-extractor-clears-rocks]] — parent global task.
