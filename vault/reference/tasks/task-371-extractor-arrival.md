@@ -1,9 +1,9 @@
 ---
 id: task-371-extractor-arrival
 description: "Global task: At level start the miner stands beside the extractor, which takes off as soon as the fade in ends."
-parent: tasks-to-do-index
+parent: tasks-done-index
 kind: task
-status: in-progress
+status: done
 ---
 # Extractor: drops the miner and takes off at level start
 
@@ -13,17 +13,17 @@ status: in-progress
 - gdd_check: read 2026-10-29: [[extraction]] (approved: lands when the alert bar is full, 37-50 cells from the miner, 45 s countdown, reaching it ends the level, missing it loses the run, landing clearance on a clear 4 x 3-cell footprint, look = the Rustwing extractor with four separate rotors), [[level-flow]] (step 1 Land, no arrival described), [[intermission]] (stats screen drawn over the paused finished level, cards screen opaque), [[run-structure]], [[destruction-rules]] (approved: only three things break blocks), [[ore-blocks]] (a deposit is never left partly destroyed; start-zone drops thrown to the ground), [[color-code]] (shuttle white + teal), [[art-prompts-extractor]] (mesh 196.6 x 201.0 x 86.1 cm, nose +X, origin bottom centre, 50,000 triangles), tech [[sys-objectives-shuttle]], [[sys-objectives-run-flow]] (EndRun pauses the game), [[sys-run-transition-fade]] (fade in 0.5 s after the level switch; level 1 and direct PIE have no fade), [[bp-extraction-shuttle]] (white box, glow pulse, chevrons). level-flow step 1 describes no arrival: written by the Q4 edit. Fade events exist (OnScreenFadeFinished FadingIn); level 1 from the menu and a direct PIE have no fade. Blocks under the arrival footprint are task-372. Needs [[task-370-extractor-takeoff-exit]] first.
 - confirmed_by_owner: yes (2026-10-29, "Pas de vérification visuel pour le point 8, prépare les tâches avec les informations dedans, je les lancerais déjà que le mesh est prés.")
 - milestone: M2
-- next_step: task-371-02-doc-extractor-arrival
+- next_step: none
 - started: 2026-10-29T21:29:55Z
 - waiting_for: none
-- result: open
+- result: Done. Done, commit 1a58c95c: arrival placement, mode, trigger, log lines documented in sys-objectives-shuttle, sys-objectives-run-flow, sys-run-transition-fade, sys-player; lint clean.
 
 ## Subtasks
 1. task-371-01-cpp-extractor-arrival (vault/reference/tasks/task-371-extractor-arrival/task-371-01-cpp-extractor-arrival.md) — cpp: spawn an arrival extractor next to the miner spawn and start its takeoff at the end of the fade in, or at once without fade.
 2. task-371-02-doc-extractor-arrival (vault/reference/tasks/task-371-extractor-arrival/task-371-02-doc-extractor-arrival.md) — doc: update sys-objectives-shuttle and sys-run-transition-fade for the arrival extractor.
 
 ## Relations
-- [[tasks-to-do-index]] — parent index.
+- [[tasks-done-index]] — parent index.
 - [[task-371-01-cpp-extractor-arrival]] — step 1, cpp.
 - [[task-371-02-doc-extractor-arrival]] — step 2, doc.
 - [[task-369-extractor-level-exit]] — holds the questions.

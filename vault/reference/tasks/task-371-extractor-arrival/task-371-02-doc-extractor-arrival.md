@@ -3,7 +3,7 @@ id: task-371-02-doc-extractor-arrival
 description: "Doc: update sys-objectives-shuttle and sys-run-transition-fade for the arrival extractor."
 parent: task-371-extractor-arrival
 kind: task
-status: in-progress
+status: done
 ---
 # Extractor: drops the miner and takes off at level start: doc
 
@@ -15,14 +15,14 @@ status: in-progress
 - done_when: arrival placement, mode, trigger and log line documented with the commit hash; lint clean; committed by path.
 - editor_state: any
 - token_ceiling: 0.3 M units
-- model: open
-- tokens: open
-- usage: open
-- runs: open
+- model: sonnet
+- tokens: input 12, cache write 29672, cache read 102832, output 3685
+- usage: turns 6, context start 12k peak 30k, resumes 0, 1 min, units 0.07 M
+- runs: 1
 - milestone: M2
 - started: 2026-10-29T21:41:05Z
 - waiting_for: none
-- result: open
+- result: Done, commit 1a58c95c: arrival placement, mode, trigger, log lines documented in sys-objectives-shuttle, sys-objectives-run-flow, sys-run-transition-fade, sys-player; lint clean.
 
 ## Relations
 - [[task-371-extractor-arrival]] — parent global task.
