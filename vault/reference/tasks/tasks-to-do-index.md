@@ -11,6 +11,5 @@ A global task moves to [[tasks-done-index]] when it is done or cancelled (`vault
 ## Relations
 - [[tasks-index]] — parent index.
 - [[task-314-chest-lid-logo]] — Add the yellow Kessler-Voss mark on top of the chest lid, as on the validated sheet, and show it in game. Status todo.
-- [[task-374-extractor-rotor-wash]] — A rotor-wash particle effect plays under each of the four extractor rotors, following the rotor speed. Status in-progress.
 - [[task-375-extractor-scale-x4]] — Scale the extractor x4 (body and rotors), its level-ending board radius and its footprint in cells; chevrons follow. Status wait-answers.
 - [[task-376-extractor-rock-margin]] — At arrival and extraction landing, the rock of the enlarged footprint plus a margin around it is destroyed; landing stays in its band. Status wait-answers.

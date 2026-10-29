@@ -1,9 +1,9 @@
 ---
 id: task-374-extractor-rotor-wash
 description: "Global task: A rotor-wash particle effect plays under each of the four extractor rotors, following the rotor speed."
-parent: tasks-to-do-index
+parent: tasks-done-index
 kind: task
-status: in-progress
+status: done
 ---
 # Extractor: rotor-wash effect under the four rotors
 
@@ -13,10 +13,10 @@ status: in-progress
 - gdd_check: read 2026-10-29: [[extraction]] (approved: lands when the alert bar is full, 37-50 cells from the miner, 45 s countdown, reaching it ends the level, missing it loses the run, landing clearance on a clear 4 x 3-cell footprint, look = the Rustwing extractor with four separate rotors), [[level-flow]] (step 1 Land, no arrival described), [[intermission]] (stats screen drawn over the paused finished level, cards screen opaque), [[run-structure]], [[destruction-rules]] (approved: only three things break blocks), [[ore-blocks]] (a deposit is never left partly destroyed; start-zone drops thrown to the ground), [[color-code]] (shuttle white + teal), [[art-prompts-extractor]] (mesh 196.6 x 201.0 x 86.1 cm, nose +X, origin bottom centre, 50,000 triangles), tech [[sys-objectives-shuttle]], [[sys-objectives-run-flow]] (EndRun pauses the game), [[sys-run-transition-fade]] (fade in 0.5 s after the level switch; level 1 and direct PIE have no fade), [[bp-extraction-shuttle]] (white box, glow pulse, chevrons). [[readability-rules]] and [[color-code]]: no code colour used by the dust; no gdd value for the wash: asked as Q7. Precedent effect [[bp-drone-thruster]]. Needs [[task-373-extractor-rotor-spin]] first (speed event).
 - confirmed_by_owner: yes (2026-10-29, "Pas de vérification visuel pour le point 8, prépare les tâches avec les informations dedans, je les lancerais déjà que le mesh est prés.")
 - milestone: M2
-- next_step: task-374-03-doc-extractor-rotor-wash
+- next_step: none
 - started: 2026-10-29T23:27:38Z
 - waiting_for: none
-- result: open
+- result: Done. Doc done (5bc81dcf): bp-extractor-rotor-wash created, blueprints-fx-index and bp-extraction-shuttle updated, lint clean.
 
 ## Subtasks
 1. task-374-01-bp-ns-extractor-rotor-wash (vault/reference/tasks/task-374-extractor-rotor-wash/task-374-01-bp-ns-extractor-rotor-wash.md) — bp: create NS_ExtractorRotorWash (downward streaks, floor dust ring, Intensity and floor height parameters).
@@ -24,7 +24,7 @@ status: in-progress
 3. task-374-03-doc-extractor-rotor-wash (vault/reference/tasks/task-374-extractor-rotor-wash/task-374-03-doc-extractor-rotor-wash.md) — doc: create bp-extractor-rotor-wash, update blueprints-fx-index and bp-extraction-shuttle.
 
 ## Relations
-- [[tasks-to-do-index]] — parent index.
+- [[tasks-done-index]] — parent index.
 - [[task-374-01-bp-ns-extractor-rotor-wash]] — step 1, bp.
 - [[task-374-02-bp-shuttle-rotor-wash-wiring]] — step 2, bp.
 - [[task-374-03-doc-extractor-rotor-wash]] — step 3, doc.
