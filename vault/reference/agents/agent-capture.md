@@ -1,6 +1,6 @@
 ---
 id: agent-capture
-description: "Capture agent: runs a -game capture from a planner checklist with a minimal brief and reports each point seen, not seen or ambiguous. Open to run or change visual checks."
+description: "Capture agent: runs a -game capture from a planner checklist, reports each point seen, not seen or ambiguous. Open to run or change visual checks."
 parent: agents-index
 kind: spec
 status: provisional
