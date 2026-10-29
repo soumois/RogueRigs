@@ -3,7 +3,7 @@ id: task-363-02-blender-module-doc
 description: "Doc: 3d definition, agent-3d, blender-asset-route and art-3d-lessons tell the agent to import rr_blender instead of rewriting helpers."
 parent: task-363-blender-shared-module
 kind: task
-status: todo
+status: in-progress
 ---
 # Shared Blender helper module for the 3d agent: doc
 
@@ -20,7 +20,7 @@ status: todo
 - usage: open
 - runs: open
 - milestone: M2
-- started: open
+- started: 2026-10-29T15:41:03Z
 - waiting_for: none
 - result: open
 
