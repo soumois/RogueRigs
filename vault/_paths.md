@@ -37,6 +37,7 @@ art-prompts-card-back  reference/gdd/art-audio/art-prompts-card-back.md
 art-prompts-chest  reference/gdd/art-audio/art-prompts-chest.md
 art-prompts-console  reference/gdd/art-audio/art-prompts-console.md
 art-prompts-drone  reference/gdd/art-audio/art-prompts-drone.md
+art-prompts-extractor  reference/gdd/art-audio/art-prompts-extractor.md
 art-prompts-floor-texture  reference/gdd/art-audio/art-prompts-floor-texture.md
 art-prompts-floor-texture-maps  reference/gdd/art-audio/art-prompts-floor-texture-maps.md
 art-prompts-heal-pickup  reference/gdd/art-audio/art-prompts-heal-pickup.md

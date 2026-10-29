@@ -1,0 +1,44 @@
+[
+  {
+    "file": "C:/Users/soumo/Documents/Unreal Projects/RogueRigs/Art/Meshes/extractor/raw/Meshy_AI_Rustwing_Quadrotor_20261024_texture.fbx",
+    "size_bytes": 115385068,
+    "sha256": "c029751fbc8ed2d401d63ff470bce7bd2ca7afbbbb7d5e016bc17441a7332302",
+    "triangles": 2593690,
+    "vertices": 1296365,
+    "objects": [
+      "Mesh_0"
+    ],
+    "bbox_cm": [
+      190.09,
+      186.18,
+      81.52
+    ],
+    "unit_scale": 1.0,
+    "materials": [
+      "Material.001"
+    ],
+    "uv_layers": {
+      "Mesh_0": [
+        "UVMap"
+      ]
+    },
+    "images": {
+      "Image_0": [
+        2048,
+        2048
+      ],
+      "Image_2": [
+        2048,
+        2048
+      ],
+      "texture_0_metallic.png": [
+        2048,
+        2048
+      ],
+      "texture_0_roughness.png": [
+        2048,
+        2048
+      ]
+    }
+  }
+]
