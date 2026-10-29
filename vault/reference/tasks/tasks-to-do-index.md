@@ -12,6 +12,6 @@ A global task moves to [[tasks-done-index]] when it is done or cancelled (`vault
 - [[tasks-index]] — parent index.
 - [[task-309-chest-opening]] — Chest opening: latch swings, lid slams open with overshoot, freeze and shake, inner light, ground ring, three popping XP chips, sparks. Status wait-answers.
 - [[task-314-chest-lid-logo]] — Add the yellow Kessler-Voss mark on top of the chest lid, as on the validated sheet, and show it in game. Status todo.
-- [[task-365-new-run-packaged-map]] — Fix New Run on the main menu doing nothing: cook L_ArenaM1 into the package (it was missing), repackage, verify the travel. Status todo.
+- [[task-365-new-run-packaged-map]] — Fix New Run on the main menu doing nothing: cook L_ArenaM1 into the package (it was missing), repackage, verify the travel. Status in-progress.
 - [[task-366-extractor-flat-faces]] — Save the owner Meshy extractor (Rustwing quadrotor) files, then decimate it to budget and flatten its bulged flat faces as for the turret. Status in-progress.
 - [[task-367-extractor-rotors]] — Cut the four rotors of the flattened extractor mesh into separate meshes pivoting on their spin axes, body kept fixed, ready to spin later. Status todo.

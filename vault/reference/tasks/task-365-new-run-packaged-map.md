@@ -3,7 +3,7 @@ id: task-365-new-run-packaged-map
 description: "Global task: Fix New Run on the main menu doing nothing: the packaged build cooks only L_MainMenu, so the travel to L_ArenaM1 fails."
 parent: tasks-to-do-index
 kind: task
-status: todo
+status: in-progress
 ---
 # New Run does nothing in the packaged game
 
@@ -14,7 +14,7 @@ status: todo
 - confirmed_by_owner: yes (2026-10-29, "ok")
 - milestone: M2
 - next_step: task-365-01-cook-arena-map
-- started: open
+- started: 2026-10-29T18:25:40Z
 - waiting_for: none
 - result: open
 

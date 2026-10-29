@@ -3,7 +3,7 @@ id: task-365-01-cook-arena-map
 description: "Add both maps to MapsToCook in DefaultGame.ini, rebuild the Development package, check New Run opens L_ArenaM1 in it."
 parent: task-365-new-run-packaged-map
 kind: task
-status: todo
+status: in-progress
 ---
 # Cook L_ArenaM1 into the package and verify New Run
 
@@ -20,7 +20,7 @@ status: todo
 - usage: open
 - runs: open
 - milestone: M2
-- started: open
+- started: 2026-10-29T18:25:40Z
 - waiting_for: none
 - result: open
 
