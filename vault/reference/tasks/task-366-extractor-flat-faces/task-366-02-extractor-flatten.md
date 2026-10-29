@@ -3,7 +3,7 @@ id: task-366-02-extractor-flatten
 description: "3d: decimate the Meshy extractor to at most 48,000 tris without bulging planar regions, project them flat, scale and pivot per Q5, render before and after."
 parent: task-366-extractor-flat-faces
 kind: task
-status: todo
+status: in-progress
 ---
 # Extractor mesh: save the Meshy files, decimate to budget, flatten the faces: 3d
 
@@ -20,7 +20,7 @@ status: todo
 - usage: open
 - runs: open
 - milestone: M2
-- started: open
+- started: 2026-10-29T18:20:17Z
 - waiting_for: none
 - result: open
 

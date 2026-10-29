@@ -13,7 +13,7 @@ status: in-progress
 - gdd_check: read 2026-10-29: [[extraction]] (shuttle, 4 x 3-cell landing footprint, M1), [[gdd-glossary]] and [[lore]] (shuttle = the Rigs' extraction craft, Rigs side patched and rusty: matches "Rustwing"), [[asset-pipeline]] (no triangle budget for the shuttle: open until Q2; height rule is a Blueprint capsule, none exists: Q5), [[art-style-guide]], [[art-3d-lessons]], precedents [[task-345-turret-meshy-files]], [[task-347-turret-flat-surfaces]], [[task-281-robot-mesh-flatten]]. No gdd node names an "extractor" (Q1). No conflict. Milestone: the shuttle is M1, art asset passes run as M2 like the turret.
 - confirmed_by_owner: yes (2026-10-29, "ok")
 - milestone: M2
-- next_step: task-366-01-extractor-meshy-files
+- next_step: task-366-02-extractor-flatten
 - started: 2026-10-29T18:18:53Z
 - waiting_for: none
 - result: open

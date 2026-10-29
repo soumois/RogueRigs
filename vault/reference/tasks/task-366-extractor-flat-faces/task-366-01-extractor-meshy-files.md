@@ -3,7 +3,7 @@ id: task-366-01-extractor-meshy-files
 description: "3d: extract the owner zip safely, measure the Meshy mesh, store it per Q3 and create node art-prompts-extractor."
 parent: task-366-extractor-flat-faces
 kind: task
-status: in-progress
+status: done
 ---
 # Extractor mesh: save the Meshy files, decimate to budget, flatten the faces: 3d
 
@@ -15,14 +15,14 @@ status: in-progress
 - done_when: the zip was extracted into a new empty directory under the agent session scratchpad (never the repo), nothing inside it executed, the FBX path passed as an argument to headless Blender (`-b --factory-startup`); the report gives every measure listed; `git ls-files Art/Source/extractor-meshy` lists the four PNG and the report, and no FBX over 100 MB is staged; art-prompts-extractor exists with relations on both ends; `node vault/scripts/lint.js --write` clean; committed by path as `task-366-01-extractor-meshy-files: <summary>`; `Get-Process blender` empty.
 - editor_state: any
 - token_ceiling: 0.4 M units
-- model: open
-- tokens: open
-- usage: open
-- runs: open
+- model: sonnet
+- tokens: input 18, cache write 33500, cache read 185061, output 5468
+- usage: turns 9, context start 11k peak 34k, resumes 0, 1 min, units 0.09 M
+- runs: 1
 - milestone: M2
 - started: 2026-10-29T18:18:53Z
 - waiting_for: none
-- result: open
+- result: Meshy FBX 2,593,690 tris, 190x186x82 cm, 1 material, 1 UV; stored per Q3; node art-prompts-extractor created; commit 82e2055f
 
 ## Relations
 - [[task-366-extractor-flat-faces]] — parent global task.
