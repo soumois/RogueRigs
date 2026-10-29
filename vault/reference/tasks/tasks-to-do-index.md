@@ -13,3 +13,9 @@ A global task moves to [[tasks-done-index]] when it is done or cancelled (`vault
 - [[task-314-chest-lid-logo]] — Add the yellow Kessler-Voss mark on top of the chest lid, as on the validated sheet, and show it in game. Status todo.
 - [[task-368-extractor-rebake]] — Re-unwrap the 47,000-triangle flattened extractor and bake the Meshy high-poly look (colour, normal, roughness, metallic) onto it, fixing the stretched rust marks. Status in-progress.
 - [[task-367-extractor-rotors]] — Cut the four rotors of the flattened extractor mesh into separate meshes pivoting on their spin axes, body kept fixed, ready to spin later; runs after task-368. Status todo.
+- [[task-369-extractor-level-exit]] — Import the extractor body and rotors into Unreal and make the extraction shuttle show it; walking near it validates the level. Status wait-answers.
+- [[task-370-extractor-takeoff-exit]] — At the contact the end screen opens, the miner disappears and the extractor takes off like a helicopter behind it and leaves the screen. Status wait-answers.
+- [[task-371-extractor-arrival]] — At level start the miner stands beside the extractor, which takes off as soon as the fade in ends. Status wait-answers.
+- [[task-372-extractor-clears-rocks]] — When the extractor is set on the ground, blocks under its footprint are destroyed and their ore or heal pickups stay on the floor. Status wait-answers.
+- [[task-373-extractor-rotor-spin]] — The four extractor rotors spin on their axes, opposite diagonal pairs, slower on the ground, faster in flight. Status wait-answers.
+- [[task-374-extractor-rotor-wash]] — A rotor-wash particle effect plays under each of the four extractor rotors, following the rotor speed. Status wait-answers.

@@ -1,0 +1,28 @@
+---
+id: task-371-02-doc-extractor-arrival
+description: "Doc: update sys-objectives-shuttle and sys-run-transition-fade for the arrival extractor."
+parent: task-371-extractor-arrival
+kind: task
+status: todo
+---
+# Extractor: drops the miner and takes off at level start: doc
+
+- goal: The docs describe the arrival placement, mode and takeoff trigger.
+- agent: doc
+- depends_on: task-371-01-cpp-extractor-arrival
+- inputs: agent-doc (vault/reference/agents/agent-doc.md), sys-objectives-shuttle (vault/reference/tech/systems/world/sys-objectives/sys-objectives-shuttle.md), sys-run-transition-fade (vault/reference/tech/systems/world/sys-run/sys-run-transition-fade.md)
+- expected_output: nodes updated; one commit.
+- done_when: arrival placement, mode, trigger and log line documented with the commit hash; lint clean; committed by path.
+- editor_state: any
+- token_ceiling: 0.3 M units
+- model: open
+- tokens: open
+- usage: open
+- runs: open
+- milestone: M2
+- started: open
+- waiting_for: none
+- result: open
+
+## Relations
+- [[task-371-extractor-arrival]] — parent global task.
