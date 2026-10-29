@@ -11,5 +11,4 @@ A global task moves to [[tasks-done-index]] when it is done or cancelled (`vault
 ## Relations
 - [[tasks-index]] — parent index.
 - [[task-314-chest-lid-logo]] — Add the yellow Kessler-Voss mark on top of the chest lid, as on the validated sheet, and show it in game. Status todo.
-- [[task-373-extractor-rotor-spin]] — The four extractor rotors spin on their axes, opposite diagonal pairs, slower on the ground, faster in flight. Status in-progress.
 - [[task-374-extractor-rotor-wash]] — A rotor-wash particle effect plays under each of the four extractor rotors, following the rotor speed. Status todo.

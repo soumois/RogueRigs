@@ -381,3 +381,4 @@ Archive: it exceeds the index size limits of [[_authoring]] on purpose (owner, 2
 - [[task-370-extractor-takeoff-exit]] — At the contact the end screen opens, the miner disappears and the extractor takes off like a helicopter behind it and leaves the screen. Status done.
 - [[task-371-extractor-arrival]] — At level start the miner stands beside the extractor, which takes off as soon as the fade in ends. Status done.
 - [[task-372-extractor-clears-rocks]] — When the extractor is set on the ground, blocks under its footprint are destroyed and their ore or heal pickups stay on the floor. Status done.
+- [[task-373-extractor-rotor-spin]] — The four extractor rotors spin on their axes, opposite diagonal pairs, slower on the ground, faster in flight. Status done.

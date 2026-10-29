@@ -1,9 +1,9 @@
 ---
 id: task-373-extractor-rotor-spin
 description: "Global task: The four extractor rotors spin on their axes, opposite diagonal pairs, slower on the ground, faster in flight."
-parent: tasks-to-do-index
+parent: tasks-done-index
 kind: task
-status: in-progress
+status: done
 ---
 # Extractor: the four rotors spin
 
@@ -13,17 +13,17 @@ status: in-progress
 - gdd_check: read 2026-10-29: [[extraction]] (approved: lands when the alert bar is full, 37-50 cells from the miner, 45 s countdown, reaching it ends the level, missing it loses the run, landing clearance on a clear 4 x 3-cell footprint, look = the Rustwing extractor with four separate rotors), [[level-flow]] (step 1 Land, no arrival described), [[intermission]] (stats screen drawn over the paused finished level, cards screen opaque), [[run-structure]], [[destruction-rules]] (approved: only three things break blocks), [[ore-blocks]] (a deposit is never left partly destroyed; start-zone drops thrown to the ground), [[color-code]] (shuttle white + teal), [[art-prompts-extractor]] (mesh 196.6 x 201.0 x 86.1 cm, nose +X, origin bottom centre, 50,000 triangles), tech [[sys-objectives-shuttle]], [[sys-objectives-run-flow]] (EndRun pauses the game), [[sys-run-transition-fade]] (fade in 0.5 s after the level switch; level 1 and direct PIE have no fade), [[bp-extraction-shuttle]] (white box, glow pulse, chevrons). No gdd value for rotor speed or direction: asked as Q6 (written in extraction by the edit). Needs [[task-370-extractor-takeoff-exit]] first (flight state).
 - confirmed_by_owner: yes (2026-10-29, "Pas de vérification visuel pour le point 8, prépare les tâches avec les informations dedans, je les lancerais déjà que le mesh est prés.")
 - milestone: M2
-- next_step: task-373-02-doc-extractor-rotor-spin
+- next_step: none
 - started: 2026-10-29T21:59:48Z
 - waiting_for: none
-- result: open
+- result: Done. Docs updated (commit d12b02a6): sys-objectives-shuttle and bp-extraction-shuttle; GetRotorSpeedAlpha defined as rev/s over FlightRevPerSecond (0.6 ground, 1 flight).
 
 ## Subtasks
 1. task-373-01-cpp-extractor-rotor-spin (vault/reference/tasks/task-373-extractor-rotor-spin/task-373-01-cpp-extractor-rotor-spin.md) — cpp: spin the four rotor components per Q6, ground and flight speeds, ramp, ticking while paused; speed fraction getter and event.
 2. task-373-02-doc-extractor-rotor-spin (vault/reference/tasks/task-373-extractor-rotor-spin/task-373-02-doc-extractor-rotor-spin.md) — doc: update sys-objectives-shuttle and bp-extraction-shuttle for the rotor spin.
 
 ## Relations
-- [[tasks-to-do-index]] — parent index.
+- [[tasks-done-index]] — parent index.
 - [[task-373-01-cpp-extractor-rotor-spin]] — step 1, cpp.
 - [[task-373-02-doc-extractor-rotor-spin]] — step 2, doc.
 - [[task-369-extractor-level-exit]] — holds the questions; makes the rotor components.
