@@ -11,4 +11,4 @@ A global task moves to [[tasks-done-index]] when it is done or cancelled (`vault
 ## Relations
 - [[tasks-index]] — parent index.
 - [[task-314-chest-lid-logo]] — Add the yellow Kessler-Voss mark on top of the chest lid, as on the validated sheet, and show it in game. Status todo.
-- [[task-376-extractor-rock-margin]] — At arrival and extraction landing, the rock of the enlarged footprint plus a margin around it is destroyed; landing stays in its band. Status todo.
+- [[task-376-extractor-rock-margin]] — At arrival and extraction landing, the rock of the enlarged footprint plus a margin around it is destroyed; landing stays in its band. Status in-progress.

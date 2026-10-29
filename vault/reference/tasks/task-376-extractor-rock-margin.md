@@ -3,7 +3,7 @@ id: task-376-extractor-rock-margin
 description: "Global task: At arrival and extraction landing, the rock of the enlarged footprint plus a margin around it is destroyed; landing stays in its band."
 parent: tasks-to-do-index
 kind: task
-status: todo
+status: in-progress
 ---
 # Extractor: rock destroyed under it and in a margin around it
 
@@ -14,7 +14,7 @@ status: todo
 - confirmed_by_owner: yes (2026-10-29, "ok")
 - milestone: M2
 - next_step: task-376-01-cpp-extractor-rock-margin
-- started: open
+- started: 2026-10-29T23:48:11Z
 - waiting_for: none
 - result: open
 

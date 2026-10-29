@@ -3,7 +3,7 @@ id: task-376-01-cpp-extractor-rock-margin
 description: "Cpp: margin tunable, footprint + margin cleared at both placements, landing kept in the 37-50 band."
 parent: task-376-extractor-rock-margin
 kind: task
-status: todo
+status: in-progress
 ---
 # Extractor: rock destroyed under it and in a margin around it: cpp
 
@@ -20,7 +20,7 @@ status: todo
 - usage: open
 - runs: open
 - milestone: M2
-- started: open
+- started: 2026-10-29T23:48:11Z
 - waiting_for: none
 - result: open
 
