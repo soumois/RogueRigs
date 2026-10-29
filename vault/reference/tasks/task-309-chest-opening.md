@@ -3,7 +3,7 @@ id: task-309-chest-opening
 description: "Global task: Chest opening: latch swings, lid slams open with overshoot, freeze and shake, inner light, ground ring, three popping XP chips, sparks."
 parent: tasks-to-do-index
 kind: task
-status: todo
+status: in-progress
 ---
 # Bonus chest opening: latch, lid slam, light and XP burst
 
@@ -15,6 +15,7 @@ status: todo
 - owner_2026-10-24: "ok : je garde la commande debug, j'accepte les 3864 tris, le pivot et la pose ouverte se règlent dans 309, et ok pour tous les défauts de la tâche 314." Pivot and open pose moved here from task-306: new 3d step task-309-07 (runs first: lid origin on the hinge pins, no hinge stubs on the body, latch hasp not dangling, recess behind the latch filled, opening signs reported); task-309-01 uses those signs; task-309-05 reimports the three meshes and moves the Lid and Latch components to the new pivots; task-309-06 checks the open pose. Task-314-01 cuts the logo into the lid after task-309-07.
 - milestone: M2
 - next_step: task-309-07-chest-hinge-recut
+- started: 2026-10-29T18:12:12Z
 - result: open
 
 ## Subtasks
