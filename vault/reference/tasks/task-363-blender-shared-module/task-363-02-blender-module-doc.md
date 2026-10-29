@@ -3,7 +3,7 @@ id: task-363-02-blender-module-doc
 description: "Doc: 3d definition, agent-3d, blender-asset-route and art-3d-lessons tell the agent to import rr_blender instead of rewriting helpers."
 parent: task-363-blender-shared-module
 kind: task
-status: in-progress
+status: done
 ---
 # Shared Blender helper module for the 3d agent: doc
 
@@ -15,14 +15,14 @@ status: in-progress
 - done_when: `.claude/agents/3d.md`, agent-3d, blender-asset-route and art-3d-lessons each name `rr_blender` and say not to redefine its helpers; the function names in blender-asset-route match the module header docstring; blender-asset-route stays under ~450 words; no other file changed; `node vault/scripts/lint.js --write` clean; committed by path.
 - editor_state: any
 - token_ceiling: 0.3 M units
-- model: open
-- tokens: open
-- usage: open
-- runs: open
+- model: sonnet
+- tokens: input 10, cache write 23814, cache read 79378, output 2608
+- usage: turns 5, context start 11k peak 27k, resumes 0, 0 min, units 0.05 M
+- runs: 1
 - milestone: M2
 - started: 2026-10-29T15:41:03Z
 - waiting_for: none
-- result: open
+- result: Doc committed 790b3efd: 3d.md step 4, agent-3d, blender-asset-route (Shared module section), art-3d-lessons name rr_blender. blender-asset-route was already 533 words by wc before (now 616 with markup); section itself is 3 bullets.
 
 ## Relations
 - [[task-363-blender-shared-module]] — parent global task.

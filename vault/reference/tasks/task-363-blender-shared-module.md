@@ -1,9 +1,9 @@
 ---
 id: task-363-blender-shared-module
 description: "Global task: shared bpy module rr_blender.py (FBX import and export, report json, preview, tris, sRGB, material) that new 3d scripts import."
-parent: tasks-to-do-index
+parent: tasks-done-index
 kind: task
-status: in-progress
+status: done
 ---
 # Shared Blender helper module for the 3d agent
 
@@ -13,10 +13,10 @@ status: in-progress
 - gdd_check: crew tooling, no gdd node involved, no gdd edit (Planner, 2026-10-29). No task in progress (tasks-to-do-index: 308, 309, 314 todo). Found: `BLENDER_EXE` is set (User variable, `C:\Program Files\Blender Foundation\Blender 5.2\blender.exe`), so the import check can run. Helper definitions found (`^def`): `import_fbx` in drone_cut_parts.py, drone_antenna.py, meshy_cut_parts.py, turret_cut_head.py and 6 others; `tri_count` in cleanup.py, chest_cut.py, drone_cut_parts.py and 4 others; `srgb` in barrel.py, rock_slab_pieces.py, xp_nut_mesh.py and 6 others; `make_material` in asteroid.py, drone_cut_parts.py, rock_plates.py, rock_slab_pieces.py; `setup_render` in rock_plates.py, rock_slab_broken.py, rock_slab_pieces.py, shield_colour_test.py; the standard preview camera is in barrel_preview.py and blender-asset-route "Checking without a screen"; FBX export rule `FBX_SCALE_UNITS` in art-3d-lessons. `Tools/art/blender/chaser/common.py` (325 lines: setup, finish, lm_check, write_part_report) is already a shared module, but chaser-specific; it is not touched. API doc: like C++ (function detail in header comments, [[_authoring]]), the module header docstring is the API list; no new vault node, blender-asset-route gets a short "Shared module" section. Rule for later: generic helpers go in the module, task-specific geometry stays in the asset script, an existing function signature is never changed (scripts import it). A doc subtask is not mandatory (no cpp or bp subtask) but the definition and node edits go to the doc agent as in task-362.
 - confirmed_by_owner: yes (2026-10-29, "OK, tout par défaut")
 - milestone: M2
-- next_step: task-363-02-blender-module-doc
+- next_step: none
 - started: 2026-10-29T15:39:34Z
 - waiting_for: none
-- result: open
+- result: Done. Doc committed 790b3efd: 3d.md step 4, agent-3d, blender-asset-route (Shared module section), art-3d-lessons name rr_blender. blender-asset-route was already 533 words by wc before (now 616 with markup); section itself is 3 bullets.
 
 ## Questions
 Decided 2026-10-29 (owner "OK, tout par défaut"): every default below is accepted; values provisional, owner 2026-10-29.
@@ -31,7 +31,7 @@ Decided 2026-10-29 (owner "OK, tout par défaut"): every default below is accept
 2. task-363-02-blender-module-doc (vault/reference/tasks/task-363-blender-shared-module/task-363-02-blender-module-doc.md) — doc: 3d definition, agent-3d, blender-asset-route and art-3d-lessons tell the agent to import rr_blender instead of rewriting helpers.
 
 ## Relations
-- [[tasks-to-do-index]] — parent index.
+- [[tasks-done-index]] — parent index.
 - [[task-363-01-rr-blender-module]] — step 1, 3d.
 - [[task-363-02-blender-module-doc]] — step 2, doc.
 - [[task-362-agents-path-of]] — previous change to the 3d agent definition (path-of.js).

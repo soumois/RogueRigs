@@ -807,17 +807,18 @@ kind: note
 | [[task-361-02-bp-agent-cost-doc]] | sonnet | 1 | 0k | 20k | 61k | 3k | 0.05 | 4 | 0 |
 | [[task-362-01-agents-path-of-doc]] | sonnet | 1 | 0k | 34k | 139k | 4k | 0.08 | 7 | 0 |
 | [[task-363-01-rr-blender-module]] | sonnet | 1 | 0k | 33k | 214k | 7k | 0.10 | 10 | 0 |
+| [[task-363-02-blender-module-doc]] | sonnet | 1 | 0k | 24k | 79k | 3k | 0.05 | 5 | 0 |
 
 ## Totals
 Rebuilt by `record-cost.js` at each closing; do not edit. Units are input-token equivalents (weights in `vault/scripts/cost-rates.json`). Subtask rows are rounded to k; the lines below them come from the usage snapshot (exact).
 
 | Scope | Units (M) | Input | Cache write | Cache read | Output |
 |---|---|---|---|---|---|
-| All subtask rows above | 326.81 | 0k | 76.66 M | 1632.43 M | 13559k |
+| All subtask rows above | 326.86 | 0k | 76.68 M | 1632.51 M | 13562k |
 | model mixed | 6.75 | 0k | 2.47 M | 20.25 M | 327k |
 | model opus | 185.70 | 0k | 41.44 M | 935.16 M | 8085k |
-| model sonnet | 134.36 | 0k | 32.75 M | 677.02 M | 5147k |
-| Executors and legacy orchestrators that ran a task (pilot) | 15.20 | 2k | 7.16 M | 40.10 M | 446k |
+| model sonnet | 134.41 | 0k | 32.78 M | 677.10 M | 5150k |
+| Executors and legacy orchestrators that ran a task (pilot) | 15.22 | 2k | 7.17 M | 40.22 M | 448k |
 | Planning runs (planners and legacy planning passes) | 17.21 | 2k | 5.60 M | 62.23 M | 797k |
 | Agents without a subtask id (other) | 0.97 | 0k | 0.37 M | 3.96 M | 24k |
 | Main sessions (all of them, also chat outside tasks) | 56.15 | 4k | 9.00 M | 380.86 M | 1361k |

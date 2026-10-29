@@ -369,3 +369,4 @@ Archive: it exceeds the index size limits of [[_authoring]] on purpose (owner, 2
 - [[task-360-capture-agent]] — New Sonnet capture agent: runs -game captures from a planner checklist with a minimal brief, reports each point seen, not seen or ambiguous. Status done.
 - [[task-361-bp-agent-cost]] — Cut bp agent cost: batch independent MCP calls, a compact tool sheet so toolset discovery is skipped, describe single widgets rather than trees. Status done.
 - [[task-362-agents-path-of]] — Agent definitions stop opening _paths.md: style-guide gets fixed read paths, 3d, art, bp, cpp, doc, text resolve wikilinks with path-of.js. Status done.
+- [[task-363-blender-shared-module]] — Shared Blender helper module rr_blender.py for new 3d scripts; 3d definition, agent-3d, blender-asset-route and lessons tell the agent to import it. Status done.
