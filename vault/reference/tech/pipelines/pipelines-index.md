@@ -23,6 +23,7 @@ kind: note
 - [[unreal-mcp]] — Epic's MCP plugin: start, connection, toolsets, limits.
 - [[build-toolchain]] — engine, compiler, plugins, regenerating project files.
 - [[tool-unreal-reimport]] — headless reimport of static meshes in place from their FBX; use after a Blender re-export.
+- [[tool-capture]] — Tools/capture scripts: capture.js, sheet.js comparison sheets and crops, commands.js rr.* list, ffmpeg finder.
 - [[barrel-asset]] — the barrel as built and integrated: files, slots, decals, wear, rejected approaches, Unreal side.
 - [[asteroid-asset]] — the four background asteroid meshes (Blender route): files, budget, seeds, rebuild command.
 - [[kie-image-workflow]] — Kie.ai image generation in practice: hosts, variables, costs, permissions, rules.

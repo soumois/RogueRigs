@@ -406,6 +406,7 @@ text-content-files  reference/tech/pipelines/text-content-files.md
 text-content-schema  reference/tech/pipelines/text-content-schema.md
 text-content-validator  reference/tech/pipelines/text-content-validator.md
 text-run-log-schema  reference/tech/pipelines/text-run-log-schema.md
+tool-capture  reference/tech/pipelines/tool-capture.md
 tool-unreal-reimport  reference/tech/pipelines/tool-unreal-reimport.md
 turret  reference/gdd/weapons/turret.md
 umg-layout  reference/tech/conventions/umg-layout.md
