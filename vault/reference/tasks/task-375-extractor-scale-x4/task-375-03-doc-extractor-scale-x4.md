@@ -3,7 +3,7 @@ id: task-375-03-doc-extractor-scale-x4
 description: "Doc: doc: update sys-objectives-shuttle, sys-objectives-run-flow and bp-extraction-shuttle."
 parent: task-375-extractor-scale-x4
 kind: task
-status: in-progress
+status: done
 ---
 # Extractor: four times bigger, with its level-ending zone and footprint: doc
 
@@ -15,14 +15,14 @@ status: in-progress
 - done_when: nodes written; lint clean; committed by path.
 - editor_state: any
 - token_ceiling: 0.3 M units
-- model: open
-- tokens: open
-- usage: open
-- runs: open
+- model: sonnet
+- tokens: input 10, cache write 37929, cache read 339189, output 3754
+- usage: turns 5, context start 59k peak 82k, resumes 0, 0 min, units 0.10 M
+- runs: 1
 - milestone: M2
 - started: 2026-10-29T23:47:08Z
 - waiting_for: none
-- result: open
+- result: sys-objectives-shuttle, sys-objectives-run-flow, bp-extraction-shuttle updated; commit c29c0886
 
 ## Relations
 - [[task-375-extractor-scale-x4]] — parent global task.

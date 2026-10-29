@@ -383,3 +383,4 @@ Archive: it exceeds the index size limits of [[_authoring]] on purpose (owner, 2
 - [[task-372-extractor-clears-rocks]] — When the extractor is set on the ground, blocks under its footprint are destroyed and their ore or heal pickups stay on the floor. Status done.
 - [[task-373-extractor-rotor-spin]] — The four extractor rotors spin on their axes, opposite diagonal pairs, slower on the ground, faster in flight. Status done.
 - [[task-374-extractor-rotor-wash]] — A rotor-wash particle effect plays under each of the four extractor rotors, following the rotor speed. Status done.
+- [[task-375-extractor-scale-x4]] — Scale the extractor x4 (body and rotors), its level-ending board radius and its footprint in cells; chevrons follow. Status done.
