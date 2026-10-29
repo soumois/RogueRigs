@@ -3,7 +3,7 @@ id: task-372-extractor-clears-rocks
 description: "Global task: When the extractor is set on the ground, blocks under its footprint are destroyed and their ore or heal pickups stay on the floor."
 parent: tasks-to-do-index
 kind: task
-status: todo
+status: in-progress
 ---
 # Extractor: blocks under its footprint are destroyed, resources stay
 
@@ -14,7 +14,7 @@ status: todo
 - confirmed_by_owner: yes (2026-10-29, "Pas de vérification visuel pour le point 8, prépare les tâches avec les informations dedans, je les lancerais déjà que le mesh est prés.")
 - milestone: M2
 - next_step: task-372-01-cpp-extractor-footprint-clear
-- started: open
+- started: 2026-10-29T21:42:09Z
 - waiting_for: none
 - result: open
 

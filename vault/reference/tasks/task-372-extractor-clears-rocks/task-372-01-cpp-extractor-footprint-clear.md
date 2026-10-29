@@ -3,7 +3,7 @@ id: task-372-01-cpp-extractor-footprint-clear
 description: "Cpp: grid footprint clear with source Extractor at each extractor ground placement, drops at rest, barrels without explosion."
 parent: task-372-extractor-clears-rocks
 kind: task
-status: todo
+status: in-progress
 ---
 # Extractor: blocks under its footprint are destroyed, resources stay: cpp
 
@@ -20,7 +20,7 @@ status: todo
 - usage: open
 - runs: open
 - milestone: M2
-- started: open
+- started: 2026-10-29T21:42:09Z
 - waiting_for: none
 - result: open
 
