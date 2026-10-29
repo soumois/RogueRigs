@@ -499,6 +499,9 @@ protected:
 	/** Every Floor cell the flow field reaches from the miner (OutCells reset first). Landing footprints are checked against it. */
 	static void GatherReachableFloor(URRFlowFieldSubsystem& FlowField, TSet<FIntPoint>& OutCells);
 
+	/** Footprint (MinCell, Size) grown by Margin cells on every side and clamped to the grid: the rectangle handed to ARRArenaGrid::ClearExtractorFootprint (task-376). */
+	void GetClearRect(FIntPoint MinCell, FIntPoint Size, int32 Margin, FIntPoint& OutMinCell, FIntPoint& OutSize) const;
+
 	/** True when every cell of the Footprint (in cells, RRLandingFootprint) around Anchor is in ReachableFloor. */
 	static bool FootprintFits(const TSet<FIntPoint>& ReachableFloor, FIntPoint Anchor, FIntPoint Footprint);
 

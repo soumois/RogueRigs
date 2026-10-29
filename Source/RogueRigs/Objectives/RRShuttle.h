@@ -80,6 +80,10 @@ public:
 	UFUNCTION(BlueprintPure, Category = "Shuttle")
 	FIntPoint GetFootprintCells() const { return FootprintCells; }
 
+	/** Margin in cells cleared of blocks around the footprint when the extractor is set down (task-376). */
+	UFUNCTION(BlueprintPure, Category = "Shuttle")
+	int32 GetClearMarginCells() const { return ClearMarginCells; }
+
 	/** True once the miner boarded or the countdown ran out. */
 	UFUNCTION(BlueprintPure, Category = "Shuttle")
 	bool IsFinished() const { return bFinished; }
@@ -227,6 +231,13 @@ protected:
 	 */
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Shuttle", meta = (ClampMin = 1))
 	FIntPoint FootprintCells = FIntPoint(16, 12);
+
+	/**
+	 * Margin, in cells, cleared of blocks around the footprint at arrival and at extraction landing (the clear rectangle is the footprint
+	 * grown by this on every side, clamped to the grid; ARRArenaGrid::ClearExtractorFootprint). Owner 2026-10-29 (task-376, Q4), provisional.
+	 */
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Shuttle", meta = (ClampMin = 0))
+	int32 ClearMarginCells = 2;
 
 	/** Takeoff: wait before the rise, rotors spinning up (s). Provisional (extraction takeoff, Q3). */
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Shuttle|Takeoff", meta = (ClampMin = 0, Units = "s"))

@@ -369,6 +369,16 @@ void URRRunFlowSubsystem::GatherReachableFloor(URRFlowFieldSubsystem& FlowField,
 	OutCells.Append(Cells);
 }
 
+void URRRunFlowSubsystem::GetClearRect(FIntPoint MinCell, FIntPoint Size, int32 Margin, FIntPoint& OutMinCell, FIntPoint& OutSize) const
+{
+	const int32 SafeMargin = FMath::Max(Margin, 0);
+	const FIntPoint GridSize = Grid ? Grid->GetGridSize() : FIntPoint(INT32_MAX, INT32_MAX);
+	const FIntPoint Low(FMath::Max(MinCell.X - SafeMargin, 0), FMath::Max(MinCell.Y - SafeMargin, 0));
+	const FIntPoint High(FMath::Min(MinCell.X + Size.X - 1 + SafeMargin, GridSize.X - 1), FMath::Min(MinCell.Y + Size.Y - 1 + SafeMargin, GridSize.Y - 1));
+	OutMinCell = Low;
+	OutSize = FIntPoint(FMath::Max(High.X - Low.X + 1, 1), FMath::Max(High.Y - Low.Y + 1, 1));
+}
+
 bool URRRunFlowSubsystem::FootprintFits(const TSet<FIntPoint>& ReachableFloor, FIntPoint Anchor, FIntPoint Footprint)
 {
 	return RRLandingFootprint::Fits(Anchor, Footprint, [&ReachableFloor](FIntPoint Cell) { return ReachableFloor.Contains(Cell); });
@@ -490,6 +500,7 @@ bool URRRunFlowSubsystem::FindShuttleCell(FIntPoint& OutCell)
 	FlowField->GatherReachableCells(ReachableCells, [](FIntPoint Cell, int32 Steps) { return true; }, /*bFloorOnly*/ true);
 	TSet<FIntPoint> ReachableFloor(ReachableCells);
 	TArray<FIntPoint> Candidates;
+	TArray<FIntPoint> BandCells;
 	FIntPoint Nearest(INDEX_NONE, INDEX_NONE);
 	float NearestGap = TNumericLimits<float>::Max();
 	int32 NearestSquared = -1;
@@ -506,6 +517,11 @@ bool URRRunFlowSubsystem::FindShuttleCell(FIntPoint& OutCell)
 			NearestSquared = DistanceSquared;
 			Nearest = Cell;
 		}
+		const bool bInBand = DistanceSquared >= MinSquared && DistanceSquared <= MaxSquared;
+		if (bInBand)
+		{
+			BandCells.Add(Cell);
+		}
 		if (!FootprintFits(ReachableFloor, Cell, Footprint))
 		{
 			continue;
@@ -516,14 +532,25 @@ bool URRRunFlowSubsystem::FindShuttleCell(FIntPoint& OutCell)
 			NearestFittingSquared = DistanceSquared;
 			NearestFitting = Cell;
 		}
-		if (DistanceSquared >= MinSquared && DistanceSquared <= MaxSquared)
+		if (bInBand)
 		{
 			Candidates.Add(Cell);
 		}
 	}
 	if (!Candidates.IsEmpty())
 	{
+		UE_LOG(LogRogueRigs, Log, TEXT("URRRunFlowSubsystem: shuttle cell: %d open %d x %d spot(s) in the %.0f to %.0f cell band (%d reachable cell(s) in it)."),
+			Candidates.Num(), Footprint.X, Footprint.Y, MinCells, MaxCells, BandCells.Num());
 		OutCell = Candidates[RandomStream.RandRange(0, Candidates.Num() - 1)];
+		return true;
+	}
+	// task-376: no open footprint in the band: any reachable floor cell of the band (its rock is destroyed at landing); the out-of-band
+	// fallbacks below only apply when the band has no reachable cell at all.
+	if (!BandCells.IsEmpty())
+	{
+		UE_LOG(LogRogueRigs, Log, TEXT("URRRunFlowSubsystem: shuttle cell: no open %d x %d spot in the %.0f to %.0f cell band; one of %d reachable cell(s) of the band is picked, its blocks are destroyed at landing."),
+			Footprint.X, Footprint.Y, MinCells, MaxCells, BandCells.Num());
+		OutCell = BandCells[RandomStream.RandRange(0, BandCells.Num() - 1)];
 		return true;
 	}
 	if (NearestFittingSquared >= 0)
@@ -565,7 +592,10 @@ ARRShuttle* URRRunFlowSubsystem::LandShuttle()
 	// an open footprint when one exists, so this usually finds nothing; the fallback cell may overlap blocks).
 	const FIntPoint Size = RRLandingFootprint::ClampSize(ShuttleClass->GetDefaultObject<ARRShuttle>()->GetFootprintCells());
 	const URRRunSubsystem* Run = URRRunSubsystem::Get(this);
-	Grid->ClearExtractorFootprint(RRLandingFootprint::GetMinCell(Cell, Size), Size,
+	// task-376: the clear rectangle is the footprint plus the ARRShuttle margin, clamped to the grid.
+	FIntPoint ClearMin, ClearSize;
+	GetClearRect(RRLandingFootprint::GetMinCell(Cell, Size), Size, ShuttleClass->GetDefaultObject<ARRShuttle>()->GetClearMarginCells(), ClearMin, ClearSize);
+	Grid->ClearExtractorFootprint(ClearMin, ClearSize,
 		FString::Printf(TEXT("extraction landing on (%d, %d), run level %d"), Cell.X, Cell.Y, Run ? Run->GetLevelIndex() : 0));
 
 	FActorSpawnParameters Params;
@@ -655,7 +685,9 @@ ARRShuttle* URRRunFlowSubsystem::PlaceArrivalShuttle()
 	if (bArrivalClearsFootprint)
 	{
 		const URRRunSubsystem* Run = URRRunSubsystem::Get(this);
-		Grid->ClearExtractorFootprint(MinCell, Size, FString::Printf(TEXT("arrival, run level %d"), Run ? Run->GetLevelIndex() : 0));
+		FIntPoint ClearMin, ClearSize;
+		GetClearRect(MinCell, Size, ShuttleClass->GetDefaultObject<ARRShuttle>()->GetClearMarginCells(), ClearMin, ClearSize);
+		Grid->ClearExtractorFootprint(ClearMin, ClearSize, FString::Printf(TEXT("arrival, run level %d"), Run ? Run->GetLevelIndex() : 0));
 	}
 
 	FActorSpawnParameters Params;
