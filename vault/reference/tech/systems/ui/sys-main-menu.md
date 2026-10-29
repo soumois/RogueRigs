@@ -15,6 +15,7 @@ kind: doc
 - entry_points: `StartNewRun`, `QuitGame` (the WBP buttons call them); `rr.Menu.NewRun`, `rr.Menu.Exit` (console, `-ExecCmds`).
 - data:
   - `URRRunSettings::NewRunMapName` (category `Run|Menu`, default `/Game/RogueRigs/Maps/L_ArenaM1`; override in `[/Script/RogueRigs.RRRunSettings]`, [[sys-run]]).
+  - Packaged builds: `Config/DefaultGame.ini` `MapsToCook` lists L_MainMenu and L_ArenaM1 ([[build-toolchain]]); without it L_ArenaM1, reached only by the `NewRunMapName` string, is not cooked.
   - Map `/Game/RogueRigs/Maps/L_MainMenu`: empty level, World Settings `DefaultGameMode` = `BP_MainMenuGameMode_C`.
   - `Config/DefaultEngine.ini`: `GameDefaultMap` = L_MainMenu (was L_ArenaM1). `EditorStartupMap` (L_ArenaM1) and `GlobalDefaultGameMode` (`BP_RRGameMode_C`) unchanged, so the editor and PIE on L_ArenaM1 still start a run directly.
 - depends_on: [[sys-run]] (`ResetRun`, `URRRunSettings`), [[sys-cheats]] (`FindCheatWorld`).
@@ -22,7 +23,8 @@ kind: doc
 - gotchas:
   - `capture.js --map none` (task-338-05) launches on the configured start-up map (the menu); a launch passing L_ArenaM1 (capture.js default) opens the arena.
   - Verified (task-338-05, -game, no map argument, 1920x1080): capture `Saved/Captures/MainMenu/MainMenu_00.png` shows the key-art background, dark stepped gradient left, title, New Run orange (focus), Options grey, Exit white; log `main menu shown (WBP_MainMenu_C).`. `rr.Menu.NewRun` logged `run reset`, `Main menu New Run: run reset, opening /Game/RogueRigs/Maps/L_ArenaM1 (level 1)`, `run started, level 1/4 on layout arena_m1_fine`. `rr.Menu.Exit` logged `Main menu Exit: quitting the game.`, exit code 0.
-  - Not seen: real mouse click, Enter key, cursor, hover colour, Options click, packaged build.
+  - Verified packaged (task-365-01): staged Development build, `Saved/StagedBuilds/Windows/RogueRigs.exe -windowed -log -ExecCmds=rr.Menu.NewRun`, no map argument. Log: `main menu shown (WBP_MainMenu_C).`, `Main menu New Run: run reset, opening /Game/RogueRigs/Maps/L_ArenaM1 (level 1).`, `LoadMap: /Game/RogueRigs/Maps/L_ArenaM1`, `URRRunSubsystem: run started, level 1/4 on layout arena_m1_fine.`, no TravelFailure. Cause of the earlier failure: only L_MainMenu was cooked.
+  - Not seen: real mouse click on New Run in the packaged build (owner-only), Enter key, cursor, hover colour, Options click.
   - Editor map authoring: a dirty current level blocks `load_level`; File > New Level opens a modal dialog that blocks MCP; duplicating L_ArenaM1 leaves a ghost level.
 
 ## Relations
@@ -33,3 +35,5 @@ kind: doc
 - [[sys-run]] — run reset and the NewRunMapName setting.
 - [[sys-cheats]] — rr.Menu.NewRun and rr.Menu.Exit.
 - [[task-338-main-menu-screen]] — the task that built it.
+- [[build-toolchain]] — packaging command and the MapsToCook rule.
+- [[task-365-new-run-packaged-map]] — the task that fixed New Run in the packaged build.

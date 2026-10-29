@@ -20,8 +20,9 @@ kind: doc
   `timeout 900 powershell.exe -NoProfile -Command "& 'C:\Program Files\Epic Games\UE_5.8\Engine\Binaries\Win64\UnrealEditor-Cmd.exe' 'C:\Users\soumo\Documents\Unreal Projects\RogueRigs\RogueRigs.uproject' '-ExecCmds=Automation RunTests RogueRigs.Dig;Quit' -unattended -nullrhi -nosplash -nop4 -log; exit \$LASTEXITCODE"`
   Replace `RogueRigs.Dig` by `RogueRigs.Weapons` for the weapon tests, or by `RogueRigs` to run every project test. Tests: [[sys-automation-tests]].
 - Staged Development game (perf checks outside the editor, [[sys-stress]] `-Exe`; output `Saved/StagedBuilds/Windows/`, not committed; single command, exits 0 since [[task-019-01-asset-manager]], ≈ 6 min cold, a few minutes warm):
-  `RunUAT.bat BuildCookRun -project=<uproject> -noP4 -platform=Win64 -clientconfig=Development -build -cook -stage -pak -map=/Game/RogueRigs/Maps/L_ArenaM1 -unattended -utf8output`
-  `Config/DefaultGame.ini` declares a `GameFeatureData` entry in `[/Script/Engine.AssetManagerSettings]` `PrimaryAssetTypesToScan` (scans the empty `/Game/Unused`): the GameFeatures plugin, pulled in by an enabled plugin, logs an error without it and the cook fails with exit 25. Staged run: `Saved/StagedBuilds/Windows/RogueRigs.exe /Game/RogueRigs/Maps/L_ArenaM1 -windowed -log`; log in `Saved/StagedBuilds/Windows/RogueRigs/Saved/Logs/`.
+  `RunUAT.bat BuildCookRun -project=<uproject> -noP4 -platform=Win64 -clientconfig=Development -build -cook -stage -pak -map=/Game/RogueRigs/Maps/L_MainMenu+/Game/RogueRigs/Maps/L_ArenaM1 -unattended -utf8output` (verified in [[task-365-01-cook-arena-map]]: ≈ 6m45s, cook 149 s, exit 0; the manifest lists both maps).
+  `Config/DefaultGame.ini` `[/Script/UnrealEd.ProjectPackagingSettings]` carries `+MapsToCook=(FilePath="/Game/RogueRigs/Maps/L_MainMenu")` and `+MapsToCook=(FilePath="/Game/RogueRigs/Maps/L_ArenaM1")`. A map reached only by a string path (`OpenLevel(NewRunMapName)`) is not cooked on its own: the earlier package held only L_MainMenu. A new map opened by name must be added to this list and to `-map=`.
+  `Config/DefaultGame.ini` declares a `GameFeatureData` entry in `[/Script/Engine.AssetManagerSettings]` `PrimaryAssetTypesToScan` (scans the empty `/Game/Unused`): the GameFeatures plugin, pulled in by an enabled plugin, logs an error without it and the cook fails with exit 25. Staged run, no map argument (starts on L_MainMenu): `Saved/StagedBuilds/Windows/RogueRigs.exe -windowed -log` (add `-ExecCmds=rr.Menu.NewRun` to test New Run, [[sys-main-menu]]); log in `Saved/StagedBuilds/Windows/RogueRigs/Saved/Logs/`.
 - Launch the editor on the project:
   `"C:\Program Files\Epic Games\UE_5.8\Engine\Binaries\Win64\UnrealEditor.exe" "C:\Users\soumo\Documents\Unreal Projects\RogueRigs\RogueRigs.uproject"`
 - Plugins: GameplayAbilities is enabled in `RogueRigs.uproject`; `GameplayAbilities`, `GameplayTags`, `GameplayTasks` are public module dependencies of `RogueRigs.Build.cs` ([[task-004-01-enable-gas]]). StateTree is already enabled by the template.
@@ -34,3 +35,5 @@ kind: doc
 - [[pipelines-index]] — parent index.
 - [[editor-workflow]] — when to compile with the editor closed.
 - [[sys-automation-tests]] — the tests the headless command runs.
+- [[sys-main-menu]] — the packaged New Run check that needs both maps cooked.
+- [[task-365-01-cook-arena-map]] — the task that added MapsToCook.
