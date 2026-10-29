@@ -31,7 +31,7 @@ Create the global task node. Add subtasks (task-NNN-SS) only when that one reque
 - is small enough to finish inside one agent session, well under its token ceiling;
 - lists `depends_on`, `done_when` and `editor_state`;
 - is listed in the global `## Subtasks` as `N. <id> (<repo-relative path>) — <agent>: <goal>`, so the Executor opens it directly (`task-create.js` writes this form);
-- lists its inputs as resolved paths (from `_paths.md`), so the agent reads them directly instead of descending again; re-reading them in each subtask is the accepted cost of independent subtasks.
+- lists its inputs as resolved paths (from `node vault/scripts/path-of.js <id>`), so the agent reads them directly instead of descending again; re-reading them in each subtask is the accepted cost of independent subtasks.
 
 Plan only what the owner asked: no new tests, bot runs, screenshot sessions or features he did not request; only update existing tests that a requested change breaks. The plan shown to the owner lists exactly the tasks and subtasks that will run.
 Order subtasks so that every dependency comes first.
@@ -43,6 +43,7 @@ bp split (owner 2026-10-14): when one owner point needs several editor assets, o
 ## 4. Confirm
 Show the plan once. A "no" to every proposed option means no task: ask or wait, never relaunch work on a reinterpreted target. The owner confirms the global task; subtasks then run without further confirmation. A second global task requested meanwhile waits for its own confirmation.
 When the Planner hands its plan and questions back, it sets each new global `wait-answers` with `node vault/scripts/task-status.js <global>.md status=wait-answers "waiting_for=owner confirmation of the plan"`, and `status=todo` once the owner confirms (this resets `waiting_for` to `none`).
+Defaults file (owner 2026-10-29, [[task-358-planner-cost]] Q1): the Planner writes its plan with one `node vault/scripts/task-create.js <spec.js>` call; with `wait-answers` globals that call also writes `Saved/Planner/<first-global-id>.defaults.json` (not committed: the globals, the Questions, the gdd edits their defaults imply as `{file, old, new}`). On a pure "ok" / "tout par défaut" the main session runs `node vault/scripts/task-confirm.js <file> "<owner words verbatim>"` instead of resuming the Planner: it marks the Questions decided with the date and words, appends the words to each `request`, sets `confirmed_by_owner: yes (<date>, "<words>")` and `todo`, applies the edits, lints and commits by path. Any other answer, or a missing file, resumes the Planner as before.
 
 ## 5. Execute, one subtask at a time
 1. Start the global with `node vault/scripts/task-start.js <global-id>`: it sets the global and its first open subtask `in-progress` and `next_step` to it, lints and commits. Later subtasks are started by `task-next.js` when the previous one closes. Both scripts print only lines that need action (ALERT lines, lint problems, hook and git errors, refusals, the commit line, `left:` leftovers) and end with `next: <absolute path of the started subtask>` or `next: none`; open that path directly. Refusals and failures print no `next:` line.

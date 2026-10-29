@@ -27,8 +27,8 @@ During execution of a confirmed task, the Executor and the agents it launches ma
 ## Resolving a `[[wikilink]]`
 A wikilink is an id, and the file is `<id>.md`.
 1. Parent link: the child is in the current node's directory or a direct subdirectory. List that directory and take the path from the listing.
-2. Cross-branch link: open `vault/_paths.md` once per session; it maps every non-task id to its path.
-3. Task link (`task-NNN-slug`, `task-NNN-MM-slug`): not in `_paths.md`. A global task is `reference/tasks/task-NNN-slug.md`; its subtasks are in the folder `reference/tasks/task-NNN-slug/` (list it). Open tasks through `tasks-index`. The global `## Subtasks` list gives each subtask path (`id (path) — agent: goal`); during execution open it directly (see "Execution exception" above).
+2. Cross-branch link: open `vault/_paths.md` once per session; it maps every non-task id to its path. Or, for ids you already hold, run `node vault/scripts/path-of.js <id> [<id>...]`: it prints `vault/<path>` per id and matches the exact id only (never partial or fuzzy), so it is resolution, not search; an unknown id exits 1. Searching a topic stays forbidden.
+3. Task link (`task-NNN-slug`, `task-NNN-MM-slug`): not in `_paths.md` (`path-of.js` resolves it). A global task is `reference/tasks/task-NNN-slug.md`; its subtasks are in the folder `reference/tasks/task-NNN-slug/` (list it). Open tasks through `tasks-index`. The global `## Subtasks` list gives each subtask path (`id (path) — agent: goal`); during execution open it directly (see "Execution exception" above).
 
 ## Relations
 - [[_authoring]] — the writing counterpart.
