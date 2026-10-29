@@ -3,7 +3,7 @@ id: task-361-01-bp-agent-cost-sheet
 description: "Cpp: Tools/unreal/mcp-sheet.js builds a compact MCP tool sheet from bp agent transcripts of tasks 332-357; run it once and commit the sheet."
 parent: task-361-bp-agent-cost
 kind: task
-status: todo
+status: in-progress
 ---
 # bp agent cost: MCP tool sheet
 
@@ -20,7 +20,7 @@ status: todo
 - usage: open
 - runs: open
 - milestone: M2
-- started: open
+- started: 2026-10-29T14:27:34Z
 - waiting_for: none
 - result: open
 

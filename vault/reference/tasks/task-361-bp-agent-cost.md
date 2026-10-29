@@ -3,7 +3,7 @@ id: task-361-bp-agent-cost
 description: "Global task: Cut bp agent cost: batch independent MCP calls, a compact tool sheet so toolset discovery is skipped, describe single widgets rather than trees."
 parent: tasks-to-do-index
 kind: task
-status: todo
+status: in-progress
 ---
 # bp agent cost: batching, MCP tool sheet, single-widget reads
 
@@ -14,7 +14,7 @@ status: todo
 - confirmed_by_owner: yes (2026-10-29, "OK, tout par défaut" to Q1-Q12 and the plan, relayed by the main session)
 - milestone: M2
 - next_step: task-361-01-bp-agent-cost-sheet
-- started: open
+- started: 2026-10-29T14:27:34Z
 - waiting_for: none
 - result: open
 
