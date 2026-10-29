@@ -3,7 +3,7 @@ id: task-375-01-cpp-extractor-scale-footprint
 description: "Cpp: ARRShuttle FootprintCells 16 x 12 and ShuttleBoardRadiusCells 12 (804 uu); test expectations updated."
 parent: task-375-extractor-scale-x4
 kind: task
-status: todo
+status: in-progress
 ---
 # Extractor: four times bigger, with its level-ending zone and footprint: cpp
 
@@ -20,7 +20,7 @@ status: todo
 - usage: open
 - runs: open
 - milestone: M2
-- started: open
+- started: 2026-10-29T23:39:47Z
 - waiting_for: none
 - result: open
 

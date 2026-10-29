@@ -3,7 +3,7 @@ id: task-375-extractor-scale-x4
 description: "Global task: Scale the extractor x4 (body and rotors), its level-ending board radius and its footprint in cells; chevrons follow."
 parent: tasks-to-do-index
 kind: task
-status: todo
+status: in-progress
 ---
 # Extractor: four times bigger, with its level-ending zone and footprint
 
@@ -14,7 +14,7 @@ status: todo
 - confirmed_by_owner: yes (2026-10-29, "ok")
 - milestone: M2
 - next_step: task-375-01-cpp-extractor-scale-footprint
-- started: open
+- started: 2026-10-29T23:39:47Z
 - waiting_for: none
 - result: open
 
