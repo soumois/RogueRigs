@@ -3,7 +3,7 @@ id: task-369-03-bp-shuttle-extractor-look
 description: "Bp: BP_ExtractionShuttle shows SM_Extractor_Body and the four rotors at their pivots, glow pulse removed, chevrons kept."
 parent: task-369-extractor-level-exit
 kind: task
-status: todo
+status: in-progress
 ---
 # Extractor in game: the level exit you walk up to: bp
 
@@ -20,7 +20,7 @@ status: todo
 - usage: open
 - runs: open
 - milestone: M2
-- started: open
+- started: 2026-10-29T21:13:35Z
 - waiting_for: none
 - result: open
 

@@ -3,7 +3,7 @@ id: task-369-02-cpp-shuttle-rotor-components
 description: "Cpp: ARRShuttle gets a body and four rotor mesh components (FL, FR, RL, RR) for the Blueprint to fill; rule unchanged."
 parent: task-369-extractor-level-exit
 kind: task
-status: in-progress
+status: done
 ---
 # Extractor in game: the level exit you walk up to: cpp
 
@@ -15,14 +15,14 @@ status: in-progress
 - done_when: build succeeds; BP_ExtractionShuttle still loads; RogueRigs.Extraction.* and RogueRigs.RunFlow.* pass; board radius still 3 cells; committed by path.
 - editor_state: closed
 - token_ceiling: 1.2 M units
-- model: open
-- tokens: open
-- usage: open
-- runs: open
+- model: opus
+- tokens: input 28, cache write 46352, cache read 429321, output 8493
+- usage: turns 14, context start 12k peak 46k, resumes 0, 6 min, units 0.14 M
+- runs: 1
 - milestone: M2
 - started: 2026-10-29T21:07:18Z
 - waiting_for: none
-- result: open
+- result: ARRShuttle: Mesh is body, RotorFL/FR/RL/RR NoCollision attached to it, GetRotors(); commit bc6422d1; Extraction+RunFlow 8/8 and FineConsoleShuttlePlacement pass.
 
 ## Relations
 - [[task-369-extractor-level-exit]] — parent global task.
