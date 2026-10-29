@@ -3,7 +3,7 @@ id: task-369-extractor-level-exit
 description: "Global task: Import the extractor body and rotors into Unreal and make the extraction shuttle show it; walking near it validates the level."
 parent: tasks-to-do-index
 kind: task
-status: todo
+status: in-progress
 ---
 # Extractor in game: the level exit you walk up to
 
@@ -14,7 +14,7 @@ status: todo
 - confirmed_by_owner: yes (2026-10-29, "Pas de vérification visuel pour le point 8, prépare les tâches avec les informations dedans, je les lancerais déjà que le mesh est prés.")
 - milestone: M2
 - next_step: task-369-01-bp-extractor-import
-- started: open
+- started: 2026-10-29T21:01:18Z
 - waiting_for: none
 - result: open
 

@@ -3,7 +3,7 @@ id: task-369-01-bp-extractor-import
 description: "Bp: import the extractor body, four rotors, four textures and one material into /Game/RogueRigs/Art/Extractor/."
 parent: task-369-extractor-level-exit
 kind: task
-status: todo
+status: in-progress
 ---
 # Extractor in game: the level exit you walk up to: bp
 
@@ -20,7 +20,7 @@ status: todo
 - usage: open
 - runs: open
 - milestone: M2
-- started: open
+- started: 2026-10-29T21:01:18Z
 - waiting_for: none
 - result: open
 
