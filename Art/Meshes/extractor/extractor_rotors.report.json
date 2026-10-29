@@ -1,0 +1,2818 @@
+{
+  "task": "task-367-01-extractor-rotors-cut",
+  "source": "Art/Meshes/extractor/SM_Extractor.fbx",
+  "input": {
+    "tris": 47000,
+    "vertices": 23020,
+    "materials": [
+      "M_Extractor.001"
+    ],
+    "uv_layers": [
+      "UVMap"
+    ],
+    "bbox_min_cm": [
+      -98.274,
+      -100.5,
+      0.0
+    ],
+    "bbox_max_cm": [
+      98.274,
+      100.5,
+      86.099
+    ]
+  },
+  "axes": {
+    "FL": {
+      "zc": 57.5,
+      "sphere_centre_cm": [
+        32.808,
+        66.197,
+        63.352
+      ],
+      "sphere_radius_cm": 7.184,
+      "sphere_fit_radial_std_cm": 0.325,
+      "hub_faces_sampled": 189,
+      "hub_samples_kept": 4642,
+      "rough_centre_cm": [
+        33.6,
+        66.3
+      ],
+      "lining_circle_centre_cm": [
+        32.57,
+        66.37
+      ],
+      "lining_circle_radius_cm": 25.03,
+      "lining_centre_to_axis_cm": 0.29,
+      "blade_plane_z_cm": 61.866,
+      "rotor_origin_in_body_frame_cm": [
+        32.808,
+        66.197,
+        61.866
+      ]
+    },
+    "FR": {
+      "zc": 57.5,
+      "sphere_centre_cm": [
+        32.967,
+        -66.619,
+        63.319
+      ],
+      "sphere_radius_cm": 7.288,
+      "sphere_fit_radial_std_cm": 0.316,
+      "hub_faces_sampled": 192,
+      "hub_samples_kept": 4715,
+      "rough_centre_cm": [
+        33.7,
+        -66.7
+      ],
+      "lining_circle_centre_cm": [
+        32.73,
+        -66.75
+      ],
+      "lining_circle_radius_cm": 25.21,
+      "lining_centre_to_axis_cm": 0.28,
+      "blade_plane_z_cm": 61.905,
+      "rotor_origin_in_body_frame_cm": [
+        32.967,
+        -66.619,
+        61.905
+      ]
+    },
+    "RL": {
+      "zc": 71.0,
+      "sphere_centre_cm": [
+        -64.777,
+        62.144,
+        76.006
+      ],
+      "sphere_radius_cm": 6.774,
+      "sphere_fit_radial_std_cm": 0.4,
+      "hub_faces_sampled": 167,
+      "hub_samples_kept": 4102,
+      "rough_centre_cm": [
+        -64.85,
+        62.1
+      ],
+      "lining_circle_centre_cm": [
+        -64.58,
+        62.89
+      ],
+      "lining_circle_radius_cm": 25.28,
+      "lining_centre_to_axis_cm": 0.77,
+      "blade_plane_z_cm": 74.563,
+      "rotor_origin_in_body_frame_cm": [
+        -64.777,
+        62.144,
+        74.563
+      ]
+    },
+    "RR": {
+      "zc": 71.0,
+      "sphere_centre_cm": [
+        -64.77,
+        -62.529,
+        76.435
+      ],
+      "sphere_radius_cm": 6.855,
+      "sphere_fit_radial_std_cm": 0.371,
+      "hub_faces_sampled": 147,
+      "hub_samples_kept": 3610,
+      "rough_centre_cm": [
+        -64.9,
+        -62.4
+      ],
+      "lining_circle_centre_cm": [
+        -64.72,
+        -62.98
+      ],
+      "lining_circle_radius_cm": 25.29,
+      "lining_centre_to_axis_cm": 0.45,
+      "blade_plane_z_cm": 74.387,
+      "rotor_origin_in_body_frame_cm": [
+        -64.77,
+        -62.529,
+        74.387
+      ]
+    }
+  },
+  "scan": {
+    "FL": [
+      {
+        "rc_cm": 22.0,
+        "rotor_faces_after_cut": 628,
+        "faces_total_after_cut": 47100,
+        "sweep_intersecting_pairs_total": 24,
+        "sweep_min_clearance_cm": 0.007,
+        "vertices_clipped": 21601,
+        "rotor_max_radius_cm": 22.0,
+        "rotor_z_range_cm": [
+          56.92,
+          70.7
+        ],
+        "on_plateau": true
+      },
+      {
+        "rc_cm": 22.5,
+        "rotor_faces_after_cut": 635,
+        "faces_total_after_cut": 47100,
+        "sweep_intersecting_pairs_total": 96,
+        "sweep_min_clearance_cm": 0.001,
+        "vertices_clipped": 21539,
+        "rotor_max_radius_cm": 22.5,
+        "rotor_z_range_cm": [
+          56.92,
+          70.7
+        ],
+        "on_plateau": true
+      },
+      {
+        "rc_cm": 23.0,
+        "rotor_faces_after_cut": 651,
+        "faces_total_after_cut": 47100,
+        "sweep_intersecting_pairs_total": 186,
+        "sweep_min_clearance_cm": 0.003,
+        "vertices_clipped": 21459,
+        "rotor_max_radius_cm": 23.0,
+        "rotor_z_range_cm": [
+          56.9,
+          70.7
+        ],
+        "on_plateau": true
+      },
+      {
+        "rc_cm": 23.5,
+        "rotor_faces_after_cut": 673,
+        "faces_total_after_cut": 47100,
+        "sweep_intersecting_pairs_total": 384,
+        "sweep_min_clearance_cm": 0.004,
+        "vertices_clipped": 21370,
+        "rotor_max_radius_cm": 23.5,
+        "rotor_z_range_cm": [
+          56.79,
+          70.7
+        ],
+        "on_plateau": true
+      },
+      {
+        "rc_cm": 24.0,
+        "rotor_faces_after_cut": 806,
+        "faces_total_after_cut": 47100,
+        "sweep_intersecting_pairs_total": 0,
+        "sweep_min_clearance_cm": 0.023,
+        "vertices_clipped": 21240,
+        "rotor_max_radius_cm": 24.0,
+        "rotor_z_range_cm": [
+          56.41,
+          70.7
+        ],
+        "on_plateau": false
+      },
+      {
+        "rc_cm": 24.5,
+        "rotor_faces_after_cut": 876,
+        "faces_total_after_cut": 47100,
+        "sweep_intersecting_pairs_total": 47,
+        "sweep_min_clearance_cm": 0.0,
+        "vertices_clipped": 21130,
+        "rotor_max_radius_cm": 24.5,
+        "rotor_z_range_cm": [
+          55.45,
+          70.7
+        ],
+        "on_plateau": false
+      }
+    ],
+    "FR": [
+      {
+        "rc_cm": 22.0,
+        "rotor_faces_after_cut": 574,
+        "faces_total_after_cut": 47098,
+        "sweep_intersecting_pairs_total": 15,
+        "sweep_min_clearance_cm": 0.004,
+        "vertices_clipped": 21635,
+        "rotor_max_radius_cm": 22.0,
+        "rotor_z_range_cm": [
+          57.17,
+          70.7
+        ],
+        "on_plateau": true
+      },
+      {
+        "rc_cm": 22.5,
+        "rotor_faces_after_cut": 588,
+        "faces_total_after_cut": 47098,
+        "sweep_intersecting_pairs_total": 49,
+        "sweep_min_clearance_cm": 0.011,
+        "vertices_clipped": 21569,
+        "rotor_max_radius_cm": 22.5,
+        "rotor_z_range_cm": [
+          57.17,
+          70.7
+        ],
+        "on_plateau": true
+      },
+      {
+        "rc_cm": 23.0,
+        "rotor_faces_after_cut": 604,
+        "faces_total_after_cut": 47098,
+        "sweep_intersecting_pairs_total": 74,
+        "sweep_min_clearance_cm": 0.005,
+        "vertices_clipped": 21496,
+        "rotor_max_radius_cm": 23.0,
+        "rotor_z_range_cm": [
+          57.17,
+          70.7
+        ],
+        "on_plateau": true
+      },
+      {
+        "rc_cm": 23.5,
+        "rotor_faces_after_cut": 651,
+        "faces_total_after_cut": 47098,
+        "sweep_intersecting_pairs_total": 30,
+        "sweep_min_clearance_cm": 0.006,
+        "vertices_clipped": 21418,
+        "rotor_max_radius_cm": 23.5,
+        "rotor_z_range_cm": [
+          56.8,
+          70.7
+        ],
+        "on_plateau": true
+      },
+      {
+        "rc_cm": 24.0,
+        "rotor_faces_after_cut": 724,
+        "faces_total_after_cut": 47098,
+        "sweep_intersecting_pairs_total": 0,
+        "sweep_min_clearance_cm": 0.02,
+        "vertices_clipped": 21314,
+        "rotor_max_radius_cm": 24.0,
+        "rotor_z_range_cm": [
+          56.51,
+          70.7
+        ],
+        "on_plateau": false
+      },
+      {
+        "rc_cm": 24.5,
+        "rotor_faces_after_cut": 774,
+        "faces_total_after_cut": 47098,
+        "sweep_intersecting_pairs_total": 0,
+        "sweep_min_clearance_cm": 0.035,
+        "vertices_clipped": 21202,
+        "rotor_max_radius_cm": 24.5,
+        "rotor_z_range_cm": [
+          55.86,
+          70.7
+        ],
+        "on_plateau": false
+      }
+    ],
+    "RL": [
+      {
+        "rc_cm": 22.0,
+        "rotor_faces_after_cut": 591,
+        "faces_total_after_cut": 47064,
+        "sweep_intersecting_pairs_total": 4,
+        "sweep_min_clearance_cm": 0.086,
+        "vertices_clipped": 21484,
+        "rotor_max_radius_cm": 22.0,
+        "rotor_z_range_cm": [
+          70.53,
+          83.33
+        ],
+        "on_plateau": true
+      },
+      {
+        "rc_cm": 22.5,
+        "rotor_faces_after_cut": 604,
+        "faces_total_after_cut": 47064,
+        "sweep_intersecting_pairs_total": 99,
+        "sweep_min_clearance_cm": 0.009,
+        "vertices_clipped": 21437,
+        "rotor_max_radius_cm": 22.5,
+        "rotor_z_range_cm": [
+          70.53,
+          83.33
+        ],
+        "on_plateau": true
+      },
+      {
+        "rc_cm": 23.0,
+        "rotor_faces_after_cut": 633,
+        "faces_total_after_cut": 47064,
+        "sweep_intersecting_pairs_total": 15,
+        "sweep_min_clearance_cm": 0.007,
+        "vertices_clipped": 21390,
+        "rotor_max_radius_cm": 23.0,
+        "rotor_z_range_cm": [
+          70.17,
+          83.33
+        ],
+        "on_plateau": true
+      },
+      {
+        "rc_cm": 23.5,
+        "rotor_faces_after_cut": 663,
+        "faces_total_after_cut": 47064,
+        "sweep_intersecting_pairs_total": 148,
+        "sweep_min_clearance_cm": 0.004,
+        "vertices_clipped": 21322,
+        "rotor_max_radius_cm": 23.5,
+        "rotor_z_range_cm": [
+          70.17,
+          83.33
+        ],
+        "on_plateau": true
+      },
+      {
+        "rc_cm": 24.0,
+        "rotor_faces_after_cut": 767,
+        "faces_total_after_cut": 47064,
+        "sweep_intersecting_pairs_total": 0,
+        "sweep_min_clearance_cm": 0.002,
+        "vertices_clipped": 21192,
+        "rotor_max_radius_cm": 24.0,
+        "rotor_z_range_cm": [
+          70.04,
+          83.33
+        ],
+        "on_plateau": false
+      },
+      {
+        "rc_cm": 24.5,
+        "rotor_faces_after_cut": 843,
+        "faces_total_after_cut": 47064,
+        "sweep_intersecting_pairs_total": 0,
+        "sweep_min_clearance_cm": 0.031,
+        "vertices_clipped": 21088,
+        "rotor_max_radius_cm": 24.5,
+        "rotor_z_range_cm": [
+          66.8,
+          83.33
+        ],
+        "on_plateau": false
+      }
+    ],
+    "RR": [
+      {
+        "rc_cm": 22.0,
+        "rotor_faces_after_cut": 477,
+        "faces_total_after_cut": 47052,
+        "sweep_intersecting_pairs_total": 38,
+        "sweep_min_clearance_cm": 0.001,
+        "vertices_clipped": 21674,
+        "rotor_max_radius_cm": 22.0,
+        "rotor_z_range_cm": [
+          69.41,
+          83.78
+        ],
+        "on_plateau": true
+      },
+      {
+        "rc_cm": 22.5,
+        "rotor_faces_after_cut": 498,
+        "faces_total_after_cut": 47052,
+        "sweep_intersecting_pairs_total": 64,
+        "sweep_min_clearance_cm": 0.009,
+        "vertices_clipped": 21640,
+        "rotor_max_radius_cm": 22.5,
+        "rotor_z_range_cm": [
+          69.41,
+          83.78
+        ],
+        "on_plateau": true
+      },
+      {
+        "rc_cm": 23.0,
+        "rotor_faces_after_cut": 521,
+        "faces_total_after_cut": 47052,
+        "sweep_intersecting_pairs_total": 23,
+        "sweep_min_clearance_cm": 0.013,
+        "vertices_clipped": 21597,
+        "rotor_max_radius_cm": 23.0,
+        "rotor_z_range_cm": [
+          69.41,
+          83.78
+        ],
+        "on_plateau": true
+      },
+      {
+        "rc_cm": 23.5,
+        "rotor_faces_after_cut": 531,
+        "faces_total_after_cut": 47052,
+        "sweep_intersecting_pairs_total": 39,
+        "sweep_min_clearance_cm": 0.013,
+        "vertices_clipped": 21527,
+        "rotor_max_radius_cm": 23.5,
+        "rotor_z_range_cm": [
+          69.41,
+          83.78
+        ],
+        "on_plateau": true
+      },
+      {
+        "rc_cm": 24.0,
+        "rotor_faces_after_cut": 581,
+        "faces_total_after_cut": 47052,
+        "sweep_intersecting_pairs_total": 137,
+        "sweep_min_clearance_cm": 0.0,
+        "vertices_clipped": 21435,
+        "rotor_max_radius_cm": 24.0,
+        "rotor_z_range_cm": [
+          69.41,
+          83.78
+        ],
+        "on_plateau": false
+      },
+      {
+        "rc_cm": 24.5,
+        "rotor_faces_after_cut": 693,
+        "faces_total_after_cut": 47052,
+        "sweep_intersecting_pairs_total": 47,
+        "sweep_min_clearance_cm": 0.005,
+        "vertices_clipped": 21309,
+        "rotor_max_radius_cm": 24.5,
+        "rotor_z_range_cm": [
+          69.41,
+          83.78
+        ],
+        "on_plateau": false
+      }
+    ]
+  },
+  "chosen_rc_cm": {
+    "FL": 22.0,
+    "FR": 22.0,
+    "RL": 22.0,
+    "RR": 23.0
+  },
+  "cut": {
+    "faces_after_cuts": 47314,
+    "faces_added_by_cuts": 314,
+    "rotor_faces": {
+      "FL": 628,
+      "FR": 574,
+      "RL": 591,
+      "RR": 521
+    },
+    "tip_vertices_clipped_to_cylinder": {
+      "FL": 40,
+      "FR": 40,
+      "RL": 41,
+      "RR": 48
+    }
+  },
+  "cap": {
+    "uv": [
+      0.55743,
+      0.4539
+    ],
+    "texel": {
+      "pixel_xy": [
+        1141,
+        929
+      ],
+      "atlas_px": [
+        2048,
+        2048
+      ],
+      "mean_luminance": 0.0737,
+      "luminance_std": 0.0026,
+      "rule": "darkest 7x7 window (mean + 2 std) at a rotor face centroid UV"
+    },
+    "slot": "M_Extractor (index 0), flat shaded",
+    "Body": {
+      "cap_triangles": 420,
+      "loops": [
+        {
+          "edges": 10,
+          "planarity_dev_cm": 1.375,
+          "centre_cm": [
+            42.92,
+            -86.3,
+            59.95
+          ],
+          "method": "centre fan",
+          "triangles": 10
+        },
+        {
+          "edges": 10,
+          "planarity_dev_cm": 2.557,
+          "centre_cm": [
+            20.12,
+            -83.93,
+            62.63
+          ],
+          "method": "centre fan",
+          "triangles": 10
+        },
+        {
+          "edges": 22,
+          "planarity_dev_cm": 3.757,
+          "centre_cm": [
+            -52.85,
+            -80.96,
+            72.51
+          ],
+          "method": "centre fan",
+          "triangles": 22
+        },
+        {
+          "edges": 8,
+          "planarity_dev_cm": 2.099,
+          "centre_cm": [
+            -78.64,
+            -81.7,
+            75.62
+          ],
+          "method": "centre fan",
+          "triangles": 8
+        },
+        {
+          "edges": 5,
+          "planarity_dev_cm": 0.145,
+          "centre_cm": [
+            -74.47,
+            -72.79,
+            71.03
+          ],
+          "method": "centre fan",
+          "triangles": 5
+        },
+        {
+          "edges": 13,
+          "planarity_dev_cm": 2.919,
+          "centre_cm": [
+            55.07,
+            -68.7,
+            60.59
+          ],
+          "method": "centre fan",
+          "triangles": 13
+        },
+        {
+          "edges": 10,
+          "planarity_dev_cm": 1.828,
+          "centre_cm": [
+            9.38,
+            -66.29,
+            64.94
+          ],
+          "method": "centre fan",
+          "triangles": 10
+        },
+        {
+          "edges": 25,
+          "planarity_dev_cm": 2.547,
+          "centre_cm": [
+            -46.51,
+            -53.97,
+            73.05
+          ],
+          "method": "centre fan",
+          "triangles": 25
+        },
+        {
+          "edges": 5,
+          "planarity_dev_cm": 0.274,
+          "centre_cm": [
+            49.89,
+            -67.4,
+            57.53
+          ],
+          "method": "centre fan",
+          "triangles": 5
+        },
+        {
+          "edges": 9,
+          "planarity_dev_cm": 1.406,
+          "centre_cm": [
+            -89.26,
+            -61.84,
+            75.79
+          ],
+          "method": "centre fan",
+          "triangles": 9
+        },
+        {
+          "edges": 4,
+          "planarity_dev_cm": 0.192,
+          "centre_cm": [
+            -80.2,
+            -64.54,
+            70.9
+          ],
+          "method": "centre fan",
+          "triangles": 4
+        },
+        {
+          "edges": 9,
+          "planarity_dev_cm": 2.464,
+          "centre_cm": [
+            20.2,
+            -49.07,
+            62.54
+          ],
+          "method": "centre fan",
+          "triangles": 9
+        },
+        {
+          "edges": 9,
+          "planarity_dev_cm": 2.505,
+          "centre_cm": [
+            48.37,
+            -49.2,
+            60.8
+          ],
+          "method": "centre fan",
+          "triangles": 9
+        },
+        {
+          "edges": 10,
+          "planarity_dev_cm": 2.138,
+          "centre_cm": [
+            -79.84,
+            -44.43,
+            75.9
+          ],
+          "method": "centre fan",
+          "triangles": 10
+        },
+        {
+          "edges": 9,
+          "planarity_dev_cm": 1.352,
+          "centre_cm": [
+            -53.43,
+            42.88,
+            73.68
+          ],
+          "method": "centre fan",
+          "triangles": 9
+        },
+        {
+          "edges": 10,
+          "planarity_dev_cm": 1.657,
+          "centre_cm": [
+            -79.93,
+            44.87,
+            75.95
+          ],
+          "method": "centre fan",
+          "triangles": 10
+        },
+        {
+          "edges": 8,
+          "planarity_dev_cm": 2.357,
+          "centre_cm": [
+            18.32,
+            48.41,
+            62.88
+          ],
+          "method": "centre fan",
+          "triangles": 8
+        },
+        {
+          "edges": 11,
+          "planarity_dev_cm": 2.389,
+          "centre_cm": [
+            47.56,
+            49.05,
+            60.81
+          ],
+          "method": "centre fan",
+          "triangles": 11
+        },
+        {
+          "edges": 9,
+          "planarity_dev_cm": 1.963,
+          "centre_cm": [
+            -86.69,
+            63.52,
+            75.63
+          ],
+          "method": "centre fan",
+          "triangles": 9
+        },
+        {
+          "edges": 8,
+          "planarity_dev_cm": 2.005,
+          "centre_cm": [
+            -42.76,
+            64.08,
+            73.2
+          ],
+          "method": "centre fan",
+          "triangles": 8
+        },
+        {
+          "edges": 8,
+          "planarity_dev_cm": 1.986,
+          "centre_cm": [
+            10.03,
+            66.39,
+            64.87
+          ],
+          "method": "centre fan",
+          "triangles": 8
+        },
+        {
+          "edges": 9,
+          "planarity_dev_cm": 1.184,
+          "centre_cm": [
+            55.5,
+            68.0,
+            60.39
+          ],
+          "method": "centre fan",
+          "triangles": 9
+        },
+        {
+          "edges": 4,
+          "planarity_dev_cm": 0.325,
+          "centre_cm": [
+            52.01,
+            68.35,
+            57.58
+          ],
+          "method": "centre fan",
+          "triangles": 4
+        },
+        {
+          "edges": 7,
+          "planarity_dev_cm": 0.047,
+          "centre_cm": [
+            -58.77,
+            69.12,
+            70.99
+          ],
+          "method": "centre fan",
+          "triangles": 7
+        },
+        {
+          "edges": 3,
+          "planarity_dev_cm": 0.0,
+          "centre_cm": [
+            -71.04,
+            70.83,
+            70.92
+          ],
+          "method": "centre fan",
+          "triangles": 3
+        },
+        {
+          "edges": 9,
+          "planarity_dev_cm": 1.99,
+          "centre_cm": [
+            -52.7,
+            82.04,
+            73.78
+          ],
+          "method": "centre fan",
+          "triangles": 9
+        },
+        {
+          "edges": 11,
+          "planarity_dev_cm": 2.463,
+          "centre_cm": [
+            -78.42,
+            79.51,
+            75.43
+          ],
+          "method": "centre fan",
+          "triangles": 11
+        },
+        {
+          "edges": 9,
+          "planarity_dev_cm": 2.677,
+          "centre_cm": [
+            18.98,
+            83.81,
+            63.25
+          ],
+          "method": "centre fan",
+          "triangles": 9
+        },
+        {
+          "edges": 9,
+          "planarity_dev_cm": 1.524,
+          "centre_cm": [
+            42.39,
+            86.69,
+            59.79
+          ],
+          "method": "centre fan",
+          "triangles": 9
+        },
+        {
+          "edges": 50,
+          "planarity_dev_cm": 0.0,
+          "centre_cm": [
+            31.15,
+            65.74,
+            57.5
+          ],
+          "method": "centre fan",
+          "triangles": 50
+        },
+        {
+          "edges": 44,
+          "planarity_dev_cm": 0.0,
+          "centre_cm": [
+            30.59,
+            -66.56,
+            57.5
+          ],
+          "method": "centre fan",
+          "triangles": 44
+        },
+        {
+          "edges": 27,
+          "planarity_dev_cm": 0.0,
+          "centre_cm": [
+            -65.01,
+            61.94,
+            71.0
+          ],
+          "method": "centre fan",
+          "triangles": 27
+        },
+        {
+          "edges": 26,
+          "planarity_dev_cm": 0.0,
+          "centre_cm": [
+            -64.46,
+            -62.23,
+            71.0
+          ],
+          "method": "centre fan",
+          "triangles": 26
+        }
+      ],
+      "open_boundary_edges_left_after_caps": 0,
+      "edges_with_more_than_2_faces": 0
+    },
+    "FL": {
+      "cap_triangles": 108,
+      "loops": [
+        {
+          "edges": 8,
+          "planarity_dev_cm": 2.131,
+          "centre_cm": [
+            19.31,
+            49.73,
+            62.88
+          ],
+          "method": "centre fan",
+          "triangles": 8
+        },
+        {
+          "edges": 11,
+          "planarity_dev_cm": 1.466,
+          "centre_cm": [
+            46.73,
+            50.0,
+            60.81
+          ],
+          "method": "centre fan",
+          "triangles": 11
+        },
+        {
+          "edges": 8,
+          "planarity_dev_cm": 1.475,
+          "centre_cm": [
+            11.57,
+            66.34,
+            64.87
+          ],
+          "method": "centre fan",
+          "triangles": 8
+        },
+        {
+          "edges": 9,
+          "planarity_dev_cm": 0.184,
+          "centre_cm": [
+            54.49,
+            67.96,
+            60.39
+          ],
+          "method": "centre fan",
+          "triangles": 9
+        },
+        {
+          "edges": 4,
+          "planarity_dev_cm": 0.325,
+          "centre_cm": [
+            52.01,
+            68.35,
+            57.58
+          ],
+          "method": "centre fan",
+          "triangles": 4
+        },
+        {
+          "edges": 9,
+          "planarity_dev_cm": 1.813,
+          "centre_cm": [
+            19.74,
+            82.8,
+            63.25
+          ],
+          "method": "centre fan",
+          "triangles": 9
+        },
+        {
+          "edges": 9,
+          "planarity_dev_cm": 0.602,
+          "centre_cm": [
+            41.96,
+            85.72,
+            59.79
+          ],
+          "method": "centre fan",
+          "triangles": 9
+        },
+        {
+          "edges": 50,
+          "planarity_dev_cm": 0.0,
+          "centre_cm": [
+            31.15,
+            65.74,
+            57.5
+          ],
+          "method": "centre fan",
+          "triangles": 50
+        }
+      ],
+      "open_boundary_edges_left_after_caps": 0,
+      "edges_with_more_than_2_faces": 0
+    },
+    "FR": {
+      "cap_triangles": 110,
+      "loops": [
+        {
+          "edges": 10,
+          "planarity_dev_cm": 1.443,
+          "centre_cm": [
+            42.59,
+            -85.61,
+            59.95
+          ],
+          "method": "centre fan",
+          "triangles": 10
+        },
+        {
+          "edges": 10,
+          "planarity_dev_cm": 2.409,
+          "centre_cm": [
+            21.09,
+            -82.62,
+            62.63
+          ],
+          "method": "centre fan",
+          "triangles": 10
+        },
+        {
+          "edges": 13,
+          "planarity_dev_cm": 1.44,
+          "centre_cm": [
+            54.03,
+            -68.62,
+            60.59
+          ],
+          "method": "centre fan",
+          "triangles": 13
+        },
+        {
+          "edges": 10,
+          "planarity_dev_cm": 1.295,
+          "centre_cm": [
+            11.66,
+            -66.26,
+            64.94
+          ],
+          "method": "centre fan",
+          "triangles": 10
+        },
+        {
+          "edges": 5,
+          "planarity_dev_cm": 0.274,
+          "centre_cm": [
+            49.89,
+            -67.4,
+            57.53
+          ],
+          "method": "centre fan",
+          "triangles": 5
+        },
+        {
+          "edges": 9,
+          "planarity_dev_cm": 1.552,
+          "centre_cm": [
+            20.56,
+            -49.65,
+            62.54
+          ],
+          "method": "centre fan",
+          "triangles": 9
+        },
+        {
+          "edges": 9,
+          "planarity_dev_cm": 2.003,
+          "centre_cm": [
+            47.25,
+            -50.51,
+            60.8
+          ],
+          "method": "centre fan",
+          "triangles": 9
+        },
+        {
+          "edges": 44,
+          "planarity_dev_cm": 0.0,
+          "centre_cm": [
+            30.59,
+            -66.56,
+            57.5
+          ],
+          "method": "centre fan",
+          "triangles": 44
+        }
+      ],
+      "open_boundary_edges_left_after_caps": 0,
+      "edges_with_more_than_2_faces": 0
+    },
+    "RL": {
+      "cap_triangles": 93,
+      "loops": [
+        {
+          "edges": 9,
+          "planarity_dev_cm": 0.391,
+          "centre_cm": [
+            -53.8,
+            43.49,
+            73.68
+          ],
+          "method": "centre fan",
+          "triangles": 9
+        },
+        {
+          "edges": 10,
+          "planarity_dev_cm": 1.189,
+          "centre_cm": [
+            -78.89,
+            46.0,
+            75.95
+          ],
+          "method": "centre fan",
+          "triangles": 10
+        },
+        {
+          "edges": 9,
+          "planarity_dev_cm": 1.765,
+          "centre_cm": [
+            -84.92,
+            63.34,
+            75.63
+          ],
+          "method": "centre fan",
+          "triangles": 9
+        },
+        {
+          "edges": 8,
+          "planarity_dev_cm": 1.518,
+          "centre_cm": [
+            -43.83,
+            64.02,
+            73.2
+          ],
+          "method": "centre fan",
+          "triangles": 8
+        },
+        {
+          "edges": 7,
+          "planarity_dev_cm": 0.047,
+          "centre_cm": [
+            -58.77,
+            69.12,
+            70.99
+          ],
+          "method": "centre fan",
+          "triangles": 7
+        },
+        {
+          "edges": 3,
+          "planarity_dev_cm": 0.0,
+          "centre_cm": [
+            -71.04,
+            70.83,
+            70.92
+          ],
+          "method": "centre fan",
+          "triangles": 3
+        },
+        {
+          "edges": 9,
+          "planarity_dev_cm": 1.609,
+          "centre_cm": [
+            -53.7,
+            80.51,
+            73.78
+          ],
+          "method": "centre fan",
+          "triangles": 9
+        },
+        {
+          "edges": 11,
+          "planarity_dev_cm": 2.416,
+          "centre_cm": [
+            -77.61,
+            78.45,
+            75.43
+          ],
+          "method": "centre fan",
+          "triangles": 11
+        },
+        {
+          "edges": 27,
+          "planarity_dev_cm": 0.0,
+          "centre_cm": [
+            -65.01,
+            61.94,
+            71.0
+          ],
+          "method": "centre fan",
+          "triangles": 27
+        }
+      ],
+      "open_boundary_edges_left_after_caps": 0,
+      "edges_with_more_than_2_faces": 0
+    },
+    "RR": {
+      "cap_triangles": 109,
+      "loops": [
+        {
+          "edges": 22,
+          "planarity_dev_cm": 2.737,
+          "centre_cm": [
+            -53.07,
+            -80.61,
+            72.51
+          ],
+          "method": "centre fan",
+          "triangles": 22
+        },
+        {
+          "edges": 8,
+          "planarity_dev_cm": 1.867,
+          "centre_cm": [
+            -77.58,
+            -80.26,
+            75.62
+          ],
+          "method": "centre fan",
+          "triangles": 8
+        },
+        {
+          "edges": 5,
+          "planarity_dev_cm": 0.145,
+          "centre_cm": [
+            -74.47,
+            -72.79,
+            71.03
+          ],
+          "method": "centre fan",
+          "triangles": 5
+        },
+        {
+          "edges": 25,
+          "planarity_dev_cm": 2.319,
+          "centre_cm": [
+            -46.89,
+            -54.21,
+            73.05
+          ],
+          "method": "centre fan",
+          "triangles": 25
+        },
+        {
+          "edges": 9,
+          "planarity_dev_cm": 0.569,
+          "centre_cm": [
+            -87.48,
+            -61.91,
+            75.79
+          ],
+          "method": "centre fan",
+          "triangles": 9
+        },
+        {
+          "edges": 4,
+          "planarity_dev_cm": 0.192,
+          "centre_cm": [
+            -80.2,
+            -64.54,
+            70.9
+          ],
+          "method": "centre fan",
+          "triangles": 4
+        },
+        {
+          "edges": 10,
+          "planarity_dev_cm": 1.452,
+          "centre_cm": [
+            -79.26,
+            -45.14,
+            75.9
+          ],
+          "method": "centre fan",
+          "triangles": 10
+        },
+        {
+          "edges": 26,
+          "planarity_dev_cm": 0.0,
+          "centre_cm": [
+            -64.46,
+            -62.23,
+            71.0
+          ],
+          "method": "centre fan",
+          "triangles": 26
+        }
+      ],
+      "open_boundary_edges_left_after_caps": 0,
+      "edges_with_more_than_2_faces": 0
+    }
+  },
+  "files": {
+    "Body": "Art/Meshes/extractor/SM_Extractor_Body.fbx",
+    "FL": "Art/Meshes/extractor/SM_Extractor_Rotor_FL.fbx",
+    "FR": "Art/Meshes/extractor/SM_Extractor_Rotor_FR.fbx",
+    "RL": "Art/Meshes/extractor/SM_Extractor_Rotor_RL.fbx",
+    "RR": "Art/Meshes/extractor/SM_Extractor_Rotor_RR.fbx"
+  },
+  "reimport": {
+    "Body": {
+      "scale": [
+        1.0,
+        1.0,
+        1.0
+      ],
+      "bbox_min_cm": [
+        -98.274,
+        -100.5,
+        0.0
+      ],
+      "bbox_max_cm": [
+        98.274,
+        100.5,
+        86.099
+      ],
+      "dimensions_cm": [
+        196.55,
+        201.0,
+        86.1
+      ],
+      "tris": 45420,
+      "vertices": 22300,
+      "materials": [
+        "M_Extractor.001"
+      ],
+      "uv_layers": [
+        "UVMap"
+      ],
+      "flat_faces": 2913,
+      "boundary_edges_total": 0,
+      "slots_used": [
+        0
+      ],
+      "origin_check": {
+        "bbox_centre_xy_cm": [
+          0.0,
+          0.0
+        ],
+        "bottom_z_cm": 0.0,
+        "source_bbox_centre_xy_cm": [
+          0.0,
+          0.0
+        ],
+        "source_bottom_z_cm": 0.0
+      }
+    },
+    "FL": {
+      "scale": [
+        1.0,
+        1.0,
+        1.0
+      ],
+      "bbox_min_cm": [
+        -21.908,
+        -19.041,
+        -4.941
+      ],
+      "bbox_max_cm": [
+        21.959,
+        21.554,
+        8.831
+      ],
+      "dimensions_cm": [
+        43.87,
+        40.6,
+        13.77
+      ],
+      "tris": 736,
+      "vertices": 364,
+      "materials": [
+        "M_Extractor.001"
+      ],
+      "uv_layers": [
+        "UVMap"
+      ],
+      "flat_faces": 110,
+      "boundary_edges_total": 0,
+      "slots_used": [
+        0
+      ],
+      "origin_check": {
+        "hub_sphere_centre_in_file_cm": [
+          0.008,
+          0.008,
+          1.474
+        ],
+        "origin_to_refitted_axis_cm": 0.0113,
+        "estimator": "same as the measurement: trimmed sphere fit on dense samples of the hub dome faces",
+        "max_radius_from_origin_cm": 22.0,
+        "chosen_rc_cm": 22.0
+      }
+    },
+    "FR": {
+      "scale": [
+        1.0,
+        1.0,
+        1.0
+      ],
+      "bbox_min_cm": [
+        -21.979,
+        -21.458,
+        -4.731
+      ],
+      "bbox_max_cm": [
+        21.976,
+        19.179,
+        8.793
+      ],
+      "dimensions_cm": [
+        43.96,
+        40.64,
+        13.52
+      ],
+      "tris": 684,
+      "vertices": 342,
+      "materials": [
+        "M_Extractor.001"
+      ],
+      "uv_layers": [
+        "UVMap"
+      ],
+      "flat_faces": 116,
+      "boundary_edges_total": 0,
+      "slots_used": [
+        0
+      ],
+      "origin_check": {
+        "hub_sphere_centre_in_file_cm": [
+          -0.027,
+          0.003,
+          1.43
+        ],
+        "origin_to_refitted_axis_cm": 0.027,
+        "estimator": "same as the measurement: trimmed sphere fit on dense samples of the hub dome faces",
+        "max_radius_from_origin_cm": 22.0,
+        "chosen_rc_cm": 22.0
+      }
+    },
+    "RL": {
+      "scale": [
+        1.0,
+        1.0,
+        1.0
+      ],
+      "bbox_min_cm": [
+        -21.976,
+        -21.243,
+        -4.036
+      ],
+      "bbox_max_cm": [
+        21.975,
+        20.516,
+        8.763
+      ],
+      "dimensions_cm": [
+        43.95,
+        41.76,
+        12.8
+      ],
+      "tris": 684,
+      "vertices": 342,
+      "materials": [
+        "M_Extractor.001"
+      ],
+      "uv_layers": [
+        "UVMap"
+      ],
+      "flat_faces": 99,
+      "boundary_edges_total": 0,
+      "slots_used": [
+        0
+      ],
+      "origin_check": {
+        "hub_sphere_centre_in_file_cm": [
+          0.005,
+          -0.009,
+          1.451
+        ],
+        "origin_to_refitted_axis_cm": 0.0105,
+        "estimator": "same as the measurement: trimmed sphere fit on dense samples of the hub dome faces",
+        "max_radius_from_origin_cm": 22.0,
+        "chosen_rc_cm": 22.0
+      }
+    },
+    "RR": {
+      "scale": [
+        1.0,
+        1.0,
+        1.0
+      ],
+      "bbox_min_cm": [
+        -22.994,
+        -21.474,
+        -4.981
+      ],
+      "bbox_max_cm": [
+        22.962,
+        21.577,
+        9.393
+      ],
+      "dimensions_cm": [
+        45.96,
+        43.05,
+        14.37
+      ],
+      "tris": 630,
+      "vertices": 315,
+      "materials": [
+        "M_Extractor.001"
+      ],
+      "uv_layers": [
+        "UVMap"
+      ],
+      "flat_faces": 109,
+      "boundary_edges_total": 0,
+      "slots_used": [
+        0
+      ],
+      "origin_check": {
+        "hub_sphere_centre_in_file_cm": [
+          -0.02,
+          -0.017,
+          2.066
+        ],
+        "origin_to_refitted_axis_cm": 0.0264,
+        "estimator": "same as the measurement: trimmed sphere fit on dense samples of the hub dome faces",
+        "max_radius_from_origin_cm": 23.0,
+        "chosen_rc_cm": 23.0
+      }
+    }
+  },
+  "tris_total": 48154,
+  "budget": 50000,
+  "tris_input": 47000,
+  "vertex_uv_check_vs_SM_Extractor": {
+    "per_file": {
+      "Body": {
+        "vertices": 22300,
+        "identical_to_SM_Extractor": 22110,
+        "new_on_neck_plane_cut": 162,
+        "new_cap_fan_centres": 28,
+        "moved_to_clip_cylinder": 0,
+        "new_elsewhere": 0,
+        "max_position_difference_cm": 0.0,
+        "corners_compared_for_uv": 134594,
+        "cap_corners_skipped": 1260,
+        "corners_with_uv_difference": 0
+      },
+      "FL": {
+        "vertices": 364,
+        "identical_to_SM_Extractor": 266,
+        "new_on_neck_plane_cut": 51,
+        "new_cap_fan_centres": 7,
+        "moved_to_clip_cylinder": 40,
+        "new_elsewhere": 0,
+        "max_position_difference_cm": 1e-05,
+        "corners_compared_for_uv": 1647,
+        "cap_corners_skipped": 324,
+        "corners_with_uv_difference": 0
+      },
+      "FR": {
+        "vertices": 342,
+        "identical_to_SM_Extractor": 250,
+        "new_on_neck_plane_cut": 45,
+        "new_cap_fan_centres": 7,
+        "moved_to_clip_cylinder": 40,
+        "new_elsewhere": 0,
+        "max_position_difference_cm": 1e-05,
+        "corners_compared_for_uv": 1528,
+        "cap_corners_skipped": 330,
+        "corners_with_uv_difference": 0
+      },
+      "RL": {
+        "vertices": 342,
+        "identical_to_SM_Extractor": 261,
+        "new_on_neck_plane_cut": 34,
+        "new_cap_fan_centres": 7,
+        "moved_to_clip_cylinder": 40,
+        "new_elsewhere": 0,
+        "max_position_difference_cm": 0.00326,
+        "corners_compared_for_uv": 1586,
+        "cap_corners_skipped": 279,
+        "corners_with_uv_difference": 0
+      },
+      "RR": {
+        "vertices": 315,
+        "identical_to_SM_Extractor": 234,
+        "new_on_neck_plane_cut": 27,
+        "new_cap_fan_centres": 7,
+        "moved_to_clip_cylinder": 47,
+        "new_elsewhere": 0,
+        "max_position_difference_cm": 0.00129,
+        "corners_compared_for_uv": 1370,
+        "cap_corners_skipped": 327,
+        "corners_with_uv_difference": 0
+      }
+    },
+    "note": "vertices mapped back to the body frame (rotor offset added) and looked up in SM_Extractor.fbx within 0.02 cm; uv compared per corner within 1e-4; cap vertices carry the cap texel UV and are not compared"
+  },
+  "boundary_edges_at_cuts": {
+    "Body": 0,
+    "FL": 0,
+    "FR": 0,
+    "RL": 0,
+    "RR": 0
+  },
+  "sweep": {
+    "method": "rotor rotated about its vertical axis every 10 degrees over 360 (36 angles); BVH triangle overlap between the rotor and the rest of the assembly (body and the other rotors); faces with a vertex on a cut surface (neck plane or prism plane: the planar contact of the caps and their rim) are excluded; minimum distance from vertices and face centres of each to the other; penetration = how far a rotor triangle pokes through the body triangle plane",
+    "per_rotor": {
+      "FL": {
+        "rc_cm": 22.0,
+        "angles": [
+          {
+            "angle_deg": 0,
+            "min_clearance_cm": 0.235,
+            "intersecting_triangle_pairs": 0
+          },
+          {
+            "angle_deg": 10,
+            "min_clearance_cm": 0.008,
+            "intersecting_triangle_pairs": 11,
+            "max_penetration_estimate_cm": 2.739,
+            "place_cm_body_frame": [
+              51.3,
+              71.0,
+              62.7
+            ],
+            "place_radius_from_axis_cm": 19.15,
+            "place_height_cm": 62.69
+          },
+          {
+            "angle_deg": 20,
+            "min_clearance_cm": 0.027,
+            "intersecting_triangle_pairs": 14,
+            "max_penetration_estimate_cm": 1.243,
+            "place_cm_body_frame": [
+              53.5,
+              73.1,
+              61.1
+            ],
+            "place_radius_from_axis_cm": 21.85,
+            "place_height_cm": 61.15
+          },
+          {
+            "angle_deg": 30,
+            "min_clearance_cm": 0.144,
+            "intersecting_triangle_pairs": 0
+          },
+          {
+            "angle_deg": 40,
+            "min_clearance_cm": 0.079,
+            "intersecting_triangle_pairs": 0
+          },
+          {
+            "angle_deg": 50,
+            "min_clearance_cm": 0.141,
+            "intersecting_triangle_pairs": 0
+          },
+          {
+            "angle_deg": 60,
+            "min_clearance_cm": 0.036,
+            "intersecting_triangle_pairs": 3,
+            "max_penetration_estimate_cm": 0.425,
+            "place_cm_body_frame": [
+              53.9,
+              71.2,
+              61.8
+            ],
+            "place_radius_from_axis_cm": 21.69,
+            "place_height_cm": 61.75
+          },
+          {
+            "angle_deg": 70,
+            "min_clearance_cm": 0.066,
+            "intersecting_triangle_pairs": 0
+          },
+          {
+            "angle_deg": 80,
+            "min_clearance_cm": 0.193,
+            "intersecting_triangle_pairs": 0
+          },
+          {
+            "angle_deg": 90,
+            "min_clearance_cm": 0.049,
+            "intersecting_triangle_pairs": 0
+          },
+          {
+            "angle_deg": 100,
+            "min_clearance_cm": 0.132,
+            "intersecting_triangle_pairs": 0
+          },
+          {
+            "angle_deg": 110,
+            "min_clearance_cm": 0.26,
+            "intersecting_triangle_pairs": 0
+          },
+          {
+            "angle_deg": 120,
+            "min_clearance_cm": 0.414,
+            "intersecting_triangle_pairs": 0
+          },
+          {
+            "angle_deg": 130,
+            "min_clearance_cm": 0.459,
+            "intersecting_triangle_pairs": 0
+          },
+          {
+            "angle_deg": 140,
+            "min_clearance_cm": 0.019,
+            "intersecting_triangle_pairs": 13,
+            "max_penetration_estimate_cm": 1.062,
+            "place_cm_body_frame": [
+              53.6,
+              72.5,
+              62.9
+            ],
+            "place_radius_from_axis_cm": 21.7,
+            "place_height_cm": 62.86
+          },
+          {
+            "angle_deg": 150,
+            "min_clearance_cm": 0.275,
+            "intersecting_triangle_pairs": 0
+          },
+          {
+            "angle_deg": 160,
+            "min_clearance_cm": 0.385,
+            "intersecting_triangle_pairs": 0
+          },
+          {
+            "angle_deg": 170,
+            "min_clearance_cm": 0.459,
+            "intersecting_triangle_pairs": 0
+          },
+          {
+            "angle_deg": 180,
+            "min_clearance_cm": 0.438,
+            "intersecting_triangle_pairs": 0
+          },
+          {
+            "angle_deg": 190,
+            "min_clearance_cm": 0.285,
+            "intersecting_triangle_pairs": 0
+          },
+          {
+            "angle_deg": 200,
+            "min_clearance_cm": 0.145,
+            "intersecting_triangle_pairs": 0
+          },
+          {
+            "angle_deg": 210,
+            "min_clearance_cm": 0.238,
+            "intersecting_triangle_pairs": 0
+          },
+          {
+            "angle_deg": 220,
+            "min_clearance_cm": 0.15,
+            "intersecting_triangle_pairs": 0
+          },
+          {
+            "angle_deg": 230,
+            "min_clearance_cm": 0.229,
+            "intersecting_triangle_pairs": 0
+          },
+          {
+            "angle_deg": 240,
+            "min_clearance_cm": 0.234,
+            "intersecting_triangle_pairs": 0
+          },
+          {
+            "angle_deg": 250,
+            "min_clearance_cm": 0.007,
+            "intersecting_triangle_pairs": 10,
+            "max_penetration_estimate_cm": 1.976,
+            "place_cm_body_frame": [
+              53.2,
+              73.2,
+              62.4
+            ],
+            "place_radius_from_axis_cm": 21.6,
+            "place_height_cm": 62.39
+          },
+          {
+            "angle_deg": 260,
+            "min_clearance_cm": 0.166,
+            "intersecting_triangle_pairs": 0
+          },
+          {
+            "angle_deg": 270,
+            "min_clearance_cm": 0.182,
+            "intersecting_triangle_pairs": 0
+          },
+          {
+            "angle_deg": 280,
+            "min_clearance_cm": 0.247,
+            "intersecting_triangle_pairs": 0
+          },
+          {
+            "angle_deg": 290,
+            "min_clearance_cm": 0.375,
+            "intersecting_triangle_pairs": 0
+          },
+          {
+            "angle_deg": 300,
+            "min_clearance_cm": 0.325,
+            "intersecting_triangle_pairs": 0
+          },
+          {
+            "angle_deg": 310,
+            "min_clearance_cm": 0.116,
+            "intersecting_triangle_pairs": 0
+          },
+          {
+            "angle_deg": 320,
+            "min_clearance_cm": 0.297,
+            "intersecting_triangle_pairs": 0
+          },
+          {
+            "angle_deg": 330,
+            "min_clearance_cm": 0.288,
+            "intersecting_triangle_pairs": 0
+          },
+          {
+            "angle_deg": 340,
+            "min_clearance_cm": 0.277,
+            "intersecting_triangle_pairs": 0
+          },
+          {
+            "angle_deg": 350,
+            "min_clearance_cm": 0.345,
+            "intersecting_triangle_pairs": 0
+          }
+        ],
+        "min_clearance_cm_over_all_angles": 0.007,
+        "intersecting_pairs_over_all_angles": 51,
+        "angles_with_collision": [
+          10,
+          20,
+          60,
+          140,
+          250
+        ]
+      },
+      "FR": {
+        "rc_cm": 22.0,
+        "angles": [
+          {
+            "angle_deg": 0,
+            "min_clearance_cm": 0.02,
+            "intersecting_triangle_pairs": 0
+          },
+          {
+            "angle_deg": 10,
+            "min_clearance_cm": 0.096,
+            "intersecting_triangle_pairs": 3,
+            "max_penetration_estimate_cm": 0.096,
+            "place_cm_body_frame": [
+              19.9,
+              -51.9,
+              64.0
+            ],
+            "place_radius_from_axis_cm": 19.72,
+            "place_height_cm": 63.98
+          },
+          {
+            "angle_deg": 20,
+            "min_clearance_cm": 0.13,
+            "intersecting_triangle_pairs": 0
+          },
+          {
+            "angle_deg": 30,
+            "min_clearance_cm": 0.016,
+            "intersecting_triangle_pairs": 4,
+            "max_penetration_estimate_cm": 0.087,
+            "place_cm_body_frame": [
+              49.6,
+              -80.5,
+              59.2
+            ],
+            "place_radius_from_axis_cm": 21.65,
+            "place_height_cm": 59.25
+          },
+          {
+            "angle_deg": 40,
+            "min_clearance_cm": 0.154,
+            "intersecting_triangle_pairs": 0
+          },
+          {
+            "angle_deg": 50,
+            "min_clearance_cm": 0.384,
+            "intersecting_triangle_pairs": 0
+          },
+          {
+            "angle_deg": 60,
+            "min_clearance_cm": 0.274,
+            "intersecting_triangle_pairs": 0
+          },
+          {
+            "angle_deg": 70,
+            "min_clearance_cm": 0.388,
+            "intersecting_triangle_pairs": 0
+          },
+          {
+            "angle_deg": 80,
+            "min_clearance_cm": 0.182,
+            "intersecting_triangle_pairs": 2,
+            "max_penetration_estimate_cm": 0.314,
+            "place_cm_body_frame": [
+              20.3,
+              -50.9,
+              62.9
+            ],
+            "place_radius_from_axis_cm": 20.18,
+            "place_height_cm": 62.87
+          },
+          {
+            "angle_deg": 90,
+            "min_clearance_cm": 0.51,
+            "intersecting_triangle_pairs": 0
+          },
+          {
+            "angle_deg": 100,
+            "min_clearance_cm": 0.345,
+            "intersecting_triangle_pairs": 0
+          },
+          {
+            "angle_deg": 110,
+            "min_clearance_cm": 0.503,
+            "intersecting_triangle_pairs": 0
+          },
+          {
+            "angle_deg": 120,
+            "min_clearance_cm": 0.383,
+            "intersecting_triangle_pairs": 0
+          },
+          {
+            "angle_deg": 130,
+            "min_clearance_cm": 0.501,
+            "intersecting_triangle_pairs": 0
+          },
+          {
+            "angle_deg": 140,
+            "min_clearance_cm": 0.421,
+            "intersecting_triangle_pairs": 0
+          },
+          {
+            "angle_deg": 150,
+            "min_clearance_cm": 0.513,
+            "intersecting_triangle_pairs": 0
+          },
+          {
+            "angle_deg": 160,
+            "min_clearance_cm": 0.565,
+            "intersecting_triangle_pairs": 0
+          },
+          {
+            "angle_deg": 170,
+            "min_clearance_cm": 0.401,
+            "intersecting_triangle_pairs": 0
+          },
+          {
+            "angle_deg": 180,
+            "min_clearance_cm": 0.557,
+            "intersecting_triangle_pairs": 0
+          },
+          {
+            "angle_deg": 190,
+            "min_clearance_cm": 0.385,
+            "intersecting_triangle_pairs": 0
+          },
+          {
+            "angle_deg": 200,
+            "min_clearance_cm": 0.39,
+            "intersecting_triangle_pairs": 0
+          },
+          {
+            "angle_deg": 210,
+            "min_clearance_cm": 0.602,
+            "intersecting_triangle_pairs": 0
+          },
+          {
+            "angle_deg": 220,
+            "min_clearance_cm": 0.62,
+            "intersecting_triangle_pairs": 0
+          },
+          {
+            "angle_deg": 230,
+            "min_clearance_cm": 0.56,
+            "intersecting_triangle_pairs": 0
+          },
+          {
+            "angle_deg": 240,
+            "min_clearance_cm": 0.133,
+            "intersecting_triangle_pairs": 0
+          },
+          {
+            "angle_deg": 250,
+            "min_clearance_cm": 0.283,
+            "intersecting_triangle_pairs": 0
+          },
+          {
+            "angle_deg": 260,
+            "min_clearance_cm": 0.005,
+            "intersecting_triangle_pairs": 6,
+            "max_penetration_estimate_cm": 0.004,
+            "place_cm_body_frame": [
+              41.7,
+              -74.8,
+              59.8
+            ],
+            "place_radius_from_axis_cm": 11.95,
+            "place_height_cm": 59.79
+          },
+          {
+            "angle_deg": 270,
+            "min_clearance_cm": 0.011,
+            "intersecting_triangle_pairs": 10,
+            "max_penetration_estimate_cm": 0.546,
+            "place_cm_body_frame": [
+              45.5,
+              -78.0,
+              59.2
+            ],
+            "place_radius_from_axis_cm": 16.93,
+            "place_height_cm": 59.22
+          },
+          {
+            "angle_deg": 280,
+            "min_clearance_cm": 0.026,
+            "intersecting_triangle_pairs": 5,
+            "max_penetration_estimate_cm": 0.026,
+            "place_cm_body_frame": [
+              47.3,
+              -75.7,
+              59.2
+            ],
+            "place_radius_from_axis_cm": 16.93,
+            "place_height_cm": 59.22
+          },
+          {
+            "angle_deg": 290,
+            "min_clearance_cm": 0.169,
+            "intersecting_triangle_pairs": 0
+          },
+          {
+            "angle_deg": 300,
+            "min_clearance_cm": 0.103,
+            "intersecting_triangle_pairs": 7,
+            "max_penetration_estimate_cm": 0.125,
+            "place_cm_body_frame": [
+              20.5,
+              -48.8,
+              64.7
+            ],
+            "place_radius_from_axis_cm": 21.71,
+            "place_height_cm": 64.7
+          },
+          {
+            "angle_deg": 310,
+            "min_clearance_cm": 0.02,
+            "intersecting_triangle_pairs": 4,
+            "max_penetration_estimate_cm": 0.51,
+            "place_cm_body_frame": [
+              22.6,
+              -52.5,
+              62.9
+            ],
+            "place_radius_from_axis_cm": 17.5,
+            "place_height_cm": 62.92
+          },
+          {
+            "angle_deg": 320,
+            "min_clearance_cm": 0.008,
+            "intersecting_triangle_pairs": 4,
+            "max_penetration_estimate_cm": 0.016,
+            "place_cm_body_frame": [
+              25.0,
+              -56.3,
+              62.7
+            ],
+            "place_radius_from_axis_cm": 13.02,
+            "place_height_cm": 62.73
+          },
+          {
+            "angle_deg": 330,
+            "min_clearance_cm": 0.278,
+            "intersecting_triangle_pairs": 0
+          },
+          {
+            "angle_deg": 340,
+            "min_clearance_cm": 0.279,
+            "intersecting_triangle_pairs": 0
+          },
+          {
+            "angle_deg": 350,
+            "min_clearance_cm": 0.14,
+            "intersecting_triangle_pairs": 4,
+            "max_penetration_estimate_cm": 0.344,
+            "place_cm_body_frame": [
+              21.9,
+              -48.1,
+              63.7
+            ],
+            "place_radius_from_axis_cm": 21.57,
+            "place_height_cm": 63.67
+          }
+        ],
+        "min_clearance_cm_over_all_angles": 0.005,
+        "intersecting_pairs_over_all_angles": 49,
+        "angles_with_collision": [
+          10,
+          30,
+          80,
+          260,
+          270,
+          280,
+          300,
+          310,
+          320,
+          350
+        ]
+      },
+      "RL": {
+        "rc_cm": 22.0,
+        "angles": [
+          {
+            "angle_deg": 0,
+            "min_clearance_cm": 0.184,
+            "intersecting_triangle_pairs": 0
+          },
+          {
+            "angle_deg": 10,
+            "min_clearance_cm": 0.3,
+            "intersecting_triangle_pairs": 0
+          },
+          {
+            "angle_deg": 20,
+            "min_clearance_cm": 0.181,
+            "intersecting_triangle_pairs": 0
+          },
+          {
+            "angle_deg": 30,
+            "min_clearance_cm": 0.217,
+            "intersecting_triangle_pairs": 0
+          },
+          {
+            "angle_deg": 40,
+            "min_clearance_cm": 0.224,
+            "intersecting_triangle_pairs": 0
+          },
+          {
+            "angle_deg": 50,
+            "min_clearance_cm": 0.327,
+            "intersecting_triangle_pairs": 0
+          },
+          {
+            "angle_deg": 60,
+            "min_clearance_cm": 0.247,
+            "intersecting_triangle_pairs": 0
+          },
+          {
+            "angle_deg": 70,
+            "min_clearance_cm": 0.307,
+            "intersecting_triangle_pairs": 0
+          },
+          {
+            "angle_deg": 80,
+            "min_clearance_cm": 0.326,
+            "intersecting_triangle_pairs": 0
+          },
+          {
+            "angle_deg": 90,
+            "min_clearance_cm": 0.267,
+            "intersecting_triangle_pairs": 0
+          },
+          {
+            "angle_deg": 100,
+            "min_clearance_cm": 0.288,
+            "intersecting_triangle_pairs": 0
+          },
+          {
+            "angle_deg": 110,
+            "min_clearance_cm": 0.322,
+            "intersecting_triangle_pairs": 0
+          },
+          {
+            "angle_deg": 120,
+            "min_clearance_cm": 0.447,
+            "intersecting_triangle_pairs": 0
+          },
+          {
+            "angle_deg": 130,
+            "min_clearance_cm": 0.372,
+            "intersecting_triangle_pairs": 0
+          },
+          {
+            "angle_deg": 140,
+            "min_clearance_cm": 0.136,
+            "intersecting_triangle_pairs": 0
+          },
+          {
+            "angle_deg": 150,
+            "min_clearance_cm": 0.35,
+            "intersecting_triangle_pairs": 0
+          },
+          {
+            "angle_deg": 160,
+            "min_clearance_cm": 0.309,
+            "intersecting_triangle_pairs": 0
+          },
+          {
+            "angle_deg": 170,
+            "min_clearance_cm": 0.474,
+            "intersecting_triangle_pairs": 0
+          },
+          {
+            "angle_deg": 180,
+            "min_clearance_cm": 0.498,
+            "intersecting_triangle_pairs": 0
+          },
+          {
+            "angle_deg": 190,
+            "min_clearance_cm": 0.187,
+            "intersecting_triangle_pairs": 0
+          },
+          {
+            "angle_deg": 200,
+            "min_clearance_cm": 0.183,
+            "intersecting_triangle_pairs": 0
+          },
+          {
+            "angle_deg": 210,
+            "min_clearance_cm": 0.453,
+            "intersecting_triangle_pairs": 0
+          },
+          {
+            "angle_deg": 220,
+            "min_clearance_cm": 0.445,
+            "intersecting_triangle_pairs": 0
+          },
+          {
+            "angle_deg": 230,
+            "min_clearance_cm": 0.086,
+            "intersecting_triangle_pairs": 5,
+            "max_penetration_estimate_cm": 0.086,
+            "place_cm_body_frame": [
+              -71.9,
+              51.0,
+              72.5
+            ],
+            "place_radius_from_axis_cm": 13.25,
+            "place_height_cm": 72.48
+          },
+          {
+            "angle_deg": 240,
+            "min_clearance_cm": 0.242,
+            "intersecting_triangle_pairs": 0
+          },
+          {
+            "angle_deg": 250,
+            "min_clearance_cm": 0.285,
+            "intersecting_triangle_pairs": 0
+          },
+          {
+            "angle_deg": 260,
+            "min_clearance_cm": 0.28,
+            "intersecting_triangle_pairs": 0
+          },
+          {
+            "angle_deg": 270,
+            "min_clearance_cm": 0.23,
+            "intersecting_triangle_pairs": 0
+          },
+          {
+            "angle_deg": 280,
+            "min_clearance_cm": 0.087,
+            "intersecting_triangle_pairs": 0
+          },
+          {
+            "angle_deg": 290,
+            "min_clearance_cm": 0.378,
+            "intersecting_triangle_pairs": 0
+          },
+          {
+            "angle_deg": 300,
+            "min_clearance_cm": 0.277,
+            "intersecting_triangle_pairs": 0
+          },
+          {
+            "angle_deg": 310,
+            "min_clearance_cm": 0.317,
+            "intersecting_triangle_pairs": 0
+          },
+          {
+            "angle_deg": 320,
+            "min_clearance_cm": 0.203,
+            "intersecting_triangle_pairs": 0
+          },
+          {
+            "angle_deg": 330,
+            "min_clearance_cm": 0.181,
+            "intersecting_triangle_pairs": 0
+          },
+          {
+            "angle_deg": 340,
+            "min_clearance_cm": 0.096,
+            "intersecting_triangle_pairs": 0
+          },
+          {
+            "angle_deg": 350,
+            "min_clearance_cm": 0.236,
+            "intersecting_triangle_pairs": 0
+          }
+        ],
+        "min_clearance_cm_over_all_angles": 0.086,
+        "intersecting_pairs_over_all_angles": 5,
+        "angles_with_collision": [
+          230
+        ]
+      },
+      "RR": {
+        "rc_cm": 23.0,
+        "angles": [
+          {
+            "angle_deg": 0,
+            "min_clearance_cm": 0.016,
+            "intersecting_triangle_pairs": 19,
+            "max_penetration_estimate_cm": 2.353,
+            "place_cm_body_frame": [
+              -45.3,
+              -61.0,
+              73.5
+            ],
+            "place_radius_from_axis_cm": 19.5,
+            "place_height_cm": 73.49
+          },
+          {
+            "angle_deg": 10,
+            "min_clearance_cm": 0.032,
+            "intersecting_triangle_pairs": 19,
+            "max_penetration_estimate_cm": 2.915,
+            "place_cm_body_frame": [
+              -45.9,
+              -57.6,
+              73.5
+            ],
+            "place_radius_from_axis_cm": 19.5,
+            "place_height_cm": 73.49
+          },
+          {
+            "angle_deg": 20,
+            "min_clearance_cm": 0.036,
+            "intersecting_triangle_pairs": 13,
+            "max_penetration_estimate_cm": 2.845,
+            "place_cm_body_frame": [
+              -47.0,
+              -54.4,
+              73.5
+            ],
+            "place_radius_from_axis_cm": 19.5,
+            "place_height_cm": 73.49
+          },
+          {
+            "angle_deg": 30,
+            "min_clearance_cm": 0.078,
+            "intersecting_triangle_pairs": 21,
+            "max_penetration_estimate_cm": 3.0,
+            "place_cm_body_frame": [
+              -46.2,
+              -53.3,
+              72.8
+            ],
+            "place_radius_from_axis_cm": 20.78,
+            "place_height_cm": 72.78
+          },
+          {
+            "angle_deg": 40,
+            "min_clearance_cm": 0.152,
+            "intersecting_triangle_pairs": 21,
+            "max_penetration_estimate_cm": 3.142,
+            "place_cm_body_frame": [
+              -48.0,
+              -50.2,
+              72.8
+            ],
+            "place_radius_from_axis_cm": 20.78,
+            "place_height_cm": 72.78
+          },
+          {
+            "angle_deg": 50,
+            "min_clearance_cm": 0.05,
+            "intersecting_triangle_pairs": 18,
+            "max_penetration_estimate_cm": 2.677,
+            "place_cm_body_frame": [
+              -50.4,
+              -47.5,
+              72.8
+            ],
+            "place_radius_from_axis_cm": 20.78,
+            "place_height_cm": 72.78
+          },
+          {
+            "angle_deg": 60,
+            "min_clearance_cm": 0.032,
+            "intersecting_triangle_pairs": 17,
+            "max_penetration_estimate_cm": 1.994,
+            "place_cm_body_frame": [
+              -53.3,
+              -45.2,
+              72.8
+            ],
+            "place_radius_from_axis_cm": 20.78,
+            "place_height_cm": 72.78
+          },
+          {
+            "angle_deg": 70,
+            "min_clearance_cm": 0.131,
+            "intersecting_triangle_pairs": 16,
+            "max_penetration_estimate_cm": 4.03,
+            "place_cm_body_frame": [
+              -75.5,
+              -48.7,
+              72.4
+            ],
+            "place_radius_from_axis_cm": 17.46,
+            "place_height_cm": 72.38
+          },
+          {
+            "angle_deg": 80,
+            "min_clearance_cm": 0.162,
+            "intersecting_triangle_pairs": 9,
+            "max_penetration_estimate_cm": 3.105,
+            "place_cm_body_frame": [
+              -47.8,
+              -58.7,
+              72.7
+            ],
+            "place_radius_from_axis_cm": 17.39,
+            "place_height_cm": 72.74
+          },
+          {
+            "angle_deg": 90,
+            "min_clearance_cm": 0.209,
+            "intersecting_triangle_pairs": 5,
+            "max_penetration_estimate_cm": 2.91,
+            "place_cm_body_frame": [
+              -48.4,
+              -56.5,
+              73.1
+            ],
+            "place_radius_from_axis_cm": 17.41,
+            "place_height_cm": 73.06
+          },
+          {
+            "angle_deg": 100,
+            "min_clearance_cm": 0.054,
+            "intersecting_triangle_pairs": 11,
+            "max_penetration_estimate_cm": 2.078,
+            "place_cm_body_frame": [
+              -53.0,
+              -56.8,
+              73.4
+            ],
+            "place_radius_from_axis_cm": 13.11,
+            "place_height_cm": 73.43
+          },
+          {
+            "angle_deg": 110,
+            "min_clearance_cm": 0.09,
+            "intersecting_triangle_pairs": 17,
+            "max_penetration_estimate_cm": 2.341,
+            "place_cm_body_frame": [
+              -48.9,
+              -49.1,
+              74.4
+            ],
+            "place_radius_from_axis_cm": 20.76,
+            "place_height_cm": 74.42
+          },
+          {
+            "angle_deg": 120,
+            "min_clearance_cm": 0.025,
+            "intersecting_triangle_pairs": 9,
+            "max_penetration_estimate_cm": 2.301,
+            "place_cm_body_frame": [
+              -51.5,
+              -46.6,
+              74.4
+            ],
+            "place_radius_from_axis_cm": 20.76,
+            "place_height_cm": 74.42
+          },
+          {
+            "angle_deg": 130,
+            "min_clearance_cm": 0.159,
+            "intersecting_triangle_pairs": 7,
+            "max_penetration_estimate_cm": 2.617,
+            "place_cm_body_frame": [
+              -72.6,
+              -53.0,
+              72.7
+            ],
+            "place_radius_from_axis_cm": 12.39,
+            "place_height_cm": 72.65
+          },
+          {
+            "angle_deg": 140,
+            "min_clearance_cm": 0.079,
+            "intersecting_triangle_pairs": 8,
+            "max_penetration_estimate_cm": 1.854,
+            "place_cm_body_frame": [
+              -75.6,
+              -50.8,
+              72.2
+            ],
+            "place_radius_from_axis_cm": 15.95,
+            "place_height_cm": 72.19
+          },
+          {
+            "angle_deg": 150,
+            "min_clearance_cm": 0.36,
+            "intersecting_triangle_pairs": 0
+          },
+          {
+            "angle_deg": 160,
+            "min_clearance_cm": 0.187,
+            "intersecting_triangle_pairs": 0
+          },
+          {
+            "angle_deg": 170,
+            "min_clearance_cm": 0.005,
+            "intersecting_triangle_pairs": 8,
+            "max_penetration_estimate_cm": 1.434,
+            "place_cm_body_frame": [
+              -55.0,
+              -52.3,
+              73.9
+            ],
+            "place_radius_from_axis_cm": 14.11,
+            "place_height_cm": 73.89
+          },
+          {
+            "angle_deg": 180,
+            "min_clearance_cm": 0.093,
+            "intersecting_triangle_pairs": 5,
+            "max_penetration_estimate_cm": 0.654,
+            "place_cm_body_frame": [
+              -42.0,
+              -62.4,
+              74.7
+            ],
+            "place_radius_from_axis_cm": 22.82,
+            "place_height_cm": 74.73
+          },
+          {
+            "angle_deg": 190,
+            "min_clearance_cm": 0.127,
+            "intersecting_triangle_pairs": 1,
+            "max_penetration_estimate_cm": 0.863,
+            "place_cm_body_frame": [
+              -55.3,
+              -42.0,
+              74.7
+            ],
+            "place_radius_from_axis_cm": 22.6,
+            "place_height_cm": 74.65
+          },
+          {
+            "angle_deg": 200,
+            "min_clearance_cm": 0.149,
+            "intersecting_triangle_pairs": 0
+          },
+          {
+            "angle_deg": 210,
+            "min_clearance_cm": 0.232,
+            "intersecting_triangle_pairs": 0
+          },
+          {
+            "angle_deg": 220,
+            "min_clearance_cm": 0.021,
+            "intersecting_triangle_pairs": 14,
+            "max_penetration_estimate_cm": 1.46,
+            "place_cm_body_frame": [
+              -49.6,
+              -48.7,
+              74.3
+            ],
+            "place_radius_from_axis_cm": 20.51,
+            "place_height_cm": 74.28
+          },
+          {
+            "angle_deg": 230,
+            "min_clearance_cm": 0.028,
+            "intersecting_triangle_pairs": 27,
+            "max_penetration_estimate_cm": 1.56,
+            "place_cm_body_frame": [
+              -51.2,
+              -50.0,
+              74.5
+            ],
+            "place_radius_from_axis_cm": 18.49,
+            "place_height_cm": 74.48
+          },
+          {
+            "angle_deg": 240,
+            "min_clearance_cm": 0.057,
+            "intersecting_triangle_pairs": 18,
+            "max_penetration_estimate_cm": 1.4,
+            "place_cm_body_frame": [
+              -57.2,
+              -82.0,
+              72.5
+            ],
+            "place_radius_from_axis_cm": 20.93,
+            "place_height_cm": 72.51
+          },
+          {
+            "angle_deg": 250,
+            "min_clearance_cm": 0.026,
+            "intersecting_triangle_pairs": 16,
+            "max_penetration_estimate_cm": 1.108,
+            "place_cm_body_frame": [
+              -53.6,
+              -81.1,
+              72.5
+            ],
+            "place_radius_from_axis_cm": 21.71,
+            "place_height_cm": 72.45
+          },
+          {
+            "angle_deg": 260,
+            "min_clearance_cm": 0.013,
+            "intersecting_triangle_pairs": 8,
+            "max_penetration_estimate_cm": 0.831,
+            "place_cm_body_frame": [
+              -55.3,
+              -81.9,
+              73.5
+            ],
+            "place_radius_from_axis_cm": 21.56,
+            "place_height_cm": 73.47
+          },
+          {
+            "angle_deg": 270,
+            "min_clearance_cm": 0.167,
+            "intersecting_triangle_pairs": 13,
+            "max_penetration_estimate_cm": 1.556,
+            "place_cm_body_frame": [
+              -50.9,
+              -51.9,
+              73.8
+            ],
+            "place_radius_from_axis_cm": 17.5,
+            "place_height_cm": 73.84
+          },
+          {
+            "angle_deg": 280,
+            "min_clearance_cm": 0.065,
+            "intersecting_triangle_pairs": 15,
+            "max_penetration_estimate_cm": 1.598,
+            "place_cm_body_frame": [
+              -49.0,
+              -49.1,
+              74.3
+            ],
+            "place_radius_from_axis_cm": 20.73,
+            "place_height_cm": 74.28
+          },
+          {
+            "angle_deg": 290,
+            "min_clearance_cm": 0.012,
+            "intersecting_triangle_pairs": 18,
+            "max_penetration_estimate_cm": 1.472,
+            "place_cm_body_frame": [
+              -51.6,
+              -46.5,
+              74.3
+            ],
+            "place_radius_from_axis_cm": 20.73,
+            "place_height_cm": 74.28
+          },
+          {
+            "angle_deg": 300,
+            "min_clearance_cm": 0.206,
+            "intersecting_triangle_pairs": 16,
+            "max_penetration_estimate_cm": 2.56,
+            "place_cm_body_frame": [
+              -47.3,
+              -61.5,
+              72.5
+            ],
+            "place_radius_from_axis_cm": 17.5,
+            "place_height_cm": 72.5
+          },
+          {
+            "angle_deg": 310,
+            "min_clearance_cm": 0.058,
+            "intersecting_triangle_pairs": 12,
+            "max_penetration_estimate_cm": 3.046,
+            "place_cm_body_frame": [
+              -43.8,
+              -62.1,
+              72.5
+            ],
+            "place_radius_from_axis_cm": 20.93,
+            "place_height_cm": 72.51
+          },
+          {
+            "angle_deg": 320,
+            "min_clearance_cm": 0.027,
+            "intersecting_triangle_pairs": 9,
+            "max_penetration_estimate_cm": 3.133,
+            "place_cm_body_frame": [
+              -44.2,
+              -58.5,
+              72.5
+            ],
+            "place_radius_from_axis_cm": 20.93,
+            "place_height_cm": 72.51
+          },
+          {
+            "angle_deg": 330,
+            "min_clearance_cm": 0.19,
+            "intersecting_triangle_pairs": 9,
+            "max_penetration_estimate_cm": 2.822,
+            "place_cm_body_frame": [
+              -50.2,
+              -57.1,
+              73.7
+            ],
+            "place_radius_from_axis_cm": 15.53,
+            "place_height_cm": 73.74
+          },
+          {
+            "angle_deg": 340,
+            "min_clearance_cm": 0.027,
+            "intersecting_triangle_pairs": 16,
+            "max_penetration_estimate_cm": 3.168,
+            "place_cm_body_frame": [
+              -44.1,
+              -56.5,
+              73.5
+            ],
+            "place_radius_from_axis_cm": 21.56,
+            "place_height_cm": 73.47
+          },
+          {
+            "angle_deg": 350,
+            "min_clearance_cm": 0.077,
+            "intersecting_triangle_pairs": 24,
+            "max_penetration_estimate_cm": 2.479,
+            "place_cm_body_frame": [
+              -48.5,
+              -49.1,
+              73.9
+            ],
+            "place_radius_from_axis_cm": 21.15,
+            "place_height_cm": 73.92
+          }
+        ],
+        "min_clearance_cm_over_all_angles": 0.005,
+        "intersecting_pairs_over_all_angles": 439,
+        "angles_with_collision": [
+          0,
+          10,
+          20,
+          30,
+          40,
+          50,
+          60,
+          70,
+          80,
+          90,
+          100,
+          110,
+          120,
+          130,
+          140,
+          170,
+          180,
+          190,
+          220,
+          230,
+          240,
+          250,
+          260,
+          270,
+          280,
+          290,
+          300,
+          310,
+          320,
+          330,
+          340,
+          350
+        ]
+      }
+    }
+  },
+  "warnings": [
+    "FL: every Rc on the plateau (22.0,22.5,23.0,23.5) shows rotor-body intersections in the sweep; Rc 22.0 kept (fewest: 24 pairs over 36 angles)",
+    "FR: every Rc on the plateau (22.0,22.5,23.0,23.5) shows rotor-body intersections in the sweep; Rc 22.0 kept (fewest: 15 pairs over 36 angles)",
+    "RL: every Rc on the plateau (22.0,22.5,23.0,23.5) shows rotor-body intersections in the sweep; Rc 22.0 kept (fewest: 4 pairs over 36 angles)",
+    "RR: every Rc on the plateau (22.0,22.5,23.0,23.5) shows rotor-body intersections in the sweep; Rc 23.0 kept (fewest: 23 pairs over 36 angles)"
+  ],
+  "done_checks": {
+    "total_tris_under_budget": true,
+    "total_tris": 48154,
+    "boundary_edges": {
+      "Body": 0,
+      "FL": 0,
+      "FR": 0,
+      "RL": 0,
+      "RR": 0
+    },
+    "sweep_intersections": {
+      "FL": 51,
+      "FR": 49,
+      "RL": 5,
+      "RR": 439
+    }
+  }
+}

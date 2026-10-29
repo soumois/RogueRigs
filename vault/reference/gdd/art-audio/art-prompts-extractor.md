@@ -39,9 +39,16 @@ Owner "oui rebake" then "ok" (defaults Q1 to Q3 accepted, provisional). `SM_Extr
 - Fidelity from the same cameras and light: mean colour difference to the source 3.7 (new) against 10.5 (old) over five views, 3.7 against 12.5 on two panel close-ups (0 to 255 scale).
 - Known limit: the normal tilt on the flat faces is 4.44 deg mean (median 1.25; 3.17 without the 2.4 % of pixels over 30 deg, which are dense-mesh bolts and borders), above the Meshy map's 3.7 deg.
 
+## Body and rotors (task-367-01, 2026-10-29)
+Cut of the re-baked `SM_Extractor.fbx` into `Art/Meshes/extractor/SM_Extractor_Body.fbx` (fixed, origin bottom centre) and `SM_Extractor_Rotor_FL|FR|RL|RR.fbx` (blades plus hub, origin on the spin axis at the blade plane height), centimetres, one slot `M_Extractor`, same maps. Script `Tools/art/blender/extractor_cut_rotors.py`, report `extractor_rotors.report.json`, renders in `Saved/ExtractorMesh/rotors/` (not committed).
+- Method: spin axis = vertical line through the centre of a sphere fitted to the hub dome (max origin offset 0.027 cm after a refit on the reimported files); neck plane through the hub underside; rotor = faces inside the cylinder Rc (22.0, 22.0, 22.0, 23.0 cm for FL, FR, RL, RR, picked by a 36-angle sweep scan) above the neck plane and connected to the hub top; hub faces bisected on the neck plane, blade tips cut along triangle edges (tip vertices beyond Rc projected on the cylinder: 40, 40, 41, 48); both sides of every cut capped with centre fans on one dark texel of the new base colour map (UV 0.55743, 0.4539, pixel 1141, 929).
+- Result: 48,154 triangles in total (body 45,420; rotors 736, 684, 684, 630), 0 boundary edges in the five files, body vertices unchanged outside the cuts and 0 UV differences against `SM_Extractor.fbx`.
+- Known limit (Q6, nothing reshaped): the 360 degree sweep, every 10 degrees, shows rotor-body face intersections (pairs over 36 angles: FL 51, FR 49, RL 5, RR 439); the figures per angle with place and depth are in the report.
+
 ## Relations
 - [[art-prompts]] - parent: method and locked phrases.
 - [[art-prompts-turret]] - precedent: same intake, flatten recipe.
 - [[extraction]] - the shuttle this mesh is for.
 - [[task-366-extractor-flat-faces]] - task that stores and flattens it.
 - [[task-368-extractor-rebake]] - task that re-unwrapped and re-baked the maps.
+- [[task-367-extractor-rotors]] - task that cuts the four rotors from the body.
