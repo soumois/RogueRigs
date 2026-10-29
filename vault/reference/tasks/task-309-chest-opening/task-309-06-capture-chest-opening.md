@@ -3,7 +3,7 @@ id: task-309-06-capture-chest-opening
 description: "Capture the chest opening (cpp): bonus chest opening, latch, slam, light, ring, chips and sparks, step 06."
 parent: task-309-chest-opening
 kind: task
-status: in-progress
+status: done
 ---
 # Capture the chest opening
 
@@ -15,12 +15,13 @@ status: in-progress
 - done_when: latch, lid slam, ring, light and rays, chips and sparks visible in order; open pose as in the goal (pivot on the pins, no stub, no dangling hasp, no dark recess); sheet sent to the owner; nothing else changed
 - editor_state: closed
 - token_ceiling: 1.2 M units
-- model: open
-- tokens: open
-- runs: open
+- model: opus
+- tokens: input 92, cache write 107777, cache read 2557587, output 29665
+- usage: turns 41, context start 13k peak 108k, resumes 5 (message x5), 15 min, units 0.54 M
+- runs: 1
 - milestone: M2
 - started: 2026-10-29T19:13:10Z
-- result: open
+- result: Closed on owner visual validation, not on capture (owner 2026-10-29: "je valide ce que j'ai vu pour le 309"). Capture ran 5 launches before the stop: latch/lid order, light, rays, chips, ore seen; latch up direction, overshoot, ground ring, chip scale pop, sparks not seen or ambiguous (default camera, glow washes out). Frames in Saved/ChestOpening/, sheet contact_sheet_owner.png. Missing: rr.Cheat to complete the bonus chest hack. Roll signs never measured in editor, owner validated what he saw.
 
 ## Relations
 - [[task-309-chest-opening]] — parent global task.

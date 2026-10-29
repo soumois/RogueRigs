@@ -1,9 +1,9 @@
 ---
 id: task-309-chest-opening
 description: "Global task: Chest opening: latch swings, lid slams open with overshoot, freeze and shake, inner light, ground ring, three popping XP chips, sparks."
-parent: tasks-to-do-index
+parent: tasks-done-index
 kind: task
-status: wait-answers
+status: done
 ---
 # Bonus chest opening: latch, lid slam, light and XP burst
 
@@ -14,10 +14,10 @@ status: wait-answers
 - confirmed_by_owner: yes (owner 2026-10-23: "ok pour tous les défauts (Q1 à Q25)"; every default below applies; not launched yet)
 - owner_2026-10-24: "ok : je garde la commande debug, j'accepte les 3864 tris, le pivot et la pose ouverte se règlent dans 309, et ok pour tous les défauts de la tâche 314." Pivot and open pose moved here from task-306: new 3d step task-309-07 (runs first: lid origin on the hinge pins, no hinge stubs on the body, latch hasp not dangling, recess behind the latch filled, opening signs reported); task-309-01 uses those signs; task-309-05 reimports the three meshes and moves the Lid and Latch components to the new pivots; task-309-06 checks the open pose. Task-314-01 cuts the logo into the lid after task-309-07.
 - milestone: M2
-- next_step: task-309-06-capture-chest-opening
+- next_step: none
 - started: 2026-10-29T18:32:25Z
-- waiting_for: owner go on the new 309-07 renders (Art/Source/chest/clean/renders/cut_openwide100|105|115_*.png, lid on rear seam axis, gap 0.5-0.7 cm)
-- result: open
+- waiting_for: none
+- result: Done. Closed on owner visual validation, not on capture (owner 2026-10-29: "je valide ce que j'ai vu pour le 309"). Capture ran 5 launches before the stop: latch/lid order, light, rays, chips, ore seen; latch up direction, overshoot, ground ring, chip scale pop, sparks not seen or ambiguous (default camera, glow washes out). Frames in Saved/ChestOpening/, sheet contact_sheet_owner.png. Missing: rr.Cheat to complete the bonus chest hack. Roll signs never measured in editor, owner validated what he saw.
 
 ## Subtasks
 1. task-309-01-chest-opening-sequence (vault/reference/tasks/task-309-chest-opening/task-309-01-chest-opening-sequence.md) — cpp: Chest opening sequence, slam, light drive and XP burst
@@ -29,7 +29,7 @@ status: wait-answers
 7. task-309-07-chest-hinge-recut (vault/reference/tasks/task-309-chest-opening/task-309-07-chest-hinge-recut.md) — 3d: Lid pivot on the hinge pins and open-pose mesh fixes (runs first)
 
 ## Relations
-- [[tasks-to-do-index]] — parent index.
+- [[tasks-done-index]] — parent index.
 - [[task-309-01-chest-opening-sequence]] — step 01, cpp.
 - [[task-309-02-bp-chest-interior-material]] — step 02, bp.
 - [[task-309-03-bp-slam-ring-params]] — step 03, bp.
