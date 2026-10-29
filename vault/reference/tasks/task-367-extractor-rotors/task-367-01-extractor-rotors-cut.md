@@ -3,7 +3,7 @@ id: task-367-01-extractor-rotors-cut
 description: "3d: cut the four rotors (blades and hub) from SM_Extractor into their own FBX with origins on their spin axes, cap the cuts, sweep 360 degrees, render."
 parent: task-367-extractor-rotors
 kind: task
-status: in-progress
+status: done
 ---
 # Extractor mesh: extract the four rotors so they can spin: 3d
 
@@ -16,14 +16,14 @@ status: in-progress
 - done_when: five FBX reimport in a clean scene with the reported bounds; each rotor origin on its measured axis within 0.1 cm and the body origin bottom centre; boundary edge count at every cut = 0; 36 sweep angles per rotor with no rotor-body face intersection, or each collision reported with angle, place and depth and nothing reshaped; total triangles at most 50,000; body vertices away from the cuts and all UVs unchanged versus SM_Extractor.fbx (numbers in the report); renders exist and their paths are reported so the Executor sends them to the owner; art-prompts-extractor updated; lint clean; committed by path as `task-367-01-extractor-rotors-cut: <summary>`; `Get-Process blender` empty.
 - editor_state: any
 - token_ceiling: 1.2 M units
-- model: open
-- tokens: open
-- usage: open
-- runs: open
+- model: sonnet
+- tokens: input 128, cache write 275642, cache read 7082742, output 116350
+- usage: turns 64, context start 12k peak 228k, resumes 1 (message x1), 34 min, units 1.63 M
+- runs: 1
 - milestone: M2
 - started: 2026-10-29T20:49:01Z
 - waiting_for: none
-- result: open
+- result: Body and four rotor FBX cut from re-baked extractor (commit fea17533): 48,154 tris, 0 boundary edges, origins on axes within 0.03 cm, UVs unchanged. Sweep collisions reported, not reshaped (Q6): FL 51, FR 49, RL 5, RR 439 pairs.
 
 ## Relations
 - [[task-367-extractor-rotors]] — parent global task.

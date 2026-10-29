@@ -375,4 +375,5 @@ Archive: it exceeds the index size limits of [[_authoring]] on purpose (owner, 2
 - [[task-364-miner-turnaround-prompt]] — Write the ChatGPT image prompt of the miner turnaround sheet (front, side, back, A-pose) that the owner turns into the 3D mesh himself. Status done.
 - [[task-365-new-run-packaged-map]] — Fix New Run on the main menu doing nothing: cook L_ArenaM1 into the package (it was missing), repackage, verify the travel. Status done.
 - [[task-366-extractor-flat-faces]] — Save the owner Meshy extractor (Rustwing quadrotor) files, then decimate it to budget and flatten its bulged flat faces as for the turret. Status done.
+- [[task-367-extractor-rotors]] — Cut the four rotors of the flattened extractor mesh into separate meshes pivoting on their spin axes, body kept fixed, ready to spin later; runs after task-368. Status done.
 - [[task-368-extractor-rebake]] — Re-unwrap the 47,000-triangle flattened extractor and bake the Meshy high-poly look (colour, normal, roughness, metallic) onto it, fixing the stretched rust marks. Status done.

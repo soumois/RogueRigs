@@ -1,9 +1,9 @@
 ---
 id: task-367-extractor-rotors
 description: "Global task: Cut the four rotors of the flattened extractor mesh into separate meshes pivoting on their spin axes, body kept fixed, ready to spin later."
-parent: tasks-to-do-index
+parent: tasks-done-index
 kind: task
-status: in-progress
+status: done
 ---
 # Extractor mesh: extract the four rotors so they can spin
 
@@ -13,16 +13,16 @@ status: in-progress
 - gdd_check: read 2026-10-29: same nodes as [[task-366-extractor-flat-faces]] `gdd_check`; precedents [[task-349-turret-mobile-head]] (cut a moving part with its pivot, sweep check) and the drone part cut (`Tools/art/blender/drone_cut_parts.py`). No conflict; the rotor list and pivots are decided by Q6 of task-366 (the "parts list" agent-3d needs before any split).
 - confirmed_by_owner: yes (2026-10-29, "ok")
 - milestone: M2
-- next_step: task-367-01-extractor-rotors-cut
+- next_step: none
 - started: 2026-10-29T20:49:01Z
 - waiting_for: none
-- result: open
+- result: Done. Body and four rotor FBX cut from re-baked extractor (commit fea17533): 48,154 tris, 0 boundary edges, origins on axes within 0.03 cm, UVs unchanged. Sweep collisions reported, not reshaped (Q6): FL 51, FR 49, RL 5, RR 439 pairs.
 
 ## Subtasks
 1. task-367-01-extractor-rotors-cut (vault/reference/tasks/task-367-extractor-rotors/task-367-01-extractor-rotors-cut.md) — 3d: cut the four rotors (blades and hub) from SM_Extractor into their own FBX with origins on their spin axes, cap the cuts, sweep 360 degrees, render.
 
 ## Relations
-- [[tasks-to-do-index]] — parent index.
+- [[tasks-done-index]] — parent index.
 - [[task-367-01-extractor-rotors-cut]] — step 1, 3d.
 - [[task-366-extractor-flat-faces]] — must be done first: its SM_Extractor.fbx is this task's input; holds the questions.
 - [[task-349-turret-mobile-head]] — precedent cut with pivot and sweep.
