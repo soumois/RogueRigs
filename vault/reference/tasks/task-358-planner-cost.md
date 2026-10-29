@@ -3,7 +3,7 @@ id: task-358-planner-cost
 description: "Global task: Cut planner cost: a script applies an all-defaults answer, a resolver prints one id path, task-create.js writes a whole plan from one spec."
 parent: tasks-to-do-index
 kind: task
-status: todo
+status: in-progress
 ---
 # Planner cost: defaults script, id resolver, one-call task creation
 
@@ -14,7 +14,7 @@ status: todo
 - confirmed_by_owner: yes (2026-10-29, "OK, tout par défaut" to Q1-Q12 and the plan, relayed by the main session)
 - milestone: M2
 - next_step: task-358-01-planner-cost-scripts
-- started: open
+- started: 2026-10-29T14:09:28Z
 - waiting_for: none
 - result: open
 

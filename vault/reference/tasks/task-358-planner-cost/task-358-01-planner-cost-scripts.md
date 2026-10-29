@@ -3,7 +3,7 @@ id: task-358-01-planner-cost-scripts
 description: "Cpp: vault scripts path-of.js (exact id resolver), task-confirm.js (apply an all-defaults answer) and task-create.js spec v2 (whole plan in one call)."
 parent: task-358-planner-cost
 kind: task
-status: todo
+status: in-progress
 ---
 # Planner cost: scripts
 
@@ -20,7 +20,7 @@ status: todo
 - usage: open
 - runs: open
 - milestone: M2
-- started: open
+- started: 2026-10-29T14:09:28Z
 - waiting_for: none
 - result: open
 
