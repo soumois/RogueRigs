@@ -14,6 +14,7 @@ kind: doc
   - Map-travel fallback ([[sys-run-transition]]): unchanged, plus the same fade in after `OnLevelReady`.
   - Gameplay stays held (paused world, phase Loading, input ignored) until the switch; the fade in plays over the started level.
   - Blueprint API for WBP_Loading: pure `URRLoadingScreenWidget::GetLoadingProgress()` (0-1) and event `OnLoadingProgressChanged(Progress)` (also once at `ShowLoading`); subsystem pure `GetLoadingProgress()`, `GetScreenFade()`, `GetScreenFadeAlpha()`, events `OnScreenFadeStarted(Fade, Duration)`, `OnScreenFadeFinished(Fade)`, `OnNextLevelProgressChanged(Progress)`.
+  - Arrival takeoff (task-371-01): `OnScreenFadeFinished(FadingIn)` starts the arrival extractor takeoff when the run flow placed it under the black ([[sys-objectives-run-flow]]); the map-travel fallback path is not verified.
 - data: `URRRunSettings::TransitionFadeOutSeconds` (0.3), `TransitionFadeInSeconds` (0.5), provisional (owner 2026-10-26), real time, 0 = cut; controller `ScreenFadeZOrder` (60).
 - depends_on: [[sys-run-transition-preload]], [[sys-hud-bindings]].
 - implements: [[intermission]].
