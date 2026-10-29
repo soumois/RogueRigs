@@ -11,6 +11,7 @@ status: provisional
 - invoked_by: orchestrator
 - trigger: a subtask asking for text content (Assignment #4 first: upgrade texts, barks, alert and console lines).
 - reads: its subtask node, [[lore]], [[crew-characters]], [[fictional-films]], [[company-voice]], [[dialogue-tone]], [[readability-rules]], and the one mechanic node the subtask names (for example [[upgrades]] or [[level-flow]]). Nothing else.
+- wikilinks: resolved with `node vault/scripts/path-of.js <id> [<id>...]` (exact ids), never by opening `vault/_paths.md`.
 - definition_file: `.claude/agents/text.md`.
 - produces: one content file in `Content/RogueRigs/Data/Text/` and a retrieval log in `Tools/content/logs/<run-id>.json`.
 - output_format: content schema `open` until its pipeline node exists; the log holds, per generated item, the query, the node ids read, the exact excerpt used and the output.

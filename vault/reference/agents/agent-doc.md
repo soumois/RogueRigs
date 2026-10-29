@@ -11,6 +11,7 @@ status: provisional
 - invoked_by: [[agent-executor]], through the doc subtask the [[agent-planner]] plans last, depending on every implementing subtask.
 - trigger: a subtask node with `agent: doc`.
 - reads: its subtask node; [[_authoring]]; the templates `vault/templates/system.md` and `vault/templates/blueprint.md` when it writes such a node; the nodes and files the brief lists. Nothing else.
+- wikilinks: resolved with `node vault/scripts/path-of.js <id> [<id>...]` (exact ids), never by opening `vault/_paths.md`.
 - brief: written by the Executor in the delegation prompt: commit hashes and changed paths (it runs `git show <hash> -- <paths>` itself, the diff is not pasted), decided values (pointer to the global `request` and `gdd_check`), the implementers' change summaries, the list of nodes to create or update.
 - produces: the listed `sys-*`, `bp-*` and tool doc nodes created or updated, with `parent` and `## Relations` on both ends, `root.md` only when a branch changes; one commit.
 - output_format: nodes from `vault/templates/system.md` or `vault/templates/blueprint.md` per [[_authoring]]; report of a few lines: nodes created, nodes updated, values left `open`, lint result, commit hash.

@@ -11,6 +11,7 @@ status: provisional
 - invoked_by: [[agent-executor]]
 - trigger: a subtask that needs C++ (new class, system change, loader, build fix), a Node tool change, a config line the subtask names, or a stress run or automation test. A visual check is not its job: [[agent-capture]].
 - reads: its subtask node; [[cpp-standard]], [[naming]], [[cpp-bp-split]], [[editor-workflow]], [[build-toolchain]]; the gdd and `sys-*` nodes the subtask lists; [[gas-engine-facts]] and [[gas-api-notes]] for GAS work. Engine source when an API is uncertain.
+- wikilinks: resolved with `node vault/scripts/path-of.js <id> [<id>...]` (exact ids), never by opening `vault/_paths.md`.
 - produces: `.h`/`.cpp` files under `Source/RogueRigs/<System>/` or the tool files the subtask names; a change summary. It does not write `sys-*` or tool doc nodes: the doc subtask does, from that summary ([[agent-doc]]). Exception: a subtask node planned before task-325 (tasks 308, 309, 314) that names a doc node in its own output is followed as written.
 - output_format: code following [[cpp-standard]]; change summary: files changed with paths, commit hash, classes added, public API, decided values used, doc nodes to create or update, build result.
 - known_limits: 60 turns; a long test or stress run can outlast them: start it in the background, commit the code first, report the run's output path so a resume can collect the result.
