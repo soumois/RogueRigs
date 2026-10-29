@@ -364,3 +364,4 @@ Archive: it exceeds the index size limits of [[_authoring]] on purpose (owner, 2
 - [[task-355-shop-card-frame-details]] — Shop cards: no second frame line beside slot 0, tier tab text with room, sold panel fitted to the frame opening. Runs after task-357 (order 356, 357, 355). Status done.
 - [[task-356-shop-screen-anchors]] — Shop screen rebuilt on a Root Canvas with explicit anchors from the owner's hand-edited version, so it adapts to small changes of resolution and ratio. Status done.
 - [[task-357-shop-resource-indicator]] — Shop resource indicator (IndicatorRessource): ore icon and value centred on the font line without a Row container, following the screen-scaled font. Status done.
+- [[task-358-planner-cost]] — Cut planner cost: a script applies an all-defaults answer, a resolver prints one id path, task-create.js writes a whole plan from one spec. Status done.

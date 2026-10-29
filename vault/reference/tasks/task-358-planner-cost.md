@@ -1,9 +1,9 @@
 ---
 id: task-358-planner-cost
 description: "Global task: Cut planner cost: a script applies an all-defaults answer, a resolver prints one id path, task-create.js writes a whole plan from one spec."
-parent: tasks-to-do-index
+parent: tasks-done-index
 kind: task
-status: in-progress
+status: done
 ---
 # Planner cost: defaults script, id resolver, one-call task creation
 
@@ -13,10 +13,10 @@ status: in-progress
 - gdd_check: crew tooling, no gdd node involved (Planner, 2026-10-29). Read: task-create.js, agent-planner, orchestration-protocol, orchestrator-runbook (Creating tasks), _navigation, `.claude/commands/task.md`. Findings: task-create.js already exists but writes one subtask per global and generic `request`/`gdd_check` lines, so the planner rewrites them by hand; a resolver of an exact id is compatible with [[_navigation]] (a wikilink id is resolved to its path through `_paths.md`; searching to locate a node is forbidden) provided it never matches partial ids; `_navigation` and `orchestration-protocol` are `kind: rule`: editing them needs explicit owner intent (Q2, Q1). The apply-defaults script changes who acts on a pure "ok" (main session instead of the planner), so CLAUDE.md and `.claude/commands/task.md` change (Q1).
 - confirmed_by_owner: yes (2026-10-29, "OK, tout par défaut" to Q1-Q12 and the plan, relayed by the main session)
 - milestone: M2
-- next_step: task-358-02-planner-cost-doc
+- next_step: none
 - started: 2026-10-29T14:09:28Z
 - waiting_for: none
-- result: open
+- result: Done. Done: efc992a3 runbook, planner, protocol step 4, _navigation, planner.md, task.md, CLAUDE.md, quirks updated; lint clean.
 
 ## Questions
 Decided 2026-10-29 (owner "OK, tout par défaut"): every default below is accepted; values provisional, owner 2026-10-29.
@@ -31,7 +31,7 @@ Decided 2026-10-29 (owner "OK, tout par défaut"): every default below is accept
 2. task-358-02-planner-cost-doc (vault/reference/tasks/task-358-planner-cost/task-358-02-planner-cost-doc.md) — doc: runbook, planner, protocol step 4, _navigation, planner.md, task.md command, CLAUDE.md describe the three scripts.
 
 ## Relations
-- [[tasks-to-do-index]] — parent index.
+- [[tasks-done-index]] — parent index.
 - [[task-358-01-planner-cost-scripts]] — step 1, cpp.
 - [[task-358-02-planner-cost-doc]] — step 2, doc.
 - [[task-359-capture-tooling]] — lever 2, same request.

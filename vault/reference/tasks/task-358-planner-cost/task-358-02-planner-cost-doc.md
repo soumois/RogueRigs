@@ -3,7 +3,7 @@ id: task-358-02-planner-cost-doc
 description: "Doc: describe path-of.js, task-confirm.js and task-create.js spec v2 in the runbook, planner, protocol, navigation and main-session instructions."
 parent: task-358-planner-cost
 kind: task
-status: in-progress
+status: done
 ---
 # Planner cost: doc
 
@@ -15,14 +15,14 @@ status: in-progress
 - done_when: each listed file names the script it now uses with its usage line; `_navigation` still forbids search and states exact-id resolution only; lint clean; committed.
 - editor_state: any
 - token_ceiling: 0.3 M units
-- model: open
-- tokens: open
-- usage: open
-- runs: open
+- model: sonnet
+- tokens: input 14, cache write 36280, cache read 153815, output 5757
+- usage: turns 7, context start 12k peak 36k, resumes 0, 1 min, units 0.09 M
+- runs: 1
 - milestone: M2
 - started: 2026-10-29T14:16:04Z
 - waiting_for: none
-- result: open
+- result: Done: efc992a3 runbook, planner, protocol step 4, _navigation, planner.md, task.md, CLAUDE.md, quirks updated; lint clean.
 
 ## Relations
 - [[task-358-planner-cost]] — parent global task.
