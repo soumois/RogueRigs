@@ -3,7 +3,7 @@ id: task-371-01-cpp-extractor-arrival
 description: "Cpp: spawn an arrival extractor next to the miner spawn and start its takeoff at the end of the fade in, or at once without fade."
 parent: task-371-extractor-arrival
 kind: task
-status: in-progress
+status: done
 ---
 # Extractor: drops the miner and takes off at level start: cpp
 
@@ -15,14 +15,14 @@ status: in-progress
 - done_when: build succeeds; a -game log of rr.Run.NextLevel shows the arrival placed and its takeoff started in the fade-in finished frame; a direct level 1 start shows the takeoff at level start; the miner can move meanwhile; RogueRigs.Extraction.* and RogueRigs.RunFlow.* pass; committed by path.
 - editor_state: closed
 - token_ceiling: 1.2 M units
-- model: open
-- tokens: open
-- usage: open
-- runs: open
+- model: opus
+- tokens: input 78, cache write 180267, cache read 4735467, output 37670
+- usage: turns 39, context start 12k peak 180k, resumes 0, 11 min, units 0.89 M
+- runs: 1
 - milestone: M2
 - started: 2026-10-29T21:29:55Z
 - waiting_for: none
-- result: open
+- result: Done, commits 66b2c5e2 and be525566: ARRShuttle::InitializeArrival/IsArrival, URRRunFlowSubsystem::PlaceArrivalShuttle, ArrivalDistanceCells (default 1), takeoff on OnScreenFadeFinished(FadingIn) or first tick; build ok, -game log and Extraction/RunFlow tests 9/9 pass; miner movement verified by logged state only.
 
 ## Relations
 - [[task-371-extractor-arrival]] — parent global task.

@@ -3,7 +3,7 @@ id: task-371-02-doc-extractor-arrival
 description: "Doc: update sys-objectives-shuttle and sys-run-transition-fade for the arrival extractor."
 parent: task-371-extractor-arrival
 kind: task
-status: todo
+status: in-progress
 ---
 # Extractor: drops the miner and takes off at level start: doc
 
@@ -20,7 +20,7 @@ status: todo
 - usage: open
 - runs: open
 - milestone: M2
-- started: open
+- started: 2026-10-29T21:41:05Z
 - waiting_for: none
 - result: open
 
