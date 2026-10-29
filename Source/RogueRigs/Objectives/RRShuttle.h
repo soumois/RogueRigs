@@ -57,7 +57,7 @@ public:
 	UFUNCTION(BlueprintPure, Category = "Shuttle")
 	bool IsArrival() const { return bArrival; }
 
-	/** Boarding check and countdown. */
+	/** Rotor spin, then the takeoff or the boarding check and countdown. */
 	virtual void Tick(float DeltaSeconds) override;
 
 	/** Seconds left before the shuttle leaves. */
@@ -93,7 +93,18 @@ public:
 	TArray<UStaticMeshComponent*> GetRotors() const;
 
 	/**
-	 * Starts the helicopter takeoff (task-370-01): SpinUpSeconds of waiting (rotors spin up in Blueprint), then a vertical rise of RiseHeight over RiseSeconds,
+	 * Rotor speed as a fraction of the flight speed: current rev/s divided by FlightRevPerSecond (0.6 on the ground with the defaults,
+	 * 1 in flight, in between during the ramp; 0 when FlightRevPerSecond is 0). For the rotor-wash intensity.
+	 */
+	UFUNCTION(BlueprintPure, Category = "Shuttle|Rotors")
+	float GetRotorSpeedAlpha() const;
+
+	/** Current rotor speed in revolutions per second (GroundRevPerSecond on the ground, FlightRevPerSecond once taking off, ramped between). */
+	UFUNCTION(BlueprintPure, Category = "Shuttle|Rotors")
+	float GetRotorRevPerSecond() const { return RotorRevPerSecond; }
+
+	/**
+	 * Starts the helicopter takeoff (task-370-01): SpinUpSeconds of waiting (the rotors ramp to FlightRevPerSecond, task-373-01), then a vertical rise of RiseHeight over RiseSeconds,
 	 * a tilt to PitchDegrees nose down over TiltSeconds, then an acceleration of ForwardAcceleration along the nose until the bounds leave the player camera view;
 	 * the shuttle is then destroyed. Ticks while the game is paused. Fires OnTakeoffStarted. Does nothing when already taking off. Called by the run flow on a
 	 * successful extraction; callable from C++ for the arrival (task-371).
@@ -145,6 +156,16 @@ protected:
 	/** Display event: the takeoff is over, the shuttle is removed right after. Implement in Blueprint. */
 	UFUNCTION(BlueprintImplementableEvent, Category = "Shuttle|Takeoff")
 	void OnTakeoffFinished();
+
+	/** Display event: the rotor speed changed during a ramp (every ramp frame, the last one included) and once at BeginPlay; Alpha = GetRotorSpeedAlpha(). Implement in Blueprint (rotor wash). */
+	UFUNCTION(BlueprintImplementableEvent, Category = "Shuttle|Rotors")
+	void OnRotorSpeedChanged(float Alpha);
+
+	/** Sets the starting rotor speed (GroundRevPerSecond) and fires the first OnRotorSpeedChanged. */
+	virtual void BeginPlay() override;
+
+	/** Rotor step, every tick (also while paused once taking off): ramps the speed toward the ground or flight target, then turns each rotor about its local Z. */
+	void TickRotors(float DeltaSeconds);
 
 	/** Takeoff step: advances the phases, then removes the shuttle once out of view. */
 	void TickTakeoff(float DeltaSeconds);
@@ -233,6 +254,37 @@ protected:
 	/** Takeoff: safety, the shuttle is removed after this many seconds even if still in view or with no viewport (headless). Provisional. */
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Shuttle|Takeoff", meta = (ClampMin = 1, Units = "s"))
 	float TakeoffMaxSeconds = 12.f;
+
+	/** Rotors: speed on the ground, before StartTakeoff (rev/s). Owner 2026-10-29 (extraction Q6), provisional. */
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Shuttle|Rotors", meta = (ClampMin = 0))
+	float GroundRevPerSecond = 3.f;
+
+	/** Rotors: speed in flight, from StartTakeoff (rev/s). Owner 2026-10-29 (extraction Q6), provisional. */
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Shuttle|Rotors", meta = (ClampMin = 0))
+	float FlightRevPerSecond = 5.f;
+
+	/** Rotors: time of the linear ramp between the ground and the flight speed (s); 0 = instant. Owner 2026-10-29 (extraction Q6), provisional. */
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Shuttle|Rotors", meta = (ClampMin = 0, Units = "s"))
+	float RampSeconds = 0.5f;
+
+	/** Rotors: front-left turns clockwise seen from above (positive yaw about its local Z) when true. Q6: clockwise. */
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Shuttle|Rotors")
+	bool bRotorFLClockwise = true;
+
+	/** Rotors: front-right turns clockwise seen from above when true. Q6: counter-clockwise. */
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Shuttle|Rotors")
+	bool bRotorFRClockwise = false;
+
+	/** Rotors: rear-left turns clockwise seen from above when true. Q6: counter-clockwise. */
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Shuttle|Rotors")
+	bool bRotorRLClockwise = false;
+
+	/** Rotors: rear-right turns clockwise seen from above when true. Q6: clockwise. */
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Shuttle|Rotors")
+	bool bRotorRRClockwise = true;
+
+	/** Current rotor speed (rev/s). */
+	float RotorRevPerSecond = 0.f;
 
 	/** True from StartTakeoff until the removal. */
 	bool bTakingOff = false;

@@ -6,7 +6,10 @@
 #if WITH_DEV_AUTOMATION_TESTS
 
 #include "Components/CapsuleComponent.h"
+#include "Components/StaticMeshComponent.h"
 #include "Drone/RRDrone.h"
+#include "GameFramework/PlayerState.h"
+#include "GameFramework/WorldSettings.h"
 #include "FlowField/RRFlowFieldSubsystem.h"
 #include "Objectives/RRConsole.h"
 #include "Objectives/RRLandingFootprint.h"
@@ -325,6 +328,107 @@ bool FRRExtractionTakeoffTest::RunTest(const FString& Parameters)
 	TestTrue(TEXT("flying forward"), Shuttle->GetActorLocation().X - Start.X > 100.f);
 
 	// No viewport in a test world: removed by the safety time.
+	TickFrames(TestWorld, 700);
+	TestFalse(TEXT("shuttle removed"), WeakShuttle.IsValid());
+	return true;
+}
+
+namespace RRExtractionTests
+{
+	/**
+	 * Ticks Frames frames and returns, per rotor (FL, FR, RL, RR), the yaw turned in revolutions (positive = clockwise seen from above),
+	 * unwrapped frame by frame from the rotor relative rotation.
+	 */
+	TArray<float> SampleRotorRevolutions(const RRTestHarness::FTestWorld& TestWorld, const ARRShuttle* Shuttle, int32 Frames)
+	{
+		const TArray<UStaticMeshComponent*> Rotors = Shuttle->GetRotors();
+		TArray<float> Previous;
+		TArray<float> Turned;
+		for (const UStaticMeshComponent* Rotor : Rotors)
+		{
+			Previous.Add(Rotor ? Rotor->GetRelativeRotation().Yaw : 0.f);
+			Turned.Add(0.f);
+		}
+		for (int32 Frame = 0; Frame < Frames; ++Frame)
+		{
+			TestWorld.Tick();
+			for (int32 Index = 0; Index < Rotors.Num(); ++Index)
+			{
+				const float Yaw = Rotors[Index] ? Rotors[Index]->GetRelativeRotation().Yaw : 0.f;
+				Turned[Index] += FMath::FindDeltaAngleDegrees(Previous[Index], Yaw) / 360.f;
+				Previous[Index] = Yaw;
+			}
+		}
+		return Turned;
+	}
+
+	/** Checks the four rotors turned Expected revolutions (within 5 %) in the Q6 directions: FL and RR clockwise, FR and RL counter-clockwise. */
+	void TestRotorRevolutions(FAutomationTestBase& Test, const TCHAR* Phase, const TArray<float>& Turned, float Expected)
+	{
+		static const TCHAR* Names[4] = { TEXT("FL"), TEXT("FR"), TEXT("RL"), TEXT("RR") };
+		static const float Signs[4] = { 1.f, -1.f, -1.f, 1.f };
+		for (int32 Index = 0; Index < 4 && Index < Turned.Num(); ++Index)
+		{
+			const float Signed = Turned[Index] * Signs[Index];
+			UE_LOG(LogTemp, Display, TEXT("RotorSpin %s %s: %.3f rev in 1 s (expected %.1f, %s)."), Phase, Names[Index], Turned[Index], Expected * Signs[Index],
+				Signs[Index] > 0.f ? TEXT("clockwise") : TEXT("counter-clockwise"));
+			Test.TestTrue(FString::Printf(TEXT("%s: rotor %s turns %.1f rev/s %s within 5 %% (%.3f)"), Phase, Names[Index], Expected,
+				Signs[Index] > 0.f ? TEXT("clockwise") : TEXT("counter-clockwise"), Turned[Index]), FMath::Abs(Signed - Expected) <= 0.05f * Expected);
+		}
+	}
+}
+
+IMPLEMENT_SIMPLE_AUTOMATION_TEST(FRRExtractionRotorSpinTest, "RogueRigs.Extraction.RotorSpin",
+	EAutomationTestFlags::EditorContext | EAutomationTestFlags::EngineFilter)
+
+bool FRRExtractionRotorSpinTest::RunTest(const FString& Parameters)
+{
+	using namespace RRTestHarness;
+	using namespace RRExtractionTests;
+
+	FTestWorld TestWorld(TEXT("RRExtractionRotorSpinWorld"));
+	TStrongObjectPtr<URRTestEventRecorder> Recorder(NewObject<URRTestEventRecorder>());
+	FExtractionSetup Setup;
+	if (!SetUp(*this, TestWorld, Recorder.Get(), Setup))
+	{
+		return false;
+	}
+	Setup.RunFlow->SkipToExtraction();
+	ARRShuttle* Shuttle = Setup.RunFlow->GetShuttle();
+	if (!TestNotNull(TEXT("shuttle"), Shuttle))
+	{
+		return false;
+	}
+	const TWeakObjectPtr<ARRShuttle> WeakShuttle(Shuttle);
+	TestNearlyEqual(TEXT("ground speed 3 rev/s"), Shuttle->GetRotorRevPerSecond(), 3.f, 1e-4f);
+	TestNearlyEqual(TEXT("ground alpha 0.6"), Shuttle->GetRotorSpeedAlpha(), 0.6f, 1e-4f);
+
+	// Ground: 1 s.
+	TickFrames(TestWorld, 5);
+	TestRotorRevolutions(*this, TEXT("ground"), SampleRotorRevolutions(TestWorld, Shuttle, 60), 3.f);
+
+	// Takeoff: 0.5 s ramp to 5 rev/s (half-way after 15 frames), then 1 s in flight.
+	Shuttle->StartTakeoff();
+	TickFrames(TestWorld, 15);
+	TestTrue(FString::Printf(TEXT("ramp half-way (%.2f rev/s)"), Shuttle->GetRotorRevPerSecond()), FMath::IsNearlyEqual(Shuttle->GetRotorRevPerSecond(), 4.f, 0.1f));
+	TickFrames(TestWorld, 20);
+	TestNearlyEqual(TEXT("flight speed 5 rev/s after the ramp"), Shuttle->GetRotorRevPerSecond(), 5.f, 1e-4f);
+	TestNearlyEqual(TEXT("flight alpha 1"), Shuttle->GetRotorSpeedAlpha(), 1.f, 1e-4f);
+	TestRotorRevolutions(*this, TEXT("flight"), SampleRotorRevolutions(TestWorld, Shuttle, 60), 5.f);
+
+	// The end screen pauses the world: the rotors keep turning (1 s) and the takeoff goes on.
+	APlayerState* Pauser = TestWorld.Get()->SpawnActor<APlayerState>();
+	if (!TestNotNull(TEXT("pauser"), Pauser))
+	{
+		return false;
+	}
+	TestWorld.Get()->GetWorldSettings()->SetPauserPlayerState(Pauser);
+	TestTrue(TEXT("world paused"), TestWorld.Get()->IsPaused());
+	const FVector BeforePause = Shuttle->GetActorLocation();
+	TestRotorRevolutions(*this, TEXT("paused"), SampleRotorRevolutions(TestWorld, Shuttle, 60), 5.f);
+	TestTrue(TEXT("still flying while paused"), !Shuttle->GetActorLocation().Equals(BeforePause, 1.f));
+	TestWorld.Get()->GetWorldSettings()->SetPauserPlayerState(nullptr);
+
 	TickFrames(TestWorld, 700);
 	TestFalse(TEXT("shuttle removed"), WeakShuttle.IsValid());
 	return true;

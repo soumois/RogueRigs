@@ -82,9 +82,57 @@ void ARRShuttle::InitializeArrival(ARRArenaGrid* InGrid, FIntPoint InCell)
 	}
 }
 
+void ARRShuttle::BeginPlay()
+{
+	Super::BeginPlay();
+	RotorRevPerSecond = bTakingOff ? FlightRevPerSecond : GroundRevPerSecond;
+	OnRotorSpeedChanged(GetRotorSpeedAlpha());
+}
+
+float ARRShuttle::GetRotorSpeedAlpha() const
+{
+	return FlightRevPerSecond > 0.f ? FMath::Clamp(RotorRevPerSecond / FlightRevPerSecond, 0.f, 1.f) : 0.f;
+}
+
+void ARRShuttle::TickRotors(float DeltaSeconds)
+{
+	// Ramp: linear, from the ground to the flight speed in RampSeconds once the takeoff started.
+	const float Target = bTakingOff ? FlightRevPerSecond : GroundRevPerSecond;
+	if (RotorRevPerSecond != Target)
+	{
+		const float Span = FMath::Abs(FlightRevPerSecond - GroundRevPerSecond);
+		const float Step = (RampSeconds > 0.f && Span > 0.f) ? Span / RampSeconds * DeltaSeconds : TNumericLimits<float>::Max();
+		RotorRevPerSecond = FMath::Abs(Target - RotorRevPerSecond) <= Step ? Target : RotorRevPerSecond + FMath::Sign(Target - RotorRevPerSecond) * Step;
+		if (RotorRevPerSecond == Target)
+		{
+			UE_LOG(LogRogueRigs, Log, TEXT("%s: rotors at %.2f rev/s (alpha %.2f)."), *GetName(), RotorRevPerSecond, GetRotorSpeedAlpha());
+		}
+		OnRotorSpeedChanged(GetRotorSpeedAlpha());
+	}
+
+	// Positive yaw about the rotor local Z = clockwise seen from above (Z up, X forward, Y right).
+	const float DegreesThisFrame = RotorRevPerSecond * 360.f * DeltaSeconds;
+	if (DegreesThisFrame == 0.f)
+	{
+		return;
+	}
+	const bool bClockwise[4] = { bRotorFLClockwise, bRotorFRClockwise, bRotorRLClockwise, bRotorRRClockwise };
+	const TArray<UStaticMeshComponent*> Rotors = GetRotors();
+	for (int32 Index = 0; Index < Rotors.Num(); ++Index)
+	{
+		if (Rotors[Index])
+		{
+			Rotors[Index]->AddLocalRotation(FRotator(0.f, bClockwise[Index] ? DegreesThisFrame : -DegreesThisFrame, 0.f));
+		}
+	}
+}
+
 void ARRShuttle::Tick(float DeltaSeconds)
 {
 	Super::Tick(DeltaSeconds);
+
+	// Always first: the rotors turn on the ground, during the takeoff and, once taking off, while the game is paused.
+	TickRotors(DeltaSeconds);
 
 	if (bTakingOff)
 	{
