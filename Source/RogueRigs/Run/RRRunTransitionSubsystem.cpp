@@ -818,6 +818,7 @@ void URRRunTransitionSubsystem::PlaceMinerAtStart(UWorld& World)
 		return;
 	}
 	AGameModeBase* GameMode = World.GetAuthGameMode();
+	Miner->ShowAfterExtraction();
 	AController* Controller = Miner->GetController();
 	const AActor* Start = GameMode && Controller ? GameMode->FindPlayerStart(Controller) : nullptr;
 	if (Start)

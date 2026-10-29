@@ -207,6 +207,36 @@ void ARRMiner::FindArenaGrid()
 	}
 }
 
+void ARRMiner::HideForExtraction()
+{
+	bHiddenForExtraction = true;
+	SetActorHiddenInGame(true);
+	SetActorEnableCollision(false);
+	if (IsValid(Drone))
+	{
+		Drone->ReleaseDig();
+		Drone->SetActorHiddenInGame(true);
+		Drone->SetActorEnableCollision(false);
+	}
+	UE_LOG(LogRogueRigs, Log, TEXT("%s: hidden for the extraction takeoff (miner and drone, no collision)."), *GetName());
+}
+
+void ARRMiner::ShowAfterExtraction()
+{
+	if (!bHiddenForExtraction)
+	{
+		return;
+	}
+	bHiddenForExtraction = false;
+	SetActorHiddenInGame(false);
+	SetActorEnableCollision(true);
+	if (IsValid(Drone))
+	{
+		Drone->SetActorHiddenInGame(false);
+		Drone->SetActorEnableCollision(true);
+	}
+}
+
 void ARRMiner::SpawnDrone()
 {
 	if (!DroneClass)

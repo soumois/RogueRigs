@@ -612,6 +612,19 @@ bool URRRunFlowSubsystem::EndRun(bool bSuccess)
 	}
 	EnterEndPause();
 
+	// Success: the miner and his drone disappear and the extractor takes off behind the end screen (it ticks while paused, task-370-01).
+	if (bSuccess)
+	{
+		if (Miner)
+		{
+			Miner->HideForExtraction();
+		}
+		if (IsValid(Shuttle))
+		{
+			Shuttle->StartTakeoff();
+		}
+	}
+
 	// A success during a run (task-206-03, task-317-01) opens the stats screen instead of the success end screen; on the last level
 	// the stats screen's button calls ShowRunWonEndScreen.
 	URRRunTransitionSubsystem* Transition = bSuccess ? URRRunTransitionSubsystem::Get(this) : nullptr;

@@ -137,6 +137,18 @@ public:
 	UFUNCTION(BlueprintPure, Category = "Miner|Drone")
 	ARRDrone* GetDrone() const { return Drone; }
 
+	/**
+	 * Extraction (task-370-01): hides the miner and his drone (hidden in game, no collision) so the end screen shows only the takeoff behind it.
+	 * Reversed by ShowAfterExtraction when the next level places the miner.
+	 */
+	void HideForExtraction();
+
+	/** Undoes HideForExtraction: miner and drone visible, collision back. No effect when not hidden. */
+	void ShowAfterExtraction();
+
+	/** True between HideForExtraction and ShowAfterExtraction. */
+	bool IsHiddenForExtraction() const { return bHiddenForExtraction; }
+
 	/** True when a block cell was within the capsule radius + DigContactMargin of the miner at its last tick (the drone digs then). */
 	UFUNCTION(BlueprintPure, Category = "Miner|Dig")
 	bool IsTouchingRock() const { return bTouchingRock; }
@@ -438,6 +450,9 @@ protected:
 	/** Stick inputs with a length at or below this value are ignored (keeps the last aim). */
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Miner|Aim", meta = (ClampMin = 0, ClampMax = 1))
 	float StickAimMinInput = 0.1f;
+
+	/** True while hidden for the extraction takeoff. */
+	bool bHiddenForExtraction = false;
 
 	/** Drone class spawned at BeginPlay (a Blueprint subclass of ARRDrone). None = no drone. */
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Miner|Drone")

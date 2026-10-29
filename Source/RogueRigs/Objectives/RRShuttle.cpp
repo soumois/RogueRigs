@@ -5,6 +5,10 @@
 #include "Components/SceneComponent.h"
 #include "Components/StaticMeshComponent.h"
 #include "Engine/CollisionProfile.h"
+#include "Engine/GameViewportClient.h"
+#include "Engine/LocalPlayer.h"
+#include "GameFramework/PlayerController.h"
+#include "Kismet/GameplayStatics.h"
 #include "Grid/RRArenaGrid.h"
 #include "Objectives/RRLandingFootprint.h"
 #include "Player/RRMiner.h"
@@ -66,6 +70,11 @@ void ARRShuttle::Tick(float DeltaSeconds)
 {
 	Super::Tick(DeltaSeconds);
 
+	if (bTakingOff)
+	{
+		TickTakeoff(DeltaSeconds);
+		return;
+	}
 	if (!bInitialized || bFinished)
 	{
 		return;
@@ -112,4 +121,95 @@ void ARRShuttle::BroadcastCountdown()
 {
 	OnCountdown(RemainingSeconds);
 	OnShuttleCountdownChanged.Broadcast(this, RemainingSeconds);
+}
+
+void ARRShuttle::StartTakeoff()
+{
+	if (bTakingOff)
+	{
+		return;
+	}
+	bTakingOff = true;
+	TakeoffElapsed = 0.f;
+	ForwardSpeed = 0.f;
+	TakeoffStartLocation = GetActorLocation();
+	TakeoffStartRotation = GetActorRotation();
+	// The run end pauses the world: the takeoff must keep ticking behind the end screen.
+	SetActorTickEnabled(true);
+	SetTickableWhenPaused(true);
+	UE_LOG(LogRogueRigs, Log, TEXT("%s: takeoff started (spin-up %.2f s, rise %.0f uu in %.2f s, pitch %.0f deg, acceleration %.0f uu/s2), world paused: %s."),
+		*GetName(), SpinUpSeconds, RiseHeight, RiseSeconds, PitchDegrees, ForwardAcceleration, GetWorld() && GetWorld()->IsPaused() ? TEXT("yes") : TEXT("no"));
+	OnTakeoffStarted();
+}
+
+void ARRShuttle::TickTakeoff(float DeltaSeconds)
+{
+	TakeoffElapsed += DeltaSeconds;
+	const float RiseEnd = SpinUpSeconds + RiseSeconds;
+	const float RiseAlpha = FMath::Clamp((TakeoffElapsed - SpinUpSeconds) / RiseSeconds, 0.f, 1.f);
+	const float TiltAlpha = FMath::Clamp((TakeoffElapsed - RiseEnd) / TiltSeconds, 0.f, 1.f);
+
+	// Rise first (smooth start and stop), then the nose tilts down and the shuttle accelerates along its nose.
+	const FRotator Rotation(TakeoffStartRotation.Pitch - PitchDegrees * FMath::InterpEaseInOut(0.f, 1.f, TiltAlpha, 2.f), TakeoffStartRotation.Yaw, TakeoffStartRotation.Roll);
+	FVector Location = TakeoffStartLocation + FVector::UpVector * RiseHeight * FMath::InterpEaseInOut(0.f, 1.f, RiseAlpha, 2.f);
+	if (TakeoffElapsed > RiseEnd)
+	{
+		// Top of the rise on the first forward frame, then the position keeps integrating the speed along the current nose.
+		Location = (TakeoffElapsed - DeltaSeconds <= RiseEnd) ? TakeoffStartLocation + FVector::UpVector * RiseHeight : GetActorLocation();
+		ForwardSpeed += ForwardAcceleration * DeltaSeconds * TiltAlpha;
+		Location += Rotation.Vector() * ForwardSpeed * DeltaSeconds;
+	}
+	SetActorLocationAndRotation(Location, Rotation);
+
+	if (TakeoffElapsed >= RiseEnd + TiltSeconds && IsOutOfPlayerView())
+	{
+		UE_LOG(LogRogueRigs, Log, TEXT("%s: takeoff: out of the player view after %.2f s, removed."), *GetName(), TakeoffElapsed);
+		FinishTakeoff();
+	}
+	else if (TakeoffElapsed >= TakeoffMaxSeconds)
+	{
+		UE_LOG(LogRogueRigs, Log, TEXT("%s: takeoff: safety time %.1f s reached (no viewport or still in view), removed."), *GetName(), TakeoffMaxSeconds);
+		FinishTakeoff();
+	}
+}
+
+bool ARRShuttle::IsOutOfPlayerView() const
+{
+	APlayerController* Controller = UGameplayStatics::GetPlayerController(GetWorld(), 0);
+	const ULocalPlayer* LocalPlayer = Controller ? Controller->GetLocalPlayer() : nullptr;
+	if (!LocalPlayer || !LocalPlayer->ViewportClient)
+	{
+		return false;
+	}
+	FVector2D ViewportSize = FVector2D::ZeroVector;
+	LocalPlayer->ViewportClient->GetViewportSize(ViewportSize);
+	if (ViewportSize.X <= 1.f || ViewportSize.Y <= 1.f)
+	{
+		return false;
+	}
+	FVector Origin, Extent;
+	GetActorBounds(true, Origin, Extent);
+	for (int32 Corner = 0; Corner < 8; ++Corner)
+	{
+		const FVector Point = Origin + FVector((Corner & 1) ? Extent.X : -Extent.X, (Corner & 2) ? Extent.Y : -Extent.Y, (Corner & 4) ? Extent.Z : -Extent.Z);
+		FVector2D Screen;
+		if (Controller->ProjectWorldLocationToScreen(Point, Screen, false)
+			&& Screen.X >= 0.f && Screen.X <= ViewportSize.X && Screen.Y >= 0.f && Screen.Y <= ViewportSize.Y)
+		{
+			return false;
+		}
+	}
+	return true;
+}
+
+void ARRShuttle::FinishTakeoff()
+{
+	if (!bTakingOff)
+	{
+		return;
+	}
+	bTakingOff = false;
+	OnTakeoffFinished();
+	OnShuttleTakeoffFinished.Broadcast(this);
+	Destroy();
 }

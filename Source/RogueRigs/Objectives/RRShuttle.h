@@ -15,6 +15,9 @@ class ARRShuttle;
 /** Fired every ticked frame of the countdown with the seconds left (also once at landing). */
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_TwoParams(FRROnShuttleCountdownChangedSignature, ARRShuttle*, Shuttle, float, RemainingSeconds);
 
+/** Fired once when the takeoff is over and the shuttle is about to be removed (it left the player camera view, or the safety time ran out). */
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FRROnShuttleTakeoffFinishedSignature, ARRShuttle*, Shuttle);
+
 /** Fired once when the shuttle is done: bExtracted true = the miner boarded, false = the countdown ran out. */
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_TwoParams(FRROnShuttleFinishedSignature, ARRShuttle*, Shuttle, bool, bExtracted);
 
@@ -77,6 +80,27 @@ public:
 	UFUNCTION(BlueprintPure, Category = "Shuttle")
 	TArray<UStaticMeshComponent*> GetRotors() const;
 
+	/**
+	 * Starts the helicopter takeoff (task-370-01): SpinUpSeconds of waiting (rotors spin up in Blueprint), then a vertical rise of RiseHeight over RiseSeconds,
+	 * a tilt to PitchDegrees nose down over TiltSeconds, then an acceleration of ForwardAcceleration along the nose until the bounds leave the player camera view;
+	 * the shuttle is then destroyed. Ticks while the game is paused. Fires OnTakeoffStarted. Does nothing when already taking off. Called by the run flow on a
+	 * successful extraction; callable from C++ for the arrival (task-371).
+	 */
+	UFUNCTION(BlueprintCallable, Category = "Shuttle|Takeoff")
+	void StartTakeoff();
+
+	/** True from StartTakeoff until the removal. */
+	UFUNCTION(BlueprintPure, Category = "Shuttle|Takeoff")
+	bool IsTakingOff() const { return bTakingOff; }
+
+	/** Seconds since StartTakeoff. */
+	UFUNCTION(BlueprintPure, Category = "Shuttle|Takeoff")
+	float GetTakeoffSeconds() const { return TakeoffElapsed; }
+
+	/** Broadcast once at the end of the takeoff, just before the removal. */
+	UPROPERTY(BlueprintAssignable, Category = "Shuttle|Takeoff")
+	FRROnShuttleTakeoffFinishedSignature OnShuttleTakeoffFinished;
+
 	/** Broadcast every countdown frame and once at landing. */
 	UPROPERTY(BlueprintAssignable, Category = "Shuttle")
 	FRROnShuttleCountdownChangedSignature OnShuttleCountdownChanged;
@@ -101,6 +125,23 @@ protected:
 	/** Display event: the countdown ran out, the shuttle leaves without the miner (run lost). Implement in Blueprint. */
 	UFUNCTION(BlueprintImplementableEvent, Category = "Shuttle")
 	void OnMissed();
+
+	/** Display event: the takeoff began (rotor spin-up, rotor wash). Implement in Blueprint. */
+	UFUNCTION(BlueprintImplementableEvent, Category = "Shuttle|Takeoff")
+	void OnTakeoffStarted();
+
+	/** Display event: the takeoff is over, the shuttle is removed right after. Implement in Blueprint. */
+	UFUNCTION(BlueprintImplementableEvent, Category = "Shuttle|Takeoff")
+	void OnTakeoffFinished();
+
+	/** Takeoff step: advances the phases, then removes the shuttle once out of view. */
+	void TickTakeoff(float DeltaSeconds);
+
+	/** True when no corner of the actor bounds projects inside the player 0 viewport (false when there is no viewport to ask). */
+	bool IsOutOfPlayerView() const;
+
+	/** Ends the takeoff: OnTakeoffFinished, OnShuttleTakeoffFinished, then Destroy. */
+	void FinishTakeoff();
 
 	/** Ends the shuttle once: fires OnExtracted or OnMissed, then OnShuttleFinished. */
 	void Finish(bool bInExtracted);
@@ -152,6 +193,47 @@ protected:
 	 */
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Shuttle", meta = (ClampMin = 1))
 	FIntPoint FootprintCells = FIntPoint(4, 3);
+
+	/** Takeoff: wait before the rise, rotors spinning up (s). Provisional (extraction takeoff, Q3). */
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Shuttle|Takeoff", meta = (ClampMin = 0, Units = "s"))
+	float SpinUpSeconds = 0.5f;
+
+	/** Takeoff: vertical rise (uu). Provisional. */
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Shuttle|Takeoff", meta = (ClampMin = 0, Units = "cm"))
+	float RiseHeight = 400.f;
+
+	/** Takeoff: duration of the vertical rise (s). Provisional. */
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Shuttle|Takeoff", meta = (ClampMin = 0.01, Units = "s"))
+	float RiseSeconds = 1.5f;
+
+	/** Takeoff: nose-down tilt after the rise (degrees, positive = nose down). Provisional. */
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Shuttle|Takeoff", meta = (ClampMin = 0, Units = "deg"))
+	float PitchDegrees = 20.f;
+
+	/** Takeoff: duration of the tilt (s); the forward acceleration starts with it. Provisional. */
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Shuttle|Takeoff", meta = (ClampMin = 0.01, Units = "s"))
+	float TiltSeconds = 0.4f;
+
+	/** Takeoff: acceleration along the nose once tilting (uu/s2). Provisional. */
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Shuttle|Takeoff", meta = (ClampMin = 0))
+	float ForwardAcceleration = 1500.f;
+
+	/** Takeoff: safety, the shuttle is removed after this many seconds even if still in view or with no viewport (headless). Provisional. */
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Shuttle|Takeoff", meta = (ClampMin = 1, Units = "s"))
+	float TakeoffMaxSeconds = 12.f;
+
+	/** True from StartTakeoff until the removal. */
+	bool bTakingOff = false;
+
+	/** Seconds since StartTakeoff. */
+	float TakeoffElapsed = 0.f;
+
+	/** Actor location and rotation at StartTakeoff (the rise and the tilt are relative to them). */
+	FVector TakeoffStartLocation = FVector::ZeroVector;
+	FRotator TakeoffStartRotation = FRotator::ZeroRotator;
+
+	/** Along-the-nose speed during the forward phase (uu/s). */
+	float ForwardSpeed = 0.f;
 
 	/** Countdown length given at landing (s). */
 	float CountdownSeconds = 0.f;

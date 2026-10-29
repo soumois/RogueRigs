@@ -6,6 +6,7 @@
 #if WITH_DEV_AUTOMATION_TESTS
 
 #include "Components/CapsuleComponent.h"
+#include "Drone/RRDrone.h"
 #include "FlowField/RRFlowFieldSubsystem.h"
 #include "Objectives/RRConsole.h"
 #include "Objectives/RRLandingFootprint.h"
@@ -205,6 +206,10 @@ bool FRRExtractionBoardWinTest::RunTest(const FString& Parameters)
 	TestTrue(TEXT("run won"), Setup.RunFlow->WasRunSuccessful());
 	TestTrue(TEXT("miner extracted"), Shuttle->WasExtracted());
 	TestTrue(TEXT("countdown not over"), Shuttle->GetRemainingSeconds() > 40.f);
+	TestTrue(TEXT("takeoff started on the extraction"), Shuttle->IsTakingOff());
+	TestTrue(TEXT("miner hidden"), Setup.Miner->IsHidden() && Setup.Miner->IsHiddenForExtraction());
+	TestTrue(TEXT("drone hidden"), !Setup.Miner->GetDrone() || Setup.Miner->GetDrone()->IsHidden());
+	TestFalse(TEXT("miner collision off"), Setup.Miner->GetActorEnableCollision());
 	TestEqual(TEXT("one run end event"), Recorder->GetRunEndedResults().Num(), 1);
 	if (Recorder->GetRunEndedResults().Num() == 1)
 	{
@@ -281,6 +286,47 @@ bool FRRExtractionEndClosesOfferTest::RunTest(const FString& Parameters)
 	TickFrames(TestWorld, 60);
 	TestFalse(TEXT("no card screen after the end"), LevelUp->IsAwaitingChoice() || LevelUp->IsChoiceDelayActive());
 	TestEqual(TEXT("one run end event"), Recorder->GetRunEndedResults().Num(), 1);
+	return true;
+}
+
+IMPLEMENT_SIMPLE_AUTOMATION_TEST(FRRExtractionTakeoffTest, "RogueRigs.Extraction.Takeoff",
+	EAutomationTestFlags::EditorContext | EAutomationTestFlags::EngineFilter)
+
+bool FRRExtractionTakeoffTest::RunTest(const FString& Parameters)
+{
+	using namespace RRTestHarness;
+	using namespace RRExtractionTests;
+
+	FTestWorld TestWorld(TEXT("RRExtractionTakeoffWorld"));
+	TStrongObjectPtr<URRTestEventRecorder> Recorder(NewObject<URRTestEventRecorder>());
+	FExtractionSetup Setup;
+	if (!SetUp(*this, TestWorld, Recorder.Get(), Setup))
+	{
+		return false;
+	}
+	Setup.RunFlow->SkipToExtraction();
+	ARRShuttle* Shuttle = Setup.RunFlow->GetShuttle();
+	if (!TestNotNull(TEXT("shuttle"), Shuttle))
+	{
+		return false;
+	}
+	const TWeakObjectPtr<ARRShuttle> WeakShuttle(Shuttle);
+	const FVector Start = Shuttle->GetActorLocation();
+	Shuttle->StartTakeoff();
+	TestTrue(TEXT("taking off"), Shuttle->IsTakingOff());
+
+	// Spin-up 0.5 s: still on the ground; end of the rise (2.0 s): 400 uu up, level; then the nose goes down and it flies forward.
+	TickFrames(TestWorld, 15);
+	TestTrue(TEXT("still on the ground during the spin-up"), Shuttle->GetActorLocation().Equals(Start, 1.f));
+	TickFrames(TestWorld, 105);
+	TestTrue(TEXT("risen 400 uu"), FMath::IsNearlyEqual(Shuttle->GetActorLocation().Z - Start.Z, 400.f, 5.f));
+	TickFrames(TestWorld, 60);
+	TestTrue(TEXT("nose down"), Shuttle->GetActorRotation().Pitch < -19.f);
+	TestTrue(TEXT("flying forward"), Shuttle->GetActorLocation().X - Start.X > 100.f);
+
+	// No viewport in a test world: removed by the safety time.
+	TickFrames(TestWorld, 700);
+	TestFalse(TEXT("shuttle removed"), WeakShuttle.IsValid());
 	return true;
 }
 
