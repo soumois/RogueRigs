@@ -3,7 +3,7 @@ id: task-374-extractor-rotor-wash
 description: "Global task: A rotor-wash particle effect plays under each of the four extractor rotors, following the rotor speed."
 parent: tasks-to-do-index
 kind: task
-status: todo
+status: in-progress
 ---
 # Extractor: rotor-wash effect under the four rotors
 
@@ -14,7 +14,7 @@ status: todo
 - confirmed_by_owner: yes (2026-10-29, "Pas de vérification visuel pour le point 8, prépare les tâches avec les informations dedans, je les lancerais déjà que le mesh est prés.")
 - milestone: M2
 - next_step: task-374-01-bp-ns-extractor-rotor-wash
-- started: open
+- started: 2026-10-29T23:27:38Z
 - waiting_for: none
 - result: open
 

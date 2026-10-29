@@ -3,7 +3,7 @@ id: task-374-01-bp-ns-extractor-rotor-wash
 description: "Bp: create NS_ExtractorRotorWash (downward streaks, floor dust ring, Intensity and floor height parameters)."
 parent: task-374-extractor-rotor-wash
 kind: task
-status: todo
+status: in-progress
 ---
 # Extractor: rotor-wash effect under the four rotors: bp
 
@@ -20,7 +20,7 @@ status: todo
 - usage: open
 - runs: open
 - milestone: M2
-- started: open
+- started: 2026-10-29T23:27:38Z
 - waiting_for: none
 - result: open
 
