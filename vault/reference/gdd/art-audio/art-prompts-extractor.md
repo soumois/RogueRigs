@@ -24,6 +24,14 @@ One object (`Mesh_0`), 2,593,690 triangles, 1,296,365 vertices, one material slo
 
 Budget: 50,000 triangles for the whole game asset, body plus four rotors (owner 2026-10-29); the body is decimated to at most 48,000 in task-366.
 
+## Game mesh (task-366-02, 2026-10-29)
+`Art/Meshes/extractor/SM_Extractor.fbx` (centimetres, `FBX_SCALE_UNITS`), maps `T_Extractor_BaseColor|Metallic|Normal|Roughness.png` next to it (byte copies of the Meshy maps, not edited), report `extractor_flat.report.json`, script `Tools/art/blender/extractor_flatten.py` (two headless phases), previews `Tools/art/blender/extractor_preview.py`, renders in `Saved/ExtractorMesh/flat/` (not committed).
+- Method: planar regions found on the dense 2.59 M triangle mesh (plane distance 0.25 cm, normal 10 deg, area at least 0.05 % of the surface: 192 regions, 19.3 % of the surface); the dense region vertices projected on their planes (max move 0.8 cm), collapse decimation to 47,000 triangles, decimated faces mapped back to the regions, vertices projected again (a shared vertex goes to the plane intersection), flat shading on those faces.
+- Result: 47,000 triangles (budget 48,000), 190 regions used, 2,507 faces flat (5.3 % of the faces: the Meshy surface is noisy at 0.25 cm, so little of it qualifies), residual after reimport 0.000004 cm. Bulge cause: smooth shading on every face (split normals 27 deg off the face normal on average) and vertices off-plane (mean 0.06 cm, max 0.95 cm); the normal map tilt on those faces equals the whole-mesh average (3.7 against 3.2 deg), not a cause.
+- Placement (Q5, provisional): nose toward +X (raw -Y, the canopy), rotation 90 deg about Z, uniform scale 1.0561, bounds 196.6 x 201.0 x 86.1 cm, origin bottom centre. The mesh is 1.5 % wider on Y than on X (rotors), so "long side on X" cannot hold with the nose on +X and a uniform scale.
+- Silhouette against the scaled source: output vertex to source surface mean 0.056, max 0.784 cm; limit 1 % of the height = 0.861 cm.
+- Known limit: collapse decimation by 55x stretches the UVs on the big panels (rust marks distorted against the source); the maps are not re-baked.
+
 ## Relations
 - [[art-prompts]] - parent: method and locked phrases.
 - [[art-prompts-turret]] - precedent: same intake, flatten recipe.

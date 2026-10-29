@@ -1,0 +1,4001 @@
+{
+  "asset": "SM_Extractor",
+  "task": "task-366-02-extractor-flatten",
+  "source": "Art/Meshes/extractor/raw/Meshy_AI_Rustwing_Quadrotor_20261024_texture.fbx",
+  "cause_of_bulge": {
+    "mapped_faces": 2640,
+    "vertex_distance_to_plane_cm": {
+      "mean": 0.056,
+      "p95": 0.185,
+      "max": 0.95
+    },
+    "face_normal_vs_plane_normal_deg": {
+      "mean": 3.564,
+      "p95": 12.583,
+      "max": 19.912
+    },
+    "split_normal_vs_face_normal_deg": {
+      "mean": 27.189,
+      "p95": 53.078,
+      "max": 154.653
+    },
+    "normal_map_tilt_deg_on_mapped_faces_sample": {
+      "mean": 3.699,
+      "p95": 18.036,
+      "max": 40.562
+    },
+    "normal_map_tilt_deg_all_faces_sample": {
+      "mean": 3.217,
+      "p95": 12.997,
+      "max": 35.406
+    },
+    "smooth_faces_before": 47000
+  },
+  "thresholds": {
+    "grow_plane_distance_cm": 0.25,
+    "grow_normal_deg": 10.0,
+    "min_area_pct_of_surface": 0.05,
+    "map_max_vertex_distance_cm": 1.5,
+    "map_max_face_normal_deg": 20.0,
+    "max_vertex_move_cm": 0.8,
+    "note": "task-347 thresholds, provisional owner Q4 2026-10-29"
+  },
+  "dense": {
+    "tris": 2593690,
+    "surface_cm2": 133225.8,
+    "regions_all": 723829,
+    "regions_kept": 192,
+    "kept_area_share_pct": 19.25
+  },
+  "triangles_before": 2593690,
+  "triangles_after": 47000,
+  "budget": 48000,
+  "faces_mapped_first_pass": 2640,
+  "faces_unmapped_in_loop_by_reason": {
+    "move_over_limit": 103,
+    "conflicting_planes": 30
+  },
+  "refused_move_cm": [
+    1.75,
+    0.815,
+    1.025,
+    2.872,
+    0.851,
+    2.742,
+    0.997,
+    2.364,
+    4.848,
+    0.875,
+    5.69,
+    5.706,
+    0.95,
+    1.314,
+    5.146,
+    0.972,
+    1.64,
+    3.539,
+    5.585,
+    3.697
+  ],
+  "vertices_moved": 2747,
+  "max_move_raw_cm": 0.762,
+  "regions_used": 190,
+  "faces_flat_shaded": 2507,
+  "max_residual_region_cm_raw_frame_after": 0.0,
+  "max_residual_region_cm_after_reimport": 4e-06,
+  "regions": [
+    {
+      "id": 0,
+      "area_cm2_raw": 1437.1,
+      "area_pct": 1.079,
+      "dense_faces": 1464,
+      "centre_cm_sm_frame": [
+        -20.63,
+        -0.16,
+        72.37
+      ],
+      "normal_sm_frame": [
+        0.022,
+        0.0005,
+        0.9998
+      ],
+      "dense_vertex_max_dist_to_plane_raw_cm": 0.3195,
+      "max_residual_before_raw_cm": 0.3369,
+      "max_residual_after_cm": 3e-06,
+      "decimated_faces_flat": 58
+    },
+    {
+      "id": 90,
+      "area_cm2_raw": 574.2,
+      "area_pct": 0.431,
+      "dense_faces": 673,
+      "centre_cm_sm_frame": [
+        43.31,
+        -0.45,
+        16.49
+      ],
+      "normal_sm_frame": [
+        0.0332,
+        -0.0,
+        -0.9994
+      ],
+      "dense_vertex_max_dist_to_plane_raw_cm": 0.4374,
+      "max_residual_before_raw_cm": 0.4109,
+      "max_residual_after_cm": 1e-06,
+      "decimated_faces_flat": 37
+    },
+    {
+      "id": 11,
+      "area_cm2_raw": 515.1,
+      "area_pct": 0.387,
+      "dense_faces": 515,
+      "centre_cm_sm_frame": [
+        -62.06,
+        61.12,
+        0.0
+      ],
+      "normal_sm_frame": [
+        0.0001,
+        0.0001,
+        -1.0
+      ],
+      "dense_vertex_max_dist_to_plane_raw_cm": 0.0376,
+      "max_residual_before_raw_cm": 0.2282,
+      "max_residual_after_cm": 0.0,
+      "decimated_faces_flat": 26
+    },
+    {
+      "id": 4,
+      "area_cm2_raw": 500.1,
+      "area_pct": 0.375,
+      "dense_faces": 552,
+      "centre_cm_sm_frame": [
+        -61.92,
+        -62.72,
+        0.01
+      ],
+      "normal_sm_frame": [
+        -0.0003,
+        0.0002,
+        -1.0
+      ],
+      "dense_vertex_max_dist_to_plane_raw_cm": 0.0458,
+      "max_residual_before_raw_cm": 0.1236,
+      "max_residual_after_cm": 0.0,
+      "decimated_faces_flat": 22
+    },
+    {
+      "id": 3,
+      "area_cm2_raw": 485.5,
+      "area_pct": 0.364,
+      "dense_faces": 403,
+      "centre_cm_sm_frame": [
+        62.44,
+        -61.19,
+        0.01
+      ],
+      "normal_sm_frame": [
+        0.0011,
+        -0.0001,
+        -1.0
+      ],
+      "dense_vertex_max_dist_to_plane_raw_cm": 0.0408,
+      "max_residual_before_raw_cm": 0.0832,
+      "max_residual_after_cm": 0.0,
+      "decimated_faces_flat": 20
+    },
+    {
+      "id": 1,
+      "area_cm2_raw": 484.9,
+      "area_pct": 0.364,
+      "dense_faces": 545,
+      "centre_cm_sm_frame": [
+        64.41,
+        62.49,
+        0.0
+      ],
+      "normal_sm_frame": [
+        0.0,
+        0.0,
+        -1.0
+      ],
+      "dense_vertex_max_dist_to_plane_raw_cm": 0.0256,
+      "max_residual_before_raw_cm": 0.1069,
+      "max_residual_after_cm": 0.0,
+      "decimated_faces_flat": 23
+    },
+    {
+      "id": 26,
+      "area_cm2_raw": 331.5,
+      "area_pct": 0.249,
+      "dense_faces": 430,
+      "centre_cm_sm_frame": [
+        72.21,
+        0.56,
+        60.6
+      ],
+      "normal_sm_frame": [
+        0.6564,
+        -0.0003,
+        0.7545
+      ],
+      "dense_vertex_max_dist_to_plane_raw_cm": 0.0358,
+      "max_residual_before_raw_cm": 0.0704,
+      "max_residual_after_cm": 3e-06,
+      "decimated_faces_flat": 15
+    },
+    {
+      "id": 99,
+      "area_cm2_raw": 308.7,
+      "area_pct": 0.232,
+      "dense_faces": 335,
+      "centre_cm_sm_frame": [
+        20.88,
+        -0.89,
+        16.77
+      ],
+      "normal_sm_frame": [
+        0.0181,
+        -0.0011,
+        -0.9998
+      ],
+      "dense_vertex_max_dist_to_plane_raw_cm": 0.4151,
+      "max_residual_before_raw_cm": 0.2986,
+      "max_residual_after_cm": 1e-06,
+      "decimated_faces_flat": 17
+    },
+    {
+      "id": 52,
+      "area_cm2_raw": 291.3,
+      "area_pct": 0.219,
+      "dense_faces": 328,
+      "centre_cm_sm_frame": [
+        -0.53,
+        -67.93,
+        59.22
+      ],
+      "normal_sm_frame": [
+        -0.9988,
+        -0.005,
+        0.0484
+      ],
+      "dense_vertex_max_dist_to_plane_raw_cm": 0.2597,
+      "max_residual_before_raw_cm": 0.2101,
+      "max_residual_after_cm": 0.0,
+      "decimated_faces_flat": 27
+    },
+    {
+      "id": 43,
+      "area_cm2_raw": 287.7,
+      "area_pct": 0.216,
+      "dense_faces": 332,
+      "centre_cm_sm_frame": [
+        -0.54,
+        67.87,
+        58.97
+      ],
+      "normal_sm_frame": [
+        -0.9988,
+        0.0051,
+        0.0494
+      ],
+      "dense_vertex_max_dist_to_plane_raw_cm": 0.2315,
+      "max_residual_before_raw_cm": 0.2559,
+      "max_residual_after_cm": 0.0,
+      "decimated_faces_flat": 22
+    },
+    {
+      "id": 64,
+      "area_cm2_raw": 282.2,
+      "area_pct": 0.212,
+      "dense_faces": 638,
+      "centre_cm_sm_frame": [
+        80.5,
+        -22.15,
+        39.09
+      ],
+      "normal_sm_frame": [
+        0.4886,
+        -0.867,
+        0.0978
+      ],
+      "dense_vertex_max_dist_to_plane_raw_cm": 0.3607,
+      "max_residual_before_raw_cm": 0.3026,
+      "max_residual_after_cm": 2e-06,
+      "decimated_faces_flat": 27
+    },
+    {
+      "id": 60,
+      "area_cm2_raw": 280.3,
+      "area_pct": 0.21,
+      "dense_faces": 314,
+      "centre_cm_sm_frame": [
+        -97.71,
+        -63.63,
+        71.77
+      ],
+      "normal_sm_frame": [
+        -0.9993,
+        0.0016,
+        0.0376
+      ],
+      "dense_vertex_max_dist_to_plane_raw_cm": 0.2561,
+      "max_residual_before_raw_cm": 0.2286,
+      "max_residual_after_cm": 3e-06,
+      "decimated_faces_flat": 28
+    },
+    {
+      "id": 2,
+      "area_cm2_raw": 268.7,
+      "area_pct": 0.202,
+      "dense_faces": 167,
+      "centre_cm_sm_frame": [
+        12.66,
+        0.26,
+        13.4
+      ],
+      "normal_sm_frame": [
+        -0.0003,
+        -0.0,
+        -1.0
+      ],
+      "dense_vertex_max_dist_to_plane_raw_cm": 0.0572,
+      "max_residual_before_raw_cm": 0.2907,
+      "max_residual_after_cm": 1e-06,
+      "decimated_faces_flat": 8
+    },
+    {
+      "id": 53,
+      "area_cm2_raw": 263.0,
+      "area_pct": 0.197,
+      "dense_faces": 690,
+      "centre_cm_sm_frame": [
+        -45.67,
+        67.19,
+        77.57
+      ],
+      "normal_sm_frame": [
+        0.1112,
+        0.0021,
+        0.9938
+      ],
+      "dense_vertex_max_dist_to_plane_raw_cm": 0.1579,
+      "max_residual_before_raw_cm": 0.1041,
+      "max_residual_after_cm": 3e-06,
+      "decimated_faces_flat": 30
+    },
+    {
+      "id": 46,
+      "area_cm2_raw": 249.9,
+      "area_pct": 0.188,
+      "dense_faces": 218,
+      "centre_cm_sm_frame": [
+        65.79,
+        0.93,
+        16.79
+      ],
+      "normal_sm_frame": [
+        -0.0494,
+        -0.0006,
+        -0.9988
+      ],
+      "dense_vertex_max_dist_to_plane_raw_cm": 0.1897,
+      "max_residual_before_raw_cm": 0.0931,
+      "max_residual_after_cm": 1e-06,
+      "decimated_faces_flat": 7
+    },
+    {
+      "id": 28,
+      "area_cm2_raw": 223.1,
+      "area_pct": 0.167,
+      "dense_faces": 468,
+      "centre_cm_sm_frame": [
+        33.91,
+        -7.97,
+        72.1
+      ],
+      "normal_sm_frame": [
+        -0.0149,
+        -0.0007,
+        0.9999
+      ],
+      "dense_vertex_max_dist_to_plane_raw_cm": 0.2273,
+      "max_residual_before_raw_cm": 0.5588,
+      "max_residual_after_cm": 3e-06,
+      "decimated_faces_flat": 20
+    },
+    {
+      "id": 102,
+      "area_cm2_raw": 216.8,
+      "area_pct": 0.163,
+      "dense_faces": 521,
+      "centre_cm_sm_frame": [
+        74.45,
+        25.83,
+        33.46
+      ],
+      "normal_sm_frame": [
+        0.4334,
+        0.8981,
+        0.0747
+      ],
+      "dense_vertex_max_dist_to_plane_raw_cm": 0.2897,
+      "max_residual_before_raw_cm": 0.6043,
+      "max_residual_after_cm": 2e-06,
+      "decimated_faces_flat": 29
+    },
+    {
+      "id": 59,
+      "area_cm2_raw": 213.9,
+      "area_pct": 0.161,
+      "dense_faces": 207,
+      "centre_cm_sm_frame": [
+        -97.69,
+        57.75,
+        72.39
+      ],
+      "normal_sm_frame": [
+        -0.9991,
+        -0.0178,
+        0.0389
+      ],
+      "dense_vertex_max_dist_to_plane_raw_cm": 0.2678,
+      "max_residual_before_raw_cm": 0.227,
+      "max_residual_after_cm": 3e-06,
+      "decimated_faces_flat": 15
+    },
+    {
+      "id": 7,
+      "area_cm2_raw": 205.9,
+      "area_pct": 0.155,
+      "dense_faces": 256,
+      "centre_cm_sm_frame": [
+        -10.14,
+        0.45,
+        13.39
+      ],
+      "normal_sm_frame": [
+        0.0028,
+        -0.0001,
+        -1.0
+      ],
+      "dense_vertex_max_dist_to_plane_raw_cm": 0.0614,
+      "max_residual_before_raw_cm": 0.2115,
+      "max_residual_after_cm": 1e-06,
+      "decimated_faces_flat": 20
+    },
+    {
+      "id": 136,
+      "area_cm2_raw": 201.7,
+      "area_pct": 0.151,
+      "dense_faces": 225,
+      "centre_cm_sm_frame": [
+        -53.17,
+        -95.06,
+        67.04
+      ],
+      "normal_sm_frame": [
+        0.5113,
+        -0.859,
+        -0.0266
+      ],
+      "dense_vertex_max_dist_to_plane_raw_cm": 0.2203,
+      "max_residual_before_raw_cm": 0.1004,
+      "max_residual_after_cm": 3e-06,
+      "decimated_faces_flat": 10
+    },
+    {
+      "id": 226,
+      "area_cm2_raw": 201.2,
+      "area_pct": 0.151,
+      "dense_faces": 151,
+      "centre_cm_sm_frame": [
+        -1.01,
+        11.06,
+        16.1
+      ],
+      "normal_sm_frame": [
+        -0.0158,
+        0.032,
+        -0.9994
+      ],
+      "dense_vertex_max_dist_to_plane_raw_cm": 0.3315,
+      "max_residual_before_raw_cm": 0.294,
+      "max_residual_after_cm": 1e-06,
+      "decimated_faces_flat": 8
+    },
+    {
+      "id": 254,
+      "area_cm2_raw": 201.0,
+      "area_pct": 0.151,
+      "dense_faces": 687,
+      "centre_cm_sm_frame": [
+        35.13,
+        26.19,
+        13.17
+      ],
+      "normal_sm_frame": [
+        -0.0013,
+        0.0025,
+        -1.0
+      ],
+      "dense_vertex_max_dist_to_plane_raw_cm": 0.2447,
+      "max_residual_before_raw_cm": 0.2083,
+      "max_residual_after_cm": 1e-06,
+      "decimated_faces_flat": 33
+    },
+    {
+      "id": 22,
+      "area_cm2_raw": 191.6,
+      "area_pct": 0.144,
+      "dense_faces": 109,
+      "centre_cm_sm_frame": [
+        84.51,
+        0.65,
+        18.15
+      ],
+      "normal_sm_frame": [
+        0.0008,
+        0.0001,
+        -1.0
+      ],
+      "dense_vertex_max_dist_to_plane_raw_cm": 0.0918,
+      "max_residual_before_raw_cm": 0.2852,
+      "max_residual_after_cm": 1e-06,
+      "decimated_faces_flat": 7
+    },
+    {
+      "id": 5,
+      "area_cm2_raw": 191.4,
+      "area_pct": 0.144,
+      "dense_faces": 80,
+      "centre_cm_sm_frame": [
+        77.1,
+        -0.57,
+        14.21
+      ],
+      "normal_sm_frame": [
+        0.0006,
+        0.0001,
+        -1.0
+      ],
+      "dense_vertex_max_dist_to_plane_raw_cm": 0.0342,
+      "max_residual_before_raw_cm": 0.0317,
+      "max_residual_after_cm": 1e-06,
+      "decimated_faces_flat": 3
+    },
+    {
+      "id": 10,
+      "area_cm2_raw": 186.5,
+      "area_pct": 0.14,
+      "dense_faces": 290,
+      "centre_cm_sm_frame": [
+        86.52,
+        0.23,
+        47.95
+      ],
+      "normal_sm_frame": [
+        0.7215,
+        0.0003,
+        0.6924
+      ],
+      "dense_vertex_max_dist_to_plane_raw_cm": 0.0403,
+      "max_residual_before_raw_cm": 0.0646,
+      "max_residual_after_cm": 3e-06,
+      "decimated_faces_flat": 11
+    },
+    {
+      "id": 101,
+      "area_cm2_raw": 185.5,
+      "area_pct": 0.139,
+      "dense_faces": 607,
+      "centre_cm_sm_frame": [
+        51.98,
+        -52.74,
+        64.3
+      ],
+      "normal_sm_frame": [
+        0.14,
+        0.0132,
+        0.9901
+      ],
+      "dense_vertex_max_dist_to_plane_raw_cm": 0.3002,
+      "max_residual_before_raw_cm": 0.1527,
+      "max_residual_after_cm": 3e-06,
+      "decimated_faces_flat": 24
+    },
+    {
+      "id": 73,
+      "area_cm2_raw": 185.3,
+      "area_pct": 0.139,
+      "dense_faces": 148,
+      "centre_cm_sm_frame": [
+        57.6,
+        84.83,
+        55.89
+      ],
+      "normal_sm_frame": [
+        0.8121,
+        0.5819,
+        -0.0437
+      ],
+      "dense_vertex_max_dist_to_plane_raw_cm": 0.3277,
+      "max_residual_before_raw_cm": 0.1611,
+      "max_residual_after_cm": 3e-06,
+      "decimated_faces_flat": 4
+    },
+    {
+      "id": 29,
+      "area_cm2_raw": 185.1,
+      "area_pct": 0.139,
+      "dense_faces": 409,
+      "centre_cm_sm_frame": [
+        44.93,
+        -96.46,
+        56.78
+      ],
+      "normal_sm_frame": [
+        0.4203,
+        -0.9073,
+        -0.0144
+      ],
+      "dense_vertex_max_dist_to_plane_raw_cm": 0.1733,
+      "max_residual_before_raw_cm": 0.322,
+      "max_residual_after_cm": 4e-06,
+      "decimated_faces_flat": 26
+    },
+    {
+      "id": 38,
+      "area_cm2_raw": 184.9,
+      "area_pct": 0.139,
+      "dense_faces": 256,
+      "centre_cm_sm_frame": [
+        -54.08,
+        95.17,
+        66.93
+      ],
+      "normal_sm_frame": [
+        0.4818,
+        0.876,
+        -0.0218
+      ],
+      "dense_vertex_max_dist_to_plane_raw_cm": 0.2214,
+      "max_residual_before_raw_cm": 0.3358,
+      "max_residual_after_cm": 3e-06,
+      "decimated_faces_flat": 15
+    },
+    {
+      "id": 19,
+      "area_cm2_raw": 184.6,
+      "area_pct": 0.139,
+      "dense_faces": 382,
+      "centre_cm_sm_frame": [
+        45.12,
+        96.21,
+        56.06
+      ],
+      "normal_sm_frame": [
+        0.4197,
+        0.9075,
+        -0.0158
+      ],
+      "dense_vertex_max_dist_to_plane_raw_cm": 0.1655,
+      "max_residual_before_raw_cm": 0.2355,
+      "max_residual_after_cm": 3e-06,
+      "decimated_faces_flat": 24
+    },
+    {
+      "id": 150,
+      "area_cm2_raw": 181.2,
+      "area_pct": 0.136,
+      "dense_faces": 131,
+      "centre_cm_sm_frame": [
+        57.67,
+        -84.9,
+        56.16
+      ],
+      "normal_sm_frame": [
+        0.8118,
+        -0.5825,
+        -0.0411
+      ],
+      "dense_vertex_max_dist_to_plane_raw_cm": 0.1939,
+      "max_residual_before_raw_cm": 0.6406,
+      "max_residual_after_cm": 2e-06,
+      "decimated_faces_flat": 4
+    },
+    {
+      "id": 17,
+      "area_cm2_raw": 171.9,
+      "area_pct": 0.129,
+      "dense_faces": 209,
+      "centre_cm_sm_frame": [
+        58.43,
+        0.81,
+        70.75
+      ],
+      "normal_sm_frame": [
+        0.145,
+        0.0003,
+        0.9894
+      ],
+      "dense_vertex_max_dist_to_plane_raw_cm": 0.3111,
+      "max_residual_before_raw_cm": 0.2015,
+      "max_residual_after_cm": 3e-06,
+      "decimated_faces_flat": 14
+    },
+    {
+      "id": 115,
+      "area_cm2_raw": 170.2,
+      "area_pct": 0.128,
+      "dense_faces": 321,
+      "centre_cm_sm_frame": [
+        64.26,
+        65.16,
+        55.04
+      ],
+      "normal_sm_frame": [
+        0.9978,
+        0.0049,
+        -0.0654
+      ],
+      "dense_vertex_max_dist_to_plane_raw_cm": 0.2599,
+      "max_residual_before_raw_cm": 0.2721,
+      "max_residual_after_cm": 3e-06,
+      "decimated_faces_flat": 25
+    },
+    {
+      "id": 106,
+      "area_cm2_raw": 166.9,
+      "area_pct": 0.125,
+      "dense_faces": 337,
+      "centre_cm_sm_frame": [
+        55.45,
+        28.78,
+        22.66
+      ],
+      "normal_sm_frame": [
+        0.0588,
+        0.6757,
+        -0.7349
+      ],
+      "dense_vertex_max_dist_to_plane_raw_cm": 0.3356,
+      "max_residual_before_raw_cm": 0.1966,
+      "max_residual_after_cm": 1e-06,
+      "decimated_faces_flat": 15
+    },
+    {
+      "id": 79,
+      "area_cm2_raw": 162.9,
+      "area_pct": 0.122,
+      "dense_faces": 464,
+      "centre_cm_sm_frame": [
+        -45.4,
+        -45.29,
+        77.59
+      ],
+      "normal_sm_frame": [
+        0.1019,
+        -0.0081,
+        0.9948
+      ],
+      "dense_vertex_max_dist_to_plane_raw_cm": 0.1591,
+      "max_residual_before_raw_cm": 0.1094,
+      "max_residual_after_cm": 3e-06,
+      "decimated_faces_flat": 22
+    },
+    {
+      "id": 36,
+      "area_cm2_raw": 160.7,
+      "area_pct": 0.121,
+      "dense_faces": 396,
+      "centre_cm_sm_frame": [
+        -57.18,
+        -1.04,
+        22.65
+      ],
+      "normal_sm_frame": [
+        -0.5007,
+        -0.0,
+        -0.8656
+      ],
+      "dense_vertex_max_dist_to_plane_raw_cm": 0.11,
+      "max_residual_before_raw_cm": 0.2177,
+      "max_residual_after_cm": 2e-06,
+      "decimated_faces_flat": 20
+    },
+    {
+      "id": 111,
+      "area_cm2_raw": 158.1,
+      "area_pct": 0.119,
+      "dense_faces": 283,
+      "centre_cm_sm_frame": [
+        64.28,
+        -65.48,
+        55.2
+      ],
+      "normal_sm_frame": [
+        0.9981,
+        -0.0056,
+        -0.0617
+      ],
+      "dense_vertex_max_dist_to_plane_raw_cm": 0.2666,
+      "max_residual_before_raw_cm": 0.2719,
+      "max_residual_after_cm": 3e-06,
+      "decimated_faces_flat": 22
+    },
+    {
+      "id": 33,
+      "area_cm2_raw": 154.5,
+      "area_pct": 0.116,
+      "dense_faces": 460,
+      "centre_cm_sm_frame": [
+        64.61,
+        -32.56,
+        40.51
+      ],
+      "normal_sm_frame": [
+        0.4566,
+        -0.888,
+        0.0538
+      ],
+      "dense_vertex_max_dist_to_plane_raw_cm": 0.1621,
+      "max_residual_before_raw_cm": 0.2671,
+      "max_residual_after_cm": 2e-06,
+      "decimated_faces_flat": 27
+    },
+    {
+      "id": 6,
+      "area_cm2_raw": 151.8,
+      "area_pct": 0.114,
+      "dense_faces": 349,
+      "centre_cm_sm_frame": [
+        65.06,
+        32.3,
+        38.98
+      ],
+      "normal_sm_frame": [
+        0.4552,
+        0.8888,
+        0.0542
+      ],
+      "dense_vertex_max_dist_to_plane_raw_cm": 0.0993,
+      "max_residual_before_raw_cm": 0.2732,
+      "max_residual_after_cm": 2e-06,
+      "decimated_faces_flat": 22
+    },
+    {
+      "id": 316,
+      "area_cm2_raw": 151.5,
+      "area_pct": 0.114,
+      "dense_faces": 333,
+      "centre_cm_sm_frame": [
+        -57.97,
+        -87.77,
+        78.77
+      ],
+      "normal_sm_frame": [
+        0.0963,
+        0.0118,
+        0.9953
+      ],
+      "dense_vertex_max_dist_to_plane_raw_cm": 0.2521,
+      "max_residual_before_raw_cm": 0.1894,
+      "max_residual_after_cm": 3e-06,
+      "decimated_faces_flat": 17
+    },
+    {
+      "id": 9,
+      "area_cm2_raw": 149.4,
+      "area_pct": 0.112,
+      "dense_faces": 222,
+      "centre_cm_sm_frame": [
+        -50.81,
+        0.08,
+        20.84
+      ],
+      "normal_sm_frame": [
+        0.0009,
+        -0.0009,
+        -1.0
+      ],
+      "dense_vertex_max_dist_to_plane_raw_cm": 0.2177,
+      "max_residual_before_raw_cm": 0.1813,
+      "max_residual_after_cm": 1e-06,
+      "decimated_faces_flat": 13
+    },
+    {
+      "id": 230,
+      "area_cm2_raw": 147.6,
+      "area_pct": 0.111,
+      "dense_faces": 481,
+      "centre_cm_sm_frame": [
+        -19.05,
+        -0.47,
+        78.68
+      ],
+      "normal_sm_frame": [
+        0.0344,
+        0.0018,
+        0.9994
+      ],
+      "dense_vertex_max_dist_to_plane_raw_cm": 0.0751,
+      "max_residual_before_raw_cm": 0.1584,
+      "max_residual_after_cm": 3e-06,
+      "decimated_faces_flat": 33
+    },
+    {
+      "id": 272,
+      "area_cm2_raw": 145.4,
+      "area_pct": 0.109,
+      "dense_faces": 312,
+      "centre_cm_sm_frame": [
+        -5.87,
+        30.99,
+        19.99
+      ],
+      "normal_sm_frame": [
+        -0.0052,
+        0.6868,
+        -0.7268
+      ],
+      "dense_vertex_max_dist_to_plane_raw_cm": 0.1237,
+      "max_residual_before_raw_cm": 0.1438,
+      "max_residual_after_cm": 1e-06,
+      "decimated_faces_flat": 13
+    },
+    {
+      "id": 199,
+      "area_cm2_raw": 144.7,
+      "area_pct": 0.109,
+      "dense_faces": 240,
+      "centre_cm_sm_frame": [
+        55.75,
+        -25.16,
+        19.44
+      ],
+      "normal_sm_frame": [
+        0.039,
+        -0.6308,
+        -0.7749
+      ],
+      "dense_vertex_max_dist_to_plane_raw_cm": 0.2592,
+      "max_residual_before_raw_cm": 0.7549,
+      "max_residual_after_cm": 1e-06,
+      "decimated_faces_flat": 6
+    },
+    {
+      "id": 167,
+      "area_cm2_raw": 144.6,
+      "area_pct": 0.109,
+      "dense_faces": 282,
+      "centre_cm_sm_frame": [
+        -4.34,
+        -31.04,
+        19.92
+      ],
+      "normal_sm_frame": [
+        -0.0039,
+        -0.7096,
+        -0.7046
+      ],
+      "dense_vertex_max_dist_to_plane_raw_cm": 0.2348,
+      "max_residual_before_raw_cm": 0.3423,
+      "max_residual_after_cm": 1e-06,
+      "decimated_faces_flat": 13
+    },
+    {
+      "id": 77,
+      "area_cm2_raw": 144.3,
+      "area_pct": 0.108,
+      "dense_faces": 94,
+      "centre_cm_sm_frame": [
+        57.76,
+        -47.85,
+        52.91
+      ],
+      "normal_sm_frame": [
+        0.7977,
+        0.6006,
+        -0.0549
+      ],
+      "dense_vertex_max_dist_to_plane_raw_cm": 0.1536,
+      "max_residual_before_raw_cm": 0.0339,
+      "max_residual_after_cm": 2e-06,
+      "decimated_faces_flat": 2
+    },
+    {
+      "id": 12,
+      "area_cm2_raw": 143.2,
+      "area_pct": 0.107,
+      "dense_faces": 97,
+      "centre_cm_sm_frame": [
+        57.99,
+        47.97,
+        53.43
+      ],
+      "normal_sm_frame": [
+        0.7992,
+        -0.5983,
+        -0.0567
+      ],
+      "dense_vertex_max_dist_to_plane_raw_cm": 0.156,
+      "max_residual_before_raw_cm": 0.1397,
+      "max_residual_after_cm": 3e-06,
+      "decimated_faces_flat": 3
+    },
+    {
+      "id": 32,
+      "area_cm2_raw": 143.1,
+      "area_pct": 0.107,
+      "dense_faces": 102,
+      "centre_cm_sm_frame": [
+        6.1,
+        65.33,
+        57.41
+      ],
+      "normal_sm_frame": [
+        0.9981,
+        -0.0043,
+        -0.0616
+      ],
+      "dense_vertex_max_dist_to_plane_raw_cm": 0.2093,
+      "max_residual_before_raw_cm": 0.1552,
+      "max_residual_after_cm": 0.0,
+      "decimated_faces_flat": 4
+    },
+    {
+      "id": 318,
+      "area_cm2_raw": 141.9,
+      "area_pct": 0.106,
+      "dense_faces": 919,
+      "centre_cm_sm_frame": [
+        -63.97,
+        -61.96,
+        4.9
+      ],
+      "normal_sm_frame": [
+        0.0044,
+        -0.0001,
+        1.0
+      ],
+      "dense_vertex_max_dist_to_plane_raw_cm": 0.1383,
+      "max_residual_before_raw_cm": 0.1816,
+      "max_residual_after_cm": 0.0,
+      "decimated_faces_flat": 51
+    },
+    {
+      "id": 1269,
+      "area_cm2_raw": 140.5,
+      "area_pct": 0.105,
+      "dense_faces": 775,
+      "centre_cm_sm_frame": [
+        47.91,
+        71.84,
+        63.33
+      ],
+      "normal_sm_frame": [
+        0.1173,
+        -0.0046,
+        0.9931
+      ],
+      "dense_vertex_max_dist_to_plane_raw_cm": 0.3205,
+      "max_residual_before_raw_cm": 0.4158,
+      "max_residual_after_cm": 3e-06,
+      "decimated_faces_flat": 58
+    },
+    {
+      "id": 23,
+      "area_cm2_raw": 139.8,
+      "area_pct": 0.105,
+      "dense_faces": 102,
+      "centre_cm_sm_frame": [
+        -35.6,
+        -78.1,
+        68.77
+      ],
+      "normal_sm_frame": [
+        0.8961,
+        -0.4423,
+        -0.0367
+      ],
+      "dense_vertex_max_dist_to_plane_raw_cm": 0.0944,
+      "max_residual_before_raw_cm": 0.1561,
+      "max_residual_after_cm": 2e-06,
+      "decimated_faces_flat": 4
+    },
+    {
+      "id": 8,
+      "area_cm2_raw": 138.3,
+      "area_pct": 0.104,
+      "dense_faces": 87,
+      "centre_cm_sm_frame": [
+        -35.9,
+        78.17,
+        64.18
+      ],
+      "normal_sm_frame": [
+        0.8957,
+        0.4426,
+        -0.042
+      ],
+      "dense_vertex_max_dist_to_plane_raw_cm": 0.1248,
+      "max_residual_before_raw_cm": 0.3043,
+      "max_residual_after_cm": 1e-06,
+      "decimated_faces_flat": 4
+    },
+    {
+      "id": 180,
+      "area_cm2_raw": 138.2,
+      "area_pct": 0.104,
+      "dense_faces": 398,
+      "centre_cm_sm_frame": [
+        56.77,
+        70.16,
+        63.78
+      ],
+      "normal_sm_frame": [
+        0.1127,
+        -0.0111,
+        0.9936
+      ],
+      "dense_vertex_max_dist_to_plane_raw_cm": 0.2157,
+      "max_residual_before_raw_cm": 0.1452,
+      "max_residual_after_cm": 3e-06,
+      "decimated_faces_flat": 15
+    },
+    {
+      "id": 179,
+      "area_cm2_raw": 137.5,
+      "area_pct": 0.103,
+      "dense_faces": 271,
+      "centre_cm_sm_frame": [
+        -20.35,
+        -8.15,
+        16.23
+      ],
+      "normal_sm_frame": [
+        0.0214,
+        0.0306,
+        -0.9993
+      ],
+      "dense_vertex_max_dist_to_plane_raw_cm": 0.3995,
+      "max_residual_before_raw_cm": 0.4147,
+      "max_residual_after_cm": 1e-06,
+      "decimated_faces_flat": 12
+    },
+    {
+      "id": 87,
+      "area_cm2_raw": 137.1,
+      "area_pct": 0.103,
+      "dense_faces": 341,
+      "centre_cm_sm_frame": [
+        9.82,
+        -80.41,
+        56.16
+      ],
+      "normal_sm_frame": [
+        0.8005,
+        0.5947,
+        0.0746
+      ],
+      "dense_vertex_max_dist_to_plane_raw_cm": 0.2868,
+      "max_residual_before_raw_cm": 0.2934,
+      "max_residual_after_cm": 2e-06,
+      "decimated_faces_flat": 10
+    },
+    {
+      "id": 13,
+      "area_cm2_raw": 135.7,
+      "area_pct": 0.102,
+      "dense_faces": 131,
+      "centre_cm_sm_frame": [
+        3.71,
+        -2.38,
+        71.38
+      ],
+      "normal_sm_frame": [
+        0.0206,
+        0.0443,
+        0.9988
+      ],
+      "dense_vertex_max_dist_to_plane_raw_cm": 0.2797,
+      "max_residual_before_raw_cm": null,
+      "max_residual_after_cm": null,
+      "decimated_faces_flat": 0
+    },
+    {
+      "id": 116,
+      "area_cm2_raw": 133.6,
+      "area_pct": 0.1,
+      "dense_faces": 97,
+      "centre_cm_sm_frame": [
+        6.09,
+        -64.91,
+        56.99
+      ],
+      "normal_sm_frame": [
+        0.9982,
+        -0.006,
+        -0.0603
+      ],
+      "dense_vertex_max_dist_to_plane_raw_cm": 0.2767,
+      "max_residual_before_raw_cm": 0.2882,
+      "max_residual_after_cm": 0.0,
+      "decimated_faces_flat": 4
+    },
+    {
+      "id": 258,
+      "area_cm2_raw": 132.1,
+      "area_pct": 0.099,
+      "dense_faces": 95,
+      "centre_cm_sm_frame": [
+        -1.75,
+        -13.29,
+        16.18
+      ],
+      "normal_sm_frame": [
+        -0.03,
+        -0.0322,
+        -0.999
+      ],
+      "dense_vertex_max_dist_to_plane_raw_cm": 0.2438,
+      "max_residual_before_raw_cm": 0.1281,
+      "max_residual_after_cm": 0.0,
+      "decimated_faces_flat": 2
+    },
+    {
+      "id": 98,
+      "area_cm2_raw": 129.2,
+      "area_pct": 0.097,
+      "dense_faces": 434,
+      "centre_cm_sm_frame": [
+        61.4,
+        59.37,
+        4.87
+      ],
+      "normal_sm_frame": [
+        -0.0079,
+        -0.0096,
+        0.9999
+      ],
+      "dense_vertex_max_dist_to_plane_raw_cm": 0.1021,
+      "max_residual_before_raw_cm": 0.2478,
+      "max_residual_after_cm": 0.0,
+      "decimated_faces_flat": 27
+    },
+    {
+      "id": 144,
+      "area_cm2_raw": 128.4,
+      "area_pct": 0.096,
+      "dense_faces": 747,
+      "centre_cm_sm_frame": [
+        62.42,
+        -62.51,
+        4.94
+      ],
+      "normal_sm_frame": [
+        -0.0049,
+        0.0092,
+        0.9999
+      ],
+      "dense_vertex_max_dist_to_plane_raw_cm": 0.1013,
+      "max_residual_before_raw_cm": 0.285,
+      "max_residual_after_cm": 0.0,
+      "decimated_faces_flat": 37
+    },
+    {
+      "id": 267,
+      "area_cm2_raw": 128.1,
+      "area_pct": 0.096,
+      "dense_faces": 538,
+      "centre_cm_sm_frame": [
+        33.72,
+        -23.93,
+        13.15
+      ],
+      "normal_sm_frame": [
+        -0.004,
+        0.0002,
+        -1.0
+      ],
+      "dense_vertex_max_dist_to_plane_raw_cm": 0.2247,
+      "max_residual_before_raw_cm": 0.2342,
+      "max_residual_after_cm": 1e-06,
+      "decimated_faces_flat": 20
+    },
+    {
+      "id": 69,
+      "area_cm2_raw": 126.7,
+      "area_pct": 0.095,
+      "dense_faces": 565,
+      "centre_cm_sm_frame": [
+        70.58,
+        17.46,
+        54.75
+      ],
+      "normal_sm_frame": [
+        0.4622,
+        0.8099,
+        0.3612
+      ],
+      "dense_vertex_max_dist_to_plane_raw_cm": 0.1427,
+      "max_residual_before_raw_cm": 0.1456,
+      "max_residual_after_cm": 2e-06,
+      "decimated_faces_flat": 18
+    },
+    {
+      "id": 63,
+      "area_cm2_raw": 126.5,
+      "area_pct": 0.095,
+      "dense_faces": 657,
+      "centre_cm_sm_frame": [
+        70.14,
+        -17.16,
+        56.25
+      ],
+      "normal_sm_frame": [
+        0.4634,
+        -0.8084,
+        0.363
+      ],
+      "dense_vertex_max_dist_to_plane_raw_cm": 0.1398,
+      "max_residual_before_raw_cm": 0.1643,
+      "max_residual_after_cm": 2e-06,
+      "decimated_faces_flat": 23
+    },
+    {
+      "id": 103,
+      "area_cm2_raw": 126.4,
+      "area_pct": 0.095,
+      "dense_faces": 103,
+      "centre_cm_sm_frame": [
+        7.27,
+        45.25,
+        58.37
+      ],
+      "normal_sm_frame": [
+        -0.6752,
+        -0.7366,
+        0.0391
+      ],
+      "dense_vertex_max_dist_to_plane_raw_cm": 0.3572,
+      "max_residual_before_raw_cm": 0.066,
+      "max_residual_after_cm": 1e-06,
+      "decimated_faces_flat": 2
+    },
+    {
+      "id": 27,
+      "area_cm2_raw": 126.3,
+      "area_pct": 0.095,
+      "dense_faces": 102,
+      "centre_cm_sm_frame": [
+        -89.61,
+        -42.12,
+        73.76
+      ],
+      "normal_sm_frame": [
+        -0.7796,
+        0.6197,
+        0.0908
+      ],
+      "dense_vertex_max_dist_to_plane_raw_cm": 0.2898,
+      "max_residual_before_raw_cm": 0.0442,
+      "max_residual_after_cm": 3e-06,
+      "decimated_faces_flat": 2
+    },
+    {
+      "id": 130,
+      "area_cm2_raw": 125.8,
+      "area_pct": 0.094,
+      "dense_faces": 323,
+      "centre_cm_sm_frame": [
+        87.21,
+        18.14,
+        40.34
+      ],
+      "normal_sm_frame": [
+        0.4994,
+        0.86,
+        0.1048
+      ],
+      "dense_vertex_max_dist_to_plane_raw_cm": 0.2918,
+      "max_residual_before_raw_cm": 0.1036,
+      "max_residual_after_cm": 2e-06,
+      "decimated_faces_flat": 16
+    },
+    {
+      "id": 40,
+      "area_cm2_raw": 125.2,
+      "area_pct": 0.094,
+      "dense_faces": 61,
+      "centre_cm_sm_frame": [
+        -41.75,
+        86.76,
+        65.45
+      ],
+      "normal_sm_frame": [
+        0.7294,
+        0.6835,
+        -0.0285
+      ],
+      "dense_vertex_max_dist_to_plane_raw_cm": 0.1855,
+      "max_residual_before_raw_cm": 0.139,
+      "max_residual_after_cm": 1e-06,
+      "decimated_faces_flat": 2
+    },
+    {
+      "id": 153,
+      "area_cm2_raw": 123.8,
+      "area_pct": 0.093,
+      "dense_faces": 429,
+      "centre_cm_sm_frame": [
+        -72.25,
+        -96.58,
+        67.62
+      ],
+      "normal_sm_frame": [
+        -0.2284,
+        -0.9731,
+        0.0283
+      ],
+      "dense_vertex_max_dist_to_plane_raw_cm": 0.3614,
+      "max_residual_before_raw_cm": 0.4652,
+      "max_residual_after_cm": 3e-06,
+      "decimated_faces_flat": 24
+    },
+    {
+      "id": 42,
+      "area_cm2_raw": 122.6,
+      "area_pct": 0.092,
+      "dense_faces": 86,
+      "centre_cm_sm_frame": [
+        -41.57,
+        -86.75,
+        65.87
+      ],
+      "normal_sm_frame": [
+        0.7275,
+        -0.6855,
+        -0.03
+      ],
+      "dense_vertex_max_dist_to_plane_raw_cm": 0.1065,
+      "max_residual_before_raw_cm": 0.0209,
+      "max_residual_after_cm": 1e-06,
+      "decimated_faces_flat": 1
+    },
+    {
+      "id": 31,
+      "area_cm2_raw": 121.0,
+      "area_pct": 0.091,
+      "dense_faces": 146,
+      "centre_cm_sm_frame": [
+        49.19,
+        -60.14,
+        26.44
+      ],
+      "normal_sm_frame": [
+        -0.0617,
+        0.0004,
+        -0.9981
+      ],
+      "dense_vertex_max_dist_to_plane_raw_cm": 0.0486,
+      "max_residual_before_raw_cm": 0.0288,
+      "max_residual_after_cm": 1e-06,
+      "decimated_faces_flat": 6
+    },
+    {
+      "id": 14,
+      "area_cm2_raw": 120.7,
+      "area_pct": 0.091,
+      "dense_faces": 129,
+      "centre_cm_sm_frame": [
+        48.99,
+        60.8,
+        26.45
+      ],
+      "normal_sm_frame": [
+        -0.063,
+        -0.0014,
+        -0.998
+      ],
+      "dense_vertex_max_dist_to_plane_raw_cm": 0.0493,
+      "max_residual_before_raw_cm": 0.0296,
+      "max_residual_after_cm": 1e-06,
+      "decimated_faces_flat": 6
+    },
+    {
+      "id": 237,
+      "area_cm2_raw": 119.2,
+      "area_pct": 0.089,
+      "dense_faces": 268,
+      "centre_cm_sm_frame": [
+        36.95,
+        92.4,
+        66.22
+      ],
+      "normal_sm_frame": [
+        0.1043,
+        -0.0006,
+        0.9945
+      ],
+      "dense_vertex_max_dist_to_plane_raw_cm": 0.1862,
+      "max_residual_before_raw_cm": 0.246,
+      "max_residual_after_cm": 3e-06,
+      "decimated_faces_flat": 13
+    },
+    {
+      "id": 1273,
+      "area_cm2_raw": 119.0,
+      "area_pct": 0.089,
+      "dense_faces": 1052,
+      "centre_cm_sm_frame": [
+        21.17,
+        -79.53,
+        66.64
+      ],
+      "normal_sm_frame": [
+        0.1176,
+        -0.0098,
+        0.993
+      ],
+      "dense_vertex_max_dist_to_plane_raw_cm": 0.2322,
+      "max_residual_before_raw_cm": 0.2683,
+      "max_residual_after_cm": 3e-06,
+      "decimated_faces_flat": 58
+    },
+    {
+      "id": 170,
+      "area_cm2_raw": 116.4,
+      "area_pct": 0.087,
+      "dense_faces": 272,
+      "centre_cm_sm_frame": [
+        -32.22,
+        -65.39,
+        68.2
+      ],
+      "normal_sm_frame": [
+        0.9992,
+        -0.0008,
+        -0.041
+      ],
+      "dense_vertex_max_dist_to_plane_raw_cm": 0.1499,
+      "max_residual_before_raw_cm": 0.2559,
+      "max_residual_after_cm": 1e-06,
+      "decimated_faces_flat": 20
+    },
+    {
+      "id": 161,
+      "area_cm2_raw": 115.8,
+      "area_pct": 0.087,
+      "dense_faces": 95,
+      "centre_cm_sm_frame": [
+        -90.54,
+        85.22,
+        71.64
+      ],
+      "normal_sm_frame": [
+        -0.7274,
+        0.682,
+        0.0755
+      ],
+      "dense_vertex_max_dist_to_plane_raw_cm": 0.4135,
+      "max_residual_before_raw_cm": 0.0822,
+      "max_residual_after_cm": 2e-06,
+      "decimated_faces_flat": 3
+    },
+    {
+      "id": 139,
+      "area_cm2_raw": 114.8,
+      "area_pct": 0.086,
+      "dense_faces": 251,
+      "centre_cm_sm_frame": [
+        9.78,
+        80.33,
+        57.44
+      ],
+      "normal_sm_frame": [
+        0.8037,
+        -0.5919,
+        0.0613
+      ],
+      "dense_vertex_max_dist_to_plane_raw_cm": 0.2911,
+      "max_residual_before_raw_cm": 0.1773,
+      "max_residual_after_cm": 2e-06,
+      "decimated_faces_flat": 10
+    },
+    {
+      "id": 322,
+      "area_cm2_raw": 113.8,
+      "area_pct": 0.085,
+      "dense_faces": 291,
+      "centre_cm_sm_frame": [
+        24.13,
+        -98.66,
+        55.36
+      ],
+      "normal_sm_frame": [
+        -0.2135,
+        -0.9768,
+        -0.0157
+      ],
+      "dense_vertex_max_dist_to_plane_raw_cm": 0.3041,
+      "max_residual_before_raw_cm": 0.52,
+      "max_residual_after_cm": 4e-06,
+      "decimated_faces_flat": 16
+    },
+    {
+      "id": 183,
+      "area_cm2_raw": 113.5,
+      "area_pct": 0.085,
+      "dense_faces": 147,
+      "centre_cm_sm_frame": [
+        56.93,
+        -65.22,
+        52.71
+      ],
+      "normal_sm_frame": [
+        -0.9934,
+        0.019,
+        0.1131
+      ],
+      "dense_vertex_max_dist_to_plane_raw_cm": 0.2052,
+      "max_residual_before_raw_cm": 0.1931,
+      "max_residual_after_cm": 3e-06,
+      "decimated_faces_flat": 8
+    },
+    {
+      "id": 86,
+      "area_cm2_raw": 113.3,
+      "area_pct": 0.085,
+      "dense_faces": 286,
+      "centre_cm_sm_frame": [
+        -35.86,
+        -63.48,
+        54.75
+      ],
+      "normal_sm_frame": [
+        0.7281,
+        -0.0007,
+        -0.6855
+      ],
+      "dense_vertex_max_dist_to_plane_raw_cm": 0.1338,
+      "max_residual_before_raw_cm": 0.2442,
+      "max_residual_after_cm": 3e-06,
+      "decimated_faces_flat": 14
+    },
+    {
+      "id": 70,
+      "area_cm2_raw": 109.6,
+      "area_pct": 0.082,
+      "dense_faces": 160,
+      "centre_cm_sm_frame": [
+        -41.43,
+        63.07,
+        52.2
+      ],
+      "normal_sm_frame": [
+        -0.1173,
+        0.0036,
+        -0.9931
+      ],
+      "dense_vertex_max_dist_to_plane_raw_cm": 0.3104,
+      "max_residual_before_raw_cm": 0.1354,
+      "max_residual_after_cm": 3e-06,
+      "decimated_faces_flat": 7
+    },
+    {
+      "id": 110,
+      "area_cm2_raw": 109.3,
+      "area_pct": 0.082,
+      "dense_faces": 281,
+      "centre_cm_sm_frame": [
+        -35.77,
+        63.36,
+        54.83
+      ],
+      "normal_sm_frame": [
+        0.7284,
+        0.0001,
+        -0.6852
+      ],
+      "dense_vertex_max_dist_to_plane_raw_cm": 0.1356,
+      "max_residual_before_raw_cm": 0.2283,
+      "max_residual_after_cm": 3e-06,
+      "decimated_faces_flat": 18
+    },
+    {
+      "id": 281,
+      "area_cm2_raw": 108.7,
+      "area_pct": 0.082,
+      "dense_faces": 247,
+      "centre_cm_sm_frame": [
+        -32.16,
+        64.29,
+        69.69
+      ],
+      "normal_sm_frame": [
+        0.9994,
+        0.0027,
+        -0.0348
+      ],
+      "dense_vertex_max_dist_to_plane_raw_cm": 0.1099,
+      "max_residual_before_raw_cm": 0.428,
+      "max_residual_after_cm": 1e-06,
+      "decimated_faces_flat": 16
+    },
+    {
+      "id": 296,
+      "area_cm2_raw": 107.5,
+      "area_pct": 0.081,
+      "dense_faces": 292,
+      "centre_cm_sm_frame": [
+        -41.31,
+        -63.31,
+        64.36
+      ],
+      "normal_sm_frame": [
+        -0.9927,
+        0.0097,
+        0.1203
+      ],
+      "dense_vertex_max_dist_to_plane_raw_cm": 0.3045,
+      "max_residual_before_raw_cm": 0.2473,
+      "max_residual_after_cm": 1e-06,
+      "decimated_faces_flat": 21
+    },
+    {
+      "id": 35,
+      "area_cm2_raw": 106.1,
+      "area_pct": 0.08,
+      "dense_faces": 146,
+      "centre_cm_sm_frame": [
+        -93.85,
+        47.72,
+        73.73
+      ],
+      "normal_sm_frame": [
+        -0.8268,
+        -0.5574,
+        0.0762
+      ],
+      "dense_vertex_max_dist_to_plane_raw_cm": 0.2846,
+      "max_residual_before_raw_cm": 0.1252,
+      "max_residual_after_cm": 2e-06,
+      "decimated_faces_flat": 3
+    },
+    {
+      "id": 34,
+      "area_cm2_raw": 105.2,
+      "area_pct": 0.079,
+      "dense_faces": 110,
+      "centre_cm_sm_frame": [
+        1.18,
+        62.61,
+        47.4
+      ],
+      "normal_sm_frame": [
+        -0.8733,
+        -0.0068,
+        -0.4871
+      ],
+      "dense_vertex_max_dist_to_plane_raw_cm": 0.2104,
+      "max_residual_before_raw_cm": 0.2811,
+      "max_residual_after_cm": 1e-06,
+      "decimated_faces_flat": 6
+    },
+    {
+      "id": 83,
+      "area_cm2_raw": 104.5,
+      "area_pct": 0.078,
+      "dense_faces": 225,
+      "centre_cm_sm_frame": [
+        21.05,
+        -0.62,
+        72.36
+      ],
+      "normal_sm_frame": [
+        -0.0415,
+        -0.0016,
+        0.9991
+      ],
+      "dense_vertex_max_dist_to_plane_raw_cm": 0.1288,
+      "max_residual_before_raw_cm": 0.215,
+      "max_residual_after_cm": 3e-06,
+      "decimated_faces_flat": 10
+    },
+    {
+      "id": 219,
+      "area_cm2_raw": 104.5,
+      "area_pct": 0.078,
+      "dense_faces": 82,
+      "centre_cm_sm_frame": [
+        6.05,
+        -46.58,
+        58.96
+      ],
+      "normal_sm_frame": [
+        -0.6912,
+        0.7216,
+        0.0389
+      ],
+      "dense_vertex_max_dist_to_plane_raw_cm": 0.1416,
+      "max_residual_before_raw_cm": 0.0329,
+      "max_residual_after_cm": 1e-06,
+      "decimated_faces_flat": 1
+    },
+    {
+      "id": 210,
+      "area_cm2_raw": 104.4,
+      "area_pct": 0.078,
+      "dense_faces": 237,
+      "centre_cm_sm_frame": [
+        16.98,
+        39.04,
+        59.47
+      ],
+      "normal_sm_frame": [
+        -0.3808,
+        -0.9233,
+        0.0493
+      ],
+      "dense_vertex_max_dist_to_plane_raw_cm": 0.3475,
+      "max_residual_before_raw_cm": 0.2246,
+      "max_residual_after_cm": 1e-06,
+      "decimated_faces_flat": 8
+    },
+    {
+      "id": 725,
+      "area_cm2_raw": 103.5,
+      "area_pct": 0.078,
+      "dense_faces": 1000,
+      "centre_cm_sm_frame": [
+        -61.7,
+        60.32,
+        4.87
+      ],
+      "normal_sm_frame": [
+        0.0003,
+        -0.0006,
+        1.0
+      ],
+      "dense_vertex_max_dist_to_plane_raw_cm": 0.1619,
+      "max_residual_before_raw_cm": 0.1298,
+      "max_residual_after_cm": 0.0,
+      "decimated_faces_flat": 39
+    },
+    {
+      "id": 47,
+      "area_cm2_raw": 101.0,
+      "area_pct": 0.076,
+      "dense_faces": 146,
+      "centre_cm_sm_frame": [
+        -41.26,
+        -64.93,
+        52.24
+      ],
+      "normal_sm_frame": [
+        -0.1314,
+        -0.003,
+        -0.9913
+      ],
+      "dense_vertex_max_dist_to_plane_raw_cm": 0.4168,
+      "max_residual_before_raw_cm": 0.4752,
+      "max_residual_after_cm": 2e-06,
+      "decimated_faces_flat": 5
+    },
+    {
+      "id": 81,
+      "area_cm2_raw": 100.6,
+      "area_pct": 0.076,
+      "dense_faces": 76,
+      "centre_cm_sm_frame": [
+        -91.2,
+        -84.84,
+        70.43
+      ],
+      "normal_sm_frame": [
+        -0.7425,
+        -0.6662,
+        0.0699
+      ],
+      "dense_vertex_max_dist_to_plane_raw_cm": 0.1681,
+      "max_residual_before_raw_cm": 0.0441,
+      "max_residual_after_cm": 3e-06,
+      "decimated_faces_flat": 2
+    },
+    {
+      "id": 298,
+      "area_cm2_raw": 100.5,
+      "area_pct": 0.075,
+      "dense_faces": 166,
+      "centre_cm_sm_frame": [
+        19.53,
+        -88.15,
+        57.35
+      ],
+      "normal_sm_frame": [
+        0.3843,
+        0.9226,
+        0.0338
+      ],
+      "dense_vertex_max_dist_to_plane_raw_cm": 0.2046,
+      "max_residual_before_raw_cm": 0.048,
+      "max_residual_after_cm": 3e-06,
+      "decimated_faces_flat": 2
+    },
+    {
+      "id": 30,
+      "area_cm2_raw": 100.0,
+      "area_pct": 0.075,
+      "dense_faces": 74,
+      "centre_cm_sm_frame": [
+        93.19,
+        -0.22,
+        26.31
+      ],
+      "normal_sm_frame": [
+        0.6326,
+        -0.0006,
+        -0.7745
+      ],
+      "dense_vertex_max_dist_to_plane_raw_cm": 0.0425,
+      "max_residual_before_raw_cm": 0.315,
+      "max_residual_after_cm": 2e-06,
+      "decimated_faces_flat": 3
+    },
+    {
+      "id": 283,
+      "area_cm2_raw": 99.7,
+      "area_pct": 0.075,
+      "dense_faces": 230,
+      "centre_cm_sm_frame": [
+        19.15,
+        97.14,
+        57.05
+      ],
+      "normal_sm_frame": [
+        -0.3231,
+        0.9463,
+        0.0093
+      ],
+      "dense_vertex_max_dist_to_plane_raw_cm": 0.2887,
+      "max_residual_before_raw_cm": 0.3298,
+      "max_residual_after_cm": 3e-06,
+      "decimated_faces_flat": 12
+    },
+    {
+      "id": 341,
+      "area_cm2_raw": 99.4,
+      "area_pct": 0.075,
+      "dense_faces": 209,
+      "centre_cm_sm_frame": [
+        -36.92,
+        -0.55,
+        19.17
+      ],
+      "normal_sm_frame": [
+        0.1169,
+        0.0071,
+        -0.9931
+      ],
+      "dense_vertex_max_dist_to_plane_raw_cm": 0.311,
+      "max_residual_before_raw_cm": 0.1448,
+      "max_residual_after_cm": 1e-06,
+      "decimated_faces_flat": 8
+    },
+    {
+      "id": 18,
+      "area_cm2_raw": 99.1,
+      "area_pct": 0.074,
+      "dense_faces": 125,
+      "centre_cm_sm_frame": [
+        9.64,
+        61.41,
+        28.08
+      ],
+      "normal_sm_frame": [
+        0.0819,
+        0.007,
+        -0.9966
+      ],
+      "dense_vertex_max_dist_to_plane_raw_cm": 0.0561,
+      "max_residual_before_raw_cm": 0.0426,
+      "max_residual_after_cm": 1e-06,
+      "decimated_faces_flat": 6
+    },
+    {
+      "id": 228,
+      "area_cm2_raw": 99.1,
+      "area_pct": 0.074,
+      "dense_faces": 238,
+      "centre_cm_sm_frame": [
+        -70.56,
+        96.92,
+        66.81
+      ],
+      "normal_sm_frame": [
+        -0.1934,
+        0.9806,
+        0.0319
+      ],
+      "dense_vertex_max_dist_to_plane_raw_cm": 0.2205,
+      "max_residual_before_raw_cm": 0.2335,
+      "max_residual_after_cm": 3e-06,
+      "decimated_faces_flat": 12
+    },
+    {
+      "id": 89,
+      "area_cm2_raw": 98.7,
+      "area_pct": 0.074,
+      "dense_faces": 142,
+      "centre_cm_sm_frame": [
+        8.74,
+        -60.94,
+        27.92
+      ],
+      "normal_sm_frame": [
+        0.0775,
+        -0.0141,
+        -0.9969
+      ],
+      "dense_vertex_max_dist_to_plane_raw_cm": 0.06,
+      "max_residual_before_raw_cm": 0.0286,
+      "max_residual_after_cm": 2e-06,
+      "decimated_faces_flat": 6
+    },
+    {
+      "id": 182,
+      "area_cm2_raw": 98.1,
+      "area_pct": 0.074,
+      "dense_faces": 235,
+      "centre_cm_sm_frame": [
+        44.68,
+        -93.28,
+        45.82
+      ],
+      "normal_sm_frame": [
+        0.2981,
+        -0.7269,
+        -0.6187
+      ],
+      "dense_vertex_max_dist_to_plane_raw_cm": 0.1569,
+      "max_residual_before_raw_cm": 0.1983,
+      "max_residual_after_cm": 3e-06,
+      "decimated_faces_flat": 11
+    },
+    {
+      "id": 157,
+      "area_cm2_raw": 97.7,
+      "area_pct": 0.073,
+      "dense_faces": 259,
+      "centre_cm_sm_frame": [
+        44.29,
+        93.78,
+        46.39
+      ],
+      "normal_sm_frame": [
+        0.2982,
+        0.7287,
+        -0.6165
+      ],
+      "dense_vertex_max_dist_to_plane_raw_cm": 0.1502,
+      "max_residual_before_raw_cm": 0.2713,
+      "max_residual_after_cm": 3e-06,
+      "decimated_faces_flat": 10
+    },
+    {
+      "id": 220,
+      "area_cm2_raw": 96.7,
+      "area_pct": 0.073,
+      "dense_faces": 304,
+      "centre_cm_sm_frame": [
+        -72.81,
+        0.57,
+        46.95
+      ],
+      "normal_sm_frame": [
+        -0.5604,
+        0.0006,
+        -0.8282
+      ],
+      "dense_vertex_max_dist_to_plane_raw_cm": 0.1659,
+      "max_residual_before_raw_cm": 0.1596,
+      "max_residual_after_cm": 2e-06,
+      "decimated_faces_flat": 10
+    },
+    {
+      "id": 146,
+      "area_cm2_raw": 96.6,
+      "area_pct": 0.072,
+      "dense_faces": 85,
+      "centre_cm_sm_frame": [
+        -96.05,
+        67.17,
+        60.62
+      ],
+      "normal_sm_frame": [
+        -0.7843,
+        0.0054,
+        -0.6203
+      ],
+      "dense_vertex_max_dist_to_plane_raw_cm": 0.1667,
+      "max_residual_before_raw_cm": 0.0644,
+      "max_residual_after_cm": 3e-06,
+      "decimated_faces_flat": 4
+    },
+    {
+      "id": 156,
+      "area_cm2_raw": 95.9,
+      "area_pct": 0.072,
+      "dense_faces": 353,
+      "centre_cm_sm_frame": [
+        11.02,
+        51.41,
+        69.3
+      ],
+      "normal_sm_frame": [
+        0.0913,
+        0.001,
+        0.9958
+      ],
+      "dense_vertex_max_dist_to_plane_raw_cm": 0.2944,
+      "max_residual_before_raw_cm": 0.2175,
+      "max_residual_after_cm": 3e-06,
+      "decimated_faces_flat": 18
+    },
+    {
+      "id": 62,
+      "area_cm2_raw": 95.4,
+      "area_pct": 0.072,
+      "dense_faces": 110,
+      "centre_cm_sm_frame": [
+        1.28,
+        -71.71,
+        47.26
+      ],
+      "normal_sm_frame": [
+        -0.8655,
+        -0.0188,
+        -0.5005
+      ],
+      "dense_vertex_max_dist_to_plane_raw_cm": 0.1504,
+      "max_residual_before_raw_cm": 0.1304,
+      "max_residual_after_cm": 1e-06,
+      "decimated_faces_flat": 5
+    },
+    {
+      "id": 95,
+      "area_cm2_raw": 95.0,
+      "area_pct": 0.071,
+      "dense_faces": 272,
+      "centre_cm_sm_frame": [
+        -49.37,
+        33.28,
+        65.76
+      ],
+      "normal_sm_frame": [
+        0.5199,
+        -0.8529,
+        -0.0478
+      ],
+      "dense_vertex_max_dist_to_plane_raw_cm": 0.1221,
+      "max_residual_before_raw_cm": 0.3489,
+      "max_residual_after_cm": 3e-06,
+      "decimated_faces_flat": 10
+    },
+    {
+      "id": 158,
+      "area_cm2_raw": 94.6,
+      "area_pct": 0.071,
+      "dense_faces": 153,
+      "centre_cm_sm_frame": [
+        -41.11,
+        63.09,
+        65.29
+      ],
+      "normal_sm_frame": [
+        -0.9965,
+        -0.0153,
+        0.0825
+      ],
+      "dense_vertex_max_dist_to_plane_raw_cm": 0.2016,
+      "max_residual_before_raw_cm": 0.3647,
+      "max_residual_after_cm": 1e-06,
+      "decimated_faces_flat": 12
+    },
+    {
+      "id": 560,
+      "area_cm2_raw": 94.5,
+      "area_pct": 0.071,
+      "dense_faces": 498,
+      "centre_cm_sm_frame": [
+        -32.57,
+        -27.76,
+        13.22
+      ],
+      "normal_sm_frame": [
+        0.0116,
+        0.0176,
+        -0.9998
+      ],
+      "dense_vertex_max_dist_to_plane_raw_cm": 0.2375,
+      "max_residual_before_raw_cm": 0.286,
+      "max_residual_after_cm": 1e-06,
+      "decimated_faces_flat": 17
+    },
+    {
+      "id": 55,
+      "area_cm2_raw": 91.1,
+      "area_pct": 0.068,
+      "dense_faces": 160,
+      "centre_cm_sm_frame": [
+        -36.92,
+        47.63,
+        65.21
+      ],
+      "normal_sm_frame": [
+        0.9037,
+        -0.4273,
+        -0.0274
+      ],
+      "dense_vertex_max_dist_to_plane_raw_cm": 0.0997,
+      "max_residual_before_raw_cm": 0.2752,
+      "max_residual_after_cm": 1e-06,
+      "decimated_faces_flat": 8
+    },
+    {
+      "id": 353,
+      "area_cm2_raw": 91.0,
+      "area_pct": 0.068,
+      "dense_faces": 127,
+      "centre_cm_sm_frame": [
+        36.59,
+        36.65,
+        56.97
+      ],
+      "normal_sm_frame": [
+        0.1634,
+        -0.9859,
+        -0.0351
+      ],
+      "dense_vertex_max_dist_to_plane_raw_cm": 0.2135,
+      "max_residual_before_raw_cm": 0.0984,
+      "max_residual_after_cm": 1e-06,
+      "decimated_faces_flat": 5
+    },
+    {
+      "id": 84,
+      "area_cm2_raw": 90.4,
+      "area_pct": 0.068,
+      "dense_faces": 109,
+      "centre_cm_sm_frame": [
+        -36.7,
+        -48.09,
+        66.97
+      ],
+      "normal_sm_frame": [
+        0.905,
+        0.4245,
+        -0.0283
+      ],
+      "dense_vertex_max_dist_to_plane_raw_cm": 0.0991,
+      "max_residual_before_raw_cm": 0.0879,
+      "max_residual_after_cm": 2e-06,
+      "decimated_faces_flat": 7
+    },
+    {
+      "id": 108,
+      "area_cm2_raw": 90.3,
+      "area_pct": 0.068,
+      "dense_faces": 196,
+      "centre_cm_sm_frame": [
+        -96.52,
+        -64.77,
+        61.16
+      ],
+      "normal_sm_frame": [
+        -0.7876,
+        -0.0035,
+        -0.6162
+      ],
+      "dense_vertex_max_dist_to_plane_raw_cm": 0.1745,
+      "max_residual_before_raw_cm": 0.2881,
+      "max_residual_after_cm": 3e-06,
+      "decimated_faces_flat": 14
+    },
+    {
+      "id": 229,
+      "area_cm2_raw": 90.3,
+      "area_pct": 0.068,
+      "dense_faces": 146,
+      "centre_cm_sm_frame": [
+        -91.35,
+        57.96,
+        81.56
+      ],
+      "normal_sm_frame": [
+        0.0115,
+        -0.0035,
+        0.9999
+      ],
+      "dense_vertex_max_dist_to_plane_raw_cm": 0.2553,
+      "max_residual_before_raw_cm": 0.1037,
+      "max_residual_after_cm": 3e-06,
+      "decimated_faces_flat": 8
+    },
+    {
+      "id": 1226,
+      "area_cm2_raw": 90.1,
+      "area_pct": 0.068,
+      "dense_faces": 829,
+      "centre_cm_sm_frame": [
+        14.91,
+        56.2,
+        67.5
+      ],
+      "normal_sm_frame": [
+        0.1448,
+        0.0084,
+        0.9894
+      ],
+      "dense_vertex_max_dist_to_plane_raw_cm": 0.2406,
+      "max_residual_before_raw_cm": 0.2545,
+      "max_residual_after_cm": 3e-06,
+      "decimated_faces_flat": 41
+    },
+    {
+      "id": 176,
+      "area_cm2_raw": 89.6,
+      "area_pct": 0.067,
+      "dense_faces": 133,
+      "centre_cm_sm_frame": [
+        37.32,
+        -36.87,
+        58.47
+      ],
+      "normal_sm_frame": [
+        0.1714,
+        0.9845,
+        -0.0359
+      ],
+      "dense_vertex_max_dist_to_plane_raw_cm": 0.3467,
+      "max_residual_before_raw_cm": 0.28,
+      "max_residual_after_cm": 1e-06,
+      "decimated_faces_flat": 5
+    },
+    {
+      "id": 257,
+      "area_cm2_raw": 88.6,
+      "area_pct": 0.066,
+      "dense_faces": 297,
+      "centre_cm_sm_frame": [
+        -49.46,
+        -33.35,
+        66.01
+      ],
+      "normal_sm_frame": [
+        0.5294,
+        0.8472,
+        -0.0436
+      ],
+      "dense_vertex_max_dist_to_plane_raw_cm": 0.135,
+      "max_residual_before_raw_cm": 0.283,
+      "max_residual_after_cm": 2e-06,
+      "decimated_faces_flat": 12
+    },
+    {
+      "id": 82,
+      "area_cm2_raw": 88.2,
+      "area_pct": 0.066,
+      "dense_faces": 257,
+      "centre_cm_sm_frame": [
+        41.81,
+        0.94,
+        72.37
+      ],
+      "normal_sm_frame": [
+        0.0522,
+        0.0001,
+        0.9986
+      ],
+      "dense_vertex_max_dist_to_plane_raw_cm": 0.0747,
+      "max_residual_before_raw_cm": 0.2589,
+      "max_residual_after_cm": 3e-06,
+      "decimated_faces_flat": 13
+    },
+    {
+      "id": 196,
+      "area_cm2_raw": 88.0,
+      "area_pct": 0.066,
+      "dense_faces": 217,
+      "centre_cm_sm_frame": [
+        -21.34,
+        11.14,
+        16.12
+      ],
+      "normal_sm_frame": [
+        0.0238,
+        -0.0352,
+        -0.9991
+      ],
+      "dense_vertex_max_dist_to_plane_raw_cm": 0.3008,
+      "max_residual_before_raw_cm": 0.1464,
+      "max_residual_after_cm": 1e-06,
+      "decimated_faces_flat": 5
+    },
+    {
+      "id": 45,
+      "area_cm2_raw": 87.9,
+      "area_pct": 0.066,
+      "dense_faces": 122,
+      "centre_cm_sm_frame": [
+        -68.42,
+        63.32,
+        51.41
+      ],
+      "normal_sm_frame": [
+        -0.1046,
+        -0.0064,
+        -0.9945
+      ],
+      "dense_vertex_max_dist_to_plane_raw_cm": 0.0388,
+      "max_residual_before_raw_cm": 0.0209,
+      "max_residual_after_cm": 3e-06,
+      "decimated_faces_flat": 5
+    },
+    {
+      "id": 56,
+      "area_cm2_raw": 87.7,
+      "area_pct": 0.066,
+      "dense_faces": 115,
+      "centre_cm_sm_frame": [
+        -66.58,
+        -64.43,
+        51.2
+      ],
+      "normal_sm_frame": [
+        -0.1029,
+        0.0056,
+        -0.9947
+      ],
+      "dense_vertex_max_dist_to_plane_raw_cm": 0.0483,
+      "max_residual_before_raw_cm": 0.0205,
+      "max_residual_after_cm": 2e-06,
+      "decimated_faces_flat": 5
+    },
+    {
+      "id": 835,
+      "area_cm2_raw": 87.5,
+      "area_pct": 0.066,
+      "dense_faces": 714,
+      "centre_cm_sm_frame": [
+        79.27,
+        19.62,
+        46.42
+      ],
+      "normal_sm_frame": [
+        0.2467,
+        -0.0922,
+        0.9647
+      ],
+      "dense_vertex_max_dist_to_plane_raw_cm": 0.2708,
+      "max_residual_before_raw_cm": 0.1466,
+      "max_residual_after_cm": 2e-06,
+      "decimated_faces_flat": 36
+    },
+    {
+      "id": 164,
+      "area_cm2_raw": 86.9,
+      "area_pct": 0.065,
+      "dense_faces": 210,
+      "centre_cm_sm_frame": [
+        57.77,
+        19.23,
+        65.21
+      ],
+      "normal_sm_frame": [
+        0.1009,
+        0.9031,
+        0.4173
+      ],
+      "dense_vertex_max_dist_to_plane_raw_cm": 0.2641,
+      "max_residual_before_raw_cm": 0.2412,
+      "max_residual_after_cm": 2e-06,
+      "decimated_faces_flat": 13
+    },
+    {
+      "id": 244,
+      "area_cm2_raw": 86.0,
+      "area_pct": 0.065,
+      "dense_faces": 292,
+      "centre_cm_sm_frame": [
+        -50.53,
+        -86.36,
+        53.18
+      ],
+      "normal_sm_frame": [
+        -0.1341,
+        0.0136,
+        -0.9909
+      ],
+      "dense_vertex_max_dist_to_plane_raw_cm": 0.3014,
+      "max_residual_before_raw_cm": 0.2662,
+      "max_residual_after_cm": 3e-06,
+      "decimated_faces_flat": 7
+    },
+    {
+      "id": 271,
+      "area_cm2_raw": 85.9,
+      "area_pct": 0.064,
+      "dense_faces": 552,
+      "centre_cm_sm_frame": [
+        77.86,
+        -19.97,
+        46.81
+      ],
+      "normal_sm_frame": [
+        0.2487,
+        0.0904,
+        0.9644
+      ],
+      "dense_vertex_max_dist_to_plane_raw_cm": 0.2371,
+      "max_residual_before_raw_cm": 0.2246,
+      "max_residual_after_cm": 2e-06,
+      "decimated_faces_flat": 25
+    },
+    {
+      "id": 301,
+      "area_cm2_raw": 85.9,
+      "area_pct": 0.064,
+      "dense_faces": 297,
+      "centre_cm_sm_frame": [
+        81.32,
+        0.66,
+        18.66
+      ],
+      "normal_sm_frame": [
+        1.0,
+        -0.0002,
+        -0.0011
+      ],
+      "dense_vertex_max_dist_to_plane_raw_cm": 0.0757,
+      "max_residual_before_raw_cm": 0.404,
+      "max_residual_after_cm": 3e-06,
+      "decimated_faces_flat": 28
+    },
+    {
+      "id": 181,
+      "area_cm2_raw": 83.8,
+      "area_pct": 0.063,
+      "dense_faces": 127,
+      "centre_cm_sm_frame": [
+        21.38,
+        -37.62,
+        60.36
+      ],
+      "normal_sm_frame": [
+        -0.2758,
+        0.96,
+        0.0479
+      ],
+      "dense_vertex_max_dist_to_plane_raw_cm": 0.3491,
+      "max_residual_before_raw_cm": 0.1929,
+      "max_residual_after_cm": 1e-06,
+      "decimated_faces_flat": 2
+    },
+    {
+      "id": 906,
+      "area_cm2_raw": 83.5,
+      "area_pct": 0.063,
+      "dense_faces": 124,
+      "centre_cm_sm_frame": [
+        -13.33,
+        -22.06,
+        71.69
+      ],
+      "normal_sm_frame": [
+        0.0154,
+        -0.525,
+        0.851
+      ],
+      "dense_vertex_max_dist_to_plane_raw_cm": 0.057,
+      "max_residual_before_raw_cm": 0.2008,
+      "max_residual_after_cm": 3e-06,
+      "decimated_faces_flat": 5
+    },
+    {
+      "id": 238,
+      "area_cm2_raw": 83.5,
+      "area_pct": 0.063,
+      "dense_faces": 117,
+      "centre_cm_sm_frame": [
+        -91.8,
+        -61.59,
+        81.62
+      ],
+      "normal_sm_frame": [
+        -0.0189,
+        0.0025,
+        0.9998
+      ],
+      "dense_vertex_max_dist_to_plane_raw_cm": 0.2027,
+      "max_residual_before_raw_cm": 0.1434,
+      "max_residual_after_cm": 3e-06,
+      "decimated_faces_flat": 7
+    },
+    {
+      "id": 85,
+      "area_cm2_raw": 83.5,
+      "area_pct": 0.063,
+      "dense_faces": 50,
+      "centre_cm_sm_frame": [
+        62.06,
+        -0.81,
+        14.93
+      ],
+      "normal_sm_frame": [
+        0.0031,
+        -0.0004,
+        -1.0
+      ],
+      "dense_vertex_max_dist_to_plane_raw_cm": 0.023,
+      "max_residual_before_raw_cm": 0.0132,
+      "max_residual_after_cm": 0.0,
+      "decimated_faces_flat": 2
+    },
+    {
+      "id": 76,
+      "area_cm2_raw": 83.0,
+      "area_pct": 0.062,
+      "dense_faces": 39,
+      "centre_cm_sm_frame": [
+        57.16,
+        -1.64,
+        14.93
+      ],
+      "normal_sm_frame": [
+        0.0002,
+        -0.0001,
+        -1.0
+      ],
+      "dense_vertex_max_dist_to_plane_raw_cm": 0.0178,
+      "max_residual_before_raw_cm": 0.4433,
+      "max_residual_after_cm": 1e-06,
+      "decimated_faces_flat": 2
+    },
+    {
+      "id": 1036,
+      "area_cm2_raw": 82.9,
+      "area_pct": 0.062,
+      "dense_faces": 360,
+      "centre_cm_sm_frame": [
+        20.31,
+        88.32,
+        57.21
+      ],
+      "normal_sm_frame": [
+        0.3944,
+        -0.9178,
+        0.0457
+      ],
+      "dense_vertex_max_dist_to_plane_raw_cm": 0.3883,
+      "max_residual_before_raw_cm": 0.0776,
+      "max_residual_after_cm": 2e-06,
+      "decimated_faces_flat": 7
+    },
+    {
+      "id": 882,
+      "area_cm2_raw": 82.3,
+      "area_pct": 0.062,
+      "dense_faces": 434,
+      "centre_cm_sm_frame": [
+        19.38,
+        -27.54,
+        21.4
+      ],
+      "normal_sm_frame": [
+        -0.0037,
+        -0.5999,
+        -0.8
+      ],
+      "dense_vertex_max_dist_to_plane_raw_cm": 0.1975,
+      "max_residual_before_raw_cm": 0.1684,
+      "max_residual_after_cm": 1e-06,
+      "decimated_faces_flat": 18
+    },
+    {
+      "id": 359,
+      "area_cm2_raw": 81.6,
+      "area_pct": 0.061,
+      "dense_faces": 365,
+      "centre_cm_sm_frame": [
+        18.46,
+        26.88,
+        21.08
+      ],
+      "normal_sm_frame": [
+        0.0053,
+        0.6088,
+        -0.7933
+      ],
+      "dense_vertex_max_dist_to_plane_raw_cm": 0.3134,
+      "max_residual_before_raw_cm": 0.2231,
+      "max_residual_after_cm": 1e-06,
+      "decimated_faces_flat": 18
+    },
+    {
+      "id": 694,
+      "area_cm2_raw": 81.5,
+      "area_pct": 0.061,
+      "dense_faces": 166,
+      "centre_cm_sm_frame": [
+        37.93,
+        -79.87,
+        59.35
+      ],
+      "normal_sm_frame": [
+        -0.0382,
+        0.0419,
+        -0.9984
+      ],
+      "dense_vertex_max_dist_to_plane_raw_cm": 0.2577,
+      "max_residual_before_raw_cm": 0.1888,
+      "max_residual_after_cm": 3e-06,
+      "decimated_faces_flat": 6
+    },
+    {
+      "id": 876,
+      "area_cm2_raw": 81.3,
+      "area_pct": 0.061,
+      "dense_faces": 115,
+      "centre_cm_sm_frame": [
+        -8.92,
+        21.94,
+        71.61
+      ],
+      "normal_sm_frame": [
+        0.0157,
+        0.5407,
+        0.8411
+      ],
+      "dense_vertex_max_dist_to_plane_raw_cm": 0.0783,
+      "max_residual_before_raw_cm": 0.3687,
+      "max_residual_after_cm": 2e-06,
+      "decimated_faces_flat": 8
+    },
+    {
+      "id": 201,
+      "area_cm2_raw": 81.1,
+      "area_pct": 0.061,
+      "dense_faces": 305,
+      "centre_cm_sm_frame": [
+        -61.7,
+        12.47,
+        70.0
+      ],
+      "normal_sm_frame": [
+        -0.7719,
+        -0.0145,
+        0.6355
+      ],
+      "dense_vertex_max_dist_to_plane_raw_cm": 0.1517,
+      "max_residual_before_raw_cm": 0.2364,
+      "max_residual_after_cm": 3e-06,
+      "decimated_faces_flat": 8
+    },
+    {
+      "id": 285,
+      "area_cm2_raw": 81.0,
+      "area_pct": 0.061,
+      "dense_faces": 302,
+      "centre_cm_sm_frame": [
+        -61.3,
+        -12.82,
+        70.5
+      ],
+      "normal_sm_frame": [
+        -0.7702,
+        0.0193,
+        0.6375
+      ],
+      "dense_vertex_max_dist_to_plane_raw_cm": 0.1019,
+      "max_residual_before_raw_cm": 0.3677,
+      "max_residual_after_cm": 3e-06,
+      "decimated_faces_flat": 12
+    },
+    {
+      "id": 321,
+      "area_cm2_raw": 81.0,
+      "area_pct": 0.061,
+      "dense_faces": 239,
+      "centre_cm_sm_frame": [
+        27.77,
+        99.26,
+        55.65
+      ],
+      "normal_sm_frame": [
+        -0.1588,
+        0.9869,
+        -0.0278
+      ],
+      "dense_vertex_max_dist_to_plane_raw_cm": 0.2093,
+      "max_residual_before_raw_cm": 0.491,
+      "max_residual_after_cm": 4e-06,
+      "decimated_faces_flat": 13
+    },
+    {
+      "id": 486,
+      "area_cm2_raw": 80.5,
+      "area_pct": 0.06,
+      "dense_faces": 230,
+      "centre_cm_sm_frame": [
+        -29.46,
+        31.59,
+        51.1
+      ],
+      "normal_sm_frame": [
+        0.0053,
+        0.6975,
+        0.7166
+      ],
+      "dense_vertex_max_dist_to_plane_raw_cm": 0.1835,
+      "max_residual_before_raw_cm": 0.1709,
+      "max_residual_after_cm": 2e-06,
+      "decimated_faces_flat": 11
+    },
+    {
+      "id": 114,
+      "area_cm2_raw": 80.1,
+      "area_pct": 0.06,
+      "dense_faces": 255,
+      "centre_cm_sm_frame": [
+        60.98,
+        -64.76,
+        44.77
+      ],
+      "normal_sm_frame": [
+        0.677,
+        -0.001,
+        -0.736
+      ],
+      "dense_vertex_max_dist_to_plane_raw_cm": 0.1028,
+      "max_residual_before_raw_cm": 0.267,
+      "max_residual_after_cm": 3e-06,
+      "decimated_faces_flat": 21
+    },
+    {
+      "id": 51,
+      "area_cm2_raw": 79.6,
+      "area_pct": 0.06,
+      "dense_faces": 251,
+      "centre_cm_sm_frame": [
+        61.08,
+        65.47,
+        44.86
+      ],
+      "normal_sm_frame": [
+        0.6743,
+        0.0013,
+        -0.7385
+      ],
+      "dense_vertex_max_dist_to_plane_raw_cm": 0.1567,
+      "max_residual_before_raw_cm": 0.3034,
+      "max_residual_after_cm": 3e-06,
+      "decimated_faces_flat": 15
+    },
+    {
+      "id": 549,
+      "area_cm2_raw": 79.4,
+      "area_pct": 0.06,
+      "dense_faces": 242,
+      "centre_cm_sm_frame": [
+        -26.58,
+        -57.29,
+        58.1
+      ],
+      "normal_sm_frame": [
+        0.9996,
+        0.0056,
+        0.0278
+      ],
+      "dense_vertex_max_dist_to_plane_raw_cm": 0.2614,
+      "max_residual_before_raw_cm": 0.1557,
+      "max_residual_after_cm": 1e-06,
+      "decimated_faces_flat": 12
+    },
+    {
+      "id": 93,
+      "area_cm2_raw": 79.3,
+      "area_pct": 0.06,
+      "dense_faces": 105,
+      "centre_cm_sm_frame": [
+        95.29,
+        1.03,
+        38.61
+      ],
+      "normal_sm_frame": [
+        0.9999,
+        -0.0003,
+        -0.0147
+      ],
+      "dense_vertex_max_dist_to_plane_raw_cm": 0.0648,
+      "max_residual_before_raw_cm": 0.0673,
+      "max_residual_after_cm": 3e-06,
+      "decimated_faces_flat": 8
+    },
+    {
+      "id": 575,
+      "area_cm2_raw": 79.3,
+      "area_pct": 0.06,
+      "dense_faces": 289,
+      "centre_cm_sm_frame": [
+        -30.25,
+        -31.66,
+        51.11
+      ],
+      "normal_sm_frame": [
+        0.0019,
+        -0.6888,
+        0.7249
+      ],
+      "dense_vertex_max_dist_to_plane_raw_cm": 0.222,
+      "max_residual_before_raw_cm": 0.3558,
+      "max_residual_after_cm": 2e-06,
+      "decimated_faces_flat": 11
+    },
+    {
+      "id": 413,
+      "area_cm2_raw": 78.1,
+      "area_pct": 0.059,
+      "dense_faces": 351,
+      "centre_cm_sm_frame": [
+        -66.15,
+        -29.47,
+        67.83
+      ],
+      "normal_sm_frame": [
+        -0.0604,
+        0.9977,
+        0.0316
+      ],
+      "dense_vertex_max_dist_to_plane_raw_cm": 0.2353,
+      "max_residual_before_raw_cm": 0.2256,
+      "max_residual_after_cm": 2e-06,
+      "decimated_faces_flat": 20
+    },
+    {
+      "id": 41,
+      "area_cm2_raw": 77.9,
+      "area_pct": 0.058,
+      "dense_faces": 78,
+      "centre_cm_sm_frame": [
+        -0.21,
+        4.74,
+        71.57
+      ],
+      "normal_sm_frame": [
+        0.0207,
+        -0.0635,
+        0.9978
+      ],
+      "dense_vertex_max_dist_to_plane_raw_cm": 0.0414,
+      "max_residual_before_raw_cm": null,
+      "max_residual_after_cm": null,
+      "decimated_faces_flat": 0
+    },
+    {
+      "id": 48,
+      "area_cm2_raw": 77.4,
+      "area_pct": 0.058,
+      "dense_faces": 93,
+      "centre_cm_sm_frame": [
+        37.13,
+        -23.62,
+        70.34
+      ],
+      "normal_sm_frame": [
+        0.0089,
+        -0.4891,
+        0.8722
+      ],
+      "dense_vertex_max_dist_to_plane_raw_cm": 0.0603,
+      "max_residual_before_raw_cm": 0.0691,
+      "max_residual_after_cm": 3e-06,
+      "decimated_faces_flat": 2
+    },
+    {
+      "id": 438,
+      "area_cm2_raw": 77.3,
+      "area_pct": 0.058,
+      "dense_faces": 266,
+      "centre_cm_sm_frame": [
+        29.22,
+        -90.79,
+        54.21
+      ],
+      "normal_sm_frame": [
+        0.1697,
+        0.9786,
+        0.1163
+      ],
+      "dense_vertex_max_dist_to_plane_raw_cm": 0.2289,
+      "max_residual_before_raw_cm": 0.1731,
+      "max_residual_after_cm": 2e-06,
+      "decimated_faces_flat": 7
+    },
+    {
+      "id": 133,
+      "area_cm2_raw": 76.7,
+      "area_pct": 0.058,
+      "dense_faces": 93,
+      "centre_cm_sm_frame": [
+        35.45,
+        23.33,
+        70.45
+      ],
+      "normal_sm_frame": [
+        0.0082,
+        0.4883,
+        0.8726
+      ],
+      "dense_vertex_max_dist_to_plane_raw_cm": 0.0719,
+      "max_residual_before_raw_cm": 0.242,
+      "max_residual_after_cm": 2e-06,
+      "decimated_faces_flat": 3
+    },
+    {
+      "id": 255,
+      "area_cm2_raw": 76.3,
+      "area_pct": 0.057,
+      "dense_faces": 105,
+      "centre_cm_sm_frame": [
+        56.76,
+        61.43,
+        53.59
+      ],
+      "normal_sm_frame": [
+        -0.992,
+        0.0623,
+        0.1098
+      ],
+      "dense_vertex_max_dist_to_plane_raw_cm": 0.3417,
+      "max_residual_before_raw_cm": 0.2167,
+      "max_residual_after_cm": 3e-06,
+      "decimated_faces_flat": 5
+    },
+    {
+      "id": 427,
+      "area_cm2_raw": 76.3,
+      "area_pct": 0.057,
+      "dense_faces": 215,
+      "centre_cm_sm_frame": [
+        21.7,
+        15.37,
+        72.34
+      ],
+      "normal_sm_frame": [
+        -0.0178,
+        0.0066,
+        0.9998
+      ],
+      "dense_vertex_max_dist_to_plane_raw_cm": 0.1383,
+      "max_residual_before_raw_cm": 0.4141,
+      "max_residual_after_cm": 3e-06,
+      "decimated_faces_flat": 15
+    },
+    {
+      "id": 242,
+      "area_cm2_raw": 75.7,
+      "area_pct": 0.057,
+      "dense_faces": 141,
+      "centre_cm_sm_frame": [
+        40.0,
+        19.09,
+        70.85
+      ],
+      "normal_sm_frame": [
+        0.0418,
+        -0.0742,
+        0.9964
+      ],
+      "dense_vertex_max_dist_to_plane_raw_cm": 0.2065,
+      "max_residual_before_raw_cm": 0.3862,
+      "max_residual_after_cm": 3e-06,
+      "decimated_faces_flat": 5
+    },
+    {
+      "id": 333,
+      "area_cm2_raw": 75.1,
+      "area_pct": 0.056,
+      "dense_faces": 325,
+      "centre_cm_sm_frame": [
+        23.21,
+        -15.37,
+        72.31
+      ],
+      "normal_sm_frame": [
+        0.003,
+        -0.0091,
+        1.0
+      ],
+      "dense_vertex_max_dist_to_plane_raw_cm": 0.159,
+      "max_residual_before_raw_cm": 0.3054,
+      "max_residual_after_cm": 3e-06,
+      "decimated_faces_flat": 14
+    },
+    {
+      "id": 72,
+      "area_cm2_raw": 75.1,
+      "area_pct": 0.056,
+      "dense_faces": 199,
+      "centre_cm_sm_frame": [
+        59.95,
+        11.65,
+        70.53
+      ],
+      "normal_sm_frame": [
+        0.158,
+        0.0012,
+        0.9874
+      ],
+      "dense_vertex_max_dist_to_plane_raw_cm": 0.2322,
+      "max_residual_before_raw_cm": 0.1908,
+      "max_residual_after_cm": 3e-06,
+      "decimated_faces_flat": 8
+    },
+    {
+      "id": 198,
+      "area_cm2_raw": 75.0,
+      "area_pct": 0.056,
+      "dense_faces": 146,
+      "centre_cm_sm_frame": [
+        13.61,
+        -40.55,
+        56.65
+      ],
+      "normal_sm_frame": [
+        -0.5065,
+        0.8621,
+        0.0172
+      ],
+      "dense_vertex_max_dist_to_plane_raw_cm": 0.2558,
+      "max_residual_before_raw_cm": 0.0371,
+      "max_residual_after_cm": 1e-06,
+      "decimated_faces_flat": 1
+    },
+    {
+      "id": 647,
+      "area_cm2_raw": 75.0,
+      "area_pct": 0.056,
+      "dense_faces": 345,
+      "centre_cm_sm_frame": [
+        -67.38,
+        29.56,
+        68.63
+      ],
+      "normal_sm_frame": [
+        -0.1014,
+        -0.9934,
+        0.0538
+      ],
+      "dense_vertex_max_dist_to_plane_raw_cm": 0.2786,
+      "max_residual_before_raw_cm": 0.6555,
+      "max_residual_after_cm": 2e-06,
+      "decimated_faces_flat": 22
+    },
+    {
+      "id": 1313,
+      "area_cm2_raw": 74.8,
+      "area_pct": 0.056,
+      "dense_faces": 643,
+      "centre_cm_sm_frame": [
+        42.59,
+        -47.06,
+        63.87
+      ],
+      "normal_sm_frame": [
+        0.1243,
+        -0.0034,
+        0.9922
+      ],
+      "dense_vertex_max_dist_to_plane_raw_cm": 0.2219,
+      "max_residual_before_raw_cm": 0.2242,
+      "max_residual_after_cm": 3e-06,
+      "decimated_faces_flat": 40
+    },
+    {
+      "id": 119,
+      "area_cm2_raw": 74.6,
+      "area_pct": 0.056,
+      "dense_faces": 49,
+      "centre_cm_sm_frame": [
+        1.09,
+        -68.68,
+        67.94
+      ],
+      "normal_sm_frame": [
+        -0.7147,
+        -0.0064,
+        0.6994
+      ],
+      "dense_vertex_max_dist_to_plane_raw_cm": 0.1312,
+      "max_residual_before_raw_cm": 0.2408,
+      "max_residual_after_cm": 1e-06,
+      "decimated_faces_flat": 3
+    },
+    {
+      "id": 430,
+      "area_cm2_raw": 74.5,
+      "area_pct": 0.056,
+      "dense_faces": 196,
+      "centre_cm_sm_frame": [
+        -52.32,
+        87.27,
+        53.42
+      ],
+      "normal_sm_frame": [
+        -0.1376,
+        -0.0113,
+        -0.9904
+      ],
+      "dense_vertex_max_dist_to_plane_raw_cm": 0.2011,
+      "max_residual_before_raw_cm": 0.1647,
+      "max_residual_after_cm": 2e-06,
+      "decimated_faces_flat": 5
+    },
+    {
+      "id": 140,
+      "area_cm2_raw": 74.2,
+      "area_pct": 0.056,
+      "dense_faces": 380,
+      "centre_cm_sm_frame": [
+        -29.92,
+        -33.13,
+        54.22
+      ],
+      "normal_sm_frame": [
+        -0.0598,
+        0.0111,
+        -0.9981
+      ],
+      "dense_vertex_max_dist_to_plane_raw_cm": 0.1489,
+      "max_residual_before_raw_cm": 0.2195,
+      "max_residual_after_cm": 3e-06,
+      "decimated_faces_flat": 21
+    },
+    {
+      "id": 501,
+      "area_cm2_raw": 74.0,
+      "area_pct": 0.056,
+      "dense_faces": 159,
+      "centre_cm_sm_frame": [
+        40.16,
+        -93.12,
+        65.88
+      ],
+      "normal_sm_frame": [
+        0.1124,
+        -0.0135,
+        0.9936
+      ],
+      "dense_vertex_max_dist_to_plane_raw_cm": 0.1429,
+      "max_residual_before_raw_cm": 0.2945,
+      "max_residual_after_cm": 3e-06,
+      "decimated_faces_flat": 8
+    },
+    {
+      "id": 299,
+      "area_cm2_raw": 73.6,
+      "area_pct": 0.055,
+      "dense_faces": 158,
+      "centre_cm_sm_frame": [
+        1.87,
+        -52.92,
+        61.56
+      ],
+      "normal_sm_frame": [
+        -0.8968,
+        0.4369,
+        0.0697
+      ],
+      "dense_vertex_max_dist_to_plane_raw_cm": 0.201,
+      "max_residual_before_raw_cm": 0.0892,
+      "max_residual_after_cm": 1e-06,
+      "decimated_faces_flat": 4
+    },
+    {
+      "id": 193,
+      "area_cm2_raw": 73.5,
+      "area_pct": 0.055,
+      "dense_faces": 106,
+      "centre_cm_sm_frame": [
+        39.64,
+        -19.28,
+        70.92
+      ],
+      "normal_sm_frame": [
+        0.0343,
+        0.0512,
+        0.9981
+      ],
+      "dense_vertex_max_dist_to_plane_raw_cm": 0.2148,
+      "max_residual_before_raw_cm": 0.1264,
+      "max_residual_after_cm": 3e-06,
+      "decimated_faces_flat": 6
+    },
+    {
+      "id": 236,
+      "area_cm2_raw": 73.4,
+      "area_pct": 0.055,
+      "dense_faces": 114,
+      "centre_cm_sm_frame": [
+        -55.76,
+        -87.37,
+        60.42
+      ],
+      "normal_sm_frame": [
+        -0.4422,
+        0.8933,
+        0.0806
+      ],
+      "dense_vertex_max_dist_to_plane_raw_cm": 0.2677,
+      "max_residual_before_raw_cm": 0.5304,
+      "max_residual_after_cm": 3e-06,
+      "decimated_faces_flat": 5
+    },
+    {
+      "id": 39,
+      "area_cm2_raw": 73.1,
+      "area_pct": 0.055,
+      "dense_faces": 207,
+      "centre_cm_sm_frame": [
+        -30.22,
+        -32.89,
+        71.43
+      ],
+      "normal_sm_frame": [
+        0.0627,
+        -0.0002,
+        0.998
+      ],
+      "dense_vertex_max_dist_to_plane_raw_cm": 0.0677,
+      "max_residual_before_raw_cm": 0.1924,
+      "max_residual_after_cm": 3e-06,
+      "decimated_faces_flat": 10
+    },
+    {
+      "id": 80,
+      "area_cm2_raw": 72.8,
+      "area_pct": 0.055,
+      "dense_faces": 149,
+      "centre_cm_sm_frame": [
+        -67.16,
+        1.36,
+        61.74
+      ],
+      "normal_sm_frame": [
+        0.0989,
+        -0.0089,
+        0.9951
+      ],
+      "dense_vertex_max_dist_to_plane_raw_cm": 0.176,
+      "max_residual_before_raw_cm": 0.1499,
+      "max_residual_after_cm": 3e-06,
+      "decimated_faces_flat": 8
+    },
+    {
+      "id": 390,
+      "area_cm2_raw": 72.7,
+      "area_pct": 0.055,
+      "dense_faces": 131,
+      "centre_cm_sm_frame": [
+        -81.47,
+        -41.42,
+        80.71
+      ],
+      "normal_sm_frame": [
+        0.018,
+        0.0604,
+        0.998
+      ],
+      "dense_vertex_max_dist_to_plane_raw_cm": 0.1645,
+      "max_residual_before_raw_cm": 0.0481,
+      "max_residual_after_cm": 3e-06,
+      "decimated_faces_flat": 5
+    },
+    {
+      "id": 37,
+      "area_cm2_raw": 72.4,
+      "area_pct": 0.054,
+      "dense_faces": 172,
+      "centre_cm_sm_frame": [
+        -30.67,
+        33.25,
+        71.46
+      ],
+      "normal_sm_frame": [
+        0.0613,
+        -0.0007,
+        0.9981
+      ],
+      "dense_vertex_max_dist_to_plane_raw_cm": 0.0788,
+      "max_residual_before_raw_cm": 0.3254,
+      "max_residual_after_cm": 3e-06,
+      "decimated_faces_flat": 12
+    },
+    {
+      "id": 381,
+      "area_cm2_raw": 72.2,
+      "area_pct": 0.054,
+      "dense_faces": 97,
+      "centre_cm_sm_frame": [
+        29.54,
+        -64.9,
+        35.39
+      ],
+      "normal_sm_frame": [
+        -0.0462,
+        0.0016,
+        -0.9989
+      ],
+      "dense_vertex_max_dist_to_plane_raw_cm": 0.086,
+      "max_residual_before_raw_cm": 0.0626,
+      "max_residual_after_cm": 1e-06,
+      "decimated_faces_flat": 5
+    },
+    {
+      "id": 291,
+      "area_cm2_raw": 72.1,
+      "area_pct": 0.054,
+      "dense_faces": 75,
+      "centre_cm_sm_frame": [
+        28.48,
+        64.72,
+        35.43
+      ],
+      "normal_sm_frame": [
+        -0.0471,
+        0.001,
+        -0.9989
+      ],
+      "dense_vertex_max_dist_to_plane_raw_cm": 0.0647,
+      "max_residual_before_raw_cm": 0.0573,
+      "max_residual_after_cm": 1e-06,
+      "decimated_faces_flat": 4
+    },
+    {
+      "id": 649,
+      "area_cm2_raw": 71.7,
+      "area_pct": 0.054,
+      "dense_faces": 243,
+      "centre_cm_sm_frame": [
+        -86.1,
+        45.66,
+        57.29
+      ],
+      "normal_sm_frame": [
+        -0.2035,
+        -0.0114,
+        -0.979
+      ],
+      "dense_vertex_max_dist_to_plane_raw_cm": 0.2396,
+      "max_residual_before_raw_cm": 0.2261,
+      "max_residual_after_cm": 3e-06,
+      "decimated_faces_flat": 11
+    },
+    {
+      "id": 125,
+      "area_cm2_raw": 71.1,
+      "area_pct": 0.053,
+      "dense_faces": 124,
+      "centre_cm_sm_frame": [
+        1.55,
+        52.84,
+        59.1
+      ],
+      "normal_sm_frame": [
+        -0.91,
+        -0.4098,
+        0.063
+      ],
+      "dense_vertex_max_dist_to_plane_raw_cm": 0.1766,
+      "max_residual_before_raw_cm": 0.0549,
+      "max_residual_after_cm": 1e-06,
+      "decimated_faces_flat": 3
+    },
+    {
+      "id": 1193,
+      "area_cm2_raw": 70.9,
+      "area_pct": 0.053,
+      "dense_faces": 251,
+      "centre_cm_sm_frame": [
+        -55.17,
+        -80.77,
+        57.28
+      ],
+      "normal_sm_frame": [
+        -0.4004,
+        -0.03,
+        -0.9159
+      ],
+      "dense_vertex_max_dist_to_plane_raw_cm": 0.4566,
+      "max_residual_before_raw_cm": 0.5991,
+      "max_residual_after_cm": 3e-06,
+      "decimated_faces_flat": 10
+    },
+    {
+      "id": 75,
+      "area_cm2_raw": 70.8,
+      "area_pct": 0.053,
+      "dense_faces": 86,
+      "centre_cm_sm_frame": [
+        40.03,
+        27.02,
+        66.92
+      ],
+      "normal_sm_frame": [
+        0.0045,
+        0.8443,
+        0.5358
+      ],
+      "dense_vertex_max_dist_to_plane_raw_cm": 0.143,
+      "max_residual_before_raw_cm": 0.0758,
+      "max_residual_after_cm": 2e-06,
+      "decimated_faces_flat": 5
+    },
+    {
+      "id": 351,
+      "area_cm2_raw": 70.7,
+      "area_pct": 0.053,
+      "dense_faces": 222,
+      "centre_cm_sm_frame": [
+        -81.84,
+        42.14,
+        80.75
+      ],
+      "normal_sm_frame": [
+        0.0194,
+        -0.0599,
+        0.998
+      ],
+      "dense_vertex_max_dist_to_plane_raw_cm": 0.1975,
+      "max_residual_before_raw_cm": 0.0741,
+      "max_residual_after_cm": 3e-06,
+      "decimated_faces_flat": 6
+    },
+    {
+      "id": 149,
+      "area_cm2_raw": 69.8,
+      "area_pct": 0.052,
+      "dense_faces": 87,
+      "centre_cm_sm_frame": [
+        42.32,
+        -27.12,
+        66.95
+      ],
+      "normal_sm_frame": [
+        0.0058,
+        -0.8424,
+        0.5388
+      ],
+      "dense_vertex_max_dist_to_plane_raw_cm": 0.1601,
+      "max_residual_before_raw_cm": 0.0644,
+      "max_residual_after_cm": 2e-06,
+      "decimated_faces_flat": 3
+    },
+    {
+      "id": 250,
+      "area_cm2_raw": 69.8,
+      "area_pct": 0.052,
+      "dense_faces": 231,
+      "centre_cm_sm_frame": [
+        42.1,
+        88.36,
+        54.34
+      ],
+      "normal_sm_frame": [
+        -0.3897,
+        -0.9167,
+        0.088
+      ],
+      "dense_vertex_max_dist_to_plane_raw_cm": 0.3591,
+      "max_residual_before_raw_cm": 0.1705,
+      "max_residual_after_cm": 3e-06,
+      "decimated_faces_flat": 9
+    },
+    {
+      "id": 417,
+      "area_cm2_raw": 69.6,
+      "area_pct": 0.052,
+      "dense_faces": 136,
+      "centre_cm_sm_frame": [
+        -54.55,
+        87.35,
+        67.96
+      ],
+      "normal_sm_frame": [
+        -0.4293,
+        -0.9031,
+        0.0121
+      ],
+      "dense_vertex_max_dist_to_plane_raw_cm": 0.2784,
+      "max_residual_before_raw_cm": 0.0933,
+      "max_residual_after_cm": 3e-06,
+      "decimated_faces_flat": 7
+    },
+    {
+      "id": 332,
+      "area_cm2_raw": 69.2,
+      "area_pct": 0.052,
+      "dense_faces": 149,
+      "centre_cm_sm_frame": [
+        2.89,
+        81.75,
+        56.61
+      ],
+      "normal_sm_frame": [
+        -0.9491,
+        0.3143,
+        0.0179
+      ],
+      "dense_vertex_max_dist_to_plane_raw_cm": 0.2896,
+      "max_residual_before_raw_cm": 0.265,
+      "max_residual_after_cm": 1e-06,
+      "decimated_faces_flat": 7
+    },
+    {
+      "id": 1166,
+      "area_cm2_raw": 69.2,
+      "area_pct": 0.052,
+      "dense_faces": 337,
+      "centre_cm_sm_frame": [
+        -65.23,
+        16.44,
+        36.22
+      ],
+      "normal_sm_frame": [
+        -0.9813,
+        0.0007,
+        -0.1927
+      ],
+      "dense_vertex_max_dist_to_plane_raw_cm": 0.2223,
+      "max_residual_before_raw_cm": 0.3032,
+      "max_residual_after_cm": 2e-06,
+      "decimated_faces_flat": 11
+    },
+    {
+      "id": 369,
+      "area_cm2_raw": 69.2,
+      "area_pct": 0.052,
+      "dense_faces": 115,
+      "centre_cm_sm_frame": [
+        -60.58,
+        -0.34,
+        26.08
+      ],
+      "normal_sm_frame": [
+        -0.9997,
+        -0.0008,
+        -0.0263
+      ],
+      "dense_vertex_max_dist_to_plane_raw_cm": 0.0779,
+      "max_residual_before_raw_cm": 0.0959,
+      "max_residual_after_cm": 3e-06,
+      "decimated_faces_flat": 6
+    },
+    {
+      "id": 24,
+      "area_cm2_raw": 69.2,
+      "area_pct": 0.052,
+      "dense_faces": 111,
+      "centre_cm_sm_frame": [
+        50.99,
+        46.32,
+        41.86
+      ],
+      "normal_sm_frame": [
+        0.0139,
+        0.0075,
+        0.9999
+      ],
+      "dense_vertex_max_dist_to_plane_raw_cm": 0.1707,
+      "max_residual_before_raw_cm": 0.356,
+      "max_residual_after_cm": 1e-06,
+      "decimated_faces_flat": 7
+    },
+    {
+      "id": 277,
+      "area_cm2_raw": 68.6,
+      "area_pct": 0.052,
+      "dense_faces": 226,
+      "centre_cm_sm_frame": [
+        49.78,
+        40.33,
+        56.49
+      ],
+      "normal_sm_frame": [
+        0.4951,
+        -0.8688,
+        -0.0102
+      ],
+      "dense_vertex_max_dist_to_plane_raw_cm": 0.1767,
+      "max_residual_before_raw_cm": 0.0765,
+      "max_residual_after_cm": 1e-06,
+      "decimated_faces_flat": 13
+    },
+    {
+      "id": 344,
+      "area_cm2_raw": 68.6,
+      "area_pct": 0.051,
+      "dense_faces": 253,
+      "centre_cm_sm_frame": [
+        -26.5,
+        57.15,
+        58.58
+      ],
+      "normal_sm_frame": [
+        0.9987,
+        -0.0438,
+        -0.0247
+      ],
+      "dense_vertex_max_dist_to_plane_raw_cm": 0.1354,
+      "max_residual_before_raw_cm": 0.1197,
+      "max_residual_after_cm": 1e-06,
+      "decimated_faces_flat": 13
+    },
+    {
+      "id": 1157,
+      "area_cm2_raw": 68.6,
+      "area_pct": 0.051,
+      "dense_faces": 262,
+      "centre_cm_sm_frame": [
+        27.68,
+        90.47,
+        53.22
+      ],
+      "normal_sm_frame": [
+        0.1973,
+        -0.971,
+        0.1354
+      ],
+      "dense_vertex_max_dist_to_plane_raw_cm": 0.3679,
+      "max_residual_before_raw_cm": 0.3282,
+      "max_residual_after_cm": 3e-06,
+      "decimated_faces_flat": 8
+    },
+    {
+      "id": 731,
+      "area_cm2_raw": 68.0,
+      "area_pct": 0.051,
+      "dense_faces": 176,
+      "centre_cm_sm_frame": [
+        -56.5,
+        48.83,
+        75.55
+      ],
+      "normal_sm_frame": [
+        0.1245,
+        0.0739,
+        0.9895
+      ],
+      "dense_vertex_max_dist_to_plane_raw_cm": 0.236,
+      "max_residual_before_raw_cm": 0.1794,
+      "max_residual_after_cm": 3e-06,
+      "decimated_faces_flat": 10
+    },
+    {
+      "id": 249,
+      "area_cm2_raw": 67.9,
+      "area_pct": 0.051,
+      "dense_faces": 78,
+      "centre_cm_sm_frame": [
+        -73.29,
+        -1.15,
+        60.81
+      ],
+      "normal_sm_frame": [
+        -0.5233,
+        0.0032,
+        0.8521
+      ],
+      "dense_vertex_max_dist_to_plane_raw_cm": 0.097,
+      "max_residual_before_raw_cm": 0.2184,
+      "max_residual_after_cm": 2e-06,
+      "decimated_faces_flat": 3
+    },
+    {
+      "id": 16,
+      "area_cm2_raw": 67.8,
+      "area_pct": 0.051,
+      "dense_faces": 85,
+      "centre_cm_sm_frame": [
+        51.78,
+        -48.32,
+        41.84
+      ],
+      "normal_sm_frame": [
+        0.0176,
+        0.0025,
+        0.9998
+      ],
+      "dense_vertex_max_dist_to_plane_raw_cm": 0.0516,
+      "max_residual_before_raw_cm": 0.344,
+      "max_residual_after_cm": 1e-06,
+      "decimated_faces_flat": 6
+    },
+    {
+      "id": 346,
+      "area_cm2_raw": 67.7,
+      "area_pct": 0.051,
+      "dense_faces": 131,
+      "centre_cm_sm_frame": [
+        25.55,
+        36.5,
+        59.86
+      ],
+      "normal_sm_frame": [
+        -0.1723,
+        -0.985,
+        0.0119
+      ],
+      "dense_vertex_max_dist_to_plane_raw_cm": 0.4059,
+      "max_residual_before_raw_cm": 0.0619,
+      "max_residual_after_cm": 2e-06,
+      "decimated_faces_flat": 7
+    },
+    {
+      "id": 235,
+      "area_cm2_raw": 67.7,
+      "area_pct": 0.051,
+      "dense_faces": 285,
+      "centre_cm_sm_frame": [
+        -31.28,
+        33.44,
+        54.29
+      ],
+      "normal_sm_frame": [
+        -0.0566,
+        -0.007,
+        -0.9984
+      ],
+      "dense_vertex_max_dist_to_plane_raw_cm": 0.0933,
+      "max_residual_before_raw_cm": 0.1562,
+      "max_residual_after_cm": 3e-06,
+      "decimated_faces_flat": 18
+    },
+    {
+      "id": 566,
+      "area_cm2_raw": 67.2,
+      "area_pct": 0.05,
+      "dense_faces": 164,
+      "centre_cm_sm_frame": [
+        17.85,
+        -96.85,
+        56.67
+      ],
+      "normal_sm_frame": [
+        -0.3694,
+        -0.9293,
+        0.0016
+      ],
+      "dense_vertex_max_dist_to_plane_raw_cm": 0.2082,
+      "max_residual_before_raw_cm": 0.2354,
+      "max_residual_after_cm": 3e-06,
+      "decimated_faces_flat": 8
+    },
+    {
+      "id": 388,
+      "area_cm2_raw": 66.8,
+      "area_pct": 0.05,
+      "dense_faces": 248,
+      "centre_cm_sm_frame": [
+        -44.38,
+        -6.65,
+        20.74
+      ],
+      "normal_sm_frame": [
+        -0.3334,
+        -0.0218,
+        -0.9425
+      ],
+      "dense_vertex_max_dist_to_plane_raw_cm": 0.2502,
+      "max_residual_before_raw_cm": 0.3207,
+      "max_residual_after_cm": 1e-06,
+      "decimated_faces_flat": 13
+    },
+    {
+      "id": 475,
+      "area_cm2_raw": 66.8,
+      "area_pct": 0.05,
+      "dense_faces": 78,
+      "centre_cm_sm_frame": [
+        16.19,
+        -1.15,
+        14.23
+      ],
+      "normal_sm_frame": [
+        0.7851,
+        -0.0006,
+        -0.6193
+      ],
+      "dense_vertex_max_dist_to_plane_raw_cm": 0.0305,
+      "max_residual_before_raw_cm": 0.0368,
+      "max_residual_after_cm": 0.0,
+      "decimated_faces_flat": 3
+    }
+  ],
+  "placement": {
+    "nose_axis_raw": "-y",
+    "rotation_about_z_deg": 90.0,
+    "long_side_on_y_before_fit": true,
+    "uniform_scale": 1.05612,
+    "footprint_cm": [
+      268.0,
+      201.0
+    ],
+    "bounds_cm": [
+      196.55,
+      201.0,
+      86.1
+    ],
+    "min_cm": [
+      -98.274,
+      -100.5,
+      0.0
+    ],
+    "max_cm": [
+      98.274,
+      100.5,
+      86.099
+    ],
+    "pivot": "bottom centre (x, y bbox centre, min z = 0)",
+    "source_dims_raw_cm": [
+      190.09,
+      186.18,
+      81.52
+    ],
+    "source_dims_scaled_cm": [
+      196.63,
+      200.76,
+      86.09
+    ]
+  },
+  "silhouette": {
+    "height_cm": 86.1,
+    "tolerance_1pct_cm": 0.861,
+    "bbox_max_change_vs_scaled_source_cm": 0.165,
+    "output_vertex_to_source_surface_cm": {
+      "mean": 0.056,
+      "p95": 0.16,
+      "max": 0.784
+    },
+    "source_vertex_sample_to_output_surface_cm": {
+      "mean": 0.056,
+      "p95": 0.161,
+      "max": 0.512
+    }
+  },
+  "uv": {
+    "layers": [
+      "UVMap"
+    ],
+    "uv0_max_abs_diff_vs_decimated": 0.0,
+    "uv0_loops_outside_0_1": 0
+  },
+  "materials": [
+    "M_Extractor"
+  ],
+  "texture_files": {
+    "BaseColor": "Art/Meshes/extractor/T_Extractor_BaseColor.png",
+    "Metallic": "Art/Meshes/extractor/T_Extractor_Metallic.png",
+    "Normal": "Art/Meshes/extractor/T_Extractor_Normal.png",
+    "Roughness": "Art/Meshes/extractor/T_Extractor_Roughness.png"
+  },
+  "faces_smooth_after": 44493,
+  "faces_flat_after": 2507,
+  "reimport_same_topology": true,
+  "warnings": [
+    "long side not on X"
+  ]
+}
