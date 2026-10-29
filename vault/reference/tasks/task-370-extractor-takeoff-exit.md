@@ -3,7 +3,7 @@ id: task-370-extractor-takeoff-exit
 description: "Global task: At the contact the end screen opens, the miner disappears and the extractor takes off like a helicopter behind it and leaves the screen."
 parent: tasks-to-do-index
 kind: task
-status: todo
+status: in-progress
 ---
 # Extractor: helicopter takeoff behind the end screen
 
@@ -14,7 +14,7 @@ status: todo
 - confirmed_by_owner: yes (2026-10-29, "Pas de vérification visuel pour le point 8, prépare les tâches avec les informations dedans, je les lancerais déjà que le mesh est prés.")
 - milestone: M2
 - next_step: task-370-01-cpp-extractor-takeoff
-- started: open
+- started: 2026-10-29T21:17:31Z
 - waiting_for: none
 - result: open
 

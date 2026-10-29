@@ -3,7 +3,7 @@ id: task-370-01-cpp-extractor-takeoff
 description: "Cpp: hide miner and drone on extraction, helicopter takeoff of ARRShuttle ticking while paused, StartTakeoff entry and events."
 parent: task-370-extractor-takeoff-exit
 kind: task
-status: todo
+status: in-progress
 ---
 # Extractor: helicopter takeoff behind the end screen: cpp
 
@@ -20,7 +20,7 @@ status: todo
 - usage: open
 - runs: open
 - milestone: M2
-- started: open
+- started: 2026-10-29T21:17:31Z
 - waiting_for: none
 - result: open
 
