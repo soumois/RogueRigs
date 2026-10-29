@@ -3,7 +3,7 @@ id: task-368-extractor-rebake
 description: "Global task: Re-unwrap the 47,000-triangle flattened extractor and bake the Meshy high-poly look (colour, normal, roughness, metallic) onto it, fixing the stretched rust marks."
 parent: tasks-to-do-index
 kind: task
-status: todo
+status: in-progress
 ---
 # Extractor mesh: re-bake the Meshy textures on clean UVs
 
@@ -14,7 +14,7 @@ status: todo
 - confirmed_by_owner: yes (2026-10-29, "ok")
 - milestone: M2
 - next_step: task-368-01-extractor-rebake-maps
-- started: open
+- started: 2026-10-29T19:07:34Z
 - waiting_for: none
 - result: open
 

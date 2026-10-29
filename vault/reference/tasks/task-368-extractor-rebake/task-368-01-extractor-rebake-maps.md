@@ -3,7 +3,7 @@ id: task-368-01-extractor-rebake-maps
 description: "3d: re-unwrap SM_Extractor (geometry kept), bake the four Meshy maps from the dense mesh onto it, report stretch and fidelity, render source, old and new."
 parent: task-368-extractor-rebake
 kind: task
-status: todo
+status: in-progress
 ---
 # Extractor mesh: re-bake the Meshy textures on clean UVs: 3d
 
@@ -20,7 +20,7 @@ status: todo
 - usage: open
 - runs: open
 - milestone: M2
-- started: open
+- started: 2026-10-29T19:07:34Z
 - waiting_for: none
 - result: open
 
