@@ -3,7 +3,7 @@ id: task-374-01-bp-ns-extractor-rotor-wash
 description: "Bp: create NS_ExtractorRotorWash (downward streaks, floor dust ring, Intensity and floor height parameters)."
 parent: task-374-extractor-rotor-wash
 kind: task
-status: in-progress
+status: done
 ---
 # Extractor: rotor-wash effect under the four rotors: bp
 
@@ -15,14 +15,14 @@ status: in-progress
 - done_when: the system compiles without error; Intensity 0 emits nothing and 1 emits streaks and the ring; the ring is not emitted when the floor height parameter is more than 300 uu below the system; committed by path.
 - editor_state: open
 - token_ceiling: 1.0 M units
-- model: open
-- tokens: open
-- usage: open
-- runs: open
+- model: sonnet
+- tokens: input 82, cache write 161618, cache read 4535069, output 29277
+- usage: turns 40, context start 58k peak 162k, resumes 1 (message x1), 7 min, units 0.80 M
+- runs: 2
 - milestone: M2
 - started: 2026-10-29T23:27:38Z
 - waiting_for: none
-- result: open
+- result: NS_ExtractorRotorWash + M_ExtractorRotorWash created, compiled, saved (aeb5cb49). Streaks and DustRing emitters, User.Intensity 0-1 and User.FloorHeight (ring spawn and alpha 0 above 300 uu). Read back by HLSL/inputs; look and PIE runtime unverified. Editor was found closed and relaunched by the executor; first run blocked.
 
 ## Relations
 - [[task-374-extractor-rotor-wash]] — parent global task.

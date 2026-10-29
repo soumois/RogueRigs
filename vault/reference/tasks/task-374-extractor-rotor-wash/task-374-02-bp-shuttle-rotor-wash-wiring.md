@@ -3,7 +3,7 @@ id: task-374-02-bp-shuttle-rotor-wash-wiring
 description: "Bp: BP_ExtractionShuttle: four wash components under the rotors, Intensity from OnRotorSpeedChanged, floor height at spawn."
 parent: task-374-extractor-rotor-wash
 kind: task
-status: todo
+status: in-progress
 ---
 # Extractor: rotor-wash effect under the four rotors: bp
 
@@ -20,7 +20,7 @@ status: todo
 - usage: open
 - runs: open
 - milestone: M2
-- started: open
+- started: 2026-10-29T23:35:03Z
 - waiting_for: none
 - result: open
 
