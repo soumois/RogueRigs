@@ -3,7 +3,7 @@ id: task-308-03-capture-chest-lock-light
 description: "Capture the chest lock light states (cpp): bonus chest lock light states, step 03."
 parent: task-308-chest-lock-light
 kind: task
-status: in-progress
+status: wait-answers
 ---
 # Capture the chest lock light states
 
@@ -20,6 +20,7 @@ status: in-progress
 - runs: open
 - milestone: M2
 - started: 2026-10-29T17:49:14Z
+- waiting_for: owner decision: capture could not frame the chest latch (5 launches used); needs a debug command that frames the chest (cpp change not in plan) or an owner look
 - result: open
 
 ## Relations

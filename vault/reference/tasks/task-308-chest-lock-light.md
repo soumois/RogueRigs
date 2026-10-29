@@ -3,7 +3,7 @@ id: task-308-chest-lock-light
 description: "Global task: Chest lock light: red blinking while waiting, orange blinking faster with hack progress in the zone, steady green once open."
 parent: tasks-to-do-index
 kind: task
-status: in-progress
+status: wait-answers
 ---
 # Bonus chest lock light states
 
@@ -15,7 +15,7 @@ status: in-progress
 - milestone: M2
 - next_step: task-308-03-capture-chest-lock-light
 - started: 2026-10-29T17:41:31Z
-- waiting_for: none
+- waiting_for: owner decision: capture could not frame the chest latch (5 launches used); needs a debug command that frames the chest (cpp change not in plan) or an owner look
 - result: open
 
 ## Subtasks
