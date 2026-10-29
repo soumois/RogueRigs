@@ -3,7 +3,7 @@ id: task-359-01-capture-tooling-scripts
 description: "Cpp: Tools/capture/sheet.js for crops and labelled comparison sheets with the ffmpeg finder shared with capture.js, and commands.js listing rr.* console commands."
 parent: task-359-capture-tooling
 kind: task
-status: todo
+status: in-progress
 ---
 # Capture tooling: scripts
 
@@ -20,7 +20,7 @@ status: todo
 - usage: open
 - runs: open
 - milestone: M2
-- started: open
+- started: 2026-10-29T14:17:36Z
 - waiting_for: none
 - result: open
 

@@ -3,7 +3,7 @@ id: task-359-capture-tooling
 description: "Global task: Capture tooling: crops and labelled comparison sheets with ffmpeg built in, and a generated list of rr.* debug console commands per system."
 parent: tasks-to-do-index
 kind: task
-status: todo
+status: in-progress
 ---
 # Capture tooling: crops, comparison sheets, debug command list
 
@@ -14,7 +14,7 @@ status: todo
 - confirmed_by_owner: yes (2026-10-29, "OK, tout par défaut" to Q1-Q12 and the plan, relayed by the main session)
 - milestone: M2
 - next_step: task-359-01-capture-tooling-scripts
-- started: open
+- started: 2026-10-29T14:17:36Z
 - waiting_for: none
 - result: open
 
