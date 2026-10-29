@@ -3,7 +3,7 @@ id: task-375-02-bp-shuttle-scale-x4
 description: "Bp: BP_ExtractionShuttle: Mesh scale 4 (rotors and wash follow), chevron hide distance 150 -> 600 uu."
 parent: task-375-extractor-scale-x4
 kind: task
-status: in-progress
+status: done
 ---
 # Extractor: four times bigger, with its level-ending zone and footprint: bp
 
@@ -15,14 +15,14 @@ status: in-progress
 - done_when: Blueprint compiles without error; the scale and threshold values read back from the asset; committed by path.
 - editor_state: open
 - token_ceiling: 1.0 M units
-- model: open
-- tokens: open
-- usage: open
-- runs: open
+- model: sonnet
+- tokens: input 38, cache write 52905, cache read 1443592, output 9997
+- usage: turns 18, context start 58k peak 97k, resumes 0, 1 min, units 0.26 M
+- runs: 1
 - milestone: M2
 - started: 2026-10-29T23:45:04Z
 - waiting_for: none
-- result: open
+- result: Mesh scale 4 (rotors and wash attached to Mesh follow), chevron threshold 150 -> 600 read back; compiled, saved; commit b112688b; no PIE check
 
 ## Relations
 - [[task-375-extractor-scale-x4]] — parent global task.
