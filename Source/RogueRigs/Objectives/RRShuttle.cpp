@@ -22,6 +22,26 @@ ARRShuttle::ARRShuttle()
 	Mesh->SetCollisionProfileName(UCollisionProfile::NoCollision_ProfileName);
 	Mesh->SetGenerateOverlapEvents(false);
 	Mesh->SetCanEverAffectNavigation(false);
+
+	RotorFL = CreateRotor(TEXT("RotorFL"));
+	RotorFR = CreateRotor(TEXT("RotorFR"));
+	RotorRL = CreateRotor(TEXT("RotorRL"));
+	RotorRR = CreateRotor(TEXT("RotorRR"));
+}
+
+UStaticMeshComponent* ARRShuttle::CreateRotor(FName Name)
+{
+	UStaticMeshComponent* Rotor = CreateDefaultSubobject<UStaticMeshComponent>(Name);
+	Rotor->SetupAttachment(Mesh);
+	Rotor->SetCollisionProfileName(UCollisionProfile::NoCollision_ProfileName);
+	Rotor->SetGenerateOverlapEvents(false);
+	Rotor->SetCanEverAffectNavigation(false);
+	return Rotor;
+}
+
+TArray<UStaticMeshComponent*> ARRShuttle::GetRotors() const
+{
+	return { RotorFL.Get(), RotorFR.Get(), RotorRL.Get(), RotorRR.Get() };
 }
 
 void ARRShuttle::InitializeShuttle(ARRArenaGrid* InGrid, ARRMiner* InMiner, FIntPoint InCell, float InCountdownSeconds, float InBoardRadius)

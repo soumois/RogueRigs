@@ -32,7 +32,7 @@ class ROGUERIGS_API ARRShuttle : public AActor
 	GENERATED_BODY()
 
 public:
-	/** Creates the root and the mesh (no collision by default) and enables ticking. */
+	/** Creates the root, the body mesh and the four rotor meshes (no collision) and enables ticking. */
 	ARRShuttle();
 
 	/**
@@ -73,6 +73,10 @@ public:
 	UFUNCTION(BlueprintPure, Category = "Shuttle")
 	bool WasExtracted() const { return bExtracted; }
 
+	/** The four rotor mesh components in the order front-left, front-right, rear-left, rear-right (for the rotor spin and the rotor-wash effects). */
+	UFUNCTION(BlueprintPure, Category = "Shuttle")
+	TArray<UStaticMeshComponent*> GetRotors() const;
+
 	/** Broadcast every countdown frame and once at landing. */
 	UPROPERTY(BlueprintAssignable, Category = "Shuttle")
 	FRROnShuttleCountdownChangedSignature OnShuttleCountdownChanged;
@@ -108,9 +112,28 @@ protected:
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Shuttle")
 	TObjectPtr<USceneComponent> ShuttleRoot;
 
-	/** Shuttle mesh, set in the Blueprint subclass. No collision by default. */
+	/** Shuttle body mesh (the extractor hull), set in the Blueprint subclass; parent of the four rotors. No collision by default. */
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Shuttle")
 	TObjectPtr<UStaticMeshComponent> Mesh;
+
+	/** Front-left rotor, attached to the body; mesh and relative location (rotor pivot in the body frame) set in the Blueprint subclass. No collision. */
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Shuttle")
+	TObjectPtr<UStaticMeshComponent> RotorFL;
+
+	/** Front-right rotor, attached to the body; mesh and relative location set in the Blueprint subclass. No collision. */
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Shuttle")
+	TObjectPtr<UStaticMeshComponent> RotorFR;
+
+	/** Rear-left rotor, attached to the body; mesh and relative location set in the Blueprint subclass. No collision. */
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Shuttle")
+	TObjectPtr<UStaticMeshComponent> RotorRL;
+
+	/** Rear-right rotor, attached to the body; mesh and relative location set in the Blueprint subclass. No collision. */
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Shuttle")
+	TObjectPtr<UStaticMeshComponent> RotorRR;
+
+	/** Creates one rotor mesh component named Name, attached to the body mesh, with no collision, no overlap events and no navigation impact. */
+	UStaticMeshComponent* CreateRotor(FName Name);
 
 	/** Grid the shuttle landed on. */
 	UPROPERTY(Transient)
