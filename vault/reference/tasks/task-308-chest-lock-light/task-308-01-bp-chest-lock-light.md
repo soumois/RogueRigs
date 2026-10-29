@@ -3,7 +3,7 @@ id: task-308-01-bp-chest-lock-light
 description: "MI_ChestLockLight on the chest latch (bp): bonus chest lock light states, step 01."
 parent: task-308-chest-lock-light
 kind: task
-status: todo
+status: in-progress
 ---
 # MI_ChestLockLight on the chest latch
 
@@ -19,6 +19,7 @@ status: todo
 - tokens: open
 - runs: open
 - milestone: M2
+- started: 2026-10-29T17:38:20Z
 - result: open
 
 ## Relations

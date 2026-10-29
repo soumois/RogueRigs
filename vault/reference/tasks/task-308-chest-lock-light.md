@@ -3,7 +3,7 @@ id: task-308-chest-lock-light
 description: "Global task: Chest lock light: red blinking while waiting, orange blinking faster with hack progress in the zone, steady green once open."
 parent: tasks-to-do-index
 kind: task
-status: todo
+status: in-progress
 ---
 # Bonus chest lock light states
 
@@ -14,6 +14,7 @@ status: todo
 - confirmed_by_owner: yes (owner 2026-10-23: "ok pour tous les défauts (Q1 à Q25)"; every default below applies; not launched yet)
 - milestone: M2
 - next_step: task-308-01-bp-chest-lock-light
+- started: 2026-10-29T17:38:20Z
 - result: open
 
 ## Subtasks
