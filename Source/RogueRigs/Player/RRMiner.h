@@ -149,6 +149,9 @@ public:
 	/** True between HideForExtraction and ShowAfterExtraction. */
 	bool IsHiddenForExtraction() const { return bHiddenForExtraction; }
 
+	/** World direction (XY, unit length) of the screen up axis seen through the fixed camera (camera arm yaw). Used to place the arrival extractor above the miner (task-371-01). */
+	FVector GetScreenUpDirection() const { return ScreenInputToWorld(FVector2D(0.f, 1.f)).GetSafeNormal2D(); }
+
 	/** True when a block cell was within the capsule radius + DigContactMargin of the miner at its last tick (the drone digs then). */
 	UFUNCTION(BlueprintPure, Category = "Miner|Dig")
 	bool IsTouchingRock() const { return bTouchingRock; }

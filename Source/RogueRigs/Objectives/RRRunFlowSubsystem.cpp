@@ -33,6 +33,12 @@ void URRRunFlowSubsystem::Initialize(FSubsystemCollectionBase& Collection)
 	RandomStream.Initialize(FMath::Rand());
 }
 
+void URRRunFlowSubsystem::Deinitialize()
+{
+	StopWaitingForArrivalFade();
+	Super::Deinitialize();
+}
+
 bool URRRunFlowSubsystem::DoesSupportWorldType(const EWorldType::Type WorldType) const
 {
 	return WorldType == EWorldType::Game || WorldType == EWorldType::PIE;
@@ -70,6 +76,7 @@ ERRRunPhase URRRunFlowSubsystem::GetPhase() const
 void URRRunFlowSubsystem::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
+	TickArrival();
 	TickRunFlow(DeltaTime);
 	if (bRunFlowEnabled && !bRunEnded)
 	{
@@ -577,6 +584,128 @@ ARRShuttle* URRRunFlowSubsystem::LandShuttle()
 	return NewShuttle;
 }
 
+ARRShuttle* URRRunFlowSubsystem::GetArrivalShuttle() const
+{
+	return IsValid(ArrivalShuttle) ? ArrivalShuttle.Get() : nullptr;
+}
+
+void URRRunFlowSubsystem::TickArrival()
+{
+	if (!bArrivalPlaced)
+	{
+		ResolveConfig();
+		if (!ResolveRunActors())
+		{
+			return;
+		}
+		PlaceArrivalShuttle();
+	}
+	// No fade awaited: the level plays (this subsystem does not tick while paused), the arrival takes off now.
+	if (bArrivalPlaced && !bArrivalWaitsForFade && !bArrivalTakeoffStarted)
+	{
+		StartArrivalTakeoff(TEXT("level start"));
+	}
+}
+
+ARRShuttle* URRRunFlowSubsystem::PlaceArrivalShuttle()
+{
+	if (bArrivalPlaced)
+	{
+		return GetArrivalShuttle();
+	}
+	ResolveConfig();
+	if (!ResolveRunActors())
+	{
+		return nullptr;
+	}
+	bArrivalPlaced = true;
+
+	UClass* ShuttleClass = Config.ShuttleClass ? Config.ShuttleClass.Get() : ARRShuttle::StaticClass();
+	const FIntPoint Size = RRLandingFootprint::ClampSize(ShuttleClass->GetDefaultObject<ARRShuttle>()->GetFootprintCells());
+	const FIntPoint StartCell = Grid->GetCellAtWorld(Miner->GetActorLocation());
+
+	// Screen up (camera yaw) in grid space, snapped to the nearest grid axis.
+	const FVector Up = Grid->GetActorTransform().InverseTransformVectorNoScale(Miner->GetScreenUpDirection());
+	const FIntPoint Step = FMath::Abs(Up.X) >= FMath::Abs(Up.Y) ? FIntPoint(Up.X >= 0.f ? 1 : -1, 0) : FIntPoint(0, Up.Y >= 0.f ? 1 : -1);
+
+	// Footprint: its nearest row ArrivalDistanceCells from the start cell along Step, centred on the start cell across it.
+	const int32 Distance = FMath::Max(1, Config.ArrivalDistanceCells);
+	auto MinAlong = [Distance](int32 Start, int32 Dir, int32 Extent)
+	{
+		return Dir > 0 ? Start + Distance : (Dir < 0 ? Start - Distance - (Extent - 1) : Start - (Extent - 1) / 2);
+	};
+	const FIntPoint MinCell(MinAlong(StartCell.X, Step.X, Size.X), MinAlong(StartCell.Y, Step.Y, Size.Y));
+	const FIntPoint Anchor = MinCell + FIntPoint((Size.X - 1) / 2, (Size.Y - 1) / 2);
+
+	TArray<FIntPoint> FootprintCells;
+	RRLandingFootprint::GetCells(Anchor, Size, FootprintCells);
+	int32 BlockCells = 0;
+	for (const FIntPoint& Cell : FootprintCells)
+	{
+		BlockCells += Grid->IsBlockCell(Cell) ? 1 : 0;
+	}
+
+	FActorSpawnParameters Params;
+	Params.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AlwaysSpawn;
+	ARRShuttle* NewArrival = GetWorld()->SpawnActor<ARRShuttle>(ShuttleClass, RRLandingFootprint::GetCenter(Grid, Anchor, Size), FRotator::ZeroRotator, Params);
+	if (!NewArrival)
+	{
+		UE_LOG(LogRogueRigs, Error, TEXT("URRRunFlowSubsystem: could not spawn the arrival extractor %s."), *GetNameSafe(ShuttleClass));
+		return nullptr;
+	}
+	ArrivalShuttle = NewArrival;
+	NewArrival->InitializeArrival(Grid, Anchor);
+
+	// A level transition running or fading in: the takeoff waits for the end of the fade in; otherwise it starts when the level plays.
+	URRRunTransitionSubsystem* Transition = URRRunTransitionSubsystem::Get(this);
+	bArrivalWaitsForFade = Transition && (Transition->GetPhase() != ERRRunTransitionPhase::None || Transition->GetScreenFade() == ERRTransitionFade::FadingIn);
+	if (bArrivalWaitsForFade)
+	{
+		ArrivalFadeSource = Transition;
+		Transition->OnScreenFadeFinished.AddUniqueDynamic(this, &URRRunFlowSubsystem::HandleScreenFadeFinished);
+	}
+	UE_LOG(LogRogueRigs, Log, TEXT("URRRunFlowSubsystem: arrival extractor %s placed on (%d, %d), footprint %d x %d from (%d, %d), start cell (%d, %d), screen up (%d, %d), %d block cells under it, frame %llu; takeoff %s."),
+		*NewArrival->GetName(), Anchor.X, Anchor.Y, Size.X, Size.Y, MinCell.X, MinCell.Y, StartCell.X, StartCell.Y, Step.X, Step.Y, BlockCells, GFrameCounter,
+		bArrivalWaitsForFade ? TEXT("waits for the fade in") : TEXT("when the level plays"));
+	return NewArrival;
+}
+
+void URRRunFlowSubsystem::StartArrivalTakeoff(const TCHAR* Trigger)
+{
+	StopWaitingForArrivalFade();
+	if (bArrivalTakeoffStarted)
+	{
+		return;
+	}
+	bArrivalTakeoffStarted = true;
+	ARRShuttle* Arrival = GetArrivalShuttle();
+	if (!Arrival)
+	{
+		return;
+	}
+	UE_LOG(LogRogueRigs, Log, TEXT("URRRunFlowSubsystem: arrival extractor %s takeoff started on (%d, %d) (trigger: %s), frame %llu."),
+		*Arrival->GetName(), Arrival->GetCell().X, Arrival->GetCell().Y, Trigger, GFrameCounter);
+	Arrival->StartTakeoff();
+}
+
+void URRRunFlowSubsystem::StopWaitingForArrivalFade()
+{
+	bArrivalWaitsForFade = false;
+	if (URRRunTransitionSubsystem* Transition = ArrivalFadeSource.Get())
+	{
+		Transition->OnScreenFadeFinished.RemoveDynamic(this, &URRRunFlowSubsystem::HandleScreenFadeFinished);
+	}
+	ArrivalFadeSource.Reset();
+}
+
+void URRRunFlowSubsystem::HandleScreenFadeFinished(ERRTransitionFade Fade)
+{
+	if (Fade == ERRTransitionFade::FadingIn && bArrivalWaitsForFade)
+	{
+		StartArrivalTakeoff(TEXT("fade in finished"));
+	}
+}
+
 bool URRRunFlowSubsystem::EndRun(bool bSuccess)
 {
 	if (bRunEnded)
@@ -672,7 +801,7 @@ void URRRunFlowSubsystem::RestartLevel()
 
 void URRRunFlowSubsystem::ResetForNextLevel()
 {
-	for (AActor* Objective : TArray<AActor*>{ Console.Get(), BonusChest.Get(), Shuttle.Get() })
+	for (AActor* Objective : TArray<AActor*>{ Console.Get(), BonusChest.Get(), Shuttle.Get(), ArrivalShuttle.Get() })
 	{
 		if (IsValid(Objective))
 		{
@@ -682,6 +811,11 @@ void URRRunFlowSubsystem::ResetForNextLevel()
 	Console = nullptr;
 	BonusChest = nullptr;
 	Shuttle = nullptr;
+	// The next level places its own arrival (URRRunTransitionSubsystem::PlaceMinerAtStart).
+	StopWaitingForArrivalFade();
+	ArrivalShuttle = nullptr;
+	bArrivalPlaced = false;
+	bArrivalTakeoffStarted = false;
 	AlertSeconds = 0.f;
 	KillCount = 0;
 	LastBroadcastAlert = -1.f;

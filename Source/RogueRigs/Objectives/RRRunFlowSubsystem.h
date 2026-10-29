@@ -16,6 +16,8 @@ class ARRBonusChest;
 class ARRMiner;
 class ARRShuttle;
 class URRFlowFieldSubsystem;
+class URRRunTransitionSubsystem;
+enum class ERRTransitionFade : uint8;
 
 /** Phase of the level run flow. */
 UENUM(BlueprintType)
@@ -116,6 +118,9 @@ public:
 	/** Seeds the console placement stream from the global random generator. */
 	virtual void Initialize(FSubsystemCollectionBase& Collection) override;
 
+	/** Unbinds the arrival extractor's wait on the transition fade. */
+	virtual void Deinitialize() override;
+
 	/** Game and PIE worlds only. */
 	virtual bool DoesSupportWorldType(const EWorldType::Type WorldType) const override;
 
@@ -202,6 +207,22 @@ public:
 	/** The landed shuttle (null before landing). */
 	UFUNCTION(BlueprintPure, Category = "RunFlow")
 	ARRShuttle* GetShuttle() const { return Shuttle; }
+
+	/** The arrival extractor of the level start (null before its placement and once it left the view and was removed). Not an exit. */
+	UFUNCTION(BlueprintPure, Category = "RunFlow")
+	ARRShuttle* GetArrivalShuttle() const;
+
+	/**
+	 * Arrival extractor (level-flow step 1, task-371-01), once per level: spawns ShuttleClass in arrival mode
+	 * (ARRShuttle::InitializeArrival: no board, no countdown, not the run's shuttle, so no locator, minimap or drone use) with its
+	 * footprint ArrivalDistanceCells from the miner's cell along the screen up axis (camera yaw snapped to the nearest grid axis),
+	 * centred on that cell across it. Takeoff (ARRShuttle::StartTakeoff): when a level transition is running or fading in
+	 * (URRRunTransitionSubsystem phase not None, or fade FadingIn), in the frame OnScreenFadeFinished(FadingIn) fires; otherwise
+	 * (level 1 from the menu, direct start) on the first run flow tick, when the level plays. Called by
+	 * URRRunTransitionSubsystem::PlaceMinerAtStart (next level prepared in the same world) and by the first tick that resolves the
+	 * grid and the miner (new world). Returns the arrival (null without grid, miner or world; the existing one when already placed).
+	 */
+	ARRShuttle* PlaceArrivalShuttle();
 
 	/** True once the run ended (win or loss). */
 	UFUNCTION(BlueprintPure, Category = "RunFlow")
@@ -488,6 +509,19 @@ protected:
 	/** Pauses the game through player 0's controller and switches it to game-and-UI input with the cursor shown. */
 	void EnterEndPause();
 
+	/** Arrival step of each tick (run even while the flow is held): places the arrival once, then starts its takeoff when no fade is awaited. */
+	void TickArrival();
+
+	/** Starts the arrival takeoff once and logs Trigger (fade in finished, level start); stops listening to the fade. */
+	void StartArrivalTakeoff(const TCHAR* Trigger);
+
+	/** Removes the OnScreenFadeFinished binding of the arrival, if any. */
+	void StopWaitingForArrivalFade();
+
+	/** Transition OnScreenFadeFinished callback: a finished FadingIn starts the arrival takeoff. */
+	UFUNCTION()
+	void HandleScreenFadeFinished(ERRTransitionFade Fade);
+
 	/** Shuttle countdown callback: relays OnShuttleCountdown. */
 	UFUNCTION()
 	void HandleShuttleCountdownChanged(ARRShuttle* InShuttle, float RemainingSeconds);
@@ -537,6 +571,22 @@ protected:
 	/** The landed shuttle. */
 	UPROPERTY(Transient)
 	TObjectPtr<ARRShuttle> Shuttle;
+
+	/** The arrival extractor of this level (PlaceArrivalShuttle); destroyed by its own takeoff or by ResetForNextLevel. */
+	UPROPERTY(Transient)
+	TObjectPtr<ARRShuttle> ArrivalShuttle;
+
+	/** Transition whose OnScreenFadeFinished the arrival waits for (bound only while waiting). */
+	TWeakObjectPtr<URRRunTransitionSubsystem> ArrivalFadeSource;
+
+	/** True once this level's arrival was placed (or its placement failed for good). */
+	bool bArrivalPlaced = false;
+
+	/** True while the placed arrival waits for the end of the transition fade in. */
+	bool bArrivalWaitsForFade = false;
+
+	/** True once this level's arrival takeoff was started. */
+	bool bArrivalTakeoffStarted = false;
 
 	/** Console placement stream. */
 	FRandomStream RandomStream;

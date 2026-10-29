@@ -88,6 +88,14 @@ struct ROGUERIGS_API FRRRunFlowConfig
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Run Flow|Extraction")
 	TSubclassOf<ARRShuttle> ShuttleClass;
 
+	/**
+	 * Arrival extractor (level-flow step 1, task-371): cell distance along the screen up axis from the miner's start cell to the
+	 * nearest row of the arrival footprint (1 = the footprint starts on the next row, the miner stands just outside it). The
+	 * footprint (ShuttleClass FootprintCells) is centred on the start cell across that axis. Provisional, owner 2026-10-29 ("1 cell").
+	 */
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Run Flow|Extraction", meta = (ClampMin = 1))
+	int32 ArrivalDistanceCells = 1;
+
 	/** A pending horde icon moving by more than this (bar fraction) re-sends OnAlertBarEventsChanged; smaller moves wait (HUD). */
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Run Flow|HUD", meta = (ClampMin = 0))
 	float AlertEventPositionTolerance = 0.002f;

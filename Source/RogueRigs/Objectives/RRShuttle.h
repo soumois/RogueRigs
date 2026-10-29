@@ -45,6 +45,18 @@ public:
 	 */
 	void InitializeShuttle(ARRArenaGrid* Grid, ARRMiner* Miner, FIntPoint Cell, float CountdownSeconds, float BoardRadius);
 
+	/**
+	 * Arrival mode (task-371-01): places the extractor that dropped the miner at the level start on Cell of Grid (centre of its
+	 * FootprintCells around Cell, floor top), already landed. No board, no countdown, no OnLanded and no countdown event: it only
+	 * waits for StartTakeoff (called by URRRunFlowSubsystem when the fade in ends, or at once without fade). Call once, right after
+	 * spawning, instead of InitializeShuttle.
+	 */
+	void InitializeArrival(ARRArenaGrid* Grid, FIntPoint Cell);
+
+	/** True for the arrival extractor of the level start (InitializeArrival): not an exit, no board, no countdown. */
+	UFUNCTION(BlueprintPure, Category = "Shuttle")
+	bool IsArrival() const { return bArrival; }
+
 	/** Boarding check and countdown. */
 	virtual void Tick(float DeltaSeconds) override;
 
@@ -246,6 +258,9 @@ protected:
 
 	/** True once InitializeShuttle ran. */
 	bool bInitialized = false;
+
+	/** True once InitializeArrival ran (arrival mode: never boards nor counts down). */
+	bool bArrival = false;
 
 	/** True once finished (final). */
 	bool bFinished = false;

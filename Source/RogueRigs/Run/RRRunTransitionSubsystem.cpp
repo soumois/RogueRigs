@@ -843,6 +843,11 @@ void URRRunTransitionSubsystem::PlaceMinerAtStart(UWorld& World)
 	{
 		FlowField->RebuildForNewTerrain();
 	}
+	// The extractor that dropped the miner stands next to him under the black; it takes off when the fade in ends (task-371-01).
+	if (URRRunFlowSubsystem* RunFlow = World.GetSubsystem<URRRunFlowSubsystem>())
+	{
+		RunFlow->PlaceArrivalShuttle();
+	}
 }
 
 void URRRunTransitionSubsystem::StopNextLevelPreparation()

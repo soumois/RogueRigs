@@ -66,6 +66,22 @@ void ARRShuttle::InitializeShuttle(ARRArenaGrid* InGrid, ARRMiner* InMiner, FInt
 	BroadcastCountdown();
 }
 
+void ARRShuttle::InitializeArrival(ARRArenaGrid* InGrid, FIntPoint InCell)
+{
+	Grid = InGrid;
+	Miner = nullptr;
+	Cell = InCell;
+	CountdownSeconds = 0.f;
+	RemainingSeconds = 0.f;
+	BoardRadius = 0.f;
+	// bInitialized stays false: Tick never runs the board check nor the countdown for the arrival.
+	bArrival = true;
+	if (Grid)
+	{
+		SetActorLocation(RRLandingFootprint::GetCenter(Grid, Cell, FootprintCells));
+	}
+}
+
 void ARRShuttle::Tick(float DeltaSeconds)
 {
 	Super::Tick(DeltaSeconds);
