@@ -3,7 +3,7 @@ id: task-369-02-cpp-shuttle-rotor-components
 description: "Cpp: ARRShuttle gets a body and four rotor mesh components (FL, FR, RL, RR) for the Blueprint to fill; rule unchanged."
 parent: task-369-extractor-level-exit
 kind: task
-status: todo
+status: in-progress
 ---
 # Extractor in game: the level exit you walk up to: cpp
 
@@ -20,7 +20,7 @@ status: todo
 - usage: open
 - runs: open
 - milestone: M2
-- started: open
+- started: 2026-10-29T21:07:18Z
 - waiting_for: none
 - result: open
 

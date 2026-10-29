@@ -3,7 +3,7 @@ id: task-369-01-bp-extractor-import
 description: "Bp: import the extractor body, four rotors, four textures and one material into /Game/RogueRigs/Art/Extractor/."
 parent: task-369-extractor-level-exit
 kind: task
-status: in-progress
+status: done
 ---
 # Extractor in game: the level exit you walk up to: bp
 
@@ -15,14 +15,14 @@ status: in-progress
 - done_when: the 5 meshes load; union of their bounds placed at the report pivots within 1 cm of 196.6 x 201.0 x 86.1 cm (no 100x scale error); each rotor origin on its spin axis per the report; total triangles at most 50,000; normal texture green channel flipped (OpenGL source), metallic and roughness linear; material assigned to every slot; committed by path.
 - editor_state: open
 - token_ceiling: 1.0 M units
-- model: open
-- tokens: open
-- usage: open
-- runs: open
+- model: sonnet
+- tokens: input 62, cache write 86732, cache read 1909307, output 16957
+- usage: turns 31, context start 11k peak 87k, resumes 0, 4 min, units 0.38 M
+- runs: 1
 - milestone: M2
 - started: 2026-10-29T21:01:18Z
 - waiting_for: none
-- result: open
+- result: Imported body, 4 rotors, 4 textures, M_Extractor in /Game/RogueRigs/Art/Extractor/ (commit eaf3a3c3); 48,154 tris, body 196.55x201.0x86.1 cm; import via Python (MCP import_file 100x too small); material compile and Y-mirror unverified.
 
 ## Relations
 - [[task-369-extractor-level-exit]] — parent global task.
