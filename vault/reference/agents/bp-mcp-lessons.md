@@ -30,6 +30,11 @@ Learned on tasks 014 to 182. MCP tool facts (DSL, widgets, Niagara, import): [[u
 - PIE can stop ticking after long idle gaps between MCP calls: restart PIE.
 - Batch probes in one Node JSON-RPC script (4 connections at most); short events are missed by slow polls. If the MCP tools are not exposed to the agent, JSON-RPC over HTTP to `http://127.0.0.1:8000/mcp` works.
 
+## Tool sheet
+- `Tools/unreal/mcp-tool-sheet.md` lists 43 tools (UMGToolSet, BlueprintTools, ObjectTools, AssetTools, TextureTools, EditorAppToolset, LogsToolset) with argument shapes, about 1.1k tokens, built from bp transcripts of tasks 342-357. Read it instead of discovering tools.
+- Not on it: ActorTools, MaterialTools, execute_tool_script (use `describe_toolset`).
+- Regenerate after an engine or plugin update, then commit: `node Tools/unreal/mcp-sheet.js [--from 332] [--to 357] [--out Tools/unreal/mcp-tool-sheet.md]` (no editor needed).
+
 ## Relations
 - [[agents-index]] — parent index.
 - [[agent-bp]] — the agent these limits apply to.

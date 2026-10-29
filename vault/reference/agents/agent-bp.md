@@ -10,11 +10,12 @@ status: provisional
 - role: build the thin editor layer on top of C++ through Unreal MCP: derived Blueprints, default values, asset assignment and import, placement in maps, UMG widgets, materials, Niagara systems.
 - invoked_by: orchestrator
 - trigger: a subtask that needs the editor: a Blueprint, widget, material, Niagara system, map change, asset import or assignment.
-- reads: its subtask node; [[bp-mcp-lessons]], [[unreal-mcp]], [[unreal-mcp-quirks]], [[cpp-bp-split]], [[editor-workflow]], [[blueprints-index]]; [[umg-layout]] before any widget (UMG) work (owner 2026-10-28); the `sys-*` node of the C++ class it derives from; the gdd nodes the subtask lists.
+- reads: its subtask node; the tool sheet `Tools/unreal/mcp-tool-sheet.md` (43 tools with argument shapes, [[bp-mcp-lessons]]); [[bp-mcp-lessons]], [[unreal-mcp]], [[unreal-mcp-quirks]], [[cpp-bp-split]], [[editor-workflow]], [[blueprints-index]]; [[umg-layout]] before any widget (UMG) work (owner 2026-10-28); the `sys-*` node of the C++ class it derives from; the gdd nodes the subtask lists.
 - produces: Blueprint assets and map changes in the editor, saved and committed by explicit path; a change summary. It does not write `bp-*` doc nodes: the doc subtask does, from that summary ([[agent-doc]]); the Blueprint doc rule of [[_authoring]] is met when it closes. Exception: a subtask node planned before task-325 (tasks 308, 309, 314) that names a doc node in its own output is followed as written.
 - output_format: change summary: assets created or changed (paths), commit hash, properties set, actors placed, decided values used, doc nodes to create or update, MCP tools used, and any tool that failed.
 - definition_of_done: assets saved and committed; the subtask's checks pass in the editor (for example, the map opens and shows the expected actors); change summary returned.
 - must_not: write C++; put gameplay logic in a Blueprint graph ([[cpp-bp-split]]); edit layout files or gdd nodes; leave unsaved assets; call a viewport or editor capture tool.
+- mcp_rules (task-361): send independent MCP calls in one message; no `list_toolsets` or `describe_toolset` for a tool on the sheet; `GetWidgetDescription` of the named widget rather than `GetWidgets` of the whole tree.
 - needs: the editor running with the MCP server started.
 - known_limits: [[bp-mcp-lessons]] (turn limit, captures, PIE, cross-Blueprint calls).
 - definition_file: `.claude/agents/bp.md` (80 turns since 2026-10-14; 40 before).
