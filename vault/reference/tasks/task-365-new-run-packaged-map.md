@@ -13,7 +13,7 @@ status: in-progress
 - gdd_check: Read main-menu (spec provisional, owner 2026-10-28), sys-main-menu, wbp-main-menu, bp-main-menu-game-mode, build-toolchain (2026-10-29). No conflict: main-menu Behaviour says New Run resets the run and opens L_ArenaM1 at level 1, and a launch outside the editor (-game, packaged) opens L_MainMenu; the package must therefore contain both maps. No value the work needs is open. sys-main-menu lists "packaged build" and "real mouse click" as not seen in task-338: this is that gap. build-toolchain documents a Development BuildCookRun with -map=/Game/RogueRigs/Maps/L_ArenaM1 only, which would now drop L_MainMenu. In milestone scope (M2).
 - confirmed_by_owner: yes (2026-10-29, "ok")
 - milestone: M2
-- next_step: task-365-01-cook-arena-map
+- next_step: task-365-02-packaging-doc
 - started: 2026-10-29T18:25:40Z
 - waiting_for: none
 - result: open

@@ -3,7 +3,7 @@ id: task-365-01-cook-arena-map
 description: "Add both maps to MapsToCook in DefaultGame.ini, rebuild the Development package, check New Run opens L_ArenaM1 in it."
 parent: task-365-new-run-packaged-map
 kind: task
-status: in-progress
+status: done
 ---
 # Cook L_ArenaM1 into the package and verify New Run
 
@@ -15,14 +15,14 @@ status: in-progress
 - done_when: BuildCookRun exits 0; the new Saved/StagedBuilds/Windows/Manifest_UFSFiles_Win64.txt (or the cook log) lists L_MainMenu and L_ArenaM1; the staged game launched with no map argument logs `main menu shown (WBP_MainMenu_C).`, then `Main menu New Run: run reset, opening /Game/RogueRigs/Maps/L_ArenaM1 (level 1)`, a LoadMap of L_ArenaM1 and `run started, level 1/4`, with no travel failure line; DefaultGame.ini committed by path.
 - editor_state: closed (packaging and ini edit; the editor can rewrite config files)
 - token_ceiling: 1.2 M units
-- model: open
-- tokens: open
-- usage: open
-- runs: open
+- model: opus
+- tokens: input 26, cache write 50439, cache read 238623, output 6642
+- usage: turns 13, context start 12k peak 28k, resumes 0, 8 min, units 0.12 M
+- runs: 1
 - milestone: M2
 - started: 2026-10-29T18:25:40Z
 - waiting_for: none
-- result: open
+- result: MapsToCook L_MainMenu and L_ArenaM1 added (commit 8fe9d01f); BuildCookRun Development exit 0 (405 s); manifest lists both maps; staged exe from menu: main menu shown, New Run opening L_ArenaM1 (level 1), LoadMap L_ArenaM1, run started level 1/4, no travel failure. Real click not verified.
 
 ## Relations
 - [[task-365-new-run-packaged-map]] — parent global task.

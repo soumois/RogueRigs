@@ -3,7 +3,7 @@ id: task-365-02-packaging-doc
 description: "Update build-toolchain and sys-main-menu with the MapsToCook rule, the two-map packaging command and the packaged New Run check."
 parent: task-365-new-run-packaged-map
 kind: task
-status: todo
+status: in-progress
 ---
 # Document the cook rule and the packaged New Run check
 
@@ -20,7 +20,7 @@ status: todo
 - usage: open
 - runs: open
 - milestone: M2
-- started: open
+- started: 2026-10-29T18:34:05Z
 - waiting_for: none
 - result: open
 
