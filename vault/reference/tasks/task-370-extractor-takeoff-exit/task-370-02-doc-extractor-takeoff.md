@@ -3,7 +3,7 @@ id: task-370-02-doc-extractor-takeoff
 description: "Doc: update sys-objectives-shuttle and sys-objectives-events for the takeoff and hidden miner."
 parent: task-370-extractor-takeoff-exit
 kind: task
-status: in-progress
+status: done
 ---
 # Extractor: helicopter takeoff behind the end screen: doc
 
@@ -15,14 +15,14 @@ status: in-progress
 - done_when: StartTakeoff, the tunables, OnTakeoffStarted/Finished and the hide rule documented with the commit hash; lint clean; committed by path.
 - editor_state: any
 - token_ceiling: 0.3 M units
-- model: open
-- tokens: open
-- usage: open
-- runs: open
+- model: sonnet
+- tokens: input 12, cache write 35197, cache read 391991, output 3947
+- usage: turns 6, context start 59k peak 79k, resumes 0, 1 min, units 0.10 M
+- runs: 1
 - milestone: M2
 - started: 2026-10-29T21:28:51Z
 - waiting_for: none
-- result: open
+- result: Commit b2327290: sys-objectives-shuttle, events and run-flow document StartTakeoff, tunables, events, hide rule; ForwardAcceleration, TakeoffMaxSeconds, TiltSeconds marked provisional.
 
 ## Relations
 - [[task-370-extractor-takeoff-exit]] — parent global task.

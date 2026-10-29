@@ -1,9 +1,9 @@
 ---
 id: task-370-extractor-takeoff-exit
 description: "Global task: At the contact the end screen opens, the miner disappears and the extractor takes off like a helicopter behind it and leaves the screen."
-parent: tasks-to-do-index
+parent: tasks-done-index
 kind: task
-status: in-progress
+status: done
 ---
 # Extractor: helicopter takeoff behind the end screen
 
@@ -13,17 +13,17 @@ status: in-progress
 - gdd_check: read 2026-10-29: [[extraction]] (approved: lands when the alert bar is full, 37-50 cells from the miner, 45 s countdown, reaching it ends the level, missing it loses the run, landing clearance on a clear 4 x 3-cell footprint, look = the Rustwing extractor with four separate rotors), [[level-flow]] (step 1 Land, no arrival described), [[intermission]] (stats screen drawn over the paused finished level, cards screen opaque), [[run-structure]], [[destruction-rules]] (approved: only three things break blocks), [[ore-blocks]] (a deposit is never left partly destroyed; start-zone drops thrown to the ground), [[color-code]] (shuttle white + teal), [[art-prompts-extractor]] (mesh 196.6 x 201.0 x 86.1 cm, nose +X, origin bottom centre, 50,000 triangles), tech [[sys-objectives-shuttle]], [[sys-objectives-run-flow]] (EndRun pauses the game), [[sys-run-transition-fade]] (fade in 0.5 s after the level switch; level 1 and direct PIE have no fade), [[bp-extraction-shuttle]] (white box, glow pulse, chevrons). No gdd node describes the miner leaving or a takeoff: values asked as Q3 (written in extraction by the Q edits). EndRun pauses the world, so the takeoff must tick while paused; the stats screen is drawn over the paused level, so it is visible behind. Needs [[task-369-extractor-level-exit]] first.
 - confirmed_by_owner: yes (2026-10-29, "Pas de vérification visuel pour le point 8, prépare les tâches avec les informations dedans, je les lancerais déjà que le mesh est prés.")
 - milestone: M2
-- next_step: task-370-02-doc-extractor-takeoff
+- next_step: none
 - started: 2026-10-29T21:17:31Z
 - waiting_for: none
-- result: open
+- result: Done. Commit b2327290: sys-objectives-shuttle, events and run-flow document StartTakeoff, tunables, events, hide rule; ForwardAcceleration, TakeoffMaxSeconds, TiltSeconds marked provisional.
 
 ## Subtasks
 1. task-370-01-cpp-extractor-takeoff (vault/reference/tasks/task-370-extractor-takeoff-exit/task-370-01-cpp-extractor-takeoff.md) — cpp: hide miner and drone on extraction, helicopter takeoff of ARRShuttle ticking while paused, StartTakeoff entry and events.
 2. task-370-02-doc-extractor-takeoff (vault/reference/tasks/task-370-extractor-takeoff-exit/task-370-02-doc-extractor-takeoff.md) — doc: update sys-objectives-shuttle and sys-objectives-events for the takeoff and hidden miner.
 
 ## Relations
-- [[tasks-to-do-index]] — parent index.
+- [[tasks-done-index]] — parent index.
 - [[task-370-01-cpp-extractor-takeoff]] — step 1, cpp.
 - [[task-370-02-doc-extractor-takeoff]] — step 2, doc.
 - [[task-369-extractor-level-exit]] — must be done first; holds the questions.
