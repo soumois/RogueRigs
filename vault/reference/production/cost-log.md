@@ -804,17 +804,18 @@ kind: note
 | [[task-359-02-capture-tooling-doc]] | sonnet | 1 | 0k | 22k | 143k | 5k | 0.06 | 8 | 0 |
 | [[task-360-01-capture-agent-definition]] | sonnet | 1 | 0k | 41k | 337k | 12k | 0.15 | 12 | 0 |
 | [[task-361-01-bp-agent-cost-sheet]] | opus | 1 | 0k | 67k | 917k | 13k | 0.24 | 20 | 0 |
+| [[task-361-02-bp-agent-cost-doc]] | sonnet | 1 | 0k | 20k | 61k | 3k | 0.05 | 4 | 0 |
 
 ## Totals
 Rebuilt by `record-cost.js` at each closing; do not edit. Units are input-token equivalents (weights in `vault/scripts/cost-rates.json`). Subtask rows are rounded to k; the lines below them come from the usage snapshot (exact).
 
 | Scope | Units (M) | Input | Cache write | Cache read | Output |
 |---|---|---|---|---|---|
-| All subtask rows above | 326.58 | 0k | 76.57 M | 1632.02 M | 13545k |
+| All subtask rows above | 326.63 | 0k | 76.59 M | 1632.08 M | 13548k |
 | model mixed | 6.75 | 0k | 2.47 M | 20.25 M | 327k |
 | model opus | 185.70 | 0k | 41.44 M | 935.16 M | 8085k |
-| model sonnet | 134.13 | 0k | 32.67 M | 676.60 M | 5133k |
-| Executors and legacy orchestrators that ran a task (pilot) | 15.01 | 2k | 7.08 M | 39.59 M | 439k |
+| model sonnet | 134.18 | 0k | 32.69 M | 676.66 M | 5136k |
+| Executors and legacy orchestrators that ran a task (pilot) | 15.03 | 2k | 7.09 M | 39.66 M | 440k |
 | Planning runs (planners and legacy planning passes) | 16.85 | 2k | 5.48 M | 61.20 M | 774k |
 | Agents without a subtask id (other) | 0.97 | 0k | 0.37 M | 3.96 M | 24k |
 | Main sessions (all of them, also chat outside tasks) | 55.35 | 4k | 8.96 M | 374.39 M | 1341k |

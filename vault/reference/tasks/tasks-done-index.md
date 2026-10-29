@@ -367,3 +367,4 @@ Archive: it exceeds the index size limits of [[_authoring]] on purpose (owner, 2
 - [[task-358-planner-cost]] — Cut planner cost: a script applies an all-defaults answer, a resolver prints one id path, task-create.js writes a whole plan from one spec. Status done.
 - [[task-359-capture-tooling]] — Capture tooling: crops and labelled comparison sheets with ffmpeg built in, and a generated list of rr.* debug console commands per system. Status done.
 - [[task-360-capture-agent]] — New Sonnet capture agent: runs -game captures from a planner checklist with a minimal brief, reports each point seen, not seen or ambiguous. Status done.
+- [[task-361-bp-agent-cost]] — Cut bp agent cost: batch independent MCP calls, a compact tool sheet so toolset discovery is skipped, describe single widgets rather than trees. Status done.

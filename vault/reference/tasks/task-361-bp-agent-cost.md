@@ -1,9 +1,9 @@
 ---
 id: task-361-bp-agent-cost
 description: "Global task: Cut bp agent cost: batch independent MCP calls, a compact tool sheet so toolset discovery is skipped, describe single widgets rather than trees."
-parent: tasks-to-do-index
+parent: tasks-done-index
 kind: task
-status: in-progress
+status: done
 ---
 # bp agent cost: batching, MCP tool sheet, single-widget reads
 
@@ -13,10 +13,10 @@ status: in-progress
 - gdd_check: crew tooling, no gdd node involved (Planner, 2026-10-29). Read: agent-bp (bp already runs on Sonnet: lever 3 is about units), `.claude/agents/bp.md`, bp-mcp-lessons, unreal-mcp (tool inventory: toolset names only, no argument shapes). Every bp run calls describe_toolset, so the transcripts already hold the argument shapes: the sheet can be generated from them without the editor (Q10). A hand-written sheet in a vault node would exceed the 400-word limit: the generated file lives in Tools/unreal and a short section of bp-mcp-lessons links it (Q11).
 - confirmed_by_owner: yes (2026-10-29, "OK, tout par défaut" to Q1-Q12 and the plan, relayed by the main session)
 - milestone: M2
-- next_step: task-361-02-bp-agent-cost-doc
+- next_step: none
 - started: 2026-10-29T14:27:34Z
 - waiting_for: none
-- result: open
+- result: Done. bp.md step 4 rules, agent-bp reads and mcp_rules, bp-mcp-lessons Tool sheet section, unreal-mcp link; commit 23915732
 
 ## Questions
 Decided 2026-10-29 (owner "OK, tout par défaut"): every default below is accepted; values provisional, owner 2026-10-29.
@@ -28,7 +28,7 @@ Decided 2026-10-29 (owner "OK, tout par défaut"): every default below is accept
 2. task-361-02-bp-agent-cost-doc (vault/reference/tasks/task-361-bp-agent-cost/task-361-02-bp-agent-cost-doc.md) — doc: bp.md step 4 rules, agent-bp reads, bp-mcp-lessons Tool sheet section, unreal-mcp link.
 
 ## Relations
-- [[tasks-to-do-index]] — parent index.
+- [[tasks-done-index]] — parent index.
 - [[task-361-01-bp-agent-cost-sheet]] — step 1, cpp.
 - [[task-361-02-bp-agent-cost-doc]] — step 2, doc.
 - [[task-358-planner-cost]] — lever 1, same request.
