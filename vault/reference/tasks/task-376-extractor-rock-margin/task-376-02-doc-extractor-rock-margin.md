@@ -3,7 +3,7 @@ id: task-376-02-doc-extractor-rock-margin
 description: "Doc: doc: update sys-objectives-shuttle, sys-objectives-run-flow and sys-grid-api."
 parent: task-376-extractor-rock-margin
 kind: task
-status: todo
+status: in-progress
 ---
 # Extractor: rock destroyed under it and in a margin around it: doc
 
@@ -20,7 +20,7 @@ status: todo
 - usage: open
 - runs: open
 - milestone: M2
-- started: open
+- started: 2026-10-29T23:55:31Z
 - waiting_for: none
 - result: open
 

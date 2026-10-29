@@ -3,7 +3,7 @@ id: task-376-01-cpp-extractor-rock-margin
 description: "Cpp: margin tunable, footprint + margin cleared at both placements, landing kept in the 37-50 band."
 parent: task-376-extractor-rock-margin
 kind: task
-status: in-progress
+status: done
 ---
 # Extractor: rock destroyed under it and in a margin around it: cpp
 
@@ -15,14 +15,14 @@ status: in-progress
 - done_when: build succeeds; RogueRigs.Extraction, RogueRigs.RunFlow and Integration.FineConsoleShuttlePlacement pass; committed by path.
 - editor_state: closed
 - token_ceiling: 1.2 M units
-- model: open
-- tokens: open
-- usage: open
-- runs: open
+- model: sonnet
+- tokens: input 54, cache write 84830, cache read 2715075, output 17574
+- usage: turns 27, context start 58k peak 129k, resumes 0, 7 min, units 0.47 M
+- runs: 1
 - milestone: M2
 - started: 2026-10-29T23:48:11Z
 - waiting_for: none
-- result: open
+- result: ClearMarginCells 2 on ARRShuttle; both placements clear footprint + margin (20 x 16 clamped); FindShuttleCell in-band reachable fallback; build ok, Extraction, RunFlow, FineConsoleShuttlePlacement pass; commit 9f2c53ae
 
 ## Relations
 - [[task-376-extractor-rock-margin]] — parent global task.
