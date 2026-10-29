@@ -3,7 +3,7 @@ id: task-369-03-bp-shuttle-extractor-look
 description: "Bp: BP_ExtractionShuttle shows SM_Extractor_Body and the four rotors at their pivots, glow pulse removed, chevrons kept."
 parent: task-369-extractor-level-exit
 kind: task
-status: in-progress
+status: done
 ---
 # Extractor in game: the level exit you walk up to: bp
 
@@ -15,14 +15,14 @@ status: in-progress
 - done_when: PIE with SkipToExtraction: the shuttle spawns with the extractor body and four rotors, no white box, chevrons placed as before, walking to it gives the success screen, no log error; committed by path.
 - editor_state: open
 - token_ceiling: 1.0 M units
-- model: open
-- tokens: open
-- usage: open
-- runs: open
+- model: sonnet
+- tokens: input 36, cache write 43123, cache read 471943, output 10103
+- usage: turns 18, context start 12k peak 43k, resumes 0, 2 min, units 0.15 M
+- runs: 1
 - milestone: M2
 - started: 2026-10-29T21:13:35Z
 - waiting_for: none
-- result: open
+- result: BP_ExtractionShuttle: Mesh=SM_Extractor_Body scale 1, 4 rotors at pivots, GlowAmount call removed, chevrons kept; commit 4fead33b; PIE walk not run (owner refused tests), render unverified.
 
 ## Relations
 - [[task-369-extractor-level-exit]] — parent global task.

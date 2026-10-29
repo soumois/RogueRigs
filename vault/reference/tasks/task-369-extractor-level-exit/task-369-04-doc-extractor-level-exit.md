@@ -3,7 +3,7 @@ id: task-369-04-doc-extractor-level-exit
 description: "Doc: update bp-extraction-shuttle and sys-objectives-shuttle for the extractor meshes and rotor components."
 parent: task-369-extractor-level-exit
 kind: task
-status: todo
+status: in-progress
 ---
 # Extractor in game: the level exit you walk up to: doc
 
@@ -20,7 +20,7 @@ status: todo
 - usage: open
 - runs: open
 - milestone: M2
-- started: open
+- started: 2026-10-29T21:16:16Z
 - waiting_for: none
 - result: open
 
