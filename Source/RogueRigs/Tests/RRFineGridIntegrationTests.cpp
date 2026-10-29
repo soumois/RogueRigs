@@ -386,7 +386,7 @@ bool FRRFineConsoleShuttlePlacementTest::RunTest(const FString& Parameters)
 	TestEqual(TEXT("console ring 60 cells"), Config.ConsoleMaxDistanceCells, 60.f);
 	TestEqual(TEXT("shuttle 37 cells min"), Config.ShuttleMinDistanceCells, 37.f);
 	TestEqual(TEXT("shuttle 50 cells max"), Config.ShuttleMaxDistanceCells, 50.f);
-	TestEqual(TEXT("board radius 3 cells"), Config.ShuttleBoardRadiusCells, 3.f);
+	TestEqual(TEXT("board radius 12 cells (task-375)"), Config.ShuttleBoardRadiusCells, 12.f);
 
 	for (const int32 Seed : { 1, 20261003, 777, 4242, 90210 })
 	{
@@ -460,12 +460,12 @@ bool FRRFineConsoleShuttlePlacementTest::RunTest(const FString& Parameters)
 			Seed, ShuttleCell.X, ShuttleCell.Y, ShuttleDistance, ShuttleDistance / CellSize, Shuttle->GetBoardRadius(), BoardCells));
 		TestTrue(*FString::Printf(TEXT("seed %d: shuttle is BP_ExtractionShuttle"), Seed), Shuttle->IsA(ShuttleClass));
 		TestEqual(*FString::Printf(TEXT("seed %d: shuttle on floor"), Seed), Grid->GetCellType(ShuttleCell), ERRCellType::Floor);
-		TestTrue(*FString::Printf(TEXT("seed %d: shuttle at its 4 x 3 footprint centre"), Seed), Shuttle->GetFootprintCells() == FIntPoint(4, 3)
+		TestTrue(*FString::Printf(TEXT("seed %d: shuttle at its 16 x 12 footprint centre (task-375)"), Seed), Shuttle->GetFootprintCells() == FIntPoint(16, 12)
 			&& Shuttle->GetActorLocation().Equals(RRLandingFootprint::GetCenter(Grid, ShuttleCell, Shuttle->GetFootprintCells()), 1.0));
 		TestTrue(*FString::Printf(TEXT("seed %d: shuttle 37 to 50 cells away (one cell of slack)"), Seed),
 			ShuttleDistance >= 37.0 * CellSize - CellSize && ShuttleDistance <= 50.0 * CellSize + CellSize);
 		TestTrue(*FString::Printf(TEXT("seed %d: shuttle reachable"), Seed), FlowField->GetCellDistance(ShuttleCell) >= 0);
-		TestTrue(*FString::Printf(TEXT("seed %d: board radius 3 cells = 201 uu"), Seed), FMath::IsNearlyEqual(Shuttle->GetBoardRadius(), 3.f * CellSize, 0.5f));
+		TestTrue(*FString::Printf(TEXT("seed %d: board radius 12 cells = 804 uu"), Seed), FMath::IsNearlyEqual(Shuttle->GetBoardRadius(), 12.f * CellSize, 0.5f));
 		TestTrue(*FString::Printf(TEXT("seed %d: several floor cells to board from"), Seed), BoardCells >= 2);
 		TestEqual(*FString::Printf(TEXT("seed %d: no block under the shuttle mesh"), Seed),
 			CountBlocksUnderActor(*this, Grid, Shuttle, *FString::Printf(TEXT("seed %d: shuttle"), Seed)), 0);

@@ -221,11 +221,12 @@ protected:
 	FIntPoint Cell = FIntPoint(INDEX_NONE, INDEX_NONE);
 
 	/**
-	 * Landing footprint in cells of the grid, rotation zero (4 x 3 cells of 67 uu = 268 x 201 uu for the 240 x 160 uu shuttle mesh,
-	 * task-026-00). The shuttle lands only where every cell is reachable floor and stands at the footprint centre (RRLandingFootprint).
+	 * Landing footprint in cells of the grid, rotation zero (16 x 12 cells of 67 uu = 1072 x 804 uu: x4 of the former 4 x 3 for the
+	 * mesh scaled x4, owner 2026-10-29, task-375). The shuttle lands only where every cell is reachable floor and stands at the
+	 * footprint centre (RRLandingFootprint). Provisional.
 	 */
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Shuttle", meta = (ClampMin = 1))
-	FIntPoint FootprintCells = FIntPoint(4, 3);
+	FIntPoint FootprintCells = FIntPoint(16, 12);
 
 	/** Takeoff: wait before the rise, rotors spinning up (s). Provisional (extraction takeoff, Q3). */
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Shuttle|Takeoff", meta = (ClampMin = 0, Units = "s"))

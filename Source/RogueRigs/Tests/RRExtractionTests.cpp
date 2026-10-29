@@ -83,7 +83,7 @@ bool FRRExtractionLandingTest::RunTest(const FString& Parameters)
 	const FRRRunFlowConfig Defaults;
 	TestEqual(TEXT("shuttle 37 cells min"), Defaults.ShuttleMinDistanceCells, 37.f);
 	TestEqual(TEXT("shuttle 50 cells max"), Defaults.ShuttleMaxDistanceCells, 50.f);
-	TestEqual(TEXT("board radius 3 cells (1 of 200 uu)"), Defaults.ShuttleBoardRadiusCells, 3.f);
+	TestEqual(TEXT("board radius 12 cells (804 uu, task-375)"), Defaults.ShuttleBoardRadiusCells, 12.f);
 	TestEqual(TEXT("countdown 45 s"), Defaults.ShuttleCountdownSeconds, 45.f);
 
 	// Several seeds: every landing respects the distance and reachability rules.
@@ -113,7 +113,7 @@ bool FRRExtractionLandingTest::RunTest(const FString& Parameters)
 		TestTrue(TEXT("at the footprint centre"), Shuttle->GetActorLocation().Equals(RRLandingFootprint::GetCenter(Setup.Grid, Cell, Shuttle->GetFootprintCells()), 1.f));
 		TArray<FIntPoint> FootprintCells;
 		RRLandingFootprint::GetCells(Cell, Shuttle->GetFootprintCells(), FootprintCells);
-		TestEqual(TEXT("4 x 3 footprint"), FootprintCells.Num(), 12);
+		TestEqual(TEXT("16 x 12 footprint (task-375)"), FootprintCells.Num(), 192);
 		for (const FIntPoint& FootprintCell : FootprintCells)
 		{
 			TestTrue(FString::Printf(TEXT("footprint cell (%d, %d) is reachable floor"), FootprintCell.X, FootprintCell.Y),
