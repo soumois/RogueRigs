@@ -1,9 +1,9 @@
 ---
 id: task-364-miner-turnaround-prompt
 description: "Global task: Write the ChatGPT image prompt of the miner turnaround sheet (front, side, back, A-pose) that the owner turns into the 3D mesh himself."
-parent: tasks-to-do-index
+parent: tasks-done-index
 kind: task
-status: in-progress
+status: done
 ---
 # Miner turnaround prompt for ChatGPT
 
@@ -13,10 +13,10 @@ status: in-progress
 - gdd_check: Read miner (spec approved), asset-pipeline, art-style-guide, art-prompts, art-prompts-rigs, art-prompts-drone, art-3d-lessons, bp-miner, bp-burst-rifle, sys-player, sys-weapons (2026-10-29). No conflict: A6 (white, teal, rust, amber visor, backpack), A2 (rigid parts only, so joint covers are segmented, not cloth), A16-A17 and asset-pipeline step 1 (front, side, back, plain white, no weapon, no effects, even light; T-pose or A-pose allowed); the drone turnaround prompt is the format model (exact 90 degree side view, same size and framing, the side view of miner-turnaround.jpg was inconsistent). The existing T-pose prompt (art-prompts-rigs section 4) is kept as history. Change: miner.md said "Asset: Tripo (auto-rig)"; the owner now makes the 3D himself (edit in the defaults). Open values reported, not decided by this task: rig and animation route of the miner (asset-pipeline: Tripo deferred, v3 API unverified; rigid binding allowed; parts and bones list open); which of up to 4 equipped weapons the miner holds visibly (MaxWeapons 4, nothing in the GDD); weapon meshes are placeholder cubes; miner hand socket not set (WeaponAttachSocketName None, capsule offset since task-008-03). In milestone scope (M2 art).
 - confirmed_by_owner: yes (2026-10-29, "ok")
 - milestone: M2
-- next_step: task-364-01-prompt-node
+- next_step: none
 - started: 2026-10-29T17:56:21Z
 - waiting_for: none
-- result: open
+- result: Done. art-prompts-miner written (commit 76eed24e), linked from art-prompts, no image generated
 
 ## Questions
 Decided 2026-10-29 (owner "ok"): every default below is accepted; values provisional, owner 2026-10-29.
@@ -29,7 +29,7 @@ Decided 2026-10-29 (owner "ok"): every default below is accepted; values provisi
 1. task-364-01-prompt-node (vault/reference/tasks/task-364-miner-turnaround-prompt/task-364-01-prompt-node.md) — art: write art-prompts-miner with the verbatim miner turnaround prompt; no generation
 
 ## Relations
-- [[tasks-to-do-index]] — parent index.
+- [[tasks-done-index]] — parent index.
 - [[task-364-01-prompt-node]] — step 1, art.
 - [[miner]] — the player character spec this prompt serves.
 - [[art-prompts]] — parent of the prompt node to create.
