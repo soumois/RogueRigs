@@ -16,6 +16,8 @@ status: approved
 - Values (owner 2026-10-07, provisional): one chest per level, dropped when the alert reaches 60 %, 30–45 cells (67 uu) from the miner on a free 2 × 2 floor footprint; hack 8 s with the console rules (zone radius 6 cells, progress drains when the miner leaves); no marked rocks; reward no direct XP (owner 2026-10-23: one upgrade, not two; was 50 % of the level need, owner 2026-10-08), 5 ore chunks, one upgrade choice with +3 luck for that draw only. The locator arrow keeps the console or shuttle; the chest shows as a gold icon on the alert bar.
 - Milestone: M2 (provisional).
 
+- Lock light (owner 2026-10-23, task-308, provisional): glows in every state; red blinking 2 Hz while waiting; orange blinking while the miner is in the zone, faster as the hack progresses, 2 Hz at 0 % to 6 Hz at 100 %, in steps 2, 3, 4, 6 Hz over equal quarters of the progress (a continuous change makes the blink jump); back to red 2 Hz when the miner leaves; steady green once open. Colours: the console state lamps ([[color-code]]).
+
 - Zone look (owner 2026-10-12): the same ground circles as the console zone, at the chest zone radius ([[objective-console]], [[ground-telegraph]]).
 
 ## Relations
