@@ -144,6 +144,16 @@ public:
 	UFUNCTION(BlueprintPure, Category = "RunFlow")
 	bool IsRunFlowEnabled() const { return bRunFlowEnabled; }
 
+	/**
+	 * Turns the arrival footprint clear (task-372-01) on or off; on by default. Off: the arrival extractor is still placed but the
+	 * blocks under it stay (task-371 behaviour). The automation test worlds turn it off (RRTestHarness::FTestWorld) so the
+	 * scenes they build next to the miner are not cleared; the extraction landing clear is not affected.
+	 */
+	void SetArrivalClearsFootprint(bool bClears) { bArrivalClearsFootprint = bClears; }
+
+	/** True when the arrival placement clears the blocks of its footprint (SetArrivalClearsFootprint). */
+	bool DoesArrivalClearFootprint() const { return bArrivalClearsFootprint; }
+
 	/** Alert value in [0, 1]. */
 	UFUNCTION(BlueprintPure, Category = "RunFlow")
 	float GetAlert() const;
@@ -588,6 +598,9 @@ protected:
 
 	/** True once this level's arrival takeoff was started. */
 	bool bArrivalTakeoffStarted = false;
+
+	/** True when PlaceArrivalShuttle clears the blocks of the footprint (SetArrivalClearsFootprint; off in automation test worlds). */
+	bool bArrivalClearsFootprint = true;
 
 	/** Console placement stream. */
 	FRandomStream RandomStream;

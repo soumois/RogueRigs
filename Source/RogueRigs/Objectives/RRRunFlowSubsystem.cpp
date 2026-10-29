@@ -652,8 +652,11 @@ ARRShuttle* URRRunFlowSubsystem::PlaceArrivalShuttle()
 		BlockCells += Grid->IsBlockCell(Cell) ? 1 : 0;
 	}
 	// task-372-01: the blocks under the footprint are destroyed before the extractor is spawned (drops at rest, no barrel blast).
-	const URRRunSubsystem* Run = URRRunSubsystem::Get(this);
-	Grid->ClearExtractorFootprint(MinCell, Size, FString::Printf(TEXT("arrival, run level %d"), Run ? Run->GetLevelIndex() : 0));
+	if (bArrivalClearsFootprint)
+	{
+		const URRRunSubsystem* Run = URRRunSubsystem::Get(this);
+		Grid->ClearExtractorFootprint(MinCell, Size, FString::Printf(TEXT("arrival, run level %d"), Run ? Run->GetLevelIndex() : 0));
+	}
 
 	FActorSpawnParameters Params;
 	Params.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AlwaysSpawn;

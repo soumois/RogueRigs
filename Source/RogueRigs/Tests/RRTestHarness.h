@@ -18,6 +18,7 @@
 #include "GameFramework/WorldSettings.h"
 #include "HAL/IConsoleManager.h"
 #include "Grid/RRArenaGrid.h"
+#include "Objectives/RRRunFlowSubsystem.h"
 #include "Tests/RRTestAccess.h"
 #include "Player/RRMiner.h"
 #include "Weapons/RRAutoFireComponent.h"
@@ -70,6 +71,11 @@ namespace RRTestHarness
 			FWorldContext& Context = GEngine->CreateNewWorldContext(EWorldType::Game);
 			Context.SetCurrentWorld(World);
 			World->InitializeActorsForPlay(FURL());
+			// The arrival extractor clears the blocks of its footprint next to the miner (task-372-01): test scenes are built there.
+			if (URRRunFlowSubsystem* RunFlow = World->GetSubsystem<URRRunFlowSubsystem>())
+			{
+				RunFlow->SetArrivalClearsFootprint(false);
+			}
 			World->BeginPlay();
 			// No game mode: dispatch BeginPlay ourselves; actors spawned afterwards begin play on spawn.
 			World->GetWorldSettings()->NotifyBeginPlay();
