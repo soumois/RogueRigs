@@ -1,9 +1,9 @@
 ---
 id: task-362-agents-path-of
 description: "Global task: agent definitions stop opening _paths.md; style-guide gets its fixed read paths in its definition, six agents resolve wikilinks with path-of.js."
-parent: tasks-to-do-index
+parent: tasks-done-index
 kind: task
-status: in-progress
+status: done
 ---
 # Agent definitions: path-of.js instead of _paths.md
 
@@ -13,10 +13,10 @@ status: in-progress
 - gdd_check: crew tooling, no gdd node involved (Planner, 2026-10-29). Found: `.claude/agents/style-guide.md` never names `_paths.md`, but its step 1 sends it to the `reads` of agent-style-guide, which are wikilinks; with Read and Write only, `_paths.md` is its only way to resolve them, hence the read in every run. Its reads are a fixed set, resolved 2026-10-29 with path-of.js: lore (vault/reference/gdd/lore.md), dialogue-tone (vault/reference/gdd/art-audio/dialogue-tone.md), crew-characters (vault/reference/gdd/crew-characters.md), fictional-films (vault/reference/gdd/fictional-films.md), company-voice (vault/reference/gdd/company-voice.md), art-style-guide (vault/reference/gdd/art-audio/art-style-guide.md), color-code (vault/reference/gdd/art-audio/color-code.md), readability-rules (vault/reference/gdd/art-audio/readability-rules.md), style-guide-text (vault/reference/gdd/art-audio/style-guide-text.md, already named by path in scored mode); the entity node comes from the caller (Executor step 4 hands resolved input paths). Same change elsewhere: `.claude/agents/3d.md`, `art.md`, `bp.md`, `cpp.md`, `doc.md`, `text.md` step 1 each say "Resolve a `[[wikilink]]` through `vault/_paths.md`"; all six have Bash, so path-of.js applies directly. Their vault nodes do not mention `_paths.md`. Not the same change, left out: executor.md (opens task nodes by printed path), capture.md, level-design.md (none names `_paths.md`; level-design lists its `reads` without a resolution rule, reported only), planner.md (done in task-358). Rule nodes `_navigation` (still allows `_paths.md` once per session) and `orchestration-protocol` are not edited.
 - confirmed_by_owner: yes (2026-10-29, "OK, tout par défaut")
 - milestone: M2
-- next_step: task-362-01-agents-path-of-doc
+- next_step: none
 - started: 2026-10-29T15:22:12Z
 - waiting_for: none
-- result: open
+- result: Done. Done, commit 98d28b42: style-guide has its nine read paths, six definitions and nodes use path-of.js. grep -l _paths still lists the seven files because the mandated sentence says 'never open vault/_paths.md'; none tells the agent to read it (intent met).
 
 ## Questions
 Decided 2026-10-29 (owner "OK, tout par défaut"): every default below is accepted; values provisional, owner 2026-10-29.
@@ -27,6 +27,6 @@ Decided 2026-10-29 (owner "OK, tout par défaut"): every default below is accept
 1. task-362-01-agents-path-of-doc (vault/reference/tasks/task-362-agents-path-of/task-362-01-agents-path-of-doc.md) — doc: style-guide definition and node get fixed read paths; 3d, art, bp, cpp, doc, text definitions and nodes resolve wikilinks with path-of.js.
 
 ## Relations
-- [[tasks-to-do-index]] — parent index.
+- [[tasks-done-index]] — parent index.
 - [[task-362-01-agents-path-of-doc]] — step 1, doc.
 - [[task-358-planner-cost]] — added path-of.js and moved the planner to it.

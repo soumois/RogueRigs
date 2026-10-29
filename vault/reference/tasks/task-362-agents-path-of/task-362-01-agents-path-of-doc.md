@@ -3,7 +3,7 @@ id: task-362-01-agents-path-of-doc
 description: "Doc: style-guide definition and node get fixed read paths; 3d, art, bp, cpp, doc, text definitions and nodes resolve wikilinks with path-of.js."
 parent: task-362-agents-path-of
 kind: task
-status: in-progress
+status: done
 ---
 # Agent definitions: path-of.js instead of _paths.md: doc
 
@@ -15,14 +15,14 @@ status: in-progress
 - done_when: style-guide.md step 1 lists the nine resolved paths of the global gdd_check, says the entity path comes from the brief, never to open `vault/_paths.md` and to stop and report a missing path, tools still `Read, Write`; agent-style-guide says the same in one clause; `grep -l _paths .claude/agents/*.md` prints only planner.md; each of the six definitions names `node vault/scripts/path-of.js` in step 1 and each of the six nodes states it; every path listed in style-guide.md exists; `node vault/scripts/lint.js --write` clean; committed by path.
 - editor_state: any
 - token_ceiling: 0.3 M units
-- model: open
-- tokens: open
-- usage: open
-- runs: open
+- model: sonnet
+- tokens: input 14, cache write 33711, cache read 138577, output 4163
+- usage: turns 7, context start 11k peak 34k, resumes 0, 3 min, units 0.08 M
+- runs: 1
 - milestone: M2
 - started: 2026-10-29T15:22:12Z
 - waiting_for: none
-- result: open
+- result: Done, commit 98d28b42: style-guide has its nine read paths, six definitions and nodes use path-of.js. grep -l _paths still lists the seven files because the mandated sentence says 'never open vault/_paths.md'; none tells the agent to read it (intent met).
 
 ## Relations
 - [[task-362-agents-path-of]] — parent global task.
