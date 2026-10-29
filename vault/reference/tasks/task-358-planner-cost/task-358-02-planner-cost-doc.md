@@ -3,7 +3,7 @@ id: task-358-02-planner-cost-doc
 description: "Doc: describe path-of.js, task-confirm.js and task-create.js spec v2 in the runbook, planner, protocol, navigation and main-session instructions."
 parent: task-358-planner-cost
 kind: task
-status: todo
+status: in-progress
 ---
 # Planner cost: doc
 
@@ -20,7 +20,7 @@ status: todo
 - usage: open
 - runs: open
 - milestone: M2
-- started: open
+- started: 2026-10-29T14:16:04Z
 - waiting_for: none
 - result: open
 

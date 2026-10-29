@@ -798,20 +798,21 @@ kind: note
 | [[task-355-01-shop-card-frame-details-fix]] | sonnet | 1 | 0k | 113k | 1665k | 13k | 0.37 | 23 | 1 |
 | [[task-355-02-shop-card-frame-details-capture]] | opus | 1 | 0k | 128k | 3437k | 41k | 0.71 | 42 | 1 |
 | [[task-355-03-shop-card-frame-details-doc]] | sonnet | 1 | 0k | 32k | 100k | 4k | 0.07 | 5 | 0 |
+| [[task-358-01-planner-cost-scripts]] | opus | 1 | 0k | 91k | 2343k | 35k | 0.52 | 36 | 0 |
 
 ## Totals
 Rebuilt by `record-cost.js` at each closing; do not edit. Units are input-token equivalents (weights in `vault/scripts/cost-rates.json`). Subtask rows are rounded to k; the lines below them come from the usage snapshot (exact).
 
 | Scope | Units (M) | Input | Cache write | Cache read | Output |
 |---|---|---|---|---|---|
-| All subtask rows above | 325.15 | 0k | 76.23 M | 1626.62 M | 13450k |
+| All subtask rows above | 325.67 | 0k | 76.32 M | 1628.96 M | 13485k |
 | model mixed | 6.75 | 0k | 2.47 M | 20.25 M | 327k |
-| model opus | 184.57 | 0k | 41.19 M | 930.39 M | 8013k |
+| model opus | 185.09 | 0k | 41.28 M | 932.74 M | 8048k |
 | model sonnet | 133.83 | 0k | 32.57 M | 675.97 M | 5110k |
-| Executors and legacy orchestrators that ran a task (pilot) | 14.64 | 2k | 6.93 M | 38.60 M | 424k |
-| Planning runs (planners and legacy planning passes) | 16.15 | 2k | 5.25 M | 59.40 M | 728k |
-| Agents without a subtask id (other) | 0.49 | 0k | 0.18 M | 1.73 M | 17k |
-| Main sessions (all of them, also chat outside tasks) | 53.91 | 4k | 8.63 M | 366.50 M | 1293k |
+| Executors and legacy orchestrators that ran a task (pilot) | 14.76 | 2k | 7.00 M | 38.72 M | 427k |
+| Planning runs (planners and legacy planning passes) | 16.85 | 2k | 5.48 M | 61.20 M | 774k |
+| Agents without a subtask id (other) | 0.97 | 0k | 0.37 M | 3.96 M | 24k |
+| Main sessions (all of them, also chat outside tasks) | 55.17 | 4k | 8.95 M | 372.81 M | 1338k |
 
 ## Lessons for estimates
 - Per C++ subtask: output 20k to 115k, cache write 50k to 250k, cache read 0.5 M to 11 M.

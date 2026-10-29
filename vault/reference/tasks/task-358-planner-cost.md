@@ -13,7 +13,7 @@ status: in-progress
 - gdd_check: crew tooling, no gdd node involved (Planner, 2026-10-29). Read: task-create.js, agent-planner, orchestration-protocol, orchestrator-runbook (Creating tasks), _navigation, `.claude/commands/task.md`. Findings: task-create.js already exists but writes one subtask per global and generic `request`/`gdd_check` lines, so the planner rewrites them by hand; a resolver of an exact id is compatible with [[_navigation]] (a wikilink id is resolved to its path through `_paths.md`; searching to locate a node is forbidden) provided it never matches partial ids; `_navigation` and `orchestration-protocol` are `kind: rule`: editing them needs explicit owner intent (Q2, Q1). The apply-defaults script changes who acts on a pure "ok" (main session instead of the planner), so CLAUDE.md and `.claude/commands/task.md` change (Q1).
 - confirmed_by_owner: yes (2026-10-29, "OK, tout par défaut" to Q1-Q12 and the plan, relayed by the main session)
 - milestone: M2
-- next_step: task-358-01-planner-cost-scripts
+- next_step: task-358-02-planner-cost-doc
 - started: 2026-10-29T14:09:28Z
 - waiting_for: none
 - result: open
