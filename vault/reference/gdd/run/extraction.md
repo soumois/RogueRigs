@@ -15,6 +15,7 @@ status: approved
 - Values (provisional, owner 2026-10-03): lands 37 to 50 cells (67 uu, about 2500–3350 uu) from the miner (owner 2026-10-07: the exit was far too far; was at least 75 cells, no maximum), on a reachable cell; countdown 45 s.
 - Landing clearance (provisional, owner after handover-2026-10-06): the shuttle lands only where its whole 4 × 3-cell footprint is open floor, so its mesh never overlaps rock.
 - M1 (single level): reaching the shuttle shows a success screen, missing it shows a run-lost screen; both offer a button that restarts the map.
+- Look (provisional, owner 2026-10-29, task-366): the shuttle is the Rigs' Rustwing quadrotor, called the extractor; its mesh fits the 4 x 3-cell footprint and its four rotors are separate meshes so they can spin (files: node art-prompts-extractor).
 - Milestone: M1.
 
 ## Relations
