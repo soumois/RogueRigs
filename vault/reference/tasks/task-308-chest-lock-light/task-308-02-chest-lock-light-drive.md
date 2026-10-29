@@ -3,7 +3,7 @@ id: task-308-02-chest-lock-light-drive
 description: "Drive the chest lock light from its state (cpp): bonus chest lock light states, step 02."
 parent: task-308-chest-lock-light
 kind: task
-status: in-progress
+status: done
 ---
 # Drive the chest lock light from its state
 
@@ -15,13 +15,14 @@ status: in-progress
 - done_when: build green; RogueRigs.Console.* and RogueRigs.RunFlow.* pass; values in the docs; lint clean; committed
 - editor_state: closed
 - token_ceiling: 1.2 M units
-- model: open
-- tokens: open
-- runs: open
+- model: opus
+- tokens: input 40, cache write 76353, cache read 1043087, output 17536
+- usage: turns 20, context start 12k peak 76k, resumes 0, 7 min, units 0.29 M
+- runs: 1
 - milestone: M2
 - started: 2026-10-29T17:41:31Z
 - waiting_for: none
-- result: open
+- result: Chest sets LampColor/BlinkRate on LockLight per state (69e4a24c, docs 300eed81). Material blink jumps phase when rate changes (Sine(Time*Rate)), so steps 2,3,4,6 Hz by progress quarter used instead of linear (linear kept if steps emptied). Build green, Console+RunFlow 9 tests pass.
 
 ## Relations
 - [[task-308-chest-lock-light]] — parent global task.

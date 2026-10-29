@@ -3,7 +3,7 @@ id: task-308-03-capture-chest-lock-light
 description: "Capture the chest lock light states (cpp): bonus chest lock light states, step 03."
 parent: task-308-chest-lock-light
 kind: task
-status: todo
+status: in-progress
 ---
 # Capture the chest lock light states
 
@@ -19,6 +19,7 @@ status: todo
 - tokens: open
 - runs: open
 - milestone: M2
+- started: 2026-10-29T17:49:14Z
 - result: open
 
 ## Relations
