@@ -1,9 +1,9 @@
 ---
 id: task-368-extractor-rebake
 description: "Global task: Re-unwrap the 47,000-triangle flattened extractor and bake the Meshy high-poly look (colour, normal, roughness, metallic) onto it, fixing the stretched rust marks."
-parent: tasks-to-do-index
+parent: tasks-done-index
 kind: task
-status: in-progress
+status: done
 ---
 # Extractor mesh: re-bake the Meshy textures on clean UVs
 
@@ -13,10 +13,10 @@ status: in-progress
 - gdd_check: read 2026-10-29: [[asset-pipeline]] Mesh values (extractor 50,000 triangles, owner 2026-10-29; texture rule A1 level 3: per-asset painted base colour, normal and roughness maps and Meshy textures allowed: no conflict); [[art-prompts-extractor]] (maps 2048 x 2048, game mesh, known limit "the maps are not re-baked", which this task lifts); [[art-3d-lessons]] (agents check by numbers, the Executor renders and sends; stop Blender before reporting). No gdd node sets a texture resolution, a UV method or a normal-map convention for the extractor: asked as Q1 and Q2. No conflict, same milestone as task-366 (M2 art pass). Partial task-367 work found at planning (untracked, not committed, no renders): `Tools/art/blender/extractor_cut_rotors.py`, the five `SM_Extractor_Body|Rotor_FL|FR|RL|RR.fbx` with `.fbm` folders and `extractor_rotors.report.json` in `Art/Meshes/extractor/` (48,154 triangles total, 0 boundary edges, sweep intersections FL 51, FR 49, RL 5, RR 439); handled by Q3.
 - confirmed_by_owner: yes (2026-10-29, "ok")
 - milestone: M2
-- next_step: task-368-01-extractor-rebake-maps
+- next_step: none
 - started: 2026-10-29T19:07:34Z
 - waiting_for: none
-- result: open
+- result: Done. SM_Extractor.fbx re-unwrapped (4631 islands, 0 overlap, 0 flipped vs 534 old, L2 stretch 1.0009 vs 1.0802) and four 2048 maps baked from the dense Meshy mesh (commit 2dfff06a); geometry identical (47,000 tri, 0.0 cm). Colour difference to source 3.7 vs 10.5 (old) over 5 views, lower in all 7. Missed rays 1114 px (0.13%) filled from neighbours, 0 left. DEVIATION: mean normal tilt on flat faces 4.44 deg (above the 3.7 limit; 3.18 deg excluding dense-mesh relief pixels over 30 deg, baked on purpose per Q2), reported in warnings. ALERT turn limit: first 3d run hit 60 turns (72 tool calls, ~3000 s) with no report, resumed by SendMessage, work finished and committed; runs 2.
 
 ## Questions
 Decided 2026-10-29 (owner "ok"): every default below is accepted; values provisional, owner 2026-10-29.
@@ -28,7 +28,7 @@ Decided 2026-10-29 (owner "ok"): every default below is accepted; values provisi
 1. task-368-01-extractor-rebake-maps (vault/reference/tasks/task-368-extractor-rebake/task-368-01-extractor-rebake-maps.md) — 3d: re-unwrap SM_Extractor (geometry kept), bake the four Meshy maps from the dense mesh onto it, report stretch and fidelity, render source, old and new.
 
 ## Relations
-- [[tasks-to-do-index]] — parent index.
+- [[tasks-done-index]] — parent index.
 - [[task-368-01-extractor-rebake-maps]] — step 1, 3d.
 - [[task-366-extractor-flat-faces]] — made the mesh and holds Q2, Q4, Q5 of the extractor.
 - [[task-367-extractor-rotors]] — runs after this task on its output.
