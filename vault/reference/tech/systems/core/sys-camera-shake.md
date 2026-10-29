@@ -6,7 +6,7 @@ kind: doc
 ---
 # Camera shake
 
-- responsibility: one light camera shake any actor can play on the local player's top-down camera through one static call. No gameplay event is wired to it (task-310-01); the bonus chest lid slam is meant to call it (task-309-01, not written yet). Heavy slam and explosions do not shake the camera (owner default Q21, 2026-10-23).
+- responsibility: one light camera shake any actor can play on the local player's top-down camera through one static call. Caller: the bonus chest at the end of its lid hold (`ARRBonusChest`, task-309-01, [[sys-objectives-console-chest]]). Heavy slam and explosions do not shake the camera (owner default Q21, 2026-10-23).
 - main_classes (all in `Source/RogueRigs/Camera/`):
   - `URRCameraShake` (`RRCameraShake.h`, `UCameraShakeBase`, Blueprintable): holds the tunables, creates a `URRCameraShakePattern` as root pattern in its constructor (no Blueprint asset), `bSingleInstance` true (a new call restarts the shake, no stacking).
   - `URRCameraShakePattern` (`RRCameraShakePattern.h`, `UCameraShakePattern`): translation-only Perlin noise (`FMath::PerlinNoise1D` per axis, random start offset per play), timing through `FCameraShakeState`, blend weight applied to the offset; no rotation, no FOV. Written in the project because the engine Perlin pattern lives in the `EngineCameras` plugin (not a module dependency).
@@ -24,3 +24,4 @@ kind: doc
 - [[systems-core-index]] — parent index.
 - [[sys-player]] — the miner's top-down camera the shake moves.
 - [[task-310-camera-shake]] — the task that created it.
+- [[sys-objectives-console-chest]] — the chest lid slam that plays it.

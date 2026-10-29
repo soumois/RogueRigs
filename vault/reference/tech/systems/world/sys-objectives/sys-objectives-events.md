@@ -8,7 +8,7 @@ kind: doc
 
 - Blueprint events (BlueprintImplementableEvent) for the visuals:
   - `ARRConsole`: `OnMarkedRocksChanged(Remaining, Total)` (also at drop), `OnHackProgress(Progress, bHacking)`, `OnHackStateChanged(NewState)`.
-  - `ARRBonusChest`: the console events `OnHackProgress`, `OnHackStateChanged` (`OnMarkedRocksChanged(0, 0)` once at drop), plus `OnRewardGranted(XP, OreChunks, bUpgradeChoiceQueued)`; pure getters `WasRewardGranted`, `GetRewardXP`, `GetXPNeedFraction`, `GetOreChunkCount`, `GetBonusLuck` and the console ones (`GetHackProgress`, `GetZoneRadius`, `GetConsoleState`).
+  - `ARRBonusChest`: the console events `OnHackProgress`, `OnHackStateChanged` (`OnMarkedRocksChanged(0, 0)` once at drop), plus `OnLidOpened(Location)` (lid opening, task-309-01), `OnRewardGranted(XP, OreChunks, bUpgradeChoiceQueued)` (right after it) and `OnLidSlam(Location)` (start of the lid hold) ([[sys-objectives-console-chest]] chest opening); pure getters `WasRewardGranted`, `GetRewardXP`, `GetXPNeedFraction`, `GetOreChunkCount`, `GetBonusLuck` and the console ones (`GetHackProgress`, `GetZoneRadius`, `GetConsoleState`).
   - `ARRShuttle`: `OnLanded()`, `OnCountdown(Remaining)` (every countdown frame), `OnExtracted()` (win), `OnMissed()` (loss).
   - `ARRArenaGrid`: `OnCellMarkedChanged(Cell, bMarked, CellCenter)`; and per-instance custom data float `MarkedCustomDataIndex` (0) = `MarkedCustomDataValue` (1) on the block HISMs, readable by a material through PerInstanceCustomData (pulsing white outline, [[color-code]]).
   - `URRHUDWidget`: `OnAlertChanged`, `OnObjectiveChanged`, `OnObjectiveProgressChanged`, `OnExtractionReady`, `OnShuttleCountdown`, `OnRunEnded`; call `RestartLevel` ([[sys-hud]]).
@@ -18,3 +18,4 @@ kind: doc
 - [[sys-objectives]] — parent hub: summary and verdict.
 - [[color-code]] — referenced above.
 - [[sys-hud]] — referenced above.
+- [[sys-objectives-console-chest]] — the chest opening timeline behind the lid events.
